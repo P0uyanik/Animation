@@ -104,6 +104,10 @@ struct PathTracer::Impl {
   RTCScene shadowScene = nullptr;  // only geometry that casts shadows (== scene when all do)
   std::shared_ptr<const FrameSnapshot> snap;
   std::vector<GeomRef> geoms;
+  // Subsurface materials: per main-scene geometry id, a scene holding only that mesh, so a random walk below the
+  // surface sees its own boundary and nothing else (eyes, teeth and other parts inside the head are ignored).
+  std::vector<RTCScene> sssScenes;
+  Material sssExit;  // Lambertian lobe where a subsurface walk leaves the surface
   std::vector<vec3> accColor, accAlbedo, accNormal;
   std::vector<float> accLumSq;
   std::vector<int> accCount;
@@ -137,11 +141,21 @@ struct PathTracer::Impl {
   CameraModel cam;
 
   Impl() {
+    sssExit.name = "subsurface exit";
+    sssExit.type = MaterialType::Plush;
+    sssExit.baseColor = vec3(1);
+    sssExit.sheen = 0;
     device = rtcNewDevice(nullptr);
     if (!device) logError("Embree device creation failed");
     rtcSetDeviceErrorFunction(device, embreeError, nullptr);
   }
+  void releaseSss() {
+    for (RTCScene s : sssScenes)
+      if (s) rtcReleaseScene(s);
+    sssScenes.clear();
+  }
   ~Impl() {
+    releaseSss();
     if (shadowScene && shadowScene != scene) rtcReleaseScene(shadowScene);
     if (scene) rtcReleaseScene(scene);
     if (device) rtcReleaseDevice(device);
@@ -149,6 +163,7 @@ struct PathTracer::Impl {
 
   void build(std::shared_ptr<const FrameSnapshot> s) {
     Stopwatch sw;
+    releaseSss();
     if (shadowScene && shadowScene != scene) rtcReleaseScene(shadowScene);
     if (scene) rtcReleaseScene(scene);
     shadowScene = nullptr;
@@ -173,6 +188,13 @@ struct PathTracer::Impl {
       std::copy(m.indices.begin(), m.indices.end(), ib);
       rtcCommitGeometry(g);
       unsigned id = rtcAttachGeometry(scene, g);
+      if (snap->materials[size_t(snap->meshes[i].material)].subsurface > 0) {
+        RTCScene ss = rtcNewScene(device);
+        rtcAttachGeometry(ss, g);
+        rtcCommitScene(ss);
+        if (sssScenes.size() <= id) sssScenes.resize(id + 1, nullptr);
+        sssScenes[id] = ss;
+      }
       if (snap->materials[size_t(snap->meshes[i].material)].castsShadow) {
         rtcRetainGeometry(g);
         casters.push_back(g);
@@ -213,6 +235,74 @@ struct PathTracer::Impl {
     for (RTCGeometry g : casters) rtcReleaseGeometry(g);
     samples = 0;
     logInfo("scene built in {:.2f}s: {} triangles, {} fiber segments", sw.seconds(), tris, segs);
+  }
+
+  static void setupRay(RTCRayHit& rh, vec3 o, vec3 d, float tnear, float tfar) {
+    rh.ray.org_x = o.x; rh.ray.org_y = o.y; rh.ray.org_z = o.z;
+    rh.ray.dir_x = d.x; rh.ray.dir_y = d.y; rh.ray.dir_z = d.z;
+    rh.ray.tnear = tnear;
+    rh.ray.tfar = tfar;
+    rh.ray.time = 0;
+    rh.ray.mask = 0xFFFFFFFFu;
+    rh.ray.id = 0;
+    rh.ray.flags = 0;
+    rh.hit.geomID = RTC_INVALID_GEOMETRY_ID;
+    rh.hit.instID[0] = RTC_INVALID_GEOMETRY_ID;
+  }
+
+  bool hasSubsurface(unsigned geomID) const { return geomID < sssScenes.size() && sssScenes[geomID]; }
+
+  // Random walk below a subsurface surface (Chiang et al. 2016 albedo inversion, chromatic free-flight sampling
+  // with balance-heuristic weights over the three channels, isotropic phase function). On success returns the
+  // boundary hit where the light leaves (geomID mapped back to the main scene) and the walk's last ray.
+  bool subsurfaceWalk(const ShadingPoint& sp, unsigned geomID, Sampler& rng, vec3& beta, RTCRayHit& exitHit,
+                      vec3& exitOrigin, vec3& exitDir) const {
+    RTCScene ss = sssScenes[geomID];
+    const Material& m = *sp.material;
+    const vec3 sigmaT = 1.0f / m.subsurfaceRadius;
+    vec3 alpha;
+    for (int c = 0; c < 3; ++c) {
+      float a = std::clamp(sp.base[c], 0.001f, 0.999f);
+      float t = 4.09712f + 4.20863f * a - std::sqrt(9.59217f + 41.6808f * a + 17.7126f * a * a);
+      alpha[c] = 1 - t * t;
+    }
+    const vec3 sigmaS = alpha * sigmaT;
+    vec3 d = Frame::fromNormal(-sp.ng).toWorld(sampleCosineHemisphere(rng.next2()));
+    vec3 p = sp.p - sp.ng * 2e-5f;
+    vec3 w(1);
+    for (int step = 0; step < 256; ++step) {
+      // Channel chosen in proportion to its current throughput: the mixture pdf then bounds every channel's
+      // weight by the total, which keeps long walks free of fireflies.
+      float wsum = w.x + w.y + w.z;
+      if (!(wsum > 0)) return false;
+      vec3 pc = w / wsum;
+      float uc = rng.next();
+      int c = uc < pc.x ? 0 : (uc < pc.x + pc.y ? 1 : 2);
+      float t = -std::log(std::max(1e-7f, 1 - rng.next())) / sigmaT[c];
+      RTCRayHit rh;
+      setupRay(rh, p, d, 0, t);
+      rtcIntersect1(ss, &rh);
+      if (rh.hit.geomID != RTC_INVALID_GEOMETRY_ID) {
+        vec3 tr = glm::exp(-sigmaT * rh.ray.tfar);
+        w *= tr / glm::dot(pc, tr);
+        rh.hit.geomID = geomID;
+        exitHit = rh;
+        exitOrigin = p;
+        exitDir = d;
+        beta *= w;
+        return std::isfinite(beta.x + beta.y + beta.z);
+      }
+      p += d * t;
+      vec3 tr = glm::exp(-sigmaT * t);
+      w *= sigmaS * tr / glm::dot(pc, sigmaT * tr);
+      if (step >= 8) {
+        float q = std::min(0.99f, maxComponent(w));
+        if (rng.next() >= q) return false;
+        w /= q;
+      }
+      d = sampleUniformSphere(rng.next2());
+    }
+    return false;
   }
 
   bool intersect(vec3 o, vec3 d, float tnear, RTCRayHit& rh) const {
@@ -434,7 +524,50 @@ struct PathTracer::Impl {
         if (albedo) *albedo = sp.fiber ? sp.base * (0.45f + 0.55f * safeSqrt(1 - sp.h * sp.h)) : sp.base;
         if (normal) *normal = sp.fiber ? sp.ng : sp.ns;
       }
+      // Subsurface materials: the BSDF keeps the specular lobes and (1 - subsurface) of the diffuse; the rest of
+      // the diffuse light is carried by a random walk below the surface, chosen stochastically for the next event.
+      const bool sss = !sp.fiber && !sp.backface && sp.material->subsurface > 0 && hasSubsurface(rh.hit.geomID);
+      const vec3 fullBase = sp.base;
+      if (sss) sp.base = fullBase * (1 - sp.material->subsurface);
       if (sp.fiber || sp.material->type != MaterialType::Glass) L += beta * directLight(sp, wo, rng, depth, rs.clamp);
+      if (sss) {
+        const float sw = sp.material->subsurface, q = 0.75f * sw;
+        if (rng.next() < q) {
+          const Material& m = *sp.material;
+          float f0 = std::clamp(sqr((m.ior - 1) / (m.ior + 1)) * m.specular, 0.0f, 1.0f);
+          float cosO = std::max(0.0f, glm::dot(wo, sp.ns));
+          float F = f0 + (1 - f0) * std::pow(1 - cosO, 5.0f);
+          beta *= sw * (1 - F) / q;
+          ShadingPoint inside = sp;
+          inside.base = fullBase;
+          RTCRayHit eh;
+          vec3 eo, ed;
+          if (!subsurfaceWalk(inside, rh.hit.geomID, rng, beta, eh, eo, ed)) break;
+          ShadingPoint ex = shade(eh, eo, ed);
+          ex.material = &sssExit;
+          ex.base = vec3(1);
+          vec3 out = glm::dot(ex.ng, ed) >= 0 ? ex.ng : -ex.ng;
+          prepareShading(ex, out);
+          L += beta * directLight(ex, out, rng, depth, rs.clamp);
+          BsdfSample bs;
+          float u0 = rng.next();
+          vec2 u1 = rng.next2(), u2 = rng.next2();
+          if (!sampleBsdf(ex, out, u0, u1, u2, bs)) break;
+          beta *= bs.weight;
+          if (!std::isfinite(beta.x + beta.y + beta.z)) break;
+          prevPdf = bs.pdf;
+          prev = ex;
+          spawn(ex, bs.wi, o, tnear);
+          d = bs.wi;
+          if (depth >= 3) {
+            float rr = std::min(0.95f, maxComponent(beta));
+            if (rng.next() >= rr) break;
+            beta /= rr;
+          }
+          continue;
+        }
+        beta /= 1 - q;
+      }
       BsdfSample bs;
       float u0 = rng.next();
       vec2 u1 = rng.next2(), u2 = rng.next2();

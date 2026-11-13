@@ -75,6 +75,10 @@ struct Material {
   // Glass / water: smooth dielectric. thin = window or lens (no refraction offset).
   bool thin = false;
   bool castsShadow = true;
+  // Subsurface scattering (random walk inside the closed mesh): weight of the diffuse part that scatters below the
+  // surface, and the mean free path per colour channel in metres (red travels furthest in skin).
+  float subsurface = 0.0f;
+  vec3 subsurfaceRadius{0.004f, 0.0018f, 0.0011f};
   ProceduralTexture texture;
 };
 

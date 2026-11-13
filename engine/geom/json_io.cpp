@@ -69,6 +69,8 @@ Result<Material> materialFromJson(const Json& j) {
   m.betaN = readFloat(j, "betaN", m.betaN);
   m.alphaDeg = readFloat(j, "alphaDeg", m.alphaDeg);
   m.thin = readBool(j, "thin", m.thin);
+  m.subsurface = std::clamp(readFloat(j, "subsurface", m.subsurface), 0.0f, 1.0f);
+  m.subsurfaceRadius = glm::max(readVec3(j, "subsurfaceRadius", m.subsurfaceRadius), vec3(1e-5f));
   m.castsShadow = readBool(j, "castsShadow", m.type != MaterialType::Glass);
   if (auto it = j.find("texture"); it != j.end()) {
     const Json& tj = *it;
@@ -93,6 +95,10 @@ Json materialToJson(const Material& m) {
             {"roughness", m.roughness}, {"ior", m.ior}, {"specular", m.specular}, {"coat", m.coat},
             {"coatRoughness", m.coatRoughness}, {"sheen", m.sheen}, {"sheenColor", toJson(m.sheenColor)},
             {"sheenRoughness", m.sheenRoughness}, {"betaM", m.betaM}, {"betaN", m.betaN}, {"alphaDeg", m.alphaDeg}, {"thin", m.thin}, {"castsShadow", m.castsShadow}};
+  if (m.subsurface > 0) {
+    j["subsurface"] = m.subsurface;
+    j["subsurfaceRadius"] = toJson(m.subsurfaceRadius);
+  }
   if (m.texture.type != TextureType::None) {
     Json spots = Json::array();
     for (auto& s : m.texture.spots) spots.push_back(toJson(s));

@@ -285,7 +285,13 @@
       0.016
      ]
     ]
-   }
+   },
+   "subsurface": 0.75,
+   "subsurfaceRadius": [
+    0.0035,
+    0.0016,
+    0.001
+   ]
   },
   {
    "name": "C_eye",
@@ -4873,39 +4879,6 @@
      "r2": 0.04,
      "blend": 0.015,
      "mirror": true
-    },
-    {
-     "name": "cuff.L",
-     "type": "ellipsoid",
-     "bone": "forearm.L",
-     "center": [
-      0.153,
-      0.447,
-      0.013
-     ],
-     "radii": [
-      0.035,
-      0.013,
-      0.035
-     ],
-     "blend": 0.008,
-     "mirror": true
-    },
-    {
-     "name": "hem",
-     "type": "ellipsoid",
-     "bone": "hips",
-     "center": [
-      0,
-      0.43,
-      0
-     ],
-     "radii": [
-      0.11,
-      0.022,
-      0.102
-     ],
-     "blend": 0.02
     }
    ],
    "skinFalloff": 0.015,
@@ -4963,8 +4936,8 @@
      "bone": "spine",
      "center": [
       0,
-      0.48,
-      0.1
+      0.482,
+      0.113
      ],
      "halfSize": [
       0.06,
@@ -4978,6 +4951,104 @@
       0
      ]
     }
+   ]
+  },
+  {
+   "name": "hoodieRib.cuff.L",
+   "material": "C_hoodie_fleece",
+   "voxelSize": 0.0012,
+   "prims": [
+    {
+     "name": "cuff.L",
+     "type": "ellipsoid",
+     "bone": "forearm.L",
+     "center": [
+      0.153,
+      0.447,
+      0.013
+     ],
+     "radii": [
+      0.035,
+      0.013,
+      0.035
+     ],
+     "blend": 0.0,
+     "mirror": false
+    }
+   ],
+   "skinFalloff": 0.02,
+   "pattern": "ribbed",
+   "patternAmplitude": 0.0012,
+   "patternScale": 300,
+   "patternCenter": [
+    0.153,
+    0.0,
+    0.013
+   ]
+  },
+  {
+   "name": "hoodieRib.cuff.R",
+   "material": "C_hoodie_fleece",
+   "voxelSize": 0.0012,
+   "prims": [
+    {
+     "name": "cuff.R",
+     "type": "ellipsoid",
+     "bone": "forearm.R",
+     "center": [
+      -0.153,
+      0.447,
+      0.013
+     ],
+     "radii": [
+      0.035,
+      0.013,
+      0.035
+     ],
+     "blend": 0.0,
+     "mirror": false
+    }
+   ],
+   "skinFalloff": 0.02,
+   "pattern": "ribbed",
+   "patternAmplitude": 0.0012,
+   "patternScale": 300,
+   "patternCenter": [
+    -0.153,
+    0.0,
+    0.013
+   ]
+  },
+  {
+   "name": "hoodieRib.hem",
+   "material": "C_hoodie_fleece",
+   "voxelSize": 0.0012,
+   "prims": [
+    {
+     "name": "hem",
+     "type": "ellipsoid",
+     "bone": "hips",
+     "center": [
+      0,
+      0.432,
+      0.004
+     ],
+     "radii": [
+      0.117,
+      0.021,
+      0.109
+     ],
+     "blend": 0.0
+    }
+   ],
+   "skinFalloff": 0.02,
+   "pattern": "ribbed",
+   "patternAmplitude": 0.0012,
+   "patternScale": 300,
+   "patternCenter": [
+    0,
+    0.0,
+    0.004
    ]
   },
   {
@@ -5211,6 +5282,39 @@
    "seed": 45
   },
   {
+   "part": "hoodieRib.cuff.L",
+   "material": "C_hoodie_fiber",
+   "density": 160,
+   "length": 0.0035,
+   "radius": 2.5e-05,
+   "tilt": 0.55,
+   "curl": 0.4,
+   "segments": 3,
+   "seed": 49
+  },
+  {
+   "part": "hoodieRib.cuff.R",
+   "material": "C_hoodie_fiber",
+   "density": 160,
+   "length": 0.0035,
+   "radius": 2.5e-05,
+   "tilt": 0.55,
+   "curl": 0.4,
+   "segments": 3,
+   "seed": 50
+  },
+  {
+   "part": "hoodieRib.hem",
+   "material": "C_hoodie_fiber",
+   "density": 160,
+   "length": 0.0035,
+   "radius": 2.5e-05,
+   "tilt": 0.55,
+   "curl": 0.4,
+   "segments": 3,
+   "seed": 51
+  },
+  {
    "part": "joggers",
    "material": "C_jogger_fiber",
    "density": 140,
@@ -5219,7 +5323,7 @@
    "tilt": 0.55,
    "curl": 0.4,
    "segments": 3,
-   "seed": 46
+   "seed": 49
   },
   {
    "part": "sneakers",
@@ -5230,7 +5334,7 @@
    "tilt": 0.55,
    "curl": 0.4,
    "segments": 3,
-   "seed": 47
+   "seed": 50
   }
  ],
  "locks": [],

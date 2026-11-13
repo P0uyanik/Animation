@@ -285,7 +285,13 @@
       0.016
      ]
     ]
-   }
+   },
+   "subsurface": 0.75,
+   "subsurfaceRadius": [
+    0.0035,
+    0.0016,
+    0.001
+   ]
   },
   {
    "name": "A_eye",
@@ -945,23 +951,6 @@
      "r1": 0.03,
      "r2": 0.031,
      "blend": 0.015,
-     "mirror": true
-    },
-    {
-     "name": "cuff.L",
-     "type": "ellipsoid",
-     "bone": "forearm.L",
-     "center": [
-      0.152,
-      0.444,
-      0.014
-     ],
-     "radii": [
-      0.034,
-      0.012,
-      0.034
-     ],
-     "blend": 0.008,
      "mirror": true
     }
    ],
@@ -2950,6 +2939,72 @@
     0,
     0
    ]
+  },
+  {
+   "name": "dressRib.cuff.L",
+   "material": "A_dress_knit",
+   "voxelSize": 0.0012,
+   "prims": [
+    {
+     "name": "cuff.L",
+     "type": "ellipsoid",
+     "bone": "forearm.L",
+     "center": [
+      0.152,
+      0.444,
+      0.014
+     ],
+     "radii": [
+      0.034,
+      0.012,
+      0.034
+     ],
+     "blend": 0.0,
+     "mirror": false
+    }
+   ],
+   "skinFalloff": 0.02,
+   "pattern": "ribbed",
+   "patternAmplitude": 0.0012,
+   "patternScale": 320,
+   "patternCenter": [
+    0.152,
+    0.0,
+    0.014
+   ]
+  },
+  {
+   "name": "dressRib.cuff.R",
+   "material": "A_dress_knit",
+   "voxelSize": 0.0012,
+   "prims": [
+    {
+     "name": "cuff.R",
+     "type": "ellipsoid",
+     "bone": "forearm.R",
+     "center": [
+      -0.152,
+      0.444,
+      0.014
+     ],
+     "radii": [
+      0.034,
+      0.012,
+      0.034
+     ],
+     "blend": 0.0,
+     "mirror": false
+    }
+   ],
+   "skinFalloff": 0.02,
+   "pattern": "ribbed",
+   "patternAmplitude": 0.0012,
+   "patternScale": 320,
+   "patternCenter": [
+    -0.152,
+    0.0,
+    0.014
+   ]
   }
  ],
  "fuzz": [
@@ -3089,6 +3144,32 @@
    ],
    "strayFraction": 0.06,
    "strayLength": 2.0
+  },
+  {
+   "part": "dressRib.cuff.L",
+   "material": "A_dress_fiber",
+   "density": 45,
+   "length": 0.0025,
+   "radius": 2.2e-05,
+   "tilt": 0.55,
+   "curl": 0.4,
+   "segments": 3,
+   "seed": 22,
+   "strayFraction": 0.04,
+   "strayLength": 3.0
+  },
+  {
+   "part": "dressRib.cuff.R",
+   "material": "A_dress_fiber",
+   "density": 45,
+   "length": 0.0025,
+   "radius": 2.2e-05,
+   "tilt": 0.55,
+   "curl": 0.4,
+   "segments": 3,
+   "seed": 23,
+   "strayFraction": 0.04,
+   "strayLength": 3.0
   }
  ],
  "locks": [],

@@ -285,7 +285,13 @@
       0.016
      ]
     ]
-   }
+   },
+   "subsurface": 0.75,
+   "subsurfaceRadius": [
+    0.0035,
+    0.0016,
+    0.001
+   ]
   },
   {
    "name": "B_eye",

@@ -100,3 +100,14 @@ noodle locks → denser layers with a longer halo; fogged lenses → guides thro
 - Clothes: A bodice + bell skirt + ribbed hem band, arms rest 9° out; B darker dusty-rose V-neck vest with embroidered
   felt motifs; C looser hoodie (torso r 0.082/0.104, sleeves 0.046) and wider joggers gathered at the ankle.
 - Fixed: an iteration-3 `add_frown` overrode the new frown with pre-iteration-4 coordinates (it moved the cheeks).
+
+## 2026-11-13 — Iteration 4: materials (Priority 2)
+
+- **Skin subsurface scattering (random walk).** Material fields `subsurface` (weight of the diffuse that scatters below
+  the surface) and `subsurfaceRadius` (mean free path per channel, metres). The walk runs inside the closed skin mesh
+  only (a per-mesh Embree scene, so eyes/teeth/tongue inside the head do not block it); Chiang 2016 albedo inversion;
+  channel chosen in proportion to the current throughput (the first version picked channels uniformly and produced
+  firefly specks on the face). Unit test (white-furnace style): base 0.5 → 0.526, base 0.95 → 0.949.
+  Cost on a face close-up (480², 64 spp): 41.4 s → 46.0 s. Characters A/B/C: subsurface 0.75, radius 3.5/1.6/1.0 mm.
+- Knitted rib bands as separate parts with vertical ribs around their own axis: A's sleeve cuffs, C's hoodie cuffs and
+  hem. C's pouch pocket moved onto the looser hoodie surface (it had sunk inside, only its edges showed).

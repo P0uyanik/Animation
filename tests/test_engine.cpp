@@ -262,6 +262,50 @@ TEST_CASE("path tracer renders deterministically") {
   CHECK(same);
 }
 
+TEST_CASE("subsurface random walk returns about the base albedo under uniform light") {
+  // A large sphere (radius >> mean free path) under a uniform white sky: a purely subsurface material should
+  // reflect close to its base colour (that is what the albedo inversion is for), and a white one about 1.
+  SdfPart part;
+  part.voxelSize = 0.01f;
+  SdfPrim s;
+  s.radii = vec3(0.3f);
+  part.prims.push_back(s);
+  auto sphere = std::make_shared<Mesh>(meshSdfPart(part));
+  for (float a : {0.5f, 0.95f}) {
+    auto snap = std::make_shared<FrameSnapshot>();
+    Material m;
+    m.name = "sss";
+    m.baseColor = vec3(a);
+    m.specular = 0;
+    m.subsurface = 1;
+    m.subsurfaceRadius = vec3(0.01f);
+    snap->materials.push_back(m);
+    snap->meshes.push_back({sphere, 0});
+    Light sky;
+    sky.type = Light::Type::Sky;
+    sky.intensity = 1;
+    snap->lights.push_back(sky);
+    snap->camera.position = vec3(0, 0, 2);
+    snap->camera.target = vec3(0);
+    snap->camera.focalMm = 200;
+    snap->camera.fStop = 0;
+    RenderSettings rs;
+    rs.width = 16;
+    rs.height = 16;
+    rs.spp = 256;
+    rs.denoise = false;
+    rs.maxDepth = 64;
+    rs.clamp = 1e6f;
+    PathTracer pt;
+    auto out = pt.render(snap, rs);
+    double sum = 0;
+    for (const vec3& c : out.color.pixels) sum += luminance(c);
+    double mean = sum / double(out.color.pixels.size());
+    MESSAGE("base " << a << " -> mean radiance " << mean);
+    CHECK(mean == doctest::Approx(a).epsilon(0.12));
+  }
+}
+
 TEST_CASE("surface fibers grow outwards and follow deformation") {
   SdfPart part;
   part.voxelSize = 0.004f;

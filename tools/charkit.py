@@ -134,6 +134,8 @@ def upgrade_base(c):
          "halfSize": [0.016, 0.0032, 0.0025], "rounding": 0.002}], voxel=0.0006)
     part(c, "tongue", "tongue", [{"name": "tongue", "type": "ellipsoid", "bone": "head", "center": [0.0, 0.7225, face_z(c, 0.0, 0.7175) - 0.0085],
          "radii": [0.015, 0.005, 0.0045]}], voxel=0.0008)
+    # Iteration 4: subsurface scattering (random walk) softens the skin like the references' soft vinyl/clay.
+    get_mat(c, "skin").update(subsurface=0.75, subsurfaceRadius=[0.0035, 0.0016, 0.001])
     blush = get_mat(c, "skin")["texture"]
     blush["spots"] = [[0.088, 0.748, face_z(c, 0.088, 0.748), 0.04], [-0.088, 0.748, face_z(c, 0.088, 0.748), 0.04],
                       [0.0, 0.738, face_z(c, 0.0, 0.738), 0.016]]
@@ -265,6 +267,29 @@ def bake_mouth(c, smile=0.0, frown=0.0, cavity=None):
         c["expressions"].append({"name": "mouthClose", "part": "skin", "set": [
             {"prim": "mouthPocket", "center": [0.0, 0.8, 0.0], "radii": [1e-4, 1e-4, 1e-4]}]})
     c["defaultExpressions"] = {}
+
+def rib_bands(c, garment, names, rib_scale=320, amplitude=0.0012):
+    """Iteration 4: knitted rib bands (cuffs, hems) as their own parts with vertical ribs around the band's axis.
+    Mirrored prims become one part per side so each cuff gets ribs around its own arm."""
+    g = get_part(c, garment)
+    fz = [f for f in c["fuzz"] if f["part"] == garment]
+    moved = [p for p in g["prims"] if p["name"] in names]
+    g["prims"] = [p for p in g["prims"] if p["name"] not in names]
+    for p in moved:
+        sides = [(p, "")]
+        if p.get("mirror"):
+            m = json.loads(json.dumps(p))
+            m["mirror"] = False
+            m["center"] = [-m["center"][0], m["center"][1], m["center"][2]]
+            m["bone"] = m["bone"].replace(".L", ".R")
+            m["name"] = m["name"].replace(".L", ".R")
+            sides = [(dict(p, mirror=False), ".L"), (m, ".R")]
+        for prim, suffix in sides:
+            name = f"{garment}Rib.{prim['name']}"
+            part(c, name, g["material"], [dict(prim, blend=0.0)], voxel=0.0012, skinFalloff=0.02, pattern="ribbed",
+                 patternAmplitude=amplitude, patternScale=rib_scale, patternCenter=[prim["center"][0], 0.0, prim["center"][2]])
+            for f in fz:
+                c["fuzz"].append(dict(f, part=name, seed=f.get("seed", 40) + len(c["fuzz"])))
 
 def add_frown(c):
     """Iteration 3 helper. Since iteration 4 the frown is defined on the measured face surface in upgrade_base;
@@ -484,6 +509,7 @@ def character_a():
         {"name": "inner", "type": "ellipsoid", "bone": "hips", "center": [0, 0.283, 0], "radii": [0.17, 0.05, 0.155], "blend": 0.004, "subtract": True},
     ], voxel=0.0014, skinFalloff=0.02, pattern="ribbed", patternAmplitude=0.0016, patternScale=260, patternCenter=[0, 0, 0])
     c["defaultPose"] = {"upperArm.L": [0, 0, 9], "upperArm.R": [0, 0, -9]}
+    rib_bands(c, "dress", ("cuff.L",))
     prefix_materials(c, "A_")
     return c
 
@@ -688,17 +714,18 @@ def character_c():
         {"name": "sleeveUpper.L", "type": "roundCone", "bone": "upperArm.L", "a": [0.078, 0.622, 0], "b": [0.124, 0.515, 0], "r1": 0.046, "r2": 0.043, "blend": 0.025, "mirror": True},
         {"name": "sleeveLower.L", "type": "roundCone", "bone": "forearm.L", "a": [0.124, 0.515, 0], "b": [0.15, 0.452, 0.012], "r1": 0.043, "r2": 0.04, "blend": 0.015, "mirror": True},
         {"name": "cuff.L", "type": "ellipsoid", "bone": "forearm.L", "center": [0.153, 0.447, 0.013], "radii": [0.035, 0.013, 0.035], "blend": 0.008, "mirror": True},
-        {"name": "hem", "type": "ellipsoid", "bone": "hips", "center": [0, 0.43, 0], "radii": [0.11, 0.022, 0.102], "blend": 0.02},
+        {"name": "hem", "type": "ellipsoid", "bone": "hips", "center": [0, 0.432, 0.004], "radii": [0.117, 0.021, 0.109], "blend": 0.02},
     ], voxel=0.002, skinFalloff=0.015, skinSmoothing=3)
     part(c, "hood", hoodie, [
         {"name": "hoodShell", "type": "ellipsoid", "bone": "chest", "center": [0, 0.668, -0.04], "radii": [0.102, 0.038, 0.08]},
         {"name": "neckHole", "type": "capsule", "bone": "chest", "a": [0, 0.6, 0.0], "b": [0, 0.72, 0.0], "r": 0.04, "blend": 0.006, "subtract": True},
     ], voxel=0.002, skinFalloff=0.02)
-    part(c, "pocket", hoodie, [{"name": "pocket", "type": "roundBox", "bone": "spine", "center": [0, 0.48, 0.1],
+    part(c, "pocket", hoodie, [{"name": "pocket", "type": "roundBox", "bone": "spine", "center": [0, 0.482, 0.113],
                                 "halfSize": [0.06, 0.03, 0.006], "rounding": 0.005, "rotationDeg": [-8, 0, 0]}], voxel=0.0015)
     hfib = mat(c, "hoodie_fiber", type="fiber", baseColor=[0.7, 0.5, 0.12], betaM=0.4, betaN=0.85)
     for pn in ("hoodie", "hood", "pocket"):
         fuzz(c, pn, hfib, 160, 0.0035)
+    rib_bands(c, "hoodie", ("cuff.L", "hem"), rib_scale=300)
     cord = mat(c, "cord", baseColor=[0.82, 0.76, 0.62], sheen=0.4)
     group(c, "drawstrings", cord, cord, [lock([[sx * 0.022, 0.648, 0.078], [sx * 0.024, 0.61, 0.093], [sx * 0.022, 0.575, 0.1]], 0.0028, 0.0028)
                                          for sx in (1, -1)], bone="chest", samples=16, roundTip=True)
