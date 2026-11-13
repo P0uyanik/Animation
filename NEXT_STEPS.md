@@ -1,8 +1,9 @@
 # Next steps
 
-**Exact next task:** waiting for review of the harness evaluation (`docs/evaluation/blender_harness/EVALUATION_REPORT.md`).
-- Blocker: `download.blender.org` must be allowed in the environment's network settings before the pinned Blender
-  binary can be installed. Then re-run the harness unchanged with that binary.
+**Exact next task:** waiting for approval of the hybrid production feasibility study
+(`docs/BOY_HYBRID_PRODUCTION_FEASIBILITY.md`).
+- Proposed first step: the head-and-hair pilot (§9). It needs an artist.
+- Blocker for automation runs: allow `download.blender.org` for the pinned Blender binary.
 - No modelling, integration or iteration 5 before approval.
 
 ## After your review (candidates, to be agreed)

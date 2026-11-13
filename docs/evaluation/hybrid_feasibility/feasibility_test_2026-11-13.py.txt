@@ -1,0 +1,130 @@
+"""Feasibility measurements (scratch only, not project code): auto-rig + auto-weights on a character-like mesh,
+glTF round trip of rig/weights/shape keys, hair-curve interchange."""
+import json, os, sys, time, random
+import bpy, addon_utils
+from mathutils import Vector
+
+OUT = sys.argv[sys.argv.index("--") + 1]
+OBJ = sys.argv[sys.argv.index("--") + 2]
+os.makedirs(OUT, exist_ok=True)
+R = {}
+bpy.ops.wm.read_factory_settings(use_empty=True)
+addon_utils.enable("rigify", default_set=True)
+
+t = time.time()
+bpy.ops.wm.obj_import(filepath=OBJ, forward_axis="NEGATIVE_Z", up_axis="Y")
+objs = [o for o in bpy.context.scene.objects if o.type == "MESH"]
+for o in list(objs):
+    if any("backdrop" in s.material.name for s in o.material_slots if s.material):
+        bpy.data.objects.remove(o, do_unlink=True); objs.remove(o)
+tris0 = sum(sum(len(p.vertices) - 2 for p in o.data.polygons) for o in objs)
+for o in objs:  # production-like density (~10%)
+    m = o.modifiers.new("dec", "DECIMATE"); m.ratio = 0.08
+    bpy.context.view_layer.objects.active = o
+    bpy.ops.object.modifier_apply(modifier="dec")
+tris = sum(sum(len(p.vertices) - 2 for p in o.data.polygons) for o in objs)
+R["import_decimate"] = {"objects": len(objs), "tris_before": tris0, "tris_after": tris, "s": round(time.time() - t, 1)}
+
+lo = Vector((1e9,) * 3); hi = Vector((-1e9,) * 3)
+for o in objs:
+    for c in o.bound_box:
+        w = o.matrix_world @ Vector(c); lo = Vector(map(min, lo, w)); hi = Vector(map(max, hi, w))
+height = hi.z - lo.z
+R["subject_height_m"] = round(height, 3)
+
+# Rigify human metarig scaled to the subject height (adult proportions: placement is NOT fitted to the chibi body;
+# this measures whether the automation runs and how weighting behaves, not rig quality).
+t = time.time()
+bpy.ops.object.armature_human_metarig_add()
+meta = bpy.context.object
+s = height / (meta.dimensions.z or 1)
+meta.scale = (s, s, s)
+bpy.ops.object.transform_apply(scale=True)
+try:
+    bpy.ops.pose.rigify_generate()
+    rig = bpy.context.object
+    R["rigify_generate"] = {"ok": True, "bones": len(rig.data.bones),
+                            "deform_bones": sum(1 for b in rig.data.bones if b.use_deform), "s": round(time.time() - t, 1)}
+except Exception as e:
+    rig = meta
+    R["rigify_generate"] = {"ok": False, "error": str(e)[:200]}
+
+# Automatic (heat) weights per object; count vertices left without weights (heat failures).
+t = time.time()
+zero, total, fails = 0, 0, []
+for o in objs:
+    bpy.ops.object.select_all(action="DESELECT")
+    o.select_set(True); rig.select_set(True); bpy.context.view_layer.objects.active = rig
+    try:
+        bpy.ops.object.parent_set(type="ARMATURE_AUTO")
+    except Exception as e:
+        fails.append(f"{o.name}: {e}")
+    for v in o.data.vertices:
+        total += 1
+        if sum(g.weight for g in v.groups) < 1e-4:
+            zero += 1
+R["auto_weights"] = {"vertices": total, "unweighted_vertices": zero, "unweighted_pct": round(100 * zero / max(1, total), 2),
+                     "operator_errors": fails[:5], "s": round(time.time() - t, 1)}
+
+# 15 shape keys on the largest skin mesh (stand-ins for the #12 expression set).
+skin = max((o for o in objs if any("skin" in s.material.name for s in o.material_slots if s.material)),
+           key=lambda o: len(o.data.vertices))
+skin.shape_key_add(name="Basis")
+names = ["Blink_L", "Blink_R", "Squint", "EyesWide", "Smile", "Frown", "JawOpen", "Laugh", "Surprise", "Sad",
+         "Anger", "Confusion", "PuffCheeks", "Worried", "GentleSmile"]
+for i, n in enumerate(names):
+    k = skin.shape_key_add(name=n)
+    for d in k.data:
+        d.co.x += 0.001 * ((i % 3) - 1)
+
+t = time.time()
+glb = os.path.join(OUT, "rig_test.glb")
+bpy.ops.export_scene.gltf(filepath=glb, export_format="GLB", export_skins=True, export_morph=True, export_animations=False,
+                          export_def_bones=True)
+R["gltf_export"] = {"mb": round(os.path.getsize(glb) / 1e6, 1), "s": round(time.time() - t, 1)}
+
+# Round trip: re-import and check bones, weights, shape keys.
+bpy.ops.wm.read_factory_settings(use_empty=True)
+t = time.time()
+bpy.ops.import_scene.gltf(filepath=glb)
+arms = [o for o in bpy.context.scene.objects if o.type == "ARMATURE"]
+meshes = [o for o in bpy.context.scene.objects if o.type == "MESH"]
+keys = [o.data.shape_keys.key_blocks.keys() for o in meshes if o.data.shape_keys]
+R["gltf_roundtrip"] = {"armatures": len(arms), "bones": [len(a.data.bones) for a in arms], "meshes": len(meshes),
+                       "meshes_with_vertex_groups": sum(1 for o in meshes if o.vertex_groups),
+                       "shape_keys": keys[0] if keys else [], "s": round(time.time() - t, 1)}
+
+# Hair curves interchange: 3000 guide curves, 8 points, radius per point.
+bpy.ops.wm.read_factory_settings(use_empty=True)
+hc = bpy.data.hair_curves.new("Hair")
+hc.add_curves([8] * 3000)
+rnd = random.Random(1)
+for c in hc.curves:
+    x, y = rnd.uniform(-0.1, 0.1), rnd.uniform(-0.1, 0.1)
+    for k, p in enumerate(c.points):
+        p.position = (x + 0.004 * k, y, 0.9 + 0.012 * k)
+        p.radius = 0.004 * (1 - k / 8)
+ob = bpy.data.objects.new("Hair", hc); bpy.context.scene.collection.objects.link(ob)
+res = {}
+for fmt, path, op in (("usd", "hair.usdc", lambda p: bpy.ops.wm.usd_export(filepath=p)),
+                      ("alembic", "hair.abc", lambda p: bpy.ops.wm.alembic_export(filepath=p, start=1, end=1)),
+                      ("gltf", "hair.glb", lambda p: bpy.ops.export_scene.gltf(filepath=p, export_format="GLB"))):
+    p = os.path.join(OUT, path)
+    try:
+        op(p); res[fmt] = {"bytes": os.path.getsize(p)}
+    except Exception as e:
+        res[fmt] = {"error": str(e)[:120]}
+for fmt, path, op in (("usd", "hair.usdc", lambda p: bpy.ops.wm.usd_import(filepath=p)),
+                      ("alembic", "hair.abc", lambda p: bpy.ops.wm.alembic_import(filepath=p)),
+                      ("gltf", "hair.glb", lambda p: bpy.ops.import_scene.gltf(filepath=p))):
+    bpy.ops.wm.read_factory_settings(use_empty=True)
+    try:
+        op(os.path.join(OUT, path))
+        got = [(o.type, len(o.data.curves) if o.type == "CURVES" else (len(o.data.splines) if o.type == "CURVE" else 0))
+               for o in bpy.context.scene.objects]
+        res[fmt]["reimported"] = got[:3]
+    except Exception as e:
+        res[fmt]["reimport_error"] = str(e)[:120]
+R["hair_curves_interchange"] = res
+json.dump(R, open(os.path.join(OUT, "feasibility.json"), "w"), indent=1)
+print(json.dumps(R, indent=1))

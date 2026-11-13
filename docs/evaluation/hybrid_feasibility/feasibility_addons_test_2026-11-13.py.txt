@@ -1,0 +1,12 @@
+import bpy, addon_utils
+mods = sorted(m.__name__ for m in addon_utils.modules())
+print("addon modules:", len(mods))
+for k in ("rigify", "io_scene_gltf2", "io_scene_fbx", "node_wrangler", "io_import_images_as_planes", "pose_library"):
+    print(k, "present" if k in mods else "absent")
+try:
+    addon_utils.enable("rigify", default_set=True)
+    print("rigify enabled:", "rigify" in bpy.context.preferences.addons)
+    bpy.ops.object.armature_human_metarig_add()
+    print("metarig bones:", len(bpy.context.object.data.bones))
+except Exception as e:
+    print("rigify error:", type(e).__name__, e)

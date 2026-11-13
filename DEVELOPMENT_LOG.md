@@ -188,3 +188,12 @@ noodle locks → denser layers with a longer halo; fogged lenses → guides thro
   height, legs −14%, feet −30% in width vs. the references.
   - Evidence: `docs/evaluation/blender_harness/`.
 - Tried and changed: #24's silhouette merged with label leader lines, so #24 is visual-only.
+
+## 2026-11-13 — Hybrid production feasibility study (no implementation)
+- Report: `docs/BOY_HYBRID_PRODUCTION_FEASIBILITY.md`. Throwaway tests in Blender 5.3 (bpy module, scratch only).
+  Script and results: `docs/evaluation/hybrid_feasibility/`.
+  - Rigify bundled and generates headless (706 bones / 160 deform, 6.4 s).
+  - Automatic weights on a 197k-triangle, 24-object mesh: 34.8 s, 1.97% unweighted.
+  - glTF round trip keeps the deform skeleton, weights and 15 shape keys.
+  - Hair curves survive USD and Alembic (3,000/3,000), not glTF.
+- Lesson for the export script: the Rigify metarig must be removed before export (the test exported 2 armatures).

@@ -1,0 +1,83 @@
+{
+ "import_decimate": {
+  "objects": 24,
+  "tris_before": 2417568,
+  "tris_after": 196587,
+  "s": 29.7
+ },
+ "subject_height_m": 1.145,
+ "rigify_generate": {
+  "ok": true,
+  "bones": 706,
+  "deform_bones": 160,
+  "s": 6.4
+ },
+ "auto_weights": {
+  "vertices": 95269,
+  "unweighted_vertices": 1875,
+  "unweighted_pct": 1.97,
+  "operator_errors": [],
+  "s": 34.8
+ },
+ "gltf_export": {
+  "mb": 8.6,
+  "s": 2.4
+ },
+ "gltf_roundtrip": {
+  "armatures": 2,
+  "bones": [
+   159,
+   161
+  ],
+  "meshes": 26,
+  "meshes_with_vertex_groups": 23,
+  "shape_keys": [
+   "Basis",
+   "Blink_L",
+   "Blink_R",
+   "Squint",
+   "EyesWide",
+   "Smile",
+   "Frown",
+   "JawOpen",
+   "Laugh",
+   "Surprise",
+   "Sad",
+   "Anger",
+   "Confusion",
+   "PuffCheeks",
+   "Worried",
+   "GentleSmile"
+  ],
+  "s": 1.1
+ },
+ "hair_curves_interchange": {
+  "usd": {
+   "bytes": 289580,
+   "reimported": [
+    [
+     "CURVES",
+     3000
+    ]
+   ]
+  },
+  "alembic": {
+   "bytes": 398225,
+   "reimported": [
+    [
+     "CURVES",
+     3000
+    ]
+   ]
+  },
+  "gltf": {
+   "bytes": 172,
+   "reimported": [
+    [
+     "EMPTY",
+     0
+    ]
+   ]
+  }
+ }
+}
