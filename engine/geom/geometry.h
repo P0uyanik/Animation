@@ -107,6 +107,7 @@ struct RenderSettings {
   float denoiseBlend = 1.0f;  // 1 = fully denoised, lower keeps more fine fibre detail
   uint32_t seed = 1;
   float clamp = 12.0f;  // max luminance of an indirect sample (firefly control)
+  float adaptiveThreshold = 0.0f;  // > 0: stop sampling 16x16 tiles whose relative error is below this
 };
 
 struct SnapshotMesh {

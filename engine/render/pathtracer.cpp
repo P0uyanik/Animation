@@ -104,7 +104,32 @@ struct PathTracer::Impl {
   std::shared_ptr<const FrameSnapshot> snap;
   std::vector<GeomRef> geoms;
   std::vector<vec3> accColor, accAlbedo, accNormal;
+  std::vector<float> accLumSq;
+  std::vector<int> accCount;
+  std::vector<uint8_t> tileActive;
   int width = 0, height = 0, samples = 0;
+  static constexpr int kTile = 16;
+
+  // Marks tiles whose estimated relative error is below the threshold as converged.
+  int updateAdaptive(float threshold) {
+    int tx = (width + kTile - 1) / kTile, ty = (height + kTile - 1) / kTile, active = 0;
+    for (int t = 0; t < tx * ty; ++t) {
+      if (!tileActive[size_t(t)]) continue;
+      int x0 = (t % tx) * kTile, y0 = (t / tx) * kTile;
+      float worst = 0;
+      for (int y = y0; y < std::min(y0 + kTile, height); ++y)
+        for (int x = x0; x < std::min(x0 + kTile, width); ++x) {
+          size_t p = size_t(y) * size_t(width) + size_t(x);
+          float n = float(std::max(1, accCount[p]));
+          float mean = luminance(accColor[p]) / n;
+          float var = std::max(0.0f, accLumSq[p] / n - mean * mean);
+          worst = std::max(worst, std::sqrt(var / n) / (mean + 0.05f));
+        }
+      if (worst < threshold) tileActive[size_t(t)] = 0;
+      else ++active;
+    }
+    return active;
+  }
   CameraModel cam;
 
   Impl() {
@@ -412,15 +437,18 @@ void PathTracer::accumulate(const RenderSettings& rs, int count, const std::func
     im.accColor.assign(n, vec3(0));
     im.accAlbedo.assign(n, vec3(0));
     im.accNormal.assign(n, vec3(0));
+    im.accLumSq.assign(n, 0.0f);
+    im.accCount.assign(n, 0);
+    im.tileActive.assign(size_t((im.width + Impl::kTile - 1) / Impl::kTile) * size_t((im.height + Impl::kTile - 1) / Impl::kTile), 1);
     im.samples = 0;
   }
   im.cam.setup(im.snap->camera, im.width, im.height);
-  const int tile = 16;
+  const int tile = Impl::kTile;
   int tx = (im.width + tile - 1) / tile, ty = (im.height + tile - 1) / tile;
   int first = im.samples;
   std::atomic<bool> stopped{false};
   parallelFor(size_t(tx) * size_t(ty), [&](size_t ti) {
-    if (stopped.load(std::memory_order_relaxed)) return;
+    if (stopped.load(std::memory_order_relaxed) || !im.tileActive[ti]) return;
     if (cancel && cancel()) {
       stopped = true;
       return;
@@ -442,7 +470,10 @@ void PathTracer::accumulate(const RenderSettings& rs, int count, const std::func
           im.accColor[pix] += c;
           im.accAlbedo[pix] += albedo;
           im.accNormal[pix] += normal;
+          float l = luminance(c);
+          im.accLumSq[pix] += l * l;
         }
+        im.accCount[pix] += count;
       }
   });
   if (!stopped) im.samples += count;
@@ -455,8 +486,8 @@ RenderOutput PathTracer::output() const {
   out.color.resize(im.width, im.height);
   out.albedo.resize(im.width, im.height);
   out.normal.resize(im.width, im.height);
-  float inv = im.samples > 0 ? 1.0f / float(im.samples) : 0.0f;
   for (size_t i = 0; i < out.color.pixels.size(); ++i) {
+    float inv = im.accCount[i] > 0 ? 1.0f / float(im.accCount[i]) : 0.0f;
     out.color.pixels[i] = im.accColor[i] * inv;
     out.albedo.pixels[i] = im.accAlbedo[i] * inv;
     vec3 n = im.accNormal[i];
@@ -472,10 +503,12 @@ RenderOutput PathTracer::render(std::shared_ptr<const FrameSnapshot> snapshot, c
   setScene(std::move(snapshot));
   int done = 0;
   const int chunk = std::max(1, std::min(8, rs.spp / 8));
+  const int warmup = std::min(rs.spp, std::max(16, rs.spp / 4));  // every pixel gets at least this many
   while (done < rs.spp) {
     int n = std::min(chunk, rs.spp - done);
     accumulate(rs, n);
     done += n;
+    if (rs.adaptiveThreshold > 0 && done >= warmup && impl_->updateAdaptive(rs.adaptiveThreshold) == 0) break;
     if (progress) progress(float(done) / float(rs.spp));
   }
   RenderOutput out = output();

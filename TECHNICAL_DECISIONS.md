@@ -81,3 +81,34 @@ no Blender in the workflow, use the existing (unknown) computer, no GPU purchase
 ## TD-14 Render jobs and export
 - `plush-render` renders stills/sequences; sequences resume (existing frames skipped, temp-file then rename);
   video via the FFmpeg command-line tool (H.264 now; ProRes later).
+
+## Iteration 2 additions (2026-11-13)
+
+## TD-15 Expressions as SDF morph targets
+- An expression edits or adds primitives of one part (e.g. mouth corners, an open-mouth cavity). At build time
+  every rest vertex is projected onto the edited surface (Newton steps on the SDF), giving a morph target with
+  identical topology. Weights come from tracks `<character>/expr.<name>`. Unit-tested.
+- Blinks use real eyelid shells on lid bones (rigid rotation), not morphs.
+
+## TD-16 Geometric surface relief
+- Parts can add displacement patterns (`strands` for hair, `knit` stockinette, `ribbed`) to the SDF before
+  meshing, so stitches and hair clumps cast real shadows. Needs finer voxels (1.1–2.2 mm) on those parts.
+
+## TD-17 Deformation quality
+- Dual-quaternion skinning per character (`"skinning": "dualQuaternion"`), Laplacian smoothing of automatic
+  weights per part (`skinSmoothing`). Milestone 01 keeps linear skinning (frozen).
+
+## TD-18 Constraints in scene evaluation
+- Two-bone analytic IK (`<character>/ik.<bone>` target + `.weight`), eye aim (`<character>/lookAt`),
+  object attachment to bones without jumps (`attach: {to, frame, release}`), all evaluated statelessly per frame.
+
+## TD-19 Sampling and level of detail
+- Owen-scrambled Sobol sampling (Burley 2020): 10–14% lower error at equal samples (measured).
+- Coverage-preserving fibre LOD: fibres thinner than ~1/4 pixel are thinned by k and widened by k
+  (pinned lock cores kept). Measured on milestone 02 frame 34: 13.4M → 2.4M fibre segments, image
+  difference RMSE 0.007 (below noise), frame 138 s → 108 s.
+- Tile-based adaptive sampling (`adaptiveThreshold`), off by default.
+
+## TD-20 Regression policy
+- Milestone 01 is frozen (`girl_white_hair_m01.character.json`) and compared against a reference image in CTest
+  (RMSE ≤ 0.03 at 320x180). Intentional engine look changes must re-baseline the image and log why.

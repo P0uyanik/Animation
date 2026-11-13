@@ -9,6 +9,7 @@ Legend: **Implemented** (works and tested) · **Experimental** (works, limited o
 | Modeling | SDF primitives, smooth union/subtract, mirror | Implemented | unit tests (closed mesh, area) |
 | Modeling | Surface-nets mesher with surface projection | Implemented | unit tests, renders |
 | Modeling | Lumpy noise displacement | Experimental | renders |
+| Modeling | Geometric relief: strands, knit, ribbed | Implemented | renders |
 | Modeling | Add/remove primitives in the app | Planned | |
 | Modeling | Polygon mesh editing, sculpting | Planned | |
 | Character | Character asset (skeleton, parts, fuzz, locks, materials) JSON | Implemented | loads/renders |
@@ -16,9 +17,11 @@ Legend: **Implemented** (works and tested) · **Experimental** (works, limited o
 | Character | Save character from Studio | Experimental | writes expanded file (BUGS-03) |
 | Rigging | Automatic skin weights from primitives | Implemented | unit test |
 | Rigging | Linear blend skinning, FK | Implemented | unit test, animation renders |
-| Rigging | IK, constraints, parent switching | Planned | |
+| Rigging | Two-bone IK, eye look-at, attach objects to bones | Implemented | unit tests (IK reach, aim), milestone 02 |
+| Rigging | Dual-quaternion skinning, skin-weight smoothing | Implemented | unit test (DQ = linear for rigid), renders |
 | Animation | Tracks with smooth/linear/step keys | Implemented | unit tests |
 | Animation | Set/delete keys in Studio, timeline markers, playback | Experimental | screenshot test |
+| Animation | Expressions as morph targets (smile, mouth open), blink lids, brows | Implemented | unit test, face test sheet |
 | Animation | Dope sheet, curve editor, pose library | Planned | |
 | Hair/fuzz | Surface fuzz with stray fibres | Implemented | unit test (outward), renders |
 | Hair/fuzz | Yarn locks (core + twisted fibres) | Experimental | renders |
@@ -27,6 +30,9 @@ Legend: **Implemented** (works and tested) · **Experimental** (works, limited o
 | Rendering | Standard / plush / fiber materials | Implemented | energy + pdf unit tests |
 | Rendering | Procedural textures (noise, knit, wood, wall, iris, blush) | Implemented | renders |
 | Rendering | Thin-lens depth of field, aperture blades | Implemented | renders |
+| Rendering | Owen-scrambled Sobol sampling | Implemented | measured error vs 1024-spp reference |
+| Rendering | Fibre level of detail | Implemented | measured: 5.7x fewer segments, RMSE 0.007 |
+| Rendering | Adaptive sampling | Experimental | implemented; measurement pending |
 | Rendering | Denoising (OIDN) with fibre-aware guide | Implemented | renders |
 | Rendering | AgX-style filmic tone mapping | Implemented | renders |
 | Rendering | Subsurface scattering (skin), motion blur, EXR output | Planned | |
@@ -39,5 +45,6 @@ Legend: **Implemented** (works and tested) · **Experimental** (works, limited o
 | Physics | Rigid bodies (Jolt), interactions | Planned | |
 | Export | Frame sequences + resume + H.264 video | Implemented | milestone animation |
 | Export | Audio, ProRes master | Planned | |
+| Testing | Look regression (milestone 01 reference image) | Implemented | CTest |
 | Platform | Linux build | Implemented | CI-less local build |
 | Platform | Windows build | Placeholder | vcpkg.json written, not built yet |
