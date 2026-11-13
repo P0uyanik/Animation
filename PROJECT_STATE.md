@@ -1,6 +1,7 @@
 # Project state
 
-_Last updated: 2026-11-13, iteration 3 (reference-driven quality, three characters, interaction)._
+_Last updated: 2026-11-13, iteration 4 (character fidelity, materials, natural animation, hands, director).
+Status: **waiting for your review and approval — iteration 5 has not been started.**_
 
 ## Summary
 Plush Studio is a standalone C++ application for making stylized plush/felt/wool 3D animation without
@@ -16,7 +17,20 @@ White-haired girl in a sunlit classroom looking down at a paper boat and reachin
 - Output: `docs/milestone01/milestone01_640x360.mp4` (48 frames, 640x360, 32 spp, rendered in 21 min on 4 cores)
 - Stills: `docs/milestone01/` (full frame, head close-up, contact sheet, Studio screenshot)
 
-## Iteration 3 (current)
+## Iteration 4 (current — awaiting your approval)
+- Characters A/B/C reconstructed against the references (`docs/ITERATION_04_PHASE_A_ANALYSIS.md`): larger wide-set
+  eyes, shorter upper face and fuller chin, felted fringes/crowns/clumps, hair mass under the locks, bigger buns and
+  bow (A), bell skirt + ribbed hem (A), V-neck vest with felt motifs (B), loose hoodie + wide joggers (C), mouths with
+  teeth and tongue. Comparison sheets: `docs/iteration4/compare_*_ref_it3_it4.png`.
+- Materials: random-walk subsurface scattering for skin; ribbed cuffs and hems.
+- Animation: life layer (breathing, weight shift, blinks, head follows gaze), actions (look, expression, reach,
+  touch, walk) compiled to generated tracks, articulated fingers with contact grasp, automatic camera director.
+  Reference: `docs/ACTIONS_AND_DIRECTOR.md`.
+- Benchmark: `content/scenes/watertable_v4.scene.json` (30 fps, 180 frames; no hand-made keys).
+- Report: `docs/ITERATION_04_ACCEPTANCE_REPORT.md`. Evidence: `renders/it4/` (stills, expression sheets, animation),
+  copies of the key images in `docs/iteration4/`.
+
+## Iteration 3
 - Three reference characters built with `tools/charkit.py`: `girl_white_hair` (A), `girl_brown_glasses` (B),
   `boy_dark_hair` (C), each with layered explicit hair locks, lashes, distinct faces/personality and garments.
 - Milestone 03: `content/scenes/milestone03_watertable.scene.json` — the three around a water table; B folds a
@@ -33,7 +47,8 @@ Character generator: `tools/make_girl_v2.py` (reproducible edits on top of the f
 Assessment: `docs/SCALABILITY_ASSESSMENT.md`.
 
 ## Build & test status
-- Linux (Ubuntu 24.04, GCC 13): builds cleanly; 14 unit test cases + 2 look-regression tests (milestone 01, neutral face) pass.
+- Linux (Ubuntu 24.04, GCC 13): builds cleanly; 24 unit test cases + 3 look-regression tests (milestone 01, neutral
+  face v2, A/B/C lineup) pass (iteration 4).
 - Studio verified under a virtual display with software OpenGL (screenshots of viewport and in-app path tracing).
 - Windows: not built yet (vcpkg manifest prepared).
 

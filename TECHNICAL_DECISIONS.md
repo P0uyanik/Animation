@@ -143,3 +143,61 @@ no Blender in the workflow, use the existing (unknown) computer, no GPU purchase
 ## TD-25 Staged paper folding
 - The paper boat has a flat "unfolded" layout per vertex; `<object>.fold` blends sheet → boat. Chosen over
   physical folding simulation (research problem) — it reads as folding at film scale and is fully keyable.
+
+## Iteration 4 additions (2026-11-13)
+
+## TD-26 Felted hair volumes (hybrid with curves)
+- Fringes, crowns and tousled clumps are **SDF volumes made of blended round-cone clumps** (root → mid → tip), with
+  strand relief, noise and a fibre layer; long wavy locks and curls stay explicit curves (TD-21), lying on a soft
+  **hair-mass volume** so gaps read as hair, not background. Evidence: A's fringe and C's hair against the references
+  (curves alone read as separate cords/noodles; a single cap read as a hat).
+- Cost: parts with ~200 primitives. Made affordable by TD-27.
+
+## TD-27 Brick-culled SDF meshing
+- The mesher evaluates the field in 8³ bricks: bricks whose centre is far from the surface are filled with the centre
+  value; near the surface a brick evaluates only primitives whose bounds are within (2 × (largest blend + relief + 2
+  voxels) + 4 mm). Unit test: identical vertex count, vertices on the exhaustive surface (1.5e-8 m). The margin uses
+  the largest blend of the part because smooth unions are applied in order (a smaller per-primitive margin changed
+  the v2 face test slightly and was rejected).
+
+## TD-28 Mouths: baked pockets + clean morphs
+- A morph target cannot open a hole in a closed skin cleanly (vertices projected into a concave cavity crumple and
+  their lining hides what is inside). So each character's **resting mouth is part of the skin SDF** (a pocket with
+  dark interior, upper teeth and tongue parts behind it); expressions only **fill** (`mouthClose`) or **grow**
+  (`surprise`) that pocket, which project cleanly, plus groove reshaping (smile/frown).
+- Morph targets are relaxed after projection: neighbour averaging with the unchanged ring fixed (Tutte-style, no
+  folds), 320 cheap passes with re-projection every 8th. 12 and 40 passes were tried and left lumps.
+
+## TD-29 Skin subsurface scattering = random walk
+- Chosen over diffusion profiles (BSSRDF) because it handles thin parts (ears, fingers) and concave faces without
+  special cases and needs no extra sampling structures. The walk runs only inside its own mesh (one Embree scene per
+  subsurface mesh), uses the Chiang 2016 albedo inversion and throughput-proportional channel selection (uniform
+  selection produced fireflies). The subsurface lobe replaces a share of the diffuse; specular is unchanged.
+
+## TD-30 Articulated hands with contact grasp
+- Finger chains (thumb + 4 two-segment fingers) driven by a few parameters (curl, thumb, spread, index override)
+  instead of per-joint keys. Grasping searches each finger's curl (bisection) until its tip rests on the object's
+  sphere/cylinder in the hand's frame — the same call adapts to a thin stick or a large ball.
+
+## TD-31 Procedural life layer
+- Breathing, weight shift, head drift, automatic blinks and the head following the gaze with a lag are evaluated
+  analytically from (frame, seed) on top of the keyed pose: deterministic, so any frame renders on its own, and
+  no simulation state to cache. Off by default; scenes opt in per character (`"life": true`).
+
+## TD-32 Actions compile to generated tracks
+- A scene can list high-level actions (look, expression, reach, touch, walk). They are compiled at load into a
+  separate `Clip::generated` that is consulted only where no hand-made key exists: manual keys always override, and
+  saving never bakes generated keys into the scene. Actions read the scene (object positions, sizes, reach) so the
+  same description adapts when objects move. This is also the layer an external assistant could write — a JSON
+  list of actions — but **no assistant integration exists or is claimed**.
+
+## TD-33 Director: rule-based shot planning
+- Shots are planned from action beats with fixed, readable rules (establishing wide, medium on the start of a
+  reach, insert at contact, reaction with the object, insert at placement, insert on a touch, wide in between;
+  minimum shot length; overlaps cut in favour of the later action). Cameras stay on the master camera's side
+  (180° rule), rotate away from characters in the way, focus on the subject, push in gently. Output is ordinary
+  camera tracks (generated), so any hand-keyed camera track overrides it.
+
+## TD-34 Frame rate
+- Default 30 fps for new scenes (`FrameRate{30,1}`); iteration-3 scenes keep their explicit 24 fps test setting.
+  Animation previews render at 640x360; stills at 1280x720.
