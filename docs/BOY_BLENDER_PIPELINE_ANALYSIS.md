@@ -28,6 +28,11 @@ recommendation._
   - Plush Studio receives an exported package: glTF 2.0 for mesh, skin, shape keys, UVs and animation; a Plush hair
     file for the curves; a manifest for Plush-specific material, rig-role and expression data.
   - Plush Studio stays the production environment: scenes, actions, director, life layer and final output.
+- **[V] References (final audit, §2).**
+  - 26 uploads: 7 original/group images and 14 technical sheets; #13–#17 duplicated #8–#12.
+  - 10 of the 14 technical sheets are stored in the project. #23–#26 (clothing, materials, UVs, interaction) were
+    reviewed in the conversation but never reached the workspace as files.
+  - No reference gives the boy's real height, and only the hair has numeric material values.
 - **[R] Biggest risk.** Reference-level sculpted forms (face, hair clumps, fleece folds) produced by scripted modelling
   without a human artist. This needs your decision (section 9).
 - **[R] Recommended first task.** Build the reference package and a camera-matched comparison harness in Blender
@@ -44,36 +49,75 @@ Both checkpoints are preserved in git (Iteration 3 = `db01ad6`, Iteration 4 = `8
 
 ---
 
-## 2. Reference image inventory and classification
+## 2. Reference audit and inventory (final audit, 2026-11-13)
 
-### 2.1 Received
-| # | File (copied to `docs/references/`) | Content | Class | Use for the boy |
+### 2.1 Method
+- Every image in this session's upload store was hashed (SHA-256) and compared byte-for-byte with every file in
+  `docs/references/`, and checked for duplicates **[V]**.
+- Images that were visible in the conversation but never written to the upload store were reviewed visually.
+- Numbers are upload order (#1–#26).
+
+### 2.2 Every upload
+| # | Stored in the project as | Subject | Character | Type |
 | --- | --- | --- | --- | --- |
-| 7 | `char_C_boy.jpg` | Original single-character render, front, slightly from above | **Dedicated original** | Final authority for identity and look |
-| 4–6 | `char_A_white_hair.webp`, `char_B_brown_hair.webp`, `lineup.webp` | Other two characters / lineup | Group/context | Style and relative scale only |
-| 1–3 | `classroom_*.webp`, `video_watertable.mp4` | Scenes with all three | Group/context | Lighting, scale relations, behaviour |
-| 8 | `boy_pipeline/08_boy_turnaround_proportions_expressions_clothing_sheet.webp` | 5-view turnaround; hair-only renders (front/back/side/top); proportion brackets (head/torso/leg/width); 5 expressions; clothing breakdown (hoodie front/back, joggers, backpack front/back, sneakers front/side/back/sole); 3 material swatches; skeleton silhouettes front/side; hoodie wireframe; T-pose; modular parts (bald head, hair, hoodie, trousers, shoes) | Design sheet + technical | Primary sheet for turnaround, proportions, clothing parts |
-| 9 | `boy_pipeline/09_group_turnaround_sheet_all_three.webp` | Rows per character; boy row: front/¾/side/back, 6 facial expressions, hair construction (cards over a scalp mesh), clothing parts incl. backpack in two colours, skeleton front/back, 2 key poses; bottom row: boy from 4 angles beside the others | Group design sheet | Boy rows only; style consistency |
-| 10 | `boy_pipeline/10_rig_overview_mockup_all_three.webp` | Image of a "Blender 4D" window with three rigged characters, finger controls and face markers | **Concept mock-up, not a real screenshot.** Menus are garbled ("Meathing", "Sceting", "Termise Fonts") and the product name does not exist. **No such rig exists in this project.** | Intended rig layout only (bone placement, finger controls) |
-| 11 | `boy_pipeline/11_boy_facial_topology_spec.webp` | Head topology: eye edge loops, mouth/lip loops, jaw/cheek flow, ear junction; ¾ wireframe; eyelid open/blink/squint; mouth neutral-frown/open | Technical (topology) | Edge-loop layout of the head; hair as sculpted clump shapes. Some labels point at the wrong part (e.g. "Mouth & Lip Loops" arrow at the ear) |
-| 12 | `boy_pipeline/12_boy_facial_rig_blendshape_blueprint.webp` | Facial controls (brow in/out, upper/lower lids, eye targets, cheeks, jaw root, mouth main/corners), 15 blendshapes, eyelid states, jaw/mouth controls, outliner hierarchy | Technical (face rig) | Target list of face controls and shapes. Axis numbers on the ruler are meaningless (130, 50, 200, 10 …) |
+| 1 | `classroom_1.webp` | Classroom scene | all three | Group / environment |
+| 2 | `classroom_watertable.webp` | Water-table scene | all three | Group / environment |
+| 3 | `classroom_drawing.webp` | Drawing scene | all three | Group / environment |
+| 4 | `char_B_brown_hair.webp` | Original render of the brown-haired girl | girl (glasses) | Original, other character |
+| 5 | `lineup.webp` | Lineup of the three | all three | Group |
+| 6 | `char_A_white_hair.webp` | Original render of the white-haired girl | girl (white hair) | Original, other character |
+| 7 | `char_C_boy.jpg` | **Original render of the boy** | **boy** | **Original: identity authority** |
+| 8–12 | `boy_pipeline/08…12_*.webp` | Technical sheets (see 2.3) | boy / all | Technical |
+| 13–17 | — (identical to #8–#12) | Duplicates | — | Duplicate |
+| 18–22 | `boy_pipeline/18…22_*.webp` | Technical sheets (see 2.3) | boy | Technical |
+| 23–26 | **not stored** (visible in the conversation only) | Technical sheets (see 2.3) | boy | Technical |
+| video | `video_watertable.mp4` | Water-table animation, 5 s | all three | Motion reference |
 
-| 18 | `boy_pipeline/18_hand_topology_finger_rig_poses_contact_weights.webp` | Hand topology (wrist/palm loops, 3 loops per joint), finger skeleton, 9 required poses, thumb opposition range, 6 hand-object contacts (boat, pencil, toy, cup, release, flat surface), wrist/palm/deformation weight heatmaps. Labelled "Character A (plush design study)" | Technical (hand) | Topology, joints, pose list, contact cases |
-| 19 | `boy_pipeline/19_boy_body_topology_joint_deformation_poses.webp` | Boy in A-pose (front, ¾) with topology and dimension arrows (no numbers); skeleton front/side with IK circles; shoulder, armpit, elbow, hip and knee deformation details; poses: arms up, bow, sit, walk, kneel; backpack | Technical (body) | Rest pose, joint loops, deformation tests |
-| 20 | `boy_pipeline/20_boy_skeleton_hierarchy_skin_weights_control_rig.webp` | "character_c_reference_01": bone names, hierarchy tree, joint orientation (bone Y along length, pre-bent elbow/knee for IK), weight heatmaps, knee/spine deformation tests ("preserve hoodie bulk, no crushing"), control rig (HEAD/CHEST/HIPS/ROOT, IK hands/feet, elbow/knee poles) | Technical (rig) | Skeleton and controls specification |
-| 21 | `boy_pipeline/21_boy_hair_geometry_groom_material_spec.webp` | Clump masses (crown spikes, downward fringe, side/back clusters), hybrid method (base-mesh clumps + curves/fine fibres 0.5–1 mm), flow arrows, colour-coded groups, material #2D2D2D, roughness 0.95, SSS | Technical (hair) | Hair construction and material |
-| 22 | `boy_pipeline/22_boy_hair_rig_secondary_motion.webp` | Hair chains DEF-hair.fringe.01–03, DEF-hair.crown.01–04, DEF-hair.side_L/R, MCH-hair.master, ORG-head; delay/overshoot/settling; spring settings (stiffness 0.65, damping 0.80, gravity 0.3) | Technical (hair rig) | Secondary-motion specification |
-| 23 | not stored (seen in conversation) | Clothing topology and deformation: A-pose half-render/half-wireframe (front, ¾, back with backpack), hoodie/joggers/shoe breakdown with seam and stitch details, ribbed cuffs/hem, hood lining, stretch/fold zones for arm raise, elbow bend, reach, sit, walk | Technical (clothing) | Garment construction and deformation zones |
-| 24 | not stored (seen in conversation) | "01_Material_Identification": hero render with material notes for hair, skin, eyes, hoodie, straps, trousers, footwear; swatches (roughness, plush, fibres, fuzz) | **High-quality look reference** + material description | Materials; also a second identity reference next to #7 |
-| 25 | not stored (seen in conversation) | UV organization: T-pose and A-pose with checker and seams; face/head, hair-mass, hoodie, pants, shoes/accessories UV layouts; fibre-direction overlays; Blender UV stretch view | Technical (UV) | Seams, layouts, texture/fibre direction |
-| 26 | not stored (seen in conversation) | "C_reference_01": hand contact zones, grasp types (precision pinch, power grasp, two-finger pinch, support), pick-up and release sequences, foot-to-floor, leaning on a table, sitting, arm/hand IK | Technical (interaction) | Contact and interaction specification |
+### 2.3 The 14 technical reference sheets
+| Sheet | # | File (in `docs/references/boy_pipeline/`) | Subject | Label on the sheet | Stored |
+| --- | --- | --- | --- | --- | --- |
+| 1 | 8 | `08_boy_turnaround_proportions_expressions_clothing_sheet.webp` | Turnaround (5 views), hair-only views, proportion brackets, 5 expressions, clothing/backpack/shoe breakdown, 3 swatches, skeleton silhouettes, wireframe, T-pose, modular parts | "Character A" | **yes** |
+| 2 | 9 | `09_group_turnaround_sheet_all_three.webp` | Rows per character: boy front/¾/side/back, 6 expressions, hair cards, clothing parts, skeleton, key poses | "A" (boy row) | **yes** |
+| 3 | 10 | `10_rig_overview_mockup_all_three.webp` | Concept mock-up of a rig window (not a real Blender screenshot) | "Character_A_Rig" … | **yes** |
+| 4 | 11 | `11_boy_facial_topology_spec.webp` | Face topology: eye, mouth and jaw loops, ear junction; lids open/closed/squint; mouth frown/open | "Character A" | **yes** |
+| 5 | 12 | `12_boy_facial_rig_blendshape_blueprint.webp` | Face controls, 15 blendshapes, eyelid states, jaw/mouth controls, outliner hierarchy | "Character C" | **yes** |
+| 6 | 18 | `18_hand_topology_finger_rig_poses_contact_weights.webp` | Hand topology, MCP/PIP/DIP and thumb CMC/MCP/IP joints, 9 poses, thumb opposition, 6 object contacts, weight heatmaps | "Character A" | **yes** |
+| 7 | 19 | `19_boy_body_topology_joint_deformation_poses.webp` | A-pose topology, dimension arrows without numbers, skeleton, shoulder/elbow/hip/knee deformation, 5 test poses | none | **yes** |
+| 8 | 20 | `20_boy_skeleton_hierarchy_skin_weights_control_rig.webp` | Bone names and tree, joint orientation, weight heatmaps, knee/spine tests, control rig | "character_c_reference_01" | **yes** |
+| 9 | 21 | `21_boy_hair_geometry_groom_material_spec.webp` | Hair masses, hybrid clump+fibre method, flow, groups, material (#2D2D2D, roughness 0.95, SSS); sections 01–10 | "REF: <IMAGE 0>" | **yes** |
+| 10 | 22 | `22_boy_hair_rig_secondary_motion.webp` | Hair chains (fringe, crown, side, master), hierarchy, lag/overshoot/settle, spring settings; sections 01–04, 08 | "character_c_reference_01" | **yes** |
+| 11 | 23 | — proposed `23_boy_clothing_topology_deformation.webp` | Clothing topology (half render/half wireframe, front/¾/back), hoodie/joggers/shoes breakdown, seams and stitching, stretch/fold zones | none | **no** |
+| 12 | 24 | — proposed `24_boy_material_identification.webp` | Hero render with material notes for hair, skin, eyes, hoodie, straps, trousers, footwear; swatches | "01_Material_Identification" | **no** |
+| 13 | 25 | — proposed `25_boy_uv_organization_texture_direction.webp` | UV seams (T-pose and A-pose), per-part UV layouts, checker validation, fibre direction, Blender UV view | sections 01–12 | **no** |
+| 14 | 26 | — proposed `26_boy_object_interaction_contact_points.webp` | Hand contact zones, 4 grasp types, pick-up/release sequences, foot/lean/sit contact, arm IK | "Character C_reference_01" | **no** |
 
-None of these is a 3D mesh, rig, UV set or skin-weight map. They are pictures.
+Result:
+- **14 technical sheets were received and reviewed: 10 are stored, 4 are not.**
+- 12 sheets show only the boy; #9 and #10 show all three characters.
+- There are **no dedicated technical sheets for the two girls** in this workspace, only the group sheets #9 and #10.
+  They are out of scope for this phase.
 
-### 2.2 Coverage of the requested categories (after the uploads of #18–#26)
+### 2.4 Duplicates, missing and inaccessible
+- **Duplicates:** #13–#17 are byte-identical to #8–#12. There are no other duplicates.
+- **Inaccessible as files:** #23–#26 were shown in the conversation but never written to the upload store, so they
+  cannot be archived or measured. They need to be sent again to become part of the stored package.
+- **Never received:** the second animation reference video named in the Iteration 3 brief.
+- **Possibly incomplete series** (inferred from section numbers on the sheets; cannot be confirmed from the images):
+  - #24 is titled "01_Material_Identification"; no 02 or later material sheet arrived.
+  - #25 shows UV sections 01, 02, 04, 05, 06, 08, 10, 11 and 12; 03, 07 and 09 are absent.
+  - #22 shows hair-rig sections 01, 02, 03–04 and 08; 05–07 are absent.
+  - #21 is complete (01–10).
+- **No dedicated sheet received** for these brief categories:
+  - Animation deformation tests: only inside #19, #20 and #23.
+  - Facial expression validation: only inside #8, #9 and #12.
+  - Full character integration: only #24's hero render and the #10 mock-up.
+- **Data no reference provides:** real height in cm; numeric material values except hair; texel density and texture
+  resolutions; cloth behaviour (simulation or correctives); numeric skin weights.
+
+### 2.5 Coverage by requested category
 | Requested category | Now covered by | Still missing |
 | --- | --- | --- |
-| Hand topology, finger rigging | #18 (topology, MCP/PIP/DIP and thumb CMC/MCP/IP joints, 9 required poses, thumb opposition) | Hand **proportions** for this boy (see §2.3, item 7) |
+| Hand topology, finger rigging | #18 (topology, MCP/PIP/DIP and thumb CMC/MCP/IP joints, 9 required poses, thumb opposition) | Hand **proportions** for this boy (§2.6, item 7) |
 | Body topology, joint deformation | #19 (A-pose topology, shoulder/elbow/hip/knee loops, test poses), #20 (knee 90°, spine bend/twist), #23 (stretch/fold zones) | — |
 | Skin-weight guides | #18 (wrist, palm, deformation heatmaps), #20 (body heatmaps) | Numeric weights (pictures only) |
 | Hair rig, secondary motion | #22 (chains, hierarchy, spring settings) | — |
@@ -84,23 +128,24 @@ None of these is a 3D mesh, rig, UV set or skin-weight map. They are pictures.
 | Object interaction, contact points | #26 (contact zones, 4 grasp types, pick-up/release, foot/lean/sit contact, IK), #18 (boat, pencil, toy, cup, release, flat surface) | — |
 | Animation deformation tests | #19 (arms up, bow, sit, walk, kneel), #20, #23 | — |
 | Full integration | #24 (hero render with all materials) | — |
+| Facial topology | #11 (eye, mouth, jaw loops, ear junction) | — |
+| Facial rig, expressions | #12 (controls, 15 blendshapes, eyelid states, jaw/mouth), #8, #9 | — |
+| Facial expression validation | inside #8, #9, #12 | No dedicated validation sheet |
+| Turnaround, proportions | #7, #8, #9, #19 | Numeric scale |
 | Real-world scale | — | **Height in cm**: dimension arrows in #19/#23 carry no numbers |
 
-Upload history: #13–#17 were byte-identical to #8–#12. #18–#22 arrived as new files. #23–#26 were visible in the
-conversation but **were not stored as files in this workspace**, so they are not yet in `docs/references/boy_pipeline/`.
-
-### 2.3 Conflicts found (reported, not resolved)
+### 2.6 Conflicts between references (reported, not resolved)
 1. **Name/letter.**
    - The boy is **"C"** in this project and in #12.
    - He is **"A"** in #8 and #11, and in the row label of #9.
    - **[R]** Use a stable ID, `boy_yellow_hoodie`, and drop letters.
 2. **Default pose.** The original (#7) has one hand in the trouser pocket. #8 has both arms down. #9 has hands in
-   pockets in several views. Pose is not identity; please choose the rest pose for the turnaround.
+   pockets in several views. Pose is not identity. Open item: which stance the turnaround uses.
 3. **Backpack.**
    - The original shows only dark navy/plum straps.
    - #8 shows a dark purple-grey felt backpack.
    - #9 shows a plum backpack with an orange zip line, plus a second, lighter mauve backpack in its breakdown.
-   - Please choose the colour and details.
+   - Open item: colour and details (see item 13).
 4. **Head-to-height ratio** (measured on the images, ±3%).
    - About 0.37 on the original. It is photographed slightly from above, which enlarges the head.
    - About 0.33 on the #8 proportion sheet.
@@ -115,7 +160,7 @@ conversation but **were not stored as files in this workspace**, so they are not
 7. **Hand proportions.** #18 and #26 show long, slender five-finger hands. #7, #8, #19 and #24 show short, chubby,
    stubby hands. **[R]** Proportions from #7/#24; topology, joints and pose list from #18.
 8. **Hand material.** #26 renders the hand as dark grey fleece, like a glove. Every other reference shows bare peach
-   skin. Most likely a material demo; please confirm the hands are bare skin.
+   skin. Most likely a material demo. Open item: confirm bare skin.
 9. **Rest pose for rigging.**
    - A-pose (arms about 45° down) in #19, #23 and #25.
    - T-pose in #8 and #25.
@@ -136,14 +181,28 @@ conversation but **were not stored as files in this workspace**, so they are not
     - Close in value; the warmth may come from lighting.
     - **[R]** #2D2D2D albedo, checked by matched renders.
 13. **Backpack colour (update).** #8, #23 and #24 agree on dark charcoal grey with a slight purple tint. #9 (plum,
-    orange zip) is the outlier. **[R]** Charcoal-plum grey, unless you decide otherwise.
+    orange zip) is the outlier. **[R]** Charcoal-plum grey.
 14. **Character letter (update).** "A" in #8, #11 and #18; "C" in #12, #20, #22 and #26. Still mixed.
+15. **Expression sets differ in size.** #8 shows 5 expressions (neutral, happy, sad, surprised, angry). #9 shows 6
+    eye/brow variants. #12 shows 15 blendshapes, including laugh, confusion and puff-cheeks. Not contradictory.
+    **[R]** #12's 15 shapes are the canonical set, because they contain the others.
+16. **Eyelids.** #11 builds the lids from edge loops in the face mesh; #12 rotates them about the eyeball centre.
+    These are compatible: lid bones pivot on the eye centre and deform the loop topology. Neither matches the current
+    Plush construction, which uses separate lid shells.
+17. **Mouth.** #11 and #12 show a real mouth opening with jaw rotation, teeth and a mouth cavity, i.e. a mouth built
+    from topology. With such a head, Plush's baked-pocket workaround (BUGS-21) is not needed.
+18. **"Character A" on #18.** In your sheets "A" means the boy (#8, #11), so #18 is treated as the boy's hand. In
+    this project's older naming "A" is the white-haired girl. The label alone is ambiguous; the stable-ID
+    recommendation (item 1) removes the problem.
+19. **Rest pose (addition).** #25 itself shows both a T-pose and an A-pose orthographic set, so the references
+    support both. The recommendation in item 9 (A-pose) stands.
 
 ---
 
 ## 3. Canonical visual description of the boy
 
-Taken from #7 (authority), #8 and #11; measurements are approximate ratios read off the images.
+Taken from #7 and #24 (identity and look), #8 and #19 (proportions), #11, #12, #18 and #20–#23 (construction).
+Measurements are approximate ratios read off the images. **Real height is not given by any reference.**
 
 - **Overall.** Chibi plush figure with a large head. Head including hair is about 0.33 of the height (#8). Torso
   (shoulder to hoodie hem) about 0.29. Legs including shoes about 0.36.
@@ -182,6 +241,11 @@ Taken from #7 (authority), #8 and #11; measurements are approximate ratios read 
   - Eyes are semi-glossy resin with inset pupils.
   - Skin is soft matte with subtle SSS and a peach-fuzz texture.
   - The hoodie is heavyweight fleece/bouclé; the trousers are felted or rough-knit and heavily textured.
+- **Face rig targets (#12).** 15 expressions:
+  - neutral, blink both, blink L, blink R, squint;
+  - eyes wide, smile, frown, jaw open, laugh;
+  - surprise, sadness, anger, confusion, puff cheeks.
+  - Controls: brows (inner/outer), upper/lower lids, eye targets, cheeks, jaw, mouth main, mouth corners.
 - **Hands.** Short, chubby, five-fingered, bare skin. In the hero renders (#7, #24) the left hand rests in the
   trouser pocket.
 - **Personality.** Sleepy, sulky and cool. A slight forward slouch and an asymmetric stance (a hand in a pocket).
@@ -254,6 +318,14 @@ collisions, BUGS-25 build times).
     comb origin per layer. **[R]** Read a direction map in UV space.
 13. Environmental contact actions. #26 shows sitting, leaning on a table and foot-to-floor contact. Plush actions have
     walk, reach and touch only; sit and lean are missing.
+14. IK pole vectors. **[V]** Plush's two-bone IK has no pole target: the bend direction comes from the current
+    pose. #20 specifies elbow and knee poles (`PV_ELBOW_L/R`, `PV_KNEE_L/R`).
+15. Grasp types. **[V]** Plush grasps by curling all fingers until their tips touch. #26 and #18 also need a
+    thumb–index precision pinch, a two-finger pinch for thin flat objects (the paper boat), palm contact (power
+    grasp) and an open-palm support.
+16. Skeleton coverage. **[V]** The boy's current skeleton has 24 authored bones: no clavicles, one spine segment plus
+    chest, no jaw, no lower lids, two segments per finger, no hair bones. #18, #20, #12 and #22 call for roughly
+    90–100 deform bones.
 
 ---
 
@@ -381,12 +453,12 @@ Versioning:
 
 | Stage | Deliverables |
 | --- | --- |
-| 1 Reference & plan | `reference_index.json`, conflict decisions (from you), canonical spec (§3 approved), comparison camera/light rig `.blend`, pinned Blender version |
+| 1 Reference & plan | `reference_index.json` (the §2 audit), #23–#26 stored as files, conflict decisions, canonical spec (§3 approved), comparison camera/light rig `.blend`, pinned Blender version |
 | 2 Modelling | `v0001.blend` (meshes, no rig), mesh stats and topology report, comparison renders per view |
 | 3 Visual approval | Side-by-side sheet (reference vs model, same views); **your written approval** |
 | 4 Materials/UV/hair | UV layout images, textures, materials, groom, Cycles lookdev turntable, material map in `asset.json` |
-| 5 Rig & deformation | Armature, weights, finger and face controls, the 15 shape keys from #12, corrective shapes, deformation test renders (arms up, squat, fist, all expressions), weight validation report |
-| 6 Animation tests | Idle, walk, blink/gaze, expression sweep, pick-up/put-down clip as `.blend` actions + exported `.glb`; renders |
+| 5 Rig & deformation | Armature (#20 bones and controls, #22 hair chains, #18 finger joints, #12 face controls), weights, the 15 shape keys from #12, corrective shapes. Deformation tests taken from the references: arms up, bow, sit, walk, kneel (#19); knee 90°, spine bend/twist (#20); arm raise, elbow bend, reach (#23); the 9 hand poses and the thumb-opposition range (#18). Weight validation report |
+| 6 Animation tests | Idle, walk, blink/gaze, the 15-expression sweep (#12). Contacts from #18 and #26: paper boat, pencil, toy, cup, release, flat surface; precision pinch, power grasp, two-finger pinch, support. Foot-to-floor, leaning on a table, sitting. Hair lag/overshoot/settle (#22). As `.blend` actions + exported `.glb`; renders |
 | 7 Integration | Plush importer (glTF, hair, manifest), mesh-character type, rest-oriented skeleton, UV textures, bone roles; the boy in a Plush scene driven by actions; regression images; the A-vs-B renderer decision |
 | 8 Canonical asset | Frozen `v1.0.0` package, manifest with hashes, CHANGELOG, LFS/bundle backup, re-export script that rebuilds the package from the master |
 
@@ -437,7 +509,7 @@ Rough, in focused sessions; [A] until measured:
 ## 15. Recommended first implementation task (after your approval)
 **Stage 1 — reference package and Blender comparison harness:**
 1. Pin the backend: `bpy` 5.3 in a project venv, or allow a Blender binary download. Your choice.
-2. Write `references/reference_index.json`: classification, priority and the conflicts in §2.3.
+2. Write `references/reference_index.json`: classification, priority and the conflicts in §2.6.
 3. Get your decisions on those conflicts and on the modelling option (§9).
 4. Build `compare_rig.blend` by script. Cameras matching #8's front, side and back, and #7's angle; neutral lighting
    close to the sheets; an output layout that places reference and render side by side.
@@ -446,8 +518,40 @@ Rough, in focused sessions; [A] until measured:
 
 This touches no engine code and produces the yardstick every later stage is judged by.
 
-**Waiting for your approval and decisions:**
+**Open decisions (recorded here; not requested until the reference audit is accepted):**
 - The modelling option (1, 2 or 3).
 - The ID, the default pose and the backpack colour.
 - The Blender install route.
 - Confirmation that the earlier no-Blender requirement is lifted for asset creation.
+
+---
+
+## 16. Reference audit result: complete and missing
+
+**Complete:**
+- Identity and look: original render #7 and hero render #24.
+- Turnaround and proportions: #8, #9, #19.
+- Facial topology (#11) and face rig with 15 expressions (#12).
+- Hands: topology, joints, poses, contacts, weights (#18).
+- Body: topology and joint deformation (#19, #23); skeleton hierarchy, weights and control rig (#20).
+- Hair: geometry, groom and material (#21); hair rig and secondary motion (#22).
+- Clothing topology and deformation (#23).
+- Qualitative materials for every part (#24).
+- UV seams, layouts and texture direction (#25).
+- Object interaction and environmental contact (#26).
+- Group and environment context (#1–#3, #5, #9, #10, video).
+
+**Missing or incomplete:**
+1. #23–#26 are not stored as files: re-send needed to archive them.
+2. The boy's real-world height (no numbers on any dimension arrow).
+3. Numeric material values for skin, hoodie, trousers, shoes, eyes and straps (only hair has numbers).
+4. Texel density and texture-resolution targets.
+5. Cloth behaviour: simulation or corrective shapes.
+6. Numeric skin weights (heatmaps are pictures only).
+7. Possibly further sheets implied by section numbering: material sheets after "01"; UV sections 03/07/09; hair-rig
+   sections 05–07.
+8. No dedicated sheets for animation deformation tests, facial expression validation or full integration (covered
+   only inside other sheets).
+9. The second animation reference video named in the Iteration 3 brief.
+10. No dedicated technical sheets for the two girls (out of scope for this phase).
+11. 19 conflicts between references, listed in §2.6, all still open.
