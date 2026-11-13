@@ -74,3 +74,29 @@ water height field; floating objects (yaw kept, tilt from the water); staged pap
 fringe locks; B's curls covered her face → curls only on back/sides; telephone-cord curls → thicker, looser; A's
 noodle locks → denser layers with a longer halo; fogged lenses → guides through glass; hedgehog spikes → rounder clumps.
 **Tests:** 16 unit tests + milestone 01 and face (v2) regressions green after every engine change.
+
+## 2026-11-13 — Iteration 4, Phase B: character reconstruction
+
+**Re-baselined `regression_lineup_abc`** on purpose: the characters were rebuilt to match the references (RMSE
+0.0608 against the iteration-3 image, limit 0.03). The iteration-3 reference image is kept next to it as
+`tests/regression/lineup_abc_320x240_it3.png`. Milestone 01 and the v2 face regressions are untouched and pass.
+
+**Engine**
+- Exact `disc` SDF primitive (glasses lenses; the flat-ellipsoid approximation produced a translucent band).
+- SDF mesher evaluates in 8³ bricks: bricks far from the surface are filled from their centre value; bricks near it
+  evaluate only primitives within reach. Unit test: identical vertex count and vertices on the exhaustive surface
+  (max |sdf| 1.5e-8 m) for a 47-primitive clump part. Needed for felted hair parts with ~200 primitives.
+- Expression morph targets: tangential relaxation (12 passes of neighbour averaging + re-projection) after
+  projection, which removed crumpling around the mouth.
+
+**Content (tools/charkit.py)**
+- Face: larger deep-set wide eyes, iris 31–34°, shorter upper face, lower fuller chin (mouth ≈0.3 eye spacings above
+  the chin, as measured on reference A), small embedded nose, finger bones.
+- Mouth: the resting mouth is baked into the skin surface (A small open smile, B wide grin, C slight frown), with
+  mouth interior parts (cavity, upper teeth, tongue) and a `mouthClose` fill expression. Morphing a hole open
+  crumpled the skin and the lining covered the interior (tried and rejected, see renders/it4wip/mouths*.png).
+- Hair: felted SDF clump volumes for A's fringe and crown, B's swept fringe and crown, C's whole head of spiky
+  clumps (96 clumps); soft hair-mass volume under A's and B's locks; A's buns ×1.22, bow ×1.6; brim prim removed.
+- Clothes: A bodice + bell skirt + ribbed hem band, arms rest 9° out; B darker dusty-rose V-neck vest with embroidered
+  felt motifs; C looser hoodie (torso r 0.082/0.104, sleeves 0.046) and wider joggers gathered at the ankle.
+- Fixed: an iteration-3 `add_frown` overrode the new frown with pre-iteration-4 coordinates (it moved the cheeks).

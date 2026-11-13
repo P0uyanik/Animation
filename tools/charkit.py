@@ -83,7 +83,8 @@ def upgrade_base(c):
         if n == "head":
             p["center"], p["radii"] = list(HEAD_C), list(HEAD_R)
         elif n == "jaw":
-            p["center"] = [0.0, 0.766, 0.034]; p["radii"] = [0.118, 0.055, 0.106]
+            # Lower, fuller chin: the mouth sits on the front of the face, ~0.3 eye spacings above the chin (reference).
+            p["center"] = [0.0, 0.752, 0.036]; p["radii"] = [0.118, 0.064, 0.11]
         elif n == "cheek.L":
             p["center"] = [0.088, 0.752, 0.078]; p["radii"] = [0.072, 0.06, 0.068]
         elif n == "nose":
@@ -112,12 +113,27 @@ def upgrade_base(c):
         {"name": "smile", "part": "skin", "set": [
             {"prim": "mouth.L", "a": [0.031, 0.748, mz(0.031, 0.748)], "b": [0.0, 0.7345, mz(0.0, 0.7345)], "r": 0.0048},
             {"prim": "cheek.L", "center": [cheek[0], cheek[1] + 0.006, cheek[2]]}]},
+        # Open mouth: a D-shaped opening under the smile line, revealing the mouth interior parts below.
         {"name": "mouthOpen", "part": "skin", "add": [
-            {"name": "mouthCavity", "type": "ellipsoid", "center": [0.0, 0.734, face_z(c, 0.0, 0.734) - 0.012], "radii": [0.02, 0.017, 0.016], "blend": 0.006, "subtract": True}]},
+            {"name": "mouthCavity", "type": "ellipsoid", "center": [0.0, 0.7295, face_z(c, 0.0, 0.7295) - 0.012], "radii": [0.016, 0.0115, 0.02], "blend": 0.004, "subtract": True}]},
+        # Wide open grin (character B's default): a broader opening.
+        {"name": "grin", "part": "skin", "add": [
+            {"name": "grinCavity", "type": "ellipsoid", "center": [0.0, 0.7285, face_z(c, 0.0, 0.7285) - 0.011], "radii": [0.026, 0.0135, 0.02], "blend": 0.004, "subtract": True}]},
         {"name": "frown", "part": "skin", "set": [
             {"prim": "mouth.L", "a": [0.028, 0.731, mz(0.028, 0.731)], "b": [0.0, 0.7375, mz(0.0, 0.7375)], "r": 0.0046},
             {"prim": "cheek.L", "center": [cheek[0], cheek[1] - 0.004, cheek[2]]}]},
     ]
+    # Mouth interior, hidden inside the head until the mouth opens: dark cavity, upper teeth, tongue.
+    # Each piece is placed against the face depth at its lowest point, so it stays hidden when the mouth is closed.
+    mat(c, "mouth_dark", type="standard", baseColor=[0.22, 0.05, 0.05], roughness=0.6)
+    mat(c, "teeth", type="standard", baseColor=[0.9, 0.87, 0.82], roughness=0.35, coat=0.3)
+    mat(c, "tongue", baseColor=[0.72, 0.3, 0.3], sheen=0.3)
+    part(c, "mouthInside", "mouth_dark", [{"name": "cavity", "type": "ellipsoid", "bone": "head",
+         "center": [0.0, 0.729, face_z(c, 0.0, 0.717) - 0.01], "radii": [0.028, 0.012, 0.005]}], voxel=0.001)
+    part(c, "teeth", "teeth", [{"name": "upper", "type": "roundBox", "bone": "head", "center": [0.0, 0.7368, face_z(c, 0.0, 0.7336) - 0.0105],
+         "halfSize": [0.016, 0.0032, 0.0025], "rounding": 0.002}], voxel=0.0006)
+    part(c, "tongue", "tongue", [{"name": "tongue", "type": "ellipsoid", "bone": "head", "center": [0.0, 0.7225, face_z(c, 0.0, 0.7175) - 0.0085],
+         "radii": [0.015, 0.005, 0.0045]}], voxel=0.0008)
     blush = get_mat(c, "skin")["texture"]
     blush["spots"] = [[0.088, 0.748, face_z(c, 0.088, 0.748), 0.04], [-0.088, 0.748, face_z(c, 0.088, 0.748), 0.04],
                       [0.0, 0.738, face_z(c, 0.0, 0.738), 0.016]]
@@ -218,12 +234,42 @@ def add_lashes(c, material, thickness=0.0016, flick=1.0):
         locks.append(lock([root, v_add(root, v_mul(out, 0.5 * (0.006 + 0.002 * k) * flick)), tip], thickness * 0.9, thickness * 0.25))
     group(c, "lashes.L", material, material, locks, bone="lid.L", mirror=True, samples=24, roundTip=True)
 
+def bake_mouth(c, smile=0.0, frown=0.0, cavity=None):
+    """Iteration 4: a character's resting mouth is part of the skin surface itself (clean mesh, real pocket that
+    shows the teeth and tongue). Morphing a hole open crumples the skin, so instead an open-mouthed character gets
+    a 'mouthClose' expression that fills the pocket (a convex change that projects cleanly)."""
+    skin = get_part(c, "skin")
+    exprs = {e["name"]: e for e in c["expressions"]}
+    mouth = next(p for p in skin["prims"] if p["name"] == "mouth.L")
+    cheek = next(p for p in skin["prims"] if p["name"] == "cheek.L")
+    lerp = lambda a, b, t: [a[i] + (b[i] - a[i]) * t for i in range(3)]
+    for name, w in (("smile", smile), ("frown", frown)):
+        if w <= 0:
+            continue
+        tm = next(x for x in exprs[name]["set"] if x["prim"] == "mouth.L")
+        tc = next(x for x in exprs[name]["set"] if x["prim"] == "cheek.L")
+        mouth["a"], mouth["b"] = lerp(mouth["a"], tm["a"], w), lerp(mouth["b"], tm["b"], w)
+        mouth["r"] = mouth["r"] + (tm["r"] - mouth["r"]) * w
+        cheek["center"] = lerp(cheek["center"], tc["center"], w)
+    if cavity:
+        pocket = dict(exprs[cavity]["add"][0], name="mouthPocket", bone="head")
+        skin["prims"].append(pocket)
+        # The lip line follows the opening: centre on its top edge, corners just past its sides, slightly up.
+        dz = face_z(c, 0.0, pocket["center"][1]) - pocket["center"][2]
+        f = math.sqrt(max(0.0, 1 - (dz / pocket["radii"][2]) ** 2))
+        hw, top = pocket["radii"][0] * f, pocket["center"][1] + pocket["radii"][1] * f
+        ax, ay = hw + 0.0045, top + 0.0025
+        mouth["a"] = [ax, ay, face_z(c, ax, ay) - 0.0012]
+        mouth["b"] = [0.0, top - 0.0008, face_z(c, 0.0, top) - 0.0012]
+        mouth["r"] = 0.0038
+        c["expressions"].append({"name": "mouthClose", "part": "skin", "set": [
+            {"prim": "mouthPocket", "center": [0.0, 0.8, 0.0], "radii": [1e-4, 1e-4, 1e-4]}]})
+    c["defaultExpressions"] = {}
+
 def add_frown(c):
-    """Sad / annoyed mouth: corners pulled down."""
-    c["expressions"] = [e for e in c["expressions"] if e["name"] != "frown"]
-    c["expressions"].append({"name": "frown", "part": "skin", "set": [
-        {"prim": "mouth.L", "a": [0.027 * S, 0.69 + (0.729 - 0.69) * S, 0.1372 * S], "b": [0.0, 0.69 + (0.7335 - 0.69) * S, 0.1356 * S], "r": 0.0046 * S},
-        {"prim": "cheek.L", "center": [0.074 * S, 0.69 + (0.758 - 0.69) * S, 0.07 * S]}]})
+    """Iteration 3 helper. Since iteration 4 the frown is defined on the measured face surface in upgrade_base;
+    the old version used pre-iteration-4 coordinates (it moved the cheeks) and is no longer applied."""
+    assert any(e["name"] == "frown" for e in c["expressions"])
 
 def set_eyes(c, iris, pupil_deg=15, iris_deg=48):
     t = get_mat(c, "eye")["texture"]
@@ -241,6 +287,7 @@ def set_brows(c, color, r1=0.0058, r2=0.0038, lift=0.0, tilt=0.0):
 def slim_cap(c, margin=0.009):
     """Hair base hugging the skull (locks provide the volume) so no hat-like brim forms."""
     cap = get_part(c, "hairCap")
+    cap["prims"] = [p for p in cap["prims"] if p["name"] != "bangs"]  # iteration 4: felted fringe instead; the brim left slivers
     for p in cap["prims"]:
         if p["name"] == "cap":
             p["center"] = [HEAD_C[0], HEAD_C[1] + 0.006, HEAD_C[2] - 0.004]
@@ -251,6 +298,56 @@ def slim_cap(c, margin=0.009):
     for f in c["fuzz"]:
         if f["part"] == "hairCap":
             f.update(density=120, length=0.004)
+
+def hair_mass(c, material, fiber, density=110, length=0.006, back=(0.16, 0.105), side=(0.055, 0.045), side_x=0.12):
+    """Soft felted hair volume behind and beside the head, under the locks (iteration 4).
+    The locks lie half-embedded on its surface, so the hair reads as one mass instead of separate cords.
+    Everything below the chin in front of the body is cut away, so it never covers the neck or chest."""
+    cap = get_part(c, "hairCap")
+    part(c, "hairMass", material, [
+        {"name": "back", "type": "roundCone", "bone": "head", "a": [0, 0.84, -0.025], "b": [0, 0.56, -0.06], "r1": back[0], "r2": back[1]},
+        {"name": "side.L", "type": "roundCone", "bone": "head", "a": [side_x, 0.79, -0.03], "b": [side_x + 0.01, 0.57, -0.065],
+         "r1": side[0], "r2": side[1], "blend": 0.04, "mirror": True},
+        {"name": "chestCut", "type": "roundBox", "bone": "head", "center": [0, 0.48, 0.12], "halfSize": [0.14, 0.245, 0.12],
+         "rounding": 0.03, "blend": 0.03, "subtract": True},
+    ], voxel=0.003, skinFalloff=0.02, noiseAmplitude=0.004, noiseScale=14, pattern="strands", patternAmplitude=0.0025,
+        patternScale=34, patternCenter=list(cap.get("patternCenter", [0, CAP_C[1] + CAP_R[1], CAP_C[2]])))
+    fuzz(c, "hairMass", fiber, density, length, radius=2.3e-5, tilt=0.6, curl=0.5, segments=4, comb=0.8,
+         combOrigin=[0.0, CAP_C[1] + CAP_R[1], 0.0], strayFraction=0.07, strayLength=2.0)
+
+def felt_clumps(c, name, material, fiber, clumps, blend=0.01, voxel=0.0016, density=130, length=0.005,
+                noise=0.0012, strands=0.0012, bone="head"):
+    """Felted hair clumps as one blended SDF volume (iteration 4).
+    Each clump is (points[3], root radius, tip radius): two round cones root->mid->tip, smoothly blended with
+    its neighbours, so the result is a single felted mass with pointed tips and soft grooves between clumps
+    (the references' fringes and tousled clumps) instead of separate cords."""
+    prims = []
+    for i, (pts, r0, r1) in enumerate(clumps):
+        rm = r0 * 0.66 + r1 * 0.34
+        prims.append({"name": f"{name}{i}a", "type": "roundCone", "bone": bone, "a": pts[0], "b": pts[1], "r1": r0, "r2": rm, "blend": blend})
+        prims.append({"name": f"{name}{i}b", "type": "roundCone", "bone": bone, "a": pts[1], "b": pts[2], "r1": rm, "r2": r1, "blend": blend * 0.5})
+    part(c, name, material, prims, voxel=voxel, skinFalloff=0.02, noiseAmplitude=noise, noiseScale=45,
+         pattern="strands", patternAmplitude=strands, patternScale=90, patternCenter=[0, CAP_C[1] + CAP_R[1], CAP_C[2]])
+    fuzz(c, name, fiber, density, length, radius=2.3e-5, tilt=0.6, curl=0.5, segments=4, comb=0.7,
+         combOrigin=[0.0, CAP_C[1] + CAP_R[1], 0.0], strayFraction=0.06, strayLength=2.0)
+
+def crown_clumps(rng, count, part_x=0.0, length_deg=(10, 22), lift=0.004, r0=0.022, front_gap=40):
+    """Broad felted clumps over the top of the head, from the crown/parting outwards."""
+    out = []
+    for k in range(count):
+        az = -180 + 360 * (k + rng.uniform(0.2, 0.8)) / count
+        if front_gap > 0 and abs(abs(az) - 180) < front_gap * 0.5:
+            continue
+        el0 = rng.uniform(70, 80)
+        el1 = el0 - rng.uniform(*length_deg) * 2
+        pts = []
+        for t in (0.0, 0.5, 1.0):
+            p, n = on_ellipsoid(CAP_C, CAP_R, az, el0 + (el1 - el0) * t, lift * (0.4 + 0.8 * t))
+            if t == 0.0:
+                p[0] += part_x * (1 if math.sin(math.radians(az)) >= 0 else -1)
+            pts.append(p)
+        out.append((pts, r0 * rng.uniform(0.85, 1.15), r0 * 0.35))
+    return out
 
 # ------------------------------------------------------------------ hair builders
 def drape(az, el, length, out, amp, wave_len, phase, n=9, body=0.115):
@@ -320,51 +417,73 @@ def character_a():
     slim_cap(c)
     buns = get_part(c, "buns")
     for p in buns["prims"]:
-        p["radii"] = [r * 0.82 for r in p["radii"]]
+        p["radii"] = [r * 1.22 for r in p["radii"]]  # iteration 4: reference buns are large round puffs (~40% of head width)
+        p["center"] = [p["center"][0] * 1.12, p["center"][1] + 0.012, p["center"][2]]
     mat(c, "lash", type="standard", baseColor=[0.05, 0.035, 0.03], roughness=0.5)
     add_lashes(c, "lash")
     add_frown(c)
-    set_brows(c, [0.72, 0.64, 0.56], r1=0.0042, r2=0.0028, lift=0.003, tilt=0.002)
+    bake_mouth(c, smile=0.6, cavity="mouthOpen")  # reference: small open happy mouth
+    set_eyes(c, get_mat(c, "eye")["texture"]["color2"], pupil_deg=12, iris_deg=34)
+    set_brows(c, [0.72, 0.64, 0.56], r1=0.0042, r2=0.0028, lift=0.012, tilt=0.002)  # iteration 4: hidden under the fringe
     wool, core = "wool_fiber", "wool_lock_core"
     get_mat(c, core).update(baseColor=[0.83, 0.81, 0.77])
-    halo = dict(fuzzDensity=140, fuzzLength=0.008, fuzzRadius=2.4e-5, fuzzTilt=0.6, strayFraction=0.08, strayLength=2.0, samples=40)
+    hair_mass(c, "wool_cap", wool, density=120, length=0.007)
+    halo = dict(fuzzDensity=150, fuzzLength=0.009, fuzzRadius=2.4e-5, fuzzTilt=0.6, strayFraction=0.08, strayLength=2.0, samples=40)
     rng = random.Random(3)
     back, outer = [], []
-    for k in range(40):  # inner layer, full circle except the face
-        az = -150 + 300 * (k + rng.uniform(0.2, 0.8)) / 40
+    for k in range(46):  # inner layer, full circle except the face (iteration 4: denser, thicker, clear of the eyes)
+        az = -132 + 264 * (k + rng.uniform(0.2, 0.8)) / 46
         back.append(lock(drape(az, rng.uniform(4, 16), rng.uniform(0.32, 0.42), 0.006, rng.uniform(0.012, 0.018), rng.uniform(0.07, 0.1), rng.uniform(0, 6.28)),
-                         rng.uniform(0.018, 0.023), 0.006, curl=0.006, turns=1.5, phase=rng.uniform(0, 6.28)))
-    for k in range(20):  # outer layer: shorter, higher, gives the layered silhouette
-        az = -140 + 280 * (k + rng.uniform(0.2, 0.8)) / 20
-        outer.append(lock(drape(az, rng.uniform(26, 38), rng.uniform(0.26, 0.34), 0.016, rng.uniform(0.012, 0.02), rng.uniform(0.07, 0.1), rng.uniform(0, 6.28)),
-                          rng.uniform(0.017, 0.021), 0.005, curl=0.006, turns=1.2, phase=rng.uniform(0, 6.28)))
+                         rng.uniform(0.021, 0.026), 0.008, curl=0.006, turns=1.5, phase=rng.uniform(0, 6.28)))
+    for k in range(24):  # outer layer: shorter, higher, gives the layered silhouette
+        az = -126 + 252 * (k + rng.uniform(0.2, 0.8)) / 24
+        outer.append(lock(drape(az, rng.uniform(26, 38), rng.uniform(0.26, 0.34), 0.018, rng.uniform(0.012, 0.02), rng.uniform(0.07, 0.1), rng.uniform(0, 6.28)),
+                          rng.uniform(0.019, 0.024), 0.007, curl=0.006, turns=1.2, phase=rng.uniform(0, 6.28)))
     group(c, "hair.back", wool, core, back, seed=51, **halo)
     group(c, "hair.outer", wool, core, outer, seed=52, **halo)
+    # Iteration 4: the fringe and the crown are felted volumes with pointed clumps (reference), not cords.
+    frng = random.Random(53)
     fringe = []
-    for k in range(9):
-        x = -0.12 + 0.03 * k
-        tip_y = 0.85 + 0.006 * math.sin(k * 2.1)
+    for k in range(11):
+        x = -0.13 + 0.026 * k + frng.uniform(-0.004, 0.004)
+        tip_y = 0.845 + 0.008 * math.sin(k * 2.1) + frng.uniform(-0.006, 0.006)
+        tx = x * 1.06 + frng.uniform(-0.008, 0.008)
         root = [x * 0.55, 0.985, 0.07]
-        mid_z = ell_z(CAP_C, CAP_R, x * 0.9, 0.915) or 0.12
-        tip_z = (ell_z(HEAD_C, HEAD_R, x * 1.05, tip_y) or 0.13) + 0.013
-        fringe.append(lock([root, [x * 0.9, 0.915, mid_z + 0.006], [x * 1.05, tip_y, tip_z]], 0.017, 0.0045, curl=0.003, turns=0.5, phase=k))
-    group(c, "hair.fringe", wool, core, fringe, seed=53, **halo)
-    group(c, "hair.crown", wool, core, crown_locks(random.Random(31), 30), seed=57, **halo)
+        mid_z = ell_z(CAP_C, CAP_R, x * 0.92, 0.915) or 0.12
+        tip_z = (ell_z(HEAD_C, HEAD_R, tx, tip_y) or 0.13) + 0.011
+        fringe.append(([root, [x * 0.92, 0.915, mid_z + 0.004], [tx, tip_y, tip_z]], frng.uniform(0.024, 0.029), 0.0055))
+    felt_clumps(c, "fringe", "wool_cap", wool, fringe, density=150, length=0.006)
+    felt_clumps(c, "crown", "wool_cap", wool, crown_clumps(random.Random(31), 26, r0=0.026), voxel=0.002, density=130, length=0.006)
     for side, sx in (("L", 1), ("R", -1)):
-        bc = [sx * 0.106, 1.0133, -0.0265]
-        coils = [lock(coil(bc, 0.044, 2.2, 0.016, phase=ph), 0.017, 0.012) for ph in (0.0, 2.1)]
+        bc = [sx * 0.106 * 1.12, 1.0133 + 0.012, -0.0265]
+        coils = [lock(coil(bc, 0.068, 2.2, 0.021, phase=ph), 0.022, 0.016) for ph in (0.0, 2.1)]
         group(c, f"bun.{side}", wool, core, coils, seed=54 if sx > 0 else 55, **halo)
     # Ribbon bow on the character's right (-x): two puffy loops, a knot and two tails.
-    p0, n = on_ellipsoid(CAP_C, CAP_R, -125, 42, 0.012)
+    p0, n = on_ellipsoid(CAP_C, CAP_R, -128, 40, 0.02)
     u = v_norm(cross([0, 1, 0], n)); v = v_norm(cross(n, u))
-    P = lambda a, b, d=0.0: v_add(p0, v_add(v_mul(u, a), v_add(v_mul(v, b), v_mul(n, d))))
-    bow = [lock([P(0, 0), P(0.02, 0.016, 0.004), P(0.042, 0.012, 0.003), P(0.04, -0.006), P(0.012, -0.004, 0.002), P(0, 0)], 0.0085, 0.006),
-           lock([P(0, 0), P(-0.02, 0.016, 0.004), P(-0.042, 0.012, 0.003), P(-0.04, -0.006), P(-0.012, -0.004, 0.002), P(0, 0)], 0.0085, 0.006),
-           lock([P(0.004, -0.002), P(0.016, -0.022), P(0.024, -0.036)], 0.006, 0.004),
-           lock([P(-0.004, -0.002), P(-0.014, -0.022), P(-0.02, -0.038)], 0.006, 0.004),
-           lock([P(-0.006, 0, 0.002), P(0.006, 0, 0.002)], 0.0095, 0.009)]
+    K = 1.6  # iteration 4: the reference bow is about a quarter of the head width
+    P = lambda a, b, d=0.0: v_add(p0, v_add(v_mul(u, a * K), v_add(v_mul(v, b * K), v_mul(n, d * K))))
+    bow = [lock([P(0, 0), P(0.02, 0.016, 0.004), P(0.042, 0.012, 0.003), P(0.04, -0.006), P(0.012, -0.004, 0.002), P(0, 0)], 0.0085 * K, 0.006 * K),
+           lock([P(0, 0), P(-0.02, 0.016, 0.004), P(-0.042, 0.012, 0.003), P(-0.04, -0.006), P(-0.012, -0.004, 0.002), P(0, 0)], 0.0085 * K, 0.006 * K),
+           lock([P(0.004, -0.002), P(0.016, -0.022), P(0.024, -0.036)], 0.006 * K, 0.004 * K),
+           lock([P(-0.004, -0.002), P(-0.014, -0.022), P(-0.02, -0.038)], 0.006 * K, 0.004 * K),
+           lock([P(-0.006, 0, 0.002), P(0.006, 0, 0.002)], 0.0095 * K, 0.009 * K)]
     mat(c, "bow_felt", baseColor=[0.17, 0.30, 0.62], sheen=0.8, sheenColor=[0.7, 0.8, 1.0])
     group(c, "bow", "bow_fiber", "bow_felt", bow, fuzzDensity=120, fuzzLength=0.0025, fuzzRadius=2e-5, samples=36, seed=56)
+    dress = get_part(c, "dress")
+    keep = [p for p in dress["prims"] if p["name"].startswith(("sleeve", "cuff"))]
+    dress["prims"] = [
+        {"name": "bodice", "type": "roundCone", "bone": "chest", "a": [0, 0.665, 0], "b": [0, 0.555, 0], "r1": 0.068, "r2": 0.074},
+        {"name": "waist", "type": "ellipsoid", "bone": "spine", "center": [0, 0.548, 0.006], "radii": [0.08, 0.03, 0.074], "blend": 0.03},
+        {"name": "skirt", "type": "roundCone", "bone": "hips", "a": [0, 0.545, 0], "b": [0, 0.32, 0], "r1": 0.082, "r2": 0.17, "blend": 0.03},
+        {"name": "bell", "type": "ellipsoid", "bone": "hips", "center": [0, 0.335, 0], "radii": [0.185, 0.075, 0.17], "blend": 0.05},
+        {"name": "hemCut", "type": "roundBox", "center": [0, 0.17, 0], "halfSize": [0.3, 0.1, 0.3], "rounding": 0.01, "blend": 0.02, "subtract": True},
+    ] + keep
+    part(c, "hemBand", get_part(c, "dress")["material"], [
+        {"name": "band", "type": "ellipsoid", "bone": "hips", "center": [0, 0.283, 0], "radii": [0.197, 0.016, 0.182]},
+        {"name": "inner", "type": "ellipsoid", "bone": "hips", "center": [0, 0.283, 0], "radii": [0.17, 0.05, 0.155], "blend": 0.004, "subtract": True},
+    ], voxel=0.0014, skinFalloff=0.02, pattern="ribbed", patternAmplitude=0.0016, patternScale=260, patternCenter=[0, 0, 0])
+    c["defaultPose"] = {"upperArm.L": [0, 0, 9], "upperArm.R": [0, 0, -9]}
     prefix_materials(c, "A_")
     return c
 
@@ -373,12 +492,12 @@ def character_b():
     c["name"] = "girl_brown_glasses"
     c["notes"] = "Iteration 3: brown curly yarn hair with a coiled top bun and clips, round glasses, blouse, rose knit vest, sage shorts."
     drop(c, parts=("bangs", "bow", "buns", "dress", "collar", "tights"), locks=True)
-    set_eyes(c, [0.30, 0.15, 0.06], pupil_deg=11, iris_deg=29)
+    set_eyes(c, [0.30, 0.15, 0.06], pupil_deg=12, iris_deg=33)
     set_brows(c, [0.22, 0.12, 0.06], r1=0.0062, r2=0.0042, lift=0.004, tilt=0.002)
     mat(c, "lash", type="standard", baseColor=[0.06, 0.035, 0.025], roughness=0.5)
     add_lashes(c, "lash", thickness=0.0017)
     add_frown(c)
-    c["defaultExpressions"] = {"smile": 0.7, "mouthOpen": 0.3}
+    bake_mouth(c, smile=1.0, cavity="grin")  # reference: wide open smile
     skin = get_mat(c, "skin")
     skin["texture"]["amount"] = 0.8
     slim_cap(c)
@@ -398,20 +517,24 @@ def character_b():
         curls.append(lock(pts, rng.uniform(0.017, 0.022), 0.009, curl=rng.uniform(0.016, 0.022),
                           turns=rng.uniform(2.2, 3.2), phase=rng.uniform(0, 6.28)))
     group(c, "hair.curls", hair_fiber, hair_core, curls, samples=96, seed=61, **halo)
-    sweep = []  # centre-parted side-swept front locks framing the face
-    for k in range(5):
-        x = 0.025 + 0.024 * k
-        root = [0.012, 0.99, 0.05]
-        mid = [x * 0.95, 0.93, (ell_z(CAP_C, CAP_R, x * 0.95, 0.93) or 0.11) + 0.007]
-        tip_y = 0.86 - 0.02 * k
-        tip = [x * 1.12 + 0.012, tip_y, (ell_z(HEAD_C, HEAD_R, min(x * 1.12 + 0.012, 0.16), tip_y) or 0.09) + 0.012]
-        sweep.append(lock([root, mid, tip], 0.018, 0.005, curl=0.004, turns=0.8, phase=k))
-    group(c, "hair.front.L", hair_fiber, hair_core, sweep, mirror=True, samples=40, seed=62, **halo)
+    hair_mass(c, "wool_cap", hair_fiber, density=100, length=0.006, back=(0.155, 0.1), side=(0.05, 0.04))
+    sweep = []  # centre-parted side-swept fringe framing the face, felted (iteration 4)
+    for sx in (1, -1):
+        for k in range(5):
+            x = 0.04 + 0.024 * k
+            root = [sx * 0.012, 0.99, 0.05]
+            mid = [sx * (x * 0.95 + 0.01), 0.935, (ell_z(CAP_C, CAP_R, x * 0.95 + 0.01, 0.935) or 0.11) + 0.006]
+            tip_y = 0.875 - 0.022 * k
+            tx = min(x * 1.15 + 0.035, 0.165)
+            tip = [sx * tx, tip_y, (ell_z(HEAD_C, HEAD_R, tx, tip_y) or 0.09) + 0.011]
+            sweep.append(([root, mid, tip], 0.022, 0.004))
+    felt_clumps(c, "fringe", "hair_core", hair_fiber, sweep, density=110, length=0.005)
     bun_c = [0.0, 1.045, -0.03]
     bun = [lock(coil(bun_c, 0.05, 2.4, 0.019, phase=ph), 0.02, 0.014) for ph in (0.0, 2.3)]
     bun.append(lock(coil([0.0, 1.085, -0.032], 0.028, 1.6, 0.014, phase=1.0, n=28), 0.015, 0.01))
     group(c, "hair.bun", hair_fiber, hair_core, bun, samples=60, seed=63, **halo)
-    group(c, "hair.crown", hair_fiber, hair_core, crown_locks(random.Random(37), 30, part_x=0.012, front_gap=0), samples=30, seed=65, **halo)
+    felt_clumps(c, "crown", "hair_core", hair_fiber, crown_clumps(random.Random(37), 26, part_x=0.012, front_gap=70, r0=0.024),
+                voxel=0.002, density=110, length=0.005)
     # Pastel clips (pompoms and a felt flower) around the bun base.
     pink = mat(c, "clip_pink", baseColor=[0.85, 0.45, 0.5], sheen=0.8)
     part(c, "clips", pink, [
@@ -456,12 +579,13 @@ def character_b():
     btn = mat(c, "button_cream", type="standard", baseColor=[0.85, 0.8, 0.7], roughness=0.35, coat=0.5)
     part(c, "blouseButtons", btn, [{"name": f"b{k}", "type": "ellipsoid", "bone": "chest", "center": [0, 0.62 - 0.035 * k, 0.074 + 0.004 * k],
                                     "radii": [0.0045, 0.0045, 0.0022]} for k in range(4)], voxel=0.0008)
-    vest = mat(c, "vest_knit", baseColor=[0.42, 0.24, 0.24], sheen=0.8, sheenColor=[1.0, 0.8, 0.8],
-               texture={"type": "knit", "color2": [0.35, 0.19, 0.19], "scale": 170, "amount": 0.15})
+    vest = mat(c, "vest_knit", baseColor=[0.36, 0.22, 0.21], sheen=0.55, sheenColor=[0.85, 0.65, 0.62],
+               texture={"type": "knit", "color2": [0.3, 0.18, 0.17], "scale": 170, "amount": 0.15})
     part(c, "vest", vest, [
         {"name": "shell", "type": "roundCone", "bone": "chest", "a": [0, 0.655, -0.004], "b": [0, 0.455, 0], "r1": 0.075, "r2": 0.103},
         {"name": "hem", "type": "ellipsoid", "bone": "spine", "center": [0, 0.47, 0.0], "radii": [0.098, 0.03, 0.09], "blend": 0.03},
-        {"name": "frontOpen", "type": "roundBox", "bone": "chest", "center": [0, 0.56, 0.11], "halfSize": [0.014, 0.14, 0.06], "rounding": 0.01, "blend": 0.01, "subtract": True},
+        {"name": "frontOpen", "type": "roundBox", "bone": "chest", "center": [0, 0.56, 0.11], "halfSize": [0.019, 0.14, 0.06], "rounding": 0.01, "blend": 0.01, "subtract": True},
+        {"name": "vNeck", "type": "ellipsoid", "bone": "chest", "center": [0, 0.665, 0.1], "radii": [0.042, 0.1, 0.06], "blend": 0.01, "subtract": True},
         {"name": "neckOpen", "type": "ellipsoid", "bone": "chest", "center": [0, 0.672, 0.02], "radii": [0.062, 0.05, 0.075], "blend": 0.01, "subtract": True},
         {"name": "armHole.L", "type": "ellipsoid", "bone": "chest", "center": [0.085, 0.6, 0], "radii": [0.035, 0.05, 0.05], "blend": 0.008, "subtract": True, "mirror": True},
         {"name": "inner", "type": "roundCone", "bone": "chest", "a": [0, 0.68, -0.004], "b": [0, 0.40, 0], "r1": 0.068, "r2": 0.094, "blend": 0.003, "subtract": True},
@@ -469,6 +593,27 @@ def character_b():
     fuzz(c, "vest", mat(c, "vest_fiber", type="fiber", baseColor=[0.5, 0.3, 0.3], betaM=0.4, betaN=0.8), 90, 0.003)
     part(c, "vestPockets", vest, [{"name": "pocket.L", "type": "roundBox", "bone": "spine", "center": [0.05, 0.49, 0.085],
                                    "halfSize": [0.022, 0.02, 0.004], "rounding": 0.003, "rotationDeg": [0, 28, 0], "mirror": True}], voxel=0.0012)
+    # Embroidered motifs on each front panel (small felt flowers: cream centre, dark petals).
+    def vest_z(x, y):
+        t = (0.655 - y) / 0.2
+        r = 0.075 + (0.103 - 0.075) * t
+        return math.sqrt(max(r * r - x * x, 0.0)) - 0.003
+    cream = mat(c, "motif_cream", baseColor=[0.86, 0.8, 0.7], sheen=0.6)
+    dark = mat(c, "motif_dark", baseColor=[0.12, 0.09, 0.09], sheen=0.5)
+    petals, centres = [], []
+    for sx in (1, -1):
+        for (mx, my, s) in ((0.047, 0.585, 1.0), (0.058, 0.548, 0.75)):
+            x0 = sx * mx
+            centres.append({"name": f"mc{len(centres)}", "type": "ellipsoid", "bone": "chest", "center": [x0, my, vest_z(mx, my) + 0.002],
+                            "radii": [0.0045 * s, 0.0045 * s, 0.0025]})
+            for k in range(5):
+                a = 2 * math.pi * k / 5 + 0.3
+                px, py = mx + 0.008 * s * math.cos(a), my + 0.008 * s * math.sin(a)
+                petals.append({"name": f"mp{len(petals)}", "type": "ellipsoid", "bone": "chest",
+                               "center": [sx * px, py, vest_z(px, py) + 0.0015], "radii": [0.005 * s, 0.003 * s, 0.002],
+                               "rotationDeg": [0, 0, math.degrees(a) * sx], "blend": 0.001})
+    part(c, "vestMotifs", dark, petals, voxel=0.0007)
+    part(c, "vestMotifCentres", cream, centres, voxel=0.0007)
     brass = mat(c, "button_brass", type="standard", baseColor=[0.75, 0.55, 0.3], roughness=0.3, coat=0.8, specular=1.0)
     part(c, "vestButtons", brass, [{"name": f"vb{k}.L", "type": "ellipsoid", "bone": "chest", "center": [0.034, 0.59 - 0.04 * k, 0.084 + 0.004 * k],
                                     "radii": [0.004, 0.004, 0.0025], "mirror": True} for k in range(3)], voxel=0.0008)
@@ -492,76 +637,80 @@ def character_c():
     c["name"] = "boy_dark_hair"
     c["notes"] = "Iteration 3: tousled black wool clumps, half-lidded sleepy eyes, low brows, mustard fleece hoodie, black joggers, sneakers, backpack straps."
     drop(c, parts=("bangs", "bow", "buns", "dress", "collar", "tights", "boots", "soles"), locks=True)
-    set_eyes(c, [0.2, 0.12, 0.07], pupil_deg=12, iris_deg=28)
-    set_brows(c, [0.05, 0.04, 0.035], r1=0.0068, r2=0.0058, lift=-0.002, tilt=-0.003)
+    set_eyes(c, [0.2, 0.12, 0.07], pupil_deg=12, iris_deg=31)
+    set_brows(c, [0.05, 0.04, 0.035], r1=0.0048, r2=0.0038, lift=-0.002, tilt=-0.003)
     mat(c, "lash", type="standard", baseColor=[0.04, 0.03, 0.03], roughness=0.5)
     add_lashes(c, "lash", thickness=0.0014, flick=0.4)
     add_frown(c)
     c["defaultPose"] = {"lid.L": [34, 0, 0], "lid.R": [34, 0, 0], "brow.L": [3, 0, 0], "brow.R": [3, 0, 0]}
-    c["defaultExpressions"] = {"frown": 0.35}
+    bake_mouth(c, frown=0.35)  # reference: small flat, slightly sulky mouth
     skin = get_mat(c, "skin")
     skin["texture"]["amount"] = 0.45
     cap = get_part(c, "hairCap")
     cap.update(patternAmplitude=0.004, noiseAmplitude=0.005)
+    cap["prims"] = [p for p in cap["prims"] if p["name"] != "bangs"]  # iteration 4: the fringe clumps cover the forehead, no brim
     for p in cap["prims"]:
         if p["name"] == "faceCut":
             p["center"][1] += 0.012
-    black_core = mat(c, "hair_core", baseColor=[0.035, 0.032, 0.03], sheen=0.8, sheenColor=[0.6, 0.6, 0.65],
+    black_core = mat(c, "hair_core", baseColor=[0.03, 0.028, 0.027], sheen=0.45, sheenColor=[0.35, 0.35, 0.38],
                      texture={"type": "noise", "color2": [0.02, 0.02, 0.02], "scale": 80, "amount": 0.5})
-    black_fiber = mat(c, "hair_fiber", type="fiber", baseColor=[0.06, 0.055, 0.05], betaM=0.4, betaN=0.8)
-    mat(c, "wool_cap", baseColor=[0.035, 0.032, 0.03], sheen=0.8)
+    black_fiber = mat(c, "hair_fiber", type="fiber", baseColor=[0.035, 0.032, 0.03], betaM=0.4, betaN=0.8)
+    mat(c, "wool_cap", baseColor=[0.03, 0.028, 0.027], sheen=0.45, sheenColor=[0.35, 0.35, 0.38])
     for f in c["fuzz"]:
         if f["part"] == "hairCap": f["material"] = black_fiber
     rng = random.Random(11)
     spikes = []
-    for k in range(64):
+    for k in range(96):  # iteration 4: longer, thicker clumps that flare out of a larger volume
         az = rng.uniform(-180, 180)
-        el = rng.uniform(5, 85)
-        if 120 < abs(az) and el < 30:  # keep the face clear
+        el = rng.uniform(0, 88)
+        if 115 < abs(az) and el < 38:  # the face: the fringe covers the forehead
             continue
-        root, n = on_ellipsoid(CAP_C, CAP_R, az, el, -0.004)
-        length = rng.uniform(0.05, 0.085) * (1.15 if el > 55 else 1.0)
-        spikes.append(lock(spike(root, n, length * 0.85, rng.uniform(0.5, 1.0), rng), rng.uniform(0.019, 0.026), 0.0065))
-    for k in range(7):  # spiky fringe pointing down over the brows
-        x = -0.1 + 0.033 * k
-        root = [x * 0.6, 0.97, 0.09]
-        tip_y = 0.85 + rng.uniform(-0.008, 0.006)
-        tip = [x * 1.1, tip_y, (ell_z(HEAD_C, HEAD_R, x * 1.1, tip_y) or 0.13) + 0.014]
-        mid = [x * 0.9, 0.93, (ell_z(CAP_C, CAP_R, x * 0.9, 0.93) or 0.12) + 0.01]
-        spikes.append(lock([root, mid, tip], 0.021, 0.006))
-    group(c, "hair.spikes", black_fiber, black_core, spikes, samples=20, fuzzDensity=110, fuzzLength=0.004,
-          fuzzRadius=2.5e-5, fuzzTilt=0.55, strayFraction=0.08, seed=71)
+        root, n = on_ellipsoid(CAP_C, CAP_R, az, el, -0.006)
+        top = el > 58
+        length = rng.uniform(0.075, 0.115) * (1.1 if top else 1.0)
+        droop = rng.uniform(0.05, 0.45) if top else rng.uniform(0.4, 0.9)
+        spikes.append((spike(root, n, length, droop, rng), rng.uniform(0.026, 0.034), 0.003))
+    for k in range(8):  # heavy pointed fringe clumps down to the brows
+        x = -0.105 + 0.03 * k + rng.uniform(-0.006, 0.006)
+        root = [x * 0.6, 0.985, 0.085]
+        tip_y = 0.848 + rng.uniform(-0.01, 0.006)
+        tx = x * 1.1 + rng.uniform(-0.018, 0.018)
+        tip = [tx, tip_y, (ell_z(HEAD_C, HEAD_R, tx, tip_y) or 0.13) + 0.016]
+        mid = [x * 0.95, 0.925, (ell_z(CAP_C, CAP_R, x * 0.95, 0.925) or 0.12) + 0.014]
+        spikes.append(([root, mid, tip], rng.uniform(0.026, 0.031), 0.003))
+    felt_clumps(c, "hairClumps", "hair_core", black_fiber, spikes, blend=0.008, voxel=0.0018, density=120, length=0.0045,
+                noise=0.0015, strands=0.0014)
     hoodie = mat(c, "hoodie_fleece", baseColor=[0.62, 0.42, 0.07], sheen=0.9, sheenColor=[1.0, 0.85, 0.5],
                  texture={"type": "noise", "color2": [0.52, 0.34, 0.05], "scale": 45, "amount": 0.35})
     part(c, "hoodie", hoodie, [
-        {"name": "torso", "type": "roundCone", "bone": "chest", "a": [0, 0.66, 0], "b": [0, 0.43, 0], "r1": 0.074, "r2": 0.094},
-        {"name": "belly", "type": "ellipsoid", "bone": "spine", "center": [0, 0.47, 0.01], "radii": [0.1, 0.06, 0.09], "blend": 0.04},
-        {"name": "sleeveUpper.L", "type": "roundCone", "bone": "upperArm.L", "a": [0.075, 0.625, 0], "b": [0.122, 0.515, 0], "r1": 0.039, "r2": 0.036, "blend": 0.025, "mirror": True},
-        {"name": "sleeveLower.L", "type": "roundCone", "bone": "forearm.L", "a": [0.122, 0.515, 0], "b": [0.15, 0.448, 0.012], "r1": 0.036, "r2": 0.033, "blend": 0.015, "mirror": True},
-        {"name": "cuff.L", "type": "ellipsoid", "bone": "forearm.L", "center": [0.152, 0.446, 0.013], "radii": [0.032, 0.012, 0.032], "blend": 0.008, "mirror": True},
-        {"name": "hem", "type": "ellipsoid", "bone": "hips", "center": [0, 0.43, 0], "radii": [0.1, 0.02, 0.092], "blend": 0.02},
+        {"name": "torso", "type": "roundCone", "bone": "chest", "a": [0, 0.658, 0], "b": [0, 0.43, 0], "r1": 0.082, "r2": 0.104},
+        {"name": "belly", "type": "ellipsoid", "bone": "spine", "center": [0, 0.47, 0.012], "radii": [0.11, 0.065, 0.1], "blend": 0.04},
+        {"name": "sleeveUpper.L", "type": "roundCone", "bone": "upperArm.L", "a": [0.078, 0.622, 0], "b": [0.124, 0.515, 0], "r1": 0.046, "r2": 0.043, "blend": 0.025, "mirror": True},
+        {"name": "sleeveLower.L", "type": "roundCone", "bone": "forearm.L", "a": [0.124, 0.515, 0], "b": [0.15, 0.452, 0.012], "r1": 0.043, "r2": 0.04, "blend": 0.015, "mirror": True},
+        {"name": "cuff.L", "type": "ellipsoid", "bone": "forearm.L", "center": [0.153, 0.447, 0.013], "radii": [0.035, 0.013, 0.035], "blend": 0.008, "mirror": True},
+        {"name": "hem", "type": "ellipsoid", "bone": "hips", "center": [0, 0.43, 0], "radii": [0.11, 0.022, 0.102], "blend": 0.02},
     ], voxel=0.002, skinFalloff=0.015, skinSmoothing=3)
     part(c, "hood", hoodie, [
-        {"name": "hoodShell", "type": "ellipsoid", "bone": "chest", "center": [0, 0.668, -0.035], "radii": [0.095, 0.035, 0.075]},
+        {"name": "hoodShell", "type": "ellipsoid", "bone": "chest", "center": [0, 0.668, -0.04], "radii": [0.102, 0.038, 0.08]},
         {"name": "neckHole", "type": "capsule", "bone": "chest", "a": [0, 0.6, 0.0], "b": [0, 0.72, 0.0], "r": 0.04, "blend": 0.006, "subtract": True},
     ], voxel=0.002, skinFalloff=0.02)
-    part(c, "pocket", hoodie, [{"name": "pocket", "type": "roundBox", "bone": "spine", "center": [0, 0.48, 0.088],
+    part(c, "pocket", hoodie, [{"name": "pocket", "type": "roundBox", "bone": "spine", "center": [0, 0.48, 0.1],
                                 "halfSize": [0.06, 0.03, 0.006], "rounding": 0.005, "rotationDeg": [-8, 0, 0]}], voxel=0.0015)
     hfib = mat(c, "hoodie_fiber", type="fiber", baseColor=[0.7, 0.5, 0.12], betaM=0.4, betaN=0.85)
     for pn in ("hoodie", "hood", "pocket"):
         fuzz(c, pn, hfib, 160, 0.0035)
     cord = mat(c, "cord", baseColor=[0.82, 0.76, 0.62], sheen=0.4)
-    group(c, "drawstrings", cord, cord, [lock([[sx * 0.022, 0.648, 0.07], [sx * 0.024, 0.61, 0.083], [sx * 0.022, 0.575, 0.09]], 0.0028, 0.0028)
+    group(c, "drawstrings", cord, cord, [lock([[sx * 0.022, 0.648, 0.078], [sx * 0.024, 0.61, 0.093], [sx * 0.022, 0.575, 0.1]], 0.0028, 0.0028)
                                          for sx in (1, -1)], bone="chest", samples=16, roundTip=True)
     strap = mat(c, "strap", type="standard", baseColor=[0.08, 0.09, 0.13], roughness=0.6)
-    group(c, "straps.L", strap, strap, [lock([[0.06, 0.48, -0.075], [0.075, 0.62, -0.06], [0.08, 0.668, 0.0], [0.075, 0.63, 0.07], [0.07, 0.53, 0.088]], 0.0085, 0.0085)],
+    group(c, "straps.L", strap, strap, [lock([[0.062, 0.48, -0.086], [0.077, 0.62, -0.07], [0.082, 0.672, 0.0], [0.077, 0.63, 0.079], [0.072, 0.53, 0.1]], 0.0085, 0.0085)],
           bone="chest", mirror=True, samples=40, roundTip=False)
     jog = mat(c, "jogger_fleece", baseColor=[0.025, 0.025, 0.028], sheen=0.5, sheenColor=[0.35, 0.35, 0.4])
     part(c, "joggers", jog, [
-        {"name": "waist", "type": "roundCone", "bone": "hips", "a": [0, 0.45, 0], "b": [0, 0.39, 0], "r1": 0.088, "r2": 0.09},
-        {"name": "thigh.L", "type": "roundCone", "bone": "thigh.L", "a": [0.05, 0.40, 0], "b": [0.055, 0.22, 0], "r1": 0.05, "r2": 0.044, "blend": 0.03, "mirror": True},
-        {"name": "shin.L", "type": "roundCone", "bone": "shin.L", "a": [0.055, 0.22, 0], "b": [0.057, 0.075, 0], "r1": 0.044, "r2": 0.041, "blend": 0.02, "mirror": True},
-        {"name": "ankle.L", "type": "ellipsoid", "bone": "shin.L", "center": [0.057, 0.08, 0], "radii": [0.043, 0.014, 0.043], "blend": 0.01, "mirror": True},
+        {"name": "waist", "type": "roundCone", "bone": "hips", "a": [0, 0.45, 0], "b": [0, 0.39, 0], "r1": 0.095, "r2": 0.098},
+        {"name": "thigh.L", "type": "roundCone", "bone": "thigh.L", "a": [0.054, 0.40, 0], "b": [0.06, 0.22, 0], "r1": 0.057, "r2": 0.051, "blend": 0.03, "mirror": True},
+        {"name": "shin.L", "type": "roundCone", "bone": "shin.L", "a": [0.06, 0.22, 0], "b": [0.06, 0.085, 0], "r1": 0.051, "r2": 0.049, "blend": 0.02, "mirror": True},
+        {"name": "ankle.L", "type": "ellipsoid", "bone": "shin.L", "center": [0.059, 0.084, 0.002], "radii": [0.046, 0.016, 0.046], "blend": 0.012, "mirror": True},
     ], voxel=0.002, skinFalloff=0.02, skinSmoothing=3)
     fuzz(c, "joggers", mat(c, "jogger_fiber", type="fiber", baseColor=[0.035, 0.035, 0.04], betaM=0.4, betaN=0.85), 140, 0.003)
     yellow = mat(c, "sneaker_canvas", baseColor=[0.78, 0.6, 0.12], sheen=0.5)

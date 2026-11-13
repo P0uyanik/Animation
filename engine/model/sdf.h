@@ -59,6 +59,8 @@ std::string mirrorName(const std::string& name);
 
 // Polygonises the zero level set (surface nets, projected onto the surface).
 // voxelScale > 1 gives a coarser, faster mesh (previews).
-Mesh meshSdfPart(const SdfPart& part, float voxelScale = 1.0f);
+// cullPrims: near the surface, each 8^3 brick only evaluates primitives within reach (much faster for parts
+// with many primitives; deviation from exhaustive evaluation is bounded by a unit test).
+Mesh meshSdfPart(const SdfPart& part, float voxelScale = 1.0f, bool cullPrims = true);
 
 }  // namespace plush

@@ -423,12 +423,52 @@ CharacterRig buildCharacter(const CharacterAsset& asset, const BuildOptions& opt
       vec3 d = p - p0;
       float len = glm::length(d);
       if (len > 0.03f) d *= 0.03f / len;
-      vec3 g = sdfGradient(*modified, p0 + d, eps);
-      float lg = glm::length(g);
       dp[v] = d;
-      dn[v] = (lg > 0 ? g / lg : rest.normals[v]) - rest.normals[v];
       moved[v] = 1;
     }, 1024);
+    // Projection alone bunches vertices up where the surface folds inwards (an opening mouth): neighbouring
+    // vertices land on nearly the same point and the surface crumples. Relax the moved vertices towards their
+    // neighbours' average and project back onto the edited surface, a few times (tangential smoothing).
+    {
+      std::vector<std::vector<uint32_t>> nbr(rest.positions.size());
+      for (size_t t = 0; t < rest.triangleCount(); ++t)
+        for (int k = 0; k < 3; ++k) {
+          uint32_t a = rest.indices[3 * t + size_t(k)], b = rest.indices[3 * t + size_t((k + 1) % 3)];
+          if (moved[a] || moved[b]) {
+            nbr[a].push_back(b);
+            nbr[b].push_back(a);
+          }
+        }
+      std::vector<vec3> cur(rest.positions.size());
+      for (size_t v = 0; v < cur.size(); ++v) cur[v] = rest.positions[v] + dp[v];
+      for (int iter = 0; iter < 12; ++iter) {
+        std::vector<vec3> next = cur;
+        parallelFor(cur.size(), [&](size_t v) {
+          if (!moved[v] || nbr[v].empty()) return;
+          vec3 avg(0);
+          for (uint32_t u : nbr[v]) avg += cur[u];
+          vec3 p = glm::mix(cur[v], avg / float(nbr[v].size()), 0.5f);
+          for (int k = 0; k < 3; ++k) {
+            vec3 g = sdfGradient(*modified, p, eps);
+            float g2 = glm::dot(g, g);
+            if (g2 < 1e-12f) break;
+            p -= g * (sdfPart(*modified, p) / g2);
+          }
+          next[v] = p;
+        }, 1024);
+        cur.swap(next);
+      }
+      parallelFor(cur.size(), [&](size_t v) {
+        if (!moved[v]) return;
+        vec3 d = cur[v] - rest.positions[v];
+        float len = glm::length(d);
+        if (len > 0.03f) d *= 0.03f / len;
+        dp[v] = d;
+        vec3 g = sdfGradient(*modified, rest.positions[v] + d, eps);
+        float lg = glm::length(g);
+        dn[v] = (lg > 0 ? g / lg : rest.normals[v]) - rest.normals[v];
+      }, 1024);
+    }
     for (size_t v = 0; v < moved.size(); ++v)
       if (moved[v]) {
         mt.vertices.push_back(uint32_t(v));

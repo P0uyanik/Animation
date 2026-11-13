@@ -60,6 +60,51 @@ TEST_CASE("sdf mesher produces a closed sphere with the right area") {
   for (size_t i = 0; i < m.positions.size(); i += 37) CHECK(glm::dot(m.normals[i], m.positions[i]) > 0);
 }
 
+TEST_CASE("brick culling in the sdf mesher matches exhaustive evaluation") {
+  // A clump-like part: many blended round cones, flattened ellipsoids, a subtraction and surface noise.
+  SdfPart part;
+  part.voxelSize = 0.002f;
+  part.noiseAmplitude = 0.0012f;
+  part.noiseScale = 45;
+  uint32_t seed = 7;
+  auto rnd = [&]() { seed = seed * 1664525u + 1013904223u; return float(seed >> 8) / float(1 << 24); };
+  for (int i = 0; i < 40; ++i) {
+    SdfPrim s;
+    s.type = PrimType::RoundCone;
+    float az = rnd() * kTwoPi, el = rnd() * 1.4f;
+    vec3 n(std::cos(el) * std::sin(az), std::sin(el), std::cos(el) * std::cos(az));
+    s.a = n * 0.06f;
+    s.b = n * (0.1f + 0.05f * rnd()) + vec3(0, -0.03f * rnd(), 0);
+    s.r1 = 0.02f + 0.01f * rnd();
+    s.r2 = 0.003f;
+    s.blend = 0.004f + 0.008f * rnd();
+    part.prims.push_back(s);
+  }
+  for (int i = 0; i < 6; ++i) {
+    SdfPrim s;
+    s.radii = vec3(0.05f + 0.03f * rnd(), 0.008f + 0.01f * rnd(), 0.04f);
+    s.center = vec3(rnd() - 0.5f, rnd() - 0.5f, rnd() - 0.5f) * 0.12f;
+    s.blend = 0.01f;
+    part.prims.push_back(s);
+  }
+  SdfPrim cut;
+  cut.type = PrimType::RoundBox;
+  cut.center = vec3(0, -0.1f, 0);
+  cut.radii = vec3(0.2f, 0.05f, 0.2f);
+  cut.subtract = true;
+  cut.blend = 0.01f;
+  part.prims.push_back(cut);
+
+  Mesh fast = meshSdfPart(part, 1.0f, true), full = meshSdfPart(part, 1.0f, false);
+  REQUIRE(full.positions.size() > 1000);
+  CHECK(double(fast.positions.size()) == doctest::Approx(double(full.positions.size())).epsilon(0.002));
+  // Every culled-mesh vertex lies on the exhaustive surface (within a small fraction of a voxel).
+  float worst = 0;
+  for (const vec3& p : fast.positions) worst = std::max(worst, std::abs(sdfPart(part, p)));
+  MESSAGE("max |sdf| at culled-mesh vertices: " << worst << " m (voxel " << part.voxelSize << " m)");
+  CHECK(worst < 0.1f * part.voxelSize);
+}
+
 TEST_CASE("automatic skin weights follow the driving primitives") {
   SdfPart part;
   part.voxelSize = 0.004f;

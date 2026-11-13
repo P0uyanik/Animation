@@ -1,5 +1,7 @@
 #include "model/sdf.h"
 
+#include <functional>
+
 #include <algorithm>
 #include <array>
 #include <limits>
@@ -92,21 +94,27 @@ float sdfPrim(const SdfPrim& s, vec3 p) {
   return 1e30f;
 }
 
-float sdfPart(const SdfPart& part, vec3 p) {
+namespace {
+// Distance to a part using the primitives in `prims` (all of them, or the subset near a brick).
+template <class Range>
+float evalPart(const SdfPart& part, const Range& prims, vec3 p) {
   float d = std::numeric_limits<float>::max();
   bool first = true;
-  for (const auto& s : part.prims) {
+  for (const SdfPrim& s : prims) {
     if (s.subtract) continue;
     float di = sdfPrim(s, p);
     d = first ? di : smin(d, di, s.blend);
     first = false;
   }
-  for (const auto& s : part.prims)
+  for (const SdfPrim& s : prims)
     if (s.subtract) d = smax(d, -sdfPrim(s, p), s.blend);
   if (part.noiseAmplitude > 0 && d < 4 * part.noiseAmplitude + 0.01f) d += part.noiseAmplitude * fbm(p * part.noiseScale, 3);
   if (part.pattern != SurfacePattern::None && d < 4 * part.patternAmplitude + 0.01f) d -= part.patternAmplitude * patternHeight(part, p);
   return d;
 }
+}  // namespace
+
+float sdfPart(const SdfPart& part, vec3 p) { return evalPart(part, part.prims, p); }
 
 float patternHeight(const SdfPart& part, vec3 p) {
   vec3 q = p - part.patternCenter;
@@ -192,7 +200,7 @@ std::vector<SdfPrim> expandMirrors(const std::vector<SdfPrim>& prims) {
   return out;
 }
 
-Mesh meshSdfPart(const SdfPart& part, float voxelScale) {
+Mesh meshSdfPart(const SdfPart& part, float voxelScale, bool cullPrims) {
   Mesh mesh;
   Aabb box = partBounds(part);
   if (!box.valid()) return mesh;
@@ -209,10 +217,46 @@ Mesh meshSdfPart(const SdfPart& part, float voxelScale) {
   auto idx = [&](int x, int y, int z) { return (size_t(z) * ny + y) * nx + x; };
   auto pos = [&](int x, int y, int z) { return box.lo + vec3(x, y, z) * h; };
 
+  // Evaluate the field brick by brick. A brick whose centre is far from the surface (further than its
+  // half diagonal, with a safety factor for the approximate ellipsoid distance plus the noise and pattern
+  // relief) cannot contain the surface: it is filled with the centre value, which has the right sign.
+  // Parts with many primitives (felted hair clumps) mesh several times faster this way.
+  constexpr int kBrick = 8;
+  const int bx = (nx + kBrick - 1) / kBrick, by = (ny + kBrick - 1) / kBrick, bz = (nz + kBrick - 1) / kBrick;
+  const float skip = 1.5f * 0.5f * std::sqrt(3.0f) * kBrick * h + part.noiseAmplitude + part.patternAmplitude + 2 * h;
+  // Near the surface, a brick only evaluates the primitives whose bounds come within reach of it: a primitive
+  // further away than the blend radius cannot change the smooth union near the surface (same mesh).
+  std::vector<Aabb> primBox(part.prims.size());
+  for (size_t i = 0; i < part.prims.size(); ++i) primBox[i] = primBounds(part.prims[i]);
+  // The margin uses the largest blend of the part: smooth unions are applied in order, so a far primitive
+  // must stay out of reach of every later blend, not just its own.
+  float maxBlend = 0;
+  for (const auto& s : part.prims) maxBlend = std::max(maxBlend, s.blend);
+  const float reach = 2.0f * (maxBlend + part.noiseAmplitude + part.patternAmplitude + 2 * h) + 0.004f;  // x2: ellipsoid distances are approximate
   std::vector<float> field(total);
-  parallelFor(size_t(nz), [&](size_t z) {
-    for (int y = 0; y < ny; ++y)
-      for (int x = 0; x < nx; ++x) field[idx(x, y, int(z))] = sdfPart(part, pos(x, y, int(z)));
+  parallelFor(size_t(bz), [&](size_t kz) {
+    std::vector<std::reference_wrapper<const SdfPrim>> near;
+    for (int ky = 0; ky < by; ++ky)
+      for (int kx = 0; kx < bx; ++kx) {
+        const int x0 = kx * kBrick, y0 = ky * kBrick, z0 = int(kz) * kBrick;
+        const int x1 = std::min(nx, x0 + kBrick), y1 = std::min(ny, y0 + kBrick), z1 = std::min(nz, z0 + kBrick);
+        const vec3 lo = pos(x0, y0, z0), hi = pos(x1 - 1, y1 - 1, z1 - 1);
+        const float dc = sdfPart(part, 0.5f * (lo + hi));
+        if (std::abs(dc) > skip) {
+          for (int z = z0; z < z1; ++z)
+            for (int y = y0; y < y1; ++y)
+              for (int x = x0; x < x1; ++x) field[idx(x, y, z)] = dc;
+          continue;
+        }
+        near.clear();
+        for (size_t i = 0; i < part.prims.size(); ++i) {
+          const vec3 gap = glm::max(glm::max(primBox[i].lo - hi, lo - primBox[i].hi), vec3(0));
+          if (!cullPrims || glm::length(gap) <= reach) near.push_back(std::cref(part.prims[i]));
+        }
+        for (int z = z0; z < z1; ++z)
+          for (int y = y0; y < y1; ++y)
+            for (int x = x0; x < x1; ++x) field[idx(x, y, z)] = evalPart(part, near, pos(x, y, z));
+      }
   });
 
   // One vertex per cell that straddles the surface.
