@@ -236,7 +236,7 @@ def add_lashes(c, material, thickness=0.0016, flick=1.0):
         locks.append(lock([root, v_add(root, v_mul(out, 0.5 * (0.006 + 0.002 * k) * flick)), tip], thickness * 0.9, thickness * 0.25))
     group(c, "lashes.L", material, material, locks, bone="lid.L", mirror=True, samples=24, roundTip=True)
 
-def bake_mouth(c, smile=0.0, frown=0.0, cavity=None):
+def bake_mouth(c, smile=0.0, frown=0.0, cavity=None, scale=1.0, closed=False):
     """Iteration 4: a character's resting mouth is part of the skin surface itself (clean mesh, real pocket that
     shows the teeth and tongue). Morphing a hole open crumples the skin, so instead an open-mouthed character gets
     a 'mouthClose' expression that fills the pocket (a convex change that projects cleanly)."""
@@ -254,8 +254,18 @@ def bake_mouth(c, smile=0.0, frown=0.0, cavity=None):
         mouth["r"] = mouth["r"] + (tm["r"] - mouth["r"]) * w
         cheek["center"] = lerp(cheek["center"], tc["center"], w)
     if cavity:
-        pocket = dict(exprs[cavity]["add"][0], name="mouthPocket", bone="head")
+        pocket = json.loads(json.dumps(dict(exprs[cavity]["add"][0], name="mouthPocket", bone="head")))
+        pocket["radii"] = [pocket["radii"][0] * scale, pocket["radii"][1] * scale, pocket["radii"][2]]
         skin["prims"].append(pocket)
+        # Surprise: the pocket grows into a rounder, taller opening (growing an existing pocket morphs cleanly).
+        c["expressions"].append({"name": "surprise", "part": "skin", "set": [
+            {"prim": "mouthPocket", "center": [0.0, pocket["center"][1] - 0.004, pocket["center"][2] + 0.001], "radii": [0.016, 0.019, 0.02]}]})
+    if cavity and closed:
+        c["expressions"].append({"name": "mouthClose", "part": "skin", "set": [
+            {"prim": "mouthPocket", "center": [0.0, 0.8, 0.0], "radii": [1e-4, 1e-4, 1e-4]}]})
+        c["defaultExpressions"] = {"mouthClose": 1.0}
+        return
+    if cavity:
         # The lip line follows the opening: centre on its top edge, corners just past its sides, slightly up.
         dz = face_z(c, 0.0, pocket["center"][1]) - pocket["center"][2]
         f = math.sqrt(max(0.0, 1 - (dz / pocket["radii"][2]) ** 2))
@@ -669,7 +679,7 @@ def character_c():
     add_lashes(c, "lash", thickness=0.0014, flick=0.4)
     add_frown(c)
     c["defaultPose"] = {"lid.L": [34, 0, 0], "lid.R": [34, 0, 0], "brow.L": [3, 0, 0], "brow.R": [3, 0, 0]}
-    bake_mouth(c, frown=0.35)  # reference: small flat, slightly sulky mouth
+    bake_mouth(c, frown=0.35, cavity="mouthOpen", scale=0.5, closed=True)  # reference: small flat, slightly sulky mouth
     skin = get_mat(c, "skin")
     skin["texture"]["amount"] = 0.45
     cap = get_part(c, "hairCap")

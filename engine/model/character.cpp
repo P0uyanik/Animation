@@ -441,21 +441,28 @@ CharacterRig buildCharacter(const CharacterAsset& asset, const BuildOptions& opt
         }
       std::vector<vec3> cur(rest.positions.size());
       for (size_t v = 0; v < cur.size(); ++v) cur[v] = rest.positions[v] + dp[v];
-      for (int iter = 0; iter < 12; ++iter) {
+      // With the unmoved ring fixed, neighbour averaging converges like a Tutte embedding (no folds), but slowly
+      // (passes ~ patch width squared), so most passes are cheap averages and every 8th re-projects.
+      std::vector<uint32_t> active;
+      for (size_t v = 0; v < cur.size(); ++v)
+        if (moved[v] && !nbr[v].empty()) active.push_back(uint32_t(v));
+      const int passes = 320;
+      for (int iter = 0; iter < passes; ++iter) {
+        const bool project = (iter % 8 == 7) || iter >= passes - 3;
         std::vector<vec3> next = cur;
-        parallelFor(cur.size(), [&](size_t v) {
-          if (!moved[v] || nbr[v].empty()) return;
+        parallelFor(active.size(), [&](size_t i) {
+          uint32_t v = active[i];
           vec3 avg(0);
           for (uint32_t u : nbr[v]) avg += cur[u];
-          vec3 p = glm::mix(cur[v], avg / float(nbr[v].size()), 0.5f);
-          for (int k = 0; k < 3; ++k) {
+          vec3 p = glm::mix(cur[v], avg / float(nbr[v].size()), 0.6f);
+          for (int k = 0; project && k < 3; ++k) {
             vec3 g = sdfGradient(*modified, p, eps);
             float g2 = glm::dot(g, g);
             if (g2 < 1e-12f) break;
             p -= g * (sdfPart(*modified, p) / g2);
           }
           next[v] = p;
-        }, 1024);
+        }, 256);
         cur.swap(next);
       }
       parallelFor(cur.size(), [&](size_t v) {

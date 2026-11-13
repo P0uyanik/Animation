@@ -3276,6 +3276,25 @@
    ]
   },
   {
+   "name": "surprise",
+   "part": "skin",
+   "set": [
+    {
+     "prim": "mouthPocket",
+     "center": [
+      0.0,
+      0.7255,
+      0.13185544934734486
+     ],
+     "radii": [
+      0.016,
+      0.019,
+      0.02
+     ]
+    }
+   ]
+  },
+  {
    "name": "mouthClose",
    "part": "skin",
    "set": [

@@ -879,6 +879,23 @@
      "blend": 0.004,
      "subtract": true,
      "mirror": true
+    },
+    {
+     "name": "mouthPocket",
+     "type": "ellipsoid",
+     "center": [
+      0.0,
+      0.7295,
+      0.13085544934734486
+     ],
+     "radii": [
+      0.008,
+      0.00575,
+      0.02
+     ],
+     "blend": 0.004,
+     "subtract": true,
+     "bone": "head"
     }
    ],
    "skinSmoothing": 2
@@ -5439,6 +5456,44 @@
      ]
     }
    ]
+  },
+  {
+   "name": "surprise",
+   "part": "skin",
+   "set": [
+    {
+     "prim": "mouthPocket",
+     "center": [
+      0.0,
+      0.7255,
+      0.13185544934734486
+     ],
+     "radii": [
+      0.016,
+      0.019,
+      0.02
+     ]
+    }
+   ]
+  },
+  {
+   "name": "mouthClose",
+   "part": "skin",
+   "set": [
+    {
+     "prim": "mouthPocket",
+     "center": [
+      0.0,
+      0.8,
+      0.0
+     ],
+     "radii": [
+      0.0001,
+      0.0001,
+      0.0001
+     ]
+    }
+   ]
   }
  ],
  "lockGroups": [
@@ -5721,5 +5776,7 @@
    0
   ]
  },
- "defaultExpressions": {}
+ "defaultExpressions": {
+  "mouthClose": 1.0
+ }
 }

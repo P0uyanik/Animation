@@ -3,11 +3,11 @@
  "version": 1,
  "name": "Test - character lineup",
  "frameRate": [
-  24,
+  30,
   1
  ],
  "frameStart": 1,
- "frameEnd": 3,
+ "frameEnd": 4,
  "render": {
   "width": 960,
   "height": 720,
@@ -200,6 +200,11 @@
     3,
     -90,
     "step"
+   ],
+   [
+    4,
+    180,
+    "step"
    ]
   ],
   "girlA/lookAt": [
@@ -228,6 +233,11 @@
     3,
     -90,
     "step"
+   ],
+   [
+    4,
+    180,
+    "step"
    ]
   ],
   "girlB/lookAt": [
@@ -255,6 +265,11 @@
    [
     3,
     -90,
+    "step"
+   ],
+   [
+    4,
+    180,
     "step"
    ]
   ],
