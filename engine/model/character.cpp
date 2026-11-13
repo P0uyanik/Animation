@@ -35,6 +35,8 @@ Result<SdfPart> partFromJson(const Json& j) {
   part.material = readString(j, "material");
   part.voxelSize = readFloat(j, "voxelSize", part.voxelSize);
   part.skinFalloff = readFloat(j, "skinFalloff", part.skinFalloff);
+  part.noiseAmplitude = readFloat(j, "noiseAmplitude", part.noiseAmplitude);
+  part.noiseScale = readFloat(j, "noiseScale", part.noiseScale);
   std::vector<SdfPrim> prims;
   if (auto it = j.find("prims"); it != j.end() && it->is_array()) {
     for (auto& pj : *it) {
@@ -45,6 +47,87 @@ Result<SdfPart> partFromJson(const Json& j) {
   }
   part.prims = expandMirrors(prims);
   return part;
+}
+
+Json primToJson(const SdfPrim& p) {
+  const char* types[] = {"ellipsoid", "capsule", "roundCone", "roundBox"};
+  Json j = {{"name", p.name}, {"type", types[int(p.type)]}, {"blend", p.blend}};
+  if (!p.bone.empty()) j["bone"] = p.bone;
+  if (p.subtract) j["subtract"] = true;
+  vec3 euler = glm::degrees(glm::eulerAngles(p.rotation));
+  switch (p.type) {
+    case PrimType::Ellipsoid:
+      j["center"] = toJson(p.center);
+      j["radii"] = toJson(p.radii);
+      j["rotationDeg"] = toJson(euler);
+      break;
+    case PrimType::RoundBox:
+      j["center"] = toJson(p.center);
+      j["halfSize"] = toJson(p.radii);
+      j["rounding"] = p.rounding;
+      j["rotationDeg"] = toJson(euler);
+      break;
+    case PrimType::Capsule:
+      j["a"] = toJson(p.a);
+      j["b"] = toJson(p.b);
+      j["r"] = p.r1;
+      break;
+    case PrimType::RoundCone:
+      j["a"] = toJson(p.a);
+      j["b"] = toJson(p.b);
+      j["r1"] = p.r1;
+      j["r2"] = p.r2;
+      break;
+  }
+  return j;
+}
+
+Json partToJson(const SdfPart& part) {
+  Json prims = Json::array();
+  for (auto& p : part.prims) prims.push_back(primToJson(p));
+  return {{"name", part.name}, {"material", part.material}, {"voxelSize", part.voxelSize}, {"skinFalloff", part.skinFalloff},
+          {"noiseAmplitude", part.noiseAmplitude}, {"noiseScale", part.noiseScale}, {"prims", prims}};
+}
+
+Json characterToJson(const CharacterAsset& c) {
+  Json bones = Json::array(), mats = Json::array(), parts = Json::array(), fuzz = Json::array(), locks = Json::array();
+  for (auto& b : c.skeleton.bones) {
+    Json bj = {{"name", b.name}, {"head", toJson(b.head)}};
+    if (b.parent >= 0) bj["parent"] = c.skeleton.bones[size_t(b.parent)].name;
+    bones.push_back(bj);
+  }
+  for (auto& m : c.materials) mats.push_back(materialToJson(m));
+  for (auto& p : c.parts) parts.push_back(partToJson(p));
+  for (auto& f : c.fuzz) {
+    const FuzzParams& q = f.params;
+    fuzz.push_back({{"part", f.part}, {"material", f.material}, {"density", q.density}, {"length", q.length},
+                    {"lengthJitter", q.lengthJitter}, {"radius", q.radius}, {"tilt", q.tilt}, {"curl", q.curl},
+                    {"comb", q.comb}, {"combOrigin", toJson(q.combOrigin)}, {"segments", q.segments}, {"seed", q.seed},
+                    {"strayFraction", q.strayFraction}, {"strayLength", q.strayLength}});
+  }
+  for (auto& l : c.locks) {
+    const LockParams& q = l.params;
+    locks.push_back({{"material", l.material}, {"bone", l.bone}, {"headCenter", toJson(q.headCenter)},
+                     {"headRadii", toJson(q.headRadii)}, {"count", q.count}, {"azimuthMinDeg", q.azimuthMinDeg},
+                     {"azimuthMaxDeg", q.azimuthMaxDeg}, {"elevationDeg", q.elevationDeg}, {"lengthMin", q.lengthMin},
+                     {"lengthMax", q.lengthMax}, {"lockRadius", q.lockRadius}, {"coreRatio", q.coreRatio},
+                     {"fibersPerLock", q.fibersPerLock}, {"fiberRadius", q.fiberRadius}, {"twist", q.twist},
+                     {"wave", q.wave}, {"waveLength", q.waveLength}, {"headBottom", q.headBottom},
+                     {"bodyClearance", q.bodyClearance}, {"sideClearance", q.sideClearance}, {"frizz", q.frizz},
+                     {"segments", q.segments}, {"seed", q.seed}});
+  }
+  return {{"format", "plush.character"}, {"version", 1}, {"name", c.name}, {"skeleton", bones}, {"materials", mats},
+          {"parts", parts}, {"fuzz", fuzz}, {"locks", locks}};
+}
+
+Result<void> resolveBones(CharacterAsset& c) {
+  for (auto& part : c.parts)
+    for (auto& prim : part.prims) {
+      prim.boneIndex = prim.bone.empty() ? -1 : c.skeleton.find(prim.bone);
+      if (!prim.bone.empty() && prim.boneIndex < 0)
+        return fail(std::format("part '{}', primitive '{}': unknown bone '{}'", part.name, prim.name, prim.bone));
+    }
+  return {};
 }
 
 namespace {
@@ -60,6 +143,8 @@ FuzzParams fuzzFromJson(const Json& j) {
   f.combOrigin = readVec3(j, "combOrigin", f.combOrigin);
   f.segments = readInt(j, "segments", f.segments);
   f.seed = uint32_t(readInt(j, "seed", int(f.seed)));
+  f.strayFraction = readFloat(j, "strayFraction", f.strayFraction);
+  f.strayLength = readFloat(j, "strayLength", f.strayLength);
   return f;
 }
 LockParams locksFromJson(const Json& j) {

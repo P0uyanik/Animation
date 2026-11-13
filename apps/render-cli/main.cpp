@@ -3,7 +3,9 @@
 //   plush-render scene.json --frames 1-48 --outdir renders/shot --video shot.mp4
 // Frame sequences resume automatically: frames that already exist are skipped.
 #include <cstdlib>
+#include <cstdio>
 #include <filesystem>
+#include <optional>
 #include <string>
 
 #include "render/image.h"
@@ -29,7 +31,8 @@ void usage() {
       "  --no-denoise         skip the denoiser\n"
       "  --overwrite          re-render frames that already exist\n"
       "  --hdr                also write linear .hdr files\n"
-      "  --threads N          worker threads (default: all)");
+      "  --threads N          worker threads (default: all)\n"
+      "  --camera X,Y,Z --target X,Y,Z --focal MM --fstop N   camera overrides (look dev)");
 }
 }  // namespace
 
@@ -46,6 +49,13 @@ int main(int argc, char** argv) {
   int width = 0, height = 0, spp = 0, depth = 0;
   float exposure = NAN;
   bool noDenoise = false;
+  std::optional<vec3> camPos, camTarget;
+  float focal = 0, fstop = -1;
+  auto parseVec3 = [](const std::string& t) {
+    vec3 v(0);
+    std::sscanf(t.c_str(), "%f,%f,%f", &v.x, &v.y, &v.z);
+    return v;
+  };
   for (int i = 2; i < argc; ++i) {
     std::string a = argv[i];
     auto next = [&]() -> std::string {
@@ -77,6 +87,10 @@ int main(int argc, char** argv) {
     else if (a == "--overwrite") overwrite = true;
     else if (a == "--hdr") hdr = true;
     else if (a == "--threads") setWorkerCount(unsigned(std::stoi(next())));
+    else if (a == "--camera") camPos = parseVec3(next());
+    else if (a == "--target") camTarget = parseVec3(next());
+    else if (a == "--focal") focal = std::stof(next());
+    else if (a == "--fstop") fstop = std::stof(next());
     else if (a == "--help" || a == "-h") { usage(); return 0; }
     else { logError("unknown option '{}'", a); usage(); return 1; }
   }
@@ -94,6 +108,15 @@ int main(int argc, char** argv) {
   if (!std::isnan(exposure)) rs.exposureEV = exposure;
   if (noDenoise) rs.denoise = false;
   if (frameA == INT32_MIN) frameA = frameB = scene->frameStart;
+  if (camPos || camTarget) {  // a fixed look-dev camera ignores camera animation
+    scene->animation.tracks.erase("camera.position");
+    scene->animation.tracks.erase("camera.target");
+    if (camPos) scene->camera.position = *camPos;
+    if (camTarget) scene->camera.target = *camTarget;
+    scene->camera.focusDistance = -1;
+  }
+  if (focal > 0) scene->camera.focalMm = focal;
+  if (fstop >= 0) scene->camera.fStop = fstop;
   bool sequence = !outdir.empty();
 
   Stopwatch total;
@@ -122,7 +145,7 @@ int main(int argc, char** argv) {
         logInfo("  frame {}: {}%", f, pct);
       }
     });
-    if (rs.denoise) denoise(result);
+    if (rs.denoise) denoise(result, rs.denoiseBlend);
     auto rgb = toneMapToSrgb8(result.color, ToneMapSettings{rs.exposureEV});
     // Write to a temp name first so an interrupted job never leaves a half file.
     fs::path tmp = target;

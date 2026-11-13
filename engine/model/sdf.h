@@ -35,6 +35,8 @@ struct SdfPart {
   std::string material;
   float voxelSize = 0.003f;    // metres
   float skinFalloff = 0.012f;  // metres; softness of automatic skin weights
+  float noiseAmplitude = 0.0f; // metres; lumpy surface (felted wool, knitted volume)
+  float noiseScale = 20.0f;    // 1/metres
   std::vector<SdfPrim> prims;
 };
 

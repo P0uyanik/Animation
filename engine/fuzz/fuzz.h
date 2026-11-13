@@ -18,6 +18,8 @@ struct FuzzParams {
   vec3 combOrigin{0};
   int segments = 3;
   uint32_t seed = 1;
+  float strayFraction = 0.0f;  // share of long flyaway fibres (soft halo)
+  float strayLength = 3.0f;    // their length multiplier
 };
 
 // Fibers bound to a mesh surface; deform with the mesh.

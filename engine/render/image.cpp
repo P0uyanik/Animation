@@ -17,7 +17,7 @@ bool denoiserAvailable() {
 #endif
 }
 
-bool denoise(RenderOutput& out) {
+bool denoise(RenderOutput& out, float blend) {
 #ifdef PLUSH_HAS_OIDN
   static oidn::DeviceRef device = [] {
     oidn::DeviceRef d = oidn::newDevice(oidn::DeviceType::CPU);
@@ -41,10 +41,13 @@ bool denoise(RenderOutput& out) {
     logError("denoiser: {}", message ? message : "unknown error");
     return false;
   }
+  blend = std::clamp(blend, 0.0f, 1.0f);
+  for (size_t i = 0; i < result.size(); ++i) result[i] = glm::mix(out.color.pixels[i], result[i], blend);
   out.color.pixels = std::move(result);
   return true;
 #else
   (void)out;
+  (void)blend;
   return false;
 #endif
 }

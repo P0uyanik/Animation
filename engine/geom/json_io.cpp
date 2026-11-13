@@ -152,6 +152,7 @@ RenderSettings renderSettingsFromJson(const Json& j) {
   r.maxDepth = readInt(j, "maxDepth", r.maxDepth);
   r.exposureEV = readFloat(j, "exposureEV", r.exposureEV);
   r.denoise = readBool(j, "denoise", r.denoise);
+  r.denoiseBlend = readFloat(j, "denoiseBlend", r.denoiseBlend);
   r.seed = uint32_t(readInt(j, "seed", int(r.seed)));
   r.clamp = readFloat(j, "clamp", r.clamp);
   return r;
@@ -159,7 +160,7 @@ RenderSettings renderSettingsFromJson(const Json& j) {
 
 Json renderSettingsToJson(const RenderSettings& r) {
   return {{"width", r.width}, {"height", r.height}, {"spp", r.spp}, {"maxDepth", r.maxDepth},
-          {"exposureEV", r.exposureEV}, {"denoise", r.denoise}, {"seed", r.seed}, {"clamp", r.clamp}};
+          {"exposureEV", r.exposureEV}, {"denoise", r.denoise}, {"denoiseBlend", r.denoiseBlend}, {"seed", r.seed}, {"clamp", r.clamp}};
 }
 
 Result<Json> parseJsonFile(const std::filesystem::path& path) {

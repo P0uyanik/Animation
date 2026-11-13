@@ -65,10 +65,11 @@ SurfaceFibers generateSurfaceFibers(const Mesh& rest, const FuzzParams& prm, flo
       away -= f.n * glm::dot(away, f.n);
       if (glm::length2(away) > 1e-12f) lean = glm::normalize(glm::mix(lean, glm::normalize(away), prm.comb));
     }
-    float theta = prm.tilt * (kPi * 0.5f) * (0.55f + 0.45f * rng.next());
+    bool stray = rng.next() < prm.strayFraction;
+    float theta = (stray ? 0.35f : prm.tilt) * (kPi * 0.5f) * (0.55f + 0.45f * rng.next());
     vec3 dir = f.n * std::cos(theta) + lean * std::sin(theta);
     vec3 side = glm::normalize(glm::cross(dir, lean) + vec3(1e-6f));
-    float len = prm.length * (1 - prm.lengthJitter * rng.next());
+    float len = prm.length * (1 - prm.lengthJitter * rng.next()) * (stray ? prm.strayLength : 1.0f);
     float phase = rng.next() * kTwoPi, freq = 1.0f + 2.0f * rng.next();
     for (int k = 0; k <= seg; ++k) {
       float s = float(k) / float(seg);
@@ -122,19 +123,23 @@ FiberSet generateLocks(const LockParams& prm, float densityScale) {
     float rootY = prm.headCenter.y + prm.headRadii.y * std::sin(el);
     float rootR = rxz * std::cos(el) * 0.97f;
 
+    // Hair follows the scalp outside the head, then falls straight down from
+    // the widest point it reached (like real hair draping over a head).
     std::vector<vec3> guide(size_t(seg) + 1);
+    float bodyR = prm.bodyClearance + prm.sideClearance * std::abs(std::sin(az));
+    float widest = rootR;
     for (int k = 0; k <= seg; ++k) {
       float s = float(k) / float(seg);
       float y = rootY - s * len;
       float dy = (y - prm.headCenter.y) / prm.headRadii.y;
       float headR = rxz * safeSqrt(1 - dy * dy) + 0.6f * prm.lockRadius;
-      float bodyR = prm.bodyClearance + prm.sideClearance * std::abs(std::sin(az));
-      float blendBody = smoothstep01((prm.headBottom + 0.04f - y) / 0.08f);
-      float r = std::max(rootR * (1 - s * 4) , glm::mix(headR, std::max(headR, bodyR), blendBody));
-      float w = prm.wave * std::sin(phase + kTwoPi * (s * len) / prm.waveLength) * std::min(1.0f, s * 5);
-      float tipCurl = smoothstep01((s - 0.8f) / 0.2f);
-      vec3 p = prm.headCenter + radial * (r + 0.4f * w + 0.03f * tipCurl) + tangential * w;
-      p.y = y + 0.02f * tipCurl;
+      widest = std::max(widest, headR);
+      float r = y > prm.headCenter.y ? std::max(headR, rootR) : widest;
+      float settle = smoothstep01((s - 0.55f) / 0.45f);  // tips drift slightly inwards
+      r = std::max(bodyR, r * (1.0f - 0.12f * settle));
+      float w = prm.wave * std::sin(phase + kTwoPi * (s * len) / prm.waveLength) * std::min(1.0f, s * 4);
+      vec3 p = prm.headCenter + radial * (r + 0.35f * w) + tangential * w;
+      p.y = y;
       guide[size_t(k)] = p;
     }
     // Core tube + twisted fibers around it.

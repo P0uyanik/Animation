@@ -328,7 +328,9 @@ struct PathTracer::Impl {
       vec3 wo = -d;
       prepareShading(sp, wo);
       if (depth == 0) {
-        if (albedo) *albedo = sp.base;
+        // Fibres: modulate the guide by the across-fibre offset so each fibre is a
+        // visible line in the albedo buffer and the denoiser preserves it.
+        if (albedo) *albedo = sp.fiber ? sp.base * (0.45f + 0.55f * safeSqrt(1 - sp.h * sp.h)) : sp.base;
         if (normal) *normal = sp.fiber ? sp.ng : sp.ns;
       }
       L += beta * directLight(sp, wo, rng, depth, rs.clamp);

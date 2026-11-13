@@ -71,6 +71,10 @@ class SceneEvaluator {
   };
   const std::vector<CharacterInstance>& characters() const { return characters_; }
   int materialIndex(const std::string& name) const;
+  // Replaces a character's asset (after in-app editing) and rebuilds its rig.
+  Result<void> rebuildCharacter(size_t index, const CharacterAsset& asset, const EvalOptions& options);
+  // Replaces material parameters by name (in-app look development).
+  void updateMaterial(const Material& m);
 
  private:
   struct ObjectGeometry {

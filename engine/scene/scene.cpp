@@ -39,39 +39,6 @@ Result<ObjectDesc> objectFromJson(const Json& j) {
   return o;
 }
 
-Json primToJson(const SdfPrim& p) {
-  const char* types[] = {"ellipsoid", "capsule", "roundCone", "roundBox"};
-  Json j = {{"name", p.name}, {"type", types[int(p.type)]}, {"blend", p.blend}};
-  if (!p.bone.empty()) j["bone"] = p.bone;
-  if (p.subtract) j["subtract"] = true;
-  vec3 euler = glm::degrees(glm::eulerAngles(p.rotation));
-  switch (p.type) {
-    case PrimType::Ellipsoid:
-      j["center"] = toJson(p.center);
-      j["radii"] = toJson(p.radii);
-      j["rotationDeg"] = toJson(euler);
-      break;
-    case PrimType::RoundBox:
-      j["center"] = toJson(p.center);
-      j["halfSize"] = toJson(p.radii);
-      j["rounding"] = p.rounding;
-      j["rotationDeg"] = toJson(euler);
-      break;
-    case PrimType::Capsule:
-      j["a"] = toJson(p.a);
-      j["b"] = toJson(p.b);
-      j["r"] = p.r1;
-      break;
-    case PrimType::RoundCone:
-      j["a"] = toJson(p.a);
-      j["b"] = toJson(p.b);
-      j["r1"] = p.r1;
-      j["r2"] = p.r2;
-      break;
-  }
-  return j;
-}
-
 mat4 objectMatrix(vec3 pos, float yawDeg, float scale) {
   return glm::translate(mat4(1), pos) * glm::rotate(mat4(1), glm::radians(yawDeg), vec3(0, 1, 0)) *
          glm::scale(mat4(1), vec3(scale));
@@ -293,6 +260,29 @@ Result<void> SceneEvaluator::load(const Scene& scene, const EvalOptions& opt) {
     objects_.push_back(std::move(g));
   }
   return {};
+}
+
+Result<void> SceneEvaluator::rebuildCharacter(size_t index, const CharacterAsset& asset, const EvalOptions& opt) {
+  if (index >= characters_.size()) return fail("character index out of range");
+  CharacterInstance ci;
+  ci.asset = asset;
+  if (auto r = resolveBones(ci.asset); !r) return r;
+  for (auto& m : ci.asset.materials)
+    if (!materialIndex_.count(m.name)) {
+      materialIndex_[m.name] = int(materials_.size());
+      materials_.push_back(m);
+    }
+  ci.rig = buildCharacter(ci.asset, BuildOptions{opt.voxelScale, opt.fuzzDensity, opt.fuzz});
+  for (auto& sm : ci.rig.meshes) ci.meshMaterial.push_back(materialIndex(sm.material));
+  for (auto& f : ci.rig.fuzz) ci.fuzzMaterial.push_back(materialIndex(f.material));
+  for (auto& l : ci.rig.locks) ci.lockMaterial.push_back(materialIndex(l.material));
+  characters_[index] = std::move(ci);
+  return {};
+}
+
+void SceneEvaluator::updateMaterial(const Material& m) {
+  auto it = materialIndex_.find(m.name);
+  if (it != materialIndex_.end()) materials_[size_t(it->second)] = m;
 }
 
 std::shared_ptr<FrameSnapshot> SceneEvaluator::evaluate(double frame) const {

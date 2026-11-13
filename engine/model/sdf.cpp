@@ -96,6 +96,7 @@ float sdfPart(const SdfPart& part, vec3 p) {
   }
   for (const auto& s : part.prims)
     if (s.subtract) d = smax(d, -sdfPrim(s, p), s.blend);
+  if (part.noiseAmplitude > 0 && d < 4 * part.noiseAmplitude + 0.01f) d += part.noiseAmplitude * fbm(p * part.noiseScale, 3);
   return d;
 }
 
@@ -115,8 +116,8 @@ Aabb partBounds(const SdfPart& part) {
     maxBlend = std::max(maxBlend, s.blend);
   }
   if (b.valid()) {
-    b.lo -= vec3(maxBlend);
-    b.hi += vec3(maxBlend);
+    b.lo -= vec3(maxBlend + part.noiseAmplitude);
+    b.hi += vec3(maxBlend + part.noiseAmplitude);
   }
   return b;
 }

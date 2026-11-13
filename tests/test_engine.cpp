@@ -216,3 +216,25 @@ TEST_CASE("path tracer renders deterministically") {
   CHECK(sum > 1.0);
   CHECK(same);
 }
+
+TEST_CASE("surface fibers grow outwards and follow deformation") {
+  SdfPart part;
+  part.voxelSize = 0.004f;
+  SdfPrim s;
+  s.radii = vec3(0.1f);
+  part.prims.push_back(s);
+  Mesh m = meshSdfPart(part);
+  FuzzParams fp;
+  fp.density = 5;
+  fp.length = 0.01f;
+  SurfaceFibers sf = generateSurfaceFibers(m, fp);
+  REQUIRE(sf.fiberCount() > 100);
+  auto fs = deformSurfaceFibers(sf, m);
+  int outside = 0, total = 0;
+  for (size_t f = 0; f < fs->fiberCount; ++f) {
+    vec3 tip = vec3(fs->points[f * size_t(sf.pointsPerFiber) + size_t(sf.pointsPerFiber - 1)]);
+    outside += glm::length(tip) > 0.1015f;
+    ++total;
+  }
+  CHECK(outside == total);
+}

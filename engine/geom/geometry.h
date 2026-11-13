@@ -102,6 +102,7 @@ struct RenderSettings {
   int maxDepth = 10;
   float exposureEV = 0.0f;
   bool denoise = true;
+  float denoiseBlend = 1.0f;  // 1 = fully denoised, lower keeps more fine fibre detail
   uint32_t seed = 1;
   float clamp = 12.0f;  // max luminance of an indirect sample (firefly control)
 };

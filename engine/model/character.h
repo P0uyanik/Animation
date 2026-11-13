@@ -36,6 +36,12 @@ Result<CharacterAsset> characterFromJson(const Json& j);
 Result<CharacterAsset> loadCharacter(const std::filesystem::path& path);
 Result<SdfPrim> primFromJson(const Json& j);
 Result<SdfPart> partFromJson(const Json& j);
+Json primToJson(const SdfPrim& p);
+Json partToJson(const SdfPart& part);
+// Saves the expanded asset (mirror copies are written out explicitly).
+Json characterToJson(const CharacterAsset& c);
+// Re-resolves primitive bone indices after editing.
+Result<void> resolveBones(CharacterAsset& c);
 
 struct SkinnedMesh {
   std::string part;

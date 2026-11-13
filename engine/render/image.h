@@ -9,7 +9,8 @@ namespace plush {
 
 bool denoiserAvailable();
 // Denoises `out.color` in place using albedo/normal guides. Returns false if unavailable.
-bool denoise(RenderOutput& out);
+// blend: 1 = fully denoised, < 1 mixes back some of the noisy image (keeps fibre texture).
+bool denoise(RenderOutput& out, float blend = 1.0f);
 
 struct ToneMapSettings {
   float exposureEV = 0.0f;
