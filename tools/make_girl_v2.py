@@ -48,11 +48,24 @@ blush = next(m for m in c["materials"] if m["name"] == "skin")["texture"]
 blush["spots"].append([0.0, 0.734, 0.13, 0.016])  # lips
 c["expressions"] = [
     {"name": "smile", "part": "skin", "set": [
-        {"prim": "mouth.L", "a": [0.032, 0.751, 0.1378], "b": [0.0, 0.731, 0.1352], "r": 0.0052},
+        {"prim": "mouth.L", "a": [0.029, 0.745, 0.1372], "b": [0.0, 0.7315, 0.1356], "r": 0.0047},
         {"prim": "cheek.L", "center": [0.074, 0.772, 0.075]}]},
     {"name": "mouthOpen", "part": "skin", "add": [
         {"name": "mouthCavity", "type": "ellipsoid", "center": [0.0, 0.729, 0.125], "radii": [0.019, 0.016, 0.016], "blend": 0.006, "subtract": True}]},
 ]
+
+# --- hands: separate finer part with palm, four fingers and a thumb (were mitten blobs)
+skin["prims"] = [p for p in skin["prims"] if p["name"] not in ("wrist.L", "hand.L", "thumb.L")]
+fingers = []
+for k, z in enumerate([0.006, 0.0165, 0.027, 0.0375]):
+    length = [0.020, 0.023, 0.022, 0.018][k]
+    fingers.append({"name": f"finger{k}.L", "type": "capsule", "bone": "hand.L", "a": [0.159, 0.398, z],
+                    "b": [0.153, 0.398 - length, z + 0.004], "r": 0.0056, "blend": 0.003, "mirror": True})
+c["parts"].append({"name": "hands", "material": "skin", "voxelSize": 0.0011, "skinFalloff": 0.006, "skinSmoothing": 1, "prims": [
+    {"name": "wrist.L", "type": "capsule", "bone": "hand.L", "a": [0.152, 0.445, 0.016], "b": [0.157, 0.42, 0.019], "r": 0.016, "mirror": True},
+    {"name": "palm.L", "type": "ellipsoid", "bone": "hand.L", "center": [0.159, 0.41, 0.021], "radii": [0.017, 0.022, 0.024], "blend": 0.008, "mirror": True},
+    {"name": "thumb.L", "type": "capsule", "bone": "hand.L", "a": [0.152, 0.418, 0.04], "b": [0.146, 0.397, 0.049], "r": 0.0065, "blend": 0.005, "mirror": True},
+] + fingers})
 
 # --- hair: strands relief + separate bang tufts that are not cut by the face cut
 cap = part("hairCap")
@@ -80,6 +93,9 @@ c["fuzz"].append({"part": "brows", "material": "boots_fiber", "density": 120, "l
                   "curl": 0.3, "segments": 2, "seed": 18})
 lock = c["locks"][0]
 lock.update(count=56, fibersPerLock=520, fiberRadius=3.5e-5, frizz=0.0012, lockRadius=0.0165, twist=6, coreRatio=0.78)
+lock["coreMaterial"] = "wool_lock_core"
+c["materials"].append({"name": "wool_lock_core", "type": "plush", "baseColor": [0.80, 0.78, 0.74], "sheen": 0.7, "sheenRoughness": 0.5,
+                       "texture": {"type": "noise", "color2": [0.68, 0.66, 0.62], "scale": 90, "amount": 0.35}})
 
 # --- clothing: knit geometry, collar part, soles, finer tights
 dress = part("dress")

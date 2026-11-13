@@ -116,16 +116,19 @@ struct PathTracer::Impl {
     for (int t = 0; t < tx * ty; ++t) {
       if (!tileActive[size_t(t)]) continue;
       int x0 = (t % tx) * kTile, y0 = (t / tx) * kTile;
-      float worst = 0;
+      // Mean relative standard error over the tile (the denoiser removes isolated outliers).
+      float sum = 0;
+      int count = 0;
       for (int y = y0; y < std::min(y0 + kTile, height); ++y)
         for (int x = x0; x < std::min(x0 + kTile, width); ++x) {
           size_t p = size_t(y) * size_t(width) + size_t(x);
           float n = float(std::max(1, accCount[p]));
           float mean = luminance(accColor[p]) / n;
           float var = std::max(0.0f, accLumSq[p] / n - mean * mean);
-          worst = std::max(worst, std::sqrt(var / n) / (mean + 0.05f));
+          sum += std::sqrt(var / n) / (mean + 0.05f);
+          ++count;
         }
-      if (worst < threshold) tileActive[size_t(t)] = 0;
+      if (sum / float(std::max(1, count)) < threshold) tileActive[size_t(t)] = 0;
       else ++active;
     }
     return active;
@@ -239,6 +242,11 @@ struct PathTracer::Impl {
       sp.pref = sp.p;
       sp.material = &snap->materials[size_t(sf.material)];
       sp.base = sp.material->baseColor;
+      if (sp.material->type != MaterialType::Fiber) {
+        // Thick curves with a surface material (e.g. felted yarn cores) shade as tubes.
+        sp.fiber = false;
+        sp.base = evalTexture(*sp.material, sp.p);
+      }
     } else {
       const SnapshotMesh& sm = snap->meshes[size_t(ref.index)];
       const Mesh& m = *sm.mesh;

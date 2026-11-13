@@ -72,7 +72,7 @@ class SceneEvaluator {
   struct CharacterInstance {
     CharacterAsset asset;
     CharacterRig rig;
-    std::vector<int> meshMaterial, fuzzMaterial, lockMaterial;
+    std::vector<int> meshMaterial, fuzzMaterial, lockMaterial, coreMaterial;
   };
   const std::vector<CharacterInstance>& characters() const { return characters_; }
   int materialIndex(const std::string& name) const;

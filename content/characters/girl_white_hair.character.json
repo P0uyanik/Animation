@@ -416,6 +416,27 @@
    "sheen": 0.5
   },
   {
+   "name": "wool_lock_core",
+   "type": "plush",
+   "baseColor": [
+    0.8,
+    0.78,
+    0.74
+   ],
+   "sheen": 0.7,
+   "sheenRoughness": 0.5,
+   "texture": {
+    "type": "noise",
+    "color2": [
+     0.68,
+     0.66,
+     0.62
+    ],
+    "scale": 90,
+    "amount": 0.35
+   }
+  },
+  {
    "name": "sole",
    "type": "standard",
    "baseColor": [
@@ -530,59 +551,6 @@
      ],
      "r": 0.035,
      "blend": 0.02
-    },
-    {
-     "name": "wrist.L",
-     "type": "capsule",
-     "bone": "hand.L",
-     "a": [
-      0.152,
-      0.445,
-      0.014
-     ],
-     "b": [
-      0.158,
-      0.418,
-      0.017
-     ],
-     "r": 0.018,
-     "blend": 0.012,
-     "mirror": true
-    },
-    {
-     "name": "hand.L",
-     "type": "ellipsoid",
-     "bone": "hand.L",
-     "center": [
-      0.16,
-      0.405,
-      0.018
-     ],
-     "radii": [
-      0.03,
-      0.038,
-      0.024
-     ],
-     "blend": 0.012,
-     "mirror": true
-    },
-    {
-     "name": "thumb.L",
-     "type": "capsule",
-     "bone": "hand.L",
-     "a": [
-      0.146,
-      0.425,
-      0.035
-     ],
-     "b": [
-      0.143,
-      0.4,
-      0.045
-     ],
-     "r": 0.011,
-     "blend": 0.01,
-     "mirror": true
     },
     {
      "name": "socket.L",
@@ -1133,6 +1101,139 @@
    ]
   },
   {
+   "name": "hands",
+   "material": "skin",
+   "voxelSize": 0.0011,
+   "skinFalloff": 0.006,
+   "skinSmoothing": 1,
+   "prims": [
+    {
+     "name": "wrist.L",
+     "type": "capsule",
+     "bone": "hand.L",
+     "a": [
+      0.152,
+      0.445,
+      0.016
+     ],
+     "b": [
+      0.157,
+      0.42,
+      0.019
+     ],
+     "r": 0.016,
+     "mirror": true
+    },
+    {
+     "name": "palm.L",
+     "type": "ellipsoid",
+     "bone": "hand.L",
+     "center": [
+      0.159,
+      0.41,
+      0.021
+     ],
+     "radii": [
+      0.017,
+      0.022,
+      0.024
+     ],
+     "blend": 0.008,
+     "mirror": true
+    },
+    {
+     "name": "thumb.L",
+     "type": "capsule",
+     "bone": "hand.L",
+     "a": [
+      0.152,
+      0.418,
+      0.04
+     ],
+     "b": [
+      0.146,
+      0.397,
+      0.049
+     ],
+     "r": 0.0065,
+     "blend": 0.005,
+     "mirror": true
+    },
+    {
+     "name": "finger0.L",
+     "type": "capsule",
+     "bone": "hand.L",
+     "a": [
+      0.159,
+      0.398,
+      0.006
+     ],
+     "b": [
+      0.153,
+      0.378,
+      0.01
+     ],
+     "r": 0.0056,
+     "blend": 0.003,
+     "mirror": true
+    },
+    {
+     "name": "finger1.L",
+     "type": "capsule",
+     "bone": "hand.L",
+     "a": [
+      0.159,
+      0.398,
+      0.0165
+     ],
+     "b": [
+      0.153,
+      0.375,
+      0.0205
+     ],
+     "r": 0.0056,
+     "blend": 0.003,
+     "mirror": true
+    },
+    {
+     "name": "finger2.L",
+     "type": "capsule",
+     "bone": "hand.L",
+     "a": [
+      0.159,
+      0.398,
+      0.027
+     ],
+     "b": [
+      0.153,
+      0.376,
+      0.031
+     ],
+     "r": 0.0056,
+     "blend": 0.003,
+     "mirror": true
+    },
+    {
+     "name": "finger3.L",
+     "type": "capsule",
+     "bone": "hand.L",
+     "a": [
+      0.159,
+      0.398,
+      0.0375
+     ],
+     "b": [
+      0.153,
+      0.38,
+      0.041499999999999995
+     ],
+     "r": 0.0056,
+     "blend": 0.003,
+     "mirror": true
+    }
+   ]
+  },
+  {
    "name": "bangs",
    "material": "wool_cap",
    "voxelSize": 0.0022,
@@ -1578,7 +1679,8 @@
    "bodyClearance": 0.105,
    "sideClearance": 0.05,
    "frizz": 0.0012,
-   "seed": 21
+   "seed": 21,
+   "coreMaterial": "wool_lock_core"
   }
  ],
  "skinning": "dualQuaternion",
@@ -1590,16 +1692,16 @@
     {
      "prim": "mouth.L",
      "a": [
-      0.033920000000000006,
-      0.75466,
-      0.146068
+      0.030740000000000003,
+      0.7483,
+      0.145432
      ],
      "b": [
       0.0,
-      0.73346,
-      0.143312
+      0.73399,
+      0.143736
      ],
-     "r": 0.005512
+     "r": 0.004982
     },
     {
      "prim": "cheek.L",

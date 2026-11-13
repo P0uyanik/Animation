@@ -118,7 +118,7 @@ Json characterToJson(const CharacterAsset& c) {
   }
   for (auto& l : c.locks) {
     const LockParams& q = l.params;
-    locks.push_back({{"material", l.material}, {"bone", l.bone}, {"headCenter", toJson(q.headCenter)},
+    locks.push_back({{"material", l.material}, {"coreMaterial", l.coreMaterial}, {"bone", l.bone}, {"headCenter", toJson(q.headCenter)},
                      {"headRadii", toJson(q.headRadii)}, {"count", q.count}, {"azimuthMinDeg", q.azimuthMinDeg},
                      {"azimuthMaxDeg", q.azimuthMaxDeg}, {"elevationDeg", q.elevationDeg}, {"lengthMin", q.lengthMin},
                      {"lengthMax", q.lengthMax}, {"lockRadius", q.lockRadius}, {"coreRatio", q.coreRatio},
@@ -236,7 +236,8 @@ Result<CharacterAsset> characterFromJson(const Json& j) {
   if (auto it = j.find("fuzz"); it != j.end() && it->is_array())
     for (auto& fj : *it) c.fuzz.push_back({readString(fj, "part"), readString(fj, "material"), fuzzFromJson(fj)});
   if (auto it = j.find("locks"); it != j.end() && it->is_array())
-    for (auto& lj : *it) c.locks.push_back({readString(lj, "material"), readString(lj, "bone", "head"), locksFromJson(lj)});
+    for (auto& lj : *it)
+      c.locks.push_back({readString(lj, "material"), readString(lj, "coreMaterial"), readString(lj, "bone", "head"), locksFromJson(lj)});
   c.dualQuaternion = readString(j, "skinning", "linear") == "dualQuaternion";
   if (auto it = j.find("expressions"); it != j.end() && it->is_array())
     for (auto& ej : *it) {
@@ -380,7 +381,22 @@ CharacterRig buildCharacter(const CharacterAsset& asset, const BuildOptions& opt
       BoundLocks bl;
       bl.bone = std::max(0, asset.skeleton.find(layer.bone));
       bl.material = layer.material;
-      bl.rest = generateLocks(layer.params, opt.fuzzDensity);
+      FiberSet all = generateLocks(layer.params, opt.fuzzDensity);
+      bl.coreMaterial = layer.coreMaterial;
+      if (layer.coreMaterial.empty()) {
+        bl.rest = std::move(all);
+      } else {  // split pinned cores from the fibres
+        for (size_t c = 0; c + 1 < all.curveOffsets.size(); ++c) {
+          FiberSet& dst = all.pinned[c] ? bl.cores : bl.rest;
+          if (dst.curveOffsets.empty()) dst.curveOffsets.push_back(0);
+          uint32_t base = uint32_t(dst.points.size());
+          for (uint32_t i = all.curveOffsets[c]; i < all.curveOffsets[c + 1]; ++i) dst.points.push_back(all.points[i]);
+          for (uint32_t i = 0; i + 1 < all.curveOffsets[c + 1] - all.curveOffsets[c]; ++i) dst.segmentStarts.push_back(base + i);
+          dst.curveOffsets.push_back(uint32_t(dst.points.size()));
+          dst.pinned.push_back(all.pinned[c]);
+          dst.fiberCount++;
+        }
+      }
       rig.locks.push_back(std::move(bl));
     }
   }
@@ -462,7 +478,10 @@ PosedCharacter poseCharacter(const CharacterRig& rig, const std::vector<mat4>& s
     out.meshes.push_back(std::move(m));
   }
   for (const auto& bf : rig.fuzz) out.fuzz.push_back(deformSurfaceFibers(bf.fibers, *out.meshes[size_t(bf.mesh)]));
-  for (const auto& bl : rig.locks) out.locks.push_back(transformFibers(bl.rest, skin[size_t(bl.bone)]));
+  for (const auto& bl : rig.locks) {
+    out.locks.push_back(transformFibers(bl.rest, skin[size_t(bl.bone)]));
+    out.lockCores.push_back(transformFibers(bl.cores, skin[size_t(bl.bone)]));
+  }
   return out;
 }
 

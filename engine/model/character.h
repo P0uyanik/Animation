@@ -19,6 +19,7 @@ struct FuzzLayer {
 
 struct LockLayer {
   std::string material;
+  std::string coreMaterial;  // material of the solid core tubes (empty = same as fibres)
   std::string bone = "head";
   LockParams params;
 };
@@ -70,7 +71,9 @@ struct BoundFuzz {
 struct BoundLocks {
   int bone = 0;
   std::string material;
-  FiberSet rest;
+  FiberSet rest;  // fibres around the cores, or everything if no core material
+  std::string coreMaterial;
+  FiberSet cores;
 };
 struct MorphTarget {
   std::string name;
@@ -100,6 +103,7 @@ struct PosedCharacter {
   std::vector<std::shared_ptr<Mesh>> meshes;     // same order as rig.meshes
   std::vector<std::shared_ptr<FiberSet>> fuzz;   // same order as rig.fuzz
   std::vector<std::shared_ptr<FiberSet>> locks;  // same order as rig.locks
+  std::vector<std::shared_ptr<FiberSet>> lockCores;  // same order as rig.locks (may be empty sets)
 };
 // morphWeights: one per rig.morphs entry (may be empty).
 PosedCharacter poseCharacter(const CharacterRig& rig, const std::vector<mat4>& skin,

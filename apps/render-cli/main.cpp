@@ -29,6 +29,7 @@ void usage() {
       "  --fuzz-density X     fiber count multiplier (default 1)\n"
       "  --no-fuzz            disable all fibers\n"
       "  --no-lod             disable fibre level of detail\n"
+      "  --adaptive X         adaptive sampling threshold (0 = off)\n"
       "  --no-denoise         skip the denoiser\n"
       "  --overwrite          re-render frames that already exist\n"
       "  --hdr                also write linear .hdr files\n"
@@ -53,6 +54,7 @@ int main(int argc, char** argv) {
   float exposure = NAN;
   bool noDenoise = false;
   bool noLod = false;
+  float adaptive = -1;
   fs::path compareRef;
   double maxRmse = 0.03;
   std::optional<vec3> camPos, camTarget;
@@ -90,6 +92,7 @@ int main(int argc, char** argv) {
     else if (a == "--fuzz-density") eval.fuzzDensity = std::stof(next());
     else if (a == "--no-fuzz") eval.fuzz = false;
     else if (a == "--no-lod") noLod = true;
+    else if (a == "--adaptive") adaptive = std::stof(next());
     else if (a == "--no-denoise") noDenoise = true;
     else if (a == "--overwrite") overwrite = true;
     else if (a == "--compare") compareRef = next();
@@ -116,6 +119,7 @@ int main(int argc, char** argv) {
   if (depth > 0) rs.maxDepth = depth;
   if (!std::isnan(exposure)) rs.exposureEV = exposure;
   if (noDenoise) rs.denoise = false;
+  if (adaptive >= 0) rs.adaptiveThreshold = adaptive;
   if (frameA == INT32_MIN) frameA = frameB = scene->frameStart;
   if (camPos || camTarget) {  // a fixed look-dev camera ignores camera animation
     scene->animation.tracks.erase("camera.position");

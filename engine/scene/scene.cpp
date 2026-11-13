@@ -249,7 +249,10 @@ Result<void> SceneEvaluator::load(const Scene& scene, const EvalOptions& opt) {
     ci.rig = buildCharacter(ci.asset, BuildOptions{opt.voxelScale, opt.fuzzDensity, opt.fuzz});
     for (auto& sm : ci.rig.meshes) ci.meshMaterial.push_back(materialIndex(sm.material));
     for (auto& f : ci.rig.fuzz) ci.fuzzMaterial.push_back(materialIndex(f.material));
-    for (auto& l : ci.rig.locks) ci.lockMaterial.push_back(materialIndex(l.material));
+    for (auto& l : ci.rig.locks) {
+    ci.lockMaterial.push_back(materialIndex(l.material));
+    ci.coreMaterial.push_back(materialIndex(l.coreMaterial.empty() ? l.material : l.coreMaterial));
+  }
     characters_.push_back(std::move(ci));
   }
   for (auto& o : scene_.objects) {
@@ -282,7 +285,10 @@ Result<void> SceneEvaluator::rebuildCharacter(size_t index, const CharacterAsset
   ci.rig = buildCharacter(ci.asset, BuildOptions{opt.voxelScale, opt.fuzzDensity, opt.fuzz});
   for (auto& sm : ci.rig.meshes) ci.meshMaterial.push_back(materialIndex(sm.material));
   for (auto& f : ci.rig.fuzz) ci.fuzzMaterial.push_back(materialIndex(f.material));
-  for (auto& l : ci.rig.locks) ci.lockMaterial.push_back(materialIndex(l.material));
+  for (auto& l : ci.rig.locks) {
+    ci.lockMaterial.push_back(materialIndex(l.material));
+    ci.coreMaterial.push_back(materialIndex(l.coreMaterial.empty() ? l.material : l.coreMaterial));
+  }
   characters_[index] = std::move(ci);
   return {};
 }
@@ -346,6 +352,8 @@ std::shared_ptr<FrameSnapshot> SceneEvaluator::evaluate(double frame) const {
     for (size_t k = 0; k < posed.meshes.size(); ++k) snap->meshes.push_back({posed.meshes[k], ci.meshMaterial[k]});
     for (size_t k = 0; k < posed.fuzz.size(); ++k) snap->fibers.push_back({posed.fuzz[k], ci.fuzzMaterial[k]});
     for (size_t k = 0; k < posed.locks.size(); ++k) snap->fibers.push_back({posed.locks[k], ci.lockMaterial[k]});
+    for (size_t k = 0; k < posed.lockCores.size(); ++k)
+      if (!posed.lockCores[k]->points.empty()) snap->fibers.push_back({posed.lockCores[k], ci.coreMaterial[k]});
   }
   // Objects after characters (objects may be attached to bones). Kept in scene order after the characters.
   std::vector<SnapshotMesh> objectMeshes;
