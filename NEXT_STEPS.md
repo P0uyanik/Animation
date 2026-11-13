@@ -1,10 +1,9 @@
 # Next steps
 
-**Exact next task:** review the automated pilot (`docs/evaluation/boy_pilot/PILOT_REPORT.md`). Proposed next step:
-make the pilot run on the user's own Blender, from a Claude session on the user's computer or by running the
-commands in the report's §8. This verifies the version, headless mode and Python access, then reproduces v6 there.
-Then improve the hair silhouette (the largest identity gap).
-- No full integration, no other characters, no iteration 5.
+**Exact next task:** the user runs `pipeline/blender/boy_pilot/reproduce_v6.py` with their installed Blender
+(`docs/evaluation/boy_pilot/LOCAL_REPRODUCTION.md`) and sends back `out/local_v6/VERIFICATION.md`.
+- Then record the verified local v6 baseline (Blender version, verdict, differences).
+- No v7, no character changes, no iteration 5 before that.
 
 ## After your review (candidates, to be agreed)
 1. Character corrections you request (approval checkpoint for A, B, C).

@@ -1,0 +1,220 @@
+{
+ "subject": "boy_yellow_hoodie automated pilot v6 (Blender)",
+ "views": [
+  {
+   "id": "orig07_front",
+   "upload": 7,
+   "yaw_deg": 0,
+   "iou": 0.811,
+   "reference": {
+    "aspect": 2.676,
+    "width_head": 0.374,
+    "width_torso": 0.318,
+    "width_legs": 0.28,
+    "width_feet": 0.265,
+    "head_fraction": 0.36
+   },
+   "subject": {
+    "aspect": 2.452,
+    "width_head": 0.408,
+    "width_torso": 0.321,
+    "width_legs": 0.287,
+    "width_feet": 0.215,
+    "head_fraction": 0.424
+   }
+  },
+  {
+   "id": "hero24_front",
+   "upload": 24,
+   "yaw_deg": 0
+  },
+  {
+   "id": "val27_front",
+   "upload": 27,
+   "yaw_deg": 0,
+   "iou": 0.843,
+   "reference": {
+    "aspect": 2.619,
+    "width_head": 0.382,
+    "width_torso": 0.355,
+    "width_legs": 0.343,
+    "width_feet": 0.261,
+    "head_fraction": 0.364
+   },
+   "subject": {
+    "aspect": 2.656,
+    "width_head": 0.377,
+    "width_torso": 0.327,
+    "width_legs": 0.295,
+    "width_feet": 0.238,
+    "head_fraction": 0.368
+   }
+  },
+  {
+   "id": "val27_threequarter_right",
+   "upload": 27,
+   "yaw_deg": -35,
+   "iou": 0.852,
+   "reference": {
+    "aspect": 2.854,
+    "width_head": 0.35,
+    "width_torso": 0.322,
+    "width_legs": 0.303,
+    "width_feet": 0.265,
+    "head_fraction": 0.37
+   },
+   "subject": {
+    "aspect": 2.665,
+    "width_head": 0.375,
+    "width_torso": 0.28,
+    "width_legs": 0.253,
+    "width_feet": 0.255,
+    "head_fraction": 0.366
+   }
+  },
+  {
+   "id": "val27_side_right",
+   "upload": 27,
+   "yaw_deg": -90,
+   "iou": 0.84,
+   "reference": {
+    "aspect": 2.927,
+    "width_head": 0.342,
+    "width_torso": 0.203,
+    "width_legs": 0.171,
+    "width_feet": 0.185,
+    "head_fraction": 0.383
+   },
+   "subject": {
+    "aspect": 2.782,
+    "width_head": 0.359,
+    "width_torso": 0.214,
+    "width_legs": 0.178,
+    "width_feet": 0.192,
+    "head_fraction": 0.377
+   }
+  },
+  {
+   "id": "val27_back",
+   "upload": 27,
+   "yaw_deg": 180,
+   "iou": 0.853,
+   "reference": {
+    "aspect": 2.621,
+    "width_head": 0.381,
+    "width_torso": 0.364,
+    "width_legs": 0.351,
+    "width_feet": 0.266,
+    "head_fraction": 0.369
+   },
+   "subject": {
+    "aspect": 2.562,
+    "width_head": 0.39,
+    "width_torso": 0.339,
+    "width_legs": 0.31,
+    "width_feet": 0.232,
+    "head_fraction": 0.385
+   }
+  },
+  {
+   "id": "val27_back_threequarter",
+   "upload": 27,
+   "yaw_deg": 150,
+   "iou": 0.849,
+   "reference": {
+    "aspect": 2.872,
+    "width_head": 0.348,
+    "width_torso": 0.318,
+    "width_legs": 0.306,
+    "width_feet": 0.252,
+    "head_fraction": 0.371
+   },
+   "subject": {
+    "aspect": 2.571,
+    "width_head": 0.389,
+    "width_torso": 0.297,
+    "width_legs": 0.272,
+    "width_feet": 0.249,
+    "head_fraction": 0.384
+   }
+  },
+  {
+   "id": "canon29_front",
+   "upload": 29,
+   "yaw_deg": 0
+  },
+  {
+   "id": "canon29_threequarter_left",
+   "upload": 29,
+   "yaw_deg": 35
+  },
+  {
+   "id": "canon29_side_left",
+   "upload": 29,
+   "yaw_deg": 90
+  },
+  {
+   "id": "canon29_back",
+   "upload": 29,
+   "yaw_deg": 180
+  },
+  {
+   "id": "turn08_front",
+   "upload": 8,
+   "yaw_deg": 0
+  },
+  {
+   "id": "turn08_threequarter_left",
+   "upload": 8,
+   "yaw_deg": 30
+  },
+  {
+   "id": "turn08_side_right",
+   "upload": 8,
+   "yaw_deg": -90
+  },
+  {
+   "id": "turn08_side_left",
+   "upload": 8,
+   "yaw_deg": 90
+  },
+  {
+   "id": "turn08_back_threequarter",
+   "upload": 8,
+   "yaw_deg": 160
+  }
+ ],
+ "summary": {
+  "mean_iou": 0.841,
+  "head_fraction": {
+   "reference": 0.369,
+   "subject": 0.384,
+   "subject_vs_reference": 1.039
+  },
+  "aspect": {
+   "reference": 2.762,
+   "subject": 2.615,
+   "subject_vs_reference": 0.947
+  },
+  "width_head": {
+   "reference": 0.363,
+   "subject": 0.383,
+   "subject_vs_reference": 1.056
+  },
+  "width_torso": {
+   "reference": 0.313,
+   "subject": 0.296,
+   "subject_vs_reference": 0.946
+  },
+  "width_legs": {
+   "reference": 0.292,
+   "subject": 0.266,
+   "subject_vs_reference": 0.909
+  },
+  "width_feet": {
+   "reference": 0.249,
+   "subject": 0.23,
+   "subject_vs_reference": 0.924
+  }
+ }
+}

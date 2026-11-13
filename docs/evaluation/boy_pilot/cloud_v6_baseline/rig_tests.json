@@ -1,0 +1,162 @@
+{
+ "rig": {
+  "bones": 410,
+  "deform_bones": 73,
+  "controls": [
+   "VIS_thigh_ik_pole.L",
+   "VIS_thigh_ik_pole.R",
+   "VIS_upper_arm_ik_pole.L",
+   "VIS_upper_arm_ik_pole.R",
+   "chest",
+   "eye.L",
+   "eye.R",
+   "f_index.01.L",
+   "f_index.01.L.001",
+   "f_index.01.R",
+   "f_index.01.R.001",
+   "f_index.01_master.L",
+   "f_index.01_master.R",
+   "f_index.02.L",
+   "f_index.02.R",
+   "f_index.03.L",
+   "f_index.03.R",
+   "f_middle.01.L",
+   "f_middle.01.L.001",
+   "f_middle.01.R",
+   "f_middle.01.R.001",
+   "f_middle.01_master.L",
+   "f_middle.01_master.R",
+   "f_middle.02.L",
+   "f_middle.02.R",
+   "f_middle.03.L",
+   "f_middle.03.R",
+   "f_pinky.01.L",
+   "f_pinky.01.L.001",
+   "f_pinky.01.R",
+   "f_pinky.01.R.001",
+   "f_pinky.01_master.L",
+   "f_pinky.01_master.R",
+   "f_pinky.02.L",
+   "f_pinky.02.R",
+   "f_pinky.03.L",
+   "f_pinky.03.R",
+   "f_ring.01.L",
+   "f_ring.01.L.001",
+   "f_ring.01.R",
+   "f_ring.01.R.001",
+   "f_ring.01_master.L",
+   "f_ring.01_master.R",
+   "f_ring.02.L",
+   "f_ring.02.R",
+   "f_ring.03.L",
+   "f_ring.03.R",
+   "foot_fk.L",
+   "foot_fk.R",
+   "foot_heel_ik.L",
+   "foot_heel_ik.R",
+   "foot_ik.L",
+   "foot_ik.R",
+   "foot_spin_ik.L",
+   "foot_spin_ik.R",
+   "foot_tweak.L",
+   "foot_tweak.R",
+   "forearm_fk.L",
+   "forearm_fk.R",
+   "forearm_tweak.L",
+   "forearm_tweak.L.001",
+   "forearm_tweak.R",
+   "forearm_tweak.R.001",
+   "hand_fk.L",
+   "hand_fk.R",
+   "hand_ik.L",
+   "hand_ik.R",
+   "hand_tweak.L",
+   "hand_tweak.R",
+   "head",
+   "hips",
+   "neck",
+   "palm.L",
+   "palm.R",
+   "root",
+   "shin_fk.L",
+   "shin_fk.R",
+   "shin_tweak.L",
+   "shin_tweak.L.001",
+   "shin_tweak.R"
+  ]
+ },
+ "shape_keys": [
+  [
+   "brow.L",
+   "BrowDown"
+  ],
+  [
+   "brow.R",
+   "BrowDown"
+  ],
+  [
+   "lash.L",
+   "Blink"
+  ],
+  [
+   "lash.R",
+   "Blink"
+  ],
+  [
+   "lid_upper.L",
+   "Blink"
+  ],
+  [
+   "lid_upper.R",
+   "Blink"
+  ],
+  [
+   "mouth",
+   "Smile"
+  ],
+  [
+   "mouth",
+   "JawOpen"
+  ]
+ ],
+ "poses": {
+  "a_pose": {},
+  "arms_raised": {
+   "upper_arm_fk.L": true,
+   "upper_arm_fk.R": true
+  },
+  "elbows_90": {
+   "forearm_fk.L": true,
+   "forearm_fk.R": true,
+   "upper_arm_fk.L": true,
+   "upper_arm_fk.R": true
+  },
+  "knee_hip": {
+   "thigh_fk.L": true,
+   "shin_fk.L": true
+  },
+  "head_turn_tilt": {
+   "head": true
+  }
+ },
+ "gaze_controls": [
+  "eye.L",
+  "eye.R"
+ ],
+ "gltf_roundtrip": {
+  "file_mb": 12.8,
+  "armatures": 1,
+  "joints": [
+   73
+  ],
+  "meshes": 55,
+  "skinned_meshes": 54,
+  "morph_targets": [
+   "Blink",
+   "BrowDown",
+   "JawOpen",
+   "Smile"
+  ],
+  "materials": 17
+ }
+}

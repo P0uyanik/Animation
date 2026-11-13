@@ -219,3 +219,20 @@ noodle locks → denser layers with a longer halo; fogged lenses → guides thro
   - blink rotated the wrong way;
   - the iris did not follow the gaze (object-space shader).
 - Tried and reverted: irregular hair tufts (v4); every outline metric got worse.
+
+## 2026-11-13 — Local reproduction kit for pilot v6 (no character or engine changes)
+- The user's Blender is not reachable from this cloud session (no shared folder). Added a one-command reproduction
+  for the user's computer:
+  - `pipeline/blender/boy_pilot/reproduce_v6.py`;
+  - `env_check.py`;
+  - `fingerprint.py`.
+- Frozen the cloud v6 baseline into `docs/evaluation/boy_pilot/cloud_v6_baseline/`: 16 harness renders, cameras,
+  geometry fingerprint, metrics, rig tests, file hashes.
+- Instructions: `docs/evaluation/boy_pilot/LOCAL_REPRODUCTION.md`.
+- Cloud test of the kit (Blender 5.3.0 module via a test stand-in): REPRODUCED. Worst silhouette overlap 0.9999,
+  worst mean colour difference 0.31/255, metrics identical.
+- Fixed in the kit before release:
+  - Cycles and AgX checks gave false negatives (their enums are dynamic);
+  - the exact coordinate hash flips on float rounding, so geometry is now compared numerically (hash kept as
+    informational).
+- Existing v6 files untouched.
