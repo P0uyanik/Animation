@@ -350,12 +350,12 @@ def character_b():
     vest = mat(c, "vest_knit", baseColor=[0.42, 0.24, 0.24], sheen=0.8, sheenColor=[1.0, 0.8, 0.8],
                texture={"type": "knit", "color2": [0.35, 0.19, 0.19], "scale": 170, "amount": 0.15})
     part(c, "vest", vest, [
-        {"name": "shell", "type": "roundCone", "bone": "chest", "a": [0, 0.655, -0.004], "b": [0, 0.455, 0], "r1": 0.075, "r2": 0.092},
+        {"name": "shell", "type": "roundCone", "bone": "chest", "a": [0, 0.655, -0.004], "b": [0, 0.455, 0], "r1": 0.075, "r2": 0.103},
         {"name": "hem", "type": "ellipsoid", "bone": "spine", "center": [0, 0.47, 0.0], "radii": [0.098, 0.03, 0.09], "blend": 0.03},
         {"name": "frontOpen", "type": "roundBox", "bone": "chest", "center": [0, 0.56, 0.11], "halfSize": [0.014, 0.14, 0.06], "rounding": 0.01, "blend": 0.01, "subtract": True},
         {"name": "neckOpen", "type": "ellipsoid", "bone": "chest", "center": [0, 0.672, 0.02], "radii": [0.062, 0.05, 0.075], "blend": 0.01, "subtract": True},
         {"name": "armHole.L", "type": "ellipsoid", "bone": "chest", "center": [0.085, 0.6, 0], "radii": [0.035, 0.05, 0.05], "blend": 0.008, "subtract": True, "mirror": True},
-        {"name": "inner", "type": "roundCone", "bone": "chest", "a": [0, 0.68, -0.004], "b": [0, 0.40, 0], "r1": 0.068, "r2": 0.085, "blend": 0.003, "subtract": True},
+        {"name": "inner", "type": "roundCone", "bone": "chest", "a": [0, 0.68, -0.004], "b": [0, 0.40, 0], "r1": 0.068, "r2": 0.094, "blend": 0.003, "subtract": True},
     ], voxel=0.0014, skinFalloff=0.015, skinSmoothing=3, pattern="knit", patternAmplitude=0.0012, patternScale=150, patternCenter=[0, 0, 0])
     fuzz(c, "vest", mat(c, "vest_fiber", type="fiber", baseColor=[0.5, 0.3, 0.3], betaM=0.4, betaN=0.8), 90, 0.003)
     part(c, "vestPockets", vest, [{"name": "pocket.L", "type": "roundBox", "bone": "spine", "center": [0.05, 0.49, 0.085],

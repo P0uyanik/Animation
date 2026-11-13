@@ -12,7 +12,7 @@ labels = ["neutral", "happy", "surprised", "sad", "annoyed", "blink", "look left
 # Per frame: smile, mouthOpen, frown, brow X (raise <0), brow tilt Z (sad <0, angry >0), lid rotation, look-at target
 F = [
     (0, 0, 0, 0, 0, 0, cam),
-    (1, 0.35, 0, -3, 0, 12, cam),
+    (1, 0.08, 0, -3, 0, 12, cam),
     (0, 1, 0, -8, 0, -4, cam),
     (0, 0, 1, -4, -9, 20, [0.0, 0.5, 0.6]),
     (0, 0, 0.6, 5, 9, 30, cam),
