@@ -21,7 +21,7 @@ White-haired girl in a sunlit classroom looking down at a paper boat and reachin
 - Characters A/B/C reconstructed against the references (`docs/ITERATION_04_PHASE_A_ANALYSIS.md`): larger wide-set
   eyes, shorter upper face and fuller chin, felted fringes/crowns/clumps, hair mass under the locks, bigger buns and
   bow (A), bell skirt + ribbed hem (A), V-neck vest with felt motifs (B), loose hoodie + wide joggers (C), mouths with
-  teeth and tongue. Comparison sheets: `docs/iteration4/compare_*_ref_it3_it4.png`.
+  teeth and tongue. Comparison sheets: `docs/iteration4/compare_*_ref_it3_it4.jpg`.
 - Materials: random-walk subsurface scattering for skin; ribbed cuffs and hems.
 - Animation: life layer (breathing, weight shift, blinks, head follows gaze), actions (look, expression, reach,
   touch, walk) compiled to generated tracks, articulated fingers with contact grasp, automatic camera director.

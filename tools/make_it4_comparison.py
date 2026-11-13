@@ -57,11 +57,11 @@ for n in ("A", "B", "C"):
     for p in row:
         out.paste(p, (x, 0))
         x += p.width + 8
-    out.save(f"docs/iteration4/compare_{n}_ref_it3_it4.png")
+    out.convert("RGB").save(f"docs/iteration4/compare_{n}_ref_it3_it4.jpg", quality=92)
     panels.append(out)
 W = max(p.width for p in panels)
 sheet = Image.new("RGB", (W, (H + 10) * 3), (255, 255, 255))
 for i, p in enumerate(panels):
     sheet.paste(p, (0, i * (H + 10)))
-sheet.save("docs/iteration4/compare_ABC_ref_it3_it4.png")
-print("wrote docs/iteration4/compare_{A,B,C}_ref_it3_it4.png and compare_ABC_ref_it3_it4.png")
+sheet.save("docs/iteration4/compare_ABC_ref_it3_it4.jpg", quality=92)
+print("wrote docs/iteration4/compare_{A,B,C}_ref_it3_it4.jpg and compare_ABC_ref_it3_it4.jpg")

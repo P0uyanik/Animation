@@ -27,7 +27,7 @@ Copies of the evidence (JPEG) are in `docs/iteration4/` so they survive with the
 | 4 | Hair close-ups (three-quarter and back) | `renders/it4/hair_{A,B,C}_{threequarter,back}_900x700.png` | Rendered, visually inspected |
 | 5 | Clothing close-ups | `renders/it4/cloth_{A_dress,B_vest_blouse,C_hoodie}.png` | Rendered, visually inspected |
 | 6 | Expression sheets (10 each) | `renders/it4/expression_sheet_{girl_white_hair,girl_brown_glasses,boy_dark_hair}.png` | Rendered, visually inspected |
-| 7 | Reference vs iteration 3 vs iteration 4 | `docs/iteration4/compare_{A,B,C}_ref_it3_it4.png`, `compare_ABC_ref_it3_it4.png` | Done (same camera for It3/It4) |
+| 7 | Reference vs iteration 3 vs iteration 4 | `docs/iteration4/compare_{A,B,C}_ref_it3_it4.jpg`, `compare_ABC_ref_it3_it4.jpg` | Done (same camera for It3/It4) |
 | 8 | Improved group scene | `renders/it4/group_watertable_v4_wide_f172_1280x720.png` + director shots f62/f92/f146 | Rendered, visually inspected |
 | 9 | Short animation (natural movement and interaction) | `renders/it4/watertable_v4_640x360_30fps.mp4` (6 s, 180 frames, 30 fps) | See "Animation" |
 | 10 | Test results | below | Tested |
@@ -82,6 +82,15 @@ reference's dark brown frames · vest lacks the fair-isle band and pocket button
 in the hoodie pocket (reference pose) · trouser cuffs less bunched.
 **All:** eyes show a bit more white around the iris than the references, most visibly in three-quarter views where
 the eyeball's side shows (`hair_A_threequarter_900x700.png`); hand/finger shapes are stubby.
+
+## Animation (`docs/iteration4/watertable_v4_640x360_30fps.mp4`, contact sheet `anim_v4_contact.jpg`)
+Rendered: 180 frames, 640x360, 30 fps, 12 samples, ~29 s per frame. Visually inspected on a contact sheet:
+- Works: C walks in and stops at the table; everyone breathes and blinks; B's close-up while she holds and looks at
+  the boat (frames 74–103) reads well; the cuts land on the actions.
+- Weak: the insert shots on the grip (frames ~48–73) and the placing (~104–133) keep the boat small or partly behind
+  the rim, so the key contact is hard to see; the touch insert (~134–159) shows A's hand above the water but not the
+  fingertip meeting it. These are director framing rules (BUGS-23/27), not missing motion.
+- Not checked frame by frame for popping; grain from 12 samples is visible.
 
 ## Tests (all passing at the end of the iteration)
 - `plush_tests`: 24 test cases (iteration 3's 16 plus: mesher brick culling vs exhaustive; subsurface furnace test

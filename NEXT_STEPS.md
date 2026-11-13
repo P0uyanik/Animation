@@ -1,7 +1,7 @@
 # Next steps
 
 **Exact next task:** none until you have reviewed iteration 4. Iteration 5 must not start before your approval.
-Open `docs/ITERATION_04_ACCEPTANCE_REPORT.md` and the comparison sheets `docs/iteration4/compare_*_ref_it3_it4.png`;
+Open `docs/ITERATION_04_ACCEPTANCE_REPORT.md` and the comparison sheets `docs/iteration4/compare_*_ref_it3_it4.jpg`;
 tell me which character details still differ from your designs (the report lists the ones I can see).
 
 ## After your review (candidates, to be agreed)
