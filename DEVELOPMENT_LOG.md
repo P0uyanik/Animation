@@ -171,3 +171,5 @@ noodle locks → denser layers with a longer halo; fogged lenses → guides thro
 - Decisions recorded: TD-35 (Blender as a background backend, subsystems replaced only on evidence) and TD-36
   (`boy_yellow_hoodie`, A-pose, charcoal-plum backpack, canonical identity protected).
 - Iteration 5 not started; the engine is unchanged.
+- Re-send: #28 (`28_boy_facial_expression_library.webp`) and #29 (`29_boy_production_integration_validation.webp`)
+  stored and verified. The reference package is complete: 17 technical sheets, all stored.

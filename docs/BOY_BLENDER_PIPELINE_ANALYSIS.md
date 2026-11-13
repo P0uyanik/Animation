@@ -30,8 +30,7 @@ recommendation._
   - Plush Studio stays the production environment: scenes, actions, director, life layer and final output.
 - **[V] References (final audit, §2).**
   - 29 uploads: 7 original/group images and 17 technical sheets; #13–#17 duplicated #8–#12.
-  - 15 of the 17 technical sheets are stored in `docs/references/boy_pipeline/` and verified readable. #28 (expression
-    library) and #29 (integration/validation) were reviewed but did not reach the upload store.
+  - All 17 technical sheets are stored in `docs/references/boy_pipeline/` and verified readable.
   - No reference gives the boy's real height, and only the hair has numeric material values.
 - **[R] Biggest risk.** Reference-level sculpted forms (face, hair clumps, fleece folds) produced by scripted modelling
   without a human artist. This needs your decision (section 9).
@@ -72,7 +71,7 @@ Both checkpoints are preserved in git (Iteration 3 = `db01ad6`, Iteration 4 = `8
 | 18–22 | `boy_pipeline/18…22_*.webp` | Technical sheets (see 2.3) | boy | Technical |
 | 23–26 | `boy_pipeline/23…26_*.webp` (stored on the re-send, 2026-11-13) | Technical sheets (see 2.3) | boy | Technical |
 | 27 | `boy_pipeline/27_boy_deformation_collision_validation.webp` | Technical sheet (see 2.3); new with the re-send | boy | Technical |
-| 28–29 | **not stored** (shown in the conversation, not written to the upload store) | Technical sheets (see 2.3) | boy | Technical |
+| 28–29 | `boy_pipeline/28…29_*.webp` (stored on the re-send, 2026-11-13) | Technical sheets (see 2.3) | boy | Technical |
 | video | `video_watertable.mp4` | Water-table animation, 5 s | all three | Motion reference |
 
 ### 2.3 The 17 technical reference sheets
@@ -93,12 +92,12 @@ Both checkpoints are preserved in git (Iteration 3 = `db01ad6`, Iteration 4 = `8
 | 13 | 25 | `25_boy_uv_organization_texture_direction.webp` | UV seams (T-pose and A-pose), per-part UV layouts, checker validation, fibre direction, Blender UV view | sections 01–12 | **yes** |
 | 14 | 26 | `26_boy_object_interaction_contact_points.webp` | Hand contact zones, 4 grasp types, pick-up/release sequences, foot/lean/sit contact, arm IK | "Character C_reference_01" | **yes** |
 | 15 | 27 | `27_boy_deformation_collision_validation.webp` | Neutral-pose validation (front, ¾, side, back, back-¾ with level lines and arm/leg joints); skeleton & joint deformation (run, squat, arms up); facial deformation tests (neutral, happy-closed eyes, surprised, eyes closed); hand tests (open, fist, pointing); foot/shoe flex and floor contact; clothing & hair collision (hand on chest, bow forward, head tilt) | none | **yes** |
-| 16 | 28 | — proposed `28_boy_facial_expression_library.webp` | "02_FACIAL_EXPRESSION_LIBRARY", expression validation in ¾ view: 01 neutral, 02 happy, 03 sad, 04 surprised, 05 angry, 06 worried, 07 confused, 08 curious, 09 sleepy, 10 excited, 11 embarrassed, 12 gentle smile. 16 tiles; row 3 repeats labels with different faces | "@character_c_reference_01" | **no** |
-| 17 | 29 | — proposed `29_boy_production_integration_validation.webp` | "3D character production integration & validation blueprint": canonical turnaround (front, ¾, left, back; backpack; hands in pockets); face, hair-clump, clothing-layer and hand/foot geometry; rig hierarchy (hair rig, spine, head/neck, root, arm/leg IK/FK, pelvis, hand/finger controllers); skinning tests ("no mesh collisions", "smooth joint deformation"); material assignment (skin SSS, hair rough felt, hoodie yellow fuzzy fleece, pants charcoal rough fabric, shoes yellow canvas + rubber) with UV thumbnails; validation poses (walk, sit, run, object interaction) | "Character A (@character_c_reference_01)" | **no** |
+| 16 | 28 | `28_boy_facial_expression_library.webp` | "02_FACIAL_EXPRESSION_LIBRARY", expression validation in ¾ view: 01 neutral, 02 happy, 03 sad, 04 surprised, 05 angry, 06 worried, 07 confused, 08 curious, 09 sleepy, 10 excited, 11 embarrassed, 12 gentle smile. 16 tiles; row 3 repeats labels with different faces | "@character_c_reference_01" | **yes** |
+| 17 | 29 | `29_boy_production_integration_validation.webp` | "3D character production integration & validation blueprint": canonical turnaround (front, ¾, left, back; backpack; hands in pockets); face, hair-clump, clothing-layer and hand/foot geometry; rig hierarchy (hair rig, spine, head/neck, root, arm/leg IK/FK, pelvis, hand/finger controllers); skinning tests ("no mesh collisions", "smooth joint deformation"); material assignment (skin SSS, hair rough felt, hoodie yellow fuzzy fleece, pants charcoal rough fabric, shoes yellow canvas + rubber) with UV thumbnails; validation poses (walk, sit, run, object interaction) | "Character A (@character_c_reference_01)" | **yes** |
 
 Result:
-- **17 technical sheets were received and reviewed. 15 are stored (verified readable, 2026-11-13); #28 and #29 are
-  not stored**, because they never reached the upload store. Re-send needed.
+- **17 technical sheets were received and reviewed; all 17 are stored** (verified readable, no duplicates, nothing
+  overwritten; 2026-11-13).
 - 15 sheets show only the boy; #9 and #10 show all three characters.
 - There are **no dedicated technical sheets for the two girls** in this workspace, only the group sheets #9 and #10.
   They are out of scope for this phase.
@@ -108,7 +107,7 @@ Result:
 - **Inaccessible as files:**
   - #23–#26 were re-sent, stored and verified, together with the new #27.
   - Duplicate check: #23–#27 match no earlier file. Nothing was overwritten.
-  - **#28 and #29 are not stored**: they were reviewed visually only.
+  - #28 and #29 were re-sent and stored; they match no earlier file.
 - **Never received:** the second animation reference video named in the Iteration 3 brief.
 - **Possibly incomplete series** (inferred from section numbers on the sheets; cannot be confirmed from the images):
   - #24 is titled "01_Material_Identification"; no 02 or later material sheet arrived.
@@ -137,11 +136,11 @@ Result:
 | Materials, textures | #24 (qualitative, all parts), #21 (hair: #2D2D2D, roughness 0.95, SSS) | Numeric values for skin, hoodie, trousers, shoes, eyes, straps |
 | Object interaction, contact points | #26 (contact zones, 4 grasp types, pick-up/release, foot/lean/sit contact, IK), #18 (boat, pencil, toy, cup, release, flat surface) | — |
 | Animation deformation tests | **#27** (run, squat, arms up; collision poses), #19 (arms up, bow, sit, walk, kneel), #20, #23 | — |
-| Full integration | **#29** (integration and validation blueprint), #24, #27 | #29 not stored |
+| Full integration | **#29** (integration and validation blueprint), #24, #27 | — |
 | Collision (clothing, hair, hands, feet) | **#27** | Collision method (simulation vs. correctives) not specified |
 | Facial topology | #11 (eye, mouth, jaw loops, ear junction) | — |
 | Facial rig, expressions | #12 (controls, 15 blendshapes, eyelid states, jaw/mouth), #8, #9 | — |
-| Facial expression validation | **#28** (12 expressions, ¾), #27, #8, #9, #12 | #28 not stored |
+| Facial expression validation | **#28** (12 expressions, ¾), #27, #8, #9, #12 | — |
 | Turnaround, proportions | #7, #8, #9, #19 | Numeric scale |
 | Real-world scale | — | **Height in cm**: dimension arrows in #19/#23 carry no numbers |
 
@@ -575,7 +574,7 @@ This touches no engine code and produces the yardstick every later stage is judg
 - UV seams, layouts and texture direction (#25).
 - Object interaction and environmental contact (#26).
 - Deformation, facial-deformation and collision validation (#27).
-- Expression library (#28) and production integration/validation (#29): reviewed, **not stored**.
+- Expression library (#28) and production integration/validation (#29).
 - Group and environment context (#1–#3, #5, #9, #10, video).
 
 **Missing or incomplete:**
@@ -586,10 +585,9 @@ This touches no engine code and produces the yardstick every later stage is judg
 5. Numeric skin weights (heatmaps are pictures only).
 6. Possibly further sheets implied by section numbering: material sheets after "01"; UV sections 03/07/09; hair-rig
    sections 05–07.
-7. Files for #28 and #29 (re-send needed; at most 5 images per message).
-8. The second animation reference video named in the Iteration 3 brief.
-9. No dedicated technical sheets for the two girls (out of scope for this phase).
-10. Conflicts in §2.6 that remain open after the decisions in §17: items 4, 5, 7, 8, 10–12, 15–17, 20, 22, 24 and 25.
+7. The second animation reference video named in the Iteration 3 brief.
+8. No dedicated technical sheets for the two girls (out of scope for this phase).
+9. Conflicts in §2.6 that remain open after the decisions in §17: items 4, 5, 7, 8, 10–12, 15–17, 20, 22, 24 and 25.
     Item 2 (turnaround stance) is settled by item 23.
 
 ---
