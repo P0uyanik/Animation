@@ -144,3 +144,15 @@ noodle locks → denser layers with a longer halo; fogged lenses → guides thro
   frames after a gaze jump and 21° fifteen frames after; reach puts the wrist 51 mm from the object at contact
   (leaning 2°+), carries it ≥3 cm up and leaves it where placed; walk arrives exactly, 0 of 59 frames with both feet
   sliding, feet lift ~2 cm, feet together at the end.
+
+## 2026-11-13 — Iteration 4: water table v4, director, Studio round trip
+
+- `tools/make_watertable_v4.py` → `content/scenes/watertable_v4.scene.json`: 180 frames at 30 fps, no hand keys;
+  staging iterated with low-res previews (`renders/it4wip/v4_sheet*.png`): first master shot too tight, boat too
+  big for the hands (scale 0.45 now), A turned away from the camera (moved to the back-right corner), medium shot
+  dropped as too short (timing changed), touch fingertip above the water (fixed by fingertip correction).
+- Studio round trip on a copy of the v4 scene: `--script-hair-edit` saved (actions, director and life kept; only the
+  script's hand-made camera key written; no generated keys baked), `--script-verify` reopened it, recompiled the
+  same shot list, and the edit survived (C has no hair lock groups now, so the script's lock went to `lashes.L`,
+  4 → 5). Screenshot `renders/it4/studio_v4_reopened.png`. Note: the scripted test only exits with `--screenshot`.
+- Fixed before use: touch fingertip correction shifted every key of that hand's IK track, not just the action's.
