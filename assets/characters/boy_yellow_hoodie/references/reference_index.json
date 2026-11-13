@@ -452,7 +452,13 @@
    "focal_mm_estimate": 70,
    "silhouette": true,
    "pose": "neutral, arms down",
-   "backpack": "straps"
+   "backpack": "straps",
+   "hide_objects_prefix": [
+    "backpack_body",
+    "backpack_pocket",
+    "backpack_handle"
+   ],
+   "note": "sheet #27 shows the straps but no backpack body (\u00a72.6 item 20): the body is hidden for this comparison"
   },
   {
    "id": "val27_threequarter_right",
@@ -469,7 +475,12 @@
    "silhouette": true,
    "pose": "neutral, arms down",
    "backpack": "straps",
-   "note": "skeleton overlay on the right arm"
+   "note": "skeleton overlay on the right arm; sheet #27 shows the straps but no backpack body (\u00a72.6 item 20): the body is hidden for this comparison",
+   "hide_objects_prefix": [
+    "backpack_body",
+    "backpack_pocket",
+    "backpack_handle"
+   ]
   },
   {
    "id": "val27_side_right",
@@ -486,7 +497,12 @@
    "silhouette": true,
    "pose": "neutral, arms down",
    "backpack": "straps",
-   "note": "skeleton overlay on arm and leg"
+   "note": "skeleton overlay on arm and leg; sheet #27 shows the straps but no backpack body (\u00a72.6 item 20): the body is hidden for this comparison",
+   "hide_objects_prefix": [
+    "backpack_body",
+    "backpack_pocket",
+    "backpack_handle"
+   ]
   },
   {
    "id": "val27_back",
@@ -503,7 +519,12 @@
    "silhouette": true,
    "pose": "neutral, arms down",
    "backpack": "none visible",
-   "note": "no backpack in the back views (\u00a72.6 item 20)"
+   "note": "no backpack in the back views (\u00a72.6 item 20); sheet #27 shows the straps but no backpack body (\u00a72.6 item 20): the body is hidden for this comparison",
+   "hide_objects_prefix": [
+    "backpack_body",
+    "backpack_pocket",
+    "backpack_handle"
+   ]
   },
   {
    "id": "val27_back_threequarter",
@@ -520,7 +541,12 @@
    "silhouette": true,
    "pose": "neutral, arms down",
    "backpack": "strap edge",
-   "note": "yaw approximate"
+   "note": "yaw approximate; sheet #27 shows the straps but no backpack body (\u00a72.6 item 20): the body is hidden for this comparison",
+   "hide_objects_prefix": [
+    "backpack_body",
+    "backpack_pocket",
+    "backpack_handle"
+   ]
   },
   {
    "id": "canon29_front",

@@ -37,25 +37,34 @@ def parse():
     ap.add_argument("--views", default="", help="comma-separated view ids (default: all)")
     ap.add_argument("--drop-material", default="backdrop", help="objects using a material containing this are removed")
     ap.add_argument("--save-blend", default="")
+    ap.add_argument("--keep-materials", action="store_true", help="render the subject's own materials (default: neutral roughness)")
     return ap.parse_args(argv)
 
 
-def import_subject(path, drop):
+def import_subject(path, drop, keep_materials=False):
     before = set(bpy.data.objects)
     ext = os.path.splitext(path)[1].lower()
-    if ext == ".obj":
+    if ext == ".blend":  # all objects of a subject file (meshes, rig, fur curves, landmark empties)
+        with bpy.data.libraries.load(path, link=False) as (src, dst):
+            dst.objects = list(src.objects)
+        coll = bpy.data.collections.new("subject")
+        bpy.context.scene.collection.children.link(coll)
+        for o in dst.objects:  # skip rig control widgets (Rigify WGT- shapes are meshes but never rendered)
+            if o is not None and o.type not in ("CAMERA", "LIGHT") and not o.name.startswith("WGT-"):
+                coll.objects.link(o)
+    elif ext == ".obj":
         bpy.ops.wm.obj_import(filepath=path, forward_axis="NEGATIVE_Z", up_axis="Y")
     elif ext in (".glb", ".gltf"):
         bpy.ops.import_scene.gltf(filepath=path)
     else:
         raise SystemExit(f"unsupported subject format: {ext}")
-    objs = [o for o in bpy.data.objects if o not in before]
+    objs = [o for o in bpy.data.objects if o not in before and o.name in bpy.context.scene.objects]  # in-scene only
     for o in list(objs):
         mats = [s.material.name for s in o.material_slots if s.material]
         if drop and any(drop in m for m in mats):
             bpy.data.objects.remove(o, do_unlink=True)
             objs.remove(o)
-    for o in objs:  # neutral, slightly rough materials: the harness compares shape and colour, not look development
+    for o in ([] if keep_materials else objs):  # neutral, slightly rough materials unless the subject's own are kept
         for s in o.material_slots:
             if s.material and s.material.use_nodes:
                 p = s.material.node_tree.nodes.get("Principled BSDF")
@@ -67,11 +76,13 @@ def import_subject(path, drop):
 
 def bbox(objs):
     lo = Vector((1e9, 1e9, 1e9)); hi = Vector((-1e9, -1e9, -1e9))
+    deps = bpy.context.evaluated_depsgraph_get()
     for o in objs:
         if o.type != "MESH":
             continue
-        for c in o.bound_box:
-            w = o.matrix_world @ Vector(c)
+        ev = o.evaluated_get(deps)
+        for c in ev.bound_box:
+            w = ev.matrix_world @ Vector(c)
             lo = Vector(map(min, lo, w)); hi = Vector(map(max, hi, w))
     return lo, hi
 
@@ -127,7 +138,9 @@ def main():
     os.makedirs(a.out, exist_ok=True)
     bpy.ops.wm.read_factory_settings(use_empty=True)
     scene = bpy.context.scene
-    objs = import_subject(os.path.abspath(a.subject), a.drop_material)
+    objs = import_subject(os.path.abspath(a.subject), a.drop_material, a.keep_materials)
+    bpy.context.view_layer.update()
+    landmarks = [o for o in bpy.data.objects if o.name.startswith("LM_")]
     lo, hi = bbox(objs)
     target = (lo + hi) * 0.5
     studio_lighting()
@@ -150,17 +163,28 @@ def main():
     for v in index["views"]:
         if wanted and v["id"] not in wanted:
             continue
+        hidden = [o for o in bpy.data.objects if any(o.name.startswith(p) for p in v.get("hide_objects_prefix", []))]
+        for o in hidden:  # parts the reference view does not show (declared in the reference index)
+            o.hide_render = True
         d, dist = place_camera(cam, target, v["yaw_deg"], v["elevation_deg"], v["focal_mm_estimate"], lo, hi,
                                a.width / a.height, a.fill)
         scene.render.filepath = os.path.join(os.path.abspath(a.out), v["id"] + ".png")
         t = time.time()
         bpy.ops.render.render(write_still=True)
         cl, tg = cam.location, target
+        from bpy_extras.object_utils import world_to_camera_view
+        lm = {}
+        for o in landmarks:  # pixel coordinates (x right, y down) of landmark empties in this view
+            p = world_to_camera_view(scene, cam, o.matrix_world.translation)
+            lm[o.name[3:]] = [round(p.x * a.width, 2), round((1 - p.y) * a.height, 2), round(p.z, 4)]
         cams["views"].append({
             "id": v["id"], "yaw_deg": v["yaw_deg"], "elevation_deg": v["elevation_deg"], "focal_mm": v["focal_mm_estimate"],
             "distance": dist, "camera_blender": list(cl), "target_blender": list(tg),
             # Plush is Y-up with the character facing +Z: (x, y, z)_plush = (x, z, -y)_blender
-            "camera_plush": [cl.x, cl.z, -cl.y], "target_plush": [tg.x, tg.z, -tg.y], "render_s": round(time.time() - t, 2)})
+            "camera_plush": [cl.x, cl.z, -cl.y], "target_plush": [tg.x, tg.z, -tg.y], "render_s": round(time.time() - t, 2),
+            **({"landmarks_px": lm} if lm else {})})
+        for o in hidden:
+            o.hide_render = False
         print(f"[harness] {v['id']}: yaw {v['yaw_deg']}, elev {v['elevation_deg']}, {v['focal_mm_estimate']} mm, "
               f"distance {dist:.2f} m, {time.time() - t:.1f} s", flush=True)
     cams["total_s"] = round(time.time() - t0, 1)
@@ -170,4 +194,5 @@ def main():
     print(f"[harness] done: {len(cams['views'])} views in {cams['total_s']} s (Blender {bpy.app.version_string})", flush=True)
 
 
-main()
+if __name__ == "__main__":
+    main()

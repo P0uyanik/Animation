@@ -1,0 +1,52 @@
+{
+ "views": {
+  "orig07_front": {
+   "iou": 0.741,
+   "contour_mean_pct_height": 2.22,
+   "contour_p95_pct_height": 6.3,
+   "hair_contour_mean_pct_head": 3.74,
+   "hair_contour_p95_pct_head": 11.55
+  },
+  "val27_front": {
+   "iou": 0.791,
+   "contour_mean_pct_height": 1.59,
+   "contour_p95_pct_height": 3.94,
+   "hair_contour_mean_pct_head": 3.23,
+   "hair_contour_p95_pct_head": 8.63
+  },
+  "val27_threequarter_right": {
+   "iou": 0.801,
+   "contour_mean_pct_height": 1.64,
+   "contour_p95_pct_height": 4.26,
+   "hair_contour_mean_pct_head": 3.18,
+   "hair_contour_p95_pct_head": 8.9
+  },
+  "val27_side_right": {
+   "iou": 0.809,
+   "contour_mean_pct_height": 1.41,
+   "contour_p95_pct_height": 3.5,
+   "hair_contour_mean_pct_head": 2.96,
+   "hair_contour_p95_pct_head": 8.3
+  },
+  "val27_back": {
+   "iou": 0.783,
+   "contour_mean_pct_height": 1.73,
+   "contour_p95_pct_height": 4.32,
+   "hair_contour_mean_pct_head": 3.47,
+   "hair_contour_p95_pct_head": 8.55
+  },
+  "val27_back_threequarter": {
+   "iou": 0.811,
+   "contour_mean_pct_height": 1.74,
+   "contour_p95_pct_height": 4.44,
+   "hair_contour_mean_pct_head": 3.02,
+   "hair_contour_p95_pct_head": 7.85
+  }
+ },
+ "summary": {
+  "views": 6,
+  "mean_iou": 0.789,
+  "mean_contour_pct_height": 1.72,
+  "mean_hair_contour_pct_head": 3.27
+ }
+}

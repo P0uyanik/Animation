@@ -1,10 +1,10 @@
 # Next steps
 
-**Exact next task:** waiting for approval of the hybrid production feasibility study
-(`docs/BOY_HYBRID_PRODUCTION_FEASIBILITY.md`).
-- Proposed first step: the head-and-hair pilot (§9). It needs an artist.
-- Blocker for automation runs: allow `download.blender.org` for the pinned Blender binary.
-- No modelling, integration or iteration 5 before approval.
+**Exact next task:** review the automated pilot (`docs/evaluation/boy_pilot/PILOT_REPORT.md`). Proposed next step:
+make the pilot run on the user's own Blender, from a Claude session on the user's computer or by running the
+commands in the report's §8. This verifies the version, headless mode and Python access, then reproduces v6 there.
+Then improve the hair silhouette (the largest identity gap).
+- No full integration, no other characters, no iteration 5.
 
 ## After your review (candidates, to be agreed)
 1. Character corrections you request (approval checkpoint for A, B, C).

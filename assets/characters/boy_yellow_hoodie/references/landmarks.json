@@ -1,0 +1,7 @@
+{
+ "note": "Manual one-time annotation of face landmarks in the reference view crops (pixel coordinates x right, y down, in references/views/<view>.png). 'eye' = centre of the visible eye opening; 'ear' = outer edge of the ear at its middle; 'chin' = lowest visible point of the face. Annotated on 4x-5x gridded zooms (docs/evaluation/boy_pilot/). Estimated precision: +-1.5 px (#27), +-2 px (#7). Character's left (L) is on the screen right in front views.",
+ "views": {
+  "val27_front": {"eye_R": [81, 174], "eye_L": [151, 174], "ear_R": [24, 180], "ear_L": [208, 180], "nose": [118, 187], "mouth": [118, 201], "chin": [118, 215]},
+  "orig07_front": {"eye_R": [142.5, 230], "eye_L": [240, 230], "ear_R": [65, 242.5], "ear_L": [312.5, 242.5], "nose": [187.5, 246], "mouth": [192.5, 270], "chin": [192, 290]}
+ }
+}

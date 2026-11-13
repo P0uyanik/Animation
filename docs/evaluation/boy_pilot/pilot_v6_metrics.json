@@ -1,0 +1,605 @@
+{
+ "views": {
+  "orig07_front": {
+   "iou": 0.811,
+   "contour_mean_pct_height": 1.83,
+   "contour_p95_pct_height": 4.76,
+   "hair_contour_mean_pct_head": 4.29,
+   "hair_contour_p95_pct_head": 9.29,
+   "landmarks": {
+    "eye_spacing/ear_width": {
+     "reference": 0.394,
+     "subject": 0.428,
+     "error_pct": 8.7
+    },
+    "mouth_below_eyes/ear_width": {
+     "reference": 0.162,
+     "subject": 0.158,
+     "error_pct": -2.4
+    },
+    "nose_below_eyes/ear_width": {
+     "reference": 0.065,
+     "subject": 0.081,
+     "error_pct": 25.0
+    },
+    "chin_below_eyes/ear_width": {
+     "reference": 0.242,
+     "subject": 0.196,
+     "error_pct": -19.2
+    },
+    "ear_width/height": {
+     "reference": 0.312,
+     "subject": 0.313,
+     "error_pct": 0.2
+    },
+    "eye_line_from_feet/height": {
+     "reference": 0.712,
+     "subject": 0.625,
+     "error_pct": -12.3
+    }
+   },
+   "colour": {
+    "hair": {
+     "reference": [
+      48,
+      40,
+      34
+     ],
+     "subject": [
+      54,
+      49,
+      48
+     ],
+     "dE2000": 4.4
+    },
+    "skin": {
+     "reference": [
+      189,
+      145,
+      121
+     ],
+     "subject": [
+      188,
+      138,
+      114
+     ],
+     "dE2000": 2.6
+    },
+    "hoodie": {
+     "reference": [
+      191,
+      147,
+      77
+     ],
+     "subject": [
+      199,
+      151,
+      87
+     ],
+     "dE2000": 2.4
+    },
+    "trousers": {
+     "reference": [
+      38,
+      35,
+      30
+     ],
+     "subject": [
+      50,
+      47,
+      46
+     ],
+     "dE2000": 4.7
+    },
+    "shoe": {
+     "reference": [
+      179,
+      134,
+      71
+     ],
+     "subject": [
+      199,
+      154,
+      94
+     ],
+     "dE2000": 6.5
+    },
+    "cream": {
+     "reference": [
+      210,
+      200,
+      189
+     ],
+     "subject": [
+      218,
+      208,
+      201
+     ],
+     "dE2000": 2.8
+    }
+   }
+  },
+  "val27_front": {
+   "iou": 0.843,
+   "contour_mean_pct_height": 1.36,
+   "contour_p95_pct_height": 3.62,
+   "hair_contour_mean_pct_head": 2.35,
+   "hair_contour_p95_pct_head": 5.88,
+   "landmarks": {
+    "eye_spacing/ear_width": {
+     "reference": 0.38,
+     "subject": 0.408,
+     "error_pct": 7.2
+    },
+    "mouth_below_eyes/ear_width": {
+     "reference": 0.147,
+     "subject": 0.152,
+     "error_pct": 3.9
+    },
+    "nose_below_eyes/ear_width": {
+     "reference": 0.071,
+     "subject": 0.075,
+     "error_pct": 6.3
+    },
+    "chin_below_eyes/ear_width": {
+     "reference": 0.223,
+     "subject": 0.241,
+     "error_pct": 8.1
+    },
+    "ear_width/height": {
+     "reference": 0.327,
+     "subject": 0.301,
+     "error_pct": -8.0
+    },
+    "eye_line_from_feet/height": {
+     "reference": 0.709,
+     "subject": 0.697,
+     "error_pct": -1.7
+    }
+   },
+   "colour": {
+    "hair": {
+     "reference": [
+      48,
+      37,
+      35
+     ],
+     "subject": [
+      52,
+      47,
+      46
+     ],
+     "dE2000": 4.4
+    },
+    "skin": {
+     "reference": [
+      192,
+      143,
+      124
+     ],
+     "subject": [
+      196,
+      145,
+      123
+     ],
+     "dE2000": 1.5
+    },
+    "hoodie": {
+     "reference": [
+      194,
+      144,
+      80
+     ],
+     "subject": [
+      199,
+      151,
+      86
+     ],
+     "dE2000": 2.1
+    },
+    "trousers": {
+     "reference": [
+      38,
+      31,
+      31
+     ],
+     "subject": [
+      43,
+      41,
+      40
+     ],
+     "dE2000": 4.0
+    },
+    "shoe": {
+     "reference": [
+      189,
+      143,
+      84
+     ],
+     "subject": [
+      199,
+      156,
+      99
+     ],
+     "dE2000": 4.0
+    },
+    "cream": {
+     "reference": [
+      208,
+      193,
+      186
+     ],
+     "subject": [
+      215,
+      204,
+      196
+     ],
+     "dE2000": 2.9
+    }
+   }
+  },
+  "val27_threequarter_right": {
+   "iou": 0.852,
+   "contour_mean_pct_height": 1.31,
+   "contour_p95_pct_height": 3.36,
+   "hair_contour_mean_pct_head": 2.93,
+   "hair_contour_p95_pct_head": 6.09,
+   "colour": {
+    "hair": {
+     "reference": [
+      52,
+      41,
+      40
+     ],
+     "subject": [
+      56,
+      50,
+      49
+     ],
+     "dE2000": 4.0
+    },
+    "skin": {
+     "reference": [
+      185,
+      133,
+      115
+     ],
+     "subject": [
+      197,
+      146,
+      123
+     ],
+     "dE2000": 4.1
+    },
+    "hoodie": {
+     "reference": [
+      200,
+      151,
+      87
+     ],
+     "subject": [
+      202,
+      155,
+      92
+     ],
+     "dE2000": 1.1
+    },
+    "trousers": {
+     "reference": [
+      42,
+      35,
+      35
+     ],
+     "subject": [
+      46,
+      43,
+      42
+     ],
+     "dE2000": 4.0
+    },
+    "shoe": {
+     "reference": [
+      178,
+      126,
+      68
+     ],
+     "subject": [
+      191,
+      148,
+      90
+     ],
+     "dE2000": 7.2
+    },
+    "cream": {
+     "reference": [
+      210,
+      195,
+      188
+     ],
+     "subject": [
+      213,
+      202,
+      194
+     ],
+     "dE2000": 2.2
+    }
+   }
+  },
+  "val27_side_right": {
+   "iou": 0.84,
+   "contour_mean_pct_height": 1.26,
+   "contour_p95_pct_height": 3.21,
+   "hair_contour_mean_pct_head": 4.13,
+   "hair_contour_p95_pct_head": 8.66,
+   "colour": {
+    "hair": {
+     "reference": [
+      47,
+      39,
+      37
+     ],
+     "subject": [
+      47,
+      43,
+      42
+     ],
+     "dE2000": 2.8
+    },
+    "skin": {
+     "reference": [
+      198,
+      145,
+      125
+     ],
+     "subject": [
+      179,
+      125,
+      100
+     ],
+     "dE2000": 6.8
+    },
+    "hoodie": {
+     "reference": [
+      193,
+      146,
+      86
+     ],
+     "subject": [
+      183,
+      139,
+      73
+     ],
+     "dE2000": 3.0
+    },
+    "trousers": {
+     "reference": [
+      42,
+      34,
+      34
+     ],
+     "subject": [
+      40,
+      38,
+      38
+     ],
+     "dE2000": 3.6
+    },
+    "shoe": {
+     "reference": [
+      184,
+      136,
+      77
+     ],
+     "subject": [
+      174,
+      129,
+      66
+     ],
+     "dE2000": 3.0
+    },
+    "cream": {
+     "reference": [
+      212,
+      197,
+      188
+     ],
+     "subject": [
+      205,
+      193,
+      183
+     ],
+     "dE2000": 1.7
+    }
+   }
+  },
+  "val27_back": {
+   "iou": 0.853,
+   "contour_mean_pct_height": 1.4,
+   "contour_p95_pct_height": 3.35,
+   "hair_contour_mean_pct_head": 2.65,
+   "hair_contour_p95_pct_head": 5.98,
+   "colour": {
+    "hair": {
+     "reference": [
+      47,
+      38,
+      37
+     ],
+     "subject": [
+      52,
+      47,
+      46
+     ],
+     "dE2000": 3.1
+    },
+    "skin": {
+     "reference": [
+      194,
+      141,
+      119
+     ],
+     "subject": [
+      137,
+      82,
+      56
+     ],
+     "dE2000": 22.7
+    },
+    "hoodie": {
+     "reference": [
+      192,
+      142,
+      76
+     ],
+     "subject": [
+      192,
+      143,
+      74
+     ],
+     "dE2000": 0.8
+    },
+    "trousers": {
+     "reference": [
+      41,
+      34,
+      34
+     ],
+     "subject": [
+      37,
+      35,
+      35
+     ],
+     "dE2000": 3.6
+    },
+    "shoe": {
+     "reference": [
+      188,
+      138,
+      75
+     ],
+     "subject": [
+      184,
+      138,
+      72
+     ],
+     "dE2000": 1.4
+    },
+    "cream": {
+     "reference": [
+      212,
+      196,
+      188
+     ],
+     "subject": [
+      207,
+      195,
+      186
+     ],
+     "dE2000": 1.8
+    }
+   }
+  },
+  "val27_back_threequarter": {
+   "iou": 0.849,
+   "contour_mean_pct_height": 1.43,
+   "contour_p95_pct_height": 3.2,
+   "hair_contour_mean_pct_head": 4.05,
+   "hair_contour_p95_pct_head": 7.33,
+   "colour": {
+    "hair": {
+     "reference": [
+      50,
+      42,
+      41
+     ],
+     "subject": [
+      54,
+      49,
+      48
+     ],
+     "dE2000": 2.8
+    },
+    "skin": {
+     "reference": [
+      164,
+      112,
+      89
+     ],
+     "subject": [
+      144,
+      81,
+      48
+     ],
+     "dE2000": 11.5
+    },
+    "hoodie": {
+     "reference": [
+      203,
+      154,
+      86
+     ],
+     "subject": [
+      195,
+      146,
+      79
+     ],
+     "dE2000": 2.4
+    },
+    "trousers": {
+     "reference": [
+      43,
+      36,
+      36
+     ],
+     "subject": [
+      39,
+      37,
+      36
+     ],
+     "dE2000": 3.3
+    },
+    "shoe": {
+     "reference": [
+      186,
+      137,
+      75
+     ],
+     "subject": [
+      182,
+      137,
+      72
+     ],
+     "dE2000": 1.4
+    },
+    "cream": {
+     "reference": [
+      208,
+      192,
+      184
+     ],
+     "subject": [
+      209,
+      197,
+      188
+     ],
+     "dE2000": 2.1
+    }
+   }
+  }
+ },
+ "summary": {
+  "views": 6,
+  "mean_iou": 0.841,
+  "mean_contour_pct_height": 1.43,
+  "mean_hair_contour_pct_head": 3.4,
+  "landmark_max_abs_error_pct": 25.0,
+  "mean_dE2000": {
+   "cream": 2.2,
+   "hair": 3.6,
+   "hoodie": 2.0,
+   "shoe": 3.9,
+   "skin": 8.2,
+   "trousers": 3.9
+  }
+ }
+}

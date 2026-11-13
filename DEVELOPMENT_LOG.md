@@ -197,3 +197,25 @@ noodle locks → denser layers with a longer halo; fogged lenses → guides thro
   - glTF round trip keeps the deform skeleton, weights and 15 shape keys.
   - Hair curves survive USD and Alembic (3,000/3,000), not glTF.
 - Lesson for the export script: the Rigify metarig must be removed before export (the test exported 2 armatures).
+
+## 2026-11-13 — Automated Blender character production test (boy_yellow_hoodie pilot), no engine changes
+- Blender: the installation on the user's computer is not reachable from this cloud session (no shared folder). Used
+  the official Blender 5.3.0 Python module (scratch venv). Nothing downloaded or installed in the project.
+- New scripts in `pipeline/blender/boy_pilot/`:
+  - `build_boy_pilot.py` (model, materials, fur, Rigify rig, weights, shape keys, compare pose, glTF), with `geom.py`;
+  - `calibrate_colors.py` and `render_regions.py` (automatic albedo calibration);
+  - `rig_tests.py`, `preview.py`.
+- New tools: `pipeline/pilot_metrics.py` (contour, hair contour, landmarks, ΔE2000) and `pipeline/triptych.py`.
+- New data: `assets/characters/boy_yellow_hoodie/references/landmarks.json` (manual landmark annotation, #27 and #7).
+- Harness extended: `.blend` subjects, own materials, landmark projection, rig widgets excluded, per-view hidden parts.
+- Result v6: mean IoU 0.841 (baseline 0.789); proportions within ±7% except legs (−9%) and feet (−7.6%); #27 face
+  landmarks within ±8.1%; ΔE2000 ≤ 4.4 for all regions in front views; hair outline 3.40% (baseline 3.27%: not
+  better). Report: `docs/evaluation/boy_pilot/PILOT_REPORT.md`.
+- Bugs found and fixed by measurement:
+  - ears rotated about the world origin;
+  - harness counted rig widgets in the framing box;
+  - heat weights bound trouser legs to fingers and straps to the upper arms;
+  - heat weighting failed silently on the cuffs;
+  - blink rotated the wrong way;
+  - the iris did not follow the gaze (object-space shader).
+- Tried and reverted: irregular hair tufts (v4); every outline metric got worse.
