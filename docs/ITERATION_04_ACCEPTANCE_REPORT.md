@@ -10,6 +10,7 @@ the key moments. **The characters are not yet identical to the references** (lis
 yours: I have not treated them as approved. **Iteration 5 has not been started.**
 
 Status words: Implemented · Tested · Visually inspected · Incomplete · Not tested.
+Copies of the evidence (JPEG) are in `docs/iteration4/` so they survive with the repository; full PNGs in `renders/it4/`.
 
 ## Inputs
 - References on disk: three character sheets, the lineup, three classroom stills, one video (`docs/references/`).
@@ -21,7 +22,7 @@ Status words: Implemented · Tested · Visually inspected · Incomplete · Not t
 | # | Deliverable | Where | Status |
 | --- | --- | --- | --- |
 | 1 | Updated models A, B, C | `content/characters/*.character.json` (from `tools/charkit.py`) | Implemented, visually inspected; awaiting your approval |
-| 2 | Turnarounds (front, three-quarter, side, back) | `renders/it4/lineup_{front_1280x960,threequarter,side,back}_*.png` | Rendered, visually inspected |
+| 2 | Turnarounds (front, three-quarter, side, back) | `renders/it4/lineup_{front_1280x960,threequarter,side,back}_*.png` | Rendered, visually inspected. The front view is re-rendered after B's back-hair fix; the three-quarter, side and back views and `face_B`/`hair_B_threequarter` show B before that fix (her back hair started low, with a bare band) — skipped to save time |
 | 3 | Face close-ups | `renders/it4/face_{A,B,C}_900.png` | Rendered, visually inspected |
 | 4 | Hair close-ups (three-quarter and back) | `renders/it4/hair_{A,B,C}_{threequarter,back}_900x700.png` | Rendered, visually inspected |
 | 5 | Clothing close-ups | `renders/it4/cloth_{A_dress,B_vest_blouse,C_hoodie}.png` | Rendered, visually inspected |
@@ -77,7 +78,7 @@ raised) and the brows are thick and flat where the reference's are thin and arch
 regular and less voluminous around the face, and their roots show as round knobs beside the head in three-quarter
 view (`hair_B_threequarter_900x700.png`) · glasses frames thinner and lighter than the
 reference's dark brown frames · vest lacks the fair-isle band and pocket buttons; shorts slightly long.
-**C:** hair clumps more uniform in size and direction than the reference's mix of large and small clumps · hands not
+**C:** brows are flat greyish bars; the reference's are dark, thin and slanted (`face_C_900.png`) · hair clumps more uniform in size and direction than the reference's mix of large and small clumps · hands not
 in the hoodie pocket (reference pose) · trouser cuffs less bunched.
 **All:** eyes show a bit more white around the iris than the references, most visibly in three-quarter views where
 the eyeball's side shows (`hair_A_threequarter_900x700.png`); hand/finger shapes are stubby.
@@ -90,10 +91,30 @@ the eyeball's side shows (`hair_A_threequarter_900x700.png`); hand/finger shapes
   exactly, 0/59 frames with both feet sliding, feet lift ~2 cm); touch (index fingertip 1.4 mm from target)).
 - Image regressions: milestone 01 (unchanged, RMSE 0.016 ≤ 0.03), v2 face (unchanged), A/B/C lineup
   (re-baselined on purpose for the new characters; the iteration-3 image is kept as `lineup_abc_320x240_it3.png`).
-- Studio save/reopen round trip on a copy of the v4 scene: see "Studio" below.
+- Studio save/reopen round trip on a copy of the v4 scene: pass (actions, director, life kept; no generated keys
+  written; edit survived; `renders/it4/studio_v4_reopened.png`).
 
 ## Performance and memory (cloud machine)
-MEASUREMENTS_PLACEHOLDER
+Measured while other jobs shared the 4 cores at times, so treat single numbers as ±20%.
+
+| Render | Resolution | Samples (adaptive) | Render time |
+| --- | --- | --- | --- |
+| Lineup front, 3 characters | 1280x960 | 80 | 112 s |
+| Lineup three-quarter / side / back | 960x720 | 56–64 | 59–66 s |
+| Face close-ups A / B / C | 900x900 | 96 | 256 / 154 / 225 s |
+| Hair close-ups (three-quarter, back) | 900x700 | 56–80 | 59–211 s |
+| Clothing close-ups | 800x600 | 64 | 32–38 s |
+| Expression frames A / B / C | 360x360 | 48 | 15 / 10 / 8 s each |
+| Group water table v4 (wide, grip, reaction, touch) | 1280x720 | 96 | 182 / 303 / 290 / 245 s |
+| **Animation v4, per frame** | 640x360 | 12 (adaptive 0.12) | **21.5 s render + 7.1 s scene update ≈ 29 s** (124 frames measured) |
+
+- Characters are built once per shot: A 11 s, B 8 s, C 15 s (iteration 3: 6.8 / 4.6 / 3.9 s); felted hair volumes
+  and denser locks are the cause (BUGS-25).
+- Whole animation (180 frames, 6 s at 30 fps): about 1 h 30 min on this machine.
+- Subsurface scattering costs about 11% on a face close-up (41.4 s → 46.0 s at 480², 64 spp).
+- **Memory:** peak resident memory 7.7 GB (1280x720 group still: 3 characters, ~9.0M triangles, ~9.3M fibre segments
+  after level of detail); the animation process peaked at 7.5 GB. Iteration 3 peaked at 3.0 GB. On a 16 GB computer
+  this fits; on 8 GB it would not without lowering fibre density (`--fuzz-density`) — not measured there.
 
 ## Process notes
 - Tried and rejected (all logged in `DEVELOPMENT_LOG.md`): opening mouths with morph targets (crumpled, lining hid
