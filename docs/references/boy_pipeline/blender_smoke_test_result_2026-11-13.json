@@ -1,0 +1,111 @@
+{
+ "blender": "5.3.0",
+ "background": true,
+ "python": "3.13.18",
+ "mesh_modeling_ops": {
+  "ok": true,
+  "s": 0.01,
+  "info": {
+   "verts": 530
+  }
+ },
+ "uv_unwrap": {
+  "ok": true,
+  "s": 0.0,
+  "info": {
+   "uv_layers": [
+    "UVMap"
+   ]
+  }
+ },
+ "armature_auto_weights": {
+  "ok": true,
+  "s": 0.17,
+  "info": {
+   "vertex_groups": [
+    "spine",
+    "head"
+   ]
+  }
+ },
+ "shape_keys": {
+  "ok": true,
+  "s": 0.0,
+  "info": {
+   "keys": [
+    "Basis",
+    "Smile"
+   ]
+  }
+ },
+ "hair_curves": {
+  "ok": true,
+  "s": 0.0,
+  "info": {
+   "curves": 50,
+   "points": 200
+  }
+ },
+ "geometry_nodes": {
+  "ok": true,
+  "s": 0.0
+ },
+ "materials_principled_sss_hair": {
+  "ok": true,
+  "s": 0.0
+ },
+ "keyframe_animation": {
+  "ok": true,
+  "s": 0.0
+ },
+ "save_blend": {
+  "ok": true,
+  "s": 0.01
+ },
+ "export_gltf": {
+  "ok": true,
+  "s": 0.23
+ },
+ "export_fbx": {
+  "ok": true,
+  "s": 0.21
+ },
+ "export_alembic": {
+  "ok": true,
+  "s": 0.56
+ },
+ "export_usd": {
+  "ok": true,
+  "s": 0.17
+ },
+ "export_obj": {
+  "ok": true,
+  "s": 0.0
+ },
+ "render_cycles_cpu": {
+  "ok": true,
+  "s": 0.4
+ },
+ "render_eevee": {
+  "ok": true,
+  "s": 26.94
+ },
+ "addons_io": [
+  "io_anim_bvh",
+  "io_curve_svg",
+  "io_mesh_uv_layout",
+  "io_scene_fbx",
+  "io_scene_gltf2"
+ ],
+ "files": {
+  "cycles.png": 5125,
+  "eevee.png": 4526,
+  "smoke.abc": 12320911,
+  "smoke.blend": 117127,
+  "smoke.fbx": 144460,
+  "smoke.glb": 125380,
+  "smoke.mtl": 236,
+  "smoke.obj": 304579,
+  "smoke.usdc": 35552
+ }
+}

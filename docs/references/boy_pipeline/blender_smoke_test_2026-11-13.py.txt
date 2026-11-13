@@ -1,0 +1,141 @@
+"""Headless capability smoke test for the Blender-as-backend investigation (scratch only, not project code)."""
+import os, sys, time, json, traceback
+import bpy, bmesh, addon_utils
+
+OUT = sys.argv[1]
+os.makedirs(OUT, exist_ok=True)
+R = {"blender": bpy.app.version_string, "background": bpy.app.background, "python": sys.version.split()[0]}
+
+def step(name, fn):
+    t = time.time()
+    try:
+        v = fn()
+        R[name] = {"ok": True, "s": round(time.time() - t, 2), **({"info": v} if v is not None else {})}
+    except Exception as e:
+        R[name] = {"ok": False, "error": f"{type(e).__name__}: {e}", "trace": traceback.format_exc().splitlines()[-3:]}
+
+bpy.ops.wm.read_factory_settings(use_empty=True)
+scene = bpy.context.scene
+
+def mesh():
+    bpy.ops.mesh.primitive_uv_sphere_add(segments=32, ring_count=16, radius=0.15, location=(0, 0, 0.85))
+    body = bpy.context.object
+    body.name = "Body"
+    bpy.ops.mesh.primitive_cylinder_add(vertices=24, radius=0.08, depth=0.5, location=(0, 0, 0.45))
+    torso = bpy.context.object
+    bpy.ops.object.select_all(action="DESELECT")
+    body.select_set(True); torso.select_set(True)
+    bpy.context.view_layer.objects.active = body
+    bpy.ops.object.join()
+    m = body.modifiers.new("Subsurf", "SUBSURF"); m.levels = 1; m.render_levels = 2
+    return {"verts": len(body.data.vertices)}
+step("mesh_modeling_ops", mesh)
+
+def uv():
+    body = bpy.data.objects["Body"]
+    bpy.context.view_layer.objects.active = body
+    bpy.ops.object.mode_set(mode="EDIT"); bpy.ops.mesh.select_all(action="SELECT")
+    bpy.ops.uv.smart_project(); bpy.ops.object.mode_set(mode="OBJECT")
+    return {"uv_layers": [l.name for l in body.data.uv_layers]}
+step("uv_unwrap", uv)
+
+def armature():
+    bpy.ops.object.armature_add(location=(0, 0, 0.2))
+    arm = bpy.context.object; arm.name = "Rig"
+    bpy.ops.object.mode_set(mode="EDIT")
+    eb = arm.data.edit_bones
+    root = eb[0]; root.name = "spine"; root.head = (0, 0, 0.2); root.tail = (0, 0, 0.7)
+    head = eb.new("head"); head.head = (0, 0, 0.7); head.tail = (0, 0, 1.0); head.parent = root; head.roll = 0.3
+    bpy.ops.object.mode_set(mode="OBJECT")
+    body = bpy.data.objects["Body"]
+    bpy.ops.object.select_all(action="DESELECT")
+    body.select_set(True); arm.select_set(True); bpy.context.view_layer.objects.active = arm
+    bpy.ops.object.parent_set(type="ARMATURE_AUTO")
+    return {"vertex_groups": [g.name for g in body.vertex_groups]}
+step("armature_auto_weights", armature)
+
+def shapekeys():
+    body = bpy.data.objects["Body"]
+    body.shape_key_add(name="Basis")
+    k = body.shape_key_add(name="Smile")
+    for i, v in enumerate(k.data):
+        if v.co.z > 0.85: v.co.x *= 1.05
+    k.value = 0.5
+    return {"keys": [kb.name for kb in body.data.shape_keys.key_blocks]}
+step("shape_keys", shapekeys)
+
+def hair():
+    hc = bpy.data.hair_curves.new("Hair")
+    hc.add_curves([4] * 50)
+    import random
+    for c in hc.curves:
+        x, y = random.uniform(-0.1, 0.1), random.uniform(-0.1, 0.1)
+        for k, p in enumerate(c.points):
+            p.position = (x, y, 1.0 + 0.03 * k)
+    ob = bpy.data.objects.new("Hair", hc); scene.collection.objects.link(ob)
+    return {"curves": len(hc.curves), "points": len(hc.points)}
+step("hair_curves", hair)
+
+def gn():
+    ob = bpy.data.objects["Hair"]
+    ng = bpy.data.node_groups.new("GN_test", "GeometryNodeTree")
+    ng.interface.new_socket("Geometry", in_out="INPUT", socket_type="NodeSocketGeometry")
+    ng.interface.new_socket("Geometry", in_out="OUTPUT", socket_type="NodeSocketGeometry")
+    i = ng.nodes.new("NodeGroupInput"); o = ng.nodes.new("NodeGroupOutput")
+    ng.links.new(i.outputs[0], o.inputs[0])
+    mod = ob.modifiers.new("GN", "NODES"); mod.node_group = ng
+    return None
+step("geometry_nodes", gn)
+
+def material():
+    mat = bpy.data.materials.new("Skin"); mat.use_nodes = True
+    p = mat.node_tree.nodes.get("Principled BSDF")
+    p.inputs["Base Color"].default_value = (0.82, 0.58, 0.47, 1)
+    p.inputs["Subsurface Weight"].default_value = 0.75
+    p.inputs["Subsurface Radius"].default_value = (0.0035, 0.0016, 0.001)
+    bpy.data.objects["Body"].data.materials.append(mat)
+    hm = bpy.data.materials.new("HairMat"); hm.use_nodes = True
+    nt = hm.node_tree; nt.nodes.clear()
+    hb = nt.nodes.new("ShaderNodeBsdfHairPrincipled"); out = nt.nodes.new("ShaderNodeOutputMaterial")
+    nt.links.new(hb.outputs[0], out.inputs[0])
+    bpy.data.objects["Hair"].data.materials.append(hm)
+    return None
+step("materials_principled_sss_hair", material)
+
+def anim():
+    arm = bpy.data.objects["Rig"]
+    pb = arm.pose.bones["head"]; pb.rotation_mode = "XYZ"
+    for f, a in ((1, 0.0), (12, 0.4), (24, 0.0)):
+        pb.rotation_euler = (a, 0, 0); pb.keyframe_insert("rotation_euler", frame=f)
+    scene.frame_start, scene.frame_end = 1, 24
+    return None
+step("keyframe_animation", anim)
+
+step("save_blend", lambda: bpy.ops.wm.save_as_mainfile(filepath=os.path.join(OUT, "smoke.blend")) and None)
+step("export_gltf", lambda: bpy.ops.export_scene.gltf(filepath=os.path.join(OUT, "smoke.glb"), export_format="GLB",
+                                                     export_skins=True, export_morph=True, export_animations=True) and None)
+step("export_fbx", lambda: bpy.ops.export_scene.fbx(filepath=os.path.join(OUT, "smoke.fbx")) and None)
+step("export_alembic", lambda: bpy.ops.wm.alembic_export(filepath=os.path.join(OUT, "smoke.abc"), start=1, end=24) and None)
+step("export_usd", lambda: bpy.ops.wm.usd_export(filepath=os.path.join(OUT, "smoke.usdc")) and None)
+step("export_obj", lambda: bpy.ops.wm.obj_export(filepath=os.path.join(OUT, "smoke.obj")) and None)
+
+def render(engine, name):
+    def f():
+        scene.render.engine = engine
+        scene.render.resolution_x, scene.render.resolution_y = 96, 96
+        if engine == "CYCLES":
+            scene.cycles.device = "CPU"; scene.cycles.samples = 8
+        cam = bpy.data.cameras.new("Cam"); co = bpy.data.objects.new("Cam", cam); scene.collection.objects.link(co)
+        co.location = (0, -2, 0.8); co.rotation_euler = (1.5708, 0, 0); scene.camera = co
+        if not bpy.data.lights:
+            l = bpy.data.lights.new("Sun", "SUN"); lo = bpy.data.objects.new("Sun", l); scene.collection.objects.link(lo)
+        scene.render.filepath = os.path.join(OUT, name)
+        bpy.ops.render.render(write_still=True)
+        return None
+    return f
+step("render_cycles_cpu", render("CYCLES", "cycles.png"))
+step("render_eevee", render("BLENDER_EEVEE", "eevee.png"))
+R["addons_io"] = sorted(m.__name__ for m in addon_utils.modules() if m.__name__.startswith("io_"))[:30]
+R["files"] = {f: os.path.getsize(os.path.join(OUT, f)) for f in sorted(os.listdir(OUT))}
+json.dump(R, open(os.path.join(OUT, "result.json"), "w"), indent=1)
+print(json.dumps({k: (v if not isinstance(v, dict) or "trace" not in v else {"ok": False, "error": v["error"]}) for k, v in R.items()}, indent=1))
