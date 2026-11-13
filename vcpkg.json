@@ -1,0 +1,6 @@
+{
+  "name": "plush-studio",
+  "version-string": "0.1.0",
+  "description": "Personal stylized 3D animation production application",
+  "dependencies": ["embree", "glm", "nlohmann-json", "glfw3", "glew", "stb", "doctest"]
+}
