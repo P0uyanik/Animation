@@ -76,6 +76,8 @@ None of these is a 3D mesh, rig, UV set or skin-weight map. They are pictures.
 
 If you have these, please send them. Stages 4–6 depend on several of them.
 
+**Second upload (2026-11-13):** five files received again, byte-identical to #8–#12 (same SHA-256, zero pixel difference). No new reference reached this workspace, so the list above is unchanged. Both uploads contained exactly five images, so further images may have been dropped by an upload limit.
+
 ### 2.3 Conflicts found (reported, not resolved)
 1. **Name/letter.**
    - The boy is **"C"** in this project and in #12.
