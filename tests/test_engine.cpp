@@ -439,3 +439,62 @@ TEST_CASE("glass lets light through and does not cast shadows") {
   for (auto& p : b.color.pixels) lb += luminance(p);
   CHECK(lb > 0.8 * la);  // the floor under the glass pane is still lit
 }
+
+TEST_CASE("finger poses close the hand and a grasp adapts to the object's size") {
+  // Hand of the iteration-4 characters (left side): hand bone, thumb and four two-segment fingers.
+  Skeleton sk;
+  sk.bones.push_back({"hand.L", -1, vec3(0.155f, 0.43f, 0.015f)});
+  sk.bones.push_back({"thumbA.L", 0, vec3(0.152f, 0.418f, 0.04f)});
+  sk.bones.push_back({"thumbB.L", 1, vec3(0.149f, 0.4075f, 0.0445f)});
+  const float zs[4] = {0.006f, 0.0165f, 0.027f, 0.0375f};
+  for (int k = 0; k < 4; ++k) {
+    sk.bones.push_back({std::format("f{}a.L", k), 0, vec3(0.159f, 0.398f, zs[k])});
+    sk.bones.push_back({std::format("f{}b.L", k), int(sk.bones.size()) - 1, vec3(0.156f, 0.3875f, zs[k] + 0.002f)});
+  }
+  const mat4 world(1);
+  const vec3 palm(0.146f, 0.41f, 0.021f);  // palm surface facing the body (-x)
+  auto meanTipToPalm = [&](const Pose& p) {
+    auto tips = fingertips(sk, p, world, 'L');
+    REQUIRE(tips.size() == 5);
+    float d = 0;
+    for (size_t i = 1; i < tips.size(); ++i) d += glm::distance(tips[i], palm);
+    return d / 4;
+  };
+  Pose open = restPose(sk), fist = restPose(sk);
+  applyHandPose(sk, open, world, 'L', HandPose{0, 0, 0});
+  applyHandPose(sk, fist, world, 'L', HandPose{1, 1, 0});
+  CHECK(meanTipToPalm(fist) < 0.6f * meanTipToPalm(open));
+  // Pointing: index (finger 3) straight, the others curled.
+  Pose point = restPose(sk);
+  HandPose hp{1, 1, 0};
+  hp.index = 0;
+  applyHandPose(sk, point, world, 'L', hp);
+  auto tipsP = fingertips(sk, point, world, 'L'), tipsO = fingertips(sk, open, world, 'L');
+  CHECK(glm::distance(tipsP[4], tipsO[4]) < 1e-5f);
+  CHECK(glm::distance(tipsP[1], tipsO[1]) > 0.005f);
+  // Grasp a stick (cylinder along z) in front of the palm: every fingertip ends on its surface, and the thin
+  // one closes the hand more than the thick one.
+  float curlSmall = 0, curlLarge = 0;
+  for (float r : {0.008f, 0.016f}) {
+    Pose g = restPose(sk);
+    HandPose gp{0, 0, 0};
+    gp.grasp = true;
+    gp.graspRadius = r;
+    gp.graspCentre = vec3(-0.004f - r, -0.03f, 0.008f);  // relative to the hand bone head
+    gp.graspAxis = vec3(0, 0, 1);
+    applyHandPose(sk, g, world, 'L', gp);
+    vec3 centre = sk.bones[0].head + gp.graspCentre;
+    auto tips = fingertips(sk, g, world, 'L');
+    for (size_t i = 1; i < tips.size(); ++i) {
+      vec3 d = tips[i] - centre;
+      d.z = 0;
+      float gap = glm::length(d) - r;
+      CHECK(gap <= 0.0046f);
+      CHECK(gap >= 0.0040f);
+    }
+    float curl = glm::angle(g.local[3]);  // f0a rotation angle
+    (r < 0.01f ? curlSmall : curlLarge) = curl;
+  }
+  MESSAGE("first-segment curl: small object " << glm::degrees(curlSmall) << " deg, large " << glm::degrees(curlLarge) << " deg");
+  CHECK(curlSmall > curlLarge);
+}

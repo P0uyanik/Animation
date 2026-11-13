@@ -111,3 +111,16 @@ noodle locks → denser layers with a longer halo; fogged lenses → guides thro
   Cost on a face close-up (480², 64 spp): 41.4 s → 46.0 s. Characters A/B/C: subsurface 0.75, radius 3.5/1.6/1.0 mm.
 - Knitted rib bands as separate parts with vertical ribs around their own axis: A's sleeve cuffs, C's hoodie cuffs and
   hem. C's pouch pocket moved onto the looser hoodie surface (it had sunk inside, only its edges showed).
+
+## 2026-11-13 — Iteration 4: articulated hands (Priority 4)
+
+- `applyHandPose` / tracks `<char>/hand.L|R` = (curl, thumb, spread), `.index` (pointing), `.grasp` (object centre in
+  the hand's rest frame), `.graspRadius`, `.graspAxis` (cylinder) and `.grasp.weight`. Default is a relaxed hand
+  (curl 0.25, thumb 0.15) instead of flat fingers.
+- Grasp: each finger's curl is found by bisection so its tip rests on the object surface (sphere or cylinder);
+  fingers that cannot reach it close fully. Unit test: fist brings tips to the palm, pointing keeps the index
+  straight, a 8 mm stick curls the first segment 27° vs 16° for a 16 mm stick, every tip ends 4.0–4.6 mm from the
+  surface (the finger's own radius). Visual check: `content/scenes/test_hand_poses.scene.json` (open, relaxed,
+  fist, point, two grasps).
+- First thumb axis was mirrored wrongly for the right hand (a rotation axis mirrors as (x, −y, −z)); fixed before use.
+- A's resting arms 13° out (the hands touched the bell skirt at 9°).

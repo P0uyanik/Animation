@@ -64,6 +64,26 @@ void solveTwoBoneIK(const Skeleton& skeleton, Pose& pose, const mat4& world, int
 // Points a bone's rest +Z axis at a world target (eyes), limited to maxAngleDeg.
 void aimBone(const Skeleton& skeleton, Pose& pose, const mat4& world, int bone, vec3 target, float weight, float maxAngleDeg);
 // Constraint tracks: "<prefix>ik.<bone>" (+ ".weight"), "<prefix>lookAt" (+ ".weight", aims every "eye.*" bone).
+// Fingers (bones thumbA/thumbB and f0a..f3a / f0b..f3b with .L/.R; skeletons without them are left alone).
+struct HandPose {
+  float curl = 0.25f;    // 0 open .. 1 fist (all fingers)
+  float thumb = 0.15f;   // 0 open .. 1 folded over the palm
+  float spread = 0.0f;   // -1 together .. 1 fanned out
+  float index = -1.0f;   // >= 0 overrides the index finger's curl (pointing = curl 1, index 0)
+  bool grasp = false;    // curl each finger until its tip touches the sphere below
+  vec3 graspCentre{0};   // in the hand bone's rest frame, relative to its head
+  float graspRadius = 0.02f;
+  vec3 graspAxis{0};     // non-zero: the object is a cylinder along this axis (hand rest frame), else a sphere
+  float graspWeight = 1.0f;
+};
+// Poses one hand ('L' or 'R'). With grasp, each finger's curl is searched (bisection) so that its tip rests on the
+// sphere surface: a small object closes the hand further than a large one.
+void applyHandPose(const Skeleton& skeleton, Pose& pose, const mat4& world, char side, const HandPose& hp);
+// Fingertip positions (world) of one hand, thumb first; empty if the skeleton has no finger bones.
+std::vector<vec3> fingertips(const Skeleton& skeleton, const Pose& pose, const mat4& world, char side);
+
+// Tracks: "<prefix>hand.L" = (curl, thumb, spread), "<prefix>hand.L.index" (x), "<prefix>hand.L.grasp" = sphere
+// centre (hand rest frame), "<prefix>hand.L.graspRadius" (x), "<prefix>hand.L.grasp.weight" (x). Same for R.
 void applyConstraints(const Skeleton& skeleton, const Clip& clip, const std::string& prefix, double frame,
                       const mat4& world, Pose& pose);
 

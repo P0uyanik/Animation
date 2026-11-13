@@ -518,7 +518,7 @@ def character_a():
         {"name": "band", "type": "ellipsoid", "bone": "hips", "center": [0, 0.283, 0], "radii": [0.197, 0.016, 0.182]},
         {"name": "inner", "type": "ellipsoid", "bone": "hips", "center": [0, 0.283, 0], "radii": [0.17, 0.05, 0.155], "blend": 0.004, "subtract": True},
     ], voxel=0.0014, skinFalloff=0.02, pattern="ribbed", patternAmplitude=0.0016, patternScale=260, patternCenter=[0, 0, 0])
-    c["defaultPose"] = {"upperArm.L": [0, 0, 9], "upperArm.R": [0, 0, -9]}
+    c["defaultPose"] = {"upperArm.L": [0, 0, 13], "upperArm.R": [0, 0, -13]}
     rib_bands(c, "dress", ("cuff.L",))
     prefix_materials(c, "A_")
     return c

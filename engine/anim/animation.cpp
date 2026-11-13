@@ -1,5 +1,7 @@
 #include "anim/animation.h"
 
+#include <format>
+
 #include <algorithm>
 
 namespace plush {
@@ -183,6 +185,108 @@ void aimBone(const Skeleton& sk, Pose& pose, const mat4& world, int bone, vec3 t
   pose.local[size_t(bone)] = glm::slerp(pose.local[size_t(bone)], q, std::clamp(weight, 0.0f, 1.0f));
 }
 
+namespace {
+struct FingerChain {
+  int a = -1, b = -1;
+};
+struct HandBones {
+  int hand = -1;
+  FingerChain thumb, fingers[4];  // fingers[3] is the index finger (next to the thumb)
+  bool valid() const {
+    if (hand < 0 || thumb.a < 0 || thumb.b < 0) return false;
+    for (auto& f : fingers)
+      if (f.a < 0 || f.b < 0) return false;
+    return true;
+  }
+};
+HandBones findHand(const Skeleton& sk, char side) {
+  std::string s = std::string(".") + side;
+  HandBones h;
+  h.hand = sk.find("hand" + s);
+  h.thumb = {sk.find("thumbA" + s), sk.find("thumbB" + s)};
+  for (int k = 0; k < 4; ++k) h.fingers[k] = {sk.find(std::format("f{}a{}", k, s)), sk.find(std::format("f{}b{}", k, s))};
+  return h;
+}
+// Curl rotations in the hand's rest frame. Fingers hang along -y with the palm facing the body (-x for the left
+// hand), so they curl about -z (left) / +z (right); the thumb folds about a tilted axis across the palm.
+quat fingerRot(char side, float angleDeg, float spreadDeg) {
+  float sz = side == 'L' ? -1.0f : 1.0f;
+  return glm::angleAxis(glm::radians(angleDeg), vec3(0, 0, sz)) * glm::angleAxis(glm::radians(spreadDeg), vec3(1, 0, 0));
+}
+quat thumbRot(char side, float angleDeg) {
+  // Left: about (0.35, 0, -1) = towards the palm (-x) and across it (-z). A rotation axis mirrors across x = 0 as
+  // (x, -y, -z), so the right hand uses (0.35, 0, 1).
+  float sz = side == 'L' ? -1.0f : 1.0f;
+  return glm::angleAxis(glm::radians(angleDeg), glm::normalize(vec3(0.35f, 0.0f, sz)));
+}
+void setChain(Pose& pose, const FingerChain& f, quat ra, quat rb) {
+  pose.local[size_t(f.a)] = ra;
+  pose.local[size_t(f.b)] = rb;
+}
+vec3 chainTip(const Skeleton& sk, const mat4& handGlobal, int handBone, const FingerChain& f, quat ra, quat rb) {
+  vec3 ha = sk.bones[size_t(f.a)].head, hb = sk.bones[size_t(f.b)].head;
+  mat4 ga = handGlobal * glm::translate(mat4(1), ha - sk.bones[size_t(handBone)].head) * glm::mat4_cast(ra);
+  mat4 gb = ga * glm::translate(mat4(1), hb - ha) * glm::mat4_cast(rb);
+  return vec3(gb * vec4(hb - ha, 1));  // tip: one more segment of the same length beyond b's head
+}
+}  // namespace
+
+void applyHandPose(const Skeleton& sk, Pose& pose, const mat4& world, char side, const HandPose& hp) {
+  HandBones h = findHand(sk, side);
+  if (!h.valid()) return;
+  const float kA = 75.0f, kB = 95.0f;  // full-curl angles of the first and second segment
+  auto fingerCurl = [&](int k) { return k == 3 && hp.index >= 0 ? hp.index : hp.curl; };
+  for (int k = 0; k < 4; ++k) {
+    float c = std::clamp(fingerCurl(k), 0.0f, 1.0f), spread = hp.spread * 7.0f * (float(k) - 1.5f);
+    setChain(pose, h.fingers[k], fingerRot(side, c * kA, spread), fingerRot(side, c * kB, 0));
+  }
+  float tc = std::clamp(hp.thumb, 0.0f, 1.0f);
+  setChain(pose, h.thumb, thumbRot(side, tc * 55.0f), thumbRot(side, tc * 45.0f));
+  if (!hp.grasp || hp.graspWeight <= 0) return;
+  // Contact search in the hand's own frame (the hand bone's global transform does not depend on the fingers).
+  mat4 handGlobal = boneGlobals(sk, pose, world)[size_t(h.hand)];
+  vec3 centre = vec3(handGlobal * vec4(hp.graspCentre, 1));
+  float scale = glm::length(vec3(handGlobal[0]));
+  float reach = (hp.graspRadius + 0.0045f) * scale;  // finger tube radius: the skin rests on the object
+  vec3 axis = glm::length(hp.graspAxis) > 1e-6f ? glm::normalize(vec3(handGlobal * vec4(hp.graspAxis, 0))) : vec3(0);
+  auto touching = [&](const FingerChain& f, quat ra, quat rb) {
+    vec3 d = chainTip(sk, handGlobal, h.hand, f, ra, rb) - centre;
+    d -= axis * glm::dot(d, axis);  // cylinder: distance to the axis
+    return glm::length(d) <= reach;
+  };
+  auto search = [&](const FingerChain& f, auto rotA, auto rotB, float c0) {
+    if (touching(f, rotA(c0), rotB(c0))) return c0;
+    float lo = c0, hi = 1.0f;
+    if (!touching(f, rotA(hi), rotB(hi))) return hi;
+    for (int it = 0; it < 14; ++it) {
+      float mid = 0.5f * (lo + hi);
+      (touching(f, rotA(mid), rotB(mid)) ? hi : lo) = mid;
+    }
+    return hi;
+  };
+  float w = std::clamp(hp.graspWeight, 0.0f, 1.0f);
+  for (int k = 0; k < 4; ++k) {
+    float c0 = std::clamp(fingerCurl(k), 0.0f, 1.0f), spread = hp.spread * 7.0f * (float(k) - 1.5f);
+    auto ra = [&](float c) { return fingerRot(side, c * kA, spread); };
+    auto rb = [&](float c) { return fingerRot(side, c * kB, 0); };
+    float c = glm::mix(c0, search(h.fingers[k], ra, rb, 0.0f), w);
+    setChain(pose, h.fingers[k], ra(c), rb(c));
+  }
+  auto ta = [&](float c) { return thumbRot(side, c * 55.0f); };
+  auto tb = [&](float c) { return thumbRot(side, c * 45.0f); };
+  float t = glm::mix(tc, search(h.thumb, ta, tb, 0.0f), w);
+  setChain(pose, h.thumb, ta(t), tb(t));
+}
+
+std::vector<vec3> fingertips(const Skeleton& sk, const Pose& pose, const mat4& world, char side) {
+  HandBones h = findHand(sk, side);
+  if (!h.valid()) return {};
+  mat4 hg = boneGlobals(sk, pose, world)[size_t(h.hand)];
+  std::vector<vec3> tips{chainTip(sk, hg, h.hand, h.thumb, pose.local[size_t(h.thumb.a)], pose.local[size_t(h.thumb.b)])};
+  for (auto& f : h.fingers) tips.push_back(chainTip(sk, hg, h.hand, f, pose.local[size_t(f.a)], pose.local[size_t(f.b)]));
+  return tips;
+}
+
 void applyConstraints(const Skeleton& sk, const Clip& clip, const std::string& prefix, double frame, const mat4& world,
                       Pose& pose) {
   for (size_t i = 0; i < sk.bones.size(); ++i) {
@@ -191,6 +295,23 @@ void applyConstraints(const Skeleton& sk, const Clip& clip, const std::string& p
     if (!t || t->keys.empty()) continue;
     float w = clip.evaluate(name + ".weight", frame, vec3(1)).x;
     solveTwoBoneIK(sk, pose, world, int(i), t->evaluate(frame), w);
+  }
+  for (char side : {'L', 'R'}) {
+    std::string base = prefix + "hand." + side;
+    HandPose hp;
+    vec3 v = clip.evaluate(base, frame, vec3(hp.curl, hp.thumb, hp.spread));
+    hp.curl = v.x;
+    hp.thumb = v.y;
+    hp.spread = v.z;
+    if (const Track* t = clip.find(base + ".index"); t && !t->keys.empty()) hp.index = t->evaluate(frame).x;
+    if (const Track* t = clip.find(base + ".grasp"); t && !t->keys.empty()) {
+      hp.grasp = true;
+      hp.graspCentre = t->evaluate(frame);
+      hp.graspRadius = clip.evaluate(base + ".graspRadius", frame, vec3(hp.graspRadius)).x;
+      hp.graspAxis = clip.evaluate(base + ".graspAxis", frame, vec3(0));
+      hp.graspWeight = clip.evaluate(base + ".grasp.weight", frame, vec3(1)).x;
+    }
+    applyHandPose(sk, pose, world, side, hp);
   }
   if (const Track* t = clip.find(prefix + "lookAt"); t && !t->keys.empty()) {
     vec3 target = t->evaluate(frame);
