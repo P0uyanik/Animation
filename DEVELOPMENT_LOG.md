@@ -124,3 +124,23 @@ noodle locks → denser layers with a longer halo; fogged lenses → guides thro
   fist, point, two grasps).
 - First thumb axis was mirrored wrongly for the right hand (a rotation axis mirrors as (x, −y, −z)); fixed before use.
 - A's resting arms 13° out (the hands touched the bell skirt at 9°).
+
+## 2026-11-13 — Iteration 4: natural animation (Priority 3)
+
+- **Life layer** (`applyLife`, per character `"life": true` or an object with amounts; off by default so older scenes
+  and the regressions are unchanged): breathing (chest, spine, shoulders; neck compensates), slow weight shift (hips
+  tilt, spine counter-tilts, thighs compensate so feet stay), small head drift, automatic blinks at jittered
+  intervals over any lid pose, and the head following the gaze with a lag (eyes jump first, head turns ~0.2 s later).
+  Deterministic per frame (a function of frame and seed), so frames render independently.
+- **Action compiler** (`engine/scene/actions.cpp`): scene `"actions"` (look, expression, reach, walk) compile into
+  generated tracks held in `Clip::generated` — used only where no hand-made key exists, never written into the
+  scene's animation; the actions themselves are saved. Reach: anticipatory hand opening, contact-search grip,
+  attach, lift toward the body, place, release, hand returns, gaze follows the object, ripples when a floating
+  object leaves/re-enters water, and leaning the upper body when the object is beyond arm's length (warning if still
+  out of reach). Walk: eased root path, turning into the path, planted footsteps via foot IK, pelvis bob and lean,
+  counter-swinging arms.
+- Floating objects no longer ride the water while held.
+- Tests: blink count over a minute (12–22) and determinism; breathing moves the chest; the head has turned 0° two
+  frames after a gaze jump and 21° fifteen frames after; reach puts the wrist 51 mm from the object at contact
+  (leaning 2°+), carries it ≥3 cm up and leaves it where placed; walk arrives exactly, 0 of 59 frames with both feet
+  sliding, feet lift ~2 cm, feet together at the end.

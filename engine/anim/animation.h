@@ -1,6 +1,7 @@
 // Keyframe animation, skeletons and poses.
 #pragma once
 #include <map>
+#include <memory>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -29,6 +30,9 @@ struct Track {
 // Named tracks, e.g. "camera.position", "girl/head.rot", "girl/root.loc".
 struct Clip {
   std::map<std::string, Track> tracks;
+  // Tracks compiled from higher-level actions. Used only where `tracks` has no keys of its own (keys made by hand
+  // always win) and never saved with the scene; the actions themselves are saved.
+  std::shared_ptr<const Clip> generated;
   const Track* find(std::string_view name) const;
   vec3 evaluate(std::string_view name, double frame, vec3 fallback) const;
 };
@@ -64,6 +68,25 @@ void solveTwoBoneIK(const Skeleton& skeleton, Pose& pose, const mat4& world, int
 // Points a bone's rest +Z axis at a world target (eyes), limited to maxAngleDeg.
 void aimBone(const Skeleton& skeleton, Pose& pose, const mat4& world, int bone, vec3 target, float weight, float maxAngleDeg);
 // Constraint tracks: "<prefix>ik.<bone>" (+ ".weight"), "<prefix>lookAt" (+ ".weight", aims every "eye.*" bone).
+// Procedural "life" layered on top of the keyed pose, so a character never stands frozen and nobody has to key
+// breathing or blinks: breathing (chest/spine/shoulders), slow weight shift (hips with leg compensation), small
+// head drift, automatic blinks, and the head following the gaze ("<prefix>lookAt") with a lag. Deterministic:
+// everything is a function of the frame and the seed, so any frame renders identically on its own.
+struct LifeParams {
+  bool enabled = false;
+  float breathing = 1.0f;      // amplitude scale
+  float sway = 1.0f;           // weight-shift amplitude scale
+  float headDrift = 1.0f;      // small idle head motion
+  float blinkInterval = 3.6f;  // mean seconds between blinks (0 = no automatic blinks)
+  float headFollow = 0.55f;    // share of a gaze turn taken by neck + head
+  float headLagSec = 0.2f;     // the head follows the eyes this much later
+  uint32_t seed = 1;
+};
+void applyLife(const Skeleton& skeleton, const Clip& clip, const std::string& prefix, double frame, double fps,
+               const mat4& world, const LifeParams& life, Pose& pose);
+// Blink closure in [0, 1] at time t (seconds) for an average interval; exposed for tests.
+float blinkAmount(double t, float interval, uint32_t seed);
+
 // Fingers (bones thumbA/thumbB and f0a..f3a / f0b..f3b with .L/.R; skeletons without them are left alone).
 struct HandPose {
   float curl = 0.25f;    // 0 open .. 1 fist (all fingers)

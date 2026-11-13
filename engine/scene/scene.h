@@ -39,6 +39,7 @@ struct CharacterDesc {
   std::string asset;  // path relative to the scene file
   vec3 position{0};
   float yawDeg = 0;
+  LifeParams life;    // procedural breathing, weight shift, blinks, head follows gaze (off unless set)
 };
 
 struct Scene {
@@ -53,6 +54,9 @@ struct Scene {
   std::vector<ObjectDesc> objects;
   std::vector<CharacterDesc> characters;
   Clip animation;
+  // High-level actions ("look", "reach", "expression", "walk"), compiled into generated tracks when the scene is
+  // loaded for evaluation (see actions.cpp). Saved as written.
+  Json actions = Json::array();
 };
 
 Result<Scene> loadScene(const std::filesystem::path& path);
@@ -60,6 +64,7 @@ Json sceneToJson(const Scene& scene);
 Result<void> saveScene(const Scene& scene, const std::filesystem::path& path);
 
 Mesh makeBoxMesh(vec3 lo, vec3 hi);
+mat4 objectMatrix(vec3 pos, float yawDeg, float scale);
 Mesh makePaperBoatMesh();
 
 struct EvalOptions {
@@ -87,11 +92,13 @@ class SceneEvaluator {
   Result<void> rebuildCharacter(size_t index, const CharacterAsset& asset, const EvalOptions& options);
   // Replaces material parameters by name (in-app look development).
   void updateMaterial(const Material& m);
-
- private:
+  // Recompiles the scene's actions into generated tracks (called by load; call again after editing actions).
+  Result<void> compileActions();
   // Bone frames (world space) of character c at a frame, after constraints.
   std::vector<mat4> characterGlobals(size_t c, double frame, Pose* poseOut = nullptr) const;
   mat4 objectWorld(size_t o, double frame) const;
+
+ private:
   float waterHeight(size_t waterObject, vec2 localXZ, double frame) const;
   struct ObjectGeometry {
     std::shared_ptr<Mesh> local;
@@ -105,6 +112,7 @@ class SceneEvaluator {
   std::map<std::string, int> materialIndex_;
   std::vector<ObjectGeometry> objects_;
   std::vector<CharacterInstance> characters_;
+  std::vector<ObjectDesc> authoredObjects_;  // objects as written, before actions set attachments and ripples
 };
 
 }  // namespace plush

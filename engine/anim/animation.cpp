@@ -64,6 +64,8 @@ vec3 Track::evaluate(double frame) const {
 
 const Track* Clip::find(std::string_view name) const {
   auto it = tracks.find(std::string(name));
+  if (it != tracks.end() && !it->second.keys.empty()) return &it->second;
+  if (generated) return generated->find(name);
   return it == tracks.end() ? nullptr : &it->second;
 }
 
@@ -183,6 +185,80 @@ void aimBone(const Skeleton& sk, Pose& pose, const mat4& world, int bone, vec3 t
   float s = glm::length(axis);
   quat q = s < 1e-7f ? quat(1, 0, 0, 0) : glm::angleAxis(std::atan2(s, glm::dot(z, d)), axis / s);
   pose.local[size_t(bone)] = glm::slerp(pose.local[size_t(bone)], q, std::clamp(weight, 0.0f, 1.0f));
+}
+
+namespace {
+uint32_t hashMix(uint32_t x) {
+  x ^= x >> 16; x *= 0x7feb352dU; x ^= x >> 15; x *= 0x846ca68bU; x ^= x >> 16;
+  return x;
+}
+float hash01(uint32_t a, uint32_t b) { return float(hashMix(a * 0x9E3779B9U + hashMix(b)) >> 8) / float(1 << 24); }
+void rotateLocal(Pose& pose, int bone, vec3 eulerDeg) {
+  if (bone >= 0) pose.local[size_t(bone)] = pose.local[size_t(bone)] * eulerDegreesToQuat(eulerDeg);
+}
+}  // namespace
+
+float blinkAmount(double t, float interval, uint32_t seed) {
+  if (interval <= 0 || t < 0) return 0.0f;
+  // Blink k happens at the sum of k jittered intervals (0.55..1.45 of the mean); a blink closes in 0.07 s,
+  // stays shut 0.03 s and opens in 0.12 s. Walk forward from a coarse index so long shots stay cheap.
+  const double close = 0.07, hold = 0.03, open = 0.12;
+  long k = std::max(0L, long(t / (interval * 1.45)) - 1);
+  double start = 0;
+  for (long i = 0; i < k; ++i) start += interval * (0.55 + 0.9 * hash01(seed, uint32_t(i)));
+  for (long i = k;; ++i) {
+    start += interval * (0.55 + 0.9 * hash01(seed, uint32_t(i)));
+    if (start > t) return 0.0f;
+    double u = t - start;
+    if (u < close) return float(smoothstep01(float(u / close)));
+    if (u < close + hold) return 1.0f;
+    if (u < close + hold + open) return 1.0f - float(smoothstep01(float((u - close - hold) / open)));
+  }
+}
+
+void applyLife(const Skeleton& sk, const Clip& clip, const std::string& prefix, double frame, double fps,
+               const mat4& world, const LifeParams& life, Pose& pose) {
+  if (!life.enabled || pose.local.size() != sk.bones.size()) return;
+  const double t = frame / std::max(1.0, fps);
+  const float ph = hash01(life.seed, 1) * 6.283f, ph2 = hash01(life.seed, 2) * 6.283f, ph3 = hash01(life.seed, 3) * 6.283f;
+  const float breathT = 3.4f + 0.6f * hash01(life.seed, 4), swayT = 6.5f + 2.0f * hash01(life.seed, 5);
+  const float b = life.breathing * float(std::sin(kTwoPi * t / breathT + ph));
+  const float w = life.sway * float(std::sin(kTwoPi * t / swayT + ph2));
+  const int hips = sk.find("hips"), spine = sk.find("spine"), chest = sk.find("chest"), neck = sk.find("neck"),
+            head = sk.find("head");
+  // Head following the gaze, with lag: aim at the look target averaged over the last ~2 lag periods.
+  if (const Track* lt = clip.find(prefix + "lookAt"); lt && !lt->keys.empty() && head >= 0 && life.headFollow > 0) {
+    float lag = life.headLagSec * float(fps);
+    vec3 target(0);
+    for (int i = 0; i < 6; ++i) target += lt->evaluate(frame - lag * (0.5 + 0.3 * i));
+    target /= 6.0f;
+    float wgt = clip.evaluate(prefix + "lookAt.weight", frame, vec3(1)).x * life.headFollow;
+    if (neck >= 0) aimBone(sk, pose, world, neck, target, 0.35f * wgt, 35.0f);
+    aimBone(sk, pose, world, head, target, 0.6f * wgt, 45.0f);
+  }
+  // Breathing: chest and spine expand (lean back slightly), shoulders rise a little; the neck compensates.
+  rotateLocal(pose, chest, vec3(-1.1f * b, 0, 0));
+  rotateLocal(pose, spine, vec3(-0.4f * b, 0, 0));
+  rotateLocal(pose, neck, vec3(1.0f * b, 0, 0));
+  rotateLocal(pose, sk.find("upperArm.L"), vec3(0, 0, 0.7f * b));
+  rotateLocal(pose, sk.find("upperArm.R"), vec3(0, 0, -0.7f * b));
+  // Weight shift: the hips tilt and the spine counter-tilts; the thighs compensate so the feet stay put.
+  rotateLocal(pose, hips, vec3(0, 0, 1.3f * w));
+  rotateLocal(pose, spine, vec3(0, 0, -0.9f * w));
+  rotateLocal(pose, chest, vec3(0, 0, -0.35f * w));
+  rotateLocal(pose, sk.find("thigh.L"), vec3(0, 0, -1.3f * w));
+  rotateLocal(pose, sk.find("thigh.R"), vec3(0, 0, -1.3f * w));
+  // Small head drift (two slow incommensurate waves).
+  float hd = life.headDrift;
+  rotateLocal(pose, head, vec3(0.8f * hd * float(std::sin(kTwoPi * t / 7.3 + ph3)), 1.4f * hd * float(std::sin(kTwoPi * t / 11.1 + ph)),
+                               0.6f * hd * float(std::sin(kTwoPi * t / 9.7 + ph2))));
+  // Automatic blinks: the upper lids close over whatever the lid pose is.
+  float bl = blinkAmount(t, life.blinkInterval, life.seed);
+  if (bl > 0)
+    for (const char* name : {"lid.L", "lid.R"}) {
+      int lid = sk.find(name);
+      if (lid >= 0) pose.local[size_t(lid)] = glm::slerp(pose.local[size_t(lid)], eulerDegreesToQuat(vec3(86, 0, 0)), bl);
+    }
 }
 
 namespace {

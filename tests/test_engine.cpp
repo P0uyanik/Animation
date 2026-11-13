@@ -498,3 +498,121 @@ TEST_CASE("finger poses close the hand and a grasp adapts to the object's size")
   MESSAGE("first-segment curl: small object " << glm::degrees(curlSmall) << " deg, large " << glm::degrees(curlLarge) << " deg");
   CHECK(curlSmall > curlLarge);
 }
+
+TEST_CASE("automatic blinks happen at jittered intervals and are deterministic") {
+  int blinks = 0;
+  bool wasClosed = false;
+  for (double t = 0; t < 60; t += 1.0 / 30) {
+    bool closed = blinkAmount(t, 3.6f, 77) > 0.9f;
+    if (closed && !wasClosed) ++blinks;
+    wasClosed = closed;
+    CHECK(blinkAmount(t, 3.6f, 77) == blinkAmount(t, 3.6f, 77));
+  }
+  CHECK(blinks >= 12);  // ~16.7 expected in a minute
+  CHECK(blinks <= 22);
+  CHECK(blinkAmount(5.0, 0.0f, 77) == 0.0f);
+}
+
+namespace {
+// The boy (C) from the content folder, built coarse and without fibres (fast) for animation tests.
+std::unique_ptr<SceneEvaluator> loadTestScene(const Json& actions, bool life) {
+  Scene s;
+  s.path = std::filesystem::path(PLUSH_SOURCE_DIR) / "content/scenes/unit_test.scene.json";
+  s.rate = FrameRate{30, 1};
+  CharacterDesc cd;
+  cd.name = "kid";
+  cd.asset = "../characters/boy_dark_hair.character.json";
+  cd.life.enabled = life;
+  s.characters.push_back(cd);
+  ObjectDesc ball;
+  ball.name = "ball";
+  ball.kind = ObjectDesc::Kind::Box;
+  ball.boxMin = vec3(-0.015f);
+  ball.boxMax = vec3(0.015f);
+  ball.position = vec3(-0.17f, 0.47f, 0.2f);  // slightly beyond the chibi arm: the reach must lean
+  s.objects.push_back(ball);
+  s.actions = actions;
+  auto ev = std::make_unique<SceneEvaluator>();
+  auto r = ev->load(s, EvalOptions{2.5f, 1.0f, false, 0});
+  REQUIRE(r.has_value());
+  return ev;
+}
+}  // namespace
+
+TEST_CASE("life layer breathes and the head follows the gaze later than the eyes") {
+  auto ev = loadTestScene(Json::array(), true);
+  Scene& s = ev->mutableScene();
+  s.animation.tracks["kid/lookAt"].setKey({1, vec3(0, 0.8f, 3), Interp::Step});
+  s.animation.tracks["kid/lookAt"].setKey({30, vec3(-2.5f, 0.8f, 1.0f), Interp::Step});
+  const auto& sk = ev->characters()[0].asset.skeleton;
+  int chest = sk.find("chest"), head = sk.find("head");
+  // Breathing: the chest moves over a breath cycle.
+  float maxDiff = 0;
+  auto c0 = ev->characterGlobals(0, 1);
+  for (int f = 2; f < 110; f += 6) {
+    auto g = ev->characterGlobals(0, f);
+    maxDiff = std::max(maxDiff, glm::distance(vec3(g[size_t(chest)][2]), vec3(c0[size_t(chest)][2])));
+  }
+  CHECK(maxDiff > 0.008f);
+  // The gaze jumps at frame 30; the head has turned only a little 2 frames later and much more by frame 45.
+  auto yawOf = [&](int f) {
+    vec3 fwd = vec3(ev->characterGlobals(0, f)[size_t(head)][2]);
+    return std::atan2(fwd.x, fwd.z);
+  };
+  float before = yawOf(29), soon = yawOf(32), later = yawOf(45);
+  MESSAGE("head yaw (deg) before " << glm::degrees(before) << ", +2 frames " << glm::degrees(soon) << ", +15 frames " << glm::degrees(later));
+  CHECK(std::abs(soon - before) < std::abs(later - before) * 0.5f);
+  CHECK(glm::degrees(std::abs(later - before)) > 10.0f);
+}
+
+TEST_CASE("reach action brings the hand to the object, carries it and puts it down") {
+  Json actions = Json::parse(R"([{"type": "reach", "character": "kid", "hand": "R", "object": "ball",
+      "start": 10, "contact": 24, "lift": 0.06, "liftEnd": 36, "place": 60, "placeAt": [-0.12, 0.45, 0.25],
+      "release": 63, "end": 78, "graspRadius": 0.015}])");
+  // (the ball starts slightly beyond arm's length: the reach leans the upper body towards it)
+  auto ev = loadTestScene(actions, false);
+  const auto& sk = ev->characters()[0].asset.skeleton;
+  int hand = sk.find("hand.R");
+  vec3 ball0 = vec3(ev->objectWorld(0, 1)[3]);
+  // At contact the object sits in front of the palm, within reach of the fingers.
+  vec3 wrist = vec3(ev->characterGlobals(0, 24)[size_t(hand)][3]);
+  MESSAGE("wrist to object at contact: " << glm::distance(wrist, ball0) * 1000 << " mm");
+  CHECK(glm::distance(wrist, ball0) < 0.065f);
+  CHECK(glm::length(ev->scene().animation.evaluate("kid/spine.rot", 24, vec3(0))) > 2.0f);  // leaned
+  // Held: it moves up with the hand; after release it stays where it was put down.
+  vec3 lifted = vec3(ev->objectWorld(0, 40)[3]);
+  CHECK(lifted.y > ball0.y + 0.03f);
+  vec3 placed = vec3(ev->objectWorld(0, 70)[3]);
+  CHECK(glm::distance(vec2(placed.x, placed.z), vec2(-0.12f, 0.25f)) < 0.04f);
+  CHECK(glm::distance(placed, vec3(ev->objectWorld(0, 90)[3])) < 1e-5f);
+  // The eyes are on the object while it is held (generated lookAt track).
+  vec3 look = ev->scene().animation.evaluate("kid/lookAt", 40, vec3(0));
+  CHECK(glm::distance(look, lifted) < 0.03f);
+}
+
+TEST_CASE("walk action moves the character and keeps the standing foot planted") {
+  Json actions = Json::parse(R"([{"type": "walk", "character": "kid", "start": 1, "end": 61, "to": [0.0, 0.6]}])");
+  auto ev = loadTestScene(actions, false);
+  const auto& sk = ev->characters()[0].asset.skeleton;
+  int footL = sk.find("foot.L"), footR = sk.find("foot.R");
+  vec3 endPos = ev->scene().animation.evaluate("kid.position", 61, vec3(0));
+  CHECK(glm::distance(endPos, vec3(0, 0, 0.6f)) < 1e-4f);
+  // Over the walk, at every frame at least one foot is (nearly) still: no skating.
+  int slidingFrames = 0;
+  float minLift = 1, maxLift = 0;
+  for (int f = 2; f < 61; ++f) {
+    auto a = ev->characterGlobals(0, f - 1), b = ev->characterGlobals(0, f);
+    float dl = glm::distance(vec3(a[size_t(footL)][3]), vec3(b[size_t(footL)][3]));
+    float dr = glm::distance(vec3(a[size_t(footR)][3]), vec3(b[size_t(footR)][3]));
+    if (std::min(dl, dr) > 0.0025f) ++slidingFrames;
+    float y = std::max(b[size_t(footL)][3].y, b[size_t(footR)][3].y);
+    minLift = std::min(minLift, y);
+    maxLift = std::max(maxLift, y);
+  }
+  MESSAGE("frames with both feet moving: " << slidingFrames << " / 59; ankle height range " << minLift << " .. " << maxLift);
+  CHECK(slidingFrames <= 6);
+  CHECK(maxLift - minLift > 0.012f);  // feet leave the ground
+  // The feet end next to each other under the body.
+  auto g = ev->characterGlobals(0, 70);
+  CHECK(std::abs(g[size_t(footL)][3].z - g[size_t(footR)][3].z) < 0.03f);
+}

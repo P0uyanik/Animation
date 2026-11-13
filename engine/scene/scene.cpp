@@ -56,7 +56,7 @@ Result<ObjectDesc> objectFromJson(const Json& j) {
   return o;
 }
 
-mat4 objectMatrix(vec3 pos, float yawDeg, float scale) {
+mat4 objectMatrixLocal(vec3 pos, float yawDeg, float scale) {
   return glm::translate(mat4(1), pos) * glm::rotate(mat4(1), glm::radians(yawDeg), vec3(0, 1, 0)) *
          glm::scale(mat4(1), vec3(scale));
 }
@@ -73,6 +73,8 @@ std::shared_ptr<Mesh> transformMesh(const Mesh& src, const mat4& m) {
   return out;
 }
 }  // namespace
+
+mat4 objectMatrix(vec3 pos, float yawDeg, float scale) { return objectMatrixLocal(pos, yawDeg, scale); }
 
 Result<Scene> loadScene(const std::filesystem::path& path) {
   auto jr = parseJsonFile(path);
@@ -104,9 +106,25 @@ Result<Scene> loadScene(const std::filesystem::path& path) {
     if (!o) return fail(std::format("{}: {}", path.string(), o.error().message));
     s.objects.push_back(*o);
   }
-  for (auto& cj : j.value("characters", Json::array()))
-    s.characters.push_back({readString(cj, "name"), readString(cj, "asset"), readVec3(cj, "position", vec3(0)),
-                            readFloat(cj, "yawDeg", 0)});
+  for (auto& cj : j.value("characters", Json::array())) {
+    CharacterDesc cd{readString(cj, "name"), readString(cj, "asset"), readVec3(cj, "position", vec3(0)),
+                     readFloat(cj, "yawDeg", 0), {}};
+    cd.life.seed = uint32_t(std::hash<std::string>{}(cd.name) & 0xffffffffu) | 1u;
+    if (auto it = cj.find("life"); it != cj.end()) {
+      if (it->is_boolean()) cd.life.enabled = it->get<bool>();
+      if (it->is_object()) {
+        cd.life.enabled = readBool(*it, "enabled", true);
+        cd.life.breathing = readFloat(*it, "breathing", cd.life.breathing);
+        cd.life.sway = readFloat(*it, "sway", cd.life.sway);
+        cd.life.headDrift = readFloat(*it, "headDrift", cd.life.headDrift);
+        cd.life.blinkInterval = readFloat(*it, "blinkInterval", cd.life.blinkInterval);
+        cd.life.headFollow = readFloat(*it, "headFollow", cd.life.headFollow);
+        cd.life.headLagSec = readFloat(*it, "headLagSec", cd.life.headLagSec);
+      }
+    }
+    s.characters.push_back(cd);
+  }
+  if (auto it = j.find("actions"); it != j.end() && it->is_array()) s.actions = *it;
   if (auto it = j.find("animation"); it != j.end() && it->is_object()) {
     for (auto& [track, keys] : it->items()) {
       Track t;
@@ -166,8 +184,13 @@ Json sceneToJson(const Scene& s) {
     }
     objs.push_back(oj);
   }
-  for (auto& c : s.characters)
-    chars.push_back({{"name", c.name}, {"asset", c.asset}, {"position", toJson(c.position)}, {"yawDeg", c.yawDeg}});
+  for (auto& c : s.characters) {
+    Json cj = {{"name", c.name}, {"asset", c.asset}, {"position", toJson(c.position)}, {"yawDeg", c.yawDeg}};
+    if (c.life.enabled)
+      cj["life"] = {{"breathing", c.life.breathing}, {"sway", c.life.sway}, {"headDrift", c.life.headDrift},
+                    {"blinkInterval", c.life.blinkInterval}, {"headFollow", c.life.headFollow}, {"headLagSec", c.life.headLagSec}};
+    chars.push_back(cj);
+  }
   Json anim = Json::object();
   for (auto& [name, track] : s.animation.tracks) {
     Json keys = Json::array();
@@ -182,6 +205,7 @@ Json sceneToJson(const Scene& s) {
   j["objects"] = objs;
   j["characters"] = chars;
   j["animation"] = anim;
+  if (!s.actions.empty()) j["actions"] = s.actions;
   return j;
 }
 
@@ -288,7 +312,8 @@ Result<void> SceneEvaluator::load(const Scene& scene, const EvalOptions& opt) {
     }
     objects_.push_back(std::move(g));
   }
-  return {};
+  authoredObjects_ = scene_.objects;
+  return compileActions();
 }
 
 Result<void> SceneEvaluator::rebuildCharacter(size_t index, const CharacterAsset& asset, const EvalOptions& opt) {
@@ -324,8 +349,9 @@ std::vector<mat4> SceneEvaluator::characterGlobals(size_t c, double frame, Pose*
   std::string prefix = cd.name + "/";
   vec3 pos = clip.evaluate(cd.name + ".position", frame, cd.position);
   float yaw = clip.evaluate(cd.name + ".yaw", frame, vec3(cd.yawDeg)).x;
-  mat4 world = objectMatrix(pos, yaw, 1.0f);
+  mat4 world = objectMatrixLocal(pos, yaw, 1.0f);
   Pose pose = evaluatePose(ci.asset.skeleton, clip, prefix, frame, &ci.asset.defaultPose);
+  applyLife(ci.asset.skeleton, clip, prefix, frame, scene_.rate.fps(), world, cd.life, pose);
   applyConstraints(ci.asset.skeleton, clip, prefix, frame, world, pose);
   if (poseOut) *poseOut = pose;
   return boneGlobals(ci.asset.skeleton, pose, world);
@@ -337,7 +363,7 @@ mat4 SceneEvaluator::objectWorld(size_t i, double frame) const {
   auto base = [&](double f) {
     vec3 pos = clip.evaluate(o.name + ".position", f, o.position);
     float yaw = clip.evaluate(o.name + ".yaw", f, vec3(o.yawDeg)).x;
-    return objectMatrix(pos, yaw, o.scale);
+    return objectMatrixLocal(pos, yaw, o.scale);
   };
   if (o.attachTo.empty() || frame < o.attachFrame) return base(frame);
   auto slash = o.attachTo.find('/');
@@ -438,7 +464,8 @@ std::shared_ptr<FrameSnapshot> SceneEvaluator::evaluate(double frame) const {
       continue;
     }
     mat4 world = objectWorld(i, frame);
-    if (!o.floatOn.empty() && frame >= o.floatFrame) {
+    const bool held = !o.attachTo.empty() && frame >= o.attachFrame && frame < o.releaseFrame;
+    if (!o.floatOn.empty() && frame >= o.floatFrame && !held) {
       for (size_t wi = 0; wi < scene_.objects.size(); ++wi) {
         if (scene_.objects[wi].name != o.floatOn) continue;
         mat4 wm = objectWorld(wi, frame), inv = glm::inverse(wm);
