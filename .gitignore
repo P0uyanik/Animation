@@ -3,3 +3,4 @@ build-*/
 renders/
 *.tmp.png
 .cache/
+__pycache__/

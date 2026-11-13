@@ -13,10 +13,11 @@ Result<SdfPrim> primFromJson(const Json& j) {
   else if (type == "capsule") p.type = PrimType::Capsule;
   else if (type == "roundCone") p.type = PrimType::RoundCone;
   else if (type == "roundBox") p.type = PrimType::RoundBox;
+  else if (type == "disc") p.type = PrimType::Disc;
   else return fail(std::format("primitive '{}': unknown type '{}'", p.name, type));
   p.bone = readString(j, "bone");
   p.center = readVec3(j, "center", p.center);
-  p.radii = readVec3(j, p.type == PrimType::RoundBox ? "halfSize" : "radii", p.radii);
+  p.radii = readVec3(j, (p.type == PrimType::RoundBox || p.type == PrimType::Disc) ? "halfSize" : "radii", p.radii);
   p.rotation = eulerDegreesToQuat(readVec3(j, "rotationDeg", vec3(0)));
   p.rounding = readFloat(j, "rounding", p.rounding);
   p.a = readVec3(j, "a", p.a);
@@ -57,7 +58,7 @@ Result<SdfPart> partFromJson(const Json& j) {
 }
 
 Json primToJson(const SdfPrim& p) {
-  const char* types[] = {"ellipsoid", "capsule", "roundCone", "roundBox"};
+  const char* types[] = {"ellipsoid", "capsule", "roundCone", "roundBox", "disc"};
   Json j = {{"name", p.name}, {"type", types[int(p.type)]}, {"blend", p.blend}};
   if (!p.bone.empty()) j["bone"] = p.bone;
   if (p.subtract) j["subtract"] = true;
@@ -68,6 +69,7 @@ Json primToJson(const SdfPrim& p) {
       j["radii"] = toJson(p.radii);
       j["rotationDeg"] = toJson(euler);
       break;
+    case PrimType::Disc:
     case PrimType::RoundBox:
       j["center"] = toJson(p.center);
       j["halfSize"] = toJson(p.radii);
@@ -611,7 +613,7 @@ void smoothSkinWeights(const Mesh& mesh, int boneCount, int iterations, std::vec
 namespace {
 void applyPrimFields(SdfPrim& p, const Json& o) {
   p.center = readVec3(o, "center", p.center);
-  p.radii = readVec3(o, p.type == PrimType::RoundBox ? "halfSize" : "radii", p.radii);
+  p.radii = readVec3(o, (p.type == PrimType::RoundBox || p.type == PrimType::Disc) ? "halfSize" : "radii", p.radii);
   if (o.contains("rotationDeg")) p.rotation = eulerDegreesToQuat(readVec3(o, "rotationDeg", vec3(0)));
   p.a = readVec3(o, "a", p.a);
   p.b = readVec3(o, "b", p.b);

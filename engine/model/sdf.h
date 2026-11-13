@@ -9,7 +9,7 @@
 
 namespace plush {
 
-enum class PrimType { Ellipsoid, Capsule, RoundCone, RoundBox };
+enum class PrimType { Ellipsoid, Capsule, RoundCone, RoundBox, Disc };  // Disc: radii.x radius, radii.z half thickness
 // Geometric surface relief added to a part (real displacement, not just colour).
 enum class SurfacePattern { None, Strands, Knit, Ribbed };
 

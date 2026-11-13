@@ -10,12 +10,14 @@ Everything is data in the character files; the Studio app edits the same data.
 import copy, json, math, random
 
 S = 1.06                      # head-group scale applied in iteration 2
-HEAD_C = (0.0, 0.8278, 0.0)   # head ellipsoid centre / radii (post-scale)
-HEAD_R = (0.1749, 0.1611, 0.159)
+HEAD_C = (0.0, 0.8389, 0.0)   # head ellipsoid centre / radii (iteration 4: shorter lower face)
+HEAD_R = (0.1749, 0.15, 0.159)
 CAP_C = (0.0, 0.8469, -0.0127)
 CAP_R = (0.1823, 0.1717, 0.176)
-EYE_L = (0.0615, 0.796, 0.1187)
-EYE_R = 0.0382
+EYE_L = (0.072, 0.794, 0.0909)   # iteration 4: larger, wider-set eyes (reference eye width ~25% of face)
+EYE_R = 0.065                     # large, deep-set eyeball: wide opening (~8 cm) but only ~1.2 cm protrusion
+LID_R = 0.0685                    # eyelid shell radius
+RIM_Y = 0.0342                    # height of the open lid rim above the eye centre
 
 def v_add(a, b): return [a[i] + b[i] for i in range(3)]
 def v_mul(a, s): return [a[i] * s for i in range(3)]
@@ -38,8 +40,115 @@ def on_ellipsoid(c, r, az, el, lift=0.0):
     return v_add(p, v_mul(n, lift)), n
 
 # ------------------------------------------------------------------ asset helpers
+def _ell_sdf(p, c, r):
+    q = [(p[i] - c[i]) / r[i] for i in range(3)]
+    k0 = math.sqrt(sum(x * x for x in q))
+    q2 = [(p[i] - c[i]) / (r[i] * r[i]) for i in range(3)]
+    k1 = math.sqrt(sum(x * x for x in q2))
+    return k0 * (k0 - 1) / k1 if k1 > 1e-12 else -min(r)
+
+def _smin(a, b, k):
+    h = max(k - abs(a - b), 0) / k
+    return min(a, b) - h * h * k * 0.25
+
+def face_z(c, x, y):
+    """Front surface depth of the skin (ellipsoid primitives, smooth union) at (x, y) — measured, not guessed."""
+    prims = []
+    for p in get_part(c, "skin")["prims"]:
+        if p.get("subtract") or p["type"] != "ellipsoid":
+            continue
+        prims.append(p)
+        if p.get("mirror"):
+            m = dict(p); m["center"] = [-p["center"][0], p["center"][1], p["center"][2]]; prims.append(m)
+    def f(z):
+        d = None
+        for p in prims:
+            di = _ell_sdf([x, y, z], p["center"], p["radii"])
+            d = di if d is None else _smin(d, di, p.get("blend", 0.02))
+        return d
+    lo, hi = 0.0, 0.3
+    for _ in range(50):
+        mid = (lo + hi) / 2
+        if f(mid) < 0: lo = mid
+        else: hi = mid
+    return lo
+
+def upgrade_base(c):
+    """Iteration 4 face and hands, applied to every character built from the shared base."""
+    ex, ey, ez = EYE_L
+    # Skull: shorter lower face (chin up 2 cm), fuller low cheeks, clearer nose.
+    skin = get_part(c, "skin")
+    for p in skin["prims"]:
+        n = p["name"]
+        if n == "head":
+            p["center"], p["radii"] = list(HEAD_C), list(HEAD_R)
+        elif n == "jaw":
+            p["center"] = [0.0, 0.766, 0.034]; p["radii"] = [0.118, 0.055, 0.106]
+        elif n == "cheek.L":
+            p["center"] = [0.088, 0.752, 0.078]; p["radii"] = [0.072, 0.06, 0.068]
+        elif n == "nose":
+            p["radii"] = [r * 0.95 for r in p["radii"]]
+        elif n == "socket.L":
+            p["center"] = [ex, ey - 0.003, ez]; p["radii"] = [EYE_R + 0.0015] * 3
+    for b in c["skeleton"]:
+        if b["name"] in ("eye.L", "lid.L"):
+            b["head"] = [ex, ey, ez]
+    nose = next(p for p in skin["prims"] if p["name"] == "nose")
+    nose["center"] = [0.0, 0.771, face_z(c, 0.0, 0.771) - 0.007]  # mostly embedded: a small bump, as in the references
+    get_part(c, "eyes")["prims"] = [{"name": "eye.L", "type": "ellipsoid", "bone": "eye.L", "center": [ex, ey, ez], "radii": [EYE_R] * 3, "mirror": True}]
+    get_part(c, "lids")["prims"] = [
+        {"name": "lid.L", "type": "ellipsoid", "bone": "lid.L", "center": [ex, ey, ez], "radii": [LID_R] * 3, "mirror": True},
+        {"name": "lidInner.L", "type": "ellipsoid", "bone": "lid.L", "center": [ex, ey, ez], "radii": [EYE_R + 0.0012] * 3, "blend": 0.0008, "subtract": True, "mirror": True},
+        {"name": "lidCut.L", "type": "roundBox", "bone": "lid.L", "center": [ex, ey + RIM_Y - 0.044, ez], "halfSize": [0.075, 0.044, 0.075], "rounding": 0.004, "blend": 0.002, "subtract": True, "mirror": True}]
+    eye_tex = get_mat(c, "eye")["texture"]
+    eye_tex["spots"] = [[ex, ey, ez, EYE_R], [-ex, ey, ez, EYE_R]]
+    eye_tex["params"] = [11, 29, 0, 0]  # iris fills most of the opening, little white (reference)
+    # Mouth and expressions placed on the measured skin surface.
+    mz = lambda x, y, inset=0.0012: face_z(c, x, y) - inset
+    mouth = next(p for p in skin["prims"] if p["name"] == "mouth.L")
+    mouth.update(a=[0.027, 0.742, mz(0.027, 0.742)], b=[0.0, 0.736, mz(0.0, 0.736)], r=0.0046, blend=0.004)
+    cheek = [0.088, 0.752, 0.078]
+    c["expressions"] = [
+        {"name": "smile", "part": "skin", "set": [
+            {"prim": "mouth.L", "a": [0.031, 0.748, mz(0.031, 0.748)], "b": [0.0, 0.7345, mz(0.0, 0.7345)], "r": 0.0048},
+            {"prim": "cheek.L", "center": [cheek[0], cheek[1] + 0.006, cheek[2]]}]},
+        {"name": "mouthOpen", "part": "skin", "add": [
+            {"name": "mouthCavity", "type": "ellipsoid", "center": [0.0, 0.734, face_z(c, 0.0, 0.734) - 0.012], "radii": [0.02, 0.017, 0.016], "blend": 0.006, "subtract": True}]},
+        {"name": "frown", "part": "skin", "set": [
+            {"prim": "mouth.L", "a": [0.028, 0.731, mz(0.028, 0.731)], "b": [0.0, 0.7375, mz(0.0, 0.7375)], "r": 0.0046},
+            {"prim": "cheek.L", "center": [cheek[0], cheek[1] - 0.004, cheek[2]]}]},
+    ]
+    blush = get_mat(c, "skin")["texture"]
+    blush["spots"] = [[0.088, 0.748, face_z(c, 0.088, 0.748), 0.04], [-0.088, 0.748, face_z(c, 0.088, 0.748), 0.04],
+                      [0.0, 0.738, face_z(c, 0.0, 0.738), 0.016]]
+    brows = get_part(c, "brows")
+    for p in brows["prims"]:
+        p["a"] = [0.032, 0.852, face_z(c, 0.032, 0.852) + 0.003]
+        p["b"] = [0.094, 0.858, face_z(c, 0.094, 0.858) + 0.003]
+    # Hands: two-segment fingers and thumb with their own bones (articulated grasping).
+    zs = [0.006, 0.0165, 0.027, 0.0375]
+    lengths = [0.020, 0.023, 0.022, 0.018]
+    names = {b["name"] for b in c["skeleton"]}
+    if "f0a.L" not in names:
+        c["skeleton"].append({"name": "thumbA.L", "parent": "hand.L", "head": [0.152, 0.418, 0.04], "mirror": True})
+        c["skeleton"].append({"name": "thumbB.L", "parent": "thumbA.L", "head": [0.149, 0.4075, 0.0445], "mirror": True})
+        for k, z in enumerate(zs):
+            c["skeleton"].append({"name": f"f{k}a.L", "parent": "hand.L", "head": [0.159, 0.398, z], "mirror": True})
+            c["skeleton"].append({"name": f"f{k}b.L", "parent": f"f{k}a.L", "head": [0.156, 0.398 - lengths[k] * 0.5, z + 0.002], "mirror": True})
+    prims = [
+        {"name": "wrist.L", "type": "capsule", "bone": "hand.L", "a": [0.152, 0.445, 0.016], "b": [0.157, 0.42, 0.019], "r": 0.016, "mirror": True},
+        {"name": "palm.L", "type": "ellipsoid", "bone": "hand.L", "center": [0.159, 0.41, 0.021], "radii": [0.017, 0.022, 0.024], "blend": 0.008, "mirror": True},
+        {"name": "thumbA.L", "type": "capsule", "bone": "thumbA.L", "a": [0.152, 0.418, 0.04], "b": [0.149, 0.4075, 0.0445], "r": 0.0066, "blend": 0.005, "mirror": True},
+        {"name": "thumbB.L", "type": "capsule", "bone": "thumbB.L", "a": [0.149, 0.4075, 0.0445], "b": [0.146, 0.397, 0.049], "r": 0.006, "blend": 0.003, "mirror": True}]
+    for k, z in enumerate(zs):
+        a = [0.159, 0.398, z]; m = [0.156, 0.398 - lengths[k] * 0.5, z + 0.002]; t = [0.153, 0.398 - lengths[k], z + 0.004]
+        prims.append({"name": f"f{k}a.L", "type": "capsule", "bone": f"f{k}a.L", "a": a, "b": m, "r": 0.0058, "blend": 0.003, "mirror": True})
+        prims.append({"name": f"f{k}b.L", "type": "capsule", "bone": f"f{k}b.L", "a": m, "b": t, "r": 0.0052, "blend": 0.002, "mirror": True})
+    get_part(c, "hands")["prims"] = prims
+    return c
+
 def load_base():
-    return json.load(open("content/characters/girl_white_hair_v2.character.json"))
+    return upgrade_base(json.load(open("content/characters/girl_white_hair_v2.character.json")))
 
 def drop(c, parts=(), fuzz=(), locks=False):
     c["parts"] = [p for p in c["parts"] if p["name"] not in parts]
@@ -95,7 +204,7 @@ def get_part(c, name): return next(p for p in c["parts"] if p["name"] == name)
 # ------------------------------------------------------------------ shared face upgrades
 def add_lashes(c, material, thickness=0.0016, flick=1.0):
     """Upper lash line on the eyelid rim (moves with the lid bone when blinking)."""
-    lid_r, rim_y = 0.0392 * S, 0.019 * S
+    lid_r, rim_y = LID_R * 0.995, RIM_Y
     rho = math.sqrt(lid_r ** 2 - rim_y ** 2) * 1.01
     ex, ey, ez = EYE_L
     line = [[ex + rho * math.sin(math.radians(t)), ey + rim_y + 0.0012 * math.cos(math.radians(t)), ez + rho * math.cos(math.radians(t))]
@@ -264,7 +373,7 @@ def character_b():
     c["name"] = "girl_brown_glasses"
     c["notes"] = "Iteration 3: brown curly yarn hair with a coiled top bun and clips, round glasses, blouse, rose knit vest, sage shorts."
     drop(c, parts=("bangs", "bow", "buns", "dress", "collar", "tights"), locks=True)
-    set_eyes(c, [0.30, 0.15, 0.06], pupil_deg=15, iris_deg=47)
+    set_eyes(c, [0.30, 0.15, 0.06], pupil_deg=11, iris_deg=29)
     set_brows(c, [0.22, 0.12, 0.06], r1=0.0062, r2=0.0042, lift=0.004, tilt=0.002)
     mat(c, "lash", type="standard", baseColor=[0.06, 0.035, 0.025], roughness=0.5)
     add_lashes(c, "lash", thickness=0.0017)
@@ -317,18 +426,18 @@ def character_b():
     fuzz(c, "clips", mat(c, "clip_fiber", type="fiber", baseColor=[0.9, 0.6, 0.65], betaM=0.4, betaN=0.8), 260, 0.003)
     # Round glasses: thin frames (curves) and thin glass lenses.
     frame = mat(c, "glasses_frame", type="standard", baseColor=[0.35, 0.18, 0.1], roughness=0.25, coat=0.8, coatRoughness=0.05)
-    gz = 0.168
+    gz = 0.176  # in front of the larger eyes
     rings = []
     for sx in (1, -1):
-        cx = sx * 0.066
-        rings.append(lock([[cx + 0.047 * math.cos(2 * math.pi * t / 32), 0.797 + 0.047 * math.sin(2 * math.pi * t / 32),
+        cx = sx * EYE_L[0]
+        rings.append(lock([[cx + 0.046 * math.cos(2 * math.pi * t / 32), EYE_L[1] + 0.046 * math.sin(2 * math.pi * t / 32),
                             gz - 0.004 * (1 - math.cos(2 * math.pi * t / 32)) * sx * 0] for t in range(33)], 0.0016, 0.0016))
-        rings.append(lock([[sx * 0.112, 0.802, gz - 0.004], [sx * 0.165, 0.81, 0.09], [sx * 0.172, 0.805, 0.0]], 0.0015, 0.0013))
-    rings.append(lock([[-0.019, 0.802, gz + 0.002], [0.0, 0.808, gz + 0.006], [0.019, 0.802, gz + 0.002]], 0.0016, 0.0016))
+        rings.append(lock([[sx * 0.118, 0.8, gz - 0.006], [sx * 0.168, 0.81, 0.09], [sx * 0.174, 0.805, 0.0]], 0.0015, 0.0013))
+    rings.append(lock([[-0.026, 0.8, gz + 0.002], [0.0, 0.806, gz + 0.006], [0.026, 0.8, gz + 0.002]], 0.0016, 0.0016))
     group(c, "glasses", frame, frame, rings, samples=64, roundTip=False, seed=64)
     lens = mat(c, "glasses_lens", type="glass", baseColor=[0.98, 0.98, 0.98], ior=1.5, thin=True, castsShadow=False)
-    part(c, "lenses", lens, [{"name": "lens.L", "type": "ellipsoid", "bone": "head", "center": [0.066, 0.797, gz - 0.001],
-                              "radii": [0.046, 0.046, 0.0012], "mirror": True}], voxel=0.0008)
+    part(c, "lenses", lens, [{"name": "lens.L", "type": "disc", "bone": "head", "center": [EYE_L[0], EYE_L[1], gz - 0.001],
+                              "halfSize": [0.045, 0.045, 0.0012], "rounding": 0.001, "mirror": True}], voxel=0.0008)
     # Clothes: blouse, open knit vest with pockets and buttons, puffy shorts, bare legs.
     blouse = mat(c, "blouse_cotton", baseColor=[0.86, 0.84, 0.79], sheen=0.4, sheenColor=[1, 1, 1],
                  texture={"type": "noise", "color2": [0.8, 0.78, 0.73], "scale": 60, "amount": 0.3})
@@ -383,7 +492,7 @@ def character_c():
     c["name"] = "boy_dark_hair"
     c["notes"] = "Iteration 3: tousled black wool clumps, half-lidded sleepy eyes, low brows, mustard fleece hoodie, black joggers, sneakers, backpack straps."
     drop(c, parts=("bangs", "bow", "buns", "dress", "collar", "tights", "boots", "soles"), locks=True)
-    set_eyes(c, [0.2, 0.12, 0.07], pupil_deg=16, iris_deg=46)
+    set_eyes(c, [0.2, 0.12, 0.07], pupil_deg=12, iris_deg=28)
     set_brows(c, [0.05, 0.04, 0.035], r1=0.0068, r2=0.0058, lift=-0.002, tilt=-0.003)
     mat(c, "lash", type="standard", baseColor=[0.04, 0.03, 0.03], roughness=0.5)
     add_lashes(c, "lash", thickness=0.0014, flick=0.4)

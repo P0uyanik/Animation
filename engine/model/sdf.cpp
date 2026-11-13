@@ -41,6 +41,11 @@ float sdRoundBox(vec3 p, vec3 halfSize, float r) {
   vec3 q = glm::abs(p) - halfSize + vec3(r);
   return glm::length(glm::max(q, vec3(0))) + std::min(std::max(q.x, std::max(q.y, q.z)), 0.0f) - r;
 }
+// Rounded cylinder along local z (lenses, buttons): exact, unlike a very flat ellipsoid.
+float sdDisc(vec3 p, float radius, float halfThickness, float r) {
+  vec2 d(glm::length(vec2(p.x, p.y)) - radius + r, std::abs(p.z) - halfThickness + r);
+  return std::min(std::max(d.x, d.y), 0.0f) + glm::length(glm::max(d, vec2(0))) - r;
+}
 float smin(float a, float b, float k) {
   if (k <= 0) return std::min(a, b);
   float h = std::max(k - std::abs(a - b), 0.0f) / k;
@@ -57,6 +62,7 @@ Aabb primBounds(const SdfPrim& s) {
       b.expand(s.center + vec3(r));
       break;
     }
+    case PrimType::Disc:
     case PrimType::RoundBox: {
       float r = glm::length(s.radii);
       b.expand(s.center - vec3(r));
@@ -79,6 +85,7 @@ float sdfPrim(const SdfPrim& s, vec3 p) {
   switch (s.type) {
     case PrimType::Ellipsoid: return sdEllipsoid(glm::conjugate(s.rotation) * (p - s.center), s.radii);
     case PrimType::RoundBox: return sdRoundBox(glm::conjugate(s.rotation) * (p - s.center), s.radii, s.rounding);
+    case PrimType::Disc: return sdDisc(glm::conjugate(s.rotation) * (p - s.center), s.radii.x, s.radii.z, std::min(s.rounding, s.radii.z));
     case PrimType::Capsule: return sdCapsule(p, s.a, s.b, s.r1);
     case PrimType::RoundCone: return sdRoundCone(p, s.a, s.b, s.r1, s.r2);
   }
