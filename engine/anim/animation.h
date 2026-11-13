@@ -56,5 +56,14 @@ Pose restPose(const Skeleton& skeleton);
 Pose evaluatePose(const Skeleton& skeleton, const Clip& clip, const std::string& prefix, double frame);
 // Skinning matrices: world * boneGlobal * translate(-head).
 std::vector<mat4> skinningMatrices(const Skeleton& skeleton, const Pose& pose, const mat4& world);
+// Global bone frames (world * parent chain); column 3 is the bone pivot in world space.
+std::vector<mat4> boneGlobals(const Skeleton& skeleton, const Pose& pose, const mat4& world);
+// Analytic two-bone IK: rotates the end bone's parent and grandparent so the end pivot reaches `target`.
+void solveTwoBoneIK(const Skeleton& skeleton, Pose& pose, const mat4& world, int endBone, vec3 target, float weight);
+// Points a bone's rest +Z axis at a world target (eyes), limited to maxAngleDeg.
+void aimBone(const Skeleton& skeleton, Pose& pose, const mat4& world, int bone, vec3 target, float weight, float maxAngleDeg);
+// Constraint tracks: "<prefix>ik.<bone>" (+ ".weight"), "<prefix>lookAt" (+ ".weight", aims every "eye.*" bone).
+void applyConstraints(const Skeleton& skeleton, const Clip& clip, const std::string& prefix, double frame,
+                      const mat4& world, Pose& pose);
 
 }  // namespace plush

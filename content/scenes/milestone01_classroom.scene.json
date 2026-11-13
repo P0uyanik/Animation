@@ -817,7 +817,7 @@
  "characters": [
   {
    "name": "girl",
-   "asset": "../characters/girl_white_hair.character.json",
+   "asset": "../characters/girl_white_hair_m01.character.json",
    "position": [
     0,
     0.012,

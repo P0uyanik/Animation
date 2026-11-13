@@ -18,6 +18,10 @@ struct ToneMapSettings {
 };
 std::vector<uint8_t> toneMapToSrgb8(const ImageRGB& img, const ToneMapSettings& tm);
 Result<void> writePng(const std::filesystem::path& path, int width, int height, const std::vector<uint8_t>& rgb);
+// Reads an 8-bit RGB image (PNG/JPEG/...).
+Result<std::vector<uint8_t>> readImageRgb8(const std::filesystem::path& path, int& width, int& height);
+// Root-mean-square difference of two 8-bit RGB images in [0, 1]; -1 if sizes differ.
+double imageRmse(const std::vector<uint8_t>& a, const std::vector<uint8_t>& b);
 Result<void> writeHdr(const std::filesystem::path& path, const ImageRGB& img);
 
 }  // namespace plush

@@ -10,6 +10,8 @@
 namespace plush {
 
 enum class PrimType { Ellipsoid, Capsule, RoundCone, RoundBox };
+// Geometric surface relief added to a part (real displacement, not just colour).
+enum class SurfacePattern { None, Strands, Knit, Ribbed };
 
 struct SdfPrim {
   std::string name;
@@ -37,11 +39,17 @@ struct SdfPart {
   float skinFalloff = 0.012f;  // metres; softness of automatic skin weights
   float noiseAmplitude = 0.0f; // metres; lumpy surface (felted wool, knitted volume)
   float noiseScale = 20.0f;    // 1/metres
+  SurfacePattern pattern = SurfacePattern::None;
+  float patternAmplitude = 0.0f;  // metres (outward relief)
+  float patternScale = 40.0f;     // strands: ridges around the crown; knit/ribbed: columns per metre at 0.1 m radius
+  vec3 patternCenter{0};          // strands: crown point; knit/ribbed: point on the vertical axis
+  int skinSmoothing = 0;          // Laplacian smoothing passes over the automatic skin weights
   std::vector<SdfPrim> prims;
 };
 
 float sdfPrim(const SdfPrim& prim, vec3 p);
 float sdfPart(const SdfPart& part, vec3 p);
+float patternHeight(const SdfPart& part, vec3 p);  // in [0, 1]
 vec3 sdfGradient(const SdfPart& part, vec3 p, float eps);
 Aabb partBounds(const SdfPart& part);
 

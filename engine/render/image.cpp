@@ -2,6 +2,8 @@
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include <stb_image_write.h>
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
 
 #ifdef PLUSH_HAS_OIDN
 #include <OpenImageDenoise/oidn.hpp>
@@ -97,6 +99,25 @@ Result<void> writeHdr(const std::filesystem::path& path, const ImageRGB& img) {
   if (!stbi_write_hdr(path.string().c_str(), img.width, img.height, 3, &img.pixels[0].x))
     return fail(std::format("failed to write '{}'", path.string()));
   return {};
+}
+
+Result<std::vector<uint8_t>> readImageRgb8(const std::filesystem::path& path, int& width, int& height) {
+  int comp = 0;
+  unsigned char* data = stbi_load(path.string().c_str(), &width, &height, &comp, 3);
+  if (!data) return fail(std::format("cannot read image '{}'", path.string()));
+  std::vector<uint8_t> out(data, data + size_t(width) * size_t(height) * 3);
+  stbi_image_free(data);
+  return out;
+}
+
+double imageRmse(const std::vector<uint8_t>& a, const std::vector<uint8_t>& b) {
+  if (a.size() != b.size() || a.empty()) return -1;
+  double sum = 0;
+  for (size_t i = 0; i < a.size(); ++i) {
+    double d = (double(a[i]) - double(b[i])) / 255.0;
+    sum += d * d;
+  }
+  return std::sqrt(sum / double(a.size()));
 }
 
 }  // namespace plush

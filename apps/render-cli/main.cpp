@@ -31,6 +31,8 @@ void usage() {
       "  --no-denoise         skip the denoiser\n"
       "  --overwrite          re-render frames that already exist\n"
       "  --hdr                also write linear .hdr files\n"
+      "  --compare REF.png    compare the result with a reference image (exit 3 if different)\n"
+      "  --max-rmse X         tolerance for --compare (default 0.03)\n"
       "  --threads N          worker threads (default: all)\n"
       "  --camera X,Y,Z --target X,Y,Z --focal MM --fstop N   camera overrides (look dev)");
 }
@@ -49,6 +51,8 @@ int main(int argc, char** argv) {
   int width = 0, height = 0, spp = 0, depth = 0;
   float exposure = NAN;
   bool noDenoise = false;
+  fs::path compareRef;
+  double maxRmse = 0.03;
   std::optional<vec3> camPos, camTarget;
   float focal = 0, fstop = -1;
   auto parseVec3 = [](const std::string& t) {
@@ -85,6 +89,8 @@ int main(int argc, char** argv) {
     else if (a == "--no-fuzz") eval.fuzz = false;
     else if (a == "--no-denoise") noDenoise = true;
     else if (a == "--overwrite") overwrite = true;
+    else if (a == "--compare") compareRef = next();
+    else if (a == "--max-rmse") maxRmse = std::stod(next());
     else if (a == "--hdr") hdr = true;
     else if (a == "--threads") setWorkerCount(unsigned(std::stoi(next())));
     else if (a == "--camera") camPos = parseVec3(next());
@@ -155,6 +161,20 @@ int main(int argc, char** argv) {
       return 1;
     }
     fs::rename(tmp, target);
+    if (!compareRef.empty()) {
+      int rw = 0, rh = 0;
+      auto ref = readImageRgb8(compareRef, rw, rh);
+      if (!ref) {
+        logError("{}", ref.error().message);
+        return 3;
+      }
+      double rmse = imageRmse(rgb, *ref);
+      logInfo("regression: rmse {:.4f} vs {} (limit {:.4f})", rmse, compareRef.string(), maxRmse);
+      if (rmse < 0 || rmse > maxRmse) {
+        logError("regression FAILED for frame {}", f);
+        return 3;
+      }
+    }
     if (hdr) {
       fs::path h = target;
       h.replace_extension(".hdr");

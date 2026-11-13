@@ -23,8 +23,20 @@ struct LockLayer {
   LockParams params;
 };
 
+// A facial (or any) shape target defined by changing primitives of one part.
+// Built into a morph target with the same topology by projecting the rest mesh
+// onto the modified surface. Weight track: "<character>/expr.<name>".
+struct Expression {
+  std::string name;
+  std::string part;
+  std::vector<Json> set;  // {"prim": name, ...fields to override}; .L overrides also update .R
+  std::vector<Json> add;  // extra primitives (same format as part primitives)
+};
+
 struct CharacterAsset {
   std::string name;
+  bool dualQuaternion = false;  // skinning method (false = linear blend)
+  std::vector<Expression> expressions;
   Skeleton skeleton;
   std::vector<SdfPart> parts;  // mirrors expanded, bone indices resolved
   std::vector<FuzzLayer> fuzz;
@@ -60,7 +72,14 @@ struct BoundLocks {
   std::string material;
   FiberSet rest;
 };
+struct MorphTarget {
+  std::string name;
+  int mesh = 0;
+  std::vector<uint32_t> vertices;
+  std::vector<vec3> dpos, dnrm;
+};
 struct CharacterRig {
+  std::vector<MorphTarget> morphs;
   std::vector<SkinnedMesh> meshes;
   std::vector<BoundFuzz> fuzz;
   std::vector<BoundLocks> locks;
@@ -82,6 +101,12 @@ struct PosedCharacter {
   std::vector<std::shared_ptr<FiberSet>> fuzz;   // same order as rig.fuzz
   std::vector<std::shared_ptr<FiberSet>> locks;  // same order as rig.locks
 };
-PosedCharacter poseCharacter(const CharacterRig& rig, const std::vector<mat4>& skin);
+// morphWeights: one per rig.morphs entry (may be empty).
+PosedCharacter poseCharacter(const CharacterRig& rig, const std::vector<mat4>& skin,
+                             const std::vector<float>& morphWeights = {}, bool dualQuaternion = false);
+void smoothSkinWeights(const Mesh& mesh, int boneCount, int iterations, std::vector<glm::ivec4>& joints,
+                       std::vector<vec4>& weights);
+// Applies an expression's overrides/additions to a copy of the part.
+Result<SdfPart> applyExpression(const SdfPart& part, const Expression& e);
 
 }  // namespace plush

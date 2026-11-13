@@ -100,20 +100,98 @@ Pose evaluatePose(const Skeleton& skeleton, const Clip& clip, const std::string&
   return p;
 }
 
-std::vector<mat4> skinningMatrices(const Skeleton& skeleton, const Pose& pose, const mat4& world) {
+std::vector<mat4> boneGlobals(const Skeleton& skeleton, const Pose& pose, const mat4& world) {
   size_t n = skeleton.bones.size();
-  std::vector<mat4> global(n), skin(n);
+  std::vector<mat4> global(n);
   for (size_t i = 0; i < n; ++i) {
     const Bone& b = skeleton.bones[i];
     mat4 rot = glm::mat4_cast(i < pose.local.size() ? pose.local[i] : quat(1, 0, 0, 0));
-    if (b.parent < 0) {
-      global[i] = glm::translate(mat4(1), b.head + pose.rootOffset) * rot;
-    } else {
-      global[i] = global[size_t(b.parent)] * glm::translate(mat4(1), b.head - skeleton.bones[size_t(b.parent)].head) * rot;
-    }
-    skin[i] = world * global[i] * glm::translate(mat4(1), -b.head);
+    if (b.parent < 0) global[i] = world * glm::translate(mat4(1), b.head + pose.rootOffset) * rot;
+    else global[i] = global[size_t(b.parent)] * glm::translate(mat4(1), b.head - skeleton.bones[size_t(b.parent)].head) * rot;
   }
+  return global;
+}
+
+std::vector<mat4> skinningMatrices(const Skeleton& skeleton, const Pose& pose, const mat4& world) {
+  std::vector<mat4> skin = boneGlobals(skeleton, pose, world);
+  for (size_t i = 0; i < skin.size(); ++i) skin[i] = skin[i] * glm::translate(mat4(1), -skeleton.bones[i].head);
   return skin;
+}
+
+namespace {
+float angleBetween(vec3 x, vec3 y) {
+  float lx = glm::length(x), ly = glm::length(y);
+  if (lx < 1e-9f || ly < 1e-9f) return 0;
+  return std::acos(std::clamp(glm::dot(x / lx, y / ly), -1.0f, 1.0f));
+}
+}  // namespace
+
+void solveTwoBoneIK(const Skeleton& sk, Pose& pose, const mat4& world, int end, vec3 target, float weight) {
+  if (end < 0 || weight <= 0) return;
+  int mid = sk.bones[size_t(end)].parent;
+  if (mid < 0) return;
+  int root = sk.bones[size_t(mid)].parent;
+  if (root < 0) return;
+  auto G = boneGlobals(sk, pose, world);
+  vec3 a(G[size_t(root)][3]), b(G[size_t(mid)][3]), c(G[size_t(end)][3]);
+  quat aGr = glm::normalize(glm::quat_cast(mat3(G[size_t(root)]))), bGr = glm::normalize(glm::quat_cast(mat3(G[size_t(mid)])));
+  float lab = glm::length(b - a), lcb = glm::length(c - b);
+  float lat = std::clamp(glm::length(target - a), 1e-4f, (lab + lcb) * 0.999f);
+  float acab0 = angleBetween(c - a, b - a), babc0 = angleBetween(a - b, c - b), acat0 = angleBetween(c - a, target - a);
+  float acab1 = std::acos(std::clamp((lcb * lcb - lab * lab - lat * lat) / (-2 * lab * lat), -1.0f, 1.0f));
+  float babc1 = std::acos(std::clamp((lat * lat - lab * lab - lcb * lcb) / (-2 * lab * lcb), -1.0f, 1.0f));
+  vec3 axis0 = glm::cross(c - a, b - a);
+  if (glm::length2(axis0) < 1e-12f) axis0 = glm::cross(c - a, vec3(0, 0, -1));
+  axis0 = glm::normalize(axis0);
+  vec3 axis1 = glm::cross(c - a, target - a);
+  axis1 = glm::length2(axis1) < 1e-12f ? axis0 : glm::normalize(axis1);
+  quat r0 = glm::angleAxis(acab1 - acab0, glm::inverse(aGr) * axis0);
+  quat r1 = glm::angleAxis(babc1 - babc0, glm::inverse(bGr) * axis0);
+  quat r2 = glm::angleAxis(acat0, glm::inverse(aGr) * axis1);
+  // World order: bend the elbow (r1), restore the shoulder-to-wrist direction (r0), then swing it onto the target (r2).
+  quat aNew = pose.local[size_t(root)] * (r2 * r0), bNew = pose.local[size_t(mid)] * r1;
+  pose.local[size_t(root)] = glm::slerp(pose.local[size_t(root)], aNew, std::clamp(weight, 0.0f, 1.0f));
+  pose.local[size_t(mid)] = glm::slerp(pose.local[size_t(mid)], bNew, std::clamp(weight, 0.0f, 1.0f));
+}
+
+void aimBone(const Skeleton& sk, Pose& pose, const mat4& world, int bone, vec3 target, float weight, float maxAngleDeg) {
+  if (bone < 0 || weight <= 0) return;
+  auto G = boneGlobals(sk, pose, world);
+  int parent = sk.bones[size_t(bone)].parent;
+  mat3 parentRot = parent >= 0 ? mat3(G[size_t(parent)]) : mat3(world);
+  vec3 pivot(G[size_t(bone)][3]);
+  vec3 dir = target - pivot;
+  if (glm::length2(dir) < 1e-12f) return;
+  vec3 d = glm::normalize(glm::transpose(parentRot) * glm::normalize(dir));
+  float maxA = glm::radians(maxAngleDeg), ang = std::acos(std::clamp(d.z, -1.0f, 1.0f));
+  if (ang > maxA) {
+    vec2 perp(d.x, d.y);
+    float lp = glm::length(perp);
+    perp = lp > 1e-6f ? perp / lp : vec2(0, 1);
+    d = vec3(perp * std::sin(maxA), std::cos(maxA));
+  }
+  vec3 z(0, 0, 1);
+  vec3 axis = glm::cross(z, d);
+  float s = glm::length(axis);
+  quat q = s < 1e-7f ? quat(1, 0, 0, 0) : glm::angleAxis(std::atan2(s, glm::dot(z, d)), axis / s);
+  pose.local[size_t(bone)] = glm::slerp(pose.local[size_t(bone)], q, std::clamp(weight, 0.0f, 1.0f));
+}
+
+void applyConstraints(const Skeleton& sk, const Clip& clip, const std::string& prefix, double frame, const mat4& world,
+                      Pose& pose) {
+  for (size_t i = 0; i < sk.bones.size(); ++i) {
+    std::string name = prefix + "ik." + sk.bones[i].name;
+    const Track* t = clip.find(name);
+    if (!t || t->keys.empty()) continue;
+    float w = clip.evaluate(name + ".weight", frame, vec3(1)).x;
+    solveTwoBoneIK(sk, pose, world, int(i), t->evaluate(frame), w);
+  }
+  if (const Track* t = clip.find(prefix + "lookAt"); t && !t->keys.empty()) {
+    vec3 target = t->evaluate(frame);
+    float w = clip.evaluate(prefix + "lookAt.weight", frame, vec3(1)).x;
+    for (size_t i = 0; i < sk.bones.size(); ++i)
+      if (sk.bones[i].name.rfind("eye.", 0) == 0) aimBone(sk, pose, world, int(i), target, w, 38.0f);
+  }
 }
 
 }  // namespace plush

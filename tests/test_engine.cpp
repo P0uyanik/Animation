@@ -238,3 +238,62 @@ TEST_CASE("surface fibers grow outwards and follow deformation") {
   }
   CHECK(outside == total);
 }
+
+TEST_CASE("two-bone IK reaches reachable targets") {
+  Skeleton sk;
+  sk.bones = {{"chest", -1, vec3(0, 0.6f, 0)}, {"upperArm", 0, vec3(0.08f, 0.62f, 0)},
+              {"forearm", 1, vec3(0.12f, 0.51f, 0)}, {"hand", 2, vec3(0.15f, 0.43f, 0.01f)}};
+  mat4 world = glm::rotate(mat4(1), 0.4f, vec3(0, 1, 0));
+  for (vec3 target : {vec3(0.15f, 0.55f, 0.12f), vec3(0.05f, 0.62f, 0.15f), vec3(0.17f, 0.47f, 0.03f)}) {  // all within the 0.203 m reach
+    Pose pose = restPose(sk);
+    solveTwoBoneIK(sk, pose, world, 3, target, 1.0f);
+    vec3 reached(boneGlobals(sk, pose, world)[3][3]);
+    CHECK(glm::distance(reached, target) < 1e-3f);
+  }
+}
+
+TEST_CASE("eye aim points the bone at the target") {
+  Skeleton sk;
+  sk.bones = {{"head", -1, vec3(0, 0.8f, 0)}, {"eye.L", 0, vec3(0.05f, 0.8f, 0.1f)}};
+  Pose pose = restPose(sk);
+  vec3 target(0.3f, 0.5f, 1.0f);
+  aimBone(sk, pose, mat4(1), 1, target, 1.0f, 89.0f);
+  mat4 g = boneGlobals(sk, pose, mat4(1))[1];
+  vec3 fwd = glm::normalize(vec3(g * vec4(0, 0, 1, 0)));
+  CHECK(glm::dot(fwd, glm::normalize(target - vec3(g[3]))) > 0.9999f);
+}
+
+TEST_CASE("dual quaternion and linear skinning agree for a single rigid bone") {
+  CharacterRig rig;
+  SkinnedMesh sm;
+  sm.rest = makeBoxMesh(vec3(-0.1f), vec3(0.1f));
+  sm.joints.assign(sm.rest.positions.size(), glm::ivec4(0));
+  sm.weights.assign(sm.rest.positions.size(), vec4(1, 0, 0, 0));
+  rig.meshes.push_back(sm);
+  mat4 m = glm::translate(mat4(1), vec3(0.3f, -0.2f, 0.5f)) * glm::rotate(mat4(1), 1.1f, glm::normalize(vec3(1, 2, 3)));
+  auto lin = poseCharacter(rig, {m}, {}, false);
+  auto dq = poseCharacter(rig, {m}, {}, true);
+  for (size_t i = 0; i < sm.rest.positions.size(); ++i)
+    CHECK(glm::distance(lin.meshes[0]->positions[i], dq.meshes[0]->positions[i]) < 1e-4f);
+}
+
+TEST_CASE("expression morph targets move the surface to the edited shape") {
+  CharacterAsset c;
+  c.skeleton.bones.push_back({"root", -1, vec3(0)});
+  SdfPart part;
+  part.name = "ball";
+  part.voxelSize = 0.004f;
+  SdfPrim s;
+  s.name = "s";
+  s.radii = vec3(0.1f);
+  part.prims.push_back(s);
+  c.parts.push_back(part);
+  c.expressions.push_back({"grow", "ball", {Json{{"prim", "s"}, {"radii", {0.11, 0.11, 0.11}}}}, {}});
+  CharacterRig rig = buildCharacter(c, BuildOptions{1.0f, 1.0f, false});
+  REQUIRE(rig.morphs.size() == 1);
+  auto posed = poseCharacter(rig, {mat4(1)}, {1.0f});
+  double avg = 0;
+  for (auto& p : posed.meshes[0]->positions) avg += glm::length(p);
+  avg /= double(posed.meshes[0]->positions.size());
+  CHECK(avg == doctest::Approx(0.11).epsilon(0.01));
+}

@@ -21,6 +21,10 @@ struct ObjectDesc {
   float yawDeg = 0;
   float scale = 1;
   std::optional<FuzzLayer> fuzz;      // optional surface fuzz (rugs, cushions ...)
+  // Attachment: between attachFrame and releaseFrame the object follows a character bone
+  // ("<character>/<bone>"), keeping its offset at attachFrame (no jump).
+  std::string attachTo;
+  double attachFrame = 0, releaseFrame = 1e9;
 };
 
 struct CharacterDesc {
@@ -77,6 +81,9 @@ class SceneEvaluator {
   void updateMaterial(const Material& m);
 
  private:
+  // Bone frames (world space) of character c at a frame, after constraints.
+  std::vector<mat4> characterGlobals(size_t c, double frame, Pose* poseOut = nullptr) const;
+  mat4 objectWorld(size_t o, double frame) const;
   struct ObjectGeometry {
     std::shared_ptr<Mesh> local;
     int material = 0;

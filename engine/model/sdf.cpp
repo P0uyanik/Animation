@@ -97,7 +97,39 @@ float sdfPart(const SdfPart& part, vec3 p) {
   for (const auto& s : part.prims)
     if (s.subtract) d = smax(d, -sdfPrim(s, p), s.blend);
   if (part.noiseAmplitude > 0 && d < 4 * part.noiseAmplitude + 0.01f) d += part.noiseAmplitude * fbm(p * part.noiseScale, 3);
+  if (part.pattern != SurfacePattern::None && d < 4 * part.patternAmplitude + 0.01f) d -= part.patternAmplitude * patternHeight(part, p);
   return d;
+}
+
+float patternHeight(const SdfPart& part, vec3 p) {
+  vec3 q = p - part.patternCenter;
+  switch (part.pattern) {
+    case SurfacePattern::None: return 0.0f;
+    case SurfacePattern::Strands: {
+      // Hair-like ridges running from the crown downwards, gently wavy and clumped.
+      float r = glm::length(q);
+      if (r < 1e-6f) return 0.0f;
+      float phi = std::atan2(q.x, q.z), theta = std::acos(std::clamp(q.y / r, -1.0f, 1.0f));
+      float u = phi / kTwoPi * part.patternScale + 0.35f * fbm(p * 14.0f, 2) + 0.5f * theta;
+      float ridge = std::pow(std::abs(std::sin(kPi * u)), 0.55f);
+      float clump = 0.65f + 0.35f * gradientNoise(vec3(std::floor(u) * 3.1f, theta * 5.0f, 0.5f));
+      return ridge * clump;
+    }
+    case SurfacePattern::Knit: {
+      // Stockinette: rounded columns of V-shaped stitches wrapped around the vertical axis.
+      float phi = std::atan2(q.x, q.z);
+      float u = phi * 0.1f * part.patternScale, v = q.y * part.patternScale * 1.25f;
+      float fu = u - std::floor(u);
+      float column = std::pow(std::sin(kPi * fu), 0.7f);
+      float row = 0.5f + 0.5f * std::cos(kTwoPi * (v + std::abs(fu - 0.5f) * 0.9f));
+      return column * (0.55f + 0.45f * row);
+    }
+    case SurfacePattern::Ribbed: {
+      float phi = std::atan2(q.x, q.z);
+      return std::pow(std::abs(std::sin(kPi * phi * 0.1f * part.patternScale)), 0.6f);
+    }
+  }
+  return 0.0f;
 }
 
 vec3 sdfGradient(const SdfPart& part, vec3 p, float e) {
@@ -116,8 +148,8 @@ Aabb partBounds(const SdfPart& part) {
     maxBlend = std::max(maxBlend, s.blend);
   }
   if (b.valid()) {
-    b.lo -= vec3(maxBlend + part.noiseAmplitude);
-    b.hi += vec3(maxBlend + part.noiseAmplitude);
+    b.lo -= vec3(maxBlend + part.noiseAmplitude + part.patternAmplitude);
+    b.hi += vec3(maxBlend + part.noiseAmplitude + part.patternAmplitude);
   }
   return b;
 }

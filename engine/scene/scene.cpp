@@ -36,6 +36,11 @@ Result<ObjectDesc> objectFromJson(const Json& j) {
     f.params.seed = uint32_t(readInt(*it, "seed", int(f.params.seed)));
     o.fuzz = f;
   }
+  if (auto it = j.find("attach"); it != j.end()) {
+    o.attachTo = readString(*it, "to");
+    o.attachFrame = readFloat(*it, "frame", 0);
+    o.releaseFrame = readFloat(*it, "release", 1e9f);
+  }
   return o;
 }
 
@@ -134,6 +139,7 @@ Json sceneToJson(const Scene& s) {
       for (auto& p : o.part.prims) prims.push_back(primToJson(p));
       oj["part"] = {{"name", o.part.name}, {"material", o.part.material}, {"voxelSize", o.part.voxelSize}, {"prims", prims}};
     }
+    if (!o.attachTo.empty()) oj["attach"] = {{"to", o.attachTo}, {"frame", o.attachFrame}, {"release", o.releaseFrame}};
     if (o.fuzz) {
       const FuzzParams& f = o.fuzz->params;
       oj["fuzz"] = {{"material", o.fuzz->material}, {"density", f.density}, {"length", f.length},
@@ -285,41 +291,76 @@ void SceneEvaluator::updateMaterial(const Material& m) {
   if (it != materialIndex_.end()) materials_[size_t(it->second)] = m;
 }
 
+std::vector<mat4> SceneEvaluator::characterGlobals(size_t c, double frame, Pose* poseOut) const {
+  const CharacterDesc& cd = scene_.characters[c];
+  const CharacterInstance& ci = characters_[c];
+  const Clip& clip = scene_.animation;
+  std::string prefix = cd.name + "/";
+  vec3 pos = clip.evaluate(cd.name + ".position", frame, cd.position);
+  float yaw = clip.evaluate(cd.name + ".yaw", frame, vec3(cd.yawDeg)).x;
+  mat4 world = objectMatrix(pos, yaw, 1.0f);
+  Pose pose = evaluatePose(ci.asset.skeleton, clip, prefix, frame);
+  applyConstraints(ci.asset.skeleton, clip, prefix, frame, world, pose);
+  if (poseOut) *poseOut = pose;
+  return boneGlobals(ci.asset.skeleton, pose, world);
+}
+
+mat4 SceneEvaluator::objectWorld(size_t i, double frame) const {
+  const ObjectDesc& o = scene_.objects[i];
+  const Clip& clip = scene_.animation;
+  auto base = [&](double f) {
+    vec3 pos = clip.evaluate(o.name + ".position", f, o.position);
+    float yaw = clip.evaluate(o.name + ".yaw", f, vec3(o.yawDeg)).x;
+    return objectMatrix(pos, yaw, o.scale);
+  };
+  if (o.attachTo.empty() || frame < o.attachFrame) return base(frame);
+  auto slash = o.attachTo.find('/');
+  std::string charName = o.attachTo.substr(0, slash), boneName = slash == std::string::npos ? "" : o.attachTo.substr(slash + 1);
+  for (size_t c = 0; c < characters_.size(); ++c) {
+    if (scene_.characters[c].name != charName) continue;
+    int bone = characters_[c].asset.skeleton.find(boneName);
+    if (bone < 0) break;
+    double f = std::min(frame, o.releaseFrame);
+    mat4 g0 = characterGlobals(c, o.attachFrame)[size_t(bone)];
+    mat4 g1 = characterGlobals(c, f)[size_t(bone)];
+    return g1 * glm::inverse(g0) * base(o.attachFrame);
+  }
+  return base(frame);
+}
+
 std::shared_ptr<FrameSnapshot> SceneEvaluator::evaluate(double frame) const {
   auto snap = std::make_shared<FrameSnapshot>();
   snap->frame = frame;
   snap->materials = materials_;
   snap->lights = scene_.lights;
   const Clip& clip = scene_.animation;
-  for (size_t i = 0; i < objects_.size(); ++i) {
-    const ObjectDesc& o = scene_.objects[i];
-    const ObjectGeometry& g = objects_[i];
-    std::shared_ptr<const Mesh> world;
-    if (o.kind == ObjectDesc::Kind::Box) {
-      world = g.local;
-    } else {
-      vec3 pos = clip.evaluate(o.name + ".position", frame, o.position);
-      float yaw = clip.evaluate(o.name + ".yaw", frame, vec3(o.yawDeg)).x;
-      auto m = transformMesh(*g.local, objectMatrix(pos, yaw, o.scale));
-      world = m;
-      if (g.fuzz) snap->fibers.push_back({deformSurfaceFibers(*g.fuzz, *m), g.fuzzMaterial});
-    }
-    if (o.kind == ObjectDesc::Kind::Box && g.fuzz) snap->fibers.push_back({deformSurfaceFibers(*g.fuzz, *g.local), g.fuzzMaterial});
-    snap->meshes.push_back({world, g.material});
-  }
   for (size_t c = 0; c < characters_.size(); ++c) {
-    const CharacterDesc& cd = scene_.characters[c];
     const CharacterInstance& ci = characters_[c];
-    std::string prefix = cd.name + "/";
-    vec3 pos = clip.evaluate(cd.name + ".position", frame, cd.position);
-    float yaw = clip.evaluate(cd.name + ".yaw", frame, vec3(cd.yawDeg)).x;
-    Pose pose = evaluatePose(ci.asset.skeleton, clip, prefix, frame);
-    auto skin = skinningMatrices(ci.asset.skeleton, pose, objectMatrix(pos, yaw, 1.0f));
-    PosedCharacter posed = poseCharacter(ci.rig, skin);
+    std::string prefix = scene_.characters[c].name + "/";
+    auto skin = characterGlobals(c, frame);
+    for (size_t b = 0; b < skin.size(); ++b) skin[b] = skin[b] * glm::translate(mat4(1), -ci.asset.skeleton.bones[b].head);
+    std::vector<float> weights;
+    for (auto& mt : ci.rig.morphs) weights.push_back(clip.evaluate(prefix + "expr." + mt.name, frame, vec3(0)).x);
+    PosedCharacter posed = poseCharacter(ci.rig, skin, weights, ci.asset.dualQuaternion);
     for (size_t k = 0; k < posed.meshes.size(); ++k) snap->meshes.push_back({posed.meshes[k], ci.meshMaterial[k]});
     for (size_t k = 0; k < posed.fuzz.size(); ++k) snap->fibers.push_back({posed.fuzz[k], ci.fuzzMaterial[k]});
     for (size_t k = 0; k < posed.locks.size(); ++k) snap->fibers.push_back({posed.locks[k], ci.lockMaterial[k]});
   }
+  // Objects after characters (objects may be attached to bones). Kept in scene order after the characters.
+  std::vector<SnapshotMesh> objectMeshes;
+  for (size_t i = 0; i < objects_.size(); ++i) {
+    const ObjectDesc& o = scene_.objects[i];
+    const ObjectGeometry& g = objects_[i];
+    if (o.kind == ObjectDesc::Kind::Box) {
+      objectMeshes.push_back({g.local, g.material});
+      if (g.fuzz) snap->fibers.push_back({deformSurfaceFibers(*g.fuzz, *g.local), g.fuzzMaterial});
+      continue;
+    }
+    auto m = transformMesh(*g.local, objectWorld(i, frame));
+    if (g.fuzz) snap->fibers.push_back({deformSurfaceFibers(*g.fuzz, *m), g.fuzzMaterial});
+    objectMeshes.push_back({m, g.material});
+  }
+  snap->meshes.insert(snap->meshes.begin(), objectMeshes.begin(), objectMeshes.end());
   Camera cam = scene_.camera;
   cam.position = clip.evaluate("camera.position", frame, cam.position);
   cam.target = clip.evaluate("camera.target", frame, cam.target);

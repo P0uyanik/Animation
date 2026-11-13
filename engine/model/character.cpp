@@ -37,6 +37,13 @@ Result<SdfPart> partFromJson(const Json& j) {
   part.skinFalloff = readFloat(j, "skinFalloff", part.skinFalloff);
   part.noiseAmplitude = readFloat(j, "noiseAmplitude", part.noiseAmplitude);
   part.noiseScale = readFloat(j, "noiseScale", part.noiseScale);
+  std::string pattern = readString(j, "pattern", "none");
+  part.pattern = pattern == "strands" ? SurfacePattern::Strands : pattern == "knit" ? SurfacePattern::Knit
+                 : pattern == "ribbed" ? SurfacePattern::Ribbed : SurfacePattern::None;
+  part.patternAmplitude = readFloat(j, "patternAmplitude", part.patternAmplitude);
+  part.patternScale = readFloat(j, "patternScale", part.patternScale);
+  part.patternCenter = readVec3(j, "patternCenter", part.patternCenter);
+  part.skinSmoothing = readInt(j, "skinSmoothing", part.skinSmoothing);
   std::vector<SdfPrim> prims;
   if (auto it = j.find("prims"); it != j.end() && it->is_array()) {
     for (auto& pj : *it) {
@@ -86,7 +93,11 @@ Json partToJson(const SdfPart& part) {
   Json prims = Json::array();
   for (auto& p : part.prims) prims.push_back(primToJson(p));
   return {{"name", part.name}, {"material", part.material}, {"voxelSize", part.voxelSize}, {"skinFalloff", part.skinFalloff},
-          {"noiseAmplitude", part.noiseAmplitude}, {"noiseScale", part.noiseScale}, {"prims", prims}};
+          {"noiseAmplitude", part.noiseAmplitude}, {"noiseScale", part.noiseScale},
+          {"pattern", part.pattern == SurfacePattern::Strands ? "strands" : part.pattern == SurfacePattern::Knit ? "knit"
+                      : part.pattern == SurfacePattern::Ribbed ? "ribbed" : "none"},
+          {"patternAmplitude", part.patternAmplitude}, {"patternScale", part.patternScale},
+          {"patternCenter", toJson(part.patternCenter)}, {"skinSmoothing", part.skinSmoothing}, {"prims", prims}};
 }
 
 Json characterToJson(const CharacterAsset& c) {
@@ -116,8 +127,11 @@ Json characterToJson(const CharacterAsset& c) {
                      {"bodyClearance", q.bodyClearance}, {"sideClearance", q.sideClearance}, {"frizz", q.frizz},
                      {"segments", q.segments}, {"seed", q.seed}});
   }
+  Json exprs = Json::array();
+  for (auto& e : c.expressions) exprs.push_back({{"name", e.name}, {"part", e.part}, {"set", e.set}, {"add", e.add}});
   return {{"format", "plush.character"}, {"version", 1}, {"name", c.name}, {"skeleton", bones}, {"materials", mats},
-          {"parts", parts}, {"fuzz", fuzz}, {"locks", locks}};
+          {"skinning", c.dualQuaternion ? "dualQuaternion" : "linear"}, {"parts", parts}, {"fuzz", fuzz},
+          {"locks", locks}, {"expressions", exprs}};
 }
 
 Result<void> resolveBones(CharacterAsset& c) {
@@ -223,6 +237,14 @@ Result<CharacterAsset> characterFromJson(const Json& j) {
     for (auto& fj : *it) c.fuzz.push_back({readString(fj, "part"), readString(fj, "material"), fuzzFromJson(fj)});
   if (auto it = j.find("locks"); it != j.end() && it->is_array())
     for (auto& lj : *it) c.locks.push_back({readString(lj, "material"), readString(lj, "bone", "head"), locksFromJson(lj)});
+  c.dualQuaternion = readString(j, "skinning", "linear") == "dualQuaternion";
+  if (auto it = j.find("expressions"); it != j.end() && it->is_array())
+    for (auto& ej : *it) {
+      Expression e{readString(ej, "name"), readString(ej, "part"), {}, {}};
+      for (auto& s : ej.value("set", Json::array())) e.set.push_back(s);
+      for (auto& a : ej.value("add", Json::array())) e.add.push_back(a);
+      c.expressions.push_back(std::move(e));
+    }
   return c;
 }
 
@@ -289,8 +311,57 @@ CharacterRig buildCharacter(const CharacterAsset& asset, const BuildOptions& opt
     sm.material = part.material;
     sm.rest = meshSdfPart(part, opt.voxelScale);
     computeSkinWeights(part, int(asset.skeleton.bones.size()), sm.rest, sm.joints, sm.weights);
+    if (part.skinSmoothing > 0)
+      smoothSkinWeights(sm.rest, int(asset.skeleton.bones.size()), part.skinSmoothing, sm.joints, sm.weights);
     logDebug("part '{}': {} vertices, {} triangles", part.name, sm.rest.positions.size(), sm.rest.triangleCount());
     rig.meshes.push_back(std::move(sm));
+  }
+  for (const auto& e : asset.expressions) {
+    auto it = std::find_if(asset.parts.begin(), asset.parts.end(), [&](auto& p) { return p.name == e.part; });
+    if (it == asset.parts.end()) {
+      logWarn("expression '{}' refers to unknown part '{}'", e.name, e.part);
+      continue;
+    }
+    size_t mi = size_t(it - asset.parts.begin());
+    auto modified = applyExpression(*it, e);
+    if (!modified) {
+      logWarn("expression '{}': {}", e.name, modified.error().message);
+      continue;
+    }
+    const Mesh& rest = rig.meshes[mi].rest;
+    MorphTarget mt;
+    mt.name = e.name;
+    mt.mesh = int(mi);
+    std::vector<vec3> dp(rest.positions.size(), vec3(0)), dn(rest.positions.size(), vec3(0));
+    std::vector<uint8_t> moved(rest.positions.size(), 0);
+    const float eps = std::max(1e-5f, 0.1f * it->voxelSize * opt.voxelScale);
+    parallelFor(rest.positions.size(), [&](size_t v) {
+      vec3 p0 = rest.positions[v];
+      if (std::abs(sdfPart(*modified, p0) - sdfPart(*it, p0)) < 1e-6f) return;  // surface unchanged here
+      vec3 p = p0;
+      for (int k = 0; k < 8; ++k) {
+        vec3 g = sdfGradient(*modified, p, eps);
+        float g2 = glm::dot(g, g);
+        if (g2 < 1e-12f) break;
+        p -= g * (sdfPart(*modified, p) / g2);
+      }
+      vec3 d = p - p0;
+      float len = glm::length(d);
+      if (len > 0.03f) d *= 0.03f / len;
+      vec3 g = sdfGradient(*modified, p0 + d, eps);
+      float lg = glm::length(g);
+      dp[v] = d;
+      dn[v] = (lg > 0 ? g / lg : rest.normals[v]) - rest.normals[v];
+      moved[v] = 1;
+    }, 1024);
+    for (size_t v = 0; v < moved.size(); ++v)
+      if (moved[v]) {
+        mt.vertices.push_back(uint32_t(v));
+        mt.dpos.push_back(dp[v]);
+        mt.dnrm.push_back(dn[v]);
+      }
+    logDebug("expression '{}': {} vertices", e.name, mt.vertices.size());
+    rig.morphs.push_back(std::move(mt));
   }
   if (opt.fuzz) {
     for (const auto& layer : asset.fuzz) {
@@ -320,23 +391,71 @@ CharacterRig buildCharacter(const CharacterAsset& asset, const BuildOptions& opt
   return rig;
 }
 
-PosedCharacter poseCharacter(const CharacterRig& rig, const std::vector<mat4>& skin) {
+namespace {
+struct DualQuat {
+  quat r{1, 0, 0, 0}, d{0, 0, 0, 0};
+};
+DualQuat toDualQuat(const mat4& m) {
+  DualQuat q;
+  q.r = glm::normalize(glm::quat_cast(mat3(m)));
+  vec3 t(m[3]);
+  q.d = 0.5f * (quat(0, t.x, t.y, t.z) * q.r);
+  return q;
+}
+}  // namespace
+
+PosedCharacter poseCharacter(const CharacterRig& rig, const std::vector<mat4>& skin, const std::vector<float>& morphWeights,
+                             bool dualQuaternion) {
   PosedCharacter out;
-  for (const auto& sm : rig.meshes) {
+  std::vector<DualQuat> dqs;
+  if (dualQuaternion)
+    for (auto& m : skin) dqs.push_back(toDualQuat(m));
+  for (size_t mi = 0; mi < rig.meshes.size(); ++mi) {
+    const SkinnedMesh& sm = rig.meshes[mi];
+    // Rest shape plus active morph targets.
+    std::vector<vec3> pos = sm.rest.positions, nrm = sm.rest.normals;
+    for (size_t t = 0; t < rig.morphs.size() && t < morphWeights.size(); ++t) {
+      const MorphTarget& mt = rig.morphs[t];
+      float w = morphWeights[t];
+      if (mt.mesh != int(mi) || std::abs(w) < 1e-4f) continue;
+      for (size_t k = 0; k < mt.vertices.size(); ++k) {
+        pos[mt.vertices[k]] += w * mt.dpos[k];
+        nrm[mt.vertices[k]] += w * mt.dnrm[k];
+      }
+    }
     auto m = std::make_shared<Mesh>();
     m->indices = sm.rest.indices;
     m->pref = sm.rest.positions;
-    size_t n = sm.rest.positions.size();
+    size_t n = pos.size();
     m->positions.resize(n);
     m->normals.resize(n);
     parallelFor(n, [&](size_t v) {
-      mat4 blended(0.0f);
-      for (int k = 0; k < 4; ++k) {
-        float w = sm.weights[v][k];
-        if (w > 0) blended += w * skin[size_t(sm.joints[v][k])];
+      vec3 nn;
+      if (dualQuaternion) {
+        DualQuat b0 = dqs[size_t(sm.joints[v][0])], acc;
+        acc.r = quat(0, 0, 0, 0);
+        for (int k = 0; k < 4; ++k) {
+          float w = sm.weights[v][k];
+          if (w <= 0) continue;
+          DualQuat q = dqs[size_t(sm.joints[v][k])];
+          if (glm::dot(q.r, b0.r) < 0) w = -w;
+          acc.r = acc.r + w * q.r;
+          acc.d = acc.d + w * q.d;
+        }
+        float len = glm::length(acc.r);
+        quat r = acc.r / len, d = acc.d / len;
+        quat t = 2.0f * (d * glm::conjugate(r));
+        m->positions[v] = r * pos[v] + vec3(t.x, t.y, t.z);
+        nn = r * nrm[v];
+      } else {
+        mat4 blended(0.0f);
+        for (int k = 0; k < 4; ++k) {
+          float w = sm.weights[v][k];
+          if (w > 0) blended += w * skin[size_t(sm.joints[v][k])];
+        }
+        m->positions[v] = vec3(blended * vec4(pos[v], 1.0f));
+        nn = mat3(blended) * nrm[v];
       }
-      m->positions[v] = vec3(blended * vec4(sm.rest.positions[v], 1.0f));
-      vec3 nn = mat3(blended) * sm.rest.normals[v];
       float len = glm::length(nn);
       m->normals[v] = len > 0 ? nn / len : sm.rest.normals[v];
     }, 2048);
@@ -344,6 +463,92 @@ PosedCharacter poseCharacter(const CharacterRig& rig, const std::vector<mat4>& s
   }
   for (const auto& bf : rig.fuzz) out.fuzz.push_back(deformSurfaceFibers(bf.fibers, *out.meshes[size_t(bf.mesh)]));
   for (const auto& bl : rig.locks) out.locks.push_back(transformFibers(bl.rest, skin[size_t(bl.bone)]));
+  return out;
+}
+
+void smoothSkinWeights(const Mesh& mesh, int boneCount, int iterations, std::vector<glm::ivec4>& joints,
+                       std::vector<vec4>& weights) {
+  size_t n = mesh.positions.size(), nb = size_t(std::max(1, boneCount));
+  std::vector<std::vector<uint32_t>> adj(n);
+  for (size_t t = 0; t < mesh.triangleCount(); ++t)
+    for (int k = 0; k < 3; ++k) {
+      uint32_t a = mesh.indices[3 * t + size_t(k)], b = mesh.indices[3 * t + size_t((k + 1) % 3)];
+      adj[a].push_back(b);
+      adj[b].push_back(a);
+    }
+  std::vector<float> dense(n * nb, 0.0f), next(n * nb);
+  for (size_t v = 0; v < n; ++v)
+    for (int k = 0; k < 4; ++k) dense[v * nb + size_t(joints[v][k])] += weights[v][k];
+  for (int it = 0; it < iterations; ++it) {
+    parallelFor(n, [&](size_t v) {
+      for (size_t b = 0; b < nb; ++b) {
+        float sum = 0;
+        for (uint32_t u : adj[v]) sum += dense[size_t(u) * nb + b];
+        float avg = adj[v].empty() ? dense[v * nb + b] : sum / float(adj[v].size());
+        next[v * nb + b] = 0.5f * dense[v * nb + b] + 0.5f * avg;
+      }
+    }, 2048);
+    dense.swap(next);
+  }
+  parallelFor(n, [&](size_t v) {
+    std::array<std::pair<float, int>, 4> best{};
+    for (size_t b = 0; b < nb; ++b) {
+      float w = dense[v * nb + b];
+      if (w > best[3].first) {
+        best[3] = {w, int(b)};
+        std::sort(best.begin(), best.end(), [](auto& x, auto& y) { return x.first > y.first; });
+      }
+    }
+    float sum = best[0].first + best[1].first + best[2].first + best[3].first;
+    for (int k = 0; k < 4; ++k) {
+      joints[v][k] = best[size_t(k)].second;
+      weights[v][k] = sum > 0 ? best[size_t(k)].first / sum : (k == 0 ? 1.0f : 0.0f);
+    }
+  }, 2048);
+}
+
+namespace {
+void applyPrimFields(SdfPrim& p, const Json& o) {
+  p.center = readVec3(o, "center", p.center);
+  p.radii = readVec3(o, p.type == PrimType::RoundBox ? "halfSize" : "radii", p.radii);
+  if (o.contains("rotationDeg")) p.rotation = eulerDegreesToQuat(readVec3(o, "rotationDeg", vec3(0)));
+  p.a = readVec3(o, "a", p.a);
+  p.b = readVec3(o, "b", p.b);
+  p.r1 = readFloat(o, "r1", readFloat(o, "r", p.r1));
+  p.r2 = readFloat(o, "r2", p.type == PrimType::Capsule ? p.r1 : p.r2);
+  p.blend = readFloat(o, "blend", p.blend);
+  p.rounding = readFloat(o, "rounding", p.rounding);
+  p.subtract = readBool(o, "subtract", p.subtract);
+}
+}  // namespace
+
+Result<SdfPart> applyExpression(const SdfPart& part, const Expression& e) {
+  SdfPart out = part;
+  for (const Json& o : e.set) {
+    std::string name = readString(o, "prim");
+    auto it = std::find_if(out.prims.begin(), out.prims.end(), [&](auto& p) { return p.name == name; });
+    if (it == out.prims.end()) return fail(std::format("unknown primitive '{}'", name));
+    applyPrimFields(*it, o);
+    std::string mirror = mirrorName(name);
+    if (mirror != name) {
+      auto mit = std::find_if(out.prims.begin(), out.prims.end(), [&](auto& p) { return p.name == mirror; });
+      if (mit != out.prims.end()) {
+        SdfPrim src = *it;
+        src.mirrorX = true;
+        auto pair = expandMirrors({src});
+        SdfPrim m = pair.back();
+        m.name = mit->name;
+        m.bone = mit->bone;
+        m.boneIndex = mit->boneIndex;
+        *mit = m;
+      }
+    }
+  }
+  for (const Json& a : e.add) {
+    auto p = primFromJson(a);
+    if (!p) return std::unexpected(p.error());
+    for (auto& q : expandMirrors({*p})) out.prims.push_back(q);
+  }
   return out;
 }
 
