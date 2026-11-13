@@ -385,6 +385,7 @@ struct PathTracer::Impl {
   vec3 radiance(vec3 o, vec3 d, Sampler& rng, const RenderSettings& rs, vec3* albedo, vec3* normal) const {
     vec3 L(0), beta(1);
     float tnear = 0, prevPdf = 0;
+    bool aovDone = false;  // denoiser guides come from the first non-glass surface
     ShadingPoint prev;
     for (int depth = 0; depth <= rs.maxDepth; ++depth) {
       RTCRayHit rh;
@@ -395,10 +396,11 @@ struct PathTracer::Impl {
       if (li >= 0) {
         const Light& l = snap->lights[size_t(li)];
         vec3 Le = l.color * l.intensity;
-        if (depth == 0) {
+        if (depth == 0 || prevPdf > 1e17f) {  // seen directly or through glass
           L += beta * Le;
-          if (albedo) *albedo = glm::min(Le, vec3(1));
-          if (normal) *normal = -d;
+          if (!aovDone && albedo) *albedo = glm::min(Le, vec3(1));
+          if (!aovDone && normal) *normal = -d;
+          aovDone = true;
         } else {
           vec3 n = glm::cross(l.edgeU, l.edgeV);
           float area = glm::length(n);
@@ -417,18 +419,19 @@ struct PathTracer::Impl {
           vec3 Le = l.color * l.intensity;
           float w = depth == 0 ? 1.0f : powerHeuristic(prevPdf, skyPdf(prev, d));
           L += beta * Le * w;
-          if (depth == 0 && albedo) *albedo = glm::min(Le, vec3(1));
+          if (!aovDone && albedo) *albedo = glm::min(Le, vec3(1));
         }
         break;
       }
       ShadingPoint sp = shade(rh, o, d);
       vec3 wo = -d;
       prepareShading(sp, wo);
-      if (depth == 0) {
+      if (!aovDone && (sp.fiber || sp.material->type != MaterialType::Glass)) {
         // Fibres: modulate the guide by the across-fibre offset so each fibre is a
         // visible line in the albedo buffer and the denoiser preserves it.
-        if (albedo) *albedo = sp.fiber ? sp.base * (0.45f + 0.55f * safeSqrt(1 - sp.h * sp.h))
-                              : sp.material->type == MaterialType::Glass ? vec3(1) : sp.base;
+        // Glass is skipped: the guides come from what is seen through it.
+        aovDone = true;
+        if (albedo) *albedo = sp.fiber ? sp.base * (0.45f + 0.55f * safeSqrt(1 - sp.h * sp.h)) : sp.base;
         if (normal) *normal = sp.fiber ? sp.ng : sp.ns;
       }
       if (sp.fiber || sp.material->type != MaterialType::Glass) L += beta * directLight(sp, wo, rng, depth, rs.clamp);

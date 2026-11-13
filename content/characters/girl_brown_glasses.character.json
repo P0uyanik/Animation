@@ -1,0 +1,6001 @@
+{
+ "format": "plush.character",
+ "version": 1,
+ "name": "girl_brown_glasses",
+ "notes": "Iteration 3: brown curly yarn hair with a coiled top bun and clips, round glasses, blouse, rose knit vest, sage shorts.",
+ "skeleton": [
+  {
+   "name": "hips",
+   "head": [
+    0,
+    0.42,
+    0
+   ]
+  },
+  {
+   "name": "spine",
+   "parent": "hips",
+   "head": [
+    0,
+    0.5,
+    0
+   ]
+  },
+  {
+   "name": "chest",
+   "parent": "spine",
+   "head": [
+    0,
+    0.58,
+    0
+   ]
+  },
+  {
+   "name": "neck",
+   "parent": "chest",
+   "head": [
+    0,
+    0.655,
+    0
+   ]
+  },
+  {
+   "name": "head",
+   "parent": "neck",
+   "head": [
+    0.0,
+    0.69,
+    0.0
+   ]
+  },
+  {
+   "name": "eye.L",
+   "parent": "head",
+   "head": [
+    0.06148000000000001,
+    0.796,
+    0.11872
+   ],
+   "mirror": true
+  },
+  {
+   "name": "upperArm.L",
+   "parent": "chest",
+   "head": [
+    0.075,
+    0.625,
+    0
+   ],
+   "mirror": true
+  },
+  {
+   "name": "forearm.L",
+   "parent": "upperArm.L",
+   "head": [
+    0.122,
+    0.515,
+    0
+   ],
+   "mirror": true
+  },
+  {
+   "name": "hand.L",
+   "parent": "forearm.L",
+   "head": [
+    0.155,
+    0.43,
+    0.015
+   ],
+   "mirror": true
+  },
+  {
+   "name": "thigh.L",
+   "parent": "hips",
+   "head": [
+    0.05,
+    0.4,
+    0
+   ],
+   "mirror": true
+  },
+  {
+   "name": "shin.L",
+   "parent": "thigh.L",
+   "head": [
+    0.054,
+    0.22,
+    0
+   ],
+   "mirror": true
+  },
+  {
+   "name": "foot.L",
+   "parent": "shin.L",
+   "head": [
+    0.056,
+    0.055,
+    0
+   ],
+   "mirror": true
+  },
+  {
+   "name": "brow.L",
+   "parent": "head",
+   "head": [
+    0.0,
+    0.8278,
+    0.0
+   ],
+   "mirror": true
+  },
+  {
+   "name": "lid.L",
+   "parent": "head",
+   "head": [
+    0.06148000000000001,
+    0.796,
+    0.11872
+   ],
+   "mirror": true
+  }
+ ],
+ "materials": [
+  {
+   "name": "B_skin",
+   "type": "standard",
+   "baseColor": [
+    0.82,
+    0.58,
+    0.47
+   ],
+   "roughness": 0.55,
+   "specular": 0.5,
+   "sheen": 0.3,
+   "sheenColor": [
+    1.0,
+    0.85,
+    0.8
+   ],
+   "sheenRoughness": 0.5,
+   "texture": {
+    "type": "blush",
+    "color2": [
+     0.88,
+     0.4,
+     0.36
+    ],
+    "amount": 0.8,
+    "spots": [
+     [
+      0.0795,
+      0.7589,
+      0.1272,
+      0.03710000000000001
+     ],
+     [
+      -0.0795,
+      0.7589,
+      0.1272,
+      0.03710000000000001
+     ],
+     [
+      0.0,
+      0.73664,
+      0.1378,
+      0.016960000000000003
+     ]
+    ]
+   }
+  },
+  {
+   "name": "B_eye",
+   "type": "standard",
+   "baseColor": [
+    0.86,
+    0.86,
+    0.86
+   ],
+   "roughness": 0.4,
+   "coat": 1.0,
+   "coatRoughness": 0.015,
+   "texture": {
+    "type": "iris",
+    "color2": [
+     0.3,
+     0.15,
+     0.06
+    ],
+    "color3": [
+     0.01,
+     0.012,
+     0.02
+    ],
+    "params": [
+     15,
+     47,
+     0,
+     0
+    ],
+    "spots": [
+     [
+      0.06148000000000001,
+      0.796,
+      0.11872,
+      0.03816
+     ],
+     [
+      -0.06148000000000001,
+      0.796,
+      0.11872,
+      0.03816
+     ]
+    ]
+   }
+  },
+  {
+   "name": "B_dress_knit",
+   "type": "plush",
+   "baseColor": [
+    0.3,
+    0.43,
+    0.65
+   ],
+   "sheen": 0.8,
+   "sheenColor": [
+    0.75,
+    0.85,
+    1.0
+   ],
+   "sheenRoughness": 0.45,
+   "texture": {
+    "type": "knit",
+    "color2": [
+     0.22,
+     0.33,
+     0.55
+    ],
+    "scale": 160,
+    "amount": 0.12
+   }
+  },
+  {
+   "name": "B_dress_fiber",
+   "type": "fiber",
+   "baseColor": [
+    0.45,
+    0.58,
+    0.8
+   ],
+   "betaM": 0.35,
+   "betaN": 0.6
+  },
+  {
+   "name": "B_tights",
+   "type": "plush",
+   "baseColor": [
+    0.85,
+    0.84,
+    0.82
+   ],
+   "sheen": 0.5,
+   "texture": {
+    "type": "knit",
+    "color2": [
+     0.75,
+     0.74,
+     0.72
+    ],
+    "scale": 220,
+    "amount": 0.2
+   }
+  },
+  {
+   "name": "B_boots_suede",
+   "type": "plush",
+   "baseColor": [
+    0.26,
+    0.12,
+    0.05
+   ],
+   "sheen": 0.9,
+   "sheenColor": [
+    1.0,
+    0.85,
+    0.7
+   ],
+   "texture": {
+    "type": "noise",
+    "color2": [
+     0.18,
+     0.08,
+     0.035
+    ],
+    "scale": 40,
+    "amount": 0.4
+   }
+  },
+  {
+   "name": "B_boots_fiber",
+   "type": "fiber",
+   "baseColor": [
+    0.34,
+    0.18,
+    0.08
+   ],
+   "betaM": 0.4,
+   "betaN": 0.7
+  },
+  {
+   "name": "B_wool_fiber",
+   "type": "fiber",
+   "baseColor": [
+    0.93,
+    0.91,
+    0.87
+   ],
+   "betaM": 0.45,
+   "betaN": 0.85,
+   "alphaDeg": 2
+  },
+  {
+   "name": "B_wool_bun",
+   "type": "plush",
+   "baseColor": [
+    0.84,
+    0.82,
+    0.78
+   ],
+   "sheen": 0.6
+  },
+  {
+   "name": "B_bow_felt",
+   "type": "plush",
+   "baseColor": [
+    0.17,
+    0.3,
+    0.62
+   ],
+   "sheen": 0.7,
+   "sheenColor": [
+    0.7,
+    0.8,
+    1.0
+   ]
+  },
+  {
+   "name": "B_bow_fiber",
+   "type": "fiber",
+   "baseColor": [
+    0.3,
+    0.45,
+    0.75
+   ],
+   "betaM": 0.35,
+   "betaN": 0.6
+  },
+  {
+   "name": "B_wool_lock_fiber",
+   "type": "fiber",
+   "baseColor": [
+    0.88,
+    0.86,
+    0.82
+   ],
+   "betaM": 0.6,
+   "betaN": 0.95,
+   "alphaDeg": 3
+  },
+  {
+   "name": "B_brow_felt",
+   "type": "plush",
+   "baseColor": [
+    0.22,
+    0.12,
+    0.06
+   ],
+   "sheen": 0.5
+  },
+  {
+   "name": "B_wool_lock_core",
+   "type": "plush",
+   "baseColor": [
+    0.8,
+    0.78,
+    0.74
+   ],
+   "sheen": 0.7,
+   "sheenRoughness": 0.5,
+   "texture": {
+    "type": "noise",
+    "color2": [
+     0.68,
+     0.66,
+     0.62
+    ],
+    "scale": 90,
+    "amount": 0.35
+   }
+  },
+  {
+   "name": "B_sole",
+   "type": "standard",
+   "baseColor": [
+    0.12,
+    0.07,
+    0.04
+   ],
+   "roughness": 0.7
+  },
+  {
+   "name": "B_lash",
+   "type": "standard",
+   "baseColor": [
+    0.06,
+    0.035,
+    0.025
+   ],
+   "roughness": 0.5
+  },
+  {
+   "name": "B_hair_core",
+   "type": "plush",
+   "baseColor": [
+    0.15,
+    0.075,
+    0.038
+   ],
+   "sheen": 0.5,
+   "sheenColor": [
+    0.8,
+    0.65,
+    0.5
+   ],
+   "texture": {
+    "type": "noise",
+    "color2": [
+     0.22,
+     0.11,
+     0.05
+    ],
+    "scale": 80,
+    "amount": 0.4
+   }
+  },
+  {
+   "name": "B_hair_fiber",
+   "type": "fiber",
+   "baseColor": [
+    0.12,
+    0.06,
+    0.03
+   ],
+   "betaM": 0.45,
+   "betaN": 0.85
+  },
+  {
+   "name": "B_wool_cap",
+   "type": "plush",
+   "baseColor": [
+    0.18,
+    0.09,
+    0.045
+   ],
+   "sheen": 0.5,
+   "texture": {
+    "type": "noise",
+    "color2": [
+     0.2,
+     0.1,
+     0.05
+    ],
+    "scale": 30,
+    "amount": 0.3
+   }
+  },
+  {
+   "name": "B_clip_pink",
+   "type": "plush",
+   "baseColor": [
+    0.85,
+    0.45,
+    0.5
+   ],
+   "sheen": 0.8
+  },
+  {
+   "name": "B_clip_fiber",
+   "type": "fiber",
+   "baseColor": [
+    0.9,
+    0.6,
+    0.65
+   ],
+   "betaM": 0.4,
+   "betaN": 0.8
+  },
+  {
+   "name": "B_glasses_frame",
+   "type": "standard",
+   "baseColor": [
+    0.35,
+    0.18,
+    0.1
+   ],
+   "roughness": 0.25,
+   "coat": 0.8,
+   "coatRoughness": 0.05
+  },
+  {
+   "name": "B_glasses_lens",
+   "type": "glass",
+   "baseColor": [
+    0.98,
+    0.98,
+    0.98
+   ],
+   "ior": 1.5,
+   "thin": true,
+   "castsShadow": false
+  },
+  {
+   "name": "B_blouse_cotton",
+   "type": "plush",
+   "baseColor": [
+    0.86,
+    0.84,
+    0.79
+   ],
+   "sheen": 0.4,
+   "sheenColor": [
+    1,
+    1,
+    1
+   ],
+   "texture": {
+    "type": "noise",
+    "color2": [
+     0.8,
+     0.78,
+     0.73
+    ],
+    "scale": 60,
+    "amount": 0.3
+   }
+  },
+  {
+   "name": "B_blouse_fiber",
+   "type": "fiber",
+   "baseColor": [
+    0.9,
+    0.88,
+    0.84
+   ],
+   "betaM": 0.4,
+   "betaN": 0.8
+  },
+  {
+   "name": "B_button_cream",
+   "type": "standard",
+   "baseColor": [
+    0.85,
+    0.8,
+    0.7
+   ],
+   "roughness": 0.35,
+   "coat": 0.5
+  },
+  {
+   "name": "B_vest_knit",
+   "type": "plush",
+   "baseColor": [
+    0.42,
+    0.24,
+    0.24
+   ],
+   "sheen": 0.8,
+   "sheenColor": [
+    1.0,
+    0.8,
+    0.8
+   ],
+   "texture": {
+    "type": "knit",
+    "color2": [
+     0.35,
+     0.19,
+     0.19
+    ],
+    "scale": 170,
+    "amount": 0.15
+   }
+  },
+  {
+   "name": "B_vest_fiber",
+   "type": "fiber",
+   "baseColor": [
+    0.5,
+    0.3,
+    0.3
+   ],
+   "betaM": 0.4,
+   "betaN": 0.8
+  },
+  {
+   "name": "B_button_brass",
+   "type": "standard",
+   "baseColor": [
+    0.75,
+    0.55,
+    0.3
+   ],
+   "roughness": 0.3,
+   "coat": 0.8,
+   "specular": 1.0
+  },
+  {
+   "name": "B_shorts_felt",
+   "type": "plush",
+   "baseColor": [
+    0.27,
+    0.34,
+    0.27
+   ],
+   "sheen": 0.7,
+   "texture": {
+    "type": "noise",
+    "color2": [
+     0.22,
+     0.28,
+     0.22
+    ],
+    "scale": 50,
+    "amount": 0.3
+   }
+  },
+  {
+   "name": "B_shorts_fiber",
+   "type": "fiber",
+   "baseColor": [
+    0.33,
+    0.4,
+    0.32
+   ],
+   "betaM": 0.4,
+   "betaN": 0.8
+  }
+ ],
+ "parts": [
+  {
+   "name": "skin",
+   "material": "B_skin",
+   "voxelSize": 0.0025,
+   "skinFalloff": 0.01,
+   "prims": [
+    {
+     "name": "head",
+     "type": "ellipsoid",
+     "bone": "head",
+     "center": [
+      0.0,
+      0.8278,
+      0.0
+     ],
+     "radii": [
+      0.17490000000000003,
+      0.16112,
+      0.159
+     ]
+    },
+    {
+     "name": "cheek.L",
+     "type": "ellipsoid",
+     "bone": "head",
+     "center": [
+      0.07632,
+      0.76632,
+      0.07420000000000002
+     ],
+     "radii": [
+      0.06572,
+      0.05512,
+      0.0636
+     ],
+     "blend": 0.035,
+     "mirror": true
+    },
+    {
+     "name": "jaw",
+     "type": "ellipsoid",
+     "bone": "head",
+     "center": [
+      0.0,
+      0.7377,
+      0.0318
+     ],
+     "radii": [
+      0.11660000000000001,
+      0.0636,
+      0.10600000000000001
+     ],
+     "blend": 0.04
+    },
+    {
+     "name": "nose",
+     "type": "ellipsoid",
+     "bone": "head",
+     "center": [
+      0.0,
+      0.77692,
+      0.15052
+     ],
+     "radii": [
+      0.01484,
+      0.01166,
+      0.01272
+     ],
+     "blend": 0.012
+    },
+    {
+     "name": "ear.L",
+     "type": "ellipsoid",
+     "bone": "head",
+     "center": [
+      0.17278000000000002,
+      0.8013,
+      -0.0053
+     ],
+     "radii": [
+      0.0212,
+      0.0318,
+      0.016960000000000003
+     ],
+     "blend": 0.012,
+     "mirror": true
+    },
+    {
+     "name": "neck",
+     "type": "capsule",
+     "bone": "neck",
+     "a": [
+      0,
+      0.63,
+      0
+     ],
+     "b": [
+      0,
+      0.72,
+      0
+     ],
+     "r": 0.035,
+     "blend": 0.02
+    },
+    {
+     "name": "socket.L",
+     "type": "ellipsoid",
+     "bone": "head",
+     "center": [
+      0.06148000000000001,
+      0.79176,
+      0.11872
+     ],
+     "radii": [
+      0.03975,
+      0.03975,
+      0.03975
+     ],
+     "blend": 0.006,
+     "subtract": true,
+     "mirror": true
+    },
+    {
+     "name": "mouth.L",
+     "type": "capsule",
+     "bone": "head",
+     "a": [
+      0.026500000000000003,
+      0.743,
+      0.14500800000000003
+     ],
+     "b": [
+      0.0,
+      0.73452,
+      0.14394800000000002
+     ],
+     "r": 0.004876,
+     "blend": 0.004,
+     "subtract": true,
+     "mirror": true
+    }
+   ],
+   "skinSmoothing": 2
+  },
+  {
+   "name": "eyes",
+   "material": "B_eye",
+   "voxelSize": 0.0012,
+   "prims": [
+    {
+     "name": "eye.L",
+     "type": "ellipsoid",
+     "bone": "eye.L",
+     "center": [
+      0.06148000000000001,
+      0.796,
+      0.11872
+     ],
+     "radii": [
+      0.03816,
+      0.03816,
+      0.03816
+     ],
+     "mirror": true
+    }
+   ]
+  },
+  {
+   "name": "boots",
+   "material": "B_boots_suede",
+   "voxelSize": 0.003,
+   "prims": [
+    {
+     "name": "foot.L",
+     "type": "roundBox",
+     "bone": "foot.L",
+     "center": [
+      0.058,
+      0.032,
+      0.022
+     ],
+     "halfSize": [
+      0.04,
+      0.034,
+      0.066
+     ],
+     "rounding": 0.032,
+     "mirror": true
+    },
+    {
+     "name": "shaft.L",
+     "type": "roundCone",
+     "bone": "shin.L",
+     "a": [
+      0.056,
+      0.05,
+      0
+     ],
+     "b": [
+      0.056,
+      0.135,
+      0
+     ],
+     "r1": 0.044,
+     "r2": 0.046,
+     "blend": 0.02,
+     "mirror": true
+    },
+    {
+     "name": "bootCuff.L",
+     "type": "ellipsoid",
+     "bone": "shin.L",
+     "center": [
+      0.056,
+      0.135,
+      0
+     ],
+     "radii": [
+      0.05,
+      0.018,
+      0.05
+     ],
+     "blend": 0.01,
+     "mirror": true
+    }
+   ]
+  },
+  {
+   "name": "hairCap",
+   "material": "B_wool_cap",
+   "voxelSize": 0.003,
+   "prims": [
+    {
+     "name": "cap",
+     "type": "ellipsoid",
+     "bone": "head",
+     "center": [
+      0.0,
+      0.8338,
+      -0.004
+     ],
+     "radii": [
+      0.1839,
+      0.1701,
+      0.168
+     ]
+    },
+    {
+     "name": "bangs",
+     "type": "ellipsoid",
+     "bone": "head",
+     "center": [
+      0.0,
+      0.8861,
+      0.10600000000000001
+     ],
+     "radii": [
+      0.1696,
+      0.0636,
+      0.07420000000000002
+     ],
+     "blend": 0.03
+    },
+    {
+     "name": "faceCut",
+     "type": "ellipsoid",
+     "bone": "head",
+     "center": [
+      0.0,
+      0.7536,
+      0.1272
+     ],
+     "radii": [
+      0.1855,
+      0.1378,
+      0.1272
+     ],
+     "blend": 0.02,
+     "subtract": true
+    }
+   ],
+   "noiseAmplitude": 0.0025,
+   "noiseScale": 11,
+   "pattern": "strands",
+   "patternAmplitude": 0.002,
+   "patternScale": 34,
+   "patternCenter": [
+    0.0,
+    1.008,
+    -0.0106
+   ]
+  },
+  {
+   "name": "lids",
+   "material": "B_skin",
+   "voxelSize": 0.0011,
+   "prims": [
+    {
+     "name": "lid.L",
+     "type": "ellipsoid",
+     "bone": "lid.L",
+     "center": [
+      0.06148000000000001,
+      0.796,
+      0.11872
+     ],
+     "radii": [
+      0.041552,
+      0.041552,
+      0.041552
+     ],
+     "mirror": true
+    },
+    {
+     "name": "lidInner.L",
+     "type": "ellipsoid",
+     "bone": "lid.L",
+     "center": [
+      0.06148000000000001,
+      0.796,
+      0.11872
+     ],
+     "radii": [
+      0.039114,
+      0.039114,
+      0.039114
+     ],
+     "blend": 0.0008,
+     "subtract": true,
+     "mirror": true
+    },
+    {
+     "name": "lidCut.L",
+     "type": "roundBox",
+     "bone": "lid.L",
+     "center": [
+      0.06148000000000001,
+      0.78434,
+      0.11872
+     ],
+     "halfSize": [
+      0.053000000000000005,
+      0.0318,
+      0.053000000000000005
+     ],
+     "rounding": 0.004240000000000001,
+     "blend": 0.002,
+     "subtract": true,
+     "mirror": true
+    }
+   ]
+  },
+  {
+   "name": "brows",
+   "material": "B_brow_felt",
+   "voxelSize": 0.0012,
+   "prims": [
+    {
+     "name": "brow.L",
+     "type": "roundCone",
+     "bone": "brow.L",
+     "a": [
+      0.02544,
+      0.8349799999999999,
+      0.16045772004078027
+     ],
+     "b": [
+      0.08056,
+      0.8422799999999999,
+      0.14406081689998887
+     ],
+     "r1": 0.006572,
+     "r2": 0.004452,
+     "mirror": true
+    }
+   ]
+  },
+  {
+   "name": "hands",
+   "material": "B_skin",
+   "voxelSize": 0.0011,
+   "skinFalloff": 0.006,
+   "skinSmoothing": 1,
+   "prims": [
+    {
+     "name": "wrist.L",
+     "type": "capsule",
+     "bone": "hand.L",
+     "a": [
+      0.152,
+      0.445,
+      0.016
+     ],
+     "b": [
+      0.157,
+      0.42,
+      0.019
+     ],
+     "r": 0.016,
+     "mirror": true
+    },
+    {
+     "name": "palm.L",
+     "type": "ellipsoid",
+     "bone": "hand.L",
+     "center": [
+      0.159,
+      0.41,
+      0.021
+     ],
+     "radii": [
+      0.017,
+      0.022,
+      0.024
+     ],
+     "blend": 0.008,
+     "mirror": true
+    },
+    {
+     "name": "thumb.L",
+     "type": "capsule",
+     "bone": "hand.L",
+     "a": [
+      0.152,
+      0.418,
+      0.04
+     ],
+     "b": [
+      0.146,
+      0.397,
+      0.049
+     ],
+     "r": 0.0065,
+     "blend": 0.005,
+     "mirror": true
+    },
+    {
+     "name": "finger0.L",
+     "type": "capsule",
+     "bone": "hand.L",
+     "a": [
+      0.159,
+      0.398,
+      0.006
+     ],
+     "b": [
+      0.153,
+      0.378,
+      0.01
+     ],
+     "r": 0.0056,
+     "blend": 0.003,
+     "mirror": true
+    },
+    {
+     "name": "finger1.L",
+     "type": "capsule",
+     "bone": "hand.L",
+     "a": [
+      0.159,
+      0.398,
+      0.0165
+     ],
+     "b": [
+      0.153,
+      0.375,
+      0.0205
+     ],
+     "r": 0.0056,
+     "blend": 0.003,
+     "mirror": true
+    },
+    {
+     "name": "finger2.L",
+     "type": "capsule",
+     "bone": "hand.L",
+     "a": [
+      0.159,
+      0.398,
+      0.027
+     ],
+     "b": [
+      0.153,
+      0.376,
+      0.031
+     ],
+     "r": 0.0056,
+     "blend": 0.003,
+     "mirror": true
+    },
+    {
+     "name": "finger3.L",
+     "type": "capsule",
+     "bone": "hand.L",
+     "a": [
+      0.159,
+      0.398,
+      0.0375
+     ],
+     "b": [
+      0.153,
+      0.38,
+      0.041499999999999995
+     ],
+     "r": 0.0056,
+     "blend": 0.003,
+     "mirror": true
+    }
+   ]
+  },
+  {
+   "name": "soles",
+   "material": "B_sole",
+   "voxelSize": 0.0025,
+   "prims": [
+    {
+     "name": "sole.L",
+     "type": "roundBox",
+     "bone": "foot.L",
+     "center": [
+      0.058,
+      0.007,
+      0.024
+     ],
+     "halfSize": [
+      0.043,
+      0.008,
+      0.069
+     ],
+     "rounding": 0.006,
+     "mirror": true
+    }
+   ]
+  },
+  {
+   "name": "clips",
+   "material": "B_clip_pink",
+   "voxelSize": 0.0015,
+   "prims": [
+    {
+     "name": "pom1",
+     "type": "ellipsoid",
+     "bone": "head",
+     "center": [
+      -0.045,
+      1.0,
+      0.02
+     ],
+     "radii": [
+      0.012,
+      0.012,
+      0.012
+     ]
+    },
+    {
+     "name": "pom2",
+     "type": "ellipsoid",
+     "bone": "head",
+     "center": [
+      -0.022,
+      1.004,
+      0.035
+     ],
+     "radii": [
+      0.011,
+      0.011,
+      0.011
+     ],
+     "blend": 0.002
+    },
+    {
+     "name": "petal1",
+     "type": "ellipsoid",
+     "bone": "head",
+     "center": [
+      0.035,
+      1.012,
+      0.03
+     ],
+     "radii": [
+      0.012,
+      0.009,
+      0.007
+     ],
+     "rotationDeg": [
+      0,
+      0,
+      30
+     ],
+     "blend": 0.004
+    },
+    {
+     "name": "petal2",
+     "type": "ellipsoid",
+     "bone": "head",
+     "center": [
+      0.052,
+      1.0,
+      0.026
+     ],
+     "radii": [
+      0.012,
+      0.009,
+      0.007
+     ],
+     "rotationDeg": [
+      0,
+      0,
+      -40
+     ],
+     "blend": 0.004
+    },
+    {
+     "name": "petal3",
+     "type": "ellipsoid",
+     "bone": "head",
+     "center": [
+      0.043,
+      0.99,
+      0.034
+     ],
+     "radii": [
+      0.011,
+      0.009,
+      0.007
+     ],
+     "rotationDeg": [
+      0,
+      0,
+      90
+     ],
+     "blend": 0.004
+    }
+   ]
+  },
+  {
+   "name": "lenses",
+   "material": "B_glasses_lens",
+   "voxelSize": 0.0008,
+   "prims": [
+    {
+     "name": "lens.L",
+     "type": "ellipsoid",
+     "bone": "head",
+     "center": [
+      0.066,
+      0.797,
+      0.167
+     ],
+     "radii": [
+      0.046,
+      0.046,
+      0.0012
+     ],
+     "mirror": true
+    }
+   ]
+  },
+  {
+   "name": "blouse",
+   "material": "B_blouse_cotton",
+   "voxelSize": 0.002,
+   "prims": [
+    {
+     "name": "torso",
+     "type": "roundCone",
+     "bone": "chest",
+     "a": [
+      0,
+      0.662,
+      0
+     ],
+     "b": [
+      0,
+      0.47,
+      0
+     ],
+     "r1": 0.066,
+     "r2": 0.083
+    },
+    {
+     "name": "belly",
+     "type": "ellipsoid",
+     "bone": "spine",
+     "center": [
+      0,
+      0.5,
+      0.008
+     ],
+     "radii": [
+      0.09,
+      0.055,
+      0.082
+     ],
+     "blend": 0.04
+    },
+    {
+     "name": "sleeveUpper.L",
+     "type": "roundCone",
+     "bone": "upperArm.L",
+     "a": [
+      0.075,
+      0.625,
+      0
+     ],
+     "b": [
+      0.122,
+      0.515,
+      0
+     ],
+     "r1": 0.036,
+     "r2": 0.034,
+     "blend": 0.025,
+     "mirror": true
+    },
+    {
+     "name": "sleeveLower.L",
+     "type": "roundCone",
+     "bone": "forearm.L",
+     "a": [
+      0.122,
+      0.515,
+      0
+     ],
+     "b": [
+      0.15,
+      0.448,
+      0.012
+     ],
+     "r1": 0.034,
+     "r2": 0.03,
+     "blend": 0.015,
+     "mirror": true
+    },
+    {
+     "name": "cuff.L",
+     "type": "ellipsoid",
+     "bone": "forearm.L",
+     "center": [
+      0.152,
+      0.446,
+      0.013
+     ],
+     "radii": [
+      0.03,
+      0.011,
+      0.03
+     ],
+     "blend": 0.006,
+     "mirror": true
+    }
+   ],
+   "skinFalloff": 0.015,
+   "skinSmoothing": 3
+  },
+  {
+   "name": "blouseCollar",
+   "material": "B_blouse_cotton",
+   "voxelSize": 0.0012,
+   "prims": [
+    {
+     "name": "collarFlap.L",
+     "type": "ellipsoid",
+     "bone": "chest",
+     "center": [
+      0.03,
+      0.652,
+      0.058
+     ],
+     "radii": [
+      0.038,
+      0.008,
+      0.026
+     ],
+     "rotationDeg": [
+      10,
+      -30,
+      -18
+     ],
+     "mirror": true
+    },
+    {
+     "name": "neckHole",
+     "type": "capsule",
+     "bone": "chest",
+     "a": [
+      0,
+      0.62,
+      0
+     ],
+     "b": [
+      0,
+      0.7,
+      0
+     ],
+     "r": 0.04,
+     "blend": 0.004,
+     "subtract": true
+    }
+   ],
+   "skinFalloff": 0.02
+  },
+  {
+   "name": "blouseButtons",
+   "material": "B_button_cream",
+   "voxelSize": 0.0008,
+   "prims": [
+    {
+     "name": "b0",
+     "type": "ellipsoid",
+     "bone": "chest",
+     "center": [
+      0,
+      0.62,
+      0.074
+     ],
+     "radii": [
+      0.0045,
+      0.0045,
+      0.0022
+     ]
+    },
+    {
+     "name": "b1",
+     "type": "ellipsoid",
+     "bone": "chest",
+     "center": [
+      0,
+      0.585,
+      0.078
+     ],
+     "radii": [
+      0.0045,
+      0.0045,
+      0.0022
+     ]
+    },
+    {
+     "name": "b2",
+     "type": "ellipsoid",
+     "bone": "chest",
+     "center": [
+      0,
+      0.55,
+      0.08199999999999999
+     ],
+     "radii": [
+      0.0045,
+      0.0045,
+      0.0022
+     ]
+    },
+    {
+     "name": "b3",
+     "type": "ellipsoid",
+     "bone": "chest",
+     "center": [
+      0,
+      0.515,
+      0.086
+     ],
+     "radii": [
+      0.0045,
+      0.0045,
+      0.0022
+     ]
+    }
+   ]
+  },
+  {
+   "name": "vest",
+   "material": "B_vest_knit",
+   "voxelSize": 0.0014,
+   "prims": [
+    {
+     "name": "shell",
+     "type": "roundCone",
+     "bone": "chest",
+     "a": [
+      0,
+      0.655,
+      -0.004
+     ],
+     "b": [
+      0,
+      0.455,
+      0
+     ],
+     "r1": 0.075,
+     "r2": 0.092
+    },
+    {
+     "name": "hem",
+     "type": "ellipsoid",
+     "bone": "spine",
+     "center": [
+      0,
+      0.47,
+      0.0
+     ],
+     "radii": [
+      0.098,
+      0.03,
+      0.09
+     ],
+     "blend": 0.03
+    },
+    {
+     "name": "frontOpen",
+     "type": "roundBox",
+     "bone": "chest",
+     "center": [
+      0,
+      0.56,
+      0.11
+     ],
+     "halfSize": [
+      0.026,
+      0.14,
+      0.06
+     ],
+     "rounding": 0.01,
+     "blend": 0.01,
+     "subtract": true
+    },
+    {
+     "name": "neckOpen",
+     "type": "ellipsoid",
+     "bone": "chest",
+     "center": [
+      0,
+      0.672,
+      0.02
+     ],
+     "radii": [
+      0.062,
+      0.05,
+      0.075
+     ],
+     "blend": 0.01,
+     "subtract": true
+    },
+    {
+     "name": "armHole.L",
+     "type": "ellipsoid",
+     "bone": "chest",
+     "center": [
+      0.085,
+      0.6,
+      0
+     ],
+     "radii": [
+      0.035,
+      0.05,
+      0.05
+     ],
+     "blend": 0.008,
+     "subtract": true,
+     "mirror": true
+    },
+    {
+     "name": "inner",
+     "type": "roundCone",
+     "bone": "chest",
+     "a": [
+      0,
+      0.68,
+      -0.004
+     ],
+     "b": [
+      0,
+      0.4,
+      0
+     ],
+     "r1": 0.068,
+     "r2": 0.085,
+     "blend": 0.003,
+     "subtract": true
+    }
+   ],
+   "skinFalloff": 0.015,
+   "skinSmoothing": 3,
+   "pattern": "knit",
+   "patternAmplitude": 0.0012,
+   "patternScale": 150,
+   "patternCenter": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "vestPockets",
+   "material": "B_vest_knit",
+   "voxelSize": 0.0012,
+   "prims": [
+    {
+     "name": "pocket.L",
+     "type": "roundBox",
+     "bone": "spine",
+     "center": [
+      0.05,
+      0.49,
+      0.085
+     ],
+     "halfSize": [
+      0.022,
+      0.02,
+      0.004
+     ],
+     "rounding": 0.003,
+     "rotationDeg": [
+      0,
+      28,
+      0
+     ],
+     "mirror": true
+    }
+   ]
+  },
+  {
+   "name": "vestButtons",
+   "material": "B_button_brass",
+   "voxelSize": 0.0008,
+   "prims": [
+    {
+     "name": "vb0.L",
+     "type": "ellipsoid",
+     "bone": "chest",
+     "center": [
+      0.034,
+      0.59,
+      0.084
+     ],
+     "radii": [
+      0.004,
+      0.004,
+      0.0025
+     ],
+     "mirror": true
+    },
+    {
+     "name": "vb1.L",
+     "type": "ellipsoid",
+     "bone": "chest",
+     "center": [
+      0.034,
+      0.5499999999999999,
+      0.08800000000000001
+     ],
+     "radii": [
+      0.004,
+      0.004,
+      0.0025
+     ],
+     "mirror": true
+    },
+    {
+     "name": "vb2.L",
+     "type": "ellipsoid",
+     "bone": "chest",
+     "center": [
+      0.034,
+      0.51,
+      0.092
+     ],
+     "radii": [
+      0.004,
+      0.004,
+      0.0025
+     ],
+     "mirror": true
+    }
+   ]
+  },
+  {
+   "name": "shorts",
+   "material": "B_shorts_felt",
+   "voxelSize": 0.002,
+   "prims": [
+    {
+     "name": "waist",
+     "type": "roundCone",
+     "bone": "hips",
+     "a": [
+      0,
+      0.47,
+      0
+     ],
+     "b": [
+      0,
+      0.4,
+      0
+     ],
+     "r1": 0.088,
+     "r2": 0.095
+    },
+    {
+     "name": "leg.L",
+     "type": "roundCone",
+     "bone": "thigh.L",
+     "a": [
+      0.048,
+      0.42,
+      0
+     ],
+     "b": [
+      0.06,
+      0.32,
+      0.004
+     ],
+     "r1": 0.062,
+     "r2": 0.06,
+     "blend": 0.03,
+     "mirror": true
+    },
+    {
+     "name": "cuff.L",
+     "type": "ellipsoid",
+     "bone": "thigh.L",
+     "center": [
+      0.06,
+      0.305,
+      0.004
+     ],
+     "radii": [
+      0.06,
+      0.016,
+      0.058
+     ],
+     "blend": 0.012,
+     "mirror": true
+    }
+   ],
+   "skinFalloff": 0.02,
+   "skinSmoothing": 3
+  },
+  {
+   "name": "legs",
+   "material": "B_skin",
+   "voxelSize": 0.0025,
+   "prims": [
+    {
+     "name": "thigh.L",
+     "type": "capsule",
+     "bone": "thigh.L",
+     "a": [
+      0.05,
+      0.4,
+      0
+     ],
+     "b": [
+      0.054,
+      0.22,
+      0
+     ],
+     "r": 0.036,
+     "mirror": true
+    },
+    {
+     "name": "shin.L",
+     "type": "capsule",
+     "bone": "shin.L",
+     "a": [
+      0.054,
+      0.22,
+      0
+     ],
+     "b": [
+      0.056,
+      0.07,
+      0
+     ],
+     "r": 0.032,
+     "blend": 0.02,
+     "mirror": true
+    }
+   ],
+   "skinSmoothing": 2
+  }
+ ],
+ "fuzz": [
+  {
+   "part": "hairCap",
+   "material": "B_hair_fiber",
+   "density": 120,
+   "length": 0.004,
+   "radius": 2.2e-05,
+   "tilt": 0.6,
+   "curl": 0.5,
+   "comb": 0.8,
+   "combOrigin": [
+    0.0,
+    1.008,
+    0.0
+   ],
+   "segments": 4,
+   "seed": 11,
+   "strayFraction": 0.07,
+   "strayLength": 2.5
+  },
+  {
+   "part": "boots",
+   "material": "B_boots_fiber",
+   "density": 220,
+   "length": 0.006,
+   "radius": 2.5e-05,
+   "tilt": 0.4,
+   "curl": 0.5,
+   "segments": 3,
+   "seed": 14,
+   "strayFraction": 0.05,
+   "strayLength": 2.5
+  },
+  {
+   "part": "brows",
+   "material": "B_boots_fiber",
+   "density": 120,
+   "length": 0.0015,
+   "radius": 1.5e-05,
+   "tilt": 0.7,
+   "curl": 0.3,
+   "segments": 2,
+   "seed": 18
+  },
+  {
+   "part": "clips",
+   "material": "B_clip_fiber",
+   "density": 260,
+   "length": 0.003,
+   "radius": 2.5e-05,
+   "tilt": 0.55,
+   "curl": 0.4,
+   "segments": 3,
+   "seed": 43
+  },
+  {
+   "part": "blouse",
+   "material": "B_blouse_fiber",
+   "density": 30,
+   "length": 0.0018,
+   "radius": 2.5e-05,
+   "tilt": 0.55,
+   "curl": 0.4,
+   "segments": 3,
+   "seed": 44
+  },
+  {
+   "part": "vest",
+   "material": "B_vest_fiber",
+   "density": 90,
+   "length": 0.003,
+   "radius": 2.5e-05,
+   "tilt": 0.55,
+   "curl": 0.4,
+   "segments": 3,
+   "seed": 45
+  },
+  {
+   "part": "shorts",
+   "material": "B_shorts_fiber",
+   "density": 70,
+   "length": 0.0028,
+   "radius": 2.5e-05,
+   "tilt": 0.55,
+   "curl": 0.4,
+   "segments": 3,
+   "seed": 46
+  }
+ ],
+ "locks": [],
+ "skinning": "dualQuaternion",
+ "expressions": [
+  {
+   "name": "smile",
+   "part": "skin",
+   "set": [
+    {
+     "prim": "mouth.L",
+     "a": [
+      0.030740000000000003,
+      0.7483,
+      0.145432
+     ],
+     "b": [
+      0.0,
+      0.73399,
+      0.143736
+     ],
+     "r": 0.004982
+    },
+    {
+     "prim": "cheek.L",
+     "center": [
+      0.07844,
+      0.77692,
+      0.0795
+     ]
+    }
+   ]
+  },
+  {
+   "name": "mouthOpen",
+   "part": "skin",
+   "add": [
+    {
+     "name": "mouthCavity",
+     "type": "ellipsoid",
+     "center": [
+      0.0,
+      0.73134,
+      0.1325
+     ],
+     "radii": [
+      0.02014,
+      0.016960000000000003,
+      0.016960000000000003
+     ],
+     "blend": 0.006,
+     "subtract": true
+    }
+   ]
+  },
+  {
+   "name": "frown",
+   "part": "skin",
+   "set": [
+    {
+     "prim": "mouth.L",
+     "a": [
+      0.02862,
+      0.73134,
+      0.145432
+     ],
+     "b": [
+      0.0,
+      0.73611,
+      0.143736
+     ],
+     "r": 0.004876
+    },
+    {
+     "prim": "cheek.L",
+     "center": [
+      0.07844,
+      0.76208,
+      0.07420000000000002
+     ]
+    }
+   ]
+  }
+ ],
+ "lockGroups": [
+  {
+   "name": "lashes.L",
+   "bone": "lid.L",
+   "material": "B_lash",
+   "coreMaterial": "B_lash",
+   "locks": [
+    {
+     "points": [
+      [
+       0.027464645645003706,
+       0.8165895279120992,
+       0.1324511757650113
+      ],
+      [
+       0.031067430001571188,
+       0.816811031484165,
+       0.13922702765334355
+      ],
+      [
+       0.036000263698742825,
+       0.8170032077604065,
+       0.14510574993361763
+      ],
+      [
+       0.04204755823358994,
+       0.8171576577153878,
+       0.1498304142329463
+      ],
+      [
+       0.04894501781680104,
+       0.8172676311449432,
+       0.15319453004999425
+      ],
+      [
+       0.05639119036690657,
+       0.8173283216824899,
+       0.1550510693807378
+      ],
+      [
+       0.06406064241276678,
+       0.8173370768603119,
+       0.15531889254775927
+      ],
+      [
+       0.07161818209786353,
+       0.8172935140351261,
+       0.15398629439350175
+      ],
+      [
+       0.07873350867285912,
+       0.8171995371114308,
+       0.1511115158518217
+      ],
+      [
+       0.08509564822330123,
+       0.8170592533317429,
+       0.14682019853970846
+      ],
+      [
+       0.09042654472190287,
+       0.8168787937703909,
+       0.14129989361572645
+      ],
+      [
+       0.09449321241119558,
+       0.816666045376147,
+       0.13479186489441572
+      ]
+     ],
+     "rootRadius": 0.0010199999999999999,
+     "tipRadius": 0.0017,
+     "curlRadius": 0,
+     "curlTurns": 0,
+     "curlPhase": 0.0
+    },
+    {
+     "points": [
+      [
+       0.0887795922271779,
+       0.8161400000000001,
+       0.1432626551681469
+      ],
+      [
+       0.09069131651905815,
+       0.8176834872662827,
+       0.1449839794521383
+      ],
+      [
+       0.0926030408109384,
+       0.8192269745325652,
+       0.1467053037361297
+      ]
+     ],
+     "rootRadius": 0.00153,
+     "tipRadius": 0.000425,
+     "curlRadius": 0.0,
+     "curlTurns": 0.0,
+     "curlPhase": 0.0
+    },
+    {
+     "points": [
+      [
+       0.0926304142329463,
+       0.8161400000000001,
+       0.13815244176641006
+      ],
+      [
+       0.0955391952054188,
+       0.8181979830217102,
+       0.13997004984752515
+      ],
+      [
+       0.0984479761778913,
+       0.8202559660434203,
+       0.14178765792864023
+      ]
+     ],
+     "rootRadius": 0.00153,
+     "tipRadius": 0.000425,
+     "curlRadius": 0.0,
+     "curlTurns": 0.0,
+     "curlPhase": 0.0
+    },
+    {
+     "points": [
+      [
+       0.0955353543549963,
+       0.8161400000000001,
+       0.1324511757650113
+      ],
+      [
+       0.09951062233562584,
+       0.8187124787771377,
+       0.13405728828390842
+      ],
+      [
+       0.10348589031625538,
+       0.8212849575542753,
+       0.1356634008028055
+      ]
+     ],
+     "rootRadius": 0.00153,
+     "tipRadius": 0.000425,
+     "curlRadius": 0.0,
+     "curlTurns": 0.0,
+     "curlPhase": 0.0
+    }
+   ],
+   "mirror": true,
+   "samples": 24,
+   "roundTip": true
+  },
+  {
+   "name": "hair.curls",
+   "bone": "head",
+   "material": "B_hair_fiber",
+   "coreMaterial": "B_hair_core",
+   "locks": [
+    {
+     "points": [
+      [
+       -0.1627711547213286,
+       0.8669778574398657,
+       0.08788513136583642
+      ],
+      [
+       -0.16291372605934537,
+       0.8186761236163254,
+       0.0877586102848237
+      ],
+      [
+       -0.162204112925002,
+       0.7703743897927849,
+       0.08838833728400089
+      ],
+      [
+       -0.16375406053944538,
+       0.7220726559692446,
+       0.08701287816002555
+      ],
+      [
+       -0.16147807260039942,
+       0.6737709221457042,
+       0.08903264214923806
+      ],
+      [
+       -0.159709099653218,
+       0.6254691883221639,
+       0.08360155527644735
+      ],
+      [
+       -0.15044134826178449,
+       0.5771674544986236,
+       0.0830748281564217
+      ],
+      [
+       -0.1486161574032146,
+       0.5288657206750832,
+       0.07594340182251819
+      ]
+     ],
+     "rootRadius": 0.017362181433337714,
+     "tipRadius": 0.009,
+     "curlRadius": 0.019215292025840134,
+     "curlTurns": 2.5656889169125856,
+     "curlPhase": 0.36423324758515874
+    },
+    {
+     "points": [
+      [
+       -0.17816298340006764,
+       0.8608939408483813,
+       0.060962116979280015
+      ],
+      [
+       -0.1785407125856264,
+       0.8163171576998833,
+       0.06049834866956966
+      ],
+      [
+       -0.17673893828207865,
+       0.7717403745513852,
+       0.06271053098214328
+      ],
+      [
+       -0.1804133412452764,
+       0.7271635914028872,
+       0.05819917280123847
+      ],
+      [
+       -0.17558242669662608,
+       0.6825868082543891,
+       0.06413047268548928
+      ],
+      [
+       -0.17568662478392597,
+       0.6380100251058911,
+       0.0556480532028333
+      ],
+      [
+       -0.16436277113196193,
+       0.5934332419573931,
+       0.05910814439418266
+      ],
+      [
+       -0.1621565559515095,
+       0.548856458808895,
+       0.05137378214072283
+      ]
+     ],
+     "rootRadius": 0.017349277117873096,
+     "tipRadius": 0.009,
+     "curlRadius": 0.01654427808006319,
+     "curlTurns": 2.6245191891425144,
+     "curlPhase": 5.192631342940399
+    },
+    {
+     "points": [
+      [
+       -0.18456492752673173,
+       0.8708503307237002,
+       0.04038931890853115
+      ],
+      [
+       -0.184692627777813,
+       0.8229514754824615,
+       0.04019124011001675
+      ],
+      [
+       -0.1840598570669009,
+       0.7750526202412229,
+       0.04117510931535558
+      ],
+      [
+       -0.18543666493556468,
+       0.7271537649999842,
+       0.03903436727359161
+      ],
+      [
+       -0.18342694737807475,
+       0.6792549097587455,
+       0.0421591946117483
+      ],
+      [
+       -0.18067708555832762,
+       0.6313560545175069,
+       0.0367187782816175
+      ],
+      [
+       -0.1710922477972736,
+       0.5834571992762683,
+       0.03947676959007713
+      ],
+      [
+       -0.16791155961197393,
+       0.5355583440350296,
+       0.0322772115914809
+      ]
+     ],
+     "rootRadius": 0.021738544712285028,
+     "tipRadius": 0.009,
+     "curlRadius": 0.01946261769170499,
+     "curlTurns": 2.59668047465078,
+     "curlPhase": 6.130882063123538
+    },
+    {
+     "points": [
+      [
+       -0.18194443437490918,
+       0.9040802466357161,
+       0.013195888131116797
+      ],
+      [
+       -0.1919005730839608,
+       0.8619726588700302,
+       0.013789020892079428
+      ],
+      [
+       -0.1902866684141553,
+       0.8198650711043443,
+       0.017281884382605847
+      ],
+      [
+       -0.19328898488933122,
+       0.7777574833386585,
+       0.01078417618500098
+      ],
+      [
+       -0.18993883481834906,
+       0.7356498955729726,
+       0.018034676843214192
+      ],
+      [
+       -0.1871476041548306,
+       0.6935423078072867,
+       0.01145250914821782
+      ],
+      [
+       -0.17894003980839793,
+       0.6514347200416009,
+       0.013436782654835853
+      ],
+      [
+       -0.17182196388960935,
+       0.6093271322759148,
+       0.01306315087530847
+      ]
+     ],
+     "rootRadius": 0.01772127541678719,
+     "tipRadius": 0.009,
+     "curlRadius": 0.016706753428470212,
+     "curlTurns": 2.5084818241019344,
+     "curlPhase": 5.125273535273798
+    },
+    {
+     "points": [
+      [
+       -0.18849320568072464,
+       0.8897997290202059,
+       -0.015673039176983036
+      ],
+      [
+       -0.19424897022018828,
+       0.8417040695528999,
+       -0.01596847909547788
+      ],
+      [
+       -0.19395986131173362,
+       0.7936084100855938,
+       -0.01494649115791228
+      ],
+      [
+       -0.19459016291084408,
+       0.7455127506182878,
+       -0.017174581031594787
+      ],
+      [
+       -0.19366727907238765,
+       0.6974170911509818,
+       -0.013912225140459327
+      ],
+      [
+       -0.18928274663450678,
+       0.6493214316836757,
+       -0.017938615257148145
+      ],
+      [
+       -0.18095933282711493,
+       0.6012257722163699,
+       -0.01292260632650572
+      ],
+      [
+       -0.17561637646923556,
+       0.5531301127490638,
+       -0.018442390215638062
+      ]
+     ],
+     "rootRadius": 0.018861987713628656,
+     "tipRadius": 0.009,
+     "curlRadius": 0.019286466794257346,
+     "curlTurns": 2.2627889749733234,
+     "curlPhase": 0.3742953473879411
+    },
+    {
+     "points": [
+      [
+       -0.1843726334339353,
+       0.8949385846334833,
+       -0.04310079830539182
+      ],
+      [
+       -0.19158862013682376,
+       0.8504655736791507,
+       -0.04488193233827876
+      ],
+      [
+       -0.19121830194609546,
+       0.8059925627248181,
+       -0.04200553418391247
+      ],
+      [
+       -0.19197120644851343,
+       0.7615195517704855,
+       -0.04785362151904951
+      ],
+      [
+       -0.1909863732832622,
+       0.7170465408161528,
+       -0.040204058603126015
+      ],
+      [
+       -0.1865650608240906,
+       0.6725735298618202,
+       -0.04746088150732517
+      ],
+      [
+       -0.17873477964000595,
+       0.6281005189074875,
+       -0.03863868273159492
+      ],
+      [
+       -0.17270762859034872,
+       0.583627507953155,
+       -0.04382206164717033
+      ]
+     ],
+     "rootRadius": 0.018570735851883957,
+     "tipRadius": 0.009,
+     "curlRadius": 0.019513371181045833,
+     "curlTurns": 2.6531843763707754,
+     "curlPhase": 1.8825367403039253
+    },
+    {
+     "points": [
+      [
+       -0.17404418708591604,
+       0.8959007094815338,
+       -0.07825263724037784
+      ],
+      [
+       -0.1808755245453799,
+       0.8545733407262969,
+       -0.08177515160490438
+      ],
+      [
+       -0.18115727393953346,
+       0.81324597197106,
+       -0.07768368225210506
+      ],
+      [
+       -0.18065294611077012,
+       0.7719186032158231,
+       -0.0850073603077326
+      ],
+      [
+       -0.1811746004397921,
+       0.7305912344605862,
+       -0.07743207267895119
+      ],
+      [
+       -0.17565336465937267,
+       0.6892638657053493,
+       -0.08058992426745704
+      ],
+      [
+       -0.16927085146908277,
+       0.6479364969501124,
+       -0.0770000384480917
+      ],
+      [
+       -0.1630241291981976,
+       0.6066091281948754,
+       -0.07143824285123768
+      ]
+     ],
+     "rootRadius": 0.019872118551293356,
+     "tipRadius": 0.009,
+     "curlRadius": 0.019151179022868708,
+     "curlTurns": 3.075137495573429,
+     "curlPhase": 4.580916417678287
+    },
+    {
+     "points": [
+      [
+       -0.1614438790767679,
+       0.9102271885006982,
+       -0.09298087520985272
+      ],
+      [
+       -0.17107049375603978,
+       0.871060346587756,
+       -0.09897272520293118
+      ],
+      [
+       -0.1728461113197005,
+       0.8318935046748137,
+       -0.09490545299317292
+      ],
+      [
+       -0.17162420364658587,
+       0.7927266627618715,
+       -0.10202364922344473
+      ],
+      [
+       -0.17254114736970408,
+       0.7535598208489294,
+       -0.0966820137653139
+      ],
+      [
+       -0.16751503643703075,
+       0.7143929789359871,
+       -0.09484389323014017
+      ],
+      [
+       -0.16060871541050745,
+       0.675226137023045,
+       -0.0961794904131769
+      ],
+      [
+       -0.15573394212548208,
+       0.6360592951101027,
+       -0.085680350984497
+      ]
+     ],
+     "rootRadius": 0.019090614108926138,
+     "tipRadius": 0.009,
+     "curlRadius": 0.020542845577391496,
+     "curlTurns": 2.351984534660505,
+     "curlPhase": 3.070688270988059
+    },
+    {
+     "points": [
+      [
+       -0.15454036936369073,
+       0.8943072562927314,
+       -0.11510199894885194
+      ],
+      [
+       -0.16037366222966568,
+       0.8440574700147975,
+       -0.11893499866956599
+      ],
+      [
+       -0.16033300334050873,
+       0.7938076837368636,
+       -0.11906941195010048
+      ],
+      [
+       -0.1604224390092091,
+       0.7435578974589296,
+       -0.11877374864310734
+      ],
+      [
+       -0.16028967231256186,
+       0.6933081111809957,
+       -0.11921265899240861
+      ],
+      [
+       -0.15587844400753703,
+       0.6430583249030617,
+       -0.11561247721169657
+      ],
+      [
+       -0.14994262445000012,
+       0.5928085386251278,
+       -0.11250661653107111
+      ],
+      [
+       -0.14446154720916246,
+       0.5425587523471939,
+       -0.10789743375156988
+      ]
+     ],
+     "rootRadius": 0.01986512970138692,
+     "tipRadius": 0.009,
+     "curlRadius": 0.021252866870985328,
+     "curlTurns": 2.513747512848097,
+     "curlPhase": 4.366454900198581
+    },
+    {
+     "points": [
+      [
+       -0.13203401256114292,
+       0.8897106722639241,
+       -0.14307840830431276
+      ],
+      [
+       -0.13579051713024712,
+       0.844747152298757,
+       -0.14753754729694415
+      ],
+      [
+       -0.13704348348474327,
+       0.79978363233359,
+       -0.14517502284058917
+      ],
+      [
+       -0.13446063323686155,
+       0.7548201123684228,
+       -0.1500451032348681
+      ],
+      [
+       -0.13791783761345297,
+       0.7098565924032558,
+       -0.1435263887769696
+      ],
+      [
+       -0.13020775854273425,
+       0.6648930724380887,
+       -0.1468961847700128
+      ],
+      [
+       -0.1291577147942723,
+       0.6199295524729216,
+       -0.13491620812067387
+      ],
+      [
+       -0.12088201251168686,
+       0.5749660325077546,
+       -0.13656053585818415
+      ]
+     ],
+     "rootRadius": 0.021199838902562707,
+     "tipRadius": 0.009,
+     "curlRadius": 0.021668086570647623,
+     "curlTurns": 2.6740983374196445,
+     "curlPhase": 4.1708758503809555
+    },
+    {
+     "points": [
+      [
+       -0.11696908393107397,
+       0.8960298143757327,
+       -0.153606690718435
+      ],
+      [
+       -0.12162760618676552,
+       0.8477933197266869,
+       -0.15951535746202614
+      ],
+      [
+       -0.12217258233125503,
+       0.7995568250776413,
+       -0.15869522984276532
+      ],
+      [
+       -0.12098291075597309,
+       0.7513203304285955,
+       -0.16048555135794318
+      ],
+      [
+       -0.12272832673362336,
+       0.7030838357795497,
+       -0.15785889721015287
+      ],
+      [
+       -0.11704294390690387,
+       0.654847341130504,
+       -0.1569904374568165
+      ],
+      [
+       -0.11533705956199312,
+       0.6066108464814582,
+       -0.14777720152512433
+      ],
+      [
+       -0.10794514488814215,
+       0.5583743518324125,
+       -0.14712079980327966
+      ]
+     ],
+     "rootRadius": 0.02196547969733317,
+     "tipRadius": 0.009,
+     "curlRadius": 0.02093154871965829,
+     "curlTurns": 2.4845955320941493,
+     "curlPhase": 2.422770258565344
+    },
+    {
+     "points": [
+      [
+       -0.08962946993999821,
+       0.8600909809522306,
+       -0.17899722763030154
+      ],
+      [
+       -0.08924290554489665,
+       0.815033347472806,
+       -0.17938409774112551
+      ],
+      [
+       -0.09110176893199588,
+       0.7699757139933815,
+       -0.17752376426580693
+      ],
+      [
+       -0.08726040510706841,
+       0.7249180805139569,
+       -0.1813681660459411
+      ],
+      [
+       -0.0924232893716632,
+       0.6798604470345324,
+       -0.17620119869735634
+      ],
+      [
+       -0.08411731461102082,
+       0.6348028135551078,
+       -0.17719952565597544
+      ],
+      [
+       -0.08669405588577954,
+       0.5897451800756832,
+       -0.16547797579508194
+      ],
+      [
+       -0.0782352604907689,
+       0.5446875465962586,
+       -0.16480069009440465
+      ]
+     ],
+     "rootRadius": 0.017840241894532722,
+     "tipRadius": 0.009,
+     "curlRadius": 0.016702574766890393,
+     "curlTurns": 2.2589544193313107,
+     "curlPhase": 4.82450316760743
+    },
+    {
+     "points": [
+      [
+       -0.0721346940594444,
+       0.8721516233781708,
+       -0.18525661013269565
+      ],
+      [
+       -0.0719537288994455,
+       0.8283067713244583,
+       -0.18650013119032263
+      ],
+      [
+       -0.07440828178525674,
+       0.7844619192707458,
+       -0.18448495180453084
+      ],
+      [
+       -0.06951603509863856,
+       0.7406170672170334,
+       -0.18850146932593792
+      ],
+      [
+       -0.0757022326680432,
+       0.6967722151633209,
+       -0.18342262262829204
+      ],
+      [
+       -0.06738727058772717,
+       0.6529273631096084,
+       -0.18359563780389368
+      ],
+      [
+       -0.07017878161211916,
+       0.609082511055896,
+       -0.17298689222694796
+      ],
+      [
+       -0.06386944645684037,
+       0.5652376590021835,
+       -0.16984990972365602
+      ]
+     ],
+     "rootRadius": 0.021357109870631497,
+     "tipRadius": 0.009,
+     "curlRadius": 0.016483487807200832,
+     "curlTurns": 2.649187400949331,
+     "curlPhase": 3.450482629424555
+    },
+    {
+     "points": [
+      [
+       -0.03285096967416208,
+       0.9020827482607173,
+       -0.18852473730402775
+      ],
+      [
+       -0.03475706915259812,
+       0.8501287287801713,
+       -0.1975834527168386
+      ],
+      [
+       -0.033788915512468265,
+       0.7981747092996254,
+       -0.19808277590856
+      ],
+      [
+       -0.03589862307238792,
+       0.7462206898190794,
+       -0.19699469869771924
+      ],
+      [
+       -0.03281190979616303,
+       0.6942666703385334,
+       -0.1985866645398418
+      ],
+      [
+       -0.03571277433351181,
+       0.6423126508579875,
+       -0.19129599728870722
+      ],
+      [
+       -0.02984694335973283,
+       0.5903586313774415,
+       -0.18707809657534194
+      ],
+      [
+       -0.033917422341026356,
+       0.5384046118968955,
+       -0.17773556502338958
+      ]
+     ],
+     "rootRadius": 0.018392105322569487,
+     "tipRadius": 0.009,
+     "curlRadius": 0.01849177910327019,
+     "curlTurns": 2.558771165331625,
+     "curlPhase": 5.552730954804803
+    },
+    {
+     "points": [
+      [
+       -0.00612169974839873,
+       0.8669817001884789,
+       -0.19939859013536076
+      ],
+      [
+       -0.005138687967530028,
+       0.8268179677000725,
+       -0.199728975777318
+      ],
+      [
+       -0.009326400670722646,
+       0.7866542352116662,
+       -0.19832150520910766
+      ],
+      [
+       -0.002320964059856631,
+       0.7464905027232598,
+       -0.20067599954673027
+      ],
+      [
+       -0.008578240700074886,
+       0.7063267702348535,
+       -0.1985729582608409
+      ],
+      [
+       -0.005743264874235359,
+       0.6661630377464471,
+       -0.19413274989991633
+      ],
+      [
+       -0.003603382040468993,
+       0.6259993052580408,
+       -0.1881106664447327
+      ],
+      [
+       -0.009176539303682693,
+       0.5858355727696345,
+       -0.17949626644413524
+      ]
+     ],
+     "rootRadius": 0.01815978433409768,
+     "tipRadius": 0.009,
+     "curlRadius": 0.017400016502085166,
+     "curlTurns": 2.684962730341357,
+     "curlPhase": 3.6996956034385655
+    },
+    {
+     "points": [
+      [
+       0.009752713869976245,
+       0.8590974523428921,
+       -0.20001891586945836
+      ],
+      [
+       0.010359652456279476,
+       0.8147726551807437,
+       -0.2001670830487664
+      ],
+      [
+       0.007477677653765296,
+       0.7704478580185952,
+       -0.19946352903694076
+      ],
+      [
+       0.013311015120042468,
+       0.7261230608564467,
+       -0.2008875761775167
+      ],
+      [
+       0.0057379908781693975,
+       0.6817982636942982,
+       -0.19903883288441965
+      ],
+      [
+       0.013440116536107563,
+       0.6374734665321498,
+       -0.19563514807096508
+      ],
+      [
+       0.005707343163195159,
+       0.5931486693700012,
+       -0.1871424756851485
+      ],
+      [
+       0.011218140998014768,
+       0.5488238722078528,
+       -0.18188285295888146
+      ]
+     ],
+     "rootRadius": 0.018846267864473628,
+     "tipRadius": 0.009,
+     "curlRadius": 0.01939804734223835,
+     "curlTurns": 3.1530979255250955,
+     "curlPhase": 4.336300166813941
+    },
+    {
+     "points": [
+      [
+       0.03967642150439421,
+       0.8916768514255711,
+       -0.19053073073806193
+      ],
+      [
+       0.04113645174623955,
+       0.8429419928692939,
+       -0.1964494967033581
+      ],
+      [
+       0.04042947572110574,
+       0.7942071343130167,
+       -0.1963985498111428
+      ],
+      [
+       0.041978629129969344,
+       0.7454722757567396,
+       -0.19651018662616973
+      ],
+      [
+       0.0396924776123483,
+       0.6967374172004624,
+       -0.19634543943416413
+      ],
+      [
+       0.0414357081148364,
+       0.6480025586441852,
+       -0.1913057741630436
+      ],
+      [
+       0.03644715469258433,
+       0.5992677000879081,
+       -0.18448967362416802
+      ],
+      [
+       0.03909520603384383,
+       0.5505328415316308,
+       -0.17822389058680005
+      ]
+     ],
+     "rootRadius": 0.01726996446611895,
+     "tipRadius": 0.009,
+     "curlRadius": 0.021397198060347712,
+     "curlTurns": 2.9799694907060728,
+     "curlPhase": 5.491942796364513
+    },
+    {
+     "points": [
+      [
+       0.07050839393972375,
+       0.879846681562003,
+       -0.18442341628302986
+      ],
+      [
+       0.07227569141468439,
+       0.8358641872936554,
+       -0.1870615725294983
+      ],
+      [
+       0.06917391060556317,
+       0.7918816930253079,
+       -0.18736698680648714
+      ],
+      [
+       0.07538448595062365,
+       0.7478991987569603,
+       -0.1867554676517104
+      ],
+      [
+       0.06746925249820743,
+       0.7039167044886129,
+       -0.18753483455441317
+      ],
+      [
+       0.07351744155285352,
+       0.6599342102202653,
+       -0.18175421495711933
+      ],
+      [
+       0.06382943866854503,
+       0.6159517159519178,
+       -0.1762267740403304
+      ],
+      [
+       0.06643044565033523,
+       0.5719692216835702,
+       -0.16948930595072303
+      ]
+     ],
+     "rootRadius": 0.017517685468551623,
+     "tipRadius": 0.009,
+     "curlRadius": 0.019805737394114252,
+     "curlTurns": 2.2622478216186876,
+     "curlPhase": 0.42294302749419604
+    },
+    {
+     "points": [
+      [
+       0.08746190880828994,
+       0.8675913300436833,
+       -0.17921635838421976
+      ],
+      [
+       0.08821268567811463,
+       0.8246189817197003,
+       -0.17907026931206324
+      ],
+      [
+       0.08474684157292844,
+       0.7816466333957173,
+       -0.17974466668619124
+      ],
+      [
+       0.09143762234981927,
+       0.7386742850717342,
+       -0.17844274863971898
+      ],
+      [
+       0.08344071385518774,
+       0.6957019367477512,
+       -0.17999881807799856
+      ],
+      [
+       0.08825829518995662,
+       0.652729588423768,
+       -0.17381753628041177
+      ],
+      [
+       0.07990208721759562,
+       0.609757240099785,
+       -0.16888869690798713
+      ],
+      [
+       0.07892333754760184,
+       0.566784891775802,
+       -0.16252432311570486
+      ]
+     ],
+     "rootRadius": 0.017262878019451335,
+     "tipRadius": 0.009,
+     "curlRadius": 0.01600139969140814,
+     "curlTurns": 2.3512649322794283,
+     "curlPhase": 0.637196231181906
+    },
+    {
+     "points": [
+      [
+       0.11371169156543032,
+       0.8602489837921922,
+       -0.1646017670746476
+      ],
+      [
+       0.11348730243025149,
+       0.808117571608641,
+       -0.16468396535822266
+      ],
+      [
+       0.11460121141517886,
+       0.7559861594250898,
+       -0.1642759179429728
+      ],
+      [
+       0.11217830426975091,
+       0.7038547472415386,
+       -0.16516347788858787
+      ],
+      [
+       0.11571323320258323,
+       0.6517233350579874,
+       -0.16386856184638698
+      ],
+      [
+       0.10802893358601195,
+       0.5995919228744362,
+       -0.16115328603965537
+      ],
+      [
+       0.10922423235923713,
+       0.547460510690885,
+       -0.1538026859651109
+      ],
+      [
+       0.09917976523576054,
+       0.4953290985073338,
+       -0.1505694397176941
+      ]
+     ],
+     "rootRadius": 0.020070344938942393,
+     "tipRadius": 0.009,
+     "curlRadius": 0.01689130291198535,
+     "curlTurns": 2.4522577565570773,
+     "curlPhase": 2.1816063492172457
+    },
+    {
+     "points": [
+      [
+       0.134812472015022,
+       0.8654767373788443,
+       -0.14678900850046406
+      ],
+      [
+       0.13464510127347565,
+       0.8137806757819652,
+       -0.14687971291190288
+      ],
+      [
+       0.135478157099171,
+       0.7620846141850861,
+       -0.14642824906782084
+      ],
+      [
+       0.13365855000239132,
+       0.710388552588207,
+       -0.1474143616298996
+      ],
+      [
+       0.13633059136985523,
+       0.6586924909913279,
+       -0.14596628332579015
+      ],
+      [
+       0.1290955945553946,
+       0.6069964293944488,
+       -0.1439686567850343
+      ],
+      [
+       0.12833686088026322,
+       0.5553003677975696,
+       -0.13698166818804594
+      ],
+      [
+       0.11883936489831919,
+       0.5036043062006905,
+       -0.1347305389438923
+      ]
+     ],
+     "rootRadius": 0.021965513608523567,
+     "tipRadius": 0.009,
+     "curlRadius": 0.0187959367549596,
+     "curlTurns": 2.68383465641627,
+     "curlPhase": 0.5393556745727199
+    },
+    {
+     "points": [
+      [
+       0.14939735508113258,
+       0.8772094285685426,
+       -0.12867802585228816
+      ],
+      [
+       0.15204510243922476,
+       0.8355278818533909,
+       -0.12965013782881588
+      ],
+      [
+       0.14879586684964857,
+       0.7938463351382392,
+       -0.13196594400813838
+      ],
+      [
+       0.15471829666206066,
+       0.7521647884230875,
+       -0.12774488980074658
+      ],
+      [
+       0.1483660635595894,
+       0.710483241707936,
+       -0.13227227486275706
+      ],
+      [
+       0.14870831963945644,
+       0.6688016949927843,
+       -0.1255907341661021
+      ],
+      [
+       0.14157091451822634,
+       0.6271201482776326,
+       -0.12263072120277183
+      ],
+      [
+       0.13450472344211817,
+       0.585438601562481,
+       -0.11961995232433434
+      ]
+     ],
+     "rootRadius": 0.021144276890607803,
+     "tipRadius": 0.009,
+     "curlRadius": 0.01696863166315859,
+     "curlTurns": 2.223095721045248,
+     "curlPhase": 5.972189397653129
+    },
+    {
+     "points": [
+      [
+       0.17032358678937015,
+       0.8667503428059213,
+       -0.10083170854503265
+      ],
+      [
+       0.17059856318012298,
+       0.8202959583622279,
+       -0.10054753797257333
+      ],
+      [
+       0.16925086260748615,
+       0.7738415739185346,
+       -0.10194030061005455
+      ],
+      [
+       0.17212314242374482,
+       0.7273871894748412,
+       -0.09897198250312556
+      ],
+      [
+       0.1680649299885312,
+       0.6809328050311478,
+       -0.10316588637872347
+      ],
+      [
+       0.1680633225944603,
+       0.6344784205874544,
+       -0.09562039669444569
+      ],
+      [
+       0.1565494296679333,
+       0.588024036143761,
+       -0.0980853325927151
+      ],
+      [
+       0.15619505672796705,
+       0.5415696517000677,
+       -0.08901761590844763
+      ]
+     ],
+     "rootRadius": 0.017135212457110843,
+     "tipRadius": 0.009,
+     "curlRadius": 0.019168656645629837,
+     "curlTurns": 3.1785012427189727,
+     "curlPhase": 5.421681190219121
+    },
+    {
+     "points": [
+      [
+       0.18203463091265418,
+       0.8728717007102654,
+       -0.07249954098837831
+      ],
+      [
+       0.18353700134757478,
+       0.8294425614229309,
+       -0.07226909326199933
+      ],
+      [
+       0.18162149777709913,
+       0.7860134221355964,
+       -0.0750164432032178
+      ],
+      [
+       0.18538414622763616,
+       0.742584282848262,
+       -0.06961978816234948
+      ],
+      [
+       0.18074560525092231,
+       0.6991551435609275,
+       -0.0762727098671886
+      ],
+      [
+       0.17999757424537757,
+       0.655726004273593,
+       -0.06812242371565579
+      ],
+      [
+       0.169881133319457,
+       0.6122968649862585,
+       -0.071103178759764
+      ],
+      [
+       0.16540822543822983,
+       0.568867725698924,
+       -0.0659895817924308
+      ]
+     ],
+     "rootRadius": 0.017835210172671683,
+     "tipRadius": 0.009,
+     "curlRadius": 0.020631627450412186,
+     "curlTurns": 2.732592397492879,
+     "curlPhase": 4.892464717603753
+    },
+    {
+     "points": [
+      [
+       0.18828309640961174,
+       0.8708397925900213,
+       -0.0516401798597351
+      ],
+      [
+       0.18822676645555933,
+       0.8197853140739025,
+       -0.05174442840326649
+      ],
+      [
+       0.188507921863086,
+       0.7687308355577838,
+       -0.05122410059129361
+      ],
+      [
+       0.18789109122647926,
+       0.717676357041665,
+       -0.052365654788407816
+      ],
+      [
+       0.18880309025626735,
+       0.6666218785255462,
+       -0.05067783927077085
+      ],
+      [
+       0.1822578786432,
+       0.6155674000094274,
+       -0.05172258669660236
+      ],
+      [
+       0.17694775727644443,
+       0.5645129214933087,
+       -0.04771450006790288
+      ],
+      [
+       0.16856671165895198,
+       0.5134584429771899,
+       -0.04938970194564614
+      ]
+     ],
+     "rootRadius": 0.021924630252954453,
+     "tipRadius": 0.009,
+     "curlRadius": 0.02111577279247996,
+     "curlTurns": 3.0060785847856675,
+     "curlPhase": 5.139130884083344
+    },
+    {
+     "points": [
+      [
+       0.1924369309760028,
+       0.8710372925461906,
+       -0.01706913837548489
+      ],
+      [
+       0.19289800112560596,
+       0.8250206287020162,
+       -0.016654910427495267
+      ],
+      [
+       0.1922301694247832,
+       0.7790039648578418,
+       -0.01871029981216524
+      ],
+      [
+       0.19364145865528326,
+       0.7329873010136674,
+       -0.014366767003681825
+      ],
+      [
+       0.1916743338860103,
+       0.686970637169493,
+       -0.020420997978497515
+      ],
+      [
+       0.18847878193405496,
+       0.6409539733253187,
+       -0.013180589800416684
+      ],
+      [
+       0.17908183702695163,
+       0.5949373094811443,
+       -0.020757399524510653
+      ],
+      [
+       0.17475428308160354,
+       0.54892064563697,
+       -0.012732116151351837
+      ]
+     ],
+     "rootRadius": 0.01877781271677479,
+     "tipRadius": 0.009,
+     "curlRadius": 0.01617388090444819,
+     "curlTurns": 2.227937075422065,
+     "curlPhase": 1.7547484252279073
+    },
+    {
+     "points": [
+      [
+       0.18617608142733455,
+       0.8955659942722688,
+       0.0023748888899671784
+      ],
+      [
+       0.19347018788533282,
+       0.8420257358207031,
+       0.00258607271727534
+      ],
+      [
+       0.19387487305408696,
+       0.7884854773691372,
+       0.00447858819404237
+      ],
+      [
+       0.1930123059579461,
+       0.7349452189175714,
+       0.00044478190402637025
+      ],
+      [
+       0.1942312062647507,
+       0.6814049604660056,
+       0.00614498510733522
+      ],
+      [
+       0.18723964381249478,
+       0.6278647020144399,
+       -0.0011374397915371814
+      ],
+      [
+       0.18195909630686882,
+       0.574324443562874,
+       0.005935146107234028
+      ],
+      [
+       0.1733243016864075,
+       0.5207841851113082,
+       -0.002678448432161957
+      ]
+     ],
+     "rootRadius": 0.019236138388833618,
+     "tipRadius": 0.009,
+     "curlRadius": 0.02162212720765745,
+     "curlTurns": 3.1880380582028605,
+     "curlPhase": 5.997403964697972
+    },
+    {
+     "points": [
+      [
+       0.18690319782470619,
+       0.8707020106682233,
+       0.032136457348635364
+      ],
+      [
+       0.1877720017604088,
+       0.829670367924268,
+       0.03328653576528113
+      ],
+      [
+       0.18753749221693286,
+       0.7886387251803126,
+       0.029104333764306656
+      ],
+      [
+       0.1879506083468,
+       0.7476070824363573,
+       0.03647177425033743
+      ],
+      [
+       0.18753715336329893,
+       0.706575439692402,
+       0.029098290708127243
+      ],
+      [
+       0.18242955019491444,
+       0.6655437969484466,
+       0.03237323184668364
+      ],
+      [
+       0.17570630190657407,
+       0.6245121542044912,
+       0.030425801435609343
+      ],
+      [
+       0.16877844190092922,
+       0.5834805114605359,
+       0.024829361603212856
+      ]
+     ],
+     "rootRadius": 0.017983530817096586,
+     "tipRadius": 0.009,
+     "curlRadius": 0.017226240179657338,
+     "curlTurns": 2.8240663974378184,
+     "curlPhase": 5.653936361912238
+    },
+    {
+     "points": [
+      [
+       0.17226933492629426,
+       0.8844444516726473,
+       0.06472877887779227
+      ],
+      [
+       0.17591884073775432,
+       0.8361076852239443,
+       0.06656515489699603
+      ],
+      [
+       0.17604020077358098,
+       0.7877709187752413,
+       0.06564369845860761
+      ],
+      [
+       0.17577504616636083,
+       0.7394341523265383,
+       0.06765695116018339
+      ],
+      [
+       0.17616458490080458,
+       0.6910973858778353,
+       0.0646992808496083
+      ],
+      [
+       0.1706441268452348,
+       0.6427606194291322,
+       0.0661869407752996
+      ],
+      [
+       0.16495253483215436,
+       0.5944238529804293,
+       0.05886702830029458
+      ],
+      [
+       0.1579846290381553,
+       0.5460870865317262,
+       0.061237847562639364
+      ]
+     ],
+     "rootRadius": 0.0209982187242483,
+     "tipRadius": 0.009,
+     "curlRadius": 0.01650867091870228,
+     "curlTurns": 2.8605856502048943,
+     "curlPhase": 5.713400423824821
+    },
+    {
+     "points": [
+      [
+       0.15576752637617328,
+       0.8985384116223224,
+       0.08556240748330286
+      ],
+      [
+       0.16259502395456146,
+       0.8532007074292824,
+       0.09045467906571723
+      ],
+      [
+       0.16326398515267848,
+       0.8078630032362424,
+       0.0880499171169675
+      ],
+      [
+       0.16187174885560007,
+       0.7625252990432023,
+       0.09305468702037321
+      ],
+      [
+       0.16376483011374715,
+       0.7171875948501624,
+       0.086249494449717
+      ],
+      [
+       0.1569710772449181,
+       0.6718498906571224,
+       0.09102443461235611
+      ],
+      [
+       0.15337183764262335,
+       0.6265121864640824,
+       0.07940407239719231
+      ],
+      [
+       0.1454673288348231,
+       0.5811744822710423,
+       0.08326016471132738
+      ]
+     ],
+     "rootRadius": 0.01789260859168787,
+     "tipRadius": 0.009,
+     "curlRadius": 0.020734812586121656,
+     "curlTurns": 2.53251719986461,
+     "curlPhase": 5.02917201267122
+    }
+   ],
+   "mirror": false,
+   "samples": 96,
+   "seed": 61,
+   "fuzzDensity": 110,
+   "fuzzLength": 0.006,
+   "fuzzRadius": 2.4e-05,
+   "fuzzTilt": 0.6,
+   "strayFraction": 0.08
+  },
+  {
+   "name": "hair.front.L",
+   "bone": "head",
+   "material": "B_hair_fiber",
+   "coreMaterial": "B_hair_core",
+   "locks": [
+    {
+     "points": [
+      [
+       0.012,
+       0.99,
+       0.05
+      ],
+      [
+       0.02375,
+       0.93,
+       0.14659716077289406
+      ],
+      [
+       0.04000000000000001,
+       0.86,
+       0.1634882866091236
+      ]
+     ],
+     "rootRadius": 0.018,
+     "tipRadius": 0.005,
+     "curlRadius": 0.004,
+     "curlTurns": 0.8,
+     "curlPhase": 0
+    },
+    {
+     "points": [
+      [
+       0.012,
+       0.99,
+       0.05
+      ],
+      [
+       0.04655,
+       0.93,
+       0.14161074016883918
+      ],
+      [
+       0.06688000000000001,
+       0.84,
+       0.15842190779173532
+      ]
+     ],
+     "rootRadius": 0.018,
+     "tipRadius": 0.005,
+     "curlRadius": 0.004,
+     "curlTurns": 0.8,
+     "curlPhase": 1
+    },
+    {
+     "points": [
+      [
+       0.012,
+       0.99,
+       0.05
+      ],
+      [
+       0.06935000000000001,
+       0.93,
+       0.13299902985127818
+      ],
+      [
+       0.09376000000000001,
+       0.82,
+       0.1460018586486641
+      ]
+     ],
+     "rootRadius": 0.018,
+     "tipRadius": 0.005,
+     "curlRadius": 0.004,
+     "curlTurns": 0.8,
+     "curlPhase": 2
+    },
+    {
+     "points": [
+      [
+       0.012,
+       0.99,
+       0.05
+      ],
+      [
+       0.09215,
+       0.93,
+       0.12001923208987662
+      ],
+      [
+       0.12064000000000001,
+       0.8,
+       0.12380371236923807
+      ]
+     ],
+     "rootRadius": 0.018,
+     "tipRadius": 0.005,
+     "curlRadius": 0.004,
+     "curlTurns": 0.8,
+     "curlPhase": 3
+    },
+    {
+     "points": [
+      [
+       0.012,
+       0.99,
+       0.05
+      ],
+      [
+       0.11495,
+       0.93,
+       0.10109029673073665
+      ],
+      [
+       0.14752,
+       0.78,
+       0.08320457159559164
+      ]
+     ],
+     "rootRadius": 0.018,
+     "tipRadius": 0.005,
+     "curlRadius": 0.004,
+     "curlTurns": 0.8,
+     "curlPhase": 4
+    }
+   ],
+   "mirror": true,
+   "samples": 40,
+   "seed": 62,
+   "fuzzDensity": 110,
+   "fuzzLength": 0.006,
+   "fuzzRadius": 2.4e-05,
+   "fuzzTilt": 0.6,
+   "strayFraction": 0.08
+  },
+  {
+   "name": "hair.bun",
+   "bone": "head",
+   "material": "B_hair_fiber",
+   "coreMaterial": "B_hair_core",
+   "locks": [
+    {
+     "points": [
+      [
+       0.04447189138830737,
+       1.01125,
+       -0.03
+      ],
+      [
+       0.04309708988421968,
+       1.012980769230769,
+       -0.01245288801047929
+      ],
+      [
+       0.0346196931158456,
+       1.0147115384615384,
+       0.0037930187569060123
+      ],
+      [
+       0.01998476540448443,
+       1.0164423076923077,
+       0.01587757077625343
+      ],
+      [
+       0.0012454842695483895,
+       1.0181730769230768,
+       0.0215284610688782
+      ],
+      [
+       -0.018759445385740713,
+       1.019903846153846,
+       0.019464592227499466
+      ],
+      [
+       -0.036864548839074265,
+       1.0216346153846154,
+       0.009638950657048562
+      ],
+      [
+       -0.05009787822582711,
+       1.0233653846153845,
+       -0.006720809085817795
+      ],
+      [
+       -0.05617748926139765,
+       1.0250961538461538,
+       -0.02728270245336043
+      ],
+      [
+       -0.05390210646150193,
+       1.026826923076923,
+       -0.048965661389267695
+      ],
+      [
+       -0.04337083250349238,
+       1.0285576923076922,
+       -0.06842320475705163
+      ],
+      [
+       -0.025994313222993466,
+       1.0302884615384615,
+       -0.08257772360726437
+      ],
+      [
+       -0.004293541934762343,
+       1.0320192307692306,
+       -0.08911886873772329
+      ],
+      [
+       0.01848301464723992,
+       1.03375,
+       -0.08688486989717942
+      ],
+      [
+       0.03886366238134264,
+       1.0354807692307693,
+       -0.07606414953823681
+      ],
+      [
+       0.053698848573528864,
+       1.0372115384615384,
+       -0.0581833298562497
+      ],
+      [
+       0.060660383223649625,
+       1.0389423076923077,
+       -0.03588203089792512
+      ],
+      [
+       0.05861429154785751,
+       1.0406730769230768,
+       -0.012509182037252313
+      ],
+      [
+       0.04780707451633681,
+       1.042403846153846,
+       0.008395622792684257
+      ],
+      [
+       0.029834887967757198,
+       1.0441346153846154,
+       0.023653556130313037
+      ],
+      [
+       0.007399837635256293,
+       1.0458653846153845,
+       0.030943145869319212
+      ],
+      [
+       -0.016108354904941363,
+       1.0475961538461538,
+       0.029163004704841747
+      ],
+      [
+       -0.037139113126429125,
+       1.049326923076923,
+       0.01860298512278353
+      ],
+      [
+       -0.05253265192855852,
+       1.0510576923076922,
+       0.0008966156994110706
+      ],
+      [
+       -0.060009026724349476,
+       1.0527884615384615,
+       -0.02123740155517396
+      ],
+      [
+       -0.05851719108812725,
+       1.0545192307692306,
+       -0.0444231922100355
+      ],
+      [
+       -0.0483891605610363,
+       1.05625,
+       -0.06515678304207259
+      ],
+      [
+       -0.03127565078496408,
+       1.0579807692307692,
+       -0.08035185012639251
+      ],
+      [
+       -0.009874569380952715,
+       1.0597115384615383,
+       -0.08781534587977252
+      ],
+      [
+       0.012503147453505673,
+       1.0614423076923076,
+       -0.08657776135200297
+      ],
+      [
+       0.032459984095378404,
+       1.063173076923077,
+       -0.07702640561904799
+      ],
+      [
+       0.04704573093779205,
+       1.064903846153846,
+       -0.06082195980466358
+      ],
+      [
+       0.05421319997147799,
+       1.0666346153846153,
+       -0.04061353292741317
+      ],
+      [
+       0.0531232371133385,
+       1.0683653846153844,
+       -0.019599853419281176
+      ],
+      [
+       0.04425126794409803,
+       1.0700961538461538,
+       -0.0010088296070505064
+      ],
+      [
+       0.029280051549322124,
+       1.071826923076923,
+       0.01241947798431315
+      ],
+      [
+       0.010798144672461499,
+       1.0735576923076922,
+       0.01886248479390925
+      ],
+      [
+       -0.008144882015012142,
+       1.0752884615384615,
+       0.017688071517953645
+      ],
+      [
+       -0.024552344476673576,
+       1.0770192307692308,
+       0.009527745652390146
+      ],
+      [
+       -0.03597851590513752,
+       1.0787499999999999,
+       -0.0038600781004002674
+      ]
+     ],
+     "rootRadius": 0.02,
+     "tipRadius": 0.014,
+     "curlRadius": 0.0,
+     "curlTurns": 0.0,
+     "curlPhase": 0.0
+    },
+    {
+     "points": [
+      [
+       -0.029630554852989908,
+       1.01125,
+       0.003162921203617809
+      ],
+      [
+       -0.041799530446031054,
+       1.012980769230769,
+       -0.009553495405018143
+      ],
+      [
+       -0.04826590160936461,
+       1.0147115384615384,
+       -0.026699392483941216
+      ],
+      [
+       -0.047526513629769125,
+       1.0164423076923077,
+       -0.04566438159653262
+      ],
+      [
+       -0.039254878298189,
+       1.0181730769230768,
+       -0.06340341391215812
+      ],
+      [
+       -0.02438703560921495,
+       1.019903846153846,
+       -0.07694608790525864
+      ],
+      [
+       -0.004997007183402781,
+       1.0216346153846154,
+       -0.08390056854532653
+      ],
+      [
+       0.016019600978902575,
+       1.0233653846153845,
+       -0.08286861561290866
+      ],
+      [
+       0.03540341108700993,
+       1.0250961538461538,
+       -0.0737023167472344
+      ],
+      [
+       0.0500564735821267,
+       1.026826923076923,
+       -0.05755871632426479
+      ],
+      [
+       0.05754932977588733,
+       1.0285576923076922,
+       -0.036741395863949436
+      ],
+      [
+       0.05652687012844163,
+       1.0302884615384615,
+       -0.014352818364342084
+      ],
+      [
+       0.04694593259320315,
+       1.0320192307692306,
+       0.006187768045682843
+      ],
+      [
+       0.03010455451590158,
+       1.03375,
+       0.02168390514529861
+      ],
+      [
+       0.008456350061347708,
+       1.0354807692307693,
+       0.029672273880018807
+      ],
+      [
+       -0.01476179920457733,
+       1.0372115384615384,
+       0.028821388152207854
+      ],
+      [
+       -0.03603029768479542,
+       1.0389423076923077,
+       0.019153820086227312
+      ],
+      [
+       -0.052096291082697276,
+       1.0406730769230768,
+       0.0020552701141340196
+      ],
+      [
+       -0.06048452343904888,
+       1.042403846153846,
+       -0.019932098143117322
+      ],
+      [
+       -0.059888006908677203,
+       1.0441346153846154,
+       -0.04350004644375367
+      ],
+      [
+       -0.05037595589893276,
+       1.0458653846153845,
+       -0.06508685926021388
+      ],
+      [
+       -0.03338555036100869,
+       1.0475961538461538,
+       -0.08143097559390866
+      ],
+      [
+       -0.011498598805668734,
+       1.049326923076923,
+       -0.09007783378392975
+      ],
+      [
+       0.01196147894856598,
+       1.0510576923076922,
+       -0.08975954653180687
+      ],
+      [
+       0.033448260234255844,
+       1.0527884615384615,
+       -0.08058735323389093
+      ],
+      [
+       0.049744050861918715,
+       1.0545192307692306,
+       -0.06402674727650105
+      ],
+      [
+       0.058457133729517524,
+       1.05625,
+       -0.04265992771695079
+      ],
+      [
+       0.058385853249935026,
+       1.0579807692307692,
+       -0.019774185438275894
+      ],
+      [
+       0.04969239356533901,
+       1.0597115384615383,
+       0.0011574607663145664
+      ],
+      [
+       0.033859784194682455,
+       1.0614423076923076,
+       0.017020067951225237
+      ],
+      [
+       0.013440526726185552,
+       1.063173076923077,
+       0.025538145758047588
+      ],
+      [
+       -0.008361346351594162,
+       1.064903846153846,
+       0.025618179517673048
+      ],
+      [
+       -0.02820638835426263,
+       1.0666346153846153,
+       0.017498608278109194
+      ],
+      [
+       -0.04315018257402381,
+       1.0683653846153844,
+       0.002684906518587972
+      ],
+      [
+       -0.0511024256115069,
+       1.0700961538461538,
+       -0.016317720510317248
+      ],
+      [
+       -0.05114102207986845,
+       1.071826923076923,
+       -0.03642879396302265
+      ],
+      [
+       -0.043631554460295416,
+       1.0735576923076922,
+       -0.05450366919423897
+      ],
+      [
+       -0.030134503906838382,
+       1.0752884615384615,
+       -0.06784709952464882
+      ],
+      [
+       -0.013117407567573253,
+       1.0770192307692308,
+       -0.07464520035084918
+      ],
+      [
+       0.004478946422404019,
+       1.0787499999999999,
+       -0.07424576999667473
+      ]
+     ],
+     "rootRadius": 0.02,
+     "tipRadius": 0.014,
+     "curlRadius": 0.0,
+     "curlTurns": 0.0,
+     "curlPhase": 0.0
+    },
+    {
+     "points": [
+      [
+       0.014545078108145338,
+       1.0661,
+       -0.00934738299866554
+      ],
+      [
+       0.0056283629532551185,
+       1.0675,
+       -0.004013044075594045
+      ],
+      [
+       -0.005179764116817139,
+       1.0689,
+       -0.0025110875293958453
+      ],
+      [
+       -0.016177174230074202,
+       1.0703,
+       -0.005388806970213517
+      ],
+      [
+       -0.02557634399261021,
+       1.0716999999999999,
+       -0.012465992832001536
+      ],
+      [
+       -0.031793925211868315,
+       1.0731,
+       -0.022860682028537534
+      ],
+      [
+       -0.033709157233723856,
+       1.0745,
+       -0.035124599554293534
+      ],
+      [
+       -0.030849977840143716,
+       1.0758999999999999,
+       -0.04746812925643382
+      ],
+      [
+       -0.023477379821162728,
+       1.0773,
+       -0.05803992843874317
+      ],
+      [
+       -0.012554650853356506,
+       1.0787,
+       -0.065217519225016
+      ],
+      [
+       0.00039379939053297414,
+       1.0801,
+       -0.06786341690870179
+      ],
+      [
+       0.013512061772510344,
+       1.0815,
+       -0.06550673960883757
+      ],
+      [
+       0.024895048895065348,
+       1.0829,
+       -0.05842188330148773
+      ],
+      [
+       0.03287957124815212,
+       1.0843,
+       -0.0475918998125016
+      ],
+      [
+       0.03629888164633063,
+       1.0856999999999999,
+       -0.0345621741648608
+      ],
+      [
+       0.034661102536888505,
+       1.0871,
+       -0.021207069553988968
+      ],
+      [
+       0.028223802140204486,
+       1.0885,
+       -0.009445745294752728
+      ],
+      [
+       0.017953143827751695,
+       1.0898999999999999,
+       -0.000951258044368325
+      ],
+      [
+       0.005373991023416784,
+       1.0913,
+       0.003101895418826432
+      ],
+      [
+       -0.007665678721029993,
+       1.0927,
+       0.0022126088760847373
+      ],
+      [
+       -0.019279347404780618,
+       1.0941,
+       -0.003376741641160398
+      ],
+      [
+       -0.02783116645985003,
+       1.0955,
+       -0.012725753522725522
+      ],
+      [
+       -0.03218470555264935,
+       1.0969,
+       -0.02434980118881642
+      ],
+      [
+       -0.031872438688595565,
+       1.0983,
+       -0.03645807807350436
+      ],
+      [
+       -0.027159557448701365,
+       1.0997,
+       -0.04723860228923321
+      ],
+      [
+       -0.018992309936825255,
+       1.1011,
+       -0.0551455844227012
+      ],
+      [
+       -0.008839393247225411,
+       1.1025,
+       -0.059144305083555226
+      ],
+      [
+       0.0015476588252135437,
+       1.1038999999999999,
+       -0.058875734526556374
+      ]
+     ],
+     "rootRadius": 0.015,
+     "tipRadius": 0.01,
+     "curlRadius": 0.0,
+     "curlTurns": 0.0,
+     "curlPhase": 0.0
+    }
+   ],
+   "mirror": false,
+   "samples": 60,
+   "seed": 63,
+   "fuzzDensity": 110,
+   "fuzzLength": 0.006,
+   "fuzzRadius": 2.4e-05,
+   "fuzzTilt": 0.6,
+   "strayFraction": 0.08
+  },
+  {
+   "name": "hair.crown",
+   "bone": "head",
+   "material": "B_hair_fiber",
+   "coreMaterial": "B_hair_core",
+   "locks": [
+    {
+     "points": [
+      [
+       -0.016630733530764615,
+       1.0194137165278305,
+       0.02220293063247483
+      ],
+      [
+       -0.009669139161859757,
+       1.0087222770006685,
+       0.06020827002445811
+      ],
+      [
+       -0.014293019629268074,
+       0.9899694772664919,
+       0.09511780206315588
+      ],
+      [
+       -0.018271756762500292,
+       0.9639646985099792,
+       0.12518743628435006
+      ],
+      [
+       -0.021402773601284696,
+       0.931879661754161,
+       0.1488815343680982
+      ],
+      [
+       -0.023521570205563568,
+       0.8952023880912501,
+       0.16494907546602008
+      ]
+     ],
+     "rootRadius": 0.016967679618203824,
+     "tipRadius": 0.007200000000000001,
+     "curlRadius": 0.003,
+     "curlTurns": 0.6,
+     "curlPhase": 5.240975812257844
+    },
+    {
+     "points": [
+      [
+       -0.019006680269842143,
+       1.0215085441185738,
+       0.008018228584181419
+      ],
+      [
+       -0.020936866677591617,
+       1.0120965852853556,
+       0.049233953080841816
+      ],
+      [
+       -0.03375678510333241,
+       0.9925168094179379,
+       0.08719791696911937
+      ],
+      [
+       -0.044676233811214015,
+       0.963821549267646,
+       0.11956694933206234
+      ],
+      [
+       -0.05300799365928489,
+       0.9276255192214425,
+       0.1442983945253785
+      ],
+      [
+       -0.05820995916750865,
+       0.8860266857132264,
+       0.15977545451407235
+      ]
+     ],
+     "rootRadius": 0.015712074488076898,
+     "tipRadius": 0.007200000000000001,
+     "curlRadius": 0.003,
+     "curlTurns": 0.6,
+     "curlPhase": 0.6773399711411564
+    },
+    {
+     "points": [
+      [
+       -0.024124845574215216,
+       1.0214171823058986,
+       0.006569457068215451
+      ],
+      [
+       -0.03565361131614229,
+       1.0116481281910048,
+       0.04398579454908864
+      ],
+      [
+       -0.057242506011556823,
+       0.9915088337348095,
+       0.07834771652276627
+      ],
+      [
+       -0.07553127414811478,
+       0.9621075799228114,
+       0.10748737039848896
+      ],
+      [
+       -0.08934155084072572,
+       0.9251359354357278,
+       0.12952207524505244
+      ],
+      [
+       -0.09775054720751392,
+       0.8827864573946567,
+       0.14297213542978077
+      ]
+     ],
+     "rootRadius": 0.015114291375072798,
+     "tipRadius": 0.007200000000000001,
+     "curlRadius": 0.003,
+     "curlTurns": 0.6,
+     "curlPhase": 4.622906053199457
+    },
+    {
+     "points": [
+      [
+       -0.021320825621291853,
+       1.0223004536077616,
+       -0.0025473591245539252
+      ],
+      [
+       -0.03745321475887461,
+       1.0157192106544286,
+       0.02811225750899963
+      ],
+      [
+       -0.06392442524649437,
+       1.0000798874774994,
+       0.056986331723397995
+      ],
+      [
+       -0.08731557718543387,
+       0.9760909299847502,
+       0.08252573108261636
+      ],
+      [
+       -0.10634840347603944,
+       0.9449035406155543,
+       0.10333168747606687
+      ],
+      [
+       -0.11995019446960092,
+       0.9080670460325374,
+       0.11822667206766296
+      ]
+     ],
+     "rootRadius": 0.016953450418994175,
+     "tipRadius": 0.007200000000000001,
+     "curlRadius": 0.003,
+     "curlTurns": 0.6,
+     "curlPhase": 0.5716527083092305
+    },
+    {
+     "points": [
+      [
+       -0.03634719730497603,
+       1.0202948595170975,
+       0.006404219826743577
+      ],
+      [
+       -0.057509563930904437,
+       1.0095336615909878,
+       0.032443933540974725
+      ],
+      [
+       -0.08782847461390964,
+       0.9894732996251842,
+       0.056272655885526025
+      ],
+      [
+       -0.11357106766162739,
+       0.9611099307356569,
+       0.07652661970247705
+      ],
+      [
+       -0.13322877031195693,
+       0.9259120652296374,
+       0.09201534968722326
+      ],
+      [
+       -0.14560169325533903,
+       0.8857610223405218,
+       0.10178825417834078
+      ]
+     ],
+     "rootRadius": 0.016419811565648063,
+     "tipRadius": 0.007200000000000001,
+     "curlRadius": 0.003,
+     "curlTurns": 0.6,
+     "curlPhase": 5.192846997464653
+    },
+    {
+     "points": [
+      [
+       -0.03247294499513016,
+       1.021534079622721,
+       -0.004072253398483594
+      ],
+      [
+       -0.06023957534928449,
+       1.0127048686141924,
+       0.012696733349220559
+      ],
+      [
+       -0.09706420216954588,
+       0.9943575647761532,
+       0.028239096197078723
+      ],
+      [
+       -0.1288372740327923,
+       0.9673961094695778,
+       0.041663582482117066
+      ],
+      [
+       -0.15369415070563244,
+       0.9332116173676489,
+       0.05218032115566579
+      ],
+      [
+       -0.17011609219359328,
+       0.8936290359016775,
+       0.059143482552492785
+      ]
+     ],
+     "rootRadius": 0.013736226380082747,
+     "tipRadius": 0.007200000000000001,
+     "curlRadius": 0.003,
+     "curlTurns": 0.6,
+     "curlPhase": 3.307445995284825
+    },
+    {
+     "points": [
+      [
+       -0.039218055986177815,
+       1.0207977697120145,
+       -0.006106596778320694
+      ],
+      [
+       -0.07191563864274036,
+       1.0095129930294304,
+       0.004728351705481999
+      ],
+      [
+       -0.11246040100686355,
+       0.9874677638515741,
+       0.01456581925077812
+      ],
+      [
+       -0.14617140457334046,
+       0.9559387739263734,
+       0.022754547445284583
+      ],
+      [
+       -0.170753706885563,
+       0.9168266498467692,
+       0.02873534535621782
+      ],
+      [
+       -0.18444817763726962,
+       0.8725709132532002,
+       0.03207760472620103
+      ]
+     ],
+     "rootRadius": 0.01622312589615964,
+     "tipRadius": 0.007200000000000001,
+     "curlRadius": 0.003,
+     "curlTurns": 0.6,
+     "curlPhase": 5.716201391119044
+    },
+    {
+     "points": [
+      [
+       -0.03582367070661097,
+       1.021354798589389,
+       -0.011449995251973806
+      ],
+      [
+       -0.07077944519788,
+       1.0108013604810318,
+       -0.008984729943745112
+      ],
+      [
+       -0.1135417874055395,
+       0.9890847306877748,
+       -0.006737544124376031
+      ],
+      [
+       -0.149201460722726,
+       0.9574977323776284,
+       -0.004861482114332052
+      ],
+      [
+       -0.1752615123318306,
+       0.9179999820160972,
+       -0.0034882971750259534
+      ],
+      [
+       -0.18980369302759648,
+       0.8731285288794596,
+       -0.002719673230253901
+      ]
+     ],
+     "rootRadius": 0.015007492027506274,
+     "tipRadius": 0.007200000000000001,
+     "curlRadius": 0.003,
+     "curlTurns": 0.6,
+     "curlPhase": 1.0003148540496918
+    },
+    {
+     "points": [
+      [
+       -0.03139082457294996,
+       1.0217817989922808,
+       -0.017582599700822595
+      ],
+      [
+       -0.059588557746593565,
+       1.0141145283319588,
+       -0.027710540149223
+      ],
+      [
+       -0.09719113897753605,
+       0.9977235614654549,
+       -0.03719305293714731
+      ],
+      [
+       -0.13024352382288282,
+       0.9733310843087639,
+       -0.04553670526156242
+      ],
+      [
+       -0.15698824066678974,
+       0.9420672851211217,
+       -0.05229681180491762
+      ],
+      [
+       -0.17594893332836584,
+       0.9054324911822879,
+       -0.05709846077978059
+      ]
+     ],
+     "rootRadius": 0.014471856443162153,
+     "tipRadius": 0.007200000000000001,
+     "curlRadius": 0.003,
+     "curlTurns": 0.6,
+     "curlPhase": 4.514688848827963
+    },
+    {
+     "points": [
+      [
+       -0.035161003080697334,
+       1.0211284636361353,
+       -0.02335147010628435
+      ],
+      [
+       -0.05933927326796443,
+       1.0127054716635022,
+       -0.04000065578927552
+      ],
+      [
+       -0.09306823292708531,
+       0.9961278792599527,
+       -0.055536550061853464
+      ],
+      [
+       -0.12269388577726903,
+       0.9720851069890021,
+       -0.06919651449037777
+      ],
+      [
+       -0.14673048368931463,
+       0.9416265973904167,
+       -0.08029376691663717
+      ],
+      [
+       -0.16392789585142697,
+       0.9061281648550239,
+       -0.0882483888964022
+      ]
+     ],
+     "rootRadius": 0.01609970495826213,
+     "tipRadius": 0.007200000000000001,
+     "curlRadius": 0.003,
+     "curlTurns": 0.6,
+     "curlPhase": 1.7760349442956507
+    },
+    {
+     "points": [
+      [
+       -0.032931119867721695,
+       1.0210271391611954,
+       -0.02826541469420308
+      ],
+      [
+       -0.056611515758189596,
+       1.0105848448823092,
+       -0.0548164668249299
+      ],
+      [
+       -0.08921258189718377,
+       0.9898725333378063,
+       -0.0790981507148973
+      ],
+      [
+       -0.11668920978034221,
+       0.9600243077916522,
+       -0.09958535541323321
+      ],
+      [
+       -0.13727341185515168,
+       0.9227450803066383,
+       -0.11495600139100455
+      ],
+      [
+       -0.14958346013175824,
+       0.8802338391631009,
+       -0.12417266320093444
+      ]
+     ],
+     "rootRadius": 0.0160712198863829,
+     "tipRadius": 0.007200000000000001,
+     "curlRadius": 0.003,
+     "curlTurns": 0.6,
+     "curlPhase": 0.30323814925089015
+    },
+    {
+     "points": [
+      [
+       -0.02848256100946664,
+       1.021279503946621,
+       -0.030174265265147295
+      ],
+      [
+       -0.0481697686603504,
+       1.0105551083963449,
+       -0.06378897394501894
+      ],
+      [
+       -0.07698398722124761,
+       0.9886513912025687,
+       -0.09438358535861607
+      ],
+      [
+       -0.10095508021946513,
+       0.9568860697090291,
+       -0.11986354263546853
+      ],
+      [
+       -0.11840244840463988,
+       0.9172513359430902,
+       -0.13843723401007416
+      ],
+      [
+       -0.1280500968731588,
+       0.8723107328967542,
+       -0.14873881949358042
+      ]
+     ],
+     "rootRadius": 0.016194280071232917,
+     "tipRadius": 0.007200000000000001,
+     "curlRadius": 0.003,
+     "curlTurns": 0.6,
+     "curlPhase": 0.5538753111968756
+    },
+    {
+     "points": [
+      [
+       -0.02651187260185517,
+       1.0205057189862259,
+       -0.03809615884743518
+      ],
+      [
+       -0.036482775958187066,
+       1.0089585326671031,
+       -0.0765719703154033
+      ],
+      [
+       -0.05638381903798796,
+       0.9869142892338061,
+       -0.11145451132212111
+      ],
+      [
+       -0.07292382060006504,
+       0.9556333621168248,
+       -0.14047722281000793
+      ],
+      [
+       -0.08500364039631304,
+       0.9169774236610713,
+       -0.1617055607469899
+      ],
+      [
+       -0.09178810529023827,
+       0.8733144701860566,
+       -0.17366383559453033
+      ]
+     ],
+     "rootRadius": 0.017597319702783953,
+     "tipRadius": 0.007200000000000001,
+     "curlRadius": 0.003,
+     "curlTurns": 0.6,
+     "curlPhase": 0.40300126126506125
+    },
+    {
+     "points": [
+      [
+       -0.021015596029979516,
+       1.0211099885417394,
+       -0.03604744213882845
+      ],
+      [
+       -0.024732313920396536,
+       1.010846678851035,
+       -0.07677471939068309
+      ],
+      [
+       -0.03910868172321746,
+       0.9903434187620543,
+       -0.1140616862188162
+      ],
+      [
+       -0.051245360101769624,
+       0.9607237028561525,
+       -0.14557250001447863
+      ],
+      [
+       -0.06036639240768136,
+       0.9236824710628887,
+       -0.1692868129002793
+      ],
+      [
+       -0.06586774019156984,
+       0.8814018089707348,
+       -0.18362630966350907
+      ]
+     ],
+     "rootRadius": 0.015721713736311684,
+     "tipRadius": 0.007200000000000001,
+     "curlRadius": 0.003,
+     "curlTurns": 0.6,
+     "curlPhase": 2.9768919030087626
+    },
+    {
+     "points": [
+      [
+       -0.014354798192934465,
+       1.0212358470298912,
+       -0.036569751938997426
+      ],
+      [
+       -0.0066102854605033755,
+       1.011260504774958,
+       -0.07973337277873466
+      ],
+      [
+       -0.010511137202969053,
+       0.9911024455305609,
+       -0.11933463726364231
+      ],
+      [
+       -0.013815230854090645,
+       0.9618568303451055,
+       -0.15291202617370755
+      ],
+      [
+       -0.01631318075744977,
+       0.9251844807689702,
+       -0.1783317685369793
+      ],
+      [
+       -0.017841345951599443,
+       0.8832283380310081,
+       -0.1939205844174099
+      ]
+     ],
+     "rootRadius": 0.014445830205439178,
+     "tipRadius": 0.007200000000000001,
+     "curlRadius": 0.003,
+     "curlTurns": 0.6,
+     "curlPhase": 4.361751034868519
+    },
+    {
+     "points": [
+      [
+       0.014428838081079094,
+       1.0211594978348468,
+       -0.03714109083330583
+      ],
+      [
+       0.006266180169461503,
+       1.0127566411747317,
+       -0.07578138368440254
+      ],
+      [
+       0.009842775022147025,
+       0.9961623151123844,
+       -0.11182718990455986
+      ],
+      [
+       0.01298182673280468,
+       0.9720762642605139,
+       -0.14349420715546962
+      ],
+      [
+       0.015525259198164438,
+       0.9415680056187123,
+       -0.1691835678262645
+      ],
+      [
+       0.01734137415134624,
+       0.9060354732157607,
+       -0.18755929806543864
+      ]
+     ],
+     "rootRadius": 0.013633937882105877,
+     "tipRadius": 0.007200000000000001,
+     "curlRadius": 0.003,
+     "curlTurns": 0.6,
+     "curlPhase": 1.7417184724461194
+    },
+    {
+     "points": [
+      [
+       0.023824756071997768,
+       1.0192315219054262,
+       -0.046958463822293704
+      ],
+      [
+       0.023975482122427647,
+       1.008832048775586,
+       -0.08218965643780644
+      ],
+      [
+       0.03516510147638382,
+       0.9908456703398989,
+       -0.11466299947535213
+      ],
+      [
+       0.04486904875135394,
+       0.9659973323724312,
+       -0.1428535787706566
+      ],
+      [
+       0.052622905150899985,
+       0.9353335175078118,
+       -0.16540814252548783
+      ],
+      [
+       0.058043834737100716,
+       0.9001846494708085,
+       -0.18120760064412111
+      ]
+     ],
+     "rootRadius": 0.015205340345095793,
+     "tipRadius": 0.007200000000000001,
+     "curlRadius": 0.003,
+     "curlTurns": 0.6,
+     "curlPhase": 1.9868078793859272
+    },
+    {
+     "points": [
+      [
+       0.018461137612732575,
+       1.0223134820824014,
+       -0.02454949155586627
+      ],
+      [
+       0.029452121836585146,
+       1.013576203755163,
+       -0.06673613395642804
+      ],
+      [
+       0.050576801432942964,
+       0.9926362619713455,
+       -0.10553218016166199
+      ],
+      [
+       0.0682862268397167,
+       0.9608436959213875,
+       -0.13808972690750937
+      ],
+      [
+       0.08125290300190789,
+       0.9203449762067631,
+       -0.1619619576386722
+      ],
+      [
+       0.088468096058793,
+       0.8739578363961853,
+       -0.1752826843784211
+      ]
+     ],
+     "rootRadius": 0.016885794831347334,
+     "tipRadius": 0.007200000000000001,
+     "curlRadius": 0.003,
+     "curlTurns": 0.6,
+     "curlPhase": 4.424611159261595
+    },
+    {
+     "points": [
+      [
+       0.026622791710106106,
+       1.0217092637525351,
+       -0.026907635957960557
+      ],
+      [
+       0.04666609070889125,
+       1.0125399696283965,
+       -0.05805977767799762
+      ],
+      [
+       0.07618648578234091,
+       0.9929506572520177,
+       -0.08678472305684638
+      ],
+      [
+       0.10132699612211925,
+       0.964012666405792,
+       -0.11127347234605581
+      ],
+      [
+       0.12046905903274252,
+       0.9273826755088284,
+       -0.1299452230756533
+      ],
+      [
+       0.1323321612089613,
+       0.8852260326080817,
+       -0.14154464364520083
+      ]
+     ],
+     "rootRadius": 0.015799902095787115,
+     "tipRadius": 0.007200000000000001,
+     "curlRadius": 0.003,
+     "curlTurns": 0.6,
+     "curlPhase": 5.787773979887349
+    },
+    {
+     "points": [
+      [
+       0.025063141464060475,
+       1.02207744862079,
+       -0.023040595400956942
+      ],
+      [
+       0.04705892258621106,
+       1.0143550759182896,
+       -0.049966413405079436
+      ],
+      [
+       0.07874836808914591,
+       0.9968973310907759,
+       -0.07508759233722546
+      ],
+      [
+       0.10629134029749507,
+       0.9705730629083258,
+       -0.09694399190514251
+      ],
+      [
+       0.12805337687040702,
+       0.9367606468988853,
+       -0.11423548808863067
+      ],
+      [
+       0.1426961419897361,
+       0.8972912652366913,
+       -0.12589375694277774
+      ]
+     ],
+     "rootRadius": 0.01438734590767635,
+     "tipRadius": 0.007200000000000001,
+     "curlRadius": 0.003,
+     "curlTurns": 0.6,
+     "curlPhase": 6.071131199472041
+    },
+    {
+     "points": [
+      [
+       0.046865733209244934,
+       1.0189883703079023,
+       -0.028739201576465655
+      ],
+      [
+       0.07238002929855694,
+       1.0069476736237504,
+       -0.046010650520586505
+      ],
+      [
+       0.10640764111481754,
+       0.9860394588622095,
+       -0.0616915964010479
+      ],
+      [
+       0.1350648675060435,
+       0.9572699952700509,
+       -0.07491267922769103
+      ],
+      [
+       0.1567202517338761,
+       0.9220785972990786,
+       -0.08491873439887077
+      ],
+      [
+       0.17008317964699043,
+       0.8822840822469009,
+       -0.09110980953818643
+      ]
+     ],
+     "rootRadius": 0.015660653027099312,
+     "tipRadius": 0.007200000000000001,
+     "curlRadius": 0.003,
+     "curlTurns": 0.6,
+     "curlPhase": 0.17453339334451676
+    },
+    {
+     "points": [
+      [
+       0.03881577182263603,
+       1.0208983616562795,
+       -0.017899709586820987
+      ],
+      [
+       0.06987071600653487,
+       1.0106543458045425,
+       -0.026253890903824368
+      ],
+      [
+       0.10932744748212941,
+       0.9906284802718834,
+       -0.03391695443083228
+      ],
+      [
+       0.14283342285032347,
+       0.9618559518132033,
+       -0.04043149656416353
+      ],
+      [
+       0.16833620298253082,
+       0.9258879520723297,
+       -0.04539731366528025
+      ],
+      [
+       0.1842007950497069,
+       0.8847310461563097,
+       -0.04849424328603039
+      ]
+     ],
+     "rootRadius": 0.016622673065281333,
+     "tipRadius": 0.007200000000000001,
+     "curlRadius": 0.003,
+     "curlTurns": 0.6,
+     "curlPhase": 3.8833080557147754
+    },
+    {
+     "points": [
+      [
+       0.028342928002657267,
+       1.0221210605411573,
+       -0.011774853734599439
+      ],
+      [
+       0.058938163269368266,
+       1.0149281328435933,
+       -0.009362236000230006
+      ],
+      [
+       0.09885322089310782,
+       0.9985560412127532,
+       -0.007099420067441278
+      ],
+      [
+       0.13391541502400023,
+       0.9737603703905245,
+       -0.005109667390934768
+      ],
+      [
+       0.16217283636715638,
+       0.9417459076514202,
+       -0.0035039941387472262
+      ],
+      [
+       0.18199111461967518,
+       0.9041245269158446,
+       -0.002375699261376008
+      ]
+     ],
+     "rootRadius": 0.01733222598771673,
+     "tipRadius": 0.007200000000000001,
+     "curlRadius": 0.003,
+     "curlTurns": 0.6,
+     "curlPhase": 5.337639325394077
+    },
+    {
+     "points": [
+      [
+       0.04818858565186615,
+       1.019306708634608,
+       -0.005323314080805126
+      ],
+      [
+       0.07599354191723358,
+       1.0080418690713926,
+       0.0027969764629331506
+      ],
+      [
+       0.11234492931901541,
+       0.9882873248013004,
+       0.010219689189343397
+      ],
+      [
+       0.14333160132504824,
+       0.9609396045020666,
+       0.016554051671525172
+      ],
+      [
+       0.1672788986765061,
+       0.927290275475974,
+       0.021456648042443176
+      ],
+      [
+       0.18283286992647488,
+       0.8889826300446378,
+       0.024648661828504816
+      ]
+     ],
+     "rootRadius": 0.01607834430819343,
+     "tipRadius": 0.007200000000000001,
+     "curlRadius": 0.003,
+     "curlTurns": 0.6,
+     "curlPhase": 6.087956116239049
+    },
+    {
+     "points": [
+      [
+       0.03373962020027169,
+       1.0213361493253421,
+       -0.002849375955378959
+      ],
+      [
+       0.0638724570662447,
+       1.0109294028274054,
+       0.01625375995888085
+      ],
+      [
+       0.10230472595804994,
+       0.9895840676448985,
+       0.033695044436841
+      ],
+      [
+       0.13447507456295268,
+       0.9585445479418508,
+       0.04831078066781609
+      ],
+      [
+       0.1581804506557155,
+       0.9196978116283738,
+       0.05909716055096084
+      ],
+      [
+       0.1717204020877186,
+       0.8754859329658226,
+       0.0652760096705083
+      ]
+     ],
+     "rootRadius": 0.016201861277771457,
+     "tipRadius": 0.007200000000000001,
+     "curlRadius": 0.003,
+     "curlTurns": 0.6,
+     "curlPhase": 0.23238767865556548
+    },
+    {
+     "points": [
+      [
+       0.043400471214626715,
+       1.0191814965987607,
+       0.007345487776460279
+      ],
+      [
+       0.06350512343774116,
+       1.0086978093520806,
+       0.027857251584122035
+      ],
+      [
+       0.09305797555842937,
+       0.9906003847232133,
+       0.04675597932134008
+      ],
+      [
+       0.11867099714726871,
+       0.96561668498644,
+       0.06315275483562126
+      ],
+      [
+       0.1391116633227562,
+       0.9347943064480764,
+       0.07625616135835202
+      ],
+      [
+       0.1533580281739451,
+       0.8994682132971719,
+       0.08540757767128197
+      ]
+     ],
+     "rootRadius": 0.017365337570185584,
+     "tipRadius": 0.007200000000000001,
+     "curlRadius": 0.003,
+     "curlTurns": 0.6,
+     "curlPhase": 3.731973833552777
+    },
+    {
+     "points": [
+      [
+       0.025959523231335314,
+       1.0218100191442663,
+       0.0008119936187812675
+      ],
+      [
+       0.04712647198251099,
+       1.01235195857965,
+       0.032934347668801274
+      ],
+      [
+       0.07755907133244362,
+       0.9917910715988093,
+       0.06243479896096026
+      ],
+      [
+       0.10321444974158225,
+       0.961334224291023,
+       0.08733079772214801
+      ],
+      [
+       0.12232866815692124,
+       0.9228506038431221,
+       0.10590597204214937
+      ],
+      [
+       0.13353363951374136,
+       0.8787783194883723,
+       0.11682392277594629
+      ]
+     ],
+     "rootRadius": 0.016437687533179826,
+     "tipRadius": 0.007200000000000001,
+     "curlRadius": 0.003,
+     "curlTurns": 0.6,
+     "curlPhase": 4.247784593630744
+    },
+    {
+     "points": [
+      [
+       0.02755716727421266,
+       1.0197593465507806,
+       0.017082818809473654
+      ],
+      [
+       0.03486549481453119,
+       1.0081584408360558,
+       0.054074231124779576
+      ],
+      [
+       0.052404583367655216,
+       0.987170898761715,
+       0.0877064976614344
+      ],
+      [
+       0.06715213306113908,
+       0.9578682298344879,
+       0.11601615704009889
+      ],
+      [
+       0.07822829885111433,
+       0.9218078310641996,
+       0.1373089881454732
+      ],
+      [
+       0.08494709815880963,
+       0.8809623259784999,
+       0.1502591637025557
+      ]
+     ],
+     "rootRadius": 0.014876846433779742,
+     "tipRadius": 0.007200000000000001,
+     "curlRadius": 0.003,
+     "curlTurns": 0.6,
+     "curlPhase": 0.48063686896113667
+    },
+    {
+     "points": [
+      [
+       0.017811436758358355,
+       1.021483366315565,
+       0.008578495294744613
+      ],
+      [
+       0.017731940589141636,
+       1.0113240448772374,
+       0.05225170130528024
+      ],
+      [
+       0.02861785062415574,
+       0.9901451186742714,
+       0.09216961653462054
+      ],
+      [
+       0.03773815105714999,
+       0.9591983350741455,
+       0.12564797867283214
+      ],
+      [
+       0.04446697056074039,
+       0.9203935551718407,
+       0.15038296088500042
+      ],
+      [
+       0.04832583080899935,
+       0.876194728882208,
+       0.16460694093664563
+      ]
+     ],
+     "rootRadius": 0.015511847925754673,
+     "tipRadius": 0.007200000000000001,
+     "curlRadius": 0.003,
+     "curlTurns": 0.6,
+     "curlPhase": 0.6201488947187659
+    },
+    {
+     "points": [
+      [
+       0.013371603179860502,
+       1.0205771305262261,
+       0.015826747572561497
+      ],
+      [
+       0.0034958969552687643,
+       1.0090187004007827,
+       0.06003766798026926
+      ],
+      [
+       0.005418884865565969,
+       0.986820946818122,
+       0.10009473373155682
+      ],
+      [
+       0.007014068005937775,
+       0.955274733145762,
+       0.1333587919338135
+      ],
+      [
+       0.008174142709882282,
+       0.9162893872395504,
+       0.15758553163408703
+      ],
+      [
+       0.008818151204355732,
+       0.8722894512088388,
+       0.17107538419415988
+      ]
+     ],
+     "rootRadius": 0.01656094421018249,
+     "tipRadius": 0.007200000000000001,
+     "curlRadius": 0.003,
+     "curlTurns": 0.6,
+     "curlPhase": 2.0759831340596753
+    }
+   ],
+   "mirror": false,
+   "samples": 30,
+   "seed": 65,
+   "fuzzDensity": 110,
+   "fuzzLength": 0.006,
+   "fuzzRadius": 2.4e-05,
+   "fuzzTilt": 0.6,
+   "strayFraction": 0.08
+  },
+  {
+   "name": "glasses",
+   "bone": "head",
+   "material": "B_glasses_frame",
+   "coreMaterial": "B_glasses_frame",
+   "locks": [
+    {
+     "points": [
+      [
+       0.113,
+       0.797,
+       0.168
+      ],
+      [
+       0.11209690817895183,
+       0.8061692451347581,
+       0.168
+      ],
+      [
+       0.10942233802803047,
+       0.8149861213211592,
+       0.168
+      ],
+      [
+       0.10507907177821962,
+       0.8231118009519214,
+       0.168
+      ],
+      [
+       0.09923401871576773,
+       0.8302340187157677,
+       0.168
+      ],
+      [
+       0.09211180095192131,
+       0.8360790717782197,
+       0.168
+      ],
+      [
+       0.08398612132115922,
+       0.8404223380280306,
+       0.168
+      ],
+      [
+       0.07516924513475803,
+       0.8430969081789519,
+       0.168
+      ],
+      [
+       0.066,
+       0.8440000000000001,
+       0.168
+      ],
+      [
+       0.05683075486524198,
+       0.8430969081789519,
+       0.168
+      ],
+      [
+       0.048013878678840785,
+       0.8404223380280306,
+       0.168
+      ],
+      [
+       0.03988819904807871,
+       0.8360790717782197,
+       0.168
+      ],
+      [
+       0.03276598128423227,
+       0.8302340187157677,
+       0.168
+      ],
+      [
+       0.02692092822178037,
+       0.8231118009519214,
+       0.168
+      ],
+      [
+       0.022577661971969525,
+       0.8149861213211592,
+       0.168
+      ],
+      [
+       0.01990309182104817,
+       0.8061692451347581,
+       0.168
+      ],
+      [
+       0.019000000000000003,
+       0.797,
+       0.168
+      ],
+      [
+       0.01990309182104817,
+       0.787830754865242,
+       0.168
+      ],
+      [
+       0.022577661971969518,
+       0.7790138786788409,
+       0.168
+      ],
+      [
+       0.02692092822178037,
+       0.7708881990480787,
+       0.168
+      ],
+      [
+       0.03276598128423226,
+       0.7637659812842323,
+       0.168
+      ],
+      [
+       0.0398881990480787,
+       0.7579209282217804,
+       0.168
+      ],
+      [
+       0.04801387867884076,
+       0.7535776619719696,
+       0.168
+      ],
+      [
+       0.05683075486524196,
+       0.7509030918210482,
+       0.168
+      ],
+      [
+       0.06599999999999999,
+       0.75,
+       0.168
+      ],
+      [
+       0.07516924513475803,
+       0.7509030918210482,
+       0.168
+      ],
+      [
+       0.08398612132115924,
+       0.7535776619719696,
+       0.168
+      ],
+      [
+       0.09211180095192129,
+       0.7579209282217804,
+       0.168
+      ],
+      [
+       0.09923401871576773,
+       0.7637659812842323,
+       0.168
+      ],
+      [
+       0.10507907177821962,
+       0.7708881990480787,
+       0.168
+      ],
+      [
+       0.10942233802803047,
+       0.7790138786788408,
+       0.168
+      ],
+      [
+       0.11209690817895182,
+       0.787830754865242,
+       0.168
+      ],
+      [
+       0.113,
+       0.797,
+       0.168
+      ]
+     ],
+     "rootRadius": 0.0016,
+     "tipRadius": 0.0016,
+     "curlRadius": 0.0,
+     "curlTurns": 0.0,
+     "curlPhase": 0.0
+    },
+    {
+     "points": [
+      [
+       0.112,
+       0.802,
+       0.164
+      ],
+      [
+       0.165,
+       0.81,
+       0.09
+      ],
+      [
+       0.172,
+       0.805,
+       0.0
+      ]
+     ],
+     "rootRadius": 0.0015,
+     "tipRadius": 0.0013,
+     "curlRadius": 0.0,
+     "curlTurns": 0.0,
+     "curlPhase": 0.0
+    },
+    {
+     "points": [
+      [
+       -0.019000000000000003,
+       0.797,
+       0.168
+      ],
+      [
+       -0.01990309182104817,
+       0.8061692451347581,
+       0.168
+      ],
+      [
+       -0.022577661971969525,
+       0.8149861213211592,
+       0.168
+      ],
+      [
+       -0.026920928221780376,
+       0.8231118009519214,
+       0.168
+      ],
+      [
+       -0.03276598128423227,
+       0.8302340187157677,
+       0.168
+      ],
+      [
+       -0.03988819904807869,
+       0.8360790717782197,
+       0.168
+      ],
+      [
+       -0.048013878678840785,
+       0.8404223380280306,
+       0.168
+      ],
+      [
+       -0.05683075486524197,
+       0.8430969081789519,
+       0.168
+      ],
+      [
+       -0.066,
+       0.8440000000000001,
+       0.168
+      ],
+      [
+       -0.07516924513475803,
+       0.8430969081789519,
+       0.168
+      ],
+      [
+       -0.08398612132115922,
+       0.8404223380280306,
+       0.168
+      ],
+      [
+       -0.0921118009519213,
+       0.8360790717782197,
+       0.168
+      ],
+      [
+       -0.09923401871576773,
+       0.8302340187157677,
+       0.168
+      ],
+      [
+       -0.10507907177821964,
+       0.8231118009519214,
+       0.168
+      ],
+      [
+       -0.10942233802803047,
+       0.8149861213211592,
+       0.168
+      ],
+      [
+       -0.11209690817895183,
+       0.8061692451347581,
+       0.168
+      ],
+      [
+       -0.113,
+       0.797,
+       0.168
+      ],
+      [
+       -0.11209690817895183,
+       0.787830754865242,
+       0.168
+      ],
+      [
+       -0.10942233802803049,
+       0.7790138786788409,
+       0.168
+      ],
+      [
+       -0.10507907177821964,
+       0.7708881990480787,
+       0.168
+      ],
+      [
+       -0.09923401871576774,
+       0.7637659812842323,
+       0.168
+      ],
+      [
+       -0.09211180095192131,
+       0.7579209282217804,
+       0.168
+      ],
+      [
+       -0.08398612132115925,
+       0.7535776619719696,
+       0.168
+      ],
+      [
+       -0.07516924513475805,
+       0.7509030918210482,
+       0.168
+      ],
+      [
+       -0.06600000000000002,
+       0.75,
+       0.168
+      ],
+      [
+       -0.05683075486524197,
+       0.7509030918210482,
+       0.168
+      ],
+      [
+       -0.04801387867884077,
+       0.7535776619719696,
+       0.168
+      ],
+      [
+       -0.03988819904807872,
+       0.7579209282217804,
+       0.168
+      ],
+      [
+       -0.032765981284232276,
+       0.7637659812842323,
+       0.168
+      ],
+      [
+       -0.026920928221780376,
+       0.7708881990480787,
+       0.168
+      ],
+      [
+       -0.02257766197196954,
+       0.7790138786788408,
+       0.168
+      ],
+      [
+       -0.01990309182104818,
+       0.787830754865242,
+       0.168
+      ],
+      [
+       -0.019000000000000003,
+       0.797,
+       0.168
+      ]
+     ],
+     "rootRadius": 0.0016,
+     "tipRadius": 0.0016,
+     "curlRadius": 0.0,
+     "curlTurns": 0.0,
+     "curlPhase": 0.0
+    },
+    {
+     "points": [
+      [
+       -0.112,
+       0.802,
+       0.164
+      ],
+      [
+       -0.165,
+       0.81,
+       0.09
+      ],
+      [
+       -0.172,
+       0.805,
+       0.0
+      ]
+     ],
+     "rootRadius": 0.0015,
+     "tipRadius": 0.0013,
+     "curlRadius": 0.0,
+     "curlTurns": 0.0,
+     "curlPhase": 0.0
+    },
+    {
+     "points": [
+      [
+       -0.019,
+       0.802,
+       0.17
+      ],
+      [
+       0.0,
+       0.808,
+       0.17400000000000002
+      ],
+      [
+       0.019,
+       0.802,
+       0.17
+      ]
+     ],
+     "rootRadius": 0.0016,
+     "tipRadius": 0.0016,
+     "curlRadius": 0.0,
+     "curlTurns": 0.0,
+     "curlPhase": 0.0
+    }
+   ],
+   "mirror": false,
+   "samples": 64,
+   "roundTip": false,
+   "seed": 64
+  }
+ ],
+ "defaultExpressions": {
+  "smile": 0.7,
+  "mouthOpen": 0.3
+ }
+}
