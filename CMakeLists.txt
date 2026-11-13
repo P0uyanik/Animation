@@ -24,6 +24,7 @@ endif()
 
 add_subdirectory(engine)
 add_subdirectory(apps/render-cli)
+add_subdirectory(apps/export-obj)  # comparison/export utility; does not change the engine
 if(PLUSH_BUILD_STUDIO)
   add_subdirectory(apps/studio)
 endif()

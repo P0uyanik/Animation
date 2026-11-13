@@ -173,3 +173,18 @@ noodle locks → denser layers with a longer halo; fogged lenses → guides thro
 - Iteration 5 not started; the engine is unchanged.
 - Re-send: #28 (`28_boy_facial_expression_library.webp`) and #29 (`29_boy_production_integration_validation.webp`)
   stored and verified. The reference package is complete: 17 technical sheets, all stored.
+
+## 2026-11-13 — Evaluation: Blender installation and reference comparison harness (no engine changes)
+- Blender binary: allowing `download.blender.org` was approved, but the change never reached this session's gateway
+  (403) and the environment reverted to no allowed hosts. Installer ready (`pipeline/blender/install_blender.sh`,
+  SHA-256 verified, version pin pending). Blender 4.0 not used.
+- Built:
+  - reference index with 16 camera-matched views;
+  - silhouette extraction;
+  - `plush-export-obj` (a new tool; engine unchanged);
+  - Blender harness, Plush same-camera renders, comparison sheet and measurements.
+  - Docs: `docs/BLENDER_COMPARISON_HARNESS.md`.
+- Interim run with the official Blender 5.3 `bpy` module. Iteration 4 boy: mean silhouette IoU 0.79. Head +15% of
+  height, legs −14%, feet −30% in width vs. the references.
+  - Evidence: `docs/evaluation/blender_harness/`.
+- Tried and changed: #24's silhouette merged with label leader lines, so #24 is visual-only.

@@ -1,0 +1,676 @@
+{
+ "asset_id": "boy_yellow_hoodie",
+ "created": "2026-11-13",
+ "decisions": {
+  "reference_pose": "A-pose (modelling/rigging)",
+  "presentation_pose": "hands-in-pocket turnaround",
+  "backpack": "charcoal-plum",
+  "records": [
+   "TECHNICAL_DECISIONS.md TD-35",
+   "TECHNICAL_DECISIONS.md TD-36"
+  ]
+ },
+ "priority_rules": [
+  "identity_authority: #7 and #24 define appearance",
+  "proportions: #27 (neutral turnaround on a plain background), #29, #8",
+  "construction: technical sheets guide topology, rig, UV, materials",
+  "context: group images for style and relations only; never model the other characters from them"
+ ],
+ "conflicts": "docs/BOY_BLENDER_PIPELINE_ANALYSIS.md \u00a72.6",
+ "missing_data": [
+  "real-world height",
+  "numeric material values except hair",
+  "texture resolution targets",
+  "cloth behaviour (simulation vs. correctives)",
+  "numeric skin weights"
+ ],
+ "yaw_convention": "0 = camera in front; +90 = camera on the character's left (face points screen-left); 180 = behind",
+ "uploads": [
+  {
+   "upload": 1,
+   "file": "docs/references/classroom_1.webp",
+   "sha256": "78c23c96cf27aae9c1ebb5c2523890f9aa053be4ad235789b5b7a6d1ca78fd31",
+   "size": [
+    1494,
+    2000
+   ],
+   "class": "group",
+   "character": "all",
+   "subject": "Classroom scene",
+   "priority": "context",
+   "stored": true
+  },
+  {
+   "upload": 2,
+   "file": "docs/references/classroom_watertable.webp",
+   "sha256": "00bd88d3056a82f5e82d6b8f86ca11003d298c04af7a69fa80656657681a189a",
+   "size": [
+    1494,
+    2000
+   ],
+   "class": "group",
+   "character": "all",
+   "subject": "Water-table scene",
+   "priority": "context",
+   "stored": true
+  },
+  {
+   "upload": 3,
+   "file": "docs/references/classroom_drawing.webp",
+   "sha256": "be24ce40c0991360fcbcde772dcbd135508f8e3404de45360eeaf48f9dd9a7f0",
+   "size": [
+    1494,
+    2000
+   ],
+   "class": "group",
+   "character": "all",
+   "subject": "Drawing scene",
+   "priority": "context",
+   "stored": true
+  },
+  {
+   "upload": 4,
+   "file": "docs/references/char_B_brown_hair.webp",
+   "sha256": "535a225e9079e2abf66a84339109d77a9eb1a4a5a4f1e6356ffb72f1fbcf4423",
+   "size": [
+    896,
+    1200
+   ],
+   "class": "original",
+   "character": "girl_brown_glasses",
+   "subject": "Original render of the brown-haired girl",
+   "priority": "out_of_scope",
+   "stored": true
+  },
+  {
+   "upload": 5,
+   "file": "docs/references/lineup.webp",
+   "sha256": "76fbc681966c4eebd49588788903e3034979e47a09d3d5d0c7716f1af055e206",
+   "size": [
+    896,
+    1200
+   ],
+   "class": "group",
+   "character": "all",
+   "subject": "Lineup of the three characters",
+   "priority": "context",
+   "stored": true
+  },
+  {
+   "upload": 6,
+   "file": "docs/references/char_A_white_hair.webp",
+   "sha256": "4f0db4d4a40112f2012998bb8a0c071f14bba94e961dbf139fd78e8d64a9d98d",
+   "size": [
+    896,
+    1200
+   ],
+   "class": "original",
+   "character": "girl_white_hair",
+   "subject": "Original render of the white-haired girl",
+   "priority": "out_of_scope",
+   "stored": true
+  },
+  {
+   "upload": 7,
+   "file": "docs/references/char_C_boy.jpg",
+   "sha256": "709e3148af2ea5830d990f61fa2875dcd7fb59660c9ca09ca21c406628f012f9",
+   "size": [
+    421,
+    794
+   ],
+   "class": "original",
+   "character": "boy_yellow_hoodie",
+   "subject": "Original render of the boy (front, slightly from above)",
+   "priority": "identity_authority",
+   "stored": true
+  },
+  {
+   "upload": 8,
+   "file": "docs/references/boy_pipeline/08_boy_turnaround_proportions_expressions_clothing_sheet.webp",
+   "sha256": "946c736f5b88705bb79831231c30f9198f867749a3b3e8553c3e5d48e793980d",
+   "size": [
+    1493,
+    2000
+   ],
+   "class": "technical",
+   "character": "boy_yellow_hoodie",
+   "subject": "Turnaround, proportions, 5 expressions, clothing breakdown, skeleton silhouettes, modular parts",
+   "priority": "proportions",
+   "stored": true
+  },
+  {
+   "upload": 9,
+   "file": "docs/references/boy_pipeline/09_group_turnaround_sheet_all_three.webp",
+   "sha256": "d8d01e7052d8927d8bc88fd8b3f7e76413502086dd349e5792fcb7c784996d4b",
+   "size": [
+    1493,
+    2000
+   ],
+   "class": "technical_group",
+   "character": "all",
+   "subject": "Turnaround rows of all three; boy row: views, expressions, hair cards, parts, skeleton, key poses",
+   "priority": "context",
+   "stored": true
+  },
+  {
+   "upload": 10,
+   "file": "docs/references/boy_pipeline/10_rig_overview_mockup_all_three.webp",
+   "sha256": "336eb64787887f36b9a9345cebd2ad732f0d5ed59521ef9337961ef3422790c6",
+   "size": [
+    1493,
+    2000
+   ],
+   "class": "technical_group",
+   "character": "all",
+   "subject": "Concept mock-up of a rig window (not a real screenshot)",
+   "priority": "construction",
+   "stored": true
+  },
+  {
+   "upload": 11,
+   "file": "docs/references/boy_pipeline/11_boy_facial_topology_spec.webp",
+   "sha256": "1af76b6bc9272051ae61be6d8a102043c6e4ecbf32d920c15321304e984d5c19",
+   "size": [
+    1493,
+    2000
+   ],
+   "class": "technical",
+   "character": "boy_yellow_hoodie",
+   "subject": "Face topology: eye/mouth/jaw loops, ear junction, lid and mouth states",
+   "priority": "construction",
+   "stored": true
+  },
+  {
+   "upload": 12,
+   "file": "docs/references/boy_pipeline/12_boy_facial_rig_blendshape_blueprint.webp",
+   "sha256": "2e808ff56a79559e6480bc7f8ddb4db03290bc3b556a31d50d5ec1ac73d9457f",
+   "size": [
+    1493,
+    2000
+   ],
+   "class": "technical",
+   "character": "boy_yellow_hoodie",
+   "subject": "Face controls, 15 blendshapes, eyelid states, jaw/mouth controls",
+   "priority": "construction",
+   "stored": true
+  },
+  {
+   "upload": 18,
+   "file": "docs/references/boy_pipeline/18_hand_topology_finger_rig_poses_contact_weights.webp",
+   "sha256": "4c3f9309c676e4b9b99f88c27e17af586412d3c1d55328d9e84aae869b7f2f9a",
+   "size": [
+    1493,
+    2000
+   ],
+   "class": "technical",
+   "character": "boy_yellow_hoodie",
+   "subject": "Hand topology, finger joints, 9 poses, thumb opposition, contacts, weights",
+   "priority": "construction",
+   "stored": true
+  },
+  {
+   "upload": 19,
+   "file": "docs/references/boy_pipeline/19_boy_body_topology_joint_deformation_poses.webp",
+   "sha256": "4713b9e128d5f408c7ee136c1e10b2919b47b55b550f956e290cbcf6a9f85b5b",
+   "size": [
+    1493,
+    2000
+   ],
+   "class": "technical",
+   "character": "boy_yellow_hoodie",
+   "subject": "A-pose body topology, joint deformation, test poses",
+   "priority": "construction",
+   "stored": true
+  },
+  {
+   "upload": 20,
+   "file": "docs/references/boy_pipeline/20_boy_skeleton_hierarchy_skin_weights_control_rig.webp",
+   "sha256": "7cfddd2a6d976f82160291c2f31d9bedfea8f9f2011ff71fc00e13e3754e08fe",
+   "size": [
+    1493,
+    2000
+   ],
+   "class": "technical",
+   "character": "boy_yellow_hoodie",
+   "subject": "Skeleton names and hierarchy, joint orientation, weights, control rig",
+   "priority": "construction",
+   "stored": true
+  },
+  {
+   "upload": 21,
+   "file": "docs/references/boy_pipeline/21_boy_hair_geometry_groom_material_spec.webp",
+   "sha256": "6918056fd1162e448e2ba37a494cef681298f2aa11d56e6eca9fc99e73d4df74",
+   "size": [
+    1493,
+    2000
+   ],
+   "class": "technical",
+   "character": "boy_yellow_hoodie",
+   "subject": "Hair masses, hybrid clump+fibre groom, flow, hair material",
+   "priority": "construction",
+   "stored": true
+  },
+  {
+   "upload": 22,
+   "file": "docs/references/boy_pipeline/22_boy_hair_rig_secondary_motion.webp",
+   "sha256": "98766015ed25172d9eddcb4189dc4c86fa30817828965f62a53ebc251dfcb369",
+   "size": [
+    1493,
+    2000
+   ],
+   "class": "technical",
+   "character": "boy_yellow_hoodie",
+   "subject": "Hair rig chains and secondary motion settings",
+   "priority": "construction",
+   "stored": true
+  },
+  {
+   "upload": 23,
+   "file": "docs/references/boy_pipeline/23_boy_clothing_topology_deformation.webp",
+   "sha256": "e1b7c37819b9fe21a8ff426b8d6fc3b7501827e79b4afa59c34fe0461f33884f",
+   "size": [
+    1493,
+    2000
+   ],
+   "class": "technical",
+   "character": "boy_yellow_hoodie",
+   "subject": "Clothing topology, seams and stitching, stretch/fold zones",
+   "priority": "construction",
+   "stored": true
+  },
+  {
+   "upload": 24,
+   "file": "docs/references/boy_pipeline/24_boy_material_identification.webp",
+   "sha256": "4870c6e2fe4b5123d5184c5ac385495c1b310309d5d6a569060176d8db5a8b47",
+   "size": [
+    1493,
+    2000
+   ],
+   "class": "technical",
+   "character": "boy_yellow_hoodie",
+   "subject": "Material identification on a hero render (all parts)",
+   "priority": "identity_authority",
+   "stored": true
+  },
+  {
+   "upload": 25,
+   "file": "docs/references/boy_pipeline/25_boy_uv_organization_texture_direction.webp",
+   "sha256": "627b582fd2d6d745979d847d9c7cd2f5d878ac99232bca4abee4e28eeff96cf2",
+   "size": [
+    1493,
+    2000
+   ],
+   "class": "technical",
+   "character": "boy_yellow_hoodie",
+   "subject": "UV seams and layouts, checker validation, texture direction",
+   "priority": "construction",
+   "stored": true
+  },
+  {
+   "upload": 26,
+   "file": "docs/references/boy_pipeline/26_boy_object_interaction_contact_points.webp",
+   "sha256": "bd463684cd8e2d50c4ad646e41fcbee876a85188d45e1f47ea1f124c21708129",
+   "size": [
+    1493,
+    2000
+   ],
+   "class": "technical",
+   "character": "boy_yellow_hoodie",
+   "subject": "Hand contact zones, grasp types, pick-up/release, environmental contact, IK",
+   "priority": "construction",
+   "stored": true
+  },
+  {
+   "upload": 27,
+   "file": "docs/references/boy_pipeline/27_boy_deformation_collision_validation.webp",
+   "sha256": "b58cd6231943f23b2303ff2b73a11d5a770ab4f97726818ef6de1ed98163f4ed",
+   "size": [
+    1493,
+    2000
+   ],
+   "class": "technical",
+   "character": "boy_yellow_hoodie",
+   "subject": "Neutral-pose validation turnaround, joint/facial deformation, hand/foot and collision tests",
+   "priority": "proportions",
+   "stored": true
+  },
+  {
+   "upload": 28,
+   "file": "docs/references/boy_pipeline/28_boy_facial_expression_library.webp",
+   "sha256": "891e8f8c85a8b92d61da158c738014effb748500ed5dc5a6343ed5249b599a4f",
+   "size": [
+    1493,
+    2000
+   ],
+   "class": "technical",
+   "character": "boy_yellow_hoodie",
+   "subject": "Facial expression library, 12 expressions, three-quarter view",
+   "priority": "construction",
+   "stored": true
+  },
+  {
+   "upload": 29,
+   "file": "docs/references/boy_pipeline/29_boy_production_integration_validation.webp",
+   "sha256": "4a513b5e6ee07cab7a9711952abe3602fce5daa0fa0b0d79305894b12598c3f6",
+   "size": [
+    1493,
+    2000
+   ],
+   "class": "technical",
+   "character": "boy_yellow_hoodie",
+   "subject": "Production integration and validation: canonical turnaround, geometry, rig, skinning, materials, validation poses",
+   "priority": "proportions",
+   "stored": true
+  },
+  {
+   "upload": 13,
+   "duplicate_of_upload": 8,
+   "stored": false,
+   "note": "byte-identical re-upload; not stored again"
+  },
+  {
+   "upload": 14,
+   "duplicate_of_upload": 9,
+   "stored": false,
+   "note": "byte-identical re-upload; not stored again"
+  },
+  {
+   "upload": 15,
+   "duplicate_of_upload": 10,
+   "stored": false,
+   "note": "byte-identical re-upload; not stored again"
+  },
+  {
+   "upload": 16,
+   "duplicate_of_upload": 11,
+   "stored": false,
+   "note": "byte-identical re-upload; not stored again"
+  },
+  {
+   "upload": 17,
+   "duplicate_of_upload": 12,
+   "stored": false,
+   "note": "byte-identical re-upload; not stored again"
+  },
+  {
+   "upload": "video",
+   "file": "docs/references/video_watertable.mp4",
+   "sha256": "b8101437d65fced27e461858214ea64712307f6d81a70b75305d75320e2dca5b",
+   "class": "motion",
+   "character": "all",
+   "subject": "Water-table animation, 5 s",
+   "priority": "context",
+   "stored": true
+  }
+ ],
+ "views": [
+  {
+   "id": "orig07_front",
+   "upload": 7,
+   "crop": [
+    0,
+    0,
+    421,
+    794
+   ],
+   "yaw_deg": 0,
+   "elevation_deg": 18,
+   "focal_mm_estimate": 50,
+   "silhouette": true,
+   "pose": "left hand in pocket, slight lean",
+   "backpack": "straps",
+   "note": "identity authority; camera clearly above eye level"
+  },
+  {
+   "id": "hero24_front",
+   "upload": 24,
+   "crop": [
+    450,
+    170,
+    1040,
+    1910
+   ],
+   "yaw_deg": 0,
+   "elevation_deg": 6,
+   "focal_mm_estimate": 70,
+   "silhouette": false,
+   "pose": "left hand in pocket",
+   "backpack": "straps",
+   "note": "identity authority (look); visual only: labels and leader lines touch the figure, so automatic silhouettes are unreliable"
+  },
+  {
+   "id": "val27_front",
+   "upload": 27,
+   "crop": [
+    70,
+    45,
+    310,
+    625
+   ],
+   "yaw_deg": 0,
+   "elevation_deg": 6,
+   "focal_mm_estimate": 70,
+   "silhouette": true,
+   "pose": "neutral, arms down",
+   "backpack": "straps"
+  },
+  {
+   "id": "val27_threequarter_right",
+   "upload": 27,
+   "crop": [
+    360,
+    45,
+    590,
+    625
+   ],
+   "yaw_deg": -35,
+   "elevation_deg": 6,
+   "focal_mm_estimate": 70,
+   "silhouette": true,
+   "pose": "neutral, arms down",
+   "backpack": "straps",
+   "note": "skeleton overlay on the right arm"
+  },
+  {
+   "id": "val27_side_right",
+   "upload": 27,
+   "crop": [
+    640,
+    45,
+    850,
+    625
+   ],
+   "yaw_deg": -90,
+   "elevation_deg": 6,
+   "focal_mm_estimate": 70,
+   "silhouette": true,
+   "pose": "neutral, arms down",
+   "backpack": "straps",
+   "note": "skeleton overlay on arm and leg"
+  },
+  {
+   "id": "val27_back",
+   "upload": 27,
+   "crop": [
+    930,
+    45,
+    1170,
+    625
+   ],
+   "yaw_deg": 180,
+   "elevation_deg": 6,
+   "focal_mm_estimate": 70,
+   "silhouette": true,
+   "pose": "neutral, arms down",
+   "backpack": "none visible",
+   "note": "no backpack in the back views (\u00a72.6 item 20)"
+  },
+  {
+   "id": "val27_back_threequarter",
+   "upload": 27,
+   "crop": [
+    1225,
+    45,
+    1445,
+    625
+   ],
+   "yaw_deg": 150,
+   "elevation_deg": 6,
+   "focal_mm_estimate": 70,
+   "silhouette": true,
+   "pose": "neutral, arms down",
+   "backpack": "strap edge",
+   "note": "yaw approximate"
+  },
+  {
+   "id": "canon29_front",
+   "upload": 29,
+   "crop": [
+    140,
+    135,
+    370,
+    685
+   ],
+   "yaw_deg": 0,
+   "elevation_deg": 6,
+   "focal_mm_estimate": 70,
+   "silhouette": false,
+   "pose": "hands in pockets",
+   "backpack": "yes",
+   "note": "dark background: hair cannot be segmented"
+  },
+  {
+   "id": "canon29_threequarter_left",
+   "upload": 29,
+   "crop": [
+    510,
+    135,
+    730,
+    685
+   ],
+   "yaw_deg": 35,
+   "elevation_deg": 6,
+   "focal_mm_estimate": 70,
+   "silhouette": false,
+   "pose": "hands in pockets",
+   "backpack": "yes"
+  },
+  {
+   "id": "canon29_side_left",
+   "upload": 29,
+   "crop": [
+    860,
+    135,
+    1065,
+    685
+   ],
+   "yaw_deg": 90,
+   "elevation_deg": 6,
+   "focal_mm_estimate": 70,
+   "silhouette": false,
+   "pose": "hands in pockets",
+   "backpack": "yes"
+  },
+  {
+   "id": "canon29_back",
+   "upload": 29,
+   "crop": [
+    1160,
+    135,
+    1390,
+    685
+   ],
+   "yaw_deg": 180,
+   "elevation_deg": 6,
+   "focal_mm_estimate": 70,
+   "silhouette": false,
+   "pose": "hands in pockets",
+   "backpack": "yes"
+  },
+  {
+   "id": "turn08_front",
+   "upload": 8,
+   "crop": [
+    60,
+    80,
+    250,
+    540
+   ],
+   "yaw_deg": 0,
+   "elevation_deg": 6,
+   "focal_mm_estimate": 70,
+   "silhouette": false,
+   "pose": "arms down",
+   "backpack": "straps",
+   "note": "dark background"
+  },
+  {
+   "id": "turn08_threequarter_left",
+   "upload": 8,
+   "crop": [
+    290,
+    80,
+    460,
+    540
+   ],
+   "yaw_deg": 30,
+   "elevation_deg": 6,
+   "focal_mm_estimate": 70,
+   "silhouette": false,
+   "pose": "arms down",
+   "backpack": "straps",
+   "note": "sheet label 'Front-Left'"
+  },
+  {
+   "id": "turn08_side_right",
+   "upload": 8,
+   "crop": [
+    495,
+    80,
+    640,
+    540
+   ],
+   "yaw_deg": -90,
+   "elevation_deg": 6,
+   "focal_mm_estimate": 70,
+   "silhouette": false,
+   "pose": "arms down",
+   "backpack": "yes",
+   "note": "sheet label 'Left', but the face points screen-right (his right side): labels conflict with #29"
+  },
+  {
+   "id": "turn08_side_left",
+   "upload": 8,
+   "crop": [
+    700,
+    80,
+    860,
+    540
+   ],
+   "yaw_deg": 90,
+   "elevation_deg": 6,
+   "focal_mm_estimate": 70,
+   "silhouette": false,
+   "pose": "arms down",
+   "backpack": "yes",
+   "note": "sheet label 'Right'"
+  },
+  {
+   "id": "turn08_back_threequarter",
+   "upload": 8,
+   "crop": [
+    895,
+    80,
+    1065,
+    540
+   ],
+   "yaw_deg": 160,
+   "elevation_deg": 6,
+   "focal_mm_estimate": 70,
+   "silhouette": false,
+   "pose": "arms down",
+   "backpack": "yes",
+   "note": "sheet label 'Back-Right'"
+  }
+ ]
+}

@@ -1,11 +1,9 @@
 # Next steps
 
-**Exact next task (proposed, not started):** Stage 1 of the `boy_yellow_hoodie` pipeline. Install a pinned, stable
-Blender, write the reference index from the audit, and build a scripted camera-matched comparison harness, validated
-on the iteration-4 boy (see `docs/BOY_BLENDER_PIPELINE_ANALYSIS.md` §15). Waiting for approval. Open input: the
-modelling approach (§9). Iteration 5 must not start before your approval.
-Open `docs/ITERATION_04_ACCEPTANCE_REPORT.md` and the comparison sheets `docs/iteration4/compare_*_ref_it3_it4.jpg`;
-tell me which character details still differ from your designs (the report lists the ones I can see).
+**Exact next task:** waiting for review of the harness evaluation (`docs/evaluation/blender_harness/EVALUATION_REPORT.md`).
+- Blocker: `download.blender.org` must be allowed in the environment's network settings before the pinned Blender
+  binary can be installed. Then re-run the harness unchanged with that binary.
+- No modelling, integration or iteration 5 before approval.
 
 ## After your review (candidates, to be agreed)
 1. Character corrections you request (approval checkpoint for A, B, C).
