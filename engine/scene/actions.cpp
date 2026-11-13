@@ -436,7 +436,8 @@ Result<void> SceneEvaluator::compileActions() {
         const vec3 err = T - tips[4];
         tipErr = glm::length(err);
         if (tipErr < 0.002f) break;
-        for (auto& k : gen->tracks[ik].keys) k.value += err;
+        for (auto& k : gen->tracks[ik].keys)
+          if (k.frame >= start && k.frame <= end) k.value += err;  // only this action's keys
       }
       if (tipErr > 0.01f)
         logWarn("touch: '{}' fingertip stays {:.0f} mm from the target at frame {} (out of reach); move them closer", who,
