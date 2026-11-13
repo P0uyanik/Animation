@@ -136,6 +136,8 @@ def slim_cap(c, margin=0.009):
         if p["name"] == "cap":
             p["center"] = [HEAD_C[0], HEAD_C[1] + 0.006, HEAD_C[2] - 0.004]
             p["radii"] = [HEAD_R[0] + margin, HEAD_R[1] + margin, HEAD_R[2] + margin]
+        if p["name"] == "faceCut":  # the base stops at the top of the forehead; fringe locks form the hairline
+            p["center"][1] += 0.05
     cap.update(patternAmplitude=0.002, noiseAmplitude=0.0025)
     for f in c["fuzz"]:
         if f["part"] == "hairCap":
@@ -213,6 +215,7 @@ def character_a():
     mat(c, "lash", type="standard", baseColor=[0.05, 0.035, 0.03], roughness=0.5)
     add_lashes(c, "lash")
     add_frown(c)
+    set_brows(c, [0.72, 0.64, 0.56], r1=0.0042, r2=0.0028, lift=0.003, tilt=0.002)
     wool, core = "wool_fiber", "wool_lock_core"
     get_mat(c, core).update(baseColor=[0.83, 0.81, 0.77])
     halo = dict(fuzzDensity=140, fuzzLength=0.008, fuzzRadius=2.4e-5, fuzzTilt=0.6, strayFraction=0.08, strayLength=2.0, samples=40)
@@ -349,7 +352,7 @@ def character_b():
     part(c, "vest", vest, [
         {"name": "shell", "type": "roundCone", "bone": "chest", "a": [0, 0.655, -0.004], "b": [0, 0.455, 0], "r1": 0.075, "r2": 0.092},
         {"name": "hem", "type": "ellipsoid", "bone": "spine", "center": [0, 0.47, 0.0], "radii": [0.098, 0.03, 0.09], "blend": 0.03},
-        {"name": "frontOpen", "type": "roundBox", "bone": "chest", "center": [0, 0.56, 0.11], "halfSize": [0.026, 0.14, 0.06], "rounding": 0.01, "blend": 0.01, "subtract": True},
+        {"name": "frontOpen", "type": "roundBox", "bone": "chest", "center": [0, 0.56, 0.11], "halfSize": [0.014, 0.14, 0.06], "rounding": 0.01, "blend": 0.01, "subtract": True},
         {"name": "neckOpen", "type": "ellipsoid", "bone": "chest", "center": [0, 0.672, 0.02], "radii": [0.062, 0.05, 0.075], "blend": 0.01, "subtract": True},
         {"name": "armHole.L", "type": "ellipsoid", "bone": "chest", "center": [0.085, 0.6, 0], "radii": [0.035, 0.05, 0.05], "blend": 0.008, "subtract": True, "mirror": True},
         {"name": "inner", "type": "roundCone", "bone": "chest", "a": [0, 0.68, -0.004], "b": [0, 0.40, 0], "r1": 0.068, "r2": 0.085, "blend": 0.003, "subtract": True},
@@ -409,14 +412,14 @@ def character_c():
             continue
         root, n = on_ellipsoid(CAP_C, CAP_R, az, el, -0.004)
         length = rng.uniform(0.05, 0.085) * (1.15 if el > 55 else 1.0)
-        spikes.append(lock(spike(root, n, length, rng.uniform(0.3, 0.8), rng), rng.uniform(0.017, 0.024), 0.0025))
+        spikes.append(lock(spike(root, n, length * 0.85, rng.uniform(0.5, 1.0), rng), rng.uniform(0.019, 0.026), 0.0065))
     for k in range(7):  # spiky fringe pointing down over the brows
         x = -0.1 + 0.033 * k
         root = [x * 0.6, 0.97, 0.09]
         tip_y = 0.85 + rng.uniform(-0.008, 0.006)
         tip = [x * 1.1, tip_y, (ell_z(HEAD_C, HEAD_R, x * 1.1, tip_y) or 0.13) + 0.014]
         mid = [x * 0.9, 0.93, (ell_z(CAP_C, CAP_R, x * 0.9, 0.93) or 0.12) + 0.01]
-        spikes.append(lock([root, mid, tip], 0.02, 0.003))
+        spikes.append(lock([root, mid, tip], 0.021, 0.006))
     group(c, "hair.spikes", black_fiber, black_core, spikes, samples=20, fuzzDensity=110, fuzzLength=0.004,
           fuzzRadius=2.5e-5, fuzzTilt=0.55, strayFraction=0.08, seed=71)
     hoodie = mat(c, "hoodie_fleece", baseColor=[0.62, 0.42, 0.07], sheen=0.9, sheenColor=[1.0, 0.85, 0.5],

@@ -191,7 +191,7 @@ struct App {
   bool playing = false, needEval = true, recolor = true, sceneCamera = true;
   // selection
   enum class Kind { None, Object, Character, Light, Camera, Material } kind = Kind::None;
-  int sel = -1, bone = -1, part = -1, prim = -1;
+  int sel = -1, bone = -1, part = -1, prim = -1, lockGroup = 0, lockIndex = 0;
   std::string material;
   // orbit camera
   vec3 orbitTarget{0, 0.6f, 0};
@@ -201,6 +201,42 @@ struct App {
 };
 
 Scene& doc(App& a) { return a.view.mutableScene(); }
+
+// Preview geometry for curves: thick curves (lock cores, frames, straps) become low-poly tubes.
+FrameSnapshot withTubes(const FrameSnapshot& snap) {
+  FrameSnapshot out = snap;
+  for (const auto& sf : snap.fibers) {
+    const FiberSet& f = *sf.fibers;
+    if (f.curveOffsets.size() < 2) continue;
+    auto tube = std::make_shared<Mesh>();
+    const int sides = 6;
+    for (size_t c = 0; c + 1 < f.curveOffsets.size(); ++c) {
+      uint32_t a0 = f.curveOffsets[c], a1 = f.curveOffsets[c + 1];
+      if (a1 - a0 < 2 || f.points[a0].w < 5e-4f) continue;  // skip fine fibres
+      uint32_t base = uint32_t(tube->positions.size());
+      for (uint32_t i = a0; i < a1; ++i) {
+        vec3 p(f.points[i]), q(f.points[std::min(i + 1, a1 - 1)]), o(f.points[i > a0 ? i - 1 : i]);
+        vec3 t = glm::normalize(q - o + vec3(1e-7f));
+        Frame fr = Frame::fromNormal(t);
+        for (int k = 0; k < sides; ++k) {
+          float ang = kTwoPi * float(k) / float(sides);
+          vec3 n = std::cos(ang) * fr.t + std::sin(ang) * fr.b;
+          tube->positions.push_back(p + n * f.points[i].w);
+          tube->normals.push_back(n);
+        }
+      }
+      for (uint32_t i = 0; i + 1 < a1 - a0; ++i)
+        for (uint32_t k = 0; k < uint32_t(sides); ++k) {
+          uint32_t v0 = base + i * sides + k, v1 = base + i * sides + (k + 1) % sides, v2 = v0 + sides, v3 = v1 + sides;
+          tube->indices.insert(tube->indices.end(), {v0, v2, v1, v1, v2, v3});
+        }
+    }
+    if (tube->indices.empty()) continue;
+    tube->pref = tube->positions;
+    out.meshes.push_back({tube, sf.material});
+  }
+  return out;
+}
 
 Material* findMaterial(App& a, const std::string& name) {
   for (auto& m : doc(a).materials)
@@ -271,6 +307,36 @@ void startRender(App& a) {
 void markEdited(App& a, bool recolor = false) {
   a.needEval = true;
   a.recolor = a.recolor || recolor;
+}
+
+// ---------------------------------------------------------------- editor actions (UI buttons and --script share these)
+void rebuildCharacter(App& a, size_t ci) {
+  if (auto r = a.view.rebuildCharacter(ci, a.assets[ci], a.viewOpt); !r) a.status = r.error().message;
+  a.fullDirty = true;
+  a.assetsEdited = true;
+  markEdited(a, true);
+}
+bool saveCharacter(App& a, size_t ci) {
+  Scene& s = a.view.mutableScene();
+  fs::path p = s.path.parent_path() / s.characters[ci].asset;
+  auto r = writeTextFile(p, characterToJson(a.assets[ci]).dump(1));
+  a.status = r ? "saved " + p.string() : r.error().message;
+  return bool(r);
+}
+// New lock: a copy of the given lock shifted sideways (or a default lock hanging from the crown).
+void addLock(App& a, size_t ci, size_t group, int copyOf) {
+  LockGroup& g = a.assets[ci].lockGroups[group];
+  LockCurve L;
+  if (copyOf >= 0 && size_t(copyOf) < g.locks.size()) {
+    L = g.locks[size_t(copyOf)];
+    for (auto& p : L.points) p.x += 0.02f;
+  } else {
+    L.points = {vec3(0.0f, 0.99f, -0.06f), vec3(0.0f, 0.93f, -0.17f), vec3(0.0f, 0.80f, -0.2f), vec3(0.0f, 0.66f, -0.18f)};
+    L.rootRadius = 0.018f;
+    L.tipRadius = 0.005f;
+  }
+  g.locks.push_back(L);
+  a.lockIndex = int(g.locks.size()) - 1;
 }
 
 // ------------------------------------------------------------------ panels
@@ -413,6 +479,40 @@ void characterInspector(App& a, size_t ci) {
       auto r = writeTextFile(p, characterToJson(asset).dump(1));
       a.status = r ? "saved " + p.string() : r.error().message;
     }
+  }
+  if (ImGui::CollapsingHeader("Hair locks & curves", ImGuiTreeNodeFlags_DefaultOpen) && !asset.lockGroups.empty()) {
+    std::vector<const char*> gn;
+    for (auto& g : asset.lockGroups) gn.push_back(g.name.c_str());
+    a.lockGroup = std::clamp(a.lockGroup, 0, int(gn.size()) - 1);
+    ImGui::Combo("Group", &a.lockGroup, gn.data(), int(gn.size()));
+    LockGroup& g = asset.lockGroups[size_t(a.lockGroup)];
+    ImGui::Text("%d locks  |  material %s", int(g.locks.size()), g.coreMaterial.c_str());
+    ImGui::SliderFloat("Halo density /cm2", &g.params.fuzzDensity, 0.0f, 400.0f);
+    ImGui::SliderFloat("Halo length", &g.params.fuzzLength, 0.0005f, 0.02f, "%.4f");
+    if (!g.locks.empty()) {
+      a.lockIndex = std::clamp(a.lockIndex, 0, int(g.locks.size()) - 1);
+      ImGui::SliderInt("Lock", &a.lockIndex, 0, int(g.locks.size()) - 1);
+      LockCurve& L = g.locks[size_t(a.lockIndex)];
+      for (size_t k = 0; k < L.points.size(); ++k) {
+        std::string label = k == 0 ? "Root" : std::format("Point {}", k);
+        ImGui::DragFloat3(label.c_str(), &L.points[k].x, 0.001f);
+      }
+      if (ImGui::Button("+ point")) L.points.push_back(L.points.back() + (L.points.back() - L.points[L.points.size() - 2]) * 0.5f);
+      ImGui::SameLine();
+      if (ImGui::Button("- point") && L.points.size() > 2) L.points.pop_back();
+      ImGui::DragFloat("Root thickness", &L.rootRadius, 0.0005f, 0.0005f, 0.06f, "%.4f");
+      ImGui::DragFloat("Tip thickness", &L.tipRadius, 0.0005f, 0.0003f, 0.06f, "%.4f");
+      ImGui::DragFloat("Curl radius", &L.curlRadius, 0.0005f, 0.0f, 0.05f, "%.4f");
+      ImGui::DragFloat("Curl turns", &L.curlTurns, 0.05f, 0.0f, 12.0f);
+    }
+    if (ImGui::Button("Add lock")) addLock(a, ci, size_t(a.lockGroup), -1);
+    ImGui::SameLine();
+    if (ImGui::Button("Duplicate")) addLock(a, ci, size_t(a.lockGroup), a.lockIndex);
+    ImGui::SameLine();
+    if (ImGui::Button("Delete") && !g.locks.empty()) g.locks.erase(g.locks.begin() + a.lockIndex);
+    if (ImGui::Button("Apply hair changes")) rebuildCharacter(a, ci);
+    ImGui::SameLine();
+    if (ImGui::Button("Save character##hair")) saveCharacter(a, ci);
   }
   if (ImGui::CollapsingHeader("Placement")) {
     CharacterDesc& cd = s.characters[ci];
@@ -649,6 +749,7 @@ void viewport(App& a) {
 int main(int argc, char** argv) {
   fs::path scenePath = "content/scenes/milestone01_classroom.scene.json";
   std::string screenshot;
+  bool scriptHairEdit = false, scriptVerify = false;
   int screenshotAfter = 30;
   bool autoRender = false;
   int renderW = 0, renderH = 0, renderSpp = 0;
@@ -659,6 +760,8 @@ int main(int argc, char** argv) {
     else if (arg == "--auto-render") autoRender = true;
     else if (arg == "--render-size" && i + 2 < argc) { renderW = std::stoi(argv[++i]); renderH = std::stoi(argv[++i]); }
     else if (arg == "--render-spp" && i + 1 < argc) renderSpp = std::stoi(argv[++i]);
+    else if (arg == "--script-hair-edit") scriptHairEdit = true;  // automated editor test (same actions as the buttons)
+    else if (arg == "--script-verify") scriptVerify = true;
     else scenePath = arg;
   }
   if (!glfwInit()) {
@@ -705,6 +808,25 @@ int main(int argc, char** argv) {
   app.status = "loaded " + scenePath.string();
   if (renderW > 0) { doc(app).render.width = renderW; doc(app).render.height = renderH; }
   if (renderSpp > 0) doc(app).render.spp = renderSpp;
+  if (scriptHairEdit && !app.assets.empty() && !app.assets[0].lockGroups.empty()) {
+    // Select the first character's first hair group, duplicate lock 0, thicken it, apply, save scene + character.
+    app.kind = App::Kind::Character;
+    app.sel = 0;
+    size_t gi = 0;
+    for (size_t k = 0; k < app.assets[0].lockGroups.size(); ++k)
+      if (app.assets[0].lockGroups[k].name.rfind("hair.", 0) == 0) { gi = k; break; }
+    app.lockGroup = int(gi);
+    size_t before = app.assets[0].lockGroups[gi].locks.size();
+    addLock(app, 0, gi, 0);
+    app.assets[0].lockGroups[gi].locks.back().rootRadius *= 1.5f;
+    rebuildCharacter(app, 0);
+    doc(app).animation.tracks["camera.position"].setKey({2, doc(app).camera.position + vec3(0.1f, 0, 0)});
+    bool ok = saveCharacter(app, 0) && bool(saveScene(doc(app), doc(app).path));
+    logInfo("script: group '{}' locks {} -> {}, saved: {}", app.assets[0].lockGroups[gi].name, before,
+            app.assets[0].lockGroups[gi].locks.size(), ok ? "yes" : "no");
+  }
+  if (scriptVerify && !app.assets.empty())
+    for (auto& g : app.assets[0].lockGroups) logInfo("verify: group '{}' has {} locks", g.name, g.locks.size());
   if (autoRender) startRender(app);
 
   int frameCounter = 0;
@@ -720,7 +842,7 @@ int main(int argc, char** argv) {
     last = now;
     if (app.needEval) {
       app.snap = app.view.evaluate(app.playing ? std::floor(app.frame) : app.frame);
-      app.preview.upload(*app.snap, app.recolor);
+      app.preview.upload(withTubes(*app.snap), app.recolor);
       app.needEval = app.recolor = false;
     }
     ImGui_ImplOpenGL3_NewFrame();
