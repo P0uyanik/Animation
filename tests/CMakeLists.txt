@@ -14,3 +14,9 @@ add_test(NAME regression_face_neutral
   COMMAND plush-render ${CMAKE_SOURCE_DIR}/content/scenes/test_face.scene.json
           --frame 1 --out ${CMAKE_BINARY_DIR}/regression_face_neutral.png --width 200 --height 200 --spp 16 --preview
           --compare ${CMAKE_SOURCE_DIR}/tests/regression/face_neutral_200.png --max-rmse 0.03)
+
+# Character consistency for the three iteration-3 characters (A, B, C): unintended changes fail this test.
+add_test(NAME regression_lineup_abc
+  COMMAND plush-render ${CMAKE_SOURCE_DIR}/content/scenes/test_lineup.scene.json
+          --frame 1 --out ${CMAKE_BINARY_DIR}/regression_lineup_abc.png --width 320 --height 240 --spp 16 --preview
+          --compare ${CMAKE_SOURCE_DIR}/tests/regression/lineup_abc_320x240.png --max-rmse 0.03)
