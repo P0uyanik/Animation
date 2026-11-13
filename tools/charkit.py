@@ -549,7 +549,8 @@ def character_b():
     curls = []
     for k in range(30):
         az = -125 + 250 * (k + rng.uniform(0.2, 0.8)) / 30
-        pts = drape(az, rng.uniform(4, 22), rng.uniform(0.26, 0.38), 0.012, 0.004, 0.1, 0.0, n=8)
+        # iteration 4: roots high under the crown clumps (low roots showed as knobs below a bare band at the back)
+        pts = drape(az, rng.uniform(30, 50), rng.uniform(0.26, 0.38) + 0.07, 0.012, 0.004, 0.1, 0.0, n=8)
         curls.append(lock(pts, rng.uniform(0.017, 0.022), 0.009, curl=rng.uniform(0.016, 0.022),
                           turns=rng.uniform(2.2, 3.2), phase=rng.uniform(0, 6.28)))
     group(c, "hair.curls", hair_fiber, hair_core, curls, samples=96, seed=61, **halo)
@@ -569,7 +570,7 @@ def character_b():
     bun = [lock(coil(bun_c, 0.05, 2.4, 0.019, phase=ph), 0.02, 0.014) for ph in (0.0, 2.3)]
     bun.append(lock(coil([0.0, 1.085, -0.032], 0.028, 1.6, 0.014, phase=1.0, n=28), 0.015, 0.01))
     group(c, "hair.bun", hair_fiber, hair_core, bun, samples=60, seed=63, **halo)
-    felt_clumps(c, "crown", "hair_core", hair_fiber, crown_clumps(random.Random(37), 26, part_x=0.012, front_gap=70, r0=0.024),
+    felt_clumps(c, "crown", "hair_core", hair_fiber, crown_clumps(random.Random(37), 32, part_x=0.012, front_gap=70, r0=0.025, length_deg=(16, 30)),
                 voxel=0.002, density=110, length=0.005)
     # Pastel clips (pompoms and a felt flower) around the bun base.
     pink = mat(c, "clip_pink", baseColor=[0.85, 0.45, 0.5], sheen=0.8)

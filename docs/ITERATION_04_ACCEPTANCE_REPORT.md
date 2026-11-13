@@ -72,11 +72,15 @@ milestone 01; iteration-3 scenes keep it so their regressions stay valid.
 **A:** side locks are thick cords that end at the chest; the reference has many thin wavy/curly locks to the waist ·
 skirt flares less and lacks the knitted wave pattern; legs+boots still slightly long · buns are coiled locks, the
 reference buns are fluffy felt balls.
-**B:** curls are more regular and less voluminous around the face · glasses frames thinner and lighter than the
+**B:** the open mouth reads as surprised rather than the reference's happy smile (corners not lifted, cheeks not
+raised) and the brows are thick and flat where the reference's are thin and arched (`face_B_900.png`) · curls are more
+regular and less voluminous around the face, and their roots show as round knobs beside the head in three-quarter
+view (`hair_B_threequarter_900x700.png`) · glasses frames thinner and lighter than the
 reference's dark brown frames · vest lacks the fair-isle band and pocket buttons; shorts slightly long.
 **C:** hair clumps more uniform in size and direction than the reference's mix of large and small clumps · hands not
 in the hoodie pocket (reference pose) · trouser cuffs less bunched.
-**All:** eyes show a bit more white around the iris than the references; hand/finger shapes are stubby.
+**All:** eyes show a bit more white around the iris than the references, most visibly in three-quarter views where
+the eyeball's side shows (`hair_A_threequarter_900x700.png`); hand/finger shapes are stubby.
 
 ## Tests (all passing at the end of the iteration)
 - `plush_tests`: 24 test cases (iteration 3's 16 plus: mesher brick culling vs exhaustive; subsurface furnace test

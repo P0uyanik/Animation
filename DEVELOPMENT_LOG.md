@@ -156,3 +156,6 @@ noodle locks → denser layers with a longer halo; fogged lenses → guides thro
   same shot list, and the edit survived (C has no hair lock groups now, so the script's lock went to `lashes.L`,
   4 → 5). Screenshot `renders/it4/studio_v4_reopened.png`. Note: the scripted test only exits with `--screenshot`.
 - Fixed before use: touch fingertip correction shifted every key of that hand's IK track, not just the action's.
+- B's back view (evidence `hair_B_back`) showed curl roots as knobs below a bare band of scalp: curl roots moved up
+  (elevation 30–50°, +7 cm length) under longer crown clumps (32, 16–30°). Lineup regression re-baselined again for
+  this intentional change. Lineup/B evidence rendered before the fix is re-rendered.
