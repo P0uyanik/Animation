@@ -9,11 +9,12 @@ automatic rigging → keyframe animation → procedural fur/fuzz and yarn hair �
 denoising → filmic tone mapping → PNG sequence → H.264 video. A first desktop app (Plush Studio) can
 open the milestone scene, preview it, edit shapes, materials, lights, camera and bone keys, and path trace in-app.
 
-## Milestone 01 (in progress → first version rendered)
+## Milestone 01 (first version rendered and reviewed)
 White-haired girl in a sunlit classroom looking down at a paper boat and reaching for it, 48 frames @ 24 fps.
 - Scene: `content/scenes/milestone01_classroom.scene.json`
 - Character: `content/characters/girl_white_hair.character.json`
-- Output: `renders/m01_anim.mp4` (640x360, 32 spp; renders/ is not committed)
+- Output: `docs/milestone01/milestone01_640x360.mp4` (48 frames, 640x360, 32 spp, rendered in 21 min on 4 cores)
+- Stills: `docs/milestone01/` (full frame, head close-up, contact sheet, Studio screenshot)
 
 ## Build & test status
 - Linux (Ubuntu 24.04, GCC 13): builds with zero warnings; 10/10 test cases pass.

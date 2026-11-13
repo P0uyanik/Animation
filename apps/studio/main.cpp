@@ -182,6 +182,7 @@ struct App {
   EvalOptions viewOpt{1.4f, 0.0f, false};
   std::unique_ptr<SceneEvaluator> full;  // full quality, built on first render
   bool fullDirty = true;
+  bool assetsEdited = false;  // characters changed in the app since loading
   std::vector<CharacterAsset> assets;  // editable copies
   std::shared_ptr<FrameSnapshot> snap;
   PreviewRenderer preview;
@@ -220,10 +221,11 @@ void startRender(App& a) {
   for (auto& c : a.assets) mats.insert(mats.end(), c.materials.begin(), c.materials.end());
   double frame = a.frame;
   bool rebuild = a.fullDirty || !a.full;
+  bool edited = a.assetsEdited;
   a.fullDirty = false;
   a.job.running = true;
   a.job.target = rs.spp;
-  a.job.worker = std::thread([&a, rs, sceneCopy, assets, mats, frame, rebuild] {
+  a.job.worker = std::thread([&a, rs, sceneCopy, assets, mats, frame, rebuild, edited] {
     auto setStatus = [&](std::string s) {
       std::lock_guard lock(a.job.mutex);
       a.job.status = std::move(s);
@@ -236,7 +238,8 @@ void startRender(App& a) {
         a.job.running = false;
         return;
       }
-      for (size_t i = 0; i < assets.size(); ++i) (void)a.full->rebuildCharacter(i, assets[i], EvalOptions{});
+      if (edited)
+        for (size_t i = 0; i < assets.size(); ++i) (void)a.full->rebuildCharacter(i, assets[i], EvalOptions{});
     }
     a.full->mutableScene() = sceneCopy;
     for (auto& m : mats) a.full->updateMaterial(m);
@@ -399,6 +402,7 @@ void characterInspector(App& a, size_t ci) {
     if (ImGui::Button("Rebuild character")) {
       if (auto r = a.view.rebuildCharacter(ci, asset, a.viewOpt); !r) a.status = r.error().message;
       a.fullDirty = true;
+      a.assetsEdited = true;
       markEdited(a, true);
     }
     ImGui::SameLine();

@@ -31,3 +31,7 @@ glm, nlohmann/json, stb, doctest via apt; Open Image Denoise 2.3.3 prebuilt; Dea
 **Problems hit**
 - Build process killed once (likely memory with parallel jobs + container restart); building with -j3 works.
 - Camera-override argument parsing: negative numbers must be passed with a leading space or `=` is rejected.
+
+**Milestone 01 animation:** 48 frames at 640x360, 32 spp, ~25 s/frame render + setup, 21 min total;
+encoded to H.264. Head/eye/arm/chest keys and camera push-in play correctly; consecutive frames show mild
+grain, no strong fibre flicker. Remaining look issues logged in BUGS_AND_ISSUES.md.
