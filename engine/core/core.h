@@ -38,7 +38,7 @@ void logDebug(std::format_string<A...> f, A&&... a) { logMessage(LogLevel::Debug
 // 23.976/24/25/30/48/50/60 fps and common audio rates (no float drift).
 inline constexpr int64_t kTicksPerSecond = 705'600'000;
 struct FrameRate {
-  int num = 24;
+  int num = 30;  // iteration 4: 30 fps default (iteration-3 scenes declare 24 explicitly)
   int den = 1;
   double fps() const { return double(num) / double(den); }
 };

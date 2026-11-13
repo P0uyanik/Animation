@@ -33,4 +33,15 @@ for a in girl_white_hair girl_brown_glasses boy_dark_hair; do
     -i frame_0006.png -i frame_0007.png -i frame_0008.png -i frame_0009.png -i frame_0010.png \
     -filter_complex "[0][1][2][3][4]hstack=5[a];[5][6][7][8][9]hstack=5[b];[a][b]vstack" ../expression_sheet_$a.png)
 done
-echo "[info] evidence done"
+echo "[info] evidence stills done"
+# Group scene (water table v4): 1280x720 stills of the master shot and of the director's key shots.
+W=content/scenes/watertable_v4.scene.json
+still $O/group_watertable_v4_wide_f172_1280x720.png $W --frame 172 --width 1280 --height 720 --spp 96 --adaptive 0.1
+still $O/group_v4_grip_f62_1280x720.png $W --frame 62 --width 1280 --height 720 --spp 96 --adaptive 0.1
+still $O/group_v4_reaction_f92_1280x720.png $W --frame 92 --width 1280 --height 720 --spp 96 --adaptive 0.1
+still $O/group_v4_touch_f146_1280x720.png $W --frame 146 --width 1280 --height 720 --spp 96 --adaptive 0.1
+# Animation preview: 180 frames (6 s at 30 fps), 640x360. Sequence mode resumes by itself.
+mkdir -p $O/anim_v4
+$R $W --frames 1-180 --outdir $O/anim_v4 --width 640 --height 360 --spp 12 --adaptive 0.12
+ffmpeg -v error -y -framerate 30 -i $O/anim_v4/frame_%04d.png -c:v libx264 -pix_fmt yuv420p -crf 18 $O/watertable_v4_640x360_30fps.mp4
+echo "[info] animation done"

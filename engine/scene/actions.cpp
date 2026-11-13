@@ -15,6 +15,15 @@
 //              ripples where a floating object leaves and re-enters its water
 //   walk       {character, start, end, to:[x,z], face?}  root path with ease in/out, turn to the path, planted
 //              footsteps (foot IK), pelvis bob and sway, counter-swinging arms
+//   touch      {character, hand, start, contact?, end?, target:[x,y,z]}  points and touches a spot with the index
+//              fingertip (ripple when the spot is a water surface)
+//
+// Director (scene "director": {minShot?, closeFocal?, closeFStop?, mediumFocal?, mediumFStop?}): plans camera shots
+// from the action beats — establishing wide (the scene camera), medium on a character starting an action, insert
+// close-ups on the hands/object at contact and at placement, reaction close-ups on faces, back to wide — places
+// each camera on the master camera's side of the action (180-degree rule), turns it away from characters standing
+// in the way, focuses on the subject with a shallow aperture for close-ups and pushes in gently during each shot.
+// Any hand-keyed camera track overrides the director.
 #include <algorithm>
 #include <format>
 
@@ -41,11 +50,151 @@ vec3 vec(const Json& j, const char* k, vec3 fallback) {
 void key(Clip& c, const std::string& track, double f, vec3 v, Interp in = Interp::Smooth) {
   c.tracks[track].setKey({f, v, in});
 }
+struct Beat {
+  enum class Kind { Reach, Touch, Expression, Walk } kind;
+  int character = -1, object = -1;
+  double start = 0, contact = 0, liftEnd = 0, place = 0, release = 0, end = 0;
+  vec3 point{0}, placePoint{0};
+};
+
 void dropKeysAfter(Clip& c, const std::string& track, double f) {
   auto it = c.tracks.find(track);
   if (it == c.tracks.end()) return;
   auto& k = it->second.keys;
   k.erase(std::remove_if(k.begin(), k.end(), [&](const Key& x) { return x.frame > f; }), k.end());
+}
+
+struct Shot {
+  const char* name = "wide";
+  double start = 0, end = 0;
+  int kind = 0;         // 0 wide, 1 object, 2 face, 3 point, 4 between face and object
+  int character = -1, object = -1;
+  vec3 point{0};
+  float size = 0.3f, focal = 50, fStop = 4, elevDeg = 15;
+};
+
+// Plans camera shots from the beats and writes camera.position / camera.target / camera.lens into `gen`.
+void planShots(const SceneEvaluator& ev, Clip& gen, const std::vector<Beat>& beats) {
+  const Scene& sc = ev.scene();
+  const Json& d = sc.director;
+  const double fps = sc.rate.fps();
+  const double minShot = num(d, "minShot", 1.2 * fps);
+  const float closeF = float(num(d, "closeFocal", 70)), closeS = float(num(d, "closeFStop", 2.8));
+  const float medF = float(num(d, "mediumFocal", 50)), medS = float(num(d, "mediumFStop", 4.0));
+  auto face = [&](int c, double f) {
+    const auto& sk = ev.characters()[size_t(c)].asset.skeleton;
+    int head = sk.find("head");
+    return vec3(ev.characterGlobals(size_t(c), f)[size_t(head)] * vec4(0, 0.11f, 0.09f, 1));
+  };
+  auto subject = [&](const Shot& s, double f) -> vec3 {
+    switch (s.kind) {
+      case 1: return vec3(ev.objectWorld(size_t(s.object), f)[3]);
+      case 2: return face(s.character, f);
+      case 4: return glm::mix(face(s.character, f), s.point, 0.5f);
+      case 5: return glm::mix(face(s.character, f), vec3(ev.objectWorld(size_t(s.object), f)[3]), 0.5f);
+      default: return s.point;
+    }
+  };
+  std::vector<Shot> shots;
+  for (const Beat& b : beats) {
+    if (b.kind == Beat::Kind::Reach) {
+      Shot m{"medium: reach", b.start - 14, b.contact - 8, 4, b.character, -1, b.point, 0.0f, medF, medS, 12};
+      m.size = std::max(0.42f, 1.6f * glm::distance(face(b.character, b.start), b.point));
+      shots.push_back(m);
+      shots.push_back({"insert: grip", b.contact - 8, b.liftEnd + 2, 1, b.character, b.object, b.point, 0.2f, closeF, closeS, 28});
+      // Reaction: the face together with the object being looked at.
+      Shot r{"close-up: reaction with object", b.liftEnd + 2, b.place - 12, 5, b.character, b.object, b.point, 0.0f, closeF, closeS, 8};
+      r.size = std::max(0.36f, 1.5f * glm::distance(face(b.character, b.liftEnd), vec3(ev.objectWorld(size_t(b.object), b.liftEnd)[3])));
+      shots.push_back(r);
+      shots.push_back({"insert: place", b.place - 12, b.release + 14, 3, b.character, -1, b.placePoint, 0.22f, closeF, closeS, 30});
+    } else if (b.kind == Beat::Kind::Touch) {
+      shots.push_back({"insert: touch", b.contact - 10, b.contact + 16, 3, b.character, -1, b.point, 0.2f, closeF, closeS, 30});
+    } else if (b.kind == Beat::Kind::Expression) {
+      shots.push_back({"close-up: expression", b.start - 2, b.start + std::max(minShot, 40.0), 2, b.character, -1, vec3(0), 0.3f, closeF, closeS, 6});
+    }
+  }
+  std::stable_sort(shots.begin(), shots.end(), [](const Shot& a, const Shot& b) { return a.start < b.start; });
+  // Resolve: drop shots too short to read, cut overlaps (the later action wins), skip expression close-ups that
+  // would interrupt another shot, and never leave a wide gap shorter than minShot (hold the previous shot).
+  std::vector<Shot> plan;
+  for (Shot s : shots) {
+    s.start = std::max(s.start, double(sc.frameStart));
+    if (!plan.empty() && s.start < plan.back().end) {
+      if (std::string(s.name) == "close-up: expression") continue;
+      plan.back().end = s.start;
+      if (plan.back().end - plan.back().start < minShot * 0.6) plan.pop_back();
+    }
+    if (s.end - s.start < minShot * 0.6) continue;
+    if (!plan.empty() && s.start - plan.back().end < minShot) plan.back().end = s.start;
+    plan.push_back(s);
+  }
+  // Master (wide) camera fills the gaps.
+  std::vector<Shot> all;
+  double t = sc.frameStart;
+  for (const Shot& s : plan) {
+    if (s.start > t) all.push_back({"wide", t, s.start, 0});
+    all.push_back(s);
+    t = s.end;
+  }
+  if (t < sc.frameEnd + 1) all.push_back({"wide", t, double(sc.frameEnd + 1), 0});
+
+  const vec3 master = sc.camera.position;
+  const float sensorH = sc.camera.sensorWidthMm * 9.0f / 16.0f;
+  auto blocked = [&](vec3 cam, vec3 subj, int subjectChar) {
+    for (size_t c = 0; c < ev.characters().size(); ++c) {
+      if (int(c) == subjectChar) continue;
+      auto G = ev.characterGlobals(c, 1);
+      const auto& sk = ev.characters()[c].asset.skeleton;
+      for (const char* bn : {"chest", "head"}) {
+        int bi = sk.find(bn);
+        if (bi < 0) continue;
+        vec3 centre = vec3(G[size_t(bi)][3]) + vec3(0, std::string(bn) == "head" ? 0.1f : 0.0f, 0);
+        float r = std::string(bn) == "head" ? 0.17f : 0.14f;
+        for (float u = 0.05f; u < 0.95f; u += 0.02f)
+          if (glm::distance(glm::mix(cam, subj, u), centre) < r) return true;
+      }
+    }
+    return false;
+  };
+  Track pos, tgt, lens;
+  for (const Shot& s : all) {
+    const double last = s.end - 1;
+    if (s.kind == 0) {
+      pos.setKey({s.start, master, Interp::Step});
+      tgt.setKey({s.start, sc.camera.target, Interp::Step});
+      lens.setKey({s.start, vec3(sc.camera.focalMm, sc.camera.fStop, sc.camera.focusDistance), Interp::Step});
+      logInfo("director: {:>6.1f}-{:<6.1f} {}", s.start, last, s.name);
+      continue;
+    }
+    vec3 s0 = subject(s, s.start);
+    float dist = s.size / (2.0f * (sensorH * 0.5f / s.focal));
+    vec2 h = glm::normalize(vec2(master.x - s0.x, master.z - s0.z) + vec2(1e-6f));
+    float el = glm::radians(s.elevDeg);
+    vec3 off;
+    float turn = 0;
+    for (float tryDeg : {0.f, 15.f, -15.f, 30.f, -30.f, 45.f, -45.f, 60.f, -60.f, 75.f, -75.f}) {
+      float a = glm::radians(tryDeg);
+      vec2 hr(h.x * std::cos(a) - h.y * std::sin(a), h.x * std::sin(a) + h.y * std::cos(a));
+      off = vec3(hr.x * std::cos(el), std::sin(el), hr.y * std::cos(el)) * dist;
+      turn = tryDeg;
+      if (!blocked(s0 + off, s0, s.character)) break;
+    }
+    for (double f = s.start;; f = std::min(last, f + 3)) {
+      double u = (f - s.start) / std::max(1.0, last - s.start);
+      vec3 sf = subject(s, f);
+      vec3 p = sf + off * float(1.04 - 0.08 * u);  // gentle push-in
+      Interp in = f >= last ? Interp::Step : Interp::Linear;
+      pos.setKey({f, p, in});
+      tgt.setKey({f, sf, in});
+      lens.setKey({f, vec3(s.focal, s.fStop, glm::distance(p, sf)), in});
+      if (f >= last) break;
+    }
+    logInfo("director: {:>6.1f}-{:<6.1f} {} ({} mm f/{:.1f}, {:.2f} m{})", s.start, last, s.name, s.focal, s.fStop, dist,
+            turn != 0 ? std::format(", turned {:.0f} deg to clear a character", turn) : std::string());
+  }
+  gen.tracks["camera.position"] = pos;
+  gen.tracks["camera.target"] = tgt;
+  gen.tracks["camera.lens"] = lens;
 }
 
 }  // namespace
@@ -82,6 +231,34 @@ Result<void> SceneEvaluator::compileActions() {
   };
   auto objPos = [&](int o, double f) { return vec3(objectWorld(size_t(o), f)[3]); };
   const Clip& clip = scene_.animation;
+  std::vector<Beat> beats;
+  // Leans the upper body towards a point beyond arm's length (forward and sideways, up to ~25 degrees).
+  auto leanToward = [&](int c, char side, vec3 p, float clearance, double startF, double reachF, double holdF, double endF,
+                        const std::string& what) {
+    const CharacterDesc& cd = scene_.characters[size_t(c)];
+    const CharacterAsset& asset = characters_[size_t(c)].asset;
+    const auto& B = asset.skeleton.bones;
+    const int upper = asset.skeleton.find(std::string("upperArm.") + side), forearm = asset.skeleton.find(std::string("forearm.") + side),
+              hand = asset.skeleton.find(std::string("hand.") + side), spine = asset.skeleton.find("spine");
+    if (upper < 0 || forearm < 0 || hand < 0 || spine < 0) return;
+    const float armLen = glm::distance(B[size_t(upper)].head, B[size_t(forearm)].head) + glm::distance(B[size_t(forearm)].head, B[size_t(hand)].head);
+    const float need = glm::distance(vec3(characterGlobals(size_t(c), reachF)[size_t(upper)][3]), p) - clearance - 0.95f * armLen;
+    if (need <= 0) return;
+    const std::string who = cd.name, prefix = who + "/";
+    const mat4 body = objectMatrix(clip.evaluate(who + ".position", reachF, cd.position), clip.evaluate(who + ".yaw", reachF, vec3(cd.yawDeg)).x, 1.0f);
+    vec3 local = vec3(glm::inverse(body) * vec4(p, 1)) - B[size_t(spine)].head;
+    vec2 dirXZ = glm::normalize(vec2(local.x, local.z) + vec2(1e-6f));
+    float lean = glm::degrees(std::min(0.45f, need / 0.22f));
+    vec3 rot(lean * std::max(0.0f, dirXZ.y), 0, -lean * dirXZ.x);
+    const std::string t = prefix + "spine.rot";
+    key(*gen, t, startF, clip.evaluate(t, startF, vec3(0)));
+    key(*gen, t, reachF - 3, rot);
+    key(*gen, t, holdF, rot);
+    key(*gen, t, endF, vec3(0));
+    const float still = glm::distance(vec3(characterGlobals(size_t(c), reachF)[size_t(upper)][3]), p) - clearance - armLen;
+    if (still > 0.01f)
+      logWarn("{}: '{}' cannot reach {} at frame {} even leaning ({:.0f} mm short); move them closer", what, who, what, reachF, still * 1000);
+  };
 
   for (const Json* ap : actions) {
     const Json& a = *ap;
@@ -120,6 +297,7 @@ Result<void> SceneEvaluator::compileActions() {
       const float w = float(num(a, "weight", 1));
       key(*gen, track, start, vec3(base));
       key(*gen, track, start + ramp, vec3(w));
+      beats.push_back({Beat::Kind::Expression, c, -1, start, start, 0, 0, 0, num(a, "end", start + 36), vec3(0), vec3(0)});
       if (has(a, "end")) {
         key(*gen, track, num(a, "end", 0), vec3(w));
         key(*gen, track, num(a, "end", 0) + ramp, vec3(base));
@@ -140,34 +318,7 @@ Result<void> SceneEvaluator::compileActions() {
       const float lift = float(num(a, "lift", 0.05)), radius = float(num(a, "graspRadius", 0.012));
       const vec3 p0 = objPos(o, contact);
       const vec3 placeP = vec(a, "placeAt", p0);
-      // Out of arm's reach: lean the upper body towards the object (forward and sideways, up to ~25 degrees).
-      {
-        const int forearm = asset.skeleton.find(std::string("forearm.") + side);
-        const auto& B = asset.skeleton.bones;
-        const float armLen = glm::distance(B[size_t(upper)].head, B[size_t(forearm)].head) +
-                             glm::distance(B[size_t(forearm)].head, B[size_t(handBone)].head);
-        const auto g0 = characterGlobals(size_t(c), contact);
-        const vec3 sh = vec3(g0[size_t(upper)][3]);
-        const float need = glm::distance(sh, p0) - (0.03f + radius) - 0.95f * armLen;
-        const int spine = asset.skeleton.find("spine");
-        if (need > 0 && spine >= 0) {
-          const mat4 body = objectMatrix(clip.evaluate(who + ".position", contact, cd.position),
-                                         clip.evaluate(who + ".yaw", contact, vec3(cd.yawDeg)).x, 1.0f);
-          vec3 local = vec3(glm::inverse(body) * vec4(p0, 1)) - B[size_t(spine)].head;
-          vec2 dirXZ = glm::normalize(vec2(local.x, local.z) + vec2(1e-6f));
-          float lean = glm::degrees(std::min(0.45f, need / 0.22f));
-          vec3 rot(lean * std::max(0.0f, dirXZ.y), 0, -lean * dirXZ.x);
-          const std::string t = prefix + "spine.rot";
-          key(*gen, t, start, clip.evaluate(t, start, vec3(0)));
-          key(*gen, t, contact - 3, rot);
-          key(*gen, t, release, rot);
-          key(*gen, t, end, vec3(0));
-          const float still = glm::distance(vec3(characterGlobals(size_t(c), contact)[size_t(upper)][3]), p0) - (0.03f + radius) - armLen;
-          if (still > 0.01f)
-            logWarn("reach: '{}' cannot reach '{}' at frame {} even leaning ({:.0f} mm short); move one of them closer",
-                    who, str(a, "object"), contact, still * 1000);
-        }
-      }
+      leanToward(c, side, p0, 0.03f + radius, start, contact, release, end, "reach '" + str(a, "object") + "'");
       // Where the wrist goes so the object sits in front of the palm, along the line from the shoulder.
       const vec3 shoulder = vec3(characterGlobals(size_t(c), contact)[size_t(upper)][3]);
       auto wristFor = [&](vec3 p) {
@@ -227,6 +378,7 @@ Result<void> SceneEvaluator::compileActions() {
         key(*gen, track, end + 2, objPos(o, release + 8), Interp::Linear);
         key(*gen, track, end + 6, prev, Interp::Linear);
       }
+      beats.push_back({Beat::Kind::Reach, c, o, start, contact, liftEnd, place, release, end, p0, placeP});
       // Ripples where a floating object leaves the water and where it goes back in.
       if (!od.floatOn.empty()) {
         int w = objIndex(od.floatOn);
@@ -237,6 +389,75 @@ Result<void> SceneEvaluator::compileActions() {
           scene_.objects[size_t(w)].ripples.emplace_back(a1.x, a1.z, float(release), 0.0018f);
         }
       }
+      continue;
+    }
+
+    if (type == "touch") {
+      const std::string sideStr = str(a, "hand", "R");
+      const char side = sideStr.empty() ? 'R' : sideStr[0];
+      const std::string hand = std::string("hand.") + side, H = prefix + hand, ik = prefix + "ik." + hand;
+      const int upper = asset.skeleton.find(std::string("upperArm.") + side);
+      if (upper < 0) return fail(std::format("touch: '{}' has no {} arm", who, side));
+      const double contact = num(a, "contact", start + 14), end = num(a, "end", contact + 20);
+      const vec3 T = vec(a, "target", vec3(0));
+      leanToward(c, side, T, 0.05f, start, contact, contact + 8, end, "touch");
+      const vec3 shoulder = vec3(characterGlobals(size_t(c), contact)[size_t(upper)][3]);
+      vec3 dir = T - shoulder;
+      dir.y *= 0.6f;
+      dir = glm::normalize(dir);
+      const vec3 wrist = T - dir * 0.05f;  // the index fingertip is ~5 cm beyond the wrist when pointing
+      key(*gen, ik, start, wrist + vec3(0, 0.06f, 0));
+      key(*gen, ik, contact - 4, wrist + vec3(0, 0.02f, 0));
+      key(*gen, ik, contact, wrist - vec3(0, 0.004f, 0));
+      key(*gen, ik, contact + 8, wrist + vec3(0, 0.015f, 0));
+      key(*gen, ik, end, wrist + vec3(0, 0.04f, 0));
+      key(*gen, ik + ".weight", start, vec3(0));
+      key(*gen, ik + ".weight", contact - 6, vec3(1));
+      key(*gen, ik + ".weight", contact + 10, vec3(1));
+      key(*gen, ik + ".weight", end, vec3(0));
+      key(*gen, H, start, vec3(0.25f, 0.15f, 0), Interp::Linear);
+      key(*gen, H, contact - 8, vec3(1, 1, 0), Interp::Linear);
+      key(*gen, H, end - 6, vec3(1, 1, 0), Interp::Linear);
+      key(*gen, H, end, vec3(0.25f, 0.15f, 0), Interp::Linear);
+      key(*gen, H + ".index", start, vec3(0.25f), Interp::Linear);
+      key(*gen, H + ".index", contact - 8, vec3(0), Interp::Linear);
+      key(*gen, H + ".index", end - 6, vec3(0), Interp::Linear);
+      key(*gen, H + ".index", end, vec3(0.25f), Interp::Linear);
+      // Correct the wrist targets so the posed index fingertip lands exactly on the target (hand orientation comes
+      // from the solved arm, so the first estimate is off by a few centimetres).
+      float tipErr = 0;
+      for (int it = 0; it < 10; ++it) {
+        Pose pose;
+        characterGlobals(size_t(c), contact, &pose);
+        const mat4 body = objectMatrix(clip.evaluate(who + ".position", contact, cd.position),
+                                       clip.evaluate(who + ".yaw", contact, vec3(cd.yawDeg)).x, 1.0f);
+        auto tips = fingertips(asset.skeleton, pose, body, side);
+        if (tips.size() < 5) break;
+        const vec3 err = T - tips[4];
+        tipErr = glm::length(err);
+        if (tipErr < 0.002f) break;
+        for (auto& k : gen->tracks[ik].keys) k.value += err;
+      }
+      if (tipErr > 0.01f)
+        logWarn("touch: '{}' fingertip stays {:.0f} mm from the target at frame {} (out of reach); move them closer", who,
+                tipErr * 1000, contact);
+      const std::string look = prefix + "lookAt";
+      vec3 prev = clip.evaluate(look, start - 4, cd.position + vec3(0, 0.6f, 3));
+      dropKeysAfter(*gen, look, start - 4);
+      key(*gen, look, start - 4, prev, Interp::Linear);
+      key(*gen, look, start, T, Interp::Linear);
+      key(*gen, look, end + 4, T, Interp::Linear);
+      // Ripples when the fingertip meets a water surface.
+      for (size_t w = 0; w < scene_.objects.size(); ++w) {
+        ObjectDesc& wo = scene_.objects[w];
+        if (wo.kind != ObjectDesc::Kind::Water) continue;
+        vec3 l = vec3(glm::inverse(objectWorld(w, contact)) * vec4(T, 1));
+        if (std::abs(l.x) <= wo.waterHalfSize.x && std::abs(l.z) <= wo.waterHalfSize.y && std::abs(l.y) < 0.03f) {
+          wo.ripples.emplace_back(l.x, l.z, float(contact), 0.0016f);
+          wo.ripples.emplace_back(l.x, l.z, float(contact + 9), 0.0008f);
+        }
+      }
+      beats.push_back({Beat::Kind::Touch, c, -1, start, contact, 0, 0, 0, end, T, T});
       continue;
     }
 
@@ -305,6 +526,7 @@ Result<void> SceneEvaluator::compileActions() {
         }
       }
       key(*gen, root, end + 2, vec3(0));
+      beats.push_back({Beat::Kind::Walk, c, -1, start, start, 0, 0, 0, end, pe, pe});
       for (char s : {'L', 'R'}) {
         const std::string t = prefix + "ik.foot." + s;
         key(*gen, t + ".weight", end + 2, vec3(1));
@@ -314,6 +536,7 @@ Result<void> SceneEvaluator::compileActions() {
     }
     return fail(std::format("unknown action type '{}'", type));
   }
+  if (scene_.director.is_object()) planShots(*this, *gen, beats);
   return {};
 }
 

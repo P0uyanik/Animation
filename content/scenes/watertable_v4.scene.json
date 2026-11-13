@@ -1,0 +1,2789 @@
+{
+ "format": "plush.scene",
+ "version": 1,
+ "name": "Water table v4 - actions and automatic camera",
+ "frameRate": [
+  30,
+  1
+ ],
+ "frameStart": 1,
+ "frameEnd": 180,
+ "render": {
+  "width": 1280,
+  "height": 720,
+  "spp": 96,
+  "maxDepth": 8,
+  "exposureEV": 0.35,
+  "denoise": true,
+  "clamp": 12,
+  "denoiseBlend": 0.85,
+  "adaptiveThreshold": 0.1
+ },
+ "camera": {
+  "position": [
+   0.5,
+   1.28,
+   2.25
+  ],
+  "target": [
+   -0.04,
+   0.58,
+   0.36
+  ],
+  "focalMm": 32,
+  "fStop": 4.0,
+  "focusDistance": -1,
+  "blades": 6
+ },
+ "materials": [
+  {
+   "name": "wood_floor",
+   "type": "standard",
+   "baseColor": [
+    0.61,
+    0.35,
+    0.16
+   ],
+   "roughness": 0.5,
+   "coat": 0.7,
+   "coatRoughness": 0.12,
+   "texture": {
+    "type": "wood",
+    "color2": [
+     0.42,
+     0.22,
+     0.09
+    ],
+    "amount": 0.8,
+    "params": [
+     0.14,
+     1.1,
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "name": "wall",
+   "type": "standard",
+   "baseColor": [
+    0.83,
+    0.68,
+    0.49
+   ],
+   "roughness": 0.9,
+   "specular": 0.3,
+   "texture": {
+    "type": "wall",
+    "color2": [
+     0.35,
+     0.4,
+     0.26
+    ],
+    "params": [
+     0.6,
+     0.11,
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "name": "ceiling",
+   "type": "standard",
+   "baseColor": [
+    0.8,
+    0.78,
+    0.74
+   ],
+   "roughness": 0.9,
+   "specular": 0.2
+  },
+  {
+   "name": "window_wood",
+   "type": "standard",
+   "baseColor": [
+    0.62,
+    0.42,
+    0.24
+   ],
+   "roughness": 0.5,
+   "coat": 0.3
+  },
+  {
+   "name": "wood_light",
+   "type": "standard",
+   "baseColor": [
+    0.65,
+    0.45,
+    0.26
+   ],
+   "roughness": 0.45,
+   "coat": 0.4,
+   "coatRoughness": 0.15,
+   "texture": {
+    "type": "wood",
+    "color2": [
+     0.5,
+     0.32,
+     0.16
+    ],
+    "amount": 0.6,
+    "params": [
+     0.5,
+     2.0,
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "name": "toy_red",
+   "type": "standard",
+   "baseColor": [
+    0.65,
+    0.05,
+    0.04
+   ],
+   "roughness": 0.35
+  },
+  {
+   "name": "toy_yellow",
+   "type": "standard",
+   "baseColor": [
+    0.85,
+    0.6,
+    0.05
+   ],
+   "roughness": 0.35
+  },
+  {
+   "name": "toy_blue",
+   "type": "standard",
+   "baseColor": [
+    0.05,
+    0.18,
+    0.6
+   ],
+   "roughness": 0.35
+  },
+  {
+   "name": "paper",
+   "type": "standard",
+   "baseColor": [
+    0.85,
+    0.84,
+    0.8
+   ],
+   "roughness": 0.7,
+   "specular": 0.3
+  },
+  {
+   "name": "rug",
+   "type": "plush",
+   "baseColor": [
+    0.62,
+    0.33,
+    0.08
+   ],
+   "sheen": 0.6,
+   "texture": {
+    "type": "noise",
+    "color2": [
+     0.08,
+     0.3,
+     0.32
+    ],
+    "scale": 3,
+    "amount": 0.7
+   }
+  },
+  {
+   "name": "rug_fiber",
+   "type": "fiber",
+   "baseColor": [
+    0.55,
+    0.33,
+    0.1
+   ],
+   "betaM": 0.4,
+   "betaN": 0.7
+  },
+  {
+   "name": "water",
+   "type": "glass",
+   "baseColor": [
+    0.82,
+    0.93,
+    0.94
+   ],
+   "ior": 1.33,
+   "thin": false,
+   "castsShadow": false
+  },
+  {
+   "name": "basin_paint",
+   "type": "standard",
+   "baseColor": [
+    0.35,
+    0.62,
+    0.68
+   ],
+   "roughness": 0.5
+  },
+  {
+   "name": "pebble_a",
+   "type": "standard",
+   "baseColor": [
+    0.75,
+    0.45,
+    0.4
+   ],
+   "roughness": 0.3,
+   "coat": 0.6
+  },
+  {
+   "name": "pebble_b",
+   "type": "standard",
+   "baseColor": [
+    0.4,
+    0.6,
+    0.4
+   ],
+   "roughness": 0.3,
+   "coat": 0.6
+  },
+  {
+   "name": "pebble_c",
+   "type": "standard",
+   "baseColor": [
+    0.55,
+    0.5,
+    0.75
+   ],
+   "roughness": 0.3,
+   "coat": 0.6
+  },
+  {
+   "name": "cushion",
+   "type": "plush",
+   "baseColor": [
+    0.75,
+    0.42,
+    0.45
+   ],
+   "sheen": 0.8
+  },
+  {
+   "name": "cushion2",
+   "type": "plush",
+   "baseColor": [
+    0.45,
+    0.55,
+    0.7
+   ],
+   "sheen": 0.8
+  },
+  {
+   "name": "cushion_fiber",
+   "type": "fiber",
+   "baseColor": [
+    0.8,
+    0.5,
+    0.5
+   ],
+   "betaM": 0.4,
+   "betaN": 0.8
+  },
+  {
+   "name": "book_red",
+   "type": "standard",
+   "baseColor": [
+    0.6,
+    0.12,
+    0.1
+   ],
+   "roughness": 0.5
+  },
+  {
+   "name": "book_green",
+   "type": "standard",
+   "baseColor": [
+    0.2,
+    0.42,
+    0.25
+   ],
+   "roughness": 0.5
+  },
+  {
+   "name": "book_yellow",
+   "type": "standard",
+   "baseColor": [
+    0.8,
+    0.62,
+    0.2
+   ],
+   "roughness": 0.5
+  },
+  {
+   "name": "drawing",
+   "type": "standard",
+   "baseColor": [
+    0.9,
+    0.88,
+    0.82
+   ],
+   "roughness": 0.8,
+   "texture": {
+    "type": "noise",
+    "color2": [
+     0.9,
+     0.55,
+     0.3
+    ],
+    "scale": 18,
+    "amount": 0.55
+   }
+  },
+  {
+   "name": "drawing2",
+   "type": "standard",
+   "baseColor": [
+    0.9,
+    0.88,
+    0.82
+   ],
+   "roughness": 0.8,
+   "texture": {
+    "type": "noise",
+    "color2": [
+     0.35,
+     0.55,
+     0.85
+    ],
+    "scale": 14,
+    "amount": 0.55
+   }
+  },
+  {
+   "name": "flag_a",
+   "type": "plush",
+   "baseColor": [
+    0.85,
+    0.45,
+    0.4
+   ],
+   "sheen": 0.6
+  },
+  {
+   "name": "flag_b",
+   "type": "plush",
+   "baseColor": [
+    0.95,
+    0.8,
+    0.45
+   ],
+   "sheen": 0.6
+  },
+  {
+   "name": "flag_c",
+   "type": "plush",
+   "baseColor": [
+    0.45,
+    0.65,
+    0.8
+   ],
+   "sheen": 0.6
+  },
+  {
+   "name": "string",
+   "type": "standard",
+   "baseColor": [
+    0.9,
+    0.88,
+    0.8
+   ],
+   "roughness": 0.8
+  },
+  {
+   "name": "toy_bear",
+   "type": "plush",
+   "baseColor": [
+    0.62,
+    0.45,
+    0.3
+   ],
+   "sheen": 0.8
+  },
+  {
+   "name": "toy_bunny",
+   "type": "plush",
+   "baseColor": [
+    0.9,
+    0.86,
+    0.8
+   ],
+   "sheen": 0.8
+  },
+  {
+   "name": "toy_fiber",
+   "type": "fiber",
+   "baseColor": [
+    0.7,
+    0.55,
+    0.4
+   ],
+   "betaM": 0.4,
+   "betaN": 0.8
+  },
+  {
+   "name": "block_a",
+   "type": "standard",
+   "baseColor": [
+    0.8,
+    0.3,
+    0.25
+   ],
+   "roughness": 0.45
+  },
+  {
+   "name": "block_b",
+   "type": "standard",
+   "baseColor": [
+    0.3,
+    0.55,
+    0.8
+   ],
+   "roughness": 0.45
+  },
+  {
+   "name": "block_c",
+   "type": "standard",
+   "baseColor": [
+    0.9,
+    0.75,
+    0.3
+   ],
+   "roughness": 0.45
+  },
+  {
+   "name": "rug",
+   "type": "plush",
+   "baseColor": [
+    0.55,
+    0.62,
+    0.55
+   ],
+   "sheen": 0.7
+  },
+  {
+   "name": "rug_fiber",
+   "type": "fiber",
+   "baseColor": [
+    0.6,
+    0.68,
+    0.6
+   ],
+   "betaM": 0.4,
+   "betaN": 0.8
+  }
+ ],
+ "lights": [
+  {
+   "type": "sun",
+   "direction": [
+    0.85,
+    -0.32,
+    0.42
+   ],
+   "angleDeg": 3.0,
+   "color": [
+    1.0,
+    0.8,
+    0.58
+   ],
+   "intensity": 6.0
+  },
+  {
+   "type": "rect",
+   "corner": [
+    -0.9,
+    0.75,
+    -1.69
+   ],
+   "edgeU": [
+    1.2,
+    0,
+    0
+   ],
+   "edgeV": [
+    0,
+    1.2,
+    0
+   ],
+   "color": [
+    1.0,
+    0.97,
+    0.88
+   ],
+   "intensity": 1.6
+  },
+  {
+   "type": "rect",
+   "corner": [
+    -1.89,
+    0.7,
+    -0.3
+   ],
+   "edgeU": [
+    0,
+    0,
+    -1.0
+   ],
+   "edgeV": [
+    0,
+    1.2,
+    0
+   ],
+   "color": [
+    1.0,
+    0.95,
+    0.85
+   ],
+   "intensity": 1.6
+  },
+  {
+   "type": "rect",
+   "corner": [
+    1.0,
+    0.6,
+    2.59
+   ],
+   "edgeU": [
+    -2.0,
+    0,
+    0
+   ],
+   "edgeV": [
+    0,
+    1.4,
+    0
+   ],
+   "color": [
+    1.0,
+    0.96,
+    0.9
+   ],
+   "intensity": 0.5
+  }
+ ],
+ "objects": [
+  {
+   "name": "floor",
+   "kind": "box",
+   "min": [
+    -1.9,
+    -0.05,
+    -1.7
+   ],
+   "max": [
+    1.9,
+    0,
+    2.7
+   ],
+   "material": "wood_floor"
+  },
+  {
+   "name": "ceiling",
+   "kind": "box",
+   "min": [
+    -1.9,
+    2.6,
+    -1.7
+   ],
+   "max": [
+    1.9,
+    2.7,
+    2.7
+   ],
+   "material": "ceiling"
+  },
+  {
+   "name": "backWall.left",
+   "kind": "box",
+   "min": [
+    -1.9,
+    0,
+    -1.7
+   ],
+   "max": [
+    -0.9,
+    2.6,
+    -1.6
+   ],
+   "material": "wall"
+  },
+  {
+   "name": "backWall.right",
+   "kind": "box",
+   "min": [
+    0.3,
+    0,
+    -1.7
+   ],
+   "max": [
+    1.9,
+    2.6,
+    -1.6
+   ],
+   "material": "wall"
+  },
+  {
+   "name": "backWall.below",
+   "kind": "box",
+   "min": [
+    -0.9,
+    0,
+    -1.7
+   ],
+   "max": [
+    0.3,
+    0.75,
+    -1.6
+   ],
+   "material": "wall"
+  },
+  {
+   "name": "backWall.above",
+   "kind": "box",
+   "min": [
+    -0.9,
+    1.95,
+    -1.7
+   ],
+   "max": [
+    0.3,
+    2.6,
+    -1.6
+   ],
+   "material": "wall"
+  },
+  {
+   "name": "leftWall.back",
+   "kind": "box",
+   "min": [
+    -1.9,
+    0,
+    -1.7
+   ],
+   "max": [
+    -1.8,
+    2.6,
+    -1.3
+   ],
+   "material": "wall"
+  },
+  {
+   "name": "leftWall.front",
+   "kind": "box",
+   "min": [
+    -1.9,
+    0,
+    -0.3
+   ],
+   "max": [
+    -1.8,
+    2.6,
+    2.7
+   ],
+   "material": "wall"
+  },
+  {
+   "name": "leftWall.below",
+   "kind": "box",
+   "min": [
+    -1.9,
+    0,
+    -1.3
+   ],
+   "max": [
+    -1.8,
+    0.7,
+    -0.3
+   ],
+   "material": "wall"
+  },
+  {
+   "name": "leftWall.above",
+   "kind": "box",
+   "min": [
+    -1.9,
+    1.9,
+    -1.3
+   ],
+   "max": [
+    -1.8,
+    2.6,
+    -0.3
+   ],
+   "material": "wall"
+  },
+  {
+   "name": "rightWall",
+   "kind": "box",
+   "min": [
+    1.8,
+    0,
+    -1.7
+   ],
+   "max": [
+    1.9,
+    2.6,
+    2.7
+   ],
+   "material": "wall"
+  },
+  {
+   "name": "frontWall",
+   "kind": "box",
+   "min": [
+    -1.9,
+    0,
+    2.6
+   ],
+   "max": [
+    1.9,
+    2.6,
+    2.7
+   ],
+   "material": "wall"
+  },
+  {
+   "name": "backWindow.sill",
+   "kind": "box",
+   "min": [
+    -0.95,
+    0.7,
+    -1.72
+   ],
+   "max": [
+    0.35,
+    0.75,
+    -1.52
+   ],
+   "material": "window_wood"
+  },
+  {
+   "name": "backWindow.top",
+   "kind": "box",
+   "min": [
+    -0.95,
+    1.95,
+    -1.71
+   ],
+   "max": [
+    0.35,
+    2.0,
+    -1.58
+   ],
+   "material": "window_wood"
+  },
+  {
+   "name": "backWindow.jambL",
+   "kind": "box",
+   "min": [
+    -0.95,
+    0.75,
+    -1.71
+   ],
+   "max": [
+    -0.9,
+    1.95,
+    -1.58
+   ],
+   "material": "window_wood"
+  },
+  {
+   "name": "backWindow.jambR",
+   "kind": "box",
+   "min": [
+    0.3,
+    0.75,
+    -1.71
+   ],
+   "max": [
+    0.35,
+    1.95,
+    -1.58
+   ],
+   "material": "window_wood"
+  },
+  {
+   "name": "backWindow.mullion",
+   "kind": "box",
+   "min": [
+    -0.325,
+    0.75,
+    -1.67
+   ],
+   "max": [
+    -0.275,
+    1.95,
+    -1.63
+   ],
+   "material": "window_wood"
+  },
+  {
+   "name": "backWindow.transom",
+   "kind": "box",
+   "min": [
+    -0.9,
+    1.35,
+    -1.67
+   ],
+   "max": [
+    0.3,
+    1.39,
+    -1.63
+   ],
+   "material": "window_wood"
+  },
+  {
+   "name": "leftWindow.sill",
+   "kind": "box",
+   "min": [
+    -1.92,
+    0.65,
+    -1.35
+   ],
+   "max": [
+    -1.62,
+    0.7,
+    -0.25
+   ],
+   "material": "window_wood"
+  },
+  {
+   "name": "leftWindow.top",
+   "kind": "box",
+   "min": [
+    -1.92,
+    1.9,
+    -1.35
+   ],
+   "max": [
+    -1.78,
+    1.95,
+    -0.25
+   ],
+   "material": "window_wood"
+  },
+  {
+   "name": "leftWindow.jambBack",
+   "kind": "box",
+   "min": [
+    -1.92,
+    0.7,
+    -1.35
+   ],
+   "max": [
+    -1.78,
+    1.9,
+    -1.3
+   ],
+   "material": "window_wood"
+  },
+  {
+   "name": "leftWindow.jambFront",
+   "kind": "box",
+   "min": [
+    -1.92,
+    0.7,
+    -0.3
+   ],
+   "max": [
+    -1.78,
+    1.9,
+    -0.25
+   ],
+   "material": "window_wood"
+  },
+  {
+   "name": "leftWindow.mullion",
+   "kind": "box",
+   "min": [
+    -1.87,
+    0.7,
+    -0.825
+   ],
+   "max": [
+    -1.83,
+    1.9,
+    -0.775
+   ],
+   "material": "window_wood"
+  },
+  {
+   "name": "shelf",
+   "kind": "sdf",
+   "material": "wood_light",
+   "position": [
+    0.9,
+    0,
+    -1.43
+   ],
+   "part": {
+    "voxelSize": 0.006,
+    "prims": [
+     {
+      "type": "roundBox",
+      "center": [
+       0,
+       0.25,
+       0
+      ],
+      "halfSize": [
+       0.5,
+       0.25,
+       0.13
+      ],
+      "rounding": 0.015
+     }
+    ]
+   }
+  },
+  {
+   "name": "block.red",
+   "kind": "sdf",
+   "material": "toy_red",
+   "position": [
+    0.72,
+    0.5,
+    -1.42
+   ],
+   "yawDeg": 12,
+   "part": {
+    "voxelSize": 0.002,
+    "prims": [
+     {
+      "type": "roundBox",
+      "center": [
+       0,
+       0.04,
+       0
+      ],
+      "halfSize": [
+       0.04,
+       0.04,
+       0.04
+      ],
+      "rounding": 0.008
+     }
+    ]
+   }
+  },
+  {
+   "name": "block.yellow",
+   "kind": "sdf",
+   "material": "toy_yellow",
+   "position": [
+    0.82,
+    0.5,
+    -1.4
+   ],
+   "yawDeg": -8,
+   "part": {
+    "voxelSize": 0.002,
+    "prims": [
+     {
+      "type": "roundBox",
+      "center": [
+       0,
+       0.04,
+       0
+      ],
+      "halfSize": [
+       0.04,
+       0.04,
+       0.04
+      ],
+      "rounding": 0.008
+     }
+    ]
+   }
+  },
+  {
+   "name": "block.blue",
+   "kind": "sdf",
+   "material": "toy_blue",
+   "position": [
+    0.77,
+    0.58,
+    -1.41
+   ],
+   "yawDeg": 30,
+   "part": {
+    "voxelSize": 0.002,
+    "prims": [
+     {
+      "type": "roundBox",
+      "center": [
+       0,
+       0.04,
+       0
+      ],
+      "halfSize": [
+       0.04,
+       0.04,
+       0.04
+      ],
+      "rounding": 0.008
+     }
+    ]
+   }
+  },
+  {
+   "name": "waterTable",
+   "kind": "sdf",
+   "material": "wood_light",
+   "position": [
+    0.0,
+    0.0,
+    0.42
+   ],
+   "part": {
+    "voxelSize": 0.003,
+    "prims": [
+     {
+      "type": "roundBox",
+      "center": [
+       0,
+       0.45,
+       0
+      ],
+      "halfSize": [
+       0.33,
+       0.055,
+       0.23
+      ],
+      "rounding": 0.02
+     },
+     {
+      "type": "roundBox",
+      "center": [
+       0,
+       0.48,
+       0
+      ],
+      "halfSize": [
+       0.295,
+       0.06,
+       0.195
+      ],
+      "rounding": 0.01,
+      "blend": 0.006,
+      "subtract": true
+     },
+     {
+      "type": "capsule",
+      "a": [
+       -0.28,
+       0.0,
+       -0.18
+      ],
+      "b": [
+       -0.28,
+       0.42,
+       -0.18
+      ],
+      "r": 0.022
+     },
+     {
+      "type": "capsule",
+      "a": [
+       -0.28,
+       0.0,
+       0.18
+      ],
+      "b": [
+       -0.28,
+       0.42,
+       0.18
+      ],
+      "r": 0.022
+     },
+     {
+      "type": "capsule",
+      "a": [
+       0.28,
+       0.0,
+       -0.18
+      ],
+      "b": [
+       0.28,
+       0.42,
+       -0.18
+      ],
+      "r": 0.022
+     },
+     {
+      "type": "capsule",
+      "a": [
+       0.28,
+       0.0,
+       0.18
+      ],
+      "b": [
+       0.28,
+       0.42,
+       0.18
+      ],
+      "r": 0.022
+     }
+    ]
+   }
+  },
+  {
+   "name": "basinBottom",
+   "kind": "sdf",
+   "material": "basin_paint",
+   "position": [
+    0.0,
+    0.0,
+    0.42
+   ],
+   "part": {
+    "voxelSize": 0.004,
+    "prims": [
+     {
+      "type": "roundBox",
+      "center": [
+       0,
+       0.423,
+       0
+      ],
+      "halfSize": [
+       0.294,
+       0.004,
+       0.194
+      ],
+      "rounding": 0.002
+     }
+    ]
+   }
+  },
+  {
+   "name": "water",
+   "kind": "water",
+   "material": "water",
+   "position": [
+    0.0,
+    0.475,
+    0.42
+   ],
+   "water": {
+    "halfSize": [
+     0.292,
+     0,
+     0.192
+    ],
+    "resolution": 110,
+    "ripples": []
+   }
+  },
+  {
+   "name": "pebble0",
+   "kind": "sdf",
+   "material": "pebble_c",
+   "position": [
+    -0.12716859142684017,
+    0.428,
+    0.3747313637618865
+   ],
+   "yawDeg": 124.28043223650045,
+   "part": {
+    "voxelSize": 0.0015,
+    "prims": [
+     {
+      "type": "ellipsoid",
+      "center": [
+       0,
+       0.004,
+       0
+      ],
+      "radii": [
+       0.012,
+       0.006,
+       0.009
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "name": "pebble1",
+   "kind": "sdf",
+   "material": "pebble_c",
+   "position": [
+    0.07905648231215023,
+    0.428,
+    0.42961275346041966
+   ],
+   "yawDeg": 151.2626616940802,
+   "part": {
+    "voxelSize": 0.0015,
+    "prims": [
+     {
+      "type": "ellipsoid",
+      "center": [
+       0,
+       0.004,
+       0
+      ],
+      "radii": [
+       0.012,
+       0.006,
+       0.009
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "name": "pebble2",
+   "kind": "sdf",
+   "material": "pebble_a",
+   "position": [
+    0.07746676763120058,
+    0.428,
+    0.5482881573601992
+   ],
+   "yawDeg": 20.377073637565985,
+   "part": {
+    "voxelSize": 0.0015,
+    "prims": [
+     {
+      "type": "ellipsoid",
+      "center": [
+       0,
+       0.004,
+       0
+      ],
+      "radii": [
+       0.012,
+       0.006,
+       0.009
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "name": "pebble3",
+   "kind": "sdf",
+   "material": "pebble_b",
+   "position": [
+    0.19159163808984958,
+    0.428,
+    0.38184253345432484
+   ],
+   "yawDeg": 18.355392391304772,
+   "part": {
+    "voxelSize": 0.0015,
+    "prims": [
+     {
+      "type": "ellipsoid",
+      "center": [
+       0,
+       0.004,
+       0
+      ],
+      "radii": [
+       0.012,
+       0.006,
+       0.009
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "name": "pebble4",
+   "kind": "sdf",
+   "material": "pebble_a",
+   "position": [
+    -0.25318062141377085,
+    0.428,
+    0.3293535361484314
+   ],
+   "yawDeg": 50.306825881999856,
+   "part": {
+    "voxelSize": 0.0015,
+    "prims": [
+     {
+      "type": "ellipsoid",
+      "center": [
+       0,
+       0.004,
+       0
+      ],
+      "radii": [
+       0.012,
+       0.006,
+       0.009
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "name": "pebble5",
+   "kind": "sdf",
+   "material": "pebble_b",
+   "position": [
+    -0.17700580957382012,
+    0.428,
+    0.5150870372579854
+   ],
+   "yawDeg": 24.978135311802568,
+   "part": {
+    "voxelSize": 0.0015,
+    "prims": [
+     {
+      "type": "ellipsoid",
+      "center": [
+       0,
+       0.004,
+       0
+      ],
+      "radii": [
+       0.012,
+       0.006,
+       0.009
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "name": "pebble6",
+   "kind": "sdf",
+   "material": "pebble_c",
+   "position": [
+    -0.028685443208488842,
+    0.428,
+    0.3023170733494159
+   ],
+   "yawDeg": 175.02071214357653,
+   "part": {
+    "voxelSize": 0.0015,
+    "prims": [
+     {
+      "type": "ellipsoid",
+      "center": [
+       0,
+       0.004,
+       0
+      ],
+      "radii": [
+       0.012,
+       0.006,
+       0.009
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "name": "pebble7",
+   "kind": "sdf",
+   "material": "pebble_a",
+   "position": [
+    -0.1510826811025387,
+    0.428,
+    0.3289539741519143
+   ],
+   "yawDeg": 176.83579958866656,
+   "part": {
+    "voxelSize": 0.0015,
+    "prims": [
+     {
+      "type": "ellipsoid",
+      "center": [
+       0,
+       0.004,
+       0
+      ],
+      "radii": [
+       0.012,
+       0.006,
+       0.009
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "name": "pebble8",
+   "kind": "sdf",
+   "material": "pebble_a",
+   "position": [
+    -0.10956131277159822,
+    0.428,
+    0.5676729564640267
+   ],
+   "yawDeg": 97.06022439674591,
+   "part": {
+    "voxelSize": 0.0015,
+    "prims": [
+     {
+      "type": "ellipsoid",
+      "center": [
+       0,
+       0.004,
+       0
+      ],
+      "radii": [
+       0.012,
+       0.006,
+       0.009
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "name": "pebble9",
+   "kind": "sdf",
+   "material": "pebble_c",
+   "position": [
+    0.06537970175210644,
+    0.428,
+    0.3181339739345932
+   ],
+   "yawDeg": 174.3402193808224,
+   "part": {
+    "voxelSize": 0.0015,
+    "prims": [
+     {
+      "type": "ellipsoid",
+      "center": [
+       0,
+       0.004,
+       0
+      ],
+      "radii": [
+       0.012,
+       0.006,
+       0.009
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "name": "pebble10",
+   "kind": "sdf",
+   "material": "pebble_a",
+   "position": [
+    0.24261344240494165,
+    0.428,
+    0.5459973368244732
+   ],
+   "yawDeg": 53.782001613696195,
+   "part": {
+    "voxelSize": 0.0015,
+    "prims": [
+     {
+      "type": "ellipsoid",
+      "center": [
+       0,
+       0.004,
+       0
+      ],
+      "radii": [
+       0.012,
+       0.006,
+       0.009
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "name": "pebble11",
+   "kind": "sdf",
+   "material": "pebble_b",
+   "position": [
+    -0.04424850995617252,
+    0.428,
+    0.5594536498682544
+   ],
+   "yawDeg": 47.486149010994644,
+   "part": {
+    "voxelSize": 0.0015,
+    "prims": [
+     {
+      "type": "ellipsoid",
+      "center": [
+       0,
+       0.004,
+       0
+      ],
+      "radii": [
+       0.012,
+       0.006,
+       0.009
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "name": "pebble12",
+   "kind": "sdf",
+   "material": "pebble_b",
+   "position": [
+    -0.1032932675998795,
+    0.428,
+    0.4529951991704494
+   ],
+   "yawDeg": 0.6089614873842164,
+   "part": {
+    "voxelSize": 0.0015,
+    "prims": [
+     {
+      "type": "ellipsoid",
+      "center": [
+       0,
+       0.004,
+       0
+      ],
+      "radii": [
+       0.012,
+       0.006,
+       0.009
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "name": "pebble13",
+   "kind": "sdf",
+   "material": "pebble_c",
+   "position": [
+    0.10799159925957297,
+    0.428,
+    0.28112718417634464
+   ],
+   "yawDeg": 63.963244313994444,
+   "part": {
+    "voxelSize": 0.0015,
+    "prims": [
+     {
+      "type": "ellipsoid",
+      "center": [
+       0,
+       0.004,
+       0
+      ],
+      "radii": [
+       0.012,
+       0.006,
+       0.009
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "name": "book0",
+   "kind": "sdf",
+   "material": "book_red",
+   "position": [
+    0.55,
+    0.5,
+    -1.47
+   ],
+   "yawDeg": 0,
+   "part": {
+    "voxelSize": 0.002,
+    "prims": [
+     {
+      "type": "roundBox",
+      "center": [
+       0,
+       0.085,
+       0
+      ],
+      "halfSize": [
+       0.014,
+       0.085,
+       0.06
+      ],
+      "rounding": 0.003
+     }
+    ]
+   }
+  },
+  {
+   "name": "book1",
+   "kind": "sdf",
+   "material": "book_green",
+   "position": [
+    0.5850000000000001,
+    0.5,
+    -1.47
+   ],
+   "yawDeg": 0,
+   "part": {
+    "voxelSize": 0.002,
+    "prims": [
+     {
+      "type": "roundBox",
+      "center": [
+       0,
+       0.075,
+       0
+      ],
+      "halfSize": [
+       0.014,
+       0.075,
+       0.06
+      ],
+      "rounding": 0.003
+     }
+    ]
+   }
+  },
+  {
+   "name": "book2",
+   "kind": "sdf",
+   "material": "book_yellow",
+   "position": [
+    0.6200000000000001,
+    0.5,
+    -1.47
+   ],
+   "yawDeg": 0,
+   "part": {
+    "voxelSize": 0.002,
+    "prims": [
+     {
+      "type": "roundBox",
+      "center": [
+       0,
+       0.09,
+       0
+      ],
+      "halfSize": [
+       0.014,
+       0.09,
+       0.06
+      ],
+      "rounding": 0.003
+     }
+    ]
+   }
+  },
+  {
+   "name": "book3",
+   "kind": "sdf",
+   "material": "book_red",
+   "position": [
+    0.655,
+    0.5,
+    -1.47
+   ],
+   "yawDeg": 0,
+   "part": {
+    "voxelSize": 0.002,
+    "prims": [
+     {
+      "type": "roundBox",
+      "center": [
+       0,
+       0.07,
+       0
+      ],
+      "halfSize": [
+       0.014,
+       0.07,
+       0.06
+      ],
+      "rounding": 0.003
+     }
+    ]
+   }
+  },
+  {
+   "name": "book4",
+   "kind": "sdf",
+   "material": "book_green",
+   "position": [
+    0.6900000000000001,
+    0.5,
+    -1.47
+   ],
+   "yawDeg": 0,
+   "part": {
+    "voxelSize": 0.002,
+    "prims": [
+     {
+      "type": "roundBox",
+      "center": [
+       0,
+       0.08,
+       0
+      ],
+      "halfSize": [
+       0.014,
+       0.08,
+       0.06
+      ],
+      "rounding": 0.003
+     }
+    ]
+   }
+  },
+  {
+   "name": "cushion0",
+   "kind": "sdf",
+   "material": "cushion",
+   "position": [
+    -1.2,
+    0,
+    -0.8
+   ],
+   "yawDeg": 0,
+   "part": {
+    "voxelSize": 0.004,
+    "prims": [
+     {
+      "type": "roundBox",
+      "center": [
+       0,
+       0.06,
+       0
+      ],
+      "halfSize": [
+       0.2,
+       0.06,
+       0.2
+      ],
+      "rounding": 0.05
+     }
+    ]
+   },
+   "fuzz": {
+    "material": "cushion_fiber",
+    "density": 25,
+    "length": 0.004,
+    "radius": 3e-05,
+    "tilt": 0.4,
+    "curl": 0.4,
+    "segments": 3,
+    "seed": 90
+   }
+  },
+  {
+   "name": "cushion1",
+   "kind": "sdf",
+   "material": "cushion2",
+   "position": [
+    -0.95,
+    0,
+    -1.1
+   ],
+   "yawDeg": 20,
+   "part": {
+    "voxelSize": 0.004,
+    "prims": [
+     {
+      "type": "roundBox",
+      "center": [
+       0,
+       0.06,
+       0
+      ],
+      "halfSize": [
+       0.2,
+       0.06,
+       0.2
+      ],
+      "rounding": 0.05
+     }
+    ]
+   },
+   "fuzz": {
+    "material": "cushion_fiber",
+    "density": 25,
+    "length": 0.004,
+    "radius": 3e-05,
+    "tilt": 0.4,
+    "curl": 0.4,
+    "segments": 3,
+    "seed": 91
+   }
+  },
+  {
+   "name": "drawing0",
+   "kind": "box",
+   "min": [
+    -1.58,
+    1.25,
+    -1.6
+   ],
+   "max": [
+    -1.3199999999999998,
+    1.4500000000000002,
+    -1.595
+   ],
+   "material": "drawing"
+  },
+  {
+   "name": "drawing1",
+   "kind": "box",
+   "min": [
+    -1.23,
+    1.3499999999999999,
+    -1.6
+   ],
+   "max": [
+    -0.9700000000000001,
+    1.55,
+    -1.595
+   ],
+   "material": "drawing2"
+  },
+  {
+   "name": "drawing2",
+   "kind": "box",
+   "min": [
+    0.47,
+    1.2999999999999998,
+    -1.6
+   ],
+   "max": [
+    0.73,
+    1.5,
+    -1.595
+   ],
+   "material": "drawing"
+  },
+  {
+   "name": "drawing3",
+   "kind": "box",
+   "min": [
+    0.87,
+    1.2,
+    -1.6
+   ],
+   "max": [
+    1.13,
+    1.4000000000000001,
+    -1.595
+   ],
+   "material": "drawing2"
+  },
+  {
+   "name": "boat",
+   "kind": "paperBoat",
+   "material": "paper",
+   "position": [
+    0.07,
+    0.479,
+    0.3
+   ],
+   "yawDeg": 70,
+   "float": {
+    "on": "water",
+    "frame": 1
+   },
+   "scale": 0.45
+  },
+  {
+   "name": "flag0",
+   "kind": "sdf",
+   "material": "flag_a",
+   "position": [
+    -1.3,
+    1.62,
+    -1.46
+   ],
+   "yawDeg": 0,
+   "part": {
+    "voxelSize": 0.002,
+    "prims": [
+     {
+      "type": "roundCone",
+      "a": [
+       0,
+       0.0,
+       0
+      ],
+      "b": [
+       0,
+       -0.09,
+       0
+      ],
+      "r1": 0.045,
+      "r2": 0.006
+     }
+    ]
+   }
+  },
+  {
+   "name": "flag1",
+   "kind": "sdf",
+   "material": "flag_b",
+   "position": [
+    -1.1,
+    1.6044708572938489,
+    -1.46
+   ],
+   "yawDeg": 0,
+   "part": {
+    "voxelSize": 0.002,
+    "prims": [
+     {
+      "type": "roundCone",
+      "a": [
+       0,
+       0.0,
+       0
+      ],
+      "b": [
+       0,
+       -0.09,
+       0
+      ],
+      "r1": 0.045,
+      "r2": 0.006
+     }
+    ]
+   }
+  },
+  {
+   "name": "flag2",
+   "kind": "sdf",
+   "material": "flag_c",
+   "position": [
+    -0.9,
+    1.59,
+    -1.46
+   ],
+   "yawDeg": 0,
+   "part": {
+    "voxelSize": 0.002,
+    "prims": [
+     {
+      "type": "roundCone",
+      "a": [
+       0,
+       0.0,
+       0
+      ],
+      "b": [
+       0,
+       -0.09,
+       0
+      ],
+      "r1": 0.045,
+      "r2": 0.006
+     }
+    ]
+   }
+  },
+  {
+   "name": "flag3",
+   "kind": "sdf",
+   "material": "flag_a",
+   "position": [
+    -0.7,
+    1.5775735931288073,
+    -1.46
+   ],
+   "yawDeg": 0,
+   "part": {
+    "voxelSize": 0.002,
+    "prims": [
+     {
+      "type": "roundCone",
+      "a": [
+       0,
+       0.0,
+       0
+      ],
+      "b": [
+       0,
+       -0.09,
+       0
+      ],
+      "r1": 0.045,
+      "r2": 0.006
+     }
+    ]
+   }
+  },
+  {
+   "name": "flag4",
+   "kind": "sdf",
+   "material": "flag_b",
+   "position": [
+    -0.5,
+    1.5680384757729338,
+    -1.46
+   ],
+   "yawDeg": 0,
+   "part": {
+    "voxelSize": 0.002,
+    "prims": [
+     {
+      "type": "roundCone",
+      "a": [
+       0,
+       0.0,
+       0
+      ],
+      "b": [
+       0,
+       -0.09,
+       0
+      ],
+      "r1": 0.045,
+      "r2": 0.006
+     }
+    ]
+   }
+  },
+  {
+   "name": "flag5",
+   "kind": "sdf",
+   "material": "flag_c",
+   "position": [
+    -0.30000000000000004,
+    1.562044450422656,
+    -1.46
+   ],
+   "yawDeg": 0,
+   "part": {
+    "voxelSize": 0.002,
+    "prims": [
+     {
+      "type": "roundCone",
+      "a": [
+       0,
+       0.0,
+       0
+      ],
+      "b": [
+       0,
+       -0.09,
+       0
+      ],
+      "r1": 0.045,
+      "r2": 0.006
+     }
+    ]
+   }
+  },
+  {
+   "name": "flag6",
+   "kind": "sdf",
+   "material": "flag_a",
+   "position": [
+    -0.09999999999999987,
+    1.56,
+    -1.46
+   ],
+   "yawDeg": 0,
+   "part": {
+    "voxelSize": 0.002,
+    "prims": [
+     {
+      "type": "roundCone",
+      "a": [
+       0,
+       0.0,
+       0
+      ],
+      "b": [
+       0,
+       -0.09,
+       0
+      ],
+      "r1": 0.045,
+      "r2": 0.006
+     }
+    ]
+   }
+  },
+  {
+   "name": "flag7",
+   "kind": "sdf",
+   "material": "flag_b",
+   "position": [
+    0.10000000000000009,
+    1.562044450422656,
+    -1.46
+   ],
+   "yawDeg": 0,
+   "part": {
+    "voxelSize": 0.002,
+    "prims": [
+     {
+      "type": "roundCone",
+      "a": [
+       0,
+       0.0,
+       0
+      ],
+      "b": [
+       0,
+       -0.09,
+       0
+      ],
+      "r1": 0.045,
+      "r2": 0.006
+     }
+    ]
+   }
+  },
+  {
+   "name": "flag8",
+   "kind": "sdf",
+   "material": "flag_c",
+   "position": [
+    0.30000000000000004,
+    1.5680384757729338,
+    -1.46
+   ],
+   "yawDeg": 0,
+   "part": {
+    "voxelSize": 0.002,
+    "prims": [
+     {
+      "type": "roundCone",
+      "a": [
+       0,
+       0.0,
+       0
+      ],
+      "b": [
+       0,
+       -0.09,
+       0
+      ],
+      "r1": 0.045,
+      "r2": 0.006
+     }
+    ]
+   }
+  },
+  {
+   "name": "flag9",
+   "kind": "sdf",
+   "material": "flag_a",
+   "position": [
+    0.5,
+    1.5775735931288073,
+    -1.46
+   ],
+   "yawDeg": 0,
+   "part": {
+    "voxelSize": 0.002,
+    "prims": [
+     {
+      "type": "roundCone",
+      "a": [
+       0,
+       0.0,
+       0
+      ],
+      "b": [
+       0,
+       -0.09,
+       0
+      ],
+      "r1": 0.045,
+      "r2": 0.006
+     }
+    ]
+   }
+  },
+  {
+   "name": "flag10",
+   "kind": "sdf",
+   "material": "flag_b",
+   "position": [
+    0.7,
+    1.59,
+    -1.46
+   ],
+   "yawDeg": 0,
+   "part": {
+    "voxelSize": 0.002,
+    "prims": [
+     {
+      "type": "roundCone",
+      "a": [
+       0,
+       0.0,
+       0
+      ],
+      "b": [
+       0,
+       -0.09,
+       0
+      ],
+      "r1": 0.045,
+      "r2": 0.006
+     }
+    ]
+   }
+  },
+  {
+   "name": "flag11",
+   "kind": "sdf",
+   "material": "flag_c",
+   "position": [
+    0.9000000000000001,
+    1.6044708572938489,
+    -1.46
+   ],
+   "yawDeg": 0,
+   "part": {
+    "voxelSize": 0.002,
+    "prims": [
+     {
+      "type": "roundCone",
+      "a": [
+       0,
+       0.0,
+       0
+      ],
+      "b": [
+       0,
+       -0.09,
+       0
+      ],
+      "r1": 0.045,
+      "r2": 0.006
+     }
+    ]
+   }
+  },
+  {
+   "name": "flag12",
+   "kind": "sdf",
+   "material": "flag_a",
+   "position": [
+    1.1000000000000003,
+    1.62,
+    -1.46
+   ],
+   "yawDeg": 0,
+   "part": {
+    "voxelSize": 0.002,
+    "prims": [
+     {
+      "type": "roundCone",
+      "a": [
+       0,
+       0.0,
+       0
+      ],
+      "b": [
+       0,
+       -0.09,
+       0
+      ],
+      "r1": 0.045,
+      "r2": 0.006
+     }
+    ]
+   }
+  },
+  {
+   "name": "buntingString",
+   "kind": "sdf",
+   "material": "string",
+   "position": [
+    0,
+    0,
+    -1.46
+   ],
+   "part": {
+    "voxelSize": 0.002,
+    "prims": [
+     {
+      "type": "capsule",
+      "a": [
+       -1.4,
+       1.63,
+       0
+      ],
+      "b": [
+       0.0,
+       1.565,
+       0
+      ],
+      "r": 0.004
+     },
+     {
+      "type": "capsule",
+      "a": [
+       0.0,
+       1.565,
+       0
+      ],
+      "b": [
+       1.2,
+       1.63,
+       0
+      ],
+      "r": 0.004,
+      "blend": 0.004
+     }
+    ]
+   }
+  },
+  {
+   "name": "toyShelf",
+   "kind": "sdf",
+   "material": "wood_light",
+   "position": [
+    -1.15,
+    0,
+    -1.2
+   ],
+   "part": {
+    "voxelSize": 0.004,
+    "prims": [
+     {
+      "type": "roundBox",
+      "center": [
+       0,
+       0.2,
+       0
+      ],
+      "halfSize": [
+       0.35,
+       0.2,
+       0.15
+      ],
+      "rounding": 0.015
+     },
+     {
+      "type": "roundBox",
+      "center": [
+       0,
+       0.21,
+       0.04
+      ],
+      "halfSize": [
+       0.32,
+       0.075,
+       0.14
+      ],
+      "rounding": 0.008,
+      "subtract": true,
+      "blend": 0.004
+     }
+    ]
+   }
+  },
+  {
+   "name": "toyBear",
+   "kind": "sdf",
+   "material": "toy_bear",
+   "position": [
+    -1.2999999999999998,
+    0.4,
+    -1.2
+   ],
+   "yawDeg": 20,
+   "part": {
+    "voxelSize": 0.002,
+    "prims": [
+     {
+      "type": "ellipsoid",
+      "center": [
+       0,
+       0.06,
+       0
+      ],
+      "radii": [
+       0.06,
+       0.065,
+       0.055
+      ]
+     },
+     {
+      "type": "ellipsoid",
+      "center": [
+       0,
+       0.15,
+       0.005
+      ],
+      "radii": [
+       0.048,
+       0.045,
+       0.045
+      ],
+      "blend": 0.015
+     },
+     {
+      "type": "ellipsoid",
+      "center": [
+       0.035,
+       0.19,
+       0
+      ],
+      "radii": [
+       0.018,
+       0.018,
+       0.012
+      ],
+      "blend": 0.006,
+      "mirror": true
+     }
+    ]
+   },
+   "fuzz": {
+    "material": "toy_fiber",
+    "density": 60,
+    "length": 0.004,
+    "radius": 3e-05,
+    "tilt": 0.5,
+    "curl": 0.4,
+    "segments": 3,
+    "seed": 141
+   }
+  },
+  {
+   "name": "toyBunny",
+   "kind": "sdf",
+   "material": "toy_bunny",
+   "position": [
+    -0.9999999999999999,
+    0.4,
+    -1.2
+   ],
+   "yawDeg": -15,
+   "part": {
+    "voxelSize": 0.002,
+    "prims": [
+     {
+      "type": "ellipsoid",
+      "center": [
+       0,
+       0.055,
+       0
+      ],
+      "radii": [
+       0.05,
+       0.058,
+       0.048
+      ]
+     },
+     {
+      "type": "ellipsoid",
+      "center": [
+       0,
+       0.13,
+       0.005
+      ],
+      "radii": [
+       0.04,
+       0.04,
+       0.038
+      ],
+      "blend": 0.012
+     },
+     {
+      "type": "capsule",
+      "a": [
+       0.015,
+       0.16,
+       0
+      ],
+      "b": [
+       0.02,
+       0.23,
+       -0.005
+      ],
+      "r": 0.012,
+      "blend": 0.005,
+      "mirror": true
+     }
+    ]
+   }
+  },
+  {
+   "name": "block0",
+   "kind": "sdf",
+   "material": "block_a",
+   "position": [
+    -1.3499999999999999,
+    0.07,
+    -1.03
+   ],
+   "yawDeg": 0,
+   "part": {
+    "voxelSize": 0.0015,
+    "prims": [
+     {
+      "type": "roundBox",
+      "center": [
+       0,
+       0.03,
+       0
+      ],
+      "halfSize": [
+       0.03,
+       0.03,
+       0.03
+      ],
+      "rounding": 0.006
+     }
+    ]
+   }
+  },
+  {
+   "name": "block1",
+   "kind": "sdf",
+   "material": "block_b",
+   "position": [
+    -1.2799999999999998,
+    0.07,
+    -1.0
+   ],
+   "yawDeg": 12,
+   "part": {
+    "voxelSize": 0.0015,
+    "prims": [
+     {
+      "type": "roundBox",
+      "center": [
+       0,
+       0.03,
+       0
+      ],
+      "halfSize": [
+       0.03,
+       0.03,
+       0.03
+      ],
+      "rounding": 0.006
+     }
+    ]
+   }
+  },
+  {
+   "name": "block2",
+   "kind": "sdf",
+   "material": "block_c",
+   "position": [
+    -1.315,
+    0.13,
+    -1.0150000000000001
+   ],
+   "yawDeg": 24,
+   "part": {
+    "voxelSize": 0.0015,
+    "prims": [
+     {
+      "type": "roundBox",
+      "center": [
+       0,
+       0.03,
+       0
+      ],
+      "halfSize": [
+       0.03,
+       0.03,
+       0.03
+      ],
+      "rounding": 0.006
+     }
+    ]
+   }
+  },
+  {
+   "name": "rug",
+   "kind": "sdf",
+   "material": "rug",
+   "position": [
+    0,
+    0,
+    0.42
+   ],
+   "part": {
+    "voxelSize": 0.006,
+    "prims": [
+     {
+      "type": "disc",
+      "center": [
+       0,
+       0.004,
+       0
+      ],
+      "halfSize": [
+       0.95,
+       0.95,
+       0.004
+      ],
+      "rounding": 0.003,
+      "rotationDeg": [
+       90,
+       0,
+       0
+      ]
+     }
+    ]
+   },
+   "fuzz": {
+    "material": "rug_fiber",
+    "density": 18,
+    "length": 0.004,
+    "radius": 3e-05,
+    "tilt": 0.3,
+    "curl": 0.5,
+    "segments": 3,
+    "seed": 142
+   }
+  }
+ ],
+ "characters": [
+  {
+   "name": "C",
+   "asset": "../characters/boy_dark_hair.character.json",
+   "position": [
+    -0.82,
+    0.012,
+    0.86
+   ],
+   "yawDeg": 120,
+   "life": true
+  },
+  {
+   "name": "B",
+   "asset": "../characters/girl_brown_glasses.character.json",
+   "position": [
+    0.0,
+    0.012,
+    0.1
+   ],
+   "yawDeg": 0,
+   "life": true
+  },
+  {
+   "name": "A",
+   "asset": "../characters/girl_white_hair.character.json",
+   "position": [
+    0.38,
+    0.012,
+    0.15
+   ],
+   "yawDeg": -25,
+   "life": true
+  }
+ ],
+ "animation": {},
+ "actions": [
+  {
+   "type": "look",
+   "character": "A",
+   "start": 1,
+   "object": "boat",
+   "end": 180
+  },
+  {
+   "type": "look",
+   "character": "B",
+   "start": 1,
+   "object": "boat",
+   "end": 40
+  },
+  {
+   "type": "walk",
+   "character": "C",
+   "start": 1,
+   "end": 54,
+   "to": [
+    -0.45,
+    0.4
+   ],
+   "face": 75
+  },
+  {
+   "type": "look",
+   "character": "C",
+   "start": 30,
+   "object": "boat",
+   "end": 180
+  },
+  {
+   "type": "reach",
+   "character": "B",
+   "hand": "L",
+   "object": "boat",
+   "start": 40,
+   "contact": 56,
+   "liftEnd": 72,
+   "place": 116,
+   "placeAt": [
+    0.02,
+    0.479,
+    0.34
+   ],
+   "release": 120,
+   "end": 136,
+   "graspRadius": 0.014,
+   "lift": 0.11
+  },
+  {
+   "type": "expression",
+   "character": "B",
+   "name": "surprise",
+   "start": 74,
+   "end": 104,
+   "weight": 0.8
+  },
+  {
+   "type": "expression",
+   "character": "A",
+   "name": "surprise",
+   "start": 78,
+   "end": 108,
+   "weight": 1.0
+  },
+  {
+   "type": "touch",
+   "character": "A",
+   "hand": "R",
+   "start": 128,
+   "contact": 144,
+   "end": 166,
+   "target": [
+    0.22,
+    0.476,
+    0.34
+   ]
+  },
+  {
+   "type": "expression",
+   "character": "C",
+   "name": "smile",
+   "start": 150,
+   "end": 200,
+   "weight": 1.0
+  }
+ ],
+ "director": {
+  "minShot": 36
+ }
+}

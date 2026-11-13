@@ -616,3 +616,18 @@ TEST_CASE("walk action moves the character and keeps the standing foot planted")
   auto g = ev->characterGlobals(0, 70);
   CHECK(std::abs(g[size_t(footL)][3].z - g[size_t(footR)][3].z) < 0.03f);
 }
+
+TEST_CASE("touch action puts the index fingertip on the target") {
+  Json actions = Json::parse(R"([{"type": "touch", "character": "kid", "hand": "L", "start": 5, "contact": 20, "end": 40,
+      "target": [0.13, 0.45, 0.12]}])");
+  auto ev = loadTestScene(actions, false);
+  Pose pose;
+  ev->characterGlobals(0, 20, &pose);
+  auto tips = fingertips(ev->characters()[0].asset.skeleton, pose, mat4(1), 'L');
+  REQUIRE(tips.size() == 5);
+  MESSAGE("index fingertip to target at contact: " << glm::distance(tips[4], vec3(0.13f, 0.45f, 0.12f)) * 1000 << " mm");
+  CHECK(glm::distance(tips[4], vec3(0.13f, 0.45f, 0.12f)) < 0.006f);
+  // Pointing: the index is straighter than the other fingers at contact.
+  const auto& sk = ev->characters()[0].asset.skeleton;
+  CHECK(glm::angle(pose.local[size_t(sk.find("f3a.L"))]) < glm::angle(pose.local[size_t(sk.find("f1a.L"))]));
+}

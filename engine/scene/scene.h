@@ -57,6 +57,9 @@ struct Scene {
   // High-level actions ("look", "reach", "expression", "walk"), compiled into generated tracks when the scene is
   // loaded for evaluation (see actions.cpp). Saved as written.
   Json actions = Json::array();
+  // Automatic camera ("director"): when set (an object, possibly empty), camera shots are planned from the actions.
+  // Hand-keyed camera tracks always win. See actions.cpp.
+  Json director = nullptr;
 };
 
 Result<Scene> loadScene(const std::filesystem::path& path);

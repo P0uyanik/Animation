@@ -125,6 +125,7 @@ Result<Scene> loadScene(const std::filesystem::path& path) {
     s.characters.push_back(cd);
   }
   if (auto it = j.find("actions"); it != j.end() && it->is_array()) s.actions = *it;
+  if (auto it = j.find("director"); it != j.end() && it->is_object()) s.director = *it;
   if (auto it = j.find("animation"); it != j.end() && it->is_object()) {
     for (auto& [track, keys] : it->items()) {
       Track t;
@@ -206,6 +207,7 @@ Json sceneToJson(const Scene& s) {
   j["characters"] = chars;
   j["animation"] = anim;
   if (!s.actions.empty()) j["actions"] = s.actions;
+  if (s.director.is_object()) j["director"] = s.director;
   return j;
 }
 
