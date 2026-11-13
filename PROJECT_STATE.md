@@ -1,6 +1,6 @@
 # Project state
 
-_Last updated: 2026-11-13, end of session 1 of implementation._
+_Last updated: 2026-11-13, end of look iteration 2._
 
 ## Summary
 Plush Studio is a standalone C++ application for making stylized plush/felt/wool 3D animation without
@@ -16,8 +16,15 @@ White-haired girl in a sunlit classroom looking down at a paper boat and reachin
 - Output: `docs/milestone01/milestone01_640x360.mp4` (48 frames, 640x360, 32 spp, rendered in 21 min on 4 cores)
 - Stills: `docs/milestone01/` (full frame, head close-up, contact sheet, Studio screenshot)
 
+## Look iteration 2 (current)
+Milestone 02: the improved character picks up the paper boat from a play table (3 s, 72 frames): eyes lead
+via look-at, surprised brows and "oh" mouth, lean-in, IK reach, grasp (object attaches to the hand), lift,
+blink, smile. Scenes: `content/scenes/milestone02_classroom.scene.json`, face test `test_face.scene.json`.
+Character generator: `tools/make_girl_v2.py` (reproducible edits on top of the frozen milestone-01 asset).
+Assessment: `docs/SCALABILITY_ASSESSMENT.md`.
+
 ## Build & test status
-- Linux (Ubuntu 24.04, GCC 13): builds with zero warnings; 10/10 test cases pass.
+- Linux (Ubuntu 24.04, GCC 13): builds cleanly; 14 unit test cases + 2 look-regression tests (milestone 01, neutral face) pass.
 - Studio verified under a virtual display with software OpenGL (screenshots of viewport and in-app path tracing).
 - Windows: not built yet (vcpkg manifest prepared).
 

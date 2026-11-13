@@ -1,6 +1,6 @@
 # Next steps
 
-**Exact next task:** Session 2, step 1. Review the milestone video (`renders/m01_anim.mp4`) for fiber flicker (BUGS-07), then start the "Studio editing core": undo/redo command stack + viewport picking + transform gizmos (ImGuizmo).
+**Exact next task:** Look iteration 3 — guide-curve tool for hair locks and clumps (draw lock paths on the head in Studio; replaces procedural placement where it matters), then skin subsurface scattering. Review `renders/m02_anim_v3.mp4` first.
 
 ## Resume checklist (every session)
 1. Read `PROJECT_STATE.md`, this file, `BUGS_AND_ISSUES.md`.

@@ -24,7 +24,7 @@ Legend: **Implemented** (works and tested) · **Experimental** (works, limited o
 | Animation | Expressions as morph targets (smile, mouth open), blink lids, brows | Implemented | unit test, face test sheet |
 | Animation | Dope sheet, curve editor, pose library | Planned | |
 | Hair/fuzz | Surface fuzz with stray fibres | Implemented | unit test (outward), renders |
-| Hair/fuzz | Yarn locks (core + twisted fibres) | Experimental | renders |
+| Hair/fuzz | Yarn locks (felt core tube + twisted fibres) | Experimental | renders, close-ups |
 | Hair/fuzz | Spring-bone secondary motion | Planned | |
 | Rendering | CPU path tracer (Embree), MIS, sun/rect/sky lights | Implemented | unit tests, renders |
 | Rendering | Standard / plush / fiber materials | Implemented | energy + pdf unit tests |
@@ -32,7 +32,7 @@ Legend: **Implemented** (works and tested) · **Experimental** (works, limited o
 | Rendering | Thin-lens depth of field, aperture blades | Implemented | renders |
 | Rendering | Owen-scrambled Sobol sampling | Implemented | measured error vs 1024-spp reference |
 | Rendering | Fibre level of detail | Implemented | measured: 5.7x fewer segments, RMSE 0.007 |
-| Rendering | Adaptive sampling | Experimental | implemented; measurement pending |
+| Rendering | Adaptive sampling | Experimental | measured −11% at threshold 0.1 on milestone 02 |
 | Rendering | Denoising (OIDN) with fibre-aware guide | Implemented | renders |
 | Rendering | AgX-style filmic tone mapping | Implemented | renders |
 | Rendering | Subsurface scattering (skin), motion blur, EXR output | Planned | |
@@ -45,6 +45,6 @@ Legend: **Implemented** (works and tested) · **Experimental** (works, limited o
 | Physics | Rigid bodies (Jolt), interactions | Planned | |
 | Export | Frame sequences + resume + H.264 video | Implemented | milestone animation |
 | Export | Audio, ProRes master | Planned | |
-| Testing | Look regression (milestone 01 reference image) | Implemented | CTest |
+| Testing | Look regression (milestone 01 + neutral face reference images) | Implemented | CTest |
 | Platform | Linux build | Implemented | CI-less local build |
 | Platform | Windows build | Placeholder | vcpkg.json written, not built yet |

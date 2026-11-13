@@ -40,12 +40,15 @@ close we actually get: (1) better shape-authoring tools for hair clumps, hands a
 | Same with fibre LOD | 108 s (image difference RMSE 0.007, below noise) |
 | Fibre segments with / without LOD | 2.4M / 13.4M |
 | Sampler: error at 64 spp vs 1024-spp reference | 0.0271 (random) → 0.0233 (Owen-Sobol) |
-| Milestone 02 animation frame, 640x360, 32 spp | see DEVELOPMENT_LOG |
+| Adaptive sampling (mean tile error 0.1), same frame | 96 s (-11%), image difference RMSE 0.0034 |
+| Milestone 02 animation, 72 frames at 640x360, 32 spp (3 cores) | 35 s per frame, 42 min total |
+| Final-quality wide frame, 1280x720, 128 spp | 219 s |
+| Final-quality close-up, 960x540, 128 spp (more fibres on screen) | 287 s |
 
-**Projection to final quality.** 1920x1080 at 128 spp is about 4x the pixels and 2x the samples of the
-960x540/64 spp frame: roughly 14 minutes per frame on this 4-core machine before adaptive sampling.
-A typical modern 8-core desktop CPU is about 3–4x faster, so about 3–5 minutes per frame. A 3-minute
-short (4,320 frames) is then roughly 9–15 days of continuous rendering on one desktop.
+**Projection to final quality (from the measured 1280x720/128 spp frame).** 1920x1080 has 2.25x the
+pixels: about 8 minutes per frame on this 4-core cloud machine. A typical modern 8-core desktop CPU is
+roughly 3–4x faster: about 2–3 minutes per frame. A 3-minute short (4,320 frames) is then about 6–9 days
+of continuous rendering on one desktop, less with lower sample counts plus denoising for wide shots.
 
 **Conclusion on speed:** quality is not blocked by the CPU, but throughput is. For short films this is
 workable with overnight batches; for a regular series we will want (in order): adaptive sampling,

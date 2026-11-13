@@ -5,7 +5,8 @@
 | BUGS-01 | Medium | Look | Iteration 2: hair cap clumpier with strand relief and a scalloped fringe, but the overall silhouette still reads partly as a hat; bow still reads as blue beads | Guide-curve clump tool; ribbon primitive for the bow |
 | BUGS-02 | Fixed | Look | Mouth/brows/blink missing | Iteration 2: measured-surface mouth groove, smile/open morphs, brows, eyelid blink |
 | BUGS-12 | Low | Look | Brows sit very close under the fringe; no eyelashes; closed lids look flat | Lash line fibres, lid crease |
-| BUGS-13 | Medium | Look | Yarn locks read as wavy sheets in close-ups (gaps/translucency between fine fibres) | Guide-curve lock tool with thicker clumps; per-lock colour variation |
+| BUGS-13 | Low | Look | Yarn locks looked like plastic sheets in close-ups | Improved: matte felt cores; next: guide-curve lock tool, per-lock colour variation |
+| BUGS-14 | Low | Render | Adaptive sampling only gives ~11% on this scene (noise is everywhere: GI, DOF, fibres) | Better light sampling (light tree), path guiding later |
 | BUGS-03 | Low | Data | Saving a character from Studio writes mirrored primitives explicitly (mirror flags lost) | Keep authored (unexpanded) parts in the asset and expand only for building |
 | BUGS-04 | Fixed | Perf | Full-quality evaluator built the character twice on first in-app render | Fixed: rebuild only after in-app edits |
 | BUGS-05 | Low | Look | Rug colours read pale; colored fibres over a textured base do not take the texture colour | Fibres sample the base texture at their root |
