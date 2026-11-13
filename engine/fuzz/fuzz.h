@@ -61,4 +61,10 @@ FiberSet generateLocks(const LockParams& params, float densityScale = 1.0f);
 
 std::shared_ptr<FiberSet> transformFibers(const FiberSet& fibers, const mat4& m);
 
+// Coverage-preserving level of detail: keeps ~1/k of the curves (deterministic subset,
+// pinned curves always kept) and multiplies their radius by k.
+std::shared_ptr<FiberSet> thinFibers(const FiberSet& fibers, float k);
+// LOD factor for fibres of root radius `radius` seen at `distance` with `metresPerPixelAt1m` footprint.
+float fiberLodFactor(float radius, float distance, float metresPerPixelAt1m, float maxFactor = 6.0f);
+
 }  // namespace plush

@@ -87,6 +87,8 @@ std::shared_ptr<FiberSet> deformSurfaceFibers(const SurfaceFibers& sf, const Mes
   size_t n = sf.fiberCount();
   size_t ppf = size_t(sf.pointsPerFiber);
   out->fiberCount = n;
+  out->curveOffsets.resize(n + 1);
+  for (size_t i = 0; i <= n; ++i) out->curveOffsets[i] = uint32_t(i * ppf);
   out->points.resize(n * ppf);
   out->segmentStarts.resize(n * (ppf - 1));
   parallelFor(n, [&](size_t i) {
@@ -105,11 +107,14 @@ FiberSet generateLocks(const LockParams& prm, float densityScale) {
   const int seg = std::max(4, prm.segments);
   const int fibers = std::max(0, int(float(prm.fibersPerLock) * densityScale));
   Rng rng(prm.seed, 11);
-  auto addCurve = [&](const std::vector<vec4>& pts) {
+  out.curveOffsets.push_back(0);
+  auto addCurve = [&](const std::vector<vec4>& pts, bool pin) {
     uint32_t base = uint32_t(out.points.size());
+    out.pinned.push_back(pin ? 1 : 0);
     out.points.insert(out.points.end(), pts.begin(), pts.end());
     for (uint32_t k = 0; k + 1 < pts.size(); ++k) out.segmentStarts.push_back(base + k);
     out.fiberCount++;
+    out.curveOffsets.push_back(uint32_t(out.points.size()));
   };
   for (int j = 0; j < prm.count; ++j) {
     float t = (float(j) + 0.5f + 0.6f * (rng.next() - 0.5f)) / float(prm.count);
@@ -156,7 +161,7 @@ FiberSet generateLocks(const LockParams& prm, float densityScale) {
       lr[k] = prm.lockRadius * (0.8f + 0.35f * std::sin(kPi * std::min(1.0f, s * 1.15f))) * (1 - 0.85f * smoothstep01((s - 0.82f) / 0.18f));
       core[k] = vec4(guide[k], std::max(lr[k] * prm.coreRatio, 2e-4f));
     }
-    addCurve(core);
+    addCurve(core, true);
     std::vector<vec4> pts(guide.size());
     for (int i = 0; i < fibers; ++i) {
       bool stray = rng.next() < 0.06f;
@@ -173,7 +178,7 @@ FiberSet generateLocks(const LockParams& prm, float densityScale) {
         vec3 p = guide[kk] + lr[kk] * rr * (std::cos(th) * fn[kk] + std::sin(th) * fb[kk]) + frizz;
         pts[k] = vec4(p, fr * (1.0f - 0.5f * s));
       }
-      addCurve(pts);
+      addCurve(pts, false);
     }
   }
   return out;
@@ -183,6 +188,8 @@ std::shared_ptr<FiberSet> transformFibers(const FiberSet& fibers, const mat4& m)
   auto out = std::make_shared<FiberSet>();
   out->segmentStarts = fibers.segmentStarts;
   out->fiberCount = fibers.fiberCount;
+  out->curveOffsets = fibers.curveOffsets;
+  out->pinned = fibers.pinned;
   out->points.resize(fibers.points.size());
   float scale = std::cbrt(std::abs(glm::determinant(mat3(m))));
   parallelFor(fibers.points.size(), [&](size_t i) {
@@ -190,6 +197,36 @@ std::shared_ptr<FiberSet> transformFibers(const FiberSet& fibers, const mat4& m)
     out->points[i] = vec4(vec3(m * vec4(vec3(p), 1.0f)), p.w * scale);
   }, 8192);
   return out;
+}
+
+std::shared_ptr<FiberSet> thinFibers(const FiberSet& in, float k) {
+  if (k <= 1.01f || in.curveOffsets.size() < 2) return std::make_shared<FiberSet>(in);
+  auto out = std::make_shared<FiberSet>();
+  float keep = 1.0f / k;
+  size_t curves = in.curveOffsets.size() - 1;
+  for (size_t c = 0; c < curves; ++c) {
+    bool pin = c < in.pinned.size() && in.pinned[c];
+    if (!pin && hashToFloat(hash64(c * 2654435761ull + 17)) >= keep) continue;
+    uint32_t a = in.curveOffsets[c], b = in.curveOffsets[c + 1];
+    uint32_t base = uint32_t(out->points.size());
+    for (uint32_t i = a; i < b; ++i) {
+      vec4 p = in.points[i];
+      out->points.push_back(vec4(vec3(p), pin ? p.w : p.w * k));
+    }
+    for (uint32_t i = 0; i + 1 < b - a; ++i) out->segmentStarts.push_back(base + i);
+    out->curveOffsets.push_back(base);
+    out->pinned.push_back(pin ? 1 : 0);
+    out->fiberCount++;
+  }
+  out->curveOffsets.push_back(uint32_t(out->points.size()));
+  return out;
+}
+
+float fiberLodFactor(float radius, float distance, float metresPerPixelAt1m, float maxFactor) {
+  if (radius <= 0 || metresPerPixelAt1m <= 0) return 1.0f;
+  float footprint = distance * metresPerPixelAt1m;      // metres covered by one pixel
+  float k = (0.12f * footprint) / radius;              // fibres thinner than ~1/4 pixel get merged
+  return std::clamp(k, 1.0f, maxFactor);
 }
 
 }  // namespace plush

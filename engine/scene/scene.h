@@ -59,6 +59,7 @@ struct EvalOptions {
   float voxelScale = 1.0f;
   float fuzzDensity = 1.0f;
   bool fuzz = true;
+  int lodWidth = 0;  // render width in pixels for fibre level of detail (0 = off)
 };
 
 class SceneEvaluator {
@@ -91,6 +92,7 @@ class SceneEvaluator {
     int fuzzMaterial = 0;
   };
   Scene scene_;
+  EvalOptions options_;
   std::vector<Material> materials_;
   std::map<std::string, int> materialIndex_;
   std::vector<ObjectGeometry> objects_;

@@ -28,6 +28,7 @@ void usage() {
       "  --voxel-scale X      mesh coarseness multiplier (default 1)\n"
       "  --fuzz-density X     fiber count multiplier (default 1)\n"
       "  --no-fuzz            disable all fibers\n"
+      "  --no-lod             disable fibre level of detail\n"
       "  --no-denoise         skip the denoiser\n"
       "  --overwrite          re-render frames that already exist\n"
       "  --hdr                also write linear .hdr files\n"
@@ -51,6 +52,7 @@ int main(int argc, char** argv) {
   int width = 0, height = 0, spp = 0, depth = 0;
   float exposure = NAN;
   bool noDenoise = false;
+  bool noLod = false;
   fs::path compareRef;
   double maxRmse = 0.03;
   std::optional<vec3> camPos, camTarget;
@@ -87,6 +89,7 @@ int main(int argc, char** argv) {
     else if (a == "--voxel-scale") eval.voxelScale = std::stof(next());
     else if (a == "--fuzz-density") eval.fuzzDensity = std::stof(next());
     else if (a == "--no-fuzz") eval.fuzz = false;
+    else if (a == "--no-lod") noLod = true;
     else if (a == "--no-denoise") noDenoise = true;
     else if (a == "--overwrite") overwrite = true;
     else if (a == "--compare") compareRef = next();
@@ -124,6 +127,7 @@ int main(int argc, char** argv) {
   if (focal > 0) scene->camera.focalMm = focal;
   if (fstop >= 0) scene->camera.fStop = fstop;
   bool sequence = !outdir.empty();
+  eval.lodWidth = noLod ? 0 : rs.width;
 
   Stopwatch total;
   SceneEvaluator evaluator;

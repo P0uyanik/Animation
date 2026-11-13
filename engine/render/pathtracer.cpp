@@ -23,6 +23,47 @@ float powerHeuristic(float a, float b) {
   return a2 + b2 > 0 ? a2 / (a2 + b2) : 0.0f;
 }
 
+// Owen-scrambled Sobol (Burley 2020, "Practical Hash-based Owen Scrambling"): every
+// dimension pair is an independently shuffled and scrambled 2D Sobol sequence, so
+// samples stay well stratified per pixel and progressive rendering keeps working.
+uint32_t reverseBits(uint32_t x) {
+  x = ((x >> 1) & 0x55555555u) | ((x & 0x55555555u) << 1);
+  x = ((x >> 2) & 0x33333333u) | ((x & 0x33333333u) << 2);
+  x = ((x >> 4) & 0x0F0F0F0Fu) | ((x & 0x0F0F0F0Fu) << 4);
+  x = ((x >> 8) & 0x00FF00FFu) | ((x & 0x00FF00FFu) << 8);
+  return (x >> 16) | (x << 16);
+}
+uint32_t laineKarras(uint32_t x, uint32_t seed) {
+  x += seed;
+  x ^= x * 0x6c50b47cu;
+  x ^= x * 0xb82f1e52u;
+  x ^= x * 0xc7afe638u;
+  x ^= x * 0x8d22f6e6u;
+  return x;
+}
+uint32_t owenScramble(uint32_t x, uint32_t seed) { return reverseBits(laineKarras(reverseBits(x), seed)); }
+uint32_t hash32(uint32_t a, uint32_t b) { return uint32_t(hash64((uint64_t(a) << 32) | b)); }
+
+class Sampler {
+ public:
+  Sampler(uint32_t pixelSeed, uint32_t index) : seed_(pixelSeed), index_(index) {}
+  vec2 next2() {
+    uint32_t seed = hash32(seed_, dim_++);
+    uint32_t i = owenScramble(index_, seed);
+    uint32_t x = reverseBits(i), y = 0;
+    for (uint32_t v = 1u << 31; i; i >>= 1, v ^= v >> 1)
+      if (i & 1u) y ^= v;
+    x = owenScramble(x, hash32(seed, 1));
+    y = owenScramble(y, hash32(seed, 2));
+    const float k = 1.0f / 4294967296.0f;
+    return {std::min(float(x) * k, 0.99999994f), std::min(float(y) * k, 0.99999994f)};
+  }
+  float next() { return next2().x; }
+
+ private:
+  uint32_t seed_, index_, dim_ = 0;
+};
+
 void embreeError(void*, RTCError code, const char* str) { logError("Embree error {}: {}", int(code), str ? str : ""); }
 
 struct CameraModel {
@@ -229,7 +270,7 @@ struct PathTracer::Impl {
     return sp.fiber ? 1.0f / (4 * kPi) : std::max(0.0f, glm::dot(wi, sp.ns)) * kInvPi;
   }
 
-  vec3 directLight(const ShadingPoint& sp, vec3 wo, Rng& rng, int depth, float clampLum) const {
+  vec3 directLight(const ShadingPoint& sp, vec3 wo, Sampler& rng, int depth, float clampLum) const {
     vec3 sum(0);
     for (const Light& l : snap->lights) {
       vec3 wi, Le;
@@ -285,7 +326,7 @@ struct PathTracer::Impl {
     return sum;
   }
 
-  vec3 radiance(vec3 o, vec3 d, Rng& rng, const RenderSettings& rs, vec3* albedo, vec3* normal) const {
+  vec3 radiance(vec3 o, vec3 d, Sampler& rng, const RenderSettings& rs, vec3* albedo, vec3* normal) const {
     vec3 L(0), beta(1);
     float tnear = 0, prevPdf = 0;
     ShadingPoint prev;
@@ -389,7 +430,7 @@ void PathTracer::accumulate(const RenderSettings& rs, int count, const std::func
       for (int x = x0; x < std::min(x0 + tile, im.width); ++x) {
         size_t pix = size_t(y) * size_t(im.width) + size_t(x);
         for (int s = first; s < first + count; ++s) {
-          Rng rng(hash64(uint64_t(rs.seed) * 0x9E3779B97F4A7C15ull ^ pix * 0x100000001B3ull) ^ uint64_t(s), uint64_t(s) + 1);
+          Sampler rng(uint32_t(hash64(uint64_t(rs.seed) * 0x9E3779B97F4A7C15ull ^ pix * 0x100000001B3ull)), uint32_t(s));
           vec2 jitter = rng.next2();
           vec3 o, d;
           float lu0 = rng.next();

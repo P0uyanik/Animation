@@ -39,6 +39,8 @@ struct FiberSet {
   std::vector<vec4> points;
   std::vector<uint32_t> segmentStarts;
   size_t fiberCount = 0;
+  std::vector<uint32_t> curveOffsets;  // first point of each curve (+ end); enables level of detail
+  std::vector<uint8_t> pinned;         // curves never removed by level of detail (e.g. lock cores)
 };
 
 enum class MaterialType { Standard, Plush, Fiber };

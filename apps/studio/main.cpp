@@ -233,13 +233,15 @@ void startRender(App& a) {
     if (rebuild) {
       setStatus("building full-quality scene (fibres, fine meshes)...");
       a.full = std::make_unique<SceneEvaluator>();
-      if (auto r = a.full->load(sceneCopy, EvalOptions{}); !r) {
+      EvalOptions fullOpt;
+      fullOpt.lodWidth = rs.width;  // coverage-preserving fibre level of detail
+      if (auto r = a.full->load(sceneCopy, fullOpt); !r) {
         setStatus("error: " + r.error().message);
         a.job.running = false;
         return;
       }
       if (edited)
-        for (size_t i = 0; i < assets.size(); ++i) (void)a.full->rebuildCharacter(i, assets[i], EvalOptions{});
+        for (size_t i = 0; i < assets.size(); ++i) (void)a.full->rebuildCharacter(i, assets[i], fullOpt);
     }
     a.full->mutableScene() = sceneCopy;
     for (auto& m : mats) a.full->updateMaterial(m);

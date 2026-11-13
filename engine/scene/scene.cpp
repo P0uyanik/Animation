@@ -224,6 +224,7 @@ int SceneEvaluator::materialIndex(const std::string& name) const {
 
 Result<void> SceneEvaluator::load(const Scene& scene, const EvalOptions& opt) {
   scene_ = scene;
+  options_ = opt;
   materials_.clear();
   materialIndex_.clear();
   objects_.clear();
@@ -371,6 +372,25 @@ std::shared_ptr<FrameSnapshot> SceneEvaluator::evaluate(double frame) const {
     cam.focusDistance = lens.z;
   }
   snap->camera = cam;
+  if (options_.lodWidth > 0) {
+    float perMetre = (cam.sensorWidthMm / cam.focalMm) / float(options_.lodWidth);
+    for (auto& f : snap->fibers) {
+      const FiberSet& fs = *f.fibers;
+      if (fs.points.empty()) continue;
+      // Use the median root radius and the distance to the set's centre.
+      Aabb box;
+      float radius = 0;
+      size_t step = std::max<size_t>(1, fs.points.size() / 256), n = 0;
+      for (size_t i = 0; i < fs.points.size(); i += step, ++n) {
+        box.expand(vec3(fs.points[i]));
+        radius += fs.points[i].w;
+      }
+      radius /= float(std::max<size_t>(1, n));
+      float dist = std::max(0.05f, glm::distance(box.center(), cam.position) - 0.5f * glm::length(box.extent()) * 0.5f);
+      float k = fiberLodFactor(radius, dist, perMetre);
+      if (k > 1.01f) f.fibers = thinFibers(fs, k);
+    }
+  }
   return snap;
 }
 
