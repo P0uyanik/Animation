@@ -41,7 +41,7 @@ close we actually get: (1) better shape-authoring tools for hair clumps, hands a
 | Fibre segments with / without LOD | 2.4M / 13.4M |
 | Sampler: error at 64 spp vs 1024-spp reference | 0.0271 (random) → 0.0233 (Owen-Sobol) |
 | Adaptive sampling (mean tile error 0.1), same frame | 96 s (-11%), image difference RMSE 0.0034 |
-| Milestone 02 animation, 72 frames at 640x360, 32 spp (3 cores) | 35 s per frame, 42 min total |
+| Milestone 02 animation, 72 frames at 640x360, 32 spp | 35 s per frame on 3 cores; 22.8 s on 4 cores with adaptive sampling (27.5 min total) |
 | Final-quality wide frame, 1280x720, 128 spp | 219 s |
 | Final-quality close-up, 960x540, 128 spp (more fibres on screen) | 287 s |
 

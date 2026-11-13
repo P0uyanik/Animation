@@ -59,3 +59,5 @@ collar part, soles, finger hands, head +6%. Milestone 02 scene with table, boat 
 
 **Bugs found by tests:** IK rotation order (unit test caught a 7–42 mm miss); a test target outside arm reach.
 **Regression:** milestone 01 still matches its reference (RMSE 0.016 ≤ 0.03) after all engine changes.
+
+**Final milestone 02 render:** 72 frames at 640x360, 32 spp, adaptive 0.1, 4 threads: 22.8 s/frame average, 27.5 min total.
