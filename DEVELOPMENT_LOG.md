@@ -61,3 +61,16 @@ collar part, soles, finger hands, head +6%. Milestone 02 scene with table, boat 
 **Regression:** milestone 01 still matches its reference (RMSE 0.016 ≤ 0.03) after all engine changes.
 
 **Final milestone 02 render:** 72 frames at 640x360, 32 spp, adaptive 0.1, 4 threads: 22.8 s/frame average, 27.5 min total.
+
+## 2026-11-13 — Iteration 3: reference-driven quality, three characters, interaction
+
+**Analysis:** `docs/ITERATION_03_REFERENCE_GAP_ANALYSIS.md` (references + 5 s water-table video studied frame by frame).
+**Engine:** explicit lock curves (Catmull-Rom, taper, helical curl, felt core, fibre halo) in bone-attached,
+mirrorable lock groups; glass/water dielectric with a shadow-only scene; denoiser guides through glass; rippling
+water height field; floating objects (yaw kept, tilt from the water); staged paper fold; default pose/expressions.
+**Content:** character kit script; characters A, B, C; lineup, expression and group scenes.
+**Studio:** hair-lock panel, tube preview of curves, `--script-hair-edit` / `--script-verify` round-trip test.
+**Look iterations (each checked with renders):** cap read as a hat → slim base ending at the hairline + crown and
+fringe locks; B's curls covered her face → curls only on back/sides; telephone-cord curls → thicker, looser; A's
+noodle locks → denser layers with a longer halo; fogged lenses → guides through glass; hedgehog spikes → rounder clumps.
+**Tests:** 16 unit tests + milestone 01 and face (v2) regressions green after every engine change.

@@ -1,6 +1,8 @@
 # Next steps
 
-**Exact next task:** Look iteration 3 — guide-curve tool for hair locks and clumps (draw lock paths on the head in Studio; replaces procedural placement where it matters), then skin subsurface scattering. Review `renders/m02_anim_v3.mp4` first.
+**Exact next task:** Iteration 4 — (1) skin subsurface scattering, (2) viewport picking + drag gizmos so hair locks
+and props are edited by dragging instead of numbers, (3) keep authored (unexpanded) mirror data in assets
+(BUGS-03/17), (4) garment motifs and seams, (5) new-character-from-template UI. Check `docs/ITERATION_03_ACCEPTANCE_REPORT.md` first.
 
 ## Resume checklist (every session)
 1. Read `PROJECT_STATE.md`, this file, `BUGS_AND_ISSUES.md`.

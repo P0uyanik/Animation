@@ -58,9 +58,9 @@ s["characters"] = [
 ]
 boat_on_water = [T[0] + 0.045, 0.49, T[2] - 0.02]
 hand_rest = [0.155, 0.442, 0.0]
-s["camera"].update(position=[0.0, 1.08, 1.75], target=[0.0, 0.58, 0.25], focalMm=40, fStop=2.4, focusDistance=-1)
+s["camera"].update(position=[0.0, 1.22, 2.0], target=[0.0, 0.63, 0.2], focalMm=35, fStop=2.4, focusDistance=-1)
 s["animation"] = {
-    "camera.position": [[1, [0.0, 1.08, 1.75]], [72, [0.05, 1.02, 1.55]]],
+    "camera.position": [[1, [0.0, 1.22, 2.0]], [72, [0.06, 1.15, 1.8]]],
     "boat.fold": [[1, 0.0], [6, 0.0], [30, 1.0]],
     # B: folds the paper at chest height, reaches over the water and lets go, then smiles.
     "B/ik.hand.L": [[1, [0.06, 0.58, 0.15]], [30, [0.06, 0.58, 0.15]], [44, [0.05, 0.53, 0.37]], [48, [0.05, 0.53, 0.37]], [62, hand_rest], [72, hand_rest]],

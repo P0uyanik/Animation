@@ -1,6 +1,6 @@
 # Project state
 
-_Last updated: 2026-11-13, end of look iteration 2._
+_Last updated: 2026-11-13, iteration 3 (reference-driven quality, three characters, interaction)._
 
 ## Summary
 Plush Studio is a standalone C++ application for making stylized plush/felt/wool 3D animation without
@@ -16,7 +16,16 @@ White-haired girl in a sunlit classroom looking down at a paper boat and reachin
 - Output: `docs/milestone01/milestone01_640x360.mp4` (48 frames, 640x360, 32 spp, rendered in 21 min on 4 cores)
 - Stills: `docs/milestone01/` (full frame, head close-up, contact sheet, Studio screenshot)
 
-## Look iteration 2 (current)
+## Iteration 3 (current)
+- Three reference characters built with `tools/charkit.py`: `girl_white_hair` (A), `girl_brown_glasses` (B),
+  `boy_dark_hair` (C), each with layered explicit hair locks, lashes, distinct faces/personality and garments.
+- Milestone 03: `content/scenes/milestone03_watertable.scene.json` — the three around a water table; B folds a
+  paper boat and sets it on rippling water; A and C react. Test scenes: `test_lineup`, `test_expressions_girl_white_hair`.
+- Studio: hair-lock editor, curve tubes in the viewport, scripted edit → save → reopen test.
+- Frozen for regression: milestone 01 (`girl_white_hair_m01`), milestone 02 + face test (`girl_white_hair_v2`).
+- Reports: `docs/ITERATION_03_REFERENCE_GAP_ANALYSIS.md`, `docs/ITERATION_03_ACCEPTANCE_REPORT.md`.
+
+## Look iteration 2
 Milestone 02: the improved character picks up the paper boat from a play table (3 s, 72 frames): eyes lead
 via look-at, surprised brows and "oh" mouth, lean-in, IK reach, grasp (object attaches to the hand), lift,
 blink, smile. Scenes: `content/scenes/milestone02_classroom.scene.json`, face test `test_face.scene.json`.

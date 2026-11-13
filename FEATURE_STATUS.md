@@ -25,6 +25,8 @@ Legend: **Implemented** (works and tested) · **Experimental** (works, limited o
 | Animation | Dope sheet, curve editor, pose library | Planned | |
 | Hair/fuzz | Surface fuzz with stray fibres | Implemented | unit test (outward), renders |
 | Hair/fuzz | Yarn locks (felt core tube + twisted fibres) | Experimental | renders, close-ups |
+| Hair/fuzz | Explicit lock curves: taper, curl, felt core, fibre halo; lock groups per bone | Implemented | unit test, renders of 3 hairstyles |
+| Hair/fuzz | Hair-lock editor in Studio (points, thickness, curl, add/duplicate/delete, apply, save) | Implemented | scripted edit test + screenshot; not click-tested by a person |
 | Hair/fuzz | Spring-bone secondary motion | Planned | |
 | Rendering | CPU path tracer (Embree), MIS, sun/rect/sky lights | Implemented | unit tests, renders |
 | Rendering | Standard / plush / fiber materials | Implemented | energy + pdf unit tests |
@@ -35,13 +37,19 @@ Legend: **Implemented** (works and tested) · **Experimental** (works, limited o
 | Rendering | Adaptive sampling | Experimental | measured −11% at threshold 0.1 on milestone 02 |
 | Rendering | Denoising (OIDN) with fibre-aware guide | Implemented | renders |
 | Rendering | AgX-style filmic tone mapping | Implemented | renders |
+| Rendering | Glass (thin lenses) and water (refraction), shadow-free option | Implemented | unit test, renders |
 | Rendering | Subsurface scattering (skin), motion blur, EXR output | Planned | |
 | Rendering | GPU path tracing backend | Planned (optional) | |
 | Studio | Window, docking UI, OpenGL preview viewport with texture colours | Implemented | screenshot test (software GL) |
 | Studio | Outliner, inspector (objects, lights, camera, materials) | Experimental | screenshot test |
 | Studio | In-app progressive path tracing + save image | Implemented | screenshot test |
 | Studio | Render animation to video from the app | Experimental | code path uses plush-render; CLI tested |
+| Studio | Viewport shows curves (hair, frames, straps) as tubes | Implemented | screenshot |
+| Studio | Save, close and reopen a project with edits | Implemented | automated round trip (lock count + keyframe survive) |
 | Studio | Undo/redo, transform gizmos, viewport picking, new project | Planned | |
+| Scene | Rippling water surface, floating objects, staged paper fold | Implemented | milestone 03 renders |
+| Character | Three reference characters (kit script), default pose/expressions, lashes, glasses | Implemented | lineup, close-ups |
+| Character | Character creation UI (new character from scratch in the app) | Planned | kit is a script today |
 | Physics | Rigid bodies (Jolt), interactions | Planned | |
 | Export | Frame sequences + resume + H.264 video | Implemented | milestone animation |
 | Export | Audio, ProRes master | Planned | |

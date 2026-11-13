@@ -450,9 +450,10 @@ std::shared_ptr<FrameSnapshot> SceneEvaluator::evaluate(double frame) const {
         float tz = (waterHeight(wi, xz + vec2(0, e), frame) - waterHeight(wi, xz - vec2(0, e), frame)) / (2 * e);
         vec3 surf = vec3(wm * vec4(local.x, h - 0.004f, local.z, 1));
         mat4 tilt = glm::rotate(mat4(1), std::atan(tz), vec3(1, 0, 0)) * glm::rotate(mat4(1), -std::atan(tx), vec3(0, 0, 1));
-        mat4 rot = world;
-        rot[3] = vec4(0, 0, 0, 1);
-        world = glm::translate(mat4(1), surf) * tilt * rot;
+        // A floating object keeps only its heading (yaw); pitch and roll come from the water.
+        vec3 fwd = vec3(world * vec4(1, 0, 0, 0));
+        float yaw = std::atan2(-fwd.z, fwd.x);
+        world = glm::translate(mat4(1), surf) * tilt * glm::rotate(mat4(1), yaw, vec3(0, 1, 0));
         break;
       }
     }

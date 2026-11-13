@@ -15,4 +15,10 @@
 | BUGS-08 | Low | Studio | Screenshot test captures the frame before the last render update | Test-only; harmless |
 | BUGS-09 | Info | Process | Cloud workspace is ephemeral and no GitHub remote is configured | Attach a private GitHub repository so every commit is pushed |
 | BUGS-11 | Fixed | Look | Reaching arm bent stiffly | Iteration 2: two-bone IK + dual-quaternion skinning + weight smoothing |
+| BUGS-15 | Medium | Look | Skin has no subsurface scattering yet (doll skin still slightly matte/plastic in close-ups) | Random-walk SSS in the path tracer |
+| BUGS-16 | Low | Look | Glasses lenses reflect the cool fill light as a blue band over B's brows | Light linking or a warmer fill |
+| BUGS-17 | Medium | Edit | Mirrored lock groups are expanded on load; editing one side does not update the other | Keep authored groups and expand only for building (same as BUGS-03) |
+| BUGS-18 | Medium | Edit | Hair editing is numeric (control points as numbers); no drawing on the head in the viewport yet | Viewport picking + drag gizmos |
+| BUGS-19 | Low | Anim | Paper fold is a staged blend; the boat snaps a few mm when released onto the water | Ease the release height; contact constraint |
+| BUGS-20 | Low | Look | Garment motifs (vest embroidery, skirt pattern) and seams are not modelled yet | Decal/pattern layers |
 | BUGS-10 | Info | Platform | Windows build not verified | Build with vcpkg on your machine |
