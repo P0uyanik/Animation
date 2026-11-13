@@ -90,11 +90,17 @@ Pose restPose(const Skeleton& skeleton) {
   return p;
 }
 
-Pose evaluatePose(const Skeleton& skeleton, const Clip& clip, const std::string& prefix, double frame) {
+Pose evaluatePose(const Skeleton& skeleton, const Clip& clip, const std::string& prefix, double frame,
+                  const std::map<std::string, vec3>* defaults) {
   Pose p = restPose(skeleton);
   for (size_t i = 0; i < skeleton.bones.size(); ++i) {
     const Track* t = clip.find(prefix + skeleton.bones[i].name + ".rot");
-    if (t && !t->keys.empty()) p.local[i] = eulerDegreesToQuat(t->evaluate(frame));
+    if (t && !t->keys.empty()) {
+      p.local[i] = eulerDegreesToQuat(t->evaluate(frame));
+    } else if (defaults) {
+      auto it = defaults->find(skeleton.bones[i].name);
+      if (it != defaults->end()) p.local[i] = eulerDegreesToQuat(it->second);
+    }
   }
   p.rootOffset = clip.evaluate(prefix + "root.loc", frame, vec3(0));
   return p;

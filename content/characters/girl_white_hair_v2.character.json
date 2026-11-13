@@ -1,0 +1,1739 @@
+{
+ "format": "plush.character",
+ "version": 1,
+ "name": "girl_white_hair",
+ "notes": "Iteration 2: lids/blink, brows, mouth expressions, strand hair relief, bang tufts, finer locks, knit geometry, collar, soles, larger head.",
+ "skeleton": [
+  {
+   "name": "hips",
+   "head": [
+    0,
+    0.42,
+    0
+   ]
+  },
+  {
+   "name": "spine",
+   "parent": "hips",
+   "head": [
+    0,
+    0.5,
+    0
+   ]
+  },
+  {
+   "name": "chest",
+   "parent": "spine",
+   "head": [
+    0,
+    0.58,
+    0
+   ]
+  },
+  {
+   "name": "neck",
+   "parent": "chest",
+   "head": [
+    0,
+    0.655,
+    0
+   ]
+  },
+  {
+   "name": "head",
+   "parent": "neck",
+   "head": [
+    0.0,
+    0.69,
+    0.0
+   ]
+  },
+  {
+   "name": "eye.L",
+   "parent": "head",
+   "head": [
+    0.06148000000000001,
+    0.796,
+    0.11872
+   ],
+   "mirror": true
+  },
+  {
+   "name": "upperArm.L",
+   "parent": "chest",
+   "head": [
+    0.075,
+    0.625,
+    0
+   ],
+   "mirror": true
+  },
+  {
+   "name": "forearm.L",
+   "parent": "upperArm.L",
+   "head": [
+    0.122,
+    0.515,
+    0
+   ],
+   "mirror": true
+  },
+  {
+   "name": "hand.L",
+   "parent": "forearm.L",
+   "head": [
+    0.155,
+    0.43,
+    0.015
+   ],
+   "mirror": true
+  },
+  {
+   "name": "thigh.L",
+   "parent": "hips",
+   "head": [
+    0.05,
+    0.4,
+    0
+   ],
+   "mirror": true
+  },
+  {
+   "name": "shin.L",
+   "parent": "thigh.L",
+   "head": [
+    0.054,
+    0.22,
+    0
+   ],
+   "mirror": true
+  },
+  {
+   "name": "foot.L",
+   "parent": "shin.L",
+   "head": [
+    0.056,
+    0.055,
+    0
+   ],
+   "mirror": true
+  },
+  {
+   "name": "brow.L",
+   "parent": "head",
+   "head": [
+    0.0,
+    0.8278,
+    0.0
+   ],
+   "mirror": true
+  },
+  {
+   "name": "lid.L",
+   "parent": "head",
+   "head": [
+    0.06148000000000001,
+    0.796,
+    0.11872
+   ],
+   "mirror": true
+  }
+ ],
+ "materials": [
+  {
+   "name": "skin",
+   "type": "standard",
+   "baseColor": [
+    0.82,
+    0.58,
+    0.47
+   ],
+   "roughness": 0.55,
+   "specular": 0.5,
+   "sheen": 0.3,
+   "sheenColor": [
+    1.0,
+    0.85,
+    0.8
+   ],
+   "sheenRoughness": 0.5,
+   "texture": {
+    "type": "blush",
+    "color2": [
+     0.88,
+     0.4,
+     0.36
+    ],
+    "amount": 0.7,
+    "spots": [
+     [
+      0.0795,
+      0.7589,
+      0.1272,
+      0.03710000000000001
+     ],
+     [
+      -0.0795,
+      0.7589,
+      0.1272,
+      0.03710000000000001
+     ],
+     [
+      0.0,
+      0.73664,
+      0.1378,
+      0.016960000000000003
+     ]
+    ]
+   }
+  },
+  {
+   "name": "eye",
+   "type": "standard",
+   "baseColor": [
+    0.86,
+    0.86,
+    0.86
+   ],
+   "roughness": 0.4,
+   "coat": 1.0,
+   "coatRoughness": 0.03,
+   "texture": {
+    "type": "iris",
+    "color2": [
+     0.06,
+     0.17,
+     0.45
+    ],
+    "color3": [
+     0.01,
+     0.012,
+     0.02
+    ],
+    "params": [
+     15,
+     48,
+     0,
+     0
+    ],
+    "spots": [
+     [
+      0.06148000000000001,
+      0.796,
+      0.11872,
+      0.03816
+     ],
+     [
+      -0.06148000000000001,
+      0.796,
+      0.11872,
+      0.03816
+     ]
+    ]
+   }
+  },
+  {
+   "name": "dress_knit",
+   "type": "plush",
+   "baseColor": [
+    0.3,
+    0.43,
+    0.65
+   ],
+   "sheen": 0.8,
+   "sheenColor": [
+    0.75,
+    0.85,
+    1.0
+   ],
+   "sheenRoughness": 0.45,
+   "texture": {
+    "type": "knit",
+    "color2": [
+     0.22,
+     0.33,
+     0.55
+    ],
+    "scale": 160,
+    "amount": 0.12
+   }
+  },
+  {
+   "name": "dress_fiber",
+   "type": "fiber",
+   "baseColor": [
+    0.45,
+    0.58,
+    0.8
+   ],
+   "betaM": 0.35,
+   "betaN": 0.6
+  },
+  {
+   "name": "tights",
+   "type": "plush",
+   "baseColor": [
+    0.85,
+    0.84,
+    0.82
+   ],
+   "sheen": 0.5,
+   "texture": {
+    "type": "knit",
+    "color2": [
+     0.75,
+     0.74,
+     0.72
+    ],
+    "scale": 220,
+    "amount": 0.2
+   }
+  },
+  {
+   "name": "boots_suede",
+   "type": "plush",
+   "baseColor": [
+    0.26,
+    0.12,
+    0.05
+   ],
+   "sheen": 0.9,
+   "sheenColor": [
+    1.0,
+    0.85,
+    0.7
+   ],
+   "texture": {
+    "type": "noise",
+    "color2": [
+     0.18,
+     0.08,
+     0.035
+    ],
+    "scale": 40,
+    "amount": 0.4
+   }
+  },
+  {
+   "name": "boots_fiber",
+   "type": "fiber",
+   "baseColor": [
+    0.34,
+    0.18,
+    0.08
+   ],
+   "betaM": 0.4,
+   "betaN": 0.7
+  },
+  {
+   "name": "wool_cap",
+   "type": "plush",
+   "baseColor": [
+    0.8,
+    0.78,
+    0.74
+   ],
+   "sheen": 0.6,
+   "texture": {
+    "type": "noise",
+    "color2": [
+     0.7,
+     0.68,
+     0.64
+    ],
+    "scale": 30,
+    "amount": 0.3
+   }
+  },
+  {
+   "name": "wool_fiber",
+   "type": "fiber",
+   "baseColor": [
+    0.93,
+    0.91,
+    0.87
+   ],
+   "betaM": 0.45,
+   "betaN": 0.85,
+   "alphaDeg": 2
+  },
+  {
+   "name": "wool_bun",
+   "type": "plush",
+   "baseColor": [
+    0.84,
+    0.82,
+    0.78
+   ],
+   "sheen": 0.6
+  },
+  {
+   "name": "bow_felt",
+   "type": "plush",
+   "baseColor": [
+    0.17,
+    0.3,
+    0.62
+   ],
+   "sheen": 0.7,
+   "sheenColor": [
+    0.7,
+    0.8,
+    1.0
+   ]
+  },
+  {
+   "name": "bow_fiber",
+   "type": "fiber",
+   "baseColor": [
+    0.3,
+    0.45,
+    0.75
+   ],
+   "betaM": 0.35,
+   "betaN": 0.6
+  },
+  {
+   "name": "wool_lock_fiber",
+   "type": "fiber",
+   "baseColor": [
+    0.88,
+    0.86,
+    0.82
+   ],
+   "betaM": 0.6,
+   "betaN": 0.95,
+   "alphaDeg": 3
+  },
+  {
+   "name": "brow_felt",
+   "type": "plush",
+   "baseColor": [
+    0.4,
+    0.33,
+    0.27
+   ],
+   "sheen": 0.5
+  },
+  {
+   "name": "wool_lock_core",
+   "type": "plush",
+   "baseColor": [
+    0.8,
+    0.78,
+    0.74
+   ],
+   "sheen": 0.7,
+   "sheenRoughness": 0.5,
+   "texture": {
+    "type": "noise",
+    "color2": [
+     0.68,
+     0.66,
+     0.62
+    ],
+    "scale": 90,
+    "amount": 0.35
+   }
+  },
+  {
+   "name": "sole",
+   "type": "standard",
+   "baseColor": [
+    0.12,
+    0.07,
+    0.04
+   ],
+   "roughness": 0.7
+  }
+ ],
+ "parts": [
+  {
+   "name": "skin",
+   "material": "skin",
+   "voxelSize": 0.0025,
+   "skinFalloff": 0.01,
+   "prims": [
+    {
+     "name": "head",
+     "type": "ellipsoid",
+     "bone": "head",
+     "center": [
+      0.0,
+      0.8278,
+      0.0
+     ],
+     "radii": [
+      0.17490000000000003,
+      0.16112,
+      0.159
+     ]
+    },
+    {
+     "name": "cheek.L",
+     "type": "ellipsoid",
+     "bone": "head",
+     "center": [
+      0.07632,
+      0.76632,
+      0.07420000000000002
+     ],
+     "radii": [
+      0.06572,
+      0.05512,
+      0.0636
+     ],
+     "blend": 0.035,
+     "mirror": true
+    },
+    {
+     "name": "jaw",
+     "type": "ellipsoid",
+     "bone": "head",
+     "center": [
+      0.0,
+      0.7377,
+      0.0318
+     ],
+     "radii": [
+      0.11660000000000001,
+      0.0636,
+      0.10600000000000001
+     ],
+     "blend": 0.04
+    },
+    {
+     "name": "nose",
+     "type": "ellipsoid",
+     "bone": "head",
+     "center": [
+      0.0,
+      0.77692,
+      0.15052
+     ],
+     "radii": [
+      0.01484,
+      0.01166,
+      0.01272
+     ],
+     "blend": 0.012
+    },
+    {
+     "name": "ear.L",
+     "type": "ellipsoid",
+     "bone": "head",
+     "center": [
+      0.17278000000000002,
+      0.8013,
+      -0.0053
+     ],
+     "radii": [
+      0.0212,
+      0.0318,
+      0.016960000000000003
+     ],
+     "blend": 0.012,
+     "mirror": true
+    },
+    {
+     "name": "neck",
+     "type": "capsule",
+     "bone": "neck",
+     "a": [
+      0,
+      0.63,
+      0
+     ],
+     "b": [
+      0,
+      0.72,
+      0
+     ],
+     "r": 0.035,
+     "blend": 0.02
+    },
+    {
+     "name": "socket.L",
+     "type": "ellipsoid",
+     "bone": "head",
+     "center": [
+      0.06148000000000001,
+      0.79176,
+      0.11872
+     ],
+     "radii": [
+      0.03975,
+      0.03975,
+      0.03975
+     ],
+     "blend": 0.006,
+     "subtract": true,
+     "mirror": true
+    },
+    {
+     "name": "mouth.L",
+     "type": "capsule",
+     "bone": "head",
+     "a": [
+      0.026500000000000003,
+      0.743,
+      0.14500800000000003
+     ],
+     "b": [
+      0.0,
+      0.73452,
+      0.14394800000000002
+     ],
+     "r": 0.004876,
+     "blend": 0.004,
+     "subtract": true,
+     "mirror": true
+    }
+   ],
+   "skinSmoothing": 2
+  },
+  {
+   "name": "eyes",
+   "material": "eye",
+   "voxelSize": 0.0012,
+   "prims": [
+    {
+     "name": "eye.L",
+     "type": "ellipsoid",
+     "bone": "eye.L",
+     "center": [
+      0.06148000000000001,
+      0.796,
+      0.11872
+     ],
+     "radii": [
+      0.03816,
+      0.03816,
+      0.03816
+     ],
+     "mirror": true
+    }
+   ]
+  },
+  {
+   "name": "tights",
+   "material": "tights",
+   "voxelSize": 0.0018,
+   "prims": [
+    {
+     "name": "thigh.L",
+     "type": "capsule",
+     "bone": "thigh.L",
+     "a": [
+      0.05,
+      0.42,
+      0
+     ],
+     "b": [
+      0.054,
+      0.22,
+      0
+     ],
+     "r": 0.042,
+     "mirror": true
+    },
+    {
+     "name": "shin.L",
+     "type": "capsule",
+     "bone": "shin.L",
+     "a": [
+      0.054,
+      0.22,
+      0
+     ],
+     "b": [
+      0.056,
+      0.07,
+      0
+     ],
+     "r": 0.034,
+     "blend": 0.02,
+     "mirror": true
+    }
+   ],
+   "skinSmoothing": 2,
+   "pattern": "knit",
+   "patternAmplitude": 0.0005,
+   "patternScale": 260
+  },
+  {
+   "name": "dress",
+   "material": "dress_knit",
+   "voxelSize": 0.0014,
+   "skinFalloff": 0.015,
+   "prims": [
+    {
+     "name": "torso",
+     "type": "roundCone",
+     "bone": "chest",
+     "a": [
+      0,
+      0.665,
+      0
+     ],
+     "b": [
+      0,
+      0.47,
+      0
+     ],
+     "r1": 0.068,
+     "r2": 0.085
+    },
+    {
+     "name": "belly",
+     "type": "ellipsoid",
+     "bone": "spine",
+     "center": [
+      0,
+      0.5,
+      0.01
+     ],
+     "radii": [
+      0.095,
+      0.06,
+      0.085
+     ],
+     "blend": 0.04
+    },
+    {
+     "name": "skirt",
+     "type": "roundCone",
+     "bone": "hips",
+     "a": [
+      0,
+      0.5,
+      0
+     ],
+     "b": [
+      0,
+      0.3,
+      0
+     ],
+     "r1": 0.09,
+     "r2": 0.16,
+     "blend": 0.04
+    },
+    {
+     "name": "hemCut",
+     "type": "roundBox",
+     "center": [
+      0,
+      0.17,
+      0
+     ],
+     "halfSize": [
+      0.3,
+      0.1,
+      0.3
+     ],
+     "rounding": 0.01,
+     "blend": 0.02,
+     "subtract": true
+    },
+    {
+     "name": "sleeveUpper.L",
+     "type": "roundCone",
+     "bone": "upperArm.L",
+     "a": [
+      0.075,
+      0.625,
+      0
+     ],
+     "b": [
+      0.122,
+      0.515,
+      0
+     ],
+     "r1": 0.034,
+     "r2": 0.03,
+     "blend": 0.025,
+     "mirror": true
+    },
+    {
+     "name": "sleeveLower.L",
+     "type": "roundCone",
+     "bone": "forearm.L",
+     "a": [
+      0.122,
+      0.515,
+      0
+     ],
+     "b": [
+      0.152,
+      0.44,
+      0.014
+     ],
+     "r1": 0.03,
+     "r2": 0.031,
+     "blend": 0.015,
+     "mirror": true
+    },
+    {
+     "name": "cuff.L",
+     "type": "ellipsoid",
+     "bone": "forearm.L",
+     "center": [
+      0.152,
+      0.444,
+      0.014
+     ],
+     "radii": [
+      0.034,
+      0.012,
+      0.034
+     ],
+     "blend": 0.008,
+     "mirror": true
+    }
+   ],
+   "skinSmoothing": 3,
+   "pattern": "knit",
+   "patternAmplitude": 0.0011,
+   "patternScale": 170,
+   "patternCenter": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "boots",
+   "material": "boots_suede",
+   "voxelSize": 0.003,
+   "prims": [
+    {
+     "name": "foot.L",
+     "type": "roundBox",
+     "bone": "foot.L",
+     "center": [
+      0.058,
+      0.032,
+      0.022
+     ],
+     "halfSize": [
+      0.04,
+      0.034,
+      0.066
+     ],
+     "rounding": 0.032,
+     "mirror": true
+    },
+    {
+     "name": "shaft.L",
+     "type": "roundCone",
+     "bone": "shin.L",
+     "a": [
+      0.056,
+      0.05,
+      0
+     ],
+     "b": [
+      0.056,
+      0.135,
+      0
+     ],
+     "r1": 0.044,
+     "r2": 0.046,
+     "blend": 0.02,
+     "mirror": true
+    },
+    {
+     "name": "bootCuff.L",
+     "type": "ellipsoid",
+     "bone": "shin.L",
+     "center": [
+      0.056,
+      0.135,
+      0
+     ],
+     "radii": [
+      0.05,
+      0.018,
+      0.05
+     ],
+     "blend": 0.01,
+     "mirror": true
+    }
+   ]
+  },
+  {
+   "name": "hairCap",
+   "material": "wool_cap",
+   "voxelSize": 0.003,
+   "prims": [
+    {
+     "name": "cap",
+     "type": "ellipsoid",
+     "bone": "head",
+     "center": [
+      0.0,
+      0.84688,
+      -0.01272
+     ],
+     "radii": [
+      0.18231999999999998,
+      0.17172,
+      0.17596
+     ]
+    },
+    {
+     "name": "bangs",
+     "type": "ellipsoid",
+     "bone": "head",
+     "center": [
+      0.0,
+      0.8861,
+      0.10600000000000001
+     ],
+     "radii": [
+      0.1696,
+      0.0636,
+      0.07420000000000002
+     ],
+     "blend": 0.03
+    },
+    {
+     "name": "faceCut",
+     "type": "ellipsoid",
+     "bone": "head",
+     "center": [
+      0.0,
+      0.7536,
+      0.1272
+     ],
+     "radii": [
+      0.1855,
+      0.1378,
+      0.1272
+     ],
+     "blend": 0.02,
+     "subtract": true
+    }
+   ],
+   "noiseAmplitude": 0.0055,
+   "noiseScale": 11,
+   "pattern": "strands",
+   "patternAmplitude": 0.0042,
+   "patternScale": 34,
+   "patternCenter": [
+    0.0,
+    1.008,
+    -0.0106
+   ]
+  },
+  {
+   "name": "buns",
+   "material": "wool_bun",
+   "voxelSize": 0.003,
+   "prims": [
+    {
+     "name": "bun.L",
+     "type": "ellipsoid",
+     "bone": "head",
+     "center": [
+      0.10600000000000001,
+      1.0133,
+      -0.026500000000000003
+     ],
+     "radii": [
+      0.06572,
+      0.06148000000000001,
+      0.0636
+     ],
+     "mirror": true
+    }
+   ],
+   "noiseAmplitude": 0.003,
+   "noiseScale": 35
+  },
+  {
+   "name": "bow",
+   "material": "bow_felt",
+   "voxelSize": 0.0015,
+   "prims": [
+    {
+     "name": "knot",
+     "type": "ellipsoid",
+     "bone": "head",
+     "center": [
+      -0.0954,
+      0.97832,
+      0.07844
+     ],
+     "radii": [
+      0.01272,
+      0.01272,
+      0.0106
+     ]
+    },
+    {
+     "name": "loopA",
+     "type": "ellipsoid",
+     "bone": "head",
+     "center": [
+      -0.1272,
+      0.9677199999999999,
+      0.05512
+     ],
+     "radii": [
+      0.02544,
+      0.0159,
+      0.01272
+     ],
+     "rotationDeg": [
+      0,
+      30,
+      25
+     ],
+     "blend": 0.006
+    },
+    {
+     "name": "loopB",
+     "type": "ellipsoid",
+     "bone": "head",
+     "center": [
+      -0.06572,
+      0.98256,
+      0.09328
+     ],
+     "radii": [
+      0.02544,
+      0.0159,
+      0.01272
+     ],
+     "rotationDeg": [
+      0,
+      30,
+      -20
+     ],
+     "blend": 0.006
+    }
+   ]
+  },
+  {
+   "name": "lids",
+   "material": "skin",
+   "voxelSize": 0.0011,
+   "prims": [
+    {
+     "name": "lid.L",
+     "type": "ellipsoid",
+     "bone": "lid.L",
+     "center": [
+      0.06148000000000001,
+      0.796,
+      0.11872
+     ],
+     "radii": [
+      0.041552,
+      0.041552,
+      0.041552
+     ],
+     "mirror": true
+    },
+    {
+     "name": "lidInner.L",
+     "type": "ellipsoid",
+     "bone": "lid.L",
+     "center": [
+      0.06148000000000001,
+      0.796,
+      0.11872
+     ],
+     "radii": [
+      0.039114,
+      0.039114,
+      0.039114
+     ],
+     "blend": 0.0008,
+     "subtract": true,
+     "mirror": true
+    },
+    {
+     "name": "lidCut.L",
+     "type": "roundBox",
+     "bone": "lid.L",
+     "center": [
+      0.06148000000000001,
+      0.78434,
+      0.11872
+     ],
+     "halfSize": [
+      0.053000000000000005,
+      0.0318,
+      0.053000000000000005
+     ],
+     "rounding": 0.004240000000000001,
+     "blend": 0.002,
+     "subtract": true,
+     "mirror": true
+    }
+   ]
+  },
+  {
+   "name": "brows",
+   "material": "brow_felt",
+   "voxelSize": 0.0012,
+   "prims": [
+    {
+     "name": "brow.L",
+     "type": "roundCone",
+     "bone": "brow.L",
+     "a": [
+      0.02544,
+      0.8309799999999999,
+      0.16045772004078027
+     ],
+     "b": [
+      0.08056,
+      0.8362799999999999,
+      0.14406081689998887
+     ],
+     "r1": 0.006148,
+     "r2": 0.004028,
+     "mirror": true
+    }
+   ]
+  },
+  {
+   "name": "hands",
+   "material": "skin",
+   "voxelSize": 0.0011,
+   "skinFalloff": 0.006,
+   "skinSmoothing": 1,
+   "prims": [
+    {
+     "name": "wrist.L",
+     "type": "capsule",
+     "bone": "hand.L",
+     "a": [
+      0.152,
+      0.445,
+      0.016
+     ],
+     "b": [
+      0.157,
+      0.42,
+      0.019
+     ],
+     "r": 0.016,
+     "mirror": true
+    },
+    {
+     "name": "palm.L",
+     "type": "ellipsoid",
+     "bone": "hand.L",
+     "center": [
+      0.159,
+      0.41,
+      0.021
+     ],
+     "radii": [
+      0.017,
+      0.022,
+      0.024
+     ],
+     "blend": 0.008,
+     "mirror": true
+    },
+    {
+     "name": "thumb.L",
+     "type": "capsule",
+     "bone": "hand.L",
+     "a": [
+      0.152,
+      0.418,
+      0.04
+     ],
+     "b": [
+      0.146,
+      0.397,
+      0.049
+     ],
+     "r": 0.0065,
+     "blend": 0.005,
+     "mirror": true
+    },
+    {
+     "name": "finger0.L",
+     "type": "capsule",
+     "bone": "hand.L",
+     "a": [
+      0.159,
+      0.398,
+      0.006
+     ],
+     "b": [
+      0.153,
+      0.378,
+      0.01
+     ],
+     "r": 0.0056,
+     "blend": 0.003,
+     "mirror": true
+    },
+    {
+     "name": "finger1.L",
+     "type": "capsule",
+     "bone": "hand.L",
+     "a": [
+      0.159,
+      0.398,
+      0.0165
+     ],
+     "b": [
+      0.153,
+      0.375,
+      0.0205
+     ],
+     "r": 0.0056,
+     "blend": 0.003,
+     "mirror": true
+    },
+    {
+     "name": "finger2.L",
+     "type": "capsule",
+     "bone": "hand.L",
+     "a": [
+      0.159,
+      0.398,
+      0.027
+     ],
+     "b": [
+      0.153,
+      0.376,
+      0.031
+     ],
+     "r": 0.0056,
+     "blend": 0.003,
+     "mirror": true
+    },
+    {
+     "name": "finger3.L",
+     "type": "capsule",
+     "bone": "hand.L",
+     "a": [
+      0.159,
+      0.398,
+      0.0375
+     ],
+     "b": [
+      0.153,
+      0.38,
+      0.041499999999999995
+     ],
+     "r": 0.0056,
+     "blend": 0.003,
+     "mirror": true
+    }
+   ]
+  },
+  {
+   "name": "bangs",
+   "material": "wool_cap",
+   "voxelSize": 0.0022,
+   "noiseAmplitude": 0.0012,
+   "noiseScale": 40,
+   "pattern": "strands",
+   "patternAmplitude": 0.002,
+   "patternScale": 60,
+   "patternCenter": [
+    0.0,
+    1.008,
+    -0.0106
+   ],
+   "prims": [
+    {
+     "name": "tuft0",
+     "type": "roundCone",
+     "bone": "head",
+     "a": [
+      -0.10361500000000001,
+      0.9709,
+      -0.00636
+     ],
+     "b": [
+      -0.13165200000000002,
+      0.8543,
+      0.10983549254606818
+     ],
+     "r1": 0.0318,
+     "r2": 0.00954,
+     "blend": 0.026
+    },
+    {
+     "name": "tuft1",
+     "type": "roundCone",
+     "bone": "head",
+     "a": [
+      -0.082892,
+      0.9709,
+      -0.00636
+     ],
+     "b": [
+      -0.10532160000000002,
+      0.862095485149444,
+      0.13082417672606533
+     ],
+     "r1": 0.0318,
+     "r2": 0.00954,
+     "blend": 0.026
+    },
+    {
+     "name": "tuft2",
+     "type": "roundCone",
+     "bone": "head",
+     "a": [
+      -0.062169,
+      0.9709,
+      0.039949038691871545
+     ],
+     "b": [
+      -0.07899120000000003,
+      0.8534073252168912,
+      0.14807120796775727
+     ],
+     "r1": 0.0318,
+     "r2": 0.00954,
+     "blend": 0.026
+    },
+    {
+     "name": "tuft3",
+     "type": "roundCone",
+     "bone": "head",
+     "a": [
+      -0.041446,
+      0.9709,
+      0.05624258617637307
+     ],
+     "b": [
+      -0.05266080000000001,
+      0.865102076901509,
+      0.15556522522579105
+     ],
+     "r1": 0.0318,
+     "r2": 0.00954,
+     "blend": 0.026
+    },
+    {
+     "name": "tuft4",
+     "type": "roundCone",
+     "bone": "head",
+     "a": [
+      -0.020723000000000005,
+      0.9709,
+      0.06423616019878978
+     ],
+     "b": [
+      -0.02633040000000001,
+      0.8638583798536775,
+      0.16158720816492625
+     ],
+     "r1": 0.0318,
+     "r2": 0.00954,
+     "blend": 0.026
+    },
+    {
+     "name": "tuft5",
+     "type": "roundCone",
+     "bone": "head",
+     "a": [
+      -1.2503886814840826e-17,
+      0.9709,
+      0.06670660783897242
+     ],
+     "b": [
+      -1.588729148238599e-17,
+      0.8572121241689816,
+      0.16480831561114523
+     ],
+     "r1": 0.0318,
+     "r2": 0.00954,
+     "blend": 0.026
+    },
+    {
+     "name": "tuft6",
+     "type": "roundCone",
+     "bone": "head",
+     "a": [
+      0.020723000000000005,
+      0.9709,
+      0.06423616019878978
+     ],
+     "b": [
+      0.02633040000000001,
+      0.8684427044576645,
+      0.1604648244914625
+     ],
+     "r1": 0.0318,
+     "r2": 0.00954,
+     "blend": 0.026
+    },
+    {
+     "name": "tuft7",
+     "type": "roundCone",
+     "bone": "head",
+     "a": [
+      0.041446,
+      0.9709,
+      0.05624258617637307
+     ],
+     "b": [
+      0.05266080000000001,
+      0.8589932257867097,
+      0.15694397635643928
+     ],
+     "r1": 0.0318,
+     "r2": 0.00954,
+     "blend": 0.026
+    },
+    {
+     "name": "tuft8",
+     "type": "roundCone",
+     "bone": "head",
+     "a": [
+      0.062168999999999995,
+      0.9709,
+      0.03994903869187158
+     ],
+     "b": [
+      0.07899120000000001,
+      0.8569633626436228,
+      0.14739015241247455
+     ],
+     "r1": 0.0318,
+     "r2": 0.00954,
+     "blend": 0.026
+    },
+    {
+     "name": "tuft9",
+     "type": "roundCone",
+     "bone": "head",
+     "a": [
+      0.082892,
+      0.9709,
+      -0.00636
+     ],
+     "b": [
+      0.1053216,
+      0.8634657313278333,
+      0.13044204176502855
+     ],
+     "r1": 0.0318,
+     "r2": 0.00954,
+     "blend": 0.026
+    },
+    {
+     "name": "tuft10",
+     "type": "roundCone",
+     "bone": "head",
+     "a": [
+      0.10361499999999998,
+      0.9709,
+      -0.00636
+     ],
+     "b": [
+      0.131652,
+      0.8489180382294459,
+      0.11105930848909149
+     ],
+     "r1": 0.0318,
+     "r2": 0.00954,
+     "blend": 0.026
+    }
+   ]
+  },
+  {
+   "name": "collar",
+   "material": "dress_knit",
+   "voxelSize": 0.0012,
+   "skinFalloff": 0.02,
+   "prims": [
+    {
+     "name": "collarRing",
+     "type": "ellipsoid",
+     "bone": "chest",
+     "center": [
+      0,
+      0.651,
+      0.008
+     ],
+     "radii": [
+      0.074,
+      0.011,
+      0.066
+     ]
+    },
+    {
+     "name": "collarFlap.L",
+     "type": "ellipsoid",
+     "bone": "chest",
+     "center": [
+      0.036,
+      0.647,
+      0.062
+     ],
+     "radii": [
+      0.042,
+      0.009,
+      0.03
+     ],
+     "rotationDeg": [
+      8,
+      -25,
+      -6
+     ],
+     "blend": 0.008,
+     "mirror": true
+    },
+    {
+     "name": "neckHole",
+     "type": "capsule",
+     "bone": "chest",
+     "a": [
+      0,
+      0.62,
+      0.0
+     ],
+     "b": [
+      0,
+      0.7,
+      0.0
+     ],
+     "r": 0.04,
+     "blend": 0.004,
+     "subtract": true
+    }
+   ]
+  },
+  {
+   "name": "soles",
+   "material": "sole",
+   "voxelSize": 0.0025,
+   "prims": [
+    {
+     "name": "sole.L",
+     "type": "roundBox",
+     "bone": "foot.L",
+     "center": [
+      0.058,
+      0.007,
+      0.024
+     ],
+     "halfSize": [
+      0.043,
+      0.008,
+      0.069
+     ],
+     "rounding": 0.006,
+     "mirror": true
+    }
+   ]
+  }
+ ],
+ "fuzz": [
+  {
+   "part": "hairCap",
+   "material": "wool_fiber",
+   "density": 300,
+   "length": 0.0075,
+   "radius": 2.2e-05,
+   "tilt": 0.6,
+   "curl": 0.5,
+   "comb": 0.8,
+   "combOrigin": [
+    0.0,
+    1.008,
+    0.0
+   ],
+   "segments": 4,
+   "seed": 11,
+   "strayFraction": 0.07,
+   "strayLength": 2.5
+  },
+  {
+   "part": "buns",
+   "material": "wool_fiber",
+   "density": 380,
+   "length": 0.007,
+   "radius": 2.8e-05,
+   "tilt": 0.35,
+   "curl": 0.8,
+   "segments": 4,
+   "seed": 12,
+   "strayFraction": 0.08,
+   "strayLength": 2.0
+  },
+  {
+   "part": "dress",
+   "material": "dress_fiber",
+   "density": 45,
+   "length": 0.0025,
+   "radius": 2.2e-05,
+   "tilt": 0.55,
+   "curl": 0.4,
+   "segments": 3,
+   "seed": 13,
+   "strayFraction": 0.04,
+   "strayLength": 3.0
+  },
+  {
+   "part": "boots",
+   "material": "boots_fiber",
+   "density": 220,
+   "length": 0.006,
+   "radius": 2.5e-05,
+   "tilt": 0.4,
+   "curl": 0.5,
+   "segments": 3,
+   "seed": 14,
+   "strayFraction": 0.05,
+   "strayLength": 2.5
+  },
+  {
+   "part": "tights",
+   "material": "wool_fiber",
+   "density": 25,
+   "length": 0.0015,
+   "radius": 1.8e-05,
+   "tilt": 0.5,
+   "curl": 0.2,
+   "segments": 2,
+   "seed": 15
+  },
+  {
+   "part": "bow",
+   "material": "bow_fiber",
+   "density": 60,
+   "length": 0.002,
+   "radius": 2e-05,
+   "tilt": 0.5,
+   "curl": 0.4,
+   "segments": 2,
+   "seed": 16
+  },
+  {
+   "part": "bangs",
+   "material": "wool_fiber",
+   "density": 260,
+   "length": 0.006,
+   "radius": 2.2e-05,
+   "tilt": 0.5,
+   "curl": 0.5,
+   "comb": 0.9,
+   "combOrigin": [
+    0.0,
+    1.008,
+    0.0
+   ],
+   "segments": 4,
+   "seed": 17,
+   "strayFraction": 0.06,
+   "strayLength": 2.5
+  },
+  {
+   "part": "brows",
+   "material": "boots_fiber",
+   "density": 120,
+   "length": 0.0015,
+   "radius": 1.5e-05,
+   "tilt": 0.7,
+   "curl": 0.3,
+   "segments": 2,
+   "seed": 18
+  }
+ ],
+ "locks": [
+  {
+   "material": "wool_lock_fiber",
+   "bone": "head",
+   "headCenter": [
+    0.0,
+    0.84688,
+    -0.01272
+   ],
+   "headRadii": [
+    0.18231999999999998,
+    0.17172,
+    0.17596
+   ],
+   "count": 56,
+   "azimuthMinDeg": -120,
+   "azimuthMaxDeg": 120,
+   "elevationDeg": 8,
+   "lengthMin": 0.318,
+   "lengthMax": 0.42400000000000004,
+   "lockRadius": 0.0165,
+   "coreRatio": 0.78,
+   "fibersPerLock": 520,
+   "fiberRadius": 3.5e-05,
+   "twist": 6,
+   "wave": 0.014,
+   "waveLength": 0.085,
+   "headBottom": 0.68,
+   "bodyClearance": 0.105,
+   "sideClearance": 0.05,
+   "frizz": 0.0012,
+   "seed": 21,
+   "coreMaterial": "wool_lock_core"
+  }
+ ],
+ "skinning": "dualQuaternion",
+ "expressions": [
+  {
+   "name": "smile",
+   "part": "skin",
+   "set": [
+    {
+     "prim": "mouth.L",
+     "a": [
+      0.030740000000000003,
+      0.7483,
+      0.145432
+     ],
+     "b": [
+      0.0,
+      0.73399,
+      0.143736
+     ],
+     "r": 0.004982
+    },
+    {
+     "prim": "cheek.L",
+     "center": [
+      0.07844,
+      0.77692,
+      0.0795
+     ]
+    }
+   ]
+  },
+  {
+   "name": "mouthOpen",
+   "part": "skin",
+   "add": [
+    {
+     "name": "mouthCavity",
+     "type": "ellipsoid",
+     "center": [
+      0.0,
+      0.73134,
+      0.1325
+     ],
+     "radii": [
+      0.02014,
+      0.016960000000000003,
+      0.016960000000000003
+     ],
+     "blend": 0.006,
+     "subtract": true
+    }
+   ]
+  }
+ ]
+}

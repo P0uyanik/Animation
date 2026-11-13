@@ -6,7 +6,7 @@ Every change is listed here so the look iteration is reproducible and reviewable
 import copy, json, math
 
 SRC = "content/characters/girl_white_hair_m01.character.json"
-DST = "content/characters/girl_white_hair.character.json"
+DST = "content/characters/girl_white_hair_v2.character.json"  # frozen iteration-2 asset
 c = json.load(open(SRC))
 c["notes"] = "Iteration 2: lids/blink, brows, mouth expressions, strand hair relief, bang tufts, finer locks, knit geometry, collar, soles, larger head."
 c["skinning"] = "dualQuaternion"

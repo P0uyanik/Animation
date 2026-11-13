@@ -364,7 +364,8 @@ void prepareShading(ShadingPoint& sp, vec3 wo) {
     return;
   }
   // Two-sided surfaces: orient normals towards the viewer.
-  if (glm::dot(sp.ng, wo) < 0) sp.ng = -sp.ng;
+  sp.backface = glm::dot(sp.ng, wo) < 0;
+  if (sp.backface) sp.ng = -sp.ng;
   if (glm::dot(sp.ns, sp.ng) < 0) sp.ns = -sp.ns;
   if (glm::dot(sp.ns, wo) <= 0.01f) sp.ns = sp.ng;
 }
@@ -376,6 +377,7 @@ vec3 evalBsdf(const ShadingPoint& sp, vec3 wo, vec3 wi, float& pdf) {
     FiberModel fm(sp);
     return fm.f(fr.toLocal(wo), fr.toLocal(wi), &pdf);
   }
+  if (sp.material->type == MaterialType::Glass) return vec3(0);  // delta lobes only
   if (glm::dot(wi, sp.ng) <= 0) return vec3(0);
   Frame fr = surfaceFrame(sp);
   vec3 lo = fr.toLocal(wo), li = fr.toLocal(wi);
@@ -396,6 +398,26 @@ bool sampleBsdf(const ShadingPoint& sp, vec3 wo, float u0, vec2 u1, vec2 u2, Bsd
     out.pdf = pdf;
     out.weight = f / pdf;
     return std::isfinite(out.weight.x + out.weight.y + out.weight.z);
+  }
+  if (sp.material->type == MaterialType::Glass) {
+    const Material& m = *sp.material;
+    vec3 n = sp.ng;  // faces wo
+    float cosO = std::clamp(glm::dot(wo, n), 0.0f, 1.0f);
+    out.delta = true;
+    out.pdf = 1e18f;  // squared in the power heuristic: must stay finite in float
+    if (m.thin) {
+      float R = frDielectric(cosO, m.ior);
+      R = R + (1 - R) * (1 - R) * R / std::max(1e-6f, 1 - R * R);
+      if (u0 < R) { out.wi = glm::reflect(-wo, n); out.weight = vec3(1); }
+      else { out.wi = -wo; out.weight = sp.base; }
+      return true;
+    }
+    float eta = sp.backface ? m.ior : 1.0f / m.ior;  // incident / transmitted
+    float R = frDielectric(sp.backface ? -cosO : cosO, m.ior);
+    vec3 t = glm::refract(-wo, n, eta);
+    if (u0 < R || glm::length2(t) < 1e-12f) { out.wi = glm::reflect(-wo, n); out.weight = vec3(1); }
+    else { out.wi = glm::normalize(t); out.weight = sp.backface ? vec3(1) : sp.base; }
+    return true;
   }
   Frame fr = surfaceFrame(sp);
   vec3 lo = fr.toLocal(wo);

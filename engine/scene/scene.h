@@ -11,7 +11,7 @@
 namespace plush {
 
 struct ObjectDesc {
-  enum class Kind { Box, Sdf, PaperBoat };
+  enum class Kind { Box, Sdf, PaperBoat, Water };
   std::string name;
   Kind kind = Kind::Box;
   std::string material;
@@ -25,6 +25,13 @@ struct ObjectDesc {
   // ("<character>/<bone>"), keeping its offset at attachFrame (no jump).
   std::string attachTo;
   double attachFrame = 0, releaseFrame = 1e9;
+  // Water: a rippling height-field surface (object space, y = 0 is the rest level).
+  vec2 waterHalfSize{0.3f, 0.2f};
+  int waterResolution = 96;
+  std::vector<vec4> ripples;  // x, z, start frame, amplitude
+  // Floating: from floatFrame on, the object rides the named water surface.
+  std::string floatOn;
+  double floatFrame = 0;
 };
 
 struct CharacterDesc {
@@ -85,6 +92,7 @@ class SceneEvaluator {
   // Bone frames (world space) of character c at a frame, after constraints.
   std::vector<mat4> characterGlobals(size_t c, double frame, Pose* poseOut = nullptr) const;
   mat4 objectWorld(size_t o, double frame) const;
+  float waterHeight(size_t waterObject, vec2 localXZ, double frame) const;
   struct ObjectGeometry {
     std::shared_ptr<Mesh> local;
     int material = 0;

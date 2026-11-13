@@ -43,7 +43,7 @@ struct FiberSet {
   std::vector<uint8_t> pinned;         // curves never removed by level of detail (e.g. lock cores)
 };
 
-enum class MaterialType { Standard, Plush, Fiber };
+enum class MaterialType { Standard, Plush, Fiber, Glass };
 enum class TextureType { None, Noise, Wood, Wall, Iris, Blush, Knit };
 
 struct ProceduralTexture {
@@ -72,6 +72,9 @@ struct Material {
   float betaM = 0.3f;
   float betaN = 0.3f;
   float alphaDeg = 2.0f;
+  // Glass / water: smooth dielectric. thin = window or lens (no refraction offset).
+  bool thin = false;
+  bool castsShadow = true;
   ProceduralTexture texture;
 };
 

@@ -53,7 +53,8 @@ struct Pose {
 quat eulerDegreesToQuat(vec3 degrees);  // XYZ order
 Pose restPose(const Skeleton& skeleton);
 // Tracks "<prefix><bone>.rot" (euler degrees) and "<prefix>root.loc" (metres).
-Pose evaluatePose(const Skeleton& skeleton, const Clip& clip, const std::string& prefix, double frame);
+Pose evaluatePose(const Skeleton& skeleton, const Clip& clip, const std::string& prefix, double frame,
+                  const std::map<std::string, vec3>* defaultRotations = nullptr);
 // Skinning matrices: world * boneGlobal * translate(-head).
 std::vector<mat4> skinningMatrices(const Skeleton& skeleton, const Pose& pose, const mat4& world);
 // Global bone frames (world * parent chain); column 3 is the bone pivot in world space.

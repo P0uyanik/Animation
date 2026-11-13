@@ -129,9 +129,60 @@ Json characterToJson(const CharacterAsset& c) {
   }
   Json exprs = Json::array();
   for (auto& e : c.expressions) exprs.push_back({{"name", e.name}, {"part", e.part}, {"set", e.set}, {"add", e.add}});
+  Json groups = Json::array(), pose = Json::object(), dexpr = Json::object();
+  for (auto& g : c.lockGroups) groups.push_back(lockGroupToJson(g));
+  for (auto& [b, v] : c.defaultPose) pose[b] = toJson(v);
+  for (auto& [e, w] : c.defaultExpressions) dexpr[e] = w;
   return {{"format", "plush.character"}, {"version", 1}, {"name", c.name}, {"skeleton", bones}, {"materials", mats},
           {"skinning", c.dualQuaternion ? "dualQuaternion" : "linear"}, {"parts", parts}, {"fuzz", fuzz},
-          {"locks", locks}, {"expressions", exprs}};
+          {"locks", locks}, {"lockGroups", groups}, {"expressions", exprs}, {"defaultPose", pose},
+          {"defaultExpressions", dexpr}};
+}
+
+Result<LockGroup> lockGroupFromJson(const Json& j) {
+  LockGroup g;
+  g.name = readString(j, "name", "locks");
+  g.bone = readString(j, "bone", "head");
+  g.material = readString(j, "material");
+  g.coreMaterial = readString(j, "coreMaterial");
+  LockGroupParams& p = g.params;
+  p.samples = readInt(j, "samples", p.samples);
+  p.fuzzDensity = readFloat(j, "fuzzDensity", p.fuzzDensity);
+  p.fuzzLength = readFloat(j, "fuzzLength", p.fuzzLength);
+  p.fuzzRadius = readFloat(j, "fuzzRadius", p.fuzzRadius);
+  p.fuzzTilt = readFloat(j, "fuzzTilt", p.fuzzTilt);
+  p.strayFraction = readFloat(j, "strayFraction", p.strayFraction);
+  p.strayLength = readFloat(j, "strayLength", p.strayLength);
+  p.roundTip = readBool(j, "roundTip", p.roundTip);
+  p.seed = uint32_t(readInt(j, "seed", int(p.seed)));
+  for (auto& lj : j.value("locks", Json::array())) {
+    LockCurve L;
+    for (auto& pt : lj.value("points", Json::array()))
+      if (pt.is_array() && pt.size() == 3) L.points.emplace_back(pt[0].get<float>(), pt[1].get<float>(), pt[2].get<float>());
+    if (L.points.size() < 2) return fail(std::format("lock group '{}': a lock needs at least 2 points", g.name));
+    L.rootRadius = readFloat(lj, "rootRadius", L.rootRadius);
+    L.tipRadius = readFloat(lj, "tipRadius", L.tipRadius);
+    L.curlRadius = readFloat(lj, "curlRadius", L.curlRadius);
+    L.curlTurns = readFloat(lj, "curlTurns", L.curlTurns);
+    L.curlPhase = readFloat(lj, "curlPhase", L.curlPhase);
+    g.locks.push_back(std::move(L));
+  }
+  return g;
+}
+
+Json lockGroupToJson(const LockGroup& g) {
+  Json locks = Json::array();
+  for (auto& L : g.locks) {
+    Json pts = Json::array();
+    for (auto& p : L.points) pts.push_back(toJson(p));
+    locks.push_back({{"points", pts}, {"rootRadius", L.rootRadius}, {"tipRadius", L.tipRadius},
+                     {"curlRadius", L.curlRadius}, {"curlTurns", L.curlTurns}, {"curlPhase", L.curlPhase}});
+  }
+  const LockGroupParams& p = g.params;
+  return {{"name", g.name}, {"bone", g.bone}, {"material", g.material}, {"coreMaterial", g.coreMaterial},
+          {"samples", p.samples}, {"fuzzDensity", p.fuzzDensity}, {"fuzzLength", p.fuzzLength}, {"fuzzRadius", p.fuzzRadius},
+          {"fuzzTilt", p.fuzzTilt}, {"strayFraction", p.strayFraction}, {"strayLength", p.strayLength},
+          {"roundTip", p.roundTip}, {"seed", p.seed}, {"locks", locks}};
 }
 
 Result<void> resolveBones(CharacterAsset& c) {
@@ -239,6 +290,27 @@ Result<CharacterAsset> characterFromJson(const Json& j) {
     for (auto& lj : *it)
       c.locks.push_back({readString(lj, "material"), readString(lj, "coreMaterial"), readString(lj, "bone", "head"), locksFromJson(lj)});
   c.dualQuaternion = readString(j, "skinning", "linear") == "dualQuaternion";
+  if (auto it = j.find("lockGroups"); it != j.end() && it->is_array())
+    for (auto& gj : *it) {
+      auto g = lockGroupFromJson(gj);
+      if (!g) return std::unexpected(g.error());
+      if (c.skeleton.find(g->bone) < 0) return fail(std::format("lock group '{}': unknown bone '{}'", g->name, g->bone));
+      bool mirror = readBool(gj, "mirror", false);
+      c.lockGroups.push_back(*g);
+      if (mirror) {
+        LockGroup m = *g;
+        m.name = mirrorName(g->name) == g->name ? g->name + ".mirror" : mirrorName(g->name);
+        m.bone = mirrorName(g->bone);
+        m.params.seed += 7919;
+        for (auto& L : m.locks)
+          for (auto& p : L.points) p.x = -p.x;
+        c.lockGroups.push_back(m);
+      }
+    }
+  if (auto it = j.find("defaultPose"); it != j.end() && it->is_object())
+    for (auto& [bone, v] : it->items()) c.defaultPose[bone] = vec3(v[0].get<float>(), v[1].get<float>(), v[2].get<float>());
+  if (auto it = j.find("defaultExpressions"); it != j.end() && it->is_object())
+    for (auto& [name, v] : it->items()) c.defaultExpressions[name] = v.get<float>();
   if (auto it = j.find("expressions"); it != j.end() && it->is_array())
     for (auto& ej : *it) {
       Expression e{readString(ej, "name"), readString(ej, "part"), {}, {}};
@@ -399,6 +471,16 @@ CharacterRig buildCharacter(const CharacterAsset& asset, const BuildOptions& opt
       }
       rig.locks.push_back(std::move(bl));
     }
+  }
+  for (const auto& g : asset.lockGroups) {
+    BoundLocks bl;
+    bl.bone = std::max(0, asset.skeleton.find(g.bone));
+    bl.material = g.material;
+    bl.coreMaterial = g.coreMaterial.empty() ? g.material : g.coreMaterial;
+    LockGroupParams prm = g.params;
+    if (!opt.fuzz) prm.fuzzDensity = 0;
+    generateLockGroup(prm, g.locks, opt.fuzzDensity, bl.cores, bl.rest);
+    rig.locks.push_back(std::move(bl));
   }
   size_t fibers = 0;
   for (auto& f : rig.fuzz) fibers += f.fibers.fiberCount();

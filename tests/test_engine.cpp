@@ -297,3 +297,56 @@ TEST_CASE("expression morph targets move the surface to the edited shape") {
   avg /= double(posed.meshes[0]->positions.size());
   CHECK(avg == doctest::Approx(0.11).epsilon(0.01));
 }
+
+TEST_CASE("lock groups build tapered cores and an outward halo") {
+  LockGroupParams prm;
+  prm.fuzzDensity = 40;
+  LockCurve L;
+  L.points = {vec3(0, 1, 0), vec3(0, 0.9f, 0.02f), vec3(0, 0.8f, 0.0f)};
+  L.curlRadius = 0.01f;
+  L.curlTurns = 2;
+  FiberSet cores, fibers;
+  generateLockGroup(prm, {L}, 1.0f, cores, fibers);
+  REQUIRE(cores.fiberCount == 1);
+  CHECK(cores.pinned[0] == 1);
+  CHECK(cores.points.front().w > cores.points.back().w);  // tapers to the tip
+  CHECK(glm::distance(vec3(cores.points.front()), L.points.front()) < 1e-4f);  // starts at the root
+  REQUIRE(fibers.fiberCount > 50);
+  // Halo fibre roots lie on the core surface: farther from the curve centre than the axis.
+  CHECK(fibers.curveOffsets.size() == fibers.fiberCount + 1);
+}
+
+TEST_CASE("glass lets light through and does not cast shadows") {
+  auto make = [](bool withGlass) {
+    auto snap = std::make_shared<FrameSnapshot>();
+    Material white;
+    white.name = "white";
+    Material glass;
+    glass.name = "glass";
+    glass.type = MaterialType::Glass;
+    glass.thin = true;
+    glass.baseColor = vec3(1);
+    glass.castsShadow = false;
+    snap->materials = {white, glass};
+    snap->meshes.push_back({std::make_shared<Mesh>(makeBoxMesh(vec3(-1, -0.1f, -1), vec3(1, 0, 1))), 0});
+    if (withGlass) snap->meshes.push_back({std::make_shared<Mesh>(makeBoxMesh(vec3(-0.5f, 0.5f, -0.5f), vec3(0.5f, 0.51f, 0.5f))), 1});
+    Light sun;
+    sun.direction = vec3(0, -1, 0);
+    sun.intensity = 3;
+    snap->lights.push_back(sun);
+    snap->camera.position = vec3(0, 0.3f, 0.6f);
+    snap->camera.target = vec3(0, 0, 0);
+    snap->camera.fStop = 0;
+    return snap;
+  };
+  RenderSettings rs;
+  rs.width = 16;
+  rs.height = 12;
+  rs.spp = 8;
+  PathTracer pt;
+  auto a = pt.render(make(false), rs), b = pt.render(make(true), rs);
+  double la = 0, lb = 0;
+  for (auto& p : a.color.pixels) la += luminance(p);
+  for (auto& p : b.color.pixels) lb += luminance(p);
+  CHECK(lb > 0.8 * la);  // the floor under the glass pane is still lit
+}

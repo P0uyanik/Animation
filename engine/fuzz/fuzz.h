@@ -61,6 +61,34 @@ FiberSet generateLocks(const LockParams& params, float densityScale = 1.0f);
 
 std::shared_ptr<FiberSet> transformFibers(const FiberSet& fibers, const mat4& m);
 
+// ---------------------------------------------------------------- explicit locks / curves
+// A hand-placed lock (or any tube: lash, glasses frame, drawstring): a smooth curve through
+// control points with a tapered radius, optional curl (helix around the path), a solid core
+// and an optional fibre halo grown from the core surface.
+struct LockCurve {
+  std::vector<vec3> points;  // rest space, root first
+  float rootRadius = 0.012f;
+  float tipRadius = 0.003f;
+  float curlRadius = 0.0f;   // helix radius around the path (curls)
+  float curlTurns = 0.0f;
+  float curlPhase = 0.0f;
+};
+struct LockGroupParams {
+  int samples = 32;            // curve samples per lock (more for tight curls)
+  float fuzzDensity = 0.0f;    // halo fibres per cm^2 of core surface (0 = none)
+  float fuzzLength = 0.004f;
+  float fuzzRadius = 3e-5f;
+  float fuzzTilt = 0.6f;       // 0 = straight out, 1 = lying along the lock towards the tip
+  float strayFraction = 0.05f;
+  float strayLength = 2.5f;
+  bool roundTip = true;
+  uint32_t seed = 1;
+};
+std::vector<vec3> sampleCatmullRom(const std::vector<vec3>& points, int samples);
+// Appends the cores (pinned curves) and the halo fibres of every lock.
+void generateLockGroup(const LockGroupParams& params, const std::vector<LockCurve>& locks, float densityScale,
+                       FiberSet& cores, FiberSet& fibers);
+
 // Coverage-preserving level of detail: keeps ~1/k of the curves (deterministic subset,
 // pinned curves always kept) and multiplies their radius by k.
 std::shared_ptr<FiberSet> thinFibers(const FiberSet& fibers, float k);

@@ -10,6 +10,7 @@ Result<ObjectDesc> objectFromJson(const Json& j) {
   if (kind == "box") o.kind = ObjectDesc::Kind::Box;
   else if (kind == "sdf") o.kind = ObjectDesc::Kind::Sdf;
   else if (kind == "paperBoat") o.kind = ObjectDesc::Kind::PaperBoat;
+  else if (kind == "water") o.kind = ObjectDesc::Kind::Water;
   else return fail(std::format("object '{}': unknown kind '{}'", o.name, kind));
   o.material = readString(j, "material");
   o.boxMin = readVec3(j, "min", o.boxMin);
@@ -35,6 +36,17 @@ Result<ObjectDesc> objectFromJson(const Json& j) {
     f.params.segments = readInt(*it, "segments", f.params.segments);
     f.params.seed = uint32_t(readInt(*it, "seed", int(f.params.seed)));
     o.fuzz = f;
+  }
+  if (auto it = j.find("water"); it != j.end()) {
+    vec3 hs = readVec3(*it, "halfSize", vec3(0.3f, 0, 0.2f));
+    o.waterHalfSize = vec2(hs.x, hs.z);
+    o.waterResolution = readInt(*it, "resolution", o.waterResolution);
+    for (auto& r : it->value("ripples", Json::array()))
+      if (r.is_array() && r.size() == 4) o.ripples.emplace_back(r[0].get<float>(), r[1].get<float>(), r[2].get<float>(), r[3].get<float>());
+  }
+  if (auto it = j.find("float"); it != j.end()) {
+    o.floatOn = readString(*it, "on");
+    o.floatFrame = readFloat(*it, "frame", 0);
   }
   if (auto it = j.find("attach"); it != j.end()) {
     o.attachTo = readString(*it, "to");
@@ -124,7 +136,7 @@ Json sceneToJson(const Scene& s) {
   for (auto& m : s.materials) mats.push_back(materialToJson(m));
   for (auto& l : s.lights) lights.push_back(lightToJson(l));
   for (auto& o : s.objects) {
-    const char* kinds[] = {"box", "sdf", "paperBoat"};
+    const char* kinds[] = {"box", "sdf", "paperBoat", "water"};
     Json oj = {{"name", o.name}, {"kind", kinds[int(o.kind)]}, {"material", o.material}};
     if (o.kind == ObjectDesc::Kind::Box) {
       oj["min"] = toJson(o.boxMin);
@@ -140,6 +152,12 @@ Json sceneToJson(const Scene& s) {
       oj["part"] = {{"name", o.part.name}, {"material", o.part.material}, {"voxelSize", o.part.voxelSize}, {"prims", prims}};
     }
     if (!o.attachTo.empty()) oj["attach"] = {{"to", o.attachTo}, {"frame", o.attachFrame}, {"release", o.releaseFrame}};
+    if (!o.floatOn.empty()) oj["float"] = {{"on", o.floatOn}, {"frame", o.floatFrame}};
+    if (o.kind == ObjectDesc::Kind::Water) {
+      Json rip = Json::array();
+      for (auto& r : o.ripples) rip.push_back(toJson(r));
+      oj["water"] = {{"halfSize", toJson(vec3(o.waterHalfSize.x, 0, o.waterHalfSize.y))}, {"resolution", o.waterResolution}, {"ripples", rip}};
+    }
     if (o.fuzz) {
       const FuzzParams& f = o.fuzz->params;
       oj["fuzz"] = {{"material", o.fuzz->material}, {"density", f.density}, {"length", f.length},
@@ -261,6 +279,7 @@ Result<void> SceneEvaluator::load(const Scene& scene, const EvalOptions& opt) {
     switch (o.kind) {
       case ObjectDesc::Kind::Box: g.local = std::make_shared<Mesh>(makeBoxMesh(o.boxMin, o.boxMax)); break;
       case ObjectDesc::Kind::PaperBoat: g.local = std::make_shared<Mesh>(makePaperBoatMesh()); break;
+      case ObjectDesc::Kind::Water: g.local = std::make_shared<Mesh>(); break;  // rebuilt per frame
       case ObjectDesc::Kind::Sdf: g.local = std::make_shared<Mesh>(meshSdfPart(o.part, opt.voxelScale)); break;
     }
     if (o.fuzz && opt.fuzz) {
@@ -306,7 +325,7 @@ std::vector<mat4> SceneEvaluator::characterGlobals(size_t c, double frame, Pose*
   vec3 pos = clip.evaluate(cd.name + ".position", frame, cd.position);
   float yaw = clip.evaluate(cd.name + ".yaw", frame, vec3(cd.yawDeg)).x;
   mat4 world = objectMatrix(pos, yaw, 1.0f);
-  Pose pose = evaluatePose(ci.asset.skeleton, clip, prefix, frame);
+  Pose pose = evaluatePose(ci.asset.skeleton, clip, prefix, frame, &ci.asset.defaultPose);
   applyConstraints(ci.asset.skeleton, clip, prefix, frame, world, pose);
   if (poseOut) *poseOut = pose;
   return boneGlobals(ci.asset.skeleton, pose, world);
@@ -335,6 +354,31 @@ mat4 SceneEvaluator::objectWorld(size_t i, double frame) const {
   return base(frame);
 }
 
+float SceneEvaluator::waterHeight(size_t wi, vec2 p, double frame) const {
+  const ObjectDesc& w = scene_.objects[wi];
+  float fps = float(scene_.rate.fps());
+  float h = 0.0006f * std::sin(p.x * 70.0f + float(frame) * 0.21f) * std::sin(p.y * 55.0f - float(frame) * 0.17f);  // calm ripples
+  const float k = kTwoPi / 0.035f, speed = 0.22f;  // 3.5 cm wavelength, 22 cm/s
+  for (const vec4& r : w.ripples) {
+    float t = (float(frame) - r.z) / fps;
+    if (t <= 0) continue;
+    float d = glm::length(p - vec2(r.x, r.y));
+    float front = speed * t;
+    float window = smoothstep01((front - d) / 0.02f + 1.0f) * smoothstep01(1.0f - (front - d) / 0.12f);
+    h += r.w * std::exp(-1.2f * t) * std::sin(k * (d - front)) * window / std::sqrt(1.0f + d / 0.02f);
+  }
+  return h;
+}
+
+namespace {
+// Flat layout of the paper boat's vertices (the sheet before folding).
+vec3 unfoldedPaper(vec3 v) {
+  if (std::abs(v.z) < 0.009f && v.y > 0.02f) return vec3(v.x * 1.25f, 0.0012f, v.z * 0.2f);  // sail lies on the sheet
+  float s = v.z >= 0 ? 1.0f : -1.0f;
+  return vec3(v.x * 1.25f, 0.0006f, s * (std::abs(v.z) + v.y * 1.5f));
+}
+}  // namespace
+
 std::shared_ptr<FrameSnapshot> SceneEvaluator::evaluate(double frame) const {
   auto snap = std::make_shared<FrameSnapshot>();
   snap->frame = frame;
@@ -347,7 +391,11 @@ std::shared_ptr<FrameSnapshot> SceneEvaluator::evaluate(double frame) const {
     auto skin = characterGlobals(c, frame);
     for (size_t b = 0; b < skin.size(); ++b) skin[b] = skin[b] * glm::translate(mat4(1), -ci.asset.skeleton.bones[b].head);
     std::vector<float> weights;
-    for (auto& mt : ci.rig.morphs) weights.push_back(clip.evaluate(prefix + "expr." + mt.name, frame, vec3(0)).x);
+    for (auto& mt : ci.rig.morphs) {
+      auto d = ci.asset.defaultExpressions.find(mt.name);
+      float def = d == ci.asset.defaultExpressions.end() ? 0.0f : d->second;
+      weights.push_back(clip.evaluate(prefix + "expr." + mt.name, frame, vec3(def)).x);
+    }
     PosedCharacter posed = poseCharacter(ci.rig, skin, weights, ci.asset.dualQuaternion);
     for (size_t k = 0; k < posed.meshes.size(); ++k) snap->meshes.push_back({posed.meshes[k], ci.meshMaterial[k]});
     for (size_t k = 0; k < posed.fuzz.size(); ++k) snap->fibers.push_back({posed.fuzz[k], ci.fuzzMaterial[k]});
@@ -365,7 +413,64 @@ std::shared_ptr<FrameSnapshot> SceneEvaluator::evaluate(double frame) const {
       if (g.fuzz) snap->fibers.push_back({deformSurfaceFibers(*g.fuzz, *g.local), g.fuzzMaterial});
       continue;
     }
-    auto m = transformMesh(*g.local, objectWorld(i, frame));
+    if (o.kind == ObjectDesc::Kind::Water) {
+      // Height-field grid rebuilt every frame.
+      Mesh grid;
+      int n = std::max(8, o.waterResolution);
+      for (int zi = 0; zi <= n; ++zi)
+        for (int xi = 0; xi <= n; ++xi) {
+          vec2 p(glm::mix(-o.waterHalfSize.x, o.waterHalfSize.x, float(xi) / float(n)),
+                 glm::mix(-o.waterHalfSize.y, o.waterHalfSize.y, float(zi) / float(n)));
+          float e = 0.002f;
+          float h = waterHeight(i, p, frame);
+          float hx = waterHeight(i, p + vec2(e, 0), frame) - waterHeight(i, p - vec2(e, 0), frame);
+          float hz = waterHeight(i, p + vec2(0, e), frame) - waterHeight(i, p - vec2(0, e), frame);
+          grid.positions.push_back(vec3(p.x, h, p.y));
+          grid.normals.push_back(glm::normalize(vec3(-hx / (2 * e), 1.0f, -hz / (2 * e))));
+        }
+      for (int zi = 0; zi < n; ++zi)
+        for (int xi = 0; xi < n; ++xi) {
+          uint32_t a = uint32_t(zi * (n + 1) + xi), b = a + 1, c = a + uint32_t(n + 1), d = c + 1;
+          grid.indices.insert(grid.indices.end(), {a, c, b, b, c, d});
+        }
+      grid.pref = grid.positions;
+      objectMeshes.push_back({transformMesh(grid, objectWorld(i, frame)), g.material});
+      continue;
+    }
+    mat4 world = objectWorld(i, frame);
+    if (!o.floatOn.empty() && frame >= o.floatFrame) {
+      for (size_t wi = 0; wi < scene_.objects.size(); ++wi) {
+        if (scene_.objects[wi].name != o.floatOn) continue;
+        mat4 wm = objectWorld(wi, frame), inv = glm::inverse(wm);
+        vec3 pos(world[3]);
+        vec3 local = vec3(inv * vec4(pos, 1));
+        vec2 xz(local.x, local.z);
+        float e = 0.01f, h = waterHeight(wi, xz, frame);
+        float tx = (waterHeight(wi, xz + vec2(e, 0), frame) - waterHeight(wi, xz - vec2(e, 0), frame)) / (2 * e);
+        float tz = (waterHeight(wi, xz + vec2(0, e), frame) - waterHeight(wi, xz - vec2(0, e), frame)) / (2 * e);
+        vec3 surf = vec3(wm * vec4(local.x, h - 0.004f, local.z, 1));
+        mat4 tilt = glm::rotate(mat4(1), std::atan(tz), vec3(1, 0, 0)) * glm::rotate(mat4(1), -std::atan(tx), vec3(0, 0, 1));
+        mat4 rot = world;
+        rot[3] = vec4(0, 0, 0, 1);
+        world = glm::translate(mat4(1), surf) * tilt * rot;
+        break;
+      }
+    }
+    std::shared_ptr<Mesh> m;
+    if (o.kind == ObjectDesc::Kind::PaperBoat && clip.find(o.name + ".fold")) {
+      float f = smoothstep01(std::clamp(clip.evaluate(o.name + ".fold", frame, vec3(1)).x, 0.0f, 1.0f));
+      Mesh folded = *g.local;
+      for (auto& p : folded.positions) p = glm::mix(unfoldedPaper(p), p, f);
+      for (size_t t = 0; t + 2 < folded.indices.size(); t += 3) {
+        vec3 a = folded.positions[folded.indices[t]], b = folded.positions[folded.indices[t + 1]], c = folded.positions[folded.indices[t + 2]];
+        vec3 nn = glm::cross(b - a, c - a);
+        nn = glm::length2(nn) > 1e-14f ? glm::normalize(nn) : vec3(0, 1, 0);
+        for (int k = 0; k < 3; ++k) folded.normals[folded.indices[t + size_t(k)]] = nn;
+      }
+      m = transformMesh(folded, world);
+    } else {
+      m = transformMesh(*g.local, world);
+    }
     if (g.fuzz) snap->fibers.push_back({deformSurfaceFibers(*g.fuzz, *m), g.fuzzMaterial});
     objectMeshes.push_back({m, g.material});
   }

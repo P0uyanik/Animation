@@ -229,4 +229,110 @@ float fiberLodFactor(float radius, float distance, float metresPerPixelAt1m, flo
   return std::clamp(k, 1.0f, maxFactor);
 }
 
+std::vector<vec3> sampleCatmullRom(const std::vector<vec3>& P, int samples) {
+  if (P.size() < 2 || samples < 2) return P;
+  std::vector<vec3> out;
+  out.reserve(size_t(samples));
+  int segs = int(P.size()) - 1;
+  for (int i = 0; i < samples; ++i) {
+    float u = float(i) / float(samples - 1) * float(segs);
+    int k = std::min(int(u), segs - 1);
+    float t = u - float(k), t2 = t * t, t3 = t2 * t;
+    vec3 p0 = P[size_t(std::max(k - 1, 0))], p1 = P[size_t(k)], p2 = P[size_t(k + 1)], p3 = P[size_t(std::min(k + 2, segs))];
+    out.push_back(0.5f * ((2.0f * p1) + (p2 - p0) * t + (2.0f * p0 - 5.0f * p1 + 4.0f * p2 - p3) * t2 + (3.0f * p1 - p0 - 3.0f * p2 + p3) * t3));
+  }
+  return out;
+}
+
+namespace {
+void transportFrames(const std::vector<vec3>& c, std::vector<vec3>& T, std::vector<vec3>& N, std::vector<vec3>& B) {
+  size_t n = c.size();
+  T.resize(n);
+  N.resize(n);
+  B.resize(n);
+  for (size_t i = 0; i < n; ++i) {
+    vec3 d = c[std::min(i + 1, n - 1)] - c[i > 0 ? i - 1 : 0];
+    T[i] = glm::length2(d) > 1e-16f ? glm::normalize(d) : (i > 0 ? T[i - 1] : vec3(0, -1, 0));
+  }
+  N[0] = Frame::fromNormal(T[0]).t;
+  for (size_t i = 0; i < n; ++i) {
+    if (i > 0) {
+      vec3 nn = N[i - 1] - T[i] * glm::dot(N[i - 1], T[i]);
+      N[i] = glm::length2(nn) > 1e-12f ? glm::normalize(nn) : Frame::fromNormal(T[i]).t;
+    }
+    B[i] = glm::cross(T[i], N[i]);
+  }
+}
+void appendCurve(FiberSet& fs, const std::vector<vec4>& pts, bool pin) {
+  if (pts.size() < 2) return;
+  if (fs.curveOffsets.empty()) fs.curveOffsets.push_back(uint32_t(fs.points.size()));
+  uint32_t base = uint32_t(fs.points.size());
+  fs.points.insert(fs.points.end(), pts.begin(), pts.end());
+  for (uint32_t k = 0; k + 1 < pts.size(); ++k) fs.segmentStarts.push_back(base + k);
+  fs.curveOffsets.push_back(uint32_t(fs.points.size()));
+  fs.pinned.push_back(pin ? 1 : 0);
+  fs.fiberCount++;
+}
+}  // namespace
+
+void generateLockGroup(const LockGroupParams& prm, const std::vector<LockCurve>& locks, float densityScale,
+                       FiberSet& cores, FiberSet& fibers) {
+  Rng rng(prm.seed, 29);
+  for (const LockCurve& L : locks) {
+    if (L.points.size() < 2) continue;
+    std::vector<vec3> g = sampleCatmullRom(L.points, std::max(4, prm.samples)), T, N, B;
+    transportFrames(g, T, N, B);
+    size_t n = g.size();
+    std::vector<vec3> c(n);
+    for (size_t i = 0; i < n; ++i) {
+      float s = float(i) / float(n - 1);
+      float cr = L.curlRadius * smoothstep01(s / 0.2f);
+      float th = L.curlPhase + kTwoPi * L.curlTurns * s;
+      c[i] = g[i] + cr * (std::cos(th) * N[i] + std::sin(th) * B[i]);
+    }
+    transportFrames(c, T, N, B);
+    std::vector<float> r(n);
+    std::vector<vec4> core(n);
+    for (size_t i = 0; i < n; ++i) {
+      float s = float(i) / float(n - 1);
+      r[i] = glm::mix(L.rootRadius, L.tipRadius, std::pow(s, 0.8f));
+      if (prm.roundTip) r[i] *= 1.0f - 0.85f * smoothstep01((s - 0.9f) / 0.1f);
+      r[i] = std::max(r[i], 1e-4f);
+      core[i] = vec4(c[i], r[i]);
+    }
+    appendCurve(cores, core, true);
+    if (prm.fuzzDensity <= 0) continue;
+    // Halo fibres, uniformly over the core surface.
+    std::vector<double> cdf(n - 1);
+    double area = 0;
+    for (size_t i = 0; i + 1 < n; ++i) {
+      area += kTwoPi * 0.5 * double(r[i] + r[i + 1]) * double(glm::length(c[i + 1] - c[i]));
+      cdf[i] = area;
+    }
+    size_t count = size_t(double(prm.fuzzDensity * densityScale) * area * 1e4);
+    std::vector<vec4> pts(4);
+    for (size_t f = 0; f < count; ++f) {
+      double target = rng.next() * area;
+      size_t i = std::min(size_t(std::lower_bound(cdf.begin(), cdf.end(), target) - cdf.begin()), n - 2);
+      float t = rng.next();
+      vec3 p = glm::mix(c[i], c[i + 1], t);
+      float rr = glm::mix(r[i], r[i + 1], t);
+      float phi = rng.next() * kTwoPi;
+      vec3 o = std::cos(phi) * N[i] + std::sin(phi) * B[i];
+      bool stray = rng.next() < prm.strayFraction;
+      float len = prm.fuzzLength * (0.5f + 0.5f * rng.next()) * (stray ? prm.strayLength : 1.0f);
+      float tilt = (stray ? 0.3f : prm.fuzzTilt) * (kPi * 0.5f) * (0.6f + 0.4f * rng.next());
+      vec3 dir = glm::normalize(o * std::cos(tilt) + T[i] * std::sin(tilt));
+      vec3 side = glm::normalize(glm::cross(dir, o) + vec3(1e-6f));
+      float phase = rng.next() * kTwoPi;
+      for (int k = 0; k < 4; ++k) {
+        float sk = float(k) / 3.0f;
+        vec3 q = p + o * (rr * (k == 0 ? 0.85f : 0.97f)) + dir * (len * sk) + side * (0.3f * len * sk * std::sin(phase + 3.0f * sk));
+        pts[size_t(k)] = vec4(q, prm.fuzzRadius * (1.0f - 0.6f * sk));
+      }
+      appendCurve(fibers, pts, false);
+    }
+  }
+}
+
 }  // namespace plush

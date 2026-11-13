@@ -37,7 +37,7 @@ Json toJson(vec4 v) { return Json::array({v.x, v.y, v.z, v.w}); }
 
 namespace {
 const std::map<std::string, MaterialType> kMaterialTypes = {
-    {"standard", MaterialType::Standard}, {"plush", MaterialType::Plush}, {"fiber", MaterialType::Fiber}};
+    {"standard", MaterialType::Standard}, {"plush", MaterialType::Plush}, {"fiber", MaterialType::Fiber}, {"glass", MaterialType::Glass}};
 const std::map<std::string, TextureType> kTextureTypes = {
     {"none", TextureType::None}, {"noise", TextureType::Noise}, {"wood", TextureType::Wood}, {"wall", TextureType::Wall},
     {"iris", TextureType::Iris}, {"blush", TextureType::Blush}, {"knit", TextureType::Knit}};
@@ -68,6 +68,8 @@ Result<Material> materialFromJson(const Json& j) {
   m.betaM = readFloat(j, "betaM", m.betaM);
   m.betaN = readFloat(j, "betaN", m.betaN);
   m.alphaDeg = readFloat(j, "alphaDeg", m.alphaDeg);
+  m.thin = readBool(j, "thin", m.thin);
+  m.castsShadow = readBool(j, "castsShadow", m.type != MaterialType::Glass);
   if (auto it = j.find("texture"); it != j.end()) {
     const Json& tj = *it;
     std::string tt = readString(tj, "type", "none");
@@ -90,7 +92,7 @@ Json materialToJson(const Material& m) {
   Json j = {{"name", m.name}, {"type", enumName(kMaterialTypes, m.type)}, {"baseColor", toJson(m.baseColor)},
             {"roughness", m.roughness}, {"ior", m.ior}, {"specular", m.specular}, {"coat", m.coat},
             {"coatRoughness", m.coatRoughness}, {"sheen", m.sheen}, {"sheenColor", toJson(m.sheenColor)},
-            {"sheenRoughness", m.sheenRoughness}, {"betaM", m.betaM}, {"betaN", m.betaN}, {"alphaDeg", m.alphaDeg}};
+            {"sheenRoughness", m.sheenRoughness}, {"betaM", m.betaM}, {"betaN", m.betaN}, {"alphaDeg", m.alphaDeg}, {"thin", m.thin}, {"castsShadow", m.castsShadow}};
   if (m.texture.type != TextureType::None) {
     Json spots = Json::array();
     for (auto& s : m.texture.spots) spots.push_back(toJson(s));

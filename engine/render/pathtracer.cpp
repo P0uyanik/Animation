@@ -101,6 +101,7 @@ struct CameraModel {
 struct PathTracer::Impl {
   RTCDevice device = nullptr;
   RTCScene scene = nullptr;
+  RTCScene shadowScene = nullptr;  // only geometry that casts shadows (== scene when all do)
   std::shared_ptr<const FrameSnapshot> snap;
   std::vector<GeomRef> geoms;
   std::vector<vec3> accColor, accAlbedo, accNormal;
@@ -141,17 +142,22 @@ struct PathTracer::Impl {
     rtcSetDeviceErrorFunction(device, embreeError, nullptr);
   }
   ~Impl() {
+    if (shadowScene && shadowScene != scene) rtcReleaseScene(shadowScene);
     if (scene) rtcReleaseScene(scene);
     if (device) rtcReleaseDevice(device);
   }
 
   void build(std::shared_ptr<const FrameSnapshot> s) {
     Stopwatch sw;
+    if (shadowScene && shadowScene != scene) rtcReleaseScene(shadowScene);
     if (scene) rtcReleaseScene(scene);
+    shadowScene = nullptr;
     snap = std::move(s);
     geoms.clear();
     scene = rtcNewScene(device);
     rtcSetSceneBuildQuality(scene, RTC_BUILD_QUALITY_MEDIUM);
+    std::vector<RTCGeometry> casters;
+    bool anyNonCaster = false;
     size_t tris = 0, segs = 0;
     for (size_t i = 0; i < snap->meshes.size(); ++i) {
       const Mesh& m = *snap->meshes[i].mesh;
@@ -167,6 +173,12 @@ struct PathTracer::Impl {
       std::copy(m.indices.begin(), m.indices.end(), ib);
       rtcCommitGeometry(g);
       unsigned id = rtcAttachGeometry(scene, g);
+      if (snap->materials[size_t(snap->meshes[i].material)].castsShadow) {
+        rtcRetainGeometry(g);
+        casters.push_back(g);
+      } else {
+        anyNonCaster = true;
+      }
       rtcReleaseGeometry(g);
       if (geoms.size() <= id) geoms.resize(id + 1);
       geoms[id] = {false, int(i)};
@@ -182,12 +194,23 @@ struct PathTracer::Impl {
       std::copy(f.segmentStarts.begin(), f.segmentStarts.end(), ib);
       rtcCommitGeometry(g);
       unsigned id = rtcAttachGeometry(scene, g);
+      rtcRetainGeometry(g);
+      casters.push_back(g);
       rtcReleaseGeometry(g);
       if (geoms.size() <= id) geoms.resize(id + 1);
       geoms[id] = {true, int(i)};
       segs += f.segmentStarts.size();
     }
     rtcCommitScene(scene);
+    if (anyNonCaster) {
+      shadowScene = rtcNewScene(device);
+      rtcSetSceneBuildQuality(shadowScene, RTC_BUILD_QUALITY_MEDIUM);
+      for (RTCGeometry g : casters) rtcAttachGeometry(shadowScene, g);
+      rtcCommitScene(shadowScene);
+    } else {
+      shadowScene = scene;
+    }
+    for (RTCGeometry g : casters) rtcReleaseGeometry(g);
     samples = 0;
     logInfo("scene built in {:.2f}s: {} triangles, {} fiber segments", sw.seconds(), tris, segs);
   }
@@ -216,7 +239,7 @@ struct PathTracer::Impl {
     r.mask = 0xFFFFFFFFu;
     r.id = 0;
     r.flags = 0;
-    rtcOccluded1(scene, &r);
+    rtcOccluded1(shadowScene, &r);
     return r.tfar < 0;
   }
 
@@ -404,17 +427,18 @@ struct PathTracer::Impl {
       if (depth == 0) {
         // Fibres: modulate the guide by the across-fibre offset so each fibre is a
         // visible line in the albedo buffer and the denoiser preserves it.
-        if (albedo) *albedo = sp.fiber ? sp.base * (0.45f + 0.55f * safeSqrt(1 - sp.h * sp.h)) : sp.base;
+        if (albedo) *albedo = sp.fiber ? sp.base * (0.45f + 0.55f * safeSqrt(1 - sp.h * sp.h))
+                              : sp.material->type == MaterialType::Glass ? vec3(1) : sp.base;
         if (normal) *normal = sp.fiber ? sp.ng : sp.ns;
       }
-      L += beta * directLight(sp, wo, rng, depth, rs.clamp);
+      if (sp.fiber || sp.material->type != MaterialType::Glass) L += beta * directLight(sp, wo, rng, depth, rs.clamp);
       BsdfSample bs;
       float u0 = rng.next();
       vec2 u1 = rng.next2(), u2 = rng.next2();
       if (!sampleBsdf(sp, wo, u0, u1, u2, bs)) break;
       beta *= bs.weight;
       if (!std::isfinite(beta.x + beta.y + beta.z)) break;
-      prevPdf = bs.pdf;
+      prevPdf = bs.pdf;  // delta lobes carry a huge pdf, so light hits after them get full weight
       prev = sp;
       spawn(sp, bs.wi, o, tnear);
       d = bs.wi;

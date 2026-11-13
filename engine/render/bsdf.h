@@ -15,6 +15,7 @@ struct ShadingPoint {
   float fiberRadius = 0;
   float h = 0;        // fiber offset in [-1, 1]
   vec3 base{0.8f};    // textured base colour
+  bool backface = false;  // the ray hit the surface from inside (normal pointing away)
   const Material* material = nullptr;
 };
 
@@ -22,6 +23,7 @@ struct BsdfSample {
   vec3 wi{0};
   vec3 weight{0};  // f * |cos| / pdf (fibers: f / pdf)
   float pdf = 0;
+  bool delta = false;  // perfectly specular (glass); excluded from light sampling
 };
 
 vec3 evalTexture(const Material& m, vec3 pref);

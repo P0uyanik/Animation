@@ -34,8 +34,21 @@ struct Expression {
   std::vector<Json> add;  // extra primitives (same format as part primitives)
 };
 
+// A group of explicit locks / tubes attached to one bone (hair locks, lashes, frames, strings).
+struct LockGroup {
+  std::string name;
+  std::string bone = "head";
+  std::string material;      // halo fibres
+  std::string coreMaterial;  // core tubes (empty = material)
+  LockGroupParams params;
+  std::vector<LockCurve> locks;
+};
+
 struct CharacterAsset {
   std::string name;
+  std::vector<LockGroup> lockGroups;          // mirrors expanded
+  std::map<std::string, vec3> defaultPose;    // bone -> euler degrees when no track (personality)
+  std::map<std::string, float> defaultExpressions;
   bool dualQuaternion = false;  // skinning method (false = linear blend)
   std::vector<Expression> expressions;
   Skeleton skeleton;
@@ -53,6 +66,8 @@ Json primToJson(const SdfPrim& p);
 Json partToJson(const SdfPart& part);
 // Saves the expanded asset (mirror copies are written out explicitly).
 Json characterToJson(const CharacterAsset& c);
+Result<LockGroup> lockGroupFromJson(const Json& j);
+Json lockGroupToJson(const LockGroup& g);
 // Re-resolves primitive bone indices after editing.
 Result<void> resolveBones(CharacterAsset& c);
 

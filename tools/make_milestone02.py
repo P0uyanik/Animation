@@ -4,7 +4,7 @@ import json
 s = json.load(open("content/scenes/milestone01_classroom.scene.json"))
 s["name"] = "Milestone 02 - picking up the paper boat"
 s["frameEnd"] = 72
-s["characters"][0]["asset"] = "../characters/girl_white_hair.character.json"
+s["characters"][0]["asset"] = "../characters/girl_white_hair_v2.character.json"
 s["objects"] = [o for o in s["objects"] if o["name"] != "boat"]
 legs = [{"type": "capsule", "a": [x, 0.0, z], "b": [x, 0.44, z], "r": 0.016, "blend": 0.0}
         for x in (-0.18, 0.18) for z in (-0.115, 0.115)]
