@@ -58,6 +58,8 @@ Assessment: `docs/SCALABILITY_ASSESSMENT.md`.
 | 960x540, 64 spp, full fibres (~1.6M) | 77 s |
 | 640x360, 32 spp, full fibres | 25–35 s per frame |
 | 480x270, 16 spp, preview density | 5 s |
+| Iteration 4: water table v4 (3 characters, SSS), 640x360, 12 spp | ~29 s per frame (21.5 s render + 7.1 s scene update) |
+| Iteration 4: 1280x720 group still, 96 spp | 3–5 min; peak memory 7.7 GB |
 Your computer's numbers will differ; unknown until you run it.
 
 ## Hardware
