@@ -201,3 +201,29 @@ no Blender in the workflow, use the existing (unknown) computer, no GPU purchase
 ## TD-34 Frame rate
 - Default 30 fps for new scenes (`FrameRate{30,1}`); iteration-3 scenes keep their explicit 24 fps test setting.
   Animation previews render at 640x360; stills at 1280x720.
+
+## Decisions after Iteration 4 (2026-11-13, product owner)
+
+## TD-35 Blender as a background backend; subsystems decided by evidence
+- **Plush Studio remains the product and the only user interface.** Blender is an internal background component for
+  asset creation, modelling, rigging, materials, hair, deformation and other areas where it shows a clear advantage.
+- Communication goes through a documented, reliable interface. Plush Studio manages Blender's installation, version
+  compatibility, execution and error reporting. The user never opens Blender, writes scripts or exports manually.
+  Exported assets must work in Plush Studio's scene, animation and rendering workflows.
+- **Production uses a proper, stable Blender installation.** The `bpy` PyPI smoke test (2026-11-13) is evidence of
+  capability only, not the production architecture.
+- Any C++ subsystem (rendering, character creation, animation) **may be replaced** if controlled comparisons show
+  Blender equal or better in visual quality, animation quality, reliability and maintainability. Nothing is kept
+  because it exists, and nothing working is discarded without evidence.
+- This partly supersedes TD-01's "no Blender" rule: Blender may be required internally, never as a tool the user
+  operates.
+
+## TD-36 Canonical experimental character `boy_yellow_hoodie`
+- Permanent asset ID `boy_yellow_hoodie`; it replaces the letters A and C used inconsistently across the references.
+- A-pose is the default reference pose for modelling and rigging. The hands-in-pocket turnaround is a presentation
+  pose.
+- Backpack: charcoal-plum (current reference-based direction).
+- Once approved, the appearance, proportions, facial identity, hair, clothing, materials, rig and expressions are kept
+  as a reusable canonical asset. **The canonical identity never changes without the product owner's explicit
+  approval.**
+- Reference package: `docs/references/boy_pipeline/`; audit: `docs/BOY_BLENDER_PIPELINE_ANALYSIS.md` §2 and §17.

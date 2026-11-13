@@ -159,3 +159,15 @@ noodle locks → denser layers with a longer halo; fogged lenses → guides thro
 - B's back view (evidence `hair_B_back`) showed curl roots as knobs below a bare band of scalp: curl roots moved up
   (elevation 30–50°, +7 cm length) under longer crown clumps (32, 16–30°). Lineup regression re-baselined again for
   this intentional change. Lineup/B evidence rendered before the fix is re-rendered.
+
+## 2026-11-13 — Reference package and decisions (no code changes)
+- Pipeline analysis for the yellow-hoodie boy: `docs/BOY_BLENDER_PIPELINE_ANALYSIS.md`. Blender checked in this
+  environment: no binary installed, the download host is blocked, `bpy` 5.3 from PyPI works headless (scratch venv
+  only).
+- References archived in `docs/references/boy_pipeline/` (#8–#12, #18–#27; SHA-256 checked, no overwrites).
+  - #13–#17 were duplicates.
+  - #28 (expression library) and #29 (integration/validation blueprint) were shown in the conversation but never
+    reached the upload store; they are recorded in the inventory as not stored.
+- Decisions recorded: TD-35 (Blender as a background backend, subsystems replaced only on evidence) and TD-36
+  (`boy_yellow_hoodie`, A-pose, charcoal-plum backpack, canonical identity protected).
+- Iteration 5 not started; the engine is unchanged.

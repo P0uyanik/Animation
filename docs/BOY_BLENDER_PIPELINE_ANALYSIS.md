@@ -29,9 +29,9 @@ recommendation._
     file for the curves; a manifest for Plush-specific material, rig-role and expression data.
   - Plush Studio stays the production environment: scenes, actions, director, life layer and final output.
 - **[V] References (final audit, §2).**
-  - 26 uploads: 7 original/group images and 14 technical sheets; #13–#17 duplicated #8–#12.
-  - 10 of the 14 technical sheets are stored in the project. #23–#26 (clothing, materials, UVs, interaction) were
-    reviewed in the conversation but never reached the workspace as files.
+  - 29 uploads: 7 original/group images and 17 technical sheets; #13–#17 duplicated #8–#12.
+  - 15 of the 17 technical sheets are stored in `docs/references/boy_pipeline/` and verified readable. #28 (expression
+    library) and #29 (integration/validation) were reviewed but did not reach the upload store.
   - No reference gives the boy's real height, and only the hair has numeric material values.
 - **[R] Biggest risk.** Reference-level sculpted forms (face, hair clumps, fleece folds) produced by scripted modelling
   without a human artist. This needs your decision (section 9).
@@ -70,10 +70,12 @@ Both checkpoints are preserved in git (Iteration 3 = `db01ad6`, Iteration 4 = `8
 | 8–12 | `boy_pipeline/08…12_*.webp` | Technical sheets (see 2.3) | boy / all | Technical |
 | 13–17 | — (identical to #8–#12) | Duplicates | — | Duplicate |
 | 18–22 | `boy_pipeline/18…22_*.webp` | Technical sheets (see 2.3) | boy | Technical |
-| 23–26 | **not stored** (visible in the conversation only) | Technical sheets (see 2.3) | boy | Technical |
+| 23–26 | `boy_pipeline/23…26_*.webp` (stored on the re-send, 2026-11-13) | Technical sheets (see 2.3) | boy | Technical |
+| 27 | `boy_pipeline/27_boy_deformation_collision_validation.webp` | Technical sheet (see 2.3); new with the re-send | boy | Technical |
+| 28–29 | **not stored** (shown in the conversation, not written to the upload store) | Technical sheets (see 2.3) | boy | Technical |
 | video | `video_watertable.mp4` | Water-table animation, 5 s | all three | Motion reference |
 
-### 2.3 The 14 technical reference sheets
+### 2.3 The 17 technical reference sheets
 | Sheet | # | File (in `docs/references/boy_pipeline/`) | Subject | Label on the sheet | Stored |
 | --- | --- | --- | --- | --- | --- |
 | 1 | 8 | `08_boy_turnaround_proportions_expressions_clothing_sheet.webp` | Turnaround (5 views), hair-only views, proportion brackets, 5 expressions, clothing/backpack/shoe breakdown, 3 swatches, skeleton silhouettes, wireframe, T-pose, modular parts | "Character A" | **yes** |
@@ -86,31 +88,39 @@ Both checkpoints are preserved in git (Iteration 3 = `db01ad6`, Iteration 4 = `8
 | 8 | 20 | `20_boy_skeleton_hierarchy_skin_weights_control_rig.webp` | Bone names and tree, joint orientation, weight heatmaps, knee/spine tests, control rig | "character_c_reference_01" | **yes** |
 | 9 | 21 | `21_boy_hair_geometry_groom_material_spec.webp` | Hair masses, hybrid clump+fibre method, flow, groups, material (#2D2D2D, roughness 0.95, SSS); sections 01–10 | "REF: <IMAGE 0>" | **yes** |
 | 10 | 22 | `22_boy_hair_rig_secondary_motion.webp` | Hair chains (fringe, crown, side, master), hierarchy, lag/overshoot/settle, spring settings; sections 01–04, 08 | "character_c_reference_01" | **yes** |
-| 11 | 23 | — proposed `23_boy_clothing_topology_deformation.webp` | Clothing topology (half render/half wireframe, front/¾/back), hoodie/joggers/shoes breakdown, seams and stitching, stretch/fold zones | none | **no** |
-| 12 | 24 | — proposed `24_boy_material_identification.webp` | Hero render with material notes for hair, skin, eyes, hoodie, straps, trousers, footwear; swatches | "01_Material_Identification" | **no** |
-| 13 | 25 | — proposed `25_boy_uv_organization_texture_direction.webp` | UV seams (T-pose and A-pose), per-part UV layouts, checker validation, fibre direction, Blender UV view | sections 01–12 | **no** |
-| 14 | 26 | — proposed `26_boy_object_interaction_contact_points.webp` | Hand contact zones, 4 grasp types, pick-up/release sequences, foot/lean/sit contact, arm IK | "Character C_reference_01" | **no** |
+| 11 | 23 | `23_boy_clothing_topology_deformation.webp` | Clothing topology (half render/half wireframe, front/¾/back), hoodie/joggers/shoes breakdown, seams and stitching, stretch/fold zones | none | **yes** |
+| 12 | 24 | `24_boy_material_identification.webp` | Hero render with material notes for hair, skin, eyes, hoodie, straps, trousers, footwear; swatches | "01_Material_Identification" | **yes** |
+| 13 | 25 | `25_boy_uv_organization_texture_direction.webp` | UV seams (T-pose and A-pose), per-part UV layouts, checker validation, fibre direction, Blender UV view | sections 01–12 | **yes** |
+| 14 | 26 | `26_boy_object_interaction_contact_points.webp` | Hand contact zones, 4 grasp types, pick-up/release sequences, foot/lean/sit contact, arm IK | "Character C_reference_01" | **yes** |
+| 15 | 27 | `27_boy_deformation_collision_validation.webp` | Neutral-pose validation (front, ¾, side, back, back-¾ with level lines and arm/leg joints); skeleton & joint deformation (run, squat, arms up); facial deformation tests (neutral, happy-closed eyes, surprised, eyes closed); hand tests (open, fist, pointing); foot/shoe flex and floor contact; clothing & hair collision (hand on chest, bow forward, head tilt) | none | **yes** |
+| 16 | 28 | — proposed `28_boy_facial_expression_library.webp` | "02_FACIAL_EXPRESSION_LIBRARY", expression validation in ¾ view: 01 neutral, 02 happy, 03 sad, 04 surprised, 05 angry, 06 worried, 07 confused, 08 curious, 09 sleepy, 10 excited, 11 embarrassed, 12 gentle smile. 16 tiles; row 3 repeats labels with different faces | "@character_c_reference_01" | **no** |
+| 17 | 29 | — proposed `29_boy_production_integration_validation.webp` | "3D character production integration & validation blueprint": canonical turnaround (front, ¾, left, back; backpack; hands in pockets); face, hair-clump, clothing-layer and hand/foot geometry; rig hierarchy (hair rig, spine, head/neck, root, arm/leg IK/FK, pelvis, hand/finger controllers); skinning tests ("no mesh collisions", "smooth joint deformation"); material assignment (skin SSS, hair rough felt, hoodie yellow fuzzy fleece, pants charcoal rough fabric, shoes yellow canvas + rubber) with UV thumbnails; validation poses (walk, sit, run, object interaction) | "Character A (@character_c_reference_01)" | **no** |
 
 Result:
-- **14 technical sheets were received and reviewed: 10 are stored, 4 are not.**
-- 12 sheets show only the boy; #9 and #10 show all three characters.
+- **17 technical sheets were received and reviewed. 15 are stored (verified readable, 2026-11-13); #28 and #29 are
+  not stored**, because they never reached the upload store. Re-send needed.
+- 15 sheets show only the boy; #9 and #10 show all three characters.
 - There are **no dedicated technical sheets for the two girls** in this workspace, only the group sheets #9 and #10.
   They are out of scope for this phase.
 
 ### 2.4 Duplicates, missing and inaccessible
 - **Duplicates:** #13–#17 are byte-identical to #8–#12. There are no other duplicates.
-- **Inaccessible as files:** #23–#26 were shown in the conversation but never written to the upload store, so they
-  cannot be archived or measured. They need to be sent again to become part of the stored package.
+- **Inaccessible as files:**
+  - #23–#26 were re-sent, stored and verified, together with the new #27.
+  - Duplicate check: #23–#27 match no earlier file. Nothing was overwritten.
+  - **#28 and #29 are not stored**: they were reviewed visually only.
 - **Never received:** the second animation reference video named in the Iteration 3 brief.
 - **Possibly incomplete series** (inferred from section numbers on the sheets; cannot be confirmed from the images):
   - #24 is titled "01_Material_Identification"; no 02 or later material sheet arrived.
   - #25 shows UV sections 01, 02, 04, 05, 06, 08, 10, 11 and 12; 03, 07 and 09 are absent.
   - #22 shows hair-rig sections 01, 02, 03–04 and 08; 05–07 are absent.
   - #21 is complete (01–10).
-- **No dedicated sheet received** for these brief categories:
-  - Animation deformation tests: only inside #19, #20 and #23.
-  - Facial expression validation: only inside #8, #9 and #12.
-  - Full character integration: only #24's hero render and the #10 mock-up.
+- **Dedicated validation sheets:**
+  - #27: animation deformation tests, facial deformation tests, hand/foot tests and clothing/hair collision.
+  - #28: facial expression validation.
+  - #29: full production integration.
+- **Series numbering:** #28 is titled "02_…" and #24 "01_…", which suggests one numbered series. #29 cites section
+  numbers 02, 03, 04, 05, 07 and 14. These fill some of the gaps listed above but cannot prove the series is complete.
 - **Data no reference provides:** real height in cm; numeric material values except hair; texel density and texture
   resolutions; cloth behaviour (simulation or correctives); numeric skin weights.
 
@@ -126,11 +136,12 @@ Result:
 | UV mapping | #25 (seams, per-part layouts, checker validation, texture direction) | Texel density and texture resolution targets |
 | Materials, textures | #24 (qualitative, all parts), #21 (hair: #2D2D2D, roughness 0.95, SSS) | Numeric values for skin, hoodie, trousers, shoes, eyes, straps |
 | Object interaction, contact points | #26 (contact zones, 4 grasp types, pick-up/release, foot/lean/sit contact, IK), #18 (boat, pencil, toy, cup, release, flat surface) | — |
-| Animation deformation tests | #19 (arms up, bow, sit, walk, kneel), #20, #23 | — |
-| Full integration | #24 (hero render with all materials) | — |
+| Animation deformation tests | **#27** (run, squat, arms up; collision poses), #19 (arms up, bow, sit, walk, kneel), #20, #23 | — |
+| Full integration | **#29** (integration and validation blueprint), #24, #27 | #29 not stored |
+| Collision (clothing, hair, hands, feet) | **#27** | Collision method (simulation vs. correctives) not specified |
 | Facial topology | #11 (eye, mouth, jaw loops, ear junction) | — |
 | Facial rig, expressions | #12 (controls, 15 blendshapes, eyelid states, jaw/mouth), #8, #9 | — |
-| Facial expression validation | inside #8, #9, #12 | No dedicated validation sheet |
+| Facial expression validation | **#28** (12 expressions, ¾), #27, #8, #9, #12 | #28 not stored |
 | Turnaround, proportions | #7, #8, #9, #19 | Numeric scale |
 | Real-world scale | — | **Height in cm**: dimension arrows in #19/#23 carry no numbers |
 
@@ -194,6 +205,30 @@ Result:
 18. **"Character A" on #18.** In your sheets "A" means the boy (#8, #11), so #18 is treated as the boy's hand. In
     this project's older naming "A" is the white-haired girl. The label alone is ambiguous; the stable-ID
     recommendation (item 1) removes the problem.
+20. **Backpack in #27.** The backpack straps appear in the front and ¾ views of #27's neutral-pose validation, but
+    the back views show no backpack. Either the validation was made without it, or the sheet is inconsistent.
+    **[R]** Validate both with and without the backpack; the backpack is a removable part.
+21. **#27 confirms existing directions.**
+    - Spiky felted hair: matches #7 and #24, unlike the softer sculpts in #19, #23 and #25.
+    - Short, chubby hands: matches #7 and #24, unlike #18 and #26 (item 7).
+    - Shoes with two cream straps.
+    - Sleepy default face.
+22. **Expression set (update to item 15).**
+    - #28 adds worried, curious, sleepy, excited, embarrassed and gentle smile, none of which are in #12's 15.
+    - #12 has blink L/R, squint, laugh, confusion and puff cheeks, which #28 lacks.
+    - #28 also contains labelling errors: row 3 repeats 05/02/07/08 with different faces (e.g. "05 angry" with closed
+      eyes), and "COLFITED" is a typo.
+    - **[R]** The canonical set is the union: #12's shapes as building blocks, #28's 12 as named expression presets.
+      The mislabelled row 3 is not used.
+23. **Turnaround stance.**
+    - #29 labels a hands-in-pockets turnaround "CANONICAL".
+    - The decision in §17 makes A-pose the modelling and rigging reference.
+    - Compatible: A-pose is the rest pose, and the hands-in-pocket turnaround is the canonical presentation pose for
+      appearance approval.
+24. **Trouser colour.** #29 says "charcoal rough fabric"; #7 and #24 render near-black. Within the same range.
+    **[R]** Charcoal-black, set by matched renders.
+25. **Nonsense labels.** The dimension labels in #28 (12.6″, 7.3.8″, 2'10″) and #29 ("Perfect Tonbuity",
+    "Subsurfara") are illegible or invalid. They give no real scale.
 19. **Rest pose (addition).** #25 itself shows both a T-pose and an A-pose orthographic set, so the references
     support both. The recommendation in item 9 (A-pose) stands.
 
@@ -539,19 +574,48 @@ This touches no engine code and produces the yardstick every later stage is judg
 - Qualitative materials for every part (#24).
 - UV seams, layouts and texture direction (#25).
 - Object interaction and environmental contact (#26).
+- Deformation, facial-deformation and collision validation (#27).
+- Expression library (#28) and production integration/validation (#29): reviewed, **not stored**.
 - Group and environment context (#1–#3, #5, #9, #10, video).
 
 **Missing or incomplete:**
-1. #23–#26 are not stored as files: re-send needed to archive them.
-2. The boy's real-world height (no numbers on any dimension arrow).
-3. Numeric material values for skin, hoodie, trousers, shoes, eyes and straps (only hair has numbers).
-4. Texel density and texture-resolution targets.
-5. Cloth behaviour: simulation or corrective shapes.
-6. Numeric skin weights (heatmaps are pictures only).
-7. Possibly further sheets implied by section numbering: material sheets after "01"; UV sections 03/07/09; hair-rig
+1. The boy's real-world height (no numbers on any dimension arrow).
+2. Numeric material values for skin, hoodie, trousers, shoes, eyes and straps (only hair has numbers).
+3. Texel density and texture-resolution targets.
+4. Cloth behaviour: simulation or corrective shapes.
+5. Numeric skin weights (heatmaps are pictures only).
+6. Possibly further sheets implied by section numbering: material sheets after "01"; UV sections 03/07/09; hair-rig
    sections 05–07.
-8. No dedicated sheets for animation deformation tests, facial expression validation or full integration (covered
-   only inside other sheets).
-9. The second animation reference video named in the Iteration 3 brief.
-10. No dedicated technical sheets for the two girls (out of scope for this phase).
-11. 19 conflicts between references, listed in §2.6, all still open.
+7. Files for #28 and #29 (re-send needed; at most 5 images per message).
+8. The second animation reference video named in the Iteration 3 brief.
+9. No dedicated technical sheets for the two girls (out of scope for this phase).
+10. Conflicts in §2.6 that remain open after the decisions in §17: items 4, 5, 7, 8, 10–12, 15–17, 20, 22, 24 and 25.
+    Item 2 (turnaround stance) is settled by item 23.
+
+---
+
+## 17. Decisions recorded (2026-11-13, by the product owner)
+
+These replace the corresponding open items above. Full text: `TECHNICAL_DECISIONS.md` TD-35 and TD-36.
+
+1. **Architecture: Blender as a background backend** (TD-35).
+   - Plush Studio remains the main application and the only user interface.
+   - Blender is an internal component for asset creation, modelling, rigging, materials, hair and deformation,
+     where it shows a clear advantage.
+   - It is driven through a documented interface. Plush Studio manages Blender's installation, version, execution
+     and error reporting.
+   - The user never opens Blender, writes scripts or exports manually.
+   - Production uses a **proper, stable Blender installation**. The `bpy` smoke test is evidence only, not the
+     production path.
+2. **Subsystem replacement by evidence.**
+   - C++ rendering, character creation or animation may be replaced if controlled comparisons show Blender is equal
+     or better in visual quality, animation quality, reliability and maintainability.
+   - Nothing is kept merely because it exists, and nothing working is discarded without evidence.
+3. **Canonical character** (TD-36).
+   - ID `boy_yellow_hoodie`.
+   - A-pose is the default reference pose for modelling and rigging.
+   - Charcoal-plum backpack (current direction).
+   - The approved appearance, proportions, face, hair, clothing, materials, rig and expressions become a canonical
+     asset whose identity changes only with explicit approval.
+   - Resolves §2.6 items 1, 3, 9, 13, 14, 18, 19, and item 2 for the rest pose.
+4. **Still open:** the modelling approach (§9: scripted, artist or hybrid). It needs to be settled before Stage 2.

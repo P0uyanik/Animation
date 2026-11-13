@@ -17,7 +17,12 @@ White-haired girl in a sunlit classroom looking down at a paper boat and reachin
 - Output: `docs/milestone01/milestone01_640x360.mp4` (48 frames, 640x360, 32 spp, rendered in 21 min on 4 cores)
 - Stills: `docs/milestone01/` (full frame, head close-up, contact sheet, Studio screenshot)
 
-## Iteration 4 (current — awaiting your approval)
+## After iteration 4: production pipeline planning (current)
+- Experimental character `boy_yellow_hoodie` (TD-36); Blender as a background backend behind Plush Studio (TD-35).
+- Reference package: `docs/references/boy_pipeline/`. Analysis and audit: `docs/BOY_BLENDER_PIPELINE_ANALYSIS.md`.
+- No implementation started; iteration 5 not started.
+
+## Iteration 4 (completed — awaiting your approval)
 - Characters A/B/C reconstructed against the references (`docs/ITERATION_04_PHASE_A_ANALYSIS.md`): larger wide-set
   eyes, shorter upper face and fuller chin, felted fringes/crowns/clumps, hair mass under the locks, bigger buns and
   bow (A), bell skirt + ribbed hem (A), V-neck vest with felt motifs (B), loose hoodie + wide joggers (C), mouths with
