@@ -58,25 +58,36 @@ Both checkpoints are preserved in git (Iteration 3 = `db01ad6`, Iteration 4 = `8
 | 11 | `boy_pipeline/11_boy_facial_topology_spec.webp` | Head topology: eye edge loops, mouth/lip loops, jaw/cheek flow, ear junction; ¾ wireframe; eyelid open/blink/squint; mouth neutral-frown/open | Technical (topology) | Edge-loop layout of the head; hair as sculpted clump shapes. Some labels point at the wrong part (e.g. "Mouth & Lip Loops" arrow at the ear) |
 | 12 | `boy_pipeline/12_boy_facial_rig_blendshape_blueprint.webp` | Facial controls (brow in/out, upper/lower lids, eye targets, cheeks, jaw root, mouth main/corners), 15 blendshapes, eyelid states, jaw/mouth controls, outliner hierarchy | Technical (face rig) | Target list of face controls and shapes. Axis numbers on the ruler are meaningless (130, 50, 200, 10 …) |
 
+| 18 | `boy_pipeline/18_hand_topology_finger_rig_poses_contact_weights.webp` | Hand topology (wrist/palm loops, 3 loops per joint), finger skeleton, 9 required poses, thumb opposition range, 6 hand-object contacts (boat, pencil, toy, cup, release, flat surface), wrist/palm/deformation weight heatmaps. Labelled "Character A (plush design study)" | Technical (hand) | Topology, joints, pose list, contact cases |
+| 19 | `boy_pipeline/19_boy_body_topology_joint_deformation_poses.webp` | Boy in A-pose (front, ¾) with topology and dimension arrows (no numbers); skeleton front/side with IK circles; shoulder, armpit, elbow, hip and knee deformation details; poses: arms up, bow, sit, walk, kneel; backpack | Technical (body) | Rest pose, joint loops, deformation tests |
+| 20 | `boy_pipeline/20_boy_skeleton_hierarchy_skin_weights_control_rig.webp` | "character_c_reference_01": bone names, hierarchy tree, joint orientation (bone Y along length, pre-bent elbow/knee for IK), weight heatmaps, knee/spine deformation tests ("preserve hoodie bulk, no crushing"), control rig (HEAD/CHEST/HIPS/ROOT, IK hands/feet, elbow/knee poles) | Technical (rig) | Skeleton and controls specification |
+| 21 | `boy_pipeline/21_boy_hair_geometry_groom_material_spec.webp` | Clump masses (crown spikes, downward fringe, side/back clusters), hybrid method (base-mesh clumps + curves/fine fibres 0.5–1 mm), flow arrows, colour-coded groups, material #2D2D2D, roughness 0.95, SSS | Technical (hair) | Hair construction and material |
+| 22 | `boy_pipeline/22_boy_hair_rig_secondary_motion.webp` | Hair chains DEF-hair.fringe.01–03, DEF-hair.crown.01–04, DEF-hair.side_L/R, MCH-hair.master, ORG-head; delay/overshoot/settling; spring settings (stiffness 0.65, damping 0.80, gravity 0.3) | Technical (hair rig) | Secondary-motion specification |
+| 23 | not stored (seen in conversation) | Clothing topology and deformation: A-pose half-render/half-wireframe (front, ¾, back with backpack), hoodie/joggers/shoe breakdown with seam and stitch details, ribbed cuffs/hem, hood lining, stretch/fold zones for arm raise, elbow bend, reach, sit, walk | Technical (clothing) | Garment construction and deformation zones |
+| 24 | not stored (seen in conversation) | "01_Material_Identification": hero render with material notes for hair, skin, eyes, hoodie, straps, trousers, footwear; swatches (roughness, plush, fibres, fuzz) | **High-quality look reference** + material description | Materials; also a second identity reference next to #7 |
+| 25 | not stored (seen in conversation) | UV organization: T-pose and A-pose with checker and seams; face/head, hair-mass, hoodie, pants, shoes/accessories UV layouts; fibre-direction overlays; Blender UV stretch view | Technical (UV) | Seams, layouts, texture/fibre direction |
+| 26 | not stored (seen in conversation) | "C_reference_01": hand contact zones, grasp types (precision pinch, power grasp, two-finger pinch, support), pick-up and release sequences, foot-to-floor, leaning on a table, sitting, arm/hand IK | Technical (interaction) | Contact and interaction specification |
+
 None of these is a 3D mesh, rig, UV set or skin-weight map. They are pictures.
 
-### 2.2 Requested in the brief but not received (explicitly missing)
-- Hand topology and finger rigging. Only small finger bones appear in #10 and finger silhouettes in #8.
-- Body topology and joint deformation (elbow, shoulder, hip, knee).
-- Skin-weight guides.
-- Hair rig and secondary-motion references.
-- Clothing topology and deformation. Only one hoodie wireframe exists, in #8.
-- UV-mapping references.
-- Material and texture specifications. Only three small swatches exist in #8: mustard fleece, black fleece, brown
-  sole tread. There are no colour values, roughness or fibre length.
-- Object interaction and contact points.
-- Animation deformation tests.
-- Full character integration references.
-- Real-world scale. No height in cm is given anywhere.
+### 2.2 Coverage of the requested categories (after the uploads of #18–#26)
+| Requested category | Now covered by | Still missing |
+| --- | --- | --- |
+| Hand topology, finger rigging | #18 (topology, MCP/PIP/DIP and thumb CMC/MCP/IP joints, 9 required poses, thumb opposition) | Hand **proportions** for this boy (see §2.3, item 7) |
+| Body topology, joint deformation | #19 (A-pose topology, shoulder/elbow/hip/knee loops, test poses), #20 (knee 90°, spine bend/twist), #23 (stretch/fold zones) | — |
+| Skin-weight guides | #18 (wrist, palm, deformation heatmaps), #20 (body heatmaps) | Numeric weights (pictures only) |
+| Hair rig, secondary motion | #22 (chains, hierarchy, spring settings) | — |
+| Hair geometry, groom | #21 (hybrid clump meshes + fibres, flow, material) | — |
+| Clothing topology, deformation | #23 (hoodie, joggers, shoes, seams, stitching, deformation zones), #19 | Cloth behaviour (simulation vs. correctives): not specified |
+| UV mapping | #25 (seams, per-part layouts, checker validation, texture direction) | Texel density and texture resolution targets |
+| Materials, textures | #24 (qualitative, all parts), #21 (hair: #2D2D2D, roughness 0.95, SSS) | Numeric values for skin, hoodie, trousers, shoes, eyes, straps |
+| Object interaction, contact points | #26 (contact zones, 4 grasp types, pick-up/release, foot/lean/sit contact, IK), #18 (boat, pencil, toy, cup, release, flat surface) | — |
+| Animation deformation tests | #19 (arms up, bow, sit, walk, kneel), #20, #23 | — |
+| Full integration | #24 (hero render with all materials) | — |
+| Real-world scale | — | **Height in cm**: dimension arrows in #19/#23 carry no numbers |
 
-If you have these, please send them. Stages 4–6 depend on several of them.
-
-**Second upload (2026-11-13):** five files received again, byte-identical to #8–#12 (same SHA-256, zero pixel difference). No new reference reached this workspace, so the list above is unchanged. Both uploads contained exactly five images, so further images may have been dropped by an upload limit.
+Upload history: #13–#17 were byte-identical to #8–#12. #18–#22 arrived as new files. #23–#26 were visible in the
+conversation but **were not stored as files in this workspace**, so they are not yet in `docs/references/boy_pipeline/`.
 
 ### 2.3 Conflicts found (reported, not resolved)
 1. **Name/letter.**
@@ -101,6 +112,32 @@ If you have these, please send them. Stages 4–6 depend on several of them.
    - **[R]** Sculpted clump meshes plus a short-fibre groom for the felt surface; not cards.
 6. **Sole.** The sole is white rubber with a white toe cap; the tread is brown in #8's sole view. Not
    contradictory, but the tread colour appears only once.
+7. **Hand proportions.** #18 and #26 show long, slender five-finger hands. #7, #8, #19 and #24 show short, chubby,
+   stubby hands. **[R]** Proportions from #7/#24; topology, joints and pose list from #18.
+8. **Hand material.** #26 renders the hand as dark grey fleece, like a glove. Every other reference shows bare peach
+   skin. Most likely a material demo; please confirm the hands are bare skin.
+9. **Rest pose for rigging.**
+   - A-pose (arms about 45° down) in #19, #23 and #25.
+   - T-pose in #8 and #25.
+   - Arms close to the body in #20.
+   - **[R]** A-pose for modelling and rigging; the hand-in-pocket stance is a pose, not the rest pose.
+10. **Skeleton naming and hierarchy.** Three naming schemes, and a hierarchy that disagrees with itself:
+    - Naming: #12 uses `CTRL_…`; #20 uses `L_UPPER_ARM`, `IK_HAND_L`, `PV_ELBOW_L`; #22 uses Rigify-style
+      `DEF-/MCH-/ORG-`.
+    - #20's tree omits neck, calf and foot, which its own labels show.
+    - #22 parents the hair to "Spine3", which does not exist in #20 (spine_01, spine_02, chest).
+    - **[R]** Blender side: Rigify-style `DEF-`/`ORG-`/`MCH-` with `.L/.R` suffixes, controls named after #20/#12,
+      and a role map in the manifest for Plush.
+11. **Hair shape.** The sculpted hair in #19, #23 and #25 is softer and wavier, with rounder tufts. #7, #8, #11, #21,
+    #22 and #24 show spikier felted clumps. Hair authority: #7/#24; construction method: #21.
+12. **Hair colour.**
+    - #21 specifies neutral charcoal #2D2D2D.
+    - The lit hair in #7 averages a slightly warm #302A26.
+    - Close in value; the warmth may come from lighting.
+    - **[R]** #2D2D2D albedo, checked by matched renders.
+13. **Backpack colour (update).** #8, #23 and #24 agree on dark charcoal grey with a slight purple tint. #9 (plum,
+    orange zip) is the outlier. **[R]** Charcoal-plum grey, unless you decide otherwise.
+14. **Character letter (update).** "A" in #8, #11 and #18; "C" in #12, #20, #22 and #26. Still mixed.
 
 ---
 
@@ -133,8 +170,20 @@ Taken from #7 (authority), #8 and #11; measurements are approximate ratios read 
   - Ribbed cuffs and hem; sleeves bunch at the wrists.
 - **Trousers.** Black fuzzy fleece joggers, slightly baggy, gathered at the ankles.
 - **Shoes.** Yellow canvas/felt sneakers with white rubber soles and toe caps; brown tread underneath (#8).
-- **Backpack.** Dark felt backpack (colour to confirm: §2.3, item 3) with front pocket and straps over both
-  shoulders.
+- **Backpack.** Dark charcoal-plum felt backpack: rounded rectangle with a front pocket and a top handle (#23); straps
+  of flat woven dark-grey webbing with adjuster buckles (#24).
+- **Details from #23/#24.**
+  - A cream undershirt collar shows inside the hoodie neckline (also faintly in #7).
+  - The hood has a slightly darker mustard lining.
+  - Shoulder, hood and side seams are double-stitched.
+  - The drawstring cords are textured, with frayed ends.
+  - Cream socks show between the trouser cuffs and the shoes.
+  - The shoes have two cream straps across the top, not laces.
+  - Eyes are semi-glossy resin with inset pupils.
+  - Skin is soft matte with subtle SSS and a peach-fuzz texture.
+  - The hoodie is heavyweight fleece/bouclé; the trousers are felted or rough-knit and heavily textured.
+- **Hands.** Short, chubby, five-fingered, bare skin. In the hero renders (#7, #24) the left hand rests in the
+  trouser pocket.
 - **Personality.** Sleepy, sulky and cool. A slight forward slouch and an asymmetric stance (a hand in a pocket).
 
 ---
@@ -193,7 +242,18 @@ collisions, BUGS-25 build times).
 7. Material translation table from Blender Principled/Hair BSDF to Plush materials.
 8. Asset manifest, versioning, validation reports, LODs.
 9. A runner that launches Blender jobs from Plush Studio and reports progress and errors.
-10. Secondary motion for hair and clothing: not implemented anywhere today, in either Plush or exported data.
+10. Secondary motion for hair and clothing: not implemented anywhere today, in either Plush or exported data. #22
+    specifies damped spring chains: stiffness 0.65, damping 0.80, gravity 0.3. **[V-knowledge]** Blender has no
+    built-in spring-bone feature; its settings panel in #22 resembles an add-on. **[R]** Implement spring chains in
+    Plush, simulated from the shot start with a per-shot cache. Unlike the life layer this is stateful, so it needs a
+    cache to keep frames independently renderable.
+11. Pose-driven corrective shapes. #20 and #23 ask for no crushing and preserved hoodie bulk. Blender drives
+    correctives with drivers, which Plush cannot run. **[R]** Export correctives as morph targets plus a small
+    "weight from joint angle" table that Plush evaluates.
+12. Fibre/flow direction maps. #21 and #25 give fleece and hair a direction per region. Plush fuzz today has a single
+    comb origin per layer. **[R]** Read a direction map in UV space.
+13. Environmental contact actions. #26 shows sitting, leaning on a table and foot-to-floor contact. Plush actions have
+    walk, reach and touch only; sit and lean are missing.
 
 ---
 
@@ -356,6 +416,8 @@ Versioning:
 | Secondary motion (hair, cloth) absent in Plush | Medium | Bake in Blender per shot first; spring bones in Plush later |
 | Memory: high-res meshes + groom + 4K textures | Medium | LODs, 2K textures, fibre LOD; Iteration 4 already peaks at 7.7 GB |
 | Your hardware unknown | Medium | Measure on your computer at Stage 1 |
+| Spring-chain secondary motion is stateful (frames no longer independent) | Medium | Per-shot simulation cache; deterministic fixed-step solver |
+| Bone count grows to roughly 90–100 deform bones (body ~22, fingers 30, face ~16, hair ~20–30) | Medium | Skinning stays 4 influences per vertex; profile posing time per frame |
 
 ## 14. Estimated complexity and critical bottlenecks
 Rough, in focused sessions; [A] until measured:
