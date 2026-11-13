@@ -1,0 +1,346 @@
+#include "scene/scene.h"
+
+namespace plush {
+
+namespace {
+Result<ObjectDesc> objectFromJson(const Json& j) {
+  ObjectDesc o;
+  o.name = readString(j, "name");
+  std::string kind = readString(j, "kind", "box");
+  if (kind == "box") o.kind = ObjectDesc::Kind::Box;
+  else if (kind == "sdf") o.kind = ObjectDesc::Kind::Sdf;
+  else if (kind == "paperBoat") o.kind = ObjectDesc::Kind::PaperBoat;
+  else return fail(std::format("object '{}': unknown kind '{}'", o.name, kind));
+  o.material = readString(j, "material");
+  o.boxMin = readVec3(j, "min", o.boxMin);
+  o.boxMax = readVec3(j, "max", o.boxMax);
+  o.position = readVec3(j, "position", o.position);
+  o.yawDeg = readFloat(j, "yawDeg", o.yawDeg);
+  o.scale = readFloat(j, "scale", o.scale);
+  if (auto it = j.find("part"); it != j.end()) {
+    auto part = partFromJson(*it);
+    if (!part) return fail(std::format("object '{}': {}", o.name, part.error().message));
+    o.part = *part;
+    if (o.part.material.empty()) o.part.material = o.material;
+  }
+  if (auto it = j.find("fuzz"); it != j.end()) {
+    FuzzLayer f;
+    f.material = readString(*it, "material", o.material);
+    f.params.density = readFloat(*it, "density", f.params.density);
+    f.params.length = readFloat(*it, "length", f.params.length);
+    f.params.lengthJitter = readFloat(*it, "lengthJitter", f.params.lengthJitter);
+    f.params.radius = readFloat(*it, "radius", f.params.radius);
+    f.params.tilt = readFloat(*it, "tilt", f.params.tilt);
+    f.params.curl = readFloat(*it, "curl", f.params.curl);
+    f.params.segments = readInt(*it, "segments", f.params.segments);
+    f.params.seed = uint32_t(readInt(*it, "seed", int(f.params.seed)));
+    o.fuzz = f;
+  }
+  return o;
+}
+
+Json primToJson(const SdfPrim& p) {
+  const char* types[] = {"ellipsoid", "capsule", "roundCone", "roundBox"};
+  Json j = {{"name", p.name}, {"type", types[int(p.type)]}, {"blend", p.blend}};
+  if (!p.bone.empty()) j["bone"] = p.bone;
+  if (p.subtract) j["subtract"] = true;
+  vec3 euler = glm::degrees(glm::eulerAngles(p.rotation));
+  switch (p.type) {
+    case PrimType::Ellipsoid:
+      j["center"] = toJson(p.center);
+      j["radii"] = toJson(p.radii);
+      j["rotationDeg"] = toJson(euler);
+      break;
+    case PrimType::RoundBox:
+      j["center"] = toJson(p.center);
+      j["halfSize"] = toJson(p.radii);
+      j["rounding"] = p.rounding;
+      j["rotationDeg"] = toJson(euler);
+      break;
+    case PrimType::Capsule:
+      j["a"] = toJson(p.a);
+      j["b"] = toJson(p.b);
+      j["r"] = p.r1;
+      break;
+    case PrimType::RoundCone:
+      j["a"] = toJson(p.a);
+      j["b"] = toJson(p.b);
+      j["r1"] = p.r1;
+      j["r2"] = p.r2;
+      break;
+  }
+  return j;
+}
+
+mat4 objectMatrix(vec3 pos, float yawDeg, float scale) {
+  return glm::translate(mat4(1), pos) * glm::rotate(mat4(1), glm::radians(yawDeg), vec3(0, 1, 0)) *
+         glm::scale(mat4(1), vec3(scale));
+}
+
+std::shared_ptr<Mesh> transformMesh(const Mesh& src, const mat4& m) {
+  auto out = std::make_shared<Mesh>();
+  out->indices = src.indices;
+  out->pref = src.pref.empty() ? src.positions : src.pref;
+  out->positions.resize(src.positions.size());
+  out->normals.resize(src.normals.size());
+  mat3 nm = glm::transpose(glm::inverse(mat3(m)));
+  for (size_t i = 0; i < src.positions.size(); ++i) out->positions[i] = vec3(m * vec4(src.positions[i], 1));
+  for (size_t i = 0; i < src.normals.size(); ++i) out->normals[i] = glm::normalize(nm * src.normals[i]);
+  return out;
+}
+}  // namespace
+
+Result<Scene> loadScene(const std::filesystem::path& path) {
+  auto jr = parseJsonFile(path);
+  if (!jr) return std::unexpected(jr.error());
+  const Json& j = *jr;
+  if (readString(j, "format") != "plush.scene") return fail(std::format("{}: not a plush.scene file", path.string()));
+  if (readInt(j, "version", 0) != 1) return fail(std::format("{}: unsupported scene version", path.string()));
+  Scene s;
+  s.path = path;
+  s.name = readString(j, "name", path.stem().string());
+  if (auto it = j.find("frameRate"); it != j.end() && it->is_array() && it->size() == 2)
+    s.rate = FrameRate{(*it)[0].get<int>(), (*it)[1].get<int>()};
+  s.frameStart = readInt(j, "frameStart", s.frameStart);
+  s.frameEnd = readInt(j, "frameEnd", s.frameEnd);
+  if (auto it = j.find("render"); it != j.end()) s.render = renderSettingsFromJson(*it);
+  if (auto it = j.find("camera"); it != j.end()) s.camera = cameraFromJson(*it);
+  for (auto& mj : j.value("materials", Json::array())) {
+    auto m = materialFromJson(mj);
+    if (!m) return fail(std::format("{}: {}", path.string(), m.error().message));
+    s.materials.push_back(*m);
+  }
+  for (auto& lj : j.value("lights", Json::array())) {
+    auto l = lightFromJson(lj);
+    if (!l) return fail(std::format("{}: {}", path.string(), l.error().message));
+    s.lights.push_back(*l);
+  }
+  for (auto& oj : j.value("objects", Json::array())) {
+    auto o = objectFromJson(oj);
+    if (!o) return fail(std::format("{}: {}", path.string(), o.error().message));
+    s.objects.push_back(*o);
+  }
+  for (auto& cj : j.value("characters", Json::array()))
+    s.characters.push_back({readString(cj, "name"), readString(cj, "asset"), readVec3(cj, "position", vec3(0)),
+                            readFloat(cj, "yawDeg", 0)});
+  if (auto it = j.find("animation"); it != j.end() && it->is_object()) {
+    for (auto& [track, keys] : it->items()) {
+      Track t;
+      for (auto& k : keys) {
+        if (!k.is_array() || k.size() < 2) return fail(std::format("{}: bad key in track '{}'", path.string(), track));
+        Key key;
+        key.frame = k[0].get<double>();
+        const Json& v = k[1];
+        key.value = v.is_number() ? vec3(v.get<float>()) : vec3(v[0].get<float>(), v[1].get<float>(), v[2].get<float>());
+        if (k.size() > 2) {
+          std::string in = k[2].get<std::string>();
+          key.interp = in == "linear" ? Interp::Linear : in == "step" ? Interp::Step : Interp::Smooth;
+        }
+        t.setKey(key);
+      }
+      s.animation.tracks[track] = std::move(t);
+    }
+  }
+  return s;
+}
+
+Json sceneToJson(const Scene& s) {
+  Json j = {{"format", "plush.scene"}, {"version", 1}, {"name", s.name}, {"frameRate", {s.rate.num, s.rate.den}},
+            {"frameStart", s.frameStart}, {"frameEnd", s.frameEnd}, {"render", renderSettingsToJson(s.render)},
+            {"camera", cameraToJson(s.camera)}};
+  Json mats = Json::array(), lights = Json::array(), objs = Json::array(), chars = Json::array();
+  for (auto& m : s.materials) mats.push_back(materialToJson(m));
+  for (auto& l : s.lights) lights.push_back(lightToJson(l));
+  for (auto& o : s.objects) {
+    const char* kinds[] = {"box", "sdf", "paperBoat"};
+    Json oj = {{"name", o.name}, {"kind", kinds[int(o.kind)]}, {"material", o.material}};
+    if (o.kind == ObjectDesc::Kind::Box) {
+      oj["min"] = toJson(o.boxMin);
+      oj["max"] = toJson(o.boxMax);
+    } else {
+      oj["position"] = toJson(o.position);
+      oj["yawDeg"] = o.yawDeg;
+      oj["scale"] = o.scale;
+    }
+    if (o.kind == ObjectDesc::Kind::Sdf) {
+      Json prims = Json::array();
+      for (auto& p : o.part.prims) prims.push_back(primToJson(p));
+      oj["part"] = {{"name", o.part.name}, {"material", o.part.material}, {"voxelSize", o.part.voxelSize}, {"prims", prims}};
+    }
+    if (o.fuzz) {
+      const FuzzParams& f = o.fuzz->params;
+      oj["fuzz"] = {{"material", o.fuzz->material}, {"density", f.density}, {"length", f.length},
+                    {"lengthJitter", f.lengthJitter}, {"radius", f.radius}, {"tilt", f.tilt}, {"curl", f.curl},
+                    {"segments", f.segments}, {"seed", f.seed}};
+    }
+    objs.push_back(oj);
+  }
+  for (auto& c : s.characters)
+    chars.push_back({{"name", c.name}, {"asset", c.asset}, {"position", toJson(c.position)}, {"yawDeg", c.yawDeg}});
+  Json anim = Json::object();
+  for (auto& [name, track] : s.animation.tracks) {
+    Json keys = Json::array();
+    for (auto& k : track.keys) {
+      const char* in = k.interp == Interp::Linear ? "linear" : k.interp == Interp::Step ? "step" : "smooth";
+      keys.push_back({k.frame, toJson(k.value), in});
+    }
+    anim[name] = keys;
+  }
+  j["materials"] = mats;
+  j["lights"] = lights;
+  j["objects"] = objs;
+  j["characters"] = chars;
+  j["animation"] = anim;
+  return j;
+}
+
+Result<void> saveScene(const Scene& scene, const std::filesystem::path& path) {
+  return writeTextFile(path, sceneToJson(scene).dump(2));
+}
+
+Mesh makeBoxMesh(vec3 lo, vec3 hi) {
+  Mesh m;
+  const vec3 n[6] = {{1, 0, 0}, {-1, 0, 0}, {0, 1, 0}, {0, -1, 0}, {0, 0, 1}, {0, 0, -1}};
+  for (int f = 0; f < 6; ++f) {
+    vec3 nn = n[f];
+    vec3 u = std::abs(nn.y) > 0.5f ? vec3(1, 0, 0) : vec3(0, 1, 0);
+    vec3 v = glm::cross(nn, u);
+    vec3 c = 0.5f * (lo + hi), e = 0.5f * (hi - lo);
+    uint32_t base = uint32_t(m.positions.size());
+    for (int k = 0; k < 4; ++k) {
+      float su = (k == 0 || k == 3) ? -1.f : 1.f, sv = (k < 2) ? -1.f : 1.f;
+      m.positions.push_back(c + e * (nn + u * su + v * sv));
+      m.normals.push_back(nn);
+    }
+    m.indices.insert(m.indices.end(), {base, base + 1, base + 2, base, base + 2, base + 3});
+  }
+  m.pref = m.positions;
+  return m;
+}
+
+Mesh makePaperBoatMesh() {
+  // Classic folded paper boat, ~16 cm long, built from flat triangles.
+  Mesh m;
+  auto tri = [&](vec3 a, vec3 b, vec3 c) {
+    vec3 nn = glm::normalize(glm::cross(b - a, c - a));
+    uint32_t base = uint32_t(m.positions.size());
+    m.positions.insert(m.positions.end(), {a, b, c});
+    m.normals.insert(m.normals.end(), {nn, nn, nn});
+    m.indices.insert(m.indices.end(), {base, base + 1, base + 2});
+  };
+  const float L = 0.08f, l = 0.045f, H = 0.032f, W = 0.03f, S = 0.095f;
+  for (float side : {1.0f, -1.0f}) {
+    vec3 k0(-l, 0.004f, 0), k1(l, 0.004f, 0), t0(-L, H, side * W), t1(L, H, side * W);
+    tri(k0, k1, t1);
+    tri(k0, t1, t0);
+  }
+  for (float end : {1.0f, -1.0f}) tri(vec3(end * L, H, W), vec3(end * L, H, -W), vec3(end * l, 0.004f, 0));
+  // Sail: two slightly separated layers (folded paper).
+  for (float z : {0.0025f, -0.0025f}) {
+    tri(vec3(-0.042f, H - 0.004f, z), vec3(0.042f, H - 0.004f, z), vec3(0, S, z * 0.3f));
+    tri(vec3(-0.026f, H - 0.004f, z * 3.0f), vec3(0.026f, H - 0.004f, z * 3.0f), vec3(0, S * 0.82f, z * 1.2f));
+  }
+  m.pref = m.positions;
+  return m;
+}
+
+int SceneEvaluator::materialIndex(const std::string& name) const {
+  auto it = materialIndex_.find(name);
+  return it == materialIndex_.end() ? 0 : it->second;
+}
+
+Result<void> SceneEvaluator::load(const Scene& scene, const EvalOptions& opt) {
+  scene_ = scene;
+  materials_.clear();
+  materialIndex_.clear();
+  objects_.clear();
+  characters_.clear();
+  auto addMaterial = [&](const Material& m) {
+    if (materialIndex_.count(m.name)) return;
+    materialIndex_[m.name] = int(materials_.size());
+    materials_.push_back(m);
+  };
+  Material fallback;
+  fallback.name = "__default";
+  addMaterial(fallback);
+  for (auto& m : scene_.materials) addMaterial(m);
+
+  for (auto& cd : scene_.characters) {
+    std::filesystem::path p = scene_.path.parent_path() / cd.asset;
+    auto asset = loadCharacter(p);
+    if (!asset) return std::unexpected(asset.error());
+    CharacterInstance ci;
+    ci.asset = std::move(*asset);
+    for (auto& m : ci.asset.materials) addMaterial(m);
+    ci.rig = buildCharacter(ci.asset, BuildOptions{opt.voxelScale, opt.fuzzDensity, opt.fuzz});
+    for (auto& sm : ci.rig.meshes) ci.meshMaterial.push_back(materialIndex(sm.material));
+    for (auto& f : ci.rig.fuzz) ci.fuzzMaterial.push_back(materialIndex(f.material));
+    for (auto& l : ci.rig.locks) ci.lockMaterial.push_back(materialIndex(l.material));
+    characters_.push_back(std::move(ci));
+  }
+  for (auto& o : scene_.objects) {
+    ObjectGeometry g;
+    g.material = materialIndex(o.material);
+    switch (o.kind) {
+      case ObjectDesc::Kind::Box: g.local = std::make_shared<Mesh>(makeBoxMesh(o.boxMin, o.boxMax)); break;
+      case ObjectDesc::Kind::PaperBoat: g.local = std::make_shared<Mesh>(makePaperBoatMesh()); break;
+      case ObjectDesc::Kind::Sdf: g.local = std::make_shared<Mesh>(meshSdfPart(o.part, opt.voxelScale)); break;
+    }
+    if (o.fuzz && opt.fuzz) {
+      g.fuzz = generateSurfaceFibers(*g.local, o.fuzz->params, opt.fuzzDensity);
+      g.fuzzMaterial = materialIndex(o.fuzz->material);
+    }
+    objects_.push_back(std::move(g));
+  }
+  return {};
+}
+
+std::shared_ptr<FrameSnapshot> SceneEvaluator::evaluate(double frame) const {
+  auto snap = std::make_shared<FrameSnapshot>();
+  snap->frame = frame;
+  snap->materials = materials_;
+  snap->lights = scene_.lights;
+  const Clip& clip = scene_.animation;
+  for (size_t i = 0; i < objects_.size(); ++i) {
+    const ObjectDesc& o = scene_.objects[i];
+    const ObjectGeometry& g = objects_[i];
+    std::shared_ptr<const Mesh> world;
+    if (o.kind == ObjectDesc::Kind::Box) {
+      world = g.local;
+    } else {
+      vec3 pos = clip.evaluate(o.name + ".position", frame, o.position);
+      float yaw = clip.evaluate(o.name + ".yaw", frame, vec3(o.yawDeg)).x;
+      auto m = transformMesh(*g.local, objectMatrix(pos, yaw, o.scale));
+      world = m;
+      if (g.fuzz) snap->fibers.push_back({deformSurfaceFibers(*g.fuzz, *m), g.fuzzMaterial});
+    }
+    if (o.kind == ObjectDesc::Kind::Box && g.fuzz) snap->fibers.push_back({deformSurfaceFibers(*g.fuzz, *g.local), g.fuzzMaterial});
+    snap->meshes.push_back({world, g.material});
+  }
+  for (size_t c = 0; c < characters_.size(); ++c) {
+    const CharacterDesc& cd = scene_.characters[c];
+    const CharacterInstance& ci = characters_[c];
+    std::string prefix = cd.name + "/";
+    vec3 pos = clip.evaluate(cd.name + ".position", frame, cd.position);
+    float yaw = clip.evaluate(cd.name + ".yaw", frame, vec3(cd.yawDeg)).x;
+    Pose pose = evaluatePose(ci.asset.skeleton, clip, prefix, frame);
+    auto skin = skinningMatrices(ci.asset.skeleton, pose, objectMatrix(pos, yaw, 1.0f));
+    PosedCharacter posed = poseCharacter(ci.rig, skin);
+    for (size_t k = 0; k < posed.meshes.size(); ++k) snap->meshes.push_back({posed.meshes[k], ci.meshMaterial[k]});
+    for (size_t k = 0; k < posed.fuzz.size(); ++k) snap->fibers.push_back({posed.fuzz[k], ci.fuzzMaterial[k]});
+    for (size_t k = 0; k < posed.locks.size(); ++k) snap->fibers.push_back({posed.locks[k], ci.lockMaterial[k]});
+  }
+  Camera cam = scene_.camera;
+  cam.position = clip.evaluate("camera.position", frame, cam.position);
+  cam.target = clip.evaluate("camera.target", frame, cam.target);
+  if (const Track* t = clip.find("camera.lens"); t && !t->keys.empty()) {
+    vec3 lens = t->evaluate(frame);  // focalMm, fStop, focusDistance
+    cam.focalMm = lens.x;
+    cam.fStop = lens.y;
+    cam.focusDistance = lens.z;
+  }
+  snap->camera = cam;
+  return snap;
+}
+
+}  // namespace plush
