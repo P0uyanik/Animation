@@ -1,0 +1,431 @@
+{
+ "format": "plush.imported_character",
+ "version": 1,
+ "name": "toy_fixture",
+ "source": {
+  "blend": "toy_fixture.blend",
+  "blend_sha256": "8dada00541cc924c87102bae33ba8e10455bee6b00d788be9a342dc2e285caf1",
+  "spec_sha256": null,
+  "spec_version": null,
+  "blender": "5.3.0"
+ },
+ "profile": {
+  "name": "humanoid_toy_fixture/1",
+  "kind": "humanoid",
+  "required_roles": [
+   "hips",
+   "spine",
+   "chest",
+   "neck",
+   "head"
+  ]
+ },
+ "coordinates": "metres; +Y up; character faces +Z; converted from Blender (x, y, z) -> (x, z, -y)",
+ "skeleton": [
+  {
+   "name": "hips",
+   "source_name": "pelvis",
+   "kind": "role",
+   "parent": null,
+   "head": [
+    0.0,
+    0.2,
+    -0.0
+   ]
+  },
+  {
+   "name": "spine",
+   "source_name": "torso_lo",
+   "kind": "role",
+   "parent": "hips",
+   "head": [
+    0.0,
+    0.26,
+    -0.0
+   ]
+  },
+  {
+   "name": "belly",
+   "source_name": "belly",
+   "kind": "helper",
+   "parent": "spine",
+   "head": [
+    0.0,
+    0.28,
+    0.02
+   ]
+  },
+  {
+   "name": "chest",
+   "source_name": "torso_hi",
+   "kind": "role",
+   "parent": "spine",
+   "head": [
+    0.0,
+    0.3,
+    -0.0
+   ]
+  },
+  {
+   "name": "neck",
+   "source_name": "neck_a",
+   "kind": "role",
+   "parent": "chest",
+   "head": [
+    0.0,
+    0.36,
+    -0.0
+   ]
+  },
+  {
+   "name": "head",
+   "source_name": "skull",
+   "kind": "role",
+   "parent": "neck",
+   "head": [
+    0.0,
+    0.39,
+    -0.0
+   ]
+  },
+  {
+   "name": "eye.L",
+   "source_name": "eye_lf",
+   "kind": "role",
+   "parent": "head",
+   "head": [
+    0.045,
+    0.5,
+    0.105
+   ]
+  },
+  {
+   "name": "eye.R",
+   "source_name": "eye_rt",
+   "kind": "role",
+   "parent": "head",
+   "head": [
+    -0.045,
+    0.5,
+    0.105
+   ]
+  },
+  {
+   "name": "upperArm.L",
+   "source_name": "arm_up_lf",
+   "kind": "role",
+   "parent": "chest",
+   "head": [
+    0.07,
+    0.35,
+    -0.0
+   ]
+  },
+  {
+   "name": "forearm.L",
+   "source_name": "arm_lo_lf",
+   "kind": "role",
+   "parent": "upperArm.L",
+   "head": [
+    0.13,
+    0.29,
+    -0.0
+   ]
+  },
+  {
+   "name": "hand.L",
+   "source_name": "paw_lf",
+   "kind": "role",
+   "parent": "forearm.L",
+   "head": [
+    0.18,
+    0.23,
+    -0.0
+   ]
+  },
+  {
+   "name": "upperArm.R",
+   "source_name": "arm_up_rt",
+   "kind": "role",
+   "parent": "chest",
+   "head": [
+    -0.07,
+    0.35,
+    -0.0
+   ]
+  },
+  {
+   "name": "forearm.R",
+   "source_name": "arm_lo_rt",
+   "kind": "role",
+   "parent": "upperArm.R",
+   "head": [
+    -0.13,
+    0.29,
+    -0.0
+   ]
+  },
+  {
+   "name": "hand.R",
+   "source_name": "paw_rt",
+   "kind": "role",
+   "parent": "forearm.R",
+   "head": [
+    -0.18,
+    0.23,
+    -0.0
+   ]
+  },
+  {
+   "name": "thigh.L",
+   "source_name": "leg_up_lf",
+   "kind": "role",
+   "parent": "hips",
+   "head": [
+    0.05,
+    0.2,
+    -0.0
+   ]
+  },
+  {
+   "name": "shin.L",
+   "source_name": "leg_lo_lf",
+   "kind": "role",
+   "parent": "thigh.L",
+   "head": [
+    0.05,
+    0.11,
+    -0.0
+   ]
+  },
+  {
+   "name": "foot.L",
+   "source_name": "foot_lf",
+   "kind": "role",
+   "parent": "shin.L",
+   "head": [
+    0.05,
+    0.03,
+    -0.0
+   ]
+  },
+  {
+   "name": "thigh.R",
+   "source_name": "leg_up_rt",
+   "kind": "role",
+   "parent": "hips",
+   "head": [
+    -0.05,
+    0.2,
+    -0.0
+   ]
+  },
+  {
+   "name": "shin.R",
+   "source_name": "leg_lo_rt",
+   "kind": "role",
+   "parent": "thigh.R",
+   "head": [
+    -0.05,
+    0.11,
+    -0.0
+   ]
+  },
+  {
+   "name": "foot.R",
+   "source_name": "foot_rt",
+   "kind": "role",
+   "parent": "shin.R",
+   "head": [
+    -0.05,
+    0.03,
+    -0.0
+   ]
+  },
+  {
+   "name": "tail_1",
+   "source_name": "tail_1",
+   "kind": "rig_specific",
+   "parent": "hips",
+   "head": [
+    0.0,
+    0.22,
+    -0.06
+   ]
+  },
+  {
+   "name": "tail_2",
+   "source_name": "tail_2",
+   "kind": "rig_specific",
+   "parent": "tail_1",
+   "head": [
+    0.0,
+    0.25,
+    -0.12
+   ]
+  }
+ ],
+ "reparented": [],
+ "roles_present": [
+  "chest",
+  "eye.L",
+  "eye.R",
+  "foot.L",
+  "foot.R",
+  "forearm.L",
+  "forearm.R",
+  "hand.L",
+  "hand.R",
+  "head",
+  "hips",
+  "neck",
+  "shin.L",
+  "shin.R",
+  "spine",
+  "thigh.L",
+  "thigh.R",
+  "upperArm.L",
+  "upperArm.R"
+ ],
+ "rig_specific_bones": [
+  "tail_1",
+  "tail_2"
+ ],
+ "materials": [
+  {
+   "name": "M_toy_felt",
+   "baseColor": [
+    0.8,
+    0.8,
+    0.8
+   ],
+   "roughness": 0.5,
+   "sheen": 0.0
+  }
+ ],
+ "meshes": [
+  {
+   "part": "toy_body",
+   "source_object": "toy_body",
+   "material": "M_toy_felt",
+   "vertices": 1318,
+   "positions": {
+    "offset": 0,
+    "count": 3954,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 15816,
+    "count": 3954,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 31632,
+    "count": 7824,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 62928,
+    "count": 5272,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 73472,
+    "count": 5272,
+    "dtype": "float32"
+   }
+  }
+ ],
+ "morphs": [
+  {
+   "name": "Squint",
+   "mesh": 0,
+   "vertices": {
+    "offset": 94560,
+    "count": 33,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 94692,
+    "count": 99,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Puff",
+   "mesh": 0,
+   "vertices": {
+    "offset": 95088,
+    "count": 150,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 95688,
+    "count": 450,
+    "dtype": "float32"
+   }
+  }
+ ],
+ "morph_names": [
+  "Puff",
+  "Squint"
+ ],
+ "capabilities": {
+  "reach_ik": {
+   "data": "available",
+   "missing": [],
+   "tested": "see docs/ENGINE_CHARACTER_PACKAGE.md (behaviour support table)"
+  },
+  "look_at": {
+   "data": "available",
+   "missing": [],
+   "tested": "see docs/ENGINE_CHARACTER_PACKAGE.md (behaviour support table)"
+  },
+  "blink_life": {
+   "data": "missing",
+   "missing": [
+    "lid.L",
+    "lid.R"
+   ],
+   "tested": "see docs/ENGINE_CHARACTER_PACKAGE.md (behaviour support table)"
+  },
+  "expressions": {
+   "data": "available",
+   "missing": [],
+   "tested": "see docs/ENGINE_CHARACTER_PACKAGE.md (behaviour support table)"
+  },
+  "grasp": {
+   "data": "missing",
+   "missing": [
+    "thumbA.L",
+    "thumbB.L",
+    "f0a.L",
+    "f0b.L",
+    "f1a.L",
+    "f1b.L",
+    "f2a.L",
+    "f2b.L",
+    "f3a.L",
+    "f3b.L"
+   ],
+   "tested": "see docs/ENGINE_CHARACTER_PACKAGE.md (behaviour support table)"
+  },
+  "walk": {
+   "data": "available",
+   "missing": [],
+   "tested": "see docs/ENGINE_CHARACTER_PACKAGE.md (behaviour support table)"
+  },
+  "idle_life": {
+   "data": "available",
+   "missing": [],
+   "tested": "see docs/ENGINE_CHARACTER_PACKAGE.md (behaviour support table)"
+  }
+ },
+ "discarded": [],
+ "files": {
+  "geometry.bin": {
+   "bytes": 97488,
+   "sha256": "11cd6813ad19b1e6cb635554881a521ac76288a1fc9802c1a439a4af0787da57"
+  }
+ }
+}

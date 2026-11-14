@@ -1,0 +1,3002 @@
+{
+ "format": "plush.imported_character",
+ "version": 1,
+ "name": "boy_yellow_hoodie",
+ "source": {
+  "blend": "boy_yellow_hoodie_master.blend",
+  "blend_sha256": "21d65f461b03fcff3fc0d1e7b75866a8f6ccdae658fdd3bc2c76135f71bdfa23",
+  "spec_sha256": "d9cb91d43905c0a51207b685a6f0eebfe83fec2fe0c12c7c92fc11dff5a8755d",
+  "spec_version": "1.0.0",
+  "blender": "5.3.0"
+ },
+ "profile": {
+  "name": "humanoid_rigify/1",
+  "kind": "humanoid",
+  "required_roles": [
+   "hips",
+   "spine",
+   "chest",
+   "neck",
+   "head"
+  ]
+ },
+ "coordinates": "metres; +Y up; character faces +Z; converted from Blender (x, y, z) -> (x, z, -y)",
+ "skeleton": [
+  {
+   "name": "hips",
+   "source_name": "DEF-spine",
+   "kind": "role",
+   "parent": null,
+   "head": [
+    0.0,
+    0.36,
+    -0.004
+   ]
+  },
+  {
+   "name": "spine",
+   "source_name": "DEF-spine.001",
+   "kind": "role",
+   "parent": "hips",
+   "head": [
+    0.0,
+    0.44,
+    -0.004
+   ]
+  },
+  {
+   "name": "DEF-spine.002",
+   "source_name": "DEF-spine.002",
+   "kind": "helper",
+   "parent": "spine",
+   "head": [
+    0.0,
+    0.52,
+    -0.003
+   ]
+  },
+  {
+   "name": "chest",
+   "source_name": "DEF-spine.003",
+   "kind": "role",
+   "parent": "DEF-spine.002",
+   "head": [
+    0.0,
+    0.59,
+    -0.002
+   ]
+  },
+  {
+   "name": "neck",
+   "source_name": "DEF-spine.004",
+   "kind": "role",
+   "parent": "chest",
+   "head": [
+    0.0,
+    0.65,
+    -0.003
+   ]
+  },
+  {
+   "name": "DEF-spine.005",
+   "source_name": "DEF-spine.005",
+   "kind": "helper",
+   "parent": "neck",
+   "head": [
+    0.0,
+    0.678,
+    -0.002
+   ]
+  },
+  {
+   "name": "head",
+   "source_name": "DEF-spine.006",
+   "kind": "role",
+   "parent": "DEF-spine.005",
+   "head": [
+    0.0,
+    0.7,
+    -0.0
+   ]
+  },
+  {
+   "name": "DEF-pelvis.L",
+   "source_name": "DEF-pelvis.L",
+   "kind": "helper",
+   "parent": null,
+   "head": [
+    0.0,
+    0.36,
+    -0.004
+   ]
+  },
+  {
+   "name": "DEF-pelvis.R",
+   "source_name": "DEF-pelvis.R",
+   "kind": "helper",
+   "parent": null,
+   "head": [
+    0.0,
+    0.36,
+    -0.004
+   ]
+  },
+  {
+   "name": "thigh.L",
+   "source_name": "DEF-thigh.L",
+   "kind": "role",
+   "parent": null,
+   "head": [
+    0.06,
+    0.35,
+    -0.0
+   ]
+  },
+  {
+   "name": "DEF-thigh.L.001",
+   "source_name": "DEF-thigh.L.001",
+   "kind": "helper",
+   "parent": "thigh.L",
+   "head": [
+    0.0605,
+    0.29,
+    0.004
+   ]
+  },
+  {
+   "name": "shin.L",
+   "source_name": "DEF-shin.L",
+   "kind": "role",
+   "parent": "thigh.L",
+   "head": [
+    0.061,
+    0.23,
+    0.008
+   ]
+  },
+  {
+   "name": "DEF-shin.L.001",
+   "source_name": "DEF-shin.L.001",
+   "kind": "helper",
+   "parent": "shin.L",
+   "head": [
+    0.0625,
+    0.16,
+    -0.0
+   ]
+  },
+  {
+   "name": "foot.L",
+   "source_name": "DEF-foot.L",
+   "kind": "role",
+   "parent": "shin.L",
+   "head": [
+    0.064,
+    0.09,
+    -0.008
+   ]
+  },
+  {
+   "name": "DEF-toe.L",
+   "source_name": "DEF-toe.L",
+   "kind": "helper",
+   "parent": "foot.L",
+   "head": [
+    0.066,
+    0.035,
+    0.07
+   ]
+  },
+  {
+   "name": "thigh.R",
+   "source_name": "DEF-thigh.R",
+   "kind": "role",
+   "parent": null,
+   "head": [
+    -0.06,
+    0.35,
+    -0.0
+   ]
+  },
+  {
+   "name": "DEF-thigh.R.001",
+   "source_name": "DEF-thigh.R.001",
+   "kind": "helper",
+   "parent": "thigh.R",
+   "head": [
+    -0.0605,
+    0.29,
+    0.004
+   ]
+  },
+  {
+   "name": "shin.R",
+   "source_name": "DEF-shin.R",
+   "kind": "role",
+   "parent": "thigh.R",
+   "head": [
+    -0.061,
+    0.23,
+    0.008
+   ]
+  },
+  {
+   "name": "DEF-shin.R.001",
+   "source_name": "DEF-shin.R.001",
+   "kind": "helper",
+   "parent": "shin.R",
+   "head": [
+    -0.0625,
+    0.16,
+    -0.0
+   ]
+  },
+  {
+   "name": "foot.R",
+   "source_name": "DEF-foot.R",
+   "kind": "role",
+   "parent": "shin.R",
+   "head": [
+    -0.064,
+    0.09,
+    -0.008
+   ]
+  },
+  {
+   "name": "DEF-toe.R",
+   "source_name": "DEF-toe.R",
+   "kind": "helper",
+   "parent": "foot.R",
+   "head": [
+    -0.066,
+    0.035,
+    0.07
+   ]
+  },
+  {
+   "name": "eye.L",
+   "source_name": "DEF-eye.L",
+   "kind": "role",
+   "parent": null,
+   "head": [
+    0.064,
+    0.778,
+    0.11
+   ]
+  },
+  {
+   "name": "eye.R",
+   "source_name": "DEF-eye.R",
+   "kind": "role",
+   "parent": null,
+   "head": [
+    -0.064,
+    0.778,
+    0.11
+   ]
+  },
+  {
+   "name": "DEF-shoulder.L",
+   "source_name": "DEF-shoulder.L",
+   "kind": "helper",
+   "parent": null,
+   "head": [
+    0.018,
+    0.636,
+    0.006
+   ]
+  },
+  {
+   "name": "upperArm.L",
+   "source_name": "DEF-upper_arm.L",
+   "kind": "role",
+   "parent": null,
+   "head": [
+    0.118,
+    0.618,
+    0.0
+   ]
+  },
+  {
+   "name": "DEF-upper_arm.L.001",
+   "source_name": "DEF-upper_arm.L.001",
+   "kind": "helper",
+   "parent": "upperArm.L",
+   "head": [
+    0.160426,
+    0.575574,
+    -0.004
+   ]
+  },
+  {
+   "name": "forearm.L",
+   "source_name": "DEF-forearm.L",
+   "kind": "role",
+   "parent": "upperArm.L",
+   "head": [
+    0.202853,
+    0.533147,
+    -0.008
+   ]
+  },
+  {
+   "name": "DEF-forearm.L.001",
+   "source_name": "DEF-forearm.L.001",
+   "kind": "helper",
+   "parent": "forearm.L",
+   "head": [
+    0.242451,
+    0.493549,
+    -0.008
+   ]
+  },
+  {
+   "name": "hand.L",
+   "source_name": "DEF-hand.L",
+   "kind": "role",
+   "parent": "forearm.L",
+   "head": [
+    0.282049,
+    0.453951,
+    -0.008
+   ]
+  },
+  {
+   "name": "f3a.L",
+   "source_name": "DEF-f_index.01.L",
+   "kind": "role",
+   "parent": "hand.L",
+   "head": [
+    0.325889,
+    0.410111,
+    0.011
+   ]
+  },
+  {
+   "name": "f3b.L",
+   "source_name": "DEF-f_index.02.L",
+   "kind": "role",
+   "parent": "f3a.L",
+   "head": [
+    0.330981,
+    0.402757,
+    0.011
+   ]
+  },
+  {
+   "name": "DEF-f_index.03.L",
+   "source_name": "DEF-f_index.03.L",
+   "kind": "helper",
+   "parent": "f3b.L",
+   "head": [
+    0.335053,
+    0.396874,
+    0.011
+   ]
+  },
+  {
+   "name": "DEF-thumb.01.L",
+   "source_name": "DEF-thumb.01.L",
+   "kind": "helper",
+   "parent": "hand.L",
+   "head": [
+    0.297605,
+    0.438395,
+    0.006
+   ]
+  },
+  {
+   "name": "thumbA.L",
+   "source_name": "DEF-thumb.02.L",
+   "kind": "role",
+   "parent": "DEF-thumb.01.L",
+   "head": [
+    0.300434,
+    0.424253,
+    0.018
+   ]
+  },
+  {
+   "name": "thumbB.L",
+   "source_name": "DEF-thumb.03.L",
+   "kind": "role",
+   "parent": "thumbA.L",
+   "head": [
+    0.303969,
+    0.413646,
+    0.023
+   ]
+  },
+  {
+   "name": "DEF-palm.01.L",
+   "source_name": "DEF-palm.01.L",
+   "kind": "helper",
+   "parent": "hand.L",
+   "head": [
+    0.299019,
+    0.436981,
+    0.011
+   ]
+  },
+  {
+   "name": "f2a.L",
+   "source_name": "DEF-f_middle.01.L",
+   "kind": "role",
+   "parent": "hand.L",
+   "head": [
+    0.325889,
+    0.410111,
+    -0.0015
+   ]
+  },
+  {
+   "name": "f2b.L",
+   "source_name": "DEF-f_middle.02.L",
+   "kind": "role",
+   "parent": "f2a.L",
+   "head": [
+    0.331829,
+    0.401908,
+    -0.0015
+   ]
+  },
+  {
+   "name": "DEF-f_middle.03.L",
+   "source_name": "DEF-f_middle.03.L",
+   "kind": "helper",
+   "parent": "f2b.L",
+   "head": [
+    0.336581,
+    0.395346,
+    -0.0015
+   ]
+  },
+  {
+   "name": "DEF-palm.02.L",
+   "source_name": "DEF-palm.02.L",
+   "kind": "helper",
+   "parent": "hand.L",
+   "head": [
+    0.299019,
+    0.436981,
+    -0.0015
+   ]
+  },
+  {
+   "name": "f1a.L",
+   "source_name": "DEF-f_ring.01.L",
+   "kind": "role",
+   "parent": "hand.L",
+   "head": [
+    0.325889,
+    0.410111,
+    -0.0145
+   ]
+  },
+  {
+   "name": "f1b.L",
+   "source_name": "DEF-f_ring.02.L",
+   "kind": "role",
+   "parent": "f1a.L",
+   "head": [
+    0.331546,
+    0.402191,
+    -0.0145
+   ]
+  },
+  {
+   "name": "DEF-f_ring.03.L",
+   "source_name": "DEF-f_ring.03.L",
+   "kind": "helper",
+   "parent": "f1b.L",
+   "head": [
+    0.336072,
+    0.395855,
+    -0.0145
+   ]
+  },
+  {
+   "name": "DEF-palm.03.L",
+   "source_name": "DEF-palm.03.L",
+   "kind": "helper",
+   "parent": "hand.L",
+   "head": [
+    0.299019,
+    0.436981,
+    -0.0145
+   ]
+  },
+  {
+   "name": "f0a.L",
+   "source_name": "DEF-f_pinky.01.L",
+   "kind": "role",
+   "parent": "hand.L",
+   "head": [
+    0.325889,
+    0.410111,
+    -0.027
+   ]
+  },
+  {
+   "name": "f0b.L",
+   "source_name": "DEF-f_pinky.02.L",
+   "kind": "role",
+   "parent": "f0a.L",
+   "head": [
+    0.330132,
+    0.403605,
+    -0.027
+   ]
+  },
+  {
+   "name": "DEF-f_pinky.03.L",
+   "source_name": "DEF-f_pinky.03.L",
+   "kind": "helper",
+   "parent": "f0b.L",
+   "head": [
+    0.333526,
+    0.398401,
+    -0.027
+   ]
+  },
+  {
+   "name": "DEF-palm.04.L",
+   "source_name": "DEF-palm.04.L",
+   "kind": "helper",
+   "parent": "hand.L",
+   "head": [
+    0.299019,
+    0.436981,
+    -0.027
+   ]
+  },
+  {
+   "name": "DEF-shoulder.R",
+   "source_name": "DEF-shoulder.R",
+   "kind": "helper",
+   "parent": null,
+   "head": [
+    -0.018,
+    0.636,
+    0.006
+   ]
+  },
+  {
+   "name": "upperArm.R",
+   "source_name": "DEF-upper_arm.R",
+   "kind": "role",
+   "parent": null,
+   "head": [
+    -0.118,
+    0.618,
+    0.0
+   ]
+  },
+  {
+   "name": "DEF-upper_arm.R.001",
+   "source_name": "DEF-upper_arm.R.001",
+   "kind": "helper",
+   "parent": "upperArm.R",
+   "head": [
+    -0.160426,
+    0.575574,
+    -0.004
+   ]
+  },
+  {
+   "name": "forearm.R",
+   "source_name": "DEF-forearm.R",
+   "kind": "role",
+   "parent": "upperArm.R",
+   "head": [
+    -0.202853,
+    0.533147,
+    -0.008
+   ]
+  },
+  {
+   "name": "DEF-forearm.R.001",
+   "source_name": "DEF-forearm.R.001",
+   "kind": "helper",
+   "parent": "forearm.R",
+   "head": [
+    -0.242451,
+    0.493549,
+    -0.008
+   ]
+  },
+  {
+   "name": "hand.R",
+   "source_name": "DEF-hand.R",
+   "kind": "role",
+   "parent": "forearm.R",
+   "head": [
+    -0.282049,
+    0.453951,
+    -0.008
+   ]
+  },
+  {
+   "name": "f3a.R",
+   "source_name": "DEF-f_index.01.R",
+   "kind": "role",
+   "parent": "hand.R",
+   "head": [
+    -0.325889,
+    0.410111,
+    0.011
+   ]
+  },
+  {
+   "name": "f3b.R",
+   "source_name": "DEF-f_index.02.R",
+   "kind": "role",
+   "parent": "f3a.R",
+   "head": [
+    -0.330981,
+    0.402757,
+    0.011
+   ]
+  },
+  {
+   "name": "DEF-f_index.03.R",
+   "source_name": "DEF-f_index.03.R",
+   "kind": "helper",
+   "parent": "f3b.R",
+   "head": [
+    -0.335053,
+    0.396874,
+    0.011
+   ]
+  },
+  {
+   "name": "DEF-thumb.01.R",
+   "source_name": "DEF-thumb.01.R",
+   "kind": "helper",
+   "parent": "hand.R",
+   "head": [
+    -0.297605,
+    0.438395,
+    0.006
+   ]
+  },
+  {
+   "name": "thumbA.R",
+   "source_name": "DEF-thumb.02.R",
+   "kind": "role",
+   "parent": "DEF-thumb.01.R",
+   "head": [
+    -0.300434,
+    0.424253,
+    0.018
+   ]
+  },
+  {
+   "name": "thumbB.R",
+   "source_name": "DEF-thumb.03.R",
+   "kind": "role",
+   "parent": "thumbA.R",
+   "head": [
+    -0.303969,
+    0.413646,
+    0.023
+   ]
+  },
+  {
+   "name": "DEF-palm.01.R",
+   "source_name": "DEF-palm.01.R",
+   "kind": "helper",
+   "parent": "hand.R",
+   "head": [
+    -0.299019,
+    0.436981,
+    0.011
+   ]
+  },
+  {
+   "name": "f2a.R",
+   "source_name": "DEF-f_middle.01.R",
+   "kind": "role",
+   "parent": "hand.R",
+   "head": [
+    -0.325889,
+    0.410111,
+    -0.0015
+   ]
+  },
+  {
+   "name": "f2b.R",
+   "source_name": "DEF-f_middle.02.R",
+   "kind": "role",
+   "parent": "f2a.R",
+   "head": [
+    -0.331829,
+    0.401908,
+    -0.0015
+   ]
+  },
+  {
+   "name": "DEF-f_middle.03.R",
+   "source_name": "DEF-f_middle.03.R",
+   "kind": "helper",
+   "parent": "f2b.R",
+   "head": [
+    -0.336581,
+    0.395346,
+    -0.0015
+   ]
+  },
+  {
+   "name": "DEF-palm.02.R",
+   "source_name": "DEF-palm.02.R",
+   "kind": "helper",
+   "parent": "hand.R",
+   "head": [
+    -0.299019,
+    0.436981,
+    -0.0015
+   ]
+  },
+  {
+   "name": "f1a.R",
+   "source_name": "DEF-f_ring.01.R",
+   "kind": "role",
+   "parent": "hand.R",
+   "head": [
+    -0.325889,
+    0.410111,
+    -0.0145
+   ]
+  },
+  {
+   "name": "f1b.R",
+   "source_name": "DEF-f_ring.02.R",
+   "kind": "role",
+   "parent": "f1a.R",
+   "head": [
+    -0.331546,
+    0.402191,
+    -0.0145
+   ]
+  },
+  {
+   "name": "DEF-f_ring.03.R",
+   "source_name": "DEF-f_ring.03.R",
+   "kind": "helper",
+   "parent": "f1b.R",
+   "head": [
+    -0.336072,
+    0.395855,
+    -0.0145
+   ]
+  },
+  {
+   "name": "DEF-palm.03.R",
+   "source_name": "DEF-palm.03.R",
+   "kind": "helper",
+   "parent": "hand.R",
+   "head": [
+    -0.299019,
+    0.436981,
+    -0.0145
+   ]
+  },
+  {
+   "name": "f0a.R",
+   "source_name": "DEF-f_pinky.01.R",
+   "kind": "role",
+   "parent": "hand.R",
+   "head": [
+    -0.325889,
+    0.410111,
+    -0.027
+   ]
+  },
+  {
+   "name": "f0b.R",
+   "source_name": "DEF-f_pinky.02.R",
+   "kind": "role",
+   "parent": "f0a.R",
+   "head": [
+    -0.330132,
+    0.403605,
+    -0.027
+   ]
+  },
+  {
+   "name": "DEF-f_pinky.03.R",
+   "source_name": "DEF-f_pinky.03.R",
+   "kind": "helper",
+   "parent": "f0b.R",
+   "head": [
+    -0.333526,
+    0.398401,
+    -0.027
+   ]
+  },
+  {
+   "name": "DEF-palm.04.R",
+   "source_name": "DEF-palm.04.R",
+   "kind": "helper",
+   "parent": "hand.R",
+   "head": [
+    -0.299019,
+    0.436981,
+    -0.027
+   ]
+  }
+ ],
+ "reparented": [
+  {
+   "bone": "forearm.L",
+   "from": "DEF-upper_arm.L.001",
+   "to": "upperArm.L",
+   "reason": "contiguous chain for engine two-bone IK"
+  },
+  {
+   "bone": "hand.L",
+   "from": "DEF-forearm.L.001",
+   "to": "forearm.L",
+   "reason": "contiguous chain for engine two-bone IK"
+  },
+  {
+   "bone": "forearm.R",
+   "from": "DEF-upper_arm.R.001",
+   "to": "upperArm.R",
+   "reason": "contiguous chain for engine two-bone IK"
+  },
+  {
+   "bone": "hand.R",
+   "from": "DEF-forearm.R.001",
+   "to": "forearm.R",
+   "reason": "contiguous chain for engine two-bone IK"
+  },
+  {
+   "bone": "shin.L",
+   "from": "DEF-thigh.L.001",
+   "to": "thigh.L",
+   "reason": "contiguous chain for engine two-bone IK"
+  },
+  {
+   "bone": "foot.L",
+   "from": "DEF-shin.L.001",
+   "to": "shin.L",
+   "reason": "contiguous chain for engine two-bone IK"
+  },
+  {
+   "bone": "shin.R",
+   "from": "DEF-thigh.R.001",
+   "to": "thigh.R",
+   "reason": "contiguous chain for engine two-bone IK"
+  },
+  {
+   "bone": "foot.R",
+   "from": "DEF-shin.R.001",
+   "to": "shin.R",
+   "reason": "contiguous chain for engine two-bone IK"
+  }
+ ],
+ "roles_present": [
+  "chest",
+  "eye.L",
+  "eye.R",
+  "f0a.L",
+  "f0a.R",
+  "f0b.L",
+  "f0b.R",
+  "f1a.L",
+  "f1a.R",
+  "f1b.L",
+  "f1b.R",
+  "f2a.L",
+  "f2a.R",
+  "f2b.L",
+  "f2b.R",
+  "f3a.L",
+  "f3a.R",
+  "f3b.L",
+  "f3b.R",
+  "foot.L",
+  "foot.R",
+  "forearm.L",
+  "forearm.R",
+  "hand.L",
+  "hand.R",
+  "head",
+  "hips",
+  "neck",
+  "shin.L",
+  "shin.R",
+  "spine",
+  "thigh.L",
+  "thigh.R",
+  "thumbA.L",
+  "thumbA.R",
+  "thumbB.L",
+  "thumbB.R",
+  "upperArm.L",
+  "upperArm.R"
+ ],
+ "rig_specific_bones": [],
+ "materials": [
+  {
+   "name": "M_backpack_felt",
+   "baseColor": [
+    0.05781,
+    0.03955,
+    0.05781
+   ],
+   "roughness": 0.9,
+   "sheen": 0.6
+  },
+  {
+   "name": "M_webbing",
+   "baseColor": [
+    0.04817,
+    0.04519,
+    0.05781
+   ],
+   "roughness": 0.75,
+   "sheen": 0.0
+  },
+  {
+   "name": "M_brow",
+   "baseColor": [
+    0.016,
+    0.01033,
+    0.00802
+   ],
+   "roughness": 0.85,
+   "sheen": 0.0
+  },
+  {
+   "name": "M_buckle",
+   "baseColor": [
+    0.10224,
+    0.08866,
+    0.07619
+   ],
+   "roughness": 0.4,
+   "sheen": 0.0
+  },
+  {
+   "name": "M_cream",
+   "baseColor": [
+    0.85499,
+    0.61721,
+    0.46208
+   ],
+   "roughness": 0.85,
+   "sheen": 0.2
+  },
+  {
+   "name": "M_cord_tip",
+   "baseColor": [
+    0.30499,
+    0.18782,
+    0.10702
+   ],
+   "roughness": 0.6,
+   "sheen": 0.0
+  },
+  {
+   "name": "M_ear",
+   "baseColor": [
+    0.6105,
+    0.21586,
+    0.13843
+   ],
+   "roughness": 0.55,
+   "sheen": 0.0
+  },
+  {
+   "name": "M_eye",
+   "baseColor": [
+    0.83077,
+    0.77582,
+    0.71569
+   ],
+   "roughness": 0.25,
+   "sheen": 0.0
+  },
+  {
+   "name": "M_hair_felt",
+   "baseColor": [
+    0.00439,
+    0.00212,
+    0.00212
+   ],
+   "roughness": 0.95,
+   "sheen": 0.15
+  },
+  {
+   "name": "M_skin",
+   "baseColor": [
+    0.46208,
+    0.14703,
+    0.06125
+   ],
+   "roughness": 0.55,
+   "sheen": 0.0
+  },
+  {
+   "name": "M_hoodie_fleece",
+   "baseColor": [
+    0.41789,
+    0.18116,
+    0.00518
+   ],
+   "roughness": 0.95,
+   "sheen": 0.25
+  },
+  {
+   "name": "M_lash",
+   "baseColor": [
+    0.00913,
+    0.00651,
+    0.00561
+   ],
+   "roughness": 0.6,
+   "sheen": 0.0
+  },
+  {
+   "name": "M_mouth",
+   "baseColor": [
+    0.11697,
+    0.02519,
+    0.02122
+   ],
+   "roughness": 0.6,
+   "sheen": 0.0
+  },
+  {
+   "name": "M_shoe_felt",
+   "baseColor": [
+    0.3467,
+    0.15593,
+    0.00972
+   ],
+   "roughness": 0.9,
+   "sheen": 0.25
+  },
+  {
+   "name": "M_sole",
+   "baseColor": [
+    0.85499,
+    0.61721,
+    0.46208
+   ],
+   "roughness": 0.7,
+   "sheen": 0.0
+  },
+  {
+   "name": "M_sock",
+   "baseColor": [
+    0.80695,
+    0.73046,
+    0.61721
+   ],
+   "roughness": 0.9,
+   "sheen": 0.4
+  },
+  {
+   "name": "M_trousers_fleece",
+   "baseColor": [
+    0.00243,
+    0.00212,
+    0.00212
+   ],
+   "roughness": 0.95,
+   "sheen": 0.15
+  }
+ ],
+ "meshes": [
+  {
+   "part": "backpack_body",
+   "source_object": "backpack_body",
+   "material": "M_backpack_felt",
+   "vertices": 4898,
+   "positions": {
+    "offset": 0,
+    "count": 14694,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 58776,
+    "count": 14694,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 117552,
+    "count": 29376,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 235056,
+    "count": 19592,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 274240,
+    "count": 19592,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "backpack_handle",
+   "source_object": "backpack_handle",
+   "material": "M_webbing",
+   "vertices": 162,
+   "positions": {
+    "offset": 352608,
+    "count": 486,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 354552,
+    "count": 486,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 356496,
+    "count": 960,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 360336,
+    "count": 648,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 361632,
+    "count": 648,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "backpack_pocket",
+   "source_object": "backpack_pocket",
+   "material": "M_backpack_felt",
+   "vertices": 1842,
+   "positions": {
+    "offset": 364224,
+    "count": 5526,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 386328,
+    "count": 5526,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 408432,
+    "count": 11040,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 452592,
+    "count": 7368,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 467328,
+    "count": 7368,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "backpack_strap.L",
+   "source_object": "backpack_strap.L",
+   "material": "M_webbing",
+   "vertices": 206,
+   "positions": {
+    "offset": 496800,
+    "count": 618,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 499272,
+    "count": 618,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 501744,
+    "count": 1224,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 506640,
+    "count": 824,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 508288,
+    "count": 824,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "backpack_strap.R",
+   "source_object": "backpack_strap.R",
+   "material": "M_webbing",
+   "vertices": 206,
+   "positions": {
+    "offset": 511584,
+    "count": 618,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 514056,
+    "count": 618,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 516528,
+    "count": 1224,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 521424,
+    "count": 824,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 523072,
+    "count": 824,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "brow.L",
+   "source_object": "brow.L",
+   "material": "M_brow",
+   "vertices": 112,
+   "positions": {
+    "offset": 526368,
+    "count": 336,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 527712,
+    "count": 336,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 529056,
+    "count": 660,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 531696,
+    "count": 448,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 532592,
+    "count": 448,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "brow.R",
+   "source_object": "brow.R",
+   "material": "M_brow",
+   "vertices": 112,
+   "positions": {
+    "offset": 536176,
+    "count": 336,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 537520,
+    "count": 336,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 538864,
+    "count": 660,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 541504,
+    "count": 448,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 542400,
+    "count": 448,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "buckle.L",
+   "source_object": "buckle.L",
+   "material": "M_buckle",
+   "vertices": 86,
+   "positions": {
+    "offset": 545984,
+    "count": 258,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 547016,
+    "count": 258,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 548048,
+    "count": 504,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 550064,
+    "count": 344,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 550752,
+    "count": 344,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "buckle.R",
+   "source_object": "buckle.R",
+   "material": "M_buckle",
+   "vertices": 86,
+   "positions": {
+    "offset": 552128,
+    "count": 258,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 553160,
+    "count": 258,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 554192,
+    "count": 504,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 556208,
+    "count": 344,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 556896,
+    "count": 344,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "drawstring.L",
+   "source_object": "drawstring.L",
+   "material": "M_cream",
+   "vertices": 170,
+   "positions": {
+    "offset": 558272,
+    "count": 510,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 560312,
+    "count": 510,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 562352,
+    "count": 1008,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 566384,
+    "count": 680,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 567744,
+    "count": 680,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "drawstring.R",
+   "source_object": "drawstring.R",
+   "material": "M_cream",
+   "vertices": 170,
+   "positions": {
+    "offset": 570464,
+    "count": 510,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 572504,
+    "count": 510,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 574544,
+    "count": 1008,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 578576,
+    "count": 680,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 579936,
+    "count": 680,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "drawstring_tip.L",
+   "source_object": "drawstring_tip.L",
+   "material": "M_cord_tip",
+   "vertices": 98,
+   "positions": {
+    "offset": 582656,
+    "count": 294,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 583832,
+    "count": 294,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 585008,
+    "count": 576,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 587312,
+    "count": 392,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 588096,
+    "count": 392,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "drawstring_tip.R",
+   "source_object": "drawstring_tip.R",
+   "material": "M_cord_tip",
+   "vertices": 98,
+   "positions": {
+    "offset": 589664,
+    "count": 294,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 590840,
+    "count": 294,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 592016,
+    "count": 576,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 594320,
+    "count": 392,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 595104,
+    "count": 392,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "ear.L",
+   "source_object": "ear.L",
+   "material": "M_ear",
+   "vertices": 1986,
+   "positions": {
+    "offset": 596672,
+    "count": 5958,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 620504,
+    "count": 5958,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 644336,
+    "count": 11904,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 691952,
+    "count": 7944,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 707840,
+    "count": 7944,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "ear.R",
+   "source_object": "ear.R",
+   "material": "M_ear",
+   "vertices": 1986,
+   "positions": {
+    "offset": 739616,
+    "count": 5958,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 763448,
+    "count": 5958,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 787280,
+    "count": 11904,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 834896,
+    "count": 7944,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 850784,
+    "count": 7944,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "eye.L",
+   "source_object": "eye.L",
+   "material": "M_eye",
+   "vertices": 1106,
+   "positions": {
+    "offset": 882560,
+    "count": 3318,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 895832,
+    "count": 3318,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 909104,
+    "count": 6624,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 935600,
+    "count": 4424,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 944448,
+    "count": 4424,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "eye.R",
+   "source_object": "eye.R",
+   "material": "M_eye",
+   "vertices": 1106,
+   "positions": {
+    "offset": 962144,
+    "count": 3318,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 975416,
+    "count": 3318,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 988688,
+    "count": 6624,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 1015184,
+    "count": 4424,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 1024032,
+    "count": 4424,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "hair_clumps",
+   "source_object": "hair_clumps",
+   "material": "M_hair_felt",
+   "vertices": 123344,
+   "positions": {
+    "offset": 1041728,
+    "count": 370032,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 2521856,
+    "count": 370032,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 4001984,
+    "count": 738816,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 6957248,
+    "count": 493376,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 7944000,
+    "count": 493376,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "hair_mass",
+   "source_object": "hair_mass",
+   "material": "M_hair_felt",
+   "vertices": 3811,
+   "positions": {
+    "offset": 9917504,
+    "count": 11433,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 9963236,
+    "count": 11433,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 10008968,
+    "count": 22512,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 10099016,
+    "count": 15244,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 10129504,
+    "count": 15244,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "hair_strays",
+   "source_object": "hair_strays",
+   "material": "M_hair_felt",
+   "vertices": 342,
+   "positions": {
+    "offset": 10190480,
+    "count": 1026,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 10194584,
+    "count": 1026,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 10198688,
+    "count": 2016,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 10206752,
+    "count": 1368,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 10209488,
+    "count": 1368,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "hand.L",
+   "source_object": "hand.L",
+   "material": "M_skin",
+   "vertices": 4300,
+   "positions": {
+    "offset": 10214960,
+    "count": 12900,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 10266560,
+    "count": 12900,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 10318160,
+    "count": 25788,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 10421312,
+    "count": 17200,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 10455712,
+    "count": 17200,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "hand.R",
+   "source_object": "hand.R",
+   "material": "M_skin",
+   "vertices": 4300,
+   "positions": {
+    "offset": 10524512,
+    "count": 12900,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 10576112,
+    "count": 12900,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 10627712,
+    "count": 25788,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 10730864,
+    "count": 17200,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 10765264,
+    "count": 17200,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "head",
+   "source_object": "head",
+   "material": "M_skin",
+   "vertices": 14722,
+   "positions": {
+    "offset": 10834064,
+    "count": 44166,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 11010728,
+    "count": 44166,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 11187392,
+    "count": 88320,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 11540672,
+    "count": 58888,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 11658448,
+    "count": 58888,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "hood_back",
+   "source_object": "hood_back",
+   "material": "M_hoodie_fleece",
+   "vertices": 482,
+   "positions": {
+    "offset": 11894000,
+    "count": 1446,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 11899784,
+    "count": 1446,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 11905568,
+    "count": 2880,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 11917088,
+    "count": 1928,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 11920944,
+    "count": 1928,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "hood_roll",
+   "source_object": "hood_roll",
+   "material": "M_hoodie_fleece",
+   "vertices": 458,
+   "positions": {
+    "offset": 11928656,
+    "count": 1374,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 11934152,
+    "count": 1374,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 11939648,
+    "count": 2736,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 11950592,
+    "count": 1832,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 11954256,
+    "count": 1832,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "hoodie_cuff.L",
+   "source_object": "hoodie_cuff.L",
+   "material": "M_hoodie_fleece",
+   "vertices": 192,
+   "positions": {
+    "offset": 11961584,
+    "count": 576,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 11963888,
+    "count": 576,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 11966192,
+    "count": 768,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 11969264,
+    "count": 768,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 11970800,
+    "count": 768,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "hoodie_cuff.R",
+   "source_object": "hoodie_cuff.R",
+   "material": "M_hoodie_fleece",
+   "vertices": 192,
+   "positions": {
+    "offset": 11973872,
+    "count": 576,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 11976176,
+    "count": 576,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 11978480,
+    "count": 768,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 11981552,
+    "count": 768,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 11983088,
+    "count": 768,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "hoodie_hem",
+   "source_object": "hoodie_hem",
+   "material": "M_hoodie_fleece",
+   "vertices": 386,
+   "positions": {
+    "offset": 11986160,
+    "count": 1158,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 11990792,
+    "count": 1158,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 11995424,
+    "count": 2304,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 12004640,
+    "count": 1544,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 12007728,
+    "count": 1544,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "hoodie_pocket",
+   "source_object": "hoodie_pocket",
+   "material": "M_hoodie_fleece",
+   "vertices": 2594,
+   "positions": {
+    "offset": 12013904,
+    "count": 7782,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 12045032,
+    "count": 7782,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 12076160,
+    "count": 15552,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 12138368,
+    "count": 10376,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 12159120,
+    "count": 10376,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "hoodie_sleeve.L",
+   "source_object": "hoodie_sleeve.L",
+   "material": "M_hoodie_fleece",
+   "vertices": 546,
+   "positions": {
+    "offset": 12200624,
+    "count": 1638,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 12207176,
+    "count": 1638,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 12213728,
+    "count": 3264,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 12226784,
+    "count": 2184,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 12231152,
+    "count": 2184,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "hoodie_sleeve.R",
+   "source_object": "hoodie_sleeve.R",
+   "material": "M_hoodie_fleece",
+   "vertices": 546,
+   "positions": {
+    "offset": 12239888,
+    "count": 1638,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 12246440,
+    "count": 1638,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 12252992,
+    "count": 3264,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 12266048,
+    "count": 2184,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 12270416,
+    "count": 2184,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "hoodie_torso",
+   "source_object": "hoodie_torso",
+   "material": "M_hoodie_fleece",
+   "vertices": 2370,
+   "positions": {
+    "offset": 12279152,
+    "count": 7110,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 12307592,
+    "count": 7110,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 12336032,
+    "count": 14208,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 12392864,
+    "count": 9480,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 12411824,
+    "count": 9480,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "lash.L",
+   "source_object": "lash.L",
+   "material": "M_lash",
+   "vertices": 212,
+   "positions": {
+    "offset": 12449744,
+    "count": 636,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 12452288,
+    "count": 636,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 12454832,
+    "count": 1260,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 12459872,
+    "count": 848,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 12461568,
+    "count": 848,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "lash.R",
+   "source_object": "lash.R",
+   "material": "M_lash",
+   "vertices": 212,
+   "positions": {
+    "offset": 12468352,
+    "count": 636,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 12470896,
+    "count": 636,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 12473440,
+    "count": 1260,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 12478480,
+    "count": 848,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 12480176,
+    "count": 848,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "lid_lower.L",
+   "source_object": "lid_lower.L",
+   "material": "M_skin",
+   "vertices": 1550,
+   "positions": {
+    "offset": 12486960,
+    "count": 4650,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 12505560,
+    "count": 4650,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 12524160,
+    "count": 9288,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 12561312,
+    "count": 6200,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 12573712,
+    "count": 6200,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "lid_lower.R",
+   "source_object": "lid_lower.R",
+   "material": "M_skin",
+   "vertices": 1550,
+   "positions": {
+    "offset": 12598512,
+    "count": 4650,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 12617112,
+    "count": 4650,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 12635712,
+    "count": 9288,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 12672864,
+    "count": 6200,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 12685264,
+    "count": 6200,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "lid_upper.L",
+   "source_object": "lid_upper.L",
+   "material": "M_skin",
+   "vertices": 1996,
+   "positions": {
+    "offset": 12710064,
+    "count": 5988,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 12734016,
+    "count": 5988,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 12757968,
+    "count": 11964,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 12805824,
+    "count": 7984,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 12821792,
+    "count": 7984,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "lid_upper.R",
+   "source_object": "lid_upper.R",
+   "material": "M_skin",
+   "vertices": 1996,
+   "positions": {
+    "offset": 12885664,
+    "count": 5988,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 12909616,
+    "count": 5988,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 12933568,
+    "count": 11964,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 12981424,
+    "count": 7984,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 12997392,
+    "count": 7984,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "mouth",
+   "source_object": "mouth",
+   "material": "M_mouth",
+   "vertices": 33,
+   "positions": {
+    "offset": 13061264,
+    "count": 99,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 13061660,
+    "count": 99,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 13062056,
+    "count": 120,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 13062536,
+    "count": 132,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 13062800,
+    "count": 132,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "neck",
+   "source_object": "neck",
+   "material": "M_skin",
+   "vertices": 122,
+   "positions": {
+    "offset": 13064336,
+    "count": 366,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 13065800,
+    "count": 366,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 13067264,
+    "count": 720,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 13070144,
+    "count": 488,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 13071120,
+    "count": 488,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "shoe.L#0",
+   "source_object": "shoe.L",
+   "material": "M_shoe_felt",
+   "vertices": 3689,
+   "positions": {
+    "offset": 13073072,
+    "count": 11067,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 13117340,
+    "count": 11067,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 13161608,
+    "count": 21840,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 13248968,
+    "count": 14756,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 13278480,
+    "count": 14756,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "shoe.L#1",
+   "source_object": "shoe.L",
+   "material": "M_sole",
+   "vertices": 1129,
+   "positions": {
+    "offset": 13337504,
+    "count": 3387,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 13351052,
+    "count": 3387,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 13364600,
+    "count": 6480,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 13390520,
+    "count": 4516,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 13399552,
+    "count": 4516,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "shoe.R#0",
+   "source_object": "shoe.R",
+   "material": "M_shoe_felt",
+   "vertices": 3689,
+   "positions": {
+    "offset": 13417616,
+    "count": 11067,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 13461884,
+    "count": 11067,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 13506152,
+    "count": 21840,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 13593512,
+    "count": 14756,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 13623024,
+    "count": 14756,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "shoe.R#1",
+   "source_object": "shoe.R",
+   "material": "M_sole",
+   "vertices": 1129,
+   "positions": {
+    "offset": 13682048,
+    "count": 3387,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 13695596,
+    "count": 3387,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 13709144,
+    "count": 6480,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 13735064,
+    "count": 4516,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 13744096,
+    "count": 4516,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "shoe_strap0.L",
+   "source_object": "shoe_strap0.L",
+   "material": "M_sole",
+   "vertices": 182,
+   "positions": {
+    "offset": 13762160,
+    "count": 546,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 13764344,
+    "count": 546,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 13766528,
+    "count": 1080,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 13770848,
+    "count": 728,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 13772304,
+    "count": 728,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "shoe_strap0.R",
+   "source_object": "shoe_strap0.R",
+   "material": "M_sole",
+   "vertices": 182,
+   "positions": {
+    "offset": 13775216,
+    "count": 546,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 13777400,
+    "count": 546,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 13779584,
+    "count": 1080,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 13783904,
+    "count": 728,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 13785360,
+    "count": 728,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "shoe_strap1.L",
+   "source_object": "shoe_strap1.L",
+   "material": "M_sole",
+   "vertices": 182,
+   "positions": {
+    "offset": 13788272,
+    "count": 546,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 13790456,
+    "count": 546,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 13792640,
+    "count": 1080,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 13796960,
+    "count": 728,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 13798416,
+    "count": 728,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "shoe_strap1.R",
+   "source_object": "shoe_strap1.R",
+   "material": "M_sole",
+   "vertices": 182,
+   "positions": {
+    "offset": 13801328,
+    "count": 546,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 13803512,
+    "count": 546,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 13805696,
+    "count": 1080,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 13810016,
+    "count": 728,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 13811472,
+    "count": 728,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "sock.L",
+   "source_object": "sock.L",
+   "material": "M_sock",
+   "vertices": 50,
+   "positions": {
+    "offset": 13814384,
+    "count": 150,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 13814984,
+    "count": 150,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 13815584,
+    "count": 288,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 13816736,
+    "count": 200,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 13817136,
+    "count": 200,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "sock.R",
+   "source_object": "sock.R",
+   "material": "M_sock",
+   "vertices": 50,
+   "positions": {
+    "offset": 13817936,
+    "count": 150,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 13818536,
+    "count": 150,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 13819136,
+    "count": 288,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 13820288,
+    "count": 200,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 13820688,
+    "count": 200,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "sole.L",
+   "source_object": "sole.L",
+   "material": "M_sole",
+   "vertices": 866,
+   "positions": {
+    "offset": 13821488,
+    "count": 2598,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 13831880,
+    "count": 2598,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 13842272,
+    "count": 5184,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 13863008,
+    "count": 3464,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 13869936,
+    "count": 3464,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "sole.R",
+   "source_object": "sole.R",
+   "material": "M_sole",
+   "vertices": 866,
+   "positions": {
+    "offset": 13883792,
+    "count": 2598,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 13894184,
+    "count": 2598,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 13904576,
+    "count": 5184,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 13925312,
+    "count": 3464,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 13932240,
+    "count": 3464,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "trouser_leg.L",
+   "source_object": "trouser_leg.L",
+   "material": "M_trousers_fleece",
+   "vertices": 282,
+   "positions": {
+    "offset": 13946096,
+    "count": 846,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 13949480,
+    "count": 846,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 13952864,
+    "count": 1680,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 13959584,
+    "count": 1128,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 13961840,
+    "count": 1128,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "trouser_leg.R",
+   "source_object": "trouser_leg.R",
+   "material": "M_trousers_fleece",
+   "vertices": 282,
+   "positions": {
+    "offset": 13966352,
+    "count": 846,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 13969736,
+    "count": 846,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 13973120,
+    "count": 1680,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 13979840,
+    "count": 1128,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 13982096,
+    "count": 1128,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "trousers_waist",
+   "source_object": "trousers_waist",
+   "material": "M_trousers_fleece",
+   "vertices": 338,
+   "positions": {
+    "offset": 13986608,
+    "count": 1014,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 13990664,
+    "count": 1014,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 13994720,
+    "count": 2016,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 14002784,
+    "count": 1352,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 14005488,
+    "count": 1352,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "undershirt",
+   "source_object": "undershirt",
+   "material": "M_cream",
+   "vertices": 266,
+   "positions": {
+    "offset": 14010896,
+    "count": 798,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 14014088,
+    "count": 798,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 14017280,
+    "count": 1584,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 14023616,
+    "count": 1064,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 14025744,
+    "count": 1064,
+    "dtype": "float32"
+   }
+  }
+ ],
+ "morphs": [
+  {
+   "name": "BrowDown",
+   "mesh": 5,
+   "vertices": {
+    "offset": 534384,
+    "count": 112,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 534832,
+    "count": 336,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "BrowDown",
+   "mesh": 6,
+   "vertices": {
+    "offset": 544192,
+    "count": 112,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 544640,
+    "count": 336,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Blink",
+   "mesh": 32,
+   "vertices": {
+    "offset": 12464960,
+    "count": 212,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 12465808,
+    "count": 636,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Blink",
+   "mesh": 33,
+   "vertices": {
+    "offset": 12483568,
+    "count": 212,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 12484416,
+    "count": 636,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Blink",
+   "mesh": 36,
+   "vertices": {
+    "offset": 12853728,
+    "count": 1996,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 12861712,
+    "count": 5988,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Blink",
+   "mesh": 37,
+   "vertices": {
+    "offset": 13029328,
+    "count": 1996,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 13037312,
+    "count": 5988,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Smile",
+   "mesh": 38,
+   "vertices": {
+    "offset": 13063328,
+    "count": 30,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 13063448,
+    "count": 90,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "JawOpen",
+   "mesh": 38,
+   "vertices": {
+    "offset": 13063808,
+    "count": 33,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 13063940,
+    "count": 99,
+    "dtype": "float32"
+   }
+  }
+ ],
+ "morph_names": [
+  "Blink",
+  "BrowDown",
+  "JawOpen",
+  "Smile"
+ ],
+ "capabilities": {
+  "reach_ik": {
+   "data": "available",
+   "missing": [],
+   "tested": "see docs/ENGINE_CHARACTER_PACKAGE.md (behaviour support table)"
+  },
+  "look_at": {
+   "data": "available",
+   "missing": [],
+   "tested": "see docs/ENGINE_CHARACTER_PACKAGE.md (behaviour support table)"
+  },
+  "blink_life": {
+   "data": "missing",
+   "missing": [
+    "lid.L",
+    "lid.R"
+   ],
+   "tested": "see docs/ENGINE_CHARACTER_PACKAGE.md (behaviour support table)"
+  },
+  "expressions": {
+   "data": "available",
+   "missing": [],
+   "tested": "see docs/ENGINE_CHARACTER_PACKAGE.md (behaviour support table)"
+  },
+  "grasp": {
+   "data": "available",
+   "missing": [],
+   "tested": "see docs/ENGINE_CHARACTER_PACKAGE.md (behaviour support table)"
+  },
+  "walk": {
+   "data": "available",
+   "missing": [],
+   "tested": "see docs/ENGINE_CHARACTER_PACKAGE.md (behaviour support table)"
+  },
+  "idle_life": {
+   "data": "available",
+   "missing": [],
+   "tested": "see docs/ENGINE_CHARACTER_PACKAGE.md (behaviour support table)"
+  }
+ },
+ "discarded": [
+  "Rigify constraint-driven twist distribution (DEF-*.001 twist bones are kept as deform bones but follow their role bone rigidly in the engine, which evaluates no constraints)",
+  "Non-deform control/mechanism bones (ORG-, MCH-, controls): the engine animates deform bones directly",
+  "Bone roll / rest orientation: engine rest frames are axis aligned at each bone pivot (skinning is unaffected; authored local rotations are in engine axes)"
+ ],
+ "files": {
+  "geometry.bin": {
+   "bytes": 14030000,
+   "sha256": "274730f58a10da8eb7e5129db0af31606ec19bc097cde32595d12f0ea19b971f"
+  }
+ }
+}

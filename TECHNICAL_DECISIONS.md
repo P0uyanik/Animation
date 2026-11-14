@@ -241,3 +241,13 @@ no Blender in the workflow, use the existing (unknown) computer, no GPU purchase
   They never append, copy or rebuild the character, so episode work cannot modify the master.
 - Facial expressions are animated through rig properties (`face_Blink`, `face_BrowDown`, `face_Smile`,
   `face_JawOpen`) driving shape keys, so they work through overrides.
+
+## TD-38 Imported characters: rig profiles + package + engine importer (2026-11-14)
+- Characters built in Blender reach the C++ engine as a versioned package (`docs/ENGINE_CHARACTER_PACKAGE.md`):
+  - every deform bone is kept;
+  - role bones carry engine role names;
+  - rig-specific bones keep their names.
+- Rig-family knowledge lives in data (rig profiles with profile-specific required roles). The importer only checks
+  package consistency, so new character kinds need profiles, not engine code.
+- Behaviour support is decided by tests per package, never by data availability alone.
+- The toy fixture is an engineering test, not production validation.

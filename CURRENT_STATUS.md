@@ -22,12 +22,21 @@ Completed and tested:
   glTF, episode link). Evidence `docs/evaluation/face_controls/F02_review_1.0.0_vs_F02.jpg`.
 - Reusability assessment `docs/CHARACTER_REUSABILITY.md`. Regression `verify_charsys.py` PASS (67/0).
 
+- **Blender → C++ adapter** (TD-38, `docs/ENGINE_CHARACTER_PACKAGE.md`): exporter + rig profiles + importer +
+  scene loading. Tested on the boy 1.0.0 package and an engineering fixture with different names, hierarchy and
+  proportions:
+  - supported on both: reach/IK, look-at, morph expressions, idle;
+  - walk: supported for the boy, partial for the fixture;
+  - unsupported: grasp, life-layer blink.
+  `ctest` 4/4 (incl. image regressions), exporter tests 8/8, `verify_charsys` 67/0.
+
 Not done / limitations:
 - H25/H26 (hair) and F01/F02 (face) not published or approved (identity changes: owner decision); H25 and F01 reviewed and not approved.
 - F02: flat interior (no teeth/tongue), skin stretch at mouth corners (3.5x), Smile without cheek/eye coordination; closed lid slightly rounded.
 - H26: crown tufts form a regular ring; #7 front 3.63%.
 - Smooth cap patch behind the ear; crown tufts thinner than the refs; side/back-¾ views still 3.5–3.7%.
 - Your local Blender 5.2 runs (`reproduce_v6.py`, `verify_charsys.py`) not yet reported.
+- Engine assumptions blocking full support: fixed 0.11 m walk step, fixed hand convention (grasp), lid-bone-only blink, hard expression preset names.
 - Fur is evaluation-only (not in master/glb); no USD/Alembic.
 
 Protected: v6 + frozen baseline, version 1.0.0, reproduction script, C++ engine. Iteration 5 not started.

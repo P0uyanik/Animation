@@ -1,5 +1,7 @@
 #include "scene/scene.h"
 
+#include "model/imported_character.h"
+
 namespace plush {
 
 namespace {
@@ -285,12 +287,21 @@ Result<void> SceneEvaluator::load(const Scene& scene, const EvalOptions& opt) {
 
   for (auto& cd : scene_.characters) {
     std::filesystem::path p = scene_.path.parent_path() / cd.asset;
-    auto asset = loadCharacter(p);
-    if (!asset) return std::unexpected(asset.error());
     CharacterInstance ci;
-    ci.asset = std::move(*asset);
-    for (auto& m : ci.asset.materials) addMaterial(m);
-    ci.rig = buildCharacter(ci.asset, BuildOptions{opt.voxelScale, opt.fuzzDensity, opt.fuzz});
+    if (isImportedCharacter(p)) {  // rigged meshes from outside the engine (docs/ENGINE_CHARACTER_PACKAGE.md)
+      auto ic = loadImportedCharacter(p);
+      if (!ic) return std::unexpected(ic.error());
+      ci.asset = std::move(ic->asset);
+      ci.rig = std::move(ic->rig);
+      ci.imported = true;
+      for (auto& m : ci.asset.materials) addMaterial(m);
+    } else {
+      auto asset = loadCharacter(p);
+      if (!asset) return std::unexpected(asset.error());
+      ci.asset = std::move(*asset);
+      for (auto& m : ci.asset.materials) addMaterial(m);
+      ci.rig = buildCharacter(ci.asset, BuildOptions{opt.voxelScale, opt.fuzzDensity, opt.fuzz});
+    }
     for (auto& sm : ci.rig.meshes) ci.meshMaterial.push_back(materialIndex(sm.material));
     for (auto& f : ci.rig.fuzz) ci.fuzzMaterial.push_back(materialIndex(f.material));
     for (auto& l : ci.rig.locks) {
@@ -319,6 +330,7 @@ Result<void> SceneEvaluator::load(const Scene& scene, const EvalOptions& opt) {
 }
 
 Result<void> SceneEvaluator::rebuildCharacter(size_t index, const CharacterAsset& asset, const EvalOptions& opt) {
+  if (index < characters_.size() && characters_[index].imported) return fail("imported characters are edited in their source pipeline");
   if (index >= characters_.size()) return fail("character index out of range");
   CharacterInstance ci;
   ci.asset = asset;

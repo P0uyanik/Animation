@@ -1,0 +1,24 @@
+{
+ "schema": "plush-studio.rig-profile/1",
+ "profile": "humanoid_rigify/1",
+ "kind": "humanoid",
+ "description": "Rigify human metarig (generated rig, DEF- deform bones). First supported profile.",
+ "required_roles": ["hips", "spine", "chest", "neck", "head"],
+ "mirror": {"engine": [".L", ".R"], "source": [".L", ".R"]},
+ "roles": {
+  "hips": "DEF-spine", "spine": "DEF-spine.001", "chest": "DEF-spine.003", "neck": "DEF-spine.004", "head": "DEF-spine.006",
+  "eye.L": "DEF-eye.L",
+  "upperArm.L": "DEF-upper_arm.L", "forearm.L": "DEF-forearm.L", "hand.L": "DEF-hand.L",
+  "thigh.L": "DEF-thigh.L", "shin.L": "DEF-shin.L", "foot.L": "DEF-foot.L",
+  "thumbA.L": "DEF-thumb.02.L", "thumbB.L": "DEF-thumb.03.L",
+  "f3a.L": "DEF-f_index.01.L", "f3b.L": "DEF-f_index.02.L",
+  "f2a.L": "DEF-f_middle.01.L", "f2b.L": "DEF-f_middle.02.L",
+  "f1a.L": "DEF-f_ring.01.L", "f1b.L": "DEF-f_ring.02.L",
+  "f0a.L": "DEF-f_pinky.01.L", "f0b.L": "DEF-f_pinky.02.L"
+ },
+ "contiguous_chains": [["upperArm.L", "forearm.L", "hand.L"], ["thigh.L", "shin.L", "foot.L"]],
+ "rig_specific_bones": ["DEF-jaw"],
+ "discarded": ["Rigify constraint-driven twist distribution (DEF-*.001 twist bones are kept as deform bones but follow their role bone rigidly in the engine, which evaluates no constraints)",
+               "Non-deform control/mechanism bones (ORG-, MCH-, controls): the engine animates deform bones directly",
+               "Bone roll / rest orientation: engine rest frames are axis aligned at each bone pivot (skinning is unaffected; authored local rotations are in engine axes)"]
+}
