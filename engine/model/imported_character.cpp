@@ -161,6 +161,46 @@ Result<ImportedCharacter> loadImportedCharacter(const std::filesystem::path& man
     mt.dnrm.assign(mt.dpos.size(), vec3(0));
     ic.rig.morphs.push_back(std::move(mt));
   }
+  // Facial metadata from the shared face system (all optional; validated, never silently ignored).
+  auto hasMorph = [&](const std::string& n) {
+    for (auto& mt : ic.rig.morphs)
+      if (mt.name == n) return true;
+    return false;
+  };
+  const Json inb = j.value("morph_inbetweens", Json::object());
+  for (auto& [base, list] : inb.items()) {
+    if (!hasMorph(base)) return fail("package: in-betweens for missing morph " + base);
+    auto& chain = ic.asset.morphInbetweens[base];
+    float last = 0.0f;
+    for (const Json& e : list) {
+      const float f = e.at(0).get<float>();
+      const std::string m = e.at(1).get<std::string>();
+      if (!(f > last && f < 1.0f)) return fail("package: in-between fractions of " + base + " must rise inside (0, 1)");
+      if (!hasMorph(m)) return fail("package: missing in-between morph " + m);
+      chain.push_back({f, m});
+      last = f;
+    }
+  }
+  const Json eb = j.value("expression_bones", Json::object());
+  for (auto& [morph, list] : eb.items()) {
+    if (!hasMorph(morph)) return fail("package: expression bones for missing morph " + morph);
+    for (const Json& e : list) {
+      CharacterAsset::ExpressionBone b;
+      b.bone = e.at("bone").get<std::string>();
+      if (ic.asset.skeleton.find(b.bone) < 0) return fail("package: expression bone " + b.bone + " not in the skeleton");
+      b.axis = readVec3(e, "axis", vec3(0));
+      if (glm::length(b.axis) < 1e-6f) return fail("package: expression bone " + b.bone + " has no axis");
+      b.axis = glm::normalize(b.axis);
+      b.degrees = readFloat(e, "degrees", 0.0f);
+      ic.asset.expressionBones[morph].push_back(b);
+    }
+  }
+  if (auto bt = j.find("blink"); bt != j.end() && bt->is_object()) {
+    ic.asset.blinkInterval = readFloat(*bt, "mean_interval_s", 0.0f);
+    ic.asset.blinkClose = readFloat(*bt, "close_s", 0.0f);
+    ic.asset.blinkHold = readFloat(*bt, "hold_s", 0.0f);
+    ic.asset.blinkOpen = readFloat(*bt, "open_s", 0.0f);
+  }
   return ic;
 }
 

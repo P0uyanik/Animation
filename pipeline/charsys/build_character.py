@@ -245,6 +245,11 @@ def main_generic(a, spec, info, out):
     stamp(C, spec, info, "master")
     if fc is not None:
         C["ps_engine_expressions"] = json.dumps(fc["engine_expressions"], sort_keys=True)
+        # expression -> bone rotations (the jaw follows JawOpen and every preset that contains it), for the engine
+        jdeg = float(fc["mouth_cfg"].get("jaw_open_deg", 7.0))
+        eb = {"JawOpen": [{"bone": "DEF-jaw", "axis_local": [1, 0, 0], "degrees": jdeg}]}
+        eb.update({p: [{"bone": "DEF-jaw", "axis_local": [1, 0, 0], "degrees": round(jdeg * w, 4)}] for p, w in fc["jaw_preset_weights"].items()})
+        C["ps_expression_bones"] = json.dumps(eb, sort_keys=True)
         if spec["face"].get("blink", {}).get("timing"):
             C["ps_blink_timing"] = json.dumps(spec["face"]["blink"]["timing"], sort_keys=True)
     rig["ps_character_id"] = cid

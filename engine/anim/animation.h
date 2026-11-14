@@ -88,6 +88,10 @@ struct LifeParams {
   float sway = 1.0f;           // weight-shift amplitude scale
   float headDrift = 1.0f;      // small idle head motion
   float blinkInterval = 3.6f;  // mean seconds between blinks (0 = no automatic blinks)
+  bool blinkIntervalSet = false;  // the scene gave blinkInterval explicitly (wins over the character's own timing)
+  // Blink shape in seconds (close, stay shut, open). Defaults are the original global timing; a character package
+  // may supply its own (CharacterAsset::blinkTiming).
+  float blinkClose = 0.07f, blinkHold = 0.03f, blinkOpen = 0.12f;
   float headFollow = 0.55f;    // share of a gaze turn taken by neck + head
   float headLagSec = 0.2f;     // the head follows the eyes this much later
   bool blinkLids = true;       // false: blinks are a morph (character expression map), lid bones are not rotated
@@ -96,7 +100,7 @@ struct LifeParams {
 void applyLife(const Skeleton& skeleton, const Clip& clip, const std::string& prefix, double frame, double fps,
                const mat4& world, const LifeParams& life, Pose& pose);
 // Blink closure in [0, 1] at time t (seconds) for an average interval; exposed for tests.
-float blinkAmount(double t, float interval, uint32_t seed);
+float blinkAmount(double t, float interval, uint32_t seed, float close = 0.07f, float hold = 0.03f, float open = 0.12f);
 
 // Fingers (bones thumbA/thumbB and f0a..f3a / f0b..f3b with .L/.R). Any subset of at least two digits works (missing
 // digits are skipped); hands with fewer digits are left alone. Curl, spread and thumb axes come from the hand's

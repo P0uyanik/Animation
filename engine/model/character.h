@@ -51,6 +51,10 @@ constexpr float kDefaultWalkStepScale = 0.11f / 0.3451f;
 float walkStep(const struct CharacterAsset& c);
 // Morph name for an engine expression name ("" if the character has none).
 std::string resolveExpression(const struct CharacterAsset& c, const std::string& name, const std::vector<std::string>& morphNames);
+// Applies morph in-betweens: `weights` holds the animated weight of every morph (same order as `morphNames`); for each
+// base morph with in-betweens its weight w is redistributed over its chain (piecewise linear between the stops 0,
+// f1.., 1). The in-between morphs' own channels are replaced. Morphs without in-betweens are unchanged.
+std::vector<float> expandInbetweens(const struct CharacterAsset& c, const std::vector<std::string>& morphNames, std::vector<float> weights);
 
 struct CharacterAsset {
   std::string name;
@@ -60,6 +64,20 @@ struct CharacterAsset {
   // Engine expression name (e.g. "blink", "smile") -> this character's morph name. Empty = morph names are used as
   // given. A "blink" entry naming a morph makes the life layer blink with that morph instead of rotating lid bones.
   std::map<std::string, std::string> expressionMap;
+  // Morph in-betweens (package "morph_inbetweens"): base morph -> (fraction, morph) stops on the way to the full
+  // morph. Driving the base with weight w follows the chain piecewise (exact at each stop), so rotation-like shapes
+  // such as a blink do not cut through the eye halfway (a single linear morph moves along the chord).
+  std::map<std::string, std::vector<std::pair<float, std::string>>> morphInbetweens;
+  // Bone rotations driven by an expression weight (package "expression_bones"): morph -> bone, axis (engine axes,
+  // parent-relative), degrees at weight 1. E.g. a jaw bone opening with the mouth morphs.
+  struct ExpressionBone {
+    std::string bone;
+    vec3 axis{1, 0, 0};
+    float degrees = 0;
+  };
+  std::map<std::string, std::vector<ExpressionBone>> expressionBones;
+  // Character blink timing (package "blink"); <= 0 = the life-layer defaults.
+  float blinkInterval = 0, blinkClose = 0, blinkHold = 0, blinkOpen = 0;
   float walkStepLength = 0.0f;  // > 0: walk step in metres
   float walkStepScale = 0.0f;   // > 0: walk step = scale * leg length (default: kDefaultWalkStepScale)
   bool dualQuaternion = false;  // skinning method (false = linear blend)

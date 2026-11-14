@@ -88,6 +88,26 @@ def eye_frame(c, sx, ecfg):
     return Matrix.Translation(c) @ Matrix.Rotation(yaw, 4, "Z") @ Matrix.Rotation(pitch, 4, "X") @ Matrix.Diagonal((s[0], s[1], s[2], 1.0))
 
 
+def gaze_envelope(sx, ecfg):
+    """Largest radius, in the eye's unit frame (1 = the eyeball surface), that the eyeball reaches when the eye bone
+    turns it rigidly over the configured gaze range (spec.face.eyes.gaze_range_deg = [yaw, pitch], default
+    [20, 12]): the spectral norm of A^-1 R A over the range, A = the eye frame. Exactly 1 for spherical eyes; an oval
+    eye turned rigidly sweeps outside its own ellipsoid (G03: 1.18), so lids built on the ellipsoid would be cut."""
+    s = ecfg.get("scale", [1.0, 1.0, 1.0])
+    if max(abs(float(k) - 1.0) for k in s) < 1e-9:
+        return 1.0
+    import numpy as np
+    A = np.array(eye_frame(Vector((0, 0, 0)), sx, ecfg).to_3x3())
+    Ai = np.linalg.inv(A)
+    gy, gp = (float(v) for v in ecfg.get("gaze_range_deg", [20.0, 12.0]))
+    worst = 1.0
+    for i in range(11):
+        for j in range(7):
+            R = np.array(Matrix.Rotation(math.radians(-gy + 2 * gy * i / 10), 3, "Z") @ Matrix.Rotation(math.radians(-gp + 2 * gp * j / 6), 3, "X"))
+            worst = max(worst, float(np.linalg.norm(Ai @ R @ A, 2)))
+    return worst
+
+
 def _plane_point(q, k, rr, a, upper):
     """Point at azimuth a (around the forward axis) on the sphere of radius rr that lies on the lid plane through q
     (upper: z - q.z + k (y - q.y) = 0; lower: z - q.z - k (y - q.y) = 0). Bisection on the elevation."""
@@ -143,8 +163,11 @@ def build_eyes(C, M, ctx, eyes_cfg, ex, ez, protrusion):
         # lids, built in the unit frame (radius r), then moved to the eye frame
         e_up, k_up = math.radians(_f(lids_cfg, "upper_edge_deg", 40)), _f(lids_cfg, "upper_back_tilt", 1.0)
         e_lo, k_lo = math.radians(_f(lids_cfg, "lower_edge_deg", -45)), _f(lids_cfg, "lower_tilt", 0.3)
-        r_up = r * (1 + _f(lids_cfg, "upper_gap", 0.06))
-        r_lo = r * (1 + _f(lids_cfg, "lower_gap", 0.03))
+        # lid clearance: the configured gap, widened where needed so the lids clear the eyeball over the gaze range
+        env = gaze_envelope(sx, eyes_cfg)
+        need = env * 1.01 - 1.0 if env > 1.0 else 0.0
+        r_up = r * (1 + max(_f(lids_cfg, "upper_gap", 0.06), need))
+        r_lo = r * (1 + max(_f(lids_cfg, "lower_gap", 0.03), need))
         q_up = Vector((0, -math.cos(e_up), math.sin(e_up))) * r_up
         q_lo = Vector((0, -math.cos(e_lo), math.sin(e_lo))) * r_lo
         up = G.uv_sphere(f"lid_upper.{side}", (0, 0, 0), r_up, C, 64, 32)
@@ -218,7 +241,8 @@ def build_eyes(C, M, ctx, eyes_cfg, ex, ez, protrusion):
             if not o.data.materials:
                 G.assign(o, M["face_skin"])
         lids.append((up, lo, lash, c))
-        info[side] = {"centre_m": [round(v, 4) for v in c], "radius_m": r, "front_protrusion_m": protrusion}
+        info[side] = {"centre_m": [round(v, 4) for v in c], "radius_m": r, "front_protrusion_m": protrusion,
+                      "gaze_envelope": round(env, 4), "lid_gap_upper": round(r_up / r - 1, 4), "lid_gap_lower": round(r_lo / r - 1, 4)}
     return eyes, lids, frames, info
 
 
@@ -251,7 +275,7 @@ def _rename_key(ob, old, new):
         ob.data.shape_keys.key_blocks[old].name = new
 
 
-def eye_action_units(eyes, lids, frames, r, blink_cfg, au_cfg):
+def eye_action_units(eyes, lids, frames, r, blink_cfg, au_cfg, envelopes=None):
     """Blink.L / Blink.R (face.py lid_seam/1 in the eye frame; optional eyeball flatten), EyeWide, EyeSquint."""
     rep = {}
     wide_up, wide_lo = _f(au_cfg, "wide_upper_deg", 10), _f(au_cfg, "wide_lower_deg", 6)
@@ -259,12 +283,13 @@ def eye_action_units(eyes, lids, frames, r, blink_cfg, au_cfg):
     flat = _f(blink_cfg, "flatten", 0.0)
     for (sx, side), eye, (up, lo, lash, c) in zip(SIDES, eyes, lids):
         T = frames[side]
+        r_closed = r * (envelopes or {}).get(side, 1.0)  # the closed lid also clears the gaze envelope
 
         def work():
             for f in INBETWEENS:  # partial closures on the true arc (see face.add_blink_lid_seam)
-                FACE.add_blink_lid_seam([(up, lo, lash, Vector((0, 0, 0)))], r, G, blink_cfg, fraction=f,
+                FACE.add_blink_lid_seam([(up, lo, lash, Vector((0, 0, 0)))], r_closed, G, blink_cfg, fraction=f,
                                         key_name=f"Blink.{side}@{int(round(f * 100))}")
-            out = FACE.add_blink_lid_seam([(up, lo, lash, Vector((0, 0, 0)))], r, G, blink_cfg)
+            out = FACE.add_blink_lid_seam([(up, lo, lash, Vector((0, 0, 0)))], r_closed, G, blink_cfg)
             for ob in (up, lash):
                 _rename_key(ob, "Blink", f"Blink.{side}")
             _rot_key(up, "EyeWide", -wide_up)
@@ -534,7 +559,19 @@ def build(C, M, head, spec, P, H, head_bone="DEF-spine.006", eye_bone="DEF-eye.{
     mouth = FACE.build_mouth_lips(C, M, head, ctx, mcfg)
     cavity = FACE.cut_mouth_and_cavity(C, M, head, ctx, mcfg, mouth)
     # action units: eyes (in their frames), smile coupling (cheeks + lower lids join the lips' Smile)
-    rep["blink"] = eye_action_units(eyes, lids, frames, r, fs.get("blink", {}), au)
+    # closed-lid radius factor: 1 for spherical eyes (unchanged); with a gaze envelope the closed lid keeps the same
+    # relation to the (widened) lower lid as on a spherical eye, but never comes closer than the envelope
+    closed = {}
+    off = _f(fs.get("blink", {}), "closed_offset_m", 0.0012) / r
+    for _, side in SIDES:
+        env = einfo[side]["gaze_envelope"]
+        closed[side] = 1.0 if env <= 1.0 else max(env * 1.005 - off, 1 + einfo[side]["lid_gap_lower"] - _f(ecfg.get("lids", {}), "lower_gap", 0.03))
+    bcfg = dict(fs.get("blink", {}))
+    widened = max(einfo[side]["lid_gap_lower"] - _f(ecfg.get("lids", {}), "lower_gap", 0.03) for _, side in SIDES)
+    if widened > 0:  # lids standing further off the eye need a larger seam overlap to stay closed when seen off-axis
+        bcfg["overlap_deg"] = _f(bcfg, "overlap_deg", 3.0) + math.degrees(widened)
+        rep["blink_overlap_deg"] = round(bcfg["overlap_deg"], 2)
+    rep["blink"] = eye_action_units(eyes, lids, frames, r, bcfg, au, closed)
     if fs.get("smile_coupling"):
         rep["smile_coupling"] = FACE.add_smile_coupling(head, lids, mouth, lm, fs["smile_coupling"])
     for ob in [mouth, cavity, head] + [l[1] for l in lids]:
@@ -557,9 +594,15 @@ def build(C, M, head, spec, P, H, head_bone="DEF-spine.006", eye_bone="DEF-eye.{
             rigid.append((o, {head_bone: 1.0 - track, eye_bone.format(s=side): track} if track > 0 else head_bone))
     sc = ecfg.get("scale", [1, 1, 1])
     if max(abs(float(k) - 1.0) for k in sc) > 1e-6:
-        rep.setdefault("warnings", []).append(
-            "non-spherical eyeball (scale %s) rotated by the eye bones: gaze makes the eyeball cut through the lid "
-            "shells (see docs/second_character/M3_FACE_SYSTEM.md); use for static eyes or small gaze ranges only" % (sc,))
+        env = max(einfo[s]["gaze_envelope"] for _, s in SIDES)
+        rep.setdefault("notes", []).append(
+            "non-spherical eyeball (scale %s): the lids clear its rigid gaze sweep over gaze_range_deg %s (envelope %.3f, "
+            "lid gap widened to at least %.1f%% of the radius); gaze beyond that range is not covered"
+            % (sc, ecfg.get("gaze_range_deg", [20.0, 12.0]), env, (env * 1.01 - 1) * 100))
+        if env > 1.25:
+            rep.setdefault("warnings", []).append(
+                "gaze envelope %.3f: the lids stand more than 25%% of the radius off the eyeball at rest (visible gap); "
+                "reduce the gaze range or the eye's ovalness (iris-sliding gaze is not implemented)" % env)
     engine = {k: v for k, v in lib["engine_expressions"].items() if v in set(au_built) | set(presets)}
     return {"eyes": eyes, "lids": lids, "brows": brows, "ears": ears, "mouth": mouth, "cavity": cavity, "landmarks": lm,
             "rigid": rigid, "frames": frames, "ctx": ctx, "controls": au_built + presets, "jaw_preset_weights": jaw_w,

@@ -120,6 +120,12 @@ class SceneEvaluator {
   std::vector<CharacterInstance> characters_;
   std::vector<std::string> warnings_;
   static std::string blinkMorph(const CharacterInstance& ci);
+ public:
+  // Effective life parameters of character c (scene values + the character's blink timing).
+  LifeParams lifeParams(size_t c) const;
+  // Animated weight of morph `morph` of character c at `frame`.
+  float expressionWeight(size_t c, const std::string& morph, double frame) const;
+ private:
   std::vector<ObjectDesc> authoredObjects_;  // objects as written, before actions set attachments and ripples
 };
 

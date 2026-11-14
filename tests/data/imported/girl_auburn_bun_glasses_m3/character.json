@@ -4,7 +4,7 @@
  "name": "girl_auburn_bun_glasses",
  "source": {
   "blend": "girl_auburn_bun_glasses_master.blend",
-  "blend_sha256": "96e3a4f857efa00c19ceceb474a73e138a70ea1ca8c2b015c9f9a93b49d0f558",
+  "blend_sha256": "f9bffe879d349be86ecb5b76e271904bd9f749871e50b197368297764ddff91f",
   "spec_sha256": "e71897430322b75e52b9337a5d1434f5fe58f4bb6f15e65b2dc41fa35e11f475",
   "spec_version": "0.3.0",
   "blender": "5.3.0"
@@ -5316,16 +5316,196 @@
   "WideOpen",
   "Worried"
  ],
+ "morph_inbetweens": {
+  "Blink.L": [
+   [
+    0.25,
+    "Blink.L@25"
+   ],
+   [
+    0.5,
+    "Blink.L@50"
+   ],
+   [
+    0.75,
+    "Blink.L@75"
+   ]
+  ],
+  "Blink.R": [
+   [
+    0.25,
+    "Blink.R@25"
+   ],
+   [
+    0.5,
+    "Blink.R@50"
+   ],
+   [
+    0.75,
+    "Blink.R@75"
+   ]
+  ],
+  "Blink": [
+   [
+    0.25,
+    "Blink@25"
+   ],
+   [
+    0.5,
+    "Blink@50"
+   ],
+   [
+    0.75,
+    "Blink@75"
+   ]
+  ],
+  "Laugh": [
+   [
+    0.25,
+    "Laugh@25"
+   ],
+   [
+    0.5,
+    "Laugh@50"
+   ],
+   [
+    0.75,
+    "Laugh@75"
+   ]
+  ],
+  "LeftEyeClosed": [
+   [
+    0.25,
+    "LeftEyeClosed@25"
+   ],
+   [
+    0.5,
+    "LeftEyeClosed@50"
+   ],
+   [
+    0.75,
+    "LeftEyeClosed@75"
+   ]
+  ],
+  "RightEyeClosed": [
+   [
+    0.25,
+    "RightEyeClosed@25"
+   ],
+   [
+    0.5,
+    "RightEyeClosed@50"
+   ],
+   [
+    0.75,
+    "RightEyeClosed@75"
+   ]
+  ],
+  "Sadness": [
+   [
+    0.25,
+    "Sadness@25"
+   ],
+   [
+    0.5,
+    "Sadness@50"
+   ],
+   [
+    0.75,
+    "Sadness@75"
+   ]
+  ],
+  "Squint": [
+   [
+    0.25,
+    "Squint@25"
+   ],
+   [
+    0.5,
+    "Squint@50"
+   ],
+   [
+    0.75,
+    "Squint@75"
+   ]
+  ]
+ },
+ "expression_bones": {
+  "JawOpen": [
+   {
+    "bone": "DEF-jaw",
+    "axis": [
+     1.0,
+     0.0,
+     -0.0
+    ],
+    "degrees": 10.0
+   }
+  ],
+  "Laugh": [
+   {
+    "bone": "DEF-jaw",
+    "axis": [
+     1.0,
+     0.0,
+     -0.0
+    ],
+    "degrees": 6.0
+   }
+  ],
+  "MouthOpen": [
+   {
+    "bone": "DEF-jaw",
+    "axis": [
+     1.0,
+     0.0,
+     -0.0
+    ],
+    "degrees": 10.0
+   }
+  ],
+  "Smile": [
+   {
+    "bone": "DEF-jaw",
+    "axis": [
+     1.0,
+     0.0,
+     -0.0
+    ],
+    "degrees": 2.0
+   }
+  ],
+  "Surprise": [
+   {
+    "bone": "DEF-jaw",
+    "axis": [
+     1.0,
+     0.0,
+     -0.0
+    ],
+    "degrees": 5.5
+   }
+  ]
+ },
+ "blink": {
+  "close_s": 0.08,
+  "hold_s": 0.04,
+  "open_s": 0.14,
+  "mean_interval_s": 3.2
+ },
  "expressions": {
   "blink": "Blink",
   "smile": "Smile",
   "jawOpen": "JawOpen",
   "browDown": "BrowDown",
   "angry": "Anger",
+  "blinkLeft": "LeftEyeClosed",
+  "blinkRight": "RightEyeClosed",
   "confused": "Confusion",
   "frown": "Frown",
   "happy": "Smile",
   "laugh": "Laugh",
+  "mouthOpen": "MouthOpen",
   "sad": "Sadness",
   "squint": "Squint",
   "surprised": "Surprise"
@@ -5377,7 +5557,7 @@
  "files": {
   "geometry.bin": {
    "bytes": 9504464,
-   "sha256": "cf76c538bb0ba46f87e9d01b7b9cac285a51607dbff67296f3bb713db3c92f84"
+   "sha256": "46da4f9ec6ece4909f8a4597775b981272ba2196f66c849beddc2373694c426c"
   }
  }
 }

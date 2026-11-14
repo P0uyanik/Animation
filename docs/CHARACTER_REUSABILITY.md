@@ -90,3 +90,12 @@ never from constants. Generic reuse is only claimed after a second, different ch
 - spherical eyes for large gaze;
 - ellipsoid ears and a bump nose;
 - glasses need ear landmarks for the temples.
+
+
+## Facial engine after M3.1 (2026-11-14)
+| Capability | Shared mechanism | Character data | Characters |
+| --- | --- | --- | --- |
+| Arc-correct blinks and presets in the engine | package `morph_inbetweens` + `expandInbetweens` | the face's in-between keys | girl (G03 builds them too; it has no engine package) |
+| Expression-driven bones (jaw) | package `expression_bones` + scene pose step | jaw angle, preset weights | girl; packages without it stay morph-only (boy 1.0.0, fixture) |
+| Blink timing | package `blink` + `LifeParams` | `spec.face.blink.timing` | girl custom; boy defaults |
+| Oval eyes under gaze | gaze envelope → lid clearance | `eyes.scale`, `eyes.gaze_range_deg` | G03 (oval), girl (sphere: unchanged) |

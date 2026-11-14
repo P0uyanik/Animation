@@ -119,6 +119,7 @@ Result<Scene> loadScene(const std::filesystem::path& path) {
         cd.life.breathing = readFloat(*it, "breathing", cd.life.breathing);
         cd.life.sway = readFloat(*it, "sway", cd.life.sway);
         cd.life.headDrift = readFloat(*it, "headDrift", cd.life.headDrift);
+        cd.life.blinkIntervalSet = it->contains("blinkInterval");
         cd.life.blinkInterval = readFloat(*it, "blinkInterval", cd.life.blinkInterval);
         cd.life.headFollow = readFloat(*it, "headFollow", cd.life.headFollow);
         cd.life.headLagSec = readFloat(*it, "headLagSec", cd.life.headLagSec);
@@ -365,7 +366,16 @@ std::vector<mat4> SceneEvaluator::characterGlobals(size_t c, double frame, Pose*
   float yaw = clip.evaluate(cd.name + ".yaw", frame, vec3(cd.yawDeg)).x;
   mat4 world = objectMatrixLocal(pos, yaw, 1.0f);
   Pose pose = evaluatePose(ci.asset.skeleton, clip, prefix, frame, &ci.asset.defaultPose);
-  LifeParams life = cd.life;
+  // Expression-driven bones (e.g. a jaw opening with the mouth): weight x rotation, from the package metadata.
+  for (const auto& [morph, bones] : ci.asset.expressionBones) {
+    const float w = expressionWeight(c, morph, frame);
+    if (w == 0.0f) continue;
+    for (const auto& b : bones) {
+      const int bi = ci.asset.skeleton.find(b.bone);
+      if (bi >= 0) pose.local[size_t(bi)] = pose.local[size_t(bi)] * glm::angleAxis(glm::radians(b.degrees * w), b.axis);
+    }
+  }
+  LifeParams life = lifeParams(c);
   if (!blinkMorph(ci).empty()) life.blinkLids = false;  // blinks are a morph for this character (see evaluate)
   applyLife(ci.asset.skeleton, clip, prefix, frame, scene_.rate.fps(), world, life, pose);
   applyConstraints(ci.asset.skeleton, clip, prefix, frame, world, pose);
@@ -421,6 +431,26 @@ vec3 unfoldedPaper(vec3 v) {
 }
 }  // namespace
 
+// Life parameters of character c: the scene's, with the character's own blink timing where the package has one
+// (an explicit scene blinkInterval wins). Characters without timing keep the defaults.
+LifeParams SceneEvaluator::lifeParams(size_t c) const {
+  LifeParams life = scene_.characters[c].life;
+  const CharacterAsset& a = characters_[c].asset;
+  if (a.blinkInterval > 0 && !life.blinkIntervalSet) life.blinkInterval = a.blinkInterval;
+  if (a.blinkClose > 0) life.blinkClose = a.blinkClose;
+  if (a.blinkHold >= 0 && a.blinkClose > 0) life.blinkHold = a.blinkHold;
+  if (a.blinkOpen > 0) life.blinkOpen = a.blinkOpen;
+  return life;
+}
+
+// Animated weight of a morph channel (track "<name>/expr.<morph>", else the character's default expression).
+float SceneEvaluator::expressionWeight(size_t c, const std::string& morph, double frame) const {
+  const CharacterInstance& ci = characters_[c];
+  auto d = ci.asset.defaultExpressions.find(morph);
+  const float def = d == ci.asset.defaultExpressions.end() ? 0.0f : d->second;
+  return scene_.animation.evaluate(scene_.characters[c].name + "/expr." + morph, frame, vec3(def)).x;
+}
+
 // The character's blink morph ("blink" in its expression map naming an existing morph), or "".
 std::string SceneEvaluator::blinkMorph(const CharacterInstance& ci) {
   auto it = ci.asset.expressionMap.find("blink");
@@ -442,17 +472,19 @@ std::shared_ptr<FrameSnapshot> SceneEvaluator::evaluate(double frame) const {
     auto skin = characterGlobals(c, frame);
     for (size_t b = 0; b < skin.size(); ++b) skin[b] = skin[b] * glm::translate(mat4(1), -ci.asset.skeleton.bones[b].head);
     std::vector<float> weights;
-    const std::string blink = scene_.characters[c].life.enabled ? blinkMorph(ci) : std::string();
+    std::vector<std::string> names;
+    const LifeParams life = lifeParams(c);
+    const std::string blink = life.enabled ? blinkMorph(ci) : std::string();
     const float blinkW = blink.empty() ? 0.0f
-                                       : blinkAmount(frame / std::max(1.0, scene_.rate.fps()), scene_.characters[c].life.blinkInterval,
-                                                     scene_.characters[c].life.seed);
+                                       : blinkAmount(frame / std::max(1.0, scene_.rate.fps()), life.blinkInterval, life.seed,
+                                                     life.blinkClose, life.blinkHold, life.blinkOpen);
     for (auto& mt : ci.rig.morphs) {
-      auto d = ci.asset.defaultExpressions.find(mt.name);
-      float def = d == ci.asset.defaultExpressions.end() ? 0.0f : d->second;
-      float w = clip.evaluate(prefix + "expr." + mt.name, frame, vec3(def)).x;
+      float w = expressionWeight(c, mt.name, frame);
       if (mt.name == blink) w = std::max(w, blinkW);  // automatic blinks drive the character's blink morph
       weights.push_back(w);
+      names.push_back(mt.name);
     }
+    weights = expandInbetweens(ci.asset, names, std::move(weights));  // rotation-like morphs follow their arc
     PosedCharacter posed = poseCharacter(ci.rig, skin, weights, ci.asset.dualQuaternion);
     for (size_t k = 0; k < posed.meshes.size(); ++k) snap->meshes.push_back({posed.meshes[k], ci.meshMaterial[k]});
     for (size_t k = 0; k < posed.fuzz.size(); ++k) snap->fibers.push_back({posed.fuzz[k], ci.fuzzMaterial[k]});

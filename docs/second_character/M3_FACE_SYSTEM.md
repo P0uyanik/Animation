@@ -249,3 +249,39 @@ The boy's v6 eyes (half-closed shells) are expressible in the generic eye builde
 
 A migration would rebuild his face with `face_generic/1`, compare it with v6 and F09 in the existing harness and
 `face_test`, and publish a new version only with your approval. Until then he stays on the legacy path.
+
+
+## M3.1: facial engine completion (2026-11-14, experimental, awaiting review)
+Four limitations of M3 were fixed in the shared platform. Character data only selects values; no C++ code names a
+bone, morph or character.
+
+| Problem (M3) | Cause | Fix | Result |
+| --- | --- | --- | --- |
+| Engine blink was linear: the lid passed through the eye mid-blink | The engine ignored the exported in-between keys | The exporter writes `morph_inbetweens` (from the `<base>@<pct>` morphs). The engine's `expandInbetweens` drives each chain piecewise, as the Blender drivers do, for every morph block of a name | Girl, both eyes, blink 0.1–1.0: smallest lid clearance **+0.51 mm** (single linear morph: **−10.7 mm**, inside the eye) |
+| Engine `jawOpen` moved only the lips (2.9 mm) | Engine expressions drove morphs only | The exporter writes `expression_bones` (bone, axis in engine axes, degrees) from the face's jaw configuration. The engine rotates each listed bone by weight × degrees before skinning. A missing bone fails the package load explicitly | MouthOpen and jawOpen: jaw 10.0° (metadata 10), chin drop 14.2 mm; Laugh: 6.0°, 7.5 mm; Smile (happy): 2.0°, 2.3 mm |
+| Blink timing was global | `blinkAmount` hardcoded 0.07 / 0.03 / 0.12 s | `LifeParams` timing fields (same defaults); package `blink` metadata; an explicit scene `blinkInterval` still wins | Girl: 3.2 s interval, 0.26 s blinks. Boy 1.0.0: defaults 3.6 s, 0.22 s (unchanged) |
+| G03 oval eyes cut the lids under gaze (606 intersections) | A rigidly rotated ellipsoid sweeps outside its own lid shells | `face_generic.gaze_envelope` computes the sweep from the eye frame and `eyes.gaze_range_deg` (default ±20° / ±12°). Lid clearance widens only when needed, and the closed lid and seam overlap follow the widened clearance | G03: **0** eyeball/lid intersections in all states and all 10 gaze cases; Blink 0% eye at every gaze. Spherical eyes: envelope exactly 1, so nothing changes (the girl's face tests are identical to M3) |
+
+Also:
+- **Per-eye engine names:** `blinkLeft` / `blinkRight` / `mouthOpen` were added to the library's engine map.
+- **Bug found and fixed:** the engine's first in-between implementation handled only the first morph block of a
+  name (morphs have one block per mesh). Found by the new geometric blink test.
+
+Evidence:
+- `docs/evaluation/second_character/M31_engine_girl_jaw_blink.jpg`: the engine renderer, girl neutral, MouthOpen,
+  Laugh, Smile, Blink 0.5.
+- `M31_G03_oval_eyes_gaze_blink.jpg`: Blender; gaze, open and blinking; per-eye closures.
+
+### Updated limitations (supersede items 2–5 above)
+1. **Oval eyes** are supported within the configured gaze range by wider lid clearance (G03: lids 18.9% of the radius
+   off the eye; not visible at G03's size). The build warns above an envelope of 1.25. A gaze range beyond the
+   configured one is not covered.
+   - Proposed future solution: an affine "iris-sliding" gaze, S·R·S⁻¹ in the eye frame. It keeps the eyeball on its
+     own surface with no clearance, but needs non-rigid skinning in Blender and the engine.
+2. **Engine in-betweens** are piecewise linear with 25% stops: the lid stays outside the eye (+0.51 mm) but follows
+   the arc only approximately.
+3. **Jaw:** a single rotation axis per bone and expression (enough for hinge jaws); no jaw translation or
+   multi-bone chains.
+4. **Discovered, not fixed** (outside M3.1): engine materials carry base colour only. The procedural iris and
+   highlight shader and the mouth interior's vertex colours are not exported, so in the engine renderer her eyes
+   render white and the mouth interior light.

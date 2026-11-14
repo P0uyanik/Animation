@@ -22,6 +22,7 @@ import sys
 
 import bpy
 import numpy as np
+from mathutils import Vector
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 FORMAT, VERSION = "plush.imported_character", 1
@@ -222,6 +223,31 @@ def main():
     # engine expression -> morph: the rig profile's map, extended per character by the face system
     # (collection property ps_engine_expressions, JSON; written by face_generic). No engine change is involved.
     expr_map = {**prof.get("expressions", {}), **json.loads(root.get("ps_engine_expressions", "{}") or "{}")}
+    # Facial metadata written by the face system (optional; the engine validates it):
+    #  morph_inbetweens: "<base>@<pct>" morphs form a piecewise chain towards <base> (rotation-like shapes, e.g. blink)
+    #  expression_bones: bone rotations driven by an expression weight (axis converted to engine axes)
+    #  blink: the character's blink timing
+    names = {m["name"] for m in morphs}
+    inbetweens = {}
+    for n in sorted(names):
+        base, _, pct = n.rpartition("@")
+        if base and pct.isdigit() and base in names:
+            inbetweens.setdefault(base, []).append([int(pct) / 100.0, n])
+    inbetweens = {k: sorted(v) for k, v in inbetweens.items()}
+    expr_bones, expr_bones_missing = {}, []
+    for morph, lst in json.loads(root.get("ps_expression_bones", "{}") or "{}").items():
+        if morph not in names:
+            continue
+        for e in lst:
+            b = rig.data.bones.get(e["bone"])
+            if b is None or not b.use_deform:
+                expr_bones_missing.append(f"{morph}: {e['bone']}")
+                continue
+            ax = (rig.matrix_world.to_3x3() @ b.matrix_local.to_3x3() @ Vector(e["axis_local"])).normalized()
+            expr_bones.setdefault(morph, []).append({"bone": engine_name.get(e["bone"], e["bone"]),
+                                                     "axis": [round(float(v), 6) for v in to_engine(np.array([ax]))[0]],
+                                                     "degrees": float(e["degrees"])})
+    blink_timing = json.loads(root.get("ps_blink_timing", "{}") or "{}")
     man = {"format": FORMAT, "version": VERSION, "name": root.get("ps_character_id", root.name),
            "source": {"blend": os.path.basename(a.blend), "blend_sha256": src_sha, "spec_sha256": root.get("ps_spec_sha256"),
                       "spec_version": root.get("ps_spec_version"), "blender": bpy.app.version_string},
@@ -231,6 +257,10 @@ def main():
            "rig_specific_bones": [s["name"] for s in skel if s["kind"] == "rig_specific"],
            "materials": list(mats.values()), "meshes": meshes, "morphs": morphs,
            "morph_names": sorted({m["name"] for m in morphs}),
+           **({"morph_inbetweens": inbetweens} if inbetweens else {}),
+           **({"expression_bones": expr_bones} if expr_bones else {}),
+           **({"expression_bones_missing": expr_bones_missing} if expr_bones_missing else {}),
+           **({"blink": {k: blink_timing[k] for k in ("close_s", "hold_s", "open_s", "mean_interval_s") if k in blink_timing}} if blink_timing else {}),
            "expressions": {k: v for k, v in expr_map.items() if v in {m["name"] for m in morphs}},
            "expressions_missing": sorted(k for k, v in expr_map.items() if v not in {m["name"] for m in morphs}),
            "capabilities": capabilities(present, bool(morphs), behaviours,

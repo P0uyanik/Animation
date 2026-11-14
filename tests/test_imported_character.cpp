@@ -269,6 +269,168 @@ TEST_CASE("imported character packages: semantic expressions from the shared fac
   }
 }
 
+namespace {
+// Skinning matrices of character 0 at a frame (as SceneEvaluator::evaluate builds them).
+std::vector<mat4> skinAt(const SceneEvaluator& ev, double frame) {
+  const auto& ci = ev.characters()[0];
+  auto skin = ev.characterGlobals(0, frame);
+  for (size_t b = 0; b < skin.size(); ++b) skin[b] = skin[b] * glm::translate(mat4(1), -ci.asset.skeleton.bones[b].head);
+  return skin;
+}
+int meshPart(const CharacterRig& rig, const std::string& part) {
+  for (size_t k = 0; k < rig.meshes.size(); ++k)
+    if (rig.meshes[k].part == part) return int(k);
+  return -1;
+}
+}  // namespace
+
+TEST_CASE("morph in-betweens: piecewise chain weights") {
+  CharacterAsset a;
+  a.morphInbetweens["Blink"] = {{0.25f, "Blink@25"}, {0.5f, "Blink@50"}, {0.75f, "Blink@75"}};
+  const std::vector<std::string> names{"Smile", "Blink", "Blink@25", "Blink@50", "Blink@75"};
+  auto w = [&](float smile, float blink) { return expandInbetweens(a, names, {smile, blink, 0.3f, 0.3f, 0.3f}); };
+  auto r = w(0.4f, 0.0f);  // no blink: the whole chain is off, other morphs untouched (their own channels ignored)
+  CHECK(r == std::vector<float>{0.4f, 0, 0, 0, 0});
+  r = w(0, 0.125f);
+  CHECK(r[2] == doctest::Approx(0.5f));
+  CHECK(r[1] + r[3] + r[4] == 0.0f);
+  r = w(0, 0.6f);  // between the 50% and 75% stops
+  CHECK(r[3] == doctest::Approx(0.6f));
+  CHECK(r[4] == doctest::Approx(0.4f));
+  r = w(0, 1.0f);
+  CHECK(r[1] == 1.0f);
+  CHECK(r[2] + r[3] + r[4] == 0.0f);
+  CharacterAsset none;  // no metadata: weights pass through unchanged (e.g. the boy 1.0.0 package)
+  CHECK(expandInbetweens(none, names, {0.1f, 0.5f, 0.2f, 0.3f, 0.4f}) == std::vector<float>{0.1f, 0.5f, 0.2f, 0.3f, 0.4f});
+}
+
+TEST_CASE("imported character packages: blink stays outside the eyeball at every closure (in-betweens)") {
+  // Girl M3: the upper lid must never enter the eyeball while closing. With the exported in-between chain the lid
+  // follows its arc; a single linear morph (the chain removed) cuts through the eye halfway, as measured in M3.
+  auto ev = sceneWith("girl_auburn_bun_glasses_m3", Json::array(), false);
+  const auto& ci = ev->characters()[0];
+  REQUIRE(ci.asset.morphInbetweens.count("Blink"));
+  const auto skin = skinAt(*ev, 1);
+  std::vector<std::string> names;
+  for (auto& mt : ci.rig.morphs) names.push_back(mt.name);
+  for (const char* side : {"L", "R"}) {
+    CAPTURE(side);
+    const int eye = meshPart(ci.rig, std::string("eye.") + side), lid = meshPart(ci.rig, std::string("lid_upper.") + side);
+    REQUIRE(eye >= 0);
+    REQUIRE(lid >= 0);
+    vec3 c(0);  // eyeball centre = centroid of its (closed, symmetric) mesh
+    for (auto& p : ci.rig.meshes[size_t(eye)].rest.positions) c += p;
+    c /= float(ci.rig.meshes[size_t(eye)].rest.positions.size());
+    float r = 0;
+    for (auto& p : ci.rig.meshes[size_t(eye)].rest.positions) r = std::max(r, glm::distance(p, c));
+    for (bool chain : {true, false}) {
+      CharacterAsset a = ci.asset;
+      if (!chain) a.morphInbetweens.clear();
+      float worst = 1e9f;
+      for (float b : {0.1f, 0.25f, 0.4f, 0.5f, 0.6f, 0.75f, 0.9f, 1.0f}) {
+        std::vector<float> w(names.size(), 0.0f);
+        for (size_t i = 0; i < names.size(); ++i)
+          if (names[i] == "Blink") w[i] = b;
+        auto posed = poseCharacter(ci.rig, skin, expandInbetweens(a, names, w), ci.asset.dualQuaternion);
+        vec3 pc(0);  // centre of the posed eyeball (same frame as the posed lid)
+        for (auto& p : posed.meshes[size_t(eye)]->positions) pc += p;
+        pc /= float(posed.meshes[size_t(eye)]->positions.size());
+        for (auto& p : posed.meshes[size_t(lid)]->positions) worst = std::min(worst, glm::distance(p, pc) - r);
+      }
+      MESSAGE("lid clearance over the blink, " << std::string(chain ? "in-between chain" : "single linear morph") << ": " << worst * 1000 << " mm");
+      if (chain) CHECK(worst > 0.0003f);  // the lid shell stays outside the eyeball (measured 0.51 mm; chord error of the 25% steps)
+      else CHECK(worst < 0.0f);           // the old linear interpolation enters the eye (the M3 engine limitation)
+    }
+  }
+}
+
+TEST_CASE("imported character packages: expression-driven jaw bone") {
+  // The girl's package maps JawOpen, MouthOpen, Laugh, Smile (happy) and Surprise to DEF-jaw rotations taken from her
+  // face configuration; the C++ code reads names and angles from the package only.
+  auto ev0 = sceneWith("girl_auburn_bun_glasses_m3", Json::array(), false);
+  const auto& asset = ev0->characters()[0].asset;
+  REQUIRE(asset.expressionBones.count("MouthOpen"));
+  const auto rest = ev0->evaluate(20);
+  const auto restG = ev0->characterGlobals(0, 20);
+  for (const char* e : {"mouthOpen", "laugh", "happy", "jawOpen"}) {
+    CAPTURE(e);
+    const std::string morph = asset.expressionMap.at(e);
+    Json actions = Json::parse(std::string(R"([{"type": "expression", "character": "who", "name": ")") + e + R"(", "start": 5}])");
+    auto ev = sceneWith("girl_auburn_bun_glasses_m3", actions, false);
+    const auto& eb = asset.expressionBones.at(morph)[0];
+    const int jaw = asset.skeleton.find(eb.bone);
+    REQUIRE(jaw >= 0);
+    const auto g = ev->characterGlobals(0, 20);
+    const int parent = asset.skeleton.bones[size_t(jaw)].parent;
+    // jaw rotation relative to its parent, compared with the metadata angle
+    const quat rel0 = glm::quat_cast(glm::inverse(mat3(restG[size_t(parent)])) * mat3(restG[size_t(jaw)]));
+    const quat rel1 = glm::quat_cast(glm::inverse(mat3(g[size_t(parent)])) * mat3(g[size_t(jaw)]));
+    const float deg = glm::degrees(glm::angle(glm::inverse(rel0) * rel1));
+    // lowest point of the skin near the face midline (the chin) moves down
+    const auto posed = ev->evaluate(20);
+    const int skinMesh = meshPart(ev->characters()[0].rig, "body_skin");
+    REQUIRE(skinMesh >= 0);
+    float drop = 0;
+    const auto& p0 = rest->meshes[size_t(skinMesh)].mesh->positions;
+    const auto& p1 = posed->meshes[size_t(skinMesh)].mesh->positions;
+    for (size_t v = 0; v < p0.size(); ++v) drop = std::max(drop, p0[v].y - p1[v].y);
+    MESSAGE("expression '" << std::string(e) << "' (" << morph << "): jaw " << deg << " deg (metadata " << eb.degrees << "), skin drop " << drop * 1000 << " mm");
+    CHECK(deg == doctest::Approx(eb.degrees).epsilon(0.02));
+    CHECK(drop > 0.001f * eb.degrees);  // > 1 mm of chin drop per degree of jaw rotation (girl: 10 deg -> > 10 mm)
+  }
+  // A package without jaw metadata keeps morph-only expressions (reported, nothing invented).
+  auto boy = sceneWith("boy_yellow_hoodie_1.0.0", Json::array(), false);
+  CHECK(boy->characters()[0].asset.expressionBones.empty());
+}
+
+TEST_CASE("per-character blink timing from the package") {
+  auto girl = sceneWith("girl_auburn_bun_glasses_m3", Json::array(), true);
+  auto boy = sceneWith("boy_yellow_hoodie_1.0.0", Json::array(), true);
+  const LifeParams g = girl->lifeParams(0), b = boy->lifeParams(0);
+  CHECK(g.blinkInterval == doctest::Approx(3.2f));
+  CHECK(g.blinkClose == doctest::Approx(0.08f));
+  CHECK(g.blinkHold == doctest::Approx(0.04f));
+  CHECK(g.blinkOpen == doctest::Approx(0.14f));
+  // the boy's package has no timing: the original global defaults (frozen baseline)
+  CHECK(b.blinkInterval == doctest::Approx(3.6f));
+  CHECK(b.blinkClose == doctest::Approx(0.07f));
+  CHECK(b.blinkHold == doctest::Approx(0.03f));
+  CHECK(b.blinkOpen == doctest::Approx(0.12f));
+  // measured blink shape: time from the first non-zero closure to fully open again
+  auto duration = [](const LifeParams& l) {
+    double first = -1, last = -1;
+    for (double t = 0; t < 30; t += 0.0005) {
+      float v = blinkAmount(t, l.blinkInterval, l.seed, l.blinkClose, l.blinkHold, l.blinkOpen);
+      if (v > 0 && first < 0) first = t;
+      if (first >= 0 && v == 0 && t > first) {
+        last = t;
+        break;
+      }
+    }
+    return last - first;
+  };
+  MESSAGE("blink duration: girl " << duration(g) << " s, boy " << duration(b) << " s");
+  CHECK(duration(g) == doctest::Approx(0.26).epsilon(0.02));
+  CHECK(duration(b) == doctest::Approx(0.22).epsilon(0.02));
+  // default arguments reproduce the original curve exactly
+  for (double t = 0; t < 10; t += 0.013) CHECK(blinkAmount(t, 3.6f, 7u) == blinkAmount(t, 3.6f, 7u, 0.07f, 0.03f, 0.12f));
+  // an explicit scene interval wins over the character's
+  Scene s;
+  s.path = std::filesystem::path(PLUSH_SOURCE_DIR) / "tests/data/imported/scene.json";
+  s.rate = FrameRate{30, 1};
+  CharacterDesc cd;
+  cd.name = "who";
+  cd.asset = "girl_auburn_bun_glasses_m3/character.json";
+  cd.life.enabled = true;
+  cd.life.blinkInterval = 5.0f;
+  cd.life.blinkIntervalSet = true;
+  s.characters.push_back(cd);
+  SceneEvaluator ev;
+  REQUIRE(ev.load(s, EvalOptions{2.5f, 1.0f, false, 0}).has_value());
+  CHECK(ev.lifeParams(0).blinkInterval == doctest::Approx(5.0f));
+  CHECK(ev.lifeParams(0).blinkClose == doctest::Approx(0.08f));
+}
+
 TEST_CASE("hand pose is independent of hand orientation and works with fewer digits") {
   // The original chibi hand (engine convention, grasp verified in test_engine.cpp), and the same skeleton rotated by an
   // arbitrary rotation Q with its hand frame rotated likewise: the grasp must give exactly Q x the original fingertips.

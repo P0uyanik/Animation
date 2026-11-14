@@ -1,5 +1,15 @@
 # Current status (2026-11-14)
 
+**Latest: M3.1 facial engine completion (experimental; technically verified; awaiting review).** Details:
+`docs/second_character/M3_FACE_SYSTEM.md` (M3.1 section).
+- Engine:
+  - arc-correct blink in-betweens (girl lid clearance +0.51 mm, was −10.7 mm);
+  - expression-driven jaw (MouthOpen 10°, 14.2 mm chin drop);
+  - per-character blink timing.
+- Pipeline: the oval-eye gaze envelope; G03 has 0 eyeball/lid intersections (was 606).
+- Tests: `ctest` 4/4 (19457 assertions), exporter tests 8/8, `verify_charsys` PASS.
+- Boy baseline unchanged.
+
 **Latest: `girl_auburn_bun_glasses` M3 (one reusable facial production system), experimental; technically verified;
 awaiting owner review.** Details: `docs/second_character/M3_FACE_SYSTEM.md`.
 - Shared:

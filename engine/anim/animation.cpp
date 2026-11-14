@@ -198,11 +198,12 @@ void rotateLocal(Pose& pose, int bone, vec3 eulerDeg) {
 }
 }  // namespace
 
-float blinkAmount(double t, float interval, uint32_t seed) {
+float blinkAmount(double t, float interval, uint32_t seed, float closeS, float holdS, float openS) {
   if (interval <= 0 || t < 0) return 0.0f;
-  // Blink k happens at the sum of k jittered intervals (0.55..1.45 of the mean); a blink closes in 0.07 s,
-  // stays shut 0.03 s and opens in 0.12 s. Walk forward from a coarse index so long shots stay cheap.
-  const double close = 0.07, hold = 0.03, open = 0.12;
+  // Blink k happens at the sum of k jittered intervals (0.55..1.45 of the mean); a blink closes in `close` s
+  // (default 0.07), stays shut `hold` s (0.03) and opens in `open` s (0.12). Walk forward from a coarse index so long
+  // shots stay cheap.
+  const double close = std::max(1e-3f, closeS), hold = std::max(0.0f, holdS), open = std::max(1e-3f, openS);
   long k = std::max(0L, long(t / (interval * 1.45)) - 1);
   double start = 0;
   for (long i = 0; i < k; ++i) start += interval * (0.55 + 0.9 * hash01(seed, uint32_t(i)));
@@ -262,7 +263,7 @@ void applyLife(const Skeleton& sk, const Clip& clip, const std::string& prefix, 
   rotateLocal(pose, head, vec3(0.8f * hd * float(std::sin(kTwoPi * t / 7.3 + ph3)), 1.4f * hd * float(std::sin(kTwoPi * t / 11.1 + ph)),
                                0.6f * hd * float(std::sin(kTwoPi * t / 9.7 + ph2))));
   // Automatic blinks: the upper lids close over whatever the lid pose is.
-  float bl = blinkAmount(t, life.blinkInterval, life.seed);
+  float bl = blinkAmount(t, life.blinkInterval, life.seed, life.blinkClose, life.blinkHold, life.blinkOpen);
   if (bl > 0 && life.blinkLids)
     for (const char* name : {"lid.L", "lid.R"}) {
       int lid = sk.find(name);

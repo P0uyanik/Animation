@@ -251,6 +251,42 @@ float walkStep(const CharacterAsset& c) {
   return (c.walkStepScale > 0 ? c.walkStepScale : kDefaultWalkStepScale) * leg;
 }
 
+std::vector<float> expandInbetweens(const CharacterAsset& c, const std::vector<std::string>& morphNames, std::vector<float> weights) {
+  if (c.morphInbetweens.empty()) return weights;
+  // A morph name may have one block per mesh; all blocks of a name share the same channel.
+  auto blocks = [&](const std::string& n) {
+    std::vector<size_t> out;
+    for (size_t i = 0; i < morphNames.size(); ++i)
+      if (morphNames[i] == n) out.push_back(i);
+    return out;
+  };
+  const std::vector<float> in = weights;
+  for (const auto& [base, chain] : c.morphInbetweens) {
+    const auto bb = blocks(base);
+    if (bb.empty()) continue;
+    std::vector<std::pair<float, std::vector<size_t>>> stops{{0.0f, {}}};
+    for (const auto& [f, m] : chain) stops.push_back({f, blocks(m)});
+    stops.push_back({1.0f, bb});
+    for (const auto& s : stops)
+      for (size_t i : s.second) weights[i] = 0.0f;
+    const float w = in[bb[0]];
+    if (w <= 0) continue;
+    if (w >= 1) {  // at or beyond the last stop: the base morph alone
+      for (size_t i : bb) weights[i] = w;
+      continue;
+    }
+    for (size_t k = 0; k + 1 < stops.size(); ++k) {
+      const float f0 = stops[k].first, f1 = stops[k + 1].first;
+      if (w > f1) continue;
+      const float t = (w - f0) / std::max(1e-6f, f1 - f0);
+      for (size_t i : stops[k].second) weights[i] += 1.0f - t;
+      for (size_t i : stops[k + 1].second) weights[i] += t;
+      break;
+    }
+  }
+  return weights;
+}
+
 std::string resolveExpression(const CharacterAsset& c, const std::string& name, const std::vector<std::string>& morphNames) {
   auto has = [&](const std::string& m) { return std::find(morphNames.begin(), morphNames.end(), m) != morphNames.end(); };
   if (auto it = c.expressionMap.find(name); it != c.expressionMap.end() && has(it->second)) return it->second;

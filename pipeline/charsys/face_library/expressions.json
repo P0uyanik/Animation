@@ -18,26 +18,110 @@
  },
  "presets": {
   "Neutral": {},
-  "Blink": {"Blink.L": 1.0, "Blink.R": 1.0},
-  "LeftEyeClosed": {"Blink.L": 1.0},
-  "RightEyeClosed": {"Blink.R": 1.0},
-  "Squint": {"Blink.L": 0.8, "Blink.R": 0.8, "EyeSquint": 1.0, "MouthSmile": 0.6},
-  "WideOpen": {"EyeWide": 1.0, "BrowUp.L": 0.8, "BrowUp.R": 0.8, "MouthO": 0.35},
-  "Smile": {"MouthWide": 1.0, "MouthSmile": 0.6, "JawOpen": 0.2, "EyeSquint": 0.25},
-  "Frown": {"MouthFrown": 1.0, "BrowDown": 0.4, "BrowSad": 0.3},
-  "Surprise": {"EyeWide": 1.0, "BrowUp.L": 1.0, "BrowUp.R": 1.0, "MouthO": 1.0, "JawOpen": 0.55},
-  "Sadness": {"BrowSad": 1.0, "MouthFrown": 0.75, "Blink.L": 0.15, "Blink.R": 0.15},
-  "Anger": {"BrowDown": 1.0, "MouthFrown": 0.6, "EyeSquint": 0.35},
-  "Confusion": {"BrowUp.L": 1.0, "BrowDown": 0.4, "MouthFrown": 0.3, "EyeSquint": 0.2},
-  "Laugh": {"Blink.L": 0.85, "Blink.R": 0.85, "EyeSquint": 1.0, "MouthWide": 1.0, "MouthSmile": 0.8, "JawOpen": 0.6},
-  "MouthOpen": {"JawOpen": 1.0}
+  "Blink": {
+   "Blink.L": 1.0,
+   "Blink.R": 1.0
+  },
+  "LeftEyeClosed": {
+   "Blink.L": 1.0
+  },
+  "RightEyeClosed": {
+   "Blink.R": 1.0
+  },
+  "Squint": {
+   "Blink.L": 0.8,
+   "Blink.R": 0.8,
+   "EyeSquint": 1.0,
+   "MouthSmile": 0.6
+  },
+  "WideOpen": {
+   "EyeWide": 1.0,
+   "BrowUp.L": 0.8,
+   "BrowUp.R": 0.8,
+   "MouthO": 0.35
+  },
+  "Smile": {
+   "MouthWide": 1.0,
+   "MouthSmile": 0.6,
+   "JawOpen": 0.2,
+   "EyeSquint": 0.25
+  },
+  "Frown": {
+   "MouthFrown": 1.0,
+   "BrowDown": 0.4,
+   "BrowSad": 0.3
+  },
+  "Surprise": {
+   "EyeWide": 1.0,
+   "BrowUp.L": 1.0,
+   "BrowUp.R": 1.0,
+   "MouthO": 1.0,
+   "JawOpen": 0.55
+  },
+  "Sadness": {
+   "BrowSad": 1.0,
+   "MouthFrown": 0.75,
+   "Blink.L": 0.15,
+   "Blink.R": 0.15
+  },
+  "Anger": {
+   "BrowDown": 1.0,
+   "MouthFrown": 0.6,
+   "EyeSquint": 0.35
+  },
+  "Confusion": {
+   "BrowUp.L": 1.0,
+   "BrowDown": 0.4,
+   "MouthFrown": 0.3,
+   "EyeSquint": 0.2
+  },
+  "Laugh": {
+   "Blink.L": 0.85,
+   "Blink.R": 0.85,
+   "EyeSquint": 1.0,
+   "MouthWide": 1.0,
+   "MouthSmile": 0.8,
+   "JawOpen": 0.6
+  },
+  "MouthOpen": {
+   "JawOpen": 1.0
+  }
  },
  "presets_source": "Blendshape matrix of reference #34 (girl_auburn_bun_glasses): Neutral, Blink, Left Eye Closed, Right Eye Closed, Squint, Wide-Open, Smile, Frown, Surprise, Sadness, Anger, Confusion, Laugh, Mouth Open (the matrix repeats Frown and Surprise). Weights are my reading of the tiles, not measured.",
  "optional_presets": {
-  "Worried": {"BrowSad": 1.0, "MouthFrown": 0.3, "EyeWide": 0.3},
-  "Curious": {"BrowUp.L": 0.7, "EyeWide": 0.3, "MouthO": 0.3}
+  "Worried": {
+   "BrowSad": 1.0,
+   "MouthFrown": 0.3,
+   "EyeWide": 0.3
+  },
+  "Curious": {
+   "BrowUp.L": 0.7,
+   "EyeWide": 0.3,
+   "MouthO": 0.3
+  }
  },
  "optional_presets_note": "Not in any reference; named in the M3 request. Built only when a character lists them in spec.face.expressions.optional.",
- "aliases": {"Happy": "Smile", "Sad": "Sadness", "Angry": "Anger", "Surprised": "Surprise"},
- "engine_expressions": {"blink": "Blink", "smile": "Smile", "jawOpen": "JawOpen", "browDown": "BrowDown", "happy": "Smile", "sad": "Sadness", "angry": "Anger", "surprised": "Surprise", "laugh": "Laugh", "frown": "Frown", "squint": "Squint", "confused": "Confusion"}
+ "aliases": {
+  "Happy": "Smile",
+  "Sad": "Sadness",
+  "Angry": "Anger",
+  "Surprised": "Surprise"
+ },
+ "engine_expressions": {
+  "blink": "Blink",
+  "smile": "Smile",
+  "jawOpen": "JawOpen",
+  "browDown": "BrowDown",
+  "happy": "Smile",
+  "sad": "Sadness",
+  "angry": "Anger",
+  "surprised": "Surprise",
+  "laugh": "Laugh",
+  "frown": "Frown",
+  "squint": "Squint",
+  "confused": "Confusion",
+  "blinkLeft": "LeftEyeClosed",
+  "blinkRight": "RightEyeClosed",
+  "mouthOpen": "MouthOpen"
+ }
 }

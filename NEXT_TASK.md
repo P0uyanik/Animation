@@ -1,18 +1,15 @@
 # Next task
 
-1. **Owner review of M3:**
-   - `docs/second_character/M3_FACE_SYSTEM.md`;
-   - sheets in `docs/evaluation/second_character/M3_*` (expressions vs #34, neutral vs #30, gaze, boy vs girl
-     face_test, G03).
-2. **Decisions needed:**
-   - accept the rounded closed lids, or choose one fix: gaze suppression while closing (Blender driver plus an engine
-     change), or a flatter eye design;
-   - engine changes: morph in-betweens, jaw bone in expressions, per-character blink timing. All are proposed; none
-     is made.
-3. **Data tuning after review:** brows lower and thicker, larger ears, a heavier lash line (spec values only).
-4. **Proposed M4 (after approval):** hair (long spiral curls, high bun) and the hair accessories (felt flowers,
-   band) through the accessory module.
-5. Still pending your review:
-   - M2 open items (hip crease, armpit stretch);
-   - F09 face and H28 hair for the boy (nothing published);
-   - the boy's face convergence onto `face_generic/1` (needs approval).
+1. **Owner review of M3.1** (facial engine completion): `docs/milestones/2026-11-14_second_character_M3_1.md`.
+2. **Still open from M3:**
+   - review of the girl's face;
+   - decision on rounded closed lids;
+   - spec tuning (brows, ears, lash weight).
+3. **Proposed, not started:**
+   - engine material export for the procedural eye and the mouth interior (iris, highlights, vertex colours);
+   - affine iris-sliding gaze for strongly oval eyes;
+   - M4 hair and hair accessories.
+4. Still pending your review:
+   - M2 open items;
+   - the boy's F09 / H28 candidates;
+   - the boy's face convergence.

@@ -90,6 +90,9 @@ rest pose reproduces the rest mesh exactly (tested, error < 1e-5 m).
 | Key | Meaning | Source |
 | --- | --- | --- |
 | `expressions` | Engine expression name → this character's morph (e.g. `blink → Blink`, fixture `blink → Squint`). The `expression` action resolves through it; an unknown expression is reported in `SceneEvaluator::warnings()`, not silently dropped | profile `expressions`, extended per character by the generic face (collection property `ps_engine_expressions`: e.g. `happy → Smile`, `sad → Sadness`, `surprised → Surprise`); only morphs that exist are kept; `expressions_missing` lists the rest |
+| `morph_inbetweens` | Base morph → `[[fraction, morph], ...]`: a piecewise chain the engine follows when the base morph is driven (rotation-like shapes such as blinks) | `<base>@<pct>` morphs of the generic face (M3.1) |
+| `expression_bones` | Morph → `[{"bone", "axis" (engine axes), "degrees"}]`: bones rotated by the expression weight (e.g. a jaw). A missing bone fails loading | collection property `ps_expression_bones` (generic face) (M3.1) |
+| `blink` | `close_s`, `hold_s`, `open_s`, `mean_interval_s` for the life-layer blink; an explicit scene `blinkInterval` wins | `spec.face.blink.timing` (M3.1) |
 | `walk` | `step_length` (m) or `step_scale` (× leg length); default `0.11 / 0.3451` per metre of leg, which keeps the original chibi characters at exactly 0.11 m | profile `walk` (optional) |
 | `hands` | `{"L": {"finger_dir": [...], "palm_normal": [...]}, "R": ...}`. Without it the importer derives each hand frame from its finger geometry | profile `hands` (optional) |
 
