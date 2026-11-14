@@ -77,7 +77,8 @@ def summarise(out, names):
                 "mean_hair_contour_pct_head": round(sum(v["hair_contour_mean_pct_head"] for v in V.values()) / len(V), 2),
                 "mean_hair_contour_p95_pct_head": round(sum(v["hair_contour_p95_pct_head"] for v in V.values()) / len(V), 2),
                 "mean_contour_pct_height": round(sum(v["contour_mean_pct_height"] for v in V.values()) / len(V), 2),
-                "hair_dE2000_mean": round(sum(v["colour"]["hair"]["dE2000"] for v in V.values()) / len(V), 1),
+                "hair_dE2000_mean": round(sum(v["colour"]["hair"]["dE2000"] for v in V.values()) / len(V), 1)
+                if all("hair" in v.get("colour", {}) for v in V.values()) else None,
                 "head_fraction_err_pct": None, "hair_build": hb,
                 "per_view": {k: {"iou": v["iou"], "hair_contour": v["hair_contour_mean_pct_head"]} for k, v in V.items()}}
         hf = [(x["subject"]["head_fraction"] / x["reference"]["head_fraction"] - 1) * 100

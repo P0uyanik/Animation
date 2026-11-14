@@ -1,0 +1,276 @@
+{
+ "variant": "H34_lock_construction_blunt_tips",
+ "description": "H30 with tip variation restricted to blunter tips (no spikes)",
+ "base_spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.spec.json",
+ "status": "experimental (not approved; never published as the character)",
+ "override": {
+  "hair": {
+   "generator": "hair_clumps/2",
+   "params": {
+    "scalp_cap": {
+     "offset": 0.006
+    },
+    "lock_noise": [
+     0.009,
+     0.02
+    ],
+    "families": {
+     "crown": {
+      "count": 6,
+      "el_root": [
+       64,
+       78
+      ],
+      "up": 0.8,
+      "out": 0.75,
+      "length": [
+       0.06,
+       0.08
+      ],
+      "width": [
+       0.07,
+       0.085
+      ],
+      "thick": [
+       0.045,
+       0.055
+      ],
+      "tip_frac": 0.3,
+      "split": true,
+      "az": [
+       -160,
+       120
+      ],
+      "az_jitter": 0.6,
+      "el_jitter_deg": 5,
+      "dir_jitter": 0.3,
+      "length_jitter": 0.25,
+      "width_jitter": 0.18,
+      "dominant": {
+       "index": 3,
+       "scale": 1.3
+      }
+     },
+     "top": {
+      "count": 6,
+      "lift": 0.012
+     },
+     "side": {
+      "count": 0
+     },
+     "back_hi": {
+      "count": 0
+     },
+     "back_lo": {
+      "count": 0
+     },
+     "side_1": {
+      "count": 5,
+      "az": [
+       50,
+       128
+      ],
+      "el_root": [
+       44,
+       52
+      ],
+      "el_tip": [
+       18,
+       26
+      ],
+      "lift": 0.014,
+      "bulge": 0.011,
+      "width": [
+       0.066,
+       0.078
+      ],
+      "thick": [
+       0.044,
+       0.052
+      ],
+      "tip_frac": 0.34,
+      "split": true,
+      "flick": 0.006,
+      "mirror": true
+     },
+     "side_2": {
+      "count": 5,
+      "az": [
+       54,
+       130
+      ],
+      "el_root": [
+       26,
+       32
+      ],
+      "el_tip": [
+       -4,
+       4
+      ],
+      "lift": 0.014,
+      "bulge": 0.011,
+      "width": [
+       0.066,
+       0.078
+      ],
+      "thick": [
+       0.044,
+       0.052
+      ],
+      "tip_frac": 0.34,
+      "split": true,
+      "flick": 0.008,
+      "mirror": true
+     },
+     "side_3": {
+      "count": 4,
+      "az": [
+       70,
+       134
+      ],
+      "el_root": [
+       8,
+       14
+      ],
+      "el_tip": [
+       -26,
+       -16
+      ],
+      "lift": 0.012,
+      "bulge": 0.01,
+      "width": [
+       0.062,
+       0.074
+      ],
+      "thick": [
+       0.042,
+       0.05
+      ],
+      "tip_frac": 0.34,
+      "split": false,
+      "flick": 0.008,
+      "mirror": true
+     },
+     "back_1": {
+      "count": 9,
+      "az": [
+       80,
+       280
+      ],
+      "el_root": [
+       60,
+       66
+      ],
+      "el_tip": [
+       30,
+       38
+      ],
+      "lift": 0.014,
+      "bulge": 0.011,
+      "width": [
+       0.064,
+       0.078
+      ],
+      "thick": [
+       0.044,
+       0.054
+      ],
+      "tip_frac": 0.33,
+      "split": true
+     },
+     "back_2": {
+      "count": 10,
+      "az": [
+       80,
+       280
+      ],
+      "el_root": [
+       34,
+       40
+      ],
+      "el_tip": [
+       2,
+       10
+      ],
+      "lift": 0.014,
+      "bulge": 0.011,
+      "width": [
+       0.064,
+       0.078
+      ],
+      "thick": [
+       0.044,
+       0.054
+      ],
+      "tip_frac": 0.33,
+      "split": true,
+      "flick": 0.006
+     },
+     "back_3": {
+      "count": 10,
+      "az": [
+       85,
+       275
+      ],
+      "el_root": [
+       8,
+       14
+      ],
+      "el_tip": [
+       -30,
+       -22
+      ],
+      "lift": 0.013,
+      "bulge": 0.01,
+      "width": [
+       0.064,
+       0.078
+      ],
+      "thick": [
+       0.044,
+       0.054
+      ],
+      "tip_frac": 0.33,
+      "split": true,
+      "flick": 0.006
+     },
+     "back_4": {
+      "count": 9,
+      "az": [
+       95,
+       265
+      ],
+      "el_root": [
+       -12,
+       -6
+      ],
+      "el_tip": [
+       -60,
+       -52
+      ],
+      "lift": 0.012,
+      "bulge": 0.01,
+      "width": [
+       0.06,
+       0.074
+      ],
+      "thick": [
+       0.042,
+       0.05
+      ],
+      "tip_frac": 0.33,
+      "split": false,
+      "flick": 0.008
+     }
+    },
+    "lock_curve": 0.18,
+    "lock_tip_jitter": 0.35,
+    "lock_splits": [
+     0,
+     2
+    ],
+    "lock_tip_mode": "blunter"
+   }
+  }
+ }
+}

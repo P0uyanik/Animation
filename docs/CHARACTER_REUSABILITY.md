@@ -49,3 +49,15 @@ never from constants. Generic reuse is only claimed after a second, different ch
 3. Fringe as family data; surface-projected hair placement.
 4. Region mapping for the metrics from the spec.
 5. A reference package and landmarks for the new character.
+
+
+## Face and hair genericity after the CP-2 system step (2026-11-14)
+| Category | Face (`face.py`) | Hair (`hair.py`, `hair_clumps/2`) |
+| --- | --- | --- |
+| Shared implementation | Lips and seam layout; interior with shaded depth; jaw bone, weights and corner-centred ramp; blink with derived closing angle, flatten and lash; smile coupling (cheeks, corner follow, squint) with intensity and asymmetry | Lock families; crown; fringe block; irregularity; lock-shape variation (curve, tips, splits); felt shader; scalp cap with configurable face cut; ellipsoid or real-scalp placement; scalp or ellipsoid base |
+| Character configuration | `spec.face.mouth` (size, frown, lips, seam, colours, smile and jaw shaping, jaw band), `spec.face.blink`, `spec.face.smile_coupling` | `spec.hair.params` (families, fringe, irregularity, shape, placement, offsets, hairline, felt), `spec.fur` |
+| Inputs | Head mesh (ray-castable face), eye and lid meshes, landmarks `eye_L/R`, `mouth`, `ear_L/R`, `chin`, `Z.mouth` | Head mesh (closed, for surface placement), projection origin (hair ellipsoid centre), hairline heights |
+| Assumptions | Spherical eyes looking along −Y; shell lids; slit mouth; `face_y` falls back to a fixed depth (−0.14 m) if a ray misses; one smile shape with left/right scaling | Azimuth/elevation parametrisation around one origin (no long hair or ponytails); face cut is a box; fringe tips placed on the face by `face_y` |
+| Verified independence | Synthetic proportions (G01): all criteria hold, derived values adapt | Synthetic egg head: runs with its own configuration; roots on the scalp (0.0 mm); 96.9% coverage |
+| Not verified | Other face topology (another head mesh, muzzle or beak mouth); other eye shapes | Other hairstyles on a production character; long hair; hair dynamics |
+| Future usability | A new humanoid face needs only its spec values and landmarks; the same tests (`face_test.py`) apply | A new hairstyle is a configuration: families, fringe and hairline. Surface placement removes the ellipsoid dependency; the synthetic test is a template for the next character |

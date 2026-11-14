@@ -1,0 +1,13 @@
+{
+ "stats": {
+  "generator": "hair_clumps/2",
+  "locks": 27,
+  "clump_parts": 40
+ },
+ "checks": {
+  "roots_on_scalp_max_err_mm": 0.0,
+  "upper_scalp_covered_pct": 96.9,
+  "generator_ran": true
+ },
+ "pass": true
+}

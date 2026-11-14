@@ -124,3 +124,34 @@ Evidence (identical cameras):
 - JawOpen is small. It has no teeth or tongue geometry (shading only), and skin stretch at the mouth corners is
   unchanged (3.5×).
 - Expressions are not tested on a second face.
+
+## F07–F09 and the synthetic-proportions check (2026-11-14, experimental, not approved)
+| Step | One change group | Result (`face_test.py`) |
+| --- | --- | --- |
+| F07 | Smile: `smile_intensity` 1.25, `smile_asymmetry` 0.15; coupling `intensity` 1.3, `asymmetry` 0.15, cheek raise 4 mm | corners +9.6 mm (L 11.6 / R 7.7: asymmetry works); eyes 31.9 → 25.7% open; stretch 1.82 |
+| F08 | JawOpen: `jaw_open_deg` 7, `jaw_lip_round` 0.9, `jaw_upper_lift_m` 2.5 mm, `jaw_band_start` 0.45 | opening 19.8 → 25.5 mm, chin drop 6.7 → 9.7 mm; visible stretch 3.48 → 3.32 |
+| **F09** | `jaw_corner_center` 1: outside the lip corners the jaw ramp is centred on the mouth line | stretch 3.30. The stretch locator shows the remaining 3.3× just outside the corners; the 5× edges are inside the opening and hidden by the interior. No tearing is visible |
+
+Evidence: `F09_review_F06_vs_F09.jpg` (neutral, Smile, JawOpen; front and ¾), `face_test_F09.json`.
+
+**Synthetic proportions (G01)**
+- Override: `experiments/generic_tests/G01_face_synthetic_proportions.json`. It is an engineering test configuration,
+  not a design.
+- Inputs: the F09 face settings on eyes 76 mm apart (64), eye radius 32 mm (37), and a mouth 12 mm lower and 36%
+  wider.
+- Every criterion holds:
+  - blink covers the eye (0%);
+  - neutral interior 0%;
+  - Smile corners +9.6 mm;
+  - JawOpen interior 67%, chin drop 9.7 mm;
+  - 0 unweighted vertices.
+- Derived values adapt: the closing angle becomes 46° (41° on the boy) and the cheek radius 47.6 mm (40 mm); the jaw
+  pivot follows the ear landmarks.
+
+This shows the face modules adapt through landmarks and spec values. It does **not** show support for different
+face topology (another head mesh or mouth type); that needs a second production character.
+
+**Status:**
+- F09: experimental; technically verified (face test, regression).
+- F09: visually reviewed by me, not by you.
+- Not approved.

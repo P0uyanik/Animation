@@ -174,11 +174,18 @@ def build_mouth_lips(C, M, head, B, cfg):
             f.material_index = 1 if r in (0, len(dzs) - 2) else 0
     mouth.shape_key_add(name="Basis")
     up = float(cfg.get("smile_up_m", 0.007))
-    for name, rr in (("Smile", rows(fr - fr - up, widen=float(cfg.get("smile_widen", 1.12)))), ("JawOpen", rows(fr, up_lift=0.0015))):
+    # Per-character expression shaping: intensity scales the motion, asymmetry > 0 favours the character's left (+x).
+    inten, asym = float(cfg.get("smile_intensity", 1.0)), float(cfg.get("smile_asymmetry", 0.0))
+    base_rows = [v for row in rows(fr) for v in row]
+    shapes = (("Smile", rows(fr - fr - up, widen=float(cfg.get("smile_widen", 1.12))), True),
+              ("JawOpen", rows(fr, widen=float(cfg.get("jaw_lip_round", 1.0)), up_lift=float(cfg.get("jaw_upper_lift_m", 0.0015))), False))
+    for name, rr, shaped in shapes:
         k = mouth.shape_key_add(name=name)
         k.value = 0.0
         for i, v in enumerate(v for row in rr for v in row):
-            k.data[i].co = v
+            b = base_rows[i]
+            s = inten * (1 + asym * (1 if b[0] > 0 else -1 if b[0] < 0 else 0)) if shaped else 1.0
+            k.data[i].co = tuple(b[j] + (v[j] - b[j]) * s for j in range(3))
     mouth["ps_lip_rows"] = n
     mouth["ps_seam_rows"] = [n_up - 1, n_up]          # upper seam row, lower seam row
     mouth["ps_lower_rows"] = list(range(n_up, len(dzs)))  # follow the jaw
@@ -280,8 +287,12 @@ def add_jaw(rig, head, cav, mouth, landmarks, head_bone, cfg):
 
     def jaw_w(p):
         ax = abs(p.x)
-        band = 0.003 + 0.6 * max(0.0, ax - 0.85 * w)  # sharp at the lip seam (hole), wide past the corners (skin)
-        s1 = _smooth(zm, zm - band, p.z) if p.z < zm else 0.0
+        # sharp at the lip seam (hidden by the interior), widening towards and past the corners (visible skin)
+        band = 0.003 + 0.6 * max(0.0, ax - float(cfg.get("jaw_band_start", 0.85)) * w)
+        # Outside the lip corners the skin is continuous: centre the ramp on the mouth line there (the corner moves
+        # about half as much as the lower lip) instead of starting it at the line (cfg jaw_corner_center 0..1).
+        top = zm + 0.5 * band * float(cfg.get("jaw_corner_center", 0.0)) * _smooth(0.85 * w, 1.15 * w, ax)
+        s1 = _smooth(top, top - band, p.z) if p.z < top else 0.0
         s2 = 1 - _smooth(c0, c1, ax)
         s3 = _smooth(piv.y + 0.01, piv.y - 0.03, p.y)
         return s1 * s2 * s3
@@ -325,6 +336,8 @@ def add_jaw(rig, head, cav, mouth, landmarks, head_bone, cfg):
 # existing face_Smile control drives every key named Smile, so no new control is needed. Placement comes only from
 # landmarks (eyes, mouth) and the lips' geometry; sizes are fractions of the eye-to-mouth-corner distance.
 def add_smile_coupling(head, lids, mouth, landmarks, cfg):
+    inten, asym = float(cfg.get("intensity", 1.0)), float(cfg.get("asymmetry", 0.0))
+    side_s = lambda x: inten * (1 + asym * (1 if x > 0 else -1))  # noqa: E731  (+x = character's left)
     raise_m = float(cfg.get("cheek_raise_m", 0.003))
     fwd_m = float(cfg.get("cheek_forward_m", 0.0015))
     rscale = float(cfg.get("cheek_radius_scale", 0.55))
@@ -353,29 +366,30 @@ def add_smile_coupling(head, lids, mouth, landmarks, cfg):
         eye = min(eyes, key=lambda e: (e - c0).length)  # the eye on the same side
         dist = (eye - c0).length
         lateral = Vector((math.copysign(0.35 * abs(eye.x - c0.x), c0.x), 0, 0))
-        cheeks.append((c0 + (eye - c0) * 0.5 + lateral, rscale * dist))
+        cheeks.append((c0 + (eye - c0) * 0.5 + lateral, rscale * dist, side_s(c0.x)))
     moved = 0
     for i, v in enumerate(head.data.vertices):
         p = hmw @ v.co
         if p.y > face_front:
             continue
         d = Vector((0, 0, 0))
-        for centre, R in cheeks:
+        for centre, R, ss in cheeks:
             g = math.exp(-((p - centre).length / R) ** 2)
-            d += Vector((0, -fwd_m, raise_m)) * g
-        for c0, dc in corners:
+            d += Vector((0, -fwd_m, raise_m)) * (g * ss)
+        for c0, dc in corners:  # dc already carries the lips' own intensity/asymmetry
             g = math.exp(-((p - c0).length / (crs * half_w)) ** 2)
             d += dc * (follow * g)
         if d.length > 1e-6:
             key.data[i].co = hinv @ (p + d)
             moved += 1
     # lower lids rise (rotation about the eye centre, opposite to the blink direction)
-    R = Matrix.Rotation(math.radians(-squint), 3, Vector((1, 0, 0)))
     for up, lo, lash, c in lids:
+        R = Matrix.Rotation(math.radians(-squint * side_s(c.x)), 3, Vector((1, 0, 0)))
         if lo.data.shape_keys is None:
             lo.shape_key_add(name="Basis")
         k = lo.shape_key_add(name="Smile")
         k.value = 0.0
         for i, v in enumerate(lo.data.vertices):
             k.data[i].co = c + R @ (v.co - c)
-    return {"head_vertices": moved, "cheek_radius_m": [round(R_, 4) for _, R_ in cheeks], "eye_squint_deg": squint}
+    return {"head_vertices": moved, "cheek_radius_m": [round(c[1], 4) for c in cheeks], "eye_squint_deg": squint,
+            "intensity": inten, "asymmetry": asym}

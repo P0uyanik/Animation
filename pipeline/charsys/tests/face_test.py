@@ -99,7 +99,9 @@ def metrics():
         out["cavity_visible_pct"] = round(100.0 * hit / tot, 1)
     return {**out, "eye_visible_pct": round(eye_visible(), 1), "lid_proud_mm": round(float(proud), 2),
             "mouth_open_mm": round(float((mid[:, 2].max() - mid[:, 2].min()) * 1000), 2),
-            "corner_lift_mm": round(float((corner[:, 2].mean() - mid[:, 2].mean()) * 1000), 2)}
+            "corner_lift_mm": round(float((corner[:, 2].mean() - mid[:, 2].mean()) * 1000), 2),
+            "corner_lift_L_mm": round(float((corner[corner[:, 0] > 0, 2].mean() - mid[:, 2].mean()) * 1000), 2),
+            "corner_lift_R_mm": round(float((corner[corner[:, 0] < 0, 2].mean() - mid[:, 2].mean()) * 1000), 2)}
 
 
 REST = {}

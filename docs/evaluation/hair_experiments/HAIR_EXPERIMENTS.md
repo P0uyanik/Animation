@@ -164,3 +164,49 @@ Evidence: `H28_H29_review_views_1-4.jpg`, `H28_H29_review_views_5-8.jpg` (refere
 - Family counts, angles, lengths, irregularity amounts, the dominant tuft and the hairline are character data.
 - **Assumption that remains:** the hair is placed on an ellipsoid around the head (`proportions.hair_ellipsoid_*`).
   Very different scalp shapes (long faces, ears on top) would need a surface-projected placement.
+
+## H30–H35: lock construction, felt surface, real-scalp placement (2026-11-14, experimental, not approved)
+New generic options in `hair_clumps/2`. All are optional, and H28 rebuilds identically (checked: 0.0 m):
+- `lock_curve`, `lock_tip_jitter` (+ `lock_tip_mode`, default blunter only), `lock_splits [min, max]`;
+- per-family `shape_variation`;
+- `felt_shader {scale, detail, strength, distance, sheen, roughness}`;
+- `placement: "surface"` with `scalp_offset_m`;
+- `base: "scalp"`;
+- `scalp_cap.face_cut`;
+- a `fringe` block (FRINGE_V6 is now only the boy's default data).
+
+| Variant | Hypothesis | IoU | Contour | Height / width | Visual | Verdict |
+| --- | --- | --- | --- | --- | --- | --- |
+| H28 | baseline | 0.8493 | 2.92% | +3.4 / +2.4% | — | remains the candidate |
+| H30 | lock construction (curve, tips both ways, 0–2 splits) | 0.8502 | 2.85% | +4.5 / +1.7% | varied sides and back, but **crown became a narrow spike** | rejected (spike) |
+| H34 | as H30, blunter tips only | 0.8485 | 2.87% | +4.8 / +2.0% | blunt but towering crown tuft | rejected |
+| H35 | as H34, crown excluded | 0.8490 | 3.04% | +3.4 / +3.3% | crown kept; rows slightly more varied, no clear gain; wider | rejected |
+| H31 | felt shader only | 0.8493 | 2.92% | identical | close-up: mostly a lighter sheen, little fibrous detail; hair ΔE 3.7 → 5.7 | rejected (not effective in this form) |
+| H32 | real-scalp placement + scalp base | 0.8457 | 2.90% | +0.4 / +1.6% | hair sits lower; **skin patch behind the fringe** | capability shown, not a candidate |
+| H33 | as H32, front hairline 0.90, offset 17 mm | 0.8445 | 3.07% | +1.2 / +2.9% | patch smaller, still visible; #7 front 3.72% | needs more character tuning |
+
+Evidence: `H30_H31_H32_review_views_*.jpg`, `H33_H34_review_views_1-4.jpg`, `H35_review_views_5-8.jpg`,
+`H31_felt_closeup_H28_vs_H31.jpg`.
+
+**Synthetic-head independence test** (`pipeline/charsys/tests/hair_generic_test.py`; result in
+`hair_generic_test.json`):
+- Setup: the hair generator with surface placement, a scalp base and its own fringe and family configuration, on a
+  synthetic egg head with a different shape, size and position. No boy objects or proportions.
+- Result: 27 locks; sampled roots exactly on the scalp at the offset (error 0.0 mm); upper scalp 96.9% covered.
+  **PASS.**
+
+**Findings:**
+1. Lock-shape variation helps the rows a little but makes upward crown tufts towering. Lock construction needs
+   per-family control (now available), and the effect on this boy is not yet clearly positive.
+2. A procedural bump alone does not produce a felted look at review resolution. The most promising efficient
+   representation is the existing fur-curve system (already per-character in `spec.fur`), which must be carried into
+   the master and engine (open item).
+3. Real-scalp placement works on any closed head mesh, but a hairstyle tuned for ellipsoid placement needs re-tuning
+   (hairline, offset, families) to keep its look.
+
+**Also noted:** a thin skin line between the fringe roots and the top locks is visible from a high camera angle in
+H28. It does not show in any reference view.
+
+**Status:**
+- H28: experimental, technically verified, visually reviewed (by me); not approved.
+- H30–H35: experimental, rejected for this character; the capabilities remain available.

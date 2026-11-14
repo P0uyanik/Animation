@@ -1,0 +1,96 @@
+{
+ "variant": "G01_face_synthetic_proportions",
+ "description": "F09 face settings on deliberately different proportions: eyes 76 mm apart (was 64), radius 32 mm (was 37), mouth 12 mm lower and 36% wider",
+ "base_spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.spec.json",
+ "status": "ENGINEERING TEST CONFIGURATION ONLY (not a character design, never published): checks that the face modules adapt to different proportions through landmarks",
+ "override": {
+  "face": {
+   "blink": {
+    "generator": "lid_seam/1",
+    "overlap_deg": 3,
+    "closed_offset_m": 0.0006,
+    "closed_thickness_m": 0.001,
+    "flatten": 0.38,
+    "flatten_lash": false
+   },
+   "mouth": {
+    "generator": "lips_jaw/2",
+    "half_width_m": 0.017,
+    "lip_height_m": 0.0032,
+    "frown_m": 0.0035,
+    "smile_up_m": 0.007,
+    "jaw_open_deg": 7.0,
+    "pivot_drop_m": 0.012,
+    "cavity_depth_m": 0.0,
+    "cheek_falloff_m": [
+     0.03,
+     0.065
+    ],
+    "lip_material": "skin",
+    "seam_half_m": 0.0011,
+    "interior_rows": 7,
+    "inner_srgb": [
+     128,
+     52,
+     52
+    ],
+    "throat_srgb": [
+     34,
+     12,
+     14
+    ],
+    "tongue_srgb": [
+     150,
+     72,
+     74
+    ],
+    "line_srgb": [
+     70,
+     34,
+     32
+    ],
+    "line_roughness": 1.0,
+    "lip_edge_offset_m": 0.0002,
+    "lip_bulge_m": 0.0012,
+    "smile_intensity": 1.25,
+    "smile_asymmetry": 0.15,
+    "jaw_lip_round": 0.9,
+    "jaw_upper_lift_m": 0.0025,
+    "jaw_band_start": 0.45,
+    "jaw_corner_center": 1.0
+   },
+   "smile_coupling": {
+    "cheek_raise_m": 0.004,
+    "cheek_forward_m": 0.0015,
+    "cheek_radius_scale": 0.55,
+    "corner_follow": 0.8,
+    "corner_radius_scale": 0.9,
+    "eye_squint_deg": 8.0,
+    "intensity": 1.3,
+    "asymmetry": 0.15
+   }
+  },
+  "proportions": {
+   "eye_x_m": 0.076,
+   "eye_radius_m": 0.032,
+   "z_targets_m": {
+    "hair_top": 1.1,
+    "hair_mass_top": 1.06,
+    "brow": 0.84,
+    "fringe_tip": 0.812,
+    "eye": 0.778,
+    "nose": 0.748,
+    "mouth": 0.712,
+    "chin": 0.698,
+    "ear": 0.756,
+    "neck_top": 0.7,
+    "collar": 0.684,
+    "shoulder": 0.64,
+    "hem": 0.368,
+    "crotch": 0.34,
+    "cuff": 0.118,
+    "shoe_top": 0.105
+   }
+  }
+ }
+}

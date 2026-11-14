@@ -189,6 +189,10 @@ def build_hair(C, M, head, B, params=None, seed=11):
 # tufts (side view, top 8% of the figure: +74..116% too wide), and the band 8-12% below the top is ~20% too wide.
 # So: the dark base mass stays (no scalp), the locks lie close to it (low lift), and only a few blunt crown tufts
 # reach the top. 30-40 larger locks in families; each lock may split into a second, smaller tip (felted grouping).
+# The boy's measured fringe (pilot v6): the default only so that earlier layouts reproduce. Character data.
+FRINGE_V6 = {"x": [-0.125, -0.085, -0.044, -0.004, 0.038, 0.080, 0.122], "tip_z": [0.838, 0.826, 0.814, 0.802, 0.818, 0.828, 0.842],
+             "jitter": 0.006, "az_depth": 0.16, "az_gain": 1.25, "root_el": 22, "tip_gap": 0.020,
+             "width": [0.060, 0.072], "thick": [0.036, 0.044], "tip_frac": 0.32}
 FAMILIES_V2 = {  # name: count, az range (deg), root el, tip el, tip lift (m), width, thick, tip_frac, split
     "crown":   dict(count=5, az=(-150, 150), el_root=(78, 86), up=1.0, out=0.35, length=(0.050, 0.064),
                     width=(0.058, 0.068), thick=(0.044, 0.052), tip_frac=0.40, split=True),
@@ -211,6 +215,7 @@ def scalp_cap(C, head, cfg):
     import bmesh
     import bpy
     off = float(cfg.get("offset", 0.006))
+    face_cut = cfg.get("face_cut", [-0.05, 0.955])  # default: the boy's face opening (character data)
     hl = sorted(cfg.get("hairline", [[0, 0.93], [60, 0.86], [90, 0.80], [180, 0.73]]))
     azs, zs = [a for a, _ in hl], [z for _, z in hl]
 
@@ -229,7 +234,7 @@ def scalp_cap(C, head, cfg):
     for f in bm.faces:
         c = f.calc_center_median()
         a = abs(math.degrees(math.atan2(c.x, -c.y)))
-        if c.z < zmin(a) or (c.y < -0.05 and c.z < 0.955):
+        if c.z < zmin(a) or (c.y < face_cut[0] and c.z < face_cut[1]):  # face opening (cfg face_cut [y, z])
             kill.append(f)
     bmesh.ops.delete(bm, geom=kill, context="FACES")
     bm.normal_update()
@@ -243,20 +248,89 @@ def scalp_cap(C, head, cfg):
     return ob
 
 
+def felt_material(base, cfg):
+    """Felted-wool surface without geometry: a copy of the hair material with a high-frequency fibrous noise bump
+    (Generated coordinates: stable under the rig) and sheen. Edits the build's own hair material in place. cfg: scale, detail, strength, distance, sheen, roughness.
+    The colour stays the character's own (calibrated) albedo."""
+    m = base  # modified in place: the material keeps its name (evaluation tools identify regions by material name)
+    nt = m.node_tree
+    p = nt.nodes.get("Principled BSDF")
+    tc = nt.nodes.new("ShaderNodeTexCoord")
+    nz = nt.nodes.new("ShaderNodeTexNoise")
+    nz.inputs["Scale"].default_value = float(cfg.get("scale", 260.0))
+    nz.inputs["Detail"].default_value = float(cfg.get("detail", 12.0))
+    if "Roughness" in nz.inputs:
+        nz.inputs["Roughness"].default_value = float(cfg.get("noise_roughness", 0.75))
+    if "Distortion" in nz.inputs:
+        nz.inputs["Distortion"].default_value = float(cfg.get("distortion", 1.5))
+    bump = nt.nodes.new("ShaderNodeBump")
+    bump.inputs["Strength"].default_value = float(cfg.get("strength", 0.45))
+    bump.inputs["Distance"].default_value = float(cfg.get("distance", 0.0015))
+    nt.links.new(tc.outputs["Generated"], nz.inputs["Vector"])
+    nt.links.new(nz.outputs["Fac"], bump.inputs["Height"])
+    nt.links.new(bump.outputs["Normal"], p.inputs["Normal"])
+    if "Sheen Weight" in p.inputs:
+        p.inputs["Sheen Weight"].default_value = float(cfg.get("sheen", 0.35))
+    if "Roughness" in p.inputs:
+        p.inputs["Roughness"].default_value = float(cfg.get("roughness", 0.95))
+    return m
+
+
+def bpy_data_remove(ob):
+    import bpy
+    me = ob.data
+    bpy.data.objects.remove(ob, do_unlink=True)
+    bpy.data.meshes.remove(me)
+
+
+def scalp_surface_placement(head, centre, radii, offset, fallback):
+    """Returns on_hair(az, el, lift) -> (point, normal) on the real scalp: a ray from `centre` in the (az, el)
+    direction hits the head mesh; the point moves out along the surface normal by offset + lift. Directions that
+    miss the head (none expected for a closed head) fall back to the ellipsoid."""
+    import bpy
+    from mathutils.bvhtree import BVHTree
+    deps = bpy.context.evaluated_depsgraph_get()
+    bvh = BVHTree.FromObject(head, deps)
+    mw = head.matrix_world
+    inv = mw.inverted()
+
+    def on_surface(az, el, lift=0.0):
+        a, e = math.radians(az), math.radians(el)
+        d = Vector((math.sin(a) * math.cos(e), -math.cos(a) * math.cos(e), math.sin(e)))
+        o = inv @ centre
+        dl = (inv.to_3x3() @ d).normalized()
+        hit, nrm, idx, dist = bvh.ray_cast(o, dl)
+        if hit is None:
+            return fallback(az, el, lift)
+        p = mw @ hit
+        n = (mw.to_3x3().inverted().transposed() @ nrm).normalized()
+        if n.dot(d) < 0:
+            n = -n
+        return p + n * (offset + lift), n
+    return on_surface
+
+
 def build_hair_v2(C, M, head, B, params=None, seed=11):
     import bmesh
     G = B.G
     P = params or {}
     R = random.Random(seed)
-    on_hair, clump, face_y = B.on_hair, B.clump, B.face_y
+    clump, face_y = B.clump, B.face_y
     HAIR_C, HAIR_R = B.HAIR_C, B.HAIR_R
+    # Placement of lock roots/tips by (azimuth, elevation, lift). "ellipsoid" (default): the spec's hair ellipsoid
+    # (B.on_hair). "surface": rays from the projection origin (the ellipsoid centre) onto the ACTUAL head mesh, then
+    # out along the surface normal by scalp_offset_m + lift, so the hair follows any scalp shape.
+    if P.get("placement") == "surface":
+        on_hair = scalp_surface_placement(head, HAIR_C, HAIR_R, float(P.get("scalp_offset_m", 0.014)), B.on_hair)
+    else:
+        on_hair = B.on_hair
     fam = {k: dict(v) for k, v in FAMILIES_V2.items()}
     for k, v in P.get("families", {}).items():  # override or add families (count 0 disables one)
         fam[k] = dict(fam.get(k, {}), **v)
     noise = P.get("lock_noise", [0.006, 0.018])
     ms = P.get("mass_scale", [1.0, 1.0, 0.97])
     inset = 0.022
-    mass = G.uv_sphere("hair_mass", HAIR_C + Vector((0, 0.006, -0.010)), 1.0, C, 48, 24,
+    mass = G.uv_sphere("hair_mass", HAIR_C + Vector((0, 0.006, -0.010)), 1.0, C, 48, 24,  # (or the scalp cap, below)
                        tuple((HAIR_R[i] - inset) * ms[i] for i in range(3)))
     bm = bmesh.new()
     bm.from_mesh(mass.data)
@@ -265,35 +339,67 @@ def build_hair_v2(C, M, head, B, params=None, seed=11):
     bm.to_mesh(mass.data)
     bm.free()
     G.displace_noise(mass, 0.008, 0.035, subdiv=1)
-    if P.get("scalp_cap"):
+    if P.get("base") == "scalp":  # base = the scalp cap only (follows the real head; no ellipsoid mass)
+        cap = scalp_cap(C, head, P.get("scalp_cap") or {"offset": 0.006})
+        bpy_data_remove(mass)
+        cap.name = "hair_mass"
+        mass = cap
+    elif P.get("scalp_cap"):
         mass = G.join([mass, scalp_cap(C, head, P["scalp_cap"])], "hair_mass")
     locks, parts = [], []
 
-    def lock(name, root, mid, tip, width, thick, n, tip_frac, split):
+    R4 = random.Random(seed + 15485863)  # lock-shape variation only (keeps older layouts reproducible)
+    shape = {"curve": 0.0, "tip": 0.0, "splits": None}
+
+    def lock(name, root, mid, tip, width, thick, n, tip_frac, split, vary=True):
+        if not vary:  # family opted out of lock-shape variation ("shape_variation": false)
+            objs = [clump(name, C, root, mid, tip, width, thick, n, tip_frac=tip_frac)]
+            for _ in range(1 if split else 0):
+                a = root + (tip - root) * 0.45
+                axis = n.normalized()
+                ang = math.radians(R.choice((-1, 1)) * R.uniform(14, 22))
+                d = (tip - a)
+                d2 = d * math.cos(ang) + axis.cross(d) * math.sin(ang) + axis * axis.dot(d) * (1 - math.cos(ang))
+                t2 = a + d2 * R.uniform(0.80, 0.92)
+                objs.append(clump(name + ".b", C, a, (a + t2) / 2 + n * 0.006, t2, width * 0.55, thick * 0.65, n, tip_frac=tip_frac))
+            locks.append(name)
+            parts.extend(objs)
+            return
+        if shape["curve"]:  # bend the lock sideways (lateral to its direction and its normal)
+            side = (tip - root).cross(n)
+            if side.length > 1e-6:
+                mid = mid + side.normalized() * ((tip - root).length * shape["curve"] * R4.uniform(-1, 1))
+        if shape["tip"]:  # felted locks: tip variation only makes tips blunter, never pointier (lock_tip_mode "both" allows both)
+            u = R4.uniform(-1, 1) if shape.get("tip_mode") == "both" else R4.uniform(0, 1)
+            tip_frac = max(0.08, tip_frac * (1 + shape["tip"] * u))
+        nsplit = (1 if split else 0) if shape["splits"] is None else (R4.randint(*shape["splits"]) if split else 0)
         objs = [clump(name, C, root, mid, tip, width, thick, n, tip_frac=tip_frac)]
-        if split:  # a smaller second tip leaving the lock at ~45%: grouped felted strands, notch at the tip
-            a = root + (tip - root) * 0.45
+        for si in range(nsplit):  # smaller tips leaving the lock: grouped felted strands, notches at the tip
+            rr = R if si == 0 and shape["splits"] is None else R4
+            a = root + (tip - root) * (0.45 if si == 0 else rr.uniform(0.35, 0.6))
             axis = n.normalized()
-            ang = math.radians(R.choice((-1, 1)) * R.uniform(14, 22))
+            ang = math.radians(rr.choice((-1, 1)) * rr.uniform(14, 22))
             d = (tip - a)
             d2 = d * math.cos(ang) + axis.cross(d) * math.sin(ang) + axis * axis.dot(d) * (1 - math.cos(ang))
-            t2 = a + d2 * R.uniform(0.80, 0.92)
-            objs.append(clump(name + ".b", C, a, (a + t2) / 2 + n * 0.006, t2, width * 0.55, thick * 0.65, n,
+            t2 = a + d2 * rr.uniform(0.80, 0.92)
+            objs.append(clump(name + f".b{si}" if si else name + ".b", C, a, (a + t2) / 2 + n * 0.006, t2, width * 0.55, thick * 0.65, n,
                               tip_frac=tip_frac))
         locks.append(name)
         parts.extend(objs)
 
-    # Fringe: the v6 fringe (its front-view fit is already good), 7 locks.
-    xs = [-0.125, -0.085, -0.044, -0.004, 0.038, 0.080, 0.122]
-    tips = [0.838, 0.826, 0.814, 0.802, 0.818, 0.828, 0.842]
-    for k, (xt, zt) in enumerate(zip(xs, tips)):
-        xt += R.uniform(-0.006, 0.006)
-        zt += R.uniform(-0.006, 0.006)
-        az = math.degrees(math.atan2(xt, 0.16)) * 1.25
-        root, n = on_hair(az, 22 + R.uniform(-4, 4), 0.004)
-        tip = Vector((xt * 1.04, face_y(head, xt, zt) - 0.020, zt))
+    # Fringe: a configurable component (params "fringe"). Without it, FRINGE_V6 (the boy's measured fringe) is used so
+    # earlier layouts reproduce; other characters give their own tip positions (x, z on the face) and root elevation.
+    fr = dict(FRINGE_V6, **P.get("fringe", {}))
+    for k, (xt, zt) in enumerate(zip(fr["x"], fr["tip_z"])):
+        xt += R.uniform(-fr["jitter"], fr["jitter"])
+        zt += R.uniform(-fr["jitter"], fr["jitter"])
+        az = math.degrees(math.atan2(xt, fr["az_depth"])) * fr["az_gain"]
+        root, n = on_hair(az, fr["root_el"] + R.uniform(-4, 4), 0.004)
+        tip = Vector((xt * 1.04, face_y(head, xt, zt) - fr["tip_gap"], zt))
         mid = (root + tip) / 2 + n * 0.022 + Vector((0, -0.010, 0.0))
-        lock(f"hair.fringe.{k}", root, mid, tip, R.uniform(0.060, 0.072), R.uniform(0.036, 0.044), n, 0.32, False)
+        lock(f"hair.fringe.{k}", root, mid, tip, R.uniform(*fr["width"]), R.uniform(*fr["thick"]), n, fr["tip_frac"], False)
+    shape.update(curve=float(P.get("lock_curve", 0.0)), tip=float(P.get("lock_tip_jitter", 0.0)), tip_mode=P.get("lock_tip_mode", "blunter"),
+                 splits=tuple(P["lock_splits"]) if P.get("lock_splits") else None)  # applies to the families below
     # Crown tufts: few, blunt, mostly upward, near the top centre.
     # Optional per-family irregularity (keys az_jitter, el_jitter_deg, dir_jitter, length_jitter, width_jitter, dominant
     # {"index", "scale"}). Drawn from their own generator, so layouts without these keys are unchanged.
@@ -328,7 +434,7 @@ def build_hair_v2(C, M, head, B, params=None, seed=11):
         tip = root + dirv * L
         mid = root + dirv * L * 0.5 + h * 0.008
         lock(f"hair.crown.{k}", root, mid, tip, R.uniform(*f["width"]) * j["wid"], R.uniform(*f["thick"]) * j["wid"], n,
-             f["tip_frac"], f["split"])
+             f["tip_frac"], f["split"], vary=f.get("shape_variation", True))
     # Families of locks lying close over the base mass.
     for name in [k for k in fam if k != "crown"]:
         f = fam[name]
@@ -350,7 +456,8 @@ def build_hair_v2(C, M, head, B, params=None, seed=11):
                 nn = (n + tn).normalized()
                 mid = (root + tip) / 2 + nn * (f["lift"] + f.get("bulge", 0.010))
                 lock(f"hair.{name}{'L' if sx > 0 else 'R'}.{k}" if f.get("mirror") else f"hair.{name}.{k}", root, mid, tip,
-                     R.uniform(*f["width"]) * j["wid"], R.uniform(*f["thick"]) * j["wid"], nn, f["tip_frac"], f["split"])
+                     R.uniform(*f["width"]) * j["wid"], R.uniform(*f["thick"]) * j["wid"], nn, f["tip_frac"], f["split"],
+                     vary=f.get("shape_variation", True))
     for c in parts:
         G.displace_noise(c, noise[0], noise[1], subdiv=1)
     hair = G.join(parts, "hair_clumps")
@@ -361,8 +468,9 @@ def build_hair_v2(C, M, head, B, params=None, seed=11):
         mid = (root + tip) / 2 + Vector((R.uniform(-0.012, 0.012), 0, 0.010))
         strays.append(G.tube(f"hair_stray.{k}", G.bezier(root, mid, tip, 8), [0.0022] * 8, [0.0022] * 8, C, seg=8))
     stray = G.join(strays, "hair_strays")
+    mat = felt_material(M["hair"], P["felt_shader"]) if P.get("felt_shader") else M["hair"]
     for o in (mass, hair, stray):
-        G.assign(o, M["hair"])
+        G.assign(o, mat)
     return [mass, hair, stray], {"generator": "hair_clumps/2", "locks": len(locks), "clump_parts": len(parts)}
 
 

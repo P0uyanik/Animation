@@ -42,6 +42,14 @@ Completed and tested:
   - Evidence: `docs/evaluation/face_controls/F06_*`, `combined_H28_F06_vs_1.0.0.jpg`, `docs/evaluation/hair_experiments/H28_*`.
   - `verify_charsys` PASS. No engine change.
 
+- **CP-2 generic face and hair system step** (status: experimental; technically verified; visually reviewed by me;
+  not approved):
+  - **Face F09:** readable smile with intensity and asymmetry, larger JawOpen (25.5 mm) with corner-centred jaw
+    weights. Synthetic-proportions check (G01) passes.
+  - **Hair:** new generic options (lock shape, felt shader, real-scalp placement, fringe as data); synthetic-head
+    test passes. None improves this boy beyond H28, so **H28 remains the hair candidate**.
+  - `verify_charsys` PASS; no engine change.
+
 Not done / limitations:
 - H25/H26 (hair) and F01/F02 (face) not published or approved (identity changes: owner decision); H25 and F01 reviewed and not approved.
 - F02: flat interior (no teeth/tongue), skin stretch at mouth corners (3.5x), Smile without cheek/eye coordination; closed lid slightly rounded.
