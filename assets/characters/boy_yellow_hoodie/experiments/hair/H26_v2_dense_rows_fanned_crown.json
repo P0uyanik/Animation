@@ -1,0 +1,29 @@
+{
+ "variant": "H26_v2_dense_rows_fanned_crown",
+ "description": "hair_clumps/2 after the H25 review: v6-like dense row structure at back (4 rows) and sides (3 rows/side) reaching nape and behind the ears, H25's low lift/bulge, 6 large fanned leaf-shaped crown tufts, scalp cap kept only as an under-layer",
+ "base_spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.spec.json",
+ "status": "experimental (not approved; never published as the character)",
+ "override": {"hair": {"generator": "hair_clumps/2", "params": {
+  "scalp_cap": {"offset": 0.006},
+  "lock_noise": [0.009, 0.020],
+  "families": {
+   "crown":   {"count": 6, "el_root": [64, 78], "up": 0.8, "out": 0.75, "length": [0.060, 0.080],
+               "width": [0.070, 0.085], "thick": [0.045, 0.055], "tip_frac": 0.30, "split": true},
+   "top":     {"count": 6, "lift": 0.012},
+   "side": {"count": 0}, "back_hi": {"count": 0}, "back_lo": {"count": 0},
+   "side_1":  {"count": 5, "az": [50, 128], "el_root": [44, 52], "el_tip": [18, 26], "lift": 0.014, "bulge": 0.011,
+               "width": [0.066, 0.078], "thick": [0.044, 0.052], "tip_frac": 0.34, "split": true, "flick": 0.006, "mirror": true},
+   "side_2":  {"count": 5, "az": [54, 130], "el_root": [26, 32], "el_tip": [-4, 4], "lift": 0.014, "bulge": 0.011,
+               "width": [0.066, 0.078], "thick": [0.044, 0.052], "tip_frac": 0.34, "split": true, "flick": 0.008, "mirror": true},
+   "side_3":  {"count": 4, "az": [70, 134], "el_root": [8, 14], "el_tip": [-26, -16], "lift": 0.012, "bulge": 0.010,
+               "width": [0.062, 0.074], "thick": [0.042, 0.050], "tip_frac": 0.34, "split": false, "flick": 0.008, "mirror": true},
+   "back_1":  {"count": 9, "az": [80, 280], "el_root": [60, 66], "el_tip": [30, 38], "lift": 0.014, "bulge": 0.011,
+               "width": [0.064, 0.078], "thick": [0.044, 0.054], "tip_frac": 0.33, "split": true},
+   "back_2":  {"count": 10, "az": [80, 280], "el_root": [34, 40], "el_tip": [2, 10], "lift": 0.014, "bulge": 0.011,
+               "width": [0.064, 0.078], "thick": [0.044, 0.054], "tip_frac": 0.33, "split": true, "flick": 0.006},
+   "back_3":  {"count": 10, "az": [85, 275], "el_root": [8, 14], "el_tip": [-30, -22], "lift": 0.013, "bulge": 0.010,
+               "width": [0.064, 0.078], "thick": [0.044, 0.054], "tip_frac": 0.33, "split": true, "flick": 0.006},
+   "back_4":  {"count": 9, "az": [95, 265], "el_root": [-12, -6], "el_tip": [-60, -52], "lift": 0.012, "bulge": 0.010,
+               "width": [0.060, 0.074], "thick": [0.042, 0.050], "tip_frac": 0.33, "split": false, "flick": 0.008}
+  }}}}
+}

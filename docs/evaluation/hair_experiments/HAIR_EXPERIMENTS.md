@@ -105,3 +105,34 @@ Remaining weaknesses, seen visually:
 **H25 is not adopted or published.** It is an identity change and waits for your approval. If approved, it becomes
 spec 1.1.0, published with `--identity-change-approved-by`. Version 1.0.0 and v6 are unchanged; the v1 hair path
 still rebuilds v6 exactly (checked: 0.0 m).
+
+## H26 after the H25 review (2026-11-14, not approved)
+Your H25 review found:
+- smooth cap patches at the temples and behind the ears;
+- an undercut at the nape;
+- too few dense irregular locks at the back;
+- crown tufts too small and narrow.
+
+H26 (`experiments/hair/H26_v2_dense_rows_fanned_crown.json`) is a spec override only, with no code change. It uses
+the v6 row structure (4 back rows of 9–10 locks, 3 side rows per side), reaching the nape and behind the ears, with
+H25's low lift and bulge, and 6 large, fanned, leaf-shaped crown tufts. 85 locks (140 parts). The scalp cap stays
+only as an under-layer.
+
+| | v6 (H00) | H25 | **H26** |
+| --- | --- | --- | --- |
+| IoU | 0.841 | 0.8455 | **0.8463** |
+| Hair contour (target ≤ 3.0%) | 3.40% | 2.93% | **2.99%** |
+| Head fraction | +4.0% | +4.1% | **+3.5%** |
+| Head width | +5.7% | +4.1% | **+2.0%** |
+| Worst views | #7 front 4.29, side 4.13 | back-¾ 3.71 | **#7 front 3.63**, side 3.52 |
+
+Visual result (`H26_review_views_1-4.jpg`, `H26_review_views_5-8.jpg`; columns: reference, v6, H25, H26):
+- Fixed: dense layered back, nape covered to the hood, no cap patches at the temples or behind the ears.
+- Fixed: larger, fanned crown tufts.
+- Fixed: rig compatible (73 deform bones, 0 unweighted vertices).
+- Remaining: the crown tufts form a fairly regular ring. The references are more one-sided and irregular, with a
+  dominant tuft.
+- Remaining: the fringe is unchanged from v6.
+- Remaining: #7 front is worse than H25.
+
+The review sheets are made from existing renders by `pipeline/charsys/review_views.py` (no rendering).

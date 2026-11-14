@@ -1,13 +1,13 @@
 {
  "runs": {
-  "H25_v2_scalp_cap_less_bulge": {
-   "variant": "H25_v2_scalp_cap_less_bulge",
+  "H26_v2_dense_rows_fanned_crown": {
+   "variant": "H26_v2_dense_rows_fanned_crown",
    "ok": true,
    "seconds": {
-    "build": 9.1,
-    "harness": 58.4,
-    "sheet": 0.7,
-    "regions": 41.1,
+    "build": 16.0,
+    "harness": 65.1,
+    "sheet": 0.8,
+    "regions": 48.5,
     "metrics": 3.3
    }
   }
@@ -791,6 +791,47 @@
     }
    },
    "head_width_err_pct": 4.1
+  },
+  "H26_v2_dense_rows_fanned_crown": {
+   "description": "hair_clumps/2 after the H25 review: v6-like dense row structure at back (4 rows) and sides (3 rows/side) reaching nape and behind the ears, H25's low lift/bulge, 6 large fanned leaf-shaped crown tufts, scalp cap kept only as an under-layer",
+   "mean_iou": 0.8463,
+   "mean_hair_contour_pct_head": 2.99,
+   "mean_hair_contour_p95_pct_head": 7.45,
+   "mean_contour_pct_height": 1.34,
+   "hair_dE2000_mean": 3.7,
+   "head_fraction_err_pct": 3.5,
+   "hair_build": {
+    "generator": "hair_clumps/2",
+    "locks": 85,
+    "clump_parts": 140
+   },
+   "per_view": {
+    "orig07_front": {
+     "iou": 0.817,
+     "hair_contour": 3.63
+    },
+    "val27_front": {
+     "iou": 0.84,
+     "hair_contour": 2.46
+    },
+    "val27_threequarter_right": {
+     "iou": 0.856,
+     "hair_contour": 2.46
+    },
+    "val27_side_right": {
+     "iou": 0.848,
+     "hair_contour": 3.52
+    },
+    "val27_back": {
+     "iou": 0.85,
+     "hair_contour": 2.79
+    },
+    "val27_back_threequarter": {
+     "iou": 0.867,
+     "hair_contour": 3.09
+    }
+   },
+   "head_width_err_pct": 2.0
   }
  }
 }
