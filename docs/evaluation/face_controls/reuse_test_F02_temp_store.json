@@ -1,0 +1,381 @@
+{
+ "version_dir": "/tmp/claude-0/-home-user/2f315425-a8bc-514d-b506-5868548079c6/scratchpad/tmpstore/0.0.1",
+ "version": "0.0.1",
+ "blender": "5.3.0",
+ "tests": {
+  "T7_master_unchanged": {
+   "pass": true,
+   "checks": [
+    {
+     "check": "master matches manifest before tests",
+     "pass": true,
+     "detail": null
+    },
+    {
+     "check": "master byte-identical after all tests",
+     "pass": true,
+     "detail": "84c41a9a0a8bef76"
+    }
+   ]
+  },
+  "T1_reopen_master": {
+   "pass": true,
+   "checks": [
+    {
+     "check": "root collection present",
+     "pass": true,
+     "detail": null
+    },
+    {
+     "check": "component collections",
+     "pass": true,
+     "detail": [
+      "accessories",
+      "body",
+      "clothing",
+      "face",
+      "fur",
+      "hair",
+      "landmarks",
+      "rig"
+     ]
+    },
+    {
+     "check": "metadata stamped",
+     "pass": true,
+     "detail": {
+      "ps_character_id": "boy_yellow_hoodie",
+      "ps_spec_version": "1.0.0",
+      "ps_build": "charsys/1",
+      "ps_role": "master"
+     }
+    },
+    {
+     "check": "embedded spec matches manifest hash",
+     "pass": true,
+     "detail": null
+    },
+    {
+     "check": "asset marked",
+     "pass": true,
+     "detail": null
+    },
+    {
+     "check": "component body: objects as published",
+     "pass": true,
+     "detail": 4
+    },
+    {
+     "check": "component face: objects as published",
+     "pass": true,
+     "detail": 14
+    },
+    {
+     "check": "component hair: objects as published",
+     "pass": true,
+     "detail": 3
+    },
+    {
+     "check": "component clothing: objects as published",
+     "pass": true,
+     "detail": 27
+    },
+    {
+     "check": "component accessories: objects as published",
+     "pass": true,
+     "detail": 7
+    },
+    {
+     "check": "component rig: objects as published",
+     "pass": true,
+     "detail": 1
+    },
+    {
+     "check": "component landmarks: objects as published",
+     "pass": true,
+     "detail": 7
+    },
+    {
+     "check": "component fur: objects as published",
+     "pass": true,
+     "detail": 0
+    },
+    {
+     "check": "rig bones",
+     "pass": true,
+     "detail": [
+      411,
+      74
+     ]
+    },
+    {
+     "check": "every vertex weighted to a deform bone",
+     "pass": true,
+     "detail": 0
+    },
+    {
+     "check": "expression shape keys",
+     "pass": true,
+     "detail": [
+      "Blink",
+      "BrowDown",
+      "JawOpen",
+      "Smile"
+     ]
+    },
+    {
+     "check": "facial controls on rig",
+     "pass": true,
+     "detail": [
+      "face_Blink",
+      "face_BrowDown",
+      "face_JawOpen",
+      "face_Smile"
+     ]
+    },
+    {
+     "check": "facial controls deform lids and mouth",
+     "pass": true,
+     "detail": {
+      "lid_mm": 29.5,
+      "mouth_mm": 10.5
+     }
+    }
+   ]
+  },
+  "T2_pose_master": {
+   "pass": true,
+   "checks": [
+    {
+     "check": "sleeve follows the arm control",
+     "pass": true,
+     "detail": 0.185
+    }
+   ]
+  },
+  "T3_episode_shot": {
+   "pass": true,
+   "checks": [
+    {
+     "check": "shot files saved outside the store",
+     "pass": true,
+     "detail": null
+    },
+    {
+     "check": "links the store master (not a copy)",
+     "pass": true,
+     "detail": [
+      "//../../../tmpstore/0.0.1/boy_yellow_hoodie_master.blend"
+     ]
+    },
+    {
+     "check": "no master geometry copied into the shot",
+     "pass": true,
+     "detail": []
+    },
+    {
+     "check": "pose persisted after reopen",
+     "pass": true,
+     "detail": {
+      "upper_arm_fk.L": [
+       0.9367,
+       0.0,
+       0.3502,
+       0.0
+      ],
+      "upper_arm_fk.R": [
+       0.9367,
+       0.0,
+       -0.3502,
+       0.0
+      ],
+      "head": [
+       0.9781,
+       0.0,
+       0.0,
+       0.2079
+      ]
+     }
+    },
+    {
+     "check": "FK switch persisted",
+     "pass": true,
+     "detail": [
+      1.0,
+      1.0,
+      1.0,
+      1.0
+     ]
+    },
+    {
+     "check": "facial controls persisted",
+     "pass": true,
+     "detail": {
+      "face_Smile": 1.0,
+      "face_JawOpen": 0.6000000238418579
+     }
+    },
+    {
+     "check": "other shot's expression not present (independent shots)",
+     "pass": true,
+     "detail": null
+    },
+    {
+     "check": "hoodie_sleeve.L deformed by the saved pose/expression after reopen",
+     "pass": true,
+     "detail": 0.0358
+    },
+    {
+     "check": "mouth deformed by the saved pose/expression after reopen",
+     "pass": true,
+     "detail": 0.0186
+    },
+    {
+     "check": "renders",
+     "pass": true,
+     "detail": 0.336
+    }
+   ]
+  },
+  "T5_isolation": {
+   "pass": true,
+   "checks": [
+    {
+     "check": "shot A: mesh data is still the linked master data",
+     "pass": true,
+     "detail": {
+      "mesh_library": "//../../../tmpstore/0.0.1/boy_yellow_hoodie_master.blend"
+     }
+    },
+    {
+     "check": "shot B: mesh data is still the linked master data",
+     "pass": true,
+     "detail": {
+      "mesh_library": "//../../../tmpstore/0.0.1/boy_yellow_hoodie_master.blend"
+     }
+    },
+    {
+     "check": "linked vertex in shot equals master value",
+     "pass": true,
+     "detail": {
+      "master_z": 0.696947,
+      "shot_z": 0.696947
+     }
+    },
+    {
+     "check": "master material unchanged by shot edit",
+     "pass": true,
+     "detail": [
+      0.8,
+      0.8,
+      0.8,
+      1.0
+     ]
+    }
+   ]
+  },
+  "T4_second_episode": {
+   "pass": true,
+   "checks": [
+    {
+     "check": "links the store master (not a copy)",
+     "pass": true,
+     "detail": [
+      "//../../../tmpstore/0.0.1/boy_yellow_hoodie_master.blend"
+     ]
+    },
+    {
+     "check": "no master geometry copied into the shot",
+     "pass": true,
+     "detail": []
+    },
+    {
+     "check": "pose persisted after reopen",
+     "pass": true,
+     "detail": {
+      "upper_arm_fk.L": [
+       0.8192,
+       0.0,
+       -0.5736,
+       0.0
+      ],
+      "thigh_fk.R": [
+       0.9397,
+       -0.342,
+       0.0,
+       0.0
+      ]
+     }
+    },
+    {
+     "check": "FK switch persisted",
+     "pass": true,
+     "detail": [
+      1.0,
+      1.0,
+      1.0,
+      1.0
+     ]
+    },
+    {
+     "check": "facial controls persisted",
+     "pass": true,
+     "detail": {
+      "face_Blink": 1.0
+     }
+    },
+    {
+     "check": "other shot's expression not present (independent shots)",
+     "pass": true,
+     "detail": null
+    },
+    {
+     "check": "hoodie_sleeve.L deformed by the saved pose/expression after reopen",
+     "pass": true,
+     "detail": 0.0586
+    },
+    {
+     "check": "lid_upper.L deformed by the saved pose/expression after reopen",
+     "pass": true,
+     "detail": 0.0295
+    },
+    {
+     "check": "renders",
+     "pass": true,
+     "detail": 0.34
+    }
+   ]
+  },
+  "T6_gltf_reuse": {
+   "pass": true,
+   "checks": [
+    {
+     "check": "skeleton",
+     "pass": true,
+     "detail": 74
+    },
+    {
+     "check": "skinned meshes",
+     "pass": true,
+     "detail": 55
+    },
+    {
+     "check": "morph targets",
+     "pass": true,
+     "detail": [
+      "Blink",
+      "BrowDown",
+      "JawOpen",
+      "Smile"
+     ]
+    },
+    {
+     "check": "imported skin deforms when posed",
+     "pass": true,
+     "detail": 0.185
+    }
+   ]
+  }
+ },
+ "pass": true
+}

@@ -15,9 +15,17 @@ Completed and tested:
   Test `pipeline/charsys/tests/face_test.py`; evidence `docs/evaluation/face_controls/`. Regression
   `verify_charsys.py` PASS (67/0).
 
+- Hair H26 (dense rows + fanned crown, spec override): contour 2.99%, IoU 0.8463, head width +2.0%; fixes the
+  H25 review points (cap patches, nape, back density, crown). Evidence `docs/evaluation/hair_experiments/H26_*`.
+- Face F02 (`lips_jaw/1` + F01 Blink): real mouth opening with dark interior, `DEF-jaw` bone driven by
+  `face_JawOpen` (6.7 mm chin drop), closed mouth hides the interior (0%). Temp-store reuse test PASS (411/74 bones,
+  glTF, episode link). Evidence `docs/evaluation/face_controls/F02_review_1.0.0_vs_F02.jpg`.
+- Reusability assessment `docs/CHARACTER_REUSABILITY.md`. Regression `verify_charsys.py` PASS (67/0).
+
 Not done / limitations:
-- H25 (hair) and F01 (face) not published or approved (identity changes: owner decision).
-- JawOpen: no mouth cavity, no jaw rotation; closed lid still slightly rounded.
+- H25/H26 (hair) and F01/F02 (face) not published or approved (identity changes: owner decision); H25 and F01 reviewed and not approved.
+- F02: flat interior (no teeth/tongue), skin stretch at mouth corners (3.5x), Smile without cheek/eye coordination; closed lid slightly rounded.
+- H26: crown tufts form a regular ring; #7 front 3.63%.
 - Smooth cap patch behind the ear; crown tufts thinner than the refs; side/back-¾ views still 3.5–3.7%.
 - Your local Blender 5.2 runs (`reproduce_v6.py`, `verify_charsys.py`) not yet reported.
 - Fur is evaluation-only (not in master/glb); no USD/Alembic.

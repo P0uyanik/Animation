@@ -1,0 +1,10 @@
+{
+ "variant": "F02_lips_jaw_cavity",
+ "description": "F01 Blink (lid_seam/1) + lips_jaw/1: lips with a seam, mouth opening cut into the head, dark cavity, DEF-jaw bone driven by face_JawOpen, smile 7 mm",
+ "base_spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.spec.json",
+ "status": "experimental (not approved; never published as the character)",
+ "override": {"face": {"blink": {"generator": "lid_seam/1", "overlap_deg": 3, "closed_offset_m": 0.0012},
+                       "mouth": {"generator": "lips_jaw/1", "half_width_m": 0.0125, "lip_height_m": 0.0032, "frown_m": 0.0035,
+                                 "smile_up_m": 0.007, "jaw_open_deg": 5.0, "pivot_drop_m": 0.012, "cavity_depth_m": 0.0,
+                                 "cheek_falloff_m": [0.030, 0.065]}}}
+}

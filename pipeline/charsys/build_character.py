@@ -192,6 +192,9 @@ def main():
     ears = B.build_ears(C, M, head)
     eyes, lids, lms = B.build_eyes(C, M, head)
     brows, mouth = B.build_brows_mouth(C, M, head)
+    mcfg = spec["face"].get("mouth", {})
+    if mcfg.get("generator") == "lips_jaw/1":  # lips with a seam (replaces the closed mouth patch)
+        mouth = FACE.build_mouth_lips(C, M, head, B, mcfg)
     hair, hair_stats = HAIR.build(C, M, head, B, spec["hair"])
     hoodie, hoodie_bits = B.build_hoodie(C, M)
     hands = B.build_hands(C, M)
@@ -205,8 +208,11 @@ def main():
     for ob in list(C.objects):
         if ob.type == "MESH" and not ob.data.shape_keys and ob.modifiers:
             G.apply_mods(ob)
+    cavity = FACE.cut_mouth_and_cavity(C, M, head, B, mcfg, mouth) if mcfg.get("generator") == "lips_jaw/1" else None
     head_bone, chest = spec["rig"]["head_bone"], spec["rig"]["chest_bone"]
     rigid = [(o, head_bone) for o in [head] + ears + brows + [mouth] + hair + [l for tup in lids for l in tup[:3]]]
+    if cavity is not None:
+        rigid.append((cavity, head_bone))
     rigid += [(e, f"DEF-eye.{s}") for e, s in zip(eyes, ("L", "R"))]
     rigid += [(s, f"DEF-foot.{side}") for s, side in zip(shoes, ("L", "R"))]
     rigid += [(o, f"DEF-foot.{'L' if o.name.endswith('.L') else 'R'}") for o in shoe_bits]
@@ -221,6 +227,10 @@ def main():
         em.parent_bone = head_bone
         em.matrix_world = Matrix.Translation(em.location)
     report["face_controls"] = add_face_controls(rig, C, spec["face"]["expression_shape_keys"])
+    if cavity is not None:
+        report["jaw"] = FACE.add_jaw(rig, head, cavity, mouth, {k: v.matrix_world.translation.copy() for k, v in empties.items()}, head_bone, mcfg)
+        report["rig"]["rigify_bones"] = len(rig.data.bones)  # counts after the added jaw bone
+        report["rig"]["deform_bones"] = sum(1 for b in rig.data.bones if b.use_deform)
     subs, unassigned = organise(C, cid)
     if unassigned:
         raise SystemExit(f"objects without a component: {unassigned}")

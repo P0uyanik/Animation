@@ -70,11 +70,39 @@ def metrics():
     xs = m[:, 0]
     mid = m[np.abs(xs) < 0.002]
     corner = m[np.abs(xs) > xs.max() * 0.9]
-    return {"eye_visible_pct": round(eye_visible(), 1), "lid_proud_mm": round(float(proud), 2),
+    out = {}
+    head = bpy.data.objects["head"]
+    hv = world_verts("head")
+    if "rest_head" not in REST:
+        REST["rest_head"] = hv
+        REST["edges"] = np.array([e.vertices[:] for e in head.data.edges])
+    e = REST["edges"]
+    if len(hv) == len(REST["rest_head"]):
+        l0 = np.linalg.norm(REST["rest_head"][e[:, 0]] - REST["rest_head"][e[:, 1]], axis=1)
+        l1 = np.linalg.norm(hv[e[:, 0]] - hv[e[:, 1]], axis=1)
+        emid = (REST["rest_head"][e[:, 0]] + REST["rest_head"][e[:, 1]]) / 2
+        lm0 = bpy.data.objects["LM_mouth"].matrix_world.translation
+        inside = (np.abs(emid[:, 0] - lm0.x) < 0.013) & (np.abs(emid[:, 2] - lm0.z) < 0.006) & (emid[:, 1] < lm0.y + 0.01)
+        ok = (l0 > 1e-4) & ~(inside if "mouth_cavity" in bpy.data.objects else np.zeros(len(l0), bool))
+        out["max_skin_stretch"] = round(float((l1[ok] / l0[ok]).max()), 3)
+        front = np.abs(REST["rest_head"][:, 0]) < 0.01
+        out["chin_drop_mm"] = round(float((REST["rest_head"][front, 2].min() - hv[front, 2].min()) * 1000), 2)
+    if "mouth_cavity" in bpy.data.objects:
+        lm = bpy.data.objects["LM_mouth"].matrix_world.translation
+        hit = tot = 0
+        for i in range(-4, 5):
+            for j in range(-6, 3):
+                o = Vector((lm.x + i * 0.002, lm.y - 0.3, lm.z + j * 0.0015))
+                okr, loc, nrm, idx, ob, mat = sc.ray_cast(deps(), o, Vector((0, 1, 0)))
+                tot += 1
+                hit += bool(okr and ob is not None and ob.name == "mouth_cavity")
+        out["cavity_visible_pct"] = round(100.0 * hit / tot, 1)
+    return {**out, "eye_visible_pct": round(eye_visible(), 1), "lid_proud_mm": round(float(proud), 2),
             "mouth_open_mm": round(float((mid[:, 2].max() - mid[:, 2].min()) * 1000), 2),
             "corner_lift_mm": round(float((corner[:, 2].mean() - mid[:, 2].mean()) * 1000), 2)}
 
 
+REST = {}
 STATES = [("neutral", {}), ("Blink", {"face_Blink": 1}), ("Smile", {"face_Smile": 1}), ("JawOpen", {"face_JawOpen": 1})]
 res = {}
 for name, kw in STATES:

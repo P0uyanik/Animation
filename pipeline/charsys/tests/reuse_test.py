@@ -114,7 +114,8 @@ for comp, objs in COMPS.items():
     have = sorted(o.name for o in bpy.data.collections[f"{CID}.{comp}"].objects)
     check("T1_reopen_master", f"component {comp}: objects as published", have == sorted(o["name"] for o in objs), len(have))
 rig = next(o for o in root.all_objects if o.type == "ARMATURE")
-check("T1_reopen_master", "rig bones", (len(rig.data.bones), sum(b.use_deform for b in rig.data.bones)) == (410, 73),
+EXP_BONES = (MAN["rig"]["rigify_bones"], MAN["rig"]["deform_bones"])  # from the version's own manifest (not boy constants)
+check("T1_reopen_master", "rig bones", (len(rig.data.bones), sum(b.use_deform for b in rig.data.bones)) == EXP_BONES,
       [len(rig.data.bones), sum(b.use_deform for b in rig.data.bones)])
 deform = {b.name for b in rig.data.bones if b.use_deform}
 unweighted = 0
@@ -212,7 +213,7 @@ bpy.ops.import_scene.gltf(filepath=os.path.join(VD, f"{CID}.glb"))
 arm = [o for o in bpy.data.objects if o.type == "ARMATURE"]
 skinned = [o for o in bpy.data.objects if o.type == "MESH" and any(m.type == "ARMATURE" for m in o.modifiers)]
 morphs = sorted({k.name for o in bpy.data.objects if o.type == "MESH" and o.data.shape_keys for k in o.data.shape_keys.key_blocks} - {"Basis"})
-check("T6_gltf_reuse", "skeleton", len(arm) == 1 and len(arm[0].data.bones) == 73, len(arm[0].data.bones) if arm else 0)
+check("T6_gltf_reuse", "skeleton", len(arm) == 1 and len(arm[0].data.bones) == EXP_BONES[1], len(arm[0].data.bones) if arm else 0)
 check("T6_gltf_reuse", "skinned meshes", len(skinned) >= 50, len(skinned))
 check("T6_gltf_reuse", "morph targets", morphs == sorted(["Blink", "BrowDown", "Smile", "JawOpen"]), morphs)
 sl = next(o for o in skinned if o.name.startswith("hoodie_sleeve.L"))

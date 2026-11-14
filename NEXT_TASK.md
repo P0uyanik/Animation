@@ -1,12 +1,15 @@
 # Next task
 
-1. **Owner decisions** (no further work needed before them):
-   - **H25 hair:** review `docs/evaluation/hair_experiments/cp2_hair_clumps_v2_sheet.jpg`.
-   - **F01 face:** review `docs/evaluation/face_controls/F01_blink_smile_vs_1.0.0.jpg`.
-   - If both are approved: one combined build (spec + H25 + F01 overrides) into a scratch folder, published as
-     1.1.0 with `--identity-change-approved-by "<owner, date>"`, then `tests/reuse_test.py` and
-     `tests/face_test.py` on 1.1.0.
-2. **Next engineering milestone (no approval needed):** JawOpen with a real mouth cavity.
-   - A dark inner-mouth shell behind the mouth patch, plus a jaw bone rotation driven by `face_JawOpen`.
-   - Built as a `face.py` generator; measured with `face_test.py` (opening, cavity visible, no face tearing).
-   - Experimental override only; no publish.
+1. **Owner review (waiting):**
+   - H26 hair: `docs/evaluation/hair_experiments/H26_review_views_1-4.jpg` and `H26_review_views_5-8.jpg`.
+   - F02 face: `docs/evaluation/face_controls/F02_review_1.0.0_vs_F02.jpg`.
+   - Nothing is published until you decide. If approved: one combined build (spec + H26 + F02), published as 1.1.0
+     with `--identity-change-approved-by`, then `reuse_test.py` and `face_test.py` on it.
+2. **Next engineering milestone (no approval needed): coordinated expressions as a reusable layer.**
+   - Smile also raises the cheeks and slightly narrows the eyes. Add cheek bulge and lower-lid lift shape keys,
+     generated from landmarks.
+   - Reduce the mouth-corner skin stretch (softer jaw weights at the corners).
+   - Measured with `face_test.py`; experimental override only.
+3. Later (see `docs/CHARACTER_REUSABILITY.md`):
+   - bridge charsys rigs to the engine's character-independent actions (needs your go-ahead: engine change);
+   - second-character integration test.
