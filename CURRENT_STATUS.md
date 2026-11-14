@@ -50,6 +50,12 @@ Completed and tested:
     test passes. None improves this boy beyond H28, so **H28 remains the hair candidate**.
   - `verify_charsys` PASS; no engine change.
 
+- **Second production character: reference intake and analysis done** (no implementation):
+  - 17 references in `assets/characters/_incoming_second_character/references/`;
+  - analysis, specification, platform assessment and milestone plan in
+    `docs/second_character/REFERENCE_ANALYSIS.md`;
+  - 4 questions open.
+
 Not done / limitations:
 - H25/H26 (hair) and F01/F02 (face) not published or approved (identity changes: owner decision); H25 and F01 reviewed and not approved.
 - F02: flat interior (no teeth/tongue), skin stretch at mouth corners (3.5x), Smile without cheek/eye coordination; closed lid slightly rounded.

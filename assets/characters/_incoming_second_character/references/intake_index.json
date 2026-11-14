@@ -1,0 +1,177 @@
+{
+ "collection": "second production character (pending canonical id)",
+ "received": "2026-11-14",
+ "count": 17,
+ "images": [
+  {
+   "file": "ref_30.webp",
+   "upload_order": 1,
+   "sha256": "dbfd5e50c2effb091e3f54eb9ff2fb05de9c5d102da3fae1781111e64b9fe724",
+   "size": [
+    1493,
+    2000
+   ],
+   "content": "Character sheet 'Character A': 6-view turnaround (front, front-left, left, right, back-right, back), proportion sheet, face & expressions (neutral, happy, sad, surprised, angry), hair construction (fringe, bun, long curls), clothing breakdown, technical guides, modular view (bald head)"
+  },
+  {
+   "file": "ref_31.webp",
+   "upload_order": 2,
+   "sha256": "d8d01e7052d8927d8bc88fd8b3f7e76413502086dd349e5792fcb7c784996d4b",
+   "size": [
+    1493,
+    2000
+   ],
+   "content": "Group sheet: boy_yellow_hoodie, brown-haired girl with glasses (labelled 'Character B'), white-haired girl ('C'); turnarounds, hair construction, clothing geometry, key animation; bottom row line-up"
+  },
+  {
+   "file": "ref_32.webp",
+   "upload_order": 3,
+   "sha256": "336eb64787887f36b9a9345cebd2ad732f0d5ed59521ef9337961ef3422790c6",
+   "size": [
+    1493,
+    2000
+   ],
+   "content": "Blender screenshot: boy, brown-haired girl, white-haired girl rigged side by side ('Production Rigs')"
+  },
+  {
+   "file": "ref_33.webp",
+   "upload_order": 4,
+   "sha256": "853ebf45b7d681094af1203601f32c115fed1b10983f94f288a35719989e69b3",
+   "size": [
+    1493,
+    2000
+   ],
+   "content": "Advanced technical references 'Character [A]': facial topology & rig controls, hand topology & finger rig, body & clothing topology, skeleton & skin weights, hair geometry & material spec"
+  },
+  {
+   "file": "ref_34.webp",
+   "upload_order": 5,
+   "sha256": "185417cca7229e5004692f100aba8357bb0f7b6004722afa642a990b4752e81c",
+   "size": [
+    1493,
+    2000
+   ],
+   "content": "Facial rig: brows, eyelid tracking, jaw rotation, mouth corners; blendshape matrix (neutral, blink, left/right eye closed, squint, wide-open, smile, frown, surprise, sadness, anger, confusion, laugh, mouth open); eye & mouth/jaw controls"
+  },
+  {
+   "file": "ref_35.webp",
+   "upload_order": 6,
+   "sha256": "54d1b69f8aea7b67dbe233bbe999021d6138f5a082e98439d7fc6eb33b534abf",
+   "size": [
+    1493,
+    2000
+   ],
+   "content": "Hand topology & finger rigging blueprint (labelled character_b_reference_01): 5 fingers with MCP/PIP/DIP, thumb opposition, 12 hand poses, hand-object contact, weight guides"
+  },
+  {
+   "file": "ref_36.webp",
+   "upload_order": 7,
+   "sha256": "98289a1ecb0f52ace44055954dc2e94d0072abad273fd4aa549b5fa565f106db",
+   "size": [
+    1493,
+    2000
+   ],
+   "content": "Technical blueprint 'Character A': body & clothing topology, joint deformation, rigging & armature, body animation poses (standing, arms raised, sitting, walking, running, squatting)"
+  },
+  {
+   "file": "ref_37.webp",
+   "upload_order": 8,
+   "sha256": "e7fc37443f07ddc163332f9b29f9976ac75c223129f8b6f589c910f9e915755d",
+   "size": [
+    1493,
+    2000
+   ],
+   "content": "Skeletal hierarchy & skin weight blueprint (labelled character_b_reference_01; outline shows the WHITE-HAIRED girl in a dress): bone tree root-pelvis-spine01-spine02-chest-neck-head, clavicles, thigh-shin-foot-toe, fingers"
+  },
+  {
+   "file": "ref_38.webp",
+   "upload_order": 9,
+   "sha256": "d837f023794b942f5fea47fdf6792e5bf86431be94a0c53609a625ca54b1fe1a",
+   "size": [
+    1493,
+    2000
+   ],
+   "content": "Complete body armature & control rig (brown-haired girl): hierarchy, joint orientation, skin weight distribution, joint deformation tests"
+  },
+  {
+   "file": "ref_39.webp",
+   "upload_order": 10,
+   "sha256": "f6c02bc0bd3142ad6211025ce1e834347d8927eaf3b01d0d53d5a10536c8bcd0",
+   "size": [
+    1493,
+    2000
+   ],
+   "content": "3D hair geometry & groom blueprint (character_a_reference_01): structure, main volume, clump construction, wool fibre structure, curl & wave construction, bun & accessory construction, density, editable components"
+  },
+  {
+   "file": "ref_40.webp",
+   "upload_order": 11,
+   "sha256": "773b1fdfca18b2e096f688e9a09154b9addec4b61c30a36a3cc34ed9241ab2a9",
+   "size": [
+    1493,
+    2000
+   ],
+   "content": "Hair rig & secondary motion blueprint 'Character A': bun, scalp, fringe spline, side-lock chains, back curl chains, collision volumes, spring/damping, overlapping action"
+  },
+  {
+   "file": "ref_41.webp",
+   "upload_order": 12,
+   "sha256": "89707a50b19d7a22a14405bbaba924bcfba0049437e2a9b3331d4c3d940c760e",
+   "size": [
+    1493,
+    2000
+   ],
+   "content": "Garment construction & turnaround: shirt, vest, bloomer shorts, boots; exploded layering; mesh topology; seams & details (embroidery, buttons); joint deformations & cloth-collision boundaries"
+  },
+  {
+   "file": "ref_42.webp",
+   "upload_order": 13,
+   "sha256": "a84e96ec22667baaaae244ae4c48a0ffa235372ed73a740e2d8e7399340a616d",
+   "size": [
+    1493,
+    2000
+   ],
+   "content": "Material & texture specification (character_a_reference_01): hair/wool, skin (soft matte vinyl + SSS), shirt, vest boucle, shorts felted wool, boots fleece, glasses; PBR map requirements; lighting validation"
+  },
+  {
+   "file": "ref_43.webp",
+   "upload_order": 14,
+   "sha256": "4cf4864ab7780faa25d6121f87663fac8d72895b8835d6440ec17fa16812ec34",
+   "size": [
+    1493,
+    2000
+   ],
+   "content": "UV mapping sheet: seams, packed UV map, head/face, hair & accessories, clothing & shoes, texel density"
+  },
+  {
+   "file": "ref_44.webp",
+   "upload_order": 15,
+   "sha256": "651e256e8a5772cc8593e501cabcf31ca96eeabbcc547675fd24d8015a0fc0c2",
+   "size": [
+    1493,
+    2000
+   ],
+   "content": "Hand anatomy & contact zones, grasp types (precision pinch, power grasp, open-hand support), pick-up sequence, holding & manipulation, environment & character contact (feet, chair, table)"
+  },
+  {
+   "file": "ref_45.webp",
+   "upload_order": 16,
+   "sha256": "a86d4021774d70bf2c5f972a9cb83912a21165b2ac3aee4ae8c603aec7b13331",
+   "size": [
+    1493,
+    2000
+   ],
+   "content": "Validation sheet: neutral pose (F, 3/4, S, B) with skeleton, joint deformation, facial deformation tests (neutral, smile, surprise, sad, eyes closed), hand & finger deformation, hair & clothing collision, full-body animation tests (walk, run, jump, landing)"
+  },
+  {
+   "file": "ref_46.webp",
+   "upload_order": 17,
+   "sha256": "b6c360f554ff45f2fb1f2e712df14c99529a22ef8672eb59f93c6d3afcb58e2e",
+   "size": [
+    1493,
+    2000
+   ],
+   "content": "Geometry & material analysis + armature overlay + animation & interaction test (walk, sit on chair, wave)"
+  }
+ ]
+}
