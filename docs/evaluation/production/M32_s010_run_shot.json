@@ -1,0 +1,64 @@
+{
+ "shot": "episodes/e000_pilot/shots/s010/shot.scene.json",
+ "steps": {
+  "engine_bake_s": 0.2,
+  "blender_s": 1036.6,
+  "video_s": 1.0
+ },
+ "cast": {
+  "boy": {
+   "character_id": "boy_yellow_hoodie",
+   "status": "published 1.0.0",
+   "master_sha256": "21d65f461b03fcff3fc0d1e7b75866a8f6ccdae658fdd3bc2c76135f71bdfa23",
+   "package": "episodes/e000_pilot/shots/s010/build/packages/boy_21d65f461b03fcff"
+  },
+  "girl": {
+   "character_id": "girl_auburn_bun_glasses",
+   "status": "unpublished build from spec (experimental; not approved)",
+   "master_sha256": "9877d13fdb43d6426670cd368f225a80803498e433973724d2e25ee28a07dec1",
+   "package": "episodes/e000_pilot/shots/s010/build/packages/girl_9877d13fdb43d642"
+  }
+ },
+ "render": {
+  "bake": "/home/user/plush-studio/episodes/e000_pilot/shots/s010/build/bake.json",
+  "frames": [
+   1,
+   120
+  ],
+  "characters": {
+   "boy": {
+    "master": "/home/user/plush-studio/assets/characters/boy_yellow_hoodie/versions/1.0.0/boy_yellow_hoodie_master.blend",
+    "baked_bones": 73,
+    "facial_controls": 4,
+    "unmapped_morphs": [],
+    "bones_left_to_drivers": [],
+    "max_bone_error_mm": 0.0003,
+    "max_bone_error_deg": 0.0
+   },
+   "girl": {
+    "master": "/home/user/plush-studio/episodes/e000_pilot/shots/s010/build/masters/girl_68bcba4c4ada0d92/girl_auburn_bun_glasses_master.blend",
+    "baked_bones": 73,
+    "facial_controls": 28,
+    "unmapped_morphs": [],
+    "bones_left_to_drivers": [
+     "DEF-jaw"
+    ],
+    "max_bone_error_mm": 0.0003,
+    "max_bone_error_deg": 0.0
+   }
+  },
+  "not_rendered": [],
+  "world": {
+   "lights": 3,
+   "objects": 2
+  },
+  "setup_s": 4.6,
+  "render_s": 1031.1,
+  "render_s_per_frame": 8.59,
+  "resolution": [
+   640,
+   360
+  ],
+  "samples": 32
+ }
+}

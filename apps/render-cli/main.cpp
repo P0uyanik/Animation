@@ -4,12 +4,14 @@
 // Frame sequences resume automatically: frames that already exist are skipped.
 #include <cstdlib>
 #include <cstdio>
+#include <fstream>
 #include <filesystem>
 #include <optional>
 #include <string>
 
 #include "render/image.h"
 #include "scene/scene.h"
+#include "scene/shot_bake.h"
 
 using namespace plush;
 namespace fs = std::filesystem;
@@ -19,6 +21,7 @@ void usage() {
   std::puts(
       "usage: plush-render <scene.json> [options]\n"
       "  --frame N            render one frame (default: scene start)\n"
+      "  --bake FILE.json     write the shot bake (plush.shot_bake/1) for the frame range instead of rendering\n"
       "  --frames A-B         render a frame range into --outdir\n"
       "  --out FILE.png       output for a single frame (default render.png)\n"
       "  --outdir DIR         output folder for sequences (frame_0001.png ...)\n"
@@ -47,7 +50,7 @@ int main(int argc, char** argv) {
   }
   fs::path scenePath = argv[1];
   int frameA = INT32_MIN, frameB = INT32_MIN;
-  fs::path out = "render.png", outdir, video;
+  fs::path out = "render.png", outdir, video, bakePath;
   EvalOptions eval;
   bool overwrite = false, hdr = false;
   int width = 0, height = 0, spp = 0, depth = 0;
@@ -80,6 +83,7 @@ int main(int argc, char** argv) {
       frameA = std::stoi(r.substr(0, dash));
       frameB = dash == std::string::npos ? frameA : std::stoi(r.substr(dash + 1));
     } else if (a == "--out") out = next();
+    else if (a == "--bake") bakePath = next();
     else if (a == "--outdir") outdir = next();
     else if (a == "--video") video = next();
     else if (a == "--width") width = std::stoi(next());
@@ -142,6 +146,20 @@ int main(int argc, char** argv) {
   logInfo("scene '{}' prepared in {:.2f}s ({} threads, denoiser {})", scene->name, total.seconds(), workerCount(),
           denoiserAvailable() ? "on" : "unavailable");
 
+  if (!bakePath.empty()) {  // animation hand-off to a production renderer (see engine/scene/shot_bake.h)
+    if (frameB == frameA && frameA == scene->frameStart) frameB = scene->frameEnd;  // default: the whole shot
+    Stopwatch sw;
+    Json bake = bakeShot(evaluator, frameA, frameB);
+    std::ofstream f(bakePath);
+    f << bake.dump();
+    if (!f) {
+      logError("cannot write {}", bakePath.string());
+      return 1;
+    }
+    logInfo("baked frames {}-{} of '{}' -> {} ({:.1f}s)", frameA, frameB, scene->name, bakePath.string(), sw.seconds());
+    for (const auto& w : evaluator.warnings()) logInfo("warning: {}", w);
+    return 0;
+  }
   PathTracer tracer;
   for (int f = frameA; f <= frameB; ++f) {
     fs::path target = sequence ? outdir / std::format("frame_{:04d}.png", f) : out;

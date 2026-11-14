@@ -121,6 +121,11 @@ class SceneEvaluator {
   std::vector<std::string> warnings_;
   static std::string blinkMorph(const CharacterInstance& ci);
  public:
+  // Camera at a frame (scene camera + camera.position/target/lens tracks).
+  Camera cameraAt(double frame) const;
+  // Morph control weight as rendered before in-between expansion: the animated channel, and for the character's
+  // blink morph the life-layer blink (max of both). This is what a facial control is set to.
+  float morphControlWeight(size_t c, const std::string& morph, double frame) const;
   // Effective life parameters of character c (scene values + the character's blink timing).
   LifeParams lifeParams(size_t c) const;
   // Animated weight of morph `morph` of character c at `frame`.

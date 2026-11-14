@@ -1,5 +1,11 @@
 # Current status (2026-11-14)
 
+**Latest: M3.2, first end-to-end production path (TD-42: engine animates, Blender renders).**
+- The pilot shot `episodes/e000_pilot/shots/s010` (published boy + unpublished girl, 120 frames) runs from character
+  sources through the engine bake to a Cycles render with one command (`pipeline/production/run_shot.py`).
+- Bones exact (≤ 0.0003 mm); bake round trip 0 mm; `ctest` 4/4; `verify_charsys` PASS.
+- Details: `docs/PRODUCTION_PIPELINE.md`.
+
 **Latest: M3.1 facial engine completion (experimental; technically verified; awaiting review).** Details:
 `docs/second_character/M3_FACE_SYSTEM.md` (M3.1 section).
 - Engine:

@@ -282,3 +282,16 @@ no Blender in the workflow, use the existing (unknown) computer, no GPU purchase
 - **Accessories** are separate rigid parts placed from landmarks and the head surface (`accessories.py`), never inside
   a face or body generator.
 - The boy's legacy face stays as the compatibility baseline until an approved migration.
+
+## TD-42 Final shots render in Blender; the engine owns animation (2026-11-14)
+- **Evidence:**
+  - the engine path tracer drops Blender materials of imported characters (white eyes, untextured mouth; M3.1);
+  - Blender already renders every character material;
+  - moving animation from the engine to Blender is an exact, character-independent mapping (skinning matrices and
+    facial control weights).
+- **Hand-off:** `plush.shot_bake/1`, written by the engine (`bakeShot`, `plush-render --bake`) and applied in
+  Blender by `shot_render.py`. Masters stay linked and read-only.
+- **The engine renderer stays** for previews and its image regressions. It is not the production renderer for
+  Blender-built characters.
+- **Trade-off:** Cycles is slower (8.6 s per frame at 640×360 / 32 samples in the pilot), and lighting translation
+  is approximate.

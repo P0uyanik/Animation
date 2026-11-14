@@ -9,6 +9,7 @@
 
 #include "model/imported_character.h"
 #include "scene/scene.h"
+#include "scene/shot_bake.h"
 
 using namespace plush;
 
@@ -429,6 +430,44 @@ TEST_CASE("per-character blink timing from the package") {
   REQUIRE(ev.load(s, EvalOptions{2.5f, 1.0f, false, 0}).has_value());
   CHECK(ev.lifeParams(0).blinkInterval == doctest::Approx(5.0f));
   CHECK(ev.lifeParams(0).blinkClose == doctest::Approx(0.08f));
+}
+
+TEST_CASE("shot bake: engine animation hand-off (plush.shot_bake/1)") {
+  // The bake carries exactly the skinning the engine renders: rebuilding the posed mesh from the baked matrices and
+  // control weights reproduces SceneEvaluator::evaluate (the production renderer receives the same animation).
+  Json actions = Json::parse(R"([{"type": "expression", "character": "who", "name": "laugh", "start": 2},
+                                 {"type": "look", "character": "who", "start": 1, "end": 30, "target": [0.4, 0.8, 1.0]}])");
+  auto ev = sceneWith("girl_auburn_bun_glasses_m3", actions, true);
+  Json bake = bakeShot(*ev, 1, 20);
+  CHECK(bake["format"] == "plush.shot_bake");
+  CHECK(bake["version"] == 1);
+  REQUIRE(bake["frame_data"].size() == 20);
+  const auto& ci = ev->characters()[0];
+  const Json& ch = bake["characters"][0];
+  CHECK(ch["supported"].get<bool>());
+  REQUIRE(ch["bones"].size() == ci.asset.skeleton.bones.size());
+  const Json& fd = bake["frame_data"][19]["characters"]["who"];
+  std::vector<mat4> skin(ci.asset.skeleton.bones.size());
+  for (size_t b = 0; b < skin.size(); ++b)
+    for (int k = 0; k < 16; ++k) skin[b][k / 4][k % 4] = fd["skin"][b * 16 + k].get<float>();
+  std::vector<std::string> unique = ch["morphs"].get<std::vector<std::string>>(), names;
+  std::vector<float> w;
+  for (auto& mt : ci.rig.morphs) {
+    names.push_back(mt.name);
+    size_t k = size_t(std::find(unique.begin(), unique.end(), mt.name) - unique.begin());
+    w.push_back(fd["morphs"][k].get<float>());
+  }
+  auto rebuilt = poseCharacter(ci.rig, skin, expandInbetweens(ci.asset, names, w), ci.asset.dualQuaternion);
+  auto ref = ev->evaluate(20);
+  float worst = 0;
+  for (size_t m = 0; m < rebuilt.meshes.size(); ++m)
+    for (size_t v = 0; v < rebuilt.meshes[m]->positions.size(); ++v)
+      worst = std::max(worst, glm::distance(rebuilt.meshes[m]->positions[v], ref->meshes[m].mesh->positions[v]));
+  MESSAGE("bake round trip: max vertex difference " << worst * 1000 << " mm");
+  CHECK(worst < 1e-5f);
+  CHECK(glm::distance(vec3(bake["frame_data"][0]["camera"]["position"][0].get<float>(), bake["frame_data"][0]["camera"]["position"][1].get<float>(),
+                           bake["frame_data"][0]["camera"]["position"][2].get<float>()),
+                      ev->cameraAt(1).position) < 1e-6f);
 }
 
 TEST_CASE("hand pose is independent of hand orientation and works with fewer digits") {

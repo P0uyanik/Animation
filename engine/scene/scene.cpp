@@ -443,6 +443,29 @@ LifeParams SceneEvaluator::lifeParams(size_t c) const {
   return life;
 }
 
+Camera SceneEvaluator::cameraAt(double frame) const {
+  const Clip& clip = scene_.animation;
+  Camera cam = scene_.camera;
+  cam.position = clip.evaluate("camera.position", frame, cam.position);
+  cam.target = clip.evaluate("camera.target", frame, cam.target);
+  if (const Track* t = clip.find("camera.lens"); t && !t->keys.empty()) {
+    vec3 lens = t->evaluate(frame);  // focalMm, fStop, focusDistance
+    cam.focalMm = lens.x;
+    cam.fStop = lens.y;
+    cam.focusDistance = lens.z;
+  }
+  return cam;
+}
+
+float SceneEvaluator::morphControlWeight(size_t c, const std::string& morph, double frame) const {
+  float w = expressionWeight(c, morph, frame);
+  const LifeParams life = lifeParams(c);
+  if (life.enabled && morph == blinkMorph(characters_[c]))
+    w = std::max(w, blinkAmount(frame / std::max(1.0, scene_.rate.fps()), life.blinkInterval, life.seed, life.blinkClose,
+                                life.blinkHold, life.blinkOpen));
+  return w;
+}
+
 // Animated weight of a morph channel (track "<name>/expr.<morph>", else the character's default expression).
 float SceneEvaluator::expressionWeight(size_t c, const std::string& morph, double frame) const {
   const CharacterInstance& ci = characters_[c];
@@ -566,15 +589,7 @@ std::shared_ptr<FrameSnapshot> SceneEvaluator::evaluate(double frame) const {
     objectMeshes.push_back({m, g.material});
   }
   snap->meshes.insert(snap->meshes.begin(), objectMeshes.begin(), objectMeshes.end());
-  Camera cam = scene_.camera;
-  cam.position = clip.evaluate("camera.position", frame, cam.position);
-  cam.target = clip.evaluate("camera.target", frame, cam.target);
-  if (const Track* t = clip.find("camera.lens"); t && !t->keys.empty()) {
-    vec3 lens = t->evaluate(frame);  // focalMm, fStop, focusDistance
-    cam.focalMm = lens.x;
-    cam.fStop = lens.y;
-    cam.focusDistance = lens.z;
-  }
+  Camera cam = cameraAt(frame);
   snap->camera = cam;
   if (options_.lodWidth > 0) {
     float perMetre = (cam.sensorWidthMm / cam.focalMm) / float(options_.lodWidth);

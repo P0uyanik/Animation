@@ -1,15 +1,15 @@
 # Next task
 
-1. **Owner review of M3.1** (facial engine completion): `docs/milestones/2026-11-14_second_character_M3_1.md`.
-2. **Still open from M3:**
-   - review of the girl's face;
-   - decision on rounded closed lids;
-   - spec tuning (brows, ears, lash weight).
-3. **Proposed, not started:**
-   - engine material export for the procedural eye and the mouth interior (iris, highlights, vertex colours);
-   - affine iris-sliding gaze for strongly oval eyes;
-   - M4 hair and hair accessories.
-4. Still pending your review:
-   - M2 open items;
-   - the boy's F09 / H28 candidates;
-   - the boy's face convergence.
+1. **Owner review of M3.2:**
+   - `docs/PRODUCTION_PIPELINE.md`;
+   - `docs/evaluation/production/M32_s010_contact_sheet.jpg` and `M32_s010_shot.mp4`.
+2. **Next concrete dependency:** connect Plush Studio to the shot pipeline. Studio opens a shot, edits actions and
+   the camera, and calls `run_shot.py` (bake, then render) and shows the result. This makes the product, not
+   hand-written JSON, the place where shots are made.
+3. **Then:**
+   - the girl's hair and garments (M4/M5) on the shared path, judged in final Blender renders;
+   - a relaxed idle arm pose for imported characters (engine data, not per character);
+   - an episode layer (shot sequence, audio).
+4. **Still pending your review:**
+   - M3 / M3.1;
+   - the boy's F09 / H28 candidates.
