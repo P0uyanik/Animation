@@ -23,8 +23,12 @@ def _front_edge_elevation(ob, c, r, lowest):
     return math.degrees(math.atan2(d.z, -d.y))
 
 
-def add_blink_lid_seam(lids, eye_r, G, cfg):
+def add_blink_lid_seam(lids, eye_r, G, cfg, eyes=()):
+    """cfg flatten (0..0.6): when closed, the front of the eyeball and the closed lid/lash are compressed along the
+    eye's forward axis by this fraction (Blink shape key on the eyeball too), so a protruding eye does not close into
+    a dome. Default 0 keeps the F01/F02 behaviour."""
     overlap = float(cfg.get("overlap_deg", 3.0))
+    flat = 1.0 - float(cfg.get("flatten", 0.0))
     closed_off = float(cfg.get("closed_offset_m", 0.0012))
     report = []
     for up, lo, lash, c in lids:
@@ -36,6 +40,8 @@ def add_blink_lid_seam(lids, eye_r, G, cfg):
         ang = (e_up - e_lo) + overlap
         R = Matrix.Rotation(math.radians(ang), 3, Vector((1, 0, 0)))
         r_in = min((v.co - c).length for v in up.data.vertices)  # inner shell radius (eye_r + gap)
+        shell = max((v.co - c).length for v in up.data.vertices) - r_in
+        ts = float(cfg["closed_thickness_m"]) / shell if cfg.get("closed_thickness_m") else 1.0  # thinner when closed
         for ob in (up, lash):
             if ob.data.shape_keys is None:
                 ob.shape_key_add(name="Basis")
@@ -45,10 +51,21 @@ def add_blink_lid_seam(lids, eye_r, G, cfg):
                 d = R @ (v.co - c)
                 if ob is up:  # pull the closed shell towards the eyeball, keeping its thickness
                     L = d.length
-                    d = d * ((eye_r + closed_off + (L - r_in)) / L)
+                    d = d * ((eye_r + closed_off + (L - r_in) * ts) / L)
+                if flat < 1.0 and d.y < 0 and (ob is up or cfg.get("flatten_lash", True)):  # forward part (eye looks along -y)
+                    d = Vector((d.x, d.y * flat, d.z))
                 k.data[i].co = c + d
+        eye = next((e for e in eyes if (e.matrix_world.translation - c).length < 1e-4), None)
+        if flat < 1.0 and eye is not None:  # flatten the front of the eyeball under the closed lid
+            if eye.data.shape_keys is None:
+                eye.shape_key_add(name="Basis")
+            ek = eye.shape_key_add(name="Blink")
+            ek.value = 0.0
+            for i, v in enumerate(eye.data.vertices):
+                co = v.co.copy()  # eye mesh is centred on its object origin (= c)
+                ek.data[i].co = Vector((co.x, co.y * flat, co.z)) if co.y < 0 else co
         report.append({"lid": up.name, "edge_upper_deg": round(e_up, 1), "edge_lower_deg": round(e_lo, 1),
-                       "close_deg": round(ang, 1)})
+                       "close_deg": round(ang, 1), "flatten": round(1 - flat, 2)})
     return report
 
 
@@ -82,13 +99,13 @@ def strengthen_smile(mouth, head, B, cfg):
     return {"corner_up_m": up, "widen": widen}
 
 
-def add_expression_keys(lids, brows, mouth, head, B, face_spec):
+def add_expression_keys(lids, brows, mouth, head, B, face_spec, eyes=()):
     """Dispatch: v6 keys by default; lid_seam/1 Blink and corner_lift/1 Smile when the spec asks for them."""
     blink = (face_spec or {}).get("blink", {})
     smile = (face_spec or {}).get("smile", {})
     rep = {}
     if blink.get("generator", "v6") == "lid_seam/1":
-        rep["blink"] = add_blink_lid_seam(lids, B.EYE_R, B.G, blink)
+        rep["blink"] = add_blink_lid_seam(lids, B.EYE_R, B.G, blink, eyes)
         add_brow_down(brows)
     else:
         B.add_expression_keys(lids, brows)
@@ -108,69 +125,125 @@ def _smooth(e0, e1, x):
 
 
 def build_mouth_lips(C, M, head, B, cfg):
-    """Upper and lower lip strips meeting at a seam (closed at rest). Rows: 0 upper outer, 1 upper inner,
-    2 lower inner, 3 lower outer. Shape keys: Smile (corners up), JawOpen (upper lip lifts slightly; the jaw bone
-    does the opening)."""
+    """Lips meeting at a seam (closed at rest).
+    lips_jaw/1 rows: 0 upper outer, 1 upper seam, 2 lower seam, 3 lower outer; all in the mouth material.
+    lips_jaw/2 rows: 0 upper outer, 1 upper line edge, 2 upper seam, 3 lower seam, 4 lower line edge, 5 lower outer;
+      the outer strips use the lip material (cfg lip_material, default the skin), only the thin band around the seam
+      (cfg seam_half_m) uses the dark mouth material, so the closed mouth reads as a line, not a dark slit.
+    Shape keys: Smile (corners up, widened), JawOpen (upper lip lifts slightly; the jaw bone does the opening)."""
     import bpy
     G = B.G
+    v2 = cfg.get("generator") == "lips_jaw/2"
     w, lh, fr = float(cfg.get("half_width_m", 0.0125)), float(cfg.get("lip_height_m", 0.0032)), float(cfg.get("frown_m", 0.0035))
+    band = float(cfg.get("seam_half_m", 0.0008))
+    edge_off, bulge = float(cfg.get("lip_edge_offset_m", 0.0002)), float(cfg.get("lip_bulge_m", 0.0012))
+    dzs = (lh, band, 0.0, 0.0, -band, -lh) if v2 else (lh, 0.0, 0.0, -lh)
+    n_up = len(dzs) // 2
     zm = B.Z["mouth"]
     n = 13
 
     def rows(frown, widen=1.0, up_lift=0.0):
         out = []
-        for r, dz in enumerate((lh, 0.0, 0.0, -lh)):
+        for r, dz in enumerate(dzs):
             row = []
             for k in range(n):
                 u = -1 + 2 * k / (n - 1)
                 env = math.sqrt(max(1 - u * u, 0.0))
                 x = u * w * widen
-                z = zm - frown * u * u + dz * (0.35 + 0.65 * env) + (up_lift * env if r < 2 else 0.0)
-                row.append((x, B.face_y(head, x, z) - 0.0012, z))
+                z = zm - frown * u * u + dz * (0.35 + 0.65 * env) + (up_lift * env if r < n_up else 0.0)
+                # v2: outer lip edges lie on the skin (no floating rim / cast shadow), the seam bulges slightly
+                off = (edge_off + (bulge - edge_off) * (1 - abs(dz) / lh)) if v2 else 0.0012
+                row.append((x, B.face_y(head, x, z) - off, z))
             out.append(row)
         return out
     verts = [v for row in rows(fr) for v in row]
-    faces = [(r * n + i, r * n + i + 1, (r + 1) * n + i + 1, (r + 1) * n + i) for r in (0, 2) for i in range(n - 1)]
+    strips = [r for r in range(len(dzs) - 1) if r != n_up - 1]  # no faces across the seam
+    faces = [(r * n + i, r * n + i + 1, (r + 1) * n + i + 1, (r + 1) * n + i) for r in strips for i in range(n - 1)]
     old = bpy.data.objects.get("mouth")
     if old is not None:
         bpy.data.objects.remove(old, do_unlink=True)
     mouth = G.new_object("mouth", verts, faces, C)
-    G.assign(mouth, M["mouth"])
+    if v2:  # mouth line: its own matte material (cfg line_srgb, line_roughness) so the seam reads as one line
+        G.assign(mouth, G.material("M_mouth_line", tuple(cfg.get("line_srgb", (70, 34, 32))), roughness=float(cfg.get("line_roughness", 1.0))))
+    else:
+        G.assign(mouth, M["mouth"])
+    if v2:  # outer strips: lip material (slot 1); seam band: line material (slot 0)
+        lip = M.get(cfg.get("lip_material", "skin"), M["skin"])
+        mouth.data.materials.append(lip)
+        for f, (r, i) in zip(mouth.data.polygons, [(r, i) for r in strips for i in range(n - 1)]):
+            f.material_index = 1 if r in (0, len(dzs) - 2) else 0
     mouth.shape_key_add(name="Basis")
     up = float(cfg.get("smile_up_m", 0.007))
-    for name, rr in (("Smile", rows(fr - fr - up, widen=1.12)), ("JawOpen", rows(fr, up_lift=0.0015))):
+    for name, rr in (("Smile", rows(fr - fr - up, widen=float(cfg.get("smile_widen", 1.12)))), ("JawOpen", rows(fr, up_lift=0.0015))):
         k = mouth.shape_key_add(name=name)
         k.value = 0.0
         for i, v in enumerate(v for row in rr for v in row):
             k.data[i].co = v
-    mouth["ps_lip_rows"] = n  # vertices per row; rows 2-3 belong to the lower lip (jaw)
+    mouth["ps_lip_rows"] = n
+    mouth["ps_seam_rows"] = [n_up - 1, n_up]          # upper seam row, lower seam row
+    mouth["ps_lower_rows"] = list(range(n_up, len(dzs)))  # follow the jaw
     return mouth
 
 
 def cut_mouth_and_cavity(C, M, head, B, cfg, mouth):
-    """Mouth interior without cutting the head: a dark surface hanging between the inner lip edges (rows: top =
-    upper-lip inner edge, middle = pushed back by cavity_depth_m, bottom = lower-lip inner edge), all just behind the
-    lips. At rest the rows coincide in the front view (zero visible area); when the jaw opens, the top row stays with
-    the head and the bottom row follows the jaw, so the interior fills exactly the gap between the lips and hides
-    the skin behind it. (A boolean cut is not used: the head is a closed surface and a difference only dents it.)"""
+    """Mouth interior without cutting the head: a surface hanging between the inner lip edges, just behind the lips.
+    All rows coincide at rest (zero visible area). Each row follows the jaw by its fraction t (top 0 = head, bottom
+    1 = jaw), so it fills exactly the gap between the lips. (A boolean cut is not used: the head is a closed
+    surface and a difference only dents it.)
+    lips_jaw/1: 3 rows, one dark material. lips_jaw/2: cfg interior_rows rows with vertex-colour shading for depth:
+    reddish inner edges (cfg inner_srgb), dark throat in the middle (cfg throat_srgb), tongue tint low in the
+    centre (cfg tongue_srgb; set it to the throat colour for no tongue). No extra geometry."""
+    import bpy
     G = B.G
+    v2 = cfg.get("generator") == "lips_jaw/2"
     n = int(mouth["ps_lip_rows"])
+    s_up, s_lo = (list(mouth["ps_seam_rows"]) if "ps_seam_rows" in mouth else [1, 2])
     co = [v.co.copy() for v in mouth.data.vertices]
     back = float(cfg.get("interior_offset_m", 0.0006))
-    depth = float(cfg.get("cavity_depth_m", 0.006))
+    depth = float(cfg.get("cavity_depth_m", 0.0))
+    ts = [0.0, 0.5, 1.0] if not v2 else [i / (int(cfg.get("interior_rows", 7)) - 1) for i in range(int(cfg.get("interior_rows", 7)))]
     verts = []
-    for r, (row, dy) in enumerate(((1, back), (1, back + depth), (2, back))):
+    for t in ts:
         for k in range(n):
-            p = co[row * n + k]
+            p = co[s_up * n + k] if t < 0.5 else co[s_lo * n + k]
             u = -1 + 2 * k / (n - 1)
             env = math.sqrt(max(1 - u * u, 0.0))
-            verts.append((p.x * 0.97, p.y + (dy if r != 1 else back + depth * env), p.z))
-    faces = [(r * n + i, r * n + i + 1, (r + 1) * n + i + 1, (r + 1) * n + i) for r in range(2) for i in range(n - 1)]
+            mid = 1 - abs(2 * t - 1)
+            verts.append((p.x * 0.97, p.y + back + depth * env * mid, p.z))
+    R = len(ts)
+    faces = [(r * n + i, r * n + i + 1, (r + 1) * n + i + 1, (r + 1) * n + i) for r in range(R - 1) for i in range(n - 1)]
     cav = G.new_object("mouth_cavity", verts, faces, C)
     cav["ps_rows"] = n
-    if "mouth_inner" not in M:
-        M["mouth_inner"] = G.material("M_mouth_inner", tuple(cfg.get("cavity_srgb", (62, 24, 26))), roughness=0.75)
-    G.assign(cav, M["mouth_inner"])
+    cav["ps_row_weights"] = ts
+    if v2:
+        lin = lambda c: tuple(float(x) for x in G.srgb_to_linear(tuple(c)))  # noqa: E731
+        inner, throat, tongue = (lin(cfg.get(k, d)) for k, d in (("inner_srgb", (128, 52, 52)), ("throat_srgb", (34, 12, 14)),
+                                                                  ("tongue_srgb", (150, 72, 74))))
+        attr = cav.data.color_attributes.new("ps_mouth_shade", "FLOAT_COLOR", "POINT")
+        for r, t in enumerate(ts):
+            for k in range(n):
+                u = -1 + 2 * k / (n - 1)
+                edge = max(abs(2 * t - 1), abs(u)) ** 3  # 1 at the lips, 0 deep inside
+                col = [throat[i] + (inner[i] - throat[i]) * edge for i in range(3)]
+                tw = max(0.0, (t - 0.55) / 0.45) * max(0.0, 1 - abs(u) * 1.3) * (1 - edge)  # tongue: low, central
+                col = [col[i] + (tongue[i] - col[i]) * tw for i in range(3)]
+                attr.data[r * n + k].color = (*col, 1.0)
+        mat = M.get("mouth_inner_v2")
+        if mat is None:
+            mat = bpy.data.materials.new("M_mouth_inner_shaded")
+            mat.use_nodes = True
+            nt = mat.node_tree
+            p = nt.nodes.get("Principled BSDF")
+            a = nt.nodes.new("ShaderNodeAttribute")
+            a.attribute_name = "ps_mouth_shade"
+            nt.links.new(a.outputs["Color"], p.inputs["Base Color"])
+            p.inputs["Roughness"].default_value = 0.6
+            M["mouth_inner_v2"] = mat
+        G.assign(cav, mat)
+    else:
+        if "mouth_inner" not in M:
+            M["mouth_inner"] = G.material("M_mouth_inner", tuple(cfg.get("cavity_srgb", (62, 24, 26))), roughness=0.75)
+        G.assign(cav, M["mouth_inner"])
     return cav
 
 
@@ -215,7 +288,7 @@ def add_jaw(rig, head, cav, mouth, landmarks, head_bone, cfg):
     stats = {}
     n = int(cav["ps_rows"])
     cj = cav.vertex_groups.get("DEF-jaw") or cav.vertex_groups.new(name="DEF-jaw")
-    for r, wr in ((0, 0.0), (1, 0.5), (2, 1.0)):  # interior: top with the head, bottom with the jaw
+    for r, wr in enumerate(list(cav.get("ps_row_weights", [0.0, 0.5, 1.0]))):  # interior: top with the head, bottom with the jaw
         for k in range(n):
             u = -1 + 2 * k / (n - 1)
             wj = wr * (1 - 0.6 * u ** 4)
@@ -234,7 +307,7 @@ def add_jaw(rig, head, cav, mouth, landmarks, head_bone, cfg):
         stats[ob.name] = moved
     n = int(mouth.get("ps_lip_rows", 13))
     jg = mouth.vertex_groups.get("DEF-jaw") or mouth.vertex_groups.new(name="DEF-jaw")
-    for r in (2, 3):  # lower lip follows the jaw; its corners blend with the head so they do not tear
+    for r in list(mouth.get("ps_lower_rows", [2, 3])):  # lower lip follows the jaw; its corners blend so they do not tear
         for k in range(n):
             u = -1 + 2 * k / (n - 1)
             wj = 1 - 0.6 * u ** 4
@@ -242,3 +315,67 @@ def add_jaw(rig, head, cav, mouth, landmarks, head_bone, cfg):
             mouth.vertex_groups[head_bone].add([r * n + k], 1 - wj, "REPLACE")
     stats["pivot"] = [round(c, 4) for c in piv]
     return stats
+
+
+# ============================================================================== smile coupling (any face)
+# spec.face.smile_coupling = {"cheek_raise_m", "cheek_forward_m", "cheek_radius_scale", "corner_follow",
+#                             "corner_radius_scale", "eye_squint_deg"}
+# Adds "Smile" shape keys to the head (cheeks rise and round forward; the skin around the mouth corners follows the
+# lips' own Smile motion so the corners do not stretch) and to the lower lids (they rise: the eyes narrow). The
+# existing face_Smile control drives every key named Smile, so no new control is needed. Placement comes only from
+# landmarks (eyes, mouth) and the lips' geometry; sizes are fractions of the eye-to-mouth-corner distance.
+def add_smile_coupling(head, lids, mouth, landmarks, cfg):
+    raise_m = float(cfg.get("cheek_raise_m", 0.003))
+    fwd_m = float(cfg.get("cheek_forward_m", 0.0015))
+    rscale = float(cfg.get("cheek_radius_scale", 0.55))
+    follow = float(cfg.get("corner_follow", 0.8))
+    crs = float(cfg.get("corner_radius_scale", 0.9))
+    squint = float(cfg.get("eye_squint_deg", 8.0))
+    n = int(mouth["ps_lip_rows"])
+    seam = list(mouth.get("ps_seam_rows", [1, 2]))[0]
+    kb = mouth.data.shape_keys.key_blocks
+    mw = mouth.matrix_world
+    corners = []
+    for k in (0, n - 1):  # lip corners and their Smile motion (world)
+        i = seam * n + k
+        p0, p1 = mw @ kb["Basis"].data[i].co, mw @ kb["Smile"].data[i].co
+        corners.append((p0, p1 - p0))
+    half_w = abs(corners[0][0].x - corners[1][0].x) / 2
+    eyes = [landmarks[k] for k in ("eye_L", "eye_R") if k in landmarks]
+    hmw, hinv = head.matrix_world, head.matrix_world.inverted()
+    if head.data.shape_keys is None:
+        head.shape_key_add(name="Basis")
+    key = head.shape_key_add(name="Smile")
+    key.value = 0.0
+    face_front = landmarks["mouth"].y + 0.03  # only the front of the face moves
+    cheeks = []
+    for (c0, dc) in corners:
+        eye = min(eyes, key=lambda e: (e - c0).length)  # the eye on the same side
+        dist = (eye - c0).length
+        lateral = Vector((math.copysign(0.35 * abs(eye.x - c0.x), c0.x), 0, 0))
+        cheeks.append((c0 + (eye - c0) * 0.5 + lateral, rscale * dist))
+    moved = 0
+    for i, v in enumerate(head.data.vertices):
+        p = hmw @ v.co
+        if p.y > face_front:
+            continue
+        d = Vector((0, 0, 0))
+        for centre, R in cheeks:
+            g = math.exp(-((p - centre).length / R) ** 2)
+            d += Vector((0, -fwd_m, raise_m)) * g
+        for c0, dc in corners:
+            g = math.exp(-((p - c0).length / (crs * half_w)) ** 2)
+            d += dc * (follow * g)
+        if d.length > 1e-6:
+            key.data[i].co = hinv @ (p + d)
+            moved += 1
+    # lower lids rise (rotation about the eye centre, opposite to the blink direction)
+    R = Matrix.Rotation(math.radians(-squint), 3, Vector((1, 0, 0)))
+    for up, lo, lash, c in lids:
+        if lo.data.shape_keys is None:
+            lo.shape_key_add(name="Basis")
+        k = lo.shape_key_add(name="Smile")
+        k.value = 0.0
+        for i, v in enumerate(lo.data.vertices):
+            k.data[i].co = c + R @ (v.co - c)
+    return {"head_vertices": moved, "cheek_radius_m": [round(R_, 4) for _, R_ in cheeks], "eye_squint_deg": squint}

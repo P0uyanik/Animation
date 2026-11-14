@@ -193,7 +193,7 @@ def main():
     eyes, lids, lms = B.build_eyes(C, M, head)
     brows, mouth = B.build_brows_mouth(C, M, head)
     mcfg = spec["face"].get("mouth", {})
-    if mcfg.get("generator") == "lips_jaw/1":  # lips with a seam (replaces the closed mouth patch)
+    if mcfg.get("generator") in ("lips_jaw/1", "lips_jaw/2"):  # lips with a seam (replaces the closed mouth patch)
         mouth = FACE.build_mouth_lips(C, M, head, B, mcfg)
     hair, hair_stats = HAIR.build(C, M, head, B, spec["hair"])
     hoodie, hoodie_bits = B.build_hoodie(C, M)
@@ -204,11 +204,11 @@ def main():
     empties = B.add_landmarks(C, lms, head, ears)
     report = {"blender": bpy.app.version_string, "build": BUILD_ID, "character_id": cid, **info,
               "hair": hair_stats, "model_s": round(time.time() - t0, 1)}
-    report["face"] = FACE.add_expression_keys(lids, brows, mouth, head, B, spec["face"])
+    report["face"] = FACE.add_expression_keys(lids, brows, mouth, head, B, spec["face"], eyes)
     for ob in list(C.objects):
         if ob.type == "MESH" and not ob.data.shape_keys and ob.modifiers:
             G.apply_mods(ob)
-    cavity = FACE.cut_mouth_and_cavity(C, M, head, B, mcfg, mouth) if mcfg.get("generator") == "lips_jaw/1" else None
+    cavity = FACE.cut_mouth_and_cavity(C, M, head, B, mcfg, mouth) if mcfg.get("generator") in ("lips_jaw/1", "lips_jaw/2") else None
     head_bone, chest = spec["rig"]["head_bone"], spec["rig"]["chest_bone"]
     rigid = [(o, head_bone) for o in [head] + ears + brows + [mouth] + hair + [l for tup in lids for l in tup[:3]]]
     if cavity is not None:
@@ -226,6 +226,9 @@ def main():
         em.parent_type = "BONE"
         em.parent_bone = head_bone
         em.matrix_world = Matrix.Translation(em.location)
+    if spec["face"].get("smile_coupling") and mouth.data.shape_keys:  # cheeks and lower lids join the Smile
+        report["smile_coupling"] = FACE.add_smile_coupling(head, lids, mouth, {k: v.matrix_world.translation.copy() for k, v in empties.items()},
+                                                           spec["face"]["smile_coupling"])
     report["face_controls"] = add_face_controls(rig, C, spec["face"]["expression_shape_keys"])
     if cavity is not None:
         report["jaw"] = FACE.add_jaw(rig, head, cavity, mouth, {k: v.matrix_world.translation.copy() for k, v in empties.items()}, head_bone, mcfg)

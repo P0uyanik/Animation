@@ -136,3 +136,31 @@ Visual result (`H26_review_views_1-4.jpg`, `H26_review_views_5-8.jpg`; columns: 
 - Remaining: #7 front is worse than H25.
 
 The review sheets are made from existing renders by `pipeline/charsys/review_views.py` (no rendering).
+
+## H27–H29: natural irregularity on top of H26 (2026-11-14, experimental, not approved)
+New optional per-family controls in `hair_clumps/2`, configuration only:
+- `az_jitter`, `el_jitter_deg`, `dir_jitter`, `length_jitter`, `width_jitter`;
+- `dominant {index, scale}`.
+
+They draw from their own random stream, so H26 rebuilds unchanged.
+
+| Variant | Hypothesis | IoU | Hair contour | Head fraction / width | #7 front | Visual | Verdict |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| H26 | baseline | 0.8463 | 2.99% | +3.5 / +2.0% | 3.63% | regular crown ring | — |
+| H27 | crown (shifted asymmetric) + rows, both irregular | 0.8403 | 3.68% | +2.0 / +3.8% | 5.39% | less ring-like, but rounder, wider mop; lost the tall front tufts | rejected (two groups changed; metric and visual agree) |
+| **H28** | **crown irregularity only** (mild asymmetry −160..120°, jittered spacing, elevation, lean, length, width; dominant front tuft ×1.3) | **0.8493** | **2.92%** | +3.4 / +2.4% | **2.97%** | irregular crown with a dominant front tuft; back, nape and temple coverage as H26; no cap patches | **candidate** |
+| H29 | row irregularity only (mild) | 0.8453 | 3.14% | +3.4 / +2.4% | 3.67% | no visible gain | rejected |
+
+Evidence: `H28_H29_review_views_1-4.jpg`, `H28_H29_review_views_5-8.jpg` (reference | H26 | H28 | H29) and
+`H27_review_views_1-4.jpg`.
+
+**Remaining:**
+- The crown is a few large tufts; the references have more, finer, fibrous tufts.
+- A small dark gap at the crown top in the back views.
+- The fibrous felt surface is unchanged: same fur and noise as H26, not addressed in this step.
+
+**Generic vs. character data:**
+- The generator, families, scalp cap and irregularity controls are generic.
+- Family counts, angles, lengths, irregularity amounts, the dominant tuft and the hairline are character data.
+- **Assumption that remains:** the hair is placed on an ellipsoid around the head (`proportions.hair_ellipsoid_*`).
+  Very different scalp shapes (long faces, ears on top) would need a surface-projected placement.

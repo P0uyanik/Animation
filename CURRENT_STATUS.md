@@ -35,6 +35,13 @@ Completed and tested:
   look-at, expressions, blink, grasp (both hands), walk, idle all supported. Fixture: all except grasp (no fingers,
   by design); missing `smile` reported. ctest 4/4, exporter tests 8/8, verify_charsys PASS.
 
+- **CP-2 face and hair quality** (experimental, not approved):
+  - **F06 face:** single thin neutral mouth line; flat closed eyes with a dark lash curve (no dome); Smile with
+    cheeks and eye narrowing; shaded open mouth.
+  - **H28 hair:** irregular crown with a dominant front tuft; H26 coverage kept; IoU 0.8493, contour 2.92%.
+  - Evidence: `docs/evaluation/face_controls/F06_*`, `combined_H28_F06_vs_1.0.0.jpg`, `docs/evaluation/hair_experiments/H28_*`.
+  - `verify_charsys` PASS. No engine change.
+
 Not done / limitations:
 - H25/H26 (hair) and F01/F02 (face) not published or approved (identity changes: owner decision); H25 and F01 reviewed and not approved.
 - F02: flat interior (no teeth/tongue), skin stretch at mouth corners (3.5x), Smile without cheek/eye coordination; closed lid slightly rounded.

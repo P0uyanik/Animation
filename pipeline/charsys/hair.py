@@ -295,17 +295,40 @@ def build_hair_v2(C, M, head, B, params=None, seed=11):
         mid = (root + tip) / 2 + n * 0.022 + Vector((0, -0.010, 0.0))
         lock(f"hair.fringe.{k}", root, mid, tip, R.uniform(0.060, 0.072), R.uniform(0.036, 0.044), n, 0.32, False)
     # Crown tufts: few, blunt, mostly upward, near the top centre.
+    # Optional per-family irregularity (keys az_jitter, el_jitter_deg, dir_jitter, length_jitter, width_jitter, dominant
+    # {"index", "scale"}). Drawn from their own generator, so layouts without these keys are unchanged.
+    R3 = random.Random(seed + 104729)
+
+    def irr(f, k, count):
+        j = {"daz": 0.0, "del": 0.0, "dir": Vector((0, 0, 0)), "len": 1.0, "wid": 1.0}
+        if not any(key in f for key in ("az_jitter", "el_jitter_deg", "dir_jitter", "length_jitter", "width_jitter", "dominant")):
+            return j
+        span = (f["az"][1] - f["az"][0]) / max(1, count)
+        j["daz"] = float(f.get("az_jitter", 0.0)) * span * R3.uniform(-0.5, 0.5)
+        j["del"] = float(f.get("el_jitter_deg", 0.0)) * R3.uniform(-1, 1)
+        dj = float(f.get("dir_jitter", 0.0))
+        j["dir"] = Vector((R3.uniform(-1, 1), R3.uniform(-1, 1), R3.uniform(-0.3, 0.3))) * dj
+        j["len"] = 1.0 + float(f.get("length_jitter", 0.0)) * R3.uniform(-1, 1)
+        j["wid"] = 1.0 + float(f.get("width_jitter", 0.0)) * R3.uniform(-1, 1)
+        dom = f.get("dominant")
+        if dom and int(dom.get("index", -1)) == k:
+            j["len"] *= float(dom.get("scale", 1.3))
+            j["wid"] *= 1 + 0.5 * (float(dom.get("scale", 1.3)) - 1)
+        return j
     f = fam["crown"]
     for k in range(f["count"]):
         az = f["az"][0] + (f["az"][1] - f["az"][0]) * (k + R.uniform(0.3, 0.7)) / f["count"]
-        root, n = on_hair(az, R.uniform(*f["el_root"]), -0.008)
+        el = R.uniform(*f["el_root"])
+        j = irr(f, k, f["count"])
+        root, n = on_hair(az + j["daz"], el + j["del"], -0.008)
         h = Vector((n.x, n.y, 0))
         h = h.normalized() if h.length > 1e-6 else h
-        dirv = (Vector((0, 0, 1)) * f["up"] + h * f["out"]).normalized()
-        L = R.uniform(*f["length"])
+        dirv = (Vector((0, 0, 1)) * f["up"] + h * f["out"] + j["dir"]).normalized()
+        L = R.uniform(*f["length"]) * j["len"]
         tip = root + dirv * L
         mid = root + dirv * L * 0.5 + h * 0.008
-        lock(f"hair.crown.{k}", root, mid, tip, R.uniform(*f["width"]), R.uniform(*f["thick"]), n, f["tip_frac"], f["split"])
+        lock(f"hair.crown.{k}", root, mid, tip, R.uniform(*f["width"]) * j["wid"], R.uniform(*f["thick"]) * j["wid"], n,
+             f["tip_frac"], f["split"])
     # Families of locks lying close over the base mass.
     for name in [k for k in fam if k != "crown"]:
         f = fam[name]
@@ -313,15 +336,21 @@ def build_hair_v2(C, M, head, B, params=None, seed=11):
         for sx in sides:
             for k in range(f["count"]):
                 az = sx * (f["az"][0] + (f["az"][1] - f["az"][0]) * (k + R.uniform(0.25, 0.75)) / f["count"])
-                root, n = on_hair(az, R.uniform(*f["el_root"]), -0.006)
-                tip, tn = on_hair(az + R.uniform(-8, 8), R.uniform(*f["el_tip"]), f["lift"])
+                el0 = R.uniform(*f["el_root"])
+                j = irr(f, k, f["count"])
+                az += sx * j["daz"]
+                root, n = on_hair(az, el0, -0.006)
+                tip, tn = on_hair(az + R.uniform(-8, 8), R.uniform(*f["el_tip"]) + j["del"], f["lift"])
+                if j["len"] != 1.0 or j["dir"].length > 0:
+                    v = tip - root
+                    tip = root + (v + j["dir"] * v.length).normalized() * v.length * j["len"]
                 if f.get("flick"):
                     hh = Vector((tn.x, tn.y, 0))
                     tip = tip + (hh.normalized() if hh.length > 1e-6 else hh) * f["flick"]
                 nn = (n + tn).normalized()
                 mid = (root + tip) / 2 + nn * (f["lift"] + f.get("bulge", 0.010))
                 lock(f"hair.{name}{'L' if sx > 0 else 'R'}.{k}" if f.get("mirror") else f"hair.{name}.{k}", root, mid, tip,
-                     R.uniform(*f["width"]), R.uniform(*f["thick"]), nn, f["tip_frac"], f["split"])
+                     R.uniform(*f["width"]) * j["wid"], R.uniform(*f["thick"]) * j["wid"], nn, f["tip_frac"], f["split"])
     for c in parts:
         G.displace_noise(c, noise[0], noise[1], subdiv=1)
     hair = G.join(parts, "hair_clumps")

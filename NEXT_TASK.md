@@ -1,14 +1,12 @@
 # Next task
 
-1. **Now: F02 face quality.** Experimental, no publish.
-   - Neutral mouth closure, flatter closed lids.
-   - Cheek raise and lower-lid narrowing coupled to Smile.
-   - An expressive JawOpen (interior with depth and shading, lip shaping).
-   - All generic via `spec.face` and landmarks; measured with `face_test.py`.
-2. **Then: H26 hair irregularity.** Experimental: asymmetric, less regular crown, dominant tuft, fibrous surface;
-   8-view review.
-3. **Owner decisions pending:** H26, F02 (no publish of 1.1.0 without approval).
-4. **Later:**
-   - minimum fixes for the boy-specific charsys modules (`docs/CHARACTER_REUSABILITY.md`);
-   - scene rendering of imported characters (materials, fur);
-   - a real second production character.
+1. **Owner review (waiting):**
+   - F06 face: `docs/evaluation/face_controls/F06_review_1.0.0_F02_F06.jpg`.
+   - H28 hair: `docs/evaluation/hair_experiments/H28_H29_review_views_*.jpg`.
+   - Combined: `docs/evaluation/face_controls/combined_H28_F06_vs_1.0.0.jpg`.
+   - Nothing is published. If approved: one combined build (spec + H28 + F06), published as 1.1.0 with
+     `--identity-change-approved-by`, then the reuse, face and export tests on it.
+2. **Candidate next work** (pick after review):
+   - Face: closed-lid rim outline, stronger and per-side Smile, larger expressive JawOpen, mouth-corner stretch.
+   - Hair: finer, fibrous crown tufts; fill the crown-top gap; felt surface (fur/noise) study.
+   - Second-character readiness items in `docs/CHARACTER_REUSABILITY.md`.

@@ -1,0 +1,56 @@
+{
+ "variant": "F03_closure_lids_smile_interior",
+ "description": "F02 + lips_jaw/2 (skin-tone lips, thin dark seam band, shaded interior), closed lid hugging the eye (0.6 mm offset, 1.0 mm thick), smile coupling (cheeks, corner skin follow, lower-lid squint)",
+ "base_spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.spec.json",
+ "status": "experimental (not approved; never published as the character)",
+ "override": {
+  "face": {
+   "blink": {
+    "generator": "lid_seam/1",
+    "overlap_deg": 3,
+    "closed_offset_m": 0.0006,
+    "closed_thickness_m": 0.001
+   },
+   "mouth": {
+    "generator": "lips_jaw/2",
+    "half_width_m": 0.0125,
+    "lip_height_m": 0.0032,
+    "frown_m": 0.0035,
+    "smile_up_m": 0.007,
+    "jaw_open_deg": 5.0,
+    "pivot_drop_m": 0.012,
+    "cavity_depth_m": 0.0,
+    "cheek_falloff_m": [
+     0.03,
+     0.065
+    ],
+    "lip_material": "skin",
+    "seam_half_m": 0.0008,
+    "interior_rows": 7,
+    "inner_srgb": [
+     128,
+     52,
+     52
+    ],
+    "throat_srgb": [
+     34,
+     12,
+     14
+    ],
+    "tongue_srgb": [
+     150,
+     72,
+     74
+    ]
+   },
+   "smile_coupling": {
+    "cheek_raise_m": 0.003,
+    "cheek_forward_m": 0.0015,
+    "cheek_radius_scale": 0.55,
+    "corner_follow": 0.8,
+    "corner_radius_scale": 0.9,
+    "eye_squint_deg": 8.0
+   }
+  }
+ }
+}

@@ -33,3 +33,19 @@ never from constants. Generic reuse is only claimed after a second, different ch
   - spec-driven rebuild equals v6.
 - **Not proven:** any shared system working on a second character. Engine actions are proven on several engine
   characters, but not on Blender-built assets.
+
+
+## Face and hair after CP-2 (2026-11-14)
+| System | Shared logic | Character configuration | Remaining assumptions | Needed for a very different face or hairstyle |
+| --- | --- | --- | --- | --- |
+| Lips / mouth (`lips_jaw/2`) | seam layout, interior, jaw bone and weights from landmarks | `spec.face.mouth` (size, frown, materials, offsets, colours, jaw angle) | horizontal slit mouth; `face_y` ray cast | mouth types without a slit (beak, muzzle) need another generator |
+| Eyes / blink (`lid_seam/1`) | closing angle from lid edges; offset, thickness, flatten | `spec.face.blink` | spherical eye looking along −Y; shell lids | non-spherical eyes need lid geometry from the eye mesh |
+| Smile coupling | cheek and corner deformation from landmarks; squint | `spec.face.smile_coupling` | `eye_L/R` and `mouth` landmarks; one symmetric smile | per-side intensities; other expressions (frown, surprise) as coupled layers |
+| Hair (`hair_clumps/2`) | lock families, scalp cap, irregularity | `spec.hair.params` | hair-ellipsoid placement; fringe positions inside the generator | surface-projected placement; fringe as family data |
+
+**Before a second production character is a genuine end-to-end reusability test:**
+1. Garment builders as parameterised modules (today `body_v6.py` is boy-specific).
+2. Component map and weight rules from the spec, not object names.
+3. Fringe as family data; surface-projected hair placement.
+4. Region mapping for the metrics from the spec.
+5. A reference package and landmarks for the new character.

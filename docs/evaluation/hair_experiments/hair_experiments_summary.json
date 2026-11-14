@@ -1,14 +1,25 @@
 {
  "runs": {
-  "H26_v2_dense_rows_fanned_crown": {
-   "variant": "H26_v2_dense_rows_fanned_crown",
+  "H28_irregular_crown_only": {
+   "variant": "H28_irregular_crown_only",
    "ok": true,
    "seconds": {
-    "build": 16.0,
-    "harness": 65.1,
-    "sheet": 0.8,
-    "regions": 48.5,
-    "metrics": 3.3
+    "build": 11.4,
+    "harness": 65.3,
+    "sheet": 0.9,
+    "regions": 50.1,
+    "metrics": 3.5
+   }
+  },
+  "H29_irregular_rows_only": {
+   "variant": "H29_irregular_rows_only",
+   "ok": true,
+   "seconds": {
+    "build": 10.2,
+    "harness": 63.8,
+    "sheet": 0.5,
+    "regions": 45.4,
+    "metrics": 3.9
    }
   }
  },
@@ -832,6 +843,129 @@
     }
    },
    "head_width_err_pct": 2.0
+  },
+  "H27_irregular_crown_and_rows": {
+   "description": "H26 + irregularity: crown shifted asymmetric (az -175..95), jittered spacing/elevation/direction/length/width, one dominant tuft (x1.35); milder jitter on top, side and back rows (dense coverage kept)",
+   "mean_iou": 0.8403,
+   "mean_hair_contour_pct_head": 3.68,
+   "mean_hair_contour_p95_pct_head": 8.5,
+   "mean_contour_pct_height": 1.43,
+   "hair_dE2000_mean": 3.6,
+   "head_fraction_err_pct": 2.0,
+   "hair_build": {
+    "generator": "hair_clumps/2",
+    "locks": 85,
+    "clump_parts": 140
+   },
+   "per_view": {
+    "orig07_front": {
+     "iou": 0.801,
+     "hair_contour": 5.39
+    },
+    "val27_front": {
+     "iou": 0.836,
+     "hair_contour": 3.16
+    },
+    "val27_threequarter_right": {
+     "iou": 0.852,
+     "hair_contour": 3.01
+    },
+    "val27_side_right": {
+     "iou": 0.858,
+     "hair_contour": 2.67
+    },
+    "val27_back": {
+     "iou": 0.844,
+     "hair_contour": 3.54
+    },
+    "val27_back_threequarter": {
+     "iou": 0.851,
+     "hair_contour": 4.29
+    }
+   },
+   "head_width_err_pct": 3.8
+  },
+  "H28_irregular_crown_only": {
+   "description": "H26 + crown irregularity only (mildly asymmetric range -160..120, jittered spacing/elevation/direction/length/width, dominant front tuft x1.3); rows unchanged",
+   "mean_iou": 0.8493,
+   "mean_hair_contour_pct_head": 2.92,
+   "mean_hair_contour_p95_pct_head": 7.41,
+   "mean_contour_pct_height": 1.32,
+   "hair_dE2000_mean": 3.7,
+   "head_fraction_err_pct": 3.4,
+   "hair_build": {
+    "generator": "hair_clumps/2",
+    "locks": 85,
+    "clump_parts": 140
+   },
+   "per_view": {
+    "orig07_front": {
+     "iou": 0.825,
+     "hair_contour": 2.97
+    },
+    "val27_front": {
+     "iou": 0.845,
+     "hair_contour": 2.07
+    },
+    "val27_threequarter_right": {
+     "iou": 0.852,
+     "hair_contour": 2.74
+    },
+    "val27_side_right": {
+     "iou": 0.866,
+     "hair_contour": 2.94
+    },
+    "val27_back": {
+     "iou": 0.845,
+     "hair_contour": 3.47
+    },
+    "val27_back_threequarter": {
+     "iou": 0.863,
+     "hair_contour": 3.33
+    }
+   },
+   "head_width_err_pct": 2.4
+  },
+  "H29_irregular_rows_only": {
+   "description": "H26 + mild row irregularity only (spacing 0.4, elevation 3 deg, direction 0.06, length/width 10%); crown unchanged",
+   "mean_iou": 0.8453,
+   "mean_hair_contour_pct_head": 3.14,
+   "mean_hair_contour_p95_pct_head": 7.49,
+   "mean_contour_pct_height": 1.36,
+   "hair_dE2000_mean": 3.7,
+   "head_fraction_err_pct": 3.4,
+   "hair_build": {
+    "generator": "hair_clumps/2",
+    "locks": 85,
+    "clump_parts": 140
+   },
+   "per_view": {
+    "orig07_front": {
+     "iou": 0.817,
+     "hair_contour": 3.67
+    },
+    "val27_front": {
+     "iou": 0.842,
+     "hair_contour": 2.39
+    },
+    "val27_threequarter_right": {
+     "iou": 0.855,
+     "hair_contour": 2.53
+    },
+    "val27_side_right": {
+     "iou": 0.848,
+     "hair_contour": 3.85
+    },
+    "val27_back": {
+     "iou": 0.848,
+     "hair_contour": 2.9
+    },
+    "val27_back_threequarter": {
+     "iou": 0.862,
+     "hair_contour": 3.48
+    }
+   },
+   "head_width_err_pct": 2.4
   }
  }
 }

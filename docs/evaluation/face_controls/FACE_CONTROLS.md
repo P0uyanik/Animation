@@ -73,3 +73,54 @@ Limitations:
 - Skin stretch concentrates at the mouth corners.
 - Smile moves only the mouth: no cheek or eye coordination yet.
 - The closed lid is still slightly rounded.
+
+## F03–F06: closure, closed lids, coordinated smile, open-mouth depth (2026-11-14, experimental, not approved)
+Overrides are in `experiments/face/`; each step changes one group of parameters. Code is in
+`pipeline/charsys/face.py`:
+- `lips_jaw/2`;
+- `add_blink_lid_seam` options `closed_thickness_m`, `flatten`, `flatten_lash`;
+- `add_smile_coupling`.
+
+| Step | Change (hypothesis) | Result |
+| --- | --- | --- |
+| F03 | Skin-tone lips with a thin dark seam band; closed lid hugging the eye (0.6 mm off, 1.0 mm thick); smile coupling (cheeks, corner skin follows the lips, lower-lid squint); shaded interior | Lid 3.75 → 1.6 mm proud, but still a **dome** (the eyeball protrudes); neutral mouth showed a "double line" |
+| F04 | Closed eye flattened 45% along its forward axis (eyeball `Blink` key; lid and lash follow); matte line material | No dome; the lash became too faint; the double line persisted |
+| F05 | Close-up diagnosis: the double line was the **cast shadow** of lips floating 1.2 mm off the skin. Lip edges now lie on the skin (0.2 mm), with the seam bulging 1.2 mm; flatten 0.38 | Single mouth line |
+| **F06** | The lash is not flattened (it stays a dark closed-eye line) | **Candidate** |
+
+Measured with `face_test.py`; the 1.0.0 → F02 → F06 progression:
+
+| Measure | 1.0.0 | F02 | **F06** |
+| --- | --- | --- | --- |
+| Neutral: interior visible | n/a | 0% | 0% (one thin line, as in 1.0.0) |
+| Blink: eye covered | 0% visible | 0% | 0% |
+| Blink: closed lid vs. original eye surface | +6.0 mm (ball) | +3.75 mm | **−1.1 mm** (eye front flattened; dark lash curve) |
+| Smile: corner lift | +4.5 mm | +7.0 mm | +7.0 mm, plus cheeks raised (1,494 head vertices, radius 40 mm from landmarks) and eyes narrowed (open area 37.2 → 31.9%) |
+| Smile: max skin stretch | 1.0 | 1.0 | 1.57 (cheek deformation; no corner tearing) |
+| JawOpen: interior visible / chin drop / opening | — | 64% / 6.7 mm / 19.9 mm | 64% / 6.7 mm / 19.8 mm, with shaded depth (reddish edges, dark throat, tongue tint) |
+
+Evidence (identical cameras):
+- `F06_review_1.0.0_F02_F06.jpg`
+- `combined_H28_F06_vs_1.0.0.jpg`, with the H28 hair
+- `F05_review_1.0.0_F02_F05.jpg` (intermediate)
+
+**Generic** (all parameters in `spec.face`; placement from geometry and landmarks):
+- The lip layout is relative to the spec's mouth width, height and frown.
+- The seam band, lip material and lip offsets are parameters.
+- The closed-lid geometry derives its angle from the lid edges; offset, thickness and flatten are parameters.
+- Smile coupling: the cheek centres come from the eye and mouth-corner landmarks, with radii as fractions of the
+  eye-to-corner distance; corner skin follows the lips' own Smile key; the squint is an angle.
+- Interior colours and row count are parameters.
+
+**Assumptions that remain:**
+- Eyes look along −Y at rest, and lids are shells around a spherical eye (flatten and squint use this).
+- The mouth is a horizontal slit at `Z.mouth` on a surface that `face_y` can ray-cast.
+- Landmarks named `eye_L/R` and `mouth` exist.
+- Only one smile shape; no per-side asymmetry.
+
+**Limitations:**
+- A faint circular outline of the flattened lid remains when closed.
+- Smile cheek motion is subtle.
+- JawOpen is small. It has no teeth or tongue geometry (shading only), and skin stretch at the mouth corners is
+  unchanged (3.5×).
+- Expressions are not tested on a second face.
