@@ -1,14 +1,14 @@
 {
  "runs": {
-  "H12_drop_clumps_dark_base": {
-   "variant": "H12_drop_clumps_dark_base",
+  "H25_v2_scalp_cap_less_bulge": {
+   "variant": "H25_v2_scalp_cap_less_bulge",
    "ok": true,
    "seconds": {
-    "build": 8.3,
-    "harness": 119.9,
-    "sheet": 1.0,
-    "regions": 42.5,
-    "metrics": 3.5
+    "build": 9.1,
+    "harness": 58.4,
+    "sheet": 0.7,
+    "regions": 41.1,
+    "metrics": 3.3
    }
   }
  },
@@ -545,6 +545,252 @@
     }
    },
    "head_width_err_pct": 5.6
+  },
+  "H20_v2_lock_families": {
+   "description": "hair_clumps/2: 38 lock families (7 fringe, 5 blunt crown tufts, 6 top, 2x4 side, 6+6 back), close to a lower dark base, split tips",
+   "mean_iou": 0.851,
+   "mean_hair_contour_pct_head": 2.85,
+   "mean_hair_contour_p95_pct_head": 7.02,
+   "mean_contour_pct_height": 1.29,
+   "hair_dE2000_mean": 4.4,
+   "head_fraction_err_pct": 2.6,
+   "hair_build": {
+    "generator": "hair_clumps/2",
+    "locks": 38,
+    "clump_parts": 63
+   },
+   "per_view": {
+    "orig07_front": {
+     "iou": 0.836,
+     "hair_contour": 2.28
+    },
+    "val27_front": {
+     "iou": 0.83,
+     "hair_contour": 3.27
+    },
+    "val27_threequarter_right": {
+     "iou": 0.856,
+     "hair_contour": 2.3
+    },
+    "val27_side_right": {
+     "iou": 0.871,
+     "hair_contour": 3.4
+    },
+    "val27_back": {
+     "iou": 0.848,
+     "hair_contour": 2.65
+    },
+    "val27_back_threequarter": {
+     "iou": 0.865,
+     "hair_contour": 3.22
+    }
+   },
+   "head_width_err_pct": 0.8
+  },
+  "H21_v2_shingled_rows": {
+   "description": "hair_clumps/2 revised after H20's helmet look: 40 shorter locks in overlapping rows (crown 5 taller, top 4, side 2 rows x 5 per side... see params), blunt raised ends, rougher felt",
+   "mean_iou": 0.8438,
+   "mean_hair_contour_pct_head": 3.08,
+   "mean_hair_contour_p95_pct_head": 7.27,
+   "mean_contour_pct_height": 1.34,
+   "hair_dE2000_mean": 3.9,
+   "head_fraction_err_pct": 4.2,
+   "hair_build": {
+    "generator": "hair_clumps/2",
+    "locks": 40,
+    "clump_parts": 69
+   },
+   "per_view": {
+    "orig07_front": {
+     "iou": 0.82,
+     "hair_contour": 3.31
+    },
+    "val27_front": {
+     "iou": 0.835,
+     "hair_contour": 2.82
+    },
+    "val27_threequarter_right": {
+     "iou": 0.859,
+     "hair_contour": 2.16
+    },
+    "val27_side_right": {
+     "iou": 0.846,
+     "hair_contour": 3.66
+    },
+    "val27_back": {
+     "iou": 0.845,
+     "hair_contour": 2.64
+    },
+    "val27_back_threequarter": {
+     "iou": 0.858,
+     "hair_contour": 3.89
+    }
+   },
+   "head_width_err_pct": 4.9
+  },
+  "H22_v2_shingled_temple_fix": {
+   "description": "H21 + temple coverage (lower side locks wider, from az 46), crown tufts back to H20 length, less lock bulge",
+   "mean_iou": 0.84,
+   "mean_hair_contour_pct_head": 3.4,
+   "mean_hair_contour_p95_pct_head": 7.37,
+   "mean_contour_pct_height": 1.4,
+   "hair_dE2000_mean": 4.0,
+   "head_fraction_err_pct": 2.3,
+   "hair_build": {
+    "generator": "hair_clumps/2",
+    "locks": 40,
+    "clump_parts": 69
+   },
+   "per_view": {
+    "orig07_front": {
+     "iou": 0.81,
+     "hair_contour": 3.4
+    },
+    "val27_front": {
+     "iou": 0.835,
+     "hair_contour": 2.81
+    },
+    "val27_threequarter_right": {
+     "iou": 0.852,
+     "hair_contour": 2.67
+    },
+    "val27_side_right": {
+     "iou": 0.848,
+     "hair_contour": 4.06
+    },
+    "val27_back": {
+     "iou": 0.841,
+     "hair_contour": 3.23
+    },
+    "val27_back_threequarter": {
+     "iou": 0.854,
+     "hair_contour": 4.21
+    }
+   },
+   "head_width_err_pct": 4.4
+  },
+  "H23_v2_shingled_scalp_cap": {
+   "description": "H21 + dark scalp cap (head surface above the hairline, offset 6 mm): covers the temples/sides without widening",
+   "mean_iou": 0.8452,
+   "mean_hair_contour_pct_head": 3.02,
+   "mean_hair_contour_p95_pct_head": 7.07,
+   "mean_contour_pct_height": 1.33,
+   "hair_dE2000_mean": 3.7,
+   "head_fraction_err_pct": 4.2,
+   "hair_build": {
+    "generator": "hair_clumps/2",
+    "locks": 40,
+    "clump_parts": 69
+   },
+   "per_view": {
+    "orig07_front": {
+     "iou": 0.82,
+     "hair_contour": 3.32
+    },
+    "val27_front": {
+     "iou": 0.837,
+     "hair_contour": 2.63
+    },
+    "val27_threequarter_right": {
+     "iou": 0.86,
+     "hair_contour": 2.15
+    },
+    "val27_side_right": {
+     "iou": 0.847,
+     "hair_contour": 3.68
+    },
+    "val27_back": {
+     "iou": 0.849,
+     "hair_contour": 2.49
+    },
+    "val27_back_threequarter": {
+     "iou": 0.858,
+     "hair_contour": 3.88
+    }
+   },
+   "head_width_err_pct": 4.9
+  },
+  "H24_v2_flared_lower_locks": {
+   "description": "H23 + lower side/nape lock ends flicked outwards (side_lo 24 mm, back_lo 22 mm, back_mid 14 mm), upper dome unchanged",
+   "mean_iou": 0.8398,
+   "mean_hair_contour_pct_head": 3.23,
+   "mean_hair_contour_p95_pct_head": 7.54,
+   "mean_contour_pct_height": 1.38,
+   "hair_dE2000_mean": 3.7,
+   "head_fraction_err_pct": 4.1,
+   "hair_build": {
+    "generator": "hair_clumps/2",
+    "locks": 40,
+    "clump_parts": 69
+   },
+   "per_view": {
+    "orig07_front": {
+     "iou": 0.815,
+     "hair_contour": 3.6
+    },
+    "val27_front": {
+     "iou": 0.836,
+     "hair_contour": 2.73
+    },
+    "val27_threequarter_right": {
+     "iou": 0.856,
+     "hair_contour": 2.37
+    },
+    "val27_side_right": {
+     "iou": 0.834,
+     "hair_contour": 3.64
+    },
+    "val27_back": {
+     "iou": 0.847,
+     "hair_contour": 2.76
+    },
+    "val27_back_threequarter": {
+     "iou": 0.851,
+     "hair_contour": 4.29
+    }
+   },
+   "head_width_err_pct": 7.1
+  },
+  "H25_v2_scalp_cap_less_bulge": {
+   "description": "H23 with lock bulge reduced (16 -> 11 mm; nape 14 -> 10 mm): less volume, same layout",
+   "mean_iou": 0.8455,
+   "mean_hair_contour_pct_head": 2.93,
+   "mean_hair_contour_p95_pct_head": 7.07,
+   "mean_contour_pct_height": 1.32,
+   "hair_dE2000_mean": 3.8,
+   "head_fraction_err_pct": 4.1,
+   "hair_build": {
+    "generator": "hair_clumps/2",
+    "locks": 40,
+    "clump_parts": 69
+   },
+   "per_view": {
+    "orig07_front": {
+     "iou": 0.82,
+     "hair_contour": 3.2
+    },
+    "val27_front": {
+     "iou": 0.835,
+     "hair_contour": 2.67
+    },
+    "val27_threequarter_right": {
+     "iou": 0.86,
+     "hair_contour": 2.12
+    },
+    "val27_side_right": {
+     "iou": 0.848,
+     "hair_contour": 3.52
+    },
+    "val27_back": {
+     "iou": 0.851,
+     "hair_contour": 2.36
+    },
+    "val27_back_threequarter": {
+     "iou": 0.859,
+     "hair_contour": 3.71
+    }
+   },
+   "head_width_err_pct": 4.1
   }
  }
 }

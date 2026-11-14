@@ -1,0 +1,7 @@
+{
+ "variant": "H20_v2_lock_families",
+ "description": "hair_clumps/2: 38 lock families (7 fringe, 5 blunt crown tufts, 6 top, 2x4 side, 6+6 back), close to a lower dark base, split tips",
+ "base_spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.spec.json",
+ "status": "experimental (not approved; never published as the character)",
+ "override": {"hair": {"generator": "hair_clumps/2", "params": {}}}
+}

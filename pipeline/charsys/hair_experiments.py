@@ -43,7 +43,8 @@ def run_variant(a, name, out):
     steps = [("build", bl("pipeline/charsys/build_character.py", "--spec", SPEC, "--override", os.path.join(EXP, name + ".json"),
                           "--out", build, "--no-glb")),
              ("harness", bl("pipeline/blender/compare_harness.py", "--subject", compare, "--index", IDX, "--out", harness,
-                            "--samples", "48", "--fill", "0.94", "--keep-materials")),
+                            "--samples", "48", "--fill", "0.94", "--keep-materials",
+                            *(["--views", ",".join(SHEET_VIEWS)] if a.sheet_views_only else []))),
              ("sheet", [sys.executable, os.path.join(ROOT, "pipeline", "compare_sheet.py"), "--index", IDX, "--blender", harness,
                         "--out", report, "--label", f"{CID} hair {name}"]),
              ("regions", bl("pipeline/blender/boy_pilot/render_regions.py", compare, IDX, regions, MEASURED, "32")),
@@ -159,6 +160,8 @@ def main():
     ap.add_argument("--variants", default="")
     ap.add_argument("--out", default=os.path.join(ROOT, "renders", "experiments", "hair"))
     ap.add_argument("--sheet-only", action="store_true")
+    ap.add_argument("--sheet-views-only", action="store_true", help="harness renders only the 8 sheet views (half the time)")
+    ap.add_argument("--sheet-variants", default="", help="rows of the multi-view sheet (default: all)")
     a = ap.parse_args()
     names = a.variants.split(",") if a.variants else sorted(os.path.splitext(os.path.basename(p))[0]
                                                              for p in glob.glob(os.path.join(EXP, "*.json")))
@@ -175,7 +178,8 @@ def main():
     json.dump({"runs": runs, "variants": S}, open(os.path.join(a.out, "summary.json"), "w"), indent=1)
     print(json.dumps({k: {x: v[x] for x in ("mean_iou", "mean_hair_contour_pct_head", "mean_contour_pct_height",
                                              "head_fraction_err_pct", "head_width_err_pct")} for k, v in S.items()}, indent=1))
-    print("[hair_experiments] sheet:", sheet(a.out, all_names, S))
+    rows = a.sheet_variants.split(",") if a.sheet_variants else all_names
+    print("[hair_experiments] sheet:", sheet(a.out, rows, S))
 
 
 if __name__ == "__main__":

@@ -57,3 +57,51 @@ Evidence:
   1.1.0, published with `--identity-change-approved-by`.
 - The next real step for hair is a new layout, `hair_clumps/2`: about 30–40 larger locks, grouped into the lock
   families visible in #7/#21/#27, with notches cut down to the dark base, measured with the same runner.
+
+## CP-2: `hair_clumps/2` lock layout (2026-11-14)
+Diagnosis, measured on the existing H00/H12 renders without new renders:
+- The v6 hair is **too full, never too small**. In the hair zone, the subject alone covers 7–17% of the reference
+  hair area; the reference alone covers only 2–3%.
+- The crown is a broad dome. In the side view the top 0–8% of the figure is 74–116% too wide (the reference has a
+  few narrow tufts there), and the band 8–12% below the top is about 20% too wide in every view.
+- The head mesh is **wider than the base hair mass** at every height (0.155–0.160 m against 0.145–0.153 m
+  half-width). That is why close-lying locks expose skin, and why v6 needed wide side clumps.
+
+The new generator `hair_clumps/2` (in `pipeline/charsys/hair.py`) uses lock families over the dark base mass:
+- the v6 fringe (7 locks);
+- blunt crown tufts;
+- top, side and back rows of larger locks, with optional split tips;
+- an optional **scalp cap**: the head surface above an azimuth hairline, offset by 6 mm, so no skin shows without
+  widening the silhouette.
+
+Runs used the 8 sheet views only (`--sheet-views-only`), which take about 115 s instead of 175 s. Metrics are on the
+same 6 measured views as before.
+
+| Variant | Hypothesis tested | IoU | Hair contour | Head fraction | Head width | Visual | Verdict |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| H00 (v6) | control | 0.841 | 3.40% | +4.0% | +5.7% | rounded mop | — |
+| H20 lock families | lower dome, close locks, 38 locks | 0.851 | 2.85% | +2.6% | +0.8% | **smooth helmet**, long locks merge, skin at temple | rejected (visual) |
+| H21 shingled rows | shorter overlapping rows, blunt raised ends, rougher felt (40 locks) | 0.844 | 3.08 | +4.2 | +4.9 | layered locks as in the refs; **skin at temple/behind ear** | partial |
+| H22 temple fix | 3 changes at once (mistake) | 0.840 | 3.40 | +2.3 | +4.4 | skin still visible | rejected |
+| H23 = H21 + scalp cap | cap covers skin without widening | 0.845 | 3.02 | +4.2 | +4.9 | no skin | kept |
+| H24 = H23 + flared lower locks | the refs' lower locks flare out | 0.840 | 3.23 | +4.1 | +7.1 | wider | rejected (falsified) |
+| **H25 = H23, less lock bulge** | volume drives the error | **0.8455** | **2.93%** | +4.1% | +4.1% | no skin, layered felted locks, soft crown tufts | **meets the target; candidate** |
+
+Evidence: `cp2_hair_clumps_v2_sheet.jpg` (8 angles: reference, H00, H12, H20, H23, H25) and
+`hair_experiments_summary.json`.
+
+H25 (`experiments/hair/H25_v2_scalp_cap_less_bulge.json`) results:
+- Hair contour **2.93%** against the ≤3.0% target (v6 3.40%).
+- IoU 0.8455 (v6 0.841).
+- Head width +4.1%, smaller than v6 (+5.7%).
+- Head fraction +4.1% against v6's +4.0%: effectively equal, a 0.1-point rise within measurement noise.
+- Its build rigs cleanly: 73 deform bones, 0 unweighted vertices.
+
+Remaining weaknesses, seen visually:
+- Behind the ear the cap reads as a smooth, short-cropped patch, not locks.
+- The crown tufts are thinner and more pointed than in #7/#21.
+- Per-view worst cases: side 3.52%, back-¾ 3.71%.
+
+**H25 is not adopted or published.** It is an identity change and waits for your approval. If approved, it becomes
+spec 1.1.0, published with `--identity-change-approved-by`. Version 1.0.0 and v6 are unchanged; the v1 hair path
+still rebuilds v6 exactly (checked: 0.0 m).

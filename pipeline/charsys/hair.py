@@ -181,3 +181,168 @@ def build_hair(C, M, head, B, params=None, seed=11):
     for o in (mass, hair, stray):
         G.assign(o, M["hair"])
     return [mass, hair, stray], stats
+
+
+# ============================================================================== hair_clumps/2
+# Lock layout derived from the measured v6 mismatch (docs/evaluation/hair_experiments/HAIR_EXPERIMENTS.md, CP-2):
+# the v6 hair is too full, never too small; the crown is a broad dome where the references show a few narrow
+# tufts (side view, top 8% of the figure: +74..116% too wide), and the band 8-12% below the top is ~20% too wide.
+# So: the dark base mass stays (no scalp), the locks lie close to it (low lift), and only a few blunt crown tufts
+# reach the top. 30-40 larger locks in families; each lock may split into a second, smaller tip (felted grouping).
+FAMILIES_V2 = {  # name: count, az range (deg), root el, tip el, tip lift (m), width, thick, tip_frac, split
+    "crown":   dict(count=5, az=(-150, 150), el_root=(78, 86), up=1.0, out=0.35, length=(0.050, 0.064),
+                    width=(0.058, 0.068), thick=(0.044, 0.052), tip_frac=0.40, split=True),
+    "top":     dict(count=6, az=(-180, 180), el_root=(76, 84), el_tip=(48, 56), lift=0.012,
+                    width=(0.092, 0.104), thick=(0.052, 0.060), tip_frac=0.38, split=False),
+    "side":    dict(count=4, az=(52, 132), el_root=(50, 56), el_tip=(-12, 0), lift=0.014,
+                    width=(0.086, 0.098), thick=(0.050, 0.058), tip_frac=0.36, split=True, flick=0.010, mirror=True),
+    "back_hi": dict(count=6, az=(130, 230), el_root=(58, 66), el_tip=(14, 24), lift=0.016,
+                    width=(0.092, 0.104), thick=(0.052, 0.060), tip_frac=0.36, split=True),
+    "back_lo": dict(count=6, az=(125, 235), el_root=(18, 26), el_tip=(-50, -40), lift=0.012,
+                    width=(0.088, 0.100), thick=(0.050, 0.058), tip_frac=0.34, split=True, flick=0.012),
+}
+
+
+def scalp_cap(C, head, cfg):
+    """Dark cap = the head surface above a hairline, offset outwards along its normals. The head is wider than the
+    base mass at every height (measured: 0.155-0.160 m vs 0.145-0.153 m half-width), so without it skin shows
+    wherever locks lie close. cfg: offset (m), hairline [[azimuth deg from front, min z], ...] (|azimuth|)."""
+    import bisect
+    import bmesh
+    import bpy
+    off = float(cfg.get("offset", 0.006))
+    hl = sorted(cfg.get("hairline", [[0, 0.93], [60, 0.86], [90, 0.80], [180, 0.73]]))
+    azs, zs = [a for a, _ in hl], [z for _, z in hl]
+
+    def zmin(a):
+        i = bisect.bisect_left(azs, a)
+        if i <= 0:
+            return zs[0]
+        if i >= len(azs):
+            return zs[-1]
+        t = (a - azs[i - 1]) / (azs[i] - azs[i - 1])
+        return zs[i - 1] + t * (zs[i] - zs[i - 1])
+    bm = bmesh.new()
+    bm.from_mesh(head.data)
+    bm.transform(head.matrix_world)
+    kill = []
+    for f in bm.faces:
+        c = f.calc_center_median()
+        a = abs(math.degrees(math.atan2(c.x, -c.y)))
+        if c.z < zmin(a) or (c.y < -0.05 and c.z < 0.955):
+            kill.append(f)
+    bmesh.ops.delete(bm, geom=kill, context="FACES")
+    bm.normal_update()
+    for v in bm.verts:
+        v.co += v.normal * off
+    me = bpy.data.meshes.new("hair_cap")
+    bm.to_mesh(me)
+    bm.free()
+    ob = bpy.data.objects.new("hair_cap", me)
+    C.objects.link(ob)
+    return ob
+
+
+def build_hair_v2(C, M, head, B, params=None, seed=11):
+    import bmesh
+    G = B.G
+    P = params or {}
+    R = random.Random(seed)
+    on_hair, clump, face_y = B.on_hair, B.clump, B.face_y
+    HAIR_C, HAIR_R = B.HAIR_C, B.HAIR_R
+    fam = {k: dict(v) for k, v in FAMILIES_V2.items()}
+    for k, v in P.get("families", {}).items():  # override or add families (count 0 disables one)
+        fam[k] = dict(fam.get(k, {}), **v)
+    noise = P.get("lock_noise", [0.006, 0.018])
+    ms = P.get("mass_scale", [1.0, 1.0, 0.97])
+    inset = 0.022
+    mass = G.uv_sphere("hair_mass", HAIR_C + Vector((0, 0.006, -0.010)), 1.0, C, 48, 24,
+                       tuple((HAIR_R[i] - inset) * ms[i] for i in range(3)))
+    bm = bmesh.new()
+    bm.from_mesh(mass.data)
+    kill = [f for f in bm.faces if f.calc_center_median().y < -0.05 and f.calc_center_median().z < 0.955]
+    bmesh.ops.delete(bm, geom=kill, context="FACES")
+    bm.to_mesh(mass.data)
+    bm.free()
+    G.displace_noise(mass, 0.008, 0.035, subdiv=1)
+    if P.get("scalp_cap"):
+        mass = G.join([mass, scalp_cap(C, head, P["scalp_cap"])], "hair_mass")
+    locks, parts = [], []
+
+    def lock(name, root, mid, tip, width, thick, n, tip_frac, split):
+        objs = [clump(name, C, root, mid, tip, width, thick, n, tip_frac=tip_frac)]
+        if split:  # a smaller second tip leaving the lock at ~45%: grouped felted strands, notch at the tip
+            a = root + (tip - root) * 0.45
+            axis = n.normalized()
+            ang = math.radians(R.choice((-1, 1)) * R.uniform(14, 22))
+            d = (tip - a)
+            d2 = d * math.cos(ang) + axis.cross(d) * math.sin(ang) + axis * axis.dot(d) * (1 - math.cos(ang))
+            t2 = a + d2 * R.uniform(0.80, 0.92)
+            objs.append(clump(name + ".b", C, a, (a + t2) / 2 + n * 0.006, t2, width * 0.55, thick * 0.65, n,
+                              tip_frac=tip_frac))
+        locks.append(name)
+        parts.extend(objs)
+
+    # Fringe: the v6 fringe (its front-view fit is already good), 7 locks.
+    xs = [-0.125, -0.085, -0.044, -0.004, 0.038, 0.080, 0.122]
+    tips = [0.838, 0.826, 0.814, 0.802, 0.818, 0.828, 0.842]
+    for k, (xt, zt) in enumerate(zip(xs, tips)):
+        xt += R.uniform(-0.006, 0.006)
+        zt += R.uniform(-0.006, 0.006)
+        az = math.degrees(math.atan2(xt, 0.16)) * 1.25
+        root, n = on_hair(az, 22 + R.uniform(-4, 4), 0.004)
+        tip = Vector((xt * 1.04, face_y(head, xt, zt) - 0.020, zt))
+        mid = (root + tip) / 2 + n * 0.022 + Vector((0, -0.010, 0.0))
+        lock(f"hair.fringe.{k}", root, mid, tip, R.uniform(0.060, 0.072), R.uniform(0.036, 0.044), n, 0.32, False)
+    # Crown tufts: few, blunt, mostly upward, near the top centre.
+    f = fam["crown"]
+    for k in range(f["count"]):
+        az = f["az"][0] + (f["az"][1] - f["az"][0]) * (k + R.uniform(0.3, 0.7)) / f["count"]
+        root, n = on_hair(az, R.uniform(*f["el_root"]), -0.008)
+        h = Vector((n.x, n.y, 0))
+        h = h.normalized() if h.length > 1e-6 else h
+        dirv = (Vector((0, 0, 1)) * f["up"] + h * f["out"]).normalized()
+        L = R.uniform(*f["length"])
+        tip = root + dirv * L
+        mid = root + dirv * L * 0.5 + h * 0.008
+        lock(f"hair.crown.{k}", root, mid, tip, R.uniform(*f["width"]), R.uniform(*f["thick"]), n, f["tip_frac"], f["split"])
+    # Families of locks lying close over the base mass.
+    for name in [k for k in fam if k != "crown"]:
+        f = fam[name]
+        sides = (1, -1) if f.get("mirror") else (1,)
+        for sx in sides:
+            for k in range(f["count"]):
+                az = sx * (f["az"][0] + (f["az"][1] - f["az"][0]) * (k + R.uniform(0.25, 0.75)) / f["count"])
+                root, n = on_hair(az, R.uniform(*f["el_root"]), -0.006)
+                tip, tn = on_hair(az + R.uniform(-8, 8), R.uniform(*f["el_tip"]), f["lift"])
+                if f.get("flick"):
+                    hh = Vector((tn.x, tn.y, 0))
+                    tip = tip + (hh.normalized() if hh.length > 1e-6 else hh) * f["flick"]
+                nn = (n + tn).normalized()
+                mid = (root + tip) / 2 + nn * (f["lift"] + f.get("bulge", 0.010))
+                lock(f"hair.{name}{'L' if sx > 0 else 'R'}.{k}" if f.get("mirror") else f"hair.{name}.{k}", root, mid, tip,
+                     R.uniform(*f["width"]), R.uniform(*f["thick"]), nn, f["tip_frac"], f["split"])
+    for c in parts:
+        G.displace_noise(c, noise[0], noise[1], subdiv=1)
+    hair = G.join(parts, "hair_clumps")
+    strays = []
+    for k, (az, el) in enumerate(((-30, 82), (40, 78), (150, 76))):
+        root, n = on_hair(az, el, 0.0)
+        tip = root + (n * 0.6 + Vector((R.uniform(-0.4, 0.4), R.uniform(-0.4, 0.4), 0.6))).normalized() * 0.04
+        mid = (root + tip) / 2 + Vector((R.uniform(-0.012, 0.012), 0, 0.010))
+        strays.append(G.tube(f"hair_stray.{k}", G.bezier(root, mid, tip, 8), [0.0022] * 8, [0.0022] * 8, C, seg=8))
+    stray = G.join(strays, "hair_strays")
+    for o in (mass, hair, stray):
+        G.assign(o, M["hair"])
+    return [mass, hair, stray], {"generator": "hair_clumps/2", "locks": len(locks), "clump_parts": len(parts)}
+
+
+def build(C, M, head, B, hair_spec):
+    """Dispatches on spec.hair.generator (hair_clumps/1 = v6 layout, hair_clumps/2 = lock families)."""
+    gen = hair_spec.get("generator", "hair_clumps/1")
+    seed = int(hair_spec.get("seed", 11))
+    if gen == "hair_clumps/1":
+        return build_hair(C, M, head, B, hair_spec.get("params"), seed=seed)
+    if gen == "hair_clumps/2":
+        return build_hair_v2(C, M, head, B, hair_spec.get("params"), seed=seed)
+    raise ValueError(f"unknown hair generator {gen}")

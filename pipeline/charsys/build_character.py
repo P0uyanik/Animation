@@ -191,7 +191,7 @@ def main():
     ears = B.build_ears(C, M, head)
     eyes, lids, lms = B.build_eyes(C, M, head)
     brows, mouth = B.build_brows_mouth(C, M, head)
-    hair, hair_stats = HAIR.build_hair(C, M, head, B, spec["hair"].get("params"), seed=int(spec["hair"].get("seed", 11)))
+    hair, hair_stats = HAIR.build(C, M, head, B, spec["hair"])
     hoodie, hoodie_bits = B.build_hoodie(C, M)
     hands = B.build_hands(C, M)
     trousers, socks = B.build_legs(C, M)

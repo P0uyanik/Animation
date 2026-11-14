@@ -1,0 +1,124 @@
+{
+ "variant": "H22_v2_shingled_temple_fix",
+ "description": "H21 + temple coverage (lower side locks wider, from az 46), crown tufts back to H20 length, less lock bulge",
+ "base_spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.spec.json",
+ "status": "experimental (not approved; never published as the character)",
+ "override": {
+  "hair": {
+   "generator": "hair_clumps/2",
+   "params": {
+    "lock_noise": [
+     0.009,
+     0.02
+    ],
+    "families": {
+     "crown": {
+      "out": 0.45
+     },
+     "top": {
+      "count": 4
+     },
+     "side": {
+      "count": 3,
+      "el_root": [
+       50,
+       56
+      ],
+      "el_tip": [
+       16,
+       24
+      ],
+      "lift": 0.016,
+      "bulge": 0.012,
+      "flick": 0.006,
+      "az": [
+       46,
+       126
+      ]
+     },
+     "side_lo": {
+      "count": 2,
+      "az": [
+       46,
+       116
+      ],
+      "el_root": [
+       24,
+       30
+      ],
+      "el_tip": [
+       -14,
+       -6
+      ],
+      "lift": 0.014,
+      "width": [
+       0.1,
+       0.112
+      ],
+      "thick": [
+       0.05,
+       0.058
+      ],
+      "tip_frac": 0.4,
+      "split": true,
+      "flick": 0.012,
+      "mirror": true,
+      "bulge": 0.012
+     },
+     "back_hi": {
+      "count": 5,
+      "el_root": [
+       62,
+       70
+      ],
+      "el_tip": [
+       30,
+       38
+      ],
+      "bulge": 0.013
+     },
+     "back_mid": {
+      "count": 5,
+      "az": [
+       128,
+       232
+      ],
+      "el_root": [
+       36,
+       44
+      ],
+      "el_tip": [
+       0,
+       8
+      ],
+      "lift": 0.016,
+      "width": [
+       0.09,
+       0.102
+      ],
+      "thick": [
+       0.052,
+       0.06
+      ],
+      "tip_frac": 0.4,
+      "split": true,
+      "flick": 0.008,
+      "bulge": 0.013
+     },
+     "back_lo": {
+      "count": 4,
+      "el_root": [
+       8,
+       14
+      ],
+      "el_tip": [
+       -44,
+       -36
+      ],
+      "bulge": 0.012
+     }
+    }
+   }
+  }
+ }
+}
