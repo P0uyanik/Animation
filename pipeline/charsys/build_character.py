@@ -175,8 +175,9 @@ def add_face_controls(rig, C, names):
 
 
 def main_generic(a, spec, info, out):
-    """Generic body path (body_generic/1): body, joints, rig fitting and skinning entirely from the spec. M2 scope:
-    no face, hair, garments or accessories yet. The legacy boy path (below) is the compatibility baseline."""
+    """Generic path (body_generic/1): body, joints, rig fitting and skinning entirely from the spec; the generic face
+    (spec.face.generator face_generic/1) and reusable accessories (spec.accessories.items) when the spec has them.
+    No hair or garments yet. The legacy boy path (below) is the compatibility baseline."""
     import body_generic as BG
     cid = spec["identity"]["id"]
     t0 = time.time()
@@ -191,23 +192,69 @@ def main_generic(a, spec, info, out):
     skin_rgb = tuple(mats.get("albedo_srgb", {}).get("skin") or mats["target_colors_srgb"]["skin"])
     M = {"skin": G.material("M_skin", skin_rgb, roughness=0.55, subsurface=0.2, sss_radius=(1, 0.4, 0.25), sss_scale=0.01)}
     parts = BG.build_body(C, M, P, H, J, frames)
-    report = {"blender": bpy.app.version_string, "build": BUILD_ID + "+body_generic/1", "character_id": cid, **info,
-              "model_s": round(time.time() - t0, 1)}
+    head_bone = spec["rig"]["head_bone"]
+    report = {"blender": bpy.app.version_string, "build": BUILD_ID + "+body_generic/1", "character_id": cid, **info}
+    fc = None
+    acc = []
+    if spec["face"].get("generator") == "face_generic/1":
+        import accessories as ACC
+        import face_generic as FG
+        fc = FG.build(C, M, parts[0][0], spec, P, H, head_bone)  # also sets the eye-bone depth (P.eyes.y)
+        report["face"] = fc["report"]
+        face_parts = fc["eyes"] + [o for l in fc["lids"] for o in l[:3]]
+        acc, report["accessories"] = ACC.build(C, spec.get("accessories", {}).get("items"), fc["landmarks"], fc["ctx"],
+                                               face_parts, head_bone, fc["ears"])
+    report["model_s"] = round(time.time() - t0, 1)
     rig, rr = BG.rig_generic(C, f"rig_{cid}", parts, P, H, J, frames, spec["rig"].get("weight_rules", {}), B,
                              spec["rig"].get("weight_smooth"))
     report["rig"] = rr
-    report["face_controls"] = add_face_controls(rig, C, spec["face"].get("expression_shape_keys", []))
+    names = list(spec["face"].get("expression_shape_keys", []))
+    if fc is not None:
+        FG.bind_rigid(rig, fc["rigid"])
+        empties = FG.add_landmarks(C, fc["landmarks"])
+        for em in empties.values():
+            em.parent = rig
+            em.parent_type = "BONE"
+            em.parent_bone = head_bone
+            em.matrix_world = Matrix.Translation(em.location)
+        for frame, lens in acc:
+            ACC.attach(rig, frame, lens, head_bone)
+        names = fc["controls"]
+
+    report["face_controls"] = add_face_controls(rig, C, names)
+    if fc is not None:
+        skin = parts[0][0]
+        report["jaw"] = FACE.add_jaw(rig, skin, fc["cavity"], fc["mouth"], fc["landmarks"], head_bone, fc["mouth_cfg"])
+        FG.add_jaw_preset_drivers(rig, fc["jaw_preset_weights"], float(fc["mouth_cfg"].get("jaw_open_deg", 7.0)))
+        report["inbetween_drivers"] = FG.add_inbetween_drivers(rig, [o for o in C.all_objects if o.type == "MESH"])
+        bpy.ops.object.select_all(action="DESELECT")  # the jaw adds a fifth influence on some skin vertices
+        skin.select_set(True)
+        bpy.context.view_layer.objects.active = skin
+        bpy.ops.object.vertex_group_limit_total(group_select_mode="ALL", limit=4)
+        bpy.ops.object.vertex_group_normalize_all(group_select_mode="ALL", lock_active=False)
+        report["rig"]["rigify_bones"] = len(rig.data.bones)
+        report["rig"]["deform_bones"] = sum(1 for b in rig.data.bones if b.use_deform)
+        rig["ps_face_parts"] = json.dumps({"head": skin.name, "eye_L": "eye.L", "lid_upper_L": "lid_upper.L",
+                                           "mouth": fc["mouth"].name, "cavity": fc["cavity"].name,
+                                           "action_units": fc["report"]["action_units"], "presets": fc["report"]["presets"],
+                                           "accessories": [f.name for f, _ in acc] + [l.name for _, l in acc if l is not None]})
     components = spec.get("components") or {"body": ["body_skin", "hand."], "rig": ["rig_"]}
     subs, unassigned = organise(C, cid, components)
     if unassigned:
         raise SystemExit(f"objects without a component: {unassigned}")
     stamp(C, spec, info, "master")
+    if fc is not None:
+        C["ps_engine_expressions"] = json.dumps(fc["engine_expressions"], sort_keys=True)
+        if spec["face"].get("blink", {}).get("timing"):
+            C["ps_blink_timing"] = json.dumps(spec["face"]["blink"]["timing"], sort_keys=True)
     rig["ps_character_id"] = cid
     report["joints_m"] = {k: [round(c, 4) for c in v] for k, v in J.items()}
     bpy.ops.wm.save_as_mainfile(filepath=os.path.join(out, f"{cid}_master.blend"), compress=True)
     json.dump(describe_components(C, cid), open(os.path.join(out, "components.json"), "w"), indent=1)
-    json.dump(animation_compat(rig, C, spec), open(os.path.join(out, "animation_compat.json"), "w"), indent=1)
-    json.dump(spec, open(os.path.join(out, "spec.resolved.json"), "w"), indent=1)
+    spec_r = json.loads(json.dumps(spec))  # resolved copy: the generated control list (the embedded spec stays as given)
+    spec_r["face"]["expression_shape_keys"] = names
+    json.dump(animation_compat(rig, C, spec_r), open(os.path.join(out, "animation_compat.json"), "w"), indent=1)
+    json.dump(spec_r, open(os.path.join(out, "spec.resolved.json"), "w"), indent=1)
     if not a.no_glb:
         bpy.ops.object.select_all(action="DESELECT")
         for o in C.all_objects:

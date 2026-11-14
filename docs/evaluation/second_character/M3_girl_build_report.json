@@ -1,0 +1,547 @@
+{
+ "blender": "5.3.0",
+ "build": "charsys/1+body_generic/1",
+ "character_id": "girl_auburn_bun_glasses",
+ "spec_path": "../../assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.spec.json",
+ "overrides": [],
+ "spec_sha256": "e71897430322b75e52b9337a5d1434f5fe58f4bb6f15e65b2dc41fa35e11f475",
+ "face": {
+  "generator": "face_generic/1",
+  "eyes": {
+   "L": {
+    "centre_m": [
+     0.058,
+     -0.0914,
+     0.777
+    ],
+    "radius_m": 0.036,
+    "front_protrusion_m": 0.014
+   },
+   "R": {
+    "centre_m": [
+     -0.058,
+     -0.0914,
+     0.777
+    ],
+    "radius_m": 0.036,
+    "front_protrusion_m": 0.014
+   }
+  },
+  "blink": {
+   "L": {
+    "lid": "lid_upper.L",
+    "edge_upper_deg": 41.9,
+    "edge_lower_deg": -50.7,
+    "close_deg": 95.6,
+    "flatten": 0.0
+   },
+   "R": {
+    "lid": "lid_upper.R",
+    "edge_upper_deg": 41.9,
+    "edge_lower_deg": -50.7,
+    "close_deg": 95.6,
+    "flatten": 0.0
+   }
+  },
+  "smile_coupling": {
+   "head_vertices": 4950,
+   "cheek_radius_m": [
+    0.0441,
+    0.0441
+   ],
+   "eye_squint_deg": 6.0,
+   "intensity": 1.0,
+   "asymmetry": 0.0
+  },
+  "action_units": [
+   "Blink.L",
+   "Blink.R",
+   "EyeWide",
+   "EyeSquint",
+   "BrowUp.L",
+   "BrowUp.R",
+   "BrowDown",
+   "BrowSad",
+   "MouthSmile",
+   "MouthFrown",
+   "MouthWide",
+   "MouthO",
+   "JawOpen"
+  ],
+  "action_units_missing": [],
+  "presets": [
+   "Blink",
+   "LeftEyeClosed",
+   "RightEyeClosed",
+   "Squint",
+   "WideOpen",
+   "Smile",
+   "Frown",
+   "Surprise",
+   "Sadness",
+   "Anger",
+   "Confusion",
+   "Laugh",
+   "MouthOpen",
+   "Worried",
+   "Curious"
+  ]
+ },
+ "accessories": {
+  "glasses": {
+   "rim_radius_m": [
+    0.0502,
+    0.0502
+   ],
+   "eye_spacing_m": 0.116,
+   "rim_L": {
+    "centre_m": [
+     0.058,
+     -0.1392,
+     0.783
+    ],
+    "eye_gap_m": 0.0056
+   },
+   "rim_R": {
+    "centre_m": [
+     -0.058,
+     -0.1392,
+     0.783
+    ],
+    "eye_gap_m": 0.0056
+   },
+   "temple_lift_m": {
+    "L": 0.0103,
+    "R": 0.0103
+   },
+   "objects": [
+    "glasses",
+    "glasses_lens"
+   ]
+  }
+ },
+ "model_s": 1.4,
+ "rig": {
+  "rigify_bones": 411,
+  "deform_bones": 74,
+  "generate_s": 0.3,
+  "fit_profile": "rigify_human_metarig/1",
+  "weighted_objects": 3,
+  "vertices": 63046,
+  "unweighted_after_heat": 142,
+  "unweighted_after_cleanup": 0,
+  "nearest_bone_fallback": []
+ },
+ "face_controls": {
+  "face_Blink.L": [
+   "lid_upper.L",
+   "lash.L"
+  ],
+  "face_Blink.R": [
+   "lid_upper.R",
+   "lash.R"
+  ],
+  "face_EyeWide": [
+   "lid_upper.L",
+   "lid_lower.L",
+   "lash.L",
+   "lid_upper.R",
+   "lid_lower.R",
+   "lash.R"
+  ],
+  "face_EyeSquint": [
+   "lid_upper.L",
+   "lid_lower.L",
+   "lash.L",
+   "lid_upper.R",
+   "lid_lower.R",
+   "lash.R"
+  ],
+  "face_BrowUp.L": [
+   "brow.L"
+  ],
+  "face_BrowUp.R": [
+   "brow.R"
+  ],
+  "face_BrowDown": [
+   "brow.L",
+   "brow.R"
+  ],
+  "face_BrowSad": [
+   "brow.L",
+   "brow.R"
+  ],
+  "face_MouthSmile": [
+   "body_skin",
+   "lid_lower.L",
+   "lid_lower.R",
+   "mouth",
+   "mouth_cavity"
+  ],
+  "face_MouthFrown": [
+   "mouth",
+   "mouth_cavity"
+  ],
+  "face_MouthWide": [
+   "mouth",
+   "mouth_cavity"
+  ],
+  "face_MouthO": [
+   "mouth",
+   "mouth_cavity"
+  ],
+  "face_JawOpen": [
+   "mouth",
+   "mouth_cavity"
+  ],
+  "face_Blink": [
+   "lid_upper.L",
+   "lash.L",
+   "lid_upper.R",
+   "lash.R"
+  ],
+  "face_LeftEyeClosed": [
+   "lid_upper.L",
+   "lash.L"
+  ],
+  "face_RightEyeClosed": [
+   "lid_upper.R",
+   "lash.R"
+  ],
+  "face_Squint": [
+   "body_skin",
+   "lid_upper.L",
+   "lid_lower.L",
+   "lash.L",
+   "lid_upper.R",
+   "lid_lower.R",
+   "lash.R",
+   "mouth",
+   "mouth_cavity"
+  ],
+  "face_WideOpen": [
+   "lid_upper.L",
+   "lid_lower.L",
+   "lash.L",
+   "lid_upper.R",
+   "lid_lower.R",
+   "lash.R",
+   "brow.L",
+   "brow.R",
+   "mouth",
+   "mouth_cavity"
+  ],
+  "face_Smile": [
+   "body_skin",
+   "lid_upper.L",
+   "lid_lower.L",
+   "lash.L",
+   "lid_upper.R",
+   "lid_lower.R",
+   "lash.R",
+   "mouth",
+   "mouth_cavity"
+  ],
+  "face_Frown": [
+   "brow.L",
+   "brow.R",
+   "mouth",
+   "mouth_cavity"
+  ],
+  "face_Surprise": [
+   "lid_upper.L",
+   "lid_lower.L",
+   "lash.L",
+   "lid_upper.R",
+   "lid_lower.R",
+   "lash.R",
+   "brow.L",
+   "brow.R",
+   "mouth",
+   "mouth_cavity"
+  ],
+  "face_Sadness": [
+   "lid_upper.L",
+   "lash.L",
+   "lid_upper.R",
+   "lash.R",
+   "brow.L",
+   "brow.R",
+   "mouth",
+   "mouth_cavity"
+  ],
+  "face_Anger": [
+   "lid_upper.L",
+   "lid_lower.L",
+   "lash.L",
+   "lid_upper.R",
+   "lid_lower.R",
+   "lash.R",
+   "brow.L",
+   "brow.R",
+   "mouth",
+   "mouth_cavity"
+  ],
+  "face_Confusion": [
+   "lid_upper.L",
+   "lid_lower.L",
+   "lash.L",
+   "lid_upper.R",
+   "lid_lower.R",
+   "lash.R",
+   "brow.L",
+   "brow.R",
+   "mouth",
+   "mouth_cavity"
+  ],
+  "face_Laugh": [
+   "body_skin",
+   "lid_upper.L",
+   "lid_lower.L",
+   "lash.L",
+   "lid_upper.R",
+   "lid_lower.R",
+   "lash.R",
+   "mouth",
+   "mouth_cavity"
+  ],
+  "face_MouthOpen": [
+   "mouth",
+   "mouth_cavity"
+  ],
+  "face_Worried": [
+   "lid_upper.L",
+   "lid_lower.L",
+   "lash.L",
+   "lid_upper.R",
+   "lid_lower.R",
+   "lash.R",
+   "brow.L",
+   "brow.R",
+   "mouth",
+   "mouth_cavity"
+  ],
+  "face_Curious": [
+   "lid_upper.L",
+   "lid_lower.L",
+   "lash.L",
+   "lid_upper.R",
+   "lid_lower.R",
+   "lash.R",
+   "brow.L",
+   "mouth",
+   "mouth_cavity"
+  ]
+ },
+ "jaw": {
+  "body_skin": 1316,
+  "pivot": [
+   0.0,
+   0.004,
+   0.75
+  ]
+ },
+ "inbetween_drivers": 144,
+ "joints_m": {
+  "spine_0": [
+   0.0,
+   0.0,
+   0.3
+  ],
+  "spine_1": [
+   0.0,
+   0.0,
+   0.3713
+  ],
+  "spine_2": [
+   0.0,
+   0.0,
+   0.4425
+  ],
+  "spine_3": [
+   0.0,
+   0.0,
+   0.5137
+  ],
+  "spine_4": [
+   0.0,
+   0.0,
+   0.585
+  ],
+  "spine_5": [
+   0.0,
+   0.0,
+   0.6375
+  ],
+  "neck_top": [
+   0.0,
+   0.0,
+   0.69
+  ],
+  "head_top": [
+   0.0,
+   -0.004,
+   0.97
+  ],
+  "clavicle.L": [
+   0.02,
+   0.0,
+   0.585
+  ],
+  "shoulder.L": [
+   0.098,
+   0.0,
+   0.585
+  ],
+  "elbow.L": [
+   0.1483,
+   0.0,
+   0.5044
+  ],
+  "wrist.L": [
+   0.1934,
+   0.0,
+   0.4323
+  ],
+  "hand_end.L": [
+   0.2146,
+   0.0,
+   0.3984
+  ],
+  "pelvis.L": [
+   0.052,
+   -0.0156,
+   0.3428
+  ],
+  "hip.L": [
+   0.052,
+   0.0,
+   0.3
+  ],
+  "knee.L": [
+   0.052,
+   -0.0039,
+   0.205
+  ],
+  "ankle.L": [
+   0.052,
+   0.0,
+   0.066
+  ],
+  "toe.L": [
+   0.052,
+   -0.0605,
+   0.0182
+  ],
+  "toe_tip.L": [
+   0.052,
+   -0.1045,
+   0.0182
+  ],
+  "heel_in.L": [
+   0.016,
+   0.03,
+   0.0
+  ],
+  "heel_out.L": [
+   0.088,
+   0.03,
+   0.0
+  ],
+  "clavicle.R": [
+   -0.02,
+   0.0,
+   0.585
+  ],
+  "shoulder.R": [
+   -0.098,
+   0.0,
+   0.585
+  ],
+  "elbow.R": [
+   -0.1483,
+   0.0,
+   0.5044
+  ],
+  "wrist.R": [
+   -0.1934,
+   0.0,
+   0.4323
+  ],
+  "hand_end.R": [
+   -0.2146,
+   0.0,
+   0.3984
+  ],
+  "pelvis.R": [
+   -0.052,
+   -0.0156,
+   0.3428
+  ],
+  "hip.R": [
+   -0.052,
+   0.0,
+   0.3
+  ],
+  "knee.R": [
+   -0.052,
+   -0.0039,
+   0.205
+  ],
+  "ankle.R": [
+   -0.052,
+   0.0,
+   0.066
+  ],
+  "toe.R": [
+   -0.052,
+   -0.0605,
+   0.0182
+  ],
+  "toe_tip.R": [
+   -0.052,
+   -0.1045,
+   0.0182
+  ],
+  "heel_in.R": [
+   -0.016,
+   0.03,
+   0.0
+  ],
+  "heel_out.R": [
+   -0.088,
+   0.03,
+   0.0
+  ]
+ },
+ "objects": [
+  "LM_chin",
+  "LM_ear_L",
+  "LM_ear_R",
+  "LM_eye_L",
+  "LM_eye_R",
+  "LM_mouth",
+  "LM_nose",
+  "body_skin",
+  "brow.L",
+  "brow.R",
+  "ear.L",
+  "ear.R",
+  "eye.L",
+  "eye.R",
+  "glasses",
+  "glasses_lens",
+  "hand.L",
+  "hand.R",
+  "lash.L",
+  "lash.R",
+  "lid_lower.L",
+  "lid_lower.R",
+  "lid_upper.L",
+  "lid_upper.R",
+  "mouth",
+  "mouth_cavity",
+  "rig_girl_auburn_bun_glasses"
+ ],
+ "total_s": 36.2
+}

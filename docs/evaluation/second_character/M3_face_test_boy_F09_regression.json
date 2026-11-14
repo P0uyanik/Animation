@@ -1,0 +1,50 @@
+{
+ "source": "/tmp/claude-0/-home-user/2f315425-a8bc-514d-b506-5868548079c6/scratchpad/boy_F09_regress/build/boy_yellow_hoodie_master.blend",
+ "blender": "5.3.0",
+ "states": {
+  "neutral": {
+   "max_skin_stretch": 1.0,
+   "chin_drop_mm": 0.0,
+   "cavity_visible_pct": 0.0,
+   "eye_visible_pct": 37.2,
+   "lid_proud_mm": 6.0,
+   "mouth_open_mm": 6.4,
+   "corner_lift_mm": -3.5,
+   "corner_lift_L_mm": -3.5,
+   "corner_lift_R_mm": -3.5
+  },
+  "Blink": {
+   "max_skin_stretch": 1.0,
+   "chin_drop_mm": 0.0,
+   "cavity_visible_pct": 0.0,
+   "eye_visible_pct": 0.0,
+   "lid_proud_mm": -1.06,
+   "mouth_open_mm": 6.4,
+   "corner_lift_mm": -3.5,
+   "corner_lift_L_mm": -3.5,
+   "corner_lift_R_mm": -3.5
+  },
+  "Smile": {
+   "max_skin_stretch": 1.819,
+   "chin_drop_mm": 0.0,
+   "cavity_visible_pct": 0.0,
+   "eye_visible_pct": 25.7,
+   "lid_proud_mm": 6.0,
+   "mouth_open_mm": 6.4,
+   "corner_lift_mm": 9.63,
+   "corner_lift_L_mm": 11.59,
+   "corner_lift_R_mm": 7.66
+  },
+  "JawOpen": {
+   "max_skin_stretch": 3.295,
+   "chin_drop_mm": 9.74,
+   "cavity_visible_pct": 64.2,
+   "eye_visible_pct": 37.2,
+   "lid_proud_mm": 6.0,
+   "mouth_open_mm": 25.49,
+   "corner_lift_mm": 0.37,
+   "corner_lift_L_mm": 0.37,
+   "corner_lift_R_mm": 0.37
+  }
+ }
+}

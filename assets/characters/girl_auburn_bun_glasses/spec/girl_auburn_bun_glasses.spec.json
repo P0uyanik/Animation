@@ -264,25 +264,284 @@
   "provenance": "#30 front silhouette and landmarks (1 px = 2.41 mm): legs, knees, hands, arm angle, face/head, crotch, armpits measured; torso and shoulders estimated inside the blouse/vest silhouette (hidden), foot inside the boots; iteration 2 after measuring the build: legs 66 -> target 75 mm, hand tips 0.331 -> target 0.374 m"
  },
  "face": {
-  "generator": "TBD (M3)",
-  "eye_style": "large fully open round eyes, brown iris, two highlights, outer upper lashes",
-  "brows": "thin, high, partly under the fringe",
-  "mouth": "small; neutral closed soft smile; Happy open smile with teeth and tongue",
+  "generator": "face_generic/1",
+  "provenance": "Layout from references/landmarks.json (sheet30_front; 1 px = 2.41 mm): mouth 23 px, nose 14 px, chin 40 px below the eye line; eye opening about 24 px wide; brows about 31 px above the eye line, from -9 to +11 px around the eye centre. Eye style, highlights, lashes and expressions from #30 face tiles and #34 (eye controls, blendshape matrix). Values in metres; my estimates where noted.",
+  "layout": {
+   "mouth_below_eye_m": 0.055,
+   "nose_below_eye_m": 0.034,
+   "chin_below_eye_m": 0.096
+  },
+  "eyes": {
+   "radius_m": 0.036,
+   "protrusion_m": 0.014,
+   "scale": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "yaw_deg": 0.0,
+   "pitch_deg": 0.0,
+   "iris": {
+    "srgb": [
+     122,
+     72,
+     42
+    ],
+    "dark_srgb": [
+     58,
+     32,
+     20
+    ],
+    "radius": 0.57,
+    "pupil": 0.3
+   },
+   "sclera_srgb": [
+    238,
+    232,
+    226
+   ],
+   "highlights": [
+    [
+     0.3,
+     0.33,
+     0.2
+    ],
+    [
+     -0.27,
+     -0.3,
+     0.08
+    ]
+   ],
+   "lids": {
+    "upper_edge_deg": 42,
+    "upper_back_tilt": 1.0,
+    "upper_gap": 0.06,
+    "upper_thickness_m": 0.0018,
+    "lower_edge_deg": -50,
+    "lower_tilt": 0.3,
+    "lower_gap": 0.03,
+    "lower_thickness_m": 0.0012
+   },
+   "lash": {
+    "srgb": [
+     40,
+     24,
+     20
+    ],
+    "span_deg": 72,
+    "thick_m": 0.0032,
+    "depth_m": 0.0018,
+    "flare": 0.6,
+    "forward_m": 0.0004,
+    "outer": {
+     "count": 3,
+     "length_m": [
+      0.0065,
+      0.0075,
+      0.006
+     ],
+     "width_m": 0.0012,
+     "spacing": 0.11,
+     "lift": 0.9
+    },
+    "lower": {
+     "from_deg": 25,
+     "to_deg": 72,
+     "thick_m": 0.0006
+    }
+   },
+   "note": "large fully open round eyes (#30, #34); two highlights on the same screen side for both eyes (upper right, small lower left); spherical eyeball (gaze rotates it inside concentric lid shells: no intersections), r 36 mm standing 14 mm out of the face (opening half-width 28.5 mm); lids follow 30% of the gaze (eyelid tracking, #34). Tried and rejected (M3): an ellipsoid eyeball (cuts the lids under gaze) and a 48 mm eye 9.5 mm out (large lid hood, off-centre iris on the curved face)",
+   "lid_tracking": 0.3
+  },
+  "brows": {
+   "inner": 0.62,
+   "outer": 0.82,
+   "height": 2.25,
+   "arch_m": 0.004,
+   "outer_drop_m": 0.002,
+   "thick_m": 0.0017,
+   "depth_m": 0.0012,
+   "taper": 0.45,
+   "offset_m": 0.0012,
+   "srgb": [
+    118,
+    76,
+    56
+   ]
+  },
+  "ears": {
+   "radii_m": [
+    0.011,
+    0.021,
+    0.029
+   ],
+   "below_eye_m": 0.012,
+   "y_m": 0.004,
+   "out_m": 0.004,
+   "yaw_deg": 32,
+   "tilt_deg": -8
+  },
+  "nose": {
+   "radius_m": 0.017,
+   "height_m": 0.0045
+  },
+  "blush": {
+   "srgb": [
+    228,
+    156,
+    150
+   ],
+   "below_eye_m": 0.042,
+   "out_m": 0.004,
+   "radius_m": 0.026,
+   "nose": true
+  },
+  "mouth": {
+   "generator": "lips_jaw/2",
+   "half_width_m": 0.0135,
+   "lip_height_m": 0.0028,
+   "frown_m": -0.0022,
+   "smile_up_m": 0.0055,
+   "smile_widen": 1.1,
+   "smile_intensity": 1.0,
+   "smile_asymmetry": 0.0,
+   "jaw_open_deg": 10.0,
+   "pivot_drop_m": 0.015,
+   "cavity_depth_m": 0.0,
+   "cheek_falloff_m": [
+    0.028,
+    0.055
+   ],
+   "jaw_band_start": 0.45,
+   "jaw_corner_center": 1.0,
+   "jaw_floor_fade_m": 0.02,
+   "jaw_lip_round": 0.9,
+   "jaw_upper_lift_m": 0.002,
+   "lip_material": "lip",
+   "lip_srgb": [
+    214,
+    150,
+    146
+   ],
+   "seam_half_m": 0.0008,
+   "line_srgb": [
+    120,
+    56,
+    56
+   ],
+   "line_roughness": 0.9,
+   "lip_edge_offset_m": 0.0002,
+   "lip_bulge_m": 0.001,
+   "interior_rows": 9,
+   "interior_follow_keys": true,
+   "inner_srgb": [
+    150,
+    60,
+    64
+   ],
+   "throat_srgb": [
+    50,
+    16,
+    20
+   ],
+   "tongue_srgb": [
+    196,
+    96,
+    104
+   ],
+   "oral": {
+    "teeth_upper": {
+     "depth": 0.26,
+     "width": 0.86,
+     "srgb": [
+      240,
+      235,
+      226
+     ],
+     "forward_m": 0.0003
+    },
+    "tongue": {
+     "t0": 0.58,
+     "width": 0.62,
+     "srgb": [
+      206,
+      104,
+      112
+     ],
+     "bulge_m": 0.0002
+    }
+   },
+   "extra_shapes": [
+    {
+     "name": "MouthFrown",
+     "frown_m": 0.0045,
+     "widen": 0.95
+    },
+    {
+     "name": "MouthWide",
+     "frown_m": -0.0055,
+     "widen": 1.55,
+     "up_lift_m": 0.004,
+     "lo_drop_m": 0.014
+    },
+    {
+     "name": "MouthO",
+     "frown_m": 0.0,
+     "widen": 0.62,
+     "up_lift_m": 0.0028,
+     "lo_drop_m": 0.0045
+    }
+   ],
+   "note": "neutral = small closed soft smile (frown_m < 0); Happy/Smile opens via MouthWide showing the teeth and tongue layers"
+  },
+  "blink": {
+   "generator": "lid_seam/1",
+   "overlap_deg": 3,
+   "closed_offset_m": 0.0012,
+   "closed_thickness_m": 0.0012,
+   "flatten": 0.0,
+   "flatten_lash": false,
+   "timing": {
+    "close_s": 0.08,
+    "hold_s": 0.04,
+    "open_s": 0.14,
+    "mean_interval_s": 3.2,
+    "note": "character data for the engine life layer; the engine currently uses one global timing (see M3 report)"
+   },
+   "note": "flatten 0: a flattened closed lid exposes the eye when gaze and blink combine (measured 20-35% at 20 deg); closed_offset 1.2 mm covers the 0.6 mm linear-blend shrink of the 30% lid tracking at 20 deg"
+  },
+  "smile_coupling": {
+   "cheek_raise_m": 0.003,
+   "cheek_forward_m": 0.0015,
+   "cheek_radius_scale": 0.55,
+   "corner_follow": 0.8,
+   "corner_radius_scale": 0.9,
+   "eye_squint_deg": 6.0,
+   "intensity": 1.0,
+   "asymmetry": 0.0
+  },
+  "action_units": {
+   "wide_upper_deg": 10,
+   "wide_lower_deg": 6,
+   "squint_lower_deg": 14,
+   "squint_upper_deg": 6,
+   "brow_up_m": 0.006,
+   "brow_down_m": 0.005,
+   "brow_in_m": 0.003,
+   "brow_sad_m": 0.005
+  },
+  "expressions": {
+   "intensity": 1.0,
+   "scale": {},
+   "override": {},
+   "optional": [
+    "Worried",
+    "Curious"
+   ],
+   "note": "presets from the shared library (14 from reference #34); Worried and Curious are optional extras (not in any reference)"
+  },
   "expression_shape_keys": [],
-  "expressions_planned": [
-   "Happy",
-   "Laugh",
-   "Sad",
-   "Surprise",
-   "Anger",
-   "Frown",
-   "Confusion",
-   "Squint",
-   "WideOpen",
-   "BlinkL",
-   "BlinkR",
-   "BrowsUp"
-  ]
+  "expressions_reference": "#34 blendshape matrix: Neutral, Blink, Left/Right Eye Closed, Squint, Wide-Open, Smile, Frown, Surprise, Sadness, Anger, Confusion, Laugh, Mouth Open"
  },
  "hair": {
   "generator": "TBD (M4: hair_clumps/2 + strand-lock and bun families)",
@@ -307,11 +566,50 @@
   ]
  },
  "accessories": {
-  "generator": "TBD (M3/M4: generic accessory module)",
+  "generator": "accessories/1",
   "items": [
-   "round glasses (brown frame, clear lenses)",
-   "hair flowers",
-   "hair band"
+   {
+    "type": "glasses/1",
+    "name": "glasses",
+    "rim": {
+     "radius_eye_spacing": 0.433,
+     "aspect": 1.0,
+     "shape_n": 2.0,
+     "offset_up_m": 0.006,
+     "eye_clearance_m": 0.004,
+     "skin_clearance_m": 0.003,
+     "wrap_deg": 6,
+     "segments": 64
+    },
+    "wire_radius_m": 0.0016,
+    "bridge": {
+     "lift_m": 0.003,
+     "forward_m": 0.001
+    },
+    "temples": {
+     "enabled": true,
+     "skin_offset_m": 0.004,
+     "past_ear_m": 0.012,
+     "above_ear_m": 0.022,
+     "drop_m": 0.008
+    },
+    "lens": {
+     "enabled": true,
+     "alpha": 0.05
+    },
+    "material": {
+     "srgb": [
+      137,
+      85,
+      69
+     ],
+     "roughness": 0.3,
+     "metallic": 0.5
+    },
+    "provenance": "rim radius / eye spacing 21/48.5 = 0.433, rim centre 2.5 px (6 mm) above the eye line (landmarks.json); frame colour #30 (color_targets.json glasses_frame)"
+   },
+   "hair flowers (planned, M4)",
+   "hair band (planned, M4)"
   ]
  },
  "rig": {
@@ -429,16 +727,33 @@
   ]
  },
  "metadata": {
-  "spec_version": "0.2.0",
-  "status": "M2: body_generic/1 base body (no face, hair, garments, accessories)"
+  "spec_version": "0.3.0",
+  "status": "M2: body_generic/1 base body (no face, hair, garments, accessories)",
+  "history": [
+   "0.3.0 (M3): generic face (face_generic/1), expression library, glasses accessory"
+  ]
  },
  "components": {
   "body": [
    "body_skin",
    "hand."
   ],
+  "face": [
+   "eye.",
+   "lid_",
+   "lash.",
+   "brow.",
+   "mouth",
+   "ear."
+  ],
+  "accessories": [
+   "glasses"
+  ],
   "rig": [
    "rig_"
+  ],
+  "landmarks": [
+   "LM_"
   ]
  }
 }

@@ -8,7 +8,10 @@ Drives the rig's facial controls (face_*) and measures, per expression:
   mouth_open_mm     vertical opening between the lips at the centre (JawOpen)
   corner_lift_mm    mouth-corner rise relative to the centre (Smile)
 Renders a close-up grid (rows: neutral, Blink, Smile, JawOpen; columns: front, three-quarter) -> face_test.png,
-numbers -> face_test.json."""
+numbers -> face_test.json.
+Part names come from the rig property ps_face_parts when present (generic face, face_generic/1); otherwise the legacy
+boy names (head, eye.L, lid_upper.L, mouth). For a head that is part of a full-body skin, the chin-drop measure is
+limited to the head region (above the chin landmark - 4 cm) and the camera aims at the face landmarks."""
 import json
 import math
 import os
@@ -24,7 +27,11 @@ os.makedirs(OUT, exist_ok=True)
 bpy.ops.wm.open_mainfile(filepath=SRC)
 sc = bpy.context.scene
 rig = next(o for o in bpy.data.objects if o.type == "ARMATURE" and "face_Blink" in o.keys())
-eye = bpy.data.objects["eye.L"]
+PARTS = json.loads(rig.get("ps_face_parts", "{}"))
+HEAD, EYE, LID, MOUTH = (PARTS.get("head", "head"), PARTS.get("eye_L", "eye.L"), PARTS.get("lid_upper_L", "lid_upper.L"),
+                         PARTS.get("mouth", "mouth"))
+eye = bpy.data.objects[EYE]
+SKIP = set(PARTS.get("accessories", []))
 deps = bpy.context.evaluated_depsgraph_get
 
 
@@ -55,24 +62,26 @@ def eye_visible():
                 continue
             o = Vector((c.x + dx, c.y - 0.5, c.z + dz))
             ok, loc, nrm, idx, ob, mat = sc.ray_cast(deps(), o, Vector((0, 1, 0)))
+            while ok and ob is not None and ob.name in SKIP:  # accessories (glasses) are not part of the face
+                ok, loc, nrm, idx, ob, mat = sc.ray_cast(deps(), loc + Vector((0, 1e-5, 0)), Vector((0, 1, 0)))
             tot += 1
-            hit += bool(ok and ob is not None and ob.name == "eye.L")
+            hit += bool(ok and ob is not None and ob.name == EYE)
     return 100.0 * hit / tot
 
 
 def metrics():
     c = np.array(eye.matrix_world.translation)
     r = eye.dimensions.x / 2
-    lid = world_verts("lid_upper.L")
+    lid = world_verts(LID)
     front = lid[(lid[:, 1] - c[1]) < -0.3 * r]
     proud = (np.linalg.norm(front - c, axis=1) - r).max() * 1000 if len(front) else 0.0
-    m = world_verts("mouth")
+    m = world_verts(MOUTH)
     xs = m[:, 0]
     mid = m[np.abs(xs) < 0.002]
     corner = m[np.abs(xs) > xs.max() * 0.9]
     out = {}
-    head = bpy.data.objects["head"]
-    hv = world_verts("head")
+    head = bpy.data.objects[HEAD]
+    hv = world_verts(HEAD)
     if "rest_head" not in REST:
         REST["rest_head"] = hv
         REST["edges"] = np.array([e.vertices[:] for e in head.data.edges])
@@ -86,7 +95,12 @@ def metrics():
         ok = (l0 > 1e-4) & ~(inside if "mouth_cavity" in bpy.data.objects else np.zeros(len(l0), bool))
         out["max_skin_stretch"] = round(float((l1[ok] / l0[ok]).max()), 3)
         front = np.abs(REST["rest_head"][:, 0]) < 0.01
-        out["chin_drop_mm"] = round(float((REST["rest_head"][front, 2].min() - hv[front, 2].min()) * 1000), 2)
+        if PARTS:  # full-body skin: mean drop of the skin within 15 mm of the chin landmark
+            ch = np.array(bpy.data.objects["LM_chin"].matrix_world.translation)
+            near = np.linalg.norm(REST["rest_head"] - ch, axis=1) < 0.015
+            out["chin_drop_mm"] = round(float((REST["rest_head"][near, 2] - hv[near, 2]).mean() * 1000), 2)
+        else:
+            out["chin_drop_mm"] = round(float((REST["rest_head"][front, 2].min() - hv[front, 2].min()) * 1000), 2)
     if "mouth_cavity" in bpy.data.objects:
         lm = bpy.data.objects["LM_mouth"].matrix_world.translation
         hit = tot = 0
@@ -133,6 +147,13 @@ sun.rotation_euler = (math.radians(55), 0, math.radians(-25))
 sc.collection.objects.link(sun)
 target = Vector((0, -0.10, 0.765))
 views = {"front": Vector((0, -1.0, 0.80)), "threequarter": Vector((0.62, -0.78, 0.82))}
+if PARTS:  # aim at this character's face with the same camera offsets as the legacy views
+    lmE = (bpy.data.objects["LM_eye_L"].matrix_world.translation + bpy.data.objects["LM_eye_R"].matrix_world.translation) / 2
+    lmM = bpy.data.objects["LM_mouth"].matrix_world.translation
+    shift = Vector((0, lmE.y + 0.0, (lmE.z + lmM.z) / 2)) - Vector((0, -0.10 - 0.0, 0.765))
+    shift.x = 0.0
+    target = target + shift
+    views = {k: v + shift for k, v in views.items()}
 tiles = []
 for name, kw in STATES:
     setf(**kw)

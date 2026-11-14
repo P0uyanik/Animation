@@ -52,7 +52,7 @@ bool hasRole(const ImportedCharacter& c, const std::string& r) {
 }  // namespace
 
 TEST_CASE("imported character packages: behaviour support") {
-  for (const char* name : {"boy_yellow_hoodie_1.0.0", "toy_fixture", "girl_auburn_bun_glasses_m2"}) {
+  for (const char* name : {"boy_yellow_hoodie_1.0.0", "toy_fixture", "girl_auburn_bun_glasses_m2", "girl_auburn_bun_glasses_m3"}) {
     CAPTURE(name);
     auto loaded = loadImportedCharacter(pkg(name));
     REQUIRE(loaded.has_value());
@@ -152,7 +152,7 @@ TEST_CASE("imported character packages: behaviour support") {
 }
 
 TEST_CASE("imported character packages: walk and idle through the scene") {
-  for (const char* name : {"boy_yellow_hoodie_1.0.0", "toy_fixture", "girl_auburn_bun_glasses_m2"}) {
+  for (const char* name : {"boy_yellow_hoodie_1.0.0", "toy_fixture", "girl_auburn_bun_glasses_m2", "girl_auburn_bun_glasses_m3"}) {
     CAPTURE(name);
     {
       Json actions = Json::parse(R"([{"type": "walk", "character": "who", "start": 1, "end": 61, "to": [0.0, 0.6]}])");
@@ -194,7 +194,7 @@ TEST_CASE("imported character packages: walk and idle through the scene") {
 }
 
 TEST_CASE("imported character packages: blink morph in the life layer and per-character expression names") {
-  for (const char* name : {"boy_yellow_hoodie_1.0.0", "toy_fixture", "girl_auburn_bun_glasses_m2"}) {
+  for (const char* name : {"boy_yellow_hoodie_1.0.0", "toy_fixture", "girl_auburn_bun_glasses_m2", "girl_auburn_bun_glasses_m3"}) {
     CAPTURE(name);
     // Blink: the life layer drives the morph mapped to "blink" (no lid bones exist; none are rotated).
     auto ev = sceneWith(name, Json::array(), true);
@@ -237,6 +237,35 @@ TEST_CASE("imported character packages: blink morph in the life layer and per-ch
     for (auto& w : ev2->warnings()) warned |= w.find("'smile'") != std::string::npos;
     MESSAGE("expressions: smile " << std::string(hasSmile ? "mapped" : "missing -> warning") << "; warnings " << ev2->warnings().size());
     CHECK(warned == !hasSmile);
+  }
+}
+
+TEST_CASE("imported character packages: semantic expressions from the shared face library") {
+  // The generic face (face_generic/1) bakes library presets into morphs and maps engine expression names to them
+  // (per character, no engine change). Each mapped expression must resolve, reach full weight and move the face.
+  for (const char* name : {"girl_auburn_bun_glasses_m3"}) {
+    CAPTURE(name);
+    auto ev0 = sceneWith(name, Json::array(), false);
+    const auto map = ev0->characters()[0].asset.expressionMap;
+    REQUIRE(map.count("happy"));
+    auto rest = ev0->evaluate(20);
+    for (const char* e : {"happy", "sad", "surprised", "angry", "laugh", "squint", "confused", "frown", "blink", "jawOpen"}) {
+      CAPTURE(e);
+      REQUIRE(map.count(e));
+      Json actions = Json::parse(std::string(R"([{"type": "expression", "character": "who", "name": ")") + e + R"(", "start": 5}])");
+      auto ev = sceneWith(name, actions, false);
+      CHECK(ev->warnings().empty());
+      CHECK(ev->scene().animation.evaluate("who/expr." + map.at(e), 20, vec3(0)).x > 0.99f);
+      auto posed = ev->evaluate(20);
+      float moved = 0;
+      for (size_t m = 0; m < posed->meshes.size(); ++m) {
+        const auto& p1 = posed->meshes[m].mesh->positions;
+        const auto& p0 = rest->meshes[m].mesh->positions;
+        for (size_t v = 0; v < p1.size(); ++v) moved = std::max(moved, glm::distance(p0[v], p1[v]));
+      }
+      MESSAGE("expression '" << std::string(e) << "' -> morph '" << map.at(e) << "': max vertex motion " << moved * 1000 << " mm");
+      CHECK(moved > 0.002f);
+    }
   }
 }
 

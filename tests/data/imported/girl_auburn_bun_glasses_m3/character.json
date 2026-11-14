@@ -1,0 +1,5383 @@
+{
+ "format": "plush.imported_character",
+ "version": 1,
+ "name": "girl_auburn_bun_glasses",
+ "source": {
+  "blend": "girl_auburn_bun_glasses_master.blend",
+  "blend_sha256": "96e3a4f857efa00c19ceceb474a73e138a70ea1ca8c2b015c9f9a93b49d0f558",
+  "spec_sha256": "e71897430322b75e52b9337a5d1434f5fe58f4bb6f15e65b2dc41fa35e11f475",
+  "spec_version": "0.3.0",
+  "blender": "5.3.0"
+ },
+ "profile": {
+  "name": "humanoid_rigify/1",
+  "kind": "humanoid",
+  "required_roles": [
+   "hips",
+   "spine",
+   "chest",
+   "neck",
+   "head"
+  ]
+ },
+ "coordinates": "metres; +Y up; character faces +Z; converted from Blender (x, y, z) -> (x, z, -y)",
+ "skeleton": [
+  {
+   "name": "hips",
+   "source_name": "DEF-spine",
+   "kind": "role",
+   "parent": null,
+   "head": [
+    0.0,
+    0.300002,
+    -0.0
+   ]
+  },
+  {
+   "name": "spine",
+   "source_name": "DEF-spine.001",
+   "kind": "role",
+   "parent": "hips",
+   "head": [
+    0.0,
+    0.371251,
+    -0.0
+   ]
+  },
+  {
+   "name": "DEF-spine.002",
+   "source_name": "DEF-spine.002",
+   "kind": "helper",
+   "parent": "spine",
+   "head": [
+    0.0,
+    0.442499,
+    -0.0
+   ]
+  },
+  {
+   "name": "chest",
+   "source_name": "DEF-spine.003",
+   "kind": "role",
+   "parent": "DEF-spine.002",
+   "head": [
+    0.0,
+    0.513748,
+    -0.0
+   ]
+  },
+  {
+   "name": "neck",
+   "source_name": "DEF-spine.004",
+   "kind": "role",
+   "parent": "chest",
+   "head": [
+    0.0,
+    0.584997,
+    -0.0
+   ]
+  },
+  {
+   "name": "DEF-spine.005",
+   "source_name": "DEF-spine.005",
+   "kind": "helper",
+   "parent": "neck",
+   "head": [
+    0.0,
+    0.637499,
+    -0.0
+   ]
+  },
+  {
+   "name": "head",
+   "source_name": "DEF-spine.006",
+   "kind": "role",
+   "parent": "DEF-spine.005",
+   "head": [
+    0.0,
+    0.69,
+    -0.0
+   ]
+  },
+  {
+   "name": "DEF-jaw",
+   "source_name": "DEF-jaw",
+   "kind": "rig_specific",
+   "parent": "head",
+   "head": [
+    0.0,
+    0.749999,
+    -0.004
+   ]
+  },
+  {
+   "name": "DEF-pelvis.L",
+   "source_name": "DEF-pelvis.L",
+   "kind": "helper",
+   "parent": null,
+   "head": [
+    0.0,
+    0.300002,
+    -0.0
+   ]
+  },
+  {
+   "name": "DEF-pelvis.R",
+   "source_name": "DEF-pelvis.R",
+   "kind": "helper",
+   "parent": null,
+   "head": [
+    0.0,
+    0.300002,
+    -0.0
+   ]
+  },
+  {
+   "name": "thigh.L",
+   "source_name": "DEF-thigh.L",
+   "kind": "role",
+   "parent": null,
+   "head": [
+    0.052002,
+    0.300002,
+    -0.0
+   ]
+  },
+  {
+   "name": "DEF-thigh.L.001",
+   "source_name": "DEF-thigh.L.001",
+   "kind": "helper",
+   "parent": "thigh.L",
+   "head": [
+    0.052002,
+    0.252501,
+    0.00194
+   ]
+  },
+  {
+   "name": "shin.L",
+   "source_name": "DEF-shin.L",
+   "kind": "role",
+   "parent": "thigh.L",
+   "head": [
+    0.052002,
+    0.205,
+    0.00388
+   ]
+  },
+  {
+   "name": "DEF-shin.L.001",
+   "source_name": "DEF-shin.L.001",
+   "kind": "helper",
+   "parent": "shin.L",
+   "head": [
+    0.052002,
+    0.135499,
+    0.00194
+   ]
+  },
+  {
+   "name": "foot.L",
+   "source_name": "DEF-foot.L",
+   "kind": "role",
+   "parent": "shin.L",
+   "head": [
+    0.052002,
+    0.065999,
+    -0.0
+   ]
+  },
+  {
+   "name": "DEF-toe.L",
+   "source_name": "DEF-toe.L",
+   "kind": "helper",
+   "parent": "foot.L",
+   "head": [
+    0.052002,
+    0.018201,
+    0.060499
+   ]
+  },
+  {
+   "name": "thigh.R",
+   "source_name": "DEF-thigh.R",
+   "kind": "role",
+   "parent": null,
+   "head": [
+    -0.052002,
+    0.300002,
+    -0.0
+   ]
+  },
+  {
+   "name": "DEF-thigh.R.001",
+   "source_name": "DEF-thigh.R.001",
+   "kind": "helper",
+   "parent": "thigh.R",
+   "head": [
+    -0.052002,
+    0.252501,
+    0.00194
+   ]
+  },
+  {
+   "name": "shin.R",
+   "source_name": "DEF-shin.R",
+   "kind": "role",
+   "parent": "thigh.R",
+   "head": [
+    -0.052002,
+    0.205,
+    0.00388
+   ]
+  },
+  {
+   "name": "DEF-shin.R.001",
+   "source_name": "DEF-shin.R.001",
+   "kind": "helper",
+   "parent": "shin.R",
+   "head": [
+    -0.052002,
+    0.135499,
+    0.00194
+   ]
+  },
+  {
+   "name": "foot.R",
+   "source_name": "DEF-foot.R",
+   "kind": "role",
+   "parent": "shin.R",
+   "head": [
+    -0.052002,
+    0.065999,
+    -0.0
+   ]
+  },
+  {
+   "name": "DEF-toe.R",
+   "source_name": "DEF-toe.R",
+   "kind": "helper",
+   "parent": "foot.R",
+   "head": [
+    -0.052002,
+    0.018201,
+    0.060499
+   ]
+  },
+  {
+   "name": "eye.L",
+   "source_name": "DEF-eye.L",
+   "kind": "role",
+   "parent": null,
+   "head": [
+    0.057996,
+    0.776999,
+    0.091432
+   ]
+  },
+  {
+   "name": "eye.R",
+   "source_name": "DEF-eye.R",
+   "kind": "role",
+   "parent": null,
+   "head": [
+    -0.057996,
+    0.776999,
+    0.091432
+   ]
+  },
+  {
+   "name": "DEF-shoulder.L",
+   "source_name": "DEF-shoulder.L",
+   "kind": "helper",
+   "parent": null,
+   "head": [
+    0.020001,
+    0.584997,
+    -0.0
+   ]
+  },
+  {
+   "name": "upperArm.L",
+   "source_name": "DEF-upper_arm.L",
+   "kind": "role",
+   "parent": null,
+   "head": [
+    0.097999,
+    0.584997,
+    -0.0
+   ]
+  },
+  {
+   "name": "DEF-upper_arm.L.001",
+   "source_name": "DEF-upper_arm.L.001",
+   "kind": "helper",
+   "parent": "upperArm.L",
+   "head": [
+    0.123171,
+    0.544714,
+    -0.0
+   ]
+  },
+  {
+   "name": "forearm.L",
+   "source_name": "DEF-forearm.L",
+   "kind": "role",
+   "parent": "upperArm.L",
+   "head": [
+    0.148342,
+    0.504431,
+    -0.0
+   ]
+  },
+  {
+   "name": "DEF-forearm.L.001",
+   "source_name": "DEF-forearm.L.001",
+   "kind": "helper",
+   "parent": "forearm.L",
+   "head": [
+    0.170864,
+    0.468389,
+    -0.0
+   ]
+  },
+  {
+   "name": "hand.L",
+   "source_name": "DEF-hand.L",
+   "kind": "role",
+   "parent": "forearm.L",
+   "head": [
+    0.193386,
+    0.432346,
+    0.0
+   ]
+  },
+  {
+   "name": "f3a.L",
+   "source_name": "DEF-f_index.01.L",
+   "kind": "role",
+   "parent": "hand.L",
+   "head": [
+    0.213524,
+    0.400118,
+    0.019798
+   ]
+  },
+  {
+   "name": "f3b.L",
+   "source_name": "DEF-f_index.02.L",
+   "kind": "role",
+   "parent": "f3a.L",
+   "head": [
+    0.216407,
+    0.392485,
+    0.019798
+   ]
+  },
+  {
+   "name": "DEF-f_index.03.L",
+   "source_name": "DEF-f_index.03.L",
+   "kind": "helper",
+   "parent": "f3b.L",
+   "head": [
+    0.218713,
+    0.386379,
+    0.019798
+   ]
+  },
+  {
+   "name": "DEF-thumb.01.L",
+   "source_name": "DEF-thumb.01.L",
+   "kind": "helper",
+   "parent": "hand.L",
+   "head": [
+    0.195506,
+    0.428954,
+    0.011999
+   ]
+  },
+  {
+   "name": "thumbA.L",
+   "source_name": "DEF-thumb.02.L",
+   "kind": "role",
+   "parent": "DEF-thumb.01.L",
+   "head": [
+    0.195718,
+    0.417293,
+    0.025198
+   ]
+  },
+  {
+   "name": "thumbB.L",
+   "source_name": "DEF-thumb.03.L",
+   "kind": "role",
+   "parent": "thumbA.L",
+   "head": [
+    0.195892,
+    0.407674,
+    0.028498
+   ]
+  },
+  {
+   "name": "DEF-palm.01.L",
+   "source_name": "DEF-palm.01.L",
+   "kind": "helper",
+   "parent": "hand.L",
+   "head": [
+    0.196566,
+    0.427258,
+    0.019798
+   ]
+  },
+  {
+   "name": "f2a.L",
+   "source_name": "DEF-f_middle.01.L",
+   "kind": "role",
+   "parent": "hand.L",
+   "head": [
+    0.213524,
+    0.400118,
+    0.006599
+   ]
+  },
+  {
+   "name": "f2b.L",
+   "source_name": "DEF-f_middle.02.L",
+   "kind": "role",
+   "parent": "f2a.L",
+   "head": [
+    0.216839,
+    0.391341,
+    0.006599
+   ]
+  },
+  {
+   "name": "DEF-f_middle.03.L",
+   "source_name": "DEF-f_middle.03.L",
+   "kind": "helper",
+   "parent": "f2b.L",
+   "head": [
+    0.219491,
+    0.38432,
+    0.006599
+   ]
+  },
+  {
+   "name": "DEF-palm.02.L",
+   "source_name": "DEF-palm.02.L",
+   "kind": "helper",
+   "parent": "hand.L",
+   "head": [
+    0.196566,
+    0.427258,
+    0.006599
+   ]
+  },
+  {
+   "name": "f1a.L",
+   "source_name": "DEF-f_ring.01.L",
+   "kind": "role",
+   "parent": "hand.L",
+   "head": [
+    0.213524,
+    0.400118,
+    -0.006599
+   ]
+  },
+  {
+   "name": "f1b.L",
+   "source_name": "DEF-f_ring.02.L",
+   "kind": "role",
+   "parent": "f1a.L",
+   "head": [
+    0.216695,
+    0.391723,
+    -0.006599
+   ]
+  },
+  {
+   "name": "DEF-f_ring.03.L",
+   "source_name": "DEF-f_ring.03.L",
+   "kind": "helper",
+   "parent": "f1b.L",
+   "head": [
+    0.219232,
+    0.385006,
+    -0.006599
+   ]
+  },
+  {
+   "name": "DEF-palm.03.L",
+   "source_name": "DEF-palm.03.L",
+   "kind": "helper",
+   "parent": "hand.L",
+   "head": [
+    0.196566,
+    0.427258,
+    -0.006599
+   ]
+  },
+  {
+   "name": "f0a.L",
+   "source_name": "DEF-f_pinky.01.L",
+   "kind": "role",
+   "parent": "hand.L",
+   "head": [
+    0.213524,
+    0.400118,
+    -0.019798
+   ]
+  },
+  {
+   "name": "f0b.L",
+   "source_name": "DEF-f_pinky.02.L",
+   "kind": "role",
+   "parent": "f0a.L",
+   "head": [
+    0.216119,
+    0.393248,
+    -0.019798
+   ]
+  },
+  {
+   "name": "DEF-f_pinky.03.L",
+   "source_name": "DEF-f_pinky.03.L",
+   "kind": "helper",
+   "parent": "f0b.L",
+   "head": [
+    0.218195,
+    0.387752,
+    -0.019798
+   ]
+  },
+  {
+   "name": "DEF-palm.04.L",
+   "source_name": "DEF-palm.04.L",
+   "kind": "helper",
+   "parent": "hand.L",
+   "head": [
+    0.196566,
+    0.427258,
+    -0.019798
+   ]
+  },
+  {
+   "name": "DEF-shoulder.R",
+   "source_name": "DEF-shoulder.R",
+   "kind": "helper",
+   "parent": null,
+   "head": [
+    -0.020001,
+    0.584997,
+    -0.0
+   ]
+  },
+  {
+   "name": "upperArm.R",
+   "source_name": "DEF-upper_arm.R",
+   "kind": "role",
+   "parent": null,
+   "head": [
+    -0.097999,
+    0.584997,
+    -0.0
+   ]
+  },
+  {
+   "name": "DEF-upper_arm.R.001",
+   "source_name": "DEF-upper_arm.R.001",
+   "kind": "helper",
+   "parent": "upperArm.R",
+   "head": [
+    -0.123171,
+    0.544714,
+    -0.0
+   ]
+  },
+  {
+   "name": "forearm.R",
+   "source_name": "DEF-forearm.R",
+   "kind": "role",
+   "parent": "upperArm.R",
+   "head": [
+    -0.148342,
+    0.504431,
+    -0.0
+   ]
+  },
+  {
+   "name": "DEF-forearm.R.001",
+   "source_name": "DEF-forearm.R.001",
+   "kind": "helper",
+   "parent": "forearm.R",
+   "head": [
+    -0.170864,
+    0.468389,
+    -0.0
+   ]
+  },
+  {
+   "name": "hand.R",
+   "source_name": "DEF-hand.R",
+   "kind": "role",
+   "parent": "forearm.R",
+   "head": [
+    -0.193386,
+    0.432346,
+    0.0
+   ]
+  },
+  {
+   "name": "f3a.R",
+   "source_name": "DEF-f_index.01.R",
+   "kind": "role",
+   "parent": "hand.R",
+   "head": [
+    -0.213524,
+    0.400118,
+    0.019798
+   ]
+  },
+  {
+   "name": "f3b.R",
+   "source_name": "DEF-f_index.02.R",
+   "kind": "role",
+   "parent": "f3a.R",
+   "head": [
+    -0.216407,
+    0.392485,
+    0.019798
+   ]
+  },
+  {
+   "name": "DEF-f_index.03.R",
+   "source_name": "DEF-f_index.03.R",
+   "kind": "helper",
+   "parent": "f3b.R",
+   "head": [
+    -0.218713,
+    0.386379,
+    0.019798
+   ]
+  },
+  {
+   "name": "DEF-thumb.01.R",
+   "source_name": "DEF-thumb.01.R",
+   "kind": "helper",
+   "parent": "hand.R",
+   "head": [
+    -0.195506,
+    0.428954,
+    0.011999
+   ]
+  },
+  {
+   "name": "thumbA.R",
+   "source_name": "DEF-thumb.02.R",
+   "kind": "role",
+   "parent": "DEF-thumb.01.R",
+   "head": [
+    -0.195718,
+    0.417293,
+    0.025198
+   ]
+  },
+  {
+   "name": "thumbB.R",
+   "source_name": "DEF-thumb.03.R",
+   "kind": "role",
+   "parent": "thumbA.R",
+   "head": [
+    -0.195892,
+    0.407674,
+    0.028498
+   ]
+  },
+  {
+   "name": "DEF-palm.01.R",
+   "source_name": "DEF-palm.01.R",
+   "kind": "helper",
+   "parent": "hand.R",
+   "head": [
+    -0.196566,
+    0.427258,
+    0.019798
+   ]
+  },
+  {
+   "name": "f2a.R",
+   "source_name": "DEF-f_middle.01.R",
+   "kind": "role",
+   "parent": "hand.R",
+   "head": [
+    -0.213524,
+    0.400118,
+    0.006599
+   ]
+  },
+  {
+   "name": "f2b.R",
+   "source_name": "DEF-f_middle.02.R",
+   "kind": "role",
+   "parent": "f2a.R",
+   "head": [
+    -0.216839,
+    0.391341,
+    0.006599
+   ]
+  },
+  {
+   "name": "DEF-f_middle.03.R",
+   "source_name": "DEF-f_middle.03.R",
+   "kind": "helper",
+   "parent": "f2b.R",
+   "head": [
+    -0.219491,
+    0.38432,
+    0.006599
+   ]
+  },
+  {
+   "name": "DEF-palm.02.R",
+   "source_name": "DEF-palm.02.R",
+   "kind": "helper",
+   "parent": "hand.R",
+   "head": [
+    -0.196566,
+    0.427258,
+    0.006599
+   ]
+  },
+  {
+   "name": "f1a.R",
+   "source_name": "DEF-f_ring.01.R",
+   "kind": "role",
+   "parent": "hand.R",
+   "head": [
+    -0.213524,
+    0.400118,
+    -0.006599
+   ]
+  },
+  {
+   "name": "f1b.R",
+   "source_name": "DEF-f_ring.02.R",
+   "kind": "role",
+   "parent": "f1a.R",
+   "head": [
+    -0.216695,
+    0.391723,
+    -0.006599
+   ]
+  },
+  {
+   "name": "DEF-f_ring.03.R",
+   "source_name": "DEF-f_ring.03.R",
+   "kind": "helper",
+   "parent": "f1b.R",
+   "head": [
+    -0.219232,
+    0.385006,
+    -0.006599
+   ]
+  },
+  {
+   "name": "DEF-palm.03.R",
+   "source_name": "DEF-palm.03.R",
+   "kind": "helper",
+   "parent": "hand.R",
+   "head": [
+    -0.196566,
+    0.427258,
+    -0.006599
+   ]
+  },
+  {
+   "name": "f0a.R",
+   "source_name": "DEF-f_pinky.01.R",
+   "kind": "role",
+   "parent": "hand.R",
+   "head": [
+    -0.213524,
+    0.400118,
+    -0.019798
+   ]
+  },
+  {
+   "name": "f0b.R",
+   "source_name": "DEF-f_pinky.02.R",
+   "kind": "role",
+   "parent": "f0a.R",
+   "head": [
+    -0.216119,
+    0.393248,
+    -0.019798
+   ]
+  },
+  {
+   "name": "DEF-f_pinky.03.R",
+   "source_name": "DEF-f_pinky.03.R",
+   "kind": "helper",
+   "parent": "f0b.R",
+   "head": [
+    -0.218195,
+    0.387752,
+    -0.019798
+   ]
+  },
+  {
+   "name": "DEF-palm.04.R",
+   "source_name": "DEF-palm.04.R",
+   "kind": "helper",
+   "parent": "hand.R",
+   "head": [
+    -0.196566,
+    0.427258,
+    -0.019798
+   ]
+  }
+ ],
+ "reparented": [
+  {
+   "bone": "forearm.L",
+   "from": "DEF-upper_arm.L.001",
+   "to": "upperArm.L",
+   "reason": "contiguous chain for engine two-bone IK"
+  },
+  {
+   "bone": "hand.L",
+   "from": "DEF-forearm.L.001",
+   "to": "forearm.L",
+   "reason": "contiguous chain for engine two-bone IK"
+  },
+  {
+   "bone": "forearm.R",
+   "from": "DEF-upper_arm.R.001",
+   "to": "upperArm.R",
+   "reason": "contiguous chain for engine two-bone IK"
+  },
+  {
+   "bone": "hand.R",
+   "from": "DEF-forearm.R.001",
+   "to": "forearm.R",
+   "reason": "contiguous chain for engine two-bone IK"
+  },
+  {
+   "bone": "shin.L",
+   "from": "DEF-thigh.L.001",
+   "to": "thigh.L",
+   "reason": "contiguous chain for engine two-bone IK"
+  },
+  {
+   "bone": "foot.L",
+   "from": "DEF-shin.L.001",
+   "to": "shin.L",
+   "reason": "contiguous chain for engine two-bone IK"
+  },
+  {
+   "bone": "shin.R",
+   "from": "DEF-thigh.R.001",
+   "to": "thigh.R",
+   "reason": "contiguous chain for engine two-bone IK"
+  },
+  {
+   "bone": "foot.R",
+   "from": "DEF-shin.R.001",
+   "to": "shin.R",
+   "reason": "contiguous chain for engine two-bone IK"
+  }
+ ],
+ "roles_present": [
+  "chest",
+  "eye.L",
+  "eye.R",
+  "f0a.L",
+  "f0a.R",
+  "f0b.L",
+  "f0b.R",
+  "f1a.L",
+  "f1a.R",
+  "f1b.L",
+  "f1b.R",
+  "f2a.L",
+  "f2a.R",
+  "f2b.L",
+  "f2b.R",
+  "f3a.L",
+  "f3a.R",
+  "f3b.L",
+  "f3b.R",
+  "foot.L",
+  "foot.R",
+  "forearm.L",
+  "forearm.R",
+  "hand.L",
+  "hand.R",
+  "head",
+  "hips",
+  "neck",
+  "shin.L",
+  "shin.R",
+  "spine",
+  "thigh.L",
+  "thigh.R",
+  "thumbA.L",
+  "thumbA.R",
+  "thumbB.L",
+  "thumbB.R",
+  "upperArm.L",
+  "upperArm.R"
+ ],
+ "rig_specific_bones": [
+  "DEF-jaw"
+ ],
+ "materials": [
+  {
+   "name": "M_skin_face",
+   "baseColor": [
+    0.59062,
+    0.43415,
+    0.39676
+   ],
+   "roughness": 0.55,
+   "sheen": 0.0
+  },
+  {
+   "name": "M_brow_generic",
+   "baseColor": [
+    0.18116,
+    0.07227,
+    0.03955
+   ],
+   "roughness": 0.8,
+   "sheen": 0.0
+  },
+  {
+   "name": "M_eye_generic",
+   "baseColor": [
+    0.85499,
+    0.80695,
+    0.76052
+   ],
+   "roughness": 0.25,
+   "sheen": 0.0
+  },
+  {
+   "name": "M_glasses",
+   "baseColor": [
+    0.25016,
+    0.09084,
+    0.05951
+   ],
+   "roughness": 0.3,
+   "sheen": 0.0
+  },
+  {
+   "name": "M_skin",
+   "baseColor": [
+    0.59062,
+    0.43415,
+    0.39676
+   ],
+   "roughness": 0.55,
+   "sheen": 0.0
+  },
+  {
+   "name": "M_lash_generic",
+   "baseColor": [
+    0.02122,
+    0.00913,
+    0.007
+   ],
+   "roughness": 0.7,
+   "sheen": 0.0
+  },
+  {
+   "name": "M_mouth_line",
+   "baseColor": [
+    0.18782,
+    0.03955,
+    0.03955
+   ],
+   "roughness": 0.9,
+   "sheen": 0.0
+  },
+  {
+   "name": "M_lip_generic",
+   "baseColor": [
+    0.67244,
+    0.30499,
+    0.28744
+   ],
+   "roughness": 0.5,
+   "sheen": 0.0
+  },
+  {
+   "name": "M_mouth_inner_shaded",
+   "baseColor": [
+    0.8,
+    0.8,
+    0.8
+   ],
+   "roughness": 0.6,
+   "sheen": 0.0
+  }
+ ],
+ "meshes": [
+  {
+   "part": "body_skin",
+   "source_object": "body_skin",
+   "material": "M_skin_face",
+   "vertices": 60688,
+   "positions": {
+    "offset": 0,
+    "count": 182064,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 728256,
+    "count": 182064,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 1456512,
+    "count": 364116,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 2912976,
+    "count": 242752,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 3398480,
+    "count": 242752,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "brow.L",
+   "source_object": "brow.L",
+   "material": "M_brow_generic",
+   "vertices": 132,
+   "positions": {
+    "offset": 4686288,
+    "count": 396,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 4687872,
+    "count": 396,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 4689456,
+    "count": 780,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 4692576,
+    "count": 528,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 4693632,
+    "count": 528,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "brow.R",
+   "source_object": "brow.R",
+   "material": "M_brow_generic",
+   "vertices": 132,
+   "positions": {
+    "offset": 4718976,
+    "count": 396,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 4720560,
+    "count": 396,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 4722144,
+    "count": 780,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 4725264,
+    "count": 528,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 4726320,
+    "count": 528,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "ear.L",
+   "source_object": "ear.L",
+   "material": "M_skin_face",
+   "vertices": 1986,
+   "positions": {
+    "offset": 4749552,
+    "count": 5958,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 4773384,
+    "count": 5958,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 4797216,
+    "count": 11904,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 4844832,
+    "count": 7944,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 4860720,
+    "count": 7944,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "ear.R",
+   "source_object": "ear.R",
+   "material": "M_skin_face",
+   "vertices": 1986,
+   "positions": {
+    "offset": 4892496,
+    "count": 5958,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 4916328,
+    "count": 5958,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 4940160,
+    "count": 11904,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 4987776,
+    "count": 7944,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 5003664,
+    "count": 7944,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "eye.L",
+   "source_object": "eye.L",
+   "material": "M_eye_generic",
+   "vertices": 1106,
+   "positions": {
+    "offset": 5035440,
+    "count": 3318,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 5048712,
+    "count": 3318,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 5061984,
+    "count": 6624,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 5088480,
+    "count": 4424,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 5097328,
+    "count": 4424,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "eye.R",
+   "source_object": "eye.R",
+   "material": "M_eye_generic",
+   "vertices": 1106,
+   "positions": {
+    "offset": 5115024,
+    "count": 3318,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 5128296,
+    "count": 3318,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 5141568,
+    "count": 6624,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 5168064,
+    "count": 4424,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 5176912,
+    "count": 4424,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "glasses",
+   "source_object": "glasses",
+   "material": "M_glasses",
+   "vertices": 1796,
+   "positions": {
+    "offset": 5194608,
+    "count": 5388,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 5216160,
+    "count": 5388,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 5237712,
+    "count": 10620,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 5280192,
+    "count": 7184,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 5294560,
+    "count": 7184,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "hand.L",
+   "source_object": "hand.L",
+   "material": "M_skin",
+   "vertices": 1178,
+   "positions": {
+    "offset": 5323296,
+    "count": 3534,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 5337432,
+    "count": 3534,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 5351568,
+    "count": 7056,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 5379792,
+    "count": 4712,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 5389216,
+    "count": 4712,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "hand.R",
+   "source_object": "hand.R",
+   "material": "M_skin",
+   "vertices": 1180,
+   "positions": {
+    "offset": 5408064,
+    "count": 3540,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 5422224,
+    "count": 3540,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 5436384,
+    "count": 7068,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 5464656,
+    "count": 4720,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 5474096,
+    "count": 4720,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "lash.L",
+   "source_object": "lash.L",
+   "material": "M_lash_generic",
+   "vertices": 382,
+   "positions": {
+    "offset": 5492976,
+    "count": 1146,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 5497560,
+    "count": 1146,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 5502144,
+    "count": 2244,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 5511120,
+    "count": 1528,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 5514176,
+    "count": 1528,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "lash.R",
+   "source_object": "lash.R",
+   "material": "M_lash_generic",
+   "vertices": 382,
+   "positions": {
+    "offset": 5721984,
+    "count": 1146,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 5726568,
+    "count": 1146,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 5731152,
+    "count": 2244,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 5740128,
+    "count": 1528,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 5743184,
+    "count": 1528,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "lid_lower.L#0",
+   "source_object": "lid_lower.L",
+   "material": "M_skin_face",
+   "vertices": 1362,
+   "positions": {
+    "offset": 5950992,
+    "count": 4086,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 5967336,
+    "count": 4086,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 5983680,
+    "count": 8160,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 6016320,
+    "count": 5448,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 6027216,
+    "count": 5448,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "lid_lower.L#1",
+   "source_object": "lid_lower.L",
+   "material": "M_lash_generic",
+   "vertices": 122,
+   "positions": {
+    "offset": 6310512,
+    "count": 366,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 6311976,
+    "count": 366,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 6313440,
+    "count": 720,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 6316320,
+    "count": 488,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 6317296,
+    "count": 488,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "lid_lower.R#0",
+   "source_object": "lid_lower.R",
+   "material": "M_skin_face",
+   "vertices": 1362,
+   "positions": {
+    "offset": 6342672,
+    "count": 4086,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 6359016,
+    "count": 4086,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 6375360,
+    "count": 8160,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 6408000,
+    "count": 5448,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 6418896,
+    "count": 5448,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "lid_lower.R#1",
+   "source_object": "lid_lower.R",
+   "material": "M_lash_generic",
+   "vertices": 122,
+   "positions": {
+    "offset": 6702192,
+    "count": 366,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 6703656,
+    "count": 366,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 6705120,
+    "count": 720,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 6708000,
+    "count": 488,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 6708976,
+    "count": 488,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "lid_upper.L",
+   "source_object": "lid_upper.L",
+   "material": "M_skin_face",
+   "vertices": 2246,
+   "positions": {
+    "offset": 6734352,
+    "count": 6738,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 6761304,
+    "count": 6738,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 6788256,
+    "count": 13464,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 6842112,
+    "count": 8984,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 6860080,
+    "count": 8984,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "lid_upper.R",
+   "source_object": "lid_upper.R",
+   "material": "M_skin_face",
+   "vertices": 2246,
+   "positions": {
+    "offset": 8081328,
+    "count": 6738,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 8108280,
+    "count": 6738,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 8135232,
+    "count": 13464,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 8189088,
+    "count": 8984,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 8207056,
+    "count": 8984,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "mouth#0",
+   "source_object": "mouth",
+   "material": "M_mouth_line",
+   "vertices": 52,
+   "positions": {
+    "offset": 9428304,
+    "count": 156,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 9428928,
+    "count": 156,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 9429552,
+    "count": 144,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 9430128,
+    "count": 208,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 9430544,
+    "count": 208,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "mouth#1",
+   "source_object": "mouth",
+   "material": "M_lip_generic",
+   "vertices": 52,
+   "positions": {
+    "offset": 9444944,
+    "count": 156,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 9445568,
+    "count": 156,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 9446192,
+    "count": 144,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 9446768,
+    "count": 208,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 9447184,
+    "count": 208,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "mouth_cavity",
+   "source_object": "mouth_cavity",
+   "material": "M_mouth_inner_shaded",
+   "vertices": 130,
+   "positions": {
+    "offset": 9461584,
+    "count": 390,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 9463144,
+    "count": 390,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 9464704,
+    "count": 648,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 9467296,
+    "count": 520,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 9468336,
+    "count": 520,
+    "dtype": "float32"
+   }
+  }
+ ],
+ "morphs": [
+  {
+   "name": "MouthSmile",
+   "mesh": 0,
+   "vertices": {
+    "offset": 4369488,
+    "count": 4950,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 4389288,
+    "count": 14850,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Squint",
+   "mesh": 0,
+   "vertices": {
+    "offset": 4448688,
+    "count": 4950,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 4468488,
+    "count": 14850,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Smile",
+   "mesh": 0,
+   "vertices": {
+    "offset": 4527888,
+    "count": 4950,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 4547688,
+    "count": 14850,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Laugh",
+   "mesh": 0,
+   "vertices": {
+    "offset": 4607088,
+    "count": 4950,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 4626888,
+    "count": 14850,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "BrowUp.L",
+   "mesh": 1,
+   "vertices": {
+    "offset": 4695744,
+    "count": 132,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 4696272,
+    "count": 396,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "BrowDown",
+   "mesh": 1,
+   "vertices": {
+    "offset": 4697856,
+    "count": 132,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 4698384,
+    "count": 396,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "BrowSad",
+   "mesh": 1,
+   "vertices": {
+    "offset": 4699968,
+    "count": 132,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 4700496,
+    "count": 396,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "WideOpen",
+   "mesh": 1,
+   "vertices": {
+    "offset": 4702080,
+    "count": 132,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 4702608,
+    "count": 396,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Frown",
+   "mesh": 1,
+   "vertices": {
+    "offset": 4704192,
+    "count": 132,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 4704720,
+    "count": 396,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Surprise",
+   "mesh": 1,
+   "vertices": {
+    "offset": 4706304,
+    "count": 132,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 4706832,
+    "count": 396,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Sadness",
+   "mesh": 1,
+   "vertices": {
+    "offset": 4708416,
+    "count": 132,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 4708944,
+    "count": 396,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Anger",
+   "mesh": 1,
+   "vertices": {
+    "offset": 4710528,
+    "count": 132,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 4711056,
+    "count": 396,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Confusion",
+   "mesh": 1,
+   "vertices": {
+    "offset": 4712640,
+    "count": 132,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 4713168,
+    "count": 396,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Worried",
+   "mesh": 1,
+   "vertices": {
+    "offset": 4714752,
+    "count": 132,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 4715280,
+    "count": 396,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Curious",
+   "mesh": 1,
+   "vertices": {
+    "offset": 4716864,
+    "count": 132,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 4717392,
+    "count": 396,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "BrowUp.R",
+   "mesh": 2,
+   "vertices": {
+    "offset": 4728432,
+    "count": 132,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 4728960,
+    "count": 396,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "BrowDown",
+   "mesh": 2,
+   "vertices": {
+    "offset": 4730544,
+    "count": 132,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 4731072,
+    "count": 396,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "BrowSad",
+   "mesh": 2,
+   "vertices": {
+    "offset": 4732656,
+    "count": 132,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 4733184,
+    "count": 396,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "WideOpen",
+   "mesh": 2,
+   "vertices": {
+    "offset": 4734768,
+    "count": 132,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 4735296,
+    "count": 396,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Frown",
+   "mesh": 2,
+   "vertices": {
+    "offset": 4736880,
+    "count": 132,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 4737408,
+    "count": 396,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Surprise",
+   "mesh": 2,
+   "vertices": {
+    "offset": 4738992,
+    "count": 132,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 4739520,
+    "count": 396,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Sadness",
+   "mesh": 2,
+   "vertices": {
+    "offset": 4741104,
+    "count": 132,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 4741632,
+    "count": 396,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Anger",
+   "mesh": 2,
+   "vertices": {
+    "offset": 4743216,
+    "count": 132,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 4743744,
+    "count": 396,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Confusion",
+   "mesh": 2,
+   "vertices": {
+    "offset": 4745328,
+    "count": 132,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 4745856,
+    "count": 396,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Worried",
+   "mesh": 2,
+   "vertices": {
+    "offset": 4747440,
+    "count": 132,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 4747968,
+    "count": 396,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Blink.L@25",
+   "mesh": 10,
+   "vertices": {
+    "offset": 5520288,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5521816,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Blink.L@50",
+   "mesh": 10,
+   "vertices": {
+    "offset": 5526400,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5527928,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Blink.L@75",
+   "mesh": 10,
+   "vertices": {
+    "offset": 5532512,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5534040,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Blink.L",
+   "mesh": 10,
+   "vertices": {
+    "offset": 5538624,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5540152,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "EyeWide",
+   "mesh": 10,
+   "vertices": {
+    "offset": 5544736,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5546264,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "EyeSquint",
+   "mesh": 10,
+   "vertices": {
+    "offset": 5550848,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5552376,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Blink@25",
+   "mesh": 10,
+   "vertices": {
+    "offset": 5556960,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5558488,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Blink@50",
+   "mesh": 10,
+   "vertices": {
+    "offset": 5563072,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5564600,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Blink@75",
+   "mesh": 10,
+   "vertices": {
+    "offset": 5569184,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5570712,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Blink",
+   "mesh": 10,
+   "vertices": {
+    "offset": 5575296,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5576824,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "LeftEyeClosed@25",
+   "mesh": 10,
+   "vertices": {
+    "offset": 5581408,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5582936,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "LeftEyeClosed@50",
+   "mesh": 10,
+   "vertices": {
+    "offset": 5587520,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5589048,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "LeftEyeClosed@75",
+   "mesh": 10,
+   "vertices": {
+    "offset": 5593632,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5595160,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "LeftEyeClosed",
+   "mesh": 10,
+   "vertices": {
+    "offset": 5599744,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5601272,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Squint@25",
+   "mesh": 10,
+   "vertices": {
+    "offset": 5605856,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5607384,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Squint@50",
+   "mesh": 10,
+   "vertices": {
+    "offset": 5611968,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5613496,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Squint@75",
+   "mesh": 10,
+   "vertices": {
+    "offset": 5618080,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5619608,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Squint",
+   "mesh": 10,
+   "vertices": {
+    "offset": 5624192,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5625720,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "WideOpen",
+   "mesh": 10,
+   "vertices": {
+    "offset": 5630304,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5631832,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Smile",
+   "mesh": 10,
+   "vertices": {
+    "offset": 5636416,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5637944,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Surprise",
+   "mesh": 10,
+   "vertices": {
+    "offset": 5642528,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5644056,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Sadness@25",
+   "mesh": 10,
+   "vertices": {
+    "offset": 5648640,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5650168,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Sadness@50",
+   "mesh": 10,
+   "vertices": {
+    "offset": 5654752,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5656280,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Sadness@75",
+   "mesh": 10,
+   "vertices": {
+    "offset": 5660864,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5662392,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Sadness",
+   "mesh": 10,
+   "vertices": {
+    "offset": 5666976,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5668504,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Anger",
+   "mesh": 10,
+   "vertices": {
+    "offset": 5673088,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5674616,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Confusion",
+   "mesh": 10,
+   "vertices": {
+    "offset": 5679200,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5680728,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Laugh@25",
+   "mesh": 10,
+   "vertices": {
+    "offset": 5685312,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5686840,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Laugh@50",
+   "mesh": 10,
+   "vertices": {
+    "offset": 5691424,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5692952,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Laugh@75",
+   "mesh": 10,
+   "vertices": {
+    "offset": 5697536,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5699064,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Laugh",
+   "mesh": 10,
+   "vertices": {
+    "offset": 5703648,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5705176,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Worried",
+   "mesh": 10,
+   "vertices": {
+    "offset": 5709760,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5711288,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Curious",
+   "mesh": 10,
+   "vertices": {
+    "offset": 5715872,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5717400,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Blink.R@25",
+   "mesh": 11,
+   "vertices": {
+    "offset": 5749296,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5750824,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Blink.R@50",
+   "mesh": 11,
+   "vertices": {
+    "offset": 5755408,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5756936,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Blink.R@75",
+   "mesh": 11,
+   "vertices": {
+    "offset": 5761520,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5763048,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Blink.R",
+   "mesh": 11,
+   "vertices": {
+    "offset": 5767632,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5769160,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "EyeWide",
+   "mesh": 11,
+   "vertices": {
+    "offset": 5773744,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5775272,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "EyeSquint",
+   "mesh": 11,
+   "vertices": {
+    "offset": 5779856,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5781384,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Blink@25",
+   "mesh": 11,
+   "vertices": {
+    "offset": 5785968,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5787496,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Blink@50",
+   "mesh": 11,
+   "vertices": {
+    "offset": 5792080,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5793608,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Blink@75",
+   "mesh": 11,
+   "vertices": {
+    "offset": 5798192,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5799720,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Blink",
+   "mesh": 11,
+   "vertices": {
+    "offset": 5804304,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5805832,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "RightEyeClosed@25",
+   "mesh": 11,
+   "vertices": {
+    "offset": 5810416,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5811944,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "RightEyeClosed@50",
+   "mesh": 11,
+   "vertices": {
+    "offset": 5816528,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5818056,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "RightEyeClosed@75",
+   "mesh": 11,
+   "vertices": {
+    "offset": 5822640,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5824168,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "RightEyeClosed",
+   "mesh": 11,
+   "vertices": {
+    "offset": 5828752,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5830280,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Squint@25",
+   "mesh": 11,
+   "vertices": {
+    "offset": 5834864,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5836392,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Squint@50",
+   "mesh": 11,
+   "vertices": {
+    "offset": 5840976,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5842504,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Squint@75",
+   "mesh": 11,
+   "vertices": {
+    "offset": 5847088,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5848616,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Squint",
+   "mesh": 11,
+   "vertices": {
+    "offset": 5853200,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5854728,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "WideOpen",
+   "mesh": 11,
+   "vertices": {
+    "offset": 5859312,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5860840,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Smile",
+   "mesh": 11,
+   "vertices": {
+    "offset": 5865424,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5866952,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Surprise",
+   "mesh": 11,
+   "vertices": {
+    "offset": 5871536,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5873064,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Sadness@25",
+   "mesh": 11,
+   "vertices": {
+    "offset": 5877648,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5879176,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Sadness@50",
+   "mesh": 11,
+   "vertices": {
+    "offset": 5883760,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5885288,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Sadness@75",
+   "mesh": 11,
+   "vertices": {
+    "offset": 5889872,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5891400,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Sadness",
+   "mesh": 11,
+   "vertices": {
+    "offset": 5895984,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5897512,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Anger",
+   "mesh": 11,
+   "vertices": {
+    "offset": 5902096,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5903624,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Confusion",
+   "mesh": 11,
+   "vertices": {
+    "offset": 5908208,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5909736,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Laugh@25",
+   "mesh": 11,
+   "vertices": {
+    "offset": 5914320,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5915848,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Laugh@50",
+   "mesh": 11,
+   "vertices": {
+    "offset": 5920432,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5921960,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Laugh@75",
+   "mesh": 11,
+   "vertices": {
+    "offset": 5926544,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5928072,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Laugh",
+   "mesh": 11,
+   "vertices": {
+    "offset": 5932656,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5934184,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Worried",
+   "mesh": 11,
+   "vertices": {
+    "offset": 5938768,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5940296,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Curious",
+   "mesh": 11,
+   "vertices": {
+    "offset": 5944880,
+    "count": 382,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 5946408,
+    "count": 1146,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "EyeWide",
+   "mesh": 12,
+   "vertices": {
+    "offset": 6049008,
+    "count": 1362,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 6054456,
+    "count": 4086,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "EyeSquint",
+   "mesh": 12,
+   "vertices": {
+    "offset": 6070800,
+    "count": 1362,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 6076248,
+    "count": 4086,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "MouthSmile",
+   "mesh": 12,
+   "vertices": {
+    "offset": 6092592,
+    "count": 1362,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 6098040,
+    "count": 4086,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Squint",
+   "mesh": 12,
+   "vertices": {
+    "offset": 6114384,
+    "count": 1362,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 6119832,
+    "count": 4086,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "WideOpen",
+   "mesh": 12,
+   "vertices": {
+    "offset": 6136176,
+    "count": 1362,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 6141624,
+    "count": 4086,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Smile",
+   "mesh": 12,
+   "vertices": {
+    "offset": 6157968,
+    "count": 1362,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 6163416,
+    "count": 4086,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Surprise",
+   "mesh": 12,
+   "vertices": {
+    "offset": 6179760,
+    "count": 1362,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 6185208,
+    "count": 4086,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Anger",
+   "mesh": 12,
+   "vertices": {
+    "offset": 6201552,
+    "count": 1362,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 6207000,
+    "count": 4086,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Confusion",
+   "mesh": 12,
+   "vertices": {
+    "offset": 6223344,
+    "count": 1362,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 6228792,
+    "count": 4086,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Laugh",
+   "mesh": 12,
+   "vertices": {
+    "offset": 6245136,
+    "count": 1362,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 6250584,
+    "count": 4086,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Worried",
+   "mesh": 12,
+   "vertices": {
+    "offset": 6266928,
+    "count": 1362,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 6272376,
+    "count": 4086,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Curious",
+   "mesh": 12,
+   "vertices": {
+    "offset": 6288720,
+    "count": 1362,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 6294168,
+    "count": 4086,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "EyeWide",
+   "mesh": 13,
+   "vertices": {
+    "offset": 6319248,
+    "count": 122,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 6319736,
+    "count": 366,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "EyeSquint",
+   "mesh": 13,
+   "vertices": {
+    "offset": 6321200,
+    "count": 122,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 6321688,
+    "count": 366,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "MouthSmile",
+   "mesh": 13,
+   "vertices": {
+    "offset": 6323152,
+    "count": 122,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 6323640,
+    "count": 366,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Squint",
+   "mesh": 13,
+   "vertices": {
+    "offset": 6325104,
+    "count": 122,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 6325592,
+    "count": 366,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "WideOpen",
+   "mesh": 13,
+   "vertices": {
+    "offset": 6327056,
+    "count": 122,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 6327544,
+    "count": 366,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Smile",
+   "mesh": 13,
+   "vertices": {
+    "offset": 6329008,
+    "count": 122,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 6329496,
+    "count": 366,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Surprise",
+   "mesh": 13,
+   "vertices": {
+    "offset": 6330960,
+    "count": 122,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 6331448,
+    "count": 366,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Anger",
+   "mesh": 13,
+   "vertices": {
+    "offset": 6332912,
+    "count": 122,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 6333400,
+    "count": 366,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Confusion",
+   "mesh": 13,
+   "vertices": {
+    "offset": 6334864,
+    "count": 122,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 6335352,
+    "count": 366,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Laugh",
+   "mesh": 13,
+   "vertices": {
+    "offset": 6336816,
+    "count": 122,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 6337304,
+    "count": 366,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Worried",
+   "mesh": 13,
+   "vertices": {
+    "offset": 6338768,
+    "count": 122,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 6339256,
+    "count": 366,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Curious",
+   "mesh": 13,
+   "vertices": {
+    "offset": 6340720,
+    "count": 122,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 6341208,
+    "count": 366,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "EyeWide",
+   "mesh": 14,
+   "vertices": {
+    "offset": 6440688,
+    "count": 1362,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 6446136,
+    "count": 4086,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "EyeSquint",
+   "mesh": 14,
+   "vertices": {
+    "offset": 6462480,
+    "count": 1362,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 6467928,
+    "count": 4086,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "MouthSmile",
+   "mesh": 14,
+   "vertices": {
+    "offset": 6484272,
+    "count": 1362,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 6489720,
+    "count": 4086,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Squint",
+   "mesh": 14,
+   "vertices": {
+    "offset": 6506064,
+    "count": 1362,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 6511512,
+    "count": 4086,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "WideOpen",
+   "mesh": 14,
+   "vertices": {
+    "offset": 6527856,
+    "count": 1362,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 6533304,
+    "count": 4086,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Smile",
+   "mesh": 14,
+   "vertices": {
+    "offset": 6549648,
+    "count": 1362,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 6555096,
+    "count": 4086,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Surprise",
+   "mesh": 14,
+   "vertices": {
+    "offset": 6571440,
+    "count": 1362,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 6576888,
+    "count": 4086,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Anger",
+   "mesh": 14,
+   "vertices": {
+    "offset": 6593232,
+    "count": 1362,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 6598680,
+    "count": 4086,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Confusion",
+   "mesh": 14,
+   "vertices": {
+    "offset": 6615024,
+    "count": 1362,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 6620472,
+    "count": 4086,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Laugh",
+   "mesh": 14,
+   "vertices": {
+    "offset": 6636816,
+    "count": 1362,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 6642264,
+    "count": 4086,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Worried",
+   "mesh": 14,
+   "vertices": {
+    "offset": 6658608,
+    "count": 1362,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 6664056,
+    "count": 4086,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Curious",
+   "mesh": 14,
+   "vertices": {
+    "offset": 6680400,
+    "count": 1362,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 6685848,
+    "count": 4086,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "EyeWide",
+   "mesh": 15,
+   "vertices": {
+    "offset": 6710928,
+    "count": 122,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 6711416,
+    "count": 366,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "EyeSquint",
+   "mesh": 15,
+   "vertices": {
+    "offset": 6712880,
+    "count": 122,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 6713368,
+    "count": 366,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "MouthSmile",
+   "mesh": 15,
+   "vertices": {
+    "offset": 6714832,
+    "count": 122,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 6715320,
+    "count": 366,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Squint",
+   "mesh": 15,
+   "vertices": {
+    "offset": 6716784,
+    "count": 122,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 6717272,
+    "count": 366,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "WideOpen",
+   "mesh": 15,
+   "vertices": {
+    "offset": 6718736,
+    "count": 122,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 6719224,
+    "count": 366,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Smile",
+   "mesh": 15,
+   "vertices": {
+    "offset": 6720688,
+    "count": 122,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 6721176,
+    "count": 366,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Surprise",
+   "mesh": 15,
+   "vertices": {
+    "offset": 6722640,
+    "count": 122,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 6723128,
+    "count": 366,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Anger",
+   "mesh": 15,
+   "vertices": {
+    "offset": 6724592,
+    "count": 122,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 6725080,
+    "count": 366,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Confusion",
+   "mesh": 15,
+   "vertices": {
+    "offset": 6726544,
+    "count": 122,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 6727032,
+    "count": 366,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Laugh",
+   "mesh": 15,
+   "vertices": {
+    "offset": 6728496,
+    "count": 122,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 6728984,
+    "count": 366,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Worried",
+   "mesh": 15,
+   "vertices": {
+    "offset": 6730448,
+    "count": 122,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 6730936,
+    "count": 366,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Curious",
+   "mesh": 15,
+   "vertices": {
+    "offset": 6732400,
+    "count": 122,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 6732888,
+    "count": 366,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Blink.L@25",
+   "mesh": 16,
+   "vertices": {
+    "offset": 6896016,
+    "count": 2246,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 6905000,
+    "count": 6738,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Blink.L@50",
+   "mesh": 16,
+   "vertices": {
+    "offset": 6931952,
+    "count": 2246,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 6940936,
+    "count": 6738,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Blink.L@75",
+   "mesh": 16,
+   "vertices": {
+    "offset": 6967888,
+    "count": 2246,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 6976872,
+    "count": 6738,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Blink.L",
+   "mesh": 16,
+   "vertices": {
+    "offset": 7003824,
+    "count": 2246,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 7012808,
+    "count": 6738,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "EyeWide",
+   "mesh": 16,
+   "vertices": {
+    "offset": 7039760,
+    "count": 2242,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 7048728,
+    "count": 6726,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "EyeSquint",
+   "mesh": 16,
+   "vertices": {
+    "offset": 7075632,
+    "count": 2242,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 7084600,
+    "count": 6726,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Blink@25",
+   "mesh": 16,
+   "vertices": {
+    "offset": 7111504,
+    "count": 2246,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 7120488,
+    "count": 6738,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Blink@50",
+   "mesh": 16,
+   "vertices": {
+    "offset": 7147440,
+    "count": 2246,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 7156424,
+    "count": 6738,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Blink@75",
+   "mesh": 16,
+   "vertices": {
+    "offset": 7183376,
+    "count": 2246,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 7192360,
+    "count": 6738,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Blink",
+   "mesh": 16,
+   "vertices": {
+    "offset": 7219312,
+    "count": 2246,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 7228296,
+    "count": 6738,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "LeftEyeClosed@25",
+   "mesh": 16,
+   "vertices": {
+    "offset": 7255248,
+    "count": 2246,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 7264232,
+    "count": 6738,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "LeftEyeClosed@50",
+   "mesh": 16,
+   "vertices": {
+    "offset": 7291184,
+    "count": 2246,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 7300168,
+    "count": 6738,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "LeftEyeClosed@75",
+   "mesh": 16,
+   "vertices": {
+    "offset": 7327120,
+    "count": 2246,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 7336104,
+    "count": 6738,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "LeftEyeClosed",
+   "mesh": 16,
+   "vertices": {
+    "offset": 7363056,
+    "count": 2246,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 7372040,
+    "count": 6738,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Squint@25",
+   "mesh": 16,
+   "vertices": {
+    "offset": 7398992,
+    "count": 2246,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 7407976,
+    "count": 6738,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Squint@50",
+   "mesh": 16,
+   "vertices": {
+    "offset": 7434928,
+    "count": 2246,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 7443912,
+    "count": 6738,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Squint@75",
+   "mesh": 16,
+   "vertices": {
+    "offset": 7470864,
+    "count": 2246,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 7479848,
+    "count": 6738,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Squint",
+   "mesh": 16,
+   "vertices": {
+    "offset": 7506800,
+    "count": 2246,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 7515784,
+    "count": 6738,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "WideOpen",
+   "mesh": 16,
+   "vertices": {
+    "offset": 7542736,
+    "count": 2242,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 7551704,
+    "count": 6726,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Smile",
+   "mesh": 16,
+   "vertices": {
+    "offset": 7578608,
+    "count": 2242,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 7587576,
+    "count": 6726,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Surprise",
+   "mesh": 16,
+   "vertices": {
+    "offset": 7614480,
+    "count": 2242,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 7623448,
+    "count": 6726,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Sadness@25",
+   "mesh": 16,
+   "vertices": {
+    "offset": 7650352,
+    "count": 2246,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 7659336,
+    "count": 6738,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Sadness@50",
+   "mesh": 16,
+   "vertices": {
+    "offset": 7686288,
+    "count": 2246,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 7695272,
+    "count": 6738,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Sadness@75",
+   "mesh": 16,
+   "vertices": {
+    "offset": 7722224,
+    "count": 2246,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 7731208,
+    "count": 6738,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Sadness",
+   "mesh": 16,
+   "vertices": {
+    "offset": 7758160,
+    "count": 2246,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 7767144,
+    "count": 6738,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Anger",
+   "mesh": 16,
+   "vertices": {
+    "offset": 7794096,
+    "count": 2242,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 7803064,
+    "count": 6726,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Confusion",
+   "mesh": 16,
+   "vertices": {
+    "offset": 7829968,
+    "count": 2242,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 7838936,
+    "count": 6726,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Laugh@25",
+   "mesh": 16,
+   "vertices": {
+    "offset": 7865840,
+    "count": 2246,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 7874824,
+    "count": 6738,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Laugh@50",
+   "mesh": 16,
+   "vertices": {
+    "offset": 7901776,
+    "count": 2246,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 7910760,
+    "count": 6738,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Laugh@75",
+   "mesh": 16,
+   "vertices": {
+    "offset": 7937712,
+    "count": 2246,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 7946696,
+    "count": 6738,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Laugh",
+   "mesh": 16,
+   "vertices": {
+    "offset": 7973648,
+    "count": 2246,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 7982632,
+    "count": 6738,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Worried",
+   "mesh": 16,
+   "vertices": {
+    "offset": 8009584,
+    "count": 2242,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 8018552,
+    "count": 6726,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Curious",
+   "mesh": 16,
+   "vertices": {
+    "offset": 8045456,
+    "count": 2242,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 8054424,
+    "count": 6726,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Blink.R@25",
+   "mesh": 17,
+   "vertices": {
+    "offset": 8242992,
+    "count": 2246,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 8251976,
+    "count": 6738,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Blink.R@50",
+   "mesh": 17,
+   "vertices": {
+    "offset": 8278928,
+    "count": 2246,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 8287912,
+    "count": 6738,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Blink.R@75",
+   "mesh": 17,
+   "vertices": {
+    "offset": 8314864,
+    "count": 2246,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 8323848,
+    "count": 6738,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Blink.R",
+   "mesh": 17,
+   "vertices": {
+    "offset": 8350800,
+    "count": 2246,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 8359784,
+    "count": 6738,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "EyeWide",
+   "mesh": 17,
+   "vertices": {
+    "offset": 8386736,
+    "count": 2242,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 8395704,
+    "count": 6726,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "EyeSquint",
+   "mesh": 17,
+   "vertices": {
+    "offset": 8422608,
+    "count": 2242,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 8431576,
+    "count": 6726,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Blink@25",
+   "mesh": 17,
+   "vertices": {
+    "offset": 8458480,
+    "count": 2246,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 8467464,
+    "count": 6738,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Blink@50",
+   "mesh": 17,
+   "vertices": {
+    "offset": 8494416,
+    "count": 2246,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 8503400,
+    "count": 6738,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Blink@75",
+   "mesh": 17,
+   "vertices": {
+    "offset": 8530352,
+    "count": 2246,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 8539336,
+    "count": 6738,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Blink",
+   "mesh": 17,
+   "vertices": {
+    "offset": 8566288,
+    "count": 2246,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 8575272,
+    "count": 6738,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "RightEyeClosed@25",
+   "mesh": 17,
+   "vertices": {
+    "offset": 8602224,
+    "count": 2246,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 8611208,
+    "count": 6738,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "RightEyeClosed@50",
+   "mesh": 17,
+   "vertices": {
+    "offset": 8638160,
+    "count": 2246,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 8647144,
+    "count": 6738,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "RightEyeClosed@75",
+   "mesh": 17,
+   "vertices": {
+    "offset": 8674096,
+    "count": 2246,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 8683080,
+    "count": 6738,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "RightEyeClosed",
+   "mesh": 17,
+   "vertices": {
+    "offset": 8710032,
+    "count": 2246,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 8719016,
+    "count": 6738,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Squint@25",
+   "mesh": 17,
+   "vertices": {
+    "offset": 8745968,
+    "count": 2246,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 8754952,
+    "count": 6738,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Squint@50",
+   "mesh": 17,
+   "vertices": {
+    "offset": 8781904,
+    "count": 2246,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 8790888,
+    "count": 6738,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Squint@75",
+   "mesh": 17,
+   "vertices": {
+    "offset": 8817840,
+    "count": 2246,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 8826824,
+    "count": 6738,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Squint",
+   "mesh": 17,
+   "vertices": {
+    "offset": 8853776,
+    "count": 2246,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 8862760,
+    "count": 6738,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "WideOpen",
+   "mesh": 17,
+   "vertices": {
+    "offset": 8889712,
+    "count": 2242,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 8898680,
+    "count": 6726,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Smile",
+   "mesh": 17,
+   "vertices": {
+    "offset": 8925584,
+    "count": 2242,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 8934552,
+    "count": 6726,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Surprise",
+   "mesh": 17,
+   "vertices": {
+    "offset": 8961456,
+    "count": 2242,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 8970424,
+    "count": 6726,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Sadness@25",
+   "mesh": 17,
+   "vertices": {
+    "offset": 8997328,
+    "count": 2246,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9006312,
+    "count": 6738,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Sadness@50",
+   "mesh": 17,
+   "vertices": {
+    "offset": 9033264,
+    "count": 2246,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9042248,
+    "count": 6738,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Sadness@75",
+   "mesh": 17,
+   "vertices": {
+    "offset": 9069200,
+    "count": 2246,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9078184,
+    "count": 6738,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Sadness",
+   "mesh": 17,
+   "vertices": {
+    "offset": 9105136,
+    "count": 2246,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9114120,
+    "count": 6738,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Anger",
+   "mesh": 17,
+   "vertices": {
+    "offset": 9141072,
+    "count": 2242,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9150040,
+    "count": 6726,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Confusion",
+   "mesh": 17,
+   "vertices": {
+    "offset": 9176944,
+    "count": 2242,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9185912,
+    "count": 6726,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Laugh@25",
+   "mesh": 17,
+   "vertices": {
+    "offset": 9212816,
+    "count": 2246,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9221800,
+    "count": 6738,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Laugh@50",
+   "mesh": 17,
+   "vertices": {
+    "offset": 9248752,
+    "count": 2246,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9257736,
+    "count": 6738,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Laugh@75",
+   "mesh": 17,
+   "vertices": {
+    "offset": 9284688,
+    "count": 2246,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9293672,
+    "count": 6738,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Laugh",
+   "mesh": 17,
+   "vertices": {
+    "offset": 9320624,
+    "count": 2246,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9329608,
+    "count": 6738,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Worried",
+   "mesh": 17,
+   "vertices": {
+    "offset": 9356560,
+    "count": 2242,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9365528,
+    "count": 6726,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Curious",
+   "mesh": 17,
+   "vertices": {
+    "offset": 9392432,
+    "count": 2242,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9401400,
+    "count": 6726,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "MouthSmile",
+   "mesh": 18,
+   "vertices": {
+    "offset": 9431376,
+    "count": 48,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9431568,
+    "count": 144,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "JawOpen",
+   "mesh": 18,
+   "vertices": {
+    "offset": 9432144,
+    "count": 50,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9432344,
+    "count": 150,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "MouthFrown",
+   "mesh": 18,
+   "vertices": {
+    "offset": 9432944,
+    "count": 48,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9433136,
+    "count": 144,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "MouthWide",
+   "mesh": 18,
+   "vertices": {
+    "offset": 9433712,
+    "count": 52,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9433920,
+    "count": 156,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "MouthO",
+   "mesh": 18,
+   "vertices": {
+    "offset": 9434544,
+    "count": 52,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9434752,
+    "count": 156,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Squint",
+   "mesh": 18,
+   "vertices": {
+    "offset": 9435376,
+    "count": 48,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9435568,
+    "count": 144,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "WideOpen",
+   "mesh": 18,
+   "vertices": {
+    "offset": 9436144,
+    "count": 52,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9436352,
+    "count": 156,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Smile",
+   "mesh": 18,
+   "vertices": {
+    "offset": 9436976,
+    "count": 52,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9437184,
+    "count": 156,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Frown",
+   "mesh": 18,
+   "vertices": {
+    "offset": 9437808,
+    "count": 48,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9438000,
+    "count": 144,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Surprise",
+   "mesh": 18,
+   "vertices": {
+    "offset": 9438576,
+    "count": 52,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9438784,
+    "count": 156,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Sadness",
+   "mesh": 18,
+   "vertices": {
+    "offset": 9439408,
+    "count": 48,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9439600,
+    "count": 144,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Anger",
+   "mesh": 18,
+   "vertices": {
+    "offset": 9440176,
+    "count": 48,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9440368,
+    "count": 144,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Confusion",
+   "mesh": 18,
+   "vertices": {
+    "offset": 9440944,
+    "count": 48,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9441136,
+    "count": 144,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Laugh",
+   "mesh": 18,
+   "vertices": {
+    "offset": 9441712,
+    "count": 52,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9441920,
+    "count": 156,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "MouthOpen",
+   "mesh": 18,
+   "vertices": {
+    "offset": 9442544,
+    "count": 50,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9442744,
+    "count": 150,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Worried",
+   "mesh": 18,
+   "vertices": {
+    "offset": 9443344,
+    "count": 48,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9443536,
+    "count": 144,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Curious",
+   "mesh": 18,
+   "vertices": {
+    "offset": 9444112,
+    "count": 52,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9444320,
+    "count": 156,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "MouthSmile",
+   "mesh": 19,
+   "vertices": {
+    "offset": 9448016,
+    "count": 48,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9448208,
+    "count": 144,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "JawOpen",
+   "mesh": 19,
+   "vertices": {
+    "offset": 9448784,
+    "count": 50,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9448984,
+    "count": 150,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "MouthFrown",
+   "mesh": 19,
+   "vertices": {
+    "offset": 9449584,
+    "count": 48,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9449776,
+    "count": 144,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "MouthWide",
+   "mesh": 19,
+   "vertices": {
+    "offset": 9450352,
+    "count": 52,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9450560,
+    "count": 156,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "MouthO",
+   "mesh": 19,
+   "vertices": {
+    "offset": 9451184,
+    "count": 52,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9451392,
+    "count": 156,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Squint",
+   "mesh": 19,
+   "vertices": {
+    "offset": 9452016,
+    "count": 48,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9452208,
+    "count": 144,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "WideOpen",
+   "mesh": 19,
+   "vertices": {
+    "offset": 9452784,
+    "count": 52,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9452992,
+    "count": 156,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Smile",
+   "mesh": 19,
+   "vertices": {
+    "offset": 9453616,
+    "count": 52,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9453824,
+    "count": 156,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Frown",
+   "mesh": 19,
+   "vertices": {
+    "offset": 9454448,
+    "count": 48,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9454640,
+    "count": 144,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Surprise",
+   "mesh": 19,
+   "vertices": {
+    "offset": 9455216,
+    "count": 52,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9455424,
+    "count": 156,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Sadness",
+   "mesh": 19,
+   "vertices": {
+    "offset": 9456048,
+    "count": 48,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9456240,
+    "count": 144,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Anger",
+   "mesh": 19,
+   "vertices": {
+    "offset": 9456816,
+    "count": 48,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9457008,
+    "count": 144,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Confusion",
+   "mesh": 19,
+   "vertices": {
+    "offset": 9457584,
+    "count": 48,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9457776,
+    "count": 144,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Laugh",
+   "mesh": 19,
+   "vertices": {
+    "offset": 9458352,
+    "count": 52,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9458560,
+    "count": 156,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "MouthOpen",
+   "mesh": 19,
+   "vertices": {
+    "offset": 9459184,
+    "count": 50,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9459384,
+    "count": 150,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Worried",
+   "mesh": 19,
+   "vertices": {
+    "offset": 9459984,
+    "count": 48,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9460176,
+    "count": 144,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Curious",
+   "mesh": 19,
+   "vertices": {
+    "offset": 9460752,
+    "count": 52,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9460960,
+    "count": 156,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "MouthSmile",
+   "mesh": 20,
+   "vertices": {
+    "offset": 9470416,
+    "count": 120,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9470896,
+    "count": 360,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "JawOpen",
+   "mesh": 20,
+   "vertices": {
+    "offset": 9472336,
+    "count": 129,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9472852,
+    "count": 387,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "MouthFrown",
+   "mesh": 20,
+   "vertices": {
+    "offset": 9474400,
+    "count": 120,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9474880,
+    "count": 360,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "MouthWide",
+   "mesh": 20,
+   "vertices": {
+    "offset": 9476320,
+    "count": 130,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9476840,
+    "count": 390,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "MouthO",
+   "mesh": 20,
+   "vertices": {
+    "offset": 9478400,
+    "count": 130,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9478920,
+    "count": 390,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Squint",
+   "mesh": 20,
+   "vertices": {
+    "offset": 9480480,
+    "count": 120,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9480960,
+    "count": 360,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "WideOpen",
+   "mesh": 20,
+   "vertices": {
+    "offset": 9482400,
+    "count": 130,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9482920,
+    "count": 390,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Smile",
+   "mesh": 20,
+   "vertices": {
+    "offset": 9484480,
+    "count": 130,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9485000,
+    "count": 390,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Frown",
+   "mesh": 20,
+   "vertices": {
+    "offset": 9486560,
+    "count": 120,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9487040,
+    "count": 360,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Surprise",
+   "mesh": 20,
+   "vertices": {
+    "offset": 9488480,
+    "count": 130,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9489000,
+    "count": 390,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Sadness",
+   "mesh": 20,
+   "vertices": {
+    "offset": 9490560,
+    "count": 120,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9491040,
+    "count": 360,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Anger",
+   "mesh": 20,
+   "vertices": {
+    "offset": 9492480,
+    "count": 120,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9492960,
+    "count": 360,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Confusion",
+   "mesh": 20,
+   "vertices": {
+    "offset": 9494400,
+    "count": 120,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9494880,
+    "count": 360,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Laugh",
+   "mesh": 20,
+   "vertices": {
+    "offset": 9496320,
+    "count": 130,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9496840,
+    "count": 390,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "MouthOpen",
+   "mesh": 20,
+   "vertices": {
+    "offset": 9498400,
+    "count": 129,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9498916,
+    "count": 387,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Worried",
+   "mesh": 20,
+   "vertices": {
+    "offset": 9500464,
+    "count": 120,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9500944,
+    "count": 360,
+    "dtype": "float32"
+   }
+  },
+  {
+   "name": "Curious",
+   "mesh": 20,
+   "vertices": {
+    "offset": 9502384,
+    "count": 130,
+    "dtype": "uint32"
+   },
+   "dpos": {
+    "offset": 9502904,
+    "count": 390,
+    "dtype": "float32"
+   }
+  }
+ ],
+ "morph_names": [
+  "Anger",
+  "Blink",
+  "Blink.L",
+  "Blink.L@25",
+  "Blink.L@50",
+  "Blink.L@75",
+  "Blink.R",
+  "Blink.R@25",
+  "Blink.R@50",
+  "Blink.R@75",
+  "Blink@25",
+  "Blink@50",
+  "Blink@75",
+  "BrowDown",
+  "BrowSad",
+  "BrowUp.L",
+  "BrowUp.R",
+  "Confusion",
+  "Curious",
+  "EyeSquint",
+  "EyeWide",
+  "Frown",
+  "JawOpen",
+  "Laugh",
+  "Laugh@25",
+  "Laugh@50",
+  "Laugh@75",
+  "LeftEyeClosed",
+  "LeftEyeClosed@25",
+  "LeftEyeClosed@50",
+  "LeftEyeClosed@75",
+  "MouthFrown",
+  "MouthO",
+  "MouthOpen",
+  "MouthSmile",
+  "MouthWide",
+  "RightEyeClosed",
+  "RightEyeClosed@25",
+  "RightEyeClosed@50",
+  "RightEyeClosed@75",
+  "Sadness",
+  "Sadness@25",
+  "Sadness@50",
+  "Sadness@75",
+  "Smile",
+  "Squint",
+  "Squint@25",
+  "Squint@50",
+  "Squint@75",
+  "Surprise",
+  "WideOpen",
+  "Worried"
+ ],
+ "expressions": {
+  "blink": "Blink",
+  "smile": "Smile",
+  "jawOpen": "JawOpen",
+  "browDown": "BrowDown",
+  "angry": "Anger",
+  "confused": "Confusion",
+  "frown": "Frown",
+  "happy": "Smile",
+  "laugh": "Laugh",
+  "sad": "Sadness",
+  "squint": "Squint",
+  "surprised": "Surprise"
+ },
+ "expressions_missing": [],
+ "capabilities": {
+  "reach_ik": {
+   "data": "available",
+   "missing": [],
+   "tested": "see docs/ENGINE_CHARACTER_PACKAGE.md (behaviour support table)"
+  },
+  "look_at": {
+   "data": "available",
+   "missing": [],
+   "tested": "see docs/ENGINE_CHARACTER_PACKAGE.md (behaviour support table)"
+  },
+  "blink_life": {
+   "data": "available",
+   "missing": [],
+   "tested": "see docs/ENGINE_CHARACTER_PACKAGE.md (behaviour support table)"
+  },
+  "expressions": {
+   "data": "available",
+   "missing": [],
+   "tested": "see docs/ENGINE_CHARACTER_PACKAGE.md (behaviour support table)"
+  },
+  "grasp": {
+   "data": "available",
+   "missing": [],
+   "tested": "see docs/ENGINE_CHARACTER_PACKAGE.md (behaviour support table)"
+  },
+  "walk": {
+   "data": "available",
+   "missing": [],
+   "tested": "see docs/ENGINE_CHARACTER_PACKAGE.md (behaviour support table)"
+  },
+  "idle_life": {
+   "data": "available",
+   "missing": [],
+   "tested": "see docs/ENGINE_CHARACTER_PACKAGE.md (behaviour support table)"
+  }
+ },
+ "discarded": [
+  "Rigify constraint-driven twist distribution (DEF-*.001 twist bones are kept as deform bones but follow their role bone rigidly in the engine, which evaluates no constraints)",
+  "Non-deform control/mechanism bones (ORG-, MCH-, controls): the engine animates deform bones directly",
+  "Bone roll / rest orientation: engine rest frames are axis aligned at each bone pivot (skinning is unaffected; authored local rotations are in engine axes)",
+  "meshes without armature (not exported): ['glasses_lens']"
+ ],
+ "files": {
+  "geometry.bin": {
+   "bytes": 9504464,
+   "sha256": "cf76c538bb0ba46f87e9d01b7b9cac285a51607dbff67296f3bb713db3c92f84"
+  }
+ }
+}

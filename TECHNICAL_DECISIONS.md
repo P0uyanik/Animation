@@ -267,3 +267,18 @@ no Blender in the workflow, use the existing (unknown) computer, no GPU purchase
 - `body_v6` stays only to keep v6 and 1.0.0 reproducible. The boy converges onto the generic path after the face
   and garment modules exist, through a measured comparison and a new approved version.
 - There are no permanently independent body systems.
+
+
+## TD-41 One facial system: action units, presets and accessories as data (2026-11-14)
+- New characters use `face_generic/1`. Faces are built from the eye bones, the head surface and a layout; every
+  difference is spec data. Shared functions never test character names.
+- **Expressions have two layers:**
+  - action units (shape keys generated from each face's geometry);
+  - semantic presets (library weights, baked per character into shape keys of the preset name).
+  Blender controls and engine morphs therefore share the names. Per-character engine names are merged at export;
+  the engine is unchanged.
+- **Rotation-type motions** (blink) are stored with in-between keys on the true arc. A single linear morph of a large
+  rotation passes through the eye.
+- **Accessories** are separate rigid parts placed from landmarks and the head surface (`accessories.py`), never inside
+  a face or body generator.
+- The boy's legacy face stays as the compatibility baseline until an approved migration.

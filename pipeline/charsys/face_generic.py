@@ -1,0 +1,589 @@
+"""Generic facial production system (spec.face.generator = "face_generic/1").
+
+One implementation for every humanoid character; a character differs only by data:
+  spec.face.layout        where the features sit (relative to the eye bones and the head surface)
+  spec.face.eyes          eyeball size/shape/orientation, iris, highlights, lid rest openness, lashes
+  spec.face.brows, ears, nose, blush
+  spec.face.mouth         face.py lips_jaw/2 (lips, seam, interior, oral layers, jaw) + extra lip shapes
+  spec.face.blink         face.py lid_seam/1 (+ timing data for the engine)
+  spec.face.smile_coupling
+  spec.face.expressions   intensity / per-preset scale / weight overrides for the shared library
+                          (pipeline/charsys/face_library/expressions.json)
+
+Shared functions never test a character's name; everything is placed from the eye bones, the head surface (ray
+casts on the head mesh) and landmarks derived from the layout. The legacy boy (body_v6) is not built here: his v6
+eyes and face stay on the legacy path until a separately approved migration.
+
+Eye frames: each eye has a frame T = Translation(c) @ Rz(yaw) @ Rx(pitch) @ Scale(scale). The lids and lashes are
+built and animated in that frame's unit-sphere space, so ellipsoidal or rotated eyes reuse face.py's lid-seam blink
+unchanged (the meshes are moved into the frame, keyed, and moved back with their shape keys)."""
+import json
+import math
+import os
+
+import bpy
+from mathutils import Matrix, Vector
+from mathutils.bvhtree import BVHTree
+
+import face as FACE
+import geom as G
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+LIBRARY = os.path.join(HERE, "face_library", "expressions.json")
+SIDES = ((1, "L"), (-1, "R"))  # +x = the character's left
+INBETWEENS = (0.25, 0.5, 0.75)  # in-between keys "<key>@25/50/75" for rotation-type motions (blink)
+
+
+def load_library(path=LIBRARY):
+    return json.load(open(path))
+
+
+def _f(d, k, default):
+    return float(d.get(k, default)) if d is not None else float(default)
+
+
+class FaceContext:
+    """The duck-typed 'B' that face.py's shared lips / interior / jaw functions expect (the legacy boy passes the
+    body_v6 module). face_y ray-casts the actual head mesh (a BVH, rebuilt after the mesh changes)."""
+
+    def __init__(self, head, z_mouth, eye_r):
+        self.G = G
+        self.Z = {"mouth": z_mouth}
+        self.EYE_R = eye_r
+        self.head = head
+        self._tree = None
+
+    def invalidate(self):
+        self._tree = None
+
+    def tree(self):
+        if self._tree is None:
+            mw = self.head.matrix_world
+            me = self.head.data
+            self._tree = BVHTree.FromPolygons([mw @ v.co for v in me.vertices], [p.vertices[:] for p in me.polygons])
+        return self._tree
+
+    def face_y(self, head, x, z):
+        loc, nrm, idx, dist = self.tree().ray_cast(Vector((x, -5.0, z)), Vector((0, 1, 0)), 10.0)
+        if loc is None:
+            raise ValueError(f"face_y: no head surface in front at x={x:.4f} z={z:.4f}")
+        return loc.y
+
+    def side_x(self, side, y, z):
+        """Outer surface x of the head at (y, z) on one side (sx = +1 left, -1 right)."""
+        loc, nrm, idx, dist = self.tree().ray_cast(Vector((side * 5.0, y, z)), Vector((-side, 0, 0)), 10.0)
+        return None if loc is None else loc.x
+
+    def nearest(self, p):
+        loc, nrm, idx, dist = self.tree().find_nearest(Vector(p))
+        return loc, nrm
+
+
+# ------------------------------------------------------------------------------------------------ eyes
+def eye_frame(c, sx, ecfg):
+    """World matrix of an eye's local frame (unit-sphere space x radius; -y = the eye's forward)."""
+    yaw = math.radians(sx * _f(ecfg, "yaw_deg", 0.0))  # positive yaw turns both eyes outwards
+    pitch = math.radians(_f(ecfg, "pitch_deg", 0.0))  # positive = looking down
+    s = ecfg.get("scale", [1.0, 1.0, 1.0])
+    return Matrix.Translation(c) @ Matrix.Rotation(yaw, 4, "Z") @ Matrix.Rotation(pitch, 4, "X") @ Matrix.Diagonal((s[0], s[1], s[2], 1.0))
+
+
+def _plane_point(q, k, rr, a, upper):
+    """Point at azimuth a (around the forward axis) on the sphere of radius rr that lies on the lid plane through q
+    (upper: z - q.z + k (y - q.y) = 0; lower: z - q.z - k (y - q.y) = 0). Bisection on the elevation."""
+    sgn = 1.0 if upper else -1.0
+
+    def g(e):
+        p = Vector((math.sin(a) * math.cos(e), -math.cos(a) * math.cos(e), math.sin(e))) * rr
+        return (p.z - q.z) + sgn * k * (p.y - q.y), p
+    lo, hi = math.radians(-85), math.radians(85)
+    glo, ghi = g(lo)[0], g(hi)[0]
+    if glo * ghi > 0:
+        return None
+    for _ in range(40):
+        mid = (lo + hi) / 2
+        gm = g(mid)[0]
+        if (gm > 0) == (ghi > 0):
+            hi, ghi = mid, gm
+        else:
+            lo = mid
+    return g((lo + hi) / 2)[1]
+
+
+def build_eyes(C, M, ctx, eyes_cfg, ex, ez, protrusion):
+    """Eyeballs (object frame = eye frame: the iris shader stays circular), lid shells cut by configurable planes,
+    an upper lash line with optional outer lashes, an optional lower lash hint (part of the lower lid object so it
+    follows every lower-lid motion). Returns eyes, lids [(up, lo, lash, c)], frames {side: T}, info."""
+    r = _f(eyes_cfg, "radius_m", 0.03)
+    lids_cfg = eyes_cfg.get("lids", {})
+    lash_cfg = eyes_cfg.get("lash", {})
+    iris = eyes_cfg.get("iris", {})
+    mat = G.eye_material("M_eye_generic", tuple(iris.get("srgb", (110, 66, 40))), tuple(iris.get("dark_srgb", (55, 30, 18))),
+                         r, _f(iris, "radius", 0.6) * r, _f(iris, "pupil", 0.28) * r,
+                         highlights=[tuple(h) for h in eyes_cfg.get("highlights", [])] or None,
+                         sclera_srgb=tuple(eyes_cfg.get("sclera_srgb", (235, 228, 220))))
+    lash_mat = G.material("M_lash_generic", tuple(lash_cfg.get("srgb", (45, 28, 24))), roughness=0.7)
+    eyes, lids, frames, info = [], [], {}, {}
+    for sx, side in SIDES:
+        x, z = sx * ex, ez
+        # eye centre: the front of the eye stands `protrusion` in front of the head surface
+        T0 = eye_frame(Vector((0, 0, 0)), sx, eyes_cfg)
+        fwd = T0.to_3x3() @ Vector((0, -r, 0))
+        cy = ctx.face_y(None, x, z)
+        for _ in range(3):
+            front = Vector((x, cy, z)) + fwd
+            cy = ctx.face_y(None, front.x, front.z) - protrusion - fwd.y
+        c = Vector((x, cy, z))
+        T = eye_frame(c, sx, eyes_cfg)
+        frames[side] = T
+        eye = G.uv_sphere(f"eye.{side}", (0, 0, 0), r, C, 48, 24)
+        eye.matrix_world = T
+        G.assign(eye, mat)
+        eyes.append(eye)
+        # lids, built in the unit frame (radius r), then moved to the eye frame
+        e_up, k_up = math.radians(_f(lids_cfg, "upper_edge_deg", 40)), _f(lids_cfg, "upper_back_tilt", 1.0)
+        e_lo, k_lo = math.radians(_f(lids_cfg, "lower_edge_deg", -45)), _f(lids_cfg, "lower_tilt", 0.3)
+        r_up = r * (1 + _f(lids_cfg, "upper_gap", 0.06))
+        r_lo = r * (1 + _f(lids_cfg, "lower_gap", 0.03))
+        q_up = Vector((0, -math.cos(e_up), math.sin(e_up))) * r_up
+        q_lo = Vector((0, -math.cos(e_lo), math.sin(e_lo))) * r_lo
+        up = G.uv_sphere(f"lid_upper.{side}", (0, 0, 0), r_up, C, 64, 32)
+        G.cut_by_plane(up, q_up, (0, k_up, 1.0), keep_positive=True)
+        G.add_mod(up, "SOLIDIFY", thickness=_f(lids_cfg, "upper_thickness_m", 0.0018), offset=1.0)
+        lo = G.uv_sphere(f"lid_lower.{side}", (0, 0, 0), r_lo, C, 64, 32)
+        G.cut_by_plane(lo, q_lo, (0, k_lo, -1.0), keep_positive=True)
+        G.add_mod(lo, "SOLIDIFY", thickness=_f(lids_cfg, "lower_thickness_m", 0.0012), offset=1.0)
+        for o in (up, lo):
+            G.apply_mods(o)
+        # upper lash line along the upper lid's front edge (unit frame), thicker towards the outer corner
+        a_max = math.radians(_f(lash_cfg, "span_deg", 70))
+        rr = r_up + _f(lids_cfg, "upper_thickness_m", 0.0018) * 0.6
+        n = 17
+        pts, ths = [], []
+        for i in range(n):
+            a = -a_max + 2 * a_max * i / (n - 1)
+            p = _plane_point(q_up, k_up, rr, a, True)
+            if p is None:
+                continue
+            outer = (math.copysign(1, a) == sx) * abs(a) / a_max  # 0 inner .. 1 outer corner
+            pts.append(p + Vector((0, -_f(lash_cfg, "forward_m", 0.0004), 0)))
+            ths.append(_f(lash_cfg, "thick_m", 0.002) * (1 + _f(lash_cfg, "flare", 0.5) * outer) * (0.55 + 0.45 * math.sin(math.pi * i / (n - 1))))
+        Tw = T.to_3x3()
+        wpts = [T @ p for p in pts]
+        lash = G.tube(f"lash.{side}", wpts, [_f(lash_cfg, "depth_m", 0.0016)] * len(wpts), ths, C,
+                      up_hint=tuple(Tw @ Vector((0, 0, 1))), seg=10, cap_start="round", cap_end="round")
+        parts = [lash]
+        oc = lash_cfg.get("outer", {})
+        for j in range(int(oc.get("count", 0))):  # outer lashes: short tapered strands curving out and up
+            a = sx * a_max * (1.0 - float(oc.get("spacing", 0.11)) * j)
+            base = _plane_point(q_up, k_up, rr, a, True)
+            if base is None:
+                continue
+            nxt = _plane_point(q_up, k_up, rr, a - sx * 0.05, True)
+            tang = (base - nxt).normalized() if nxt is not None else Vector((sx, 0, 0))
+            L = float(oc.get("length_m", [0.006])[min(j, len(oc.get("length_m", [0.006])) - 1)])
+            d = (tang * 0.8 + Vector((0, -0.35, 1.0)) * float(oc.get("lift", 0.9))).normalized()
+            ctrl = [base, base + d * L * 0.5 + Vector((0, 0, L * 0.12)), base + d * L + tang * L * 0.25]
+            cp = [T @ p for p in G.bezier(ctrl[0], ctrl[1], ctrl[2], 5)]
+            wb = _f(oc, "width_m", 0.0011)
+            s = G.tube(f"_lash_outer.{side}.{j}", cp, [wb * (1 - 0.8 * t / 4) for t in range(5)], [wb * 0.6 * (1 - 0.8 * t / 4) for t in range(5)],
+                       C, up_hint=tuple(Tw @ Vector((0, -1, 0))), seg=6, cap_start="round", cap_end="point")
+            parts.append(s)
+        if len(parts) > 1:
+            lash = G.join(parts, f"lash.{side}")
+        G.assign(lash, lash_mat)
+        lo.data.transform(T)
+        up.data.transform(T)
+        lw = lash_cfg.get("lower")
+        if lw:  # thin lower lash hint on the outer part of the lower lid edge (joined into the lower lid)
+            a0, a1 = math.radians(_f(lw, "from_deg", 20)), math.radians(_f(lw, "to_deg", 70))
+            lpts = []
+            for i in range(9):
+                a = sx * (a0 + (a1 - a0) * i / 8)
+                p = _plane_point(q_lo, k_lo, r_lo + _f(lids_cfg, "lower_thickness_m", 0.0012) * 0.6, a, False)
+                if p is not None:
+                    lpts.append(T @ p)
+            if len(lpts) >= 3:
+                th = _f(lw, "thick_m", 0.0007)
+                ll = G.tube(f"_lash_lower.{side}", lpts, [th] * len(lpts), [th * (0.6 + 0.4 * i / (len(lpts) - 1)) for i in range(len(lpts))],
+                            C, up_hint=tuple(Tw @ Vector((0, 0, 1))), seg=8)
+                G.assign(lo, M["face_skin"])
+                ll.data.materials.clear()
+                ll.data.materials.append(M["face_skin"])
+                ll.data.materials.append(lash_mat)
+                for poly in ll.data.polygons:
+                    poly.material_index = 1
+                lo = G.join([lo, ll], f"lid_lower.{side}")
+        for o in (up, lo):
+            if not o.data.materials:
+                G.assign(o, M["face_skin"])
+        lids.append((up, lo, lash, c))
+        info[side] = {"centre_m": [round(v, 4) for v in c], "radius_m": r, "front_protrusion_m": protrusion}
+    return eyes, lids, frames, info
+
+
+def _in_frame(objs, T, fn):
+    """Runs fn with the objects' meshes (and shape keys) moved into an eye frame's unit space, then moves them back."""
+    Ti = T.inverted()
+    for o in objs:
+        o.data.transform(Ti, shape_keys=True)
+    try:
+        return fn()
+    finally:
+        for o in objs:
+            o.data.transform(T, shape_keys=True)
+
+
+def _rot_key(ob, name, deg, origin=Vector((0, 0, 0))):
+    """Shape key: the mesh rotated about the frame's x axis through origin (+deg moves the front downwards)."""
+    if ob.data.shape_keys is None:
+        ob.shape_key_add(name="Basis")
+    k = ob.shape_key_add(name=name)
+    k.value = 0.0
+    R = Matrix.Rotation(math.radians(deg), 3, Vector((1, 0, 0)))
+    for i, v in enumerate(ob.data.vertices):
+        k.data[i].co = origin + R @ (v.co - origin)
+    return k
+
+
+def _rename_key(ob, old, new):
+    if ob.data.shape_keys and old in ob.data.shape_keys.key_blocks:
+        ob.data.shape_keys.key_blocks[old].name = new
+
+
+def eye_action_units(eyes, lids, frames, r, blink_cfg, au_cfg):
+    """Blink.L / Blink.R (face.py lid_seam/1 in the eye frame; optional eyeball flatten), EyeWide, EyeSquint."""
+    rep = {}
+    wide_up, wide_lo = _f(au_cfg, "wide_upper_deg", 10), _f(au_cfg, "wide_lower_deg", 6)
+    sq_lo, sq_up = _f(au_cfg, "squint_lower_deg", 14), _f(au_cfg, "squint_upper_deg", 6)
+    flat = _f(blink_cfg, "flatten", 0.0)
+    for (sx, side), eye, (up, lo, lash, c) in zip(SIDES, eyes, lids):
+        T = frames[side]
+
+        def work():
+            for f in INBETWEENS:  # partial closures on the true arc (see face.add_blink_lid_seam)
+                FACE.add_blink_lid_seam([(up, lo, lash, Vector((0, 0, 0)))], r, G, blink_cfg, fraction=f,
+                                        key_name=f"Blink.{side}@{int(round(f * 100))}")
+            out = FACE.add_blink_lid_seam([(up, lo, lash, Vector((0, 0, 0)))], r, G, blink_cfg)
+            for ob in (up, lash):
+                _rename_key(ob, "Blink", f"Blink.{side}")
+            _rot_key(up, "EyeWide", -wide_up)
+            _rot_key(lash, "EyeWide", -wide_up)
+            _rot_key(lo, "EyeWide", wide_lo)
+            _rot_key(up, "EyeSquint", sq_up)
+            _rot_key(lash, "EyeSquint", sq_up)
+            _rot_key(lo, "EyeSquint", -sq_lo)
+            return out
+        rep[side] = _in_frame([up, lo, lash], T, work)[0]
+        if flat > 0:  # eyeball front pressed under the closed lid (object space = eye frame)
+            if eye.data.shape_keys is None:
+                eye.shape_key_add(name="Basis")
+            k = eye.shape_key_add(name=f"Blink.{side}")
+            k.value = 0.0
+            for i, v in enumerate(eye.data.vertices):
+                co = v.co.copy()
+                k.data[i].co = Vector((co.x, co.y * (1 - flat), co.z)) if co.y < 0 else co
+    return rep
+
+
+# ------------------------------------------------------------------------------------------------ brows, ears, nose
+def _brow_points(ctx, sx, ex, ez, r, bc, up=0.0, inner_dz=0.0, inner_dx=0.0, outer_dz=0.0):
+    pts = []
+    n = 7
+    xi, xo = ex - _f(bc, "inner", 0.6) * r, ex + _f(bc, "outer", 0.85) * r
+    z0 = ez + _f(bc, "height", 2.2) * r
+    for i in range(n):
+        t = i / (n - 1)
+        inner = 1 - t
+        x = sx * (xi + (xo - xi) * t) - sx * inner_dx * inner
+        z = (z0 + _f(bc, "arch_m", 0.004) * math.sin(math.pi * t) - _f(bc, "inner_drop_m", 0.0) * inner
+             - _f(bc, "outer_drop_m", 0.002) * t + up + inner_dz * inner + outer_dz * t)
+        y = ctx.face_y(None, x, z) - _f(bc, "offset_m", 0.0012)
+        pts.append((x, y, z))
+    return pts
+
+
+def _brow_tube(name, pts, bc, C):
+    n = len(pts)
+    w = [_f(bc, "thick_m", 0.0016) * (0.7 + 0.3 * math.sin(math.pi * (0.25 + 0.6 * i / (n - 1)))) * (1 - _f(bc, "taper", 0.4) * i / (n - 1))
+         for i in range(n)]
+    return G.tube(name, pts, w, [_f(bc, "depth_m", 0.0012)] * n, C, up_hint=(0, -1, 0), seg=10)
+
+
+def build_brows(C, ctx, bc, au, ex, ez, r):
+    """Thin brows on the face surface; keys BrowUp.<side>, BrowDown, BrowSad (every key re-projected onto the face)."""
+    mat = G.material("M_brow_generic", tuple(bc.get("srgb", (110, 70, 52))), roughness=0.8)
+    brows = []
+    up_m, down_m, in_m, sad_m = (_f(au, "brow_up_m", 0.006), _f(au, "brow_down_m", 0.005), _f(au, "brow_in_m", 0.003),
+                                 _f(au, "brow_sad_m", 0.005))
+    for sx, side in SIDES:
+        b = _brow_tube(f"brow.{side}", _brow_points(ctx, sx, ex, ez, r, bc), bc, C)
+        G.assign(b, mat)
+        b.shape_key_add(name="Basis")
+        for name, kw in ((f"BrowUp.{side}", {"up": up_m}),
+                         ("BrowDown", {"inner_dz": -down_m, "inner_dx": in_m, "up": -0.2 * down_m}),
+                         ("BrowSad", {"inner_dz": sad_m, "outer_dz": -0.4 * sad_m})):
+            tmp = _brow_tube("_tmp_brow", _brow_points(ctx, sx, ex, ez, r, bc, **kw), bc, C)
+            k = b.shape_key_add(name=name)
+            k.value = 0.0
+            for i, v in enumerate(tmp.data.vertices):
+                k.data[i].co = v.co
+            me = tmp.data
+            bpy.data.objects.remove(tmp, do_unlink=True)
+            bpy.data.meshes.remove(me)
+        brows.append(b)
+    return brows
+
+
+def build_ears(C, M, ctx, ec, ez):
+    ears = []
+    rad = ec.get("radii_m", [0.012, 0.022, 0.030])
+    for sx, side in SIDES:
+        e = G.uv_sphere(f"ear.{side}", (0, 0, 0), 1.0, C, 32, 16, tuple(rad))
+        z = ez - _f(ec, "below_eye_m", 0.01)
+        y = _f(ec, "y_m", 0.0)
+        sxs = ctx.side_x(sx, y, z)
+        x = (sxs if sxs is not None else sx * 0.14) + sx * _f(ec, "out_m", 0.004)
+        e.location = (x, y, z)
+        e.rotation_euler = (math.radians(_f(ec, "tilt_deg", -8)), 0, math.radians(sx * _f(ec, "yaw_deg", 28)))
+        bpy.context.view_layer.update()
+        bowl = Vector((x + sx * rad[0] * 0.9, y - rad[1] * 0.25, z))
+        G.brush(e, bowl, rad[2] * 0.7, (-sx * rad[0] * 0.5, rad[1] * 0.12, 0))  # inner bowl
+        G.add_mod(e, "SUBSURF", levels=1, render_levels=2)
+        G.apply_mods(e)
+        G.assign(e, M["face_skin"])
+        ears.append(e)
+    return ears
+
+
+# ------------------------------------------------------------------------------------------------ expression library
+def _au_shape(kb, base, au, w, np):
+    """Coordinates delta of action unit `au` at weight w on one mesh: piecewise along its in-between keys when it has
+    them (rotation-type motions), else linear."""
+    if au not in kb:
+        return 0.0
+    n = len(base)
+
+    def get(name):
+        d = np.empty(n)
+        kb[name].data.foreach_get("co", d)
+        return d - base
+    stops = [(0.0, None)] + [(f, f"{au}@{int(round(f * 100))}") for f in INBETWEENS if f"{au}@{int(round(f * 100))}" in kb] + [(1.0, au)]
+    if len(stops) == 2 or w <= 0 or w > 1:
+        return get(au) * w
+    for (f0, k0), (f1, k1) in zip(stops, stops[1:]):
+        if w <= f1 + 1e-9:
+            d0 = 0.0 if k0 is None else get(k0)
+            return d0 + (get(k1) - d0) * ((w - f0) / (f1 - f0))
+    return get(au) * w
+
+
+def bake_presets(objs, lib, ecfg, au_names):
+    """Semantic presets -> shape keys of the preset name on every mesh whose action units move it, evaluated on the
+    true arc of rotation-type units (their in-between keys). Meshes moved by such units also get preset in-betweens
+    "<preset>@25/50/75" so the control's transition follows the arc. Returns the built preset names and each preset's
+    JawOpen weight (the jaw bone is driven separately)."""
+    import numpy as np
+    inten = _f(ecfg, "intensity", 1.0)
+    scale = ecfg.get("scale", {})
+    over = ecfg.get("override", {})
+    presets = dict(lib["presets"])
+    for name in ecfg.get("optional", []):
+        presets[name] = lib["optional_presets"][name]
+    built, jaw = [], {}
+    for p, w in presets.items():
+        w = {**w, **over.get(p, {})}
+        s = inten * float(scale.get(p, 1.0))
+        w = {k: v * s for k, v in w.items() if k in au_names and abs(v) > 1e-6}
+        if not w:
+            continue
+        built.append(p)
+        if "JawOpen" in w:
+            jaw[p] = w["JawOpen"]
+        for ob in objs:
+            sk = ob.data.shape_keys
+            if sk is None:
+                continue
+            kb = sk.key_blocks
+            if not any(a in kb for a in w):
+                continue
+            n = len(ob.data.vertices) * 3
+            base = np.empty(n)
+            kb[0].data.foreach_get("co", base)
+            arc = any(f"{a}@{int(round(INBETWEENS[0] * 100))}" in kb for a in w)
+            for g in (INBETWEENS if arc else ()) + (1.0,):
+                acc = base.copy()
+                for a, v in w.items():
+                    acc = acc + _au_shape(kb, base, a, v * g, np)
+                k = ob.shape_key_add(name=p if g == 1.0 else f"{p}@{int(round(g * 100))}", from_mix=False)
+                k.value = 0.0
+                k.data.foreach_set("co", acc)
+    return built, jaw
+
+
+def add_inbetween_drivers(rig, objs):
+    """Keys "<X>@NN" take a hat-shaped share of control face_<X>; the full key <X> then only covers the last
+    segment, so driving face_<X> from 0 to 1 follows the in-between chain (piecewise along the arc)."""
+    stops = [0.0] + list(INBETWEENS) + [1.0]
+    n = 0
+    for ob in objs:
+        sk = ob.data.shape_keys
+        if sk is None:
+            continue
+        names = {k.name for k in sk.key_blocks}
+        for k in sk.key_blocks:
+            if "@" not in k.name:
+                continue
+            base, pct = k.name.rsplit("@", 1)
+            if f"face_{base}" not in rig.keys():
+                continue
+            f = int(pct) / 100.0
+            i = stops.index(f)
+            lo, hi = stops[i - 1], stops[i + 1]
+            for key, expr in ((k, f"max(0.0, min((v - {lo}) / {f - lo:.4f}, ({hi} - v) / {hi - f:.4f}))"),
+                              (sk.key_blocks[base] if base in names else None, f"max(0.0, (v - {stops[-2]}) / {1.0 - stops[-2]:.4f})")):
+                if key is None:
+                    continue
+                key.driver_remove("value")
+                d = key.driver_add("value").driver
+                d.type = "SCRIPTED"
+                var = d.variables.new()
+                var.name, var.type = "v", "SINGLE_PROP"
+                var.targets[0].id = rig
+                var.targets[0].data_path = f'["face_{base}"]'
+                d.expression = expr
+                n += 1
+    return n
+
+
+def add_jaw_preset_drivers(rig, jaw_weights, angle_deg):
+    """DEF-jaw rotation = (face_JawOpen + sum w_p * face_<preset>) * angle."""
+    if rig.pose.bones.get("DEF-jaw") is None or rig.animation_data is None:
+        return
+    fc = next((f for f in rig.animation_data.drivers if f.data_path == 'pose.bones["DEF-jaw"].rotation_euler' and f.array_index == 0), None)
+    if fc is None:
+        return
+    d = fc.driver
+    terms = ["j"]
+    for i, (p, w) in enumerate(sorted(jaw_weights.items())):
+        v = d.variables.new()
+        v.name, v.type = f"p{i}", "SINGLE_PROP"
+        v.targets[0].id = rig
+        v.targets[0].data_path = f'["face_{p}"]'
+        terms.append(f"{w:.4f} * p{i}")
+    d.expression = f"({' + '.join(terms)}) * {math.radians(angle_deg):.5f}"
+
+
+# ------------------------------------------------------------------------------------------------ build
+def build(C, M, head, spec, P, H, head_bone="DEF-spine.006", eye_bone="DEF-eye.{s}"):
+    """Builds the face on the head mesh `head` (any skin mesh with a face). Updates P['eyes']['y'] so the eye bones
+    sit at the eye centres. Returns a dict with objects, landmarks, rigid bindings, names and a report."""
+    fs = spec["face"]
+    L = fs.get("layout", {})
+    ecfg = fs.get("eyes", {})
+    lib = load_library()
+    ex, ez = P["eyes"]["x"] * H, P["eyes"]["z"] * H
+    r = _f(ecfg, "radius_m", 0.03)
+    z_mouth = ez - _f(L, "mouth_below_eye_m", 0.05)
+    ctx = FaceContext(head, z_mouth, r)
+    rep = {"generator": "face_generic/1"}
+    # face skin (blush spots from the layout), used by the head skin, ears and lids
+    skin_rgb = tuple(spec["materials"].get("albedo_srgb", {}).get("skin") or spec["materials"]["target_colors_srgb"]["skin"])
+    bl = fs.get("blush")
+    z_nose = ez - _f(L, "nose_below_eye_m", 0.03)
+    if bl:
+        spots = []
+        for sx, _ in SIDES:
+            bx, bz = sx * (ex + _f(bl, "out_m", 0.0)), ez - _f(bl, "below_eye_m", 0.04)
+            spots.append((bx, ctx.face_y(None, bx, bz), bz))
+        if bl.get("nose"):
+            spots.append((0.0, ctx.face_y(None, 0.0, z_nose), z_nose))
+        M["face_skin"] = G.blush_skin_material("M_skin_face", skin_rgb, tuple(bl.get("srgb", (226, 150, 150))), spots,
+                                               _f(bl, "radius_m", 0.025), subsurface=0.2)
+    else:
+        M["face_skin"] = M["skin"]
+    G.assign(head, M["face_skin"])
+    # nose: a soft bump on the head surface
+    nc = fs.get("nose", {})
+    if nc:
+        ny = ctx.face_y(None, 0.0, z_nose)
+        G.brush(head, (0.0, ny + _f(nc, "radius_m", 0.016) * 0.3, z_nose), _f(nc, "radius_m", 0.016), (0, -_f(nc, "height_m", 0.004), 0))
+        ctx.invalidate()
+    # landmarks (before the eyes push nothing; the head mesh is final from here on)
+    lm = {"mouth": Vector((0.0, ctx.face_y(None, 0.0, z_mouth), z_mouth))}
+    zc = ez - _f(L, "chin_below_eye_m", 0.09)
+    lm["chin"] = Vector((0.0, ctx.face_y(None, 0.0, zc), zc))
+    lm["nose"] = Vector((0.0, ctx.face_y(None, 0.0, z_nose), z_nose))
+    # eyes
+    eyes, lids, frames, einfo = build_eyes(C, M, ctx, ecfg, ex, ez, _f(ecfg, "protrusion_m", 0.015))
+    P["eyes"]["y"] = lids[0][3].y / H  # the eye bones sit at the eye centres (gaze rotates about them)
+    rep["eyes"] = einfo
+    for (sx, side), (up, lo, lash, c) in zip(SIDES, lids):
+        lm[f"eye_{side}"] = frames[side] @ Vector((0, -r, 0))
+    ears = build_ears(C, M, ctx, fs.get("ears", {}), ez) if fs.get("ears") else []
+    for (sx, side), e in zip(SIDES, ears):
+        lm[f"ear_{side}"] = e.location.copy()
+    if not ears:  # the jaw pivot needs ear landmarks: use the head sides at the eye line
+        for sx, side in SIDES:
+            lm[f"ear_{side}"] = Vector((ctx.side_x(sx, 0.0, ez - 0.01) or sx * 0.1, 0.0, ez - 0.01))
+    au = fs.get("action_units", {})
+    brows = build_brows(C, ctx, fs.get("brows", {}), au, ex, ez, r) if fs.get("brows") else []
+    # mouth (face.py lips_jaw/2 through the context) and its interior with oral layers
+    mcfg = dict(fs["mouth"])
+    M.setdefault("lip", G.material("M_lip_generic", tuple(mcfg.get("lip_srgb", skin_rgb)), roughness=0.5, subsurface=0.15))
+    mouth = FACE.build_mouth_lips(C, M, head, ctx, mcfg)
+    cavity = FACE.cut_mouth_and_cavity(C, M, head, ctx, mcfg, mouth)
+    # action units: eyes (in their frames), smile coupling (cheeks + lower lids join the lips' Smile)
+    rep["blink"] = eye_action_units(eyes, lids, frames, r, fs.get("blink", {}), au)
+    if fs.get("smile_coupling"):
+        rep["smile_coupling"] = FACE.add_smile_coupling(head, lids, mouth, lm, fs["smile_coupling"])
+    for ob in [mouth, cavity, head] + [l[1] for l in lids]:
+        _rename_key(ob, "Smile", "MouthSmile")
+    au_names = [a for a in lib["action_units"]]
+    lid_objs = [o for l in lids for o in l[:3]]
+    face_objs = eyes + lid_objs + brows + [mouth, cavity, head]
+    present = sorted({k.name for o in face_objs if o.data.shape_keys for k in o.data.shape_keys.key_blocks[1:] if "@" not in k.name} | {"JawOpen"})
+    au_built = [a for a in au_names if a in present]
+    presets, jaw_w = bake_presets(face_objs, lib, fs.get("expressions", {}), set(au_built))
+    rep["action_units"] = au_built
+    rep["action_units_missing"] = [a for a in au_names if a not in au_built]
+    rep["presets"] = presets
+    rigid = [(o, head_bone) for o in brows + ears + [mouth, cavity]] + [(e, eye_bone.format(s=s)) for e, (_, s) in zip(eyes, SIDES)]
+    # lids: rigid to the head, or split between head and eye bone (eyelid tracking: the lids follow a fraction of
+    # the gaze; concentric shells around a spherical eye never intersect it whatever the fraction)
+    track = _f(ecfg, "lid_tracking", 0.0)
+    for (sx, side), l in zip(SIDES, lids):
+        for o in l[:3]:
+            rigid.append((o, {head_bone: 1.0 - track, eye_bone.format(s=side): track} if track > 0 else head_bone))
+    sc = ecfg.get("scale", [1, 1, 1])
+    if max(abs(float(k) - 1.0) for k in sc) > 1e-6:
+        rep.setdefault("warnings", []).append(
+            "non-spherical eyeball (scale %s) rotated by the eye bones: gaze makes the eyeball cut through the lid "
+            "shells (see docs/second_character/M3_FACE_SYSTEM.md); use for static eyes or small gaze ranges only" % (sc,))
+    engine = {k: v for k, v in lib["engine_expressions"].items() if v in set(au_built) | set(presets)}
+    return {"eyes": eyes, "lids": lids, "brows": brows, "ears": ears, "mouth": mouth, "cavity": cavity, "landmarks": lm,
+            "rigid": rigid, "frames": frames, "ctx": ctx, "controls": au_built + presets, "jaw_preset_weights": jaw_w,
+            "engine_expressions": engine, "mouth_cfg": mcfg, "report": rep}
+
+
+def add_landmarks(C, lm):
+    empties = {}
+    for k, p in lm.items():
+        em = bpy.data.objects.new(f"LM_{k}", None)
+        em.empty_display_size = 0.01
+        em.location = p
+        C.objects.link(em)
+        empties[k] = em
+    return empties
+
+
+def bind_rigid(rig, pairs):
+    """Rigid parts: full weight to one deform bone + Armature modifier (as the legacy path)."""
+    for ob, bone in pairs:
+        ob.parent = rig
+        ob.matrix_parent_inverse = rig.matrix_world.inverted()
+        for name, w in (bone.items() if isinstance(bone, dict) else ((bone, 1.0),)):  # {bone: weight} splits a part
+            vg = ob.vertex_groups.get(name) or ob.vertex_groups.new(name=name)
+            vg.add(list(range(len(ob.data.vertices))), w, "REPLACE")
+        m = ob.modifiers.new("Armature", "ARMATURE")
+        m.object = rig

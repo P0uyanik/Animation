@@ -118,3 +118,11 @@ Later and not scheduled: hair and cloth dynamics, sit/run/jump actions, pinch gr
 3. **Neutral expression:** a closed soft smile (#34, #45), with the open happy smile as the "happy" expression?
 4. **Height relative to the boy (1.10 m including hair):** about the same, as in #31 and #32? Proposal: body
    slightly shorter, with the bun top level with his hair top.
+
+
+## Gap status after M3 (2026-11-14)
+- **G3 (open eyes)** and **G4 (expression library):** built as shared systems (`face_generic/1`, `face_library/`).
+- **G5 (teeth and tongue):** built as oral layers.
+- **G7:** glasses built (`accessories.py`); flowers and band remain for M4.
+
+See `docs/second_character/M3_FACE_SYSTEM.md`.

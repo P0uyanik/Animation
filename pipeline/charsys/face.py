@@ -23,10 +23,13 @@ def _front_edge_elevation(ob, c, r, lowest):
     return math.degrees(math.atan2(d.z, -d.y))
 
 
-def add_blink_lid_seam(lids, eye_r, G, cfg, eyes=()):
+def add_blink_lid_seam(lids, eye_r, G, cfg, eyes=(), fraction=1.0, key_name="Blink"):
     """cfg flatten (0..0.6): when closed, the front of the eyeball and the closed lid/lash are compressed along the
     eye's forward axis by this fraction (Blink shape key on the eyeball too), so a protruding eye does not close into
-    a dome. Default 0 keeps the F01/F02 behaviour."""
+    a dome. Default 0 keeps the F01/F02 behaviour.
+    fraction < 1 builds a partial closure (the lid rotated by that fraction of the closing angle, pull and flatten
+    blended) under key_name: in-between keys, because a linear morph of a large rotation moves the lid along a chord
+    through the eyeball (at half closure the lid edge sinks to cos(angle/2) of the radius). Defaults unchanged."""
     overlap = float(cfg.get("overlap_deg", 3.0))
     flat = 1.0 - float(cfg.get("flatten", 0.0))
     closed_off = float(cfg.get("closed_offset_m", 0.0012))
@@ -38,25 +41,29 @@ def add_blink_lid_seam(lids, eye_r, G, cfg, eyes=()):
         e_up = _front_edge_elevation(up, c, eye_r, lowest=True)
         e_lo = _front_edge_elevation(lo, c, eye_r, lowest=False)
         ang = (e_up - e_lo) + overlap
-        R = Matrix.Rotation(math.radians(ang), 3, Vector((1, 0, 0)))
+        R = Matrix.Rotation(math.radians(ang if fraction == 1.0 else ang * fraction), 3, Vector((1, 0, 0)))
         r_in = min((v.co - c).length for v in up.data.vertices)  # inner shell radius (eye_r + gap)
         shell = max((v.co - c).length for v in up.data.vertices) - r_in
         ts = float(cfg["closed_thickness_m"]) / shell if cfg.get("closed_thickness_m") else 1.0  # thinner when closed
         for ob in (up, lash):
             if ob.data.shape_keys is None:
                 ob.shape_key_add(name="Basis")
-            k = ob.shape_key_add(name="Blink")
+            k = ob.shape_key_add(name=key_name)
             k.value = 0.0
             for i, v in enumerate(ob.data.vertices):
                 d = R @ (v.co - c)
                 if ob is up:  # pull the closed shell towards the eyeball, keeping its thickness
                     L = d.length
-                    d = d * ((eye_r + closed_off + (L - r_in) * ts) / L)
-                if flat < 1.0 and d.y < 0 and (ob is up or cfg.get("flatten_lash", True)):  # forward part (eye looks along -y)
-                    d = Vector((d.x, d.y * flat, d.z))
+                    if fraction == 1.0:
+                        d = d * ((eye_r + closed_off + (L - r_in) * ts) / L)
+                    else:
+                        d = d * ((L + fraction * (eye_r + closed_off + (L - r_in) * ts - L)) / L)
+                fl = flat if fraction == 1.0 else 1.0 - fraction * (1.0 - flat)
+                if fl < 1.0 and d.y < 0 and (ob is up or cfg.get("flatten_lash", True)):  # forward part (eye looks along -y)
+                    d = Vector((d.x, d.y * fl, d.z))
                 k.data[i].co = c + d
         eye = next((e for e in eyes if (e.matrix_world.translation - c).length < 1e-4), None)
-        if flat < 1.0 and eye is not None:  # flatten the front of the eyeball under the closed lid
+        if flat < 1.0 and eye is not None and fraction == 1.0:  # flatten the front of the eyeball under the closed lid
             if eye.data.shape_keys is None:
                 eye.shape_key_add(name="Basis")
             ek = eye.shape_key_add(name="Blink")
@@ -142,7 +149,7 @@ def build_mouth_lips(C, M, head, B, cfg):
     zm = B.Z["mouth"]
     n = 13
 
-    def rows(frown, widen=1.0, up_lift=0.0):
+    def rows(frown, widen=1.0, up_lift=0.0, lo_drop=0.0):
         out = []
         for r, dz in enumerate(dzs):
             row = []
@@ -150,7 +157,7 @@ def build_mouth_lips(C, M, head, B, cfg):
                 u = -1 + 2 * k / (n - 1)
                 env = math.sqrt(max(1 - u * u, 0.0))
                 x = u * w * widen
-                z = zm - frown * u * u + dz * (0.35 + 0.65 * env) + (up_lift * env if r < n_up else 0.0)
+                z = zm - frown * u * u + dz * (0.35 + 0.65 * env) + (up_lift * env if r < n_up else -lo_drop * env)
                 # v2: outer lip edges lie on the skin (no floating rim / cast shadow), the seam bulges slightly
                 off = (edge_off + (bulge - edge_off) * (1 - abs(dz) / lh)) if v2 else 0.0012
                 row.append((x, B.face_y(head, x, z) - off, z))
@@ -179,6 +186,11 @@ def build_mouth_lips(C, M, head, B, cfg):
     base_rows = [v for row in rows(fr) for v in row]
     shapes = (("Smile", rows(fr - fr - up, widen=float(cfg.get("smile_widen", 1.12))), True),
               ("JawOpen", rows(fr, widen=float(cfg.get("jaw_lip_round", 1.0)), up_lift=float(cfg.get("jaw_upper_lift_m", 0.0015))), False))
+    # cfg extra_shapes: further lip shapes for the expression library, e.g. {"name": "MouthWide", "frown_m": -0.006,
+    # "widen": 1.2, "up_lift_m": 0.004, "lo_drop_m": 0.008}; frown_m is absolute (negative = corners up).
+    shapes = shapes + tuple((e["name"], rows(float(e.get("frown_m", fr)), widen=float(e.get("widen", 1.0)),
+                                             up_lift=float(e.get("up_lift_m", 0.0)), lo_drop=float(e.get("lo_drop_m", 0.0))),
+                             bool(e.get("shaped", False))) for e in cfg.get("extra_shapes", []))
     for name, rr, shaped in shapes:
         k = mouth.shape_key_add(name=name)
         k.value = 0.0
@@ -209,19 +221,50 @@ def cut_mouth_and_cavity(C, M, head, B, cfg, mouth):
     back = float(cfg.get("interior_offset_m", 0.0006))
     depth = float(cfg.get("cavity_depth_m", 0.0))
     ts = [0.0, 0.5, 1.0] if not v2 else [i / (int(cfg.get("interior_rows", 7)) - 1) for i in range(int(cfg.get("interior_rows", 7)))]
-    verts = []
-    for t in ts:
-        for k in range(n):
-            p = co[s_up * n + k] if t < 0.5 else co[s_lo * n + k]
-            u = -1 + 2 * k / (n - 1)
-            env = math.sqrt(max(1 - u * u, 0.0))
-            mid = 1 - abs(2 * t - 1)
-            verts.append((p.x * 0.97, p.y + back + depth * env * mid, p.z))
+    oral = cfg.get("oral") or {}
+    follow = bool(cfg.get("interior_follow_keys", False))
+    if oral:  # extra rows just either side of each layer edge, so teeth have a crisp edge
+        for key, side in (("teeth_upper", 0), ("teeth_lower", 1)):
+            if oral.get(key):
+                d = float(oral[key].get("depth", 0.2))
+                for t in (d - 0.01, d + 0.01):
+                    ts.append(t if side == 0 else 1 - t)
+        ts = sorted(set(round(t, 4) for t in ts))
+
+    def layer(t, u):
+        """Oral layer at (t, u): 'teeth' / 'tongue' / None, and its forward offset (m)."""
+        w = abs(u)
+        tu, tl = oral.get("teeth_upper"), oral.get("teeth_lower")
+        if tu and t <= float(tu.get("depth", 0.2)) and w <= float(tu.get("width", 0.9)):
+            return "teeth_upper", float(tu.get("forward_m", 0.0003))
+        if tl and t >= 1 - float(tl.get("depth", 0.15)) and w <= float(tl.get("width", 0.8)):
+            return "teeth_lower", float(tl.get("forward_m", 0.0003))
+        tg = oral.get("tongue")
+        if tg and t >= float(tg.get("t0", 0.55)) + 0.25 * (w / max(1e-6, float(tg.get("width", 0.7)))) ** 2 and w <= float(tg.get("width", 0.7)):
+            return "tongue", float(tg.get("bulge_m", 0.0002))
+        return None, 0.0
+
+    def interior_point(pu, pl, t, k):
+        u = -1 + 2 * k / (n - 1)
+        env = math.sqrt(max(1 - u * u, 0.0))
+        mid = 1 - abs(2 * t - 1)
+        p = pu.lerp(pl, t) if follow else (pu if t < 0.5 else pl)
+        fwd = layer(t, u)[1] if oral else 0.0
+        return (p.x * 0.97, p.y + back + depth * env * mid - fwd, p.z)
+    verts = [interior_point(co[s_up * n + k], co[s_lo * n + k], t, k) for t in ts for k in range(n)]
     R = len(ts)
     faces = [(r * n + i, r * n + i + 1, (r + 1) * n + i + 1, (r + 1) * n + i) for r in range(R - 1) for i in range(n - 1)]
     cav = G.new_object("mouth_cavity", verts, faces, C)
     cav["ps_rows"] = n
     cav["ps_row_weights"] = ts
+    if follow and mouth.data.shape_keys:  # the interior follows every lip shape (an open-lip shape never shows the skin behind)
+        cav.shape_key_add(name="Basis")
+        for kb in mouth.data.shape_keys.key_blocks[1:]:
+            kc = [d.co.copy() for d in kb.data]
+            ck = cav.shape_key_add(name=kb.name)
+            ck.value = 0.0
+            for i, v in enumerate(interior_point(kc[s_up * n + k], kc[s_lo * n + k], t, k) for t in ts for k in range(n)):
+                ck.data[i].co = v
     if v2:
         lin = lambda c: tuple(float(x) for x in G.srgb_to_linear(tuple(c)))  # noqa: E731
         inner, throat, tongue = (lin(cfg.get(k, d)) for k, d in (("inner_srgb", (128, 52, 52)), ("throat_srgb", (34, 12, 14)),
@@ -232,8 +275,13 @@ def cut_mouth_and_cavity(C, M, head, B, cfg, mouth):
                 u = -1 + 2 * k / (n - 1)
                 edge = max(abs(2 * t - 1), abs(u)) ** 3  # 1 at the lips, 0 deep inside
                 col = [throat[i] + (inner[i] - throat[i]) * edge for i in range(3)]
-                tw = max(0.0, (t - 0.55) / 0.45) * max(0.0, 1 - abs(u) * 1.3) * (1 - edge)  # tongue: low, central
-                col = [col[i] + (tongue[i] - col[i]) * tw for i in range(3)]
+                if oral:  # explicit oral layers replace the tongue tint
+                    lay = layer(t, u)[0]
+                    if lay:
+                        col = list(lin(oral[lay].get("srgb", (238, 232, 222) if lay.startswith("teeth") else (196, 96, 104))))
+                else:
+                    tw = max(0.0, (t - 0.55) / 0.45) * max(0.0, 1 - abs(u) * 1.3) * (1 - edge)  # tongue: low, central
+                    col = [col[i] + (tongue[i] - col[i]) * tw for i in range(3)]
                 attr.data[r * n + k].color = (*col, 1.0)
         mat = M.get("mouth_inner_v2")
         if mat is None:
@@ -284,6 +332,7 @@ def add_jaw(rig, head, cav, mouth, landmarks, head_bone, cfg):
     bpy.ops.object.mode_set(mode="OBJECT")
     c0, c1 = cfg.get("cheek_falloff_m", [0.030, 0.065])
     w = float(cfg.get("half_width_m", 0.0125))
+    floor = float(cfg["jaw_floor_fade_m"]) if cfg.get("jaw_floor_fade_m") else None
 
     def jaw_w(p):
         ax = abs(p.x)
@@ -295,6 +344,8 @@ def add_jaw(rig, head, cav, mouth, landmarks, head_bone, cfg):
         s1 = _smooth(top, top - band, p.z) if p.z < top else 0.0
         s2 = 1 - _smooth(c0, c1, ax)
         s3 = _smooth(piv.y + 0.01, piv.y - 0.03, p.y)
+        if floor is not None:
+            return s1 * s2 * s3 * _smooth(chin.z - floor, chin.z + 0.25 * floor, p.z)
         return s1 * s2 * s3
     stats = {}
     n = int(cav["ps_rows"])
@@ -312,8 +363,13 @@ def add_jaw(rig, head, cav, mouth, landmarks, head_bone, cfg):
         for vtx in ob.data.vertices:
             wj = jaw_w(ob.matrix_world @ vtx.co)
             if wj > 1e-4:
+                if floor is not None:  # scale this vertex's existing weights, then add the jaw
+                    for g in vtx.groups:
+                        if ob.vertex_groups[g.group].name != "DEF-jaw":
+                            g.weight *= (1 - wj)
+                else:
+                    hg.add([vtx.index], 1 - wj, "REPLACE")
                 jg.add([vtx.index], wj, "REPLACE")
-                hg.add([vtx.index], 1 - wj, "REPLACE")
                 moved += 1
         stats[ob.name] = moved
     n = int(mouth.get("ps_lip_rows", 13))

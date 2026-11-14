@@ -340,9 +340,13 @@ def blush_skin_material(name, base_srgb, blush_srgb, spots, radius, subsurface=0
     return m
 
 
-def eye_material(name, iris_srgb, iris_dark_srgb, radius, iris_r, pupil_r):
-    """Sclera / iris / pupil from the distance to the eye's forward axis (object space: eyeball at origin, -Y forward)."""
-    m = material(name, (235, 228, 220), roughness=0.25, coat=1.0, specular=0.5)
+def eye_material(name, iris_srgb, iris_dark_srgb, radius, iris_r, pupil_r, scale=(1.0, 1.0, 1.0), highlights=None,
+                 sclera_srgb=(235, 228, 220)):
+    """Sclera / iris / pupil from the distance to the eye's forward axis (object space: eyeball at origin, -Y forward).
+    scale: the eyeball's ellipsoid scale (x, y depth, z); the iris stays circular in the eye's local frame.
+    highlights: optional [(x, z, r), ...] in fractions of the radius (local eye frame, +x = the character's left,
+    +z up), painted white on the front (they move with the eye). Defaults keep the v6 node graph unchanged."""
+    m = material(name, tuple(sclera_srgb), roughness=0.25, coat=1.0, specular=0.5)
     nt = m.node_tree
     p = nt.nodes.get("Principled BSDF")
     # Undeformed ("Generated", 0..1 over the eyeball's bounding box) coordinates, so the iris follows the eye bone
@@ -350,9 +354,15 @@ def eye_material(name, iris_srgb, iris_dark_srgb, radius, iris_r, pupil_r):
     tc = nt.nodes.new("ShaderNodeTexCoord")
     gen = nt.nodes.new("ShaderNodeVectorMath")
     gen.operation = "MULTIPLY_ADD"
-    gen.inputs[1].default_value = (2 * radius, 2 * radius, 2 * radius)
-    gen.inputs[2].default_value = (-radius, -radius, -radius)
+    gen.inputs[1].default_value = tuple(2 * radius * k for k in scale)
+    gen.inputs[2].default_value = tuple(-radius * k for k in scale)
     nt.links.new(tc.outputs["Generated"], gen.inputs[0])
+    if tuple(scale) != (1.0, 1.0, 1.0):  # back to the unit-sphere frame: iris and pupil stay circular
+        unsc = nt.nodes.new("ShaderNodeVectorMath")
+        unsc.operation = "DIVIDE"
+        unsc.inputs[1].default_value = tuple(float(k) for k in scale)
+        nt.links.new(gen.outputs[0], unsc.inputs[0])
+        gen = unsc
     sep = nt.nodes.new("ShaderNodeSeparateXYZ")
     nt.links.new(gen.outputs[0], sep.inputs[0])
     comb = nt.nodes.new("ShaderNodeCombineXYZ")
@@ -388,7 +398,41 @@ def eye_material(name, iris_srgb, iris_dark_srgb, radius, iris_r, pupil_r):
     mix.inputs["A"].default_value = (*srgb_to_linear((225, 215, 205)), 1)
     nt.links.new(front.outputs[0], mix.inputs["Factor"])
     nt.links.new(ramp.outputs["Color"], mix.inputs["B"])
-    nt.links.new(mix.outputs["Result"], p.inputs["Base Color"])
+    out = mix.outputs["Result"]
+    if highlights:
+        acc = None
+        for hx, hz, hr in highlights:
+            dist = nt.nodes.new("ShaderNodeVectorMath")
+            dist.operation = "DISTANCE"
+            dist.inputs[1].default_value = (hx * radius, 0.0, hz * radius)
+            nt.links.new(comb.outputs[0], dist.inputs[0])
+            mr = nt.nodes.new("ShaderNodeMapRange")
+            mr.inputs["From Min"].default_value = hr * radius * 0.8
+            mr.inputs["From Max"].default_value = hr * radius
+            mr.inputs["To Min"].default_value = 1.0
+            mr.inputs["To Max"].default_value = 0.0
+            nt.links.new(dist.outputs["Value"], mr.inputs["Value"])
+            if acc is None:
+                acc = mr.outputs["Result"]
+            else:
+                mx = nt.nodes.new("ShaderNodeMath")
+                mx.operation = "MAXIMUM"
+                nt.links.new(acc, mx.inputs[0])
+                nt.links.new(mr.outputs["Result"], mx.inputs[1])
+                acc = mx.outputs[0]
+        onfront = nt.nodes.new("ShaderNodeMath")
+        onfront.operation = "MULTIPLY"
+        nt.links.new(acc, onfront.inputs[0])
+        nt.links.new(front.outputs[0], onfront.inputs[1])
+        hl = nt.nodes.new("ShaderNodeMix")
+        hl.data_type = "RGBA"
+        hl.inputs["B"].default_value = (1.0, 1.0, 1.0, 1)
+        nt.links.new(onfront.outputs[0], hl.inputs["Factor"])
+        nt.links.new(out, hl.inputs["A"])
+        out = hl.outputs["Result"]
+        nt.links.new(onfront.outputs[0], p.inputs["Emission Strength"])  # highlights glow slightly (catch-lights)
+        p.inputs["Emission Color"].default_value = (1, 1, 1, 1)
+    nt.links.new(out, p.inputs["Base Color"])
     return m
 
 

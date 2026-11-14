@@ -155,3 +155,22 @@ face topology (another head mesh or mouth type); that needs a second production 
 - F09: experimental; technically verified (face test, regression).
 - F09: visually reviewed by me, not by you.
 - Not approved.
+
+
+## M3: generic face system (2026-11-14, experimental, not approved)
+The shared face modules now also serve the second character through `face_generic/1`. For the boy nothing changed:
+- every M3 addition to `face.py` is opt-in (extra lip shapes, interior following the lip shapes, oral layers, jaw
+  floor, partial-closure blink keys);
+- the F09 rebuild gives identical `face_test` values (36/36).
+
+`face_test.py` now reads part names from the rig (`ps_face_parts`) when present. The new
+`pipeline/charsys/tests/face_system_test.py` covers:
+- action units and presets;
+- partial blinks;
+- gaze;
+- glasses interference;
+- the teeth and tongue share.
+
+**Finding for the boy (not fixed):** his Blink is one linear morph of a 62–70° rotation, so mid-blink the lid edge
+passes inside the eyeball. The generic system fixes this with in-between keys; for the boy this belongs to the face
+convergence, which needs your approval. See `docs/second_character/M3_FACE_SYSTEM.md`.

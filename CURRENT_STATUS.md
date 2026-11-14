@@ -1,5 +1,26 @@
 # Current status (2026-11-14)
 
+**Latest: `girl_auburn_bun_glasses` M3 (one reusable facial production system), experimental; technically verified;
+awaiting owner review.** Details: `docs/second_character/M3_FACE_SYSTEM.md`.
+- Shared:
+  - `face_generic.py` (eyes, lids, lashes, brows, ears, nose, blush, action units, preset bake);
+  - `face_library/expressions.json` (13 action units, 14 presets from #34, 2 optional);
+  - `accessories.py` (`glasses/1`);
+  - opt-in extensions of `face.py` and `geom.py`;
+  - `face_system_test.py`; `face_test.py` generalised.
+- Girl:
+  - open eyes with highlights; Blink 0%; per-eye and partial blinks on the true arc;
+  - closed soft-smile neutral; Smile/Happy with teeth and tongue;
+  - glasses with 0 intersections in all states and gaze cases.
+- Engine: no C++ change; her package `girl_auburn_bun_glasses_m3` blinks and plays 10 semantic expressions
+  (694 assertions).
+- Synthetic G03 face: builds and passes from data only.
+- Boy unchanged (F09 face_test 36/36 identical, `verify_charsys` PASS, `ctest` 4/4).
+- Open:
+  - rounded closed lids;
+  - ellipsoid eyes under gaze;
+  - engine in-betweens, jaw bone and per-character blink timing (proposed engine changes, not made).
+
 **CP-2 (hair_clumps/2): target reached by an experimental candidate; awaiting owner approval.**
 
 Completed and tested:

@@ -219,6 +219,9 @@ def main():
         raise SystemExit("export problems: " + "; ".join(problems))
     open(os.path.join(out, "geometry.bin"), "wb").write(bytes(blob))
     present = set(src_to_role.values())
+    # engine expression -> morph: the rig profile's map, extended per character by the face system
+    # (collection property ps_engine_expressions, JSON; written by face_generic). No engine change is involved.
+    expr_map = {**prof.get("expressions", {}), **json.loads(root.get("ps_engine_expressions", "{}") or "{}")}
     man = {"format": FORMAT, "version": VERSION, "name": root.get("ps_character_id", root.name),
            "source": {"blend": os.path.basename(a.blend), "blend_sha256": src_sha, "spec_sha256": root.get("ps_spec_sha256"),
                       "spec_version": root.get("ps_spec_version"), "blender": bpy.app.version_string},
@@ -228,10 +231,10 @@ def main():
            "rig_specific_bones": [s["name"] for s in skel if s["kind"] == "rig_specific"],
            "materials": list(mats.values()), "meshes": meshes, "morphs": morphs,
            "morph_names": sorted({m["name"] for m in morphs}),
-           "expressions": {k: v for k, v in prof.get("expressions", {}).items() if v in {m["name"] for m in morphs}},
-           "expressions_missing": sorted(k for k, v in prof.get("expressions", {}).items() if v not in {m["name"] for m in morphs}),
+           "expressions": {k: v for k, v in expr_map.items() if v in {m["name"] for m in morphs}},
+           "expressions_missing": sorted(k for k, v in expr_map.items() if v not in {m["name"] for m in morphs}),
            "capabilities": capabilities(present, bool(morphs), behaviours,
-                                        {k for k, v in prof.get("expressions", {}).items() if v in {m["name"] for m in morphs}}),
+                                        {k for k, v in expr_map.items() if v in {m["name"] for m in morphs}}),
            **({"walk": prof["walk"]} if "walk" in prof else {}), **({"hands": prof["hands"]} if "hands" in prof else {}),
            "discarded": prof.get("discarded", []) + ([f"meshes without armature (not exported): {skipped}"] if skipped else []),
            "files": {"geometry.bin": {"bytes": len(blob), "sha256": hashlib.sha256(bytes(blob)).hexdigest()}}}

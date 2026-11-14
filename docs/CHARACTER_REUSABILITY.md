@@ -71,3 +71,22 @@ never from constants. Generic reuse is only claimed after a second, different ch
 | Weight rules | role-based with profile defaults (eye bones only drive eyes) | gaze deforms nothing without eye meshes (C++ test) |
 | Component map | from the spec (legacy default for the boy) | — |
 | Boy | **legacy path** (`body_v6`, literal joints, name-based rules) | convergence plan in `docs/second_character/M2_GENERIC_BODY_RIG.md` |
+
+
+## Face after M3 (2026-11-14)
+| System | Status | Evidence |
+| --- | --- | --- |
+| Eyes, lids, lashes, highlights (`face_generic/1`) | shared; parameterised; used by the girl and the synthetic G03 | girl and G03 `face_system_test` |
+| Blink (`lid_seam/1` in the eye frame, in-betweens on the arc, per eye) | shared; verified on 2 configurations | Blink 0%, partial blinks monotonic, 0 eyeball/lid intersections |
+| Mouth (`lips_jaw/2` + extra shapes + oral layers) | shared; girl with teeth and tongue, G03 without | Smile: teeth 18%, tongue 12% |
+| Expression library (13 action units, 14 + 2 presets) | shared data; per-character intensity, scale, overrides | girl 15 presets, G03 13 presets at intensity 0.7 |
+| Accessories (`glasses/1`) | shared; round (girl) and rectangular (G03) | 0 intersections in every state and gaze |
+| Engine expressions | per-character names merged at export; no engine change | 10 semantic expressions tested in C++ |
+| Boy | **legacy face path** (`body_v6.build_eyes`, F09 config) | unchanged (36/36 face_test values) |
+
+**Remaining assumptions:**
+- humanoid front-facing face with two eyes;
+- horizontal slit mouth;
+- spherical eyes for large gaze;
+- ellipsoid ears and a bump nose;
+- glasses need ear landmarks for the temples.

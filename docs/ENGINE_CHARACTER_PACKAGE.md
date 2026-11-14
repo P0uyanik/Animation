@@ -89,7 +89,7 @@ rest pose reproduces the rest mesh exactly (tested, error < 1e-5 m).
 ## Character settings carried by the package (optional keys)
 | Key | Meaning | Source |
 | --- | --- | --- |
-| `expressions` | Engine expression name → this character's morph (e.g. `blink → Blink`, fixture `blink → Squint`). The `expression` action resolves through it; an unknown expression is reported in `SceneEvaluator::warnings()`, not silently dropped | profile `expressions`, keeping only morphs that exist; `expressions_missing` lists the rest |
+| `expressions` | Engine expression name → this character's morph (e.g. `blink → Blink`, fixture `blink → Squint`). The `expression` action resolves through it; an unknown expression is reported in `SceneEvaluator::warnings()`, not silently dropped | profile `expressions`, extended per character by the generic face (collection property `ps_engine_expressions`: e.g. `happy → Smile`, `sad → Sadness`, `surprised → Surprise`); only morphs that exist are kept; `expressions_missing` lists the rest |
 | `walk` | `step_length` (m) or `step_scale` (× leg length); default `0.11 / 0.3451` per metre of leg, which keeps the original chibi characters at exactly 0.11 m | profile `walk` (optional) |
 | `hands` | `{"L": {"finger_dir": [...], "palm_normal": [...]}, "R": ...}`. Without it the importer derives each hand frame from its finger geometry | profile `hands` (optional) |
 
@@ -119,6 +119,15 @@ Engine side (generic, for every character):
 | Grasp / hand pose | **supported** both hands: hand frame derived from fingers; all 5 fingertips rest on a stick held between thumb and fingers (worst gap 4.5 mm = finger-tube radius) | **unsupported**: no finger roles, hand frame "none", by design | Hand orientation is verified independently: a rotated skeleton gives exactly Q × the original fingertips (≤ 0.0001 mm); a 3-digit hand grasps |
 | Walk | **supported**: step 83 mm from 261 mm legs, 1/59 frames with both feet moving | **supported**: step 54 mm from 170 mm legs, 0/59 | Chibi reference walk: 2/59 (was up to 6) |
 | Idle | **supported**, deterministic | **supported** | — |
+
+**Second production character** (`girl_auburn_bun_glasses`, packages `_m2` without face, `_m3` with the generic face):
+- `_m3` look-at: 0°, eye meshes move 11 mm.
+- `_m3` life-layer blink: via `Blink`.
+- `_m3` semantic expressions: happy, sad, surprised, angry, laugh, squint, confused, frown, blink and jawOpen all
+  resolve and move the face (2.9–61.6 mm).
+- `_m2` reports blink and expressions as unsupported.
+- Engine morphs are linear: the face's blink in-between keys are exported as extra morphs but the engine does not
+  chain them. The `DEF-jaw` bone is not driven by engine expressions (Blender driver only).
 
 Remaining limitations:
 - Only humanoid profiles exist. The finger-role naming (`thumbA/B`, `f0..f3`) is the engine's humanoid hand model;
