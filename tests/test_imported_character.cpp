@@ -52,7 +52,7 @@ bool hasRole(const ImportedCharacter& c, const std::string& r) {
 }  // namespace
 
 TEST_CASE("imported character packages: behaviour support") {
-  for (const char* name : {"boy_yellow_hoodie_1.0.0", "toy_fixture"}) {
+  for (const char* name : {"boy_yellow_hoodie_1.0.0", "toy_fixture", "girl_auburn_bun_glasses_m2"}) {
     CAPTURE(name);
     auto loaded = loadImportedCharacter(pkg(name));
     REQUIRE(loaded.has_value());
@@ -91,10 +91,16 @@ TEST_CASE("imported character packages: behaviour support") {
       aimBone(sk, p, mat4(1), eye, target, 1.0f, 60.0f);
       vec3 axis = glm::normalize(vec3(boneGlobals(sk, p, mat4(1))[size_t(eye)][2]));
       float ang = glm::degrees(std::acos(std::clamp(glm::dot(axis, glm::normalize(target - e)), -1.0f, 1.0f)));
+      bool eyeSkinned = false;  // does any mesh follow the eye bone? (no face yet = bone only)
+      for (auto& m : c.rig.meshes)
+        for (size_t i = 0; i < m.joints.size() && !eyeSkinned; ++i)
+          for (int k = 0; k < 4; ++k) eyeSkinned |= m.joints[i][k] == eye && m.weights[i][k] > 0;
       float moved = maxDisplacement(c.rig, sk, p);
-      MESSAGE("look-at: eye axis error " << ang << " deg, eye mesh moved " << moved * 1000 << " mm");
+      MESSAGE("look-at: eye axis error " << ang << " deg, eye mesh " << std::string(eyeSkinned ? "moved " : "absent (bone only), moved ")
+                                       << moved * 1000 << " mm");
       CHECK(ang < 1.0f);
-      CHECK(moved > 0.001f);
+      if (eyeSkinned) CHECK(moved > 0.001f);
+      else CHECK(moved < 1e-5f);  // without eye meshes, gaze must not deform anything (eye bones drive eyes only)
     }
     // Expressions: each morph block deforms its mesh.
     for (size_t t = 0; t < c.rig.morphs.size(); ++t) {
@@ -146,7 +152,7 @@ TEST_CASE("imported character packages: behaviour support") {
 }
 
 TEST_CASE("imported character packages: walk and idle through the scene") {
-  for (const char* name : {"boy_yellow_hoodie_1.0.0", "toy_fixture"}) {
+  for (const char* name : {"boy_yellow_hoodie_1.0.0", "toy_fixture", "girl_auburn_bun_glasses_m2"}) {
     CAPTURE(name);
     {
       Json actions = Json::parse(R"([{"type": "walk", "character": "who", "start": 1, "end": 61, "to": [0.0, 0.6]}])");
@@ -188,11 +194,19 @@ TEST_CASE("imported character packages: walk and idle through the scene") {
 }
 
 TEST_CASE("imported character packages: blink morph in the life layer and per-character expression names") {
-  for (const char* name : {"boy_yellow_hoodie_1.0.0", "toy_fixture"}) {
+  for (const char* name : {"boy_yellow_hoodie_1.0.0", "toy_fixture", "girl_auburn_bun_glasses_m2"}) {
     CAPTURE(name);
     // Blink: the life layer drives the morph mapped to "blink" (no lid bones exist; none are rotated).
     auto ev = sceneWith(name, Json::array(), true);
     const auto& ci = ev->characters()[0];
+    if (!ci.asset.expressionMap.count("blink")) {  // no face yet (e.g. a base body): reported, not faked
+      MESSAGE("blink and expressions: unsupported for this package (no blink morph, " << ci.rig.morphs.size() << " morphs)");
+      CHECK(ci.rig.morphs.empty());
+      Json actions = Json::parse(R"([{"type": "expression", "character": "who", "name": "smile", "start": 5}])");
+      auto ev2 = sceneWith(name, actions, false);
+      CHECK(ev2->warnings().size() == 1);  // the missing expression is reported
+      continue;
+    }
     const std::string blink = ci.asset.expressionMap.at("blink");
     const LifeParams& life = ev->scene().characters[0].life;
     int open = -1, closed = -1;

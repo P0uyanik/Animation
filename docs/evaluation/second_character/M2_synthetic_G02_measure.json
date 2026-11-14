@@ -1,0 +1,13 @@
+{
+ "crown_m": 1.5043,
+ "eye_bone_z_m": 1.4,
+ "eye_bone_x_m": 0.032,
+ "hand_tip_z_m": 0.7995,
+ "leg_width_m": 0.0782,
+ "leg_centre_x_m": 0.0851,
+ "shoulder_joint_z_m": 1.23,
+ "hip_joint_z_m": 0.76,
+ "knee_z_m": 0.42,
+ "ankle_z_m": 0.07,
+ "head_width_m": 0.1689
+}

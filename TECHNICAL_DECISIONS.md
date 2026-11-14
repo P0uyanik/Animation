@@ -258,3 +258,12 @@ no Blender in the workflow, use the existing (unknown) computer, no GPU purchase
 - Blink and expressions resolve through a per-character expression map; morph blinks replace lid rotation for that
   character; missing expressions become scene warnings.
 - Defaults reproduce the previous behaviour of existing characters (regressions unchanged).
+
+## TD-40 One generic body and rig path; the boy's legacy path is a compatibility baseline (2026-11-14)
+- New characters use `body_generic/1`:
+  - body and joints from spec parameters;
+  - rig fitting from a rig-profile data file;
+  - weights from role rules with profile defaults.
+- `body_v6` stays only to keep v6 and 1.0.0 reproducible. The boy converges onto the generic path after the face
+  and garment modules exist, through a measured comparison and a new approved version.
+- There are no permanently independent body systems.

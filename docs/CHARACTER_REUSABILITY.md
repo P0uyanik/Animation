@@ -61,3 +61,13 @@ never from constants. Generic reuse is only claimed after a second, different ch
 | Verified independence | Synthetic proportions (G01): all criteria hold, derived values adapt | Synthetic egg head: runs with its own configuration; roots on the scalp (0.0 mm); 96.9% coverage |
 | Not verified | Other face topology (another head mesh, muzzle or beak mouth); other eye shapes | Other hairstyles on a production character; long hair; hair dynamics |
 | Future usability | A new humanoid face needs only its spec values and landmarks; the same tests (`face_test.py`) apply | A new hairstyle is a configuration: families, fringe and hairline. Surface placement removes the ellipsoid dependency; the synthetic test is a template for the next character |
+
+
+## Body and rig after M2 (2026-11-14)
+| System | Status | Evidence |
+| --- | --- | --- |
+| Body generation (`body_generic/1`) | shared; parameterised; used by the girl and the synthetic G02 | girl meets the M1 measurements; G02 builds at 1.5 m |
+| Rig fitting | shared via `rig_profiles/rigify_human_metarig.json` | 410 / 73 bones for both; joints exactly as specified |
+| Weight rules | role-based with profile defaults (eye bones only drive eyes) | gaze deforms nothing without eye meshes (C++ test) |
+| Component map | from the spec (legacy default for the boy) | — |
+| Boy | **legacy path** (`body_v6`, literal joints, name-based rules) | convergence plan in `docs/second_character/M2_GENERIC_BODY_RIG.md` |

@@ -1,0 +1,1089 @@
+{
+ "format": "plush.imported_character",
+ "version": 1,
+ "name": "girl_auburn_bun_glasses",
+ "source": {
+  "blend": "girl_auburn_bun_glasses_master.blend",
+  "blend_sha256": "34e1eb9b064fea2c8f574a4df8c6e1cf500c77907f60ec4b6b894c6a4a4308ee",
+  "spec_sha256": "36ebfcb4f562f3266061eedf3d2cdaae3f814fa9ab0b942b573131f985017d94",
+  "spec_version": "0.2.0",
+  "blender": "5.3.0"
+ },
+ "profile": {
+  "name": "humanoid_rigify/1",
+  "kind": "humanoid",
+  "required_roles": [
+   "hips",
+   "spine",
+   "chest",
+   "neck",
+   "head"
+  ]
+ },
+ "coordinates": "metres; +Y up; character faces +Z; converted from Blender (x, y, z) -> (x, z, -y)",
+ "skeleton": [
+  {
+   "name": "hips",
+   "source_name": "DEF-spine",
+   "kind": "role",
+   "parent": null,
+   "head": [
+    0.0,
+    0.300002,
+    -0.0
+   ]
+  },
+  {
+   "name": "spine",
+   "source_name": "DEF-spine.001",
+   "kind": "role",
+   "parent": "hips",
+   "head": [
+    0.0,
+    0.371251,
+    -0.0
+   ]
+  },
+  {
+   "name": "DEF-spine.002",
+   "source_name": "DEF-spine.002",
+   "kind": "helper",
+   "parent": "spine",
+   "head": [
+    0.0,
+    0.442499,
+    -0.0
+   ]
+  },
+  {
+   "name": "chest",
+   "source_name": "DEF-spine.003",
+   "kind": "role",
+   "parent": "DEF-spine.002",
+   "head": [
+    0.0,
+    0.513748,
+    -0.0
+   ]
+  },
+  {
+   "name": "neck",
+   "source_name": "DEF-spine.004",
+   "kind": "role",
+   "parent": "chest",
+   "head": [
+    0.0,
+    0.584997,
+    -0.0
+   ]
+  },
+  {
+   "name": "DEF-spine.005",
+   "source_name": "DEF-spine.005",
+   "kind": "helper",
+   "parent": "neck",
+   "head": [
+    0.0,
+    0.637499,
+    -0.0
+   ]
+  },
+  {
+   "name": "head",
+   "source_name": "DEF-spine.006",
+   "kind": "role",
+   "parent": "DEF-spine.005",
+   "head": [
+    0.0,
+    0.69,
+    -0.0
+   ]
+  },
+  {
+   "name": "DEF-pelvis.L",
+   "source_name": "DEF-pelvis.L",
+   "kind": "helper",
+   "parent": null,
+   "head": [
+    0.0,
+    0.300002,
+    -0.0
+   ]
+  },
+  {
+   "name": "DEF-pelvis.R",
+   "source_name": "DEF-pelvis.R",
+   "kind": "helper",
+   "parent": null,
+   "head": [
+    0.0,
+    0.300002,
+    -0.0
+   ]
+  },
+  {
+   "name": "thigh.L",
+   "source_name": "DEF-thigh.L",
+   "kind": "role",
+   "parent": null,
+   "head": [
+    0.052002,
+    0.300002,
+    -0.0
+   ]
+  },
+  {
+   "name": "DEF-thigh.L.001",
+   "source_name": "DEF-thigh.L.001",
+   "kind": "helper",
+   "parent": "thigh.L",
+   "head": [
+    0.052002,
+    0.252501,
+    0.00194
+   ]
+  },
+  {
+   "name": "shin.L",
+   "source_name": "DEF-shin.L",
+   "kind": "role",
+   "parent": "thigh.L",
+   "head": [
+    0.052002,
+    0.205,
+    0.00388
+   ]
+  },
+  {
+   "name": "DEF-shin.L.001",
+   "source_name": "DEF-shin.L.001",
+   "kind": "helper",
+   "parent": "shin.L",
+   "head": [
+    0.052002,
+    0.135499,
+    0.00194
+   ]
+  },
+  {
+   "name": "foot.L",
+   "source_name": "DEF-foot.L",
+   "kind": "role",
+   "parent": "shin.L",
+   "head": [
+    0.052002,
+    0.065999,
+    -0.0
+   ]
+  },
+  {
+   "name": "DEF-toe.L",
+   "source_name": "DEF-toe.L",
+   "kind": "helper",
+   "parent": "foot.L",
+   "head": [
+    0.052002,
+    0.018201,
+    0.060499
+   ]
+  },
+  {
+   "name": "thigh.R",
+   "source_name": "DEF-thigh.R",
+   "kind": "role",
+   "parent": null,
+   "head": [
+    -0.052002,
+    0.300002,
+    -0.0
+   ]
+  },
+  {
+   "name": "DEF-thigh.R.001",
+   "source_name": "DEF-thigh.R.001",
+   "kind": "helper",
+   "parent": "thigh.R",
+   "head": [
+    -0.052002,
+    0.252501,
+    0.00194
+   ]
+  },
+  {
+   "name": "shin.R",
+   "source_name": "DEF-shin.R",
+   "kind": "role",
+   "parent": "thigh.R",
+   "head": [
+    -0.052002,
+    0.205,
+    0.00388
+   ]
+  },
+  {
+   "name": "DEF-shin.R.001",
+   "source_name": "DEF-shin.R.001",
+   "kind": "helper",
+   "parent": "shin.R",
+   "head": [
+    -0.052002,
+    0.135499,
+    0.00194
+   ]
+  },
+  {
+   "name": "foot.R",
+   "source_name": "DEF-foot.R",
+   "kind": "role",
+   "parent": "shin.R",
+   "head": [
+    -0.052002,
+    0.065999,
+    -0.0
+   ]
+  },
+  {
+   "name": "DEF-toe.R",
+   "source_name": "DEF-toe.R",
+   "kind": "helper",
+   "parent": "foot.R",
+   "head": [
+    -0.052002,
+    0.018201,
+    0.060499
+   ]
+  },
+  {
+   "name": "eye.L",
+   "source_name": "DEF-eye.L",
+   "kind": "role",
+   "parent": null,
+   "head": [
+    0.057996,
+    0.776999,
+    0.105003
+   ]
+  },
+  {
+   "name": "eye.R",
+   "source_name": "DEF-eye.R",
+   "kind": "role",
+   "parent": null,
+   "head": [
+    -0.057996,
+    0.776999,
+    0.105003
+   ]
+  },
+  {
+   "name": "DEF-shoulder.L",
+   "source_name": "DEF-shoulder.L",
+   "kind": "helper",
+   "parent": null,
+   "head": [
+    0.020001,
+    0.584997,
+    -0.0
+   ]
+  },
+  {
+   "name": "upperArm.L",
+   "source_name": "DEF-upper_arm.L",
+   "kind": "role",
+   "parent": null,
+   "head": [
+    0.097999,
+    0.584997,
+    -0.0
+   ]
+  },
+  {
+   "name": "DEF-upper_arm.L.001",
+   "source_name": "DEF-upper_arm.L.001",
+   "kind": "helper",
+   "parent": "upperArm.L",
+   "head": [
+    0.123171,
+    0.544714,
+    -0.0
+   ]
+  },
+  {
+   "name": "forearm.L",
+   "source_name": "DEF-forearm.L",
+   "kind": "role",
+   "parent": "upperArm.L",
+   "head": [
+    0.148342,
+    0.504431,
+    -0.0
+   ]
+  },
+  {
+   "name": "DEF-forearm.L.001",
+   "source_name": "DEF-forearm.L.001",
+   "kind": "helper",
+   "parent": "forearm.L",
+   "head": [
+    0.170864,
+    0.468389,
+    -0.0
+   ]
+  },
+  {
+   "name": "hand.L",
+   "source_name": "DEF-hand.L",
+   "kind": "role",
+   "parent": "forearm.L",
+   "head": [
+    0.193386,
+    0.432346,
+    0.0
+   ]
+  },
+  {
+   "name": "f3a.L",
+   "source_name": "DEF-f_index.01.L",
+   "kind": "role",
+   "parent": "hand.L",
+   "head": [
+    0.213524,
+    0.400118,
+    0.019798
+   ]
+  },
+  {
+   "name": "f3b.L",
+   "source_name": "DEF-f_index.02.L",
+   "kind": "role",
+   "parent": "f3a.L",
+   "head": [
+    0.216407,
+    0.392485,
+    0.019798
+   ]
+  },
+  {
+   "name": "DEF-f_index.03.L",
+   "source_name": "DEF-f_index.03.L",
+   "kind": "helper",
+   "parent": "f3b.L",
+   "head": [
+    0.218713,
+    0.386379,
+    0.019798
+   ]
+  },
+  {
+   "name": "DEF-thumb.01.L",
+   "source_name": "DEF-thumb.01.L",
+   "kind": "helper",
+   "parent": "hand.L",
+   "head": [
+    0.195506,
+    0.428954,
+    0.011999
+   ]
+  },
+  {
+   "name": "thumbA.L",
+   "source_name": "DEF-thumb.02.L",
+   "kind": "role",
+   "parent": "DEF-thumb.01.L",
+   "head": [
+    0.195718,
+    0.417293,
+    0.025198
+   ]
+  },
+  {
+   "name": "thumbB.L",
+   "source_name": "DEF-thumb.03.L",
+   "kind": "role",
+   "parent": "thumbA.L",
+   "head": [
+    0.195892,
+    0.407674,
+    0.028498
+   ]
+  },
+  {
+   "name": "DEF-palm.01.L",
+   "source_name": "DEF-palm.01.L",
+   "kind": "helper",
+   "parent": "hand.L",
+   "head": [
+    0.196566,
+    0.427258,
+    0.019798
+   ]
+  },
+  {
+   "name": "f2a.L",
+   "source_name": "DEF-f_middle.01.L",
+   "kind": "role",
+   "parent": "hand.L",
+   "head": [
+    0.213524,
+    0.400118,
+    0.006599
+   ]
+  },
+  {
+   "name": "f2b.L",
+   "source_name": "DEF-f_middle.02.L",
+   "kind": "role",
+   "parent": "f2a.L",
+   "head": [
+    0.216839,
+    0.391341,
+    0.006599
+   ]
+  },
+  {
+   "name": "DEF-f_middle.03.L",
+   "source_name": "DEF-f_middle.03.L",
+   "kind": "helper",
+   "parent": "f2b.L",
+   "head": [
+    0.219491,
+    0.38432,
+    0.006599
+   ]
+  },
+  {
+   "name": "DEF-palm.02.L",
+   "source_name": "DEF-palm.02.L",
+   "kind": "helper",
+   "parent": "hand.L",
+   "head": [
+    0.196566,
+    0.427258,
+    0.006599
+   ]
+  },
+  {
+   "name": "f1a.L",
+   "source_name": "DEF-f_ring.01.L",
+   "kind": "role",
+   "parent": "hand.L",
+   "head": [
+    0.213524,
+    0.400118,
+    -0.006599
+   ]
+  },
+  {
+   "name": "f1b.L",
+   "source_name": "DEF-f_ring.02.L",
+   "kind": "role",
+   "parent": "f1a.L",
+   "head": [
+    0.216695,
+    0.391723,
+    -0.006599
+   ]
+  },
+  {
+   "name": "DEF-f_ring.03.L",
+   "source_name": "DEF-f_ring.03.L",
+   "kind": "helper",
+   "parent": "f1b.L",
+   "head": [
+    0.219232,
+    0.385006,
+    -0.006599
+   ]
+  },
+  {
+   "name": "DEF-palm.03.L",
+   "source_name": "DEF-palm.03.L",
+   "kind": "helper",
+   "parent": "hand.L",
+   "head": [
+    0.196566,
+    0.427258,
+    -0.006599
+   ]
+  },
+  {
+   "name": "f0a.L",
+   "source_name": "DEF-f_pinky.01.L",
+   "kind": "role",
+   "parent": "hand.L",
+   "head": [
+    0.213524,
+    0.400118,
+    -0.019798
+   ]
+  },
+  {
+   "name": "f0b.L",
+   "source_name": "DEF-f_pinky.02.L",
+   "kind": "role",
+   "parent": "f0a.L",
+   "head": [
+    0.216119,
+    0.393248,
+    -0.019798
+   ]
+  },
+  {
+   "name": "DEF-f_pinky.03.L",
+   "source_name": "DEF-f_pinky.03.L",
+   "kind": "helper",
+   "parent": "f0b.L",
+   "head": [
+    0.218195,
+    0.387752,
+    -0.019798
+   ]
+  },
+  {
+   "name": "DEF-palm.04.L",
+   "source_name": "DEF-palm.04.L",
+   "kind": "helper",
+   "parent": "hand.L",
+   "head": [
+    0.196566,
+    0.427258,
+    -0.019798
+   ]
+  },
+  {
+   "name": "DEF-shoulder.R",
+   "source_name": "DEF-shoulder.R",
+   "kind": "helper",
+   "parent": null,
+   "head": [
+    -0.020001,
+    0.584997,
+    -0.0
+   ]
+  },
+  {
+   "name": "upperArm.R",
+   "source_name": "DEF-upper_arm.R",
+   "kind": "role",
+   "parent": null,
+   "head": [
+    -0.097999,
+    0.584997,
+    -0.0
+   ]
+  },
+  {
+   "name": "DEF-upper_arm.R.001",
+   "source_name": "DEF-upper_arm.R.001",
+   "kind": "helper",
+   "parent": "upperArm.R",
+   "head": [
+    -0.123171,
+    0.544714,
+    -0.0
+   ]
+  },
+  {
+   "name": "forearm.R",
+   "source_name": "DEF-forearm.R",
+   "kind": "role",
+   "parent": "upperArm.R",
+   "head": [
+    -0.148342,
+    0.504431,
+    -0.0
+   ]
+  },
+  {
+   "name": "DEF-forearm.R.001",
+   "source_name": "DEF-forearm.R.001",
+   "kind": "helper",
+   "parent": "forearm.R",
+   "head": [
+    -0.170864,
+    0.468389,
+    -0.0
+   ]
+  },
+  {
+   "name": "hand.R",
+   "source_name": "DEF-hand.R",
+   "kind": "role",
+   "parent": "forearm.R",
+   "head": [
+    -0.193386,
+    0.432346,
+    0.0
+   ]
+  },
+  {
+   "name": "f3a.R",
+   "source_name": "DEF-f_index.01.R",
+   "kind": "role",
+   "parent": "hand.R",
+   "head": [
+    -0.213524,
+    0.400118,
+    0.019798
+   ]
+  },
+  {
+   "name": "f3b.R",
+   "source_name": "DEF-f_index.02.R",
+   "kind": "role",
+   "parent": "f3a.R",
+   "head": [
+    -0.216407,
+    0.392485,
+    0.019798
+   ]
+  },
+  {
+   "name": "DEF-f_index.03.R",
+   "source_name": "DEF-f_index.03.R",
+   "kind": "helper",
+   "parent": "f3b.R",
+   "head": [
+    -0.218713,
+    0.386379,
+    0.019798
+   ]
+  },
+  {
+   "name": "DEF-thumb.01.R",
+   "source_name": "DEF-thumb.01.R",
+   "kind": "helper",
+   "parent": "hand.R",
+   "head": [
+    -0.195506,
+    0.428954,
+    0.011999
+   ]
+  },
+  {
+   "name": "thumbA.R",
+   "source_name": "DEF-thumb.02.R",
+   "kind": "role",
+   "parent": "DEF-thumb.01.R",
+   "head": [
+    -0.195718,
+    0.417293,
+    0.025198
+   ]
+  },
+  {
+   "name": "thumbB.R",
+   "source_name": "DEF-thumb.03.R",
+   "kind": "role",
+   "parent": "thumbA.R",
+   "head": [
+    -0.195892,
+    0.407674,
+    0.028498
+   ]
+  },
+  {
+   "name": "DEF-palm.01.R",
+   "source_name": "DEF-palm.01.R",
+   "kind": "helper",
+   "parent": "hand.R",
+   "head": [
+    -0.196566,
+    0.427258,
+    0.019798
+   ]
+  },
+  {
+   "name": "f2a.R",
+   "source_name": "DEF-f_middle.01.R",
+   "kind": "role",
+   "parent": "hand.R",
+   "head": [
+    -0.213524,
+    0.400118,
+    0.006599
+   ]
+  },
+  {
+   "name": "f2b.R",
+   "source_name": "DEF-f_middle.02.R",
+   "kind": "role",
+   "parent": "f2a.R",
+   "head": [
+    -0.216839,
+    0.391341,
+    0.006599
+   ]
+  },
+  {
+   "name": "DEF-f_middle.03.R",
+   "source_name": "DEF-f_middle.03.R",
+   "kind": "helper",
+   "parent": "f2b.R",
+   "head": [
+    -0.219491,
+    0.38432,
+    0.006599
+   ]
+  },
+  {
+   "name": "DEF-palm.02.R",
+   "source_name": "DEF-palm.02.R",
+   "kind": "helper",
+   "parent": "hand.R",
+   "head": [
+    -0.196566,
+    0.427258,
+    0.006599
+   ]
+  },
+  {
+   "name": "f1a.R",
+   "source_name": "DEF-f_ring.01.R",
+   "kind": "role",
+   "parent": "hand.R",
+   "head": [
+    -0.213524,
+    0.400118,
+    -0.006599
+   ]
+  },
+  {
+   "name": "f1b.R",
+   "source_name": "DEF-f_ring.02.R",
+   "kind": "role",
+   "parent": "f1a.R",
+   "head": [
+    -0.216695,
+    0.391723,
+    -0.006599
+   ]
+  },
+  {
+   "name": "DEF-f_ring.03.R",
+   "source_name": "DEF-f_ring.03.R",
+   "kind": "helper",
+   "parent": "f1b.R",
+   "head": [
+    -0.219232,
+    0.385006,
+    -0.006599
+   ]
+  },
+  {
+   "name": "DEF-palm.03.R",
+   "source_name": "DEF-palm.03.R",
+   "kind": "helper",
+   "parent": "hand.R",
+   "head": [
+    -0.196566,
+    0.427258,
+    -0.006599
+   ]
+  },
+  {
+   "name": "f0a.R",
+   "source_name": "DEF-f_pinky.01.R",
+   "kind": "role",
+   "parent": "hand.R",
+   "head": [
+    -0.213524,
+    0.400118,
+    -0.019798
+   ]
+  },
+  {
+   "name": "f0b.R",
+   "source_name": "DEF-f_pinky.02.R",
+   "kind": "role",
+   "parent": "f0a.R",
+   "head": [
+    -0.216119,
+    0.393248,
+    -0.019798
+   ]
+  },
+  {
+   "name": "DEF-f_pinky.03.R",
+   "source_name": "DEF-f_pinky.03.R",
+   "kind": "helper",
+   "parent": "f0b.R",
+   "head": [
+    -0.218195,
+    0.387752,
+    -0.019798
+   ]
+  },
+  {
+   "name": "DEF-palm.04.R",
+   "source_name": "DEF-palm.04.R",
+   "kind": "helper",
+   "parent": "hand.R",
+   "head": [
+    -0.196566,
+    0.427258,
+    -0.019798
+   ]
+  }
+ ],
+ "reparented": [
+  {
+   "bone": "forearm.L",
+   "from": "DEF-upper_arm.L.001",
+   "to": "upperArm.L",
+   "reason": "contiguous chain for engine two-bone IK"
+  },
+  {
+   "bone": "hand.L",
+   "from": "DEF-forearm.L.001",
+   "to": "forearm.L",
+   "reason": "contiguous chain for engine two-bone IK"
+  },
+  {
+   "bone": "forearm.R",
+   "from": "DEF-upper_arm.R.001",
+   "to": "upperArm.R",
+   "reason": "contiguous chain for engine two-bone IK"
+  },
+  {
+   "bone": "hand.R",
+   "from": "DEF-forearm.R.001",
+   "to": "forearm.R",
+   "reason": "contiguous chain for engine two-bone IK"
+  },
+  {
+   "bone": "shin.L",
+   "from": "DEF-thigh.L.001",
+   "to": "thigh.L",
+   "reason": "contiguous chain for engine two-bone IK"
+  },
+  {
+   "bone": "foot.L",
+   "from": "DEF-shin.L.001",
+   "to": "shin.L",
+   "reason": "contiguous chain for engine two-bone IK"
+  },
+  {
+   "bone": "shin.R",
+   "from": "DEF-thigh.R.001",
+   "to": "thigh.R",
+   "reason": "contiguous chain for engine two-bone IK"
+  },
+  {
+   "bone": "foot.R",
+   "from": "DEF-shin.R.001",
+   "to": "shin.R",
+   "reason": "contiguous chain for engine two-bone IK"
+  }
+ ],
+ "roles_present": [
+  "chest",
+  "eye.L",
+  "eye.R",
+  "f0a.L",
+  "f0a.R",
+  "f0b.L",
+  "f0b.R",
+  "f1a.L",
+  "f1a.R",
+  "f1b.L",
+  "f1b.R",
+  "f2a.L",
+  "f2a.R",
+  "f2b.L",
+  "f2b.R",
+  "f3a.L",
+  "f3a.R",
+  "f3b.L",
+  "f3b.R",
+  "foot.L",
+  "foot.R",
+  "forearm.L",
+  "forearm.R",
+  "hand.L",
+  "hand.R",
+  "head",
+  "hips",
+  "neck",
+  "shin.L",
+  "shin.R",
+  "spine",
+  "thigh.L",
+  "thigh.R",
+  "thumbA.L",
+  "thumbA.R",
+  "thumbB.L",
+  "thumbB.R",
+  "upperArm.L",
+  "upperArm.R"
+ ],
+ "rig_specific_bones": [],
+ "materials": [
+  {
+   "name": "M_skin",
+   "baseColor": [
+    0.59062,
+    0.43415,
+    0.39676
+   ],
+   "roughness": 0.55,
+   "sheen": 0.0
+  }
+ ],
+ "meshes": [
+  {
+   "part": "body_skin",
+   "source_object": "body_skin",
+   "material": "M_skin",
+   "vertices": 60688,
+   "positions": {
+    "offset": 0,
+    "count": 182064,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 728256,
+    "count": 182064,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 1456512,
+    "count": 364116,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 2912976,
+    "count": 242752,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 3398480,
+    "count": 242752,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "hand.L",
+   "source_object": "hand.L",
+   "material": "M_skin",
+   "vertices": 1178,
+   "positions": {
+    "offset": 4369488,
+    "count": 3534,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 4383624,
+    "count": 3534,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 4397760,
+    "count": 7056,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 4425984,
+    "count": 4712,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 4435408,
+    "count": 4712,
+    "dtype": "float32"
+   }
+  },
+  {
+   "part": "hand.R",
+   "source_object": "hand.R",
+   "material": "M_skin",
+   "vertices": 1180,
+   "positions": {
+    "offset": 4454256,
+    "count": 3540,
+    "dtype": "float32"
+   },
+   "normals": {
+    "offset": 4468416,
+    "count": 3540,
+    "dtype": "float32"
+   },
+   "indices": {
+    "offset": 4482576,
+    "count": 7068,
+    "dtype": "uint32"
+   },
+   "joints": {
+    "offset": 4510848,
+    "count": 4720,
+    "dtype": "uint16"
+   },
+   "weights": {
+    "offset": 4520288,
+    "count": 4720,
+    "dtype": "float32"
+   }
+  }
+ ],
+ "morphs": [],
+ "morph_names": [],
+ "expressions": {},
+ "expressions_missing": [
+  "blink",
+  "browDown",
+  "jawOpen",
+  "smile"
+ ],
+ "capabilities": {
+  "reach_ik": {
+   "data": "available",
+   "missing": [],
+   "tested": "see docs/ENGINE_CHARACTER_PACKAGE.md (behaviour support table)"
+  },
+  "look_at": {
+   "data": "available",
+   "missing": [],
+   "tested": "see docs/ENGINE_CHARACTER_PACKAGE.md (behaviour support table)"
+  },
+  "blink_life": {
+   "data": "missing",
+   "missing": [
+    "any of lid.L/lid.R or expression 'blink'"
+   ],
+   "tested": "see docs/ENGINE_CHARACTER_PACKAGE.md (behaviour support table)"
+  },
+  "expressions": {
+   "data": "missing",
+   "missing": [
+    "morph targets"
+   ],
+   "tested": "see docs/ENGINE_CHARACTER_PACKAGE.md (behaviour support table)"
+  },
+  "grasp": {
+   "data": "available",
+   "missing": [],
+   "tested": "see docs/ENGINE_CHARACTER_PACKAGE.md (behaviour support table)"
+  },
+  "walk": {
+   "data": "available",
+   "missing": [],
+   "tested": "see docs/ENGINE_CHARACTER_PACKAGE.md (behaviour support table)"
+  },
+  "idle_life": {
+   "data": "available",
+   "missing": [],
+   "tested": "see docs/ENGINE_CHARACTER_PACKAGE.md (behaviour support table)"
+  }
+ },
+ "discarded": [
+  "Rigify constraint-driven twist distribution (DEF-*.001 twist bones are kept as deform bones but follow their role bone rigidly in the engine, which evaluates no constraints)",
+  "Non-deform control/mechanism bones (ORG-, MCH-, controls): the engine animates deform bones directly",
+  "Bone roll / rest orientation: engine rest frames are axis aligned at each bone pivot (skinning is unaffected; authored local rotations are in engine axes)"
+ ],
+ "files": {
+  "geometry.bin": {
+   "bytes": 4539168,
+   "sha256": "a07ee7e80587d70e788ffb13780cc22224dc9e3de786326a94ffe90a277c0210"
+  }
+ }
+}

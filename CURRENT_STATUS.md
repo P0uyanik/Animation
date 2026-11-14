@@ -50,6 +50,13 @@ Completed and tested:
     test passes. None improves this boy beyond H28, so **H28 remains the hair candidate**.
   - `verify_charsys` PASS; no engine change.
 
+- **`girl_auburn_bun_glasses` M2: generic body and rig fitting** (experimental; technically verified; not approved),
+  details in `docs/second_character/M2_GENERIC_BODY_RIG.md`:
+  - `body_generic/1` builds and rigs from the spec;
+  - the girl meets the M1 measurements;
+  - engine behaviours pass on 3 packages;
+  - the synthetic G02 configuration builds;
+  - the boy is unchanged (`verify_charsys` PASS, `ctest` 4/4).
 - **Second production character `girl_auburn_bun_glasses`: M1 reference package complete**
   (`docs/second_character/M1_REFERENCE_PACKAGE.md`):
   - 6 camera-matchable views with masks; landmarks; measured proportions; colour targets; spec skeleton;

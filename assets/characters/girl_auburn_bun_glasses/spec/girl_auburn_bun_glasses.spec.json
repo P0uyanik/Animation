@@ -31,25 +31,244 @@
   "TODO_M2": "joint positions (spec.rig.joints) and body part dimensions from the masks"
  },
  "body": {
-  "generator": "TBD (M2: generic body from spec)",
-  "parts": [
-   "head",
-   "neck",
-   "hands (5 fingers, 3 joints)",
-   "bare legs"
-  ]
+  "generator": "body_generic/1",
+  "height_m": 0.97,
+  "height_note": "sole to top of skull (crown); the bun adds 0.13 m (total 1.10 m, #31)",
+  "params": {
+   "head": {
+    "centre_z": 0.85052,
+    "half_width": 0.14639,
+    "half_depth": 0.13918,
+    "half_height": 0.14948,
+    "chin_taper": 0.3,
+    "forward": -0.00412
+   },
+   "neck": {
+    "base_z": 0.60309,
+    "top_z": 0.71134,
+    "radius": 0.04639
+   },
+   "torso": {
+    "levels": [
+     [
+      0.2732,
+      0.08763,
+      0.06186,
+      0.06392
+     ],
+     [
+      0.30928,
+      0.10103,
+      0.06804,
+      0.06804
+     ],
+     [
+      0.37113,
+      0.09485,
+      0.06598,
+      0.06392
+     ],
+     [
+      0.4433,
+      0.09278,
+      0.06804,
+      0.06186
+     ],
+     [
+      0.52577,
+      0.09897,
+      0.0701,
+      0.06392
+     ],
+     [
+      0.59278,
+      0.09485,
+      0.06392,
+      0.05979
+     ],
+     [
+      0.62887,
+      0.06392,
+      0.05155,
+      0.05155
+     ]
+    ]
+   },
+   "shoulder": {
+    "z": 0.60309,
+    "joint_x": 0.10103,
+    "clavicle_x": 0.02062
+   },
+   "arm": {
+    "angle_deg": 58,
+    "upper_len": 0.09794,
+    "fore_len": 0.08763,
+    "radii": [
+     0.03093,
+     0.02577,
+     0.02165
+    ]
+   },
+   "hand": {
+    "palm_len": 0.04124,
+    "palm_half_width": 0.02474,
+    "palm_half_thick": 0.01237,
+    "finger_len": [
+     0.02062,
+     0.02371,
+     0.02268,
+     0.01856
+    ],
+    "finger_radius": 0.00804,
+    "thumb_len": 0.02268,
+    "thumb_radius": 0.00876,
+    "finger_curl": 0.2
+   },
+   "leg": {
+    "hip_x": 0.05361,
+    "hip_z": 0.30928,
+    "knee_z": 0.21134,
+    "ankle_z": 0.06804,
+    "radii": [
+     0.04536,
+     0.04227,
+     0.03608
+    ]
+   },
+   "foot": {
+    "length": 0.1134,
+    "half_width": 0.03711,
+    "height": 0.05361,
+    "heel_back": 0.03093
+   },
+   "eyes": {
+    "x": 0.05979,
+    "z": 0.80103,
+    "y": -0.10825
+   },
+   "voxel": 0.004
+  },
+  "measured_m": {
+   "head": {
+    "centre_z": 0.825,
+    "half_width": 0.142,
+    "half_depth": 0.135,
+    "half_height": 0.145,
+    "chin_taper": 0.3,
+    "forward": -0.004
+   },
+   "neck": {
+    "base_z": 0.585,
+    "top_z": 0.69,
+    "radius": 0.045
+   },
+   "torso": {
+    "levels": [
+     [
+      0.265,
+      0.085,
+      0.06,
+      0.062
+     ],
+     [
+      0.3,
+      0.098,
+      0.066,
+      0.066
+     ],
+     [
+      0.36,
+      0.092,
+      0.064,
+      0.062
+     ],
+     [
+      0.43,
+      0.09,
+      0.066,
+      0.06
+     ],
+     [
+      0.51,
+      0.096,
+      0.068,
+      0.062
+     ],
+     [
+      0.575,
+      0.092,
+      0.062,
+      0.058
+     ],
+     [
+      0.61,
+      0.062,
+      0.05,
+      0.05
+     ]
+    ]
+   },
+   "shoulder": {
+    "z": 0.585,
+    "joint_x": 0.098,
+    "clavicle_x": 0.02
+   },
+   "arm": {
+    "angle_deg": 58,
+    "upper_len": 0.095,
+    "fore_len": 0.085,
+    "radii": [
+     0.03,
+     0.025,
+     0.021
+    ]
+   },
+   "hand": {
+    "palm_len": 0.04,
+    "palm_half_width": 0.024,
+    "palm_half_thick": 0.012,
+    "finger_len": [
+     0.02,
+     0.023,
+     0.022,
+     0.018
+    ],
+    "finger_radius": 0.0078,
+    "thumb_len": 0.022,
+    "thumb_radius": 0.0085,
+    "finger_curl": 0.2
+   },
+   "leg": {
+    "hip_x": 0.052,
+    "hip_z": 0.3,
+    "knee_z": 0.205,
+    "ankle_z": 0.066,
+    "radii": [
+     0.044,
+     0.041,
+     0.035
+    ]
+   },
+   "foot": {
+    "length": 0.11,
+    "half_width": 0.036,
+    "height": 0.052,
+    "heel_back": 0.03
+   },
+   "eyes": {
+    "x": 0.058,
+    "z": 0.777,
+    "y": -0.105
+   }
+  },
+  "provenance": "#30 front silhouette and landmarks (1 px = 2.41 mm): legs, knees, hands, arm angle, face/head, crotch, armpits measured; torso and shoulders estimated inside the blouse/vest silhouette (hidden), foot inside the boots; iteration 2 after measuring the build: legs 66 -> target 75 mm, hand tips 0.331 -> target 0.374 m"
  },
  "face": {
   "generator": "TBD (M3)",
   "eye_style": "large fully open round eyes, brown iris, two highlights, outer upper lashes",
   "brows": "thin, high, partly under the fringe",
   "mouth": "small; neutral closed soft smile; Happy open smile with teeth and tongue",
-  "expression_shape_keys": [
-   "Blink",
-   "BrowDown",
-   "Smile",
-   "JawOpen"
-  ],
+  "expression_shape_keys": [],
   "expressions_planned": [
    "Happy",
    "Laugh",
@@ -103,7 +322,33 @@
   "optional_roles": [
    "toe.L",
    "toe.R"
-  ]
+  ],
+  "weight_rules": {
+   "skin": {
+    "deny_prefixes": [
+     "DEF-f_",
+     "DEF-thumb",
+     "DEF-palm",
+     "DEF-eye"
+    ]
+   },
+   "hand": {
+    "sided": true,
+    "allow_prefixes": [
+     "DEF-forearm",
+     "DEF-hand",
+     "DEF-f_",
+     "DEF-thumb",
+     "DEF-palm"
+    ]
+   }
+  },
+  "weight_smooth": {
+   "skin": {
+    "factor": 0.5,
+    "repeat": 6
+   }
+  }
  },
  "materials": {
   "target_colors_srgb": {
@@ -184,7 +429,16 @@
   ]
  },
  "metadata": {
-  "spec_version": "0.1.0",
-  "status": "M1 reference skeleton: data only, not buildable until M2"
+  "spec_version": "0.2.0",
+  "status": "M2: body_generic/1 base body (no face, hair, garments, accessories)"
+ },
+ "components": {
+  "body": [
+   "body_skin",
+   "hand."
+  ],
+  "rig": [
+   "rig_"
+  ]
  }
 }

@@ -1,0 +1,71 @@
+{
+ "source": "girl_auburn_bun_glasses_master.blend",
+ "rig": "rig_girl_auburn_bun_glasses",
+ "poses": {
+  "shoulder_raise": {
+   "sign": 1,
+   "effect": 0.5758,
+   "max_stretch": 2.234,
+   "p99_stretch": 1.087,
+   "min_compress": 0.272,
+   "p01_compress": 0.974
+  },
+  "shoulder_forward": {
+   "sign": 1,
+   "effect": 0.4332,
+   "max_stretch": 1.778,
+   "p99_stretch": 1.044,
+   "min_compress": 0.384,
+   "p01_compress": 0.95
+  },
+  "elbow_90": {
+   "sign": 1,
+   "effect": 0.2354,
+   "max_stretch": 1.671,
+   "p99_stretch": 1.005,
+   "min_compress": 0.238,
+   "p01_compress": 1.0
+  },
+  "wrist_60": {
+   "sign": 1,
+   "effect": 0.0637,
+   "max_stretch": 1.827,
+   "p99_stretch": 1.0,
+   "min_compress": 0.285,
+   "p01_compress": 1.0
+  },
+  "hip_forward_80": {
+   "sign": -1,
+   "effect": 0.3299,
+   "max_stretch": 4.464,
+   "p99_stretch": 1.299,
+   "min_compress": 0.039,
+   "p01_compress": 0.885
+  },
+  "knee_90": {
+   "sign": 1,
+   "effect": 0.344,
+   "max_stretch": 1.828,
+   "p99_stretch": 1.031,
+   "min_compress": 0.053,
+   "p01_compress": 0.964
+  },
+  "ankle_30": {
+   "sign": -1,
+   "effect": 0.0666,
+   "max_stretch": 1.248,
+   "p99_stretch": 1.016,
+   "min_compress": 0.396,
+   "p01_compress": 0.996
+  },
+  "fingers_curl_70": {
+   "sign": 1,
+   "effect": 0.701,
+   "max_stretch": 4.485,
+   "p99_stretch": 1.152,
+   "min_compress": 0.161,
+   "p01_compress": 0.927
+  }
+ },
+ "missing_controls": []
+}

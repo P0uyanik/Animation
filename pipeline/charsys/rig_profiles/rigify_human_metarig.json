@@ -1,0 +1,108 @@
+{
+ "schema": "plush-studio.metarig-fit/1",
+ "profile": "rigify_human_metarig/1",
+ "description": "How the Rigify human metarig is fitted to a generic joint set (body_generic.joints). Bone -> [head joint, tail joint]; '{s}' expands to L and R. Fingers and thumb are fitted from the hand construction (body_generic.hand_frames), so mesh and bones share one definition.",
+ "remove": [
+  "face",
+  "breast.L",
+  "breast.R"
+ ],
+ "bones": {
+  "spine": [
+   "spine_0",
+   "spine_1"
+  ],
+  "spine.001": [
+   "spine_1",
+   "spine_2"
+  ],
+  "spine.002": [
+   "spine_2",
+   "spine_3"
+  ],
+  "spine.003": [
+   "spine_3",
+   "spine_4"
+  ],
+  "spine.004": [
+   "spine_4",
+   "spine_5"
+  ],
+  "spine.005": [
+   "spine_5",
+   "neck_top"
+  ],
+  "spine.006": [
+   "neck_top",
+   "head_top"
+  ],
+  "shoulder.{s}": [
+   "clavicle.{s}",
+   "shoulder.{s}"
+  ],
+  "upper_arm.{s}": [
+   "shoulder.{s}",
+   "elbow.{s}"
+  ],
+  "forearm.{s}": [
+   "elbow.{s}",
+   "wrist.{s}"
+  ],
+  "hand.{s}": [
+   "wrist.{s}",
+   "hand_end.{s}"
+  ],
+  "pelvis.{s}": [
+   "spine_0",
+   "pelvis.{s}"
+  ],
+  "thigh.{s}": [
+   "hip.{s}",
+   "knee.{s}"
+  ],
+  "shin.{s}": [
+   "knee.{s}",
+   "ankle.{s}"
+  ],
+  "foot.{s}": [
+   "ankle.{s}",
+   "toe.{s}"
+  ],
+  "toe.{s}": [
+   "toe.{s}",
+   "toe_tip.{s}"
+  ],
+  "heel.02.{s}": [
+   "heel_in.{s}",
+   "heel_out.{s}"
+  ]
+ },
+ "fingers": {
+  "palm.01": "f_index",
+  "palm.02": "f_middle",
+  "palm.03": "f_ring",
+  "palm.04": "f_pinky"
+ },
+ "eye_bones": true,
+ "default_weight_rules": {
+  "skin": {
+   "deny_prefixes": [
+    "DEF-f_",
+    "DEF-thumb",
+    "DEF-palm",
+    "DEF-eye"
+   ]
+  },
+  "hand": {
+   "sided": true,
+   "allow_prefixes": [
+    "DEF-forearm",
+    "DEF-hand",
+    "DEF-f_",
+    "DEF-thumb",
+    "DEF-palm"
+   ]
+  }
+ },
+ "default_weight_rules_note": "Shared safety rules for body_generic parts (eye bones drive eye meshes only; the body skin never follows fingers; a hand follows only its own arm). spec.rig.weight_rules extends or overrides them per role."
+}

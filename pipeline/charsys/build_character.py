@@ -45,8 +45,8 @@ COMPONENTS = {  # component -> object-name prefixes (exact names or prefixes end
 BUILD_ID = "charsys/1"
 
 
-def component_of(name):
-    for comp, prefixes in COMPONENTS.items():
+def component_of(name, components=None):
+    for comp, prefixes in (components or COMPONENTS).items():
         for p in prefixes:
             if name == p or name.startswith(p):
                 return comp
@@ -65,17 +65,19 @@ def parse():
     return ap.parse_args(argv)
 
 
-def organise(C, cid):
-    """Moves every object of the root collection into its component sub-collection."""
+def organise(C, cid, components=None):
+    """Moves every object of the root collection into its component sub-collection. The component map comes from
+    spec.components when given (generic characters); COMPONENTS is the legacy (boy) default."""
+    components = components or COMPONENTS
     subs = {}
-    for comp in COMPONENTS:
+    for comp in components:
         sc = bpy.data.collections.get(f"{cid}.{comp}") or bpy.data.collections.new(f"{cid}.{comp}")
         if sc.name not in C.children:
             C.children.link(sc)
         subs[comp] = sc
     unassigned = []
     for ob in list(C.objects):
-        comp = component_of(ob.name)
+        comp = component_of(ob.name, components)
         if comp is None:
             unassigned.append(ob.name)
             continue
@@ -172,6 +174,53 @@ def add_face_controls(rig, C, names):
     return made
 
 
+def main_generic(a, spec, info, out):
+    """Generic body path (body_generic/1): body, joints, rig fitting and skinning entirely from the spec. M2 scope:
+    no face, hair, garments or accessories yet. The legacy boy path (below) is the compatibility baseline."""
+    import body_generic as BG
+    cid = spec["identity"]["id"]
+    t0 = time.time()
+    bpy.ops.wm.read_factory_settings(use_empty=True)
+    C = bpy.data.collections.new(cid)
+    bpy.context.scene.collection.children.link(C)
+    H = float(spec["body"]["height_m"])
+    P = spec["body"]["params"]
+    J = BG.joints(P, H, spec["rig"].get("joints"))
+    frames = BG.hand_frames(P, H, J)
+    mats = spec["materials"]
+    skin_rgb = tuple(mats.get("albedo_srgb", {}).get("skin") or mats["target_colors_srgb"]["skin"])
+    M = {"skin": G.material("M_skin", skin_rgb, roughness=0.55, subsurface=0.2, sss_radius=(1, 0.4, 0.25), sss_scale=0.01)}
+    parts = BG.build_body(C, M, P, H, J, frames)
+    report = {"blender": bpy.app.version_string, "build": BUILD_ID + "+body_generic/1", "character_id": cid, **info,
+              "model_s": round(time.time() - t0, 1)}
+    rig, rr = BG.rig_generic(C, f"rig_{cid}", parts, P, H, J, frames, spec["rig"].get("weight_rules", {}), B,
+                             spec["rig"].get("weight_smooth"))
+    report["rig"] = rr
+    report["face_controls"] = add_face_controls(rig, C, spec["face"].get("expression_shape_keys", []))
+    components = spec.get("components") or {"body": ["body_skin", "hand."], "rig": ["rig_"]}
+    subs, unassigned = organise(C, cid, components)
+    if unassigned:
+        raise SystemExit(f"objects without a component: {unassigned}")
+    stamp(C, spec, info, "master")
+    rig["ps_character_id"] = cid
+    report["joints_m"] = {k: [round(c, 4) for c in v] for k, v in J.items()}
+    bpy.ops.wm.save_as_mainfile(filepath=os.path.join(out, f"{cid}_master.blend"), compress=True)
+    json.dump(describe_components(C, cid), open(os.path.join(out, "components.json"), "w"), indent=1)
+    json.dump(animation_compat(rig, C, spec), open(os.path.join(out, "animation_compat.json"), "w"), indent=1)
+    json.dump(spec, open(os.path.join(out, "spec.resolved.json"), "w"), indent=1)
+    if not a.no_glb:
+        bpy.ops.object.select_all(action="DESELECT")
+        for o in C.all_objects:
+            if o.type in ("MESH", "ARMATURE"):
+                o.select_set(True)
+        bpy.ops.export_scene.gltf(filepath=os.path.join(out, f"{cid}.glb"), export_format="GLB", export_skins=True,
+                                  export_morph=True, export_def_bones=True, export_animations=False, use_selection=True)
+    report["objects"] = sorted(o.name for o in C.all_objects)
+    report["total_s"] = round(time.time() - t0, 1)
+    json.dump(report, open(os.path.join(out, "build_report.json"), "w"), indent=1)
+    print(json.dumps({k: v for k, v in report.items() if k not in ("objects", "joints_m")}, indent=1))
+
+
 def main():
     a = parse()
     out = os.path.abspath(a.out)
@@ -181,6 +230,8 @@ def main():
     os.makedirs(out, exist_ok=True)
     spec, info = S.load(a.spec, a.override)
     cid = spec["identity"]["id"]
+    if spec["body"].get("generator") == "body_generic/1":  # generic body path (any character); the legacy path follows
+        return main_generic(a, spec, info, out)
     B.configure(spec)
     t0 = time.time()
     bpy.ops.wm.read_factory_settings(use_empty=True)
