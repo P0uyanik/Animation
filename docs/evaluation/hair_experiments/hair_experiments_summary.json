@@ -1,0 +1,550 @@
+{
+ "runs": {
+  "H12_drop_clumps_dark_base": {
+   "variant": "H12_drop_clumps_dark_base",
+   "ok": true,
+   "seconds": {
+    "build": 8.3,
+    "harness": 119.9,
+    "sheet": 1.0,
+    "regions": 42.5,
+    "metrics": 3.5
+   }
+  }
+ },
+ "variants": {
+  "H00_reference": {
+   "description": "Control: v6 hair through charsys (no change)",
+   "mean_iou": 0.8412,
+   "mean_hair_contour_pct_head": 3.4,
+   "mean_hair_contour_p95_pct_head": 7.2,
+   "mean_contour_pct_height": 1.43,
+   "hair_dE2000_mean": 3.6,
+   "head_fraction_err_pct": 4.0,
+   "hair_build": {
+    "clumps": 104,
+    "dropped": 0,
+    "spikes": 0
+   },
+   "per_view": {
+    "orig07_front": {
+     "iou": 0.811,
+     "hair_contour": 4.29
+    },
+    "val27_front": {
+     "iou": 0.843,
+     "hair_contour": 2.35
+    },
+    "val27_threequarter_right": {
+     "iou": 0.852,
+     "hair_contour": 2.93
+    },
+    "val27_side_right": {
+     "iou": 0.839,
+     "hair_contour": 4.13
+    },
+    "val27_back": {
+     "iou": 0.853,
+     "hair_contour": 2.65
+    },
+    "val27_back_threequarter": {
+     "iou": 0.849,
+     "hair_contour": 4.05
+    }
+   },
+   "head_width_err_pct": 5.7
+  },
+  "H01_longer_tufts": {
+   "description": "Tuft length: crown x1.35, centre x1.2, top x1.25, sides x1.15",
+   "mean_iou": 0.8343,
+   "mean_hair_contour_pct_head": 4.03,
+   "mean_hair_contour_p95_pct_head": 8.33,
+   "mean_contour_pct_height": 1.5,
+   "hair_dE2000_mean": 3.4,
+   "head_fraction_err_pct": 5.4,
+   "hair_build": {
+    "clumps": 104,
+    "dropped": 0,
+    "spikes": 0
+   },
+   "per_view": {
+    "orig07_front": {
+     "iou": 0.794,
+     "hair_contour": 6.0
+    },
+    "val27_front": {
+     "iou": 0.841,
+     "hair_contour": 2.82
+    },
+    "val27_threequarter_right": {
+     "iou": 0.837,
+     "hair_contour": 4.2
+    },
+    "val27_side_right": {
+     "iou": 0.838,
+     "hair_contour": 3.93
+    },
+    "val27_back": {
+     "iou": 0.851,
+     "hair_contour": 2.54
+    },
+    "val27_back_threequarter": {
+     "iou": 0.845,
+     "hair_contour": 4.69
+    }
+   },
+   "head_width_err_pct": 7.6
+  },
+  "H02_up_out_direction": {
+   "description": "Tuft direction: crown/centre/top turned upwards, sides and top outwards",
+   "mean_iou": 0.8265,
+   "mean_hair_contour_pct_head": 4.78,
+   "mean_hair_contour_p95_pct_head": 9.98,
+   "mean_contour_pct_height": 1.56,
+   "hair_dE2000_mean": 3.2,
+   "head_fraction_err_pct": 4.8,
+   "hair_build": {
+    "clumps": 104,
+    "dropped": 0,
+    "spikes": 0
+   },
+   "per_view": {
+    "orig07_front": {
+     "iou": 0.788,
+     "hair_contour": 6.86
+    },
+    "val27_front": {
+     "iou": 0.83,
+     "hair_contour": 3.69
+    },
+    "val27_threequarter_right": {
+     "iou": 0.835,
+     "hair_contour": 4.25
+    },
+    "val27_side_right": {
+     "iou": 0.831,
+     "hair_contour": 4.45
+    },
+    "val27_back": {
+     "iou": 0.835,
+     "hair_contour": 4.37
+    },
+    "val27_back_threequarter": {
+     "iou": 0.84,
+     "hair_contour": 5.04
+    }
+   },
+   "head_width_err_pct": 10.2
+  },
+  "H03_irregular_asymmetric": {
+   "description": "Irregularity and asymmetry: 12 mm tip jitter, \u00b125% clump size, his left 12% longer",
+   "mean_iou": 0.8368,
+   "mean_hair_contour_pct_head": 3.78,
+   "mean_hair_contour_p95_pct_head": 8.07,
+   "mean_contour_pct_height": 1.45,
+   "hair_dE2000_mean": 3.6,
+   "head_fraction_err_pct": 4.2,
+   "hair_build": {
+    "clumps": 104,
+    "dropped": 0,
+    "spikes": 0
+   },
+   "per_view": {
+    "orig07_front": {
+     "iou": 0.81,
+     "hair_contour": 4.74
+    },
+    "val27_front": {
+     "iou": 0.841,
+     "hair_contour": 2.63
+    },
+    "val27_threequarter_right": {
+     "iou": 0.839,
+     "hair_contour": 3.52
+    },
+    "val27_side_right": {
+     "iou": 0.833,
+     "hair_contour": 3.97
+    },
+    "val27_back": {
+     "iou": 0.848,
+     "hair_contour": 3.24
+    },
+    "val27_back_threequarter": {
+     "iou": 0.85,
+     "hair_contour": 4.59
+    }
+   },
+   "head_width_err_pct": 7.6
+  },
+  "H04_gaps": {
+   "description": "Gaps between clumps: 82% clump width, 15% of clumps removed, base mass inset 12 mm",
+   "mean_iou": 0.8447,
+   "mean_hair_contour_pct_head": 3.13,
+   "mean_hair_contour_p95_pct_head": 6.88,
+   "mean_contour_pct_height": 1.4,
+   "hair_dE2000_mean": 3.3,
+   "head_fraction_err_pct": 4.1,
+   "hair_build": {
+    "clumps": 88,
+    "dropped": 16,
+    "spikes": 0
+   },
+   "per_view": {
+    "orig07_front": {
+     "iou": 0.811,
+     "hair_contour": 4.09
+    },
+    "val27_front": {
+     "iou": 0.843,
+     "hair_contour": 2.34
+    },
+    "val27_threequarter_right": {
+     "iou": 0.855,
+     "hair_contour": 2.69
+    },
+    "val27_side_right": {
+     "iou": 0.849,
+     "hair_contour": 3.86
+    },
+    "val27_back": {
+     "iou": 0.856,
+     "hair_contour": 2.33
+    },
+    "val27_back_threequarter": {
+     "iou": 0.854,
+     "hair_contour": 3.48
+    }
+   },
+   "head_width_err_pct": 5.7
+  },
+  "H05_projecting_spikes": {
+   "description": "12 extra pointed tufts projecting up and out",
+   "mean_iou": 0.841,
+   "mean_hair_contour_pct_head": 3.2,
+   "mean_hair_contour_p95_pct_head": 7.61,
+   "mean_contour_pct_height": 1.38,
+   "hair_dE2000_mean": 3.5,
+   "head_fraction_err_pct": 6.1,
+   "hair_build": {
+    "clumps": 104,
+    "dropped": 0,
+    "spikes": 12
+   },
+   "per_view": {
+    "orig07_front": {
+     "iou": 0.81,
+     "hair_contour": 3.37
+    },
+    "val27_front": {
+     "iou": 0.844,
+     "hair_contour": 2.02
+    },
+    "val27_threequarter_right": {
+     "iou": 0.859,
+     "hair_contour": 2.23
+    },
+    "val27_side_right": {
+     "iou": 0.838,
+     "hair_contour": 4.51
+    },
+    "val27_back": {
+     "iou": 0.85,
+     "hair_contour": 2.71
+    },
+    "val27_back_threequarter": {
+     "iou": 0.845,
+     "hair_contour": 4.36
+    }
+   },
+   "head_width_err_pct": 4.4
+  },
+  "H06_layered": {
+   "description": "Layering: tips lifted 1.6x off the base, pointier tips (x0.75)",
+   "mean_iou": 0.8228,
+   "mean_hair_contour_pct_head": 4.77,
+   "mean_hair_contour_p95_pct_head": 9.7,
+   "mean_contour_pct_height": 1.6,
+   "hair_dE2000_mean": 3.2,
+   "head_fraction_err_pct": 4.3,
+   "hair_build": {
+    "clumps": 104,
+    "dropped": 0,
+    "spikes": 0
+   },
+   "per_view": {
+    "orig07_front": {
+     "iou": 0.788,
+     "hair_contour": 6.28
+    },
+    "val27_front": {
+     "iou": 0.836,
+     "hair_contour": 3.46
+    },
+    "val27_threequarter_right": {
+     "iou": 0.838,
+     "hair_contour": 4.07
+    },
+    "val27_side_right": {
+     "iou": 0.802,
+     "hair_contour": 5.1
+    },
+    "val27_back": {
+     "iou": 0.835,
+     "hair_contour": 4.36
+    },
+    "val27_back_threequarter": {
+     "iou": 0.838,
+     "hair_contour": 5.38
+    }
+   },
+   "head_width_err_pct": 9.6
+  },
+  "H07_felted_surface": {
+   "description": "Felted surface: stronger, coarser clump noise and longer, denser hair fibres",
+   "mean_iou": 0.8427,
+   "mean_hair_contour_pct_head": 3.34,
+   "mean_hair_contour_p95_pct_head": 6.97,
+   "mean_contour_pct_height": 1.42,
+   "hair_dE2000_mean": 3.6,
+   "head_fraction_err_pct": 4.3,
+   "hair_build": {
+    "clumps": 104,
+    "dropped": 0,
+    "spikes": 0
+   },
+   "per_view": {
+    "orig07_front": {
+     "iou": 0.81,
+     "hair_contour": 4.31
+    },
+    "val27_front": {
+     "iou": 0.844,
+     "hair_contour": 2.32
+    },
+    "val27_threequarter_right": {
+     "iou": 0.853,
+     "hair_contour": 2.95
+    },
+    "val27_side_right": {
+     "iou": 0.846,
+     "hair_contour": 3.82
+    },
+    "val27_back": {
+     "iou": 0.853,
+     "hair_contour": 2.53
+    },
+    "val27_back_threequarter": {
+     "iou": 0.85,
+     "hair_contour": 4.12
+    }
+   },
+   "head_width_err_pct": 6.1
+  },
+  "H08_gaps_spikes_felt": {
+   "description": "Combination of the three that improved: gaps (H04) + projecting spikes (H05) + felted surface (H07)",
+   "mean_iou": 0.8417,
+   "mean_hair_contour_pct_head": 3.07,
+   "mean_hair_contour_p95_pct_head": 7.49,
+   "mean_contour_pct_height": 1.37,
+   "hair_dE2000_mean": 3.4,
+   "head_fraction_err_pct": 6.3,
+   "hair_build": {
+    "clumps": 88,
+    "dropped": 16,
+    "spikes": 12
+   },
+   "per_view": {
+    "orig07_front": {
+     "iou": 0.809,
+     "hair_contour": 3.58
+    },
+    "val27_front": {
+     "iou": 0.843,
+     "hair_contour": 2.03
+    },
+    "val27_threequarter_right": {
+     "iou": 0.854,
+     "hair_contour": 2.74
+    },
+    "val27_side_right": {
+     "iou": 0.844,
+     "hair_contour": 3.96
+    },
+    "val27_back": {
+     "iou": 0.851,
+     "hair_contour": 2.34
+    },
+    "val27_back_threequarter": {
+     "iou": 0.849,
+     "hair_contour": 3.8
+    }
+   },
+   "head_width_err_pct": 4.7
+  },
+  "H09_stronger_gaps_short_spikes": {
+   "description": "Stronger gaps (76% width, 22% removed, 18 mm inset) + 10 shorter upward spikes + felted surface",
+   "mean_iou": 0.8427,
+   "mean_hair_contour_pct_head": 3.15,
+   "mean_hair_contour_p95_pct_head": 7.0,
+   "mean_contour_pct_height": 1.4,
+   "hair_dE2000_mean": 3.4,
+   "head_fraction_err_pct": 4.4,
+   "hair_build": {
+    "clumps": 80,
+    "dropped": 24,
+    "spikes": 10
+   },
+   "per_view": {
+    "orig07_front": {
+     "iou": 0.808,
+     "hair_contour": 3.83
+    },
+    "val27_front": {
+     "iou": 0.843,
+     "hair_contour": 2.38
+    },
+    "val27_threequarter_right": {
+     "iou": 0.852,
+     "hair_contour": 2.91
+    },
+    "val27_side_right": {
+     "iou": 0.842,
+     "hair_contour": 3.94
+    },
+    "val27_back": {
+     "iou": 0.856,
+     "hair_contour": 2.27
+    },
+    "val27_back_threequarter": {
+     "iou": 0.855,
+     "hair_contour": 3.55
+    }
+   },
+   "head_width_err_pct": 5.7
+  },
+  "H10_narrow_clumps_no_scalp": {
+   "description": "Gaps without exposing the scalp: clumps 82% wide, none removed, base mass not inset",
+   "mean_iou": 0.8417,
+   "mean_hair_contour_pct_head": 3.37,
+   "mean_hair_contour_p95_pct_head": 7.15,
+   "mean_contour_pct_height": 1.43,
+   "hair_dE2000_mean": 3.4,
+   "head_fraction_err_pct": 4.0,
+   "hair_build": {
+    "clumps": 104,
+    "dropped": 0,
+    "spikes": 0
+   },
+   "per_view": {
+    "orig07_front": {
+     "iou": 0.811,
+     "hair_contour": 4.24
+    },
+    "val27_front": {
+     "iou": 0.843,
+     "hair_contour": 2.36
+    },
+    "val27_threequarter_right": {
+     "iou": 0.853,
+     "hair_contour": 2.86
+    },
+    "val27_side_right": {
+     "iou": 0.839,
+     "hair_contour": 4.14
+    },
+    "val27_back": {
+     "iou": 0.854,
+     "hair_contour": 2.62
+    },
+    "val27_back_threequarter": {
+     "iou": 0.85,
+     "hair_contour": 4.01
+    }
+   },
+   "head_width_err_pct": 5.7
+  },
+  "H11_narrow_clumps_soft_tufts": {
+   "description": "H10 + 8 soft, blunt upward tufts on the crown (thick tips, shorter)",
+   "mean_iou": 0.8423,
+   "mean_hair_contour_pct_head": 3.35,
+   "mean_hair_contour_p95_pct_head": 7.05,
+   "mean_contour_pct_height": 1.42,
+   "hair_dE2000_mean": 3.4,
+   "head_fraction_err_pct": 4.0,
+   "hair_build": {
+    "clumps": 104,
+    "dropped": 0,
+    "spikes": 8
+   },
+   "per_view": {
+    "orig07_front": {
+     "iou": 0.81,
+     "hair_contour": 4.29
+    },
+    "val27_front": {
+     "iou": 0.843,
+     "hair_contour": 2.32
+    },
+    "val27_threequarter_right": {
+     "iou": 0.853,
+     "hair_contour": 2.87
+    },
+    "val27_side_right": {
+     "iou": 0.845,
+     "hair_contour": 4.01
+    },
+    "val27_back": {
+     "iou": 0.854,
+     "hair_contour": 2.61
+    },
+    "val27_back_threequarter": {
+     "iou": 0.849,
+     "hair_contour": 4.03
+    }
+   },
+   "head_width_err_pct": 5.6
+  },
+  "H12_drop_clumps_dark_base": {
+   "description": "Gaps over the dark base: 15% of clumps removed, clumps 82% wide, base mass NOT inset (no scalp exposure)",
+   "mean_iou": 0.8438,
+   "mean_hair_contour_pct_head": 3.14,
+   "mean_hair_contour_p95_pct_head": 6.91,
+   "mean_contour_pct_height": 1.4,
+   "hair_dE2000_mean": 3.4,
+   "head_fraction_err_pct": 4.0,
+   "hair_build": {
+    "clumps": 88,
+    "dropped": 16,
+    "spikes": 0
+   },
+   "per_view": {
+    "orig07_front": {
+     "iou": 0.811,
+     "hair_contour": 4.09
+    },
+    "val27_front": {
+     "iou": 0.843,
+     "hair_contour": 2.35
+    },
+    "val27_threequarter_right": {
+     "iou": 0.855,
+     "hair_contour": 2.69
+    },
+    "val27_side_right": {
+     "iou": 0.844,
+     "hair_contour": 3.84
+    },
+    "val27_back": {
+     "iou": 0.856,
+     "hair_contour": 2.4
+    },
+    "val27_back_threequarter": {
+     "iou": 0.854,
+     "hair_contour": 3.48
+    }
+   },
+   "head_width_err_pct": 5.6
+  }
+ }
+}

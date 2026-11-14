@@ -1,0 +1,14 @@
+{
+ "variant": "H06_layered",
+ "description": "Layering: tips lifted 1.6x off the base, pointier tips (x0.75)",
+ "base_spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.spec.json",
+ "status": "experimental (not approved; never published as the character)",
+ "override": {
+  "hair": {
+   "params": {
+    "lift_scale": 1.6,
+    "tip_frac_scale": 0.75
+   }
+  }
+ }
+}

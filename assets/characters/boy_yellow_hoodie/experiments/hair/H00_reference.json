@@ -1,0 +1,11 @@
+{
+ "variant": "H00_reference",
+ "description": "Control: v6 hair through charsys (no change)",
+ "base_spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.spec.json",
+ "status": "experimental (not approved; never published as the character)",
+ "override": {
+  "hair": {
+   "params": {}
+  }
+ }
+}

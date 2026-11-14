@@ -1,0 +1,14 @@
+{
+ "variant": "H12_drop_clumps_dark_base",
+ "description": "Gaps over the dark base: 15% of clumps removed, clumps 82% wide, base mass NOT inset (no scalp exposure)",
+ "base_spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.spec.json",
+ "status": "experimental (not approved; never published as the character)",
+ "override": {
+  "hair": {
+   "params": {
+    "width_scale": 0.82,
+    "drop_fraction": 0.15
+   }
+  }
+ }
+}

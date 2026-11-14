@@ -5,6 +5,21 @@
 - Then record the verified local v6 baseline (Blender version, verdict, differences).
 - No v7, no character changes, no iteration 5 before that.
 
+**Next concrete milestone (CP-2, character production pipeline):**
+1. On the same computer, run the pipeline check. It writes only into `--out`:
+   ```bash
+   python3 pipeline/charsys/verify_charsys.py --blender <your blender> --out out/charsys_check
+   ```
+   Send back `out/charsys_check/CHARSYS_VERIFICATION.md`. It proves, on your Blender, that the spec build equals v6
+   and that version 1.0.0 reopens and links into episode shots.
+2. Then `hair_clumps/2`: a new lock layout (30–40 larger locks in lock families, notches down to the dark base).
+   - Experimental, measured with `pipeline/charsys/hair_experiments.py`.
+   - Target: hair contour ≤ 3.0%, IoU not lower, clean visual from all 8 angles.
+   - If met, it is proposed to you as candidate 1.1.0. Nothing is adopted without your approval.
+3. Decisions open for you (no action until you decide):
+   - approve version 1.0.0 as the `approved` boy;
+   - adopt H12 (small, clean hair gain) or wait for `hair_clumps/2`.
+
 ## After your review (candidates, to be agreed)
 1. Character corrections you request (approval checkpoint for A, B, C).
 2. Collision-aware reach/touch (arm vs table rim) and "step closer, then reach" (BUGS-22, BUGS-24).

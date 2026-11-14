@@ -1,0 +1,108 @@
+{
+ "pass": true,
+ "checks": [
+  {
+   "check": "publish 1.0.0",
+   "pass": true,
+   "detail": null
+  },
+  {
+   "check": "verify 1.0.0",
+   "pass": true,
+   "detail": null
+  },
+  {
+   "check": "re-publishing an existing version is refused (immutable)",
+   "pass": true,
+   "detail": null
+  },
+  {
+   "check": "bad version string refused",
+   "pass": true,
+   "detail": null
+  },
+  {
+   "check": "identity change without owner approval refused",
+   "pass": true,
+   "detail": null
+  },
+  {
+   "check": "identity change with recorded owner approval accepted",
+   "pass": true,
+   "detail": null
+  },
+  {
+   "check": "manifest records parent and identity change",
+   "pass": true,
+   "detail": {
+    "parent": "1.0.0",
+    "identity_changes": [
+     "proportions"
+    ]
+   }
+  },
+  {
+   "check": "spec edited after build refused",
+   "pass": true,
+   "detail": null
+  },
+  {
+   "check": "approve without --by refused",
+   "pass": true,
+   "detail": null
+  },
+  {
+   "check": "approve 1.0.0",
+   "pass": true,
+   "detail": null
+  },
+  {
+   "check": "approved pointer set, history kept",
+   "pass": true,
+   "detail": {
+    "approved": "1.0.0",
+    "reference": "1.0.0"
+   }
+  },
+  {
+   "check": "restore approved",
+   "pass": true,
+   "detail": null
+  },
+  {
+   "check": "restored files identical to the stored version",
+   "pass": true,
+   "detail": null
+  },
+  {
+   "check": "restore into the store refused",
+   "pass": true,
+   "detail": null
+  },
+  {
+   "check": "restore into a non-empty folder refused",
+   "pass": true,
+   "detail": null
+  },
+  {
+   "check": "tampered master detected by verify",
+   "pass": true,
+   "detail": null
+  },
+  {
+   "check": "tampered version cannot be approved",
+   "pass": true,
+   "detail": null
+  },
+  {
+   "check": "tampered version cannot be restored",
+   "pass": true,
+   "detail": null
+  },
+  {
+   "check": "untouched version still verifies",
+   "pass": true,
+   "detail": null
+  }
+ ]
+}

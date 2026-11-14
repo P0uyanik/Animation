@@ -1,0 +1,13 @@
+{
+ "base_spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.spec.json",
+ "status": "experimental (not approved; never published as the character)",
+ "variant": "H10_narrow_clumps_no_scalp",
+ "description": "Gaps without exposing the scalp: clumps 82% wide, none removed, base mass not inset",
+ "override": {
+  "hair": {
+   "params": {
+    "width_scale": 0.82
+   }
+  }
+ }
+}

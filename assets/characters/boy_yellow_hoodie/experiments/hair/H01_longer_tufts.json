@@ -1,0 +1,18 @@
+{
+ "variant": "H01_longer_tufts",
+ "description": "Tuft length: crown x1.35, centre x1.2, top x1.25, sides x1.15",
+ "base_spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.spec.json",
+ "status": "experimental (not approved; never published as the character)",
+ "override": {
+  "hair": {
+   "params": {
+    "length": {
+     "crown": 1.35,
+     "centre": 1.2,
+     "top": 1.25,
+     "side": 1.15
+    }
+   }
+  }
+ }
+}

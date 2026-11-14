@@ -1,0 +1,44 @@
+{
+ "character_id": "boy_yellow_hoodie",
+ "version": "1.0.0",
+ "parent": null,
+ "created": "2026-11-14T05:56:20+00:00",
+ "notes": "Reference: pilot v6 rebuilt by charsys from boy_yellow_hoodie.spec.json (geometry identical to v6), plus rig facial controls face_*. Owner visual approval of face and hair still pending.",
+ "spec_sha256": "d9cb91d43905c0a51207b685a6f0eebfe83fec2fe0c12c7c92fc11dff5a8755d",
+ "spec_version": "1.0.0",
+ "build": "charsys/1",
+ "blender": "5.3.0",
+ "identity_changes": [],
+ "identity_change_approved_by": null,
+ "files": {
+  "boy_yellow_hoodie_master.blend": {
+   "sha256": "21d65f461b03fcff3fc0d1e7b75866a8f6ccdae658fdd3bc2c76135f71bdfa23",
+   "bytes": 7001295
+  },
+  "boy_yellow_hoodie.glb": {
+   "sha256": "58daacbadeadbc644ba1170b15c7921d9ff3562419bf1f066ce676cc6045a14c",
+   "bytes": 12864292
+  },
+  "spec.json": {
+   "sha256": "2c3f786b60b5d0bba75a193fac0f5740b1d3745638e35e8c5166e2a866135cd3",
+   "bytes": 4145
+  },
+  "components.json": {
+   "sha256": "49cce3a641c7b3b7bd48db81fd0b49ac036ce5911bf068665973edc94c091af1",
+   "bytes": 10239
+  },
+  "animation_compat.json": {
+   "sha256": "7f0c5c379222003737b1f797234dce040fd86589b1f8599b0f2aa9585065a737",
+   "bytes": 4953
+  },
+  "build_report.json": {
+   "sha256": "5202e6d0dc65b1fac6ba1a3c816b3ef6edf9eaccc7ebdae0019478421a7bce04",
+   "bytes": 2387
+  }
+ },
+ "rig": {
+  "rigify_bones": 410,
+  "deform_bones": 73,
+  "unweighted_after_cleanup": 0
+ }
+}

@@ -17,7 +17,14 @@ White-haired girl in a sunlit classroom looking down at a paper boat and reachin
 - Output: `docs/milestone01/milestone01_640x360.mp4` (48 frames, 640x360, 32 spp, rendered in 21 min on 4 cores)
 - Stills: `docs/milestone01/` (full frame, head close-up, contact sheet, Studio screenshot)
 
-## After iteration 4: production pipeline planning (current)
+## Character production pipeline (2026-11-14, current)
+- `pipeline/charsys/`: spec-driven, versioned character pipeline (TD-37); doc: `docs/CHARACTER_PRODUCTION_PIPELINE.md`.
+- `boy_yellow_hoodie` spec + published version `1.0.0` (status `reference`, equals pilot v6 geometry, plus facial
+  controls); `approved` pointer empty (owner decision). Reuse, episode-link and store tests: all pass (cloud).
+- Hair experiments: 13 variants, `docs/evaluation/hair_experiments/HAIR_EXPERIMENTS.md`; none adopted.
+- Pilot v6 and its frozen baseline unchanged; local reproduction with your Blender 5.2 pending.
+
+## After iteration 4: production pipeline planning
 - Experimental character `boy_yellow_hoodie` (TD-36); Blender as a background backend behind Plush Studio (TD-35).
 - Reference package: `docs/references/boy_pipeline/`. Analysis and audit: `docs/BOY_BLENDER_PIPELINE_ANALYSIS.md`.
 - No implementation started; iteration 5 not started.

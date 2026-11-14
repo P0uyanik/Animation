@@ -1,0 +1,21 @@
+{
+ "variant": "H02_up_out_direction",
+ "description": "Tuft direction: crown/centre/top turned upwards, sides and top outwards",
+ "base_spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.spec.json",
+ "status": "experimental (not approved; never published as the character)",
+ "override": {
+  "hair": {
+   "params": {
+    "up_bias": {
+     "crown": 0.6,
+     "centre": 0.4,
+     "top": 0.4
+    },
+    "out_bias": {
+     "side": 0.5,
+     "top": 0.3
+    }
+   }
+  }
+ }
+}

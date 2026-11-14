@@ -1,0 +1,89 @@
+{
+ "variant": "H09_stronger_gaps_short_spikes",
+ "description": "Stronger gaps (76% width, 22% removed, 18 mm inset) + 10 shorter upward spikes + felted surface",
+ "base_spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.spec.json",
+ "status": "experimental (not approved; never published as the character)",
+ "override": {
+  "hair": {
+   "params": {
+    "width_scale": 0.76,
+    "drop_fraction": 0.22,
+    "mass_inset_m": 0.018,
+    "spikes": {
+     "count": 10,
+     "el_deg": [
+      45,
+      80
+     ],
+     "up": 0.8,
+     "out": 0.25,
+     "length_m": [
+      0.05,
+      0.08
+     ],
+     "tip_frac": 0.14
+    },
+    "felt": {
+     "amp_m": 0.009,
+     "scale": 0.022,
+     "mass_amp_m": 0.012,
+     "mass_scale": 0.04
+    }
+   }
+  },
+  "fur": [
+   {
+    "name": "fur_hair",
+    "on": "hair",
+    "material": "hair_fur",
+    "density": 560000,
+    "length_m": [
+     0.006,
+     0.014
+    ],
+    "radius_m": 0.00034,
+    "spread": 0.8,
+    "gravity": 0.15
+   },
+   {
+    "name": "fur_hoodie",
+    "on": "hoodie",
+    "material": "hoodie_fur",
+    "density": 380000,
+    "length_m": [
+     0.0018,
+     0.0035
+    ],
+    "radius_m": 0.00022,
+    "spread": 0.9,
+    "gravity": 0.0
+   },
+   {
+    "name": "fur_trousers",
+    "on": "trousers",
+    "material": "trousers_fur",
+    "density": 300000,
+    "length_m": [
+     0.0015,
+     0.003
+    ],
+    "radius_m": 0.0002,
+    "spread": 0.9,
+    "gravity": 0.0
+   },
+   {
+    "name": "fur_shoes",
+    "on": "shoes",
+    "material": "shoe_fur",
+    "density": 300000,
+    "length_m": [
+     0.0012,
+     0.0024
+    ],
+    "radius_m": 0.0002,
+    "spread": 0.9,
+    "gravity": 0.0
+   }
+  ]
+ }
+}

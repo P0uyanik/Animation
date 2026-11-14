@@ -1,0 +1,26 @@
+{
+ "variant": "H05_projecting_spikes",
+ "description": "12 extra pointed tufts projecting up and out",
+ "base_spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.spec.json",
+ "status": "experimental (not approved; never published as the character)",
+ "override": {
+  "hair": {
+   "params": {
+    "spikes": {
+     "count": 12,
+     "el_deg": [
+      40,
+      78
+     ],
+     "up": 0.7,
+     "out": 0.35,
+     "length_m": [
+      0.06,
+      0.1
+     ],
+     "tip_frac": 0.14
+    }
+   }
+  }
+ }
+}

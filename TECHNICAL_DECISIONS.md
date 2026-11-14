@@ -227,3 +227,17 @@ no Blender in the workflow, use the existing (unknown) computer, no GPU purchase
   as a reusable canonical asset. **The canonical identity never changes without the product owner's explicit
   approval.**
 - Reference package: `docs/references/boy_pipeline/`; audit: `docs/BOY_BLENDER_PIPELINE_ANALYSIS.md` §2 and §17.
+
+## TD-37 Character assets: spec → build → immutable versions → linked into episodes (2026-11-14)
+- A character is defined once by a spec (`assets/characters/<id>/spec/<id>.spec.json`) and built headless by
+  `pipeline/charsys/`. The v6 pilot builder stays frozen as the reference implementation; charsys reproduces it
+  (same geometry, checked numerically).
+- Built characters are published as immutable, hashed versions (`assets/characters/<id>/versions/<x.y.z>/`) with
+  one master `.blend` holding geometry, facial controls, hair, clothing, accessories, rig, weights and materials,
+  plus a glb and `animation_compat.json`. `index.json` holds the `reference` and `approved` pointers and history.
+- Identity sections of the spec cannot change in a published version without a recorded owner approval
+  (`--identity-change-approved-by`), implementing TD-36. Only the owner moves the `approved` pointer.
+- Episodes link the master and use a library override in which only the rig (pose, `face_*` controls) is editable.
+  They never append, copy or rebuild the character, so episode work cannot modify the master.
+- Facial expressions are animated through rig properties (`face_Blink`, `face_BrowDown`, `face_Smile`,
+  `face_JawOpen`) driving shape keys, so they work through overrides.

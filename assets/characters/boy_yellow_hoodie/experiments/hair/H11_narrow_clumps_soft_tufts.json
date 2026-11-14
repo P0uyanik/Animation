@@ -1,0 +1,35 @@
+{
+ "base_spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.spec.json",
+ "status": "experimental (not approved; never published as the character)",
+ "variant": "H11_narrow_clumps_soft_tufts",
+ "description": "H10 + 8 soft, blunt upward tufts on the crown (thick tips, shorter)",
+ "override": {
+  "hair": {
+   "params": {
+    "width_scale": 0.82,
+    "spikes": {
+     "count": 8,
+     "el_deg": [
+      55,
+      82
+     ],
+     "up": 0.8,
+     "out": 0.2,
+     "length_m": [
+      0.04,
+      0.065
+     ],
+     "width_m": [
+      0.045,
+      0.058
+     ],
+     "thick_m": [
+      0.034,
+      0.044
+     ],
+     "tip_frac": 0.32
+    }
+   }
+  }
+ }
+}

@@ -236,3 +236,39 @@ noodle locks → denser layers with a longer halo; fogged lenses → guides thro
   - the exact coordinate hash flips on float rounding, so geometry is now compared numerically (hash kept as
     informational).
 - Existing v6 files untouched.
+
+## 2026-11-14 — Reusable, versioned Character Production Pipeline (`charsys`)
+- `pipeline/charsys/`:
+  - spec loader;
+  - an isolated verbatim copy of the v6 part generators, configured from the spec;
+  - a parametric hair generator;
+  - a spec-driven builder (component collections, metadata, embedded spec, rig facial controls `face_*`);
+  - the asset store (publish, approve, verify, restore, identity lock);
+  - episode linking with library overrides;
+  - the hair experiment runner;
+  - a one-command verification.
+- Spec: `assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.spec.json`.
+- Published version `1.0.0` (reference) in `assets/characters/boy_yellow_hoodie/versions/`.
+- Equivalence: the charsys build equals v6 geometry for all 55 objects (numeric difference 0.0 m; one informational
+  rounding hash).
+- Tests, all PASS (`docs/evaluation/charsys/`):
+  - reopen the master;
+  - pose it;
+  - two episode shots linked from the store and reopened (pose, FK switch and expressions persist; no geometry
+    copied);
+  - linked-data edits not saved;
+  - glTF import and deformation;
+  - master byte-identical afterwards;
+  - store tests 19/19.
+- Found and fixed while testing:
+  - Rigify limbs default to IK, so FK posing did nothing: `apply_pose` now switches to FK;
+  - ID-property edits are not tagged for drivers: added `update_tag`;
+  - custom properties added inside an episode are not saved on overrides: facial controls are defined in the master.
+- Hair experiments: 13 variants.
+  - Bigger hair is worse.
+  - Removing outline clumps helps (3.40 → 3.14%).
+  - Three high-scoring variants exposed the scalp (caught visually).
+  - Best clean variant: H12.
+  - Target ≤ 3.0% not reached.
+  - Nothing adopted.
+- v6 files, the frozen baseline, the reproduction script and the C++ engine are untouched.

@@ -1,0 +1,24 @@
+{
+ "character_id": "boy_yellow_hoodie",
+ "versions": {
+  "1.0.0": {
+   "created": "2026-11-14T05:56:20+00:00",
+   "parent": null,
+   "notes": "Reference: pilot v6 rebuilt by charsys from boy_yellow_hoodie.spec.json (geometry identical to v6), plus rig facial controls face_*. Owner visual approval of face and hair still pending.",
+   "status": "reference",
+   "spec_sha256": "d9cb91d43905c0a51207b685a6f0eebfe83fec2fe0c12c7c92fc11dff5a8755d"
+  }
+ },
+ "pointers": {
+  "approved": null,
+  "reference": "1.0.0"
+ },
+ "history": [
+  {
+   "at": "2026-11-14T05:56:20+00:00",
+   "action": "publish",
+   "version": "1.0.0",
+   "status": "reference"
+  }
+ ]
+}

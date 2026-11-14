@@ -1,0 +1,15 @@
+{
+ "variant": "H03_irregular_asymmetric",
+ "description": "Irregularity and asymmetry: 12 mm tip jitter, \u00b125% clump size, his left 12% longer",
+ "base_spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.spec.json",
+ "status": "experimental (not approved; never published as the character)",
+ "override": {
+  "hair": {
+   "params": {
+    "jitter_m": 0.012,
+    "width_jitter": 0.25,
+    "asymmetry": 0.12
+   }
+  }
+ }
+}

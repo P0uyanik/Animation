@@ -1,0 +1,158 @@
+{
+ "blender": "5.3.0",
+ "build": "charsys/1",
+ "character_id": "boy_yellow_hoodie",
+ "spec_path": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.spec.json",
+ "overrides": [],
+ "spec_sha256": "d9cb91d43905c0a51207b685a6f0eebfe83fec2fe0c12c7c92fc11dff5a8755d",
+ "hair": {
+  "clumps": 104,
+  "dropped": 0,
+  "spikes": 0
+ },
+ "model_s": 2.5,
+ "rig": {
+  "rigify_bones": 410,
+  "deform_bones": 73,
+  "generate_s": 0.2,
+  "nearest_bone_fallback": [
+   "hoodie_cuff.L",
+   "hoodie_cuff.R"
+  ],
+  "weighted_objects": 17,
+  "rigid_objects": 37,
+  "vertices": 17490,
+  "unweighted_after_heat": 384,
+  "unweighted_after_cleanup": 0,
+  "weights_s": 3.8
+ },
+ "face_controls": {
+  "face_Blink": [
+   "lid_upper.L",
+   "lash.L",
+   "lid_upper.R",
+   "lash.R"
+  ],
+  "face_BrowDown": [
+   "brow.L",
+   "brow.R"
+  ],
+  "face_Smile": [
+   "mouth"
+  ],
+  "face_JawOpen": [
+   "mouth"
+  ]
+ },
+ "master_s": 7.3,
+ "gltf": {
+  "mb": 12.9,
+  "s": 1.2
+ },
+ "landmarks_rest": {
+  "eye_L": [
+   0.064,
+   -0.2185,
+   0.1418
+  ],
+  "eye_R": [
+   -0.064,
+   -0.2185,
+   0.1418
+  ],
+  "chin": [
+   0.0,
+   -0.294,
+   0.06
+  ],
+  "mouth": [
+   0.0,
+   -0.266,
+   0.1419
+  ],
+  "nose": [
+   0.0,
+   -0.242,
+   0.1458
+  ],
+  "ear_L": [
+   0.1755,
+   -0.234,
+   0.004
+  ],
+  "ear_R": [
+   -0.1755,
+   -0.234,
+   0.004
+  ]
+ },
+ "objects": [
+  "LM_chin",
+  "LM_ear_L",
+  "LM_ear_R",
+  "LM_eye_L",
+  "LM_eye_R",
+  "LM_mouth",
+  "LM_nose",
+  "backpack_body",
+  "backpack_handle",
+  "backpack_pocket",
+  "backpack_strap.L",
+  "backpack_strap.R",
+  "brow.L",
+  "brow.R",
+  "buckle.L",
+  "buckle.R",
+  "drawstring.L",
+  "drawstring.R",
+  "drawstring_tip.L",
+  "drawstring_tip.R",
+  "ear.L",
+  "ear.R",
+  "eye.L",
+  "eye.R",
+  "fur_hair",
+  "fur_hoodie",
+  "fur_shoes",
+  "fur_trousers",
+  "hair_clumps",
+  "hair_mass",
+  "hair_strays",
+  "hand.L",
+  "hand.R",
+  "head",
+  "hood_back",
+  "hood_roll",
+  "hoodie_cuff.L",
+  "hoodie_cuff.R",
+  "hoodie_hem",
+  "hoodie_pocket",
+  "hoodie_sleeve.L",
+  "hoodie_sleeve.R",
+  "hoodie_torso",
+  "lash.L",
+  "lash.R",
+  "lid_lower.L",
+  "lid_lower.R",
+  "lid_upper.L",
+  "lid_upper.R",
+  "mouth",
+  "neck",
+  "rig_boy_yellow_hoodie",
+  "shoe.L",
+  "shoe.R",
+  "shoe_strap0.L",
+  "shoe_strap0.R",
+  "shoe_strap1.L",
+  "shoe_strap1.R",
+  "sock.L",
+  "sock.R",
+  "sole.L",
+  "sole.R",
+  "trouser_leg.L",
+  "trouser_leg.R",
+  "trousers_waist",
+  "undershirt"
+ ],
+ "total_s": 9.6
+}

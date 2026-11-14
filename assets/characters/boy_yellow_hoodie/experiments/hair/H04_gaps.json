@@ -1,0 +1,15 @@
+{
+ "variant": "H04_gaps",
+ "description": "Gaps between clumps: 82% clump width, 15% of clumps removed, base mass inset 12 mm",
+ "base_spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.spec.json",
+ "status": "experimental (not approved; never published as the character)",
+ "override": {
+  "hair": {
+   "params": {
+    "width_scale": 0.82,
+    "drop_fraction": 0.15,
+    "mass_inset_m": 0.012
+   }
+  }
+ }
+}
