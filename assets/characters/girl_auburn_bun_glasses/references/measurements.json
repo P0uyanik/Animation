@@ -1,0 +1,52 @@
+{
+ "method": "silhouette masks of #30 (compare_sheet.measures + width profiles); heights as fractions of the total height (sole to bun top)",
+ "views": {
+  "sheet30_front": {
+   "aspect": 2.082,
+   "width_head": 0.342,
+   "width_torso": 0.48,
+   "width_legs": 0.478,
+   "width_feet": 0.208,
+   "head_fraction": 0.219,
+   "figure_height_px": 456
+  },
+  "sheet30_left": {
+   "aspect": 3.0,
+   "width_head": 0.333,
+   "width_torso": 0.272,
+   "width_legs": 0.202,
+   "width_feet": 0.167,
+   "head_fraction": 0.395,
+   "figure_height_px": 456
+  },
+  "sheet30_back": {
+   "aspect": 2.126,
+   "width_head": 0.339,
+   "width_torso": 0.47,
+   "width_legs": 0.47,
+   "width_feet": 0.206,
+   "head_fraction": 0.219,
+   "figure_height_px": 457
+  }
+ },
+ "fractions_from_top": {
+  "bun_head_junction": 0.118,
+  "bun_head_junction_sources": "#30 front 0.123, #30 side 0.116, #31 line-up 0.118",
+  "eye_line": 0.294,
+  "mouth": 0.344,
+  "chin": 0.382
+ },
+ "scale": {
+  "total_height_m": 1.1,
+  "crown_height_m": 0.97,
+  "evidence": "#31 line-up: girl 356 px (sole to bun top) vs boy 351-353 px (sole to hair top) in the same image",
+  "eye_line_from_feet": 0.706,
+  "boy_eye_line_from_feet": 0.707
+ },
+ "face_ratios": {
+  "eye_spacing/ear_width": 0.365,
+  "mouth_below_eyes/ear_width": 0.173,
+  "chin_below_eyes/ear_width": 0.301,
+  "glasses_rim_radius/ear_width": 0.156
+ }
+}

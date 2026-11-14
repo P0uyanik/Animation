@@ -1,0 +1,49 @@
+{
+ "note": "Manual one-time annotation of face landmarks in the reference view crops (pixel coordinates x right, y down, in references/views/<view>.png), read on a 4x gridded zoom. Estimated precision +-2 px. Character's left (L) is on the screen right in front views. Glasses rims: centre and radius.",
+ "views": {
+  "sheet30_front": {
+   "eye_R": [
+    94,
+    140
+   ],
+   "eye_L": [
+    142.5,
+    140
+   ],
+   "ear_R": [
+    51,
+    145
+   ],
+   "ear_L": [
+    184,
+    145
+   ],
+   "nose": [
+    117.5,
+    154
+   ],
+   "mouth": [
+    117.5,
+    163
+   ],
+   "chin": [
+    117.5,
+    180
+   ],
+   "glasses_rim_R": {
+    "centre": [
+     92.5,
+     137.5
+    ],
+    "radius": 21
+   },
+   "glasses_rim_L": {
+    "centre": [
+     145.5,
+     137.5
+    ],
+    "radius": 20.6
+   }
+  }
+ }
+}

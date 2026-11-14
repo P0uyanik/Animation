@@ -1,0 +1,99 @@
+{
+ "skin": {
+  "srgb": [
+   202,
+   176,
+   169
+  ],
+  "source": "#42 (1040,285) +-14px"
+ },
+ "hair": {
+  "srgb": [
+   86,
+   54,
+   44
+  ],
+  "source": "#42 (1300,300) +-14px"
+ },
+ "vest": {
+  "srgb": [
+   116,
+   80,
+   80
+  ],
+  "source": "#42 (1035,600) +-12px"
+ },
+ "shorts": {
+  "srgb": [
+   106,
+   109,
+   101
+  ],
+  "source": "#42 (1300,600) +-14px"
+ },
+ "boots": {
+  "srgb": [
+   92,
+   56,
+   41
+  ],
+  "source": "#42 (1300,900) +-14px"
+ },
+ "shirt": {
+  "srgb": [
+   203,
+   193,
+   190
+  ],
+  "source": "#41 (1180,470) +-12px"
+ },
+ "vest_garment": {
+  "srgb": [
+   110,
+   76,
+   74
+  ],
+  "source": "#41 (1215,210) +-10px"
+ },
+ "shorts_garment": {
+  "srgb": [
+   99,
+   107,
+   100
+  ],
+  "source": "#41 (1190,660) +-12px"
+ },
+ "boots_garment": {
+  "srgb": [
+   111,
+   77,
+   63
+  ],
+  "source": "#41 (1130,860) +-10px"
+ },
+ "flower": {
+  "srgb": [
+   160,
+   115,
+   124
+  ],
+  "source": "#39 (1285,1110) +-8px"
+ },
+ "band": {
+  "srgb": [
+   115,
+   130,
+   135
+  ],
+  "source": "#39 (1265,1335) +-8px"
+ },
+ "glasses_frame": {
+  "srgb": [
+   137,
+   85,
+   69
+  ],
+  "source": "#30 (107,198) +-1px"
+ },
+ "note": "Median sRGB of sampled patches (#42 swatch spheres = lit sides; #41 flat garments; #39 accessory close-ups; #30 frame). Targets for automatic colour calibration; skin is a shaded sphere: cross-check with the #30 face in calibration."
+}

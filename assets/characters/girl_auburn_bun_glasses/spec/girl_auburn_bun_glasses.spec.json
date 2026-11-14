@@ -1,0 +1,190 @@
+{
+ "schema": "plush-studio.character-spec/1",
+ "identity": {
+  "id": "girl_auburn_bun_glasses",
+  "display_name": "Girl with auburn bun and round glasses",
+  "identity_lock": "Changing identity (proportions, face, hair style, outfit colours) requires explicit owner approval",
+  "approved_decisions": {
+   "modelling_pose": "A-pose",
+   "hair": "long spiral curls to about mid-back; high bun; pink felt flowers; blue-grey band",
+   "neutral_expression": "closed-mouth soft smile; Happy = open smile with teeth and tongue",
+   "scale": "bun top level with boy_yellow_hoodie's hair top; body slightly shorter"
+  },
+  "references": "assets/characters/girl_auburn_bun_glasses/references/reference_index.json"
+ },
+ "proportions": {
+  "height_m": 1.1,
+  "height_note": "sole to bun top (validated on #31)",
+  "measured": "references/measurements.json",
+  "fractions_from_top": {
+   "bun_head_junction": 0.118,
+   "eye_line": 0.294,
+   "mouth": 0.344,
+   "chin": 0.382
+  },
+  "face_ratios": {
+   "eye_spacing/ear_width": 0.365,
+   "mouth_below_eyes/ear_width": 0.173,
+   "chin_below_eyes/ear_width": 0.301,
+   "glasses_rim_radius/ear_width": 0.156
+  },
+  "TODO_M2": "joint positions (spec.rig.joints) and body part dimensions from the masks"
+ },
+ "body": {
+  "generator": "TBD (M2: generic body from spec)",
+  "parts": [
+   "head",
+   "neck",
+   "hands (5 fingers, 3 joints)",
+   "bare legs"
+  ]
+ },
+ "face": {
+  "generator": "TBD (M3)",
+  "eye_style": "large fully open round eyes, brown iris, two highlights, outer upper lashes",
+  "brows": "thin, high, partly under the fringe",
+  "mouth": "small; neutral closed soft smile; Happy open smile with teeth and tongue",
+  "expression_shape_keys": [
+   "Blink",
+   "BrowDown",
+   "Smile",
+   "JawOpen"
+  ],
+  "expressions_planned": [
+   "Happy",
+   "Laugh",
+   "Sad",
+   "Surprise",
+   "Anger",
+   "Frown",
+   "Confusion",
+   "Squint",
+   "WideOpen",
+   "BlinkL",
+   "BlinkR",
+   "BrowsUp"
+  ]
+ },
+ "hair": {
+  "generator": "TBD (M4: hair_clumps/2 + strand-lock and bun families)",
+  "components": {
+   "fringe": "side-swept, slightly off-centre part, to the brows",
+   "bun": "single high bun of interlocking wavy bundles",
+   "curls": "long spiral curls down sides and back to about mid-back",
+   "accessories": [
+    "2-3 pink felt flowers with yellow centres",
+    "blue-grey band at the bun base"
+   ]
+  },
+  "params": {}
+ },
+ "clothing": {
+  "generator": "TBD (M5: generic garment library)",
+  "garments": [
+   "cream collared blouse, puffy long sleeves, cuffs, 4-5 buttons",
+   "open dusty-rose boucle vest, dark embroidered motifs, patch pockets, wooden buttons",
+   "sage felted bloomer shorts, gathered cuffs, 3 waist buttons",
+   "brown fleece boots, darker soles"
+  ]
+ },
+ "accessories": {
+  "generator": "TBD (M3/M4: generic accessory module)",
+  "items": [
+   "round glasses (brown frame, clear lenses)",
+   "hair flowers",
+   "hair band"
+  ]
+ },
+ "rig": {
+  "generator": "rigify_human/1",
+  "head_bone": "DEF-spine.006",
+  "chest_bone": "DEF-spine.003",
+  "max_influences": 4,
+  "optional_roles": [
+   "toe.L",
+   "toe.R"
+  ]
+ },
+ "materials": {
+  "target_colors_srgb": {
+   "skin": [
+    202,
+    176,
+    169
+   ],
+   "hair": [
+    86,
+    54,
+    44
+   ],
+   "vest": [
+    116,
+    80,
+    80
+   ],
+   "shorts": [
+    106,
+    109,
+    101
+   ],
+   "boots": [
+    92,
+    56,
+    41
+   ],
+   "shirt": [
+    203,
+    193,
+    190
+   ],
+   "vest_garment": [
+    110,
+    76,
+    74
+   ],
+   "shorts_garment": [
+    99,
+    107,
+    100
+   ],
+   "boots_garment": [
+    111,
+    77,
+    63
+   ],
+   "flower": [
+    160,
+    115,
+    124
+   ],
+   "band": [
+    115,
+    130,
+    135
+   ],
+   "glasses_frame": [
+    137,
+    85,
+    69
+   ]
+  },
+  "target_source": "references/color_targets.json",
+  "albedo_srgb": {}
+ },
+ "fur": [],
+ "animation": {
+  "rest_pose": "A-pose",
+  "controls": "Rigify (FK/IK arms and legs, fingers, eye targets)",
+  "interchange": [
+   "glTF 2.0",
+   "Plush Studio engine package (humanoid_rigify)"
+  ],
+  "not_carried_by_gltf": [
+   "fur curves"
+  ]
+ },
+ "metadata": {
+  "spec_version": "0.1.0",
+  "status": "M1 reference skeleton: data only, not buildable until M2"
+ }
+}

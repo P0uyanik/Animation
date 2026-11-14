@@ -1,0 +1,144 @@
+{
+ "asset_id": "girl_auburn_bun_glasses",
+ "created": "2026-11-14",
+ "decisions": {
+  "id": "girl_auburn_bun_glasses (not girl_brown_glasses: older engine character)",
+  "hair": "long spiral curls to about mid-back (#30, #39, #40); high bun, pink felt flowers, blue-grey band",
+  "neutral_expression": "closed-mouth soft smile; open smile with teeth and tongue = Happy",
+  "scale": "body slightly shorter than the boy; bun top level with his hair top (validated on #31: 356 px vs 351-353 px)"
+ },
+ "priority_rules": [
+  "#30 top row = identity and silhouette authority",
+  "#39/#40 = hair construction",
+  "#41/#42 = garments and colours",
+  "#34 = expression targets",
+  "#31/#32 = world scale only",
+  "#37 shows the white-haired girl: hierarchy idea only",
+  "all numeric measurements printed on the sheets are ignored (inconsistent)"
+ ],
+ "conflicts": "see docs/second_character/REFERENCE_ANALYSIS.md section 1",
+ "missing_data": [
+  "true profile of her right side (#30 'Right' duplicates 'Left')",
+  "closed-mouth neutral in a full-body turnaround (only face tiles #34/#45)",
+  "back of the bun at high elevation",
+  "feet/soles from below (only #41 boot sole)"
+ ],
+ "yaw_convention": "0 = camera in front; +90 = camera on the character's left (face points screen-left); 180 = behind",
+ "uploads": [
+  "uploads/ref_30.webp",
+  "uploads/ref_31.webp",
+  "uploads/ref_32.webp",
+  "uploads/ref_33.webp",
+  "uploads/ref_34.webp",
+  "uploads/ref_35.webp",
+  "uploads/ref_36.webp",
+  "uploads/ref_37.webp",
+  "uploads/ref_38.webp",
+  "uploads/ref_39.webp",
+  "uploads/ref_40.webp",
+  "uploads/ref_41.webp",
+  "uploads/ref_42.webp",
+  "uploads/ref_43.webp",
+  "uploads/ref_44.webp",
+  "uploads/ref_45.webp",
+  "uploads/ref_46.webp"
+ ],
+ "views": [
+  {
+   "id": "sheet30_front",
+   "upload": 30,
+   "yaw_deg": 0,
+   "elevation_deg": 5,
+   "focal_mm_estimate": 70,
+   "silhouette": true,
+   "pose": "A-pose, arms ~30 deg",
+   "note": "identity authority (with #39/#40 for hair); open happy smile in this view (neutral is closed per decision)",
+   "crop": [
+    36,
+    60,
+    267,
+    528
+   ]
+  },
+  {
+   "id": "sheet30_front_left",
+   "upload": 30,
+   "yaw_deg": -45,
+   "elevation_deg": 5,
+   "focal_mm_estimate": 70,
+   "silhouette": true,
+   "pose": "A-pose",
+   "note": "label 'Front-Left'; facing measured from the bun offset: face points screen-right (camera on her right side)",
+   "crop": [
+    314,
+    60,
+    519,
+    528
+   ]
+  },
+  {
+   "id": "sheet30_left",
+   "upload": 30,
+   "yaw_deg": 90,
+   "elevation_deg": 5,
+   "focal_mm_estimate": 70,
+   "silhouette": true,
+   "pose": "A-pose",
+   "note": "label 'Left'; face points screen-left (camera on her left side)",
+   "crop": [
+    570,
+    60,
+    738,
+    528
+   ]
+  },
+  {
+   "id": "sheet30_right",
+   "upload": 30,
+   "yaw_deg": 90,
+   "elevation_deg": 5,
+   "focal_mm_estimate": 70,
+   "silhouette": false,
+   "pose": "A-pose",
+   "note": "label 'Right' but a near-duplicate of 'Left' (mask IoU 0.989, pixel diff 4.2): same direction; visual only, excluded from metrics",
+   "crop": [
+    782,
+    60,
+    950,
+    528
+   ]
+  },
+  {
+   "id": "sheet30_back_right",
+   "upload": 30,
+   "yaw_deg": -135,
+   "elevation_deg": 5,
+   "focal_mm_estimate": 70,
+   "silhouette": true,
+   "pose": "A-pose",
+   "note": "label 'Back-Right'; yaw from the label (facing not measurable from behind)",
+   "crop": [
+    977,
+    60,
+    1202,
+    528
+   ]
+  },
+  {
+   "id": "sheet30_back",
+   "upload": 30,
+   "yaw_deg": 180,
+   "elevation_deg": 5,
+   "focal_mm_estimate": 70,
+   "silhouette": true,
+   "pose": "A-pose",
+   "note": "long curls to mid-back",
+   "crop": [
+    1235,
+    59,
+    1462,
+    528
+   ]
+  }
+ ]
+}

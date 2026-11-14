@@ -1,8 +1,8 @@
 # Second production character: reference analysis and platform assessment
 
 _2026-11-14. Status: analysis only. Nothing modelled or implemented. The 17 references are stored unchanged in
-`assets/characters/_incoming_second_character/references/uploads/` (`intake_index.json`: sha256 and content of each
-image). The folder is renamed once you confirm the canonical id._
+`assets/characters/girl_auburn_bun_glasses/references/uploads/` (`intake_index.json`: sha256 and content of each
+image). Canonical id confirmed: girl_auburn_bun_glasses._
 
 ## 1. Who the character is, and conflicts in the collection
 The collection describes **the brown-haired girl with round glasses**. She is the main subject of 15 of the 17

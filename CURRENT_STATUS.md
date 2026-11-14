@@ -50,11 +50,11 @@ Completed and tested:
     test passes. None improves this boy beyond H28, so **H28 remains the hair candidate**.
   - `verify_charsys` PASS; no engine change.
 
-- **Second production character: reference intake and analysis done** (no implementation):
-  - 17 references in `assets/characters/_incoming_second_character/references/`;
-  - analysis, specification, platform assessment and milestone plan in
-    `docs/second_character/REFERENCE_ANALYSIS.md`;
-  - 4 questions open.
+- **Second production character `girl_auburn_bun_glasses`: M1 reference package complete**
+  (`docs/second_character/M1_REFERENCE_PACKAGE.md`):
+  - 6 camera-matchable views with masks; landmarks; measured proportions; colour targets; spec skeleton;
+  - reusable view-extraction tool;
+  - scale validated on #31: bun top level with the boy's hair top, crown at 0.97 m.
 
 Not done / limitations:
 - H25/H26 (hair) and F01/F02 (face) not published or approved (identity changes: owner decision); H25 and F01 reviewed and not approved.
