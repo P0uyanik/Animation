@@ -15,9 +15,9 @@ import tempfile
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 PROF = os.path.join(ROOT, "pipeline", "charsys", "rig_profiles")
 EXPECTED = {
- "toy_fixture": {"reach_ik": "available", "look_at": "available", "blink_life": "missing", "expressions": "available",
+ "toy_fixture": {"reach_ik": "available", "look_at": "available", "blink_life": "available", "expressions": "available",
                  "grasp": "missing", "walk": "available", "idle_life": "available"},
- "boy_yellow_hoodie": {"reach_ik": "available", "look_at": "available", "blink_life": "missing", "expressions": "available",
+ "boy_yellow_hoodie": {"reach_ik": "available", "look_at": "available", "blink_life": "available", "expressions": "available",
                        "grasp": "available", "walk": "available", "idle_life": "available"}}
 R = []
 

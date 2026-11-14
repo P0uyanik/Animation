@@ -201,6 +201,7 @@ void planShots(const SceneEvaluator& ev, Clip& gen, const std::vector<Beat>& bea
 
 Result<void> SceneEvaluator::compileActions() {
   auto gen = std::make_shared<Clip>();
+  warnings_.clear();
   scene_.animation.generated = gen;  // later actions already see earlier ones (a reach after a walk)
   // Object fields that actions write are reset to what the scene author wrote, so compiling twice is harmless.
   if (authoredObjects_.size() == scene_.objects.size())
@@ -289,7 +290,13 @@ Result<void> SceneEvaluator::compileActions() {
     }
 
     if (type == "expression") {
-      const std::string name = str(a, "name");
+      std::vector<std::string> morphNames;
+      for (auto& mt : characters_[size_t(c)].rig.morphs) morphNames.push_back(mt.name);
+      const std::string requested = str(a, "name"), name = resolveExpression(asset, requested, morphNames);
+      if (name.empty()) {  // reported, not silently ignored: the scene still plays, without this expression
+        warnings_.push_back(std::format("expression: character '{}' has no expression '{}'", who, requested));
+        continue;
+      }
       const std::string track = prefix + "expr." + name;
       auto d = asset.defaultExpressions.find(name);
       const float base = clip.evaluate(track, start, vec3(d == asset.defaultExpressions.end() ? 0.0f : d->second)).x;
@@ -489,7 +496,9 @@ Result<void> SceneEvaluator::compileActions() {
         vec3 rest = asset.skeleton.bones[size_t(s == 'L' ? footL : footR)].head;
         return vec3(bodyAt(f) * vec4(rest, 1));
       };
-      const int steps = std::max(2, int(std::ceil(dist / 0.11f)));
+      const float stepLen = walkStep(asset);          // from the character's legs (or its explicit setting)
+      const float gaitScale = stepLen / 0.11f;           // lift and pelvis motion scale with the step
+      const int steps = std::max(2, int(std::ceil(dist / stepLen)));
       const double dt = (end - start) / double(steps);
       vec3 last[2] = {ankle('L', start), ankle('R', start)};
       for (char s : {'L', 'R'}) {
@@ -503,18 +512,20 @@ Result<void> SceneEvaluator::compileActions() {
       for (int k = 0; k <= steps; ++k) {
         const char s = k % 2 == 0 ? 'L' : 'R';
         const int si = s == 'L' ? 0 : 1;
-        const double t0 = start + dt * (k == 0 ? 0.0 : k - 0.5), t1 = std::min(end, start + dt * (k + 0.5));
+        // Each swing uses ~85% of its interval, so both feet are briefly planted at every hand-over (double support).
+        const double ds = 0.075 * dt;
+        const double t0 = start + dt * (k == 0 ? 0.0 : k - 0.5) + (k == 0 ? 0.0 : ds), t1 = std::min(end, start + dt * (k + 0.5) - ds);
         const double land = std::min(end, t1 + dt * 0.5);
         const vec3 next = k >= steps - 1 ? ankle(s, end) : ankle(s, land);
         const std::string t = prefix + "ik.foot." + s;
         key(*gen, t, t0, last[si]);
-        key(*gen, t, 0.5 * (t0 + t1), glm::mix(last[si], next, 0.5f) + vec3(0, 0.022f, 0));
+        key(*gen, t, 0.5 * (t0 + t1), glm::mix(last[si], next, 0.5f) + vec3(0, 0.022f * gaitScale, 0));
         key(*gen, t, t1, next);
         last[si] = next;
         // Pelvis drops at each landing and leans over the standing foot mid-swing.
-        const float lean = s == 'L' ? -0.005f : 0.005f;
-        key(*gen, root, 0.5 * (t0 + t1), vec3(lean, 0.002f, 0));
-        key(*gen, root, t1, vec3(0, -0.005f, 0));
+        const float lean = (s == 'L' ? -0.005f : 0.005f) * gaitScale;
+        key(*gen, root, 0.5 * (t0 + t1), vec3(lean, 0.002f * gaitScale, 0));
+        key(*gen, root, t1, vec3(0, -0.005f * gaitScale, 0));
         // Arms swing against the legs (forward = negative x rotation), keeping each arm's resting spread.
         for (char arm : {'L', 'R'}) {
           std::string bone = std::string("upperArm.") + arm;

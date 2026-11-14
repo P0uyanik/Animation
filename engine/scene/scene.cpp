@@ -365,7 +365,9 @@ std::vector<mat4> SceneEvaluator::characterGlobals(size_t c, double frame, Pose*
   float yaw = clip.evaluate(cd.name + ".yaw", frame, vec3(cd.yawDeg)).x;
   mat4 world = objectMatrixLocal(pos, yaw, 1.0f);
   Pose pose = evaluatePose(ci.asset.skeleton, clip, prefix, frame, &ci.asset.defaultPose);
-  applyLife(ci.asset.skeleton, clip, prefix, frame, scene_.rate.fps(), world, cd.life, pose);
+  LifeParams life = cd.life;
+  if (!blinkMorph(ci).empty()) life.blinkLids = false;  // blinks are a morph for this character (see evaluate)
+  applyLife(ci.asset.skeleton, clip, prefix, frame, scene_.rate.fps(), world, life, pose);
   applyConstraints(ci.asset.skeleton, clip, prefix, frame, world, pose);
   if (poseOut) *poseOut = pose;
   return boneGlobals(ci.asset.skeleton, pose, world);
@@ -419,6 +421,15 @@ vec3 unfoldedPaper(vec3 v) {
 }
 }  // namespace
 
+// The character's blink morph ("blink" in its expression map naming an existing morph), or "".
+std::string SceneEvaluator::blinkMorph(const CharacterInstance& ci) {
+  auto it = ci.asset.expressionMap.find("blink");
+  if (it == ci.asset.expressionMap.end()) return {};
+  for (auto& mt : ci.rig.morphs)
+    if (mt.name == it->second) return mt.name;
+  return {};
+}
+
 std::shared_ptr<FrameSnapshot> SceneEvaluator::evaluate(double frame) const {
   auto snap = std::make_shared<FrameSnapshot>();
   snap->frame = frame;
@@ -431,10 +442,16 @@ std::shared_ptr<FrameSnapshot> SceneEvaluator::evaluate(double frame) const {
     auto skin = characterGlobals(c, frame);
     for (size_t b = 0; b < skin.size(); ++b) skin[b] = skin[b] * glm::translate(mat4(1), -ci.asset.skeleton.bones[b].head);
     std::vector<float> weights;
+    const std::string blink = scene_.characters[c].life.enabled ? blinkMorph(ci) : std::string();
+    const float blinkW = blink.empty() ? 0.0f
+                                       : blinkAmount(frame / std::max(1.0, scene_.rate.fps()), scene_.characters[c].life.blinkInterval,
+                                                     scene_.characters[c].life.seed);
     for (auto& mt : ci.rig.morphs) {
       auto d = ci.asset.defaultExpressions.find(mt.name);
       float def = d == ci.asset.defaultExpressions.end() ? 0.0f : d->second;
-      weights.push_back(clip.evaluate(prefix + "expr." + mt.name, frame, vec3(def)).x);
+      float w = clip.evaluate(prefix + "expr." + mt.name, frame, vec3(def)).x;
+      if (mt.name == blink) w = std::max(w, blinkW);  // automatic blinks drive the character's blink morph
+      weights.push_back(w);
     }
     PosedCharacter posed = poseCharacter(ci.rig, skin, weights, ci.asset.dualQuaternion);
     for (size_t k = 0; k < posed.meshes.size(); ++k) snap->meshes.push_back({posed.meshes[k], ci.meshMaterial[k]});

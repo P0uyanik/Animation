@@ -135,10 +135,13 @@ Json characterToJson(const CharacterAsset& c) {
   for (auto& g : c.lockGroups) groups.push_back(lockGroupToJson(g));
   for (auto& [b, v] : c.defaultPose) pose[b] = toJson(v);
   for (auto& [e, w] : c.defaultExpressions) dexpr[e] = w;
-  return {{"format", "plush.character"}, {"version", 1}, {"name", c.name}, {"skeleton", bones}, {"materials", mats},
-          {"skinning", c.dualQuaternion ? "dualQuaternion" : "linear"}, {"parts", parts}, {"fuzz", fuzz},
-          {"locks", locks}, {"lockGroups", groups}, {"expressions", exprs}, {"defaultPose", pose},
-          {"defaultExpressions", dexpr}};
+  Json out = {{"format", "plush.character"}, {"version", 1}, {"name", c.name}, {"skeleton", bones}, {"materials", mats},
+              {"skinning", c.dualQuaternion ? "dualQuaternion" : "linear"}, {"parts", parts}, {"fuzz", fuzz},
+              {"locks", locks}, {"lockGroups", groups}, {"expressions", exprs}, {"defaultPose", pose},
+              {"defaultExpressions", dexpr}};
+  if (!c.expressionMap.empty()) out["expressionMap"] = c.expressionMap;  // optional keys: written only when set
+  if (c.walkStepLength > 0 || c.walkStepScale > 0) out["walk"] = {{"stepLength", c.walkStepLength}, {"stepScale", c.walkStepScale}};
+  return out;
 }
 
 Result<LockGroup> lockGroupFromJson(const Json& j) {
@@ -241,6 +244,19 @@ LockParams locksFromJson(const Json& j) {
 }
 }  // namespace
 
+float walkStep(const CharacterAsset& c) {
+  if (c.walkStepLength > 0) return c.walkStepLength;
+  const float leg = legLength(c.skeleton);
+  if (leg <= 0) return 0.11f;
+  return (c.walkStepScale > 0 ? c.walkStepScale : kDefaultWalkStepScale) * leg;
+}
+
+std::string resolveExpression(const CharacterAsset& c, const std::string& name, const std::vector<std::string>& morphNames) {
+  auto has = [&](const std::string& m) { return std::find(morphNames.begin(), morphNames.end(), m) != morphNames.end(); };
+  if (auto it = c.expressionMap.find(name); it != c.expressionMap.end() && has(it->second)) return it->second;
+  return has(name) ? name : std::string();
+}
+
 Result<CharacterAsset> characterFromJson(const Json& j) {
   if (readString(j, "format") != "plush.character") return fail("not a plush.character file");
   if (readInt(j, "version", 0) != 1) return fail("unsupported plush.character version");
@@ -320,6 +336,12 @@ Result<CharacterAsset> characterFromJson(const Json& j) {
       for (auto& a : ej.value("add", Json::array())) e.add.push_back(a);
       c.expressions.push_back(std::move(e));
     }
+  if (auto it = j.find("expressionMap"); it != j.end() && it->is_object())
+    for (auto& [k, v] : it->items()) c.expressionMap[k] = v.get<std::string>();
+  if (auto it = j.find("walk"); it != j.end() && it->is_object()) {
+    c.walkStepLength = readFloat(*it, "stepLength", 0.0f);
+    c.walkStepScale = readFloat(*it, "stepScale", 0.0f);
+  }
   return c;
 }
 

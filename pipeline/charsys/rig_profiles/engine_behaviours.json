@@ -2,12 +2,113 @@
  "schema": "plush-studio.engine-behaviours/1",
  "note": "What each existing C++ engine behaviour needs, by ENGINE ROLE name (engine/anim, engine/scene). These are engine facts, independent of any character or rig profile. 'roles' = all required; 'roles_any' = at least one; 'morphs' = needs morph targets. Data availability is not proof of support: tests/test_imported_character.cpp decides.",
  "behaviours": {
-  "reach_ik":      {"roles": ["spine", "upperArm.L", "forearm.L", "hand.L", "upperArm.R", "forearm.R", "hand.R"], "chains": [["upperArm.L", "forearm.L", "hand.L"], ["upperArm.R", "forearm.R", "hand.R"]]},
-  "look_at":       {"roles_any": ["eye.L", "eye.R"]},
-  "blink_life":    {"roles": ["lid.L", "lid.R"], "note": "life layer rotates lid bones by a fixed 86 deg"},
-  "expressions":   {"morphs": true},
-  "grasp":         {"roles": ["hand.L", "thumbA.L", "thumbB.L", "f0a.L", "f0b.L", "f1a.L", "f1b.L", "f2a.L", "f2b.L", "f3a.L", "f3b.L"], "chains": [["thumbA.L", "thumbB.L"], ["f0a.L", "f0b.L"], ["f1a.L", "f1b.L"], ["f2a.L", "f2b.L"], ["f3a.L", "f3b.L"]]},
-  "walk":          {"roles": ["thigh.L", "shin.L", "foot.L", "thigh.R", "shin.R", "foot.R"], "chains": [["thigh.L", "shin.L", "foot.L"], ["thigh.R", "shin.R", "foot.R"]]},
-  "idle_life":     {"roles": ["hips", "spine", "chest", "neck", "head"]}
+  "reach_ik": {
+   "roles": [
+    "spine",
+    "upperArm.L",
+    "forearm.L",
+    "hand.L",
+    "upperArm.R",
+    "forearm.R",
+    "hand.R"
+   ],
+   "chains": [
+    [
+     "upperArm.L",
+     "forearm.L",
+     "hand.L"
+    ],
+    [
+     "upperArm.R",
+     "forearm.R",
+     "hand.R"
+    ]
+   ]
+  },
+  "look_at": {
+   "roles_any": [
+    "eye.L",
+    "eye.R"
+   ]
+  },
+  "blink_life": {
+   "roles_any": [
+    "lid.L",
+    "lid.R"
+   ],
+   "or_expression": "blink",
+   "note": "life layer: rotates lid bones by 86 deg, or drives the morph mapped to 'blink' (the morph wins; no lid rotation)"
+  },
+  "expressions": {
+   "morphs": true
+  },
+  "grasp": {
+   "roles": [
+    "hand.L",
+    "thumbA.L",
+    "thumbB.L",
+    "f0a.L",
+    "f0b.L",
+    "f1a.L",
+    "f1b.L",
+    "f2a.L",
+    "f2b.L",
+    "f3a.L",
+    "f3b.L"
+   ],
+   "chains": [
+    [
+     "thumbA.L",
+     "thumbB.L"
+    ],
+    [
+     "f0a.L",
+     "f0b.L"
+    ],
+    [
+     "f1a.L",
+     "f1b.L"
+    ],
+    [
+     "f2a.L",
+     "f2b.L"
+    ],
+    [
+     "f3a.L",
+     "f3b.L"
+    ]
+   ]
+  },
+  "walk": {
+   "roles": [
+    "thigh.L",
+    "shin.L",
+    "foot.L",
+    "thigh.R",
+    "shin.R",
+    "foot.R"
+   ],
+   "chains": [
+    [
+     "thigh.L",
+     "shin.L",
+     "foot.L"
+    ],
+    [
+     "thigh.R",
+     "shin.R",
+     "foot.R"
+    ]
+   ]
+  },
+  "idle_life": {
+   "roles": [
+    "hips",
+    "spine",
+    "chest",
+    "neck",
+    "head"
+   ]
+  }
  }
 }

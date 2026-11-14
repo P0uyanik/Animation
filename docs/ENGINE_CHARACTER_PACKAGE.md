@@ -86,26 +86,49 @@ Arrays are `{offset, count, dtype}` into `geometry.bin` (little-endian); `count`
 convention: rest positions are in rest world space and the skinning matrix is `boneGlobal · translate(−head)`, so the
 rest pose reproduces the rest mesh exactly (tested, error < 1e-5 m).
 
+## Character settings carried by the package (optional keys)
+| Key | Meaning | Source |
+| --- | --- | --- |
+| `expressions` | Engine expression name → this character's morph (e.g. `blink → Blink`, fixture `blink → Squint`). The `expression` action resolves through it; an unknown expression is reported in `SceneEvaluator::warnings()`, not silently dropped | profile `expressions`, keeping only morphs that exist; `expressions_missing` lists the rest |
+| `walk` | `step_length` (m) or `step_scale` (× leg length); default `0.11 / 0.3451` per metre of leg, which keeps the original chibi characters at exactly 0.11 m | profile `walk` (optional) |
+| `hands` | `{"L": {"finger_dir": [...], "palm_normal": [...]}, "R": ...}`. Without it the importer derives each hand frame from its finger geometry | profile `hands` (optional) |
+
+Engine side (generic, for every character):
+- **Walk** step = `walkStep(asset)`: explicit length, else scale × leg length (thigh → shin → foot).
+  - Foot lift and pelvis motion scale with the step.
+  - Each swing now uses about 85% of its interval, so both feet are briefly planted at every hand-over (double
+    support). Previously both feet moved at hand-overs; this was visible with short steps.
+- **Hands:** `Skeleton::handL/handR` (`HandFrame`) gives curl, spread and thumb axes. A zero frame reproduces the old
+  convention exactly (existing characters unchanged).
+  - Any subset of at least two digits works.
+  - A hand with fewer digits is "no hand": grasp is unsupported and nothing is posed.
+- **Blink:** if `expressions.blink` names a morph, the life layer drives that morph (`blinkAmount`) and does not rotate
+  lid bones (`LifeParams::blinkLids = false`). Lid-bone characters are unchanged.
+- **Expressions:** `resolveExpression(asset, name, morphs)`. A map entry wins, else the morph name itself, else a
+  warning.
+- SDF character files accept the same optional `expressionMap` and `walk` keys.
+
 ## Behaviour support, as tested (`tests/test_imported_character.cpp`)
-| Behaviour | boy_yellow_hoodie 1.0.0 | toy fixture (engineering test) | Reason when not supported |
+| Behaviour | boy_yellow_hoodie 1.0.0 | toy fixture (engineering test) | Notes |
 | --- | --- | --- | --- |
 | Rest skinning | **supported** (exact) | **supported** | — |
-| Reach / two-bone IK | **supported** (hand error 0.0003 mm, mesh follows) | **supported** (0.0001 mm) | — |
-| Look-at (eyes) | **supported** (axis error 0°, eye mesh moves 13 mm) | **supported** (9 mm) | — |
-| Expressions (morph weights `expr.<name>`) | **supported** (Blink, BrowDown, Smile, JawOpen) | **supported** (Squint, Puff) | Names are the character's own; the engine's expression presets (smile, frown, surprise) are not mapped to them |
-| Blink in the life layer | **unsupported** | **unsupported** | The life layer rotates `lid.L/R` bones by a fixed 86°. Both packages blink with morphs and have no lid bones. A lid bone would reproduce the 62° overshoot problem fixed in F01 |
-| Grasp / hand pose | **unsupported** (chains resolve, 5 fingertips, but contact misses by 46 mm) | **unsupported** (no fingers, by design) | The engine hand code assumes its own rest pose: fingers hanging along −y, palm facing −x. An A-pose import has neither. Rigify's third phalanx stays a helper (the engine uses 2 joints) |
-| Walk (scene action) | **supported** (3/59 sliding frames, limit 6; 22 mm foot lift) | **partial** (root reaches the target and feet lift, but 8/59 sliding frames) | The walk action uses a fixed 0.11 m step, not scaled by leg length |
-| Idle (life layer: breathing, sway, head drift) | **supported**, deterministic | **supported** | — |
+| Reach / two-bone IK | **supported** (0.0003 mm) | **supported** (0.0001 mm) | — |
+| Look-at | **supported** (0°, eye mesh 13 mm) | **supported** (9 mm) | — |
+| Expressions by engine name | **supported** (blink, smile, jawOpen, browDown → own morphs) | **supported** (blink → Squint, surprise → Puff); `smile` **missing**, reported as a warning | — |
+| Blink in the life layer | **supported** via morph `Blink` (morph vertices move 48 mm when closed) | **supported** via morph `Squint` (13 mm) | No lid bones used |
+| Grasp / hand pose | **supported** both hands: hand frame derived from fingers; all 5 fingertips rest on a stick held between thumb and fingers (worst gap 4.5 mm = finger-tube radius) | **unsupported**: no finger roles, hand frame "none", by design | Hand orientation is verified independently: a rotated skeleton gives exactly Q × the original fingertips (≤ 0.0001 mm); a 3-digit hand grasps |
+| Walk | **supported**: step 83 mm from 261 mm legs, 1/59 frames with both feet moving | **supported**: step 54 mm from 170 mm legs, 0/59 | Chibi reference walk: 2/59 (was up to 6) |
+| Idle | **supported**, deterministic | **supported** | — |
 
-Status is pinned in the tests: if an engine fix changes it, the test fails and this table must be updated.
-
-## Engine assumptions found (candidates for small, generic engine fixes; not made here)
-1. Walk step length is a constant (0.11 m): it should scale with leg length from the skeleton.
-2. The hand convention is fixed: palm and finger axes should come from the hand's own rest geometry, or from the
-   profile.
-3. Blink is lid-bone only: it should also accept a blink morph, mapped through the profile or package.
-4. Expression presets are hard names: a per-character expression map belongs in the package.
+Remaining limitations:
+- Only humanoid profiles exist. The finger-role naming (`thumbA/B`, `f0..f3`) is the engine's humanoid hand model;
+  other limb types need their own behaviour definitions later.
+- Hand-frame derivation assumes index and pinky (or thumb) define the across-hand direction, which is a humanoid hand
+  convention. Other hands supply `hands` metadata.
+- Grasp is measured with the engine's convention: a stick across the hand. Arbitrary object shapes are not tested.
+- Walk timing (frames per step) follows the action's duration. Very short legs over long distances give a fast
+  cadence; there is no speed limit.
+- The fixture validates the adapter only, not production of a second character.
 
 ## Commands
 ```bash

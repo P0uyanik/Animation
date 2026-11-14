@@ -48,12 +48,13 @@ def expand_profile(p):
     return roles, chains
 
 
-def capabilities(roles_present, has_morphs, behaviours):
+def capabilities(roles_present, has_morphs, behaviours, expressions=()):
     out = {}
     for name, b in behaviours.items():
         missing = [r for r in b.get("roles", []) if r not in roles_present]
-        if b.get("roles_any") and not any(r in roles_present for r in b["roles_any"]):
-            missing += ["any of " + "/".join(b["roles_any"])]
+        alt = b.get("or_expression") in expressions
+        if b.get("roles_any") and not any(r in roles_present for r in b["roles_any"]) and not alt:
+            missing += ["any of " + "/".join(b["roles_any"]) + (f" or expression '{b['or_expression']}'" if b.get("or_expression") else "")]
         if b.get("morphs") and not has_morphs:
             missing.append("morph targets")
         out[name] = {"data": "available" if not missing else "missing", "missing": missing,
@@ -227,7 +228,11 @@ def main():
            "rig_specific_bones": [s["name"] for s in skel if s["kind"] == "rig_specific"],
            "materials": list(mats.values()), "meshes": meshes, "morphs": morphs,
            "morph_names": sorted({m["name"] for m in morphs}),
-           "capabilities": capabilities(present, bool(morphs), behaviours),
+           "expressions": {k: v for k, v in prof.get("expressions", {}).items() if v in {m["name"] for m in morphs}},
+           "expressions_missing": sorted(k for k, v in prof.get("expressions", {}).items() if v not in {m["name"] for m in morphs}),
+           "capabilities": capabilities(present, bool(morphs), behaviours,
+                                        {k for k, v in prof.get("expressions", {}).items() if v in {m["name"] for m in morphs}}),
+           **({"walk": prof["walk"]} if "walk" in prof else {}), **({"hands": prof["hands"]} if "hands" in prof else {}),
            "discarded": prof.get("discarded", []) + ([f"meshes without armature (not exported): {skipped}"] if skipped else []),
            "files": {"geometry.bin": {"bytes": len(blob), "sha256": hashlib.sha256(bytes(blob)).hexdigest()}}}
     json.dump(man, open(os.path.join(out, "character.json"), "w"), indent=1)

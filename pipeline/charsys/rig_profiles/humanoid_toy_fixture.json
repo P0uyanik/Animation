@@ -3,15 +3,58 @@
  "profile": "humanoid_toy_fixture/1",
  "kind": "humanoid",
  "description": "ENGINEERING TEST FIXTURE ONLY (pipeline/charsys/tests/fixtures/make_toy_fixture.py): different bone names, hierarchy, proportions; no fingers; tail. Not a production character.",
- "required_roles": ["hips", "spine", "chest", "neck", "head"],
- "mirror": {"engine": [".L", ".R"], "source": ["_lf", "_rt"]},
- "roles": {
-  "hips": "pelvis", "spine": "torso_lo", "chest": "torso_hi", "neck": "neck_a", "head": "skull",
-  "eye.L": "eye_lf",
-  "upperArm.L": "arm_up_lf", "forearm.L": "arm_lo_lf", "hand.L": "paw_lf",
-  "thigh.L": "leg_up_lf", "shin.L": "leg_lo_lf", "foot.L": "foot_lf"
+ "required_roles": [
+  "hips",
+  "spine",
+  "chest",
+  "neck",
+  "head"
+ ],
+ "mirror": {
+  "engine": [
+   ".L",
+   ".R"
+  ],
+  "source": [
+   "_lf",
+   "_rt"
+  ]
  },
- "contiguous_chains": [["upperArm.L", "forearm.L", "hand.L"], ["thigh.L", "shin.L", "foot.L"]],
- "rig_specific_bones": ["tail_1", "tail_2"],
- "discarded": []
+ "roles": {
+  "hips": "pelvis",
+  "spine": "torso_lo",
+  "chest": "torso_hi",
+  "neck": "neck_a",
+  "head": "skull",
+  "eye.L": "eye_lf",
+  "upperArm.L": "arm_up_lf",
+  "forearm.L": "arm_lo_lf",
+  "hand.L": "paw_lf",
+  "thigh.L": "leg_up_lf",
+  "shin.L": "leg_lo_lf",
+  "foot.L": "foot_lf"
+ },
+ "contiguous_chains": [
+  [
+   "upperArm.L",
+   "forearm.L",
+   "hand.L"
+  ],
+  [
+   "thigh.L",
+   "shin.L",
+   "foot.L"
+  ]
+ ],
+ "rig_specific_bones": [
+  "tail_1",
+  "tail_2"
+ ],
+ "discarded": [],
+ "expressions": {
+  "blink": "Squint",
+  "surprise": "Puff",
+  "smile": "Grin"
+ },
+ "expressions_note": "engine expression name -> this rig family's morph name; entries whose morph is absent are listed as missing in the package"
 }

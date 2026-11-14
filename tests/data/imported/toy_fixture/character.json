@@ -370,6 +370,13 @@
   "Puff",
   "Squint"
  ],
+ "expressions": {
+  "blink": "Squint",
+  "surprise": "Puff"
+ },
+ "expressions_missing": [
+  "smile"
+ ],
  "capabilities": {
   "reach_ik": {
    "data": "available",
@@ -382,11 +389,8 @@
    "tested": "see docs/ENGINE_CHARACTER_PACKAGE.md (behaviour support table)"
   },
   "blink_life": {
-   "data": "missing",
-   "missing": [
-    "lid.L",
-    "lid.R"
-   ],
+   "data": "available",
+   "missing": [],
    "tested": "see docs/ENGINE_CHARACTER_PACKAGE.md (behaviour support table)"
   },
   "expressions": {

@@ -43,10 +43,20 @@ struct Bone {
   vec3 head{0};  // rest-space pivot
 };
 
+// Orientation of a hand in the rest pose: the direction its fingers point and the palm normal (unit vectors in the
+// rest frame). Zero = the engine's own convention (fingers hang along -y, palm faces the body: -x left, +x right).
+// Imported characters derive it from their finger geometry or take it from package metadata.
+struct HandFrame {
+  vec3 fingerDir{0};
+  vec3 palmNormal{0};
+};
 struct Skeleton {
   std::vector<Bone> bones;  // parents always precede children
+  HandFrame handL, handR;
   int find(std::string_view name) const;
 };
+// Leg length (thigh -> shin -> foot pivots, left side, else right); 0 if the skeleton has no legs.
+float legLength(const Skeleton& skeleton);
 
 // Local bone rotations relative to the rest pose (rest frames are axis aligned).
 struct Pose {
@@ -80,6 +90,7 @@ struct LifeParams {
   float blinkInterval = 3.6f;  // mean seconds between blinks (0 = no automatic blinks)
   float headFollow = 0.55f;    // share of a gaze turn taken by neck + head
   float headLagSec = 0.2f;     // the head follows the eyes this much later
+  bool blinkLids = true;       // false: blinks are a morph (character expression map), lid bones are not rotated
   uint32_t seed = 1;
 };
 void applyLife(const Skeleton& skeleton, const Clip& clip, const std::string& prefix, double frame, double fps,
@@ -87,7 +98,9 @@ void applyLife(const Skeleton& skeleton, const Clip& clip, const std::string& pr
 // Blink closure in [0, 1] at time t (seconds) for an average interval; exposed for tests.
 float blinkAmount(double t, float interval, uint32_t seed);
 
-// Fingers (bones thumbA/thumbB and f0a..f3a / f0b..f3b with .L/.R; skeletons without them are left alone).
+// Fingers (bones thumbA/thumbB and f0a..f3a / f0b..f3b with .L/.R). Any subset of at least two digits works (missing
+// digits are skipped); hands with fewer digits are left alone. Curl, spread and thumb axes come from the hand's
+// HandFrame (Skeleton::handL/handR).
 struct HandPose {
   float curl = 0.25f;    // 0 open .. 1 fist (all fingers)
   float thumb = 0.15f;   // 0 open .. 1 folded over the palm

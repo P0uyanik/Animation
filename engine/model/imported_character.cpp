@@ -2,6 +2,7 @@
 
 #include <array>
 #include <cstring>
+#include <format>
 #include <fstream>
 
 namespace plush {
@@ -23,6 +24,32 @@ struct Blob {
 };
 
 }  // namespace
+
+// Hand frame from finger geometry: fingers point from the hand pivot to the mean finger base; the palm normal is
+// perpendicular to that and to the across-hand axis (index - pinky, else thumb - fingers), signed per side so that
+// the engine convention (palm towards the body) is reproduced for hands hanging at the sides.
+static HandFrame deriveHandFrame(const Skeleton& sk, char side, std::string& how) {
+  const std::string s = std::string(".") + side;
+  const int hand = sk.find("hand" + s);
+  if (hand < 0) return how = "none", HandFrame{};
+  vec3 base(0);
+  int n = 0;
+  for (int k = 0; k < 4; ++k)
+    if (int a = sk.find(std::format("f{}a{}", k, s)); a >= 0) base += sk.bones[size_t(a)].head, ++n;
+  const int thumb = sk.find("thumbA" + s), idx = sk.find("f3a" + s), pinky = sk.find("f0a" + s);
+  if (n == 0) return how = "none", HandFrame{};
+  base /= float(n);
+  vec3 d = base - sk.bones[size_t(hand)].head;
+  vec3 across = idx >= 0 && pinky >= 0 ? sk.bones[size_t(idx)].head - sk.bones[size_t(pinky)].head
+                : thumb >= 0             ? sk.bones[size_t(thumb)].head - base
+                                         : vec3(0);
+  if (glm::length(d) < 1e-6f || glm::length(across) < 1e-6f) return how = "none", HandFrame{};
+  d = glm::normalize(d);
+  vec3 nrm = glm::cross(across, d);
+  if (glm::length(nrm) < 1e-6f) return how = "none", HandFrame{};
+  how = "derived";
+  return HandFrame{d, glm::normalize(nrm) * (side == 'L' ? -1.0f : 1.0f)};
+}
 
 bool isImportedCharacter(const std::filesystem::path& manifest) {
   auto text = readTextFile(manifest);
@@ -66,6 +93,26 @@ Result<ImportedCharacter> loadImportedCharacter(const std::filesystem::path& man
     ic.asset.skeleton.bones.push_back(bone);
   }
   const int boneCount = int(ic.asset.skeleton.bones.size());
+  // Character settings carried by the package (all optional).
+  const Json exprMap = j.value("expressions", Json::object());  // keep alive while iterating
+  for (auto& [k, v] : exprMap.items()) ic.asset.expressionMap[k] = v.get<std::string>();
+  if (auto w = j.find("walk"); w != j.end() && w->is_object()) {
+    ic.asset.walkStepLength = readFloat(*w, "step_length", 0.0f);
+    ic.asset.walkStepScale = readFloat(*w, "step_scale", 0.0f);
+  }
+  for (char side : {'L', 'R'}) {
+    HandFrame& hf = side == 'L' ? ic.asset.skeleton.handL : ic.asset.skeleton.handR;
+    const Json hm = j.value("hands", Json::object()).value(std::string(1, side), Json());
+    std::string how;
+    if (hm.is_object()) {  // explicit metadata wins
+      hf.fingerDir = readVec3(hm, "finger_dir", vec3(0));
+      hf.palmNormal = readVec3(hm, "palm_normal", vec3(0));
+      how = "metadata";
+    } else {
+      hf = deriveHandFrame(ic.asset.skeleton, side, how);
+    }
+    ic.handFrameSource[side == 'L' ? 0 : 1] = how;
+  }
   for (const Json& m : j.value("materials", Json::array())) {
     auto mat = materialFromJson(m);
     if (!mat) return std::unexpected(mat.error());

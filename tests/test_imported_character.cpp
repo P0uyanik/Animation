@@ -103,31 +103,44 @@ TEST_CASE("imported character packages: behaviour support") {
       CHECK(maxDisplacement(c.rig, sk, rest, w) > 1e-4f);
     }
     MESSAGE("expressions: " << c.rig.morphs.size() << " morph blocks each deform their mesh");
-    // Blink through the life layer needs lid bones (fixed 86 deg rotation).
-    MESSAGE("blink_life: lid bones " << (sk.find("lid.L") >= 0 ? "present" : "absent"));
-    CHECK(sk.find("lid.L") < 0);  // documented status: unsupported for both packages (blink is a morph)
-    // Grasp: fingertips on a sphere in front of the palm (engine hand convention).
-    if (hasRole(c, "thumbA.L")) {
-      int ha = sk.find("hand.L");
-      float seg = glm::distance(sk.bones[size_t(sk.find("f1a.L"))].head, sk.bones[size_t(sk.find("f1b.L"))].head);
-      const float r = seg;
+    // Grasp: fingertips on a sphere in front of the palm, placed with the hand's own frame (derived from its fingers).
+    for (char side : {'L', 'R'}) {
+      const HandFrame& hf = side == 'L' ? sk.handL : sk.handR;
+      if (!hasRole(c, std::string("thumbA.") + side)) {
+        MESSAGE("grasp " << std::string(1, side) << ": unsupported (no finger roles; hand frame " << c.handFrameSource[side == 'L' ? 0 : 1] << ")");
+        CHECK(fingertips(sk, rest, mat4(1), side).empty());
+        CHECK(c.handFrameSource[side == 'L' ? 0 : 1] == "none");
+        continue;
+      }
+      REQUIRE(c.handFrameSource[side == 'L' ? 0 : 1] == "derived");
+      // A stick held across the hand (as in the engine's own grasp test): axis = the hand's across direction (index
+      // - pinky), placed in the opening between thumb and fingers, radius from that opening. All from the hand's data.
+      const std::string s = std::string(".") + side;
+      auto H = [&](const std::string& b) { return sk.bones[size_t(sk.find(b + s))].head; };
+      const vec3 hand = H("hand"), fingersB = 0.25f * (H("f0b") + H("f1b") + H("f2b") + H("f3b"));
+      const vec3 n = glm::normalize(hf.palmNormal), axis = glm::normalize(H("f3a") - H("f0a"));
+      vec3 mid = 0.5f * (fingersB + H("thumbB"));
+      const float r = 0.35f * glm::length((fingersB - H("thumbB")) - axis * glm::dot(fingersB - H("thumbB"), axis));
       HandPose gp{0, 0, 0};
       gp.grasp = true;
       gp.graspRadius = r;
-      gp.graspCentre = vec3(-0.004f - r, -0.03f, 0.008f);
+      gp.graspAxis = axis;
+      gp.graspCentre = (mid - hand) + n * (0.5f * r);
       Pose p = restPose(sk);
-      applyHandPose(sk, p, mat4(1), 'L', gp);
-      vec3 centre = sk.bones[size_t(ha)].head + gp.graspCentre;
-      auto tips = fingertips(sk, p, mat4(1), 'L');
-      float worst = 0;
-      for (auto& t : tips) worst = std::max(worst, std::abs(glm::distance(t, centre) - r));
-      MESSAGE("grasp: " << tips.size() << " fingertips, worst gap to the sphere " << worst * 1000 << " mm (radius " << r * 1000 << " mm)");
-      // Documented status: UNSUPPORTED for A-pose imports. The finger chains resolve (5 tips) but contact fails: the
-      // engine hand code assumes fingers hanging along -y with the palm facing -x (its own rest pose).
+      applyHandPose(sk, p, mat4(1), side, gp);
+      const vec3 centre = hand + gp.graspCentre;
+      auto tips = fingertips(sk, p, mat4(1), side);
+      float worst = 0, worstFar = 0;
+      for (auto& t : tips) {
+        vec3 dd = t - centre;
+        dd -= axis * glm::dot(dd, axis);
+        float gap = glm::length(dd) - r;
+        worst = std::max(worst, std::abs(gap));
+        worstFar = std::max(worstFar, gap);
+      }
+      MESSAGE("grasp " << std::string(1, side) << ": " << tips.size() << " fingertips, worst |gap| " << worst * 1000 << " mm (radius " << r * 1000 << " mm)");
       CHECK(tips.size() == 5);
-    } else {
-      MESSAGE("grasp: unsupported (no finger roles in this package)");
-      CHECK(fingertips(sk, rest, mat4(1), 'L').empty());
+      CHECK(worstFar < 0.007f);  // every fingertip rests on the object (finger tube radius 4.5 mm)
     }
   }
 }
@@ -154,11 +167,9 @@ TEST_CASE("imported character packages: walk and idle through the scene") {
       MESSAGE("walk: end " << glm::distance(endPos, vec3(0, 0, 0.6f)) << " m from target, sliding frames " << sliding
                            << "/59, foot lift " << (maxLift - minLift) * 1000 << " mm");
       CHECK(glm::distance(endPos, vec3(0, 0, 0.6f)) < 1e-4f);
-      CHECK(maxLift - minLift > 0.012f);
-      // Documented status: the boy meets the engine's no-skating criterion; the short-legged fixture does not
-      // (PARTIAL): the walk action uses a fixed 0.11 m step that is not scaled by leg length.
-      if (std::string(name) == "toy_fixture") CHECK(sliding > 6);
-      else CHECK(sliding <= 6);
+      CHECK(maxLift - minLift > 0.035f * legLength(sk));  // feet leave the ground (relative to leg length)
+      CHECK(sliding <= 6);  // step length from the character's legs (walkStep)
+      MESSAGE("walk: step " << walkStep(ev->characters()[0].asset) * 1000 << " mm for legs " << legLength(sk) * 1000 << " mm");
     }
     {
       auto ev = sceneWith(name, Json::array(), true);
@@ -174,4 +185,93 @@ TEST_CASE("imported character packages: walk and idle through the scene") {
       CHECK(a1[size_t(chest)] == a2[size_t(chest)]);  // deterministic
     }
   }
+}
+
+TEST_CASE("imported character packages: blink morph in the life layer and per-character expression names") {
+  for (const char* name : {"boy_yellow_hoodie_1.0.0", "toy_fixture"}) {
+    CAPTURE(name);
+    // Blink: the life layer drives the morph mapped to "blink" (no lid bones exist; none are rotated).
+    auto ev = sceneWith(name, Json::array(), true);
+    const auto& ci = ev->characters()[0];
+    const std::string blink = ci.asset.expressionMap.at("blink");
+    const LifeParams& life = ev->scene().characters[0].life;
+    int open = -1, closed = -1;
+    for (int f = 1; f < 600 && (open < 0 || closed < 0); ++f) {
+      float b = blinkAmount(f / 30.0, life.blinkInterval, life.seed);
+      if (b == 0 && open < 0) open = f;
+      if (b > 0.99f && closed < 0) closed = f;
+    }
+    REQUIRE(open > 0);
+    REQUIRE(closed > 0);
+    auto a = ev->evaluate(open), b = ev->evaluate(closed);
+    // The meshes carrying the blink morph move between an open and a closed frame.
+    float moved = 0;
+    for (auto& mt : ci.rig.morphs)
+      if (mt.name == blink)
+        for (uint32_t v : mt.vertices)
+          moved = std::max(moved, glm::distance(a->meshes[size_t(mt.mesh)].mesh->positions[v], b->meshes[size_t(mt.mesh)].mesh->positions[v]) -
+                                      0.0f);
+    MESSAGE("blink (morph '" << blink << "'): closed frame " << closed << ", morph vertices moved " << moved * 1000 << " mm");
+    CHECK(moved > 0.001f);
+    // Expressions by engine name resolve to the character's own morph; a missing one is reported.
+    Json actions = Json::parse(R"([{"type": "expression", "character": "who", "name": "blink", "start": 5},
+                                   {"type": "expression", "character": "who", "name": "smile", "start": 5}])");
+    auto ev2 = sceneWith(name, actions, false);
+    CHECK(ev2->scene().animation.evaluate("who/expr." + blink, 20, vec3(0)).x > 0.99f);
+    bool hasSmile = ev2->characters()[0].asset.expressionMap.count("smile") > 0;
+    bool warned = false;
+    for (auto& w : ev2->warnings()) warned |= w.find("'smile'") != std::string::npos;
+    MESSAGE("expressions: smile " << std::string(hasSmile ? "mapped" : "missing -> warning") << "; warnings " << ev2->warnings().size());
+    CHECK(warned == !hasSmile);
+  }
+}
+
+TEST_CASE("hand pose is independent of hand orientation and works with fewer digits") {
+  // The original chibi hand (engine convention, grasp verified in test_engine.cpp), and the same skeleton rotated by an
+  // arbitrary rotation Q with its hand frame rotated likewise: the grasp must give exactly Q x the original fingertips.
+  auto asset = loadCharacter(std::filesystem::path(PLUSH_SOURCE_DIR) / "content/characters/boy_dark_hair.character.json");
+  REQUIRE(asset.has_value());
+  const Skeleton& sk = asset->skeleton;
+  const quat Q = glm::angleAxis(glm::radians(70.0f), glm::normalize(vec3(1, 0.4f, 0.3f)));
+  Skeleton rot = sk;
+  for (auto& b : rot.bones) b.head = Q * b.head;
+  rot.handL = HandFrame{Q * vec3(0, -1, 0), Q * vec3(-1, 0, 0)};
+  const float r = 0.012f;
+  HandPose gp{0, 0, 0};
+  gp.grasp = true;
+  gp.graspRadius = r;
+  gp.graspCentre = vec3(-0.004f - r, -0.03f, 0.008f);
+  Pose p0 = restPose(sk), p1 = restPose(rot);
+  applyHandPose(sk, p0, mat4(1), 'L', gp);
+  HandPose gq = gp;
+  gq.graspCentre = Q * gp.graspCentre;
+  applyHandPose(rot, p1, mat4(1), 'L', gq);
+  auto t0 = fingertips(sk, p0, mat4(1), 'L'), t1 = fingertips(rot, p1, mat4(1), 'L');
+  REQUIRE(t0.size() == 5);
+  REQUIRE(t1.size() == 5);
+  float worst = 0;
+  for (size_t i = 0; i < 5; ++i) worst = std::max(worst, glm::distance(Q * t0[i], t1[i]));
+  MESSAGE("rotated hand: max fingertip difference " << worst * 1000 << " mm");
+  CHECK(worst < 1e-4f);
+  // Fewer digits: rename two fingers away; the remaining thumb and two fingers still grasp, the hand is not skipped.
+  Skeleton three = sk;
+  for (auto& b : three.bones)
+    if (b.name.rfind("f0", 0) == 0 || b.name.rfind("f2", 0) == 0) b.name = "x_" + b.name;
+  HandPose gc = gp;  // stick across the palm, as in the engine's own grasp test
+  gc.graspAxis = vec3(0, 0, 1);
+  Pose p3 = restPose(three);
+  applyHandPose(three, p3, mat4(1), 'L', gc);
+  auto t3 = fingertips(three, p3, mat4(1), 'L');
+  REQUIRE(t3.size() == 3);
+  vec3 centre = sk.bones[size_t(sk.find("hand.L"))].head + gc.graspCentre;
+  for (auto& t : t3) {
+    vec3 dd = t - centre;
+    dd.z = 0;
+    CHECK(glm::length(dd) - r < 0.007f);
+  }
+  // A single digit is not a hand: grasp reports unsupported (no tips), nothing is posed.
+  Skeleton one = three;
+  for (auto& b : one.bones)
+    if (b.name.rfind("f1", 0) == 0 || b.name.rfind("f3", 0) == 0) b.name = "x_" + b.name;
+  CHECK(fingertips(one, restPose(one), mat4(1), 'L').empty());
 }

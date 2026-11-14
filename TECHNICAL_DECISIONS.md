@@ -251,3 +251,10 @@ no Blender in the workflow, use the existing (unknown) computer, no GPU purchase
   package consistency, so new character kinds need profiles, not engine code.
 - Behaviour support is decided by tests per package, never by data availability alone.
 - The toy fixture is an engineering test, not production validation.
+
+## TD-39 Character-dependent engine behaviour comes from character data (2026-11-14)
+- Walk step = explicit, else scale × leg length; gait offsets scale with it; swings leave double support.
+- Hands have a `HandFrame` (explicit, derived from fingers, or the old convention); hands with any 2+ digits work.
+- Blink and expressions resolve through a per-character expression map; morph blinks replace lid rotation for that
+  character; missing expressions become scene warnings.
+- Defaults reproduce the previous behaviour of existing characters (regressions unchanged).

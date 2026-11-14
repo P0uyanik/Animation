@@ -91,6 +91,8 @@ class SceneEvaluator {
     bool imported = false;  // loaded from an imported-character package (not built from SDF parts)
   };
   const std::vector<CharacterInstance>& characters() const { return characters_; }
+  // Non-fatal problems found while compiling actions (e.g. an expression a character does not have).
+  const std::vector<std::string>& warnings() const { return warnings_; }
   int materialIndex(const std::string& name) const;
   // Replaces a character's asset (after in-app editing) and rebuilds its rig.
   Result<void> rebuildCharacter(size_t index, const CharacterAsset& asset, const EvalOptions& options);
@@ -116,6 +118,8 @@ class SceneEvaluator {
   std::map<std::string, int> materialIndex_;
   std::vector<ObjectGeometry> objects_;
   std::vector<CharacterInstance> characters_;
+  std::vector<std::string> warnings_;
+  static std::string blinkMorph(const CharacterInstance& ci);
   std::vector<ObjectDesc> authoredObjects_;  // objects as written, before actions set attachments and ripples
 };
 

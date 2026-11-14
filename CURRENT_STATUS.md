@@ -30,13 +30,18 @@ Completed and tested:
   - unsupported: grasp, life-layer blink.
   `ctest` 4/4 (incl. image regressions), exporter tests 8/8, `verify_charsys` 67/0.
 
+- **Engine behaviour generalised** (TD-39): leg-derived walk step + double support; hand frames (derived/explicit,
+  any 2+ digits); blink via the character's morph; per-character expression map with warnings. Boy package: reach,
+  look-at, expressions, blink, grasp (both hands), walk, idle all supported. Fixture: all except grasp (no fingers,
+  by design); missing `smile` reported. ctest 4/4, exporter tests 8/8, verify_charsys PASS.
+
 Not done / limitations:
 - H25/H26 (hair) and F01/F02 (face) not published or approved (identity changes: owner decision); H25 and F01 reviewed and not approved.
 - F02: flat interior (no teeth/tongue), skin stretch at mouth corners (3.5x), Smile without cheek/eye coordination; closed lid slightly rounded.
 - H26: crown tufts form a regular ring; #7 front 3.63%.
 - Smooth cap patch behind the ear; crown tufts thinner than the refs; side/back-¾ views still 3.5–3.7%.
 - Your local Blender 5.2 runs (`reproduce_v6.py`, `verify_charsys.py`) not yet reported.
-- Engine assumptions blocking full support: fixed 0.11 m walk step, fixed hand convention (grasp), lid-bone-only blink, hard expression preset names.
+- Adapter limits: humanoid profiles only; grasp tested with a stick across the hand; no cadence/speed limit for very short legs.
 - Fur is evaluation-only (not in master/glb); no USD/Alembic.
 
 Protected: v6 + frozen baseline, version 1.0.0, reproduction script, C++ engine. Iteration 5 not started.

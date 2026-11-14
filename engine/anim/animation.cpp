@@ -216,6 +216,15 @@ float blinkAmount(double t, float interval, uint32_t seed) {
   }
 }
 
+float legLength(const Skeleton& sk) {
+  for (const char* s : {".L", ".R"}) {
+    int t = sk.find(std::string("thigh") + s), k = sk.find(std::string("shin") + s), f = sk.find(std::string("foot") + s);
+    if (t >= 0 && k >= 0 && f >= 0)
+      return glm::distance(sk.bones[size_t(t)].head, sk.bones[size_t(k)].head) + glm::distance(sk.bones[size_t(k)].head, sk.bones[size_t(f)].head);
+  }
+  return 0.0f;
+}
+
 void applyLife(const Skeleton& sk, const Clip& clip, const std::string& prefix, double frame, double fps,
                const mat4& world, const LifeParams& life, Pose& pose) {
   if (!life.enabled || pose.local.size() != sk.bones.size()) return;
@@ -254,7 +263,7 @@ void applyLife(const Skeleton& sk, const Clip& clip, const std::string& prefix, 
                                0.6f * hd * float(std::sin(kTwoPi * t / 9.7 + ph2))));
   // Automatic blinks: the upper lids close over whatever the lid pose is.
   float bl = blinkAmount(t, life.blinkInterval, life.seed);
-  if (bl > 0)
+  if (bl > 0 && life.blinkLids)
     for (const char* name : {"lid.L", "lid.R"}) {
       int lid = sk.find(name);
       if (lid >= 0) pose.local[size_t(lid)] = glm::slerp(pose.local[size_t(lid)], eulerDegreesToQuat(vec3(86, 0, 0)), bl);
@@ -268,11 +277,11 @@ struct FingerChain {
 struct HandBones {
   int hand = -1;
   FingerChain thumb, fingers[4];  // fingers[3] is the index finger (next to the thumb)
-  bool valid() const {
-    if (hand < 0 || thumb.a < 0 || thumb.b < 0) return false;
-    for (auto& f : fingers)
-      if (f.a < 0 || f.b < 0) return false;
-    return true;
+  static bool ok(const FingerChain& f) { return f.a >= 0 && f.b >= 0; }
+  bool valid() const {  // a hand bone and at least two complete digits
+    int n = ok(thumb) ? 1 : 0;
+    for (auto& f : fingers) n += ok(f) ? 1 : 0;
+    return hand >= 0 && n >= 2;
   }
 };
 HandBones findHand(const Skeleton& sk, char side) {
@@ -283,18 +292,25 @@ HandBones findHand(const Skeleton& sk, char side) {
   for (int k = 0; k < 4; ++k) h.fingers[k] = {sk.find(std::format("f{}a{}", k, s)), sk.find(std::format("f{}b{}", k, s))};
   return h;
 }
-// Curl rotations in the hand's rest frame. Fingers hang along -y with the palm facing the body (-x for the left
-// hand), so they curl about -z (left) / +z (right); the thumb folds about a tilted axis across the palm.
-quat fingerRot(char side, float angleDeg, float spreadDeg) {
-  float sz = side == 'L' ? -1.0f : 1.0f;
-  return glm::angleAxis(glm::radians(angleDeg), vec3(0, 0, sz)) * glm::angleAxis(glm::radians(spreadDeg), vec3(1, 0, 0));
+// Curl rotations from the hand frame. Engine convention (zero HandFrame): fingers hang along -y with the palm facing
+// the body (-x for the left hand), so they curl about -z (left) / +z (right); the thumb folds about a tilted axis
+// across the palm. A general frame (finger direction d, palm normal n) gives curl axis d x n, spread axis e
+// (= -n left, n right) and thumb axis normalize(0.35 e + curl axis), which reduce exactly to the convention.
+struct HandAxes {
+  vec3 curl, spread, thumb;
+};
+HandAxes handAxes(const Skeleton& sk, char side) {
+  const HandFrame& f = side == 'L' ? sk.handL : sk.handR;
+  vec3 d = glm::length(f.fingerDir) > 1e-6f ? glm::normalize(f.fingerDir) : vec3(0, -1, 0);
+  vec3 n = glm::length(f.palmNormal) > 1e-6f ? f.palmNormal : vec3(side == 'L' ? -1.0f : 1.0f, 0, 0);
+  n = glm::normalize(n - d * glm::dot(n, d));
+  vec3 c = glm::cross(d, n), e = side == 'L' ? -n : n;
+  return {c, e, glm::normalize(0.35f * e + c)};
 }
-quat thumbRot(char side, float angleDeg) {
-  // Left: about (0.35, 0, -1) = towards the palm (-x) and across it (-z). A rotation axis mirrors across x = 0 as
-  // (x, -y, -z), so the right hand uses (0.35, 0, 1).
-  float sz = side == 'L' ? -1.0f : 1.0f;
-  return glm::angleAxis(glm::radians(angleDeg), glm::normalize(vec3(0.35f, 0.0f, sz)));
+quat fingerRot(const HandAxes& ax, float angleDeg, float spreadDeg) {
+  return glm::angleAxis(glm::radians(angleDeg), ax.curl) * glm::angleAxis(glm::radians(spreadDeg), ax.spread);
 }
+quat thumbRot(const HandAxes& ax, float angleDeg) { return glm::angleAxis(glm::radians(angleDeg), ax.thumb); }
 void setChain(Pose& pose, const FingerChain& f, quat ra, quat rb) {
   pose.local[size_t(f.a)] = ra;
   pose.local[size_t(f.b)] = rb;
@@ -310,14 +326,16 @@ vec3 chainTip(const Skeleton& sk, const mat4& handGlobal, int handBone, const Fi
 void applyHandPose(const Skeleton& sk, Pose& pose, const mat4& world, char side, const HandPose& hp) {
   HandBones h = findHand(sk, side);
   if (!h.valid()) return;
+  const HandAxes ax = handAxes(sk, side);
   const float kA = 75.0f, kB = 95.0f;  // full-curl angles of the first and second segment
   auto fingerCurl = [&](int k) { return k == 3 && hp.index >= 0 ? hp.index : hp.curl; };
   for (int k = 0; k < 4; ++k) {
+    if (!HandBones::ok(h.fingers[k])) continue;
     float c = std::clamp(fingerCurl(k), 0.0f, 1.0f), spread = hp.spread * 7.0f * (float(k) - 1.5f);
-    setChain(pose, h.fingers[k], fingerRot(side, c * kA, spread), fingerRot(side, c * kB, 0));
+    setChain(pose, h.fingers[k], fingerRot(ax, c * kA, spread), fingerRot(ax, c * kB, 0));
   }
   float tc = std::clamp(hp.thumb, 0.0f, 1.0f);
-  setChain(pose, h.thumb, thumbRot(side, tc * 55.0f), thumbRot(side, tc * 45.0f));
+  if (HandBones::ok(h.thumb)) setChain(pose, h.thumb, thumbRot(ax, tc * 55.0f), thumbRot(ax, tc * 45.0f));
   if (!hp.grasp || hp.graspWeight <= 0) return;
   // Contact search in the hand's own frame (the hand bone's global transform does not depend on the fingers).
   mat4 handGlobal = boneGlobals(sk, pose, world)[size_t(h.hand)];
@@ -342,14 +360,16 @@ void applyHandPose(const Skeleton& sk, Pose& pose, const mat4& world, char side,
   };
   float w = std::clamp(hp.graspWeight, 0.0f, 1.0f);
   for (int k = 0; k < 4; ++k) {
+    if (!HandBones::ok(h.fingers[k])) continue;
     float c0 = std::clamp(fingerCurl(k), 0.0f, 1.0f), spread = hp.spread * 7.0f * (float(k) - 1.5f);
-    auto ra = [&](float c) { return fingerRot(side, c * kA, spread); };
-    auto rb = [&](float c) { return fingerRot(side, c * kB, 0); };
+    auto ra = [&](float c) { return fingerRot(ax, c * kA, spread); };
+    auto rb = [&](float c) { return fingerRot(ax, c * kB, 0); };
     float c = glm::mix(c0, search(h.fingers[k], ra, rb, 0.0f), w);
     setChain(pose, h.fingers[k], ra(c), rb(c));
   }
-  auto ta = [&](float c) { return thumbRot(side, c * 55.0f); };
-  auto tb = [&](float c) { return thumbRot(side, c * 45.0f); };
+  if (!HandBones::ok(h.thumb)) return;
+  auto ta = [&](float c) { return thumbRot(ax, c * 55.0f); };
+  auto tb = [&](float c) { return thumbRot(ax, c * 45.0f); };
   float t = glm::mix(tc, search(h.thumb, ta, tb, 0.0f), w);
   setChain(pose, h.thumb, ta(t), tb(t));
 }
@@ -358,8 +378,10 @@ std::vector<vec3> fingertips(const Skeleton& sk, const Pose& pose, const mat4& w
   HandBones h = findHand(sk, side);
   if (!h.valid()) return {};
   mat4 hg = boneGlobals(sk, pose, world)[size_t(h.hand)];
-  std::vector<vec3> tips{chainTip(sk, hg, h.hand, h.thumb, pose.local[size_t(h.thumb.a)], pose.local[size_t(h.thumb.b)])};
-  for (auto& f : h.fingers) tips.push_back(chainTip(sk, hg, h.hand, f, pose.local[size_t(f.a)], pose.local[size_t(f.b)]));
+  std::vector<vec3> tips;  // thumb first, then fingers 0..3 (missing digits skipped)
+  if (HandBones::ok(h.thumb)) tips.push_back(chainTip(sk, hg, h.hand, h.thumb, pose.local[size_t(h.thumb.a)], pose.local[size_t(h.thumb.b)]));
+  for (auto& f : h.fingers)
+    if (HandBones::ok(f)) tips.push_back(chainTip(sk, hg, h.hand, f, pose.local[size_t(f.a)], pose.local[size_t(f.b)]));
   return tips;
 }
 

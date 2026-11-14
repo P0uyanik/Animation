@@ -44,11 +44,24 @@ struct LockGroup {
   std::vector<LockCurve> locks;
 };
 
+// Default walk step per metre of leg (thigh -> shin -> foot): 0.11 m for the 0.3451 m legs of the original chibi
+// characters, so their walks are unchanged; other proportions scale.
+constexpr float kDefaultWalkStepScale = 0.11f / 0.3451f;
+// Walk step length for a character (explicit length, else scale x leg length, else 0.11 m without legs).
+float walkStep(const struct CharacterAsset& c);
+// Morph name for an engine expression name ("" if the character has none).
+std::string resolveExpression(const struct CharacterAsset& c, const std::string& name, const std::vector<std::string>& morphNames);
+
 struct CharacterAsset {
   std::string name;
   std::vector<LockGroup> lockGroups;          // mirrors expanded
   std::map<std::string, vec3> defaultPose;    // bone -> euler degrees when no track (personality)
   std::map<std::string, float> defaultExpressions;
+  // Engine expression name (e.g. "blink", "smile") -> this character's morph name. Empty = morph names are used as
+  // given. A "blink" entry naming a morph makes the life layer blink with that morph instead of rotating lid bones.
+  std::map<std::string, std::string> expressionMap;
+  float walkStepLength = 0.0f;  // > 0: walk step in metres
+  float walkStepScale = 0.0f;   // > 0: walk step = scale * leg length (default: kDefaultWalkStepScale)
   bool dualQuaternion = false;  // skinning method (false = linear blend)
   std::vector<Expression> expressions;
   Skeleton skeleton;

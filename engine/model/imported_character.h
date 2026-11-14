@@ -18,6 +18,7 @@ struct ImportedCharacter {
   std::string profile, kind;
   std::vector<std::string> rolesPresent, rigSpecificBones;
   Json capabilities;     // data availability per engine behaviour (as exported)
+  std::string handFrameSource[2];  // L, R: "metadata", "derived" (from finger geometry) or "none" (no fingers)
 };
 
 // True if the file is an imported-character manifest ("format": "plush.imported_character").

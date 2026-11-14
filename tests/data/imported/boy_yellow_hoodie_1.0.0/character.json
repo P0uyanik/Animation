@@ -2948,6 +2948,13 @@
   "JawOpen",
   "Smile"
  ],
+ "expressions": {
+  "blink": "Blink",
+  "smile": "Smile",
+  "jawOpen": "JawOpen",
+  "browDown": "BrowDown"
+ },
+ "expressions_missing": [],
  "capabilities": {
   "reach_ik": {
    "data": "available",
@@ -2960,11 +2967,8 @@
    "tested": "see docs/ENGINE_CHARACTER_PACKAGE.md (behaviour support table)"
   },
   "blink_life": {
-   "data": "missing",
-   "missing": [
-    "lid.L",
-    "lid.R"
-   ],
+   "data": "available",
+   "missing": [],
    "tested": "see docs/ENGINE_CHARACTER_PACKAGE.md (behaviour support table)"
   },
   "expressions": {
