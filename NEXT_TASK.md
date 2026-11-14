@@ -1,9 +1,12 @@
 # Next task
 
-1. **Owner:** review `docs/evaluation/hair_experiments/cp2_hair_clumps_v2_sheet.jpg` and decide on H25.
-   If approved: build from the spec + H25 override into a scratch folder, publish as 1.1.0 with
-   `--identity-change-approved-by "<owner, date>"`, run `tests/reuse_test.py` on 1.1.0.
-2. **Next engineering milestone (no approval needed, priority 3: rigging/facial controls):** fix the known face-rig
-   defects from the pilot report — closed lids bulging over the eyes (Blink), and Smile/JawOpen too weak (no jaw
-   rotation, no mouth cavity) — as charsys modules, measured with `pipeline/blender/boy_pilot/rig_tests.py`
-   renders, built into a scratch folder only (no publish without approval).
+1. **Owner decisions** (no further work needed before them):
+   - **H25 hair:** review `docs/evaluation/hair_experiments/cp2_hair_clumps_v2_sheet.jpg`.
+   - **F01 face:** review `docs/evaluation/face_controls/F01_blink_smile_vs_1.0.0.jpg`.
+   - If both are approved: one combined build (spec + H25 + F01 overrides) into a scratch folder, published as
+     1.1.0 with `--identity-change-approved-by "<owner, date>"`, then `tests/reuse_test.py` and
+     `tests/face_test.py` on 1.1.0.
+2. **Next engineering milestone (no approval needed):** JawOpen with a real mouth cavity.
+   - A dark inner-mouth shell behind the mouth patch, plus a jaw bone rotation driven by `face_JawOpen`.
+   - Built as a `face.py` generator; measured with `face_test.py` (opening, cavity visible, no face tearing).
+   - Experimental override only; no publish.

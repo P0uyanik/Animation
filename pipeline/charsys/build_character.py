@@ -27,6 +27,7 @@ from mathutils import Matrix
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import body_v6 as B  # noqa: E402
+import face as FACE  # noqa: E402
 import hair as HAIR  # noqa: E402
 import spec as S  # noqa: E402
 
@@ -200,7 +201,7 @@ def main():
     empties = B.add_landmarks(C, lms, head, ears)
     report = {"blender": bpy.app.version_string, "build": BUILD_ID, "character_id": cid, **info,
               "hair": hair_stats, "model_s": round(time.time() - t0, 1)}
-    B.add_expression_keys(lids, brows)
+    report["face"] = FACE.add_expression_keys(lids, brows, mouth, head, B, spec["face"])
     for ob in list(C.objects):
         if ob.type == "MESH" and not ob.data.shape_keys and ob.modifiers:
             G.apply_mods(ob)

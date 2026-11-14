@@ -1,0 +1,30 @@
+{
+ "source": "/home/user/plush-studio/renders/experiments/face/F01_lid_seam_smile/build/boy_yellow_hoodie_master.blend",
+ "blender": "5.3.0",
+ "states": {
+  "neutral": {
+   "eye_visible_pct": 37.2,
+   "lid_proud_mm": 6.0,
+   "mouth_open_mm": 1.6,
+   "corner_lift_mm": -3.5
+  },
+  "Blink": {
+   "eye_visible_pct": 0.0,
+   "lid_proud_mm": 3.75,
+   "mouth_open_mm": 1.6,
+   "corner_lift_mm": -3.5
+  },
+  "Smile": {
+   "eye_visible_pct": 37.2,
+   "lid_proud_mm": 6.0,
+   "mouth_open_mm": 1.6,
+   "corner_lift_mm": 7.0
+  },
+  "JawOpen": {
+   "eye_visible_pct": 37.2,
+   "lid_proud_mm": 6.0,
+   "mouth_open_mm": 13.6,
+   "corner_lift_mm": 1.5
+  }
+ }
+}

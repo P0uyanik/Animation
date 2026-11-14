@@ -1,0 +1,8 @@
+{
+ "variant": "F01_lid_seam_smile",
+ "description": "Blink lid_seam/1 (computed closing angle, lid pulled in, lash on the seam) + Smile corner_lift/1 (7 mm, widen 1.12)",
+ "base_spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.spec.json",
+ "status": "experimental (not approved; never published as the character)",
+ "override": {"face": {"blink": {"generator": "lid_seam/1", "overlap_deg": 3, "closed_offset_m": 0.0012},
+                       "smile": {"generator": "corner_lift/1", "corner_up_m": 0.007, "widen": 1.12}}}
+}
