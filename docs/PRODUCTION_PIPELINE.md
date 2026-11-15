@@ -23,6 +23,81 @@ a `production` block naming each cast member's source:
 
 Everything is written to `<shot>/build/` (ignored by git). Masters and packages are cached by content hashes.
 
+## Workflow contract (T-001, 2026-11-15): one contract for the command line and Plush Studio
+`run_shot.py` is the only production entry point. The extensions are additive: without `--run-dir` and `--stages`,
+the command behaves and writes exactly as in M3.2.
+
+**Stages** (`--stages prepare,bake,render,encode`, default: all):
+- **prepare** resolves the cast (masters, packages, `shot.resolved.scene.json`, `cast.json`) and writes
+  `prepare.json`, which reports per cast member whether its master and package were cached or built.
+  - It is idempotent: an unchanged repeat writes nothing to masters, packages, `assets/` or published versions.
+  - The resolved scene and `cast.json` are rewritten only when their content changes.
+- **bake:** the engine (`plush-render --bake`).
+- **render:** Blender (`shot_render.py`).
+- **encode:** mp4. Without `--stages`, encode runs only with `--video`, as before.
+
+**Run folders** (`--run-dir <id>` gives `<shot>/build/runs/<id>/`):
+- Each run folder holds that run's `bake.json`, `render/` (frames, `shot.blend`, `shot_render.json`), `shot.mp4`,
+  `prepare.json`, `run_shot.json`, `logs/` and `status.json`.
+- The shared cache (masters, packages, resolved scene, `cast.json`) stays in `<shot>/build/`.
+- `runs/latest` (a text file holding the run id) is replaced only after a run succeeds.
+- An existing run folder is never reused.
+
+**`status.json`** (`plush.run_status/1`):
+- Rewritten atomically per stage and per finished frame.
+- Fields: `state` (running / done / failed / cancelled), `stage`, `stages`, `stages_done`, `frames`, `frames_done`,
+  `frames_total`, `resolution`, `samples`, `light_scale`, `exposure_ev`, `error`.
+
+**Cancel:**
+- SIGTERM or SIGINT stops the current step, removes a partly written frame (a PNG without its IEND chunk), marks the
+  run cancelled, and never touches earlier runs or `latest`.
+- `--mark-cancelled --run-dir <id>` finalises a run whose process was killed forcibly.
+
+**Frame numbers:** rendered files carry the shot's own frame numbers (`frame_0005.png` is frame 5).
+
+**Tests:**
+- `pipeline/production/tests/test_run_shot_workflow.py`: idempotent prepare; the status contract; cancel and
+  partial frames; failure; default command-line behaviour.
+- `pipeline/production/tests/compare_runs.py`: equivalence of two runs.
+
+## Plush Studio drives the workflow (T-001)
+Studio orchestrates and displays. It contains no animation, bake, retargeting or rendering logic.
+
+**Opening shots:**
+- `plush-studio --shot <shot.scene.json> [--blender <exe>]`, or the shot browser in the Production panel.
+- The browser lists every `episodes/*/shots/*/shot.scene.json`; there is no per-shot code.
+- A prepared shot opens its resolved scene in the engine evaluator. Timeline scrubbing and playback evaluate the
+  shot's actions, so the preview equals the bake (R2).
+
+**Production panel:**
+- the cast, with its source (published version or unpublished build) and package status from `prepare.json`;
+- Prepare / Render / Cancel;
+- frame range, resolution and samples (defaults from `production.render`);
+- stage and frame progress, and the log tail;
+- the run list;
+- a result viewer. It shows the selected run's image for the timeline frame only inside that run's range, and
+  "not rendered in this run" otherwise, together with the run's settings from its `status.json`.
+
+**Jobs:**
+- Each job runs `run_shot.py --run-dir <id>` in its own process group (`apps/studio/shot_workflow.{h,cpp}`, no UI).
+- Cancel sends SIGTERM to the group, then SIGKILL after 8 s. Studio is the subreaper, so no orphans remain.
+- Blender comes from `--blender`, then `PLUSH_BLENDER`, then the settings file
+  (`$PLUSH_STUDIO_SETTINGS` or `~/.config/plush-studio/settings.json`, `{"blender": "..."}`).
+
+**Saving a shot** merges the edits into the source file:
+- Only these may change: the camera, animation tracks and keys, actions, render settings, frame range, and each
+  character's position, yaw and life.
+- Everything else is kept as written, at every depth: the production block, asset placeholders and unknown keys.
+- An unedited save leaves the file untouched.
+- Prepare and Render save first, because the pipeline works on the saved shot.
+
+**Shot-specific limits:**
+- A shot's character packages are pipeline outputs: "Save character" is refused inside a shot.
+- The engine animation render renders a copy of the resolved scene.
+
+**Evidence:** `docs/evaluation/production/T-001/`. The equivalence of a Studio run with the command line covers bake,
+bones, Blender camera, frames, settings and pixels, all identical.
+
 ## Interchange format `plush.shot_bake/1` (`engine/scene/shot_bake.{h,cpp}`)
 - **Static:**
   - fps and frame range;
@@ -62,5 +137,5 @@ Everything is written to `<shot>/build/` (ignored by git). Masters and packages 
 - **Engine-only characters** (SDF) cannot be rendered in Blender.
 - **Lights** are matched only approximately, not radiometrically.
 - **No episode layer:** each shot is run on its own; there is no sequence assembly or audio.
-- **Plush Studio** does not call this pipeline yet.
+- **Plush Studio** drives the pipeline (T-001), but it has no episode/sequence view, and the cast is edited at its sources, not in Studio.
 - **Arms:** imported characters stand in the engine's default A-pose arms (no relaxed idle pose for them).

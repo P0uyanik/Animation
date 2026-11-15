@@ -1,0 +1,15 @@
+[doctest] test cases:    39 |    39 passed | 0 failed | 0 skipped
+[doctest] assertions: 19631 | 19631 passed | 0 failed |
+[doctest] Status: SUCCESS!
+1/4 Test #1: plush_tests ......................   Passed   13.67 sec
+2/4 Test #2: regression_milestone01 ...........***Failed    2.92 sec
+3/4 Test #3: regression_face_neutral ..........***Failed    4.11 sec
+4/4 Test #4: regression_lineup_abc ............   Passed   12.30 sec
+50% tests passed, 2 tests failed out of 4
+[info] regression: rmse 0.0464 vs /home/user/Animation/tests/regression/m01_f24_320x180.png (limit 0.0300)
+[info] regression: rmse 0.0406 vs /home/user/Animation/tests/regression/face_neutral_200.png (limit 0.0300)
+[test_export_engine] ALL PASS (8/8)
+[verify_charsys] PASS -> /tmp/claude-0/-home-user-Animation/1d110147-d321-507b-b6a1-0715487317cd/scratchpad/verify_final/CHARSYS_VERIFICATION.md
+[info] script: group 'lashes.L' locks 4 -> 5, saved: yes
+[info] verify: group 'lashes.L' has 5 locks
+[info] verify: group 'lashes.R' has 4 locks

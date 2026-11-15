@@ -1,0 +1,545 @@
+{
+ "blender": "/opt/bpywrap/blender",
+ "characters_imported": [
+  true,
+  true
+ ],
+ "gl_renderer": "llvmpipe (LLVM 20.1.2, 256 bits)",
+ "gl_version": "4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.4",
+ "loaded_after_prepare": true,
+ "playback": {
+  "distinct_frames_shown": 31,
+  "first": 10,
+  "last": 100,
+  "seconds": 3.0571588119999995
+ },
+ "playback_bake_run": "20261115-115339-142",
+ "playback_check": {
+  "changes_over_time": {
+   "boy": {
+    "bone0_max_travel_m": 0.015484482981264591,
+    "bone0_translation_per_frame": [
+     [
+      -0.33302009105682373,
+      7.483363151550293e-05,
+      -0.0022679143585264683
+     ],
+     [
+      -0.33339738845825195,
+      6.693601608276367e-05,
+      -0.0021453252993524075
+     ],
+     [
+      -0.33350229263305664,
+      6.4849853515625e-05,
+      -0.0021112398244440556
+     ],
+     [
+      -0.33361130952835083,
+      6.267428398132324e-05,
+      -0.002075820928439498
+     ],
+     [
+      -0.334622323513031,
+      4.4405460357666016e-05,
+      -0.0017473180778324604
+     ],
+     [
+      -0.33706337213516235,
+      1.3232231140136719e-05,
+      -0.0009541776962578297
+     ],
+     [
+      -0.33991697430610657,
+      0.0,
+      -2.6984605938196182e-05
+     ],
+     [
+      -0.34278222918510437,
+      1.189112663269043e-05,
+      0.0009040003642439842
+     ],
+     [
+      -0.34525662660598755,
+      4.240870475769043e-05,
+      0.0017079804092645645
+     ],
+     [
+      -0.3469926714897156,
+      7.507205009460449e-05,
+      0.0022720512934029102
+     ],
+     [
+      -0.34774670004844666,
+      9.21487808227539e-05,
+      0.0025170515291392803
+     ],
+     [
+      -0.34741297364234924,
+      8.440017700195313e-05,
+      0.0024086153134703636
+     ]
+    ],
+    "max_skin_matrix_change": 0.7231886386871338,
+    "morph_weight_ranges": {
+     "Smile": [
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "camera_max_move_m": 0.5102941393852234,
+   "camera_target_max_move_m": 0.0,
+   "girl": {
+    "bone0_max_travel_m": 0.31005626916885376,
+    "bone0_translation_per_frame": [
+     [
+      0.625826358795166,
+      6.887316703796387e-05,
+      0.15271688997745514
+     ],
+     [
+      0.6260055303573608,
+      7.319450378417969e-05,
+      0.15280044078826904
+     ],
+     [
+      0.6238582134246826,
+      0.0006926953792572021,
+      0.15247228741645813
+     ],
+     [
+      0.6202500462532043,
+      0.0014181733131408691,
+      0.15171556174755096
+     ],
+     [
+      0.5728209018707275,
+      0.0014340579509735107,
+      0.14397647976875305
+     ],
+     [
+      0.42632198333740234,
+      -0.0031066536903381348,
+      0.08800162374973297
+     ],
+     [
+      0.338424950838089,
+      -0.00335577130317688,
+      0.05441011115908623
+     ],
+     [
+      0.3422998785972595,
+      9.98377799987793e-06,
+      0.050837088376283646
+     ],
+     [
+      0.33985209465026855,
+      2.9802322387695313e-08,
+      0.04994616657495499
+     ],
+     [
+      0.33742663264274597,
+      1.2487173080444336e-05,
+      0.04906336963176727
+     ],
+     [
+      0.3353896141052246,
+      4.011392593383789e-05,
+      0.04832195118069649
+     ],
+     [
+      0.334048330783844,
+      6.684660911560059e-05,
+      0.047833770513534546
+     ]
+    ],
+    "max_skin_matrix_change": 1.2669957876205444,
+    "morph_weight_ranges": {
+     "Laugh": [
+      0.0,
+      1.0
+     ],
+     "Smile": [
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "viewport_mesh_centroid_max_move_m": 0.09377723932266235
+  },
+  "equal_within_1e-6": true,
+  "frames": [
+   1,
+   5,
+   6,
+   7,
+   15,
+   30,
+   45,
+   60,
+   75,
+   90,
+   105,
+   120
+  ],
+  "max_abs_diff": {
+   "camera": 0.0,
+   "morph_weights": 0.0,
+   "skin_matrices": 0.0
+  },
+  "per_frame": [
+   {
+    "camera_max_abs_diff": 0.0,
+    "characters": {
+     "boy": {
+      "morph_max_abs_diff": 0.0,
+      "skin_max_abs_diff": 0.0
+     },
+     "girl": {
+      "morph_max_abs_diff": 0.0,
+      "skin_max_abs_diff": 0.0
+     }
+    },
+    "frame": 1
+   },
+   {
+    "camera_max_abs_diff": 0.0,
+    "characters": {
+     "boy": {
+      "morph_max_abs_diff": 0.0,
+      "skin_max_abs_diff": 0.0
+     },
+     "girl": {
+      "morph_max_abs_diff": 0.0,
+      "skin_max_abs_diff": 0.0
+     }
+    },
+    "frame": 5
+   },
+   {
+    "camera_max_abs_diff": 0.0,
+    "characters": {
+     "boy": {
+      "morph_max_abs_diff": 0.0,
+      "skin_max_abs_diff": 0.0
+     },
+     "girl": {
+      "morph_max_abs_diff": 0.0,
+      "skin_max_abs_diff": 0.0
+     }
+    },
+    "frame": 6
+   },
+   {
+    "camera_max_abs_diff": 0.0,
+    "characters": {
+     "boy": {
+      "morph_max_abs_diff": 0.0,
+      "skin_max_abs_diff": 0.0
+     },
+     "girl": {
+      "morph_max_abs_diff": 0.0,
+      "skin_max_abs_diff": 0.0
+     }
+    },
+    "frame": 7
+   },
+   {
+    "camera_max_abs_diff": 0.0,
+    "characters": {
+     "boy": {
+      "morph_max_abs_diff": 0.0,
+      "skin_max_abs_diff": 0.0
+     },
+     "girl": {
+      "morph_max_abs_diff": 0.0,
+      "skin_max_abs_diff": 0.0
+     }
+    },
+    "frame": 15
+   },
+   {
+    "camera_max_abs_diff": 0.0,
+    "characters": {
+     "boy": {
+      "morph_max_abs_diff": 0.0,
+      "skin_max_abs_diff": 0.0
+     },
+     "girl": {
+      "morph_max_abs_diff": 0.0,
+      "skin_max_abs_diff": 0.0
+     }
+    },
+    "frame": 30
+   },
+   {
+    "camera_max_abs_diff": 0.0,
+    "characters": {
+     "boy": {
+      "morph_max_abs_diff": 0.0,
+      "skin_max_abs_diff": 0.0
+     },
+     "girl": {
+      "morph_max_abs_diff": 0.0,
+      "skin_max_abs_diff": 0.0
+     }
+    },
+    "frame": 45
+   },
+   {
+    "camera_max_abs_diff": 0.0,
+    "characters": {
+     "boy": {
+      "morph_max_abs_diff": 0.0,
+      "skin_max_abs_diff": 0.0
+     },
+     "girl": {
+      "morph_max_abs_diff": 0.0,
+      "skin_max_abs_diff": 0.0
+     }
+    },
+    "frame": 60
+   },
+   {
+    "camera_max_abs_diff": 0.0,
+    "characters": {
+     "boy": {
+      "morph_max_abs_diff": 0.0,
+      "skin_max_abs_diff": 0.0
+     },
+     "girl": {
+      "morph_max_abs_diff": 0.0,
+      "skin_max_abs_diff": 0.0
+     }
+    },
+    "frame": 75
+   },
+   {
+    "camera_max_abs_diff": 0.0,
+    "characters": {
+     "boy": {
+      "morph_max_abs_diff": 0.0,
+      "skin_max_abs_diff": 0.0
+     },
+     "girl": {
+      "morph_max_abs_diff": 0.0,
+      "skin_max_abs_diff": 0.0
+     }
+    },
+    "frame": 90
+   },
+   {
+    "camera_max_abs_diff": 0.0,
+    "characters": {
+     "boy": {
+      "morph_max_abs_diff": 0.0,
+      "skin_max_abs_diff": 0.0
+     },
+     "girl": {
+      "morph_max_abs_diff": 0.0,
+      "skin_max_abs_diff": 0.0
+     }
+    },
+    "frame": 105
+   },
+   {
+    "camera_max_abs_diff": 0.0,
+    "characters": {
+     "boy": {
+      "morph_max_abs_diff": 0.0,
+      "skin_max_abs_diff": 0.0
+     },
+     "girl": {
+      "morph_max_abs_diff": 0.0,
+      "skin_max_abs_diff": 0.0
+     }
+    },
+    "frame": 120
+   }
+  ]
+ },
+ "prepare_report": {
+  "all_cached": true,
+  "cast": {
+   "boy": {
+    "character_id": "boy_yellow_hoodie",
+    "from_cache": true,
+    "master": "assets/characters/boy_yellow_hoodie/versions/1.0.0/boy_yellow_hoodie_master.blend",
+    "master_state": "published (read only)",
+    "package": "episodes/e000_pilot/shots/s010/build/packages/boy_21d65f461b03fcff",
+    "package_state": "cached",
+    "source": "published 1.0.0"
+   },
+   "girl": {
+    "character_id": "girl_auburn_bun_glasses",
+    "from_cache": true,
+    "master": "episodes/e000_pilot/shots/s010/build/masters/girl_68bcba4c4ada0d92/girl_auburn_bun_glasses_master.blend",
+    "master_state": "cached",
+    "package": "episodes/e000_pilot/shots/s010/build/packages/girl_b5f24266a9d124c0",
+    "package_state": "cached",
+    "source": "unpublished build from spec (experimental; not approved)"
+   }
+  },
+  "cast_json_written": false,
+  "format": "plush.prepare",
+  "resolved_scene": "episodes/e000_pilot/shots/s010/build/shot.resolved.scene.json",
+  "resolved_scene_written": false,
+  "shot": "episodes/e000_pilot/shots/s010/shot.scene.json",
+  "version": 1
+ },
+ "prepare_run": "20261115-115338-810",
+ "prepare_status": "done",
+ "prepared_at_open": true,
+ "render_command": [
+  "python3",
+  "/home/user/Animation/pipeline/production/run_shot.py",
+  "--shot",
+  "/home/user/Animation/episodes/e000_pilot/shots/s010/shot.scene.json",
+  "--blender",
+  "/opt/bpywrap/blender",
+  "--engine",
+  "/home/user/Animation/build/apps/render-cli/plush-render",
+  "--run-dir",
+  "20261115-115343-136",
+  "--stages",
+  "prepare,bake,render,encode",
+  "--frames",
+  "5-7",
+  "--resolution",
+  "320",
+  "180",
+  "--samples",
+  "16"
+ ],
+ "render_error": "",
+ "render_progress": [
+  {
+   "frames_done": 0,
+   "frames_total": 3,
+   "stage": "bake",
+   "state": "running",
+   "t": 0.09795689500000027
+  },
+  {
+   "frames_done": 0,
+   "frames_total": 3,
+   "stage": "render",
+   "state": "running",
+   "t": 0.7283275590000002
+  },
+  {
+   "frames_done": 1,
+   "frames_total": 3,
+   "stage": "render",
+   "state": "running",
+   "t": 4.939510134
+  },
+  {
+   "frames_done": 2,
+   "frames_total": 3,
+   "stage": "render",
+   "state": "running",
+   "t": 6.6414827260000004
+  },
+  {
+   "frames_done": 3,
+   "frames_total": 3,
+   "stage": "render",
+   "state": "running",
+   "t": 8.762249788999998
+  },
+  {
+   "frames_done": 3,
+   "frames_total": 3,
+   "stage": "encode",
+   "state": "running",
+   "t": 9.26646767
+  },
+  {
+   "frames_done": 3,
+   "frames_total": 3,
+   "stage": "",
+   "state": "done",
+   "t": 9.737397465
+  }
+ ],
+ "render_run": "20261115-115343-136",
+ "render_status": "done",
+ "responsiveness": {
+  "job_s": 9.737431691000001,
+  "max_ui_frame_s": 0.2493575969999995,
+  "ui_frames_during_job": 71
+ },
+ "screenshot_not_rendered_frame": 20,
+ "screenshot_rendered_frame": 6,
+ "shot": "/home/user/Animation/episodes/e000_pilot/shots/s010/shot.scene.json",
+ "shots_discovered": [
+  "/home/user/Animation/episodes/e000_pilot/shots/s010/shot.scene.json",
+  "/home/user/Animation/episodes/e900_workflow_test/shots/s010/shot.scene.json"
+ ],
+ "viewer_mapping": [
+  {
+   "available": false,
+   "frame": 1,
+   "image": "",
+   "in_range": false,
+   "message": "not rendered in this run (run range 5-7)"
+  },
+  {
+   "available": false,
+   "frame": 4,
+   "image": "",
+   "in_range": false,
+   "message": "not rendered in this run (run range 5-7)"
+  },
+  {
+   "available": true,
+   "frame": 5,
+   "image": "frame_0005.png",
+   "in_range": true,
+   "message": ""
+  },
+  {
+   "available": true,
+   "frame": 6,
+   "image": "frame_0006.png",
+   "in_range": true,
+   "message": ""
+  },
+  {
+   "available": true,
+   "frame": 7,
+   "image": "frame_0007.png",
+   "in_range": true,
+   "message": ""
+  },
+  {
+   "available": false,
+   "frame": 8,
+   "image": "",
+   "in_range": false,
+   "message": "not rendered in this run (run range 5-7)"
+  },
+  {
+   "available": false,
+   "frame": 120,
+   "image": "",
+   "in_range": false,
+   "message": "not rendered in this run (run range 5-7)"
+  }
+ ],
+ "viewer_run_settings": {
+  "exposure_ev": 0.4,
+  "frames": [
+   5,
+   7
+  ],
+  "light_scale": 1.0,
+  "resolution": [
+   320,
+   180
+  ],
+  "samples": 16
+ }
+}

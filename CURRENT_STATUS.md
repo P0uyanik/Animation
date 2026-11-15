@@ -1,4 +1,25 @@
-# Current status (2026-11-14)
+# Current status (2026-11-15)
+
+**Latest: T-001, Plush Studio drives the shot pipeline (implemented and tested; awaiting Supervisor and owner review).**
+Details: `docs/milestones/2026-11-15_T-001_studio_shot_pipeline.md`, `docs/PRODUCTION_PIPELINE.md`.
+- **Implemented:**
+  - one workflow contract in `run_shot.py`: stages, `--run-dir` run folders, `status.json`, cancel; additive, so the
+    default command is unchanged;
+  - a non-UI workflow module `apps/studio/shot_workflow.{h,cpp}`;
+  - in Studio: a shot browser, `--shot`, a Production panel (cast, Prepare / Render / Cancel, progress, log, runs,
+    result viewer) and merge-save of shots;
+  - a second test shot, `episodes/e900_workflow_test/shots/s010`.
+- **Tested:**
+  - idempotent prepare: 0 of 126 / 119 files changed;
+  - preview equals the bake: 0.0 difference;
+  - cancel: no orphans, run cancelled, earlier runs untouched;
+  - merge-save with unknown fields at every depth;
+  - viewer frame mapping;
+  - command line vs Studio: bake, bones, camera, frames, settings and pixels identical;
+  - `plush_tests` 39/39, exporter 8/8, `verify_charsys` PASS, Studio round trip.
+- **Not verified:** `ctest` image regressions. Two tests (`regression_milestone01`, `regression_face_neutral`) fail
+  in this environment without OIDN 2.3.3, identically on unchanged `main`. They must be rerun with OIDN.
+- **Unchanged:** the engine, `pipeline/charsys`, assets and test data.
 
 **Latest: M3.2, first end-to-end production path (TD-42: engine animates, Blender renders).**
 - The pilot shot `episodes/e000_pilot/shots/s010` (published boy + unpublished girl, 120 frames) runs from character

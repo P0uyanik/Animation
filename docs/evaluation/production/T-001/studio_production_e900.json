@@ -1,0 +1,359 @@
+{
+ "blender": "/opt/bpywrap/blender",
+ "characters_imported": [
+  true
+ ],
+ "gl_renderer": "llvmpipe (LLVM 20.1.2, 256 bits)",
+ "gl_version": "4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.4",
+ "loaded_after_prepare": true,
+ "playback": {
+  "distinct_frames_shown": 33,
+  "first": 11,
+  "last": 67,
+  "seconds": 3.005470996
+ },
+ "playback_bake_run": "20261115-115355-084",
+ "playback_check": {
+  "changes_over_time": {
+   "boy": {
+    "bone0_max_travel_m": 0.7523834705352783,
+    "bone0_translation_per_frame": [
+     [
+      -0.5978735685348511,
+      5.367398262023926e-05,
+      0.19415760040283203
+     ],
+     [
+      -0.5743451714515686,
+      0.0006542503833770752,
+      0.18807023763656616
+     ],
+     [
+      -0.433735728263855,
+      0.0012882649898529053,
+      0.17009715735912323
+     ],
+     [
+      -0.19431519508361816,
+      -0.0023089349269866943,
+      0.14183974266052246
+     ],
+     [
+      0.008103901520371437,
+      -0.0013153254985809326,
+      0.11559790372848511
+     ],
+     [
+      0.134905606508255,
+      -0.00029143691062927246,
+      0.09943626075983047
+     ],
+     [
+      0.14878524839878082,
+      5.245208740234375e-06,
+      0.10152101516723633
+     ],
+     [
+      0.14713791012763977,
+      1.5169382095336914e-05,
+      0.10165242850780487
+     ],
+     [
+      0.14590376615524292,
+      3.108382225036621e-05,
+      0.10236496478319168
+     ]
+    ],
+    "max_skin_matrix_change": 0.9679418802261353,
+    "morph_weight_ranges": {
+     "Smile": [
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "camera_max_move_m": 0.0,
+   "camera_target_max_move_m": 0.5545268058776855,
+   "viewport_mesh_centroid_max_move_m": 0.7845707535743713
+  },
+  "equal_within_1e-6": true,
+  "frames": [
+   5,
+   6,
+   7,
+   11,
+   18,
+   25,
+   33,
+   40,
+   47,
+   55,
+   62,
+   70
+  ],
+  "max_abs_diff": {
+   "camera": 0.0,
+   "morph_weights": 0.0,
+   "skin_matrices": 0.0
+  },
+  "per_frame": [
+   {
+    "camera_max_abs_diff": 0.0,
+    "characters": {
+     "boy": {
+      "morph_max_abs_diff": 0.0,
+      "skin_max_abs_diff": 0.0
+     }
+    },
+    "frame": 11
+   },
+   {
+    "camera_max_abs_diff": 0.0,
+    "characters": {
+     "boy": {
+      "morph_max_abs_diff": 0.0,
+      "skin_max_abs_diff": 0.0
+     }
+    },
+    "frame": 18
+   },
+   {
+    "camera_max_abs_diff": 0.0,
+    "characters": {
+     "boy": {
+      "morph_max_abs_diff": 0.0,
+      "skin_max_abs_diff": 0.0
+     }
+    },
+    "frame": 25
+   },
+   {
+    "camera_max_abs_diff": 0.0,
+    "characters": {
+     "boy": {
+      "morph_max_abs_diff": 0.0,
+      "skin_max_abs_diff": 0.0
+     }
+    },
+    "frame": 33
+   },
+   {
+    "camera_max_abs_diff": 0.0,
+    "characters": {
+     "boy": {
+      "morph_max_abs_diff": 0.0,
+      "skin_max_abs_diff": 0.0
+     }
+    },
+    "frame": 40
+   },
+   {
+    "camera_max_abs_diff": 0.0,
+    "characters": {
+     "boy": {
+      "morph_max_abs_diff": 0.0,
+      "skin_max_abs_diff": 0.0
+     }
+    },
+    "frame": 47
+   },
+   {
+    "camera_max_abs_diff": 0.0,
+    "characters": {
+     "boy": {
+      "morph_max_abs_diff": 0.0,
+      "skin_max_abs_diff": 0.0
+     }
+    },
+    "frame": 55
+   },
+   {
+    "camera_max_abs_diff": 0.0,
+    "characters": {
+     "boy": {
+      "morph_max_abs_diff": 0.0,
+      "skin_max_abs_diff": 0.0
+     }
+    },
+    "frame": 62
+   },
+   {
+    "camera_max_abs_diff": 0.0,
+    "characters": {
+     "boy": {
+      "morph_max_abs_diff": 0.0,
+      "skin_max_abs_diff": 0.0
+     }
+    },
+    "frame": 70
+   }
+  ]
+ },
+ "prepare_report": {
+  "all_cached": true,
+  "cast": {
+   "boy": {
+    "character_id": "boy_yellow_hoodie",
+    "from_cache": true,
+    "master": "assets/characters/boy_yellow_hoodie/versions/1.0.0/boy_yellow_hoodie_master.blend",
+    "master_state": "published (read only)",
+    "package": "episodes/e900_workflow_test/shots/s010/build/packages/boy_21d65f461b03fcff",
+    "package_state": "cached",
+    "source": "published 1.0.0"
+   }
+  },
+  "cast_json_written": false,
+  "format": "plush.prepare",
+  "resolved_scene": "episodes/e900_workflow_test/shots/s010/build/shot.resolved.scene.json",
+  "resolved_scene_written": false,
+  "shot": "episodes/e900_workflow_test/shots/s010/shot.scene.json",
+  "version": 1
+ },
+ "prepare_run": "20261115-115354-829",
+ "prepare_status": "done",
+ "prepared_at_open": true,
+ "render_command": [
+  "python3",
+  "/home/user/Animation/pipeline/production/run_shot.py",
+  "--shot",
+  "/home/user/Animation/episodes/e900_workflow_test/shots/s010/shot.scene.json",
+  "--blender",
+  "/opt/bpywrap/blender",
+  "--engine",
+  "/home/user/Animation/build/apps/render-cli/plush-render",
+  "--run-dir",
+  "20261115-115358-864",
+  "--stages",
+  "prepare,bake,render,encode",
+  "--frames",
+  "20-22",
+  "--resolution",
+  "320",
+  "180",
+  "--samples",
+  "16"
+ ],
+ "render_error": "",
+ "render_progress": [
+  {
+   "frames_done": 0,
+   "frames_total": 3,
+   "stage": "bake",
+   "state": "running",
+   "t": 0.11884990499999937
+  },
+  {
+   "frames_done": 0,
+   "frames_total": 3,
+   "stage": "render",
+   "state": "running",
+   "t": 0.6394594919999994
+  },
+  {
+   "frames_done": 1,
+   "frames_total": 3,
+   "stage": "render",
+   "state": "running",
+   "t": 3.6252783079999995
+  },
+  {
+   "frames_done": 2,
+   "frames_total": 3,
+   "stage": "render",
+   "state": "running",
+   "t": 4.793103822999999
+  },
+  {
+   "frames_done": 3,
+   "frames_total": 3,
+   "stage": "encode",
+   "state": "running",
+   "t": 6.253321351
+  },
+  {
+   "frames_done": 3,
+   "frames_total": 3,
+   "stage": "",
+   "state": "done",
+   "t": 6.701111457
+  }
+ ],
+ "render_run": "20261115-115358-864",
+ "render_status": "done",
+ "responsiveness": {
+  "job_s": 6.701129351999999,
+  "max_ui_frame_s": 0.1605390249999994,
+  "ui_frames_during_job": 65
+ },
+ "screenshot_not_rendered_frame": 35,
+ "screenshot_rendered_frame": 21,
+ "shot": "/home/user/Animation/episodes/e900_workflow_test/shots/s010/shot.scene.json",
+ "shots_discovered": [
+  "/home/user/Animation/episodes/e000_pilot/shots/s010/shot.scene.json",
+  "/home/user/Animation/episodes/e900_workflow_test/shots/s010/shot.scene.json"
+ ],
+ "viewer_mapping": [
+  {
+   "available": false,
+   "frame": 11,
+   "image": "",
+   "in_range": false,
+   "message": "not rendered in this run (run range 20-22)"
+  },
+  {
+   "available": false,
+   "frame": 19,
+   "image": "",
+   "in_range": false,
+   "message": "not rendered in this run (run range 20-22)"
+  },
+  {
+   "available": true,
+   "frame": 20,
+   "image": "frame_0020.png",
+   "in_range": true,
+   "message": ""
+  },
+  {
+   "available": true,
+   "frame": 21,
+   "image": "frame_0021.png",
+   "in_range": true,
+   "message": ""
+  },
+  {
+   "available": true,
+   "frame": 22,
+   "image": "frame_0022.png",
+   "in_range": true,
+   "message": ""
+  },
+  {
+   "available": false,
+   "frame": 23,
+   "image": "",
+   "in_range": false,
+   "message": "not rendered in this run (run range 20-22)"
+  },
+  {
+   "available": false,
+   "frame": 70,
+   "image": "",
+   "in_range": false,
+   "message": "not rendered in this run (run range 20-22)"
+  }
+ ],
+ "viewer_run_settings": {
+  "exposure_ev": 0.2,
+  "frames": [
+   20,
+   22
+  ],
+  "light_scale": 1.0,
+  "resolution": [
+   320,
+   180
+  ],
+  "samples": 16
+ }
+}
