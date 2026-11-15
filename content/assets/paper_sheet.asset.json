@@ -1,0 +1,36 @@
+{
+  "format": "plush.asset",
+  "version": 1,
+  "id": "prop.paper_sheet",
+  "licence": "CC0-1.0",
+  "attribution": "Plush Studio project; generated from a box primitive",
+  "mesh": {
+    "primitive": "box",
+    "size": [0.21, 0.001, 0.297]
+  },
+  "material_presets": [
+    "paper_white"
+  ],
+  "scale": 1.0,
+  "sockets": {
+    "grip": {
+      "translation": [0.0, 0.0005, 0.12],
+      "rotationDeg": [0.0, 0.0, 0.0],
+      "scale": [1.0, 1.0, 1.0]
+    },
+    "place": {
+      "translation": [0.0, -0.0005, 0.0],
+      "rotationDeg": [0.0, 0.0, 0.0],
+      "scale": [1.0, 1.0, 1.0]
+    },
+    "contact": {
+      "translation": [0.0, 0.0005, 0.0],
+      "rotationDeg": [0.0, 0.0, 0.0],
+      "scale": [1.0, 1.0, 1.0]
+    }
+  },
+  "collision": {
+    "type": "box",
+    "size": [0.21, 0.001, 0.297]
+  }
+}

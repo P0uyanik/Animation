@@ -108,6 +108,24 @@ Result<Scene> loadScene(const std::filesystem::path& path) {
     if (!o) return fail(std::format("{}: {}", path.string(), o.error().message));
     s.objects.push_back(*o);
   }
+  for (const auto& pj : j.value("props", Json::array())) {
+    if (!pj.is_object()) return fail(std::format("{}: prop must be an object", path.string()));
+    PropDesc prop;
+    if (!pj.contains("id") || !pj["id"].is_string() || pj["id"].get<std::string>().empty())
+      return fail(std::format("{}: prop id is required", path.string()));
+    prop.id = pj["id"].get<std::string>();
+    if (!pj.contains("transform"))
+      return fail(std::format("{}: prop '{}': transform is required", path.string(), prop.id));
+    auto transform = assetTransformFromJson(pj["transform"], std::format("prop '{}' transform", prop.id));
+    if (!transform) return fail(std::format("{}: {}", path.string(), transform.error().message));
+    prop.transform = *transform;
+    if (auto parent = pj.find("parentSocket"); parent != pj.end()) {
+      if (!parent->is_string() || parent->get<std::string>().empty())
+        return fail(std::format("{}: prop '{}': parentSocket must be a non-empty string", path.string(), prop.id));
+      prop.parentSocket = parent->get<std::string>();
+    }
+    s.props.push_back(std::move(prop));
+  }
   for (auto& cj : j.value("characters", Json::array())) {
     CharacterDesc cd{readString(cj, "name"), readString(cj, "asset"), readVec3(cj, "position", vec3(0)),
                      readFloat(cj, "yawDeg", 0), {}};
@@ -160,7 +178,7 @@ Json sceneToJson(const Scene& s) {
   Json j = {{"format", "plush.scene"}, {"version", 1}, {"name", s.name}, {"frameRate", {s.rate.num, s.rate.den}},
             {"frameStart", s.frameStart}, {"frameEnd", s.frameEnd}, {"render", renderSettingsToJson(s.render)},
             {"camera", cameraToJson(s.camera)}};
-  Json mats = Json::array(), lights = Json::array(), objs = Json::array(), chars = Json::array();
+  Json mats = Json::array(), lights = Json::array(), objs = Json::array(), props = Json::array(), chars = Json::array();
   for (auto& m : s.materials) mats.push_back(materialToJson(m));
   for (auto& l : s.lights) lights.push_back(lightToJson(l));
   for (auto& o : s.objects) {
@@ -194,6 +212,11 @@ Json sceneToJson(const Scene& s) {
     }
     objs.push_back(oj);
   }
+  for (const auto& prop : s.props) {
+    Json pj = {{"id", prop.id}, {"transform", assetTransformToJson(prop.transform)}};
+    if (prop.parentSocket) pj["parentSocket"] = *prop.parentSocket;
+    props.push_back(std::move(pj));
+  }
   for (auto& c : s.characters) {
     Json cj = {{"name", c.name}, {"asset", c.asset}, {"position", toJson(c.position)}, {"yawDeg", c.yawDeg}};
     const GazeLimits defaultGaze;
@@ -224,6 +247,7 @@ Json sceneToJson(const Scene& s) {
   j["materials"] = mats;
   j["lights"] = lights;
   j["objects"] = objs;
+  j["props"] = props;
   j["characters"] = chars;
   j["animation"] = anim;
   if (!s.actions.empty()) j["actions"] = s.actions;

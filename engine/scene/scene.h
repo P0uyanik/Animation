@@ -8,6 +8,7 @@
 #include "anim/animation.h"
 #include "model/character.h"
 #include "model/clip.h"
+#include "scene/asset_library.h"
 
 namespace plush {
 
@@ -43,6 +44,12 @@ struct CharacterDesc {
   LifeParams life;    // procedural breathing, weight shift, blinks, head follows gaze (off unless set)
 };
 
+struct PropDesc {
+  std::string id;
+  AssetTransform transform;
+  std::optional<std::string> parentSocket;
+};
+
 struct Scene {
   std::string name;
   std::filesystem::path path;  // where it was loaded from / saved to
@@ -53,6 +60,7 @@ struct Scene {
   std::vector<Material> materials;
   std::vector<Light> lights;
   std::vector<ObjectDesc> objects;
+  std::vector<PropDesc> props;
   std::vector<CharacterDesc> characters;
   Clip animation;
   // High-level actions ("look", "reach", "expression", "walk"), compiled into generated tracks when the scene is
