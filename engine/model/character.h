@@ -81,6 +81,9 @@ struct CharacterAsset {
   float walkStepLength = 0.0f;  // > 0: walk step in metres
   float walkStepScale = 0.0f;   // > 0: walk step = scale * leg length (default: kDefaultWalkStepScale)
   bool dualQuaternion = false;  // skinning method (false = linear blend)
+  // Generated retarget data of an imported package ("retarget" block written by export_engine.py; null if the
+  // package has none, then clip playback derives the same data from the skeleton). See model/clip.h.
+  Json retargetBlock;
   std::vector<Expression> expressions;
   Skeleton skeleton;
   std::vector<SdfPart> parts;  // mirrors expanded, bone indices resolved

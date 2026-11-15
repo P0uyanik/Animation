@@ -364,8 +364,14 @@ std::vector<mat4> SceneEvaluator::characterGlobals(size_t c, double frame, Pose*
   std::string prefix = cd.name + "/";
   vec3 pos = clip.evaluate(cd.name + ".position", frame, cd.position);
   float yaw = clip.evaluate(cd.name + ".yaw", frame, vec3(cd.yawDeg)).x;
-  mat4 world = objectMatrixLocal(pos, yaw, 1.0f);
   Pose pose = evaluatePose(ci.asset.skeleton, clip, prefix, frame, &ci.asset.defaultPose);
+  const bool clips = hasClipLayers(c);  // clip actions (clip_layers.cpp); without them nothing below changes
+  if (clips) {
+    float clipYaw = 0;
+    applyClips(c, frame, pose, clipYaw);
+    yaw += clipYaw;
+  }
+  mat4 world = objectMatrixLocal(pos, yaw, 1.0f);
   // Expression-driven bones (e.g. a jaw opening with the mouth): weight x rotation, from the package metadata.
   for (const auto& [morph, bones] : ci.asset.expressionBones) {
     const float w = expressionWeight(c, morph, frame);
@@ -379,6 +385,7 @@ std::vector<mat4> SceneEvaluator::characterGlobals(size_t c, double frame, Pose*
   if (!blinkMorph(ci).empty()) life.blinkLids = false;  // blinks are a morph for this character (see evaluate)
   applyLife(ci.asset.skeleton, clip, prefix, frame, scene_.rate.fps(), world, life, pose);
   applyConstraints(ci.asset.skeleton, clip, prefix, frame, world, pose);
+  if (clips) applyClipFingers(c, frame, pose);
   if (poseOut) *poseOut = pose;
   return boneGlobals(ci.asset.skeleton, pose, world);
 }

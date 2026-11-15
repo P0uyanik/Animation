@@ -7,6 +7,7 @@
 
 #include "anim/animation.h"
 #include "model/character.h"
+#include "model/clip.h"
 
 namespace plush {
 
@@ -132,6 +133,26 @@ class SceneEvaluator {
   float expressionWeight(size_t c, const std::string& morph, double frame) const;
  private:
   std::vector<ObjectDesc> authoredObjects_;  // objects as written, before actions set attachments and ripples
+  // Clip actions (type "clip", model/clip.h): per character, in start order; a "base" clip replaces the default pose
+  // for the whole shot. Walk spans: frames where a walk owns the legs, hips and root.
+  struct ClipLayer {
+    std::shared_ptr<const ClipData> clip;
+    ClipBinding binding;
+    double start = 0, end = 1e30, speed = 1, weight = 1, blendIn = 6, blendOut = 6;
+    bool mirror = false, base = false;
+    double envelope(double frame) const;  // weight x blend in/out at a scene frame
+    double clipFrame(double frame, double sceneFps) const;
+  };
+  std::vector<std::vector<ClipLayer>> clipLayers_;
+  std::vector<std::vector<std::pair<double, double>>> walkSpans_;
+  std::map<std::string, std::shared_ptr<const ClipData>> clipCache_;
+  void applyClips(size_t c, double frame, Pose& pose, float& yawOffset) const;
+  void applyClipFingers(size_t c, double frame, Pose& pose) const;
+ public:
+  // Clip playback data of character c for a reference pose: the package's generated block if it matches the
+  // reference version, else derived from the skeleton (same rules).
+  RetargetData retargetData(size_t c, const ReferencePose& ref) const;
+  bool hasClipLayers(size_t c) const { return c < clipLayers_.size() && !clipLayers_[c].empty(); }
 };
 
 }  // namespace plush

@@ -79,6 +79,7 @@ Result<ImportedCharacter> loadImportedCharacter(const std::filesystem::path& man
   ic.rolesPresent = j.value("roles_present", std::vector<std::string>{});
   ic.rigSpecificBones = j.value("rig_specific_bones", std::vector<std::string>{});
   ic.capabilities = j.value("capabilities", Json::object());
+  ic.asset.retargetBlock = j.value("retarget", Json());
   // Skeleton: parents precede children (checked).
   for (const Json& b : j.at("skeleton")) {
     Bone bone;
