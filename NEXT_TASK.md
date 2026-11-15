@@ -11,6 +11,10 @@
    - Report: `docs/milestones/2026-11-15_T-002_clip_foundation.md`;
    - format and usage: `docs/ANIMATION_CLIPS.md`;
    - evidence: `docs/evaluation/animation/T-002/` (contact sheet, measurements).
+3a. **T-003 (body emotions): delivered on branch `t-003-body-emotions`; awaiting Supervisor and owner review.**
+   - Report: `docs/milestones/2026-11-15_T-003_body_emotions.md`; format and library: `docs/EMOTIONS.md`;
+   - evidence: `docs/evaluation/animation/T-003/` (contact sheet, face comparisons with #34 / #28, measurements);
+   - open question: eyes render closed when the head pitches down (render/master side).
 4. **Then:**
    - the girl's hair and garments (M4/M5) on the shared path, judged in final Blender renders;
    - acting-quality clips towards the reference videos (Blender-authored or licensed motion capture through the
