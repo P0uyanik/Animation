@@ -44,10 +44,18 @@ struct CharacterDesc {
   LifeParams life;    // procedural breathing, weight shift, blinks, head follows gaze (off unless set)
 };
 
+struct PropParent {
+  enum class Kind { Character, Prop };
+  Kind kind = Kind::Character;
+  std::string name;
+  std::string socket;
+};
+
 struct PropDesc {
+  std::string name;
   std::string id;
   AssetTransform transform;
-  std::optional<std::string> parentSocket;
+  std::optional<PropParent> parent;
 };
 
 struct Scene {

@@ -2,6 +2,9 @@
 
 #include "model/imported_character.h"
 
+#include <algorithm>
+#include <set>
+
 namespace plush {
 
 namespace {
@@ -74,6 +77,32 @@ std::shared_ptr<Mesh> transformMesh(const Mesh& src, const mat4& m) {
   for (size_t i = 0; i < src.normals.size(); ++i) out->normals[i] = glm::normalize(nm * src.normals[i]);
   return out;
 }
+
+Result<PropAsset> loadSceneAsset(const std::filesystem::path& scenePath, const std::string& id) {
+  for (auto dir = std::filesystem::absolute(scenePath).parent_path();; dir = dir.parent_path()) {
+    const auto assetDir = dir / "content" / "assets";
+    std::error_code error;
+    if (std::filesystem::is_directory(assetDir, error)) {
+      std::vector<std::filesystem::path> files;
+      for (std::filesystem::directory_iterator it(assetDir, error), end; !error && it != end; it.increment(error)) {
+        if (it->is_regular_file() && it->path().filename().string().ends_with(".asset.json"))
+          files.push_back(it->path());
+      }
+      std::sort(files.begin(), files.end());
+      for (const auto& file : files) {
+        auto json = parseJsonFile(file);
+        if (!json || !json->is_object()) continue;
+        auto assetId = json->find("id");
+        if (assetId == json->end() || !assetId->is_string() || assetId->get<std::string>() != id) continue;
+        auto asset = assetFromJson(*json);
+        if (!asset) return fail(std::format("{}: {}", file.string(), asset.error().message));
+        return asset;
+      }
+    }
+    if (dir == dir.parent_path()) break;
+  }
+  return fail(std::format("asset '{}' not found in content/assets above {}", id, scenePath.string()));
+}
 }  // namespace
 
 mat4 objectMatrix(vec3 pos, float yawDeg, float scale) { return objectMatrixLocal(pos, yawDeg, scale); }
@@ -111,18 +140,40 @@ Result<Scene> loadScene(const std::filesystem::path& path) {
   for (const auto& pj : j.value("props", Json::array())) {
     if (!pj.is_object()) return fail(std::format("{}: prop must be an object", path.string()));
     PropDesc prop;
+    if (!pj.contains("name") || !pj["name"].is_string() || pj["name"].get<std::string>().empty())
+      return fail(std::format("{}: prop name is required", path.string()));
+    prop.name = pj["name"].get<std::string>();
     if (!pj.contains("id") || !pj["id"].is_string() || pj["id"].get<std::string>().empty())
-      return fail(std::format("{}: prop id is required", path.string()));
+      return fail(std::format("{}: prop '{}': id is required", path.string(), prop.name));
     prop.id = pj["id"].get<std::string>();
     if (!pj.contains("transform"))
-      return fail(std::format("{}: prop '{}': transform is required", path.string(), prop.id));
-    auto transform = assetTransformFromJson(pj["transform"], std::format("prop '{}' transform", prop.id));
+      return fail(std::format("{}: prop '{}': transform is required", path.string(), prop.name));
+    auto transform = assetTransformFromJson(pj["transform"], std::format("prop '{}' transform", prop.name));
     if (!transform) return fail(std::format("{}: {}", path.string(), transform.error().message));
     prop.transform = *transform;
-    if (auto parent = pj.find("parentSocket"); parent != pj.end()) {
-      if (!parent->is_string() || parent->get<std::string>().empty())
-        return fail(std::format("{}: prop '{}': parentSocket must be a non-empty string", path.string(), prop.id));
-      prop.parentSocket = parent->get<std::string>();
+    if (auto parentJson = pj.find("parent"); parentJson != pj.end()) {
+      if (!parentJson->is_object())
+        return fail(std::format("{}: prop '{}': parent must be an object", path.string(), prop.name));
+      PropParent parent;
+      const auto requireParentString = [&](const char* field) -> Result<std::string> {
+        auto value = parentJson->find(field);
+        if (value == parentJson->end() || !value->is_string() || value->get<std::string>().empty())
+          return fail(std::format("{}: prop '{}': parent.{} must be a non-empty string", path.string(), prop.name, field));
+        return value->get<std::string>();
+      };
+      auto kind = requireParentString("kind");
+      if (!kind) return std::unexpected(kind.error());
+      if (*kind == "character") parent.kind = PropParent::Kind::Character;
+      else if (*kind == "prop") parent.kind = PropParent::Kind::Prop;
+      else
+        return fail(std::format("{}: prop '{}': parent.kind must be 'character' or 'prop'", path.string(), prop.name));
+      auto parentName = requireParentString("name");
+      if (!parentName) return std::unexpected(parentName.error());
+      parent.name = std::move(*parentName);
+      auto socket = requireParentString("socket");
+      if (!socket) return std::unexpected(socket.error());
+      parent.socket = std::move(*socket);
+      prop.parent = std::move(parent);
     }
     s.props.push_back(std::move(prop));
   }
@@ -150,6 +201,48 @@ Result<Scene> loadScene(const std::filesystem::path& path) {
       }
     }
     s.characters.push_back(cd);
+  }
+  std::map<std::string, size_t> propsByName;
+  for (size_t i = 0; i < s.props.size(); ++i) {
+    const auto& name = s.props[i].name;
+    if (!propsByName.emplace(name, i).second)
+      return fail(std::format("{}: prop name '{}' is not unique", path.string(), name));
+  }
+  std::set<std::string> characterNames;
+  for (const auto& character : s.characters) characterNames.insert(character.name);
+  for (const auto& prop : s.props) {
+    if (!prop.parent) continue;
+    if (prop.parent->kind == PropParent::Kind::Character) {
+      if (!characterNames.contains(prop.parent->name))
+        return fail(std::format("{}: prop '{}': parent character '{}' does not exist", path.string(), prop.name,
+                                prop.parent->name));
+    } else if (!propsByName.contains(prop.parent->name)) {
+      return fail(std::format("{}: prop '{}': parent prop '{}' does not exist", path.string(), prop.name,
+                              prop.parent->name));
+    }
+  }
+  for (size_t start = 0; start < s.props.size(); ++start) {
+    std::set<size_t> chain;
+    size_t current = start;
+    while (s.props[current].parent && s.props[current].parent->kind == PropParent::Kind::Prop) {
+      if (!chain.insert(current).second)
+        return fail(std::format("{}: prop parent cycle includes '{}'", path.string(), s.props[current].name));
+      current = propsByName.at(s.props[current].parent->name);
+    }
+  }
+  std::map<std::string, PropAsset> assetsById;
+  for (const auto& prop : s.props) {
+    if (!prop.parent || prop.parent->kind != PropParent::Kind::Prop) continue;
+    const PropDesc& parentProp = s.props[propsByName.at(prop.parent->name)];
+    auto asset = assetsById.find(parentProp.id);
+    if (asset == assetsById.end()) {
+      auto loaded = loadSceneAsset(path, parentProp.id);
+      if (!loaded) return fail(std::format("{}: prop '{}': {}", path.string(), prop.name, loaded.error().message));
+      asset = assetsById.emplace(parentProp.id, std::move(*loaded)).first;
+    }
+    if (!asset->second.sockets.contains(prop.parent->socket))
+      return fail(std::format("{}: prop '{}': parent prop '{}' asset '{}' has no socket '{}'", path.string(), prop.name,
+                              parentProp.name, parentProp.id, prop.parent->socket));
   }
   if (auto it = j.find("actions"); it != j.end() && it->is_array()) s.actions = *it;
   if (auto it = j.find("director"); it != j.end() && it->is_object()) s.director = *it;
@@ -213,8 +306,11 @@ Json sceneToJson(const Scene& s) {
     objs.push_back(oj);
   }
   for (const auto& prop : s.props) {
-    Json pj = {{"id", prop.id}, {"transform", assetTransformToJson(prop.transform)}};
-    if (prop.parentSocket) pj["parentSocket"] = *prop.parentSocket;
+    Json pj = {{"name", prop.name}, {"id", prop.id}, {"transform", assetTransformToJson(prop.transform)}};
+    if (prop.parent) {
+      const char* kind = prop.parent->kind == PropParent::Kind::Character ? "character" : "prop";
+      pj["parent"] = {{"kind", kind}, {"name", prop.parent->name}, {"socket", prop.parent->socket}};
+    }
     props.push_back(std::move(pj));
   }
   for (auto& c : s.characters) {
@@ -247,7 +343,7 @@ Json sceneToJson(const Scene& s) {
   j["materials"] = mats;
   j["lights"] = lights;
   j["objects"] = objs;
-  j["props"] = props;
+  if (!props.empty()) j["props"] = props;
   j["characters"] = chars;
   j["animation"] = anim;
   if (!s.actions.empty()) j["actions"] = s.actions;
