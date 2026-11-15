@@ -10,3 +10,6 @@ Supervisor: is woken by every comment or push on this PR and answers by session 
 2026-11-15T22:16Z | T-007 | pushed | t-007-agy-mocap-licences@211d412 | agy ~7min; 1 file +215; ACCAD/CMU ALLOW, Mixamo/Rokoko LOCAL-ONLY; quotes not relay-verified
 2026-11-15T22:16Z | RELAY | idle | - | T-004/T-005 based on 9bcb039 (main now de944ae); no rate limits seen; awaiting next instructions
 2026-11-15T22:19Z | RULES | ACK + RELAY TEST OK via push (gh not installed) | relay-channel | Standing rules 1-7 acknowledged; owner-approval still required for actions outside them
+2026-11-15T22:27Z | T-008 | started | t-008-codex-clip-formula@de944ae | Codex running in D:\Animation\wt\t008-codex
+2026-11-15T22:27Z | T-009 | started | t-009-agy-mocap-formats@de944ae | agy running in D:\Animation\wt\t009-agy (asked to push itself)
+2026-11-15T22:27Z | CHANNEL | blocked | - | gh not installed: auto mode refused winget install (accepting package agreements needs owner). Asked owner to run install + gh auth login. Using push fallback meanwhile.
