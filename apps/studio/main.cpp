@@ -5,17 +5,26 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <imgui.h>
+#include <imgui_internal.h>  // DockBuilder (shot layout)
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
+#include <signal.h>
+
 #include <atomic>
 #include <cstdio>
+#include <fstream>
+#include <map>
 #include <mutex>
+#include <set>
+#include <sstream>
 #include <thread>
 
 #include "render/bsdf.h"
 #include "render/image.h"
 #include "scene/scene.h"
+#include "scene/shot_bake.h"
+#include "shot_workflow.h"
 
 using namespace plush;
 namespace fs = std::filesystem;
@@ -198,6 +207,30 @@ struct App {
   float yaw = -0.4f, pitch = 0.25f, dist = 2.4f;
   std::string status;
   std::atomic<bool> animRendering{false};
+  bool loaded = false;  // a scene is loaded into the evaluators
+  // ---- production workflow (T-001): Studio drives pipeline/production/run_shot.py and displays its results
+  bool shotMode = false;                 // the document is a shot: saved by merging into shot.path
+  workflow::ShotInfo shot;
+  workflow::Config cfg;
+  std::vector<workflow::ShotInfo> shots;  // shot browser
+  int browserSel = -1;
+  workflow::Job prodJob;
+  std::string jobRunId, jobKind;
+  workflow::RunSettings settings;
+  workflow::RunStatus jobStatus;
+  std::string jobLogTail, prodError;
+  double lastPoll = 0;
+  std::vector<workflow::RunInfo> runs;
+  std::string selRunId;
+  workflow::Job::CancelResult lastCancel;
+  // result viewer texture
+  GLuint viewTex = 0;
+  fs::path viewImage;
+  fs::file_time_type viewStamp{};
+  int viewW = 0, viewH = 0;
+  // responsiveness while a job runs
+  int jobUiFrames = 0;
+  double jobMaxFrameDt = 0;
 };
 
 Scene& doc(App& a) { return a.view.mutableScene(); }
@@ -317,6 +350,10 @@ void rebuildCharacter(App& a, size_t ci) {
   markEdited(a, true);
 }
 bool saveCharacter(App& a, size_t ci) {
+  if (a.shotMode) {  // a shot's characters are engine packages built by the pipeline (a cache), never edited here
+    a.status = "characters of a shot are edited at their sources (spec / asset store), not inside the shot";
+    return false;
+  }
   Scene& s = a.view.mutableScene();
   fs::path p = s.path.parent_path() / s.characters[ci].asset;
   auto r = writeTextFile(p, characterToJson(a.assets[ci]).dump(1));
@@ -474,11 +511,7 @@ void characterInspector(App& a, size_t ci) {
       markEdited(a, true);
     }
     ImGui::SameLine();
-    if (ImGui::Button("Save character")) {
-      fs::path p = s.path.parent_path() / s.characters[ci].asset;
-      auto r = writeTextFile(p, characterToJson(asset).dump(1));
-      a.status = r ? "saved " + p.string() : r.error().message;
-    }
+    if (ImGui::Button("Save character")) saveCharacter(a, ci);
   }
   if (ImGui::CollapsingHeader("Hair locks & curves", ImGuiTreeNodeFlags_DefaultOpen) && !asset.lockGroups.empty()) {
     std::vector<const char*> gn;
@@ -518,6 +551,11 @@ void characterInspector(App& a, size_t ci) {
     CharacterDesc& cd = s.characters[ci];
     if (dragVec3("Position", cd.position)) markEdited(a);
     if (ImGui::DragFloat("Yaw", &cd.yawDeg, 0.5f)) markEdited(a);
+    if (ImGui::Checkbox("Life layer (breathing, sway, blinks)", &cd.life.enabled)) markEdited(a);
+    if (cd.life.enabled) {
+      if (ImGui::SliderFloat("Breathing", &cd.life.breathing, 0.0f, 2.0f)) markEdited(a);
+      if (ImGui::SliderFloat("Sway", &cd.life.sway, 0.0f, 2.0f)) markEdited(a);
+    }
   }
 }
 
@@ -656,12 +694,17 @@ void renderPanel(App& a) {
     a.status = r ? "saved " + out.string() : r.error().message;
   }
   if (ImGui::Button(a.animRendering ? "Rendering animation..." : "Render animation to video") && !a.animRendering) {
-    if (auto r = saveScene(doc(a), doc(a).path); r) {
-      for (size_t i = 0; i < a.assets.size(); ++i)
-        (void)writeTextFile(doc(a).path.parent_path() / doc(a).characters[i].asset, characterToJson(a.assets[i]).dump(1));
-      std::string stem = doc(a).path.stem().stem().string();
+    // A shot renders a copy of its resolved scene (engine preview); its packages are pipeline outputs, not rewritten.
+    fs::path scenePath = a.shotMode ? a.shot.buildDir() / "studio_engine_preview.scene.json" : doc(a).path;
+    if (auto r = saveScene(doc(a), scenePath); r) {
+      if (!a.shotMode)
+        for (size_t i = 0; i < a.assets.size(); ++i)
+          (void)writeTextFile(doc(a).path.parent_path() / doc(a).characters[i].asset, characterToJson(a.assets[i]).dump(1));
+      std::string stem = a.shotMode ? a.shot.episode + "_" + a.shot.shot + "_engine" : doc(a).path.stem().stem().string();
+      std::error_code ec;
+      fs::create_directories("renders", ec);
       std::string cmd = std::format("\"{}\" \"{}\" --frames {}-{} --outdir renders/{} --video renders/{}.mp4 > renders/{}.log 2>&1",
-                                    PLUSH_RENDER_CLI, doc(a).path.string(), doc(a).frameStart, doc(a).frameEnd, stem, stem, stem);
+                                    PLUSH_RENDER_CLI, scenePath.string(), doc(a).frameStart, doc(a).frameEnd, stem, stem, stem);
       a.animRendering = true;
       std::thread([&a, cmd] {
         int rc = std::system(cmd.c_str());
@@ -686,6 +729,349 @@ void renderPanel(App& a) {
   if (a.job.tex && a.job.width > 0) {
     float avail = ImGui::GetContentRegionAvail().x;
     ImGui::Image(ImTextureID(uintptr_t(a.job.tex)), ImVec2(avail, avail * float(a.job.height) / float(a.job.width)));
+  }
+  ImGui::End();
+}
+
+// ------------------------------------------------------------------ documents and the production workflow (T-001)
+// Loads a scene into the evaluators (the legacy single-scene path and a prepared shot's resolved scene).
+bool loadDocument(App& a, const fs::path& scenePath) {
+  a.job.stop();
+  auto scene = loadScene(scenePath);
+  if (!scene) {
+    a.status = scene.error().message;
+    logError("{}", scene.error().message);
+    return false;
+  }
+  a.view = SceneEvaluator();
+  a.full.reset();
+  a.fullDirty = true;
+  a.assetsEdited = false;
+  a.assets.clear();
+  if (auto r = a.view.load(*scene, a.viewOpt); !r) {
+    a.status = r.error().message;
+    logError("{}", r.error().message);
+    a.loaded = false;
+    return false;
+  }
+  for (auto& c : a.view.characters()) a.assets.push_back(c.asset);
+  a.scenePath = scenePath;
+  a.loaded = true;
+  a.kind = App::Kind::None;
+  a.sel = -1;
+  a.needEval = a.recolor = true;
+  a.status = "loaded " + scenePath.string();
+  return true;
+}
+
+void refreshRuns(App& a) {
+  a.runs = workflow::listRuns(a.shot);
+  bool found = false;
+  for (auto& r : a.runs) found |= r.id == a.selRunId;
+  if (!found) {  // default selection: the newest successful run that rendered frames, else latest, else the newest
+    a.selRunId.clear();
+    for (auto& r : a.runs) {
+      const auto& d = r.status.stagesDone;
+      if (r.status.state == "done" && std::find(d.begin(), d.end(), "render") != d.end()) {
+        a.selRunId = r.id;
+        break;
+      }
+    }
+    if (a.selRunId.empty()) a.selRunId = workflow::latestRunId(a.shot);
+    if (a.selRunId.empty() && !a.runs.empty()) a.selRunId = a.runs.front().id;
+  }
+}
+
+// Opens a shot: the cast is resolved by the pipeline (prepare), so the viewport shows the shot once it is prepared.
+bool openShot(App& a, const fs::path& shotFile) {
+  auto info = workflow::readShotInfo(shotFile);
+  if (!info) {
+    a.status = info.error().message;
+    logError("{}", info.error().message);
+    return false;
+  }
+  a.shotMode = true;
+  a.shot = *info;
+  a.settings = workflow::RunSettings{};
+  a.settings.frameA = a.shot.frameStart;
+  a.settings.frameB = a.shot.frameEnd;
+  a.settings.width = a.shot.width;
+  a.settings.height = a.shot.height;
+  a.settings.samples = a.shot.samples;
+  a.selRunId.clear();
+  a.prodError.clear();
+  refreshRuns(a);
+  a.frame = a.shot.frameStart;
+  bool ok = true;
+  if (workflow::isPrepared(a.shot)) {
+    ok = loadDocument(a, a.shot.resolvedScene());
+  } else {
+    a.job.stop();
+    a.view = SceneEvaluator();
+    a.full.reset();
+    a.assets.clear();
+    a.snap.reset();
+    a.loaded = false;
+    a.status = "shot not prepared: press Prepare (the pipeline resolves its cast)";
+  }
+  a.frame = a.shot.frameStart;
+  logInfo("opened shot {} ({})", a.shot.path.string(), a.loaded ? "prepared" : "not prepared");
+  return ok;
+}
+
+// Saves the document: a shot merges its edits into the source shot file (production block, placeholders and
+// unknown data are kept); a plain scene is written as before.
+bool saveDocument(App& a) {
+  if (a.shotMode) {
+    if (!a.loaded) return true;  // nothing loaded, nothing edited
+    auto r = workflow::mergeSaveShot(a.shot.path, doc(a));
+    a.status = !r ? r.error().message : *r ? "saved (merged) " + a.shot.path.string() : "no changes to save";
+    return bool(r);
+  }
+  auto r = saveScene(doc(a), doc(a).path);
+  a.status = r ? "saved " + doc(a).path.string() : r.error().message;
+  return bool(r);
+}
+
+bool startProduction(App& a, const std::string& kind, workflow::RunSettings s) {
+  if (a.prodJob.running()) {
+    a.prodError = "a production job is already running";
+    return false;
+  }
+  if (a.cfg.blender.empty()) {
+    a.prodError = "no Blender configured (--blender, PLUSH_BLENDER or " + workflow::settingsFilePath().string() + ")";
+    return false;
+  }
+  if (!saveDocument(a)) {  // the pipeline works on the saved shot file
+    a.prodError = "save failed: " + a.status;
+    return false;
+  }
+  if (kind == "prepare") s.stages = {"prepare"};
+  a.jobRunId = workflow::newRunId();
+  a.jobKind = kind;
+  fs::path runDir = a.shot.runsDir() / a.jobRunId;
+  auto cmd = workflow::buildCommand(a.cfg, a.shot, a.jobRunId, s);
+  std::string line;
+  for (auto& c : cmd) line += c + " ";
+  logInfo("production job {}: {}", a.jobRunId, line);
+  if (auto r = a.prodJob.start(cmd, runDir / "studio_job.log"); !r) {
+    a.prodError = r.error().message;
+    return false;
+  }
+  a.prodError.clear();
+  a.jobStatus = {};
+  a.jobLogTail.clear();
+  a.jobUiFrames = 0;
+  a.jobMaxFrameDt = 0;
+  a.lastPoll = 0;
+  return true;
+}
+
+void cancelProduction(App& a) {
+  if (a.jobRunId.empty()) return;
+  a.lastCancel = a.prodJob.cancel(8.0);
+  auto st = workflow::readStatus(a.shot.runsDir() / a.jobRunId / "status.json");
+  if (!st.terminal()) {  // killed before it could finalise itself: the workflow contract does it
+    workflow::Job fin;
+    if (fin.start(workflow::markCancelledCommand(a.cfg, a.shot, a.jobRunId), a.shot.runsDir() / a.jobRunId / "studio_job.log"))
+      fin.waitFor(30);
+  }
+  a.jobStatus = workflow::readStatus(a.shot.runsDir() / a.jobRunId / "status.json");
+  a.status = std::format("job {} cancelled ({}, {:.1f}s)", a.jobRunId, a.lastCancel.forced ? "forced" : "graceful", a.lastCancel.seconds);
+  refreshRuns(a);
+}
+
+// Called every UI frame: never blocks (status.json and the log tail are read at most 4 times a second).
+void pollProduction(App& a, double dt) {
+  if (a.jobRunId.empty()) return;
+  bool running = a.prodJob.running();
+  if (running) {
+    ++a.jobUiFrames;
+    a.jobMaxFrameDt = std::max(a.jobMaxFrameDt, dt);
+  }
+  double t = glfwGetTime();
+  if (running && t - a.lastPoll < 0.25) return;
+  a.lastPoll = t;
+  fs::path runDir = a.shot.runsDir() / a.jobRunId;
+  auto st = workflow::readStatus(runDir / "status.json");
+  if (st.valid) a.jobStatus = st;
+  std::string stage = a.jobStatus.stage.empty() ? "render" : a.jobStatus.stage;
+  std::string tail = stage == "prepare" ? "" : workflow::tailFile(runDir / "logs" / (stage + ".log"), 12);
+  a.jobLogTail = tail.empty() ? workflow::tailFile(runDir / "studio_job.log", 12) : tail;
+  if (running) return;
+  // finished
+  std::string id = a.jobRunId, kind = a.jobKind;
+  if (a.jobStatus.state == "done") {
+    a.status = std::format("job {} done", id);
+    bool prepared = std::find(a.jobStatus.stagesDone.begin(), a.jobStatus.stagesDone.end(), "prepare") != a.jobStatus.stagesDone.end();
+    if (prepared) {  // reload the resolved scene (its packages may have changed)
+      double f = a.frame;
+      if (loadDocument(a, a.shot.resolvedScene())) a.frame = f;
+    }
+    if (kind == "render") a.selRunId = id;
+  } else {
+    a.prodError = a.jobStatus.valid && !a.jobStatus.error.empty()
+                      ? a.jobStatus.error
+                      : std::format("job exited with code {}: {}", a.prodJob.exitCode(), workflow::tailFile(runDir / "studio_job.log", 6));
+    a.status = std::format("job {} {}", id, a.jobStatus.valid ? a.jobStatus.state : "failed");
+  }
+  a.jobLogTail = workflow::tailFile(runDir / "studio_job.log", 12);
+  a.jobRunId.clear();
+  refreshRuns(a);
+}
+
+const workflow::RunInfo* selectedRun(App& a) {
+  for (auto& r : a.runs)
+    if (r.id == a.selRunId) return &r;
+  return nullptr;
+}
+
+// The image of the selected run for the current timeline frame (only frames inside the run's range).
+workflow::FrameView updateViewer(App& a) {
+  const workflow::RunInfo* run = selectedRun(a);
+  if (!run) return {false, false, {}, "no run selected"};
+  workflow::FrameView v = workflow::mapFrame(*run, int(std::round(a.frame)));
+  if (!v.available) return v;
+  std::error_code ec;
+  auto stamp = fs::last_write_time(v.image, ec);
+  if (v.image != a.viewImage || stamp != a.viewStamp) {
+    int w = 0, h = 0;
+    auto px = readImageRgb8(v.image, w, h);
+    if (!px) return {true, false, v.image, "cannot read " + v.image.string()};
+    if (!a.viewTex) glGenTextures(1, &a.viewTex);
+    glBindTexture(GL_TEXTURE_2D, a.viewTex);
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, px->data());
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    a.viewImage = v.image;
+    a.viewStamp = stamp;
+    a.viewW = w;
+    a.viewH = h;
+  }
+  return v;
+}
+
+void productionPanel(App& a) {
+  ImGui::Begin("Production");
+  if (ImGui::CollapsingHeader("Shots", a.shotMode ? 0 : ImGuiTreeNodeFlags_DefaultOpen)) {
+    if (ImGui::Button("Rescan")) a.shots = workflow::discoverShots(a.cfg.root);
+    for (size_t i = 0; i < a.shots.size(); ++i) {
+      const auto& sh = a.shots[i];
+      std::string label = std::format("{}/{}  {}##shot{}", sh.episode, sh.shot, sh.name, i);
+      if (ImGui::Selectable(label.c_str(), a.shotMode && a.shot.path == sh.path, ImGuiSelectableFlags_AllowDoubleClick) &&
+          !a.prodJob.running())
+        openShot(a, sh.path);
+    }
+  }
+  if (!a.shotMode) {
+    ImGui::TextDisabled("Open a shot (above or --shot <file>) to prepare and render it.");
+    ImGui::End();
+    return;
+  }
+  ImGui::Text("Shot: %s/%s  (%s)", a.shot.episode.c_str(), a.shot.shot.c_str(), a.loaded ? "prepared" : "not prepared");
+  ImGui::TextDisabled("Blender: %s  [%s]", a.cfg.blender.empty() ? "(not configured)" : a.cfg.blender.c_str(), a.cfg.blenderSource.c_str());
+  if (ImGui::CollapsingHeader("Cast", ImGuiTreeNodeFlags_DefaultOpen)) {
+    Json prep = workflow::readPrepareReport(a.shot);
+    if (ImGui::BeginTable("cast", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_SizingStretchProp)) {
+      ImGui::TableSetupColumn("Character");
+      ImGui::TableSetupColumn("Source");
+      ImGui::TableSetupColumn("Package");
+      ImGui::TableHeadersRow();
+      for (const auto& c : a.shot.cast) {
+        ImGui::TableNextRow();
+        ImGui::TableNextColumn();
+        ImGui::TextUnformatted(c.name.c_str());
+        ImGui::TableNextColumn();
+        const Json pc = prep.is_object() ? prep.value("cast", Json::object()).value(c.name, Json::object()) : Json::object();
+        std::string src = pc.contains("source") ? pc["source"].get<std::string>() : (c.sourceKind == "published" ? "published: " : "spec (unpublished build): ") + c.source;
+        ImGui::TextWrapped("%s", src.c_str());
+        ImGui::TableNextColumn();
+        if (pc.contains("package_state"))
+          ImGui::TextWrapped("%s (master %s)", pc["package_state"].get<std::string>().c_str(), pc["master_state"].get<std::string>().c_str());
+        else
+          ImGui::TextDisabled("not prepared");
+      }
+      ImGui::EndTable();
+    }
+  }
+  bool busy = a.prodJob.running();
+  if (ImGui::CollapsingHeader("Render settings", ImGuiTreeNodeFlags_DefaultOpen)) {
+    ImGui::DragIntRange2("Frames", &a.settings.frameA, &a.settings.frameB, 1, a.shot.frameStart, a.shot.frameEnd);
+    ImGui::SetNextItemWidth(100);
+    ImGui::DragInt("W", &a.settings.width, 8, 64, 7680);
+    ImGui::SameLine();
+    ImGui::SetNextItemWidth(100);
+    ImGui::DragInt("H", &a.settings.height, 8, 64, 4320);
+    ImGui::SameLine();
+    ImGui::SetNextItemWidth(100);
+    ImGui::DragInt("Samples##prod", &a.settings.samples, 1, 1, 4096);
+    ImGui::TextDisabled("Defaults from the shot's production.render; light_scale %.2f", a.shot.lightScale);
+  }
+  ImGui::BeginDisabled(busy);
+  if (ImGui::Button("Prepare")) startProduction(a, "prepare", a.settings);
+  ImGui::SameLine();
+  if (ImGui::Button("Render (bake + Blender)")) startProduction(a, "render", a.settings);
+  ImGui::EndDisabled();
+  ImGui::SameLine();
+  ImGui::BeginDisabled(!busy);
+  if (ImGui::Button("Cancel")) cancelProduction(a);
+  ImGui::EndDisabled();
+  if (!a.jobRunId.empty() || a.jobStatus.valid) {
+    const auto& st = a.jobStatus;
+    ImGui::Text("Job %s: %s  stage %s", st.runId.empty() ? a.jobRunId.c_str() : st.runId.c_str(), st.state.c_str(), st.stage.c_str());
+    float frac = st.framesTotal > 0 ? float(st.framesDone) / float(st.framesTotal) : 0.0f;
+    std::string over = std::format("{} / {} frames", st.framesDone, st.framesTotal);
+    ImGui::ProgressBar(frac, ImVec2(-1, 0), over.c_str());
+    ImGui::BeginChild("log", ImVec2(0, 70), ImGuiChildFlags_Borders);
+    ImGui::TextUnformatted(a.jobLogTail.c_str());
+    ImGui::EndChild();
+  }
+  if (!a.prodError.empty()) ImGui::TextColored(ImVec4(1, 0.4f, 0.35f, 1), "Error: %s", a.prodError.c_str());
+  if (ImGui::CollapsingHeader("Result viewer", ImGuiTreeNodeFlags_DefaultOpen)) {
+    workflow::FrameView v = updateViewer(a);
+    if (const workflow::RunInfo* run = selectedRun(a)) {
+      const auto& st = run->status;
+      ImGui::Text("Run %s: %s, frames %d-%d, %dx%d, %d samples, light_scale %.2f, exposure %.2f", run->id.c_str(), st.state.c_str(),
+                  st.frameA, st.frameB, st.width, st.height, st.samples, st.lightScale, st.exposureEV);
+    }
+    ImGui::Text("Timeline frame %d", int(std::round(a.frame)));
+    if (v.available && a.viewTex && a.viewW > 0) {
+      float avail = ImGui::GetContentRegionAvail().x;
+      ImGui::Image(ImTextureID(uintptr_t(a.viewTex)), ImVec2(avail, avail * float(a.viewH) / float(a.viewW)));
+      ImGui::TextDisabled("%s", v.image.filename().string().c_str());
+    } else {
+      ImGui::TextColored(ImVec4(1, 0.8f, 0.4f, 1), "%s", v.message.c_str());
+    }
+  }
+  if (ImGui::CollapsingHeader("Runs", ImGuiTreeNodeFlags_DefaultOpen)) {
+    if (ImGui::Button("Refresh runs")) refreshRuns(a);
+    ImGui::BeginChild("runs", ImVec2(0, 110), ImGuiChildFlags_Borders);
+    for (const auto& r : a.runs) {
+      std::string label = std::format("{}{}  {}  frames {}-{}  {}x{}  {} spp##{}", r.id, r.latest ? " (latest)" : "", r.status.state,
+                                      r.status.frameA, r.status.frameB, r.status.width, r.status.height, r.status.samples, r.id);
+      if (ImGui::Selectable(label.c_str(), r.id == a.selRunId)) a.selRunId = r.id;
+    }
+    ImGui::EndChild();
+  }
+  if (a.loaded && ImGui::CollapsingHeader("Shot actions")) {
+    Json& acts = doc(a).actions;
+    bool changed = false;
+    for (size_t i = 0; i < acts.size(); ++i) {
+      Json& act = acts[i];
+      if (!act.is_object() || !act.contains("start") || !act.contains("end")) continue;
+      int se[2] = {act["start"].get<int>(), act["end"].get<int>()};
+      std::string label = std::format("{} {} {}##act{}", act.value("type", "?"), act.value("character", ""), act.value("name", ""), i);
+      if (ImGui::DragInt2(label.c_str(), se, 1, doc(a).frameStart, doc(a).frameEnd)) {
+        act["start"] = se[0];
+        act["end"] = std::max(se[0], se[1]);
+        changed = true;
+      }
+    }
+    if (changed) {
+      if (auto r = a.view.compileActions(); !r) a.status = r.error().message;
+      markEdited(a);
+    }
   }
   ImGui::End();
 }
@@ -744,6 +1130,401 @@ void viewport(App& a) {
   ImGui::PopStyleVar();
 }
 
+// ------------------------------------------------------------------ scripted production tests (Xvfb + Mesa)
+// --script-production DIR: prepare -> playback check against the bake -> render -> viewer mapping -> screenshots.
+// --script-cancel DIR: render, cancel during the Blender render, check processes and earlier runs.
+// --script-fail DIR: a render with a missing Blender executable shows its error.
+// They drive the same functions as the Production panel buttons; results are written as JSON into DIR.
+struct ProdScript {
+  std::string mode;  // production / cancel / fail
+  fs::path dir;
+  int frameA = 5, frameB = 7, width = 320, height = 180, samples = 16;
+  int step = 0, wait = 0;
+  double t0 = 0;
+  Json out = Json::object();
+  std::string pendingShot;  // screenshot requested (written after the frame is drawn)
+  bool shotWritten = false;
+  std::string lastProgress;
+  Json progress = Json::array();
+  std::set<int> visited;
+  std::vector<std::pair<std::string, Json>> earlierRuns;
+};
+
+Json v3j(vec3 v) { return Json::array({v.x, v.y, v.z}); }
+
+// Snapshot of a run folder for "earlier runs untouched": every file with size and modification time.
+Json folderState(const fs::path& d) {
+  Json j = Json::object();
+  std::error_code ec;
+  for (auto it = fs::recursive_directory_iterator(d, ec); it != fs::recursive_directory_iterator(); ++it) {
+    if (!it->is_regular_file()) continue;
+    auto t = fs::last_write_time(it->path(), ec).time_since_epoch().count();
+    j[fs::relative(it->path(), d).string()] = std::format("{} {}", fs::file_size(it->path(), ec), t);
+  }
+  return j;
+}
+
+std::string psList() {
+  std::string out;
+  if (FILE* p = ::popen("ps -eo pid,pgid,ppid,stat,args --sort=pid", "r")) {
+    char buf[4096];
+    while (fgets(buf, sizeof buf, p)) out += buf;
+    ::pclose(p);
+  }
+  return out;
+}
+
+bool pngComplete(const fs::path& p) {
+  std::ifstream f(p, std::ios::binary);
+  char sig[8] = {};
+  f.read(sig, 8);
+  if (std::memcmp(sig, "\x89PNG\r\n\x1a\n", 8) != 0) return false;
+  f.seekg(-8, std::ios::end);
+  char tail[4] = {};
+  f.read(tail, 4);
+  return std::memcmp(tail, "IEND", 4) == 0;
+}
+
+// R2: the evaluator the viewport draws from, at given frames, against a bake written by the pipeline.
+Json playbackCheck(App& a, const Json& bake) {
+  Json res = Json::object();
+  std::map<int, const Json*> byFrame;
+  for (const auto& fd : bake["frame_data"]) byFrame[fd["frame"].get<int>()] = &fd;
+  const Scene& s = doc(a);
+  std::vector<int> frames;
+  for (int k = 0; k <= 8; ++k) frames.push_back(s.frameStart + (s.frameEnd - s.frameStart) * k / 8);
+  frames.insert(frames.end(), {5, 6, 7});
+  std::sort(frames.begin(), frames.end());
+  frames.erase(std::unique(frames.begin(), frames.end()), frames.end());
+  double maxCam = 0, maxSkin = 0, maxMorph = 0;
+  Json perFrame = Json::array();
+  std::map<std::string, std::vector<vec3>> roots;
+  std::map<std::string, std::vector<std::vector<float>>> morphs;
+  std::map<std::string, std::vector<std::vector<float>>> skins;
+  std::vector<vec3> meshCentroid, camPos, camTgt;
+  for (int f : frames) {
+    if (!byFrame.count(f)) continue;
+    a.frame = f;  // the timeline frame
+    auto snap = a.view.evaluate(f);  // what the viewport draws
+    vec3 c(0);
+    size_t n = 0;
+    for (const auto& m : snap->meshes)
+      for (const auto& p : m.mesh->positions) c += p, ++n;
+    meshCentroid.push_back(n ? c / float(n) : c);
+    Json mine = bakeShot(a.view, f, f)["frame_data"][0];
+    const Json& ref = *byFrame[f];
+    auto diff = [](const Json& x, const Json& y) {
+      double d = 0;
+      for (size_t i = 0; i < x.size(); ++i) d = std::max(d, std::abs(x[i].get<double>() - y[i].get<double>()));
+      return x.size() == y.size() ? d : 1e9;
+    };
+    double dc = 0;
+    for (const char* k : {"position", "target", "up"}) dc = std::max(dc, diff(mine["camera"][k], ref["camera"][k]));
+    for (const char* k : {"focalMm", "sensorWidthMm", "fStop", "focusDistance"})
+      dc = std::max(dc, std::abs(mine["camera"][k].get<double>() - ref["camera"][k].get<double>()));
+    auto vj = [](const Json& v) { return vec3(v[0].get<float>(), v[1].get<float>(), v[2].get<float>()); };
+    camPos.push_back(vj(ref["camera"]["position"]));
+    camTgt.push_back(vj(ref["camera"]["target"]));
+    Json fr = {{"frame", f}, {"camera_max_abs_diff", dc}, {"characters", Json::object()}};
+    maxCam = std::max(maxCam, dc);
+    for (auto it = ref["characters"].begin(); it != ref["characters"].end(); ++it) {
+      double ds = diff(mine["characters"][it.key()]["skin"], it.value()["skin"]);
+      double dm = diff(mine["characters"][it.key()]["morphs"], it.value()["morphs"]);
+      maxSkin = std::max(maxSkin, ds);
+      maxMorph = std::max(maxMorph, dm);
+      const Json& sk = it.value()["skin"];
+      roots[it.key()].push_back(vec3(sk[12].get<float>(), sk[13].get<float>(), sk[14].get<float>()));
+      morphs[it.key()].push_back(it.value()["morphs"].get<std::vector<float>>());
+      skins[it.key()].push_back(sk.get<std::vector<float>>());
+      fr["characters"][it.key()] = {{"skin_max_abs_diff", ds}, {"morph_max_abs_diff", dm}};
+    }
+    perFrame.push_back(fr);
+  }
+  res["frames"] = frames;
+  res["per_frame"] = perFrame;
+  res["max_abs_diff"] = {{"camera", maxCam}, {"skin_matrices", maxSkin}, {"morph_weights", maxMorph}};
+  res["equal_within_1e-6"] = maxCam <= 1e-6 && maxSkin <= 1e-6 && maxMorph <= 1e-6;
+  // the animation changes over time as the actions require
+  Json change = Json::object();
+  for (auto& [name, rs] : roots) {
+    float travel = 0;
+    for (auto& r : rs) travel = std::max(travel, glm::length(r - rs.front()));
+    // largest change of any bone's skinning matrix (gaze / head / limbs), and per-morph weight ranges
+    double boneChange = 0;
+    for (auto& sk : skins[name])
+      for (size_t i = 0; i < sk.size(); ++i) boneChange = std::max(boneChange, double(std::abs(sk[i] - skins[name].front()[i])));
+    Json mr = Json::object();
+    const Json* ch = nullptr;
+    for (const auto& c : bake["characters"])
+      if (c["name"] == name) ch = &c;
+    for (size_t m = 0; ch && m < (*ch)["morphs"].size(); ++m) {
+      float lo = 1e9f, hi = -1e9f;
+      for (auto& w : morphs[name]) lo = std::min(lo, w[m]), hi = std::max(hi, w[m]);
+      if (hi - lo > 1e-4f) mr[(*ch)["morphs"][m].get<std::string>()] = {lo, hi};
+    }
+    change[name] = {{"bone0_max_travel_m", travel}, {"max_skin_matrix_change", boneChange}, {"morph_weight_ranges", mr},
+                    {"bone0_translation_per_frame", Json::array()}};
+    for (auto& r : rs) change[name]["bone0_translation_per_frame"].push_back(v3j(r));
+  }
+  float meshMove = 0, camMove = 0, tgtMove = 0;
+  for (auto& c : meshCentroid) meshMove = std::max(meshMove, glm::length(c - meshCentroid.front()));
+  for (auto& c : camPos) camMove = std::max(camMove, glm::length(c - camPos.front()));
+  for (auto& c : camTgt) tgtMove = std::max(tgtMove, glm::length(c - camTgt.front()));
+  change["camera_target_max_move_m"] = tgtMove;
+  change["viewport_mesh_centroid_max_move_m"] = meshMove;
+  change["camera_max_move_m"] = camMove;
+  res["changes_over_time"] = change;
+  return res;
+}
+
+void finishScript(App& a, ProdScript& ps) {
+  std::error_code ec;
+  fs::create_directories(ps.dir, ec);
+  std::ofstream(ps.dir / std::format("studio_{}.json", ps.mode)) << ps.out.dump(1);
+  logInfo("script {} finished -> {}", ps.mode, (ps.dir / std::format("studio_{}.json", ps.mode)).string());
+  glfwSetWindowShouldClose(a.window, 1);
+}
+
+void tickScript(App& a, ProdScript& ps) {
+  if (!ps.pendingShot.empty()) return;  // wait for the screenshot
+  if (ps.wait > 0) {
+    --ps.wait;
+    return;
+  }
+  auto jobDone = [&] { return a.jobRunId.empty(); };
+  auto runDir = [&](const std::string& id) { return a.shot.runsDir() / id; };
+  workflow::RunSettings rs = a.settings;
+  rs.frameA = ps.frameA;
+  rs.frameB = ps.frameB;
+  rs.width = ps.width;
+  rs.height = ps.height;
+  rs.samples = ps.samples;
+  if (ps.step == 0) a.settings = rs;  // the script types its settings into the panel's fields
+  std::string id;
+  switch (ps.step) {
+    case 0: {  // open (done at start-up) -> Prepare
+      std::error_code ec;
+      fs::create_directories(ps.dir, ec);
+      ps.t0 = glfwGetTime();
+      ps.out["shot"] = a.shot.path.string();
+      ps.out["shots_discovered"] = Json::array();
+      for (auto& s : a.shots) ps.out["shots_discovered"].push_back(s.path.string());
+      ps.out["prepared_at_open"] = a.loaded;
+      ps.out["blender"] = a.cfg.blender;
+      ps.out["gl_renderer"] = reinterpret_cast<const char*>(glGetString(GL_RENDERER));
+      ps.out["gl_version"] = reinterpret_cast<const char*>(glGetString(GL_VERSION));
+      if (ps.mode == "fail") {
+        a.cfg.blender = "/nonexistent/blender";
+        ps.step = 20;
+        return;
+      }
+      startProduction(a, "prepare", rs);
+      ps.out["prepare_run"] = a.jobRunId;
+      ps.step = 1;
+      return;
+    }
+    case 1:
+      if (!jobDone()) return;
+      ps.out["prepare_status"] = a.jobStatus.state;
+      ps.out["prepare_report"] = Json::parse(std::ifstream(runDir(ps.out["prepare_run"]) / "prepare.json"), nullptr, false);
+      ps.out["loaded_after_prepare"] = a.loaded;
+      ps.out["characters_imported"] = Json::array();
+      for (auto& c : a.view.characters()) ps.out["characters_imported"].push_back(c.imported);
+      if (!a.loaded || a.jobStatus.state != "done") return finishScript(a, ps);
+      ps.step = ps.mode == "cancel" ? 10 : 2;
+      return;
+    case 2: {  // a bake of the full shot range for the playback check (the pipeline's engine bake)
+      workflow::RunSettings b = rs;
+      b.stages = {"bake"};
+      b.frameA = a.shot.frameStart;
+      b.frameB = a.shot.frameEnd;
+      startProduction(a, "bake", b);
+      ps.out["playback_bake_run"] = a.jobRunId;
+      ps.step = 3;
+      return;
+    }
+    case 3: {
+      if (!jobDone()) return;
+      Json bake = Json::parse(std::ifstream(runDir(ps.out["playback_bake_run"]) / "bake.json"), nullptr, false);
+      if (bake.is_discarded()) {
+        ps.out["error"] = "no bake";
+        return finishScript(a, ps);
+      }
+      ps.out["playback_check"] = playbackCheck(a, bake);
+      a.frame = a.shot.frameStart;
+      a.playing = true;
+      ps.visited.clear();
+      ps.wait = 0;
+      ps.t0 = glfwGetTime();
+      ps.step = 4;
+      return;
+    }
+    case 4:  // timeline playback through the main loop (the same path as the Play button)
+      ps.visited.insert(int(std::floor(a.frame)));
+      if (glfwGetTime() - ps.t0 < 3.0) return;
+      a.playing = false;
+      ps.out["playback"] = {{"seconds", glfwGetTime() - ps.t0}, {"distinct_frames_shown", ps.visited.size()},
+                            {"first", *ps.visited.begin()}, {"last", *ps.visited.rbegin()}};
+      ps.step = 5;
+      return;
+    case 5:
+      startProduction(a, "render", rs);
+      ps.out["render_run"] = a.jobRunId;
+      ps.out["render_command"] = Json::array();
+      for (auto& c : workflow::buildCommand(a.cfg, a.shot, a.jobRunId, rs)) ps.out["render_command"].push_back(c);
+      ps.t0 = glfwGetTime();
+      ps.step = 6;
+      return;
+    case 6: {
+      std::string p = std::format("{} {} {}", a.jobStatus.state, a.jobStatus.stage, a.jobStatus.framesDone);
+      if (p != ps.lastProgress && a.jobStatus.valid) {
+        ps.lastProgress = p;
+        ps.progress.push_back({{"t", glfwGetTime() - ps.t0}, {"state", a.jobStatus.state}, {"stage", a.jobStatus.stage},
+                               {"frames_done", a.jobStatus.framesDone}, {"frames_total", a.jobStatus.framesTotal}});
+      }
+      if (!jobDone()) return;
+      ps.out["render_progress"] = ps.progress;
+      ps.out["render_status"] = a.jobStatus.state;
+      ps.out["render_error"] = a.prodError;
+      ps.out["responsiveness"] = {{"ui_frames_during_job", a.jobUiFrames}, {"max_ui_frame_s", a.jobMaxFrameDt},
+                                  {"job_s", glfwGetTime() - ps.t0}};
+      ps.step = 7;
+      return;
+    }
+    case 7: {  // viewer mapping
+      a.selRunId = ps.out["render_run"];
+      refreshRuns(a);
+      const workflow::RunInfo* run = selectedRun(a);
+      if (!run) return finishScript(a, ps);
+      ps.out["viewer_run_settings"] = {{"frames", {run->status.frameA, run->status.frameB}},
+                                       {"resolution", {run->status.width, run->status.height}},
+                                       {"samples", run->status.samples}, {"light_scale", run->status.lightScale},
+                                       {"exposure_ev", run->status.exposureEV}};
+      Json m = Json::array();
+      for (int f : {a.shot.frameStart, ps.frameA - 1, ps.frameA, ps.frameA + 1, ps.frameB, ps.frameB + 1, a.shot.frameEnd}) {
+        auto v = workflow::mapFrame(*run, f);
+        m.push_back({{"frame", f}, {"in_range", v.inRange}, {"available", v.available}, {"image", v.image.filename().string()},
+                     {"message", v.message}});
+      }
+      ps.out["viewer_mapping"] = m;
+      a.frame = ps.frameA + 1;
+      a.needEval = true;
+      ps.wait = 5;
+      ps.step = 8;
+      return;
+    }
+    case 8:
+      ps.out["screenshot_rendered_frame"] = int(a.frame);
+      ps.pendingShot = (ps.dir / "viewer_rendered_frame.png").string();
+      ps.step = 9;
+      return;
+    case 9:
+      a.frame = std::min(a.shot.frameEnd, ps.frameB + 13);
+      a.needEval = true;
+      ps.wait = 5;
+      ps.step = 100;
+      return;
+    case 100:
+      ps.out["screenshot_not_rendered_frame"] = int(a.frame);
+      ps.pendingShot = (ps.dir / "viewer_not_rendered_frame.png").string();
+      ps.step = 101;
+      return;
+    case 101:
+      return finishScript(a, ps);
+    // ---- cancel test
+    case 10: {
+      refreshRuns(a);
+      ps.out["latest_before"] = workflow::latestRunId(a.shot);
+      for (auto& r : a.runs) ps.earlierRuns.push_back({r.id, folderState(r.dir)});
+      ps.out["earlier_runs"] = Json::array();
+      for (auto& [rid, st] : ps.earlierRuns) ps.out["earlier_runs"].push_back(rid);
+      workflow::RunSettings c = rs;
+      c.frameA = a.shot.frameStart;  // long enough to cancel inside the Blender render
+      c.frameB = a.shot.frameEnd;
+      startProduction(a, "render", c);
+      ps.out["cancel_run"] = a.jobRunId;
+      ps.t0 = glfwGetTime();
+      ps.step = 11;
+      return;
+    }
+    case 11: {
+      if (jobDone()) {
+        ps.out["error"] = "job finished before it could be cancelled";
+        return finishScript(a, ps);
+      }
+      if (!(a.jobStatus.stage == "render" && a.jobStatus.framesDone >= 1)) return;
+      id = a.jobRunId;
+      pid_t pg = a.prodJob.pgid();
+      Json before = Json::array();
+      for (auto& p : workflow::processGroupMembers(pg)) before.push_back({{"pid", p.pid}, {"cmd", p.cmd}});
+      std::ofstream(ps.dir / "processes_before_cancel.txt") << psList();
+      ps.out["process_group"] = pg;
+      ps.out["group_before_cancel"] = before;
+      ps.out["frames_done_at_cancel"] = a.jobStatus.framesDone;
+      cancelProduction(a);
+      std::string after = psList();
+      std::ofstream(ps.dir / "processes_after_cancel.txt") << after;
+      Json groupAfter = Json::array();
+      for (auto& p : workflow::processGroupMembers(pg)) groupAfter.push_back({{"pid", p.pid}, {"cmd", p.cmd}});
+      // survivors: any process whose command line names this run (run_shot.py --run-dir <id>, Blender --bake
+      // .../runs/<id>/bake.json, ffmpeg ...), and every process of the job's group from before the cancel
+      Json survivors = Json::array();
+      std::istringstream lines(after);
+      for (std::string l; std::getline(lines, l);)
+        if (l.find(id) != std::string::npos && l.find(" ps -eo") == std::string::npos) survivors.push_back(l);
+      for (auto& b : before) {
+        bool alive = ::kill(b["pid"].get<pid_t>(), 0) == 0;
+        if (alive) survivors.push_back(std::format("pid {} still exists", b["pid"].get<int>()));
+      }
+      ps.out["group_after_cancel"] = groupAfter;
+      ps.out["surviving_processes"] = survivors;
+      ps.out["cancel_result"] = {{"graceful", a.lastCancel.graceful}, {"forced", a.lastCancel.forced},
+                                 {"group_gone", a.lastCancel.groupGone}, {"seconds", a.lastCancel.seconds}};
+      auto st = workflow::readStatus(runDir(id) / "status.json");
+      ps.out["status_after_cancel"] = Json::parse(std::ifstream(runDir(id) / "status.json"), nullptr, false);
+      Json frames = Json::array();
+      bool allComplete = true;
+      std::error_code ec;
+      for (auto& e : fs::directory_iterator(runDir(id) / "render", ec))
+        if (e.path().extension() == ".png") {
+          bool ok = pngComplete(e.path());
+          allComplete &= ok;
+          frames.push_back({{"file", e.path().filename().string()}, {"complete", ok}});
+        }
+      ps.out["frames_on_disk"] = frames;
+      ps.out["all_frames_on_disk_complete"] = allComplete;
+      ps.out["state_cancelled"] = st.state == "cancelled";
+      bool same = true;
+      for (auto& [rid, state] : ps.earlierRuns) same &= folderState(runDir(rid)) == state;
+      ps.out["earlier_runs_unchanged"] = same;
+      ps.out["latest_after"] = workflow::latestRunId(a.shot);
+      ps.out["latest_unchanged"] = ps.out["latest_after"] == ps.out["latest_before"];
+      ps.out["no_orphans"] = groupAfter.empty() && survivors.empty();
+      ps.wait = 5;
+      ps.step = 12;
+      return;
+    }
+    case 12:
+      ps.pendingShot = (ps.dir / std::format("studio_after_{}.png", ps.mode)).string();
+      ps.step = 101;
+      return;
+    // ---- failure test
+    case 20:
+      startProduction(a, "render", rs);
+      ps.out["fail_run"] = a.jobRunId;
+      ps.step = 21;
+      return;
+    case 21:
+      if (!jobDone()) return;
+      ps.out["status"] = a.jobStatus.state;
+      ps.out["error_shown"] = a.prodError;
+      ps.wait = 5;
+      ps.step = 12;
+      ps.mode = "fail";
+      return;
+  }
+}
+
 }  // namespace
 
 int main(int argc, char** argv) {
@@ -753,6 +1534,9 @@ int main(int argc, char** argv) {
   int screenshotAfter = 30;
   bool autoRender = false;
   int renderW = 0, renderH = 0, renderSpp = 0;
+  fs::path shotArg;
+  std::string blenderArg;
+  ProdScript script;
   for (int i = 1; i < argc; ++i) {
     std::string arg = argv[i];
     if (arg == "--screenshot" && i + 1 < argc) screenshot = argv[++i];
@@ -762,6 +1546,21 @@ int main(int argc, char** argv) {
     else if (arg == "--render-spp" && i + 1 < argc) renderSpp = std::stoi(argv[++i]);
     else if (arg == "--script-hair-edit") scriptHairEdit = true;  // automated editor test (same actions as the buttons)
     else if (arg == "--script-verify") scriptVerify = true;
+    // production workflow (T-001)
+    else if (arg == "--shot" && i + 1 < argc) shotArg = argv[++i];
+    else if (arg == "--blender" && i + 1 < argc) blenderArg = argv[++i];
+    else if ((arg == "--script-production" || arg == "--script-cancel" || arg == "--script-fail") && i + 1 < argc) {
+      script.mode = arg.substr(9);
+      script.dir = argv[++i];
+    }
+    else if (arg == "--script-frames" && i + 1 < argc) {
+      std::string r = argv[++i];
+      size_t dash = r.find('-');
+      script.frameA = std::stoi(r.substr(0, dash));
+      script.frameB = dash == std::string::npos ? script.frameA : std::stoi(r.substr(dash + 1));
+    }
+    else if (arg == "--script-size" && i + 2 < argc) { script.width = std::stoi(argv[++i]); script.height = std::stoi(argv[++i]); }
+    else if (arg == "--script-samples" && i + 1 < argc) script.samples = std::stoi(argv[++i]);
     else scenePath = arg;
   }
   if (!glfwInit()) {
@@ -793,19 +1592,18 @@ int main(int argc, char** argv) {
   ImGui_ImplGlfw_InitForOpenGL(app.window, true);
   ImGui_ImplOpenGL3_Init("#version 330");
   app.preview.init();
+  logInfo("OpenGL: {} / {}", reinterpret_cast<const char*>(glGetString(GL_RENDERER)), reinterpret_cast<const char*>(glGetString(GL_VERSION)));
 
-  auto scene = loadScene(scenePath);
-  if (!scene) {
-    logError("{}", scene.error().message);
-    return 1;
+  // production workflow: the pipeline of this source tree, Blender from --blender / PLUSH_BLENDER / settings file
+  workflow::becomeSubreaper();  // a cancelled job's descendants are reaped here (no zombies, no orphans)
+  app.cfg = workflow::makeConfig(PLUSH_SOURCE_DIR, PLUSH_RENDER_CLI, blenderArg);
+  app.shots = workflow::discoverShots(app.cfg.root);
+  if (!shotArg.empty()) {
+    if (!openShot(app, fs::absolute(shotArg))) return 1;
+  } else {
+    if (!loadDocument(app, scenePath)) return 1;
+    app.frame = doc(app).frameStart;
   }
-  app.frame = scene->frameStart;
-  if (auto r = app.view.load(*scene, app.viewOpt); !r) {
-    logError("{}", r.error().message);
-    return 1;
-  }
-  for (auto& c : app.view.characters()) app.assets.push_back(c.asset);
-  app.status = "loaded " + scenePath.string();
   if (renderW > 0) { doc(app).render.width = renderW; doc(app).render.height = renderH; }
   if (renderSpp > 0) doc(app).render.spp = renderSpp;
   if (scriptHairEdit && !app.assets.empty() && !app.assets[0].lockGroups.empty()) {
@@ -828,6 +1626,10 @@ int main(int argc, char** argv) {
   if (scriptVerify && !app.assets.empty())
     for (auto& g : app.assets[0].lockGroups) logInfo("verify: group '{}' has {} locks", g.name, g.locks.size());
   if (autoRender) startRender(app);
+  if (!script.mode.empty() && !app.shotMode) {
+    logError("--script-{} needs --shot", script.mode);
+    return 1;
+  }
 
   int frameCounter = 0;
   double last = glfwGetTime();
@@ -839,8 +1641,11 @@ int main(int argc, char** argv) {
       if (app.frame > doc(app).frameEnd) app.frame = doc(app).frameStart;
       app.needEval = true;
     }
+    double dt = now - last;
     last = now;
-    if (app.needEval) {
+    pollProduction(app, dt);
+    if (!script.mode.empty()) tickScript(app, script);
+    if (app.needEval && app.loaded) {
       app.snap = app.view.evaluate(app.playing ? std::floor(app.frame) : app.frame);
       app.preview.upload(withTubes(*app.snap), app.recolor);
       app.needEval = app.recolor = false;
@@ -851,29 +1656,54 @@ int main(int argc, char** argv) {
     ImGui::DockSpaceOverViewport(0, ImGui::GetMainViewport());
     if (ImGui::BeginMainMenuBar()) {
       if (ImGui::BeginMenu("File")) {
-        if (ImGui::MenuItem("Save scene", "Ctrl+S")) {
-          auto r = saveScene(doc(app), doc(app).path);
-          app.status = r ? "saved " + doc(app).path.string() : r.error().message;
-        }
+        if (ImGui::MenuItem("Save scene", "Ctrl+S")) saveDocument(app);
         if (ImGui::MenuItem("Quit")) glfwSetWindowShouldClose(app.window, 1);
         ImGui::EndMenu();
       }
-      ImGui::TextDisabled("  %s  |  %s", doc(app).name.c_str(), app.status.c_str());
+      ImGui::TextDisabled("  %s  |  %s", app.shotMode ? app.shot.name.c_str() : doc(app).name.c_str(), app.status.c_str());
       ImGui::EndMainMenuBar();
     }
-    if (io.KeyCtrl && ImGui::IsKeyPressed(ImGuiKey_S)) (void)saveScene(doc(app), doc(app).path);
+    if (io.KeyCtrl && ImGui::IsKeyPressed(ImGuiKey_S)) saveDocument(app);
     ImGui::SetNextWindowPos(ImVec2(0, 20), ImGuiCond_FirstUseEver);
     ImGui::SetNextWindowSize(ImVec2(260, 640), ImGuiCond_FirstUseEver);
     outliner(app);
     ImGui::SetNextWindowPos(ImVec2(260, 20), ImGuiCond_FirstUseEver);
     ImGui::SetNextWindowSize(ImVec2(900, 640), ImGuiCond_FirstUseEver);
     viewport(app);
+    // Layout of the new Production panel: in a plain scene it is a tab behind Render (the existing layout stays as
+    // it was); in a shot the right column holds Production, Inspector and Render as tabs, Production in front.
+    static int layout = 0;  // 0 none, 1 scene, 2 shot
+    static int focusRender = 0, focusProduction = 0;
+    auto dockColumn = [](const char* id, ImVec2 pos, ImVec2 size, std::initializer_list<const char*> windows) {
+      ImGuiID node = ImGui::GetID(id);
+      if (ImGui::DockBuilderGetNode(node)) return;
+      ImGui::DockBuilderAddNode(node, ImGuiDockNodeFlags_None);
+      ImGui::DockBuilderSetNodePos(node, pos);
+      ImGui::DockBuilderSetNodeSize(node, size);
+      for (const char* w : windows) ImGui::DockBuilderDockWindow(w, node);
+      ImGui::DockBuilderFinish(node);
+    };
+    if (!app.shotMode && layout == 0) {
+      layout = 1;
+      focusRender = 3;  // the docked tab is selected once the dock node exists
+      dockColumn("SceneRenderColumn", ImVec2(1160, 360), ImVec2(440, 540), {"Render", "Production"});
+    }
+    if (app.shotMode && layout != 2) {
+      layout = 2;
+      focusProduction = 3;
+      dockColumn("ShotRightColumn", ImVec2(1160, 20), ImVec2(440, 880), {"Inspector", "Render", "Production"});
+    }
     ImGui::SetNextWindowPos(ImVec2(1160, 20), ImGuiCond_FirstUseEver);
     ImGui::SetNextWindowSize(ImVec2(440, 340), ImGuiCond_FirstUseEver);
     inspector(app);
     ImGui::SetNextWindowPos(ImVec2(1160, 360), ImGuiCond_FirstUseEver);
     ImGui::SetNextWindowSize(ImVec2(440, 540), ImGuiCond_FirstUseEver);
+    if (focusRender > 0 && focusRender-- == 1) ImGui::SetNextWindowFocus();
     renderPanel(app);
+    ImGui::SetNextWindowPos(ImVec2(1160, 360), ImGuiCond_FirstUseEver);
+    ImGui::SetNextWindowSize(ImVec2(440, 540), ImGuiCond_FirstUseEver);
+    if (focusProduction > 0 && focusProduction-- == 1) ImGui::SetNextWindowFocus();
+    productionPanel(app);
     ImGui::SetNextWindowPos(ImVec2(0, 660), ImGuiCond_FirstUseEver);
     ImGui::SetNextWindowSize(ImVec2(1160, 240), ImGuiCond_FirstUseEver);
     timeline(app);
@@ -884,17 +1714,28 @@ int main(int argc, char** argv) {
     glClearColor(0.1f, 0.1f, 0.11f, 1);
     glClear(GL_COLOR_BUFFER_BIT);
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-    if (!screenshot.empty() && ++frameCounter >= screenshotAfter && (!autoRender || (!app.job.running && app.job.samples > 0))) {
+    auto capture = [&](const std::string& path) {
       std::vector<uint8_t> px(size_t(fbw) * size_t(fbh) * 3), flipped(px.size());
       glPixelStorei(GL_PACK_ALIGNMENT, 1);
       glReadPixels(0, 0, fbw, fbh, GL_RGB, GL_UNSIGNED_BYTE, px.data());
       for (int y = 0; y < fbh; ++y) std::memcpy(&flipped[size_t(y) * size_t(fbw) * 3], &px[size_t(fbh - 1 - y) * size_t(fbw) * 3], size_t(fbw) * 3);
-      (void)writePng(screenshot, fbw, fbh, flipped);
-      logInfo("screenshot written to {}", screenshot);
+      (void)writePng(path, fbw, fbh, flipped);
+      logInfo("screenshot written to {}", path);
+    };
+    if (!script.pendingShot.empty()) {
+      std::error_code ec;
+      fs::create_directories(fs::path(script.pendingShot).parent_path(), ec);
+      capture(script.pendingShot);
+      script.pendingShot.clear();
+    }
+    if (!screenshot.empty() && script.mode.empty() && ++frameCounter >= screenshotAfter &&
+        (!autoRender || (!app.job.running && app.job.samples > 0))) {
+      capture(screenshot);
       glfwSetWindowShouldClose(app.window, 1);
     }
     glfwSwapBuffers(app.window);
   }
+  if (app.prodJob.running()) app.prodJob.cancel(8.0);
   app.job.stop();
   ImGui_ImplOpenGL3_Shutdown();
   ImGui_ImplGlfw_Shutdown();

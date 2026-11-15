@@ -1,6 +1,12 @@
 add_executable(plush_tests test_main.cpp test_engine.cpp test_imported_character.cpp)
 target_link_libraries(plush_tests PRIVATE plush_scene plush_render doctest::doctest plush_warnings)
 target_compile_definitions(plush_tests PRIVATE PLUSH_SOURCE_DIR="${CMAKE_SOURCE_DIR}")
+# Plush Studio production workflow (no OpenGL), built when the studio is built.
+if(TARGET plush_shot_workflow)
+  target_sources(plush_tests PRIVATE test_shot_workflow.cpp)
+  target_link_libraries(plush_tests PRIVATE plush_shot_workflow)
+  target_compile_definitions(plush_tests PRIVATE PLUSH_RENDER_CLI="$<TARGET_FILE:plush-render>")
+endif()
 add_test(NAME plush_tests COMMAND plush_tests)
 
 # Look regression: Milestone 01 is frozen (scene + character copy) and must keep rendering the same.

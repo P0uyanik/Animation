@@ -1,0 +1,14 @@
+{
+ "blender": "/opt/bpywrap/blender",
+ "error_shown": "FileNotFoundError: [Errno 2] No such file or directory: '/nonexistent/blender'",
+ "fail_run": "20261115-115452-399",
+ "gl_renderer": "llvmpipe (LLVM 20.1.2, 256 bits)",
+ "gl_version": "4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.4",
+ "prepared_at_open": true,
+ "shot": "/home/user/Animation/episodes/e000_pilot/shots/s010/shot.scene.json",
+ "shots_discovered": [
+  "/home/user/Animation/episodes/e000_pilot/shots/s010/shot.scene.json",
+  "/home/user/Animation/episodes/e900_workflow_test/shots/s010/shot.scene.json"
+ ],
+ "status": "failed"
+}

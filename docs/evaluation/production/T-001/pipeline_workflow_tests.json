@@ -1,0 +1,223 @@
+{
+ "idempotent_prepare": {
+  "episodes/e000_pilot/shots/s010/shot.scene.json": {
+   "files_compared": 126,
+   "files_changed": [],
+   "first_prepare": {
+    "boy": {
+     "character_id": "boy_yellow_hoodie",
+     "source": "published 1.0.0",
+     "master": "assets/characters/boy_yellow_hoodie/versions/1.0.0/boy_yellow_hoodie_master.blend",
+     "master_state": "published (read only)",
+     "package": "episodes/e000_pilot/shots/s010/build/packages/boy_21d65f461b03fcff",
+     "package_state": "cached",
+     "from_cache": true
+    },
+    "girl": {
+     "character_id": "girl_auburn_bun_glasses",
+     "source": "unpublished build from spec (experimental; not approved)",
+     "master": "episodes/e000_pilot/shots/s010/build/masters/girl_68bcba4c4ada0d92/girl_auburn_bun_glasses_master.blend",
+     "master_state": "cached",
+     "package": "episodes/e000_pilot/shots/s010/build/packages/girl_b5f24266a9d124c0",
+     "package_state": "cached",
+     "from_cache": true
+    }
+   },
+   "second_prepare": {
+    "boy": {
+     "character_id": "boy_yellow_hoodie",
+     "source": "published 1.0.0",
+     "master": "assets/characters/boy_yellow_hoodie/versions/1.0.0/boy_yellow_hoodie_master.blend",
+     "master_state": "published (read only)",
+     "package": "episodes/e000_pilot/shots/s010/build/packages/boy_21d65f461b03fcff",
+     "package_state": "cached",
+     "from_cache": true
+    },
+    "girl": {
+     "character_id": "girl_auburn_bun_glasses",
+     "source": "unpublished build from spec (experimental; not approved)",
+     "master": "episodes/e000_pilot/shots/s010/build/masters/girl_68bcba4c4ada0d92/girl_auburn_bun_glasses_master.blend",
+     "master_state": "cached",
+     "package": "episodes/e000_pilot/shots/s010/build/packages/girl_b5f24266a9d124c0",
+     "package_state": "cached",
+     "from_cache": true
+    }
+   },
+   "second_all_cached": true,
+   "watched": [
+    "assets",
+    "episodes/e000_pilot/shots/s010/build/masters",
+    "episodes/e000_pilot/shots/s010/build/packages",
+    "episodes/e000_pilot/shots/s010/build/shot.resolved.scene.json",
+    "episodes/e000_pilot/shots/s010/build/cast.json",
+    "assets/characters/boy_yellow_hoodie/versions/1.0.0",
+    "assets/characters/boy_yellow_hoodie/versions/1.0.0"
+   ]
+  },
+  "episodes/e900_workflow_test/shots/s010/shot.scene.json": {
+   "files_compared": 119,
+   "files_changed": [],
+   "first_prepare": {
+    "boy": {
+     "character_id": "boy_yellow_hoodie",
+     "source": "published 1.0.0",
+     "master": "assets/characters/boy_yellow_hoodie/versions/1.0.0/boy_yellow_hoodie_master.blend",
+     "master_state": "published (read only)",
+     "package": "episodes/e900_workflow_test/shots/s010/build/packages/boy_21d65f461b03fcff",
+     "package_state": "cached",
+     "from_cache": true
+    }
+   },
+   "second_prepare": {
+    "boy": {
+     "character_id": "boy_yellow_hoodie",
+     "source": "published 1.0.0",
+     "master": "assets/characters/boy_yellow_hoodie/versions/1.0.0/boy_yellow_hoodie_master.blend",
+     "master_state": "published (read only)",
+     "package": "episodes/e900_workflow_test/shots/s010/build/packages/boy_21d65f461b03fcff",
+     "package_state": "cached",
+     "from_cache": true
+    }
+   },
+   "second_all_cached": true,
+   "watched": [
+    "assets",
+    "episodes/e900_workflow_test/shots/s010/build/packages",
+    "episodes/e900_workflow_test/shots/s010/build/shot.resolved.scene.json",
+    "episodes/e900_workflow_test/shots/s010/build/cast.json",
+    "assets/characters/boy_yellow_hoodie/versions/1.0.0",
+    "assets/characters/boy_yellow_hoodie/versions/1.0.0"
+   ]
+  }
+ },
+ "cancel_graceful": {
+  "status": {
+   "format": "plush.run_status",
+   "version": 1,
+   "run_id": "cancel1",
+   "shot": "../../../tmp/plush_t001_r4eagr9l/episodes/etest/shots/s001/shot.scene.json",
+   "run_dir": "/tmp/plush_t001_r4eagr9l/episodes/etest/shots/s001/build/runs/cancel1",
+   "pid": 21702,
+   "state": "cancelled",
+   "stage": "render",
+   "stages": [
+    "bake",
+    "render"
+   ],
+   "stages_done": [
+    "bake"
+   ],
+   "frames": [
+    11,
+    14
+   ],
+   "frames_done": 1,
+   "frames_total": 4,
+   "resolution": [
+    640,
+    360
+   ],
+   "samples": 16,
+   "light_scale": 1.0,
+   "exposure_ev": 0.2,
+   "blend_only": false,
+   "error": "cancelled (SIGTERM)",
+   "started": "2026-11-15T11:56:21",
+   "updated": "2026-11-15T11:56:22",
+   "removed_partial_frames": [
+    "frame_0012.png"
+   ]
+  },
+  "group_before": "  PID  PGID COMMAND\n21702 21702 /usr/local/bin/python3 /home/user/Animation/pipeline/production/run_shot.py --shot /tmp/plush_t001_r4eagr9l/episodes/etest/shots/s001/shot.scene.json --blender /tmp/plush_t001_r4eagr9l/fake_blender.py --stages bake,render --run-dir cancel1 --frames 11-14\n21721 21702 python3 /tmp/plush_t001_r4eagr9l/fake_blender.py -b --factory-startup -P /home/user/Animation/pipeline/charsys/shot_render.py -- --bake /tmp/plush_t001_r4eagr9l/episodes/etest/shots/s001/build/runs/cancel1/bake.json --cast /tmp/plush_t001_r4eagr9l/episodes/etest/shots/s001/build/cast.json --out /tmp/plush_t001_r4eagr9l/episodes/etest/shots/s001/build/runs/cancel1/render --samples 16 --light-scale 1.0 --resolution 640 360 --frames 11-14\n",
+  "exit_code": 143
+ },
+ "cancel_forced": {
+  "status": {
+   "format": "plush.run_status",
+   "version": 1,
+   "run_id": "kill1",
+   "shot": "../../../tmp/plush_t001_r4eagr9l/episodes/etest/shots/s001/shot.scene.json",
+   "run_dir": "/tmp/plush_t001_r4eagr9l/episodes/etest/shots/s001/build/runs/kill1",
+   "pid": 21724,
+   "state": "cancelled",
+   "stage": "render",
+   "stages": [
+    "bake",
+    "render"
+   ],
+   "stages_done": [
+    "bake"
+   ],
+   "frames": [
+    11,
+    14
+   ],
+   "frames_done": 1,
+   "frames_total": 4,
+   "resolution": [
+    640,
+    360
+   ],
+   "samples": 16,
+   "light_scale": 1.0,
+   "exposure_ev": 0.2,
+   "blend_only": false,
+   "error": "killed",
+   "started": "2026-11-15T11:56:22",
+   "updated": "2026-11-15T11:56:23",
+   "removed_partial_frames": [
+    "frame_0012.png"
+   ]
+  }
+ },
+ "failure": {
+  "status": {
+   "format": "plush.run_status",
+   "version": 1,
+   "run_id": "fail1",
+   "shot": "../../../tmp/plush_t001_r4eagr9l/episodes/etest/shots/s001/shot.scene.json",
+   "run_dir": "/tmp/plush_t001_r4eagr9l/episodes/etest/shots/s001/build/runs/fail1",
+   "pid": 21745,
+   "state": "failed",
+   "stage": "render",
+   "stages": [
+    "bake",
+    "render"
+   ],
+   "stages_done": [
+    "bake"
+   ],
+   "frames": [
+    11,
+    12
+   ],
+   "frames_done": 0,
+   "frames_total": 2,
+   "resolution": [
+    640,
+    360
+   ],
+   "samples": 16,
+   "light_scale": 1.0,
+   "exposure_ev": 0.2,
+   "blend_only": false,
+   "error": "step failed (3): /tmp/plush_t001_r4eagr9l/fake_blender.py -b --factory-startup -P ... see /tmp/plush_t001_r4eagr9l/episodes/etest/shots/s001/build/runs/fail1/logs/render.log\nfake blender: simulated render failure\n",
+   "started": "2026-11-15T11:56:23",
+   "updated": "2026-11-15T11:56:24",
+   "removed_partial_frames": []
+  }
+ },
+ "default_cli": {
+  "run_shot_json_keys": [
+   "cast",
+   "render",
+   "shot",
+   "steps"
+  ],
+  "steps": [
+   "blender_s",
+   "engine_bake_s"
+  ]
+ },
+ "failures": []
+}

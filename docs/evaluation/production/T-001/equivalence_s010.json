@@ -1,0 +1,274 @@
+{
+ "labels": [
+  "cli",
+  "studio"
+ ],
+ "runs": [
+  "episodes/e000_pilot/shots/s010/build",
+  "episodes/e000_pilot/shots/s010/build/runs/20261115-115343-136"
+ ],
+ "tolerance": 1e-06,
+ "bake": {
+  "byte_identical": true,
+  "frames": [
+   5,
+   6,
+   7
+  ],
+  "frames_equal": true,
+  "camera_max_abs_diff": 0.0,
+  "skin_matrix_max_abs_diff": 0.0,
+  "morph_weight_max_abs_diff": 0.0,
+  "static_fields_equal": {
+   "characters": true,
+   "coordinates": true,
+   "format": true,
+   "fps": true,
+   "frames": true,
+   "lights": true,
+   "objects": true,
+   "objects_not_baked": true,
+   "render": true,
+   "scene": true,
+   "scene_path": true,
+   "version": true
+  },
+  "pass": true
+ },
+ "bone_reconstruction": {
+  "cli": {
+   "boy": {
+    "baked_bones": 73,
+    "facial_controls": 4,
+    "unmapped_morphs": [],
+    "bones_left_to_drivers": [],
+    "max_bone_error_mm": 0.0003,
+    "max_bone_error_deg": 0.0
+   },
+   "girl": {
+    "baked_bones": 73,
+    "facial_controls": 28,
+    "unmapped_morphs": [],
+    "bones_left_to_drivers": [
+     "DEF-jaw"
+    ],
+    "max_bone_error_mm": 0.0004,
+    "max_bone_error_deg": 0.0
+   }
+  },
+  "studio": {
+   "boy": {
+    "baked_bones": 73,
+    "facial_controls": 4,
+    "unmapped_morphs": [],
+    "bones_left_to_drivers": [],
+    "max_bone_error_mm": 0.0003,
+    "max_bone_error_deg": 0.0
+   },
+   "girl": {
+    "baked_bones": 73,
+    "facial_controls": 28,
+    "unmapped_morphs": [],
+    "bones_left_to_drivers": [
+     "DEF-jaw"
+    ],
+    "max_bone_error_mm": 0.0004,
+    "max_bone_error_deg": 0.0
+   }
+  },
+  "pass": true
+ },
+ "frames": {
+  "cli": [
+   "frame_0005.png",
+   "frame_0006.png",
+   "frame_0007.png"
+  ],
+  "studio": [
+   "frame_0005.png",
+   "frame_0006.png",
+   "frame_0007.png"
+  ],
+  "count": [
+   3,
+   3
+  ],
+  "pass": true,
+  "report_frames": [
+   [
+    5,
+    7
+   ],
+   [
+    5,
+    7
+   ]
+  ]
+ },
+ "blender_camera": {
+  "matrix_world_max_abs_diff": 0.0,
+  "lens_max_abs_diff": 0.0,
+  "frames": [
+   5,
+   6,
+   7
+  ],
+  "pass": true
+ },
+ "render_settings": {
+  "cli": {
+   "resolution": [
+    320,
+    180,
+    100
+   ],
+   "engine": "CYCLES",
+   "samples": 16,
+   "denoise": true,
+   "exposure": 0.400000006,
+   "view_transform": "AgX",
+   "frame_range": [
+    5,
+    7
+   ],
+   "fps": [
+    30,
+    1.0
+   ],
+   "lights": [
+    [
+     "rect.0",
+     "AREA",
+     188.827026367,
+     [
+      1.0,
+      0.949999988079071,
+      0.8799999952316284
+     ]
+    ],
+    [
+     "rect.1",
+     "AREA",
+     46.576335907,
+     [
+      0.8999999761581421,
+      0.9300000071525574,
+      1.0
+     ]
+    ],
+    [
+     "sun.2",
+     "SUN",
+     4.5,
+     [
+      1.0,
+      0.8999999761581421,
+      0.800000011920929
+     ]
+    ]
+   ],
+   "world_strength": 0.3499999940395355
+  },
+  "studio": {
+   "resolution": [
+    320,
+    180,
+    100
+   ],
+   "engine": "CYCLES",
+   "samples": 16,
+   "denoise": true,
+   "exposure": 0.400000006,
+   "view_transform": "AgX",
+   "frame_range": [
+    5,
+    7
+   ],
+   "fps": [
+    30,
+    1.0
+   ],
+   "lights": [
+    [
+     "rect.0",
+     "AREA",
+     188.827026367,
+     [
+      1.0,
+      0.949999988079071,
+      0.8799999952316284
+     ]
+    ],
+    [
+     "rect.1",
+     "AREA",
+     46.576335907,
+     [
+      0.8999999761581421,
+      0.9300000071525574,
+      1.0
+     ]
+    ],
+    [
+     "sun.2",
+     "SUN",
+     4.5,
+     [
+      1.0,
+      0.8999999761581421,
+      0.800000011920929
+     ]
+    ]
+   ],
+   "world_strength": 0.3499999940395355
+  },
+  "report": {
+   "cli": [
+    [
+     320,
+     180
+    ],
+    16
+   ],
+   "studio": [
+    [
+     320,
+     180
+    ],
+    16
+   ]
+  },
+  "pass": true
+ },
+ "pixels": {
+  "per_frame": {
+   "frame_0005.png": {
+    "size": [
+     320,
+     180
+    ],
+    "max_abs_diff_8bit": 0,
+    "differing_pixels": 0
+   },
+   "frame_0006.png": {
+    "size": [
+     320,
+     180
+    ],
+    "max_abs_diff_8bit": 0,
+    "differing_pixels": 0
+   },
+   "frame_0007.png": {
+    "size": [
+     320,
+     180
+    ],
+    "max_abs_diff_8bit": 0,
+    "differing_pixels": 0
+   }
+  },
+  "identical": true,
+  "pass": true
+ },
+ "pass": true
+}

@@ -4,9 +4,9 @@
 1. **Owner review of M3.2:**
    - `docs/PRODUCTION_PIPELINE.md`;
    - `docs/evaluation/production/M32_s010_contact_sheet.jpg` and `M32_s010_shot.mp4`.
-2. **Next concrete dependency:** connect Plush Studio to the shot pipeline. Studio opens a shot, edits actions and
-   the camera, and calls `run_shot.py` (bake, then render) and shows the result. This makes the product, not
-   hand-written JSON, the place where shots are made.
+2. **T-001 (Studio ↔ shot pipeline): accepted by the owner on 2026-11-15** (branch `t-001-studio-shot-pipeline`).
+   - Report: `docs/milestones/2026-11-15_T-001_studio_shot_pipeline.md`.
+   - `ctest` is 4/4 with OIDN 2.3.3 (a build dependency outside the repository, `-DPLUSH_OIDN_ROOT`).
 3. **Then:**
    - the girl's hair and garments (M4/M5) on the shared path, judged in final Blender renders;
    - a relaxed idle arm pose for imported characters (engine data, not per character);
