@@ -82,7 +82,7 @@ never from constants. Generic reuse is only claimed after a second, different ch
 | Expression library (13 action units, 14 + 2 presets) | shared data; per-character intensity, scale, overrides | girl 15 presets, G03 13 presets at intensity 0.7 |
 | Accessories (`glasses/1`) | shared; round (girl) and rectangular (G03) | 0 intersections in every state and gaze |
 | Engine expressions | per-character names merged at export; no engine change | 10 semantic expressions tested in C++ |
-| Boy | **legacy face path** (`body_v6.build_eyes`, F09 config) | unchanged (36/36 face_test values) |
+| Boy | **legacy face geometry** (`body_v6.build_eyes`, F09 config); shared `face.lid_bindings` accepts the same spec-driven gaze-follow value as `face_generic/1` | 1.0.0 remains frozen; unpublished T-014 1.1.0 candidate uses full lid tracking, pending Blender evidence |
 
 **Remaining assumptions:**
 - humanoid front-facing face with two eyes;

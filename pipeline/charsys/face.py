@@ -13,6 +13,29 @@ import math
 from mathutils import Matrix, Vector
 
 
+def lid_bindings(lids, head_bone, eye_bone="DEF-eye.{s}", tracking=0.0, sides=("L", "R")):
+    """Rigid bindings for eyelids and lashes, optionally following gaze.
+
+    ``tracking`` is character data in the range 0..1.  Zero binds the lid set to the head (the legacy behaviour);
+    one binds it to the eye bone, preserving the rest-pose iris/lid relationship at every gaze angle.  Intermediate
+    values provide natural partial eyelid tracking.  The same rule is used by ``face_generic/1`` and by legacy face
+    geometry, so a character can opt in without a character-name branch in the shared systems.
+    """
+    tracking = float(tracking)
+    if not 0.0 <= tracking <= 1.0:
+        raise ValueError(f"lid_tracking must be in [0, 1], got {tracking}")
+    out = []
+    for side, lid in zip(sides, lids):
+        if tracking <= 0.0:
+            binding = head_bone
+        elif tracking >= 1.0:
+            binding = {eye_bone.format(s=side): 1.0}
+        else:
+            binding = {head_bone: 1.0 - tracking, eye_bone.format(s=side): tracking}
+        out.extend((ob, binding) for ob in lid[:3])
+    return out
+
+
 def _front_edge_elevation(ob, c, r, lowest):
     """Elevation (deg) of the lid's free edge at the front: the lowest (upper lid) or highest (lower lid) vertex
     among the vertices in front of the eye centre close to the middle (|x - c.x| < 0.25 r)."""
