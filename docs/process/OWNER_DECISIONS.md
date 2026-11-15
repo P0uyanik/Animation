@@ -21,3 +21,14 @@
 - **Visual benchmark:** the owner's test videos (`docs/references/video_watertable.mp4`,
   `docs/references/video_paperboat.mp4`) and the character reference sheets are the visual and animation benchmark
   for all future development. Avoid work that does not move the project towards that target.
+
+## 2026-11-15: multi-agent orchestration (Claude Implementer, Codex, Antigravity)
+1. The Supervisor is the central authority and makes all final decisions.
+2. Minimise token use for the Supervisor and the Claude Implementer; keep enough Claude quota to coordinate Codex
+   and Antigravity.
+3. Delegate implementation tasks to Codex and Antigravity whenever appropriate (they use the owner's existing
+   ChatGPT and Google subscriptions through the local Claude Code session on the owner's computer; no API billing).
+4. Each agent gets a clear, independent task with defined acceptance criteria.
+5. Each agent creates its own task branch from the latest `main`; agents never modify or push to `main`.
+6. The Supervisor reviews all completed work (code quality, architecture, tests), requests fixes and re-reviews when
+   needed, and merges verified branches into `main` without conflicts or regressions.
