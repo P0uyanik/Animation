@@ -712,7 +712,36 @@
    ]
   },
   "target_source": "references/color_targets.json",
-  "albedo_srgb": {}
+  "albedo_srgb": {},
+  "assignments": {
+   "skin": {
+    "preset": "skin-felt",
+    "base_color_srgb": [
+     202,
+     176,
+     169
+    ],
+    "reference_size_m": 0.29278
+   },
+   "glasses": {
+    "preset": "buttons/plastic",
+    "base_color_srgb": [
+     137,
+     85,
+     69
+    ],
+    "reference_size_m": 0.11958
+   },
+   "glasses_lens": {
+    "preset": "glasses/acrylic",
+    "base_color_srgb": [
+     238,
+     244,
+     246
+    ],
+    "reference_size_m": 0.11958
+   }
+  }
  },
  "fur": [],
  "animation": {
@@ -727,10 +756,11 @@
   ]
  },
  "metadata": {
-  "spec_version": "0.3.0",
-  "status": "M2: body_generic/1 base body (no face, hair, garments, accessories)",
+  "spec_version": "0.4.0",
+  "status": "V2: shared skin-felt and glasses materials opted in",
   "history": [
-   "0.3.0 (M3): generic face (face_generic/1), expression library, glasses accessory"
+   "0.3.0 (M3): generic face (face_generic/1), expression library, glasses accessory",
+   "0.4.0 (V2/T-015): shared skin-felt, buttons/plastic glasses frame, and glasses/acrylic lens presets"
   ]
  },
  "components": {

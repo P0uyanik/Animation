@@ -34,6 +34,13 @@ def validate(spec):
     cid = spec.get("identity", {}).get("id", "")
     if not cid or not cid.replace("_", "").isalnum() or cid != cid.lower():
         errs.append("identity.id must be lower_snake_case")
+    materials = spec.get("materials", {})
+    if materials.get("assignments") is not None:
+        try:
+            from materials import builder as material_builder
+            errs.extend(material_builder.validate_assignments(materials))
+        except (OSError, ValueError) as exc:
+            errs.append(str(exc))
     if errs:
         raise ValueError("invalid character spec: " + "; ".join(errs))
     return spec

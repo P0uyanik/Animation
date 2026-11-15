@@ -27,6 +27,7 @@ from mathutils.bvhtree import BVHTree
 
 import face as FACE
 import geom as G
+from materials import builder as MATERIALS
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 LIBRARY = os.path.join(HERE, "face_library", "expressions.json")
@@ -130,7 +131,7 @@ def _plane_point(q, k, rr, a, upper):
     return g((lo + hi) / 2)[1]
 
 
-def build_eyes(C, M, ctx, eyes_cfg, ex, ez, protrusion):
+def build_eyes(C, M, ctx, eyes_cfg, ex, ez, protrusion, material_assignment=None):
     """Eyeballs (object frame = eye frame: the iris shader stays circular), lid shells cut by configurable planes,
     an upper lash line with optional outer lashes, an optional lower lash hint (part of the lower lid object so it
     follows every lower-lid motion). Returns eyes, lids [(up, lo, lash, c)], frames {side: T}, info."""
@@ -142,6 +143,8 @@ def build_eyes(C, M, ctx, eyes_cfg, ex, ez, protrusion):
                          r, _f(iris, "radius", 0.6) * r, _f(iris, "pupil", 0.28) * r,
                          highlights=[tuple(h) for h in eyes_cfg.get("highlights", [])] or None,
                          sclera_srgb=tuple(eyes_cfg.get("sclera_srgb", (235, 228, 220))))
+    if material_assignment:
+        MATERIALS.apply_from_assignment(mat, material_assignment, preserve_base_color=True)
     lash_mat = G.material("M_lash_generic", tuple(lash_cfg.get("srgb", (45, 28, 24))), roughness=0.7)
     eyes, lids, frames, info = [], [], {}, {}
     for sx, side in SIDES:
@@ -525,6 +528,9 @@ def build(C, M, head, spec, P, H, head_bone="DEF-spine.006", eye_bone="DEF-eye.{
             spots.append((0.0, ctx.face_y(None, 0.0, z_nose), z_nose))
         M["face_skin"] = G.blush_skin_material("M_skin_face", skin_rgb, tuple(bl.get("srgb", (226, 150, 150))), spots,
                                                _f(bl, "radius_m", 0.025), subsurface=0.2)
+        skin_assignment = MATERIALS.get_assignment(spec["materials"], "skin")
+        if skin_assignment:
+            MATERIALS.apply_from_assignment(M["face_skin"], skin_assignment, preserve_base_color=True)
     else:
         M["face_skin"] = M["skin"]
     G.assign(head, M["face_skin"])
@@ -540,7 +546,8 @@ def build(C, M, head, spec, P, H, head_bone="DEF-spine.006", eye_bone="DEF-eye.{
     lm["chin"] = Vector((0.0, ctx.face_y(None, 0.0, zc), zc))
     lm["nose"] = Vector((0.0, ctx.face_y(None, 0.0, z_nose), z_nose))
     # eyes
-    eyes, lids, frames, einfo = build_eyes(C, M, ctx, ecfg, ex, ez, _f(ecfg, "protrusion_m", 0.015))
+    eyes, lids, frames, einfo = build_eyes(C, M, ctx, ecfg, ex, ez, _f(ecfg, "protrusion_m", 0.015),
+                                           MATERIALS.get_assignment(spec["materials"], "eyes"))
     P["eyes"]["y"] = lids[0][3].y / H  # the eye bones sit at the eye centres (gaze rotates about them)
     rep["eyes"] = einfo
     for (sx, side), (up, lo, lash, c) in zip(SIDES, lids):
