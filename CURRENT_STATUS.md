@@ -1,5 +1,19 @@
 # Current status (2026-11-15)
 
+**Latest: T-010, V1 test video:** implemented on branch `t-010-claude-test-video`; awaiting Supervisor and owner
+review. Nothing is approved. Evidence: `docs/evaluation/animation/T-010/`.
+- **What it is:** shot `episodes/e903_test_video/shots/s010`, 60 frames at 24 fps, 960×540, Cycles at 16 samples
+  with OIDN. The girl is happy and waves; the boy is surprised, then laughs, then pitches his head down.
+- **Passed:**
+  - the mp4 has 60 frames and runs 2.5 s;
+  - the baked gaze stays inside the T-006 limits;
+  - the T-002 smoothness limits hold;
+  - `ctest` 4/4 and `plush_tests` pass.
+- **Failed:** the boy's eyes render closed whenever his eyes look up relative to his head: closed in frames 34–60,
+  and one eye open with the other closed in frames 4–5 and 32–33. This comes from his master's eye/lid set-up, not
+  from the gaze limit. The girl's eyes are open in every frame.
+- **Gap list:** `GAP_LIST.md`.
+
 **Latest: T-003, body emotions (Acting Foundation stage A): implemented and tested on branch
 `t-003-body-emotions`; awaiting Supervisor and owner review. Nothing is approved.** Details: `docs/EMOTIONS.md`,
 `docs/milestones/2026-11-15_T-003_body_emotions.md`.
