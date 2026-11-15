@@ -1,0 +1,1942 @@
+{
+ "limits": {
+  "face_tol": 0.0001,
+  "clip_match_deg": 0.001,
+  "boy_vs_girl_dir_deg": 2.0,
+  "intensity_ratio": [
+   0.475,
+   0.525
+  ],
+  "boundary_factor": 1.25,
+  "max_deg_per_frame": 12.0
+ },
+ "AC2": {
+  "happy": {
+   "peak_frame": 44,
+   "masked_roles": [
+    "upperArm.L",
+    "forearm.L",
+    "upperArm.R",
+    "forearm.R",
+    "spine",
+    "chest",
+    "neck",
+    "head",
+    "hand.L",
+    "hand.R"
+   ],
+   "boy": {
+    "face_expected": {
+     "Smile": 1.0
+    },
+    "face_max_err": 0.0,
+    "body_vs_clip_max_deg": 0.0,
+    "pass": true
+   },
+   "girl": {
+    "face_expected": {
+     "Smile": 1.0
+    },
+    "face_max_err": 0.0,
+    "body_vs_clip_max_deg": 0.0,
+    "pass": true
+   },
+   "boy_vs_girl_max_dir_deg": 2.6324388280798522e-05,
+   "pass": true
+  },
+  "happy/laugh": {
+   "peak_frame": 42,
+   "masked_roles": [
+    "upperArm.L",
+    "forearm.L",
+    "upperArm.R",
+    "forearm.R",
+    "spine",
+    "chest",
+    "neck",
+    "head",
+    "hand.L",
+    "hand.R"
+   ],
+   "boy": {
+    "face_expected": {},
+    "face_max_err": 0.0,
+    "body_vs_clip_max_deg": 0.0,
+    "pass": true
+   },
+   "girl": {
+    "face_expected": {
+     "Laugh": 1.0,
+     "Squint": 0.3
+    },
+    "face_max_err": 1.1920928966180355e-08,
+    "body_vs_clip_max_deg": 0.0,
+    "pass": true
+   },
+   "boy_vs_girl_max_dir_deg": 1.6631105143155776e-05,
+   "pass": true
+  },
+  "sad": {
+   "peak_frame": 56,
+   "masked_roles": [
+    "upperArm.L",
+    "forearm.L",
+    "upperArm.R",
+    "forearm.R",
+    "spine",
+    "chest",
+    "neck",
+    "head",
+    "hand.L",
+    "hand.R"
+   ],
+   "boy": {
+    "face_expected": {},
+    "face_max_err": 0.0,
+    "body_vs_clip_max_deg": 0.0,
+    "pass": true
+   },
+   "girl": {
+    "face_expected": {
+     "Sadness": 1.0
+    },
+    "face_max_err": 0.0,
+    "body_vs_clip_max_deg": 0.0,
+    "pass": true
+   },
+   "boy_vs_girl_max_dir_deg": 1.146228324019395e-05,
+   "pass": true
+  },
+  "sad/cry": {
+   "peak_frame": 56,
+   "masked_roles": [
+    "upperArm.L",
+    "forearm.L",
+    "upperArm.R",
+    "forearm.R",
+    "spine",
+    "chest",
+    "neck",
+    "head",
+    "hand.L",
+    "hand.R"
+   ],
+   "boy": {
+    "face_expected": {},
+    "face_max_err": 0.0,
+    "body_vs_clip_max_deg": 0.0,
+    "pass": true
+   },
+   "girl": {
+    "face_expected": {
+     "Sadness": 1.0,
+     "Squint": 0.6
+    },
+    "face_max_err": 2.384185793236071e-08,
+    "body_vs_clip_max_deg": 0.0,
+    "pass": true
+   },
+   "boy_vs_girl_max_dir_deg": 2.9015189693877833e-05,
+   "pass": true
+  },
+  "angry": {
+   "peak_frame": 42,
+   "masked_roles": [
+    "upperArm.L",
+    "forearm.L",
+    "upperArm.R",
+    "forearm.R",
+    "spine",
+    "chest",
+    "neck",
+    "head",
+    "hand.L",
+    "hand.R"
+   ],
+   "boy": {
+    "face_expected": {
+     "BrowDown": 0.5
+    },
+    "face_max_err": 0.0,
+    "body_vs_clip_max_deg": 0.0,
+    "pass": true
+   },
+   "girl": {
+    "face_expected": {
+     "Anger": 0.9,
+     "BrowDown": 0.5
+    },
+    "face_max_err": 2.384185793236071e-08,
+    "body_vs_clip_max_deg": 0.0,
+    "pass": true
+   },
+   "boy_vs_girl_max_dir_deg": 2.3932558458746163e-05,
+   "pass": true
+  },
+  "surprised": {
+   "peak_frame": 43,
+   "masked_roles": [
+    "upperArm.L",
+    "forearm.L",
+    "upperArm.R",
+    "forearm.R",
+    "spine",
+    "chest",
+    "neck",
+    "head",
+    "hand.L",
+    "hand.R"
+   ],
+   "boy": {
+    "face_expected": {
+     "JawOpen": 0.25
+    },
+    "face_max_err": 0.0,
+    "body_vs_clip_max_deg": 0.0,
+    "pass": true
+   },
+   "girl": {
+    "face_expected": {
+     "Surprise": 1.0,
+     "JawOpen": 0.25
+    },
+    "face_max_err": 0.0,
+    "body_vs_clip_max_deg": 1.7075472925031877e-06,
+    "pass": true
+   },
+   "boy_vs_girl_max_dir_deg": 2.470353206924741e-05,
+   "pass": true
+  },
+  "confused": {
+   "peak_frame": 80,
+   "masked_roles": [
+    "neck",
+    "head"
+   ],
+   "boy": {
+    "face_expected": {},
+    "face_max_err": 0.0,
+    "body_vs_clip_max_deg": 0.0,
+    "pass": true
+   },
+   "girl": {
+    "face_expected": {
+     "Confusion": 1.0
+    },
+    "face_max_err": 0.0,
+    "body_vs_clip_max_deg": 0.0,
+    "pass": true
+   },
+   "boy_vs_girl_max_dir_deg": 3.824657461737841e-06,
+   "pass": true
+  },
+  "afraid": {
+   "peak_frame": 48,
+   "masked_roles": [
+    "upperArm.L",
+    "forearm.L",
+    "upperArm.R",
+    "forearm.R",
+    "spine",
+    "chest",
+    "neck",
+    "head",
+    "hand.L",
+    "hand.R"
+   ],
+   "boy": {
+    "face_expected": {},
+    "face_max_err": 0.0,
+    "body_vs_clip_max_deg": 0.0,
+    "pass": true
+   },
+   "girl": {
+    "face_expected": {
+     "Worried": 0.7,
+     "WideOpen": 0.6
+    },
+    "face_max_err": 2.384185793236071e-08,
+    "body_vs_clip_max_deg": 0.0,
+    "pass": true
+   },
+   "boy_vs_girl_max_dir_deg": 5.054954811593278e-05,
+   "pass": true
+  },
+  "sleepy": {
+   "peak_frame": 127,
+   "masked_roles": [
+    "spine",
+    "chest",
+    "neck",
+    "head"
+   ],
+   "boy": {
+    "face_expected": {
+     "Blink": 0.45
+    },
+    "face_max_err": 1.1920928966180355e-08,
+    "body_vs_clip_max_deg": 0.0,
+    "pass": true
+   },
+   "girl": {
+    "face_expected": {
+     "Squint": 0.4,
+     "Blink": 0.45
+    },
+    "face_max_err": 1.1920928966180355e-08,
+    "body_vs_clip_max_deg": 0.0,
+    "pass": true
+   },
+   "boy_vs_girl_max_dir_deg": 3.1095218809125258e-06,
+   "pass": true
+  },
+  "curious": {
+   "peak_frame": 48,
+   "masked_roles": [
+    "spine",
+    "chest",
+    "neck",
+    "head"
+   ],
+   "boy": {
+    "face_expected": {},
+    "face_max_err": 0.0,
+    "body_vs_clip_max_deg": 0.0,
+    "pass": true
+   },
+   "girl": {
+    "face_expected": {
+     "Curious": 1.0
+    },
+    "face_max_err": 0.0,
+    "body_vs_clip_max_deg": 0.0,
+    "pass": true
+   },
+   "boy_vs_girl_max_dir_deg": 4.222965321673343e-06,
+   "pass": true
+  }
+ },
+ "AC3": {
+  "happy": {
+   "peak_frame": 44,
+   "boy": {
+    "face_max_err": 0.0,
+    "body_ratio_worst": [
+     "upperArm.R",
+     7.889,
+     0.49999953811850645
+    ],
+    "ratios": [
+     [
+      "upperArm.L",
+      7.889,
+      0.5000000688052423
+     ],
+     [
+      "forearm.L",
+      6.0,
+      0.500000144979974
+     ],
+     [
+      "upperArm.R",
+      7.889,
+      0.49999953811850645
+     ],
+     [
+      "forearm.R",
+      6.0,
+      0.5000002393706785
+     ],
+     [
+      "spine",
+      1.93,
+      0.49999970493467727
+     ],
+     [
+      "chest",
+      3.841,
+      0.5000001370264638
+     ],
+     [
+      "neck",
+      2.142,
+      0.49999999893720093
+     ],
+     [
+      "head",
+      5.328,
+      0.4999999394472621
+     ]
+    ],
+    "pass": true
+   },
+   "girl": {
+    "face_max_err": 0.0,
+    "body_ratio_worst": [
+     "upperArm.R",
+     7.889,
+     0.499999489049541
+    ],
+    "ratios": [
+     [
+      "upperArm.L",
+      7.889,
+      0.5000001163152838
+     ],
+     [
+      "forearm.L",
+      6.0,
+      0.49999962292476197
+     ],
+     [
+      "upperArm.R",
+      7.889,
+      0.499999489049541
+     ],
+     [
+      "forearm.R",
+      6.0,
+      0.5000003676176579
+     ],
+     [
+      "spine",
+      1.93,
+      0.5000000096058953
+     ],
+     [
+      "chest",
+      3.841,
+      0.5000000222745076
+     ],
+     [
+      "neck",
+      2.142,
+      0.5000000260272746
+     ],
+     [
+      "head",
+      5.328,
+      0.5000001257160127
+     ]
+    ],
+    "pass": true
+   },
+   "pass": true
+  },
+  "happy/laugh": {
+   "peak_frame": 42,
+   "boy": {
+    "face_max_err": 0.0,
+    "body_ratio_worst": [
+     "hand.L",
+     2.0,
+     0.5000031575198572
+    ],
+    "ratios": [
+     [
+      "upperArm.L",
+      20.471,
+      0.5000002882916216
+     ],
+     [
+      "forearm.L",
+      43.351,
+      0.5000001467923475
+     ],
+     [
+      "upperArm.R",
+      20.471,
+      0.5000002311100015
+     ],
+     [
+      "forearm.R",
+      43.351,
+      0.5000000699296226
+     ],
+     [
+      "spine",
+      1.572,
+      0.49999987648052
+     ],
+     [
+      "chest",
+      8.445,
+      0.49999989318809823
+     ],
+     [
+      "neck",
+      3.275,
+      0.5000002658151327
+     ],
+     [
+      "head",
+      13.734,
+      0.4999999957463194
+     ],
+     [
+      "hand.L",
+      2.0,
+      0.5000031575198572
+     ],
+     [
+      "hand.R",
+      2.0,
+      0.4999985057460546
+     ]
+    ],
+    "pass": true
+   },
+   "girl": {
+    "face_max_err": 0.0,
+    "body_ratio_worst": [
+     "hand.L",
+     2.0,
+     0.5000023866525453
+    ],
+    "ratios": [
+     [
+      "upperArm.L",
+      20.471,
+      0.5000003901688306
+     ],
+     [
+      "forearm.L",
+      43.351,
+      0.4999999258468577
+     ],
+     [
+      "upperArm.R",
+      20.471,
+      0.5000003179539997
+     ],
+     [
+      "forearm.R",
+      43.351,
+      0.5000000544623848
+     ],
+     [
+      "spine",
+      1.572,
+      0.4999999249442875
+     ],
+     [
+      "chest",
+      8.445,
+      0.49999994207805437
+     ],
+     [
+      "neck",
+      3.275,
+      0.5000000039414719
+     ],
+     [
+      "head",
+      13.734,
+      0.49999991645998015
+     ],
+     [
+      "hand.L",
+      2.0,
+      0.5000023866525453
+     ],
+     [
+      "hand.R",
+      2.0,
+      0.49999960698374785
+     ]
+    ],
+    "pass": true
+   },
+   "pass": true
+  },
+  "sad": {
+   "peak_frame": 56,
+   "boy": {
+    "face_max_err": 0.0,
+    "body_ratio_worst": [
+     "forearm.L",
+     2.0,
+     0.5000008796456035
+    ],
+    "ratios": [
+     [
+      "upperArm.L",
+      22.667,
+      0.500000114412564
+     ],
+     [
+      "forearm.L",
+      2.0,
+      0.5000008796456035
+     ],
+     [
+      "upperArm.R",
+      22.667,
+      0.4999998268304895
+     ],
+     [
+      "forearm.R",
+      2.0,
+      0.5000003240783449
+     ],
+     [
+      "spine",
+      4.685,
+      0.4999999107244632
+     ],
+     [
+      "chest",
+      4.245,
+      0.4999998743926822
+     ],
+     [
+      "neck",
+      3.633,
+      0.5000000858583241
+     ],
+     [
+      "head",
+      6.252,
+      0.49999983553197297
+     ]
+    ],
+    "pass": true
+   },
+   "girl": {
+    "face_max_err": 0.0,
+    "body_ratio_worst": [
+     "forearm.R",
+     2.0,
+     0.5000003629468637
+    ],
+    "ratios": [
+     [
+      "upperArm.L",
+      22.667,
+      0.5000000088137199
+     ],
+     [
+      "forearm.L",
+      2.0,
+      0.5000002078945902
+     ],
+     [
+      "upperArm.R",
+      22.667,
+      0.49999998781380867
+     ],
+     [
+      "forearm.R",
+      2.0,
+      0.5000003629468637
+     ],
+     [
+      "spine",
+      4.685,
+      0.5000000271128551
+     ],
+     [
+      "chest",
+      4.245,
+      0.5000000235788158
+     ],
+     [
+      "neck",
+      3.633,
+      0.5000000232501569
+     ],
+     [
+      "head",
+      6.252,
+      0.4999997197503079
+     ]
+    ],
+    "pass": true
+   },
+   "pass": true
+  },
+  "sad/cry": {
+   "peak_frame": 56,
+   "boy": {
+    "face_max_err": 0.0,
+    "body_ratio_worst": [
+     "hand.L",
+     4.0,
+     0.4999992411092201
+    ],
+    "ratios": [
+     [
+      "upperArm.L",
+      28.213,
+      0.4999999600541503
+     ],
+     [
+      "forearm.L",
+      24.0,
+      0.500000208047982
+     ],
+     [
+      "upperArm.R",
+      28.213,
+      0.5000000044431108
+     ],
+     [
+      "forearm.R",
+      24.0,
+      0.5000001690326341
+     ],
+     [
+      "spine",
+      5.916,
+      0.5000000436839963
+     ],
+     [
+      "chest",
+      5.725,
+      0.49999983835406914
+     ],
+     [
+      "neck",
+      4.233,
+      0.4999998322384143
+     ],
+     [
+      "head",
+      7.167,
+      0.5000000693580295
+     ],
+     [
+      "hand.L",
+      4.0,
+      0.4999992411092201
+     ],
+     [
+      "hand.R",
+      4.0,
+      0.500000431921032
+     ]
+    ],
+    "pass": true
+   },
+   "girl": {
+    "face_max_err": 0.0,
+    "body_ratio_worst": [
+     "hand.L",
+     4.0,
+     0.49999933350403925
+    ],
+    "ratios": [
+     [
+      "upperArm.L",
+      28.213,
+      0.5000001245157327
+     ],
+     [
+      "forearm.L",
+      24.0,
+      0.5000000615816781
+     ],
+     [
+      "upperArm.R",
+      28.213,
+      0.5000000761461193
+     ],
+     [
+      "forearm.R",
+      24.0,
+      0.49999980073325995
+     ],
+     [
+      "spine",
+      5.916,
+      0.5000000638970539
+     ],
+     [
+      "chest",
+      5.725,
+      0.49999992527676496
+     ],
+     [
+      "neck",
+      4.233,
+      0.5000001015541733
+     ],
+     [
+      "head",
+      7.167,
+      0.49999994590115726
+     ],
+     [
+      "hand.L",
+      4.0,
+      0.49999933350403925
+     ],
+     [
+      "hand.R",
+      4.0,
+      0.49999975744273634
+     ]
+    ],
+    "pass": true
+   },
+   "pass": true
+  },
+  "angry": {
+   "peak_frame": 42,
+   "boy": {
+    "face_max_err": 0.0,
+    "body_ratio_worst": [
+     "hand.R",
+     6.0,
+     0.4999990541900016
+    ],
+    "ratios": [
+     [
+      "upperArm.L",
+      14.24,
+      0.5000004078295927
+     ],
+     [
+      "forearm.L",
+      44.0,
+      0.49999976617499153
+     ],
+     [
+      "upperArm.R",
+      14.24,
+      0.5000002135634961
+     ],
+     [
+      "forearm.R",
+      44.0,
+      0.5000000844094149
+     ],
+     [
+      "spine",
+      6.134,
+      0.5000000190728032
+     ],
+     [
+      "chest",
+      1.682,
+      0.500000325623162
+     ],
+     [
+      "neck",
+      7.725,
+      0.49999998127245737
+     ],
+     [
+      "head",
+      6.085,
+      0.5000001734654063
+     ],
+     [
+      "hand.L",
+      6.0,
+      0.5000006850882737
+     ],
+     [
+      "hand.R",
+      6.0,
+      0.4999990541900016
+     ]
+    ],
+    "pass": true
+   },
+   "girl": {
+    "face_max_err": 0.0,
+    "body_ratio_worst": [
+     "hand.L",
+     6.0,
+     0.4999993792303005
+    ],
+    "ratios": [
+     [
+      "upperArm.L",
+      14.24,
+      0.5000004583560691
+     ],
+     [
+      "forearm.L",
+      44.0,
+      0.4999999331144589
+     ],
+     [
+      "upperArm.R",
+      14.24,
+      0.5000003576217569
+     ],
+     [
+      "forearm.R",
+      44.0,
+      0.5000002608202433
+     ],
+     [
+      "spine",
+      6.134,
+      0.5000000032850795
+     ],
+     [
+      "chest",
+      1.682,
+      0.49999994025862776
+     ],
+     [
+      "neck",
+      7.725,
+      0.5000000994830636
+     ],
+     [
+      "head",
+      6.085,
+      0.5000001290455921
+     ],
+     [
+      "hand.L",
+      6.0,
+      0.4999993792303005
+     ],
+     [
+      "hand.R",
+      6.0,
+      0.5000001048826486
+     ]
+    ],
+    "pass": true
+   },
+   "pass": true
+  },
+  "surprised": {
+   "peak_frame": 43,
+   "boy": {
+    "face_max_err": 0.0,
+    "body_ratio_worst": [
+     "neck",
+     3.208,
+     0.5000007670672327
+    ],
+    "ratios": [
+     [
+      "upperArm.L",
+      23.92,
+      0.5000002014321114
+     ],
+     [
+      "forearm.L",
+      64.0,
+      0.49999993175878593
+     ],
+     [
+      "upperArm.R",
+      23.92,
+      0.5000000139768522
+     ],
+     [
+      "forearm.R",
+      64.0,
+      0.5000000940676098
+     ],
+     [
+      "spine",
+      3.898,
+      0.5000000412479633
+     ],
+     [
+      "chest",
+      5.761,
+      0.5000000155177948
+     ],
+     [
+      "neck",
+      3.208,
+      0.5000007670672327
+     ],
+     [
+      "head",
+      7.16,
+      0.49999994331002257
+     ],
+     [
+      "hand.L",
+      26.0,
+      0.49999983988991464
+     ],
+     [
+      "hand.R",
+      26.0,
+      0.5000001915045114
+     ]
+    ],
+    "pass": true
+   },
+   "girl": {
+    "face_max_err": 0.0,
+    "body_ratio_worst": [
+     "upperArm.L",
+     23.92,
+     0.5000005529088144
+    ],
+    "ratios": [
+     [
+      "upperArm.L",
+      23.92,
+      0.5000005529088144
+     ],
+     [
+      "forearm.L",
+      64.0,
+      0.5000001292588607
+     ],
+     [
+      "upperArm.R",
+      23.92,
+      0.5000000759708763
+     ],
+     [
+      "forearm.R",
+      64.0,
+      0.5000001243382833
+     ],
+     [
+      "spine",
+      3.898,
+      0.5000001017523611
+     ],
+     [
+      "chest",
+      5.761,
+      0.4999998122140282
+     ],
+     [
+      "neck",
+      3.208,
+      0.5000001869325033
+     ],
+     [
+      "head",
+      7.16,
+      0.4999998754557182
+     ],
+     [
+      "hand.L",
+      26.0,
+      0.49999975197037433
+     ],
+     [
+      "hand.R",
+      26.0,
+      0.500000005819969
+     ]
+    ],
+    "pass": true
+   },
+   "pass": true
+  },
+  "confused": {
+   "peak_frame": 80,
+   "boy": {
+    "face_max_err": 0.0,
+    "body_ratio_worst": [
+     "head",
+     13.696,
+     0.5000000405248147
+    ],
+    "ratios": [
+     [
+      "neck",
+      4.059,
+      0.5000000209325655
+     ],
+     [
+      "head",
+      13.696,
+      0.5000000405248147
+     ]
+    ],
+    "pass": true
+   },
+   "girl": {
+    "face_max_err": 0.0,
+    "body_ratio_worst": [
+     "neck",
+     4.059,
+     0.5000000657716039
+    ],
+    "ratios": [
+     [
+      "neck",
+      4.059,
+      0.5000000657716039
+     ],
+     [
+      "head",
+      13.696,
+      0.5000000619236127
+     ]
+    ],
+    "pass": true
+   },
+   "pass": true
+  },
+  "afraid": {
+   "peak_frame": 48,
+   "boy": {
+    "face_max_err": 0.0,
+    "body_ratio_worst": [
+     "hand.R",
+     28.0,
+     0.49999969940055466
+    ],
+    "ratios": [
+     [
+      "upperArm.L",
+      41.068,
+      0.5000001017033473
+     ],
+     [
+      "forearm.L",
+      90.0,
+      0.49999995195828434
+     ],
+     [
+      "upperArm.R",
+      41.068,
+      0.5000000486928486
+     ],
+     [
+      "forearm.R",
+      90.0,
+      0.50000006025428
+     ],
+     [
+      "spine",
+      5.942,
+      0.5000000466169242
+     ],
+     [
+      "chest",
+      4.593,
+      0.5000001397621103
+     ],
+     [
+      "neck",
+      4.877,
+      0.5000002420430026
+     ],
+     [
+      "head",
+      9.802,
+      0.4999999326960561
+     ],
+     [
+      "hand.L",
+      28.0,
+      0.5000000424465185
+     ],
+     [
+      "hand.R",
+      28.0,
+      0.49999969940055466
+     ]
+    ],
+    "pass": true
+   },
+   "girl": {
+    "face_max_err": 0.0,
+    "body_ratio_worst": [
+     "chest",
+     4.593,
+     0.49999975355571563
+    ],
+    "ratios": [
+     [
+      "upperArm.L",
+      41.068,
+      0.5000000628194708
+     ],
+     [
+      "forearm.L",
+      90.0,
+      0.5000002226987267
+     ],
+     [
+      "upperArm.R",
+      41.068,
+      0.4999999869981979
+     ],
+     [
+      "forearm.R",
+      90.0,
+      0.49999984765865174
+     ],
+     [
+      "spine",
+      5.942,
+      0.5000000089520396
+     ],
+     [
+      "chest",
+      4.593,
+      0.49999975355571563
+     ],
+     [
+      "neck",
+      4.877,
+      0.5000000174757941
+     ],
+     [
+      "head",
+      9.802,
+      0.4999998989660886
+     ],
+     [
+      "hand.L",
+      28.0,
+      0.49999996666871355
+     ],
+     [
+      "hand.R",
+      28.0,
+      0.5000001193157863
+     ]
+    ],
+    "pass": true
+   },
+   "pass": true
+  },
+  "sleepy": {
+   "peak_frame": 127,
+   "boy": {
+    "face_max_err": 0.0,
+    "body_ratio_worst": [
+     "head",
+     8.752,
+     0.5000002171323871
+    ],
+    "ratios": [
+     [
+      "spine",
+      5.294,
+      0.5000000057079098
+     ],
+     [
+      "chest",
+      4.696,
+      0.5000000031464716
+     ],
+     [
+      "neck",
+      5.215,
+      0.49999987036395793
+     ],
+     [
+      "head",
+      8.752,
+      0.5000002171323871
+     ]
+    ],
+    "pass": true
+   },
+   "girl": {
+    "face_max_err": 0.0,
+    "body_ratio_worst": [
+     "neck",
+     5.215,
+     0.4999996500780614
+    ],
+    "ratios": [
+     [
+      "spine",
+      5.294,
+      0.5000000762216029
+     ],
+     [
+      "chest",
+      4.696,
+      0.5000001499702601
+     ],
+     [
+      "neck",
+      5.215,
+      0.4999996500780614
+     ],
+     [
+      "head",
+      8.752,
+      0.5000000030312969
+     ]
+    ],
+    "pass": true
+   },
+   "pass": true
+  },
+  "curious": {
+   "peak_frame": 48,
+   "boy": {
+    "face_max_err": 0.0,
+    "body_ratio_worst": [
+     "chest",
+     3.841,
+     0.5000001968738367
+    ],
+    "ratios": [
+     [
+      "spine",
+      2.942,
+      0.5000000058290209
+     ],
+     [
+      "chest",
+      3.841,
+      0.5000001968738367
+     ],
+     [
+      "neck",
+      9.123,
+      0.4999999014499757
+     ],
+     [
+      "head",
+      12.132,
+      0.4999999921395394
+     ]
+    ],
+    "pass": true
+   },
+   "girl": {
+    "face_max_err": 0.0,
+    "body_ratio_worst": [
+     "chest",
+     3.841,
+     0.500000219808778
+    ],
+    "ratios": [
+     [
+      "spine",
+      2.942,
+      0.5000000494470269
+     ],
+     [
+      "chest",
+      3.841,
+      0.500000219808778
+     ],
+     [
+      "neck",
+      9.123,
+      0.49999989999589106
+     ],
+     [
+      "head",
+      12.132,
+      0.49999992175792346
+     ]
+    ],
+    "pass": true
+   },
+   "pass": true
+  }
+ },
+ "AC4": {
+  "windows": [
+   {
+    "character": "boy",
+    "window": "entry happy",
+    "frames": [
+     7,
+     16
+    ],
+    "worst_role": "forearm.L",
+    "worst_deg_per_frame": 1.6581,
+    "worst_ratio_to_limit": 0.8,
+    "face_max_change_per_frame": 0.12384,
+    "face_fail": [],
+    "pass": true
+   },
+   {
+    "character": "boy",
+    "window": "happy -> happy/laugh",
+    "frames": [
+     64.0,
+     97.0
+    ],
+    "worst_role": "hips",
+    "worst_deg_per_frame": 0.06,
+    "worst_ratio_to_limit": 0.8,
+    "face_max_change_per_frame": 0.05553,
+    "face_fail": [],
+    "pass": true
+   },
+   {
+    "character": "boy",
+    "window": "happy/laugh -> sad",
+    "frames": [
+     136.0,
+     196.0
+    ],
+    "worst_role": "spine",
+    "worst_deg_per_frame": 0.4346,
+    "worst_ratio_to_limit": 0.89,
+    "face_max_change_per_frame": 0.0,
+    "face_fail": [],
+    "pass": true
+   },
+   {
+    "character": "boy",
+    "window": "sad -> sad/cry",
+    "frames": [
+     235.0,
+     289.0
+    ],
+    "worst_role": "hips",
+    "worst_deg_per_frame": 0.06,
+    "worst_ratio_to_limit": 0.8,
+    "face_max_change_per_frame": 0.0,
+    "face_fail": [],
+    "pass": true
+   },
+   {
+    "character": "boy",
+    "window": "sad/cry -> angry",
+    "frames": [
+     328.0,
+     367.0
+    ],
+    "worst_role": "hips",
+    "worst_deg_per_frame": 0.06,
+    "worst_ratio_to_limit": 0.8,
+    "face_max_change_per_frame": 0.02272,
+    "face_fail": [],
+    "pass": true
+   },
+   {
+    "character": "boy",
+    "window": "angry -> surprised",
+    "frames": [
+     406.0,
+     445.0
+    ],
+    "worst_role": "hips",
+    "worst_deg_per_frame": 0.06,
+    "worst_ratio_to_limit": 0.8,
+    "face_max_change_per_frame": 0.02272,
+    "face_fail": [],
+    "pass": true
+   },
+   {
+    "character": "boy",
+    "window": "surprised -> confused",
+    "frames": [
+     475.0,
+     511.0
+    ],
+    "worst_role": "hips",
+    "worst_deg_per_frame": 0.0596,
+    "worst_ratio_to_limit": 0.795,
+    "face_max_change_per_frame": 0.01248,
+    "face_fail": [],
+    "pass": true
+   },
+   {
+    "character": "boy",
+    "window": "confused -> afraid",
+    "frames": [
+     571.0,
+     610.0
+    ],
+    "worst_role": "hips",
+    "worst_deg_per_frame": 0.0596,
+    "worst_ratio_to_limit": 0.795,
+    "face_max_change_per_frame": 0.0,
+    "face_fail": [],
+    "pass": true
+   },
+   {
+    "character": "boy",
+    "window": "afraid -> sleepy",
+    "frames": [
+     649.0,
+     706.0
+    ],
+    "worst_role": "upperArm.L",
+    "worst_deg_per_frame": 6.7494,
+    "worst_ratio_to_limit": 0.806,
+    "face_max_change_per_frame": 0.09907,
+    "face_fail": [],
+    "pass": true
+   },
+   {
+    "character": "boy",
+    "window": "sleepy -> curious",
+    "frames": [
+     796.0,
+     847.0
+    ],
+    "worst_role": "hips",
+    "worst_deg_per_frame": 0.06,
+    "worst_ratio_to_limit": 0.8,
+    "face_max_change_per_frame": 0.015,
+    "face_fail": [],
+    "pass": true
+   },
+   {
+    "character": "boy",
+    "window": "exit curious",
+    "frames": [
+     901.0,
+     910.0
+    ],
+    "worst_role": "forearm.R",
+    "worst_deg_per_frame": 0.1565,
+    "worst_ratio_to_limit": 0.8,
+    "face_max_change_per_frame": 0.0,
+    "face_fail": [],
+    "pass": true
+   },
+   {
+    "character": "girl",
+    "window": "entry happy",
+    "frames": [
+     7,
+     16
+    ],
+    "worst_role": "forearm.L",
+    "worst_deg_per_frame": 1.6581,
+    "worst_ratio_to_limit": 0.8,
+    "face_max_change_per_frame": 0.12384,
+    "face_fail": [],
+    "pass": true
+   },
+   {
+    "character": "girl",
+    "window": "happy -> happy/laugh",
+    "frames": [
+     64.0,
+     97.0
+    ],
+    "worst_role": "hips",
+    "worst_deg_per_frame": 0.06,
+    "worst_ratio_to_limit": 0.8,
+    "face_max_change_per_frame": 0.05553,
+    "face_fail": [],
+    "pass": true
+   },
+   {
+    "character": "girl",
+    "window": "happy/laugh -> sad",
+    "frames": [
+     136.0,
+     196.0
+    ],
+    "worst_role": "spine",
+    "worst_deg_per_frame": 0.4346,
+    "worst_ratio_to_limit": 0.89,
+    "face_max_change_per_frame": 0.02777,
+    "face_fail": [],
+    "pass": true
+   },
+   {
+    "character": "girl",
+    "window": "sad -> sad/cry",
+    "frames": [
+     235.0,
+     289.0
+    ],
+    "worst_role": "hips",
+    "worst_deg_per_frame": 0.06,
+    "worst_ratio_to_limit": 0.8,
+    "face_max_change_per_frame": 0.01874,
+    "face_fail": [],
+    "pass": true
+   },
+   {
+    "character": "girl",
+    "window": "sad/cry -> angry",
+    "frames": [
+     328.0,
+     367.0
+    ],
+    "worst_role": "hips",
+    "worst_deg_per_frame": 0.06,
+    "worst_ratio_to_limit": 0.8,
+    "face_max_change_per_frame": 0.04544,
+    "face_fail": [],
+    "pass": true
+   },
+   {
+    "character": "girl",
+    "window": "angry -> surprised",
+    "frames": [
+     406.0,
+     445.0
+    ],
+    "worst_role": "hips",
+    "worst_deg_per_frame": 0.06,
+    "worst_ratio_to_limit": 0.8,
+    "face_max_change_per_frame": 0.04544,
+    "face_fail": [],
+    "pass": true
+   },
+   {
+    "character": "girl",
+    "window": "surprised -> confused",
+    "frames": [
+     475.0,
+     511.0
+    ],
+    "worst_role": "hips",
+    "worst_deg_per_frame": 0.0596,
+    "worst_ratio_to_limit": 0.795,
+    "face_max_change_per_frame": 0.04993,
+    "face_fail": [],
+    "pass": true
+   },
+   {
+    "character": "girl",
+    "window": "confused -> afraid",
+    "frames": [
+     571.0,
+     610.0
+    ],
+    "worst_role": "hips",
+    "worst_deg_per_frame": 0.0596,
+    "worst_ratio_to_limit": 0.795,
+    "face_max_change_per_frame": 0.04544,
+    "face_fail": [],
+    "pass": true
+   },
+   {
+    "character": "girl",
+    "window": "afraid -> sleepy",
+    "frames": [
+     649.0,
+     706.0
+    ],
+    "worst_role": "upperArm.L",
+    "worst_deg_per_frame": 6.7494,
+    "worst_ratio_to_limit": 0.806,
+    "face_max_change_per_frame": 0.09907,
+    "face_fail": [],
+    "pass": true
+   },
+   {
+    "character": "girl",
+    "window": "sleepy -> curious",
+    "frames": [
+     796.0,
+     847.0
+    ],
+    "worst_role": "hips",
+    "worst_deg_per_frame": 0.06,
+    "worst_ratio_to_limit": 0.8,
+    "face_max_change_per_frame": 0.03333,
+    "face_fail": [],
+    "pass": true
+   },
+   {
+    "character": "girl",
+    "window": "exit curious",
+    "frames": [
+     901.0,
+     910.0
+    ],
+    "worst_role": "upperArm.R",
+    "worst_deg_per_frame": 0.1565,
+    "worst_ratio_to_limit": 0.8,
+    "face_max_change_per_frame": 0.07064,
+    "face_fail": [],
+    "pass": true
+   }
+  ],
+  "entry_exit": [
+   {
+    "character": "boy",
+    "event": "entry",
+    "frame": 10,
+    "max_diff_vs_underlying_deg": 0.0,
+    "max_face_diff": 0.0,
+    "pass": true
+   },
+   {
+    "character": "boy",
+    "event": "exit",
+    "frame": 907,
+    "max_diff_vs_underlying_deg": 0.0,
+    "max_face_diff": 0.0,
+    "pass": true
+   },
+   {
+    "character": "girl",
+    "event": "entry",
+    "frame": 10,
+    "max_diff_vs_underlying_deg": 0.0,
+    "max_face_diff": 0.0,
+    "pass": true
+   },
+   {
+    "character": "girl",
+    "event": "exit",
+    "frame": 907,
+    "max_diff_vs_underlying_deg": 1.7075472925031877e-06,
+    "max_face_diff": 0.0,
+    "pass": true
+   }
+  ],
+  "sequence": [
+   {
+    "emotion": "happy",
+    "start": 10,
+    "end": 94.0
+   },
+   {
+    "emotion": "happy/laugh",
+    "start": 67.0,
+    "end": 193.0
+   },
+   {
+    "emotion": "sad",
+    "start": 139.0,
+    "end": 286.0
+   },
+   {
+    "emotion": "sad/cry",
+    "start": 238.0,
+    "end": 364.0
+   },
+   {
+    "emotion": "angry",
+    "start": 331.0,
+    "end": 442.0
+   },
+   {
+    "emotion": "surprised",
+    "start": 409.0,
+    "end": 508.0
+   },
+   {
+    "emotion": "confused",
+    "start": 478.0,
+    "end": 607.0
+   },
+   {
+    "emotion": "afraid",
+    "start": 574.0,
+    "end": 703.0
+   },
+   {
+    "emotion": "sleepy",
+    "start": 652.0,
+    "end": 844.0
+   },
+   {
+    "emotion": "curious",
+    "start": 799.0,
+    "end": 907.0
+   }
+  ],
+  "single_emotion_max_deg_per_frame": 10.650145437025873,
+  "pass": true
+ },
+ "AC5": {
+  "girl_walk_keeps_hips_legs_root": {
+   "max_deg": 0.0,
+   "max_hips_m": 0.0,
+   "pass": true
+  },
+  "girl_emotion_visible_on_torso_during_walk_deg": 4.600055074511422,
+  "boy_walk_keeps_hips_legs_root": {
+   "max_deg": 0.0,
+   "max_hips_m": 0.0,
+   "pass": true
+  },
+  "boy_emotion_visible_on_torso_during_walk_deg": 8.811609273515238,
+  "girl_wave_keeps_its_roles_during_walk_and_emotion": {
+   "frames": [
+    84,
+    121
+   ],
+   "max_semantic_local_deg": 4.844742298294805e-05,
+   "pass": true
+  },
+  "look_keeps_gaze": {
+   "max_aim_error_change_deg": 0.0,
+   "pass": true
+  },
+  "boy_reach_keeps_hand": {
+   "frames": [
+    140,
+    165
+   ],
+   "max_hand_pos_m": 5.068344174130521e-07,
+   "pass": true
+  },
+  "hand_keyed_head_wins": {
+   "max_engine_local_deg": 0.0,
+   "pass": true
+  },
+  "pass": true
+ },
+ "AC6": {
+  "happy": {
+   "expected_missing": [],
+   "warnings": [],
+   "warnings_when_played_twice": [],
+   "girl_warnings": [],
+   "other_morphs_max_change": 0.0,
+   "body_pass_AC2": true,
+   "pass": true
+  },
+  "happy/laugh": {
+   "expected_missing": [
+    "laugh",
+    "squint"
+   ],
+   "warnings": [
+    "laugh",
+    "squint"
+   ],
+   "warnings_when_played_twice": [
+    "laugh",
+    "squint"
+   ],
+   "girl_warnings": [],
+   "other_morphs_max_change": 0.0,
+   "body_pass_AC2": true,
+   "pass": true
+  },
+  "sad": {
+   "expected_missing": [
+    "sad"
+   ],
+   "warnings": [
+    "sad"
+   ],
+   "warnings_when_played_twice": [
+    "sad"
+   ],
+   "girl_warnings": [],
+   "other_morphs_max_change": 0.0,
+   "body_pass_AC2": true,
+   "pass": true
+  },
+  "sad/cry": {
+   "expected_missing": [
+    "sad",
+    "squint"
+   ],
+   "warnings": [
+    "sad",
+    "squint"
+   ],
+   "warnings_when_played_twice": [
+    "sad",
+    "squint"
+   ],
+   "girl_warnings": [],
+   "other_morphs_max_change": 0.0,
+   "body_pass_AC2": true,
+   "pass": true
+  },
+  "angry": {
+   "expected_missing": [
+    "angry"
+   ],
+   "warnings": [
+    "angry"
+   ],
+   "warnings_when_played_twice": [
+    "angry"
+   ],
+   "girl_warnings": [],
+   "other_morphs_max_change": 0.0,
+   "body_pass_AC2": true,
+   "pass": true
+  },
+  "surprised": {
+   "expected_missing": [
+    "surprised"
+   ],
+   "warnings": [
+    "surprised"
+   ],
+   "warnings_when_played_twice": [
+    "surprised"
+   ],
+   "girl_warnings": [],
+   "other_morphs_max_change": 0.0,
+   "body_pass_AC2": true,
+   "pass": true
+  },
+  "confused": {
+   "expected_missing": [
+    "confused"
+   ],
+   "warnings": [
+    "confused"
+   ],
+   "warnings_when_played_twice": [
+    "confused"
+   ],
+   "girl_warnings": [],
+   "other_morphs_max_change": 0.0,
+   "body_pass_AC2": true,
+   "pass": true
+  },
+  "afraid": {
+   "expected_missing": [
+    "WideOpen",
+    "Worried"
+   ],
+   "warnings": [
+    "WideOpen",
+    "Worried"
+   ],
+   "warnings_when_played_twice": [
+    "WideOpen",
+    "Worried"
+   ],
+   "girl_warnings": [],
+   "other_morphs_max_change": 0.0,
+   "body_pass_AC2": true,
+   "pass": true
+  },
+  "sleepy": {
+   "expected_missing": [
+    "squint"
+   ],
+   "warnings": [
+    "squint"
+   ],
+   "warnings_when_played_twice": [
+    "squint"
+   ],
+   "girl_warnings": [],
+   "other_morphs_max_change": 0.0,
+   "body_pass_AC2": true,
+   "pass": true
+  },
+  "curious": {
+   "expected_missing": [
+    "Curious"
+   ],
+   "warnings": [
+    "Curious"
+   ],
+   "warnings_when_played_twice": [
+    "Curious"
+   ],
+   "girl_warnings": [],
+   "other_morphs_max_change": 0.0,
+   "body_pass_AC2": true,
+   "pass": true
+  }
+ },
+ "summary": {
+  "AC2": true,
+  "AC3": true,
+  "AC6": true,
+  "AC4": true,
+  "AC5": true
+ }
+}

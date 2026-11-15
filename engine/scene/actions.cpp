@@ -314,6 +314,7 @@ Result<void> SceneEvaluator::compileActions() {
     ClipLayer envelope, posture;
     bool hasPosture = false;
     std::vector<std::pair<std::string, float>> face;  // resolved morph -> weight
+    bool explicitEnd = false;
   };
   std::vector<PendingEmotion> pending;
 
@@ -694,7 +695,7 @@ Result<void> SceneEvaluator::compileActions() {
         }
         return out;
       };
-      PendingEmotion pe{c, env, {}, false, resolveFace(e->face)};
+      PendingEmotion pe{c, env, {}, false, resolveFace(e->face), has(a, "end")};
       auto addLayer = [&](const std::string& clipName, ClipLayer L, int loopOverride, const std::vector<std::string>& mask,
                           bool defer) -> Result<void> {
         const auto cf = findLibrary("clips", clipName + ".clip.json");
@@ -747,6 +748,7 @@ Result<void> SceneEvaluator::compileActions() {
   // Consecutive emotions of a character crossfade: when one starts before the previous one has ended, the previous
   // one releases from that start over (its release + the new onset), and the new one's onset takes the same time.
   // The sum keeps a transition no faster than the faster of the two ramps it replaces, whatever the two postures.
+  // Without an explicit end the new one's end moves by the extra onset time (its hold keeps its length).
   for (size_t i = 0; i < pending.size(); ++i) {
     ClipLayer& cur = pending[i].envelope;
     for (size_t k = i + 1; k < pending.size(); ++k) {
@@ -756,6 +758,7 @@ Result<void> SceneEvaluator::compileActions() {
         const double cross = cur.blendOut + next.blendIn;
         cur.end = next.start + cross;
         cur.blendOut = cross;
+        if (!pending[k].explicitEnd) next.end += cross - next.blendIn;
         next.blendIn = std::max(0.0, std::min(cross, next.end - next.start - next.blendOut));
       }
       break;  // only the next emotion of the same character

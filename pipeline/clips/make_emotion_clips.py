@@ -71,7 +71,7 @@ def laugh(t):
 
 def sad(k=1.0, heave=0.0):
     p = relaxed()
-    torso(p, 7 * k + 1.2 * heave, 6 * k + 2.5 * heave, 6 * k, rx(14 * k - 2.5 * heave))
+    torso(p, 5 * k + 1.2 * heave, 5 * k + 2.5 * heave, 2 * k, rx(4 * k - 2.5 * heave))
     arms(p, seq(rx(-8), rz(-82), ry(-22 * k)), ry(-12 - 10 * (k - 1)))
     return p
 
@@ -80,7 +80,7 @@ def sob(t):
     # two quick heaves, then a slower recovery (one 1.2 s cycle)
     h = math.exp(-((t - 0.15) / 0.07) ** 2) + 0.8 * math.exp(-((t - 0.38) / 0.08) ** 2)
     h += math.exp(-((t - 1.15) / 0.07) ** 2)  # wraps smoothly into the next cycle
-    p = sad(1.35, heave=h)
+    p = sad(1.2, heave=h)
     arms(p, seq(rx(-8), rz(-80), ry(-28)), ry(-38), rz(-8))
     return p
 
@@ -118,7 +118,7 @@ def afraid(t):
 def sleepy(t):
     s = math.sin(2 * math.pi * t)
     p = relaxed()
-    torso(p, 6, 5, 9 + 1.5 * s, seq(rx(16 + 2 * s), rz(4 * math.sin(2 * math.pi * t + 0.7))))
+    torso(p, 5, 4, 6 + 1.5 * s, seq(rx(8 + 2 * s), rz(4 * math.sin(2 * math.pi * t + 0.7))))
     return p
 
 

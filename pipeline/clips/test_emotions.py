@@ -249,14 +249,18 @@ def main():
         chg, _ = MC.per_frame_change(Bb.B.data[who], ROLES, Bb.B.frames)
         interior[who]["base"] = {r: max(v.values(), default=0.0) for r, v in chg.items()}
     # ---------------------------------------------------------------- AC4 sequence
-    acts, spans, t = base_actions(), [], START
+    # each starts at the beginning of the previous one's release; the engine crossfades over (release + onset) and
+    # moves the new one's end by its extra onset time (spans below follow the same rule)
+    acts, spans, t, prev_re = base_actions(), [], START, 0.0
     for n in EMOTIONS:
         on, ho, re_, end = timing(E[n])
-        length = end - START
         for c in ("boy", "girl"):
             acts.append({"type": "emotion", "character": c, "name": n, "start": t})
-        spans.append((n, t, t + length, re_))
-        t = t + length - re_  # the next starts at the beginning of this one's release
+        if spans:
+            n0, s0, e0, r0 = spans[-1]
+            spans[-1] = (n0, s0, t + prev_re + on, prev_re + on)  # the previous one now ends at start + crossfade
+        spans.append((n, t, t + prev_re + on + ho + re_, re_))
+        t, prev_re = t + prev_re + on + ho, re_
     fe = int(spans[-1][2]) + 12
     bs, _ = run(a.engine, sd, "sequence", MC.scene(chars(pk, sd), acts, fe))
     bsb, _ = run(a.engine, sd, "sequence_base", MC.scene(chars(pk, sd), base_actions(), fe))

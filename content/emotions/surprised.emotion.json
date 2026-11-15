@@ -11,7 +11,7 @@
   "clip": "emo_surprised"
  },
  "timing": {
-  "onset": 0.4,
+  "onset": 0.5,
   "hold": 1.2,
   "release": 0.6,
   "curve": "smooth"

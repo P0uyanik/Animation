@@ -11,7 +11,7 @@
   "clip": "emo_afraid"
  },
  "timing": {
-  "onset": 0.25,
+  "onset": 0.5,
   "hold": 1.5,
   "release": 0.7,
   "curve": "smooth"
