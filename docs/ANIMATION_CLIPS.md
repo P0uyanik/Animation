@@ -146,6 +146,13 @@ Studio and scene files use this same JSON. No new UI is needed.
 **Without clip actions none of this runs:** the old code path is used unchanged. The s010 bake is byte-identical with
 `main`.
 
+## 7a. Emotions (T-003)
+Emotions (`docs/EMOTIONS.md`) reuse this clip path: an `emotion` action plays a posture clip and an optional
+gesture clip (`content/clips/emo_*`, `gest_*`, made with `pipeline/clips/make_emotion_clips.py`) as **tier-1** layers:
+above the base clip, below clip actions; walk, IK, look and hand keys keep their priority. Emotion layers blend in
+the clip's reference-space rotations (intensity k = k × the deviation), and consecutive emotions crossfade. The clip
+format is unchanged; `clip` actions behave exactly as before.
+
 ## 8. Future motion capture (not implemented)
 A converter maps a BVH (or similar) take into `plush.clip/1` without format changes:
 1. **Role mapping:** map the source joints to roles (a mapping table per mocap skeleton family, like a rig profile).

@@ -140,6 +140,9 @@ class SceneEvaluator {
     ClipBinding binding;
     double start = 0, end = 1e30, speed = 1, weight = 1, blendIn = 6, blendOut = 6;
     bool mirror = false, base = false;
+    // Layer tier (application order): 0 base clip, 1 emotion posture / gesture (action "emotion"), 2 clip actions.
+    int tier = 2;
+    bool linear = false;  // linear instead of smoothstep blend ramps (emotion intensity curve "linear")
     double envelope(double frame) const;  // weight x blend in/out at a scene frame
     double clipFrame(double frame, double sceneFps) const;
   };

@@ -1,0 +1,22 @@
+{
+ "format": "plush.emotion",
+ "version": 1,
+ "name": "surprised",
+ "description": "Surprised: surprised face, mouth open, pulled back with hands raised.",
+ "face": {
+  "surprised": 1.0,
+  "jawOpen": 0.25
+ },
+ "body": {
+  "clip": "emo_surprised"
+ },
+ "timing": {
+  "onset": 0.5,
+  "hold": 1.2,
+  "release": 0.6,
+  "curve": "smooth"
+ },
+ "source": "script",
+ "license": "project",
+ "attribution": "Plush Studio project (T-003, technical quality)"
+}

@@ -1,0 +1,27 @@
+{
+ "format": "plush.emotion",
+ "version": 1,
+ "name": "confused",
+ "description": "Confused: confused face, head tilt, shrug gesture.",
+ "face": {
+  "confused": 1.0
+ },
+ "body": {
+  "clip": "emo_confused"
+ },
+ "gesture": {
+  "clip": "gest_shrug",
+  "offset": 0.3,
+  "blendIn": 0.4,
+  "blendOut": 0.4
+ },
+ "timing": {
+  "onset": 0.4,
+  "hold": 2.2,
+  "release": 0.6,
+  "curve": "smooth"
+ },
+ "source": "script",
+ "license": "project",
+ "attribution": "Plush Studio project (T-003, technical quality)"
+}

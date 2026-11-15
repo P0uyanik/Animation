@@ -1,6 +1,19 @@
 # Current status (2026-11-15)
 
-**Latest: T-002, clip foundation (Acting Foundation stage A): implemented and tested; awaiting Supervisor and
+**Latest: T-003, body emotions (Acting Foundation stage A): implemented and tested on branch
+`t-003-body-emotions`; awaiting Supervisor and owner review. Nothing is approved.** Details: `docs/EMOTIONS.md`,
+`docs/milestones/2026-11-15_T-003_body_emotions.md`.
+- **Implemented:** format `plush.emotion/1` (`content/emotions/`, 8 emotions + variants `happy/laugh`, `sad/cry`);
+  an `emotion` action compiled into expression weights and tier-1 clip layers (intensity, crossfades, one warning per
+  missing morph); 10 posture and 2 gesture clips made with the T-002 tools; test shot
+  `episodes/e902_emotion_test/shots/s010`.
+- **Tested:** `pipeline/clips/test_emotions.py` AC2–AC6 all pass on boy and girl; s010 bakes of e000/e900/e901
+  byte-identical with `main`; `ctest` 4/4, `plush_tests` 43/43, exporter, `verify_charsys`, workflow and clip
+  pipeline tests pass; contact sheet and face comparisons in `docs/evaluation/animation/T-003/`.
+- **Limits:** script postures (technical quality); eyes render closed when the head pitches down (open question);
+  the boy's 1.0.0 face shows only smile, brow-down, jaw and blink.
+
+**T-002, clip foundation (Acting Foundation stage A): implemented and tested; awaiting Supervisor and
 owner review. Nothing is approved.** Details: `docs/ANIMATION_CLIPS.md`,
 `docs/milestones/2026-11-15_T-002_clip_foundation.md`.
 - **Implemented:**

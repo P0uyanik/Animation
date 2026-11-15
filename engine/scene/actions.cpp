@@ -24,6 +24,12 @@
 //              override their body-part mask with blending; walk keeps the legs, hips and root while walking;
 //              IK (reach, touch, foot plants) and look are applied afterwards and keep priority. Library clips are
 //              found in content/clips/<name>.clip.json above the scene file.
+//   emotion    {character, name:<library name>[/<variant>], start, end?, intensity=1}  a shared emotion
+//              (plush.emotion/1, scene/emotion.h, docs/EMOTIONS.md) found in content/emotions/<name>.emotion.json above
+//              the scene file: its face mix becomes expression weights (generated per-frame keys added to the
+//              morph's track; names the character lacks are skipped with one warning each), its posture and gesture
+//              clips become clip layers above the base clip and below clip actions. `intensity` scales the face
+//              weights and the layers' weights. Without `end` it lasts onset + hold + release.
 //
 // Director (scene "director": {minShot?, closeFocal?, closeFStop?, mediumFocal?, mediumFStop?}): plans camera shots
 // from the action beats — establishing wide (the scene camera), medium on a character starting an action, insert
@@ -33,7 +39,9 @@
 // Any hand-keyed camera track overrides the director.
 #include <algorithm>
 #include <format>
+#include <set>
 
+#include "scene/emotion.h"
 #include "scene/scene.h"
 
 namespace plush {
@@ -269,6 +277,46 @@ Result<void> SceneEvaluator::compileActions() {
     if (still > 0.01f)
       logWarn("{}: '{}' cannot reach {} at frame {} even leaning ({:.0f} mm short); move them closer", what, who, what, reachF, still * 1000);
   };
+
+  // Library files (content/<kind>/<file>) are found by walking up from the scene file.
+  auto findLibrary = [&](const char* kind, const std::string& file) -> std::filesystem::path {
+    for (auto d = std::filesystem::absolute(scene_.path).parent_path();; d = d.parent_path()) {
+      auto cand = d / "content" / kind / file;
+      if (std::filesystem::exists(cand)) return cand;
+      if (d == d.parent_path()) return {};
+    }
+  };
+  auto cachedClip = [&](const std::filesystem::path& file) -> Result<std::shared_ptr<const ClipData>> {
+    const std::string key = std::filesystem::weakly_canonical(file).string();
+    if (!clipCache_.count(key)) {
+      auto cl = loadClip(file);
+      if (!cl) return std::unexpected(cl.error());
+      clipCache_[key] = std::make_shared<const ClipData>(std::move(*cl));
+    }
+    return clipCache_[key];
+  };
+  auto sortLayers = [&](int c) {  // base clip, emotion layers (by start), clip actions (in action order)
+    std::stable_sort(clipLayers_[size_t(c)].begin(), clipLayers_[size_t(c)].end(), [](const ClipLayer& x, const ClipLayer& y) {
+      if (x.tier != y.tier) return x.tier < y.tier;
+      return x.tier == 1 && x.start < y.start;
+    });
+  };
+  struct FaceContribution {
+    int character;
+    std::string morph;
+    ClipLayer envelope;  // timing only (start, end, ramps, weight = intensity, curve)
+    float weight;
+  };
+  std::vector<FaceContribution> emotionFace;
+  std::set<std::string> missingFace;
+  struct PendingEmotion {  // posture and face timing are final only after all emotions are known (crossfades)
+    int character;
+    ClipLayer envelope, posture;
+    bool hasPosture = false;
+    std::vector<std::pair<std::string, float>> face;  // resolved morph -> weight
+    bool explicitEnd = false;
+  };
+  std::vector<PendingEmotion> pending;
 
   for (const Json* ap : actions) {
     const Json& a = *ap;
@@ -573,15 +621,12 @@ Result<void> SceneEvaluator::compileActions() {
         }
         if (file.empty()) return fail(std::format("clip: '{}' not found in content/clips above {}", name, scene_.path.string()));
       }
-      const std::string key = std::filesystem::weakly_canonical(file).string();
-      if (!clipCache_.count(key)) {
-        auto cl = loadClip(file);
-        if (!cl) return fail(cl.error().message);
-        clipCache_[key] = std::make_shared<const ClipData>(std::move(*cl));
-      }
+      auto cl = cachedClip(file);
+      if (!cl) return fail(cl.error().message);
       ClipLayer L;
-      L.clip = clipCache_[key];
+      L.clip = *cl;
       L.base = a.value("base", false);
+      L.tier = L.base ? 0 : 2;
       L.binding = bindClip(asset.skeleton, L.clip->reference, retargetData(size_t(c), L.clip->reference));
       L.start = has(a, "start") || has(a, "frame") ? start : double(scene_.frameStart);
       L.speed = num(a, "speed", 1.0);
@@ -603,11 +648,150 @@ Result<void> SceneEvaluator::compileActions() {
         if (r.bone < 0 && L.clip->tracks.count(r.name) && r.name.rfind("eye.", 0) != 0)
           warnings_.push_back(std::format("clip '{}': character '{}' has no role '{}' (not played)", L.clip->name, who, r.name));
       clipLayers_[size_t(c)].push_back(std::move(L));
-      std::stable_sort(clipLayers_[size_t(c)].begin(), clipLayers_[size_t(c)].end(),
-                       [](const ClipLayer& x, const ClipLayer& y) { return x.base > y.base; });  // base first, then start order
+      sortLayers(c);
+      continue;
+    }
+    if (type == "emotion") {
+      const std::string full = str(a, "name");
+      const size_t slash = full.find('/');
+      const std::string ename = full.substr(0, slash), variant = slash == std::string::npos ? "" : full.substr(slash + 1);
+      if (ename.empty()) return fail("emotion: give 'name' (library name, optionally name/variant)");
+      const auto file = findLibrary("emotions", ename + ".emotion.json");
+      if (file.empty()) return fail(std::format("emotion: '{}' not found in content/emotions above {}", ename, scene_.path.string()));
+      auto j = parseJsonFile(file);
+      if (!j) return fail(j.error().message);
+      auto e = emotionFromJson(*j, variant);
+      if (!e) return fail(std::format("{}: {}", file.string(), e.error().message));
+      const double fps = scene_.rate.fps();
+      const double intensity = std::clamp(num(a, "intensity", 1.0), 0.0, 1.0);
+      double onset = e->onset * fps, release = e->release * fps;
+      const double end = has(a, "end") ? num(a, "end", 0) : start + onset + e->hold * fps + release;
+      if (end <= start) return fail("emotion: end must be after start");
+      if (onset + release > end - start) {  // a short emotion: the ramps share its length
+        const double k = (end - start) / (onset + release);
+        onset *= k;
+        release *= k;
+      }
+      ClipLayer env;
+      env.start = start;
+      env.end = end;
+      env.blendIn = onset;
+      env.blendOut = release;
+      env.weight = intensity;
+      env.linear = e->linear;
+      env.tier = 1;
+      std::vector<std::string> morphNames;
+      for (auto& mt : characters_[size_t(c)].rig.morphs) morphNames.push_back(mt.name);
+      auto resolveFace = [&](const std::vector<std::pair<std::string, float>>& mix) {
+        std::vector<std::pair<std::string, float>> out;
+        for (const auto& [ename2, w] : mix) {
+          const std::string morph = resolveExpression(asset, ename2, morphNames);
+          if (morph.empty()) {  // nothing is invented for a missing morph: one warning, the body still plays
+            if (missingFace.insert(who + "|" + full + "|" + ename2).second)
+              warnings_.push_back(std::format("emotion '{}': character '{}' has no morph for expression '{}' (face part skipped, body plays)", full, who, ename2));
+            continue;
+          }
+          out.push_back({morph, w});
+        }
+        return out;
+      };
+      PendingEmotion pe{c, env, {}, false, resolveFace(e->face), has(a, "end")};
+      auto addLayer = [&](const std::string& clipName, ClipLayer L, int loopOverride, const std::vector<std::string>& mask,
+                          bool defer) -> Result<void> {
+        const auto cf = findLibrary("clips", clipName + ".clip.json");
+        if (cf.empty()) return fail(std::format("emotion '{}': clip '{}' not found in content/clips", full, clipName));
+        auto cl = cachedClip(cf);
+        if (!cl) return std::unexpected(cl.error());
+        L.clip = *cl;
+        const bool loop = loopOverride < 0 ? L.clip->loop : loopOverride == 1;
+        if (loop != L.clip->loop || !mask.empty()) {  // overrides play a copy of the clip
+          auto copy = std::make_shared<ClipData>(*L.clip);
+          copy->loop = loop;
+          if (!mask.empty()) copy->mask = mask;
+          L.clip = copy;
+        }
+        if (L.end < 0) L.end = L.start + L.clip->duration() * fps;
+        L.binding = bindClip(asset.skeleton, L.clip->reference, retargetData(size_t(c), L.clip->reference));
+        for (const auto& r : L.binding.roles)
+          if (r.bone < 0 && L.clip->tracks.count(r.name) && r.name.rfind("eye.", 0) != 0)
+            warnings_.push_back(std::format("emotion '{}' clip '{}': character '{}' has no role '{}' (not played)", full, L.clip->name, who, r.name));
+        if (defer) {
+          pe.posture = std::move(L);
+          pe.hasPosture = true;
+        } else {
+          clipLayers_[size_t(c)].push_back(std::move(L));
+        }
+        return {};
+      };
+      if (!e->bodyClip.empty())
+        if (auto r = addLayer(e->bodyClip, env, e->bodyLoop, e->bodyMask, true); !r) return fail(r.error().message);
+      if (e->hasGesture) {
+        ClipLayer g;
+        g.tier = 1;
+        g.start = start + e->gesture.offset * fps;
+        g.end = -1;  // the clip's length
+        g.blendIn = e->gesture.blendIn * fps;
+        g.blendOut = e->gesture.blendOut * fps;
+        g.weight = intensity;
+        g.linear = e->linear;
+        g.mirror = e->gesture.mirror;
+        if (auto r = addLayer(e->gesture.clip, g, 0, {}, false); !r) return fail(r.error().message);
+        for (const auto& [morph, w] : resolveFace(e->gesture.face)) emotionFace.push_back({c, morph, clipLayers_[size_t(c)].back(), w});
+        sortLayers(c);
+      }
+      pending.push_back(std::move(pe));
+      beats.push_back({Beat::Kind::Expression, c, -1, start, start, 0, 0, 0, end, vec3(0), vec3(0)});
       continue;
     }
     return fail(std::format("unknown action type '{}'", type));
+  }
+  // Consecutive emotions of a character crossfade: when one starts before the previous one has ended, the previous
+  // one releases from that start over (its release + the new onset), and the new one's onset takes the same time.
+  // The sum keeps a transition no faster than the faster of the two ramps it replaces, whatever the two postures.
+  // Without an explicit end the new one's end moves by the extra onset time (its hold keeps its length).
+  for (size_t i = 0; i < pending.size(); ++i) {
+    ClipLayer& cur = pending[i].envelope;
+    for (size_t k = i + 1; k < pending.size(); ++k) {
+      if (pending[k].character != pending[i].character) continue;
+      ClipLayer& next = pending[k].envelope;
+      if (next.start < cur.end && next.start > cur.start) {
+        const double cross = cur.blendOut + next.blendIn;
+        cur.end = next.start + cross;
+        cur.blendOut = cross;
+        if (!pending[k].explicitEnd) next.end += cross - next.blendIn;
+        next.blendIn = std::max(0.0, std::min(cross, next.end - next.start - next.blendOut));
+      }
+      break;  // only the next emotion of the same character
+    }
+  }
+  for (auto& pe : pending) {
+    for (const auto& [morph, w] : pe.face) emotionFace.push_back({pe.character, morph, pe.envelope, w});
+    if (!pe.hasPosture) continue;
+    pe.posture.start = pe.envelope.start;
+    pe.posture.end = pe.envelope.end;
+    pe.posture.blendIn = pe.envelope.blendIn;
+    pe.posture.blendOut = pe.envelope.blendOut;
+    clipLayers_[size_t(pe.character)].push_back(std::move(pe.posture));
+    sortLayers(pe.character);
+  }
+  // Emotion faces: per morph, the track as compiled so far plus every emotion's weight x envelope, written as
+  // per-frame keys over the scene range (hand keys on the morph still win: generated tracks are only a fallback).
+  std::map<std::pair<int, std::string>, std::vector<const FaceContribution*>> faceByMorph;
+  for (const auto& fc : emotionFace) faceByMorph[{fc.character, fc.morph}].push_back(&fc);
+  for (const auto& [cm, list] : faceByMorph) {
+    const auto& [c, morph] = cm;
+    const std::string track = scene_.characters[size_t(c)].name + "/expr." + morph;
+    const auto& defs = characters_[size_t(c)].asset.defaultExpressions;
+    auto d = defs.find(morph);
+    const float def = d == defs.end() ? 0.0f : d->second;
+    const Track* old = gen->find(track);
+    std::vector<Key> keys;
+    for (int f = scene_.frameStart - 1; f <= scene_.frameEnd + 1; ++f) {
+      double v = old && !old->keys.empty() ? old->evaluate(f).x : def;
+      for (const FaceContribution* fc : list) v += fc->envelope.envelope(f) * fc->weight;
+      keys.push_back({double(f), vec3(float(std::clamp(v, 0.0, 1.0))), Interp::Linear});
+    }
+    gen->tracks[track].keys = std::move(keys);
   }
   if (scene_.director.is_object()) planShots(*this, *gen, beats);
   return {};

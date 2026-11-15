@@ -1,0 +1,21 @@
+{
+ "format": "plush.emotion",
+ "version": 1,
+ "name": "curious",
+ "description": "Curious: curious face, leaning in with the head tilted.",
+ "face": {
+  "Curious": 1.0
+ },
+ "body": {
+  "clip": "emo_curious"
+ },
+ "timing": {
+  "onset": 0.5,
+  "hold": 1.5,
+  "release": 0.6,
+  "curve": "smooth"
+ },
+ "source": "script",
+ "license": "project",
+ "attribution": "Plush Studio project (T-003, technical quality)"
+}
