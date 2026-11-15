@@ -1,0 +1,14 @@
+{
+ "override": {
+  "face": {
+   "eyes": {
+    "lid_tracking": 1.0,
+    "note": "T-014: the legacy spherical lid shells follow the gaze bones completely. This preserves the rest-pose iris/lid relationship through the configured gaze range; 1.0.0 used head-rigid lids (implicit 0.0)."
+   }
+  },
+  "metadata": {
+   "spec_version": "1.1.0",
+   "notes": "Unpublished T-014 candidate. Uses the shared spec-driven eyelid-tracking rule; never publish or approve without a later owner decision."
+  }
+ }
+}
