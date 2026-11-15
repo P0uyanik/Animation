@@ -32,3 +32,13 @@
 5. Each agent creates its own task branch from the latest `main`; agents never modify or push to `main`.
 6. The Supervisor reviews all completed work (code quality, architecture, tests), requests fixes and re-reviews when
    needed, and merges verified branches into `main` without conflicts or regressions.
+
+## 2026-11-15: permanent workflow rules (supersede conflicting earlier wording)
+1. Every sub-agent (Codex, Antigravity, Claude Implementer) works on its own task branch and worktree and pushes
+   its completed work to GitHub. Sub-agents never merge into `main`.
+2. The Supervisor independently reviews and tests every branch, checks and resolves conflicts, and merges all
+   verified changes (merges and pushes to `main` with owner approval).
+3. Reliable two-way communication between the Supervisor and the local Claude relay session is mandatory:
+   Supervisor -> relay by session message; relay -> Supervisor by comments (or pushes) on the never-merged relay PR
+   P0uyanik/Animation#2 (branch `relay-channel`), which wake the Supervisor. Fallback: the Supervisor reads the
+   relay's transcript. If the channel fails, the Supervisor investigates and repairs it.
