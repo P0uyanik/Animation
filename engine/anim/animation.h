@@ -64,6 +64,15 @@ struct Pose {
   vec3 rootOffset{0};
 };
 
+// Natural eye travel relative to the head. Engine +X is the character's left and +Y is up.
+// Values are degrees and may be overridden for each character through its life parameters.
+struct GazeLimits {
+  float maxUpDeg = 20.0f;
+  float maxDownDeg = 25.0f;
+  float maxLeftDeg = 30.0f;
+  float maxRightDeg = 30.0f;
+};
+
 quat eulerDegreesToQuat(vec3 degrees);  // XYZ order
 Pose restPose(const Skeleton& skeleton);
 // Tracks "<prefix><bone>.rot" (euler degrees) and "<prefix>root.loc" (metres).
@@ -94,6 +103,7 @@ struct LifeParams {
   float blinkClose = 0.07f, blinkHold = 0.03f, blinkOpen = 0.12f;
   float headFollow = 0.55f;    // share of a gaze turn taken by neck + head
   float headLagSec = 0.2f;     // the head follows the eyes this much later
+  GazeLimits gaze;             // eye travel relative to the final head pose
   bool blinkLids = true;       // false: blinks are a morph (character expression map), lid bones are not rotated
   uint32_t seed = 1;
 };
@@ -125,6 +135,6 @@ std::vector<vec3> fingertips(const Skeleton& skeleton, const Pose& pose, const m
 // Tracks: "<prefix>hand.L" = (curl, thumb, spread), "<prefix>hand.L.index" (x), "<prefix>hand.L.grasp" = sphere
 // centre (hand rest frame), "<prefix>hand.L.graspRadius" (x), "<prefix>hand.L.grasp.weight" (x). Same for R.
 void applyConstraints(const Skeleton& skeleton, const Clip& clip, const std::string& prefix, double frame,
-                      const mat4& world, Pose& pose);
+                      const mat4& world, Pose& pose, const GazeLimits& gaze = {});
 
 }  // namespace plush

@@ -188,6 +188,51 @@ void aimBone(const Skeleton& sk, Pose& pose, const mat4& world, int bone, vec3 t
 }
 
 namespace {
+// Leaves the central range untouched, then approaches the limit exponentially. The value and first derivative are
+// continuous where the soft zone begins, and there is no hard plateau to pop against at the nominal limit.
+float softLimit(float angleDeg, float negativeLimitDeg, float positiveLimitDeg) {
+  const float limit = std::max(0.0f, angleDeg < 0 ? negativeLimitDeg : positiveLimitDeg);
+  const float magnitude = std::abs(angleDeg);
+  const float softness = std::min(5.0f, limit * 0.25f);
+  const float onset = limit - softness;
+  if (magnitude <= onset || softness <= 1e-6f) return std::copysign(std::min(magnitude, limit), angleDeg);
+  const float limited = onset + softness * (1.0f - std::exp(-(magnitude - onset) / softness));
+  return std::copysign(limited, angleDeg);
+}
+
+vec3 limitGazeDirection(vec3 headDirection, const GazeLimits& limits) {
+  headDirection = glm::normalize(headDirection);
+  const float yaw = glm::degrees(std::atan2(headDirection.x, headDirection.z));
+  const float pitch = glm::degrees(std::atan2(headDirection.y, glm::length(vec2(headDirection.x, headDirection.z))));
+  // Positive yaw is character-left (+X); positive pitch is up (+Y).
+  const float y = glm::radians(softLimit(yaw, limits.maxRightDeg, limits.maxLeftDeg));
+  const float p = glm::radians(softLimit(pitch, limits.maxDownDeg, limits.maxUpDeg));
+  const float cp = std::cos(p);
+  return vec3(std::sin(y) * cp, std::sin(p), std::cos(y) * cp);
+}
+
+void aimEye(const Skeleton& sk, Pose& pose, const std::vector<mat4>& globals, const mat4& world, int eye, int head,
+            vec3 target, float weight, const GazeLimits& limits) {
+  const vec3 pivot(globals[size_t(eye)][3]);
+  vec3 worldDirection = target - pivot;
+  if (glm::length2(worldDirection) < 1e-12f) return;
+  const int parent = sk.bones[size_t(eye)].parent;
+  const mat3 headRotation = head >= 0 ? mat3(globals[size_t(head)])
+                                      : parent >= 0 ? mat3(globals[size_t(parent)]) : mat3(world);
+  const vec3 limitedHeadDirection = limitGazeDirection(glm::transpose(headRotation) * glm::normalize(worldDirection), limits);
+  const vec3 limitedWorldDirection = glm::normalize(headRotation * limitedHeadDirection);
+  const mat3 parentRotation = parent >= 0 ? mat3(globals[size_t(parent)]) : mat3(world);
+  const vec3 localDirection = glm::normalize(glm::transpose(parentRotation) * limitedWorldDirection);
+  const vec3 z(0, 0, 1);
+  const vec3 axis = glm::cross(z, localDirection);
+  const float s = glm::length(axis);
+  const quat q = s < 1e-7f ? quat(1, 0, 0, 0)
+                           : glm::angleAxis(std::atan2(s, glm::dot(z, localDirection)), axis / s);
+  pose.local[size_t(eye)] = glm::slerp(pose.local[size_t(eye)], q, std::clamp(weight, 0.0f, 1.0f));
+}
+}  // namespace
+
+namespace {
 uint32_t hashMix(uint32_t x) {
   x ^= x >> 16; x *= 0x7feb352dU; x ^= x >> 15; x *= 0x846ca68bU; x ^= x >> 16;
   return x;
@@ -387,7 +432,7 @@ std::vector<vec3> fingertips(const Skeleton& sk, const Pose& pose, const mat4& w
 }
 
 void applyConstraints(const Skeleton& sk, const Clip& clip, const std::string& prefix, double frame, const mat4& world,
-                      Pose& pose) {
+                      Pose& pose, const GazeLimits& gaze) {
   for (size_t i = 0; i < sk.bones.size(); ++i) {
     std::string name = prefix + "ik." + sk.bones[i].name;
     const Track* t = clip.find(name);
@@ -415,8 +460,10 @@ void applyConstraints(const Skeleton& sk, const Clip& clip, const std::string& p
   if (const Track* t = clip.find(prefix + "lookAt"); t && !t->keys.empty()) {
     vec3 target = t->evaluate(frame);
     float w = clip.evaluate(prefix + "lookAt.weight", frame, vec3(1)).x;
+    const int head = sk.find("head");
+    const std::vector<mat4> globals = boneGlobals(sk, pose, world);
     for (size_t i = 0; i < sk.bones.size(); ++i)
-      if (sk.bones[i].name.rfind("eye.", 0) == 0) aimBone(sk, pose, world, int(i), target, w, 38.0f);
+      if (sk.bones[i].name.rfind("eye.", 0) == 0) aimEye(sk, pose, globals, world, int(i), head, target, w, gaze);
   }
 }
 

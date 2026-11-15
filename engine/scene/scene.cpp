@@ -123,6 +123,12 @@ Result<Scene> loadScene(const std::filesystem::path& path) {
         cd.life.blinkInterval = readFloat(*it, "blinkInterval", cd.life.blinkInterval);
         cd.life.headFollow = readFloat(*it, "headFollow", cd.life.headFollow);
         cd.life.headLagSec = readFloat(*it, "headLagSec", cd.life.headLagSec);
+        if (auto gaze = it->find("gaze"); gaze != it->end() && gaze->is_object()) {
+          cd.life.gaze.maxUpDeg = readFloat(*gaze, "maxUpDeg", cd.life.gaze.maxUpDeg);
+          cd.life.gaze.maxDownDeg = readFloat(*gaze, "maxDownDeg", cd.life.gaze.maxDownDeg);
+          cd.life.gaze.maxLeftDeg = readFloat(*gaze, "maxLeftDeg", cd.life.gaze.maxLeftDeg);
+          cd.life.gaze.maxRightDeg = readFloat(*gaze, "maxRightDeg", cd.life.gaze.maxRightDeg);
+        }
       }
     }
     s.characters.push_back(cd);
@@ -190,9 +196,20 @@ Json sceneToJson(const Scene& s) {
   }
   for (auto& c : s.characters) {
     Json cj = {{"name", c.name}, {"asset", c.asset}, {"position", toJson(c.position)}, {"yawDeg", c.yawDeg}};
-    if (c.life.enabled)
-      cj["life"] = {{"breathing", c.life.breathing}, {"sway", c.life.sway}, {"headDrift", c.life.headDrift},
-                    {"blinkInterval", c.life.blinkInterval}, {"headFollow", c.life.headFollow}, {"headLagSec", c.life.headLagSec}};
+    const GazeLimits defaultGaze;
+    const bool customGaze = c.life.gaze.maxUpDeg != defaultGaze.maxUpDeg ||
+                            c.life.gaze.maxDownDeg != defaultGaze.maxDownDeg ||
+                            c.life.gaze.maxLeftDeg != defaultGaze.maxLeftDeg ||
+                            c.life.gaze.maxRightDeg != defaultGaze.maxRightDeg;
+    if (c.life.enabled || customGaze) {
+      Json life = {{"enabled", c.life.enabled},
+                   {"gaze", {{"maxUpDeg", c.life.gaze.maxUpDeg}, {"maxDownDeg", c.life.gaze.maxDownDeg},
+                             {"maxLeftDeg", c.life.gaze.maxLeftDeg}, {"maxRightDeg", c.life.gaze.maxRightDeg}}}};
+      if (c.life.enabled)
+        life.update({{"breathing", c.life.breathing}, {"sway", c.life.sway}, {"headDrift", c.life.headDrift},
+                     {"blinkInterval", c.life.blinkInterval}, {"headFollow", c.life.headFollow}, {"headLagSec", c.life.headLagSec}});
+      cj["life"] = std::move(life);
+    }
     chars.push_back(cj);
   }
   Json anim = Json::object();
@@ -384,7 +401,7 @@ std::vector<mat4> SceneEvaluator::characterGlobals(size_t c, double frame, Pose*
   LifeParams life = lifeParams(c);
   if (!blinkMorph(ci).empty()) life.blinkLids = false;  // blinks are a morph for this character (see evaluate)
   applyLife(ci.asset.skeleton, clip, prefix, frame, scene_.rate.fps(), world, life, pose);
-  applyConstraints(ci.asset.skeleton, clip, prefix, frame, world, pose);
+  applyConstraints(ci.asset.skeleton, clip, prefix, frame, world, pose, life.gaze);
   if (clips) applyClipFingers(c, frame, pose);
   if (poseOut) *poseOut = pose;
   return boneGlobals(ci.asset.skeleton, pose, world);
