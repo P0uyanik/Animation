@@ -1,0 +1,10 @@
+# Task log
+
+| ID | Task | State | Commit / branch | Notes |
+| --- | --- | --- | --- | --- |
+| M3 | Generic facial system (girl face, expression library, glasses) | delivered; awaiting owner acceptance | b41c88f | `docs/second_character/M3_FACE_SYSTEM.md` |
+| M3.1 | Facial engine completion (blink in-betweens, jaw, timing, oval eyes) | delivered; awaiting owner acceptance | 9d9612f | M3.1 section of the same document |
+| M3.2 | First end-to-end production path (engine animates, Blender renders) | delivered; awaiting owner acceptance | 7ff08cc | `docs/PRODUCTION_PIPELINE.md` |
+| Boy F09 / H28 | Face and hair candidates for the boy | awaiting owner review | — | unpublished experiments |
+
+Tasks from now on are numbered T-001, T-002, …, and pass through the states in `WORKFLOW.md`.

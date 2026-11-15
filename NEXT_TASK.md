@@ -1,5 +1,6 @@
 # Next task
 
+0. **Working structure (2026-11-15):** Supervisor/Implementer workflow in `docs/process/` (owner-approved). Pending: GitHub push access to the project repository, then the Implementer chat setup. No development task is selected yet.
 1. **Owner review of M3.2:**
    - `docs/PRODUCTION_PIPELINE.md`;
    - `docs/evaluation/production/M32_s010_contact_sheet.jpg` and `M32_s010_shot.mp4`.
