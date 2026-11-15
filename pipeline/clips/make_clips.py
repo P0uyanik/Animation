@@ -90,9 +90,7 @@ def relaxed():
         both(p, f + "b", rz(-c * 1.2))
     both(p, "thumbA", ry(12))
     both(p, "thumbB", ry(10))
-    p["spine"] = rx(1.0)
-    p["neck"] = rx(-1.0)
-    return p
+    return p  # torso, neck and head upright (the reference): arm-only clips then match any upright torso
 
 
 def arm_pose(base, s, upper, fore, hand, fingers=None, thumb=None):
@@ -113,9 +111,9 @@ def seated(base, k=1.0, lean=6.0):
     both(p, "thigh", seq(rz(-2 * k), rx(-88 * k)))
     both(p, "shin", rx(88 * k))
     both(p, "foot", ID)
-    p["spine"] = rx(1.0 + lean)
+    p["spine"] = rx(lean)
     p["chest"] = rx(-0.4 * lean)
-    p["neck"] = rx(-1.0 - 0.4 * lean)
+    p["neck"] = rx(-0.4 * lean)
     return p
 
 
@@ -128,8 +126,8 @@ def clip_idle(R):
         p = relaxed()
         b = math.sin(t)                     # one breath per 3 s
         p["chest"] = rx(-1.2 * b)
-        p["spine"] = RT.qmul(rx(-0.5 * b), p["spine"])
-        p["neck"] = RT.qmul(rx(1.0 * b), p["neck"])
+        p["spine"] = rx(-0.5 * b)
+        p["neck"] = rx(1.0 * b)
         w = math.sin(t + 1.1)               # weight shift (hips sway, legs compensate)
         p["hips"] = rz(0.9 * w)
         both(p, "thigh", rz(-0.9 * w))
@@ -144,55 +142,62 @@ def clip_idle(R):
 
 
 def clip_wave(R):
+    """Hold (0-8), raise (8-34), wave (38-70), lower (72-96), hold (96-104): blends happen on held poses."""
     s = "R"
     base = relaxed()
     up = seq(rx(-90), rz(25))                         # external twist (palm forward), arm 25 deg above horizontal
-    keys = {0: base, 10: arm_pose(base, s, up, ry(-75), rz(0)), 46: None, 56: base}
-    for i, f in enumerate(range(14, 43, 4)):
+    raised = arm_pose(base, s, up, ry(-75), rz(0))
+    keys = {0: base, 8: base, 34: raised, 72: raised, 96: base, 104: base}
+    for i, f in enumerate(range(38, 71, 4)):
         keys[f] = arm_pose(base, s, up, ry(-75 + (14 if i % 2 == 0 else -14)), ry(8 if i % 2 == 0 else -8))
-    keys[46] = arm_pose(base, s, up, ry(-75), rz(0))
     mask = [f"{r}.{s}" for r in ("upperArm", "forearm", "hand")]
-    return keys, {"name": "wave", "loop": False, "frame_count": 57, "fps": 30, "mask": mask,
+    return keys, {"name": "wave", "loop": False, "frame_count": 105, "fps": 30, "mask": mask,
                   "description": "Right-arm wave (palm forward, forearm swinging in the frontal plane); mirror for the left arm"}
 
 
+FINGERS = ("thumbA", "thumbB", "f0a", "f0b", "f1a", "f1b", "f2a", "f2b", "f3a", "f3b")
+
+
 def clip_point(R):
+    """Hold (0-8), raise (8-32), point (32-60), lower (60-84), hold (84-92)."""
     s = "R"
     base = relaxed()
     curl = {f"{f}a": rz(-85) for f in ("f0", "f1", "f2")}
     curl.update({f"{f}b": rz(-95) for f in ("f0", "f1", "f2")})
     curl.update({"f3a": rz(-2), "f3b": rz(-2)})
     pt = arm_pose(base, s, seq(rx(-10), ry(-72), rz(-8)), ry(-8), rz(-4), curl, {"thumbA": ry(35), "thumbB": ry(30)})
-    keys = {0: base, 14: pt, 40: pt, 54: base}
-    mask = [f"{r}.{s}" for r in ("upperArm", "forearm", "hand", "thumbA", "thumbB", "f0a", "f0b", "f1a", "f1b", "f2a",
-                                    "f2b", "f3a", "f3b")]
-    return keys, {"name": "point", "loop": False, "frame_count": 55, "fps": 30, "mask": mask,
+    keys = {0: base, 8: base, 32: pt, 60: pt, 84: base, 92: base}
+    mask = [f"{r}.{s}" for r in ("upperArm", "forearm", "hand") + FINGERS]
+    return keys, {"name": "point", "loop": False, "frame_count": 93, "fps": 30, "mask": mask,
                   "description": "Right arm points forward with the index finger, other fingers curled; mirror for the left"}
 
 
 SIT_ROOT = None  # set from the mannequin's proportions in main()
+# Roles a sit / stand clip animates (arms, hips and head stay with the layer underneath, e.g. the base idle).
+SIT_MASK = ["spine", "chest", "neck"] + [f"{r}.{x}" for r in ("thigh", "shin", "foot") for x in ("L", "R")]
 
 
 def sit_keys():
+    """Hold standing (0-8), sit (8-48), hold seated (48-56)."""
     base = relaxed()
-    p8 = seated(base, 0.25, lean=16)
-    p20 = seated(base, 0.6, lean=20)
-    p32 = seated(base, 1.0, lean=9)
-    p40 = seated(base, 1.0, lean=6)
+    p16 = seated(base, 0.25, lean=16)
+    p28 = seated(base, 0.6, lean=20)
+    p40 = seated(base, 1.0, lean=9)
+    p48 = seated(base, 1.0, lean=6)
     dz, dy = SIT_ROOT
-    return {0: (base, [0, 0, 0]), 8: (p8, [0, dy * 0.12, dz * 0.25]), 20: (p20, [0, dy * 0.55, dz * 0.7]),
-            32: (p32, [0, dy, dz]), 40: (p40, [0, dy, dz])}
+    return {0: (base, [0, 0, 0]), 8: (base, [0, 0, 0]), 16: (p16, [0, dy * 0.12, dz * 0.25]),
+            28: (p28, [0, dy * 0.55, dz * 0.7]), 40: (p40, [0, dy, dz]), 48: (p48, [0, dy, dz]), 56: (p48, [0, dy, dz])}
 
 
 def clip_sit_down(R):
-    return sit_keys(), {"name": "sit_down", "loop": False, "frame_count": 41, "fps": 30, "mask": None,
+    return sit_keys(), {"name": "sit_down", "loop": False, "frame_count": 57, "fps": 30, "mask": SIT_MASK,
                         "description": "Standing to seated on a seat behind the character (root moves down and back)"}
 
 
 def clip_stand_up(R):
     k = sit_keys()
-    rev = {40 - f: v for f, v in k.items()}
-    return rev, {"name": "stand_up", "loop": False, "frame_count": 41, "fps": 30, "mask": None,
+    rev = {56 - f: v for f, v in k.items()}
+    return rev, {"name": "stand_up", "loop": False, "frame_count": 57, "fps": 30, "mask": SIT_MASK,
                  "description": "Seated to standing (the reverse of sit_down; starts in its final pose)"}
 
 
@@ -282,16 +287,16 @@ def main():
         sc.frame_start, sc.frame_end = 0, meta["frame_count"] - 1
         if meta["name"] == "sit_down":
             m = json.loads(act["ps_clip_meta"])
-            m["contacts"] = [{"type": "seat", "frames": [32, 40], "height_ratio": round(seat_ratio(R, 40), 4),
+            m["contacts"] = [{"type": "seat", "frames": [40, 56], "height_ratio": round(seat_ratio(R, 56), 4),
                               "note": "seat top height = height_ratio x the character's leg length"},
-                             {"type": "foot_plant", "role": "foot.L", "frames": [0, 40]},
-                             {"type": "foot_plant", "role": "foot.R", "frames": [0, 40]}]
+                             {"type": "foot_plant", "role": "foot.L", "frames": [0, 56]},
+                             {"type": "foot_plant", "role": "foot.R", "frames": [0, 56]}]
             act["ps_clip_meta"] = json.dumps(m)
             seat = m["contacts"][0]
         if meta["name"] == "stand_up":
             m = json.loads(act["ps_clip_meta"])
-            m["contacts"] = [dict(seat, frames=[0, 8]), {"type": "foot_plant", "role": "foot.L", "frames": [0, 40]},
-                             {"type": "foot_plant", "role": "foot.R", "frames": [0, 40]}]
+            m["contacts"] = [dict(seat, frames=[0, 16]), {"type": "foot_plant", "role": "foot.L", "frames": [0, 56]},
+                             {"type": "foot_plant", "role": "foot.R", "frames": [0, 56]}]
             act["ps_clip_meta"] = json.dumps(m)
         made.append(CT.export_action(rig, act, os.path.abspath(a.out)))
         print("[make_clips]", made[-1])

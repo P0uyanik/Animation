@@ -175,7 +175,7 @@ def _slerp(a, b, t):
 def write_clip(path, name, fps, samples, roots, meta, ref_block, dense=False, tol_deg=0.02, root_tol=1e-5):
     """samples: [{role: L}] per clip frame 0..N-1; roots: [normalised root] per frame. Sparse keys unless dense."""
     n = len(samples)
-    roles = list(samples[0].keys())
+    roles = [r for r in samples[0] if not meta.get("mask") or r in meta["mask"]]  # tracks for the masked roles only
     tracks = {}
     for r in roles:
         vals = [s[r] for s in samples]
