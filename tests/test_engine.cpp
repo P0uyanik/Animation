@@ -32,6 +32,62 @@ TEST_CASE("tracks interpolate through keys without overshoot") {
   CHECK(lin.keys.size() == 1);
 }
 
+namespace {
+Skeleton gazeSkeleton() {
+  Skeleton sk;
+  sk.bones = {{"head", -1, vec3(0, 1, 0)}, {"eye.L", 0, vec3(0, 1, 0)}};
+  return sk;
+}
+
+vec3 gazeDirection(const Skeleton& sk, float headPitchDeg, float targetPitchDeg, const GazeLimits& limits = {}) {
+  Pose pose = restPose(sk);
+  pose.local[0] = eulerDegreesToQuat(vec3(headPitchDeg, 0, 0));
+  const mat4 world(1);
+  const vec3 pivot(boneGlobals(sk, pose, world)[1][3]);
+  const float p = glm::radians(targetPitchDeg);
+  const vec3 target = pivot + vec3(0, std::sin(p), std::cos(p));
+  Clip clip;
+  clip.tracks["who/lookAt"].setKey({0, target, Interp::Linear});
+  applyConstraints(sk, clip, "who/", 0, world, pose, limits);
+  const auto globals = boneGlobals(sk, pose, world);
+  return glm::normalize(glm::transpose(mat3(globals[0])) * vec3(globals[1][2]));
+}
+
+float pitchDegrees(vec3 direction) {
+  return glm::degrees(std::atan2(direction.y, glm::length(vec2(direction.x, direction.z))));
+}
+}  // namespace
+
+TEST_CASE("look-at limits eye rotation relative to a downward-pitched head") {
+  const Skeleton sk = gazeSkeleton();
+  // Head pitches down 30 degrees while the target remains level in world space: the eye would otherwise turn up 30.
+  const float eyePitch = pitchDegrees(gazeDirection(sk, 30.0f, 0.0f));
+  CHECK(eyePitch < 20.0f);
+  CHECK(eyePitch > 19.0f);
+  GazeLimits characterLimits;
+  characterLimits.maxUpDeg = 12.0f;
+  const float characterPitch = pitchDegrees(gazeDirection(sk, 30.0f, 0.0f, characterLimits));
+  CHECK(characterPitch < 12.0f);
+  CHECK(characterPitch > 11.5f);
+}
+
+TEST_CASE("look-at leaves in-range gaze unchanged") {
+  const Skeleton sk = gazeSkeleton();
+  // A level world target with a 10-degree downward head pitch is 10 degrees up relative to the head.
+  CHECK(pitchDegrees(gazeDirection(sk, 10.0f, 0.0f)) == doctest::Approx(10.0f).epsilon(0.0001));
+}
+
+TEST_CASE("look-at soft limit is continuous across the eye range") {
+  const Skeleton sk = gazeSkeleton();
+  const float below = pitchDegrees(gazeDirection(sk, 0.0f, 19.99f));
+  const float at = pitchDegrees(gazeDirection(sk, 0.0f, 20.0f));
+  const float above = pitchDegrees(gazeDirection(sk, 0.0f, 20.01f));
+  CHECK(std::abs(at - below) < 0.01f);
+  CHECK(std::abs(above - at) < 0.01f);
+  CHECK(above > at);  // still eases forward beyond the nominal limit; there is no hard-stop plateau
+  CHECK(above < 20.0f);
+}
+
 TEST_CASE("sdf mesher produces a closed sphere with the right area") {
   SdfPart part;
   part.voxelSize = 0.004f;
@@ -222,6 +278,13 @@ TEST_CASE("scene json round trip") {
   o.name = "box";
   o.material = "floor";
   s.objects.push_back(o);
+  CharacterDesc c;
+  c.name = "kid";
+  c.life.gaze.maxUpDeg = 12.0f;
+  c.life.gaze.maxDownDeg = 18.0f;
+  c.life.gaze.maxLeftDeg = 22.0f;
+  c.life.gaze.maxRightDeg = 24.0f;
+  s.characters.push_back(c);
   s.animation.tracks["camera.position"].setKey({1, vec3(1, 2, 3)});
   auto dir = std::filesystem::temp_directory_path() / "plush_test_scene";
   auto path = dir / "s.scene.json";
@@ -230,6 +293,12 @@ TEST_CASE("scene json round trip") {
   REQUIRE(back);
   CHECK(back->objects.size() == 1);
   CHECK(back->materials[0].texture.type == TextureType::Wood);
+  REQUIRE(back->characters.size() == 1);
+  CHECK_FALSE(back->characters[0].life.enabled);
+  CHECK(back->characters[0].life.gaze.maxUpDeg == doctest::Approx(12.0f));
+  CHECK(back->characters[0].life.gaze.maxDownDeg == doctest::Approx(18.0f));
+  CHECK(back->characters[0].life.gaze.maxLeftDeg == doctest::Approx(22.0f));
+  CHECK(back->characters[0].life.gaze.maxRightDeg == doctest::Approx(24.0f));
   CHECK(back->animation.evaluate("camera.position", 1, vec3(0)).z == doctest::Approx(3));
 }
 
