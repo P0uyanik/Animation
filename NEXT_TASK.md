@@ -7,10 +7,15 @@
 2. **T-001 (Studio ↔ shot pipeline): accepted by the owner on 2026-11-15** (branch `t-001-studio-shot-pipeline`).
    - Report: `docs/milestones/2026-11-15_T-001_studio_shot_pipeline.md`.
    - `ctest` is 4/4 with OIDN 2.3.3 (a build dependency outside the repository, `-DPLUSH_OIDN_ROOT`).
-3. **Then:**
+3. **T-002 (clip foundation): delivered on branch `t-002-clip-foundation`; awaiting Supervisor and owner review.**
+   - Report: `docs/milestones/2026-11-15_T-002_clip_foundation.md`;
+   - format and usage: `docs/ANIMATION_CLIPS.md`;
+   - evidence: `docs/evaluation/animation/T-002/` (contact sheet, measurements).
+4. **Then:**
    - the girl's hair and garments (M4/M5) on the shared path, judged in final Blender renders;
-   - a relaxed idle arm pose for imported characters (engine data, not per character);
+   - acting-quality clips towards the reference videos (Blender-authored or licensed motion capture through the
+     same format); the `idle_relaxed` base clip already replaces the A-pose arms in shots that use it;
    - an episode layer (shot sequence, audio).
-4. **Still pending your review:**
+5. **Still pending your review:**
    - M3 / M3.1;
    - the boy's F09 / H28 candidates.

@@ -60,6 +60,20 @@ the command behaves and writes exactly as in M3.2.
   partial frames; failure; default command-line behaviour.
 - `pipeline/production/tests/compare_runs.py`: equivalence of two runs.
 
+## Clip actions (T-002)
+Shots can play shared body animation clips from `content/clips/` with the action
+`{"type": "clip", "character", "clip", "start", "end", "speed", "weight", "blendIn", "blendOut", "loop", "mirror", "base"}`.
+Format, retargeting and layering are described in `docs/ANIMATION_CLIPS.md`.
+- **One file per clip:** the same file plays on every humanoid.
+- **Retarget data:** each character's generated retarget data comes from its engine package (`retarget` block,
+  `export_engine.py` `EXPORTER_VERSION` 2).
+- **Package cache:** packages are cached by the master hash and the exporter version, so they are re-exported when
+  the exporter changes.
+- **Render path:** clip motion reaches Blender only through the existing bake (`shot_bake` / `shot_render` unchanged).
+- **Shots without clip actions:** they bake exactly as before (s010 bake byte-identical with `main` for the same
+  packages).
+- **Test shot:** `episodes/e901_clip_test/shots/s010`.
+
 ## Plush Studio drives the workflow (T-001)
 Studio orchestrates and displays. It contains no animation, bake, retargeting or rendering logic.
 
