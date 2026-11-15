@@ -3,7 +3,7 @@
 **Environment:**
 - Blender: the bpy 5.3.0 module (Python 3.13) through a `blender` wrapper.
 - GL: Mesa llvmpipe (LLVM 20.1.2), OpenGL 4.5 core, under Xvfb.
-- Engine build: no OIDN in this environment, which accounts for the two failing image tests (see Regression).
+- Engine build: the image regressions were run with the official OIDN 2.3.3 prebuilt, a build dependency installed outside the repository (`-DPLUSH_OIDN_ROOT`); see Regression.
 
 Renders are low resolution on purpose (320×180, 16 samples). Scripts and settings are listed at the end.
 
@@ -94,7 +94,9 @@ Renders are low resolution on purpose (320×180, 16 samples). Scripts and settin
   - `test_export_engine`: 8/8.
   - `verify_charsys`: PASS.
   - Studio round trip: `--script-hair-edit` then `--script-verify` on a copy of `watertable_v4`, `lashes.L` 4 → 5.
-- **ctest: 2/4, because OIDN is missing.** `regression_milestone01` (rmse 0.0464) and `regression_face_neutral` (rmse 0.0406) fail in this environment both on unchanged `main` and on this branch. The engine and `plush-render` are unchanged, so they run identical code. Rerun them once OIDN 2.3.3 is installed.
+- **ctest: 4/4 (AC10 PASS).** with the official OIDN 2.3.3 prebuilt (a build dependency installed outside the repository, `-DPLUSH_OIDN_ROOT=<path>`), `ctest` is 4/4 on unchanged `main` 1ab1ade and on the branch e6e9246, with identical rmse (m01 0.0164, face_neutral 0.0004, lineup 0.0000). This was independently confirmed in the Supervisor environment (`ctest` 4/4, `plush_tests` 39 test cases / 19631 assertions).
+  - Without OIDN (the first runs in this environment), `regression_milestone01` (rmse 0.0464) and
+    `regression_face_neutral` (rmse 0.0406) failed identically on `main` and the branch.
 
 ## Scripts and settings
 - **Command line:** `python3 pipeline/production/run_shot.py --shot episodes/e000_pilot/shots/s010/shot.scene.json --blender <blender> --frames 5-7 --resolution 320 180 --samples 16`

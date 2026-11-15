@@ -1,13 +1,24 @@
 [doctest] test cases:    39 |    39 passed | 0 failed | 0 skipped
 [doctest] assertions: 19631 | 19631 passed | 0 failed |
 [doctest] Status: SUCCESS!
-1/4 Test #1: plush_tests ......................   Passed   13.67 sec
-2/4 Test #2: regression_milestone01 ...........***Failed    2.92 sec
-3/4 Test #3: regression_face_neutral ..........***Failed    4.11 sec
-4/4 Test #4: regression_lineup_abc ............   Passed   12.30 sec
-50% tests passed, 2 tests failed out of 4
-[info] regression: rmse 0.0464 vs /home/user/Animation/tests/regression/m01_f24_320x180.png (limit 0.0300)
-[info] regression: rmse 0.0406 vs /home/user/Animation/tests/regression/face_neutral_200.png (limit 0.0300)
+== ctest with OIDN 2.3.3 (-DPLUSH_OIDN_ROOT=/opt/oidn/oidn-2.3.3.x86_64.linux, outside the repository)
+-- unchanged main 1ab1ade
+1/4 Test #1: plush_tests ......................   Passed   14.08 sec
+2/4 Test #2: regression_milestone01 ...........   Passed    2.98 sec
+3/4 Test #3: regression_face_neutral ..........   Passed    4.50 sec
+4/4 Test #4: regression_lineup_abc ............   Passed   11.93 sec
+100% tests passed, 0 tests failed out of 4
+rmse: m01 0.0164, face_neutral 0.0004, lineup 0.0000
+-- branch t-001-studio-shot-pipeline e6e9246
+1/4 Test #1: plush_tests ......................   Passed   15.56 sec
+2/4 Test #2: regression_milestone01 ...........   Passed    3.25 sec
+3/4 Test #3: regression_face_neutral ..........   Passed    4.46 sec
+4/4 Test #4: regression_lineup_abc ............   Passed   11.92 sec
+100% tests passed, 0 tests failed out of 4
+rmse: m01 0.0164, face_neutral 0.0004, lineup 0.0000
+-- independently confirmed in the Supervisor environment: ctest 4/4, plush_tests 39 test cases / 19631 assertions
+== (earlier, without OIDN: regression_milestone01 rmse 0.0464 and regression_face_neutral rmse 0.0406 failed,
+   identically on main and the branch)
 [test_export_engine] ALL PASS (8/8)
 [verify_charsys] PASS -> /tmp/claude-0/-home-user-Animation/1d110147-d321-507b-b6a1-0715487317cd/scratchpad/verify_final/CHARSYS_VERIFICATION.md
 [info] script: group 'lashes.L' locks 4 -> 5, saved: yes

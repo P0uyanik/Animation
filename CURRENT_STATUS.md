@@ -1,6 +1,6 @@
 # Current status (2026-11-15)
 
-**Latest: T-001, Plush Studio drives the shot pipeline (implemented and tested; awaiting Supervisor and owner review).**
+**Latest: T-001, Plush Studio drives the shot pipeline (implemented and tested; accepted by the owner on 2026-11-15).**
 Details: `docs/milestones/2026-11-15_T-001_studio_shot_pipeline.md`, `docs/PRODUCTION_PIPELINE.md`.
 - **Implemented:**
   - one workflow contract in `run_shot.py`: stages, `--run-dir` run folders, `status.json`, cancel; additive, so the
@@ -17,8 +17,7 @@ Details: `docs/milestones/2026-11-15_T-001_studio_shot_pipeline.md`, `docs/PRODU
   - viewer frame mapping;
   - command line vs Studio: bake, bones, camera, frames, settings and pixels identical;
   - `plush_tests` 39/39, exporter 8/8, `verify_charsys` PASS, Studio round trip.
-- **Not verified:** `ctest` image regressions. Two tests (`regression_milestone01`, `regression_face_neutral`) fail
-  in this environment without OIDN 2.3.3, identically on unchanged `main`. They must be rerun with OIDN.
+- **Image regressions:** with the official OIDN 2.3.3 prebuilt (a build dependency installed outside the repository, `-DPLUSH_OIDN_ROOT=<path>`), `ctest` is 4/4 on unchanged `main` 1ab1ade and on the branch e6e9246, with identical rmse (m01 0.0164, face_neutral 0.0004, lineup 0.0000). This was independently confirmed in the Supervisor environment (`ctest` 4/4, `plush_tests` 39 test cases / 19631 assertions).
 - **Unchanged:** the engine, `pipeline/charsys`, assets and test data.
 
 **Latest: M3.2, first end-to-end production path (TD-42: engine animates, Blender renders).**

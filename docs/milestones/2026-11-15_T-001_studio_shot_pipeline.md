@@ -7,7 +7,8 @@
 | Workflow module | `apps/studio/shot_workflow.{h,cpp}` (no UI, no GL): shot discovery, command building, job runner (process group, SIGTERM then SIGKILL, subreaper), status parsing, run list, frame mapping, merge-save, configuration |
 | Studio | `--shot`, shot browser, Production panel (cast with source and package status, Prepare / Render / Cancel, range / resolution / samples, stage and frame progress, log tail, runs, result viewer), shot actions (start/end), life toggle; scripted tests `--script-production`, `--script-cancel`, `--script-fail` |
 | Test shot | `episodes/e900_workflow_test/shots/s010`: published boy 1.0.0 only, side camera with a moving target, frames 11–70; existing character, no character change |
-| Approvals | Nothing published or approved |
+| Acceptance | The owner accepted T-001 on 2026-11-15 (see below) |
+| Approvals | No character or asset published or approved |
 
 ## Implemented / tested / not verified
 **Implemented and tested:**
@@ -45,20 +46,27 @@
   - pixels: 0 differing pixels.
 - **R7:** Studio only builds `run_shot.py` command lines and reads its files. There is no shot, character or
   episode name in the code.
-- **R8:**
+- **R8 / AC10 (PASS):**
   - `plush_tests` 39/39 (19631 assertions), `test_export_engine` 8/8, `verify_charsys` PASS.
+  - Image regressions: with the official OIDN 2.3.3 prebuilt (a build dependency installed outside the repository, `-DPLUSH_OIDN_ROOT=<path>`), `ctest` is 4/4 on unchanged `main` 1ab1ade and on the branch e6e9246, with identical rmse (m01 0.0164, face_neutral 0.0004, lineup 0.0000). This was independently confirmed in the Supervisor environment (`ctest` 4/4, `plush_tests` 39 test cases / 19631 assertions).
+  - Without OIDN, the two denoised image tests fail (rmse 0.0464 and 0.0406) identically on `main` and the branch:
+    an environment limit, not a regression.
   - Studio `--script-hair-edit` / `--script-verify` round trip passes (`lashes.L` 4 → 5).
   - Path tracing a frame works in legacy and shot mode.
   - The default command line writes the same outputs (bake, resolved scene and `cast.json` byte-identical with
     `main`, pixels identical).
 
 **Not verified:**
-- **ctest image regressions:** `regression_milestone01` and `regression_face_neutral` fail in this environment
-  because OIDN 2.3.3 is missing. They fail identically on unchanged `main`; the engine and `plush-render` are not
-  changed. `ctest` is 2/4 here and must be rerun once OIDN is installed.
 - **"Render animation to video" (engine path):** not exercised by a script. Its legacy code path is unchanged apart
   from creating `renders/`.
 - **Studio under real Blender 5.3:** only the bpy module ran. With a real Blender binary the same command lines apply.
+
+## Owner acceptance (2026-11-15)
+- The owner accepted T-001 on 2026-11-15 (option 1).
+- **Two controls beyond the original UI scope** were added during the task and accepted afterwards:
+  - the "Shot actions" timing editor (start/end of each action);
+  - the "Life layer" checkbox, with breathing and sway sliders, under a character's placement.
+- Prepare and full Render stay separate controls.
 
 ## Decisions and assumptions
 - **Run ids:** run folders are `<shot>/build/runs/<id>`. A bare `--run-dir` value is an id; a path is used as given.
