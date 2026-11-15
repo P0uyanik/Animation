@@ -14,6 +14,9 @@
 | T-007 | Mocap licence verification (Antigravity) | **result accepted** 2026-11-15 | t-007-agy-mocap-licences (211d412), merged | ACCAD/CMU ALLOW, Mixamo/Rokoko LOCAL-ONLY; CMU quote to re-check in converter task |
 | T-008 | Exact clip retarget formula, ANIMATION_CLIPS.md §8 (Codex) | **result accepted** 2026-11-15 | t-008-codex-clip-formula (b766ecc), merged | formulas match code; open issue: fractional blend spaces differ (emotion vs clip layers) |
 | T-009 | ACCAD/CMU mocap formats + role mapping (Antigravity) | **result accepted** 2026-11-15 | t-009-agy-mocap-formats (cea7424, pushed by agy), merged | 5 UNVERIFIED points; verify against real files in converter task |
+| T-010 | V1 test video, 2.5 s two-shot (Claude Implementer) | **result accepted** 2026-11-15 | t-010-claude-test-video (5020d2a), merged | 60 frames, smooth PASS, gaze in limits; girl eyes PASS, boy eyes FAIL (lid rig of frozen 1.0.0) → T-014; gap list → V2–V6 |
+| T-012 | Measurable visual target spec (Codex; agy quota-out) | **result accepted** 2026-11-15 | t-012-codex-visual-target (6f84e3c), merged | 33 ESTIMATE values; 17 benchmark frames |
+| T-013 | plush.asset/1 prop library + scene props (Codex, 1 fix round) | **result accepted** 2026-11-15 | t-013-codex-asset-library (b8c76df), merged | ctest 4/4, plush_tests 20,652 assertions |
 | Boy F09 / H28 | Face and hair candidates for the boy | awaiting owner review | — | unpublished experiments |
 
 Tasks from now on are numbered T-001, T-002, …, and pass through the states in `WORKFLOW.md`.
