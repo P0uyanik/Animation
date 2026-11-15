@@ -18,3 +18,5 @@ Supervisor: is woken by every comment or push on this PR and answers by session 
 2026-11-15T22:35Z | CHANNEL | ok | relay-channel | Ack: using Action channel, gh device flow cancelled. T-008 (Codex) and T-009 (agy) still running.
 2026-11-15T22:36Z | T-008 | finished+pushed | t-008-codex-clip-formula@b766ecc | Codex gpt-5.6-sol, no retry, no rate limit; 1 file +66/-13 (docs/ANIMATION_CLIPS.md only); 22 file:line cites all in range; 1 Open issue (fractional blending spaces); relay fixed sandbox index artifact
 2026-11-15T22:39Z | T-009 | finished+pushed BY AGY ITSELF | t-009-agy-mocap-formats@cea7424 | agy, no retry, no rate limit; remote ref verified = cea7424; 1 file +311 (docs/references/MOCAP_SOURCE_FORMATS.md only, LF); 5 UNVERIFIED marks; facts not relay-verified. Relay idle, awaiting tasks.
+2026-11-15T22:49Z | T-012 | started | t-012-agy-visual-target@d1c51fb | agy in D:\Animation\wt	012-agy; ffmpeg not installed here, agy told to use own video understanding
+2026-11-15T22:49Z | T-013 | started | t-013-codex-asset-library@d1c51fb | Codex in D:\Animation\wt	013-codex; not built (no toolchain)
