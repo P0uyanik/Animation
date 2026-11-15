@@ -33,8 +33,9 @@ std::string mirrorName(const std::string& n, const std::string& l, const std::st
   if (n.size() >= r.size() && n.compare(n.size() - r.size(), r.size(), r) == 0) return n.substr(0, n.size() - r.size()) + l;
   return n;
 }
-float angleDeg(vec3 a, vec3 b) {
-  return glm::degrees(std::acos(std::clamp(glm::dot(glm::normalize(a), glm::normalize(b)), -1.0f, 1.0f)));
+float angleDeg(vec3 a, vec3 b) {  // atan2 form: accurate for small angles (acos of a float dot is not)
+  glm::dvec3 x = glm::normalize(glm::dvec3(a)), y = glm::normalize(glm::dvec3(b));
+  return float(glm::degrees(std::atan2(glm::length(glm::cross(x, y)), glm::dot(x, y))));
 }
 }  // namespace
 

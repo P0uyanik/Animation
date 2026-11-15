@@ -23,8 +23,9 @@ Json profileReference() {
 }
 Json q4(quat q) { return Json::array({q.w, q.x, q.y, q.z}); }
 quat rot(float deg, vec3 axis) { return glm::angleAxis(glm::radians(deg), glm::normalize(axis)); }
-float angleBetween(vec3 a, vec3 b) {
-  return glm::degrees(std::acos(std::clamp(glm::dot(glm::normalize(a), glm::normalize(b)), -1.0f, 1.0f)));
+float angleBetween(vec3 a, vec3 b) {  // atan2 form: accurate for small angles
+  glm::dvec3 x = glm::normalize(glm::dvec3(a)), y = glm::normalize(glm::dvec3(b));
+  return float(glm::degrees(std::atan2(glm::length(glm::cross(x, y)), glm::dot(x, y))));
 }
 float quatAngle(quat a, quat b) {  // double precision: float acos near 1 cannot resolve angles below ~0.04 degrees
   glm::dquat x = glm::normalize(glm::dquat(a)), y = glm::normalize(glm::dquat(b));

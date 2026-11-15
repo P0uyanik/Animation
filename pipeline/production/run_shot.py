@@ -15,7 +15,8 @@ sources (no character-specific code anywhere in the path):
 
 Each character's "asset" in the scene is ignored and replaced by the package built here. Outputs go to
 <shot dir>/build/ (masters for unpublished casts, packages, bake.json, frames, shot.blend, shot.mp4, run_shot.json).
-Steps are cached by content hashes (a master or package is rebuilt only when its inputs change).
+Steps are cached by content hashes (a master or package is rebuilt only when its inputs change; a package also when
+the exporter's EXPORTER_VERSION changes).
 
 Workflow contract (used by the command line and by Plush Studio; see docs/PRODUCTION_PIPELINE.md):
 - Stages: prepare (resolve the cast: masters, packages, <build>/shot.resolved.scene.json, <build>/cast.json,
@@ -33,6 +34,7 @@ import argparse
 import hashlib
 import json
 import os
+import re
 import signal
 import subprocess
 import sys
@@ -41,6 +43,22 @@ import time
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 CHARSYS = os.path.join(ROOT, "pipeline", "charsys")
 STAGES = ["prepare", "bake", "render", "encode"]
+
+
+def exporter_script():
+    """The engine-package exporter (PLUSH_EXPORT_ENGINE overrides it, e.g. for tests)."""
+    return os.environ.get("PLUSH_EXPORT_ENGINE") or os.path.join(CHARSYS, "export_engine.py")
+
+
+def exporter_version(path):
+    """EXPORTER_VERSION of an exporter script (read from its source; "1" for exporters that predate it)."""
+    m = re.search(r'^EXPORTER_VERSION\s*=\s*["\']([^"\']+)["\']', open(path).read(), re.M)
+    return m.group(1) if m else "1"
+
+
+def package_key(master_sha, exporter_ver):
+    """Package cache key: the master's content hash and the exporter version (a new exporter re-exports)."""
+    return hashlib.sha256(f"{master_sha}:exporter {exporter_ver}".encode()).hexdigest()[:16]
 
 
 def sha256(path):
@@ -212,11 +230,12 @@ def prepare(shot, shot_path, out, logs, blender, rep):
                 master_state = "built"
             status = "unpublished build from spec (experimental; not approved)"
         msha = sha256(master)
-        # 2. engine package from the master (cached by the master's hash)
-        pkg = os.path.join(out, "packages", f"{name}_{msha[:16]}")
+        # 2. engine package from the master (cached by the master's hash and the exporter version)
+        exporter = exporter_script()
+        pkg = os.path.join(out, "packages", f"{name}_{package_key(msha, exporter_version(exporter))}")
         package_state = "cached"
         if not os.path.exists(os.path.join(pkg, "character.json")):
-            cmd = [blender, "-b", "--factory-startup", "-P", os.path.join(CHARSYS, "export_engine.py"), "--",
+            cmd = [blender, "-b", "--factory-startup", "-P", exporter, "--",
                    "--blend", master, "--profile", profile, "--out", pkg]
             rep["steps"][f"export_{name}_s"] = run(cmd, os.path.join(logs, f"export_{name}.log"))
             package_state = "built"
