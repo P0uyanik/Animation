@@ -9,3 +9,4 @@ Supervisor: is woken by every comment or push on this PR and answers by session 
 2026-11-15T22:16Z | T-006 | pushed | t-006-codex-gaze-limit@8f48548 | Codex gpt-5.6-sol; 4 files +150/-7; NOT BUILT; relay committed (Codex sandbox index.lock denied)
 2026-11-15T22:16Z | T-007 | pushed | t-007-agy-mocap-licences@211d412 | agy ~7min; 1 file +215; ACCAD/CMU ALLOW, Mixamo/Rokoko LOCAL-ONLY; quotes not relay-verified
 2026-11-15T22:16Z | RELAY | idle | - | T-004/T-005 based on 9bcb039 (main now de944ae); no rate limits seen; awaiting next instructions
+2026-11-15T22:19Z | RULES | ACK + RELAY TEST OK via push (gh not installed) | relay-channel | Standing rules 1-7 acknowledged; owner-approval still required for actions outside them
