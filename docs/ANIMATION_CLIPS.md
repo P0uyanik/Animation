@@ -153,19 +153,72 @@ above the base clip, below clip actions; walk, IK, look and hand keys keep their
 the clip's reference-space rotations (intensity k = k × the deviation), and consecutive emotions crossfade. The clip
 format is unchanged; `clip` actions behave exactly as before.
 
-## 8. Future motion capture (not implemented)
-A converter maps a BVH (or similar) take into `plush.clip/1` without format changes:
-1. **Role mapping:** map the source joints to roles (a mapping table per mocap skeleton family, like a rig profile).
-2. **Source frames:** compute the source's rest frames with the same rules: direction to the child joint, twist from
-   a hint. A BVH has no meshes, so the rules work on joint positions, exactly as `deriveRetarget` does.
-3. **Per frame and role:** `R = G_source · C_source · Fref⁻¹`, then `L = R_parent⁻¹ · R`. Write dense `samples` at
-   the source fps.
-4. **Root:** the root translation relative to the first frame, divided by the source leg length; heading from the hips'
-   yaw if wanted.
-5. **Metadata:** `source: "mocap"` with `license` and `attribution` filled from the take's licence, foot-plant
-   contacts from velocity thresholds, `mask` from the joints present.
+## 8. Exact quaternion and retarget convention (including future motion capture)
 
-The engine already plays dense data at any fps (`dense_test`).
+**Multiplication convention and spaces.** Quaternions are stored as `(w, x, y, z)` and use the Hamilton product. In
+`q1 · q2`, `q2` acts first: rotating a vector is `q · v · q⁻¹` (`pipeline/clips/retarget.py:132-151`; clip JSON is
+read in that component order at `engine/model/clip.cpp:195-196`). For a role `r` and its nearest present semantic
+parent `p`:
+
+- `F_r = frame(ref_dir_r, ref_twist_r)` is the shared reference-pose frame, expressed in character/engine axes. It is
+  not parent-local. `frame(d, t)` uses the orthonormal basis whose columns are `x = d × t`, `y = d`, `z = t`, after
+  making `t` perpendicular to `d` (`pipeline/clips/retarget.py:178-183`, `engine/model/clip.cpp:18-21`).
+- `C_r = frame(dir_r, twist_r)` is the character (or mocap source) rest frame, also expressed in character/engine
+  axes, not parent-local. Despite the shorthand “retarget quaternion”, the package `retarget` block contains `dir`
+  and `twist` vectors, not quaternion fields; the engine reads and orthonormalizes those vectors, then constructs
+  `C_r` when binding the clip (`engine/model/clip.cpp:138-153`, `engine/model/clip.cpp:313-322`). The scene uses that
+  package block when its reference version matches, otherwise it derives the same vectors from the skeleton
+  (`engine/scene/clip_layers.cpp:43-49`).
+- `G_r` is the role bone's character-space rotation delta from its own rest orientation; it is not a bone-local
+  rotation and it is not reference-pose-relative. The Blender exporter obtains it as evaluated character-space
+  rotation times inverse rest character-space rotation (`pipeline/clips/clip_tools.py:113-120`).
+- `R_r = G_r · C_r · F_r⁻¹` is the role's character-space posed frame expressed relative to the shared reference
+  frame. `R_r` is still per-role, not parent-local. The stored clip value is
+  `L_r = R_p⁻¹ · R_r = A_p · G_p⁻¹ · G_r · A_r⁻¹`, where `A_r = F_r · C_r⁻¹`; for no semantic parent, `R_p`,
+  `G_p`, and `A_p` are identity. This is the exact exporter order (`pipeline/clips/clip_tools.py:63-72`,
+  `pipeline/clips/clip_tools.py:122-133`).
+  Dense and sparse tracks both store this `L_r`; sampling only interpolates it and optionally mirrors it
+  (`engine/model/clip.cpp:286-293`).
+
+**Playback.** Binding converts the target character's retarget vectors to `C_r` and stores only
+`A_r = F_r · C_r⁻¹` (`engine/model/clip.cpp:313-322`). In semantic-parent order the full-weight target is
+`G_r^target = G_p^result · A_p⁻¹ · L_r · A_r`; `G_p^result` is the semantic parent's character-space result after
+this layer, including the underlying pose when that parent is not driven (`engine/model/clip.h:130-148`). The engine
+then converts that character-space target to the actual skeleton-parent-local quaternion as
+`Q_r^local = (G_engineParent^current)⁻¹ · G_r^target` and blends/writes `Q_r^local` into `pose.local`
+(`engine/model/clip.h:142-148`). Thus “local” has two distinct meanings: clip `L_r` is local to the **semantic**
+parent in reference-pose-relative space; `pose.local` is local to the **actual engine bone parent**.
+
+**Worked two-role example (`p → r`).** Let superscript `s` mean the source rig and `t` the target character.
+
+1. From their rest frames, the source corrections are `A_p^s = F_p · (C_p^s)⁻¹` and
+   `A_r^s = F_r · (C_r^s)⁻¹` (`pipeline/clips/clip_tools.py:63-66`).
+2. For one source frame, `R_p = G_p^s · C_p^s · F_p⁻¹` and `R_r = G_r^s · C_r^s · F_r⁻¹`, so the exported child
+   sample is
+   `L_r = R_p⁻¹ · R_r = F_p · (C_p^s)⁻¹ · (G_p^s)⁻¹ · G_r^s · C_r^s · F_r⁻¹ = A_p^s · (G_p^s)⁻¹ · G_r^s · (A_r^s)⁻¹`
+   (`pipeline/clips/clip_tools.py:122-133`).
+3. Playback builds `A_p^t = F_p · (C_p^t)⁻¹` and `A_r^t = F_r · (C_r^t)⁻¹`, then computes
+   `G_r^t = G_p^t · (A_p^t)⁻¹ · L_r · A_r^t` (`engine/model/clip.cpp:313-322`,
+   `engine/model/clip.h:139-146`). Substitution gives `G_r^t · C_r^t = R_r · F_r` whenever
+   `G_p^t · C_p^t = R_p · F_p`: the target rest frames cancel, while the source's reference-relative motion remains
+   (`pipeline/clips/clip_tools.py:122-133`, `engine/model/clip.h:139-146`).
+
+**Future mocap conversion (not implemented).** Map source joints to semantic roles, derive each `C_r^s` from joint
+positions with the existing direction/twist rules (`pipeline/clips/retarget.py:95-129`), calculate each frame's `G`
+and then `L` exactly as in the worked example, and write dense `samples` at the source fps
+(`pipeline/clips/clip_tools.py:175-192`, `pipeline/clips/clip_tools.py:208-226`). Root translation is the source root
+offset divided by source leg length (`pipeline/clips/clip_tools.py:134-137`,
+`pipeline/clips/clip_tools.py:193-199`). Metadata remains `source: "mocap"`, its licence and
+attribution, contacts, and a mask of present joints. The engine already plays dense data at any fps (`dense_test`).
+
+**Open issues.** Full-weight authoring/export and playback agree, but fractional blending uses two spaces. Ordinary
+and base clips retarget first and slerp the resulting actual-engine-parent-local quaternion
+(`engine/model/clip.h:142-146`; callers at `engine/scene/clip_layers.cpp:84-86` and
+`engine/scene/clip_layers.cpp:118`). Tier-1 emotion layers instead
+recover the underlying semantic/reference-space value as `L_r^under = A_p · G_p⁻¹ · G_r · A_r⁻¹`, slerp it toward
+the clip's `L_r`, and apply that result at full weight (`engine/scene/clip_layers.cpp:97-115`). The endpoints agree,
+but intermediate rotations need not when the semantic parent differs from the actual engine parent. Code is
+unchanged.
 
 ## 9. Limits (known)
 - **Clip quality:** the clips are mechanical script poses; acting quality and the reference videos remain future work.
