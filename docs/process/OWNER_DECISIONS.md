@@ -42,3 +42,17 @@
    Supervisor -> relay by session message; relay -> Supervisor by comments (or pushes) on the never-merged relay PR
    P0uyanik/Animation#2 (branch `relay-channel`), which wake the Supervisor. Fallback: the Supervisor reads the
    relay's transcript. If the channel fails, the Supervisor investigates and repairs it.
+
+## 2026-11-15: standing collaboration rules (Supervisor <-> local relay session)
+Roles: the local session executes and reports; the Supervisor supervises, reviews, decides and assigns.
+1. The Supervisor communicates actively and answers relay questions promptly.
+2. The relay notifies the Supervisor immediately (PR #2 comment) when it needs clarification, approval or a decision.
+3. The relay notifies the Supervisor as soon as any Codex or Antigravity task finishes, fails or becomes blocked.
+4. The Supervisor reviews every completed branch: code quality, architecture, tests, potential conflicts.
+5. If issues exist, the Supervisor instructs the responsible agent to fix them and report back.
+6. Branches are pushed only after the relay's local verification (1 commit scope, diff stat, available tests); the
+   Supervisor then verifies independently before any merge.
+7. Only the Supervisor merges into `main`, and only with owner approval.
+8. When a task is accepted, the Supervisor promptly assigns the next suitable task to an available agent.
+9. Keep agents productive without unnecessary waiting, repeated polling or excessive token use.
+10. Coordination runs continuously through the PR #2 channel; communication failures are repaired immediately.
