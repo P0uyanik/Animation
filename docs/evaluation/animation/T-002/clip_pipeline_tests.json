@@ -1,0 +1,59 @@
+{
+ "packages": {
+  "episodes/e000_pilot/shots/s010/build/packages/boy_e61bc677dd91bb92/character.json": {
+   "roles": 37,
+   "height": 0.7,
+   "leg_length": 0.2612138,
+   "max_diff_vs_python_derivation_deg": 0.0
+  },
+  "episodes/e000_pilot/shots/s010/build/packages/girl_94387f74d784cbf9/character.json": {
+   "roles": 37,
+   "height": 0.69,
+   "leg_length": 0.2341363,
+   "max_diff_vs_python_derivation_deg": 0.0
+  },
+  "episodes/e900_workflow_test/shots/s010/build/packages/boy_e61bc677dd91bb92/character.json": {
+   "roles": 37,
+   "height": 0.7,
+   "leg_length": 0.2612138,
+   "max_diff_vs_python_derivation_deg": 0.0
+  },
+  "episodes/e901_clip_test/shots/s010/build/packages/boy_e61bc677dd91bb92/character.json": {
+   "roles": 37,
+   "height": 0.7,
+   "leg_length": 0.2612138,
+   "max_diff_vs_python_derivation_deg": 0.0
+  },
+  "episodes/e901_clip_test/shots/s010/build/packages/girl_176aa1de342e2a51/character.json": {
+   "roles": 37,
+   "height": 0.69,
+   "leg_length": 0.2341363,
+   "max_diff_vs_python_derivation_deg": 0.0
+  }
+ },
+ "engine_check": [
+  "/home/user/Animation/episodes/e000_pilot/shots/s010/build/packages/boy_e61bc677dd91bb92/character.json: block vs derived max difference 0.000117406 deg, leg 0.261214 / 0.261214",
+  "/home/user/Animation/episodes/e000_pilot/shots/s010/build/packages/girl_94387f74d784cbf9/character.json: block vs derived max difference 5.27836e-05 deg, leg 0.234136 / 0.234136",
+  "/home/user/Animation/episodes/e900_workflow_test/shots/s010/build/packages/boy_e61bc677dd91bb92/character.json: block vs derived max difference 0.000117406 deg, leg 0.261214 / 0.261214",
+  "/home/user/Animation/episodes/e901_clip_test/shots/s010/build/packages/boy_e61bc677dd91bb92/character.json: block vs derived max difference 0.000117406 deg, leg 0.261214 / 0.261214",
+  "/home/user/Animation/episodes/e901_clip_test/shots/s010/build/packages/girl_176aa1de342e2a51/character.json: block vs derived max difference 5.27836e-05 deg, leg 0.234136 / 0.234136"
+ ],
+ "cache_key": {
+  "exporter_version": "2",
+  "runs": [
+   [
+    "built",
+    "../../../tmp/plush_t002_43her5zj/episodes/etest/shots/s001/build/packages/boy_e61bc677dd91bb92"
+   ],
+   [
+    "cached",
+    "../../../tmp/plush_t002_43her5zj/episodes/etest/shots/s001/build/packages/boy_e61bc677dd91bb92"
+   ],
+   [
+    "built",
+    "../../../tmp/plush_t002_43her5zj/episodes/etest/shots/s001/build/packages/boy_6d2c0d3573ac2e0f"
+   ]
+  ]
+ },
+ "failures": []
+}

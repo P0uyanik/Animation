@@ -1,0 +1,33 @@
+== ctest
+1/4 Test #1: plush_tests ......................   Passed   14.34 sec
+2/4 Test #2: regression_milestone01 ...........   Passed    3.15 sec
+3/4 Test #3: regression_face_neutral ..........   Passed    4.08 sec
+4/4 Test #4: regression_lineup_abc ............   Passed   11.28 sec
+100% tests passed, 0 tests failed out of 4
+2: [info] regression: rmse 0.0164 vs /home/user/Animation/tests/regression/m01_f24_320x180.png (limit 0.0300)
+3: [info] regression: rmse 0.0004 vs /home/user/Animation/tests/regression/face_neutral_200.png (limit 0.0300)
+4: [info] regression: rmse 0.0000 vs /home/user/Animation/tests/regression/lineup_abc_320x240.png (limit 0.0300)
+== plush_tests
+[doctest] test cases:    46 |    46 passed | 0 failed | 0 skipped
+[doctest] assertions: 20520 | 20520 passed | 0 failed |
+[doctest] Status: SUCCESS!
+/home/user/Animation/tests/test_clips.cpp:259: MESSAGE: synthetic skeletons: max direction difference 2.9112e-05 deg, twist 1.96161e-05 deg, vs clip 3.18326e-05 deg
+
+/home/user/Animation/tests/test_clips.cpp:377: MESSAGE: test packages boy vs girl: max role direction difference 2.21789e-05 deg
+
+/home/user/Animation/tests/test_clips.cpp:392: MESSAGE: arm clip on the base: max per-frame change 8.79096 deg, entry difference 0 deg
+
+/home/user/Animation/tests/test_clips.cpp:476: MESSAGE: reach with an arm clip on the same arm: wrist differs by 0.000127533 mm from reach alone
+
+== export_engine
+[test_export_engine] ALL PASS (8/8)
+== verify_charsys
+[verify_charsys] PASS -> /tmp/claude-0/-home-user-Animation/1d110147-d321-507b-b6a1-0715487317cd/scratchpad/verify_t002/CHARSYS_VERIFICATION.md
+== run_shot_workflow
+[test_run_shot_workflow] ALL PASS
+== clip_pipeline
+[test_clip_pipeline] ALL PASS
+== studio_roundtrip
+[info] script: group 'lashes.L' locks 4 -> 5, saved: yes
+[info] verify: group 'lashes.L' has 5 locks
+[info] verify: group 'lashes.R' has 4 locks
