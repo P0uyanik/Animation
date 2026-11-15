@@ -44,4 +44,3 @@ cmake --build build --config Release
 ```
 
 Run both from the repository root (scene paths are relative).
-
