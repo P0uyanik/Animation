@@ -11,6 +11,7 @@ characters (see `docs/` and the state files in this folder). No Blender, no clou
 | `apps/studio` | **Plush Studio**, the desktop application (Dear ImGui + OpenGL 3.3 preview) |
 | `apps/render-cli` | `plush-render`, headless renderer for stills, sequences and video |
 | `content/` | Characters (`*.character.json`) and scenes (`*.scene.json`) |
+| `docs/AUTHENTICATION_AND_TRUST.md` | Local trust boundary, job flow, and credential/token handling |
 | `tests/` | Unit and integration tests (doctest) |
 
 ## Build (Linux, verified)
