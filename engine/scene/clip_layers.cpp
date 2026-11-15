@@ -1,6 +1,6 @@
 // Clip layers of the scene evaluator (actions of type "clip", see actions.cpp and model/clip.h).
 // Order of a character's pose: keyed / generated tracks -> base clip (generated action motion added on top as a
-// delta) -> clip actions on their masks (walk keeps legs, hips and root while it walks; hand keys always win) ->
+// delta) -> emotion postures and gestures (action "emotion", tier 1) -> clip actions on their masks (walk keeps legs, hips and root while it walks; hand keys always win) ->
 // life layer -> constraints (IK, hand pose, look) -> clip finger tracks (unless a hand track owns that hand).
 #include <algorithm>
 
@@ -29,8 +29,9 @@ bool inMask(const ClipData& c, const std::string& role, bool mirror) {
 double SceneEvaluator::ClipLayer::envelope(double f) const {
   if (base) return weight;
   if (f < start || f > end) return 0;
-  double in = blendIn > 0 ? smooth01((f - start) / blendIn) : 1.0;
-  double out = blendOut > 0 && end < 1e29 ? smooth01((end - f) / blendOut) : 1.0;
+  auto ramp = [this](double x) { return linear ? std::clamp(x, 0.0, 1.0) : smooth01(x); };
+  double in = blendIn > 0 ? ramp((f - start) / blendIn) : 1.0;
+  double out = blendOut > 0 && end < 1e29 ? ramp((end - f) / blendOut) : 1.0;
   return weight * in * out;
 }
 
