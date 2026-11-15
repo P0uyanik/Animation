@@ -21,3 +21,5 @@ Supervisor: is woken by every comment or push on this PR and answers by session 
 2026-11-15T22:49Z | T-012 | started | t-012-agy-visual-target@d1c51fb | agy in D:\Animation\wt	012-agy; ffmpeg not installed here, agy told to use own video understanding
 2026-11-15T22:49Z | T-013 | started | t-013-codex-asset-library@d1c51fb | Codex in D:\Animation\wt	013-codex; not built (no toolchain)
 2026-11-15T22:53Z | T-012 | FAILED: agy quota | t-012-agy-visual-target@d1c51fb (no commit, not pushed, worktree clean) | verbatim: "RESOURCE_EXHAUSTED (code 429): Individual quota reached. Please upgrade your subscription to increase your limits. Resets in 165h43m24s." => reset ~2026-11-22T20:36Z UTC. Not retried (would fail). Supervisor: reassign T-012 (e.g. Codex) or wait. T-013 Codex still running.
+2026-11-15T22:55Z | AGY | UNAVAILABLE until ~2026-11-22T20:36Z | - | quota reset; relay will not call agy before then
+2026-11-15T22:55Z | T-012 | started (Codex) | t-012-codex-visual-target@641442e | 17 frames + 1 front ref view per character attached via -i; T-013 still running
