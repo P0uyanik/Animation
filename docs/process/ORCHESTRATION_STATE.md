@@ -1,11 +1,11 @@
 # Orchestration state (Supervisor checkpoint; update on every status change)
 
-Integration base: origin/main 9bcb039. Local relay: Claude Code session on owner PC, repository
+Integration base: origin/main (after T-003 merge, see git log). Local relay: Claude Code session on owner PC, repository
 `D:\Animation\code\Animation`, worktrees `D:\Animation\wt\`. Pushes and merges into main need owner approval.
 
 | Task | Agent | Branch | Worktree | Commit | Status | Depends |
 | --- | --- | --- | --- | --- | --- | --- |
-| T-003 body emotions | Claude Impl | t-003-body-emotions (origin) | cloud | 9f9f1f7 | verified; awaiting owner acceptance + merge approval | - |
+| T-003 body emotions | Claude Impl | t-003-body-emotions | cloud | 9f9f1f7 | merged into main e8fd5d5 | - |
 | T-004 clip file test | Codex | t-004-codex-clip-check (local only) | wt\t004-codex | 687362b | done; Supervisor review pending | - |
 | T-005 doc link checker | agy | t-005-agy-doc-links (local only) | wt\t005-agy | 0c2f178 | done; Supervisor review pending | - |
 | T-006 gaze range limit | Codex | t-006-codex-gaze-limit | wt\t006-codex | - | dispatched | (fixes T-003 eye issue) |
