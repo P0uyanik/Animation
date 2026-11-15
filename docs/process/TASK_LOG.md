@@ -12,6 +12,8 @@
 | T-005 | Markdown link checker (Antigravity) | **result accepted** 2026-11-15 | t-005-agy-doc-links (0c2f178), merged | 0 broken links |
 | T-006 | Soft gaze range limit relative to head (Codex) | **result accepted** 2026-11-15 | t-006-codex-gaze-limit (8f48548), merged | ctest 4/4, plush_tests 20,591 assertions; render check pending (test video) |
 | T-007 | Mocap licence verification (Antigravity) | **result accepted** 2026-11-15 | t-007-agy-mocap-licences (211d412), merged | ACCAD/CMU ALLOW, Mixamo/Rokoko LOCAL-ONLY; CMU quote to re-check in converter task |
+| T-008 | Exact clip retarget formula, ANIMATION_CLIPS.md §8 (Codex) | **result accepted** 2026-11-15 | t-008-codex-clip-formula (b766ecc), merged | formulas match code; open issue: fractional blend spaces differ (emotion vs clip layers) |
+| T-009 | ACCAD/CMU mocap formats + role mapping (Antigravity) | **result accepted** 2026-11-15 | t-009-agy-mocap-formats (cea7424, pushed by agy), merged | 5 UNVERIFIED points; verify against real files in converter task |
 | Boy F09 / H28 | Face and hair candidates for the boy | awaiting owner review | — | unpublished experiments |
 
 Tasks from now on are numbered T-001, T-002, …, and pass through the states in `WORKFLOW.md`.
