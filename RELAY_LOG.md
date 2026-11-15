@@ -24,3 +24,4 @@ Supervisor: is woken by every comment or push on this PR and answers by session 
 2026-11-15T22:55Z | AGY | UNAVAILABLE until ~2026-11-22T20:36Z | - | quota reset; relay will not call agy before then
 2026-11-15T22:55Z | T-012 | started (Codex) | t-012-codex-visual-target@641442e | 17 frames + 1 front ref view per character attached via -i; T-013 still running
 2026-11-15T23:00Z | T-013 | finished+pushed | t-013-codex-asset-library@e1e7d9e | Codex gpt-5.6-sol, no retry, no limit; 10 files +572/-3 (asset_library.{h,cpp}, scene.{h,cpp} props, 2 primitive assets, ASSET_LIBRARY.md, test_asset_library.cpp, both CMakeLists); NOT BUILT; all LF; no char/scene names added; relay committed (Codex sandbox index.lock denied). T-012 Codex still running.
+2026-11-15T23:03Z | T-013 fix1 | started | t-013-codex-asset-library@e1e7d9e | Codex in t013-codex, follow-up commit, no history rewrite. T-012 Codex still running.
