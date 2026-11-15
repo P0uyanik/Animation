@@ -1,0 +1,32 @@
+{
+ "format": "plush.emotion",
+ "version": 1,
+ "name": "sad",
+ "description": "Sad: sad face, slumped torso, head down. Variant 'cry': sadness + squint face, sobbing body (no tears).",
+ "face": {
+  "sad": 1.0
+ },
+ "body": {
+  "clip": "emo_sad"
+ },
+ "timing": {
+  "onset": 0.8,
+  "hold": 1.5,
+  "release": 0.8,
+  "curve": "smooth"
+ },
+ "variants": {
+  "cry": {
+   "description": "Crying (sobbing, no tears)",
+   "face": {
+    "squint": 0.6
+   },
+   "body": {
+    "clip": "emo_sob"
+   }
+  }
+ },
+ "source": "script",
+ "license": "project",
+ "attribution": "Plush Studio project (T-003, technical quality)"
+}

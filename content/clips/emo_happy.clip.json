@@ -1,0 +1,642 @@
+{
+ "format": "plush.clip",
+ "version": 1,
+ "name": "emo_happy",
+ "fps": 30.0,
+ "frame_count": 2,
+ "loop": false,
+ "source": "script",
+ "license": "project",
+ "attribution": "Plush Studio project (script-made, pipeline/clips/make_clips.py)",
+ "description": "Emotion happy: chest lifted, chin up, arms slightly open (posture: held)",
+ "mask": [
+  "spine",
+  "chest",
+  "neck",
+  "head",
+  "upperArm.L",
+  "upperArm.R",
+  "forearm.L",
+  "forearm.R",
+  "hand.L",
+  "hand.R"
+ ],
+ "mirror": {
+  "suffix": [
+   ".L",
+   ".R"
+  ],
+  "axis": "x",
+  "note": "mirrorable"
+ },
+ "contacts": [],
+ "tracks": {
+  "spine": {
+   "keys": [
+    [
+     0,
+     0.9998477,
+     -0.0174524,
+     0.0,
+     0.0
+    ],
+    [
+     1,
+     0.9998477,
+     -0.0174524,
+     0.0,
+     0.0
+    ]
+   ]
+  },
+  "chest": {
+   "keys": [
+    [
+     0,
+     0.9993908,
+     -0.0348995,
+     0.0,
+     0.0
+    ],
+    [
+     1,
+     0.9993908,
+     -0.0348995,
+     0.0,
+     0.0
+    ]
+   ]
+  },
+  "neck": {
+   "keys": [
+    [
+     0,
+     0.9998477,
+     -0.0174524,
+     0.0,
+     0.0
+    ],
+    [
+     1,
+     0.9998477,
+     -0.0174524,
+     0.0,
+     0.0
+    ]
+   ]
+  },
+  "head": {
+   "keys": [
+    [
+     0,
+     0.9990482,
+     -0.0436194,
+     0.0,
+     0.0
+    ],
+    [
+     1,
+     0.9990482,
+     -0.0436194,
+     0.0,
+     0.0
+    ]
+   ]
+  },
+  "upperArm.L": {
+   "keys": [
+    [
+     0,
+     0.8270181,
+     -0.0578308,
+     0.0390073,
+     -0.5578308
+    ],
+    [
+     1,
+     0.8270181,
+     -0.0578308,
+     0.0390073,
+     -0.5578308
+    ]
+   ]
+  },
+  "forearm.L": {
+   "keys": [
+    [
+     0,
+     0.9848077,
+     -0.0,
+     -0.1736483,
+     0.0
+    ],
+    [
+     1,
+     0.9848077,
+     -0.0,
+     -0.1736483,
+     0.0
+    ]
+   ]
+  },
+  "hand.L": {
+   "keys": [
+    [
+     0,
+     0.9993908,
+     0.0,
+     0.0,
+     -0.0348995
+    ],
+    [
+     1,
+     0.9993908,
+     0.0,
+     0.0,
+     -0.0348995
+    ]
+   ]
+  },
+  "upperArm.R": {
+   "keys": [
+    [
+     0,
+     0.8270181,
+     -0.0578308,
+     -0.0390073,
+     0.5578308
+    ],
+    [
+     1,
+     0.8270181,
+     -0.0578308,
+     -0.0390073,
+     0.5578308
+    ]
+   ]
+  },
+  "forearm.R": {
+   "keys": [
+    [
+     0,
+     0.9848077,
+     -0.0,
+     0.1736483,
+     -0.0
+    ],
+    [
+     1,
+     0.9848077,
+     -0.0,
+     0.1736483,
+     -0.0
+    ]
+   ]
+  },
+  "hand.R": {
+   "keys": [
+    [
+     0,
+     0.9993908,
+     0.0,
+     -0.0,
+     0.0348995
+    ],
+    [
+     1,
+     0.9993908,
+     0.0,
+     -0.0,
+     0.0348995
+    ]
+   ]
+  }
+ },
+ "reference_pose": {
+  "version": 1,
+  "pose": "T-pose: torso, neck and head upright, arms horizontal to the sides, palms down, legs straight down, feet forward",
+  "axes": "engine axes: metres, +Y up, the character faces +Z, the character's left is +X",
+  "rules": "Per role: 'parent' is the semantic parent role (clip rotations are local to it); the rest direction runs from the role's head to the head of 'end' (or along 'end_dir'; 'continue': the direction from the parent role's head to this head; 'end_fallback_dir_from_parent': if 'end' is missing, the parent's direction); the twist reference is 'twist_hint' (or the vector from the second 'twist_from' head to the first) made perpendicular to the direction. 'ref_dir' / 'ref_twist' are the neutral reference pose. '.L' entries are mirrored to '.R' (x -> -x). Eyes are not clip roles (gaze belongs to look).",
+  "mirror": {
+   "suffix": [
+    ".L",
+    ".R"
+   ],
+   "axis": "x"
+  },
+  "roles": {
+   "hips": {
+    "parent": null,
+    "end": "spine",
+    "twist_hint": [
+     0,
+     0,
+     1
+    ],
+    "ref_dir": [
+     0,
+     1,
+     0
+    ],
+    "ref_twist": [
+     0,
+     0,
+     1
+    ]
+   },
+   "spine": {
+    "parent": "hips",
+    "end": "chest",
+    "twist_hint": [
+     0,
+     0,
+     1
+    ],
+    "ref_dir": [
+     0,
+     1,
+     0
+    ],
+    "ref_twist": [
+     0,
+     0,
+     1
+    ]
+   },
+   "chest": {
+    "parent": "spine",
+    "end": "neck",
+    "twist_hint": [
+     0,
+     0,
+     1
+    ],
+    "ref_dir": [
+     0,
+     1,
+     0
+    ],
+    "ref_twist": [
+     0,
+     0,
+     1
+    ]
+   },
+   "neck": {
+    "parent": "chest",
+    "end": "head",
+    "twist_hint": [
+     0,
+     0,
+     1
+    ],
+    "ref_dir": [
+     0,
+     1,
+     0
+    ],
+    "ref_twist": [
+     0,
+     0,
+     1
+    ]
+   },
+   "head": {
+    "parent": "neck",
+    "end_dir": [
+     0,
+     1,
+     0
+    ],
+    "twist_hint": [
+     0,
+     0,
+     1
+    ],
+    "ref_dir": [
+     0,
+     1,
+     0
+    ],
+    "ref_twist": [
+     0,
+     0,
+     1
+    ]
+   },
+   "upperArm.L": {
+    "parent": "chest",
+    "end": "forearm.L",
+    "twist_hint": [
+     0,
+     0,
+     1
+    ],
+    "ref_dir": [
+     1,
+     0,
+     0
+    ],
+    "ref_twist": [
+     0,
+     0,
+     1
+    ]
+   },
+   "forearm.L": {
+    "parent": "upperArm.L",
+    "end": "hand.L",
+    "twist_hint": [
+     0,
+     0,
+     1
+    ],
+    "ref_dir": [
+     1,
+     0,
+     0
+    ],
+    "ref_twist": [
+     0,
+     0,
+     1
+    ]
+   },
+   "hand.L": {
+    "parent": "forearm.L",
+    "end": "f2a.L",
+    "end_fallback_dir_from_parent": true,
+    "twist_from": [
+     "f3a.L",
+     "f0a.L"
+    ],
+    "twist_hint": [
+     0,
+     0,
+     1
+    ],
+    "ref_dir": [
+     1,
+     0,
+     0
+    ],
+    "ref_twist": [
+     0,
+     0,
+     1
+    ]
+   },
+   "thumbA.L": {
+    "parent": "hand.L",
+    "end": "thumbB.L",
+    "twist_hint": [
+     0,
+     1,
+     0
+    ],
+    "ref_dir": [
+     0.7071067811865476,
+     0,
+     0.7071067811865476
+    ],
+    "ref_twist": [
+     0,
+     1,
+     0
+    ]
+   },
+   "thumbB.L": {
+    "parent": "thumbA.L",
+    "continue": true,
+    "twist_hint": [
+     0,
+     1,
+     0
+    ],
+    "ref_dir": [
+     0.7071067811865476,
+     0,
+     0.7071067811865476
+    ],
+    "ref_twist": [
+     0,
+     1,
+     0
+    ]
+   },
+   "thigh.L": {
+    "parent": "hips",
+    "end": "shin.L",
+    "twist_hint": [
+     0,
+     0,
+     1
+    ],
+    "ref_dir": [
+     0,
+     -1,
+     0
+    ],
+    "ref_twist": [
+     0,
+     0,
+     1
+    ]
+   },
+   "shin.L": {
+    "parent": "thigh.L",
+    "end": "foot.L",
+    "twist_hint": [
+     0,
+     0,
+     1
+    ],
+    "ref_dir": [
+     0,
+     -1,
+     0
+    ],
+    "ref_twist": [
+     0,
+     0,
+     1
+    ]
+   },
+   "foot.L": {
+    "parent": "shin.L",
+    "end_dir": [
+     0,
+     0,
+     1
+    ],
+    "twist_hint": [
+     0,
+     1,
+     0
+    ],
+    "ref_dir": [
+     0,
+     0,
+     1
+    ],
+    "ref_twist": [
+     0,
+     1,
+     0
+    ]
+   },
+   "f0a.L": {
+    "parent": "hand.L",
+    "end": "f0b.L",
+    "twist_hint": [
+     0,
+     0,
+     1
+    ],
+    "ref_dir": [
+     1,
+     0,
+     0
+    ],
+    "ref_twist": [
+     0,
+     0,
+     1
+    ]
+   },
+   "f0b.L": {
+    "parent": "f0a.L",
+    "continue": true,
+    "twist_hint": [
+     0,
+     0,
+     1
+    ],
+    "ref_dir": [
+     1,
+     0,
+     0
+    ],
+    "ref_twist": [
+     0,
+     0,
+     1
+    ]
+   },
+   "f1a.L": {
+    "parent": "hand.L",
+    "end": "f1b.L",
+    "twist_hint": [
+     0,
+     0,
+     1
+    ],
+    "ref_dir": [
+     1,
+     0,
+     0
+    ],
+    "ref_twist": [
+     0,
+     0,
+     1
+    ]
+   },
+   "f1b.L": {
+    "parent": "f1a.L",
+    "continue": true,
+    "twist_hint": [
+     0,
+     0,
+     1
+    ],
+    "ref_dir": [
+     1,
+     0,
+     0
+    ],
+    "ref_twist": [
+     0,
+     0,
+     1
+    ]
+   },
+   "f2a.L": {
+    "parent": "hand.L",
+    "end": "f2b.L",
+    "twist_hint": [
+     0,
+     0,
+     1
+    ],
+    "ref_dir": [
+     1,
+     0,
+     0
+    ],
+    "ref_twist": [
+     0,
+     0,
+     1
+    ]
+   },
+   "f2b.L": {
+    "parent": "f2a.L",
+    "continue": true,
+    "twist_hint": [
+     0,
+     0,
+     1
+    ],
+    "ref_dir": [
+     1,
+     0,
+     0
+    ],
+    "ref_twist": [
+     0,
+     0,
+     1
+    ]
+   },
+   "f3a.L": {
+    "parent": "hand.L",
+    "end": "f3b.L",
+    "twist_hint": [
+     0,
+     0,
+     1
+    ],
+    "ref_dir": [
+     1,
+     0,
+     0
+    ],
+    "ref_twist": [
+     0,
+     0,
+     1
+    ]
+   },
+   "f3b.L": {
+    "parent": "f3a.L",
+    "continue": true,
+    "twist_hint": [
+     0,
+     0,
+     1
+    ],
+    "ref_dir": [
+     1,
+     0,
+     0
+    ],
+    "ref_twist": [
+     0,
+     0,
+     1
+    ]
+   }
+  }
+ }
+}

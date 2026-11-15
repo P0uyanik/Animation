@@ -3,6 +3,7 @@
 // delta) -> emotion postures and gestures (action "emotion", tier 1) -> clip actions on their masks (walk keeps legs, hips and root while it walks; hand keys always win) ->
 // life layer -> constraints (IK, hand pose, look) -> clip finger tracks (unless a hand track owns that hand).
 #include <algorithm>
+#include <map>
 
 #include "scene/scene.h"
 
@@ -89,10 +90,32 @@ void SceneEvaluator::applyClips(size_t c, double frame, Pose& pose, float& yawOf
       yawOffset += s.heading * wr;
       continue;
     }
-    applyClipSample(sk, L.binding, s, pose, [&](const std::string& role) {
+    auto weightOf = [&](const std::string& role) {
       if (isFingerRole(role) || handKeyed(role) || !inMask(*L.clip, role, L.mirror)) return 0.0f;
       return float(isWalkRole(role) ? env * (1 - walk) : env);
-    });
+    };
+    if (L.tier == 1) {
+      // Emotion layers blend in the clip's own (semantic, reference-space) rotations: each driven role's local
+      // rotation goes from the underlying one to the clip's by the weight, so intensity k gives k x the deviation
+      // from the underlying pose on every role (also on roles whose engine parent is not their semantic parent).
+      ClipSample t = s;
+      std::map<std::string, float> on;
+      for (const auto& r : L.binding.roles) {
+        auto it = t.local.find(r.name);
+        if (r.bone < 0 || it == t.local.end()) continue;
+        const float w = weightOf(r.name);
+        if (w <= 0) continue;
+        const quat Gp = r.parentRole >= 0 && L.binding.roles[size_t(r.parentRole)].bone >= 0
+                            ? globalRotation(sk, pose, L.binding.roles[size_t(r.parentRole)].bone) : quat(1, 0, 0, 0);
+        const quat Ap = r.parentRole >= 0 ? L.binding.roles[size_t(r.parentRole)].A : quat(1, 0, 0, 0);
+        const quat under = glm::normalize(Ap * glm::inverse(Gp) * globalRotation(sk, pose, r.bone) * glm::inverse(r.A));
+        it->second = w >= 1.0f ? it->second : glm::normalize(glm::slerp(under, it->second, w));
+        on[r.name] = 1.0f;
+      }
+      applyClipSample(sk, L.binding, t, pose, [&](const std::string& role) { return on.count(role) ? 1.0f : 0.0f; });
+      continue;
+    }
+    applyClipSample(sk, L.binding, s, pose, weightOf);
     if (L.clip->hasRoot() || L.clip->hasHeading()) {
       const float wr = float(env * (1 - walk));
       pose.rootOffset = glm::mix(pose.rootOffset, s.root * L.binding.legLength, wr);

@@ -1,0 +1,22 @@
+{
+ "format": "plush.emotion",
+ "version": 1,
+ "name": "afraid",
+ "description": "Afraid: worried face with wide eyes, hunched, arms guarding, slight tremble.",
+ "face": {
+  "Worried": 0.7,
+  "WideOpen": 0.6
+ },
+ "body": {
+  "clip": "emo_afraid"
+ },
+ "timing": {
+  "onset": 0.25,
+  "hold": 1.5,
+  "release": 0.7,
+  "curve": "smooth"
+ },
+ "source": "script",
+ "license": "project",
+ "attribution": "Plush Studio project (T-003, technical quality)"
+}

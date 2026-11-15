@@ -1,0 +1,22 @@
+{
+ "format": "plush.emotion",
+ "version": 1,
+ "name": "angry",
+ "description": "Angry: angry face with lowered brows, forward lean, tense bent arms.",
+ "face": {
+  "angry": 0.9,
+  "browDown": 0.5
+ },
+ "body": {
+  "clip": "emo_angry"
+ },
+ "timing": {
+  "onset": 0.3,
+  "hold": 1.5,
+  "release": 0.6,
+  "curve": "smooth"
+ },
+ "source": "script",
+ "license": "project",
+ "attribution": "Plush Studio project (T-003, technical quality)"
+}

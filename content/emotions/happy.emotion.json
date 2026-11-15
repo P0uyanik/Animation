@@ -1,0 +1,38 @@
+{
+ "format": "plush.emotion",
+ "version": 1,
+ "name": "happy",
+ "description": "Happy: smile, chest lifted, chin up. Variant 'laugh': laughing face with bouncing chest and head.",
+ "face": {
+  "smile": 1.0
+ },
+ "body": {
+  "clip": "emo_happy"
+ },
+ "timing": {
+  "onset": 0.4,
+  "hold": 1.5,
+  "release": 0.6,
+  "curve": "smooth"
+ },
+ "variants": {
+  "laugh": {
+   "description": "Laughter",
+   "face": {
+    "smile": null,
+    "laugh": 1.0,
+    "squint": 0.3
+   },
+   "body": {
+    "clip": "emo_laugh"
+   },
+   "timing": {
+    "onset": 0.3,
+    "release": 1.0
+   }
+  }
+ },
+ "source": "script",
+ "license": "project",
+ "attribution": "Plush Studio project (T-003, technical quality)"
+}
