@@ -16,3 +16,4 @@ Supervisor: is woken by every comment or push on this PR and answers by session 
 2026-11-15T22:32Z | CHANNEL | waiting on owner | - | gh 2.104.0 installed by relay (official zip, sha256 OK); gh auth login device flow started, owner must enter code at github.com/login/device. Owner-only step; nothing Supervisor can do.
 2026-11-15T22:34Z | CHANNEL | test | relay-channel | Supervisor test of relay-notify Action
 2026-11-15T22:35Z | CHANNEL | ok | relay-channel | Ack: using Action channel, gh device flow cancelled. T-008 (Codex) and T-009 (agy) still running.
+2026-11-15T22:36Z | T-008 | finished+pushed | t-008-codex-clip-formula@b766ecc | Codex gpt-5.6-sol, no retry, no rate limit; 1 file +66/-13 (docs/ANIMATION_CLIPS.md only); 22 file:line cites all in range; 1 Open issue (fractional blending spaces); relay fixed sandbox index artifact
