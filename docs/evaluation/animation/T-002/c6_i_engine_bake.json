@@ -1,0 +1,7 @@
+{
+ "scene": "main resolved s010 scene (packages boy_21d65f461b03fcff, girl_b5f24266a9d124c0), frames 1-120",
+ "main_engine_sha256": "aa01af3248a113a5d6a25c1757b28843ba05ecdcff2c78948f10d0aa96a6953a",
+ "branch_engine_sha256": "aa01af3248a113a5d6a25c1757b28843ba05ecdcff2c78948f10d0aa96a6953a",
+ "byte_identical": true,
+ "bytes": 4332465
+}

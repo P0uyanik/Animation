@@ -1,5 +1,33 @@
 # Current status (2026-11-15)
 
+**Latest: T-002, clip foundation (Acting Foundation stage A): implemented and tested; awaiting Supervisor and
+owner review. Nothing is approved.** Details: `docs/ANIMATION_CLIPS.md`,
+`docs/milestones/2026-11-15_T-002_clip_foundation.md`.
+- **Implemented:**
+  - clip format `plush.clip/1` (`content/clips/`);
+  - a shared T-pose reference pose in the rig profile;
+  - generated retarget data in every package (`export_engine.py` version 2), derived from the skeleton for older
+    packages;
+  - one engine retarget algorithm;
+  - a `clip` action with layering (base clip; walk keeps legs, hips and root; IK and look keep priority; hand keys
+    win);
+  - a neutral authoring mannequin and Blender clip exporter;
+  - clips: idle_relaxed, wave, point, sit_down, stand_up, plus dense_test (60 fps);
+  - test shot `episodes/e901_clip_test/shots/s010`.
+- **Tested:**
+  - C2 boy vs girl ≤ 0.95° (whole-body clips 0.0000°); synthetic skeletons 0.00003°;
+  - C3 engine vs Blender mannequin ≤ 0.047°;
+  - C4: all blend, layering, loop and entry/exit limits met;
+  - C6: s010 bake byte-identical with `main` (same packages); production bake differs only in package paths;
+    0 differing pixels;
+  - C7: the e901 shot through `run_shot.py` and Studio (contact sheet in `docs/evaluation/animation/T-002/`);
+  - `ctest` 4/4 (OIDN 2.3.3), `plush_tests`, exporter, `verify_charsys`, workflow tests, Studio round trip.
+- **Limits:**
+  - the clips are mechanical (technical validation only);
+  - arm and thigh pivots of the Rigify packages do not follow torso bends;
+  - slight foot sliding is possible while sitting;
+  - box props are static in the bake.
+
 **Latest: T-001, Plush Studio drives the shot pipeline (implemented and tested; accepted by the owner on 2026-11-15).**
 Details: `docs/milestones/2026-11-15_T-001_studio_shot_pipeline.md`, `docs/PRODUCTION_PIPELINE.md`.
 - **Implemented:**

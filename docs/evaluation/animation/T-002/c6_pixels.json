@@ -1,0 +1,62 @@
+{
+ "e000_pilot/frame_0005": {
+  "size": [
+   320,
+   180
+  ],
+  "max_abs_diff": 1,
+  "differing_pixels": 8
+ },
+ "e000_pilot/frame_0006": {
+  "size": [
+   320,
+   180
+  ],
+  "max_abs_diff": 1,
+  "differing_pixels": 7
+ },
+ "e000_pilot/frame_0007": {
+  "size": [
+   320,
+   180
+  ],
+  "max_abs_diff": 1,
+  "differing_pixels": 54
+ },
+ "e900_workflow_test/frame_0020": {
+  "size": [
+   320,
+   180
+  ],
+  "max_abs_diff": 0,
+  "differing_pixels": 0
+ },
+ "e900_workflow_test/frame_0021": {
+  "size": [
+   320,
+   180
+  ],
+  "max_abs_diff": 0,
+  "differing_pixels": 0
+ },
+ "e900_workflow_test/frame_0022": {
+  "size": [
+   320,
+   180
+  ],
+  "max_abs_diff": 0,
+  "differing_pixels": 0
+ },
+ "e000_pilot/frame_0005 (same girl master)": {
+  "max_abs_diff": 0,
+  "differing_pixels": 0
+ },
+ "e000_pilot/frame_0006 (same girl master)": {
+  "max_abs_diff": 0,
+  "differing_pixels": 0
+ },
+ "e000_pilot/frame_0007 (same girl master)": {
+  "max_abs_diff": 0,
+  "differing_pixels": 0
+ }
+}

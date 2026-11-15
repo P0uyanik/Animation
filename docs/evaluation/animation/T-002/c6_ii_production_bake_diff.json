@@ -1,0 +1,14 @@
+{
+ "differing_fields": [
+  {
+   "path": "/characters[0]/package",
+   "main": "/home/user/Animation/episodes/e000_pilot/shots/s010/build/packages/boy_21d65f461b03fcff/character.json",
+   "branch": "/home/user/Animation/episodes/e000_pilot/shots/s010/build/packages/boy_e61bc677dd91bb92/character.json"
+  },
+  {
+   "path": "/characters[1]/package",
+   "main": "/home/user/Animation/episodes/e000_pilot/shots/s010/build/packages/girl_b5f24266a9d124c0/character.json",
+   "branch": "/home/user/Animation/episodes/e000_pilot/shots/s010/build/packages/girl_94387f74d784cbf9/character.json"
+  }
+ ]
+}

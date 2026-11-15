@@ -1,0 +1,24 @@
+{
+ "format": "plush.mannequin",
+ "version": 1,
+ "id": "neutral_mannequin",
+ "description": "Neutral authoring mannequin for body animation clips (shared asset, not a character): neutral proportions of a small plush figure, no face, hair or clothing. Built with body_generic/1 and the shared Rigify profile, then converted to a plain FK deform rig with the reference-pose role hierarchy (pipeline/clips/build_mannequin.py).",
+ "body": {
+  "generator": "body_generic/1",
+  "height_m": 1.0,
+  "params": {
+   "head": {"centre_z": 0.835, "half_width": 0.135, "half_depth": 0.13, "half_height": 0.145, "chin_taper": 0.3, "forward": 0.0},
+   "neck": {"base_z": 0.6, "top_z": 0.7, "radius": 0.045},
+   "torso": {"levels": [[0.27, 0.09, 0.064, 0.064], [0.31, 0.1, 0.068, 0.068], [0.38, 0.094, 0.065, 0.063], [0.45, 0.092, 0.066, 0.062], [0.53, 0.098, 0.068, 0.063], [0.59, 0.094, 0.063, 0.06], [0.63, 0.063, 0.051, 0.051]]},
+   "shoulder": {"z": 0.6, "joint_x": 0.103, "clavicle_x": 0.021},
+   "arm": {"angle_deg": 45, "upper_len": 0.11, "fore_len": 0.095, "radii": [0.03, 0.025, 0.021]},
+   "hand": {"palm_len": 0.042, "palm_half_width": 0.024, "palm_half_thick": 0.012, "finger_len": [0.021, 0.024, 0.023, 0.019], "finger_radius": 0.008, "thumb_len": 0.022, "thumb_radius": 0.0088, "finger_curl": 0.12},
+   "leg": {"hip_x": 0.055, "hip_z": 0.31, "knee_z": 0.19, "ankle_z": 0.062, "radii": [0.045, 0.041, 0.035]},
+   "foot": {"length": 0.11, "half_width": 0.036, "height": 0.05, "heel_back": 0.03},
+   "eyes": {"x": 0.058, "z": 0.8, "y": -0.105},
+   "voxel": 0.004
+  }
+ },
+ "rig": {"weight_rules": {"skin": {"deny_prefixes": ["DEF-f_", "DEF-thumb", "DEF-palm", "DEF-eye"]}, "hand": {"sided": true, "allow_prefixes": ["DEF-forearm", "DEF-hand", "DEF-f_", "DEF-thumb", "DEF-palm"]}}, "weight_smooth": {"skin": {"factor": 0.5, "repeat": 6}}},
+ "skin_srgb": [0.72, 0.72, 0.74]
+}

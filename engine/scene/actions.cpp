@@ -17,6 +17,13 @@
 //              footsteps (foot IK), pelvis bob and sway, counter-swinging arms
 //   touch      {character, hand, start, contact?, end?, target:[x,y,z]}  points and touches a spot with the index
 //              fingertip (ripple when the spot is a water surface)
+//   clip       {character, clip:<library name> | file:<path>, start?, end?, speed=1, weight=1, blendIn=6,
+//               blendOut=6, loop?, mirror=false, base=false}  a body animation clip (plush.clip/1, model/clip.h)
+//              retargeted to the character. base:true = the character's base layer for the whole shot (replaces
+//              the default pose; generated action motion such as walk arm swing is added on top). Other clips
+//              override their body-part mask with blending; walk keeps the legs, hips and root while walking;
+//              IK (reach, touch, foot plants) and look are applied afterwards and keep priority. Library clips are
+//              found in content/clips/<name>.clip.json above the scene file.
 //
 // Director (scene "director": {minShot?, closeFocal?, closeFStop?, mediumFocal?, mediumFStop?}): plans camera shots
 // from the action beats — establishing wide (the scene camera), medium on a character starting an action, insert
@@ -202,6 +209,8 @@ void planShots(const SceneEvaluator& ev, Clip& gen, const std::vector<Beat>& bea
 Result<void> SceneEvaluator::compileActions() {
   auto gen = std::make_shared<Clip>();
   warnings_.clear();
+  clipLayers_.assign(characters_.size(), {});
+  walkSpans_.assign(characters_.size(), {});
   scene_.animation.generated = gen;  // later actions already see earlier ones (a reach after a walk)
   // Object fields that actions write are reset to what the scene author wrote, so compiling twice is harmless.
   if (authoredObjects_.size() == scene_.objects.size())
@@ -539,11 +548,63 @@ Result<void> SceneEvaluator::compileActions() {
       }
       key(*gen, root, end + 2, vec3(0));
       beats.push_back({Beat::Kind::Walk, c, -1, start, start, 0, 0, 0, end, pe, pe});
+      walkSpans_[size_t(c)].push_back({start, end + 6});
       for (char s : {'L', 'R'}) {
         const std::string t = prefix + "ik.foot." + s;
         key(*gen, t + ".weight", end + 2, vec3(1));
         key(*gen, t + ".weight", end + 6, vec3(0));
       }
+      continue;
+    }
+    if (type == "clip") {
+      std::filesystem::path file;
+      const std::string name = str(a, "clip");
+      if (has(a, "file")) {
+        file = scene_.path.parent_path() / str(a, "file");
+      } else {
+        if (name.empty()) return fail("clip: give 'clip' (library name) or 'file'");
+        for (auto d = std::filesystem::absolute(scene_.path).parent_path();; d = d.parent_path()) {
+          auto cand = d / "content" / "clips" / (name + ".clip.json");
+          if (std::filesystem::exists(cand)) {
+            file = cand;
+            break;
+          }
+          if (d == d.parent_path()) break;
+        }
+        if (file.empty()) return fail(std::format("clip: '{}' not found in content/clips above {}", name, scene_.path.string()));
+      }
+      const std::string key = std::filesystem::weakly_canonical(file).string();
+      if (!clipCache_.count(key)) {
+        auto cl = loadClip(file);
+        if (!cl) return fail(cl.error().message);
+        clipCache_[key] = std::make_shared<const ClipData>(std::move(*cl));
+      }
+      ClipLayer L;
+      L.clip = clipCache_[key];
+      L.base = a.value("base", false);
+      L.binding = bindClip(asset.skeleton, L.clip->reference, retargetData(size_t(c), L.clip->reference));
+      L.start = has(a, "start") || has(a, "frame") ? start : double(scene_.frameStart);
+      L.speed = num(a, "speed", 1.0);
+      if (L.speed <= 0) return fail("clip: speed must be > 0");
+      L.weight = num(a, "weight", 1.0);
+      L.blendIn = num(a, "blendIn", L.base ? 0.0 : 6.0);
+      L.blendOut = num(a, "blendOut", L.base ? 0.0 : 6.0);
+      L.mirror = a.value("mirror", false);
+      const bool loop = a.contains("loop") ? a.value("loop", false) : L.clip->loop;
+      if (loop != L.clip->loop) {  // a per-action loop override plays a copy of the clip with that setting
+        auto copy = std::make_shared<ClipData>(*L.clip);
+        copy->loop = loop;
+        L.clip = copy;
+      }
+      const double sceneLen = L.clip->duration() * scene_.rate.fps() / L.speed;
+      L.end = has(a, "end") ? num(a, "end", 0) : (L.base || loop) ? 1e30 : L.start + sceneLen;
+      if (L.end <= L.start) return fail("clip: end must be after start");
+      for (const auto& r : L.binding.roles)
+        if (r.bone < 0 && L.clip->tracks.count(r.name) && r.name.rfind("eye.", 0) != 0)
+          warnings_.push_back(std::format("clip '{}': character '{}' has no role '{}' (not played)", L.clip->name, who, r.name));
+      clipLayers_[size_t(c)].push_back(std::move(L));
+      std::stable_sort(clipLayers_[size_t(c)].begin(), clipLayers_[size_t(c)].end(),
+                       [](const ClipLayer& x, const ClipLayer& y) { return x.base > y.base; });  // base first, then start order
       continue;
     }
     return fail(std::format("unknown action type '{}'", type));

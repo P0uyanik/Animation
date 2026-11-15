@@ -26,6 +26,11 @@ from mathutils import Vector
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 FORMAT, VERSION = "plush.imported_character", 1
+# Version of this exporter's output. run_shot.py keys its package cache on it, so packages are re-exported when the
+# exporter changes. 2: adds the "retarget" block (generated clip retarget data, docs/ANIMATION_CLIPS.md).
+EXPORTER_VERSION = "2"
+sys.path.insert(0, os.path.join(HERE, "..", "clips"))
+import retarget as RT  # noqa: E402  (shared clip retargeting rules; pure Python)
 
 
 def to_engine(v):
@@ -248,6 +253,12 @@ def main():
                                                      "axis": [round(float(v), 6) for v in to_engine(np.array([ax]))[0]],
                                                      "degrees": float(e["degrees"])})
     blink_timing = json.loads(root.get("ps_blink_timing", "{}") or "{}")
+    # Clip retarget data, generated from the role pivots with the profile's reference-pose rules (the engine derives
+    # the same numbers from the skeleton for packages without this block).
+    retarget = None
+    if "reference_pose" in prof:
+        retarget = RT.derive({s["name"]: s["head"] for s in skel}, RT.reference_pose(prof["reference_pose"]))
+        retarget["profile"] = prof["profile"]
     man = {"format": FORMAT, "version": VERSION, "name": root.get("ps_character_id", root.name),
            "source": {"blend": os.path.basename(a.blend), "blend_sha256": src_sha, "spec_sha256": root.get("ps_spec_sha256"),
                       "spec_version": root.get("ps_spec_version"), "blender": bpy.app.version_string},
@@ -266,6 +277,7 @@ def main():
            "capabilities": capabilities(present, bool(morphs), behaviours,
                                         {k for k, v in expr_map.items() if v in {m["name"] for m in morphs}}),
            **({"walk": prof["walk"]} if "walk" in prof else {}), **({"hands": prof["hands"]} if "hands" in prof else {}),
+           **({"retarget": retarget} if retarget else {}), "exporter_version": EXPORTER_VERSION,
            "discarded": prof.get("discarded", []) + ([f"meshes without armature (not exported): {skipped}"] if skipped else []),
            "files": {"geometry.bin": {"bytes": len(blob), "sha256": hashlib.sha256(bytes(blob)).hexdigest()}}}
     json.dump(man, open(os.path.join(out, "character.json"), "w"), indent=1)
