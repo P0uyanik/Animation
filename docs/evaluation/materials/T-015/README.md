@@ -1,53 +1,115 @@
 # T-015 shared plush material evidence
 
-Status: implementation and non-Blender preparation are complete. Blender was
-not available on this machine, so no render or measured metric has been
-fabricated. The commands below create the pending evidence with the current
-builder and measurement code.
+Status: implementation and compatibility checks are complete. The frozen boy
+1.0.0 path and all requested Blender-backed tests pass. The measured swatch
+target does **not** pass: only 2/10 presets pass all applicable material rows
+(7/27 applicable metric checks). This file records that result rather than
+retuning the acceptance ranges or overstating the evidence.
 
-## Prepared in this change
+No version was published or approved, and no pointer was changed.
 
-- Ten validated JSON presets and one Cycles node-graph builder.
-- Explicit girl opt-ins for `skin-felt`, a `buttons/plastic` glasses frame,
-  and `glasses/acrylic` lenses.
-- `legacy_materials.override.json`, which sets `materials.assignments` to null
-  and produces the visual "before" build without editing the character spec.
-- A 640 px-wide sphere/patch swatch renderer using the existing neutral studio
-  light from `pipeline/blender/compare_harness.py`.
-- A metric script that writes actual fuzz RMS, sheen P90/P50, saturation, and
-  per-range pass/fail results to `metrics.json` only after a swatch exists.
+## Evidence inspected
 
-The frozen boy 1.0.0 directory and boy spec were not edited. The legacy H31
-felt-hair function now delegates to a node-for-node copy in the shared builder;
-characters without `materials.assignments` remain on their legacy paths.
+| File | Result |
+| --- | --- |
+| `swatch_sheet.png` | 480 x 5760, ten sphere/patch pairs, Cycles CPU, 8 samples, OIDN, AgX, exposure 0. The clear acrylic is intentionally low contrast. |
+| `swatches.json` | Blender 5.3.0; 100 x 100 px flat patch ROIs; the 0.256 m reference spans about 205 px, above the VISUAL_TARGET `H >= 180 px` validity floor. Render 113.10 s, total 121.46 s. |
+| `metrics.json` | Hashes the final sheet and metadata. Aggregate `pass` is false. |
+| `girl_head_before.png` | 480 x 480 legacy/null-assignment build; framing and geometry are clean. |
+| `girl_head_after.png` | 480 x 480 opt-in build; framing matches before and the visible change is material-only. Decoded before/after difference: max 73/255, mean 0.870290/255. |
 
-## Checks completed without Blender
+The first metric run was invalid for two independent reasons and was replaced:
 
-- PASS: `presets.json`, the girl spec, and the legacy override parse as JSON.
-- PASS: PowerShell structural checks found exactly the ten requested presets,
-  all silhouette layers disabled by default, all three metric keys per preset,
-  only the three intended girl assignments, and no boy assignment.
-- BLOCKED: `py -3 pipeline/charsys/tests/test_material_presets.py`. The Windows
-  launcher is present at `C:\WINDOWS\py.exe`, but `py --list-paths` reports
-  `No installed Pythons found!`; `py -3` exits 1 on this host.
+1. Blender 5.3 exposes loaded PNG samples as display-sRGB, but the measurement
+   code applied the sRGB transfer function a second time. That suppressed
+   saturation and local contrast.
+2. The original two-column 480 x 720 sheet produced 60 x 32 px measurement
+   crops and projected the physical reference below the `H >= 180 px` floor.
 
-## Pending Blender steps
+`measure_swatches.py` now reads the display samples directly. The sheet uses a
+single stacked column at 480 px wide, yielding square 100 px patch crops and a
+reference projection of about 205 px. No extreme shader retuning was retained:
+experiments that forced numerical passes produced visibly wrong mottled felt,
+grid-like yarn, and over-fuzzy knit.
 
-Run from the repository root in PowerShell. Set `$Blender` to the installed
-executable once Blender and a Python runtime are available.
+## Measured material result
+
+Values are `fuzz RMS / sheen P90:P50 / saturation retention %`. A dash means
+the preset declares that metric not applicable.
+
+| Preset | Measured | Applicable checks | Preset result |
+| --- | --- | --- | --- |
+| felt | 3.0102 / 1.0368 / 51.7296 | PASS / FAIL / FAIL | FAIL |
+| wool yarn | 0.4558 / 1.0031 / 44.1630 | FAIL / FAIL / FAIL | FAIL |
+| fleece | 0.3704 / 1.0019 / 32.4399 | FAIL / FAIL / FAIL | FAIL |
+| cotton knit | 0.4140 / 1.0018 / 40.8362 | FAIL / FAIL / FAIL | FAIL |
+| woven cotton | 0.5105 / 1.0028 / 46.8019 | FAIL / FAIL / FAIL | FAIL |
+| denim | 1.4643 / 1.0116 / 75.2242 | FAIL / FAIL / PASS | FAIL |
+| felt hair | 0.7142 / 1.0080 / 55.6809 | FAIL / FAIL / FAIL | FAIL |
+| buttons/plastic | 0.3805 / - / 99.2318 | PASS / - / PASS | PASS |
+| glasses/acrylic | 0.3561 / - / 5.0764 | PASS / - / - | PASS |
+| skin-felt | 0.3941 / 1.0030 / 86.3248 | PASS / FAIL / PASS | FAIL |
+
+The output therefore remains useful as measured evidence, but it does not meet
+the reusable VISUAL_TARGET material pass rule. The fibrous cloth presets need
+a follow-up shader/measurement calibration task; that should not be hidden in
+T-015 by weakening targets.
+
+## Frozen-character compatibility
+
+The comparison used commit `573a065989e3f285ad66019f055b3c3d51f24bc8`
+and the frozen file
+`assets/characters/boy_yellow_hoodie/versions/1.0.0/boy_yellow_hoodie_master.blend`.
+Both the origin tool and current tool rendered `canon29_front` at 480 x 720,
+Cycles CPU, 8 samples, and OIDN. Comparing decoded RGBA channel bytes produced:
+
+| Measurement | Result |
+| --- | ---: |
+| maximum absolute pixel difference | 0/255 |
+| mean absolute pixel difference | 0/255 |
+| changed RGBA channel samples | 0 of 1,382,400 |
+
+This is an exact pixel pass. `verify_charsys.py` independently rebuilt the boy,
+matched the frozen v6 geometry (`worst_numeric_m: 0.0`, no missing/extra/count
+mismatches), passed store tests, and passed reuse against version 1.0.0.
+
+The WIP change to `pipeline/blender/boy_pilot/preview.py` was reverted. The file
+now matches commit 573a065 exactly; evidence sizing does not alter a shared
+character preview tool.
+
+## Requested checks
+
+The configured Python 3.14 executable was not executable in the managed
+workspace. Plain-Python drivers were run with Blender's Python 3.13.13 and the
+requested Blender 5.3.0 executable. `face_system_test.py` requires Pillow only
+for contact-sheet assembly; this host used a workspace-local Blender image shim
+for that presentation step without changing the test or its assertions.
+
+| Check | Result | Detail |
+| --- | --- | --- |
+| `verify_charsys.py --blender ...` | PASS | build, fingerprint, v6 geometry, store, and reuse all pass |
+| `test_export_engine.py --blender ...` | PASS | 8/8 checks |
+| `face_test.py` | PASS | exited 0; neutral, Blink, Smile, JawOpen metrics and eight renders written |
+| `face_system_test.py` | PASS | exited 0; controls, expressions, blink progression, gaze, overlap, and contact-sheet stages completed |
+| `test_material_presets.py` | PASS | 28/28 checks |
+| frozen boy 1.0.0 pixel identity vs 573a065 | PASS | max 0, mean 0, zero changed channels |
+| VISUAL_TARGET swatch metrics | FAIL | 2/10 presets; 7/27 applicable metric rows |
+
+Generated check outputs are under `renders/materials/T-015/checks/` and the
+compatibility renders are under `renders/materials/T-015/byte_identity/`.
+
+## Reproduction
 
 ```powershell
-$Blender = 'C:\path\to\blender.exe'
-$GirlSpec = 'assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.spec.json'
+$Blender = 'D:/Animation/tools/blender-5.3/blender.exe'
+$Python = 'D:/Animation/tools/blender-5.3/5.3/python/bin/python.exe'
 $Evidence = 'docs/evaluation/materials/T-015'
 $BuildRoot = 'renders/materials/T-015'
-
-py -3 pipeline/charsys/tests/test_material_presets.py
 
 & $Blender -b --factory-startup -P pipeline/charsys/materials/render_swatches.py -- `
   --out "$Evidence/swatch_sheet.png" `
   --metadata "$Evidence/swatches.json" `
-  --width 640 --height 960 --samples 64 `
+  --width 480 --height 5760 --samples 8 `
   --save-blend "$BuildRoot/swatch_scene.blend"
 
 & $Blender -b --factory-startup -P pipeline/charsys/materials/measure_swatches.py -- `
@@ -55,64 +117,11 @@ py -3 pipeline/charsys/tests/test_material_presets.py
   --metadata "$Evidence/swatches.json" `
   --out "$Evidence/metrics.json"
 
-& $Blender -b --factory-startup -P pipeline/charsys/build_character.py -- `
-  --spec $GirlSpec --override "$Evidence/legacy_materials.override.json" `
-  --out "$BuildRoot/girl_before" --no-glb --no-compare
-
-& $Blender -b --factory-startup -P pipeline/charsys/build_character.py -- `
-  --spec $GirlSpec --out "$BuildRoot/girl_after" --no-compare
-
-& $Blender -b --factory-startup -P pipeline/blender/boy_pilot/preview.py -- `
-  "$BuildRoot/girl_before/girl_auburn_bun_glasses_master.blend" `
-  "$BuildRoot/preview_before" 64 face_front
-
-& $Blender -b --factory-startup -P pipeline/blender/boy_pilot/preview.py -- `
-  "$BuildRoot/girl_after/girl_auburn_bun_glasses_master.blend" `
-  "$BuildRoot/preview_after" 64 face_front
-
-Copy-Item "$BuildRoot/preview_before/face_front.png" "$Evidence/girl_head_before.png"
-Copy-Item "$BuildRoot/preview_after/face_front.png" "$Evidence/girl_head_after.png"
+& $Python pipeline/charsys/verify_charsys.py `
+  --blender $Blender --out "$BuildRoot/checks/verify_charsys-new"
+& $Python pipeline/charsys/tests/test_export_engine.py --blender $Blender
+& $Python pipeline/charsys/tests/test_material_presets.py
 ```
 
-Expected evidence after those commands:
-
-| File | Purpose |
-| --- | --- |
-| `swatch_sheet.png` | 640 px-wide sphere plus fabric patch for every preset |
-| `swatches.json` | Render metadata, timing budget, and exact patch ROIs |
-| `metrics.json` | Measured VISUAL_TARGET material metrics and pass/fail |
-| `girl_head_before.png` | Girl head using the null-assignment legacy override |
-| `girl_head_after.png` | Girl head using the T-015 opt-ins |
-
-Run the requested checks after the builds. `verify_charsys.py` requires a new
-or empty output directory.
-
-```powershell
-py -3 pipeline/charsys/verify_charsys.py --blender "$Blender" --out "$BuildRoot/verify_charsys"
-py -3 pipeline/charsys/tests/test_export_engine.py --blender "$Blender"
-
-& $Blender -b --factory-startup -P pipeline/charsys/tests/face_test.py -- `
-  "$BuildRoot/girl_after/girl_auburn_bun_glasses_master.blend" `
-  "$BuildRoot/face_test"
-
-& $Blender -b --factory-startup -P pipeline/charsys/tests/face_system_test.py -- `
-  "$BuildRoot/girl_after/girl_auburn_bun_glasses_master.blend" `
-  "$BuildRoot/face_system_test"
-```
-
-No C++ build is required for T-015.
-
-## Pending version creation
-
-Only after the build and checks pass, publish the new girl candidate. This is
-intentionally not run here because a publish requires real Blender outputs.
-
-```powershell
-py -3 pipeline/charsys/asset_store.py publish `
-  --character girl_auburn_bun_glasses `
-  --build "$BuildRoot/girl_after" `
-  --version 0.4.0 `
-  --notes 'T-015 shared skin-felt and glasses material opt-in'
-```
-
-Approval/pointer changes remain an owner action.
+`measure_swatches.py` intentionally exits 1 while the aggregate material result
+is false. No C++ build is required for T-015.

@@ -43,6 +43,8 @@ existing render.
 
 The Blender commands are recorded in
 `docs/evaluation/materials/T-015/README.md`. The swatch scene reuses
-`compare_harness.studio_lighting`, renders at 640 px wide, and writes exact
-patch ROIs plus render/total timings. The measurement script reads those ROIs and reports fuzz RMS,
-sheen P90/P50, and saturation retention against the ranges in `presets.json`.
+`compare_harness.studio_lighting`. Its 480 px-wide single-column evidence layout
+keeps the 0.256 m reference above the VISUAL_TARGET measurement-scale floor and
+writes exact square patch ROIs plus render/total timings. The measurement script
+reads those ROIs and reports fuzz RMS, sheen P90/P50, and saturation retention
+against the ranges in `presets.json`.

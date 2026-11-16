@@ -1,6 +1,5 @@
 """Close-up previews of a pilot .blend (face front / three-quarter / side, full figure), same studio lighting as
-the comparison harness.  blender -b -P pipeline/blender/boy_pilot/preview.py --
-<subject.blend> <out_dir> [samples] [views] [max_width]"""
+the comparison harness.  blender -b -P pipeline/blender/boy_pilot/preview.py -- <subject.blend> <out_dir> [samples] [views]"""
 import math
 import os
 import sys
@@ -13,7 +12,6 @@ argv = sys.argv[sys.argv.index("--") + 1:]
 subject, out = os.path.abspath(argv[0]), os.path.abspath(argv[1])
 samples = int(argv[2]) if len(argv) > 2 else 32
 wanted = argv[3].split(",") if len(argv) > 3 else None
-max_width = int(argv[4]) if len(argv) > 4 else None
 os.makedirs(out, exist_ok=True)
 
 bpy.ops.wm.read_factory_settings(use_empty=True)
@@ -59,9 +57,6 @@ for name, (yaw, el, tgt, dist, focal, res) in views.items():
     cam.location = Vector(tgt) + d * dist
     cam.rotation_euler = (-d).to_track_quat("-Z", "Y").to_euler()
     cam.data.lens = focal
-    if max_width and res[0] > max_width:
-        scale = max_width / res[0]
-        res = (max_width, round(res[1] * scale))
     scene.render.resolution_x, scene.render.resolution_y = res
     scene.render.filepath = os.path.join(out, name + ".png")
     bpy.ops.render.render(write_still=True)

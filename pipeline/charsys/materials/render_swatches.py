@@ -33,7 +33,7 @@ def parse():
     parser.add_argument("--out", required=True)
     parser.add_argument("--metadata", required=True)
     parser.add_argument("--width", type=int, default=640)
-    parser.add_argument("--height", type=int, default=960)
+    parser.add_argument("--height", type=int, default=5760)
     parser.add_argument("--samples", type=int, default=64)
     parser.add_argument("--exposure", type=float, default=0.0)
     parser.add_argument("--view-transform", default="AgX")
@@ -77,8 +77,14 @@ def roi(scene, camera, obj, width, height):
     points = [world_to_camera_view(scene, camera, obj.matrix_world @ Vector(corner)) for corner in obj.bound_box]
     x0, x1 = min(p.x for p in points) * width, max(p.x for p in points) * width
     y0, y1 = (1 - max(p.y for p in points)) * height, (1 - min(p.y for p in points)) * height
-    dx, dy = (x1 - x0) * 0.25, (y1 - y0) * 0.25
-    return [round(x0 + dx), round(y0 + dy), round(x1 - dx), round(y1 - dy)]
+    # Measure a square, flat central crop.  At the 480 px evidence width this
+    # is about 100 px square and the 0.256 m reference spans about 205 px, so
+    # the VISUAL_TARGET fibre checks remain above their H >= 180 px validity
+    # floor.  The old two-column layout only provided 60 x 32 px crops.
+    side = min(x1 - x0, y1 - y0) * 0.5
+    cx, cy = (x0 + x1) * 0.5, (y0 + y1) * 0.5
+    return [round(cx - side * 0.5), round(cy - side * 0.5),
+            round(cx + side * 0.5), round(cy + side * 0.5)]
 
 
 def main():
@@ -96,6 +102,7 @@ def main():
     scene.cycles.device = "CPU"
     scene.cycles.samples = args.samples
     scene.cycles.use_denoising = True
+    scene.cycles.denoiser = "OPENIMAGEDENOISE"
     scene.render.resolution_x = args.width
     scene.render.resolution_y = args.height
     scene.render.resolution_percentage = 100
@@ -113,29 +120,30 @@ def main():
     camera = bpy.data.objects.new("SwatchCamera", camera_data)
     scene.collection.objects.link(camera)
     scene.camera = camera
-    camera.location = (0.0, -6.0, 0.5)
+    camera.location = (0.0, -6.0, 0.0)
     camera.data.type = "ORTHO"
-    camera.data.ortho_scale = 2.8
-    look_at(camera, (0.0, 0.0, 0.5))
+    # A single stacked column keeps the physical reference scale measurable at
+    # 480 px wide.  Keep the horizontal field at 0.6 m for every output height.
+    camera.data.ortho_scale = 0.6 * args.height / args.width
+    look_at(camera, (0.0, 0.0, 0.0))
 
     text_material = G.material("M_swatch_labels", (32, 29, 28), roughness=0.9)
     library = MATERIALS.load_library()
     entries = []
     for index, name in enumerate(library["presets"]):
-        row, column = divmod(index, 2)
-        x = -0.55 if column == 0 else 0.55
-        z = 1.62 - row * 0.56
+        x = 0.0
+        z = 2.97 - index * 0.66
         preset = library["presets"][name]
         material = MATERIALS.build_material("M_swatch_" + name, name, preset["swatch_srgb"],
                                             library["reference_size_m"])
         bpy.ops.mesh.primitive_uv_sphere_add(segments=64, ring_count=32, radius=0.125,
-                                             location=(x - 0.235, 0.0, z))
+                                             location=(x, 0.0, z + 0.18))
         sphere = bpy.context.object
         sphere.name = "sphere_" + name.replace("/", "_").replace(" ", "_")
         bpy.ops.object.shade_smooth()
         G.assign(sphere, material)
-        fabric = patch(name, (x + 0.145, 0.0, z), material)
-        label(name, (x, -0.17, z - 0.19), text_material)
+        fabric = patch(name, (x, 0.0, z - 0.08), material)
+        label(name, (x, -0.17, z - 0.275), text_material)
         entries.append({"preset": name, "base_color_srgb": preset["swatch_srgb"], "patch": fabric})
 
     bpy.context.view_layer.update()
@@ -149,6 +157,8 @@ def main():
         "exposure": args.exposure,
         "view_transform": requested_transform,
         "render_engine": "CYCLES",
+        "device": "CPU",
+        "denoiser": "OPENIMAGEDENOISE",
         "studio_light": "pipeline/blender/compare_harness.py:studio_lighting",
         "reference_size_m": library["reference_size_m"],
         "swatches": [],
@@ -165,7 +175,7 @@ def main():
     bpy.ops.render.render(write_still=True)
     metadata["render_s"] = round(time.time() - render_started, 2)
     metadata["total_s"] = round(time.time() - started, 2)
-    with open(metadata_path, "w", encoding="utf-8") as handle:
+    with open(metadata_path, "w", encoding="utf-8", newline="\n") as handle:
         json.dump(metadata, handle, indent=2)
         handle.write("\n")
     if args.save_blend:

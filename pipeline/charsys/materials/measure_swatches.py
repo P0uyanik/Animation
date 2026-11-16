@@ -40,16 +40,14 @@ def sha256(path):
     return digest.hexdigest()
 
 
-def linear_to_srgb(values):
-    return np.where(values <= 0.0031308, values * 12.92, 1.055 * np.power(values, 1 / 2.4) - 0.055)
-
-
 def load_display_rgb(path):
     image = bpy.data.images.load(path, check_existing=False)
     width, height = image.size
     rgba = np.asarray(image.pixels[:], dtype=np.float64).reshape(height, width, 4)
-    # Blender exposes a colour-managed sRGB PNG as scene-linear floats, bottom row first.
-    rgb = np.flipud(linear_to_srgb(np.clip(rgba[:, :, :3], 0.0, 1.0)))
+    # Blender 5.3 exposes a colour-managed PNG's display-sRGB samples directly,
+    # with the bottom scanline first.  Applying the sRGB transfer function again
+    # would suppress both chroma and local contrast in every reported metric.
+    rgb = np.flipud(np.clip(rgba[:, :, :3], 0.0, 1.0))
     return rgb, width, height
 
 
@@ -154,7 +152,7 @@ def main():
         "image_sha256": sha256(image_path),
         "metadata_sha256": sha256(metadata_path),
         "measurement": {
-            "colour_space": "display sRGB reconstructed from Blender's linear image buffer",
+            "colour_space": "display sRGB samples read from Blender's image buffer",
             "luma": "Y' = 0.2126 R + 0.7152 G + 0.0722 B, 0..255",
             "fuzz_rms_y255": "RMS of luma minus a 9-pixel Gaussian kernel on the patch ROI",
             "sheen_p90_p50": "P90/P50 of positive luma/(31-pixel Gaussian form blur) residuals",
@@ -164,7 +162,7 @@ def main():
         "pass": all(item["pass"] for item in results),
     }
     os.makedirs(os.path.dirname(out), exist_ok=True)
-    with open(out, "w", encoding="utf-8") as handle:
+    with open(out, "w", encoding="utf-8", newline="\n") as handle:
         json.dump(output, handle, indent=2)
         handle.write("\n")
     print(f"[measure_swatches] {'PASS' if output['pass'] else 'FAIL'} -> {out}")
