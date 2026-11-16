@@ -544,7 +544,8 @@
   "expressions_reference": "#34 blendshape matrix: Neutral, Blink, Left/Right Eye Closed, Squint, Wide-Open, Smile, Frown, Surprise, Sadness, Anger, Confusion, Laugh, Mouth Open"
  },
  "hair": {
-  "generator": "TBD (M4: hair_clumps/2 + strand-lock and bun families)",
+  "generator": "groom/1",
+  "seed": 30,
   "components": {
    "fringe": "side-swept, slightly off-centre part, to the brows",
    "bun": "single high bun of interlocking wavy bundles",
@@ -554,7 +555,352 @@
     "blue-grey band at the bun base"
    ]
   },
-  "params": {}
+  "provenance": "T-016: structures read from #30 (front, front-left, left, back) and #39/#40; sizes in metres at height 0.97 m (bun top 1.10 m)",
+  "scalp_offset_m": 0.008,
+  "yarn": {
+   "plies": 3,
+   "depth": 0.16,
+   "twist_per_m": 160.0,
+   "seg": 12,
+   "step_m": 0.003
+  },
+  "binding": {
+   "blend_z": [
+    0.6,
+    0.72
+   ]
+  },
+  "structures": [
+   {
+    "type": "scalp_cap",
+    "name": "cap",
+    "offset": 0.004,
+    "face_cut": [
+     -0.06,
+     0.9
+    ],
+    "hairline": [
+     [
+      0,
+      0.905
+     ],
+     [
+      40,
+      0.88
+     ],
+     [
+      70,
+      0.8
+     ],
+     [
+      100,
+      0.74
+     ],
+     [
+      140,
+      0.71
+     ],
+     [
+      180,
+      0.7
+     ]
+    ]
+   },
+   {
+    "type": "bun",
+    "name": "bun",
+    "buns": [
+     {
+      "az": 180,
+      "el": 74,
+      "lift": -0.004,
+      "radius": 0.074,
+      "height": 0.135,
+      "tilt": 0.6,
+      "wrap": "ccw",
+      "turns": 0.95,
+      "ropes": 5,
+      "rope_thick": 0.046
+     }
+    ]
+   },
+   {
+    "type": "sweep",
+    "name": "sweep_front",
+    "count": 12,
+    "az": [
+     -85,
+     85
+    ],
+    "el_root": [
+     36,
+     46
+    ],
+    "target": {
+     "bun": 0
+    },
+    "lift": [
+     0.006,
+     0.02
+    ],
+    "width": [
+     0.032,
+     0.04
+    ],
+    "thick": [
+     0.02,
+     0.024
+    ]
+   },
+   {
+    "type": "sweep",
+    "name": "sweep_back",
+    "count": 12,
+    "az": [
+     95,
+     265
+    ],
+    "el_root": [
+     14,
+     24
+    ],
+    "target": {
+     "bun": 0
+    },
+    "lift": [
+     0.006,
+     0.02
+    ],
+    "width": [
+     0.032,
+     0.04
+    ],
+    "thick": [
+     0.02,
+     0.024
+    ]
+   },
+   {
+    "type": "fringe",
+    "name": "fringe",
+    "root_az": [
+     -44,
+     -38,
+     -32,
+     -26,
+     -20,
+     -12
+    ],
+    "root_el": [
+     58,
+     66
+    ],
+    "tip_x": [
+     -0.1,
+     -0.06,
+     -0.02,
+     0.025,
+     0.065,
+     0.1
+    ],
+    "tip_z": [
+     0.862,
+     0.866,
+     0.866,
+     0.86,
+     0.852,
+     0.84
+    ],
+    "tip_gap": 0.01,
+    "bulge": 0.026,
+    "width": [
+     0.036,
+     0.044
+    ],
+    "thick": [
+     0.02,
+     0.024
+    ],
+    "tip_frac": 0.5
+   },
+   {
+    "type": "locks",
+    "name": "side_curls",
+    "style": "curly",
+    "mirror": true,
+    "count": 4,
+    "az": [
+     62,
+     112
+    ],
+    "el_root": [
+     26,
+     38
+    ],
+    "el_leave": -5,
+    "lift": [
+     0.004,
+     0.014
+    ],
+    "hang_radii": [
+     0.175,
+     0.16
+    ],
+    "z_end": [
+     0.6,
+     0.64
+    ],
+    "flare": 0.1,
+    "width": [
+     0.024,
+     0.028
+    ],
+    "thick": [
+     0.022,
+     0.025
+    ],
+    "tip_frac": 0.6,
+    "curl": {
+     "radius": 0.014,
+     "pitch": 0.036,
+     "radius_growth": 0.2,
+     "start": 0.02,
+     "direction": "alternate",
+     "jitter": 0.2,
+     "start_jitter": 0.03
+    }
+   },
+   {
+    "type": "locks",
+    "name": "back_curls",
+    "style": "curly",
+    "count": 11,
+    "az": [
+     124,
+     236
+    ],
+    "el_root": [
+     10,
+     20
+    ],
+    "el_leave": -25,
+    "lift": [
+     0.004,
+     0.018
+    ],
+    "hang_radii": [
+     0.185,
+     0.18
+    ],
+    "z_end": [
+     0.44,
+     0.54
+    ],
+    "flare": 0.12,
+    "width": [
+     0.026,
+     0.03
+    ],
+    "thick": [
+     0.024,
+     0.027
+    ],
+    "tip_frac": 0.6,
+    "curl": {
+     "radius": 0.015,
+     "pitch": 0.038,
+     "radius_growth": 0.3,
+     "start": 0.03,
+     "direction": "alternate",
+     "jitter": 0.25,
+     "start_jitter": 0.05
+    }
+   },
+   {
+    "type": "locks",
+    "name": "nape_curls",
+    "style": "curly",
+    "count": 8,
+    "az": [
+     130,
+     230
+    ],
+    "el_root": [
+     -14,
+     -6
+    ],
+    "el_leave": -32,
+    "lift": [
+     0.004,
+     0.01
+    ],
+    "hang_radii": [
+     0.145,
+     0.15
+    ],
+    "z_end": [
+     0.47,
+     0.55
+    ],
+    "flare": 0.08,
+    "width": [
+     0.024,
+     0.028
+    ],
+    "thick": [
+     0.022,
+     0.025
+    ],
+    "tip_frac": 0.6,
+    "curl": {
+     "radius": 0.014,
+     "pitch": 0.038,
+     "radius_growth": 0.25,
+     "start": 0.03,
+     "direction": "alternate",
+     "jitter": 0.25,
+     "start_jitter": 0.04
+    }
+   },
+   {
+    "type": "tie",
+    "name": "band",
+    "bun": 0,
+    "height_frac": 0.1,
+    "radius_scale": 0.92,
+    "tube": 0.008,
+    "width_scale": 1.5,
+    "material": "hair_band"
+   },
+   {
+    "type": "flowers",
+    "name": "flowers",
+    "bun": 0,
+    "petals": 5,
+    "material": "hair_flower",
+    "centre_material": "hair_flower_centre",
+    "items": [
+     {
+      "around_deg": 55,
+      "height_frac": 0.22,
+      "size": 0.026,
+      "out": 0.004
+     },
+     {
+      "around_deg": 85,
+      "height_frac": 0.35,
+      "size": 0.022,
+      "out": 0.004
+     },
+     {
+      "around_deg": 30,
+      "height_frac": 0.4,
+      "size": 0.018,
+      "out": 0.002
+     }
+    ]
+   }
+  ]
  },
  "clothing": {
   "generator": "TBD (M5: generic garment library)",
@@ -709,6 +1055,11 @@
     137,
     85,
     69
+   ],
+   "flower_centre": [
+    214,
+    176,
+    104
    ]
   },
   "target_source": "references/color_targets.json",
@@ -740,6 +1091,42 @@
      246
     ],
     "reference_size_m": 0.11958
+   },
+   "hair": {
+    "preset": "wool yarn",
+    "base_color_srgb": [
+     86,
+     54,
+     44
+    ],
+    "reference_size_m": 0.29278
+   },
+   "hair_band": {
+    "preset": "felt",
+    "base_color_srgb": [
+     115,
+     130,
+     135
+    ],
+    "reference_size_m": 0.12
+   },
+   "hair_flower": {
+    "preset": "felt",
+    "base_color_srgb": [
+     160,
+     115,
+     124
+    ],
+    "reference_size_m": 0.06
+   },
+   "hair_flower_centre": {
+    "preset": "felt",
+    "base_color_srgb": [
+     214,
+     176,
+     104
+    ],
+    "reference_size_m": 0.06
    }
   }
  },
@@ -756,11 +1143,12 @@
   ]
  },
  "metadata": {
-  "spec_version": "0.4.0",
-  "status": "V2: shared skin-felt and glasses materials opted in",
+  "spec_version": "0.5.0",
+  "status": "V3/T-016: shared groom (groom/1) hair; unpublished",
   "history": [
    "0.3.0 (M3): generic face (face_generic/1), expression library, glasses accessory",
-   "0.4.0 (V2/T-015): shared skin-felt, buttons/plastic glasses frame, and glasses/acrylic lens presets"
+   "0.4.0 (V2/T-015): shared skin-felt, buttons/plastic glasses frame, and glasses/acrylic lens presets",
+   "0.5.0 (V3/T-016): hair through the shared groom system (bun, band, flowers, sweep, fringe, spiral curls); wool-yarn, felt presets for hair and hair accessories"
   ]
  },
  "components": {
@@ -784,6 +1172,9 @@
   ],
   "landmarks": [
    "LM_"
+  ],
+  "hair": [
+   "hair_"
   ]
  }
 }
