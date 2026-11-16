@@ -38,7 +38,25 @@ fibre_lean; V = metres along the rope), so a preset with fibre.coordinates "uv" 
 Materials: each structure names a slot ("material", default "hair"); the caller resolves slots to materials.
 Binding: spec.hair.binding {"blend_z": [lo, hi]}: vertices below lo follow the chest bone, above hi the head bone,
 linear in between (long hair hangs from the head but rests on the back). Without it everything follows the head.
+
+Dynamics (optional; T-021, docs/SECONDARY_MOTION.md): spec.hair.dynamics adds spring-chain bones for the engine's
+secondary-motion layer. Without it (or with "enabled": false) nothing changes (no bones, same geometry and weights).
+  {"enabled": true,
+   "defaults": {stiffness, stiffness_tip, damping, gravity, drag, limit_deg, radius},      engine spring parameters
+   "structures": {"<structure name>": {"bones": n | [lo, hi], "bone_length": m, "every": k, "blend": f, <params>}},
+   "colliders": [{"name", "type": "sphere", "bone": "head"|"chest", "head_offset": [x, y, z], "radius": r} |
+                 {"name", "type": "capsule", "bone": "head"|"chest", "a": [x, y, z], "b": [x, y, z], "radius": r}]}
+  locks: one chain per lock (every k-th lock) along its hanging centre line, from where it leaves the scalp to the tip;
+         n bones, or round(length / bone_length) clamped to [lo, hi]; rope vertices are skinned along the chain
+         (linear between bone centres; the first half bone blends from the static binding over "blend" bones).
+  bun:   n bones (1-2) along each bun's axis from its base; bun ropes and core, and the ties / bows / flowers that sit
+         on that bun, follow it (weights by height along the axis).
+  colliders: "bone" names the spec's rig.head_bone / rig.chest_bone; a sphere's centre is the head frame centre plus
+         head_offset; capsule ends are absolute (Blender coordinates, metres).
+The chain list is stored on the rig object ("ps_dynamics", JSON, Blender coordinates and bone names) for
+export_engine.py, which writes the package "dynamics" block.
 """
+import json
 import math
 import random
 
@@ -433,9 +451,14 @@ def build_locks(st, ctx, R):
                         pts.append(p + tang * amp * min(1.0, u / wl) * math.sin(ph + 2 * math.pi * u / wl))
             w, h = rng_range(R, st["width"]) / 2, rng_range(R, st["thick"]) / 2
             tf = float(st.get("tip_frac", 0.6))
+            v_start = len(bucket.verts)
             bucket.add(*rope_mesh(pts, taper(len(pts), w, w * float(st.get("end_scale", 0.85)), tf, swell=0.05),
                                   taper(len(pts), h, h * float(st.get("end_scale", 0.85)), tf, swell=0.05), yarn,
                                   up_hint=hdir, phase=R.uniform(0, 6.28)))
+            if ctx.get("dynamics") is not None:  # centre line of the hanging part (no random draws: same geometry)
+                hang = [p.copy() for p, si in zip(base, s) if si >= s_leave]
+                ctx["dynamics"].append({"kind": "lock", "structure": st.get("name", st["type"]), "index": made,
+                                        "line": hang, "verts": (v_start, len(bucket.verts))})
             made += 1
     return bucket, {"locks": made, "style": style}
 
@@ -468,6 +491,7 @@ def build_bun(st, ctx, R):
         turns = float(b.get("turns", 1.2))
         dsign = 1 if b.get("wrap", "ccw") == "ccw" else -1
         thick = float(b.get("rope_thick", Rb * 0.42)) / 2
+        v_start = len(bucket.verts)
         for k in range(nro):
             ph = 2 * math.pi * k / nro + R.uniform(-0.3, 0.3)
             ctrl = []
@@ -492,6 +516,10 @@ def build_bun(st, ctx, R):
             vtx.co = base + ax * (Hb * 0.5) + q
         bucket.add([tuple(vtx.co) for vtx in core.data.vertices], [tuple(f.vertices) for f in core.data.polygons])
         _hair().bpy_data_remove(core)
+        if ctx.get("dynamics") is not None:
+            ctx["dynamics"].append({"kind": "bun", "structure": st.get("name", st["type"]),
+                                    "bun": next(i for i, x in enumerate(ctx["buns"]) if x is bf),
+                                    "verts": (v_start, len(bucket.verts))})
     return bucket, {"buns": len(ctx["buns"]), "ropes": ropes_total}
 
 
@@ -617,7 +645,125 @@ def validate(hair_spec):
         ref = s.get("bun", (s.get("target") or {}).get("bun"))
         if t in ("tie", "flowers", "sweep", "bow") and ref is not None and int(ref) >= nb:
             errs.append(f"hair.structures[{i}] refers to bun {ref}, but only {nb} bun(s) exist")
+    errs += validate_dynamics(hair_spec)
     return errs
+
+
+# ------------------------------------------------------------------------------------------- dynamics (chain bones)
+DYN_PARAMS = ("stiffness", "stiffness_tip", "damping", "gravity", "drag", "limit_deg", "radius")
+DYN_STRUCTURE_KEYS = {"bones", "bone_length", "every", "blend"} | set(DYN_PARAMS)
+DYN_BONE_PREFIX = "DYN-"
+
+
+def dynamics_spec(hair_spec):
+    """The enabled dynamics block of a hair spec, or None (absent or "enabled": false)."""
+    d = hair_spec.get("dynamics")
+    if not d or not d.get("enabled", True):
+        return None
+    return d
+
+
+def validate_dynamics(hair_spec):
+    d = hair_spec.get("dynamics")
+    if d is None:
+        return []
+    if not isinstance(d, dict):
+        return ["hair.dynamics must be an object"]
+    errs = []
+    names = {s.get("name", s.get("type")): s.get("type") for s in hair_spec.get("structures", [])}
+    for k in d.get("defaults", {}):
+        if k not in DYN_PARAMS:
+            errs.append(f"hair.dynamics.defaults: unknown key {k}")
+    for name, cfg in (d.get("structures") or {}).items():
+        if names.get(name) not in ("locks", "bun"):
+            errs.append(f"hair.dynamics.structures.{name}: no locks or bun structure of that name")
+            continue
+        for k in cfg:
+            if k not in DYN_STRUCTURE_KEYS:
+                errs.append(f"hair.dynamics.structures.{name}: unknown key {k}")
+        b = cfg.get("bones", 3)
+        lo_hi = b if isinstance(b, list) else [b, b]
+        if len(lo_hi) != 2 or not all(isinstance(x, int) and 1 <= x <= 12 for x in lo_hi) or lo_hi[0] > lo_hi[1]:
+            errs.append(f"hair.dynamics.structures.{name}.bones must be an integer or [lo, hi] in 1..12")
+        if isinstance(b, list) and not cfg.get("bone_length"):
+            errs.append(f"hair.dynamics.structures.{name}: bones [lo, hi] needs bone_length")
+    for c in d.get("colliders", []):
+        if c.get("type") not in ("sphere", "capsule") or c.get("bone") not in ("head", "chest") or not c.get("name") \
+                or not float(c.get("radius", 0)) > 0:
+            errs.append(f"hair.dynamics.colliders: {c.get('name')} needs name, type sphere|capsule, bone head|chest, radius > 0")
+        elif c["type"] == "capsule" and not ("a" in c and "b" in c):
+            errs.append(f"hair.dynamics.colliders: capsule {c['name']} needs a and b")
+    return errs
+
+
+def _chain_params(dyn, cfg):
+    p = {k: float(v) for k, v in (dyn.get("defaults") or {}).items() if k in DYN_PARAMS}
+    p.update({k: float(v) for k, v in cfg.items() if k in DYN_PARAMS})
+    return p
+
+
+def _polyline_points(line, n):
+    """n + 1 points at equal arc length along a polyline (Vectors)."""
+    s = [0.0]
+    for a, b in zip(line, line[1:]):
+        s.append(s[-1] + (b - a).length)
+    L, out, j = s[-1], [], 0
+    for i in range(n + 1):
+        x = L * i / n
+        while j < len(s) - 2 and s[j + 1] < x:
+            j += 1
+        t = 0.0 if s[j + 1] == s[j] else (x - s[j]) / (s[j + 1] - s[j])
+        out.append(line[j].lerp(line[j + 1], t))
+    return out, L
+
+
+def _store_dynamics_records(objs, st, records, ctx, dyn):
+    """Turns the builder's records into chains (joint positions, vertex ranges) stored on the structure's object(s)
+    as JSON ("ps_dyn"); ties, bows and flowers on a bun with a chain follow that bun."""
+    name = st.get("name", st["type"])
+    cfg = (dyn.get("structures") or {}).get(name)
+    chains, follow = [], []
+    if cfg is not None:
+        every = max(1, int(cfg.get("every", 1)))
+        for r in records:
+            b = cfg.get("bones", 3)
+            if r["kind"] == "lock":
+                if r["index"] % every or len(r["line"]) < 2:
+                    continue
+                L = sum((q - p).length for p, q in zip(r["line"], r["line"][1:]))
+                n = b if isinstance(b, int) else max(b[0], min(b[1], round(L / float(cfg["bone_length"]))))
+                pts, _ = _polyline_points(r["line"], n)
+                chains.append({"name": f"{name}.{r['index']:02d}", "group": name, "kind": "lock",
+                               "joints": [list(p) for p in pts], "verts": list(r["verts"]),
+                               "blend": float(cfg.get("blend", 0.5)), "params": _chain_params(dyn, cfg)})
+            else:
+                bf = ctx["buns"][r["bun"]]
+                n = b if isinstance(b, int) else b[0]
+                pts = [bf["base"] + bf["axis"] * (bf["height"] * k / n) for k in range(n + 1)]
+                cname = f"{name}.{r['bun']}"
+                ctx.setdefault("bun_chain", {})[r["bun"]] = cname
+                chains.append({"name": cname, "group": name, "kind": "bun", "joints": [list(p) for p in pts],
+                               "verts": list(r["verts"]), "base": list(bf["base"]), "axis": list(bf["axis"]),
+                               "height": bf["height"], "params": _chain_params(dyn, cfg)})
+    elif st["type"] in ACCESSORY_TYPES and "bun" in st and int(st["bun"]) in ctx.get("bun_chain", {}):
+        bf = ctx["buns"][int(st["bun"])]
+        follow.append({"chain": ctx["bun_chain"][int(st["bun"])], "base": list(bf["base"]), "axis": list(bf["axis"]),
+                       "height": bf["height"]})
+    if not chains and not follow:
+        return
+    sc = ctx["scalp"]
+    colliders = []
+    for c in dyn.get("colliders", []):
+        e = {"name": c["name"], "type": c["type"], "bone": c["bone"], "radius": float(c["radius"])}
+        if c["type"] == "sphere":
+            e["centre"] = list(sc.centre + Vector(c.get("head_offset", (0, 0, 0))))
+        else:
+            e["a"], e["b"] = list(c["a"]), list(c["b"])
+        colliders.append(e)
+    data = {"chains": chains, "follow": follow, "colliders": colliders,
+            "settings": {k: dyn[k] for k in ("substep_hz", "preroll_s") if k in dyn}}
+    for ob in objs:  # chains are per object (vertex ranges): a structure with dynamics makes one object
+        ob["ps_dyn"] = json.dumps(data)
 
 
 def build(C, head, frame, hair_spec, material, face_y):
@@ -630,6 +776,9 @@ def build(C, head, frame, hair_spec, material, face_y):
     yarn = dict(YARN_DEFAULT, **(hair_spec.get("yarn") or {}))
     scalp = Scalp(head, frame["centre"], frame["radii"], float(hair_spec.get("scalp_offset_m", 0.008)))
     ctx = {"C": C, "head": head, "scalp": scalp, "yarn": yarn, "face_y": face_y, "buns": []}
+    dyn = dynamics_spec(hair_spec)
+    if dyn:
+        ctx["dynamics"] = []
     sts = hair_spec["structures"]
     for s in sts:  # bun frames first: sweeps and accessories refer to them
         if s["type"] == "bun":
@@ -646,22 +795,29 @@ def build(C, head, frame, hair_spec, material, face_y):
             objs.append(ob)
             rep["structures"][name] = {"type": t, "faces": len(ob.data.polygons)}
             continue
+        n_rec = len(ctx["dynamics"]) if dyn else 0
         result, info = BUILDERS[t](s, ctx, R)
+        made = []
         if isinstance(result, dict):  # several parts with their own material slots
             slots = {"petals": s.get("material", "hair_flower"), "centres": s.get("centre_material", "hair_flower_centre")}
             for part, bucket in result.items():
                 ob = bucket.obj(f"hair_{name}_{part}", C)
                 HAIR_G().assign(ob, material(slots[part]))
-                objs.append(ob)
+                made.append(ob)
         else:
             default = "hair" if t not in ACCESSORY_TYPES else "hair_" + t
             ob = result.obj(f"hair_{name}", C)
             HAIR_G().assign(ob, material(s.get("material", default)))
-            objs.append(ob)
+            made.append(ob)
+        objs += made
+        if dyn:
+            _store_dynamics_records(made, s, ctx["dynamics"][n_rec:], ctx, dyn)
         info.update(type=t)
         rep["structures"][name] = info
     rep["objects"] = [o.name for o in objs]
     rep["vertices"] = sum(len(o.data.vertices) for o in objs)
+    if dyn:
+        rep["dynamics"] = {"chains": sum(len(json.loads(o.get("ps_dyn", "{}")).get("chains", [])) for o in objs)}
     return objs, rep
 
 
@@ -687,3 +843,118 @@ def bind(rig, objs, head_bone, chest_bone, binding):
             gh.add(list(range(len(ob.data.vertices))), 1.0, "REPLACE")
         m = ob.modifiers.new("Armature", "ARMATURE")
         m.object = rig
+    _bind_dynamics(rig, objs, head_bone, chest_bone, lo_hi)
+
+
+def _chain_weights(u, n):
+    """Weights of the n chain bones at chain coordinate u (in bones from the root): linear between bone centres."""
+    b = min(max(u - 0.5, 0.0), n - 1.0)
+    lo = int(math.floor(b))
+    f = b - lo
+    w = {lo: 1.0 - f}
+    if f > 0 and lo + 1 < n:
+        w[lo + 1] = f
+    return w
+
+
+def _bind_dynamics(rig, objs, head_bone, chest_bone, blend_z=None):
+    """Adds the chain bones (deform, parented to the head bone) and skins the chain vertices; stores the chain list on
+    the rig ("ps_dynamics") for the engine exporter. No-op without dynamics records. With binding.blend_z a lock chain
+    gets an anchor: each joint's kinematic target follows the chest bone with the static binding's chest weight at
+    the joint's height, so hair that rests on the back keeps resting there."""
+    import bpy
+    recs = [(ob, json.loads(ob["ps_dyn"])) for ob in objs if "ps_dyn" in ob]
+    if not recs:
+        return
+    inv = rig.matrix_world.inverted()
+    bpy.ops.object.select_all(action="DESELECT")
+    rig.hide_set(False)
+    rig.select_set(True)
+    bpy.context.view_layer.objects.active = rig
+    bpy.ops.object.mode_set(mode="EDIT")
+    eb = rig.data.edit_bones
+    bone_names = {}
+    for ob, d in recs:
+        for ch in d["chains"]:
+            prev, names = eb[head_bone], []
+            J = [Vector(p) for p in ch["joints"]]
+            for k in range(len(J) - 1):
+                b = eb.new(f"{DYN_BONE_PREFIX}{ch['name']}.{k}")
+                b.head, b.tail = inv @ J[k], inv @ J[k + 1]
+                b.parent = prev
+                b.use_connect = k > 0
+                b.use_deform = True
+                prev = b
+                names.append(b.name)
+            bone_names[ch["name"]] = names
+    bpy.ops.object.mode_set(mode="OBJECT")
+    chains_out, colliders = [], {}
+    resolve = {"head": head_bone, "chest": chest_bone}
+
+    def blend_into(ob, v, target):
+        """Sets vertex v's weights: target {group: w} plus the static weights scaled by 1 - sum(target)."""
+        keep = 1.0 - sum(target.values())
+        for g in list(v.groups):
+            vg = ob.vertex_groups[g.group]
+            if keep <= 1e-6:
+                vg.remove([v.index])
+            else:
+                vg.add([v.index], g.weight * keep, "REPLACE")
+        for gname, w in target.items():
+            if w > 1e-6:
+                vg = ob.vertex_groups.get(gname) or ob.vertex_groups.new(name=gname)
+                vg.add([v.index], w, "REPLACE")
+
+    def axial(ob, v, base, axis, height, names):
+        p = ob.matrix_world @ v.co
+        h = (p - Vector(base)).dot(Vector(axis)) / height  # 0 at the base, 1 at the top
+        n = len(names)
+        a = min(1.0, max(0.0, (h - 0.1) / 0.3))  # the lowest part stays on the head
+        blend_into(ob, v, {names[i]: w * a for i, w in _chain_weights(h * n, n).items()})
+
+    for ob, d in recs:
+        mw = ob.matrix_world
+        for ch in d["chains"]:
+            names = bone_names[ch["name"]]
+            v0, v1 = ch["verts"]
+            if ch["kind"] == "bun":
+                for v in ob.data.vertices[v0:v1]:
+                    axial(ob, v, ch["base"], ch["axis"], ch["height"], names)
+            else:
+                J = [Vector(p) for p in ch["joints"]]
+                n = len(J) - 1
+                for v in ob.data.vertices[v0:v1]:
+                    p = mw @ v.co
+                    best, u = 1e9, 0.0
+                    for k in range(n):  # closest point on the chain polyline -> chain coordinate u
+                        a, b = J[k], J[k + 1]
+                        ab = b - a
+                        t = (p - a).dot(ab) / max(1e-12, ab.dot(ab))
+                        tc = min(1.0, max(0.0, t)) if 0 < k < n - 1 else (min(1.0, t) if k == 0 else max(0.0, t))
+                        if n == 1:
+                            tc = t
+                        dist = (p - (a + ab * min(1.0, max(0.0, tc)))).length
+                        if dist < best:
+                            best, u = dist, k + tc
+                    if u <= 0:
+                        continue  # on the scalp, before the chain: static binding
+                    a = min(1.0, u / max(1e-6, ch["blend"]))
+                    blend_into(ob, v, {names[i]: w * a for i, w in _chain_weights(u, n).items()})
+            p = ch["params"]
+            out = {"name": ch["name"], "group": ch["group"], "bones": names, "tip": ch["joints"][-1], **p}
+            if blend_z and ch["kind"] == "lock" and chest_bone != head_bone:
+                lo, hi = float(blend_z[0]), float(blend_z[1])
+                w = [round(1.0 - min(1.0, max(0.0, ((mw @ Vector(j)).z - lo) / (hi - lo))), 4) for j in ch["joints"]]
+                if any(w):
+                    out["anchor"] = {"bone": chest_bone, "weights": [0.0] + w[1:]}
+            chains_out.append(out)
+        for f in d["follow"]:
+            names = bone_names.get(f["chain"])
+            if names:
+                for v in ob.data.vertices:
+                    axial(ob, v, f["base"], f["axis"], f["height"], names)
+        for c in d["colliders"]:
+            colliders[c["name"]] = dict(c, bone=resolve[c["bone"]])
+        settings = d.get("settings", {})
+    rig["ps_dynamics"] = json.dumps({"enabled": True, **settings, "chains": chains_out, "colliders": list(colliders.values()),
+                                     "coordinates": "Blender world, metres; bones are source names"})

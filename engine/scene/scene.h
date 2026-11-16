@@ -42,6 +42,7 @@ struct CharacterDesc {
   vec3 position{0};
   float yawDeg = 0;
   LifeParams life;    // procedural breathing, weight shift, blinks, head follows gaze (off unless set)
+  Json dynamics;      // secondary-motion override of the package's "dynamics" block (null = as the package says)
 };
 
 struct PropParent {
@@ -106,7 +107,10 @@ class SceneEvaluator {
   Result<void> load(const Scene& scene, const EvalOptions& options);
   std::shared_ptr<FrameSnapshot> evaluate(double frame) const;
   const Scene& scene() const { return scene_; }
-  Scene& mutableScene() { return scene_; }
+  Scene& mutableScene() {
+    resetDynamics();  // edits may change what drives the spring chains
+    return scene_;
+  }
   // Character data (for editors).
   struct CharacterInstance {
     CharacterAsset asset;
@@ -125,7 +129,10 @@ class SceneEvaluator {
   // Recompiles the scene's actions into generated tracks (called by load; call again after editing actions).
   Result<void> compileActions();
   // Bone frames (world space) of character c at a frame, after constraints.
+  // Includes secondary motion (spring chains, anim/secondary.h) when the character has it; poseOut stays kinematic.
   std::vector<mat4> characterGlobals(size_t c, double frame, Pose* poseOut = nullptr) const;
+  // Drops cached spring-chain states (done automatically on load and on mutableScene()).
+  void resetDynamics() const;
   mat4 objectWorld(size_t o, double frame) const;
   // Prop instance frames (world space). Prop parents are resolved in dependency order; parent switches are
   // rebased at their switch frame so random-access evaluation remains continuous.
@@ -180,6 +187,9 @@ class SceneEvaluator {
   std::vector<std::vector<std::pair<double, double>>> walkSpans_;
   std::map<std::string, std::shared_ptr<const ClipData>> clipCache_;
   void applyClips(size_t c, double frame, Pose& pose, float& yawOffset) const;
+  // Clips, life, constraints: the pose before secondary motion.
+  std::vector<mat4> kinematicGlobals(size_t c, double frame, Pose* poseOut) const;
+  std::vector<std::shared_ptr<SpringChainSolver>> dynamics_;  // per character; null = no secondary motion
   void applyClipFingers(size_t c, double frame, Pose& pose) const;
  public:
   // Clip playback data of character c for a reference pose: the package's generated block if it matches the
