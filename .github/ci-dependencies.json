@@ -1,0 +1,18 @@
+{
+  "oidn": {
+    "version": "2.3.3",
+    "url": "https://github.com/RenderKit/oidn/releases/download/v2.3.3/oidn-2.3.3.src.tar.gz",
+    "sha256": "ccf221535b4007607fb53d3ff5afa74de25413bb8ef5d03d215f46c7cc2f96cf"
+  },
+  "bpy": {
+    "version": "5.3.0",
+    "linux": {
+      "url": "https://files.pythonhosted.org/packages/a1/15/b54ab677660ca4bf957de2787f6ea394d3e1f275bb3587accffefadb7fe8/bpy-5.3.0-cp313-cp313-manylinux_2_28_x86_64.whl",
+      "sha256": "5850cd39369e4cd8c67ed067d39ec1e57426103ddc709436e13209b56665c6a0"
+    },
+    "windows": {
+      "url": "https://files.pythonhosted.org/packages/61/4f/2864babf5d1535d18dfce52fef02774e6d6de901cbdfb2acc46c2ba69fc3/bpy-5.3.0-cp313-cp313-win_amd64.whl",
+      "sha256": "9501b722e49b61ac9dcc8b2fded7a0de4e9dc05852d75abe10b76baf4cc5fb5e"
+    }
+  }
+}

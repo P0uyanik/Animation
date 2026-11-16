@@ -1,0 +1,27 @@
+{
+  "schema": "plush-studio.fidelity-baseline/1",
+  "policy": {
+    "maximum_score_drop": 2.0,
+    "failure_reason": "visual regression, needs owner review"
+  },
+  "render": {
+    "height": 640,
+    "samples": 32
+  },
+  "characters": {
+    "boy_yellow_hoodie": {
+      "score": 64.4891,
+      "build": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.spec.json",
+      "overrides": [
+        "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.1.1.0.override.json"
+      ],
+      "source": "docs/evaluation/characters/T-032/boy/fidelity.json"
+    },
+    "girl_auburn_bun_glasses": {
+      "score": 63.0418,
+      "build": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.spec.json",
+      "overrides": [],
+      "source": "docs/evaluation/characters/T-032/girl/fidelity.json"
+    }
+  }
+}

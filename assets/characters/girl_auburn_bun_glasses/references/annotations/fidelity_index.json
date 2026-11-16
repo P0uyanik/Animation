@@ -1,0 +1,11 @@
+{
+ "schema": "plush-studio.fidelity-index/1",
+ "character": "girl_auburn_bun_glasses",
+ "note": "T-032 per-character data for tools/fidelity/run.py: which reference views are measured and which build variant matches their pose. Annotations: <view>.json in this folder.",
+ "reference_index": "assets/characters/girl_auburn_bun_glasses/references/reference_index.json",
+ "views": ["sheet30_front", "sheet30_front_left", "sheet30_left", "sheet30_back_right", "sheet30_back"],
+ "excluded_views": {"sheet30_right": "near-duplicate of sheet30_left (reference_index.json: silhouette false)"},
+ "render_variant": "master",
+ "render_variant_note": "#30 is an A-pose turnaround, like the master",
+ "region_rules": []
+}

@@ -1,0 +1,56 @@
+name: Verified repository backup
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '17 2 * * *'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verified-backup
+  cancel-in-progress: false
+
+jobs:
+  bundle:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Check out every ref
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+          persist-credentials: false
+
+      - name: Fetch all remote refs
+        run: git fetch --force --prune origin '+refs/heads/*:refs/remotes/origin/*' '+refs/tags/*:refs/tags/*'
+
+      - name: Create and verify bundle
+        run: |
+          mkdir -p build/backups
+          bundle="build/backups/animation-$(date -u +%Y%m%dT%H%M%SZ).bundle"
+          git bundle create "$bundle" --all
+          git bundle verify "$bundle" | tee build/backups/verify.txt
+          printf '%s\n' "$bundle" > build/backups/bundle-path.txt
+
+      - name: Restore into an empty folder and validate
+        run: |
+          bundle="$(cat build/backups/bundle-path.txt)"
+          restore="$RUNNER_TEMP/animation-restore"
+          test ! -e "$restore"
+          git clone "$bundle" "$restore"
+          git -C "$restore" fsck --full
+          git -C "$restore" rev-parse --verify HEAD
+          printf 'restore PASS\n' > build/backups/restore.txt
+
+      - name: Upload verified bundle at maximum retention
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: verified-git-bundle-${{ github.run_id }}
+          path: build/backups/
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 0

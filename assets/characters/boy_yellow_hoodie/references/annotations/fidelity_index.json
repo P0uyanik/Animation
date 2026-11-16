@@ -1,0 +1,16 @@
+{
+ "schema": "plush-studio.fidelity-index/1",
+ "character": "boy_yellow_hoodie",
+ "note": "T-032 per-character data for tools/fidelity/run.py: which reference views are measured and which build variant matches their pose. Annotations: <view>.json in this folder.",
+ "reference_index": "assets/characters/boy_yellow_hoodie/references/reference_index.json",
+ "views": ["val27_front", "val27_threequarter_right", "val27_side_right", "val27_back", "val27_back_threequarter"],
+ "excluded_views": {"orig07_front": "hand in pocket and lean: pose differs from every build variant", "canon29_*": "hands in pockets", "turn08_*": "not silhouette-grade (reference_index.json)", "hero24_front": "hand in pocket"},
+ "render_variant": "compare",
+ "render_variant_note": "#27 has the arms down: the build's <id>_compare.blend (arms lowered through the rig, fur on); hide_objects_prefix from reference_index.json is applied",
+ "region_rules": [
+  ["hoodie*", "garment:hoodie"], ["hood_*", "garment:hoodie"], ["drawstring*", "garment:hoodie"],
+  ["trouser*", "garment:trousers"], ["sock.*", "garment:socks"], ["shoe*", "garment:shoes"], ["sole.*", "garment:shoes"],
+  ["undershirt", "garment:undershirt"], ["backpack*", "accessory:backpack"], ["buckle.*", "accessory:backpack"],
+  ["fur_hair", "hair"], ["fur_hoodie", "garment:hoodie"], ["fur_trousers", "garment:trousers"], ["fur_shoes", "garment:shoes"]
+ ]
+}
