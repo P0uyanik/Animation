@@ -44,6 +44,9 @@ struct CharacterDesc {
   float yawDeg = 0;
   LifeParams life;    // procedural breathing, weight shift, blinks, head follows gaze (off unless set)
   Json dynamics;      // secondary-motion override of the package's "dynamics" block (null = as the package says)
+  // Without a base clip the shared "idle_relaxed" clip plays as the character's base layer (clip_layers.cpp, T-027).
+  // Scene JSON "autoIdle": false opts out.
+  bool autoIdle = true;
 };
 
 struct PropParent {
@@ -196,6 +199,12 @@ class SceneEvaluator {
     double clipFrame(double frame, double sceneFps) const;
   };
   std::vector<std::vector<ClipLayer>> clipLayers_;
+  // Automatic base idle (T-027): per character, the shared idle clip bound to it (prepared once by load); it plays
+  // only while the character has no base clip action, so recompiled actions decide (autoIdleLayer).
+  std::vector<std::optional<ClipLayer>> autoIdle_;
+  void prepareAutoIdle();
+  const ClipLayer* autoIdleLayer(size_t c) const;
+  std::vector<const ClipLayer*> activeClipLayers(size_t c) const;  // auto idle (if it applies) + the clip layers
   std::vector<std::vector<std::pair<double, double>>> walkSpans_;
   std::map<std::string, std::shared_ptr<const ClipData>> clipCache_;
   void applyClips(size_t c, double frame, Pose& pose, float& yawOffset) const;
@@ -207,7 +216,7 @@ class SceneEvaluator {
   // Clip playback data of character c for a reference pose: the package's generated block if it matches the
   // reference version, else derived from the skeleton (same rules).
   RetargetData retargetData(size_t c, const ReferencePose& ref) const;
-  bool hasClipLayers(size_t c) const { return c < clipLayers_.size() && !clipLayers_[c].empty(); }
+  bool hasClipLayers(size_t c) const { return (c < clipLayers_.size() && !clipLayers_[c].empty()) || autoIdleLayer(c); }
   // Arm-body clearance of character c's arm `side` at a frame (gap < 0: the arm is inside a body capsule), and the
   // body model it is measured against (T-030, scene/interaction.h).
   ArmClearance armClearanceAt(size_t c, char side, double frame) const;

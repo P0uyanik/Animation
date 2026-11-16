@@ -1,0 +1,81 @@
+{
+ "limits": {
+  "boundary_factor": 1.25,
+  "max_deg_per_frame": 12.0
+ },
+ "sources": {
+  "base": {
+   "character_span": null,
+   "interior_max_deg": {
+    "boy": {
+     "upperArm.L": 0.28400650347212963,
+     "forearm.L": 0.34834842908082375,
+     "upperArm.R": 0.28426086536095624,
+     "forearm.R": 0.3557002564207807,
+     "thigh.L": 0.0583375366339471,
+     "shin.L": 0.05655103453067339,
+     "thigh.R": 0.044989319355147404,
+     "shin.R": 0.04498946174054087,
+     "hips": 0.041268750410047655,
+     "spine": 0.0916341804916622,
+     "chest": 0.3417312692690085,
+     "neck": 0.9036625107894812,
+     "head": 3.1584695142407186
+    }
+   }
+  },
+  "1_walk_None": {
+   "character_span": [
+    "boy",
+    10.0,
+    60.0
+   ],
+   "interior_max_deg": {
+    "boy": {
+     "upperArm.L": 14.391708837292585,
+     "forearm.L": 14.422640600309796,
+     "upperArm.R": 13.96686986508207,
+     "forearm.R": 13.939641133706008,
+     "thigh.L": 24.705876708457662,
+     "shin.L": 21.811360554773923,
+     "thigh.R": 31.39794086670828,
+     "shin.R": 21.653604631821654,
+     "hips": 12.410001724213002,
+     "spine": 12.410620180059219,
+     "chest": 12.412132838067766,
+     "neck": 12.503126311862985,
+     "head": 12.758451502984945
+    }
+   }
+  },
+  "keys_camera.target": {
+   "character_span": [
+    "camera.target",
+    11.0,
+    70.0
+   ],
+   "interior_max_deg": {}
+  }
+ },
+ "characters": {
+  "boy": {
+   "max_deg_per_frame": 31.39794086670828,
+   "worst": {
+    "ratio": 0.8,
+    "frame": 17,
+    "role": "forearm.R",
+    "change_deg": 13.939641133706008,
+    "limit_deg": 17.42455141713251,
+    "boundary_window": false,
+    "sources": [
+     "base",
+     "1_walk_None"
+    ]
+   },
+   "failures": [],
+   "pass": true
+  }
+ },
+ "boundary_windows": [],
+ "pass": true
+}

@@ -114,8 +114,8 @@ def main():
         if cl["loop"]:
             nframes = 2 * nframes + 1
         masked = [r for r in LIMB_ROLES if r in cl["mask"]]  # roles the clip drives (others keep each character's pose)
-        chars = [{"name": n, "asset": os.path.relpath(pk[n], sd), "position": [x, 0, 0], "yawDeg": 0, "life": False}
-                 for n, x in (("boy", -0.8), ("girl", 0.0), ("mannequin", 0.8))]
+        chars = [{"name": n, "asset": os.path.relpath(pk[n], sd), "position": [x, 0, 0], "yawDeg": 0, "life": False, "autoIdle": False}
+                 for n, x in (("boy", -0.8), ("girl", 0.0), ("mannequin", 0.8))]  # the clip alone (no automatic base idle)
         acts = [{"type": "clip", "character": n, "clip": c, "start": 1, "blendIn": 0, "blendOut": 0} for n in ("boy", "girl", "mannequin")]
         p = os.path.join(sd, f"clip_{c}.scene.json")
         json.dump(scene(chars, acts, nframes), open(p, "w"), indent=1)
@@ -185,7 +185,8 @@ def main():
             {"type": "clip", "character": who, "clip": "sit_down", "start": T["sit"], "blendIn": 8, "blendOut": 0, "end": T["stand"] + 8},
             {"type": "clip", "character": who, "clip": "stand_up", "start": T["stand"], "blendIn": 8, "blendOut": 8}]
         walk = {"type": "walk", "character": who, "start": W0, "end": W1, "to": [0.0, 0.8 * leg / 0.26]}
-        chars = [{"name": who, "asset": os.path.relpath(pk[who], sd), "position": [0, 0, 0], "yawDeg": 0, "life": False}]
+        chars = [{"name": who, "asset": os.path.relpath(pk[who], sd), "position": [0, 0, 0], "yawDeg": 0, "life": False,
+                  "autoIdle": False}]  # the walk-alone scene stays the engine walk alone (T-027 automatic idle off)
         n_end = int(T["stand"] + L["stand_up"] + 30)
         p = os.path.join(sd, f"blend_{who}.scene.json")
         json.dump(scene(chars, clip_acts + [walk], n_end), open(p, "w"), indent=1)

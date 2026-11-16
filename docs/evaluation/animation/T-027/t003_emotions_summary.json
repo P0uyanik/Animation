@@ -1,0 +1,89 @@
+{
+ "note": "T-003 emotion measurements (pipeline/clips/test_emotions.py, thresholds unchanged) with the T-027 build packages (boy 1.1.0 candidate, girl current spec): branch (new clips, new engine) vs main e94f3bc (old clips, old engine).",
+ "branch": {
+  "AC2": true,
+  "AC4_pass": true,
+  "AC4_worst_ratio": 0.83,
+  "AC4_single_emotion_max_deg_per_frame": 10.654166952092444,
+  "AC5": {
+   "girl_walk_keeps_hips_legs_root": {
+    "max_deg": 0.0,
+    "max_hips_m": 0.0,
+    "pass": true
+   },
+   "boy_walk_keeps_hips_legs_root": {
+    "max_deg": 0.0,
+    "max_hips_m": 0.0,
+    "pass": true
+   },
+   "girl_wave_keeps_its_roles_during_walk_and_emotion": {
+    "frames": [
+     84,
+     121
+    ],
+    "max_semantic_local_deg": 1.7075472925031877e-06,
+    "pass": true
+   },
+   "look_keeps_gaze": {
+    "max_aim_error_change_deg": 3.4265567199332736,
+    "pass": false
+   },
+   "boy_reach_keeps_hand": {
+    "frames": [
+     140,
+     165
+    ],
+    "max_hand_pos_m": 5.811059152691986e-07,
+    "pass": true
+   },
+   "hand_keyed_head_wins": {
+    "max_engine_local_deg": 0.0,
+    "pass": true
+   }
+  },
+  "AC5_pass": false
+ },
+ "main": {
+  "AC2": true,
+  "AC4_pass": true,
+  "AC4_worst_ratio": 0.89,
+  "AC4_single_emotion_max_deg_per_frame": 10.650145437025873,
+  "AC5": {
+   "girl_walk_keeps_hips_legs_root": {
+    "max_deg": 0.0,
+    "max_hips_m": 0.0,
+    "pass": true
+   },
+   "boy_walk_keeps_hips_legs_root": {
+    "max_deg": 0.0,
+    "max_hips_m": 0.0,
+    "pass": true
+   },
+   "girl_wave_keeps_its_roles_during_walk_and_emotion": {
+    "frames": [
+     84,
+     121
+    ],
+    "max_semantic_local_deg": 4.844742298294805e-05,
+    "pass": true
+   },
+   "look_keeps_gaze": {
+    "max_aim_error_change_deg": 1.5733781198910037,
+    "pass": false
+   },
+   "boy_reach_keeps_hand": {
+    "frames": [
+     140,
+     165
+    ],
+    "max_hand_pos_m": 5.068344174130521e-07,
+    "pass": true
+   },
+   "hand_keyed_head_wins": {
+    "max_engine_local_deg": 0.0,
+    "pass": true
+   }
+  },
+  "AC5_pass": false
+ }
+}

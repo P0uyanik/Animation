@@ -9,11 +9,15 @@ arm hangs down by rotating -78 degrees about z; a left elbow flexes forward abou
 motion is the mirror of the left-side definition (one definition, M · q · M). Every clip is a Blender action on the
 mannequin, exported by the shared exporter (clip_tools.export_action), so a future artist-made clip goes the same way.
 
-Clips (mechanical, for technical validation; acting quality is out of scope):
-  idle_relaxed  loop, 90 frames: arms down, breathing (chest/spine), slight sway, small head drift
-  wave          right arm wave (mirrorable), starts and ends in the relaxed arm pose
-  point         right arm and index finger pointing forward (mirrorable), other fingers curled
-  sit_down      standing -> seated with root motion (seat contact: height ratio measured on the mesh)
+Clips. The acting clips (T-027) use the shared principles in clip_principles.py: anticipation, overshoot and
+settle, successive breaking along the arm chain (arcs), whole-body support and eased spacing; poses are evaluated
+per frame (every frame keyed), so the spacing is the authored one and not Blender's interpolation:
+  idle_relaxed  loop, 180 frames: asymmetric contrapposto stance (weight right, feet planted by IK), weight drift,
+                breathing travelling up the chain, head drift, arm overlap
+  wave          right arm wave (mirrorable) with hip / spine support; held rest frames at both ends, 90 frames
+  point         right arm and index finger pointing forward (mirrorable) with support, 84 frames
+The technical clips keep their mechanical definition:
+  sit_down      standing (the idle's stance) -> seated with root motion (seat contact: height ratio measured on the mesh)
   stand_up      seated -> standing (exact reverse of sit_down's poses)
   dense_test    60 fps, dense per-frame samples on several roles (mocap-like data; fps resampling test)"""
 import argparse
@@ -26,6 +30,7 @@ import bpy
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
+import clip_principles as CP  # noqa: E402
 import clip_tools as CT  # noqa: E402
 import retarget as RT  # noqa: E402
 
@@ -117,59 +122,171 @@ def seated(base, k=1.0, lean=6.0):
     return p
 
 
+# ------------------------------------------------------------------ acting poses (T-027, clip_principles.py)
+FINGERS = ("thumbA", "thumbB", "f0a", "f0b", "f1a", "f1b", "f2a", "f2b", "f3a", "f3b")
+BODY = None  # leg geometry of the authoring rig (clip_principles.Body), set in main()
+REST_CURL = (("f0", 22), ("f1", 18), ("f2", 15), ("f3", 12))
+
+
+def stance_arms(p):
+    """Relaxed arms with left / right asymmetry: the right elbow is more bent and that arm a little forward."""
+    side(p, "upperArm", seq(rx(-7), rz(-77), ry(-2)), "L")
+    side(p, "forearm", ry(-11), "L")
+    side(p, "hand", seq(rz(-3), ry(2)), "L")
+    side(p, "upperArm", seq(rx(-11), rz(-74), ry(-7)), "R")
+    side(p, "forearm", seq(ry(-24), rx(4)), "R")
+    side(p, "hand", seq(rz(-8), rx(-5)), "R")
+    for s, k in (("L", 1.0), ("R", 1.25)):
+        for f, c in REST_CURL:
+            side(p, f + "a", rz(-c * k), s)
+            side(p, f + "b", rz(-c * 1.2 * k), s)
+        side(p, "thumbA", ry(12 * k), s)
+        side(p, "thumbB", ry(10 * k), s)
+    return p
+
+
+STANCE_HEAD = (1.5, -1.5, 0.5)  # head tilt (rz), turn (ry), nod (rx) of the idle stance, degrees (small: look aims from it)
+
+
+def breath(t):
+    """Breathing shape, t in turns: a slightly faster inhale than exhale (not a pure sine), mean 0, amplitude 1."""
+    x = t % 1.0
+    return math.sin(2 * math.pi * (x + 0.08 * math.sin(2 * math.pi * x)))
+
+
+def open_hand(p, s, spread=1.0, curl=4.0):
+    """Fingers nearly straight and slightly spread (a greeting hand); thumb out."""
+    for f, sp in (("f0", -6), ("f1", -2), ("f2", 2), ("f3", 6)):
+        side(p, f + "a", seq(rz(-curl), ry(sp * spread)), s)
+        side(p, f + "b", rz(-curl * 0.8), s)
+    side(p, "thumbA", ry(24), s)
+    side(p, "thumbB", ry(8), s)
+
+
+def stance(p, k=1.0):
+    """The idle's weight shift onto the right leg (k = 1 at the stance centre) on pose p: pelvis shifted right and
+    hiked on that side, spine and chest countering, both feet planted (the free left knee bends). Returns the root."""
+    root = CP.support(p, "R", k, tilt=1.0, counter=0.8, chest=0.4, shift=0.02)
+    return CP.plant_legs(p, root, BODY)
+
+
 # ------------------------------------------------------------------ clips
 def clip_idle(R):
-    n = 90
+    """Asymmetric contrapposto stance (weight on the right leg, pelvis hiked on that side and the spine countering it,
+    feet planted by IK, the free knee bent), slow weight drift, breathing that travels up the chain (spine, chest,
+    neck, shoulders lag each other), head drift from several harmonics and arm overlap. Loops every 6 s."""
+    n = 180
     keys = {}
-    for f in range(0, n + 1, 6):
-        t = 2 * math.pi * f / n
-        p = relaxed()
-        b = math.sin(t)                     # one breath per 3 s
-        p["chest"] = rx(-1.2 * b)
-        p["spine"] = rx(-0.5 * b)
-        p["neck"] = rx(1.0 * b)
-        w = math.sin(t + 1.1)               # weight shift (hips sway, legs compensate)
-        p["hips"] = rz(0.9 * w)
-        both(p, "thigh", rz(-0.9 * w))
-        p["thigh.R"] = rz(-0.9 * w)         # both thighs counter-rotate the same way (feet stay put)
-        p["head"] = seq(rx(0.8 * math.sin(2 * t + 0.4)), ry(1.6 * math.sin(t + 2.0)))
-        both(p, "upperArm", seq(rx(-8), rz(-76 + 0.8 * b)))
-        p["upperArm.R"] = mirror(seq(rx(-8), rz(-76 + 0.8 * b)))
-        keys[f] = p
-    return keys, {"name": "idle_relaxed", "loop": True, "frame_count": n, "fps": 30,
-                  "description": "Relaxed stance with arms down, breathing, slight weight shift and head drift; loops every 3 s",
-                  "mask": None}
+    lag = 0.015  # overlap: phase lag per chain level, in loop turns
+    for f in range(n):
+        t = f / n
+        p = stance_arms({})
+        b = lambda d: breath(3 * t - 3 * lag * d)  # three breaths per loop (2 s each)
+        p["spine"] = rx(-0.5 * b(0))
+        p["chest"] = rx(-1.3 * b(1))
+        p["neck"] = rx(0.9 * b(2))
+        tilt, turn, nod = STANCE_HEAD
+        p["head"] = seq(rz(tilt + 0.8 * math.sin(2 * math.pi * (t + 0.3))),
+                        ry(turn + 1.6 * math.sin(2 * math.pi * (t + 0.15)) + 0.6 * math.sin(2 * math.pi * (2 * t + 0.55))),
+                        rx(nod + 0.6 * math.sin(2 * math.pi * (2 * t + 0.1)) + 0.4 * b(3)))
+        for s, amp in (("L", 1.0), ("R", 0.75)):  # shoulders rise with the breath, arms sway with the weight drift
+            sway = math.sin(2 * math.pi * (t - 0.06 - lag * 2)) * amp
+            p[f"upperArm.{s}"] = RT.qmul(p[f"upperArm.{s}"], (lambda q: q if s == "L" else mirror(q))(seq(rz(0.7 * b(2)), rx(-1.0 * sway))))
+            p[f"forearm.{s}"] = RT.qmul(p[f"forearm.{s}"], (lambda q: q if s == "L" else mirror(q))(ry(-1.4 * math.sin(2 * math.pi * (t - 0.06 - lag * 3)) * amp - 0.6 * b(3))))
+            p[f"hand.{s}"] = RT.qmul(p[f"hand.{s}"], (lambda q: q if s == "L" else mirror(q))(rz(-1.2 * math.sin(2 * math.pi * (t - 0.06 - lag * 4)) * amp)))
+        k = 1.0 + 0.3 * math.sin(2 * math.pi * (t + 0.6))  # weight drift around the stance
+        keys[f] = (p, stance(p, k))
+    return keys, {"name": "idle_relaxed", "loop": True, "frame_count": n, "fps": 30, "mask": None,
+                  "description": "Relaxed asymmetric stance: weight on the right leg (feet planted, free knee bent), slow weight "
+                                 "drift, breathing travelling up the spine, head drift and arm overlap; loops every 6 s"}
+
+
+def gesture_base(s):
+    """Start / end pose of an arm gesture on side s: the stance arms and an upright trunk (the idle's centre)."""
+    return stance_arms({"hips": ID, "spine": ID, "chest": ID})
+
+
+def with_support(keys, side_, k_beats, breath_period=60, **kw):
+    """Adds whole-body support (clip_principles.support, timed by the scalar beats k_beats) and a light breath on the
+    chest to each frame; returns {frame: (pose, root)}. The legs stay with the layer underneath (not in the mask)."""
+    out = {}
+    for f, p in keys.items():
+        p = dict(p)
+        p["chest"] = RT.qmul(p.get("chest", ID), rx(-0.8 * breath(f / breath_period)))
+        CP.support(p, side_, CP.scalar_track(k_beats, f), **kw)
+        out[f] = p  # no root motion: a gesture must not slide the feet of the layer underneath
+    return out
 
 
 def clip_wave(R):
-    """Hold (0-8), raise (8-34), wave (38-70), lower (72-96), hold (96-104): blends happen on held poses."""
+    """Right-arm wave with acting: the body leads (weight and pelvis towards the waving side, spine countering, chest
+    opening), a small dip before the arm rises (anticipation), shoulder, elbow, wrist and fingers break in succession
+    (arcs), overshoot and settle at the top, three waves led by the upper-arm twist with the forearm and hand
+    dragging, and a lower with follow-through. Held rest frames at both ends for blending; 90 frames (3 s)."""
     s = "R"
-    base = relaxed()
-    up = seq(rx(-90), rz(25))                         # external twist (palm forward), arm 25 deg above horizontal
-    raised = arm_pose(base, s, up, ry(-75), rz(0))
-    keys = {0: base, 8: base, 34: raised, 72: raised, 96: base, 104: base}
-    for i, f in enumerate(range(38, 71, 4)):
-        keys[f] = arm_pose(base, s, up, ry(-75 + (14 if i % 2 == 0 else -14)), ry(8 if i % 2 == 0 else -8))
-    mask = [f"{r}.{s}" for r in ("upperArm", "forearm", "hand")]
-    return keys, {"name": "wave", "loop": False, "frame_count": 105, "fps": 30, "mask": mask,
-                  "description": "Right-arm wave (palm forward, forearm swinging in the frontal plane); mirror for the left arm"}
+    rest = gesture_base(s)
 
-
-FINGERS = ("thumbA", "thumbB", "f0a", "f0b", "f1a", "f1b", "f2a", "f2b", "f3a", "f3b")
+    def arm_up(tw, fl, hd):  # raised arm, palm forward; tw: upper-arm twist, fl: elbow, hd: wrist (degrees)
+        p = dict(rest)
+        side(p, "upperArm", seq(rx(-90 + tw), rz(25)), s)
+        side(p, "forearm", ry(-75 + fl), s)
+        side(p, "hand", ry(hd), s)
+        open_hand(p, s)
+        return p
+    raised = arm_up(0, 0, 0)
+    out_p, in_p = arm_up(5, 11, 7), arm_up(-5, -11, -7)
+    swing = dict(power=1.5, overshoot=0.04, settle=0.4)
+    beats = [CP.Beat(3, rest, anticipation=0.08, ant=0.1, overshoot=0.05, settle=0.2, power=1.5), CP.Beat(28, raised, **swing)]
+    for i in range(5):  # three waves, 5.5 frames per swing; the lower starts from the last swing
+        beats.append(CP.Beat(33.5 + 5.5 * i, out_p if i % 2 == 0 else in_p, **swing))
+    beats += [CP.Beat(61, in_p, anticipation=0.05, ant=0.1, overshoot=0.05, settle=0.22, power=1.5,
+                      per_role={f"upperArm.{s}": {"overshoot": 0.0}}),
+              CP.Beat(86, rest)]
+    roles = [r for r in rest if r.endswith("." + s)]
+    delay = {r: 1.0 * max(0, CP.depth_of(r) - 2) for r in roles}  # shoulder 0, elbow 1, wrist 2, fingers 3 frames
+    keys = CP.perform(beats, 90, delay)
+    k = [(2, 0.0, dict(power=2.0)), (22, 1.0, dict(overshoot=0.12, settle=0.35)), (65, 1.0, dict(power=2.0)), (87, 0.0, None)]
+    keys = with_support(keys, s, k, tilt=2.5, counter=0.45, chest=0.3, yaw=4.0, lean=-2.5)
+    mask = ["hips", "spine", "chest"] + [f"{r}.{s}" for r in ("upperArm", "forearm", "hand") + FINGERS]
+    return keys, {"name": "wave", "loop": False, "frame_count": 90, "fps": 30, "mask": mask,
+                  "description": "Right-arm wave (palm forward) with anticipation, successive breaking, overshoot and settle, and "
+                                 "hip / spine support; mirror for the left arm"}
 
 
 def clip_point(R):
-    """Hold (0-8), raise (8-32), point (32-60), lower (60-84), hold (84-92)."""
+    """Right-arm point with acting: a small pull back before the arm shoots out (anticipation), shoulder, elbow, wrist
+    and fingers in succession (the index straightens while the others curl a few frames later), overshoot and
+    settle, a small emphasis push, then a relaxed lower with follow-through; the body shifts weight towards the
+    pointing side, turns the chest towards the target and leans in. 84 frames."""
     s = "R"
-    base = relaxed()
+    rest = gesture_base(s)
     curl = {f"{f}a": rz(-85) for f in ("f0", "f1", "f2")}
     curl.update({f"{f}b": rz(-95) for f in ("f0", "f1", "f2")})
-    curl.update({"f3a": rz(-2), "f3b": rz(-2)})
-    pt = arm_pose(base, s, seq(rx(-10), ry(-72), rz(-8)), ry(-8), rz(-4), curl, {"thumbA": ry(35), "thumbB": ry(30)})
-    keys = {0: base, 8: base, 32: pt, 60: pt, 84: base, 92: base}
-    mask = [f"{r}.{s}" for r in ("upperArm", "forearm", "hand") + FINGERS]
-    return keys, {"name": "point", "loop": False, "frame_count": 93, "fps": 30, "mask": mask,
-                  "description": "Right arm points forward with the index finger, other fingers curled; mirror for the left"}
+    curl.update({"f3a": rz(-2), "f3b": rz(-2), "thumbA": ry(35), "thumbB": ry(30)})
+    pt = dict(rest)
+    side(pt, "upperArm", seq(rx(-10), ry(-72), rz(-8)), s)
+    side(pt, "forearm", ry(-8), s)
+    side(pt, "hand", rz(-4), s)
+    for kk, q in curl.items():
+        side(pt, kk, q, s)
+    push = dict(pt)
+    side(push, "upperArm", seq(rx(-10), ry(-75), rz(-6)), s)
+    side(push, "forearm", ry(-3), s)
+    beats = [CP.Beat(3, rest, anticipation=0.12, ant=0.14, overshoot=0.06, settle=0.2, power=1.6),
+             CP.Beat(28, pt, power=2.0), CP.Beat(36, pt, overshoot=0.1, settle=0.4, power=2.0), CP.Beat(42, push, power=2.0),
+             CP.Beat(50, pt, power=2.0), CP.Beat(54, pt, anticipation=0.04, ant=0.1, overshoot=0.04, settle=0.22, power=1.6,
+                                                 per_role={f"upperArm.{s}": {"overshoot": 0.0}}),
+             CP.Beat(79, rest)]
+    roles = [r for r in rest if r.endswith("." + s)]
+    delay = {r: 1.2 * max(0, CP.depth_of(r) - 2) for r in roles}
+    keys = CP.perform(beats, 84, delay)
+    k = [(1, 0.0, dict(anticipation=0.15, ant=0.25, power=2.0)), (24, 1.0, dict(overshoot=0.1, settle=0.4)), (40, 1.0, dict(power=2.0)),
+         (44, 1.15, dict(power=2.0)), (54, 1.0, dict(power=2.0)), (80, 0.0, None)]
+    keys = with_support(keys, s, k, tilt=2.5, counter=0.45, chest=0.3, yaw=6.0, lean=3.0)
+    mask = ["hips", "spine", "chest"] + [f"{r}.{s}" for r in ("upperArm", "forearm", "hand") + FINGERS]
+    return keys, {"name": "point", "loop": False, "frame_count": 84, "fps": 30, "mask": mask,
+                  "description": "Right arm points forward with the index finger (anticipation, overlap, overshoot and settle, "
+                                 "body support towards the target); mirror for the left"}
 
 
 SIT_ROOT = None  # set from the mannequin's proportions in main()
@@ -178,14 +295,19 @@ SIT_MASK = ["spine", "chest", "neck"] + [f"{r}.{x}" for r in ("thigh", "shin", "
 
 
 def sit_keys():
-    """Hold standing (0-8), sit (8-48), hold seated (48-56)."""
+    """Hold standing (0-8), sit (8-48), hold seated (48-56). The standing frames are the idle's stance (trunk, legs and
+    root, T-027), so the clip blends in from the base idle without a leg pop; the seated poses are unchanged."""
     base = relaxed()
+    st = {}
+    st_root = stance(st)
+    stand = dict(base)
+    stand.update({r: q for r, q in st.items() if r in SIT_MASK})
     p16 = seated(base, 0.25, lean=16)
     p28 = seated(base, 0.6, lean=20)
     p40 = seated(base, 1.0, lean=9)
     p48 = seated(base, 1.0, lean=6)
     dz, dy = SIT_ROOT
-    return {0: (base, [0, 0, 0]), 8: (base, [0, 0, 0]), 16: (p16, [0, dy * 0.12, dz * 0.25]),
+    return {0: (stand, st_root), 8: (stand, st_root), 16: (p16, [0, dy * 0.12, dz * 0.25]),
             28: (p28, [0, dy * 0.55, dz * 0.7]), 40: (p40, [0, dy, dz]), 48: (p48, [0, dy, dz]), 56: (p48, [0, dy, dz])}
 
 
@@ -264,7 +386,7 @@ def seat_ratio(R, frame):
 
 
 def main():
-    global SIT_ROOT
+    global SIT_ROOT, BODY
     argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
     ap = argparse.ArgumentParser()
     ap.add_argument("--mannequin", required=True)
@@ -274,6 +396,8 @@ def main():
     bpy.ops.wm.open_mainfile(filepath=os.path.abspath(a.mannequin))
     rig = next(o for o in bpy.data.objects if o.type == "ARMATURE" and o.get("ps_character_id"))
     R = CT.Rig(rig)
+    heads = {r: CT.to_engine(rig.matrix_world @ rig.data.bones[b].head_local) for r, b in R.src.items()}
+    BODY = CP.Body.from_heads(heads, R.leg)
     # seated root: thigh horizontal over a vertical shin -> the hip moves down and back by about the thigh length
     th = R.data["roles"]["thigh.L"]["length"]
     k = math.radians(88)
