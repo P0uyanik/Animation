@@ -36,6 +36,23 @@
       "color_strength": 0.4,
       "roughness_variation": 0.4
     },
+    "nap": {
+      "enabled": false,
+      "scale_per_reference": 12.0,
+      "detail": 2.0,
+      "roughness": 0.5,
+      "distortion": 0.6,
+      "threshold": 0.52,
+      "softness": 0.08,
+      "value_gain": 0.0,
+      "value_shadow": 0.0,
+      "sheen_gain": 0.0,
+      "roughness_drop": 0.0,
+      "fibre_gloss": 0.0,
+      "anisotropy": [1.0, 1.0, 1.0],
+      "bump_strength": 0.0,
+      "distance_fraction": 0.01
+    },
     "fibres": {
       "enabled": false,
       "density_per_cm2": 0.0,
@@ -63,6 +80,7 @@
       "surface": {"roughness": 0.92, "sheen_weight": 0.48, "sheen_roughness": 0.72, "saturation_compensation": 1.1},
       "fibre": {"kind": "noise", "scale_per_reference": 5.0, "detail": 10.0, "roughness": 0.78, "distortion": 1.2, "anisotropy": [1.0, 0.7, 1.15], "strength": 2.0, "distance_fraction": 0.05},
       "micro_relief": {"scale_per_reference": 32.0, "color_strength": 0.8, "roughness_variation": 0.4},
+      "nap": {"enabled": true, "scale_per_reference": 14, "threshold": 0.59, "softness": 0.05, "value_gain": 0.8, "value_shadow": 0.0, "sheen_gain": 0.8, "roughness_drop": 0.35, "fibre_gloss": 0.5, "anisotropy": [1.0, 1.0, 0.4]},
       "fibres": {"enabled": true, "density_per_cm2": 28.0, "length_mm": 4.2, "curl": 0.35, "lean": 0.5, "lod": 0.25, "color_variation": 0.8, "lean_variation": 0.6, "root_transparency": 0.3, "tip_transparency": 0.55},
       "silhouette": {"enabled": true, "weight": 0.78},
       "targets": {
@@ -77,6 +95,7 @@
       "surface": {"roughness": 0.9, "specular_ior_level": 0.42, "sheen_weight": 0.5, "sheen_roughness": 0.66, "shadow_transmission": 0.75},
       "fibre": {"kind": "yarn", "scale_per_reference": 72.0, "detail": 9.0, "roughness": 0.76, "distortion": 2.0, "anisotropy": [0.32, 1.0, 1.0], "strength": 0.48, "distance_fraction": 0.007},
       "micro_relief": {"scale_per_reference": 40.0, "color_strength": 0.48, "roughness_variation": 0.42},
+      "nap": {"enabled": true, "scale_per_reference": 14, "threshold": 0.59, "softness": 0.05, "value_gain": 1.0, "value_shadow": 0.0, "sheen_gain": 0.8, "roughness_drop": 0.35, "fibre_gloss": 0.5, "anisotropy": [1.0, 1.0, 0.4]},
       "fibres": {"enabled": true, "density_per_cm2": 18.0, "length_mm": 5.0, "curl": 0.5, "lean": 0.45, "lod": 0.25, "color_variation": 0.3, "lean_variation": 0.6, "root_transparency": 0.3, "tip_transparency": 0.55},
       "silhouette": {"enabled": true, "weight": 0.9},
       "targets": {
@@ -91,6 +110,7 @@
       "surface": {"roughness": 0.94, "sheen_weight": 0.58, "sheen_roughness": 0.72, "saturation_compensation": 1.04},
       "fibre": {"kind": "noise", "scale_per_reference": 36.0, "detail": 12.0, "roughness": 0.82, "distortion": 2.5, "anisotropy": [1.0, 0.82, 1.0], "strength": 0.44, "distance_fraction": 0.006},
       "micro_relief": {"scale_per_reference": 32.0, "color_strength": 0.65, "roughness_variation": 0.42},
+      "nap": {"enabled": true, "scale_per_reference": 14, "threshold": 0.59, "softness": 0.05, "value_gain": 0.8, "value_shadow": 0.0, "sheen_gain": 0.8, "roughness_drop": 0.35, "fibre_gloss": 0.5, "anisotropy": [1.0, 1.0, 0.4]},
       "fibres": {"enabled": true, "density_per_cm2": 22.0, "length_mm": 5.2, "curl": 0.4, "lean": 0.5, "lod": 0.25, "color_variation": 0.45, "lean_variation": 0.6, "root_transparency": 0.3, "tip_transparency": 0.55},
       "silhouette": {"enabled": true, "weight": 0.8},
       "targets": {
@@ -104,8 +124,9 @@
       "swatch_srgb": [110, 143, 155],
       "surface": {"roughness": 0.86, "sheen_weight": 0.2, "sheen_roughness": 0.62},
       "fibre": {"kind": "knit", "scale_per_reference": 32.0, "detail": 5.0, "roughness": 0.62, "distortion": 0.5, "anisotropy": [0.65, 1.0, 1.0], "strength": 0.32, "distance_fraction": 0.0035},
-      "micro_relief": {"scale_per_reference": 40.0, "color_strength": 0.55, "roughness_variation": 0.4},
-      "fibres": {"enabled": true, "density_per_cm2": 8.0, "length_mm": 3.4, "curl": 0.18, "lean": 0.4, "lod": 0.25, "color_variation": 0.25, "lean_variation": 0.5, "root_transparency": 0.3, "tip_transparency": 0.55},
+      "micro_relief": {"scale_per_reference": 80.0, "color_strength": 0.7, "roughness_variation": 0.4},
+      "nap": {"enabled": true, "scale_per_reference": 26, "threshold": 0.623, "softness": 0.05, "value_gain": 1.4, "value_shadow": 0.0, "sheen_gain": 0.8, "roughness_drop": 0.35, "fibre_gloss": 0.85, "anisotropy": [1.0, 1.0, 0.4]},
+      "fibres": {"enabled": true, "density_per_cm2": 16.0, "length_mm": 3.4, "curl": 0.18, "lean": 0.4, "lod": 0.25, "color_variation": 0.5, "lean_variation": 0.5, "root_transparency": 0.3, "tip_transparency": 0.55},
       "silhouette": {"enabled": true, "weight": 0.78},
       "targets": {
         "fuzz_rms_y255": {"range": [3.0, 8.0], "source": "VISUAL_TARGET.md: Surface fuzz amount, fabric surface"},
@@ -118,7 +139,8 @@
       "swatch_srgb": [133, 151, 112],
       "surface": {"roughness": 0.84, "sheen_weight": 0.16, "sheen_roughness": 0.58},
       "fibre": {"kind": "weave", "scale_per_reference": 36.0, "detail": 4.0, "roughness": 0.58, "distortion": 0.25, "anisotropy": [1.0, 1.0, 1.0], "strength": 0.28, "distance_fraction": 0.0028},
-      "micro_relief": {"scale_per_reference": 40.0, "color_strength": 0.54, "roughness_variation": 0.38},
+      "micro_relief": {"scale_per_reference": 96.0, "color_strength": 0.7, "roughness_variation": 0.38},
+      "nap": {"enabled": true, "scale_per_reference": 26, "threshold": 0.623, "softness": 0.05, "value_gain": 1.0, "value_shadow": 0.0, "sheen_gain": 0.8, "roughness_drop": 0.35, "fibre_gloss": 0.0, "anisotropy": [1.0, 1.0, 0.4]},
       "fibres": {"enabled": false, "density_per_cm2": 0.0, "length_mm": 3.0, "curl": 0.1, "lean": 0.2, "lod": 0.25},
       "silhouette": {"enabled": true, "weight": 0.78},
       "targets": {
@@ -132,7 +154,8 @@
       "swatch_srgb": [67, 92, 128],
       "surface": {"roughness": 0.82, "sheen_weight": 0.18, "sheen_roughness": 0.6},
       "fibre": {"kind": "denim", "scale_per_reference": 42.0, "detail": 6.0, "roughness": 0.68, "distortion": 0.7, "anisotropy": [0.55, 1.0, 1.0], "strength": 0.36, "distance_fraction": 0.0032},
-      "micro_relief": {"scale_per_reference": 40.0, "color_strength": 0.9, "roughness_variation": 0.4},
+      "micro_relief": {"scale_per_reference": 96.0, "color_strength": 0.95, "roughness_variation": 0.4},
+      "nap": {"enabled": true, "scale_per_reference": 26, "threshold": 0.623, "softness": 0.05, "value_gain": 1.5, "value_shadow": 0.0, "sheen_gain": 0.8, "roughness_drop": 0.35, "fibre_gloss": 0.0, "anisotropy": [1.0, 1.0, 0.4]},
       "fibres": {"enabled": false, "density_per_cm2": 0.0, "length_mm": 3.0, "curl": 0.1, "lean": 0.2, "lod": 0.25},
       "silhouette": {"enabled": true, "weight": 0.82},
       "targets": {
@@ -147,6 +170,7 @@
       "surface": {"roughness": 0.93, "specular_ior_level": 0.1, "sheen_weight": 0.2, "sheen_roughness": 0.68, "saturation_compensation": 2.1, "shadow_transmission": 0.75},
       "fibre": {"kind": "noise", "scale_per_reference": 56.0, "detail": 12.0, "roughness": 0.75, "distortion": 1.5, "anisotropy": [1.0, 0.7, 1.0], "strength": 0.45, "distance_fraction": 0.0059},
       "micro_relief": {"scale_per_reference": 32.0, "color_strength": 0.9, "roughness_variation": 0.42},
+      "nap": {"enabled": true, "scale_per_reference": 14, "threshold": 0.59, "softness": 0.05, "value_gain": 1.4, "value_shadow": 0.0, "sheen_gain": 0.8, "roughness_drop": 0.35, "fibre_gloss": 0.85, "anisotropy": [1.0, 1.0, 0.4]},
       "fibres": {"enabled": true, "density_per_cm2": 16.0, "length_mm": 5.0, "curl": 0.55, "lean": 0.5, "lod": 0.25, "color_variation": 0.5, "lean_variation": 0.6, "root_transparency": 0.3, "tip_transparency": 0.55},
       "silhouette": {"enabled": true, "weight": 1.0},
       "targets": {
@@ -160,8 +184,9 @@
       "swatch_srgb": [113, 76, 58],
       "surface": {"roughness": 0.94, "sheen_weight": 0.58, "sheen_roughness": 0.72, "saturation_compensation": 1.08},
       "fibre": {"kind": "noise", "scale_per_reference": 32.0, "detail": 12.0, "roughness": 0.82, "distortion": 2.5, "anisotropy": [1.0, 0.82, 1.0], "strength": 0.5, "distance_fraction": 0.006},
-      "micro_relief": {"scale_per_reference": 30.0, "color_strength": 0.72, "roughness_variation": 0.42},
-      "fibres": {"enabled": true, "density_per_cm2": 26.0, "length_mm": 5.6, "curl": 0.45, "lean": 0.55, "lod": 0.25, "color_variation": 0.8, "lean_variation": 0.6, "root_transparency": 0.3, "tip_transparency": 0.55},
+      "micro_relief": {"scale_per_reference": 30.0, "color_strength": 0.9, "roughness_variation": 0.42},
+      "nap": {"enabled": true, "scale_per_reference": 14, "threshold": 0.59, "softness": 0.05, "value_gain": 1.2, "value_shadow": 0.0, "sheen_gain": 0.8, "roughness_drop": 0.35, "fibre_gloss": 0.85, "anisotropy": [1.0, 1.0, 0.4]},
+      "fibres": {"enabled": true, "density_per_cm2": 36.0, "length_mm": 5.6, "curl": 0.45, "lean": 0.55, "lod": 0.25, "color_variation": 0.9, "lean_variation": 0.6, "root_transparency": 0.3, "tip_transparency": 0.55},
       "silhouette": {"enabled": true, "weight": 0.85},
       "targets": {
         "fuzz_rms_y255": {"range": [3.0, 8.0], "source": "VISUAL_TARGET.md: Surface fuzz amount, felt/fleece"},

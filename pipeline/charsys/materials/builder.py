@@ -22,6 +22,22 @@ FIBRE_GROUP_VERSION = 2
 # and alpha fade at the root (blends into the surface) and the tip (soft halo instead of hard ends).
 FIBRE_LOOK_FIELDS = ("color_variation", "lean_variation", "root_transparency", "tip_transparency")
 FIBRE_TONE_ATTRIBUTE = "ps_fibre_tone"
+# T-028 mid-scale nap/clump highlight layer ("nap" preset section). VISUAL_TARGET's sheen ratio removes form with a
+# 31 px blur and the fuzz metric removes everything above a 9 px blur, so a P90/P50 >= 1.08 needs ~8 % relative
+# luminance structure in the 9-31 px band at H = 256 (nap clumps, fibre-broken highlights) that fuzz barely sees.
+# The layer is one smooth clump mask (a reference-scaled noise through a smoothstep window); inside a clump the
+# albedo is lifted, between clumps it is lowered, the Principled sheen grows and a broad bump tilts the clump so its
+# highlight follows the light. The same mask tints the generated fibres, so nap reads through dense fibres.
+# T-028 iteration 1: broad 40-50 %-coverage clumps that also darken the gaps read as camouflage before the metric moves.
+# The layer is therefore positive and sparse: a high threshold leaves ~10-15 % of the surface as clump tips, the
+# per-axis ``anisotropy`` stretches them into streaks along the nap, and ``roughness_drop`` makes the tips glossier so
+# the lift is a light-catching highlight rather than paint.
+NAP_FIELDS = ("scale_per_reference", "detail", "roughness", "distortion", "threshold", "softness", "value_gain",
+              "value_shadow", "sheen_gain", "roughness_drop", "fibre_gloss", "bump_strength", "distance_fraction")
+# ``fibre_gloss`` (0..1): generated fibres lower their Principled Hair roughness by up to this fraction, fully on a clump
+# and by half elsewhere, so clump fibres throw strand-shaped glints where the light catches them - the "highlights
+# broken by fibre" of the VISUAL_TARGET benchmark sleeves - instead of a painted lift.
+FIBRE_ROUGHNESS = 0.64
 # fibre.coordinates: "object" (default, object space) or "uv" (the mesh's "ps_fibre" UV map, e.g. groom ropes: U around
 # the rope, V along it, in metres), so directional fibre patterns follow the geometry instead of object axes.
 COORDINATES = {"object", "uv"}
@@ -71,7 +87,7 @@ def validate_library(data):
     if not isinstance(defaults, dict):
         errors.append("defaults must be an object")
         defaults = {}
-    for section in ("surface", "fibre", "micro_relief", "fibres", "silhouette"):
+    for section in ("surface", "fibre", "micro_relief", "nap", "fibres", "silhouette"):
         if not isinstance(defaults.get(section), dict):
             errors.append(f"defaults.{section} must be an object")
     presets = data.get("presets")
@@ -114,6 +130,24 @@ def validate_library(data):
             value = fibres.get(field, 0.0)
             if not isinstance(value, (int, float)) or not 0 <= value <= 1:
                 errors.append(f"{name}.fibres.{field} must be in 0..1")
+        nap = resolved.get("nap", {})
+        if not isinstance(nap.get("enabled"), bool):
+            errors.append(f"{name}.nap.enabled must be a boolean")
+        for field in NAP_FIELDS:
+            if not isinstance(nap.get(field), (int, float)) or nap.get(field, -1) < 0:
+                errors.append(f"{name}.nap.{field} must be non-negative")
+        if not 0 <= nap.get("value_shadow", 0.0) < 1:
+            errors.append(f"{name}.nap.value_shadow must be in [0, 1)")
+        if nap.get("softness", 1.0) <= 0:
+            errors.append(f"{name}.nap.softness must be positive")
+        if not 0 <= nap.get("fibre_gloss", 0.0) < 1:
+            errors.append(f"{name}.nap.fibre_gloss must be in [0, 1)")
+        if not 0 <= nap.get("roughness_drop", 0.0) < 1:
+            errors.append(f"{name}.nap.roughness_drop must be in [0, 1)")
+        stretch = nap.get("anisotropy")
+        if (not isinstance(stretch, list) or len(stretch) != 3 or
+                not all(isinstance(v, (int, float)) and v > 0 for v in stretch)):
+            errors.append(f"{name}.nap.anisotropy must be three positive numbers")
         silhouette = resolved.get("silhouette", {})
         if silhouette.get("mode") != "sheen_layer":
             errors.append(f"{name}.silhouette.mode must be sheen_layer")
@@ -331,6 +365,97 @@ def _micro_relief(material, principled, vector, reference, micro, base):
     return noise.outputs["Fac"]
 
 
+def _nap_mask(nodes, links, vector, nap, tag=None):
+    """Smooth 0..1 clump mask of the nap layer from reference-scaled coordinates."""
+    tag = tag or (lambda node, name: node)
+    stretch = tag(nodes.new("ShaderNodeVectorMath"), "Nap Streak Stretch")
+    stretch.operation = "MULTIPLY"
+    stretch.inputs[1].default_value = tuple(float(v) for v in nap["anisotropy"])
+    links.new(vector, stretch.inputs[0])
+    vector = stretch.outputs[0]
+    noise = tag(nodes.new("ShaderNodeTexNoise"), "Nap Clumps")
+    _set(noise, float(nap["scale_per_reference"]), "Scale")
+    _set(noise, float(nap["detail"]), "Detail")
+    _set(noise, float(nap["roughness"]), "Roughness")
+    _set(noise, float(nap["distortion"]), "Distortion")
+    links.new(vector, noise.inputs["Vector"])
+    window = tag(nodes.new("ShaderNodeMapRange"), "Nap Clump Mask")
+    window.interpolation_type = "SMOOTHSTEP"
+    window.clamp = True
+    threshold, softness = float(nap["threshold"]), float(nap["softness"])
+    window.inputs["From Min"].default_value = threshold - softness
+    window.inputs["From Max"].default_value = threshold + softness
+    links.new(noise.outputs["Fac"], window.inputs["Value"])
+    return window.outputs["Result"]
+
+
+def _nap_gain(nodes, links, mask, nap, tag=None):
+    """Albedo multiplier: 1 - value_shadow between clumps, 1 + value_gain on a clump."""
+    tag = tag or (lambda node, name: node)
+    gain = tag(nodes.new("ShaderNodeMapRange"), "Nap Value")
+    gain.clamp = False
+    gain.inputs["To Min"].default_value = 1.0 - float(nap["value_shadow"])
+    gain.inputs["To Max"].default_value = 1.0 + float(nap["value_gain"])
+    links.new(mask, gain.inputs["Value"])
+    return gain.outputs["Result"]
+
+
+def _nap_layer(material, principled, vector, reference, nap, base):
+    """T-028 shared mid-scale nap/clump highlight layer (see NAP_FIELDS)."""
+    if not nap.get("enabled", False):
+        return None
+    nodes, links = material.node_tree.nodes, material.node_tree.links
+    mask = _nap_mask(nodes, links, vector, nap, _tag)
+    if float(nap["value_gain"]) > 0.0 or float(nap["value_shadow"]) > 0.0:
+        source = next((link.from_socket for link in base.links), None)
+        multiply = _new(nodes, "ShaderNodeMixRGB", "Nap Albedo")
+        multiply.blend_type = "MULTIPLY"
+        multiply.inputs[0].default_value = 1.0
+        if source is None:
+            multiply.inputs[1].default_value = base.default_value
+        else:
+            links.new(source, multiply.inputs[1])
+        links.new(_nap_gain(nodes, links, mask, nap, _tag), multiply.inputs[2])
+        links.new(multiply.outputs[0], base)
+    sheen = _input(principled, "Sheen Weight", "Sheen")
+    if sheen is not None and float(nap["sheen_gain"]) > 0.0 and float(sheen.default_value) > 0.0 and not sheen.links:
+        weight = float(sheen.default_value)
+        ramp = _new(nodes, "ShaderNodeMapRange", "Nap Sheen")
+        ramp.clamp = False
+        ramp.inputs["To Min"].default_value = weight
+        ramp.inputs["To Max"].default_value = weight * (1.0 + float(nap["sheen_gain"]))
+        links.new(mask, ramp.inputs["Value"])
+        links.new(ramp.outputs["Result"], sheen)
+    drop = float(nap["roughness_drop"])
+    roughness = _input(principled, "Roughness")
+    if drop > 0.0 and roughness is not None:
+        source = next((link.from_socket for link in roughness.links), None)
+        factor = _new(nodes, "ShaderNodeMapRange", "Nap Tip Gloss")
+        factor.clamp = True
+        factor.inputs["To Min"].default_value = 1.0
+        factor.inputs["To Max"].default_value = 1.0 - drop
+        links.new(mask, factor.inputs["Value"])
+        glossy = _new(nodes, "ShaderNodeMath", "Nap Tip Roughness")
+        glossy.operation = "MULTIPLY"
+        if source is None:
+            glossy.inputs[0].default_value = float(roughness.default_value)
+        else:
+            links.new(source, glossy.inputs[0])
+        links.new(factor.outputs["Result"], glossy.inputs[1])
+        links.new(glossy.outputs[0], roughness)
+    if float(nap["bump_strength"]) > 0.0 and float(nap["distance_fraction"]) > 0.0:
+        normal = _input(principled, "Normal")
+        previous = next((link.from_socket for link in normal.links), None)
+        bump = _new(nodes, "ShaderNodeBump", "Nap Clump Normal")
+        bump.inputs["Strength"].default_value = float(nap["bump_strength"])
+        bump.inputs["Distance"].default_value = reference * float(nap["distance_fraction"])
+        links.new(mask, bump.inputs["Height"])
+        if previous is not None:
+            links.new(previous, bump.inputs["Normal"])
+        links.new(bump.outputs["Normal"], normal)
+    return mask
+
+
 def _add_rim_layer(material, principled, preset, base_color, breakup=None):
     silhouette = preset["silhouette"]
     if not silhouette.get("enabled"):
@@ -460,6 +585,7 @@ def apply_preset(material, preset_name, base_color_srgb=None, reference_size_m=N
         links.new(previous, bump.inputs["Normal"])
     links.new(bump.outputs["Normal"], normal)
     micro_breakup = _micro_relief(material, principled, anis.outputs[0], reference, preset["micro_relief"], base)
+    _nap_layer(material, principled, anis.outputs[0], reference, preset["nap"], base)
     if float(surface["alpha"]) < 1.0:
         try:
             material.surface_render_method = "DITHERED"
@@ -472,12 +598,15 @@ def apply_preset(material, preset_name, base_color_srgb=None, reference_size_m=N
     return material
 
 
-def _fibres_material(name, color, fibres=None):
+def _fibres_material(name, color, fibres=None, nap=None, reference=None, anisotropy=(1.0, 1.0, 1.0)):
     """Principled Hair material for the generated native curve fibres.
 
     ``fibres`` (the resolved preset block) adds the T-026 look: each strand's value is scaled by
     ``1 +/- color_variation`` from the per-curve ``ps_fibre_tone`` attribute written by the shared node group, and
     the strand fades to ``1 - root_transparency`` at the root and ``1 - tip_transparency`` at the tip.
+    ``nap`` (T-028, the resolved nap block, with the surface's ``reference`` size and fibre ``anisotropy``) applies
+    the surface's clump albedo gain to the strands: the curves object shares the surface object's transform, so its
+    object coordinates evaluate the same clump mask as the surface under each fibre.
     """
     import bpy
     fibres = fibres or {}
@@ -492,10 +621,11 @@ def _fibres_material(name, color, fibres=None):
     except Exception:
         pass
     _set(shader, (*_srgb_to_linear(color), 1), "Color", "Base Color")
-    _set(shader, 0.64, "Roughness")
+    _set(shader, FIBRE_ROUGHNESS, "Roughness")
     _set(shader, 0.74, "Radial Roughness")
     _set(shader, 0.12, "Random Roughness")
     variation = float(fibres.get("color_variation", 0.0))
+    colour_socket = None
     if variation > 0.0:
         tone = nodes.new("ShaderNodeAttribute")
         tone.attribute_type = "GEOMETRY"
@@ -509,7 +639,38 @@ def _fibres_material(name, color, fibres=None):
         scaled.operation = "SCALE"
         scaled.inputs[0].default_value = _srgb_to_linear(color)
         links.new(gain.outputs["Result"], scaled.inputs["Scale"])
-        links.new(scaled.outputs["Vector"], _input(shader, "Color", "Base Color"))
+        colour_socket = scaled.outputs["Vector"]
+    gloss = float(nap["fibre_gloss"]) if nap and nap.get("enabled") else 0.0
+    if nap and nap.get("enabled") and reference and (float(nap["value_gain"]) > 0.0 or
+                                                       float(nap["value_shadow"]) > 0.0 or gloss > 0.0):
+        coords = nodes.new("ShaderNodeTexCoord")
+        ref = nodes.new("ShaderNodeVectorMath")
+        ref.operation = "SCALE"
+        ref.inputs["Scale"].default_value = 1.0 / float(reference)
+        links.new(coords.outputs["Object"], ref.inputs[0])
+        anis = nodes.new("ShaderNodeVectorMath")
+        anis.operation = "MULTIPLY"
+        anis.inputs[1].default_value = tuple(float(v) for v in anisotropy)
+        links.new(ref.outputs[0], anis.inputs[0])
+        mask = _nap_mask(nodes, links, anis.outputs[0], nap)
+        if gloss > 0.0:
+            rough = nodes.new("ShaderNodeMapRange")
+            rough.clamp = True
+            rough.inputs["To Min"].default_value = FIBRE_ROUGHNESS * (1.0 - 0.5 * gloss)
+            rough.inputs["To Max"].default_value = FIBRE_ROUGHNESS * (1.0 - gloss)
+            links.new(mask, rough.inputs["Value"])
+            links.new(rough.outputs["Result"], _input(shader, "Roughness"))
+        nap_gain = _nap_gain(nodes, links, mask, nap)
+        clumped = nodes.new("ShaderNodeVectorMath")
+        clumped.operation = "SCALE"
+        if colour_socket is None:
+            clumped.inputs[0].default_value = _srgb_to_linear(color)
+        else:
+            links.new(colour_socket, clumped.inputs[0])
+        links.new(nap_gain, clumped.inputs["Scale"])
+        colour_socket = clumped.outputs["Vector"]
+    if colour_socket is not None:
+        links.new(colour_socket, _input(shader, "Color", "Base Color"))
     surface = shader.outputs[0]
     root_t = float(fibres.get("root_transparency", 0.0))
     tip_t = float(fibres.get("tip_transparency", 0.0))
@@ -705,14 +866,21 @@ def add_fibres_geometry(obj, preset_name, base_color_srgb=None, reference_size_m
         return None
     if obj.type != "MESH":
         raise ValueError("surface fibres require a mesh object")
-    density = float(fibres["density_per_cm2"]) * 10000.0
+    reference = float(reference_size_m or library["reference_size_m"])
+    if reference <= 0:
+        raise ValueError("reference_size_m must be positive")
+    # T-028: fibre length and density are authored at the library reference (the size that projects to H); a surface
+    # with another reference_size_m keeps the same look in H-normalised pixels: length x k, density / k^2.
+    k = reference / float(library["reference_size_m"])
+    density = float(fibres["density_per_cm2"]) * 10000.0 / (k * k)
     if lod == "wide":
         density *= float(fibres["lod"])
-    length = float(fibres["length_mm"]) / 1000.0
+    length = float(fibres["length_mm"]) / 1000.0 * k
     # The raw base colour: saturation_compensation offsets the desaturating sheen/rim layers of the surface shader,
     # which the Principled Hair fibres do not have (T-026: dense compensated fibres pushed felt hair to 127 %).
     color = tuple(base_color_srgb or preset["swatch_srgb"])
-    material = _fibres_material(f"M_fibres_{preset_name}_{obj.name}", color, fibres)
+    material = _fibres_material(f"M_fibres_{preset_name}_{obj.name}", color, fibres, preset["nap"], reference,
+                                preset["fibre"]["anisotropy"])
     import bpy
     group = shared_fibre_node_group()
     curves = bpy.data.hair_curves.new(obj.name + ".fibres")
@@ -737,6 +905,8 @@ def add_fibres_geometry(obj, preset_name, base_color_srgb=None, reference_size_m
     _set_modifier_input(modifier, group, "Material", material)
     fibre_object["ps_material_preset"] = preset_name
     fibre_object["ps_fibres_lod"] = lod
+    fibre_object["ps_fibres_source"] = obj.name
+    fibre_object["ps_fibres_reference_scale"] = k
     return fibre_object
 
 
