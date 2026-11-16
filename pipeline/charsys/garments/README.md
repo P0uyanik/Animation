@@ -12,7 +12,8 @@ The character spec uses this shape:
 {
   "clothing": {
     "generator": "garment/1",
-    "hide_body_faces": false,
+    "hide_body_faces": true,
+    "collision": {"enabled": true, "offset_m": 0.002, "radius_m": 0.08, "falloff_m": 0.02, "passes": 3},
     "max_influences": 1,
     "defaults": {
       "thickness_m": 0.002,
@@ -49,9 +50,39 @@ use a `_m` suffix. Shared fields are `thickness_m`, `ease_m` (alias
 library names. When that library is installed its node builder is used; the
 fallback used by isolated tests preserves the same preset metadata.
 
-`hide_body_faces` is opt-in. It deletes only body faces selected by shell-based
-items; open boundaries remain under the garment. It is useful for export builds
-where extreme poses would otherwise reveal covered skin.
+## Body masks (`hide_body_faces`, per-item `mask_body`)
+
+Production clothes do not keep skin under a garment: in extreme poses it pokes
+through. `hide_body_faces` (default `false`) sets the default for every item and
+`mask_body` overrides it per item. For each masked shell-based item (tops, vests,
+dresses' bodices, shorts/trousers, footwear) the body faces copied into that
+item's shell are recorded on the body mesh as the FACE attribute
+`ps_cover.<item>`. Nothing is deleted. After rigging, `bind_to_body` builds the
+vertex group `ps_garment_mask` from the worn items (vertices whose every face is
+covered) and a `MASK` modifier `garment_body_mask` (inverted) hides exactly the
+fully covered faces; the boundary ring under hems and cuffs stays. Skirts cover
+no faces and never mask. `set_active_items(body, garments, items)` switches the
+worn set (outfits) and rebuilds mask and collision weights; it is deterministic.
+The engine exporter keeps all body vertices and drops the masked triangles.
+
+## Post-skinning collision (`collision`)
+
+Every garment piece gets, after its `Armature` modifier, `passes` (1--4, default
+3) `SHRINKWRAP` modifiers (`body_collision`, `body_collision.2`, ...):
+nearest surface point, `OUTSIDE`, `offset_m` (default 2 mm), limited to the
+vertex group `ps_collision`. The target is `garment.collider.<body>`, a hidden,
+never-rendered object that shares the body mesh and weights and is deformed by
+the same rig without the mask, so hidden skin still pushes clothes outward.
+Extra passes resolve vertices that the first projection pushed into an
+adjacent body part in deep creases. `ps_collision` weights come from the rest
+pose: 1 where the vertex hangs over visible skin or lies within `radius_m` of
+it, falling to 0 over `falloff_m`; vertices deep over masked skin are not
+moved. It is a modifier stack, so it bakes and evaluates identically in viewport,
+render and caches. Set `collision.enabled` to `false` to omit it.
+
+Articulation helpers from the first iteration (`articulation_allowance_m`,
+`front_articulation_rise_m`, `front_centre_ease_m`) remain available as item
+fields but default to 0; masks plus collision replace per-pose offset tuning.
 
 `max_influences` is 1--4. Four copies the body's complete smooth weights. A
 dominant-source value of 1 is useful for thick plush clothes: it keeps an

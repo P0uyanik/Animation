@@ -6,7 +6,6 @@ garment spec. The character faces -Y, +Z is up, and +X is its left.
 import math
 import re
 
-import bmesh
 import bpy
 from mathutils import Vector
 from mathutils.bvhtree import BVHTree
@@ -65,8 +64,20 @@ def validate(clothing):
     if "max_influences" in clothing and (not isinstance(clothing["max_influences"], int) or
                                           not 1 <= clothing["max_influences"] <= 4):
         raise ValueError("clothing.max_influences must be an integer in [1, 4]")
+    collision = clothing.get("collision", {})
+    if not isinstance(collision, dict):
+        raise ValueError("clothing.collision must be an object")
+    if "enabled" in collision and not isinstance(collision["enabled"], bool):
+        raise ValueError("clothing.collision.enabled must be a boolean")
+    for key in ("offset_m", "radius_m", "falloff_m"):
+        if key in collision:
+            _number(collision[key], f"clothing.collision.{key}", 0.0, 0.2)
+    if "passes" in collision and (not isinstance(collision["passes"], int) or not 1 <= collision["passes"] <= 4):
+        raise ValueError("clothing.collision.passes must be an integer in [1, 4]")
+    if "hide_body_faces" in clothing and not isinstance(clothing["hide_body_faces"], bool):
+        raise ValueError("clothing.hide_body_faces must be a boolean")
     for key in ("thickness_m", "ease_m", "offset_m", "seam_radius_m", "collision_clearance_m",
-                "articulation_allowance_m", "front_articulation_rise_m"):
+                "articulation_allowance_m", "front_articulation_rise_m", "front_centre_ease_m"):
         if key in defaults:
             _number(defaults[key], f"clothing.defaults.{key}", 0.0, 0.1)
     names = set()
@@ -80,11 +91,13 @@ def validate(clothing):
             raise ValueError(f"duplicate garment name: {name}")
         names.add(name)
         _assignment(raw)
+        if "mask_body" in raw and not isinstance(raw["mask_body"], bool):
+            raise ValueError(f"garment {name}.mask_body must be a boolean")
         for key in ("sleeve_length", "length", "height", "flare"):
             if key in raw:
                 _number(raw[key], f"garment {name}.{key}", 0.0, 1.0)
         for key in ("thickness_m", "ease_m", "offset_m", "seam_radius_m", "collision_clearance_m",
-                    "articulation_allowance_m", "front_articulation_rise_m", "length_m", "height_m", "flare_m"):
+                    "articulation_allowance_m", "front_articulation_rise_m", "front_centre_ease_m", "length_m", "height_m", "flare_m"):
             if key in raw:
                 _number(raw[key], f"garment {name}.{key}", 0.0, 1.0)
         collar = raw.get("collar", "none")
@@ -291,8 +304,8 @@ def _feature(objects, ob, cfg, part, mat, G):
 
 def _top(C, body, cfg, P, H, J, G, vest=False):
     ease, thick = cfg["ease_m"], cfg["thickness_m"]
-    shell_ease = ease + float(cfg.get("articulation_allowance_m", 0.022))
-    front_rise = float(cfg.get("front_articulation_rise_m", 0.10))
+    shell_ease = ease + float(cfg.get("articulation_allowance_m", 0.0))
+    front_rise = float(cfg.get("front_articulation_rise_m", 0.0))
     levels = P["torso"]["levels"]
     hem_z = float(cfg.get("hem_z_m", levels[2][0] * H))
     top_z = max(P["neck"]["base_z"], P["torso"]["levels"][-1][0]) * H
@@ -409,8 +422,8 @@ def _top(C, body, cfg, P, H, J, G, vest=False):
 
 def _bottoms(C, body, cfg, P, H, J, G):
     ease, thick = cfg["ease_m"], cfg["thickness_m"]
-    shell_ease = ease + float(cfg.get("articulation_allowance_m", 0.016))
-    front_rise = float(cfg.get("front_articulation_rise_m", 0.10))
+    shell_ease = ease + float(cfg.get("articulation_allowance_m", 0.0))
+    front_rise = float(cfg.get("front_articulation_rise_m", 0.0))
     is_short = cfg["type"] == "shorts"
     length = float(cfg.get("length", 0.36 if is_short else 0.92))
     hip_z, ankle_z = P["leg"]["hip_z"] * H, P["leg"]["ankle_z"] * H
@@ -432,7 +445,7 @@ def _bottoms(C, body, cfg, P, H, J, G):
 
     main, covered = _shell(body, f"garment.{cfg['name']}.main", selector, shell_ease, thick, C, G)
     _front_articulation_rise(main, hip_z, 0.20 * H, front_rise)
-    _front_centre_ease(main, hip_z, 0.12 * H, 0.06, abs(J["hip.L"].x) * 0.75)
+    _front_centre_ease(main, hip_z, 0.12 * H, float(cfg.get("front_centre_ease_m", 0.0)), abs(J["hip.L"].x) * 0.75)
     objects = []
     _feature(objects, main, cfg, "main", _mat_for(G, cfg, "main", H), G)
     bands = cfg.get("bands", {})
@@ -574,27 +587,132 @@ def _footwear(C, body, cfg, P, H, J, G):
     return objects, covered
 
 
-def _delete_body_faces(body, indices):
-    if not indices:
-        return 0
-    bm = bmesh.new()
-    bm.from_mesh(body.data)
-    bm.faces.ensure_lookup_table()
-    doomed = [bm.faces[i] for i in sorted(indices) if i < len(bm.faces)]
-    bmesh.ops.delete(bm, geom=doomed, context="FACES")
-    loose = [v for v in bm.verts if not v.link_faces]
-    if loose:
-        bmesh.ops.delete(bm, geom=loose, context="VERTS")
-    bm.to_mesh(body.data)
-    bm.free()
-    body.data.update()
-    return len(doomed)
+MASK_PREFIX = "ps_mask."
+MASK_GROUP = "ps_garment_mask"
+MASK_MODIFIER = "garment_body_mask"
+COLLISION_GROUP = "ps_collision"
+COLLISION_MODIFIER = "body_collision"
+COVER_ATTR = "ps_cover."
+
+
+def _store_cover(body, item, faces):
+    """Record the body faces an item's shell covers as a FACE boolean attribute (survives rigging)."""
+    name = COVER_ATTR + item
+    if name in body.data.attributes:
+        body.data.attributes.remove(body.data.attributes[name])
+    attr = body.data.attributes.new(name, "BOOLEAN", "FACE")
+    values = [False] * len(body.data.polygons)
+    for index in faces:
+        values[index] = True
+    attr.data.foreach_set("value", values)
+
+
+def _covered_faces(body, items):
+    covered = set()
+    for item in items:
+        attr = body.data.attributes.get(COVER_ATTR + item)
+        if attr is None:
+            continue
+        values = [False] * len(body.data.polygons)
+        attr.data.foreach_get("value", values)
+        covered.update(i for i, v in enumerate(values) if v)
+    return covered
+
+
+def _fully_covered_vertices(body, faces):
+    """Vertices whose every incident face is covered. Masking them removes only fully covered faces."""
+    touched, open_verts = set(), set()
+    for poly in body.data.polygons:
+        target = touched if poly.index in faces else open_verts
+        target.update(poly.vertices)
+    return touched - open_verts
+
+
+def masked_items(body):
+    return list(body.get("ps_garment_mask_items", []))
+
+
+def set_active_items(body, garments, items, collision=None):
+    """Select which garment items are worn: rebuilds the body mask (union of the worn items' masks) and the
+    per-garment collision weights against the body regions that stay visible. Deterministic; no simulation."""
+    items = set(items)
+    if collision is None:
+        collision = dict(body.get("ps_garment_collision", {}))
+    radius = float(collision.get("radius_m", 0.08))
+    falloff = float(collision.get("falloff_m", 0.02))
+    mask_items = sorted(items & set(masked_items(body)))
+    hidden_faces = _covered_faces(body, mask_items)
+    hidden_verts = _fully_covered_vertices(body, hidden_faces)
+    group = body.vertex_groups.get(MASK_GROUP) or body.vertex_groups.new(name=MASK_GROUP)
+    group.remove(list(range(len(body.data.vertices))))
+    if hidden_verts:
+        group.add(sorted(hidden_verts), 1.0, "REPLACE")
+    mod = body.modifiers.get(MASK_MODIFIER)
+    if mod is None:
+        mod = body.modifiers.new(MASK_MODIFIER, "MASK")
+    mod.mode, mod.vertex_group, mod.invert_vertex_group = "VERTEX_GROUP", MASK_GROUP, True
+    mod.show_viewport = mod.show_render = bool(hidden_verts)
+    # Faces actually removed by the mask: any face with a hidden vertex.
+    removed = {p.index for p in body.data.polygons if any(v in hidden_verts for v in p.vertices)}
+    visible = [p for p in body.data.polygons if p.index not in removed]
+    body_points = [body.matrix_world @ v.co for v in body.data.vertices]
+    full = BVHTree.FromPolygons(body_points, [tuple(p.vertices) for p in body.data.polygons], all_triangles=False)
+    bvh = None
+    if visible:
+        bvh = BVHTree.FromPolygons(body_points, [tuple(p.vertices) for p in visible], all_triangles=False)
+    weighted = 0
+    for ob in garments:
+        worn = ob.get("ps_garment_item") in items
+        ob.hide_render = not worn
+        cgroup = ob.vertex_groups.get(COLLISION_GROUP)
+        if cgroup is None or ob.modifiers.get(COLLISION_MODIFIER) is None:
+            continue
+        cgroup.remove(list(range(len(ob.data.vertices))))
+        if not worn or bvh is None:
+            continue
+        # Rest-pose distance to the visible body decides how much of the post-skinning correction applies:
+        # full weight near hems, cuffs, collars and open garments; zero over masked (hidden) skin.
+        by_weight = {}
+        for v in ob.data.vertices:
+            point = ob.matrix_world @ v.co
+            over = full.find_nearest(point)[2]
+            if over is not None and over not in removed:
+                w = 1.0  # hangs over visible skin (skirts, sleeve openings, hems)
+            else:
+                hit = bvh.find_nearest(point)
+                if hit[0] is None:
+                    continue
+                d = hit[3]
+                w = 1.0 if d <= radius else max(0.0, 1.0 - (d - radius) / max(falloff, 1e-9))
+            if w > 0:
+                by_weight.setdefault(round(w, 4), []).append(v.index)
+        for w, idx in sorted(by_weight.items()):
+            cgroup.add(idx, w, "REPLACE")
+            weighted += len(idx)
+    return {"worn": sorted(items), "masked_items": mask_items, "hidden_body_vertices": len(hidden_verts),
+            "hidden_body_faces": len(removed), "visible_body_faces": len(visible),
+            "collision_weighted_vertices": weighted}
+
+
+def visible_face_flags(body):
+    """Per-polygon visibility of the body under its current garment mask (True = visible)."""
+    group = body.vertex_groups.get(MASK_GROUP)
+    mod = body.modifiers.get(MASK_MODIFIER)
+    if group is None or mod is None or not mod.show_render:
+        return [True] * len(body.data.polygons)
+    hidden = set()
+    gi = group.index
+    for v in body.data.vertices:
+        if any(g.group == gi and g.weight > 0 for g in v.groups):
+            hidden.add(v.index)
+    return [not any(i in hidden for i in p.vertices) for p in body.data.polygons]
 
 
 def build(C, body, clothing, P, H, J, G):
     """Build garments before rigging. Returns ``(objects, JSON-safe report)``."""
     validate(clothing)
-    objects, coverage, item_report = [], set(), []
+    objects, coverage, item_report, masked = [], set(), [], []
+    hide_default = bool(clothing.get("hide_body_faces", False))
     for raw in clothing["garments"]:
         cfg = _merge(clothing.get("defaults"), raw)
         before = len(objects)
@@ -626,19 +744,56 @@ def build(C, body, clothing, P, H, J, G):
             _ensure_clearance(body, ob, cfg["ease_m"])
         objects += made
         coverage |= cov
+        mask = bool(cfg.get("mask_body", hide_default)) and bool(cov)
+        if mask:
+            _store_cover(body, cfg["name"], cov)
+            masked.append(cfg["name"])
         item_report.append({"name": cfg["name"], "type": cfg["type"], "objects": [o.name for o in objects[before:]],
+                            "covered_body_faces": len(cov), "mask_body": mask,
                             "material_presets": sorted({o.get("ps_material_preset", "") for o in objects[before:]})})
-    hidden = _delete_body_faces(body, coverage) if clothing.get("hide_body_faces", False) else 0
+    body["ps_garment_mask_items"] = masked
+    collision = {"enabled": True, "offset_m": 0.0015, "radius_m": 0.08, "falloff_m": 0.02, "passes": 2}
+    collision.update(clothing.get("collision", {}))
+    body["ps_garment_collision"] = collision
     return objects, {"generator": GENERATOR, "items": item_report, "objects": len(objects),
-                     "covered_body_faces": len(coverage), "hidden_body_faces": hidden,
-                     "hide_body_faces": bool(clothing.get("hide_body_faces", False))}
+                     "covered_body_faces": len(coverage), "masked_items": masked,
+                     "hide_body_faces": hide_default, "collision": collision}
 
 
-def bind_to_body(rig, body, garments, neighbours=1, max_influences=4):
+def collision_proxy(rig, body):
+    """Hidden, never-rendered object sharing the body mesh and deform weights, deformed by the same rig but without
+    the garment mask. Collision targets this so hidden (masked) skin still pushes garments outward."""
+    name = f"garment.collider.{body.name}"
+    proxy = bpy.data.objects.get(name)
+    if proxy is None:
+        proxy = bpy.data.objects.new(name, body.data)
+        for collection in body.users_collection:
+            collection.objects.link(proxy)
+        proxy.parent = rig
+        proxy.matrix_world = body.matrix_world.copy()
+        source = next((m for m in body.modifiers if m.type == "ARMATURE"), None)
+        mod = proxy.modifiers.new("Armature", "ARMATURE")
+        mod.object = rig
+        if source is not None:
+            mod.use_deform_preserve_volume = source.use_deform_preserve_volume
+            mod.use_vertex_groups, mod.use_bone_envelopes = source.use_vertex_groups, source.use_bone_envelopes
+    proxy["ps_collision_proxy"] = True
+    proxy["ps_collision_source"] = body.name
+    proxy.hide_render = True
+    proxy.visible_camera = proxy.visible_shadow = False
+    proxy.display_type = "WIRE"
+    try:
+        proxy.hide_set(True)
+    except RuntimeError:
+        pass
+    return proxy
+
+
+def bind_to_body(rig, body, garments, neighbours=1, max_influences=4, worn=None):
     """Copy normalized nearby body weights to all garment pieces and add their Armature modifiers."""
     if not garments:
         return {"method": "nearest_body_weights/1", "objects": 0, "vertices": 0, "max_source_distance_m": 0.0}
-    source_groups = {g.index: g.name for g in body.vertex_groups}
+    source_groups = {g.index: g.name for g in body.vertex_groups if not g.name.startswith("ps_")}
     if not source_groups:
         raise ValueError("body must be rigged before garment weight transfer")
     tree = KDTree(len(body.data.vertices))
@@ -649,6 +804,8 @@ def bind_to_body(rig, body, garments, neighbours=1, max_influences=4):
     max_dist = 0.0
     total = 0
     per_object = {}
+    collision_cfg = dict(body.get("ps_garment_collision", {"enabled": True}))
+    proxy = collision_proxy(rig, body) if collision_cfg.get("enabled", True) else None
     for ob in garments:
         groups = {name: ob.vertex_groups.new(name=name) for name in source_groups.values()}
         source_hits = []
@@ -684,18 +841,29 @@ def bind_to_body(rig, body, garments, neighbours=1, max_influences=4):
         ob.matrix_parent_inverse = rig.matrix_world.inverted()
         mod = ob.modifiers.new("Armature", "ARMATURE")
         mod.object = rig
-        clearance = float(ob.get("ps_collision_clearance_m", 0.003))
-        collision = ob.modifiers.new("body_collision_envelope", "SHRINKWRAP")
-        collision.target = body
-        collision.wrap_method = "NEAREST_SURFACEPOINT"
-        collision.wrap_mode = "OUTSIDE"
-        collision.offset = clearance
+        if collision_cfg.get("enabled", True):
+            # Post-skinning collision correction: after the Armature modifier, project only the vertex-group
+            # weighted vertices (those near visible skin) to the outside of the posed, masked body.
+            # A second pass resolves vertices that the first projection moved into an adjacent body part in deep
+            # creases (thigh against belly, arm against ribs).
+            ob.vertex_groups.new(name=COLLISION_GROUP)
+            for k in range(int(collision_cfg.get("passes", 2))):
+                collision = ob.modifiers.new(COLLISION_MODIFIER if k == 0 else f"{COLLISION_MODIFIER}.{k + 1}",
+                                             "SHRINKWRAP")
+                collision.target = proxy
+                collision.wrap_method = "NEAREST_SURFACEPOINT"
+                collision.wrap_mode = "OUTSIDE"
+                collision.offset = float(collision_cfg.get("offset_m", 0.0015))
+                collision.vertex_group = COLLISION_GROUP
         ob["ps_weight_transfer"] = "nearest_body_weights/1"
         ob["ps_weight_source"] = body.name
         ob["ps_weight_neighbours"] = int(neighbours)
         total += len(ob.data.vertices)
-        per_object[ob.name] = {"vertices": len(ob.data.vertices), "nearest_source_vertices": len(set(source_hits)),
-                               "collision_clearance_m": round(float(ob["ps_collision_clearance_m"]), 6)}
+        per_object[ob.name] = {"vertices": len(ob.data.vertices), "nearest_source_vertices": len(set(source_hits))}
+    items = sorted({ob.get("ps_garment_item") for ob in garments} if worn is None else set(worn))
+    active = set_active_items(body, garments, items, collision_cfg)
     return {"method": "nearest_body_weights/1", "objects": len(garments), "vertices": total,
-            "max_source_distance_m": round(max_dist, 6), "collision": "shrinkwrap_outside/1",
-            "per_object": per_object}
+            "max_source_distance_m": round(max_dist, 6), "collision_proxy": proxy.name if proxy else None,
+            "collision": {"method": "shrinkwrap_outside_after_armature/1", **{
+                k: (round(v, 6) if isinstance(v, float) else v) for k, v in collision_cfg.items()}},
+            "mask": active, "per_object": per_object}

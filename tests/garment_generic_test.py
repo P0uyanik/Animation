@@ -76,7 +76,8 @@ def _internal():
     H, P = float(neutral["body"]["height_m"]), neutral["body"]["params"]
     clothing = {
         "generator": "garment/1",
-        "hide_body_faces": False,
+        "hide_body_faces": True,
+        "collision": {"enabled": True, "offset_m": 0.002, "radius_m": 0.08, "falloff_m": 0.02, "passes": 3},
         "max_influences": 4,
         "defaults": {"thickness_m": 0.002, "ease_m": 0.009, "seam_radius_m": 0.00115},
         "garments": [
@@ -209,79 +210,135 @@ def _internal():
         evaluated.to_mesh_clear()
         return verts, faces
 
-    def clearance(objects):
+    mask_mod = body.modifiers.get(GAR.generator.MASK_MODIFIER)
+    PROBES = [Vector(v) for v in ((1, 0, 0), (-1, 0, 0), (0, 1, 0), (0, -1, 0), (0, 0, 1), (0, 0, -1))]
+
+    def clearance(objects, floor):
+        """Signed clearance of garment vertices over visible body faces (hidden regions reported for information).
+        Passes when no vertex over visible skin is closer than ``floor`` (negative = inside the body)."""
+        garment_points = [(ob.name, p) for ob in objects for p in world_mesh(ob)[0]]
+        visible = GAR.visible_face_flags(body)
+        enabled = mask_mod.show_viewport if mask_mod else False
+        if mask_mod:
+            mask_mod.show_viewport = False  # full posed body; face indices match body.data.polygons
         body_verts, body_faces = world_mesh(body)
+        if mask_mod:
+            mask_mod.show_viewport = enabled
+            bpy.context.view_layer.update()
+        assert len(body_faces) == len(visible)
         bvh = BVHTree.FromPolygons(body_verts, body_faces, all_triangles=False)
-        minimum = float("inf")
-        closest = None
-        garment_point = None
-        body_point = None
-        for ob in objects:
-            verts, _ = world_mesh(ob)
-            for point in verts:
-                location, normal, _, distance = bvh.find_nearest(point)
-                signed = (point - location).dot(normal) if location is not None else -1.0
-                if signed < minimum:
-                    minimum, closest = signed, ob.name
-                    garment_point = tuple(round(value, 6) for value in point)
-                    body_point = tuple(round(value, 6) for value in location) if location is not None else None
-        return minimum, closest, garment_point, body_point
+        best = {"visible": [float("inf"), None, None, None], "hidden": [float("inf"), None, None, None]}
+        counted, inside, buried, buried_min = 0, 0, 0, float("inf")
+        def crossings(origin, direction):
+            count, start = 0, origin
+            for _ in range(64):
+                hit = bvh.ray_cast(start + direction * 1e-6, direction)
+                if hit[0] is None:
+                    break
+                count, start = count + 1, hit[0]
+            return count
 
-    outfits = {
-        "outfit_a": [ob for ob in garment_objects if ob.get("ps_garment_item") in {"shirt", "vest", "shorts", "boots"}],
-        "dress": [ob for ob in garment_objects if ob.get("ps_garment_item") in {"dress", "boots"}],
+        for name, point in garment_points:
+            location, normal, index, distance = bvh.find_nearest(point)
+            if location is None:
+                continue
+            signed = (point - location).dot(normal)
+            if signed < 0 and distance > 1e-6:
+                # Posed creases make the nearest-face sign unreliable (nearest point on an edge, or on a face that
+                # the bent body itself has pushed inside another part). The body is one closed surface, so a point
+                # is outside when every probe ray crosses it an even number of times.
+                away = (point - location).normalized()
+                if all(crossings(point, direction) % 2 == 0 for direction in (away, *PROBES)):
+                    signed = distance
+            if signed < clearance_floor and visible[index]:
+                # Skin-to-skin contact is not visible skin: the pose has pushed this skin inside another body part,
+                # or another body part faces it closer than a garment can fit (arm resting on the ribs).
+                probe = location + normal * 1e-4
+                facing = bvh.ray_cast(probe, normal, contact_gap)
+                if facing[0] is not None or sum(crossings(probe, direction) % 2 for direction in PROBES) >= 4:
+                    buried += 1
+                    buried_min = min(buried_min, signed)
+                    continue
+            key = "visible" if visible[index] else "hidden"
+            counted += key == "visible"
+            inside += key == "visible" and signed < 0
+            if signed < best[key][0]:
+                best[key] = [signed, name, tuple(round(v, 6) for v in point), tuple(round(v, 6) for v in location)]
+        value, closest, garment_point, body_point = best["visible"]
+        return {"min_clearance_m": round(value, 6), "closest_object": closest,
+                "garment_point_m": garment_point, "body_point_m": body_point,
+                "vertices_over_visible_body": counted, "vertices_inside_visible_body": inside,
+                "vertices_total": len(garment_points), "floor_m": floor,
+                "hidden_region_min_m": round(best["hidden"][0], 6) if best["hidden"][1] else None,
+                "skin_contact_vertices": buried,
+                "skin_contact_min_m": round(buried_min, 6) if buried else None,
+                "pass": value >= floor}
+
+    items = {
+        "outfit_a": ["shirt", "vest", "shorts", "boots"],
+        "dress": ["dress", "boots"],
     }
+    outfits = {name: [ob for ob in garment_objects if ob.get("ps_garment_item") in worn] for name, worn in items.items()}
     result = {"blender": bpy.app.version_string, "body_generator": "body_generic/1", "garment_generator": "garment/1",
-              "build": build_report, "rig": rig_report, "weight_transfer": bind_report, "checks": {}, "poses": {}}
+              "build": build_report, "rig": rig_report, "weight_transfer": bind_report, "checks": {}, "poses": {},
+              "rest": {}, "masks": {}}
 
-    # Structural skinning checks: every garment vertex has <=4 normalized body groups and an Armature modifier.
+    # Structural skinning checks: every garment vertex has <=4 normalized deform groups, an Armature modifier and
+    # (when enabled) the body collision Shrinkwrap evaluated AFTER the Armature modifier.
     max_weight_error = 0.0
     max_influences = 0
     unweighted = 0
     bad_modifiers = []
     for ob in garment_objects:
+        kinds = [mod.type for mod in ob.modifiers]
         if not any(mod.type == "ARMATURE" and mod.object == rig for mod in ob.modifiers):
             bad_modifiers.append(ob.name)
+        elif "SHRINKWRAP" in kinds and (kinds.index("SHRINKWRAP") < kinds.index("ARMATURE") or
+                                        ob.modifiers[GAR.generator.COLLISION_MODIFIER].target.data != body.data or
+                                        ob.modifiers[GAR.generator.COLLISION_MODIFIER].vertex_group !=
+                                        GAR.generator.COLLISION_GROUP):
+            bad_modifiers.append(ob.name)
+        elif "SHRINKWRAP" not in kinds:
+            bad_modifiers.append(ob.name)
+        deform = {g.index for g in ob.vertex_groups if not g.name.startswith("ps_")}
         for vertex in ob.data.vertices:
-            weights = [g.weight for g in vertex.groups]
+            weights = [g.weight for g in vertex.groups if g.group in deform]
             max_influences = max(max_influences, len(weights))
             if not weights:
                 unweighted += 1
             else:
                 max_weight_error = max(max_weight_error, abs(sum(weights) - 1.0))
     result["checks"]["skinning"] = {"unweighted_vertices": unweighted, "max_influences": max_influences,
-                                             "max_normalization_error": round(max_weight_error, 8),
-                                             "missing_armature_modifiers": bad_modifiers,
-                                             "pass": unweighted == 0 and max_influences <= 4 and max_weight_error < 1e-5 and not bad_modifiers}
+                                    "max_normalization_error": round(max_weight_error, 8),
+                                    "bad_modifier_stacks": bad_modifiers,
+                                    "pass": unweighted == 0 and max_influences <= 4 and max_weight_error < 1e-5 and not bad_modifiers}
 
-    reset_pose()
-    rest_positions = {ob.name: world_mesh(ob)[0] for ob in garment_objects}
-    result["rest"] = {}
+    # Rest pose keeps the 0.5 mm clearance floor. Posed: no garment vertex may be inside visible skin.
     clearance_floor = 0.0005
-    for outfit, objects in outfits.items():
-        value, closest, garment_point, body_point = clearance(objects)
-        result["rest"][outfit] = {"min_clearance_m": round(value, 6), "closest_object": closest,
-                                   "garment_point_m": garment_point, "body_point_m": body_point,
-                                   "pass": value >= clearance_floor}
-
+    contact_gap = 2 * clothing["collision"]["offset_m"] + clearance_floor
     samples = [("idle_relaxed", 45), ("wave", 52), ("point", 46), ("gest_shrug", 26),
                ("sit_down", 50), ("emo_happy", 30)]
     movement = {ob.name: 0.0 for ob in garment_objects}
-    for clip_name, frame in samples:
-        meta = apply_clip(clip_name, frame)
-        pose_result = {"source": meta, "outfits": {}}
-        for outfit, objects in outfits.items():
-            value, closest, garment_point, body_point = clearance(objects)
-            pose_result["outfits"][outfit] = {"min_clearance_m": round(value, 6), "closest_object": closest,
-                                              "garment_point_m": garment_point, "body_point_m": body_point,
-                                                  "pass": value >= clearance_floor}
-        for ob in garment_objects:
-            posed = world_mesh(ob)[0]
-            rest = rest_positions[ob.name]
-            if len(posed) == len(rest):
-                rms = math.sqrt(sum((a - b).length_squared for a, b in zip(posed, rest)) / max(1, len(rest)))
-                movement[ob.name] = max(movement[ob.name], rms)
-        result["poses"][f"{clip_name}:{frame}"] = pose_result
+    worst = {"min_clearance_m": float("inf")}
+    for outfit, objects in outfits.items():
+        result["masks"][outfit] = GAR.set_active_items(body, garment_objects, items[outfit])
+        reset_pose()
+        rest_positions = {ob.name: world_mesh(ob)[0] for ob in objects}
+        result["rest"][outfit] = clearance(objects, clearance_floor)
+        for clip_name, frame in samples:
+            meta = apply_clip(clip_name, frame)
+            pose_key = f"{clip_name}:{frame}"
+            entry = clearance(objects, 0.0)
+            result["poses"].setdefault(pose_key, {"source": meta, "outfits": {}})["outfits"][outfit] = entry
+            if entry["min_clearance_m"] < worst["min_clearance_m"]:
+                worst = {"outfit": outfit, "clip": clip_name, "frame": frame, **entry}
+            for ob in objects:
+                posed = world_mesh(ob)[0]
+                rest = rest_positions[ob.name]
+                if len(posed) == len(rest):
+                    rms = math.sqrt(sum((p - q).length_squared for p, q in zip(posed, rest)) / max(1, len(rest)))
+                    movement[ob.name] = max(movement[ob.name], rms)
+    result["worst_pose"] = worst
     result["checks"]["garments_follow_skinning"] = {
         "minimum_max_rms_motion_m": round(min(movement.values()), 6),
         "maximum_rms_motion_m": round(max(movement.values()), 6),
@@ -357,27 +414,41 @@ def _internal():
 
         render_info = {"engine": scene.render.engine, "samples": 8, "denoiser": denoiser,
                        "sheet_px": [640, 640], "views": [name for name, _ in angles]}
-        for outfit, visible in outfits.items():
-            visible_names = {ob.name for ob in visible}
-            for ob in garment_objects:
-                ob.hide_render = ob.name not in visible_names
+        def render_views(prefix, destination, look_at):
             paths = []
             for view_name, degrees in angles:
                 angle = math.radians(degrees)
-                cam.location = target + Vector((2.2 * math.sin(angle), -2.2 * math.cos(angle), 0.18))
-                cam.rotation_euler = (target - cam.location).to_track_quat("-Z", "Y").to_euler()
-                path = os.path.join(views, f"{outfit}_{view_name}.png")
+                cam.location = look_at + Vector((2.2 * math.sin(angle), -2.2 * math.cos(angle), 0.18))
+                cam.rotation_euler = (look_at - cam.location).to_track_quat("-Z", "Y").to_euler()
+                path = os.path.join(views, f"{prefix}_{view_name}.png")
                 scene.render.filepath = path
                 bpy.ops.render.render(write_still=True)
                 paths.append(path)
-            destination = os.path.join(evidence, f"synthetic_{outfit}_turnaround.png")
             make_sheet(paths, destination)
-            render_info[outfit] = os.path.basename(destination)
+            return os.path.basename(destination)
+
+        for outfit in outfits:
+            GAR.set_active_items(body, garment_objects, items[outfit])
+            reset_pose()
+            render_info[outfit] = render_views(outfit, os.path.join(evidence, f"synthetic_{outfit}_turnaround.png"),
+                                               target)
+        # Worst measured pose (lowest visible clearance), same four views, framed on the posed body.
+        GAR.set_active_items(body, garment_objects, items[worst["outfit"]])
+        apply_clip(worst["clip"], worst["frame"])
+        posed = world_mesh(body)[0]
+        lo = Vector((min(p.x for p in posed), min(p.y for p in posed), min(p.z for p in posed)))
+        hi = Vector((max(p.x for p in posed), max(p.y for p in posed), max(p.z for p in posed)))
+        render_info["worst_pose"] = render_views(
+            "worst", os.path.join(evidence, "synthetic_worst_pose.png"), (lo + hi) * 0.5)
+        render_info["worst_pose_source"] = {k: worst[k] for k in ("outfit", "clip", "frame", "min_clearance_m")}
+        reset_pose()
         result["evidence"] = render_info
 
     all_clear = all(entry["pass"] for entry in result["rest"].values()) and all(
         entry["pass"] for pose in result["poses"].values() for entry in pose["outfits"].values())
-    result["checks"]["clearance"] = {"threshold_m": clearance_floor, "pass": all_clear}
+    result["checks"]["clearance"] = {"rest_floor_m": clearance_floor, "pose_floor_m": 0.0,
+                                     "worst_pose": {k: worst.get(k) for k in ("outfit", "clip", "frame", "min_clearance_m")},
+                                     "pass": all_clear}
     result["pass"] = all(check["pass"] for check in result["checks"].values())
     json.dump(result, open(os.path.join(out, "garment_generic_test.json"), "w"), indent=1)
     bpy.ops.wm.save_as_mainfile(filepath=os.path.join(out, "garment_generic_test.blend"), compress=True)
