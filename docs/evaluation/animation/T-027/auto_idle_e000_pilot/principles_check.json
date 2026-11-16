@@ -1,0 +1,444 @@
+{
+ "characters": {
+  "boy": {
+   "frames": [
+    1,
+    120
+   ],
+   "chains": {
+    "arm.L": {
+     "chain_length_m": 0.23226670208434747,
+     "moves": 4,
+     "major_moves": 0,
+     "ease_ratio_median": 0.8808568754158232,
+     "arc_curvature_median": null,
+     "arc_curvature_max": null,
+     "anticipation_present": false,
+     "anticipated_major_moves": 0,
+     "overshoot_settle_present": false,
+     "settled_major_moves": 0,
+     "micro_motion_rms_deg": 2.0099797052269746,
+     "micro_motion_effector_rms_mm": 6.6530426045287205,
+     "move_list": [
+      {
+       "frames": [
+        0,
+        53
+       ],
+       "chord_m": 0.00845,
+       "arc_curvature": 1.13076,
+       "start_dip_ratio": 0.91237,
+       "ease_ratio": 1.38974
+      },
+      {
+       "frames": [
+        53,
+        73
+       ],
+       "chord_m": 0.01379,
+       "arc_curvature": 0.0754,
+       "start_dip_ratio": -0.0,
+       "ease_ratio": 0.32611
+      },
+      {
+       "frames": [
+        73,
+        111
+       ],
+       "chord_m": 0.01692,
+       "arc_curvature": 0.04669,
+       "start_dip_ratio": -0.0,
+       "ease_ratio": 0.70676
+      },
+      {
+       "frames": [
+        111,
+        119
+       ],
+       "chord_m": 0.00454,
+       "arc_curvature": 0.02125,
+       "start_dip_ratio": -0.0,
+       "ease_ratio": 1.05496
+      }
+     ]
+    },
+    "arm.R": {
+     "chain_length_m": 0.23226670946732725,
+     "moves": 4,
+     "major_moves": 0,
+     "ease_ratio_median": 0.8593510266143954,
+     "arc_curvature_median": null,
+     "arc_curvature_max": null,
+     "anticipation_present": false,
+     "anticipated_major_moves": 0,
+     "overshoot_settle_present": false,
+     "settled_major_moves": 0,
+     "micro_motion_rms_deg": 1.8071994870498251,
+     "micro_motion_effector_rms_mm": 6.301075910015321,
+     "move_list": [
+      {
+       "frames": [
+        0,
+        53
+       ],
+       "chord_m": 0.00731,
+       "arc_curvature": 1.10115,
+       "start_dip_ratio": 1.19707,
+       "ease_ratio": 1.4097
+      },
+      {
+       "frames": [
+        53,
+        73
+       ],
+       "chord_m": 0.01396,
+       "arc_curvature": 0.0586,
+       "start_dip_ratio": -0.0,
+       "ease_ratio": 0.33249
+      },
+      {
+       "frames": [
+        73,
+        111
+       ],
+       "chord_m": 0.01637,
+       "arc_curvature": 0.04657,
+       "start_dip_ratio": -0.0,
+       "ease_ratio": 0.69066
+      },
+      {
+       "frames": [
+        111,
+        119
+       ],
+       "chord_m": 0.00441,
+       "arc_curvature": 0.01123,
+       "start_dip_ratio": -0.0,
+       "ease_ratio": 1.02804
+      }
+     ]
+    },
+    "trunk": {
+     "chain_length_m": 0.3401116057301791,
+     "moves": 5,
+     "major_moves": 0,
+     "ease_ratio_median": 0.8404858058516187,
+     "arc_curvature_median": null,
+     "arc_curvature_max": null,
+     "anticipation_present": false,
+     "anticipated_major_moves": 0,
+     "overshoot_settle_present": false,
+     "settled_major_moves": 0,
+     "micro_motion_rms_deg": 4.07484596016063,
+     "micro_motion_effector_rms_mm": 3.8415043264018554,
+     "move_list": [
+      {
+       "frames": [
+        0,
+        51
+       ],
+       "chord_m": 0.00378,
+       "arc_curvature": 1.50995,
+       "start_dip_ratio": -0.0,
+       "ease_ratio": 2.64327
+      },
+      {
+       "frames": [
+        51,
+        54
+       ],
+       "chord_m": 0.00047,
+       "arc_curvature": 0.18795,
+       "start_dip_ratio": -0.0,
+       "ease_ratio": null
+      },
+      {
+       "frames": [
+        54,
+        69
+       ],
+       "chord_m": 0.00507,
+       "arc_curvature": 0.01363,
+       "start_dip_ratio": -0.0,
+       "ease_ratio": 0.47813
+      },
+      {
+       "frames": [
+        69,
+        108
+       ],
+       "chord_m": 0.01024,
+       "arc_curvature": 0.03845,
+       "start_dip_ratio": -0.0,
+       "ease_ratio": 0.66751
+      },
+      {
+       "frames": [
+        108,
+        119
+       ],
+       "chord_m": 0.00429,
+       "arc_curvature": 0.01109,
+       "start_dip_ratio": -0.0,
+       "ease_ratio": 1.01346
+      }
+     ]
+    }
+   },
+   "symmetry_index": 0.8714054288170575,
+   "arm_mirror_difference_mean_deg": 11.57351140646482,
+   "trunk_lateral_tilt_mean_deg": 0.963490271101933,
+   "micro_motion_frames": "120 base-only frames"
+  },
+  "girl": {
+   "frames": [
+    1,
+    120
+   ],
+   "chains": {
+    "arm.L": {
+     "chain_length_m": 0.18000280885296568,
+     "moves": 7,
+     "major_moves": 5,
+     "ease_ratio_median": 0.40013554313995003,
+     "arc_curvature_median": 0.04906519911784957,
+     "arc_curvature_max": 0.3109058996274567,
+     "anticipation_present": true,
+     "anticipated_major_moves": 1,
+     "overshoot_settle_present": true,
+     "settled_major_moves": 5,
+     "micro_motion_rms_deg": 12.393516654403657,
+     "micro_motion_effector_rms_mm": 10.675907370279893,
+     "move_list": [
+      {
+       "frames": [
+        6,
+        14
+       ],
+       "chord_m": 0.08841,
+       "arc_curvature": 0.16406,
+       "start_dip_ratio": -0.0,
+       "ease_ratio": 0.92548
+      },
+      {
+       "frames": [
+        14,
+        24
+       ],
+       "chord_m": 0.0494,
+       "arc_curvature": 0.04376,
+       "start_dip_ratio": -0.0,
+       "ease_ratio": 0.32579
+      },
+      {
+       "frames": [
+        24,
+        34
+       ],
+       "chord_m": 0.0603,
+       "arc_curvature": 0.04907,
+       "start_dip_ratio": -0.0,
+       "ease_ratio": 0.39971
+      },
+      {
+       "frames": [
+        34,
+        42
+       ],
+       "chord_m": 0.05225,
+       "arc_curvature": 0.04079,
+       "start_dip_ratio": -0.0,
+       "ease_ratio": 0.40056
+      },
+      {
+       "frames": [
+        42,
+        45
+       ],
+       "chord_m": 0.00832,
+       "arc_curvature": 0.08817,
+       "start_dip_ratio": -0.0,
+       "ease_ratio": null
+      },
+      {
+       "frames": [
+        45,
+        78
+       ],
+       "chord_m": 0.05696,
+       "arc_curvature": 0.31091,
+       "start_dip_ratio": -0.0,
+       "ease_ratio": 10.05188
+      },
+      {
+       "frames": [
+        78,
+        99
+       ],
+       "chord_m": 0.01179,
+       "arc_curvature": 0.10564,
+       "start_dip_ratio": -0.0,
+       "ease_ratio": 0.34162
+      }
+     ]
+    },
+    "arm.R": {
+     "chain_length_m": 0.18000279170002143,
+     "moves": 6,
+     "major_moves": 5,
+     "ease_ratio_median": 0.3805865025762844,
+     "arc_curvature_median": 0.0468419395548358,
+     "arc_curvature_max": 0.526400232730306,
+     "anticipation_present": true,
+     "anticipated_major_moves": 2,
+     "overshoot_settle_present": true,
+     "settled_major_moves": 5,
+     "micro_motion_rms_deg": 12.645137796137227,
+     "micro_motion_effector_rms_mm": 13.313088414297296,
+     "move_list": [
+      {
+       "frames": [
+        2,
+        14
+       ],
+       "chord_m": 0.08811,
+       "arc_curvature": 0.5264,
+       "start_dip_ratio": 0.11619,
+       "ease_ratio": 0.08318
+      },
+      {
+       "frames": [
+        14,
+        24
+       ],
+       "chord_m": 0.05523,
+       "arc_curvature": 0.04684,
+       "start_dip_ratio": -0.0,
+       "ease_ratio": 0.37676
+      },
+      {
+       "frames": [
+        25,
+        34
+       ],
+       "chord_m": 0.04395,
+       "arc_curvature": 0.03995,
+       "start_dip_ratio": -0.0,
+       "ease_ratio": 0.45362
+      },
+      {
+       "frames": [
+        34,
+        42
+       ],
+       "chord_m": 0.05266,
+       "arc_curvature": 0.04091,
+       "start_dip_ratio": -0.0,
+       "ease_ratio": 0.41182
+      },
+      {
+       "frames": [
+        42,
+        54
+       ],
+       "chord_m": 0.10023,
+       "arc_curvature": 0.10236,
+       "start_dip_ratio": -0.0,
+       "ease_ratio": 0.13293
+      },
+      {
+       "frames": [
+        78,
+        98
+       ],
+       "chord_m": 0.01196,
+       "arc_curvature": 0.08223,
+       "start_dip_ratio": -0.0,
+       "ease_ratio": 0.38441
+      }
+     ]
+    },
+    "trunk": {
+     "chain_length_m": 0.3899980243552469,
+     "moves": 6,
+     "major_moves": 0,
+     "ease_ratio_median": 0.35899267016377434,
+     "arc_curvature_median": null,
+     "arc_curvature_max": null,
+     "anticipation_present": false,
+     "anticipated_major_moves": 0,
+     "overshoot_settle_present": false,
+     "settled_major_moves": 0,
+     "micro_motion_rms_deg": 11.729127392911156,
+     "micro_motion_effector_rms_mm": 5.027813572076199,
+     "move_list": [
+      {
+       "frames": [
+        0,
+        4
+       ],
+       "chord_m": 0.00034,
+       "arc_curvature": 0.02387,
+       "start_dip_ratio": -0.0,
+       "ease_ratio": null
+      },
+      {
+       "frames": [
+        4,
+        13
+       ],
+       "chord_m": 0.00379,
+       "arc_curvature": 0.48377,
+       "start_dip_ratio": -0.0,
+       "ease_ratio": 0.35899
+      },
+      {
+       "frames": [
+        13,
+        41
+       ],
+       "chord_m": 0.01282,
+       "arc_curvature": 0.01325,
+       "start_dip_ratio": -0.0,
+       "ease_ratio": 0.35551
+      },
+      {
+       "frames": [
+        41,
+        75
+       ],
+       "chord_m": 0.01324,
+       "arc_curvature": 0.73306,
+       "start_dip_ratio": -0.0,
+       "ease_ratio": 1.72599
+      },
+      {
+       "frames": [
+        75,
+        99
+       ],
+       "chord_m": 0.01378,
+       "arc_curvature": 0.01844,
+       "start_dip_ratio": -0.0,
+       "ease_ratio": 0.26894
+      },
+      {
+       "frames": [
+        101,
+        119
+       ],
+       "chord_m": 0.00243,
+       "arc_curvature": 0.07979,
+       "start_dip_ratio": -0.0,
+       "ease_ratio": 1.25323
+      }
+     ]
+    }
+   },
+   "symmetry_index": 0.7474396587697154,
+   "arm_mirror_difference_mean_deg": 22.730430710725607,
+   "trunk_lateral_tilt_mean_deg": 1.157504049546923,
+   "micro_motion_frames": "77 base-only frames"
+  }
+ }
+}

@@ -158,7 +158,7 @@ def merge(a, b):
     return out
 
 
-def ramps(a, fps):
+def ramps(a, fps, base_dir=None):
     """(start, end, ramp-in frames, ramp-out frames) of a clip or emotion action, in scene frames."""
     start = float(a.get("start", a.get("frame", 1)))
     if a["type"] not in ("clip", "emotion"):  # walk, reach, ...: their own span, 4-frame ownership ramps
@@ -167,7 +167,10 @@ def ramps(a, fps):
             start, end = start - 4.0, end + 10.0  # around start .. end + 6) and turns to "face" until end + 8
         return start, end, 4.0, 4.0
     if a["type"] == "clip":
-        c = json.load(open(os.path.join(ROOT, "content", "clips", a["clip"] + ".clip.json")))
+        path = a["file"] if "file" in a else os.path.join(ROOT, "content", "clips", a["clip"] + ".clip.json")
+        if not os.path.isabs(path):
+            path = os.path.join(base_dir or ROOT, path)  # "file" is relative to the scene file
+        c = json.load(open(path))
         end = float(a.get("end", start + c["frame_count"] / c["fps"] * fps / float(a.get("speed", 1.0))))
         return start, end, float(a.get("blendIn", 0)), float(a.get("blendOut", 0))
     name, _, var = a["name"].partition("/")
@@ -204,10 +207,10 @@ def smoothness(scene_path, bake_path, out, engine, pkgs):
     for i, a in enumerate(scene["actions"]):
         if a.get("base") or a["type"] in ("look", "expression"):  # expressions move morphs (and the jaw), not limb roles
             continue
-        srcs[f"{i}_{a['type']}_{a.get('clip') or a.get('name')}".replace("/", "-")] = (variant(scene, {i}, False), (a["character"], *ramps(a, fps)[:2]))
+        srcs[f"{i}_{a['type']}_{a.get('clip') or a.get('name')}".replace("/", "-")] = (variant(scene, {i}, False), (a["character"], *ramps(a, fps, base_dir)[:2]))
         if a["type"] not in ("clip", "emotion"):  # generated actions (walk, reach): sources only; their own steps can
             continue  # exceed 12 deg/frame (walk boundaries are T-002 C4 in measure_clips.py)
-        st, en, ri, ro = ramps(a, fps)
+        st, en, ri, ro = ramps(a, fps, base_dir)
         windows.append((a["character"], st - 1, st + ri + 1))
         if en <= f_end:
             windows.append((a["character"], en - ro - 1, en + 1))

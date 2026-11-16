@@ -189,7 +189,7 @@
    "start": 3,
    "speed": 1.25,
    "blendIn": 2,
-   "blendOut": 2,
+   "blendOut": 6,
    "mirror": true
   },
   {
@@ -226,7 +226,7 @@
    "speed": 1.5,
    "weight": 0.7,
    "blendIn": 2,
-   "blendOut": 2
+   "blendOut": 6
   }
  ],
  "production": {

@@ -1,0 +1,177 @@
+{
+ "note": "Engine-only effect of T-027 on shots that set a base clip: the same resolved scene and the same (new) clips baked by the main engine (e94f3bc) and by the branch engine. Automatic idle: none (a base clip is set). Expected difference: only the legs during walks (base-layer legs follow the walk while it owns them).",
+ "shots": {
+  "e901_clip_test": {
+   "sha256_branch": "e20f6c830447a25dc3dcca594b03195ad46debbf413e29b83a9c3c589cbcbea1",
+   "sha256_main_engine": "68c6b81d2a26998b9c51ce33abff12d0ed2ef8c849461a74564fd889a8a0e45b",
+   "identical": false,
+   "roles_differing_gt_1e-4_deg": {
+    "boy": {
+     "thigh.L": {
+      "frames": [
+       217,
+       299
+      ],
+      "max_deg": 4.6860786840572635
+     },
+     "shin.L": {
+      "frames": [
+       217,
+       299
+      ],
+      "max_deg": 1.3757067036131347
+     },
+     "foot.L": {
+      "frames": [
+       217,
+       299
+      ],
+      "max_deg": 1.7635812539251603
+     },
+     "thigh.R": {
+      "frames": [
+       217,
+       299
+      ],
+      "max_deg": 28.85036226986684
+     },
+     "shin.R": {
+      "frames": [
+       217,
+       299
+      ],
+      "max_deg": 24.50350261607738
+     },
+     "foot.R": {
+      "frames": [
+       217,
+       299
+      ],
+      "max_deg": 22.33520352638847
+     }
+    }
+   },
+   "walks": [
+    {
+     "character": "boy",
+     "start": 220,
+     "end": 290
+    }
+   ]
+  },
+  "e902_emotion_test": {
+   "sha256_branch": "e3cb4f45e687b42c2f39309ab6b2b9523e2dd67ff317895e187bf632b01ea368",
+   "sha256_main_engine": "5f90ce9fb210cd7f2472422c4047a41451c04f517aae22cc249dc15fe0d575c7",
+   "identical": false,
+   "roles_differing_gt_1e-4_deg": {
+    "boy": {
+     "thigh.L": {
+      "frames": [
+       946,
+       1028
+      ],
+      "max_deg": 4.653022535574879
+     },
+     "shin.L": {
+      "frames": [
+       946,
+       1028
+      ],
+      "max_deg": 1.3529813959484018
+     },
+     "foot.L": {
+      "frames": [
+       946,
+       1028
+      ],
+      "max_deg": 1.79273810618018
+     },
+     "thigh.R": {
+      "frames": [
+       946,
+       1028
+      ],
+      "max_deg": 35.9706510063629
+     },
+     "shin.R": {
+      "frames": [
+       946,
+       1028
+      ],
+      "max_deg": 30.55697445878519
+     },
+     "foot.R": {
+      "frames": [
+       946,
+       1028
+      ],
+      "max_deg": 23.599447756119904
+     }
+    },
+    "girl": {
+     "thigh.L": {
+      "frames": [
+       946,
+       1028
+      ],
+      "max_deg": 6.198418295126816
+     },
+     "shin.L": {
+      "frames": [
+       946,
+       1028
+      ],
+      "max_deg": 6.42164910763985
+     },
+     "foot.L": {
+      "frames": [
+       946,
+       1028
+      ],
+      "max_deg": 6.4343056448427065
+     },
+     "thigh.R": {
+      "frames": [
+       946,
+       1028
+      ],
+      "max_deg": 41.87237645796687
+     },
+     "shin.R": {
+      "frames": [
+       946,
+       1028
+      ],
+      "max_deg": 28.188460056726463
+     },
+     "foot.R": {
+      "frames": [
+       946,
+       1028
+      ],
+      "max_deg": 27.367151195631127
+     }
+    }
+   },
+   "walks": [
+    {
+     "character": "girl",
+     "start": 949,
+     "end": 1019
+    },
+    {
+     "character": "boy",
+     "start": 949,
+     "end": 1019
+    }
+   ]
+  },
+  "e903_test_video": {
+   "sha256_branch": "63540d7ea572699b19588662b82262e8438a20cd67851f2e81a3f1701e686c20",
+   "sha256_main_engine": "63540d7ea572699b19588662b82262e8438a20cd67851f2e81a3f1701e686c20",
+   "identical": true,
+   "roles_differing_gt_1e-4_deg": {},
+   "walks": []
+  }
+ }
+}
