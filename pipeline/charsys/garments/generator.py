@@ -1303,8 +1303,15 @@ def _footwear(C, body, cfg, P, H, J, G, fit):
             # the cuff tube's centre line instead of poking out between the shaft wall and the tube.
             t = max(0.0, min(1.0, (knee_z - top_z) / max(knee_z - ankle_z, 1e-9)))
             lr = _leg_radius(P, H, 1 - t)
-            lining_z = top_z - 0.002 * lm
-            r_leg = _section_radii(body, (hx, 0.0), lining_z, 48, 0.004 * lm, abs(hx) * 0.95, lr)
+            r_leg = _section_radii(body, (hx, 0.0), top_z - 0.002 * lm, 48, 0.004 * lm, abs(hx) * 0.95, lr)
+            # The lining closes onto the leg, so it keeps only the collision clearance, not the garment ease that
+            # build() enforces on every piece (that pushed its inner edge 2 cm off the leg: the dark gap + ring).
+            clearance = float(cfg.get("collision_clearance_m", max(0.003, thick * 1.5)))
+            # Seat the lining on the shaft's top rim (the solidified shell edge stands above top_z once the shell
+            # has its ease clearance); a lining below that rim leaves the rim visible as a separate ring.
+            _ensure_clearance(body, ob, lambda point: ease * fit.at(point))
+            rim = [(ob.matrix_world @ v.co).z for v in ob.data.vertices]
+            lining_z = max([top_z - 0.002 * lm] + rim) + 0.0005 * lm
             r_shell = lr + (ease + shaft) * lm + thick
             r_cuff = (lr + (ease + shaft) * lm + thick + max(0.0, cr - cfg["seam_radius_m"] * 1.4)
                       if cfg.get("cuff") or bands.get("cuff") else None)
@@ -1312,7 +1319,7 @@ def _footwear(C, body, cfg, P, H, J, G, fit):
             for k in range(48):
                 a = 2 * math.pi * k / 48
                 d = Vector((math.cos(a), math.sin(a), 0.0))
-                r_in = r_leg[k] + 0.001 * lm
+                r_in = r_leg[k] + clearance
                 r_out = max(r_cuff if r_cuff is not None else r_shell, r_in + 0.002 * lm)
                 verts += [tuple(Vector((hx, 0, lining_z)) + d * r_in),
                           tuple(Vector((hx, 0, lining_z)) + d * r_out)]
@@ -1320,6 +1327,7 @@ def _footwear(C, body, cfg, P, H, J, G, fit):
                 a, b = 2 * k, 2 * ((k + 1) % 48)
                 faces.append((a, b, b + 1, a + 1))
             lining = G.new_object(f"garment.{cfg['name']}.lining.{side}", verts, faces, C)
+            lining[CLEARANCE_PROP] = clearance
             mod = lining.modifiers.new("garment_thickness", "SOLIDIFY")
             mod.thickness, mod.offset = max(thick, 0.0015), -1.0
             bpy.context.view_layer.objects.active = lining
@@ -1342,6 +1350,8 @@ def _footwear(C, body, cfg, P, H, J, G, fit):
     return objects, covered
 
 
+# Per-object rest clearance override for pieces that close onto the body (boot lining), read by build().
+CLEARANCE_PROP = "ps_garment_rest_clearance_m"
 MASK_PREFIX = "ps_mask."
 MASK_GROUP = "ps_garment_mask"
 MASK_MODIFIER = "garment_body_mask"
@@ -1537,7 +1547,8 @@ def build(C, body, clothing, P, H, J, G):
             made, cov = _footwear(C, body, cfg, P, H, J, G, fit)
         ease = cfg["ease_m"]
         for ob in made:
-            _ensure_clearance(body, ob, lambda point, ease=ease: ease * fit.at(point))
+            _ensure_clearance(body, ob, ob[CLEARANCE_PROP] if CLEARANCE_PROP in ob else
+                              (lambda point, ease=ease: ease * fit.at(point)))
         objects += made
         coverage |= cov
         mask = bool(cfg.get("mask_body", hide_default)) and bool(cov)
