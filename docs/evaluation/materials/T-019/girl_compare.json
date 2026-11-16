@@ -1,0 +1,10 @@
+{
+  "comparison": "fibres on versus the same current master with fibres off",
+  "decoded_space": "8-bit RGB",
+  "views": {
+    "sheet30_front": {"max_abs": 33, "mean_abs": 0.124583, "changed_pixels": 14972, "total_pixels": 115200},
+    "sheet30_front_left": {"max_abs": 28, "mean_abs": 0.112471, "changed_pixels": 13076, "total_pixels": 115200},
+    "sheet30_left": {"max_abs": 20, "mean_abs": 0.125692, "changed_pixels": 14752, "total_pixels": 115200},
+    "sheet30_back": {"max_abs": 54, "mean_abs": 0.170561, "changed_pixels": 19341, "total_pixels": 115200}
+  }
+}

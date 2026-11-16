@@ -1,0 +1,25 @@
+{
+  "blender": "5.3.0",
+  "device": "CPU",
+  "samples": 8,
+  "denoiser": "OPENIMAGEDENOISE",
+  "swatches": {
+    "frame_size_px": [480, 576],
+    "frames": 11,
+    "fibres_on_total_s": 36.71,
+    "fibres_off_total_s": 36.28,
+    "fibres_on_per_frame_s": 3.337,
+    "fibres_off_per_frame_s": 3.298,
+    "delta_per_frame_s": 0.039,
+    "delta_percent": 1.2
+  },
+  "girl_turnaround": {
+    "frame_size_px": [240, 480],
+    "views": 4,
+    "fibres_on_view_s": [1.46, 1.35, 1.32, 1.46],
+    "fibres_off_view_s": [1.43, 1.33, 1.25, 1.38],
+    "fibres_on_per_frame_s": 1.398,
+    "fibres_off_per_frame_s": 1.348,
+    "delta_percent": 3.7
+  }
+}
