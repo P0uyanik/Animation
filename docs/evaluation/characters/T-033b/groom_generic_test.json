@@ -1,0 +1,404 @@
+{
+ "report": {
+  "generator": "groom/1",
+  "structures": {
+   "cap": {
+    "type": "scalp_cap",
+    "faces": 1114
+   },
+   "buns": {
+    "buns": 2,
+    "ropes": 8,
+    "type": "bun"
+   },
+   "sweep": {
+    "locks": 6,
+    "type": "sweep"
+   },
+   "fringe": {
+    "locks": 2,
+    "type": "fringe"
+   },
+   "long": {
+    "locks": 5,
+    "style": "straight",
+    "type": "locks"
+   },
+   "wavy": {
+    "locks": 4,
+    "style": "wavy",
+    "type": "locks"
+   },
+   "curls": {
+    "locks": 3,
+    "style": "curly",
+    "type": "locks"
+   },
+   "ringlets": {
+    "locks": 4,
+    "style": "curly",
+    "type": "locks"
+   },
+   "tie": {
+    "radius_m": 0.0254,
+    "type": "tie"
+   },
+   "bow": {
+    "size_m": 0.04,
+    "type": "bow"
+   },
+   "flowers": {
+    "flowers": 1,
+    "type": "flowers"
+   }
+  },
+  "objects": [
+   "hair_cap",
+   "hair_buns",
+   "hair_sweep",
+   "hair_fringe",
+   "hair_long",
+   "hair_wavy",
+   "hair_curls",
+   "hair_ringlets",
+   "hair_tie",
+   "hair_bow",
+   "hair_flowers_petals",
+   "hair_flowers_centres"
+  ],
+  "vertices": 35665
+ },
+ "checks": {
+  "all structures built": {
+   "pass": true,
+   "value": [
+    "hair_bow",
+    "hair_buns",
+    "hair_cap",
+    "hair_curls",
+    "hair_flowers_centres",
+    "hair_flowers_petals",
+    "hair_fringe",
+    "hair_long",
+    "hair_ringlets",
+    "hair_sweep",
+    "hair_tie",
+    "hair_wavy"
+   ]
+  },
+  "two bun frames": {
+   "pass": true,
+   "value": {
+    "buns": 2,
+    "ropes": 8,
+    "type": "bun"
+   }
+  },
+  "long locks reach z_end (+-15 mm)": {
+   "pass": true,
+   "value": 0.9449
+  },
+  "curls spiral (horizontal spread > 2 x curl radius)": {
+   "pass": true,
+   "value": 0.1362
+  },
+  "roots on scalp (max error < 1 mm)": {
+   "pass": true,
+   "value": 0.0
+  },
+  "validation rejects bad specs": {
+   "pass": true,
+   "value": [
+    [
+     "hair.structures[0].type unknown: braid"
+    ],
+    [
+     "hair.structures[0] (locks) needs 'az'",
+     "hair.structures[0] (locks) needs 'el_root'",
+     "hair.structures[0] (locks) needs 'hang_radii'",
+     "hair.structures[0] (locks) needs 'z_end'",
+     "hair.structures[0] (locks) needs 'width'",
+     "hair.structures[0] (locks) needs 'thick'"
+    ],
+    [
+     "hair.structures[0] refers to bun 0, but only 0 bun(s) exist"
+    ]
+   ]
+  },
+  "synthetic spec validates": {
+   "pass": true,
+   "value": null
+  },
+  "ropes carry the fibre UV map; V runs along the rope in metres (long lock > 0.3 m)": {
+   "pass": true,
+   "value": 0.407
+  },
+  "draped ringlets move inwards below rest_z (outer radius < hang radius)": {
+   "pass": true,
+   "value": 0.0904
+  },
+  "felt structures build (finish felt on sweep, fringe, bun, locks; felt_volume gather/fringe/mass)": {
+   "pass": true,
+   "value": [
+    "hair_fbun",
+    "hair_fcurls",
+    "hair_ffringe",
+    "hair_fstraight",
+    "hair_fsweep",
+    "hair_vfringe",
+    "hair_vgather",
+    "hair_vmass",
+    "hair_ystraight"
+   ]
+  },
+  "felt shells are closed (every edge has two faces)": {
+   "pass": true,
+   "value": {
+    "hair_fbun": 0,
+    "hair_fsweep": 0,
+    "hair_ffringe": 0,
+    "hair_vgather": 0,
+    "hair_vfringe": 0,
+    "hair_vmass": 0
+   }
+  },
+  "felt locks have no ply ridges (radius variation along the lock < 25 % of the yarn rope's)": {
+   "pass": true,
+   "value": {
+    "felt": 0.0193,
+    "yarn": 0.1655
+   }
+  },
+  "gather volume lies on the head (inner <= 4.5 mm under the skin, outer < 1.4 x height)": {
+   "pass": true,
+   "value": [
+    -0.004,
+    0.0129
+   ]
+  },
+  "felt fringe tips hang at tip_z (+-12 mm) in front of the face": {
+   "pass": true,
+   "value": [
+    1.3198,
+    -0.1125
+   ]
+  },
+  "felt bun mass sits on its frame (centroid within 1.2 x height of the base)": {
+   "pass": true,
+   "value": 0.035
+  },
+  "dynamics records kept with the felt finish (1 bun + 3 curl + 2 straight chains)": {
+   "pass": true,
+   "value": 6
+  },
+  "validation rejects a bad finish, an unknown felt shape and missing felt keys": {
+   "pass": true,
+   "value": [
+    [
+     "hair.structures[0] (locks) finish must be one of yarn, felt on bun, fringe, locks, sweep"
+    ],
+    [
+     "hair.structures[0] felt_volume shape must be one of gather, fringe, mass"
+    ],
+    [
+     "hair.structures[0] (felt_volume gather) needs 'hairline_el'",
+     "hair.structures[0] (felt_volume gather) needs 'height'"
+    ],
+    [
+     "hair.finish must be one of yarn, felt"
+    ]
+   ]
+  },
+  "felt spec validates": {
+   "pass": true,
+   "value": null
+  },
+  "GN fibre group grows fibres on the felt surfaces (2 layers per object, parented, curves > 0)": {
+   "pass": true,
+   "value": {
+    "objects": 18,
+    "curves": 4236
+   }
+  },
+  "curl.ellipse flattens the helix into a lateral wave (depth spread < 0.75 x the round helix's, lateral kept)": {
+   "pass": true,
+   "value": [
+    0.0379,
+    0.0368,
+    0.0363,
+    0.0207
+   ]
+  },
+  "curl.tip turns the end of the lock into a wider, rounder ringlet": {
+   "pass": true,
+   "value": [
+    0.0286,
+    0.0165,
+    0.0412,
+    0.0343
+   ]
+  },
+  "curtain fringe (tips on the head) is closed, outside the head and reaches the temple tip (+-15 mm)": {
+   "pass": true,
+   "value": [
+    0,
+    0.0028,
+    0.1475,
+    0.1503
+   ]
+  },
+  "felt_lobes are part of the bun mesh and of its dynamics record (3 masses, one chain covering all vertices)": {
+   "pass": true,
+   "value": [
+    6726,
+    [
+     0,
+     6726
+    ]
+   ]
+  },
+  "T-033b spec validates": {
+   "pass": true,
+   "value": null
+  }
+ },
+ "felt_report": {
+  "generator": "groom/1",
+  "structures": {
+   "fbun": {
+    "buns": 1,
+    "finish": "felt",
+    "type": "bun"
+   },
+   "fsweep": {
+    "shape": "gather",
+    "grid": [
+     80,
+     40
+    ],
+    "finish": "felt",
+    "type": "sweep"
+   },
+   "ffringe": {
+    "shape": "fringe",
+    "grid": [
+     48,
+     32
+    ],
+    "finish": "felt",
+    "type": "fringe"
+   },
+   "fcurls": {
+    "locks": 3,
+    "style": "curly",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "fstraight": {
+    "locks": 2,
+    "style": "straight",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "ystraight": {
+    "locks": 2,
+    "style": "straight",
+    "type": "locks"
+   },
+   "vgather": {
+    "shape": "gather",
+    "grid": [
+     180,
+     40
+    ],
+    "type": "felt_volume"
+   },
+   "vfringe": {
+    "shape": "fringe",
+    "grid": [
+     48,
+     32
+    ],
+    "type": "felt_volume"
+   },
+   "vmass": {
+    "shape": "mass",
+    "grid": [
+     64,
+     36
+    ],
+    "type": "felt_volume"
+   }
+  },
+  "objects": [
+   "hair_fbun",
+   "hair_fsweep",
+   "hair_ffringe",
+   "hair_fcurls",
+   "hair_fstraight",
+   "hair_ystraight",
+   "hair_vgather",
+   "hair_vfringe",
+   "hair_vmass"
+  ],
+  "vertices": 41632,
+  "fibres": {
+   "objects": 18,
+   "layers": [
+    "felt",
+    "flyaways"
+   ]
+  },
+  "dynamics": {
+   "chains": 6
+  }
+ },
+ "felt_r2_report": {
+  "generator": "groom/1",
+  "structures": {
+   "lbun": {
+    "buns": 1,
+    "finish": "felt",
+    "type": "bun"
+   },
+   "round": {
+    "locks": 1,
+    "style": "curly",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "flat": {
+    "locks": 1,
+    "style": "curly",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "ringtip": {
+    "locks": 1,
+    "style": "curly",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "curtain": {
+    "shape": "fringe",
+    "grid": [
+     48,
+     32
+    ],
+    "type": "felt_volume"
+   }
+  },
+  "objects": [
+   "hair_lbun",
+   "hair_round",
+   "hair_flat",
+   "hair_ringtip",
+   "hair_curtain"
+  ],
+  "vertices": 16832,
+  "dynamics": {
+   "chains": 1
+  }
+ },
+ "pass": true
+}

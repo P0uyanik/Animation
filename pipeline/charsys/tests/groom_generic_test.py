@@ -236,6 +236,62 @@ expect_fib = 2 * sum(1 for o in fobjs)  # every felt object uses the "hair" slot
 check("GN fibre group grows fibres on the felt surfaces (2 layers per object, parented, curves > 0)",
       len(fib) == expect_fib and all(o.parent is not None for o in fib) and all(v > 0 for v in ncurves.values()),
       {"objects": len(fib), "curves": sum(ncurves.values())})
+# ------------------------------------------------------------------------------ felt shaping (T-033b, synthetic)
+C3 = bpy.data.collections.new("synthetic_felt_r2")
+bpy.context.scene.collection.children.link(C3)
+wave_lock = {"type": "locks", "style": "curly", "count": 1, "az": [178, 182], "el_root": [-5, -5], "el_leave": -15,
+             "hang_radii": [0.12, 0.12], "z_end": [cz - 0.4, cz - 0.4], "width": 0.014, "thick": 0.012}
+r2 = {"generator": "groom/1", "seed": 7, "scalp_offset_m": 0.006, "finish": "felt", "yarn": {"step_m": 0.003},
+      "dynamics": {"enabled": True, "structures": {"lbun": {"bones": 1}}},
+      "structures": [
+          {"type": "bun", "name": "lbun", "buns": [{"az": 180, "el": 60, "radius": 0.04, "height": 0.07, "turns": 1.0,
+                                                   "felt_lobes": [{"offset": [0.1, 0.5, 0.3], "radii": [0.6, 0.6, 0.7]},
+                                                                  {"offset": [0.1, -0.5, 0.2], "radii": [0.6, 0.6, 0.7]}]}]},
+          dict(wave_lock, name="round", curl={"radius": 0.012, "pitch": 0.08}),
+          dict(wave_lock, name="flat", curl={"radius": 0.012, "pitch": 0.08, "ellipse": 0.3}),
+          dict(wave_lock, name="ringtip", curl={"radius": 0.008, "pitch": 0.1, "ellipse": 0.3,
+                                                "tip": {"from": 0.6, "radius": 2.0, "pitch": 0.4, "ellipse": 1.0}}),
+          {"type": "felt_volume", "name": "curtain", "shape": "fringe", "root_az": [-15, -15, -16, -17],
+           "root_el": [45, 55, 65, 75], "tip_az": [10, 35, 60, 80], "tip_el": [30, 20, 8, 0], "tip_lift": 0.006,
+           "thick": [0.014, 0.01], "bulge": 0.015, "tip_jitter": 0.15, "tip_scallop": 0.1}]}
+r2objs, r2rep = GROOM.build(C3, head, {"centre": centre, "radii": radii}, r2,
+                            lambda slot: mats.setdefault(slot, G.material("M_" + slot, (90, 60, 50))),
+                            lambda h, x, z: (G.surface_point(h, (x, -1.0, z), (0, 1, 0))[0] or Vector((0, -0.1, 0))).y)
+R["felt_r2_report"] = r2rep
+O = {o.name: o for o in r2objs}
+
+
+def spread(ob, zlo, zhi):
+    vs = [v.co for v in ob.data.vertices if zlo <= v.co.z <= zhi]
+    xs, ys = [v.x for v in vs], [v.y for v in vs]
+    return max(xs) - min(xs), max(ys) - min(ys)
+
+
+zl, zm = cz - 0.38, cz - 0.15
+rx_, ry_ = spread(O["hair_round"], zl, zm)
+fx_, fy_ = spread(O["hair_flat"], zl, zm)
+check("curl.ellipse flattens the helix into a lateral wave (depth spread < 0.75 x the round helix's, lateral kept)",
+      fy_ < 0.75 * ry_ and fx_ > 0.85 * rx_, [round(rx_, 4), round(ry_, 4), round(fx_, 4), round(fy_, 4)])
+mid_x, mid_y = spread(O["hair_ringtip"], cz - 0.22, cz - 0.15)
+tip_x, tip_y = spread(O["hair_ringtip"], cz - 0.38, cz - 0.33)
+check("curl.tip turns the end of the lock into a wider, rounder ringlet", tip_x > 1.3 * mid_x and tip_y > 1.3 * mid_y,
+      [round(mid_x, 4), round(mid_y, 4), round(tip_x, 4), round(tip_y, 4)])
+cu = O["hair_curtain"]
+cd = []
+for v in cu.data.vertices:
+    loc, nrm, _, _ = bvh.find_nearest(v.co)
+    cd.append((1 if (v.co - loc).dot(nrm) >= 0 else -1) * (v.co - loc).length)
+side_x = max(v.co.x for v in cu.data.vertices)
+tip80 = GROOM.Scalp(head, centre, radii, 0.006).at(80, 0, 0.006)[0]
+check("curtain fringe (tips on the head) is closed, outside the head and reaches the temple tip (+-15 mm)",
+      open_edges(cu) == 0 and min(cd) > -0.0045 and abs(side_x - tip80.x) < 0.015,
+      [open_edges(cu), round(min(cd), 4), round(side_x, 4), round(tip80.x, 4)])
+lb = O["hair_lbun"]
+recs = json.loads(lb["ps_dyn"])["chains"]
+cover = recs and recs[0]["verts"][0] == 0 and recs[0]["verts"][1] == len(lb.data.vertices)
+check("felt_lobes are part of the bun mesh and of its dynamics record (3 masses, one chain covering all vertices)",
+      bool(cover) and len(lb.data.vertices) % 3 == 0, [len(lb.data.vertices), recs[0]["verts"] if recs else None])
+check("T-033b spec validates", GROOM.validate(r2) == [])
 R["pass"] = ok
 json.dump(R, open(out, "w"), indent=1, default=str)
 sys.exit(0 if ok else 1)
