@@ -586,12 +586,10 @@ def build(C, M, head, spec, P, H, head_bone="DEF-spine.006", eye_bone="DEF-eye.{
     rep["action_units_missing"] = [a for a in au_names if a not in au_built]
     rep["presets"] = presets
     rigid = [(o, head_bone) for o in brows + ears + [mouth, cavity]] + [(e, eye_bone.format(s=s)) for e, (_, s) in zip(eyes, SIDES)]
-    # lids: rigid to the head, or split between head and eye bone (eyelid tracking: the lids follow a fraction of
-    # the gaze; concentric shells around a spherical eye never intersect it whatever the fraction)
+    # Lids use the shared binding rule: rigid to the head, or split between head and eye bone so they follow a
+    # configured fraction of gaze. Concentric shells around a spherical eye never intersect it at any fraction.
     track = _f(ecfg, "lid_tracking", 0.0)
-    for (sx, side), l in zip(SIDES, lids):
-        for o in l[:3]:
-            rigid.append((o, {head_bone: 1.0 - track, eye_bone.format(s=side): track} if track > 0 else head_bone))
+    rigid.extend(FACE.lid_bindings(lids, head_bone, eye_bone, track, tuple(side for _, side in SIDES)))
     sc = ecfg.get("scale", [1, 1, 1])
     if max(abs(float(k) - 1.0) for k in sc) > 1e-6:
         env = max(einfo[s]["gaze_envelope"] for _, s in SIDES)

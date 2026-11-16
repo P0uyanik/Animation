@@ -702,13 +702,15 @@ def rig_character(C, objs, rigid):
     report = {"rigify_bones": len(rig.data.bones), "deform_bones": sum(1 for b in rig.data.bones if b.use_deform),
               "generate_s": round(time.time() - t, 1)}
     bpy.data.objects.remove(meta, do_unlink=True)
-    # Rigid parts: fixed weights to one deform bone (no heat weighting needed).
+    # Rigid parts: fixed weights to one deform bone, or a uniform split between bones (used by shared eyelid
+    # tracking). No heat weighting is needed.
     t = time.time()
     for ob, bone in rigid:
         ob.parent = rig
         ob.matrix_parent_inverse = rig.matrix_world.inverted()
-        vg = ob.vertex_groups.new(name=bone)
-        vg.add(list(range(len(ob.data.vertices))), 1.0, "REPLACE")
+        for name, weight in (bone.items() if isinstance(bone, dict) else ((bone, 1.0),)):
+            vg = ob.vertex_groups.get(name) or ob.vertex_groups.new(name=name)
+            vg.add(list(range(len(ob.data.vertices))), weight, "REPLACE")
         m = ob.modifiers.new("Armature", "ARMATURE")
         m.object = rig
     # Deforming parts: automatic (heat) weights, then fill unweighted vertices from their nearest weighted neighbour,

@@ -313,7 +313,8 @@ def main():
             G.apply_mods(ob)
     cavity = FACE.cut_mouth_and_cavity(C, M, head, B, mcfg, mouth) if mcfg.get("generator") in ("lips_jaw/1", "lips_jaw/2") else None
     head_bone, chest = spec["rig"]["head_bone"], spec["rig"]["chest_bone"]
-    rigid = [(o, head_bone) for o in [head] + ears + brows + [mouth] + hair + [l for tup in lids for l in tup[:3]]]
+    rigid = [(o, head_bone) for o in [head] + ears + brows + [mouth] + hair]
+    rigid += FACE.lid_bindings(lids, head_bone, tracking=spec["face"].get("eyes", {}).get("lid_tracking", 0.0))
     if cavity is not None:
         rigid.append((cavity, head_bone))
     rigid += [(e, f"DEF-eye.{s}") for e, s in zip(eyes, ("L", "R"))]
