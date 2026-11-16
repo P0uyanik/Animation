@@ -38,3 +38,10 @@ Everything that can be shared across characters must be designed as a reusable, 
 (code with no character names, configured by spec/preset data, tested on at least two characters or a synthetic
 configuration), never implemented separately per character. Character-specific legacy (boy 1.0.0/1.1.0) stays frozen
 and is migrated through new versions (Boy 2.0, roadmap V3b). Task prompts and reviews enforce this rule.
+
+## 2026-11-16: open-source tooling (owner-approved; installs allowed when needed)
+Priority: (1) Blender Geometry Nodes + hair curves for real fibre fuzz on felt, wool and yarn (shared material/groom
+builders); (2) EEVEE draft renders alongside Cycles finals (`--engine eevee|cycles`); (3) engine secondary motion
+(spring chains, shared layer) and a `run_shot` simulate stage using Blender's built-in Bullet rigid body, cloth,
+Dynamic Paint waves and particles (V4: water, ripples, sparkles, falling/floating props); (4) OpenTimelineIO edit
+export and Rhubarb Lip Sync with V5. Later/not now: OpenUSD (V7/V8), MaterialX, Filament, OpenVDB, Bullet in engine.
