@@ -198,7 +198,7 @@ listed as `render_regions_not_annotated`.
   | hidden landmarks | 1 + 0.5 per view |
 
   Example wording: "eyes 24% too small (width relative to head height)", "hair width at the temples (eye level)
-  −40%", "hoodie colour dE00 14.5 (render darker by 16 L*, …)".
+  −71%", "hoodie colour dE00 14.5 (render darker by 16 L*, …)".
 - **Suggestions (optional, never applied):**
   - proportions: the spec value times reference/render for eye size, eye spacing, arm length and shoulder width;
   - colours: the current base sRGB moved in Lab by (reference median − render median), averaged when several regions
