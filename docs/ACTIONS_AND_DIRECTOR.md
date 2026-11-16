@@ -44,6 +44,27 @@ are re-checked after all actions are compiled; a contact that stays more than 5 
 the scene's warnings. Generated tracks: `<who>/ik.<hand bone>`, `<who>/orient.<hand bone>` (+ `.weight`; the hand's
 world rotation, applied after IK), `<who>/hand.<side>` and its grasp tracks, `<who>/lookAt`.
 
+**Arm-body clearance (T-030, `interaction.h`).** Every IK-driven arm is kept out of its own body:
+- *Body model* (per character, from the shared roles and the skinned rest meshes, garments included): seven short
+  sections along the spine (2 pelvis bands under the hips, 3 lower-torso bands hips → chest, 2 upper-torso bands
+  chest → neck), each an elliptical capsule fitted to the 99th percentile of its own height slab (front half: hands
+  work in front). The arm is its own skinned surface (sleeve, cuff, hand: about 600 sampled vertices with their real
+  weights), not bone capsules, because a garment sleeve need not follow the arm bones the way skin does.
+- *Measure:* the gap of the hand and the wrist half of the forearm to the sections (negative = inside). A point that
+  already rests against the body in the rest pose counts from that depth. The upper arm and the elbow half of the
+  forearm rest against the side naturally: they are reported, not required.
+- *Elbow pole* (`<who>/pole.<hand bone>` + `.weight` = the IK weight): the upper arm swings about the shoulder → wrist
+  axis so the elbow points out, down and a little back (chest frame); the wrist stays and the hand keeps its rotation.
+- *Wrist target:* per frame, pushed along the gap gradient until the arm keeps 5 mm (`kArmBodyMargin`). Each frame starts
+  from the previous frame's push and is shrunk to the smallest push that clears; the pushes are then eased in time (no
+  pops). While the IK fades in or out the arm may be as deep as the clip arm alone is, never deeper. Contacts and the
+  giver's still hold of a hand-over keep their exact targets; `reach`/`touch` contacts too.
+- *Hand-over:* the meeting point (`at`, or the default) is searched on a grid around the requested point (3 cm, then
+  1 cm steps) for the closest point that keeps both arms clear and within reach; the receiver's reach is planned there.
+- *Reports:* an arm still inside at full IK weight (`'<who>' arm R passes N mm into the body at frame F`) and a hand-over
+  without a clear meeting point are scene warnings. A contact the body is in the way of cannot be moved (the prop is
+  where the author put it): stage props in front of the body.
+
 ## Director (automatic camera)
 ```json
 "director": {"minShot": 36, "closeFocal": 70, "closeFStop": 2.8, "mediumFocal": 50, "mediumFStop": 4}
@@ -72,4 +93,4 @@ To override: key `camera.position`, `camera.target` or `camera.lens` by hand —
 - Natural-language or external-assistant control: a JSON action list is the intended target for such a layer,
   but no integration exists yet.
 - Running, sitting, turning on the spot without walking, two-handed grasps. (Handing a prop between characters:
-  `handover`, T-022.) Prop interactions do not lean the body: keep the prop within arm's length.
+  `handover`, T-022.) Prop interactions do not lean the body: keep the prop within arm's length, and in front of the body (T-030).

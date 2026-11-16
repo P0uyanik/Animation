@@ -20,7 +20,10 @@ Per character (any rig whose deform bones the package lists; nothing character-s
     primitive mesh (box / sphere centred; cylinder standing on its base along +Y, optionally "open_top" with a "wall"
     thickness) and its first material preset from the shared library (pipeline/charsys/materials); the object is
     keyed every frame from the baked world matrix. Assets are found by id in content/assets above the baked scene.
-Writes shot.blend (masters stay linked), frame_####.png, shot_render.json (timings, reconstruction error)."""
+  * eye sockets (T-030): on every frame, as Blender evaluates the applied bake, each eye's centre (sphere fit of its
+    evaluated eyeball, any mesh bound only to an "eye.*" role bone and without shape keys) is compared with its
+    socket (the rest centre carried by the head bone); the largest distance per character is reported.
+Writes shot.blend (masters stay linked), frame_####.png, shot_render.json (timings, reconstruction error, eye sockets)."""
 import argparse
 import json
 import math

@@ -7,6 +7,7 @@
 // uprightness and palm-to-socket drift while held.
 #include <cstdio>
 #include <iostream>
+#include <set>
 
 #include "scene/interaction.h"
 #include "scene/scene.h"
@@ -63,6 +64,15 @@ int main(int argc, char** argv) {
   // Arm-body clearance. gap: forearm/hand surface to the body sections beyond the rest contact (>= 0 is outside);
   // raw: without the rest-contact allowance; upper: the elbow half of the upper arm (reported only).
   out["clearance_margin_mm"] = kArmBodyMargin * 1000;
+  // Reference: the same shot without the interaction actions (the clip arms alone), for the frames where the IK fades
+  // in or out: there the arm may rest as deep as the clip arm does (a sleeve hanging against the side), never deeper.
+  Scene idleScene = *scene;
+  Json kept = Json::array();
+  for (const auto& a : idleScene.actions)
+    if (!std::set<std::string>{"grasp", "reach", "hold", "place", "handover", "touch"}.count(a.value("type", ""))) kept.push_back(a);
+  idleScene.actions = kept;
+  SceneEvaluator idle;
+  if (auto r = idle.load(idleScene, EvalOptions{2.5f, 1.0f, false, 0}); !r) { std::cerr << r.error().message << "\n"; return 1; }
   for (size_t c = 0; c < s.characters.size(); ++c) {
     const std::string who = s.characters[c].name;
     const BodyClearanceModel* M = ev.clearanceModel(c);
@@ -73,13 +83,16 @@ int main(int argc, char** argv) {
       const std::string ik = who + "/ik." + ev.characters()[c].asset.skeleton.bones[size_t(M->arm[side == 'L' ? 0 : 1].hand)].name;
       const bool driven = s.animation.find(ik) != nullptr;
       Json per = Json::array();
-      float fullMin = 1e9f, anyMin = 1e9f, rawMin = 1e9f, upperMin = 1e9f;
+      float fullMin = 1e9f, anyMin = 1e9f, rawMin = 1e9f, upperMin = 1e9f, deeperThanClip = 0;
       int fullAt = 0, frames = 0;
       std::string part, against;
       for (int f = s.frameStart; f <= s.frameEnd; ++f) {
         const float w = driven ? s.animation.evaluate(ik + ".weight", f, vec3(1)).x : 0.0f;
         const ArmClearance a = ev.armClearanceAt(c, side, f);
+        const float clipGap = idle.armClearanceAt(c, side, f).gap;
+        if (w > 0.01f) deeperThanClip = std::max(deeperThanClip, std::min(0.0f, clipGap) - a.gap);
         per.push_back({{"f", f}, {"ik", std::round(w * 100) / 100}, {"gap_mm", std::round(a.gap * 1e4) / 10},
+                       {"clip_arm_gap_mm", std::round(clipGap * 1e4) / 10},
                        {"raw_mm", std::round(a.rawGap * 1e4) / 10}, {"upper_mm", std::round(a.upperGap * 1e4) / 10}, {"part", a.part}});
         if (w > 0.01f) {
           anyMin = std::min(anyMin, a.gap), rawMin = std::min(rawMin, a.rawGap), upperMin = std::min(upperMin, a.upperGap);
@@ -91,7 +104,8 @@ int main(int argc, char** argv) {
           {"ik_driven", driven}, {"ik_frames", frames}, {"min_gap_mm_full_ik", fullMin < 1e8f ? Json(fullMin * 1000) : Json()},
           {"worst_frame", fullAt}, {"worst_part", part}, {"worst_against", against},
           {"min_gap_mm_any_ik", anyMin < 1e8f ? Json(anyMin * 1000) : Json()}, {"min_raw_mm_any_ik", rawMin < 1e8f ? Json(rawMin * 1000) : Json()},
-          {"min_upper_arm_mm_any_ik", upperMin < 1e8f ? Json(upperMin * 1000) : Json()}, {"per_frame", per}};
+          {"min_upper_arm_mm_any_ik", upperMin < 1e8f ? Json(upperMin * 1000) : Json()},
+          {"max_mm_deeper_than_clip_arm_any_ik", deeperThanClip * 1000}, {"per_frame", per}};
     }
   }
   std::cout << out.dump(1) << "\n";
