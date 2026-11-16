@@ -20,13 +20,17 @@ WEIGHTS = {"silhouette": 0.25, "regions": 0.15, "landmarks": 0.20, "proportions"
 
 
 # ---------------------------------------------------------------------------------------------------------- loading
-def poly_mask(size, polys):
-    im = Image.new("L", size, 0)
+def poly_mask(size, polys, ss=4):
+    """Rasterise polygons given in pixel-corner coordinates (a pixel (i, j) spans [i, i+1] x [j, j+1]) to a boolean
+    mask of `size` (w, h): 4x supersampled, a pixel is inside when at least half of it is covered."""
+    w, h = size
+    im = Image.new("L", (w * ss, h * ss), 0)
     d = ImageDraw.Draw(im)
     for p in polys:
         if len(p) >= 3:
-            d.polygon([tuple(map(float, q)) for q in p], fill=255)
-    return np.asarray(im) > 0
+            d.polygon([(float(x) * ss, float(y) * ss) for x, y in p], fill=1)
+    a = np.asarray(im, np.uint8)[:h * ss, :w * ss].reshape(h, ss, w, ss).sum(axis=(1, 3))
+    return a >= (ss * ss) / 2
 
 
 def load_reference(ref_dir, ann):

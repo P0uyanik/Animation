@@ -9,7 +9,7 @@ Semi-automatic method (documented in docs/CHARACTER_FIDELITY.md):
   3. Every figure pixel is assigned the region with the nearest seed colour (CIE Lab, Euclidean) among the regions
      whose zone contains it. A 5x5 majority filter removes speckle.
   4. Each region's connected components (holes filled, >= min_px pixels) are traced and simplified
-     (Douglas-Peucker, 0.75 px) into polygons. Hand polygons from the hints (e.g. eyes, glasses) are copied as given.
+     (Douglas-Peucker, 0.5 px) into polygons. Hand polygons from the hints (e.g. eyes, glasses) are copied as given.
   5. skin is split at the annotated chin line: skin_face above, skin_limbs below (the render side uses the same rule).
 The annotator then reviews the preview overlay and corrects seeds/zones/hand polygons until the overlay is right.
 The written polygons are the annotation; this helper is only provenance and is never run by the fidelity tool."""
@@ -23,18 +23,14 @@ from PIL import Image, ImageDraw, ImageFilter
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
+import analysis as A  # noqa: E402
 import metrics as M  # noqa: E402
 
 ROOT = os.path.abspath(os.path.join(HERE, "..", ".."))
 
 
 def poly_mask(shape, polys):
-    im = Image.new("L", (shape[1], shape[0]), 0)
-    d = ImageDraw.Draw(im)
-    for p in polys:
-        if len(p) >= 3:
-            d.polygon([tuple(map(float, q)) for q in p], fill=255)
-    return np.asarray(im) > 0
+    return A.poly_mask((shape[1], shape[0]), polys)
 
 
 def components(mask):
@@ -115,7 +111,7 @@ def trace(m):
     return [(px - 1, py - 1) for px, py in pts]
 
 
-def simplify(pts, eps=0.75):
+def simplify(pts, eps=0.5):
     pts = np.asarray(pts, float)
     if len(pts) < 4:
         return pts.tolist()
