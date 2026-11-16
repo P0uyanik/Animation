@@ -173,6 +173,21 @@ blender -b --factory-startup -P pipeline/charsys/tools/groom_turnaround.py -- <d
 Blender: no binary on this host, so `bpy==5.3.0` (Python 3.13) runs behind a `blender` wrapper that accepts
 `-b --factory-startup -P <script> -- <args>`. CPU only.
 
+## Checks
+
+| Command | Result |
+| --- | --- |
+| `python3 pipeline/charsys/tests/test_material_presets.py` | PASS 54/54 (schema set extended with the 4 fibre look fields) |
+| `blender -b --factory-startup -P pipeline/charsys/tests/groom_generic_test.py -- <out.json>` | PASS (rc 0) |
+| `python3 tests/garment_generic_test.py --blender <blender> --out <dir>` | PASS (rc 0) |
+| `python3 pipeline/charsys/tests/test_export_engine.py --blender <blender>` | PASS 8/8 |
+| `python3 pipeline/charsys/verify_charsys.py --blender <blender> --out <new dir>` | PASS: build, geometry fingerprint (boy byte-identical), store, reuse |
+| `blender ... face_system_test.py -- <girl master> <dir> --no-render` | rc 0; 0 lid/glasses overlaps and 0.0% eye visibility in blink gazes |
+| `blender ... face_test.py -- assets/characters/boy_yellow_hoodie/versions/1.0.0/boy_yellow_hoodie_master.blend <dir>` | rc 0; neutral eye 37.2%, Blink 0.0%, Smile +4.5 mm, JawOpen 13.6 mm (same as T-019) |
+
+`git diff origin/main -- assets tests/data docs/references` is empty: frozen boy versions, test data, baselines
+and references are untouched.
+
 ## Render budget
 
 | Run | What |
