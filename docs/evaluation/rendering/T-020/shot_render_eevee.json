@@ -1,0 +1,32 @@
+{
+ "bake": "D:\\Animation\\wt\\t020-codex\\build\\T-020\\shot_fixture\\bake.json",
+ "frames": [
+  1,
+  1
+ ],
+ "characters": {},
+ "not_rendered": [],
+ "world": {
+  "lights": 1,
+  "objects": 3
+ },
+ "setup_s": 0.1,
+ "render_s": 15.2,
+ "render_s_per_frame": 15.2,
+ "resolution": [
+  320,
+  180
+ ],
+ "samples": 8,
+ "engine": "eevee",
+ "engine_settings": {
+  "engine": "eevee",
+  "blender_engine": "BLENDER_EEVEE",
+  "samples": 8,
+  "soft_shadows": true,
+  "shadow_rays": 4,
+  "ambient_occlusion": true,
+  "fast_gi_method": "AMBIENT_OCCLUSION_ONLY",
+  "bloom": false
+ }
+}

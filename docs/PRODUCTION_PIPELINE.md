@@ -2,12 +2,12 @@
 
 **Render path (TD-42):**
 - **The C++ engine animates:** actions, life layer, IK, expressions, jaw, blink timing.
-- **Blender renders:** Cycles, with the characters' own materials.
+- **Blender renders:** Cycles by default, or EEVEE for drafts, with the characters' own materials.
 - The engine's path tracer stays for previews and the existing image regressions.
 
 ```
 character sources            engine packages           C++ engine                 Blender
-(published version dir   ->  export_engine.py      ->  plush-render --bake    ->  shot_render.py (Cycles)
+(published version dir   ->  export_engine.py      ->  plush-render --bake    ->  shot_render.py (Cycles/EEVEE)
  or spec, built)             (cached by master sha)    bake.json                  frames, shot.blend, shot.mp4
 ```
 
@@ -15,6 +15,10 @@ character sources            engine packages           C++ engine               
 ```bash
 python3 pipeline/production/run_shot.py --shot episodes/e000_pilot/shots/s010/shot.scene.json --blender <blender> --video
 ```
+
+`--engine cycles|eevee` selects the Blender renderer and defaults to `cycles`. EEVEE is a draft approximation with
+four-ray soft shadows, Fast GI ambient occlusion and bloom off. `--bake-engine <path>` overrides the separate
+`plush-render` executable used by the bake stage. Omitting `--engine` keeps the original Cycles setup and invocation.
 
 The shot file is an engine scene (`plush.scene`): characters, actions, tracks, camera, lights and props. It also has
 a `production` block naming each cast member's source:
@@ -33,7 +37,7 @@ the command behaves and writes exactly as in M3.2.
   - It is idempotent: an unchanged repeat writes nothing to masters, packages, `assets/` or published versions.
   - The resolved scene and `cast.json` are rewritten only when their content changes.
 - **bake:** the engine (`plush-render --bake`).
-- **render:** Blender (`shot_render.py`).
+- **render:** Blender (`shot_render.py`, Cycles by default or EEVEE with `--engine eevee`).
 - **encode:** mp4. Without `--stages`, encode runs only with `--video`, as before.
 
 **Run folders** (`--run-dir <id>` gives `<shot>/build/runs/<id>/`):
