@@ -1,0 +1,25 @@
+{
+  "baseline_commit": "573a065989e3f285ad66019f055b3c3d51f24bc8",
+  "baseline_source_archive_sha256": "e5cc91e236b2bd5fb917621a5072dd239613c56801ee413f1d4fc2089077832e",
+  "source_blob_matches": {
+    "pipeline/charsys/face.py": true,
+    "pipeline/charsys/face_generic.py": true,
+    "pipeline/charsys/build_character.py": true,
+    "pipeline/charsys/body_v6.py": true
+  },
+  "render": {
+    "blender": "5.3.0",
+    "engine": "BLENDER_EEVEE",
+    "resolution": [300, 300],
+    "current": "girl_current_head.png",
+    "baseline": "girl_origin_573a065_head.png"
+  },
+  "comparison": {
+    "channels": "RGB 8-bit decoded pixels",
+    "max_abs_difference": 0,
+    "mean_abs_difference": 0.0,
+    "changed_pixels": 0,
+    "total_pixels": 90000
+  },
+  "face_system_metrics_exactly_equal": true
+}
