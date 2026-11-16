@@ -235,7 +235,13 @@ def main_generic(a, spec, info, out):
                 hair_mats[slot] = (MATERIALS.build_from_assignment(f"M_{slot}", asg) if asg else
                                    G.material(f"M_{slot}", tuple(rgb), roughness=0.9, sheen=0.4))
             return hair_mats[slot]
-        groom, report["hair"] = GROOM.build(C, parts[0][0], frame, spec["hair"], hair_material, B.face_y)
+        def hair_fibres(ob, slot, overrides):  # shared GN surface fibres of the slot's material preset (T-033)
+            asg = MATERIALS.get_assignment(mats, slot)
+            if not asg:
+                return None
+            asg = dict(asg, overrides=MATERIALS.deep_merge(asg.get("overrides") or {}, overrides))
+            return MATERIALS.add_fibres_from_assignment(ob, asg)
+        groom, report["hair"] = GROOM.build(C, parts[0][0], frame, spec["hair"], hair_material, B.face_y, hair_fibres)
     report["model_s"] = round(time.time() - t0, 1)
     rig, rr = BG.rig_generic(C, f"rig_{cid}", parts, P, H, J, frames, spec["rig"].get("weight_rules", {}), B,
                              spec["rig"].get("weight_smooth"))

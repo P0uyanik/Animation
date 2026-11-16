@@ -70,6 +70,20 @@ def _hair():
     import hair
     return hair
 
+
+def _felt():
+    import groom_felt
+    return groom_felt
+
+
+FINISHES = ("yarn", "felt")
+FINISH_TYPES = {"sweep", "fringe", "locks", "bun"}
+
+
+def finish(st, ctx):
+    """'yarn' (plied ropes, the groom/1 default) or 'felt' (T-033): structure "finish", else spec.hair.finish."""
+    return st.get("finish", ctx.get("finish", "yarn"))
+
 GENERATOR = "groom/1"
 YARN_DEFAULT = {"plies": 3, "depth": 0.16, "twist_per_m": 160.0, "seg": 12, "step_m": 0.004, "fibre_lean": 0.5}
 UV_NAME = "ps_fibre"
@@ -157,10 +171,11 @@ def resample(pts, step):
 
 
 # ------------------------------------------------------------------------------------------------ yarn rope geometry
-def rope_mesh(pts, widths, thicks, yarn, up_hint=(0, 0, 1), closed=False, phase=0.0, cap_rings=3):
+def rope_mesh(pts, widths, thicks, yarn, up_hint=(0, 0, 1), closed=False, phase=0.0, cap_rings=3, section=None):
     """Vertices, faces and per-corner UVs of a plied yarn rope along pts: a section whose radius is modulated by
     `plies` lobes that rotate with arc length (twist), so the plies wind around the rope. Rounded end caps.
-    UV (metres): U around the rope, measured in the frame of the plies (lean = yarn.fibre_lean), V along it."""
+    UV (metres): U around the rope, measured in the frame of the plies (lean = yarn.fibre_lean), V along it.
+    section(theta, s) -> radius multiplier replaces the ply modulation (felt locks: soft irregular section)."""
     G = HAIR_G()
     seg = int(yarn["seg"])
     plies, depth, tw = int(yarn["plies"]), float(yarn["depth"]), float(yarn["twist_per_m"])
@@ -176,7 +191,10 @@ def rope_mesh(pts, widths, thicks, yarn, up_hint=(0, 0, 1), closed=False, phase=
         r = []
         for k in range(seg):
             th = 2 * math.pi * k / seg
-            m = 1.0 + depth * math.cos(plies * (th - ph)) if plies > 1 else 1.0
+            if section is not None:
+                m = section(th, sk)
+            else:
+                m = 1.0 + depth * math.cos(plies * (th - ph)) if plies > 1 else 1.0
             r.append(p + b * (math.cos(th) * w * m) + n * (math.sin(th) * h * m))
         return r
     for i, p in enumerate(P):
@@ -239,6 +257,7 @@ class MeshBucket:
 
     def __init__(self):
         self.verts, self.faces, self.uvs = [], [], []
+        self.recalc = False  # felt shells: make face winding consistent (outwards) before smooth shading
 
     def add(self, verts, faces, uvs=None):
         o = len(self.verts)
@@ -255,6 +274,13 @@ class MeshBucket:
         flat = [c for f in self.uvs for corner in f for c in corner]
         layer.data.foreach_set("uv", flat)
         me.validate()
+        if self.recalc:
+            import bmesh
+            bm = bmesh.new()
+            bm.from_mesh(me)
+            bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+            bm.to_mesh(me)
+            bm.free()
         me.shade_smooth()
         ob = bpy.data.objects.new(name, me)
         C.objects.link(ob)
@@ -280,6 +306,9 @@ def rng_range(R, v):
 
 # ------------------------------------------------------------------------------------------------------- structures
 def build_sweep(st, ctx, R):
+    if finish(st, ctx) == "felt":
+        b, info = _felt().build_volume(_felt().sweep_as_gather(st), ctx, R)
+        return b, dict(info, finish="felt")
     sc, yarn = ctx["scalp"], ctx["yarn"]
     tgt = st.get("target", {})
     if "bun" in tgt:
@@ -310,6 +339,9 @@ def build_sweep(st, ctx, R):
 
 
 def build_fringe(st, ctx, R):
+    if finish(st, ctx) == "felt":
+        b, info = _felt().build_volume(_felt().fringe_as_sheet(st), ctx, R)
+        return b, dict(info, finish="felt")
     sc, yarn, face_y, head = ctx["scalp"], ctx["yarn"], ctx["face_y"], ctx["head"]
     bucket = MeshBucket()
     n = len(st["tip_x"])
@@ -385,7 +417,11 @@ def smooth_noise(R, wavelength):
 def build_locks(st, ctx, R):
     yarn = ctx["yarn"]
     style = st.get("style", "straight")
+    felt = finish(st, ctx) == "felt"
     bucket = MeshBucket()
+    if felt:  # felt_lock: soft irregular section, no plies (its own seeded stream: centre lines keep their seeds)
+        RF = random.Random("felt_lock:" + st.get("name", st["type"]) + ":" + str(ctx.get("seed", 0)))
+        bucket.recalc = True
     sides = (1, -1) if st.get("mirror") else (1,)
     a0, a1 = st["az"]
     cnt = int(st["count"])
@@ -452,15 +488,22 @@ def build_locks(st, ctx, R):
             w, h = rng_range(R, st["width"]) / 2, rng_range(R, st["thick"]) / 2
             tf = float(st.get("tip_frac", 0.6))
             v_start = len(bucket.verts)
-            bucket.add(*rope_mesh(pts, taper(len(pts), w, w * float(st.get("end_scale", 0.85)), tf, swell=0.05),
-                                  taper(len(pts), h, h * float(st.get("end_scale", 0.85)), tf, swell=0.05), yarn,
-                                  up_hint=hdir, phase=R.uniform(0, 6.28)))
+            if felt:
+                section, seg = _felt().lock_section(st, RF)
+                ph = R.uniform(0, 6.28)
+                bucket.add(*rope_mesh(pts, taper(len(pts), w, w * float(st.get("end_scale", 0.85)), tf, swell=0.05),
+                                      taper(len(pts), h, h * float(st.get("end_scale", 0.85)), tf, swell=0.05),
+                                      dict(yarn, seg=seg), up_hint=hdir, phase=ph, section=section))
+            else:
+                bucket.add(*rope_mesh(pts, taper(len(pts), w, w * float(st.get("end_scale", 0.85)), tf, swell=0.05),
+                                      taper(len(pts), h, h * float(st.get("end_scale", 0.85)), tf, swell=0.05), yarn,
+                                      up_hint=hdir, phase=R.uniform(0, 6.28)))
             if ctx.get("dynamics") is not None:  # centre line of the hanging part (no random draws: same geometry)
                 hang = [p.copy() for p, si in zip(base, s) if si >= s_leave]
                 ctx["dynamics"].append({"kind": "lock", "structure": st.get("name", st["type"]), "index": made,
                                         "line": hang, "verts": (v_start, len(bucket.verts))})
             made += 1
-    return bucket, {"locks": made, "style": style}
+    return bucket, dict({"locks": made, "style": style}, **({"finish": "felt"} if felt else {}))
 
 
 def bun_frames(st, ctx):
@@ -478,6 +521,8 @@ def bun_frames(st, ctx):
 
 
 def build_bun(st, ctx, R):
+    if finish(st, ctx) == "felt":
+        return _felt().felt_bun(st, ctx, R)
     yarn = ctx["yarn"]
     bucket = MeshBucket()
     G = HAIR_G()
@@ -615,8 +660,12 @@ def build_flowers(st, ctx, R):
     return {"petals": pet, "centres": cen}, {"flowers": len(st["items"])}
 
 
+def build_felt_volume(st, ctx, R):
+    return _felt().build_volume(st, ctx, R)
+
+
 BUILDERS = {"sweep": build_sweep, "fringe": build_fringe, "locks": build_locks, "bun": build_bun, "tie": build_tie,
-            "bow": build_bow, "flowers": build_flowers}
+            "bow": build_bow, "flowers": build_flowers, "felt_volume": build_felt_volume}
 ACCESSORY_TYPES = {"tie", "bow", "flowers"}
 TYPES = {"scalp_cap"} | set(BUILDERS)
 
@@ -642,9 +691,20 @@ def validate(hair_spec):
             errs.append(f"hair.structures[{i}] curly locks need curl.radius and curl.pitch")
         if t == "fringe" and len(s.get("tip_x", [])) != len(s.get("tip_z", [])):
             errs.append(f"hair.structures[{i}] fringe tip_x and tip_z differ in length")
+        if t == "felt_volume":
+            errs += _felt().validate(s, i, nb)
+            continue
+        if "finish" in s and (s["finish"] not in FINISHES or t not in FINISH_TYPES):
+            errs.append(f"hair.structures[{i}] ({t}) finish must be one of {', '.join(FINISHES)} on "
+                        f"{', '.join(sorted(FINISH_TYPES))}")
         ref = s.get("bun", (s.get("target") or {}).get("bun"))
         if t in ("tie", "flowers", "sweep", "bow") and ref is not None and int(ref) >= nb:
             errs.append(f"hair.structures[{i}] refers to bun {ref}, but only {nb} bun(s) exist")
+    if hair_spec.get("finish", "yarn") not in FINISHES:
+        errs.append(f"hair.finish must be one of {', '.join(FINISHES)}")
+    fb = hair_spec.get("fibres")
+    if fb is not None and (not isinstance(fb, dict) or not isinstance(fb.get("layers", []), list)):
+        errs.append("hair.fibres must be an object with an optional 'layers' list")
     errs += validate_dynamics(hair_spec)
     return errs
 
@@ -766,16 +826,21 @@ def _store_dynamics_records(objs, st, records, ctx, dyn):
         ob["ps_dyn"] = json.dumps(data)
 
 
-def build(C, head, frame, hair_spec, material, face_y):
+def build(C, head, frame, hair_spec, material, face_y, fibres=None):
     """Builds every structure. frame: {"centre", "radii"} of the head; material(slot) -> bpy material;
-    face_y(head, x, z) -> y of the face surface. Returns (objects, report)."""
+    face_y(head, x, z) -> y of the face surface. Returns (objects, report).
+    fibres(obj, slot, overrides) -> fibre object (the shared GN surface-fibre group with the slot's material preset):
+    with spec.hair.fibres {"slots": [...] (default ["hair"]), "layers": [{"overrides": {...}}, ...]} every object
+    of those slots gets one fibre object per layer (e.g. a dense short felt layer and a sparse long flyaway layer).
+    Fibre objects are not returned with the meshes (they are not skinned; they follow the surface they grow on)."""
     errs = validate(hair_spec)
     if errs:
         raise SystemExit("groom/1: " + "; ".join(errs))
     seed = int(hair_spec.get("seed", 11))
     yarn = dict(YARN_DEFAULT, **(hair_spec.get("yarn") or {}))
     scalp = Scalp(head, frame["centre"], frame["radii"], float(hair_spec.get("scalp_offset_m", 0.008)))
-    ctx = {"C": C, "head": head, "scalp": scalp, "yarn": yarn, "face_y": face_y, "buns": []}
+    ctx = {"C": C, "head": head, "scalp": scalp, "yarn": yarn, "face_y": face_y, "buns": [],
+           "finish": hair_spec.get("finish", "yarn"), "seed": seed}
     dyn = dynamics_spec(hair_spec)
     if dyn:
         ctx["dynamics"] = []
@@ -784,6 +849,7 @@ def build(C, head, frame, hair_spec, material, face_y):
         if s["type"] == "bun":
             ctx["buns"] += bun_frames(s, ctx)
     objs, rep = [], {"generator": GENERATOR, "structures": {}}
+    slot_of = {}
     for i, s in enumerate(sts):
         t = s["type"]
         name = s.get("name", t)
@@ -792,6 +858,7 @@ def build(C, head, frame, hair_spec, material, face_y):
             ob = _hair().scalp_cap(C, head, s)
             ob.name = ob.data.name = f"hair_{name}"
             HAIR_G().assign(ob, material(s.get("material", "hair")))
+            slot_of[ob.name] = s.get("material", "hair")
             objs.append(ob)
             rep["structures"][name] = {"type": t, "faces": len(ob.data.polygons)}
             continue
@@ -803,11 +870,13 @@ def build(C, head, frame, hair_spec, material, face_y):
             for part, bucket in result.items():
                 ob = bucket.obj(f"hair_{name}_{part}", C)
                 HAIR_G().assign(ob, material(slots[part]))
+                slot_of[ob.name] = slots[part]
                 made.append(ob)
         else:
             default = "hair" if t not in ACCESSORY_TYPES else "hair_" + t
             ob = result.obj(f"hair_{name}", C)
             HAIR_G().assign(ob, material(s.get("material", default)))
+            slot_of[ob.name] = s.get("material", default)
             made.append(ob)
         objs += made
         if dyn:
@@ -816,6 +885,20 @@ def build(C, head, frame, hair_spec, material, face_y):
         rep["structures"][name] = info
     rep["objects"] = [o.name for o in objs]
     rep["vertices"] = sum(len(o.data.vertices) for o in objs)
+    fb = hair_spec.get("fibres")
+    if fb and fb.get("enabled", True) and fibres is not None:
+        slots = set(fb.get("slots", ["hair"]))
+        made = []
+        for ob in objs:
+            if slot_of.get(ob.name) in slots:
+                for layer in fb.get("layers", [{}]):
+                    fo = fibres(ob, slot_of[ob.name], layer.get("overrides") or {})
+                    if fo is not None:
+                        fo.parent = ob  # rides with the surface (its geometry is the surface's own, deformed)
+                        fo.matrix_parent_inverse = ob.matrix_world.inverted()
+                        fo["ps_groom_fibres"] = layer.get("name", "fibres")
+                        made.append(fo.name)
+        rep["fibres"] = {"objects": len(made), "layers": [l.get("name", "fibres") for l in fb.get("layers", [{}])]}
     if dyn:
         rep["dynamics"] = {"chains": sum(len(json.loads(o.get("ps_dyn", "{}")).get("chains", [])) for o in objs)}
     return objs, rep
