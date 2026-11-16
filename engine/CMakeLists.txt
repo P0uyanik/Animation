@@ -1,5 +1,5 @@
 # Engine modules. Dependencies point downward only:
-#   core <- geom <- anim <- fuzz <- model <- scene ;  render depends on core + geom only.
+#   core <- geom <- anim (secondary motion reads its JSON block) <- fuzz <- model <- scene ;  render depends on core + geom only.
 function(plush_module name)
   cmake_parse_arguments(M "" "" "SOURCES;DEPS" ${ARGN})
   add_library(${name} STATIC ${M_SOURCES})
@@ -9,7 +9,7 @@ endfunction()
 
 plush_module(plush_core SOURCES core/core.cpp DEPS glm::glm Threads::Threads)
 plush_module(plush_geom SOURCES geom/json_io.cpp DEPS plush_core nlohmann_json::nlohmann_json)
-plush_module(plush_anim SOURCES anim/animation.cpp DEPS plush_core)
+plush_module(plush_anim SOURCES anim/animation.cpp anim/secondary.cpp DEPS plush_geom)
 plush_module(plush_fuzz SOURCES fuzz/fuzz.cpp DEPS plush_geom)
 plush_module(plush_model SOURCES model/sdf.cpp model/character.cpp model/imported_character.cpp model/clip.cpp DEPS plush_geom plush_anim plush_fuzz)
 plush_module(plush_scene SOURCES scene/asset_library.cpp scene/scene.cpp scene/actions.cpp scene/shot_bake.cpp scene/clip_layers.cpp scene/emotion.cpp DEPS plush_model)

@@ -255,6 +255,7 @@ Result<Scene> loadScene(const std::filesystem::path& path) {
         }
       }
     }
+    cd.dynamics = cj.value("dynamics", Json());
     s.characters.push_back(cd);
   }
   std::map<std::string, size_t> propsByName;
@@ -427,6 +428,7 @@ Json sceneToJson(const Scene& s) {
                      {"blinkInterval", c.life.blinkInterval}, {"headFollow", c.life.headFollow}, {"headLagSec", c.life.headLagSec}});
       cj["life"] = std::move(life);
     }
+    if (!c.dynamics.is_null()) cj["dynamics"] = c.dynamics;
     chars.push_back(cj);
   }
   Json anim = Json::object();
@@ -581,6 +583,17 @@ Result<void> SceneEvaluator::load(const Scene& scene, const EvalOptions& opt) {
   authoredObjects_ = scene_.objects;
   auto compiled = compileActions();
   if (!compiled) return compiled;
+  // Secondary motion after the actions are compiled (action planning sees the kinematic pose).
+  dynamics_.assign(characters_.size(), nullptr);
+  for (size_t c = 0; c < characters_.size(); ++c) {
+    DynamicsSpec spec = characters_[c].asset.dynamics;
+    if (auto r = applyDynamicsOverride(spec, scene_.characters[c].dynamics); !r)
+      return fail(std::format("character '{}': {}", scene_.characters[c].name, r.error().message));
+    if (!spec.enabled || spec.chains.empty()) continue;
+    auto solver = SpringChainSolver::create(characters_[c].asset.skeleton, spec);
+    if (!solver) return fail(std::format("character '{}': {}", scene_.characters[c].name, solver.error().message));
+    dynamics_[c] = std::move(*solver);
+  }
 
   std::map<std::string, size_t> charactersByName, propsByName;
   for (size_t c = 0; c < scene_.characters.size(); ++c) charactersByName[scene_.characters[c].name] = c;
@@ -663,6 +676,7 @@ Result<void> SceneEvaluator::rebuildCharacter(size_t index, const CharacterAsset
     ci.coreMaterial.push_back(materialIndex(l.coreMaterial.empty() ? l.material : l.coreMaterial));
   }
   characters_[index] = std::move(ci);
+  resetDynamics();
   return {};
 }
 
@@ -672,6 +686,18 @@ void SceneEvaluator::updateMaterial(const Material& m) {
 }
 
 std::vector<mat4> SceneEvaluator::characterGlobals(size_t c, double frame, Pose* poseOut) const {
+  std::vector<mat4> g = kinematicGlobals(c, frame, poseOut);
+  if (c < dynamics_.size() && dynamics_[c])
+    dynamics_[c]->apply(frame, scene_.frameStart, scene_.rate.fps(), [&](double f) { return kinematicGlobals(c, f, nullptr); }, g);
+  return g;
+}
+
+void SceneEvaluator::resetDynamics() const {
+  for (const auto& d : dynamics_)
+    if (d) d->reset();
+}
+
+std::vector<mat4> SceneEvaluator::kinematicGlobals(size_t c, double frame, Pose* poseOut) const {
   const CharacterDesc& cd = scene_.characters[c];
   const CharacterInstance& ci = characters_[c];
   const Clip& clip = scene_.animation;

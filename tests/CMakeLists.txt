@@ -1,5 +1,5 @@
 add_executable(plush_tests test_main.cpp test_engine.cpp test_imported_character.cpp test_clips.cpp test_emotions.cpp
-                           test_asset_library.cpp)
+                           test_asset_library.cpp test_secondary.cpp)
 target_link_libraries(plush_tests PRIVATE plush_scene plush_render doctest::doctest plush_warnings)
 target_compile_definitions(plush_tests PRIVATE PLUSH_SOURCE_DIR="${CMAKE_SOURCE_DIR}")
 # Plush Studio production workflow (no OpenGL), built when the studio is built.

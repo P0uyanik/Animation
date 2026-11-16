@@ -5,6 +5,7 @@
 #include <memory>
 
 #include "anim/animation.h"
+#include "anim/secondary.h"
 #include "fuzz/fuzz.h"
 #include "geom/json_io.h"
 #include "model/sdf.h"
@@ -84,6 +85,8 @@ struct CharacterAsset {
   // Generated retarget data of an imported package ("retarget" block written by export_engine.py; null if the
   // package has none, then clip playback derives the same data from the skeleton). See model/clip.h.
   Json retargetBlock;
+  // Secondary motion (package "dynamics" block, anim/secondary.h); disabled when the package has none.
+  DynamicsSpec dynamics;
   std::vector<Expression> expressions;
   Skeleton skeleton;
   std::vector<SdfPart> parts;  // mirrors expanded, bone indices resolved
