@@ -2,7 +2,8 @@
 animation (TD-42). Read-only on every character master.
 
     blender -b --factory-startup -P pipeline/charsys/shot_render.py -- --bake bake.json --cast cast.json --out <dir>
-        [--frames A-B] [--resolution W H] [--samples N] [--light-scale X] [--blend-only]
+        [--frames A-B] [--resolution W H] [--samples N] [--light-scale X]
+        [--engine cycles|eevee] [--blend-only]
 
 bake.json: the engine's shot bake (plush.shot_bake/1, `plush-render shot.scene.json --bake bake.json`).
 cast.json: {"<character name in the scene>": {"master": <master .blend>, "character_id": <root collection>,
@@ -29,6 +30,7 @@ from mathutils import Matrix, Vector
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import episode  # noqa: E402
+import render_engine  # noqa: E402
 
 C = Matrix(((1, 0, 0, 0), (0, 0, 1, 0), (0, -1, 0, 0), (0, 0, 0, 1)))  # Blender -> engine axes
 Ci = C.inverted()
@@ -48,6 +50,7 @@ def parse():
     ap.add_argument("--resolution", type=int, nargs=2, default=None)
     ap.add_argument("--samples", type=int, default=32)
     ap.add_argument("--light-scale", type=float, default=1.0)
+    ap.add_argument("--engine", choices=("cycles", "eevee"), default="cycles")
     ap.add_argument("--blend-only", action="store_true")
     return ap.parse_args(argv)
 
@@ -242,9 +245,7 @@ def main():
                                 "unmapped_morphs": st["unmapped_morphs"], "bones_left_to_drivers": st["skipped_driven_bones"],
                                 "max_bone_error_mm": round(err[n][0] * 1000, 4), "max_bone_error_deg": round(err[n][1], 4)}
     r = scene.render
-    r.engine = "CYCLES"
-    scene.cycles.samples = a.samples
-    scene.cycles.use_denoising = True
+    engine_settings = render_engine.configure(scene, a.engine, a.samples)
     w, h = a.resolution or (bake["render"]["width"], bake["render"]["height"])
     r.resolution_x, r.resolution_y, r.resolution_percentage = w, h, 100
     scene.view_settings.exposure = float(bake["render"].get("exposureEV", 0.0))
@@ -258,6 +259,9 @@ def main():
         rep["render_s"] = round(time.time() - t, 1)
         rep["render_s_per_frame"] = round(rep["render_s"] / (fb - fa + 1), 2)
     rep["resolution"], rep["samples"] = [w, h], a.samples
+    rep["engine"] = a.engine
+    if a.engine == "eevee":
+        rep["engine_settings"] = engine_settings
     json.dump(rep, open(os.path.join(a.out, "shot_render.json"), "w"), indent=1)
     print("[shot_render]", json.dumps(rep))
 
