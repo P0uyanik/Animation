@@ -1,0 +1,22 @@
+{
+ "open_s": 0.2,
+ "views": {
+  "val27_front": 21.28
+ },
+ "lighting": "character_neutral/1",
+ "view_transform": "Standard",
+ "exposure": 0.0,
+ "engine": "eevee",
+ "engine_settings": {
+  "engine": "eevee",
+  "blender_engine": "BLENDER_EEVEE",
+  "samples": 2,
+  "soft_shadows": true,
+  "shadow_rays": 4,
+  "ambient_occlusion": true,
+  "fast_gi_method": "AMBIENT_OCCLUSION_ONLY",
+  "bloom": false
+ },
+ "samples": 2,
+ "total_s": 21.48
+}

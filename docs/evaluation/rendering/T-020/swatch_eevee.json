@@ -1,0 +1,61 @@
+{
+  "schema": "plush-studio.material-swatches/1",
+  "blender": "5.3.0",
+  "image": "build/T-020/eevee.png",
+  "width": 320,
+  "height": 384,
+  "render_width": 320,
+  "render_height": 384,
+  "max_eevee_render_dimension_px": 384,
+  "samples": 8,
+  "exposure": 0.0,
+  "view_transform": "AgX",
+  "render_engine": "BLENDER_EEVEE",
+  "engine_settings": {
+    "engine": "eevee",
+    "blender_engine": "BLENDER_EEVEE",
+    "samples": 8,
+    "soft_shadows": true,
+    "shadow_rays": 4,
+    "ambient_occlusion": true,
+    "fast_gi_method": "AMBIENT_OCCLUSION_ONLY",
+    "bloom": false
+  },
+  "device": "N/A",
+  "denoiser": "OFF",
+  "studio_light": "pipeline/blender/compare_harness.py:studio_lighting",
+  "reference_size_m": 0.256,
+  "projected_reference_px": 136.5333,
+  "fibres_lod": "off",
+  "swatches": [
+    {
+      "preset": "fleece",
+      "base_color_srgb": [
+        199,
+        151,
+        78
+      ],
+      "patch_roi_px": [
+        127,
+        212,
+        193,
+        279
+      ],
+      "sheen_roi_px": [
+        104,
+        40,
+        157,
+        93
+      ],
+      "neutral_roi_px": [
+        261,
+        27,
+        288,
+        53
+      ],
+      "projected_reference_px": 136.5333
+    }
+  ],
+  "render_s": 42.8,
+  "total_s": 44.94
+}

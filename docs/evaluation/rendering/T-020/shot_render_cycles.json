@@ -1,0 +1,22 @@
+{
+ "bake": "D:\\Animation\\wt\\t020-codex\\build\\T-020\\shot_fixture\\bake.json",
+ "frames": [
+  1,
+  1
+ ],
+ "characters": {},
+ "not_rendered": [],
+ "world": {
+  "lights": 1,
+  "objects": 3
+ },
+ "setup_s": 0.1,
+ "render_s": 0.9,
+ "render_s_per_frame": 0.9,
+ "resolution": [
+  320,
+  180
+ ],
+ "samples": 8,
+ "engine": "cycles"
+}
