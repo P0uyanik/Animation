@@ -107,7 +107,7 @@ Evidence is in `round2/`. The round-1 files above are left as they were.
   `character_neutral/1`. It has no character data, and the lights are placed relative to each camera:
   - **Key:** sun from screen-left, azimuth 35°, elevation 45°, 5800 K, angle 18°.
   - **Fill:** azimuth −50°, elevation 15°, 4800 K.
-  - **Rim:** azimuth 160°, 0.4–0.5 stop over the adjacent hair.
+  - **Rim:** azimuth 160°, elevation 35°; its stop gain over the adjacent hair was not measured this round.
   - **Ambient:** uniform, 6500 K.
   - **Backdrop:** camera rays see the sheet's grey, sRGB (96, 92, 95), through a Light Path mix, so the backdrop does
     not light the subject.
@@ -214,7 +214,7 @@ masters; for example, eye visibility is 76.1 % on both sides at rest.
 - **Band:** set at 0.20 of the bun height, radius × 1.12, tube 10 mm. It is visible from every view; see the close-up.
 
 ## Round 2: remaining deviations
-1. **Hair lightness and redness.** The hair is a little darker and browner than the sheet: L* is about 8 lower in the
+1. **Hair lightness and redness.** The hair is a little darker and browner than the sheet: L* is about 7 lower in the
    front view, and saturation is 0.40 against 0.54. The base colour is unchanged. Self-shadowing inside the chunky curls
    lowers the median; the reference's hair has broader lit tops.
 2. **Skin chroma.** The skin is less saturated than the front reference legs: 0.23 against 0.30. Its luma-matched ΔE is
