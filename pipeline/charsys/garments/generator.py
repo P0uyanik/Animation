@@ -14,7 +14,8 @@ from mathutils.kdtree import KDTree
 
 GENERATOR = "garment/1"
 ITEM_TYPES = {"top", "shirt", "vest", "shorts", "trousers", "dress", "skirt", "shoes", "boots"}
-COLLARS = {"none", "crew", "rib", "shirt", "point", "v", "v-neck"}
+COLLARS = {"none", "crew", "rib", "shirt", "point", "v", "v-neck", "round"}
+EMBROIDERY_STYLES = {"flower", "sprig"}
 MATERIAL_PRESETS = {
     "felt", "wool yarn", "fleece", "cotton knit", "woven cotton", "denim", "felt hair",
     "buttons/plastic", "glasses/acrylic", "skin-felt",
@@ -106,9 +107,55 @@ def validate(clothing):
         collar = collar.get("type", "none") if isinstance(collar, dict) else collar
         if collar not in COLLARS:
             raise ValueError(f"garment {name}.collar must be one of {sorted(COLLARS)}")
+        for key in ("sleeve_puff_m", "puff_m"):
+            if key in raw:
+                _number(raw[key], f"garment {name}.{key}", 0.0, 0.1)
+        for key in ("sleeve_puff_peak", "puff_inner"):
+            if key in raw:
+                _number(raw[key], f"garment {name}.{key}", 0.0, 1.0)
+        if isinstance(raw.get("collar"), dict):
+            for key in ("width_m", "gap_m", "slope", "tip_round", "lift_m"):
+                if key in raw["collar"]:
+                    _number(raw["collar"][key], f"garment {name}.collar.{key}", 0.0, 1.0)
+        bands = raw.get("bands")
+        if isinstance(bands, dict) and "cuff_radius_m" in bands:
+            _number(bands["cuff_radius_m"], f"garment {name}.bands.cuff_radius_m", 0.0, 0.05)
+        if "embroidery" in raw:
+            _validate_embroidery(raw, name)
         for part in raw.get("materials", {}):
             _assignment(raw, part)
     return clothing
+
+
+def _validate_embroidery(raw, name):
+    emb = raw["embroidery"]
+    if raw["type"] not in ("top", "shirt", "vest", "dress", "shorts", "trousers"):
+        raise ValueError(f"garment {name}.embroidery is supported on tops, vests, dresses and bottoms")
+    if not isinstance(emb, dict) or not isinstance(emb.get("motifs"), list) or not emb["motifs"]:
+        raise ValueError(f"garment {name}.embroidery.motifs must be a non-empty list")
+    for i, m in enumerate(emb["motifs"]):
+        label = f"garment {name}.embroidery.motifs[{i}]"
+        if not isinstance(m, dict):
+            raise ValueError(f"{label} must be an object")
+        _number(m.get("u", 0.0), f"{label}.u", -1.0, 1.0)
+        _number(m.get("v", 0.5), f"{label}.v", 0.0, 1.0)
+        if m.get("face", "front") not in ("front", "back"):
+            raise ValueError(f"{label}.face must be front or back")
+        if m.get("style", emb.get("style", "flower")) not in EMBROIDERY_STYLES:
+            raise ValueError(f"{label}.style must be one of {sorted(EMBROIDERY_STYLES)}")
+        for key in ("size_m", "relief_m"):
+            if key in m:
+                _number(m[key], f"{label}.{key}", 0.0, 0.2)
+    for key in ("size_m", "relief_m"):
+        if key in emb:
+            _number(emb[key], f"garment {name}.embroidery.{key}", 0.0, 0.2)
+    for part in ("embroidery", "embroidery_accent"):
+        if part in raw.get("materials", {}):
+            continue
+        if part == "embroidery" and "material" in emb:
+            _assignment({"name": name, "materials": {part: emb["material"]}}, part)
+        if part == "embroidery_accent" and "accent_material" in emb:
+            _assignment({"name": name, "materials": {part: emb["accent_material"]}}, part)
 
 
 def _merge(defaults, item):
@@ -191,13 +238,19 @@ def _face_centroid(body, poly):
     return sum((body.data.vertices[i].co for i in poly.vertices), Vector()) / len(poly.vertices)
 
 
-def _shell(body, name, selector, ease, thickness, C, G):
+def _shell(body, name, selector, ease, thickness, C, G, extra=None):
+    """Offset body shell. ``extra(co, normal) -> metres`` adds a per-vertex volume (puffed sleeves, bloomers) on top
+    of the ease, along the body normal."""
     selected = [p for p in body.data.polygons if selector(_face_centroid(body, p))]
     if not selected:
         raise ValueError(f"garment region {name} selected no body faces")
     source = sorted({i for p in selected for i in p.vertices})
     remap = {old: new for new, old in enumerate(source)}
-    verts = [body.data.vertices[i].co + body.data.vertices[i].normal * ease for i in source]
+    verts = []
+    for i in source:
+        v = body.data.vertices[i]
+        add = extra(v.co, v.normal) if extra is not None else 0.0
+        verts.append(v.co + v.normal * (ease + add))
     # Concave body areas (especially an armpit) can point an ordinary normal offset toward another part of the
     # surface. Project those vertices to the exterior clearance envelope; the source index still owns its skinning.
     body_bvh = BVHTree.FromPolygons([v.co.copy() for v in body.data.vertices],
@@ -304,6 +357,165 @@ def _feature(objects, ob, cfg, part, mat, G):
     return ob
 
 
+def _bump(s, peak):
+    """Smooth 0 -> 1 -> 0 volume profile over s in [0, 1] with its maximum at ``peak``."""
+    s = max(0.0, min(1.0, s))
+    peak = max(0.05, min(0.95, peak))
+    if s <= peak:
+        return math.sin(0.5 * math.pi * s / peak)
+    return math.cos(0.5 * math.pi * (s - peak) / (1.0 - peak))
+
+
+def _cuff_radius(cfg, bands, default):
+    return float(bands.get("cuff_radius_m", default)) if isinstance(bands, dict) else default
+
+
+def _round_collar(G, C, body, cfg, P, H, top_z):
+    """Flat collar lying on the shoulders, split at the front with rounded tips (round/Peter Pan collar)."""
+    collar = cfg.get("collar") if isinstance(cfg.get("collar"), dict) else {}
+    ease, thick = cfg["ease_m"], cfg["thickness_m"]
+    width = float(collar.get("width_m", 0.035 * H))
+    slope = float(collar.get("slope", 0.55))
+    tip = float(collar.get("tip_round", 0.35))  # fraction of each half (by angle) that is rounded
+    r_in = P["neck"]["radius"] * H + ease + thick + cfg["seam_radius_m"]
+    gap = min(math.pi * 0.4, float(collar.get("gap_m", 0.008 * H)) / max(r_in, 1e-6))
+    z0 = top_z + ease * 0.35
+    cols, rows = 72, 6
+    verts, faces = [], []
+    half = math.pi - gap
+    for i in range(cols + 1):
+        phi = gap + (2 * math.pi - 2 * gap) * i / cols  # 0 = front centre, increasing towards the character's left
+        from_tip = min(phi - gap, 2 * math.pi - gap - phi) / max(half, 1e-9)
+        q = min(1.0, from_tip / max(tip, 1e-6))
+        w = width * math.sqrt(max(0.0, 1.0 - (1.0 - q) ** 2)) if tip > 0 else width
+        w = max(w, width * 0.08)
+        d = Vector((math.sin(phi), -math.cos(phi), 0.0))
+        for k in range(rows + 1):
+            r = r_in + w * k / rows
+            verts.append(tuple(d * r + Vector((0, 0, z0 - slope * w * k / rows))))
+    for i in range(cols):
+        for k in range(rows):
+            a = i * (rows + 1) + k
+            faces.append((a, a + 1, a + rows + 2, a + rows + 1))
+    ob = G.new_object(f"garment.{cfg['name']}.collar", verts, faces, C)
+    # lift_m: extra clearance so the collar lies out over outer layers (a vest or jacket worn on top).
+    _ensure_clearance(body, ob, ease + thick + cfg["seam_radius_m"] + float(collar.get("lift_m", 0.0)))
+    mod = ob.modifiers.new("garment_thickness", "SOLIDIFY")
+    mod.thickness, mod.offset = max(thick, 0.0015), 1.0
+    bpy.context.view_layer.objects.active = ob
+    ob.select_set(True)
+    bpy.ops.object.modifier_apply(modifier=mod.name)
+    ob.select_set(False)
+    return ob
+
+
+_UNIT_SPHERE = None
+
+
+def _unit_sphere():
+    global _UNIT_SPHERE
+    if _UNIT_SPHERE is None:
+        import bmesh
+        bm = bmesh.new()
+        bmesh.ops.create_uvsphere(bm, u_segments=10, v_segments=6, radius=1.0)
+        _UNIT_SPHERE = ([v.co.copy() for v in bm.verts], [tuple(v.index for v in f.verts) for f in bm.faces])
+        bm.free()
+    return _UNIT_SPHERE
+
+
+def _embroidery(G, C, cfg, shell, z_range, P, H):
+    """Raised embroidery motifs on the outside of a garment shell. Each motif sits at (u, v): u is the signed
+    fraction of the local half width (+ = the character's left), v the fraction between the hem and the top.
+    Styles: ``flower`` (petals around a centre knot) and ``sprig`` (leaves along a short stem). Returns two meshes:
+    main stitches (part ``embroidery``) and accents (part ``embroidery_accent``)."""
+    emb = cfg["embroidery"]
+    sv, sf = _unit_sphere()
+    deps = bpy.context.evaluated_depsgraph_get()
+    bvh = BVHTree.FromObject(shell, deps)
+    z_lo, z_hi = z_range
+    main_v, main_f, acc_v, acc_f = [], [], [], []
+
+    def blob(vs, fs, centre, t, b, n, sx, sy, sz):
+        base = len(vs)
+        for p in sv:
+            vs.append(tuple(centre + t * (p.x * sx) + b * (p.y * sy) + n * (p.z * sz)))
+        fs.extend(tuple(base + i for i in f) for f in sf)
+
+    placed = []
+    for m in emb["motifs"]:
+        size = float(m.get("size_m", emb.get("size_m", 0.03 * H)))
+        relief = float(m.get("relief_m", emb.get("relief_m", 0.0015)))
+        style = m.get("style", emb.get("style", "flower"))
+        petals = int(m.get("petals", emb.get("petals", 5)))
+        face = m.get("face", "front")
+        z = z_lo + (z_hi - z_lo) * float(m.get("v", 0.5))
+        w, _, _ = _torso_dims(P, H, z)
+        x = float(m.get("u", 0.0)) * w
+        sign = -1.0 if face == "front" else 1.0
+        hit = bvh.ray_cast(Vector((x, sign * 2.0, z)), Vector((0, -sign, 0)))
+        if hit[0] is None:
+            raise ValueError(f"garment {cfg['name']}: embroidery motif at u={m.get('u')} v={m.get('v')} misses the garment")
+        n = hit[1].normalized()
+        if n.y * sign < 0:
+            n = -n
+        up = Vector((0, 0, 1))
+        t = up.cross(n).normalized() if abs(n.z) < 0.95 else Vector((1, 0, 0))
+        b = n.cross(t).normalized()
+        rot = math.radians(float(m.get("rotation_deg", 0.0)))
+        t, b = t * math.cos(rot) + b * math.sin(rot), b * math.cos(rot) - t * math.sin(rot)
+        c = hit[0] + n * (relief * 0.6)
+        r = size * 0.5
+        if style == "flower":
+            for k in range(petals):
+                a = 2 * math.pi * k / petals
+                d = t * math.cos(a) + b * math.sin(a)
+                e = d.cross(n).normalized()
+                blob(main_v, main_f, c + d * (r * 0.55), d, e, n, r * 0.45, r * 0.24, relief)
+            blob(acc_v, acc_f, c + n * (relief * 0.4), t, b, n, r * 0.22, r * 0.22, relief * 1.1)
+            for k in range(int(m.get("leaves", emb.get("leaves", 2)))):
+                a = -0.5 * math.pi + (k - 0.5 * (int(m.get("leaves", emb.get("leaves", 2))) - 1)) * 0.9
+                d = t * math.cos(a) + b * math.sin(a)
+                blob(acc_v, acc_f, c + d * (r * 1.15), d, d.cross(n).normalized(), n, r * 0.38, r * 0.15, relief * 0.8)
+        else:  # sprig: a short stem with leaves alternating along it
+            leaves = max(2, int(m.get("leaves", emb.get("leaves", 4))))
+            blob(main_v, main_f, c, b, t, n, r, r * 0.07, relief * 0.6)
+            for k in range(leaves):
+                s = -0.8 + 1.6 * k / (leaves - 1)
+                side = 1 if k % 2 else -1
+                d = (b * 0.6 + t * side).normalized()
+                blob(acc_v if k % 2 else main_v, acc_f if k % 2 else main_f, c + b * (s * r) + d * (r * 0.28),
+                     d, d.cross(n).normalized(), n, r * 0.30, r * 0.13, relief * 0.8)
+        placed.append({"u": m.get("u", 0.0), "v": m.get("v", 0.5), "face": face, "style": style,
+                       "at_m": [round(v, 4) for v in hit[0]]})
+    out = []
+    if main_v:
+        out.append(("embroidery", G.new_object(f"garment.{cfg['name']}.embroidery", main_v, main_f, C)))
+    if acc_v:
+        out.append(("embroidery_accent", G.new_object(f"garment.{cfg['name']}.embroidery_accent", acc_v, acc_f, C)))
+    return out, placed
+
+
+def _emb_assignment(cfg, part):
+    """Embroidery materials: materials.<part>, else embroidery.material / accent_material, else the garment's band."""
+    emb = cfg.get("embroidery", {})
+    if part in cfg.get("materials", {}):
+        return cfg
+    src = emb.get("material") if part == "embroidery" else emb.get("accent_material", emb.get("material"))
+    if src is None:
+        return cfg
+    return {**cfg, "materials": {**cfg.get("materials", {}), part: src}}
+
+
+def _add_embroidery(objects, G, C, cfg, shell, z_range, P, H):
+    if not cfg.get("embroidery"):
+        return
+    pieces, placed = _embroidery(G, C, cfg, shell, z_range, P, H)
+    for part, ob in pieces:
+        ob["ps_embroidery_motifs"] = len(placed)
+        _feature(objects, ob, cfg, part, _mat_for(G, _emb_assignment(cfg, part), part, H), G)
+    cfg["_embroidery_report"] = placed
+
+
 def _top(C, body, cfg, P, H, J, G, vest=False):
     ease, thick = cfg["ease_m"], cfg["thickness_m"]
     shell_ease = ease + float(cfg.get("articulation_allowance_m", 0.0))
@@ -332,7 +544,22 @@ def _top(C, body, cfg, P, H, J, G, vest=False):
                 arm |= 0.10 <= t <= sleeve and d <= _arm_radius(P, H, t) + 0.012 * H
         return torso or arm
 
-    main, covered = _shell(body, f"garment.{cfg['name']}.main", selector, shell_ease, thick, C, G)
+    puff = float(cfg.get("sleeve_puff_m", 0.0)) if sleeve > 0 else 0.0
+    peak = float(cfg.get("sleeve_puff_peak", 0.6))
+    start = 0.10
+
+    def sleeve_volume(c, normal):
+        if puff <= 0:
+            return 0.0
+        best = 0.0
+        for a, b in arm_segments:
+            t, d = _segment(c, a, b)
+            if start <= t <= sleeve and d <= _arm_radius(P, H, t) + 0.012 * H:
+                best = max(best, puff * _bump((t - start) / max(sleeve - start, 1e-6), peak))
+        return best
+
+    main, covered = _shell(body, f"garment.{cfg['name']}.main", selector, shell_ease, thick, C, G,
+                           extra=sleeve_volume if puff > 0 else None)
     _front_articulation_rise(main, hem_z, 0.20 * H, front_rise, upper_only=True)
     objects = []
     main_mat = _mat_for(G, cfg, "main", H)
@@ -357,8 +584,9 @@ def _top(C, body, cfg, P, H, J, G, vest=False):
         for side in ("L", "R"):
             a, b = J[f"shoulder.{side}"], J[f"wrist.{side}"]
             centre = a.lerp(b, sleeve)
+            cr = _cuff_radius(cfg, bands, cfg["seam_radius_m"] * 1.25)
             ob = _limb_ring(G, C, f"garment.{cfg['name']}.band.cuff.{side}", centre, b - a,
-                            _arm_radius(P, H, sleeve), ease + thick, cfg["seam_radius_m"] * 1.25)
+                            _arm_radius(P, H, sleeve), ease + thick + max(0.0, cr - cfg["seam_radius_m"] * 1.25), cr)
             _feature(objects, ob, cfg, "band", _mat_for(G, cfg, "band", H), G)
     if cfg.get("seam_lines"):
         seam_top_z = min(top_z, P["shoulder"]["z"] * H - 0.12 * H)
@@ -380,6 +608,9 @@ def _top(C, body, cfg, P, H, J, G, vest=False):
         pts = [Vector((math.cos(2 * math.pi * k / 48) * r, math.sin(2 * math.pi * k / 48) * r, collar_z)) for k in range(48)]
         _feature(objects, _closed_tube(G, C, f"garment.{cfg['name']}.collar", pts, cfg["seam_radius_m"] * 1.4),
                  cfg, "band", _mat_for(G, cfg, "band", H), G)
+    elif collar == "round":
+        _feature(objects, _round_collar(G, C, body, cfg, P, H, top_z), cfg, "collar",
+                 _mat_for(G, cfg, "collar" if "collar" in cfg.get("materials", {}) else "main", H), G)
     elif collar in ("v", "v-neck", "shirt", "point"):
         r = P["neck"]["radius"] * H + ease + thick
         drop = float(cfg.get("collar_drop_m", 0.045 * H if collar in ("v", "v-neck") else 0.032 * H))
@@ -419,6 +650,7 @@ def _top(C, body, cfg, P, H, J, G, vest=False):
                              (pw, pd, ph))
             ob["ps_weight_anchor"] = (centre[0], -front, centre[2])
             _feature(objects, ob, cfg, "pockets", pm, G)
+    _add_embroidery(objects, G, C, cfg, main, (hem_z, top_z), P, H)
     return objects, covered
 
 
@@ -450,7 +682,23 @@ def _bottoms(C, body, cfg, P, H, J, G):
         r = _leg_radius(P, H, t) + 0.012 * H
         return any((Vector((c.x, c.y, c.z)) - Vector((J[f"hip.{s}"].x, 0, c.z))).length <= r for s in ("L", "R"))
 
-    main, covered = _shell(body, f"garment.{cfg['name']}.main", selector, shell_ease, thick, C, G)
+    puff = float(cfg.get("puff_m", 0.0))
+    inner = float(cfg.get("puff_inner", 0.35))
+    at_hip = math.sin(0.25 * math.pi)
+
+    def bloomer_volume(c, normal):
+        """Bloomers: volume grows from the waist to the seat, peaks in the upper leg and gathers to 0 at the cuff;
+        surfaces facing the other leg get ``puff_inner`` of it."""
+        if c.z >= hip_z:
+            f = at_hip * max(0.0, min(1.0, (waist_z - c.z) / max(waist_z - hip_z, 1e-9)))
+        else:
+            s = (hip_z - c.z) / max(hip_z - bottom_z, 1e-9)
+            f = math.sin(math.pi * (0.25 + 0.75 * max(0.0, min(1.0, s))))
+        facing_in = max(0.0, -normal.x * math.copysign(1.0, c.x)) if abs(c.x) > 1e-6 else 0.0
+        return puff * f * (1.0 - (1.0 - inner) * facing_in)
+
+    main, covered = _shell(body, f"garment.{cfg['name']}.main", selector, shell_ease, thick, C, G,
+                           extra=bloomer_volume if puff > 0 else None)
     _front_articulation_rise(main, hip_z, 0.20 * H, front_rise)
     _front_centre_ease(main, hip_z, 0.12 * H, float(cfg.get("front_centre_ease_m", 0.0)), abs(J["hip.L"].x) * 0.75)
     objects = []
@@ -467,8 +715,9 @@ def _bottoms(C, body, cfg, P, H, J, G):
         t = max(0.0, min(1.0, (hip_z - bottom_z) / max(hip_z - ankle_z, 1e-9)))
         for side in ("L", "R"):
             centre = Vector((J[f"hip.{side}"].x, 0, bottom_z))
+            cr = _cuff_radius(cfg, bands, cfg["seam_radius_m"] * 1.35)
             ob = _limb_ring(G, C, f"garment.{cfg['name']}.band.cuff.{side}", centre, (0, 0, -1),
-                            _leg_radius(P, H, t), ease + thick, cfg["seam_radius_m"] * 1.35)
+                            _leg_radius(P, H, t), ease + thick + max(0.0, cr - cfg["seam_radius_m"] * 1.35), cr)
             _feature(objects, ob, cfg, "band", _mat_for(G, cfg, "band", H), G)
     if cfg.get("seam_lines"):
         sm = _mat_for(G, cfg, "seam", H)
@@ -486,6 +735,7 @@ def _bottoms(C, body, cfg, P, H, J, G):
                         [cfg["seam_radius_m"]] * len(path), [cfg["seam_radius_m"]] * len(path), C,
                         up_hint=(0, -1, 0), seg=7)
             _feature(objects, ob, cfg, "seam", sm, G)
+    _add_embroidery(objects, G, C, cfg, main, (bottom_z, waist_z), P, H)
     return objects, covered
 
 
@@ -580,8 +830,9 @@ def _footwear(C, body, cfg, P, H, J, G):
         if cfg.get("cuff") or bands.get("cuff"):
             t = max(0.0, min(1.0, (knee_z - top_z) / max(knee_z - ankle_z, 1e-9)))
             lr = _leg_radius(P, H, 1 - t)
+            cr = _cuff_radius(cfg, bands, cfg["seam_radius_m"] * 1.4)
             ring = _limb_ring(G, C, f"garment.{cfg['name']}.band.cuff.{side}", (hx, 0, top_z), (0, 0, -1),
-                              lr, ease + thick, cfg["seam_radius_m"] * 1.4)
+                              lr, ease + thick + max(0.0, cr - cfg["seam_radius_m"] * 1.4), cr)
             _feature(objects, ring, cfg, "band", _mat_for(G, cfg, "band", H), G)
         sole = cfg.get("sole", {})
         if sole is not False:
@@ -790,7 +1041,11 @@ def build(C, body, clothing, P, H, J, G):
         if mask:
             _store_cover(body, cfg["name"], cov)
             masked.append(cfg["name"])
-        item_report.append({"name": cfg["name"], "type": cfg["type"], "objects": [o.name for o in objects[before:]],
+        if cfg.get("_embroidery_report"):
+            item_report_extra = {"embroidery_motifs": cfg["_embroidery_report"]}
+        else:
+            item_report_extra = {}
+        item_report.append({**item_report_extra, "name": cfg["name"], "type": cfg["type"], "objects": [o.name for o in objects[before:]],
                             "covered_body_faces": len(cov), "mask_body": mask,
                             "material_presets": sorted({o.get("ps_material_preset", "") for o in objects[before:]})})
     body["ps_garment_mask_items"] = masked

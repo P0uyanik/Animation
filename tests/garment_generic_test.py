@@ -5,7 +5,8 @@ Plain-Python entry point:
     python tests/garment_generic_test.py --blender <blender> [--out <dir>] [--evidence-dir <dir>]
 
 The subprocess builds the neutral body_generic mannequin, shirt + vest +
-shorts + boots and a dress variant. It transfers body weights, applies six
+shorts + boots, a dress variant and outfit B (puffed sleeves, round collar,
+embroidered vest, bloomers, thick boot cuffs). It transfers body weights, applies six
 repository clips through the shared retargeter, and measures signed garment to
 body clearance in rest and posed states. Optional evidence is two 640 px
 four-view Cycles/OIDN turnaround sheets.
@@ -49,7 +50,7 @@ def _driver():
 
 def _internal():
     import bpy
-    from mathutils import Quaternion, Vector
+    from mathutils import Vector
     from mathutils.bvhtree import BVHTree
 
     charsys = os.path.join(ROOT, "pipeline", "charsys")
@@ -58,10 +59,9 @@ def _internal():
     sys.path.insert(0, clips_dir)
     import body_generic as BG
     import body_v6 as B
-    import clip_tools as CT
     import garments as GAR
+    from garments import evaluate as EV
     import geom as G
-    import retarget as RT
 
     argv = sys.argv[sys.argv.index("--") + 1:]
     ap = argparse.ArgumentParser()
@@ -72,6 +72,7 @@ def _internal():
     out = os.path.abspath(a.out)
     os.makedirs(out, exist_ok=True)
 
+    PUFF, RELIEF, CUFF_R = 0.016, 0.0018, 0.009
     neutral = json.load(open(os.path.join(ROOT, "pipeline", "clips", "mannequin.json")))
     H, P = float(neutral["body"]["height_m"]), neutral["body"]["params"]
     clothing = {
@@ -103,6 +104,26 @@ def _internal():
              "seam_lines": True,
              "material": {"preset": "cotton knit", "base_color_srgb": [102, 128, 151]},
              "materials": {"skirt": {"preset": "woven cotton", "base_color_srgb": [112, 139, 161]}}},
+            # Outfit B: the volume, collar and decoration parameters (puffed sleeves, round collar, embroidery,
+            # bloomers with gathered cuffs, a thick boot cuff). Same sleeve/leg lengths as outfit A for comparison.
+            {"type": "top", "name": "puff_top", "sleeve_length": 0.74, "sleeve_puff_m": PUFF, "sleeve_puff_peak": 0.6,
+             "collar": {"type": "round", "width_m": 0.028, "gap_m": 0.008, "slope": 0.5, "tip_round": 0.35},
+             "bands": {"cuff": True, "cuff_radius_m": 0.004},
+             "material": {"preset": "cotton knit", "base_color_srgb": [214, 206, 196]}},
+            {"type": "vest", "name": "emb_vest", "ease_m": 0.022, "open_front_m": 0.023,
+             "embroidery": {"size_m": 0.03, "relief_m": RELIEF,
+                            "motifs": [{"u": 0.55, "v": 0.7}, {"u": -0.55, "v": 0.7, "petals": 6},
+                                       {"u": 0.5, "v": 0.35, "style": "sprig", "rotation_deg": 25},
+                                       {"u": 0.0, "v": 0.6, "face": "back", "style": "sprig", "leaves": 5}],
+                            "material": {"preset": "felt", "base_color_srgb": [60, 40, 44]},
+                            "accent_material": {"preset": "wool yarn", "base_color_srgb": [200, 190, 180]}},
+             "material": {"preset": "felt", "base_color_srgb": [150, 96, 96]}},
+            {"type": "shorts", "name": "bloomers", "length": 0.38, "ease_m": 0.012, "puff_m": PUFF, "puff_inner": 0.3,
+             "cuff": True, "bands": {"waist": True, "cuff": True, "cuff_radius_m": 0.004},
+             "material": {"preset": "woven cotton", "base_color_srgb": [120, 140, 112]}},
+            {"type": "boots", "name": "fur_boots", "height": 0.5, "ease_m": 0.012, "cuff": True,
+             "bands": {"cuff": True, "cuff_radius_m": CUFF_R}, "sole": {"thickness_m": 0.007},
+             "material": {"preset": "fleece", "base_color_srgb": [120, 82, 64]}},
         ],
     }
 
@@ -120,169 +141,95 @@ def _internal():
     bind_report = GAR.bind_to_body(rig, body, garment_objects, max_influences=clothing["max_influences"])
 
     # Convert Rigify to the same plain semantic FK deform rig used to author the repository clips.
-    profile = json.load(open(os.path.join(charsys, "rig_profiles", "humanoid_rigify.json")))
-    ref = RT.reference_pose(profile["reference_pose"])
-    (el, er), (sl, sr) = profile["mirror"]["engine"], profile["mirror"]["source"]
-    roles = {}
-    for role, source in profile["roles"].items():
-        roles[role] = source
-        if role.endswith(el):
-            roles[role[:-len(el)] + er] = source[:-len(sl)] + sr if source.endswith(sl) else source.replace(sl, sr)
-    sources = {role: source for role, source in roles.items() if source in rig.data.bones and rig.data.bones[source].use_deform}
-    semantic_parent = {entry["name"]: entry["parent"] for entry in ref}
-
-    def deform_parent(bone):
-        parent = bone.parent
-        while parent is not None and not parent.use_deform:
-            parent = parent.parent
-        return parent.name if parent else None
-
-    new_parent = {bone.name: deform_parent(bone) for bone in rig.data.bones if bone.use_deform}
-    role_of = {source: role for role, source in sources.items()}
-    for source, role in role_of.items():
-        parent = semantic_parent.get(role)
-        while parent and parent not in sources:
-            parent = semantic_parent.get(parent)
-        new_parent[source] = sources[parent] if parent else None
-    rig.animation_data_clear()
-    for pb in rig.pose.bones:
-        for constraint in list(pb.constraints):
-            pb.constraints.remove(constraint)
-    bpy.ops.object.select_all(action="DESELECT")
-    rig.select_set(True)
-    bpy.context.view_layer.objects.active = rig
-    bpy.ops.object.mode_set(mode="EDIT")
-    edit = rig.data.edit_bones
-    for name, parent in new_parent.items():
-        edit[name].use_connect = False
-        edit[name].parent = edit[parent] if parent else None
-        edit[name].bbone_segments = 1
-    for bone in list(edit):
-        if not bone.use_deform:
-            edit.remove(bone)
-    bpy.ops.object.mode_set(mode="OBJECT")
-    for pb in rig.pose.bones:
-        pb.rotation_mode = "QUATERNION"
-        pb.custom_shape = None
-    clip_rig = CT.Rig(rig)
-
-    def reset_pose():
-        for pb in rig.pose.bones:
-            pb.rotation_mode = "QUATERNION"
-            pb.rotation_quaternion = (1, 0, 0, 0)
-            pb.location = (0, 0, 0)
-            pb.scale = (1, 1, 1)
-        bpy.context.view_layer.update()
-
-    def sample(track, frame, quaternion=True):
-        if "samples" in track:
-            values = track["samples"][max(0, min(len(track["samples"]) - 1, frame))]
-            return list(values)
-        keys = track["keys"]
-        if frame <= keys[0][0]:
-            return list(keys[0][1:])
-        if frame >= keys[-1][0]:
-            return list(keys[-1][1:])
-        for left, right in zip(keys, keys[1:]):
-            if left[0] <= frame <= right[0]:
-                t = (frame - left[0]) / max(1, right[0] - left[0])
-                if quaternion:
-                    return list(Quaternion(left[1:]).slerp(Quaternion(right[1:]), t))
-                return [a + (b - a) * t for a, b in zip(left[1:], right[1:])]
-        raise AssertionError("unreachable clip sample")
-
-    def apply_clip(name, frame):
-        clip = json.load(open(os.path.join(ROOT, "content", "clips", name + ".clip.json")))
-        rotations = {role: sample(track, frame) for role, track in clip["tracks"].items()}
-        root = [0.0, 0.0, 0.0]
-        if clip.get("root", {}).get("translation"):
-            root = sample(clip["root"]["translation"], frame, quaternion=False)
-        reset_pose()
-        clip_rig.pose_from_clip_rotations(rotations, root)
-        bpy.context.view_layer.update()
-        return {"clip": name, "frame": frame, "frame_count": clip["frame_count"]}
-
-    def world_mesh(ob):
-        deps = bpy.context.evaluated_depsgraph_get()
-        evaluated = ob.evaluated_get(deps)
-        mesh = evaluated.to_mesh()
-        verts = [evaluated.matrix_world @ vertex.co for vertex in mesh.vertices]
-        faces = [tuple(poly.vertices) for poly in mesh.polygons]
-        evaluated.to_mesh_clear()
-        return verts, faces
-
-    mask_mod = body.modifiers.get(GAR.generator.MASK_MODIFIER)
-    PROBES = [Vector(v) for v in ((1, 0, 0), (-1, 0, 0), (0, 1, 0), (0, -1, 0), (0, 0, 1), (0, 0, -1))]
+    clip_rig = EV.semantic_fk_rig(rig, ROOT)
+    player = EV.ClipPlayer(rig, clip_rig, os.path.join(ROOT, "content", "clips"))
+    reset_pose, apply_clip, world_mesh = player.reset, player.apply, EV.world_mesh
 
     def clearance(objects, floor):
-        """Signed clearance of garment vertices over visible body faces (hidden regions reported for information).
-        Passes when no vertex over visible skin is closer than ``floor`` (negative = inside the body)."""
-        garment_points = [(ob.name, p) for ob in objects for p in world_mesh(ob)[0]]
-        visible = GAR.visible_face_flags(body)
-        enabled = mask_mod.show_viewport if mask_mod else False
-        if mask_mod:
-            mask_mod.show_viewport = False  # full posed body; face indices match body.data.polygons
-        body_verts, body_faces = world_mesh(body)
-        if mask_mod:
-            mask_mod.show_viewport = enabled
-            bpy.context.view_layer.update()
-        assert len(body_faces) == len(visible)
-        bvh = BVHTree.FromPolygons(body_verts, body_faces, all_triangles=False)
-        best = {"visible": [float("inf"), None, None, None], "hidden": [float("inf"), None, None, None]}
-        counted, inside, buried, buried_min = 0, 0, 0, float("inf")
-        def crossings(origin, direction):
-            count, start = 0, origin
-            for _ in range(64):
-                hit = bvh.ray_cast(start + direction * 1e-6, direction)
-                if hit[0] is None:
-                    break
-                count, start = count + 1, hit[0]
-            return count
-
-        for name, point in garment_points:
-            location, normal, index, distance = bvh.find_nearest(point)
-            if location is None:
-                continue
-            signed = (point - location).dot(normal)
-            if signed < 0 and distance > 1e-6:
-                # Posed creases make the nearest-face sign unreliable (nearest point on an edge, or on a face that
-                # the bent body itself has pushed inside another part). The body is one closed surface, so a point
-                # is outside when every probe ray crosses it an even number of times.
-                away = (point - location).normalized()
-                if all(crossings(point, direction) % 2 == 0 for direction in (away, *PROBES)):
-                    signed = distance
-            if signed < clearance_floor and visible[index]:
-                # Skin-to-skin contact is not visible skin: the pose has pushed this skin inside another body part,
-                # or another body part faces it closer than a garment can fit (arm resting on the ribs).
-                probe = location + normal * 1e-4
-                facing = bvh.ray_cast(probe, normal, contact_gap)
-                if facing[0] is not None or sum(crossings(probe, direction) % 2 for direction in PROBES) >= 4:
-                    buried += 1
-                    buried_min = min(buried_min, signed)
-                    continue
-            key = "visible" if visible[index] else "hidden"
-            counted += key == "visible"
-            inside += key == "visible" and signed < 0
-            if signed < best[key][0]:
-                best[key] = [signed, name, tuple(round(v, 6) for v in point), tuple(round(v, 6) for v in location)]
-        value, closest, garment_point, body_point = best["visible"]
-        return {"min_clearance_m": round(value, 6), "closest_object": closest,
-                "garment_point_m": garment_point, "body_point_m": body_point,
-                "vertices_over_visible_body": counted, "vertices_inside_visible_body": inside,
-                "vertices_total": len(garment_points), "floor_m": floor,
-                "hidden_region_min_m": round(best["hidden"][0], 6) if best["hidden"][1] else None,
-                "skin_contact_vertices": buried,
-                "skin_contact_min_m": round(buried_min, 6) if buried else None,
-                "pass": value >= floor}
+        return EV.clearance(body, objects, floor, contact_gap, contact_floor=clearance_floor)
 
     items = {
         "outfit_a": ["shirt", "vest", "shorts", "boots"],
         "dress": ["dress", "boots"],
+        "outfit_b": ["puff_top", "emb_vest", "bloomers", "fur_boots"],
     }
     outfits = {name: [ob for ob in garment_objects if ob.get("ps_garment_item") in worn] for name, worn in items.items()}
     result = {"blender": bpy.app.version_string, "body_generator": "body_generic/1", "garment_generator": "garment/1",
               "build": build_report, "rig": rig_report, "weight_transfer": bind_report, "checks": {}, "poses": {},
               "rest": {}, "masks": {}}
+
+    # Volume, collar and decoration parameters, rest pose: outfit B against the plain outfit A pieces (outer half of
+    # each limb), the collar's front gap, embroidery relief over the vest and the boot cuff tube radius.
+    def by_item(item, part=None):
+        return [ob for ob in garment_objects if ob.get("ps_garment_item") == item and
+                (part is None or ob.get("ps_garment_part") == part)]
+
+    def limb_profile(ob, a, b, bins, reach, min_x):
+        """Max distance from the limb axis per parameter bin [t0, t1) over the vertices of ``ob`` near that limb."""
+        out = [0.0] * len(bins)
+        for v in world_mesh(ob)[0]:
+            if v.x < min_x:  # this limb's side only (not the torso or the other leg)
+                continue
+            d = b - a
+            t = max(0.0, min(1.0, (v - a).dot(d) / d.length_squared))
+            dist = (v - (a + d * t)).length
+            for k, (t0, t1) in enumerate(bins):
+                if t0 <= t < t1 and dist < reach:
+                    out[k] = max(out[k], dist)
+        return out
+
+    J0 = BG.joints(P, H)
+    sh, wr = J0["shoulder.L"], J0["wrist.L"]
+    arm_bins = [(0.40, 0.48), (0.66, 0.72)]  # puff peak (t 0.10 + 0.6 * 0.64 = 0.48) / just above the cuff
+    plain = limb_profile(by_item("shirt", "main")[0], sh, wr, arm_bins, 0.07, sh.x + 0.01)
+    puffed = limb_profile(by_item("puff_top", "main")[0], sh, wr, arm_bins, 0.07, sh.x + 0.01)
+    hip, ankle = Vector((J0["hip.L"].x, 0, P["leg"]["hip_z"] * H)), Vector((J0["hip.L"].x, 0, P["leg"]["ankle_z"] * H))
+    leg_bins = [(0.08, 0.16), (0.33, 0.37)]  # bloomer peak (s = 1/3 of the length 0.38) / just above the cuff
+    shorts_plain = limb_profile(by_item("shorts", "main")[0], hip, ankle, leg_bins, 0.09, hip.x)
+    shorts_puff = limb_profile(by_item("bloomers", "main")[0], hip, ankle, leg_bins, 0.09, hip.x)
+    result["checks"]["sleeve_puff"] = {
+        "plain_m": [round(x, 5) for x in plain], "puffed_m": [round(x, 5) for x in puffed], "puff_m": PUFF,
+        "pass": puffed[0] - plain[0] >= 0.8 * PUFF and abs(puffed[1] - plain[1]) <= 0.5 * PUFF}
+    result["checks"]["bloomers_puff"] = {
+        "plain_m": [round(x, 5) for x in shorts_plain], "puffed_m": [round(x, 5) for x in shorts_puff], "puff_m": PUFF,
+        "pass": shorts_puff[0] - shorts_plain[0] >= 0.6 * PUFF and shorts_puff[1] - shorts_plain[1] <= 0.5 * PUFF}
+    collar = by_item("puff_top", "collar")
+    cverts = world_mesh(collar[0])[0] if collar else []
+    neck_r = P["neck"]["radius"] * H
+    front_gap = [v for v in cverts if v.y < 0 and abs(v.x) < 0.002]
+    result["checks"]["round_collar"] = {
+        "objects": [o.name for o in collar], "vertices": len(cverts),
+        "min_radius_m": round(min(math.hypot(v.x, v.y) for v in cverts), 5) if cverts else None,
+        "vertices_in_front_gap": len(front_gap),
+        "pass": len(collar) == 1 and not front_gap and min(math.hypot(v.x, v.y) for v in cverts) > neck_r}
+    vest_main = by_item("emb_vest", "main")[0]
+    vest_bvh = BVHTree.FromPolygons(*world_mesh(vest_main), all_triangles=False)
+    emb = by_item("emb_vest", "embroidery") + by_item("emb_vest", "embroidery_accent")
+    motifs = next(i for i in build_report["items"] if i["name"] == "emb_vest").get("embroidery_motifs", [])
+    heights = []
+    for ob in emb:
+        for v in world_mesh(ob)[0]:
+            loc, nrm, _, _ = vest_bvh.find_nearest(v)
+            heights.append((v - loc).length)
+    try:
+        GAR.validate({"generator": "garment/1", "garments": [
+            {"type": "boots", "name": "b", "material": "felt", "embroidery": {"motifs": [{"u": 0}]}}]})
+        rejects_footwear = False
+    except ValueError:
+        rejects_footwear = True
+    result["checks"]["embroidery"] = {
+        "objects": [o.name for o in emb], "motifs": len(motifs),
+        "max_height_over_vest_m": round(max(heights), 5) if heights else None,
+        "rejects_embroidery_on_footwear": rejects_footwear,
+        "pass": len(emb) == 2 and len(motifs) == 4 and max(heights) <= 0.02 and rejects_footwear and
+                {o.get("ps_material_preset") for o in emb} == {"felt", "wool yarn"}}
+    cuffs = by_item("fur_boots", "band")
+    tube = []
+    for ob in cuffs:
+        zs = [p.z for p in world_mesh(ob)[0]]  # horizontal ring: its height is the tube diameter
+        tube.append((max(zs) - min(zs)) / 2)
+    result["checks"]["cuff_radius"] = {"tube_radius_m": [round(t, 5) for t in tube], "requested_m": CUFF_R,
+                                       "pass": len(cuffs) == 2 and all(abs(t - CUFF_R) < 0.002 for t in tube)}
 
     # Structural skinning checks: every garment vertex has <=4 normalized deform groups, an Armature modifier and
     # (when enabled) the body collision Shrinkwrap evaluated AFTER the Armature modifier.

@@ -92,3 +92,20 @@ dominant-source value of 1 is useful for thick plush clothes: it keeps an
 outward shell offset rigid at tight joints where a multi-bone linear blend can
 invert the offset. In both modes the bone choice and weights originate from the
 nearest body surface.
+
+## Volume, collar and decoration parameters (T-024)
+
+All optional and generic; omitted values reproduce the T-018 geometry exactly.
+
+| field | item types | meaning |
+|---|---|---|
+| `sleeve_puff_m` (0–0.1) | top, shirt, dress bodice | extra shell offset along the sleeve; a smooth 0→1→0 bump from the sleeve start (t 0.10) to the cuff, so the sleeve is gathered at both ends |
+| `sleeve_puff_peak` (0–1, default 0.6) | same | where along the sleeve the puff peaks |
+| `puff_m` (0–0.1) | shorts, trousers | bloomers: the volume grows from the waist to the seat (0.71 × `puff_m` at the hip line), peaks in the upper leg and gathers to 0 at the leg opening |
+| `puff_inner` (0–1, default 0.35) | same | share of the puff on surfaces facing the other leg |
+| `collar: {"type": "round", ...}` | tops | flat collar lying on the shoulders, split at the front with rounded tips: `width_m`, `gap_m` (front split), `slope` (drop per metre outwards), `tip_round` (rounded share of each half), `lift_m` (extra clearance so it lies out over a vest or jacket). Material part `collar`, else `main` |
+| `bands.cuff_radius_m` (0–0.05) | tops, bottoms, footwear | tube radius of the cuff band (thick fur boot cuffs, gathered cuffs); the ring moves out so it stays outside the garment |
+| `embroidery` | tops, vests, dresses, bottoms | raised motifs on the outside of the main shell. `motifs`: `u` (signed fraction of the local half width, + = the character's left), `v` (fraction from hem to top), `face` (`front`/`back`), `style` (`flower`: petals, centre knot and leaves; `sprig`: stem with alternating leaves), `size_m`, `relief_m`, `petals`, `leaves`, `rotation_deg`. `material` / `accent_material` (or `materials.embroidery` / `embroidery_accent`). Two objects: `garment.<item>.embroidery` and `.embroidery_accent`. A motif that misses the garment (e.g. in a vest's open front) is an error |
+
+`garments/evaluate.py` holds the shared evaluation helpers (semantic FK rig conversion, clip player, signed
+clearance) used by `tests/garment_generic_test.py` and `tools/garment_pose_eval.py`.
