@@ -11,7 +11,9 @@ import hashlib
 import json
 import math
 import os
+import struct
 import sys
+import zlib
 
 import bpy
 import numpy as np
@@ -41,13 +43,69 @@ def sha256(path):
 
 
 def load_display_rgb(path):
-    image = bpy.data.images.load(path, check_existing=False)
-    width, height = image.size
-    rgba = np.asarray(image.pixels[:], dtype=np.float64).reshape(height, width, 4)
-    # Blender 5.3 exposes a colour-managed PNG's display-sRGB samples directly,
-    # with the bottom scanline first.  Applying the sRGB transfer function again
-    # would suppress both chroma and local contrast in every reported metric.
-    rgb = np.flipud(np.clip(rgba[:, :, :3], 0.0, 1.0))
+    """Decode exact 8-bit PNG display samples without Blender colour conversion.
+
+    ``Image.pixels`` is scene-linear for some Blender/image combinations and
+    display-referred for others.  That ambiguity caused the T-015/T-016
+    saturation measurements to change when the same PNG was reloaded.  The
+    evidence render is an 8-bit RGB(A), non-interlaced PNG, so a small stdlib
+    decoder is both deterministic and the most direct implementation of the
+    VISUAL_TARGET's final-display convention.
+    """
+    data = open(path, "rb").read()
+    if data[:8] != b"\x89PNG\r\n\x1a\n":
+        raise ValueError(f"not a PNG: {path}")
+    pos, payload, width, height, color_type, bit_depth, interlace = 8, [], None, None, None, None, None
+    while pos < len(data):
+        length = struct.unpack(">I", data[pos:pos + 4])[0]
+        kind = data[pos + 4:pos + 8]
+        chunk = data[pos + 8:pos + 8 + length]
+        pos += 12 + length
+        if kind == b"IHDR":
+            width, height, bit_depth, color_type, _compression, _filter, interlace = struct.unpack(">IIBBBBB", chunk)
+        elif kind == b"IDAT":
+            payload.append(chunk)
+        elif kind == b"IEND":
+            break
+    if bit_depth != 8 or color_type not in (2, 6) or interlace != 0:
+        raise ValueError(f"PNG must be non-interlaced 8-bit RGB/RGBA, got depth={bit_depth} type={color_type}")
+    channels = 3 if color_type == 2 else 4
+    packed = zlib.decompress(b"".join(payload))
+    stride = width * channels
+    rows = np.empty((height, stride), dtype=np.uint8)
+    previous = np.zeros(stride, dtype=np.uint8)
+
+    def paeth(a, b, c):
+        p = a + b - c
+        pa, pb, pc = abs(p - a), abs(p - b), abs(p - c)
+        return a if pa <= pb and pa <= pc else (b if pb <= pc else c)
+
+    offset = 0
+    for y in range(height):
+        method = packed[offset]
+        raw = packed[offset + 1:offset + 1 + stride]
+        offset += stride + 1
+        row = np.empty(stride, dtype=np.uint8)
+        for x, value in enumerate(raw):
+            left = int(row[x - channels]) if x >= channels else 0
+            up = int(previous[x])
+            upper_left = int(previous[x - channels]) if x >= channels else 0
+            if method == 0:
+                decoded = value
+            elif method == 1:
+                decoded = value + left
+            elif method == 2:
+                decoded = value + up
+            elif method == 3:
+                decoded = value + ((left + up) // 2)
+            elif method == 4:
+                decoded = value + paeth(left, up, upper_left)
+            else:
+                raise ValueError(f"unsupported PNG filter {method}")
+            row[x] = decoded & 255
+        rows[y] = row
+        previous = row
+    rgb = rows.reshape(height, width, channels)[:, :, :3].astype(np.float64) / 255.0
     return rgb, width, height
 
 
@@ -74,6 +132,41 @@ def color_saturation(color):
     return 0.0 if values.max() <= 0 else float((values.max() - values.min()) / values.max())
 
 
+def srgb_to_linear(values):
+    values = np.asarray(values, dtype=np.float64)
+    return np.where(values <= 0.04045, values / 12.92, ((values + 0.055) / 1.055) ** 2.4)
+
+
+def linear_to_srgb(values):
+    values = np.maximum(np.asarray(values, dtype=np.float64), 0.0)
+    return np.where(values <= 0.0031308, values * 12.92, 1.055 * values ** (1.0 / 2.4) - 0.055)
+
+
+def neutral_adapt(rgb, neutral_rgb):
+    """Remove the measured neutral-card cast while preserving mean exposure."""
+    neutral = np.median(srgb_to_linear(neutral_rgb).reshape(-1, 3), axis=0)
+    mean = max(float(neutral.mean()), 1e-8)
+    channel_gain = np.maximum(neutral / mean, 1e-8)
+    return np.clip(linear_to_srgb(srgb_to_linear(rgb) / channel_gain), 0.0, 1.0)
+
+
+def resize_bilinear(values, scale):
+    if abs(scale - 1.0) < 1e-6:
+        return values
+    height, width = values.shape[:2]
+    out_h, out_w = max(2, round(height * scale)), max(2, round(width * scale))
+    xs = np.linspace(0.0, width - 1.0, out_w)
+    ys = np.linspace(0.0, height - 1.0, out_h)
+    x0 = np.floor(xs).astype(int)
+    y0 = np.floor(ys).astype(int)
+    x1 = np.minimum(x0 + 1, width - 1)
+    y1 = np.minimum(y0 + 1, height - 1)
+    wx = (xs - x0)[None, :, None]
+    top = values[y0][:, x0] * (1.0 - wx) + values[y0][:, x1] * wx
+    wy = (ys - y0)[:, None, None]
+    return top * (1.0 - wy) + (values[y1][:, x0] * (1.0 - wx) + values[y1][:, x1] * wx) * wy
+
+
 def target_check(value, target):
     if target is None:
         return {"value": round(float(value), 4), "target": None, "pass": None, "source": None}
@@ -86,19 +179,25 @@ def target_check(value, target):
     }
 
 
-def measure(rgb, base_color):
+def measure(rgb, base_color, projected_reference_px, neutral_rgb=None, sheen_rgb=None):
+    # VISUAL_TARGET defines the kernels at H=256.  Normalize before applying
+    # them instead of silently treating a 42 px or 100 px crop as H=256.
+    rgb = resize_bilinear(rgb, 256.0 / projected_reference_px)
     luma = (0.2126 * rgb[:, :, 0] + 0.7152 * rgb[:, :, 1] + 0.0722 * rgb[:, :, 2]) * 255.0
     residual9 = luma - gaussian_blur(luma, 9)
     fuzz_rms = math.sqrt(float(np.mean(residual9 * residual9)))
-    form = np.maximum(gaussian_blur(luma, 31), 1e-6)
-    normalized = luma / form
+    sheen_rgb = resize_bilinear(sheen_rgb, 256.0 / projected_reference_px) if sheen_rgb is not None else rgb
+    sheen_luma = (0.2126 * sheen_rgb[:, :, 0] + 0.7152 * sheen_rgb[:, :, 1] + 0.0722 * sheen_rgb[:, :, 2]) * 255.0
+    form = np.maximum(gaussian_blur(sheen_luma, 31), 1e-6)
+    normalized = sheen_luma / form
     positive = normalized[normalized >= 1.0]
     if len(positive) < 2:
         sheen = 1.0
     else:
         p50, p90 = np.percentile(positive, [50, 90])
         sheen = float(p90 / max(p50, 1e-6))
-    sat = saturation(rgb)
+    saturation_rgb = neutral_adapt(rgb, neutral_rgb) if neutral_rgb is not None else rgb
+    sat = saturation(saturation_rgb)
     s50, s90 = np.percentile(sat, [50, 90])
     input_sat = color_saturation(base_color)
     retention = float(s50 / input_sat * 100.0) if input_sat > 1e-6 else 100.0
@@ -125,10 +224,33 @@ def main():
 
     results = []
     for swatch in metadata["swatches"]:
+        source_rgb, source_width, source_height = rgb, width, height
+        if swatch.get("image"):
+            swatch_path = swatch["image"]
+            if not os.path.isabs(swatch_path):
+                swatch_path = os.path.join(os.path.dirname(metadata_path), swatch_path)
+            source_rgb, source_width, source_height = load_display_rgb(swatch_path)
         x0, y0, x1, y1 = swatch["patch_roi_px"]
-        if not (0 <= x0 < x1 <= width and 0 <= y0 < y1 <= height):
+        if not (0 <= x0 < x1 <= source_width and 0 <= y0 < y1 <= source_height):
             raise SystemExit(f"invalid ROI for {swatch['preset']}: {swatch['patch_roi_px']}")
-        raw = measure(rgb[y0:y1, x0:x1], swatch["base_color_srgb"])
+        projected_reference_px = float(swatch.get("projected_reference_px",
+                                                  metadata.get("projected_reference_px", 256.0)))
+        if projected_reference_px < 180.0:
+            raise SystemExit(f"{swatch['preset']} has H={projected_reference_px:.1f}px; VISUAL_TARGET requires H>=180px")
+        neutral_rgb = None
+        if swatch.get("neutral_roi_px"):
+            nx0, ny0, nx1, ny1 = swatch["neutral_roi_px"]
+            if not (0 <= nx0 < nx1 <= source_width and 0 <= ny0 < ny1 <= source_height):
+                raise SystemExit(f"invalid neutral ROI for {swatch['preset']}: {swatch['neutral_roi_px']}")
+            neutral_rgb = source_rgb[ny0:ny1, nx0:nx1]
+        sheen_rgb = None
+        if swatch.get("sheen_roi_px"):
+            sx0, sy0, sx1, sy1 = swatch["sheen_roi_px"]
+            if not (0 <= sx0 < sx1 <= source_width and 0 <= sy0 < sy1 <= source_height):
+                raise SystemExit(f"invalid sheen ROI for {swatch['preset']}: {swatch['sheen_roi_px']}")
+            sheen_rgb = source_rgb[sy0:sy1, sx0:sx1]
+        raw = measure(source_rgb[y0:y1, x0:x1], swatch["base_color_srgb"], projected_reference_px,
+                      neutral_rgb, sheen_rgb)
         targets = library["presets"][swatch["preset"]]["targets"]
         checks = {name: target_check(raw[name], targets[name]) for name in
                   ("fuzz_rms_y255", "sheen_p90_p50", "saturation_retention_percent")}
@@ -136,6 +258,7 @@ def main():
         results.append({
             "preset": swatch["preset"],
             "patch_roi_px": swatch["patch_roi_px"],
+            "projected_reference_px": round(projected_reference_px, 4),
             "metrics": {
                 **checks,
                 "saturation_p50_percent": round(raw["saturation_p50_percent"], 4),
@@ -152,10 +275,12 @@ def main():
         "image_sha256": sha256(image_path),
         "metadata_sha256": sha256(metadata_path),
         "measurement": {
-            "colour_space": "display sRGB samples read from Blender's image buffer",
+            "colour_space": "exact 8-bit display-sRGB PNG samples (stdlib decoder; no Blender reload conversion)",
+            "scale": "ROIs bilinear-resampled so the physical reference projects to H=256 px; source H>=180 px",
+            "neutral_adaptation": "saturation measured after linear-RGB channel adaptation from a co-planar neutral card",
             "luma": "Y' = 0.2126 R + 0.7152 G + 0.0722 B, 0..255",
             "fuzz_rms_y255": "RMS of luma minus a 9-pixel Gaussian kernel on the patch ROI",
-            "sheen_p90_p50": "P90/P50 of positive luma/(31-pixel Gaussian form blur) residuals",
+            "sheen_p90_p50": "P90/P50 of positive luma/(31-pixel Gaussian form blur) residuals in the sphere highlight ROI",
             "saturation": "(max-min)/max; retention is patch S50 divided by input-colour saturation",
         },
         "presets": results,

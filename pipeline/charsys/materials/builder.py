@@ -5,7 +5,9 @@ functions that create or edit a material. Character specs remain byte/render
 compatible because no caller enters this code without an explicit assignment.
 """
 import copy
+import colorsys
 import json
+import math
 import os
 
 
@@ -13,6 +15,8 @@ SCHEMA = "plush-studio.material-presets/1"
 HERE = os.path.dirname(os.path.abspath(__file__))
 PRESETS_PATH = os.path.join(HERE, "presets.json")
 KINDS = {"noise", "yarn", "knit", "weave", "denim"}
+FUZZ_SHADERS = {"principled", "principled_hair"}
+FUZZ_LODS = {"close", "wide", "off"}
 # fibre.coordinates: "object" (default, object space) or "uv" (the mesh's "ps_fibre" UV map, e.g. groom ropes: U around
 # the rope, V along it, in metres), so directional fibre patterns follow the geometry instead of object axes.
 COORDINATES = {"object", "uv"}
@@ -62,7 +66,7 @@ def validate_library(data):
     if not isinstance(defaults, dict):
         errors.append("defaults must be an object")
         defaults = {}
-    for section in ("surface", "fibre", "silhouette"):
+    for section in ("surface", "fibre", "micro_relief", "fuzz", "silhouette"):
         if not isinstance(defaults.get(section), dict):
             errors.append(f"defaults.{section} must be an object")
     presets = data.get("presets")
@@ -88,6 +92,19 @@ def validate_library(data):
             errors.append(f"{name}.fibre.distance_fraction must be non-negative")
         if fibre.get("coordinates", "object") not in COORDINATES:
             errors.append(f"{name}.fibre.coordinates must be one of {sorted(COORDINATES)}")
+        micro = resolved.get("micro_relief", {})
+        for field in ("scale_per_reference", "detail", "roughness", "strength", "distance_fraction",
+                      "color_strength", "roughness_variation"):
+            if not isinstance(micro.get(field), (int, float)) or micro.get(field, -1) < 0:
+                errors.append(f"{name}.micro_relief.{field} must be non-negative")
+        fuzz = resolved.get("fuzz", {})
+        for field in ("density_per_m2", "length_fraction", "radius_fraction", "curl", "wide_density_scale"):
+            if not isinstance(fuzz.get(field), (int, float)) or fuzz.get(field, -1) < 0:
+                errors.append(f"{name}.fuzz.{field} must be non-negative")
+        if fuzz.get("shader") not in FUZZ_SHADERS:
+            errors.append(f"{name}.fuzz.shader must be one of {sorted(FUZZ_SHADERS)}")
+        if not isinstance(fuzz.get("seed"), int):
+            errors.append(f"{name}.fuzz.seed must be an integer")
         silhouette = resolved.get("silhouette", {})
         if silhouette.get("mode") != "sheen_layer":
             errors.append(f"{name}.silhouette.mode must be sheen_layer")
@@ -172,6 +189,13 @@ def _srgb_to_linear(color):
     return srgb_to_linear(color)
 
 
+def _saturate_srgb(color, factor):
+    rgb = tuple(float(v) / (255.0 if max(color) > 1.0 else 1.0) for v in color)
+    hue, saturation, value = colorsys.rgb_to_hsv(*rgb)
+    out = colorsys.hsv_to_rgb(hue, min(1.0, saturation * float(factor)), value)
+    return tuple(v * 255.0 for v in out)
+
+
 def _principled(material):
     nodes = material.node_tree.nodes
     return nodes.get("Principled BSDF") or next((n for n in nodes if n.type == "BSDF_PRINCIPLED"), None)
@@ -234,7 +258,71 @@ def _pattern(nodes, links, vector, fibre):
     return breakup.outputs[0]
 
 
-def _add_rim_layer(material, principled, preset, base_color):
+def _micro_relief(material, principled, vector, reference, micro, base):
+    """Add fine, reference-scaled relief that remains readable after OIDN.
+
+    The primary fibre pattern describes weave/nap.  This second octave is kept
+    independent so it can be fine enough for 1--2 px fibre breakup without
+    forcing the broad pattern into noisy, repeating clumps.
+    """
+    if not micro.get("enabled", True):
+        return None
+    nodes, links = material.node_tree.nodes, material.node_tree.links
+    noise = _new(nodes, "ShaderNodeTexNoise", "Micro Fibre Relief")
+    _set(noise, float(micro["scale_per_reference"]), "Scale")
+    _set(noise, float(micro["detail"]), "Detail")
+    _set(noise, float(micro["roughness"]), "Roughness")
+    links.new(vector, noise.inputs["Vector"])
+
+    normal = _input(principled, "Normal")
+    previous = next((link.from_socket for link in normal.links), None)
+    bump = _new(nodes, "ShaderNodeBump", "Micro Fibre Normal")
+    bump.inputs["Strength"].default_value = float(micro["strength"])
+    bump.inputs["Distance"].default_value = reference * float(micro["distance_fraction"])
+    links.new(noise.outputs["Fac"], bump.inputs["Height"])
+    if previous is not None:
+        links.new(previous, bump.inputs["Normal"])
+    links.new(bump.outputs["Normal"], normal)
+
+    roughness = _input(principled, "Roughness")
+    variation = float(micro.get("roughness_variation", 0.0))
+    if variation > 0.0:
+        centre = float(roughness.default_value)
+        ramp = _new(nodes, "ShaderNodeMapRange", "Broken Fibre Roughness")
+        ramp.clamp = True
+        # Noise Fac spends most of its area around 0.3--0.7.  Expanding that
+        # useful band makes the authored variation survive low-sample OIDN;
+        # mapping the unreachable 0--1 extrema made every preset nearly flat.
+        ramp.inputs["From Min"].default_value = 0.3
+        ramp.inputs["From Max"].default_value = 0.7
+        ramp.inputs["To Min"].default_value = max(0.02, centre - variation)
+        ramp.inputs["To Max"].default_value = min(1.0, centre + variation)
+        links.new(noise.outputs["Fac"], ramp.inputs["Value"])
+        links.new(ramp.outputs["Result"], roughness)
+
+    color_strength = float(micro.get("color_strength", 0.0))
+    if color_strength > 0.0:
+        source = next((link.from_socket for link in base.links), None)
+        modulation = _new(nodes, "ShaderNodeMapRange", "Fibre Albedo Variation")
+        modulation.clamp = True
+        modulation.inputs["From Min"].default_value = 0.3
+        modulation.inputs["From Max"].default_value = 0.7
+        modulation.inputs["To Min"].default_value = 1.0 - color_strength
+        modulation.inputs["To Max"].default_value = 1.0 + color_strength
+        links.new(noise.outputs["Fac"], modulation.inputs["Value"])
+        multiply = _new(nodes, "ShaderNodeMixRGB", "Fibre Albedo Breakup")
+        multiply.blend_type = "MULTIPLY"
+        multiply.inputs[0].default_value = 1.0
+        if source is None:
+            multiply.inputs[1].default_value = base.default_value
+        else:
+            links.new(source, multiply.inputs[1])
+        links.new(modulation.outputs["Result"], multiply.inputs[2])
+        links.new(multiply.outputs[0], base)
+    return noise.outputs["Fac"]
+
+
+def _add_rim_layer(material, principled, preset, base_color, breakup=None):
     silhouette = preset["silhouette"]
     if not silhouette.get("enabled"):
         return
@@ -258,8 +346,15 @@ def _add_rim_layer(material, principled, preset, base_color):
     weight.operation = "MULTIPLY"
     weight.inputs[1].default_value = float(silhouette.get("weight", 0.22))
     links.new(power.outputs[0], weight.inputs[0])
+    rim_factor = weight.outputs[0]
+    if breakup is not None:
+        broken = _new(nodes, "ShaderNodeMath", "Rim Fibre Breakup")
+        broken.operation = "MULTIPLY"
+        links.new(rim_factor, broken.inputs[0])
+        links.new(breakup, broken.inputs[1])
+        rim_factor = broken.outputs[0]
     mix = _new(nodes, "ShaderNodeMixShader", "Rim Mix")
-    links.new(weight.outputs[0], mix.inputs[0])
+    links.new(rim_factor, mix.inputs[0])
     links.new(old, mix.inputs[1])
     links.new(rim.outputs[0], mix.inputs[2])
     links.new(mix.outputs[0], out.inputs["Surface"])
@@ -289,9 +384,10 @@ def apply_preset(material, preset_name, base_color_srgb=None, reference_size_m=N
     if output is not None and not output.inputs["Surface"].links:
         links.new(principled.outputs[0], output.inputs["Surface"])
     surface = preset["surface"]
+    shader_color = _saturate_srgb(color, surface.get("saturation_compensation", 1.0))
     base = _input(principled, "Base Color")
     if not preserve_base_color or not base.links:
-        base.default_value = (*_srgb_to_linear(color), 1)
+        base.default_value = (*_srgb_to_linear(shader_color), 1)
     _set(principled, float(surface["roughness"]), "Roughness")
     _set(principled, float(surface["metallic"]), "Metallic")
     _set(principled, float(surface["specular_ior_level"]), "Specular IOR Level", "Specular")
@@ -330,15 +426,178 @@ def apply_preset(material, preset_name, base_color_srgb=None, reference_size_m=N
     if previous is not None:
         links.new(previous, bump.inputs["Normal"])
     links.new(bump.outputs["Normal"], normal)
+    micro_breakup = _micro_relief(material, principled, anis.outputs[0], reference, preset["micro_relief"], base)
     if float(surface["alpha"]) < 1.0:
         try:
             material.surface_render_method = "DITHERED"
         except Exception:  # Blender 4.0 and older
             material.blend_method = "BLEND"
-    _add_rim_layer(material, principled, preset, color)
+    _add_rim_layer(material, principled, preset, shader_color, micro_breakup)
     material["ps_material_preset"] = preset_name
     material["ps_material_reference_size_m"] = reference
     return material
+
+
+def _fuzz_material(name, color, fuzz):
+    import bpy
+    hue, saturation, value = colorsys.rgb_to_hsv(*(float(v) / 255.0 for v in color))
+    fuzz_color = tuple(v * 255.0 for v in colorsys.hsv_to_rgb(
+        hue, saturation, min(1.0, value * float(fuzz.get("value_compensation", 1.0)))))
+    material = bpy.data.materials.new(name)
+    material.use_nodes = True
+    nodes, links = material.node_tree.nodes, material.node_tree.links
+    nodes.clear()
+    output = nodes.new("ShaderNodeOutputMaterial")
+    if fuzz["shader"] == "principled_hair":
+        shader = nodes.new("ShaderNodeBsdfHairPrincipled")
+        try:
+            shader.parametrization = "DIRECT"
+        except Exception:
+            pass
+        _set(shader, (*_srgb_to_linear(fuzz_color), 1), "Color", "Base Color")
+        _set(shader, float(fuzz.get("roughness", 0.62)), "Roughness")
+        _set(shader, float(fuzz.get("radial_roughness", 0.75)), "Radial Roughness")
+        _set(shader, float(fuzz.get("random_roughness", 0.12)), "Random Roughness")
+    else:
+        shader = nodes.new("ShaderNodeBsdfPrincipled")
+        _set(shader, (*_srgb_to_linear(fuzz_color), 1), "Base Color")
+        _set(shader, float(fuzz.get("roughness", 0.9)), "Roughness")
+        _set(shader, float(fuzz.get("sheen_weight", 0.45)), "Sheen Weight", "Sheen")
+        _set(shader, 0.2, "Specular IOR Level", "Specular")
+    links.new(shader.outputs[0], output.inputs["Surface"])
+    material["ps_material_fuzz"] = True
+    material["ps_material_fuzz_shader"] = fuzz["shader"]
+    return material
+
+
+def add_fuzz_geometry(obj, preset_name, base_color_srgb=None, reference_size_m=None, overrides=None, lod="close"):
+    """Attach native hair curves to a mesh through a Geometry Nodes modifier.
+
+    ``close`` uses the authored density. ``wide`` keeps the same integrated nap
+    with a much cheaper density, and ``off`` is a zero-cost LOD.  The modifier
+    joins native curves to the incoming mesh; it does not destructively edit
+    the source geometry and contains no character-specific assumptions.
+    """
+    import bpy
+    if lod not in FUZZ_LODS:
+        raise ValueError(f"lod must be one of {sorted(FUZZ_LODS)}")
+    library = load_library()
+    preset = resolve_preset(preset_name, overrides, library)
+    fuzz = preset["fuzz"]
+    if lod == "off" or not fuzz.get("enabled"):
+        return None
+    if obj.type != "MESH":
+        raise ValueError("fuzz geometry requires a mesh object")
+    reference = float(reference_size_m or library["reference_size_m"])
+    color = tuple(base_color_srgb or preset["swatch_srgb"])
+    color = _saturate_srgb(color, preset["surface"].get("saturation_compensation", 1.0))
+    density = float(fuzz["density_per_m2"])
+    if lod == "wide":
+        density *= float(fuzz["wide_density_scale"])
+    length = reference * float(fuzz["length_fraction"])
+    radius = reference * float(fuzz["radius_fraction"])
+    curl = float(fuzz["curl"])
+
+    modifier = obj.modifiers.new("PS Fibre Fuzz", "NODES")
+    group = bpy.data.node_groups.new(f"PS Fibre Fuzz {obj.name}", "GeometryNodeTree")
+    modifier.node_group = group
+    group.interface.new_socket(name="Geometry", in_out="INPUT", socket_type="NodeSocketGeometry")
+    group.interface.new_socket(name="Geometry", in_out="OUTPUT", socket_type="NodeSocketGeometry")
+    nodes, links = group.nodes, group.links
+    group_in = nodes.new("NodeGroupInput")
+    group_out = nodes.new("NodeGroupOutput")
+    distribute = nodes.new("GeometryNodeDistributePointsOnFaces")
+    distribute.distribute_method = "RANDOM"
+    distribute.inputs["Density"].default_value = density
+    distribute.inputs["Seed"].default_value = int(fuzz["seed"])
+    links.new(group_in.outputs["Geometry"], distribute.inputs["Mesh"])
+
+    line = nodes.new("GeometryNodeCurvePrimitiveLine")
+    try:
+        line.mode = "DIRECTION"
+        line.inputs["Direction"].default_value = (0.0, 0.0, 1.0)
+        line.inputs["Length"].default_value = length
+    except Exception:
+        line.inputs["Start"].default_value = (0.0, 0.0, 0.0)
+        line.inputs["End"].default_value = (0.0, 0.0, length)
+    resample = nodes.new("GeometryNodeResampleCurve")
+    resample.inputs["Count"].default_value = 5
+    links.new(line.outputs["Curve"], resample.inputs["Curve"])
+    curved_socket = resample.outputs["Curve"]
+    if curl > 0.0:
+        parameter = nodes.new("GeometryNodeSplineParameter")
+        phase = nodes.new("ShaderNodeMath")
+        phase.operation = "MULTIPLY"
+        # A quarter-wave produces a leaning/curling tip instead of returning
+        # every strand to its root axis.  The instances are randomized around
+        # the surface normal below, so this reads as stochastic nap rather
+        # than a repeated comb.
+        phase.inputs[1].default_value = math.pi * 0.5
+        links.new(parameter.outputs["Factor"], phase.inputs[0])
+        sine = nodes.new("ShaderNodeMath")
+        sine.operation = "SINE"
+        links.new(phase.outputs[0], sine.inputs[0])
+        amplitude = nodes.new("ShaderNodeMath")
+        amplitude.operation = "MULTIPLY"
+        amplitude.inputs[1].default_value = length * curl
+        links.new(sine.outputs[0], amplitude.inputs[0])
+        offset = nodes.new("ShaderNodeCombineXYZ")
+        links.new(amplitude.outputs[0], offset.inputs["X"])
+        set_position = nodes.new("GeometryNodeSetPosition")
+        links.new(curved_socket, set_position.inputs["Geometry"])
+        links.new(offset.outputs["Vector"], set_position.inputs["Offset"])
+        curved_socket = set_position.outputs["Geometry"]
+
+    taper = nodes.new("ShaderNodeMapRange")
+    taper.clamp = True
+    taper.inputs["From Min"].default_value = 0.0
+    taper.inputs["From Max"].default_value = 1.0
+    taper.inputs["To Min"].default_value = radius
+    taper.inputs["To Max"].default_value = radius * 0.2
+    parameter2 = nodes.new("GeometryNodeSplineParameter")
+    links.new(parameter2.outputs["Factor"], taper.inputs["Value"])
+    set_radius = nodes.new("GeometryNodeSetCurveRadius")
+    links.new(curved_socket, set_radius.inputs["Curve"])
+    links.new(taper.outputs["Result"], set_radius.inputs["Radius"])
+
+    instance = nodes.new("GeometryNodeInstanceOnPoints")
+    links.new(distribute.outputs["Points"], instance.inputs["Points"])
+    links.new(set_radius.outputs["Curve"], instance.inputs["Instance"])
+    links.new(distribute.outputs["Rotation"], instance.inputs["Rotation"])
+    random_length = nodes.new("FunctionNodeRandomValue")
+    random_length.data_type = "FLOAT_VECTOR"
+    random_length.inputs["Min"].default_value = (1.0, 1.0, 0.72)
+    random_length.inputs["Max"].default_value = (1.0, 1.0, 1.28)
+    random_length.inputs["Seed"].default_value = int(fuzz["seed"]) + 101
+    links.new(random_length.outputs["Value"], instance.inputs["Scale"])
+    rotate = nodes.new("GeometryNodeRotateInstances")
+    links.new(instance.outputs["Instances"], rotate.inputs["Instances"])
+    random_azimuth = nodes.new("FunctionNodeRandomValue")
+    random_azimuth.data_type = "FLOAT_VECTOR"
+    random_azimuth.inputs["Min"].default_value = (0.0, 0.0, 0.0)
+    random_azimuth.inputs["Max"].default_value = (0.0, 0.0, math.tau)
+    random_azimuth.inputs["Seed"].default_value = int(fuzz["seed"]) + 211
+    links.new(random_azimuth.outputs["Value"], rotate.inputs["Rotation"])
+    rotate.inputs["Local Space"].default_value = True
+    realize = nodes.new("GeometryNodeRealizeInstances")
+    links.new(rotate.outputs["Instances"], realize.inputs["Geometry"])
+    set_material = nodes.new("GeometryNodeSetMaterial")
+    links.new(realize.outputs["Geometry"], set_material.inputs["Geometry"])
+    fuzz_material = _fuzz_material(f"M_fuzz_{preset_name}_{obj.name}", color, fuzz)
+    set_material.inputs["Material"].default_value = fuzz_material
+    join = nodes.new("GeometryNodeJoinGeometry")
+    links.new(group_in.outputs["Geometry"], join.inputs["Geometry"])
+    links.new(set_material.outputs["Geometry"], join.inputs["Geometry"])
+    links.new(join.outputs["Geometry"], group_out.inputs["Geometry"])
+    group["ps_material_preset"] = preset_name
+    group["ps_fuzz_lod"] = lod
+    group["ps_fuzz_density_per_m2"] = density
+    return modifier
+
+
+def add_fuzz_from_assignment(obj, assignment, lod="close"):
+    return add_fuzz_geometry(obj, assignment["preset"], assignment["base_color_srgb"],
+                             assignment.get("reference_size_m"), assignment.get("overrides"), lod)
 
 
 def build_material(name, preset_name, base_color_srgb=None, reference_size_m=None, overrides=None):
