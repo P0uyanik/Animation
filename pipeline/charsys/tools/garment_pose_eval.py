@@ -1,7 +1,7 @@
 """Garment clearance and posed renders of a built character master (headless Blender; read-only on the master).
 
     blender -b --factory-startup -P pipeline/charsys/tools/garment_pose_eval.py -- <master.blend> <out_dir>
-        [--poses idle_relaxed:45,wave:52,point:46,gest_shrug:26,sit_down:50,emo_happy:30]
+        [--poses auto | idle_relaxed:45,wave:52,...]
         [--render-pose sit_down:50] [--index <reference_index.json> --views id,id,...] [--height 640] [--samples 32]
         [--lighting character_neutral/1]
 
@@ -9,7 +9,8 @@ Finds the garment/1 pieces (``ps_garment_generator``), the body that carries the
 master, converts the rig to the semantic FK deform rig the repository clips are authored on (garments.evaluate), and
 measures the signed garment-to-visible-body clearance at rest (floor 0.5 mm) and in every pose (floor 0). With
 --render-pose it renders that pose from the reference views' yaw/elevation/focal under the shared character-render
-calibration. Character-agnostic: everything comes from the master and the arguments. The master is never saved.
+calibration. ``--poses auto`` (default, T-025) evaluates the legacy six samples plus one sampled extreme per
+``content/clips/*.clip.json`` (garments.evaluate.test_poses), so new clips become new test poses. Character-agnostic: everything comes from the master and the arguments. The master is never saved.
 Writes garment_pose_eval.json and <pose>_<view>.png."""
 import argparse
 import json
@@ -27,7 +28,7 @@ sys.path.insert(0, os.path.join(ROOT, "pipeline", "blender"))
 from garments import evaluate as EV  # noqa: E402
 from garments import generator as GEN  # noqa: E402
 
-DEFAULT_POSES = "idle_relaxed:45,wave:52,point:46,gest_shrug:26,sit_down:50,emo_happy:30"
+DEFAULT_POSES = "auto"
 
 
 def main():
@@ -51,9 +52,8 @@ def main():
     rig = next(m.object for m in body.modifiers if m.type == "ARMATURE")
     worn = sorted({o["ps_garment_item"] for o in garments if not o.hide_render})
     objects = [o for o in garments if o["ps_garment_item"] in worn]
-    collision = dict(body.get("ps_garment_collision", {"offset_m": 0.002}))
     floor = 0.0005
-    gap = 2 * float(collision.get("offset_m", 0.002)) + floor
+    gap = EV.SKIN_CONTACT_TOLERANCE_M
     player = EV.ClipPlayer(rig, EV.semantic_fk_rig(rig, ROOT), os.path.join(ROOT, "content", "clips"))
     player.reset()
     rest_positions = {o.name: EV.world_mesh(o)[0] for o in objects}
@@ -62,7 +62,10 @@ def main():
               "rest": EV.clearance(body, objects, floor, gap), "poses": {}}
     motion = {}
     worst = None
-    for spec in [p for p in a.poses.split(",") if p]:
+    clips_dir = os.path.join(ROOT, "content", "clips")
+    specs = ([f"{n}:{f}" for n, f in EV.test_poses(clips_dir)] if a.poses == "auto"
+             else [p for p in a.poses.split(",") if p])
+    for spec in specs:
         name, frame = spec.split(":")
         meta = player.apply(name, int(frame))
         entry = {"source": meta, **EV.clearance(body, objects, 0.0, gap, contact_floor=floor)}

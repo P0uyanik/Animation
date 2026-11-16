@@ -7,6 +7,8 @@ master). Nothing here reads character data: the rig profile, clips and garments 
   (constraints and non-deform bones removed). Destructive: use on a scratch copy of a scene.
 * ``ClipPlayer``: samples a repository clip (``content/clips/<name>.clip.json``) and poses the rig.
 * ``clearance``: signed clearance of garment vertices over the visible (unmasked) body faces.
+* ``clip_extremes`` / ``test_poses`` (T-025): the evaluation pose list, read from ``content/clips/*.clip.json``.
+* ``inside_body`` / ``skin_contact`` (T-025): crease-robust inside/outside and skin-contact tests.
 """
 import json
 import math
@@ -19,6 +21,111 @@ from mathutils.bvhtree import BVHTree
 from . import generator as GEN
 
 PROBES = [Vector(v) for v in ((1, 0, 0), (-1, 0, 0), (0, 1, 0), (0, -1, 0), (0, 0, 1), (0, 0, -1))]
+# Inside/outside vote directions: the 6 axes and the 8 cube diagonals (none parallel to another, so one ray that
+# grazes a fold or runs along a crease cannot decide alone).
+VOTE_DIRECTIONS = PROBES + [Vector((x, y, z)).normalized() for x in (1, -1) for y in (1, -1) for z in (1, -1)]
+# T-025: the one skin-contact tolerance. Two skin surfaces closer than this along the skin normal cannot have a
+# garment between them (2 x the 2 mm collision offset + the 0.5 mm rest clearance floor), so a garment vertex that is
+# nearest to such skin is reported as skin contact (armpit, crotch, elbow folds), not as poke-through.
+SKIN_CONTACT_TOLERANCE_M = 0.0045
+# Legacy fixed samples kept in the pose list (T-018/T-024 continuity); every clip also contributes its extreme.
+LEGACY_SAMPLES = [("idle_relaxed", 45), ("wave", 52), ("point", 46), ("gest_shrug", 26), ("sit_down", 50),
+                  ("emo_happy", 30)]
+
+
+def _track_value(track, frame):
+    if "samples" in track:
+        return list(track["samples"][max(0, min(len(track["samples"]) - 1, frame))])
+    keys = track["keys"]
+    if frame <= keys[0][0]:
+        return list(keys[0][1:])
+    if frame >= keys[-1][0]:
+        return list(keys[-1][1:])
+    for left, right in zip(keys, keys[1:]):
+        if left[0] <= frame <= right[0]:
+            t = (frame - left[0]) / max(1, right[0] - left[0])
+            return [a + (b - a) * t for a, b in zip(left[1:], right[1:])]
+    return list(keys[-1][1:])
+
+
+def _angle(q, r):
+    n = math.sqrt(sum(x * x for x in q)) * math.sqrt(sum(x * x for x in r))
+    return 2.0 * math.acos(min(1.0, abs(sum(x * y for x, y in zip(q, r))) / max(n, 1e-12)))
+
+
+def clip_extremes(clips_dir, step=2):
+    """One sampled extreme per clip in ``clips_dir`` (every ``*.clip.json``): the frame (sampled every ``step``)
+    whose pose is farthest from the clip's first frame (sum of the per-role rotation angles plus pi x the root
+    translation in leg lengths). A static clip (at most 2 frames, e.g. an emotion pose) gives its last frame.
+    New clips automatically become new test poses."""
+    out = []
+    for name in sorted(f[:-len(".clip.json")] for f in os.listdir(clips_dir) if f.endswith(".clip.json")):
+        clip = json.load(open(os.path.join(clips_dir, name + ".clip.json")))
+        count = int(clip["frame_count"])
+        root = clip.get("root", {}).get("translation")
+        if count <= 2:
+            out.append({"clip": name, "frame": count - 1, "score": 0.0, "frame_count": count})
+            continue
+        best = (-1.0, 0)
+        for frame in range(0, count, step):
+            score = sum(_angle(_track_value(t, frame), _track_value(t, 0)) for t in clip["tracks"].values())
+            if root:
+                score += math.pi * math.dist(_track_value(root, frame), _track_value(root, 0))
+            best = max(best, (score, frame))
+        out.append({"clip": name, "frame": best[1], "score": round(best[0], 4), "frame_count": count})
+    return out
+
+
+def test_poses(clips_dir, legacy=LEGACY_SAMPLES):
+    """Evaluation poses: the legacy fixed samples (clamped to each clip's length) plus every clip's extreme,
+    without duplicates, as ``[(clip, frame)]``."""
+    poses, seen = [], set()
+    counts = {}
+    for name, frame in legacy:
+        path = os.path.join(clips_dir, name + ".clip.json")
+        if not os.path.exists(path):
+            continue
+        counts[name] = counts.get(name) or int(json.load(open(path))["frame_count"])
+        key = (name, min(frame, counts[name] - 1))
+        if key not in seen:
+            seen.add(key)
+            poses.append((name, frame))
+    for entry in clip_extremes(clips_dir):
+        key = (entry["clip"], entry["frame"])
+        if key not in seen:
+            seen.add(key)
+            poses.append(key)
+    return poses
+
+
+def crossings(bvh, origin, direction):
+    count, start = 0, origin
+    for _ in range(64):
+        hit = bvh.ray_cast(start + direction * 1e-6, direction)
+        if hit[0] is None:
+            break
+        count, start = count + 1, hit[0]
+    return count
+
+
+def inside_body(bvh, point):
+    """Crease-robust inside test for a closed body surface: a majority vote of ray-crossing parity over the 14
+    ``VOTE_DIRECTIONS``. In folds (armpit, crotch, elbow) single rays graze or run along the crease and miscount; the
+    vote ignores them."""
+    odd = sum(crossings(bvh, point, d) % 2 for d in VOTE_DIRECTIONS)
+    return odd * 2 > len(VOTE_DIRECTIONS)
+
+
+def skin_contact(bvh, location, normal, tolerance=SKIN_CONTACT_TOLERANCE_M):
+    """True when the skin at ``location`` touches other skin: another body surface faces it within ``tolerance``
+    along its normal, or the posed body has pushed this skin inside another body part. ``clearance`` also applies it
+    to the skin a garment vertex was built from (``ps_body_vertex``): when the pose sinks that skin into another
+    body part (an upper arm into the ribs, the hip front into a raised thigh), the garment vertex that follows it is
+    in a skin fold, not poking through."""
+    probe = location + normal * 1e-4
+    if bvh.ray_cast(probe, normal, tolerance)[0] is not None:
+        return True
+    return inside_body(bvh, probe)
 
 
 def semantic_fk_rig(rig, root):
@@ -132,56 +239,62 @@ def world_mesh(ob):
     return verts, faces
 
 
-def clearance(body, objects, floor, contact_gap, contact_floor=None):
+def clearance(body, objects, floor, contact_gap=SKIN_CONTACT_TOLERANCE_M, contact_floor=None):
     """Signed clearance of garment vertices over visible body faces (hidden regions reported for information).
-    Passes when no vertex over visible skin is closer than ``floor`` (negative = inside the body). Vertices closer
-    than ``contact_floor`` (default ``floor``) over skin that touches other skin are counted as skin contact."""
+    Passes when no vertex over visible skin is closer than ``floor`` (negative = inside the body). A vertex whose
+    nearest-face sign says inside is re-checked with the crease-robust ``inside_body`` vote. Vertices closer than
+    ``contact_floor`` (default ``floor``) over skin that touches other skin (``skin_contact`` with ``contact_gap``,
+    default ``SKIN_CONTACT_TOLERANCE_M``) are counted as skin contact, not as poke-through."""
     contact_floor = floor if contact_floor is None else contact_floor
     mask_mod = body.modifiers.get(GEN.MASK_MODIFIER)
-    garment_points = [(ob.name, p) for ob in objects for p in world_mesh(ob)[0]]
+    garment_points = []
+    for ob in objects:
+        attr = ob.data.attributes.get("ps_body_vertex")
+        sources = [d.value for d in attr.data] if attr is not None else None
+        for i, p in enumerate(world_mesh(ob)[0]):
+            garment_points.append((ob.name, p, sources[i] if sources is not None and i < len(sources) else -1))
     visible = GEN.visible_face_flags(body)
     enabled = mask_mod.show_viewport if mask_mod else False
     if mask_mod:
         mask_mod.show_viewport = False  # full posed body; face indices match body.data.polygons
     body_verts, body_faces = world_mesh(body)
+    deps = bpy.context.evaluated_depsgraph_get()
+    evaluated = body.evaluated_get(deps)
+    mesh = evaluated.to_mesh()
+    rot = evaluated.matrix_world.to_3x3()
+    body_normals = [(rot @ v.normal).normalized() for v in mesh.vertices]
+    evaluated.to_mesh_clear()
     if mask_mod:
         mask_mod.show_viewport = enabled
         bpy.context.view_layer.update()
     assert len(body_faces) == len(visible)
     bvh = BVHTree.FromPolygons(body_verts, body_faces, all_triangles=False)
     best = {"visible": [float("inf"), None, None, None], "hidden": [float("inf"), None, None, None]}
-    counted, inside, buried, buried_min = 0, 0, 0, float("inf")
+    counted, inside, buried, buried_min, revoted, folded = 0, 0, 0, float("inf"), 0, 0
+    source_contact = {}
 
-    def crossings(origin, direction):
-        count, start = 0, origin
-        for _ in range(64):
-            hit = bvh.ray_cast(start + direction * 1e-6, direction)
-            if hit[0] is None:
-                break
-            count, start = count + 1, hit[0]
-        return count
+    def source_in_fold(index):
+        if index not in source_contact:
+            source_contact[index] = (0 <= index < len(body_verts) and
+                                     inside_body(bvh, body_verts[index] + body_normals[index] * 1e-4))
+        return source_contact[index]
 
-    for name, point in garment_points:
+    for name, point, source in garment_points:
         location, normal, index, distance = bvh.find_nearest(point)
         if location is None:
             continue
         signed = (point - location).dot(normal)
-        if signed < 0 and distance > 1e-6:
+        if signed < 0 and distance > 1e-6 and not inside_body(bvh, point):
             # Posed creases make the nearest-face sign unreliable (nearest point on an edge, or on a face that
-            # the bent body itself has pushed inside another part). The body is one closed surface, so a point
-            # is outside when every probe ray crosses it an even number of times.
-            away = (point - location).normalized()
-            if all(crossings(point, direction) % 2 == 0 for direction in (away, *PROBES)):
-                signed = distance
-        if signed < contact_floor and visible[index]:
-            # Skin-to-skin contact is not visible skin: the pose has pushed this skin inside another body part,
-            # or another body part faces it closer than a garment can fit (arm resting on the ribs).
-            probe = location + normal * 1e-4
-            facing = bvh.ray_cast(probe, normal, contact_gap)
-            if facing[0] is not None or sum(crossings(probe, direction) % 2 for direction in PROBES) >= 4:
-                buried += 1
-                buried_min = min(buried_min, signed)
-                continue
+            # the bent body itself has pushed inside another part); the vote says the point is outside.
+            signed = distance
+            revoted += 1
+        if signed < contact_floor and visible[index] and (skin_contact(bvh, location, normal, contact_gap) or
+                                                          (source >= 0 and source_in_fold(source))):
+            folded += source >= 0 and source_contact.get(source, False)
+            buried += 1
+            buried_min = min(buried_min, signed)
+            continue
         key = "visible" if visible[index] else "hidden"
         counted += key == "visible"
         inside += key == "visible" and signed < 0
@@ -195,6 +308,8 @@ def clearance(body, objects, floor, contact_gap, contact_floor=None):
             "hidden_region_min_m": round(best["hidden"][0], 6) if best["hidden"][1] else None,
             "skin_contact_vertices": buried,
             "skin_contact_min_m": round(buried_min, 6) if buried else None,
+            "skin_contact_tolerance_m": contact_gap, "sign_corrected_by_vote": revoted,
+            "skin_contact_over_folded_source_skin": folded,
             "pass": value >= floor}
 
 
