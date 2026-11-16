@@ -91,6 +91,14 @@ Result<DynamicsSpec> dynamicsFromJson(const Json& j) {
     ch.params = defaults;
     readParams(c, ch.params);
     for (const Json& n : c.value("colliders", Json::array())) ch.colliders.push_back(n.get<std::string>());
+    if (auto a = c.find("anchor"); a != c.end() && a->is_object()) {
+      ch.anchorBone = a->value("bone", "");
+      for (const Json& w : a->value("weights", Json::array())) ch.anchorWeights.push_back(w.get<float>());
+      if (ch.anchorBone.empty() || ch.anchorWeights.size() != ch.bones.size() + 1)
+        return fail("dynamics: chain " + ch.name + ": anchor needs a bone and one weight per joint");
+      for (float w : ch.anchorWeights)
+        if (!(w >= 0 && w <= 1)) return fail("dynamics: chain " + ch.name + ": anchor weights must be in [0, 1]");
+    }
     if (ch.name.empty() || ch.bones.empty()) return fail("dynamics: a chain needs a name and at least one bone");
     if (auto r = checkParams(ch.params, "chain " + ch.name); !r) return std::unexpected(r.error());
     s.chains.push_back(std::move(ch));
@@ -110,6 +118,7 @@ Json dynamicsToJson(const DynamicsSpec& s) {
   for (const auto& c : s.chains) {
     Json cj = paramsToJson(c.params);
     cj.update({{"name", c.name}, {"group", c.group}, {"bones", c.bones}, {"tip", v3(c.tip)}, {"colliders", c.colliders}});
+    if (!c.anchorBone.empty()) cj["anchor"] = {{"bone", c.anchorBone}, {"weights", c.anchorWeights}};
     chains.push_back(cj);
   }
   j["colliders"] = cols;
@@ -145,8 +154,10 @@ Result<void> applyDynamicsOverride(DynamicsSpec& s, const Json& o) {
   return {};
 }
 
-Result<std::shared_ptr<SpringChainSolver>> SpringChainSolver::create(const Skeleton& skeleton, const DynamicsSpec& spec) {
+Result<std::shared_ptr<SpringChainSolver>> SpringChainSolver::create(const Skeleton& skeleton, const DynamicsSpec& spec,
+                                                                     bool simulate) {
   auto s = std::make_shared<SpringChainSolver>();
+  s->simulate_ = simulate;
   s->skeleton_ = skeleton;
   s->hz_ = spec.substepHz;
   s->preroll_ = spec.prerollSec;
@@ -176,6 +187,12 @@ Result<std::shared_ptr<SpringChainSolver>> SpringChainSolver::create(const Skele
     for (size_t k = 0; k + 1 < ch.rest.size(); ++k) {
       ch.length.push_back(glm::distance(ch.rest[k], ch.rest[k + 1]));
       if (ch.length.back() < 1e-5f) return fail("dynamics: chain " + sc.name + " has a zero-length segment");
+    }
+    if (!sc.anchorBone.empty()) {
+      ch.anchor = skeleton.find(sc.anchorBone);
+      if (ch.anchor < 0) return fail("dynamics: chain " + sc.name + ": anchor bone " + sc.anchorBone + " not in the skeleton");
+      if (sc.anchorWeights.size() != ch.rest.size()) return fail("dynamics: chain " + sc.name + ": one anchor weight per joint");
+      ch.anchorW = sc.anchorWeights;
     }
     if (sc.colliders.empty()) {
       for (size_t k = 0; k < s->colliders_.size(); ++k) ch.colliders.push_back(int(k));
@@ -208,6 +225,11 @@ void SpringChainSolver::targets(const std::vector<mat4>& g, std::vector<vec3>& x
     for (size_t k = 1; k < ch.rest.size(); ++k) {
       const size_t b = size_t(ch.bones[k - 1]);
       xk[o + k] = vec3(g[b] * vec4(ch.rest[k] - skeleton_.bones[b].head, 1.0f));
+      if (ch.anchor >= 0 && ch.anchorW[k] > 0) {
+        const size_t a = size_t(ch.anchor);
+        const vec3 anchored = vec3(g[a] * vec4(ch.rest[k] - skeleton_.bones[a].head, 1.0f));
+        xk[o + k] = glm::mix(xk[o + k], anchored, ch.anchorW[k]);
+      }
     }
   }
 }
@@ -284,7 +306,7 @@ void SpringChainSolver::step(State& s, double dtd, const std::vector<mat4>& g) c
   s.xk = std::move(xk);
 }
 
-void SpringChainSolver::write(const State& s, const std::vector<vec3>& xkNow, std::vector<mat4>& globals) const {
+void SpringChainSolver::write(const State& s, std::vector<mat4>& globals) const {
   const std::vector<mat4> old = globals;
   std::vector<bool> moved(globals.size(), false), chainBone(globals.size(), false);
   for (size_t c = 0; c < chains_.size(); ++c) {
@@ -292,7 +314,8 @@ void SpringChainSolver::write(const State& s, const std::vector<vec3>& xkNow, st
     const size_t o = offset_[c];
     for (size_t k = 0; k < ch.bones.size(); ++k) {
       const size_t b = size_t(ch.bones[k]);
-      const vec3 dk = xkNow[o + k + 1] - xkNow[o + k], ds = s.x[o + k + 1] - s.x[o + k];
+      // the bone's own kinematic direction (an anchor may move the targets, not the bone's kinematic frame)
+      const vec3 dk = mat3(old[b]) * (ch.rest[k + 1] - ch.rest[k]), ds = s.x[o + k + 1] - s.x[o + k];
       if (glm::length(dk) < 1e-9f || glm::length(ds) < 1e-9f) continue;
       const mat3 rot = mat3(arc(glm::normalize(dk), glm::normalize(ds))) * mat3(old[b]);
       mat4 m(rot);
@@ -312,7 +335,23 @@ void SpringChainSolver::write(const State& s, const std::vector<vec3>& xkNow, st
 
 void SpringChainSolver::apply(double frame, double frameStart, double fps, const Driver& kinematic,
                               std::vector<mat4>& globals) const {
-  if (chains_.empty() || !(fps > 0) || frame < frameStart) return;
+  if (chains_.empty()) return;
+  if (!simulate_) {  // static: anchored targets, lengths kept; unanchored chains untouched
+    State s;
+    targets(globals, s.xk);
+    s.x = s.xk;
+    for (size_t c = 0; c < chains_.size(); ++c) {
+      if (chains_[c].anchor < 0) continue;
+      for (size_t k = 1; k < chains_[c].rest.size(); ++k) {
+        const size_t i = offset_[c] + k;
+        const vec3 d = s.x[i] - s.x[i - 1];
+        s.x[i] = s.x[i - 1] + (glm::length(d) > 1e-9f ? glm::normalize(d) : vec3(0, -1, 0)) * chains_[c].length[k - 1];
+      }
+    }
+    write(s, globals);
+    return;
+  }
+  if (!(fps > 0) || frame < frameStart) return;
   std::lock_guard lock(mutex_);
   if (cacheStart_ != frameStart || cacheFps_ != fps) {
     checkpoints_.clear();
@@ -355,14 +394,8 @@ void SpringChainSolver::apply(double frame, double frameStart, double fps, const
     if (k % 16 == 0 || k == K) checkpoints_[k] = s;
   }
   const double rem = T - double(K) * h;
-  std::vector<vec3> xkNow;
-  if (rem > 1e-9) {
-    step(s, rem, globals);  // partial step to the frame itself (not cached)
-    xkNow = s.xk;
-  } else {
-    targets(globals, xkNow);
-  }
-  write(s, xkNow, globals);
+  if (rem > 1e-9) step(s, rem, globals);  // partial step to the frame itself (not cached)
+  write(s, globals);
 }
 
 }  // namespace plush

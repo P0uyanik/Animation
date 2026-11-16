@@ -1,0 +1,116 @@
+{
+ "override": {
+  "hair": {
+   "dynamics": {
+    "enabled": true,
+    "substep_hz": 240,
+    "preroll_s": 1.0,
+    "defaults": {
+     "stiffness": 90.0,
+     "stiffness_tip": 60.0,
+     "damping": 7.0,
+     "gravity": 0.5,
+     "drag": 0.8,
+     "limit_deg": 30.0,
+     "radius": 0.014
+    },
+    "structures": {
+     "temple_puffs": {
+      "bones": [
+       2,
+       3
+      ],
+      "bone_length": 0.05,
+      "stiffness": 110.0,
+      "stiffness_tip": 90.0
+     },
+     "side_curls": {
+      "bones": [
+       3,
+       4
+      ],
+      "bone_length": 0.06
+     },
+     "back_curls": {
+      "bones": [
+       3,
+       5
+      ],
+      "bone_length": 0.07
+     },
+     "nape_curls": {
+      "bones": [
+       3,
+       5
+      ],
+      "bone_length": 0.07
+     },
+     "bun": {
+      "bones": 1,
+      "stiffness": 140.0,
+      "stiffness_tip": 140.0,
+      "damping": 9.0,
+      "gravity": 0.3,
+      "limit_deg": 12.0,
+      "radius": 0.0
+     }
+    },
+    "colliders": [
+     {
+      "name": "head",
+      "type": "sphere",
+      "bone": "head",
+      "head_offset": [
+       0.0,
+       0.0,
+       -0.004
+      ],
+      "radius": 0.128
+     },
+     {
+      "name": "torso",
+      "type": "capsule",
+      "bone": "chest",
+      "a": [
+       0.0,
+       0.004,
+       0.4
+      ],
+      "b": [
+       0.0,
+       0.004,
+       0.56
+      ],
+      "radius": 0.082
+     },
+     {
+      "name": "shoulder_l",
+      "type": "sphere",
+      "bone": "chest",
+      "head_offset": [
+       0.1,
+       0.0,
+       -0.24
+      ],
+      "radius": 0.045
+     },
+     {
+      "name": "shoulder_r",
+      "type": "sphere",
+      "bone": "chest",
+      "head_offset": [
+       -0.1,
+       0.0,
+       -0.24
+      ],
+      "radius": 0.045
+     }
+    ]
+   }
+  },
+  "metadata": {
+   "spec_version": "0.7.1+dynamics",
+   "notes": "T-021 candidate, unpublished: the 0.7.1 spec plus hair.dynamics (spring-chain bones for the engine's secondary-motion layer, groom/1). Adds no identity change; never publish or approve without a later owner decision."
+  }
+ }
+}

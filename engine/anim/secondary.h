@@ -43,6 +43,11 @@ struct SpringChain {
   vec3 tip{0};                     // rest-space end point of the last bone
   SpringParams params;
   std::vector<std::string> colliders;  // collider names; empty = all
+  // Optional anchor: the kinematic target of joint k is blended towards where `anchorBone` carries its rest
+  // position, by anchorWeights[k] (one per joint, root first; e.g. long hair that rests on the back follows the
+  // chest more than the head, like its static skin binding).
+  std::string anchorBone;
+  std::vector<float> anchorWeights;
 };
 
 struct DynamicsCollider {
@@ -75,7 +80,10 @@ class SpringChainSolver {
  public:
   // Kinematic bone globals (boneGlobals: column 3 = pivot) of the character at a (fractional) scene frame.
   using Driver = std::function<std::vector<mat4>(double frame)>;
-  static Result<std::shared_ptr<SpringChainSolver>> create(const Skeleton& skeleton, const DynamicsSpec& spec);
+  // simulate = false: no secondary motion; chains with an anchor are only posed at their (anchored) kinematic
+  // targets, segment lengths kept (the static equivalent of the chain). Chains without an anchor stay kinematic.
+  static Result<std::shared_ptr<SpringChainSolver>> create(const Skeleton& skeleton, const DynamicsSpec& spec,
+                                                           bool simulate = true);
   // Replaces the chain bones' globals (and those of their non-chain descendants) for `frame`. `globals` are the
   // kinematic globals at `frame`. Frames before frameStart are left kinematic.
   void apply(double frame, double frameStart, double fps, const Driver& kinematic, std::vector<mat4>& globals) const;
@@ -90,6 +98,8 @@ class SpringChainSolver {
     std::vector<float> length;  // segment lengths (rest)
     std::vector<int> colliders;
     SpringParams p;
+    int anchor = -1;
+    std::vector<float> anchorW;
   };
   struct Collider {
     DynamicsCollider::Kind kind;
@@ -102,13 +112,14 @@ class SpringChainSolver {
   };
   void targets(const std::vector<mat4>& g, std::vector<vec3>& xk) const;
   void step(State& s, double dt, const std::vector<mat4>& g) const;
-  void write(const State& s, const std::vector<vec3>& xkNow, std::vector<mat4>& globals) const;
+  void write(const State& s, std::vector<mat4>& globals) const;
 
   Skeleton skeleton_;
   std::vector<Chain> chains_;
   std::vector<Collider> colliders_;
   std::vector<size_t> offset_;  // first joint of each chain in State
   size_t joints_ = 0;
+  bool simulate_ = true;
   double hz_ = 240, preroll_ = 1;
   // Cache: states on the step grid; key = step index since the first frame. Invalidated when the parameters
   // (frameStart, fps) change or when the driver no longer reproduces a checkpoint's kinematic joints.

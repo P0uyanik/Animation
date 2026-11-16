@@ -589,8 +589,10 @@ Result<void> SceneEvaluator::load(const Scene& scene, const EvalOptions& opt) {
     DynamicsSpec spec = characters_[c].asset.dynamics;
     if (auto r = applyDynamicsOverride(spec, scene_.characters[c].dynamics); !r)
       return fail(std::format("character '{}': {}", scene_.characters[c].name, r.error().message));
-    if (!spec.enabled || spec.chains.empty()) continue;
-    auto solver = SpringChainSolver::create(characters_[c].asset.skeleton, spec);
+    // Off: nothing, unless chains rest on an anchor bone (then they are posed statically at their anchored targets).
+    const bool anchored = std::any_of(spec.chains.begin(), spec.chains.end(), [](const SpringChain& ch) { return !ch.anchorBone.empty(); });
+    if (spec.chains.empty() || (!spec.enabled && !anchored)) continue;
+    auto solver = SpringChainSolver::create(characters_[c].asset.skeleton, spec, spec.enabled);
     if (!solver) return fail(std::format("character '{}': {}", scene_.characters[c].name, solver.error().message));
     dynamics_[c] = std::move(*solver);
   }

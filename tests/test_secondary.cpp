@@ -131,6 +131,15 @@ TEST_CASE("secondary motion: package block and scene override parsing") {
   DynamicsSpec on = *none;
   REQUIRE(applyDynamicsOverride(on, Json(true)).has_value());
   CHECK_FALSE(on.enabled);  // "true" cannot invent chains
+  // anchor: one weight per joint, in [0, 1]
+  Json withAnchor = dynamicsToJson(chainSpec());
+  withAnchor["chains"][0]["anchor"] = {{"bone", "root"}, {"weights", {0, 0.2, 0.4, 0.6, 0.8}}};
+  auto anchored = dynamicsFromJson(withAnchor);
+  REQUIRE(anchored.has_value());
+  CHECK(anchored->chains[0].anchorBone == "root");
+  CHECK(SpringChainSolver::create(chainSkeleton(), *anchored).has_value());
+  withAnchor["chains"][0]["anchor"]["weights"] = {0, 1};
+  CHECK_FALSE(dynamicsFromJson(withAnchor).has_value());
   // invalid: a chain whose bones are not parent -> child
   DynamicsSpec bad = chainSpec();
   bad.chains[0].bones = {"c0", "c2"};

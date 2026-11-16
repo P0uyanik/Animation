@@ -28,7 +28,9 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 FORMAT, VERSION = "plush.imported_character", 1
 # Version of this exporter's output. run_shot.py keys its package cache on it, so packages are re-exported when the
 # exporter changes. 2: adds the "retarget" block (generated clip retarget data, docs/ANIMATION_CLIPS.md).
-EXPORTER_VERSION = "2"
+# 3: adds the optional "dynamics" block (secondary-motion chains, docs/SECONDARY_MOTION.md); packages of masters
+# without chain metadata are unchanged apart from this number.
+EXPORTER_VERSION = "3"
 sys.path.insert(0, os.path.join(HERE, "..", "clips"))
 import retarget as RT  # noqa: E402  (shared clip retargeting rules; pure Python)
 
@@ -65,6 +67,43 @@ def capabilities(roles_present, has_morphs, behaviours, expressions=()):
             missing.append("morph targets")
         out[name] = {"data": "available" if not missing else "missing", "missing": missing,
                      "tested": "see docs/ENGINE_CHARACTER_PACKAGE.md (behaviour support table)"}
+    return out
+
+
+def export_dynamics(rig, engine_name, deform_names):
+    """Package "dynamics" block (engine axes, engine bone names) from the rig's "ps_dynamics" metadata (written by a
+    shared generator such as groom/1); None when the rig has none. A chain or collider naming a bone that is not
+    exported fails the export (the engine would reject the package)."""
+    raw = rig.get("ps_dynamics")
+    if not raw:
+        return None
+    d = json.loads(raw)
+    # metadata is in Blender world coordinates (rest pose), as the exported bone heads (M @ head_local)
+    P = lambda p: [round(float(x), 6) for x in to_engine(np.array(p))]  # noqa: E731
+    for ch in d["chains"]:
+        for b in ch["bones"]:
+            if b not in deform_names:
+                raise SystemExit(f"dynamics chain {ch['name']}: bone {b} is not a deform bone")
+    out = {k: d[k] for k in ("enabled", "substep_hz", "preroll_s") if k in d}
+    out["colliders"] = []
+    for c in d.get("colliders", []):
+        if c["bone"] not in deform_names:
+            raise SystemExit(f"dynamics collider {c['name']}: bone {c['bone']} is not a deform bone")
+        e = {"name": c["name"], "type": c["type"], "bone": engine_name[c["bone"]], "radius": float(c["radius"])}
+        if c["type"] == "sphere":
+            e["centre"] = P(c["centre"])
+        else:
+            e["a"], e["b"] = P(c["a"]), P(c["b"])
+        out["colliders"].append(e)
+    out["chains"] = []
+    for ch in d["chains"]:
+        c = dict({k: v for k, v in ch.items() if k not in ("bones", "tip", "anchor")}, bones=[engine_name[b] for b in ch["bones"]],
+                 tip=P(ch["tip"]))
+        if "anchor" in ch:
+            if ch["anchor"]["bone"] not in deform_names:
+                raise SystemExit(f"dynamics chain {ch['name']}: anchor bone {ch['anchor']['bone']} is not a deform bone")
+            c["anchor"] = {"bone": engine_name[ch["anchor"]["bone"]], "weights": ch["anchor"]["weights"]}
+        out["chains"].append(c)
     return out
 
 
@@ -282,6 +321,7 @@ def main():
     if "reference_pose" in prof:
         retarget = RT.derive({s["name"]: s["head"] for s in skel}, RT.reference_pose(prof["reference_pose"]))
         retarget["profile"] = prof["profile"]
+    dynamics = export_dynamics(rig, engine_name, dnames)
     man = {"format": FORMAT, "version": VERSION, "name": root.get("ps_character_id", root.name),
            "source": {"blend": os.path.basename(a.blend), "blend_sha256": src_sha, "spec_sha256": root.get("ps_spec_sha256"),
                       "spec_version": root.get("ps_spec_version"), "blender": bpy.app.version_string},
@@ -300,7 +340,8 @@ def main():
            "capabilities": capabilities(present, bool(morphs), behaviours,
                                         {k for k, v in expr_map.items() if v in {m["name"] for m in morphs}}),
            **({"walk": prof["walk"]} if "walk" in prof else {}), **({"hands": prof["hands"]} if "hands" in prof else {}),
-           **({"retarget": retarget} if retarget else {}), "exporter_version": EXPORTER_VERSION,
+           **({"retarget": retarget} if retarget else {}), **({"dynamics": dynamics} if dynamics else {}),
+           "exporter_version": EXPORTER_VERSION,
            "discarded": prof.get("discarded", []) + ([f"meshes without armature (not exported): {skipped}"] if skipped else []),
            "files": {"geometry.bin": {"bytes": len(blob), "sha256": hashlib.sha256(bytes(blob)).hexdigest()}}}
     json.dump(man, open(os.path.join(out, "character.json"), "w"), indent=1)
