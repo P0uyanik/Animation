@@ -1,0 +1,428 @@
+{
+  "schema": "plush-studio.material-metrics/1",
+  "visual_target": "docs/references/VISUAL_TARGET.md#materials",
+  "image": "../../../tmp/claude-0/-home-user-Animation/896448eb-0852-5b56-a043-bef2ef701056/scratchpad/sw5_final/swatch.png",
+  "image_sha256": "8bcfe80ba42a2eeff294ea0c99ce8c59a8ca25f0f2e3dbc7a2ae9c662de162b4",
+  "metadata_sha256": "a0d71bddbe2d4c8eb6ce60affb6c04c40dee12755b6f34b0ba8169d953e28ef2",
+  "measurement": {
+    "colour_space": "display sRGB reconstructed from Blender's linear image buffer",
+    "luma": "Y' = 0.2126 R + 0.7152 G + 0.0722 B, 0..255",
+    "fuzz_rms_y255": "RMS of luma minus a 9-pixel Gaussian kernel on the patch ROI",
+    "sheen_p90_p50": "P90/P50 of positive luma/(31-pixel Gaussian form blur) residuals",
+    "saturation": "(max-min)/max; retention is patch S50 divided by input-colour saturation"
+  },
+  "presets": [
+    {
+      "preset": "felt",
+      "patch_roi_px": [
+        141,
+        75,
+        221,
+        117
+      ],
+      "metrics": {
+        "fuzz_rms_y255": {
+          "value": 0.2701,
+          "target": [
+            3.0,
+            8.0
+          ],
+          "pass": false,
+          "source": "VISUAL_TARGET.md: Surface fuzz amount, felt/fleece"
+        },
+        "sheen_p90_p50": {
+          "value": 1.0003,
+          "target": [
+            1.08,
+            1.22
+          ],
+          "pass": false,
+          "source": "VISUAL_TARGET.md: Sheen/roughness read, cloth/felt"
+        },
+        "saturation_retention_percent": {
+          "value": 49.5798,
+          "target": [
+            75.0,
+            110.0
+          ],
+          "pass": false,
+          "source": "VISUAL_TARGET.md: Material colour saturation"
+        },
+        "saturation_p50_percent": 27.215,
+        "saturation_p90_percent": 27.215,
+        "input_saturation_percent": 54.8913
+      },
+      "pass": false
+    },
+    {
+      "preset": "wool yarn",
+      "patch_roi_px": [
+        518,
+        75,
+        599,
+        117
+      ],
+      "metrics": {
+        "fuzz_rms_y255": {
+          "value": 0.3024,
+          "target": [
+            3.0,
+            8.0
+          ],
+          "pass": false,
+          "source": "VISUAL_TARGET.md: Surface fuzz amount, fibrous plush surface"
+        },
+        "sheen_p90_p50": {
+          "value": 1.0006,
+          "target": [
+            1.1,
+            1.28
+          ],
+          "pass": false,
+          "source": "VISUAL_TARGET.md: Sheen/roughness read, plush hair"
+        },
+        "saturation_retention_percent": {
+          "value": 55.1353,
+          "target": [
+            75.0,
+            110.0
+          ],
+          "pass": false,
+          "source": "VISUAL_TARGET.md: Material colour saturation"
+        },
+        "saturation_p50_percent": 30.914,
+        "saturation_p90_percent": 30.914,
+        "input_saturation_percent": 56.0694
+      },
+      "pass": false
+    },
+    {
+      "preset": "fleece",
+      "patch_roi_px": [
+        141,
+        267,
+        221,
+        309
+      ],
+      "metrics": {
+        "fuzz_rms_y255": {
+          "value": 0.2324,
+          "target": [
+            3.0,
+            8.0
+          ],
+          "pass": false,
+          "source": "VISUAL_TARGET.md: Surface fuzz amount, felt/fleece"
+        },
+        "sheen_p90_p50": {
+          "value": 1.0003,
+          "target": [
+            1.08,
+            1.22
+          ],
+          "pass": false,
+          "source": "VISUAL_TARGET.md: Sheen/roughness read, cloth/felt"
+        },
+        "saturation_retention_percent": {
+          "value": 44.0463,
+          "target": [
+            75.0,
+            110.0
+          ],
+          "pass": false,
+          "source": "VISUAL_TARGET.md: Material colour saturation"
+        },
+        "saturation_p50_percent": 26.7819,
+        "saturation_p90_percent": 26.7819,
+        "input_saturation_percent": 60.804
+      },
+      "pass": false
+    },
+    {
+      "preset": "cotton knit",
+      "patch_roi_px": [
+        518,
+        267,
+        599,
+        309
+      ],
+      "metrics": {
+        "fuzz_rms_y255": {
+          "value": 0.2312,
+          "target": [
+            3.0,
+            8.0
+          ],
+          "pass": false,
+          "source": "VISUAL_TARGET.md: Surface fuzz amount, fabric surface"
+        },
+        "sheen_p90_p50": {
+          "value": 1.0022,
+          "target": [
+            1.08,
+            1.22
+          ],
+          "pass": false,
+          "source": "VISUAL_TARGET.md: Sheen/roughness read, cloth/felt"
+        },
+        "saturation_retention_percent": {
+          "value": 33.5024,
+          "target": [
+            75.0,
+            110.0
+          ],
+          "pass": false,
+          "source": "VISUAL_TARGET.md: Material colour saturation"
+        },
+        "saturation_p50_percent": 9.7265,
+        "saturation_p90_percent": 10.0088,
+        "input_saturation_percent": 29.0323
+      },
+      "pass": false
+    },
+    {
+      "preset": "woven cotton",
+      "patch_roi_px": [
+        141,
+        459,
+        221,
+        501
+      ],
+      "metrics": {
+        "fuzz_rms_y255": {
+          "value": 0.252,
+          "target": [
+            3.0,
+            8.0
+          ],
+          "pass": false,
+          "source": "VISUAL_TARGET.md: Surface fuzz amount, fabric surface"
+        },
+        "sheen_p90_p50": {
+          "value": 1.0004,
+          "target": [
+            1.08,
+            1.22
+          ],
+          "pass": false,
+          "source": "VISUAL_TARGET.md: Sheen/roughness read, cloth/felt"
+        },
+        "saturation_retention_percent": {
+          "value": 51.1262,
+          "target": [
+            75.0,
+            110.0
+          ],
+          "pass": false,
+          "source": "VISUAL_TARGET.md: Material colour saturation"
+        },
+        "saturation_p50_percent": 13.2048,
+        "saturation_p90_percent": 13.2048,
+        "input_saturation_percent": 25.8278
+      },
+      "pass": false
+    },
+    {
+      "preset": "denim",
+      "patch_roi_px": [
+        518,
+        459,
+        599,
+        501
+      ],
+      "metrics": {
+        "fuzz_rms_y255": {
+          "value": 0.3385,
+          "target": [
+            3.0,
+            8.0
+          ],
+          "pass": false,
+          "source": "VISUAL_TARGET.md: Surface fuzz amount, fabric surface"
+        },
+        "sheen_p90_p50": {
+          "value": 1.0007,
+          "target": [
+            1.08,
+            1.22
+          ],
+          "pass": false,
+          "source": "VISUAL_TARGET.md: Sheen/roughness read, cloth/felt"
+        },
+        "saturation_retention_percent": {
+          "value": 38.5177,
+          "target": [
+            75.0,
+            110.0
+          ],
+          "pass": false,
+          "source": "VISUAL_TARGET.md: Material colour saturation"
+        },
+        "saturation_p50_percent": 18.3561,
+        "saturation_p90_percent": 18.5399,
+        "input_saturation_percent": 47.6562
+      },
+      "pass": false
+    },
+    {
+      "preset": "felt hair",
+      "patch_roi_px": [
+        141,
+        651,
+        221,
+        693
+      ],
+      "metrics": {
+        "fuzz_rms_y255": {
+          "value": 0.3284,
+          "target": [
+            3.0,
+            8.0
+          ],
+          "pass": false,
+          "source": "VISUAL_TARGET.md: Surface fuzz amount, fibrous plush surface"
+        },
+        "sheen_p90_p50": {
+          "value": 1.0006,
+          "target": [
+            1.1,
+            1.28
+          ],
+          "pass": false,
+          "source": "VISUAL_TARGET.md: Sheen/roughness read, plush hair"
+        },
+        "saturation_retention_percent": {
+          "value": 33.7019,
+          "target": [
+            75.0,
+            110.0
+          ],
+          "pass": false,
+          "source": "VISUAL_TARGET.md: Material colour saturation"
+        },
+        "saturation_p50_percent": 16.4591,
+        "saturation_p90_percent": 17.0243,
+        "input_saturation_percent": 48.8372
+      },
+      "pass": false
+    },
+    {
+      "preset": "buttons/plastic",
+      "patch_roi_px": [
+        518,
+        651,
+        599,
+        693
+      ],
+      "metrics": {
+        "fuzz_rms_y255": {
+          "value": 0.3364,
+          "target": [
+            0.0,
+            3.0
+          ],
+          "pass": true,
+          "source": "VISUAL_TARGET.md: low-fuzz ceiling for non-fibrous surfaces"
+        },
+        "sheen_p90_p50": {
+          "value": 1.0005,
+          "target": null,
+          "pass": null,
+          "source": null
+        },
+        "saturation_retention_percent": {
+          "value": 54.2105,
+          "target": [
+            75.0,
+            110.0
+          ],
+          "pass": false,
+          "source": "VISUAL_TARGET.md: Material colour saturation"
+        },
+        "saturation_p50_percent": 26.9074,
+        "saturation_p90_percent": 27.1621,
+        "input_saturation_percent": 49.635
+      },
+      "pass": false
+    },
+    {
+      "preset": "glasses/acrylic",
+      "patch_roi_px": [
+        141,
+        843,
+        221,
+        885
+      ],
+      "metrics": {
+        "fuzz_rms_y255": {
+          "value": 0.3302,
+          "target": [
+            0.0,
+            3.0
+          ],
+          "pass": true,
+          "source": "VISUAL_TARGET.md: low-fuzz ceiling for non-fibrous surfaces"
+        },
+        "sheen_p90_p50": {
+          "value": 1.0003,
+          "target": null,
+          "pass": null,
+          "source": null
+        },
+        "saturation_retention_percent": {
+          "value": 4.8578,
+          "target": null,
+          "pass": null,
+          "source": null
+        },
+        "saturation_p50_percent": 1.3384,
+        "saturation_p90_percent": 1.7898,
+        "input_saturation_percent": 27.551
+      },
+      "pass": true
+    },
+    {
+      "preset": "skin-felt",
+      "patch_roi_px": [
+        518,
+        843,
+        599,
+        885
+      ],
+      "metrics": {
+        "fuzz_rms_y255": {
+          "value": 0.2094,
+          "target": [
+            0.0,
+            3.0
+          ],
+          "pass": true,
+          "source": "VISUAL_TARGET.md: Skin remains below 3/255"
+        },
+        "sheen_p90_p50": {
+          "value": 1.0018,
+          "target": [
+            1.12,
+            1.32
+          ],
+          "pass": false,
+          "source": "VISUAL_TARGET.md: Sheen/roughness read, skin"
+        },
+        "saturation_retention_percent": {
+          "value": 67.0262,
+          "target": [
+            75.0,
+            110.0
+          ],
+          "pass": false,
+          "source": "VISUAL_TARGET.md: Material colour saturation"
+        },
+        "saturation_p50_percent": 10.9498,
+        "saturation_p90_percent": 11.146,
+        "input_saturation_percent": 16.3366
+      },
+      "pass": false
+    }
+  ],
+  "pass": false
+}
