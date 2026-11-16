@@ -109,3 +109,49 @@ All optional and generic; omitted values reproduce the T-018 geometry exactly.
 
 `garments/evaluate.py` holds the shared evaluation helpers (semantic FK rig conversion, clip player, signed
 clearance) used by `tests/garment_generic_test.py` and `tools/garment_pose_eval.py`.
+
+## Robustness and placement options (T-025)
+
+All generic; when the new fields are omitted, the geometry on the reference body (the neutral `body_generic`
+mannequin at 1.0 m) is bit-identical to T-024, except for the hip band fix below.
+
+**Proportion-relative distances (`BodyFit`).** Every ease, offset, opening, placement, mask margin and collision
+distance (spec values and the former height-fraction margins) is defined on the reference body and multiplied by
+the ratio of the local body measure to `REFERENCE_BODY_M`. The arm-root radius is used for sleeves, the thigh
+radius for legs and footwear, the mean torso depth for the torso, and the head height for collar defaults.
+`mask_margin_m` and `collision.offset_m/radius_m/falloff_m` use the geometric mean of the limb and torso ratios.
+Ratios are rounded to 1e-4. Decoration sizes (button, pocket, collar, cuff and embroidery sizes, thickness,
+seam radius) are not scaled. The build report carries `body_fit` (measures and ratios).
+
+**Armholes from body measurements.**
+- The armhole depth below the shoulder line is (2/π) × the arm-root circumference (= 4 arm-root radii).
+- The side cut keeps `ARMHOLE_SIDE_SHARE` (0.58) of the local torso half width. It never comes closer than
+  1.25 arm-root radii to the shoulder joint, so the arm root always passes through the opening.
+
+**Hip band.** Below the hip line, the shorts/trousers shell takes the whole hip ring down to one thigh radius. The
+older band covered only the area between the leg centres, which left holes at the front and back of the hip that
+bloomer volume opened.
+
+| field | item types | meaning |
+|---|---|---|
+| `shoulder_width` (0–1) | top, shirt, vest, dress | fuller shoulders: at the shoulder line, the strap reaches this share of the way from the neck to the shoulder joint. It blends smoothly into the default armhole cut at the underarm |
+| `bands.edge_roll_m` (0–0.03) | top, shirt, vest, dress | rolled edge (piping): a tube of this radius along every open edge of the main panel (front/neck/hem loop, armholes or sleeve ends). Material part `edge`, else `band`, else `main` |
+| `crotch: {"type": "gusset", "depth", "width"}` | shorts, trousers | hammock panel between the legs, from just above the crotch down to `depth` (0–1, default 0.6) of the crotch-to-hem length. `width` (default 0.85) is its front/back reach as a share of the leg-panel radius. Object `garment.<item>.gusset`, part `gusset` (material falls back to `main`) |
+| `buttons: {"placement": ...}` | see below | `centre` (default, T-018 behaviour, tops); `edge`: along the front edge(s) of an open garment, `side` both/left/right, `inset_m` from the opening, vertical span `v0`–`v1` between the hem and the armhole bottom; `waistband` (bottoms): `count` buttons across the front of the waistband, `spread` (fraction of the half width), `drop_m` below the top; `pockets` (vests): on each pocket's upper part; `positions`: explicit `[{u, v, face}]` on the main panel. Each button is oriented on the garment surface. An integer `buttons` on bottoms means `waistband` |
+| `embroidery.motifs[].target` | all | `main` (default), `pocket.L` / `pocket.R` (vests), `main.L` / `main.R` (footwear). On targets other than a torso/bottoms `main`, `u`/`v` are fractions of the piece's rest bounding box |
+| `embroidery` style `bouquet` | all | three flowers with leaves and a knot: dense enough to read at 640 px |
+| `shaft_width_m` (0–0.1) | shoes, boots | extra shaft volume, reaching full width over the lower third of the shaft. A lining ring closes the opening between the leg and the widened shaft (part `lining`, material `lining`, else `band`) |
+| `toe_volume_m` (0–0.1) | shoes, boots | extra volume over the front half of the foot, mostly on its top and front; the sole grows with it |
+| `sole.width_m` (0–0.05) | shoes, boots | extra sole width and length |
+
+`garments/evaluate.py` (T-025):
+- **`test_poses(clips_dir)`.** The legacy six samples plus one sampled extreme per `content/clips/*.clip.json`.
+  The extreme is the frame farthest from the clip's first frame; a static clip contributes its last frame. A new
+  clip is a new test pose.
+- **`inside_body`.** A majority vote of ray-crossing parity over 14 directions, so a ray that grazes a fold
+  cannot decide alone.
+- **`skin_contact`.** It has one documented tolerance, `SKIN_CONTACT_TOLERANCE_M` = 4.5 mm (2 × the 2 mm collision
+  offset + the 0.5 mm rest floor). `clearance` counts a vertex as skin contact rather than poke-through in two cases:
+  - the skin nearest to it faces other skin within that tolerance, or lies inside another body part;
+  - the skin the garment vertex was built from (`ps_body_vertex`) is posed inside another body part (an upper arm
+    sunk into the ribs, the hip front folded into a raised thigh).
