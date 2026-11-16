@@ -1,0 +1,116 @@
+{
+ "schema": "plush-studio.colour-checks/1",
+ "reference_dir": "assets/characters/girl_auburn_bun_glasses/references/views",
+ "note": "T-016 round 2: reference patches (pixel boxes [x0, y0, x1, y1] in the extracted sheet30 views) for render-vs-reference colour medians; render side = every pixel of the material slot in the same view; the body skin is the M_skin_face slot; erode false for thin parts (the band)",
+ "checks": [
+  {
+   "name": "hair_back",
+   "slot": "M_hair",
+   "view": "sheet30_back",
+   "ref_boxes": [
+    [
+     75,
+     105,
+     155,
+     215
+    ]
+   ]
+  },
+  {
+   "name": "hair_front",
+   "slot": "M_hair",
+   "view": "sheet30_front",
+   "ref_boxes": [
+    [
+     40,
+     170,
+     60,
+     220
+    ],
+    [
+     175,
+     170,
+     195,
+     220
+    ],
+    [
+     70,
+     60,
+     160,
+     85
+    ]
+   ]
+  },
+  {
+   "name": "skin_front",
+   "slot": "M_skin_face",
+   "view": "sheet30_front",
+   "ref_boxes": [
+    [
+     84,
+     360,
+     100,
+     395
+    ],
+    [
+     128,
+     360,
+     144,
+     395
+    ]
+   ]
+  },
+  {
+   "name": "skin_back",
+   "slot": "M_skin_face",
+   "view": "sheet30_back",
+   "ref_boxes": [
+    [
+     88,
+     360,
+     104,
+     395
+    ],
+    [
+     124,
+     360,
+     140,
+     395
+    ]
+   ]
+  },
+  {
+   "name": "flower_front",
+   "slot": "M_hair_flower",
+   "view": "sheet30_front",
+   "ref_boxes": [
+    [
+     140,
+     33,
+     160,
+     50
+    ]
+   ]
+  },
+  {
+   "name": "band_front",
+   "slot": "M_hair_band",
+   "view": "sheet30_front",
+   "ref_boxes": [
+    [
+     83,
+     46,
+     93,
+     54
+    ],
+    [
+     116,
+     46,
+     126,
+     52
+    ]
+   ],
+   "erode": false
+  }
+ ]
+}

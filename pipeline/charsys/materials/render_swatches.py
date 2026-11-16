@@ -25,6 +25,7 @@ sys.path.insert(0, os.path.join(ROOT, "pipeline", "blender"))
 from materials import builder as MATERIALS  # noqa: E402
 import compare_harness as HARNESS  # noqa: E402
 import geom as G  # noqa: E402
+import render_calibration as RC  # noqa: E402
 
 
 def parse():
@@ -38,6 +39,8 @@ def parse():
     parser.add_argument("--exposure", type=float, default=0.0)
     parser.add_argument("--view-transform", default="AgX")
     parser.add_argument("--save-blend", default="")
+    parser.add_argument("--lighting", default="harness",
+                        help="'harness' (compare_harness.studio_lighting + AgX, the T-015 setup) or a render_calibration profile")
     return parser.parse_args(argv)
 
 
@@ -96,7 +99,11 @@ def main():
     os.makedirs(os.path.dirname(metadata_path), exist_ok=True)
     bpy.ops.wm.read_factory_settings(use_empty=True)
     scene = bpy.context.scene
-    HARNESS.studio_lighting()
+    rig = None
+    if args.lighting == "harness":
+        HARNESS.studio_lighting()
+    else:
+        rig = RC.apply(scene, RC.load(args.lighting))
 
     scene.render.engine = "CYCLES"
     scene.cycles.device = "CPU"
@@ -109,12 +116,15 @@ def main():
     scene.render.image_settings.file_format = "PNG"
     scene.render.image_settings.color_mode = "RGB"
     scene.render.film_transparent = False
-    requested_transform = args.view_transform
-    try:
-        scene.view_settings.view_transform = requested_transform
-    except TypeError:
+    if rig is None:
+        requested_transform = args.view_transform
+        try:
+            scene.view_settings.view_transform = requested_transform
+        except TypeError:
+            requested_transform = scene.view_settings.view_transform
+        scene.view_settings.exposure = args.exposure
+    else:
         requested_transform = scene.view_settings.view_transform
-    scene.view_settings.exposure = args.exposure
 
     camera_data = bpy.data.cameras.new("SwatchCamera")
     camera = bpy.data.objects.new("SwatchCamera", camera_data)
@@ -126,6 +136,8 @@ def main():
     # 480 px wide.  Keep the horizontal field at 0.6 m for every output height.
     camera.data.ortho_scale = 0.6 * args.height / args.width
     look_at(camera, (0.0, 0.0, 0.0))
+    if rig:
+        RC.orient(rig, (0.0, -1.0, 0.0))
 
     text_material = G.material("M_swatch_labels", (32, 29, 28), roughness=0.9)
     library = MATERIALS.load_library()
@@ -154,12 +166,13 @@ def main():
         "width": args.width,
         "height": args.height,
         "samples": args.samples,
-        "exposure": args.exposure,
+        "exposure": scene.view_settings.exposure,
         "view_transform": requested_transform,
         "render_engine": "CYCLES",
         "device": "CPU",
         "denoiser": "OPENIMAGEDENOISE",
-        "studio_light": "pipeline/blender/compare_harness.py:studio_lighting",
+        "studio_light": ("pipeline/blender/compare_harness.py:studio_lighting" if rig is None else
+                         "pipeline/charsys/render_calibration.json:" + args.lighting),
         "reference_size_m": library["reference_size_m"],
         "swatches": [],
     }
