@@ -1030,7 +1030,8 @@ void SceneEvaluator::armClearancePass(Clip& gen, const InteractionContext& ctx) 
         const size_t i = size_t(f - (fs - 1));
         return std::min(kArmBodyMargin, w[i] * kArmBodyMargin + (1 - w[i]) * std::min(kArmBodyMargin, idle[i]));
       };
-      // Pushes `f`'s key until the arm clears; returns the push added.
+      // Pushes `f`'s key until the arm clears; returns the push added. Steps are capped (3 cm) so a point that follows
+      // the wrist only partly (a sleeve) does not throw the hand away.
       auto clear = [&](int f, int iterations) {
         vec3 added(0);
         const float wf = w[size_t(f - (fs - 1))];
@@ -1039,17 +1040,39 @@ void SceneEvaluator::armClearancePass(Clip& gen, const InteractionContext& ctx) 
         for (int k = 0; k < iterations; ++k) {
           const ArmClearance s = armClearance(clearance_[c], characterGlobals(c, f), side);
           if (s.gap >= req - 0.0005f) break;
-          const vec3 step = s.push * ((req - s.gap) * 1.1f / (std::max(wf, 0.3f) * std::max(s.mobility, 0.3f)));
+          vec3 step = s.push * ((req - s.gap) * 1.1f / (std::max(wf, 0.3f) * std::max(s.mobility, 0.5f)));
+          if (glm::length(step) > 0.03f) step = glm::normalize(step) * 0.03f;
           keyAt(f).value += step;
           added += step;
         }
         return added;
       };
+      auto gapAt = [&](int f) { return armClearance(clearance_[c], characterGlobals(c, f), side).gap; };
       setDense(raw);
       bool any = false;
+      // Frame by frame, starting from the previous frame's push (coherent in time: the worst point or its direction
+      // may change between frames, the push should not), then shrunk to the smallest quarter that still clears.
+      vec3 prev(0);
       for (int f = fs; f <= fe; ++f) {
-        raw[size_t(f - (fs - 1))] = clear(f, 8);
-        any |= glm::length(raw[size_t(f - (fs - 1))]) > 1e-6f;
+        const size_t i = size_t(f - (fs - 1));
+        if (w[i] <= 1e-3f) {
+          prev = vec3(0);
+          continue;
+        }
+        keyAt(f).value = base[i] + prev;
+        vec3 push = prev + clear(f, 12);
+        const float req = required(f);
+        for (float k : {0.0f, 0.25f, 0.5f, 0.75f}) {
+          keyAt(f).value = base[i] + push * k;
+          if (gapAt(f) >= req - 0.0005f) {
+            push *= k;
+            break;
+          }
+          keyAt(f).value = base[i] + push;
+        }
+        keyAt(f).value = base[i] + push;
+        raw[i] = prev = push;
+        any |= glm::length(push) > 1e-6f;
       }
       if (!any) {
         T = original;

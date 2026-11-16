@@ -153,14 +153,14 @@
    "name": "table_top",
    "kind": "box",
    "min": [
-    -0.2167,
-    0.3687,
-    0.0387
+    -0.1414,
+    0.4175,
+    0.0692
    ],
    "max": [
-    -0.0367,
-    0.3987,
-    0.1987
+    0.0386,
+    0.4475,
+    0.2292
    ],
    "material": "table_mat"
   },
@@ -168,14 +168,14 @@
    "name": "table_leg",
    "kind": "box",
    "min": [
-    -0.1517,
+    -0.0764,
     0.0,
-    0.0837
+    0.1142
    ],
    "max": [
-    -0.1017,
-    0.3687,
-    0.1337
+    -0.0264,
+    0.4175,
+    0.1642
    ],
    "material": "table_mat"
   }
@@ -186,9 +186,9 @@
    "id": "prop.felt_cup",
    "transform": {
     "translation": [
-     -0.1167,
-     0.3987,
-     0.1287
+     -0.0414,
+     0.4475,
+     0.1592
     ],
     "rotationDeg": [
      0,
@@ -339,8 +339,8 @@
  },
  "x_t022_derivation": {
   "grip_from_right_shoulder_in_arm_lengths": [
-   0.5,
-   -0.66,
+   0.85,
+   -0.45,
    0.06
   ],
   "boy_arm_length": 0.2323,
@@ -350,9 +350,9 @@
    0.0
   ],
   "grip_socket_world": [
-   -0.1317,
-   0.4647,
-   0.1658
+   -0.0564,
+   0.5135,
+   0.1963
   ],
   "cup_yaw": "boy yaw + 180: grip (local +x) faces his right, grip_b faces the girl's right",
   "table_top": "cup base height",

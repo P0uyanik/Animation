@@ -24,7 +24,10 @@ GIRL_SPEC = "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glas
 
 BOY_POS, BOY_YAW = (-0.19, 0.0, 0.0), 68.0
 GIRL_POS, GIRL_YAW = (0.19, 0.0, 0.0), -68.0
-REACH = (0.5, -0.66, 0.06)  # grip socket from the right shoulder: forward, down, outward, in arm lengths
+# grip socket from the right shoulder: forward, down, outward, in arm lengths. T-030: 0.85 forward / 0.45 down (0.96 arm
+# from the shoulder); T-022 used 0.5 / 0.66, which put the grip at the belly surface, so the forearm had to enter the
+# body at the grasp (the engine's arm-body clearance reports such a contact).
+REACH = (0.85, -0.45, 0.06)
 CUP = json.load(open(os.path.join(ROOT, "content", "assets", "felt_cup.asset.json")))
 CUP_GRIP = tuple(CUP["sockets"]["grip"]["translation"])  # felt_cup "grip" socket (local)
 

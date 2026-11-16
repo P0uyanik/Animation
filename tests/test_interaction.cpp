@@ -247,3 +247,164 @@ TEST_CASE("interaction: bad action timelines are load errors") {
   expectError(R"([{"type": "grasp", "character": "actor", "prop": "cup", "start": 5, "contact": 20},
                   {"type": "handover", "character": "actor", "to": "ghost", "start": 25}])", "unknown receiver");
 }
+
+// ------------------------------------------------------------------------------------- arm-body clearance (T-030)
+namespace {
+
+// Smallest forearm/hand clearance over the frames where the arm's IK weight is full, and the frame of it.
+std::pair<float, int> fullIkClearance(const SceneEvaluator& ev, size_t c, char side, int fa, int fb) {
+  const std::string ik = ev.scene().characters[c].name + "/ik.hand." + side;
+  float worst = 1e9f;
+  int at = 0;
+  for (int f = fa; f <= fb; ++f) {
+    if (ev.scene().animation.evaluate(ik + ".weight", f, vec3(1)).x < 0.99f) continue;
+    const float g = ev.armClearanceAt(c, side, f).gap;
+    if (g < worst) worst = g, at = f;
+  }
+  return {worst, at};
+}
+
+}  // namespace
+
+TEST_CASE("arm-body clearance: body sections and arm surface fitted from the package, rest pose is clear") {
+  for (const char* pkg : {kBoy, kGirl}) {
+    Scene scene = baseScene();
+    scene.characters.push_back(character("a", pkg, vec3(0), 0));
+    auto ev = load(scene);
+    const BodyClearanceModel* M = ev->clearanceModel(0);
+    REQUIRE(M);
+    REQUIRE(M->valid);
+    CHECK(M->source == "mesh");
+    CHECK(M->body.size() == 7);  // 2 pelvis, 3 lower torso, 2 upper torso bands
+    for (const BodyCapsule& C : M->body) {
+      CHECK(C.r1 > 0.03f);  // a pelvis band is shallow at its round bottom end
+      CHECK(C.r1 < 0.2f);
+      CHECK(C.r2 > 0.03f);
+      CHECK(C.r2 < 0.2f);
+    }
+    CHECK(M->body.front().cap0);
+    CHECK(M->body.back().cap1);
+    const Skeleton& sk = ev->characters()[0].asset.skeleton;
+    std::vector<mat4> rest(sk.bones.size());
+    for (size_t b = 0; b < sk.bones.size(); ++b) rest[b] = glm::translate(mat4(1), sk.bones[b].head);
+    for (char side : {'L', 'R'}) {
+      CHECK(M->arm[side == 'L' ? 0 : 1].points.size() > 100);
+      const ArmClearance a = armClearance(*M, rest, side);
+      MESSAGE(pkg << " " << side << ": rest gap " << a.gap * 1000 << " mm (" << a.part << " / " << a.against << ")");
+      CHECK(a.gap >= kArmBodyMargin - 1e-4f);  // a point that rests against the body counts from its rest depth
+    }
+    // A hand pushed into the belly reads as inside, with a push pointing out of the body (forward).
+    std::vector<mat4> G = rest;
+    const int hand = sk.find("hand.R"), hips = sk.find("hips"), chest = sk.find("chest");
+    const vec3 belly = 0.5f * (sk.bones[size_t(hips)].head + sk.bones[size_t(chest)].head) + vec3(0, 0, 0.05f);
+    G[size_t(hand)] = glm::translate(mat4(1), belly);
+    for (int b = 0; b < int(sk.bones.size()); ++b)  // fingers follow the hand
+      for (int p = sk.bones[size_t(b)].parent; p >= 0; p = sk.bones[size_t(p)].parent)
+        if (p == hand) {
+          G[size_t(b)] = glm::translate(mat4(1), belly + sk.bones[size_t(b)].head - sk.bones[size_t(hand)].head);
+          break;
+        }
+    const ArmClearance in = armClearance(*M, G, 'R');
+    MESSAGE(pkg << ": hand in the belly: gap " << in.gap * 1000 << " mm, push " << in.push.x << " " << in.push.y << " " << in.push.z);
+    CHECK(in.gap < -0.02f);
+    CHECK(in.push.z > 0.5f);
+  }
+}
+
+TEST_CASE("arm-body clearance: the elbow pole turns the elbow only (wrist and hand stay)") {
+  Scene scene = baseScene();
+  scene.characters.push_back(character("a", kBoy, vec3(0), 0));
+  auto ev = load(scene);
+  const Skeleton& sk = ev->characters()[0].asset.skeleton;
+  const int hand = sk.find("hand.R"), fore = sk.find("forearm.R"), upper = sk.find("upperArm.R");
+  Pose pose = restPose(sk);
+  Clip ik;
+  const vec3 target = vec3(boneGlobals(sk, pose, mat4(1))[size_t(upper)][3]) + vec3(0.02f, -0.1f, 0.14f);
+  ik.tracks["a/ik.hand.R"].setKey({0, target, Interp::Linear});
+  applyConstraints(sk, ik, "a/", 0, mat4(1), pose, GazeLimits{});
+  const auto G0 = boneGlobals(sk, pose, mat4(1));
+  for (const vec3 poleDir : {vec3(-1, -0.2f, 0), vec3(0, -1, 0), vec3(-0.3f, 0, -1)}) {
+    Pose p = pose;
+    Clip c;
+    c.tracks["a/pole.hand.R"].setKey({0, poleDir, Interp::Linear});
+    applyArmPoles(sk, c, "a/", 0, mat4(1), p);
+    const auto G1 = boneGlobals(sk, p, mat4(1));
+    CHECK(glm::distance(vec3(G1[size_t(hand)][3]), vec3(G0[size_t(hand)][3])) < 1e-5f);  // the wrist stays
+    const quat h0 = glm::quat_cast(mat3(G0[size_t(hand)])), h1 = glm::quat_cast(mat3(G1[size_t(hand)]));
+    CHECK(std::abs(glm::dot(glm::normalize(h0), glm::normalize(h1))) > 0.99999f);  // the hand keeps its rotation
+    // the elbow now lies in the plane of the arm axis and the pole, on the pole's side
+    const vec3 a(G1[size_t(upper)][3]), e(G1[size_t(fore)][3]), w(G1[size_t(hand)][3]);
+    const vec3 u = glm::normalize(w - a);
+    const vec3 eo = glm::normalize((e - a) - u * glm::dot(e - a, u)), po = glm::normalize(poleDir - u * glm::dot(poleDir, u));
+    CHECK(glm::dot(eo, po) > 0.999f);
+  }
+}
+
+TEST_CASE("arm-body clearance: a hold pulled across and into the body keeps the arm outside, smoothly") {
+  for (const char* asset : {kBoy, kGirl}) {
+    Scene scene = baseScene();
+    scene.characters.push_back(character("actor", asset, vec3(0), 0));
+    auto probe = load(scene);
+    // The cup stands in front of the right side (clear contact); the hold then pulls it across the front towards the
+    // centre line and back into the belly (an authored target the arm cannot reach while staying outside).
+    scene.props.push_back(cupFor(*probe, 0, "cup", 180, vec3(0.04f, -0.45f, 0.85f)));
+    scene.actions = Json::parse(R"([
+        {"type": "grasp", "character": "actor", "hand": "R", "prop": "cup", "start": 5, "contact": 20},
+        {"type": "hold", "character": "actor", "hand": "R", "start": 24, "end": 44, "by": [0.1, 0, -0.1]}])");
+    auto ev = load(scene);
+    for (const auto& w : ev->warnings()) MESSAGE(w);
+    CHECK(ev->warnings().empty());
+    const auto [gap, at] = fullIkClearance(*ev, 0, 'R', 1, 90);
+    MESSAGE(asset << ": smallest forearm/hand clearance at full IK " << gap * 1000 << " mm (frame " << at << ")");
+    CHECK(gap >= 0.0f);
+    CHECK(glm::distance(ev->handGripPoint(0, 'R', 20), socketWorld(*ev, 0, "grip", 20)) < 0.005f);  // contact exact
+    // The hold was kept outside: the cup did not arrive where the hold asked (inside the body).
+    const vec3 asked = scene.props[0].transform.translation + vec3(0.1f, 0, -0.1f);
+    MESSAGE(asset << ": hold end kept " << glm::distance(vec3(ev->propWorld(0, 44)[3]), asked) * 1000 << " mm from the asked point");
+    CHECK(glm::distance(vec3(ev->propWorld(0, 44)[3]), asked) > 0.01f);
+    // Smooth: while the push acts (the hold, with a margin of frames) no quarter-frame wrist step is a spike against
+    // its neighbours (no pop) and none is faster than a hand; the prop is continuous over the whole shot.
+    std::vector<float> steps;
+    for (double f = 20; f < 50; f += 0.25) steps.push_back(glm::distance(bonePos(*ev, 0, "hand.R", f), bonePos(*ev, 0, "hand.R", f + 0.25)));
+    float worst = 0, spike = 0;
+    for (size_t i = 1; i + 1 < steps.size(); ++i) {
+      worst = std::max(worst, steps[i]);
+      spike = std::max(spike, steps[i] - 2.0f * std::max(steps[i - 1], steps[i + 1]));
+    }
+    MESSAGE(asset << ": largest quarter-frame wrist step " << worst * 1000 << " mm, largest spike " << spike * 1000 << " mm");
+    CHECK(worst < 0.012f);
+    CHECK(spike < 0.0005f);
+    checkContinuous(*ev, 0, {20}, 1, 90);
+  }
+}
+
+TEST_CASE("arm-body clearance: the hand-over meeting point keeps both arms outside their bodies") {
+  for (auto [giver, receiver] : {std::pair{kBoy, kGirl}, std::pair{kGirl, kBoy}}) {
+    Scene scene = baseScene();
+    // Close together (0.36 m), both right hands: the default meeting point (between the shoulders) makes the arms
+    // cross their own fronts; the shared search moves it until both forearms and hands are clear.
+    scene.characters.push_back(character("giver", giver, vec3(-0.18f, 0, 0), 70));
+    scene.characters.push_back(character("receiver", receiver, vec3(0.18f, 0, 0), -70));
+    auto probe = load(scene);
+    // The cup in the giver's own frame (yaw 70): 0.85 arm forward, 0.45 down, 0.06 to its right.
+    const float yaw = glm::radians(70.0f);
+    const vec3 fwd(std::sin(yaw), 0, std::cos(yaw)), right(-std::cos(yaw), 0, std::sin(yaw));
+    scene.props.push_back(cupFor(*probe, 0, "cup", 250, 0.85f * fwd + 0.06f * right + vec3(0, -0.45f, 0)));
+    scene.actions = Json::parse(R"([
+        {"type": "grasp", "character": "giver", "hand": "R", "prop": "cup", "start": 4, "contact": 18},
+        {"type": "handover", "character": "giver", "hand": "R", "to": "receiver", "toHand": "R",
+         "start": 26, "receiverStart": 28, "contact": 46, "release": 51, "end": 64}])");
+    auto ev = load(scene);
+    for (const auto& w : ev->warnings()) MESSAGE(w);
+    CHECK(ev->warnings().empty());
+    const float g = ev->armClearanceAt(0, 'R', 46).gap, r = ev->armClearanceAt(1, 'R', 46).gap;
+    MESSAGE("at the hand-over: giver " << g * 1000 << " mm, receiver " << r * 1000 << " mm");
+    CHECK(g >= 0.0f);
+    CHECK(r >= 0.0f);
+    CHECK(fullIkClearance(*ev, 0, 'R', 1, 90).first >= 0.0f);
+    CHECK(fullIkClearance(*ev, 1, 'R', 1, 90).first >= 0.0f);
+    CHECK(glm::distance(ev->handGripPoint(1, 'R', 46), socketWorld(*ev, 0, "grip_b", 46)) < 0.005f);
+    CHECK(glm::distance(ev->handGripPoint(0, 'R', 49), socketWorld(*ev, 0, "grip", 49)) < 0.005f);  // both hold it
+    checkContinuous(*ev, 0, {18, 46}, 1, 90);
+  }
+}
