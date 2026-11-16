@@ -26,6 +26,7 @@ from mathutils import Matrix, Vector
 from mathutils.bvhtree import BVHTree
 
 import face as FACE
+import face_features as FF
 import geom as G
 from materials import builder as MATERIALS
 
@@ -86,7 +87,9 @@ def eye_frame(c, sx, ecfg):
     yaw = math.radians(sx * _f(ecfg, "yaw_deg", 0.0))  # positive yaw turns both eyes outwards
     pitch = math.radians(_f(ecfg, "pitch_deg", 0.0))  # positive = looking down
     s = ecfg.get("scale", [1.0, 1.0, 1.0])
-    return Matrix.Translation(c) @ Matrix.Rotation(yaw, 4, "Z") @ Matrix.Rotation(pitch, 4, "X") @ Matrix.Diagonal((s[0], s[1], s[2], 1.0))
+    roll = _f(ecfg, "roll_deg", 0.0)  # eye tilt: positive raises the outer corners (v2 option; 0 = unchanged)
+    R = Matrix.Rotation(math.radians(-sx * roll), 4, "Y") if roll else Matrix.Identity(4)
+    return Matrix.Translation(c) @ Matrix.Rotation(yaw, 4, "Z") @ Matrix.Rotation(pitch, 4, "X") @ R @ Matrix.Diagonal((s[0], s[1], s[2], 1.0))
 
 
 def gaze_envelope(sx, ecfg):
@@ -131,6 +134,16 @@ def _plane_point(q, k, rr, a, upper):
     return g((lo + hi) / 2)[1]
 
 
+def _lid_edge(q, k, rr, a, lids_cfg, upper):
+    """Lid edge point at azimuth a (unit frame), with the v2 lid curvature applied (see face_features.curve_lid)."""
+    p = _plane_point(q, k, rr, a, upper)
+    c = _f(lids_cfg, "upper_curve" if upper else "lower_curve", 0.0)
+    if p is None or abs(c) < 1e-9:
+        return p
+    u = p.x / rr
+    return Matrix.Rotation((1.0 if upper else -1.0) * c * u * u * (math.pi / 4), 3, "X") @ p
+
+
 def build_eyes(C, M, ctx, eyes_cfg, ex, ez, protrusion, material_assignment=None):
     """Eyeballs (object frame = eye frame: the iris shader stays circular), lid shells cut by configurable planes,
     an upper lash line with optional outer lashes, an optional lower lash hint (part of the lower lid object so it
@@ -139,10 +152,13 @@ def build_eyes(C, M, ctx, eyes_cfg, ex, ez, protrusion, material_assignment=None
     lids_cfg = eyes_cfg.get("lids", {})
     lash_cfg = eyes_cfg.get("lash", {})
     iris = eyes_cfg.get("iris", {})
-    mat = G.eye_material("M_eye_generic", tuple(iris.get("srgb", (110, 66, 40))), tuple(iris.get("dark_srgb", (55, 30, 18))),
-                         r, _f(iris, "radius", 0.6) * r, _f(iris, "pupil", 0.28) * r,
-                         highlights=[tuple(h) for h in eyes_cfg.get("highlights", [])] or None,
-                         sclera_srgb=tuple(eyes_cfg.get("sclera_srgb", (235, 228, 220))))
+    if eyes_cfg.get("shader") == "layered/1":
+        mat = FF.eye_material_layered("M_eye_generic", eyes_cfg, r)
+    else:
+        mat = G.eye_material("M_eye_generic", tuple(iris.get("srgb", (110, 66, 40))), tuple(iris.get("dark_srgb", (55, 30, 18))),
+                             r, _f(iris, "radius", 0.6) * r, _f(iris, "pupil", 0.28) * r,
+                             highlights=[tuple(h) for h in eyes_cfg.get("highlights", [])] or None,
+                             sclera_srgb=tuple(eyes_cfg.get("sclera_srgb", (235, 228, 220))))
     if material_assignment:
         MATERIALS.apply_from_assignment(mat, material_assignment, preserve_base_color=True)
     lash_mat = G.material("M_lash_generic", tuple(lash_cfg.get("srgb", (45, 28, 24))), roughness=0.7)
@@ -181,6 +197,8 @@ def build_eyes(C, M, ctx, eyes_cfg, ex, ez, protrusion, material_assignment=None
         G.add_mod(lo, "SOLIDIFY", thickness=_f(lids_cfg, "lower_thickness_m", 0.0012), offset=1.0)
         for o in (up, lo):
             G.apply_mods(o)
+        FF.curve_lid(up, _f(lids_cfg, "upper_curve", 0.0), True)  # v2 lid edge curvature (0 = unchanged)
+        FF.curve_lid(lo, _f(lids_cfg, "lower_curve", 0.0), False)
         # upper lash line along the upper lid's front edge (unit frame), thicker towards the outer corner
         a_max = math.radians(_f(lash_cfg, "span_deg", 70))
         rr = r_up + _f(lids_cfg, "upper_thickness_m", 0.0018) * 0.6
@@ -188,7 +206,7 @@ def build_eyes(C, M, ctx, eyes_cfg, ex, ez, protrusion, material_assignment=None
         pts, ths = [], []
         for i in range(n):
             a = -a_max + 2 * a_max * i / (n - 1)
-            p = _plane_point(q_up, k_up, rr, a, True)
+            p = _lid_edge(q_up, k_up, rr, a, lids_cfg, True)
             if p is None:
                 continue
             outer = (math.copysign(1, a) == sx) * abs(a) / a_max  # 0 inner .. 1 outer corner
@@ -202,10 +220,10 @@ def build_eyes(C, M, ctx, eyes_cfg, ex, ez, protrusion, material_assignment=None
         oc = lash_cfg.get("outer", {})
         for j in range(int(oc.get("count", 0))):  # outer lashes: short tapered strands curving out and up
             a = sx * a_max * (1.0 - float(oc.get("spacing", 0.11)) * j)
-            base = _plane_point(q_up, k_up, rr, a, True)
+            base = _lid_edge(q_up, k_up, rr, a, lids_cfg, True)
             if base is None:
                 continue
-            nxt = _plane_point(q_up, k_up, rr, a - sx * 0.05, True)
+            nxt = _lid_edge(q_up, k_up, rr, a - sx * 0.05, lids_cfg, True)
             tang = (base - nxt).normalized() if nxt is not None else Vector((sx, 0, 0))
             L = float(oc.get("length_m", [0.006])[min(j, len(oc.get("length_m", [0.006])) - 1)])
             d = (tang * 0.8 + Vector((0, -0.35, 1.0)) * float(oc.get("lift", 0.9))).normalized()
@@ -215,6 +233,9 @@ def build_eyes(C, M, ctx, eyes_cfg, ex, ez, protrusion, material_assignment=None
             s = G.tube(f"_lash_outer.{side}.{j}", cp, [wb * (1 - 0.8 * t / 4) for t in range(5)], [wb * 0.6 * (1 - 0.8 * t / 4) for t in range(5)],
                        C, up_hint=tuple(Tw @ Vector((0, -1, 0))), seg=6, cap_start="round", cap_end="point")
             parts.append(s)
+        if lash_cfg.get("strands"):  # v2: individual curled upper lashes along the lid edge
+            parts += FF.lash_strands(T, lambda a: _lid_edge(q_up, k_up, rr, a, lids_cfg, True), sx, lash_cfg["strands"],
+                                     True, f"lash_strand.{side}", C)
         if len(parts) > 1:
             lash = G.join(parts, f"lash.{side}")
         G.assign(lash, lash_mat)
@@ -226,7 +247,7 @@ def build_eyes(C, M, ctx, eyes_cfg, ex, ez, protrusion, material_assignment=None
             lpts = []
             for i in range(9):
                 a = sx * (a0 + (a1 - a0) * i / 8)
-                p = _plane_point(q_lo, k_lo, r_lo + _f(lids_cfg, "lower_thickness_m", 0.0012) * 0.6, a, False)
+                p = _lid_edge(q_lo, k_lo, r_lo + _f(lids_cfg, "lower_thickness_m", 0.0012) * 0.6, a, lids_cfg, False)
                 if p is not None:
                     lpts.append(T @ p)
             if len(lpts) >= 3:
@@ -239,6 +260,23 @@ def build_eyes(C, M, ctx, eyes_cfg, ex, ez, protrusion, material_assignment=None
                 ll.data.materials.append(lash_mat)
                 for poly in ll.data.polygons:
                     poly.material_index = 1
+                lo = G.join([lo, ll], f"lid_lower.{side}")
+        if lash_cfg.get("lower_strands"):  # v2: individual lower lashes, part of the lower lid object
+            rl = r_lo + _f(lids_cfg, "lower_thickness_m", 0.0012) * 0.6
+            ls = FF.lash_strands(T, lambda a: _lid_edge(q_lo, k_lo, rl, a, lids_cfg, False), sx, lash_cfg["lower_strands"],
+                                 False, f"lash_lower_strand.{side}", C)
+            if ls:
+                if not lo.data.materials:
+                    G.assign(lo, M["face_skin"])
+                ll = G.join(ls, f"_lash_lower_strands.{side}")
+                ll.data.materials.clear()
+                for mm in lo.data.materials:
+                    ll.data.materials.append(mm)
+                if lash_mat.name not in [mm.name for mm in ll.data.materials]:
+                    ll.data.materials.append(lash_mat)
+                li = [mm.name for mm in ll.data.materials].index(lash_mat.name)
+                for poly in ll.data.polygons:
+                    poly.material_index = li
                 lo = G.join([lo, ll], f"lid_lower.{side}")
         for o in (up, lo):
             if not o.data.materials:
@@ -340,7 +378,8 @@ def _brow_tube(name, pts, bc, C):
 
 def build_brows(C, ctx, bc, au, ex, ez, r):
     """Thin brows on the face surface; keys BrowUp.<side>, BrowDown, BrowSad (every key re-projected onto the face)."""
-    mat = G.material("M_brow_generic", tuple(bc.get("srgb", (110, 70, 52))), roughness=0.8)
+    mat = (FF.brow_material("M_brow_generic", bc, MATERIALS) if bc.get("style") else
+           G.material("M_brow_generic", tuple(bc.get("srgb", (110, 70, 52))), roughness=0.8))
     brows = []
     up_m, down_m, in_m, sad_m = (_f(au, "brow_up_m", 0.006), _f(au, "brow_down_m", 0.005), _f(au, "brow_in_m", 0.003),
                                  _f(au, "brow_sad_m", 0.005))
@@ -511,6 +550,10 @@ def build(C, M, head, spec, P, H, head_bone="DEF-spine.006", eye_bone="DEF-eye.{
     ecfg = fs.get("eyes", {})
     lib = load_library()
     ex, ez = P["eyes"]["x"] * H, P["eyes"]["z"] * H
+    if "spacing_m" in ecfg or "offset_z_m" in ecfg:  # v2: eye spacing (centre to centre) and height as spec values
+        ex = _f(ecfg, "spacing_m", 2 * ex) / 2
+        ez = ez + _f(ecfg, "offset_z_m", 0.0)
+        P["eyes"]["x"], P["eyes"]["z"] = ex / H, ez / H  # the eye bones follow
     r = _f(ecfg, "radius_m", 0.03)
     z_mouth = ez - _f(L, "mouth_below_eye_m", 0.05)
     ctx = FaceContext(head, z_mouth, r)
@@ -519,7 +562,24 @@ def build(C, M, head, spec, P, H, head_bone="DEF-spine.006", eye_bone="DEF-eye.{
     skin_rgb = tuple(spec["materials"].get("albedo_srgb", {}).get("skin") or spec["materials"]["target_colors_srgb"]["skin"])
     bl = fs.get("blush")
     z_nose = ez - _f(L, "nose_below_eye_m", 0.03)
-    if bl:
+    if fs.get("shape"):  # v2 head proportions, sculpted before anything is placed on the surface
+        rep["shape"] = FF.shape_head(head, ctx, fs["shape"], ex, ez, r)
+    if fs.get("skin"):  # v2 felt face skin: soft felt blush patches + occlusion compensation (one material, body too)
+        spots = []
+        if bl:
+            for sx, _ in SIDES:
+                bx, bz = sx * (ex + _f(bl, "out_m", 0.0)), ez - _f(bl, "below_eye_m", 0.04)
+                spots.append(((bx, ctx.face_y(None, bx, bz), bz), _f(bl, "radius_m", 0.025), _f(bl, "intensity", 1.0)))
+            if bl.get("nose"):
+                zn = z_nose + _f(fs.get("nose", {}), "offset_z_m", 0.0)
+                spots.append(((0.0, ctx.face_y(None, 0.0, zn), zn), _f(bl, "nose_radius_m", _f(bl, "radius_m", 0.025)),
+                              _f(bl, "nose_intensity", _f(bl, "intensity", 1.0))))
+        M["face_skin"] = FF.face_skin_material("M_skin_face", skin_rgb, bl, spots, fs["skin"])
+        skin_assignment = MATERIALS.get_assignment(spec["materials"], "skin")
+        if skin_assignment:
+            MATERIALS.apply_from_assignment(M["face_skin"], skin_assignment, preserve_base_color=True)
+        FF.carry_base_to_rim(M["face_skin"])
+    elif bl:
         spots = []
         for sx, _ in SIDES:
             bx, bz = sx * (ex + _f(bl, "out_m", 0.0)), ez - _f(bl, "below_eye_m", 0.04)
@@ -536,7 +596,12 @@ def build(C, M, head, spec, P, H, head_bone="DEF-spine.006", eye_bone="DEF-eye.{
     G.assign(head, M["face_skin"])
     # nose: a soft bump on the head surface
     nc = fs.get("nose", {})
-    if nc:
+    nose_obj = None
+    if nc.get("type"):  # v2 nose types
+        nose_obj, nose_tip = FF.build_nose(C, M, head, ctx, nc, z_nose)
+        z_nose = nose_tip.z
+        rep["nose"] = {"type": nc["type"], "tip_m": [round(v, 4) for v in nose_tip]}
+    elif nc:
         ny = ctx.face_y(None, 0.0, z_nose)
         G.brush(head, (0.0, ny + _f(nc, "radius_m", 0.016) * 0.3, z_nose), _f(nc, "radius_m", 0.016), (0, -_f(nc, "height_m", 0.004), 0))
         ctx.invalidate()
@@ -583,6 +648,9 @@ def build(C, M, head, spec, P, H, head_bone="DEF-spine.006", eye_bone="DEF-eye.{
         rep["smile_coupling"] = FACE.add_smile_coupling(head, lids, mouth, lm, fs["smile_coupling"])
     for ob in [mouth, cavity, head] + [l[1] for l in lids]:
         _rename_key(ob, "Smile", "MouthSmile")
+    if mcfg.get("rest_shape", "closed_smile") != "closed_smile":  # v2 mouth rest shape (baked into the basis)
+        rep["mouth_rest_shape"] = {"shape": mcfg["rest_shape"],
+                                   "objects": FF.bake_rest_shape([mouth, cavity, head], mcfg["rest_shape"])}
     au_names = [a for a in lib["action_units"]]
     lid_objs = [o for l in lids for o in l[:3]]
     face_objs = eyes + lid_objs + brows + [mouth, cavity, head]
@@ -592,7 +660,7 @@ def build(C, M, head, spec, P, H, head_bone="DEF-spine.006", eye_bone="DEF-eye.{
     rep["action_units"] = au_built
     rep["action_units_missing"] = [a for a in au_names if a not in au_built]
     rep["presets"] = presets
-    rigid = [(o, head_bone) for o in brows + ears + [mouth, cavity]] + [(e, eye_bone.format(s=s)) for e, (_, s) in zip(eyes, SIDES)]
+    rigid = [(o, head_bone) for o in brows + ears + [mouth, cavity] + ([nose_obj] if nose_obj else [])] + [(e, eye_bone.format(s=s)) for e, (_, s) in zip(eyes, SIDES)]
     # Lids use the shared binding rule: rigid to the head, or split between head and eye bone so they follow a
     # configured fraction of gaze. Concentric shells around a spherical eye never intersect it at any fraction.
     track = _f(ecfg, "lid_tracking", 0.0)
@@ -609,7 +677,7 @@ def build(C, M, head, spec, P, H, head_bone="DEF-spine.006", eye_bone="DEF-eye.{
                 "gaze envelope %.3f: the lids stand more than 25%% of the radius off the eyeball at rest (visible gap); "
                 "reduce the gaze range or the eye's ovalness (iris-sliding gaze is not implemented)" % env)
     engine = {k: v for k, v in lib["engine_expressions"].items() if v in set(au_built) | set(presets)}
-    return {"eyes": eyes, "lids": lids, "brows": brows, "ears": ears, "mouth": mouth, "cavity": cavity, "landmarks": lm,
+    return {"eyes": eyes, "lids": lids, "brows": brows, "ears": ears, "nose": nose_obj, "mouth": mouth, "cavity": cavity, "landmarks": lm,
             "rigid": rigid, "frames": frames, "ctx": ctx, "controls": au_built + presets, "jaw_preset_weights": jaw_w,
             "engine_expressions": engine, "mouth_cfg": mcfg, "report": rep}
 

@@ -272,8 +272,8 @@
    "chin_below_eye_m": 0.096
   },
   "eyes": {
-   "radius_m": 0.036,
-   "protrusion_m": 0.014,
+   "radius_m": 0.042,
+   "protrusion_m": 0.0132,
    "scale": [
     1.0,
     1.0,
@@ -283,44 +283,76 @@
    "pitch_deg": 0.0,
    "iris": {
     "srgb": [
-     122,
-     72,
-     42
+     128,
+     74,
+     38
+    ],
+    "inner_srgb": [
+     176,
+     112,
+     58
     ],
     "dark_srgb": [
-     58,
-     32,
-     20
+     78,
+     42,
+     22
     ],
-    "radius": 0.57,
-    "pupil": 0.3
+    "limbal_srgb": [
+     34,
+     18,
+     12
+    ],
+    "glow_srgb": [
+     196,
+     132,
+     72
+    ],
+    "shade_srgb": [
+     70,
+     40,
+     24
+    ],
+    "pupil_srgb": [
+     10,
+     7,
+     6
+    ],
+    "radius": 0.52,
+    "pupil": 0.235,
+    "limbal_width": 0.07,
+    "pupil_softness": 0.015,
+    "streaks": 0.3,
+    "vertical_gradient": 0.45
    },
    "sclera_srgb": [
-    238,
-    232,
-    226
+    240,
+    236,
+    230
    ],
    "highlights": [
     [
-     0.3,
-     0.33,
-     0.2
+     0.2,
+     0.22,
+     0.12
     ],
     [
-     -0.27,
-     -0.3,
-     0.08
+     -0.19,
+     -0.17,
+     0.05,
+     0.8
     ]
    ],
    "lids": {
-    "upper_edge_deg": 42,
+    "upper_edge_deg": 40,
     "upper_back_tilt": 1.0,
     "upper_gap": 0.06,
-    "upper_thickness_m": 0.0018,
+    "upper_thickness_m": 0.0024,
     "lower_edge_deg": -50,
     "lower_tilt": 0.3,
     "lower_gap": 0.03,
-    "lower_thickness_m": 0.0012
+    "lower_thickness_m": 0.0012,
+    "upper_curve": 0.12,
+    "lower_curve": 0.06
    },
    "lash": {
     "srgb": [
@@ -329,12 +361,12 @@
      20
     ],
     "span_deg": 72,
-    "thick_m": 0.0032,
+    "thick_m": 0.0036,
     "depth_m": 0.0018,
     "flare": 0.6,
     "forward_m": 0.0004,
     "outer": {
-     "count": 3,
+     "count": 0,
      "length_m": [
       0.0065,
       0.0075,
@@ -344,30 +376,66 @@
      "spacing": 0.11,
      "lift": 0.9
     },
-    "lower": {
-     "from_deg": 25,
-     "to_deg": 72,
-     "thick_m": 0.0006
+    "strands": {
+     "count": 5,
+     "from_deg": 30,
+     "to_deg": 80,
+     "length_m": [
+      0.004,
+      0.0055,
+      0.0068
+     ],
+     "curl": 0.7,
+     "width_m": 0.0013,
+     "outward": 0.7
+    },
+    "lower_strands": {
+     "count": 3,
+     "from_deg": 45,
+     "to_deg": 78,
+     "length_m": [
+      0.0022,
+      0.003
+     ],
+     "curl": 0.2,
+     "width_m": 0.0008,
+     "outward": 0.6
     }
    },
-   "note": "large fully open round eyes (#30, #34); two highlights on the same screen side for both eyes (upper right, small lower left); spherical eyeball (gaze rotates it inside concentric lid shells: no intersections), r 36 mm standing 14 mm out of the face (opening half-width 28.5 mm); lids follow 30% of the gaze (eyelid tracking, #34). Tried and rejected (M3): an ellipsoid eyeball (cuts the lids under gaze) and a 48 mm eye 9.5 mm out (large lid hood, off-centre iris on the curved face)",
-   "lid_tracking": 0.3
+   "note": "T-031 v2: layered glossy iris (amber centre, brown body, dark limbal ring, lighter lower half), large catchlight upper screen-right plus a small lower one, wet clear coat; r 42 mm standing 13.2 mm out (opening half-width about 30 mm, about 60% of the glasses rim as in #30/#34); lashes as a thick upper line with five curled strands to the outer corner and three short lower strands. large fully open round eyes (#30, #34); two highlights on the same screen side for both eyes (upper right, small lower left); spherical eyeball (gaze rotates it inside concentric lid shells: no intersections), r 36 mm standing 14 mm out of the face (opening half-width 28.5 mm); lids follow 30% of the gaze (eyelid tracking, #34). Tried and rejected (M3): an ellipsoid eyeball (cuts the lids under gaze) and a 48 mm eye 9.5 mm out (large lid hood, off-centre iris on the curved face)",
+   "lid_tracking": 0.3,
+   "shader": "layered/1",
+   "sclera_edge_srgb": [
+    214,
+    200,
+    194
+   ],
+   "catchlight_strength": 1.5,
+   "catchlight_softness": 0.3,
+   "wet_coat": {
+    "weight": 1.0,
+    "roughness": 0.03,
+    "base_roughness": 0.35
+   }
   },
   "brows": {
-   "inner": 0.62,
-   "outer": 0.82,
-   "height": 2.25,
-   "arch_m": 0.004,
-   "outer_drop_m": 0.002,
-   "thick_m": 0.0017,
-   "depth_m": 0.0012,
-   "taper": 0.45,
-   "offset_m": 0.0012,
+   "style": "felt",
+   "inner": 0.55,
+   "outer": 0.66,
+   "height": 1.43,
+   "arch_m": 0.003,
+   "inner_drop_m": 0.001,
+   "outer_drop_m": 0.006,
+   "thick_m": 0.0056,
+   "depth_m": 0.0016,
+   "taper": 0.35,
+   "offset_m": 0.0009,
    "srgb": [
-    118,
-    76,
-    56
-   ]
+    92,
+    54,
+    38
+   ],
+   "note": "T-031: thick dark-brown felt brows (#30, #34) placed in the skin band between the glasses rim top (z 0.832) and the fringe edge (z 0.846 at the eye centre, 0.832 at the outer end; measured on the 0.7.1 build): at 2.25 r they were under the fringe"
   },
   "ears": {
    "radii_m": [
@@ -382,23 +450,31 @@
    "tilt_deg": -8
   },
   "nose": {
-   "radius_m": 0.017,
-   "height_m": 0.0045
+   "type": "small_round",
+   "size_m": 0.015,
+   "height_m": 0.0062,
+   "offset_z_m": 0.0,
+   "note": "T-031: small round pink nose (#34): a prouder round bump, tinted by the blush nose spot"
   },
   "blush": {
    "srgb": [
-    228,
-    156,
-    150
+    232,
+    146,
+    138
    ],
-   "below_eye_m": 0.042,
-   "out_m": 0.004,
-   "radius_m": 0.026,
-   "nose": true
+   "below_eye_m": 0.047,
+   "out_m": 0.006,
+   "radius_m": 0.03,
+   "nose": true,
+   "intensity": 1.0,
+   "softness": 0.85,
+   "breakup": 0.25,
+   "nose_intensity": 0.55,
+   "nose_radius_m": 0.014
   },
   "mouth": {
    "generator": "lips_jaw/2",
-   "half_width_m": 0.0135,
+   "half_width_m": 0.0155,
    "lip_height_m": 0.0028,
    "frown_m": -0.0022,
    "smile_up_m": 0.0055,
@@ -492,7 +568,8 @@
      "lo_drop_m": 0.0045
     }
    ],
-   "note": "neutral = small closed soft smile (frown_m < 0); Happy/Smile opens via MouthWide showing the teeth and tongue layers"
+   "note": "neutral = small closed soft smile (frown_m < 0); Happy/Smile opens via MouthWide showing the teeth and tongue layers",
+   "rest_shape": "closed_smile"
   },
   "blink": {
    "generator": "lid_seam/1",
@@ -536,12 +613,33 @@
    "override": {},
    "optional": [
     "Worried",
-    "Curious"
+    "Curious",
+    "SmileClosed",
+    "Thinking"
    ],
    "note": "presets from the shared library (14 from reference #34); Worried and Curious are optional extras (not in any reference)"
   },
   "expression_shape_keys": [],
-  "expressions_reference": "#34 blendshape matrix: Neutral, Blink, Left/Right Eye Closed, Squint, Wide-Open, Smile, Frown, Surprise, Sadness, Anger, Confusion, Laugh, Mouth Open"
+  "expressions_reference": "#34 blendshape matrix: Neutral, Blink, Left/Right Eye Closed, Squint, Wide-Open, Smile, Frown, Surprise, Sadness, Anger, Confusion, Laugh, Mouth Open",
+  "skin": {
+   "occlusion": {
+    "distance_m": 0.12,
+    "lift": 0.85,
+    "warm_srgb": [
+     244,
+     198,
+     176
+    ]
+   },
+   "note": "T-031: the grey face came from occlusion (protruding eyes, glasses, fringe) on a neutral felt base under the key-left calibration; felt scatters light into creases, so occluded areas shift warm and light instead of grey. Body and face share this material (body_skin), so the tones match."
+  },
+  "shape": {
+   "cheek_roundness_m": 0.003,
+   "cheek_radius_m": 0.04,
+   "cheek_below_eye_m": 0.045,
+   "cheek_x": 0.9,
+   "note": "T-031: slightly fuller round cheeks (#30 neutral); chin and forehead unchanged"
+  }
  },
  "hair": {
   "generator": "groom/1",
@@ -1505,15 +1603,16 @@
   ]
  },
  "metadata": {
-  "spec_version": "0.7.1",
-  "status": "V3/T-025: shared garment robustness options (garment/1); unpublished",
+  "spec_version": "0.8.0",
+  "status": "V4/T-031: face system v2 (shared feature options); unpublished",
   "history": [
    "0.3.0 (M3): generic face (face_generic/1), expression library, glasses accessory",
    "0.4.0 (V2/T-015): shared skin-felt, buttons/plastic glasses frame, and glasses/acrylic lens presets",
    "0.5.0 (V3/T-016): hair through the shared groom system (bun, band, flowers, sweep, fringe, spiral curls); wool-yarn, felt presets for hair and hair accessories",
    "0.6.0 (V3/T-016 round 2): irregular chunky ringlets with per-rope fibre UVs, curls draped closer to the head and back, temple puffs, fuller fringe, larger pinker flowers, exposed band; still unpublished",
    "0.7.0 (V3/T-024): outfit through the shared garment system (garment/1): cream blouse with round collar and puffed long sleeves, dusty-rose felt vest with embroidery and pockets, sage bloomer shorts with cuffs, brown fleece boots; still unpublished",
-   "0.7.1 (V3/T-025): generic garment/1 options from the T-024 review: bloomer crotch gusset, wooden buttons on the vest front edge and the shorts waistband, fuller vest shoulders with a rolled edge, pocket embroidery, chunkier boots; still unpublished"
+   "0.7.1 (V3/T-025): generic garment/1 options from the T-024 review: bloomer crotch gusset, wooden buttons on the vest front edge and the shorts waistband, fuller vest shoulders with a rolled edge, pocket embroidery, chunkier boots; still unpublished",
+   "0.8.0 (V4/T-031): face section only: layered glossy eyes, curled lash strands, thick felt brows moved below the fringe, small round nose, felt blush, felt-skin occlusion compensation (grey face), fuller cheeks; still unpublished"
   ]
  },
  "components": {
