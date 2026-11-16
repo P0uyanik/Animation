@@ -47,7 +47,18 @@ A question or a discussion is never an approval.
 
 `tools/check_all.py` is the common local and CI entry point. A guarded path is accepted only when a commit on the
 branch has the exact trailer `Supervisor-Approved: <path>`, added by the Supervisor. The Supervisor applies GitHub
-rulesets separately. The relay creates its rotating verified local backup with:
+rulesets separately.
+
+The optional Blender tier also runs character fidelity when a character spec or references/annotations change, or
+when a shared body, face, groom, garment, material, geometry/build, or render-calibration generator changes. It runs
+`tools/fidelity/run.py` for every affected character, puts score and signed main-baseline delta on the Blender line
+of the at-most-ten-line summary, and uploads the side-by-side sheets. A score drop greater than 2.0 points fails as
+`visual regression, needs owner review`; an increase is informational. The main baseline is
+`docs/evaluation/characters/fidelity_baseline.json` and may change only in an explicit commit with the exact trailer
+`Supervisor-Approved: docs/evaluation/characters/fidelity_baseline.json`. See `docs/CHARACTER_FIDELITY.md` for the
+trigger list, artifacts, and interpretation.
+
+The relay creates its rotating verified local backup with:
 
 ```powershell
 python tools/backup_repository.py --destination D:\Animation\backups --keep 7 --restore-test
