@@ -176,7 +176,25 @@ def pin_weights(points, faces, body_bvh, ease_at, settings):
     return weights
 
 
-def _run_cloth(points, faces, pins, gather, settings, collider_mesh, collider_matrix, clearance, seed_key):
+def gather_weights(points, pins, body_bvh, ease_at, settings):
+    """Share of the ``gather`` growth per vertex: free cloth only, and, when the item pins its plain ease
+    (``volume``), in proportion to the designed extra volume (puff/bloomer fullness). Fabric is gathered where the
+    pattern has fullness; the tapering run into a cuff or band stays smooth."""
+    weights = [1.0 - w for w in pins]
+    if "volume" not in settings["pin"]:
+        return weights
+    extra = []
+    for p in points:
+        location, normal, _, _ = body_bvh.find_nearest(p)
+        extra.append(max(0.0, (p - location).dot(normal) - ease_at(p)))
+    peak = max(extra) if extra else 0.0
+    if peak <= 1e-6:
+        return weights
+    return [w * min(1.0, e / peak) for w, e in zip(weights, extra)]
+
+
+def _run_cloth(points, faces, pins, gather, settings, collider_mesh, collider_matrix, clearance, seed_key,
+               gathers=None):
     """Settle one single-layer sheet; returns the settled points (world space)."""
     fabric = settings["fabric_settings"]
     rng = random.Random((int(settings["seed"]) * 1000003) ^ zlib.crc32(seed_key.encode()))
@@ -199,7 +217,7 @@ def _run_cloth(points, faces, pins, gather, settings, collider_mesh, collider_ma
     gather_group = sheet.vertex_groups.new(name="gather")
     for i, w in enumerate(pins):
         pin_group.add([i], float(w), "REPLACE")
-        gather_group.add([i], float(1.0 - w), "REPLACE")
+        gather_group.add([i], float(gathers[i] if gathers is not None else 1.0 - w), "REPLACE")
     collider = bpy.data.objects.new("ps_drape.collider", collider_mesh)
     collider.matrix_world = collider_matrix
     scene.collection.objects.link(collider)
@@ -299,12 +317,13 @@ def drape_shell(ob, body, ease_at, settings, clearance):
     # original face orientation, [n, 2n) the original (inner) layer. The outer layer is settled; its distance to the
     # body includes the thickness.
     pins = pin_weights(points, faces, body_bvh, lambda p: ease_at(p) + thick, settings)
+    gathers = gather_weights(points, pins, body_bvh, lambda p: ease_at(p) + thick, settings)
     started = time.perf_counter()
     shell_gap = settings["fabric_settings"]["thickness_m"] + COLLIDER_SKIN_M
     collider = _collider_mesh(body, points, float(settings["collider_reach_m"]) + clearance,
                               max(0.0, clearance - shell_gap))
     settled = _run_cloth(points, faces, pins, float(settings["gather"]), settings, collider,
-                         body.matrix_world.copy(), clearance, ob.name)
+                         body.matrix_world.copy(), clearance, ob.name, gathers)
     n_collider = len(collider.polygons)
     bpy.data.meshes.remove(collider)
     settled = _smooth_free(settled, faces, pins, int(settings["smooth"]))
@@ -333,24 +352,34 @@ def drape_shell(ob, body, ease_at, settings, clearance):
                                     "collider_faces": n_collider, "seconds": round(time.perf_counter() - started, 2)}
 
 
+def displacement_field(old_points, new_points, faces):
+    """``f(point) -> Vector``: the drape displacement at the nearest settled-shell face (inverse-distance blend of
+    its corners' displacements)."""
+    bvh = BVHTree.FromPolygons([tuple(p) for p in old_points], faces, all_triangles=False)
+    delta = [b - a for a, b in zip(old_points, new_points)]
+
+    def move(p):
+        location, _, index, _ = bvh.find_nearest(p)
+        if index is None:
+            return Vector()
+        corners = faces[index]
+        ws = [1.0 / max((old_points[c] - location).length, 1e-6) for c in corners]
+        total = sum(ws)
+        return sum((delta[c] * (w / total) for c, w in zip(corners, ws)), Vector())
+    return move
+
+
 def follow(objects, old_points, new_points, faces):
     """Carry the drape displacement onto an item's other pieces (bands, buttons, pockets, edge rolls, embroidery):
     each vertex takes the inverse-distance blend of the displacement of the nearest shell face's corners."""
-    bvh = BVHTree.FromPolygons([tuple(p) for p in old_points], faces, all_triangles=False)
-    delta = [b - a for a, b in zip(old_points, new_points)]
+    move = displacement_field(old_points, new_points, faces)
     for ob in objects:
         mw = ob.matrix_world
         inv = mw.inverted()
         changed = False
         for v in ob.data.vertices:
             p = mw @ v.co
-            location, _, index, _ = bvh.find_nearest(p)
-            if index is None:
-                continue
-            corners = faces[index]
-            ws = [1.0 / max((old_points[c] - location).length, 1e-6) for c in corners]
-            total = sum(ws)
-            d = sum((delta[c] * (w / total) for c, w in zip(corners, ws)), Vector())
+            d = move(p)
             if d.length > 1e-9:
                 v.co = inv @ (p + d)
                 changed = True

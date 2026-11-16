@@ -983,7 +983,7 @@
  },
  "clothing": {
   "generator": "garment/1",
-  "provenance": "T-024: outfit from references #41 (garment construction sheet, exploded view) and the sheet30 views; heights read on sheet30_front at 2.35 mm/px (sole to bun top 1.10 m). Colours: #41 flat-garment medians (references/color_targets.json *_garment) checked against sheet30 medians. Values are my estimates where not measured. 0.7.1 (T-025): gusset, edge/waistband buttons, shoulder_width, rolled edge, pocket bouquets and boot shaft/toe volume read from #41 (front and exploded views); values are my estimates.",
+  "provenance": "T-024: outfit from references #41 (garment construction sheet, exploded view) and the sheet30 views; heights read on sheet30_front at 2.35 mm/px (sole to bun top 1.10 m). Colours: #41 flat-garment medians (references/color_targets.json *_garment) checked against sheet30 medians. Values are my estimates where not measured. 0.7.1 (T-025): gusset, edge/waistband buttons, shoulder_width, rolled edge, pocket bouquets and boot shaft/toe volume read from #41 (front and exploded views); values are my estimates. T-034: build-time cloth rest shape (drape) for the blouse, vest and bloomers, rounded solidified edges on every item and a slimmer boot cuff, tuned by eye against sheet30 front/left; values are my estimates.",
   "description": [
    "cream collared blouse, puffy long sleeves, cuffs, 4-5 buttons",
    "open dusty-rose boucle vest, dark embroidered motifs, patch pockets, wooden buttons",
@@ -1048,6 +1048,24 @@
       ],
       "reference_size_m": 0.02
      }
+    },
+    "edge_finish": "rounded",
+    "drape": {
+     "enabled": true,
+     "fabric": "cotton",
+     "gather": 0.3,
+     "gravity": 0.4,
+     "overrides": {
+      "bending": 4.0
+     },
+     "pin": [
+      "edges",
+      "volume"
+     ],
+     "edge_band_m": 0.004,
+     "volume_band_m": 0.003,
+     "smooth": 3,
+     "seed": 34
     }
    },
    {
@@ -1157,6 +1175,20 @@
       ],
       "reference_size_m": 0.02
      }
+    },
+    "edge_finish": "rounded",
+    "drape": {
+     "enabled": true,
+     "fabric": "felt",
+     "pin": [
+      "top"
+     ],
+     "top_band_m": 0.06,
+     "gravity": 0.6,
+     "overrides": {
+      "bending": 15.0
+     },
+     "seed": 34
     }
    },
    {
@@ -1202,6 +1234,24 @@
       ],
       "reference_size_m": 0.02
      }
+    },
+    "edge_finish": "rounded",
+    "drape": {
+     "enabled": true,
+     "fabric": "felt",
+     "gather": 0.35,
+     "gravity": 0.5,
+     "overrides": {
+      "bending": 2.0
+     },
+     "pin": [
+      "edges",
+      "volume"
+     ],
+     "edge_band_m": 0.004,
+     "volume_band_m": 0.003,
+     "smooth": 2,
+     "seed": 34
     }
    },
    {
@@ -1212,7 +1262,7 @@
     "cuff": true,
     "bands": {
      "cuff": true,
-     "cuff_radius_m": 0.014
+     "cuff_radius_m": 0.009
     },
     "sole": {
      "thickness_m": 0.008,
@@ -1258,7 +1308,8 @@
      }
     },
     "shaft_width_m": 0.012,
-    "toe_volume_m": 0.014
+    "toe_volume_m": 0.014,
+    "edge_finish": "rounded"
    }
   ]
  },

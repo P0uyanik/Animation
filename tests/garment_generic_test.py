@@ -112,6 +112,12 @@ def _internal():
 
     PUFF, RELIEF, CUFF_R = 0.016, 0.0018, 0.009
     SHAFT, TOE, ROLL = 0.008, 0.010, 0.004
+    # T-034: build-time cloth rest shape on every main panel (both outfits) with fixed seed and frames.
+    # Volume items gather between their pinned bands; fitted panels (no volume) hang from their top and edges.
+    DRAPE = {"enabled": True, "gather": 0.3, "gravity": 0.5, "pin": ["edges", "volume"], "seed": 34, "frames": 30}
+    FITTED_DRAPE = {"enabled": True, "gravity": 1.0, "pin": ["edges", "top"], "seed": 34, "frames": 30}
+    VEST_DRAPE = {"enabled": True, "fabric": "felt", "pin": ["top"], "top_band_m": 0.05, "gravity": 0.6, "seed": 34,
+                  "frames": 30}
     neutral = json.load(open(os.path.join(ROOT, "pipeline", "clips", "mannequin.json")))
     H, P_ref = float(neutral["body"]["height_m"]), neutral["body"]["params"]
     clothing = {
@@ -124,15 +130,17 @@ def _internal():
         "garments": [
             {"type": "top", "name": "shirt", "sleeve_length": 0.74, "collar": "shirt",
              "buttons": {"count": 4, "radius_m": 0.005},
-             "bands": {"hem": True, "cuff": True, "rib_ridges": 2}, "seam_lines": True,
+             "bands": {"hem": True, "cuff": True, "rib_ridges": 2}, "seam_lines": True, "edge_finish": "rounded",
+             "drape": {**FITTED_DRAPE, "fabric": "cotton"},
              "material": {"preset": "woven cotton", "base_color_srgb": [211, 201, 190]},
              "materials": {"buttons": {"preset": "buttons/plastic", "base_color_srgb": [142, 104, 69]}}},
             {"type": "vest", "name": "vest", "ease_m": 0.015, "open_front_m": 0.023,
              "pockets": {"width_m": 0.030, "height_m": 0.027, "depth_m": 0.0035},
-             "bands": {"hem": True}, "seam_lines": True,
+             "bands": {"hem": True}, "seam_lines": True, "edge_finish": "rounded", "drape": VEST_DRAPE,
              "material": {"preset": "felt", "base_color_srgb": [137, 89, 88]}},
-            {"type": "shorts", "name": "shorts", "length": 0.38, "cuff": True,
-             "bands": {"waist": True, "cuff": True}, "seam_lines": True,
+            {"type": "shorts", "name": "shorts", "length": 0.38, "cuff": True, "edge_finish": "rounded",
+             "bands": {"waist": True, "cuff": True, "edge_roll_m": 0.002, "edge_style": "piped"}, "seam_lines": True,
+             "drape": {**FITTED_DRAPE, "fabric": "denim"},
              "material": {"preset": "denim", "base_color_srgb": [91, 113, 111]}},
             {"type": "boots", "name": "boots", "height": 0.62, "cuff": True,
              "bands": {"cuff": True}, "sole": {"thickness_m": 0.006},
@@ -148,10 +156,11 @@ def _internal():
             # rolled edge, edge buttons, pocket embroidery, a crotch gusset, waistband buttons, chunky boots).
             {"type": "top", "name": "puff_top", "sleeve_length": 0.74, "sleeve_puff_m": PUFF, "sleeve_puff_peak": 0.6,
              "collar": {"type": "round", "width_m": 0.028, "gap_m": 0.008, "slope": 0.5, "tip_round": 0.35},
-             "bands": {"cuff": True, "cuff_radius_m": 0.004},
+             "bands": {"cuff": True, "cuff_radius_m": 0.004}, "edge_finish": "rounded",
+             "drape": {**DRAPE, "fabric": "knit"},
              "material": {"preset": "cotton knit", "base_color_srgb": [214, 206, 196]}},
             {"type": "vest", "name": "emb_vest", "ease_m": 0.022, "open_front_m": 0.023, "shoulder_width": 0.55,
-             "bands": {"edge_roll_m": ROLL},
+             "bands": {"edge_roll_m": ROLL}, "edge_finish": "rounded", "drape": VEST_DRAPE,
              "buttons": {"count": 3, "placement": "edge", "side": "left", "radius_m": 0.005},
              "embroidery": {"size_m": 0.03, "relief_m": RELIEF,
                             "motifs": [{"u": 0.55, "v": 0.7}, {"u": -0.55, "v": 0.7, "petals": 6},
@@ -164,13 +173,13 @@ def _internal():
              "materials": {"buttons": {"preset": "buttons/plastic", "base_color_srgb": [142, 104, 69]}},
              "material": {"preset": "felt", "base_color_srgb": [150, 96, 96]}},
             {"type": "shorts", "name": "bloomers", "length": 0.38, "ease_m": 0.012, "puff_m": PUFF, "puff_inner": 0.3,
-             "crotch": {"type": "gusset", "depth": 0.6},
+             "crotch": {"type": "gusset", "depth": 0.6}, "edge_finish": "rounded", "drape": {**DRAPE, "fabric": "felt"},
              "buttons": {"count": 3, "placement": "waistband", "radius_m": 0.004},
              "cuff": True, "bands": {"waist": True, "cuff": True, "cuff_radius_m": 0.004},
              "material": {"preset": "woven cotton", "base_color_srgb": [120, 140, 112]},
              "materials": {"buttons": {"preset": "buttons/plastic", "base_color_srgb": [142, 104, 69]}}},
             {"type": "boots", "name": "fur_boots", "height": 0.5, "ease_m": 0.012, "cuff": True,
-             "shaft_width_m": SHAFT, "toe_volume_m": TOE,
+             "shaft_width_m": SHAFT, "toe_volume_m": TOE, "edge_finish": "rounded",
              "bands": {"cuff": True, "cuff_radius_m": CUFF_R}, "sole": {"thickness_m": 0.007, "width_m": 0.003},
              "material": {"preset": "fleece", "base_color_srgb": [120, 82, 64]}},
         ],
@@ -217,6 +226,31 @@ def run_body(body_name, P, H, clothing, items, samples, clearance_floor, contact
     skin_mat = G.material("M_test_skin", (185, 161, 148), roughness=0.72)
     parts = BG.build_body(C, {"skin": skin_mat}, P, H, J, frames)
     body = parts[0][0]
+    # T-034 determinism: the same draped item built twice gives bit-identical rest shapes.
+    import hashlib
+    import time as _time
+    det_item = next(g for g in clothing["garments"] if g["name"] == "puff_top")
+    det_clothing = {"generator": "garment/1", "defaults": clothing["defaults"], "fibres_lod": "off",
+                    "garments": [det_item]}
+    digests, det_seconds = [], []
+    for _ in range(2):
+        t0 = _time.perf_counter()
+        made, _ = GAR.build(C, body, det_clothing, P, H, J, G)
+        det_seconds.append(round(_time.perf_counter() - t0, 2))
+        main = next(o for o in made if o.get("ps_garment_part") == "main")
+        digests.append(hashlib.sha256(b"".join(
+            v.co.x.hex().encode() + v.co.y.hex().encode() + v.co.z.hex().encode() for v in main.data.vertices)
+        ).hexdigest())
+        for ob in made:
+            for child in list(ob.children):
+                bpy.data.objects.remove(child)
+            bpy.data.objects.remove(ob)
+    undraped = {**det_clothing, "garments": [{k: v for k, v in det_item.items() if k != "drape"}]}
+    t0 = _time.perf_counter()
+    made, _ = GAR.build(C, body, undraped, P, H, J, G)
+    off_seconds = round(_time.perf_counter() - t0, 2)
+    for ob in made:
+        bpy.data.objects.remove(ob)
     garment_objects, build_report = GAR.build(C, body, clothing, P, H, J, G)
     fit = GAR.generator.BodyFit(P, H, J)
     rig, rig_report = BG.rig_generic(C, "rig_garment_test", parts, P, H, J, frames,
@@ -234,6 +268,17 @@ def run_body(body_name, P, H, clothing, items, samples, clearance_floor, contact
     outfits = {name: [ob for ob in garment_objects if ob.get("ps_garment_item") in worn] for name, worn in items.items()}
     result = {"proportions": P, "body_fit": build_report["body_fit"], "build": build_report, "rig": rig_report,
               "weight_transfer": bind_report, "checks": {}, "poses": {}, "rest": {}, "masks": {}}
+    result["checks"]["drape_deterministic"] = {"item": "puff_top", "sha256": digests, "seconds_on": det_seconds,
+                                               "seconds_off": off_seconds, "pass": digests[0] == digests[1]}
+    draped = {i["name"]: i.get("drape") for i in build_report["items"]}
+    expected = sorted(g["name"] for g in clothing["garments"] if g.get("drape", {}).get("enabled"))
+    result["checks"]["drape_applied"] = {
+        "items": draped, "expected": expected,
+        "pass": all(draped.get(name) and all(d["free_vertices"] > 0 and d["max_move_m"] > 0 for d in draped[name])
+                    for name in expected)}
+    piped = [ob.name for ob in garment_objects if ob.get("ps_garment_item") == "shorts" and
+             ob.get("ps_garment_part") == "edge"]
+    result["checks"]["bottoms_edge_finish"] = {"piping_objects": piped, "pass": len(piped) >= 3}
 
     def by_item(item, part=None):
         return [ob for ob in garment_objects if ob.get("ps_garment_item") == item and

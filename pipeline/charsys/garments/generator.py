@@ -1689,6 +1689,17 @@ def _drape_and_finish(body, made, cfg, fit):
         faces_all += [tuple(i + offset for i in f) for f in faces]
     if report:
         cloth.follow([ob for ob in made if ob not in shells], old_all, new_all, faces_all)
+        move = cloth.displacement_field(old_all, new_all, faces_all)
+        for motif in cfg.get("_embroidery_report") or []:
+            if "at_m" in motif:
+                motif["at_m"] = [round(c, 4) for c in Vector(motif["at_m"]) + move(Vector(motif["at_m"]))]
+        if cfg.get("_buttons_report"):
+            cfg["_buttons_report"]["at_m"] = [[round(c, 4) for c in Vector(p) + move(Vector(p))]
+                                              for p in cfg["_buttons_report"]["at_m"]]
+        for ob in made:
+            if "ps_weight_anchor" in ob and ob not in shells:
+                anchor = Vector(ob["ps_weight_anchor"])
+                ob["ps_weight_anchor"] = tuple(anchor + move(anchor))
     if cfg.get("edge_finish", "flat") == "rounded":
         for ob in shells:
             cloth.round_rim(ob)
