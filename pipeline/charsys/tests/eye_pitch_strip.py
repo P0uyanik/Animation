@@ -28,11 +28,18 @@ def parse():
     return ap.parse_args(argv)
 
 
-def eye_surface_visible(scene, eyes):
-    """Share of a front-facing ray grid whose first face hit is either eyeball."""
+def eye_visibility(scene, rig, eyes):
+    """Front-grid shares whose first hit is eyeball surface / the procedural iris disc.
+
+    The iris is defined in undeformed eye-local coordinates.  Undoing the rigid eye-bone deformation at each ray
+    hit therefore measures actual iris exposure rather than merely exposed sclera.
+    """
     deps = bpy.context.evaluated_depsgraph_get()
-    visible = total = 0
-    for eye in eyes:
+    surface = iris = total = 0
+    for side, eye in zip(("L", "R"), eyes):
+        pb = rig.pose.bones[f"DEF-eye.{side}"]
+        deform = rig.matrix_world @ pb.matrix @ pb.bone.matrix_local.inverted() @ rig.matrix_world.inverted()
+        undeform = eye.matrix_world.inverted() @ deform.inverted()
         c = eye.matrix_world.translation
         r = eye.dimensions.x / 2
         for ix in range(-6, 7):
@@ -40,11 +47,15 @@ def eye_surface_visible(scene, eyes):
                 dx, dz = ix / 6 * r * 0.8, iz / 6 * r * 0.8
                 if dx * dx + dz * dz > (0.8 * r) ** 2:
                     continue
-                ok, _loc, _nrm, _idx, ob, _mat = scene.ray_cast(
+                ok, loc, _nrm, _idx, ob, _mat = scene.ray_cast(
                     deps, Vector((c.x + dx, c.y - 0.5, c.z + dz)), Vector((0, 1, 0)))
                 total += 1
-                visible += bool(ok and ob is not None and ob.name == eye.name)
-    return round(100.0 * visible / total, 1)
+                hit_eye = bool(ok and ob is not None and ob.name == eye.name)
+                surface += hit_eye
+                if hit_eye:
+                    local = undeform @ loc
+                    iris += local.y < 0 and math.hypot(local.x, local.z) <= 0.023
+    return round(100.0 * surface / total, 1), round(100.0 * iris / total, 1)
 
 
 def setup(master, samples):
@@ -98,13 +109,16 @@ def pose_pitch(rig, pitch):
         for constraint in pb.constraints:
             constraint.mute = True
         pb.rotation_mode = "XYZ"
-        pb.rotation_euler = (math.radians(-pitch), 0, 0)  # engine +pitch (up) == Blender local -X
+        pb.rotation_euler = (math.radians(pitch), 0, 0)  # engine +pitch (up) == this Rigify deform bone's local +X
     rig.update_tag()
     bpy.context.view_layer.update()
 
 
 def main():
     a = parse()
+    a.old = os.path.abspath(a.old)
+    a.new = os.path.abspath(a.new)
+    a.out = os.path.abspath(a.out)
     os.makedirs(a.out, exist_ok=True)
     rows = []
     metrics = {"cell_px": 320, "pitches_deg": a.pitches, "versions": {}}
@@ -118,8 +132,9 @@ def main():
             path = os.path.join(a.out, f"eye_{label}_{tag}.png")
             scene.render.filepath = path
             bpy.ops.render.render(write_still=True)
-            visible = eye_surface_visible(scene, eyes)
-            metrics["versions"][label].append({"pitch_deg": pitch, "eye_surface_visible_pct": visible,
+            surface, iris = eye_visibility(scene, rig, eyes)
+            metrics["versions"][label].append({"pitch_deg": pitch, "eye_surface_visible_pct": surface,
+                                                 "iris_visible_grid_pct": iris,
                                                  "render": os.path.basename(path)})
             row.append(path)
         rows.append((label, row))
