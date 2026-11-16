@@ -15,7 +15,11 @@ Per character (any rig whose deform bones the package lists; nothing character-s
     facial controls) are left to their drivers, which read the keyed controls;
   * morphs: the rig's facial controls face_<morph> are keyed from the baked control weights (the master's drivers
     then produce every shape key, in-between and jaw rotation exactly as in Blender);
-  * camera, lights (sun, rect, sky) and box props are translated from the bake.
+  * camera, lights (sun, rect, sky) and box objects are translated from the bake;
+  * scene props (plush.asset/1, T-017/T-022): each prop in the bake's per-frame "props" block gets its asset's
+    primitive mesh (box / sphere centred; cylinder standing on its base along +Y, optionally "open_top" with a "wall"
+    thickness) and its first material preset from the shared library (pipeline/charsys/materials); the object is
+    keyed every frame from the baked world matrix. Assets are found by id in content/assets above the baked scene.
 Writes shot.blend (masters stay linked), frame_####.png, shot_render.json (timings, reconstruction error)."""
 import argparse
 import json
@@ -25,10 +29,12 @@ import sys
 import time
 
 import bpy
+import bmesh
 from mathutils import Matrix, Vector
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import episode  # noqa: E402
+from materials import builder as MATERIALS  # noqa: E402
 
 C = Matrix(((1, 0, 0, 0), (0, 0, 1, 0), (0, -1, 0, 0), (0, 0, 0, 1)))  # Blender -> engine axes
 Ci = C.inverted()
@@ -174,6 +180,110 @@ def setup_world(bake, scene, light_scale):
     return rep
 
 
+def find_assets(scene_path):
+    """plush.asset/1 files by id, from the nearest content/assets above the baked scene."""
+    d = os.path.dirname(os.path.abspath(scene_path))
+    while True:
+        lib = os.path.join(d, "content", "assets")
+        if os.path.isdir(lib):
+            out = {}
+            for n in sorted(os.listdir(lib)):
+                if n.endswith(".asset.json"):
+                    j = json.load(open(os.path.join(lib, n)))
+                    out[j.get("id")] = j
+            return out
+        if os.path.dirname(d) == d:
+            return {}
+        d = os.path.dirname(d)
+
+
+def prop_mesh(name, asset):
+    """The asset's primitive as a Blender mesh in Blender axes (engine +Y up -> Blender +Z). Returns (mesh, note)."""
+    m = asset.get("mesh", {})
+    k = float(asset.get("scale", 1.0))
+    bm = bmesh.new()
+    note = ""
+    prim = m.get("primitive")
+    if prim == "cylinder":
+        r, h = m["radius"] * k, m["height"] * k
+        bmesh.ops.create_cone(bm, cap_ends=True, segments=40, radius1=r, radius2=r, depth=h)
+        bmesh.ops.translate(bm, verts=bm.verts, vec=(0, 0, h / 2))
+        if m.get("open_top"):  # a vessel: no top cap (a solidify modifier gives the wall)
+            top = [f for f in bm.faces if f.normal.z > 0.9 and min(v.co.z for v in f.verts) > h - 1e-6]
+            bmesh.ops.delete(bm, geom=top, context="FACES_ONLY")
+    elif prim == "sphere":
+        bmesh.ops.create_uvsphere(bm, u_segments=32, v_segments=16, radius=m["radius"] * k)
+    elif prim == "box":
+        sx, sy, sz = (v * k for v in m["size"])
+        bmesh.ops.create_cube(bm, size=1.0)
+        bmesh.ops.scale(bm, vec=(sx, sz, sy), verts=bm.verts)
+    else:  # file meshes are not imported here yet: a small placeholder cube, reported
+        bmesh.ops.create_cube(bm, size=0.05)
+        note = f"mesh source {m.get('path', '?')} not imported (placeholder)"
+    me = bpy.data.meshes.new(f"PROP_{name}")
+    bm.to_mesh(me)
+    bm.free()
+    for poly in me.polygons:
+        poly.use_smooth = prim in ("cylinder", "sphere")
+    return me, note
+
+
+def setup_props(bake, scene):
+    """One object per baked prop instance. Returns ({name: object}, report)."""
+    names = []
+    for fd in bake["frame_data"]:
+        for n in fd.get("props", {}):
+            if n not in names:
+                names.append(n)
+    rep = {"props": {}, "unknown_material_presets": []}
+    if not names:
+        return {}, rep
+    ids = {}
+    try:
+        sc = json.load(open(bake["scene_path"]))
+        ids = {p["name"]: p["id"] for p in sc.get("props", [])}
+    except (OSError, KeyError, ValueError):
+        pass
+    assets = find_assets(bake.get("scene_path", "."))
+    library = MATERIALS.load_library()["presets"]
+    objs = {}
+    for n in names:
+        asset = assets.get(ids.get(n), {"mesh": {}, "material_presets": []})
+        me, note = prop_mesh(n, asset)
+        ob = bpy.data.objects.new(f"prop.{n}", me)
+        scene.collection.objects.link(ob)
+        ob.rotation_mode = "QUATERNION"
+        m = asset.get("mesh", {})
+        if m.get("primitive") == "cylinder" and m.get("open_top"):
+            sol = ob.modifiers.new("wall", "SOLIDIFY")
+            sol.thickness = float(m.get("wall", 0.004)) * float(asset.get("scale", 1.0))
+            sol.offset = -1.0
+        preset = (asset.get("material_presets") or [None])[0]
+        if preset in library:
+            mat = MATERIALS.build_material(f"M_prop_{n}", preset)
+        else:
+            mat = bpy.data.materials.new(f"M_prop_{n}")
+            mat.use_nodes = True
+            if preset:
+                rep["unknown_material_presets"].append(preset)
+        me.materials.append(mat)
+        objs[n] = ob
+        rep["props"][n] = {"asset": ids.get(n), "primitive": m.get("primitive"), "material_preset": preset,
+                           "preset_found": preset in library, **({"note": note} if note else {})}
+    return objs, rep
+
+
+def key_props(objs, fd, frame):
+    for n, ob in objs.items():
+        if n not in fd.get("props", {}):
+            continue
+        M = Ci @ mat(fd["props"][n]) @ C  # engine world -> Blender world (mesh is built in Blender axes)
+        loc, rot, sca = M.decompose()
+        ob.location, ob.rotation_quaternion, ob.scale = loc, rot, sca
+        for path in ("location", "rotation_quaternion", "scale"):
+            ob.keyframe_insert(path, frame=frame)
+
+
 def key_camera(cam, c, frame):
     p, t = to_b(c["position"]), to_b(c["target"])
     cam.location = p
@@ -216,6 +326,7 @@ def main():
             raise SystemExit(f"cast has no master for character {ch['name']}")
         states[ch["name"]] = setup_character(ch, cast, scene)
     rep["world"] = setup_world(bake, scene, a.light_scale)
+    props, rep["props"] = setup_props(bake, scene)
     cam = bpy.data.objects.new("shot_camera", bpy.data.cameras.new("shot_camera"))
     scene.collection.objects.link(cam)
     scene.camera = cam
@@ -224,6 +335,7 @@ def main():
     for f in range(fa, fb + 1):
         fd = frames[f]
         key_camera(cam, fd["camera"], f)
+        key_props(props, fd, f)
         done = {n: apply_frame(st, fd["characters"][n], f) for n, st in states.items()}
         if any(late for _, late in done.values()):
             scene.frame_set(f)

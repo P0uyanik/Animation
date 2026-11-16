@@ -28,6 +28,22 @@ jittered) and the head following the gaze with a lag. Fine control: `"life": {"b
 
 Warnings are printed when a reach/touch target stays out of reach even after leaning ("move them closer").
 
+### Prop interactions (T-022, `engine/scene/interaction.{h,cpp}`)
+These work on scene `props` (`plush.asset/1`, `docs/ASSET_LIBRARY.md`) and on any character: the hand is the shared
+`hand.L`/`hand.R` role, the palm contact point and hand axes come from the finger roles and the skeleton's hand frame.
+
+| Type | Fields | What it generates |
+| --- | --- | --- |
+| `grasp` (or `reach` with `prop`) | `hand` (L/R), `prop`, `socket`="grip", `start`, `contact`=start+14, `grasp`=true, `end` (only with grasp:false), `look`=true | Arm IK so the palm point lands on the socket at `contact` (corrected to < 0.3 mm when in reach), palm turned towards the prop (thumb along a cylinder's axis, fingers away from the body), hand opens on the way and closes by contact search sized to the prop, the prop's parent switches to the hand at `contact` (rebased: no pop), gaze on the prop |
+| `hold` | `hand`, `prop`?, `start`, `end`, `at:[x,y,z]` (prop origin) or `by:[dx,dy,dz]` | Moves the held prop, keeping its world orientation (a cup stays upright) |
+| `place` | `hand`, `prop`?, `start`, `contact`=start+16, `end`=contact+14, `at:[x,y,z]` or `onto:{prop, socket}`, `socket`="place" | The prop's `socket` lands on the target at `contact`, where it detaches (or re-parents to `onto`); fingers open, the hand backs away, the arm returns by `end` |
+| `handover` | `hand`, `to`, `toHand`="R", `prop`?, `toSocket`="grip_b", `start`, `receiverStart`=start+4, `contact`=start+18, `release`=contact+4, `end`=release+12, `at:[x,y,z]`? | The giver brings the prop to `at` (default between the two) and holds it still; the receiver reaches its own socket and grasps at `contact`, where the parent switches to the receiver; the giver lets go at `release`, looks at the receiver and withdraws by `end` |
+
+A hand holds one prop at a time; `hold`/`place`/`handover` need the hand to hold it (load errors otherwise). Contacts
+are re-checked after all actions are compiled; a contact that stays more than 5 mm off (out of reach) is reported in
+the scene's warnings. Generated tracks: `<who>/ik.<hand bone>`, `<who>/orient.<hand bone>` (+ `.weight`; the hand's
+world rotation, applied after IK), `<who>/hand.<side>` and its grasp tracks, `<who>/lookAt`.
+
 ## Director (automatic camera)
 ```json
 "director": {"minShot": 36, "closeFocal": 70, "closeFStop": 2.8, "mediumFocal": 50, "mediumFStop": 4}
@@ -55,4 +71,5 @@ To override: key `camera.position`, `camera.target` or `camera.lens` by hand —
 - Collision between bodies and furniture (an arm can pass over or through a table rim).
 - Natural-language or external-assistant control: a JSON action list is the intended target for such a layer,
   but no integration exists yet.
-- Running, sitting, turning on the spot without walking, two-handed grasps, handing objects between characters.
+- Running, sitting, turning on the spot without walking, two-handed grasps. (Handing a prop between characters:
+  `handover`, T-022.) Prop interactions do not lean the body: keep the prop within arm's length.

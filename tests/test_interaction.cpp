@@ -68,7 +68,8 @@ PropDesc cupFor(const SceneEvaluator& probe, size_t c, const char* name, float y
   const float arm = glm::distance(shoulder, elbow) + glm::distance(elbow, bonePos(probe, c, "hand.R", 1));
   const vec3 grip = shoulder + offsetFromShoulder * arm;
   const mat4 rot = assetTransformMatrix({vec3(0), vec3(0, yawCupDeg, 0), vec3(1)});
-  cup.transform.translation = grip - vec3(rot * vec4(0.03f, 0.05f, 0, 0));
+  const PropAsset asset = loadAsset(kRoot / "content/assets/felt_cup.asset.json").value();
+  cup.transform.translation = grip - vec3(rot * vec4(asset.sockets.at("grip").translation, 0));
   cup.transform.rotationDeg = {0, yawCupDeg, 0};
   return cup;
 }
@@ -139,7 +140,8 @@ void pickUpAndPlace(const char* asset) {
   CHECK(glm::distance(socketWorld(*ev, 0, "place", 90), target) < 0.005f);
   CHECK(glm::distance(ev->handGripPoint(0, 'R', 90), socketWorld(*ev, 0, "grip", 90)) > 0.03f);  // let go
   // Size-adaptive grasp: the fingers close on the cup (the hand pose track opens, the grasp closes it).
-  CHECK(ev->scene().animation.evaluate("actor/hand.R.graspRadius", 20, vec3(0)).x == doctest::Approx(0.03f));
+  CHECK(ev->scene().animation.evaluate("actor/hand.R.graspRadius", 20, vec3(0)).x ==
+        doctest::Approx(loadAsset(kRoot / "content/assets/felt_cup.asset.json").value().mesh.radius));
   CHECK(ev->scene().animation.evaluate("actor/hand.R.grasp.weight", 20, vec3(0)).x == doctest::Approx(1.0f));
   // Gaze is on the cup while it is handled.
   CHECK(glm::distance(ev->scene().animation.evaluate("actor/lookAt", 30, vec3(0)), vec3(ev->propWorld(0, 30)[3])) < 0.08f);
