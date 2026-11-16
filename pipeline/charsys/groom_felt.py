@@ -13,6 +13,9 @@ felt_volume  sculpted, smooth felted masses with soft (rounded) edges, combing g
           part {"az", "width_deg", "depth" (fraction of height), "length" (fraction of the way)}, resolution [nu, nv].
   fringe  a felted fringe sheet from a part line over the forehead (same placement keys as the yarn fringe):
           root_az [...], root_el, tip_x [...], tip_z [...], tip_gap, bulge, thick [root, tip], resolution [nu, nv],
+          or tips on the head: tip_az [...], tip_el [...], tip_lift (a curtain falling around the temples);
+          root_el may be a list as long as root_az (roots along a part line); tip_jitter (seeded per-strand
+          shortening: an irregular, soft tip line),
           tip_scallop (fraction of the length the sheet is shorter between strand crests: rounded strand tips),
           clearance (the sheet is pushed out to lie at least this far plus half its thickness above the head).
           Strand grooves run from the roots to the tips; the tip edge is rounded and scalloped by the grooves.
@@ -30,7 +33,8 @@ felt_lock    the "felt" finish of a hanging lock (groom locks with "finish": "fe
              the slow elliptical twist), flatten (relative)}.
 
 Finish selection: spec.hair.finish ("yarn" default | "felt") with a per-structure "finish" override. A felt sweep is
-built as a gather volume, a felt fringe as a fringe sheet, a felt bun as a mass on each bun frame, felt locks as
+built as a gather volume, a felt fringe as a fringe sheet, a felt bun as a mass on each bun frame (plus optional
+bundles: buns[i].felt_lobes [{offset [out, side, axis], radii, swirl}], relative to the bun frame), felt locks as
 felt_lock. Felt meshes get the same per-object UV map name as ropes (U across, V along, metres)."""
 import math
 import random
@@ -278,21 +282,39 @@ def fringe(st, ctx, R):
     soft = merged(st, "soft")
     rim = float(merged(st, "rim"))
     el = st["root_el"]
-    el = sum(el) / 2 if isinstance(el, (list, tuple)) else float(el)
+    # a root_el list as long as root_az (T-033b) gives one elevation per root (roots along a part line);
+    # otherwise [lo, hi] is averaged as before
+    el_along = isinstance(el, (list, tuple)) and len(el) == len(st["root_az"]) and len(el) > 2
+    el = el if el_along else sum(el) / 2 if isinstance(el, (list, tuple)) else float(el)
     S = Surface(st, R)
     scal = float(st.get("tip_scallop", 0.0))  # tips end in rounded strand lobes: the sheet is shorter between strands
     clear = float(st.get("clearance", 0.003))
+    # T-033b, optional: tips on the scalp/side of the head (tip_az, tip_el [, tip_lift]) instead of on the face
+    # (tip_x, tip_z): a curtain fringe that falls from the part around the temples; tip_jitter shortens each strand
+    # by a seeded random fraction, so the tip line is irregular instead of a blunt band
+    on_scalp = "tip_az" in st
+    tjit = float(st.get("tip_jitter", 0.0))
+    if tjit:
+        RJ = random.Random("felt_fringe:" + st.get("name", "fringe") + ":" + str(ctx.get("seed", 0)))
+        jit = [RJ.uniform(0.0, tjit) for _ in range(int(S.n) + 2)]
     base, hints = [], []
     for i in range(nu):
         u = i / (nu - 1)
         az = smooth_list(st["root_az"], u)
-        root, nr = sc.at(az, el, 0.004)
-        xt, zt = smooth_list(st["tip_x"], u), smooth_list(st["tip_z"], u)
-        tip = Vector((xt, face_y(head, xt, zt) - float(st.get("tip_gap", 0.012)), zt))
+        root, nr = sc.at(az, smooth_list(el, u) if el_along else el, 0.004)
+        if on_scalp:
+            tl = st.get("tip_lift", 0.006)
+            tl = smooth_list(tl, u) if isinstance(tl, (list, tuple)) else float(tl)
+            tip, _ = sc.at(smooth_list(st["tip_az"], u), smooth_list(st["tip_el"], u), tl)
+        else:
+            xt, zt = smooth_list(st["tip_x"], u), smooth_list(st["tip_z"], u)
+            tip = Vector((xt, face_y(head, xt, zt) - float(st.get("tip_gap", 0.012)), zt))
         mid = (root + tip) / 2 + nr * float(st.get("bulge", 0.02))
         dense = G.HAIR_G().bezier(root, mid, tip, nv * 4)
         crest = abs(math.sin(math.pi * S.n * u)) ** 0.6 if S.n > 0 else 1.0
         vmax = 1.0 - scal * (1.0 - crest)
+        if tjit:
+            vmax *= 1.0 - jit[min(len(jit) - 1, int(S.n * u))]
         line = G.resample(dense, 0.001)
         L = len(line) - 1
         row = []
@@ -417,6 +439,16 @@ def felt_bun(st, ctx, R):
         (v, f, uv), _ = mass(spec, ctx, random.Random(R.random()), (c, ax, out, side),
                              (bf["radius"] * sq[0], bf["radius"] * sq[1], bf["height"] * 0.5 * sq[2]))
         bucket.add(v, f, uv)
+        # T-033b, optional: felt_lobes [{offset [out, side, axis], radii [r1, r2, r3]}] (relative to the bun radius,
+        # radius, half height): extra felted bundles of the same bun, inside its dynamics record (they move with it)
+        for lb in b.get("felt_lobes", []):
+            o = lb.get("offset", [0.0, 0.0, 0.0])
+            lc = c + (out * o[0] + side * o[1]) * bf["radius"] + ax * (o[2] * bf["height"] * 0.5)
+            lr = lb.get("radii", [0.6, 0.6, 0.6])
+            lspec = dict(spec, swirl=float(lb.get("swirl", spec["swirl"])))
+            (v, f, uv), _ = mass(lspec, ctx, random.Random(R.random()), (lc, ax, out, side),
+                                 (bf["radius"] * lr[0], bf["radius"] * lr[1], bf["height"] * 0.5 * lr[2]))
+            bucket.add(v, f, uv)
         if ctx.get("dynamics") is not None:
             ctx["dynamics"].append({"kind": "bun", "structure": st.get("name", st["type"]), "bun": k,
                                     "verts": (v_start, len(bucket.verts))})
@@ -463,12 +495,13 @@ def validate(st, i, nb):
     sh = st.get("shape")
     if sh not in SHAPES:
         return [f"hair.structures[{i}] felt_volume shape must be one of {', '.join(SHAPES)}"]
-    need = {"gather": ("hairline_el", "height"), "fringe": ("root_az", "root_el", "tip_x", "tip_z", "thick"),
+    tips = ("tip_az", "tip_el") if "tip_az" in st else ("tip_x", "tip_z")
+    need = {"gather": ("hairline_el", "height"), "fringe": ("root_az", "root_el") + tips + ("thick",),
             "mass": ("radii",)}[sh]
     for k in need:
         if k not in st:
             errs.append(f"hair.structures[{i}] (felt_volume {sh}) needs '{k}'")
-    if sh == "fringe" and len(st.get("tip_x", [])) != len(st.get("tip_z", [])):
+    if sh == "fringe" and len(st.get(tips[0], [])) != len(st.get(tips[1], [])):
         errs.append(f"hair.structures[{i}] felt fringe tip_x and tip_z differ in length")
     if sh == "mass" and "bun" not in st and not all(k in st for k in ("az", "el")):
         errs.append(f"hair.structures[{i}] felt mass needs 'bun' or 'az' and 'el'")

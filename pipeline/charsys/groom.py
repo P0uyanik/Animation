@@ -19,7 +19,9 @@ Structures ({"type": ..., "name": ...}; "name" defaults to the type; objects are
               z_end [lo, hi] (absolute, metres), flare, width, thick, tip_frac,
               curl {radius, pitch, radius_growth, start, start_jitter, jitter, direction ("alternate", "cw", "ccw"),
                     wobble, wobble_wavelength, sway}  (wobble: seeded along-length variation of radius and pitch,
-                    relative; sway: lateral wander of the centre line in metres, so ringlets are irregular),
+                    relative; sway: lateral wander of the centre line in metres, so ringlets are irregular;
+                    ellipse: <1 flattens the helix towards the lateral plane, giving soft S-waves; tip {from,
+                    radius, pitch, ellipse}: multipliers blended in over the end of the lock, e.g. a ringlet tip),
               wave {amplitude, wavelength},
               hang_jitter (per-lock relative jitter of hang_radii: depth layering instead of one curtain),
               rest_radii [rx, ry] + rest_z (drape: below the head the lock moves in to this ellipse by rest_z, so long
@@ -453,6 +455,12 @@ def build_locks(st, ctx, R):
                     s0 = s_leave + float(curl.get("start", 0.03)) + R.uniform(0, float(curl.get("start_jitter", 0.0)))
                     wob = float(curl.get("wobble", 0.0))  # along-length irregularity of radius and pitch
                     sway = float(curl.get("sway", 0.0))  # lateral wander of the centre line (m)
+                    # T-033b, optional (absent = unchanged geometry): ellipse < 1 flattens the helix out of the
+                    # lateral plane (soft S-waves instead of round coils); tip {from, radius, pitch, ellipse} blends
+                    # radius/pitch/ellipse (multipliers) over the lock's end into a ringlet
+                    ell0 = float(curl.get("ellipse", 1.0))
+                    tipc = curl.get("tip")
+                    shaped = ell0 != 1.0 or bool(tipc)
                     if wob or sway:
                         wl = float(curl.get("wobble_wavelength", 0.12))
                         n_r, n_p, n_s = smooth_noise(R, wl), smooth_noise(R, wl), smooth_noise(R, wl * 1.6)
@@ -468,16 +476,28 @@ def build_locks(st, ctx, R):
                         u = max(0.0, si - s0)
                         ramp = min(1.0, u / max(1e-6, pitch * 0.75))
                         r = r0 * (1 + grow * (si - s0) / max(1e-6, L - s0)) * ramp
-                        if wob or sway:
-                            pl = pitch * (1 + wob * n_p(si))
+                        ell, pm = ell0, 1.0
+                        if tipc:
+                            f0 = float(tipc.get("from", 0.7))
+                            q = min(1.0, max(0.0, (u / max(1e-6, L - s0) - f0) / max(1e-6, 1.0 - f0)))
+                            q = q * q * (3 - 2 * q)
+                            r *= 1 + (float(tipc.get("radius", 1.0)) - 1) * q
+                            pm = 1 + (float(tipc.get("pitch", 1.0)) - 1) * q
+                            ell = ell0 + (float(tipc.get("ellipse", ell0)) - ell0) * q
+                        if wob or sway or shaped:
+                            pl = pitch * pm * (1 + wob * (n_p(si) if wob or sway else 0.0))
                             if prev is not None:
                                 phi += dsign * 2 * math.pi * (max(0.0, si - s0) - max(0.0, prev - s0)) / pl
                             prev = si
-                            r *= 1 + wob * n_r(si)
-                            p = p + tang * (sway * n_s(si) * ramp)
+                            if wob or sway:
+                                r *= 1 + wob * n_r(si)
+                                p = p + tang * (sway * n_s(si) * ramp)
                         else:
                             phi = ph + dsign * 2 * math.pi * u / pitch
-                        pts.append(p + (hdir * math.cos(phi) + tang * math.sin(phi)) * r)
+                        if shaped:
+                            pts.append(p + (hdir * (math.cos(phi) * ell) + tang * math.sin(phi)) * r)
+                        else:
+                            pts.append(p + (hdir * math.cos(phi) + tang * math.sin(phi)) * r)
                     pts = resample(pts, yarn["step_m"])
                 else:
                     amp, wl = float(wave["amplitude"]), float(wave["wavelength"])

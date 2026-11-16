@@ -556,7 +556,7 @@
    ],
    "finish": "felted wool (T-033): smooth felted crown and fringe, felted bun, felted ringlets with fibre fuzz"
   },
-  "provenance": "T-016: structures read from #30 (front, front-left, left, back) and #39/#40; sizes in metres at height 0.97 m (bun top 1.10 m); T-016 round 2: chunky irregular ringlets (seeded wobble/sway), 2 thick plies, per-rope fibre UVs, curls draped closer to head/back, temple puffs, fuller fringe, larger pinker flowers and an exposed band; T-033 (0.8.0): felted finish read from #30, #39 (sections 01, 02, 04, 06) and #40: smooth felted crown volume combed up to the bun with soft strand grooves and a part, a soft felted fringe sheet over the forehead to the glasses, temple volumes, a felted bundled bun, felted ringlets (soft irregular section, no plies), short felt fuzz plus sparse flyaways on the silhouette",
+  "provenance": "T-016: structures read from #30 (front, front-left, left, back) and #39/#40; sizes in metres at height 0.97 m (bun top 1.10 m); T-016 round 2: chunky irregular ringlets (seeded wobble/sway), 2 thick plies, per-rope fibre UVs, curls draped closer to head/back, temple puffs, fuller fringe, larger pinker flowers and an exposed band; T-033 (0.8.0): felted finish read from #30, #39 (sections 01, 02, 04, 06) and #40: smooth felted crown volume combed up to the bun with soft strand grooves and a part, a soft felted fringe sheet over the forehead to the glasses, temple volumes, a felted bundled bun, felted ringlets (soft irregular section, no plies), short felt fuzz plus sparse flyaways on the silhouette; T-033b (r2): bigger rounder bun, crown volume down over the temples, curtain fringe in two side-swept felt sheets from the part, chunky irregular felted waves with ringlet tips (curl.ellipse, curl.tip), back locks rooted under the back gather",
   "scalp_offset_m": 0.008,
   "finish": "felt",
   "yarn": {
@@ -651,18 +651,59 @@
      {
       "az": 180,
       "el": 74,
-      "lift": -0.004,
-      "radius": 0.074,
-      "height": 0.135,
+      "lift": 0.0,
+      "radius": 0.082,
+      "height": 0.19,
       "tilt": 0.6,
       "wrap": "ccw",
       "turns": 0.9,
       "ropes": 5,
       "rope_thick": 0.046,
       "felt_radii": [
-       1.25,
-       1.2,
-       1.2
+       1.0,
+       1.0,
+       1.0
+      ],
+      "felt_lobes": [
+       {
+        "offset": [
+         0.15,
+         0.55,
+         0.25
+        ],
+        "radii": [
+         0.7,
+         0.68,
+         0.8
+        ],
+        "swirl": 1.2
+       },
+       {
+        "offset": [
+         0.1,
+         -0.6,
+         0.15
+        ],
+        "radii": [
+         0.68,
+         0.66,
+         0.78
+        ],
+        "swirl": -1.0
+       },
+       {
+        "offset": [
+         -0.35,
+         0.05,
+         0.45
+        ],
+        "radii": [
+         0.66,
+         0.7,
+         0.7
+        ],
+        "swirl": 0.8
+       }
       ]
      }
     ],
@@ -675,8 +716,8 @@
       "wavelength": 0.6
      },
      "lumps": {
-      "amount": 0.14,
-      "scale": 1.3
+      "amount": 0.08,
+      "scale": 1.1
      },
      "resolution": [
       72,
@@ -698,20 +739,28 @@
       40
      ],
      [
-      40,
+      25,
       36
      ],
      [
-      70,
-      28
+      50,
+      20
      ],
      [
-      100,
-      22
+      72,
+      2
      ],
      [
-      140,
-      17
+      95,
+      0
+     ],
+     [
+      125,
+      10
+     ],
+     [
+      150,
+      14
      ],
      [
       180,
@@ -723,9 +772,9 @@
     },
     "tuck": 0.97,
     "height": [
-     0.01,
-     0.026,
-     0.022
+     0.016,
+     0.045,
+     0.03
     ],
     "inset": 0.004,
     "part": {
@@ -735,10 +784,10 @@
      "length": 0.55
     },
     "grooves": {
-     "count": 20,
+     "count": 28,
      "depth": 0.22,
      "sharpness": 0.55,
-     "wander": 0.6,
+     "wander": 0.35,
      "wavelength": 0.5
     },
     "lumps": {
@@ -748,7 +797,7 @@
     "soft": [
      0,
      0,
-     0.25,
+     0.3,
      0.0
     ],
     "rim": 0.12,
@@ -762,17 +811,21 @@
     "name": "back_fall",
     "shape": "gather",
     "az": [
-     95,
-     265
+     80,
+     280
     ],
     "hairline_el": [
      [
-      95,
-      22
+      80,
+      2
+     ],
+     [
+      110,
+      8
      ],
      [
       140,
-      17
+      12
      ],
      [
       180,
@@ -785,20 +838,20 @@
     },
     "tuck": 0.3,
     "height": [
-     0.014,
-     0.02,
-     0.012
+     0.03,
+     0.036,
+     0.02
     ],
     "inset": 0.004,
     "grooves": {
      "count": 11,
-     "depth": 0.3,
+     "depth": 0.15,
      "sharpness": 0.6,
-     "wander": 0.5,
+     "wander": 0.3,
      "wavelength": 0.7
     },
     "lumps": {
-     "amount": 0.06
+     "amount": 0.0
     },
     "soft": [
      0.12,
@@ -817,52 +870,61 @@
     "name": "fringe",
     "shape": "fringe",
     "root_az": [
-     -48,
-     -42,
-     -36,
-     -30,
-     -24,
+     -17,
+     -17,
      -18,
-     -10,
-     -2
+     -19,
+     -20,
+     -21
     ],
     "root_el": [
-     56,
-     66
+     50,
+     57,
+     64,
+     71,
+     78,
+     85
     ],
-    "tip_x": [
-     -0.115,
-     -0.085,
-     -0.055,
-     -0.025,
-     0.01,
-     0.045,
-     0.08,
-     0.11
+    "tip_az": [
+     6,
+     24,
+     42,
+     58,
+     70,
+     80
     ],
-    "tip_z": [
-     0.85,
-     0.856,
-     0.859,
-     0.858,
-     0.853,
-     0.845,
-     0.835,
-     0.824
+    "tip_el": [
+     22,
+     15,
+     9,
+     4,
+     0,
+     -4
     ],
-    "tip_gap": 0.01,
-    "bulge": 0.03,
+    "tip_lift": [
+     0.004,
+     0.008,
+     0.012,
+     0.016,
+     0.02,
+     0.022
+    ],
+    "bulge": 0.035,
     "thick": [
-     0.03,
-     0.016
+     0.028,
+     0.02
     ],
-    "tip_scallop": 0.12,
-    "clearance": 0.003,
+    "tip_scallop": 0.18,
+    "tip_jitter": 0.12,
+    "resolution": [
+     64,
+     40
+    ],
     "grooves": {
-     "count": 7,
-     "depth": 0.4,
-     "sharpness": 0.75,
-     "wander": 0.25,
+     "count": 6,
+     "depth": 0.35,
+     "sharpness": 0.6,
+     "wander": 0.5,
      "wavelength": 0.9
     },
     "lumps": {
@@ -875,22 +937,88 @@
      0.12
     ],
     "rim": 0.12,
+    "clearance": 0.003
+   },
+   {
+    "type": "felt_volume",
+    "name": "fringe_part",
+    "shape": "fringe",
+    "root_az": [
+     -24,
+     -24,
+     -25,
+     -26,
+     -27
+    ],
+    "root_el": [
+     50,
+     58,
+     66,
+     74,
+     82
+    ],
+    "tip_az": [
+     -30,
+     -44,
+     -58,
+     -70,
+     -80
+    ],
+    "tip_el": [
+     24,
+     17,
+     10,
+     3,
+     -2
+    ],
+    "tip_lift": [
+     0.004,
+     0.008,
+     0.012,
+     0.016,
+     0.02
+    ],
+    "bulge": 0.03,
+    "thick": [
+     0.026,
+     0.018
+    ],
+    "tip_scallop": 0.18,
+    "tip_jitter": 0.12,
     "resolution": [
-     64,
-     36
-    ]
+     48,
+     40
+    ],
+    "grooves": {
+     "count": 6,
+     "depth": 0.35,
+     "sharpness": 0.6,
+     "wander": 0.5,
+     "wavelength": 0.9
+    },
+    "lumps": {
+     "amount": 0.05
+    },
+    "soft": [
+     0.08,
+     0.08,
+     0.05,
+     0.12
+    ],
+    "rim": 0.12,
+    "clearance": 0.003
    },
    {
     "type": "felt_volume",
     "name": "temple_l",
     "shape": "mass",
-    "az": 74,
-    "el": 6,
-    "lift": -0.012,
+    "az": 76,
+    "el": 2,
+    "lift": -0.006,
     "radii": [
-     0.05,
-     0.042,
-     0.07
+     0.06,
+     0.055,
+     0.085
     ],
     "axis": "up",
     "swirl": 0.08,
@@ -912,13 +1040,13 @@
     "type": "felt_volume",
     "name": "temple_r",
     "shape": "mass",
-    "az": -74,
-    "el": 6,
-    "lift": -0.012,
+    "az": -76,
+    "el": 2,
+    "lift": -0.006,
     "radii": [
-     0.05,
-     0.042,
-     0.07
+     0.06,
+     0.055,
+     0.085
     ],
     "axis": "up",
     "swirl": 0.08,
@@ -943,8 +1071,8 @@
     "mirror": true,
     "count": 3,
     "az": [
-     48,
-     78
+     44,
+     72
     ],
     "el_root": [
      22,
@@ -956,41 +1084,48 @@
      0.03
     ],
     "hang_radii": [
-     0.17,
-     0.16
+     0.175,
+     0.165
     ],
     "z_end": [
-     0.72,
-     0.78
+     0.64,
+     0.72
     ],
     "flare": 0.0,
     "width": [
-     0.02,
-     0.024
+     0.03,
+     0.036
     ],
     "thick": [
-     0.018,
-     0.022
+     0.024,
+     0.029
     ],
     "tip_frac": 0.65,
     "curl": {
      "radius": 0.012,
-     "pitch": 0.04,
-     "radius_growth": 0.1,
-     "start": 0.02,
+     "pitch": 0.1,
+     "radius_growth": 0.25,
+     "start": 0.03,
      "direction": "alternate",
      "jitter": 0.3,
-     "start_jitter": 0.04,
-     "wobble": 0.35,
-     "wobble_wavelength": 0.1,
-     "sway": 0.006
+     "start_jitter": 0.05,
+     "wobble": 0.3,
+     "wobble_wavelength": 0.16,
+     "sway": 0.01,
+     "ellipse": 0.3,
+     "tip": {
+      "from": 0.62,
+      "radius": 1.4,
+      "pitch": 0.5,
+      "ellipse": 1.0
+     }
     },
     "felt": {
-     "seg": 14,
-     "irregularity": 0.12,
-     "wavelength": 0.06,
-     "flatten": 0.1,
-     "flatten_twist": 4.0
+     "seg": 16,
+     "irregularity": 0.1,
+     "wavelength": 0.15,
+     "flatten": 0.15,
+     "flatten_twist": 1.2
     }
    },
    {
@@ -998,9 +1133,9 @@
     "name": "side_curls",
     "style": "curly",
     "mirror": true,
-    "count": 6,
+    "count": 5,
     "az": [
-     62,
+     66,
      112
     ],
     "el_root": [
@@ -1013,49 +1148,56 @@
      0.014
     ],
     "hang_radii": [
-     0.16,
-     0.15
+     0.18,
+     0.165
     ],
     "z_end": [
-     0.58,
+     0.56,
      0.66
     ],
     "flare": 0.05,
     "width": [
-     0.019,
-     0.023
+     0.034,
+     0.042
     ],
     "thick": [
-     0.018,
-     0.022
+     0.027,
+     0.034
     ],
     "tip_frac": 0.6,
     "curl": {
      "radius": 0.012,
-     "pitch": 0.04,
-     "radius_growth": 0.2,
-     "start": 0.02,
+     "pitch": 0.1,
+     "radius_growth": 0.25,
+     "start": 0.03,
      "direction": "alternate",
      "jitter": 0.3,
-     "start_jitter": 0.04,
-     "wobble": 0.35,
-     "wobble_wavelength": 0.1,
-     "sway": 0.008
+     "start_jitter": 0.05,
+     "wobble": 0.3,
+     "wobble_wavelength": 0.16,
+     "sway": 0.01,
+     "ellipse": 0.3,
+     "tip": {
+      "from": 0.62,
+      "radius": 1.4,
+      "pitch": 0.5,
+      "ellipse": 1.0
+     }
     },
     "hang_jitter": 0.06,
     "felt": {
-     "seg": 14,
-     "irregularity": 0.12,
-     "wavelength": 0.06,
-     "flatten": 0.1,
-     "flatten_twist": 4.0
+     "seg": 16,
+     "irregularity": 0.1,
+     "wavelength": 0.15,
+     "flatten": 0.15,
+     "flatten_twist": 1.2
     }
    },
    {
     "type": "locks",
     "name": "back_curls",
     "style": "curly",
-    "count": 12,
+    "count": 15,
     "az": [
      128,
      232
@@ -1066,51 +1208,58 @@
     ],
     "el_leave": -12,
     "lift": [
-     0.012,
-     0.03
+     0.0,
+     0.006
     ],
     "hang_radii": [
-     0.17,
-     0.165
+     0.19,
+     0.175
     ],
     "z_end": [
      0.42,
-     0.56
+     0.54
     ],
     "flare": 0.06,
     "width": [
-     0.02,
-     0.024
+     0.036,
+     0.046
     ],
     "thick": [
-     0.018,
-     0.022
+     0.029,
+     0.037
     ],
     "tip_frac": 0.6,
     "curl": {
      "radius": 0.012,
-     "pitch": 0.042,
-     "radius_growth": 0.3,
-     "start": 0.02,
+     "pitch": 0.1,
+     "radius_growth": 0.25,
+     "start": 0.03,
      "direction": "alternate",
      "jitter": 0.3,
-     "start_jitter": 0.04,
-     "wobble": 0.35,
-     "wobble_wavelength": 0.1,
-     "sway": 0.01
+     "start_jitter": 0.05,
+     "wobble": 0.3,
+     "wobble_wavelength": 0.16,
+     "sway": 0.01,
+     "ellipse": 0.3,
+     "tip": {
+      "from": 0.62,
+      "radius": 1.4,
+      "pitch": 0.5,
+      "ellipse": 1.0
+     }
     },
     "hang_jitter": 0.08,
     "rest_radii": [
-     0.12,
-     0.1
+     0.17,
+     0.14
     ],
     "rest_z": 0.66,
     "felt": {
-     "seg": 14,
-     "irregularity": 0.12,
-     "wavelength": 0.06,
-     "flatten": 0.1,
-     "flatten_twist": 4.0
+     "seg": 16,
+     "irregularity": 0.1,
+     "wavelength": 0.15,
+     "flatten": 0.15,
+     "flatten_twist": 1.2
     }
    },
    {
@@ -1128,12 +1277,12 @@
     ],
     "el_leave": -32,
     "lift": [
-     0.004,
-     0.01
+     0.0,
+     0.006
     ],
     "hang_radii": [
-     0.14,
-     0.15
+     0.16,
+     0.16
     ],
     "z_end": [
      0.46,
@@ -1141,25 +1290,32 @@
     ],
     "flare": 0.08,
     "width": [
-     0.019,
-     0.023
+     0.034,
+     0.04
     ],
     "thick": [
-     0.018,
-     0.021
+     0.027,
+     0.032
     ],
     "tip_frac": 0.6,
     "curl": {
      "radius": 0.012,
-     "pitch": 0.04,
+     "pitch": 0.1,
      "radius_growth": 0.25,
-     "start": 0.02,
+     "start": 0.03,
      "direction": "alternate",
      "jitter": 0.3,
-     "start_jitter": 0.04,
-     "wobble": 0.35,
-     "wobble_wavelength": 0.1,
-     "sway": 0.008
+     "start_jitter": 0.05,
+     "wobble": 0.3,
+     "wobble_wavelength": 0.16,
+     "sway": 0.01,
+     "ellipse": 0.3,
+     "tip": {
+      "from": 0.62,
+      "radius": 1.4,
+      "pitch": 0.5,
+      "ellipse": 1.0
+     }
     },
     "hang_jitter": 0.08,
     "rest_radii": [
@@ -1168,11 +1324,11 @@
     ],
     "rest_z": 0.66,
     "felt": {
-     "seg": 14,
-     "irregularity": 0.12,
-     "wavelength": 0.06,
-     "flatten": 0.1,
-     "flatten_twist": 4.0
+     "seg": 16,
+     "irregularity": 0.1,
+     "wavelength": 0.15,
+     "flatten": 0.15,
+     "flatten_twist": 1.2
     }
    },
    {
@@ -1180,7 +1336,7 @@
     "name": "band",
     "bun": 0,
     "height_frac": 0.2,
-    "radius_scale": 1.12,
+    "radius_scale": 1.1,
     "tube": 0.01,
     "width_scale": 1.7,
     "material": "hair_band"
@@ -1197,19 +1353,19 @@
       "around_deg": 50,
       "height_frac": 0.25,
       "size": 0.036,
-      "out": 0.012
+      "out": 0.024
      },
      {
       "around_deg": 85,
       "height_frac": 0.38,
       "size": 0.032,
-      "out": 0.012
+      "out": 0.024
      },
      {
       "around_deg": 22,
       "height_frac": 0.45,
       "size": 0.028,
-      "out": 0.01
+      "out": 0.024
      }
     ]
    }
