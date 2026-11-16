@@ -1,4 +1,4 @@
-"""Render the T-015 sphere/patch swatch sheet in Cycles.
+"""Render the T-015 sphere/patch swatch sheet in Cycles or EEVEE.
 
 blender -b --factory-startup -P pipeline/charsys/materials/render_swatches.py -- \
   --out docs/evaluation/materials/T-015/swatch_sheet.png \
@@ -30,6 +30,7 @@ from materials import builder as MATERIALS  # noqa: E402
 import compare_harness as HARNESS  # noqa: E402
 import geom as G  # noqa: E402
 import render_calibration as RC  # noqa: E402
+import render_engine  # noqa: E402
 
 
 def parse():
@@ -39,8 +40,9 @@ def parse():
     parser.add_argument("--metadata", required=True)
     parser.add_argument("--width", type=int, default=480)
     parser.add_argument("--height", type=int, default=576,
-                        help="height of each Cycles render; the evidence sheet stacks all ten renders")
+                        help="height of each render; the evidence sheet stacks all ten renders")
     parser.add_argument("--samples", type=int, default=16)
+    parser.add_argument("--engine", choices=("cycles", "eevee"), default="cycles")
     parser.add_argument("--exposure", type=float, default=0.0)
     parser.add_argument("--view-transform", default="AgX")
     parser.add_argument("--save-blend", default="")
@@ -159,13 +161,10 @@ def main():
     else:
         rig = RC.apply(scene, RC.load(args.lighting))
 
-    scene.render.engine = "CYCLES"
-    scene.cycles.device = "CPU"
-    scene.cycles.samples = args.samples
-    scene.cycles.use_denoising = True
-    scene.cycles.denoiser = "OPENIMAGEDENOISE"
+    engine_settings = render_engine.configure(scene, args.engine, args.samples, cycles_device="CPU",
+                                               cycles_denoiser="OPENIMAGEDENOISE")
     if max(args.width, args.height) > 640:
-        raise SystemExit("each Cycles swatch render must be <=640 px in both dimensions")
+        raise SystemExit("each swatch render must be <=640 px in both dimensions")
     scene.render.resolution_x = args.width
     scene.render.resolution_y = args.height
     scene.render.resolution_percentage = 100
@@ -241,13 +240,15 @@ def main():
         "height": args.height * len(entries),
         "render_width": args.width,
         "render_height": args.height,
-        "max_cycles_render_dimension_px": max(args.width, args.height),
+        ("max_cycles_render_dimension_px" if args.engine == "cycles" else
+         "max_eevee_render_dimension_px"): max(args.width, args.height),
         "samples": args.samples,
         "exposure": scene.view_settings.exposure,
         "view_transform": requested_transform,
-        "render_engine": "CYCLES",
-        "device": "CPU",
-        "denoiser": "OPENIMAGEDENOISE",
+        "render_engine": engine_settings["blender_engine"],
+        "engine_settings": engine_settings,
+        "device": "CPU" if args.engine == "cycles" else "N/A",
+        "denoiser": "OPENIMAGEDENOISE" if args.engine == "cycles" else "OFF",
         "studio_light": ("pipeline/blender/compare_harness.py:studio_lighting" if rig is None else
                          "pipeline/charsys/render_calibration.json:" + args.lighting),
         "reference_size_m": library["reference_size_m"],

@@ -1,7 +1,8 @@
 """Turnaround and close-up renders of a built character master for groom evaluation (headless Blender; read-only).
 
     blender -b --factory-startup -P pipeline/charsys/tools/groom_turnaround.py -- <master.blend> <reference_index.json> <out_dir>
-        [--views id,id,...] [--height 640] [--samples 32] [--lighting character_neutral/1|harness] [--exposure E]
+        [--views id,id,...] [--height 640] [--samples 32] [--engine cycles|eevee]
+        [--lighting character_neutral/1|harness] [--exposure E]
         [--closeup "<name>:<yaw>:<elev>:<x>,<y>,<z>:<width_m>"] [--ids]
 
 Cameras: yaw/elevation/focal of each reference view (reference_index.json), framed on the character's bounding box
@@ -26,6 +27,7 @@ sys.path.insert(0, os.path.join(ROOT, "pipeline", "blender"))
 import compare_harness as CH  # noqa: E402
 sys.path.insert(0, os.path.join(ROOT, "pipeline", "charsys"))
 import render_calibration as RC  # noqa: E402
+import render_engine  # noqa: E402
 
 ID_COLOURS = [(230, 25, 75), (60, 180, 75), (255, 225, 25), (0, 130, 200), (245, 130, 48), (145, 30, 180),
               (70, 240, 240), (240, 50, 230), (210, 245, 60), (250, 190, 212), (0, 128, 128), (220, 190, 255),
@@ -37,7 +39,7 @@ def render_ids(sc, path, materials, meshes):
     """Flat material-slot colours (sRGB ids): every material is swapped for an emission stand-in and rendered in
     Cycles with one sample, a minimal pixel filter and no denoising; the scene is restored afterwards. (Workbench
     needs a GPU context, which headless cloud machines lack.)"""
-    keep = (sc.cycles.samples, sc.cycles.use_denoising, sc.render.filter_size, sc.view_settings.view_transform,
+    keep = (sc.render.engine, sc.cycles.samples, sc.cycles.use_denoising, sc.render.filter_size, sc.view_settings.view_transform,
             sc.view_settings.exposure, sc.view_settings.gamma, sc.world)
     flat = {}
     for i, m in enumerate(materials):
@@ -59,6 +61,7 @@ def render_ids(sc, path, materials, meshes):
                 slot.material = flat[slot.material.name]
     black = bpy.data.worlds.new("_id_world")
     sc.world = black
+    sc.render.engine = "CYCLES"
     sc.cycles.samples, sc.cycles.use_denoising, sc.render.filter_size = 1, False, 0.01
     sc.view_settings.view_transform = "Standard"
     sc.view_settings.exposure, sc.view_settings.gamma = 0.0, 1.0
@@ -66,7 +69,7 @@ def render_ids(sc, path, materials, meshes):
     bpy.ops.render.render(write_still=True)
     for slot, m in saved:
         slot.material = m
-    (sc.cycles.samples, sc.cycles.use_denoising, sc.render.filter_size, sc.view_settings.view_transform,
+    (sc.render.engine, sc.cycles.samples, sc.cycles.use_denoising, sc.render.filter_size, sc.view_settings.view_transform,
      sc.view_settings.exposure, sc.view_settings.gamma, sc.world) = keep
     for e in flat.values():
         bpy.data.materials.remove(e)
@@ -82,6 +85,7 @@ def main():
     ap.add_argument("--views", default="")
     ap.add_argument("--height", type=int, default=640)
     ap.add_argument("--samples", type=int, default=32)
+    ap.add_argument("--engine", choices=("cycles", "eevee"), default="cycles")
     ap.add_argument("--closeup", action="append", default=[])
     ap.add_argument("--lighting", default=RC.DEFAULT,
                     help="a render_calibration.json profile, or 'harness' for compare_harness.studio_lighting (round 1)")
@@ -89,6 +93,7 @@ def main():
                     help="override the view exposure (stops); harness default -1, calibrated profiles use their own")
     ap.add_argument("--ids", action="store_true", help="also write <view>_ids.png material-slot masks")
     a = ap.parse_args(argv)
+    a.master, a.index, a.out = map(os.path.abspath, (a.master, a.index, a.out))
     os.makedirs(a.out, exist_ok=True)
     t0 = time.time()
     bpy.ops.wm.open_mainfile(filepath=os.path.abspath(a.master))
@@ -101,14 +106,8 @@ def main():
         CH.studio_lighting()
     else:
         rig = RC.apply(sc, RC.load(a.lighting))
-    sc.render.engine = "CYCLES"
-    sc.cycles.samples = a.samples
-    sc.cycles.device = "CPU"
-    try:
-        sc.cycles.use_denoising = True
-        sc.cycles.denoiser = "OPENIMAGEDENOISE"
-    except Exception:
-        pass
+    engine_settings = render_engine.configure(sc, a.engine, a.samples, cycles_device="CPU",
+                                               cycles_denoiser="OPENIMAGEDENOISE")
     sc.render.film_transparent = False
     if rig is None:
         names = [v.identifier for v in sc.view_settings.bl_rna.properties["view_transform"].enum_items]
@@ -134,7 +133,8 @@ def main():
     want = [v for v in a.views.split(",") if v]
     views = [v for v in idx["views"] if not want or v["id"] in want]
     times = {"open_s": round(time.time() - t0, 2), "views": {}, "lighting": a.lighting,
-             "view_transform": sc.view_settings.view_transform, "exposure": sc.view_settings.exposure}
+             "view_transform": sc.view_settings.view_transform, "exposure": sc.view_settings.exposure,
+             "engine": a.engine, "engine_settings": engine_settings}
     mats = sorted({m for o in meshes for m in o.data.materials if m}, key=lambda m: m.name)
     if a.ids:
         json.dump({m.name: ID_COLOURS[i % len(ID_COLOURS)] for i, m in enumerate(mats)},
