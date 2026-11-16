@@ -14,6 +14,7 @@ personality styles, A5 behaviour system, motion capture (licence and format grou
 | V1 | Test video 2–3 s (T-010) | end-to-end check of A1/A2 and the T-006 gaze fix | both characters, 1 emotion + 1 clip; eyes visible in every frame; no pops (smoothness limits from T-002); benchmark side-by-side; owner gap list |
 | V2 | Plush material library | felt, wool, fibre, cotton/knit fabric, buttons, plastic; presets with fibre scale and fuzz | swatch sheet under benchmark light next to benchmark close-ups; same presets on 2 characters; render-time budget recorded |
 | V3 | Girl complete | shared groom system (buns, long, curly) + shared garment library (shirt, vest, shorts, boots) | turnaround vs her reference sheet; deformation in 6 poses with no intersections; groom and garments driven only by spec |
+| V3b | Boy 2.0 on the shared systems | new boy version built only from spec with `groom/1` hair, `garment/1` hoodie/trousers/shoes, material presets and shared eyes/lids; versions 1.0.0 and 1.1.0 stay frozen and unchanged | turnaround vs his reference sheet; zero boy-specific code; existing versions byte-identical |
 | V4 | Hands, props, effects | grasp/hold/place/hand-over of props, paper folding as a prop deformation sequence, water surface with ripples, sparkle effect | 3 hand-interaction clips on 2 characters; water/sparkle test shot |
 | V5 | Benchmark scene 10–15 s | multi-shot sequence with close-ups through `run_shot` + episode edit, in a **simple set** (a table, the props it needs, a plain backdrop) with benchmark-quality lighting and camera presets (warm daylight, bounce and rim light, shallow depth of field) | owner rates it against `video_paperboat`; gap list for the next round |
 | V6 | Third character (specs only) | the generality test of V2–V3 | built with zero character-specific code; three-character scene |
@@ -38,3 +39,5 @@ Third-character work that needs no references (groom structures, garment types, 
 deformation checks) is done inside V2–V3.
 
 **Change v3 (owner decision 2026-11-16):** hands, props and effects (V4) and the 10–15 s benchmark scene (V5) come before the classroom kit, which moves to V7. The benchmark scene uses a simple set with good lighting. Lighting and camera presets move into V5. Priority remains visual quality, natural animation and believable interaction.
+
+**Change (owner decision 2026-11-16):** V3b Boy 2.0 added after V3. Architecture rule: anything that can be shared across characters is built as a reusable, character-independent system configured by spec, never per character (see `docs/process/OWNER_DECISIONS.md`).

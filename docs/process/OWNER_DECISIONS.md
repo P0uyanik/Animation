@@ -32,3 +32,9 @@
 5. Each agent creates its own task branch from the latest `main`; agents never modify or push to `main`.
 6. The Supervisor reviews all completed work (code quality, architecture, tests), requests fixes and re-reviews when
    needed, and merges verified branches into `main` without conflicts or regressions.
+
+## 2026-11-16: shared-systems principle (binding)
+Everything that can be shared across characters must be designed as a reusable, character-independent system
+(code with no character names, configured by spec/preset data, tested on at least two characters or a synthetic
+configuration), never implemented separately per character. Character-specific legacy (boy 1.0.0/1.1.0) stays frozen
+and is migrated through new versions (Boy 2.0, roadmap V3b). Task prompts and reviews enforce this rule.
