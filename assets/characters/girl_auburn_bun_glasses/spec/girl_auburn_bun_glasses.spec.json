@@ -1219,7 +1219,7 @@
      "width_m": 0.004
     },
     "material": {
-     "preset": "fleece",
+     "preset": "boot fleece",
      "base_color_srgb": [
       104,
       58,
@@ -1234,7 +1234,7 @@
     },
     "materials": {
      "band": {
-      "preset": "fleece",
+      "preset": "boot fleece",
       "base_color_srgb": [
        112,
        64,

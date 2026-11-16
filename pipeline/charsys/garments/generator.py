@@ -3,6 +3,7 @@
 Coordinates and dimensions come only from the generic body parameters and the
 garment spec. The character faces -Y, +Z is up, and +X is its left.
 """
+import json
 import math
 import re
 
@@ -33,8 +34,14 @@ ARMHOLE_SIDE_SHARE = 0.58
 ARMHOLE_ROOT_CLEARANCE = 1.25
 MATERIAL_PRESETS = {
     "felt", "wool yarn", "fleece", "cotton knit", "woven cotton", "denim", "felt hair",
-    "buttons/plastic", "glasses/acrylic", "skin-felt",
+    "buttons/plastic", "glasses/acrylic", "skin-felt", "boot fleece",
 }
+# T-028: every garment piece whose material preset enables surface fibres gets the shared fibre group
+# (materials.builder.add_fibres_geometry, "PS Shared Surface Fibres/1") at clothing.fibres_lod (default "close";
+# "off" builds none). The fibre object is a child of its piece, so it follows the rig and the post-skinning collision,
+# and is hidden with it when the item is not worn. Fibres are Curves objects: never in the returned garment list.
+FIBRE_LODS = ("close", "wide", "off")
+FIBRES_PROP = "ps_fibres_source"
 DEFAULT_COLOURS = {
     "cotton knit": (196, 189, 181), "woven cotton": (202, 194, 184), "denim": (74, 91, 112),
     "felt": (118, 101, 90), "fleece": (151, 132, 116), "buttons/plastic": (118, 88, 64),
@@ -94,6 +101,8 @@ def validate(clothing):
         raise ValueError("clothing.collision.passes must be an integer in [1, 4]")
     if "hide_body_faces" in clothing and not isinstance(clothing["hide_body_faces"], bool):
         raise ValueError("clothing.hide_body_faces must be a boolean")
+    if clothing.get("fibres_lod", "close") not in FIBRE_LODS:
+        raise ValueError(f"clothing.fibres_lod must be one of {list(FIBRE_LODS)}")
     for key in ("thickness_m", "ease_m", "offset_m", "seam_radius_m", "collision_clearance_m",
                 "articulation_allowance_m", "front_articulation_rise_m", "front_centre_ease_m"):
         if key in defaults:
@@ -258,9 +267,13 @@ def _merge(defaults, item):
 def _material(G, name, assignment, reference_size):
     try:
         from materials import builder as material_builder
-        return material_builder.build_material(name, assignment["preset"], assignment["base_color_srgb"],
-                                               assignment.get("reference_size_m", reference_size),
-                                               assignment.get("overrides"))
+        mat = material_builder.build_material(name, assignment["preset"], assignment["base_color_srgb"],
+                                              assignment.get("reference_size_m", reference_size),
+                                              assignment.get("overrides"))
+        mat["ps_material_assignment"] = json.dumps(
+            {**assignment, "reference_size_m": float(assignment.get("reference_size_m", reference_size))},
+            sort_keys=True)
+        return mat
     except ImportError:
         mat = G.material(name, tuple(assignment["base_color_srgb"]), roughness=0.74,
                          sheen=0.12 if assignment["preset"] in ("cotton knit", "woven cotton", "denim") else 0.04)
@@ -1464,6 +1477,8 @@ def set_active_items(body, garments, items, collision=None):
     for ob in garments:
         worn = ob.get("ps_garment_item") in items
         ob.hide_render = not worn
+        for fibres in fibre_children(ob):
+            fibres.hide_render = not worn
         cgroup = ob.vertex_groups.get(COLLISION_GROUP)
         if cgroup is None or ob.modifiers.get(COLLISION_MODIFIER) is None:
             continue
@@ -1506,6 +1521,34 @@ def visible_face_flags(body):
         if any(g.group == gi and g.weight > 0 for g in v.groups):
             hidden.add(v.index)
     return [not any(i in hidden for i in p.vertices) for p in body.data.polygons]
+
+
+def add_fibres(ob, lod="close"):
+    """Attach the shared surface-fibre group to one garment piece through its material preset. Returns the fibre
+    object or None (preset without fibres, LOD off, or the isolated-test material fallback)."""
+    if lod == "off" or ob.type != "MESH" or not ob.data.materials or ob.data.materials[0] is None:
+        return None
+    raw = ob.data.materials[0].get("ps_material_assignment")
+    if not raw:
+        return None
+    try:
+        from materials import builder as material_builder
+    except ImportError:
+        return None
+    fibres = material_builder.add_fibres_from_assignment(ob, json.loads(raw), lod)
+    if fibres is None:
+        return None
+    fibres.parent = ob
+    fibres.matrix_parent_inverse.identity()
+    fibres.matrix_basis.identity()
+    fibres.hide_render = ob.hide_render
+    fibres["ps_garment_item"] = ob.get("ps_garment_item", "")
+    fibres["ps_garment_part"] = ob.get("ps_garment_part", "")
+    return fibres
+
+
+def fibre_children(ob):
+    return [child for child in ob.children if child.get(FIBRES_PROP) == ob.name]
 
 
 def build(C, body, clothing, P, H, J, G):
@@ -1551,6 +1594,7 @@ def build(C, body, clothing, P, H, J, G):
                               (lambda point, ease=ease: ease * fit.at(point)))
         objects += made
         coverage |= cov
+        fibre_objects = [f for f in (add_fibres(ob, clothing.get("fibres_lod", "close")) for ob in made) if f]
         mask = bool(cfg.get("mask_body", hide_default)) and bool(cov)
         if mask:
             _store_cover(body, cfg["name"], cov)
@@ -1564,7 +1608,9 @@ def build(C, body, clothing, P, H, J, G):
             item_report_extra["gusset"] = cfg["_gusset_report"]
         item_report.append({**item_report_extra, "name": cfg["name"], "type": cfg["type"], "objects": [o.name for o in objects[before:]],
                             "covered_body_faces": len(cov), "mask_body": mask,
-                            "material_presets": sorted({o.get("ps_material_preset", "") for o in objects[before:]})})
+                            "material_presets": sorted({o.get("ps_material_preset", "") for o in objects[before:]}),
+                            "fibres": [{"object": f.name, "source": f[FIBRES_PROP], "preset": f["ps_material_preset"],
+                                        "lod": f["ps_fibres_lod"]} for f in fibre_objects]})
     body["ps_garment_mask_items"] = masked
     body["ps_garment_mask_margin_m"] = float(clothing.get("mask_margin_m", 0.015)) * fit.body
     collision = {"enabled": True, "offset_m": 0.002, "radius_m": 0.08, "falloff_m": 0.02, "passes": 3}
@@ -1573,6 +1619,7 @@ def build(C, body, clothing, P, H, J, G):
         collision[key] = float(collision[key]) * fit.body
     body["ps_garment_collision"] = collision
     return objects, {"generator": GENERATOR, "items": item_report, "objects": len(objects),
+                     "fibres_lod": clothing.get("fibres_lod", "close"),
                      "covered_body_faces": len(coverage), "masked_items": masked,
                      "mask_margin_m": body["ps_garment_mask_margin_m"],
                      "hide_body_faces": hide_default, "collision": collision, "body_fit": fit.report()}
