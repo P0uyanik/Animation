@@ -52,7 +52,7 @@ def main():
     check("girl skin preset", assignments["skin"]["preset"] == "skin-felt")
     check("girl glasses presets", assignments["glasses"]["preset"] == "buttons/plastic" and
           assignments["glasses_lens"]["preset"] == "glasses/acrylic")
-    check("girl hair preset (T-016)", assignments["hair"]["preset"] == "wool yarn")
+    check("girl hair preset (T-033: felted hair, was wool yarn in T-016)", assignments["hair"]["preset"] == "felt hair")
 
     boy_path = os.path.join(ROOT, "assets", "characters", "boy_yellow_hoodie", "spec",
                             "boy_yellow_hoodie.spec.json")

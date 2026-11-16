@@ -12,7 +12,9 @@ felt_volume  sculpted, smooth felted masses with soft (rounded) edges, combing g
           surface: the shell's outer surface; mid at half way), inset (how far the inner surface sits under the skin),
           part {"az", "width_deg", "depth" (fraction of height), "length" (fraction of the way)}, resolution [nu, nv].
   fringe  a felted fringe sheet from a part line over the forehead (same placement keys as the yarn fringe):
-          root_az [...], root_el, tip_x [...], tip_z [...], tip_gap, bulge, thick [root, tip], resolution [nu, nv].
+          root_az [...], root_el, tip_x [...], tip_z [...], tip_gap, bulge, thick [root, tip], resolution [nu, nv],
+          tip_scallop (fraction of the length the sheet is shorter between strand crests: rounded strand tips),
+          clearance (the sheet is pushed out to lie at least this far plus half its thickness above the head).
           Strand grooves run from the roots to the tips; the tip edge is rounded and scalloped by the grooves.
   mass    an ellipsoidal mass (bun, temple volume, puff): at a bun frame ({"bun": i}, centred half way up the bun)
           or on the scalp (az, el, lift), radii [outward, sideways, along the axis], axis "bun" | "normal" | "up" |
@@ -278,6 +280,8 @@ def fringe(st, ctx, R):
     el = st["root_el"]
     el = sum(el) / 2 if isinstance(el, (list, tuple)) else float(el)
     S = Surface(st, R)
+    scal = float(st.get("tip_scallop", 0.0))  # tips end in rounded strand lobes: the sheet is shorter between strands
+    clear = float(st.get("clearance", 0.003))
     base, hints = [], []
     for i in range(nu):
         u = i / (nu - 1)
@@ -286,7 +290,22 @@ def fringe(st, ctx, R):
         xt, zt = smooth_list(st["tip_x"], u), smooth_list(st["tip_z"], u)
         tip = Vector((xt, face_y(head, xt, zt) - float(st.get("tip_gap", 0.012)), zt))
         mid = (root + tip) / 2 + nr * float(st.get("bulge", 0.02))
-        base.append(G.HAIR_G().bezier(root, mid, tip, nv))
+        dense = G.HAIR_G().bezier(root, mid, tip, nv * 4)
+        crest = abs(math.sin(math.pi * S.n * u)) ** 0.6 if S.n > 0 else 1.0
+        vmax = 1.0 - scal * (1.0 - crest)
+        line = G.resample(dense, 0.001)
+        L = len(line) - 1
+        row = []
+        for j in range(nv):
+            p = line[min(L, int(round(L * vmax * j / (nv - 1))))].copy()
+            # conform: the sheet never passes inside the head (it lies on the scalp/forehead, clearance + half thick)
+            d = p - sc.centre
+            s_, n_ = sc.at_dir(d, -sc.offset)
+            need = (s_ - sc.centre).length + clear + 0.5 * (th[0] + (th[1] - th[0]) * j / (nv - 1))
+            if d.length < need and d.dot(n_) > 0:
+                p = sc.centre + d.normalized() * need
+            row.append(p)
+        base.append(row)
         hints.append(nr)
     c = sc.centre
     nrm = grid_normals(base, lambda i, j: (base[i][j] - c).normalized())
