@@ -17,6 +17,8 @@
 | T-010 | V1 test video, 2.5 s two-shot (Claude Implementer) | **result accepted** 2026-11-15 | t-010-claude-test-video (5020d2a), merged | 60 frames, smooth PASS, gaze in limits; girl eyes PASS, boy eyes FAIL (lid rig of frozen 1.0.0) → T-014; gap list → V2–V6 |
 | T-012 | Measurable visual target spec (Codex; agy quota-out) | **result accepted** 2026-11-15 | t-012-codex-visual-target (6f84e3c), merged | 33 ESTIMATE values; 17 benchmark frames |
 | T-013 | plush.asset/1 prop library + scene props (Codex, 1 fix round) | **result accepted** 2026-11-15 | t-013-codex-asset-library (b8c76df), merged | ctest 4/4, plush_tests 20,652 assertions |
+| T-014 | Boy eyelids: shared lids-follow-gaze, boy 1.1.0 unpublished candidate (Codex + Supervisor cloud shot) | **result accepted** 2026-11-16 | t-014-codex-boy-lids (e2d708e), merged | 1.0.0 unchanged; girl render 0 px diff; verify_charsys, export 8/8, face tests PASS; eyes open in T-010 shot except fringe occlusion at max pitch |
+| T-017 | Prop attachment evaluation + bake (Codex) | **result accepted** 2026-11-16 | t-017-codex-prop-eval (10aacbf), merged | ctest 4/4, plush_tests 20,754 assertions |
 | Boy F09 / H28 | Face and hair candidates for the boy | awaiting owner review | — | unpublished experiments |
 
 Tasks from now on are numbered T-001, T-002, …, and pass through the states in `WORKFLOW.md`.
