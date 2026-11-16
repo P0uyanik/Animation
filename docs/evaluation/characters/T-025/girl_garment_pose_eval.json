@@ -1,0 +1,756 @@
+{
+ "blender": "5.3.0",
+ "master": "girl_auburn_bun_glasses_master.blend",
+ "worn": [
+  "blouse",
+  "boots",
+  "shorts",
+  "vest"
+ ],
+ "garment_objects": 36,
+ "mask": {
+  "worn": [
+   "blouse",
+   "boots",
+   "shorts",
+   "vest"
+  ],
+  "masked_items": [
+   "blouse",
+   "boots",
+   "shorts",
+   "vest"
+  ],
+  "hidden_body_vertices": 23194,
+  "hidden_body_faces": 23821,
+  "visible_body_faces": 36865,
+  "collision_weighted_vertices": 83520
+ },
+ "rest": {
+  "min_clearance_m": 0.00755,
+  "closest_object": "garment.blouse.main",
+  "garment_point_m": [
+   0.030895,
+   -0.053748,
+   0.611217
+  ],
+  "body_point_m": [
+   0.029044,
+   -0.047403,
+   0.606995
+  ],
+  "vertices_over_visible_body": 17718,
+  "vertices_inside_visible_body": 0,
+  "vertices_total": 92282,
+  "floor_m": 0.0005,
+  "hidden_region_min_m": 0.007813,
+  "skin_contact_vertices": 0,
+  "skin_contact_min_m": null,
+  "skin_contact_tolerance_m": 0.0045,
+  "sign_corrected_by_vote": 0,
+  "skin_contact_over_folded_source_skin": 0,
+  "pass": true
+ },
+ "poses": {
+  "idle_relaxed:45": {
+   "source": {
+    "clip": "idle_relaxed",
+    "frame": 45,
+    "frame_count": 90
+   },
+   "min_clearance_m": 0.001243,
+   "closest_object": "garment.blouse.main",
+   "garment_point_m": [
+    0.083725,
+    0.039304,
+    0.496139
+   ],
+   "body_point_m": [
+    0.082524,
+    0.039179,
+    0.495663
+   ],
+   "vertices_over_visible_body": 18321,
+   "vertices_inside_visible_body": 0,
+   "vertices_total": 92282,
+   "floor_m": 0.0,
+   "hidden_region_min_m": 0.001217,
+   "skin_contact_vertices": 0,
+   "skin_contact_min_m": null,
+   "skin_contact_tolerance_m": 0.0045,
+   "sign_corrected_by_vote": 0,
+   "skin_contact_over_folded_source_skin": 0,
+   "pass": true
+  },
+  "wave:52": {
+   "source": {
+    "clip": "wave",
+    "frame": 52,
+    "frame_count": 105
+   },
+   "min_clearance_m": 0.001524,
+   "closest_object": "garment.blouse.main",
+   "garment_point_m": [
+    -0.103176,
+    -0.030935,
+    0.578757
+   ],
+   "body_point_m": [
+    -0.103618,
+    -0.029445,
+    0.578327
+   ],
+   "vertices_over_visible_body": 15927,
+   "vertices_inside_visible_body": 0,
+   "vertices_total": 92282,
+   "floor_m": 0.0,
+   "hidden_region_min_m": -5e-05,
+   "skin_contact_vertices": 0,
+   "skin_contact_min_m": null,
+   "skin_contact_tolerance_m": 0.0045,
+   "sign_corrected_by_vote": 10,
+   "skin_contact_over_folded_source_skin": 0,
+   "pass": true
+  },
+  "point:46": {
+   "source": {
+    "clip": "point",
+    "frame": 46,
+    "frame_count": 93
+   },
+   "min_clearance_m": 0.001912,
+   "closest_object": "garment.blouse.main",
+   "garment_point_m": [
+    -0.088762,
+    -0.039993,
+    0.546384
+   ],
+   "body_point_m": [
+    -0.088968,
+    -0.038073,
+    0.546424
+   ],
+   "vertices_over_visible_body": 15538,
+   "vertices_inside_visible_body": 0,
+   "vertices_total": 92282,
+   "floor_m": 0.0,
+   "hidden_region_min_m": 0.001584,
+   "skin_contact_vertices": 0,
+   "skin_contact_min_m": null,
+   "skin_contact_tolerance_m": 0.0045,
+   "sign_corrected_by_vote": 0,
+   "skin_contact_over_folded_source_skin": 0,
+   "pass": true
+  },
+  "gest_shrug:26": {
+   "source": {
+    "clip": "gest_shrug",
+    "frame": 26,
+    "frame_count": 52
+   },
+   "min_clearance_m": 0.00152,
+   "closest_object": "garment.blouse.main",
+   "garment_point_m": [
+    -0.085898,
+    0.01364,
+    0.534873
+   ],
+   "body_point_m": [
+    -0.08448,
+    0.013688,
+    0.534292
+   ],
+   "vertices_over_visible_body": 17072,
+   "vertices_inside_visible_body": 0,
+   "vertices_total": 92282,
+   "floor_m": 0.0,
+   "hidden_region_min_m": 0.001642,
+   "skin_contact_vertices": 0,
+   "skin_contact_min_m": null,
+   "skin_contact_tolerance_m": 0.0045,
+   "sign_corrected_by_vote": 0,
+   "skin_contact_over_folded_source_skin": 0,
+   "pass": true
+  },
+  "sit_down:50": {
+   "source": {
+    "clip": "sit_down",
+    "frame": 50,
+    "frame_count": 57
+   },
+   "min_clearance_m": 0.000544,
+   "closest_object": "garment.shorts.gusset",
+   "garment_point_m": [
+    0.01056,
+    0.070789,
+    0.169979
+   ],
+   "body_point_m": [
+    0.011066,
+    0.070821,
+    0.170177
+   ],
+   "vertices_over_visible_body": 19387,
+   "vertices_inside_visible_body": 0,
+   "vertices_total": 92282,
+   "floor_m": 0.0,
+   "hidden_region_min_m": -0.005978,
+   "skin_contact_vertices": 21,
+   "skin_contact_min_m": -0.00369,
+   "skin_contact_tolerance_m": 0.0045,
+   "sign_corrected_by_vote": 55,
+   "skin_contact_over_folded_source_skin": 0,
+   "pass": true
+  },
+  "emo_happy:30": {
+   "source": {
+    "clip": "emo_happy",
+    "frame": 30,
+    "frame_count": 2
+   },
+   "min_clearance_m": 0.001554,
+   "closest_object": "garment.blouse.main",
+   "garment_point_m": [
+    -0.093741,
+    -0.005333,
+    0.493633
+   ],
+   "body_point_m": [
+    -0.092158,
+    -0.005266,
+    0.493663
+   ],
+   "vertices_over_visible_body": 17431,
+   "vertices_inside_visible_body": 0,
+   "vertices_total": 92282,
+   "floor_m": 0.0,
+   "hidden_region_min_m": 0.001918,
+   "skin_contact_vertices": 0,
+   "skin_contact_min_m": null,
+   "skin_contact_tolerance_m": 0.0045,
+   "sign_corrected_by_vote": 0,
+   "skin_contact_over_folded_source_skin": 0,
+   "pass": true
+  },
+  "dense_test:34": {
+   "source": {
+    "clip": "dense_test",
+    "frame": 34,
+    "frame_count": 120
+   },
+   "min_clearance_m": 0.001549,
+   "closest_object": "garment.blouse.main",
+   "garment_point_m": [
+    -0.094151,
+    -0.004315,
+    0.469432
+   ],
+   "body_point_m": [
+    -0.092584,
+    -0.00428,
+    0.469516
+   ],
+   "vertices_over_visible_body": 17716,
+   "vertices_inside_visible_body": 0,
+   "vertices_total": 92282,
+   "floor_m": 0.0,
+   "hidden_region_min_m": 0.001956,
+   "skin_contact_vertices": 0,
+   "skin_contact_min_m": null,
+   "skin_contact_tolerance_m": 0.0045,
+   "sign_corrected_by_vote": 0,
+   "skin_contact_over_folded_source_skin": 0,
+   "pass": true
+  },
+  "emo_afraid:10": {
+   "source": {
+    "clip": "emo_afraid",
+    "frame": 10,
+    "frame_count": 12
+   },
+   "min_clearance_m": 0.001461,
+   "closest_object": "garment.blouse.main",
+   "garment_point_m": [
+    0.080393,
+    -0.055949,
+    0.494227
+   ],
+   "body_point_m": [
+    0.078952,
+    -0.055542,
+    0.494074
+   ],
+   "vertices_over_visible_body": 19049,
+   "vertices_inside_visible_body": 0,
+   "vertices_total": 92282,
+   "floor_m": 0.0,
+   "hidden_region_min_m": 0.001152,
+   "skin_contact_vertices": 0,
+   "skin_contact_min_m": null,
+   "skin_contact_tolerance_m": 0.0045,
+   "sign_corrected_by_vote": 0,
+   "skin_contact_over_folded_source_skin": 0,
+   "pass": true
+  },
+  "emo_angry:1": {
+   "source": {
+    "clip": "emo_angry",
+    "frame": 1,
+    "frame_count": 2
+   },
+   "min_clearance_m": 0.00171,
+   "closest_object": "garment.blouse.main",
+   "garment_point_m": [
+    0.094466,
+    -0.005577,
+    0.492851
+   ],
+   "body_point_m": [
+    0.092747,
+    -0.0057,
+    0.492887
+   ],
+   "vertices_over_visible_body": 17684,
+   "vertices_inside_visible_body": 0,
+   "vertices_total": 92282,
+   "floor_m": 0.0,
+   "hidden_region_min_m": 1.2e-05,
+   "skin_contact_vertices": 0,
+   "skin_contact_min_m": null,
+   "skin_contact_tolerance_m": 0.0045,
+   "sign_corrected_by_vote": 0,
+   "skin_contact_over_folded_source_skin": 0,
+   "pass": true
+  },
+  "emo_confused:1": {
+   "source": {
+    "clip": "emo_confused",
+    "frame": 1,
+    "frame_count": 2
+   },
+   "min_clearance_m": 0.003689,
+   "closest_object": "garment.blouse.main",
+   "garment_point_m": [
+    -0.115337,
+    -0.027779,
+    0.543526
+   ],
+   "body_point_m": [
+    -0.11359,
+    -0.024859,
+    0.545118
+   ],
+   "vertices_over_visible_body": 15872,
+   "vertices_inside_visible_body": 0,
+   "vertices_total": 92282,
+   "floor_m": 0.0,
+   "hidden_region_min_m": 0.007119,
+   "skin_contact_vertices": 0,
+   "skin_contact_min_m": null,
+   "skin_contact_tolerance_m": 0.0045,
+   "sign_corrected_by_vote": 0,
+   "skin_contact_over_folded_source_skin": 0,
+   "pass": true
+  },
+  "emo_curious:1": {
+   "source": {
+    "clip": "emo_curious",
+    "frame": 1,
+    "frame_count": 2
+   },
+   "min_clearance_m": 0.003629,
+   "closest_object": "garment.blouse.main",
+   "garment_point_m": [
+    -0.115337,
+    -0.038349,
+    0.540239
+   ],
+   "body_point_m": [
+    -0.11364,
+    -0.035684,
+    0.542152
+   ],
+   "vertices_over_visible_body": 15710,
+   "vertices_inside_visible_body": 0,
+   "vertices_total": 92282,
+   "floor_m": 0.0,
+   "hidden_region_min_m": 0.00685,
+   "skin_contact_vertices": 0,
+   "skin_contact_min_m": null,
+   "skin_contact_tolerance_m": 0.0045,
+   "sign_corrected_by_vote": 2,
+   "skin_contact_over_folded_source_skin": 0,
+   "pass": true
+  },
+  "emo_laugh:6": {
+   "source": {
+    "clip": "emo_laugh",
+    "frame": 6,
+    "frame_count": 20
+   },
+   "min_clearance_m": 0.001461,
+   "closest_object": "garment.blouse.main",
+   "garment_point_m": [
+    0.083698,
+    -0.039705,
+    0.49828
+   ],
+   "body_point_m": [
+    0.082375,
+    -0.039145,
+    0.497979
+   ],
+   "vertices_over_visible_body": 17528,
+   "vertices_inside_visible_body": 0,
+   "vertices_total": 92282,
+   "floor_m": 0.0,
+   "hidden_region_min_m": 0.001982,
+   "skin_contact_vertices": 0,
+   "skin_contact_min_m": null,
+   "skin_contact_tolerance_m": 0.0045,
+   "sign_corrected_by_vote": 0,
+   "skin_contact_over_folded_source_skin": 0,
+   "pass": true
+  },
+  "emo_sad:1": {
+   "source": {
+    "clip": "emo_sad",
+    "frame": 1,
+    "frame_count": 2
+   },
+   "min_clearance_m": 0.000716,
+   "closest_object": "garment.blouse.main",
+   "garment_point_m": [
+    0.080629,
+    -0.0284,
+    0.518208
+   ],
+   "body_point_m": [
+    0.079929,
+    -0.028399,
+    0.518054
+   ],
+   "vertices_over_visible_body": 18941,
+   "vertices_inside_visible_body": 0,
+   "vertices_total": 92282,
+   "floor_m": 0.0,
+   "hidden_region_min_m": -0.001277,
+   "skin_contact_vertices": 38,
+   "skin_contact_min_m": -0.029971,
+   "skin_contact_tolerance_m": 0.0045,
+   "sign_corrected_by_vote": 3,
+   "skin_contact_over_folded_source_skin": 0,
+   "pass": true
+  },
+  "emo_sleepy:80": {
+   "source": {
+    "clip": "emo_sleepy",
+    "frame": 80,
+    "frame_count": 120
+   },
+   "min_clearance_m": 0.003629,
+   "closest_object": "garment.blouse.main",
+   "garment_point_m": [
+    -0.115337,
+    -0.044223,
+    0.538798
+   ],
+   "body_point_m": [
+    -0.11364,
+    -0.041627,
+    0.540803
+   ],
+   "vertices_over_visible_body": 15786,
+   "vertices_inside_visible_body": 0,
+   "vertices_total": 92282,
+   "floor_m": 0.0,
+   "hidden_region_min_m": 0.007018,
+   "skin_contact_vertices": 0,
+   "skin_contact_min_m": null,
+   "skin_contact_tolerance_m": 0.0045,
+   "sign_corrected_by_vote": 0,
+   "skin_contact_over_folded_source_skin": 0,
+   "pass": true
+  },
+  "emo_sob:6": {
+   "source": {
+    "clip": "emo_sob",
+    "frame": 6,
+    "frame_count": 36
+   },
+   "min_clearance_m": 0.000559,
+   "closest_object": "garment.blouse.main",
+   "garment_point_m": [
+    -0.083412,
+    -0.029288,
+    0.506216
+   ],
+   "body_point_m": [
+    -0.082869,
+    -0.02918,
+    0.506135
+   ],
+   "vertices_over_visible_body": 18854,
+   "vertices_inside_visible_body": 0,
+   "vertices_total": 92282,
+   "floor_m": 0.0,
+   "hidden_region_min_m": -0.006572,
+   "skin_contact_vertices": 37,
+   "skin_contact_min_m": -0.007249,
+   "skin_contact_tolerance_m": 0.0045,
+   "sign_corrected_by_vote": 0,
+   "skin_contact_over_folded_source_skin": 0,
+   "pass": true
+  },
+  "emo_surprised:1": {
+   "source": {
+    "clip": "emo_surprised",
+    "frame": 1,
+    "frame_count": 2
+   },
+   "min_clearance_m": 0.002437,
+   "closest_object": "garment.blouse.main",
+   "garment_point_m": [
+    0.091637,
+    -0.020049,
+    0.494936
+   ],
+   "body_point_m": [
+    0.089386,
+    -0.019116,
+    0.494983
+   ],
+   "vertices_over_visible_body": 17649,
+   "vertices_inside_visible_body": 0,
+   "vertices_total": 92282,
+   "floor_m": 0.0,
+   "hidden_region_min_m": 0.004558,
+   "skin_contact_vertices": 0,
+   "skin_contact_min_m": null,
+   "skin_contact_tolerance_m": 0.0045,
+   "sign_corrected_by_vote": 0,
+   "skin_contact_over_folded_source_skin": 0,
+   "pass": true
+  },
+  "gest_shrug:32": {
+   "source": {
+    "clip": "gest_shrug",
+    "frame": 32,
+    "frame_count": 52
+   },
+   "min_clearance_m": 0.00152,
+   "closest_object": "garment.blouse.main",
+   "garment_point_m": [
+    -0.085898,
+    0.01364,
+    0.534873
+   ],
+   "body_point_m": [
+    -0.08448,
+    0.013688,
+    0.534292
+   ],
+   "vertices_over_visible_body": 17072,
+   "vertices_inside_visible_body": 0,
+   "vertices_total": 92282,
+   "floor_m": 0.0,
+   "hidden_region_min_m": 0.001642,
+   "skin_contact_vertices": 0,
+   "skin_contact_min_m": null,
+   "skin_contact_tolerance_m": 0.0045,
+   "sign_corrected_by_vote": 0,
+   "skin_contact_over_folded_source_skin": 0,
+   "pass": true
+  },
+  "gest_yawn:34": {
+   "source": {
+    "clip": "gest_yawn",
+    "frame": 34,
+    "frame_count": 84
+   },
+   "min_clearance_m": 0.00175,
+   "closest_object": "garment.blouse.main",
+   "garment_point_m": [
+    0.130578,
+    -0.007557,
+    0.569083
+   ],
+   "body_point_m": [
+    0.129415,
+    -0.005968,
+    0.569014
+   ],
+   "vertices_over_visible_body": 15477,
+   "vertices_inside_visible_body": 0,
+   "vertices_total": 92282,
+   "floor_m": 0.0,
+   "hidden_region_min_m": 0.001963,
+   "skin_contact_vertices": 0,
+   "skin_contact_min_m": null,
+   "skin_contact_tolerance_m": 0.0045,
+   "sign_corrected_by_vote": 0,
+   "skin_contact_over_folded_source_skin": 0,
+   "pass": true
+  },
+  "idle_relaxed:56": {
+   "source": {
+    "clip": "idle_relaxed",
+    "frame": 56,
+    "frame_count": 90
+   },
+   "min_clearance_m": 0.001198,
+   "closest_object": "garment.blouse.main",
+   "garment_point_m": [
+    0.090111,
+    0.000223,
+    0.510372
+   ],
+   "body_point_m": [
+    0.088926,
+    0.000145,
+    0.510212
+   ],
+   "vertices_over_visible_body": 18332,
+   "vertices_inside_visible_body": 0,
+   "vertices_total": 92282,
+   "floor_m": 0.0,
+   "hidden_region_min_m": 0.001091,
+   "skin_contact_vertices": 0,
+   "skin_contact_min_m": null,
+   "skin_contact_tolerance_m": 0.0045,
+   "sign_corrected_by_vote": 0,
+   "skin_contact_over_folded_source_skin": 0,
+   "pass": true
+  },
+  "point:60": {
+   "source": {
+    "clip": "point",
+    "frame": 60,
+    "frame_count": 93
+   },
+   "min_clearance_m": 0.001912,
+   "closest_object": "garment.blouse.main",
+   "garment_point_m": [
+    -0.088762,
+    -0.039993,
+    0.546384
+   ],
+   "body_point_m": [
+    -0.088968,
+    -0.038073,
+    0.546424
+   ],
+   "vertices_over_visible_body": 15538,
+   "vertices_inside_visible_body": 0,
+   "vertices_total": 92282,
+   "floor_m": 0.0,
+   "hidden_region_min_m": 0.001584,
+   "skin_contact_vertices": 0,
+   "skin_contact_min_m": null,
+   "skin_contact_tolerance_m": 0.0045,
+   "sign_corrected_by_vote": 0,
+   "skin_contact_over_folded_source_skin": 0,
+   "pass": true
+  },
+  "sit_down:40": {
+   "source": {
+    "clip": "sit_down",
+    "frame": 40,
+    "frame_count": 57
+   },
+   "min_clearance_m": 0.000544,
+   "closest_object": "garment.shorts.gusset",
+   "garment_point_m": [
+    0.01056,
+    0.070789,
+    0.169979
+   ],
+   "body_point_m": [
+    0.011066,
+    0.070821,
+    0.170177
+   ],
+   "vertices_over_visible_body": 19550,
+   "vertices_inside_visible_body": 0,
+   "vertices_total": 92282,
+   "floor_m": 0.0,
+   "hidden_region_min_m": -0.005978,
+   "skin_contact_vertices": 21,
+   "skin_contact_min_m": -0.00369,
+   "skin_contact_tolerance_m": 0.0045,
+   "sign_corrected_by_vote": 34,
+   "skin_contact_over_folded_source_skin": 0,
+   "pass": true
+  },
+  "stand_up:56": {
+   "source": {
+    "clip": "stand_up",
+    "frame": 56,
+    "frame_count": 57
+   },
+   "min_clearance_m": 0.003689,
+   "closest_object": "garment.blouse.main",
+   "garment_point_m": [
+    -0.115337,
+    -0.027779,
+    0.543526
+   ],
+   "body_point_m": [
+    -0.11359,
+    -0.024859,
+    0.545118
+   ],
+   "vertices_over_visible_body": 15872,
+   "vertices_inside_visible_body": 0,
+   "vertices_total": 92282,
+   "floor_m": 0.0,
+   "hidden_region_min_m": 0.007119,
+   "skin_contact_vertices": 0,
+   "skin_contact_min_m": null,
+   "skin_contact_tolerance_m": 0.0045,
+   "sign_corrected_by_vote": 0,
+   "skin_contact_over_folded_source_skin": 0,
+   "pass": true
+  },
+  "wave:66": {
+   "source": {
+    "clip": "wave",
+    "frame": 66,
+    "frame_count": 105
+   },
+   "min_clearance_m": 0.001524,
+   "closest_object": "garment.blouse.main",
+   "garment_point_m": [
+    -0.103176,
+    -0.030935,
+    0.578757
+   ],
+   "body_point_m": [
+    -0.103618,
+    -0.029445,
+    0.578327
+   ],
+   "vertices_over_visible_body": 15981,
+   "vertices_inside_visible_body": 0,
+   "vertices_total": 92282,
+   "floor_m": 0.0,
+   "hidden_region_min_m": 8e-06,
+   "skin_contact_vertices": 0,
+   "skin_contact_min_m": null,
+   "skin_contact_tolerance_m": 0.0045,
+   "sign_corrected_by_vote": 5,
+   "skin_contact_over_folded_source_skin": 0,
+   "pass": true
+  }
+ },
+ "worst_pose": {
+  "pose": "sit_down:50",
+  "min_clearance_m": 0.000544,
+  "closest_object": "garment.shorts.gusset",
+  "vertices_inside_visible_body": 0
+ },
+ "min_rms_motion_m": 0.02596,
+ "pass": true,
+ "measure_s": 73.3,
+ "total_s": 73.3
+}
