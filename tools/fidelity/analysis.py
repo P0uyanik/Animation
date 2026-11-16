@@ -193,7 +193,9 @@ def proportions(side):
         ys = np.nonzero(hair.any(axis=1))[0]
         out["hair_length"] = (ys.max() + 1 - top) / H
         if "eye_line" in out:
-            out["hair_width_at_eyes"] = M.width_at(hair, top + out["eye_line"] * H) / H
+            ye = top + out["eye_line"] * H  # mean over a band of +-1.5% of the height around the eye line
+            rows = range(int(round(ye - 0.015 * H)), int(round(ye + 0.015 * H)) + 1)
+            out["hair_width_at_eyes"] = sum(M.width_at(hair, y) for y in rows) / len(rows) / H
     eyes = side["regions"].get("eyes")
     if head and eyes is not None and eyes.any():
         out["eye_area_to_head"] = float(eyes.sum()) / head ** 2

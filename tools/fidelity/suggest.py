@@ -74,13 +74,19 @@ def suggest(overall, spec_path, overrides=()):
                 out.append({"path": path, "current": v, "suggested": round(v * ratio, 5),
                             "reason": f"{key} render/reference {1 + p['relative_median']:.2f} (median over views)",
                             "kind": "proportion"})
+    by_path = {}
     for region, c in sorted(overall["colour"].items()):
         if c["de00_median"] is None or c["de00_median"] < 3:
             continue
         delta = np.array(c["reference_lab_median"]) - np.array(c["render_lab_median"])
         for path, cur in colour_paths(spec, region):
-            new = M.lab_to_srgb(M.srgb_to_lab(np.array(cur, float)) + delta).tolist()
-            out.append({"path": path, "current": cur, "suggested": new,
-                        "reason": f"{region} dE00 {c['de00_median']:.1f}; Lab shift {np.round(delta, 1).tolist()} "
-                                  "(first-order; re-measure after changing)", "kind": "colour"})
+            by_path.setdefault(path, (cur, []))[1].append((region, c, delta))
+    for path, (cur, lst) in by_path.items():  # several regions on one material (skin face + limbs): mean shift
+        delta = np.mean([d for _, _, d in lst], axis=0)
+        new = M.lab_to_srgb(M.srgb_to_lab(np.array(cur, float)) + delta).tolist()
+        why = "; ".join(f"{r} dE00 {c['de00_median']:.1f} (luma-matched {c['de00_luma_matched_median']:.1f})"
+                        for r, c, _ in lst)
+        out.append({"path": path, "current": cur, "suggested": new, "kind": "colour",
+                    "reason": f"{why}; mean Lab shift {np.round(delta, 1).tolist()} (first-order; a large lightness "
+                              "share points at lighting/exposure as much as at the base colour; re-measure)"})
     return out

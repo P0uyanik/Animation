@@ -3,6 +3,7 @@
     python3 tools/fidelity/run.py --character <id> --build <master.blend | spec.json> --blender <exe>
         [--override <override.json> ...] [--out <dir>] [--views id,...] [--height 640] [--samples 32]
         [--renders <dir>]   (reuse renders from an earlier run: analysis only, no Blender)
+        [--reference-index <json>]   (experiments only: e.g. trial camera angles)
 
 Character data (assets/characters/<id>/references/annotations/): fidelity_index.json (views, build variant, region
 rules) and one <view>.json per reference view (hand-annotated landmarks and region polygons).
@@ -36,6 +37,16 @@ RENDER_SIDE = os.path.join(HERE, "blender_render_side.py")
 
 def rel(p):
     return os.path.relpath(os.path.abspath(p), ROOT)
+
+
+def portable(p, out):
+    """Repository-relative path, or <out>/... for files written by this run (never a machine-specific path)."""
+    p = os.path.abspath(p)
+    if p.startswith(out + os.sep):
+        return "<out>/" + os.path.relpath(p, out)
+    if p.startswith(ROOT + os.sep):
+        return os.path.relpath(p, ROOT)
+    return os.path.basename(p)
 
 
 def blender(exe, script, args, log):
@@ -105,7 +116,7 @@ def report_md(cid, doc, out):
     L = [f"# Fidelity report: {cid}", "",
          "**The score and the numbers support, but never replace, visual judgement.** Review the side-by-side sheets "
          "(`sheets/`) before acting on any number.", "",
-         f"- Build: `{doc['build'].get('spec') or doc['build'].get('master')}`"
+         f"- Build: `{doc['build'].get('spec') or doc['build'].get('master')}` -> `{doc['build'].get('rendered_blend')}`"
          + (f" + {', '.join('`' + x + '`' for x in doc['build'].get('overrides', []))}" if doc['build'].get('overrides') else "")
          + f" (variant: {doc['build']['variant']})",
          f"- Views: {', '.join(doc['views'])}",
@@ -151,11 +162,13 @@ def main():
     ap.add_argument("--height", type=int, default=640)
     ap.add_argument("--samples", type=int, default=32)
     ap.add_argument("--renders", default="", help="reuse an earlier run's renders/ folder (analysis only)")
+    ap.add_argument("--reference-index", default="", help="experiments only: another reference_index.json (e.g. a "
+                    "trial camera yaw); default: the one named in fidelity_index.json")
     a = ap.parse_args()
     cid = a.character
     adir = os.path.join(ROOT, "assets", "characters", cid, "references", "annotations")
     fidx = json.load(open(os.path.join(adir, "fidelity_index.json")))
-    a.index = os.path.join(ROOT, fidx["reference_index"])
+    a.index = os.path.abspath(a.reference_index) if a.reference_index else os.path.join(ROOT, fidx["reference_index"])
     ref_index = json.load(open(a.index))
     views = [v for v in (a.views.split(",") if a.views else fidx["views"]) if v]
     out = os.path.abspath(a.out or os.path.join("fidelity_out", cid))
@@ -193,10 +206,11 @@ def main():
     except StopIteration:
         pass
     doc = {"schema": "plush-studio.fidelity/1", "character": cid, "views": views,
-           "build": {k: (rel(v) if isinstance(v, str) and os.path.isabs(v) else v) for k, v in prov.items()},
+           "build": {k: (portable(v, out) if isinstance(v, str) and os.path.isabs(v) else v) for k, v in prov.items()},
            "render": {"tool": "pipeline/charsys/tools/groom_turnaround.py", "lighting": calib, "height": a.height,
                       "samples": a.samples, "region_objects": regions_json["objects"]},
            "annotations": {v: rel(os.path.join(adir, v + ".json")) for v in views},
+           "reference_index": rel(a.index),
            "reference_head_fraction": head_fraction,
            "note": "Scores support, but never replace, visual judgement: the side-by-side sheets are the review material.",
            "overall": overall, "per_view": per_view, "suggestions": suggestions}

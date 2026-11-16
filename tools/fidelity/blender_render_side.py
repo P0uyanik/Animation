@@ -250,7 +250,7 @@ def landmarks_3d(objs, regions, rig, deps, sc, proj, view_dir):
         mid_x = (empties["eye_L"].x + empties["eye_R"].x) / 2
     for k in ("eye_L", "eye_R", "nose", "mouth", "chin"):
         if k in empties:
-            lm[k] = (empties[k], True)
+            lm[k] = (empties[k], "empty")
     # eyes: iris (front-most point of the eyeball) and corners (extremes of the visible eyeball)
     for s in ("L", "R"):
         eo = by.get("eye." + s)
@@ -412,7 +412,12 @@ def main():
         lm3 = landmarks_3d(objs, regions, rig, deps, sc, proj, d)
         out = {}
         for k, (p, surface) in sorted(lm3.items()):
-            vis = proj.visible(p) if surface else True
+            # landmark empties are the builder's own face landmarks (the chin one lies on the underside of the jaw, so
+            # a ray grazes the jaw first): visible whenever the camera is in front of the face, ray-tested otherwise
+            if surface == "empty":
+                vis = d.dot(Vector((0, -1, 0))) > 0.2 or proj.visible(p, 0.008)
+            else:
+                vis = proj.visible(p) if surface else True
             out[k] = {"xy": proj.px(p), "visible": bool(vis), "world": [round(c, 5) for c in p]}
         chin = lm3.get("chin")
         info = {"view": v["id"], "camera_dir": [round(c, 5) for c in d],
