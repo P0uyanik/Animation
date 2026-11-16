@@ -60,9 +60,9 @@ world placement at zero with the attached placement at one using translation, qu
 authored ramp can pick up or put down a prop without a one-frame pop. Its default is one while a parent is active.
 
 `parentSwitch` changes the active parent at the listed frame. Each `parent` has the same shape as the instance parent;
-`null` detaches. Entries are evaluated in frame order. At every switch the evaluator derives a new local offset from
-the old world transform, so the switch itself is continuous even for random-access frame evaluation. Later frames
-follow the new parent (or remain at the detach transform).
+`null` detaches. Entries are evaluated in frame order. At every switch the evaluator rebases the new attachment target
+so the blended world transform is continuous, including while `parent.weight` is between zero and one and during
+random-access frame evaluation. Later frames follow the new parent (or remain at the detach transform).
 
 ## Shot bake
 

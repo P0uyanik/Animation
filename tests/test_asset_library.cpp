@@ -354,6 +354,7 @@ TEST_CASE("prop parent switch preserves its world transform at the switch frame"
   prop.parent = PropParent{PropParent::Kind::Character, "actor_a", "hand.L"};
   prop.parentSwitch.push_back({10, PropParent{PropParent::Kind::Character, "actor_a", "hand.R"}});
   scene.props.push_back(prop);
+  scene.animation.tracks["switch_item.parent.weight"].setKey({0, vec3(0.35f), Interp::Linear});
   scene.animation.tracks["actor_a/hand.R.rot"].setKey({10, vec3(0), Interp::Linear});
   scene.animation.tracks["actor_a/hand.R.rot"].setKey({20, vec3(0, 90, 0), Interp::Linear});
 

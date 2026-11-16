@@ -134,6 +134,8 @@ class SceneEvaluator {
 
  private:
   float waterHeight(size_t waterObject, vec2 localXZ, double frame) const;
+  // A socket may name an exported bone directly or a semantic role from a compiled clip binding.
+  int characterSocketBone(size_t character, const std::string& socket) const;
   struct ObjectGeometry {
     std::shared_ptr<Mesh> local;
     int material = 0;

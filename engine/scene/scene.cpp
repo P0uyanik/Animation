@@ -587,20 +587,6 @@ Result<void> SceneEvaluator::load(const Scene& scene, const EvalOptions& opt) {
   for (size_t p = 0; p < scene_.props.size(); ++p)
     if (!propsByName.emplace(scene_.props[p].name, p).second)
       return fail(std::format("prop name '{}' is not unique", scene_.props[p].name));
-  const auto characterSocketBone = [&](size_t character, const std::string& socket) {
-    const int direct = characters_[character].asset.skeleton.find(socket);
-    if (direct >= 0) return direct;  // exported role bones carry their shared role name
-    // Clip bindings are the authoritative role-to-bone mapping when this shot has role-based clip layers.
-    if (character < clipLayers_.size())
-      for (const auto& layer : clipLayers_[character]) {
-        auto role = layer.binding.roleIndex.find(socket);
-        if (role != layer.binding.roleIndex.end()) {
-          const int bone = layer.binding.roles[size_t(role->second)].bone;
-          if (bone >= 0) return bone;
-        }
-      }
-    return -1;
-  };
   const auto validateParent = [&](const PropDesc& prop, const PropParent& parent) -> Result<void> {
     if (parent.kind == PropParent::Kind::Character) {
       auto character = charactersByName.find(parent.name);
@@ -741,6 +727,21 @@ mat4 SceneEvaluator::objectWorld(size_t i, double frame) const {
   return base(frame);
 }
 
+int SceneEvaluator::characterSocketBone(size_t character, const std::string& socket) const {
+  const int direct = characters_[character].asset.skeleton.find(socket);
+  if (direct >= 0) return direct;  // imported role bones carry their shared role name
+  // The bindings are the same role-to-bone mapping used by clip layer evaluation. Checking all layers makes the
+  // resolution independent of which layer happens to be active at the requested frame.
+  if (character < clipLayers_.size())
+    for (const auto& layer : clipLayers_[character]) {
+      const auto role = layer.binding.roleIndex.find(socket);
+      if (role == layer.binding.roleIndex.end()) continue;
+      const int bone = layer.binding.roles[size_t(role->second)].bone;
+      if (bone >= 0) return bone;
+    }
+  return -1;
+}
+
 std::vector<mat4> SceneEvaluator::propWorlds(double frame) const {
   struct PropState {
     std::optional<PropParent> parent;
@@ -760,20 +761,6 @@ std::vector<mat4> SceneEvaluator::propWorlds(double frame) const {
   std::map<std::string, size_t> charactersByName, propsByName;
   for (size_t c = 0; c < scene_.characters.size(); ++c) charactersByName[scene_.characters[c].name] = c;
   for (size_t p = 0; p < scene_.props.size(); ++p) propsByName[scene_.props[p].name] = p;
-  const auto characterSocketBone = [&](size_t character, const std::string& socket) {
-    const int direct = characters_[character].asset.skeleton.find(socket);
-    if (direct >= 0) return direct;
-    if (character < clipLayers_.size())
-      for (const auto& layer : clipLayers_[character]) {
-        auto role = layer.binding.roleIndex.find(socket);
-        if (role != layer.binding.roleIndex.end()) {
-          const int bone = layer.binding.roles[size_t(role->second)].bone;
-          if (bone >= 0) return bone;
-        }
-      }
-    return -1;
-  };
-
   std::vector<PropState> state(scene_.props.size());
   std::vector<SwitchEvent> events;
   for (size_t p = 0; p < scene_.props.size(); ++p) {
