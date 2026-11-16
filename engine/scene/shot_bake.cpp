@@ -5,6 +5,11 @@
 namespace plush {
 namespace {
 Json v3(vec3 v) { return Json::array({v.x, v.y, v.z}); }
+Json matrix(const mat4& value) {
+  Json out = Json::array();
+  for (int k = 0; k < 16; ++k) out.push_back(value[k / 4][k % 4]);
+  return out;
+}
 }  // namespace
 
 Json bakeShot(const SceneEvaluator& evaluator, int frameA, int frameB) {
@@ -83,6 +88,12 @@ Json bakeShot(const SceneEvaluator& evaluator, int frameA, int frameB) {
       cj[scene.characters[c].name] = {{"skin", mats}, {"morphs", w}};
     }
     fj["characters"] = cj;
+    if (!scene.props.empty()) {
+      Json props = Json::object();
+      const std::vector<mat4> worlds = evaluator.propWorlds(f);
+      for (size_t p = 0; p < worlds.size(); ++p) props[scene.props[p].name] = matrix(worlds[p]);
+      fj["props"] = std::move(props);
+    }
     frames.push_back(fj);
   }
   out["frame_data"] = frames;

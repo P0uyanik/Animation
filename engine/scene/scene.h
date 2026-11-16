@@ -51,11 +51,18 @@ struct PropParent {
   std::string socket;
 };
 
+struct PropParentSwitch {
+  double frame = 0;
+  // null detaches the prop at its current world transform.
+  std::optional<PropParent> parent;
+};
+
 struct PropDesc {
   std::string name;
   std::string id;
   AssetTransform transform;
   std::optional<PropParent> parent;
+  std::vector<PropParentSwitch> parentSwitch;
 };
 
 struct Scene {
@@ -120,6 +127,10 @@ class SceneEvaluator {
   // Bone frames (world space) of character c at a frame, after constraints.
   std::vector<mat4> characterGlobals(size_t c, double frame, Pose* poseOut = nullptr) const;
   mat4 objectWorld(size_t o, double frame) const;
+  // Prop instance frames (world space). Prop parents are resolved in dependency order; parent switches are
+  // rebased at their switch frame so random-access evaluation remains continuous.
+  std::vector<mat4> propWorlds(double frame) const;
+  mat4 propWorld(size_t prop, double frame) const;
 
  private:
   float waterHeight(size_t waterObject, vec2 localXZ, double frame) const;
@@ -135,6 +146,7 @@ class SceneEvaluator {
   std::map<std::string, int> materialIndex_;
   std::vector<ObjectGeometry> objects_;
   std::vector<CharacterInstance> characters_;
+  std::vector<PropAsset> propAssets_;
   std::vector<std::string> warnings_;
   static std::string blinkMorph(const CharacterInstance& ci);
  public:
