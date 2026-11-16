@@ -22,6 +22,7 @@ import math
 import random
 
 from mathutils import Vector
+from materials import builder as MATERIALS
 
 GROUPS = ("crown", "centre", "top", "side", "back")
 
@@ -252,28 +253,7 @@ def felt_material(base, cfg):
     """Felted-wool surface without geometry: a copy of the hair material with a high-frequency fibrous noise bump
     (Generated coordinates: stable under the rig) and sheen. Edits the build's own hair material in place. cfg: scale, detail, strength, distance, sheen, roughness.
     The colour stays the character's own (calibrated) albedo."""
-    m = base  # modified in place: the material keeps its name (evaluation tools identify regions by material name)
-    nt = m.node_tree
-    p = nt.nodes.get("Principled BSDF")
-    tc = nt.nodes.new("ShaderNodeTexCoord")
-    nz = nt.nodes.new("ShaderNodeTexNoise")
-    nz.inputs["Scale"].default_value = float(cfg.get("scale", 260.0))
-    nz.inputs["Detail"].default_value = float(cfg.get("detail", 12.0))
-    if "Roughness" in nz.inputs:
-        nz.inputs["Roughness"].default_value = float(cfg.get("noise_roughness", 0.75))
-    if "Distortion" in nz.inputs:
-        nz.inputs["Distortion"].default_value = float(cfg.get("distortion", 1.5))
-    bump = nt.nodes.new("ShaderNodeBump")
-    bump.inputs["Strength"].default_value = float(cfg.get("strength", 0.45))
-    bump.inputs["Distance"].default_value = float(cfg.get("distance", 0.0015))
-    nt.links.new(tc.outputs["Generated"], nz.inputs["Vector"])
-    nt.links.new(nz.outputs["Fac"], bump.inputs["Height"])
-    nt.links.new(bump.outputs["Normal"], p.inputs["Normal"])
-    if "Sheen Weight" in p.inputs:
-        p.inputs["Sheen Weight"].default_value = float(cfg.get("sheen", 0.35))
-    if "Roughness" in p.inputs:
-        p.inputs["Roughness"].default_value = float(cfg.get("roughness", 0.95))
-    return m
+    return MATERIALS.apply_legacy_felt_surface(base, cfg)
 
 
 def bpy_data_remove(ob):
