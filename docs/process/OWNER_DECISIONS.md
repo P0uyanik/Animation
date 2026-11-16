@@ -45,3 +45,9 @@ builders); (2) EEVEE draft renders alongside Cycles finals (`--engine eevee|cycl
 (spring chains, shared layer) and a `run_shot` simulate stage using Blender's built-in Bullet rigid body, cloth,
 Dynamic Paint waves and particles (V4: water, ripples, sparkles, falling/floating props); (4) OpenTimelineIO edit
 export and Rhubarb Lip Sync with V5. Later/not now: OpenUSD (V7/V8), MaterialX, Filament, OpenVDB, Bullet in engine.
+
+## 2026-11-16: code-based first, hybrid only if proven necessary
+Continue improving the code-based shared systems (face v2, hair v2 r2, cloth rest-shape simulation, surface detail)
+before deciding on a hybrid workflow (optional sculpted asset slots). Decide by measurement (fidelity) plus the owner's
+visual verdict. Every system must be reusable across all current and future characters. Every task reports technical
+limitations that block reference quality, with a proposal for overcoming them.
