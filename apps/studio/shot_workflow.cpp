@@ -143,7 +143,7 @@ std::string newRunId() {
 
 std::vector<std::string> buildCommand(const Config& cfg, const ShotInfo& shot, const std::string& runId, const RunSettings& s) {
   std::vector<std::string> cmd{cfg.python.string(), cfg.runShot.string(), "--shot", shot.path.string(), "--blender", cfg.blender};
-  if (!cfg.engine.empty()) cmd.insert(cmd.end(), {"--engine", cfg.engine.string()});
+  if (!cfg.engine.empty()) cmd.insert(cmd.end(), {"--bake-engine", cfg.engine.string()});
   cmd.insert(cmd.end(), {"--run-dir", runId});
   std::string st;
   for (const auto& x : s.stages) st += (st.empty() ? "" : ",") + x;
