@@ -46,7 +46,7 @@ def parse():
     parser.add_argument("--save-blend", default="")
     parser.add_argument("--lighting", default="harness",
                         help="'harness' (compare_harness.studio_lighting + AgX, the T-015 setup) or a render_calibration profile")
-    parser.add_argument("--fuzz-lod", choices=("close", "wide", "off"), default="close")
+    parser.add_argument("--fibres-lod", choices=("close", "wide", "off"), default="close")
     parser.add_argument("--presets", default="", help="optional comma-separated subset for calibration probes")
     return parser.parse_args(argv)
 
@@ -80,6 +80,19 @@ def patch(name, location, material):
     bevel.width = 0.018
     bevel.segments = 5
     G.assign(obj, material)
+    return obj
+
+
+def fibre_patch_surface(name, location):
+    """Front-face-only source for flat-patch fibre measurement."""
+    bpy.ops.mesh.primitive_grid_add(x_subdivisions=2, y_subdivisions=2, size=2.0,
+                                    location=(location[0], -0.026, location[2]),
+                                    rotation=(math.pi / 2.0, 0.0, 0.0))
+    obj = bpy.context.object
+    obj.name = "fibre_source_" + name.replace("/", "_").replace(" ", "_")
+    obj.scale = (0.217, 0.107, 1.0)
+    bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
+    obj.hide_render = True
     return obj
 
 
@@ -203,20 +216,21 @@ def main():
         bpy.ops.object.shade_smooth()
         G.assign(sphere, material)
         fabric = patch(name, (x, 0.0, -0.10), material)
+        fabric_fibre_source = fibre_patch_surface(name, (x, 0.0, -0.10))
         caption = label(name, (x, -0.17, -0.305), text_material)
         bpy.ops.mesh.primitive_cube_add(location=(0.215, 0.0, 0.285), scale=(0.035, 0.025, 0.035))
         neutral = bpy.context.object
         neutral.name = "neutral_" + name.replace("/", "_").replace(" ", "_")
         bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
         G.assign(neutral, neutral_material)
-        for fuzz_object in (sphere, fabric):
-            MATERIALS.add_fuzz_geometry(fuzz_object, name, preset["swatch_srgb"],
-                                        library["reference_size_m"], lod=args.fuzz_lod)
-        objects = [sphere, fabric, caption, neutral]
+        generated_fibres = [MATERIALS.add_fibres_geometry(surface, name, preset["swatch_srgb"],
+                                                            library["reference_size_m"], lod=args.fibres_lod)
+                            for surface in (sphere, fabric_fibre_source)]
+        objects = [sphere, fabric, caption, neutral] + [item for item in generated_fibres if item is not None]
         for obj in objects:
             obj.hide_render = True
         entries.append({"preset": name, "base_color_srgb": preset["swatch_srgb"], "sphere": sphere, "patch": fabric,
-                        "neutral": neutral, "objects": objects})
+                        "neutral": neutral, "objects": objects, "fibre_source": fabric_fibre_source})
 
     bpy.context.view_layer.update()
     metadata = {
@@ -238,7 +252,7 @@ def main():
                          "pipeline/charsys/render_calibration.json:" + args.lighting),
         "reference_size_m": library["reference_size_m"],
         "projected_reference_px": round(library["reference_size_m"] / 0.6 * args.width, 4),
-        "fuzz_lod": args.fuzz_lod,
+        "fibres_lod": args.fibres_lod,
         "swatches": [],
     }
     frame_dir = os.path.join(os.path.dirname(out), "." + os.path.splitext(os.path.basename(out))[0] + "_frames")

@@ -15,8 +15,10 @@ from materials import builder as MATERIALS  # noqa: E402
 
 EXPECTED = {
     "felt", "wool yarn", "fleece", "cotton knit", "woven cotton", "denim", "felt hair",
-    "buttons/plastic", "glasses/acrylic", "skin-felt",
+    "boot fleece", "buttons/plastic", "glasses/acrylic", "skin-felt",
 }
+FIBRE_ENABLED = {"felt", "wool yarn", "fleece", "cotton knit", "felt hair", "boot fleece"}
+FIBRE_FIELDS = {"enabled", "density_per_cm2", "length_mm", "curl", "lean", "lod"}
 RESULTS = []
 
 
@@ -32,9 +34,13 @@ def main():
     check("library validates", MATERIALS.validate_library(library) == [])
     for name in EXPECTED:
         preset = MATERIALS.resolve_preset(name, library=library)
-        check(f"{name}: silhouette is opt-in", preset["silhouette"]["enabled"] is False)
         check(f"{name}: reference-scaled bump", preset["fibre"]["distance_fraction"] >= 0 and
               preset["fibre"]["scale_per_reference"] > 0)
+        check(f"{name}: fibre schema", set(preset["fibres"]) == FIBRE_FIELDS)
+        check(f"{name}: fibre enable", preset["fibres"]["enabled"] is (name in FIBRE_ENABLED))
+        check(f"{name}: wide LOD is quarter density", preset["fibres"]["lod"] == 0.25)
+    check("non-fibrous surfaces disable fibres", all(not library["presets"][name].get("fibres", {}).get("enabled", False)
+                                                      for name in ("skin-felt", "buttons/plastic", "glasses/acrylic")))
 
     girl_path = os.path.join(ROOT, "assets", "characters", "girl_auburn_bun_glasses", "spec",
                              "girl_auburn_bun_glasses.spec.json")

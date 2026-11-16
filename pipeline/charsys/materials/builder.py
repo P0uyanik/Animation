@@ -15,8 +15,8 @@ SCHEMA = "plush-studio.material-presets/1"
 HERE = os.path.dirname(os.path.abspath(__file__))
 PRESETS_PATH = os.path.join(HERE, "presets.json")
 KINDS = {"noise", "yarn", "knit", "weave", "denim"}
-FUZZ_SHADERS = {"principled", "principled_hair"}
-FUZZ_LODS = {"close", "wide", "off"}
+FIBRE_LODS = {"close", "wide", "off"}
+FIBRE_GROUP = "PS Shared Surface Fibres/1"
 # fibre.coordinates: "object" (default, object space) or "uv" (the mesh's "ps_fibre" UV map, e.g. groom ropes: U around
 # the rope, V along it, in metres), so directional fibre patterns follow the geometry instead of object axes.
 COORDINATES = {"object", "uv"}
@@ -66,7 +66,7 @@ def validate_library(data):
     if not isinstance(defaults, dict):
         errors.append("defaults must be an object")
         defaults = {}
-    for section in ("surface", "fibre", "micro_relief", "fuzz", "silhouette"):
+    for section in ("surface", "fibre", "micro_relief", "fibres", "silhouette"):
         if not isinstance(defaults.get(section), dict):
             errors.append(f"defaults.{section} must be an object")
     presets = data.get("presets")
@@ -97,14 +97,14 @@ def validate_library(data):
                       "color_strength", "roughness_variation"):
             if not isinstance(micro.get(field), (int, float)) or micro.get(field, -1) < 0:
                 errors.append(f"{name}.micro_relief.{field} must be non-negative")
-        fuzz = resolved.get("fuzz", {})
-        for field in ("density_per_m2", "length_fraction", "radius_fraction", "curl", "wide_density_scale"):
-            if not isinstance(fuzz.get(field), (int, float)) or fuzz.get(field, -1) < 0:
-                errors.append(f"{name}.fuzz.{field} must be non-negative")
-        if fuzz.get("shader") not in FUZZ_SHADERS:
-            errors.append(f"{name}.fuzz.shader must be one of {sorted(FUZZ_SHADERS)}")
-        if not isinstance(fuzz.get("seed"), int):
-            errors.append(f"{name}.fuzz.seed must be an integer")
+        fibres = resolved.get("fibres", {})
+        if not isinstance(fibres.get("enabled"), bool):
+            errors.append(f"{name}.fibres.enabled must be a boolean")
+        for field in ("density_per_cm2", "length_mm", "curl", "lean", "lod"):
+            if not isinstance(fibres.get(field), (int, float)) or fibres.get(field, -1) < 0:
+                errors.append(f"{name}.fibres.{field} must be non-negative")
+        if not 0 <= fibres.get("lod", -1) <= 1:
+            errors.append(f"{name}.fibres.lod must be in 0..1")
         silhouette = resolved.get("silhouette", {})
         if silhouette.get("mode") != "sheen_layer":
             errors.append(f"{name}.silhouette.mode must be sheen_layer")
@@ -438,126 +438,111 @@ def apply_preset(material, preset_name, base_color_srgb=None, reference_size_m=N
     return material
 
 
-def _fuzz_material(name, color, fuzz):
+def _fibres_material(name, color):
+    """Principled Hair material for the generated native curve fibres."""
     import bpy
-    hue, saturation, value = colorsys.rgb_to_hsv(*(float(v) / 255.0 for v in color))
-    fuzz_color = tuple(v * 255.0 for v in colorsys.hsv_to_rgb(
-        hue, saturation, min(1.0, value * float(fuzz.get("value_compensation", 1.0)))))
     material = bpy.data.materials.new(name)
     material.use_nodes = True
     nodes, links = material.node_tree.nodes, material.node_tree.links
     nodes.clear()
     output = nodes.new("ShaderNodeOutputMaterial")
-    if fuzz["shader"] == "principled_hair":
-        shader = nodes.new("ShaderNodeBsdfHairPrincipled")
-        try:
-            shader.parametrization = "DIRECT"
-        except Exception:
-            pass
-        _set(shader, (*_srgb_to_linear(fuzz_color), 1), "Color", "Base Color")
-        _set(shader, float(fuzz.get("roughness", 0.62)), "Roughness")
-        _set(shader, float(fuzz.get("radial_roughness", 0.75)), "Radial Roughness")
-        _set(shader, float(fuzz.get("random_roughness", 0.12)), "Random Roughness")
-    else:
-        shader = nodes.new("ShaderNodeBsdfPrincipled")
-        _set(shader, (*_srgb_to_linear(fuzz_color), 1), "Base Color")
-        _set(shader, float(fuzz.get("roughness", 0.9)), "Roughness")
-        _set(shader, float(fuzz.get("sheen_weight", 0.45)), "Sheen Weight", "Sheen")
-        _set(shader, 0.2, "Specular IOR Level", "Specular")
+    shader = nodes.new("ShaderNodeBsdfHairPrincipled")
+    try:
+        shader.parametrization = "DIRECT"
+    except Exception:
+        pass
+    _set(shader, (*_srgb_to_linear(color), 1), "Color", "Base Color")
+    _set(shader, 0.64, "Roughness")
+    _set(shader, 0.74, "Radial Roughness")
+    _set(shader, 0.12, "Random Roughness")
     links.new(shader.outputs[0], output.inputs["Surface"])
-    material["ps_material_fuzz"] = True
-    material["ps_material_fuzz_shader"] = fuzz["shader"]
+    material["ps_material_fibres"] = True
+    material["ps_material_fibres_shader"] = "principled_hair"
     return material
 
 
-def add_fuzz_geometry(obj, preset_name, base_color_srgb=None, reference_size_m=None, overrides=None, lod="close"):
-    """Attach native hair curves to a mesh through a Geometry Nodes modifier.
+def _math(nodes, operation, a=None, b=None, name=""):
+    node = nodes.new("ShaderNodeMath")
+    node.operation = operation
+    node.label = name
+    if isinstance(a, (int, float)):
+        node.inputs[0].default_value = a
+    if isinstance(b, (int, float)):
+        node.inputs[1].default_value = b
+    return node
 
-    ``close`` uses the authored density. ``wide`` keeps the same integrated nap
-    with a much cheaper density, and ``off`` is a zero-cost LOD.  The modifier
-    joins native curves to the incoming mesh; it does not destructively edit
-    the source geometry and contains no character-specific assumptions.
-    """
+
+def shared_fibre_node_group():
+    """Return the single parameterised Geometry Nodes hair-curve generator."""
     import bpy
-    if lod not in FUZZ_LODS:
-        raise ValueError(f"lod must be one of {sorted(FUZZ_LODS)}")
-    library = load_library()
-    preset = resolve_preset(preset_name, overrides, library)
-    fuzz = preset["fuzz"]
-    if lod == "off" or not fuzz.get("enabled"):
-        return None
-    if obj.type != "MESH":
-        raise ValueError("fuzz geometry requires a mesh object")
-    reference = float(reference_size_m or library["reference_size_m"])
-    color = tuple(base_color_srgb or preset["swatch_srgb"])
-    color = _saturate_srgb(color, preset["surface"].get("saturation_compensation", 1.0))
-    density = float(fuzz["density_per_m2"])
-    if lod == "wide":
-        density *= float(fuzz["wide_density_scale"])
-    length = reference * float(fuzz["length_fraction"])
-    radius = reference * float(fuzz["radius_fraction"])
-    curl = float(fuzz["curl"])
-
-    modifier = obj.modifiers.new("PS Fibre Fuzz", "NODES")
-    group = bpy.data.node_groups.new(f"PS Fibre Fuzz {obj.name}", "GeometryNodeTree")
-    modifier.node_group = group
-    group.interface.new_socket(name="Geometry", in_out="INPUT", socket_type="NodeSocketGeometry")
+    existing = bpy.data.node_groups.get(FIBRE_GROUP)
+    if existing is not None:
+        return existing
+    group = bpy.data.node_groups.new(FIBRE_GROUP, "GeometryNodeTree")
+    for name, socket_type in (("Surface", "NodeSocketObject"), ("Density", "NodeSocketFloat"),
+                              ("Length", "NodeSocketFloat"), ("Curl", "NodeSocketFloat"),
+                              ("Lean", "NodeSocketFloat"), ("Seed", "NodeSocketInt"),
+                              ("Material", "NodeSocketMaterial")):
+        socket = group.interface.new_socket(name=name, in_out="INPUT", socket_type=socket_type)
+        if name == "Length":
+            socket.subtype = "DISTANCE"
     group.interface.new_socket(name="Geometry", in_out="OUTPUT", socket_type="NodeSocketGeometry")
     nodes, links = group.nodes, group.links
-    group_in = nodes.new("NodeGroupInput")
-    group_out = nodes.new("NodeGroupOutput")
+    group_in, group_out = nodes.new("NodeGroupInput"), nodes.new("NodeGroupOutput")
+    surface = nodes.new("GeometryNodeObjectInfo")
+    surface.transform_space = "ORIGINAL"
+    links.new(group_in.outputs["Surface"], surface.inputs["Object"])
     distribute = nodes.new("GeometryNodeDistributePointsOnFaces")
     distribute.distribute_method = "RANDOM"
-    distribute.inputs["Density"].default_value = density
-    distribute.inputs["Seed"].default_value = int(fuzz["seed"])
-    links.new(group_in.outputs["Geometry"], distribute.inputs["Mesh"])
+    links.new(surface.outputs["Geometry"], distribute.inputs["Mesh"])
+    links.new(group_in.outputs["Density"], distribute.inputs["Density"])
+    links.new(group_in.outputs["Seed"], distribute.inputs["Seed"])
 
     line = nodes.new("GeometryNodeCurvePrimitiveLine")
-    try:
-        line.mode = "DIRECTION"
-        line.inputs["Direction"].default_value = (0.0, 0.0, 1.0)
-        line.inputs["Length"].default_value = length
-    except Exception:
-        line.inputs["Start"].default_value = (0.0, 0.0, 0.0)
-        line.inputs["End"].default_value = (0.0, 0.0, length)
+    line.mode = "DIRECTION"
+    line.inputs["Direction"].default_value = (0.0, 0.0, 1.0)
+    links.new(group_in.outputs["Length"], line.inputs["Length"])
     resample = nodes.new("GeometryNodeResampleCurve")
-    resample.inputs["Count"].default_value = 5
+    resample.inputs["Count"].default_value = 6
     links.new(line.outputs["Curve"], resample.inputs["Curve"])
-    curved_socket = resample.outputs["Curve"]
-    if curl > 0.0:
-        parameter = nodes.new("GeometryNodeSplineParameter")
-        phase = nodes.new("ShaderNodeMath")
-        phase.operation = "MULTIPLY"
-        # A quarter-wave produces a leaning/curling tip instead of returning
-        # every strand to its root axis.  The instances are randomized around
-        # the surface normal below, so this reads as stochastic nap rather
-        # than a repeated comb.
-        phase.inputs[1].default_value = math.pi * 0.5
-        links.new(parameter.outputs["Factor"], phase.inputs[0])
-        sine = nodes.new("ShaderNodeMath")
-        sine.operation = "SINE"
-        links.new(phase.outputs[0], sine.inputs[0])
-        amplitude = nodes.new("ShaderNodeMath")
-        amplitude.operation = "MULTIPLY"
-        amplitude.inputs[1].default_value = length * curl
-        links.new(sine.outputs[0], amplitude.inputs[0])
-        offset = nodes.new("ShaderNodeCombineXYZ")
-        links.new(amplitude.outputs[0], offset.inputs["X"])
-        set_position = nodes.new("GeometryNodeSetPosition")
-        links.new(curved_socket, set_position.inputs["Geometry"])
-        links.new(offset.outputs["Vector"], set_position.inputs["Offset"])
-        curved_socket = set_position.outputs["Geometry"]
+    parameter = nodes.new("GeometryNodeSplineParameter")
 
+    lean_length = _math(nodes, "MULTIPLY", name="Lean by length")
+    links.new(group_in.outputs["Length"], lean_length.inputs[0])
+    links.new(group_in.outputs["Lean"], lean_length.inputs[1])
+    lean = _math(nodes, "MULTIPLY", name="Lean along strand")
+    links.new(parameter.outputs["Factor"], lean.inputs[0])
+    links.new(lean_length.outputs[0], lean.inputs[1])
+    phase = _math(nodes, "MULTIPLY", b=math.pi, name="Curl phase")
+    links.new(parameter.outputs["Factor"], phase.inputs[0])
+    sine = _math(nodes, "SINE", name="Curl arc")
+    links.new(phase.outputs[0], sine.inputs[0])
+    curl_length = _math(nodes, "MULTIPLY", name="Curl by length")
+    links.new(group_in.outputs["Length"], curl_length.inputs[0])
+    links.new(group_in.outputs["Curl"], curl_length.inputs[1])
+    curl = _math(nodes, "MULTIPLY", name="Curl offset")
+    links.new(sine.outputs[0], curl.inputs[0])
+    links.new(curl_length.outputs[0], curl.inputs[1])
+    offset = nodes.new("ShaderNodeCombineXYZ")
+    links.new(lean.outputs[0], offset.inputs["X"])
+    links.new(curl.outputs[0], offset.inputs["Y"])
+    set_position = nodes.new("GeometryNodeSetPosition")
+    links.new(resample.outputs["Curve"], set_position.inputs["Geometry"])
+    links.new(offset.outputs["Vector"], set_position.inputs["Offset"])
+
+    radius = _math(nodes, "MULTIPLY", b=0.11, name="Shaft radius")
+    links.new(group_in.outputs["Length"], radius.inputs[0])
+    tip_radius = _math(nodes, "MULTIPLY", b=0.18, name="Tapered tip")
+    links.new(radius.outputs[0], tip_radius.inputs[0])
     taper = nodes.new("ShaderNodeMapRange")
     taper.clamp = True
     taper.inputs["From Min"].default_value = 0.0
     taper.inputs["From Max"].default_value = 1.0
-    taper.inputs["To Min"].default_value = radius
-    taper.inputs["To Max"].default_value = radius * 0.2
-    parameter2 = nodes.new("GeometryNodeSplineParameter")
-    links.new(parameter2.outputs["Factor"], taper.inputs["Value"])
+    links.new(parameter.outputs["Factor"], taper.inputs["Value"])
+    links.new(radius.outputs[0], taper.inputs["To Min"])
+    links.new(tip_radius.outputs[0], taper.inputs["To Max"])
     set_radius = nodes.new("GeometryNodeSetCurveRadius")
-    links.new(curved_socket, set_radius.inputs["Curve"])
+    links.new(set_position.outputs["Geometry"], set_radius.inputs["Curve"])
     links.new(taper.outputs["Result"], set_radius.inputs["Radius"])
 
     instance = nodes.new("GeometryNodeInstanceOnPoints")
@@ -568,7 +553,7 @@ def add_fuzz_geometry(obj, preset_name, base_color_srgb=None, reference_size_m=N
     random_length.data_type = "FLOAT_VECTOR"
     random_length.inputs["Min"].default_value = (1.0, 1.0, 0.72)
     random_length.inputs["Max"].default_value = (1.0, 1.0, 1.28)
-    random_length.inputs["Seed"].default_value = int(fuzz["seed"]) + 101
+    links.new(group_in.outputs["Seed"], random_length.inputs["Seed"])
     links.new(random_length.outputs["Value"], instance.inputs["Scale"])
     rotate = nodes.new("GeometryNodeRotateInstances")
     links.new(instance.outputs["Instances"], rotate.inputs["Instances"])
@@ -576,28 +561,73 @@ def add_fuzz_geometry(obj, preset_name, base_color_srgb=None, reference_size_m=N
     random_azimuth.data_type = "FLOAT_VECTOR"
     random_azimuth.inputs["Min"].default_value = (0.0, 0.0, 0.0)
     random_azimuth.inputs["Max"].default_value = (0.0, 0.0, math.tau)
-    random_azimuth.inputs["Seed"].default_value = int(fuzz["seed"]) + 211
+    links.new(group_in.outputs["Seed"], random_azimuth.inputs["Seed"])
     links.new(random_azimuth.outputs["Value"], rotate.inputs["Rotation"])
     rotate.inputs["Local Space"].default_value = True
     realize = nodes.new("GeometryNodeRealizeInstances")
     links.new(rotate.outputs["Instances"], realize.inputs["Geometry"])
     set_material = nodes.new("GeometryNodeSetMaterial")
     links.new(realize.outputs["Geometry"], set_material.inputs["Geometry"])
-    fuzz_material = _fuzz_material(f"M_fuzz_{preset_name}_{obj.name}", color, fuzz)
-    set_material.inputs["Material"].default_value = fuzz_material
-    join = nodes.new("GeometryNodeJoinGeometry")
-    links.new(group_in.outputs["Geometry"], join.inputs["Geometry"])
-    links.new(set_material.outputs["Geometry"], join.inputs["Geometry"])
-    links.new(join.outputs["Geometry"], group_out.inputs["Geometry"])
-    group["ps_material_preset"] = preset_name
-    group["ps_fuzz_lod"] = lod
-    group["ps_fuzz_density_per_m2"] = density
-    return modifier
+    links.new(group_in.outputs["Material"], set_material.inputs["Material"])
+    links.new(set_material.outputs["Geometry"], group_out.inputs["Geometry"])
+    group["ps_material_fibres"] = True
+    group["ps_material_fibres_version"] = 1
+    return group
 
 
-def add_fuzz_from_assignment(obj, assignment, lod="close"):
-    return add_fuzz_geometry(obj, assignment["preset"], assignment["base_color_srgb"],
-                             assignment.get("reference_size_m"), assignment.get("overrides"), lod)
+def _set_modifier_input(modifier, group, name, value):
+    socket = next(item for item in group.interface.items_tree
+                  if item.item_type == "SOCKET" and item.in_out == "INPUT" and item.name == name)
+    getattr(modifier.properties.inputs, socket.identifier).value = value
+
+
+def add_fibres_geometry(obj, preset_name, base_color_srgb=None, reference_size_m=None, overrides=None, lod="close"):
+    """Attach shared native hair curves; wide LOD uses the preset's 0.25 density multiplier."""
+    if lod not in FIBRE_LODS:
+        raise ValueError(f"lod must be one of {sorted(FIBRE_LODS)}")
+    library = load_library()
+    preset = resolve_preset(preset_name, overrides, library)
+    fibres = preset["fibres"]
+    if lod == "off" or not fibres["enabled"]:
+        return None
+    if obj.type != "MESH":
+        raise ValueError("surface fibres require a mesh object")
+    density = float(fibres["density_per_cm2"]) * 10000.0
+    if lod == "wide":
+        density *= float(fibres["lod"])
+    length = float(fibres["length_mm"]) / 1000.0
+    color = tuple(base_color_srgb or preset["swatch_srgb"])
+    color = _saturate_srgb(color, preset["surface"].get("saturation_compensation", 1.0))
+    material = _fibres_material(f"M_fibres_{preset_name}_{obj.name}", color)
+    import bpy
+    group = shared_fibre_node_group()
+    curves = bpy.data.hair_curves.new(obj.name + ".fibres")
+    fibre_object = bpy.data.objects.new(obj.name + ".fibres", curves)
+    (obj.users_collection[0] if obj.users_collection else bpy.context.scene.collection).objects.link(fibre_object)
+    # Object Info supplies source-local geometry; matching transforms places
+    # the generated Curves object on the evaluated source surface.
+    fibre_object.matrix_world = obj.matrix_world.copy()
+    curves.materials.append(material)
+    if hasattr(curves, "surface"):
+        curves.surface = obj
+    modifier = fibre_object.modifiers.new("PS Surface Fibres", "NODES")
+    modifier.node_group = group
+    _set_modifier_input(modifier, group, "Surface", obj)
+    _set_modifier_input(modifier, group, "Density", density)
+    _set_modifier_input(modifier, group, "Length", length)
+    _set_modifier_input(modifier, group, "Curl", float(fibres["curl"]))
+    _set_modifier_input(modifier, group, "Lean", float(fibres["lean"]))
+    seed = sum((index + 1) * ord(char) for index, char in enumerate(preset_name)) % 100000
+    _set_modifier_input(modifier, group, "Seed", seed)
+    _set_modifier_input(modifier, group, "Material", material)
+    fibre_object["ps_material_preset"] = preset_name
+    fibre_object["ps_fibres_lod"] = lod
+    return fibre_object
+
+
+def add_fibres_from_assignment(obj, assignment, lod="close"):
+    return add_fibres_geometry(obj, assignment["preset"], assignment["base_color_srgb"],
+                               assignment.get("reference_size_m"), assignment.get("overrides"), lod)
 
 
 def build_material(name, preset_name, base_color_srgb=None, reference_size_m=None, overrides=None):
