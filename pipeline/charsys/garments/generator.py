@@ -15,7 +15,22 @@ from mathutils.kdtree import KDTree
 GENERATOR = "garment/1"
 ITEM_TYPES = {"top", "shirt", "vest", "shorts", "trousers", "dress", "skirt", "shoes", "boots"}
 COLLARS = {"none", "crew", "rib", "shirt", "point", "v", "v-neck", "round"}
-EMBROIDERY_STYLES = {"flower", "sprig"}
+EMBROIDERY_STYLES = {"flower", "sprig", "bouquet"}
+BUTTON_PLACEMENTS = {"centre", "edge", "waistband", "pockets", "positions"}
+CROTCH_TYPES = {"none", "gusset"}
+
+# T-025, proportion-relative distances. Every ease, offset, mask margin and collision distance in a spec (and every
+# internal margin that used to be a fraction of the height) is defined on the neutral body_generic proportions at
+# 1.0 m (the synthetic test body, ``pipeline/clips/mannequin.json``) and is scaled by the ratio of the local body
+# measure to this reference: limb thickness for sleeves, legs and footwear, torso depth for the torso, head height
+# for collars. Ratios are rounded to 1e-4, so a body with the reference measures reproduces the T-024 geometry.
+REFERENCE_BODY_M = {"arm_root_radius": 0.030, "thigh_radius": 0.045, "torso_depth": 0.125143, "head_height": 0.290}
+# T-025, armholes from body measurements. Depth below the shoulder line = (2/pi) x the arm-root circumference
+# (ARMHOLE_DEPTH_ROOT_RADII = 4 arm-root radii, the same length); the side cut keeps ARMHOLE_SIDE_SHARE of the local torso half width, but never closer than
+# ARMHOLE_ROOT_CLEARANCE arm-root radii to the shoulder joint, so the arm root always passes through the opening.
+ARMHOLE_DEPTH_ROOT_RADII = 4.0
+ARMHOLE_SIDE_SHARE = 0.58
+ARMHOLE_ROOT_CLEARANCE = 1.25
 MATERIAL_PRESETS = {
     "felt", "wool yarn", "fleece", "cotton knit", "woven cotton", "denim", "felt hair",
     "buttons/plastic", "glasses/acrylic", "skin-felt",
@@ -120,6 +135,25 @@ def validate(clothing):
         bands = raw.get("bands")
         if isinstance(bands, dict) and "cuff_radius_m" in bands:
             _number(bands["cuff_radius_m"], f"garment {name}.bands.cuff_radius_m", 0.0, 0.05)
+        if isinstance(bands, dict) and "edge_roll_m" in bands:
+            if raw["type"] not in ("top", "shirt", "vest", "dress"):
+                raise ValueError(f"garment {name}.bands.edge_roll_m is supported on tops, vests and dresses")
+            _number(bands["edge_roll_m"], f"garment {name}.bands.edge_roll_m", 0.0, 0.03)
+        if "shoulder_width" in raw:
+            if raw["type"] not in ("top", "shirt", "vest", "dress"):
+                raise ValueError(f"garment {name}.shoulder_width is supported on tops, vests and dresses")
+            _number(raw["shoulder_width"], f"garment {name}.shoulder_width", 0.0, 1.0)
+        if "crotch" in raw:
+            _validate_crotch(raw, name)
+        if raw.get("buttons") not in (None, 0) and not isinstance(raw.get("buttons"), int):
+            _validate_buttons(raw, name)
+        for key in ("shaft_width_m", "toe_volume_m"):
+            if key in raw:
+                if raw["type"] not in ("shoes", "boots"):
+                    raise ValueError(f"garment {name}.{key} is supported on shoes and boots")
+                _number(raw[key], f"garment {name}.{key}", 0.0, 0.1)
+        if isinstance(raw.get("sole"), dict) and "width_m" in raw["sole"]:
+            _number(raw["sole"]["width_m"], f"garment {name}.sole.width_m", 0.0, 0.05)
         if "embroidery" in raw:
             _validate_embroidery(raw, name)
         for part in raw.get("materials", {}):
@@ -127,10 +161,60 @@ def validate(clothing):
     return clothing
 
 
+def _validate_crotch(raw, name):
+    crotch = raw["crotch"]
+    crotch = {"type": crotch} if isinstance(crotch, str) else crotch
+    if raw["type"] not in ("shorts", "trousers"):
+        raise ValueError(f"garment {name}.crotch is supported on shorts and trousers")
+    if not isinstance(crotch, dict) or crotch.get("type", "gusset") not in CROTCH_TYPES:
+        raise ValueError(f"garment {name}.crotch.type must be one of {sorted(CROTCH_TYPES)}")
+    for key in ("depth", "width"):
+        if key in crotch:
+            _number(crotch[key], f"garment {name}.crotch.{key}", 0.0, 1.0)
+
+
+def _validate_buttons(raw, name):
+    b = raw["buttons"]
+    if not isinstance(b, dict):
+        raise ValueError(f"garment {name}.buttons must be an integer or an object")
+    placement = b.get("placement", "centre")
+    if placement not in BUTTON_PLACEMENTS:
+        raise ValueError(f"garment {name}.buttons.placement must be one of {sorted(BUTTON_PLACEMENTS)}")
+    allowed = {"centre": ("top", "shirt", "vest", "dress"), "edge": ("top", "shirt", "vest", "dress"),
+               "waistband": ("shorts", "trousers", "skirt"), "pockets": ("vest",),
+               "positions": ("top", "shirt", "vest", "dress", "shorts", "trousers")}[placement]
+    if raw["type"] not in allowed:
+        raise ValueError(f"garment {name}.buttons.placement {placement} is supported on {', '.join(allowed)}")
+    if "count" in b and (not isinstance(b["count"], int) or not 0 <= b["count"] <= 16):
+        raise ValueError(f"garment {name}.buttons.count must be an integer in [0, 16]")
+    if b.get("side", "both") not in ("both", "left", "right"):
+        raise ValueError(f"garment {name}.buttons.side must be both, left or right")
+    for key in ("radius_m", "inset_m", "drop_m"):
+        if key in b:
+            _number(b[key], f"garment {name}.buttons.{key}", 0.0, 0.1)
+    for key in ("spread", "v0", "v1"):
+        if key in b:
+            _number(b[key], f"garment {name}.buttons.{key}", 0.0, 1.0)
+    if placement == "positions":
+        if not isinstance(b.get("positions"), list) or not b["positions"]:
+            raise ValueError(f"garment {name}.buttons.positions must be a non-empty list")
+        for i, m in enumerate(b["positions"]):
+            _number(m.get("u", 0.0), f"garment {name}.buttons.positions[{i}].u", -1.0, 1.0)
+            _number(m.get("v", 0.5), f"garment {name}.buttons.positions[{i}].v", 0.0, 1.0)
+            if m.get("face", "front") not in ("front", "back"):
+                raise ValueError(f"garment {name}.buttons.positions[{i}].face must be front or back")
+
+
+EMBROIDERY_TARGETS = {
+    "top": ("main",), "shirt": ("main",), "vest": ("main", "pocket.L", "pocket.R"),
+    "dress": ("main",), "shorts": ("main",), "trousers": ("main",), "skirt": ("main",),
+    "shoes": ("main.L", "main.R"), "boots": ("main.L", "main.R"),
+}
+
+
 def _validate_embroidery(raw, name):
     emb = raw["embroidery"]
-    if raw["type"] not in ("top", "shirt", "vest", "dress", "shorts", "trousers"):
-        raise ValueError(f"garment {name}.embroidery is supported on tops, vests, dresses and bottoms")
+    targets = EMBROIDERY_TARGETS[raw["type"]]
     if not isinstance(emb, dict) or not isinstance(emb.get("motifs"), list) or not emb["motifs"]:
         raise ValueError(f"garment {name}.embroidery.motifs must be a non-empty list")
     for i, m in enumerate(emb["motifs"]):
@@ -141,6 +225,9 @@ def _validate_embroidery(raw, name):
         _number(m.get("v", 0.5), f"{label}.v", 0.0, 1.0)
         if m.get("face", "front") not in ("front", "back"):
             raise ValueError(f"{label}.face must be front or back")
+        default_target = targets[0]
+        if m.get("target", default_target) not in targets:
+            raise ValueError(f"{label}.target must be one of {list(targets)} for a {raw['type']}")
         if m.get("style", emb.get("style", "flower")) not in EMBROIDERY_STYLES:
             raise ValueError(f"{label}.style must be one of {sorted(EMBROIDERY_STYLES)}")
         for key in ("size_m", "relief_m"):
@@ -234,37 +321,122 @@ def _segment(p, a, b):
     return t, (p - (a + d * t)).length
 
 
+class BodyFit:
+    """Local body measures of a ``body_generic/1`` body and the distance scales derived from them (T-025).
+
+    ``arm``, ``leg``, ``torso`` and ``head`` are the ratios of this body's arm-root radius, thigh radius, mean torso
+    depth and head height to ``REFERENCE_BODY_M``; ``body`` is the geometric mean of the limb and torso ratios
+    (whole-body distances: mask margin, collision). ``at(point)`` gives the ratio of the region a rest-pose point
+    belongs to (sleeve, leg/foot or torso)."""
+
+    def __init__(self, P, H, J):
+        self.P, self.H, self.J = P, H, J
+        levels = P["torso"]["levels"]
+        self.measures = {
+            "arm_root_radius": P["arm"]["radii"][0] * H,
+            "thigh_radius": P["leg"]["radii"][0] * H,
+            "torso_depth": sum(f + b for _, _, f, b in levels) / len(levels) * H,
+            "head_height": 2.0 * P["head"]["half_height"] * H,
+        }
+        ratio = {k: round(v / REFERENCE_BODY_M[k], 4) for k, v in self.measures.items()}
+        self.arm, self.leg, self.torso, self.head = (ratio["arm_root_radius"], ratio["thigh_radius"],
+                                                     ratio["torso_depth"], ratio["head_height"])
+        self.body = round((self.arm * self.leg * self.torso) ** (1.0 / 3.0), 4)
+        self.hip_z = P["leg"]["hip_z"] * H
+        self.arm_root = self.measures["arm_root_radius"]
+        self.segments = [(J[f"shoulder.{s}"], J[f"wrist.{s}"]) for s in ("L", "R")]
+
+    def in_sleeve(self, c, t0=0.10, t1=1.0, margin=None):
+        margin = 0.012 * self.arm if margin is None else margin
+        for a, b in self.segments:
+            t, d = _segment(c, a, b)
+            if t0 <= t <= t1 and d <= _arm_radius(self.P, self.H, t) + margin:
+                return True
+        return False
+
+    def at(self, c):
+        if self.in_sleeve(c):
+            return self.arm
+        if c.z < self.hip_z:
+            return self.leg
+        return self.torso
+
+    def report(self):
+        return {"measures_m": {k: round(v, 6) for k, v in self.measures.items()},
+                "scale": {"arm": self.arm, "leg": self.leg, "torso": self.torso, "head": self.head, "body": self.body}}
+
+
 def _face_centroid(body, poly):
     return sum((body.data.vertices[i].co for i in poly.vertices), Vector()) / len(poly.vertices)
 
 
-def _shell(body, name, selector, ease, thickness, C, G, extra=None):
+def _boundary_loops(faces):
+    """Closed boundary loops (vertex index lists) of a face list; edges used by exactly one face."""
+    count, nxt = {}, {}
+    for f in faces:
+        for a, b in zip(f, f[1:] + f[:1]):
+            key = (min(a, b), max(a, b))
+            count[key] = count.get(key, 0) + 1
+    for (a, b), n in count.items():
+        if n == 1:
+            nxt.setdefault(a, []).append(b)
+            nxt.setdefault(b, []).append(a)
+    loops, seen = [], set()
+    for start in sorted(nxt):
+        if start in seen:
+            continue
+        loop, prev, cur = [start], None, start
+        seen.add(start)
+        while True:
+            options = [v for v in nxt[cur] if v != prev and (v not in seen or v == start)]
+            if not options:
+                break
+            prev, cur = cur, options[0]
+            if cur == start:
+                break
+            loop.append(cur)
+            seen.add(cur)
+        if len(loop) >= 6:
+            loops.append(loop)
+    return loops
+
+
+def _shell(body, name, selector, ease, thickness, C, G, extra=None, scale=None, loops_out=None):
     """Offset body shell. ``extra(co, normal) -> metres`` adds a per-vertex volume (puffed sleeves, bloomers) on top
-    of the ease, along the body normal."""
+    of the ease, along the body normal. ``scale(co)`` (T-025) multiplies ease and volume by the local body-measure
+    ratio. ``loops_out`` receives the open edges as [(points, normals)] loops (rolled edges)."""
     selected = [p for p in body.data.polygons if selector(_face_centroid(body, p))]
     if not selected:
         raise ValueError(f"garment region {name} selected no body faces")
     source = sorted({i for p in selected for i in p.vertices})
     remap = {old: new for new, old in enumerate(source)}
-    verts = []
+    verts, eases = [], []
     for i in source:
         v = body.data.vertices[i]
         add = extra(v.co, v.normal) if extra is not None else 0.0
-        verts.append(v.co + v.normal * (ease + add))
+        k = scale(v.co) if scale is not None else 1.0
+        e = ease * k if scale is not None else ease
+        verts.append(v.co + v.normal * (ease + add) if scale is None else v.co + v.normal * ((ease + add) * k))
+        eases.append(e)
     # Concave body areas (especially an armpit) can point an ordinary normal offset toward another part of the
     # surface. Project those vertices to the exterior clearance envelope; the source index still owns its skinning.
     body_bvh = BVHTree.FromPolygons([v.co.copy() for v in body.data.vertices],
                                     [tuple(p.vertices) for p in body.data.polygons], all_triangles=False)
     for k, point in enumerate(verts):
         point = point.copy()
+        e = eases[k]
         for _ in range(4):
             location, normal, _, _ = body_bvh.find_nearest(point)
             signed = (point - location).dot(normal)
-            if signed >= ease - 1e-6:
+            if signed >= e - 1e-6:
                 break
-            point += normal * (ease - signed + 1e-5)
+            point += normal * (e - signed + 1e-5)
         verts[k] = tuple(point)
     faces = [tuple(remap[i] for i in p.vertices) for p in selected]
+    if loops_out is not None:
+        for loop in _boundary_loops(faces):
+            loops_out.append(([Vector(verts[i]) for i in loop], [body.data.vertices[source[i]].normal.copy()
+                                                                  for i in loop]))
     ob = G.new_object(name, verts, faces, C)
     source_attr = ob.data.attributes.new("ps_body_vertex", "INT", "POINT")
     for datum, index in zip(source_attr.data, source):
@@ -281,18 +453,20 @@ def _shell(body, name, selector, ease, thickness, C, G, extra=None):
 
 
 def _ensure_clearance(body, ob, clearance):
-    """Move a procedural piece onto the body's exterior clearance envelope in rest pose."""
+    """Move a procedural piece onto the body's exterior clearance envelope in rest pose. ``clearance`` is metres or
+    a function of the rest-pose point (proportion-relative ease)."""
     bvh = BVHTree.FromPolygons([v.co.copy() for v in body.data.vertices],
                                [tuple(p.vertices) for p in body.data.polygons], all_triangles=False)
     changed = False
     for vertex in ob.data.vertices:
         point = ob.matrix_world @ vertex.co
+        need = clearance(point) if callable(clearance) else clearance
         for _ in range(5):
             location, normal, _, _ = bvh.find_nearest(point)
             signed = (point - location).dot(normal)
-            if signed >= clearance - 1e-6:
+            if signed >= need - 1e-6:
                 break
-            point += normal * (clearance - signed + 1e-5)
+            point += normal * (need - signed + 1e-5)
             changed = True
         vertex.co = ob.matrix_world.inverted() @ point
     if changed:
@@ -370,15 +544,15 @@ def _cuff_radius(cfg, bands, default):
     return float(bands.get("cuff_radius_m", default)) if isinstance(bands, dict) else default
 
 
-def _round_collar(G, C, body, cfg, P, H, top_z):
+def _round_collar(G, C, body, cfg, P, H, top_z, fit):
     """Flat collar lying on the shoulders, split at the front with rounded tips (round/Peter Pan collar)."""
     collar = cfg.get("collar") if isinstance(cfg.get("collar"), dict) else {}
-    ease, thick = cfg["ease_m"], cfg["thickness_m"]
-    width = float(collar.get("width_m", 0.035 * H))
+    ease, thick = cfg["ease_m"] * fit.torso, cfg["thickness_m"]
+    width = float(collar.get("width_m", 0.035 * fit.head))
     slope = float(collar.get("slope", 0.55))
     tip = float(collar.get("tip_round", 0.35))  # fraction of each half (by angle) that is rounded
     r_in = P["neck"]["radius"] * H + ease + thick + cfg["seam_radius_m"]
-    gap = min(math.pi * 0.4, float(collar.get("gap_m", 0.008 * H)) / max(r_in, 1e-6))
+    gap = min(math.pi * 0.4, float(collar.get("gap_m", 0.008 * fit.head)) / max(r_in, 1e-6))
     z0 = top_z + ease * 0.35
     cols, rows = 72, 6
     verts, faces = [], []
@@ -399,7 +573,7 @@ def _round_collar(G, C, body, cfg, P, H, top_z):
             faces.append((a, a + 1, a + rows + 2, a + rows + 1))
     ob = G.new_object(f"garment.{cfg['name']}.collar", verts, faces, C)
     # lift_m: extra clearance so the collar lies out over outer layers (a vest or jacket worn on top).
-    _ensure_clearance(body, ob, ease + thick + cfg["seam_radius_m"] + float(collar.get("lift_m", 0.0)))
+    _ensure_clearance(body, ob, ease + thick + cfg["seam_radius_m"] + float(collar.get("lift_m", 0.0)) * fit.torso)
     mod = ob.modifiers.new("garment_thickness", "SOLIDIFY")
     mod.thickness, mod.offset = max(thick, 0.0015), 1.0
     bpy.context.view_layer.objects.active = ob
@@ -423,15 +597,39 @@ def _unit_sphere():
     return _UNIT_SPHERE
 
 
-def _embroidery(G, C, cfg, shell, z_range, P, H):
-    """Raised embroidery motifs on the outside of a garment shell. Each motif sits at (u, v): u is the signed
-    fraction of the local half width (+ = the character's left), v the fraction between the hem and the top.
-    Styles: ``flower`` (petals around a centre knot) and ``sprig`` (leaves along a short stem). Returns two meshes:
-    main stitches (part ``embroidery``) and accents (part ``embroidery_accent``)."""
+def _surface_frame(bvh, x, z, face, what):
+    """Ray-cast a front/back placement (x, z) onto a garment piece; returns (point, tangent, bitangent, normal)."""
+    sign = -1.0 if face == "front" else 1.0
+    hit = bvh.ray_cast(Vector((x, sign * 2.0, z)), Vector((0, -sign, 0)))
+    if hit[0] is None:
+        raise ValueError(f"{what} misses the garment")
+    n = hit[1].normalized()
+    if n.y * sign < 0:
+        n = -n
+    up = Vector((0, 0, 1))
+    t = up.cross(n).normalized() if abs(n.z) < 0.95 else Vector((1, 0, 0))
+    b = n.cross(t).normalized()
+    return hit[0], t, b, n
+
+
+def _bbox_world(ob):
+    pts = [ob.matrix_world @ v.co for v in ob.data.vertices]
+    return (Vector((min(p.x for p in pts), min(p.y for p in pts), min(p.z for p in pts))),
+            Vector((max(p.x for p in pts), max(p.y for p in pts), max(p.z for p in pts))))
+
+
+def _embroidery(G, C, cfg, targets, z_range, P, H):
+    """Raised embroidery motifs on the outside of garment pieces. ``targets`` maps a target name (``main``,
+    ``pocket.L``, ``main.L``, ...) to its object. On a torso or bottoms ``main`` each motif sits at (u, v): u is the
+    signed fraction of the local half width (+ = the character's left), v the fraction between the hem and the top.
+    On any other target (pockets, boot shells, skirts) u and v are fractions of the piece's rest bounding box.
+    Styles: ``flower`` (petals around a centre knot), ``sprig`` (leaves along a short stem) and ``bouquet`` (three
+    flowers with leaves, dense enough to read at 640 px). Returns two meshes: main stitches (part ``embroidery``) and
+    accents (part ``embroidery_accent``)."""
     emb = cfg["embroidery"]
     sv, sf = _unit_sphere()
     deps = bpy.context.evaluated_depsgraph_get()
-    bvh = BVHTree.FromObject(shell, deps)
+    bvhs = {}
     z_lo, z_hi = z_range
     main_v, main_f, acc_v, acc_f = [], [], [], []
 
@@ -441,6 +639,18 @@ def _embroidery(G, C, cfg, shell, z_range, P, H):
             vs.append(tuple(centre + t * (p.x * sx) + b * (p.y * sy) + n * (p.z * sz)))
         fs.extend(tuple(base + i for i in f) for f in sf)
 
+    def flower(c, t, b, n, r, relief, petals, leaves, leaf_dir=-0.5 * math.pi):
+        for k in range(petals):
+            a = 2 * math.pi * k / petals
+            d = t * math.cos(a) + b * math.sin(a)
+            e = d.cross(n).normalized()
+            blob(main_v, main_f, c + d * (r * 0.55), d, e, n, r * 0.45, r * 0.24, relief)
+        blob(acc_v, acc_f, c + n * (relief * 0.4), t, b, n, r * 0.22, r * 0.22, relief * 1.1)
+        for k in range(leaves):
+            a = leaf_dir + (k - 0.5 * (leaves - 1)) * 0.9
+            d = t * math.cos(a) + b * math.sin(a)
+            blob(acc_v, acc_f, c + d * (r * 1.15), d, d.cross(n).normalized(), n, r * 0.38, r * 0.15, relief * 0.8)
+
     placed = []
     for m in emb["motifs"]:
         size = float(m.get("size_m", emb.get("size_m", 0.03 * H)))
@@ -448,34 +658,41 @@ def _embroidery(G, C, cfg, shell, z_range, P, H):
         style = m.get("style", emb.get("style", "flower"))
         petals = int(m.get("petals", emb.get("petals", 5)))
         face = m.get("face", "front")
-        z = z_lo + (z_hi - z_lo) * float(m.get("v", 0.5))
-        w, _, _ = _torso_dims(P, H, z)
-        x = float(m.get("u", 0.0)) * w
-        sign = -1.0 if face == "front" else 1.0
-        hit = bvh.ray_cast(Vector((x, sign * 2.0, z)), Vector((0, -sign, 0)))
-        if hit[0] is None:
-            raise ValueError(f"garment {cfg['name']}: embroidery motif at u={m.get('u')} v={m.get('v')} misses the garment")
-        n = hit[1].normalized()
-        if n.y * sign < 0:
-            n = -n
-        up = Vector((0, 0, 1))
-        t = up.cross(n).normalized() if abs(n.z) < 0.95 else Vector((1, 0, 0))
-        b = n.cross(t).normalized()
+        target = m.get("target", next(iter(targets)))
+        if target not in targets:
+            raise ValueError(f"garment {cfg['name']}: embroidery target {target} does not exist")
+        shell = targets[target]
+        if target not in bvhs:
+            bvhs[target] = BVHTree.FromObject(shell, deps)
+        bvh = bvhs[target]
+        if target == "main" and cfg["type"] not in ("shoes", "boots", "skirt"):
+            z = z_lo + (z_hi - z_lo) * float(m.get("v", 0.5))
+            w, _, _ = _torso_dims(P, H, z)
+            x = float(m.get("u", 0.0)) * w
+        else:
+            lo, hi = _bbox_world(shell)
+            x = (lo.x + hi.x) * 0.5 + float(m.get("u", 0.0)) * (hi.x - lo.x) * 0.5
+            z = lo.z + (hi.z - lo.z) * float(m.get("v", 0.5))
+        point, t, b, n = _surface_frame(bvh, x, z, face, f"garment {cfg['name']}: embroidery motif at "
+                                                         f"u={m.get('u')} v={m.get('v')} ({target})")
         rot = math.radians(float(m.get("rotation_deg", 0.0)))
         t, b = t * math.cos(rot) + b * math.sin(rot), b * math.cos(rot) - t * math.sin(rot)
-        c = hit[0] + n * (relief * 0.6)
+        c = point + n * (relief * 0.6)
         r = size * 0.5
+        leaves = int(m.get("leaves", emb.get("leaves", 2)))
         if style == "flower":
-            for k in range(petals):
-                a = 2 * math.pi * k / petals
+            flower(c, t, b, n, r, relief, petals, leaves)
+        elif style == "bouquet":
+            # Three flowers in a tight cluster, leaves fanning out below and to the sides, a stem knot in the gaps.
+            for dx, dy, k, lead in ((0.0, 0.30, 0.48, 0), (-0.42, -0.12, 0.40, 1), (0.42, -0.12, 0.40, 2)):
+                fc = c + t * (dx * r) + b * (dy * r)
+                flower(fc, t, b, n, r * k, relief, petals, 0)
+            for k in range(max(2, leaves)):
+                a = -0.5 * math.pi + (k - 0.5 * (max(2, leaves) - 1)) * 0.75
                 d = t * math.cos(a) + b * math.sin(a)
-                e = d.cross(n).normalized()
-                blob(main_v, main_f, c + d * (r * 0.55), d, e, n, r * 0.45, r * 0.24, relief)
-            blob(acc_v, acc_f, c + n * (relief * 0.4), t, b, n, r * 0.22, r * 0.22, relief * 1.1)
-            for k in range(int(m.get("leaves", emb.get("leaves", 2)))):
-                a = -0.5 * math.pi + (k - 0.5 * (int(m.get("leaves", emb.get("leaves", 2))) - 1)) * 0.9
-                d = t * math.cos(a) + b * math.sin(a)
-                blob(acc_v, acc_f, c + d * (r * 1.15), d, d.cross(n).normalized(), n, r * 0.38, r * 0.15, relief * 0.8)
+                blob(acc_v if k % 2 else main_v, acc_f if k % 2 else main_f, c + d * (r * 0.72) - b * (r * 0.15),
+                     d, d.cross(n).normalized(), n, r * 0.30, r * 0.12, relief * 0.8)
+            blob(main_v, main_f, c - b * (r * 0.05), t, b, n, r * 0.12, r * 0.12, relief * 0.9)
         else:  # sprig: a short stem with leaves alternating along it
             leaves = max(2, int(m.get("leaves", emb.get("leaves", 4))))
             blob(main_v, main_f, c, b, t, n, r, r * 0.07, relief * 0.6)
@@ -485,8 +702,11 @@ def _embroidery(G, C, cfg, shell, z_range, P, H):
                 d = (b * 0.6 + t * side).normalized()
                 blob(acc_v if k % 2 else main_v, acc_f if k % 2 else main_f, c + b * (s * r) + d * (r * 0.28),
                      d, d.cross(n).normalized(), n, r * 0.30, r * 0.13, relief * 0.8)
-        placed.append({"u": m.get("u", 0.0), "v": m.get("v", 0.5), "face": face, "style": style,
-                       "at_m": [round(v, 4) for v in hit[0]]})
+        entry = {"u": m.get("u", 0.0), "v": m.get("v", 0.5), "face": face, "style": style,
+                 "at_m": [round(v, 4) for v in point]}
+        if "target" in m:
+            entry["target"] = target
+        placed.append(entry)
     out = []
     if main_v:
         out.append(("embroidery", G.new_object(f"garment.{cfg['name']}.embroidery", main_v, main_f, C)))
@@ -506,43 +726,110 @@ def _emb_assignment(cfg, part):
     return {**cfg, "materials": {**cfg.get("materials", {}), part: src}}
 
 
-def _add_embroidery(objects, G, C, cfg, shell, z_range, P, H):
+def _add_embroidery(objects, G, C, cfg, targets, z_range, P, H):
     if not cfg.get("embroidery"):
         return
-    pieces, placed = _embroidery(G, C, cfg, shell, z_range, P, H)
+    if not isinstance(targets, dict):
+        targets = {"main": targets}
+    pieces, placed = _embroidery(G, C, cfg, targets, z_range, P, H)
     for part, ob in pieces:
         ob["ps_embroidery_motifs"] = len(placed)
         _feature(objects, ob, cfg, part, _mat_for(G, _emb_assignment(cfg, part), part, H), G)
     cfg["_embroidery_report"] = placed
 
 
-def _top(C, body, cfg, P, H, J, G, vest=False):
+_UNIT_BUTTON = None
+
+
+def _button(G, C, name, point, t, b, n, radius):
+    """Flattened button oriented on the garment surface (local frame t, b, n)."""
+    global _UNIT_BUTTON
+    if _UNIT_BUTTON is None:
+        import bmesh
+        bm = bmesh.new()
+        bmesh.ops.create_uvsphere(bm, u_segments=16, v_segments=8, radius=1.0)
+        _UNIT_BUTTON = ([v.co.copy() for v in bm.verts], [tuple(v.index for v in f.verts) for f in bm.faces])
+        bm.free()
+    sv, sf = _UNIT_BUTTON
+    centre = point + n * (radius * 0.45 * 0.8)
+    verts = [tuple(centre + t * (p.x * radius) + b * (p.z * radius) + n * (p.y * radius * 0.45)) for p in sv]
+    return G.new_object(name, verts, sf, C)
+
+
+def _placed_buttons(objects, G, C, cfg, H, fit, bvh_main, points, what):
+    """Buttons at explicit (x, z, face, bvh) placements, each projected onto its garment piece."""
+    buttons = cfg["buttons"]
+    bm = _mat_for(G, cfg, "buttons", H)
+    radius = float(buttons.get("radius_m", 0.006 * fit.torso))
+    report = []
+    for k, (x, z, face, bvh) in enumerate(points):
+        point, t, b, n = _surface_frame(bvh or bvh_main, x, z, face, f"garment {cfg['name']}: {what} button {k + 1}")
+        ob = _button(G, C, f"garment.{cfg['name']}.button.{k + 1}", point, t, b, n, radius)
+        ob["ps_weight_anchor"] = tuple(point - n * (cfg["ease_m"] + cfg["thickness_m"]))
+        _feature(objects, ob, cfg, "buttons", bm, G)
+        report.append([round(v, 4) for v in point])
+    cfg["_buttons_report"] = {"placement": buttons.get("placement", "centre"), "at_m": report}
+
+
+def _spread(count, lo, hi):
+    return [(lo + hi) * 0.5] if count == 1 else [lo + (hi - lo) * k / (count - 1) for k in range(count)]
+
+
+def _smooth_loop(points, iterations):
+    pts = [p.copy() for p in points]
+    n = len(pts)
+    for _ in range(iterations):
+        pts = [pts[i] * 0.5 + (pts[i - 1] + pts[(i + 1) % n]) * 0.25 for i in range(n)]
+    out = [pts[0]]
+    for p in pts[1:]:
+        if (p - out[-1]).length > 1e-4:
+            out.append(p)
+    return out
+
+
+def _armhole_edge(fit, cfg, shoulder_z, arm_bottom, neck_r):
+    """Side cut x(z, w) of a torso shell's armhole (T-025): ARMHOLE_SIDE_SHARE of the local half width, kept clear
+    of the arm root; ``shoulder_width`` (0-1) widens the strap towards the shoulder joint at the shoulder line."""
+    joint_x = fit.P["shoulder"]["joint_x"] * fit.H
+    root_x = joint_x - ARMHOLE_ROOT_CLEARANCE * fit.arm_root
+    sw = cfg.get("shoulder_width")
+    strap_x = None if sw is None else neck_r + float(sw) * (joint_x - neck_r)
+
+    def edge(z, w):
+        base = min(ARMHOLE_SIDE_SHARE * w, root_x)
+        if strap_x is None or strap_x <= base:
+            return base
+        u = max(0.0, min(1.0, (z - arm_bottom) / max(shoulder_z - arm_bottom, 1e-9)))
+        return base + (strap_x - base) * u * u * (3 - 2 * u)
+    return edge
+
+
+def _top(C, body, cfg, P, H, J, G, fit, vest=False):
     ease, thick = cfg["ease_m"], cfg["thickness_m"]
     shell_ease = ease + float(cfg.get("articulation_allowance_m", 0.0))
-    front_rise = float(cfg.get("front_articulation_rise_m", 0.0))
+    front_rise = float(cfg.get("front_articulation_rise_m", 0.0)) * fit.torso
     levels = P["torso"]["levels"]
     hem_z = float(cfg.get("hem_z_m", levels[2][0] * H))
     top_z = max(P["neck"]["base_z"], P["torso"]["levels"][-1][0]) * H
     sleeve = 0.0 if vest else float(cfg.get("sleeve_length", 0.45))
-    arm_segments = [(J[f"shoulder.{s}"], J[f"wrist.{s}"]) for s in ("L", "R")]
-    opening = float(cfg.get("open_front_m", 0.022 * H if vest else 0.0))
+    arm_segments = fit.segments
+    opening = float(cfg.get("open_front_m", 0.022 if vest else 0.0)) * fit.torso
+    shoulder_z = P["shoulder"]["z"] * H
+    arm_bottom = shoulder_z - ARMHOLE_DEPTH_ROOT_RADII * fit.arm_root
+    edge = _armhole_edge(fit, cfg, shoulder_z, arm_bottom, P["neck"]["radius"] * H)
+    torso_margin = 0.015 * fit.torso
 
     def selector(c):
         torso = hem_z <= c.z <= top_z
         if torso:
             w, front, back = _torso_dims(P, H, c.z)
-            torso = abs(c.x) <= w + 0.015 * H and -front - 0.015 * H <= c.y <= back + 0.015 * H
+            torso = abs(c.x) <= w + torso_margin and -front - torso_margin <= c.y <= back + torso_margin
             # Leave an actual armhole. A shell copied from the underarm concavity is trapped when the arm lowers.
-            if c.z > P["shoulder"]["z"] * H - 0.12 * H and abs(c.x) > w * 0.58:
+            if c.z > arm_bottom and abs(c.x) > edge(c.z, w):
                 torso = False
             if vest and torso and c.y < -front * 0.35 and abs(c.x) < opening:
                 torso = False
-        arm = False
-        if sleeve > 0:
-            for a, b in arm_segments:
-                t, d = _segment(c, a, b)
-                arm |= 0.10 <= t <= sleeve and d <= _arm_radius(P, H, t) + 0.012 * H
-        return torso or arm
+        return torso or (sleeve > 0 and fit.in_sleeve(c, 0.10, sleeve))
 
     puff = float(cfg.get("sleeve_puff_m", 0.0)) if sleeve > 0 else 0.0
     peak = float(cfg.get("sleeve_puff_peak", 0.6))
@@ -554,31 +841,34 @@ def _top(C, body, cfg, P, H, J, G, vest=False):
         best = 0.0
         for a, b in arm_segments:
             t, d = _segment(c, a, b)
-            if start <= t <= sleeve and d <= _arm_radius(P, H, t) + 0.012 * H:
+            if start <= t <= sleeve and d <= _arm_radius(P, H, t) + 0.012 * fit.arm:
                 best = max(best, puff * _bump((t - start) / max(sleeve - start, 1e-6), peak))
         return best
 
+    bands = cfg.get("bands", {})
+    if bands is True:
+        bands = {"hem": True, "cuff": True}
+    roll = float(bands.get("edge_roll_m", 0.0))
+    loops = [] if roll > 0 else None
     main, covered = _shell(body, f"garment.{cfg['name']}.main", selector, shell_ease, thick, C, G,
-                           extra=sleeve_volume if puff > 0 else None)
-    _front_articulation_rise(main, hem_z, 0.20 * H, front_rise, upper_only=True)
+                           extra=sleeve_volume if puff > 0 else None, scale=fit.at, loops_out=loops)
+    _front_articulation_rise(main, hem_z, 0.20 * fit.torso, front_rise, upper_only=True)
     objects = []
     main_mat = _mat_for(G, cfg, "main", H)
     _feature(objects, main, cfg, "main", main_mat, G)
     seam_mat = _mat_for(G, cfg, "seam", H)
-    bands = cfg.get("bands", {})
-    if bands is True:
-        bands = {"hem": True, "cuff": True}
+    te, ae = ease * fit.torso, ease * fit.arm
     if bands.get("hem"):
-        hem_band = _torso_ring(G, C, f"garment.{cfg['name']}.band.hem", P, H, hem_z, ease + thick + 0.004,
+        hem_band = _torso_ring(G, C, f"garment.{cfg['name']}.band.hem", P, H, hem_z, te + thick + 0.004 * fit.torso,
                                cfg["seam_radius_m"] * 1.25)
-        _front_articulation_rise(hem_band, hem_z, 0.10 * H, front_rise, upper_only=True)
+        _front_articulation_rise(hem_band, hem_z, 0.10 * fit.torso, front_rise, upper_only=True)
         _feature(objects, hem_band, cfg, "band", _mat_for(G, cfg, "band", H), G)
     ridges = int(bands.get("rib_ridges", 0))
     for k in range(ridges):
         z = hem_z + (k + 1) * cfg["seam_radius_m"] * 2.2
-        ridge = _torso_ring(G, C, f"garment.{cfg['name']}.rib.hem_{k + 1}", P, H, z, ease + thick + 0.004,
+        ridge = _torso_ring(G, C, f"garment.{cfg['name']}.rib.hem_{k + 1}", P, H, z, te + thick + 0.004 * fit.torso,
                             cfg["seam_radius_m"] * 0.65)
-        _front_articulation_rise(ridge, hem_z, 0.10 * H, front_rise, upper_only=True)
+        _front_articulation_rise(ridge, hem_z, 0.10 * fit.torso, front_rise, upper_only=True)
         _feature(objects, ridge, cfg, "band", _mat_for(G, cfg, "band", H), G)
     if sleeve > 0 and bands.get("cuff"):
         for side in ("L", "R"):
@@ -586,16 +876,27 @@ def _top(C, body, cfg, P, H, J, G, vest=False):
             centre = a.lerp(b, sleeve)
             cr = _cuff_radius(cfg, bands, cfg["seam_radius_m"] * 1.25)
             ob = _limb_ring(G, C, f"garment.{cfg['name']}.band.cuff.{side}", centre, b - a,
-                            _arm_radius(P, H, sleeve), ease + thick + max(0.0, cr - cfg["seam_radius_m"] * 1.25), cr)
+                            _arm_radius(P, H, sleeve), ae + thick + max(0.0, cr - cfg["seam_radius_m"] * 1.25), cr)
             _feature(objects, ob, cfg, "band", _mat_for(G, cfg, "band", H), G)
+    if roll > 0:
+        # Rolled edge (piping): a soft tube along every open edge of the main panel (neckline, front opening, hem,
+        # armholes or sleeve ends), centred just outside the panel's edge.
+        part = "edge" if "edge" in cfg.get("materials", {}) else ("band" if "band" in cfg.get("materials", {}) else "main")
+        edge_mat = _mat_for(G, cfg, part, H)
+        for k, (pts, normals) in enumerate(sorted(loops, key=lambda lp: -len(lp[0]))):
+            path = _smooth_loop([p + n * (thick * 0.5 + roll * 0.6) for p, n in zip(pts, normals)], 6)
+            if len(path) < 6:
+                continue
+            ob = _closed_tube(G, C, f"garment.{cfg['name']}.edge.{k + 1}", path, roll)
+            _feature(objects, ob, cfg, "edge", edge_mat, G)
     if cfg.get("seam_lines"):
-        seam_top_z = min(top_z, P["shoulder"]["z"] * H - 0.12 * H)
+        seam_top_z = min(top_z, arm_bottom)
         for sx, side in ((1, "L"), (-1, "R")):
             path = []
             for k in range(9):
                 z = hem_z + (seam_top_z - hem_z) * k / 8
                 w, _, _ = _torso_dims(P, H, z)
-                path.append(Vector((sx * (w + ease + thick), 0, z)))
+                path.append(Vector((sx * (w + te + thick), 0, z)))
             ob = G.tube(f"garment.{cfg['name']}.seam.side.{side}", path,
                         [cfg["seam_radius_m"]] * len(path), [cfg["seam_radius_m"]] * len(path), C,
                         up_hint=(0, -1, 0), seg=7, cap_start="round", cap_end="round")
@@ -603,83 +904,157 @@ def _top(C, body, cfg, P, H, J, G, vest=False):
     collar = cfg.get("collar", "none")
     collar = collar.get("type", "none") if isinstance(collar, dict) else collar
     if collar in ("crew", "rib"):
-        r = P["neck"]["radius"] * H + ease + thick + cfg["seam_radius_m"]
-        collar_z = top_z + ease * 0.35
+        r = P["neck"]["radius"] * H + te + thick + cfg["seam_radius_m"]
+        collar_z = top_z + te * 0.35
         pts = [Vector((math.cos(2 * math.pi * k / 48) * r, math.sin(2 * math.pi * k / 48) * r, collar_z)) for k in range(48)]
         _feature(objects, _closed_tube(G, C, f"garment.{cfg['name']}.collar", pts, cfg["seam_radius_m"] * 1.4),
                  cfg, "band", _mat_for(G, cfg, "band", H), G)
     elif collar == "round":
-        _feature(objects, _round_collar(G, C, body, cfg, P, H, top_z), cfg, "collar",
+        _feature(objects, _round_collar(G, C, body, cfg, P, H, top_z, fit), cfg, "collar",
                  _mat_for(G, cfg, "collar" if "collar" in cfg.get("materials", {}) else "main", H), G)
     elif collar in ("v", "v-neck", "shirt", "point"):
-        r = P["neck"]["radius"] * H + ease + thick
-        drop = float(cfg.get("collar_drop_m", 0.045 * H if collar in ("v", "v-neck") else 0.032 * H))
-        collar_z = top_z + ease * 0.2
+        r = P["neck"]["radius"] * H + te + thick
+        drop = float(cfg.get("collar_drop_m", (0.045 if collar in ("v", "v-neck") else 0.032) * fit.torso))
+        collar_z = top_z + te * 0.2
         _, front_top, _ = _torso_dims(P, H, top_z)
         _, front_low, _ = _torso_dims(P, H, top_z - drop)
-        y_top = -(max(r, front_top) + ease + thick + cfg["seam_radius_m"] * 2)
-        y_low = -(front_low + ease + thick + cfg["seam_radius_m"] * 2)
+        y_top = -(max(r, front_top) + te + thick + cfg["seam_radius_m"] * 2)
+        y_low = -(front_low + te + thick + cfg["seam_radius_m"] * 2)
         pts = [Vector((-r, y_top, collar_z)), Vector((0, y_low, top_z - drop)), Vector((r, y_top, collar_z))]
         ob = G.tube(f"garment.{cfg['name']}.collar", pts, [cfg["seam_radius_m"] * 1.5] * 3,
                     [cfg["seam_radius_m"] * 1.5] * 3, C, up_hint=(0, -1, 0), seg=8)
         _feature(objects, ob, cfg, "band", _mat_for(G, cfg, "band", H), G)
     buttons = cfg.get("buttons", 0)
     buttons = {"count": buttons} if isinstance(buttons, int) else (buttons or {})
+    cfg["buttons"] = buttons
     count = int(buttons.get("count", 0))
-    if count:
+    placement = buttons.get("placement", "centre")
+    if count and placement == "centre":
         bm = _mat_for(G, cfg, "buttons", H)
-        radius = float(buttons.get("radius_m", 0.006 * H))
-        z0, z1 = hem_z + 0.07 * H, top_z - 0.07 * H
+        radius = float(buttons.get("radius_m", 0.006 * fit.torso))
+        z0, z1 = hem_z + 0.07 * fit.torso, top_z - 0.07 * fit.torso
         for k in range(count):
             z = (z0 + z1) * 0.5 if count == 1 else z0 + (z1 - z0) * k / (count - 1)
             _, front, _ = _torso_dims(P, H, z)
-            ob = G.uv_sphere(f"garment.{cfg['name']}.button.{k + 1}", (0, -front - ease - thick - radius, z),
+            ob = G.uv_sphere(f"garment.{cfg['name']}.button.{k + 1}", (0, -front - te - thick - radius, z),
                              1.0, C, 16, 8, (radius, radius * 0.45, radius))
             ob["ps_weight_anchor"] = (0, -front, z)
             _feature(objects, ob, cfg, "buttons", bm, G)
+    pockets = {}
     if vest and cfg.get("pockets", True):
         pm = _mat_for(G, cfg, "pockets", H)
         pc = cfg.get("pockets") if isinstance(cfg.get("pockets"), dict) else {}
-        pw, ph, pd = (float(pc.get("width_m", 0.035 * H)), float(pc.get("height_m", 0.032 * H)),
-                      float(pc.get("depth_m", 0.004 * H)))
-        z = hem_z + float(pc.get("above_hem_m", 0.055 * H))
+        pw, ph, pd = (float(pc.get("width_m", 0.035 * fit.torso)), float(pc.get("height_m", 0.032 * fit.torso)),
+                      float(pc.get("depth_m", 0.004 * fit.torso)))
+        z = hem_z + float(pc.get("above_hem_m", 0.055)) * fit.torso
         w, front, _ = _torso_dims(P, H, z)
         for sx, side in ((1, "L"), (-1, "R")):
-            centre = (sx * min(w * 0.5, w - pw), -front - ease - thick - pd, z)
+            centre = (sx * min(w * 0.5, w - pw), -front - te - thick - pd, z)
             ob = G.uv_sphere(f"garment.{cfg['name']}.pocket.{side}", centre, 1.0, C, 20, 10,
                              (pw, pd, ph))
             ob["ps_weight_anchor"] = (centre[0], -front, centre[2])
             _feature(objects, ob, cfg, "pockets", pm, G)
-    _add_embroidery(objects, G, C, cfg, main, (hem_z, top_z), P, H)
+            pockets[f"pocket.{side}"] = ob
+    if count and placement != "centre":
+        deps = bpy.context.evaluated_depsgraph_get()
+        bvh = BVHTree.FromObject(main, deps)
+        side = buttons.get("side", "both")
+        sides = [s for s, name in ((1, "left"), (-1, "right")) if side in ("both", name)]
+        if placement == "edge":
+            # Along the front edge(s) of an open garment, inset from the opening.
+            radius = float(buttons.get("radius_m", 0.006 * fit.torso))
+            inset = float(buttons.get("inset_m", 1.8 * radius / fit.torso)) * fit.torso
+            z_lo = hem_z + float(buttons.get("v0", 0.18)) * (arm_bottom - hem_z)
+            z_hi = hem_z + float(buttons.get("v1", 0.95)) * (arm_bottom - hem_z)
+            points = [(sx * (max(opening, 0.0) + inset), z, "front", None)
+                      for sx in sides for z in reversed(_spread(count, z_lo, z_hi))]
+        elif placement == "pockets":
+            points = []
+            for s in sides:
+                ob = pockets.get("pocket.L" if s > 0 else "pocket.R")
+                if ob is None:
+                    continue
+                lo, hi = _bbox_world(ob)
+                pb = BVHTree.FromObject(ob, deps)
+                for x in _spread(count, lo.x + (hi.x - lo.x) * 0.3, hi.x - (hi.x - lo.x) * 0.3):
+                    points.append((x, lo.z + (hi.z - lo.z) * float(buttons.get("v1", 0.78)), "front", pb))
+        else:  # positions
+            points = []
+            for m in buttons["positions"]:
+                z = hem_z + (top_z - hem_z) * float(m.get("v", 0.5))
+                points.append((float(m.get("u", 0.0)) * _torso_dims(P, H, z)[0], z, m.get("face", "front"), None))
+        _placed_buttons(objects, G, C, cfg, H, fit, bvh, points, placement)
+    _add_embroidery(objects, G, C, cfg, {"main": main, **pockets}, (hem_z, top_z), P, H)
     return objects, covered
 
 
-def _bottoms(C, body, cfg, P, H, J, G):
+def _gusset(G, C, cfg, P, H, J, fit, bottom_z, hip_z, ankle_z, puff, inner):
+    """Crotch gusset (T-025): a hammock panel between the leg panels, from just above the crotch down to ``depth``
+    of the leg opening, so no gap shows between the legs from the front or back. Its sides are buried in the leg
+    panels; ``width`` is its front/back reach as a share of the leg panel radius."""
+    crotch = cfg["crotch"] if isinstance(cfg["crotch"], dict) else {"type": cfg["crotch"]}
+    r0 = _leg_radius(P, H, 0.0)
+    crotch_z = hip_z - r0
+    depth = float(crotch.get("depth", 0.6)) * max(0.0, crotch_z - bottom_z)
+    t = (hip_z - crotch_z) / max(hip_z - ankle_z, 1e-9)
+    leg_r = _leg_radius(P, H, t)
+    ease = cfg["ease_m"] * fit.leg
+    reach = float(crotch.get("width", 0.85)) * (leg_r + ease + puff * inner * fit.leg)
+    hip_x = abs(J["hip.L"].x)
+    xe = max(1e-3, hip_x - leg_r + 0.6 * leg_r)
+    z_top = crotch_z + 0.25 * r0
+    z_bottom = crotch_z - depth
+    nx, nphi = 16, 18
+    verts, faces = [], []
+    for i in range(nx + 1):
+        x = -xe + 2 * xe * i / nx
+        for j in range(nphi + 1):
+            phi = math.pi * j / nphi
+            verts.append((x, -reach * math.cos(phi), z_top - (z_top - z_bottom) * math.sin(phi)))
+    for i in range(nx):
+        for j in range(nphi):
+            a = i * (nphi + 1) + j
+            faces.append((a, a + nphi + 1, a + nphi + 2, a + 1))
+    ob = G.new_object(f"garment.{cfg['name']}.gusset", verts, faces, C)
+    if cfg["thickness_m"] > 0:
+        mod = ob.modifiers.new("garment_thickness", "SOLIDIFY")
+        mod.thickness, mod.offset = cfg["thickness_m"], 1.0
+        bpy.context.view_layer.objects.active = ob
+        ob.select_set(True)
+        bpy.ops.object.modifier_apply(modifier=mod.name)
+        ob.select_set(False)
+    cfg["_gusset_report"] = {"crotch_z_m": round(crotch_z, 4), "bottom_z_m": round(z_bottom, 4),
+                             "reach_m": round(reach, 4), "half_width_m": round(xe, 4)}
+    return ob
+
+
+def _bottoms(C, body, cfg, P, H, J, G, fit):
     ease, thick = cfg["ease_m"], cfg["thickness_m"]
     shell_ease = ease + float(cfg.get("articulation_allowance_m", 0.0))
-    front_rise = float(cfg.get("front_articulation_rise_m", 0.0))
+    front_rise = float(cfg.get("front_articulation_rise_m", 0.0)) * fit.torso
     is_short = cfg["type"] == "shorts"
     length = float(cfg.get("length", 0.36 if is_short else 0.92))
     hip_z, ankle_z = P["leg"]["hip_z"] * H, P["leg"]["ankle_z"] * H
     bottom_z = float(cfg.get("length_m", length * (hip_z - ankle_z)))
     bottom_z = hip_z - bottom_z if "length_m" in cfg else hip_z - length * (hip_z - ankle_z)
     waist_z = float(cfg.get("waist_z_m", P["torso"]["levels"][2][0] * H))
+    tm, lm = 0.012 * fit.torso, 0.012 * fit.leg
 
     def selector(c):
         if not bottom_z <= c.z <= waist_z:
             return False
         if c.z >= hip_z:
             w, front, back = _torso_dims(P, H, c.z)
-            return abs(c.x) <= w + 0.012 * H and -front - 0.012 * H <= c.y <= back + 0.012 * H
+            return abs(c.x) <= w + tm and -front - tm <= c.y <= back + tm
         t = (hip_z - c.z) / max(hip_z - ankle_z, 1e-9)
         if t > length + 0.04:
             return False
         # Crotch bridge: the merged body surface between the legs just below the hip line.
         if c.z >= hip_z - _leg_radius(P, H, 0.0) and abs(c.x) <= abs(J["hip.L"].x):
             _, front, back = _torso_dims(P, H, hip_z)
-            if -front - 0.012 * H <= c.y <= back + 0.012 * H:
+            if -front - tm <= c.y <= back + tm:
                 return True
-        r = _leg_radius(P, H, t) + 0.012 * H
+        r = _leg_radius(P, H, t) + lm
         return any((Vector((c.x, c.y, c.z)) - Vector((J[f"hip.{s}"].x, 0, c.z))).length <= r for s in ("L", "R"))
 
     puff = float(cfg.get("puff_m", 0.0))
@@ -698,18 +1073,24 @@ def _bottoms(C, body, cfg, P, H, J, G):
         return puff * f * (1.0 - (1.0 - inner) * facing_in)
 
     main, covered = _shell(body, f"garment.{cfg['name']}.main", selector, shell_ease, thick, C, G,
-                           extra=bloomer_volume if puff > 0 else None)
-    _front_articulation_rise(main, hip_z, 0.20 * H, front_rise)
-    _front_centre_ease(main, hip_z, 0.12 * H, float(cfg.get("front_centre_ease_m", 0.0)), abs(J["hip.L"].x) * 0.75)
+                           extra=bloomer_volume if puff > 0 else None, scale=fit.at)
+    _front_articulation_rise(main, hip_z, 0.20 * fit.torso, front_rise)
+    _front_centre_ease(main, hip_z, 0.12 * fit.torso, float(cfg.get("front_centre_ease_m", 0.0)) * fit.torso,
+                       abs(J["hip.L"].x) * 0.75)
     objects = []
     _feature(objects, main, cfg, "main", _mat_for(G, cfg, "main", H), G)
+    te, le = ease * fit.torso, ease * fit.leg
     bands = cfg.get("bands", {})
     if bands is True:
         bands = {"waist": True, "cuff": True}
+    crotch = cfg.get("crotch", "none")
+    if (crotch.get("type", "gusset") if isinstance(crotch, dict) else crotch) == "gusset":
+        gusset = _gusset(G, C, cfg, P, H, J, fit, bottom_z, hip_z, ankle_z, puff, inner)
+        _feature(objects, gusset, cfg, "gusset", _mat_for(G, cfg, "gusset", H), G)
     if bands.get("waist"):
         waist_band = _torso_ring(G, C, f"garment.{cfg['name']}.band.waist", P, H, waist_z,
-                                  ease + thick + 0.004, cfg["seam_radius_m"] * 1.3)
-        _front_articulation_rise(waist_band, hip_z, 0.10 * H, front_rise)
+                                 te + thick + 0.004 * fit.torso, cfg["seam_radius_m"] * 1.3)
+        _front_articulation_rise(waist_band, hip_z, 0.10 * fit.torso, front_rise)
         _feature(objects, waist_band, cfg, "band", _mat_for(G, cfg, "band", H), G)
     if cfg.get("cuff") or bands.get("cuff"):
         t = max(0.0, min(1.0, (hip_z - bottom_z) / max(hip_z - ankle_z, 1e-9)))
@@ -717,7 +1098,7 @@ def _bottoms(C, body, cfg, P, H, J, G):
             centre = Vector((J[f"hip.{side}"].x, 0, bottom_z))
             cr = _cuff_radius(cfg, bands, cfg["seam_radius_m"] * 1.35)
             ob = _limb_ring(G, C, f"garment.{cfg['name']}.band.cuff.{side}", centre, (0, 0, -1),
-                            _leg_radius(P, H, t), ease + thick + max(0.0, cr - cfg["seam_radius_m"] * 1.35), cr)
+                            _leg_radius(P, H, t), le + thick + max(0.0, cr - cfg["seam_radius_m"] * 1.35), cr)
             _feature(objects, ob, cfg, "band", _mat_for(G, cfg, "band", H), G)
     if cfg.get("seam_lines"):
         sm = _mat_for(G, cfg, "seam", H)
@@ -727,14 +1108,33 @@ def _bottoms(C, body, cfg, P, H, J, G):
                 z = bottom_z + (waist_z - bottom_z) * k / 8
                 if z < hip_z:
                     t = (hip_z - z) / max(hip_z - ankle_z, 1e-9)
-                    x = abs(J[f"hip.{side}"].x) + _leg_radius(P, H, t) + ease + thick
+                    x = abs(J[f"hip.{side}"].x) + _leg_radius(P, H, t) + le + thick
                 else:
-                    x = _torso_dims(P, H, z)[0] + ease + thick
+                    x = _torso_dims(P, H, z)[0] + te + thick
                 path.append(Vector((sx * x, 0, z)))
             ob = G.tube(f"garment.{cfg['name']}.seam.side.{side}", path,
                         [cfg["seam_radius_m"]] * len(path), [cfg["seam_radius_m"]] * len(path), C,
                         up_hint=(0, -1, 0), seg=7)
             _feature(objects, ob, cfg, "seam", sm, G)
+    buttons = cfg.get("buttons", 0)
+    buttons = {"count": buttons, "placement": "waistband"} if isinstance(buttons, int) else (buttons or {})
+    cfg["buttons"] = buttons
+    count = int(buttons.get("count", 0))
+    if count:
+        bvh = BVHTree.FromObject(main, bpy.context.evaluated_depsgraph_get())
+        radius = float(buttons.get("radius_m", 0.006 * fit.torso))
+        if buttons.get("placement", "waistband") == "waistband":
+            # Across the front of the waistband, just below its top edge.
+            drop = float(buttons.get("drop_m", 1.7 * radius / fit.torso)) * fit.torso
+            spread = float(buttons.get("spread", 0.5))
+            w = _torso_dims(P, H, waist_z - drop)[0]
+            points = [(u * w, waist_z - drop, "front", None) for u in _spread(count, -spread, spread)]
+        else:
+            points = []
+            for m in buttons["positions"]:
+                z = bottom_z + (waist_z - bottom_z) * float(m.get("v", 0.5))
+                points.append((float(m.get("u", 0.0)) * _torso_dims(P, H, z)[0], z, m.get("face", "front"), None))
+        _placed_buttons(objects, G, C, cfg, H, fit, bvh, points, buttons.get("placement", "waistband"))
     _add_embroidery(objects, G, C, cfg, main, (bottom_z, waist_z), P, H)
     return objects, covered
 
@@ -752,13 +1152,13 @@ def _skirt_ring(z, width, front, back):
     return points
 
 
-def _skirt(C, cfg, P, H, J, G, part="main"):
+def _skirt(C, cfg, P, H, J, G, fit, part="main"):
     ease, thick = cfg["ease_m"], cfg["thickness_m"]
     hip_z, ankle_z = P["leg"]["hip_z"] * H, P["leg"]["ankle_z"] * H
     waist_z = float(cfg.get("waist_z_m", P["torso"]["levels"][2][0] * H))
     length = float(cfg.get("length", 0.66))
     bottom_z = waist_z - (float(cfg["length_m"]) if "length_m" in cfg else length * (waist_z - ankle_z))
-    flare = float(cfg.get("flare_m", float(cfg.get("flare", 0.08)) * H))
+    flare = float(cfg.get("flare_m", float(cfg.get("flare", 0.08)) * fit.leg))
     rings = []
     for k in range(17):
         t = k / 16
@@ -766,12 +1166,14 @@ def _skirt(C, cfg, P, H, J, G, part="main"):
         down = 1 - t
         if z >= hip_z:
             w, front, back = _torso_dims(P, H, z)
+            s = fit.torso
         else:
             lt = (hip_z - z) / max(hip_z - ankle_z, 1e-9)
             lr = _leg_radius(P, H, lt)
             w = abs(J["hip.L"].x) + lr
             front = back = lr
-        add = ease + thick + flare * down
+            s = fit.leg
+        add = ease * s + thick + flare * down
         rings.append(_skirt_ring(z, w + add, front + add, back + add))
     ob = G.loft(f"garment.{cfg['name']}.{part}", rings, C, cap_bottom=False, cap_top=False)
     if thick > 0:
@@ -789,7 +1191,7 @@ def _skirt(C, cfg, P, H, J, G, part="main"):
     bm = _mat_for(G, cfg, "band", H)
     if bands.get("waist"):
         _feature(objects, _torso_ring(G, C, f"garment.{cfg['name']}.band.waist", P, H, waist_z,
-                                     ease + thick, cfg["seam_radius_m"] * 1.3), cfg, "band", bm, G)
+                                     ease * fit.torso + thick, cfg["seam_radius_m"] * 1.3), cfg, "band", bm, G)
     if bands.get("hem"):
         ring = rings[0]
         _feature(objects, _closed_tube(G, C, f"garment.{cfg['name']}.band.hem", ring,
@@ -805,26 +1207,51 @@ def _skirt(C, cfg, P, H, J, G, part="main"):
     anchor = (0.0, 0.0, waist_z)
     for piece in objects:
         piece["ps_weight_anchor"] = anchor
+    if part == "main" and cfg.get("embroidery"):
+        _add_embroidery(objects, G, C, cfg, {"main": ob}, (bottom_z, waist_z), P, H)
     return objects
 
 
-def _footwear(C, body, cfg, P, H, J, G):
+def _smoothstep(x):
+    x = max(0.0, min(1.0, x))
+    return x * x * (3 - 2 * x)
+
+
+def _footwear(C, body, cfg, P, H, J, G, fit):
     ease, thick = cfg["ease_m"], cfg["thickness_m"]
     ankle_z, knee_z = P["leg"]["ankle_z"] * H, P["leg"]["knee_z"] * H
     height = float(cfg.get("height", 0.18 if cfg["type"] == "shoes" else 0.64))
     top_z = ankle_z + (float(cfg["height_m"]) if "height_m" in cfg else height * (knee_z - ankle_z))
     fw, fl = P["foot"]["half_width"] * H, P["foot"]["length"] * H
     max_r = max(x * H for x in P["leg"]["radii"])
+    # Chunky proportions (T-025): extra shaft width (full above the lower third of the shaft) and toe volume (over
+    # the front half of the foot, mostly on its top and front).
+    shaft, toe = float(cfg.get("shaft_width_m", 0.0)), float(cfg.get("toe_volume_m", 0.0))
+
+    def volume(c, normal):
+        v = 0.0
+        if shaft > 0 and c.z > ankle_z:
+            v += shaft * _smoothstep((c.z - ankle_z) / max(0.35 * (top_z - ankle_z), 1e-9))
+        if toe > 0:
+            front = _smoothstep((-c.y - 0.15 * fl) / (0.55 * fl))
+            facing = max(0.0, normal.z, -normal.y) + 0.3 * max(0.0, 1.0 - abs(normal.z))
+            v += toe * front * min(1.0, facing) * (normal.z > -0.5)
+        return v
+
     objects, covered = [], set()
+    shell_parts = {}
+    lm = fit.leg
     for side in ("L", "R"):
         hx = J[f"ankle.{side}"].x
 
         def selector(c, hx=hx):
-            return (-0.01 * H <= c.z <= top_z and abs(c.x - hx) <= max(fw, max_r) + 0.015 * H and
-                    -1.05 * fl <= c.y <= max_r + 0.02 * H)
-        ob, cov = _shell(body, f"garment.{cfg['name']}.main.{side}", selector, ease, thick, C, G)
+            return (-0.01 * lm <= c.z <= top_z and abs(c.x - hx) <= max(fw, max_r) + 0.015 * lm and
+                    -1.05 * fl <= c.y <= max_r + 0.02 * lm)
+        ob, cov = _shell(body, f"garment.{cfg['name']}.main.{side}", selector, ease, thick, C, G,
+                         extra=volume if shaft > 0 or toe > 0 else None, scale=lambda c: lm)
         covered |= cov
         _feature(objects, ob, cfg, "main", _mat_for(G, cfg, "main", H), G)
+        shell_parts[f"main.{side}"] = ob
         bands = cfg.get("bands", {})
         bands = {"cuff": True} if bands is True else bands
         if cfg.get("cuff") or bands.get("cuff"):
@@ -832,16 +1259,19 @@ def _footwear(C, body, cfg, P, H, J, G):
             lr = _leg_radius(P, H, 1 - t)
             cr = _cuff_radius(cfg, bands, cfg["seam_radius_m"] * 1.4)
             ring = _limb_ring(G, C, f"garment.{cfg['name']}.band.cuff.{side}", (hx, 0, top_z), (0, 0, -1),
-                              lr, ease + thick + max(0.0, cr - cfg["seam_radius_m"] * 1.4), cr)
+                              lr, (ease + shaft) * lm + thick + max(0.0, cr - cfg["seam_radius_m"] * 1.4), cr)
             _feature(objects, ring, cfg, "band", _mat_for(G, cfg, "band", H), G)
         sole = cfg.get("sole", {})
         if sole is not False:
             sole = sole if isinstance(sole, dict) else {}
             st = float(sole.get("thickness_m", max(0.003, thick * 2)))
+            extra_w = float(sole.get("width_m", 0.0)) + 0.5 * toe
+            e = ease * lm
             ob = G.uv_sphere(f"garment.{cfg['name']}.sole.{side}",
-                             (hx, -0.30 * fl, -ease - st * 0.5), 1.0, C, 28, 12,
-                             (fw + ease + thick, 0.60 * fl + ease + thick, st * 0.5))
+                             (hx, -0.30 * fl - 0.5 * toe * lm, -e - st * 0.5), 1.0, C, 28, 12,
+                             (fw + e + thick + extra_w * lm, 0.60 * fl + e + thick + extra_w * lm, st * 0.5))
             _feature(objects, ob, cfg, "sole", _mat_for(G, cfg, "sole", H), G)
+    _add_embroidery(objects, G, C, cfg, shell_parts, (0.0, top_z), P, H)
     return objects, covered
 
 
@@ -1004,25 +1434,29 @@ def visible_face_flags(body):
 def build(C, body, clothing, P, H, J, G):
     """Build garments before rigging. Returns ``(objects, JSON-safe report)``."""
     validate(clothing)
+    fit = BodyFit(P, H, J)
     objects, coverage, item_report, masked = [], set(), [], []
     hide_default = bool(clothing.get("hide_body_faces", False))
     for raw in clothing["garments"]:
         cfg = _merge(clothing.get("defaults"), raw)
         before = len(objects)
         if cfg["type"] in ("top", "shirt"):
-            made, cov = _top(C, body, cfg, P, H, J, G)
+            made, cov = _top(C, body, cfg, P, H, J, G, fit)
         elif cfg["type"] == "vest":
-            made, cov = _top(C, body, cfg, P, H, J, G, vest=True)
+            made, cov = _top(C, body, cfg, P, H, J, G, fit, vest=True)
         elif cfg["type"] in ("shorts", "trousers"):
-            made, cov = _bottoms(C, body, cfg, P, H, J, G)
+            made, cov = _bottoms(C, body, cfg, P, H, J, G, fit)
         elif cfg["type"] == "skirt":
-            made, cov = _skirt(C, cfg, P, H, J, G), set()
+            made, cov = _skirt(C, cfg, P, H, J, G, fit), set()
         elif cfg["type"] == "dress":
             bodice_cfg = dict(cfg)
             bodice_cfg["type"] = "dress"
             bodice_cfg.setdefault("sleeve_length", 0.18)
             bodice_cfg["hem_z_m"] = float(cfg.get("waist_z_m", P["torso"]["levels"][2][0] * H))
-            made, cov = _top(C, body, bodice_cfg, P, H, J, G)
+            made, cov = _top(C, body, bodice_cfg, P, H, J, G, fit)
+            for key in ("_embroidery_report", "_buttons_report"):
+                if key in bodice_cfg:
+                    cfg[key] = bodice_cfg[key]
             made[0].name = f"garment.{cfg['name']}.bodice"
             made[0]["ps_garment_part"] = "bodice"
             if "bodice" in cfg.get("materials", {}):
@@ -1030,33 +1464,40 @@ def build(C, body, clothing, P, H, J, G):
                 made[0].data.materials.clear()
                 G.assign(made[0], mat)
                 _tag(made[0], cfg, "bodice", mat)
-            made += _skirt(C, cfg, P, H, J, G, part="skirt")
+            skirt_cfg = {k: v for k, v in cfg.items() if k != "embroidery"}
+            made += _skirt(C, skirt_cfg, P, H, J, G, fit, part="skirt")
         else:
-            made, cov = _footwear(C, body, cfg, P, H, J, G)
+            made, cov = _footwear(C, body, cfg, P, H, J, G, fit)
+        ease = cfg["ease_m"]
         for ob in made:
-            _ensure_clearance(body, ob, cfg["ease_m"])
+            _ensure_clearance(body, ob, lambda point, ease=ease: ease * fit.at(point))
         objects += made
         coverage |= cov
         mask = bool(cfg.get("mask_body", hide_default)) and bool(cov)
         if mask:
             _store_cover(body, cfg["name"], cov)
             masked.append(cfg["name"])
+        item_report_extra = {}
         if cfg.get("_embroidery_report"):
-            item_report_extra = {"embroidery_motifs": cfg["_embroidery_report"]}
-        else:
-            item_report_extra = {}
+            item_report_extra["embroidery_motifs"] = cfg["_embroidery_report"]
+        if cfg.get("_buttons_report"):
+            item_report_extra["buttons"] = cfg["_buttons_report"]
+        if cfg.get("_gusset_report"):
+            item_report_extra["gusset"] = cfg["_gusset_report"]
         item_report.append({**item_report_extra, "name": cfg["name"], "type": cfg["type"], "objects": [o.name for o in objects[before:]],
                             "covered_body_faces": len(cov), "mask_body": mask,
                             "material_presets": sorted({o.get("ps_material_preset", "") for o in objects[before:]})})
     body["ps_garment_mask_items"] = masked
-    body["ps_garment_mask_margin_m"] = float(clothing.get("mask_margin_m", 0.015))
+    body["ps_garment_mask_margin_m"] = float(clothing.get("mask_margin_m", 0.015)) * fit.body
     collision = {"enabled": True, "offset_m": 0.002, "radius_m": 0.08, "falloff_m": 0.02, "passes": 3}
     collision.update(clothing.get("collision", {}))
+    for key in ("offset_m", "radius_m", "falloff_m"):
+        collision[key] = float(collision[key]) * fit.body
     body["ps_garment_collision"] = collision
     return objects, {"generator": GENERATOR, "items": item_report, "objects": len(objects),
                      "covered_body_faces": len(coverage), "masked_items": masked,
                      "mask_margin_m": body["ps_garment_mask_margin_m"],
-                     "hide_body_faces": hide_default, "collision": collision}
+                     "hide_body_faces": hide_default, "collision": collision, "body_fit": fit.report()}
 
 
 def collision_proxy(rig, body):
