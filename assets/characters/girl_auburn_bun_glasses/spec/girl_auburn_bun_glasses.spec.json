@@ -360,7 +360,7 @@
      24,
      20
     ],
-    "span_deg": 72,
+    "span_deg": 62,
     "thick_m": 0.0036,
     "depth_m": 0.0018,
     "flare": 0.6,
@@ -378,8 +378,8 @@
     },
     "strands": {
      "count": 5,
-     "from_deg": 30,
-     "to_deg": 80,
+     "from_deg": 25,
+     "to_deg": 58,
      "length_m": [
       0.0035,
       0.0048,
@@ -387,8 +387,9 @@
      ],
      "curl": 0.7,
      "width_m": 0.0013,
-     "outward": 0.7,
-     "forward": 0.15
+     "outward": 0.3,
+     "forward": 0.15,
+     "note": "span 62 / strands to 58 deg, outward 0.3: with the 42 mm eye the lash line and strand tips stay inside the glasses rim (72 deg / 80 deg crossed the frame at the outer corner in face_system_test)"
     },
     "lower_strands": {
      "count": 3,
