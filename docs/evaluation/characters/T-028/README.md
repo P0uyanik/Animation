@@ -195,7 +195,16 @@ Blender: no binary on this host, so `bpy==5.3.0` (Python 3.13 venv) runs behind 
 
 ## Checks
 
-CHECKS_TABLE
+| Command | Result |
+| --- | --- |
+| `python3 pipeline/charsys/tests/test_material_presets.py` | PASS 54/54 (test unchanged) |
+| `python3 tests/garment_generic_test.py --blender <blender> --out <dir>` | PASS (rc 0): reference and extreme bodies, all clip poses, worst pose clearance 0.0005 m; fibres are attached in the test outfits (e.g. vest 6, boots 4, dress 11, fur_boots 8 fibre objects) and the garment checks are unaffected |
+| `blender -b --factory-startup -P pipeline/charsys/tests/groom_generic_test.py -- <out.json>` | PASS (rc 0) |
+| `python3 pipeline/charsys/verify_charsys.py --blender <blender> --out <dir>` | PASS: build, geometry fingerprint ok (boy byte-identical to v6), asset store, reuse |
+| `python3 pipeline/charsys/tests/test_export_engine.py --blender <blender>` | PASS 8/8 |
+
+`git diff t-026-claude-girl-visual -- assets/characters/boy_yellow_hoodie tests/data docs/references` is empty, and so are the
+`targets` lines of `presets.json`.
 
 ## Render budget
 
