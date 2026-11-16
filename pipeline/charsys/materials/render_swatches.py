@@ -35,6 +35,8 @@ def parse():
     parser.add_argument("--width", type=int, default=640)
     parser.add_argument("--height", type=int, default=960)
     parser.add_argument("--samples", type=int, default=64)
+    parser.add_argument("--exposure", type=float, default=0.0)
+    parser.add_argument("--view-transform", default="AgX")
     parser.add_argument("--save-blend", default="")
     return parser.parse_args(argv)
 
@@ -100,8 +102,12 @@ def main():
     scene.render.image_settings.file_format = "PNG"
     scene.render.image_settings.color_mode = "RGB"
     scene.render.film_transparent = False
-    transforms = [item.identifier for item in scene.view_settings.bl_rna.properties["view_transform"].enum_items]
-    scene.view_settings.view_transform = "AgX" if "AgX" in transforms else "Filmic"
+    requested_transform = args.view_transform
+    try:
+        scene.view_settings.view_transform = requested_transform
+    except TypeError:
+        requested_transform = scene.view_settings.view_transform
+    scene.view_settings.exposure = args.exposure
 
     camera_data = bpy.data.cameras.new("SwatchCamera")
     camera = bpy.data.objects.new("SwatchCamera", camera_data)
@@ -140,6 +146,8 @@ def main():
         "width": args.width,
         "height": args.height,
         "samples": args.samples,
+        "exposure": args.exposure,
+        "view_transform": requested_transform,
         "render_engine": "CYCLES",
         "studio_light": "pipeline/blender/compare_harness.py:studio_lighting",
         "reference_size_m": library["reference_size_m"],

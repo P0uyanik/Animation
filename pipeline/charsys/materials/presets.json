@@ -37,7 +37,7 @@
       "description": "Dense pressed felt with short, stochastic surface fibres.",
       "swatch_srgb": [184, 92, 83],
       "surface": {"roughness": 0.92, "sheen_weight": 0.32, "sheen_roughness": 0.72},
-      "fibre": {"kind": "noise", "scale_per_reference": 210.0, "detail": 10.0, "roughness": 0.78, "distortion": 1.2, "anisotropy": [1.0, 0.7, 1.15], "strength": 0.38, "distance_fraction": 0.0045},
+      "fibre": {"kind": "noise", "scale_per_reference": 5.0, "detail": 10.0, "roughness": 0.78, "distortion": 1.2, "anisotropy": [1.0, 0.7, 1.15], "strength": 2.0, "distance_fraction": 0.05},
       "targets": {
         "fuzz_rms_y255": {"range": [3.0, 8.0], "source": "VISUAL_TARGET.md: Surface fuzz amount, felt/fleece"},
         "sheen_p90_p50": {"range": [1.08, 1.22], "source": "VISUAL_TARGET.md: Sheen/roughness read, cloth/felt"},
@@ -48,7 +48,7 @@
       "description": "Chunky wool yarn with directional ridges and irregular fibre breakup.",
       "swatch_srgb": [173, 120, 76],
       "surface": {"roughness": 0.9, "sheen_weight": 0.42, "sheen_roughness": 0.66},
-      "fibre": {"kind": "yarn", "scale_per_reference": 72.0, "detail": 9.0, "roughness": 0.76, "distortion": 2.0, "anisotropy": [0.32, 1.0, 1.0], "strength": 0.48, "distance_fraction": 0.007},
+      "fibre": {"kind": "yarn", "scale_per_reference": 28.0, "detail": 9.0, "roughness": 0.76, "distortion": 2.0, "anisotropy": [0.32, 1.0, 1.0], "strength": 0.48, "distance_fraction": 0.007},
       "targets": {
         "fuzz_rms_y255": {"range": [3.0, 8.0], "source": "VISUAL_TARGET.md: Surface fuzz amount, fibrous plush surface"},
         "sheen_p90_p50": {"range": [1.10, 1.28], "source": "VISUAL_TARGET.md: Sheen/roughness read, plush hair"},
@@ -59,7 +59,7 @@
       "description": "Soft fleece with a broad, broken nap.",
       "swatch_srgb": [199, 151, 78],
       "surface": {"roughness": 0.96, "sheen_weight": 0.48, "sheen_roughness": 0.78},
-      "fibre": {"kind": "noise", "scale_per_reference": 145.0, "detail": 12.0, "roughness": 0.82, "distortion": 2.5, "anisotropy": [1.0, 0.82, 1.0], "strength": 0.44, "distance_fraction": 0.006},
+      "fibre": {"kind": "noise", "scale_per_reference": 36.0, "detail": 12.0, "roughness": 0.82, "distortion": 2.5, "anisotropy": [1.0, 0.82, 1.0], "strength": 0.44, "distance_fraction": 0.006},
       "targets": {
         "fuzz_rms_y255": {"range": [3.0, 8.0], "source": "VISUAL_TARGET.md: Surface fuzz amount, felt/fleece"},
         "sheen_p90_p50": {"range": [1.08, 1.22], "source": "VISUAL_TARGET.md: Sheen/roughness read, cloth/felt"},
@@ -70,7 +70,7 @@
       "description": "Cotton jersey/knit with paired loop-like directional relief.",
       "swatch_srgb": [110, 143, 155],
       "surface": {"roughness": 0.86, "sheen_weight": 0.2, "sheen_roughness": 0.62},
-      "fibre": {"kind": "knit", "scale_per_reference": 105.0, "detail": 5.0, "roughness": 0.62, "distortion": 0.5, "anisotropy": [0.65, 1.0, 1.0], "strength": 0.32, "distance_fraction": 0.0035},
+      "fibre": {"kind": "knit", "scale_per_reference": 32.0, "detail": 5.0, "roughness": 0.62, "distortion": 0.5, "anisotropy": [0.65, 1.0, 1.0], "strength": 0.32, "distance_fraction": 0.0035},
       "targets": {
         "fuzz_rms_y255": {"range": [3.0, 8.0], "source": "VISUAL_TARGET.md: Surface fuzz amount, fabric surface"},
         "sheen_p90_p50": {"range": [1.08, 1.22], "source": "VISUAL_TARGET.md: Sheen/roughness read, cloth/felt"},
@@ -81,7 +81,7 @@
       "description": "Balanced plain-weave cotton with subtle warp and weft relief.",
       "swatch_srgb": [133, 151, 112],
       "surface": {"roughness": 0.84, "sheen_weight": 0.16, "sheen_roughness": 0.58},
-      "fibre": {"kind": "weave", "scale_per_reference": 120.0, "detail": 4.0, "roughness": 0.58, "distortion": 0.25, "anisotropy": [1.0, 1.0, 1.0], "strength": 0.28, "distance_fraction": 0.0028},
+      "fibre": {"kind": "weave", "scale_per_reference": 36.0, "detail": 4.0, "roughness": 0.58, "distortion": 0.25, "anisotropy": [1.0, 1.0, 1.0], "strength": 0.28, "distance_fraction": 0.0028},
       "targets": {
         "fuzz_rms_y255": {"range": [3.0, 8.0], "source": "VISUAL_TARGET.md: Surface fuzz amount, fabric surface"},
         "sheen_p90_p50": {"range": [1.08, 1.22], "source": "VISUAL_TARGET.md: Sheen/roughness read, cloth/felt"},
@@ -92,7 +92,7 @@
       "description": "Dense cotton twill with a diagonal ridge and fine broken fibres.",
       "swatch_srgb": [67, 92, 128],
       "surface": {"roughness": 0.82, "sheen_weight": 0.18, "sheen_roughness": 0.6},
-      "fibre": {"kind": "denim", "scale_per_reference": 145.0, "detail": 6.0, "roughness": 0.68, "distortion": 0.7, "anisotropy": [0.55, 1.0, 1.0], "strength": 0.36, "distance_fraction": 0.0032},
+      "fibre": {"kind": "denim", "scale_per_reference": 42.0, "detail": 6.0, "roughness": 0.68, "distortion": 0.7, "anisotropy": [0.55, 1.0, 1.0], "strength": 0.36, "distance_fraction": 0.0032},
       "targets": {
         "fuzz_rms_y255": {"range": [3.0, 8.0], "source": "VISUAL_TARGET.md: Surface fuzz amount, fabric surface"},
         "sheen_p90_p50": {"range": [1.08, 1.22], "source": "VISUAL_TARGET.md: Sheen/roughness read, cloth/felt"},
@@ -103,7 +103,7 @@
       "description": "Felted hair locks, generalized from the H31 felt-hair shader.",
       "swatch_srgb": [86, 54, 44],
       "surface": {"roughness": 0.95, "sheen_weight": 0.35, "sheen_roughness": 0.7},
-      "fibre": {"kind": "noise", "scale_per_reference": 260.0, "detail": 12.0, "roughness": 0.75, "distortion": 1.5, "anisotropy": [1.0, 0.7, 1.0], "strength": 0.45, "distance_fraction": 0.0059},
+      "fibre": {"kind": "noise", "scale_per_reference": 56.0, "detail": 12.0, "roughness": 0.75, "distortion": 1.5, "anisotropy": [1.0, 0.7, 1.0], "strength": 0.45, "distance_fraction": 0.0059},
       "targets": {
         "fuzz_rms_y255": {"range": [3.0, 8.0], "source": "VISUAL_TARGET.md: Surface fuzz amount, fibrous plush surface"},
         "sheen_p90_p50": {"range": [1.10, 1.28], "source": "VISUAL_TARGET.md: Sheen/roughness read, plush hair"},
@@ -114,7 +114,7 @@
       "description": "Opaque toy plastic for buttons and small accessories.",
       "swatch_srgb": [137, 85, 69],
       "surface": {"roughness": 0.3, "metallic": 0.0, "specular_ior_level": 0.45, "ior": 1.46, "sheen_weight": 0.0},
-      "fibre": {"kind": "noise", "scale_per_reference": 80.0, "detail": 2.0, "roughness": 0.5, "distortion": 0.0, "anisotropy": [1.0, 1.0, 1.0], "strength": 0.03, "distance_fraction": 0.0002},
+      "fibre": {"kind": "noise", "scale_per_reference": 32.0, "detail": 2.0, "roughness": 0.5, "distortion": 0.0, "anisotropy": [1.0, 1.0, 1.0], "strength": 0.03, "distance_fraction": 0.0002},
       "targets": {
         "fuzz_rms_y255": {"range": [0.0, 3.0], "source": "VISUAL_TARGET.md: low-fuzz ceiling for non-fibrous surfaces"},
         "sheen_p90_p50": null,
@@ -125,7 +125,7 @@
       "description": "Clear, lightly rough acrylic for spectacle lenses.",
       "swatch_srgb": [142, 183, 196],
       "surface": {"roughness": 0.08, "metallic": 0.0, "specular_ior_level": 0.5, "ior": 1.49, "alpha": 0.08, "transmission_weight": 0.96, "sheen_weight": 0.0},
-      "fibre": {"kind": "noise", "scale_per_reference": 80.0, "detail": 2.0, "roughness": 0.5, "distortion": 0.0, "anisotropy": [1.0, 1.0, 1.0], "strength": 0.0, "distance_fraction": 0.0},
+      "fibre": {"kind": "noise", "scale_per_reference": 32.0, "detail": 2.0, "roughness": 0.5, "distortion": 0.0, "anisotropy": [1.0, 1.0, 1.0], "strength": 0.0, "distance_fraction": 0.0},
       "targets": {
         "fuzz_rms_y255": {"range": [0.0, 3.0], "source": "VISUAL_TARGET.md: low-fuzz ceiling for non-fibrous surfaces"},
         "sheen_p90_p50": null,
@@ -136,7 +136,7 @@
       "description": "Low-fuzz felt skin: soft subsurface response with texture kept below the skin fuzz ceiling.",
       "swatch_srgb": [202, 176, 169],
       "surface": {"roughness": 0.58, "specular_ior_level": 0.35, "subsurface_weight": 0.2, "subsurface_scale_fraction": 0.04, "sheen_weight": 0.12, "sheen_roughness": 0.68},
-      "fibre": {"kind": "noise", "scale_per_reference": 285.0, "detail": 8.0, "roughness": 0.72, "distortion": 0.8, "anisotropy": [1.0, 0.85, 1.0], "strength": 0.16, "distance_fraction": 0.0018},
+      "fibre": {"kind": "noise", "scale_per_reference": 64.0, "detail": 8.0, "roughness": 0.72, "distortion": 0.8, "anisotropy": [1.0, 0.85, 1.0], "strength": 0.16, "distance_fraction": 0.0018},
       "targets": {
         "fuzz_rms_y255": {"range": [0.0, 3.0], "source": "VISUAL_TARGET.md: Skin remains below 3/255"},
         "sheen_p90_p50": {"range": [1.12, 1.32], "source": "VISUAL_TARGET.md: Sheen/roughness read, skin"},
