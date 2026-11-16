@@ -69,6 +69,8 @@ def validate(clothing):
         raise ValueError("clothing.collision must be an object")
     if "enabled" in collision and not isinstance(collision["enabled"], bool):
         raise ValueError("clothing.collision.enabled must be a boolean")
+    if "mask_margin_m" in clothing:
+        _number(clothing["mask_margin_m"], "clothing.mask_margin_m", 0.0, 0.2)
     for key in ("offset_m", "radius_m", "falloff_m"):
         if key in collision:
             _number(collision[key], f"clothing.collision.{key}", 0.0, 0.2)
@@ -440,6 +442,11 @@ def _bottoms(C, body, cfg, P, H, J, G):
         t = (hip_z - c.z) / max(hip_z - ankle_z, 1e-9)
         if t > length + 0.04:
             return False
+        # Crotch bridge: the merged body surface between the legs just below the hip line.
+        if c.z >= hip_z - _leg_radius(P, H, 0.0) and abs(c.x) <= abs(J["hip.L"].x):
+            _, front, back = _torso_dims(P, H, hip_z)
+            if -front - 0.012 * H <= c.y <= back + 0.012 * H:
+                return True
         r = _leg_radius(P, H, t) + 0.012 * H
         return any((Vector((c.x, c.y, c.z)) - Vector((J[f"hip.{s}"].x, 0, c.z))).length <= r for s in ("L", "R"))
 
@@ -628,6 +635,40 @@ def _fully_covered_vertices(body, faces):
     return touched - open_verts
 
 
+def _mask_margin(body, hidden, margin):
+    """Keep skin within ``margin`` (geodesic, rest pose) of any visible skin, so a camera looking past a hem, cuff or
+    collar sees skin under the opening instead of the hollow inside of the masked body."""
+    if not hidden or margin <= 0:
+        return hidden
+    import heapq
+    co = [v.co for v in body.data.vertices]
+    adjacent = {}
+    for edge in body.data.edges:
+        a, b = edge.vertices
+        if a in hidden or b in hidden:
+            length = (co[a] - co[b]).length
+            adjacent.setdefault(a, []).append((b, length))
+            adjacent.setdefault(b, []).append((a, length))
+    dist = {}
+    heap = []
+    for index in hidden:
+        for other, length in adjacent.get(index, ()):
+            if other not in hidden and length < dist.get(index, margin):
+                dist[index] = length
+    heap = [(d, i) for i, d in dist.items()]
+    heapq.heapify(heap)
+    while heap:
+        d, index = heapq.heappop(heap)
+        if d > dist.get(index, margin):
+            continue
+        for other, length in adjacent.get(index, ()):
+            nd = d + length
+            if other in hidden and nd < dist.get(other, margin):
+                dist[other] = nd
+                heapq.heappush(heap, (nd, other))
+    return {i for i in hidden if dist.get(i, margin) >= margin}
+
+
 def masked_items(body):
     return list(body.get("ps_garment_mask_items", []))
 
@@ -642,7 +683,8 @@ def set_active_items(body, garments, items, collision=None):
     falloff = float(collision.get("falloff_m", 0.02))
     mask_items = sorted(items & set(masked_items(body)))
     hidden_faces = _covered_faces(body, mask_items)
-    hidden_verts = _fully_covered_vertices(body, hidden_faces)
+    hidden_verts = _mask_margin(body, _fully_covered_vertices(body, hidden_faces),
+                                float(body.get("ps_garment_mask_margin_m", 0.015)))
     group = body.vertex_groups.get(MASK_GROUP) or body.vertex_groups.new(name=MASK_GROUP)
     group.remove(list(range(len(body.data.vertices))))
     if hidden_verts:
@@ -752,11 +794,13 @@ def build(C, body, clothing, P, H, J, G):
                             "covered_body_faces": len(cov), "mask_body": mask,
                             "material_presets": sorted({o.get("ps_material_preset", "") for o in objects[before:]})})
     body["ps_garment_mask_items"] = masked
-    collision = {"enabled": True, "offset_m": 0.0015, "radius_m": 0.08, "falloff_m": 0.02, "passes": 2}
+    body["ps_garment_mask_margin_m"] = float(clothing.get("mask_margin_m", 0.015))
+    collision = {"enabled": True, "offset_m": 0.002, "radius_m": 0.08, "falloff_m": 0.02, "passes": 3}
     collision.update(clothing.get("collision", {}))
     body["ps_garment_collision"] = collision
     return objects, {"generator": GENERATOR, "items": item_report, "objects": len(objects),
                      "covered_body_faces": len(coverage), "masked_items": masked,
+                     "mask_margin_m": body["ps_garment_mask_margin_m"],
                      "hide_body_faces": hide_default, "collision": collision}
 
 
@@ -847,13 +891,13 @@ def bind_to_body(rig, body, garments, neighbours=1, max_influences=4, worn=None)
             # A second pass resolves vertices that the first projection moved into an adjacent body part in deep
             # creases (thigh against belly, arm against ribs).
             ob.vertex_groups.new(name=COLLISION_GROUP)
-            for k in range(int(collision_cfg.get("passes", 2))):
+            for k in range(int(collision_cfg.get("passes", 3))):
                 collision = ob.modifiers.new(COLLISION_MODIFIER if k == 0 else f"{COLLISION_MODIFIER}.{k + 1}",
                                              "SHRINKWRAP")
                 collision.target = proxy
                 collision.wrap_method = "NEAREST_SURFACEPOINT"
                 collision.wrap_mode = "OUTSIDE"
-                collision.offset = float(collision_cfg.get("offset_m", 0.0015))
+                collision.offset = float(collision_cfg.get("offset_m", 0.002))
                 collision.vertex_group = COLLISION_GROUP
         ob["ps_weight_transfer"] = "nearest_body_weights/1"
         ob["ps_weight_source"] = body.name

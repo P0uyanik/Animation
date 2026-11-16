@@ -13,6 +13,7 @@ The character spec uses this shape:
   "clothing": {
     "generator": "garment/1",
     "hide_body_faces": true,
+    "mask_margin_m": 0.015,
     "collision": {"enabled": true, "offset_m": 0.002, "radius_m": 0.08, "falloff_m": 0.02, "passes": 3},
     "max_influences": 1,
     "defaults": {
@@ -59,8 +60,10 @@ dresses' bodices, shorts/trousers, footwear) the body faces copied into that
 item's shell are recorded on the body mesh as the FACE attribute
 `ps_cover.<item>`. Nothing is deleted. After rigging, `bind_to_body` builds the
 vertex group `ps_garment_mask` from the worn items (vertices whose every face is
-covered) and a `MASK` modifier `garment_body_mask` (inverted) hides exactly the
-fully covered faces; the boundary ring under hems and cuffs stays. Skirts cover
+covered) and a `MASK` modifier `garment_body_mask` (inverted) hides the fully
+covered faces. Skin within `mask_margin_m` (default 15 mm, geodesic, rest pose)
+of visible skin stays, so a camera looking past a hem, cuff or collar sees skin
+rather than the hollow inside of the masked body. Skirts cover
 no faces and never mask. `set_active_items(body, garments, items)` switches the
 worn set (outfits) and rebuilds mask and collision weights; it is deterministic.
 The engine exporter keeps all body vertices and drops the masked triangles.

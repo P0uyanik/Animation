@@ -77,6 +77,7 @@ def _internal():
     clothing = {
         "generator": "garment/1",
         "hide_body_faces": True,
+        "mask_margin_m": 0.015,
         "collision": {"enabled": True, "offset_m": 0.002, "radius_m": 0.08, "falloff_m": 0.02, "passes": 3},
         "max_influences": 4,
         "defaults": {"thickness_m": 0.002, "ease_m": 0.009, "seam_radius_m": 0.00115},
@@ -352,26 +353,27 @@ def _internal():
         os.makedirs(evidence, exist_ok=True)
         os.makedirs(views, exist_ok=True)
         scene = bpy.context.scene
-        scene.render.engine = "BLENDER_EEVEE_NEXT"
-        # Render low-sample Cycles with OpenImageDenoise when the CPU device is available.
-        try:
-            scene.render.engine = "CYCLES"
-            scene.cycles.device = "CPU"
-            scene.cycles.samples = 8
-            scene.cycles.use_denoising = True
-            scene.view_layers[0].cycles.use_denoising = True
-            denoiser = "OPENIMAGEDENOISE"
-        except Exception:
-            denoiser = "unavailable"
+        # Low-sample Cycles (CPU) with OpenImageDenoise.
+        scene.render.engine = "CYCLES"
+        scene.cycles.device = "CPU"
+        scene.cycles.samples = 8
+        scene.cycles.use_denoising = True
+        scene.cycles.denoiser = "OPENIMAGEDENOISE"
+        scene.view_layers[0].cycles.use_denoising = True
+        denoiser = scene.cycles.denoiser
         scene.render.resolution_x = scene.render.resolution_y = 320
         scene.render.resolution_percentage = 100
         scene.render.image_settings.file_format = "PNG"
         scene.render.film_transparent = False
-        scene.world.color = (0.035, 0.035, 0.035)
+        if scene.world is None:
+            scene.world = bpy.data.worlds.new("evidence_world")
         world = scene.world
-        world.use_nodes = True
-        world.node_tree.nodes["Background"].inputs["Color"].default_value = (0.055, 0.065, 0.08, 1)
-        world.node_tree.nodes["Background"].inputs["Strength"].default_value = 0.35
+        world.color = (0.035, 0.035, 0.035)
+        if world.node_tree is None:
+            world.use_nodes = True
+        background = next(node for node in world.node_tree.nodes if node.type == "BACKGROUND")
+        background.inputs["Color"].default_value = (0.055, 0.065, 0.08, 1)
+        background.inputs["Strength"].default_value = 0.35
         cam_data = bpy.data.cameras.new("evidence_camera")
         cam = bpy.data.objects.new("evidence_camera", cam_data)
         scene.collection.objects.link(cam)
