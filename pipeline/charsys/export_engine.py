@@ -156,15 +156,30 @@ def main():
     meshes, morphs, mats, problems = [], [], {}, []
     deps = bpy.context.evaluated_depsgraph_get()
     objs = [o for o in root.all_objects if o.type == "MESH" and not o.name.startswith(("WGT-", "LM_"))
-            and any(m.type == "ARMATURE" for m in o.modifiers)]
+            and any(m.type == "ARMATURE" for m in o.modifiers) and not o.get("ps_collision_proxy")]
     skipped = sorted(o.name for o in root.all_objects if o.type == "MESH" and o not in objs and not o.name.startswith("WGT-"))
     for o in sorted(objs, key=lambda o: o.name):
+        # A garment body mask (garment/1) hides covered faces; export keeps all vertices and drops those faces.
+        masks = [m for m in o.modifiers if m.type == "MASK" and m.mode == "VERTEX_GROUP" and m.show_viewport
+                 and m.vertex_group in o.vertex_groups]
+        hidden_verts = None
+        if masks:
+            hidden_verts = set()
+            for m in masks:
+                gidx = o.vertex_groups[m.vertex_group].index
+                member = {v.index for v in o.data.vertices if any(g.group == gidx and g.weight > 0 for g in v.groups)}
+                hidden_verts |= member if m.invert_vertex_group else {v.index for v in o.data.vertices} - member
+                m.show_viewport = False
+            bpy.context.view_layer.update()
+            deps = bpy.context.evaluated_depsgraph_get()
         ev = o.evaluated_get(deps)
         me = ev.to_mesh()
         n = len(me.vertices)
         if n != len(o.data.vertices):
             problems.append(f"{o.name}: evaluated vertex count differs from base mesh; skipped")
             ev.to_mesh_clear()
+            for m in masks:
+                m.show_viewport = True
             continue
         mw = o.matrix_world
         co = np.array([mw @ v.co for v in me.vertices])
@@ -174,6 +189,14 @@ def main():
         tri = np.array([t.vertices[:] for t in me.loop_triangles], dtype=np.int64).reshape(-1, 3)
         tmat = np.array([t.material_index for t in me.loop_triangles], dtype=np.int64)
         ev.to_mesh_clear()
+        if masks:
+            if hidden_verts:
+                keep = ~np.isin(tri, np.array(sorted(hidden_verts), dtype=np.int64)).any(axis=1)
+                tri, tmat = tri[keep], tmat[keep]
+            for m in masks:
+                m.show_viewport = True
+            bpy.context.view_layer.update()
+            deps = bpy.context.evaluated_depsgraph_get()
         # skin weights: deform-bone groups only, top 4, normalised
         gi = {g.index: g.name for g in o.vertex_groups if g.name in index}
         J = np.zeros((n, 4), np.uint16)

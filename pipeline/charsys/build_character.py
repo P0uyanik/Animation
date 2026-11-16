@@ -178,8 +178,8 @@ def add_face_controls(rig, C, names):
 def main_generic(a, spec, info, out):
     """Generic path (body_generic/1): body, joints, rig fitting and skinning entirely from the spec; the generic face
     (spec.face.generator face_generic/1) and reusable accessories (spec.accessories.items) when the spec has them.
-    Hair through the shared groom system (spec.hair.generator groom/1); no garments yet. The legacy boy path (below)
-    is the compatibility baseline."""
+    Hair through the shared groom system (spec.hair.generator groom/1). Shared garments are opt-in through
+    clothing.generator garment/1. The legacy boy path (below) is the compatibility baseline."""
     import body_generic as BG
     cid = spec["identity"]["id"]
     t0 = time.time()
@@ -198,10 +198,17 @@ def main_generic(a, spec, info, out):
     else:
         M = {"skin": G.material("M_skin", skin_rgb, roughness=0.55, subsurface=0.2, sss_radius=(1, 0.4, 0.25), sss_scale=0.01)}
     parts = BG.build_body(C, M, P, H, J, frames)
+    garment_objects = []
+    garment_report = None
+    if spec.get("clothing", {}).get("generator") == "garment/1":
+        import garments as GAR
+        garment_objects, garment_report = GAR.build(C, parts[0][0], spec["clothing"], P, H, J, G)
     head_bone = spec["rig"]["head_bone"]
     report = {"blender": bpy.app.version_string, "build": BUILD_ID + "+body_generic/1", "character_id": cid, **info}
     if mats.get("assignments"):
         report["material_presets"] = {slot: cfg["preset"] for slot, cfg in mats["assignments"].items()}
+    if garment_report is not None:
+        report["garments"] = garment_report
     fc = None
     acc = []
     if spec["face"].get("generator") == "face_generic/1":
@@ -233,6 +240,10 @@ def main_generic(a, spec, info, out):
     rig, rr = BG.rig_generic(C, f"rig_{cid}", parts, P, H, J, frames, spec["rig"].get("weight_rules", {}), B,
                              spec["rig"].get("weight_smooth"))
     report["rig"] = rr
+    if garment_objects:
+        report["garment_skinning"] = GAR.bind_to_body(rig, parts[0][0], garment_objects,
+                                                       max_influences=int(spec["clothing"].get(
+                                                           "max_influences", spec["rig"].get("max_influences", 4))))
     names = list(spec["face"].get("expression_shape_keys", []))
     if fc is not None:
         FG.bind_rigid(rig, fc["rigid"])
@@ -265,7 +276,10 @@ def main_generic(a, spec, info, out):
                                            "mouth": fc["mouth"].name, "cavity": fc["cavity"].name,
                                            "action_units": fc["report"]["action_units"], "presets": fc["report"]["presets"],
                                            "accessories": [f.name for f, _ in acc] + [l.name for _, l in acc if l is not None]})
-    components = spec.get("components") or {"body": ["body_skin", "hand."], "rig": ["rig_"]}
+    components = {k: list(v) for k, v in (spec.get("components") or
+                                           {"body": ["body_skin", "hand."], "rig": ["rig_"]}).items()}
+    if garment_objects:
+        components.setdefault("clothing", ["garment."])
     subs, unassigned = organise(C, cid, components)
     if unassigned:
         raise SystemExit(f"objects without a component: {unassigned}")
