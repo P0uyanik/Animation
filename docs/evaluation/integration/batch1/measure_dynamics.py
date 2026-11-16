@@ -48,6 +48,28 @@ def main():
     on = json.load(open(a.on))
     t_on, frames, bones, ci = tips(on, a.character, chains)
     rep = {"chains": len(chains), "dynamics_enabled": dyn.get("enabled", True), "frames": [frames[0], frames[-1]]}
+    # T-021 collision figure: smallest (joint/tip to sphere-collider centre) - (collider radius + chain joint radius)
+    heads = {b["name"]: b["head"] for b in pkg["skeleton"]}
+    clear = {}
+    for col in dyn.get("colliders", []):
+        if col["type"] != "sphere":
+            continue
+        cb = bones.index(col["bone"])
+        best = None
+        for k, fd in enumerate(on["frame_data"]):
+            skin = fd["characters"][ci]["skin"] if isinstance(fd["characters"], list) else fd["characters"][a.character]["skin"]
+            c = xf(skin[cb * 16:(cb + 1) * 16], col["centre"])
+            for ch in chains:
+                pts = [xf(skin[bones.index(b) * 16:(bones.index(b) + 1) * 16], heads[b]) for b in ch["bones"][1:]]
+                pts.append(t_on[ch["name"]][k])
+                r = ch.get("radius", dyn.get("defaults", {}).get("radius", 0.0))
+                for p in pts:
+                    g = (dist(p, c) - col["radius"] - r) * 1000
+                    if best is None or g < best[0]:
+                        best = (g, fd["frame"], ch["name"])
+        if best:
+            clear[col["name"]] = {"min_clearance_mm": round(best[0], 2), "frame": best[1], "chain": best[2]}
+    rep["sphere_collider_clearance"] = clear
     if a.off:
         t_off, _, _, _ = tips(json.load(open(a.off)), a.character, chains)
         per = {}
