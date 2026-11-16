@@ -1,3 +1,2 @@
 # Pinned Blender release for the Plush Studio backend (TD-35).
-# Not chosen yet: download.blender.org is blocked in this environment, so the official release list could not be
-# read. Choose the current LTS release from that list, write it on the next line (e.g. X.Y.Z), then run install_blender.sh.
+5.3.0
