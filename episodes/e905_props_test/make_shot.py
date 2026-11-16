@@ -1,6 +1,6 @@
 """Writes the T-022 hand-prop test shot episodes/e905_props_test/shots/s010/shot.scene.json (python3).
 
-    python3 pipeline/clips/make_t022_shot.py [--boy-package <pkg dir> --girl-package <pkg dir>]
+    python3 episodes/e905_props_test/make_shot.py [--boy-package <pkg dir> --girl-package <pkg dir>]
 
 3 s at 24 fps: the boy picks a felt cup (content/assets/felt_cup.asset.json) up from a small table with his right
 hand, lifts it, hands it to the girl, who takes it with her right hand at the cup's other grip socket and draws it

@@ -74,7 +74,7 @@ Tests:
   both arms are clear and within reach. The receiver's reach is planned there.
 - **Warnings:** an arm still inside at full IK, or a hand-over with no clear point, is a scene warning. A contact the
   body is in the way of cannot be moved (the prop is where the author put it).
-- **Staging (shot data, same rule as the test fixtures).** `make_t022_shot.py` now derives the cup 0.85 arm forward /
+- **Staging (shot data, same rule as the test fixtures).** `episodes/e905_props_test/make_shot.py` now derives the cup 0.85 arm forward /
   0.45 down (was 0.5 / 0.66, at the belly). The hand-over `at` is unchanged; the engine moved it to a clear point.
 
 **Measurements, this render** (`e905_measurements.json`, from `measure_e905.cpp`). Gap = forearm/hand surface to the
@@ -138,7 +138,7 @@ move it away, because the clearance rightly resists the old ones. Every existing
 
 ## Commands
 ```bash
-python3 pipeline/clips/make_t022_shot.py --boy-package <build>/packages/boy_* --girl-package <build>/packages/girl_*
+python3 episodes/e905_props_test/make_shot.py --boy-package <build>/packages/boy_* --girl-package <build>/packages/girl_*
 python3 pipeline/production/run_shot.py --shot episodes/e905_props_test/shots/s010/shot.scene.json --blender <blender> \
     --run-dir t030_final --video
 g++ -std=c++23 -O2 -I engine docs/evaluation/animation/T-030/measure_e905.cpp -Lbuild/engine -lplush_scene \

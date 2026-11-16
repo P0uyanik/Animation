@@ -1,6 +1,6 @@
 # T-022 evidence: believable hand interaction (e905_props_test/s010)
 
-**Shot** `episodes/e905_props_test/shots/s010/shot.scene.json` (written by `pipeline/clips/make_t022_shot.py` from the
+**Shot** `episodes/e905_props_test/shots/s010/shot.scene.json` (written by `episodes/e905_props_test/make_shot.py` from the
 package skeletons): 72 frames at 24 fps (3 s), 640×360. The boy (spec + `boy_yellow_hoodie.1.1.0.override.json`,
 unpublished build) grasps a felt cup (`content/assets/felt_cup.asset.json`, preset `felt`) from a small table with
 his right hand (contact f17), lifts it (f19–30), hands it to the girl (current spec) who grasps its lower grip with
@@ -9,7 +9,7 @@ Only shared actions: `grasp`, `hold`, `handover`, `hold` (+ idle base clips, a l
 
 **Commands**
 ```bash
-python3 pipeline/clips/make_t022_shot.py --boy-package <build>/packages/boy_* --girl-package <build>/packages/girl_*
+python3 episodes/e905_props_test/make_shot.py --boy-package <build>/packages/boy_* --girl-package <build>/packages/girl_*
 python3 pipeline/production/run_shot.py --shot episodes/e905_props_test/shots/s010/shot.scene.json \
     --blender <blender> --run-dir t022 --video
 python3 pipeline/clips/t022_contact_sheet.py --frames <build>/runs/t022/render --bake <build>/runs/t022/bake.json \
