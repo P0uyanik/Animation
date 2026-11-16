@@ -41,6 +41,9 @@ def validate(spec):
             errs.extend(material_builder.validate_assignments(materials))
         except (OSError, ValueError) as exc:
             errs.append(str(exc))
+    if spec.get("hair", {}).get("generator") == "groom/1":
+        import groom
+        errs.extend(groom.validate(spec["hair"]))
     if errs:
         raise ValueError("invalid character spec: " + "; ".join(errs))
     return spec

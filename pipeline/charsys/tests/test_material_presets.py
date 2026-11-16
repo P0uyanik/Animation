@@ -40,11 +40,13 @@ def main():
                              "girl_auburn_bun_glasses.spec.json")
     girl, _ = SPEC.load(girl_path)
     assignments = girl["materials"]["assignments"]
-    check("girl opts into only requested slots", set(assignments) == {"skin", "glasses", "glasses_lens"},
+    check("girl opts into only requested slots", set(assignments) == {"skin", "glasses", "glasses_lens", "hair", "hair_band",
+                                                                "hair_flower", "hair_flower_centre"},  # T-016 groom slots
           sorted(assignments))
     check("girl skin preset", assignments["skin"]["preset"] == "skin-felt")
     check("girl glasses presets", assignments["glasses"]["preset"] == "buttons/plastic" and
           assignments["glasses_lens"]["preset"] == "glasses/acrylic")
+    check("girl hair preset (T-016)", assignments["hair"]["preset"] == "wool yarn")
 
     boy_path = os.path.join(ROOT, "assets", "characters", "boy_yellow_hoodie", "spec",
                             "boy_yellow_hoodie.spec.json")

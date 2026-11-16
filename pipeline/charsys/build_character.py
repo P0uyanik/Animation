@@ -178,7 +178,8 @@ def add_face_controls(rig, C, names):
 def main_generic(a, spec, info, out):
     """Generic path (body_generic/1): body, joints, rig fitting and skinning entirely from the spec; the generic face
     (spec.face.generator face_generic/1) and reusable accessories (spec.accessories.items) when the spec has them.
-    No hair or garments yet. The legacy boy path (below) is the compatibility baseline."""
+    Hair through the shared groom system (spec.hair.generator groom/1); no garments yet. The legacy boy path (below)
+    is the compatibility baseline."""
     import body_generic as BG
     cid = spec["identity"]["id"]
     t0 = time.time()
@@ -211,6 +212,23 @@ def main_generic(a, spec, info, out):
         face_parts = fc["eyes"] + [o for l in fc["lids"] for o in l[:3]]
         acc, report["accessories"] = ACC.build(C, spec.get("accessories", {}).get("items"), fc["landmarks"], fc["ctx"],
                                                face_parts, head_bone, fc["ears"], mats.get("assignments"))
+    groom = []
+    if spec.get("hair", {}).get("generator") == "groom/1":  # shared spec-driven groom (hair structures are spec data)
+        import groom as GROOM
+        hp = P["head"]
+        frame = {"centre": (0, hp["forward"] * H, hp["centre_z"] * H),
+                 "radii": (hp["half_width"] * H, hp["half_depth"] * H, hp["half_height"] * H)}
+        hair_mats = {}
+
+        def hair_material(slot):
+            if slot not in hair_mats:
+                asg = MATERIALS.get_assignment(mats, slot)
+                rgb = (mats.get("target_colors_srgb", {}).get(slot) or mats.get("target_colors_srgb", {}).get("hair")
+                       or (90, 60, 50))
+                hair_mats[slot] = (MATERIALS.build_from_assignment(f"M_{slot}", asg) if asg else
+                                   G.material(f"M_{slot}", tuple(rgb), roughness=0.9, sheen=0.4))
+            return hair_mats[slot]
+        groom, report["hair"] = GROOM.build(C, parts[0][0], frame, spec["hair"], hair_material, B.face_y)
     report["model_s"] = round(time.time() - t0, 1)
     rig, rr = BG.rig_generic(C, f"rig_{cid}", parts, P, H, J, frames, spec["rig"].get("weight_rules", {}), B,
                              spec["rig"].get("weight_smooth"))
@@ -227,6 +245,8 @@ def main_generic(a, spec, info, out):
         for frame, lens in acc:
             ACC.attach(rig, frame, lens, head_bone)
         names = fc["controls"]
+    if groom:
+        GROOM.bind(rig, groom, head_bone, spec["rig"].get("chest_bone", head_bone), spec["hair"].get("binding"))
 
     report["face_controls"] = add_face_controls(rig, C, names)
     if fc is not None:
