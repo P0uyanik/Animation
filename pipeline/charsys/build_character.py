@@ -30,6 +30,7 @@ import body_v6 as B  # noqa: E402
 import face as FACE  # noqa: E402
 import hair as HAIR  # noqa: E402
 import spec as S  # noqa: E402
+from materials import builder as MATERIALS  # noqa: E402
 
 G = B.G
 COMPONENTS = {  # component -> object-name prefixes (exact names or prefixes ending with "." / "_")
@@ -190,10 +191,16 @@ def main_generic(a, spec, info, out):
     frames = BG.hand_frames(P, H, J)
     mats = spec["materials"]
     skin_rgb = tuple(mats.get("albedo_srgb", {}).get("skin") or mats["target_colors_srgb"]["skin"])
-    M = {"skin": G.material("M_skin", skin_rgb, roughness=0.55, subsurface=0.2, sss_radius=(1, 0.4, 0.25), sss_scale=0.01)}
+    skin_assignment = MATERIALS.get_assignment(mats, "skin")
+    if skin_assignment:
+        M = {"skin": MATERIALS.build_from_assignment("M_skin", skin_assignment)}
+    else:
+        M = {"skin": G.material("M_skin", skin_rgb, roughness=0.55, subsurface=0.2, sss_radius=(1, 0.4, 0.25), sss_scale=0.01)}
     parts = BG.build_body(C, M, P, H, J, frames)
     head_bone = spec["rig"]["head_bone"]
     report = {"blender": bpy.app.version_string, "build": BUILD_ID + "+body_generic/1", "character_id": cid, **info}
+    if mats.get("assignments"):
+        report["material_presets"] = {slot: cfg["preset"] for slot, cfg in mats["assignments"].items()}
     fc = None
     acc = []
     if spec["face"].get("generator") == "face_generic/1":
@@ -203,7 +210,7 @@ def main_generic(a, spec, info, out):
         report["face"] = fc["report"]
         face_parts = fc["eyes"] + [o for l in fc["lids"] for o in l[:3]]
         acc, report["accessories"] = ACC.build(C, spec.get("accessories", {}).get("items"), fc["landmarks"], fc["ctx"],
-                                               face_parts, head_bone, fc["ears"])
+                                               face_parts, head_bone, fc["ears"], mats.get("assignments"))
     report["model_s"] = round(time.time() - t0, 1)
     rig, rr = BG.rig_generic(C, f"rig_{cid}", parts, P, H, J, frames, spec["rig"].get("weight_rules", {}), B,
                              spec["rig"].get("weight_smooth"))

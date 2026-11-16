@@ -19,6 +19,7 @@ import bpy
 from mathutils import Matrix, Vector
 
 import geom as G
+from materials import builder as MATERIALS
 
 
 def _f(d, k, default):
@@ -34,7 +35,7 @@ def _superellipse(cx, cz, rx, rz, n, seg):
     return pts
 
 
-def build_glasses(C, cfg, lm, ctx, face_parts, head_bone, obstacles=()):
+def build_glasses(C, cfg, lm, ctx, face_parts, head_bone, obstacles=(), material_assignments=None):
     """lm: landmarks (eye_L/R centres of the eye fronts, ear_L/R); face_parts: objects that must stay behind the
     lenses (eyes, lids, lashes). Returns (frame, lens or None, report)."""
     name = cfg.get("name", "glasses")
@@ -78,12 +79,17 @@ def build_glasses(C, cfg, lm, ctx, face_parts, head_bone, obstacles=()):
             y -= worst
         rims[side] = place(y)
         report[f"rim_{side}"] = {"centre_m": [round(cx, 4), round(y, 4), round(cz, 4)], "eye_gap_m": round(min(front) - y, 4)}
-    mat = G.material(f"M_{name}", tuple(cfg.get("material", {}).get("srgb", (137, 85, 69))),
-                     roughness=_f(cfg.get("material", {}), "roughness", 0.3))
-    try:
-        mat.node_tree.nodes.get("Principled BSDF").inputs["Metallic"].default_value = _f(cfg.get("material", {}), "metallic", 0.5)
-    except Exception:  # pragma: no cover
-        pass
+    frame_assignment = (material_assignments or {}).get(name)
+    if frame_assignment:
+        mat = MATERIALS.build_from_assignment(f"M_{name}", frame_assignment)
+        report["frame_material_preset"] = frame_assignment["preset"]
+    else:
+        mat = G.material(f"M_{name}", tuple(cfg.get("material", {}).get("srgb", (137, 85, 69))),
+                         roughness=_f(cfg.get("material", {}), "roughness", 0.3))
+        try:
+            mat.node_tree.nodes.get("Principled BSDF").inputs["Metallic"].default_value = _f(cfg.get("material", {}), "metallic", 0.5)
+        except Exception:  # pragma: no cover
+            pass
     parts = []
     for side, pts in rims.items():
         loop = pts + [pts[0]]
@@ -154,16 +160,25 @@ def build_glasses(C, cfg, lm, ctx, face_parts, head_bone, obstacles=()):
             k = len(pts)
             faces += [(base, base + 1 + i, base + 1 + (i + 1) % k) for i in range(k)]
         lens = G.new_object(f"{name}_lens", verts, faces, C)
-        lm_ = bpy.data.materials.new(f"M_{name}_lens")
-        lm_.use_nodes = True
-        p = lm_.node_tree.nodes.get("Principled BSDF")
-        p.inputs["Base Color"].default_value = (1, 1, 1, 1)
-        p.inputs["Roughness"].default_value = 0.0
-        p.inputs["Alpha"].default_value = _f(lc, "alpha", 0.05)
-        try:
-            lm_.surface_render_method = "BLENDED"
-        except Exception:  # pragma: no cover
-            pass
+        lens_assignment = (material_assignments or {}).get(f"{name}_lens")
+        if lens_assignment:
+            overrides = MATERIALS.deep_merge(lens_assignment.get("overrides") or {},
+                                              {"surface": {"alpha": _f(lc, "alpha", 0.05)}})
+            lm_ = MATERIALS.build_material(f"M_{name}_lens", lens_assignment["preset"],
+                                           lens_assignment["base_color_srgb"], lens_assignment.get("reference_size_m"),
+                                           overrides)
+            report["lens_material_preset"] = lens_assignment["preset"]
+        else:
+            lm_ = bpy.data.materials.new(f"M_{name}_lens")
+            lm_.use_nodes = True
+            p = lm_.node_tree.nodes.get("Principled BSDF")
+            p.inputs["Base Color"].default_value = (1, 1, 1, 1)
+            p.inputs["Roughness"].default_value = 0.0
+            p.inputs["Alpha"].default_value = _f(lc, "alpha", 0.05)
+            try:
+                lm_.surface_render_method = "BLENDED"
+            except Exception:  # pragma: no cover
+                pass
         G.assign(lens, lm_)
     report["objects"] = [frame.name] + ([lens.name] if lens else [])
     return frame, lens, report
@@ -185,13 +200,13 @@ def attach(rig, frame, lens, head_bone):
         lens.matrix_world = mw
 
 
-def build(C, items, lm, ctx, face_parts, head_bone, obstacles=()):
+def build(C, items, lm, ctx, face_parts, head_bone, obstacles=(), material_assignments=None):
     out, rep = [], {}
     for it in items or []:
         if not isinstance(it, dict):
             continue  # planned items (strings) are documentation only
         if it.get("type") == "glasses/1":
-            frame, lens, r = build_glasses(C, it, lm, ctx, face_parts, head_bone, obstacles)
+            frame, lens, r = build_glasses(C, it, lm, ctx, face_parts, head_bone, obstacles, material_assignments)
             out.append((frame, lens))
             rep[it.get("name", "glasses")] = r
         else:
