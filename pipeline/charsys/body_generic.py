@@ -3,7 +3,8 @@ humanoid character, entirely from its spec. No character's dimensions live in th
 
 Spec (`spec.body`): {"generator": "body_generic/1", "height_m": <sole to top of skull>, "params": {...}} with every
 length a FRACTION OF height_m (angles in degrees):
-  head:     centre_z, half_width, half_depth, half_height, chin_taper (0..1), forward
+  head:     centre_z, half_width, half_depth, half_height, chin_taper (0..1), forward; optional profile_levels
+            [[z, centre_x, centre_y, half_width, front_depth, back_depth], ...] and profile_exponent
   neck:     base_z, top_z, radius
   torso:    levels: [[z, half_width, half_depth_front, half_depth_back], ...]  (bottom to top)
   shoulder: z, joint_x, clavicle_x
@@ -105,14 +106,20 @@ def build_body(C, M, P, H, J, frames):
     """Body skin (head, neck, torso, arms, legs, feet; one remeshed surface) and the two hands. Returns
     [(object, role)] with roles 'skin' and 'hand'."""
     hp = P["head"]
-    head = G.uv_sphere("_head", (0, hp["forward"] * H, hp["centre_z"] * H), 1.0, C, 48, 24,
-                       (hp["half_width"] * H, hp["half_depth"] * H, hp["half_height"] * H))
-    cz, hh = hp["centre_z"] * H, hp["half_height"] * H
-    for v in head.data.vertices:  # rounder cranium, tapered jaw
-        t = max(0.0, (cz - v.co.z) / hh)
-        k = 1 - hp["chin_taper"] * t * t
-        v.co.x *= k
-        v.co.y = hp["forward"] * H + (v.co.y - hp["forward"] * H) * k
+    if hp.get("profile_levels"):
+        profile = [[x * H for x in level] for level in hp["profile_levels"]]
+        head = G.profile_loft("_head", profile, C, n=float(hp.get("profile_exponent", 2.25)),
+                              seg=int(hp.get("profile_segments", 64)), steps=int(hp.get("profile_steps", 56)))
+    else:
+        head = G.uv_sphere("_head", (0, hp["forward"] * H, hp["centre_z"] * H), 1.0, C, 48, 24,
+                           (hp["half_width"] * H, hp["half_depth"] * H, hp["half_height"] * H))
+        cz, hh = hp["centre_z"] * H, hp["half_height"] * H
+        for v in head.data.vertices:  # rounder cranium, tapered jaw
+            t = max(0.0, (cz - v.co.z) / hh)
+            k = 1 - hp["chin_taper"] * t * t
+            v.co.x *= k
+            v.co.y = hp["forward"] * H + (v.co.y - hp["forward"] * H) * k
+    cz = hp["centre_z"] * H
     neck = G.tube("_neck", [Vector((0, 0, P["neck"]["base_z"] * H)), Vector((0, 0, P["neck"]["top_z"] * H)),
                             Vector((0, hp["forward"] * H * 0.5, cz))], [P["neck"]["radius"] * H] * 3,
                   [P["neck"]["radius"] * H] * 3, C, up_hint=(0, -1, 0))

@@ -10,6 +10,7 @@ import json
 SCHEMA = "plush-studio.character-spec/1"
 SECTIONS = ("identity", "proportions", "body", "face", "hair", "clothing", "accessories", "rig", "materials", "fur",
             "animation", "metadata")
+BODY_ONLY_SECTIONS = ("face", "hair", "clothing", "accessories", "fur")
 IDENTITY_SECTIONS = ("identity", "proportions", "face", "hair", "clothing", "accessories", "materials")  # changes need owner approval
 
 
@@ -28,7 +29,9 @@ def validate(spec):
     errs = []
     if spec.get("schema") != SCHEMA:
         errs.append(f"schema must be {SCHEMA}")
-    for s in SECTIONS:
+    required = [s for s in SECTIONS if not (spec.get("body", {}).get("generator") == "body_generic/1" and
+                                             s in BODY_ONLY_SECTIONS)]
+    for s in required:
         if s not in spec:
             errs.append(f"missing section: {s}")
     cid = spec.get("identity", {}).get("id", "")
