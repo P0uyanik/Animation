@@ -24,6 +24,7 @@
 //              override their body-part mask with blending; walk keeps the legs, hips and root while walking;
 //              IK (reach, touch, foot plants) and look are applied afterwards and keep priority. Library clips are
 //              found in content/clips/<name>.clip.json above the scene file.
+//   reach/grasp {.., prop, ..}, hold, place, handover  prop interactions at asset sockets (scene/interaction.h)
 //   emotion    {character, name:<library name>[/<variant>], start, end?, intensity=1}  a shared emotion
 //              (plush.emotion/1, scene/emotion.h, docs/EMOTIONS.md) found in content/emotions/<name>.emotion.json above
 //              the scene file: its face mix becomes expression weights (generated per-frame keys added to the
@@ -230,7 +231,16 @@ Result<void> SceneEvaluator::compileActions() {
     }
   else
     authoredObjects_ = scene_.objects;
+  // Props likewise: interaction actions add parent switches, which are reset to the authored ones first.
+  if (authoredProps_.size() == scene_.props.size())
+    for (size_t i = 0; i < scene_.props.size(); ++i) {
+      scene_.props[i].parent = authoredProps_[i].parent;
+      scene_.props[i].parentSwitch = authoredProps_[i].parentSwitch;
+    }
+  else
+    authoredProps_ = scene_.props;
   if (!scene_.actions.is_array() || scene_.actions.empty()) return {};
+  InteractionContext interactions;
 
   std::vector<const Json*> actions;
   for (const Json& a : scene_.actions) actions.push_back(&a);
@@ -327,6 +337,11 @@ Result<void> SceneEvaluator::compileActions() {
     const CharacterAsset& asset = characters_[size_t(c)].asset;
     const std::string prefix = who + "/";
     const double start = startOf(&a);
+
+    // Prop interactions (reach/grasp a prop, hold, place, handover): interaction.cpp.
+    auto interaction = compileInteraction(a, *gen, interactions);
+    if (!interaction) return fail(interaction.error().message);
+    if (*interaction) continue;
 
     if (type == "look") {
       const std::string track = prefix + "lookAt";
@@ -793,6 +808,7 @@ Result<void> SceneEvaluator::compileActions() {
     }
     gen->tracks[track].keys = std::move(keys);
   }
+  if (auto r = finishInteractions(*gen, interactions); !r) return r;
   if (scene_.director.is_object()) planShots(*this, *gen, beats);
   return {};
 }

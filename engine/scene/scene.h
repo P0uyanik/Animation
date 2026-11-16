@@ -9,6 +9,7 @@
 #include "model/character.h"
 #include "model/clip.h"
 #include "scene/asset_library.h"
+#include "scene/interaction.h"
 
 namespace plush {
 
@@ -131,6 +132,8 @@ class SceneEvaluator {
   // rebased at their switch frame so random-access evaluation remains continuous.
   std::vector<mat4> propWorlds(double frame) const;
   mat4 propWorld(size_t prop, double frame) const;
+  // World position of a hand's palm contact point (interaction.h): the point that meets a prop's grasp socket.
+  vec3 handGripPoint(size_t c, char side, double frame) const;
 
  private:
   float waterHeight(size_t waterObject, vec2 localXZ, double frame) const;
@@ -163,6 +166,10 @@ class SceneEvaluator {
   float expressionWeight(size_t c, const std::string& morph, double frame) const;
  private:
   std::vector<ObjectDesc> authoredObjects_;  // objects as written, before actions set attachments and ripples
+  std::vector<PropDesc> authoredProps_;      // props as written, before interaction actions add parent switches
+  // Interaction actions (interaction.cpp): returns false for an action that is not a prop interaction.
+  Result<bool> compileInteraction(const Json& action, Clip& gen, InteractionContext& ctx);
+  Result<void> finishInteractions(Clip& gen, InteractionContext& ctx);
   // Clip actions (type "clip", model/clip.h): per character, in start order; a "base" clip replaces the default pose
   // for the whole shot. Walk spans: frames where a walk owns the legs, hips and root.
   struct ClipLayer {

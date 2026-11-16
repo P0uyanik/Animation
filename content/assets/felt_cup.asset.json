@@ -1,0 +1,43 @@
+{
+  "format": "plush.asset",
+  "version": 1,
+  "id": "prop.felt_cup",
+  "licence": "CC0-1.0",
+  "attribution": "Plush Studio project; generated from a cylinder primitive (stands on its base at the origin, axis +Y)",
+  "mesh": {
+    "primitive": "cylinder",
+    "radius": 0.03,
+    "height": 0.08
+  },
+  "material_presets": [
+    "felt"
+  ],
+  "scale": 1.0,
+  "sockets": {
+    "grip": {
+      "translation": [0.03, 0.05, 0.0],
+      "rotationDeg": [0.0, 0.0, -90.0],
+      "scale": [1.0, 1.0, 1.0]
+    },
+    "grip_b": {
+      "translation": [-0.03, 0.028, 0.0],
+      "rotationDeg": [0.0, 0.0, 90.0],
+      "scale": [1.0, 1.0, 1.0]
+    },
+    "place": {
+      "translation": [0.0, 0.0, 0.0],
+      "rotationDeg": [0.0, 0.0, 0.0],
+      "scale": [1.0, 1.0, 1.0]
+    },
+    "contact": {
+      "translation": [0.0, 0.08, 0.0],
+      "rotationDeg": [0.0, 0.0, 0.0],
+      "scale": [1.0, 1.0, 1.0]
+    }
+  },
+  "collision": {
+    "type": "capsule",
+    "radius": 0.03,
+    "height": 0.08
+  }
+}
