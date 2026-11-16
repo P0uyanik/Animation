@@ -114,7 +114,10 @@ def _internal():
     SHAFT, TOE, ROLL = 0.008, 0.010, 0.004
     # T-034: build-time cloth rest shape on every main panel (both outfits) with fixed seed and frames.
     # Volume items gather between their pinned bands; fitted panels (no volume) hang from their top and edges.
-    DRAPE = {"enabled": True, "gather": 0.3, "gravity": 0.5, "pin": ["edges", "volume"], "seed": 34, "frames": 30}
+    # The T-024 profile checks want puffs gathered back to the plain width just above the cuff: a 30 mm cuff zone
+    # and stuffed-plush gravity (0.3).
+    DRAPE = {"enabled": True, "gather": 0.3, "gravity": 0.3, "pin": ["edges", "volume"], "edge_band_m": 0.03,
+             "seed": 34, "frames": 30}
     FITTED_DRAPE = {"enabled": True, "gravity": 1.0, "pin": ["edges", "top"], "seed": 34, "frames": 30}
     VEST_DRAPE = {"enabled": True, "fabric": "felt", "pin": ["top"], "top_band_m": 0.05, "gravity": 0.6, "seed": 34,
                   "frames": 30}
