@@ -1,7 +1,8 @@
 # Animation clips (T-002, Acting Foundation stage A)
 
-**Status:** implemented and tested on the boy (published 1.0.0) and the girl (unpublished build). The clips are
-script-made technical validation clips. They are not final acting quality, and nothing is approved.
+**Status:** implemented and tested on the boy (published 1.0.0; T-027 also on the unpublished 1.1.0 candidate) and
+the girl (unpublished build). The clips are script-made. T-027 gave the gesture, idle and emotion clips an acting pass
+with shared animation principles (section 5a) and added the automatic base idle (section 6a). Nothing is approved.
 
 **The idea:**
 - Body clips are authored once in Blender, on a neutral mannequin.
@@ -106,11 +107,43 @@ re-exported when the exporter changes.
 
 | Clip | Content | Mask |
 | --- | --- | --- |
-| `idle_relaxed` | loop, 90 frames: arms down, breathing, weight shift, head drift | all roles |
-| `wave` | right arm, palm forward, forearm swings in the frontal plane; held start and end | right arm |
-| `point` | right arm forward, index straight, other fingers curled | right arm, hand, fingers |
-| `sit_down` / `stand_up` | standing ↔ seated, with root motion down and back; seat contact `height_ratio` 0.617 | spine, chest, neck, legs (arms, hips and head stay with the base layer) |
+| `idle_relaxed` | loop, 180 frames (6 s): asymmetric contrapposto stance (weight on the right leg, feet planted, free knee bent), slow weight drift, breathing travelling up the spine, head drift, arm overlap; root motion (weight shift) | all roles |
+| `wave` | 90 frames: right arm, palm forward, three waves; anticipation, successive breaking, overshoot / settle, hip and spine support; held rest frames at both ends | hips, spine, chest, right arm, hand, fingers |
+| `point` | 84 frames: right arm forward, index straight, other fingers curled; anticipation, overlap, an emphasis push, settle; weight towards the target, chest turn, lean in | hips, spine, chest, right arm, hand, fingers |
+| `sit_down` / `stand_up` | standing (the idle's stance) ↔ seated, with root motion down and back; seat contact `height_ratio` 0.617 | spine, chest, neck, legs (arms, hips and head stay with the base layer) |
 | `dense_test` | 60 fps, 120 dense frames on several roles (mocap-like data) | all roles |
+
+The emotion clips (`emo_*`, `gest_shrug`, `gest_yawn`) come from `make_emotion_clips.py` with the same helpers
+(`docs/EMOTIONS.md`): postures start from the idle's asymmetric stance arms; loops travel up the chain with per-joint
+phase lags and eased, non-sinusoidal pulses; the shrug (chest, neck, head, arms) and the yawn (torso, arms) use
+anticipation, overshoot / settle and successive breaking, with the two arms out of sync.
+
+**Regenerate** (headless Blender; the mannequin from `build_mannequin.py`):
+```
+blender -b --factory-startup -P pipeline/clips/make_clips.py -- --mannequin <dir>/neutral_mannequin.blend --out content/clips
+blender -b --factory-startup -P pipeline/clips/make_emotion_clips.py -- --mannequin <dir>/neutral_mannequin.blend --out content/clips
+```
+Both are deterministic: the same scripts and mannequin give byte-identical files.
+
+## 5a. Acting principles (`pipeline/clips/clip_principles.py`, T-027)
+Shared, parameterised authoring helpers on the shared skeleton roles. Pure Python (no Blender), no character names;
+poses are `{role: L}` in the clip convention and root offsets are in leg lengths.
+
+| Principle | Helper | What it does |
+| --- | --- | --- |
+| Eased spacing | `ease(u, kind, power)` | `linear`, `in`, `out`, `inout` (power > 1 sharpens it) instead of uniform spacing |
+| Anticipation, overshoot, settle | `move(u, anticipation, ant, overshoot, settle, power, bounce)` | a 0 → 1 transition: a counter-move to `-anticipation` over the first `ant` of the time, the eased main move to `1 + overshoot`, a settle back to 1 with one small damped undershoot; every phase joins with zero velocity (C1) |
+| Successive breaking / overlap | `perform(beats, n, delay, follow)` with `Beat(frame, pose, **motion)` and `chain_delays()` | each role reaches a beat `delay[role]` frames late (spine, chest → shoulder → elbow → wrist → fingers), so the joints no longer rotate in sync and the hand path arcs; overshoot grows past the shoulder (follow-through); `per_role` overrides single roles |
+| Whole-body support | `support(pose, side, k, tilt, counter, chest, yaw, lean, shift)` | the pelvis shifts towards the action side and hikes there, spine and chest counter-rotate, the trunk turns and leans; returns the root offset |
+| Planted feet | `plant_legs(pose, root, body)` with `Body.from_heads()` | two-bone IK in reference space: both feet stay at their reference position, flat and forward, under the hips rotation and root offset; the root sinks where a leg cannot reach (the free knee bends) |
+| Loops | `periodic()`, `lagged()` | harmonics and per-depth phase lags for idles |
+
+`make_clips.py` keys every frame of the acting clips, so the spacing is the authored one (not Blender's interpolation);
+the exporter's key reduction (0.02°) keeps the shape.
+
+**Gestures do not own the legs or the root.** A gesture (wave, point) drives hips, spine and chest for support but
+leaves the legs and root to the layer underneath, so it also plays over a sit or a walk without moving the feet. The
+weight shift with planted feet lives in the base idle.
 
 ## 6. Playback: the `clip` action (`engine/scene/actions.cpp`, `clip_layers.cpp`)
 ```json
@@ -129,12 +162,32 @@ re-exported when the exporter changes.
 
 Studio and scene files use this same JSON. No new UI is needed.
 
+## 6a. Automatic base idle (T-027, `clip_layers.cpp`)
+A character with **no base clip action** plays the shared `idle_relaxed` as its base layer automatically, so nobody
+stands frozen in the package's default pose:
+- **Who:** humanoid engine packages with generated retarget data (exporter version ≥ 2; the production path). The
+  clip must be found in `content/clips` above the scene file, and the character must have the core roles (hips, spine,
+  chest, head, both upper arms and thighs). Procedural characters and legacy packages without the `retarget` block
+  (for example the frozen `tests/data` packages) keep their default pose.
+- **Opt out** per character in the scene: `{"name": "boy", ..., "autoIdle": false}` (written back only when false).
+- **Timing:** loops for the whole shot, with a per-character phase offset from its name, so two characters do not
+  breathe in sync.
+- **Layering:** exactly like a `base: true` clip (tier 0, under emotions and clip actions). Any base clip action replaces
+  it; the check is made at evaluation, so recompiled actions decide.
+- **Existing shots:** bakes change only for characters without a base clip (e000, e900 in this repository); shots
+  with a base clip keep their base. The life layer (breathing, sway, blinks) is unchanged and still adds on top;
+  test shots that disable blinks keep them disabled.
+- **Measurement scenes** that need a clip alone (`measure_clips.py` per-clip and walk-alone scenes,
+  `measure_shot.py` before/after mode) set `"autoIdle": false`.
+
 ## 7. Layering (order of a character's pose)
 1. Keyed and generated tracks (unchanged).
 2. **Base clip** on its mask. Generated action motion (walk arm swing, reach lean) is added on top of it as a change
    relative to the default pose.
 3. **Clip actions** in start order, each overriding its mask with its blend weight:
    - **Walk:** a walk keeps the hips, legs and root (clip weight × (1 − walk ownership), ramped over 4 frames).
+     The base clip's legs also follow the walk while it owns them (T-027): the base idle's weight shift, for
+     example a bent free knee, does not leak into the walk; the hips keep the base pose plus the walk's change.
    - **Arm clips during a walk:** an arm clip replaces the walk's arm swing **only on the roles in its mask**; the
      other arm keeps the swing (owner-approved rule).
    - **Hand keys:** a hand-keyed role (`<char>/<role>.rot` keys) always wins.
@@ -143,8 +196,9 @@ Studio and scene files use this same JSON. No new UI is needed.
    its arm and look keeps the gaze**.
 6. Clip finger tracks, unless a hand track (reach, touch, hand keys) owns that hand.
 
-**Without clip actions none of this runs:** the old code path is used unchanged. The s010 bake is byte-identical with
-`main`.
+**Without clip layers none of this runs:** the old code path is used unchanged. Since T-027 a humanoid package
+character without a base clip has the automatic idle as its clip layer (section 6a); with `"autoIdle": false` (or a
+procedural / legacy package) the old path runs, as before.
 
 ## 7a. Emotions (T-003)
 Emotions (`docs/EMOTIONS.md`) reuse this clip path: an `emotion` action plays a posture clip and an optional
@@ -221,7 +275,15 @@ but intermediate rotations need not when the semantic parent differs from the ac
 unchanged.
 
 ## 9. Limits (known)
-- **Clip quality:** the clips are mechanical script poses; acting quality and the reference videos remain future work.
+- **Clip quality:** the clips are script-made. T-027 added anticipation, overlap, overshoot / settle, support and
+  eased spacing (measured in `docs/evaluation/animation/T-027/`); they are still not reviewed acting, and nothing is
+  approved.
+- **Pelvis tilt on top-level thighs:** clips plant the feet in the semantic hierarchy (thighs hang from the hips). In
+  the Rigify packages the thighs are top-level engine bones, so a pelvis tilt does not move the hip joints: with the
+  idle's 1° tilt a foot can be off by about 1–2 mm vertically. The tilts are kept small for that reason.
+- **Asymmetric idle and mirrored gestures:** a gesture starts from an upright trunk and the stance arms of its own
+  side. Over the asymmetric idle, a mirrored gesture blends from the idle's other arm (a few degrees, inside the
+  blend-in).
 - **Rigid shoulders and hips:** in the Rigify packages, arms and thighs are top-level engine bones. A torso lean
   rotates the arms through the semantic hierarchy, but their pivots do not follow the chest. Sit and stand lean only
   a little.

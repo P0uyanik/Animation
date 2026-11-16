@@ -21,13 +21,17 @@ Acting principles (T-027, principles_check.json; per character and limb chain, m
   chains: arm.L / arm.R (upperArm -> forearm -> hand; effector = wrist, relative to the shoulder) and trunk (hips ->
   head; effector = head pivot, relative to the hips pivot). The effector path is cut into moves at deep speed minima
   and at direction reversals.
-  - ease_ratio: per move (>= 6 frames), mean speed in its first and last 20 % / mean speed in its middle 20 %
-    (1 = uniform spacing, lower = eased in and out); median over the moves;
+  - ease_ratio: per move (>= 6 frames), mean effector speed in its first and last 20 % / mean speed in its middle
+    20 % (1 = uniform spacing, lower = eased in and out); median over the moves. joint_ease_ratio: the same on each
+    chain role's angular speed over the major moves (the spacing of the joints themselves; overlap between joints
+    spreads the effector's speed towards the ends of a move, so both are reported);
   - arc_curvature: per move with a chord >= 20 % of the chain length, the largest distance of the path from the
     straight chord / chord length (0 = straight line); median and max;
-  - anticipation: a major move is anticipated when the effector first moves against the move's direction (a short
-    opposite move just before it, or a dip of >= 1 % of the chord at its start); "present" = any;
-  - overshoot_settle: a short opposite move right after a major move;
+  - anticipation: in joint space, per major move of the effector: a chain role first turns against the move's own
+    rotation axis (2-40 % of the move, >= 0.3 deg) in the 6 frames before it or early in it, and that counter-turn is
+    the role's motion there (so an oscillation such as a preceding wave does not count); "present" = any;
+  - overshoot_settle: a chain role goes past its final value along the move's axis (2-40 %, >= 0.3 deg) near the
+    end of the move or in the 6 frames after it, and comes back;
   - symmetry_index (per character): 1 - mean angle between each left arm role direction and the mirrored right one
     (character frame) / 90 deg, 1 = mirror-symmetric; plus the mean lateral tilt of hips / chest / head;
   - micro_motion: per chain, mean over its roles of the RMS rotation (deg) about the role's mean rotation, and the
@@ -48,6 +52,7 @@ import tempfile
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, "..", ".."))
 sys.path.insert(0, HERE)
+import clip_principles as CP  # noqa: E402
 import measure_clips as MC  # noqa: E402
 import retarget as RT  # noqa: E402
 
@@ -76,7 +81,8 @@ def gaze(scene, bake):
     out = {"limits_source": "engine/anim/animation.h GazeLimits (scene life.gaze overrides applied)", "characters": {}}
     for ch in bake["characters"]:
         name = ch["name"]
-        lim = dict(lim0, **((chars[name].get("life") or {}).get("gaze") or {}))
+        life = chars[name].get("life")
+        lim = dict(lim0, **(((life if isinstance(life, dict) else {}).get("gaze")) or {}))  # "life": true has no overrides
         idx = {n: i for i, n in enumerate(ch["bones"])}
         eyes = sorted(n for n in ch["bones"] if n.startswith("eye."))
         head = idx["head"]
@@ -134,7 +140,7 @@ def add_camera_error(g, bake, pkgs):
 
 def variant(scene, keep, keys):
     v = copy.deepcopy(scene)
-    v["actions"] = [a for i, a in enumerate(scene["actions"]) if a.get("base") or a["type"] == "look" or i in keep]
+    v["actions"] = [a for i, a in enumerate(scene["actions"]) if a.get("base") or a["type"] in ("look", "expression") or i in keep]
     if not keys:
         v.pop("animation", None)
     return v
@@ -154,7 +160,12 @@ def merge(a, b):
 
 def ramps(a, fps):
     """(start, end, ramp-in frames, ramp-out frames) of a clip or emotion action, in scene frames."""
-    start = float(a.get("start", 1))
+    start = float(a.get("start", a.get("frame", 1)))
+    if a["type"] not in ("clip", "emotion"):  # walk, reach, ...: their own span, 4-frame ownership ramps
+        end = float(a.get("end", start))
+        if a["type"] == "walk":  # the engine walk owns the legs from start - 4 to end + 10 (4-frame ownership ramps
+            start, end = start - 4.0, end + 10.0  # around start .. end + 6) and turns to "face" until end + 8
+        return start, end, 4.0, 4.0
     if a["type"] == "clip":
         c = json.load(open(os.path.join(ROOT, "content", "clips", a["clip"] + ".clip.json")))
         end = float(a.get("end", start + c["frame_count"] / c["fps"] * fps / float(a.get("speed", 1.0))))
@@ -191,9 +202,11 @@ def smoothness(scene_path, bake_path, out, engine, pkgs):
     srcs = {"base": (variant(scene, set(), False), None)}
     windows = []  # (character, first frame, last frame): blend / emotion ramp boundaries (12 deg cap applies)
     for i, a in enumerate(scene["actions"]):
-        if a.get("base") or a["type"] == "look":
+        if a.get("base") or a["type"] in ("look", "expression"):  # expressions move morphs (and the jaw), not limb roles
             continue
         srcs[f"{i}_{a['type']}_{a.get('clip') or a.get('name')}".replace("/", "-")] = (variant(scene, {i}, False), (a["character"], *ramps(a, fps)[:2]))
+        if a["type"] not in ("clip", "emotion"):  # generated actions (walk, reach): sources only; their own steps can
+            continue  # exceed 12 deg/frame (walk boundaries are T-002 C4 in measure_clips.py)
         st, en, ri, ro = ramps(a, fps)
         windows.append((a["character"], st - 1, st + ri + 1))
         if en <= f_end:
@@ -333,6 +346,50 @@ def _qmean(qs):
     return RT.qnorm(acc)
 
 
+LOOK = 6  # frames before / after a major move searched for its counter-move (anticipation) and its settle
+
+
+def _joint_principles(per, frames, roles, a, b):
+    """Anticipation and overshoot / settle of one major move [a, b] (frame indices) in joint space. Per chain role, the
+    progress of its rotation along the move's own axis (from the pose LOOK frames before the move to its end):
+    - anticipation: before / early in the move the role first turns AGAINST the move by 2-40 % of the move (>= 0.3
+      deg; a counter-move as large as the move is an oscillation, not anticipation), and that counter-turn is the
+      role's motion there (its rotation path <= 3 x the counter-turn);
+    - overshoot / settle: near / after the end the role goes PAST its final value by 2-40 % of the move (>= 0.3 deg)
+      and comes back, and that return is its motion there.
+    Roles that turn less than 5 deg in the move are ignored. Returns (anticipating roles, settling roles, joint ease
+    ratios: per role, its angular speed in the first and last 20 % of the move / in the middle 20 %)."""
+    n = len(frames)
+    ws, we = max(0, a - LOOK), min(n - 1, b + LOOK)
+    ra, rs, ease = [], [], []
+    for r in roles:
+        q = [per[frames[i]][r][0] for i in range(ws, we + 1)]
+        main = CP.qlog(RT.qmul(RT.qconj(q[0]), q[b - ws]))
+        ang = RT.length(main)  # half-angle (rad)
+        if ang < math.radians(5) / 2:
+            continue
+        ax = [c / ang for c in main]
+        sp = [RT.qangle_deg(q[i], q[i + 1]) for i in range(a - ws, b - ws)]
+        if len(sp) >= 6:
+            kk = max(1, int(round(0.2 * len(sp))))
+            mid = sp[(len(sp) - kk) // 2:(len(sp) - kk) // 2 + kk]
+            if sum(mid) > 1e-9:
+                ease.append((sum(sp[:kk]) + sum(sp[-kk:])) / (2 * kk) / (sum(mid) / kk))
+        prog = [RT.dot(CP.qlog(RT.qmul(RT.qconj(q[0]), x)), ax) for x in q]
+        step = [RT.qangle_deg(q[i], q[i + 1]) / 2 for i in range(len(q) - 1)]
+        thr = max(0.02 * ang, math.radians(0.3) / 2)
+        early = range(0, (a - ws) + int(0.35 * (b - a)) + 1)
+        imin = min(early, key=lambda i: prog[i])
+        if thr <= -prog[imin] <= 0.4 * ang and math.radians(sum(step[:imin])) <= 3 * -prog[imin] + 1e-9:
+            ra.append(r)
+        late = range((b - ws) - int(0.35 * (b - a)), len(q))
+        imax = max(late, key=lambda i: prog[i])
+        back = prog[imax] - prog[-1]
+        if thr <= back <= 0.4 * ang and math.radians(sum(step[imax:])) <= 3 * back + 1e-9:
+            rs.append(r)
+    return ra, rs, ease
+
+
 def principles(per, frames, yaw_deg=0.0, micro_frames=None):
     """Acting-principle measurements of one character's baked data (measure_clips.Baked().data[name])."""
     to_c = _yaw_frame(yaw_deg)
@@ -345,35 +402,38 @@ def principles(per, frames, yaw_deg=0.0, micro_frames=None):
         length = sum(math.dist(per[frames[0]][roles[i]][3], per[frames[0]][roles[i + 1]][3]) for i in range(len(roles) - 1))
         moves = [_move_stats(path, a, b) for a, b in _moves(path)]
         major = [k for k, m in enumerate(moves) if m["chord_m"] >= 0.2 * length]
-        antic, settle = [], []
+        antic, settle, antic_roles, settle_roles, jease = [], [], set(), set(), []
         for k in major:
-            m = moves[k]
-            pre = moves[k - 1] if k > 0 else None
-            ok = m["start_dip_ratio"] >= 0.01
-            if pre and m["frames"][0] - pre["frames"][1] <= 2 and 0.01 * m["chord_m"] <= pre["chord_m"] <= 0.4 * m["chord_m"] \
-                    and RT.dot(pre["dir"], m["dir"]) < -0.2:
-                ok = True
-            antic.append(ok)
-            post = moves[k + 1] if k + 1 < len(moves) else None
-            settle.append(bool(post and post["frames"][0] - m["frames"][1] <= 2 and post["chord_m"] <= 0.4 * m["chord_m"]
-                               and RT.dot(post["dir"], m["dir"]) < -0.2))
-        mf = sorted(f for f in (micro_frames or frames) if f in per)
+            a, b = moves[k]["frames"]
+            ra, rs, je = _joint_principles(per, frames, roles, a, b)
+            jease += je
+            antic.append(bool(ra))
+            settle.append(bool(rs))
+            antic_roles |= set(ra)
+            settle_roles |= set(rs)
+        mf = sorted(f for f in (frames if micro_frames is None else micro_frames) if f in per)
         rms = []
-        for r in roles:
+        if not mf:  # no quiet frames: micro-motion is not measured
+            mf = None
+        prms = None
+        for r in roles if mf else ():
             qs = [per[f][r][0] for f in mf]
             mean = _qmean(qs)
             rms.append(math.sqrt(sum(RT.qangle_deg(q, mean) ** 2 for q in qs) / len(qs)))
-        ep = [to_c(RT.sub(per[f][eff][3], per[f][base][3])) for f in mf]
-        c = [sum(p[i] for p in ep) / len(ep) for i in range(3)]
-        prms = math.sqrt(sum(math.dist(p, c) ** 2 for p in ep) / len(ep))
+        if mf:
+            ep = [to_c(RT.sub(per[f][eff][3], per[f][base][3])) for f in mf]
+            c = [sum(p[i] for p in ep) / len(ep) for i in range(3)]
+            prms = math.sqrt(sum(math.dist(p, c) ** 2 for p in ep) / len(ep))
         out["chains"][name] = {
             "chain_length_m": length, "moves": len(moves), "major_moves": len(major),
             "ease_ratio_median": _median(m["ease_ratio"] for m in moves),
+            "joint_ease_ratio_median": _median(jease),
             "arc_curvature_median": _median(moves[k]["arc_curvature"] for k in major),
             "arc_curvature_max": max((moves[k]["arc_curvature"] for k in major), default=None),
-            "anticipation_present": any(antic), "anticipated_major_moves": sum(antic),
-            "overshoot_settle_present": any(settle), "settled_major_moves": sum(settle),
-            "micro_motion_rms_deg": sum(rms) / len(rms), "micro_motion_effector_rms_mm": prms * 1000,
+            "anticipation_present": any(antic), "anticipated_major_moves": sum(antic), "anticipation_roles": sorted(antic_roles),
+            "overshoot_settle_present": any(settle), "settled_major_moves": sum(settle), "overshoot_settle_roles": sorted(settle_roles),
+            "micro_motion_rms_deg": sum(rms) / len(rms) if rms else None,
+            "micro_motion_effector_rms_mm": None if prms is None else prms * 1000,
             "move_list": [{k2: (round(v, 5) if isinstance(v, float) else v) for k2, v in m.items() if k2 != "dir"} for m in moves]}
     # left / right symmetry of the arms (character frame) and lateral trunk tilt
     angs, tilt = [], []
@@ -419,8 +479,9 @@ def principles_shot(scene, bake, pkgs):
                 st, en = float(a.get("start", a.get("frame", 1))), float(a.get("end", frames[-1]))
             busy.update(f for f in frames if st - 1 <= f <= en + 1)
         quiet = [f for f in frames if f not in busy]
-        res["characters"][who] = principles(data[who], frames, float(ch.get("yawDeg", 0)), quiet if len(quiet) >= 10 else None)
-        res["characters"][who]["micro_motion_frames"] = "base-only frames" if len(quiet) >= 10 else "all frames"
+        res["characters"][who] = principles(data[who], frames, float(ch.get("yawDeg", 0)), quiet if len(quiet) >= 10 else [])
+        res["characters"][who]["micro_motion_frames"] = (f"{len(quiet)} base-only frames" if len(quiet) >= 10
+                                                         else "not measured (fewer than 10 base-only frames)")
     return res
 
 
@@ -459,8 +520,8 @@ def _fmt(v, nd=2):
 
 
 def print_before_after(res, who):
-    print(f"{'clip':13s} {'chain':6s} | {'ease ratio':>15s} | {'arc curvature':>15s} | {'anticip.':>9s} | {'settle':>9s} | "
-          f"{'micro rms deg':>15s} | {'symmetry idx':>14s}")
+    print(f"{'clip':13s} {'chain':6s} | {'ease ratio':>15s} | {'joint ease':>15s} | {'arc curvature':>15s} | {'anticip.':>9s} | "
+          f"{'settle':>9s} | {'micro rms deg':>15s} | {'symmetry idx':>14s}")
     for c, v in res["clips"].items():
         b, a = v["before"][who], v["after"][who]
         for ch in ("arm.L", "arm.R", "trunk"):
@@ -469,6 +530,7 @@ def print_before_after(res, who):
             x, y = b["chains"][ch], a["chains"][ch]
             sym = f"{_fmt(b.get('symmetry_index'))} -> {_fmt(a.get('symmetry_index'))}" if ch == "arm.L" else ""
             print(f"{c:13s} {ch:6s} | {_fmt(x['ease_ratio_median']):>6s} -> {_fmt(y['ease_ratio_median']):>6s} | "
+                  f"{_fmt(x['joint_ease_ratio_median']):>6s} -> {_fmt(y['joint_ease_ratio_median']):>6s} | "
                   f"{_fmt(x['arc_curvature_median'], 3):>6s} -> {_fmt(y['arc_curvature_median'], 3):>6s} | "
                   f"{_fmt(x['anticipation_present']):>3s} -> {_fmt(y['anticipation_present']):>3s} | "
                   f"{_fmt(x['overshoot_settle_present']):>3s} -> {_fmt(y['overshoot_settle_present']):>3s} | "
@@ -516,7 +578,7 @@ def main():
     json.dump(pr, open(os.path.join(a.out, "principles_check.json"), "w"), indent=1)
     for who, c in pr["characters"].items():
         for ch, v in c["chains"].items():
-            print(f"principles {who} {ch}: ease {_fmt(v['ease_ratio_median'])} arc {_fmt(v['arc_curvature_median'], 3)} "
+            print(f"principles {who} {ch}: ease {_fmt(v['ease_ratio_median'])} joint ease {_fmt(v['joint_ease_ratio_median'])} arc {_fmt(v['arc_curvature_median'], 3)} "
                   f"anticipation {_fmt(v['anticipation_present'])} settle {_fmt(v['overshoot_settle_present'])} "
                   f"micro {_fmt(v['micro_motion_rms_deg'])} deg / {_fmt(v['micro_motion_effector_rms_mm'])} mm")
         print(f"principles {who}: symmetry index {_fmt(c.get('symmetry_index'), 3)}, trunk lateral tilt {_fmt(c.get('trunk_lateral_tilt_mean_deg'))} deg")
