@@ -77,7 +77,7 @@ def _internal():
     clothing = {
         "generator": "garment/1",
         "hide_body_faces": False,
-        "max_influences": 1,
+        "max_influences": 4,
         "defaults": {"thickness_m": 0.002, "ease_m": 0.009, "seam_radius_m": 0.00115},
         "garments": [
             {"type": "top", "name": "shirt", "sleeve_length": 0.74, "collar": "shirt",
@@ -214,6 +214,8 @@ def _internal():
         bvh = BVHTree.FromPolygons(body_verts, body_faces, all_triangles=False)
         minimum = float("inf")
         closest = None
+        garment_point = None
+        body_point = None
         for ob in objects:
             verts, _ = world_mesh(ob)
             for point in verts:
@@ -221,7 +223,9 @@ def _internal():
                 signed = (point - location).dot(normal) if location is not None else -1.0
                 if signed < minimum:
                     minimum, closest = signed, ob.name
-        return minimum, closest
+                    garment_point = tuple(round(value, 6) for value in point)
+                    body_point = tuple(round(value, 6) for value in location) if location is not None else None
+        return minimum, closest, garment_point, body_point
 
     outfits = {
         "outfit_a": [ob for ob in garment_objects if ob.get("ps_garment_item") in {"shirt", "vest", "shorts", "boots"}],
@@ -255,8 +259,9 @@ def _internal():
     result["rest"] = {}
     clearance_floor = 0.0005
     for outfit, objects in outfits.items():
-        value, closest = clearance(objects)
+        value, closest, garment_point, body_point = clearance(objects)
         result["rest"][outfit] = {"min_clearance_m": round(value, 6), "closest_object": closest,
+                                   "garment_point_m": garment_point, "body_point_m": body_point,
                                    "pass": value >= clearance_floor}
 
     samples = [("idle_relaxed", 45), ("wave", 52), ("point", 46), ("gest_shrug", 26),
@@ -266,8 +271,9 @@ def _internal():
         meta = apply_clip(clip_name, frame)
         pose_result = {"source": meta, "outfits": {}}
         for outfit, objects in outfits.items():
-            value, closest = clearance(objects)
+            value, closest, garment_point, body_point = clearance(objects)
             pose_result["outfits"][outfit] = {"min_clearance_m": round(value, 6), "closest_object": closest,
+                                              "garment_point_m": garment_point, "body_point_m": body_point,
                                                   "pass": value >= clearance_floor}
         for ob in garment_objects:
             posed = world_mesh(ob)[0]

@@ -65,7 +65,8 @@ def validate(clothing):
     if "max_influences" in clothing and (not isinstance(clothing["max_influences"], int) or
                                           not 1 <= clothing["max_influences"] <= 4):
         raise ValueError("clothing.max_influences must be an integer in [1, 4]")
-    for key in ("thickness_m", "ease_m", "offset_m", "seam_radius_m"):
+    for key in ("thickness_m", "ease_m", "offset_m", "seam_radius_m", "collision_clearance_m",
+                "articulation_allowance_m", "front_articulation_rise_m"):
         if key in defaults:
             _number(defaults[key], f"clothing.defaults.{key}", 0.0, 0.1)
     names = set()
@@ -82,7 +83,8 @@ def validate(clothing):
         for key in ("sleeve_length", "length", "height", "flare"):
             if key in raw:
                 _number(raw[key], f"garment {name}.{key}", 0.0, 1.0)
-        for key in ("thickness_m", "ease_m", "offset_m", "seam_radius_m", "length_m", "height_m", "flare_m"):
+        for key in ("thickness_m", "ease_m", "offset_m", "seam_radius_m", "collision_clearance_m",
+                    "articulation_allowance_m", "front_articulation_rise_m", "length_m", "height_m", "flare_m"):
             if key in raw:
                 _number(raw[key], f"garment {name}.{key}", 0.0, 1.0)
         collar = raw.get("collar", "none")
@@ -124,6 +126,8 @@ def _tag(ob, cfg, part, material):
     ob["ps_garment_type"] = cfg["type"]
     ob["ps_garment_part"] = part
     ob["ps_material_preset"] = material.get("ps_material_preset", "")
+    ob["ps_collision_clearance_m"] = float(cfg.get(
+        "collision_clearance_m", max(0.003, cfg["thickness_m"] * 1.5)))
     return ob
 
 
@@ -227,6 +231,32 @@ def _ensure_clearance(body, ob, clearance):
         ob.data.update()
 
 
+def _front_articulation_rise(ob, centre_z, half_span, rise, upper_only=False):
+    """Raise the lower front articulation band so flexed thighs remain below the garment."""
+    if rise <= 0:
+        return
+    for vertex in ob.data.vertices:
+        dz = vertex.co.z - centre_z
+        factor = 1.0 - (max(0.0, dz) if upper_only else abs(dz)) / max(half_span, 1e-9)
+        front = min(1.0, max(0.0, -vertex.co.y / 0.04))
+        if factor <= 0 or front <= 0 or upper_only and dz < -0.01:
+            continue
+        vertex.co.z += rise * min(1.0, factor) * front
+    ob.data.update()
+
+
+def _front_centre_ease(ob, centre_z, half_span, depth, centre_width):
+    """Add a front pleat over the hip centre without widening the side silhouette."""
+    if depth <= 0:
+        return
+    for vertex in ob.data.vertices:
+        z_factor = 1.0 - abs(vertex.co.z - centre_z) / max(half_span, 1e-9)
+        x_factor = 1.0 - abs(vertex.co.x) / max(centre_width, 1e-9)
+        if vertex.co.y < 0 and z_factor > 0 and x_factor > 0:
+            vertex.co.y -= depth * min(1.0, z_factor) * min(1.0, x_factor)
+    ob.data.update()
+
+
 def _closed_tube(G, C, name, points, radius):
     pts = [Vector(p) for p in points]
     if (pts[0] - pts[-1]).length > 1e-8:
@@ -261,6 +291,8 @@ def _feature(objects, ob, cfg, part, mat, G):
 
 def _top(C, body, cfg, P, H, J, G, vest=False):
     ease, thick = cfg["ease_m"], cfg["thickness_m"]
+    shell_ease = ease + float(cfg.get("articulation_allowance_m", 0.022))
+    front_rise = float(cfg.get("front_articulation_rise_m", 0.10))
     levels = P["torso"]["levels"]
     hem_z = float(cfg.get("hem_z_m", levels[2][0] * H))
     top_z = max(P["neck"]["base_z"], P["torso"]["levels"][-1][0]) * H
@@ -285,7 +317,8 @@ def _top(C, body, cfg, P, H, J, G, vest=False):
                 arm |= 0.10 <= t <= sleeve and d <= _arm_radius(P, H, t) + 0.012 * H
         return torso or arm
 
-    main, covered = _shell(body, f"garment.{cfg['name']}.main", selector, ease, thick, C, G)
+    main, covered = _shell(body, f"garment.{cfg['name']}.main", selector, shell_ease, thick, C, G)
+    _front_articulation_rise(main, hem_z, 0.20 * H, front_rise, upper_only=True)
     objects = []
     main_mat = _mat_for(G, cfg, "main", H)
     _feature(objects, main, cfg, "main", main_mat, G)
@@ -294,13 +327,17 @@ def _top(C, body, cfg, P, H, J, G, vest=False):
     if bands is True:
         bands = {"hem": True, "cuff": True}
     if bands.get("hem"):
-        _feature(objects, _torso_ring(G, C, f"garment.{cfg['name']}.band.hem", P, H, hem_z, ease + thick,
-                                     cfg["seam_radius_m"] * 1.25), cfg, "band", _mat_for(G, cfg, "band", H), G)
+        hem_band = _torso_ring(G, C, f"garment.{cfg['name']}.band.hem", P, H, hem_z, ease + thick + 0.004,
+                               cfg["seam_radius_m"] * 1.25)
+        _front_articulation_rise(hem_band, hem_z, 0.10 * H, front_rise, upper_only=True)
+        _feature(objects, hem_band, cfg, "band", _mat_for(G, cfg, "band", H), G)
     ridges = int(bands.get("rib_ridges", 0))
     for k in range(ridges):
         z = hem_z + (k + 1) * cfg["seam_radius_m"] * 2.2
-        _feature(objects, _torso_ring(G, C, f"garment.{cfg['name']}.rib.hem_{k + 1}", P, H, z, ease + thick,
-                                     cfg["seam_radius_m"] * 0.65), cfg, "band", _mat_for(G, cfg, "band", H), G)
+        ridge = _torso_ring(G, C, f"garment.{cfg['name']}.rib.hem_{k + 1}", P, H, z, ease + thick + 0.004,
+                            cfg["seam_radius_m"] * 0.65)
+        _front_articulation_rise(ridge, hem_z, 0.10 * H, front_rise, upper_only=True)
+        _feature(objects, ridge, cfg, "band", _mat_for(G, cfg, "band", H), G)
     if sleeve > 0 and bands.get("cuff"):
         for side in ("L", "R"):
             a, b = J[f"shoulder.{side}"], J[f"wrist.{side}"]
@@ -372,6 +409,8 @@ def _top(C, body, cfg, P, H, J, G, vest=False):
 
 def _bottoms(C, body, cfg, P, H, J, G):
     ease, thick = cfg["ease_m"], cfg["thickness_m"]
+    shell_ease = ease + float(cfg.get("articulation_allowance_m", 0.016))
+    front_rise = float(cfg.get("front_articulation_rise_m", 0.10))
     is_short = cfg["type"] == "shorts"
     length = float(cfg.get("length", 0.36 if is_short else 0.92))
     hip_z, ankle_z = P["leg"]["hip_z"] * H, P["leg"]["ankle_z"] * H
@@ -391,16 +430,19 @@ def _bottoms(C, body, cfg, P, H, J, G):
         r = _leg_radius(P, H, t) + 0.012 * H
         return any((Vector((c.x, c.y, c.z)) - Vector((J[f"hip.{s}"].x, 0, c.z))).length <= r for s in ("L", "R"))
 
-    main, covered = _shell(body, f"garment.{cfg['name']}.main", selector, ease, thick, C, G)
+    main, covered = _shell(body, f"garment.{cfg['name']}.main", selector, shell_ease, thick, C, G)
+    _front_articulation_rise(main, hip_z, 0.20 * H, front_rise)
+    _front_centre_ease(main, hip_z, 0.12 * H, 0.06, abs(J["hip.L"].x) * 0.75)
     objects = []
     _feature(objects, main, cfg, "main", _mat_for(G, cfg, "main", H), G)
     bands = cfg.get("bands", {})
     if bands is True:
         bands = {"waist": True, "cuff": True}
     if bands.get("waist"):
-        _feature(objects, _torso_ring(G, C, f"garment.{cfg['name']}.band.waist", P, H, waist_z,
-                                     ease + thick, cfg["seam_radius_m"] * 1.3),
-                 cfg, "band", _mat_for(G, cfg, "band", H), G)
+        waist_band = _torso_ring(G, C, f"garment.{cfg['name']}.band.waist", P, H, waist_z,
+                                  ease + thick + 0.004, cfg["seam_radius_m"] * 1.3)
+        _front_articulation_rise(waist_band, hip_z, 0.10 * H, front_rise)
+        _feature(objects, waist_band, cfg, "band", _mat_for(G, cfg, "band", H), G)
     if cfg.get("cuff") or bands.get("cuff"):
         t = max(0.0, min(1.0, (hip_z - bottom_z) / max(hip_z - ankle_z, 1e-9)))
         for side in ("L", "R"):
@@ -427,6 +469,19 @@ def _bottoms(C, body, cfg, P, H, J, G):
     return objects, covered
 
 
+def _skirt_ring(z, width, front, back):
+    """Eight-sided ring rotated off the inter-leg axes for a stable unified skirt silhouette."""
+    points = []
+    for k in range(8):
+        angle = 2 * math.pi * (k + 0.5) / 8
+        c, s = math.cos(angle), math.sin(angle)
+        x = width * math.copysign(abs(c) ** (2 / 2.4), c)
+        y_extent = back if s > 0 else front
+        y = y_extent * math.copysign(abs(s) ** (2 / 2.4), s)
+        points.append((x, y, z))
+    return points
+
+
 def _skirt(C, cfg, P, H, J, G, part="main"):
     ease, thick = cfg["ease_m"], cfg["thickness_m"]
     hip_z, ankle_z = P["leg"]["hip_z"] * H, P["leg"]["ankle_z"] * H
@@ -447,7 +502,7 @@ def _skirt(C, cfg, P, H, J, G, part="main"):
             w = abs(J["hip.L"].x) + lr
             front = back = lr
         add = ease + thick + flare * down
-        rings.append(G.superellipse_ring(0, 0, z, w + add, front + add, back + add, 2.4, 48))
+        rings.append(_skirt_ring(z, w + add, front + add, back + add))
     ob = G.loft(f"garment.{cfg['name']}.{part}", rings, C, cap_bottom=False, cap_top=False)
     if thick > 0:
         mod = ob.modifiers.new("garment_thickness", "SOLIDIFY")
@@ -472,11 +527,14 @@ def _skirt(C, cfg, P, H, J, G, part="main"):
     if cfg.get("seam_lines"):
         sm = _mat_for(G, cfg, "seam", H)
         for sx, side in ((1, "L"), (-1, "R")):
-            path = [Vector(rings[k][0 if sx > 0 else 24]) for k in range(len(rings))]
+            path = [Vector((sx * max(abs(point[0]) for point in ring), 0.0, ring[0][2])) for ring in rings]
             ob = G.tube(f"garment.{cfg['name']}.seam.side.{side}", path,
                         [cfg["seam_radius_m"]] * len(path), [cfg["seam_radius_m"]] * len(path), C,
                         up_hint=(0, -1, 0), seg=7)
             _feature(objects, ob, cfg, "seam", sm, G)
+    anchor = (0.0, 0.0, waist_z)
+    for piece in objects:
+        piece["ps_weight_anchor"] = anchor
     return objects
 
 
@@ -626,10 +684,18 @@ def bind_to_body(rig, body, garments, neighbours=1, max_influences=4):
         ob.matrix_parent_inverse = rig.matrix_world.inverted()
         mod = ob.modifiers.new("Armature", "ARMATURE")
         mod.object = rig
+        clearance = float(ob.get("ps_collision_clearance_m", 0.003))
+        collision = ob.modifiers.new("body_collision_envelope", "SHRINKWRAP")
+        collision.target = body
+        collision.wrap_method = "NEAREST_SURFACEPOINT"
+        collision.wrap_mode = "OUTSIDE"
+        collision.offset = clearance
         ob["ps_weight_transfer"] = "nearest_body_weights/1"
         ob["ps_weight_source"] = body.name
         ob["ps_weight_neighbours"] = int(neighbours)
         total += len(ob.data.vertices)
-        per_object[ob.name] = {"vertices": len(ob.data.vertices), "nearest_source_vertices": len(set(source_hits))}
+        per_object[ob.name] = {"vertices": len(ob.data.vertices), "nearest_source_vertices": len(set(source_hits)),
+                               "collision_clearance_m": round(float(ob["ps_collision_clearance_m"]), 6)}
     return {"method": "nearest_body_weights/1", "objects": len(garments), "vertices": total,
-            "max_source_distance_m": round(max_dist, 6), "per_object": per_object}
+            "max_source_distance_m": round(max_dist, 6), "collision": "shrinkwrap_outside/1",
+            "per_object": per_object}
