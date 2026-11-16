@@ -224,10 +224,12 @@ def world_verts(o, deps):
 
 
 def first_visible(cands, proj, eps=0.004):
+    """First visible candidate as (point, False); if none is visible, the first candidate as (point, True) so the
+    landmark is reported as hidden (surface point, visibility tested again) instead of being dropped."""
     for p in cands:
         if proj.visible(p, eps):
-            return p
-    return None
+            return p, False
+    return (cands[0], True) if cands else None
 
 
 def landmarks_3d(objs, regions, rig, deps, sc, proj, view_dir):
@@ -270,15 +272,15 @@ def landmarks_3d(objs, regions, rig, deps, sc, proj, view_dir):
             pi = first_visible(bp[:40], proj)
             po = first_visible(list(reversed(bp))[:40], proj)
             if pi:
-                lm["brow_inner_" + s] = (pi, False)
+                lm["brow_inner_" + s] = pi
             if po:
-                lm["brow_outer_" + s] = (po, False)
+                lm["brow_outer_" + s] = po
         ear = by.get("ear." + s)
         if ear:
             ep = sorted(world_verts(ear, deps), key=lambda p: -p.z)
             pt = first_visible(ep[:60], proj)
             if pt:
-                lm["ear_top_" + s] = (pt, False)
+                lm["ear_top_" + s] = pt
     mo = by.get("mouth")
     if mo and facing > 0.2:
         mp = world_verts(mo, deps)
@@ -286,7 +288,7 @@ def landmarks_3d(objs, regions, rig, deps, sc, proj, view_dir):
             cand = sorted(mp, key=lambda p: -side[s] * (p.x - mid_x))
             pt = first_visible(cand[:60], proj)
             if pt:
-                lm["mouth_corner_" + s] = (pt, False)
+                lm["mouth_corner_" + s] = pt
     # hairline: lowest visible hair point on the face midline, in front of the head, above the eyes
     if facing > 0.3 and "eye_L" in empties:
         spacing = abs(empties["eye_L"].x - empties["eye_R"].x)
@@ -298,8 +300,8 @@ def landmarks_3d(objs, regions, rig, deps, sc, proj, view_dir):
                          if abs(p.x - mid_x) < 0.12 * spacing and p.y < empties["eye_L"].y + 0.02 and p.z > eye_z]
         cand.sort(key=lambda p: p.z)
         pt = first_visible(cand[:200], proj, 0.006)
-        if pt:
-            lm["hairline"] = (pt, False)
+        if pt and not pt[1]:
+            lm["hairline"] = pt
     # skeleton (Rigify deform names, shared rig generator)
     def bone(n):
         return bones.get(n)
@@ -333,8 +335,8 @@ def landmarks_3d(objs, regions, rig, deps, sc, proj, view_dir):
                 continue  # footwear / ground contact: covered by feet
             pts.sort(key=lambda p: p.z)
             pt = first_visible(pts[:400], proj, 0.006)
-            if pt:
-                lm["hem_" + item] = (Vector((cx, pt.y, pt.z)), False)
+            if pt and not pt[1]:
+                lm["hem_" + item] = (Vector((cx, pt[0].y, pt[0].z)), False)
     return lm
 
 

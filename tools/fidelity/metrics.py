@@ -124,17 +124,23 @@ def column_bottom(mask, x, x_halfwidth=2):
     return float(ys.max() + 1) if len(ys) else None
 
 
-def crotch_y(mask, x, bottom):
-    """First figure row above the floor gap between the legs at column x; None if there is no gap."""
+def crotch_y(mask, x, bottom, top=None):
+    """Crotch height: the top of the highest background run (gap between the legs) in column x, searched in the lower
+    60% of the figure; None if the column has no gap there."""
     col = mask[:, int(round(x))]
+    top = 0 if top is None else int(top)
+    start = int(top + 0.4 * (bottom - top))
+    best = None
     y = int(bottom) - 1
-    while y > 0 and col[y]:
+    while y >= start:
+        if not col[y]:
+            run_end = y
+            while y >= start and not col[y]:
+                y -= 1
+            if run_end - y >= 2 and y >= start:
+                best = y + 1  # keep going up: the highest gap wins
         y -= 1
-    if int(bottom) - 1 - y > 2:  # the column starts inside a foot: no gap here
-        return None
-    while y > 0 and not col[y]:
-        y -= 1
-    return float(y + 1) if y > 0 else None
+    return float(best) if best is not None else None
 
 
 def width_at(mask, y):
