@@ -11,6 +11,9 @@ Rules:
   * a bone's parent is its nearest deform ancestor; for the profile's contiguous_chains a role bone is re-parented
     to the previous role of its chain (engine two-bone IK needs parent/grandparent = chain), and the in-between
     helpers stay children of their original parent (reported in "reparented");
+  * a deform bone with no deform ancestor (Rigify: under ORG-/MCH- bones only, e.g. DEF-eye.L, DEF-shoulder.L) is
+    parented to the DEF twin of its nearest ORG-/MCH- ancestor that has one (the bone Blender carries it with);
+  * eye roles ("eye.*") pivot at the centre of the spherical eyeball bound only to them (reported in "eye_pivots");
   * required roles are profile-specific; a missing one fails the export;
   * coordinates: Blender (+Z up, faces -Y) -> engine (+Y up, faces +Z): (x, y, z) -> (x, z, -y); metres.
 """
@@ -28,7 +31,9 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 FORMAT, VERSION = "plush.imported_character", 1
 # Version of this exporter's output. run_shot.py keys its package cache on it, so packages are re-exported when the
 # exporter changes. 2: adds the "retarget" block (generated clip retarget data, docs/ANIMATION_CLIPS.md).
-EXPORTER_VERSION = "2"
+# 3 (T-030): deform bones without a deform ancestor take the DEF twin of their Rigify ORG/MCH ancestor as parent;
+#    eye roles pivot at their eyeball's centre ("eye_pivots").
+EXPORTER_VERSION = "3"
 sys.path.insert(0, os.path.join(HERE, "..", "clips"))
 import retarget as RT  # noqa: E402  (shared clip retargeting rules; pure Python)
 
@@ -68,8 +73,55 @@ def capabilities(roles_present, has_morphs, behaviours, expressions=()):
     return out
 
 
+def sphere_fit(P):
+    """Least-squares sphere through points (N x 3): (centre, radius, rms residual)."""
+    A = np.c_[2.0 * P, np.ones(len(P))]
+    x = np.linalg.lstsq(A, (P * P).sum(axis=1), rcond=None)[0]
+    c = x[:3]
+    r = float(np.sqrt(max(x[3] + c @ c, 0.0)))
+    return c, r, float(np.sqrt(np.mean((np.linalg.norm(P - c, axis=1) - r) ** 2)))
+
+
+def eye_pivots(rig, root, skel_by_source):
+    """Eye roles ("eye.*", the bones the engine aims) turn about the centre of the eyeball they carry (T-030).
+    The eyeball is the most spherical mesh bound only to that bone and without shape keys (rms residual below 2 %
+    of its radius; a lid shell fits worse than the ball). When the rig's bone head is elsewhere (a Rigify eye bone on the front of the ball),
+    rotating about it swings the ball out of its socket while the eyes look around, so the exported head (the engine
+    pivot) is moved to the ball's centre. Skinning stays exact: the engine's skin matrices are world transforms of
+    the geometry, independent of the pivot. Returns the report; edits skel_by_source in place."""
+    rep = {}
+    M = rig.matrix_world
+    for src, entry in skel_by_source.items():
+        if not entry["name"].startswith("eye."):
+            continue
+        best = None
+        for o in root.all_objects:
+            if o.type != "MESH" or o.data.shape_keys is not None or len(o.data.vertices) < 16:
+                continue
+            if not any(m.type == "ARMATURE" and m.object == rig for m in o.modifiers):
+                continue
+            used = {o.vertex_groups[g.group].name for v in o.data.vertices for g in v.groups if g.weight > 0}
+            if used != {src}:
+                continue
+            mw = o.matrix_world
+            P = np.array([tuple(mw @ v.co) for v in o.data.vertices])
+            c, r, res = sphere_fit(P)
+            if r > 0 and res < 0.02 * r and (best is None or res / r < best[0]):
+                best = (res / r, c, r, o.name)
+        if best is None:
+            continue
+        old = np.array(entry["head"])
+        new = to_engine(best[1])
+        moved = float(np.linalg.norm(new - old))
+        if moved > 1e-5:
+            entry["head"] = [round(float(x), 6) for x in new]
+            rep[entry["name"]] = {"object": best[3], "radius_m": round(best[2], 5), "moved_mm": round(moved * 1000, 3),
+                                  "rig_head": [round(float(x), 6) for x in old]}
+    return rep
+
+
 def main():
-    argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
+    argv =sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
     ap = argparse.ArgumentParser()
     ap.add_argument("--blend", required=True)
     ap.add_argument("--profile", required=True)
@@ -110,7 +162,21 @@ def main():
         p = b.parent
         while p is not None and not p.use_deform:
             p = p.parent
-        return p.name if p is not None else None
+        if p is not None:
+            return p.name
+        # No deform ancestor (T-030). Rigify hangs some deform bones under mechanism/original bones only
+        # (DEF-eye.L -> ORG-eye.L -> ORG-spine.006 -> ..., DEF-shoulder.L -> ORG-shoulder.L -> ORG-spine.003 -> ...).
+        # Blender carries them with the deform twin of such an ancestor (ORG-x/MCH-x follow DEF-x), so that twin is
+        # the engine parent. Without it these bones were engine roots: eyes stayed in character space while the head
+        # moved (up to 60 mm off the sockets in e905) and the shoulder girdle did not follow the chest.
+        p = b.parent
+        while p is not None:
+            if "-" in p.name:
+                twin = rig.data.bones.get("DEF-" + p.name.split("-", 1)[1])
+                if twin is not None and twin.use_deform and twin != b and b.name not in {x.name for x in twin.parent_recursive}:
+                    return twin.name
+            p = p.parent
+        return None
     parent = {b.name: deform_parent(b) for b in deform}
     reparented = []
     role_to_src = {v: k for k, v in src_to_role.items()}
@@ -144,6 +210,8 @@ def main():
         skel.append({"name": engine_name[n], "source_name": n, "kind": kind,
                      "parent": engine_name[parent[n]] if parent[n] else None,
                      "head": [round(float(x), 6) for x in to_engine(M @ b.head_local)]})
+
+    pivots = eye_pivots(rig, root, {s["source_name"]: s for s in skel})
 
     blob = bytearray()
 
@@ -287,7 +355,7 @@ def main():
                       "spec_version": root.get("ps_spec_version"), "blender": bpy.app.version_string},
            "profile": {"name": prof["profile"], "kind": prof["kind"], "required_roles": prof["required_roles"]},
            "coordinates": "metres; +Y up; character faces +Z; converted from Blender (x, y, z) -> (x, z, -y)",
-           "skeleton": skel, "reparented": reparented, "roles_present": sorted(present),
+           "skeleton": skel, "reparented": reparented, **({"eye_pivots": pivots} if pivots else {}), "roles_present": sorted(present),
            "rig_specific_bones": [s["name"] for s in skel if s["kind"] == "rig_specific"],
            "materials": list(mats.values()), "meshes": meshes, "morphs": morphs,
            "morph_names": sorted({m["name"] for m in morphs}),

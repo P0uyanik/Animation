@@ -30,6 +30,7 @@ import time
 
 import bpy
 import bmesh
+import numpy as np
 from mathutils import Matrix, Vector
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -88,7 +89,67 @@ def setup_character(ch, cast, scene):
     controls = [(k, f"face_{m}") for k, m in enumerate(ch["morphs"]) if f"face_{m}" in rig.keys()]
     unmapped = [m for m in ch["morphs"] if f"face_{m}" not in rig.keys() and "@" not in m]
     return {"rig": rig, "bones": bones, "controls": controls, "unmapped_morphs": unmapped,
-            "skipped_driven_bones": sorted(driven & set(src.values())), "master": info["master"]}
+            "skipped_driven_bones": sorted(driven & set(src.values())), "master": info["master"],
+            "eyes": eye_sockets(ov, rig, src)}
+
+
+def sphere_centre(points):
+    """Least-squares sphere centre of points (N x 3). Moves rigidly with the points, so it is the same eye point in
+    every frame whatever the gaze; for an eyeball it is the ball's centre, for a lid shell the centre it wraps."""
+    P = np.asarray(points, dtype=np.float64)
+    A = np.c_[2.0 * P, np.ones(len(P))]
+    x = np.linalg.lstsq(A, (P * P).sum(axis=1), rcond=None)[0]
+    return Vector(x[:3])
+
+
+def mesh_points(o, mesh=None):
+    me = mesh if mesh is not None else o.data
+    co = np.empty(len(me.vertices) * 3)
+    me.vertices.foreach_get("co", co)
+    co = co.reshape(-1, 3)
+    M = np.array(o.matrix_world)
+    return co @ M[:3, :3].T + M[:3, 3]
+
+
+def eye_sockets(ov, rig, src):
+    """Eye-socket alignment probes (T-030). For every eye role ("eye.*" in the package) the character's meshes bound
+    only to that role's bone (and without shape keys: blinking lids are not rigid) are its eye objects. Eye centre:
+    the sphere centre of the evaluated mesh. Socket centre: the rest eye centre (armature space) carried by the head
+    bone's evaluated pose, i.e. where the face holds the eye. An eye turning about its centre keeps the two equal; an
+    eye that does not follow the head, or swings about a pivot off its centre, drifts off."""
+    head = src.get("head")
+    if head is None or head not in rig.data.bones:
+        return []
+    bpy.context.view_layer.update()  # linked override objects have no evaluated matrix_world before this
+    Wi = rig.matrix_world.inverted()
+    out = []
+    for role, bone in sorted(src.items()):
+        if not role.startswith("eye.") or bone not in rig.data.bones:
+            continue
+        for o in ov.all_objects:
+            if o.type != "MESH" or not any(m.type == "ARMATURE" and m.object == rig for m in o.modifiers):
+                continue
+            if o.data.shape_keys is not None or len(o.data.vertices) < 4:
+                continue
+            used = {o.vertex_groups[g.group].name for v in o.data.vertices for g in v.groups if g.weight > 0}
+            if used != {bone}:
+                continue
+            out.append({"role": role, "object": o, "head": head, "rest_centre": Wi @ sphere_centre(mesh_points(o))})
+    return out
+
+
+def measure_eyes(st, deps):
+    """Largest eye-centre to socket-centre distance (m) of this character at the evaluated frame."""
+    rig, worst = st["rig"], 0.0
+    W = rig.matrix_world
+    for e in st["eyes"]:
+        hb = rig.pose.bones[e["head"]]
+        socket = W @ hb.matrix @ hb.bone.matrix_local.inverted() @ e["rest_centre"]
+        ev = e["object"].evaluated_get(deps)
+        centre = sphere_centre(mesh_points(ev, ev.to_mesh()))
+        ev.to_mesh_clear()
+        worst = max(worst, (centre - socket).length)
+    return worst
 
 
 def _key_bone(pb, P, Pp, frame):
@@ -332,6 +393,7 @@ def main():
     scene.camera = cam
     frames = {fd["frame"]: fd for fd in bake["frame_data"]}
     err = {n: [0.0, 0.0] for n in states}
+    eyes = {n: [0.0, None] for n in states}
     for f in range(fa, fb + 1):
         fd = frames[f]
         key_camera(cam, fd["camera"], f)
@@ -341,6 +403,14 @@ def main():
             scene.frame_set(f)
             for n, (target, late) in done.items():
                 fix_late(states[n], target, late, f)
+        if any(st["eyes"] for st in states.values()):  # eye-socket alignment on every frame, as Blender evaluates it
+            scene.frame_set(f)
+            deps = bpy.context.evaluated_depsgraph_get()
+            for n, st in states.items():
+                if st["eyes"]:
+                    d = measure_eyes(st, deps)
+                    if d >= eyes[n][0]:
+                        eyes[n] = [d, f]
         for n, st in states.items():
             target = done[n][0]
             if f in (fa, (fa + fb) // 2, fb):  # check the reconstruction: evaluated bone poses == baked poses
@@ -352,7 +422,10 @@ def main():
     for n, st in states.items():
         rep["characters"][n] = {"master": st["master"], "baked_bones": len(st["bones"]), "facial_controls": len(st["controls"]),
                                 "unmapped_morphs": st["unmapped_morphs"], "bones_left_to_drivers": st["skipped_driven_bones"],
-                                "max_bone_error_mm": round(err[n][0] * 1000, 4), "max_bone_error_deg": round(err[n][1], 4)}
+                                "max_bone_error_mm": round(err[n][0] * 1000, 4), "max_bone_error_deg": round(err[n][1], 4),
+                                "eye_objects": [e["object"].name for e in st["eyes"]],
+                                "eye_socket_max_mm": round(eyes[n][0] * 1000, 4) if st["eyes"] else None,
+                                "eye_socket_worst_frame": eyes[n][1]}
     r = scene.render
     r.engine = "CYCLES"
     scene.cycles.samples = a.samples
