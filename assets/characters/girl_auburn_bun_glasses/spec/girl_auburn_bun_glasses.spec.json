@@ -1134,9 +1134,9 @@
     "material": {
      "preset": "felt",
      "base_color_srgb": [
-      150,
-      94,
-      96
+      144,
+      104,
+      104
      ],
      "reference_size_m": 0.3
     },
@@ -1221,9 +1221,9 @@
     "material": {
      "preset": "boot fleece",
      "base_color_srgb": [
-      100,
-      64,
-      46
+      132,
+      88,
+      68
      ],
      "reference_size_m": 0.15,
      "overrides": {
@@ -1236,9 +1236,9 @@
      "band": {
       "preset": "boot fleece",
       "base_color_srgb": [
-       106,
-       70,
-       52
+       138,
+       94,
+       74
       ],
       "reference_size_m": 0.15,
       "overrides": {

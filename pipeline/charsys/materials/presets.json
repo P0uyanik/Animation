@@ -81,8 +81,8 @@
       "surface": {"roughness": 0.92, "sheen_weight": 0.48, "sheen_roughness": 0.72, "sheen_tint": 0.6, "saturation_compensation": 1.1},
       "fibre": {"kind": "noise", "scale_per_reference": 5.0, "detail": 10.0, "roughness": 0.78, "distortion": 1.2, "anisotropy": [1.0, 0.7, 1.15], "strength": 2.0, "distance_fraction": 0.05},
       "micro_relief": {"scale_per_reference": 32.0, "color_strength": 0.8, "roughness_variation": 0.4},
-      "nap": {"enabled": true, "scale_per_reference": 14, "threshold": 0.59, "softness": 0.05, "value_gain": 0.4, "value_shadow": 0.0, "sheen_gain": 0.8, "roughness_drop": 0.35, "fibre_gloss": 0.3, "anisotropy": [1.0, 1.0, 0.4]},
-      "fibres": {"enabled": true, "density_per_cm2": 28.0, "length_mm": 4.2, "curl": 0.35, "lean": 0.5, "lod": 0.25, "color_variation": 0.8, "lean_variation": 0.6, "root_transparency": 0.3, "tip_transparency": 0.55},
+      "nap": {"enabled": true, "scale_per_reference": 14, "threshold": 0.59, "softness": 0.05, "value_gain": 0.4, "value_shadow": 0.0, "sheen_gain": 0.8, "roughness_drop": 0.35, "fibre_gloss": 0.15, "anisotropy": [1.0, 1.0, 0.4]},
+      "fibres": {"enabled": true, "density_per_cm2": 28.0, "length_mm": 4.2, "curl": 0.35, "lean": 0.5, "lod": 0.25, "color_variation": 0.45, "lean_variation": 0.6, "root_transparency": 0.3, "tip_transparency": 0.55},
       "silhouette": {"enabled": true, "weight": 0.78},
       "targets": {
         "fuzz_rms_y255": {"range": [3.0, 8.0], "source": "VISUAL_TARGET.md: Surface fuzz amount, felt/fleece"},
