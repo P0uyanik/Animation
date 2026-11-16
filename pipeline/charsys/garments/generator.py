@@ -1049,10 +1049,12 @@ def _bottoms(C, body, cfg, P, H, J, G, fit):
         t = (hip_z - c.z) / max(hip_z - ankle_z, 1e-9)
         if t > length + 0.04:
             return False
-        # Crotch bridge: the merged body surface between the legs just below the hip line.
-        if c.z >= hip_z - _leg_radius(P, H, 0.0) and abs(c.x) <= abs(J["hip.L"].x):
-            _, front, back = _torso_dims(P, H, hip_z)
-            if -front - tm <= c.y <= back + tm:
+        # Hip band (T-025): the merged body surface below the hip line, one thigh radius deep, across the whole hip
+        # (crotch bridge and the hip front/back/sides). Selecting only between the leg centres left holes at the
+        # front and back of the hip, where the hip is deeper than a thigh radius; volume (bloomers) opened them.
+        if c.z >= hip_z - _leg_radius(P, H, 0.0):
+            w, front, back = _torso_dims(P, H, hip_z)
+            if abs(c.x) <= w + tm and -front - tm <= c.y <= back + tm:
                 return True
         r = _leg_radius(P, H, t) + lm
         return any((Vector((c.x, c.y, c.z)) - Vector((J[f"hip.{s}"].x, 0, c.z))).length <= r for s in ("L", "R"))
@@ -1261,6 +1263,29 @@ def _footwear(C, body, cfg, P, H, J, G, fit):
             ring = _limb_ring(G, C, f"garment.{cfg['name']}.band.cuff.{side}", (hx, 0, top_z), (0, 0, -1),
                               lr, (ease + shaft) * lm + thick + max(0.0, cr - cfg["seam_radius_m"] * 1.4), cr)
             _feature(objects, ring, cfg, "band", _mat_for(G, cfg, "band", H), G)
+        if shaft > 0:
+            # Lining ring closing the opening between the leg and a widened shaft (seen from above).
+            t = max(0.0, min(1.0, (knee_z - top_z) / max(knee_z - ankle_z, 1e-9)))
+            lr = _leg_radius(P, H, 1 - t)
+            r_in, r_out = lr + 0.25 * ease * lm, lr + (ease + shaft) * lm + thick
+            verts, faces = [], []
+            for k in range(48):
+                a = 2 * math.pi * k / 48
+                d = Vector((math.cos(a), math.sin(a), 0.0))
+                verts += [tuple(Vector((hx, 0, top_z - 0.002 * lm)) + d * r_in),
+                          tuple(Vector((hx, 0, top_z - 0.002 * lm)) + d * r_out)]
+            for k in range(48):
+                a, b = 2 * k, 2 * ((k + 1) % 48)
+                faces.append((a, b, b + 1, a + 1))
+            lining = G.new_object(f"garment.{cfg['name']}.lining.{side}", verts, faces, C)
+            mod = lining.modifiers.new("garment_thickness", "SOLIDIFY")
+            mod.thickness, mod.offset = max(thick, 0.0015), -1.0
+            bpy.context.view_layer.objects.active = lining
+            lining.select_set(True)
+            bpy.ops.object.modifier_apply(modifier=mod.name)
+            lining.select_set(False)
+            _feature(objects, lining, cfg, "lining", _mat_for(G, cfg, "lining" if "lining" in cfg.get("materials", {})
+                                                              else "band", H), G)
         sole = cfg.get("sole", {})
         if sole is not False:
             sole = sole if isinstance(sole, dict) else {}
