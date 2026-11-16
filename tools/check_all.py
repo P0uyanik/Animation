@@ -235,11 +235,18 @@ def character_terms() -> list[str]:
     return [terms[key] for key in sorted(terms)]
 
 
+def is_test_source(path: str) -> bool:
+    """Tests may name specific characters (regression checks of concrete assets); shared code may not."""
+    name = Path(path).name
+    return "/tests/" in f"/{path}" or name.startswith("test_") or name.endswith("_test.py")
+
+
 def shared_source_paths() -> list[str]:
     return sorted(
         path for path in tracked_and_untracked()
         if path.startswith(SHARED_PREFIXES)
         and not path.startswith(CHARACTER_DATA_PREFIXES)
+        and not is_test_source(path)
         and Path(path).suffix.lower() in CODE_SUFFIXES
         and (ROOT / Path(path)).is_file()
     )
