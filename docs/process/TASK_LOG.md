@@ -19,6 +19,15 @@
 | T-013 | plush.asset/1 prop library + scene props (Codex, 1 fix round) | **result accepted** 2026-11-15 | t-013-codex-asset-library (b8c76df), merged | ctest 4/4, plush_tests 20,652 assertions |
 | T-014 | Boy eyelids: shared lids-follow-gaze, boy 1.1.0 unpublished candidate (Codex + Supervisor cloud shot) | **result accepted** 2026-11-16 | t-014-codex-boy-lids (e2d708e), merged | 1.0.0 unchanged; girl render 0 px diff; verify_charsys, export 8/8, face tests PASS; eyes open in T-010 shot except fringe occlusion at max pitch |
 | T-017 | Prop attachment evaluation + bake (Codex) | **result accepted** 2026-11-16 | t-017-codex-prop-eval (10aacbf), merged | ctest 4/4, plush_tests 20,754 assertions |
+| T-015/16/18/19/24/25 | V3 batch: material library + GN fibres, groom/1 girl hair, garment/1 + robustness, girl outfit (spec 0.7.1) | **merged** 2026-11-16 (functional) | integration/v3 (2cb4616) | ctest 4/4, plush_tests, presets 54/54, verify_charsys PASS (boy unchanged), garment test PASS both bodies. **Girl visual quality NOT approved**; open T-026: fuzz below target (felt, wool, boots), sheen systemic miss, grey face, boot lining ring |
 | Boy F09 / H28 | Face and hair candidates for the boy | awaiting owner review | — | unpublished experiments |
 
 Tasks from now on are numbered T-001, T-002, …, and pass through the states in `WORKFLOW.md`.
+
+## Open visual issues (owner: girl visual quality not yet approved)
+| ID | Issue | Status |
+| --- | --- | --- |
+| T-026a | Fibre fuzz below VISUAL_TARGET on felt, wool yarn, boot fleece (fleece passes) | open |
+| T-026b | Sheen P90/P50 below target on all presets (systemic: light or metric) | open |
+| T-026c | Girl face skin renders greyer than body skin | open |
+| T-026d | Boot top shows lining ring | open |
