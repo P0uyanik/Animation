@@ -1,0 +1,57 @@
+{
+ "chains": 28,
+ "dynamics_enabled": true,
+ "frames": [
+  1,
+  75
+ ],
+ "sphere_collider_clearance": {
+  "head": {
+   "min_clearance_mm": 14.33,
+   "frame": 22,
+   "chain": "side_curls.00"
+  },
+  "shoulder_l": {
+   "min_clearance_mm": 13.24,
+   "frame": 75,
+   "chain": "back_curls.00"
+  },
+  "shoulder_r": {
+   "min_clearance_mm": 17.06,
+   "frame": 14,
+   "chain": "side_curls.05"
+  }
+ },
+ "tip_motion_relative_to_head_max_mm": {
+  "bun.0": 8.0,
+  "temple_puffs.00": 10.5,
+  "temple_puffs.01": 10.8,
+  "temple_puffs.02": 7.1,
+  "temple_puffs.03": 6.8,
+  "side_curls.00": 13.4,
+  "side_curls.01": 13.4,
+  "side_curls.02": 13.6,
+  "side_curls.03": 13.4,
+  "side_curls.04": 10.0,
+  "side_curls.05": 10.5,
+  "side_curls.06": 10.2,
+  "side_curls.07": 10.4,
+  "back_curls.00": 12.6,
+  "back_curls.01": 12.4,
+  "back_curls.02": 12.4,
+  "back_curls.03": 12.3,
+  "back_curls.04": 12.0,
+  "back_curls.05": 11.9,
+  "back_curls.06": 11.7,
+  "back_curls.07": 11.6,
+  "back_curls.08": 11.3,
+  "nape_curls.00": 12.4,
+  "nape_curls.01": 12.2,
+  "nape_curls.02": 12.0,
+  "nape_curls.03": 11.9,
+  "nape_curls.04": 11.7,
+  "nape_curls.05": 11.4
+ },
+ "median_mm": 11.8,
+ "max_mm": 13.6
+}
