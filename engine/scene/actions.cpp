@@ -24,6 +24,7 @@
 //              override their body-part mask with blending; walk keeps the legs, hips and root while walking;
 //              IK (reach, touch, foot plants) and look are applied afterwards and keep priority. Library clips are
 //              found in content/clips/<name>.clip.json above the scene file.
+//   reach/grasp {.., prop, ..}, hold, place, handover  prop interactions at asset sockets (scene/interaction.h)
 //   emotion    {character, name:<library name>[/<variant>], start, end?, intensity=1}  a shared emotion
 //              (plush.emotion/1, scene/emotion.h, docs/EMOTIONS.md) found in content/emotions/<name>.emotion.json above
 //              the scene file: its face mix becomes expression weights (generated per-frame keys added to the
@@ -219,6 +220,7 @@ Result<void> SceneEvaluator::compileActions() {
   warnings_.clear();
   clipLayers_.assign(characters_.size(), {});
   walkSpans_.assign(characters_.size(), {});
+  buildClearanceModels();  // arm-body clearance models (interaction.cpp, T-030)
   scene_.animation.generated = gen;  // later actions already see earlier ones (a reach after a walk)
   // Object fields that actions write are reset to what the scene author wrote, so compiling twice is harmless.
   if (authoredObjects_.size() == scene_.objects.size())
@@ -230,7 +232,16 @@ Result<void> SceneEvaluator::compileActions() {
     }
   else
     authoredObjects_ = scene_.objects;
+  // Props likewise: interaction actions add parent switches, which are reset to the authored ones first.
+  if (authoredProps_.size() == scene_.props.size())
+    for (size_t i = 0; i < scene_.props.size(); ++i) {
+      scene_.props[i].parent = authoredProps_[i].parent;
+      scene_.props[i].parentSwitch = authoredProps_[i].parentSwitch;
+    }
+  else
+    authoredProps_ = scene_.props;
   if (!scene_.actions.is_array() || scene_.actions.empty()) return {};
+  InteractionContext interactions;
 
   std::vector<const Json*> actions;
   for (const Json& a : scene_.actions) actions.push_back(&a);
@@ -328,6 +339,11 @@ Result<void> SceneEvaluator::compileActions() {
     const std::string prefix = who + "/";
     const double start = startOf(&a);
 
+    // Prop interactions (reach/grasp a prop, hold, place, handover): interaction.cpp.
+    auto interaction = compileInteraction(a, *gen, interactions);
+    if (!interaction) return fail(interaction.error().message);
+    if (*interaction) continue;
+
     if (type == "look") {
       const std::string track = prefix + "lookAt";
       const int o = has(a, "object") ? objIndex(str(a, "object")) : -1;
@@ -379,6 +395,9 @@ Result<void> SceneEvaluator::compileActions() {
       if (handBone < 0 || upper < 0) return fail(std::format("reach: '{}' has no {} arm", who, side));
       const double contact = num(a, "contact", start + 14), liftEnd = num(a, "liftEnd", contact + 12);
       const double place = num(a, "place", liftEnd + 24), release = num(a, "release", place + 3), end = num(a, "end", release + 14);
+      // Contact and put-down keep their exact wrist targets in the arm-body clearance pass (T-030).
+      interactions.frozen.push_back({c, side, contact, contact});
+      interactions.frozen.push_back({c, side, place, release});
       const float lift = float(num(a, "lift", 0.05)), radius = float(num(a, "graspRadius", 0.012));
       const vec3 p0 = objPos(o, contact);
       const vec3 placeP = vec(a, "placeAt", p0);
@@ -464,6 +483,7 @@ Result<void> SceneEvaluator::compileActions() {
       if (upper < 0) return fail(std::format("touch: '{}' has no {} arm", who, side));
       const double contact = num(a, "contact", start + 14), end = num(a, "end", contact + 20);
       const vec3 T = vec(a, "target", vec3(0));
+      interactions.frozen.push_back({c, side, contact - 4, contact + 8});  // the fingertip touch stays exact (T-030)
       leanToward(c, side, T, 0.05f, start, contact, contact + 8, end, "touch");
       const vec3 shoulder = vec3(characterGlobals(size_t(c), contact)[size_t(upper)][3]);
       vec3 dir = T - shoulder;
@@ -793,6 +813,7 @@ Result<void> SceneEvaluator::compileActions() {
     }
     gen->tracks[track].keys = std::move(keys);
   }
+  if (auto r = finishInteractions(*gen, interactions); !r) return r;
   if (scene_.director.is_object()) planShots(*this, *gen, beats);
   return {};
 }

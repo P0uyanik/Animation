@@ -581,6 +581,7 @@ Result<void> SceneEvaluator::load(const Scene& scene, const EvalOptions& opt) {
     objects_.push_back(std::move(g));
   }
   authoredObjects_ = scene_.objects;
+  authoredProps_ = scene_.props;
   auto compiled = compileActions();
   if (!compiled) return compiled;
   // Secondary motion after the actions are compiled (action planning sees the kinematic pose).
@@ -727,6 +728,8 @@ std::vector<mat4> SceneEvaluator::kinematicGlobals(size_t c, double frame, Pose*
   if (!blinkMorph(ci).empty()) life.blinkLids = false;  // blinks are a morph for this character (see evaluate)
   applyLife(ci.asset.skeleton, clip, prefix, frame, scene_.rate.fps(), world, life, pose);
   applyConstraints(ci.asset.skeleton, clip, prefix, frame, world, pose, life.gaze);
+  applyArmPoles(ci.asset.skeleton, clip, prefix, frame, world, pose);          // elbow outward (T-030)
+  applyOrientConstraints(ci.asset.skeleton, clip, prefix, frame, world, pose);  // hand-prop interaction (T-022)
   if (clips) applyClipFingers(c, frame, pose);
   if (poseOut) *poseOut = pose;
   return boneGlobals(ci.asset.skeleton, pose, world);

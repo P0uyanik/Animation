@@ -1,0 +1,53 @@
+{
+ "bake": "/home/user/Animation/episodes/e905_props_test/shots/s010/build/runs/t022/bake.json",
+ "frames": [
+  1,
+  72
+ ],
+ "characters": {
+  "boy": {
+   "master": "/home/user/Animation/episodes/e905_props_test/shots/s010/build/masters/boy_c9f6eba9a647f627/boy_yellow_hoodie_master.blend",
+   "baked_bones": 73,
+   "facial_controls": 4,
+   "unmapped_morphs": [],
+   "bones_left_to_drivers": [],
+   "max_bone_error_mm": 0.0008,
+   "max_bone_error_deg": 0.0
+  },
+  "girl": {
+   "master": "/home/user/Animation/episodes/e905_props_test/shots/s010/build/masters/girl_3d0781599bff915c/girl_auburn_bun_glasses_master.blend",
+   "baked_bones": 73,
+   "facial_controls": 28,
+   "unmapped_morphs": [],
+   "bones_left_to_drivers": [
+    "DEF-jaw"
+   ],
+   "max_bone_error_mm": 0.0004,
+   "max_bone_error_deg": 0.0
+  }
+ },
+ "not_rendered": [],
+ "world": {
+  "lights": 2,
+  "objects": 4
+ },
+ "props": {
+  "props": {
+   "cup": {
+    "asset": "prop.felt_cup",
+    "primitive": "cylinder",
+    "material_preset": "felt",
+    "preset_found": true
+   }
+  },
+  "unknown_material_presets": []
+ },
+ "setup_s": 30.4,
+ "render_s": 482.9,
+ "render_s_per_frame": 6.71,
+ "resolution": [
+  640,
+  360
+ ],
+ "samples": 16
+}
