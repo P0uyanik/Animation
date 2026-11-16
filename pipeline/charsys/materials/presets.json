@@ -14,6 +14,7 @@
       "sheen_weight": 0.0,
       "sheen_roughness": 0.5,
       "saturation_compensation": 1.0,
+      "sheen_tint": 0.0,
       "shadow_transmission": 0.0
     },
     "fibre": {
@@ -77,10 +78,10 @@
     "felt": {
       "description": "Dense pressed felt with short, stochastic surface fibres.",
       "swatch_srgb": [184, 92, 83],
-      "surface": {"roughness": 0.92, "sheen_weight": 0.48, "sheen_roughness": 0.72, "saturation_compensation": 1.1},
+      "surface": {"roughness": 0.92, "sheen_weight": 0.48, "sheen_roughness": 0.72, "sheen_tint": 0.6, "saturation_compensation": 1.1},
       "fibre": {"kind": "noise", "scale_per_reference": 5.0, "detail": 10.0, "roughness": 0.78, "distortion": 1.2, "anisotropy": [1.0, 0.7, 1.15], "strength": 2.0, "distance_fraction": 0.05},
       "micro_relief": {"scale_per_reference": 32.0, "color_strength": 0.8, "roughness_variation": 0.4},
-      "nap": {"enabled": true, "scale_per_reference": 14, "threshold": 0.59, "softness": 0.05, "value_gain": 0.8, "value_shadow": 0.0, "sheen_gain": 0.8, "roughness_drop": 0.35, "fibre_gloss": 0.5, "anisotropy": [1.0, 1.0, 0.4]},
+      "nap": {"enabled": true, "scale_per_reference": 14, "threshold": 0.59, "softness": 0.05, "value_gain": 0.4, "value_shadow": 0.0, "sheen_gain": 0.8, "roughness_drop": 0.35, "fibre_gloss": 0.3, "anisotropy": [1.0, 1.0, 0.4]},
       "fibres": {"enabled": true, "density_per_cm2": 28.0, "length_mm": 4.2, "curl": 0.35, "lean": 0.5, "lod": 0.25, "color_variation": 0.8, "lean_variation": 0.6, "root_transparency": 0.3, "tip_transparency": 0.55},
       "silhouette": {"enabled": true, "weight": 0.78},
       "targets": {
@@ -92,10 +93,10 @@
     "wool yarn": {
       "description": "Chunky wool yarn with directional ridges and irregular fibre breakup.",
       "swatch_srgb": [173, 120, 76],
-      "surface": {"roughness": 0.9, "specular_ior_level": 0.42, "sheen_weight": 0.5, "sheen_roughness": 0.66, "shadow_transmission": 0.75},
+      "surface": {"roughness": 0.9, "specular_ior_level": 0.42, "sheen_weight": 0.3, "sheen_roughness": 0.66, "sheen_tint": 1.0, "shadow_transmission": 0.75},
       "fibre": {"kind": "yarn", "scale_per_reference": 72.0, "detail": 9.0, "roughness": 0.76, "distortion": 2.0, "anisotropy": [0.32, 1.0, 1.0], "strength": 0.48, "distance_fraction": 0.007},
       "micro_relief": {"scale_per_reference": 40.0, "color_strength": 0.48, "roughness_variation": 0.42},
-      "nap": {"enabled": true, "scale_per_reference": 14, "threshold": 0.59, "softness": 0.05, "value_gain": 1.0, "value_shadow": 0.0, "sheen_gain": 0.8, "roughness_drop": 0.35, "fibre_gloss": 0.5, "anisotropy": [1.0, 1.0, 0.4]},
+      "nap": {"enabled": true, "scale_per_reference": 14, "threshold": 0.59, "softness": 0.05, "value_gain": 0.3, "value_shadow": 0.0, "sheen_gain": 0.5, "roughness_drop": 0.2, "fibre_gloss": 0.5, "anisotropy": [1.0, 1.0, 0.4]},
       "fibres": {"enabled": true, "density_per_cm2": 18.0, "length_mm": 5.0, "curl": 0.5, "lean": 0.45, "lod": 0.25, "color_variation": 0.3, "lean_variation": 0.6, "root_transparency": 0.3, "tip_transparency": 0.55},
       "silhouette": {"enabled": true, "weight": 0.9},
       "targets": {
@@ -137,10 +138,10 @@
     "woven cotton": {
       "description": "Balanced plain-weave cotton with subtle warp and weft relief.",
       "swatch_srgb": [133, 151, 112],
-      "surface": {"roughness": 0.84, "sheen_weight": 0.16, "sheen_roughness": 0.58},
+      "surface": {"roughness": 0.84, "sheen_weight": 0.16, "sheen_roughness": 0.58, "sheen_tint": 0.6},
       "fibre": {"kind": "weave", "scale_per_reference": 36.0, "detail": 4.0, "roughness": 0.58, "distortion": 0.25, "anisotropy": [1.0, 1.0, 1.0], "strength": 0.28, "distance_fraction": 0.0028},
-      "micro_relief": {"scale_per_reference": 96.0, "color_strength": 0.7, "roughness_variation": 0.38},
-      "nap": {"enabled": true, "scale_per_reference": 26, "threshold": 0.623, "softness": 0.05, "value_gain": 1.0, "value_shadow": 0.0, "sheen_gain": 0.8, "roughness_drop": 0.35, "fibre_gloss": 0.0, "anisotropy": [1.0, 1.0, 0.4]},
+      "micro_relief": {"scale_per_reference": 96.0, "color_strength": 0.2, "roughness_variation": 0.15},
+      "nap": {"enabled": false, "scale_per_reference": 26, "threshold": 0.623, "softness": 0.05, "value_gain": 1.0, "value_shadow": 0.0, "sheen_gain": 0.8, "roughness_drop": 0.35, "fibre_gloss": 0.0, "anisotropy": [1.0, 1.0, 0.4]},
       "fibres": {"enabled": false, "density_per_cm2": 0.0, "length_mm": 3.0, "curl": 0.1, "lean": 0.2, "lod": 0.25},
       "silhouette": {"enabled": true, "weight": 0.78},
       "targets": {
@@ -182,11 +183,11 @@
     "boot fleece": {
       "description": "Dense, long-nap fleece for shared plush boot and cuff surfaces.",
       "swatch_srgb": [113, 76, 58],
-      "surface": {"roughness": 0.94, "sheen_weight": 0.58, "sheen_roughness": 0.72, "saturation_compensation": 1.08},
+      "surface": {"roughness": 0.94, "sheen_weight": 0.58, "sheen_roughness": 0.72, "saturation_compensation": 1.0, "sheen_tint": 0.8},
       "fibre": {"kind": "noise", "scale_per_reference": 32.0, "detail": 12.0, "roughness": 0.82, "distortion": 2.5, "anisotropy": [1.0, 0.82, 1.0], "strength": 0.5, "distance_fraction": 0.006},
-      "micro_relief": {"scale_per_reference": 30.0, "color_strength": 0.9, "roughness_variation": 0.42},
-      "nap": {"enabled": true, "scale_per_reference": 14, "threshold": 0.59, "softness": 0.05, "value_gain": 1.2, "value_shadow": 0.0, "sheen_gain": 0.8, "roughness_drop": 0.35, "fibre_gloss": 0.85, "anisotropy": [1.0, 1.0, 0.4]},
-      "fibres": {"enabled": true, "density_per_cm2": 36.0, "length_mm": 5.6, "curl": 0.45, "lean": 0.55, "lod": 0.25, "color_variation": 0.9, "lean_variation": 0.6, "root_transparency": 0.3, "tip_transparency": 0.55},
+      "micro_relief": {"scale_per_reference": 30.0, "color_strength": 0.45, "roughness_variation": 0.42},
+      "nap": {"enabled": true, "scale_per_reference": 14, "threshold": 0.59, "softness": 0.05, "value_gain": 0.25, "value_shadow": 0.0, "sheen_gain": 0.4, "roughness_drop": 0.15, "fibre_gloss": 0.15, "anisotropy": [1.0, 1.0, 0.4]},
+      "fibres": {"enabled": true, "density_per_cm2": 36.0, "length_mm": 5.6, "curl": 0.45, "lean": 0.55, "lod": 0.25, "color_variation": 0.4, "lean_variation": 0.6, "root_transparency": 0.3, "tip_transparency": 0.55},
       "silhouette": {"enabled": true, "weight": 0.85},
       "targets": {
         "fuzz_rms_y255": {"range": [3.0, 8.0], "source": "VISUAL_TARGET.md: Surface fuzz amount, felt/fleece"},

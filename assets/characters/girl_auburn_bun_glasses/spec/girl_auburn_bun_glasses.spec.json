@@ -1221,9 +1221,9 @@
     "material": {
      "preset": "boot fleece",
      "base_color_srgb": [
-      104,
-      58,
-      34
+      100,
+      64,
+      46
      ],
      "reference_size_m": 0.15,
      "overrides": {
@@ -1236,9 +1236,9 @@
      "band": {
       "preset": "boot fleece",
       "base_color_srgb": [
-       112,
-       64,
-       40
+       106,
+       70,
+       52
       ],
       "reference_size_m": 0.15,
       "overrides": {

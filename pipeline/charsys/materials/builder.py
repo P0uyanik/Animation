@@ -42,6 +42,10 @@ FIBRE_ROUGHNESS = 0.64
 # the rope, V along it, in metres), so directional fibre patterns follow the geometry instead of object axes.
 COORDINATES = {"object", "uv"}
 FIBRE_UV = "ps_fibre"
+# T-028b ``surface.sheen_tint`` (0..1): 0 keeps Principled's white sheen; 1 tints the sheen (and the silhouette rim's
+# sheen) with the base colour's hue at full value. A white sheen layered over a dark, saturated albedo (auburn yarn,
+# brown fleece) lifts it towards grey; a tinted sheen keeps the same light-dependent lift but stays in hue, as real
+# dyed fibres do (their forward scattering passes through the dye).
 
 
 def deep_merge(base, override):
@@ -148,6 +152,9 @@ def validate_library(data):
         if (not isinstance(stretch, list) or len(stretch) != 3 or
                 not all(isinstance(v, (int, float)) and v > 0 for v in stretch)):
             errors.append(f"{name}.nap.anisotropy must be three positive numbers")
+        tint = resolved.get("surface", {}).get("sheen_tint", 0.0)
+        if not isinstance(tint, (int, float)) or not 0 <= tint <= 1:
+            errors.append(f"{name}.surface.sheen_tint must be in 0..1")
         silhouette = resolved.get("silhouette", {})
         if silhouette.get("mode") != "sheen_layer":
             errors.append(f"{name}.silhouette.mode must be sheen_layer")
@@ -237,6 +244,13 @@ def _saturate_srgb(color, factor):
     hue, saturation, value = colorsys.rgb_to_hsv(*rgb)
     out = colorsys.hsv_to_rgb(hue, min(1.0, saturation * float(factor)), value)
     return tuple(v * 255.0 for v in out)
+
+
+def _sheen_tint_rgba(linear_color, amount):
+    """White blended towards the colour's hue at full value (see ``surface.sheen_tint``)."""
+    peak = max(max(linear_color), 1e-6)
+    hue = [min(1.0, float(v) / peak) for v in linear_color]
+    return (*[1.0 + float(amount) * (v - 1.0) for v in hue], 1.0)
 
 
 def _principled(material):
@@ -456,7 +470,7 @@ def _nap_layer(material, principled, vector, reference, nap, base):
     return mask
 
 
-def _add_rim_layer(material, principled, preset, base_color, breakup=None):
+def _add_rim_layer(material, principled, preset, base_color, breakup=None, sheen_tint=0.0):
     silhouette = preset["silhouette"]
     if not silhouette.get("enabled"):
         return
@@ -467,6 +481,8 @@ def _add_rim_layer(material, principled, preset, base_color, breakup=None):
     _set(rim, (*_srgb_to_linear(base_color), 1), "Base Color")
     _set(rim, float(silhouette.get("roughness", 0.8)), "Roughness")
     _set(rim, 1.0, "Sheen Weight", "Sheen")
+    if sheen_tint > 0.0:
+        _set(rim, _sheen_tint_rgba(_srgb_to_linear(base_color), sheen_tint), "Sheen Tint")
     layer = _new(nodes, "ShaderNodeLayerWeight", "Rim Facing")
     invert = _new(nodes, "ShaderNodeMath", "Rim Invert")
     invert.operation = "SUBTRACT"
@@ -557,6 +573,9 @@ def apply_preset(material, preset_name, base_color_srgb=None, reference_size_m=N
     _set(principled, (1.0, 0.45, 0.3), "Subsurface Radius")
     _set(principled, float(surface["sheen_weight"]), "Sheen Weight", "Sheen")
     _set(principled, float(surface["sheen_roughness"]), "Sheen Roughness")
+    sheen_tint = float(surface.get("sheen_tint", 0.0))
+    if sheen_tint > 0.0:
+        _set(principled, _sheen_tint_rgba(_srgb_to_linear(shader_color), sheen_tint), "Sheen Tint")
 
     fibre = preset["fibre"]
     if fibre.get("coordinates", "object") == "uv":
@@ -591,7 +610,7 @@ def apply_preset(material, preset_name, base_color_srgb=None, reference_size_m=N
             material.surface_render_method = "DITHERED"
         except Exception:  # Blender 4.0 and older
             material.blend_method = "BLEND"
-    _add_rim_layer(material, principled, preset, shader_color, micro_breakup)
+    _add_rim_layer(material, principled, preset, shader_color, micro_breakup, sheen_tint)
     _add_shadow_transmission(material, float(surface.get("shadow_transmission", 0.0)))
     material["ps_material_preset"] = preset_name
     material["ps_material_reference_size_m"] = reference
