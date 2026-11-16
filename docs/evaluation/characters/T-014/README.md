@@ -145,3 +145,6 @@ lid-binding rule. `face_test.py` is the applicable boy face test.
 | Publish/approve safety | **PASS** — no publish or approve command ran; no 1.1.0 store version or pointer exists |
 | C++ `ctest` | **FAIL (environment)** — no C++ toolchain is installed |
 
+
+### T-010 frames 30–60 with 1.1.0 (Supervisor, cloud engine bake)
+`t010_shot_1.1.0_frames30-60.png`: frames 30, 36, 42, 48, 54, 60 at 960×540, Cycles 16 samples. Bake and render PASS on Linux. The eyes are open in 30, 36, 54 and 60 (irises visible, with the character's heavy lid design). In 42–48, at maximum head pitch, the eyes are mostly hidden by the fringe from this camera, not closed. In 1.0.0, frames 34–60 were closed.
