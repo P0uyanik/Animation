@@ -17,6 +17,11 @@ PRESETS_PATH = os.path.join(HERE, "presets.json")
 KINDS = {"noise", "yarn", "knit", "weave", "denim"}
 FIBRE_LODS = {"close", "wide", "off"}
 FIBRE_GROUP = "PS Shared Surface Fibres/1"
+FIBRE_GROUP_VERSION = 2
+# T-026 per-fibre look controls (all 0..1): stochastic per-strand value spread, tilt spread around the authored lean,
+# and alpha fade at the root (blends into the surface) and the tip (soft halo instead of hard ends).
+FIBRE_LOOK_FIELDS = ("color_variation", "lean_variation", "root_transparency", "tip_transparency")
+FIBRE_TONE_ATTRIBUTE = "ps_fibre_tone"
 # fibre.coordinates: "object" (default, object space) or "uv" (the mesh's "ps_fibre" UV map, e.g. groom ropes: U around
 # the rope, V along it, in metres), so directional fibre patterns follow the geometry instead of object axes.
 COORDINATES = {"object", "uv"}
@@ -105,6 +110,10 @@ def validate_library(data):
                 errors.append(f"{name}.fibres.{field} must be non-negative")
         if not 0 <= fibres.get("lod", -1) <= 1:
             errors.append(f"{name}.fibres.lod must be in 0..1")
+        for field in FIBRE_LOOK_FIELDS:
+            value = fibres.get(field, 0.0)
+            if not isinstance(value, (int, float)) or not 0 <= value <= 1:
+                errors.append(f"{name}.fibres.{field} must be in 0..1")
         silhouette = resolved.get("silhouette", {})
         if silhouette.get("mode") != "sheen_layer":
             errors.append(f"{name}.silhouette.mode must be sheen_layer")
@@ -360,6 +369,30 @@ def _add_rim_layer(material, principled, preset, base_color, breakup=None):
     links.new(mix.outputs[0], out.inputs["Surface"])
 
 
+def _add_shadow_transmission(material, amount):
+    """Porous surfaces (chunky yarn locks): each shadow-ray crossing of the surface passes ``amount`` of the light (a
+    closed rope is crossed twice, so 0.75 per surface is ~0.56 per lock). Camera, diffuse and glossy
+    rays still see the full shader, so the surface itself renders unchanged; only the shadow it casts is lighter."""
+    if amount <= 0.0:
+        return
+    nodes, links = material.node_tree.nodes, material.node_tree.links
+    out = nodes.get("Material Output") or next((n for n in nodes if n.type == "OUTPUT_MATERIAL"), None)
+    if out is None or not out.inputs["Surface"].links:
+        return
+    shaded = out.inputs["Surface"].links[0].from_socket
+    path = _new(nodes, "ShaderNodeLightPath", "Shadow Ray")
+    factor = _new(nodes, "ShaderNodeMath", "Shadow Transmission")
+    factor.operation = "MULTIPLY"
+    factor.inputs[1].default_value = amount
+    links.new(path.outputs["Is Shadow Ray"], factor.inputs[0])
+    clear = _new(nodes, "ShaderNodeBsdfTransparent", "Shadow Transparent")
+    mix = _new(nodes, "ShaderNodeMixShader", "Shadow Mix")
+    links.new(factor.outputs[0], mix.inputs[0])
+    links.new(shaded, mix.inputs[1])
+    links.new(clear.outputs[0], mix.inputs[2])
+    links.new(mix.outputs[0], out.inputs["Surface"])
+
+
 def apply_preset(material, preset_name, base_color_srgb=None, reference_size_m=None, overrides=None,
                  preserve_base_color=False):
     """Apply one resolved preset to a material's existing Principled shader.
@@ -433,14 +466,21 @@ def apply_preset(material, preset_name, base_color_srgb=None, reference_size_m=N
         except Exception:  # Blender 4.0 and older
             material.blend_method = "BLEND"
     _add_rim_layer(material, principled, preset, shader_color, micro_breakup)
+    _add_shadow_transmission(material, float(surface.get("shadow_transmission", 0.0)))
     material["ps_material_preset"] = preset_name
     material["ps_material_reference_size_m"] = reference
     return material
 
 
-def _fibres_material(name, color):
-    """Principled Hair material for the generated native curve fibres."""
+def _fibres_material(name, color, fibres=None):
+    """Principled Hair material for the generated native curve fibres.
+
+    ``fibres`` (the resolved preset block) adds the T-026 look: each strand's value is scaled by
+    ``1 +/- color_variation`` from the per-curve ``ps_fibre_tone`` attribute written by the shared node group, and
+    the strand fades to ``1 - root_transparency`` at the root and ``1 - tip_transparency`` at the tip.
+    """
     import bpy
+    fibres = fibres or {}
     material = bpy.data.materials.new(name)
     material.use_nodes = True
     nodes, links = material.node_tree.nodes, material.node_tree.links
@@ -455,7 +495,46 @@ def _fibres_material(name, color):
     _set(shader, 0.64, "Roughness")
     _set(shader, 0.74, "Radial Roughness")
     _set(shader, 0.12, "Random Roughness")
-    links.new(shader.outputs[0], output.inputs["Surface"])
+    variation = float(fibres.get("color_variation", 0.0))
+    if variation > 0.0:
+        tone = nodes.new("ShaderNodeAttribute")
+        tone.attribute_type = "GEOMETRY"
+        tone.attribute_name = FIBRE_TONE_ATTRIBUTE
+        gain = nodes.new("ShaderNodeMapRange")
+        gain.clamp = True
+        gain.inputs["To Min"].default_value = max(0.0, 1.0 - variation)
+        gain.inputs["To Max"].default_value = 1.0 + variation
+        links.new(tone.outputs["Fac"], gain.inputs["Value"])
+        scaled = nodes.new("ShaderNodeVectorMath")
+        scaled.operation = "SCALE"
+        scaled.inputs[0].default_value = _srgb_to_linear(color)
+        links.new(gain.outputs["Result"], scaled.inputs["Scale"])
+        links.new(scaled.outputs["Vector"], _input(shader, "Color", "Base Color"))
+    surface = shader.outputs[0]
+    root_t = float(fibres.get("root_transparency", 0.0))
+    tip_t = float(fibres.get("tip_transparency", 0.0))
+    if root_t > 0.0 or tip_t > 0.0:
+        info = nodes.new("ShaderNodeHairInfo")
+        root = nodes.new("ShaderNodeMapRange")
+        root.clamp = True
+        root.inputs["From Min"].default_value, root.inputs["From Max"].default_value = 0.0, 0.3
+        root.inputs["To Min"].default_value, root.inputs["To Max"].default_value = 1.0 - root_t, 1.0
+        tip = nodes.new("ShaderNodeMapRange")
+        tip.clamp = True
+        tip.inputs["From Min"].default_value, tip.inputs["From Max"].default_value = 0.5, 1.0
+        tip.inputs["To Min"].default_value, tip.inputs["To Max"].default_value = 1.0, 1.0 - tip_t
+        for node in (root, tip):
+            links.new(info.outputs["Intercept"], node.inputs["Value"])
+        alpha = _math(nodes, "MULTIPLY", name="Fibre alpha")
+        links.new(root.outputs["Result"], alpha.inputs[0])
+        links.new(tip.outputs["Result"], alpha.inputs[1])
+        clear = nodes.new("ShaderNodeBsdfTransparent")
+        mix = nodes.new("ShaderNodeMixShader")
+        links.new(alpha.outputs[0], mix.inputs[0])
+        links.new(clear.outputs[0], mix.inputs[1])
+        links.new(surface, mix.inputs[2])
+        surface = mix.outputs[0]
+    links.new(surface, output.inputs["Surface"])
     material["ps_material_fibres"] = True
     material["ps_material_fibres_shader"] = "principled_hair"
     return material
@@ -482,6 +561,7 @@ def shared_fibre_node_group():
     for name, socket_type in (("Surface", "NodeSocketObject"), ("Density", "NodeSocketFloat"),
                               ("Length", "NodeSocketFloat"), ("Curl", "NodeSocketFloat"),
                               ("Lean", "NodeSocketFloat"), ("Seed", "NodeSocketInt"),
+                              ("Lean Variation", "NodeSocketFloat"),
                               ("Material", "NodeSocketMaterial")):
         socket = group.interface.new_socket(name=name, in_out="INPUT", socket_type=socket_type)
         if name == "Length":
@@ -530,7 +610,9 @@ def shared_fibre_node_group():
     links.new(resample.outputs["Curve"], set_position.inputs["Geometry"])
     links.new(offset.outputs["Vector"], set_position.inputs["Offset"])
 
-    radius = _math(nodes, "MULTIPLY", b=0.11, name="Shaft radius")
+    # Shaft radius 0.16 x length (T-026, was 0.11): a 4-6 mm fibre is 1.3-1.9 mm wide, the VISUAL_TARGET felt-fibre
+    # width of 1-2 px at H = 256 for the 0.256 m reference; thinner shafts fell below 1 px and averaged away.
+    radius = _math(nodes, "MULTIPLY", b=0.16, name="Shaft radius")
     links.new(group_in.outputs["Length"], radius.inputs[0])
     tip_radius = _math(nodes, "MULTIPLY", b=0.18, name="Tapered tip")
     links.new(radius.outputs[0], tip_radius.inputs[0])
@@ -562,16 +644,47 @@ def shared_fibre_node_group():
     random_azimuth.inputs["Min"].default_value = (0.0, 0.0, 0.0)
     random_azimuth.inputs["Max"].default_value = (0.0, 0.0, math.tau)
     links.new(group_in.outputs["Seed"], random_azimuth.inputs["Seed"])
-    links.new(random_azimuth.outputs["Value"], rotate.inputs["Rotation"])
+    # Per-fibre tilt about the local X axis (applied before the azimuth spin): +/- Lean Variation x 60 degrees, so
+    # strands range from upright to lying along the surface instead of one combed angle.
+    random_tilt = nodes.new("FunctionNodeRandomValue")
+    random_tilt.data_type = "FLOAT"
+    random_tilt.inputs["Min"].default_value = -1.0
+    random_tilt.inputs["Max"].default_value = 1.0
+    seed_tilt = _math(nodes, "ADD", b=7919.0, name="Tilt seed")
+    links.new(group_in.outputs["Seed"], seed_tilt.inputs[0])
+    links.new(seed_tilt.outputs[0], random_tilt.inputs["Seed"])
+    tilt = _math(nodes, "MULTIPLY", name="Tilt amount")
+    links.new(random_tilt.outputs["Value"], tilt.inputs[0])
+    tilt_scale = _math(nodes, "MULTIPLY", b=math.radians(60.0), name="Tilt range")
+    links.new(group_in.outputs["Lean Variation"], tilt_scale.inputs[0])
+    links.new(tilt_scale.outputs[0], tilt.inputs[1])
+    azimuth = nodes.new("ShaderNodeSeparateXYZ")
+    links.new(random_azimuth.outputs["Value"], azimuth.inputs[0])
+    euler = nodes.new("ShaderNodeCombineXYZ")
+    links.new(tilt.outputs[0], euler.inputs["X"])
+    links.new(azimuth.outputs["Z"], euler.inputs["Z"])
+    links.new(euler.outputs["Vector"], rotate.inputs["Rotation"])
     rotate.inputs["Local Space"].default_value = True
     realize = nodes.new("GeometryNodeRealizeInstances")
     links.new(rotate.outputs["Instances"], realize.inputs["Geometry"])
+    # Per-strand tone (0..1) for the fibre material's value variation.
+    random_tone = nodes.new("FunctionNodeRandomValue")
+    random_tone.data_type = "FLOAT"
+    seed_tone = _math(nodes, "ADD", b=104729.0, name="Tone seed")
+    links.new(group_in.outputs["Seed"], seed_tone.inputs[0])
+    links.new(seed_tone.outputs[0], random_tone.inputs["Seed"])
+    store_tone = nodes.new("GeometryNodeStoreNamedAttribute")
+    store_tone.data_type = "FLOAT"
+    store_tone.domain = "CURVE"
+    store_tone.inputs["Name"].default_value = FIBRE_TONE_ATTRIBUTE
+    links.new(realize.outputs["Geometry"], store_tone.inputs["Geometry"])
+    links.new(random_tone.outputs["Value"], store_tone.inputs["Value"])
     set_material = nodes.new("GeometryNodeSetMaterial")
-    links.new(realize.outputs["Geometry"], set_material.inputs["Geometry"])
+    links.new(store_tone.outputs["Geometry"], set_material.inputs["Geometry"])
     links.new(group_in.outputs["Material"], set_material.inputs["Material"])
     links.new(set_material.outputs["Geometry"], group_out.inputs["Geometry"])
     group["ps_material_fibres"] = True
-    group["ps_material_fibres_version"] = 1
+    group["ps_material_fibres_version"] = FIBRE_GROUP_VERSION
     return group
 
 
@@ -596,9 +709,10 @@ def add_fibres_geometry(obj, preset_name, base_color_srgb=None, reference_size_m
     if lod == "wide":
         density *= float(fibres["lod"])
     length = float(fibres["length_mm"]) / 1000.0
+    # The raw base colour: saturation_compensation offsets the desaturating sheen/rim layers of the surface shader,
+    # which the Principled Hair fibres do not have (T-026: dense compensated fibres pushed felt hair to 127 %).
     color = tuple(base_color_srgb or preset["swatch_srgb"])
-    color = _saturate_srgb(color, preset["surface"].get("saturation_compensation", 1.0))
-    material = _fibres_material(f"M_fibres_{preset_name}_{obj.name}", color)
+    material = _fibres_material(f"M_fibres_{preset_name}_{obj.name}", color, fibres)
     import bpy
     group = shared_fibre_node_group()
     curves = bpy.data.hair_curves.new(obj.name + ".fibres")
@@ -617,6 +731,7 @@ def add_fibres_geometry(obj, preset_name, base_color_srgb=None, reference_size_m
     _set_modifier_input(modifier, group, "Length", length)
     _set_modifier_input(modifier, group, "Curl", float(fibres["curl"]))
     _set_modifier_input(modifier, group, "Lean", float(fibres["lean"]))
+    _set_modifier_input(modifier, group, "Lean Variation", float(fibres.get("lean_variation", 0.0)))
     seed = sum((index + 1) * ord(char) for index, char in enumerate(preset_name)) % 100000
     _set_modifier_input(modifier, group, "Seed", seed)
     _set_modifier_input(modifier, group, "Material", material)

@@ -1219,6 +1219,39 @@ def _smoothstep(x):
     return x * x * (3 - 2 * x)
 
 
+
+def _section_radii(body, centre_xy, z, count, half_band, max_r, fallback):
+    """Per-angle outer radius of the body cross-section around ``centre_xy`` in the band ``|co.z - z| <= half_band``
+    (``count`` equal sectors starting at +X, counter-clockwise). Vertices further than ``max_r`` (another limb) are
+    ignored; empty sectors are filled from their neighbours, or ``fallback`` when nothing was found."""
+    cx, cy = centre_xy
+    radii = [None] * count
+    for v in body.data.vertices:
+        co = v.co
+        if abs(co.z - z) > half_band:
+            continue
+        dx, dy = co.x - cx, co.y - cy
+        r = math.hypot(dx, dy)
+        if r > max_r:
+            continue
+        k = int(round((math.atan2(dy, dx) % (2 * math.pi)) / (2 * math.pi) * count)) % count
+        radii[k] = r if radii[k] is None else max(radii[k], r)
+    known = [k for k, r in enumerate(radii) if r is not None]
+    if not known:
+        return [fallback] * count
+    out = []
+    for k in range(count):
+        if radii[k] is not None:
+            out.append(radii[k])
+            continue
+        prev = max((j for j in known if j < k), default=known[-1])
+        nxt = min((j for j in known if j > k), default=known[0])
+        span = (nxt - prev) % count or count
+        f = ((k - prev) % count) / span
+        out.append(radii[prev] * (1 - f) + radii[nxt] * f)
+    return out
+
+
 def _footwear(C, body, cfg, P, H, J, G, fit):
     ease, thick = cfg["ease_m"], cfg["thickness_m"]
     ankle_z, knee_z = P["leg"]["ankle_z"] * H, P["leg"]["knee_z"] * H
@@ -1264,16 +1297,25 @@ def _footwear(C, body, cfg, P, H, J, G, fit):
                               lr, (ease + shaft) * lm + thick + max(0.0, cr - cfg["seam_radius_m"] * 1.4), cr)
             _feature(objects, ring, cfg, "band", _mat_for(G, cfg, "band", H), G)
         if shaft > 0:
-            # Lining ring closing the opening between the leg and a widened shaft (seen from above).
+            # Lining closing the opening between the leg and a widened shaft (seen from above). T-026: its inner
+            # edge follows the measured leg cross-section (the _leg_radius estimate can sit centimetres outside a
+            # slim leg, leaving a dark gap and a separate visible ring), and with a cuff its outer edge ends under
+            # the cuff tube's centre line instead of poking out between the shaft wall and the tube.
             t = max(0.0, min(1.0, (knee_z - top_z) / max(knee_z - ankle_z, 1e-9)))
             lr = _leg_radius(P, H, 1 - t)
-            r_in, r_out = lr + 0.25 * ease * lm, lr + (ease + shaft) * lm + thick
+            lining_z = top_z - 0.002 * lm
+            r_leg = _section_radii(body, (hx, 0.0), lining_z, 48, 0.004 * lm, abs(hx) * 0.95, lr)
+            r_shell = lr + (ease + shaft) * lm + thick
+            r_cuff = (lr + (ease + shaft) * lm + thick + max(0.0, cr - cfg["seam_radius_m"] * 1.4)
+                      if cfg.get("cuff") or bands.get("cuff") else None)
             verts, faces = [], []
             for k in range(48):
                 a = 2 * math.pi * k / 48
                 d = Vector((math.cos(a), math.sin(a), 0.0))
-                verts += [tuple(Vector((hx, 0, top_z - 0.002 * lm)) + d * r_in),
-                          tuple(Vector((hx, 0, top_z - 0.002 * lm)) + d * r_out)]
+                r_in = r_leg[k] + 0.001 * lm
+                r_out = max(r_cuff if r_cuff is not None else r_shell, r_in + 0.002 * lm)
+                verts += [tuple(Vector((hx, 0, lining_z)) + d * r_in),
+                          tuple(Vector((hx, 0, lining_z)) + d * r_out)]
             for k in range(48):
                 a, b = 2 * k, 2 * ((k + 1) % 48)
                 faces.append((a, b, b + 1, a + 1))

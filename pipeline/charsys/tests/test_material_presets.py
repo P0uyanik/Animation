@@ -18,7 +18,8 @@ EXPECTED = {
     "boot fleece", "buttons/plastic", "glasses/acrylic", "skin-felt",
 }
 FIBRE_ENABLED = {"felt", "wool yarn", "fleece", "cotton knit", "felt hair", "boot fleece"}
-FIBRE_FIELDS = {"enabled", "density_per_cm2", "length_mm", "curl", "lean", "lod"}
+FIBRE_FIELDS = {"enabled", "density_per_cm2", "length_mm", "curl", "lean", "lod",
+                "color_variation", "lean_variation", "root_transparency", "tip_transparency"}  # T-026 look fields
 RESULTS = []
 
 
