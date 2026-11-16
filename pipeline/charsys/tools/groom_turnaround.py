@@ -8,8 +8,8 @@ Cameras: yaw/elevation/focal of each reference view (reference_index.json), fram
 (compare_harness.place_camera, 90% of the height). Lighting: the shared character-render calibration
 (render_calibration.json, lights re-aimed relative to every camera) or, with --lighting harness, the round-1 setup
 (compare_harness.studio_lighting, AgX, exposure -1). A close-up camera looks at a world point from yaw/elevation with
-an orthographic width. --ids also writes <view>_ids.png: flat material-slot colours (Workbench, no anti-aliasing) and
-ids.json (slot -> colour) for colour measurements. Character-agnostic: everything comes from the arguments.
+an orthographic width. --ids also writes <view>_ids.png: flat material-slot colours (no anti-aliasing) and
+ids.json (slot -> colour) for colour measurements (Cycles, emission stand-ins, 1 sample). Character-agnostic: everything comes from the arguments.
 Writes <view>.png per view and timings.json."""
 import argparse
 import json
@@ -33,23 +33,44 @@ ID_COLOURS = [(230, 25, 75), (60, 180, 75), (255, 225, 25), (0, 130, 200), (245,
               (0, 0, 128), (128, 128, 128)]
 
 
-def render_ids(sc, path, materials):
-    """Flat material colours (sRGB ids) through Workbench without anti-aliasing; restores the scene afterwards."""
-    keep = (sc.render.engine, sc.view_settings.view_transform, sc.view_settings.exposure, sc.view_settings.gamma)
-    old = {m.name: tuple(m.diffuse_color) for m in materials}
-    sc.render.engine = "BLENDER_WORKBENCH"
-    sc.display.shading.light = "FLAT"
-    sc.display.shading.color_type = "MATERIAL"
-    sc.display.render_aa = "OFF"
+def render_ids(sc, path, materials, meshes):
+    """Flat material-slot colours (sRGB ids): every material is swapped for an emission stand-in and rendered in
+    Cycles with one sample, a minimal pixel filter and no denoising; the scene is restored afterwards. (Workbench
+    needs a GPU context, which headless cloud machines lack.)"""
+    keep = (sc.cycles.samples, sc.cycles.use_denoising, sc.render.filter_size, sc.view_settings.view_transform,
+            sc.view_settings.exposure, sc.view_settings.gamma, sc.world)
+    flat = {}
+    for i, m in enumerate(materials):
+        e = bpy.data.materials.new("_id_" + m.name)
+        e.use_nodes = True
+        nt = e.node_tree
+        for n in list(nt.nodes):
+            nt.nodes.remove(n)
+        em = nt.nodes.new("ShaderNodeEmission")
+        em.inputs["Color"].default_value = (*RC.srgb_to_linear(ID_COLOURS[i % len(ID_COLOURS)]), 1)
+        out = nt.nodes.new("ShaderNodeOutputMaterial")
+        nt.links.new(em.outputs[0], out.inputs["Surface"])
+        flat[m.name] = e
+    saved = []
+    for o in meshes:
+        for k, slot in enumerate(o.material_slots):
+            if slot.material and slot.material.name in flat:
+                saved.append((slot, slot.material))
+                slot.material = flat[slot.material.name]
+    black = bpy.data.worlds.new("_id_world")
+    sc.world = black
+    sc.cycles.samples, sc.cycles.use_denoising, sc.render.filter_size = 1, False, 0.01
     sc.view_settings.view_transform = "Standard"
     sc.view_settings.exposure, sc.view_settings.gamma = 0.0, 1.0
-    for i, m in enumerate(materials):
-        m.diffuse_color = (*RC.srgb_to_linear(ID_COLOURS[i % len(ID_COLOURS)]), 1)
     sc.render.filepath = path
     bpy.ops.render.render(write_still=True)
-    for m in materials:
-        m.diffuse_color = old[m.name]
-    sc.render.engine, sc.view_settings.view_transform, sc.view_settings.exposure, sc.view_settings.gamma = keep
+    for slot, m in saved:
+        slot.material = m
+    (sc.cycles.samples, sc.cycles.use_denoising, sc.render.filter_size, sc.view_settings.view_transform,
+     sc.view_settings.exposure, sc.view_settings.gamma, sc.world) = keep
+    for e in flat.values():
+        bpy.data.materials.remove(e)
+    bpy.data.worlds.remove(black)
 
 
 def main():
@@ -130,7 +151,7 @@ def main():
         bpy.ops.render.render(write_still=True)
         times["views"][v["id"]] = round(time.time() - t, 2)
         if a.ids:
-            render_ids(sc, os.path.join(a.out, v["id"] + "_ids.png"), mats)
+            render_ids(sc, os.path.join(a.out, v["id"] + "_ids.png"), mats, meshes)
     for spec in a.closeup:
         name, yaw, elev, xyz, width = spec.split(":")
         p = Vector(tuple(float(c) for c in xyz.split(",")))

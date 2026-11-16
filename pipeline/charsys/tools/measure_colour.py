@@ -5,7 +5,7 @@
 checks.json (character data): {"reference_dir": "<dir relative to the repo>", "checks": [
     {"name": "hair_back", "slot": "M_hair", "view": "sheet30_back", "ref_boxes": [[x0, y0, x1, y1], ...]}, ...]}
 The render side is the median sRGB of every pixel of the material slot in <view>.png (from <view>_ids.png and ids.json
-written by groom_turnaround.py --ids; the mask is eroded by one pixel against edge blending). The reference side is the
+written by groom_turnaround.py --ids; the mask is eroded by one pixel against edge blending unless "erode": false). The reference side is the
 median over the given boxes of the reference view. Reports both medians, CIEDE2000 (D65), luma Y' and saturation,
 and the luma-matched dE00 (VISUAL_TARGET.md: compare Lab after matching the patch median luma)."""
 import argparse
@@ -70,15 +70,18 @@ def sat(rgb):
     return (max(rgb) - min(rgb)) / max(1e-6, max(rgb))
 
 
-def slot_median(render_dir, view, colour):
+def slot_median(render_dir, view, colour, erode=True):
     img = np.asarray(Image.open(os.path.join(render_dir, view + ".png")).convert("RGB")).astype(int)
     ids = np.asarray(Image.open(os.path.join(render_dir, view + "_ids.png")).convert("RGB")).astype(int)
     m = np.all(np.abs(ids - np.array(colour)) <= 2, axis=2)
-    e = m.copy()  # one-pixel erosion
-    e[1:, :] &= m[:-1, :]
-    e[:-1, :] &= m[1:, :]
-    e[:, 1:] &= m[:, :-1]
-    e[:, :-1] &= m[:, 1:]
+    e = m.copy()  # one-pixel erosion (off for thin parts)
+    if erode:
+        e[1:, :] &= m[:-1, :]
+        e[:-1, :] &= m[1:, :]
+        e[:, 1:] &= m[:, :-1]
+        e[:, :-1] &= m[:, 1:]
+    if not e.any():
+        return [float("nan")] * 3, 0
     px = img[e]
     return [float(v) for v in np.median(px, axis=0)], int(e.sum())
 
@@ -101,7 +104,7 @@ def main():
     ref_dir = os.path.join(ROOT, cfg["reference_dir"])
     rows = []
     for c in cfg["checks"]:
-        r, n = slot_median(a.render_dir, c["view"], ids[c["slot"]])
+        r, n = slot_median(a.render_dir, c["view"], ids[c["slot"]], c.get("erode", True))
         t, nt = box_median(os.path.join(ref_dir, c["view"] + ".png"), c["ref_boxes"])
         lr, lt = luma(r), luma(t)
         r_matched = [min(255.0, v * lt / max(1e-6, lr)) for v in r]
