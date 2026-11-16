@@ -235,6 +235,7 @@ Result<Scene> loadScene(const std::filesystem::path& path) {
   for (auto& cj : j.value("characters", Json::array())) {
     CharacterDesc cd{readString(cj, "name"), readString(cj, "asset"), readVec3(cj, "position", vec3(0)),
                      readFloat(cj, "yawDeg", 0), {}};
+    cd.autoIdle = readBool(cj, "autoIdle", true);
     cd.life.seed = uint32_t(std::hash<std::string>{}(cd.name) & 0xffffffffu) | 1u;
     if (auto it = cj.find("life"); it != cj.end()) {
       if (it->is_boolean()) cd.life.enabled = it->get<bool>();
@@ -413,6 +414,7 @@ Json sceneToJson(const Scene& s) {
   }
   for (auto& c : s.characters) {
     Json cj = {{"name", c.name}, {"asset", c.asset}, {"position", toJson(c.position)}, {"yawDeg", c.yawDeg}};
+    if (!c.autoIdle) cj["autoIdle"] = false;
     const GazeLimits defaultGaze;
     const bool customGaze = c.life.gaze.maxUpDeg != defaultGaze.maxUpDeg ||
                             c.life.gaze.maxDownDeg != defaultGaze.maxDownDeg ||
@@ -581,6 +583,7 @@ Result<void> SceneEvaluator::load(const Scene& scene, const EvalOptions& opt) {
   authoredObjects_ = scene_.objects;
   auto compiled = compileActions();
   if (!compiled) return compiled;
+  prepareAutoIdle();
 
   std::map<std::string, size_t> charactersByName, propsByName;
   for (size_t c = 0; c < scene_.characters.size(); ++c) charactersByName[scene_.characters[c].name] = c;

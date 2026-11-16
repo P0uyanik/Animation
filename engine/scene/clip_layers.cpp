@@ -1,8 +1,13 @@
 // Clip layers of the scene evaluator (actions of type "clip", see actions.cpp and model/clip.h).
 // Order of a character's pose: keyed / generated tracks -> base clip (generated action motion added on top as a
-// delta) -> emotion postures and gestures (action "emotion", tier 1) -> clip actions on their masks (walk keeps legs, hips and root while it walks; hand keys always win) ->
+// delta; the legs follow a walk while it owns them) -> emotion postures and gestures (action "emotion", tier 1) -> clip actions on their masks (walk keeps legs, hips and root while it walks; hand keys always win) ->
 // life layer -> constraints (IK, hand pose, look) -> clip finger tracks (unless a hand track owns that hand).
+// Automatic base idle (T-027): a humanoid character with no base clip action plays the shared "idle_relaxed" clip as
+// its base layer (scene character "autoIdle": false opts out), so no character stands frozen in its default pose.
 #include <algorithm>
+#include <filesystem>
+#include <format>
+#include <functional>
 #include <map>
 
 #include "scene/scene.h"
@@ -49,8 +54,70 @@ RetargetData SceneEvaluator::retargetData(size_t c, const ReferencePose& ref) co
   return deriveRetarget(asset.skeleton, ref);
 }
 
+void SceneEvaluator::prepareAutoIdle() {
+  autoIdle_.assign(characters_.size(), std::nullopt);
+  std::filesystem::path file;  // the shared library clip, found by walking up from the scene file like clip actions
+  for (auto d = std::filesystem::absolute(scene_.path).parent_path();; d = d.parent_path()) {
+    auto cand = d / "content" / "clips" / "idle_relaxed.clip.json";
+    if (std::filesystem::exists(cand)) {
+      file = cand;
+      break;
+    }
+    if (d == d.parent_path()) break;
+  }
+  if (file.empty()) return;
+  std::shared_ptr<const ClipData> clip;
+  for (size_t c = 0; c < characters_.size() && c < scene_.characters.size(); ++c) {
+    const CharacterInstance& ci = characters_[c];
+    // Humanoid engine packages with generated retarget data only (the production path, exporter version >= 2);
+    // procedural characters and legacy packages without the block keep their default pose.
+    if (!scene_.characters[c].autoIdle || !ci.imported || !ci.asset.retargetBlock.is_object()) continue;
+    if (!clip) {
+      auto cl = loadClip(file);
+      if (!cl) {
+        warnings_.push_back(std::format("auto idle: {}", cl.error().message));
+        return;
+      }
+      clip = std::make_shared<const ClipData>(std::move(*cl));
+    }
+    ClipLayer L;
+    L.clip = clip;
+    L.base = true;
+    L.tier = 0;
+    L.binding = bindClip(ci.asset.skeleton, clip->reference, retargetData(c, clip->reference));
+    bool humanoid = true;
+    for (const char* role : {"hips", "spine", "chest", "head", "upperArm.L", "upperArm.R", "thigh.L", "thigh.R"}) {
+      auto it = L.binding.roleIndex.find(role);
+      humanoid = humanoid && it != L.binding.roleIndex.end() && L.binding.roles[size_t(it->second)].bone >= 0;
+    }
+    if (!humanoid) continue;
+    // A per-character phase (from the name, deterministic) so characters sharing the idle do not breathe in sync.
+    const double period = clip->duration() * scene_.rate.fps();
+    const double phase = period > 0 ? double(std::hash<std::string>{}(scene_.characters[c].name) % 997) / 997.0 * period : 0.0;
+    L.start = double(scene_.frameStart) - phase;
+    L.blendIn = L.blendOut = 0;
+    autoIdle_[c] = std::move(L);
+  }
+}
+
+const SceneEvaluator::ClipLayer* SceneEvaluator::autoIdleLayer(size_t c) const {
+  if (c >= autoIdle_.size() || !autoIdle_[c]) return nullptr;
+  if (c < clipLayers_.size())
+    for (const ClipLayer& L : clipLayers_[c])
+      if (L.base) return nullptr;  // a base clip action replaces the automatic idle
+  return &*autoIdle_[c];
+}
+
+std::vector<const SceneEvaluator::ClipLayer*> SceneEvaluator::activeClipLayers(size_t c) const {
+  std::vector<const ClipLayer*> out;
+  if (const ClipLayer* a = autoIdleLayer(c)) out.push_back(a);  // tier 0: under every other layer
+  if (c < clipLayers_.size())
+    for (const ClipLayer& L : clipLayers_[c]) out.push_back(&L);
+  return out;
+}
+
 void SceneEvaluator::applyClips(size_t c, double frame, Pose& pose, float& yawOffset) const {
-  const auto& layers = clipLayers_[c];
+  const auto layers = activeClipLayers(c);
   const Skeleton& sk = characters_[c].asset.skeleton;
   const CharacterAsset& asset = characters_[c].asset;
   const std::string prefix = scene_.characters[c].name + "/";
@@ -66,7 +133,8 @@ void SceneEvaluator::applyClips(size_t c, double frame, Pose& pose, float& yawOf
     auto it = anim.tracks.find(prefix + role + ".rot");
     return it != anim.tracks.end() && !it->second.keys.empty();
   };
-  for (const ClipLayer& L : layers) {
+  for (const ClipLayer* layer : layers) {
+    const ClipLayer& L = *layer;
     const double env = L.envelope(frame);
     if (env <= 0) continue;
     const ClipSample s = sampleClip(*L.clip, L.clipFrame(frame, fps), L.mirror);
@@ -81,10 +149,19 @@ void SceneEvaluator::applyClips(size_t c, double frame, Pose& pose, float& yawOf
         const quat q0 = d == asset.defaultPose.end() ? quat(1, 0, 0, 0) : eulerDegreesToQuat(d->second);
         deltas.push_back({r.bone, glm::inverse(q0) * pose.local[size_t(r.bone)]});
       }
+      // While a walk owns the legs they follow the walk itself, as under every other clip layer (T-027: a base idle
+      // with a real weight shift, e.g. a bent free knee, must not leak into the walk's legs). The hips keep the base
+      // pose plus the walk's change, as before.
+      std::vector<std::pair<int, quat>> walkOwned;
+      if (walk > 0)
+        for (const auto& r : L.binding.roles)
+          if (r.bone >= 0 && isWalkRole(r.name) && r.name != "hips" && !handKeyed(r.name) && inMask(*L.clip, r.name, L.mirror))
+            walkOwned.push_back({r.bone, pose.local[size_t(r.bone)]});
       applyClipSample(sk, L.binding, s, pose, [&](const std::string& role) {
         return (isFingerRole(role) || handKeyed(role) || !inMask(*L.clip, role, L.mirror)) ? 0.0f : float(env);
       });
       for (auto& [b, d] : deltas) pose.local[size_t(b)] = glm::normalize(pose.local[size_t(b)] * d);
+      for (auto& [b, q] : walkOwned) pose.local[size_t(b)] = glm::normalize(glm::slerp(pose.local[size_t(b)], q, float(walk)));
       const float wr = float(env * (1 - walk));
       pose.rootOffset += s.root * L.binding.legLength * wr;
       yawOffset += s.heading * wr;
@@ -134,7 +211,8 @@ void SceneEvaluator::applyClipFingers(size_t c, double frame, Pose& pose) const 
     const Track* t = anim.find(prefix + "hand." + side);
     return t && !t->keys.empty();
   };
-  for (const ClipLayer& L : clipLayers_[c]) {
+  for (const ClipLayer* layer : activeClipLayers(c)) {
+    const ClipLayer& L = *layer;
     const double env = L.envelope(frame);
     if (env <= 0) continue;
     bool any = false;
