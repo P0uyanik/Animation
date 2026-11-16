@@ -114,11 +114,16 @@ void pickUpAndPlace(const char* asset) {
   scene.characters.push_back(character("actor", asset, vec3(0), 0));
   auto probe = load(scene);
   // Grip faces the right hand (the character's right is -x): cup yaw 180 puts local +x at world -x.
-  scene.props.push_back(cupFor(*probe, 0, "cup", 180, vec3(0.04f, -0.65f, 0.5f)));
+  // T-030: the cup stands in front of the body (0.85 arm lengths forward, 0.45 down; 0.96 arm from the shoulder).
+  // T-022 had it 0.5 forward / 0.65 down, at the belly surface, so the forearm had to enter the body at contact; the
+  // arm-body clearance reports that now.
+  scene.props.push_back(cupFor(*probe, 0, "cup", 180, vec3(0.04f, -0.45f, 0.85f)));
+  // The hold lifts the cup and moves it a little away from the body (T-022 moved it 3 cm towards the body, which ends
+  // inside the boy's: his sleeve is skinned between shoulder and hand).
   const vec3 place0 = scene.props[0].transform.translation;
   scene.actions = Json::parse(R"([
       {"type": "grasp", "character": "actor", "hand": "R", "prop": "cup", "start": 5, "contact": 20},
-      {"type": "hold", "character": "actor", "hand": "R", "start": 22, "end": 36, "by": [0, 0.08, -0.03]},
+      {"type": "hold", "character": "actor", "hand": "R", "start": 22, "end": 36, "by": [0, 0.06, 0.02]},
       {"type": "place", "character": "actor", "hand": "R", "start": 40, "contact": 54, "end": 68,
        "at": [0, 0, 0]}])");
   scene.actions[2]["at"] = {place0.x + 0.02f, place0.y, place0.z + 0.01f};
@@ -132,7 +137,7 @@ void pickUpAndPlace(const char* asset) {
   // The cup waits on the table until contact, then rides with the hand, upright.
   CHECK(glm::distance(vec3(ev->propWorld(0, 19)[3]), place0) < 1e-5f);
   const mat4 lifted = ev->propWorld(0, 36);
-  CHECK(glm::distance(vec3(lifted[3]), place0 + vec3(0, 0.08f, -0.03f)) < 0.005f);
+  CHECK(glm::distance(vec3(lifted[3]), place0 + vec3(0, 0.06f, 0.02f)) < 0.005f);
   CHECK(glm::dot(glm::normalize(vec3(lifted[1])), vec3(0, 1, 0)) > 0.999f);
   // Put down: the place socket lands on the target at contact and stays there after the hand has gone.
   const vec3 target(place0.x + 0.02f, place0.y, place0.z + 0.01f);
@@ -162,13 +167,15 @@ TEST_CASE("interaction: hand-over between two characters keeps the prop continuo
     scene.characters.push_back(character("receiver", receiver, vec3(0.18f, 0, 0), -90));
     auto probe = load(scene);
     // Cup yaw -90: grip (local +x) faces +z (giver's right hand side), grip_b faces -z (receiver's right hand).
-    scene.props.push_back(cupFor(*probe, 0, "cup", -90, vec3(0.5f, -0.65f, 0.04f)));
+    // T-030: the receiver's last hold lifts the cup and moves it to her right side (-z); T-022 moved it 2 cm across
+    // her front (+x towards her body), which the arm-body clearance now resists.
+    scene.props.push_back(cupFor(*probe, 0, "cup", -90, vec3(0.85f, -0.45f, 0.04f)));  // in front of the body (T-030)
     scene.actions = Json::parse(R"([
         {"type": "grasp", "character": "giver", "hand": "R", "prop": "cup", "start": 4, "contact": 18},
         {"type": "hold", "character": "giver", "hand": "R", "start": 20, "end": 30, "by": [0.03, 0.08, 0]},
         {"type": "handover", "character": "giver", "hand": "R", "to": "receiver", "toHand": "R",
          "start": 30, "receiverStart": 32, "contact": 50, "release": 55, "end": 68},
-        {"type": "hold", "character": "receiver", "hand": "R", "start": 62, "end": 78, "by": [0.02, 0.04, 0]}])");
+        {"type": "hold", "character": "receiver", "hand": "R", "start": 62, "end": 78, "by": [0, 0.04, -0.02]}])");
     auto ev = load(scene);
     for (const auto& w : ev->warnings()) MESSAGE(w);
     CHECK(ev->warnings().empty());
@@ -180,7 +187,7 @@ TEST_CASE("interaction: hand-over between two characters keeps the prop continuo
     // Between contact and release both hands are on the cup (the giver still touches its socket).
     CHECK(glm::distance(ev->handGripPoint(0, 'R', 53), socketWorld(*ev, 0, "grip", 53)) < 0.005f);
     // After the hand-over the cup follows the receiver, not the giver.
-    CHECK(glm::distance(vec3(ev->propWorld(0, 78)[3]) - vec3(ev->propWorld(0, 62)[3]), vec3(0.02f, 0.04f, 0)) < 0.005f);
+    CHECK(glm::distance(vec3(ev->propWorld(0, 78)[3]) - vec3(ev->propWorld(0, 62)[3]), vec3(0, 0.04f, -0.02f)) < 0.005f);
     CHECK(glm::distance(ev->handGripPoint(1, 'R', 78), socketWorld(*ev, 0, "grip_b", 78)) < 0.005f);
     CHECK(glm::distance(ev->handGripPoint(0, 'R', 80), socketWorld(*ev, 0, "grip", 80)) > 0.03f);
     CHECK(glm::dot(glm::normalize(vec3(ev->propWorld(0, 78)[1])), vec3(0, 1, 0)) > 0.999f);  // still upright
@@ -220,7 +227,10 @@ TEST_CASE("interaction: bad action timelines are load errors") {
   Scene scene = baseScene();
   scene.characters.push_back(character("actor", kBoy, vec3(0), 0));
   auto probe = load(scene);
-  scene.props.push_back(cupFor(*probe, 0, "cup", 180, vec3(0.04f, -0.65f, 0.5f)));
+  // T-030: the cup stands in front of the body (0.85 arm lengths forward, 0.45 down; 0.96 arm from the shoulder).
+  // T-022 had it 0.5 forward / 0.65 down, at the belly surface, so the forearm had to enter the body at contact; the
+  // arm-body clearance reports that now.
+  scene.props.push_back(cupFor(*probe, 0, "cup", 180, vec3(0.04f, -0.45f, 0.85f)));
   auto expectError = [&](const char* actions, const char* text) {
     Scene s = scene;
     s.actions = Json::parse(actions);

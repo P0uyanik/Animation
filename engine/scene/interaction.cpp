@@ -72,6 +72,275 @@ void applyOrientConstraints(const Skeleton& sk, const Clip& clip, const std::str
   }
 }
 
+// ------------------------------------------------------------------------------------- arm-body clearance (T-030)
+namespace {
+
+enum class Region { Other, Torso, ArmL, ArmR, Leg, Head };
+enum class ArmPart { None, Upper, Fore, Hand };
+
+bool startsWith(const std::string& s, const char* p) { return s.rfind(p, 0) == 0; }
+bool isFingerName(const std::string& n) {
+  return n.size() >= 4 && ((n[0] == 'f' && n[1] >= '0' && n[1] <= '9') || startsWith(n, "thumb"));
+}
+
+// Region of a bone: the nearest role on its way to the root decides (helpers belong to their role's region).
+Region regionOf(const Skeleton& sk, int b) {
+  for (int k = b; k >= 0; k = sk.bones[size_t(k)].parent) {
+    const std::string& n = sk.bones[size_t(k)].name;
+    const char side = n.empty() ? ' ' : n.back();
+    if (startsWith(n, "upperArm.") || startsWith(n, "forearm.") || startsWith(n, "hand.") || (isFingerName(n) && n.find('.') != std::string::npos))
+      return side == 'L' ? Region::ArmL : Region::ArmR;
+    if (startsWith(n, "thigh.") || startsWith(n, "shin.") || startsWith(n, "foot.") || startsWith(n, "toe")) return Region::Leg;
+    if (n == "neck" || n == "head" || startsWith(n, "eye.")) return Region::Head;
+    if (n == "hips" || n == "spine" || n == "chest") return Region::Torso;
+  }
+  return Region::Other;
+}
+ArmPart armPartOf(const Skeleton& sk, int b) {
+  for (int k = b; k >= 0; k = sk.bones[size_t(k)].parent) {
+    const std::string& n = sk.bones[size_t(k)].name;
+    if (startsWith(n, "hand.") || isFingerName(n)) return ArmPart::Hand;
+    if (startsWith(n, "forearm.")) return ArmPart::Fore;
+    if (startsWith(n, "upperArm.")) return ArmPart::Upper;
+  }
+  return ArmPart::None;
+}
+
+float percentile(std::vector<float> v, float q, float fallback) {
+  if (v.size() < 20) return fallback;
+  const size_t k = std::min(v.size() - 1, size_t(q * float(v.size() - 1)));
+  std::nth_element(v.begin(), v.begin() + std::ptrdiff_t(k), v.end());
+  return v[k];
+}
+
+
+// Signed gap of world point p to a body section whose owning bone has global Gb (gradient g in capsule-local
+// scaled coordinates). Scaled coordinates make the elliptical section round (radius min(r1, r2)); the map only
+// shrinks distances, so a gap measured here never overstates the true gap. Inside its slab the gap is radial; past a
+// capped end it is round; past a joined (flat) end it is the distance to the end disc.
+struct SectionGap {
+  float gap;
+  vec3 worldGrad;
+};
+SectionGap sectionGap(const BodyCapsule& C, const mat4& Gb, vec3 p, char side) {
+  vec3 u = C.p1 - C.p0;
+  const float L = glm::length(u);
+  u = L > 1e-6f ? u / L : glm::normalize(glm::cross(C.e1, C.e2));
+  const float r = std::min(C.r1, C.r2), s1 = r / C.r1, s2 = r / C.r2;
+  const vec3 q0 = vec3(glm::inverse(Gb) * vec4(p, 1)) - C.p0;
+  const vec3 q(glm::dot(q0, u), glm::dot(q0, C.e1) * s1, glm::dot(q0, C.e2) * s2);
+  const float radial = glm::length(vec2(q.y, q.z));
+  const float ax = q.x < 0 ? -q.x : q.x > L ? q.x - L : 0.0f;
+  const bool round = (q.x < 0 && C.cap0) || (q.x > L && C.cap1);
+  float gap;
+  vec3 g;
+  if (ax <= 0 || round) {
+    const vec3 d = q - vec3(std::clamp(q.x, 0.0f, L), 0, 0);
+    const float dist = glm::length(d);
+    gap = dist - r;
+    g = dist > 1e-6f ? d / dist : vec3(0, side == 'L' ? 1.0f : -1.0f, 0);
+  } else {
+    const float ro = std::max(radial - r, 0.0f);
+    gap = std::sqrt(ro * ro + ax * ax);
+    const vec3 rad = radial > 1e-6f ? vec3(0, q.y, q.z) / radial : vec3(0);
+    g = glm::normalize(vec3(q.x < 0 ? -ax : ax, 0, 0) + ro * rad);
+  }
+  const vec3 local = u * g.x + C.e1 * (g.y * s1) + C.e2 * (g.z * s2);  // gradient of the scaled distance
+  return {gap, glm::normalize(mat3(Gb) * local)};
+}
+
+vec3 skinPoint(const ArmPoint& P, const std::vector<mat4>& G) {
+  vec3 p(0);
+  for (int k = 0; k < 4; ++k)
+    if (P.weight[k] > 0) p += P.weight[k] * vec3(G[size_t(P.joint[k])] * vec4(P.local[k], 1));
+  return p;
+}
+
+}  // namespace
+
+BodyClearanceModel bodyClearanceModel(const Skeleton& sk, const std::vector<SkinnedMesh>& meshes) {
+  BodyClearanceModel M;
+  const int hips = sk.find("hips"), chest = sk.find("chest"), spine = sk.find("spine"), neck = sk.find("neck");
+  if (hips < 0 || chest < 0) return M;
+  auto head = [&](int b) { return sk.bones[size_t(b)].head; };
+  for (int s = 0; s < 2; ++s) {
+    const char side = s == 0 ? 'L' : 'R';
+    ArmModel& A = M.arm[s];
+    A.hand = sk.find(std::string("hand.") + side);
+    if (A.hand < 0) return M;
+    A.fore = sk.bones[size_t(A.hand)].parent;
+    A.upper = A.fore >= 0 ? sk.bones[size_t(A.fore)].parent : -1;
+    if (A.upper < 0) return M;
+  }
+  // Skinned rest vertices by region (a vertex counts when >= 90 % of its weight is in one region).
+  std::vector<int> region(sk.bones.size()), part(sk.bones.size());
+  for (size_t b = 0; b < sk.bones.size(); ++b) region[b] = int(regionOf(sk, int(b))), part[b] = int(armPartOf(sk, int(b)));
+  std::vector<vec3> torso;
+  struct Cand { const SkinnedMesh* m; size_t v; };
+  std::vector<Cand> armCand[2];
+  for (const SkinnedMesh& m : meshes) {
+    for (size_t v = 0; v < m.rest.positions.size() && v < m.joints.size() && v < m.weights.size(); ++v) {
+      float w[6] = {0, 0, 0, 0, 0, 0};
+      for (int k = 0; k < 4; ++k) {
+        const int j = m.joints[v][k];
+        if (j < 0 || size_t(j) >= sk.bones.size() || m.weights[v][k] <= 0) continue;
+        w[region[size_t(j)]] += m.weights[v][k];
+      }
+      if (w[int(Region::Torso)] >= 0.9f) torso.push_back(m.rest.positions[v]);
+      // Arm surface: carried at least half by that arm (a sleeve between shoulder and hand included), nothing of the
+      // head or legs; torso garment vertices with a little weight bleed onto the arm stay body.
+      for (int s = 0; s < 2; ++s)
+        if (w[int(s == 0 ? Region::ArmL : Region::ArmR)] >= 0.5f && w[int(Region::Head)] + w[int(Region::Leg)] < 0.1f)
+          armCand[s].push_back({&m, v});
+    }
+  }
+  const bool fromMesh = torso.size() >= 200;
+  M.source = fromMesh ? "mesh" : "skeleton";
+  const int ua = sk.find("upperArm.L"), ub = sk.find("upperArm.R");
+  const float shoulderHalf = ua >= 0 && ub >= 0 ? 0.5f * glm::distance(head(ua), head(ub)) : 0.12f;
+  const float rDefault = 0.95f * shoulderHalf;
+  // Body sections along the spine: pelvis (below the hips, carried by the hips), lower torso (hips -> chest, carried
+  // by the spine or hips) and upper torso (chest -> neck, carried by the chest), each cut into short bands whose
+  // radii fit the vertices of their own height slab (a waist is narrower than a belly). Bands meet with flat ends;
+  // the lowest and highest are capsules with round ends.
+  auto band = [&](std::string name, int bone, vec3 a, vec3 b) {
+    BodyCapsule C;
+    C.name = std::move(name);
+    C.bone = bone;
+    C.p0 = a - head(bone);
+    C.p1 = b - head(bone);
+    const vec3 u = glm::normalize(b - a);
+    C.e1 = glm::normalize(vec3(1, 0, 0) - u * u.x);
+    C.e2 = glm::normalize(glm::cross(C.e1, u));  // forward (+Z) for an upright segment
+    C.cap0 = C.cap1 = false;
+    std::vector<float> side, front;
+    for (const vec3& p : torso) {
+      const float t = glm::dot(p - a, b - a) / glm::dot(b - a, b - a);
+      if (t < 0 || t > 1) continue;
+      const vec3 d = p - (a + t * (b - a));
+      if (glm::dot(d, C.e2) < 0) continue;  // front half only: hands work in front (hair, a backpack are not body)
+      side.push_back(std::abs(glm::dot(d, C.e1)));
+      front.push_back(glm::dot(d, C.e2));
+    }
+    C.r1 = std::clamp(percentile(side, 0.99f, rDefault), 0.02f, 0.5f);
+    C.r2 = std::clamp(percentile(front, 0.99f, rDefault), 0.02f, 0.5f);
+    M.body.push_back(C);
+  };
+  const vec3 top = neck >= 0 ? head(neck) : head(chest) + vec3(0, 0.6f * shoulderHalf, 0);
+  const vec3 bottom = head(hips) + 0.4f * (head(hips) - head(chest));
+  auto bands = [&](const char* name, int bone, vec3 a, vec3 b, int n) {
+    for (int i = 0; i < n; ++i)
+      band(std::format("{}_{}", name, i + 1), bone, glm::mix(a, b, float(i) / float(n)), glm::mix(a, b, float(i + 1) / float(n)));
+  };
+  bands("pelvis", hips, bottom, head(hips), 2);
+  bands("torso_lower", spine >= 0 ? spine : hips, head(hips), head(chest), 3);
+  bands("torso_upper", chest, head(chest), top, 2);
+  M.body.front().cap0 = true;
+  M.body.back().cap1 = true;
+  // Arm points: an even subsample (at most 600 per arm) of the arm surface, with skin weights and joint offsets.
+  for (int s = 0; s < 2; ++s) {
+    ArmModel& A = M.arm[s];
+    const char side = s == 0 ? 'L' : 'R';
+    const HandGrip g = handGrip(sk, A.hand, side);
+    const vec3 su = head(A.upper), sf = head(A.fore), sh = head(A.hand), st = sh + g.fingerDir * (1.5f * g.palmLength);
+    auto segDist = [](vec3 p, vec3 a, vec3 b) {
+      const float t = std::clamp(glm::dot(p - a, b - a) / std::max(1e-9f, glm::dot(b - a, b - a)), 0.0f, 1.0f);
+      return glm::distance(p, a + t * (b - a));
+    };
+    const size_t stride = std::max<size_t>(1, armCand[s].size() / 600);
+    for (size_t i = 0; i < armCand[s].size(); i += stride) {
+      const SkinnedMesh& m = *armCand[s][i].m;
+      const size_t v = armCand[s][i].v;
+      ArmPoint P;
+      const vec3 p = m.rest.positions[v];
+      for (int k = 0; k < 4; ++k) {
+        const int j = std::clamp(m.joints[v][k], 0, int(sk.bones.size()) - 1);
+        P.joint[k] = j;
+        P.weight[k] = m.weights[v][k];
+        P.local[k] = p - sk.bones[size_t(j)].head;
+        if (part[size_t(j)] == int(ArmPart::Fore) || part[size_t(j)] == int(ArmPart::Hand)) P.mobility += m.weights[v][k];
+      }
+      const float du = segDist(p, su, sf), df = segDist(p, sf, sh), dh = segDist(p, sh, st);
+      // The elbow half of the forearm counts with the upper arm: an elbow rests against the body's side.
+      const float tf = glm::dot(p - sf, sh - sf) / std::max(1e-9f, glm::dot(sh - sf, sh - sf));
+      P.part = dh <= df && dh <= du ? 2 : (df <= du && tf >= 0.5f) ? 1 : 0;
+      A.points.push_back(P);
+    }
+  }
+  // Resting contact: an arm point already inside a body section at rest (a sleeve under a vest's armhole, a puff
+  // pressed against the side) may stay as deep as it rests, never deeper; every other point keeps the margin.
+  std::vector<mat4> rest(sk.bones.size());
+  for (size_t b = 0; b < sk.bones.size(); ++b) rest[b] = glm::translate(mat4(1), sk.bones[b].head);
+  for (int s = 0; s < 2; ++s)
+    for (ArmPoint& P : M.arm[s].points) {
+      float g = 1e9f;
+      for (const BodyCapsule& C : M.body) g = std::min(g, sectionGap(C, rest[size_t(C.bone)], skinPoint(P, rest), s == 0 ? 'L' : 'R').gap);
+      P.allowance = std::min(0.0f, g - kArmBodyMargin);
+    }
+  M.valid = true;
+  return M;
+}
+
+ArmClearance armClearance(const BodyClearanceModel& M, const std::vector<mat4>& G, char side) {
+  ArmClearance out;
+  if (!M.valid) return out;
+  static const char* kPart[3] = {"upperArm", "forearm", "hand"};
+  for (const ArmPoint& P : M.arm[side == 'L' ? 0 : 1].points) {
+    const vec3 p = skinPoint(P, G);
+    for (const BodyCapsule& C : M.body) {
+      const SectionGap sg = sectionGap(C, G[size_t(C.bone)], p, side);
+      const float gap = sg.gap - P.allowance;  // never deeper than at rest
+      if (P.part == 0) {  // upper arm: reported only
+        out.upperGap = std::min(out.upperGap, gap);
+        continue;
+      }
+      out.rawGap = std::min(out.rawGap, sg.gap);
+      if (gap >= out.gap) continue;
+      out.gap = gap;
+      out.part = kPart[P.part];
+      out.against = C.name;
+      out.mobility = P.mobility;
+      out.point = p;
+      out.push = sg.worldGrad;
+    }
+  }
+  return out;
+}
+
+void applyArmPoles(const Skeleton& sk, const Clip& clip, const std::string& prefix, double frame, const mat4& world,
+                   Pose& pose) {
+  for (size_t i = 0; i < sk.bones.size(); ++i) {
+    const std::string name = prefix + "pole." + sk.bones[i].name;
+    const Track* t = clip.find(name);
+    if (!t || t->keys.empty()) continue;
+    const float w = std::clamp(clip.evaluate(name + ".weight", frame, vec3(1)).x, 0.0f, 1.0f);
+    const int mid = sk.bones[i].parent, root = mid >= 0 ? sk.bones[size_t(mid)].parent : -1;
+    if (w <= 0 || root < 0) continue;
+    const std::vector<mat4> G = boneGlobals(sk, pose, world);
+    const vec3 a(G[size_t(root)][3]), b(G[size_t(mid)][3]), c(G[i][3]);
+    if (glm::length(c - a) < 1e-5f) continue;
+    const vec3 u = glm::normalize(c - a), pole = t->evaluate(frame);
+    vec3 e = (b - a) - u * glm::dot(b - a, u), p = pole - u * glm::dot(pole, u);
+    const float le = glm::length(e), lp = glm::length(p), lpole = glm::length(pole);
+    if (le < 1e-5f || lp < 1e-6f || lpole < 1e-6f) continue;
+    e /= le;
+    p /= lp;
+    // A pole nearly along the arm has no meaningful plane: fade out instead of flipping.
+    const float strength = std::clamp((lp / lpole) / 0.3f, 0.0f, 1.0f);
+    const float angle = std::atan2(glm::dot(glm::cross(e, p), u), glm::dot(e, p));
+    const quat R = glm::angleAxis(angle * w * strength, u);
+    const int parent = sk.bones[size_t(root)].parent;
+    const mat4 pg = parent >= 0 ? G[size_t(parent)] : world;
+    const quat parentRot = glm::normalize(glm::quat_cast(mat3(glm::normalize(vec3(pg[0])), glm::normalize(vec3(pg[1])),
+                                                              glm::normalize(vec3(pg[2])))));
+    const quat handBefore = glm::normalize(glm::quat_cast(mat3(G[i])));
+    pose.local[size_t(root)] = glm::normalize(glm::inverse(parentRot) * R * parentRot * pose.local[size_t(root)]);
+    // Only the elbow moves: the hand keeps its world rotation (the forearm's swing is taken out of the hand's local).
+    const quat midAfter = glm::normalize(glm::quat_cast(mat3(boneGlobals(sk, pose, world)[size_t(mid)])));
+    pose.local[i] = glm::normalize(glm::inverse(midAfter) * handBefore);
+  }
+}
+
 namespace {
 
 double num(const Json& j, const char* k, double fallback) {
@@ -568,22 +837,83 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
   } else {
     meet = 0.5f * (boneAt(h, h.root, contact) + boneAt(r, r.root, contact)) - kUp * (0.35f * h.armLength);
   }
-  const vec3 wrist = clip.evaluate(h.ik, start, vec3(0)), wristM = wrist + (meet - origin);
+  const vec3 wrist = clip.evaluate(h.ik, start, vec3(0));
   const double still = contact - std::min(4.0, 0.3 * (contact - start));
-  key(gen, h.ik, start, wrist);
-  key(gen, h.ik, still, wristM);
-  key(gen, h.ik, contact, wristM);
-  key(gen, h.ik + ".weight", contact, vec3(1));
-  key(gen, h.orient, contact, rotationVector(gOrient), Interp::Linear);
-  key(gen, h.orient + ".weight", contact, vec3(1));
-  warnReach(h, wristM, contact, "handover (giver)");
-  correct(h, still, [&] { return meet - vec3(propWorld(size_t(*p), still)[3]); });
-  for (auto& k : gen.tracks[h.ik].keys)  // still means still: contact repeats the corrected meeting key
-    if (std::abs(k.frame - contact) < 1e-6) k.value = clip.evaluate(h.ik, still, wristM);
-  // Receiver: reaches its own socket on the prop as the giver holds it, grasps at contact; the prop switches hands.
   const std::string what = std::format("handover '{}' to '{}'", scene_.props[size_t(*p)].name, to);
-  auto pl = reachTo(r, *p, toSocket, rStart, contact, true, what);
+  vec3 wristM(0);
+  // Giver brings the prop to `meet` and holds it still; the receiver reaches its socket there (compiled together,
+  // so the meeting point can move).
+  auto meetAt = [&](vec3 m) -> Result<Plan> {
+    wristM = wrist + (m - origin);
+    key(gen, h.ik, start, wrist);
+    key(gen, h.ik, still, wristM);
+    key(gen, h.ik, contact, wristM);
+    key(gen, h.ik + ".weight", contact, vec3(1));
+    key(gen, h.orient, contact, rotationVector(gOrient), Interp::Linear);
+    key(gen, h.orient + ".weight", contact, vec3(1));
+    correct(h, still, [&] { return m - vec3(propWorld(size_t(*p), still)[3]); });
+    for (auto& k : gen.tracks[h.ik].keys)  // still means still: contact repeats the corrected meeting key
+      if (std::abs(k.frame - contact) < 1e-6) k.value = clip.evaluate(h.ik, still, wristM);
+    return reachTo(r, *p, toSocket, rStart, contact, true, what);
+  };
+  // T-030: the meeting point must leave both arms (forearm and hand surface) outside their own bodies and within
+  // both reaches. Candidates on a grid around the requested point (3 cm steps, then 1 cm steps around the best); the
+  // closest one that keeps both arms at the margin wins, else the one with the largest clearance (the depth left is
+  // reported).
+  auto shortfall = [&](const Hand& x, vec3 target) {
+    return glm::distance(boneAt(x, x.root, contact), target) - 0.98f * x.armLength;
+  };
+  auto score = [&](vec3 m) -> Result<float> {
+    auto pl = meetAt(m);
+    if (!pl) return std::unexpected(pl.error());
+    const float sg = shortfall(h, wristM), sr = shortfall(r, pl->wrist);
+    if (std::max(sg, sr) > 0.003f) return -1.0f - std::max(sg, sr);  // out of reach: never chosen over a reachable point
+    const float g = armClearance(clearance_[size_t(c)], characterGlobals(size_t(c), contact), h.side).gap;
+    const float q = armClearance(clearance_[size_t(rc)], characterGlobals(size_t(rc), contact), r.side).gap;
+    return std::min(g, q);
+  };
+  const bool canClear = c < int(clearance_.size()) && rc < int(clearance_.size()) && clearance_[size_t(c)].valid &&
+                        clearance_[size_t(rc)].valid;
+  if (canClear) {
+    const size_t warningsBefore = warnings_.size();  // trial reaches report nothing
+    if (auto pl = meetAt(meet); !pl) return std::unexpected(pl.error());
+    writeArmPole(gen, size_t(c), h.side);  // poles first: the elbows they set are part of the clearance
+    writeArmPole(gen, size_t(rc), r.side);
+    const vec3 across = glm::normalize(vec3(boneAt(r, r.root, contact) - boneAt(h, h.root, contact)) * vec3(1, 0, 1));
+    const vec3 side = glm::cross(kUp, across);
+    const vec3 asked = meet;
+    vec3 best = asked;
+    float bestScore = -1e9f, bestDist = 1e9f;
+    auto consider = [&](vec3 m) -> Result<void> {
+      auto sc = score(m);
+      if (!sc) return std::unexpected(sc.error());
+      const float d = glm::distance(m, asked);
+      const bool clear = *sc >= kArmBodyMargin - 0.0005f, bestClear = bestScore >= kArmBodyMargin - 0.0005f;
+      if ((clear && (!bestClear || d < bestDist)) || (!clear && !bestClear && *sc > bestScore))
+        best = m, bestScore = *sc, bestDist = d;
+      return {};
+    };
+    for (int i = -4; i <= 4; ++i)  // coarse: 3 cm steps, +-12 cm across and sideways, +-9 cm up and down
+      for (int j = -4; j <= 4; ++j)
+        for (int k = -3; k <= 3; ++k)
+          if (auto e = consider(asked + across * (0.03f * float(i)) + side * (0.03f * float(j)) + kUp * (0.03f * float(k))); !e)
+            return std::unexpected(e.error());
+    const vec3 coarse = best;
+    for (int i = -2; i <= 2; ++i)  // fine: 1 cm steps around the best coarse point
+      for (int j = -2; j <= 2; ++j)
+        for (int k = -2; k <= 2; ++k)
+          if (auto e = consider(coarse + across * (0.01f * float(i)) + side * (0.01f * float(j)) + kUp * (0.01f * float(k))); !e)
+            return std::unexpected(e.error());
+    meet = best;
+    warnings_.resize(warningsBefore);
+    if (bestScore < 0)
+      warnings_.push_back(std::format("{}: no meeting point keeps both arms outside the bodies ({:.0f} mm inside); move them apart",
+                                      what, -bestScore * 1000));
+  }
+  auto pl = meetAt(meet);
   if (!pl) return std::unexpected(pl.error());
+  warnReach(h, wristM, contact, "handover (giver)");
+  ctx.frozen.push_back({c, h.side, still, rel});  // the giver holds still: the clearance pass leaves it there
   if (auto rs = addSwitch(*p, contact, PropParent{PropParent::Kind::Character, to, std::string("hand.") + r.side}, what); !rs)
     return std::unexpected(rs.error());
   ctx.contacts.push_back({rc, r.side, contact, *p, toSocket, false, vec3(0)});
@@ -604,7 +934,163 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
   return true;
 }
 
+void SceneEvaluator::buildClearanceModels() {
+  clearance_.clear();
+  for (const auto& ci : characters_) clearance_.push_back(bodyClearanceModel(ci.asset.skeleton, ci.rig.meshes));
+}
+
+// Elbow pole of an IK-driven arm, per frame over the scene: out of the body (the character's side, down and a little
+// back, in the chest frame), weighted by the arm's IK weight so it fades with the IK and leaves the clip arm alone.
+void SceneEvaluator::writeArmPole(Clip& gen, size_t c, char side) {
+  const Skeleton& sk = characters_[c].asset.skeleton;
+  const int hand = characterSocketBone(c, std::string("hand.") + side), chest = sk.find("chest");
+  if (hand < 0 || chest < 0) return;
+  const std::string who = scene_.characters[c].name, ik = who + "/ik." + sk.bones[size_t(hand)].name;
+  const std::string pole = who + "/pole." + sk.bones[size_t(hand)].name;
+  if (!gen.find(ik)) return;
+  const float out = side == 'L' ? 1.0f : -1.0f;  // engine +X is the character's left
+  gen.tracks.erase(pole);
+  gen.tracks.erase(pole + ".weight");  // the chest frame below is the pose without this arm's pole
+  std::vector<Key> dir, wt;
+  for (int f = scene_.frameStart - 1; f <= scene_.frameEnd + 1; ++f) {
+    const mat4 Gc = characterGlobals(c, f)[size_t(chest)];
+    const vec3 X = glm::normalize(vec3(Gc[0])), Y = glm::normalize(vec3(Gc[1])), Z = glm::normalize(vec3(Gc[2]));
+    dir.push_back({double(f), glm::normalize(out * 0.8f * X - 1.0f * Y - 0.25f * Z), Interp::Linear});
+    wt.push_back({double(f), vec3(std::clamp(scene_.animation.evaluate(ik + ".weight", f, vec3(1)).x, 0.0f, 1.0f)), Interp::Linear});
+  }
+  gen.tracks[pole].keys = std::move(dir);
+  gen.tracks[pole + ".weight"].keys = std::move(wt);
+}
+
+ArmClearance SceneEvaluator::armClearanceAt(size_t c, char side, double frame) const {
+  if (c >= clearance_.size() || !clearance_[c].valid) return {};
+  return armClearance(clearance_[c], characterGlobals(c, frame), side);
+}
+
+// For every arm driven by an IK track ("<who>/ik.<hand>"):
+//  1. elbow pole: per frame, the elbow is swung (about the shoulder -> wrist axis, so the wrist does not move) to
+//     point out of the body: the character's side, down and a little back in the chest frame. Its weight is the IK
+//     weight, so it fades in and out with the IK and the clip arm is untouched;
+//  2. wrist target: per frame, the target is pushed out of the body capsules along the gap gradient until hand,
+//     forearm and the elbow half of the upper arm keep kArmBodyMargin (a few re-solves: the elbow moves with the
+//     wrist); the per-frame pushes are then eased in time (cosine-weighted max over +-5 frames for the size, weighted
+//     mean for the direction), so the correction starts before the arm gets close and never pops. Contact frames keep
+//     their exact target (the push fades out over 4 frames towards a contact), and a contact inside the body is
+//     reported. The IK track becomes per-frame keys only when some push is needed.
+void SceneEvaluator::armClearancePass(Clip& gen, const InteractionContext& ctx) {
+  const Clip& clip = scene_.animation;
+  const int fs = scene_.frameStart, fe = scene_.frameEnd;
+  if (clearance_.size() != characters_.size()) buildClearanceModels();
+  for (size_t c = 0; c < characters_.size(); ++c) {
+    const Skeleton& sk = characters_[c].asset.skeleton;
+    if (!clearance_[c].valid) continue;
+    const std::string who = scene_.characters[c].name;
+    for (char side : {'L', 'R'}) {
+      const ArmModel& A = clearance_[c].arm[side == 'L' ? 0 : 1];
+      const std::string ik = who + "/ik." + sk.bones[size_t(A.hand)].name;
+      auto it = gen.tracks.find(ik);
+      if (it == gen.tracks.end() || it->second.keys.empty()) continue;
+      auto weight = [&](double f) { return std::clamp(clip.evaluate(ik + ".weight", f, vec3(1)).x, 0.0f, 1.0f); };
+      std::vector<double> contacts;
+      for (const auto& k : ctx.contacts)
+        if (size_t(k.character) == c && k.side == side) contacts.push_back(k.frame);
+      // 1. pole
+      const std::string pole = who + "/pole." + sk.bones[size_t(A.hand)].name;
+      writeArmPole(gen, c, side);
+      for (const auto& fz : ctx.frozen)
+        if (size_t(fz.character) == c && fz.side == side) contacts.push_back(fz.from), contacts.push_back(fz.to);
+      // 2. wrist target
+      Track& T = gen.tracks[ik];
+      const Track original = T;
+      const int n = fe - fs + 3;
+      std::vector<vec3> base(static_cast<size_t>(n)), raw(static_cast<size_t>(n), vec3(0));
+      std::vector<float> w(static_cast<size_t>(n));
+      for (int i = 0; i < n; ++i) base[size_t(i)] = original.evaluate(fs - 1 + i), w[size_t(i)] = weight(fs - 1 + i);
+      auto setDense = [&](const std::vector<vec3>& push) {
+        T.keys.clear();
+        for (int i = 0; i < n; ++i) T.keys.push_back({double(fs - 1 + i), base[size_t(i)] + push[size_t(i)], Interp::Linear});
+      };
+      auto keyAt = [&](int f) -> Key& { return T.keys[size_t(f - (fs - 1))]; };
+      // The clip arm's own gap per frame (IK and pole off): while the IK fades in or out the arm may rest as deep as
+      // the clip puts it (a sleeve hanging against the side), never deeper; at full IK weight it keeps the margin.
+      std::vector<float> idle(static_cast<size_t>(n), 1e9f);
+      {
+        const std::string wk = ik + ".weight", pk = pole + ".weight";
+        const std::optional<Track> savedW = gen.tracks.count(wk) ? std::optional<Track>(gen.tracks[wk]) : std::nullopt;
+        const Track savedP = gen.tracks[pk];
+        gen.tracks[wk].keys = {{0.0, vec3(0), Interp::Step}};
+        gen.tracks[pk].keys = {{0.0, vec3(0), Interp::Step}};
+        for (int i = 0; i < n; ++i)
+          if (w[size_t(i)] > 1e-3f) idle[size_t(i)] = armClearance(clearance_[c], characterGlobals(c, fs - 1 + i), side).gap;
+        if (savedW) gen.tracks[wk] = *savedW;
+        else gen.tracks.erase(wk);
+        gen.tracks[pk] = savedP;
+      }
+      auto required = [&](int f) {
+        const size_t i = size_t(f - (fs - 1));
+        return std::min(kArmBodyMargin, w[i] * kArmBodyMargin + (1 - w[i]) * std::min(kArmBodyMargin, idle[i]));
+      };
+      // Pushes `f`'s key until the arm clears; returns the push added.
+      auto clear = [&](int f, int iterations) {
+        vec3 added(0);
+        const float wf = w[size_t(f - (fs - 1))];
+        if (wf <= 1e-3f) return added;
+        const float req = required(f);
+        for (int k = 0; k < iterations; ++k) {
+          const ArmClearance s = armClearance(clearance_[c], characterGlobals(c, f), side);
+          if (s.gap >= req - 0.0005f) break;
+          const vec3 step = s.push * ((req - s.gap) * 1.1f / (std::max(wf, 0.3f) * std::max(s.mobility, 0.3f)));
+          keyAt(f).value += step;
+          added += step;
+        }
+        return added;
+      };
+      setDense(raw);
+      bool any = false;
+      for (int f = fs; f <= fe; ++f) {
+        raw[size_t(f - (fs - 1))] = clear(f, 8);
+        any |= glm::length(raw[size_t(f - (fs - 1))]) > 1e-6f;
+      }
+      if (!any) {
+        T = original;
+        continue;
+      }
+      constexpr int R = 5;
+      std::vector<vec3> eased(static_cast<size_t>(n), vec3(0));
+      for (int i = 0; i < n; ++i) {
+        float mag = 0;
+        vec3 dir(0);
+        for (int k = -R; k <= R; ++k) {
+          const int j = i + k;
+          if (j < 0 || j >= n) continue;
+          const float cw = 0.5f * (1.0f + std::cos(glm::pi<float>() * float(k) / float(R + 1)));
+          mag = std::max(mag, cw * glm::length(raw[size_t(j)]));
+          dir += cw * raw[size_t(j)];
+        }
+        float fade = 1.0f;  // contact frames and held-still spans keep their exact target
+        const double fi = double(fs - 1 + i);
+        for (double cf : contacts) {
+          const float d = float(std::abs(fi - cf));
+          if (d < 4.0f) fade = std::min(fade, 0.5f - 0.5f * std::cos(glm::pi<float>() * d / 4.0f));
+        }
+        for (const auto& fz : ctx.frozen)
+          if (size_t(fz.character) == c && fz.side == side && fi >= fz.from && fi <= fz.to) fade = 0;
+        if (glm::length(dir) > 1e-9f) eased[size_t(i)] = glm::normalize(dir) * mag * fade;
+      }
+      setDense(eased);
+      for (int f = fs; f <= fe; ++f) {  // residuals (direction mixing in the easing): small, local top-ups
+        bool nearContact = false;
+        for (double cf : contacts) nearContact |= std::abs(double(f) - cf) < 4.0;
+        for (const auto& fz : ctx.frozen)
+          nearContact |= size_t(fz.character) == c && fz.side == side && f >= fz.from - 4 && f <= fz.to + 4;
+        if (!nearContact) clear(f, 4);
+      }
+    }
+  }
+}
+
 Result<void> SceneEvaluator::finishInteractions(Clip& gen, InteractionContext& ctx) {
+  armClearancePass(gen, ctx);
   // Later actions (clips, walks, other interactions) may change the body at an earlier contact: re-correct every
   // contact in time order, so each one is exact in the final animation.
   std::stable_sort(ctx.contacts.begin(), ctx.contacts.end(),
@@ -622,6 +1108,25 @@ Result<void> SceneEvaluator::finishInteractions(Clip& gen, InteractionContext& c
       warnings_.push_back(std::format("interaction: '{}' hand.{} misses '{}' socket '{}' by {:.1f} mm at frame {} (out of reach?)",
                                       scene_.characters[size_t(k.character)].name, k.side, scene_.props[size_t(k.prop)].name,
                                       k.socket, e * 1000, k.frame));
+  }
+  // The final arms (after the contact corrections): an IK-driven arm inside the body is reported.
+  for (size_t c = 0; c < clearance_.size(); ++c) {
+    if (!clearance_[c].valid) continue;
+    const std::string who = scene_.characters[c].name;
+    for (char side : {'L', 'R'}) {
+      const std::string ik = who + "/ik." + characters_[c].asset.skeleton.bones[size_t(clearance_[c].arm[side == 'L' ? 0 : 1].hand)].name;
+      if (!gen.find(ik)) continue;
+      float worst = 1e9f;
+      double at = 0;
+      for (int f = scene_.frameStart; f <= scene_.frameEnd; ++f) {  // full IK weight: the margin is required
+        if (scene_.animation.evaluate(ik + ".weight", f, vec3(1)).x < 0.99f) continue;
+        const float g = armClearanceAt(c, side, f).gap;
+        if (g < worst) worst = g, at = f;
+      }
+      if (worst < 0)
+        warnings_.push_back(std::format("interaction: '{}' arm {} passes {:.1f} mm into the body at frame {} (target inside the body?)",
+                                        who, side, -worst * 1000, at));
+    }
   }
   return {};
 }

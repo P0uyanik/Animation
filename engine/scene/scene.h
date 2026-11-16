@@ -170,6 +170,11 @@ class SceneEvaluator {
   // Interaction actions (interaction.cpp): returns false for an action that is not a prop interaction.
   Result<bool> compileInteraction(const Json& action, Clip& gen, InteractionContext& ctx);
   Result<void> finishInteractions(Clip& gen, InteractionContext& ctx);
+  // Arm-body clearance (T-030, interaction.cpp): elbow poles and wrist-target pushes for every IK-driven arm.
+  void armClearancePass(Clip& gen, const InteractionContext& ctx);
+  void buildClearanceModels();
+  void writeArmPole(Clip& gen, size_t c, char side);
+  std::vector<BodyClearanceModel> clearance_;  // per character (built by compileActions)
   // Clip actions (type "clip", model/clip.h): per character, in start order; a "base" clip replaces the default pose
   // for the whole shot. Walk spans: frames where a walk owns the legs, hips and root.
   struct ClipLayer {
@@ -193,6 +198,10 @@ class SceneEvaluator {
   // reference version, else derived from the skeleton (same rules).
   RetargetData retargetData(size_t c, const ReferencePose& ref) const;
   bool hasClipLayers(size_t c) const { return c < clipLayers_.size() && !clipLayers_[c].empty(); }
+  // Arm-body clearance of character c's arm `side` at a frame (gap < 0: the arm is inside a body capsule), and the
+  // body model it is measured against (T-030, scene/interaction.h).
+  ArmClearance armClearanceAt(size_t c, char side, double frame) const;
+  const BodyClearanceModel* clearanceModel(size_t c) const { return c < clearance_.size() ? &clearance_[c] : nullptr; }
 };
 
 }  // namespace plush

@@ -220,6 +220,7 @@ Result<void> SceneEvaluator::compileActions() {
   warnings_.clear();
   clipLayers_.assign(characters_.size(), {});
   walkSpans_.assign(characters_.size(), {});
+  buildClearanceModels();  // arm-body clearance models (interaction.cpp, T-030)
   scene_.animation.generated = gen;  // later actions already see earlier ones (a reach after a walk)
   // Object fields that actions write are reset to what the scene author wrote, so compiling twice is harmless.
   if (authoredObjects_.size() == scene_.objects.size())
@@ -394,6 +395,9 @@ Result<void> SceneEvaluator::compileActions() {
       if (handBone < 0 || upper < 0) return fail(std::format("reach: '{}' has no {} arm", who, side));
       const double contact = num(a, "contact", start + 14), liftEnd = num(a, "liftEnd", contact + 12);
       const double place = num(a, "place", liftEnd + 24), release = num(a, "release", place + 3), end = num(a, "end", release + 14);
+      // Contact and put-down keep their exact wrist targets in the arm-body clearance pass (T-030).
+      interactions.frozen.push_back({c, side, contact, contact});
+      interactions.frozen.push_back({c, side, place, release});
       const float lift = float(num(a, "lift", 0.05)), radius = float(num(a, "graspRadius", 0.012));
       const vec3 p0 = objPos(o, contact);
       const vec3 placeP = vec(a, "placeAt", p0);
@@ -479,6 +483,7 @@ Result<void> SceneEvaluator::compileActions() {
       if (upper < 0) return fail(std::format("touch: '{}' has no {} arm", who, side));
       const double contact = num(a, "contact", start + 14), end = num(a, "end", contact + 20);
       const vec3 T = vec(a, "target", vec3(0));
+      interactions.frozen.push_back({c, side, contact - 4, contact + 8});  // the fingertip touch stays exact (T-030)
       leanToward(c, side, T, 0.05f, start, contact, contact + 8, end, "touch");
       const vec3 shoulder = vec3(characterGlobals(size_t(c), contact)[size_t(upper)][3]);
       vec3 dir = T - shoulder;
