@@ -41,6 +41,14 @@ def main() -> int:
                 detail = ""
                 if name == "Merge status":
                     detail = ": clean"
+                elif name == "Blender tier":
+                    values = []
+                    for _platform, check in grouped[name]:
+                        value = str(check.get("detail") or "").replace("\n", " ")
+                        if value and value not in values:
+                            values.append(value)
+                    if values:
+                        detail = ": " + " | ".join(values)
                 lines.append(f"PASS {name}{detail}")
                 continue
             details = []

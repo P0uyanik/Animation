@@ -33,6 +33,8 @@ $bpyName = Split-Path -Leaf $bpyPin.url
 $bpyWheel = Get-VerifiedFile -Name $bpyName -Url $bpyPin.url -Sha256 $bpyPin.sha256
 & python -m pip install --disable-pip-version-check $bpyWheel
 if ($LASTEXITCODE -ne 0) { throw 'installing the verified bpy wheel failed' }
+& python -m pip install --disable-pip-version-check 'Pillow==11.3.0'
+if ($LASTEXITCODE -ne 0) { throw 'installing the pinned Pillow dependency failed' }
 & python -c "import bpy; assert bpy.app.version_string.startswith('$($pins.bpy.version)'); print(bpy.app.version_string)"
 if ($LASTEXITCODE -ne 0) { throw 'the pinned bpy module failed its import/version check' }
 

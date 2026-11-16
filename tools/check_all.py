@@ -23,11 +23,14 @@ import sys
 import tempfile
 import time
 
+from fidelity import ci as fidelity_ci
+
 
 ROOT = Path(__file__).resolve().parents[1]
 FROZEN_MANIFEST = ROOT / "tools" / "frozen_manifest.txt"
 GUARDED_PATHS = ROOT / "tools" / "guarded_paths.txt"
 CHARACTER_ALLOWLIST = ROOT / "tools" / "shared_character_allowlist.txt"
+FIDELITY_BASELINE = ROOT / "docs" / "evaluation" / "characters" / "fidelity_baseline.json"
 CODE_SUFFIXES = {".c", ".cc", ".cpp", ".cxx", ".h", ".hh", ".hpp", ".hxx", ".py"}
 TEXT_SUFFIXES = {".csv", ".json", ".md", ".py", ".txt", ".yaml", ".yml"}
 SHARED_PREFIXES = ("engine/", "apps/", "pipeline/charsys/", "pipeline/clips/")
@@ -393,6 +396,7 @@ def check_python_tests(logs: Path) -> Result:
     log = logs / "python-tests.log"
     tests = [
         [sys.executable, str(ROOT / "pipeline/clips/tests/test_clip_files.py"), "--selftest"],
+        [sys.executable, str(ROOT / "tools/fidelity/tests/test_ci.py")],
     ]
     failed: list[str] = []
     started = time.monotonic()
@@ -440,7 +444,72 @@ def json_pass(path: Path, key: str = "pass") -> bool:
         return False
 
 
-def check_blender(blender: str, artifacts: Path, logs: Path, required: bool) -> Result:
+def run_fidelity_checks(
+    executable: str, changes: set[str], artifacts: Path, logs: Path,
+) -> tuple[list[dict], list[str]]:
+    """Run fidelity for affected characters and return subchecks plus summary details."""
+    subchecks: list[dict] = []
+    details: list[str] = []
+    try:
+        baseline = json.loads(FIDELITY_BASELINE.read_text(encoding="utf-8"))
+        if baseline.get("schema") != "plush-studio.fidelity-baseline/1":
+            raise ValueError("unsupported fidelity baseline schema")
+        characters = baseline["characters"]
+        affected = fidelity_ci.affected_characters(changes, set(characters))
+        maximum_drop = float(baseline["policy"]["maximum_score_drop"])
+        if maximum_drop != fidelity_ci.MAX_SCORE_DROP:
+            raise ValueError(f"maximum score drop must be {fidelity_ci.MAX_SCORE_DROP:.1f}")
+        if baseline["policy"]["failure_reason"] != "visual regression, needs owner review":
+            raise ValueError("unexpected fidelity failure reason")
+        height = int(baseline["render"]["height"])
+        samples = int(baseline["render"]["samples"])
+    except (OSError, ValueError, TypeError, KeyError, json.JSONDecodeError) as exc:
+        add_subcheck(subchecks, "character fidelity", False, f"invalid baseline: {exc}")
+        return subchecks, details
+
+    for character_id in affected:
+        entry = characters[character_id]
+        log = logs / f"fidelity-{character_id}.log"
+        out = artifacts / "fidelity" / character_id
+        try:
+            build = fidelity_ci.repo_path(ROOT, entry["build"])
+            overrides = [fidelity_ci.repo_path(ROOT, value) for value in entry.get("overrides", [])]
+            if not build.is_file():
+                raise ValueError(f"build input not found: {entry['build']}")
+            missing = [str(path) for path in overrides if not path.is_file()]
+            if missing:
+                raise ValueError("override not found: " + ", ".join(missing))
+            command = [
+                sys.executable, str(ROOT / "tools/fidelity/run.py"),
+                "--character", character_id,
+                "--build", str(build),
+                "--blender", executable,
+                "--out", str(out),
+                "--height", str(height),
+                "--samples", str(samples),
+            ]
+            for override in overrides:
+                command.extend(["--override", str(override)])
+            code, _ = run_logged(command, log)
+            if code:
+                raise ValueError(f"run.py failed; see {relative_log(log)}")
+            measured = json.loads((out / "fidelity.json").read_text(encoding="utf-8"))
+            comparison = fidelity_ci.compare_score(
+                measured["overall"]["score"], entry["score"], maximum_drop,
+            )
+            details.append(f"{character_id} {comparison.detail}")
+            add_subcheck(
+                subchecks, f"fidelity {character_id}", comparison.ok,
+                comparison.detail, log,
+            )
+        except (OSError, ValueError, TypeError, KeyError, json.JSONDecodeError) as exc:
+            detail = str(exc)
+            details.append(f"{character_id} {detail}")
+            add_subcheck(subchecks, f"fidelity {character_id}", False, detail, log)
+    return subchecks, details
+
+
+def check_blender(blender: str, artifacts: Path, logs: Path, required: bool, changes: set[str]) -> Result:
     if not required:
         return Result("Blender tier", True, skipped=True)
     started = time.monotonic()
@@ -525,10 +594,18 @@ def check_blender(blender: str, artifacts: Path, logs: Path, required: bool) -> 
         material_code, _ = run_logged([sys.executable, str(material_script)], material_log)
         add_subcheck(subchecks, "material presets", material_code == 0, "" if material_code == 0 else "material preset tests failed", material_log)
 
+    fidelity_subchecks, fidelity_details = run_fidelity_checks(executable, changes, artifacts, logs)
+    subchecks.extend(fidelity_subchecks)
+
     failed = [item["name"] for item in subchecks if not item["ok"]]
+    detail_parts = []
+    if failed:
+        detail_parts.append("failed: " + short(failed))
+    if fidelity_details:
+        detail_parts.append("; ".join(fidelity_details))
     return Result(
         "Blender tier", not failed,
-        "" if not failed else "failed: " + short(failed),
+        "; ".join(detail_parts),
         seconds=round(time.monotonic() - started, 2), subchecks=subchecks,
     )
 
@@ -538,7 +615,9 @@ def summary_lines(results: list[Result]) -> list[str]:
     for result in results:
         state = "PASS" if result.ok else "FAIL"
         line = f"{state} {result.name}"
-        if result.name == "Merge status" or (not result.ok and result.detail):
+        if result.name in {"Blender tier", "Merge status"} and result.detail:
+            line += f": {result.detail.replace(chr(10), ' ')}"
+        elif not result.ok and result.detail:
             line += f": {result.detail.replace(chr(10), ' ')}"
         lines.append(line)
     return lines
@@ -588,7 +667,7 @@ def main(argv: list[str] | None = None) -> int:
     results.append(check_python_tests(logs))
     results.append(check_doc_links(logs))
     blender_required = bool(args.blender) or blender_paths_changed(changes)
-    results.append(check_blender(args.blender, artifacts, logs, blender_required))
+    results.append(check_blender(args.blender, artifacts, logs, blender_required, changes))
     if args.merge_status:
         tests_ok = all(result.ok for result in results)
         if args.merge_status == "clean" and tests_ok:
