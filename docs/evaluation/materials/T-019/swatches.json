@@ -1,0 +1,321 @@
+{
+  "schema": "plush-studio.material-swatches/1",
+  "blender": "5.3.0",
+  "image": "docs/evaluation/materials/T-019/swatch_sheet.png",
+  "width": 480,
+  "height": 6336,
+  "render_width": 480,
+  "render_height": 576,
+  "max_cycles_render_dimension_px": 576,
+  "samples": 8,
+  "exposure": 0.0,
+  "view_transform": "Standard",
+  "render_engine": "CYCLES",
+  "device": "CPU",
+  "denoiser": "OPENIMAGEDENOISE",
+  "studio_light": "pipeline/charsys/render_calibration.json:character_neutral/1",
+  "reference_size_m": 0.256,
+  "projected_reference_px": 204.8,
+  "fibres_lod": "close",
+  "swatches": [
+    {
+      "preset": "felt",
+      "base_color_srgb": [
+        184,
+        92,
+        83
+      ],
+      "patch_roi_px": [
+        190,
+        318,
+        290,
+        418
+      ],
+      "sheen_roi_px": [
+        156,
+        60,
+        236,
+        140
+      ],
+      "neutral_roi_px": [
+        392,
+        40,
+        432,
+        80
+      ],
+      "projected_reference_px": 204.8
+    },
+    {
+      "preset": "wool yarn",
+      "base_color_srgb": [
+        173,
+        120,
+        76
+      ],
+      "patch_roi_px": [
+        190,
+        894,
+        290,
+        994
+      ],
+      "sheen_roi_px": [
+        156,
+        636,
+        236,
+        716
+      ],
+      "neutral_roi_px": [
+        392,
+        616,
+        432,
+        656
+      ],
+      "projected_reference_px": 204.8
+    },
+    {
+      "preset": "fleece",
+      "base_color_srgb": [
+        199,
+        151,
+        78
+      ],
+      "patch_roi_px": [
+        190,
+        1470,
+        290,
+        1570
+      ],
+      "sheen_roi_px": [
+        156,
+        1212,
+        236,
+        1292
+      ],
+      "neutral_roi_px": [
+        392,
+        1192,
+        432,
+        1232
+      ],
+      "projected_reference_px": 204.8
+    },
+    {
+      "preset": "cotton knit",
+      "base_color_srgb": [
+        110,
+        143,
+        155
+      ],
+      "patch_roi_px": [
+        190,
+        2046,
+        290,
+        2146
+      ],
+      "sheen_roi_px": [
+        156,
+        1788,
+        236,
+        1868
+      ],
+      "neutral_roi_px": [
+        392,
+        1768,
+        432,
+        1808
+      ],
+      "projected_reference_px": 204.8
+    },
+    {
+      "preset": "woven cotton",
+      "base_color_srgb": [
+        133,
+        151,
+        112
+      ],
+      "patch_roi_px": [
+        190,
+        2622,
+        290,
+        2722
+      ],
+      "sheen_roi_px": [
+        156,
+        2364,
+        236,
+        2444
+      ],
+      "neutral_roi_px": [
+        392,
+        2344,
+        432,
+        2384
+      ],
+      "projected_reference_px": 204.8
+    },
+    {
+      "preset": "denim",
+      "base_color_srgb": [
+        67,
+        92,
+        128
+      ],
+      "patch_roi_px": [
+        190,
+        3198,
+        290,
+        3298
+      ],
+      "sheen_roi_px": [
+        156,
+        2940,
+        236,
+        3020
+      ],
+      "neutral_roi_px": [
+        392,
+        2920,
+        432,
+        2960
+      ],
+      "projected_reference_px": 204.8
+    },
+    {
+      "preset": "felt hair",
+      "base_color_srgb": [
+        86,
+        54,
+        44
+      ],
+      "patch_roi_px": [
+        190,
+        3774,
+        290,
+        3874
+      ],
+      "sheen_roi_px": [
+        156,
+        3516,
+        236,
+        3596
+      ],
+      "neutral_roi_px": [
+        392,
+        3496,
+        432,
+        3536
+      ],
+      "projected_reference_px": 204.8
+    },
+    {
+      "preset": "boot fleece",
+      "base_color_srgb": [
+        113,
+        76,
+        58
+      ],
+      "patch_roi_px": [
+        190,
+        4350,
+        290,
+        4450
+      ],
+      "sheen_roi_px": [
+        156,
+        4092,
+        236,
+        4172
+      ],
+      "neutral_roi_px": [
+        392,
+        4072,
+        432,
+        4112
+      ],
+      "projected_reference_px": 204.8
+    },
+    {
+      "preset": "buttons/plastic",
+      "base_color_srgb": [
+        137,
+        85,
+        69
+      ],
+      "patch_roi_px": [
+        190,
+        4926,
+        290,
+        5026
+      ],
+      "sheen_roi_px": [
+        156,
+        4668,
+        236,
+        4748
+      ],
+      "neutral_roi_px": [
+        392,
+        4648,
+        432,
+        4688
+      ],
+      "projected_reference_px": 204.8
+    },
+    {
+      "preset": "glasses/acrylic",
+      "base_color_srgb": [
+        142,
+        183,
+        196
+      ],
+      "patch_roi_px": [
+        190,
+        5502,
+        290,
+        5602
+      ],
+      "sheen_roi_px": [
+        156,
+        5244,
+        236,
+        5324
+      ],
+      "neutral_roi_px": [
+        392,
+        5224,
+        432,
+        5264
+      ],
+      "projected_reference_px": 204.8
+    },
+    {
+      "preset": "skin-felt",
+      "base_color_srgb": [
+        202,
+        176,
+        169
+      ],
+      "patch_roi_px": [
+        190,
+        6078,
+        290,
+        6178
+      ],
+      "sheen_roi_px": [
+        156,
+        5820,
+        236,
+        5900
+      ],
+      "neutral_roi_px": [
+        392,
+        5800,
+        432,
+        5840
+      ],
+      "projected_reference_px": 204.8
+    }
+  ],
+  "render_s": 36.71,
+  "total_s": 53.71
+}

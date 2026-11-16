@@ -1,0 +1,134 @@
+{
+ "schema": "plush-studio.colour-checks/1",
+ "reference_dir": "assets/characters/girl_auburn_bun_glasses/references/views",
+ "note": "T-024: outfit reference patches (pixel boxes [x0, y0, x1, y1] in the extracted sheet30 views); render side = every pixel of the garment's main material slot in the same view",
+ "checks": [
+  {
+   "name": "blouse_sleeves_front",
+   "slot": "M_garment.blouse.main",
+   "view": "sheet30_front",
+   "ref_boxes": [
+    [
+     30,
+     235,
+     50,
+     260
+    ],
+    [
+     180,
+     235,
+     200,
+     260
+    ]
+   ]
+  },
+  {
+   "name": "vest_front",
+   "slot": "M_garment.vest.main",
+   "view": "sheet30_front",
+   "ref_boxes": [
+    [
+     62,
+     255,
+     88,
+     290
+    ],
+    [
+     145,
+     255,
+     170,
+     290
+    ]
+   ]
+  },
+  {
+   "name": "vest_back",
+   "slot": "M_garment.vest.main",
+   "view": "sheet30_back",
+   "ref_boxes": [
+    [
+     85,
+     280,
+     165,
+     305
+    ]
+   ]
+  },
+  {
+   "name": "shorts_front",
+   "slot": "M_garment.shorts.main",
+   "view": "sheet30_front",
+   "ref_boxes": [
+    [
+     75,
+     315,
+     100,
+     335
+    ],
+    [
+     130,
+     315,
+     155,
+     335
+    ]
+   ]
+  },
+  {
+   "name": "shorts_back",
+   "slot": "M_garment.shorts.main",
+   "view": "sheet30_back",
+   "ref_boxes": [
+    [
+     85,
+     310,
+     105,
+     345
+    ],
+    [
+     125,
+     310,
+     155,
+     340
+    ]
+   ]
+  },
+  {
+   "name": "boots_front",
+   "slot": "M_garment.boots.main",
+   "view": "sheet30_front",
+   "ref_boxes": [
+    [
+     75,
+     410,
+     95,
+     440
+    ],
+    [
+     125,
+     410,
+     150,
+     440
+    ]
+   ]
+  },
+  {
+   "name": "boots_back",
+   "slot": "M_garment.boots.main",
+   "view": "sheet30_back",
+   "ref_boxes": [
+    [
+     85,
+     400,
+     105,
+     450
+    ],
+    [
+     125,
+     400,
+     145,
+     450
+    ]
+   ]
+  }
+ ]
+}

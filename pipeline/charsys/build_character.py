@@ -30,6 +30,7 @@ import body_v6 as B  # noqa: E402
 import face as FACE  # noqa: E402
 import hair as HAIR  # noqa: E402
 import spec as S  # noqa: E402
+from materials import builder as MATERIALS  # noqa: E402
 
 G = B.G
 COMPONENTS = {  # component -> object-name prefixes (exact names or prefixes ending with "." / "_")
@@ -177,7 +178,8 @@ def add_face_controls(rig, C, names):
 def main_generic(a, spec, info, out):
     """Generic path (body_generic/1): body, joints, rig fitting and skinning entirely from the spec; the generic face
     (spec.face.generator face_generic/1) and reusable accessories (spec.accessories.items) when the spec has them.
-    No hair or garments yet. The legacy boy path (below) is the compatibility baseline."""
+    Hair through the shared groom system (spec.hair.generator groom/1). Shared garments are opt-in through
+    clothing.generator garment/1. The legacy boy path (below) is the compatibility baseline."""
     import body_generic as BG
     cid = spec["identity"]["id"]
     t0 = time.time()
@@ -190,10 +192,23 @@ def main_generic(a, spec, info, out):
     frames = BG.hand_frames(P, H, J)
     mats = spec["materials"]
     skin_rgb = tuple(mats.get("albedo_srgb", {}).get("skin") or mats["target_colors_srgb"]["skin"])
-    M = {"skin": G.material("M_skin", skin_rgb, roughness=0.55, subsurface=0.2, sss_radius=(1, 0.4, 0.25), sss_scale=0.01)}
+    skin_assignment = MATERIALS.get_assignment(mats, "skin")
+    if skin_assignment:
+        M = {"skin": MATERIALS.build_from_assignment("M_skin", skin_assignment)}
+    else:
+        M = {"skin": G.material("M_skin", skin_rgb, roughness=0.55, subsurface=0.2, sss_radius=(1, 0.4, 0.25), sss_scale=0.01)}
     parts = BG.build_body(C, M, P, H, J, frames)
+    garment_objects = []
+    garment_report = None
+    if spec.get("clothing", {}).get("generator") == "garment/1":
+        import garments as GAR
+        garment_objects, garment_report = GAR.build(C, parts[0][0], spec["clothing"], P, H, J, G)
     head_bone = spec["rig"]["head_bone"]
     report = {"blender": bpy.app.version_string, "build": BUILD_ID + "+body_generic/1", "character_id": cid, **info}
+    if mats.get("assignments"):
+        report["material_presets"] = {slot: cfg["preset"] for slot, cfg in mats["assignments"].items()}
+    if garment_report is not None:
+        report["garments"] = garment_report
     fc = None
     acc = []
     if spec["face"].get("generator") == "face_generic/1":
@@ -203,11 +218,32 @@ def main_generic(a, spec, info, out):
         report["face"] = fc["report"]
         face_parts = fc["eyes"] + [o for l in fc["lids"] for o in l[:3]]
         acc, report["accessories"] = ACC.build(C, spec.get("accessories", {}).get("items"), fc["landmarks"], fc["ctx"],
-                                               face_parts, head_bone, fc["ears"])
+                                               face_parts, head_bone, fc["ears"], mats.get("assignments"))
+    groom = []
+    if spec.get("hair", {}).get("generator") == "groom/1":  # shared spec-driven groom (hair structures are spec data)
+        import groom as GROOM
+        hp = P["head"]
+        frame = {"centre": (0, hp["forward"] * H, hp["centre_z"] * H),
+                 "radii": (hp["half_width"] * H, hp["half_depth"] * H, hp["half_height"] * H)}
+        hair_mats = {}
+
+        def hair_material(slot):
+            if slot not in hair_mats:
+                asg = MATERIALS.get_assignment(mats, slot)
+                rgb = (mats.get("target_colors_srgb", {}).get(slot) or mats.get("target_colors_srgb", {}).get("hair")
+                       or (90, 60, 50))
+                hair_mats[slot] = (MATERIALS.build_from_assignment(f"M_{slot}", asg) if asg else
+                                   G.material(f"M_{slot}", tuple(rgb), roughness=0.9, sheen=0.4))
+            return hair_mats[slot]
+        groom, report["hair"] = GROOM.build(C, parts[0][0], frame, spec["hair"], hair_material, B.face_y)
     report["model_s"] = round(time.time() - t0, 1)
     rig, rr = BG.rig_generic(C, f"rig_{cid}", parts, P, H, J, frames, spec["rig"].get("weight_rules", {}), B,
                              spec["rig"].get("weight_smooth"))
     report["rig"] = rr
+    if garment_objects:
+        report["garment_skinning"] = GAR.bind_to_body(rig, parts[0][0], garment_objects,
+                                                       max_influences=int(spec["clothing"].get(
+                                                           "max_influences", spec["rig"].get("max_influences", 4))))
     names = list(spec["face"].get("expression_shape_keys", []))
     if fc is not None:
         FG.bind_rigid(rig, fc["rigid"])
@@ -220,6 +256,8 @@ def main_generic(a, spec, info, out):
         for frame, lens in acc:
             ACC.attach(rig, frame, lens, head_bone)
         names = fc["controls"]
+    if groom:
+        GROOM.bind(rig, groom, head_bone, spec["rig"].get("chest_bone", head_bone), spec["hair"].get("binding"))
 
     report["face_controls"] = add_face_controls(rig, C, names)
     if fc is not None:
@@ -238,7 +276,10 @@ def main_generic(a, spec, info, out):
                                            "mouth": fc["mouth"].name, "cavity": fc["cavity"].name,
                                            "action_units": fc["report"]["action_units"], "presets": fc["report"]["presets"],
                                            "accessories": [f.name for f, _ in acc] + [l.name for _, l in acc if l is not None]})
-    components = spec.get("components") or {"body": ["body_skin", "hand."], "rig": ["rig_"]}
+    components = {k: list(v) for k, v in (spec.get("components") or
+                                           {"body": ["body_skin", "hand."], "rig": ["rig_"]}).items()}
+    if garment_objects:
+        components.setdefault("clothing", ["garment."])
     subs, unassigned = organise(C, cid, components)
     if unassigned:
         raise SystemExit(f"objects without a component: {unassigned}")
