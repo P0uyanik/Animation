@@ -41,6 +41,10 @@ FIBRE_ROUGHNESS = 0.64
 # fibre.coordinates: "object" (default, object space) or "uv" (the mesh's "ps_fibre" UV map, e.g. groom ropes: U around
 # the rope, V along it, in metres), so directional fibre patterns follow the geometry instead of object axes.
 COORDINATES = {"object", "uv"}
+# T-034 shared hand-made surface detail (felt lumpiness, fibre direction, irregularity). Optional section; when it
+# is absent or disabled the node tree is exactly as before.
+SURFACE_DETAIL_FIELDS = ("lump_scale_per_reference", "lump_strength", "lump_albedo", "fibre_scale_per_reference",
+                         "fibre_strength", "fibre_albedo", "irregularity", "distance_fraction")
 FIBRE_UV = "ps_fibre"
 # T-028b ``surface.sheen_tint`` (0..1): 0 keeps Principled's white sheen; 1 tints the sheen (and the silhouette rim's
 # sheen) with the base colour's hue at full value. A white sheen layered over a dark, saturated albedo (auburn yarn,
@@ -79,6 +83,26 @@ def _range_errors(value, label):
     if not isinstance(value.get("source"), str) or not value["source"]:
         return [f"{label}.source must be non-empty"]
     return []
+
+
+def _surface_detail_errors(detail, label):
+    errors = []
+    if not isinstance(detail, dict):
+        return [f"{label} must be an object"]
+    if not isinstance(detail.get("enabled"), bool):
+        errors.append(f"{label}.enabled must be a boolean")
+    for field in SURFACE_DETAIL_FIELDS:
+        value = detail.get(field)
+        if isinstance(value, bool) or not isinstance(value, (int, float)) or value < 0:
+            errors.append(f"{label}.{field} must be non-negative")
+    for field in ("lump_albedo", "fibre_albedo"):
+        if isinstance(detail.get(field), (int, float)) and detail[field] > 0.3:
+            errors.append(f"{label}.{field} must be at most 0.3 (subtle)")
+    direction = detail.get("fibre_direction")
+    if (not isinstance(direction, list) or len(direction) != 3 or
+            not all(isinstance(v, (int, float)) and v > 0 for v in direction)):
+        errors.append(f"{label}.fibre_direction must be three positive numbers (coordinate stretch)")
+    return errors
 
 
 def validate_library(data):
@@ -152,6 +176,9 @@ def validate_library(data):
         if (not isinstance(stretch, list) or len(stretch) != 3 or
                 not all(isinstance(v, (int, float)) and v > 0 for v in stretch)):
             errors.append(f"{name}.nap.anisotropy must be three positive numbers")
+        detail = resolved.get("surface_detail")
+        if detail is not None:
+            errors += _surface_detail_errors(detail, f"{name}.surface_detail")
         tint = resolved.get("surface", {}).get("sheen_tint", 0.0)
         if not isinstance(tint, (int, float)) or not 0 <= tint <= 1:
             errors.append(f"{name}.surface.sheen_tint must be in 0..1")
@@ -313,6 +340,80 @@ def _pattern(nodes, links, vector, fibre):
     links.new(mix.outputs[0], breakup.inputs[0])
     links.new(noise, breakup.inputs[1])
     return breakup.outputs[0]
+
+
+def _surface_detail(material, principled, vector, reference, detail, base):
+    """T-034 shared hand-made surface layer, below the weave/fibre scale and above the silhouette scale:
+
+    - lumps: soft, domain-warped noise (felt lumpiness, uneven stuffing under the cloth), on the normal and, very
+      slightly, on the albedo;
+    - fibre direction: the same coordinates stretched by ``fibre_direction`` give streaks along the dominant fibre
+      or grain direction (normal and albedo);
+    - ``irregularity``: domain warp of both, so nothing reads machine-regular.
+
+    Scales are per reference size (H-normalised like every other layer), so the look is the same on any character.
+    Why it survives OIDN: the features are several pixels wide at turnaround scale (the lumps are ~1/lump_scale of
+    the reference size) and they are carried by the albedo and the shading normal, the two guide passes OIDN
+    preserves, rather than by low-sample specular noise.
+    """
+    if not detail or not detail.get("enabled", False):
+        return None
+    nodes, links = material.node_tree.nodes, material.node_tree.links
+    irregular = float(detail["irregularity"])
+    lumps = _new(nodes, "ShaderNodeTexNoise", "Surface Detail Lumps")
+    _set(lumps, float(detail["lump_scale_per_reference"]), "Scale")
+    _set(lumps, 3.0, "Detail")
+    _set(lumps, 0.55, "Roughness")
+    _set(lumps, irregular, "Distortion")
+    links.new(vector, lumps.inputs["Vector"])
+    stretch = _new(nodes, "ShaderNodeVectorMath", "Surface Detail Fibre Direction")
+    stretch.operation = "MULTIPLY"
+    stretch.inputs[1].default_value = tuple(float(v) for v in detail["fibre_direction"])
+    links.new(vector, stretch.inputs[0])
+    streaks = _new(nodes, "ShaderNodeTexNoise", "Surface Detail Fibre Streaks")
+    _set(streaks, float(detail["fibre_scale_per_reference"]), "Scale")
+    _set(streaks, 2.0, "Detail")
+    _set(streaks, 0.5, "Roughness")
+    _set(streaks, irregular * 0.5, "Distortion")
+    links.new(stretch.outputs[0], streaks.inputs["Vector"])
+
+    normal = _input(principled, "Normal")
+    distance = reference * float(detail["distance_fraction"])
+    for height, strength, label in ((lumps.outputs["Fac"], float(detail["lump_strength"]), "Lump"),
+                                    (streaks.outputs["Fac"], float(detail["fibre_strength"]), "Fibre")):
+        if strength <= 0.0 or distance <= 0.0:
+            continue
+        previous = next((link.from_socket for link in normal.links), None)
+        bump = _new(nodes, "ShaderNodeBump", f"Surface Detail {label} Normal")
+        bump.inputs["Strength"].default_value = min(1.0, strength)
+        bump.inputs["Distance"].default_value = distance
+        links.new(height, bump.inputs["Height"])
+        if previous is not None:
+            links.new(previous, bump.inputs["Normal"])
+        links.new(bump.outputs["Normal"], normal)
+
+    for fac, amount, label in ((lumps.outputs["Fac"], float(detail["lump_albedo"]), "Lump"),
+                               (streaks.outputs["Fac"], float(detail["fibre_albedo"]), "Fibre")):
+        if amount <= 0.0:
+            continue
+        source = next((link.from_socket for link in base.links), None)
+        modulation = _new(nodes, "ShaderNodeMapRange", f"Surface Detail {label} Albedo")
+        modulation.clamp = True
+        modulation.inputs["From Min"].default_value = 0.3
+        modulation.inputs["From Max"].default_value = 0.7
+        modulation.inputs["To Min"].default_value = 1.0 - amount
+        modulation.inputs["To Max"].default_value = 1.0 + amount
+        links.new(fac, modulation.inputs["Value"])
+        multiply = _new(nodes, "ShaderNodeMixRGB", f"Surface Detail {label} Albedo Mix")
+        multiply.blend_type = "MULTIPLY"
+        multiply.inputs[0].default_value = 1.0
+        if source is None:
+            multiply.inputs[1].default_value = base.default_value
+        else:
+            links.new(source, multiply.inputs[1])
+        links.new(modulation.outputs["Result"], multiply.inputs[2])
+        links.new(multiply.outputs[0], base)
+    return lumps.outputs["Fac"]
 
 
 def _micro_relief(material, principled, vector, reference, micro, base):
@@ -604,6 +705,7 @@ def apply_preset(material, preset_name, base_color_srgb=None, reference_size_m=N
         links.new(previous, bump.inputs["Normal"])
     links.new(bump.outputs["Normal"], normal)
     micro_breakup = _micro_relief(material, principled, anis.outputs[0], reference, preset["micro_relief"], base)
+    _surface_detail(material, principled, ref.outputs[0], reference, preset.get("surface_detail"), base)
     _nap_layer(material, principled, anis.outputs[0], reference, preset["nap"], base)
     if float(surface["alpha"]) < 1.0:
         try:
