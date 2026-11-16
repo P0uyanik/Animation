@@ -322,7 +322,7 @@ def lash_strands(T, edge_point, sx, cfg, upper, name, C):
     """Individual curved lashes along a lid edge (built in the eye's unit frame, returned in world space).
     cfg: count, length_m (scalar or list, inner -> outer), curl (0 straight .. 1 strongly curled), from_deg/to_deg
     (azimuth span from the eye axis, positive = towards the outer corner), width_m, outward (lean towards the outer
-    corner). edge_point(a) gives the lid edge at azimuth a (radians, frame space) or None."""
+    corner), forward (how far they stand out of the face, default 0.25). edge_point(a) gives the lid edge at azimuth a (radians, frame space) or None."""
     n = int(cfg.get("count", 0))
     if n <= 0:
         return []
@@ -330,6 +330,7 @@ def lash_strands(T, edge_point, sx, cfg, upper, name, C):
     lengths = cfg.get("length_m", 0.005)
     lengths = lengths if isinstance(lengths, list) else [lengths]
     curl, wb, lean = _f(cfg, "curl", 0.5), _f(cfg, "width_m", 0.001), _f(cfg, "outward", 0.6)
+    fwd = _f(cfg, "forward", 0.25)  # how far the lashes stand out of the face (glasses sit close in front)
     vz = 1.0 if upper else -1.0
     Tw = T.to_3x3()
     out = []
@@ -343,9 +344,9 @@ def lash_strands(T, edge_point, sx, cfg, upper, name, C):
         tang = (base - nxt).normalized() if nxt is not None else Vector((sx, 0, 0))  # towards the outer corner
         L = float(lengths[min(int(round(t * (len(lengths) - 1))), len(lengths) - 1)])
         radial = base.normalized()
-        d = (radial * 0.6 + Vector((0, 0, vz)) * 0.8 + tang * lean * t).normalized()
+        d = (radial * fwd + Vector((0, 0, vz)) * 0.8 + tang * lean * t).normalized()
         tip = base + d * L + Vector((0, 0, vz)) * L * curl * 0.6 + Vector((0, -1, 0)) * L * (0.2 - 0.4 * curl)
-        mid = base + d * L * 0.55 + Vector((0, -1, 0)) * L * 0.15
+        mid = base + d * L * 0.55 + Vector((0, -1, 0)) * L * 0.15 * fwd
         cp = [T @ p for p in G.bezier(base, mid, tip, 6)]
         s = G.tube(f"_{name}.{j}", cp, [wb * (1 - 0.85 * k / 5) for k in range(6)], [wb * 0.6 * (1 - 0.85 * k / 5) for k in range(6)],
                    C, up_hint=tuple(Tw @ Vector((0, -1, 0))), seg=6, cap_start="round", cap_end="point")
