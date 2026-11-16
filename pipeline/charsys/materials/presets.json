@@ -47,7 +47,7 @@
     "wool yarn": {
       "description": "Chunky wool yarn with directional ridges and irregular fibre breakup.",
       "swatch_srgb": [173, 120, 76],
-      "surface": {"roughness": 0.9, "sheen_weight": 0.42, "sheen_roughness": 0.66},
+      "surface": {"roughness": 0.9, "sheen_weight": 0.2, "sheen_roughness": 0.66},
       "fibre": {"kind": "yarn", "scale_per_reference": 72.0, "detail": 9.0, "roughness": 0.76, "distortion": 2.0, "anisotropy": [0.32, 1.0, 1.0], "strength": 0.48, "distance_fraction": 0.007},
       "targets": {
         "fuzz_rms_y255": {"range": [3.0, 8.0], "source": "VISUAL_TARGET.md: Surface fuzz amount, fibrous plush surface"},

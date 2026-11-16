@@ -4,11 +4,14 @@
 
 A SYNTHETIC egg head (0.20 m tall, centred at z = 1.30, off the origin), no character objects or proportions, and a
 synthetic groom that uses the structures the girl does NOT use: two buns with opposite wrap directions, a bow,
-straight long locks, wavy locks, plus a cap, sweep, fringe, curls, a tie and flowers. Checks:
+straight long locks, wavy locks, plus a cap, sweep, fringe, curls, irregular draped ringlets (curl wobble/sway,
+hang_jitter, rest_radii), a tie and flowers. Checks:
   1. every structure builds; object names are hair_<name>; two bun frames;
   2. long straight locks reach their z_end; curly locks have a helix (horizontal spread around the centre line);
   3. sweep roots lie on the scalp at the configured offset (surface placement);
-  4. validation rejects an unknown type, a missing key and a reference to a bun that does not exist.
+  4. validation rejects an unknown type, a missing key and a reference to a bun that does not exist;
+  5. every rope object carries the per-rope fibre UV map, with V increasing along the rope (metres);
+  6. draped irregular ringlets (wobble, sway, hang_jitter) build and move inwards below rest_z.
 Exit code 1 on any failure."""
 import json
 import math
@@ -49,6 +52,10 @@ spec = {"generator": "groom/1", "seed": 3, "scalp_offset_m": 0.006, "yarn": {"st
              "wave": {"amplitude": 0.01, "wavelength": 0.05}},
             {"type": "locks", "name": "curls", "style": "curly", "count": 3, "az": [150, 210], "el_root": [-10, 0],
              "hang_radii": [0.10, 0.11], "z_end": [cz - 0.25, cz - 0.25], "width": 0.014, "thick": 0.012, "curl": curl},
+            {"type": "locks", "name": "ringlets", "style": "curly", "count": 4, "az": [140, 220], "el_root": [-5, 5],
+             "hang_radii": [0.13, 0.14], "hang_jitter": 0.1, "rest_radii": [0.07, 0.07], "rest_z": cz - 0.15,
+             "z_end": [cz - 0.30, cz - 0.24], "width": 0.016, "thick": 0.014,
+             "curl": {"radius": 0.010, "pitch": 0.03, "jitter": 0.2, "wobble": 0.3, "sway": 0.006}},
             {"type": "tie", "name": "tie", "bun": 0},
             {"type": "bow", "name": "bow", "bun": 1, "around_deg": 0, "height_frac": 0.15, "size": 0.04},
             {"type": "flowers", "name": "flowers", "bun": 0, "items": [{"around_deg": 0, "size": 0.015}]}]}
@@ -90,6 +97,16 @@ bad = [{"structures": [{"type": "braid"}]},
 errs_bad = [GROOM.validate(b) for b in bad]
 check("validation rejects bad specs", all(errs_bad), errs_bad)
 check("synthetic spec validates", GROOM.validate(spec) == [])
+ropes = [o for o in objs if not o.name.startswith("hair_cap")]
+uv_ok = all(GROOM.UV_NAME in o.data.uv_layers for o in ropes)
+lo_ob = bpy.data.objects["hair_long"]
+vmax = max(d.uv[1] for d in lo_ob.data.uv_layers[GROOM.UV_NAME].data)
+check("ropes carry the fibre UV map; V runs along the rope in metres (long lock > 0.3 m)", uv_ok and vmax > 0.3,
+      round(vmax, 3))
+rl = bpy.data.objects["hair_ringlets"]
+low = [v.co for v in rl.data.vertices if v.co.z < cz - 0.2]
+r_low = max((Vector((p.x - centre.x, p.y - centre.y)).length for p in low), default=1.0)
+check("draped ringlets move inwards below rest_z (outer radius < hang radius)", r_low < 0.13, round(r_low, 4))
 R["pass"] = ok
 json.dump(R, open(out, "w"), indent=1, default=str)
 sys.exit(0 if ok else 1)

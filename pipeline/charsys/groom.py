@@ -17,8 +17,13 @@ Structures ({"type": ..., "name": ...}; "name" defaults to the type; objects are
   locks       hanging locks; style "straight" | "wavy" | "curly" (long hair, ringlets, side locks):
               count, az [from, to], mirror, el_root [lo, hi], el_leave, lift [root, leave], hang_radii [rx, ry],
               z_end [lo, hi] (absolute, metres), flare, width, thick, tip_frac,
-              curl {radius, pitch, radius_growth, start, start_jitter, jitter, direction ("alternate", "cw", "ccw")},
-              wave {amplitude, wavelength}
+              curl {radius, pitch, radius_growth, start, start_jitter, jitter, direction ("alternate", "cw", "ccw"),
+                    wobble, wobble_wavelength, sway}  (wobble: seeded along-length variation of radius and pitch,
+                    relative; sway: lateral wander of the centre line in metres, so ringlets are irregular),
+              wave {amplitude, wavelength},
+              hang_jitter (per-lock relative jitter of hang_radii: depth layering instead of one curtain),
+              rest_radii [rx, ry] + rest_z (drape: below the head the lock moves in to this ellipse by rest_z, so long
+              hair lies on the back/shoulders instead of hanging at the skull radius)
   bun         one or more coiled buns: buns [{az, el, lift, radius, height, wrap ("cw"|"ccw"), turns, ropes,
               rope_thick, tilt}]; a core keeps the coil closed
   tie         a band around a bun base: bun (index), radius_scale, tube, height_frac, material slot
@@ -26,8 +31,10 @@ Structures ({"type": ..., "name": ...}; "name" defaults to the type; objects are
   flowers     felt flowers on a bun: bun (index), items [{around_deg, height_frac, size}], petals, material,
               centre_material
 
-Yarn: every lock, coil and sweep is a plied rope (spec.hair.yarn: plies, depth, twist_per_m, seg, step_m), so the
-wool-yarn twist is geometry; the fibre/sheen response comes from the material preset (spec.materials.assignments).
+Yarn: every lock, coil and sweep is a plied rope (spec.hair.yarn: plies, depth, twist_per_m, seg, step_m, fibre_lean),
+so the wool-yarn twist is geometry; the fibre/sheen response comes from the material preset (spec.materials.assignments).
+Every rope carries its own UV map "ps_fibre" (U = metres around the rope in the frame of the twisting plies, scaled by
+fibre_lean; V = metres along the rope), so a preset with fibre.coordinates "uv" lays its ridges along each rope.
 Materials: each structure names a slot ("material", default "hair"); the caller resolves slots to materials.
 Binding: spec.hair.binding {"blend_z": [lo, hi]}: vertices below lo follow the chest bone, above hi the head bone,
 linear in between (long hair hangs from the head but rests on the back). Without it everything follows the head.
@@ -46,7 +53,8 @@ def _hair():
     return hair
 
 GENERATOR = "groom/1"
-YARN_DEFAULT = {"plies": 3, "depth": 0.16, "twist_per_m": 160.0, "seg": 12, "step_m": 0.004}
+YARN_DEFAULT = {"plies": 3, "depth": 0.16, "twist_per_m": 160.0, "seg": 12, "step_m": 0.004, "fibre_lean": 0.5}
+UV_NAME = "ps_fibre"
 
 
 # ------------------------------------------------------------------------------------------- head frame / placement
@@ -132,8 +140,9 @@ def resample(pts, step):
 
 # ------------------------------------------------------------------------------------------------ yarn rope geometry
 def rope_mesh(pts, widths, thicks, yarn, up_hint=(0, 0, 1), closed=False, phase=0.0, cap_rings=3):
-    """Vertices and faces of a plied yarn rope along pts: a superellipse-like section whose radius is modulated by
-    `plies` lobes that rotate with arc length (twist), so the plies wind around the rope. Rounded end caps."""
+    """Vertices, faces and per-corner UVs of a plied yarn rope along pts: a section whose radius is modulated by
+    `plies` lobes that rotate with arc length (twist), so the plies wind around the rope. Rounded end caps.
+    UV (metres): U around the rope, measured in the frame of the plies (lean = yarn.fibre_lean), V along it."""
     G = HAIR_G()
     seg = int(yarn["seg"])
     plies, depth, tw = int(yarn["plies"]), float(yarn["depth"]), float(yarn["twist_per_m"])
@@ -141,7 +150,8 @@ def rope_mesh(pts, widths, thicks, yarn, up_hint=(0, 0, 1), closed=False, phase=
     s = [0.0]
     for a, b in zip(P, P[1:]):
         s.append(s[-1] + (b - a).length)
-    rings = []
+    rings, ring_s, ring_r = [], [], []
+    lean = float(yarn.get("fibre_lean", 0.5))
 
     def ring(p, t, n, b, w, h, sk):
         ph = phase + sk * tw
@@ -153,6 +163,8 @@ def rope_mesh(pts, widths, thicks, yarn, up_hint=(0, 0, 1), closed=False, phase=
         return r
     for i, p in enumerate(P):
         rings.append(ring(p, T[i], N[i], B[i], widths[i], thicks[i], s[i]))
+        ring_s.append(s[i])
+        ring_r.append(0.5 * (widths[i] + thicks[i]))
     caps = []
     if not closed:
         for end, sign in ((0, -1), (len(P) - 1, 1)):
@@ -163,24 +175,40 @@ def rope_mesh(pts, widths, thicks, yarn, up_hint=(0, 0, 1), closed=False, phase=
                 off = T[end] * sign * max(widths[end], thicks[end]) * math.sin(ang)
                 ext.append(ring(P[end] + off, T[end], N[end], B[end], widths[end] * f, thicks[end] * f, s[end]))
             caps.append((ext, P[end] + T[end] * sign * max(widths[end], thicks[end])))
+        r0, r1 = max(widths[0], thicks[0]), max(widths[-1], thicks[-1])
+        pre = [-r0 * math.sin(k * (math.pi / 2) / (cap_rings + 1)) for k in range(cap_rings, 0, -1)]
+        post = [s[-1] + r1 * math.sin(k * (math.pi / 2) / (cap_rings + 1)) for k in range(1, cap_rings + 1)]
+        ring_r = [ring_r[0]] * cap_rings + ring_r + [ring_r[-1]] * cap_rings
+        ring_s = pre + ring_s + post
         rings = list(reversed(caps[0][0])) + rings + caps[1][0]
     verts = [tuple(v) for r in rings for v in r]
-    faces = []
+    faces, uvs = [], []
     nr = len(rings)
+    total = ring_s[-1] + (ring_s[1] - ring_s[0] if closed and nr > 1 else 0.0)
+
+    def uv(i, k, wrap_s=False):  # k may equal seg (seam): U keeps increasing instead of wrapping to 0
+        si = total if wrap_s else ring_s[i]
+        rr = ring_r[i]
+        return (rr * (2 * math.pi * k / seg - lean * (phase + si * tw)), si)
     for i in range(nr - 1 + (1 if closed else 0)):
         a, b = i % nr, (i + 1) % nr
+        wrap = closed and b == 0
         for k in range(seg):
             k2 = (k + 1) % seg
             faces.append((a * seg + k, a * seg + k2, b * seg + k2, b * seg + k))
+            uvs.append((uv(a, k), uv(a, k + 1), uv(b, k + 1, wrap), uv(b, k, wrap)))
     if not closed:
         i0 = len(verts)
         verts.append(tuple(caps[0][1]))
         faces += [(i0, k2, k) for k, k2 in ((k, (k + 1) % seg) for k in range(seg))]
+        uvs += [((ring_r[0] * math.pi * (2 * k + 1) / seg, ring_s[0] - 0.002), uv(0, k + 1), uv(0, k)) for k in range(seg)]
         i1 = len(verts)
         verts.append(tuple(caps[1][1]))
         last = (nr - 1) * seg
         faces += [(i1, last + k, last + k2) for k, k2 in ((k, (k + 1) % seg) for k in range(seg))]
-    return verts, faces
+        uvs += [((ring_r[-1] * math.pi * (2 * k + 1) / seg, ring_s[-1] + 0.002), uv(nr - 1, k), uv(nr - 1, k + 1))
+                for k in range(seg)]
+    return verts, faces, uvs
 
 
 def HAIR_G():
@@ -192,15 +220,27 @@ class MeshBucket:
     """Collects vertices/faces of many ropes into one object (fast; one object per structure)."""
 
     def __init__(self):
-        self.verts, self.faces = [], []
+        self.verts, self.faces, self.uvs = [], [], []
 
-    def add(self, verts, faces):
+    def add(self, verts, faces, uvs=None):
         o = len(self.verts)
         self.verts.extend(verts)
         self.faces.extend(tuple(i + o for i in f) for f in faces)
+        self.uvs.extend(uvs if uvs is not None else [((0.0, 0.0),) * len(f) for f in faces])
 
     def obj(self, name, C):
-        return HAIR_G().new_object(name, self.verts, self.faces, C, smooth=True)
+        """One mesh with the per-rope UV map (set before validate(), which keeps the loop data consistent)."""
+        import bpy
+        me = bpy.data.meshes.new(name)
+        me.from_pydata([tuple(v) for v in self.verts], [], self.faces)
+        layer = me.uv_layers.new(name=UV_NAME)
+        flat = [c for f in self.uvs for corner in f for c in corner]
+        layer.data.foreach_set("uv", flat)
+        me.validate()
+        me.shade_smooth()
+        ob = bpy.data.objects.new(name, me)
+        C.objects.link(ob)
+        return ob
 
 
 def taper(n, w0, w1, tip_frac=1.0, swell=0.15):
@@ -246,9 +286,8 @@ def build_sweep(st, ctx, R):
         pts = resample(catmull_rom(pts, yarn["step_m"]), yarn["step_m"])
         w, h = rng_range(R, st["width"]) / 2, rng_range(R, st["thick"]) / 2
         nrm = sc.at_dir(d0)[1]
-        v, f = rope_mesh(pts, taper(len(pts), w, w * 0.75, 0.5), taper(len(pts), h, h * 0.8, 0.5), yarn, up_hint=nrm,
-                         phase=R.uniform(0, 6.28))
-        bucket.add(v, f)
+        bucket.add(*rope_mesh(pts, taper(len(pts), w, w * 0.75, 0.5), taper(len(pts), h, h * 0.8, 0.5), yarn,
+                              up_hint=nrm, phase=R.uniform(0, 6.28)))
     return bucket, {"locks": cnt}
 
 
@@ -266,9 +305,9 @@ def build_fringe(st, ctx, R):
         q = HAIR_G().bezier(root, mid, tip, 16)
         pts = resample(catmull_rom(q, yarn["step_m"]), yarn["step_m"])
         w, h = rng_range(R, st["width"]) / 2, rng_range(R, st["thick"]) / 2
-        v, f = rope_mesh(pts, taper(len(pts), w, w * 0.8, float(st.get("tip_frac", 0.45))),
-                         taper(len(pts), h, h * 0.85, float(st.get("tip_frac", 0.45))), yarn, up_hint=nr, phase=R.uniform(0, 6.28))
-        bucket.add(v, f)
+        bucket.add(*rope_mesh(pts, taper(len(pts), w, w * 0.8, float(st.get("tip_frac", 0.45))),
+                              taper(len(pts), h, h * 0.85, float(st.get("tip_frac", 0.45))), yarn, up_hint=nr,
+                              phase=R.uniform(0, 6.28)))
     return bucket, {"locks": n}
 
 
@@ -286,6 +325,9 @@ def hanging_path(st, ctx, R, az, sx):
         p, _ = sc.at(az, el0 + (el1 - el0) * t, l0 + (l1 - l0) * t)
         ctrl.append(p)
     rx, ry = st["hang_radii"]
+    if st.get("hang_jitter"):  # per-lock depth layering (only drawn when asked: other locks keep their seeds)
+        j = 1 + float(st["hang_jitter"]) * R.uniform(-1, 1)
+        rx, ry = rx * j, ry * j
     a = math.radians(az)
     hdir = Vector((math.sin(a), -math.cos(a), 0.0))
     last = ctrl[-1]
@@ -297,11 +339,29 @@ def hanging_path(st, ctx, R, az, sx):
     z1 = last.z - 0.03
     ctrl.append(Vector((hang.x, hang.y, z1)))
     drop = max(0.0, z1 - z_end)
+    if st.get("rest_radii") and z_end < float(st.get("rest_z", z1)) < z1:
+        # drape: below the head the lock moves in towards the rest ellipse (shoulders/back), reached at rest_z
+        qx, qy = st["rest_radii"]
+        rest = Vector((c.x + math.sin(a) * qx, c.y - math.cos(a) * qy, 0))
+        if (rest.xy - c.xy).length < (hang.xy - c.xy).length:
+            zr = float(st["rest_z"])
+            mid = hang.lerp(rest, 0.6)
+            ctrl.append(Vector((mid.x, mid.y, z1 - 0.55 * (z1 - zr))))
+            ctrl.append(Vector((rest.x, rest.y, zr)))
+            hang, z1 = rest, zr
+            drop = max(0.0, z1 - z_end)
     tipxy = hang + hdir * flare * drop
     if drop > 0.06:
         ctrl.append(Vector((hang.x, hang.y, z1)).lerp(Vector((tipxy.x, tipxy.y, z_end)), 0.5))
     ctrl.append(Vector((tipxy.x, tipxy.y, min(z_end, z1 - 0.01))))
     return ctrl, hdir
+
+
+def smooth_noise(R, wavelength):
+    """A seeded smooth 1-D function of arc length in [-1, 1]: two incommensurate sines with random phases."""
+    l1, l2 = wavelength * R.uniform(0.8, 1.25), wavelength * R.uniform(0.38, 0.55)
+    p1, p2 = R.uniform(0, 2 * math.pi), R.uniform(0, 2 * math.pi)
+    return lambda x: 0.65 * math.sin(2 * math.pi * x / l1 + p1) + 0.35 * math.sin(2 * math.pi * x / l2 + p2)
 
 
 def build_locks(st, ctx, R):
@@ -337,6 +397,11 @@ def build_locks(st, ctx, R):
                     dmode = curl.get("direction", "alternate")
                     dsign = (1 if (k + (sx < 0)) % 2 == 0 else -1) if dmode == "alternate" else (1 if dmode == "ccw" else -1)
                     s0 = s_leave + float(curl.get("start", 0.03)) + R.uniform(0, float(curl.get("start_jitter", 0.0)))
+                    wob = float(curl.get("wobble", 0.0))  # along-length irregularity of radius and pitch
+                    sway = float(curl.get("sway", 0.0))  # lateral wander of the centre line (m)
+                    if wob or sway:
+                        wl = float(curl.get("wobble_wavelength", 0.12))
+                        n_r, n_p, n_s = smooth_noise(R, wl), smooth_noise(R, wl), smooth_noise(R, wl * 1.6)
                     # helix: dense sampling of the centre line, then the offset around it
                     dense = resample(base, min(0.002, pitch / 14))
                     sd = [0.0]
@@ -344,11 +409,20 @@ def build_locks(st, ctx, R):
                         sd.append(sd[-1] + (q - p).length)
                     L = sd[-1]
                     pts = []
+                    phi, prev = ph, None
                     for p, si in zip(dense, sd):
                         u = max(0.0, si - s0)
                         ramp = min(1.0, u / max(1e-6, pitch * 0.75))
                         r = r0 * (1 + grow * (si - s0) / max(1e-6, L - s0)) * ramp
-                        phi = ph + dsign * 2 * math.pi * u / pitch
+                        if wob or sway:
+                            pl = pitch * (1 + wob * n_p(si))
+                            if prev is not None:
+                                phi += dsign * 2 * math.pi * (max(0.0, si - s0) - max(0.0, prev - s0)) / pl
+                            prev = si
+                            r *= 1 + wob * n_r(si)
+                            p = p + tang * (sway * n_s(si) * ramp)
+                        else:
+                            phi = ph + dsign * 2 * math.pi * u / pitch
                         pts.append(p + (hdir * math.cos(phi) + tang * math.sin(phi)) * r)
                     pts = resample(pts, yarn["step_m"])
                 else:
@@ -359,10 +433,9 @@ def build_locks(st, ctx, R):
                         pts.append(p + tang * amp * min(1.0, u / wl) * math.sin(ph + 2 * math.pi * u / wl))
             w, h = rng_range(R, st["width"]) / 2, rng_range(R, st["thick"]) / 2
             tf = float(st.get("tip_frac", 0.6))
-            v, f = rope_mesh(pts, taper(len(pts), w, w * float(st.get("end_scale", 0.85)), tf, swell=0.05),
-                             taper(len(pts), h, h * float(st.get("end_scale", 0.85)), tf, swell=0.05), yarn,
-                             up_hint=hdir, phase=R.uniform(0, 6.28))
-            bucket.add(v, f)
+            bucket.add(*rope_mesh(pts, taper(len(pts), w, w * float(st.get("end_scale", 0.85)), tf, swell=0.05),
+                                  taper(len(pts), h, h * float(st.get("end_scale", 0.85)), tf, swell=0.05), yarn,
+                                  up_hint=hdir, phase=R.uniform(0, 6.28)))
             made += 1
     return bucket, {"locks": made, "style": style}
 
@@ -408,9 +481,8 @@ def build_bun(st, ctx, R):
                 ctrl.append(base + ax * (Hb * hf) + (u * math.cos(th) + v * math.sin(th)) * (rho - thick * 0.6))
             ctrl[-1] = base + ax * (Hb * h1 * 0.98) + (ctrl[-1] - base - ax * (Hb * h1)) * 0.3  # tuck the end in
             pts = resample(catmull_rom(ctrl, yarn["step_m"]), yarn["step_m"])
-            vv, ff = rope_mesh(pts, taper(len(pts), thick * 1.05, thick, 0.6), taper(len(pts), thick * 0.9, thick * 0.85, 0.6),
-                               yarn, up_hint=ax, phase=R.uniform(0, 6.28))
-            bucket.add(vv, ff)
+            bucket.add(*rope_mesh(pts, taper(len(pts), thick * 1.05, thick, 0.6),
+                                  taper(len(pts), thick * 0.9, thick * 0.85, 0.6), yarn, up_hint=ax, phase=R.uniform(0, 6.28)))
             ropes_total += 1
         core = G.uv_sphere("_bun_core", base + ax * (Hb * 0.5), 1.0, ctx["C"], 24, 12, (1, 1, 1))
         # orient the core along the axis
@@ -450,8 +522,7 @@ def build_tie(st, ctx, R):
     pts = [c + (u * math.cos(2 * math.pi * i / n) + v * math.sin(2 * math.pi * i / n)) * rho for i in range(n)]
     r = float(st.get("tube", 0.008))
     bucket = MeshBucket()
-    vv, ff = rope_mesh(pts, [r * float(st.get("width_scale", 1.4))] * n, [r] * n, yarn, up_hint=ax, closed=True)
-    bucket.add(vv, ff)
+    bucket.add(*rope_mesh(pts, [r * float(st.get("width_scale", 1.4))] * n, [r] * n, yarn, up_hint=ax, closed=True))
     return bucket, {"radius_m": round(rho, 4)}
 
 
@@ -477,15 +548,12 @@ def build_bow(st, ctx, R):
                         + up * size * 0.22 * math.sin(2 * a) * 0.5)
         ctrl.append(c)
         pts = resample(catmull_rom(ctrl, 0.003), 0.003)
-        vv, ff = rope_mesh(pts, [w / 2] * len(pts), [t] * len(pts), yarn, up_hint=radial)
-        bucket.add(vv, ff)
+        bucket.add(*rope_mesh(pts, [w / 2] * len(pts), [t] * len(pts), yarn, up_hint=radial))
         tail = [c, c + side * sgn * size * 0.15 - up * size * 0.35, c + side * sgn * size * 0.30 - up * size * 0.62]
         pts = resample(catmull_rom(tail, 0.003), 0.003)
-        vv, ff = rope_mesh(pts, [w / 2] * len(pts), [t] * len(pts), yarn, up_hint=radial)
-        bucket.add(vv, ff)
+        bucket.add(*rope_mesh(pts, [w / 2] * len(pts), [t] * len(pts), yarn, up_hint=radial))
     knot = resample(catmull_rom([c - up * size * 0.08, c + up * size * 0.08], 0.003), 0.003)
-    vv, ff = rope_mesh(knot, [w * 0.45] * len(knot), [w * 0.35] * len(knot), yarn, up_hint=radial)
-    bucket.add(vv, ff)
+    bucket.add(*rope_mesh(knot, [w * 0.45] * len(knot), [w * 0.35] * len(knot), yarn, up_hint=radial))
     return bucket, {"size_m": size}
 
 

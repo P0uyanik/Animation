@@ -13,6 +13,10 @@ SCHEMA = "plush-studio.material-presets/1"
 HERE = os.path.dirname(os.path.abspath(__file__))
 PRESETS_PATH = os.path.join(HERE, "presets.json")
 KINDS = {"noise", "yarn", "knit", "weave", "denim"}
+# fibre.coordinates: "object" (default, object space) or "uv" (the mesh's "ps_fibre" UV map, e.g. groom ropes: U around
+# the rope, V along it, in metres), so directional fibre patterns follow the geometry instead of object axes.
+COORDINATES = {"object", "uv"}
+FIBRE_UV = "ps_fibre"
 
 
 def deep_merge(base, override):
@@ -82,6 +86,8 @@ def validate_library(data):
             errors.append(f"{name}.fibre.scale_per_reference must be positive")
         if not isinstance(fibre.get("distance_fraction"), (int, float)) or fibre.get("distance_fraction", -1) < 0:
             errors.append(f"{name}.fibre.distance_fraction must be non-negative")
+        if fibre.get("coordinates", "object") not in COORDINATES:
+            errors.append(f"{name}.fibre.coordinates must be one of {sorted(COORDINATES)}")
         silhouette = resolved.get("silhouette", {})
         if silhouette.get("mode") != "sheen_layer":
             errors.append(f"{name}.silhouette.mode must be sheen_layer")
@@ -299,11 +305,17 @@ def apply_preset(material, preset_name, base_color_srgb=None, reference_size_m=N
     _set(principled, float(surface["sheen_roughness"]), "Sheen Roughness")
 
     fibre = preset["fibre"]
-    tex = _new(nodes, "ShaderNodeTexCoord", "Material Coordinates")
+    if fibre.get("coordinates", "object") == "uv":
+        coords = _new(nodes, "ShaderNodeUVMap", "Fibre UV")
+        coords.uv_map = FIBRE_UV
+        coords_out = coords.outputs["UV"]
+    else:
+        coords = _new(nodes, "ShaderNodeTexCoord", "Material Coordinates")
+        coords_out = coords.outputs["Object"]
     ref = _new(nodes, "ShaderNodeVectorMath", "Reference Scale")
     ref.operation = "SCALE"
     _set(ref, 1.0 / reference, "Scale")
-    links.new(tex.outputs["Object"], ref.inputs[0])
+    links.new(coords_out, ref.inputs[0])
     anis = _new(nodes, "ShaderNodeVectorMath", "Fibre Anisotropy")
     anis.operation = "MULTIPLY"
     anis.inputs[1].default_value = tuple(float(v) for v in fibre["anisotropy"])

@@ -25,6 +25,7 @@ sys.path.insert(0, os.path.join(ROOT, "pipeline", "blender"))
 from materials import builder as MATERIALS  # noqa: E402
 import compare_harness as HARNESS  # noqa: E402
 import geom as G  # noqa: E402
+import render_calibration as RC  # noqa: E402
 
 
 def parse():
@@ -36,6 +37,8 @@ def parse():
     parser.add_argument("--height", type=int, default=960)
     parser.add_argument("--samples", type=int, default=64)
     parser.add_argument("--save-blend", default="")
+    parser.add_argument("--lighting", default="harness",
+                        help="'harness' (compare_harness.studio_lighting + AgX, the T-015 setup) or a render_calibration profile")
     return parser.parse_args(argv)
 
 
@@ -88,7 +91,11 @@ def main():
     os.makedirs(os.path.dirname(metadata_path), exist_ok=True)
     bpy.ops.wm.read_factory_settings(use_empty=True)
     scene = bpy.context.scene
-    HARNESS.studio_lighting()
+    rig = None
+    if args.lighting == "harness":
+        HARNESS.studio_lighting()
+    else:
+        rig = RC.apply(scene, RC.load(args.lighting))
 
     scene.render.engine = "CYCLES"
     scene.cycles.device = "CPU"
@@ -100,8 +107,9 @@ def main():
     scene.render.image_settings.file_format = "PNG"
     scene.render.image_settings.color_mode = "RGB"
     scene.render.film_transparent = False
-    transforms = [item.identifier for item in scene.view_settings.bl_rna.properties["view_transform"].enum_items]
-    scene.view_settings.view_transform = "AgX" if "AgX" in transforms else "Filmic"
+    if rig is None:
+        transforms = [item.identifier for item in scene.view_settings.bl_rna.properties["view_transform"].enum_items]
+        scene.view_settings.view_transform = "AgX" if "AgX" in transforms else "Filmic"
 
     camera_data = bpy.data.cameras.new("SwatchCamera")
     camera = bpy.data.objects.new("SwatchCamera", camera_data)
@@ -111,6 +119,8 @@ def main():
     camera.data.type = "ORTHO"
     camera.data.ortho_scale = 2.8
     look_at(camera, (0.0, 0.0, 0.5))
+    if rig:
+        RC.orient(rig, (0.0, -1.0, 0.0))
 
     text_material = G.material("M_swatch_labels", (32, 29, 28), roughness=0.9)
     library = MATERIALS.load_library()
@@ -141,7 +151,9 @@ def main():
         "height": args.height,
         "samples": args.samples,
         "render_engine": "CYCLES",
-        "studio_light": "pipeline/blender/compare_harness.py:studio_lighting",
+        "studio_light": ("pipeline/blender/compare_harness.py:studio_lighting" if rig is None else
+                         "pipeline/charsys/render_calibration.json:" + args.lighting),
+        "view_transform": scene.view_settings.view_transform,
         "reference_size_m": library["reference_size_m"],
         "swatches": [],
     }
