@@ -41,3 +41,15 @@ deformation checks) is done inside V2–V3.
 **Change v3 (owner decision 2026-11-16):** hands, props and effects (V4) and the 10–15 s benchmark scene (V5) come before the classroom kit, which moves to V7. The benchmark scene uses a simple set with good lighting. Lighting and camera presets move into V5. Priority remains visual quality, natural animation and believable interaction.
 
 **Change (owner decision 2026-11-16):** V3b Boy 2.0 added after V3. Architecture rule: anything that can be shared across characters is built as a reusable, character-independent system configured by spec, never per character (see `docs/process/OWNER_DECISIONS.md`).
+
+## Priority v4 (owner decision 2026-11-16): reusable character creation at reference quality
+Top priority is a shared character creation system that reproduces the owner's reference images (faces, eyes, noses,
+mouths, expressions, proportions, hair, clothing, skin/felt/wool materials) for every current and future character,
+with all differences in specs and assets. Order:
+1. T-032 character fidelity measurement (supports, never replaces, visual judgement; final approval is the owner's).
+2. T-031 face system v2 (eyes, nose, mouth, brows, lashes, cheeks/blush, proportions).
+3. T-033 hair v2 (felted styles, soft volume, fine fibres) alongside yarn styles.
+4. T-028 materials (sheen, fibres on garments) and the garment detail library.
+5. Boy 2.0 (V3b) on all shared systems, accepted against his reference sheet.
+6. Personality and acting (a per-character profile: posture, tempo, gaze, expressions).
+7. V4/V5 effects and the benchmark scene (T-029 paper folding and the simulate stage are deferred until after 1–5).
