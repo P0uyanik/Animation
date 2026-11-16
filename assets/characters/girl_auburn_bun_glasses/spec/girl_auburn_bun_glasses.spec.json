@@ -982,12 +982,284 @@
   ]
  },
  "clothing": {
-  "generator": "TBD (M5: generic garment library)",
-  "garments": [
+  "generator": "garment/1",
+  "provenance": "T-024: outfit from references #41 (garment construction sheet, exploded view) and the sheet30 views; heights read on sheet30_front at 2.35 mm/px (sole to bun top 1.10 m). Colours: #41 flat-garment medians (references/color_targets.json *_garment) checked against sheet30 medians. Values are my estimates where not measured. 0.7.1 (T-025): gusset, edge/waistband buttons, shoulder_width, rolled edge, pocket bouquets and boot shaft/toe volume read from #41 (front and exploded views); values are my estimates.",
+  "description": [
    "cream collared blouse, puffy long sleeves, cuffs, 4-5 buttons",
    "open dusty-rose boucle vest, dark embroidered motifs, patch pockets, wooden buttons",
    "sage felted bloomer shorts, gathered cuffs, 3 waist buttons",
    "brown fleece boots, darker soles"
+  ],
+  "hide_body_faces": true,
+  "mask_margin_m": 0.015,
+  "collision": {
+   "enabled": true,
+   "offset_m": 0.002,
+   "radius_m": 0.08,
+   "falloff_m": 0.02,
+   "passes": 3
+  },
+  "max_influences": 4,
+  "defaults": {
+   "thickness_m": 0.002,
+   "ease_m": 0.008,
+   "seam_radius_m": 0.0012
+  },
+  "garments": [
+   {
+    "type": "top",
+    "name": "blouse",
+    "sleeve_length": 0.97,
+    "sleeve_puff_m": 0.024,
+    "sleeve_puff_peak": 0.62,
+    "hem_z_m": 0.34,
+    "collar": {
+     "type": "round",
+     "width_m": 0.04,
+     "gap_m": 0.006,
+     "slope": 0.45,
+     "tip_round": 0.35,
+     "lift_m": 0.024
+    },
+    "buttons": {
+     "count": 4,
+     "radius_m": 0.0042
+    },
+    "bands": {
+     "cuff": true,
+     "cuff_radius_m": 0.0042
+    },
+    "material": {
+     "preset": "woven cotton",
+     "base_color_srgb": [
+      214,
+      210,
+      210
+     ],
+     "reference_size_m": 0.3
+    },
+    "materials": {
+     "buttons": {
+      "preset": "buttons/plastic",
+      "base_color_srgb": [
+       226,
+       220,
+       210
+      ],
+      "reference_size_m": 0.02
+     }
+    }
+   },
+   {
+    "type": "vest",
+    "name": "vest",
+    "ease_m": 0.03,
+    "hem_z_m": 0.34,
+    "open_front_m": 0.024,
+    "pockets": {
+     "width_m": 0.026,
+     "height_m": 0.022,
+     "depth_m": 0.004,
+     "above_hem_m": 0.035
+    },
+    "bands": {
+     "edge_roll_m": 0.005
+    },
+    "embroidery": {
+     "size_m": 0.045,
+     "relief_m": 0.0025,
+     "petals": 5,
+     "leaves": 2,
+     "motifs": [
+      {
+       "u": 0.55,
+       "v": 0.74,
+       "style": "flower"
+      },
+      {
+       "u": -0.55,
+       "v": 0.74,
+       "style": "flower"
+      },
+      {
+       "u": 0.6,
+       "v": 0.36,
+       "style": "sprig",
+       "leaves": 4,
+       "size_m": 0.045,
+       "rotation_deg": 20
+      },
+      {
+       "u": -0.6,
+       "v": 0.36,
+       "style": "sprig",
+       "leaves": 4,
+       "size_m": 0.045,
+       "rotation_deg": -20
+      },
+      {
+       "u": 0.0,
+       "v": 0.45,
+       "target": "pocket.L",
+       "style": "bouquet",
+       "size_m": 0.03
+      },
+      {
+       "u": 0.0,
+       "v": 0.45,
+       "target": "pocket.R",
+       "style": "bouquet",
+       "size_m": 0.03
+      }
+     ],
+     "material": {
+      "preset": "felt",
+      "base_color_srgb": [
+       58,
+       32,
+       38
+      ],
+      "reference_size_m": 0.05
+     },
+     "accent_material": {
+      "preset": "wool yarn",
+      "base_color_srgb": [
+       196,
+       186,
+       176
+      ],
+      "reference_size_m": 0.05
+     }
+    },
+    "material": {
+     "preset": "felt",
+     "base_color_srgb": [
+      150,
+      94,
+      96
+     ],
+     "reference_size_m": 0.3
+    },
+    "shoulder_width": 1.0,
+    "buttons": {
+     "count": 4,
+     "placement": "edge",
+     "side": "left",
+     "radius_m": 0.0055
+    },
+    "materials": {
+     "buttons": {
+      "preset": "buttons/plastic",
+      "base_color_srgb": [
+       150,
+       92,
+       62
+      ],
+      "reference_size_m": 0.02
+     }
+    }
+   },
+   {
+    "type": "shorts",
+    "name": "shorts",
+    "length": 0.24,
+    "ease_m": 0.013,
+    "puff_m": 0.03,
+    "puff_inner": 0.8,
+    "cuff": true,
+    "bands": {
+     "waist": true,
+     "cuff": true,
+     "cuff_radius_m": 0.0045
+    },
+    "material": {
+     "preset": "woven cotton",
+     "base_color_srgb": [
+      110,
+      114,
+      103
+     ],
+     "reference_size_m": 0.3
+    },
+    "waist_z_m": 0.41,
+    "crotch": {
+     "type": "gusset",
+     "depth": 0.8
+    },
+    "buttons": {
+     "count": 3,
+     "placement": "waistband",
+     "radius_m": 0.0045,
+     "spread": 0.35
+    },
+    "materials": {
+     "buttons": {
+      "preset": "buttons/plastic",
+      "base_color_srgb": [
+       150,
+       92,
+       62
+      ],
+      "reference_size_m": 0.02
+     }
+    }
+   },
+   {
+    "type": "boots",
+    "name": "boots",
+    "height": 0.45,
+    "ease_m": 0.022,
+    "cuff": true,
+    "bands": {
+     "cuff": true,
+     "cuff_radius_m": 0.014
+    },
+    "sole": {
+     "thickness_m": 0.008,
+     "width_m": 0.004
+    },
+    "material": {
+     "preset": "fleece",
+     "base_color_srgb": [
+      104,
+      58,
+      34
+     ],
+     "reference_size_m": 0.15,
+     "overrides": {
+      "surface": {
+       "sheen_weight": 0.25
+      }
+     }
+    },
+    "materials": {
+     "band": {
+      "preset": "fleece",
+      "base_color_srgb": [
+       112,
+       64,
+       40
+      ],
+      "reference_size_m": 0.15,
+      "overrides": {
+       "surface": {
+        "sheen_weight": 0.25
+       }
+      }
+     },
+     "sole": {
+      "preset": "felt",
+      "base_color_srgb": [
+       78,
+       52,
+       42
+      ],
+      "reference_size_m": 0.15
+     }
+    },
+    "shaft_width_m": 0.012,
+    "toe_volume_m": 0.014
+   }
   ]
  },
  "accessories": {
@@ -1233,13 +1505,15 @@
   ]
  },
  "metadata": {
-  "spec_version": "0.6.0",
-  "status": "V3/T-016: shared groom (groom/1) hair; unpublished",
+  "spec_version": "0.7.1",
+  "status": "V3/T-025: shared garment robustness options (garment/1); unpublished",
   "history": [
    "0.3.0 (M3): generic face (face_generic/1), expression library, glasses accessory",
    "0.4.0 (V2/T-015): shared skin-felt, buttons/plastic glasses frame, and glasses/acrylic lens presets",
    "0.5.0 (V3/T-016): hair through the shared groom system (bun, band, flowers, sweep, fringe, spiral curls); wool-yarn, felt presets for hair and hair accessories",
-   "0.6.0 (V3/T-016 round 2): irregular chunky ringlets with per-rope fibre UVs, curls draped closer to the head and back, temple puffs, fuller fringe, larger pinker flowers, exposed band; still unpublished"
+   "0.6.0 (V3/T-016 round 2): irregular chunky ringlets with per-rope fibre UVs, curls draped closer to the head and back, temple puffs, fuller fringe, larger pinker flowers, exposed band; still unpublished",
+   "0.7.0 (V3/T-024): outfit through the shared garment system (garment/1): cream blouse with round collar and puffed long sleeves, dusty-rose felt vest with embroidery and pockets, sage bloomer shorts with cuffs, brown fleece boots; still unpublished",
+   "0.7.1 (V3/T-025): generic garment/1 options from the T-024 review: bloomer crotch gusset, wooden buttons on the vest front edge and the shorts waistband, fuller vest shoulders with a rolled edge, pocket embroidery, chunkier boots; still unpublished"
   ]
  },
  "components": {
@@ -1266,6 +1540,9 @@
   ],
   "hair": [
    "hair_"
+  ],
+  "clothing": [
+   "garment."
   ]
  }
 }

@@ -35,6 +35,9 @@ rig = next(o for o in bpy.data.objects if o.type == "ARMATURE" and "ps_face_part
 PARTS = json.loads(rig["ps_face_parts"])
 OB = bpy.data.objects
 head = OB[PARTS["head"]]
+for _m in head.modifiers:  # garment body masks hide covered skin; face metrics need the rest-mesh topology
+    if _m.type == "MASK":
+        _m.show_viewport = _m.show_render = False
 mouth, cavity = OB[PARTS["mouth"]], OB[PARTS["cavity"]]
 eyes = {s: OB[f"eye.{s}"] for s in ("L", "R")}
 acc = [OB[n] for n in PARTS.get("accessories", []) if n in OB]

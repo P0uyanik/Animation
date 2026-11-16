@@ -1,0 +1,195 @@
+{
+ "label": "",
+ "render_dir": "/tmp/claude-0/-home-user-Animation/88a10fef-ba29-5839-87c7-b4b31c461108/scratchpad/final",
+ "checks": [
+  {
+   "name": "blouse_sleeves_front",
+   "slot": "M_garment.blouse.main",
+   "view": "sheet30_front",
+   "render_median_srgb": [
+    196.0,
+    183.0,
+    178.0
+   ],
+   "render_pixels": 7900,
+   "reference_median_srgb": [
+    202.0,
+    192.0,
+    188.0
+   ],
+   "reference_pixels": 1000,
+   "dE00": 2.56,
+   "dE00_luma_matched": 1.52,
+   "luma": [
+    185.4,
+    193.8
+   ],
+   "saturation": [
+    0.092,
+    0.069
+   ]
+  },
+  {
+   "name": "vest_front",
+   "slot": "M_garment.vest.main",
+   "view": "sheet30_front",
+   "render_median_srgb": [
+    103.0,
+    77.0,
+    75.0
+   ],
+   "render_pixels": 4981,
+   "reference_median_srgb": [
+    116.0,
+    94.0,
+    92.0
+   ],
+   "reference_pixels": 1785,
+   "dE00": 6.0,
+   "dE00_luma_matched": 3.36,
+   "luma": [
+    82.4,
+    98.5
+   ],
+   "saturation": [
+    0.272,
+    0.207
+   ]
+  },
+  {
+   "name": "vest_back",
+   "slot": "M_garment.vest.main",
+   "view": "sheet30_back",
+   "render_median_srgb": [
+    105.0,
+    78.0,
+    76.0
+   ],
+   "render_pixels": 5587,
+   "reference_median_srgb": [
+    134.0,
+    91.0,
+    92.0
+   ],
+   "reference_pixels": 2000,
+   "dE00": 8.12,
+   "dE00_luma_matched": 3.64,
+   "luma": [
+    83.6,
+    100.2
+   ],
+   "saturation": [
+    0.276,
+    0.321
+   ]
+  },
+  {
+   "name": "shorts_front",
+   "slot": "M_garment.shorts.main",
+   "view": "sheet30_front",
+   "render_median_srgb": [
+    113.0,
+    111.0,
+    98.0
+   ],
+   "render_pixels": 5321,
+   "reference_median_srgb": [
+    111.0,
+    111.0,
+    99.0
+   ],
+   "reference_pixels": 1000,
+   "dE00": 1.11,
+   "dE00_luma_matched": 1.1,
+   "luma": [
+    110.5,
+    110.1
+   ],
+   "saturation": [
+    0.133,
+    0.108
+   ]
+  },
+  {
+   "name": "shorts_back",
+   "slot": "M_garment.shorts.main",
+   "view": "sheet30_back",
+   "render_median_srgb": [
+    113.0,
+    111.0,
+    98.0
+   ],
+   "render_pixels": 4458,
+   "reference_median_srgb": [
+    115.0,
+    115.0,
+    103.0
+   ],
+   "reference_pixels": 1600,
+   "dE00": 1.81,
+   "dE00_luma_matched": 1.19,
+   "luma": [
+    110.5,
+    114.1
+   ],
+   "saturation": [
+    0.133,
+    0.104
+   ]
+  },
+  {
+   "name": "boots_front",
+   "slot": "M_garment.boots.main",
+   "view": "sheet30_front",
+   "render_median_srgb": [
+    117.0,
+    84.0,
+    70.0
+   ],
+   "render_pixels": 2776,
+   "reference_median_srgb": [
+    126.0,
+    84.0,
+    66.0
+   ],
+   "reference_pixels": 1350,
+   "dE00": 3.06,
+   "dE00_luma_matched": 2.78,
+   "luma": [
+    90.0,
+    91.6
+   ],
+   "saturation": [
+    0.402,
+    0.476
+   ]
+  },
+  {
+   "name": "boots_back",
+   "slot": "M_garment.boots.main",
+   "view": "sheet30_back",
+   "render_median_srgb": [
+    111.0,
+    80.0,
+    67.0
+   ],
+   "render_pixels": 1967,
+   "reference_median_srgb": [
+    122.0,
+    80.0,
+    61.0
+   ],
+   "reference_pixels": 2000,
+   "dE00": 3.96,
+   "dE00_luma_matched": 3.64,
+   "luma": [
+    85.7,
+    87.6
+   ],
+   "saturation": [
+    0.396,
+    0.5
+   ]
+  }
+ ]
+}

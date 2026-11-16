@@ -1,0 +1,14 @@
+{
+ "open_s": 0.59,
+ "views": {
+  "sheet30_front": 6.91,
+  "sheet30_front_left": 5.61,
+  "sheet30_left": 4.73,
+  "sheet30_back": 5.85
+ },
+ "lighting": "character_neutral/1",
+ "view_transform": "Standard",
+ "exposure": 0.0,
+ "samples": 32,
+ "total_s": 29.26
+}
