@@ -51,6 +51,21 @@ use a `_m` suffix. Shared fields are `thickness_m`, `ease_m` (alias
 library names. When that library is installed its node builder is used; the
 fallback used by isolated tests preserves the same preset metadata.
 
+## Surface fibres (`fibres_lod`, T-028)
+
+Every garment piece whose material preset enables `fibres` (felt, wool yarn,
+fleece, cotton knit, felt hair, boot fleece) gets the shared Geometry Nodes
+group `PS Shared Surface Fibres/1` through
+`materials.builder.add_fibres_from_assignment`. Nothing is character-specific:
+the piece's own assignment (preset, colour, `reference_size_m`, overrides)
+drives it. Fibre length scales with `reference_size_m / 0.256` and density with
+its inverse square, so the H-normalised look matches the swatch sheet.
+`clothing.fibres_lod` is `close` (default), `wide` (preset LOD density) or `off`.
+The Curves object `<piece>.fibres` is a child of its piece (it follows the rig
+and the collision modifiers) and carries `ps_fibres_source`; `set_active_items`
+hides it with its piece. It is not in the returned garment list, and the engine
+exporter skips it (meshes only).
+
 ## Body masks (`hide_body_faces`, per-item `mask_body`)
 
 Production clothes do not keep skin under a garment: in extreme poses it pokes
