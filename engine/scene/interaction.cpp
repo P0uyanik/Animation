@@ -8,7 +8,9 @@
 #include <cstdio>
 #include <cstdlib>
 #include <format>
+#include <map>
 #include <optional>
+#include <set>
 #include <unordered_map>
 
 #include "scene/scene.h"
@@ -182,16 +184,54 @@ vec3 skinPoint(const ArmPoint& P, const std::vector<mat4>& G) {
 
 namespace {
 
-// Torso radius profile (T-040r1, see interaction.h) from the body triangles of the rest meshes.
-TorsoProfile buildTorsoProfile(const Skeleton& sk, const std::vector<SkinnedMesh>& meshes, const std::vector<int>& region,
-                               float bottomY) {
-  TorsoProfile P;
-  struct Tri { vec3 a, b, c; };
+// Torso clearance field (T-040r1, see interaction.h) from the body triangles of the rest meshes.
+vec3 closestOnTriangle(vec3 p, vec3 a, vec3 b, vec3 c, vec3& bary) {  // Ericson, Real-Time Collision Detection 5.1.5
+  const vec3 ab = b - a, ac = c - a, ap = p - a;
+  const float d1 = glm::dot(ab, ap), d2 = glm::dot(ac, ap);
+  if (d1 <= 0 && d2 <= 0) return bary = {1, 0, 0}, a;
+  const vec3 bp = p - b;
+  const float d3 = glm::dot(ab, bp), d4 = glm::dot(ac, bp);
+  if (d3 >= 0 && d4 <= d3) return bary = {0, 1, 0}, b;
+  const float vc = d1 * d4 - d3 * d2;
+  if (vc <= 0 && d1 >= 0 && d3 <= 0) {
+    const float v = d1 / (d1 - d3);
+    bary = {1 - v, v, 0};
+    return a + v * ab;
+  }
+  const vec3 cp = p - c;
+  const float d5 = glm::dot(ab, cp), d6 = glm::dot(ac, cp);
+  if (d6 >= 0 && d5 <= d6) return bary = {0, 0, 1}, c;
+  const float vb = d5 * d2 - d1 * d6;
+  if (vb <= 0 && d2 >= 0 && d6 <= 0) {
+    const float w = d2 / (d2 - d6);
+    bary = {1 - w, 0, w};
+    return a + w * ac;
+  }
+  const float va = d3 * d6 - d5 * d4;
+  if (va <= 0 && (d4 - d3) >= 0 && (d5 - d6) >= 0) {
+    const float w = (d4 - d3) / ((d4 - d3) + (d5 - d6));
+    bary = {0, 1 - w, w};
+    return b + w * (c - b);
+  }
+  const float den = 1 / (va + vb + vc), v = vb * den, w = vc * den;
+  bary = {1 - v - w, v, w};
+  return a + ab * v + ac * w;
+}
+
+TorsoField buildTorsoField(const Skeleton& sk, const std::vector<SkinnedMesh>& meshes, const std::vector<int>& region,
+                           float bottomY) {
+  TorsoField F;
+  // Body triangles (vertices welded by rest position within a mesh, for the topology the sign needs).
+  struct Tri { vec3 p[3]; int w[3]; vec3 n; size_t mesh; };
   std::vector<Tri> tris;
-  // body vertices with their torso-bone weights (for the per-bone row weights)
+  std::vector<std::vector<int>> vertexTris;
+  std::map<std::pair<int, int>, int> edgeCount;
   struct BodyVertex { vec3 p; int joint[4]; float weight[4]; };
   std::vector<BodyVertex> verts;
+  std::map<std::tuple<long, long, long, size_t>, int> weldIds;
+  size_t meshIndex = 0;
   for (const SkinnedMesh& m : meshes) {
+    ++meshIndex;
     if (startsWith(m.part, "hair")) continue;  // hair (curls hanging onto the chest) is not body volume
     const size_t n = std::min({m.rest.positions.size(), m.joints.size(), m.weights.size()});
     std::vector<char> body(n, 0);
@@ -203,17 +243,36 @@ TorsoProfile buildTorsoProfile(const Skeleton& sk, const std::vector<SkinnedMesh
       }
       // Body: mostly torso-carried (>= 90 %, the hips' leg-carried sides down to the pelvis bottom), or, on packages
       // whose torso skin is shared with the neck or legs, torso-dominant with (almost) nothing on the arms and neither
-      // the head nor the legs carrying half (the profile is then fuller than the strict surface, never thinner).
+      // the head nor the legs carrying half.
       const float torso = w[int(Region::Torso)], leg = w[int(Region::Leg)];
       const float arm = std::max(w[int(Region::ArmL)], w[int(Region::ArmR)]), headW = w[int(Region::Head)];
       body[v] = torso >= 0.9f || (torso + leg >= 0.9f && m.rest.positions[v].y >= bottomY) ||
-                (!std::getenv("PP_STRICT") && torso >= 0.5f && arm < 0.1f && headW < 0.5f && leg < 0.5f);
+                (torso >= 0.5f && arm < 0.1f && headW < 0.5f && leg < 0.5f);
     }
     std::vector<char> used(n, 0);
+    auto weld = [&](uint32_t v) {
+      const vec3 q = m.rest.positions[v] * 10000.0f;
+      auto [it, fresh] = weldIds.try_emplace({std::lround(q.x), std::lround(q.y), std::lround(q.z), meshIndex}, int(vertexTris.size()));
+      if (fresh) vertexTris.emplace_back();
+      return it->second;
+    };
     for (size_t t = 0; t + 2 < m.rest.indices.size(); t += 3) {
       const uint32_t a = m.rest.indices[t], b = m.rest.indices[t + 1], c = m.rest.indices[t + 2];
       if (a >= n || b >= n || c >= n || !body[a] || !body[b] || !body[c]) continue;
-      tris.push_back({m.rest.positions[a], m.rest.positions[b], m.rest.positions[c]});
+      Tri T{{m.rest.positions[a], m.rest.positions[b], m.rest.positions[c]}, {weld(a), weld(b), weld(c)}, vec3(0), meshIndex};
+      vec3 nn = glm::cross(T.p[1] - T.p[0], T.p[2] - T.p[0]);
+      if (glm::length(nn) < 1e-14f) continue;
+      nn = glm::normalize(nn);
+      if (m.rest.normals.size() == m.rest.positions.size() &&
+          glm::dot(nn, m.rest.normals[a] + m.rest.normals[b] + m.rest.normals[c]) < 0)
+        nn = -nn;  // winding against the vertex normals
+      T.n = nn;
+      for (int k = 0; k < 3; ++k) {
+        vertexTris[size_t(T.w[k])].push_back(int(tris.size()));
+        const int e0 = T.w[k], e1 = T.w[(k + 1) % 3];
+        ++edgeCount[{std::min(e0, e1), std::max(e0, e1)}];
+      }
+      tris.push_back(T);
       used[a] = used[b] = used[c] = 1;
     }
     for (size_t v = 0; v < n; ++v) {
@@ -228,30 +287,29 @@ TorsoProfile buildTorsoProfile(const Skeleton& sk, const std::vector<SkinnedMesh
       verts.push_back(bv);
     }
   }
-  P.triangles = tris.size();
-  if (tris.size() < 100) return P;
-  float top = -1e9f;
-  for (const BodyVertex& v : verts) top = std::max(top, v.p.y);
-  if (top <= bottomY + 0.05f) return P;
-  P.h0 = bottomY;
-  P.nh = int(std::ceil((top - bottomY) / P.dh)) + 1;
-  const int nh = P.nh, na = P.na;
-  // Row centres: middle of the row's vertex extent (x, z), from the rows around it where a row is empty.
-  std::vector<vec4> box(size_t(nh), vec4(1e9f, 1e9f, -1e9f, -1e9f));
+  F.triangles = tris.size();
+  if (tris.size() < 100) return F;
+  std::vector<char> boundaryVertex(vertexTris.size(), 0);
+  for (const auto& [e, count] : edgeCount)
+    if (count < 2) boundaryVertex[size_t(e.first)] = boundaryVertex[size_t(e.second)] = 1;
+  // Rows up the body (+Y): the torso bones' mean skin weights per row (normalised), for blending the bones' copies.
+  float top = -1e9f, low = 1e9f;
+  for (const BodyVertex& v : verts) top = std::max(top, v.p.y), low = std::min(low, v.p.y);
+  F.h0 = low;
+  F.nh = int(std::ceil((top - low) / F.dh)) + 1;
+  const int nh = F.nh;
   std::vector<std::vector<float>> bw{size_t(nh), std::vector<float>{}};
   std::vector<float> bwSum(size_t(nh), 0.0f);
   for (const BodyVertex& v : verts) {
-    const float s = (v.p.y - P.h0) / P.dh;
-    for (int r = std::max(0, int(std::floor(s - 2))); r <= std::min(nh - 1, int(std::ceil(s + 2))); ++r) {
-      box[size_t(r)] = vec4(std::min(box[size_t(r)].x, v.p.x), std::min(box[size_t(r)].y, v.p.z),
-                            std::max(box[size_t(r)].z, v.p.x), std::max(box[size_t(r)].w, v.p.z));
+    const float s = (v.p.y - F.h0) / F.dh;
+    for (int r = std::max(0, int(std::floor(s - 1.5f))); r <= std::min(nh - 1, int(std::ceil(s + 1.5f))); ++r) {
       if (std::abs(s - float(r)) > 1.5f) continue;
       for (int k = 0; k < 4; ++k) {
         if (v.joint[k] < 0 || v.weight[k] <= 0) continue;
-        auto it = std::find(P.bones.begin(), P.bones.end(), v.joint[k]);
-        size_t bi = size_t(it - P.bones.begin());
-        if (it == P.bones.end()) {
-          P.bones.push_back(v.joint[k]);
+        auto it = std::find(F.bones.begin(), F.bones.end(), v.joint[k]);
+        const size_t bi = size_t(it - F.bones.begin());
+        if (it == F.bones.end()) {
+          F.bones.push_back(v.joint[k]);
           for (auto& row : bw) row.push_back(0.0f);
         }
         bw[size_t(r)][bi] += v.weight[k];
@@ -259,213 +317,208 @@ TorsoProfile buildTorsoProfile(const Skeleton& sk, const std::vector<SkinnedMesh
       }
     }
   }
-  if (P.bones.empty()) return P;
-  for (int b : P.bones) P.heads.push_back(sk.bones[size_t(b)].head);
-  P.center.assign(size_t(nh), vec2(0));
-  std::vector<char> has(size_t(nh), 0);
-  for (int r = 0; r < nh; ++r)
-    if (box[size_t(r)].x <= box[size_t(r)].z)
-      has[size_t(r)] = 1, P.center[size_t(r)] = 0.5f * vec2(box[size_t(r)].x + box[size_t(r)].z, box[size_t(r)].y + box[size_t(r)].w);
-  auto fillRows = [&](auto&& copy) {  // empty rows take the nearest filled row
-    for (int r = 0; r < nh; ++r) {
-      if (has[size_t(r)]) continue;
-      for (int d = 1; d < nh; ++d) {
-        if (r - d >= 0 && has[size_t(r - d)]) { copy(r, r - d); break; }
-        if (r + d < nh && has[size_t(r + d)]) { copy(r, r + d); break; }
-      }
-    }
-  };
-  fillRows([&](int r, int from) { P.center[size_t(r)] = P.center[size_t(from)]; });
-  {  // smooth the centres along the body (a 5-row box): the ray origins must not jump between rows
-    std::vector<vec2> c = P.center;
-    for (int r = 0; r < nh; ++r) {
-      vec2 sum(0);
-      int n = 0;
-      for (int d = -2; d <= 2; ++d)
-        if (r + d >= 0 && r + d < nh) sum += P.center[size_t(r + d)], ++n;
-      c[size_t(r)] = sum / float(n);
-    }
-    P.center = c;
-  }
-  // Per-bone row weights (normalised; empty rows from the nearest).
-  const size_t nb = P.bones.size();
-  P.weight.assign(nb * size_t(nh), 0.0f);
+  if (F.bones.empty()) return F;
+  for (int b : F.bones) F.heads.push_back(sk.bones[size_t(b)].head);
+  const size_t nb = F.bones.size();
+  F.weight.assign(nb * size_t(nh), 0.0f);
   std::vector<char> hasW(size_t(nh), 0);
   for (int r = 0; r < nh; ++r)
     if (bwSum[size_t(r)] > 1e-6f) {
       hasW[size_t(r)] = 1;
-      for (size_t b = 0; b < nb; ++b) P.weight[b * size_t(nh) + size_t(r)] = bw[size_t(r)][b] / bwSum[size_t(r)];
+      for (size_t b = 0; b < nb; ++b) F.weight[b * size_t(nh) + size_t(r)] = bw[size_t(r)][b] / bwSum[size_t(r)];
     }
   for (int r = 0; r < nh; ++r) {
     if (hasW[size_t(r)]) continue;
     for (int d = 1; d < nh; ++d) {
       const int from = r - d >= 0 && hasW[size_t(r - d)] ? r - d : r + d < nh && hasW[size_t(r + d)] ? r + d : -1;
       if (from < 0) continue;
-      for (size_t b = 0; b < nb; ++b) P.weight[b * size_t(nh) + size_t(r)] = P.weight[b * size_t(nh) + size_t(from)];
+      for (size_t b = 0; b < nb; ++b) F.weight[b * size_t(nh) + size_t(r)] = F.weight[b * size_t(nh) + size_t(from)];
       break;
     }
   }
-  // Rays: per row, the triangles crossing the row's plane give segments in (x, z); the outermost hit per angle.
-  std::vector<std::vector<int>> rowTris{size_t(nh), std::vector<int>{}};
+  // Grid over the body with a margin; signed distance to the nearest body triangle (exact within the band, by the
+  // swept nearest triangle beyond it), signed by the angle-weighted pseudo-normal of the nearest feature (a nearest
+  // feature on an open boundary - a hem, an armhole, a side panel carried by the arm - has no inside: outside).
+  vec3 lo(1e9f), hi(-1e9f);
+  for (const Tri& T : tris)
+    for (const vec3& q : T.p) lo = glm::min(lo, q), hi = glm::max(hi, q);
+  const float pad = 0.06f, h = F.cell, band = 0.03f;
+  F.origin = lo - vec3(pad);
+  F.dims = glm::ivec3(glm::ceil((hi - lo + 2 * pad) / h)) + 1;
+  const glm::ivec3 D = F.dims;
+  const size_t cells = size_t(D.x) * size_t(D.y) * size_t(D.z);
+  F.dist.assign(cells, 1e9f);
+  std::vector<int> nearest(cells, -1);
+  std::vector<vec3> nearestBary(cells);
+  auto id = [&](int x, int y, int z) { return (size_t(z) * size_t(D.y) + size_t(y)) * size_t(D.x) + size_t(x); };
   for (size_t t = 0; t < tris.size(); ++t) {
-    const float lo = std::min({tris[t].a.y, tris[t].b.y, tris[t].c.y}), hi = std::max({tris[t].a.y, tris[t].b.y, tris[t].c.y});
-    const int r0 = std::max(0, int(std::ceil((lo - P.h0) / P.dh))), r1 = std::min(nh - 1, int(std::floor((hi - P.h0) / P.dh)));
-    for (int r = r0; r <= r1; ++r) rowTris[size_t(r)].push_back(int(t));
+    const Tri& T = tris[t];
+    const vec3 tl = glm::min(glm::min(T.p[0], T.p[1]), T.p[2]) - vec3(band), th = glm::max(glm::max(T.p[0], T.p[1]), T.p[2]) + vec3(band);
+    const glm::ivec3 c0 = glm::max(glm::ivec3(glm::ceil((tl - F.origin) / h)), glm::ivec3(0));
+    const glm::ivec3 c1 = glm::min(glm::ivec3(glm::floor((th - F.origin) / h)), D - 1);
+    for (int z = c0.z; z <= c1.z; ++z)
+      for (int y = c0.y; y <= c1.y; ++y)
+        for (int x = c0.x; x <= c1.x; ++x) {
+          const vec3 p = F.origin + vec3(x, y, z) * h;
+          vec3 bary;
+          const float d = glm::distance(p, closestOnTriangle(p, T.p[0], T.p[1], T.p[2], bary));
+          const size_t i = id(x, y, z);
+          if (d < F.dist[i]) F.dist[i] = d, nearest[i] = int(t), nearestBary[i] = bary;
+        }
   }
-  P.radius.assign(size_t(nh) * size_t(na), -1.0f);
-  std::fill(has.begin(), has.end(), 0);
-  for (int r = 0; r < nh; ++r) {
-    const float y = P.h0 + float(r) * P.dh;
-    std::vector<std::pair<vec2, vec2>> seg;
-    for (int t : rowTris[size_t(r)]) {
-      const vec3 v[3] = {tris[size_t(t)].a, tris[size_t(t)].b, tris[size_t(t)].c};
-      vec2 q[3];
-      int n = 0;
-      for (int k = 0; k < 3 && n < 2; ++k) {
-        const vec3 a = v[k], b = v[(k + 1) % 3];
-        if ((a.y - y) * (b.y - y) > 0 || a.y == b.y) continue;
-        const float u = (y - a.y) / (b.y - a.y);
-        const vec3 x = a + u * (b - a);
-        q[n++] = vec2(x.x, x.z);
+  // Buckets (2.5 cm) of the triangles, for the confirming rays.
+  const float bucket = 0.025f;
+  const glm::ivec3 BD = glm::ivec3(glm::ceil((hi - lo) / bucket)) + 1;
+  std::vector<std::vector<int>> buckets(size_t(BD.x) * size_t(BD.y) * size_t(BD.z));
+  auto bucketId = [&](glm::ivec3 c) { return (size_t(c.z) * size_t(BD.y) + size_t(c.y)) * size_t(BD.x) + size_t(c.x); };
+  for (size_t t = 0; t < tris.size(); ++t) {
+    const Tri& T = tris[t];
+    const glm::ivec3 b0 = glm::clamp(glm::ivec3(glm::floor((glm::min(glm::min(T.p[0], T.p[1]), T.p[2]) - lo) / bucket)), glm::ivec3(0), BD - 1);
+    const glm::ivec3 b1 = glm::clamp(glm::ivec3(glm::floor((glm::max(glm::max(T.p[0], T.p[1]), T.p[2]) - lo) / bucket)), glm::ivec3(0), BD - 1);
+    for (int z = b0.z; z <= b1.z; ++z)
+      for (int y = b0.y; y <= b1.y; ++y)
+        for (int x = b0.x; x <= b1.x; ++x) buckets[bucketId({x, y, z})].push_back(int(t));
+  }
+  std::vector<unsigned> stamp(tris.size(), 0);
+  unsigned rayId = 0;
+  auto rayHitsShell = [&](vec3 o, vec3 d, size_t mesh) -> int {  // Moller-Trumbore against one shell's triangles
+    ++rayId;
+    const float len = glm::length(hi - lo) + bucket;
+    for (float t = 0; t <= len; t += 0.5f * bucket) {
+      const glm::ivec3 c = glm::ivec3(glm::floor((o + d * t - lo) / bucket));
+      if (glm::any(glm::lessThan(c, glm::ivec3(0))) || glm::any(glm::greaterThanEqual(c, BD))) {
+        if (t > 0) break;
+        continue;
       }
-      if (n == 2) seg.push_back({q[0], q[1]});
-    }
-    const vec2 c = P.center[size_t(r)];
-    int hits = 0;
-    for (int k = 0; k < na; ++k) {
-      const float phi = 2.0f * glm::pi<float>() * float(k) / float(na);
-      const vec2 d(std::cos(phi), std::sin(phi));
-      float best = -1;
-      for (const auto& [a, b] : seg) {  // c + t d = a + u (b - a)
-        const vec2 e = b - a, w = a - c;
-        const float den = d.x * e.y - d.y * e.x;
-        if (std::abs(den) < 1e-12f) continue;
-        const float t = (w.x * e.y - w.y * e.x) / den, u = (w.x * d.y - w.y * d.x) / den;
-        if (u < 0 || u > 1 || t <= 0) continue;
-        best = std::max(best, t);
+      for (int u : buckets[bucketId(c)]) {
+        if (stamp[size_t(u)] == rayId) continue;
+        stamp[size_t(u)] = rayId;
+        const Tri& T = tris[size_t(u)];
+        if (mesh != size_t(-1) && T.mesh != mesh) continue;
+        const vec3 e1 = T.p[1] - T.p[0], e2 = T.p[2] - T.p[0], hv = glm::cross(d, e2);
+        const float det = glm::dot(e1, hv);
+        if (std::abs(det) < 1e-12f) continue;
+        const float inv = 1 / det;
+        const vec3 sv = o - T.p[0];
+        const float bu = inv * glm::dot(sv, hv);
+        if (bu < 0 || bu > 1) continue;
+        const vec3 qv = glm::cross(sv, e1);
+        const float bv = inv * glm::dot(d, qv);
+        if (bv < 0 || bu + bv > 1) continue;
+        if (inv * glm::dot(e2, qv) > 1e-6f) return 1;
       }
-      if (best > 0) P.radius[size_t(r) * size_t(na) + size_t(k)] = best, ++hits;
     }
-    if (hits == 0) continue;
-    has[size_t(r)] = 1;
-    // Angles without a hit (an armhole, a side panel carried by the arm): the surface there is open (the mesh has no
-    // body to touch), so the hole takes the smaller of the radii at its two rims, never a bridge between them.
-    float* R = &P.radius[size_t(r) * size_t(na)];
-    for (int k = 0; k < na; ++k) {
-      if (R[k] > 0) continue;
-      int a = 1, b = 1;
-      while (R[(k - a + na) % na] <= 0) ++a;
-      while (R[(k + b) % na] <= 0) ++b;
-      R[k] = -std::min(R[(k - a + na) % na], R[(k + b) % na]);  // negative: filled
+    return 0;
+  };
+  auto angleAt = [&](const Tri& T, int k) {
+    const vec3 u = T.p[(k + 1) % 3] - T.p[k], v = T.p[(k + 2) % 3] - T.p[k];
+    const float l = glm::length(u) * glm::length(v);
+    return l > 1e-12f ? std::acos(std::clamp(glm::dot(u, v) / l, -1.0f, 1.0f)) : 0.0f;
+  };
+  // Beyond the band: the nearest triangle is carried on by sweeps (each cell tries its swept neighbours' triangles,
+  // exactly), so every cell knows its nearest triangle and gets its sign by the same rule.
+  for (int pass = 0; pass < 4; ++pass) {
+    const int dir = pass % 2 == 0 ? 1 : -1;
+    for (int zz = 0; zz < D.z; ++zz)
+      for (int yy = 0; yy < D.y; ++yy)
+        for (int xx = 0; xx < D.x; ++xx) {
+          const int x = dir > 0 ? xx : D.x - 1 - xx, y = dir > 0 ? yy : D.y - 1 - yy, z = dir > 0 ? zz : D.z - 1 - zz;
+          const size_t i = id(x, y, z);
+          if (F.dist[i] <= band) continue;
+          const vec3 p = F.origin + vec3(x, y, z) * h;
+          for (int k = 0; k < 3; ++k) {
+            glm::ivec3 c(x, y, z);
+            c[k] -= dir;
+            if (c[k] < 0 || c[k] >= D[k]) continue;
+            const int t = nearest[id(c.x, c.y, c.z)];
+            if (t < 0 || t == nearest[i]) continue;
+            const Tri& T = tris[size_t(t)];
+            vec3 bary;
+            const float d = glm::distance(p, closestOnTriangle(p, T.p[0], T.p[1], T.p[2], bary));
+            if (d < F.dist[i]) F.dist[i] = d, nearest[i] = t, nearestBary[i] = bary;
+          }
+        }
+  }
+  std::vector<signed char> sign(cells, 0);
+  for (size_t i = 0; i < cells; ++i) {
+    if (nearest[i] < 0) continue;
+    const Tri& T = tris[size_t(nearest[i])];
+    const vec3 bary = nearestBary[i];
+    const glm::ivec3 c(int(i % size_t(D.x)), int((i / size_t(D.x)) % size_t(D.y)), int(i / (size_t(D.x) * size_t(D.y))));
+    const vec3 p = F.origin + vec3(c) * h;
+    const vec3 q = T.p[0] * bary.x + T.p[1] * bary.y + T.p[2] * bary.z;
+    int zero = 0;
+    for (int k = 0; k < 3; ++k) zero += bary[k] <= 1e-6f;
+    vec3 n(0);
+    bool open = false;
+    if (zero == 0) n = T.n;
+    else if (zero == 1) {
+      int a = -1, b = -1;
+      for (int k = 0; k < 3; ++k)
+        if (bary[k] > 1e-6f) (a < 0 ? a : b) = T.w[k];
+      if (edgeCount[{std::min(a, b), std::max(a, b)}] < 2) open = true;
+      else
+        for (int u : vertexTris[size_t(a)])
+          for (int k = 0; k < 3; ++k)
+            if (tris[size_t(u)].w[k] == b) n += tris[size_t(u)].n;
+    } else {
+      const int k = bary.x > 0.5f ? 0 : bary.y > 0.5f ? 1 : 2;
+      const int wv = T.w[k];
+      if (boundaryVertex[size_t(wv)]) open = true;
+      else
+        for (int u : vertexTris[size_t(wv)])
+          for (int j = 0; j < 3; ++j)
+            if (tris[size_t(u)].w[j] == wv) n += angleAt(tris[size_t(u)], j) * tris[size_t(u)].n;
     }
-    for (int k = 0; k < na; ++k) R[k] = std::abs(R[k]);
+    sign[i] = open || glm::dot(p - q, n) >= 0 ? 1 : -1;
+    // A negative sign is confirmed by rays, as the T-040 mesh measurement does: a point inside a shell hits that shell
+    // in (nearly) every direction; one outside a thin or open shell (a drawstring, a hood roll) escapes.
+    // Inside = at least 2 of 3 rays hit the nearest triangle's own shell (the T-040 measurement's rule, so the
+    // post-pass and the evidence agree on what is inside).
+    if (sign[i] < 0) {
+      vec3 a = p - q;
+      a = glm::length(a) > 1e-7f ? glm::normalize(a) : -n;
+      const vec3 t1 = glm::normalize(std::abs(a.y) < 0.9f ? glm::cross(a, vec3(0, 1, 0)) : glm::cross(a, vec3(1, 0, 0)));
+      const vec3 t2 = glm::cross(a, t1);
+      int hits = 0;
+      for (vec3 dir : {a, glm::normalize(a + t1), glm::normalize(a - 0.5f * t1 + 0.9f * t2)}) hits += rayHitsShell(p, dir, T.mesh);
+      if (hits < 2) sign[i] = 1;
+    }
   }
-  fillRows([&](int r, int from) {
-    std::copy_n(&P.radius[size_t(from) * size_t(na)], na, &P.radius[size_t(r) * size_t(na)]);
-  });
-  if (std::find(has.begin(), has.end(), 1) == has.end()) return P;
-  // Rows with little body (a few torso-weighted triangles below the hips or at the collar of a package whose lower
-  // body is carried by the legs) are not torso volume: the profile is the longest run of full rows.
-  std::vector<float> mean(size_t(nh), 0.0f);
-  float meanMax = 0;
-  for (int r = 0; r < nh; ++r) {
-    for (int k = 0; k < na; ++k) mean[size_t(r)] += P.radius[size_t(r * na + k)] / float(na);
-    meanMax = std::max(meanMax, mean[size_t(r)]);
-  }
-  int lo = 0, hi = -1;  // the longest run of full rows
-  for (int r = 0; r < nh;) {
-    if (mean[size_t(r)] < 0.35f * meanMax) { ++r; continue; }
-    int e = r;
-    while (e + 1 < nh && mean[size_t(e + 1)] >= 0.35f * meanMax) ++e;
-    if (e - r > hi - lo) lo = r, hi = e;
-    r = e + 1;
-  }
-  if (hi - lo < 4) return P;
-  if (lo > 0 || hi < nh - 1) {
-    const int n = hi - lo + 1;
-    std::vector<float> radius(P.radius.begin() + std::ptrdiff_t(lo * na), P.radius.begin() + std::ptrdiff_t((hi + 1) * na));
-    std::vector<vec2> center(P.center.begin() + lo, P.center.begin() + hi + 1);
-    std::vector<float> weight(nb * size_t(n));
-    for (size_t b = 0; b < nb; ++b)
-      std::copy_n(&P.weight[b * size_t(nh) + size_t(lo)], n, &weight[b * size_t(n)]);
-    P.radius = std::move(radius), P.center = std::move(center), P.weight = std::move(weight);
-    P.h0 += float(lo) * P.dh;
-    P.nh = n;
-  }
-  P.valid = true;
-  return P;
+  for (size_t i = 0; i < cells; ++i) F.dist[i] = sign[i] == 0 ? band : float(sign[i]) * F.dist[i];
+  F.valid = true;
+  return F;
 }
 
 }  // namespace
 
-ProfileGap torsoProfileGap(const TorsoProfile& P, vec3 q) {
-  // Bicubic Catmull-Rom over rows (clamped) and angles (wrapped): it passes through every ray hit and is C1, so the gap
-  // and its gradient are continuous (the solver needs a smooth field).
-  const int nh = P.nh, na = P.na;
-  const float s = (q.y - P.h0) / P.dh, sc = std::clamp(s, 0.0f, float(nh - 1));
-  const bool inRange = s >= 0 && s <= float(nh - 1);
-  const int i1 = std::min(int(sc), std::max(0, nh - 2));
-  const float t = sc - float(i1);
-  auto cr = [](float x, float* w, float* dw) {
-    const float x2 = x * x, x3 = x2 * x;
-    w[0] = 0.5f * (-x3 + 2 * x2 - x), w[1] = 0.5f * (3 * x3 - 5 * x2 + 2), w[2] = 0.5f * (-3 * x3 + 4 * x2 + x), w[3] = 0.5f * (x3 - x2);
-    dw[0] = 0.5f * (-3 * x2 + 4 * x - 1), dw[1] = 0.5f * (9 * x2 - 10 * x), dw[2] = 0.5f * (-9 * x2 + 8 * x + 1), dw[3] = 0.5f * (3 * x2 - 2 * x);
+ProfileGap torsoFieldGap(const TorsoField& F, vec3 q) {
+  // Trilinear in the grid (outside it: the distance to the grid box added to the border value).
+  const vec3 s = (q - F.origin) / F.cell;
+  const vec3 maxIdx = vec3(F.dims - 1) - vec3(1e-3f);
+  const vec3 sc = glm::clamp(s, vec3(0), maxIdx);
+  const glm::ivec3 c = glm::min(glm::ivec3(sc), F.dims - 2);
+  const vec3 t = sc - vec3(c);
+  auto at = [&](int x, int y, int z) {
+    return F.dist[(size_t(c.z + z) * size_t(F.dims.y) + size_t(c.y + y)) * size_t(F.dims.x) + size_t(c.x + x)];
   };
-  float ws[4], dws[4];
-  cr(t, ws, dws);
-  int rows[4];
-  for (int k = 0; k < 4; ++k) rows[k] = std::clamp(i1 - 1 + k, 0, nh - 1);
-  vec2 c(0), dc(0);
-  for (int k = 0; k < 4; ++k) c += ws[k] * P.center[size_t(rows[k])], dc += dws[k] * P.center[size_t(rows[k])];
-  dc /= P.dh;  // per metre
-  const vec2 d(q.x - c.x, q.z - c.y);
-  const float rho = glm::length(d);
-  if (rho < 1e-6f) {
-    float rmin = 1e9f;
-    for (int k = 0; k < na; ++k) {
-      float r = 0;
-      for (int j = 0; j < 4; ++j) r += ws[j] * P.radius[size_t(rows[j] * na + k)];
-      rmin = std::min(rmin, r);
-    }
-    return {-rmin, vec3(1, 0, 0)};
-  }
-  const vec2 rh = d / rho;
-  float a = std::atan2(rh.y, rh.x) / (2.0f * glm::pi<float>()) * float(na);
-  if (a < 0) a += float(na);
-  const int k1 = int(a) % na;
-  float wa[4], dwa[4];
-  cr(a - std::floor(a), wa, dwa);
-  float radius = 0, dRds = 0, dRda = 0;
-  for (int j = 0; j < 4; ++j)
-    for (int k = 0; k < 4; ++k) {
-      const float r = P.radius[size_t(rows[j] * na + (k1 - 1 + k + na) % na)];
-      radius += ws[j] * wa[k] * r;
-      dRds += dws[j] * wa[k] * r;
-      dRda += ws[j] * dwa[k] * r;
-    }
-  const float dRdh = inRange ? dRds / P.dh : 0.0f;
-  const float dRdphi = dRda * float(na) / (2.0f * glm::pi<float>());
-  const float f = rho - radius;
-  const vec2 tang(-rh.y, rh.x);
-  // The angular slope is taken at the surface (radius R), not at the point: deep inside, the estimate stays the radial
-  // depth scaled by the surface's own slope (it does not shrink towards the axis), so it keeps growing with depth.
-  const vec2 gxz = rh - (dRdphi / std::max(radius, 1e-3f)) * tang;
-  const float gy = -dRdh - (inRange ? glm::dot(rh, dc) : 0.0f);
-  vec3 g(gxz.x, gy, gxz.y);
+  float v[2][2][2];
+  for (int z = 0; z < 2; ++z)
+    for (int y = 0; y < 2; ++y)
+      for (int x = 0; x < 2; ++x) v[z][y][x] = at(x, y, z);
+  auto lerp = [](float a, float b, float u) { return a + (b - a) * u; };
+  const float x00 = lerp(v[0][0][0], v[0][0][1], t.x), x10 = lerp(v[0][1][0], v[0][1][1], t.x);
+  const float x01 = lerp(v[1][0][0], v[1][0][1], t.x), x11 = lerp(v[1][1][0], v[1][1][1], t.x);
+  const float y0 = lerp(x00, x10, t.y), y1 = lerp(x01, x11, t.y);
+  float gap = lerp(y0, y1, t.z);
+  vec3 g;
+  g.x = lerp(lerp(v[0][0][1] - v[0][0][0], v[0][1][1] - v[0][1][0], t.y), lerp(v[1][0][1] - v[1][0][0], v[1][1][1] - v[1][1][0], t.y), t.z);
+  g.y = lerp(x10 - x00, x11 - x01, t.z);
+  g.z = y1 - y0;
+  const float outside = glm::length((s - sc) * F.cell);
+  if (outside > 0) gap += outside, g += (s - sc);
   const float gl = glm::length(g);
-  float gap = f / gl;
-  g /= gl;
-  const float beyond = s < 0 ? -s * P.dh : s > float(nh - 1) ? (s - float(nh - 1)) * P.dh : 0.0f;
-  if (beyond > 0) {
-    const vec3 out(0, s < 0 ? -1.0f : 1.0f, 0);
-    if (gap < 0) gap += beyond, g = glm::normalize(g + out);
-    else {
-      const float r = std::sqrt(gap * gap + beyond * beyond);
-      g = glm::normalize(g * gap + out * beyond);
-      gap = r;
-    }
-  }
-  return {gap, g};
+  return {gap, gl > 1e-12f ? g / gl : vec3(0, 1, 0)};
 }
 
 
@@ -563,9 +616,16 @@ BodyClearanceModel bodyClearanceModel(const Skeleton& sk, const std::vector<Skin
       return glm::distance(p, a + t * (b - a));
     };
     const size_t stride = std::max<size_t>(1, armCand[s].size() / 600);
-    for (size_t i = 0; i < armCand[s].size(); i += stride) {
+    // The post-pass (T-040r1) takes the arm surface at 3 mm spacing (one vertex per 3 mm cell): a sleeve puff or cuff
+    // that a sparse subsample misses is exactly what presses into the body.
+    std::set<std::tuple<long, long, long>> welded;
+    for (size_t i = 0; i < armCand[s].size(); ++i) {
       const SkinnedMesh& m = *armCand[s][i].m;
       const size_t v = armCand[s][i].v;
+      const vec3 key = glm::floor(m.rest.positions[v] / 0.003f);  // one vertex per 3 mm cell
+      const bool dense = welded.insert({std::lround(key.x), std::lround(key.y), std::lround(key.z)}).second;
+      const bool sparse = i % stride == 0;
+      if (!dense && !sparse) continue;
       ArmPoint P;
       const vec3 p = m.rest.positions[v];
       for (int k = 0; k < 4; ++k) {
@@ -584,21 +644,29 @@ BodyClearanceModel bodyClearanceModel(const Skeleton& sk, const std::vector<Skin
       // The elbow half of the forearm counts with the upper arm: an elbow rests against the body's side.
       const float tf = glm::dot(p - sf, sh - sf) / std::max(1e-9f, glm::dot(sh - sf, sh - sf));
       P.part = dh <= df && dh <= du ? 2 : (df <= du && tf >= 0.5f) ? 1 : 0;
-      A.points.push_back(P);
+      if (sparse) A.points.push_back(P);
+      if (dense) A.dense.push_back(P);
     }
   }
   // Resting contact: an arm point already inside a body section at rest (a sleeve under a vest's armhole, a puff
   // pressed against the side) may stay as deep as it rests, never deeper; every other point keeps the margin.
   std::vector<mat4> rest(sk.bones.size());
   for (size_t b = 0; b < sk.bones.size(); ++b) rest[b] = glm::translate(mat4(1), sk.bones[b].head);
-  M.profile = buildTorsoProfile(sk, meshes, region, bottom.y);
+  M.field = buildTorsoField(sk, meshes, region, bottom.y);
   for (int s = 0; s < 2; ++s)
     for (ArmPoint& P : M.arm[s].points) {
       float g = 1e9f;
       for (const BodyCapsule& C : M.body) g = std::min(g, sectionGap(C, rest[size_t(C.bone)], skinPoint(P, rest), s == 0 ? 'L' : 'R').gap);
       P.allowance = std::min(0.0f, g - kArmBodyMargin);
       // (20 microns below the exact value: posed and rest evaluations differ by float rounding)
-      P.restGap = (M.profile.valid ? torsoProfileGap(M.profile, skinPoint(P, rest)).gap : g) - 2e-5f;
+      P.restGap = (M.field.valid ? torsoFieldGap(M.field, skinPoint(P, rest)).gap : g) - 2e-5f;
+    }
+  for (int s = 0; s < 2; ++s)
+    for (ArmPoint& P : M.arm[s].dense) {
+      float g = 1e9f;
+      if (!M.field.valid)
+        for (const BodyCapsule& C : M.body) g = std::min(g, sectionGap(C, rest[size_t(C.bone)], skinPoint(P, rest), s == 0 ? 'L' : 'R').gap);
+      P.restGap = (M.field.valid ? torsoFieldGap(M.field, skinPoint(P, rest)).gap : g) - 2e-5f;
     }
   M.valid = true;
   static std::atomic<unsigned long long> fits{0};
@@ -687,8 +755,8 @@ struct BodyFrames {
 };
 BodyFrames bodyFrames(const BodyClearanceModel& M, const std::vector<mat4>& G) {
   BodyFrames B;
-  if (M.profile.valid) {
-    for (int b : M.profile.bones) B.profG.push_back(G[size_t(b)]), B.profInv.push_back(glm::inverse(G[size_t(b)]));
+  if (M.field.valid) {
+    for (int b : M.field.bones) B.profG.push_back(G[size_t(b)]), B.profInv.push_back(glm::inverse(G[size_t(b)]));
     return B;
   }
   for (const BodyCapsule& C : M.body) B.G.push_back(G[size_t(C.bone)]), B.inv.push_back(glm::inverse(G[size_t(C.bone)]));
@@ -697,7 +765,7 @@ BodyFrames bodyFrames(const BodyClearanceModel& M, const std::vector<mat4>& G) {
 // Gap of a world point to the post-pass body: the profile carried by each of its bones, blended by the bones' row
 // weights at the point's height in that bone's frame (the sections when the character has no profile).
 SectionGap postPassGap(const BodyClearanceModel& M, const BodyFrames& B, vec3 p, char side) {
-  const TorsoProfile& P = M.profile;
+  const TorsoField& P = M.field;
   if (!P.valid) {
     SectionGap best{1e9f, vec3(0)};
     for (size_t k = 0; k < M.body.size(); ++k) {
@@ -706,24 +774,28 @@ SectionGap postPassGap(const BodyClearanceModel& M, const BodyFrames& B, vec3 p,
     }
     return best;
   }
-  float gap = 0, wsum = 0;
-  vec3 grad(0);
+  // Rest coordinates of the point as carried by each torso bone (skinning: G_b (rest - head_b)), blended with the
+  // bones' weights at that height (an inverse of the torso's skinning), then one field lookup; the gradient goes
+  // back to the world with the blended rotation.
+  vec3 rest(0);
+  mat3 rot(0.0f);
+  float wsum = 0;
   for (size_t b = 0; b < P.bones.size(); ++b) {
-    // rest coordinates as if carried rigidly by the bone (skinning: G_b (rest - head_b))
-    const vec3 rest = vec3(B.profInv[b] * vec4(p, 1)) + P.heads[b];
-    const float s = std::clamp((rest.y - P.h0) / P.dh, 0.0f, float(P.nh - 1));
+    const vec3 q = vec3(B.profInv[b] * vec4(p, 1)) + P.heads[b];
+    const float s = std::clamp((q.y - P.h0) / P.dh, 0.0f, float(P.nh - 1));
     const int i0 = std::min(int(s), std::max(0, P.nh - 2)), i1 = std::min(i0 + 1, P.nh - 1);
     const float* W = &P.weight[b * size_t(P.nh)];
     const float w = glm::mix(W[i0], W[i1], s - float(i0));
     if (w <= 1e-4f) continue;
-    const ProfileGap pg = torsoProfileGap(P, rest);
-    gap += w * pg.gap;
-    grad += w * (mat3(B.profG[b]) * pg.grad);
+    rest += w * q;
+    rot += w * mat3(B.profG[b]);
     wsum += w;
   }
   if (wsum <= 0) return {1e9f, vec3(0)};
+  const ProfileGap pg = torsoFieldGap(P, rest / wsum);
+  const vec3 grad = rot * pg.grad;
   const float gl = glm::length(grad);
-  return {gap / wsum, gl > 1e-9f ? grad / gl : vec3(side == 'L' ? 1.0f : -1.0f, 0, 0)};
+  return {pg.gap, gl > 1e-9f ? grad / gl : vec3(side == 'L' ? 1.0f : -1.0f, 0, 0)};
 }
 bool postPassPoint(const ArmPoint& P, const ArmPostPassOptions& o) {
   return !(P.part == 0 && P.along < o.armpit) && P.followUpper >= 0.5f;
@@ -744,11 +816,15 @@ struct PointGap {
   vec3 p, n;
   float gap;
 };
+const std::vector<ArmPoint>& passPoints(const ArmModel& A) { return A.dense.empty() ? A.points : A.dense; }
 void pointGaps(const BodyClearanceModel& M, const BodyFrames& B, const std::vector<mat4>& G, const ArmModel& A, char side,
-               const ArmPostPassOptions& o, std::vector<PointGap>& out) {
-  out.resize(A.points.size());
-  for (size_t i = 0; i < A.points.size(); ++i) {
-    const ArmPoint& P = A.points[i];
+               const ArmPostPassOptions& o, std::vector<PointGap>& out, const std::vector<int>* subset = nullptr) {
+  const std::vector<ArmPoint>& pts = passPoints(A);
+  out.resize(pts.size());
+  const size_t n = subset ? subset->size() : pts.size();
+  for (size_t k = 0; k < n; ++k) {
+    const size_t i = subset ? size_t((*subset)[k]) : k;
+    const ArmPoint& P = pts[i];
     if (!postPassPoint(P, o)) {
       out[i].gap = 1e9f;
       continue;
@@ -800,7 +876,7 @@ bool solveSpd(float (&A)[N][N], float (&b)[N], float (&x)[N]) {
 float armBodyGap(const BodyClearanceModel& M, const std::vector<mat4>& G, char side, const ArmPostPassOptions& o) {
   if (!M.valid) return 1e9f;
   const ArmModel& A = M.arm[side == 'L' ? 0 : 1];
-  if (A.points.empty()) return 1e9f;
+  if (passPoints(A).empty()) return 1e9f;
   std::vector<PointGap> g;
   pointGaps(M, bodyFrames(M, G), G, A, side, o, g);
   return worstGap(g);
@@ -843,6 +919,11 @@ ArmPostPassResult armPostPass(const Skeleton& sk, const BodyClearanceModel& M, c
       any |= gaps[i].gap < T;
     }
     if (!any) return;
+    // The points that can take part: within 4 cm of their target at the stage start (a correction does not move the
+    // arm further than that towards the body); the others keep their start gaps.
+    std::vector<int> near;
+    for (size_t i = 0; i < gaps.size(); ++i)
+      if (gaps[i].gap < T + 0.04f) near.push_back(int(i));
     const float kh = swing ? 1.0f : keepHand;
     const vec3 sh0(G[size_t(A.upper)][3]), el0(G[size_t(A.fore)][3]), wr0(G[size_t(A.hand)][3]);
     const vec3 u = glm::length(wr0 - sh0) > 1e-6f ? glm::normalize(wr0 - sh0) : vec3(0, -1, 0);
@@ -877,7 +958,6 @@ ArmPostPassResult armPostPass(const Skeleton& sk, const BodyClearanceModel& M, c
       g = boneGlobals(sk, p, world);
     };
     // The largest deficit (target - gap) over the points: continuous in the pose; <= 0 clears every point.
-    constexpr float kTau = 0.0003f;  // width of the direction weights' fade below a point's target
     auto maxDeficit = [&](const std::vector<PointGap>& pg) {
       float mx = -1e9f;
       for (size_t i = 0; i < pg.size(); ++i)
@@ -898,17 +978,18 @@ ArmPostPassResult armPostPass(const Skeleton& sk, const BodyClearanceModel& M, c
       if (mx <= 1e-5f) break;
       apply(x, trial, g);
       const vec3 sh(g[size_t(A.upper)][3]), el(g[size_t(A.fore)][3]);
+      // Direction: the deficit-weighted gradient of the points' gaps (the rotation that lifts the points below their
+      // target fastest, the elbow weighted by its forearm share). The weights are the squared deficit (fading to 0 at
+      // the target), so the direction does not flip when the deepest point changes.
       vec3 ds(0);
       float dt = 0, de = 0, wsum = 0;
-      for (size_t i = 0; i < cur.size(); ++i) {
-        if (cur[i].gap >= 1e8f) continue;
-        // direction weights: the squared deficit (all points below their target, fading to 0 at it), so the direction
-        // does not flip when the deepest point changes
-        const float dfc = target[i] - cur[i].gap + 2 * kTau;
+      for (int i : near) {
+        if (cur[size_t(i)].gap >= 1e8f) continue;
+        const float dfc = target[size_t(i)] - cur[size_t(i)].gap + 0.0006f;
         if (dfc <= 0) continue;
         const float w = dfc * dfc;
-        const ArmPoint& P = A.points[i];
-        const vec3 q = cur[i].p, nrm = cur[i].n;
+        const ArmPoint& P = passPoints(A)[size_t(i)];
+        const vec3 q = cur[size_t(i)].p, nrm = cur[size_t(i)].n;
         if (swing) dt += w * std::clamp(P.followUpper - P.followHand * kh, 0.0f, 1.0f) * glm::dot(u, glm::cross(q - sh, nrm));
         else {
           ds += w * P.followUpper * glm::cross(q - sh, nrm);
@@ -929,10 +1010,10 @@ ArmPostPassResult armPostPass(const Skeleton& sk, const BodyClearanceModel& M, c
         v.swing = std::clamp(v.swing + t * dir.swing, -o.maxSwing, o.maxSwing);
         return v;
       };
-      std::vector<PointGap> pg;
+      std::vector<PointGap> pg = cur;
       auto D = [&](float t) {
         apply(along(t), trial, g);
-        pointGaps(M, B, g, A, side, o, pg);
+        pointGaps(M, B, g, A, side, o, pg, &near);
         return maxDeficit(pg);
       };
       // Newton steps until the soft deficit crosses 0, then the crossing refined in its bracket (Illinois): the root
@@ -951,11 +1032,27 @@ ArmPostPassResult armPostPass(const Skeleton& sk, const BodyClearanceModel& M, c
           hi = tn, Dhi = Dn;
           break;
         }
+        if (Dn >= Dt) {
+          // The deficit stopped falling: a local minimum lies in [t - step, tn]. Stop there (golden section) and let the
+          // next round's direction take the rest: the stop moves continuously with the pose, a jump to a later
+          // crossing would not.
+          float a = std::max(0.0f, t - stepT), b = tn;
+          constexpr float g = 0.618034f;
+          float c1 = b - g * (b - a), c2 = a + g * (b - a), f1 = D(c1), f2 = D(c2);
+          for (int k = 0; k < 14 && b - a > 2e-5f; ++k) {
+            if (f1 <= f2) b = c2, c2 = c1, f2 = f1, c1 = b - g * (b - a), f1 = D(c1);
+            else a = c1, c1 = c2, f1 = f2, c2 = a + g * (b - a), f2 = D(c2);
+          }
+          const float tm = 0.5f * (a + b);
+          if (D(tm) <= 0) hi = tm, Dhi = D(tm);  // the minimum already clears: refine the crossing before it
+          else t = tm;
+          break;
+        }
         t = lo = tn, Dt = Dlo = Dn;
       }
       if (hi > 0) {
         int sideKept = 0;
-        for (int it = 0; it < 20 && hi - lo > 1e-6f; ++it) {
+        for (int it = 0; it < 16 && hi - lo > 1e-6f; ++it) {
           float m = (lo * Dhi - hi * Dlo) / (Dhi - Dlo);
           if (!(m > lo && m < hi)) m = 0.5f * (lo + hi);
           const float Dm = D(m);
@@ -975,7 +1072,7 @@ ArmPostPassResult armPostPass(const Skeleton& sk, const BodyClearanceModel& M, c
       if (t <= 0) break;
       x = along(t);
       apply(x, trial, g);
-      pointGaps(M, B, g, A, side, o, cur);
+      pointGaps(M, B, g, A, side, o, cur, &near);
     }
     if (x.swing == 0 && x.elbow == 0 && x.shoulder == vec3(0)) return;
     apply(x, pose, G);

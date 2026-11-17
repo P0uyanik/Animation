@@ -90,38 +90,41 @@ struct ArmPoint {
 };
 struct ArmModel {
   int upper = -1, fore = -1, hand = -1;
-  std::vector<ArmPoint> points;
+  std::vector<ArmPoint> points;  // interaction solver (T-030): an even subsample (at most ~600)
+  std::vector<ArmPoint> dense;   // pose post-pass (T-040r1): the arm surface, one vertex per 3 mm cell
 };
-// Post-pass body model (T-040r1): the torso's own skinned surface as a radius profile around the spine, built once at
+// Post-pass body model (T-040r1): a coarse signed distance field of the torso's own skinned surface, built once at
 // character load from the package's body triangles (every vertex >= 90 % torso-carried, the hips' leg-carried sides
-// down to the pelvis bottom; hair excluded), in the rest frame. Rows every `dh` metres up the body (+Y), each with its
-// own centre (side, forward) and `na` angular bins: the outermost surface hit of a horizontal ray from the centre
-// (garments over skin included). Per torso bone (hips, spine, chest and their helpers): the mean skin weight of the
-// row's body vertices, so a point is measured against the profile carried rigidly by each bone and the per-bone gaps
-// are blended with those weights (the field follows the torso the way its skinned surface does). Used by the post-pass
-// only; the interaction solver keeps the sections (`sectionGap`).
-struct TorsoProfile {
+// down to the pelvis bottom, or torso-dominant with nothing on the arms; hair excluded; garments over skin included),
+// in the rest frame. Within 3 cm of the surface it is the exact distance to the nearest triangle, signed by the
+// angle-weighted pseudo-normal (a nearest feature on an open boundary counts as outside, as the T-040 mesh
+// measurement does); beyond, the sign of the nearest surface with a chamfer distance. Per torso bone (hips, spine,
+// chest and their helpers): the mean skin weight of the body vertices per height row, so a point is measured against
+// the field carried rigidly by each bone and the per-bone distances are blended with those weights (the field follows
+// the torso the way its skinned surface does). Used by the post-pass only; the interaction solver keeps the sections
+// (`sectionGap`).
+struct TorsoField {
   bool valid = false;
-  float h0 = 0, dh = 0.005f;  // height (rest +Y) of row 0 and the row spacing
-  int nh = 0, na = 72;
-  std::vector<vec2> center;   // per row: (x, z) of the ray origin
-  std::vector<float> radius;  // nh * na: surface radius per row and angle (angle 0 = +X, increasing towards +Z)
-  std::vector<int> bones;     // torso bones carrying the profile
+  vec3 origin{0};             // rest-frame position of grid cell (0, 0, 0)
+  float cell = 0.006f;        // grid spacing (metres)
+  glm::ivec3 dims{0};
+  std::vector<float> dist;    // signed distance per cell (< 0 inside), x fastest
+  float h0 = 0, dh = 0.01f;   // height (rest +Y) of weight row 0 and the row spacing
+  int nh = 0;
+  std::vector<int> bones;     // torso bones carrying the field
   std::vector<vec3> heads;    // their rest heads
   std::vector<float> weight;  // bones.size() * nh: normalised skin weight of each bone per row
   size_t triangles = 0;       // body triangles it was built from
 };
-// Signed distance estimate (metres, < 0 inside) of a rest-frame point to the profile and its outward gradient (rest
-// frame). First order: (rho - R) / |grad (rho - R)| inside the height range; past an end, the distance beyond it is
-// added (inside) or combined (outside).
+// Signed distance (metres, < 0 inside; trilinear) of a rest-frame point to the field and its outward gradient.
 struct ProfileGap {
   float gap;
   vec3 grad;
 };
-ProfileGap torsoProfileGap(const TorsoProfile& profile, vec3 restPoint);
+ProfileGap torsoFieldGap(const TorsoField& field, vec3 restPoint);
 struct BodyClearanceModel {
   std::vector<BodyCapsule> body;
-  TorsoProfile profile;  // post-pass body (T-040r1); invalid: the post-pass falls back to the sections
+  TorsoField field;  // post-pass body (T-040r1); invalid: the post-pass falls back to the sections
   ArmModel arm[2];  // 0 = L, 1 = R
   bool valid = false;
   std::string source;  // "mesh" (fitted to skinned vertices) or "skeleton" (proportions only, no arm points)
@@ -159,7 +162,7 @@ constexpr float kArmBodyMargin = 0.009f;  // clearance kept between the arm and 
 // A pose post-pass for every character and every source of arm motion (clips, base/auto idle, emotions, IK,
 // interactions): after the full pose is evaluated, upper arm (past the armpit band), forearm and hand are pushed out
 // of the body by the smallest change of the shoulder and elbow rotations. The body is the character's own skinned
-// torso surface (TorsoProfile, T-040r1), not the interaction sections. The result is a pure function of the evaluated
+// torso surface (TorsoField, T-040r1), not the interaction sections. The result is a pure function of the evaluated
 // pose (no state): deterministic and frame-rate independent. Continuity in time comes from the solver: a fixed,
 // damped Gauss-Newton iteration from the evaluated pose, every arm point near the body weighted by how far it is below
 // its own target (a point entering the band starts with weight 0), so the corrected rotations are a continuous
@@ -172,14 +175,14 @@ constexpr float kArmBodyMargin = 0.009f;  // clearance kept between the arm and 
 // that needs path planning, not a pose pass); `keepHand` (IK or orientation-constraint weight) keeps the hand's world
 // rotation (a held cup stays upright).
 struct ArmPostPassOptions {
-  // Output floor above the mesh profile. The profile is the skinned surface itself; the floor covers the arm-surface
-  // subsampling and the profile's linear interpolation between rays.
-  float margin = 0.003f;
-  float band = 0.004f;      // width of the C1 blend above the margin (metres)
+  // Output floor above the torso field (the skinned surface itself); it covers the arm-surface subsampling and the
+  // field's trilinear interpolation.
+  float margin = 0.0004f;
+  float band = 0.0008f;     // width of the C1 blend above the margin (metres)
   float armpit = 0.4f;      // upper-arm points nearer the shoulder pivot than this fraction are the armpit band:
                             // they fold with the shoulder joint and are not moved for (reported in armClearance only)
   int rounds = 3;           // direction + angle rounds per stage (fixed: the result stays a continuous function)
-  int iterations = 40;      // Newton steps per round at most
+  int iterations = 24;      // Newton steps per round at most
   float maxStep = 0.03f;    // largest angle change per Newton step (radians): the first crossing is bracketed
   float maxAngle = 1.2f;    // longest correction per round (radians)
   float maxSwing = 0.35f;   // longest swing of a pinned arm (radians): a held hand is not worth a large elbow turn
