@@ -21,5 +21,6 @@ means none. Branch is the task's branch; a task branch without a row falls back 
 | T-061 | C | `t-061-claude-animation-principles` | `engine/anim/**`, `engine/scene/clip_layers.cpp`, `engine/scene/actions.cpp`, `engine/scene/scene.{h,cpp}`, `engine/scene/emotion.{h,cpp}`, `engine/CMakeLists.txt`, `tests/test_anim_principles.cpp`, `tests/CMakeLists.txt`, `tools/animcheck/**`, `tools/check_all.py`, `tools/regression_paths.txt`, `content/clips/**`, `docs/evaluation/animation/T-061/**` | — | — |
 | T-064 | A | `t-064-claude-fidelity-fixes` | `tools/fidelity/**`, `docs/evaluation/characters/fidelity_baseline.json`, `docs/CHARACTER_FIDELITY.md`, `assets/characters/*/references/annotations/**`, `docs/evaluation/characters/T-064/**` | — | — |
 | T-065 | B | `t-065-claude-face-v2` | `pipeline/charsys/body_generic.py`, `pipeline/charsys/body_helpers.py`, `pipeline/charsys/face_generic.py`, `pipeline/charsys/face_features.py`, `pipeline/charsys/face_library/**`, `pipeline/charsys/tests/test_face_v2*.py`, `docs/evaluation/characters/T-065/**` | `pipeline/charsys/versions.py` (stable) | `face_generic`, `body_generic` |
+| T-069 | — | `t-069-claude-legacy-audit` | `docs/evaluation/review/T-069/**` | — | — |
 
 Supervisor-only files: docs/process/TASK_LOG.md, docs/ROADMAP.md, docs/process/OWNER_DECISIONS.md, docs/tasks/**.
