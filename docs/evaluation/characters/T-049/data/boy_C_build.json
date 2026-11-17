@@ -1,0 +1,49 @@
+{
+ "character": "boy_yellow_hoodie",
+ "approach": "C",
+ "label": "hybrid: felted base volume + 55 broad felt clumps (crown tufts, fringe chunks, temples, back)",
+ "hair_build_s": 0.42,
+ "total_s": 0.82,
+ "hair_vertices": 47375,
+ "hair_faces": 47892,
+ "fibre_points": 371958,
+ "chain_bones": 82,
+ "peak_rss_mb": 562.8,
+ "structures": {
+  "cap": {
+   "type": "scalp_cap",
+   "faces": 8058
+  },
+  "base": {
+   "shape": "gather",
+   "grid": [
+    160,
+    40
+   ],
+   "type": "felt_volume"
+  },
+  "crown": {
+   "clumps": 6,
+   "type": "study_clumps"
+  },
+  "top": {
+   "clumps": 14,
+   "type": "study_clumps"
+  },
+  "fringe": {
+   "clumps": 6,
+   "type": "study_clumps"
+  },
+  "sides": {
+   "clumps": 10,
+   "type": "study_clumps"
+  },
+  "back": {
+   "clumps": 19,
+   "type": "study_clumps"
+  }
+ },
+ "fused": null,
+ "spec_lines": 528,
+ "blend_mb": 4.32
+}

@@ -1,0 +1,7 @@
+{
+ "override": {
+  "generators": {
+   "exporter": "export/5"
+  }
+ }
+}

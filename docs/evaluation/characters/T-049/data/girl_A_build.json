@@ -1,0 +1,72 @@
+{
+ "character": "girl_auburn_bun_glasses",
+ "approach": "A",
+ "label": "strand/lock groom: yarn locks swept to a yarn bun, yarn fringe locks, 42 felt ringlet locks",
+ "hair_build_s": 2.01,
+ "total_s": 10.91,
+ "hair_vertices": 209323,
+ "hair_faces": 210846,
+ "fibre_points": 785316,
+ "chain_bones": 189,
+ "peak_rss_mb": 1287.4,
+ "structures": {
+  "cap": {
+   "type": "scalp_cap",
+   "faces": 14706
+  },
+  "bun": {
+   "buns": 1,
+   "ropes": 5,
+   "type": "bun"
+  },
+  "sweep_front": {
+   "locks": 30,
+   "type": "sweep"
+  },
+  "sweep_side_l": {
+   "locks": 12,
+   "type": "sweep"
+  },
+  "sweep_side_r": {
+   "locks": 12,
+   "type": "sweep"
+  },
+  "sweep_back": {
+   "locks": 26,
+   "type": "sweep"
+  },
+  "fringe": {
+   "locks": 7,
+   "type": "fringe"
+  },
+  "side_curls": {
+   "locks": 8,
+   "style": "curly",
+   "finish": "felt",
+   "type": "locks"
+  },
+  "back_curls": {
+   "locks": 24,
+   "style": "curly",
+   "finish": "felt",
+   "type": "locks"
+  },
+  "nape_curls": {
+   "locks": 10,
+   "style": "curly",
+   "finish": "felt",
+   "type": "locks"
+  },
+  "band": {
+   "radius_m": 0.0754,
+   "type": "tie"
+  },
+  "flowers": {
+   "flowers": 3,
+   "type": "flowers"
+  }
+ },
+ "fused": null,
+ "spec_lines": 699,
+ "blend_mb": 21.39
+}
