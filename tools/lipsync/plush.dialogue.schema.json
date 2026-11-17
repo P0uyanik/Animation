@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "format": {
+      "const": "plush.dialogue/1"
+    },
+    "lines": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "speaker": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "audio": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "start": {
+            "type": "number",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "speaker",
+          "text",
+          "audio",
+          "start"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "format",
+    "lines"
+  ],
+  "additionalProperties": false
+}

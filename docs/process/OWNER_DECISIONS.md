@@ -167,3 +167,12 @@ with the original references as the primary target.
 Start P6 (fidelity tool fixes, T-064) and P1 (face v2, T-065) now; the girl look round (T-059) follows the shared-system
 improvements (face v2, skin T-066, materials T-067). **Visual fidelity to the original references takes priority over
 numerical scores**; the fidelity score supports, never overrides, the owner's side-by-side judgement.
+
+## 2026-11-17: facial geometry
+The characters still have significant facial geometry issues (chin, jawline, overall face shape). The underlying 3D
+head/face geometry must be improved to match the original references; added to face v2 (T-065) as its first criterion.
+
+## 2026-11-17: GitHub Free, public repository; hair v3 merged as a system, round 2
+- The owner is on GitHub Free and made the repository public again to avoid Actions limits (CI and rulesets as before).
+- Hair v3 (`groom/2`) is approved for merging as a technical system; round 2 (T-070) improves its visual fidelity.
+  Current approved character versions stay unchanged until the owner approves new renders.
