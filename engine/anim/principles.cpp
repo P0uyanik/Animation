@@ -172,10 +172,11 @@ quat elbowOpening(const Skeleton& sk, const Pose& pose, int upperArm, int forear
   if (glm::length2(b - a) < 1e-10f || glm::length2(c - b) < 1e-10f) return quat(1, 0, 0, 0);
   const vec3 u = glm::normalize(b - a), v = glm::normalize(c - b);
   const float bend = glm::degrees(std::acos(std::clamp(glm::dot(u, v), -1.0f, 1.0f)));
-  const float open = std::min(degrees, bend - 2.0f);  // never past straight
-  if (open <= 0.0f) return quat(1, 0, 0, 0);
+  // opening: never past straight; closing (negative): never beyond 150 degrees of bend
+  const float open = degrees > 0 ? std::min(degrees, bend - 2.0f) : std::max(degrees, bend - 150.0f);
+  if ((degrees > 0 && open <= 0.0f) || (degrees < 0 && open >= 0.0f)) return quat(1, 0, 0, 0);
   const vec3 axis = glm::cross(v, u);
-  if (glm::length2(axis) < 1e-12f) return quat(1, 0, 0, 0);
+  if (glm::length2(axis) < 1e-12f || bend < 2.0f) return quat(1, 0, 0, 0);
   const quat rg = glm::angleAxis(glm::radians(open), glm::normalize(axis));  // turns v towards u (world)
   const int parent = sk.bones[size_t(forearm)].parent;
   const quat gp = parent >= 0 ? glm::normalize(glm::quat_cast(mat3(g[size_t(parent)]))) : quat(1, 0, 0, 0);

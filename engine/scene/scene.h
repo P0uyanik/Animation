@@ -278,6 +278,14 @@ class SceneEvaluator {
   // Clip playback data of character c for a reference pose: the package's generated block if it matches the
   // reference version, else derived from the skeleton (same rules).
   RetargetData retargetData(size_t c, const ReferencePose& ref) const;
+  // Planned clip actions of character c (T-061, read only: tests and tools): timing, blends and breakdowns.
+  struct ClipLayerPlan {
+    std::string clip;
+    double start = 0, end = 0, blendIn = 0, blendOut = 0, succession = 0, clockIn = 0, clockOut = 0;
+    bool principles = false, warped = false;
+    float breakIn[2] = {0, 0}, breakOut[2] = {0, 0};
+  };
+  std::vector<ClipLayerPlan> clipLayerPlans(size_t c) const;
   bool hasClipLayers(size_t c) const { return (c < clipLayers_.size() && !clipLayers_[c].empty()) || autoIdleLayer(c); }
   // Arm-body clearance of character c's arm `side` at a frame (gap < 0: the arm is inside a body capsule), and the
   // body model it is measured against (T-030, scene/interaction.h).

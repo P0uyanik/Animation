@@ -93,6 +93,31 @@ void SceneEvaluator::applyBreakdowns(size_t c, const ClipLayer& L, double f, Pos
   }
 }
 
+std::vector<SceneEvaluator::ClipLayerPlan> SceneEvaluator::clipLayerPlans(size_t c) const {
+  std::vector<ClipLayerPlan> out;
+  if (c >= clipLayers_.size()) return out;
+  for (const ClipLayer& L : clipLayers_[c]) {
+    if (L.base || L.tier != 2) continue;
+    ClipLayerPlan p;
+    p.clip = L.clip ? L.clip->name : "";
+    p.start = L.start;
+    p.end = L.end;
+    p.blendIn = L.blendIn;
+    p.blendOut = L.blendOut;
+    p.succession = L.succession;
+    p.clockIn = L.clockIn;
+    p.clockOut = L.clockOut;
+    p.principles = L.principles;
+    p.warped = L.warp && !L.warp->isLinear();
+    for (int s = 0; s < 2; ++s) {
+      p.breakIn[s] = L.breakIn[s];
+      p.breakOut[s] = L.breakOut[s];
+    }
+    out.push_back(p);
+  }
+  return out;
+}
+
 RetargetData SceneEvaluator::retargetData(size_t c, const ReferencePose& ref) const {
   const CharacterAsset& asset = characters_[c].asset;
   if (asset.retargetBlock.is_object()) {

@@ -471,16 +471,21 @@ Result<void> SceneEvaluator::compileActionsBody() {
           float chord = 0;
           const float arc0 = arcWith(0, &chord);
           if (chord < principles_.breakdownMinChordM || arc0 >= principles_.minArc) continue;
-          float lo = 0, hi = float(principles_.breakdownMaxDeg);
-          if (arcWith(hi, nullptr) < principles_.minArc) {
-            *slot = hi;
+          // the direction (open or bend the elbow) that curves the path more; then the smallest angle reaching minArc
+          const float maxDeg = float(principles_.breakdownMaxDeg);
+          const float aOpen = arcWith(maxDeg, nullptr), aBend = arcWith(-maxDeg, nullptr);
+          const float sign = aOpen >= aBend ? 1.0f : -1.0f, best = std::max(aOpen, aBend);
+          if (best <= arc0 + 1e-4f) continue;  // neither helps: leave the blend as it is
+          if (best < principles_.minArc) {
+            *slot = sign * maxDeg;
             continue;
           }
+          float lo = 0, hi = maxDeg;
           for (int it = 0; it < 7; ++it) {
             const float mid = 0.5f * (lo + hi);
-            (arcWith(mid, nullptr) >= principles_.minArc ? hi : lo) = mid;
+            (arcWith(sign * mid, nullptr) >= principles_.minArc ? hi : lo) = mid;
           }
-          *slot = hi;
+          *slot = sign * hi;
         }
       }
       return 0;
@@ -505,12 +510,16 @@ Result<void> SceneEvaluator::compileActionsBody() {
     Track& w = gen->tracks[ik + ".weight"];
     const double prevKey = w.keys.empty() ? -1e30 : w.keys.back().frame;
     w.keys.erase(std::remove_if(w.keys.begin(), w.keys.end(), [&](const Key& k) { return k.frame >= inStart - 1e-9 && k.frame <= zero + 1e-9; }), w.keys.end());
-    double inEnd = full - lag, outEnd = zero - lag;
+    // In: the shoulder leads and the elbow trails by `lag` (weight track shifted). Out: the elbow opens first and the
+    // shoulder follows (the ".lag" key turns negative), so the hand swings back round the shoulder instead of
+    // dropping straight down; both end at the authored frames.
+    double inEnd = full - lag, outBegin = outStart + lag;
     if (inEnd <= inStart + 1) inEnd = full;  // no room for the lag
-    if (outEnd <= outStart + 1) outEnd = zero;
+    if (outBegin >= zero - 1) outBegin = outStart;
+    const double outEnd = zero;
     // amplitude: arm rotation between the pose without the IK and with it (measured with plain ramps first)
     easedKeys(ik + ".weight", inStart, inEnd, 0, 1);
-    easedKeys(ik + ".weight", outStart, outEnd, 1, 0);
+    easedKeys(ik + ".weight", outBegin, outEnd, 1, 0);
     const auto [ampIn, ampOut] = measured([&] {
       const auto a = kinematicGlobals(c, inStart, nullptr), b = kinematicGlobals(c, full, nullptr);
       const auto d = kinematicGlobals(c, zero, nullptr), e = kinematicGlobals(c, outStart, nullptr);
@@ -533,7 +542,10 @@ Result<void> SceneEvaluator::compileActionsBody() {
       }
     }
     (void)needOut;  // the ramp out keeps its authored frames: the next action may own the arm right after `zero`
-    if (lag > 0) key(*gen, ik + ".lag", inStart, vec3(float(lag)), Interp::Step);
+    if (lag > 0) {
+      key(*gen, ik + ".lag", inStart, vec3(float(lag)), Interp::Step);
+      key(*gen, ik + ".lag", outStart, vec3(float(outBegin > outStart ? -lag : 0.0)), Interp::Step);
+    }
   };
   auto sortLayers = [&](int c) {  // base clip, emotion layers (by start), clip actions (in action order)
     std::stable_sort(clipLayers_[size_t(c)].begin(), clipLayers_[size_t(c)].end(), [](const ClipLayer& x, const ClipLayer& y) {

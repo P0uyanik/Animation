@@ -32,7 +32,8 @@ struct AnimPrinciples {
   bool easePreservingRetime = true;
   double retimeMaxRate = 1.15;
   // Arcs: a blend whose wrist path deviates less than minArc (fraction of the chord) from a straight line gets a
-  // breakdown: the elbow opens mid-blend (up to breakdownMaxDeg) so the wrist travels round the shoulder.
+  // breakdown: mid-blend the elbow opens or bends further (whichever curves the path; up to breakdownMaxDeg) so the
+  // wrist travels on an arc instead of the straight chord.
   double minArc = 0.10;
   double breakdownMaxDeg = 35.0;
   double breakdownMinChordM = 0.05;  // shorter wrist moves are not given breakdowns
@@ -78,8 +79,8 @@ class TimeWarp {
   std::vector<double> sceneAt_;  // scene offset of clip frame k (ease preserving)
 };
 
-// Rotation (applied to the forearm's local rotation) that opens the elbow by `degrees` in the current pose; identity
-// when the arm is (nearly) straight or the bones are missing.
+// Rotation (applied to the forearm's local rotation) that opens the elbow by `degrees` in the current pose (negative:
+// bends it further, up to 150 degrees); identity when the arm is (nearly) straight or the bones are missing.
 quat elbowOpening(const Skeleton& sk, const Pose& pose, int upperArm, int forearm, int hand, float degrees);
 
 // Wrist-path measures used for breakdowns and by the tests: deviation of a polyline from its chord / chord length.

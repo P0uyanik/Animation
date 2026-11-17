@@ -617,7 +617,13 @@ Result<void> SceneEvaluator::load(const Scene& scene, const EvalOptions& opt) {
   dynamics_.assign(characters_.size(), nullptr);
   for (size_t c = 0; c < characters_.size(); ++c) {
     DynamicsSpec spec = characters_[c].asset.dynamics;
+    // Accessory chains (T-061): the package's attach entries first (so a scene override may address them), then the
+    // scene's own.
+    if (auto r = resolveAccessoryChains(spec, characters_[c].asset.skeleton); !r)
+      return fail(std::format("character '{}': {}", scene_.characters[c].name, r.error().message));
     if (auto r = applyDynamicsOverride(spec, scene_.characters[c].dynamics); !r)
+      return fail(std::format("character '{}': {}", scene_.characters[c].name, r.error().message));
+    if (auto r = resolveAccessoryChains(spec, characters_[c].asset.skeleton); !r)
       return fail(std::format("character '{}': {}", scene_.characters[c].name, r.error().message));
     // Off: nothing, unless chains rest on an anchor bone (then they are posed statically at their anchored targets).
     const bool anchored = std::any_of(spec.chains.begin(), spec.chains.end(), [](const SpringChain& ch) { return !ch.anchorBone.empty(); });
