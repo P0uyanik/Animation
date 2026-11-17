@@ -408,3 +408,184 @@ TEST_CASE("arm-body clearance: the hand-over meeting point keeps both arms outsi
     checkContinuous(*ev, 0, {18, 46}, 1, 90);
   }
 }
+
+// ------------------------------------------------------------- T-040: always-on arm-body clearance (pose post-pass)
+namespace {
+
+const ArmPostPassOptions kPass{};
+
+// Right arm turned about the character's forward axis at the shoulder (and bent at the elbow), on the rest pose.
+Pose armPose(const Skeleton& sk, float shoulderDeg, float elbowDeg) {
+  Pose p = restPose(sk);
+  p.local[size_t(sk.find("upperArm.R"))] = glm::angleAxis(glm::radians(shoulderDeg), vec3(0, 0, 1));
+  p.local[size_t(sk.find("forearm.R"))] = glm::angleAxis(glm::radians(elbowDeg), vec3(1, 0, 0));
+  return p;
+}
+float gapOf(const Skeleton& sk, const BodyClearanceModel& M, const Pose& p) {
+  return armBodyGap(M, boneGlobals(sk, p, mat4(1)), 'R');
+}
+// The sign of the shoulder turn that brings the right arm into the body (towards the character's left, +X).
+float inward(const Skeleton& sk, const BodyClearanceModel& M) {
+  return gapOf(sk, M, armPose(sk, 40, 0)) < gapOf(sk, M, armPose(sk, -40, 0)) ? 1.0f : -1.0f;
+}
+float quatAngle(quat a, quat b) { return 2 * std::acos(std::min(1.0f, std::abs(glm::dot(glm::normalize(a), glm::normalize(b))))); }
+
+}  // namespace
+
+TEST_CASE("arm-body post-pass: a clear pose is not touched; an arm in the body is pushed out minimally") {
+  for (const char* pkg : {kBoy, kGirl}) {
+    Scene scene = baseScene();
+    scene.characters.push_back(character("a", pkg, vec3(0), 0));
+    auto ev = load(scene);
+    const Skeleton& sk = ev->characters()[0].asset.skeleton;
+    const BodyClearanceModel& M = *ev->clearanceModel(0);
+    REQUIRE(M.valid);
+    const float in = inward(sk, M);
+    // Clear poses (rest, arm raised outward): bit for bit the same pose.
+    for (float deg : {0.0f, -20.0f * in}) {
+      Pose p = armPose(sk, deg, 10);
+      const Pose before = p;
+      const ArmPostPassResult r = applyArmBodyClearance(sk, M, mat4(1), 'R', 0, 0, p);
+      CHECK(r.before >= kPass.margin + kPass.band);
+      CHECK_FALSE(r.changed);
+      for (size_t b = 0; b < sk.bones.size(); ++b) CHECK(p.local[b] == before.local[b]);
+    }
+    // An arm swung into the side/belly: out to the margin, no further (minimal), only shoulder/elbow/hand change.
+    float deg = 0;
+    while (gapOf(sk, M, armPose(sk, deg * in, 30)) > -0.015f && deg < 90) deg += 1;
+    Pose p = armPose(sk, deg * in, 30);
+    const Pose before = p;
+    const ArmPostPassResult r = applyArmBodyClearance(sk, M, mat4(1), 'R', 0, 0, p);
+    const float after = gapOf(sk, M, p);
+    MESSAGE(std::string(pkg) << ": swung " << deg << " deg in: gap " << r.before * 1000 << " -> " << after * 1000 << " mm, shoulder "
+                << glm::degrees(quatAngle(p.local[size_t(sk.find("upperArm.R"))], before.local[size_t(sk.find("upperArm.R"))]))
+                << " deg, elbow "
+                << glm::degrees(quatAngle(p.local[size_t(sk.find("forearm.R"))], before.local[size_t(sk.find("forearm.R"))])) << " deg");
+    CHECK(r.before < -0.015f);
+    CHECK(r.changed);
+    CHECK(after >= kPass.margin - 0.0005f);
+    CHECK(after <= kPass.margin + 0.003f);  // minimal: the arm stops at the margin
+    const int keep[3] = {sk.find("upperArm.R"), sk.find("forearm.R"), sk.find("hand.R")};
+    for (size_t b = 0; b < sk.bones.size(); ++b)
+      if (int(b) != keep[0] && int(b) != keep[1] && int(b) != keep[2]) CHECK(p.local[b] == before.local[b]);
+    // Smaller than undoing the swing: the arm keeps most of its acting.
+    CHECK(quatAngle(p.local[size_t(keep[0])], before.local[size_t(keep[0])]) < glm::radians(deg));
+  }
+}
+
+TEST_CASE("arm-body post-pass: continuous and smooth as an arm sweeps into the body (no pop)") {
+  for (const char* pkg : {kBoy, kGirl}) {
+    Scene scene = baseScene();
+    scene.characters.push_back(character("a", pkg, vec3(0), 0));
+    auto ev = load(scene);
+    const Skeleton& sk = ev->characters()[0].asset.skeleton;
+    const BodyClearanceModel& M = *ev->clearanceModel(0);
+    const float in = inward(sk, M);
+    const int hand = sk.find("hand.R");
+    std::vector<vec3> raw, out;
+    std::vector<float> depth;
+    float worstGap = 1e9f, deepest = 1e9f;
+    for (float deg = -10; deg <= 60; deg += 0.25f) {
+      Pose p = armPose(sk, deg * in, 20);
+      raw.push_back(vec3(boneGlobals(sk, p, mat4(1))[size_t(hand)][3]));
+      const ArmPostPassResult r = applyArmBodyClearance(sk, M, mat4(1), 'R', 0, 0, p);
+      deepest = std::min(deepest, r.before);
+      depth.push_back(r.before);
+      worstGap = std::min(worstGap, gapOf(sk, M, p));
+      out.push_back(vec3(boneGlobals(sk, p, mat4(1))[size_t(hand)][3]));
+    }
+    float rawStep = 0, step = 0, rawKink = 0, kink = 0;
+    // Smoothness over the range clips reach (the deepest clip arm measured in the batch-1 shots was 45.5 mm in); a
+    // forearm buried deeper than 50 mm still clears, with up to ~1 mm of second-difference wobble.
+    for (size_t i = 1; i < out.size(); ++i) {
+      if (depth[i] < -0.05f || (i + 1 < out.size() && depth[i + 1] < -0.05f)) continue;
+      rawStep = std::max(rawStep, glm::distance(raw[i], raw[i - 1]));
+      step = std::max(step, glm::distance(out[i], out[i - 1]));
+      if (i + 1 < out.size()) {
+        rawKink = std::max(rawKink, glm::length(raw[i + 1] - 2.0f * raw[i] + raw[i - 1]));
+        kink = std::max(kink, glm::length(out[i + 1] - 2.0f * out[i] + out[i - 1]));
+      }
+    }
+    MESSAGE(std::string(pkg) << ": deepest input gap " << deepest * 1000 << " mm, worst output " << worstGap * 1000 << " mm; wrist step "
+                << step * 1000 << " mm (input " << rawStep * 1000 << "), second difference " << kink * 1000 << " mm (input "
+                << rawKink * 1000 << ")");
+    CHECK(deepest < -0.02f);                         // the sweep does go deep into the body
+    CHECK(worstGap >= kPass.margin - 0.0005f);       // and the output never does
+    CHECK(step <= 2.5f * rawStep);                   // no jump: the corrected wrist moves at the clip's pace
+    CHECK(kink <= 0.75f * rawStep);                  // and its velocity has no step (C1 blend, continuous path)
+  }
+}
+
+TEST_CASE("arm-body post-pass: a pinned (IK) arm keeps its wrist and hand; only the elbow swings") {
+  for (const char* pkg : {kBoy, kGirl}) {
+    Scene scene = baseScene();
+    scene.characters.push_back(character("a", pkg, vec3(0), 0));
+    auto ev = load(scene);
+    const Skeleton& sk = ev->characters()[0].asset.skeleton;
+    const BodyClearanceModel& M = *ev->clearanceModel(0);
+    const float in = inward(sk, M);
+    const int hand = sk.find("hand.R"), fore = sk.find("forearm.R");
+    // Elbow tucked into the side, forearm pointing forward: the wrist is clear, the elbow is not.
+    Pose p = armPose(sk, 0, 0);
+    p.local[size_t(sk.find("upperArm.R"))] = glm::angleAxis(glm::radians(20 * in), vec3(0, 0, 1));
+    p.local[size_t(fore)] = glm::angleAxis(glm::radians(-80.0f), vec3(1, 0, 0));
+    const auto G0 = boneGlobals(sk, p, mat4(1));
+    const ArmPostPassResult r = applyArmBodyClearance(sk, M, mat4(1), 'R', 1, 0, p);
+    const auto G1 = boneGlobals(sk, p, mat4(1));
+    MESSAGE(std::string(pkg) << ": pinned arm gap " << r.before * 1000 << " -> " << r.after * 1000 << " mm");
+    CHECK(glm::distance(vec3(G0[size_t(hand)][3]), vec3(G1[size_t(hand)][3])) < 1e-5f);
+    CHECK(quatAngle(glm::quat_cast(mat3(G0[size_t(hand)])), glm::quat_cast(mat3(G1[size_t(hand)]))) < 1e-3f);
+    CHECK(r.after >= r.before - 1e-4f);
+  }
+}
+
+TEST_CASE("arm-body post-pass in the scene: every frame clear, deterministic, frame-rate independent") {
+  auto sceneAt = [](int fps) {
+    Scene s = baseScene();
+    s.rate = FrameRate{fps, 1};
+    s.frameEnd = 2 * fps;
+    CharacterDesc c = character("a", kGirl, vec3(0), 0);
+    c.life.enabled = false;
+    c.autoIdle = false;
+    s.characters.push_back(c);
+    return s;
+  };
+  // Probe the inward direction, then a clip that swings the right arm into the body and back (over 2 s).
+  Scene probeScene = sceneAt(24);
+  auto probe = load(probeScene);
+  const float in = inward(probe->characters()[0].asset.skeleton, *probe->clearanceModel(0));
+  auto withClip = [&](int fps) {
+    Scene s = sceneAt(fps);
+    Track& t = s.animation.tracks["a/upperArm.R.rot"];
+    t.setKey({1.0, vec3(0, 0, -10 * in), Interp::Smooth});
+    t.setKey({1.0 + fps, vec3(0, 0, 45 * in), Interp::Smooth});
+    t.setKey({1.0 + 2 * fps, vec3(0, 0, -10 * in), Interp::Smooth});
+    s.animation.tracks["a/forearm.R.rot"].setKey({1.0, vec3(-25, 0, 0), Interp::Smooth});
+    return s;
+  };
+  auto ev = load(withClip(24));
+  auto off = load(withClip(24));
+  REQUIRE(off->setArmBodyClearance(false));
+  const BodyClearanceModel& M = *ev->clearanceModel(0);
+  float on = 1e9f, raw = 1e9f;
+  for (int f = 1; f <= 49; ++f) {
+    on = std::min(on, armBodyGap(M, ev->characterGlobals(0, f), 'R'));
+    raw = std::min(raw, armBodyGap(M, off->characterGlobals(0, f), 'R'));
+  }
+  MESSAGE("clip arm: " << raw * 1000 << " mm without the post-pass, " << on * 1000 << " mm with it");
+  CHECK(raw < -0.02f);
+  CHECK(on >= kPass.margin - 0.0005f);
+  // Deterministic: the same frame gives the same pose whatever was evaluated before (no state).
+  const auto a = ev->characterGlobals(0, 30);
+  for (int f = 49; f >= 1; f -= 7) (void)ev->characterGlobals(0, f);
+  const auto b = ev->characterGlobals(0, 30);
+  for (size_t i = 0; i < a.size(); ++i) CHECK(a[i] == b[i]);
+  // Frame-rate independent: at 48 fps the pose at the same time is the same.
+  auto ev48 = load(withClip(48));
+  for (int f = 1; f <= 49; f += 6) {
+    const auto g24 = ev->characterGlobals(0, f), g48 = ev48->characterGlobals(0, 1 + 2 * (f - 1));
+    float d = 0;
+    for (size_t i = 0; i < g24.size(); ++i) d = std::max(d, glm::distance(vec3(g24[i][3]), vec3(g48[i][3])));
+    CHECK(d < 1e-5f);
+  }
+}

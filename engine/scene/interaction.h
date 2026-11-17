@@ -86,6 +86,7 @@ struct ArmPoint {
   // along shoulder -> elbow (0 at the shoulder pivot, 1 at the elbow; > 1 past it).
   float followUpper = 0, followFore = 0, followHand = 0;
   float along = 1;
+  float restGap = 1e9f;  // gap to the body sections at rest (without allowance or margin)
 };
 struct ArmModel {
   int upper = -1, fore = -1, hand = -1;
@@ -128,10 +129,12 @@ constexpr float kArmBodyMargin = 0.005f;  // clearance kept between the arm and 
 // ------------------------------------------------------------------------ always-on arm-body clearance (T-040)
 // A pose post-pass for every character and every source of arm motion (clips, base/auto idle, emotions, IK,
 // interactions): after the full pose is evaluated, upper arm (past the armpit band), forearm and hand are pushed out
-// of the body sections by the smallest change of the shoulder and elbow rotations (damped minimum-norm steps on the
-// worst point's gap gradient). The result is a pure function of the evaluated pose (no state): deterministic and
-// frame-rate independent, and continuous in time because the target gap is a C1 ramp of the arm's own gap:
-//   gap >= margin + band: untouched;
+// of the body sections by the smallest change of the shoulder and elbow rotations along one rotation path (it moves
+// the penetrating points' deficit-weighted centroid radially away from the spine axis; the angle is the smallest that
+// reaches the target). The result is a pure function of the evaluated pose (no state): deterministic and
+// frame-rate independent, and continuous in time because the path direction varies continuously with the pose and
+// the target gap is a C1 ramp of the arm's own gap:
+//   gap >= margin + band: untouched (points resting nearer than that at rest count from their rest gap);
 //   below that: target = gap + s(margin + band - gap), s(x) = x^2 / 4band (x < 2band), x - band (beyond),
 // so the output gap is >= margin everywhere and its slope is continuous (no pop when the arm starts to touch).
 // `pin` (the arm's IK weight) keeps the wrist where IK put it: at pin 1 only the elbow swings about the shoulder ->
@@ -142,8 +145,8 @@ struct ArmPostPassOptions {
   float band = 0.004f;      // width of the C1 blend above the margin (metres)
   float armpit = 0.4f;      // upper-arm points nearer the shoulder pivot than this fraction are the armpit band:
                             // they fold with the shoulder joint and are not moved for (reported in armClearance only)
-  int iterations = 10;
-  float maxStep = 0.12f;    // radians per iteration and joint
+  float step = 0.01f;       // coarse search step along the correction path (radians), then bisection
+  float maxAngle = 1.2f;    // longest correction searched (radians)
 };
 struct ArmPostPassResult {
   float before = 1e9f, after = 1e9f;  // worst gap (with the rest allowance) of the considered arm points

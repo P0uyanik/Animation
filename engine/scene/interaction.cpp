@@ -303,6 +303,7 @@ BodyClearanceModel bodyClearanceModel(const Skeleton& sk, const std::vector<Skin
       float g = 1e9f;
       for (const BodyCapsule& C : M.body) g = std::min(g, sectionGap(C, rest[size_t(C.bone)], skinPoint(P, rest), s == 0 ? 'L' : 'R').gap);
       P.allowance = std::min(0.0f, g - kArmBodyMargin);
+      P.restGap = g;
     }
   M.valid = true;
   return M;
@@ -376,12 +377,11 @@ namespace {
 quat rotationOf(const mat4& m) {
   return glm::normalize(glm::quat_cast(mat3(glm::normalize(vec3(m[0])), glm::normalize(vec3(m[1])), glm::normalize(vec3(m[2])))));
 }
+quat rotationFromVector(vec3 w) {
+  const float a = glm::length(w);
+  return a > 1e-9f ? glm::angleAxis(a, w / a) : quat(1, 0, 0, 0);
+}
 
-struct WorstPoint {
-  float gap = 1e9f;
-  const ArmPoint* point = nullptr;
-  vec3 p{0}, n{0};
-};
 // The body sections are carried by torso bones, which the arm pass never moves: their inverses are computed once.
 struct BodyFrames {
   std::vector<mat4> G, inv;
@@ -394,19 +394,41 @@ BodyFrames bodyFrames(const BodyClearanceModel& M, const std::vector<mat4>& G) {
 bool postPassPoint(const ArmPoint& P, const ArmPostPassOptions& o) {
   return !(P.part == 0 && P.along < o.armpit) && P.followUpper >= 0.5f;
 }
-WorstPoint worstArmPoint(const BodyClearanceModel& M, const BodyFrames& B, const std::vector<mat4>& G, char side,
-                         const ArmPostPassOptions& o) {
-  WorstPoint w;
-  for (const ArmPoint& P : M.arm[side == 'L' ? 0 : 1].points) {
+// Gap of a point for the post-pass: a point that rests nearer than the untouched threshold (margin + band) counts
+// from its rest gap, so the rest pose itself is never corrected.
+float passGap(const ArmPoint& P, float sectionGapValue, const ArmPostPassOptions& o) {
+  return sectionGapValue - std::min(0.0f, P.restGap - (o.margin + o.band));
+}
+// Worst gap of the arm and, for every point closer than the threshold, the deficit-weighted sum of the joint-space
+// directions that move it out (continuous in the pose: a point's weight fades to zero as it reaches the threshold).
+struct ArmState {
+  float gap = 1e9f;
+  vec3 centroid{0};  // deficit-weighted centroid of the points closer than the threshold
+  float weight = 0, fore = 0;  // total deficit weight; the share of it that follows the forearm
+};
+ArmState armState(const BodyClearanceModel& M, const BodyFrames& B, const std::vector<mat4>& G, const ArmModel& A,
+                  char side, const ArmPostPassOptions& o, bool directions) {
+  ArmState st;
+  const float T = o.margin + o.band;
+  for (const ArmPoint& P : A.points) {
     if (!postPassPoint(P, o)) continue;
     const vec3 p = skinPoint(P, G);
+    float gap = 1e9f;
+    vec3 n(0);
     for (size_t k = 0; k < M.body.size(); ++k) {
       const SectionGap sg = sectionGapInv(M.body[k], B.G[k], B.inv[k], p, side);
-      const float gap = sg.gap - P.allowance;
-      if (gap < w.gap) w = {gap, &P, p, sg.worldGrad};
+      const float g = passGap(P, sg.gap, o);
+      if (g < gap) gap = g, n = sg.worldGrad;
     }
+    st.gap = std::min(st.gap, gap);
+    if (!directions || gap >= T) continue;
+    const float w = (T - gap) * (T - gap) * P.followUpper;
+    st.centroid += w * p;
+    st.weight += w;
+    st.fore += w * P.followFore;
   }
-  return w;
+  if (st.weight > 0) st.centroid /= st.weight, st.fore /= st.weight;
+  return st;
 }
 // C1 ramp of the target gap (see interaction.h).
 float targetGap(float gap, const ArmPostPassOptions& o) {
@@ -419,18 +441,23 @@ void rotateBoneWorld(const Skeleton& sk, const std::vector<mat4>& G, const mat4&
   const quat pr = rotationOf(parent >= 0 ? G[size_t(parent)] : world);
   pose.local[size_t(bone)] = glm::normalize(glm::inverse(pr) * R * pr * pose.local[size_t(bone)]);
 }
-quat rotationFromVector(vec3 w) {
-  const float a = glm::length(w);
-  return a > 1e-9f ? glm::angleAxis(a, w / a) : quat(1, 0, 0, 0);
-}
 
 }  // namespace
 
 float armBodyGap(const BodyClearanceModel& M, const std::vector<mat4>& G, char side, const ArmPostPassOptions& o) {
   if (!M.valid) return 1e9f;
-  return worstArmPoint(M, bodyFrames(M, G), G, side, o).gap;
+  const ArmModel& A = M.arm[side == 'L' ? 0 : 1];
+  if (A.points.empty()) return 1e9f;
+  return armState(M, bodyFrames(M, G), G, A, side, o, false).gap;
 }
 
+// The correction is one rotation path from the evaluated pose: theta * (shoulder axis, elbow axis, swing), the
+// direction being the joint motions that move the penetrating points' deficit-weighted centroid radially away from
+// the spine axis (weighted for a free arm: shoulder 1, elbow 0.5 times the forearm's share; a pinned arm only swings).
+// The centroid and the radial direction vary continuously with the pose, so the path does. Theta is the smallest angle along that path at which the
+// arm's worst gap reaches the target (coarse steps, then bisection): the smallest change of the shoulder and elbow
+// rotations that clears the arm along a direction that varies continuously with the pose. A second round from the
+// result picks up what a curved body leaves.
 ArmPostPassResult applyArmBodyClearance(const Skeleton& sk, const BodyClearanceModel& M, const mat4& world, char side,
                                         float pin, float keepHand, Pose& pose, const ArmPostPassOptions& o) {
   ArmPostPassResult out;
@@ -441,66 +468,72 @@ ArmPostPassResult applyArmBodyClearance(const Skeleton& sk, const BodyClearanceM
   keepHand = std::clamp(std::max(keepHand, pin), 0.0f, 1.0f);
   std::vector<mat4> G = boneGlobals(sk, pose, world);
   const BodyFrames B = bodyFrames(M, G);
-  WorstPoint w = worstArmPoint(M, B, G, side, o);
-  out.before = out.after = w.gap;
-  if (w.gap >= o.margin + o.band) return out;  // already clear: the pose is not touched
-  const float target = targetGap(w.gap, o);
-  const quat handWorld = rotationOf(G[size_t(A.hand)]);
-  const quat handLocal = pose.local[size_t(A.hand)];
-  // Weights of the minimum-norm step: the shoulder carries most of a free arm's correction (the arm moves away as a
-  // whole and keeps its acting shape), the elbow less; a pinned (IK) arm only swings about shoulder -> wrist.
+  ArmState st = armState(M, B, G, A, side, o, true);
+  out.before = out.after = st.gap;
+  if (st.gap >= o.margin + o.band) return out;  // already clear: the pose is not touched
+  const float target = targetGap(st.gap, o);
   const float aS = 1 - pin, aE = 0.5f * (1 - pin), aT = pin;
-  float totalS = 0, totalE = 0, totalT = 0;
-  constexpr float kMaxTotal = 0.7f;  // radians per joint over the whole pass (a guard; real corrections are small)
-  Pose best = pose;
-  for (int it = 0; it < o.iterations && w.point && w.gap < target - 1e-4f; ++it) {
-    const ArmPoint& P = *w.point;
-    const vec3 s(G[size_t(A.upper)][3]), e(G[size_t(A.fore)][3]), h(G[size_t(A.hand)][3]);
-    const vec3 rs = w.p - s, re = w.p - e;
-    const float handFixed = P.followHand * keepHand;  // hand points keep their world rotation when the hand is kept
-    const vec3 Js = P.followUpper * glm::cross(rs, w.n);
-    const vec3 Je = P.followFore * glm::cross(re, w.n);
-    vec3 u = h - s;
-    u = glm::length(u) > 1e-6f ? glm::normalize(u) : vec3(0);
-    const float Jt = std::max(0.0f, P.followUpper - handFixed) * glm::dot(u, glm::cross(rs, w.n));
-    const float D = aS * glm::dot(Js, Js) + aE * glm::dot(Je, Je) + aT * Jt * Jt;
-    if (D < 1e-10f) break;
-    const float lambda = (target - w.gap) / D;
-    auto capped = [&](vec3 v, float& total) {
-      float a = glm::length(v);
-      const float lim = std::min(o.maxStep, std::max(0.0f, kMaxTotal - total));
-      if (a > lim) v *= lim / a, a = lim;
-      total += a;
-      return v;
+  for (int round = 0; round < 1 && st.gap < target - 1e-4f; ++round) {
+    if (st.weight <= 0) break;
+    // Out of the body = radially away from the spine axis (the body sections' axis), at the penetrating points'
+    // centroid: a forearm across the belly goes forward, an arm against the side goes sideways.
+    const vec3 a0 = vec3(B.G.front() * vec4(M.body.front().p0, 1)), a1 = vec3(B.G.back() * vec4(M.body.back().p1, 1));
+    const vec3 ax = glm::normalize(a1 - a0);
+    vec3 r = st.centroid - a0;
+    r -= ax * glm::dot(r, ax);
+    r = glm::length(r) > 1e-6f ? glm::normalize(r) : glm::normalize(vec3(B.G.front()[0])) * (side == 'L' ? 1.0f : -1.0f);
+    const vec3 sh(G[size_t(A.upper)][3]), el(G[size_t(A.fore)][3]), wr(G[size_t(A.hand)][3]);
+    const vec3 u = glm::length(wr - sh) > 1e-6f ? glm::normalize(wr - sh) : vec3(0);
+    const vec3 ds = aS * glm::cross(st.centroid - sh, r), de = aE * st.fore * glm::cross(st.centroid - el, r);
+    const float dt = aT * glm::dot(u, glm::cross(st.centroid - sh, r));
+    const float norm = std::sqrt(glm::dot(ds, ds) + glm::dot(de, de) + dt * dt);
+    if (norm < 1e-12f) break;
+    const Pose start = pose;
+    const std::vector<mat4> G0 = G;
+    const quat handWorld = rotationOf(G0[size_t(A.hand)]);
+    const quat handLocal = start.local[size_t(A.hand)];
+    const vec3 u0 = glm::normalize(vec3(G0[size_t(A.hand)][3]) - vec3(G0[size_t(A.upper)][3]));
+    auto at = [&](float theta, Pose& p) {
+      p = start;
+      std::vector<mat4> g = G0;
+      const quat Rs = glm::normalize(glm::angleAxis(theta * dt / norm, u0) * rotationFromVector(theta * ds / norm));
+      rotateBoneWorld(sk, g, world, A.upper, Rs, p);
+      g = boneGlobals(sk, p, world);
+      if (glm::length(de) > 0) {
+        rotateBoneWorld(sk, g, world, A.fore, rotationFromVector(theta * de / norm), p);
+        g = boneGlobals(sk, p, world);
+      }
+      // The hand: its own local rotation (it follows the forearm), or its world rotation as far as `keepHand` asks.
+      const quat kept = glm::normalize(glm::inverse(rotationOf(g[size_t(A.fore)])) * handWorld);
+      p.local[size_t(A.hand)] = keepHand >= 1 ? kept : glm::normalize(glm::slerp(handLocal, kept, keepHand));
+      g = boneGlobals(sk, p, world);
+      return armState(M, B, g, A, side, o, false).gap;
     };
-    const vec3 ws = capped(aS * lambda * Js, totalS), we = capped(aE * lambda * Je, totalE);
-    float th = aT * lambda * Jt;
-    {
-      const float lim = std::min(o.maxStep, std::max(0.0f, kMaxTotal - totalT));
-      th = std::clamp(th, -lim, lim);
-      totalT += std::abs(th);
+    Pose trial;
+    float lo = 0, hi = -1, bestTheta = 0, bestGap = st.gap;
+    for (float theta = o.step; theta <= o.maxAngle + 1e-6f; theta += o.step) {
+      const float g = at(theta, trial);
+      if (g > bestGap) bestGap = g, bestTheta = theta;
+      if (g >= target) {
+        hi = theta;
+        break;
+      }
+      lo = theta;
     }
-    const quat Rs = glm::normalize(glm::angleAxis(th, u) * rotationFromVector(ws));
-    if (glm::length(ws) + std::abs(th) + glm::length(we) < 1e-7f) break;
-    rotateBoneWorld(sk, G, world, A.upper, Rs, pose);
+    float theta = bestTheta;
+    if (hi > 0) {
+      for (int k = 0; k < 14; ++k) {
+        const float mid = 0.5f * (lo + hi);
+        (at(mid, trial) >= target ? hi : lo) = mid;
+      }
+      theta = hi;
+    }
+    if (theta <= 0) break;
+    at(theta, pose);
     G = boneGlobals(sk, pose, world);
-    if (glm::length(we) > 0) {
-      rotateBoneWorld(sk, G, world, A.fore, rotationFromVector(we), pose);
-      G = boneGlobals(sk, pose, world);
-    }
-    // The hand: its own local rotation (it follows the forearm), or its world rotation as far as `keepHand` asks.
-    const quat kept = glm::normalize(glm::inverse(rotationOf(G[size_t(A.fore)])) * handWorld);
-    pose.local[size_t(A.hand)] = keepHand >= 1 ? kept : glm::normalize(glm::slerp(handLocal, kept, keepHand));
-    G = boneGlobals(sk, pose, world);
-    const WorstPoint next = worstArmPoint(M, B, G, side, o);
-    if (next.gap < w.gap - 1e-4f) {  // no progress (a point the free joints cannot move): keep the best pose
-      pose = best;
-      break;
-    }
-    w = next;
-    best = pose;
+    st = armState(M, B, G, A, side, o, true);
   }
-  out.after = w.gap;
+  out.after = st.gap;
   out.changed = true;
   return out;
 }
