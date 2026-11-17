@@ -40,7 +40,7 @@
 | T-061 | Animation principles pass: slow-in/out on gesture blends and retimed clips, arcs (breakdowns), spacing/arc metrics in the gate; accessory secondary motion (strings, straps, bow) via spring chains | assigned 2026-11-17 | t-061-claude-animation-principles | owner-shared AnimLog critique 2026-11-17 (timing/spacing, overlap, arcs) verified |
 | T-062 | Evaluations use current approved character versions (`run_shot` cast "current", eval shots, gate check) | **in main** 2026-11-17 | t-062-claude-current-cast (40101c8), merge 8074793 | "current" = boy 1.1.0, girl 0.10.0 (verified on merged tree); GitHub full gate PASS |
 | T-063 | Comprehensive visual review vs references: gap register, root causes, prioritized plan, third-character readiness (evaluation only) | **in main** 2026-11-17 | t-063-claude-visual-review (9494365) | overall ≈45–50 % vs references; plan P1–P7; V6 readiness 2/6 |
-| T-064 | P6 fidelity tool fixes (segmentation, hair, skin/face metrics, rebaseline) | assigned 2026-11-17 | t-064-claude-fidelity-fixes | `docs/tasks/T-064.md` |
+| T-064 | P6 fidelity tool fixes (segmentation, hair, skin/face metrics, rebaseline) | **merged** 2026-11-17 | t-064-claude-fidelity-fixes, integration 1120bc0 | GitHub full gate PASS; rebaseline boy 66.41, girl 64.39 (same renders, new tool) |
 | T-065 | P1 face v2 (`face_generic/2`: lids in skin, round cheeks, soft brows, eyes, mouth) | assigned 2026-11-17 | t-065-claude-face-v2 | `docs/tasks/T-065.md` |
 | T-066 | P2 skin look round (`presets/2` skin; split presets.json by family) | queued (after T-044 releases presets.json) | — | T-063 P2 |
 | T-067 | P3 fleece/felt/knit materials round | queued (after T-066) | — | T-063 P3 |
@@ -50,6 +50,9 @@
 | T-071 | Documentation cleanup from T-069 (remove/archive/consolidate) + investigate the 18 tests missing from the gate | assigned 2026-11-17 | t-071-claude-docs-cleanup | `docs/tasks/T-071.md`; owner request |
 | T-072 | Code/asset cleanup from T-069 (C5–C8; owner-approved recommendations) | assigned 2026-11-17 | t-072-claude-code-cleanup | `docs/tasks/T-072.md` |
 | T-073 | Render benchmark on the owner's PC (CPU/GPU) | idea, unassigned (owner: not for Codex now) | — | `docs/tasks/T-073.md` |
+| T-074 | CPU-only Blender render optimisation study (Cycles/Eevee/denoise; quality first) | queued: starts when a slot frees | t-074-claude-cpu-render | `docs/tasks/T-074.md`; owner approved 2026-11-17 |
+| T-075 | Preserve approved character assets (immutable store, generator guard, reuse) | assigned 2026-11-17 | t-075-claude-approved-assets | `docs/tasks/T-075.md`; owner approved 2026-11-17 |
+| T-076 | Reference video analysis + architecture report (evaluation only) | **merged** 2026-11-17 | t-076-claude-reference-architecture (18fb94f) | `docs/architecture/REFERENCE_ARCHITECTURE_REPORT.md`; GitHub fast gate PASS; recommendations await owner decision |
 | T-048 | Branch cleanup workflow + tests | **in main** 2026-11-17 | t-048-claude-branch-cleanup (8f1c3ce), merge ae15c0b | 25/25 cleanup tests, full gate PASS; first real dry run after T-041 backups |
 | T-049 | Hair approach study (strand vs sculpted vs hybrid) | **in main** 2026-11-17; owner choice pending | t-049-claude-hair-study (e31e613) | recommends hybrid C (felted base volumes + few broad edge clumps, face keep-out as spec data); none reaches reference softness yet (fibre halo/volume, girl fringe) |
 | T-050 | GPU / render cost study (no spending) | **in main** 2026-11-17; owner decision pending | t-050-claude-render-cost (242c97c) | previews CPU; review/finals on rented RTX 4090 ≈ $0.84/finished min, ≈ $10–25/month; do not buy a GPU for cost alone |
