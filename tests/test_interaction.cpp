@@ -589,3 +589,31 @@ TEST_CASE("arm-body post-pass in the scene: every frame clear, deterministic, fr
     CHECK(d < 1e-5f);
   }
 }
+
+TEST_CASE("arm-body post-pass: an IK weight ramp hands over from the pinned swing to the free correction continuously") {
+  for (const char* pkg : {kBoy, kGirl}) {
+    Scene scene = baseScene();
+    scene.characters.push_back(character("a", pkg, vec3(0), 0));
+    auto ev = load(scene);
+    const Skeleton& sk = ev->characters()[0].asset.skeleton;
+    const BodyClearanceModel& M = *ev->clearanceModel(0);
+    const float in = inward(sk, M);
+    const int hand = sk.find("hand.R");
+    const Pose deep = armPose(sk, 40 * in, 30);  // hand and forearm well inside the body
+    const vec3 wrist0 = vec3(boneGlobals(sk, deep, mat4(1))[size_t(hand)][3]);
+    std::vector<vec3> wrist;
+    for (float pin = 0; pin <= 1.0001f; pin += 0.02f) {
+      Pose p = deep;
+      applyArmBodyClearance(sk, M, mat4(1), 'R', pin, 0, p);
+      wrist.push_back(vec3(boneGlobals(sk, p, mat4(1))[size_t(hand)][3]));
+    }
+    float step = 0;
+    for (size_t i = 1; i < wrist.size(); ++i) step = std::max(step, glm::distance(wrist[i], wrist[i - 1]));
+    const float total = glm::distance(wrist.front(), wrist.back());
+    MESSAGE(std::string(pkg) << ": free correction moves the wrist " << total * 1000 << " mm; largest step per 0.02 of IK weight "
+                             << step * 1000 << " mm");
+    CHECK(glm::distance(wrist.back(), wrist0) < 1e-5f);  // full IK weight: the wrist is IK's
+    CHECK(total > 0.01f);
+    CHECK(step < 0.1f * total);  // spread over the ramp (50 steps), no jump
+  }
+}

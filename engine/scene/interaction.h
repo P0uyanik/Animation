@@ -124,7 +124,7 @@ float bodySectionGap(const BodyCapsule& section, const mat4& Gb, vec3 p);
 // IK and before the orientation constraint (scene.cpp).
 void applyArmPoles(const Skeleton& skeleton, const Clip& clip, const std::string& prefix, double frame,
                    const mat4& world, Pose& pose);
-constexpr float kArmBodyMargin = 0.005f;  // clearance kept between the arm and the body capsules (metres)
+constexpr float kArmBodyMargin = 0.009f;  // clearance kept between the arm and the body capsules (metres)
 
 // ------------------------------------------------------------------------ always-on arm-body clearance (T-040)
 // A pose post-pass for every character and every source of arm motion (clips, base/auto idle, emotions, IK,
