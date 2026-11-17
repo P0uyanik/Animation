@@ -41,8 +41,9 @@ build configuration, `tools/**`, `.github/**`, `docs/**`, root Markdown. A new s
 python tools/regression/run.py --blender <blender> --out <dir> [--character <id>] [--base origin/main]
 ```
 
-For **every** character folder in `assets/characters` (a folder without a regression config is a FAIL), in
-parallel: build (spec + the overrides of its current version, from `fidelity_baseline.json`), format-2 fingerprint
+For **every** character folder in `assets/characters`, in parallel. A folder with a spec but no regression config
+(an entry in `fidelity_baseline.json`) is a FAIL. A folder with references but no spec yet (reference intake, e.g.
+`girl_white_hair_blue_dress`) is reported as "references only, not buildable yet". The steps per character: build (spec + the overrides of its current version, from `fidelity_baseline.json`), format-2 fingerprint
 (0.01 mm), engine export, fixed-camera renders (`views.json`: four turnaround views + face close-up at the head
 bone, 320 px, 16 samples, OIDN, seed 0, the shared render calibration), fidelity (drop > 2 points = FAIL).
 
