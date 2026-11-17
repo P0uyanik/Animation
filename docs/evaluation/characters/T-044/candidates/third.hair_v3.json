@@ -1,0 +1,760 @@
+{
+ "schema": "plush-studio.hair-candidate/1",
+ "task": "T-044",
+ "character_spec": "docs/evaluation/characters/T-044/candidates/third.base.spec.json",
+ "head_object": "body_skin",
+ "frame": {
+  "centre": [
+   0.0,
+   -0.0039964,
+   0.8250044
+  ],
+  "radii": [
+   0.1419983,
+   0.1350046,
+   0.1449956
+  ]
+ },
+ "overrides": {
+  "generators": {
+   "groom": "groom/2"
+  },
+  "hair": {
+   "generator": "groom/2",
+   "seed": 52,
+   "finish": "felt",
+   "face_keepout": {
+    "az": 34,
+    "el_min": 4,
+    "margin_deg": 3
+   },
+   "structures": [
+    {
+     "type": "scalp_cap",
+     "name": "cap",
+     "offset": 0.004,
+     "face_cut": [
+      -0.06,
+      0.9
+     ],
+     "hairline": [
+      [
+       0,
+       0.905
+      ],
+      [
+       40,
+       0.88
+      ],
+      [
+       70,
+       0.8
+      ],
+      [
+       100,
+       0.74
+      ],
+      [
+       140,
+       0.71
+      ],
+      [
+       180,
+       0.7
+      ]
+     ]
+    },
+    {
+     "type": "bun",
+     "name": "buns",
+     "buns": [
+      {
+       "az": 60,
+       "el": 46,
+       "lift": 0.004,
+       "radius": 0.064,
+       "height": 0.112,
+       "tilt": 0.6,
+       "wrap": "ccw",
+       "turns": 0.6,
+       "felt_radii": [
+        1.0,
+        1.0,
+        1.0
+       ]
+      },
+      {
+       "az": -60,
+       "el": 46,
+       "lift": 0.004,
+       "radius": 0.064,
+       "height": 0.112,
+       "tilt": 0.6,
+       "wrap": "cw",
+       "turns": 0.6,
+       "felt_radii": [
+        1.0,
+        1.0,
+        1.0
+       ]
+      }
+     ],
+     "felt": {
+      "grooves": {
+       "count": 12,
+       "depth": 0.25,
+       "sharpness": 0.5,
+       "wander": 0.6,
+       "wavelength": 0.5
+      },
+      "lumps": {
+       "amount": 0.08,
+       "scale": 1.3
+      },
+      "resolution": [
+       64,
+       40
+      ]
+     }
+    },
+    {
+     "type": "felt_volume",
+     "name": "crown",
+     "shape": "gather",
+     "az": [
+      -180,
+      180
+     ],
+     "hairline_el": [
+      [
+       0,
+       30
+      ],
+      [
+       30,
+       28
+      ],
+      [
+       55,
+       14
+      ],
+      [
+       80,
+       0
+      ],
+      [
+       100,
+       -4
+      ],
+      [
+       130,
+       4
+      ],
+      [
+       180,
+       6
+      ]
+     ],
+     "target": {
+      "az": 0,
+      "el": 90
+     },
+     "tuck": 1.0,
+     "height": [
+      0.024,
+      0.045,
+      0.04
+     ],
+     "inset": 0.004,
+     "part": {
+      "az": 0,
+      "width_deg": 3.0,
+      "depth": 0.35,
+      "length": 0.45
+     },
+     "grooves": {
+      "count": 36,
+      "depth": 0.28,
+      "sharpness": 0.55,
+      "wander": 0.45,
+      "wavelength": 0.5
+     },
+     "lumps": {
+      "amount": 0.08,
+      "scale": 1.2
+     },
+     "soft": [
+      0,
+      0,
+      0.3,
+      0.0
+     ],
+     "rim": 0.15,
+     "resolution": [
+      220,
+      48
+     ]
+    },
+    {
+     "type": "clumps",
+     "name": "fringe",
+     "seg": 16,
+     "grooves": 3,
+     "groove_depth": 0.14,
+     "irregularity": 0.1,
+     "rows": [
+      {
+       "count": 8,
+       "az": [
+        -44,
+        44
+       ],
+       "el": [
+        26,
+        40
+       ],
+       "flow": "down",
+       "pole": {
+        "az": 0,
+        "el": 90
+       },
+       "len_deg": [
+        30,
+        42
+       ],
+       "lift": [
+        0.012,
+        0.02
+       ],
+       "width": [
+        0.05,
+        0.062
+       ],
+       "thick": [
+        0.024,
+        0.03
+       ],
+       "jitter_deg": 8,
+       "curl_deg": 10,
+       "converge": 0.06,
+       "taper_power": 1.9
+      }
+     ]
+    },
+    {
+     "type": "clumps",
+     "name": "temples",
+     "seg": 16,
+     "grooves": 3,
+     "groove_depth": 0.14,
+     "irregularity": 0.1,
+     "rows": [
+      {
+       "count": 2,
+       "az": [
+        58,
+        74
+       ],
+       "el": [
+        12,
+        24
+       ],
+       "flow": "down",
+       "pole": {
+        "az": 0,
+        "el": 90
+       },
+       "len_deg": [
+        22,
+        30
+       ],
+       "lift": [
+        0.01,
+        0.022
+       ],
+       "width": [
+        0.046,
+        0.056
+       ],
+       "thick": [
+        0.024,
+        0.03
+       ],
+       "jitter_deg": 8,
+       "curl_deg": 10,
+       "taper_power": 1.9
+      },
+      {
+       "count": 2,
+       "az": [
+        -74,
+        -58
+       ],
+       "el": [
+        12,
+        24
+       ],
+       "flow": "down",
+       "pole": {
+        "az": 0,
+        "el": 90
+       },
+       "len_deg": [
+        22,
+        30
+       ],
+       "lift": [
+        0.01,
+        0.022
+       ],
+       "width": [
+        0.046,
+        0.056
+       ],
+       "thick": [
+        0.024,
+        0.03
+       ],
+       "jitter_deg": 8,
+       "curl_deg": 10,
+       "taper_power": 1.9
+      }
+     ]
+    },
+    {
+     "type": "curtain",
+     "name": "back_mass",
+     "az": [
+      80,
+      280
+     ],
+     "root_el": [
+      [
+       80,
+       4
+      ],
+      [
+       120,
+       16
+      ],
+      [
+       180,
+       24
+      ]
+     ],
+     "leave_el": -8,
+     "z_end": [
+      [
+       80,
+       0.6
+      ],
+      [
+       120,
+       0.5
+      ],
+      [
+       180,
+       0.46
+      ]
+     ],
+     "rest_radii": [
+      0.19,
+      0.155
+     ],
+     "rest_z": 0.55,
+     "columns": 10,
+     "thick": 0.03,
+     "column_depth": 0.3,
+     "lobe": {
+      "pitch": 0.075,
+      "depth": 0.2,
+      "twist": 0.2
+     },
+     "scallop": 0.035,
+     "resolution": [
+      180,
+      100
+     ],
+     "inset": 0.004
+    },
+    {
+     "type": "locks",
+     "name": "side_locks",
+     "style": "wavy",
+     "count": 2,
+     "az": [
+      64,
+      82
+     ],
+     "el_root": [
+      4,
+      14
+     ],
+     "el_leave": -16,
+     "lift": [
+      0.006,
+      0.016
+     ],
+     "hang_radii": [
+      0.16,
+      0.15
+     ],
+     "z_end": [
+      0.6,
+      0.66
+     ],
+     "flare": 0.16,
+     "width": [
+      0.04,
+      0.048
+     ],
+     "thick": [
+      0.024,
+      0.03
+     ],
+     "tip_frac": 0.45,
+     "end_scale": 0.8,
+     "wave": {
+      "amplitude": 0.012,
+      "wavelength": 0.075
+     },
+     "felt": {
+      "seg": 16,
+      "irregularity": 0.07,
+      "wavelength": 0.16,
+      "flatten": 0.35,
+      "flatten_twist": 0.8
+     },
+     "finish": "felt",
+     "mirror": true
+    },
+    {
+     "type": "locks",
+     "name": "back_locks",
+     "style": "wavy",
+     "count": 8,
+     "az": [
+      110,
+      250
+     ],
+     "el_root": [
+      -10,
+      4
+     ],
+     "el_leave": -26,
+     "lift": [
+      0.006,
+      0.016
+     ],
+     "hang_radii": [
+      0.165,
+      0.16
+     ],
+     "z_end": [
+      0.45,
+      0.52
+     ],
+     "flare": 0.16,
+     "width": [
+      0.058,
+      0.07
+     ],
+     "thick": [
+      0.03,
+      0.036
+     ],
+     "tip_frac": 0.45,
+     "end_scale": 0.8,
+     "wave": {
+      "amplitude": 0.014,
+      "wavelength": 0.085
+     },
+     "felt": {
+      "seg": 16,
+      "irregularity": 0.07,
+      "wavelength": 0.16,
+      "flatten": 0.35,
+      "flatten_twist": 0.8
+     },
+     "finish": "felt",
+     "hang_jitter": 0.05,
+     "rest_radii": [
+      0.185,
+      0.16
+     ],
+     "rest_z": 0.62
+    },
+    {
+     "type": "locks",
+     "name": "outer_locks",
+     "style": "wavy",
+     "count": 2,
+     "az": [
+      76,
+      104
+     ],
+     "el_root": [
+      0,
+      10
+     ],
+     "el_leave": -20,
+     "lift": [
+      0.006,
+      0.016
+     ],
+     "hang_radii": [
+      0.165,
+      0.16
+     ],
+     "z_end": [
+      0.5,
+      0.58
+     ],
+     "flare": 0.16,
+     "width": [
+      0.05,
+      0.06
+     ],
+     "thick": [
+      0.028,
+      0.034
+     ],
+     "tip_frac": 0.45,
+     "end_scale": 0.8,
+     "wave": {
+      "amplitude": 0.014,
+      "wavelength": 0.08
+     },
+     "felt": {
+      "seg": 16,
+      "irregularity": 0.07,
+      "wavelength": 0.16,
+      "flatten": 0.35,
+      "flatten_twist": 0.8
+     },
+     "finish": "felt",
+     "mirror": true
+    },
+    {
+     "type": "felt_bow",
+     "name": "bow",
+     "az": -40,
+     "el": 40,
+     "out": 0.026,
+     "size": 0.14,
+     "tilt_deg": 20,
+     "material": "hair_bow"
+    }
+   ],
+   "binding": {
+    "blend_z": [
+     0.6,
+     0.72
+    ]
+   },
+   "fibres": {
+    "slots": [
+     "hair",
+     "hair_bow"
+    ],
+    "layers": [
+     {
+      "name": "felt",
+      "overrides": {
+       "fibres": {
+        "density_per_cm2": 36.0,
+        "length_mm": 2.0,
+        "curl": 0.25,
+        "lean": 0.6,
+        "lean_variation": 0.8
+       },
+       "surface": {
+        "saturation_compensation": 1.0
+       }
+      }
+     },
+     {
+      "name": "halo",
+      "overrides": {
+       "fibres": {
+        "density_per_cm2": 3.0,
+        "length_mm": 4.2,
+        "curl": 0.3,
+        "lean": 0.8,
+        "lean_variation": 0.9
+       },
+       "surface": {
+        "saturation_compensation": 1.0
+       }
+      }
+     },
+     {
+      "name": "flyaways",
+      "overrides": {
+       "fibres": {
+        "density_per_cm2": 0.08,
+        "length_mm": 10.0,
+        "curl": 0.7,
+        "lean": 0.7,
+        "lean_variation": 0.9
+       },
+       "surface": {
+        "saturation_compensation": 1.0
+       }
+      }
+     }
+    ]
+   },
+   "dynamics": {
+    "enabled": true,
+    "substep_hz": 240,
+    "preroll_s": 1.0,
+    "defaults": {
+     "stiffness": 90.0,
+     "stiffness_tip": 60.0,
+     "damping": 7.0,
+     "gravity": 0.5,
+     "drag": 0.8,
+     "limit_deg": 28.0,
+     "radius": 0.014
+    },
+    "structures": {
+     "fringe": {
+      "bones": 2,
+      "bone_length": 0.03,
+      "stiffness": 140.0
+     },
+     "temples": {
+      "bones": [
+       2,
+       3
+      ],
+      "bone_length": 0.035
+     },
+     "side_locks": {
+      "bones": [
+       3,
+       4
+      ],
+      "bone_length": 0.06
+     },
+     "back_locks": {
+      "bones": [
+       3,
+       5
+      ],
+      "bone_length": 0.07
+     },
+     "outer_locks": {
+      "bones": [
+       3,
+       5
+      ],
+      "bone_length": 0.07
+     },
+     "buns": {
+      "bones": 3,
+      "stiffness": 150.0,
+      "stiffness_tip": 120.0,
+      "damping": 9.0,
+      "gravity": 0.3,
+      "limit_deg": 12.0,
+      "radius": 0.0
+     }
+    },
+    "colliders": [
+     {
+      "name": "head",
+      "type": "sphere",
+      "bone": "head",
+      "head_offset": [
+       0.0,
+       0.0,
+       -0.004
+      ],
+      "radius": 0.128
+     },
+     {
+      "name": "torso",
+      "type": "capsule",
+      "bone": "chest",
+      "a": [
+       0.0,
+       0.004,
+       0.4
+      ],
+      "b": [
+       0.0,
+       0.004,
+       0.56
+      ],
+      "radius": 0.082
+     },
+     {
+      "name": "shoulder_l",
+      "type": "sphere",
+      "bone": "chest",
+      "head_offset": [
+       0.1,
+       0.0,
+       -0.24
+      ],
+      "radius": 0.045
+     },
+     {
+      "name": "shoulder_r",
+      "type": "sphere",
+      "bone": "chest",
+      "head_offset": [
+       -0.1,
+       0.0,
+       -0.24
+      ],
+      "radius": 0.045
+     }
+    ]
+   }
+  },
+  "materials": {
+   "assignments": {
+    "hair": {
+     "preset": "felt hair",
+     "base_color_srgb": [
+      214,
+      202,
+      186
+     ],
+     "reference_size_m": 0.29278,
+     "source": "references/color_targets.json hair: off-white/cream felt (w01)",
+     "overrides": {
+      "surface": {
+       "saturation_compensation": 1.0,
+       "sheen_weight": 0.15,
+       "sheen_roughness": 0.6
+      },
+      "nap": {
+       "fibre_gloss": 0.1,
+       "value_gain": 0.25,
+       "sheen_gain": 0.3
+      },
+      "fibres": {
+       "color_variation": 0.35,
+       "root_transparency": 0.2,
+       "tip_transparency": 0.6
+      }
+     }
+    },
+    "hair_bow": {
+     "preset": "felt",
+     "base_color_srgb": [
+      90,
+      109,
+      130
+     ],
+     "reference_size_m": 0.06,
+     "source": "references/color_targets.json bow: dusty denim-blue felt"
+    }
+   }
+  }
+ }
+}
