@@ -99,3 +99,8 @@ promotion; path-B visual approval via version pin bumps). Owner's four required 
 4. Backups must be durable (backup tags, CI bundles with restore test, off-site copy) and the automatic branch
    cleanup must be thoroughly tested (unit + end-to-end + dry run) before it deletes anything.
 The workflow must stay reliable, efficient and free of unnecessary bottlenecks.
+
+## 2026-11-17: backups on the owner PC; GitHub protection
+The owner's local computer is the off-site backup destination (read-only mirror + verified bundle, set up via
+Remote Control when the PC is online). The owner asked the Supervisor to handle GitHub security settings; the cloud
+proxy blocks settings changes, so the Supervisor prepared importable rulesets (docs/process/github-rulesets/).

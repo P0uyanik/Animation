@@ -151,8 +151,11 @@ Container files disappear when a session ends, so a backup kept only there is no
 2. **Full bundle by GitHub Actions** (`backup.yml`): on every push to `main` and nightly, `git bundle create --all`,
    `git bundle verify`, SHA-256 checksum, uploaded as a workflow artifact (90-day retention) and attached to a
    weekly `backup-<date>` release (last 8 weekly and every monthly kept permanently).
-3. **Off-site copy (owner's choice):** a mirror push to a second private repository, or regular download of the
-   release bundle to your PC or cloud drive. Needs one setup step by the owner.
+3. **Off-site copy on the owner's PC** (owner decision 2026-11-17): a Windows scheduled task on the owner's computer
+   keeps a mirror (`git fetch --mirror` into e.g. `D:\Animation\backup\Animation.git`, all branches and tags) and
+   the latest weekly bundle, runs `git bundle verify` and `git fsck`, and writes a status line the Supervisor can read.
+   It only reads from GitHub and never pushes or deletes. It is set up by the Supervisor through Remote Control
+   the next time the computer is online; until then layers 1 and 2 cover backups.
 
 **Restore test:** every backup run clones the bundle into an empty repository, checks that `main`, `staging` and
 all branch tips match the remote SHAs, and runs the fast test tier. A failed restore test fails the workflow and
@@ -198,6 +201,8 @@ Next: T-045 body mechanics (C), T-047 collisions (C), Boy 2.0 look and hoodie (D
 ## 10. What the owner needs to do
 
 1. ~~Approve this plan~~ (approved 2026-11-17).
-2. In GitHub settings: protect `main` and `staging` (no direct pushes except the Supervisor's fast-forward, required checks green), and protect tags matching `backup/*` from deletion.
-3. Choose the off-site backup copy (§8.1 layer 3): a second private repository, or regular download to your drive.
+2. Import the three GitHub rulesets in `docs/process/github-rulesets/` (cloud sessions cannot change repository
+   settings). Required status checks are added once CI is green on GitHub (T-041/42).
+3. ~~Choose the off-site backup copy~~ (your PC, §8.1 layer 3): turn on Remote Control on the PC once so the
+   Supervisor can install the backup task.
 3. Review visual sheets when sent; everything else is handled without you.
