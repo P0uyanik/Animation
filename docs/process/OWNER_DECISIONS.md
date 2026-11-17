@@ -68,3 +68,14 @@ Never delete an unmerged branch, a branch with commits not in `main`, `relay-cha
 - Rejections are undone on `staging` with revert commits only. `main` advances only by fast-forward to a gate-green
   `staging` commit, with a verified backup before and merged-branch cleanup after (see 2026-11-17 branch cleanup).
 - Ownership map `docs/process/OWNERSHIP.md`: parallel tasks never share files; specs are split into per-area parts.
+
+## 2026-11-17: shared systems with versioned behaviour (owner-approved)
+Architecture: shared systems + versioned behaviour + character-specific data/assets (never character-specific code).
+- Each character spec pins the generator versions it uses; behaviour changes create a new version; a character
+  changes only when the owner approves its upgrade (before/after renders). At most two active versions per system.
+- Shared defaults stay neutral; new features are opt-in parameters (off = identical output).
+- Visual quality is never sacrificed for reusability. Any change to a shared system rebuilds and renders ALL
+  characters in CI: an unintended fingerprint change or a fidelity drop is a FAIL needing owner review, with
+  side-by-side render comparisons attached.
+- Order: finish/validate/merge all running and suspended work first; then spec parts + generator versioning +
+  all-character visual regression; then Boy 2.0 and new features.
