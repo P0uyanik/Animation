@@ -6233,5 +6233,46 @@
     ]
    }
   }
+ },
+ "face": {
+  "note": "T-046 facial layer channels (clip frames): a friendly lift of brows and mouth corners while waving",
+  "tracks": {
+   "browUp": [
+    [
+     0,
+     0.0
+    ],
+    [
+     10,
+     0.3
+    ],
+    [
+     70,
+     0.25
+    ],
+    [
+     89,
+     0.0
+    ]
+   ],
+   "mouthUp": [
+    [
+     0,
+     0.0
+    ],
+    [
+     10,
+     0.25
+    ],
+    [
+     70,
+     0.25
+    ],
+    [
+     89,
+     0.0
+    ]
+   ]
+  }
  }
 }

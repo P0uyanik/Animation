@@ -6,6 +6,20 @@
  "face": {
   "Curious": 1.0
  },
+ "faceMotion": {
+  "blinkRate": 0.8,
+  "saccadeRate": 1.5,
+  "saccadeDeg": 2.2,
+  "attention": 0.7,
+  "gazeBiasDeg": [
+   3.0,
+   2.0
+  ],
+  "channels": {
+   "browUp": 0.35,
+   "eyeWide": 0.15
+  }
+ },
  "body": {
   "clip": "emo_curious"
  },

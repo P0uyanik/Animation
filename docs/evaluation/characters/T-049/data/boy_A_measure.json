@@ -1,0 +1,53 @@
+{
+ "blend": "boy_yellow_hoodie_study.blend",
+ "rest": {
+  "front": {
+   "face": 0.9078,
+   "eyes": 0.9986
+  },
+  "three_quarter": {
+   "face": 0.8539,
+   "eyes": 0.9689
+  },
+  "penetration": {
+   "head_inside_frac": 0.00719,
+   "other_inside_frac": 0.00413,
+   "other_deepest_mm": 29.8,
+   "sampled": 26148
+  }
+ },
+ "turn": {
+  "frames": 48,
+  "max_lag_deg": 11.817362233205293,
+  "penetration_max": {
+   "head_inside_frac": 0.00719,
+   "other_inside_frac": 0.00413,
+   "other_deepest_mm": 30.0
+  },
+  "visibility_at_extremes": {
+   "psi_40": {
+    "front": {
+     "face": 0.9078,
+     "eyes": 0.9973
+    },
+    "three_quarter": {
+     "face": 0.8534,
+     "eyes": 0.9689
+    }
+   },
+   "psi_-40": {
+    "front": {
+     "face": 0.9108,
+     "eyes": 0.9973
+    },
+    "three_quarter": {
+     "face": 0.8568,
+     "eyes": 0.9689
+    }
+   }
+  },
+  "chains": 181,
+  "render_s_per_frame": 6.46
+ },
+ "measure_s": 184.6
+}
