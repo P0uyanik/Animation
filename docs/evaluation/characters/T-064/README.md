@@ -218,4 +218,17 @@ python3 docs/evaluation/characters/T-064/make_evidence.py <old tools/fidelity> $
 
 ## 9. Checks
 
-See the gate section below (filled in before READY).
+After `git merge origin/staging` (no fidelity, spec or generator file changed on staging since the branch point):
+
+- `python3 tools/fidelity/tests/test_metrics.py`: **48/48 PASS**. `test_ci.py`: PASS (unchanged; the 2.0-point rule
+  holds).
+- Determinism: `--renders` twice gives byte-identical `fidelity.json`, `report.md`, sheets and masks (boy and girl).
+- A fresh end-to-end girl run (build, render, fixed tool, gate settings 640 px / 32 spp) scores **64.40**. The new
+  baseline is 64.4042.
+- `python3 tools/check_all.py --base origin/main --task T-064` in this container:
+  - PASS: Frozen assets, Write-set (42 paths, all inside the claim), Shared-systems lint, Python tests and links.
+  - FAIL, **guarded paths, expected**: `docs/evaluation/characters/fidelity_baseline.json` and
+    `tools/fidelity/tests/test_metrics.py`. They need the Supervisor's `Supervisor-Approved:` trailers.
+  - Not runnable here: the C++ tier (this container has no embree or OIDN; no C++ file changed) and the full Blender
+    regression. CI runs both.
+- CI ("Quality gate" on the pushed branch): see the RELAY line and the final report for the verdict.
