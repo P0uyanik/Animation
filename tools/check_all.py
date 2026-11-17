@@ -459,6 +459,9 @@ def check_python_tests(logs: Path) -> Result:
         [sys.executable, str(ROOT / "tools/fidelity/tests/test_ci.py")],
         [sys.executable, str(ROOT / "tools/regression/tests/test_gate_tools.py")],
     ]
+    cleanup_tests = ROOT / "tools/cleanup/run_tests.py"  # T-048 branch-cleanup tests, once merged
+    if cleanup_tests.is_file():
+        tests.append([sys.executable, str(cleanup_tests)])
     failed: list[str] = []
     started = time.monotonic()
     for index, command in enumerate(tests):
