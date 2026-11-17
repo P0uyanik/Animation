@@ -104,3 +104,12 @@ The workflow must stay reliable, efficient and free of unnecessary bottlenecks.
 The owner's local computer is the off-site backup destination (read-only mirror + verified bundle, set up via
 Remote Control when the PC is online). The owner asked the Supervisor to handle GitHub security settings; the cloud
 proxy blocks settings changes, so the Supervisor prepared importable rulesets (docs/process/github-rulesets/).
+
+## 2026-11-17: roadmap priority v5
+Water simulation and paper folding are not priorities for now. Personalities: the boy is impatient and easily
+bored; the girl is cheerful and intelligent; both must show in movement, expression and behaviour (shared
+personality-profile system, data per character). A third character follows once the shared systems are complete and
+reliable. Approved: evaluate strand grooming vs sculpted hair and choose the best; explore GPU rendering options and
+costs before any extra expense; include dialogue and lip sync; develop detailed natural finger animation; include
+Blender checks in GitHub CI where practical. All implementations efficient and reusable across all characters.
+See docs/ROADMAP.md "Priority v5".
