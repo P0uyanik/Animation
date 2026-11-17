@@ -1,3 +1,12 @@
+# ▶ CODEX QUEUE after T-060 (Supervisor, 2026-11-17) — one at a time, report READY via relay, then start the next
+1. T-060 follow-ups (same branch or `t-060b-codex-windows-followup`): once the Windows job is green, archive `apps/export-obj`
+   (owner-approved; remove it from the root CMakeLists, move the folder to `archive/apps/export-obj/` with a README) and
+   propose making the Windows job required. 
+2. T-054b — real lip-sync aligner (`docs/tasks/T-054b.md` on main).
+3. T-073 — render benchmark on this PC, CPU and GPU if present (`docs/tasks/T-073.md` on main). Work on C: only.
+Same workflow rules as below (branch from origin/staging, claims, merge staging before READY, gate, relay line).
+
+---
 # ▶ T-060 UNBLOCKED — owner approved option B (2026-11-17, Supervisor)
 The owner approves installing the C++ Build Tools on this PC **and accepting their licences** for T-060. Do it now,
 then continue T-060; T-054a continues in parallel only if it doesn't slow the install/build.
