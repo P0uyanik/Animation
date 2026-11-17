@@ -258,7 +258,9 @@ jobs:
           NEEDS: ${{ toJSON(needs) }}
           TIER: ${{ needs.plan.outputs.tier }}
           CHARACTERS: ${{ needs.plan.outputs.characters }}
-          WINDOWS: ${{ needs.plan.outputs.windows }}
+          # Windows has never been green on GitHub yet (vcpkg cold build > 2 h before T-041): reported, not
+          # required. Change to "${{ needs.plan.outputs.windows }}" once it has passed on staging.
+          WINDOWS: ${{ needs.plan.outputs.windows == 'true' && 'informational' || 'false' }}
         run: |
           python .github/scripts/combine_check_reports.py build/combined build/combined-summary.txt \
             --needs-json "$NEEDS" --tier "$TIER" --characters "$CHARACTERS" --windows "$WINDOWS"

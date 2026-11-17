@@ -32,7 +32,8 @@ def main() -> int:
     parser.add_argument("--needs-json", default="")
     parser.add_argument("--tier", default="")
     parser.add_argument("--characters", default="[]")
-    parser.add_argument("--windows", default="false")
+    parser.add_argument("--windows", default="false",
+                        help="true: the windows job ran and is required; informational: it ran, reported but not required")
     args = parser.parse_args()
 
     reports = []
@@ -63,8 +64,13 @@ def main() -> int:
 
     order: list[str] = []
     grouped: dict[str, list[tuple[str, dict]]] = {}
+    info: list[str] = []
     for path, report in reports:
         label = label_for(path, args.root, report)
+        if args.windows == "informational" and path.relative_to(args.root).parts[0] == "quality-windows":
+            failed = [str(c.get("name")) for c in report.get("checks", []) if not c.get("ok", False)]
+            info.append("INFO windows (not required yet): " + (f"FAIL {', '.join(failed)}" if failed else "all PASS"))
+            continue
         for check in report.get("checks", []):
             name = str(check.get("name", "unnamed"))
             if name not in grouped:
@@ -92,10 +98,14 @@ def main() -> int:
         problems.append("no quality-gate reports were downloaded")
     if problems:
         lines.append("FAIL CI jobs: " + "; ".join(problems))
+    checks = len(lines)
+    if checks > 10:
+        raise SystemExit(f"combined summary has {checks} check lines (maximum 10)")
     if args.tier:
         lines.insert(0, f"Tier: {args.tier}")
-    if len(lines) > 11:  # tier header + at most 10 check lines
-        raise SystemExit(f"combined summary has {len(lines)} lines (maximum 10 checks)")
+    if args.windows == "informational" and not info:
+        info.append("INFO windows (not required yet): no report")
+    lines.extend(info)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text("\n".join(lines) + "\n", encoding="utf-8")
     print("\n".join(lines))
