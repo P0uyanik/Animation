@@ -40,7 +40,7 @@
 | T-061 | Animation principles pass: slow-in/out on gesture blends and retimed clips, arcs (breakdowns), spacing/arc metrics in the gate; accessory secondary motion (strings, straps, bow) via spring chains | assigned 2026-11-17 | t-061-claude-animation-principles | owner-shared AnimLog critique 2026-11-17 (timing/spacing, overlap, arcs) verified |
 | T-062 | Evaluations use current approved character versions (`run_shot` cast "current", eval shots, gate check) | **in main** 2026-11-17 | t-062-claude-current-cast (40101c8), merge 8074793 | "current" = boy 1.1.0, girl 0.10.0 (verified on merged tree); GitHub full gate PASS |
 | T-063 | Comprehensive visual review vs references: gap register, root causes, prioritized plan, third-character readiness (evaluation only) | **in main** 2026-11-17 | t-063-claude-visual-review (9494365) | overall ≈45–50 % vs references; plan P1–P7; V6 readiness 2/6 |
-| T-064 | P6 fidelity tool fixes (segmentation, hair, skin/face metrics, rebaseline) | assigned 2026-11-17 | t-064-claude-fidelity-fixes | `docs/tasks/T-064.md` |
+| T-064 | P6 fidelity tool fixes (segmentation, hair, skin/face metrics, rebaseline) | **merged** 2026-11-17 | t-064-claude-fidelity-fixes, integration 1120bc0 | GitHub full gate PASS; rebaseline boy 66.41, girl 64.39 (same renders, new tool) |
 | T-065 | P1 face v2 (`face_generic/2`: lids in skin, round cheeks, soft brows, eyes, mouth) | assigned 2026-11-17 | t-065-claude-face-v2 | `docs/tasks/T-065.md` |
 | T-066 | P2 skin look round (`presets/2` skin; split presets.json by family) | queued (after T-044 releases presets.json) | — | T-063 P2 |
 | T-067 | P3 fleece/felt/knit materials round | queued (after T-066) | — | T-063 P3 |
