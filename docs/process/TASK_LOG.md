@@ -46,13 +46,13 @@
 | T-067 | P3 fleece/felt/knit materials round | queued (after T-066) | — | T-063 P3 |
 | T-068 | P4 garment detail types (sneaker, backpack, hood/underarm fix, gathered skirt + hem rib, decals) | queued (after T-067) | — | T-063 P4 |
 | T-069 | Codebase audit: outdated/unused/duplicate/legacy code and assets (report only) | **in main** 2026-11-17 | t-069-claude-legacy-audit (afe0e63) | little dead code; no shared-system consolidation possible (frozen/pinned); cleanup plan C1–C9 + 8 owner questions; 18 Python tests not run by the gate |
-| T-070 | Hair v3 round 2: girl fringe/bun/ringlets, boy clumps/tufts/volume, third character S-waves/texture (path B) | queued (starts when T-044 is merged) | t-070-claude-hair-v3-r2 | `docs/tasks/T-070.md`; owner approved 2026-11-17 |
+| T-070 | Hair v3 round 2: girl fringe/bun/ringlets, boy clumps/tufts/volume, third character S-waves/texture (path B) | assigned 2026-11-17 | t-070-claude-hair-v3-r2 | `docs/tasks/T-070.md`; owner approved 2026-11-17 |
 | T-071 | Documentation cleanup from T-069 (remove/archive/consolidate) + investigate the 18 tests missing from the gate | assigned 2026-11-17 | t-071-claude-docs-cleanup | `docs/tasks/T-071.md`; owner request |
 | T-072 | Code/asset cleanup from T-069 (C5–C8; owner-approved recommendations) | assigned 2026-11-17 | t-072-claude-code-cleanup | `docs/tasks/T-072.md` |
 | T-048 | Branch cleanup workflow + tests | **in main** 2026-11-17 | t-048-claude-branch-cleanup (8f1c3ce), merge ae15c0b | 25/25 cleanup tests, full gate PASS; first real dry run after T-041 backups |
 | T-049 | Hair approach study (strand vs sculpted vs hybrid) | **in main** 2026-11-17; owner choice pending | t-049-claude-hair-study (e31e613) | recommends hybrid C (felted base volumes + few broad edge clumps, face keep-out as spec data); none reaches reference softness yet (fibre halo/volume, girl fringe) |
 | T-050 | GPU / render cost study (no spending) | **in main** 2026-11-17; owner decision pending | t-050-claude-render-cost (242c97c) | previews CPU; review/finals on rented RTX 4090 ≈ $0.84/finished min, ≈ $10–25/month; do not buy a GPU for cost alone |
-| T-044 | Hair v3, hybrid C, reference-accurate, all three characters (path B) | assigned 2026-11-17 | t-044-claude-hair-v3 | `docs/tasks/T-044.md`; owner approved hybrid C |
+| T-044 | Hair v3, hybrid C (path B) | **system in main** 2026-11-17 (owner-approved as technical system); no character pinned yet | t-044-claude-hair-v3 (7a5f02c), merge eae321a | groom/2 registered; GitHub full gate PASS; round 2 → T-070 |
 | T-047 | Collision system (redesign of T-040/T-040r1/T-040r2) | queued (after T-045 and T-056) | — | one collision-body definition per character built by the pipeline and exported (body + closed garments, open garment parts as cloth), used by both engine and measuring tool; clearance as a temporally smoothed constraint inside the animation solve; shoulder/clavicle avoidance from T-045 first; hold/hand-over paths planned outside the body; reuse T-040r1 SDF code and test speed-up |
 | Boy F09 / H28 | Face and hair candidates for the boy | awaiting owner review | — | unpublished experiments |
 
