@@ -1,0 +1,144 @@
+{
+ "q1_ref_c1024": {
+  "label": "Cycles 1024 spp (adaptive 0.002) + OIDN = reference",
+  "render_s": 199.87,
+  "settings": {
+   "engine": "cycles",
+   "blender_engine": "CYCLES",
+   "samples": 1024,
+   "denoising": true,
+   "adaptive": true,
+   "adaptive_threshold": 0.0020000000949949026,
+   "persistent_data": false,
+   "max_bounces": 12,
+   "threads": 4
+  },
+  "psnr_full_db": Infinity,
+  "psnr_crop_db": Infinity,
+  "mae_crop": 0.0
+ },
+ "q2_c16_oidn": {
+  "label": "Cycles 16 spp + OIDN (today's production)",
+  "render_s": 15.42,
+  "settings": {
+   "engine": "cycles",
+   "blender_engine": "CYCLES",
+   "samples": 16,
+   "denoising": true,
+   "adaptive": true,
+   "adaptive_threshold": 0.009999999776482582,
+   "persistent_data": false,
+   "max_bounces": 12,
+   "threads": 4
+  },
+  "psnr_full_db": 53.56,
+  "psnr_crop_db": 48.63,
+  "mae_crop": 0.4
+ },
+ "q3_c16_raw": {
+  "label": "Cycles 16 spp, no denoise",
+  "render_s": 6.21,
+  "settings": {
+   "engine": "cycles",
+   "blender_engine": "CYCLES",
+   "samples": 16,
+   "denoising": false,
+   "adaptive": true,
+   "adaptive_threshold": 0.009999999776482582,
+   "persistent_data": false,
+   "max_bounces": 12,
+   "threads": 4
+  },
+  "psnr_full_db": 44.81,
+  "psnr_crop_db": 38.24,
+  "mae_crop": 1.44
+ },
+ "q4_c64_oidn": {
+  "label": "Cycles 64 spp + OIDN",
+  "render_s": 32.98,
+  "settings": {
+   "engine": "cycles",
+   "blender_engine": "CYCLES",
+   "samples": 64,
+   "denoising": true,
+   "adaptive": true,
+   "adaptive_threshold": 0.009999999776482582,
+   "persistent_data": false,
+   "max_bounces": 12,
+   "threads": 4
+  },
+  "psnr_full_db": 56.71,
+  "psnr_crop_db": 51.45,
+  "mae_crop": 0.27
+ },
+ "q5_c128_oidn": {
+  "label": "Cycles 128 spp + OIDN",
+  "render_s": 44.63,
+  "settings": {
+   "engine": "cycles",
+   "blender_engine": "CYCLES",
+   "samples": 128,
+   "denoising": true,
+   "adaptive": true,
+   "adaptive_threshold": 0.009999999776482582,
+   "persistent_data": false,
+   "max_bounces": 12,
+   "threads": 4
+  },
+  "psnr_full_db": 57.83,
+  "psnr_crop_db": 52.55,
+  "mae_crop": 0.24
+ },
+ "q6_c256_oidn": {
+  "label": "Cycles 256 spp + OIDN",
+  "render_s": 49.62,
+  "settings": {
+   "engine": "cycles",
+   "blender_engine": "CYCLES",
+   "samples": 256,
+   "denoising": true,
+   "adaptive": true,
+   "adaptive_threshold": 0.009999999776482582,
+   "persistent_data": false,
+   "max_bounces": 12,
+   "threads": 4
+  },
+  "psnr_full_db": 58.22,
+  "psnr_crop_db": 52.87,
+  "mae_crop": 0.24
+ },
+ "q7_e16": {
+  "label": "EEVEE 16 samples",
+  "render_s": 34.24,
+  "settings": {
+   "engine": "eevee",
+   "blender_engine": "BLENDER_EEVEE",
+   "samples": 16,
+   "soft_shadows": true,
+   "shadow_rays": 4,
+   "ambient_occlusion": true,
+   "fast_gi_method": "AMBIENT_OCCLUSION_ONLY",
+   "bloom": false
+  },
+  "psnr_full_db": 37.62,
+  "psnr_crop_db": 29.86,
+  "mae_crop": 3.5
+ },
+ "q8_e64": {
+  "label": "EEVEE 64 samples",
+  "render_s": 118.94,
+  "settings": {
+   "engine": "eevee",
+   "blender_engine": "BLENDER_EEVEE",
+   "samples": 64,
+   "soft_shadows": true,
+   "shadow_rays": 4,
+   "ambient_occlusion": true,
+   "fast_gi_method": "AMBIENT_OCCLUSION_ONLY",
+   "bloom": false
+  },
+  "psnr_full_db": 37.55,
+  "psnr_crop_db": 29.76,
+  "mae_crop": 3.56
+ }
+}

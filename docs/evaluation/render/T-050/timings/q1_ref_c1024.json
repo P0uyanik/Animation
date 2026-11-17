@@ -1,0 +1,26 @@
+{
+ "master": "assets/characters/boy_yellow_hoodie/versions/1.0.0/boy_yellow_hoodie_master.blend",
+ "blender": "5.3.0",
+ "cpu_threads": 4,
+ "resolution": [
+  1920,
+  1080
+ ],
+ "cast": 2,
+ "engine_settings": {
+  "engine": "cycles",
+  "blender_engine": "CYCLES",
+  "samples": 1024,
+  "denoising": true,
+  "adaptive": true,
+  "adaptive_threshold": 0.0020000000949949026,
+  "persistent_data": false,
+  "max_bounces": 12,
+  "threads": 4
+ },
+ "open_s": 0.23,
+ "renders_s": [
+  199.87
+ ],
+ "total_s": 200.11
+}
