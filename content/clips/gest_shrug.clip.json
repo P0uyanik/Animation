@@ -2915,5 +2915,54 @@
     ]
    }
   }
+ },
+ "face": {
+  "note": "T-046 facial layer channels (clip frames): brows up and mouth corners down with the shoulders",
+  "tracks": {
+   "browUp": [
+    [
+     0,
+     0.0
+    ],
+    [
+     10,
+     0.1
+    ],
+    [
+     22,
+     0.65
+    ],
+    [
+     38,
+     0.55
+    ],
+    [
+     51,
+     0.0
+    ]
+   ],
+   "mouthDown": [
+    [
+     0,
+     0.0
+    ],
+    [
+     12,
+     0.05
+    ],
+    [
+     24,
+     0.4
+    ],
+    [
+     38,
+     0.35
+    ],
+    [
+     51,
+     0.0
+    ]
+   ]
+  }
  }
 }

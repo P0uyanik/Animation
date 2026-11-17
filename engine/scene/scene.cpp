@@ -248,15 +248,21 @@ Result<Scene> loadScene(const std::filesystem::path& path) {
         cd.life.blinkInterval = readFloat(*it, "blinkInterval", cd.life.blinkInterval);
         cd.life.headFollow = readFloat(*it, "headFollow", cd.life.headFollow);
         cd.life.headLagSec = readFloat(*it, "headLagSec", cd.life.headLagSec);
+        cd.life.face = readBool(*it, "face", cd.life.face);
         if (auto gaze = it->find("gaze"); gaze != it->end() && gaze->is_object()) {
           cd.life.gaze.maxUpDeg = readFloat(*gaze, "maxUpDeg", cd.life.gaze.maxUpDeg);
           cd.life.gaze.maxDownDeg = readFloat(*gaze, "maxDownDeg", cd.life.gaze.maxDownDeg);
           cd.life.gaze.maxLeftDeg = readFloat(*gaze, "maxLeftDeg", cd.life.gaze.maxLeftDeg);
           cd.life.gaze.maxRightDeg = readFloat(*gaze, "maxRightDeg", cd.life.gaze.maxRightDeg);
+          cd.life.gaze.assistYawDeg = readFloat(*gaze, "assistYawDeg", cd.life.gaze.assistYawDeg);
+          cd.life.gaze.assistPitchDeg = readFloat(*gaze, "assistPitchDeg", cd.life.gaze.assistPitchDeg);
+          cd.life.gaze.assistBodyYawDeg = readFloat(*gaze, "assistBodyYawDeg", cd.life.gaze.assistBodyYawDeg);
+          cd.life.gaze.assistLagSec = readFloat(*gaze, "assistLagSec", cd.life.gaze.assistLagSec);
         }
       }
     }
     cd.dynamics = cj.value("dynamics", Json());
+    cd.faceMotion = cj.value("faceMotion", Json());
     s.characters.push_back(cd);
   }
   std::map<std::string, size_t> propsByName;
@@ -421,16 +427,25 @@ Json sceneToJson(const Scene& s) {
                             c.life.gaze.maxDownDeg != defaultGaze.maxDownDeg ||
                             c.life.gaze.maxLeftDeg != defaultGaze.maxLeftDeg ||
                             c.life.gaze.maxRightDeg != defaultGaze.maxRightDeg;
-    if (c.life.enabled || customGaze) {
+    const bool customAssist = c.life.gaze.assistYawDeg != defaultGaze.assistYawDeg ||
+                              c.life.gaze.assistPitchDeg != defaultGaze.assistPitchDeg ||
+                              c.life.gaze.assistBodyYawDeg != defaultGaze.assistBodyYawDeg ||
+                              c.life.gaze.assistLagSec != defaultGaze.assistLagSec;
+    if (c.life.enabled || customGaze || customAssist) {
       Json life = {{"enabled", c.life.enabled},
                    {"gaze", {{"maxUpDeg", c.life.gaze.maxUpDeg}, {"maxDownDeg", c.life.gaze.maxDownDeg},
                              {"maxLeftDeg", c.life.gaze.maxLeftDeg}, {"maxRightDeg", c.life.gaze.maxRightDeg}}}};
+      if (customAssist)
+        life["gaze"].update({{"assistYawDeg", c.life.gaze.assistYawDeg}, {"assistPitchDeg", c.life.gaze.assistPitchDeg},
+                             {"assistBodyYawDeg", c.life.gaze.assistBodyYawDeg}, {"assistLagSec", c.life.gaze.assistLagSec}});
+      if (!c.life.face) life["face"] = false;
       if (c.life.enabled)
         life.update({{"breathing", c.life.breathing}, {"sway", c.life.sway}, {"headDrift", c.life.headDrift},
                      {"blinkInterval", c.life.blinkInterval}, {"headFollow", c.life.headFollow}, {"headLagSec", c.life.headLagSec}});
       cj["life"] = std::move(life);
     }
     if (!c.dynamics.is_null()) cj["dynamics"] = c.dynamics;
+    if (!c.faceMotion.is_null()) cj["faceMotion"] = c.faceMotion;
     chars.push_back(cj);
   }
   Json anim = Json::object();
@@ -718,9 +733,12 @@ std::vector<mat4> SceneEvaluator::kinematicGlobals(size_t c, double frame, Pose*
     yaw += clipYaw;
   }
   mat4 world = objectMatrixLocal(pos, yaw, 1.0f);
+  // Facial layer (T-046): blink, eye darts and control offsets of the living face.
+  const bool face = faceActive(c);
+  const FaceState fs = face ? faces_[c].evaluate(frame) : FaceState{};
   // Expression-driven bones (e.g. a jaw opening with the mouth): weight x rotation, from the package metadata.
   for (const auto& [morph, bones] : ci.asset.expressionBones) {
-    const float w = expressionWeight(c, morph, frame);
+    const float w = face ? morphControlWeight(c, morph, frame) : expressionWeight(c, morph, frame);
     if (w == 0.0f) continue;
     for (const auto& b : bones) {
       const int bi = ci.asset.skeleton.find(b.bone);
@@ -728,9 +746,17 @@ std::vector<mat4> SceneEvaluator::kinematicGlobals(size_t c, double frame, Pose*
     }
   }
   LifeParams life = lifeParams(c);
-  if (!blinkMorph(ci).empty()) life.blinkLids = false;  // blinks are a morph for this character (see evaluate)
+  const bool morphBlink = !blinkMorph(ci).empty();
+  if (morphBlink || face) life.blinkLids = false;  // blinks are a morph for this character (see evaluate) or the face layer's
   applyLife(ci.asset.skeleton, clip, prefix, frame, scene_.rate.fps(), world, life, pose);
-  applyConstraints(ci.asset.skeleton, clip, prefix, frame, world, pose, life.gaze);
+  if (face && !morphBlink) applyLidBlink(ci.asset.skeleton, pose, fs.blink);
+  applyConstraints(ci.asset.skeleton, clip, prefix, frame, world, pose, life.gaze, scene_.rate.fps());
+  if (face && (fs.eyeOffsetDeg.x != 0 || fs.eyeOffsetDeg.y != 0)) {  // eye darts and gaze bias on top of the aim
+    const quat dq = glm::angleAxis(glm::radians(fs.eyeOffsetDeg.x), vec3(0, 1, 0)) *
+                    glm::angleAxis(glm::radians(-fs.eyeOffsetDeg.y), vec3(1, 0, 0));
+    for (size_t b = 0; b < ci.asset.skeleton.bones.size(); ++b)
+      if (ci.asset.skeleton.bones[b].name.rfind("eye.", 0) == 0) pose.local[b] = glm::normalize(pose.local[b] * dq);
+  }
   applyArmPoles(ci.asset.skeleton, clip, prefix, frame, world, pose);          // elbow outward (T-030)
   applyOrientConstraints(ci.asset.skeleton, clip, prefix, frame, world, pose);  // hand-prop interaction (T-022)
   if (clips) applyClipFingers(c, frame, pose);
@@ -960,10 +986,29 @@ Camera SceneEvaluator::cameraAt(double frame) const {
 float SceneEvaluator::morphControlWeight(size_t c, const std::string& morph, double frame) const {
   float w = expressionWeight(c, morph, frame);
   const LifeParams life = lifeParams(c);
+  if (faceActive(c)) {  // the facial layer: control offsets and its own blinks
+    const FaceState fs = faces_[c].evaluate(frame);
+    if (auto it = fs.controls.find(morph); it != fs.controls.end()) w = std::clamp(w + it->second, 0.0f, 1.0f);
+    const std::string blink = blinkMorph(characters_[c]);
+    if (morph == blink) w = std::max(w, fs.blink);
+    else if (!blink.empty() && faces_[c].clearsWithBlink(morph))  // eye-opening controls fade while the lids close
+      w *= 1.0f - std::clamp(std::max(fs.blink, expressionWeight(c, blink, frame)), 0.0f, 1.0f);
+    return w;
+  }
   if (life.enabled && morph == blinkMorph(characters_[c]))
     w = std::max(w, blinkAmount(frame / std::max(1.0, scene_.rate.fps()), life.blinkInterval, life.seed, life.blinkClose,
                                 life.blinkHold, life.blinkOpen));
   return w;
+}
+
+bool SceneEvaluator::faceActive(size_t c) const {
+  if (c >= faces_.size() || c >= scene_.characters.size() || !faces_[c].built()) return false;
+  const LifeParams& life = scene_.characters[c].life;
+  return life.enabled && life.face;
+}
+
+FaceState SceneEvaluator::faceState(size_t c, double frame) const {
+  return faceActive(c) ? faces_[c].evaluate(frame) : FaceState{};
 }
 
 // Animated weight of a morph channel (track "<name>/expr.<morph>", else the character's default expression).
@@ -997,13 +1042,19 @@ std::shared_ptr<FrameSnapshot> SceneEvaluator::evaluate(double frame) const {
     std::vector<float> weights;
     std::vector<std::string> names;
     const LifeParams life = lifeParams(c);
+    const bool face = faceActive(c);
+    const FaceState fs = face ? faces_[c].evaluate(frame) : FaceState{};
     const std::string blink = life.enabled ? blinkMorph(ci) : std::string();
     const float blinkW = blink.empty() ? 0.0f
+                         : face        ? fs.blink
                                        : blinkAmount(frame / std::max(1.0, scene_.rate.fps()), life.blinkInterval, life.seed,
                                                      life.blinkClose, life.blinkHold, life.blinkOpen);
     for (auto& mt : ci.rig.morphs) {
       float w = expressionWeight(c, mt.name, frame);
+      if (auto it = fs.controls.find(mt.name); it != fs.controls.end()) w = std::clamp(w + it->second, 0.0f, 1.0f);
       if (mt.name == blink) w = std::max(w, blinkW);  // automatic blinks drive the character's blink morph
+      else if (face && !blink.empty() && faces_[c].clearsWithBlink(mt.name))  // eye-opening controls fade while the lids close
+        w *= 1.0f - std::clamp(std::max(blinkW, expressionWeight(c, blink, frame)), 0.0f, 1.0f);
       weights.push_back(w);
       names.push_back(mt.name);
     }

@@ -65,6 +65,12 @@ Result<EmotionDef> emotionFromJson(const Json& file, const std::string& variant)
     if (curve != "smooth" && curve != "linear") return fail(std::format("emotion '{}': unknown curve '{}'", e.name, curve));
     e.linear = curve == "linear";
   }
+  if (auto fm = j.find("faceMotion"); fm != j.end() && !fm->is_null()) {
+    auto m = faceMotionFromJson(*fm);
+    if (!m) return fail(std::format("emotion '{}': {}", e.name, m.error().message));
+    e.faceMotion = *m;
+    e.hasFaceMotion = true;
+  }
   if (e.onset < 0 || e.hold < 0 || e.release < 0) return fail(std::format("emotion '{}': negative timing", e.name));
   return e;
 }

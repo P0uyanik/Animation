@@ -7,6 +7,22 @@
   "angry": 0.9,
   "browDown": 0.5
  },
+ "faceMotion": {
+  "blinkRate": 0.5,
+  "doubleBlink": 0.0,
+  "saccadeRate": 0.6,
+  "saccadeDeg": 1.0,
+  "longHold": 0.5,
+  "gazeBiasDeg": [
+   0.0,
+   -2.0
+  ],
+  "micro": 0.5,
+  "channels": {
+   "mouthDown": 0.3,
+   "eyeSquint": 0.25
+  }
+ },
  "body": {
   "clip": "emo_angry"
  },

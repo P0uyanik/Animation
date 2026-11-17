@@ -6,6 +6,20 @@
  "face": {
   "smile": 1.0
  },
+ "faceMotion": {
+  "blinkRate": 1.1,
+  "doubleBlink": 0.2,
+  "saccadeRate": 1.1,
+  "attention": 0.4,
+  "gazeBiasDeg": [
+   0.0,
+   2.0
+  ],
+  "channels": {
+   "browUp": 0.25,
+   "eyeSquint": 0.15
+  }
+ },
  "body": {
   "clip": "emo_happy"
  },
@@ -29,6 +43,14 @@
    "timing": {
     "onset": 0.3,
     "release": 1.0
+   },
+   "faceMotion": {
+    "blinkRate": 0.6,
+    "saccadeDeg": 1.0,
+    "channels": {
+     "browUp": 0.3,
+     "eyeSquint": null
+    }
    }
   }
  },
