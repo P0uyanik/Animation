@@ -5,6 +5,8 @@
 
 #include <algorithm>
 #include <atomic>
+#include <cstdio>
+#include <cstdlib>
 #include <format>
 #include <optional>
 #include <unordered_map>
@@ -178,6 +180,295 @@ vec3 skinPoint(const ArmPoint& P, const std::vector<mat4>& G) {
 
 }  // namespace
 
+namespace {
+
+// Torso radius profile (T-040r1, see interaction.h) from the body triangles of the rest meshes.
+TorsoProfile buildTorsoProfile(const Skeleton& sk, const std::vector<SkinnedMesh>& meshes, const std::vector<int>& region,
+                               float bottomY) {
+  TorsoProfile P;
+  struct Tri { vec3 a, b, c; };
+  std::vector<Tri> tris;
+  // body vertices with their torso-bone weights (for the per-bone row weights)
+  struct BodyVertex { vec3 p; int joint[4]; float weight[4]; };
+  std::vector<BodyVertex> verts;
+  for (const SkinnedMesh& m : meshes) {
+    if (startsWith(m.part, "hair")) continue;  // hair (curls hanging onto the chest) is not body volume
+    const size_t n = std::min({m.rest.positions.size(), m.joints.size(), m.weights.size()});
+    std::vector<char> body(n, 0);
+    for (size_t v = 0; v < n; ++v) {
+      float w[6] = {0, 0, 0, 0, 0, 0};
+      for (int k = 0; k < 4; ++k) {
+        const int j = m.joints[v][k];
+        if (j >= 0 && size_t(j) < sk.bones.size() && m.weights[v][k] > 0) w[region[size_t(j)]] += m.weights[v][k];
+      }
+      // Body: mostly torso-carried (>= 90 %, the hips' leg-carried sides down to the pelvis bottom), or, on packages
+      // whose torso skin is shared with the neck or legs, torso-dominant with (almost) nothing on the arms and neither
+      // the head nor the legs carrying half (the profile is then fuller than the strict surface, never thinner).
+      const float torso = w[int(Region::Torso)], leg = w[int(Region::Leg)];
+      const float arm = std::max(w[int(Region::ArmL)], w[int(Region::ArmR)]), headW = w[int(Region::Head)];
+      body[v] = torso >= 0.9f || (torso + leg >= 0.9f && m.rest.positions[v].y >= bottomY) ||
+                (!std::getenv("PP_STRICT") && torso >= 0.5f && arm < 0.1f && headW < 0.5f && leg < 0.5f);
+    }
+    std::vector<char> used(n, 0);
+    for (size_t t = 0; t + 2 < m.rest.indices.size(); t += 3) {
+      const uint32_t a = m.rest.indices[t], b = m.rest.indices[t + 1], c = m.rest.indices[t + 2];
+      if (a >= n || b >= n || c >= n || !body[a] || !body[b] || !body[c]) continue;
+      tris.push_back({m.rest.positions[a], m.rest.positions[b], m.rest.positions[c]});
+      used[a] = used[b] = used[c] = 1;
+    }
+    for (size_t v = 0; v < n; ++v) {
+      if (!used[v]) continue;
+      BodyVertex bv{m.rest.positions[v], {0, 0, 0, 0}, {0, 0, 0, 0}};
+      for (int k = 0; k < 4; ++k) {
+        const int j = m.joints[v][k];
+        const bool torsoBone = j >= 0 && size_t(j) < sk.bones.size() && region[size_t(j)] == int(Region::Torso);
+        bv.joint[k] = torsoBone ? j : -1;
+        bv.weight[k] = torsoBone ? m.weights[v][k] : 0.0f;
+      }
+      verts.push_back(bv);
+    }
+  }
+  P.triangles = tris.size();
+  if (tris.size() < 100) return P;
+  float top = -1e9f;
+  for (const BodyVertex& v : verts) top = std::max(top, v.p.y);
+  if (top <= bottomY + 0.05f) return P;
+  P.h0 = bottomY;
+  P.nh = int(std::ceil((top - bottomY) / P.dh)) + 1;
+  const int nh = P.nh, na = P.na;
+  // Row centres: middle of the row's vertex extent (x, z), from the rows around it where a row is empty.
+  std::vector<vec4> box(size_t(nh), vec4(1e9f, 1e9f, -1e9f, -1e9f));
+  std::vector<std::vector<float>> bw{size_t(nh), std::vector<float>{}};
+  std::vector<float> bwSum(size_t(nh), 0.0f);
+  for (const BodyVertex& v : verts) {
+    const float s = (v.p.y - P.h0) / P.dh;
+    for (int r = std::max(0, int(std::floor(s - 2))); r <= std::min(nh - 1, int(std::ceil(s + 2))); ++r) {
+      box[size_t(r)] = vec4(std::min(box[size_t(r)].x, v.p.x), std::min(box[size_t(r)].y, v.p.z),
+                            std::max(box[size_t(r)].z, v.p.x), std::max(box[size_t(r)].w, v.p.z));
+      if (std::abs(s - float(r)) > 1.5f) continue;
+      for (int k = 0; k < 4; ++k) {
+        if (v.joint[k] < 0 || v.weight[k] <= 0) continue;
+        auto it = std::find(P.bones.begin(), P.bones.end(), v.joint[k]);
+        size_t bi = size_t(it - P.bones.begin());
+        if (it == P.bones.end()) {
+          P.bones.push_back(v.joint[k]);
+          for (auto& row : bw) row.push_back(0.0f);
+        }
+        bw[size_t(r)][bi] += v.weight[k];
+        bwSum[size_t(r)] += v.weight[k];
+      }
+    }
+  }
+  if (P.bones.empty()) return P;
+  for (int b : P.bones) P.heads.push_back(sk.bones[size_t(b)].head);
+  P.center.assign(size_t(nh), vec2(0));
+  std::vector<char> has(size_t(nh), 0);
+  for (int r = 0; r < nh; ++r)
+    if (box[size_t(r)].x <= box[size_t(r)].z)
+      has[size_t(r)] = 1, P.center[size_t(r)] = 0.5f * vec2(box[size_t(r)].x + box[size_t(r)].z, box[size_t(r)].y + box[size_t(r)].w);
+  auto fillRows = [&](auto&& copy) {  // empty rows take the nearest filled row
+    for (int r = 0; r < nh; ++r) {
+      if (has[size_t(r)]) continue;
+      for (int d = 1; d < nh; ++d) {
+        if (r - d >= 0 && has[size_t(r - d)]) { copy(r, r - d); break; }
+        if (r + d < nh && has[size_t(r + d)]) { copy(r, r + d); break; }
+      }
+    }
+  };
+  fillRows([&](int r, int from) { P.center[size_t(r)] = P.center[size_t(from)]; });
+  {  // smooth the centres along the body (a 5-row box): the ray origins must not jump between rows
+    std::vector<vec2> c = P.center;
+    for (int r = 0; r < nh; ++r) {
+      vec2 sum(0);
+      int n = 0;
+      for (int d = -2; d <= 2; ++d)
+        if (r + d >= 0 && r + d < nh) sum += P.center[size_t(r + d)], ++n;
+      c[size_t(r)] = sum / float(n);
+    }
+    P.center = c;
+  }
+  // Per-bone row weights (normalised; empty rows from the nearest).
+  const size_t nb = P.bones.size();
+  P.weight.assign(nb * size_t(nh), 0.0f);
+  std::vector<char> hasW(size_t(nh), 0);
+  for (int r = 0; r < nh; ++r)
+    if (bwSum[size_t(r)] > 1e-6f) {
+      hasW[size_t(r)] = 1;
+      for (size_t b = 0; b < nb; ++b) P.weight[b * size_t(nh) + size_t(r)] = bw[size_t(r)][b] / bwSum[size_t(r)];
+    }
+  for (int r = 0; r < nh; ++r) {
+    if (hasW[size_t(r)]) continue;
+    for (int d = 1; d < nh; ++d) {
+      const int from = r - d >= 0 && hasW[size_t(r - d)] ? r - d : r + d < nh && hasW[size_t(r + d)] ? r + d : -1;
+      if (from < 0) continue;
+      for (size_t b = 0; b < nb; ++b) P.weight[b * size_t(nh) + size_t(r)] = P.weight[b * size_t(nh) + size_t(from)];
+      break;
+    }
+  }
+  // Rays: per row, the triangles crossing the row's plane give segments in (x, z); the outermost hit per angle.
+  std::vector<std::vector<int>> rowTris{size_t(nh), std::vector<int>{}};
+  for (size_t t = 0; t < tris.size(); ++t) {
+    const float lo = std::min({tris[t].a.y, tris[t].b.y, tris[t].c.y}), hi = std::max({tris[t].a.y, tris[t].b.y, tris[t].c.y});
+    const int r0 = std::max(0, int(std::ceil((lo - P.h0) / P.dh))), r1 = std::min(nh - 1, int(std::floor((hi - P.h0) / P.dh)));
+    for (int r = r0; r <= r1; ++r) rowTris[size_t(r)].push_back(int(t));
+  }
+  P.radius.assign(size_t(nh) * size_t(na), -1.0f);
+  std::fill(has.begin(), has.end(), 0);
+  for (int r = 0; r < nh; ++r) {
+    const float y = P.h0 + float(r) * P.dh;
+    std::vector<std::pair<vec2, vec2>> seg;
+    for (int t : rowTris[size_t(r)]) {
+      const vec3 v[3] = {tris[size_t(t)].a, tris[size_t(t)].b, tris[size_t(t)].c};
+      vec2 q[3];
+      int n = 0;
+      for (int k = 0; k < 3 && n < 2; ++k) {
+        const vec3 a = v[k], b = v[(k + 1) % 3];
+        if ((a.y - y) * (b.y - y) > 0 || a.y == b.y) continue;
+        const float u = (y - a.y) / (b.y - a.y);
+        const vec3 x = a + u * (b - a);
+        q[n++] = vec2(x.x, x.z);
+      }
+      if (n == 2) seg.push_back({q[0], q[1]});
+    }
+    const vec2 c = P.center[size_t(r)];
+    int hits = 0;
+    for (int k = 0; k < na; ++k) {
+      const float phi = 2.0f * glm::pi<float>() * float(k) / float(na);
+      const vec2 d(std::cos(phi), std::sin(phi));
+      float best = -1;
+      for (const auto& [a, b] : seg) {  // c + t d = a + u (b - a)
+        const vec2 e = b - a, w = a - c;
+        const float den = d.x * e.y - d.y * e.x;
+        if (std::abs(den) < 1e-12f) continue;
+        const float t = (w.x * e.y - w.y * e.x) / den, u = (w.x * d.y - w.y * d.x) / den;
+        if (u < 0 || u > 1 || t <= 0) continue;
+        best = std::max(best, t);
+      }
+      if (best > 0) P.radius[size_t(r) * size_t(na) + size_t(k)] = best, ++hits;
+    }
+    if (hits == 0) continue;
+    has[size_t(r)] = 1;
+    // Angles without a hit (an armhole, a side panel carried by the arm): the surface there is open (the mesh has no
+    // body to touch), so the hole takes the smaller of the radii at its two rims, never a bridge between them.
+    float* R = &P.radius[size_t(r) * size_t(na)];
+    for (int k = 0; k < na; ++k) {
+      if (R[k] > 0) continue;
+      int a = 1, b = 1;
+      while (R[(k - a + na) % na] <= 0) ++a;
+      while (R[(k + b) % na] <= 0) ++b;
+      R[k] = -std::min(R[(k - a + na) % na], R[(k + b) % na]);  // negative: filled
+    }
+    for (int k = 0; k < na; ++k) R[k] = std::abs(R[k]);
+  }
+  fillRows([&](int r, int from) {
+    std::copy_n(&P.radius[size_t(from) * size_t(na)], na, &P.radius[size_t(r) * size_t(na)]);
+  });
+  if (std::find(has.begin(), has.end(), 1) == has.end()) return P;
+  // Rows with little body (a few torso-weighted triangles below the hips or at the collar of a package whose lower
+  // body is carried by the legs) are not torso volume: the profile is the longest run of full rows.
+  std::vector<float> mean(size_t(nh), 0.0f);
+  float meanMax = 0;
+  for (int r = 0; r < nh; ++r) {
+    for (int k = 0; k < na; ++k) mean[size_t(r)] += P.radius[size_t(r * na + k)] / float(na);
+    meanMax = std::max(meanMax, mean[size_t(r)]);
+  }
+  int lo = 0, hi = -1;  // the longest run of full rows
+  for (int r = 0; r < nh;) {
+    if (mean[size_t(r)] < 0.35f * meanMax) { ++r; continue; }
+    int e = r;
+    while (e + 1 < nh && mean[size_t(e + 1)] >= 0.35f * meanMax) ++e;
+    if (e - r > hi - lo) lo = r, hi = e;
+    r = e + 1;
+  }
+  if (hi - lo < 4) return P;
+  if (lo > 0 || hi < nh - 1) {
+    const int n = hi - lo + 1;
+    std::vector<float> radius(P.radius.begin() + std::ptrdiff_t(lo * na), P.radius.begin() + std::ptrdiff_t((hi + 1) * na));
+    std::vector<vec2> center(P.center.begin() + lo, P.center.begin() + hi + 1);
+    std::vector<float> weight(nb * size_t(n));
+    for (size_t b = 0; b < nb; ++b)
+      std::copy_n(&P.weight[b * size_t(nh) + size_t(lo)], n, &weight[b * size_t(n)]);
+    P.radius = std::move(radius), P.center = std::move(center), P.weight = std::move(weight);
+    P.h0 += float(lo) * P.dh;
+    P.nh = n;
+  }
+  P.valid = true;
+  return P;
+}
+
+}  // namespace
+
+ProfileGap torsoProfileGap(const TorsoProfile& P, vec3 q) {
+  // Bicubic Catmull-Rom over rows (clamped) and angles (wrapped): it passes through every ray hit and is C1, so the gap
+  // and its gradient are continuous (the solver needs a smooth field).
+  const int nh = P.nh, na = P.na;
+  const float s = (q.y - P.h0) / P.dh, sc = std::clamp(s, 0.0f, float(nh - 1));
+  const bool inRange = s >= 0 && s <= float(nh - 1);
+  const int i1 = std::min(int(sc), std::max(0, nh - 2));
+  const float t = sc - float(i1);
+  auto cr = [](float x, float* w, float* dw) {
+    const float x2 = x * x, x3 = x2 * x;
+    w[0] = 0.5f * (-x3 + 2 * x2 - x), w[1] = 0.5f * (3 * x3 - 5 * x2 + 2), w[2] = 0.5f * (-3 * x3 + 4 * x2 + x), w[3] = 0.5f * (x3 - x2);
+    dw[0] = 0.5f * (-3 * x2 + 4 * x - 1), dw[1] = 0.5f * (9 * x2 - 10 * x), dw[2] = 0.5f * (-9 * x2 + 8 * x + 1), dw[3] = 0.5f * (3 * x2 - 2 * x);
+  };
+  float ws[4], dws[4];
+  cr(t, ws, dws);
+  int rows[4];
+  for (int k = 0; k < 4; ++k) rows[k] = std::clamp(i1 - 1 + k, 0, nh - 1);
+  vec2 c(0), dc(0);
+  for (int k = 0; k < 4; ++k) c += ws[k] * P.center[size_t(rows[k])], dc += dws[k] * P.center[size_t(rows[k])];
+  dc /= P.dh;  // per metre
+  const vec2 d(q.x - c.x, q.z - c.y);
+  const float rho = glm::length(d);
+  if (rho < 1e-6f) {
+    float rmin = 1e9f;
+    for (int k = 0; k < na; ++k) {
+      float r = 0;
+      for (int j = 0; j < 4; ++j) r += ws[j] * P.radius[size_t(rows[j] * na + k)];
+      rmin = std::min(rmin, r);
+    }
+    return {-rmin, vec3(1, 0, 0)};
+  }
+  const vec2 rh = d / rho;
+  float a = std::atan2(rh.y, rh.x) / (2.0f * glm::pi<float>()) * float(na);
+  if (a < 0) a += float(na);
+  const int k1 = int(a) % na;
+  float wa[4], dwa[4];
+  cr(a - std::floor(a), wa, dwa);
+  float radius = 0, dRds = 0, dRda = 0;
+  for (int j = 0; j < 4; ++j)
+    for (int k = 0; k < 4; ++k) {
+      const float r = P.radius[size_t(rows[j] * na + (k1 - 1 + k + na) % na)];
+      radius += ws[j] * wa[k] * r;
+      dRds += dws[j] * wa[k] * r;
+      dRda += ws[j] * dwa[k] * r;
+    }
+  const float dRdh = inRange ? dRds / P.dh : 0.0f;
+  const float dRdphi = dRda * float(na) / (2.0f * glm::pi<float>());
+  const float f = rho - radius;
+  const vec2 tang(-rh.y, rh.x);
+  // The angular slope is taken at the surface (radius R), not at the point: deep inside, the estimate stays the radial
+  // depth scaled by the surface's own slope (it does not shrink towards the axis), so it keeps growing with depth.
+  const vec2 gxz = rh - (dRdphi / std::max(radius, 1e-3f)) * tang;
+  const float gy = -dRdh - (inRange ? glm::dot(rh, dc) : 0.0f);
+  vec3 g(gxz.x, gy, gxz.y);
+  const float gl = glm::length(g);
+  float gap = f / gl;
+  g /= gl;
+  const float beyond = s < 0 ? -s * P.dh : s > float(nh - 1) ? (s - float(nh - 1)) * P.dh : 0.0f;
+  if (beyond > 0) {
+    const vec3 out(0, s < 0 ? -1.0f : 1.0f, 0);
+    if (gap < 0) gap += beyond, g = glm::normalize(g + out);
+    else {
+      const float r = std::sqrt(gap * gap + beyond * beyond);
+      g = glm::normalize(g * gap + out * beyond);
+      gap = r;
+    }
+  }
+  return {gap, g};
+}
+
+
 BodyClearanceModel bodyClearanceModel(const Skeleton& sk, const std::vector<SkinnedMesh>& meshes) {
   BodyClearanceModel M;
   const int hips = sk.find("hips"), chest = sk.find("chest"), spine = sk.find("spine"), neck = sk.find("neck");
@@ -300,12 +591,14 @@ BodyClearanceModel bodyClearanceModel(const Skeleton& sk, const std::vector<Skin
   // pressed against the side) may stay as deep as it rests, never deeper; every other point keeps the margin.
   std::vector<mat4> rest(sk.bones.size());
   for (size_t b = 0; b < sk.bones.size(); ++b) rest[b] = glm::translate(mat4(1), sk.bones[b].head);
+  M.profile = buildTorsoProfile(sk, meshes, region, bottom.y);
   for (int s = 0; s < 2; ++s)
     for (ArmPoint& P : M.arm[s].points) {
       float g = 1e9f;
       for (const BodyCapsule& C : M.body) g = std::min(g, sectionGap(C, rest[size_t(C.bone)], skinPoint(P, rest), s == 0 ? 'L' : 'R').gap);
       P.allowance = std::min(0.0f, g - kArmBodyMargin);
-      P.restGap = g;
+      // (20 microns below the exact value: posed and rest evaluations differ by float rounding)
+      P.restGap = (M.profile.valid ? torsoProfileGap(M.profile, skinPoint(P, rest)).gap : g) - 2e-5f;
     }
   M.valid = true;
   static std::atomic<unsigned long long> fits{0};
@@ -386,60 +679,59 @@ quat rotationFromVector(vec3 w) {
   return a > 1e-9f ? glm::angleAxis(a, w / a) : quat(1, 0, 0, 0);
 }
 
-// The body sections are carried by torso bones, which the arm pass never moves: their inverses are computed once.
+// The post-pass body is carried by torso bones, which the arm pass never moves: their frames and inverses are computed
+// once per pass.
 struct BodyFrames {
-  std::vector<mat4> G, inv;
+  std::vector<mat4> G, inv;          // sections (fallback)
+  std::vector<mat4> profG, profInv;  // profile bones
 };
 BodyFrames bodyFrames(const BodyClearanceModel& M, const std::vector<mat4>& G) {
   BodyFrames B;
+  if (M.profile.valid) {
+    for (int b : M.profile.bones) B.profG.push_back(G[size_t(b)]), B.profInv.push_back(glm::inverse(G[size_t(b)]));
+    return B;
+  }
   for (const BodyCapsule& C : M.body) B.G.push_back(G[size_t(C.bone)]), B.inv.push_back(glm::inverse(G[size_t(C.bone)]));
   return B;
+}
+// Gap of a world point to the post-pass body: the profile carried by each of its bones, blended by the bones' row
+// weights at the point's height in that bone's frame (the sections when the character has no profile).
+SectionGap postPassGap(const BodyClearanceModel& M, const BodyFrames& B, vec3 p, char side) {
+  const TorsoProfile& P = M.profile;
+  if (!P.valid) {
+    SectionGap best{1e9f, vec3(0)};
+    for (size_t k = 0; k < M.body.size(); ++k) {
+      const SectionGap sg = sectionGapInv(M.body[k], B.G[k], B.inv[k], p, side);
+      if (sg.gap < best.gap) best = sg;
+    }
+    return best;
+  }
+  float gap = 0, wsum = 0;
+  vec3 grad(0);
+  for (size_t b = 0; b < P.bones.size(); ++b) {
+    // rest coordinates as if carried rigidly by the bone (skinning: G_b (rest - head_b))
+    const vec3 rest = vec3(B.profInv[b] * vec4(p, 1)) + P.heads[b];
+    const float s = std::clamp((rest.y - P.h0) / P.dh, 0.0f, float(P.nh - 1));
+    const int i0 = std::min(int(s), std::max(0, P.nh - 2)), i1 = std::min(i0 + 1, P.nh - 1);
+    const float* W = &P.weight[b * size_t(P.nh)];
+    const float w = glm::mix(W[i0], W[i1], s - float(i0));
+    if (w <= 1e-4f) continue;
+    const ProfileGap pg = torsoProfileGap(P, rest);
+    gap += w * pg.gap;
+    grad += w * (mat3(B.profG[b]) * pg.grad);
+    wsum += w;
+  }
+  if (wsum <= 0) return {1e9f, vec3(0)};
+  const float gl = glm::length(grad);
+  return {gap / wsum, gl > 1e-9f ? grad / gl : vec3(side == 'L' ? 1.0f : -1.0f, 0, 0)};
 }
 bool postPassPoint(const ArmPoint& P, const ArmPostPassOptions& o) {
   return !(P.part == 0 && P.along < o.armpit) && P.followUpper >= 0.5f;
 }
 // Gap of a point for the post-pass: a point that rests nearer than the untouched threshold (margin + band) counts
 // from its rest gap, so the rest pose itself is never corrected.
-float passGap(const ArmPoint& P, float sectionGapValue, const ArmPostPassOptions& o) {
-  return sectionGapValue - std::min(0.0f, P.restGap - (o.margin + o.band));
-}
-// Worst gap of the arm and, for every point closer than the threshold, the deficit-weighted sum of the joint-space
-// directions that move it out (continuous in the pose: a point's weight fades to zero as it reaches the threshold).
-struct ArmState {
-  float gap = 1e9f;
-  vec3 centroid{0};  // deficit-weighted centroid of the points closer than the threshold
-  float weight = 0, fore = 0;  // total deficit weight; the share of it that follows the forearm
-};
-// `pin` / `keepHand`: a pinned arm can only swing about shoulder -> wrist, which does not move a point carried by the
-// hand (a sleeve skinned to the hand and the shoulder, not to the arm bones): such a point's deficit fades out with
-// the pin (continuously, so an IK weight ramp does not switch points on and off), instead of driving the swing.
-ArmState armState(const BodyClearanceModel& M, const BodyFrames& B, const std::vector<mat4>& G, const ArmModel& A,
-                  char side, const ArmPostPassOptions& o, bool directions, float pin = 0, float keepHand = 0) {
-  ArmState st;
-  const float T = o.margin + o.band;
-  for (const ArmPoint& P : A.points) {
-    if (!postPassPoint(P, o)) continue;
-    const vec3 p = skinPoint(P, G);
-    float gap = 1e9f;
-    vec3 n(0);
-    for (size_t k = 0; k < M.body.size(); ++k) {
-      const SectionGap sg = sectionGapInv(M.body[k], B.G[k], B.inv[k], p, side);
-      const float g = passGap(P, sg.gap, o);
-      if (g < gap) gap = g, n = sg.worldGrad;
-    }
-    if (pin > 0 && gap < T) {
-      const float swings = std::clamp(P.followUpper - P.followHand * keepHand, 0.0f, 1.0f);
-      gap += pin * (1 - swings) * (T - gap);
-    }
-    st.gap = std::min(st.gap, gap);
-    if (!directions || gap >= T) continue;
-    const float w = (T - gap) * (T - gap) * P.followUpper;
-    st.centroid += w * p;
-    st.weight += w;
-    st.fore += w * P.followFore;
-  }
-  if (st.weight > 0) st.centroid /= st.weight, st.fore /= st.weight;
-  return st;
+float passGap(const ArmPoint& P, float gapValue, const ArmPostPassOptions& o) {
+  return gapValue - std::min(0.0f, P.restGap - (o.margin + o.band));
 }
 // C1 ramp of the target gap (see interaction.h).
 float targetGap(float gap, const ArmPostPassOptions& o) {
@@ -447,10 +739,60 @@ float targetGap(float gap, const ArmPostPassOptions& o) {
   if (x <= 0) return gap;
   return gap + (x < 2 * b ? x * x / (4 * b) : x - b);
 }
+// Per point of the post-pass: position, gap (rest-relative) and outward world normal.
+struct PointGap {
+  vec3 p, n;
+  float gap;
+};
+void pointGaps(const BodyClearanceModel& M, const BodyFrames& B, const std::vector<mat4>& G, const ArmModel& A, char side,
+               const ArmPostPassOptions& o, std::vector<PointGap>& out) {
+  out.resize(A.points.size());
+  for (size_t i = 0; i < A.points.size(); ++i) {
+    const ArmPoint& P = A.points[i];
+    if (!postPassPoint(P, o)) {
+      out[i].gap = 1e9f;
+      continue;
+    }
+    const vec3 p = skinPoint(P, G);
+    const SectionGap sg = postPassGap(M, B, p, side);
+    out[i] = {p, sg.worldGrad, passGap(P, sg.gap, o)};
+  }
+}
+float worstGap(const std::vector<PointGap>& g) {
+  float w = 1e9f;
+  for (const PointGap& x : g) w = std::min(w, x.gap);
+  return w;
+}
 void rotateBoneWorld(const Skeleton& sk, const std::vector<mat4>& G, const mat4& world, int bone, const quat& R, Pose& pose) {
   const int parent = sk.bones[size_t(bone)].parent;
   const quat pr = rotationOf(parent >= 0 ? G[size_t(parent)] : world);
   pose.local[size_t(bone)] = glm::normalize(glm::inverse(pr) * R * pr * pose.local[size_t(bone)]);
+}
+// Solve the small symmetric positive definite system A x = b (n <= 7) by Cholesky.
+template <int N>
+bool solveSpd(float (&A)[N][N], float (&b)[N], float (&x)[N]) {
+  float L[N][N] = {};
+  for (int i = 0; i < N; ++i)
+    for (int j = 0; j <= i; ++j) {
+      double sum = A[i][j];
+      for (int k = 0; k < j; ++k) sum -= double(L[i][k]) * L[j][k];
+      if (i == j) {
+        if (sum <= 1e-20) return false;
+        L[i][i] = float(std::sqrt(sum));
+      } else L[i][j] = float(sum / L[j][j]);
+    }
+  float y[N];
+  for (int i = 0; i < N; ++i) {
+    double sum = b[i];
+    for (int k = 0; k < i; ++k) sum -= double(L[i][k]) * y[k];
+    y[i] = float(sum / L[i][i]);
+  }
+  for (int i = N - 1; i >= 0; --i) {
+    double sum = y[i];
+    for (int k = i + 1; k < N; ++k) sum -= double(L[k][i]) * x[k];
+    x[i] = float(sum / L[i][i]);
+  }
+  return true;
 }
 
 }  // namespace
@@ -459,20 +801,21 @@ float armBodyGap(const BodyClearanceModel& M, const std::vector<mat4>& G, char s
   if (!M.valid) return 1e9f;
   const ArmModel& A = M.arm[side == 'L' ? 0 : 1];
   if (A.points.empty()) return 1e9f;
-  return armState(M, bodyFrames(M, G), G, A, side, o, false).gap;
+  std::vector<PointGap> g;
+  pointGaps(M, bodyFrames(M, G), G, A, side, o, g);
+  return worstGap(g);
 }
 
-// The correction is a rotation path from the evaluated pose, in two stages blended by the IK weight `pin`:
-//  1. swing (weight pin): the upper arm turns about shoulder -> wrist (the wrist and the hand's world rotation stay),
-//     towards the target scaled by pin, seeing only the points the swing can move;
-//  2. free (weight 1 - pin): shoulder and elbow (elbow 0.5 times the forearm's share), the hand following the forearm
-//     (or keeping its world rotation as far as `keepHand` asks), towards the target scaled by 1 - pin.
-// So a pinned arm keeps its wrist exactly, a free arm is corrected fully, and an IK weight ramp hands over from one to
-// the other continuously (an IK pose that leaves the arm in the body is released over the fade, not at once).
-// Each stage's direction moves the penetrating points' deficit-weighted centroid radially away from the spine axis
-// (the body sections' axis): a forearm across the belly goes forward, an arm against the side goes sideways. The
-// centroid and the radial direction vary continuously with the pose, so the path does. The angle is the smallest along
-// that path at which the stage's worst gap reaches its target (coarse steps, then bisection).
+// The correction runs in two stages from the evaluated pose, blended by the IK weight `pin`:
+//  1. swing (share pin of every point's demand): the upper arm turns about shoulder -> wrist (the wrist and the
+//     hand's world rotation stay), at most maxSwing; it moves only what the upper arm and forearm carry;
+//  2. free (share 1 - pin of what remains): shoulder (3 rotations) and elbow (3, twice as stiff), the hand following
+//     the forearm or keeping its world rotation as far as `keepHand` asks.
+// So a pinned arm keeps its wrist exactly, a free arm is corrected fully, and an IK weight ramp hands over linearly.
+// Each stage is a damped Gauss-Newton solve of: every point at or above its target gap (targetGap of its gap at the
+// stage start, scaled by the stage's share), the rotations as small as possible. Points weigh in by how far they are
+// below their target (zero at the target, full 1 mm under it), so points enter and leave continuously; the iteration
+// count is fixed, so the result is a continuous function of the pose.
 namespace {
 ArmPostPassResult armPostPass(const Skeleton& sk, const BodyClearanceModel& M, const mat4& world, char side, float pin,
                               float keepHand, Pose& pose, const ArmPostPassOptions& o) {
@@ -485,86 +828,163 @@ ArmPostPassResult armPostPass(const Skeleton& sk, const BodyClearanceModel& M, c
   std::vector<mat4> G = boneGlobals(sk, pose, world);
   const BodyFrames B = bodyFrames(M, G);
   const float T = o.margin + o.band;
-  out.before = out.after = armState(M, B, G, A, side, o, false, pin, keepHand).gap;
-  if (armState(M, B, G, A, side, o, false).gap >= T) return out;  // already clear: the pose is not touched
+  std::vector<PointGap> gaps;
+  pointGaps(M, B, G, A, side, o, gaps);
+  out.before = out.after = worstGap(gaps);
+  if (out.before >= T) return out;  // already clear: the pose is not touched
   auto stage = [&](bool swing, float scale) {
     if (scale <= 0) return;
-    const float gp = swing ? 1.0f : 0.0f, kh = swing ? 1.0f : keepHand;  // gap view and hand rule of this stage
-    const ArmState st = armState(M, B, G, A, side, o, true, gp, kh);
-    if (st.gap >= T || st.weight <= 0) return;
-    const float target = st.gap + scale * (targetGap(st.gap, o) - st.gap);
-    const vec3 a0 = vec3(B.G.front() * vec4(M.body.front().p0, 1)), a1 = vec3(B.G.back() * vec4(M.body.back().p1, 1));
-    const vec3 ax = glm::normalize(a1 - a0);
-    vec3 r = st.centroid - a0;
-    r -= ax * glm::dot(r, ax);
-    r = glm::length(r) > 1e-6f ? glm::normalize(r) : glm::normalize(vec3(B.G.front()[0])) * (side == 'L' ? 1.0f : -1.0f);
-    const vec3 sh(G[size_t(A.upper)][3]), el(G[size_t(A.fore)][3]), wr(G[size_t(A.hand)][3]);
-    const vec3 u = glm::length(wr - sh) > 1e-6f ? glm::normalize(wr - sh) : vec3(0);
-    const vec3 ds = swing ? vec3(0) : glm::cross(st.centroid - sh, r);
-    const vec3 de = swing ? vec3(0) : 0.5f * st.fore * glm::cross(st.centroid - el, r);
-    const float dt = swing ? glm::dot(u, glm::cross(st.centroid - sh, r)) : 0.0f;
-    const float norm = std::sqrt(glm::dot(ds, ds) + glm::dot(de, de) + dt * dt);
-    if (norm < 1e-12f) return;
+    pointGaps(M, B, G, A, side, o, gaps);
+    std::vector<float> target(gaps.size());
+    bool any = false;
+    for (size_t i = 0; i < gaps.size(); ++i) {
+      const float g = std::min(gaps[i].gap, T);
+      target[i] = g + scale * (targetGap(g, o) - g);
+      any |= gaps[i].gap < T;
+    }
+    if (!any) return;
+    const float kh = swing ? 1.0f : keepHand;
+    const vec3 sh0(G[size_t(A.upper)][3]), el0(G[size_t(A.fore)][3]), wr0(G[size_t(A.hand)][3]);
+    const vec3 u = glm::length(wr0 - sh0) > 1e-6f ? glm::normalize(wr0 - sh0) : vec3(0, -1, 0);
+    // Elbow hinge: the normal of the arm's plane, or the forearm's own x axis while the arm is nearly straight.
+    vec3 hinge = glm::cross(el0 - sh0, wr0 - el0);
+    {
+      const float lu = glm::length(el0 - sh0) * glm::length(wr0 - el0);
+      const float bend = lu > 1e-9f ? glm::length(hinge) / lu : 0.0f;  // sine of the elbow angle
+      const vec3 boneX = glm::normalize(vec3(G[size_t(A.fore)][0]));
+      const vec3 h = bend > 1e-6f ? hinge / (bend * lu) : boneX;
+      const float k = std::clamp(bend / 0.2f, 0.0f, 1.0f);
+      hinge = glm::normalize(k * h + (1 - k) * (glm::dot(boneX, h) < 0 ? -boneX : boneX));
+    }
+    // The pose along a path: swing angle about shoulder -> wrist (swing stage), or shoulder rotation vector + elbow
+    // flexion (free stage); the hand keeps its world rotation as far as kh asks.
+    struct Dof { vec3 shoulder{0}; float swing = 0, elbow = 0; };
     const Pose start = pose;
     const std::vector<mat4> G0 = G;
     const quat handWorld = rotationOf(G0[size_t(A.hand)]);
     const quat handLocal = start.local[size_t(A.hand)];
-    auto at = [&](float theta, Pose& p) {
+    auto apply = [&](const Dof& v, Pose& p, std::vector<mat4>& g) {
       p = start;
-      std::vector<mat4> g = G0;
-      const quat Rs = glm::normalize(glm::angleAxis(theta * dt / norm, u) * rotationFromVector(theta * ds / norm));
-      rotateBoneWorld(sk, g, world, A.upper, Rs, p);
+      g = G0;
+      rotateBoneWorld(sk, g, world, A.upper, glm::angleAxis(v.swing, u) * fromRotationVector(v.shoulder), p);
       g = boneGlobals(sk, p, world);
-      if (glm::length(de) > 0) {
-        rotateBoneWorld(sk, g, world, A.fore, rotationFromVector(theta * de / norm), p);
+      if (v.elbow != 0) {
+        rotateBoneWorld(sk, g, world, A.fore, glm::angleAxis(v.elbow, hinge), p);
         g = boneGlobals(sk, p, world);
       }
       const quat kept = glm::normalize(glm::inverse(rotationOf(g[size_t(A.fore)])) * handWorld);
       p.local[size_t(A.hand)] = kh >= 1 ? kept : glm::normalize(glm::slerp(handLocal, kept, kh));
       g = boneGlobals(sk, p, world);
-      return armState(M, B, g, A, side, o, false, gp, kh).gap;
     };
-    // Along the path: the first angle that reaches the target. The swing stops at the path's first local maximum of
-    // the gap if that comes first (it does not cross a dip, so its angle stays continuous as the target grows; the
-    // free stage takes the rest). The free stage goes on to the target (its best angle if the path never reaches it).
+    // The largest deficit (target - gap) over the points: continuous in the pose; <= 0 clears every point.
+    constexpr float kTau = 0.0003f;  // width of the direction weights' fade below a point's target
+    auto maxDeficit = [&](const std::vector<PointGap>& pg) {
+      float mx = -1e9f;
+      for (size_t i = 0; i < pg.size(); ++i)
+        if (pg[i].gap < 1e8f) mx = std::max(mx, target[i] - pg[i].gap);
+      return mx;
+    };
     Pose trial;
-    float lo = 0, hi = -1, theta = 0, prevGap = st.gap;
-    const float maxAngle = swing ? std::min(o.maxSwing, o.maxAngle) : o.maxAngle;
-    for (float t = o.step; t <= maxAngle + 1e-6f; t += o.step) {
-      const float g = at(t, trial);
-      if (g >= target) {
-        hi = t;
-        break;
-      }
-      if (swing && g < prevGap - 1e-6f) {  // past a local maximum: refine it in [t - 2 step, t]
-        float a = std::max(0.0f, t - 2 * o.step), b = t;
-        for (int k = 0; k < 20; ++k) {
-          const float m1 = a + (b - a) / 3, m2 = b - (b - a) / 3;
-          if (at(m1, trial) < at(m2, trial)) a = m1;
-          else b = m2;
+    std::vector<mat4> g;
+    std::vector<PointGap> cur = gaps;
+    Dof x;
+    // Rounds: a direction (the deficit-weighted gradient of the points' gaps: the rotation that lifts the points below
+    // their target fastest, the elbow weighted by its forearm share), then the smallest angle along it at which the soft maximum
+    // deficit reaches 0 (Newton steps from 0, damped). Every quantity varies continuously with the pose.
+    for (int round = 0; round < o.rounds; ++round) {
+      float mx = -1e9f;
+      for (size_t i = 0; i < cur.size(); ++i)
+        if (cur[i].gap < 1e8f) mx = std::max(mx, target[i] - cur[i].gap);
+      if (mx <= 1e-5f) break;
+      apply(x, trial, g);
+      const vec3 sh(g[size_t(A.upper)][3]), el(g[size_t(A.fore)][3]);
+      vec3 ds(0);
+      float dt = 0, de = 0, wsum = 0;
+      for (size_t i = 0; i < cur.size(); ++i) {
+        if (cur[i].gap >= 1e8f) continue;
+        // direction weights: the squared deficit (all points below their target, fading to 0 at it), so the direction
+        // does not flip when the deepest point changes
+        const float dfc = target[i] - cur[i].gap + 2 * kTau;
+        if (dfc <= 0) continue;
+        const float w = dfc * dfc;
+        const ArmPoint& P = A.points[i];
+        const vec3 q = cur[i].p, nrm = cur[i].n;
+        if (swing) dt += w * std::clamp(P.followUpper - P.followHand * kh, 0.0f, 1.0f) * glm::dot(u, glm::cross(q - sh, nrm));
+        else {
+          ds += w * P.followUpper * glm::cross(q - sh, nrm);
+          de += w * P.followFore * glm::dot(hinge, glm::cross(q - el, nrm));
         }
-        theta = 0.5f * (a + b);
-        break;
+        wsum += w;
       }
-      if (g > prevGap) theta = t;
-      prevGap = std::max(prevGap, g);
-      lo = t;
-    }
-    if (hi > 0) {
-      for (int k = 0; k < 14; ++k) {
-        const float mid = 0.5f * (lo + hi);
-        (at(mid, trial) >= target ? hi : lo) = mid;
+      if (wsum <= 0) break;
+      Dof dir;
+      if (swing) dir.swing = dt;
+      else dir.shoulder = ds, dir.elbow = 0.5f * de;
+      const float norm = std::sqrt(glm::dot(dir.shoulder, dir.shoulder) + dir.swing * dir.swing + dir.elbow * dir.elbow);
+      if (norm < 1e-9f) break;
+      dir.shoulder /= norm, dir.swing /= norm, dir.elbow /= norm;
+      auto along = [&](float t) {
+        Dof v = x;
+        v.shoulder += t * dir.shoulder, v.elbow += t * dir.elbow;
+        v.swing = std::clamp(v.swing + t * dir.swing, -o.maxSwing, o.maxSwing);
+        return v;
+      };
+      std::vector<PointGap> pg;
+      auto D = [&](float t) {
+        apply(along(t), trial, g);
+        pointGaps(M, B, g, A, side, o, pg);
+        return maxDeficit(pg);
+      };
+      // Newton steps until the soft deficit crosses 0, then the crossing refined in its bracket (Illinois): the root
+      // itself, not wherever a step happened to land.
+      float t = 0, Dt = maxDeficit(cur);
+      float lo = 0, Dlo = Dt, hi = -1, Dhi = 0;
+      for (int it = 0; it < o.iterations && Dt > 1e-5f; ++it) {
+        constexpr float h = 1e-3f;
+        const float slope = (D(t + h) - Dt) / h;
+        float stepT = slope > 1e-4f ? 1.2f * Dt / slope : o.maxStep;  // aim a little past the root to bracket it
+        stepT = std::clamp(stepT, 0.0f, o.maxStep);
+        if (t + stepT > o.maxAngle) stepT = o.maxAngle - t;
+        if (stepT <= 1e-7f) break;
+        const float tn = t + stepT, Dn = D(tn);
+        if (Dn <= 0) {
+          hi = tn, Dhi = Dn;
+          break;
+        }
+        t = lo = tn, Dt = Dlo = Dn;
       }
-      theta = hi;
+      if (hi > 0) {
+        int sideKept = 0;
+        for (int it = 0; it < 20 && hi - lo > 1e-6f; ++it) {
+          float m = (lo * Dhi - hi * Dlo) / (Dhi - Dlo);
+          if (!(m > lo && m < hi)) m = 0.5f * (lo + hi);
+          const float Dm = D(m);
+          if (std::abs(Dm) < 2e-6f) { hi = m; break; }
+          if (Dm > 0) {
+            lo = m, Dlo = Dm;
+            if (sideKept == 1) Dhi *= 0.5f;
+            sideKept = 1;
+          } else {
+            hi = m, Dhi = Dm;
+            if (sideKept == -1) Dlo *= 0.5f;
+            sideKept = -1;
+          }
+        }
+        t = hi;
+      }
+      if (t <= 0) break;
+      x = along(t);
+      apply(x, trial, g);
+      pointGaps(M, B, g, A, side, o, cur);
     }
-    if (theta <= 0) return;
-    at(theta, pose);
-    G = boneGlobals(sk, pose, world);
+    if (x.swing == 0 && x.elbow == 0 && x.shoulder == vec3(0)) return;
+    apply(x, pose, G);
     out.changed = true;
   };
   stage(true, pin);
   stage(false, 1 - pin);
-  out.after = armState(M, B, G, A, side, o, false, pin, keepHand).gap;
+  pointGaps(M, B, G, A, side, o, gaps);
+  out.after = worstGap(gaps);
   out.changed = true;
   return out;
 }
@@ -602,8 +1022,8 @@ ArmPostPassResult applyArmBodyClearance(const Skeleton& sk, const BodyClearanceM
   key.bytes.reserve(64 + pose.local.size() * sizeof(quat));
   putBytes(key.bytes, M.id), putBytes(key.bytes, &M), putBytes(key.bytes, &sk), putBytes(key.bytes, world), putBytes(key.bytes, side);
   putBytes(key.bytes, pin), putBytes(key.bytes, keepHand), putBytes(key.bytes, pose.rootOffset);
-  putBytes(key.bytes, o.margin), putBytes(key.bytes, o.band), putBytes(key.bytes, o.armpit), putBytes(key.bytes, o.step);
-  putBytes(key.bytes, o.maxAngle), putBytes(key.bytes, o.maxSwing);
+  putBytes(key.bytes, o.margin), putBytes(key.bytes, o.band), putBytes(key.bytes, o.armpit), putBytes(key.bytes, o.iterations), putBytes(key.bytes, o.rounds), putBytes(key.bytes, o.maxAngle);
+  putBytes(key.bytes, o.maxStep), putBytes(key.bytes, o.maxSwing);
   key.bytes.insert(key.bytes.end(), reinterpret_cast<const unsigned char*>(pose.local.data()),
                    reinterpret_cast<const unsigned char*>(pose.local.data() + pose.local.size()));
   size_t h = 1469598103934665603ull;  // FNV-1a
