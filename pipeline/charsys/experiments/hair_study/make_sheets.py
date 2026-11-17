@@ -11,12 +11,11 @@ import sys
 from PIL import Image, ImageDraw
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", ".."))
-CHARS = {
-    "boy": {"id": "boy_yellow_hoodie", "views": ["val27_front", "val27_threequarter_right", "val27_back"],
-            "ref_close": ("docs/references/char_C_boy.jpg", (40, 0, 380, 330))},
-    "girl": {"id": "girl_auburn_bun_glasses", "views": ["sheet30_front", "sheet30_front_left", "sheet30_back"],
-             "ref_close": ("docs/references/char_B_brown_hair.webp", (250, 0, 700, 520))},
-}
+import json  # noqa: E402
+
+CHARS = {k: dict(v, ref_close=(v["ref_close"][0], tuple(v["ref_close"][1])))
+         for k, v in json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "specs",
+                                                 "characters.json"))).items() if k != "note"}
 LABELS = {"A": "A strand/lock groom", "B": "B sculpted volume", "C": "C hybrid"}
 H = 420
 

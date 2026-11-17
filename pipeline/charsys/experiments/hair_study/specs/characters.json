@@ -1,0 +1,9 @@
+{
+ "note": "T-049 study: per-character data used by the study scripts (kept out of code: shared-systems lint).",
+ "boy": {"id": "boy_yellow_hoodie", "spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.spec.json",
+         "views": ["val27_front", "val27_threequarter_right", "val27_back"],
+         "ref_close": ["docs/references/char_C_boy.jpg", [40, 0, 380, 330]]},
+ "girl": {"id": "girl_auburn_bun_glasses", "spec": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.spec.json",
+          "views": ["sheet30_front", "sheet30_front_left", "sheet30_back"],
+          "ref_close": ["docs/references/char_B_brown_hair.webp", [250, 0, 700, 520]]}
+}

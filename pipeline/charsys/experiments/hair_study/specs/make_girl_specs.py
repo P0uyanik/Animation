@@ -6,7 +6,7 @@ import os
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, "..", "..", "..", "..", ".."))
-SPEC = "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.spec.json"
+SPEC = json.load(open(os.path.join(HERE, "characters.json")))["girl"]["spec"]
 src = json.load(open(os.path.join(ROOT, SPEC)))["hair"]
 S = {s.get("name", s["type"]): s for s in src["structures"]}
 H = 0.97

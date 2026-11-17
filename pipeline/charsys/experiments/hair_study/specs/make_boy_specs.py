@@ -6,7 +6,7 @@ import json
 import os
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-SPEC = "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.spec.json"
+SPEC = json.load(open(os.path.join(HERE, "characters.json")))["boy"]["spec"]
 POLE = {"az": 180, "el": 66}
 KEEP = {"az": 35, "el_min": -11}  # face keep-out: no clump tip over the eyes (|az| < 35 deg) below the brows
 
