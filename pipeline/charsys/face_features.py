@@ -515,3 +515,618 @@ def bake_rest_shape(objs, shape, mix=None):
         ob.data.update()
         done.append(ob.name)
     return done
+
+
+# ================================================================================================ face_generic/2 (T-065)
+# Everything below is used only by face_generic/2 (opt-in by the spec's face pin). face_generic/1 never calls it.
+def _smooth(t):
+    import numpy as np
+    t = np.clip(t, 0.0, 1.0)
+    return t * t * (3 - 2 * t)
+
+
+def _head_coords(head):
+    """(N, 3) world coordinates of the head mesh's basis and a setter that writes new world coordinates back to the
+    basis and adds the same displacement to every shape key (so keys made before keep their relative motion)."""
+    import numpy as np
+    me = head.data
+    n = len(me.vertices)
+    mw = np.array(head.matrix_world)
+    co = np.empty(n * 3)
+    me.vertices.foreach_get("co", co)
+    co = co.reshape(n, 3)
+    world = co @ mw[:3, :3].T + mw[:3, 3]
+
+    def write(new_world):
+        mi = np.linalg.inv(mw)
+        local = new_world @ mi[:3, :3].T + mi[:3, 3]
+        delta = (local - co).ravel()
+        if me.shape_keys:
+            for k in me.shape_keys.key_blocks:
+                d = np.empty(n * 3)
+                k.data.foreach_get("co", d)
+                k.data.foreach_set("co", d + delta)
+        me.vertices.foreach_set("co", local.ravel())
+        me.update()
+    return world, write
+
+
+# ------------------------------------------------------------------------------------------------ face shape v2
+def shape_face_v2(head, ctx, sc, ex, ez, r, z_chin):
+    """Round, full-cheeked face options (all absent/0 = unchanged), applied to the head mesh before any feature is
+    placed, in this order:
+      outline_roundness (0..1), outline_exponent (2 = ellipse), outline_top_below_eye_m: the front-view outline of the
+        lower face (from outline_top down to the chin) moves towards a superellipse; every horizontal slice is scaled
+        in x (the slice keeps its own shape). outline_chin_width_m keeps a small flat chin (default 0).
+      face_width_m: the lower face (below the eye line, front half) widens by this much per side at its widest.
+      lower_face_length_m: the region between the eye line and the chin stretches (+) or shortens (-) vertically; the
+        chin and everything below it within lower_face_fade_m move by the full amount.
+      cheek_fullness_m, cheek_radius_m, cheek_below_eye_m, cheek_x, cheek_forward (0..1): a soft bulge of the cheeks,
+        outwards along a direction between the radial direction (from the head centre) and forward; the
+        face_generic/1 option cheek_roundness_m is added to it (v2 does not use the v1 normal brush for it).
+      jaw_depth_roundness (0..1): the lower face's horizontal sections round off at the front corners (3/4 views).
+      lower_face_recede_m, recede_from_below_eye_m: below that line the face curves back towards the chin (side view).
+    Returns a report; the face context is invalidated."""
+    import numpy as np
+    rep = {}
+    world, write = _head_coords(head)
+    p = world.copy()
+    front = p[:, 1] < (ctx.face_y(None, 0.0, ez) + 0.6 * abs(ctx.face_y(None, 0.0, ez)))  # front ~ 80 % of the head
+    # --- lower outline (front view)
+    ro = _f(sc, "outline_roundness", 0.0)
+    if ro > 0:
+        z_top = ez - _f(sc, "outline_top_below_eye_m", 0.0)
+        nexp = _f(sc, "outline_exponent", 2.2)
+        cw = _f(sc, "outline_chin_width_m", 0.0)
+        fade = _f(sc, "outline_chin_fade_m", 0.008)
+        bins = np.arange(z_chin - 0.01, z_top + 0.004, 0.003)
+        widths = []
+        for b in bins:
+            m = np.abs(p[:, 2] - b) < 0.002
+            widths.append(np.abs(p[m, 0]).max() if m.any() else np.nan)
+        widths = np.array(widths)
+        W = np.nanmax(np.abs(p[np.abs(p[:, 2] - z_top) < 0.002, 0])) if (np.abs(p[:, 2] - z_top) < 0.002).any() else np.nanmax(widths)
+        sel = (p[:, 2] < z_top) & (p[:, 2] > z_chin - 0.004)
+        xc = np.interp(p[sel, 2], bins[~np.isnan(widths)], widths[~np.isnan(widths)])
+        t = np.clip((z_top - p[sel, 2]) / max(z_top - z_chin, 1e-6), 0.0, 1.0)
+        xt = cw + (W - cw) * np.power(np.clip(1 - t ** nexp, 0.0, 1.0), 1.0 / nexp)
+        a = ro * _smooth((p[sel, 2] - z_chin) / fade + 0.5)
+        s = 1.0 + a * (np.clip(xt / np.maximum(xc, 1e-4), 0.55, 1.6) - 1.0)
+        p[sel, 0] *= s
+        rep["outline"] = {"roundness": ro, "exponent": nexp, "top_z_m": round(z_top, 4), "width_m": round(float(W), 4)}
+    # --- face width (lower face, front)
+    fw = _f(sc, "face_width_m", 0.0)
+    if fw:
+        zb = ez - _f(sc, "face_width_below_eye_m", 0.035)
+        wz = np.exp(-((p[:, 2] - zb) / _f(sc, "face_width_band_m", 0.035)) ** 2)
+        hw = max(np.abs(p[:, 0]).max(), 1e-4)
+        p[:, 0] += np.sign(p[:, 0]) * fw * wz * front * np.clip(np.abs(p[:, 0]) / hw, 0, 1) ** 1.5
+        rep["face_width_m"] = fw
+    # --- lower face length
+    lf = _f(sc, "lower_face_length_m", 0.0)
+    if lf:
+        lff = _f(sc, "lower_face_fade_m", 0.03)
+        t = np.clip((ez - p[:, 2]) / max(ez - z_chin, 1e-6), 0.0, 1.0)
+        below = np.clip((z_chin - p[:, 2]) / lff, 0.0, 1.0)
+        mv = np.where(p[:, 2] >= z_chin, t, 1.0 - _smooth(below))
+        p[:, 2] -= lf * mv * (p[:, 2] < ez)
+        rep["lower_face_length_m"] = lf
+    # --- jaw depth roundness (front corners of the lower face sections)
+    jd = _f(sc, "jaw_depth_roundness", 0.0)
+    if jd > 0:
+        zc = ez - _f(sc, "jaw_depth_below_eye_m", 0.03)
+        band = _f(sc, "jaw_depth_band_m", 0.05)
+        wz = np.exp(-((p[:, 2] - zc) / band) ** 2) * (p[:, 2] < ez + 0.01)
+        yf = p[:, 1].min()
+        hw = max(np.abs(p[:, 0]).max(), 1e-4)
+        u = np.clip(np.abs(p[:, 0]) / hw, 0, 1)
+        back = (p[:, 1] - yf)  # 0 at the front plane
+        pull = jd * wz * (u ** 2) * np.clip(1 - back / 0.08, 0, 1) * 0.04
+        p[:, 1] += pull * front
+        rep["jaw_depth_roundness"] = jd
+    # --- lower face recede (side view: the face below recede_from curves back towards the chin)
+    rc = _f(sc, "lower_face_recede_m", 0.0)
+    if rc:
+        z0 = ez - _f(sc, "recede_from_below_eye_m", 0.045)
+        yf, yb = p[:, 1].min(), np.median(p[:, 1])
+        t = np.clip((z0 - p[:, 2]) / max(z0 - z_chin, 1e-6), 0.0, 1.0) ** 2 * (p[:, 2] > z_chin - 0.02)
+        fr = np.clip((yb - p[:, 1]) / max(yb - yf, 1e-6), 0.0, 1.0) ** 2
+        p[:, 1] += rc * t * fr
+        rep["lower_face_recede_m"] = rc
+    write(p)
+    ctx.invalidate()
+    # --- cheeks: soft bulge (normal + forward), after the global reshape
+    cf = _f(sc, "cheek_fullness_m", 0.0) + _f(sc, "cheek_roundness_m", 0.0)  # v1's cheek_roundness joins in (smooth)
+    if cf:
+        world, write = _head_coords(head)
+        p = world.copy()
+        # smooth outward directions (radial from the head's centre at the eye line), not the mesh's vertex normals:
+        # the v1 cheek brush followed vertex normals and left bumps on coarse cheeks
+        hm = p[:, 2] > z_chin
+        hc = np.array([0.0, float(np.mean(p[hm, 1])), ez])
+        nrm = p - hc
+        nrm /= np.maximum(np.linalg.norm(nrm, axis=1, keepdims=True), 1e-9)
+        fwd = _f(sc, "cheek_forward", 0.4)
+        rad = _f(sc, "cheek_radius_m", 0.045)
+        for sx, _ in SIDES:
+            x, z = sx * ex * _f(sc, "cheek_x", 1.0), ez - _f(sc, "cheek_below_eye_m", 0.045)
+            c = np.array([x, ctx.face_y(None, x, z), z])
+            d = np.linalg.norm(p - c, axis=1) / rad
+            f = np.clip(1 - d * d, 0, None) ** 2
+            dirv = nrm * (1 - fwd) + np.array([0, -1.0, 0]) * fwd
+            p += dirv * (cf * f)[:, None]
+        write(p)
+        ctx.invalidate()
+        rep["cheek_fullness_m"] = cf
+    return rep
+
+
+# ------------------------------------------------------------------------------------------------ lid socket v2
+def lid_edges(edge_fn, n=121, corner_deg=60.0):
+    """Unit directions of a lid edge: edge_fn(a) -> point (frame space) or None, for azimuths within +-corner_deg."""
+    import numpy as np
+    pts = []
+    for i in range(n):
+        a = math.radians(-corner_deg + 2 * corner_deg * i / (n - 1))
+        q = edge_fn(a)
+        if q is not None:
+            pts.append(np.array(q[:]) / max(q.length, 1e-9))
+    return np.array(pts)
+
+
+def _edge_table(edge):
+    """Azimuth-sorted (azimuth, elevation) table of a lid edge given as unit directions in the eye frame."""
+    import numpy as np
+    a = np.arctan2(edge[:, 0], -edge[:, 1])
+    e = np.arcsin(np.clip(edge[:, 2], -1, 1))
+    o = np.argsort(a)
+    return a[o], e[o]
+
+
+def lid_socket(head, ctx, sides, cfg):
+    """Blends the lids into the skin (face_generic/2). In each eye's frame (azimuth a around the forward axis,
+    elevation e), with the lid edges e_up(a) and e_lo(a): above the upper edge the skin stays behind the lid shell for
+    band_deg (the visible lid band), rises over ramp_deg to just outside the shell (clearance_m; where it crosses the
+    shell is the crease) and blends back to the original face over reach_deg; the same below the lower edge
+    (lower_band_deg). Skin far off the shell (radial_reach x radius) and the opening itself stay as they are. Upper
+    and lower profiles blend smoothly at the eye corners. The lid shells therefore show only as a narrow band at
+    their edge; the rest lies under the face skin.
+    sides: [{"side", "T" (eye frame), "r", "up_edge", "lo_edge" (unit directions), "r_up_out", "r_lo_out"}].
+    Returns (report, per-side weights {"up", "lo", "T"} for the lid-following shape keys)."""
+    import numpy as np
+    band_up = math.radians(_f(cfg, "band_deg", 7.0))
+    band_lo = math.radians(_f(cfg, "lower_band_deg", _f(cfg, "band_deg", 7.0)))
+    ramp = math.radians(_f(cfg, "ramp_deg", 6.0))
+    reach = math.radians(_f(cfg, "reach_deg", 24.0))
+    clear = _f(cfg, "clearance_m", 0.0006)
+    inner = _f(cfg, "inner_scale", 0.95)
+    corner = math.radians(_f(cfg, "corner_deg", 60.0))
+    follow_reach = math.radians(_f(cfg, "follow_reach_deg", _f(cfg, "reach_deg", 24.0) * 0.6))
+    fa = math.radians(_f(cfg, "follow_azimuth_deg", 40.0))
+    world, write = _head_coords(head)
+    p = world.copy()
+    weights, rep = {}, {}
+    smooth_sel = []
+    soft = _f(cfg, "cover_softness", 0.12)
+
+    def profile(delta, dc, band, R_s, behind, radial):
+        """Skin radius along one lid: behind the eye under the lid band, then over the shell (a smooth maximum of the
+        face and the shell's outer radius, so the face is only raised where the shell would show). Continuous in
+        delta, starting from the opening's own value (behind) at the edge."""
+        k = soft * radial / 0.4
+        cover = 0.5 * (dc + R_s + np.sqrt((dc - R_s) ** 2 + k * k))
+        start = max(band - ramp, 0.0)
+        rise = _smooth((delta - start) / max(band - start, math.radians(1.0)))
+        back = _smooth((delta - band) / reach) * _smooth((dc - R_s) / (0.5 * radial))  # blend back where the face is in front
+        back = np.maximum(back, _smooth((dc - R_s - 0.5 * radial) / radial))  # surfaces far in front (temples, cheeks) stay
+        cover = cover * (1 - back) + dc * back
+        return behind + (cover - behind) * rise, back
+    for s in sides:
+        T = np.array(s["T"])
+        Ti = np.linalg.inv(T)
+        q = p @ Ti[:3, :3].T + Ti[:3, 3]
+        d = np.linalg.norm(q, axis=1)
+        u = q / np.maximum(d, 1e-9)[:, None]
+        cand = (u[:, 1] < -0.05) & (d < s["r"] * 2.2)
+        uc, dc = u[cand], d[cand]
+        a = np.arctan2(uc[:, 0], -uc[:, 1])
+        e = np.arcsin(np.clip(uc[:, 2], -1, 1))
+        ac = np.clip(a, -corner, corner)
+        tu, tl = _edge_table(s["up_edge"]), _edge_table(s["lo_edge"])
+        e_up = np.interp(ac, tu[0], tu[1])
+        e_lo = np.interp(ac, tl[0], tl[1])
+        # beyond the corner the edges close in towards their mean (the opening ends)
+        over = np.abs(a) - corner
+        mid = (e_up + e_lo) / 2
+        k = _smooth(over / math.radians(12.0))
+        e_up = e_up + (mid - e_up) * k
+        e_lo = e_lo + (mid - e_lo) * k
+        du, dl = e - e_up, e_lo - e
+        inside = (du < 0) & (dl < 0)
+        radial = _f(cfg, "radial_reach", 0.4) * s["r"]
+        t_in = s["r"] * inner
+        cr = _f(cfg, "carve_reach", 0.15) * s["r"]  # only skin close in front of the eye is carved (not the corners' skin)
+        fo = (1.0 - _smooth((np.abs(a) - (corner - math.radians(10.0))) / math.radians(10.0))) * (1.0 - _smooth((dc - s["r"] - cr) / cr))
+        behind = np.where(dc > t_in, dc + (t_in - dc) * fo, dc)  # the opening: skin in front of the eyeball moves behind it
+        nu, bu = profile(du, dc, band_up, s["r_up_out"] + clear, behind, radial)
+        nl, bl = profile(dl, dc, band_lo, s["r_lo_out"] + clear, behind, radial)
+        # beyond the eye corners there is no opening and no lid band: the skin only covers the shells
+        cf = 1.0 - _smooth((np.abs(a) - corner) / math.radians(10.0) + 0.5)
+        kk = soft * radial / 0.4
+        for nn, R_s in ((nu, s["r_up_out"] + clear), (nl, s["r_lo_out"] + clear)):
+            cov = 0.5 * (dc + R_s + np.sqrt((dc - R_s) ** 2 + kk * kk))
+            cov = cov + (dc - cov) * _smooth((dc - R_s - 0.5 * radial) / radial)
+            nn[:] = cov + (nn - cov) * cf
+        zu = _smooth((du - dl) / math.radians(8.0) + 0.5)  # 1 = nearer the upper lid (further above it than below the lower)
+        newd = np.where(inside, behind, zu * nu + (1 - zu) * nl)
+        fw = _smooth((-uc[:, 1] - 0.05) / 0.35)  # the socket fades out towards the eye's sides
+        newd = dc + (newd - dc) * fw
+        q[cand] = uc * newd[:, None]
+        far = np.where(zu > 0.5, du - band_up, dl - band_lo) > math.radians(3.0)
+        smooth_sel.append(np.where(cand)[0][far & ~inside & (fw > 0.05)])
+        # lid-following weights (EyeWide): the skin from just inside the edge to the crease, over the eye's width
+        azw = 1.0 - _smooth((np.abs(a) - fa) / math.radians(35.0))
+        azw = azw * (1.0 - _smooth((dc - (s["r_up_out"] + clear)) / (0.35 * s["r"])))  # skin away from the eye moves less
+        wu_ = _smooth((du + band_up) / band_up) * (1.0 - _smooth((du - band_up) / follow_reach)) * azw * (1 - bu * _smooth((du - band_up) / math.radians(2.0)))
+        wl_ = _smooth((dl + band_lo) / band_lo) * (1.0 - _smooth((dl - band_lo) / (0.4 * follow_reach))) * azw * (1 - bl * _smooth((dl - band_lo) / math.radians(2.0)))
+        wu, wl = np.zeros(len(p)), np.zeros(len(p))
+        idx = np.where(cand)[0]
+        wu[idx], wl[idx] = wu_ * zu, wl_ * (1 - zu)
+        weights[s["side"]] = {"up": wu, "lo": wl, "T": s["T"]}
+        p = q @ T[:3, :3].T + T[:3, 3]
+        rep[s["side"]] = {"vertices": int(cand.sum()), "opening": int(inside.sum()),
+                          "moved_max_m": round(float(np.abs(newd - dc).max()) if len(dc) else 0.0, 4)}
+    # gentle Laplacian smoothing of the covered / blended skin (never the lid band or the opening): removes the small
+    # ripples a coarse cheek surface gets when it is pulled onto the shell
+    it = int(_f(cfg, "smooth_iterations", 4))
+    if it > 0 and smooth_sel:
+        sel = np.zeros(len(p), bool)
+        for idx_s in smooth_sel:
+            sel[idx_s] = True
+        me = head.data
+        ed = np.empty(len(me.edges) * 2, dtype=np.int64)
+        me.edges.foreach_get("vertices", ed)
+        ed = ed.reshape(-1, 2)
+        ed = ed[sel[ed[:, 0]] | sel[ed[:, 1]]]
+        deg = np.bincount(ed.ravel(), minlength=len(p)).astype(float)
+        for _ in range(it):
+            acc = np.zeros_like(p)
+            np.add.at(acc, ed[:, 0], p[ed[:, 1]])
+            np.add.at(acc, ed[:, 1], p[ed[:, 0]])
+            avg = acc / np.maximum(deg, 1)[:, None]
+            p[sel] += 0.5 * (avg[sel] - p[sel])
+        rep["smoothed_vertices"] = int(sel.sum())
+    write(p)
+    ctx.invalidate()
+    return rep, weights
+
+
+def socket_key(head, name, side_w, angles):
+    """Adds (or extends) shape key `name` on the head: the socket skin of each side rotates about its eye frame's x
+    axis by angles[(side, zone)] degrees times the vertex weight (zone "up" = upper lid skin, "lo" = lower)."""
+    import numpy as np
+    me = head.data
+    n = len(me.vertices)
+    if me.shape_keys is None:
+        head.shape_key_add(name="Basis")
+    kb = me.shape_keys.key_blocks
+    base = np.empty(n * 3)
+    kb[0].data.foreach_get("co", base)
+    base = base.reshape(n, 3)
+    if name in kb:
+        cur = np.empty(n * 3)
+        kb[name].data.foreach_get("co", cur)
+        cur = cur.reshape(n, 3)
+        key = kb[name]
+    else:
+        cur = base.copy()
+        key = head.shape_key_add(name=name, from_mix=False)
+        key.value = 0.0
+    mw = np.array(head.matrix_world)
+    mi = np.linalg.inv(mw)
+    world = base @ mw[:3, :3].T + mw[:3, 3]
+    delta = np.zeros_like(world)
+    for (side, zone), deg in angles.items():
+        if side not in side_w or abs(deg) < 1e-9:
+            continue
+        w = side_w[side][zone]
+        idx = np.nonzero(w > 1e-4)[0]
+        if not len(idx):
+            continue
+        T = np.array(side_w[side]["T"])
+        Ti = np.linalg.inv(T)
+        q = world[idx] @ Ti[:3, :3].T + Ti[:3, 3]
+        a = np.radians(deg) * w[idx]
+        c, s_ = np.cos(a), np.sin(a)
+        y = q[:, 1] * c - q[:, 2] * s_  # rotation about x by +a (front moves down for positive a)
+        z = q[:, 1] * s_ + q[:, 2] * c
+        q2 = np.stack([q[:, 0], y, z], axis=1)
+        delta[idx] += (q2 @ T[:3, :3].T + T[:3, 3]) - world[idx]
+    dl = delta @ mi[:3, :3].T
+    key.data.foreach_set("co", (cur + dl).ravel())
+    return key
+
+
+def shell_exposure(head, shells, ctx_tree_fn=None):
+    """Fraction of each lid shell's outer vertices that can be seen from the front (no head skin in front of them
+    along -y): a diagnostic of the blended lids (the lid band shows, the rest of the shell should be covered)."""
+    from mathutils.bvhtree import BVHTree
+    mw = head.matrix_world
+    me = head.data
+    tree = BVHTree.FromPolygons([mw @ v.co for v in me.vertices], [pp.vertices[:] for pp in me.polygons])
+    out = {}
+    for ob in shells:
+        tot = vis = 0
+        for v in ob.data.vertices:
+            w = ob.matrix_world @ v.co
+            tot += 1
+            hit = tree.ray_cast(w, Vector((0, -1, 0)), 1.0)
+            if hit[0] is None:
+                vis += 1
+        out[ob.name] = round(vis / max(tot, 1), 3)
+    return out
+
+
+# ------------------------------------------------------------------------------------------------ brows v2
+BROW_PRESETS = {
+    # short, low, nearly flat felt strokes (boy: char_C, #08, #28)
+    "flat_stroke": {"inner": 0.45, "outer": 0.9, "arch_m": 0.0006, "inner_drop_m": 0.0012, "outer_drop_m": 0.0012,
+                    "thick_m": 0.0045, "depth_m": 0.0014, "taper": 0.45, "taper_inner": 0.35},
+    # soft arched, thinner, lighter brows (girl: ref_34, ref_30)
+    "soft_arch": {"inner": 0.55, "outer": 1.0, "arch_m": 0.0045, "inner_drop_m": 0.0, "outer_drop_m": 0.003,
+                  "thick_m": 0.0032, "depth_m": 0.0012, "taper": 0.6, "taper_inner": 0.3},
+    # small, short, high soft arcs (third character: 04, 14)
+    "short_arc": {"inner": 0.35, "outer": 0.75, "arch_m": 0.003, "inner_drop_m": 0.0, "outer_drop_m": 0.002,
+                  "thick_m": 0.0028, "depth_m": 0.001, "taper": 0.55, "taper_inner": 0.4},
+}
+
+
+def brow_config(bc):
+    """Brow preset (bc.shape) merged under the spec's own values."""
+    shape = bc.get("shape")
+    if shape is None:
+        return dict(bc)
+    if shape not in BROW_PRESETS:
+        raise ValueError(f"face.brows.shape {shape!r}: {sorted(BROW_PRESETS)}")
+    return {**BROW_PRESETS[shape], **bc}
+
+
+def brow_widths(bc, n):
+    """Width profile of a v2 brow stroke: tapered at both ends (taper_inner at the inner end, taper at the outer),
+    fullest a little inside the middle; soft and felt-like rather than a bar."""
+    th = _f(bc, "thick_m", 0.004)
+    ti, to = _f(bc, "taper_inner", 0.3), _f(bc, "taper", 0.5)
+    out = []
+    for i in range(n):
+        t = i / (n - 1)
+        body = math.sin(math.pi * (0.08 + 0.84 * t)) ** 0.5
+        out.append(th * body * (1 - ti * (1 - t) ** 2) * (1 - to * t ** 1.5))
+    return out
+
+
+# ------------------------------------------------------------------------------------------------ mouth v2
+def lip_fullness(mouth, cfg):
+    """Fuller lips (face_generic/2; spec face.mouth.fullness {upper, lower, forward_m}): the outer lip rows move away
+    from the seam (upper/lower = height factors, 1 = unchanged) and the lip body pushes forward into a soft pillow
+    (forward_m at the middle of each lip, fading to the corners and to the outer edge). The same displacement is
+    added to every shape key, so the action units keep their relative motion."""
+    import numpy as np
+    fl = cfg.get("fullness")
+    if not fl:
+        return None
+    n = int(mouth["ps_lip_rows"])
+    me = mouth.data
+    nv = len(me.vertices)
+    rows = nv // n
+    kb = me.shape_keys.key_blocks
+    base = np.empty(nv * 3)
+    kb[0].data.foreach_get("co", base)
+    base = base.reshape(rows, n, 3)
+    seam_up, seam_lo = list(mouth["ps_seam_rows"])
+    mid_z = (base[seam_up, :, 2] + base[seam_lo, :, 2]) / 2
+    fu, flo, fwd = _f(fl, "upper", 1.0), _f(fl, "lower", 1.0), _f(fl, "forward_m", 0.0)
+    delta = np.zeros_like(base)
+    u = np.linspace(-1, 1, n)
+    env = np.sqrt(np.clip(1 - u * u, 0, 1))
+    for rr in range(rows):
+        f = fu if rr <= seam_up else flo
+        dz = base[rr, :, 2] - mid_z
+        delta[rr, :, 2] = dz * (f - 1.0)
+        if rr in (0, rows - 1):
+            continue  # outer edge stays on the skin
+        delta[rr, :, 1] = -fwd * env * (1.0 if rr <= seam_up else _f(fl, "lower_forward", 1.2))
+    d = delta.ravel()
+    for k in kb:
+        c = np.empty(nv * 3)
+        k.data.foreach_get("co", c)
+        k.data.foreach_set("co", c + d)
+    me.vertices.foreach_set("co", (base.ravel() + d))
+    me.update()
+    return {"upper": fu, "lower": flo, "forward_m": fwd}
+
+
+REST_SHAPES_V2 = {"closed_smile": {}, "open_smile": {"MouthWide": 0.8, "MouthSmile": 0.4}, "small_o": {"MouthO": 0.9},
+                  "pout": {"MouthFrown": 0.5, "MouthPout": 0.6},
+                  # soft closed smile with cheek lift (owner decision 2026-11-17, girl ref_34)
+                  "soft_smile": {"MouthSmile": 0.35, "CheekRaise": 0.6},
+                  # lips slightly parted (third character while watching)
+                  "parted": {"MouthO": 0.25, "MouthWide": 0.12}}
+RELEASE_V2 = ("MouthSmile", "MouthFrown", "CheekRaise")  # keys that keep their absolute target over a baked rest
+
+
+def bake_rest_shape_v2(objs, shape, mix=None, release=RELEASE_V2):
+    """face_generic/2 rest shape: like bake_rest_shape, but `mix` (spec face.mouth.rest_mix) is honoured for every
+    shape (also closed_smile), and the keys in `release` keep their absolute target (their full weight reaches the
+    same shape as without the rest; e.g. Frown is not weakened by a baked soft smile)."""
+    import numpy as np
+    if shape not in REST_SHAPES_V2:
+        raise ValueError(f"face.mouth.rest_shape {shape!r}: {sorted(REST_SHAPES_V2)}")
+    w = dict(mix) if mix else REST_SHAPES_V2[shape]
+    done = []
+    for ob in objs:
+        sk = ob.data.shape_keys
+        if sk is None or not any(k in sk.key_blocks for k in w):
+            continue
+        kb = sk.key_blocks
+        n = len(ob.data.vertices) * 3
+        base = np.empty(n)
+        kb[0].data.foreach_get("co", base)
+        delta = np.zeros(n)
+        for k, v in w.items():
+            if k in kb:
+                d = np.empty(n)
+                kb[k].data.foreach_get("co", d)
+                delta += (d - base) * v
+        for k in kb:
+            if k.name in release:
+                continue
+            d = np.empty(n)
+            k.data.foreach_get("co", d)
+            k.data.foreach_set("co", d + delta)
+        ob.data.vertices.foreach_set("co", base + delta)
+        ob.data.update()
+        done.append(ob.name)
+    return done
+
+
+def add_cheek_raise(head, landmarks, cfg, ex, ez):
+    """Action unit CheekRaise (face_generic/2): the cheeks lift and round forward (the soft smile's cheek lift, also
+    usable by presets). cfg (spec face.cheeks): raise_m, forward_m, radius_m, below_eye_m, x (fraction of the eye x)."""
+    import numpy as np
+    raise_m, fwd = _f(cfg, "raise_m", 0.003), _f(cfg, "forward_m", 0.002)
+    if raise_m == 0 and fwd == 0:
+        return None
+    rad = _f(cfg, "radius_m", 0.035)
+    me = head.data
+    n = len(me.vertices)
+    if me.shape_keys is None:
+        head.shape_key_add(name="Basis")
+    kb = me.shape_keys.key_blocks
+    base = np.empty(n * 3)
+    kb[0].data.foreach_get("co", base)
+    base = base.reshape(n, 3)
+    mw = np.array(head.matrix_world)
+    world = base @ mw[:3, :3].T + mw[:3, 3]
+    front = 1.0 - _smooth((world[:, 1] - (landmarks["mouth"].y + 0.02)) / 0.02)  # the front of the face, faded
+    delta = np.zeros_like(world)
+    for sx, _ in SIDES:
+        c = np.array([sx * ex * _f(cfg, "x", 1.0), 0.0, ez - _f(cfg, "below_eye_m", 0.04)])
+        fr = front > 0.5
+        c[1] = world[fr][np.argmin(np.linalg.norm(world[fr][:, [0, 2]] - c[[0, 2]], axis=1)), 1]
+        dd = np.linalg.norm(world - c, axis=1) / rad
+        g = np.exp(-dd * dd) * front
+        delta += np.outer(g, [0.0, -fwd, raise_m])
+    mi = np.linalg.inv(mw)
+    k = head.shape_key_add(name="CheekRaise", from_mix=False)
+    k.value = 0.0
+    k.data.foreach_set("co", (base + delta @ mi[:3, :3].T).ravel())
+    return {"raise_m": raise_m, "forward_m": fwd, "radius_m": rad}
+
+
+def refine_eye_regions(head, frames, r, reach=1.8, cuts=2):
+    """Subdivides the head faces around each eye (every vertex within reach x radius of an eye centre, in front of
+    it), smooth subdivision (new vertices on a smooth surface, the original vertices do not move), so the lid creases
+    of the socket stay smooth and the refined patch shades like the rest of the face. Vertex data (groups, UVs) are
+    interpolated by bmesh. Returns the number of faces subdivided."""
+    import bmesh
+    me = head.data
+    bm = bmesh.new()
+    bm.from_mesh(me)
+    mw = head.matrix_world
+    cs = [(T.translation.copy(), T.inverted()) for T in frames]
+    sel = set()
+    for f in bm.faces:
+        ok = True
+        for v in f.verts:
+            w = mw @ v.co
+            if not any((Ti @ w).length < reach * r and (Ti @ w).y < 0.3 * r for c, Ti in cs):
+                ok = False
+                break
+        if ok:
+            sel.add(f)
+    edges = list({e for f in sel for e in f.edges})
+    if edges:
+        bmesh.ops.subdivide_edges(bm, edges=edges, cuts=cuts, use_grid_fill=True, smooth=1.0)
+    bm.to_mesh(me)
+    bm.free()
+    me.update()
+    return len(sel)
+
+
+def lids_follow_skin(head, lids, names, reach_m=0.012):
+    """The lower lid shells ride on the skin around them (face_generic/2): for every head key in `names` (e.g.
+    MouthSmile, CheekRaise), each lid vertex gets the displacement of the nearest head vertex (weighted down with the
+    distance, 0 beyond reach_m), added to the lid's key of the same name (made if missing). Keeps the cheek lift from
+    pushing the blended under-eye skin through the lid."""
+    import numpy as np
+    from mathutils.kdtree import KDTree
+    sk = head.data.shape_keys
+    if sk is None:
+        return []
+    kb = sk.key_blocks
+    n = len(head.data.vertices)
+    mw = head.matrix_world
+    base = np.empty(n * 3)
+    kb[0].data.foreach_get("co", base)
+    base = base.reshape(n, 3)
+    kd = KDTree(n)
+    for i in range(n):
+        kd.insert(mw @ Vector(base[i]), i)
+    kd.balance()
+    done = []
+    for name in names:
+        if name not in kb:
+            continue
+        cur = np.empty(n * 3)
+        kb[name].data.foreach_get("co", cur)
+        disp = (cur.reshape(n, 3) - base) @ np.array(mw.to_3x3()).T
+        for lid in lids:
+            lmw = lid.matrix_world
+            li = np.array(lmw.inverted().to_3x3())
+            if lid.data.shape_keys is None:
+                lid.shape_key_add(name="Basis")
+            lkb = lid.data.shape_keys.key_blocks
+            m = len(lid.data.vertices)
+            lb = np.empty(m * 3)
+            lkb[0].data.foreach_get("co", lb)
+            lb = lb.reshape(m, 3)
+            add = np.zeros((m, 3))
+            for j in range(m):
+                co, idx, dist = kd.find(lmw @ Vector(lb[j]))
+                w = max(0.0, 1.0 - dist / reach_m)
+                if w > 0:
+                    add[j] = disp[idx] * w
+            if not add.any():
+                continue
+            if name in lkb:
+                k = lkb[name]
+                c = np.empty(m * 3)
+                k.data.foreach_get("co", c)
+            else:
+                k = lid.shape_key_add(name=name, from_mix=False)
+                k.value = 0.0
+                c = lb.ravel().copy()
+            k.data.foreach_set("co", c + (add @ li.T).ravel())
+            done.append(f"{lid.name}:{name}")
+    return done
+
+
+def taper_key_front(head, name, y_cut, width=0.012):
+    """Tapers a head shape key's displacement to zero towards a hard front cut-off at y_cut (the smile coupling only
+    moves vertices in front of y_cut; without the taper the cheeks get a step there). face_generic/2 only."""
+    import numpy as np
+    sk = head.data.shape_keys
+    if sk is None or name not in sk.key_blocks:
+        return False
+    kb = sk.key_blocks
+    n = len(head.data.vertices)
+    base = np.empty(n * 3)
+    kb[0].data.foreach_get("co", base)
+    cur = np.empty(n * 3)
+    kb[name].data.foreach_get("co", cur)
+    base, cur = base.reshape(n, 3), cur.reshape(n, 3)
+    mw = np.array(head.matrix_world)
+    y = (base @ mw[:3, :3].T + mw[:3, 3])[:, 1]
+    w = 1.0 - _smooth((y - (y_cut - width)) / width)
+    kb[name].data.foreach_set("co", (base + (cur - base) * w[:, None]).ravel())
+    return True
