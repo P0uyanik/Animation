@@ -51,6 +51,9 @@ hair, clothing, materials and defining details must be preserved. Visual freedom
 appearance. Change only what the task explicitly allows; if a visual requirement cannot be met reliably, report the
 limitation. Never silently accept a different look. Renders are evidence, not decoration: render only what a check
 needs.
+Current versions in evaluations (owner decision 2026-11-17): every animation test, render and evidence uses the
+**current approved character versions** (from `docs/evaluation/characters/fidelity_baseline.json`; `run_shot` cast
+`"current"` once T-062 lands), never older versions, unless a frozen regression test requires them (say so).
 References are the primary target (owner decision 2026-11-17): the reference images, character models and videos were
 designed around each character's personality (boy: impatient, easily bored; girl: cheerful, intelligent). Match them
 as closely as possible in appearance, expressions, movement and animation quality. Personality features and other

@@ -156,3 +156,9 @@ are complete; reference intake and gap analysis (T-057) start now.
 Girl 0.10.0 (closed gentle-smile neutral, T-055) is approved as an intermediate version, **not** final visual approval.
 The next improvement round must address the remaining differences, especially mouth, cheeks, skin tone, eyes and hair,
 with the original references as the primary target.
+
+## 2026-11-17: animation evaluations use the current approved versions; T-060 locally
+1. Future animation evaluations and evidence must use the latest approved character versions, so the combined quality
+   is assessed (old versions only where a frozen regression test needs them). Implemented by T-062 + Implementer rule.
+2. T-060 (Windows build): option B — install the C++ Build Tools on the owner's PC (owner approval for the install and
+   licence). The owner frees space on D: personally; agents never delete or move the owner's personal files.

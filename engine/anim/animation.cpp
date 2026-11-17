@@ -116,8 +116,9 @@ std::vector<mat4> boneGlobals(const Skeleton& skeleton, const Pose& pose, const 
   for (size_t i = 0; i < n; ++i) {
     const Bone& b = skeleton.bones[i];
     mat4 rot = glm::mat4_cast(i < pose.local.size() ? pose.local[i] : quat(1, 0, 0, 0));
-    if (b.parent < 0) global[i] = world * glm::translate(mat4(1), b.head + pose.rootOffset) * rot;
-    else global[i] = global[size_t(b.parent)] * glm::translate(mat4(1), b.head - skeleton.bones[size_t(b.parent)].head) * rot;
+    const vec3 off = i < pose.offset.size() ? pose.offset[i] : vec3(0);
+    if (b.parent < 0) global[i] = world * glm::translate(mat4(1), b.head + pose.rootOffset + off) * rot;
+    else global[i] = global[size_t(b.parent)] * glm::translate(mat4(1), b.head - skeleton.bones[size_t(b.parent)].head + off) * rot;
   }
   return global;
 }

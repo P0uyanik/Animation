@@ -263,6 +263,7 @@ Result<Scene> loadScene(const std::filesystem::path& path) {
     }
     cd.dynamics = cj.value("dynamics", Json());
     cd.faceMotion = cj.value("faceMotion", Json());
+    cd.bodyMechanics = cj.value("bodyMechanics", Json());
     s.characters.push_back(cd);
   }
   std::map<std::string, size_t> propsByName;
@@ -446,6 +447,7 @@ Json sceneToJson(const Scene& s) {
     }
     if (!c.dynamics.is_null()) cj["dynamics"] = c.dynamics;
     if (!c.faceMotion.is_null()) cj["faceMotion"] = c.faceMotion;
+    if (!c.bodyMechanics.is_null()) cj["bodyMechanics"] = c.bodyMechanics;
     chars.push_back(cj);
   }
   Json anim = Json::object();
@@ -602,6 +604,10 @@ Result<void> SceneEvaluator::load(const Scene& scene, const EvalOptions& opt) {
   auto compiled = compileActions();
   if (!compiled) return compiled;
   prepareAutoIdle();
+  {  // the auto idle changes the pose the body-mechanics drivers are measured on
+    std::lock_guard<std::mutex> lock(*bodyMutex_);
+    for (auto& m : bodyCache_) m.clear();
+  }
   // Secondary motion after the actions are compiled (action planning sees the kinematic pose).
   dynamics_.assign(characters_.size(), nullptr);
   for (size_t c = 0; c < characters_.size(); ++c) {
@@ -716,6 +722,8 @@ std::vector<mat4> SceneEvaluator::characterGlobals(size_t c, double frame, Pose*
 void SceneEvaluator::resetDynamics() const {
   for (const auto& d : dynamics_)
     if (d) d->reset();
+  std::lock_guard<std::mutex> lock(*bodyMutex_);
+  for (auto& m : bodyCache_) m.clear();
 }
 
 std::vector<mat4> SceneEvaluator::kinematicGlobals(size_t c, double frame, Pose* poseOut) const {
@@ -750,6 +758,8 @@ std::vector<mat4> SceneEvaluator::kinematicGlobals(size_t c, double frame, Pose*
   if (morphBlink || face) life.blinkLids = false;  // blinks are a morph for this character (see evaluate) or the face layer's
   applyLife(ci.asset.skeleton, clip, prefix, frame, scene_.rate.fps(), world, life, pose);
   if (face && !morphBlink) applyLidBlink(ci.asset.skeleton, pose, fs.blink);
+  // Body mechanics (T-045): shoulders, torso, weight shift and pivot carry, before IK and look-at so they work on it.
+  if (bodyMechanicsActive(c)) applyBodyMechanicsAt(c, frame, pose);
   applyConstraints(ci.asset.skeleton, clip, prefix, frame, world, pose, life.gaze, scene_.rate.fps());
   if (face && (fs.eyeOffsetDeg.x != 0 || fs.eyeOffsetDeg.y != 0)) {  // eye darts and gaze bias on top of the aim
     const quat dq = glm::angleAxis(glm::radians(fs.eyeOffsetDeg.x), vec3(0, 1, 0)) *
@@ -1162,6 +1172,141 @@ std::shared_ptr<FrameSnapshot> SceneEvaluator::evaluate(double frame) const {
     }
   }
   return snap;
+}
+
+// ------------------------------------------------------------------ body mechanics (T-045, anim/body_mechanics.h)
+void SceneEvaluator::buildBodyMechanics() {
+  body_.assign(characters_.size(), BodyMechanicsSetup{});
+  {
+    std::lock_guard<std::mutex> lock(*bodyMutex_);
+    bodyCache_.assign(characters_.size(), {});
+  }
+  // Library files (content/<kind>/<file>) are found by walking up from the scene file.
+  auto findLibrary = [&](const std::string& kind, const std::string& file) -> std::filesystem::path {
+    if (scene_.path.empty()) return {};
+    for (auto d = std::filesystem::absolute(scene_.path).parent_path();; d = d.parent_path()) {
+      auto cand = d / "content" / kind / file;
+      if (std::filesystem::exists(cand)) return cand;
+      if (d == d.parent_path()) return {};
+    }
+  };
+  bool any = false;
+  for (const auto& cd : scene_.characters) {
+    const Json& j = cd.bodyMechanics;
+    any |= (j.is_boolean() && j.get<bool>()) || (j.is_object() && readBool(j, "enabled", true));
+  }
+  if (!any) return;
+  BodyMechanicsRigProfile profile;
+  if (auto f = findLibrary("rig_profiles", "body_mechanics.json"); !f.empty()) {
+    auto j = parseJsonFile(f);
+    auto p = j ? bodyMechanicsRigProfileFromJson(*j) : Result<BodyMechanicsRigProfile>(std::unexpected(j.error()));
+    if (p) profile = std::move(*p);
+    else warnings_.push_back(std::format("{}: {} (built-in body mechanics rig defaults used)", f.string(), p.error().message));
+  }
+  const double fps = scene_.rate.fps();
+  const double perFrame24 = fps / 24.0;  // profile frame values are at 24 fps
+  for (size_t c = 0; c < characters_.size(); ++c) {
+    const CharacterDesc& cd = scene_.characters[c];
+    const Json& j = cd.bodyMechanics;
+    BodyMechanicsSetup& b = body_[c];
+    if (!((j.is_boolean() && j.get<bool>()) || j.is_object())) continue;
+    b.params.enabled = true;
+    b.params.seed = cd.life.seed * 0x2545F491u + 7u;
+    applyBodyMechanicsLimits(b.params, profile.limits);
+    if (j.is_object()) {
+      if (auto id = readString(j, "personality"); !id.empty()) {
+        auto f = findLibrary("personality", id + ".json");
+        if (f.empty()) f = findLibrary("personality", id + ".draft.json");
+        auto pj = f.empty() ? Result<Json>(fail("not found")) : parseJsonFile(f);
+        if (pj) applyPersonalityToBodyMechanics(b.params, *pj);
+        else warnings_.push_back(std::format("character '{}': body mechanics personality '{}': {} (neutral tuning used)", cd.name, id,
+                                             pj.error().message));
+      }
+      applyBodyMechanicsOverrides(b.params, j);
+    }
+    b.rig = bindBodyMechanics(characters_[c].asset.skeleton, profile);
+    b.fast = followKernel(0.0f, float(std::max(2.0, 0.5 * b.params.settleFrames * perFrame24)), b.params.overshoot);
+    b.slow = followKernel(float(b.params.lagFrames * perFrame24), float(b.params.settleFrames * perFrame24), b.params.overshoot);
+    b.weight = followKernel(float(b.params.lagFrames * perFrame24), float(2.0 * b.params.settleFrames * perFrame24), 0.0f);
+  }
+}
+
+BodyDrivers SceneEvaluator::bodyDrivers(size_t c, long long frame) const {
+  if (c >= body_.size()) return {};
+  if (bodyCacheOn_) {
+    std::lock_guard<std::mutex> lock(*bodyMutex_);
+    if (c < bodyCache_.size())
+      if (auto it = bodyCache_[c].find(frame); it != bodyCache_[c].end()) return it->second;
+  }
+  const CharacterDesc& cd = scene_.characters[c];
+  const CharacterInstance& ci = characters_[c];
+  const Skeleton& sk = ci.asset.skeleton;
+  const Clip& clip = scene_.animation;
+  const std::string prefix = cd.name + "/";
+  const double f = double(frame);
+  Pose pose = evaluatePose(sk, clip, prefix, f, &ci.asset.defaultPose);
+  float yaw = clip.evaluate(cd.name + ".yaw", f, vec3(cd.yawDeg)).x;
+  if (hasClipLayers(c)) {
+    float clipYaw = 0;
+    applyClips(c, f, pose, clipYaw);
+    yaw += clipYaw;
+  }
+  const mat4 toChar = glm::inverse(objectMatrixLocal(clip.evaluate(cd.name + ".position", f, cd.position), yaw, 1.0f));
+  std::array<vec4, 2> ik{vec4(0), vec4(0)};
+  const BodyMechanicsRig& rig = body_[c].rig;
+  for (int s = 0; s < 2; ++s) {
+    if (rig.hand[size_t(s)] < 0) continue;
+    const std::string name = prefix + "ik." + sk.bones[size_t(rig.hand[size_t(s)])].name;
+    const Track* t = clip.find(name);
+    if (!t || t->keys.empty()) continue;
+    const float w = clip.evaluate(name + ".weight", f, vec3(1)).x;
+    ik[size_t(s)] = vec4(vec3(toChar * vec4(t->evaluate(f), 1.0f)), w);
+  }
+  BodyDrivers d = measureBodyDrivers(sk, rig, pose, ik);
+  if (c < walkSpans_.size())
+    for (auto [a, e] : walkSpans_[c]) {
+      const double x = f < a ? (f - (a - 4)) / 4 : f > e ? (e + 4 - f) / 4 : 1.0;
+      const double cl = std::clamp(x, 0.0, 1.0);
+      d.walk = std::max(d.walk, float(cl * cl * (3 - 2 * cl)));
+    }
+  if (bodyCacheOn_) {
+    std::lock_guard<std::mutex> lock(*bodyMutex_);
+    if (c < bodyCache_.size()) bodyCache_[c][frame] = d;
+  }
+  return d;
+}
+
+BodyDrivers SceneEvaluator::filteredDrivers(size_t c, long long frame, const std::vector<float>& kernel) const {
+  BodyDrivers out;
+  out.standing = 0;
+  for (size_t k = 0; k < kernel.size(); ++k)
+    if (kernel[k] != 0) out = out + bodyDrivers(c, frame - (long long)k) * kernel[k];
+  // Standing and walking are gates, not motion: no overshoot.
+  out.standing = std::clamp(out.standing, 0.0f, 1.0f);
+  out.walk = std::max(std::clamp(out.walk, 0.0f, 1.0f), bodyDrivers(c, frame).walk);
+  return out;
+}
+
+BodyMechanicsInput SceneEvaluator::bodyMechanicsInput(size_t c, double frame) const {
+  BodyMechanicsInput in;
+  if (!bodyMechanicsActive(c)) return in;
+  const BodyMechanicsSetup& b = body_[c];
+  const long long f0 = (long long)std::floor(frame);
+  const float t = float(frame - double(f0));
+  auto lerp = [&](const std::vector<float>& kernel) {
+    const BodyDrivers a = filteredDrivers(c, f0, kernel);
+    return t > 1e-6f ? a * (1 - t) + filteredDrivers(c, f0 + 1, kernel) * t : a;
+  };
+  in.fast = lerp(b.fast);
+  in.slow = lerp(b.slow);
+  in.weight = lerp(b.weight);
+  in.idle = idleWeightShift(frame / std::max(1.0, scene_.rate.fps()), b.params);
+  return in;
+}
+
+void SceneEvaluator::applyBodyMechanicsAt(size_t c, double frame, Pose& pose) const {
+  const BodyMechanicsSetup& b = body_[c];
+  applyBodyMechanics(characters_[c].asset.skeleton, b.rig, b.params, bodyMechanicsInput(c, frame), pose);
 }
 
 }  // namespace plush
