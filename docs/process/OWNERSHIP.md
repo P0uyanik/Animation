@@ -10,5 +10,6 @@ on every assign and close. (`tools/integrate.py claims --check` will automate th
 | T-043 | B | pipeline/charsys/{spec,build_character,versions,body_helpers,body_generic,face_generic,groom,export_engine}.py, garments registration, assets/characters/*/spec/*.json (pins only) | — |
 | T-046 | C | engine/scene/{emotion,scene,face_layer}.*, engine/anim/animation.*, engine/scene/actions.cpp, engine/CMakeLists.txt, content/emotions/**, content/clips/**, tests/CMakeLists.txt, tests/test_face_layer.cpp, tests/test_emotions*.cpp | — |
 | T-040r1 | C | engine/scene/interaction.*, engine/model/**, tests/test_interaction.cpp | — |
+| T-048 | A | .github/workflows/cleanup.yml, tools/cleanup/**, docs/process/CLEANUP.md | backup refs + backup.yml result (T-041; interface fixed in the task) |
 
 Supervisor-only files: docs/process/TASK_LOG.md, docs/ROADMAP.md, docs/process/OWNER_DECISIONS.md, docs/tasks/**.
