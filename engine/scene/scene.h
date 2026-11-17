@@ -9,6 +9,7 @@
 
 #include "anim/animation.h"
 #include "anim/body_mechanics.h"
+#include "anim/principles.h"
 #include "model/character.h"
 #include "model/clip.h"
 #include "scene/asset_library.h"
@@ -100,6 +101,9 @@ struct Scene {
   // Automatic camera ("director"): when set (an object, possibly empty), camera shots are planned from the actions.
   // Hand-keyed camera tracks always win. See actions.cpp.
   Json director = nullptr;
+  // Animation principles (T-061, anim/principles.h): null / true = on with the shared defaults, false = off (the
+  // behaviour before T-061), an object = field overrides. Saved as written.
+  Json animPrinciples = nullptr;
 };
 
 Result<Scene> loadScene(const std::filesystem::path& path);
@@ -225,10 +229,24 @@ class SceneEvaluator {
     // Layer tier (application order): 0 base clip, 1 emotion posture / gesture (action "emotion"), 2 clip actions.
     int tier = 2;
     bool linear = false;  // linear instead of smoothstep blend ramps (emotion intensity curve "linear")
-    double envelope(double frame) const;  // weight x blend in/out at a scene frame
+    // Animation principles (T-061, clip actions only): quintic ease ramps; each succession rank (successionRank)
+    // blends `succession` frames after the previous one, in and out; an optional ease-preserving time warp; elbow
+    // breakdowns (degrees the elbow opens mid blend, per side L / R) where the wrist path would be near-linear.
+    bool principles = false;
+    // Eased clock: ramps (scene frames) over which the clip's clock accelerates from / decelerates to a stop, at the
+    // ends where the clip itself is moving (a clip cut mid-motion); 0 = the plain clock at that end. The layer keeps
+    // its length (anim/principles.h easedClock).
+    double clockIn = 0, clockOut = 0;
+    double succession = 0;
+    std::shared_ptr<const TimeWarp> warp;
+    float breakIn[2] = {0, 0}, breakOut[2] = {0, 0};
+    double envelope(double frame) const;  // weight x blend in/out at a scene frame (any rank still blending)
+    double envelopeRank(double frame, int rank) const;  // the same for one succession rank
     double clipFrame(double frame, double sceneFps) const;
   };
   std::vector<std::vector<ClipLayer>> clipLayers_;
+  AnimPrinciples principles_;  // the scene's animPrinciples (parsed when actions compile)
+  void applyBreakdowns(size_t c, const ClipLayer& L, double frame, Pose& pose) const;
   // Automatic base idle (T-027): per character, the shared idle clip bound to it (prepared once by load); it plays
   // only while the character has no base clip action, so recompiled actions decide (autoIdleLayer).
   std::vector<std::optional<ClipLayer>> autoIdle_;

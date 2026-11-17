@@ -344,6 +344,10 @@ Result<Scene> loadScene(const std::filesystem::path& path) {
   }
   if (auto it = j.find("actions"); it != j.end() && it->is_array()) s.actions = *it;
   if (auto it = j.find("director"); it != j.end() && it->is_object()) s.director = *it;
+  if (auto it = j.find("animPrinciples"); it != j.end()) {
+    if (auto r = animPrinciplesFromJson(*it); !r) return std::unexpected(r.error());
+    s.animPrinciples = *it;
+  }
   if (auto it = j.find("animation"); it != j.end() && it->is_object()) {
     for (auto& [track, keys] : it->items()) {
       Track t;
@@ -467,6 +471,7 @@ Json sceneToJson(const Scene& s) {
   j["animation"] = anim;
   if (!s.actions.empty()) j["actions"] = s.actions;
   if (s.director.is_object()) j["director"] = s.director;
+  if (!s.animPrinciples.is_null()) j["animPrinciples"] = s.animPrinciples;
   return j;
 }
 
