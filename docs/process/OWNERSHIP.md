@@ -21,5 +21,6 @@ means none. Branch is the task's branch; a task branch without a row falls back 
 | T-060 | A | `t-060-codex-windows-ci` | `.github/workflows/checks.yml`, `.github/scripts/install_ci_dependencies.ps1`, `.github/ci-dependencies.json`, `CMakeLists.txt`, `cmake/**`, `vcpkg.json`, `docs/evaluation/process/T-060/**` | — | — |
 | T-054a | A | `t-054a-codex-lipsync-tools` | `tools/lipsync/**`, `content/visemes/**`, `docs/LIPSYNC.md`, `docs/evaluation/animation/T-054a/**` | — | — |
 | T-061 | C | `t-061-claude-animation-principles` | `engine/anim/**`, `engine/scene/clip_layers.cpp`, `engine/scene/actions.cpp`, `engine/scene/scene.{h,cpp}`, `engine/scene/emotion.{h,cpp}`, `engine/CMakeLists.txt`, `tests/test_anim_principles.cpp`, `tests/CMakeLists.txt`, `tools/animcheck/**`, `tools/check_all.py`, `tools/regression_paths.txt`, `content/clips/**`, `docs/evaluation/animation/T-061/**` | — | — |
+| T-062 | A | `t-062-claude-current-cast` | `pipeline/production/run_shot.py`, `pipeline/production/tests/test_run_shot_current*.py`, `content/scenes/eval/**`, `tools/check_cast.py`, `docs/process/GATE.md`, `docs/evaluation/animation/T-062/**` | `tools/check_all.py` (stable) | — |
 
 Supervisor-only files: docs/process/TASK_LOG.md, docs/ROADMAP.md, docs/process/OWNER_DECISIONS.md, docs/tasks/**.
