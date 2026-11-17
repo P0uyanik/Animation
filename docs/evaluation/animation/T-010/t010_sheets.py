@@ -1,6 +1,6 @@
 """T-010 evidence sheets from the e903 run (python3 + Pillow + ffmpeg).
 
-    python3 pipeline/clips/t010_sheets.py --frames <run>/render --gaze <gaze_check.json> --out <dir>
+    python3 docs/evaluation/animation/T-010/t010_sheets.py --frames <run>/render --gaze <gaze_check.json> --out <dir>
 
 Writes:
   contact_sheet.png       6 frames of the 960x540 render in a 3x2 grid, each labelled with the frame number, the
@@ -18,7 +18,7 @@ import tempfile
 
 from PIL import Image, ImageDraw
 
-ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", ".."))
 REFS = os.path.join(ROOT, "docs", "references")
 SHEET = [(1, "start: girl happy, wave begins; boy neutral"), (12, "girl raising arm; boy surprised (onset)"),
          (24, "girl waving; boy surprised -> laugh"), (36, "boy laugh, head pitching down"),
