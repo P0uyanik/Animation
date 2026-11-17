@@ -7,6 +7,8 @@
      `Supervisor-Approved:` trailers (list in §6).
    - Windows CI is reported but not required until it has passed once on `staging`.
    - The backup workflow and the `stage`/`promote` pushes only run for real after merge.
+   - Characters with references but no spec yet (`girl_white_hair_blue_dress`, from T-057) are reported as "not
+     buildable yet".
 3. **Branch / commits:** `t-041-claude-gate-claims`; final commit in the RELAY_LOG line.
 
 ## 3. Files changed
@@ -145,10 +147,70 @@ Not tested:
 - Windows CI.
 
 ### 5.1 Full local gate
-(filled in below)
+
+Command, run on the final merge with `origin/staging`:
+`PLUSH_OIDN_ROOT=<oidn 2.3.3> python3 tools/check_all.py --base origin/main --build-dir build/apt --artifacts-dir <tmp> --blender <bpy 5.3 shim>`
+
+Environment:
+- Ubuntu 24.04, 4 vCPU (Intel Xeon, AVX-512);
+- apt C++ libraries and OIDN 2.3.3 prebuilt;
+- Blender = bpy 5.3.0 behind `tools/bpy_blender.py`.
+
+```
+PASS Frozen assets
+FAIL Guarded paths: REQUIRES SUPERVISOR APPROVAL: (the files in §6)
+PASS Write-set: T-041: 40 changed path(s) vs origin/staging, all inside the claim
+PASS Shared-systems lint
+PASS C++ build
+PASS C++ tests
+PASS Python tests and links
+PASS Blender tier: full tier; regression boy_yellow_hoodie PASS (fidelity 64.08), girl_auburn_bun_glasses PASS (fidelity 65.37), girl_white_hair_blue_dress PASS
+```
+
+- **C++ tests:** CTest 4/4 (including the frozen image regressions) and plush_tests (doctest).
+- **Blender tier subchecks:** verify_charsys, boy fingerprint, build determinism, test_export_engine, face tests,
+  hair/groom, groom_generic, garment_generic, material presets.
+- **Regression, both built characters:**
+  - fingerprint byte-equal, engine export equal and renders within noise against `origin/main` built locally
+    (girl max rmse 0.0025, boy 0.0000);
+  - the approved baselines also match.
+  - `girl_white_hair_blue_dress` is reported as "references only, not buildable yet".
+- **Durations:** Blender tier 30.9 min (regression about 14 min of it), C++ build 76 s (incremental after the
+  T-046 merge), C++ tests 81 s.
+- Run on f888cce (merge with `origin/staging` at 6b78904). The two earlier full runs, before the last two
+  staging merges, gave the same result.
 
 ### 5.2 GitHub CI
-(filled in below)
+
+Run 44134402416 (commit f888cce, the final merge with `origin/staging`; later commits change only this report):
+**all checks PASS except Guarded paths** (Supervisor trailers). The earlier run 44128350051 (1cef6e0) gave the same
+result.
+
+| Job | Duration |
+| --- | --- |
+| plan | 25 s |
+| linux gate | 17.3 min |
+| regression boy | 2.6 min |
+| regression girl | 13.6 min |
+| regression girl_white_hair_blue_dress (references only) | 0.9 min |
+| Gate verdict | 0.4 min |
+| **Wall time** | **18.2 min** |
+
+Fast tier (docs/tools-only change): only the plan, linux gate (C++ build with ccache and tests, about 5–6 min) and
+verdict jobs run.
+
+```
+Tier: full
+PASS Frozen assets
+FAIL Guarded paths: linux:quality-linux: REQUIRES SUPERVISOR APPROVAL: ... (+32 more)
+PASS Write-set: T-041: 40 changed path(s) vs origin/staging, all inside the claim
+PASS Shared-systems lint
+PASS C++ build
+PASS C++ tests
+PASS Python tests and links
+PASS Blender tier: full tier; regression in linux regression jobs | regression boy_yellow_hoodie PASS, fidelity 64.08 | regression girl_auburn_bun_glasses PASS, fidelity 65.49 | regression girl_white_hair_blue_dress PASS
+FAIL Merge status: linux:quality-linux: clean, tests FAIL after merge   (follows from Guarded paths only)
+```
 
 ## 6. Baselines and guarded paths
 
@@ -210,8 +272,8 @@ face close-up per character, in `docs/evaluation/regression/baselines/*/*/images
    an owner step, because the cloud proxy blocks settings APIs.
 8. **CI cost:**
    - fast tier: about 6 min on linux;
-   - full tier: about 21 min wall time (linux gate about 20 min, girl regression about 11 min, boy about 2.5 min,
-     all in parallel).
+   - full tier: 16.5–18 min wall time (linux gate 16–17 min, girl regression 10.5–13.5 min including the `main`
+     reference build, boy 2.5–4 min, all in parallel).
 
    The linux gate's Blender tier (garment test, verify_charsys, determinism) dominates. Per-character jobs scale
    with the number of characters at no extra wall time.
@@ -221,6 +283,15 @@ face close-up per character, in `docs/evaluation/regression/baselines/*/*/images
 ## 10. Resource use
 
 Token usage: not available. Repeated work:
-- CI ran 4 times. The first run found the staging conflict, the second found the fidelity variant problem, the
-  third found the ignored images.
-- One local gate attempt hit the 10-minute foreground limit.
+- CI ran 10 times for this branch, about 2.5 h of runner time in total. Each run found a real problem:
+  - the staging conflict;
+  - the fidelity variant;
+  - the ignored images;
+  - the write-set check during a trial merge;
+  - the cross-runner hair difference;
+  - the relative output path;
+  - the references-only character;
+  - plus one re-run of a single job to confirm the hair difference.
+- Local full gates (about 30 min each) ran 3 times, plus 2 aborted attempts: one hit the 10-minute foreground
+  limit, and one was stopped because it was running stale code. Staging moved four times during the task, and each
+  move required a re-merge.
