@@ -62,6 +62,10 @@ float legLength(const Skeleton& skeleton);
 struct Pose {
   std::vector<quat> local;
   vec3 rootOffset{0};
+  // Optional per-bone pivot translation (empty = none, the default): added to a bone's pivot in its parent's frame
+  // (character space for root bones). Body mechanics (anim/body_mechanics.h) use it to carry bones whose skeleton
+  // parent is not their anatomical carrier, e.g. unparented arm and thigh pivots that should follow the torso.
+  std::vector<vec3> offset;
 };
 
 // Natural eye travel relative to the head. Engine +X is the character's left and +Y is up.
