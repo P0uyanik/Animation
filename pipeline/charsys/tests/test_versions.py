@@ -55,7 +55,8 @@ def test_registry():
     for n in (1, 2, 3):
         check(f"retired export/{n} fails", raises(lambda n=n: V.REGISTRY.check("exporter", f"export/{n}"),
                                                   V.VersionError, "retired"))
-    check("export/4 is the only released exporter", V.REGISTRY.released("exporter") == [("exporter", "export/4")])
+    check("export/4 and export/5 (T-056) are the only released exporters",
+          V.REGISTRY.released("exporter") == [("exporter", "export/4"), ("exporter", "export/5")])
     reg = V.Registry()
     reg.register("body", "probe", 1)
     check("released version cannot be re-registered", raises(lambda: reg.register("body", "probe", 1),

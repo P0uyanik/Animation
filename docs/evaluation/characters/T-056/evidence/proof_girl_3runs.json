@@ -1,0 +1,134 @@
+{
+ "quick": {
+  "a": {
+   "geometry.bin": "d01b9dde82e071a7bcea992b552b6e1829b0c8cfda94f9ab37e5d360ce01bb12",
+   "character.json": "ba3e5f52c7d1c9656abeeeb975fc6f516440b25497d9c8d6828fa1ade8de4160"
+  },
+  "a2": {
+   "geometry.bin": "d01b9dde82e071a7bcea992b552b6e1829b0c8cfda94f9ab37e5d360ce01bb12",
+   "character.json": "ba3e5f52c7d1c9656abeeeb975fc6f516440b25497d9c8d6828fa1ade8de4160"
+  },
+  "b": {
+   "geometry.bin": "d01b9dde82e071a7bcea992b552b6e1829b0c8cfda94f9ab37e5d360ce01bb12",
+   "character.json": "ba3e5f52c7d1c9656abeeeb975fc6f516440b25497d9c8d6828fa1ade8de4160"
+  }
+ },
+ "full": {
+  "girl": {
+   "packages": [
+    {
+     "geometry.bin": "18d29adf65958662182d41b91f04753974c675a6595e8c0d6b9acdd6fa057826",
+     "character.json": "8e23dbd90c71a53bff51d8dc7b198ce89be4057d9f7f2db620733e1ada2344c2"
+    },
+    {
+     "geometry.bin": "18d29adf65958662182d41b91f04753974c675a6595e8c0d6b9acdd6fa057826",
+     "character.json": "8e23dbd90c71a53bff51d8dc7b198ce89be4057d9f7f2db620733e1ada2344c2"
+    },
+    {
+     "geometry.bin": "18d29adf65958662182d41b91f04753974c675a6595e8c0d6b9acdd6fa057826",
+     "character.json": "8e23dbd90c71a53bff51d8dc7b198ce89be4057d9f7f2db620733e1ada2344c2"
+    }
+   ],
+   "fingerprints_sha256": [
+    "13f4e0a684d1ae6a42e40d38d701fc4fc8bc31ecaa9ed00245e70a1e81a465b4",
+    "13f4e0a684d1ae6a42e40d38d701fc4fc8bc31ecaa9ed00245e70a1e81a465b4",
+    "13f4e0a684d1ae6a42e40d38d701fc4fc8bc31ecaa9ed00245e70a1e81a465b4"
+   ]
+  }
+ },
+ "checks": [
+  {
+   "name": "fixture builds",
+   "pass": true
+  },
+  {
+   "name": "fixture exports (a)",
+   "pass": true
+  },
+  {
+   "name": "fixture exports (a2)",
+   "pass": true
+  },
+  {
+   "name": "same master, two exports: identical bytes",
+   "pass": true
+  },
+  {
+   "name": "scrambled master written",
+   "pass": true
+  },
+  {
+   "name": "the scramble changed the master's mesh data (order, triangle start corners, noise)",
+   "pass": true
+  },
+  {
+   "name": "scrambled master exports",
+   "pass": true
+  },
+  {
+   "name": "scrambled master: geometry.bin byte-identical",
+   "pass": true
+  },
+  {
+   "name": "scrambled master: character.json byte-identical",
+   "pass": true
+  },
+  {
+   "name": "manifest has no .blend byte hash",
+   "pass": true
+  },
+  {
+   "name": "exporter_version 5, recorded as export/5",
+   "pass": true
+  },
+  {
+   "name": "positions on the 2^-15 m grid, morph deltas on the 2^-14 m grid (no zero morph entries)",
+   "pass": true
+  },
+  {
+   "name": "skin weights: multiples of 1/1024 summing to exactly 1",
+   "pass": true
+  },
+  {
+   "name": "influences sorted by (weight desc, joint); empty slots use joint 0",
+   "pass": true
+  },
+  {
+   "name": "triangles start at their lowest index and are sorted",
+   "pass": true
+  },
+  {
+   "name": "girl: 3 clean builds + exports byte-identical",
+   "pass": true
+  },
+  {
+   "name": "girl: 3 fingerprints identical",
+   "pass": true
+  },
+  {
+   "name": "manifest has no .blend byte hash",
+   "pass": true
+  },
+  {
+   "name": "exporter_version 5, recorded as export/5",
+   "pass": true
+  },
+  {
+   "name": "positions on the 2^-15 m grid, morph deltas on the 2^-14 m grid (no zero morph entries)",
+   "pass": true
+  },
+  {
+   "name": "skin weights: multiples of 1/1024 summing to exactly 1",
+   "pass": true
+  },
+  {
+   "name": "influences sorted by (weight desc, joint); empty slots use joint 0",
+   "pass": true
+  },
+  {
+   "name": "triangles start at their lowest index and are sorted",
+   "pass": true
+  }
+ ],
+ "pass": true
+}

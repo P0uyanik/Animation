@@ -39,8 +39,24 @@ FORMAT, VERSION = "plush.imported_character", 1
 # T-043: this number is the exporter's entry "export/4" in the per-feature version registry (versions.py); 1-3 are
 # retired. The literal stays here because run_shot.py reads it from this file's source for its package cache key.
 # A spec pinning another exporter version fails here; the manifest records every generator pin ("versions").
+# 5 (T-056): order-stable, byte-reproducible output (canonical(), docs/evaluation/characters/T-056/README.md); same
+#    content as 4 within its rounding grids. export/4 output is unchanged byte for byte (released versions are immutable):
+#    the pinned version selects the code path. EXPORTER_VERSION stays "4" (the legacy default every unpinned spec
+#    resolves to and run_shot's cache key; a master pinning export/5 never had an export/4 package). Masters without
+#    an embedded spec (test data) export as EXPORTER_DEFAULT.
 EXPORTER_VERSION = "4"
-GENERATOR_VERSIONS = (f"export/{EXPORTER_VERSION}",)
+EXPORTER_DEFAULT = "5"
+GENERATOR_VERSIONS = (f"export/{EXPORTER_VERSION}", f"export/{EXPORTER_DEFAULT}")
+# export/5 grids (powers of two: exact in float32, so the rounding survives the float32 write). Chosen from the noise
+# measured over 7 builds of each character (docs/evaluation/characters/T-056): a value whose build-to-build noise
+# crosses a rounding midpoint still differs, so each grid is coarse enough to make that unlikely (expected <= 0.02
+# such values per character per pair of builds) and fine enough to be invisible.
+GRID_M = 2.0 ** -15        # positions: 30.5 um (max change 15 um)
+DELTA_GRID_M = 2.0 ** -14  # morph deltas: 61 um (max change 31 um; deltas below 31 um are dropped)
+WEIGHT_STEPS = 2 ** 10     # skin weights: multiples of 1/1024 summing to exactly 1 (max change 4.9e-4)
+# export/5 normals: the normal of the rounded positions is used where it is within this angle of Blender's normal of
+# the unrounded positions (see canonical comment below).
+NORMAL_SWITCH_DEG = 2.0
 sys.path.insert(0, os.path.join(HERE, "..", "clips"))
 import retarget as RT  # noqa: E402  (shared clip retargeting rules; pure Python)
 
@@ -53,13 +69,133 @@ def version_record(root):
     without an embedded spec (test data, older files) record only the exporter."""
     txt = bpy.data.texts.get("ps_character_spec.json")
     if txt is None:
-        return {"generators": {"exporter": GENERATOR_VERSIONS[0]}, "embedded_spec": False}
+        return {"generators": {"exporter": f"export/{EXPORTER_DEFAULT}"}, "embedded_spec": False}
     rec = V.record(json.loads(txt.as_string()))
     pinned = rec["generators"]["exporter"]
     if pinned not in GENERATOR_VERSIONS:
         raise V.VersionError(f"{root.get('ps_character_id', root.name)} pins exporter {pinned!r}; this exporter is "
-                             f"{GENERATOR_VERSIONS[0]}")
+                             f"{' / '.join(GENERATOR_VERSIONS)}")
     return rec
+
+
+# ---- export/5: canonical, run-independent mesh data (T-056) ----
+# Two builds of the same spec can store a mesh with its polygons (and, for some meshes, vertices) in a different
+# order, with ulp-level noise (<= 6e-8 m) on a few coordinates, and with ulp-level noise on automatic skin weights
+# (measured in docs/evaluation/characters/T-056). The builders own that order (not this exporter), so export/5 writes
+# data that does not depend on it:
+#   * positions rounded to GRID_M, morph deltas to DELTA_GRID_M;
+#   * skin weights rounded to 1/WEIGHT_STEPS with an exact integer sum, the four influences ordered by (weight
+#     descending, joint index), an empty influence slot written as joint 0;
+#   * every vertex of an object gets a canonical rank: sorted by (rounded position, joints, weights, rounded morph
+#     deltas in shape key order, which the spec defines); exact ties are told apart by their polygon neighbourhoods
+#     (colour refinement);
+#   * the build's start corners of quads and n-gons are kept: they decide how Blender splits them (export/4's
+#     triangles) and they were the same in every observed build; changing them would flip quad diagonals. Triangles
+#     start at their lowest-rank corner;
+#   * vertex normals by Blender's own rule (as export/4), computed on temporary copies of the evaluated mesh whose
+#     vertices are in canonical order and whose polygons are sorted (canonical_polygons), so the build's polygon and
+#     vertex order cannot change a bit. Two copies: one with the rounded positions (noise-free, but on near-degenerate
+#     garment geometry its normals turn by up to 170 deg) and one with the unrounded positions (exact, but ulp noise
+#     in a position reaches its neighbours' normals). Per vertex the rounded one is written when the two are within
+#     NORMAL_SWITCH_DEG, otherwise the unrounded one: the noisy regions (ears, lids) get noise-free normals,
+#     near-degenerate ones keep Blender's exact normal, and no normal is more than NORMAL_SWITCH_DEG from export/4's;
+#   * each exported part lists its vertices in canonical order; triangles rotated to start at their lowest index
+#     (winding kept) and sorted; morph vertex lists follow the new order;
+#   * the manifest leaves out the .blend's byte hash (the .blend bytes are not reproducible).
+
+
+def quantise(a, grid=GRID_M):
+    """Rounds to multiples of grid; -0.0 becomes +0.0 (noise around 0 must not leave a sign bit)."""
+    return np.round(np.asarray(a, dtype=np.float64) / grid) * grid + 0.0
+
+
+def _dense_rank(rows):
+    """Dense rank of each row of a 2-D array (lexicographic, exact comparison)."""
+    if not len(rows):
+        return np.zeros(0, np.int64)
+    order = np.lexsort(rows.T[::-1])
+    srt = rows[order]
+    new = np.r_[True, (srt[1:] != srt[:-1]).any(axis=1)]
+    rank = np.empty(len(rows), np.int64)
+    rank[order] = np.cumsum(new) - 1
+    return rank
+
+
+def canonical_rank(record, edges):
+    """Canonical rank (0..n-1) of every vertex: vertices sorted by their record (n x k float64, compared exactly);
+    ties between identical records are separated by colour refinement over the edge neighbourhood (edges: m x 2).
+    Returns (rank, ties left): ties left > 0 counts vertices indistinguishable even by their neighbourhood, which
+    keep their input order (reported; none in the current characters)."""
+    n = len(record)
+    cls = _dense_rank(record)
+    if n and len(np.unique(cls)) < n and len(edges):
+        nbr = [[] for _ in range(n)]
+        for a, b in edges.tolist():
+            nbr[a].append(b)
+            nbr[b].append(a)
+        for _ in range(16):
+            keys = [(int(cls[i]), tuple(sorted(int(cls[j]) for j in nbr[i]))) for i in range(n)]
+            sig = {k: i for i, k in enumerate(sorted(set(keys)))}
+            new = np.array([sig[k] for k in keys], np.int64)
+            if len(np.unique(new)) == len(np.unique(cls)):
+                break
+            cls = new
+            if len(np.unique(cls)) == n:
+                break
+    order = np.lexsort((np.arange(n), cls))
+    rank = np.empty(n, np.int64)
+    rank[order] = np.arange(n)
+    return rank, int(n - len(np.unique(cls)))
+
+
+def canonical_polygons(loop_vert, loop_start, loop_total, rank):
+    """Polygons as rank tuples in canonical order: sorted by the polygon rotated to its lowest rank (winding kept).
+    Triangles start at their lowest rank; quads and n-gons keep their own start corner: it decides how Blender splits
+    them into triangles (and so export/4's triangles), and the builds keep it (only the polygon order varies;
+    docs/evaluation/characters/T-056)."""
+    polys = []
+    lv = rank[loop_vert].tolist()
+    for s0, t in zip(loop_start.tolist(), loop_total.tolist()):
+        p = lv[s0:s0 + t]
+        r = p.index(min(p))
+        rot = tuple(p[r:] + p[:r])
+        polys.append((rot, rot if t == 3 else tuple(p)))
+    polys.sort()
+    return [p for _, p in polys]
+
+
+def canonical_triangles(tri):
+    """Triangles rotated to start at their lowest index (winding kept), sorted lexicographically."""
+    if not len(tri):
+        return tri
+    r = np.argmin(tri, axis=1)
+    t = np.take_along_axis(tri, (np.arange(3)[None, :] + r[:, None]) % 3, axis=1)
+    return t[np.lexsort(t.T[::-1])]
+
+
+def blender_normals(co_local, polys, rank):
+    """Blender's vertex normals (object space, unit) of a mesh rebuilt in canonical order: co_local (n x 3, the
+    evaluated positions as Blender stores them) placed at their ranks, polygons from canonical_polygons. Returned in
+    the original vertex order."""
+    n = len(co_local)
+    pos = np.empty((n, 3), np.float32)
+    pos[rank] = co_local
+    t = bpy.data.meshes.new("ps_export_canonical_tmp")
+    try:
+        t.vertices.add(n)
+        t.vertices.foreach_set("co", pos.ravel())
+        flat = np.array([v for p in polys for v in p], np.int32)
+        sizes = np.array([len(p) for p in polys], np.int32)
+        t.loops.add(len(flat))
+        t.loops.foreach_set("vertex_index", flat)
+        t.polygons.add(len(polys))
+        t.polygons.foreach_set("loop_start", (np.cumsum(sizes) - sizes).astype(np.int32))
+        t.update()
+        nrm = np.empty(n * 3, np.float32)
+        t.vertices.foreach_get("normal", nrm)
+    finally:
+        bpy.data.meshes.remove(t)
+    return nrm.reshape(n, 3)[rank]
 
 
 def to_engine(v):
@@ -143,7 +279,7 @@ def sphere_fit(P):
     return c, r, float(np.sqrt(np.mean((np.linalg.norm(P - c, axis=1) - r) ** 2)))
 
 
-def eye_pivots(rig, root, skel_by_source):
+def eye_pivots(rig, root, skel_by_source, canonical=False):
     """Eye roles ("eye.*", the bones the engine aims) turn about the centre of the eyeball they carry (T-030).
     The eyeball is the most spherical mesh bound only to that bone and without shape keys (rms residual below 2 %
     of its radius; a lid shell fits worse than the ball). When the rig's bone head is elsewhere (a Rigify eye bone on the front of the ball),
@@ -166,6 +302,8 @@ def eye_pivots(rig, root, skel_by_source):
                 continue
             mw = o.matrix_world
             P = np.array([tuple(mw @ v.co) for v in o.data.vertices])
+            if canonical:  # export/5: the fit must not depend on the vertex order
+                P = P[np.lexsort(P.T[::-1])]
             c, r, res = sphere_fit(P)
             if r > 0 and res < 0.02 * r and (best is None or res / r < best[0]):
                 best = (res / r, c, r, o.name)
@@ -203,6 +341,8 @@ def main():
     if root is None:
         raise SystemExit("character root collection not found (give --collection)")
     versions = version_record(root)  # fails before any work when the spec pins another exporter version
+    out_version = versions["generators"]["exporter"].split("/")[1]
+    canonical = out_version != "4"  # export/5 (T-056); export/4 keeps its released code path
     rigs = [o for o in root.all_objects if o.type == "ARMATURE"]
     if len(rigs) != 1:
         raise SystemExit(f"expected one armature in {root.name}, found {len(rigs)}")
@@ -273,7 +413,7 @@ def main():
                      "parent": engine_name[parent[n]] if parent[n] else None,
                      "head": [round(float(x), 6) for x in to_engine(M @ b.head_local)]})
 
-    pivots = eye_pivots(rig, root, {s["source_name"]: s for s in skel})
+    pivots = eye_pivots(rig, root, {s["source_name"]: s for s in skel}, canonical)
 
     blob = bytearray()
 
@@ -284,6 +424,7 @@ def main():
         blob += arr.tobytes()
         return {"offset": off, "count": int(arr.size), "dtype": np.dtype(dtype).name}
     meshes, morphs, mats, problems = [], [], {}, []
+    canon_report = {"ties_left": {}, "unrounded_normals": {}}
     deps = bpy.context.evaluated_depsgraph_get()
     objs = [o for o in root.all_objects if o.type == "MESH" and not o.name.startswith(("WGT-", "LM_"))
             and any(m.type == "ARMATURE" for m in o.modifiers) and not o.get("ps_collision_proxy")]
@@ -314,7 +455,22 @@ def main():
         mw = o.matrix_world
         co = np.array([mw @ v.co for v in me.vertices])
         nm3 = mw.to_3x3().inverted().transposed()
-        nrm = np.array([(nm3 @ v.normal).normalized() for v in me.vertices])
+        if canonical:
+            co = quantise(co)
+            co_local = np.empty(n * 3, np.float32)
+            me.vertices.foreach_get("co", co_local)
+            lv = np.empty(len(me.loops), np.int64)
+            me.loops.foreach_get("vertex_index", lv)
+            ls = np.empty(len(me.polygons), np.int64)
+            lt = np.empty(len(me.polygons), np.int64)
+            me.polygons.foreach_get("loop_start", ls)
+            me.polygons.foreach_get("loop_total", lt)
+            nxt = np.arange(len(lv)) + 1
+            nxt[ls + lt - 1] = ls
+            edges = np.stack([lv, lv[nxt]], axis=1)
+            co_local = co_local.reshape(n, 3)
+        else:
+            nrm = np.array([(nm3 @ v.normal).normalized() for v in me.vertices])
         me.calc_loop_triangles()
         tri = np.array([t.vertices[:] for t in me.loop_triangles], dtype=np.int64).reshape(-1, 3)
         tmat = np.array([t.material_index for t in me.loop_triangles], dtype=np.int64)
@@ -338,6 +494,11 @@ def main():
             if s <= 0:
                 zero += 1
                 continue
+            if canonical:
+                q = [int(np.round(w / s * WEIGHT_STEPS)) for w, _ in ws]
+                q[0] += WEIGHT_STEPS - sum(q)  # exact sum; the largest influence absorbs the rounding
+                ws = sorted(((qi, j) for qi, (_, j) in zip(q, ws) if qi > 0), key=lambda x: (-x[0], x[1]))
+                ws, s = [(qi / WEIGHT_STEPS, j) for qi, j in ws], 1.0
             for k, (w, j) in enumerate(ws):
                 J[v.index, k], W[v.index, k] = j, w / s
         if zero:
@@ -348,10 +509,28 @@ def main():
             basis = np.array([v.co for v in kb[0].data])
             for k in kb[1:]:
                 d = np.array([v.co for v in k.data]) - basis
-                keys.append((k.name, (np.array(mw.to_3x3()) @ d.T).T))
+                d = (np.array(mw.to_3x3()) @ d.T).T
+                keys.append((k.name, quantise(d, DELTA_GRID_M) if canonical else d))
+        if canonical:
+            # canonical vertex rank: rounded position, joints, weights, rounded morph deltas (shape key order)
+            rec = np.hstack([co, J.astype(np.float64), W.astype(np.float64)] + [d for _, d in keys])
+            rank, ties = canonical_rank(rec, edges)
+            if ties:
+                canon_report["ties_left"][o.name] = ties
+            polys = canonical_polygons(lv, ls, lt, rank)
+            n_raw = blender_normals(co_local, polys, rank).astype(np.float64)
+            n_q = blender_normals(quantise(co_local).astype(np.float32), polys, rank).astype(np.float64)
+            use_q = (n_raw * n_q).sum(axis=1) >= np.cos(np.radians(NORMAL_SWITCH_DEG))
+            canon_report["unrounded_normals"][o.name] = int((~use_q).sum())
+            nl = np.where(use_q[:, None], n_q, n_raw)
+            nrm = (np.array(nm3, dtype=np.float64) @ nl.T).T
+            ln = np.linalg.norm(nrm, axis=1, keepdims=True)
+            nrm = np.divide(nrm, ln, out=np.zeros_like(nrm), where=ln > 0)
         for mi in sorted(set(tmat.tolist())) if len(tmat) else []:
             t = tri[tmat == mi]
             used = np.unique(t)
+            if canonical:
+                used = used[np.argsort(rank[used], kind="stable")]
             remap = -np.ones(n, np.int64)
             remap[used] = np.arange(len(used))
             slot = o.material_slots[mi].material if mi < len(o.material_slots) else None
@@ -366,11 +545,13 @@ def main():
             meshes.append({"part": o.name if len(set(tmat.tolist())) == 1 else f"{o.name}#{mi}", "source_object": o.name,
                            "material": mname, "vertices": int(len(used)),
                            "positions": put(to_engine(co[used]), np.float32), "normals": put(to_engine(nrm[used]), np.float32),
-                           "indices": put(remap[t].reshape(-1), np.uint32), "joints": put(J[used], np.uint16),
+                           "indices": put((canonical_triangles(remap[t]) if canonical else remap[t]).reshape(-1), np.uint32),
+                           "joints": put(J[used], np.uint16),
                            "weights": put(W[used], np.float32)})
             for kname, d in keys:
                 dd = to_engine(d[used])
-                nz = np.nonzero(np.linalg.norm(dd, axis=1) > 1e-7)[0]
+                nz = (np.nonzero(np.abs(dd).max(axis=1) > 0)[0] if canonical
+                      else np.nonzero(np.linalg.norm(dd, axis=1) > 1e-7)[0])
                 if len(nz):
                     morphs.append({"name": kname, "mesh": mi_index, "vertices": put(nz, np.uint32),
                                    "dpos": put(dd[nz], np.float32)})
@@ -414,7 +595,8 @@ def main():
         retarget["profile"] = prof["profile"]
     dynamics = export_dynamics(rig, engine_name, dnames)
     man = {"format": FORMAT, "version": VERSION, "name": root.get("ps_character_id", root.name),
-           "source": {"blend": os.path.basename(a.blend), "blend_sha256": src_sha, "spec_sha256": root.get("ps_spec_sha256"),
+           "source": {"blend": os.path.basename(a.blend), **({} if canonical else {"blend_sha256": src_sha}),
+                      "spec_sha256": root.get("ps_spec_sha256"),
                       "spec_version": root.get("ps_spec_version"), "blender": bpy.app.version_string},
            "profile": {"name": prof["profile"], "kind": prof["kind"], "required_roles": prof["required_roles"]},
            "coordinates": "metres; +Y up; character faces +Z; converted from Blender (x, y, z) -> (x, z, -y)",
@@ -432,12 +614,14 @@ def main():
                                         {k for k, v in expr_map.items() if v in {m["name"] for m in morphs}}),
            **({"walk": prof["walk"]} if "walk" in prof else {}), **({"hands": prof["hands"]} if "hands" in prof else {}),
            **({"retarget": retarget} if retarget else {}), **({"dynamics": dynamics} if dynamics else {}),
-           "exporter_version": EXPORTER_VERSION, "versions": versions,
+           "exporter_version": out_version, "versions": versions,
            "discarded": prof.get("discarded", []) + ([f"meshes without armature (not exported): {skipped}"] if skipped else []),
            "files": {"geometry.bin": {"bytes": len(blob), "sha256": hashlib.sha256(bytes(blob)).hexdigest()}}}
     json.dump(man, open(os.path.join(out, "character.json"), "w"), indent=1)
     print(f"[export_engine] {man['name']}: {len(skel)} bones ({len(present)} roles, {len(man['rig_specific_bones'])} rig-specific), "
           f"{len(meshes)} meshes, {len(morphs)} morph blocks, {len(blob) / 1e6:.1f} MB -> {out}")
+    if canonical:
+        print(f"[export_engine] export/{out_version} canonical: {json.dumps(canon_report, sort_keys=True)}")
 
 
 main()

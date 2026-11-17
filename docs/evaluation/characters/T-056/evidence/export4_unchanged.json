@@ -1,0 +1,37 @@
+{
+ "what": "export/4 (every unpinned spec) on the same master with origin/staging's export_engine.py and with this branch's",
+ "result": "byte-identical in all 6 files",
+ "packages": {
+  "boy build (staging)": {
+   "geometry.bin": {
+    "origin/staging exporter": "77d9788ddbf379ea831114bd3386e7a1e145d7c17a0e24d75f7ed2e95a92a238",
+    "this branch": "77d9788ddbf379ea831114bd3386e7a1e145d7c17a0e24d75f7ed2e95a92a238"
+   },
+   "character.json": {
+    "origin/staging exporter": "9f992cd3622578948ed27191dfa423d5b075acc74fd81704bc85ac25a7193312",
+    "this branch": "9f992cd3622578948ed27191dfa423d5b075acc74fd81704bc85ac25a7193312"
+   }
+  },
+  "girl build (staging)": {
+   "geometry.bin": {
+    "origin/staging exporter": "218e06e6464363559b5454f40fba51ba22576789a873f891b27c3f708b19b440",
+    "this branch": "218e06e6464363559b5454f40fba51ba22576789a873f891b27c3f708b19b440"
+   },
+   "character.json": {
+    "origin/staging exporter": "7cbbc05a1cb2c0c20bf381cd658cb7bd7edac50df0028123dd0c3bd69cf5e275",
+    "this branch": "7cbbc05a1cb2c0c20bf381cd658cb7bd7edac50df0028123dd0c3bd69cf5e275"
+   }
+  },
+  "boy published 1.0.0 master": {
+   "geometry.bin": {
+    "origin/staging exporter": "274730f58a10da8eb7e5129db0af31606ec19bc097cde32595d12f0ea19b971f",
+    "this branch": "274730f58a10da8eb7e5129db0af31606ec19bc097cde32595d12f0ea19b971f"
+   },
+   "character.json": {
+    "origin/staging exporter": "5a8305a13615bd4c44ae04e17fe35a5740047209e9dcb19d19588cd6ed4eab60",
+    "this branch": "5a8305a13615bd4c44ae04e17fe35a5740047209e9dcb19d19588cd6ed4eab60"
+   }
+  }
+ },
+ "note": "the published 1.0.0 export's geometry.bin equals the committed tests/data/imported/boy_yellow_hoodie_1.0.0/geometry.bin (274730f5...)"
+}
