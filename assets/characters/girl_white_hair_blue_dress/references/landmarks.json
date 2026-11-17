@@ -1,0 +1,190 @@
+{
+ "note": "Manual one-time annotation in UPLOAD pixel coordinates (x right, y down) of w01 (identity, front) and w15 (canonical side, face points screen-left = her left side), read on 2-3x gridded zooms (10 px grid). Precision: w01 face +-2 px, w01 body levels +-5 px, w15 +-4 px. Character's left (L) is screen-right in the front view. Subtract the view's crop origin (reference_index.json) for views/<id>.jpg coordinates.",
+ "views": {
+  "id01_full": {
+   "upload": "w01",
+   "image_size": [
+    896,
+    1200
+   ],
+   "face": {
+    "iris_centre_R": [
+     378,
+     356.5
+    ],
+    "iris_centre_L": [
+     511,
+     356
+    ],
+    "iris_radius": 23.5,
+    "eye_white_R_x": [
+     340,
+     403
+    ],
+    "eye_white_L_x": [
+     488,
+     548
+    ],
+    "upper_lash_top_y": 325,
+    "eye_bottom_y": 382,
+    "ear_R": [
+     285,
+     390
+    ],
+    "ear_L": [
+     600,
+     392
+    ],
+    "nose": [
+     442,
+     383
+    ],
+    "mouth_centre": [
+     444,
+     411
+    ],
+    "mouth_width": 38,
+    "chin": [
+     444,
+     463
+    ],
+    "cheek_edge_R_x": 305,
+    "cheek_edge_L_x": 575,
+    "blush_centre_R": [
+     358,
+     398
+    ],
+    "blush_centre_L": [
+     530,
+     398
+    ]
+   },
+   "hair": {
+    "top_of_right_bun (screen-left)": [
+     365,
+     35
+    ],
+    "top_of_left_bun (screen-right)": [
+     575,
+     65
+    ],
+    "notch_between_buns": [
+     487,
+     107
+    ],
+    "bow_centre": [
+     300,
+     172
+    ],
+    "bow_box": [
+     245,
+     128,
+     352,
+     222
+    ],
+    "fringe_tip_line_y": [
+     318,
+     330
+    ]
+   },
+   "body": {
+    "collar_top (neck base)": [
+     444,
+     495
+    ],
+    "waist_seam_y": 642,
+    "fingertips_y": 812,
+    "hem_y": 872,
+    "tights_leg_R_x": [
+     350,
+     428
+    ],
+    "tights_leg_L_x": [
+     466,
+     545
+    ],
+    "boot_top_y": 1012,
+    "boot_R_x_at_y1100": [
+     337,
+     438
+    ],
+    "boot_L_x_at_y1100": [
+     454,
+     558
+    ],
+    "sole_y": 1173
+   }
+  },
+  "c15_side": {
+   "upload": "w15",
+   "image_size": [
+    1493,
+    2000
+   ],
+   "yaw_deg": 90,
+   "head": {
+    "bun_top": [
+     500,
+     82
+    ],
+    "eye": [
+     415,
+     235
+    ],
+    "nose_tip": [
+     400,
+     255
+    ],
+    "chin": [
+     420,
+     285
+    ],
+    "ear": [
+     480,
+     250
+    ],
+    "hair_back_max": [
+     575,
+     320
+    ]
+   },
+   "body": {
+    "hem_front": [
+     390,
+     490
+    ],
+    "hem_back": [
+     545,
+     490
+    ],
+    "boot_top_y": 560,
+    "toe_x": 415,
+    "heel_x": 505,
+    "sole_y": 638
+   }
+  },
+  "l03_top": {
+   "upload": "w03",
+   "image_size": [
+    1493,
+    2000
+   ],
+   "note": "Blender viewport, perspective; all three stand on about the same floor line (soles 1267-1272)",
+   "boy": {
+    "hair_top_y": 296,
+    "sole_y": 1272,
+    "eye_y": 555
+   },
+   "girl": {
+    "bun_top_y": 284,
+    "sole_y": 1267,
+    "eye_y": 565
+   },
+   "her": {
+    "bun_top_y": 312,
+    "sole_y": 1267,
+    "eye_y": 582
+   }
+  }
+ }
+}

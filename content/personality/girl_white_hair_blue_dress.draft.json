@@ -1,0 +1,484 @@
+{
+  "format": "plush.personality",
+  "version": 0,
+  "status": "draft (T-057); no reader yet; not approved",
+  "character": "girl_white_hair_blue_dress",
+  "owner_brief": "a little goofy, not very bright, bubbly and cheerful (owner 2026-11-17)",
+  "guide": "docs/characters/girl_white_hair_blue_dress/REFERENCE_BEHAVIOUR.md",
+  "citation_keys": "w01-w15 = her uploads (reference_index.json); WT/PB/C1/CD/CW/lineup as in docs/characters/REFERENCE_INVENTORY.md; strips in docs/evaluation/characters/T-057/",
+  "tempo": {
+    "action_speed": {
+      "value": 1.0,
+      "unit": "multiplier",
+      "kind": "estimate",
+      "source": "no reach or gesture measured: she barely moves in WT/PB; keep the library default"
+    },
+    "reach_frames": {
+      "value": [
+        8,
+        12
+      ],
+      "unit": "frames@24",
+      "kind": "extrapolation",
+      "source": "not shown; library-range reach, slightly softer than the girl's 8-10 f (WT)"
+    },
+    "anticipation_frames": {
+      "value": [
+        5,
+        8
+      ],
+      "unit": "frames@24",
+      "kind": "default",
+      "source": "docs/references/VISUAL_TARGET.md (Motion and editorial rhythm)"
+    },
+    "settle_frames": {
+      "value": [
+        12,
+        18
+      ],
+      "unit": "frames@24",
+      "kind": "extrapolation",
+      "source": "bubbly: a little longer settle with a small bounce; VISUAL_TARGET default 10-16 f"
+    },
+    "overshoot": {
+      "value": 0.08,
+      "unit": "fraction",
+      "kind": "extrapolation",
+      "source": "bubbly bounce (guide section 7); no motion in her references to measure; keep small"
+    },
+    "hold_frames": {
+      "value": [
+        19,
+        121
+      ],
+      "unit": "frames@24",
+      "kind": "measured",
+      "source": "lips parted ~19 f (WT f000-f018, f066-f084); hand on paper ~42 f (PB f044-f086); clasp >=50 f (PB f239-f288); rim lean >=121 f (WT)"
+    }
+  },
+  "energy": {
+    "level": {
+      "value": 0.55,
+      "unit": "0-1",
+      "kind": "estimate",
+      "source": "stills: smiles, wave, show-object (w15 animation, w01, lineup); videos: very still (WT, PB)"
+    },
+    "idle_motion_amplitude": {
+      "value": 0.004,
+      "unit": "H",
+      "kind": "estimate",
+      "source": "WT/PB: only small head and eye motion (strips/wt_her_body_every6.jpg)"
+    },
+    "gesture_amplitude": {
+      "value": 0.5,
+      "unit": "0-1",
+      "kind": "reference",
+      "source": "w15 wave (hand above shoulder); PB S6 clasp under the chin (small)"
+    }
+  },
+  "posture": {
+    "slouch": {
+      "value": 0.0,
+      "unit": "0-1",
+      "kind": "reference",
+      "source": "w01, s02_front, c15_front, lineup: upright"
+    },
+    "head_pitch_deg": {
+      "value": 0,
+      "unit": "deg",
+      "kind": "reference",
+      "source": "w01 level eyes (iris centres y 356.5/356); tilts down only toward the task (WT, PB)"
+    },
+    "head_tilt_deg": {
+      "value": 6,
+      "unit": "deg",
+      "kind": "estimate",
+      "source": "w15 walk and wave tiles; WT f000 (key/wt000.jpg)"
+    },
+    "shoulders_forward": {
+      "value": 0.0,
+      "unit": "0-1",
+      "kind": "reference",
+      "source": "w01, lineup; forward only while leaning on a rim (WT)"
+    },
+    "rest_hands": {
+      "value": [
+        "relaxed_at_sides",
+        "hands_folded_on_table",
+        "hands_on_table_rim",
+        "hands_clasped_under_chin"
+      ],
+      "unit": "enum",
+      "kind": "reference",
+      "source": "w01, C1, lineup / PB f000-f031, f112-f150, CD / WT, CW / PB f239-f288"
+    },
+    "weight_shift": {
+      "value": 0.1,
+      "unit": "0-1",
+      "kind": "estimate",
+      "source": "w01, s02_front: feet together, weight even"
+    },
+    "lean_toward_task": {
+      "value": 0.6,
+      "unit": "0-1",
+      "kind": "reference",
+      "source": "WT (leans on the rim), CW, PB S6"
+    }
+  },
+  "attention": {
+    "primary_target": {
+      "value": "task_object",
+      "unit": "enum",
+      "kind": "reference",
+      "source": "WT boat; PB S6 boat; PB S1/S3 the girl's paper (another child's task)"
+    },
+    "watches_others_work": {
+      "value": true,
+      "unit": "bool",
+      "kind": "reference",
+      "source": "PB f000-f031, f112-f150: eyes on the girl's paper, her own hands folded"
+    },
+    "span_s": {
+      "value": 6,
+      "unit": "s",
+      "kind": "extrapolation",
+      "source": "'not very bright': shorter span than the girl (20 s); references show only continuous watching (WT 5 s)"
+    },
+    "glance_at_others": {
+      "value": 0,
+      "unit": "per_min",
+      "kind": "measured",
+      "source": "never looks at another character's face in WT or PB"
+    },
+    "glance_hold_frames": {
+      "value": [
+        12,
+        24
+      ],
+      "unit": "frames@24",
+      "kind": "extrapolation",
+      "source": "if added (guide section 7)"
+    }
+  },
+  "boredom": {
+    "enabled": {
+      "value": false,
+      "unit": "bool",
+      "kind": "extrapolation",
+      "source": "not in her brief; no bored face in a scene reference (f14_e11 half-lidded is a tile only)"
+    }
+  },
+  "gaze": {
+    "saccade_interval_s": {
+      "value": [
+        1.5,
+        3.0
+      ],
+      "unit": "s",
+      "kind": "estimate",
+      "source": "WT: gaze stays on the boat for long stretches"
+    },
+    "fixation_on_task": {
+      "value": 0.9,
+      "unit": "0-1",
+      "kind": "measured",
+      "source": "gaze on the boat / the paper in all video frames"
+    },
+    "eyes_lead_head_frames": {
+      "value": [
+        2,
+        4
+      ],
+      "unit": "frames@24",
+      "kind": "default",
+      "source": "docs/references/VISUAL_TARGET.md (Motion and editorial rhythm)"
+    },
+    "look_down_bias": {
+      "value": 0.6,
+      "unit": "0-1",
+      "kind": "reference",
+      "source": "down at the task in WT/PB; level in w01, lineup"
+    },
+    "spacey_drift": {
+      "value": {
+        "interval_s": [
+          15,
+          30
+        ],
+        "hold_frames": [
+          24,
+          48
+        ],
+        "lids": 0.4
+      },
+      "unit": "mixed",
+      "kind": "extrapolation",
+      "source": "guide section 7: unfocused look up/aside with f14_e11 half lids, then back with EyeWide"
+    }
+  },
+  "blink": {
+    "interval_frames": {
+      "value": {
+        "mean": 43,
+        "min": 37,
+        "max": 50
+      },
+      "unit": "frames@24",
+      "kind": "measured",
+      "source": "WT starts f019, f056, f106 (strips/wt_her_blinks_f015-f114.jpg); PB one blink per 32-50 f shot"
+    },
+    "duration_frames": {
+      "value": [
+        3,
+        6
+      ],
+      "unit": "frames@24",
+      "kind": "measured",
+      "source": "WT 4,4,5 f; PB f004-f008 (5), f122-f127 (6), f245-f247 (3)"
+    },
+    "closed_frames": {
+      "value": [
+        1,
+        3
+      ],
+      "unit": "frames@24",
+      "kind": "measured",
+      "source": "WT 2 f each; PB 3, 3, 1-2 f"
+    },
+    "couple_to_action_change": {
+      "value": true,
+      "unit": "bool",
+      "kind": "measured",
+      "source": "WT f019 as the parted mouth closes; PB f245 right before the 'ooh' (f248-f251)"
+    },
+    "long_blink_on_gaze_drop": {
+      "value": false,
+      "unit": "bool",
+      "kind": "measured",
+      "source": "not observed"
+    }
+  },
+  "face": {
+    "lid_rest": {
+      "value": 0.0,
+      "unit": "Blink weight",
+      "kind": "reference",
+      "source": "w01; m04_neutral; f14_e1"
+    },
+    "resting": {
+      "value": {
+        "MouthSmile": 0.2,
+        "EyeWide": 0.05
+      },
+      "unit": "action units",
+      "kind": "estimate",
+      "source": "m04_neutral, f14_e1 (closed); w01 open variant pending owner (conflict 8.2)"
+    },
+    "watching_mouth": {
+      "value": {
+        "JawOpen": 0.12,
+        "MouthO": 0.15
+      },
+      "unit": "action units",
+      "kind": "estimate",
+      "source": "lips parted while watching: WT f000-f018, f066-f084; PB f249-f288"
+    },
+    "expression_bias": {
+      "value": {
+        "EyeWide": 0.15,
+        "BrowUp.L": 0.1,
+        "BrowUp.R": 0.1,
+        "MouthSmile": 0.15,
+        "MouthO": 0.1,
+        "BrowDown": -0.2,
+        "MouthFrown": -0.1
+      },
+      "unit": "offset",
+      "kind": "estimate",
+      "source": "wide-eyed wonder and smiles in every scene reference"
+    },
+    "asymmetry": {
+      "value": 0.15,
+      "unit": "0-1",
+      "kind": "reference",
+      "source": "f14_m8/m10 lopsided mouths, f14_e8 side glance, m04_confusion (sided mouth AUs missing: SYSTEM_GAPS.md)"
+    },
+    "mouth_rest": {
+      "value": "pending: open small smile (w01, w10, w15, lineup) vs closed soft smile (m04_neutral, f14_e1, s02_face_neutral)",
+      "kind": "owner",
+      "source": "REFERENCE_BEHAVIOUR.md section 8.2"
+    }
+  },
+  "smile": {
+    "frequency": {
+      "value": 0.7,
+      "unit": "0-1",
+      "kind": "reference",
+      "source": "w01, w10, w13, w15, lineup, PB S6; closed/neutral in WT and PB S1/S3"
+    },
+    "default_mouth": {
+      "value": "soft_smile",
+      "unit": "enum",
+      "kind": "reference",
+      "source": "open/closed variant pending (conflict 8.2)"
+    },
+    "open_smile_share": {
+      "value": 0.5,
+      "unit": "0-1",
+      "kind": "reference",
+      "source": "open: w01, w10, w15, lineup, PB S6; closed: m04_neutral, f14_e1/e7, WT f120"
+    }
+  },
+  "gestures": {
+    "value": [
+      {
+        "name": "lean_on_rim_watch",
+        "description": "both hands on the rim, shoulders forward, head down, lips parted",
+        "hand": "both",
+        "source": "WT f000-f120, CW",
+        "kind": "reference"
+      },
+      {
+        "name": "hands_folded_watch",
+        "description": "forearms on the desk, hands together, watching another child's work",
+        "hand": "both",
+        "source": "PB f000-f031, f112-f150, CD",
+        "kind": "reference"
+      },
+      {
+        "name": "hold_flat_assist",
+        "description": "one flat hand rests on the paper corner while someone else folds",
+        "hand": "one (likely left), palm flat",
+        "source": "PB f044-f110",
+        "kind": "reference"
+      },
+      {
+        "name": "clasp_under_chin",
+        "description": "interlaced fingers just under the chin, delight",
+        "hand": "both",
+        "source": "PB f239-f288",
+        "kind": "reference"
+      },
+      {
+        "name": "wave",
+        "description": "right hand above the shoulder, palm out, open smile, head tilt",
+        "hand": "right",
+        "source": "w15 animation",
+        "kind": "reference"
+      },
+      {
+        "name": "show_object",
+        "description": "seated, holds a small object up at shoulder height",
+        "hand": "right",
+        "source": "w15 animation",
+        "kind": "reference"
+      },
+      {
+        "name": "arms_raised",
+        "description": "both arms up in a V (rig test pose only)",
+        "hand": "both",
+        "source": "w05 poses, w13 arm raise",
+        "kind": "estimate"
+      },
+      {
+        "name": "puzzled_tilt",
+        "description": "head tilt 8-12 deg, side glance or confusion + pucker 12-24 f, then a bright smile",
+        "hand": "none",
+        "source": "f14_e8, m04_confusion, m04_pucker as shapes; the beat itself is not shown",
+        "kind": "extrapolation"
+      },
+      {
+        "name": "double_take",
+        "description": "looks away, then back with EyeWide (slow uptake)",
+        "hand": "none",
+        "source": "not shown",
+        "kind": "extrapolation"
+      },
+      {
+        "name": "giggle_bounce",
+        "description": "Laugh 6-10 f with a small shoulder bounce",
+        "hand": "none",
+        "source": "m04_laugh, f14_e3 as shapes; bounce not shown",
+        "kind": "extrapolation"
+      },
+      {
+        "name": "fiddle_hair_or_bow",
+        "description": "touches a side lock or the bow at rest",
+        "hand": "one",
+        "source": "not shown",
+        "kind": "extrapolation"
+      }
+    ],
+    "unit": "list",
+    "kind": "reference",
+    "source": "see each entry"
+  },
+  "reaction": {
+    "delay_frames": {
+      "value": [
+        4,
+        8
+      ],
+      "unit": "frames@24",
+      "kind": "extrapolation",
+      "source": "'not very bright': a beat later than the others; PB S6 starts after the cut, not measurable"
+    },
+    "channel_order": {
+      "value": [
+        "eyes",
+        "mouth",
+        "hands",
+        "head"
+      ],
+      "unit": "enum",
+      "kind": "estimate",
+      "source": "PB S6: blink f245-f247, then the mouth opens f248-f251; hands already clasped at the cut"
+    },
+    "positive_style": {
+      "value": "hands clasped under the chin, eyes wide on the object, mouth opens to a small 'o' / smile",
+      "unit": "text",
+      "kind": "reference",
+      "source": "PB f239-f288"
+    },
+    "engaged_style": {
+      "value": "leans in on the rim and watches with lips parted",
+      "unit": "text",
+      "kind": "reference",
+      "source": "WT f000-f120"
+    }
+  },
+  "interaction": {
+    "prop_handling": {
+      "value": "passive_gentle",
+      "unit": "enum",
+      "kind": "reference",
+      "source": "PB S2: rests a flat hand on the paper, touches the boat; never folds, points or places"
+    },
+    "two_handed": {
+      "value": 0.5,
+      "unit": "0-1",
+      "kind": "reference",
+      "source": "clasp/rim both hands; assist one hand (PB S2)"
+    },
+    "leads_task": {
+      "value": 0.1,
+      "unit": "0-1",
+      "kind": "reference",
+      "source": "onlooker/helper in WT and PB; the girl leads"
+    },
+    "contact_slowdown_frames": {
+      "value": null,
+      "unit": "frames@24",
+      "kind": "extrapolation",
+      "source": "no placement by her in any reference"
+    }
+  },
+  "gaps": [
+    "no reference shows a mistake, clumsy move, double-take or puzzled beat: 'goofy, not very bright' is extrapolated from the face sheets and her onlooker role",
+    "no walk/run/jump in a scene (only rig tiles w05, w15)",
+    "no talking with audio; w14 mouths are the lip-sync targets",
+    "no single-eye wink (w04 BLINK L/R close both eyes)",
+    "neutral mouth open vs closed: owner decision pending",
+    "intensity of the goofy/bubbly extrapolations: owner to confirm (references are calm and small in motion)"
+  ]
+}
