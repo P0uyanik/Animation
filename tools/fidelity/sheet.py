@@ -95,3 +95,46 @@ def overview(sheets, path, width=1600):
         out.paste(i, (0, y))
         y += i.height
     out.save(path)
+
+
+def mask_sheet(view, ref, extra, region_names, k=2):
+    """T-064: the region masks that were measured, for inspection: reference label map | render label map (aligned
+    into the reference frame) | disagreement (white = same region, red = reference only, blue = render only,
+    magenta = different regions). Colours follow the region order of the view sheets; unlabelled figure = grey."""
+    h, w = ref["fig"].shape
+
+    def label(fig, masks):
+        im = np.full((h, w, 3), 255, np.uint8)
+        im[fig] = (150, 150, 150)
+        lab = np.full((h, w), -1, int)
+        # large regions first, islands on top, the glasses overlay last (as they are measured)
+        order = sorted((i for i, n in enumerate(region_names) if masks.get(n) is not None),
+                       key=lambda i: (region_names[i] == "glasses", -int(masks[region_names[i]].sum()), i))
+        for i in order:
+            m = masks[region_names[i]]
+            im[m] = PAL[i % len(PAL)]
+            if region_names[i] != "glasses":
+                lab[m] = i
+        return im, lab
+    a, la = label(ref["fig"], ref["regions"])
+    b, lb = label(extra["aligned_fig"], {k_: v for k_, v in extra["aligned_regions"].items() if v is not None})
+    d = np.full((h, w, 3), 245, np.uint8)
+    d[(la >= 0) & (la == lb)] = (210, 210, 210)
+    d[(la >= 0) & (lb < 0)] = (220, 40, 40)
+    d[(la < 0) & (lb >= 0)] = (40, 90, 230)
+    d[(la >= 0) & (lb >= 0) & (la != lb)] = (200, 40, 200)
+    panels = [_up(Image.fromarray(x), k) for x in (a, b, d)]
+    W = sum(p.width for p in panels) + 10 * (len(panels) - 1)
+    rows = (len(region_names) + 3) // 4
+    out = Image.new("RGB", (W, panels[0].height + 30 + 16 * rows), (255, 255, 255))
+    x = 0
+    dr = ImageDraw.Draw(out)
+    for p, title in zip(panels, ("reference regions", "render regions (aligned)", "disagreement")):
+        out.paste(p, (x, 26))
+        dr.text((x + 4, 6), f"{view}: {title}", fill=(0, 0, 0), font=font(13))
+        x += p.width + 10
+    for i, name in enumerate(region_names):
+        cx, cy = 6 + (i % 4) * (W // 4), panels[0].height + 32 + 16 * (i // 4)
+        dr.rectangle([cx, cy + 2, cx + 10, cy + 12], fill=PAL[i % len(PAL)])
+        dr.text((cx + 14, cy), name, fill=(0, 0, 0), font=font(12))
+    return out

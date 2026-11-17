@@ -124,6 +124,37 @@ def region_colours(regions):
     return {r: PALETTE[i % len(PALETTE)] for i, r in enumerate(names)}
 
 
+def node_material_inputs(o):
+    """(modifier, socket identifier) of every material input of the object's geometry-node modifiers. The shared
+    surface fibres (materials/builder.py) set their material from such an input, so a slot swap alone leaves them
+    with their real material, which renders black in the flat pass (T-064: 26% of the girl's figure unclassified)."""
+    out = []
+    for mod in getattr(o, "modifiers", []):
+        if mod.type != "NODES" or mod.node_group is None:
+            continue
+        for item in mod.node_group.interface.items_tree:
+            if (item.item_type == "SOCKET" and item.in_out == "INPUT"
+                    and getattr(item, "socket_type", "") == "NodeSocketMaterial"):
+                out.append((mod, item.identifier))
+    return out
+
+
+def get_modifier_input(mod, ident):
+    props = getattr(mod, "properties", None)
+    if props is not None and hasattr(props, "inputs"):
+        return getattr(props.inputs, ident).value
+    return mod[ident]
+
+
+def set_modifier_input(mod, ident, value):
+    props = getattr(mod, "properties", None)
+    if props is not None and hasattr(props, "inputs"):
+        getattr(props.inputs, ident).value = value
+    else:
+        mod[ident] = value
+    mod.id_data.update_tag()
+
+
 def render_regions(sc, path, objs, regions, colours, hide=()):
     """Flat region colours (RGBA, transparent background): every material slot is swapped for an emission stand-in
     (restored afterwards). Objects named in `hide` are left out of this pass."""
@@ -156,6 +187,10 @@ def render_regions(sc, path, objs, regions, colours, hide=()):
         for slot in o.material_slots:
             saved.append((slot, slot.material))
             slot.material = mat
+    for o in objs:  # T-064: geometry-node material inputs (surface fibres) bypass the slots; swap them too
+        for mod, ident in node_material_inputs(o):
+            saved.append((("modifier", mod, ident), get_modifier_input(mod, ident)))
+            set_modifier_input(mod, ident, flat[regions[o.name]])
     world = bpy.data.worlds.new("_fid_world")
     world.color = (0, 0, 0)
     sc.world = world
@@ -170,8 +205,10 @@ def render_regions(sc, path, objs, regions, colours, hide=()):
     sc.view_settings.exposure, sc.view_settings.gamma = 0.0, 1.0
     sc.render.filepath = path
     bpy.ops.render.render(write_still=True)
-    for a, b in saved:
-        if a == "appended":
+    for a, b in reversed(saved):
+        if isinstance(a, tuple):
+            set_modifier_input(a[1], a[2], b)
+        elif a == "appended":
             b.data.materials.pop(index=len(b.data.materials) - 1)
         else:
             a.material = b

@@ -124,9 +124,11 @@ def column_bottom(mask, x, x_halfwidth=2):
     return float(ys.max() + 1) if len(ys) else None
 
 
-def crotch_y(mask, x, bottom, top=None):
+def crotch_y(mask, x, bottom, top=None, hair=None):
     """Crotch height: the top of the highest background run (gap between the legs) in column x, searched in the lower
-    60% of the figure; None if the column has no gap there."""
+    60% of the figure; None if the column has no gap there. With a hair mask, a run closed at its top by hair is a
+    hole between locks (long hair reaching the hips), not the leg gap, and is skipped (T-064)."""
+    hcol = hair[:, int(round(x))] if hair is not None else None
     col = mask[:, int(round(x))]
     top = 0 if top is None else int(top)
     start = int(top + 0.4 * (bottom - top))
@@ -137,7 +139,7 @@ def crotch_y(mask, x, bottom, top=None):
             run_end = y
             while y >= start and not col[y]:
                 y -= 1
-            if run_end - y >= 2 and y >= start:
+            if run_end - y >= 2 and y >= start and not (hcol is not None and y >= 0 and hcol[y]):
                 best = y + 1  # keep going up: the highest gap wins
         y -= 1
     return float(best) if best is not None else None
