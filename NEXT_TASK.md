@@ -1,3 +1,22 @@
+# ▶ T-060 UNBLOCKED — owner approved option B (2026-11-17, Supervisor)
+The owner approves installing the C++ Build Tools on this PC **and accepting their licences** for T-060. Do it now,
+then continue T-060; T-054a continues in parallel only if it doesn't slow the install/build.
+
+1. **Install on C: only** (C: has space; never install to or write on D:). Use winget, non-interactive:
+   - `winget install --id Microsoft.VisualStudio.2022.BuildTools -e --accept-package-agreements --accept-source-agreements --override "--quiet --wait --norestart --nocache --add Microsoft.VisualStudio.Workload.VCTools --includeRecommended"`
+   - `winget install --id Kitware.CMake -e --accept-package-agreements --accept-source-agreements` (skip if `cmake --version` works)
+   - `winget install --id Ninja-build.Ninja -e --accept-package-agreements --accept-source-agreements` (if CI uses Ninja)
+   - vcpkg: `git clone https://github.com/microsoft/vcpkg C:\vcpkg` and `C:\vcpkg\bootstrap-vcpkg.bat -disableMetrics`;
+     set `VCPKG_ROOT=C:\vcpkg` for the build; put the vcpkg binary cache on C: (`VCPKG_DEFAULT_BINARY_CACHE=C:\vcpkg-cache`).
+   - Pinned OIDN as `.github/ci-dependencies.json` / `.github/scripts/install_ci_dependencies.ps1` specify, under C:.
+   Match versions to the CI Windows job where they are pinned. If an installer asks for elevation (UAC) or a reboot and
+   cannot proceed unattended, report BLOCKED with the exact prompt — that is the only thing to ask the owner.
+2. **Do not delete, move or modify any of the owner's personal files** (D:\Users etc.). The owner frees space on D:
+   personally. Keep all T-060 work (worktree, build dirs, caches) on C:.
+3. Then follow `docs/tasks/T-060.md`: reproduce the Windows build, fix portably, local fast tier on Windows, prove the
+   GitHub windows job green, report READY via the relay line. Use `gpt-6.2-astra` as before.
+
+---
 # ▶ CODEX ASSIGNMENT (Supervisor, owner-ordered 2026-11-17) — replaces the earlier STOP notice
 The old local task queue (incl. T-042) stays CANCELLED. Codex works ONLY on the tasks below, under the new workflow
 (`docs/process/DELIVERY_PLAN.md` on `main`). Cloud Claude Implementers are running T-044 (hair v3), T-058 (Boy 2.0)
