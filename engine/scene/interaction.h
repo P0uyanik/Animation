@@ -146,10 +146,11 @@ constexpr float kArmBodyMargin = 0.009f;  // clearance kept between the arm and 
 // wrist axis, so contacts and held props stay exact; `keepHand` (IK or orientation-constraint weight) keeps the
 // hand's world rotation (a held cup stays upright).
 struct ArmPostPassOptions {
-  // Output floor above the body sections. The sections follow the mesh's cross-section (profile), so the floor only
-  // covers what a rigid per-bone section cannot: the torso skin blending between bones and the facets between
-  // vertices (T-040 evidence: an ellipse fit needed 11 mm and still left a vest corner 1 mm in).
-  float margin = 0.004f;
+  // Output floor above the body sections. The sections follow the mesh's cross-section (profile); the floor covers
+  // what a rigid per-bone section cannot (torso skin blending between bones, facets between vertices, slabs of older
+  // packages too sparse to fit). T-040 evidence: an ellipse fit with 11 mm still left a vest corner 1 mm in; 4 and
+  // 7 mm with the profile made the IK-ramp hand-over of the old test package step too far (doctest), so 11 mm stays.
+  float margin = 0.011f;
   float band = 0.004f;      // width of the C1 blend above the margin (metres)
   float armpit = 0.4f;      // upper-arm points nearer the shoulder pivot than this fraction are the armpit band:
                             // they fold with the shoulder joint and are not moved for (reported in armClearance only)
