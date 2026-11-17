@@ -1,0 +1,156 @@
+{
+ "pass": true,
+ "checks": {
+  "all structures built": {
+   "pass": true,
+   "value": [
+    "hair_bow",
+    "hair_buns",
+    "hair_cap",
+    "hair_curls",
+    "hair_flowers_centres",
+    "hair_flowers_petals",
+    "hair_fringe",
+    "hair_long",
+    "hair_ringlets",
+    "hair_sweep",
+    "hair_tie",
+    "hair_wavy"
+   ]
+  },
+  "two bun frames": {
+   "pass": true,
+   "value": {
+    "buns": 2,
+    "ropes": 8,
+    "type": "bun"
+   }
+  },
+  "long locks reach z_end (+-15 mm)": {
+   "pass": true,
+   "value": 0.9449
+  },
+  "curls spiral (horizontal spread > 2 x curl radius)": {
+   "pass": true,
+   "value": 0.1362
+  },
+  "roots on scalp (max error < 1 mm)": {
+   "pass": true,
+   "value": 0.0
+  },
+  "validation rejects bad specs": {
+   "pass": true,
+   "value": [
+    [
+     "hair.structures[0].type unknown: braid"
+    ],
+    [
+     "hair.structures[0] (locks) needs 'az'",
+     "hair.structures[0] (locks) needs 'el_root'",
+     "hair.structures[0] (locks) needs 'hang_radii'",
+     "hair.structures[0] (locks) needs 'z_end'",
+     "hair.structures[0] (locks) needs 'width'",
+     "hair.structures[0] (locks) needs 'thick'"
+    ],
+    [
+     "hair.structures[0] refers to bun 0, but only 0 bun(s) exist"
+    ]
+   ]
+  },
+  "synthetic spec validates": {
+   "pass": true,
+   "value": null
+  },
+  "ropes carry the fibre UV map; V runs along the rope in metres (long lock > 0.3 m)": {
+   "pass": true,
+   "value": 0.407
+  },
+  "draped ringlets move inwards below rest_z (outer radius < hang radius)": {
+   "pass": true,
+   "value": 0.0904
+  },
+  "felt structures build (finish felt on sweep, fringe, bun, locks; felt_volume gather/fringe/mass)": {
+   "pass": true,
+   "value": [
+    "hair_fbun",
+    "hair_fcurls",
+    "hair_ffringe",
+    "hair_fstraight",
+    "hair_fsweep",
+    "hair_vfringe",
+    "hair_vgather",
+    "hair_vmass",
+    "hair_ystraight"
+   ]
+  },
+  "felt shells are closed (every edge has two faces)": {
+   "pass": true,
+   "value": {
+    "hair_fbun": 0,
+    "hair_fsweep": 0,
+    "hair_ffringe": 0,
+    "hair_vgather": 0,
+    "hair_vfringe": 0,
+    "hair_vmass": 0
+   }
+  },
+  "felt locks have no ply ridges (radius variation along the lock < 25 % of the yarn rope's)": {
+   "pass": true,
+   "value": {
+    "felt": 0.0193,
+    "yarn": 0.1655
+   }
+  },
+  "gather volume lies on the head (inner <= 4.5 mm under the skin, outer < 1.4 x height)": {
+   "pass": true,
+   "value": [
+    -0.004,
+    0.0129
+   ]
+  },
+  "felt fringe tips hang at tip_z (+-12 mm) in front of the face": {
+   "pass": true,
+   "value": [
+    1.3198,
+    -0.1125
+   ]
+  },
+  "felt bun mass sits on its frame (centroid within 1.2 x height of the base)": {
+   "pass": true,
+   "value": 0.035
+  },
+  "dynamics records kept with the felt finish (1 bun + 3 curl + 2 straight chains)": {
+   "pass": true,
+   "value": 6
+  },
+  "validation rejects a bad finish, an unknown felt shape and missing felt keys": {
+   "pass": true,
+   "value": [
+    [
+     "hair.structures[0] (locks) finish must be one of yarn, felt on bun, fringe, locks, sweep"
+    ],
+    [
+     "hair.structures[0] felt_volume shape must be one of gather, fringe, mass"
+    ],
+    [
+     "hair.structures[0] (felt_volume gather) needs 'hairline_el'",
+     "hair.structures[0] (felt_volume gather) needs 'height'"
+    ],
+    [
+     "hair.finish must be one of yarn, felt"
+    ]
+   ]
+  },
+  "felt spec validates": {
+   "pass": true,
+   "value": null
+  },
+  "GN fibre group grows fibres on the felt surfaces (2 layers per object, parented, curves > 0)": {
+   "pass": true,
+   "value": {
+    "objects": 18,
+    "curves": 4236
+   }
+  }
+ }
+}

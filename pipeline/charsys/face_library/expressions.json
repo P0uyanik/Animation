@@ -98,9 +98,20 @@
    "BrowUp.L": 0.7,
    "EyeWide": 0.3,
    "MouthO": 0.3
+  },
+  "SmileClosed": {
+   "MouthSmile": 1.0,
+   "EyeSquint": 0.2
+  },
+  "Thinking": {
+   "BrowUp.L": 0.7,
+   "BrowDown": 0.35,
+   "MouthFrown": 0.2,
+   "MouthO": 0.2,
+   "EyeSquint": 0.3
   }
  },
- "optional_presets_note": "Not in any reference; named in the M3 request. Built only when a character lists them in spec.face.expressions.optional.",
+ "optional_presets_note": "Not in any reference; named in the M3 request. Built only when a character lists them in spec.face.expressions.optional. SmileClosed and Thinking (T-031): closed-mouth smile and a thinking face (one brow up, small pursed mouth) for expression sheets; opt-in per spec.",
  "aliases": {
   "Happy": "Smile",
   "Sad": "Sadness",

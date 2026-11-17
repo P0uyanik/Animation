@@ -545,6 +545,17 @@ def check_blender(blender: str, artifacts: Path, logs: Path, required: bool, cha
     fingerprint_ok = bool(verify_data.get("v6_geometry", {}).get("ok"))
     add_subcheck(subchecks, "boy fingerprint", fingerprint_ok, "" if fingerprint_ok else "v6 geometry differs", verify_log)
 
+    # Build the boy twice and compare format-2 fingerprints (pipeline/charsys/fingerprint_v2.py) at 0.01 mm and 0.1 mm.
+    determinism_log = logs / "blender-determinism.log"
+    determinism_out = out / "determinism"
+    determinism_command = [
+        sys.executable, str(ROOT / "pipeline/charsys/tests/test_determinism.py"),
+        "--blender", executable, "--out", str(determinism_out),
+    ]
+    determinism_code, _ = run_logged(determinism_command, determinism_log)
+    determinism_ok = determinism_code == 0 and json_pass(determinism_out / "determinism.json")
+    add_subcheck(subchecks, "build determinism", determinism_ok, "" if determinism_ok else "two builds differ", determinism_log)
+
     export_log = logs / "blender-export-engine.log"
     export_command = [
         sys.executable, str(ROOT / "pipeline/charsys/tests/test_export_engine.py"),

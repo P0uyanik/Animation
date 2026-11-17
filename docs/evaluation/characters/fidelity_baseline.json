@@ -18,10 +18,10 @@
       "source": "docs/evaluation/characters/T-032/boy/fidelity.json"
     },
     "girl_auburn_bun_glasses": {
-      "score": 63.0418,
+      "score": 65.4074,
       "build": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.spec.json",
       "overrides": [],
-      "source": "docs/evaluation/characters/T-032/girl/fidelity.json"
+      "source": "docs/evaluation/integration/consolidation/fidelity/girl/fidelity.json"
     }
   }
 }

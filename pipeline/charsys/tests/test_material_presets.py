@@ -18,7 +18,8 @@ EXPECTED = {
     "boot fleece", "buttons/plastic", "glasses/acrylic", "skin-felt",
 }
 FIBRE_ENABLED = {"felt", "wool yarn", "fleece", "cotton knit", "felt hair", "boot fleece"}
-FIBRE_FIELDS = {"enabled", "density_per_cm2", "length_mm", "curl", "lean", "lod"}
+FIBRE_FIELDS = {"enabled", "density_per_cm2", "length_mm", "curl", "lean", "lod",
+                "color_variation", "lean_variation", "root_transparency", "tip_transparency"}  # T-026 look fields
 RESULTS = []
 
 
@@ -52,7 +53,7 @@ def main():
     check("girl skin preset", assignments["skin"]["preset"] == "skin-felt")
     check("girl glasses presets", assignments["glasses"]["preset"] == "buttons/plastic" and
           assignments["glasses_lens"]["preset"] == "glasses/acrylic")
-    check("girl hair preset (T-016)", assignments["hair"]["preset"] == "wool yarn")
+    check("girl hair preset (T-033: felted hair, was wool yarn in T-016)", assignments["hair"]["preset"] == "felt hair")
 
     boy_path = os.path.join(ROOT, "assets", "characters", "boy_yellow_hoodie", "spec",
                             "boy_yellow_hoodie.spec.json")

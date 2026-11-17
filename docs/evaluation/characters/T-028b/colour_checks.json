@@ -1,0 +1,966 @@
+{
+ "before": {
+  "colour_checks": {
+   "label": "before",
+   "render_dir": "/tmp/claude-0/-home-user-Animation/4dae7d3e-11f0-5bdd-93a7-4aa24a823d1d/scratchpad/final/before/r",
+   "checks": [
+    {
+     "name": "hair_back",
+     "slot": "M_hair",
+     "view": "sheet30_back",
+     "render_median_srgb": [
+      102.0,
+      82.0,
+      75.0
+     ],
+     "render_pixels": 35384,
+     "reference_median_srgb": [
+      93.0,
+      53.0,
+      43.0
+     ],
+     "reference_pixels": 8800,
+     "dE00": 11.16,
+     "dE00_luma_matched": 10.1,
+     "luma": [
+      85.7,
+      60.8
+     ],
+     "saturation": [
+      0.265,
+      0.538
+     ]
+    },
+    {
+     "name": "hair_front",
+     "slot": "M_hair",
+     "view": "sheet30_front",
+     "render_median_srgb": [
+      105.0,
+      85.0,
+      78.0
+     ],
+     "render_pixels": 18102,
+     "reference_median_srgb": [
+      107.0,
+      68.0,
+      55.0
+     ],
+     "reference_pixels": 4250,
+     "dE00": 8.43,
+     "dE00_luma_matched": 8.43,
+     "luma": [
+      88.7,
+      75.4
+     ],
+     "saturation": [
+      0.257,
+      0.486
+     ]
+    },
+    {
+     "name": "skin_front",
+     "slot": "M_skin_face",
+     "view": "sheet30_front",
+     "render_median_srgb": [
+      163.0,
+      133.0,
+      124.0
+     ],
+     "render_pixels": 7497,
+     "reference_median_srgb": [
+      198.0,
+      154.5,
+      139.0
+     ],
+     "reference_pixels": 1120,
+     "dE00": 8.86,
+     "dE00_luma_matched": 2.77,
+     "luma": [
+      138.7,
+      162.6
+     ],
+     "saturation": [
+      0.239,
+      0.298
+     ]
+    },
+    {
+     "name": "skin_back",
+     "slot": "M_skin_face",
+     "view": "sheet30_back",
+     "render_median_srgb": [
+      170.0,
+      140.0,
+      129.0
+     ],
+     "render_pixels": 2371,
+     "reference_median_srgb": [
+      215.0,
+      185.0,
+      172.0
+     ],
+     "reference_pixels": 1120,
+     "dE00": 13.09,
+     "dE00_luma_matched": 2.87,
+     "luma": [
+      145.6,
+      190.4
+     ],
+     "saturation": [
+      0.241,
+      0.2
+     ]
+    },
+    {
+     "name": "flower_front",
+     "slot": "M_hair_flower",
+     "view": "sheet30_front",
+     "render_median_srgb": [
+      170.0,
+      115.0,
+      116.0
+     ],
+     "render_pixels": 470,
+     "reference_median_srgb": [
+      198.0,
+      138.0,
+      137.0
+     ],
+     "reference_pixels": 340,
+     "dE00": 8.33,
+     "dE00_luma_matched": 1.33,
+     "luma": [
+      126.8,
+      150.7
+     ],
+     "saturation": [
+      0.324,
+      0.308
+     ]
+    },
+    {
+     "name": "band_front",
+     "slot": "M_hair_band",
+     "view": "sheet30_front",
+     "render_median_srgb": [
+      135.5,
+      128.0,
+      124.0
+     ],
+     "render_pixels": 28,
+     "reference_median_srgb": [
+      128.0,
+      121.5,
+      126.5
+     ],
+     "reference_pixels": 140,
+     "dE00": 5.52,
+     "dE00_luma_matched": 4.94,
+     "luma": [
+      129.3,
+      123.2
+     ],
+     "saturation": [
+      0.085,
+      0.051
+     ]
+    }
+   ]
+  },
+  "colour_checks_outfit": {
+   "label": "before",
+   "render_dir": "/tmp/claude-0/-home-user-Animation/4dae7d3e-11f0-5bdd-93a7-4aa24a823d1d/scratchpad/final/before/r",
+   "checks": [
+    {
+     "name": "blouse_sleeves_front",
+     "slot": "M_garment.blouse.main",
+     "view": "sheet30_front",
+     "render_median_srgb": [
+      197.0,
+      183.0,
+      177.0
+     ],
+     "render_pixels": 7025,
+     "reference_median_srgb": [
+      202.0,
+      192.0,
+      188.0
+     ],
+     "reference_pixels": 1000,
+     "dE00": 2.79,
+     "dE00_luma_matched": 1.99,
+     "luma": [
+      185.5,
+      193.8
+     ],
+     "saturation": [
+      0.102,
+      0.069
+     ]
+    },
+    {
+     "name": "vest_front",
+     "slot": "M_garment.vest.main",
+     "view": "sheet30_front",
+     "render_median_srgb": [
+      175.5,
+      138.5,
+      131.0
+     ],
+     "render_pixels": 24,
+     "reference_median_srgb": [
+      116.0,
+      94.0,
+      92.0
+     ],
+     "reference_pixels": 1785,
+     "dE00": 19.35,
+     "dE00_luma_matched": 1.8,
+     "luma": [
+      145.8,
+      98.5
+     ],
+     "saturation": [
+      0.254,
+      0.207
+     ]
+    },
+    {
+     "name": "vest_back",
+     "slot": "M_garment.vest.main",
+     "view": "sheet30_back",
+     "render_median_srgb": [
+      129.5,
+      78.5,
+      77.5
+     ],
+     "render_pixels": 22,
+     "reference_median_srgb": [
+      134.0,
+      91.0,
+      92.0
+     ],
+     "reference_pixels": 2000,
+     "dE00": 4.49,
+     "dE00_luma_matched": 3.82,
+     "luma": [
+      89.3,
+      100.2
+     ],
+     "saturation": [
+      0.402,
+      0.321
+     ]
+    },
+    {
+     "name": "shorts_front",
+     "slot": "M_garment.shorts.main",
+     "view": "sheet30_front",
+     "render_median_srgb": [
+      114.0,
+      112.0,
+      100.0
+     ],
+     "render_pixels": 5250,
+     "reference_median_srgb": [
+      111.0,
+      111.0,
+      99.0
+     ],
+     "reference_pixels": 1000,
+     "dE00": 1.24,
+     "dE00_luma_matched": 1.11,
+     "luma": [
+      111.6,
+      110.1
+     ],
+     "saturation": [
+      0.123,
+      0.108
+     ]
+    },
+    {
+     "name": "shorts_back",
+     "slot": "M_garment.shorts.main",
+     "view": "sheet30_back",
+     "render_median_srgb": [
+      114.0,
+      112.0,
+      100.0
+     ],
+     "render_pixels": 4492,
+     "reference_median_srgb": [
+      115.0,
+      115.0,
+      103.0
+     ],
+     "reference_pixels": 1600,
+     "dE00": 1.5,
+     "dE00_luma_matched": 1.11,
+     "luma": [
+      111.6,
+      114.1
+     ],
+     "saturation": [
+      0.123,
+      0.104
+     ]
+    },
+    {
+     "name": "boots_front",
+     "slot": "M_garment.boots.main",
+     "view": "sheet30_front",
+     "render_median_srgb": [
+      170.0,
+      115.0,
+      116.0
+     ],
+     "render_pixels": 470,
+     "reference_median_srgb": [
+      126.0,
+      84.0,
+      66.0
+     ],
+     "reference_pixels": 1350,
+     "dE00": 16.66,
+     "dE00_luma_matched": 8.52,
+     "luma": [
+      126.8,
+      91.6
+     ],
+     "saturation": [
+      0.324,
+      0.476
+     ]
+    },
+    {
+     "name": "boots_back",
+     "slot": "M_garment.boots.main",
+     "view": "sheet30_back",
+     "render_median_srgb": [
+      154.0,
+      102.5,
+      103.5
+     ],
+     "render_pixels": 76,
+     "reference_median_srgb": [
+      122.0,
+      80.0,
+      61.0
+     ],
+     "reference_pixels": 2000,
+     "dE00": 13.65,
+     "dE00_luma_matched": 9.01,
+     "luma": [
+      113.5,
+      87.6
+     ],
+     "saturation": [
+      0.334,
+      0.5
+     ]
+    }
+   ]
+  },
+  "fibre_garments": {
+   "blouse_sleeves_front": {
+    "render": [
+     129.0,
+     83.0,
+     82.0
+    ],
+    "ref": [
+     202.0,
+     192.0,
+     188.0
+    ],
+    "dE00": 36.54,
+    "px": 962
+   },
+   "vest_front": {
+    "render": [
+     129.0,
+     82.0,
+     81.0
+    ],
+    "ref": [
+     116.0,
+     94.0,
+     92.0
+    ],
+    "dE00": 8.44,
+    "px": 697
+   },
+   "vest_back": {
+    "render": [
+     114.0,
+     73.0,
+     72.0
+    ],
+    "ref": [
+     134.0,
+     91.0,
+     92.0
+    ],
+    "dE00": 6.73,
+    "px": 250
+   },
+   "shorts_front": {
+    "render": [
+     128.0,
+     84.0,
+     83.0
+    ],
+    "ref": [
+     111.0,
+     111.0,
+     99.0
+    ],
+    "dE00": 22.69,
+    "px": 649
+   },
+   "shorts_back": {
+    "render": [
+     129.5,
+     82.0,
+     81.0
+    ],
+    "ref": [
+     115.0,
+     115.0,
+     103.0
+    ],
+    "dE00": 24.01,
+    "px": 594
+   },
+   "boots_front": {
+    "render": [
+     89.0,
+     51.0,
+     35.0
+    ],
+    "ref": [
+     126.0,
+     84.0,
+     66.0
+    ],
+    "dE00": 11.41,
+    "px": 5857
+   },
+   "boots_back": {
+    "render": [
+     84.0,
+     51.0,
+     36.0
+    ],
+    "ref": [
+     122.0,
+     80.0,
+     61.0
+    ],
+    "dE00": 10.66,
+    "px": 4049
+   }
+  },
+  "render_timings": {
+   "open_s": 1.28,
+   "views": {
+    "sheet30_front": 11.61,
+    "sheet30_front_left": 10.78,
+    "sheet30_left": 9.78,
+    "sheet30_back": 12.01,
+    "boots": 28.99,
+    "vest": 49.87,
+    "hair": 29.04
+   },
+   "lighting": "character_neutral/1",
+   "view_transform": "Standard",
+   "exposure": 0.0,
+   "samples": 32,
+   "total_s": 169.54
+  }
+ },
+ "after": {
+  "colour_checks": {
+   "label": "after",
+   "render_dir": "/tmp/claude-0/-home-user-Animation/4dae7d3e-11f0-5bdd-93a7-4aa24a823d1d/scratchpad/final/after/r",
+   "checks": [
+    {
+     "name": "hair_back",
+     "slot": "M_hair",
+     "view": "sheet30_back",
+     "render_median_srgb": [
+      94.0,
+      61.0,
+      51.0
+     ],
+     "render_pixels": 35384,
+     "reference_median_srgb": [
+      93.0,
+      53.0,
+      43.0
+     ],
+     "reference_pixels": 8800,
+     "dE00": 3.14,
+     "dE00_luma_matched": 3.45,
+     "luma": [
+      67.3,
+      60.8
+     ],
+     "saturation": [
+      0.457,
+      0.538
+     ]
+    },
+    {
+     "name": "hair_front",
+     "slot": "M_hair",
+     "view": "sheet30_front",
+     "render_median_srgb": [
+      97.0,
+      64.0,
+      53.0
+     ],
+     "render_pixels": 18102,
+     "reference_median_srgb": [
+      107.0,
+      68.0,
+      55.0
+     ],
+     "reference_pixels": 4250,
+     "dE00": 2.67,
+     "dE00_luma_matched": 1.19,
+     "luma": [
+      70.2,
+      75.4
+     ],
+     "saturation": [
+      0.454,
+      0.486
+     ]
+    },
+    {
+     "name": "skin_front",
+     "slot": "M_skin_face",
+     "view": "sheet30_front",
+     "render_median_srgb": [
+      164.0,
+      134.0,
+      124.0
+     ],
+     "render_pixels": 7497,
+     "reference_median_srgb": [
+      198.0,
+      154.5,
+      139.0
+     ],
+     "reference_pixels": 1120,
+     "dE00": 8.51,
+     "dE00_luma_matched": 2.62,
+     "luma": [
+      139.7,
+      162.6
+     ],
+     "saturation": [
+      0.244,
+      0.298
+     ]
+    },
+    {
+     "name": "skin_back",
+     "slot": "M_skin_face",
+     "view": "sheet30_back",
+     "render_median_srgb": [
+      173.0,
+      141.0,
+      130.0
+     ],
+     "render_pixels": 2371,
+     "reference_median_srgb": [
+      215.0,
+      185.0,
+      172.0
+     ],
+     "reference_pixels": 1120,
+     "dE00": 12.66,
+     "dE00_luma_matched": 3.53,
+     "luma": [
+      147.0,
+      190.4
+     ],
+     "saturation": [
+      0.249,
+      0.2
+     ]
+    },
+    {
+     "name": "flower_front",
+     "slot": "M_hair_flower",
+     "view": "sheet30_front",
+     "render_median_srgb": [
+      168.0,
+      105.0,
+      107.0
+     ],
+     "render_pixels": 470,
+     "reference_median_srgb": [
+      198.0,
+      138.0,
+      137.0
+     ],
+     "reference_pixels": 340,
+     "dE00": 11.15,
+     "dE00_luma_matched": 3.92,
+     "luma": [
+      118.5,
+      150.7
+     ],
+     "saturation": [
+      0.375,
+      0.308
+     ]
+    },
+    {
+     "name": "band_front",
+     "slot": "M_hair_band",
+     "view": "sheet30_front",
+     "render_median_srgb": [
+      125.0,
+      114.0,
+      106.5
+     ],
+     "render_pixels": 28,
+     "reference_median_srgb": [
+      128.0,
+      121.5,
+      126.5
+     ],
+     "reference_pixels": 140,
+     "dE00": 7.46,
+     "dE00_luma_matched": 7.08,
+     "luma": [
+      115.8,
+      123.2
+     ],
+     "saturation": [
+      0.148,
+      0.051
+     ]
+    }
+   ]
+  },
+  "colour_checks_outfit": {
+   "label": "after",
+   "render_dir": "/tmp/claude-0/-home-user-Animation/4dae7d3e-11f0-5bdd-93a7-4aa24a823d1d/scratchpad/final/after/r",
+   "checks": [
+    {
+     "name": "blouse_sleeves_front",
+     "slot": "M_garment.blouse.main",
+     "view": "sheet30_front",
+     "render_median_srgb": [
+      196.0,
+      182.0,
+      176.0
+     ],
+     "render_pixels": 7024,
+     "reference_median_srgb": [
+      202.0,
+      192.0,
+      188.0
+     ],
+     "reference_pixels": 1000,
+     "dE00": 3.01,
+     "dE00_luma_matched": 2.03,
+     "luma": [
+      184.5,
+      193.8
+     ],
+     "saturation": [
+      0.102,
+      0.069
+     ]
+    },
+    {
+     "name": "vest_front",
+     "slot": "M_garment.vest.main",
+     "view": "sheet30_front",
+     "render_median_srgb": [
+      173.0,
+      138.0,
+      130.0
+     ],
+     "render_pixels": 24,
+     "reference_median_srgb": [
+      116.0,
+      94.0,
+      92.0
+     ],
+     "reference_pixels": 1785,
+     "dE00": 18.89,
+     "dE00_luma_matched": 1.81,
+     "luma": [
+      144.9,
+      98.5
+     ],
+     "saturation": [
+      0.249,
+      0.207
+     ]
+    },
+    {
+     "name": "vest_back",
+     "slot": "M_garment.vest.main",
+     "view": "sheet30_back",
+     "render_median_srgb": [
+      130.5,
+      87.0,
+      84.0
+     ],
+     "render_pixels": 22,
+     "reference_median_srgb": [
+      134.0,
+      91.0,
+      92.0
+     ],
+     "reference_pixels": 2000,
+     "dE00": 2.36,
+     "dE00_luma_matched": 1.96,
+     "luma": [
+      96.0,
+      100.2
+     ],
+     "saturation": [
+      0.356,
+      0.321
+     ]
+    },
+    {
+     "name": "shorts_front",
+     "slot": "M_garment.shorts.main",
+     "view": "sheet30_front",
+     "render_median_srgb": [
+      114.0,
+      112.0,
+      99.0
+     ],
+     "render_pixels": 5250,
+     "reference_median_srgb": [
+      111.0,
+      111.0,
+      99.0
+     ],
+     "reference_pixels": 1000,
+     "dE00": 1.22,
+     "dE00_luma_matched": 1.08,
+     "luma": [
+      111.5,
+      110.1
+     ],
+     "saturation": [
+      0.132,
+      0.108
+     ]
+    },
+    {
+     "name": "shorts_back",
+     "slot": "M_garment.shorts.main",
+     "view": "sheet30_back",
+     "render_median_srgb": [
+      113.0,
+      112.0,
+      99.0
+     ],
+     "render_pixels": 4492,
+     "reference_median_srgb": [
+      115.0,
+      115.0,
+      103.0
+     ],
+     "reference_pixels": 1600,
+     "dE00": 1.3,
+     "dE00_luma_matched": 0.74,
+     "luma": [
+      111.3,
+      114.1
+     ],
+     "saturation": [
+      0.124,
+      0.104
+     ]
+    },
+    {
+     "name": "boots_front",
+     "slot": "M_garment.boots.main",
+     "view": "sheet30_front",
+     "render_median_srgb": [
+      168.0,
+      105.0,
+      107.0
+     ],
+     "render_pixels": 470,
+     "reference_median_srgb": [
+      126.0,
+      84.0,
+      66.0
+     ],
+     "reference_pixels": 1350,
+     "dE00": 14.87,
+     "dE00_luma_matched": 9.09,
+     "luma": [
+      118.5,
+      91.6
+     ],
+     "saturation": [
+      0.375,
+      0.476
+     ]
+    },
+    {
+     "name": "boots_back",
+     "slot": "M_garment.boots.main",
+     "view": "sheet30_back",
+     "render_median_srgb": [
+      150.0,
+      93.0,
+      94.5
+     ],
+     "render_pixels": 76,
+     "reference_median_srgb": [
+      122.0,
+      80.0,
+      61.0
+     ],
+     "reference_pixels": 2000,
+     "dE00": 12.11,
+     "dE00_luma_matched": 9.36,
+     "luma": [
+      105.2,
+      87.6
+     ],
+     "saturation": [
+      0.38,
+      0.5
+     ]
+    }
+   ]
+  },
+  "fibre_garments": {
+   "blouse_sleeves_front": {
+    "render": [
+     127.0,
+     90.0,
+     88.0
+    ],
+    "ref": [
+     202.0,
+     192.0,
+     188.0
+    ],
+    "dE00": 33.85,
+    "px": 1001
+   },
+   "vest_front": {
+    "render": [
+     127.0,
+     89.0,
+     86.0
+    ],
+    "ref": [
+     116.0,
+     94.0,
+     92.0
+    ],
+    "dE00": 5.61,
+    "px": 725
+   },
+   "vest_back": {
+    "render": [
+     116.0,
+     82.0,
+     80.0
+    ],
+    "ref": [
+     134.0,
+     91.0,
+     92.0
+    ],
+    "dE00": 5.14,
+    "px": 257
+   },
+   "shorts_front": {
+    "render": [
+     127.0,
+     91.0,
+     89.0
+    ],
+    "ref": [
+     111.0,
+     111.0,
+     99.0
+    ],
+    "dE00": 19.9,
+    "px": 667
+   },
+   "shorts_back": {
+    "render": [
+     130.0,
+     90.0,
+     87.0
+    ],
+    "ref": [
+     115.0,
+     115.0,
+     103.0
+    ],
+    "dE00": 21.19,
+    "px": 597
+   },
+   "boots_front": {
+    "render": [
+     124.0,
+     79.0,
+     60.0
+    ],
+    "ref": [
+     126.0,
+     84.0,
+     66.0
+    ],
+    "dE00": 1.76,
+    "px": 5899
+   },
+   "boots_back": {
+    "render": [
+     112.0,
+     74.0,
+     58.0
+    ],
+    "ref": [
+     122.0,
+     80.0,
+     61.0
+    ],
+    "dE00": 2.8,
+    "px": 4085
+   }
+  },
+  "render_timings": {
+   "open_s": 1.27,
+   "views": {
+    "sheet30_front": 11.79,
+    "sheet30_front_left": 10.88,
+    "sheet30_left": 9.92,
+    "sheet30_back": 11.22,
+    "boots": 32.09,
+    "vest": 47.98,
+    "hair": 28.83
+   },
+   "lighting": "character_neutral/1",
+   "view_transform": "Standard",
+   "exposure": 0.0,
+   "samples": 32,
+   "total_s": 170.88
+  }
+ }
+}

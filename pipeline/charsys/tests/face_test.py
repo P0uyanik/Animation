@@ -31,6 +31,9 @@ PARTS = json.loads(rig.get("ps_face_parts", "{}"))
 HEAD, EYE, LID, MOUTH = (PARTS.get("head", "head"), PARTS.get("eye_L", "eye.L"), PARTS.get("lid_upper_L", "lid_upper.L"),
                          PARTS.get("mouth", "mouth"))
 eye = bpy.data.objects[EYE]
+for _m in bpy.data.objects[HEAD].modifiers:  # garment body masks hide covered skin; the measures need the full topology
+    if _m.type == "MASK":                    # (as face_system_test.py)
+        _m.show_viewport = _m.show_render = False
 SKIP = set(PARTS.get("accessories", []))
 deps = bpy.context.evaluated_depsgraph_get
 

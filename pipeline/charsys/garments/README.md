@@ -51,6 +51,21 @@ use a `_m` suffix. Shared fields are `thickness_m`, `ease_m` (alias
 library names. When that library is installed its node builder is used; the
 fallback used by isolated tests preserves the same preset metadata.
 
+## Surface fibres (`fibres_lod`, T-028)
+
+Every garment piece whose material preset enables `fibres` (felt, wool yarn,
+fleece, cotton knit, felt hair, boot fleece) gets the shared Geometry Nodes
+group `PS Shared Surface Fibres/1` through
+`materials.builder.add_fibres_from_assignment`. Nothing is character-specific:
+the piece's own assignment (preset, colour, `reference_size_m`, overrides)
+drives it. Fibre length scales with `reference_size_m / 0.256` and density with
+its inverse square, so the H-normalised look matches the swatch sheet.
+`clothing.fibres_lod` is `close` (default), `wide` (preset LOD density) or `off`.
+The Curves object `<piece>.fibres` is a child of its piece (it follows the rig
+and the collision modifiers) and carries `ps_fibres_source`; `set_active_items`
+hides it with its piece. It is not in the returned garment list, and the engine
+exporter skips it (meshes only).
+
 ## Body masks (`hide_body_faces`, per-item `mask_body`)
 
 Production clothes do not keep skin under a garment: in extreme poses it pokes
@@ -155,3 +170,60 @@ bloomer volume opened.
   - the skin nearest to it faces other skin within that tolerance, or lies inside another body part;
   - the skin the garment vertex was built from (`ps_body_vertex`) is posed inside another body part (an upper arm
     sunk into the ribs, the hip front folded into a raised thigh).
+
+## Cloth rest shape, thickness and edges (T-034)
+
+All optional and generic; with none of these fields the geometry is unchanged (the boy and every older spec build
+byte-identically).
+
+**`drape`** (any shell-based item: tops, vests, dress bodices, shorts/trousers, footwear) runs Blender's cloth solver
+once at build time on the item's offset shells (`garments/drape.py`). The body is the collider in its rest pose
+(only the faces within `collider_reach_m` of the shell, inflated to the item's ease so a thin collision shell
+suffices). The cloth settles under gravity. The settled shape replaces the shell's rest shape, and then skinning,
+masks, post-skinning collision and the rest clearance projection run exactly as before. Other pieces of the item,
+such as bands, buttons, pockets, edge rolls and embroidery, follow the settled panel: each takes the displacement
+of the nearest shell face. The solidified inner layer is rebuilt along the settled normals, so the cloth keeps an
+even thickness through the folds.
+
+| field | meaning |
+|---|---|
+| `enabled` | default `false` |
+| `fabric` | `cotton`, `knit`, `felt`, `denim`. Blender cloth mass, tension/compression/shear/bending stiffness, air damping, collision thickness and friction (`drape.FABRICS`) |
+| `overrides` | per-field fabric overrides (`mass`, `tension`, `compression`, `shear`, `bending`, `air_damping`, `thickness_m`, `friction`) |
+| `pin` | list of `edges` (open edges held by their band or finish), `volume` (shell areas at the plain ease stay fitted; only puff/bloomer volume drapes), `top` (the item's top band carries the weight, as a vest hangs from the shoulders) |
+| `edge_band_m`, `volume_band_m`, `top_band_m` | falloff of each pin (defaults 12, 6 and 30 mm) |
+| `gather` (0–0.5) | the free cloth is grown by this share before it settles. It no longer fits the volume it came from, so it buckles into gathers against the pinned bands. With the `volume` pin, the growth is proportional to the designed extra volume (fullness), so the run into a cuff stays smooth |
+| `gravity` (0–1) | share of Earth gravity. Plush garments are stuffed and stiff, so less than 1 keeps puffs round |
+| `frames`, `quality`, `seed`, `jitter_m`, `smooth` | fixed solver frames (default 30) and steps per frame (6). A seeded jitter of free vertices breaks the symmetry so folds form, and is reproducible. `smooth` is a Laplacian relax of the free vertices after the solve |
+| `parts.<main|bodice>` | per-part overrides of any of the above (for example `{"bodice": {"enabled": false}}` on a dress) |
+
+The solve runs in a private scene with no self-collision and a fixed frame count, so a build is bit-reproducible
+(`tests/garment_generic_test.py` check `drape_deterministic`). The build report carries per-shell `drape` statistics:
+free vertices, mean/max movement, collider faces and seconds.
+
+**`edge_finish: "rounded"`** (any shell item, or `defaults`) rounds the solidified rim of the shell: the rim edges
+get a 2-segment bevel of half the thickness, so the hems, cuffs and openings read as soft cloth with real thickness
+rather than a cut sheet. `thickness_m` still sets the thickness.
+
+**`bands.edge_roll_m` + `bands.edge_style`** now work on every shell type, not only tops: bottoms (waist and leg
+openings) and footwear (boot tops). `rolled` (default, as in T-025) is cloth turned over the edge. `piped` is a cord
+centred on the rim, with material part `piping`, falling back to `edge`, `band` and then `main`.
+
+## Hand-made surface detail (`surface_detail`, T-034, materials)
+
+`surface_detail` is an optional material preset section (`materials/presets.json`, `materials/builder.py`
+`_surface_detail`). It sits between the weave/fibre scale and the silhouette scale:
+- domain-warped **lumps**: felt lumpiness and uneven stuffing under the cloth. Fields: `lump_scale_per_reference`,
+  `lump_strength`, `lump_albedo`;
+- **fibre-direction streaks**: object coordinates stretched by `fibre_direction`. Fields:
+  `fibre_scale_per_reference`, `fibre_strength`, `fibre_albedo`;
+- **`irregularity`**: a domain warp of both, so nothing reads machine-regular;
+- `distance_fraction`: the bump distance, as a share of the reference size.
+
+It drives the shading normal and, very lightly (at most ±30 %, ±3–6 % in the presets), the albedo. Those are the two
+guide passes that OIDN preserves, and the features are several pixels wide at turnaround scale, so the detail
+survives denoising.
+
+It is enabled on `felt`, `woven cotton`, `cotton knit`, `denim`, `fleece` and `boot fleece`. `skin-felt` carries a
+tuned block that is disabled: a character opts in with `"overrides": {"surface_detail": {"enabled": true}}`. It works
+on any garment or skin assignment through the same overrides.

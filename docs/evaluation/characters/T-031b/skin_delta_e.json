@@ -1,0 +1,131 @@
+{
+ "note": "CIEDE2000 vs the reference region medians (fidelity tool regions skin_face / skin_limbs); before = T-031 final (0.8.0, old calibration), after = T-031b (0.9.0, new calibration)",
+ "before/sheet30_front/skin_face": {
+  "de00": 14.9364,
+  "de00_luma_matched": 3.188,
+  "dL": -17.0774,
+  "dC": -4.833,
+  "render_srgb": [
+   152,
+   122,
+   109
+  ],
+  "reference_srgb": [
+   207,
+   163,
+   147
+  ]
+ },
+ "before/sheet30_front/skin_limbs": {
+  "de00": 3.677,
+  "de00_luma_matched": 0.6048,
+  "dL": -4.6435,
+  "dC": 0.635,
+  "render_srgb": [
+   191,
+   155,
+   139
+  ],
+  "reference_srgb": [
+   204,
+   168,
+   152
+  ]
+ },
+ "before/sheet30_front_left/skin_face": {
+  "de00": 15.6017,
+  "de00_luma_matched": 2.5188,
+  "dL": -18.4837,
+  "dC": -3.6875,
+  "render_srgb": [
+   154,
+   125,
+   113
+  ],
+  "reference_srgb": [
+   211,
+   172,
+   156
+  ]
+ },
+ "before/sheet30_front_left/skin_limbs": {
+  "de00": 7.9389,
+  "de00_luma_matched": 0.2344,
+  "dL": -9.4952,
+  "dC": -0.188,
+  "render_srgb": [
+   168,
+   135,
+   120
+  ],
+  "reference_srgb": [
+   195,
+   160,
+   145
+  ]
+ },
+ "after/sheet30_front/skin_face": {
+  "de00": 2.2655,
+  "de00_luma_matched": 1.6714,
+  "dL": -1.969,
+  "dC": -0.3581,
+  "render_srgb": [
+   199,
+   159,
+   140
+  ],
+  "reference_srgb": [
+   207,
+   163,
+   147
+  ]
+ },
+ "after/sheet30_front/skin_limbs": {
+  "de00": 3.3071,
+  "de00_luma_matched": 2.3054,
+  "dL": 3.1777,
+  "dC": 3.9646,
+  "render_srgb": [
+   218,
+   175,
+   154
+  ],
+  "reference_srgb": [
+   204,
+   168,
+   152
+  ]
+ },
+ "after/sheet30_front_left/skin_face": {
+  "de00": 3.4261,
+  "de00_luma_matched": 1.3752,
+  "dL": -4.1149,
+  "dC": 2.0261,
+  "render_srgb": [
+   201,
+   160,
+   141
+  ],
+  "reference_srgb": [
+   211,
+   172,
+   156
+  ]
+ },
+ "after/sheet30_front_left/skin_limbs": {
+  "de00": 1.91,
+  "de00_luma_matched": 1.9023,
+  "dL": 0.2179,
+  "dC": 3.2641,
+  "render_srgb": [
+   200,
+   159,
+   140
+  ],
+  "reference_srgb": [
+   195,
+   160,
+   145
+  ]
+ }
+}

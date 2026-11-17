@@ -1,0 +1,56 @@
+{
+ "tool": "tools/fidelity/run.py from origin/t-032-claude-fidelity (read-only scratch worktree), 640 px, 32 samples, character_neutral/1",
+ "results": {
+  "before: girl 0.8.0 hair (T-033)": {
+   "score": 62.5,
+   "hair_area_relative": -0.358,
+   "hair_width_at_eyes_relative": 0.0053,
+   "hair_width_at_eyes_front_relative": 0.0878,
+   "hair_length_relative": 0.0481,
+   "hair_iou_mean": 0.5379,
+   "hair_area_ratio": 0.6432,
+   "hair_de00": 2.8578,
+   "hair_iou_by_view": {
+    "sheet30_back": 0.7004,
+    "sheet30_back_right": 0.5722,
+    "sheet30_front": 0.4278,
+    "sheet30_front_left": 0.5071,
+    "sheet30_left": 0.482
+   }
+  },
+  "intermediate: iteration 5 (bun too tall)": {
+   "score": 57.9,
+   "hair_area_relative": -0.2572,
+   "hair_width_at_eyes_relative": 0.0114,
+   "hair_width_at_eyes_front_relative": 0.1007,
+   "hair_length_relative": 0.0877,
+   "hair_iou_mean": 0.5426,
+   "hair_area_ratio": 0.7431,
+   "hair_de00": 2.4877,
+   "hair_iou_by_view": {
+    "sheet30_back": 0.6933,
+    "sheet30_back_right": 0.5792,
+    "sheet30_front": 0.463,
+    "sheet30_front_left": 0.5294,
+    "sheet30_left": 0.4482
+   }
+  },
+  "after: T-033b final": {
+   "score": 64.8,
+   "hair_area_relative": -0.1947,
+   "hair_width_at_eyes_relative": 0.0534,
+   "hair_width_at_eyes_front_relative": 0.1503,
+   "hair_length_relative": 0.0557,
+   "hair_iou_mean": 0.5942,
+   "hair_area_ratio": 0.8046,
+   "hair_de00": 2.5477,
+   "hair_iou_by_view": {
+    "sheet30_back": 0.7256,
+    "sheet30_back_right": 0.6404,
+    "sheet30_front": 0.4691,
+    "sheet30_front_left": 0.6029,
+    "sheet30_left": 0.5332
+   }
+  }
+ }
+}

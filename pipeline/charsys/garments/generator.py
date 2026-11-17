@@ -3,6 +3,7 @@
 Coordinates and dimensions come only from the generic body parameters and the
 garment spec. The character faces -Y, +Z is up, and +X is its left.
 """
+import json
 import math
 import re
 
@@ -11,6 +12,8 @@ from mathutils import Vector
 from mathutils.bvhtree import BVHTree
 from mathutils.kdtree import KDTree
 
+from . import drape as cloth
+
 
 GENERATOR = "garment/1"
 ITEM_TYPES = {"top", "shirt", "vest", "shorts", "trousers", "dress", "skirt", "shoes", "boots"}
@@ -18,6 +21,7 @@ COLLARS = {"none", "crew", "rib", "shirt", "point", "v", "v-neck", "round"}
 EMBROIDERY_STYLES = {"flower", "sprig", "bouquet"}
 BUTTON_PLACEMENTS = {"centre", "edge", "waistband", "pockets", "positions"}
 CROTCH_TYPES = {"none", "gusset"}
+EDGE_STYLES = ("rolled", "piped")
 
 # T-025, proportion-relative distances. Every ease, offset, mask margin and collision distance in a spec (and every
 # internal margin that used to be a fraction of the height) is defined on the neutral body_generic proportions at
@@ -33,8 +37,14 @@ ARMHOLE_SIDE_SHARE = 0.58
 ARMHOLE_ROOT_CLEARANCE = 1.25
 MATERIAL_PRESETS = {
     "felt", "wool yarn", "fleece", "cotton knit", "woven cotton", "denim", "felt hair",
-    "buttons/plastic", "glasses/acrylic", "skin-felt",
+    "buttons/plastic", "glasses/acrylic", "skin-felt", "boot fleece",
 }
+# T-028: every garment piece whose material preset enables surface fibres gets the shared fibre group
+# (materials.builder.add_fibres_geometry, "PS Shared Surface Fibres/1") at clothing.fibres_lod (default "close";
+# "off" builds none). The fibre object is a child of its piece, so it follows the rig and the post-skinning collision,
+# and is hidden with it when the item is not worn. Fibres are Curves objects: never in the returned garment list.
+FIBRE_LODS = ("close", "wide", "off")
+FIBRES_PROP = "ps_fibres_source"
 DEFAULT_COLOURS = {
     "cotton knit": (196, 189, 181), "woven cotton": (202, 194, 184), "denim": (74, 91, 112),
     "felt": (118, 101, 90), "fleece": (151, 132, 116), "buttons/plastic": (118, 88, 64),
@@ -94,6 +104,12 @@ def validate(clothing):
         raise ValueError("clothing.collision.passes must be an integer in [1, 4]")
     if "hide_body_faces" in clothing and not isinstance(clothing["hide_body_faces"], bool):
         raise ValueError("clothing.hide_body_faces must be a boolean")
+    if "drape" in defaults:
+        cloth.validate(defaults["drape"], "clothing.defaults.drape")
+    if defaults.get("edge_finish", "flat") not in cloth.EDGE_FINISHES:
+        raise ValueError(f"clothing.defaults.edge_finish must be one of {list(cloth.EDGE_FINISHES)}")
+    if clothing.get("fibres_lod", "close") not in FIBRE_LODS:
+        raise ValueError(f"clothing.fibres_lod must be one of {list(FIBRE_LODS)}")
     for key in ("thickness_m", "ease_m", "offset_m", "seam_radius_m", "collision_clearance_m",
                 "articulation_allowance_m", "front_articulation_rise_m", "front_centre_ease_m"):
         if key in defaults:
@@ -136,9 +152,15 @@ def validate(clothing):
         if isinstance(bands, dict) and "cuff_radius_m" in bands:
             _number(bands["cuff_radius_m"], f"garment {name}.bands.cuff_radius_m", 0.0, 0.05)
         if isinstance(bands, dict) and "edge_roll_m" in bands:
-            if raw["type"] not in ("top", "shirt", "vest", "dress"):
-                raise ValueError(f"garment {name}.bands.edge_roll_m is supported on tops, vests and dresses")
+            if raw["type"] == "skirt":
+                raise ValueError(f"garment {name}.bands.edge_roll_m is not supported on skirts (lofted, no shell)")
             _number(bands["edge_roll_m"], f"garment {name}.bands.edge_roll_m", 0.0, 0.03)
+        if isinstance(bands, dict) and bands.get("edge_style", "rolled") not in EDGE_STYLES:
+            raise ValueError(f"garment {name}.bands.edge_style must be one of {list(EDGE_STYLES)}")
+        if "drape" in raw:
+            cloth.validate(raw["drape"], f"garment {name}.drape")
+        if raw.get("edge_finish", "flat") not in cloth.EDGE_FINISHES:
+            raise ValueError(f"garment {name}.edge_finish must be one of {list(cloth.EDGE_FINISHES)}")
         if "shoulder_width" in raw:
             if raw["type"] not in ("top", "shirt", "vest", "dress"):
                 raise ValueError(f"garment {name}.shoulder_width is supported on tops, vests and dresses")
@@ -258,9 +280,13 @@ def _merge(defaults, item):
 def _material(G, name, assignment, reference_size):
     try:
         from materials import builder as material_builder
-        return material_builder.build_material(name, assignment["preset"], assignment["base_color_srgb"],
-                                               assignment.get("reference_size_m", reference_size),
-                                               assignment.get("overrides"))
+        mat = material_builder.build_material(name, assignment["preset"], assignment["base_color_srgb"],
+                                              assignment.get("reference_size_m", reference_size),
+                                              assignment.get("overrides"))
+        mat["ps_material_assignment"] = json.dumps(
+            {**assignment, "reference_size_m": float(assignment.get("reference_size_m", reference_size))},
+            sort_keys=True)
+        return mat
     except ImportError:
         mat = G.material(name, tuple(assignment["base_color_srgb"]), roughness=0.74,
                          sheen=0.12 if assignment["preset"] in ("cotton knit", "woven cotton", "denim") else 0.04)
@@ -449,6 +475,9 @@ def _shell(body, name, selector, ease, thickness, C, G, extra=None, scale=None, 
         ob.select_set(True)
         bpy.ops.object.modifier_apply(modifier=mod.name)
         ob.select_set(False)
+        cloth.register_shell(ob, len(verts), thickness)
+    else:
+        cloth.register_shell(ob, len(verts), 0.0)
     return ob, {p.index for p in selected}
 
 
@@ -804,6 +833,28 @@ def _armhole_edge(fit, cfg, shoulder_z, arm_bottom, neck_r):
     return edge
 
 
+def _edge_rolls(objects, G, C, cfg, H, loops, thick, bands, prefix="edge"):
+    """Rolled edge or piping along every open edge of a shell (neckline, front opening, hem, armholes, sleeve ends,
+    waist, leg openings, boot tops). ``rolled`` (default, T-025): the cloth turned over, a soft tube centred just
+    outside the panel edge. ``piped`` (T-034): a cord sewn onto the edge, centred on the rim (material part
+    ``piping``, else ``edge``/``band``/``main``)."""
+    roll = float(bands.get("edge_roll_m", 0.0)) if isinstance(bands, dict) else 0.0
+    if roll <= 0 or not loops:
+        return
+    style = bands.get("edge_style", "rolled")
+    mats = cfg.get("materials", {})
+    order = (("piping",) if style == "piped" else ()) + ("edge", "band")
+    part = next((p for p in order if p in mats), "main")
+    edge_mat = _mat_for(G, cfg, part, H)
+    lift = thick * 0.5 + roll * (0.6 if style == "rolled" else 0.0)
+    for k, (pts, normals) in enumerate(sorted(loops, key=lambda lp: -len(lp[0]))):
+        path = _smooth_loop([p + n * lift for p, n in zip(pts, normals)], 6)
+        if len(path) < 6:
+            continue
+        ob = _closed_tube(G, C, f"garment.{cfg['name']}.{prefix}.{k + 1}", path, roll)
+        _feature(objects, ob, cfg, "edge", edge_mat, G)
+
+
 def _top(C, body, cfg, P, H, J, G, fit, vest=False):
     ease, thick = cfg["ease_m"], cfg["thickness_m"]
     shell_ease = ease + float(cfg.get("articulation_allowance_m", 0.0))
@@ -878,17 +929,7 @@ def _top(C, body, cfg, P, H, J, G, fit, vest=False):
             ob = _limb_ring(G, C, f"garment.{cfg['name']}.band.cuff.{side}", centre, b - a,
                             _arm_radius(P, H, sleeve), ae + thick + max(0.0, cr - cfg["seam_radius_m"] * 1.25), cr)
             _feature(objects, ob, cfg, "band", _mat_for(G, cfg, "band", H), G)
-    if roll > 0:
-        # Rolled edge (piping): a soft tube along every open edge of the main panel (neckline, front opening, hem,
-        # armholes or sleeve ends), centred just outside the panel's edge.
-        part = "edge" if "edge" in cfg.get("materials", {}) else ("band" if "band" in cfg.get("materials", {}) else "main")
-        edge_mat = _mat_for(G, cfg, part, H)
-        for k, (pts, normals) in enumerate(sorted(loops, key=lambda lp: -len(lp[0]))):
-            path = _smooth_loop([p + n * (thick * 0.5 + roll * 0.6) for p, n in zip(pts, normals)], 6)
-            if len(path) < 6:
-                continue
-            ob = _closed_tube(G, C, f"garment.{cfg['name']}.edge.{k + 1}", path, roll)
-            _feature(objects, ob, cfg, "edge", edge_mat, G)
+    _edge_rolls(objects, G, C, cfg, H, loops, thick, bands)
     if cfg.get("seam_lines"):
         seam_top_z = min(top_z, arm_bottom)
         for sx, side in ((1, "L"), (-1, "R")):
@@ -1074,8 +1115,10 @@ def _bottoms(C, body, cfg, P, H, J, G, fit):
         facing_in = max(0.0, -normal.x * math.copysign(1.0, c.x)) if abs(c.x) > 1e-6 else 0.0
         return puff * f * (1.0 - (1.0 - inner) * facing_in)
 
+    roll_loops = [] if float((cfg.get("bands") or {}).get("edge_roll_m", 0.0) if isinstance(cfg.get("bands"), dict)
+                             else 0.0) > 0 else None
     main, covered = _shell(body, f"garment.{cfg['name']}.main", selector, shell_ease, thick, C, G,
-                           extra=bloomer_volume if puff > 0 else None, scale=fit.at)
+                           extra=bloomer_volume if puff > 0 else None, scale=fit.at, loops_out=roll_loops)
     _front_articulation_rise(main, hip_z, 0.20 * fit.torso, front_rise)
     _front_centre_ease(main, hip_z, 0.12 * fit.torso, float(cfg.get("front_centre_ease_m", 0.0)) * fit.torso,
                        abs(J["hip.L"].x) * 0.75)
@@ -1137,6 +1180,7 @@ def _bottoms(C, body, cfg, P, H, J, G, fit):
                 z = bottom_z + (waist_z - bottom_z) * float(m.get("v", 0.5))
                 points.append((float(m.get("u", 0.0)) * _torso_dims(P, H, z)[0], z, m.get("face", "front"), None))
         _placed_buttons(objects, G, C, cfg, H, fit, bvh, points, buttons.get("placement", "waistband"))
+    _edge_rolls(objects, G, C, cfg, H, roll_loops, thick, cfg.get("bands"))
     _add_embroidery(objects, G, C, cfg, main, (bottom_z, waist_z), P, H)
     return objects, covered
 
@@ -1219,6 +1263,39 @@ def _smoothstep(x):
     return x * x * (3 - 2 * x)
 
 
+
+def _section_radii(body, centre_xy, z, count, half_band, max_r, fallback):
+    """Per-angle outer radius of the body cross-section around ``centre_xy`` in the band ``|co.z - z| <= half_band``
+    (``count`` equal sectors starting at +X, counter-clockwise). Vertices further than ``max_r`` (another limb) are
+    ignored; empty sectors are filled from their neighbours, or ``fallback`` when nothing was found."""
+    cx, cy = centre_xy
+    radii = [None] * count
+    for v in body.data.vertices:
+        co = v.co
+        if abs(co.z - z) > half_band:
+            continue
+        dx, dy = co.x - cx, co.y - cy
+        r = math.hypot(dx, dy)
+        if r > max_r:
+            continue
+        k = int(round((math.atan2(dy, dx) % (2 * math.pi)) / (2 * math.pi) * count)) % count
+        radii[k] = r if radii[k] is None else max(radii[k], r)
+    known = [k for k, r in enumerate(radii) if r is not None]
+    if not known:
+        return [fallback] * count
+    out = []
+    for k in range(count):
+        if radii[k] is not None:
+            out.append(radii[k])
+            continue
+        prev = max((j for j in known if j < k), default=known[-1])
+        nxt = min((j for j in known if j > k), default=known[0])
+        span = (nxt - prev) % count or count
+        f = ((k - prev) % count) / span
+        out.append(radii[prev] * (1 - f) + radii[nxt] * f)
+    return out
+
+
 def _footwear(C, body, cfg, P, H, J, G, fit):
     ease, thick = cfg["ease_m"], cfg["thickness_m"]
     ankle_z, knee_z = P["leg"]["ankle_z"] * H, P["leg"]["knee_z"] * H
@@ -1249,13 +1326,15 @@ def _footwear(C, body, cfg, P, H, J, G, fit):
         def selector(c, hx=hx):
             return (-0.01 * lm <= c.z <= top_z and abs(c.x - hx) <= max(fw, max_r) + 0.015 * lm and
                     -1.05 * fl <= c.y <= max_r + 0.02 * lm)
+        bands = cfg.get("bands", {})
+        bands = {"cuff": True} if bands is True else bands
+        roll_loops = [] if float(bands.get("edge_roll_m", 0.0)) > 0 else None
         ob, cov = _shell(body, f"garment.{cfg['name']}.main.{side}", selector, ease, thick, C, G,
-                         extra=volume if shaft > 0 or toe > 0 else None, scale=lambda c: lm)
+                         extra=volume if shaft > 0 or toe > 0 else None, scale=lambda c: lm, loops_out=roll_loops)
         covered |= cov
         _feature(objects, ob, cfg, "main", _mat_for(G, cfg, "main", H), G)
         shell_parts[f"main.{side}"] = ob
-        bands = cfg.get("bands", {})
-        bands = {"cuff": True} if bands is True else bands
+        _edge_rolls(objects, G, C, cfg, H, roll_loops, thick, bands, prefix=f"edge.{side}")
         if cfg.get("cuff") or bands.get("cuff"):
             t = max(0.0, min(1.0, (knee_z - top_z) / max(knee_z - ankle_z, 1e-9)))
             lr = _leg_radius(P, H, 1 - t)
@@ -1264,20 +1343,37 @@ def _footwear(C, body, cfg, P, H, J, G, fit):
                               lr, (ease + shaft) * lm + thick + max(0.0, cr - cfg["seam_radius_m"] * 1.4), cr)
             _feature(objects, ring, cfg, "band", _mat_for(G, cfg, "band", H), G)
         if shaft > 0:
-            # Lining ring closing the opening between the leg and a widened shaft (seen from above).
+            # Lining closing the opening between the leg and a widened shaft (seen from above). T-026: its inner
+            # edge follows the measured leg cross-section (the _leg_radius estimate can sit centimetres outside a
+            # slim leg, leaving a dark gap and a separate visible ring), and with a cuff its outer edge ends under
+            # the cuff tube's centre line instead of poking out between the shaft wall and the tube.
             t = max(0.0, min(1.0, (knee_z - top_z) / max(knee_z - ankle_z, 1e-9)))
             lr = _leg_radius(P, H, 1 - t)
-            r_in, r_out = lr + 0.25 * ease * lm, lr + (ease + shaft) * lm + thick
+            r_leg = _section_radii(body, (hx, 0.0), top_z - 0.002 * lm, 48, 0.004 * lm, abs(hx) * 0.95, lr)
+            # The lining closes onto the leg, so it keeps only the collision clearance, not the garment ease that
+            # build() enforces on every piece (that pushed its inner edge 2 cm off the leg: the dark gap + ring).
+            clearance = float(cfg.get("collision_clearance_m", max(0.003, thick * 1.5)))
+            # Seat the lining on the shaft's top rim (the solidified shell edge stands above top_z once the shell
+            # has its ease clearance); a lining below that rim leaves the rim visible as a separate ring.
+            _ensure_clearance(body, ob, lambda point: ease * fit.at(point))
+            rim = [(ob.matrix_world @ v.co).z for v in ob.data.vertices]
+            lining_z = max([top_z - 0.002 * lm] + rim) + 0.0005 * lm
+            r_shell = lr + (ease + shaft) * lm + thick
+            r_cuff = (lr + (ease + shaft) * lm + thick + max(0.0, cr - cfg["seam_radius_m"] * 1.4)
+                      if cfg.get("cuff") or bands.get("cuff") else None)
             verts, faces = [], []
             for k in range(48):
                 a = 2 * math.pi * k / 48
                 d = Vector((math.cos(a), math.sin(a), 0.0))
-                verts += [tuple(Vector((hx, 0, top_z - 0.002 * lm)) + d * r_in),
-                          tuple(Vector((hx, 0, top_z - 0.002 * lm)) + d * r_out)]
+                r_in = r_leg[k] + clearance
+                r_out = max(r_cuff if r_cuff is not None else r_shell, r_in + 0.002 * lm)
+                verts += [tuple(Vector((hx, 0, lining_z)) + d * r_in),
+                          tuple(Vector((hx, 0, lining_z)) + d * r_out)]
             for k in range(48):
                 a, b = 2 * k, 2 * ((k + 1) % 48)
                 faces.append((a, b, b + 1, a + 1))
             lining = G.new_object(f"garment.{cfg['name']}.lining.{side}", verts, faces, C)
+            lining[CLEARANCE_PROP] = clearance
             mod = lining.modifiers.new("garment_thickness", "SOLIDIFY")
             mod.thickness, mod.offset = max(thick, 0.0015), -1.0
             bpy.context.view_layer.objects.active = lining
@@ -1300,6 +1396,8 @@ def _footwear(C, body, cfg, P, H, J, G, fit):
     return objects, covered
 
 
+# Per-object rest clearance override for pieces that close onto the body (boot lining), read by build().
+CLEARANCE_PROP = "ps_garment_rest_clearance_m"
 MASK_PREFIX = "ps_mask."
 MASK_GROUP = "ps_garment_mask"
 MASK_MODIFIER = "garment_body_mask"
@@ -1412,6 +1510,8 @@ def set_active_items(body, garments, items, collision=None):
     for ob in garments:
         worn = ob.get("ps_garment_item") in items
         ob.hide_render = not worn
+        for fibres in fibre_children(ob):
+            fibres.hide_render = not worn
         cgroup = ob.vertex_groups.get(COLLISION_GROUP)
         if cgroup is None or ob.modifiers.get(COLLISION_MODIFIER) is None:
             continue
@@ -1456,11 +1556,41 @@ def visible_face_flags(body):
     return [not any(i in hidden for i in p.vertices) for p in body.data.polygons]
 
 
+def add_fibres(ob, lod="close"):
+    """Attach the shared surface-fibre group to one garment piece through its material preset. Returns the fibre
+    object or None (preset without fibres, LOD off, or the isolated-test material fallback)."""
+    if lod == "off" or ob.type != "MESH" or not ob.data.materials or ob.data.materials[0] is None:
+        return None
+    raw = ob.data.materials[0].get("ps_material_assignment")
+    if not raw:
+        return None
+    try:
+        from materials import builder as material_builder
+    except ImportError:
+        return None
+    fibres = material_builder.add_fibres_from_assignment(ob, json.loads(raw), lod)
+    if fibres is None:
+        return None
+    fibres.parent = ob
+    fibres.matrix_parent_inverse.identity()
+    fibres.matrix_basis.identity()
+    fibres.hide_render = ob.hide_render
+    fibres["ps_garment_item"] = ob.get("ps_garment_item", "")
+    fibres["ps_garment_part"] = ob.get("ps_garment_part", "")
+    return fibres
+
+
+def fibre_children(ob):
+    return [child for child in ob.children if child.get(FIBRES_PROP) == ob.name]
+
+
 def build(C, body, clothing, P, H, J, G):
     """Build garments before rigging. Returns ``(objects, JSON-safe report)``."""
     validate(clothing)
+    cloth.reset()
     fit = BodyFit(P, H, J)
     objects, coverage, item_report, masked = [], set(), [], []
+    item_report_drape = {}
     hide_default = bool(clothing.get("hide_body_faces", False))
     for raw in clothing["garments"]:
         cfg = _merge(clothing.get("defaults"), raw)
@@ -1494,10 +1624,15 @@ def build(C, body, clothing, P, H, J, G):
         else:
             made, cov = _footwear(C, body, cfg, P, H, J, G, fit)
         ease = cfg["ease_m"]
+        drape_report = _drape_and_finish(body, made, cfg, fit)
+        if drape_report:
+            item_report_drape[cfg["name"]] = drape_report
         for ob in made:
-            _ensure_clearance(body, ob, lambda point, ease=ease: ease * fit.at(point))
+            _ensure_clearance(body, ob, ob[CLEARANCE_PROP] if CLEARANCE_PROP in ob else
+                              (lambda point, ease=ease: ease * fit.at(point)))
         objects += made
         coverage |= cov
+        fibre_objects = [f for f in (add_fibres(ob, clothing.get("fibres_lod", "close")) for ob in made) if f]
         mask = bool(cfg.get("mask_body", hide_default)) and bool(cov)
         if mask:
             _store_cover(body, cfg["name"], cov)
@@ -1509,9 +1644,13 @@ def build(C, body, clothing, P, H, J, G):
             item_report_extra["buttons"] = cfg["_buttons_report"]
         if cfg.get("_gusset_report"):
             item_report_extra["gusset"] = cfg["_gusset_report"]
+        if cfg["name"] in item_report_drape:
+            item_report_extra["drape"] = item_report_drape[cfg["name"]]
         item_report.append({**item_report_extra, "name": cfg["name"], "type": cfg["type"], "objects": [o.name for o in objects[before:]],
                             "covered_body_faces": len(cov), "mask_body": mask,
-                            "material_presets": sorted({o.get("ps_material_preset", "") for o in objects[before:]})})
+                            "material_presets": sorted({o.get("ps_material_preset", "") for o in objects[before:]}),
+                            "fibres": [{"object": f.name, "source": f[FIBRES_PROP], "preset": f["ps_material_preset"],
+                                        "lod": f["ps_fibres_lod"]} for f in fibre_objects]})
     body["ps_garment_mask_items"] = masked
     body["ps_garment_mask_margin_m"] = float(clothing.get("mask_margin_m", 0.015)) * fit.body
     collision = {"enabled": True, "offset_m": 0.002, "radius_m": 0.08, "falloff_m": 0.02, "passes": 3}
@@ -1520,9 +1659,51 @@ def build(C, body, clothing, P, H, J, G):
         collision[key] = float(collision[key]) * fit.body
     body["ps_garment_collision"] = collision
     return objects, {"generator": GENERATOR, "items": item_report, "objects": len(objects),
+                     "fibres_lod": clothing.get("fibres_lod", "close"),
                      "covered_body_faces": len(coverage), "masked_items": masked,
                      "mask_margin_m": body["ps_garment_mask_margin_m"],
                      "hide_body_faces": hide_default, "collision": collision, "body_fit": fit.report()}
+
+
+def _drape_and_finish(body, made, cfg, fit):
+    """T-034: optional cloth rest shape for the item's shells (``drape``), the displacement carried onto its other
+    pieces, then the optional rounded rim (``edge_finish``). Returns a JSON-safe report or None."""
+    drape = cfg.get("drape") or {}
+    shells = [ob for ob in made if cloth.shell_layers(ob) is not None]
+    report = []
+    old_all, new_all, faces_all = [], [], []
+    ease = cfg["ease_m"]
+    for ob in shells:
+        part = ob.get("ps_garment_part", "main")
+        settings = cloth.settings_for(drape, part if part in cloth.DRAPE_PARTS else "main")
+        if not settings["enabled"]:
+            continue
+        old, new, faces, info = cloth.drape_shell(
+            ob, body, lambda p: ease * fit.at(p), settings, ease * fit.body)
+        info.update({"part": part, "fabric": settings["fabric"], "frames": settings["frames"],
+                     "gather": settings["gather"], "seed": settings["seed"], "pin": list(settings["pin"])})
+        report.append(info)
+        offset = len(old_all)
+        old_all += old
+        new_all += new
+        faces_all += [tuple(i + offset for i in f) for f in faces]
+    if report:
+        cloth.follow([ob for ob in made if ob not in shells], old_all, new_all, faces_all)
+        move = cloth.displacement_field(old_all, new_all, faces_all)
+        for motif in cfg.get("_embroidery_report") or []:
+            if "at_m" in motif:
+                motif["at_m"] = [round(c, 4) for c in Vector(motif["at_m"]) + move(Vector(motif["at_m"]))]
+        if cfg.get("_buttons_report"):
+            cfg["_buttons_report"]["at_m"] = [[round(c, 4) for c in Vector(p) + move(Vector(p))]
+                                              for p in cfg["_buttons_report"]["at_m"]]
+        for ob in made:
+            if "ps_weight_anchor" in ob and ob not in shells:
+                anchor = Vector(ob["ps_weight_anchor"])
+                ob["ps_weight_anchor"] = tuple(anchor + move(anchor))
+    if cfg.get("edge_finish", "flat") == "rounded":
+        for ob in shells:
+            cloth.round_rim(ob)
+    return report or None
 
 
 def collision_proxy(rig, body):

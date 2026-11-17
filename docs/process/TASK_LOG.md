@@ -20,6 +20,15 @@
 | T-014 | Boy eyelids: shared lids-follow-gaze, boy 1.1.0 unpublished candidate (Codex + Supervisor cloud shot) | **result accepted** 2026-11-16 | t-014-codex-boy-lids (e2d708e), merged | 1.0.0 unchanged; girl render 0 px diff; verify_charsys, export 8/8, face tests PASS; eyes open in T-010 shot except fringe occlusion at max pitch |
 | T-017 | Prop attachment evaluation + bake (Codex) | **result accepted** 2026-11-16 | t-017-codex-prop-eval (10aacbf), merged | ctest 4/4, plush_tests 20,754 assertions |
 | T-015/16/18/19/24/25 | V3 batch: material library + GN fibres, groom/1 girl hair, garment/1 + robustness, girl outfit (spec 0.7.1) | **merged** 2026-11-16 (functional) | integration/v3 (2cb4616) | ctest 4/4, plush_tests, presets 54/54, verify_charsys PASS (boy unchanged), garment test PASS both bodies. **Girl visual quality NOT approved**; open T-026: fuzz below target (felt, wool, boots), sheen systemic miss, grey face, boot lining ring |
+| T-020..T-039 (consolidation) | Batch 1 + V3b work consolidated: secondary motion, interactions, acting, materials, face v2, hair v2, garment drape, girl 0.9.0 (intermediate, owner-approved), fidelity CI, gate, determinism, Boy 2.0 body | **in main** 2026-11-17 | integration/consolidated (d70bc8f) | full gate PASS (all tiers); fidelity boy 64.05 (−0.44), girl 65.45 (+0.04); report `docs/evaluation/integration/consolidation/README.md` |
+| T-038b | Boy `hair_mass` bit-determinism (canonical topology before SUBSURF+DISPLACE) | **in main** 2026-11-17 | t-038b-claude-hair-determinism (d70bc8f) | determinism 3× PASS, verify_charsys PASS |
+| T-040 | Arm-body clearance in all poses | **open, redesign** | t-040-claude-pose-clearance (2e81e45) | not merged: e905 −37.7 mm while wrist pinned, 3 clip tests over-corrected; split into T-040r1 (mesh-based clearance) and T-040r2 (hold/hand-over path planning, with T-047) |
+| T-041 | Gate on GitHub, file claims, full regression, unchanged-character guard, durable backups | assigned (first batch) | t-041-claude-gate-claims | `docs/tasks/T-041.md` |
+| T-043 | Spec parts, per-feature generator versions, helpers out of body_v6 | assigned (first batch) | t-043-claude-spec-versions | `docs/tasks/T-043.md` |
+| T-046 | Facial animation | assigned (first batch) | t-046-claude-facial-animation | `docs/tasks/T-046.md` |
+| T-040r1 | Clearance from the real mesh, smooth correction | assigned (first batch) | t-040-claude-pose-clearance | `docs/tasks/T-040r1.md` |
+| T-048 | Branch cleanup workflow + tests | queued (after T-041 backups) | — | plan §8.2 |
+| T-044 | Hair v3 | queued (after T-043) | — | — |
 | Boy F09 / H28 | Face and hair candidates for the boy | awaiting owner review | — | unpublished experiments |
 
 Tasks from now on are numbered T-001, T-002, …, and pass through the states in `WORKFLOW.md`.
