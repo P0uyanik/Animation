@@ -113,3 +113,10 @@ reliable. Approved: evaluate strand grooming vs sculpted hair and choose the bes
 costs before any extra expense; include dialogue and lip sync; develop detailed natural finger animation; include
 Blender checks in GitHub CI where practical. All implementations efficient and reusable across all characters.
 See docs/ROADMAP.md "Priority v5".
+
+## 2026-11-17: the references are the primary target
+The reference images, character models and videos were designed around each character's personality (boy:
+impatient and easily bored; girl: cheerful and intelligent) and already reflect those traits. Goal: match them as
+closely as possible in appearance, expressions, movements and animation quality. Always treat the original
+references as the primary target; improvements and personality features must support those designs, never change or
+contradict them.
