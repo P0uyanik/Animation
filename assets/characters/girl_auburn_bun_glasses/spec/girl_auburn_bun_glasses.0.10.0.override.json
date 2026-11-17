@@ -1,0 +1,41 @@
+{
+ "override": {
+  "generators": {
+   "body": "body_generic/1",
+   "face": "face_generic/1",
+   "groom": "groom/1",
+   "garment": "garment/1",
+   "accessories": "accessories/1",
+   "rig": "rigify_human/1",
+   "materials": "presets/1",
+   "exporter": "export/4"
+  },
+  "identity": {
+   "approved_decisions": {
+    "neutral_expression": "closed gentle smile: lips closed, soft upturned corners, no teeth or tongue at rest (owner decision 2026-11-17, ref_34 Neutral); open smile with upper teeth and tongue = Happy"
+   }
+  },
+  "face": {
+   "mouth": {
+    "rest_shape": "closed_smile",
+    "note": "T-055 (0.10.0): neutral = closed gentle smile (owner decision 2026-11-17; ref_34 Neutral, REFERENCE_BEHAVIOUR.md). rest_shape closed_smile = the lips_jaw/2 neutral: nothing is baked, so rest_mix (kept from 0.9.0) is inactive; corners up by -frown_m (0.9.0: 2.2 mm, now 4.2 mm for the gentle upturn of ref_34 Neutral; Smile, MouthFrown and MouthWide targets are absolute, so the full-weight expressions keep their shapes); the open smile with teeth, tongue and red felt interior comes only from MouthWide/JawOpen (Smile, Laugh, Surprise, MouthOpen presets, talking)",
+    "frown_m": -0.0042
+   }
+  },
+  "metadata": {
+   "spec_version": "0.10.0",
+   "status": "T-055: 0.9.0 with a closed gentle-smile neutral mouth; unpublished, awaiting owner visual approval",
+   "history": [
+    "0.3.0 (M3): generic face (face_generic/1), expression library, glasses accessory",
+    "0.4.0 (V2/T-015): shared skin-felt, buttons/plastic glasses frame, and glasses/acrylic lens presets",
+    "0.5.0 (V3/T-016): hair through the shared groom system (bun, band, flowers, sweep, fringe, spiral curls); wool-yarn, felt presets for hair and hair accessories",
+    "0.6.0 (V3/T-016 round 2): irregular chunky ringlets with per-rope fibre UVs, curls draped closer to the head and back, temple puffs, fuller fringe, larger pinker flowers, exposed band; still unpublished",
+    "0.7.0 (V3/T-024): outfit through the shared garment system (garment/1): cream blouse with round collar and puffed long sleeves, dusty-rose felt vest with embroidery and pockets, sage bloomer shorts with cuffs, brown fleece boots; still unpublished",
+    "0.7.1 (V3/T-025): generic garment/1 options from the T-024 review: bloomer crotch gusset, wooden buttons on the vest front edge and the shorts waistband, fuller vest shoulders with a rolled edge, pocket embroidery, chunkier boots; still unpublished",
+    "0.8.0: RETIRED, never published and not used: the label was given independently to two different branch-local specs (T-031 face v2 and T-033 felted hair v2); T-031b's branch-local '0.9.0' (face r2 only) is likewise superseded by the combined 0.9.0 below",
+    "0.9.0 (V4 consolidation, integration/consolidated): ONE combined spec. face, body.params.head, body.params.neck, identity.approved_decisions.neutral_expression from T-031b (face v2 r2: round plush face, open-smile neutral, blush, eyes); hair (structures, finish, fibres, components.finish, provenance) and materials.assignments.hair from T-033b (felted hair v2 r2); clothing.garments and clothing.provenance from T-034 (garment fibres, cloth drape); hair.dynamics from T-021 (girl_auburn_bun_glasses.dynamics.override.json, values unchanged, now part of the base spec); all other sections unchanged from 0.7.1; unpublished",
+    "0.10.0 (T-055, girl_auburn_bun_glasses.0.10.0.override.json on top of the frozen 0.9.0 spec): owner decision 2026-11-17, neutral/rest mouth = closed gentle smile (face.mouth.rest_shape closed_smile: the lips_jaw/2 neutral, corners raised by frown_m -0.0022 -> -0.0042, lips closed, no teeth or tongue at rest); open smile with teeth and tongue only in Happy/Smile/Laugh and talking shapes; eyes stay brown; explicit generator pins (the 0.9.0 defaults); everything else identical to 0.9.0; unpublished"
+   ]
+  }
+ }
+}
