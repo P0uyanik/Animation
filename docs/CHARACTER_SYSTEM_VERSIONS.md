@@ -54,7 +54,7 @@ characters' outputs. New specs (and new spec versions) should carry explicit pin
 | --- | --- | --- |
 | body | body_v6/1, body_generic/1 | `body_v6.py` (frozen), `body_generic.py` |
 | face | body_v6/1, face_generic/1 | `body_v6.py` + `face.py`, `face_generic.py` |
-| groom | hair_clumps/1, hair_clumps/2 (experiments only: no character pins it; used by the boy's hair experiments H20–H35, incl. the frozen H28 candidate), groom/1 | `hair.py`, `groom.py` |
+| groom | hair_clumps/1, hair_clumps/2 (retired by T-072; its experiments are archived, incl. the frozen H28 candidate), groom/1 | `hair.py`, `groom.py` |
 | garment | body_v6/1, garment/1 | `body_v6.py`, `garments/` |
 | accessories | body_v6/1, accessories/1 | `body_v6.py`, `accessories.py` |
 | rig | rigify_human/1 | `body_v6.rig_character` / `body_generic.rig_generic` |

@@ -102,5 +102,11 @@ and behaviour from the references first, and invent only what they do not show, 
 10. Resource use: actual token usage if exposed, otherwise state "not available". Never estimate. Note any
     repeated or unnecessary work.
 
+== Delivering the report ==
+Send the report to the Supervisor session with send_message (claude-code-remote), using the Supervisor session id
+given in your task prompt (not "@parent"). Also append one line to RELAY_LOG.md on branch relay-channel
+(`<UTC> | T-NNN | READY|BLOCKED | <branch@sha> | <one line>`, fetch the branch by name first, never rewrite it):
+that is the fallback if send_message is refused. Then stop; do not wait for CI.
+
 Wait for your first task prompt. Do not start any work before you receive it.
 ```
