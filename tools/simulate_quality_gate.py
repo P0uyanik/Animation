@@ -1,16 +1,26 @@
 #!/usr/bin/env python3
-"""Run T-023 acceptance simulations on temporary local branches.
+"""Run the quality-gate acceptance simulations (T-023, extended by T-041) on temporary local branches.
 
 Nothing is pushed. Every branch created by this script has a unique
 ``t023-sim-<pid>-`` prefix and only those branches are deleted afterwards.
-Run this only from a clean, committed T-023 branch after Supervisor approval
-trailers have made its guarded-path check green.
+Run this from a clean, committed branch.
+
+Each simulation asserts the check it targets (from check_all.json), so a full-tier change that also needs the
+Blender tier does not hide or fake the result. T-041 simulations:
+  claim overlap             tools/integrate.py claims --check on a claims table with an overlapping row -> FAIL
+  write-set violation       a file outside the task's claim -> gate check "Write-set" FAIL (inside -> PASS)
+  unknown path              a path no rule in tools/regression_paths.txt knows -> tier "full" (docs only -> "fast")
+  changed fingerprint       shared code changes the boy's geometry without a spec change -> unchanged-character
+                            guard FAIL (tools/regression/run.py; needs --blender and the approved baselines)
+
+    python tools/simulate_quality_gate.py [--blender <blender>] [--only name,name] [--task T-NNN]
 """
 
 from __future__ import annotations
 
 import argparse
 import json
+import shutil
 import os
 from pathlib import Path
 import subprocess
@@ -34,15 +44,18 @@ def git(*args, **kwargs):
 
 
 class Simulations:
-    def __init__(self, blender):
+    def __init__(self, blender, task):
         self.start_branch = git("branch", "--show-current", capture=True).stdout.strip()
         self.start_commit = git("rev-parse", "HEAD", capture=True).stdout.strip()
         self.prefix = f"t023-sim-{os.getpid()}-"
         self.created = []
         self.results = []
+        self.blender = str(Path(blender).resolve()) if blender else ""
+        self.task = task
         self.env = dict(os.environ)
-        if blender:
-            self.env["BLENDER"] = str(Path(blender).resolve())
+        # Gate runs do not get Blender: every simulation asserts its own check, and a full-tier change then reports
+        # "Blender executable not found" in the Blender tier instead of running a 20-minute regression per case.
+        self.env.pop("BLENDER", None)
 
     def branch(self, suffix, start=None):
         name = self.prefix + suffix
@@ -57,14 +70,25 @@ class Simulations:
             command.extend(["-m", "\n".join(f"Supervisor-Approved: {path}" for path in trailers)])
         run(command)
 
-    def gate(self, label, base, expected):
+    def gate(self, label, base, expected, check=None, extra=()):
+        """Run the gate; compare the overall verdict, or only the named check when `check` is given."""
         slug = label.lower().replace(" ", "-")
         command = [
             sys.executable, "tools/check_all.py", "--base", base,
-            "--build-dir", "build/t023-sim/cpp", "--artifacts-dir", f"build/t023-sim/{slug}",
+            "--build-dir", "build/t023-sim/cpp", "--artifacts-dir", f"build/t023-sim/{slug}", *extra,
         ]
         proc = run(command, check=False, env=self.env)
-        actual = "PASS" if proc.returncode == 0 else "FAIL"
+        report = json.loads((ROOT / "build" / "t023-sim" / slug / "check_all.json").read_text(encoding="utf-8"))
+        if check:
+            found = [c for c in report["checks"] if c["name"] == check]
+            actual = "PASS" if found and found[0]["ok"] else "FAIL"
+            label = f"{label} [{check}]"
+        else:
+            actual = "PASS" if proc.returncode == 0 else "FAIL"
+        self.record(label, expected, actual)
+        return report
+
+    def record(self, label, expected, actual):
         ok = actual == expected
         self.results.append((label, expected, actual, ok))
         print(f"SIMULATION {label}: expected {expected}, got {actual}")
@@ -88,7 +112,7 @@ class Simulations:
         path = Path("assets/characters/boy_yellow_hoodie/experiments/face/F09_jaw_corner_center.json")
         path.write_bytes(path.read_bytes() + b"\n")
         self.commit([str(path)], "T-023 simulation: change frozen file")
-        self.gate("frozen file", self.start_commit, "FAIL")
+        self.gate("frozen file", self.start_commit, "FAIL", "Frozen assets")
         self.reset()
 
     def shared_name(self):
@@ -96,7 +120,7 @@ class Simulations:
         path = Path("engine/t023_shared_name_probe.cpp")
         path.write_text('static const char* probe = "boy_yellow_hoodie";\n', encoding="utf-8")
         self.commit([str(path)], "T-023 simulation: character name in shared code")
-        self.gate("shared character name", self.start_commit, "FAIL")
+        self.gate("shared character name", self.start_commit, "FAIL", "Shared-systems lint")
         self.reset()
 
     def threshold(self):
@@ -104,10 +128,10 @@ class Simulations:
         path = Path("docs/references/VISUAL_TARGET.md")
         path.write_text(path.read_text(encoding="utf-8") + "\n<!-- T-023 threshold simulation -->\n", encoding="utf-8")
         self.commit([str(path)], "T-023 simulation: change guarded threshold")
-        self.gate("threshold unapproved", self.start_commit, "FAIL")
+        self.gate("threshold unapproved", self.start_commit, "FAIL", "Guarded paths")
         git("commit", "--allow-empty", "-m", "T-023 simulation: supervisor approval", "-m",
             "Supervisor-Approved: docs/references/VISUAL_TARGET.md")
-        self.gate("threshold approved", self.start_commit, "PASS")
+        self.gate("threshold approved", self.start_commit, "PASS", "Guarded paths")
         self.reset()
 
     def broken_cpp(self):
@@ -116,7 +140,7 @@ class Simulations:
         addition = '\nTEST_CASE("T-023 simulated C++ failure") { CHECK(false); }\n'
         path.write_text(path.read_text(encoding="utf-8") + addition, encoding="utf-8")
         self.commit([str(path)], "T-023 simulation: broken C++ test", [str(path).replace("\\", "/")])
-        self.gate("broken C++ test", self.start_commit, "FAIL")
+        self.gate("broken C++ test", self.start_commit, "FAIL", "C++ tests")
         self.reset()
 
     def textual_conflict(self):
@@ -153,31 +177,124 @@ class Simulations:
         probe = Path("engine/t023_hidden_conflict_probe.cpp")
         probe.write_text('static const char* probe = "quality_gate_hidden_character";\n', encoding="utf-8")
         self.commit([str(probe)], "T-023 simulation: task uses a future identifier")
-        self.gate("hidden conflict branch alone", self.start_commit, "PASS")
+        self.gate("hidden conflict branch alone", self.start_commit, "PASS", "Shared-systems lint")
         git("merge", "--no-commit", main_branch)
-        self.gate("hidden conflict after merge", main_branch, "FAIL")
+        self.gate("hidden conflict after merge", main_branch, "FAIL", "Shared-systems lint")
         git("merge", "--abort")
         self.reset()
+
+    # ----------------------------------------------------------------- T-041
+
+    def claim_overlap(self):
+        self.branch("claim-overlap")
+        ownership = Path("docs/process/OWNERSHIP.md")
+        text = ownership.read_text(encoding="utf-8")
+        rows = ("| T-990 | B | `t-990-sim-a` | `pipeline/charsys/{spec,hair}.py` | — | — |\n"
+                "| T-991 | D | `t-991-sim-b` | `content/sim_only/**` | — | — |\n")
+        ownership.write_text(_insert_rows(text, rows), encoding="utf-8")
+        self.commit([str(ownership)], "T-041 simulation: claims with an overlapping task")
+        for task, expected in (("T-990", "FAIL"), ("T-991", "PASS")):
+            proc = run([sys.executable, "tools/integrate.py", "claims", "--check", task], check=False, capture=True)
+            print(proc.stdout)
+            self.record(f"claim {'overlap' if expected == 'FAIL' else 'disjoint'} {task}", expected,
+                        "PASS" if proc.returncode == 0 else "FAIL")
+        self.reset()
+
+    def write_set(self):
+        self.branch("write-set")
+        inside = Path("docs/evaluation/process") / self.task / "simulation_probe.md"
+        inside.parent.mkdir(parents=True, exist_ok=True)
+        inside.write_text("T-041 simulation: inside the claim\n", encoding="utf-8")
+        self.commit([str(inside)], "T-041 simulation: file inside the write-set")
+        self.gate("write-set inside", self.start_commit, "PASS", "Write-set", ["--task", self.task])
+        outside = Path("docs/write_set_simulation_probe.md")
+        outside.write_text("T-041 simulation: outside the claim\n", encoding="utf-8")
+        self.commit([str(outside)], "T-041 simulation: file outside the write-set")
+        self.gate("write-set violation", self.start_commit, "FAIL", "Write-set", ["--task", self.task])
+        self.reset()
+
+    def unknown_path(self):
+        self.branch("unknown-path")
+        known = Path("docs/tier_simulation_probe.md")
+        known.write_text("T-041 simulation: docs only\n", encoding="utf-8")
+        self.commit([str(known)], "T-041 simulation: docs-only change")
+        report = self.gate("docs-only change", self.start_commit, "PASS", "Blender tier")
+        self.record("docs-only change is fast tier", "fast", report.get("tier"))
+        unknown = Path("sim_unknown_folder/probe.dat")
+        unknown.parent.mkdir(parents=True, exist_ok=True)
+        unknown.write_text("T-041 simulation: unknown path\n", encoding="utf-8")
+        self.commit([str(unknown)], "T-041 simulation: unknown path")
+        report = self.gate("unknown path", self.start_commit, "FAIL", "Blender tier")
+        self.record("unknown path is full tier", "full", report.get("tier"))
+        self.record("unknown path listed", "sim_unknown_folder/probe.dat",
+                    ",".join(report.get("tier_unknown_paths", [])))
+        shutil.rmtree(unknown.parent, ignore_errors=True)
+        self.reset()
+
+    def changed_fingerprint(self):
+        if not self.blender:
+            self.record("changed unchanged-character fingerprint (needs --blender)", "FAIL", "NOT RUN")
+            return
+        self.branch("changed-fingerprint")
+        path = Path("pipeline/charsys/build_character.py")
+        text = path.read_text(encoding="utf-8")
+        anchor = "    bpy.ops.wm.save_as_mainfile(filepath=master, compress=True)\n"
+        if text.count(anchor) != 1:
+            raise RuntimeError("build_character.py save anchor not found")
+        probe = ('    _sim = sorted((o for o in bpy.data.objects if o.type == "MESH"), key=lambda o: o.name)[0]\n'
+                 '    _sim.data.vertices[0].co.x += 0.001  # T-041 simulation: 1 mm shared-code geometry change\n')
+        path.write_text(text.replace(anchor, probe + anchor), encoding="utf-8")
+        self.commit([str(path)], "T-041 simulation: shared code moves one boy vertex by 1 mm (no spec change)")
+        out = ROOT / "build" / "t023-sim" / "changed-fingerprint"
+        shutil.rmtree(out, ignore_errors=True)
+        proc = run([sys.executable, "tools/regression/run.py", "--blender", self.blender, "--character",
+                    "boy_yellow_hoodie", "--no-fidelity", "--base", self.start_commit, "--out", str(out)],
+                   check=False, capture=True)
+        print(proc.stdout)
+        result = json.loads((out / "boy_yellow_hoodie" / "result.json").read_text(encoding="utf-8"))
+        fingerprint = [c for c in result["checks"] if c["name"] == "fingerprint"]
+        self.record("unchanged character treated as unchanged", True, result.get("unchanged"))
+        self.record("changed unchanged-character fingerprint", "FAIL",
+                    "PASS" if fingerprint and fingerprint[0]["ok"] else "FAIL")
+        self.record("regression run verdict", "FAIL", "PASS" if proc.returncode == 0 else "FAIL")
+        self.reset()
+
+
+def _insert_rows(text, rows):
+    lines = text.split("\n")
+    last = max(i for i, line in enumerate(lines) if line.startswith("| T-"))
+    return "\n".join(lines[:last + 1] + rows.rstrip("\n").split("\n") + lines[last + 1:])
+
+
+SIMULATIONS = ("frozen", "shared_name", "threshold", "broken_cpp", "textual_conflict", "hidden_conflict",
+               "claim_overlap", "write_set", "unknown_path", "changed_fingerprint")
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--blender", default="", help="Blender executable used only when changed paths require it")
+    parser.add_argument("--blender", default="", help="Blender for the changed-fingerprint simulation")
+    parser.add_argument("--only", default="", help="comma-separated subset of: " + ", ".join(SIMULATIONS))
+    parser.add_argument("--task", default="", help="task whose claim the write-set simulation uses (default: branch)")
     args = parser.parse_args()
     if git("status", "--porcelain", capture=True).stdout.strip():
         raise SystemExit("working tree must be clean")
     if not git("branch", "--show-current", capture=True).stdout.strip():
         raise SystemExit("run from a named branch, not detached HEAD")
 
-    simulations = Simulations(args.blender)
+    sys.path.insert(0, str(ROOT / "tools"))
+    import integrate
+    branch = git("branch", "--show-current", capture=True).stdout.strip()
+    task = args.task or getattr(integrate.claim_for_branch(branch), "task", "") or "T-041"
+    simulations = Simulations(args.blender, task)
+    chosen = [name for name in (args.only.split(",") if args.only else SIMULATIONS) if name]
+    unknown = sorted(set(chosen) - set(SIMULATIONS))
+    if unknown:
+        raise SystemExit(f"unknown simulations: {', '.join(unknown)}")
     try:
-        simulations.gate("baseline", simulations.start_commit, "PASS")
-        simulations.frozen()
-        simulations.shared_name()
-        simulations.threshold()
-        simulations.broken_cpp()
-        simulations.textual_conflict()
-        simulations.hidden_conflict()
+        if not args.only:
+            simulations.gate("baseline", simulations.start_commit, "PASS")
+        for name in chosen:
+            getattr(simulations, name)()
     finally:
         simulations.delete_created()
 
