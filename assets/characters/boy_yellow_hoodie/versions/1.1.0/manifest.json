@@ -1,0 +1,45 @@
+{
+ "character_id": "boy_yellow_hoodie",
+ "version": "1.1.0",
+ "parent": "1.0.0",
+ "created": "2026-11-17T22:18:47+00:00",
+ "notes": "Current approved boy (fidelity baseline: spec 1.0.0 + override 1.1.0, T-014 spec-driven eyelid tracking). Owner wording (OWNER_DECISIONS 2026-11-17): \"current approved\". Built by T-075 with pinned bpy 5.3.0, deterministic environment (determinism.subprocess_env, -t 1).",
+ "spec_sha256": "38def66c6776cc3ceb4e023132a14e6f674d0361da0eaf3f26a398cf6a0b5de2",
+ "spec_version": "1.1.0",
+ "build": "charsys/1",
+ "blender": "5.3.0",
+ "identity_changes": [
+  "face"
+ ],
+ "identity_change_approved_by": "owner, docs/process/OWNER_DECISIONS.md 2026-11-17 (T-069 #6: boy 1.1.0 is the current approved version; 2026-11-17 architecture #4 / T-075: store it immutably)",
+ "files": {
+  "boy_yellow_hoodie_master.blend": {
+   "sha256": "031b813e8d33c80d9b34846472d98dc7cf38b1a886ea2124773318fb5ce54841",
+   "bytes": 6974841
+  },
+  "spec.json": {
+   "sha256": "1cad2925b146002a6cc08518abab1dc8b2b74355de7f95cb878858f4a6c28a9f",
+   "bytes": 4478
+  },
+  "components.json": {
+   "sha256": "17ddf2f2ddfeaa9e1954a3a21fa4ce446c3aa2eb1b6373dbb7a824c995af7b3c",
+   "bytes": 10239
+  },
+  "animation_compat.json": {
+   "sha256": "b7171ab446d5fa76b23362f2ec9d19507dfd0c71a02baaa196c17b8b79e84aa1",
+   "bytes": 4953
+  },
+  "build_report.json": {
+   "sha256": "abe79c26d7caebc5ff27c599db47bc7cc843dbfc08c2e4b25effeba76a73df9d",
+   "bytes": 2700
+  }
+ },
+ "rig": {
+  "rigify_bones": 410,
+  "deform_bones": 73,
+  "unweighted_after_cleanup": 0
+ },
+ "not_stored": {
+  "boy_yellow_hoodie.glb": "not needed for reuse: shots link the master and engine packages are exported from it (run_shot.py); reproducible from the master"
+ }
+}
