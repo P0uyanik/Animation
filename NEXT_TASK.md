@@ -1,8 +1,34 @@
-# ⛔ STOP — OLD TASK QUEUE CANCELLED (Supervisor, owner-ordered 2026-11-17)
-Do NOT start or continue T-042 or any task from the old local queue. Do not run Codex or Antigravity jobs, do not push
-task branches. All work now runs under docs/process/DELIVERY_PLAN.md on `main`, assigned only by the Supervisor.
-Your T-041 work is preserved as `archive/t-041-codex-local` (25e9798). Wait for a new assignment.
+# ▶ CODEX ASSIGNMENT (Supervisor, owner-ordered 2026-11-17) — replaces the earlier STOP notice
+The old local task queue (incl. T-042) stays CANCELLED. Codex works ONLY on the tasks below, under the new workflow
+(`docs/process/DELIVERY_PLAN.md` on `main`). Cloud Claude Implementers are running T-044 (hair v3), T-058 (Boy 2.0)
+and T-045 (body mechanics, merging); never touch their files (`docs/process/OWNERSHIP.md` lists every claim).
 
+## 1. Model: switch Codex to "Astra" (owner order)
+- In Codex, open the model picker (`/model`) or run `codex --help` / check `~/.codex/config.toml`; select the model the
+  list shows as **Astra** and set it as the default (`model = "<exact id from the list>"` in `~/.codex/config.toml`).
+- Use the exact ID Codex shows; do not guess. If no Astra model is listed for this account, keep the current model,
+  continue with the tasks and report "Astra not available: <models listed>" in the relay log.
+- Reasoning effort: medium by default; high only for root-cause debugging. Run Codex non-interactively with stdin
+  closed (`</dev/null`) and check after 2 minutes that it is producing output/token usage (lesson from T-015).
+
+## 2. Tasks, in order (one at a time)
+1. **T-060 — Windows build + CI green** (`docs/tasks/T-060.md`). Ideal for this Windows PC: reproduce the GitHub
+   Windows C++ build failure locally, fix it portably, prove it in CI. Branch `t-060-codex-windows-ci` from
+   `origin/staging`. Write-set = the T-060 row in `docs/process/OWNERSHIP.md`; if a fix needs C++ source changes
+   outside it, push what you have and report the exact files in the relay log first (the Supervisor widens the claim).
+2. **T-054a — lip-sync toolchain** (`docs/tasks/T-054a.md`), after T-060 is READY. Branch `t-054a-codex-lipsync-tools`.
+
+## 3. Workflow rules (all tasks)
+- Branch from `origin/staging`; push at least hourly; never push to `main`, `staging`, or other tasks' branches; no
+  force-push, rebase or history rewrite; never delete branches.
+- Before READY: `git merge origin/staging`, then `python tools/check_all.py --base origin/main` (fast tier locally;
+  the full tier runs in GitHub CI) — all PASS except guarded paths, which the Supervisor approves.
+- Never weaken tests or thresholds; never modify frozen files (`tools/frozen_manifest.txt`); no secrets in the repo.
+- Report: push one line `<UTC time> | T-NNN | READY|BLOCKED | <branch>@<commit> | <one-line result>` to `RELAY_LOG.md`
+  on `relay-channel` (that wakes the Supervisor). Report BLOCKED instead of waiting; do not ask and wait.
+- Keep Codex busy but efficient: when a task is READY, start the next one immediately.
+
+---
 # Next task
 
 0. **Working structure (2026-11-15):** Supervisor/Implementer workflow in `docs/process/` (owner-approved). Pending: GitHub push access to the project repository, then the Implementer chat setup. No development task is selected yet.
