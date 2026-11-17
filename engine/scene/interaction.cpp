@@ -524,7 +524,8 @@ ArmPostPassResult applyArmBodyClearance(const Skeleton& sk, const BodyClearanceM
     // free stage takes the rest). The free stage goes on to the target (its best angle if the path never reaches it).
     Pose trial;
     float lo = 0, hi = -1, theta = 0, prevGap = st.gap;
-    for (float t = o.step; t <= o.maxAngle + 1e-6f; t += o.step) {
+    const float maxAngle = swing ? std::min(o.maxSwing, o.maxAngle) : o.maxAngle;
+    for (float t = o.step; t <= maxAngle + 1e-6f; t += o.step) {
       const float g = at(t, trial);
       if (g >= target) {
         hi = t;

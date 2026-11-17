@@ -142,14 +142,15 @@ constexpr float kArmBodyMargin = 0.009f;  // clearance kept between the arm and 
 // hand's world rotation (a held cup stays upright).
 struct ArmPostPassOptions {
   // Output floor above the body sections. Larger than the interaction margin: measured against the skinned mesh the
-  // fitted sections run up to ~7 mm inside the surface where an arm meets it (T-040 evidence), so 9 mm keeps the
+  // fitted sections run up to ~10 mm inside the surface where an arm meets it (T-040 evidence), so 11 mm keeps the
   // mesh itself clear.
-  float margin = 0.009f;
+  float margin = 0.011f;
   float band = 0.004f;      // width of the C1 blend above the margin (metres)
   float armpit = 0.4f;      // upper-arm points nearer the shoulder pivot than this fraction are the armpit band:
                             // they fold with the shoulder joint and are not moved for (reported in armClearance only)
   float step = 0.01f;       // coarse search step along the correction path (radians), then bisection
   float maxAngle = 1.2f;    // longest correction searched (radians)
+  float maxSwing = 0.35f;   // longest swing of a pinned arm (radians): a held hand is not worth a large elbow turn
 };
 struct ArmPostPassResult {
   float before = 1e9f, after = 1e9f;  // worst gap (with the rest allowance) of the considered arm points
