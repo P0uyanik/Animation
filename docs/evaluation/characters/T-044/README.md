@@ -258,7 +258,7 @@ the hair are hers.
 - Python tests and links: PASS.
 - Blender tier, full tier: verify_charsys, determinism, export, face, groom, garment, and the all-character
   regression. boy_yellow_hoodie PASS (fidelity 64.08), girl_auburn_bun_glasses PASS (65.36),
-  girl_white_hair_blue_dress PASS. **Existing characters are unchanged**: they do not use groom/2.
+  girl_white_hair_blue_dress PASS (not buildable yet: no spec). **Existing characters are unchanged**: they do not use groom/2.
 
 Notes on the gate:
 
@@ -271,6 +271,6 @@ Notes on the gate:
 
 `python3 pipeline/charsys/tests/test_hair_v3.py`: 30/30 PASS.
 
-Staging now also contains spec data for the third character (it appears in the regression). The hair v3 candidate here
-was built on my own stand-in base (`candidates/third.base.spec.json`); her V6 build should apply
-`candidates/third.hair_v3.json` to her real spec.
+The regression reports girl_white_hair_blue_dress as "references only, no spec yet (not buildable)", so she is not
+regressed. The hair v3 candidate for her was built on my stand-in base (`candidates/third.base.spec.json`). Her V6
+build should apply `candidates/third.hair_v3.json` to her real spec.
