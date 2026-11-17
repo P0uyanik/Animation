@@ -1,0 +1,12 @@
+{
+ "schema": "plush-studio.regression-views/1",
+ "note": "Fixed regression cameras (T-041). Same keys as a reference_index.json so pipeline/charsys/tools/groom_turnaround.py can render them; changing this file invalidates every regression baseline.",
+ "views": [
+  {"id": "turn_front", "yaw_deg": 0, "elevation_deg": 0, "focal_mm_estimate": 50},
+  {"id": "turn_right", "yaw_deg": 90, "elevation_deg": 0, "focal_mm_estimate": 50},
+  {"id": "turn_back", "yaw_deg": 180, "elevation_deg": 0, "focal_mm_estimate": 50},
+  {"id": "turn_left", "yaw_deg": 270, "elevation_deg": 0, "focal_mm_estimate": 50}
+ ],
+ "closeup": {"id": "face_closeup", "yaw_deg": 0, "elevation_deg": 0, "width_head_lengths": 2.6},
+ "render": {"height": 320, "samples": 16, "denoiser": "OPENIMAGEDENOISE", "engine": "cycles", "seed": 0}
+}

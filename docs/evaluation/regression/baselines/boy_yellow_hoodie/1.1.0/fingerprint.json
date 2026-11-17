@@ -1,0 +1,1922 @@
+{
+ "blender": "5.3.0",
+ "coordinate_grid_m": 1e-05,
+ "format": "character-geometry-fingerprint/2",
+ "objects": {
+  "backpack_body": {
+   "bbox": [
+    [
+     -0.1038,
+     0.0941,
+     0.42
+    ],
+    [
+     0.1038,
+     0.1819,
+     0.648
+    ]
+   ],
+   "centroid": [
+    0.0,
+    0.137905,
+    0.534
+   ],
+   "coords_hash": "0e8609fc683318d8",
+   "faces": 4896,
+   "materials": [
+    "M_backpack_felt"
+   ],
+   "rms_radius": 0.108504,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-spine.003"
+   ],
+   "vertices": 4898
+  },
+  "backpack_handle": {
+   "bbox": [
+    [
+     -0.0287,
+     0.134,
+     0.6364
+    ],
+    [
+     0.0287,
+     0.146,
+     0.6635
+    ]
+   ],
+   "centroid": [
+    0.0,
+    0.14,
+    0.646564
+   ],
+   "coords_hash": "09462c22679199d8",
+   "faces": 170,
+   "materials": [
+    "M_webbing"
+   ],
+   "rms_radius": 0.022837,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-spine.003"
+   ],
+   "vertices": 162
+  },
+  "backpack_pocket": {
+   "bbox": [
+    [
+     -0.0716,
+     0.171,
+     0.445
+    ],
+    [
+     0.0716,
+     0.2088,
+     0.552
+    ]
+   ],
+   "centroid": [
+    0.0,
+    0.187549,
+    0.4985
+   ],
+   "coords_hash": "0e8d22f0c8c7b306",
+   "faces": 1840,
+   "materials": [
+    "M_backpack_felt"
+   ],
+   "rms_radius": 0.064017,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-spine.003"
+   ],
+   "vertices": 1842
+  },
+  "backpack_strap.L": {
+   "bbox": [
+    [
+     0.0559,
+     -0.0773,
+     0.4452
+    ],
+    [
+     0.1349,
+     0.0945,
+     0.6695
+    ]
+   ],
+   "centroid": [
+    0.087815,
+    0.025571,
+    0.544263
+   ],
+   "coords_hash": "b917c66002ae0a26",
+   "faces": 216,
+   "materials": [
+    "M_webbing"
+   ],
+   "rms_radius": 0.110904,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-spine.003"
+   ],
+   "vertices": 206
+  },
+  "backpack_strap.R": {
+   "bbox": [
+    [
+     -0.1349,
+     -0.0773,
+     0.4452
+    ],
+    [
+     -0.0559,
+     0.0945,
+     0.6695
+    ]
+   ],
+   "centroid": [
+    -0.087815,
+    0.025565,
+    0.544263
+   ],
+   "coords_hash": "8b2e5f02ccedd7b4",
+   "faces": 216,
+   "materials": [
+    "M_webbing"
+   ],
+   "rms_radius": 0.110901,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-spine.003"
+   ],
+   "vertices": 206
+  },
+  "brow.L": {
+   "bbox": [
+    [
+     0.0435,
+     -0.1275,
+     0.83
+    ],
+    [
+     0.1013,
+     -0.1037,
+     0.845
+    ]
+   ],
+   "centroid": [
+    0.072475,
+    -0.115952,
+    0.835553
+   ],
+   "coords_hash": "8ad2e2046585ed78",
+   "faces": 120,
+   "materials": [
+    "M_brow"
+   ],
+   "rms_radius": 0.026703,
+   "shape_keys": [
+    "Basis",
+    "BrowDown"
+   ],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-spine.006"
+   ],
+   "vertices": 112
+  },
+  "brow.R": {
+   "bbox": [
+    [
+     -0.1013,
+     -0.1275,
+     0.83
+    ],
+    [
+     -0.0435,
+     -0.1037,
+     0.845
+    ]
+   ],
+   "centroid": [
+    -0.072475,
+    -0.115951,
+    0.835553
+   ],
+   "coords_hash": "35044a69d48d8a24",
+   "faces": 120,
+   "materials": [
+    "M_brow"
+   ],
+   "rms_radius": 0.026703,
+   "shape_keys": [
+    "Basis",
+    "BrowDown"
+   ],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-spine.006"
+   ],
+   "vertices": 112
+  },
+  "buckle.L": {
+   "bbox": [
+    [
+     0.087,
+     -0.115,
+     0.537
+    ],
+    [
+     0.111,
+     -0.107,
+     0.553
+    ]
+   ],
+   "centroid": [
+    0.099,
+    -0.111,
+    0.545
+   ],
+   "coords_hash": "10c3316d324d385e",
+   "faces": 96,
+   "materials": [
+    "M_buckle"
+   ],
+   "rms_radius": 0.00854,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-spine.003"
+   ],
+   "vertices": 86
+  },
+  "buckle.R": {
+   "bbox": [
+    [
+     -0.111,
+     -0.115,
+     0.537
+    ],
+    [
+     -0.087,
+     -0.107,
+     0.553
+    ]
+   ],
+   "centroid": [
+    -0.099,
+    -0.111,
+    0.545
+   ],
+   "coords_hash": "896407576d98031e",
+   "faces": 96,
+   "materials": [
+    "M_buckle"
+   ],
+   "rms_radius": 0.00854,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-spine.003"
+   ],
+   "vertices": 86
+  },
+  "drawstring.L": {
+   "bbox": [
+    [
+     0.0159,
+     -0.1171,
+     0.5521
+    ],
+    [
+     0.0291,
+     -0.0901,
+     0.6431
+    ]
+   ],
+   "centroid": [
+    0.022571,
+    -0.104144,
+    0.597884
+   ],
+   "coords_hash": "c4e9d393eff00317",
+   "faces": 180,
+   "materials": [
+    "M_cream"
+   ],
+   "rms_radius": 0.037161,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-spine.003"
+   ],
+   "vertices": 170
+  },
+  "drawstring.R": {
+   "bbox": [
+    [
+     -0.0291,
+     -0.1171,
+     0.5521
+    ],
+    [
+     -0.0159,
+     -0.0901,
+     0.6431
+    ]
+   ],
+   "centroid": [
+    -0.022571,
+    -0.104144,
+    0.597884
+   ],
+   "coords_hash": "77a4a6c97fe09e05",
+   "faces": 180,
+   "materials": [
+    "M_cream"
+   ],
+   "rms_radius": 0.037161,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-spine.003"
+   ],
+   "vertices": 170
+  },
+  "drawstring_tip.L": {
+   "bbox": [
+    [
+     0.0204,
+     -0.1184,
+     0.5351
+    ],
+    [
+     0.0296,
+     -0.1084,
+     0.5591
+    ]
+   ],
+   "centroid": [
+    0.025,
+    -0.113498,
+    0.547036
+   ],
+   "coords_hash": "6947dfa58dc9bb68",
+   "faces": 108,
+   "materials": [
+    "M_cord_tip"
+   ],
+   "rms_radius": 0.011249,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-spine.003"
+   ],
+   "vertices": 98
+  },
+  "drawstring_tip.R": {
+   "bbox": [
+    [
+     -0.0296,
+     -0.1184,
+     0.5351
+    ],
+    [
+     -0.0204,
+     -0.1084,
+     0.5591
+    ]
+   ],
+   "centroid": [
+    -0.025,
+    -0.113498,
+    0.547036
+   ],
+   "coords_hash": "03a695f5cbcd4079",
+   "faces": 108,
+   "materials": [
+    "M_cord_tip"
+   ],
+   "rms_radius": 0.011249,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-spine.003"
+   ],
+   "vertices": 98
+  },
+  "ear.L": {
+   "bbox": [
+    [
+     -0.0158,
+     -0.0288,
+     -0.0399
+    ],
+    [
+     0.0153,
+     0.0296,
+     0.0399
+    ]
+   ],
+   "centroid": [
+    -0.000213,
+    0.000238,
+    4.2e-05
+   ],
+   "coords_hash": "676339f593cc2ee2",
+   "faces": 1984,
+   "materials": [
+    "M_ear"
+   ],
+   "rms_radius": 0.032301,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-spine.006"
+   ],
+   "vertices": 1986
+  },
+  "ear.R": {
+   "bbox": [
+    [
+     -0.0153,
+     -0.0288,
+     -0.0399
+    ],
+    [
+     0.0158,
+     0.0296,
+     0.0399
+    ]
+   ],
+   "centroid": [
+    0.000213,
+    0.000238,
+    4.2e-05
+   ],
+   "coords_hash": "c011e1d70109b00a",
+   "faces": 1984,
+   "materials": [
+    "M_ear"
+   ],
+   "rms_radius": 0.032301,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-spine.006"
+   ],
+   "vertices": 1986
+  },
+  "eye.L": {
+   "bbox": [
+    [
+     -0.037,
+     -0.037,
+     -0.037
+    ],
+    [
+     0.037,
+     0.037,
+     0.037
+    ]
+   ],
+   "centroid": [
+    -0.0,
+    0.0,
+    0.0
+   ],
+   "coords_hash": "b6156acae28b20b5",
+   "faces": 1152,
+   "materials": [
+    "M_eye"
+   ],
+   "rms_radius": 0.037,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-eye.L"
+   ],
+   "vertices": 1106
+  },
+  "eye.R": {
+   "bbox": [
+    [
+     -0.037,
+     -0.037,
+     -0.037
+    ],
+    [
+     0.037,
+     0.037,
+     0.037
+    ]
+   ],
+   "centroid": [
+    -0.0,
+    0.0,
+    0.0
+   ],
+   "coords_hash": "b6156acae28b20b5",
+   "faces": 1152,
+   "materials": [
+    "M_eye"
+   ],
+   "rms_radius": 0.037,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-eye.R"
+   ],
+   "vertices": 1106
+  },
+  "hair_clumps": {
+   "bbox": [
+    [
+     -0.2135,
+     -0.1873,
+     0.7059
+    ],
+    [
+     0.2192,
+     0.2361,
+     1.1083
+    ]
+   ],
+   "centroid": [
+    -0.000198,
+    0.044104,
+    0.946875
+   ],
+   "coords_hash": "519ed9399990306e",
+   "faces": 123136,
+   "materials": [
+    "M_hair_felt"
+   ],
+   "rms_radius": 0.177155,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-spine.006"
+   ],
+   "vertices": 123344
+  },
+  "hair_mass": {
+   "bbox": [
+    [
+     -0.1536,
+     -0.1017,
+     0.7278
+    ],
+    [
+     0.1531,
+     0.1849,
+     1.0196
+    ]
+   ],
+   "centroid": [
+    -4.6e-05,
+    0.048361,
+    0.877354
+   ],
+   "coords_hash": "2dc90b354bb3fd49",
+   "faces": 3752,
+   "materials": [
+    "M_hair_felt"
+   ],
+   "rms_radius": 0.148592,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-spine.006"
+   ],
+   "vertices": 3811
+  },
+  "hair_strays": {
+   "bbox": [
+    [
+     -0.0239,
+     -0.0302,
+     1.0609
+    ],
+    [
+     0.0422,
+     0.0684,
+     1.1173
+    ]
+   ],
+   "centroid": [
+    0.013676,
+    0.01215,
+    1.090093
+   ],
+   "coords_hash": "9799d20202f3fe47",
+   "faces": 360,
+   "materials": [
+    "M_hair_felt"
+   ],
+   "rms_radius": 0.048266,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-spine.006"
+   ],
+   "vertices": 342
+  },
+  "hand.L": {
+   "bbox": [
+    [
+     0.2816,
+     -0.0359,
+     0.3861
+    ],
+    [
+     0.3453,
+     0.038,
+     0.4544
+    ]
+   ],
+   "centroid": [
+    0.313851,
+    0.004403,
+    0.419057
+   ],
+   "coords_hash": "0895792a50294bd6",
+   "faces": 4298,
+   "materials": [
+    "M_skin"
+   ],
+   "rms_radius": 0.032258,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-f_index.01.L",
+    "DEF-f_index.02.L",
+    "DEF-f_index.03.L",
+    "DEF-f_middle.01.L",
+    "DEF-f_middle.02.L",
+    "DEF-f_middle.03.L",
+    "DEF-f_pinky.01.L",
+    "DEF-f_pinky.02.L",
+    "DEF-f_pinky.03.L",
+    "DEF-f_ring.01.L",
+    "DEF-f_ring.02.L",
+    "DEF-f_ring.03.L",
+    "DEF-forearm.L",
+    "DEF-hand.L",
+    "DEF-palm.01.L",
+    "DEF-palm.02.L",
+    "DEF-palm.03.L",
+    "DEF-palm.04.L",
+    "DEF-thumb.01.L",
+    "DEF-thumb.02.L",
+    "DEF-thumb.03.L"
+   ],
+   "vertices": 4300
+  },
+  "hand.R": {
+   "bbox": [
+    [
+     -0.3453,
+     -0.0359,
+     0.3861
+    ],
+    [
+     -0.2816,
+     0.038,
+     0.4544
+    ]
+   ],
+   "centroid": [
+    -0.313851,
+    0.004403,
+    0.419057
+   ],
+   "coords_hash": "f3bf56cbf53e2f08",
+   "faces": 4298,
+   "materials": [
+    "M_skin"
+   ],
+   "rms_radius": 0.032258,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-f_index.01.R",
+    "DEF-f_index.02.R",
+    "DEF-f_index.03.R",
+    "DEF-f_middle.01.R",
+    "DEF-f_middle.02.R",
+    "DEF-f_middle.03.R",
+    "DEF-f_pinky.01.R",
+    "DEF-f_pinky.02.R",
+    "DEF-f_pinky.03.R",
+    "DEF-f_ring.01.R",
+    "DEF-f_ring.02.R",
+    "DEF-f_ring.03.R",
+    "DEF-forearm.R",
+    "DEF-hand.R",
+    "DEF-palm.01.R",
+    "DEF-palm.02.R",
+    "DEF-palm.03.R",
+    "DEF-palm.04.R",
+    "DEF-thumb.01.R",
+    "DEF-thumb.02.R",
+    "DEF-thumb.03.R"
+   ],
+   "vertices": 4300
+  },
+  "head": {
+   "bbox": [
+    [
+     -0.1597,
+     -0.1458,
+     0.696
+    ],
+    [
+     0.1597,
+     0.1617,
+     1.014
+    ]
+   ],
+   "centroid": [
+    0.0,
+    0.006748,
+    0.854906
+   ],
+   "coords_hash": "042e7c884de7f9bc",
+   "faces": 14720,
+   "materials": [
+    "M_skin"
+   ],
+   "rms_radius": 0.164647,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-spine.006"
+   ],
+   "vertices": 14722
+  },
+  "hood_back": {
+   "bbox": [
+    [
+     -0.098,
+     0.058,
+     0.555
+    ],
+    [
+     0.098,
+     0.138,
+     0.7102
+    ]
+   ],
+   "centroid": [
+    0.0,
+    0.098694,
+    0.630694
+   ],
+   "coords_hash": "7d6a0e610bb3076d",
+   "faces": 512,
+   "materials": [
+    "M_hoodie_fleece"
+   ],
+   "rms_radius": 0.07543,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006"
+   ],
+   "vertices": 482
+  },
+  "hood_roll": {
+   "bbox": [
+    [
+     -0.1135,
+     -0.1083,
+     0.6105
+    ],
+    [
+     0.1131,
+     0.1308,
+     0.7261
+    ]
+   ],
+   "centroid": [
+    0.0,
+    -0.026601,
+    0.654497
+   ],
+   "coords_hash": "30d178d10d82f435",
+   "faces": 480,
+   "materials": [
+    "M_hoodie_fleece"
+   ],
+   "rms_radius": 0.096469,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006"
+   ],
+   "vertices": 458
+  },
+  "hoodie_cuff.L": {
+   "bbox": [
+    [
+     0.2437,
+     -0.0392,
+     0.4072
+    ],
+    [
+     0.3288,
+     0.0552,
+     0.4923
+    ]
+   ],
+   "centroid": [
+    0.288648,
+    0.008,
+    0.447352
+   ],
+   "coords_hash": "08a8fba8afc51988",
+   "faces": 128,
+   "materials": [
+    "M_hoodie_fleece"
+   ],
+   "rms_radius": 0.046667,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-forearm.L",
+    "DEF-hand.L",
+    "DEF-shoulder.L",
+    "DEF-spine.003",
+    "DEF-upper_arm.L"
+   ],
+   "vertices": 192
+  },
+  "hoodie_cuff.R": {
+   "bbox": [
+    [
+     -0.3288,
+     -0.0392,
+     0.4072
+    ],
+    [
+     -0.2437,
+     0.0552,
+     0.4923
+    ]
+   ],
+   "centroid": [
+    -0.288648,
+    0.008,
+    0.447352
+   ],
+   "coords_hash": "6174dbf1778b2177",
+   "faces": 128,
+   "materials": [
+    "M_hoodie_fleece"
+   ],
+   "rms_radius": 0.046667,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-forearm.R",
+    "DEF-hand.R",
+    "DEF-shoulder.R",
+    "DEF-spine.003",
+    "DEF-upper_arm.R"
+   ],
+   "vertices": 192
+  },
+  "hoodie_hem": {
+   "bbox": [
+    [
+     -0.1333,
+     -0.1071,
+     0.352
+    ],
+    [
+     0.1333,
+     0.099,
+     0.392
+    ]
+   ],
+   "centroid": [
+    -0.0,
+    -0.001314,
+    0.372
+   ],
+   "coords_hash": "610184d9dd6488ba",
+   "faces": 480,
+   "materials": [
+    "M_hoodie_fleece"
+   ],
+   "rms_radius": 0.119682,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001"
+   ],
+   "vertices": 386
+  },
+  "hoodie_pocket": {
+   "bbox": [
+    [
+     -0.0855,
+     -0.1109,
+     0.423
+    ],
+    [
+     0.0855,
+     -0.0832,
+     0.507
+    ]
+   ],
+   "centroid": [
+    -0.0,
+    -0.100853,
+    0.465022
+   ],
+   "coords_hash": "61867c4837daeeee",
+   "faces": 2592,
+   "materials": [
+    "M_hoodie_fleece"
+   ],
+   "rms_radius": 0.055111,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001"
+   ],
+   "vertices": 2594
+  },
+  "hoodie_sleeve.L": {
+   "bbox": [
+    [
+     0.0451,
+     -0.0531,
+     0.4215
+    ],
+    [
+     0.3147,
+     0.0554,
+     0.7013
+    ]
+   ],
+   "centroid": [
+    0.171826,
+    0.004089,
+    0.570041
+   ],
+   "coords_hash": "5d16e8030f8a413f",
+   "faces": 576,
+   "materials": [
+    "M_hoodie_fleece"
+   ],
+   "rms_radius": 0.112694,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-forearm.L",
+    "DEF-hand.L",
+    "DEF-shoulder.L",
+    "DEF-spine.003",
+    "DEF-upper_arm.L"
+   ],
+   "vertices": 546
+  },
+  "hoodie_sleeve.R": {
+   "bbox": [
+    [
+     -0.3147,
+     -0.0531,
+     0.4215
+    ],
+    [
+     -0.0451,
+     0.0554,
+     0.7013
+    ]
+   ],
+   "centroid": [
+    -0.171826,
+    0.004089,
+    0.570041
+   ],
+   "coords_hash": "e73a5dca19d63606",
+   "faces": 576,
+   "materials": [
+    "M_hoodie_fleece"
+   ],
+   "rms_radius": 0.112694,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-forearm.R",
+    "DEF-hand.R",
+    "DEF-shoulder.R",
+    "DEF-spine.003",
+    "DEF-upper_arm.R"
+   ],
+   "vertices": 546
+  },
+  "hoodie_torso": {
+   "bbox": [
+    [
+     -0.131,
+     -0.107,
+     0.372
+    ],
+    [
+     0.131,
+     0.094,
+     0.672
+    ]
+   ],
+   "centroid": [
+    -0.0,
+    -0.0022,
+    0.522
+   ],
+   "coords_hash": "ea6f92e54ada2873",
+   "faces": 2432,
+   "materials": [
+    "M_hoodie_fleece"
+   ],
+   "rms_radius": 0.143175,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001"
+   ],
+   "vertices": 2370
+  },
+  "lash.L": {
+   "bbox": [
+    [
+     0.0215,
+     -0.1497,
+     0.7731
+    ],
+    [
+     0.108,
+     -0.1118,
+     0.7826
+    ]
+   ],
+   "centroid": [
+    0.064018,
+    -0.127543,
+    0.778416
+   ],
+   "coords_hash": "654a5b746be7a926",
+   "faces": 220,
+   "materials": [
+    "M_lash"
+   ],
+   "rms_radius": 0.035078,
+   "shape_keys": [
+    "Basis",
+    "Blink"
+   ],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-eye.L"
+   ],
+   "vertices": 212
+  },
+  "lash.R": {
+   "bbox": [
+    [
+     -0.108,
+     -0.1497,
+     0.7731
+    ],
+    [
+     -0.0215,
+     -0.1118,
+     0.7825
+    ]
+   ],
+   "centroid": [
+    -0.064018,
+    -0.127552,
+    0.778416
+   ],
+   "coords_hash": "86b99fa30f571c09",
+   "faces": 220,
+   "materials": [
+    "M_lash"
+   ],
+   "rms_radius": 0.035078,
+   "shape_keys": [
+    "Basis",
+    "Blink"
+   ],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-eye.R"
+   ],
+   "vertices": 212
+  },
+  "lid_lower.L": {
+   "bbox": [
+    [
+     0.0284,
+     -0.1341,
+     0.7386
+    ],
+    [
+     0.0996,
+     -0.0659,
+     0.7723
+    ]
+   ],
+   "centroid": [
+    0.064,
+    -0.100167,
+    0.749225
+   ],
+   "coords_hash": "905ac42ce3ec0a25",
+   "faces": 1612,
+   "materials": [
+    "M_skin"
+   ],
+   "rms_radius": 0.025613,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-eye.L"
+   ],
+   "vertices": 1550
+  },
+  "lid_lower.R": {
+   "bbox": [
+    [
+     -0.0996,
+     -0.1341,
+     0.7386
+    ],
+    [
+     -0.0284,
+     -0.0659,
+     0.7723
+    ]
+   ],
+   "centroid": [
+    -0.064,
+    -0.100177,
+    0.749225
+   ],
+   "coords_hash": "47914ae6640abdb9",
+   "faces": 1612,
+   "materials": [
+    "M_skin"
+   ],
+   "rms_radius": 0.025613,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-eye.R"
+   ],
+   "vertices": 1550
+  },
+  "lid_upper.L": {
+   "bbox": [
+    [
+     0.0212,
+     -0.1478,
+     0.7746
+    ],
+    [
+     0.1068,
+     -0.0634,
+     0.821
+    ]
+   ],
+   "centroid": [
+    0.064,
+    -0.107129,
+    0.80393
+   ],
+   "coords_hash": "5acf44264c4567e0",
+   "faces": 2058,
+   "materials": [
+    "M_skin"
+   ],
+   "rms_radius": 0.03266,
+   "shape_keys": [
+    "Basis",
+    "Blink"
+   ],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-eye.L"
+   ],
+   "vertices": 1996
+  },
+  "lid_upper.R": {
+   "bbox": [
+    [
+     -0.1068,
+     -0.1478,
+     0.7746
+    ],
+    [
+     -0.0212,
+     -0.0634,
+     0.821
+    ]
+   ],
+   "centroid": [
+    -0.064,
+    -0.107139,
+    0.80393
+   ],
+   "coords_hash": "ff0d062e20f1860e",
+   "faces": 2058,
+   "materials": [
+    "M_skin"
+   ],
+   "rms_radius": 0.03266,
+   "shape_keys": [
+    "Basis",
+    "Blink"
+   ],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-eye.R"
+   ],
+   "vertices": 1996
+  },
+  "mouth": {
+   "bbox": [
+    [
+     -0.0125,
+     -0.1431,
+     0.7192
+    ],
+    [
+     0.0125,
+     -0.1407,
+     0.7243
+    ]
+   ],
+   "centroid": [
+    0.0,
+    -0.142168,
+    0.7221
+   ],
+   "coords_hash": "2d388ef4ba6a35cd",
+   "faces": 20,
+   "materials": [
+    "M_mouth"
+   ],
+   "rms_radius": 0.008059,
+   "shape_keys": [
+    "Basis",
+    "Smile",
+    "JawOpen"
+   ],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-spine.006"
+   ],
+   "vertices": 33
+  },
+  "neck": {
+   "bbox": [
+    [
+     -0.046,
+     -0.044,
+     0.6
+    ],
+    [
+     0.046,
+     0.044,
+     0.7
+    ]
+   ],
+   "centroid": [
+    -0.0,
+    -0.0,
+    0.65
+   ],
+   "coords_hash": "bd348c17c8de53f4",
+   "faces": 144,
+   "materials": [
+    "M_skin"
+   ],
+   "rms_radius": 0.057125,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006"
+   ],
+   "vertices": 122
+  },
+  "rig_boy_yellow_hoodie": {
+   "bones": 410,
+   "deform_bones": 73,
+   "type": "ARMATURE"
+  },
+  "shoe.L": {
+   "bbox": [
+    [
+     0.0062,
+     -0.14,
+     0.0221
+    ],
+    [
+     0.1378,
+     0.072,
+     0.1078
+    ]
+   ],
+   "centroid": [
+    0.072,
+    -0.034,
+    0.057978
+   ],
+   "coords_hash": "3f812e7d1c63ce3c",
+   "faces": 4720,
+   "materials": [
+    "M_shoe_felt",
+    "M_sole"
+   ],
+   "rms_radius": 0.083127,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L"
+   ],
+   "vertices": 4722
+  },
+  "shoe.R": {
+   "bbox": [
+    [
+     -0.1378,
+     -0.14,
+     0.0221
+    ],
+    [
+     -0.0062,
+     0.072,
+     0.1078
+    ]
+   ],
+   "centroid": [
+    -0.072,
+    -0.034,
+    0.057978
+   ],
+   "coords_hash": "ecd8adb4308bf411",
+   "faces": 4720,
+   "materials": [
+    "M_shoe_felt",
+    "M_sole"
+   ],
+   "rms_radius": 0.083127,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.R"
+   ],
+   "vertices": 4722
+  },
+  "shoe_strap0.L": {
+   "bbox": [
+    [
+     0.0086,
+     -0.0575,
+     0.083
+    ],
+    [
+     0.1354,
+     -0.0425,
+     0.107
+    ]
+   ],
+   "centroid": [
+    0.072,
+    -0.05,
+    0.092844
+   ],
+   "coords_hash": "360d982760cbc567",
+   "faces": 192,
+   "materials": [
+    "M_sole"
+   ],
+   "rms_radius": 0.050528,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L"
+   ],
+   "vertices": 182
+  },
+  "shoe_strap0.R": {
+   "bbox": [
+    [
+     -0.1354,
+     -0.0575,
+     0.083
+    ],
+    [
+     -0.0086,
+     -0.0425,
+     0.107
+    ]
+   ],
+   "centroid": [
+    -0.072,
+    -0.05,
+    0.092844
+   ],
+   "coords_hash": "51a3aaa33101f3c5",
+   "faces": 192,
+   "materials": [
+    "M_sole"
+   ],
+   "rms_radius": 0.050528,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.R"
+   ],
+   "vertices": 182
+  },
+  "shoe_strap1.L": {
+   "bbox": [
+    [
+     0.0087,
+     -0.0275,
+     0.0842
+    ],
+    [
+     0.1353,
+     -0.0125,
+     0.111
+    ]
+   ],
+   "centroid": [
+    0.072,
+    -0.02,
+    0.095181
+   ],
+   "coords_hash": "af9d7ce31f21d596",
+   "faces": 192,
+   "materials": [
+    "M_sole"
+   ],
+   "rms_radius": 0.050702,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L"
+   ],
+   "vertices": 182
+  },
+  "shoe_strap1.R": {
+   "bbox": [
+    [
+     -0.1353,
+     -0.0275,
+     0.0842
+    ],
+    [
+     -0.0087,
+     -0.0125,
+     0.111
+    ]
+   ],
+   "centroid": [
+    -0.072,
+    -0.02,
+    0.095181
+   ],
+   "coords_hash": "80fde6e4d5e2b0af",
+   "faces": 192,
+   "materials": [
+    "M_sole"
+   ],
+   "rms_radius": 0.050702,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.R"
+   ],
+   "vertices": 182
+  },
+  "sock.L": {
+   "bbox": [
+    [
+     0.023,
+     -0.031,
+     0.0686
+    ],
+    [
+     0.105,
+     0.052,
+     0.1294
+    ]
+   ],
+   "centroid": [
+    0.064,
+    0.011,
+    0.099
+   ],
+   "coords_hash": "0a5a81dc388c8357",
+   "faces": 72,
+   "materials": [
+    "M_sock"
+   ],
+   "rms_radius": 0.049162,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001"
+   ],
+   "vertices": 50
+  },
+  "sock.R": {
+   "bbox": [
+    [
+     -0.105,
+     -0.031,
+     0.0686
+    ],
+    [
+     -0.023,
+     0.052,
+     0.1294
+    ]
+   ],
+   "centroid": [
+    -0.064,
+    0.011,
+    0.099
+   ],
+   "coords_hash": "1db20632a2b7399a",
+   "faces": 72,
+   "materials": [
+    "M_sock"
+   ],
+   "rms_radius": 0.049162,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001"
+   ],
+   "vertices": 50
+  },
+  "sole.L": {
+   "bbox": [
+    [
+     0.0021,
+     -0.1458,
+     0.0
+    ],
+    [
+     0.1419,
+     0.0778,
+     0.026
+    ]
+   ],
+   "centroid": [
+    0.072,
+    -0.034,
+    0.013
+   ],
+   "coords_hash": "7bed7f8cd185e84f",
+   "faces": 864,
+   "materials": [
+    "M_sole"
+   ],
+   "rms_radius": 0.091403,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L"
+   ],
+   "vertices": 866
+  },
+  "sole.R": {
+   "bbox": [
+    [
+     -0.1419,
+     -0.1458,
+     0.0
+    ],
+    [
+     -0.0021,
+     0.0778,
+     0.026
+    ]
+   ],
+   "centroid": [
+    -0.072,
+    -0.034,
+    0.013
+   ],
+   "coords_hash": "d82a6a98e78ded51",
+   "faces": 864,
+   "materials": [
+    "M_sole"
+   ],
+   "rms_radius": 0.091403,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.R"
+   ],
+   "vertices": 866
+  },
+  "trouser_leg.L": {
+   "bbox": [
+    [
+     -0.003,
+     -0.0638,
+     0.112
+    ],
+    [
+     0.123,
+     0.0617,
+     0.372
+    ]
+   ],
+   "centroid": [
+    0.060642,
+    -0.000851,
+    0.207106
+   ],
+   "coords_hash": "f4cf56561e137324",
+   "faces": 320,
+   "materials": [
+    "M_trousers_fleece"
+   ],
+   "rms_radius": 0.108048,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001"
+   ],
+   "vertices": 282
+  },
+  "trouser_leg.R": {
+   "bbox": [
+    [
+     -0.123,
+     -0.0638,
+     0.112
+    ],
+    [
+     0.003,
+     0.0617,
+     0.372
+    ]
+   ],
+   "centroid": [
+    -0.060642,
+    -0.000851,
+    0.207106
+   ],
+   "coords_hash": "8046c4d725d09da1",
+   "faces": 320,
+   "materials": [
+    "M_trousers_fleece"
+   ],
+   "rms_radius": 0.108048,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001"
+   ],
+   "vertices": 282
+  },
+  "trousers_waist": {
+   "bbox": [
+    [
+     -0.12,
+     -0.091,
+     0.32
+    ],
+    [
+     0.12,
+     0.089,
+     0.42
+    ]
+   ],
+   "centroid": [
+    -0.0,
+    0.00102,
+    0.37
+   ],
+   "coords_hash": "2f5451a4a35c361c",
+   "faces": 384,
+   "materials": [
+    "M_trousers_fleece"
+   ],
+   "rms_radius": 0.112262,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001"
+   ],
+   "vertices": 338
+  },
+  "undershirt": {
+   "bbox": [
+    [
+     -0.03,
+     -0.084,
+     0.628
+    ],
+    [
+     0.03,
+     -0.06,
+     0.668
+    ]
+   ],
+   "centroid": [
+    0.0,
+    -0.072,
+    0.648
+   ],
+   "coords_hash": "01db3fdbc0a62fff",
+   "faces": 288,
+   "materials": [
+    "M_cream"
+   ],
+   "rms_radius": 0.021588,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-spine.003"
+   ],
+   "vertices": 266
+  }
+ }
+}

@@ -1,0 +1,50 @@
+# Path classification for the quality gate (delivery plan §5.1). Guarded: changes need Supervisor approval.
+#
+# One rule per line: "<tier> <glob>". Tier is "fast" (frozen assets, guarded paths, write-set, lint, C++ build,
+# CTest, plush_tests, Python tests, links) or "full" (fast + Blender tier + the all-character regression:
+# build, fingerprint, engine export, regression renders, fidelity, unchanged-character guard).
+# Globs: '*' stays inside one folder, '**' crosses folders, '**/' may be empty. The FIRST matching rule wins.
+# A path that matches no rule is classified "full" (unknown paths default to full regression).
+# A change set is "full" as soon as one path is "full".
+#
+# Add a new shared module here once (as "full", above any broader "fast" rule) and it is always covered.
+
+# --- The regression machinery itself: a change must prove itself on the full run.
+full tools/regression/**
+full tools/regression_paths.txt
+full tools/fidelity/**
+full tools/bpy_blender.py
+full docs/evaluation/regression/**
+full docs/evaluation/characters/fidelity_baseline.json
+full docs/references/**
+
+# --- Shared systems, character data and visual inputs (plan §5.1 "any shared system ... or any visual file or spec").
+full pipeline/**
+full assets/**
+full content/**
+full engine/**
+full apps/render-cli/**
+full tests/regression/**
+full tests/data/**
+
+# --- Isolated C++ tests: the fast tier builds and runs them.
+fast tests/*.cpp
+fast tests/*.h
+fast tests/CMakeLists.txt
+
+# --- Studio UI (no character build, export or render path) and build configuration.
+fast apps/studio/**
+fast apps/export-obj/**
+fast CMakeLists.txt
+fast cmake/**
+fast vcpkg.json
+fast vcpkg-configuration.json
+
+# --- Tools, CI and documentation.
+fast tools/**
+fast .github/**
+fast docs/**
+fast *.md
+fast .gitignore
+fast .gitattributes
+fast LICENSE
