@@ -14,7 +14,7 @@ face_generic/1 behaviour unchanged, so older specs build exactly as before.
   blush.intensity / softness / nose_intensity  soft felt colour patch
   shape.cheek_roundness_m / chin_forward_m / chin_drop_m / forehead_height_m / forehead_fullness_m   head shape
   skin.occlusion                               felt-skin occlusion compensation (see face_skin_material)
-  mouth.rest_shape = "closed_smile" | "open_smile" | "small_o"
+  mouth.rest_shape = "closed_smile" | "open_smile" | "small_o"; mouth.rest_mix {key: weight} tunes the baked weights
 """
 import math
 
@@ -447,13 +447,14 @@ def shape_head(head, ctx, sc, ex, ez, r):
 REST_SHAPES = {"closed_smile": {}, "open_smile": {"MouthWide": 0.8, "MouthSmile": 0.4}, "small_o": {"MouthO": 0.9}}
 
 
-def bake_rest_shape(objs, shape):
+def bake_rest_shape(objs, shape, mix=None):
     """Makes a mouth shape the rest state: its deltas are added to the basis and to every shape key (relative action
-    units keep working on top). closed_smile = the lips_jaw/2 neutral (nothing baked)."""
+    units keep working on top). closed_smile = the lips_jaw/2 neutral (nothing baked). `mix` (spec
+    face.mouth.rest_mix, {shape key: weight}) replaces the shape's default weights, e.g. a gentler open smile."""
     import numpy as np
     if shape not in REST_SHAPES:
         raise ValueError(f"face.mouth.rest_shape {shape!r}: {sorted(REST_SHAPES)}")
-    w = REST_SHAPES[shape]
+    w = dict(mix) if mix else REST_SHAPES[shape]
     done = []
     for ob in objs:
         sk = ob.data.shape_keys

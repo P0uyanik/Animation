@@ -650,7 +650,8 @@ def build(C, M, head, spec, P, H, head_bone="DEF-spine.006", eye_bone="DEF-eye.{
         _rename_key(ob, "Smile", "MouthSmile")
     if mcfg.get("rest_shape", "closed_smile") != "closed_smile":  # v2 mouth rest shape (baked into the basis)
         rep["mouth_rest_shape"] = {"shape": mcfg["rest_shape"],
-                                   "objects": FF.bake_rest_shape([mouth, cavity, head], mcfg["rest_shape"])}
+                                   "objects": FF.bake_rest_shape([mouth, cavity, head], mcfg["rest_shape"],
+                                                                     mcfg.get("rest_mix"))}
     au_names = [a for a in lib["action_units"]]
     lid_objs = [o for l in lids for o in l[:3]]
     face_objs = eyes + lid_objs + brows + [mouth, cavity, head]

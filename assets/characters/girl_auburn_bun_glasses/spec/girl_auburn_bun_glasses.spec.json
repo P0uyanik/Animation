@@ -7,7 +7,7 @@
   "approved_decisions": {
    "modelling_pose": "A-pose",
    "hair": "long spiral curls to about mid-back; high bun; pink felt flowers; blue-grey band",
-   "neutral_expression": "closed-mouth soft smile; Happy = open smile with teeth and tongue",
+   "neutral_expression": "gentle open smile with upper teeth and tongue (T-031b task brief: the reference default; owner to confirm at visual approval). Before 0.9.0: closed-mouth soft smile; Happy = open smile with teeth and tongue",
    "scale": "bun top level with boy_yellow_hoodie's hair top; body slightly shorter"
   },
   "references": "assets/characters/girl_auburn_bun_glasses/references/reference_index.json"
@@ -40,13 +40,19 @@
     "half_width": 0.14639,
     "half_depth": 0.13918,
     "half_height": 0.14948,
-    "chin_taper": 0.3,
-    "forward": -0.00412
+    "chin_taper": 0.12,
+    "forward": -0.00412,
+    "lower_half_height": 0.14948,
+    "lower_roundness": 3.8,
+    "lower_depth_roundness": 2.3,
+    "shape_note": "T-031b: big round plush face (#30): superellipse lower outline (full cheeks carried down to a wide jaw and a broad, short chin at the chin landmark), lighter jaw taper; face width at the mouth line ~250 mm (reference ~265 mm incl. the cheek bulge); was a tapered ellipsoid (~170 mm at the mouth)"
    },
    "neck": {
     "base_z": 0.60309,
     "top_z": 0.71134,
-    "radius": 0.04639
+    "radius": 0.04639,
+    "top_radius": 0.055,
+    "note": "T-031b: neck widens towards the jaw (#30: the head sits on a short neck; the broad chin hides most of it)"
    },
    "torso": {
     "levels": [
@@ -272,7 +278,7 @@
    "chin_below_eye_m": 0.096
   },
   "eyes": {
-   "radius_m": 0.042,
+   "radius_m": 0.044,
    "protrusion_m": 0.0132,
    "scale": [
     1.0,
@@ -343,11 +349,11 @@
     ]
    ],
    "lids": {
-    "upper_edge_deg": 40,
+    "upper_edge_deg": 43,
     "upper_back_tilt": 1.0,
     "upper_gap": 0.06,
     "upper_thickness_m": 0.0024,
-    "lower_edge_deg": -50,
+    "lower_edge_deg": -53,
     "lower_tilt": 0.3,
     "lower_gap": 0.03,
     "lower_thickness_m": 0.0012,
@@ -461,19 +467,20 @@
   },
   "blush": {
    "srgb": [
-    232,
-    146,
-    138
+    238,
+    138,
+    132
    ],
-   "below_eye_m": 0.047,
-   "out_m": 0.006,
-   "radius_m": 0.03,
+   "below_eye_m": 0.036,
+   "out_m": 0.03,
+   "radius_m": 0.033,
    "nose": true,
    "intensity": 1.0,
-   "softness": 0.85,
-   "breakup": 0.25,
+   "softness": 0.9,
+   "breakup": 0.2,
    "nose_intensity": 0.55,
-   "nose_radius_m": 0.014
+   "nose_radius_m": 0.014,
+   "note": "T-031b: rosy round felt blush on the outer cheeks, partly outside the glasses rims (#30 neutral: centre ~48 mm out and ~34 mm below the eye centre)"
   },
   "mouth": {
    "generator": "lips_jaw/2",
@@ -514,19 +521,19 @@
    "interior_rows": 9,
    "interior_follow_keys": true,
    "inner_srgb": [
-    150,
-    60,
+    178,
+    62,
     64
    ],
    "throat_srgb": [
-    50,
-    16,
-    20
+    92,
+    24,
+    28
    ],
    "tongue_srgb": [
-    196,
-    96,
-    104
+    222,
+    112,
+    118
    ],
    "oral": {
     "teeth_upper": {
@@ -543,9 +550,9 @@
      "t0": 0.58,
      "width": 0.62,
      "srgb": [
-      206,
-      104,
-      112
+      222,
+      112,
+      118
      ],
      "bulge_m": 0.0002
     }
@@ -571,8 +578,12 @@
      "lo_drop_m": 0.0045
     }
    ],
-   "note": "neutral = small closed soft smile (frown_m < 0); Happy/Smile opens via MouthWide showing the teeth and tongue layers",
-   "rest_shape": "closed_smile"
+   "note": "T-031b: neutral = gentle open smile (#30 neutral tile and front views: friendly open D-shaped smile, upper teeth, tongue, red felt interior), baked as the rest shape; every action unit works on top",
+   "rest_shape": "open_smile",
+   "rest_mix": {
+    "MouthWide": 0.6,
+    "MouthSmile": 0.55
+   }
   },
   "blink": {
    "generator": "lid_seam/1",
@@ -637,11 +648,11 @@
    "note": "T-031: the grey face came from occlusion (protruding eyes, glasses, fringe) on a neutral felt base under the key-left calibration; felt scatters light into creases, so occluded areas shift warm and light instead of grey. Body and face share this material (body_skin), so the tones match."
   },
   "shape": {
-   "cheek_roundness_m": 0.003,
-   "cheek_radius_m": 0.04,
-   "cheek_below_eye_m": 0.045,
-   "cheek_x": 0.9,
-   "note": "T-031: slightly fuller round cheeks (#30 neutral); chin and forehead unchanged"
+   "cheek_roundness_m": 0.007,
+   "cheek_radius_m": 0.046,
+   "cheek_below_eye_m": 0.05,
+   "cheek_x": 1.15,
+   "note": "T-031b: full round plush cheeks (#30 neutral, #30 front-left), carried by the body_generic lower-face roundness"
   }
  },
  "hair": {
@@ -1606,8 +1617,8 @@
   ]
  },
  "metadata": {
-  "spec_version": "0.8.0",
-  "status": "V4/T-031: face system v2 (shared feature options); unpublished",
+  "spec_version": "0.9.0",
+  "status": "V4/T-031b: face round 2 (round plush face shape, warm skin, open-smile neutral, blush, eyes); unpublished",
   "history": [
    "0.3.0 (M3): generic face (face_generic/1), expression library, glasses accessory",
    "0.4.0 (V2/T-015): shared skin-felt, buttons/plastic glasses frame, and glasses/acrylic lens presets",
@@ -1615,7 +1626,8 @@
    "0.6.0 (V3/T-016 round 2): irregular chunky ringlets with per-rope fibre UVs, curls draped closer to the head and back, temple puffs, fuller fringe, larger pinker flowers, exposed band; still unpublished",
    "0.7.0 (V3/T-024): outfit through the shared garment system (garment/1): cream blouse with round collar and puffed long sleeves, dusty-rose felt vest with embroidery and pockets, sage bloomer shorts with cuffs, brown fleece boots; still unpublished",
    "0.7.1 (V3/T-025): generic garment/1 options from the T-024 review: bloomer crotch gusset, wooden buttons on the vest front edge and the shorts waistband, fuller vest shoulders with a rolled edge, pocket embroidery, chunkier boots; still unpublished",
-   "0.8.0 (V4/T-031): face section only: layered glossy eyes, curled lash strands, thick felt brows moved below the fringe, small round nose, felt blush, felt-skin occlusion compensation (grey face), fuller cheeks; still unpublished"
+   "0.8.0 (V4/T-031): face section only: layered glossy eyes, curled lash strands, thick felt brows moved below the fringe, small round nose, felt blush, felt-skin occlusion compensation (grey face), fuller cheeks; still unpublished",
+   "0.9.0 (V4/T-031b): round plush face (body_generic lower-face roundness, short broad chin, neck top radius), fuller cheeks, gentle open-smile neutral, rosier outer-cheek blush, larger more open eyes; unpublished"
   ]
  },
  "components": {
