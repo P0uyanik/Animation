@@ -13,6 +13,7 @@
 full tools/regression/**
 full tools/regression_paths.txt
 full tools/fidelity/**
+full tools/animcheck/**
 full tools/bpy_blender.py
 full docs/evaluation/regression/**
 full docs/evaluation/characters/fidelity_baseline.json

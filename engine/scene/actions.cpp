@@ -309,6 +309,10 @@ Result<void> SceneEvaluator::compileActionsBody() {
     }
   else
     authoredProps_ = scene_.props;
+  {  // T-061: the scene's animation-principles setting (validated when the scene loaded)
+    auto pr = animPrinciplesFromJson(scene_.animPrinciples);
+    principles_ = pr ? *pr : AnimPrinciples{};
+  }
   if (!scene_.actions.is_array() || scene_.actions.empty()) return {};
   InteractionContext interactions;
 
@@ -374,6 +378,174 @@ Result<void> SceneEvaluator::compileActionsBody() {
       clipCache_[key] = std::make_shared<const ClipData>(std::move(*cl));
     }
     return clipCache_[key];
+  };
+  // --- Animation principles (T-061, anim/principles.h): measurements for clip-layer blends and IK weight ramps. ---
+  // Poses are measured with the automatic base idle present (as at playback), whether or not it is prepared yet, so
+  // a first load and a recompile plan the same blends; nothing else the actions plan sees it.
+  auto measured = [&](auto&& fn) {
+    if (!autoIdle_.empty()) return fn();
+    const auto savedWarnings = warnings_;
+    prepareAutoIdle();
+    auto r = fn();
+    autoIdle_.clear();
+    warnings_ = savedWarnings;
+    return r;
+  };
+  auto globalsWith = [&](size_t c, const ClipLayer* extra, double f) {
+    if (extra) clipLayers_[c].push_back(*extra);
+    auto g = kinematicGlobals(c, f, nullptr);
+    if (extra) clipLayers_[c].pop_back();
+    return g;
+  };
+  auto rotDeg = [](const mat4& a, const mat4& b) {
+    const quat qa = glm::normalize(glm::quat_cast(mat3(a))), qb = glm::normalize(glm::quat_cast(mat3(b)));
+    return glm::degrees(2.0f * std::acos(std::min(1.0f, std::abs(glm::dot(qa, qb)))));
+  };
+  auto isFinger = [](const std::string& r) { return successionRank(r) == 4; };
+  auto layerInMask = [](const ClipLayer& L, const std::string& role) {
+    const std::string r = L.mirror ? mirrorRole(*L.clip, role) : role;
+    return std::find(L.clip->mask.begin(), L.clip->mask.end(), r) != L.clip->mask.end();
+  };
+  // Largest global rotation change of a driven (non-finger) bone between the pose without the layer and with it at
+  // full weight, at frame f: the amplitude a blend at f has to cover.
+  auto blendAmplitude = [&](size_t c, const ClipLayer& L, double f) {
+    ClipLayer full = L;
+    full.principles = false;
+    full.blendIn = full.blendOut = 0;
+    const auto g0 = globalsWith(c, nullptr, f), g1 = globalsWith(c, &full, f);
+    float a = 0;
+    for (const auto& r : L.binding.roles)
+      if (r.bone >= 0 && !isFinger(r.name) && layerInMask(L, r.name)) a = std::max(a, rotDeg(g0[size_t(r.bone)], g1[size_t(r.bone)]));
+    return double(a);
+  };
+  auto wristPath = [&](size_t c, const ClipLayer& L, int hand, double f0, double f1) {
+    std::vector<vec3> path;
+    clipLayers_[c].push_back(L);
+    for (double f = std::floor(f0); f <= std::ceil(f1); f += 1) path.push_back(vec3(kinematicGlobals(c, f, nullptr)[size_t(hand)][3]));
+    clipLayers_[c].pop_back();
+    return path;
+  };
+  // Clip action blends: minimum lengths from the amplitude, then elbow breakdowns where the wrist path of a blend
+  // would be near-linear (bisection on the breakdown angle until the path deviates minArc from its chord).
+  auto planClipBlends = [&](size_t c, ClipLayer& L, bool explicitEnd, bool movingIn, bool movingOut) {
+    const double fps = scene_.rate.fps();
+    measured([&] {
+      const bool finite = L.end < 1e29;
+      const double inMin = L.blendIn > 0 ? minBlendFrames(blendAmplitude(c, L, L.start), fps, principles_) : 0.0;
+      const double outMin = L.blendOut > 0 && finite ? minBlendFrames(blendAmplitude(c, L, L.end), fps, principles_) : 0.0;
+      double in = std::max(L.blendIn, inMin), out = std::max(L.blendOut, outMin);
+      // The lengthened blends take at most half of a finite layer (never less than authored), so a short clip keeps
+      // a part at full weight.
+      if (const double room = std::max(L.blendIn + L.blendOut, 0.5 * (L.end - L.start)); finite && in + out > room) {
+        const double extra = in + out - (L.blendIn + L.blendOut), allowed = room - (L.blendIn + L.blendOut);
+        const double k = extra > 0 ? std::max(0.0, allowed) / extra : 0.0;
+        in = L.blendIn + (in - L.blendIn) * k;
+        out = L.blendOut + (out - L.blendOut) * k;
+      }
+      L.blendIn = in;
+      L.blendOut = out;
+      // Eased clock (clip_layers.cpp) at the ends where the clip is moving; the layer keeps its length, so its middle
+      // plays faster by length / (length - ramps / 2): only where that stays <= 1.25 (ramps <= 40 % of the layer).
+      L.clockIn = movingIn ? in : 0.0;
+      L.clockOut = movingOut && finite && !explicitEnd ? out : 0.0;
+      if (finite && L.clockIn + L.clockOut > 0.4 * (L.end - L.start)) L.clockIn = L.clockOut = 0.0;
+      for (int s = 0; s < 2; ++s) {
+        const std::string side = s == 0 ? ".L" : ".R";
+        auto roleBone = [&](const std::string& role) {
+          auto it = L.binding.roleIndex.find(role);
+          return it == L.binding.roleIndex.end() ? -1 : L.binding.roles[size_t(it->second)].bone;
+        };
+        const int hand = roleBone("hand" + side);
+        if (hand < 0 || roleBone("forearm" + side) < 0 || !layerInMask(L, "forearm" + side)) continue;
+        for (int phase = 0; phase < 2; ++phase) {
+          const double len = phase == 0 ? L.blendIn : L.blendOut;
+          if (len < 2 || (phase == 1 && !finite)) continue;
+          const double tail = 4 * L.succession;  // the ranks' offsets (succession)
+          const double f0 = phase == 0 ? L.start : L.end - len, f1 = phase == 0 ? L.start + len + tail : L.end + tail;
+          float* slot = phase == 0 ? &L.breakIn[s] : &L.breakOut[s];
+          auto arcWith = [&](float deg, float* chord) {
+            ClipLayer T = L;
+            (phase == 0 ? T.breakIn : T.breakOut)[s] = deg;
+            return arcDeviation(wristPath(c, T, hand, f0, f1), chord);
+          };
+          float chord = 0;
+          const float arc0 = arcWith(0, &chord);
+          if (chord < principles_.breakdownMinChordM || arc0 >= principles_.minArc) continue;
+          // the direction (open or bend the elbow) that curves the path more; then the smallest angle reaching minArc
+          const float maxDeg = float(principles_.breakdownMaxDeg);
+          const float aOpen = arcWith(maxDeg, nullptr), aBend = arcWith(-maxDeg, nullptr);
+          const float sign = aOpen >= aBend ? 1.0f : -1.0f, best = std::max(aOpen, aBend);
+          if (best <= arc0 + 1e-4f) continue;  // neither helps: leave the blend as it is
+          if (best < principles_.minArc) {
+            *slot = sign * maxDeg;
+            continue;
+          }
+          float lo = 0, hi = maxDeg;
+          for (int it = 0; it < 7; ++it) {
+            const float mid = 0.5f * (lo + hi);
+            (arcWith(sign * mid, nullptr) >= principles_.minArc ? hi : lo) = mid;
+          }
+          *slot = sign * hi;
+        }
+      }
+      return 0;
+    });
+  };
+  // IK gesture weight ramps (touch, reach): quintic ease, at least as long as the arm's rotation needs (the ramp in
+  // starts earlier when the authored one is too short, never before the hand's previous IK keys), and the elbow
+  // trailing the shoulder by ikElbowLagSec (".lag"), both reaching full weight / zero at the authored frames.
+  // in: weight 0 -> 1, reaching 1 at `full`; out: 1 -> 0 from `from` to `zero`.
+  auto easedKeys = [&](const std::string& track, double f0, double f1, float v0, float v1) {
+    const int n = std::max(1, int(std::ceil(f1 - f0)));
+    for (int k = 0; k <= n; ++k) {
+      const double x = double(k) / n;
+      key(*gen, track, f0 + (f1 - f0) * x, vec3(v0 + (v1 - v0) * float(easeInOut(x))), Interp::Linear);
+    }
+  };
+  auto ikRamps = [&](size_t c, char side, const std::string& ik, double inStart, double full, double outStart, double zero) {
+    const double fps = scene_.rate.fps(), lag = principles_.ikElbowLagSec * fps;
+    const int upper = characters_[c].asset.skeleton.find(std::string("upperArm.") + side);
+    const int fore = characters_[c].asset.skeleton.find(std::string("forearm.") + side);
+    const int handB = characters_[c].asset.skeleton.find(std::string("hand.") + side);
+    Track& w = gen->tracks[ik + ".weight"];
+    const double prevKey = w.keys.empty() ? -1e30 : w.keys.back().frame;
+    w.keys.erase(std::remove_if(w.keys.begin(), w.keys.end(), [&](const Key& k) { return k.frame >= inStart - 1e-9 && k.frame <= zero + 1e-9; }), w.keys.end());
+    // In: the shoulder leads and the elbow trails by `lag` (weight track shifted). Out: the elbow opens first and the
+    // shoulder follows (the ".lag" key turns negative), so the hand swings back round the shoulder instead of
+    // dropping straight down; both end at the authored frames.
+    double inEnd = full - lag, outBegin = outStart + lag;
+    if (inEnd <= inStart + 1) inEnd = full;  // no room for the lag
+    if (outBegin >= zero - 1) outBegin = outStart;
+    const double outEnd = zero;
+    // amplitude: arm rotation between the pose without the IK and with it (measured with plain ramps first)
+    easedKeys(ik + ".weight", inStart, inEnd, 0, 1);
+    easedKeys(ik + ".weight", outBegin, outEnd, 1, 0);
+    const auto [ampIn, ampOut] = measured([&] {
+      const auto a = kinematicGlobals(c, inStart, nullptr), b = kinematicGlobals(c, full, nullptr);
+      const auto d = kinematicGlobals(c, zero, nullptr), e = kinematicGlobals(c, outStart, nullptr);
+      double ai = 0, ao = 0;
+      for (int bone : {upper, fore, handB})
+        if (bone >= 0) {
+          ai = std::max(ai, double(rotDeg(a[size_t(bone)], b[size_t(bone)])));
+          ao = std::max(ao, double(rotDeg(d[size_t(bone)], e[size_t(bone)])));
+        }
+      return std::pair<double, double>(ai, ao);
+    });
+    const double needIn = minBlendFrames(ampIn, fps, principles_), needOut = minBlendFrames(ampOut, fps, principles_);
+    if (inEnd - inStart < needIn) {  // start earlier (the contact frame is the authored constraint)
+      // at most 50 % earlier than authored: the gesture's timing stays the author's
+      const double earliest = std::max({prevKey + 1, double(scene_.frameStart), inEnd - needIn, inStart - 0.5 * (inEnd - inStart)});
+      if (earliest < inStart) {
+        w.keys.erase(std::remove_if(w.keys.begin(), w.keys.end(), [&](const Key& k) { return k.frame >= inStart - 1e-9 && k.frame <= inEnd + 1e-9; }), w.keys.end());
+        inStart = earliest;
+        easedKeys(ik + ".weight", inStart, inEnd, 0, 1);
+      }
+    }
+    (void)needOut;  // the ramp out keeps its authored frames: the next action may own the arm right after `zero`
+    if (lag > 0) {
+      key(*gen, ik + ".lag", inStart, vec3(float(lag)), Interp::Step);
+      key(*gen, ik + ".lag", outStart, vec3(float(outBegin > outStart ? -lag : 0.0)), Interp::Step);
+    }
   };
   auto sortLayers = [&](int c) {  // base clip, emotion layers (by start), clip actions (in action order)
     std::stable_sort(clipLayers_[size_t(c)].begin(), clipLayers_[size_t(c)].end(), [](const ClipLayer& x, const ClipLayer& y) {
@@ -494,11 +666,15 @@ Result<void> SceneEvaluator::compileActionsBody() {
       key(*gen, ik, place - 4, wristFor(placeP) + vec3(0, 0.02f, 0));
       key(*gen, ik, place, wristFor(placeP));
       key(*gen, ik, end, wristFor(placeP) + vec3(0, 0.02f, 0));
-      key(*gen, ik + ".weight", start, vec3(0));
-      key(*gen, ik + ".weight", contact - 5, vec3(0.9f));
-      key(*gen, ik + ".weight", contact, vec3(1));
-      key(*gen, ik + ".weight", release, vec3(1));
-      key(*gen, ik + ".weight", end, vec3(0));
+      if (principles_.enabled) {
+        ikRamps(size_t(c), side, ik, start, contact, release, end);
+      } else {
+        key(*gen, ik + ".weight", start, vec3(0));
+        key(*gen, ik + ".weight", contact - 5, vec3(0.9f));
+        key(*gen, ik + ".weight", contact, vec3(1));
+        key(*gen, ik + ".weight", release, vec3(1));
+        key(*gen, ik + ".weight", end, vec3(0));
+      }
       // Hand: opens in anticipation, then the grip closes on the object by contact search; opens on release.
       const vec3 relaxed(0.25f, 0.15f, 0), open(0.03f, 0.05f, 0.35f);
       key(*gen, H, start, relaxed);
@@ -569,10 +745,14 @@ Result<void> SceneEvaluator::compileActionsBody() {
       key(*gen, ik, contact, wrist - vec3(0, 0.004f, 0));
       key(*gen, ik, contact + 8, wrist + vec3(0, 0.015f, 0));
       key(*gen, ik, end, wrist + vec3(0, 0.04f, 0));
-      key(*gen, ik + ".weight", start, vec3(0));
-      key(*gen, ik + ".weight", contact - 6, vec3(1));
-      key(*gen, ik + ".weight", contact + 10, vec3(1));
-      key(*gen, ik + ".weight", end, vec3(0));
+      if (principles_.enabled) {
+        ikRamps(size_t(c), side, ik, start, contact - 6, contact + 10, end);
+      } else {
+        key(*gen, ik + ".weight", start, vec3(0));
+        key(*gen, ik + ".weight", contact - 6, vec3(1));
+        key(*gen, ik + ".weight", contact + 10, vec3(1));
+        key(*gen, ik + ".weight", end, vec3(0));
+      }
       key(*gen, H, start, vec3(0.25f, 0.15f, 0), Interp::Linear);
       key(*gen, H, contact - 8, vec3(1, 1, 0), Interp::Linear);
       key(*gen, H, end - 6, vec3(1, 1, 0), Interp::Linear);
@@ -738,6 +918,38 @@ Result<void> SceneEvaluator::compileActionsBody() {
       const double sceneLen = L.clip->duration() * scene_.rate.fps() / L.speed;
       L.end = has(a, "end") ? num(a, "end", 0) : (L.base || loop) ? 1e30 : L.start + sceneLen;
       if (L.end <= L.start) return fail("clip: end must be after start");
+      if (principles_.enabled && !L.base) {  // T-061: eased, successive blends; ease-preserving retiming; breakdowns
+        L.principles = true;
+        L.succession = principles_.successionSec * scene_.rate.fps();
+        // Motion of the clip per clip frame (driven non-finger roles, degrees): retiming and the eased clock use it.
+        std::vector<double> motion;
+        if (L.clip->frameCount > 2) {
+          const int n = L.clip->loop ? L.clip->frameCount : L.clip->frameCount - 1;
+          motion.assign(size_t(n), 0.0);
+          ClipSample prev = sampleClip(*L.clip, 0);
+          for (int k = 0; k < n; ++k) {
+            ClipSample next = sampleClip(*L.clip, double((k + 1) % L.clip->frameCount));
+            for (const auto& [role, q] : next.local) {
+              if (isFinger(role) || std::find(L.clip->mask.begin(), L.clip->mask.end(), role) == L.clip->mask.end()) continue;
+              auto p0 = prev.local.find(role);
+              if (p0 != prev.local.end())
+                motion[size_t(k)] += glm::degrees(2.0 * std::acos(std::min(1.0, double(std::abs(glm::dot(p0->second, q))))));
+            }
+            prev = std::move(next);
+          }
+        }
+        if (principles_.easePreservingRetime && std::abs(L.speed - 1.0) > 1e-9 && !motion.empty())
+          L.warp = std::make_shared<const TimeWarp>(TimeWarp::easePreserving(motion, L.speed, L.clip->fps, scene_.rate.fps(), principles_));
+        // A clip "moves" at an end when its motion over the first / last 3 frames averages > 15 % of its peak.
+        bool movingIn = false, movingOut = false;
+        if (motion.size() >= 6) {
+          const double peak = *std::max_element(motion.begin(), motion.end());
+          const size_t n = motion.size();
+          movingIn = (motion[0] + motion[1] + motion[2]) / 3 > 0.15 * peak;
+          movingOut = !L.clip->loop && (motion[n - 1] + motion[n - 2] + motion[n - 3]) / 3 > 0.15 * peak;
+        }
+        planClipBlends(size_t(c), L, has(a, "end") || L.clip->loop, movingIn, movingOut);
+      }
       for (const auto& r : L.binding.roles)
         if (r.bone < 0 && L.clip->tracks.count(r.name) && r.name.rfind("eye.", 0) != 0)
           warnings_.push_back(std::format("clip '{}': character '{}' has no role '{}' (not played)", L.clip->name, who, r.name));

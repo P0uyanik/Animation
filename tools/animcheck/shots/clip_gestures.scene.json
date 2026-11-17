@@ -1,0 +1,243 @@
+{
+ "format": "plush.scene",
+ "version": 1,
+ "frameRate": [
+  24,
+  1
+ ],
+ "render": {
+  "width": 640,
+  "height": 360,
+  "spp": 32,
+  "maxDepth": 8,
+  "exposureEV": 0.3,
+  "denoise": true,
+  "denoiseBlend": 0.85,
+  "clamp": 12
+ },
+ "camera": {
+  "position": [
+   0.0,
+   0.56,
+   2.3
+  ],
+  "target": [
+   0.0,
+   0.46,
+   0.0
+  ],
+  "focalMm": 35,
+  "fStop": 0,
+  "focusDistance": -1
+ },
+ "materials": [
+  {
+   "name": "floor_mat",
+   "type": "standard",
+   "baseColor": [
+    0.46,
+    0.44,
+    0.42
+   ],
+   "roughness": 0.85,
+   "specular": 0.3
+  },
+  {
+   "name": "wall_mat",
+   "type": "standard",
+   "baseColor": [
+    0.62,
+    0.6,
+    0.55
+   ],
+   "roughness": 0.9,
+   "specular": 0.3
+  },
+  {
+   "name": "plinth_mat",
+   "type": "standard",
+   "baseColor": [
+    0.55,
+    0.42,
+    0.3
+   ],
+   "roughness": 0.8,
+   "specular": 0.3
+  }
+ ],
+ "lights": [
+  {
+   "type": "rect",
+   "corner": [
+    -2.0,
+    1.0,
+    2.0
+   ],
+   "edgeU": [
+    1.2,
+    0,
+    0.6
+   ],
+   "edgeV": [
+    0,
+    1.4,
+    0
+   ],
+   "color": [
+    1.0,
+    0.95,
+    0.88
+   ],
+   "intensity": 3.0
+  },
+  {
+   "type": "sun",
+   "direction": [
+    0.3,
+    -0.6,
+    -0.7
+   ],
+   "angleDeg": 4,
+   "color": [
+    1.0,
+    0.92,
+    0.82
+   ],
+   "intensity": 1.4
+  },
+  {
+   "type": "sky",
+   "color": [
+    0.6,
+    0.62,
+    0.66
+   ],
+   "intensity": 0.4
+  }
+ ],
+ "name": "animcheck: library gesture clips at three speeds",
+ "frameStart": 1,
+ "frameEnd": 250,
+ "objects": [
+  {
+   "name": "floor",
+   "kind": "box",
+   "min": [
+    -4,
+    -0.05,
+    -3
+   ],
+   "max": [
+    4,
+    0,
+    4
+   ],
+   "material": "floor_mat"
+  },
+  {
+   "name": "wall",
+   "kind": "box",
+   "min": [
+    -4,
+    0,
+    -1.4
+   ],
+   "max": [
+    4,
+    3,
+    -1.3
+   ],
+   "material": "wall_mat"
+  }
+ ],
+ "characters": [
+  {
+   "name": "boy",
+   "asset": "../../../tests/data/imported/boy_yellow_hoodie_1.0.0/character.json",
+   "position": [
+    -0.28,
+    0.0,
+    0.0
+   ],
+   "yawDeg": 12,
+   "life": true,
+   "bodyMechanics": {
+    "personality": "boy_yellow_hoodie"
+   }
+  },
+  {
+   "name": "girl",
+   "asset": "../../../tests/data/imported/girl_auburn_bun_glasses_m3/character.json",
+   "position": [
+    0.28,
+    0.0,
+    0.0
+   ],
+   "yawDeg": -12,
+   "life": true,
+   "bodyMechanics": {
+    "personality": "girl_auburn_bun_glasses"
+   }
+  }
+ ],
+ "actions": [
+  {
+   "type": "look",
+   "character": "boy",
+   "start": 1,
+   "end": 250,
+   "camera": true
+  },
+  {
+   "type": "clip",
+   "character": "boy",
+   "clip": "point",
+   "start": 6,
+   "speed": 1.0
+  },
+  {
+   "type": "clip",
+   "character": "boy",
+   "clip": "wave",
+   "start": 100,
+   "speed": 1.5,
+   "mirror": true
+  },
+  {
+   "type": "clip",
+   "character": "boy",
+   "clip": "gest_shrug",
+   "start": 176,
+   "speed": 0.8
+  },
+  {
+   "type": "look",
+   "character": "girl",
+   "start": 1,
+   "end": 250,
+   "camera": true
+  },
+  {
+   "type": "clip",
+   "character": "girl",
+   "clip": "point",
+   "start": 9,
+   "speed": 1.0
+  },
+  {
+   "type": "clip",
+   "character": "girl",
+   "clip": "wave",
+   "start": 103,
+   "speed": 1.5,
+   "mirror": true
+  },
+  {
+   "type": "clip",
+   "character": "girl",
+   "clip": "gest_shrug",
+   "start": 179,
+   "speed": 0.8
+  }
+ ]
+}
