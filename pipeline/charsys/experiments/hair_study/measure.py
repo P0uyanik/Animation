@@ -36,6 +36,12 @@ argv = sys.argv[sys.argv.index("--") + 1:]
 blend, out = argv[0], argv[1]
 FRAMES = int(argv[argv.index("--frames") + 1]) if "--frames" in argv else 48
 RENDER = "--render" in argv
+# --render-range a-b: render only frames a..b (inclusive) and skip the measurements, so a slow character's turn can
+# be rendered in several calls (the chain springs are still integrated from frame 0, so results are identical)
+RANGE = [int(x) for x in argv[argv.index("--render-range") + 1].split("-")] if "--render-range" in argv else None
+MEASURE = RANGE is None
+if RANGE:
+    RENDER = True
 os.makedirs(out, exist_ok=True)
 bpy.ops.wm.open_mainfile(filepath=os.path.abspath(blend))
 sc = bpy.context.scene
@@ -99,7 +105,7 @@ def visibility(yaw_head, view_yaw):
 
 
 def penetration():
-    """Hair vertices (every 3rd) more than 2 mm inside a body mesh, split into the head/scalp (roots and the base
+    """Hair vertices (~8000 sampled evenly) more than 2 mm inside a body mesh, split into the head/scalp (roots and the base
     volume's inset sit there by design: compare against rest) and everything else (ears, neck, clothing, body)."""
     dg = bpy.context.evaluated_depsgraph_get()
     trees = []
@@ -110,6 +116,8 @@ def penetration():
         trees.append((o.name in ("head", "body_skin"),
                       BVHTree.FromPolygons([v.co.copy() for v in me.vertices], [tuple(p.vertices) for p in me.polygons])))
         e.to_mesh_clear()
+    total = sum(len(o.data.vertices) for o in hair)
+    stride = max(1, total // 8000)  # ~8000 sampled hair vertices whatever the density
     n = 0
     bad = {"head": 0, "other": 0}
     deepest = {"head": 0.0, "other": 0.0}
@@ -118,7 +126,7 @@ def penetration():
         me = e.to_mesh()
         mw = o.matrix_world
         for k, v in enumerate(me.vertices):
-            if k % 3:
+            if k % stride:
                 continue
             p = mw @ v.co
             n += 1
@@ -136,8 +144,9 @@ def penetration():
 
 # --- rest measurements
 t0 = time.time()
-res = {"blend": os.path.basename(blend), "rest": {"front": visibility(0, 0), "three_quarter": visibility(0, -35),
-                                                   "penetration": penetration()}}
+res = {"blend": os.path.basename(blend)}
+if MEASURE:
+    res["rest"] = {"front": visibility(0, 0), "three_quarter": visibility(0, -35), "penetration": penetration()}
 
 # --- head turn
 head_ctrl = rig.pose.bones.get("head")
@@ -226,15 +235,15 @@ for f in range(FRAMES + 1):
                 pb = rig.pose.bones[ch["bones"][k]]
                 set_world_rot(pb, lag / len(ch["bones"]), rig.matrix_world @ pb.head)
         bpy.context.view_layer.update()
-    if f % 4 == 0 and f:
+    if MEASURE and f % 8 == 0 and f:
         pen = penetration()
         pm = turn["penetration_max"]
         for k in pm:
             pm[k] = max(pm[k], pen[k])
-    if f in (12, 36):  # the turn extremes (+40 / -40 deg)
+    if MEASURE and f in (12, 36):  # the turn extremes (+40 / -40 deg)
         turn["visibility_at_extremes"][f"psi_{round(math.degrees(psi(t)))}"] = {
             "front": visibility(math.degrees(psi(t)), 0), "three_quarter": visibility(math.degrees(psi(t)), -35)}
-    if RENDER and f % render_every == 0 and f < FRAMES:
+    if RENDER and f % render_every == 0 and f < FRAMES and (RANGE is None or RANGE[0] <= f <= RANGE[1]):
         tr = time.time()
         sc.render.filepath = os.path.join(out, "turn", f"{f:04d}.png")
         bpy.ops.render.render(write_still=True)
@@ -243,5 +252,6 @@ turn["chains"] = len(chains)
 turn["render_s_per_frame"] = round(t_render / max(1, FRAMES // render_every), 2) if RENDER else None
 res["turn"] = turn
 res["measure_s"] = round(time.time() - t0, 1)
-json.dump(res, open(os.path.join(out, "measure.json"), "w"), indent=1)
+if MEASURE:
+    json.dump(res, open(os.path.join(out, "measure.json"), "w"), indent=1)
 print("MEASURE", json.dumps(res))

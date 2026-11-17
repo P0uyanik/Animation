@@ -1,0 +1,53 @@
+{
+ "blend": "girl_auburn_bun_glasses_study.blend",
+ "rest": {
+  "front": {
+   "face": 0.9822,
+   "eyes": 1.0
+  },
+  "three_quarter": {
+   "face": 0.9316,
+   "eyes": 1.0
+  },
+  "penetration": {
+   "head_inside_frac": 0.00691,
+   "other_inside_frac": 0.00059,
+   "other_deepest_mm": 29.8,
+   "sampled": 69777
+  }
+ },
+ "turn": {
+  "frames": 48,
+  "max_lag_deg": 14.19257428748317,
+  "penetration_max": {
+   "head_inside_frac": 0.01228,
+   "other_inside_frac": 0.00426,
+   "other_deepest_mm": 30.0
+  },
+  "visibility_at_extremes": {
+   "psi_40": {
+    "front": {
+     "face": 0.9822,
+     "eyes": 1.0
+    },
+    "three_quarter": {
+     "face": 0.9316,
+     "eyes": 1.0
+    }
+   },
+   "psi_-40": {
+    "front": {
+     "face": 0.9822,
+     "eyes": 1.0
+    },
+    "three_quarter": {
+     "face": 0.9316,
+     "eyes": 1.0
+    }
+   }
+  },
+  "chains": 43,
+  "render_s_per_frame": 22.02
+ },
+ "measure_s": 1038.9
+}

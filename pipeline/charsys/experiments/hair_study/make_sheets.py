@@ -65,7 +65,8 @@ def main():
             if not os.path.isdir(td):
                 continue
             fr = [Image.open(os.path.join(td, f)).convert("RGB") for f in sorted(os.listdir(td)) if f.endswith(".png")]
-            fr[0].save(os.path.join(out, f"{c}_{ap}_head_turn.gif"), save_all=True, append_images=fr[1:],
+            g = [f.resize((240, 240), Image.LANCZOS).quantize(64) for f in fr]
+            g[0].save(os.path.join(out, f"{c}_{ap}_head_turn.gif"), save_all=True, append_images=g[1:],
                        duration=83, loop=0)
             sel = [f.resize((200, 200)) for f in fr[::3]]
             strips.append(tile_row([s.resize((int(s.width * H / 200 / 2), H // 2)) for s in sel], LABELS[ap]))
