@@ -163,7 +163,13 @@ python3 docs/evaluation/characters/T-065/make_sheets.py docs/evaluation/characte
     - CheekRaise;
     - soft-smile corner lift 3.1–3.5 mm;
     - third: no eye overlap, blue iris.
-- Gate: see the final report (`tools/check_all.py --base origin/main --task T-065 --blender <wrapper>`).
+- Gate (GitHub "Quality gate" run 44195415311 on `2315636`, after `git merge origin/staging`): Frozen assets, Write-set
+  (17 paths, all in the claim), Shared-systems lint, C++ build, C++ tests, Python tests and links, Blender tier (full;
+  regression + unchanged-character guard jobs for boy, girl, third character: all PASS) **PASS**. **FAIL only:** Guarded
+  paths, `pipeline/charsys/tests/test_face_v2.py` (new test, needs Supervisor approval), and the derived "Merge status"
+  line that follows from it. Locally (bpy wrapper) the same, plus C++ build (embree not installed in this container) and
+  `OWNERSHIP.md parses` (the staging claims table had no rows at that moment); `test_export_engine` passed after fixing
+  the local wrapper to print `SystemExit` messages.
 
 ## Render budget (24 Cycles stills, all used)
 
