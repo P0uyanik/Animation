@@ -9,7 +9,8 @@ sheets, `fidelity.json` and a short report.
 > score is not a rejection. Look at the sheets.
 
 Code: `tools/fidelity/`. Per-character data: `assets/characters/<id>/references/annotations/`. First results:
-[docs/evaluation/characters/T-032/](evaluation/characters/T-032/README.md).
+[docs/evaluation/characters/T-032/](evaluation/characters/T-032/README.md). Measurement fixes and the hair, skin and
+face-window parts (T-064): [docs/evaluation/characters/T-064/](evaluation/characters/T-064/README.md).
 
 ## Command
 
@@ -17,6 +18,8 @@ Code: `tools/fidelity/`. Per-character data: `assets/characters/<id>/references/
 python3 tools/fidelity/run.py --character <id> --build <master.blend | spec.json> --blender <exe>
     [--override <override.json> ...] [--out <dir>] [--views id,...] [--height 640] [--samples 32]
     [--renders <dir>]            # analysis only: reuse the renders/ folder of an earlier run
+    [--beauty-from <dir>]        # re-run only the measurement passes (region ids, landmarks) on the same build and
+                                 # reuse the beauty renders of an earlier renders/ folder (T-064)
     [--reference-index <json>]   # experiments only (for example, a trial camera yaw)
 ```
 
@@ -70,6 +73,7 @@ metrics, weights, or tolerances.
   |---|---|
   | `sheets/<view>.png` | reference \| render (aligned) \| silhouette and landmark difference \| region outlines |
   | `sheets/overview.png` | all views stacked |
+  | `masks/<view>.png` | the measured region masks: reference \| render (aligned) \| disagreement (T-064) |
   | `fidelity.json` | every number, the score, the ranked differences and the suggestions |
   | `report.md` | short report: score, per-view table, top 15 differences, suggestions |
   | `renders/` | beauty renders, region ids and projected landmarks (reusable with `--renders`) |
@@ -150,11 +154,24 @@ On the render side, `blender_render_side.py` classifies objects by the builder's
 - **face:** `eye.*` maps to `eyes`; brows, lashes and mouth map to `face_detail`.
 - **accessories:** `glasses*` maps to `glasses`; other accessories map to `accessory:<token>`.
 - **fur curves** follow their surface.
+- **surface fibres** (`<object>.fibres`, `materials/builder.py`) take their material from a geometry-node modifier
+  input, not from a material slot. The flat pass swaps those inputs too (T-064). Before that fix they rendered black,
+  and 26 % of the girl's figure had no region (boots 509 px instead of about 5000, vest area ×0.29).
+- Figure pixels that still match no region colour (anti-aliased edges) take the region of the nearest classified pixel
+  within 6 px. The fraction before filling is reported per view (`render_unclassified_fraction`).
 
 Per-character `region_rules` in `fidelity_index.json` win; the boy uses them for his legacy v6 object names. The
 render side applies the same chin split as the reference, using the projected `LM_chin`. `skin_face` includes eyes
 and face details, as the filled reference polygon does. Glasses are rendered in a second pass, so the eyes stay
 visible through the lenses in the main pass.
+
+**Islands on the reference side (T-064).** A polygon is traced with its holes filled, so a region can cover a
+smaller region that lies on top of it. For example, the girl's front hair outline also covered her face. When a region
+lies more than half inside a larger one, the larger one loses those pixels. Two exceptions:
+- `skin_face` keeps the eyes, and takes in eye ellipses that stick out of the traced face, as on the render side.
+- The glasses stay a filled overlay on both sides.
+
+The pixels moved are reported per view as `reference_islands_removed_px`.
 
 The tool compares only the regions that the reference view annotates. Render regions that are not annotated are
 listed as `render_regions_not_annotated`.
@@ -169,15 +186,22 @@ listed as `render_regions_not_annotated`.
 
 ## Metrics
 
-- **Alignment:** the reference crop and the render are framed differently. The render is scaled uniformly so that
-  its figure height (sole to top, bun included) equals the reference figure height. Bottoms and horizontal centres
-  are aligned, then the integer shift within ±10 px horizontally and ±3 px vertically with the best figure IoU is
-  kept. Width is never normalised, so a too narrow figure stays visible.
+- **Alignment:** the reference crop and the render are framed differently, so the render is scaled uniformly.
+  - **Scale (T-064):** for each body landmark on both sides (chin, mouth, nose, eyes, neck, shoulders), take its
+    height above the sole on the reference divided by the same height on the render. The scale is the median of these
+    ratios, and at least two are needed. Otherwise the figure height (sole to top) is the fallback, which is what every
+    view used before T-064. The figure height includes the hair, so a fuller or flatter hairstyle used to rescale and
+    misalign the whole body. `alignment.scale_source` and `scale_figure_height` are reported per view.
+  - **Shift:** bottoms and horizontal centres are aligned. Then the integer shift within ±10 px horizontally and
+    ±3 px vertically with the best figure IoU is kept.
+  - Width is never normalised, so a too narrow figure stays visible.
 - **Silhouette IoU:** figure vs background, and per region (hair, each garment, skin face and limbs, eyes, glasses,
   accessories) in the reference frame. The area ratio render/reference is also reported.
 - **Landmark error:** distance in the reference frame divided by the reference head height (chin to figure top).
   Views without a visible chin use the median head fraction of the other views.
-- **Proportions:** each image is measured in its own frame. All values are dimensionless ratios:
+- **Proportions:** each image is measured in its own frame. The unit height is the reference figure height. On the
+  render it is the reference height divided by the alignment scale, and the top is the sole minus that height
+  (T-064). Hair volume therefore no longer rescales the body ratios. All values are dimensionless ratios:
   - `head_to_height`;
   - `eye_line` and `mouth_line` (fraction of the height);
   - `eye_width_to_head`, `eye_area_to_head` and `eye_spacing_to_head`;
@@ -187,7 +211,11 @@ listed as `render_regions_not_annotated`.
   - `hem_<garment>_height`;
   - `hair_area` (silhouette area / height²), `hair_width_at_eyes` (temples) and `hair_length`.
 
-  The relative difference is render/reference − 1, as a median over the views.
+  The relative difference is render/reference − 1, as a median over the views. T-064 adds three rules:
+  - `leg_gap_height` is compared only where the reference gap is at least 5 % of the height. In 3/4 views the legs
+    overlap; a gap of 0.4 % had read as +4700 %.
+  - A background run closed at its top by hair is a hole between locks, not the crotch.
+  - In the proportions part, no single ratio counts more than 100 %. The hair ratios moved to the hair part.
 - **Colour:** CIEDE2000 (D65) between the median Lab of the reference region and of the render region.
   - Reference pixels exclude overlapping regions (eyes, glasses, islands). Masks are eroded by 1 px.
   - Also reported: the luma-matched ΔE00 (VISUAL_TARGET.md: compare after matching the median lightness), the signed
@@ -204,19 +232,52 @@ listed as `render_regions_not_annotated`.
   Blur sizes are scaled from the H = 256 px convention by (reference head height / 256). The values are reported as
   render/reference ratios. They are relative comparisons at the reference resolution, not the absolute VISUAL_TARGET
   bands. Silhouette edge roughness (perimeter / smoothed perimeter) is reported per view.
-- **Fidelity score (0–100):** a weighted mean of six sub-scores, each from 0 to 1:
+- **Hair (T-064, `look.py`):** six parts, each from 0 to 1, with equal weights. Sizes are in reference head heights.
+  - **shape:** mean hair region IoU.
+  - **volume:** 1 − mean \|relative error\| of `hair_area`, `hair_width_at_eyes` and `hair_length` / 0.5.
+  - **outline:** hair mask perimeter / perimeter after a 0.04-head smoothing, compared as a log2 ratio
+    (tolerance 1). Thin strands, ropes and fibre spikes raise it; a fused shell lowers it.
+  - **strand:** luma structure-tensor coherence at the lock scale (0.035 head), energy weighted, as a log2 ratio
+    (tolerance 1). Parallel ropes, carved rows and straight-cut grooves are directional; felt clumps are not.
+  - **relief:** band-pass luma contrast at the lock scale divided by the mean luma, as a log2 ratio (tolerance 2;
+    the references are lit more contrastily). A fused helmet has little relief between locks.
+  - **face cover:** the fraction of the face that the reference shows uncovered and the render hides under hair.
+    Views with annotated eyes only; tolerance 0.3.
+- **Skin (T-064):** for `skin_limbs` in every view and `skin_face` in views with annotated eyes (back views show an ear
+  or the neck in shade), the mean of four terms, each scoring 0 at its tolerance:
+  - the luma-matched ΔE00 (tolerance 10);
+  - \|ΔL*\| (tolerance 30: wide, because the references have their own light, but a much darker skin is a real miss);
+  - the chroma in shade, the median C* of the darkest 30 % of the pixels (tolerance 15). The references keep warm
+    chroma in shade; a grey cast drains it.
+  - a* at the 90th percentile, blush and warmth (tolerance 15).
+
+  The lenses are left out on both sides.
+- **Face windows (T-064):** frontal views only, meaning both eyes with their corners on both sides, spaced at least
+  1.2 eye widths apart. Each side is measured in its own frame with its own landmarks; w = eye width.
+  - **lid:** a band 0.25 w high, starting 0.06 w above the top edge of the visible eye opening. Pixels more than
+    25 L* darker than the face skin (lashes, brow strokes) are dropped.
+  - **cheek:** an ellipse 0.85 w below and 0.2 w outside the eye centre.
+  - **Measures:** `lid_dL` and `lid_dC` are the lid minus the face skin median (pale or grey lid shells read as
+    domes). `blush_da` is the cheek a* (75th percentile) minus the face skin a*.
+  - **Score:** 1 − mean \|render − reference\| over tolerances of 15 L*, 10 C* and 10 a*.
+- **Fidelity score (0–100):** a weighted mean of nine sub-scores, each from 0 to 1 (T-064 weights):
 
   | part | weight | sub-score |
   |---|---|---|
-  | silhouette | 0.25 | (mean figure IoU − 0.5) / 0.5 |
-  | regions | 0.15 | region IoU weighted by reference area |
-  | landmarks | 0.20 | 1 − mean error / 0.3 head heights |
-  | proportions | 0.15 | 1 − mean \|relative error\| / 0.3 |
-  | colour | 0.15 | 1 − mean ΔE00 / 20 |
-  | texture | 0.10 | 1 − mean \|log2 ratio\| / 1.5 |
+  | silhouette | 0.20 | (mean figure IoU − 0.5) / 0.5 |
+  | regions | 0.10 | region IoU weighted by reference area (hair excluded: it is in the hair part) |
+  | landmarks | 0.15 | 1 − mean error / 0.3 head heights |
+  | proportions | 0.10 | 1 − mean \|relative error\| / 0.3 (body ratios; each capped at 1.0) |
+  | colour | 0.10 | 1 − mean ΔE00 / 20 (skin excluded: it is in the skin part) |
+  | texture | 0.05 | 1 − mean \|log2 ratio\| / 1.5 |
+  | hair | 0.15 | mean of the six hair parts |
+  | skin | 0.10 | mean skin score over regions |
+  | face | 0.05 | mean face-window score over frontal views |
 
   The weights and ranges are a heuristic, documented here. The score is for tracking one character across builds,
-  not for comparing characters.
+  not for comparing characters. Before T-064 there were six parts (0.25 / 0.15 / 0.20 / 0.15 / 0.15 / 0.10).
+  T-064 validated the new parts on T-049, T-055, T-058 and the T-063 evidence, and recorded where the score still
+  disagrees with the visual judgement (see its README). The owner's side-by-side judgement wins.
 - **Ranked differences:** every difference is put in plain words and given a severity: its size divided by a
   tolerance. The tolerances are:
 
@@ -229,6 +290,10 @@ listed as `render_regions_not_annotated`.
   | colour | ΔE00 4 |
   | texture | half a log2 step |
   | hidden landmarks | 1 + 0.5 per view |
+  | hair outline / strand / relief | a quarter of the part tolerance (log2) |
+  | hair face cover | 5 % of the face |
+  | skin shade chroma, blush (a* P90) | 4 |
+  | face windows (lid L*, lid C*, blush a*) | 4 |
 
   Example wording: "eyes 24% too small (width relative to head height)", "hair width at the temples (eye level)
   −71%", "hoodie colour dE00 14.5 (render darker by 16 L*, …)".
@@ -243,7 +308,7 @@ listed as `render_regions_not_annotated`.
 
 ## Tests and determinism
 
-- `python3 tools/fidelity/tests/test_metrics.py` tests on synthetic images (35 checks):
+- `python3 tools/fidelity/tests/test_metrics.py` tests on synthetic images (48 checks; T-064 added 13):
   - IoU;
   - landmark error (y-only hems);
   - CIEDE2000 against the published Sharma et al. 2005 test pairs (8 pairs, error < 1e-3);
@@ -253,7 +318,9 @@ listed as `render_regions_not_annotated`.
   - crotch and column measures;
   - texture statistics;
   - polygon tracing and rasterisation;
-  - byte-identical analysis output.
+  - byte-identical analysis output;
+  - T-064: filling unclassified pixels, reference islands, the hair-independent scale, the crotch through hair holes,
+    the hair outline / strand / relief measures, grey-cast skin and pale lid windows.
 - `python3 tools/fidelity/tests/test_ci.py` tests affected-character selection and the score-delta boundary,
   including that a 2.0-point drop passes and any larger drop fails with the owner-review reason.
 - The analysis is deterministic: `--renders` on the same renders gives byte-identical `fidelity.json`, `report.md`
@@ -272,3 +339,8 @@ listed as `render_regions_not_annotated`.
   girl `sheet30_back_right` is labelled −135°, but the reference looks almost square-on (see the T-032 README).
 - Region polygons come from colour classification, so fine features under about 3 px (cords, buttons, embroidery)
   are not separate regions.
+- The face windows and the skin terms see what the turnaround references show. The girl's `sheet30_front` has an
+  open smile, while the owner chose a closed gentle smile for her neutral (T-055). At 640 px full figure the tool does
+  not see the 0.9.0 → 0.10.0 mouth change (scores within 0.2), and it would not reward it.
+- Hair is a part of the score, not the whole of it. A hair that fills the silhouette better can still win on the
+  silhouette and region parts, as the girl's T-049 B (fused curtain) does against C (see the T-064 README).

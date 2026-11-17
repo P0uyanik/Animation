@@ -189,9 +189,110 @@ def test_determinism():
     check("analysis output is byte-identical across runs", a == b, f"{len(a)} bytes")
 
 
+# ---------------------------------------------------------------------------------------------- T-064 additions
+def test_t064_segmentation():
+    import look as LK
+    fig = rect((40, 40), 5, 5, 35, 35)
+    masks = {"a": rect((40, 40), 5, 5, 20, 35), "b": rect((40, 40), 22, 5, 35, 35)}
+    frac = A.fill_unclassified(fig, masks)
+    check("unclassified fraction reported (2 of 30 columns)", abs(frac - 2 / 30) < 1e-9, f"{frac:.4f}")
+    check("unclassified pixels take the nearest region", (masks["a"] | masks["b"]).sum() == fig.sum()
+          and masks["a"][10, 20] and masks["b"][10, 21])
+    hair = rect((60, 60), 10, 5, 50, 45)   # outline traced with the face filled in
+    face = rect((60, 60), 20, 15, 40, 40)
+    eyes = rect((60, 60), 24, 22, 28, 26)
+    ex, carved = LK.exclusive_regions({"hair": hair, "skin_face": face, "eyes": eyes, "glasses": rect((60, 60), 22, 20, 38, 28)})
+    check("an island removes its pixels from the region under it (hair minus face)",
+          not ex["hair"][30, 30] and ex["hair"][6, 12] and carved.get("hair") == face.sum())
+    check("skin_face keeps the eyes and the glasses overlay stays whole",
+          ex["skin_face"][24, 25] and ex["glasses"].sum() == 16 * 8)
+
+
+def test_t064_alignment_hair_independent():
+    ref_fig, ref_lm = figure(100, 170)
+    ren_fig, ren_lm = figure(200, 360, s=2.0, ox=17, oy=30)
+    ren_fig = ren_fig.copy()
+    ren_fig[0:30, 75:125] = True  # a tall hair crown that the reference does not have
+    ren_fig[30:60, 80:120] = True
+    lm = {k: v for k, v in ren_lm.items()}
+    lm["neck"], lm["mouth"] = (100 + 17, 100 + 30), (100 + 17, 85 + 30)
+    rl = dict(ref_lm)
+    rl["neck"], rl["mouth"] = (50, 50), (50, 42.5)
+    al = A.align({"fig": ref_fig, "landmarks": rl}, {"fig": ren_fig, "landmarks": lm})
+    check("scale comes from body landmarks, not the hair-inflated figure height", abs(al["scale"] - 0.5) < 0.01
+          and al["scale_source"].startswith("body"), f"{al['scale']:.4f} vs figure {al['scale_figure_height']:.4f}")
+
+
+def test_t064_crotch_ignores_hair_holes():
+    fig, lm = figure(100, 170)
+    fig = fig.copy()
+    hair = np.zeros_like(fig)
+    hair[60:100, 45:56] = True   # long hair over the back with a hole between two locks
+    fig[60:100, 45:56] = True
+    fig[80:84, 49:52] = False
+    hair[80:84, 49:52] = False
+    check("without a hair mask the hole between locks is read as the crotch", M.crotch_y(fig, 50, 161, 10) == 80.0)
+    check("with the hair mask the real crotch is found", M.crotch_y(fig, 50, 161, 10, hair) == 111.0,
+          str(M.crotch_y(fig, 50, 161, 10, hair)))
+
+
+def test_t064_hair_read():
+    import look as LK
+    rng = np.random.default_rng(3)
+    h, w = 120, 120
+    yy, xx = np.mgrid[:h, :w]
+    disc = (xx - 60) ** 2 + (yy - 60) ** 2 < 45 ** 2
+    clumps = 120 + 40 * np.sin(xx / 6.0) * np.sin(yy / 6.0)          # broad, isotropic clumps
+    ropes = 120 + 40 * np.sin(xx / 1.6)                               # thin parallel ropes
+    flat = 120 + rng.normal(0, 2, (h, w))                             # fused shell
+    img = lambda a: np.repeat(np.clip(a, 0, 255)[..., None], 3, axis=2).astype(np.uint8)
+    rc, rr, rf = (LK.hair_read(img(a), disc, 100.0) for a in (clumps, ropes, flat))
+    check("strand: parallel ropes are more directional than clumps", rr["strand"] > rc["strand"] + 0.2,
+          f"{rr['strand']:.2f} vs {rc['strand']:.2f}")
+    check("relief: a fused shell has less lock relief than clumps", rf["relief"] < 0.25 * rc["relief"],
+          f"{rf['relief']:.3f} vs {rc['relief']:.3f}")
+    spiky = disc.copy()
+    for a in range(0, 360, 10):
+        t = np.radians(a)
+        for r in range(45, 58):
+            spiky[int(60 + r * np.sin(t)) % h, int(60 + r * np.cos(t)) % w] = True
+    check("outline: thin spikes raise the outline ratio", LK.hair_read(img(clumps), spiky, 100.0)["outline"] > rc["outline"] + 0.3)
+
+
+def test_t064_skin_and_face():
+    import look as LK
+    yy, xx = np.mgrid[:60, :60]
+    m = np.ones((60, 60), bool)
+    shade = (yy < 30)
+    ref = np.zeros((60, 60, 3), np.uint8)
+    ref[...] = (225, 180, 160)
+    ref[shade] = (185, 120, 100)                          # warm shade
+    grey = ref.copy()
+    grey[shade] = (150, 135, 132)                         # same lightness band, grey shade
+    col = M.colour_difference(M.colour_stats(ref, m), M.colour_stats(grey, m))
+    sv = LK.skin_view(ref, m, grey, m, col)
+    check("skin: a grey shade is reported as a grey cast", sv["grey_cast"] > 8 and sv["score"] < 0.9,
+          f"grey cast {sv['grey_cast']:.1f}, score {sv['score']:.2f}")
+    same = LK.skin_view(ref, m, ref, m, M.colour_difference(M.colour_stats(ref, m), M.colour_stats(ref, m)))
+    check("skin: identical patches score 1", abs(same["score"] - 1) < 1e-9)
+    lm = {"eye_L": (40, 30), "eye_inner_L": (34, 30), "eye_outer_L": (46, 30),
+          "eye_R": (20, 30), "eye_inner_R": (26, 30), "eye_outer_R": (14, 30)}
+    eyes = ((xx - 40) ** 2 / 36 + (yy - 30) ** 2 / 9 <= 1) | ((xx - 20) ** 2 / 36 + (yy - 30) ** 2 / 9 <= 1)
+    face = np.full((60, 60, 3), (220, 175, 155), np.uint8)
+    dome = face.copy()
+    win = LK.eye_windows((60, 60), lm, "L", eyes)
+    win_r = LK.eye_windows((60, 60), lm, "R", eyes)
+    dome[(win["lid"] | win_r["lid"]) & ~eyes] = (245, 235, 230)  # pale lid shells
+    side = lambda im: {"img": im, "landmarks": lm}
+    regs = {"skin_face": np.ones((60, 60), bool), "eyes": eyes}
+    fv = LK.face_view(side(face), side(dome), regs, regs)
+    check("face window: pale lid domes raise lid_dL", fv["difference"]["lid_dL"] > 8, f"{fv['difference']['lid_dL']:.1f}")
+
+
 if __name__ == "__main__":
     for t in (test_iou, test_ciede2000, test_lab, test_landmarks, test_alignment, test_geometry, test_texture,
-              test_polygons, test_determinism):
+              test_polygons, test_determinism, test_t064_segmentation, test_t064_alignment_hair_independent,
+              test_t064_crotch_ignores_hair_holes, test_t064_hair_read, test_t064_skin_and_face):
         t()
     ok = all(RESULTS)
     print(f"{'ALL PASS' if ok else 'FAILED'} ({sum(RESULTS)}/{len(RESULTS)})")
