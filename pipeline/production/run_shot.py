@@ -9,7 +9,9 @@ sources (no character-specific code anywhere in the path):
 
   "production": {"cast": {"<scene character name>": {"version_dir": "<published store version>"}            or
                                                      {"spec": "<spec.json>", "overrides": [...]}           (unpublished:
-                                                      built into the shot's build folder, never published)},
+                                                      built into the shot's build folder, never published)  or
+                                                     {"character_id": "<id>", "version": "current"}       (T-062: the
+                                                      character's current approved version, see current_source())},
                  "profile": "pipeline/charsys/rig_profiles/humanoid_rigify.json",
                  "render": {"resolution": [w, h], "samples": n, "light_scale": x}}
 
@@ -43,6 +45,53 @@ import time
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 CHARSYS = os.path.join(ROOT, "pipeline", "charsys")
 STAGES = ["prepare", "bake", "render", "encode"]
+# The single list of current character versions (spec + overrides per character id), shared with the quality gate's
+# all-character regression (tools/regression/tiers.py character_config).
+FIDELITY_BASELINE = os.path.join("docs", "evaluation", "characters", "fidelity_baseline.json")
+
+
+def current_source(cid, root=None):
+    """The current approved version of character `cid`: the build inputs listed for it in the fidelity baseline (its
+    spec plus the overrides of its current version). The version is the last spec_version among spec and overrides
+    (metadata.spec_version). When that version is published in the asset store (versions/<version>/manifest.json),
+    the published master is used; otherwise it is built from the spec, exactly like an explicit {"spec", "overrides"}
+    cast (same build cache key). Returns a cast source plus "resolved" (what was resolved, for the run reports)."""
+    if not isinstance(cid, str) or not re.fullmatch(r"[a-z0-9_]+", cid):
+        raise SystemExit(f"cast 'current' needs a character_id (got {cid!r})")
+    root = root or ROOT
+    baseline_path = os.path.join(root, FIDELITY_BASELINE)
+    entry = json.load(open(baseline_path, encoding="utf-8")).get("characters", {}).get(cid)
+    if entry is None:
+        raise SystemExit(f"{cid}: no current version (not listed in {FIDELITY_BASELINE})")
+    spec, overrides = entry["build"], list(entry.get("overrides", []))
+    for item in [spec] + overrides:
+        if not os.path.isfile(os.path.join(root, item)):
+            raise SystemExit(f"{cid}: current build input missing: {item}")
+    spec_data = json.load(open(os.path.join(root, spec), encoding="utf-8"))
+    if spec_data.get("identity", {}).get("id") != cid:
+        raise SystemExit(f"{cid}: the fidelity baseline builds {spec}, which is not this character's spec")
+    version = spec_data.get("metadata", {}).get("spec_version", "")
+    for item in overrides:
+        data = json.load(open(os.path.join(root, item), encoding="utf-8")).get("override", {})
+        version = data.get("metadata", {}).get("spec_version", version)
+    version = version or "unversioned"
+    resolved = {"from": "current", "character_id": cid, "version": version, "spec": spec, "overrides": overrides,
+                "baseline": FIDELITY_BASELINE.replace(os.sep, "/")}
+    vdir = os.path.join("assets", "characters", cid, "versions", version)
+    if os.path.isfile(os.path.join(root, vdir, "manifest.json")):
+        resolved["version_dir"] = vdir.replace(os.sep, "/")
+        return {"version_dir": vdir, "resolved": resolved}
+    return {"spec": spec, "overrides": overrides, "resolved": resolved}
+
+
+def cast_source(name, src):
+    """A shot's cast entry with "current" references resolved (explicit sources are returned unchanged)."""
+    if isinstance(src, dict) and src.get("version") == "current":
+        return current_source(src.get("character_id"))
+    if isinstance(src, dict) and "version" in src and "version_dir" not in src and "spec" not in src:
+        raise SystemExit(f"{name}: cast version {src['version']!r} is not supported (use \"current\", a version_dir "
+                         f"or a spec)")
+    return src
 
 
 def exporter_script():
@@ -208,6 +257,8 @@ def prepare(shot, shot_path, out, logs, blender, rep):
         src = prod.get("cast", {}).get(name)
         if src is None:
             raise SystemExit(f"production.cast has no source for character {name}")
+        src = cast_source(name, src)
+        current = src.get("resolved")
         # 1. master: a published version (manifest-checked by the Blender side) or an unpublished build from a spec
         if "version_dir" in src:
             vdir = resolve(ROOT, src["version_dir"])
@@ -232,6 +283,10 @@ def prepare(shot, shot_path, out, logs, blender, rep):
                 rep["steps"][f"build_{name}_s"] = run(cmd, os.path.join(logs, f"build_{name}.log"))
                 master_state = "built"
             status = "unpublished build from spec (experimental; not approved)"
+        if current:
+            if current["character_id"] != cid:
+                raise SystemExit(f"{name}: current {current['character_id']} resolved to a master of {cid}")
+            status = f"current {current['version']} ({status})"
         msha = sha256(master)
         # 2. engine package from the master (cached by the master's hash and the exporter version)
         exporter = exporter_script()
@@ -248,6 +303,9 @@ def prepare(shot, shot_path, out, logs, blender, rep):
         report[name] = {"character_id": cid, "source": status, "master": os.path.relpath(master, ROOT),
                         "master_state": master_state, "package": os.path.relpath(pkg, ROOT), "package_state": package_state,
                         "from_cache": master_state != "built" and package_state != "built"}
+        if current:  # explicit casts keep their exact keys (and cast.json bytes) from before T-062
+            cast_for_blender[name]["version"] = rep["cast"][name]["version"] = report[name]["version"] = current["version"]
+            rep["cast"][name]["resolved"] = report[name]["resolved"] = current
     # the scene with resolved packages lives in the build folder (rewritten only when its content changes)
     resolved = os.path.join(out, "shot.resolved.scene.json")
     scene_written = write_if_changed(resolved, json.dumps({k: v for k, v in shot.items() if k != "production"}, indent=1))
@@ -369,7 +427,8 @@ def stages_run(a, shot, shot_path, out, run_out, logs, stages, encode, status, f
     elif not os.path.exists(resolved) or not os.path.exists(os.path.join(out, "cast.json")):
         raise SystemExit(f"shot is not prepared ({resolved} missing): run the prepare stage first")
     else:
-        rep["cast"] = {n: {"character_id": c["character_id"], "package": os.path.relpath(c["package"], ROOT)}
+        rep["cast"] = {n: {"character_id": c["character_id"], "package": os.path.relpath(c["package"], ROOT),
+                           **({"version": c["version"]} if "version" in c else {})}
                        for n, c in json.load(open(os.path.join(out, "cast.json"))).items()}
     # 3. engine animation -> bake
     bake = os.path.join(run_out, "bake.json")

@@ -1,0 +1,106 @@
+{
+ "shot": "content/scenes/eval/reach_touch_wave/shot.scene.json",
+ "steps": {
+  "build_boy_s": 8.9,
+  "export_boy_s": 2.5,
+  "build_girl_s": 101.9,
+  "export_girl_s": 8.8,
+  "engine_bake_s": 1.3,
+  "blender_s": 20.0
+ },
+ "cast": {
+  "boy": {
+   "character_id": "boy_yellow_hoodie",
+   "status": "current 1.1.0 (unpublished build from spec (experimental; not approved))",
+   "master_sha256": "b250b7ff04c50bcc389be29e072c079f102120ab2aa88d33e3911f66768fbe48",
+   "package": "content/scenes/eval/reach_touch_wave/build/packages/boy_58d29caef7f46b9c",
+   "version": "1.1.0",
+   "resolved": {
+    "from": "current",
+    "character_id": "boy_yellow_hoodie",
+    "version": "1.1.0",
+    "spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.spec.json",
+    "overrides": [
+     "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.1.1.0.override.json"
+    ],
+    "baseline": "docs/evaluation/characters/fidelity_baseline.json"
+   }
+  },
+  "girl": {
+   "character_id": "girl_auburn_bun_glasses",
+   "status": "current 0.9.0 (unpublished build from spec (experimental; not approved))",
+   "master_sha256": "8e052be16b5b86829e823878cc8a4c9ede895e5b3c0476d7eeaf85d5642d8ed1",
+   "package": "content/scenes/eval/reach_touch_wave/build/packages/girl_836c36529d136e7d",
+   "version": "0.9.0",
+   "resolved": {
+    "from": "current",
+    "character_id": "girl_auburn_bun_glasses",
+    "version": "0.9.0",
+    "spec": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.spec.json",
+    "overrides": [],
+    "baseline": "docs/evaluation/characters/fidelity_baseline.json"
+   }
+  }
+ },
+ "render": {
+  "bake": "content/scenes/eval/reach_touch_wave/build/bake.json",
+  "frames": [
+   90,
+   90
+  ],
+  "characters": {
+   "boy": {
+    "master": "content/scenes/eval/reach_touch_wave/build/masters/boy_c9f6eba9a647f627/boy_yellow_hoodie_master.blend",
+    "baked_bones": 73,
+    "facial_controls": 4,
+    "unmapped_morphs": [],
+    "bones_left_to_drivers": [],
+    "max_bone_error_mm": 0.0005,
+    "max_bone_error_deg": 0.0,
+    "eye_objects": [
+     "eye.L",
+     "lid_lower.L",
+     "eye.R",
+     "lid_lower.R"
+    ],
+    "eye_socket_max_mm": 0.0415,
+    "eye_socket_worst_frame": 90
+   },
+   "girl": {
+    "master": "content/scenes/eval/reach_touch_wave/build/masters/girl_58d46f6de21d03d6/girl_auburn_bun_glasses_master.blend",
+    "baked_bones": 239,
+    "facial_controls": 30,
+    "unmapped_morphs": [],
+    "bones_left_to_drivers": [
+     "DEF-jaw"
+    ],
+    "max_bone_error_mm": 0.0005,
+    "max_bone_error_deg": 0.0,
+    "eye_objects": [
+     "eye.L.001",
+     "eye.R.001"
+    ],
+    "eye_socket_max_mm": 0.0001,
+    "eye_socket_worst_frame": 90
+   }
+  },
+  "not_rendered": [],
+  "world": {
+   "lights": 2,
+   "objects": 4
+  },
+  "props": {
+   "props": {},
+   "unknown_material_presets": []
+  },
+  "setup_s": 7.6,
+  "render_s": 11.6,
+  "render_s_per_frame": 11.6,
+  "resolution": [
+   640,
+   360
+  ],
+  "samples": 16,
+  "engine": "cycles"
+ }
+}
