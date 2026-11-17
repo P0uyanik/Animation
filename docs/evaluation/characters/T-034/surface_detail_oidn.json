@@ -1,0 +1,42 @@
+{
+ "detail_signal": "std of the on-minus-off luminance (0..255), centre 128 px; correlation of that difference between OIDN 32 spp and noise-free 512 spp",
+ "metric": "band-pass luminance std (DoG 2-24 px, 0..255), centre 128 px",
+ "presets": {
+  "felt": {
+   "off_oidn32": 4.22,
+   "off_ref512": 4.286,
+   "on_oidn32": 4.252,
+   "on_ref512": 4.307,
+   "detail_signal_std_ref512": 1.552,
+   "detail_signal_std_oidn32": 1.024,
+   "oidn_vs_noise_free_correlation": 0.403
+  },
+  "woven cotton": {
+   "off_oidn32": 7.325,
+   "off_ref512": 7.304,
+   "on_oidn32": 7.071,
+   "on_ref512": 7.054,
+   "detail_signal_std_ref512": 1.621,
+   "detail_signal_std_oidn32": 1.605,
+   "oidn_vs_noise_free_correlation": 0.958
+  },
+  "boot fleece": {
+   "off_oidn32": 4.225,
+   "off_ref512": 4.236,
+   "on_oidn32": 4.241,
+   "on_ref512": 4.254,
+   "detail_signal_std_ref512": 2.141,
+   "detail_signal_std_oidn32": 2.042,
+   "oidn_vs_noise_free_correlation": 0.957
+  },
+  "skin-felt": {
+   "off_oidn32": 7.007,
+   "off_ref512": 7.008,
+   "on_oidn32": 6.947,
+   "on_ref512": 6.947,
+   "detail_signal_std_ref512": 0.813,
+   "detail_signal_std_oidn32": 0.767,
+   "oidn_vs_noise_free_correlation": 0.808
+  }
+ }
+}
