@@ -179,6 +179,10 @@ PASS Blender tier: full tier; regression boy_yellow_hoodie PASS (fidelity 64.08)
   T-046 merge), C++ tests 81 s.
 - Run on f888cce (merge with `origin/staging` at 6b78904). The two earlier full runs, before the last two
   staging merges, gave the same result.
+- After that, staging received only T-049 hair-study experiment scripts (`pipeline/charsys/experiments/**`,
+  not used by any build), docs and task files. I merged it (clean, no overlap with T-041 files or character specs).
+  Unit tests, claims, write-set and doc links were re-checked on the merge. The full gate on that head ran on
+  GitHub (§5.2) instead of a fourth 30-minute local run.
 
 ### 5.2 GitHub CI
 
