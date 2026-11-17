@@ -139,3 +139,15 @@ The owner supplied 15 reference images for the third character (working id `girl
 a little goofy, not very bright, bubbly and cheerful; reflected in expressions, movements and behaviour while staying
 faithful to the reference images (references remain the primary target). She is built (V6) once the shared systems
 are complete; reference intake and gap analysis (T-057) start now.
+
+## 2026-11-17: hair v3 approach; third character details
+1. **Hair v3 = hybrid C** (T-049): felted base volumes + a limited number of broad felt clumps/locks at the edges, face
+   keep-out as spec data. The final result must closely match the references; renders go to the owner for approval.
+2. Third character, "exactly as in the references" (Supervisor's application of the references, per T-057 §8):
+   - **Hair accessory: the blue felt bow** (identity render, 10 sheets, both videos, material spec "BOW"); the 4-petal
+     flower appears only in the technical hair/rig blueprints `w05`–`w08`.
+   - **Neutral mouth: closed soft smile** (all tiles labelled Neutral, videos at rest); lips slightly parted while
+     watching (behaviour); the small open smile of the turnaround/line-up renders is her presentation/Happy face.
+   - **Goofiness subtle**, as in the references (open-mouthed watching, following the others, comic face tiles; no big
+     comic moves).
+   - Dress: cable-knit skirt and knit bodice; boots: shaggy fleece (majority + material spec; `w09` is a construction sheet).

@@ -113,7 +113,10 @@ character (owner to confirm the intensity, as for the boy in T-053a).
 - **Speech**: her mouth shapes are in `w14`; no audio reference exists (dialogue task).
 - **Single-eye wink**: not shown (both "BLINK L/R" tiles close both eyes); do not invent unless the owner wants it.
 
-## 8. Reference conflicts (listed, not resolved)
+## 8. Reference conflicts
+Resolved by the owner 2026-11-17 (see docs/process/OWNER_DECISIONS.md): bow; neutral = closed soft smile (parted while
+watching, open small smile = presentation/Happy); goofiness subtle; cable-knit dress and fleece boots.
+
 1. **Hair accessory: bow vs flower.** A two-loop felt **bow** with two tails on her right side (`w01`, `w02`, `w03`,
    `w04`, `w10`, `w12` thumbnail, `w13`, `w14`, `w15`, `WT`, `PB`, `lineup`, `C1`, `CD`, `CW`) vs a **4-petal blue
    flower** at the same place (`w05`, `w06`, `w07` "BLUE FLOWER ACCESSORY", `w08` "Flower Accessory Rig").
