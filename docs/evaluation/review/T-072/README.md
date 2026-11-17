@@ -4,7 +4,7 @@ Branch `t-072-claude-code-cleanup` from `origin/staging` (`debd84f`). Source: [T
 §2.2, §2.3, §2.6, §2.7, §6 (C5–C8) and the owner decisions of 2026-11-17 ("T-069 audit recommendations approved",
 [OWNER_DECISIONS.md](../../../process/OWNER_DECISIONS.md)).
 
-**Result: complete except C8 (hair_study), which waits for T-044.** 60 files moved with `git mv` and byte-identical
+**Result: complete except C8 (hair_study): kept, see §3 (one link outside the claim).** 60 files moved with `git mv` and byte-identical
 (rename similarity 100 %), 2 moved with a one-line root-depth fix (97 %), 1 status change in `versions.py`, 4 new
 READMEs, 1 command line updated in the T-010 README. No code behaviour change; all CTest and regression inputs untouched.
 
@@ -95,7 +95,7 @@ per-released-version loop entry "released groom hair_clumps/2 resolves", expecte
 | `content/scenes/milestone01_classroom`, `test_face`, `test_lineup`, `eval/**` | CTest regression inputs / Studio default / evaluation shots |
 | `pipeline/triptych.py` | Listed in T-069 §2.6 but outside the T-072 write-set |
 | `pipeline/clips/t022_contact_sheet.py` | **Imported** by `docs/evaluation/animation/T-030/contact_sheet.py:17` and `docs/evaluation/integration/batch1/contact_sheet.py:21` (`from t022_contact_sheet import project`) |
-| `pipeline/charsys/experiments/hair_study/**` (C8) | T-044 is **not** in `origin/staging` (no `hair_v3*`/`groom_hybrid*` files, no T-044 merge); `docs/tasks/T-044.md:9` lists it as input |
+| `pipeline/charsys/experiments/hair_study/**` (C8) | T-044 reached `origin/staging` during this task (merge `665ec6a`/`dd4984a`), and nothing imports the folder (`git grep` of `hair_study`, `primitives`, `study_build`, `scorecard` in `groom_hybrid*.py`, `hair_v3*`, `test_hair_v3*`, T-044 evidence: no import). **But** `docs/evaluation/characters/T-049/README.md:157` has a Markdown link to `pipeline/charsys/experiments/hair_study/README.md`; that file is outside the T-072 claim, so moving the folder would fail the link check. To finish C8: claim that one line too, `git mv pipeline/charsys/experiments/hair_study archive/experiments/hair_study`, and point the link at `../../../../archive/experiments/hair_study/README.md`. |
 | `pipeline/compare_sheet.py`, `pilot_metrics.py`, `pipeline/blender/compare_harness.py` | Imported by frozen `reproduce_v6.py` and fidelity tools (T-069: K) |
 | `content/characters/**`, `tests/data/**`, `tests/regression/**`, baselines, published versions | Regression inputs / frozen |
 
@@ -118,7 +118,7 @@ docs T-071 is archiving. Each could get "(archived in T-072, see `archive/…`)"
 ## 6. Tests
 
 `python3 tools/check_all.py --base origin/main --task T-072 --full --blender <bpy 5.3.0 wrapper>` (local, OIDN 2.3.3
-prebuilt, after `git merge origin/staging`: already up to date):
+prebuilt). First run on `501a69d`; re-run after `git merge origin/staging` (T-044 et al.) on the final commit:
 
 ```
 PASS Frozen assets

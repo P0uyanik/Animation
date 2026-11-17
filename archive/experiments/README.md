@@ -22,4 +22,5 @@ hair v3 (T-044) and face v2 (T-065); the last candidates F09 (face) and H28 (hai
 `experiments/hair/H28_irregular_crown_only.json`. They are rejected, but frozen files are never moved without a
 manifest change, which only the Supervisor makes.
 
-Not archived yet: `pipeline/charsys/experiments/hair_study/` (T-049 prototypes) waits until T-044 is in staging.
+Not archived yet: `pipeline/charsys/experiments/hair_study/` (T-049 prototypes): unused since T-044, but the T-049 report links into it
+(see `docs/evaluation/review/T-072/README.md` §3).
