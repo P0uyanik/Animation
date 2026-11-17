@@ -203,3 +203,8 @@ The 4-petal flower in the all-three turnaround sheet is not her look.
    stored master (T-075). `assets/characters/*/versions/` is a guarded path.
 These must not distract from the current priority (reference-quality characters): T-075 runs now (it protects the
 approved characters during the visual rounds); T-074 starts when a slot frees; docs go with T-071.
+
+## 2026-11-17: finish running tasks first
+No new tasks start until the running ones (T-060, T-061, T-065, T-070, T-071, T-072, T-075) finish. Each is merged
+as soon as it passes review and the gate, keeping `main` up to date so the owner can see the results. T-074 and the
+rest of the queue are on hold until the owner says otherwise.

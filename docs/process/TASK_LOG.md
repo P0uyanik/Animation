@@ -50,7 +50,7 @@
 | T-071 | Documentation cleanup from T-069 (remove/archive/consolidate) + investigate the 18 tests missing from the gate | assigned 2026-11-17 | t-071-claude-docs-cleanup | `docs/tasks/T-071.md`; owner request |
 | T-072 | Code/asset cleanup from T-069 (C5–C8; owner-approved recommendations) | assigned 2026-11-17 | t-072-claude-code-cleanup | `docs/tasks/T-072.md` |
 | T-073 | Render benchmark on the owner's PC (CPU/GPU) | idea, unassigned (owner: not for Codex now) | — | `docs/tasks/T-073.md` |
-| T-074 | CPU-only Blender render optimisation study (Cycles/Eevee/denoise; quality first) | queued: starts when a slot frees | t-074-claude-cpu-render | `docs/tasks/T-074.md`; owner approved 2026-11-17 |
+| T-074 | CPU-only Blender render optimisation study (Cycles/Eevee/denoise; quality first) | **on hold** (owner 2026-11-17: no new tasks until the running ones finish) | t-074-claude-cpu-render | `docs/tasks/T-074.md`; owner approved 2026-11-17 |
 | T-075 | Preserve approved character assets (immutable store, generator guard, reuse) | assigned 2026-11-17 | t-075-claude-approved-assets | `docs/tasks/T-075.md`; owner approved 2026-11-17 |
 | T-076 | Reference video analysis + architecture report (evaluation only) | **merged** 2026-11-17 | t-076-claude-reference-architecture (18fb94f) | `docs/architecture/REFERENCE_ARCHITECTURE_REPORT.md`; GitHub fast gate PASS; recommendations await owner decision |
 | T-048 | Branch cleanup workflow + tests | **in main** 2026-11-17 | t-048-claude-branch-cleanup (8f1c3ce), merge ae15c0b | 25/25 cleanup tests, full gate PASS; first real dry run after T-041 backups |
