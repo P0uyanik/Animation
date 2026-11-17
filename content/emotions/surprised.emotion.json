@@ -7,6 +7,21 @@
   "surprised": 1.0,
   "jawOpen": 0.25
  },
+ "faceMotion": {
+  "blinkRate": 0.25,
+  "doubleBlink": 0.0,
+  "saccadeRate": 1.6,
+  "saccadeDeg": 2.5,
+  "attention": 1.0,
+  "gazeBiasDeg": [
+   0.0,
+   2.0
+  ],
+  "channels": {
+   "browUp": 0.5,
+   "eyeWide": 0.4
+  }
+ },
  "body": {
   "clip": "emo_surprised"
  },
