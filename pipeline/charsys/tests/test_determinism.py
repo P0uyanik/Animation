@@ -14,6 +14,9 @@ import sys
 
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
+# Shared format-2 fingerprint tool (T-038). The frozen pipeline/blender/boy_pilot/fingerprint.py stays reserved for
+# the v6 baseline comparison in verify_charsys.
+FINGERPRINT = os.path.join(ROOT, "pipeline", "charsys", "fingerprint_v2.py")
 CHARS = {
     "boy": ("boy_yellow_hoodie", "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.spec.json"),
     "girl": ("girl_auburn_bun_glasses", "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.spec.json"),
@@ -54,15 +57,14 @@ def main():
             log_path = os.path.join(build, "build.log")
             with open(log_path, "w", encoding="utf-8") as log:
                 subprocess.run(cmd, cwd=ROOT, env=env, stdout=log, stderr=subprocess.STDOUT, check=True)
-            fp = os.path.join(build, "fingerprint.json")
-            subprocess.run([a.blender, "-b", "--factory-startup", "-t", "1", "-P",
-                            os.path.join(ROOT, "pipeline", "blender", "boy_pilot", "fingerprint.py"), "--",
-                            os.path.join(build, f"{cid}_master.blend"), fp], cwd=ROOT, env=env,
-                           stdout=subprocess.DEVNULL, check=True)
+            # Both grids are required to match; see pipeline/charsys/fingerprint_v2.py for why there are two.
+            fp = os.path.join(build, "fingerprint_0.1mm.json")
+            subprocess.run([a.blender, "-b", "--factory-startup", "-t", "1", "-P", FINGERPRINT, "--",
+                            os.path.join(build, f"{cid}_master.blend"), fp, "--grid-m", "0.0001"],
+                           cwd=ROOT, env=env, stdout=subprocess.DEVNULL, check=True)
             fingerprints.append(fp)
             strict_fp = os.path.join(build, "fingerprint_0.01mm.json")
-            subprocess.run([a.blender, "-b", "--factory-startup", "-t", "1", "-P",
-                            os.path.join(ROOT, "pipeline", "blender", "boy_pilot", "fingerprint.py"), "--",
+            subprocess.run([a.blender, "-b", "--factory-startup", "-t", "1", "-P", FINGERPRINT, "--",
                             os.path.join(build, f"{cid}_master.blend"), strict_fp, "--grid-m", "0.00001"],
                            cwd=ROOT, env=env, stdout=subprocess.DEVNULL, check=True)
             strict_fingerprints.append(strict_fp)

@@ -3,9 +3,7 @@
     blender -b --factory-startup -P pipeline/blender/boy_pilot/fingerprint.py -- <master.blend> <out.json>
 
 Per mesh object: vertex and face counts, bounding box, vertex-order-independent hash of the coordinates rounded to
-0.1 mm, vertex-group names, shape-key names, materials. The 0.1 mm grid is far below a visible modelling tolerance
-but avoids false changes when Blender's threaded geometry code lands either side of a 0.01 mm rounding boundary.
-Plus armature bone counts and the Blender version. Read-only."""
+0.01 mm, vertex-group names, shape-key names, materials. Plus armature bone counts and the Blender version. Read-only."""
 import hashlib
 import json
 import os
@@ -16,13 +14,8 @@ import numpy as np
 
 argv = sys.argv[sys.argv.index("--") + 1:]
 src, out = os.path.abspath(argv[0]), os.path.abspath(argv[1])
-grid_arg = argv.index("--grid-m") + 1 if "--grid-m" in argv else None
-GRID_M = float(argv[grid_arg]) if grid_arg is not None else 1e-4
-if not 0.0 < GRID_M <= 1e-3:
-    raise SystemExit("--grid-m must be in (0, 0.001]")
 bpy.ops.wm.open_mainfile(filepath=src)
-fp = {"format": "character-geometry-fingerprint/2", "coordinate_grid_m": GRID_M,
-      "blender": bpy.app.version_string, "file": os.path.basename(src), "objects": {}}
+fp = {"blender": bpy.app.version_string, "file": os.path.basename(src), "objects": {}}
 for o in sorted(bpy.data.objects, key=lambda o: o.name):
     if o.name.startswith("WGT-"):
         continue
@@ -31,15 +24,12 @@ for o in sorted(bpy.data.objects, key=lambda o: o.name):
         co = np.empty(n * 3, np.float64)
         o.data.vertices.foreach_get("co", co)
         co = co.reshape(-1, 3)
-        # Explicit half-away-from-zero quantization avoids NumPy's platform-
-        # dependent tie handling and keeps the serialized bytes canonical.
-        scaled = co / GRID_M
-        q = (np.sign(scaled) * np.floor(np.abs(scaled) + 0.5)).astype(np.int64)
+        q = np.round(co * 1e5).astype(np.int64)  # 0.01 mm grid
         q = q[np.lexsort(q.T[::-1])]
         fp["objects"][o.name] = {
             "type": "MESH", "vertices": n, "faces": len(o.data.polygons),
             "bbox": [np.round(co.min(0), 4).tolist(), np.round(co.max(0), 4).tolist()] if n else None,
-            "coords_hash": hashlib.sha256(q.astype("<i8", copy=False).tobytes()).hexdigest()[:16],
+            "coords_hash": hashlib.sha256(q.tobytes()).hexdigest()[:16],  # exact match test (sensitive to float noise)
             "centroid": np.round(co.mean(0), 6).tolist() if n else None,       # numeric comparison
             "rms_radius": round(float(np.sqrt(((co - co.mean(0)) ** 2).sum(1).mean())), 6) if n else None,
             "vertex_groups": sorted(g.name for g in o.vertex_groups),
