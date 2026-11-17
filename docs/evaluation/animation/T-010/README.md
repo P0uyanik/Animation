@@ -16,7 +16,7 @@ python3 pipeline/production/run_shot.py --shot episodes/e903_test_video/shots/s0
     --blender <blender> --video --run-dir final
 python3 pipeline/clips/measure_shot.py --scene <build>/shot.resolved.scene.json --bake <build>/runs/final/bake.json \
     --out docs/evaluation/animation/T-010
-python3 pipeline/clips/t010_sheets.py --frames <build>/runs/final/render --gaze docs/evaluation/animation/T-010/gaze_check.json \
+python3 docs/evaluation/animation/T-010/t010_sheets.py --frames <build>/runs/final/render --gaze docs/evaluation/animation/T-010/gaze_check.json \
     --out docs/evaluation/animation/T-010
 ```
 
