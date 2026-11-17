@@ -120,3 +120,9 @@ impatient and easily bored; girl: cheerful and intelligent) and already reflect 
 closely as possible in appearance, expressions, movements and animation quality. Always treat the original
 references as the primary target; improvements and personality features must support those designs, never change or
 contradict them.
+
+## 2026-11-17: no GPU rental available
+The owner cannot rent a GPU at present. Render planning assumes CPU only (cloud containers, and the owner's PC when
+available) until this changes; T-050's rental recommendation is on hold. Mitigations to evaluate before the
+benchmark scene: render settings tuned for CPU (resolution, samples + OIDN, adaptive sampling), splitting frame
+ranges across several cloud sessions, the owner's PC hardware, and only rendering final takes at full quality.
