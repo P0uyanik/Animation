@@ -1,0 +1,579 @@
+{
+ "schema": "plush-studio.hair-study/1",
+ "approach": "B",
+ "label": "sculpted: crown/fringe/bun/temple shells + carved ringlet curtain fused by voxel remesh into one sculpt",
+ "character_spec": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.spec.json",
+ "head_object": "body_skin",
+ "frame": {
+  "centre": [
+   0.0,
+   -0.003996400000000001,
+   0.8250044000000001
+  ],
+  "radii": [
+   0.1419983,
+   0.1350046,
+   0.1449956
+  ]
+ },
+ "hair": {
+  "generator": "groom/1",
+  "seed": 49,
+  "scalp_offset_m": 0.008,
+  "finish": "felt",
+  "yarn": {
+   "plies": 2,
+   "depth": 0.24,
+   "twist_per_m": 95.0,
+   "seg": 12,
+   "step_m": 0.003,
+   "fibre_lean": 0.6
+  },
+  "binding": {
+   "blend_z": [
+    0.6,
+    0.72
+   ]
+  },
+  "fibres": {
+   "slots": [
+    "hair"
+   ],
+   "layers": [
+    {
+     "name": "felt",
+     "overrides": {
+      "fibres": {
+       "density_per_cm2": 5.0,
+       "length_mm": 2.8,
+       "curl": 0.5,
+       "lean": 0.5
+      },
+      "surface": {
+       "saturation_compensation": 1.0
+      }
+     }
+    },
+    {
+     "name": "flyaways",
+     "overrides": {
+      "fibres": {
+       "density_per_cm2": 0.06,
+       "length_mm": 9.0,
+       "curl": 0.9,
+       "lean": 0.7
+      },
+      "surface": {
+       "saturation_compensation": 1.0
+      }
+     }
+    }
+   ]
+  },
+  "structures": [
+   {
+    "type": "scalp_cap",
+    "name": "cap",
+    "offset": 0.004,
+    "face_cut": [
+     -0.06,
+     0.9
+    ],
+    "hairline": [
+     [
+      0,
+      0.905
+     ],
+     [
+      40,
+      0.88
+     ],
+     [
+      70,
+      0.8
+     ],
+     [
+      100,
+      0.74
+     ],
+     [
+      140,
+      0.71
+     ],
+     [
+      180,
+      0.7
+     ]
+    ]
+   },
+   {
+    "type": "bun",
+    "name": "bun",
+    "buns": [
+     {
+      "az": 180,
+      "el": 74,
+      "lift": 0.0,
+      "radius": 0.088,
+      "height": 0.14,
+      "tilt": 0.6,
+      "wrap": "ccw",
+      "turns": 0.9,
+      "ropes": 5,
+      "rope_thick": 0.046,
+      "felt_radii": [
+       1.0,
+       1.0,
+       1.05
+      ],
+      "felt_lobes": [
+       {
+        "offset": [
+         0.1,
+         0.62,
+         0.05
+        ],
+        "radii": [
+         0.72,
+         0.66,
+         0.85
+        ],
+        "swirl": 1.2
+       },
+       {
+        "offset": [
+         0.1,
+         -0.68,
+         0.0
+        ],
+        "radii": [
+         0.72,
+         0.7,
+         0.85
+        ],
+        "swirl": -1.0
+       },
+       {
+        "offset": [
+         -0.4,
+         0.0,
+         0.25
+        ],
+        "radii": [
+         0.66,
+         0.72,
+         0.75
+        ],
+        "swirl": 0.8
+       }
+      ]
+     }
+    ],
+    "felt": {
+     "grooves": {
+      "count": 9,
+      "depth": 0.5,
+      "sharpness": 0.75,
+      "wander": 0.5,
+      "wavelength": 0.6
+     },
+     "lumps": {
+      "amount": 0.08,
+      "scale": 1.1
+     },
+     "resolution": [
+      72,
+      40
+     ]
+    }
+   },
+   {
+    "type": "felt_volume",
+    "name": "crown",
+    "shape": "gather",
+    "az": [
+     -180,
+     180
+    ],
+    "hairline_el": [
+     [
+      0,
+      40
+     ],
+     [
+      25,
+      36
+     ],
+     [
+      50,
+      20
+     ],
+     [
+      72,
+      2
+     ],
+     [
+      95,
+      0
+     ],
+     [
+      125,
+      10
+     ],
+     [
+      150,
+      14
+     ],
+     [
+      180,
+      14
+     ]
+    ],
+    "target": {
+     "bun": 0
+    },
+    "tuck": 0.97,
+    "height": [
+     0.018,
+     0.05,
+     0.03
+    ],
+    "inset": 0.004,
+    "part": {
+     "az": -22,
+     "width_deg": 3.5,
+     "depth": 0.45,
+     "length": 0.55
+    },
+    "grooves": {
+     "count": 28,
+     "depth": 0.22,
+     "sharpness": 0.55,
+     "wander": 0.35,
+     "wavelength": 0.5
+    },
+    "lumps": {
+     "amount": 0.06,
+     "scale": 1.0
+    },
+    "soft": [
+     0,
+     0,
+     0.3,
+     0.0
+    ],
+    "rim": 0.12,
+    "resolution": [
+     200,
+     44
+    ]
+   },
+   {
+    "type": "felt_volume",
+    "name": "fringe",
+    "shape": "fringe",
+    "root_az": [
+     -17,
+     -17,
+     -18,
+     -19,
+     -20,
+     -21
+    ],
+    "root_el": [
+     50,
+     57,
+     64,
+     71,
+     78,
+     85
+    ],
+    "tip_az": [
+     6,
+     24,
+     42,
+     58,
+     70,
+     80
+    ],
+    "tip_el": [
+     25,
+     18,
+     12,
+     7,
+     3,
+     -1
+    ],
+    "tip_lift": [
+     0.004,
+     0.008,
+     0.012,
+     0.016,
+     0.02,
+     0.022
+    ],
+    "bulge": 0.035,
+    "thick": [
+     0.028,
+     0.02
+    ],
+    "tip_scallop": 0.18,
+    "tip_jitter": 0.12,
+    "resolution": [
+     64,
+     40
+    ],
+    "grooves": {
+     "count": 6,
+     "depth": 0.35,
+     "sharpness": 0.6,
+     "wander": 0.5,
+     "wavelength": 0.9
+    },
+    "lumps": {
+     "amount": 0.05
+    },
+    "soft": [
+     0.08,
+     0.08,
+     0.05,
+     0.12
+    ],
+    "rim": 0.12,
+    "clearance": 0.003
+   },
+   {
+    "type": "felt_volume",
+    "name": "fringe_part",
+    "shape": "fringe",
+    "root_az": [
+     -24,
+     -24,
+     -25,
+     -26,
+     -27
+    ],
+    "root_el": [
+     50,
+     58,
+     66,
+     74,
+     82
+    ],
+    "tip_az": [
+     -30,
+     -44,
+     -58,
+     -70,
+     -80
+    ],
+    "tip_el": [
+     27,
+     20,
+     13,
+     6,
+     1
+    ],
+    "tip_lift": [
+     0.004,
+     0.008,
+     0.012,
+     0.016,
+     0.02
+    ],
+    "bulge": 0.03,
+    "thick": [
+     0.026,
+     0.018
+    ],
+    "tip_scallop": 0.18,
+    "tip_jitter": 0.12,
+    "resolution": [
+     48,
+     40
+    ],
+    "grooves": {
+     "count": 6,
+     "depth": 0.35,
+     "sharpness": 0.6,
+     "wander": 0.5,
+     "wavelength": 0.9
+    },
+    "lumps": {
+     "amount": 0.05
+    },
+    "soft": [
+     0.08,
+     0.08,
+     0.05,
+     0.12
+    ],
+    "rim": 0.12,
+    "clearance": 0.003
+   },
+   {
+    "type": "felt_volume",
+    "name": "temple_l",
+    "shape": "mass",
+    "az": 82,
+    "el": 2,
+    "lift": -0.006,
+    "radii": [
+     0.05,
+     0.045,
+     0.075
+    ],
+    "axis": "up",
+    "swirl": 0.08,
+    "grooves": {
+     "count": 9,
+     "depth": 0.5,
+     "sharpness": 0.7,
+     "wander": 0.3
+    },
+    "lumps": {
+     "amount": 0.05
+    },
+    "resolution": [
+     56,
+     32
+    ]
+   },
+   {
+    "type": "felt_volume",
+    "name": "temple_r",
+    "shape": "mass",
+    "az": -82,
+    "el": 2,
+    "lift": -0.006,
+    "radii": [
+     0.05,
+     0.045,
+     0.075
+    ],
+    "axis": "up",
+    "swirl": 0.08,
+    "grooves": {
+     "count": 9,
+     "depth": 0.5,
+     "sharpness": 0.7,
+     "wander": 0.3
+    },
+    "lumps": {
+     "amount": 0.05
+    },
+    "resolution": [
+     56,
+     32
+    ]
+   },
+   {
+    "type": "study_curtain",
+    "name": "curtain",
+    "az": [
+     92,
+     268
+    ],
+    "root_el": [
+     [
+      92,
+      14
+     ],
+     [
+      125,
+      24
+     ],
+     [
+      180,
+      30
+     ]
+    ],
+    "leave_el": -6,
+    "z_end": [
+     [
+      92,
+      0.6
+     ],
+     [
+      130,
+      0.5
+     ],
+     [
+      180,
+      0.44
+     ]
+    ],
+    "rest_radii": [
+     0.175,
+     0.15
+    ],
+    "rest_z": 0.62,
+    "columns": 14,
+    "thick": 0.046,
+    "column_depth": 0.45,
+    "lobe": {
+     "pitch": 0.056,
+     "depth": 0.35,
+     "twist": 0.5
+    },
+    "scallop": 0.045,
+    "resolution": [
+     200,
+     110
+    ],
+    "inset": 0.004
+   },
+   {
+    "type": "tie",
+    "name": "band",
+    "bun": 0,
+    "height_frac": 0.2,
+    "radius_scale": 1.02,
+    "tube": 0.01,
+    "width_scale": 1.7,
+    "material": "hair_band"
+   },
+   {
+    "type": "flowers",
+    "name": "flowers",
+    "bun": 0,
+    "petals": 5,
+    "material": "hair_flower",
+    "centre_material": "hair_flower_centre",
+    "items": [
+     {
+      "around_deg": 50,
+      "height_frac": 0.25,
+      "size": 0.036,
+      "out": 0.024
+     },
+     {
+      "around_deg": 85,
+      "height_frac": 0.38,
+      "size": 0.032,
+      "out": 0.024
+     },
+     {
+      "around_deg": 22,
+      "height_frac": 0.45,
+      "size": 0.028,
+      "out": 0.024
+     }
+    ]
+   }
+  ],
+  "dynamics": {
+   "enabled": false
+  }
+ },
+ "fuse": {
+  "voxel": 0.0022,
+  "smooth": 3,
+  "exclude": [
+   "cap",
+   "band",
+   "flowers_petals",
+   "flowers_centres"
+  ]
+ }
+}

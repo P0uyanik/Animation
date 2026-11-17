@@ -1,0 +1,466 @@
+{
+ "schema": "plush-studio.hair-study/1",
+ "approach": "B",
+ "label": "sculpted felt volume: base volume + C's clump shapes fused by voxel remesh into one smoothed sculpt",
+ "character_spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.spec.json",
+ "head_object": "head",
+ "frame": {
+  "centre": [
+   0.0,
+   0.008,
+   0.855
+  ],
+  "radii": [
+   0.16,
+   0.154,
+   0.159
+  ]
+ },
+ "materials": {
+  "hair": {
+   "preset": "felt hair",
+   "base_color_srgb": [
+    44,
+    38,
+    36
+   ],
+   "reference_size_m": 0.32,
+   "source": "T-049 study: boy target_colors_srgb hair (48,39,35), slightly darker (#2D2D2D blueprint 21)"
+  }
+ },
+ "hair": {
+  "generator": "groom/1",
+  "seed": 49,
+  "scalp_offset_m": 0.006,
+  "finish": "felt",
+  "fibres": {
+   "slots": [
+    "hair"
+   ],
+   "layers": [
+    {
+     "name": "felt",
+     "overrides": {
+      "fibres": {
+       "density_per_cm2": 6.0,
+       "length_mm": 2.6,
+       "curl": 0.55,
+       "lean": 0.5
+      },
+      "surface": {
+       "saturation_compensation": 1.0
+      }
+     }
+    },
+    {
+     "name": "flyaways",
+     "overrides": {
+      "fibres": {
+       "density_per_cm2": 0.08,
+       "length_mm": 8.0,
+       "curl": 0.9,
+       "lean": 0.7
+      },
+      "surface": {
+       "saturation_compensation": 1.0
+      }
+     }
+    }
+   ]
+  },
+  "structures": [
+   {
+    "type": "scalp_cap",
+    "name": "cap",
+    "offset": 0.004
+   },
+   {
+    "type": "felt_volume",
+    "name": "base",
+    "shape": "gather",
+    "az": [
+     -180,
+     180
+    ],
+    "hairline_el": [
+     [
+      0,
+      22
+     ],
+     [
+      35,
+      16
+     ],
+     [
+      65,
+      2
+     ],
+     [
+      95,
+      -14
+     ],
+     [
+      130,
+      -28
+     ],
+     [
+      180,
+      -34
+     ]
+    ],
+    "target": {
+     "az": 180,
+     "el": 66
+    },
+    "tuck": 1.0,
+    "height": [
+     0.012,
+     0.03,
+     0.03
+    ],
+    "inset": 0.004,
+    "grooves": {
+     "count": 30,
+     "depth": 0.3,
+     "sharpness": 0.6,
+     "wander": 0.4,
+     "wavelength": 0.5
+    },
+    "lumps": {
+     "amount": 0.1,
+     "scale": 1.2
+    },
+    "soft": [
+     0,
+     0,
+     0.25,
+     0.0
+    ],
+    "rim": 0.2,
+    "resolution": [
+     160,
+     40
+    ]
+   },
+   {
+    "type": "study_clumps",
+    "name": "crown",
+    "seg": 14,
+    "grooves": 3,
+    "groove_depth": 0.14,
+    "irregularity": 0.07,
+    "rows": [
+     {
+      "count": 6,
+      "az": [
+       -50,
+       60
+      ],
+      "el": [
+       66,
+       78
+      ],
+      "flow": "stand",
+      "pole": {
+       "az": 180,
+       "el": 66
+      },
+      "len_deg": [
+       6,
+       12
+      ],
+      "lift": [
+       0.0,
+       0.075
+      ],
+      "lift_power": 0.85,
+      "width": [
+       0.058,
+       0.074
+      ],
+      "thick": [
+       0.036,
+       0.046
+      ],
+      "jitter_deg": 20,
+      "curl_deg": 0
+     },
+     {
+      "count": 5,
+      "az": [
+       110,
+       250
+      ],
+      "el": [
+       55,
+       70
+      ],
+      "flow": "stand",
+      "pole": {
+       "az": 180,
+       "el": 66
+      },
+      "len_deg": [
+       6,
+       12
+      ],
+      "lift": [
+       0.0,
+       0.065
+      ],
+      "lift_power": 0.85,
+      "width": [
+       0.058,
+       0.074
+      ],
+      "thick": [
+       0.036,
+       0.046
+      ],
+      "jitter_deg": 20,
+      "curl_deg": 0
+     }
+    ]
+   },
+   {
+    "type": "study_clumps",
+    "name": "top",
+    "seg": 14,
+    "grooves": 3,
+    "groove_depth": 0.14,
+    "irregularity": 0.07,
+    "rows": [
+     {
+      "count": 14,
+      "az": [
+       -180,
+       180
+      ],
+      "el": [
+       44,
+       58
+      ],
+      "flow": "away",
+      "pole": {
+       "az": 180,
+       "el": 66
+      },
+      "len_deg": [
+       32,
+       46
+      ],
+      "lift": [
+       0.006,
+       0.042
+      ],
+      "width": [
+       0.05,
+       0.064
+      ],
+      "thick": [
+       0.026,
+       0.034
+      ],
+      "jitter_deg": 12,
+      "curl_deg": 12
+     }
+    ]
+   },
+   {
+    "type": "study_clumps",
+    "name": "fringe",
+    "seg": 14,
+    "grooves": 3,
+    "groove_depth": 0.14,
+    "irregularity": 0.07,
+    "keepout": {
+     "az": 42,
+     "el_min": -9
+    },
+    "rows": [
+     {
+      "count": 6,
+      "az": [
+       -42,
+       42
+      ],
+      "el": [
+       34,
+       42
+      ],
+      "flow": "down",
+      "converge": 0.12,
+      "len_deg": [
+       42,
+       50
+      ],
+      "lift": [
+       0.008,
+       0.016
+      ],
+      "width": [
+       0.046,
+       0.056
+      ],
+      "thick": [
+       0.024,
+       0.03
+      ],
+      "jitter_deg": 10,
+      "curl_deg": 10
+     }
+    ]
+   },
+   {
+    "type": "study_clumps",
+    "name": "sides",
+    "seg": 14,
+    "grooves": 3,
+    "groove_depth": 0.14,
+    "irregularity": 0.07,
+    "rows": [
+     {
+      "count": 5,
+      "az": [
+       52,
+       118
+      ],
+      "el": [
+       12,
+       30
+      ],
+      "flow": "down",
+      "len_deg": [
+       26,
+       38
+      ],
+      "lift": [
+       0.006,
+       0.036
+      ],
+      "width": [
+       0.04,
+       0.052
+      ],
+      "thick": [
+       0.022,
+       0.028
+      ],
+      "jitter_deg": 14,
+      "curl_deg": 15
+     },
+     {
+      "count": 5,
+      "az": [
+       -118,
+       -52
+      ],
+      "el": [
+       12,
+       30
+      ],
+      "flow": "down",
+      "len_deg": [
+       26,
+       38
+      ],
+      "lift": [
+       0.006,
+       0.036
+      ],
+      "width": [
+       0.04,
+       0.052
+      ],
+      "thick": [
+       0.022,
+       0.028
+      ],
+      "jitter_deg": 14,
+      "curl_deg": 15
+     }
+    ]
+   },
+   {
+    "type": "study_clumps",
+    "name": "back",
+    "seg": 14,
+    "grooves": 3,
+    "groove_depth": 0.14,
+    "irregularity": 0.07,
+    "rows": [
+     {
+      "count": 10,
+      "az": [
+       120,
+       240
+      ],
+      "el": [
+       12,
+       32
+      ],
+      "flow": "down",
+      "len_deg": [
+       28,
+       38
+      ],
+      "lift": [
+       0.006,
+       0.036
+      ],
+      "width": [
+       0.046,
+       0.058
+      ],
+      "thick": [
+       0.024,
+       0.032
+      ],
+      "jitter_deg": 16,
+      "curl_deg": 18
+     },
+     {
+      "count": 9,
+      "az": [
+       125,
+       235
+      ],
+      "el": [
+       -16,
+       2
+      ],
+      "flow": "down",
+      "len_deg": [
+       18,
+       26
+      ],
+      "lift": [
+       0.004,
+       0.026
+      ],
+      "width": [
+       0.04,
+       0.052
+      ],
+      "thick": [
+       0.022,
+       0.028
+      ],
+      "jitter_deg": 16,
+      "curl_deg": 18
+     }
+    ]
+   }
+  ],
+  "dynamics": {
+   "enabled": false
+  }
+ },
+ "fuse": {
+  "voxel": 0.002,
+  "smooth": 3,
+  "exclude": [
+   "cap"
+  ]
+ }
+}

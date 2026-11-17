@@ -1,0 +1,515 @@
+{
+ "schema": "plush-studio.hair-study/1",
+ "approach": "A",
+ "label": "strand/lock groom (groom/1 direction, improved): scalp cap + ~190 narrow felt locks, no base volume",
+ "character_spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.spec.json",
+ "head_object": "head",
+ "frame": {
+  "centre": [
+   0.0,
+   0.008,
+   0.855
+  ],
+  "radii": [
+   0.16,
+   0.154,
+   0.159
+  ]
+ },
+ "materials": {
+  "hair": {
+   "preset": "felt hair",
+   "base_color_srgb": [
+    44,
+    38,
+    36
+   ],
+   "reference_size_m": 0.32,
+   "source": "T-049 study: boy target_colors_srgb hair (48,39,35), slightly darker (#2D2D2D blueprint 21)"
+  }
+ },
+ "hair": {
+  "generator": "groom/1",
+  "seed": 49,
+  "scalp_offset_m": 0.006,
+  "finish": "felt",
+  "fibres": {
+   "slots": [
+    "hair"
+   ],
+   "layers": [
+    {
+     "name": "felt",
+     "overrides": {
+      "fibres": {
+       "density_per_cm2": 6.0,
+       "length_mm": 2.6,
+       "curl": 0.55,
+       "lean": 0.5
+      },
+      "surface": {
+       "saturation_compensation": 1.0
+      }
+     }
+    },
+    {
+     "name": "flyaways",
+     "overrides": {
+      "fibres": {
+       "density_per_cm2": 0.08,
+       "length_mm": 8.0,
+       "curl": 0.9,
+       "lean": 0.7
+      },
+      "surface": {
+       "saturation_compensation": 1.0
+      }
+     }
+    }
+   ]
+  },
+  "structures": [
+   {
+    "type": "scalp_cap",
+    "name": "cap",
+    "offset": 0.004
+   },
+   {
+    "type": "study_clumps",
+    "name": "under",
+    "seg": 10,
+    "grooves": 2,
+    "groove_depth": 0.08,
+    "irregularity": 0.06,
+    "rows": [
+     {
+      "count": 40,
+      "az": [
+       -180,
+       180
+      ],
+      "el": [
+       20,
+       60
+      ],
+      "flow": "away",
+      "pole": {
+       "az": 180,
+       "el": 66
+      },
+      "len_deg": [
+       30,
+       44
+      ],
+      "lift": [
+       0.0,
+       0.012
+      ],
+      "width": [
+       0.022,
+       0.03
+      ],
+      "thick": [
+       0.012,
+       0.016
+      ],
+      "jitter_deg": 10
+     },
+     {
+      "count": 30,
+      "az": [
+       50,
+       310
+      ],
+      "el": [
+       -20,
+       20
+      ],
+      "flow": "down",
+      "len_deg": [
+       24,
+       34
+      ],
+      "lift": [
+       0.0,
+       0.01
+      ],
+      "width": [
+       0.022,
+       0.03
+      ],
+      "thick": [
+       0.012,
+       0.016
+      ],
+      "jitter_deg": 10
+     }
+    ],
+    "keepout": {
+     "az": 42,
+     "el_min": -9
+    }
+   },
+   {
+    "type": "study_clumps",
+    "name": "crown",
+    "seg": 10,
+    "grooves": 3,
+    "groove_depth": 0.08,
+    "irregularity": 0.07,
+    "rows": [
+     {
+      "count": 12,
+      "az": [
+       -50,
+       60
+      ],
+      "el": [
+       66,
+       78
+      ],
+      "flow": "stand",
+      "pole": {
+       "az": 180,
+       "el": 66
+      },
+      "len_deg": [
+       6,
+       12
+      ],
+      "lift": [
+       0.0,
+       0.075
+      ],
+      "lift_power": 0.85,
+      "width": [
+       0.029,
+       0.037
+      ],
+      "thick": [
+       0.021599999999999998,
+       0.0276
+      ],
+      "jitter_deg": 20,
+      "curl_deg": 0
+     },
+     {
+      "count": 10,
+      "az": [
+       110,
+       250
+      ],
+      "el": [
+       55,
+       70
+      ],
+      "flow": "stand",
+      "pole": {
+       "az": 180,
+       "el": 66
+      },
+      "len_deg": [
+       6,
+       12
+      ],
+      "lift": [
+       0.0,
+       0.065
+      ],
+      "lift_power": 0.85,
+      "width": [
+       0.029,
+       0.037
+      ],
+      "thick": [
+       0.021599999999999998,
+       0.0276
+      ],
+      "jitter_deg": 20,
+      "curl_deg": 0
+     }
+    ]
+   },
+   {
+    "type": "study_clumps",
+    "name": "top",
+    "seg": 10,
+    "grooves": 3,
+    "groove_depth": 0.08,
+    "irregularity": 0.07,
+    "rows": [
+     {
+      "count": 42,
+      "az": [
+       -180,
+       180
+      ],
+      "el": [
+       44,
+       58
+      ],
+      "flow": "away",
+      "pole": {
+       "az": 180,
+       "el": 66
+      },
+      "len_deg": [
+       32,
+       46
+      ],
+      "lift": [
+       0.006,
+       0.042
+      ],
+      "width": [
+       0.025,
+       0.032
+      ],
+      "thick": [
+       0.0156,
+       0.0204
+      ],
+      "jitter_deg": 12,
+      "curl_deg": 12
+     }
+    ]
+   },
+   {
+    "type": "study_clumps",
+    "name": "fringe",
+    "seg": 10,
+    "grooves": 3,
+    "groove_depth": 0.08,
+    "irregularity": 0.07,
+    "keepout": {
+     "az": 42,
+     "el_min": -9
+    },
+    "rows": [
+     {
+      "count": 12,
+      "az": [
+       -42,
+       42
+      ],
+      "el": [
+       34,
+       42
+      ],
+      "flow": "down",
+      "converge": 0.12,
+      "len_deg": [
+       42,
+       50
+      ],
+      "lift": [
+       0.008,
+       0.016
+      ],
+      "width": [
+       0.023,
+       0.028
+      ],
+      "thick": [
+       0.0144,
+       0.018
+      ],
+      "jitter_deg": 10,
+      "curl_deg": 10
+     }
+    ]
+   },
+   {
+    "type": "study_clumps",
+    "name": "sides",
+    "seg": 10,
+    "grooves": 3,
+    "groove_depth": 0.08,
+    "irregularity": 0.07,
+    "rows": [
+     {
+      "count": 15,
+      "az": [
+       52,
+       118
+      ],
+      "el": [
+       12,
+       30
+      ],
+      "flow": "down",
+      "len_deg": [
+       26,
+       38
+      ],
+      "lift": [
+       0.006,
+       0.036
+      ],
+      "width": [
+       0.02,
+       0.026
+      ],
+      "thick": [
+       0.013199999999999998,
+       0.0168
+      ],
+      "jitter_deg": 14,
+      "curl_deg": 15
+     },
+     {
+      "count": 15,
+      "az": [
+       -118,
+       -52
+      ],
+      "el": [
+       12,
+       30
+      ],
+      "flow": "down",
+      "len_deg": [
+       26,
+       38
+      ],
+      "lift": [
+       0.006,
+       0.036
+      ],
+      "width": [
+       0.02,
+       0.026
+      ],
+      "thick": [
+       0.013199999999999998,
+       0.0168
+      ],
+      "jitter_deg": 14,
+      "curl_deg": 15
+     }
+    ]
+   },
+   {
+    "type": "study_clumps",
+    "name": "back",
+    "seg": 10,
+    "grooves": 3,
+    "groove_depth": 0.08,
+    "irregularity": 0.07,
+    "rows": [
+     {
+      "count": 30,
+      "az": [
+       120,
+       240
+      ],
+      "el": [
+       12,
+       32
+      ],
+      "flow": "down",
+      "len_deg": [
+       28,
+       38
+      ],
+      "lift": [
+       0.006,
+       0.036
+      ],
+      "width": [
+       0.023,
+       0.029
+      ],
+      "thick": [
+       0.0144,
+       0.0192
+      ],
+      "jitter_deg": 16,
+      "curl_deg": 18
+     },
+     {
+      "count": 27,
+      "az": [
+       125,
+       235
+      ],
+      "el": [
+       -16,
+       2
+      ],
+      "flow": "down",
+      "len_deg": [
+       18,
+       26
+      ],
+      "lift": [
+       0.004,
+       0.026
+      ],
+      "width": [
+       0.02,
+       0.026
+      ],
+      "thick": [
+       0.013199999999999998,
+       0.0168
+      ],
+      "jitter_deg": 16,
+      "curl_deg": 18
+     }
+    ]
+   }
+  ],
+  "dynamics": {
+   "enabled": true,
+   "substep_hz": 240,
+   "preroll_s": 1.0,
+   "defaults": {
+    "stiffness": 140.0,
+    "stiffness_tip": 100.0,
+    "damping": 9.0,
+    "gravity": 0.2,
+    "drag": 0.8,
+    "limit_deg": 18.0,
+    "radius": 0.012
+   },
+   "structures": {
+    "fringe": {
+     "bones": 2,
+     "bone_length": 0.03
+    },
+    "sides": {
+     "bones": 2,
+     "bone_length": 0.03
+    },
+    "back": {
+     "bones": 2,
+     "bone_length": 0.03
+    },
+    "crown": {
+     "bones": 2,
+     "bone_length": 0.03,
+     "stiffness": 200.0
+    },
+    "under": {
+     "bones": 1,
+     "bone_length": 0.03,
+     "stiffness": 240.0
+    }
+   },
+   "colliders": [
+    {
+     "name": "head",
+     "type": "sphere",
+     "bone": "head",
+     "head_offset": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "radius": 0.15
+    }
+   ]
+  }
+ }
+}
