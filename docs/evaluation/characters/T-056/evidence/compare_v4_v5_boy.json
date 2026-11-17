@@ -1,0 +1,885 @@
+{
+ "export4": "origin/staging build 1, export/4",
+ "export5": "export/5-pinned build, final exporter",
+ "manifest_keys": {
+  "capabilities": "equal",
+  "coordinates": "equal",
+  "discarded": "equal",
+  "expressions": "equal",
+  "expressions_missing": "equal",
+  "eye_pivots": "equal",
+  "format": "equal",
+  "materials": "equal",
+  "morph_names": "equal",
+  "name": "equal",
+  "profile": "equal",
+  "reparented": "equal",
+  "retarget": "equal",
+  "rig_specific_bones": "equal",
+  "roles_present": "equal",
+  "skeleton": "equal",
+  "source": "DIFFERS",
+  "version": "equal",
+  "meshes (layout: part, material, vertex count)": "equal",
+  "morphs (mesh, name)": "equal"
+ },
+ "errors": {},
+ "worst": {
+  "position_m": 1.52587890625e-05,
+  "normal_deg": 1.9466018868122978,
+  "influence": 0.0014338493347167969,
+  "morph_m": 3.0517578125e-05,
+  "morph_vertices_only_one_side": 0,
+  "triangles_equal": true,
+  "normals_over_deg": {
+   "0.1": 60982,
+   "0.5": 2313,
+   "1.0": 151,
+   "2.0": 0,
+   "5.0": 0
+  },
+  "vertices": 194050
+ },
+ "meshes": {
+  "backpack_body": {
+   "position_m": 1.52587890625e-05,
+   "normal_deg": 0.2530729843708891,
+   "normals_over_deg": {
+    "0.1": 831,
+    "0.5": 0,
+    "1.0": 0,
+    "2.0": 0,
+    "5.0": 0
+   },
+   "influence": 0.0,
+   "morph_m": 0.0,
+   "morph_vertices_only_one_side": 0,
+   "triangles_equal": true
+  },
+  "backpack_handle": {
+   "position_m": 1.5154480934143066e-05,
+   "normal_deg": 0.320467335202056,
+   "normals_over_deg": {
+    "0.1": 100,
+    "0.5": 0,
+    "1.0": 0,
+    "2.0": 0,
+    "5.0": 0
+   },
+   "influence": 0.0,
+   "morph_m": 0.0,
+   "morph_vertices_only_one_side": 0,
+   "triangles_equal": true
+  },
+  "backpack_pocket": {
+   "position_m": 1.5228986740112305e-05,
+   "normal_deg": 0.6829818935462417,
+   "normals_over_deg": {
+    "0.1": 598,
+    "0.5": 16,
+    "1.0": 0,
+    "2.0": 0,
+    "5.0": 0
+   },
+   "influence": 0.0,
+   "morph_m": 0.0,
+   "morph_vertices_only_one_side": 0,
+   "triangles_equal": true
+  },
+  "backpack_strap.L": {
+   "position_m": 1.5228986740112305e-05,
+   "normal_deg": 1.188569088835543,
+   "normals_over_deg": {
+    "0.1": 99,
+    "0.5": 12,
+    "1.0": 2,
+    "2.0": 0,
+    "5.0": 0
+   },
+   "influence": 0.0,
+   "morph_m": 0.0,
+   "morph_vertices_only_one_side": 0,
+   "triangles_equal": true
+  },
+  "backpack_strap.R": {
+   "position_m": 1.5169382095336914e-05,
+   "normal_deg": 1.224951500133356,
+   "normals_over_deg": {
+    "0.1": 92,
+    "0.5": 9,
+    "1.0": 2,
+    "2.0": 0,
+    "5.0": 0
+   },
+   "influence": 0.0,
+   "morph_m": 0.0,
+   "morph_vertices_only_one_side": 0,
+   "triangles_equal": true
+  },
+  "brow.L": {
+   "position_m": 1.5139579772949219e-05,
+   "normal_deg": 1.241258641868215,
+   "normals_over_deg": {
+    "0.1": 102,
+    "0.5": 24,
+    "1.0": 4,
+    "2.0": 0,
+    "5.0": 0
+   },
+   "influence": 0.0,
+   "morph_m": 3.0040740966796875e-05,
+   "morph_vertices_only_one_side": 0,
+   "triangles_equal": true
+  },
+  "brow.R": {
+   "position_m": 1.5139579772949219e-05,
+   "normal_deg": 1.2355108723693944,
+   "normals_over_deg": {
+    "0.1": 98,
+    "0.5": 27,
+    "1.0": 4,
+    "2.0": 0,
+    "5.0": 0
+   },
+   "influence": 0.0,
+   "morph_m": 3.0040740966796875e-05,
+   "morph_vertices_only_one_side": 0,
+   "triangles_equal": true
+  },
+  "buckle.L": {
+   "position_m": 1.5169382095336914e-05,
+   "normal_deg": 0.28840244554982153,
+   "normals_over_deg": {
+    "0.1": 46,
+    "0.5": 0,
+    "1.0": 0,
+    "2.0": 0,
+    "5.0": 0
+   },
+   "influence": 0.0,
+   "morph_m": 0.0,
+   "morph_vertices_only_one_side": 0,
+   "triangles_equal": true
+  },
+  "buckle.R": {
+   "position_m": 1.5169382095336914e-05,
+   "normal_deg": 0.28840244554982153,
+   "normals_over_deg": {
+    "0.1": 46,
+    "0.5": 0,
+    "1.0": 0,
+    "2.0": 0,
+    "5.0": 0
+   },
+   "influence": 0.0,
+   "morph_m": 0.0,
+   "morph_vertices_only_one_side": 0,
+   "triangles_equal": true
+  },
+  "drawstring.L": {
+   "position_m": 1.5242025256156921e-05,
+   "normal_deg": 0.7479405089106492,
+   "normals_over_deg": {
+    "0.1": 114,
+    "0.5": 2,
+    "1.0": 0,
+    "2.0": 0,
+    "5.0": 0
+   },
+   "influence": 0.0,
+   "morph_m": 0.0,
+   "morph_vertices_only_one_side": 0,
+   "triangles_equal": true
+  },
+  "drawstring.R": {
+   "position_m": 1.5242025256156921e-05,
+   "normal_deg": 0.7479350939946317,
+   "normals_over_deg": {
+    "0.1": 114,
+    "0.5": 2,
+    "1.0": 0,
+    "2.0": 0,
+    "5.0": 0
+   },
+   "influence": 0.0,
+   "morph_m": 0.0,
+   "morph_vertices_only_one_side": 0,
+   "triangles_equal": true
+  },
+  "drawstring_tip.L": {
+   "position_m": 1.5243887901306152e-05,
+   "normal_deg": 0.7594604636994874,
+   "normals_over_deg": {
+    "0.1": 84,
+    "0.5": 3,
+    "1.0": 0,
+    "2.0": 0,
+    "5.0": 0
+   },
+   "influence": 0.0,
+   "morph_m": 0.0,
+   "morph_vertices_only_one_side": 0,
+   "triangles_equal": true
+  },
+  "drawstring_tip.R": {
+   "position_m": 1.5243887901306152e-05,
+   "normal_deg": 0.7597901251299305,
+   "normals_over_deg": {
+    "0.1": 84,
+    "0.5": 3,
+    "1.0": 0,
+    "2.0": 0,
+    "5.0": 0
+   },
+   "influence": 0.0,
+   "morph_m": 0.0,
+   "morph_vertices_only_one_side": 0,
+   "triangles_equal": true
+  },
+  "ear.L": {
+   "position_m": 1.52587890625e-05,
+   "normal_deg": 0.613219359437508,
+   "normals_over_deg": {
+    "0.1": 1188,
+    "0.5": 11,
+    "1.0": 0,
+    "2.0": 0,
+    "5.0": 0
+   },
+   "influence": 0.0,
+   "morph_m": 0.0,
+   "morph_vertices_only_one_side": 0,
+   "triangles_equal": true
+  },
+  "ear.R": {
+   "position_m": 1.52587890625e-05,
+   "normal_deg": 0.6132267489602559,
+   "normals_over_deg": {
+    "0.1": 1188,
+    "0.5": 10,
+    "1.0": 0,
+    "2.0": 0,
+    "5.0": 0
+   },
+   "influence": 0.0,
+   "morph_m": 0.0,
+   "morph_vertices_only_one_side": 0,
+   "triangles_equal": true
+  },
+  "eye.L": {
+   "position_m": 1.5236437320709229e-05,
+   "normal_deg": 0.09896369821978529,
+   "normals_over_deg": {
+    "0.1": 0,
+    "0.5": 0,
+    "1.0": 0,
+    "2.0": 0,
+    "5.0": 0
+   },
+   "influence": 0.0,
+   "morph_m": 0.0,
+   "morph_vertices_only_one_side": 0,
+   "triangles_equal": true
+  },
+  "eye.R": {
+   "position_m": 1.5228986740112305e-05,
+   "normal_deg": 0.09910491605495385,
+   "normals_over_deg": {
+    "0.1": 0,
+    "0.5": 0,
+    "1.0": 0,
+    "2.0": 0,
+    "5.0": 0
+   },
+   "influence": 0.0,
+   "morph_m": 0.0,
+   "morph_vertices_only_one_side": 0,
+   "triangles_equal": true
+  },
+  "hair_clumps": {
+   "position_m": 1.52587890625e-05,
+   "normal_deg": 1.6890361944583312,
+   "normals_over_deg": {
+    "0.1": 40057,
+    "0.5": 1864,
+    "1.0": 107,
+    "2.0": 0,
+    "5.0": 0
+   },
+   "influence": 0.0,
+   "morph_m": 0.0,
+   "morph_vertices_only_one_side": 0,
+   "triangles_equal": true
+  },
+  "hair_mass": {
+   "position_m": 1.52587890625e-05,
+   "normal_deg": 0.6420832558065566,
+   "normals_over_deg": {
+    "0.1": 443,
+    "0.5": 2,
+    "1.0": 0,
+    "2.0": 0,
+    "5.0": 0
+   },
+   "influence": 0.0,
+   "morph_m": 0.0,
+   "morph_vertices_only_one_side": 0,
+   "triangles_equal": true
+  },
+  "hair_strays": {
+   "position_m": 1.5251338481903076e-05,
+   "normal_deg": 1.1822487661358518,
+   "normals_over_deg": {
+    "0.1": 265,
+    "0.5": 68,
+    "1.0": 2,
+    "2.0": 0,
+    "5.0": 0
+   },
+   "influence": 0.0,
+   "morph_m": 0.0,
+   "morph_vertices_only_one_side": 0,
+   "triangles_equal": true
+  },
+  "hand.L": {
+   "position_m": 1.52587890625e-05,
+   "normal_deg": 0.8404068797010533,
+   "normals_over_deg": {
+    "0.1": 3166,
+    "0.5": 34,
+    "1.0": 0,
+    "2.0": 0,
+    "5.0": 0
+   },
+   "influence": 0.0013400912284851074,
+   "morph_m": 0.0,
+   "morph_vertices_only_one_side": 0,
+   "triangles_equal": true
+  },
+  "hand.R": {
+   "position_m": 1.52587890625e-05,
+   "normal_deg": 0.8419559022329851,
+   "normals_over_deg": {
+    "0.1": 3162,
+    "0.5": 30,
+    "1.0": 0,
+    "2.0": 0,
+    "5.0": 0
+   },
+   "influence": 0.0013567209243774414,
+   "morph_m": 0.0,
+   "morph_vertices_only_one_side": 0,
+   "triangles_equal": true
+  },
+  "head": {
+   "position_m": 1.52587890625e-05,
+   "normal_deg": 0.48030852403655927,
+   "normals_over_deg": {
+    "0.1": 2671,
+    "0.5": 0,
+    "1.0": 0,
+    "2.0": 0,
+    "5.0": 0
+   },
+   "influence": 0.0,
+   "morph_m": 0.0,
+   "morph_vertices_only_one_side": 0,
+   "triangles_equal": true
+  },
+  "hood_back": {
+   "position_m": 1.519918441772461e-05,
+   "normal_deg": 0.4250649021462199,
+   "normals_over_deg": {
+    "0.1": 20,
+    "0.5": 0,
+    "1.0": 0,
+    "2.0": 0,
+    "5.0": 0
+   },
+   "influence": 0.0013167858123779297,
+   "morph_m": 0.0,
+   "morph_vertices_only_one_side": 0,
+   "triangles_equal": true
+  },
+  "hood_roll": {
+   "position_m": 1.5255063772201538e-05,
+   "normal_deg": 0.3477966223310233,
+   "normals_over_deg": {
+    "0.1": 49,
+    "0.5": 0,
+    "1.0": 0,
+    "2.0": 0,
+    "5.0": 0
+   },
+   "influence": 0.0013055801391601562,
+   "morph_m": 0.0,
+   "morph_vertices_only_one_side": 0,
+   "triangles_equal": true
+  },
+  "hoodie_cuff.L": {
+   "position_m": 1.52587890625e-05,
+   "normal_deg": 0.13086241313930605,
+   "normals_over_deg": {
+    "0.1": 8,
+    "0.5": 0,
+    "1.0": 0,
+    "2.0": 0,
+    "5.0": 0
+   },
+   "influence": 0.0,
+   "morph_m": 0.0,
+   "morph_vertices_only_one_side": 0,
+   "triangles_equal": true
+  },
+  "hoodie_cuff.R": {
+   "position_m": 1.5228986740112305e-05,
+   "normal_deg": 0.13263991069024134,
+   "normals_over_deg": {
+    "0.1": 10,
+    "0.5": 0,
+    "1.0": 0,
+    "2.0": 0,
+    "5.0": 0
+   },
+   "influence": 0.0,
+   "morph_m": 0.0,
+   "morph_vertices_only_one_side": 0,
+   "triangles_equal": true
+  },
+  "hoodie_hem": {
+   "position_m": 1.5184283256530762e-05,
+   "normal_deg": 0.08576253962360748,
+   "normals_over_deg": {
+    "0.1": 0,
+    "0.5": 0,
+    "1.0": 0,
+    "2.0": 0,
+    "5.0": 0
+   },
+   "influence": 0.0009381771087646484,
+   "morph_m": 0.0,
+   "morph_vertices_only_one_side": 0,
+   "triangles_equal": true
+  },
+  "hoodie_pocket": {
+   "position_m": 1.52587890625e-05,
+   "normal_deg": 0.3405134839438655,
+   "normals_over_deg": {
+    "0.1": 822,
+    "0.5": 0,
+    "1.0": 0,
+    "2.0": 0,
+    "5.0": 0
+   },
+   "influence": 0.0009601712226867676,
+   "morph_m": 0.0,
+   "morph_vertices_only_one_side": 0,
+   "triangles_equal": true
+  },
+  "hoodie_sleeve.L": {
+   "position_m": 1.52587890625e-05,
+   "normal_deg": 0.11366787586979996,
+   "normals_over_deg": {
+    "0.1": 2,
+    "0.5": 0,
+    "1.0": 0,
+    "2.0": 0,
+    "5.0": 0
+   },
+   "influence": 0.0013023614883422852,
+   "morph_m": 0.0,
+   "morph_vertices_only_one_side": 0,
+   "triangles_equal": true
+  },
+  "hoodie_sleeve.R": {
+   "position_m": 1.52587890625e-05,
+   "normal_deg": 0.11304771988827088,
+   "normals_over_deg": {
+    "0.1": 2,
+    "0.5": 0,
+    "1.0": 0,
+    "2.0": 0,
+    "5.0": 0
+   },
+   "influence": 0.0013724863529205322,
+   "morph_m": 0.0,
+   "morph_vertices_only_one_side": 0,
+   "triangles_equal": true
+  },
+  "hoodie_torso": {
+   "position_m": 1.5236437320709229e-05,
+   "normal_deg": 0.08497743057516019,
+   "normals_over_deg": {
+    "0.1": 0,
+    "0.5": 0,
+    "1.0": 0,
+    "2.0": 0,
+    "5.0": 0
+   },
+   "influence": 0.0014338493347167969,
+   "morph_m": 0.0,
+   "morph_vertices_only_one_side": 0,
+   "triangles_equal": true
+  },
+  "lash.L": {
+   "position_m": 1.5195459127426147e-05,
+   "normal_deg": 1.9466018868122978,
+   "normals_over_deg": {
+    "0.1": 162,
+    "0.5": 35,
+    "1.0": 6,
+    "2.0": 0,
+    "5.0": 0
+   },
+   "influence": 0.0,
+   "morph_m": 3.048032522201538e-05,
+   "morph_vertices_only_one_side": 0,
+   "triangles_equal": true
+  },
+  "lash.R": {
+   "position_m": 1.5204772353172302e-05,
+   "normal_deg": 0.9416368615713003,
+   "normals_over_deg": {
+    "0.1": 149,
+    "0.5": 21,
+    "1.0": 0,
+    "2.0": 0,
+    "5.0": 0
+   },
+   "influence": 0.0,
+   "morph_m": 3.0517578125e-05,
+   "morph_vertices_only_one_side": 0,
+   "triangles_equal": true
+  },
+  "lid_lower.L": {
+   "position_m": 1.52587890625e-05,
+   "normal_deg": 1.8027058600028874,
+   "normals_over_deg": {
+    "0.1": 653,
+    "0.5": 30,
+    "1.0": 1,
+    "2.0": 0,
+    "5.0": 0
+   },
+   "influence": 0.0,
+   "morph_m": 0.0,
+   "morph_vertices_only_one_side": 0,
+   "triangles_equal": true
+  },
+  "lid_lower.R": {
+   "position_m": 1.52587890625e-05,
+   "normal_deg": 1.7883307707128806,
+   "normals_over_deg": {
+    "0.1": 667,
+    "0.5": 34,
+    "1.0": 6,
+    "2.0": 0,
+    "5.0": 0
+   },
+   "influence": 0.0,
+   "morph_m": 0.0,
+   "morph_vertices_only_one_side": 0,
+   "triangles_equal": true
+  },
+  "lid_upper.L": {
+   "position_m": 1.52587890625e-05,
+   "normal_deg": 1.531115452009742,
+   "normals_over_deg": {
+    "0.1": 692,
+    "0.5": 25,
+    "1.0": 6,
+    "2.0": 0,
+    "5.0": 0
+   },
+   "influence": 0.0,
+   "morph_m": 3.0517578125e-05,
+   "morph_vertices_only_one_side": 0,
+   "triangles_equal": true
+  },
+  "lid_upper.R": {
+   "position_m": 1.52587890625e-05,
+   "normal_deg": 1.6608390753510147,
+   "normals_over_deg": {
+    "0.1": 719,
+    "0.5": 27,
+    "1.0": 7,
+    "2.0": 0,
+    "5.0": 0
+   },
+   "influence": 0.0,
+   "morph_m": 3.0517578125e-05,
+   "morph_vertices_only_one_side": 0,
+   "triangles_equal": true
+  },
+  "mouth": {
+   "position_m": 1.4901161193847656e-05,
+   "normal_deg": 1.2631637313062414,
+   "normals_over_deg": {
+    "0.1": 27,
+    "0.5": 9,
+    "1.0": 2,
+    "2.0": 0,
+    "5.0": 0
+   },
+   "influence": 0.0,
+   "morph_m": 3.045797348022461e-05,
+   "morph_vertices_only_one_side": 0,
+   "triangles_equal": true
+  },
+  "neck": {
+   "position_m": 1.523829996585846e-05,
+   "normal_deg": 0.050726643144269605,
+   "normals_over_deg": {
+    "0.1": 0,
+    "0.5": 0,
+    "1.0": 0,
+    "2.0": 0,
+    "5.0": 0
+   },
+   "influence": 0.0011931955814361572,
+   "morph_m": 0.0,
+   "morph_vertices_only_one_side": 0,
+   "triangles_equal": true
+  },
+  "shoe.L#0": {
+   "position_m": 1.5251338481903076e-05,
+   "normal_deg": 0.22792599511327122,
+   "normals_over_deg": {
+    "0.1": 697,
+    "0.5": 0,
+    "1.0": 0,
+    "2.0": 0,
+    "5.0": 0
+   },
+   "influence": 0.0,
+   "morph_m": 0.0,
+   "morph_vertices_only_one_side": 0,
+   "triangles_equal": true
+  },
+  "shoe.L#1": {
+   "position_m": 1.5228986740112305e-05,
+   "normal_deg": 0.38695130085206375,
+   "normals_over_deg": {
+    "0.1": 267,
+    "0.5": 0,
+    "1.0": 0,
+    "2.0": 0,
+    "5.0": 0
+   },
+   "influence": 0.0,
+   "morph_m": 0.0,
+   "morph_vertices_only_one_side": 0,
+   "triangles_equal": true
+  },
+  "shoe.R#0": {
+   "position_m": 1.52587890625e-05,
+   "normal_deg": 0.22809308995359204,
+   "normals_over_deg": {
+    "0.1": 697,
+    "0.5": 0,
+    "1.0": 0,
+    "2.0": 0,
+    "5.0": 0
+   },
+   "influence": 0.0,
+   "morph_m": 0.0,
+   "morph_vertices_only_one_side": 0,
+   "triangles_equal": true
+  },
+  "shoe.R#1": {
+   "position_m": 1.5228986740112305e-05,
+   "normal_deg": 0.38707663265691883,
+   "normals_over_deg": {
+    "0.1": 269,
+    "0.5": 0,
+    "1.0": 0,
+    "2.0": 0,
+    "5.0": 0
+   },
+   "influence": 0.0,
+   "morph_m": 0.0,
+   "morph_vertices_only_one_side": 0,
+   "triangles_equal": true
+  },
+  "shoe_strap0.L": {
+   "position_m": 1.523829996585846e-05,
+   "normal_deg": 0.7476747680624115,
+   "normals_over_deg": {
+    "0.1": 92,
+    "0.5": 1,
+    "1.0": 0,
+    "2.0": 0,
+    "5.0": 0
+   },
+   "influence": 0.0,
+   "morph_m": 0.0,
+   "morph_vertices_only_one_side": 0,
+   "triangles_equal": true
+  },
+  "shoe_strap0.R": {
+   "position_m": 1.5224330127239227e-05,
+   "normal_deg": 0.4891666475239455,
+   "normals_over_deg": {
+    "0.1": 90,
+    "0.5": 0,
+    "1.0": 0,
+    "2.0": 0,
+    "5.0": 0
+   },
+   "influence": 0.0,
+   "morph_m": 0.0,
+   "morph_vertices_only_one_side": 0,
+   "triangles_equal": true
+  },
+  "shoe_strap1.L": {
+   "position_m": 1.5245750546455383e-05,
+   "normal_deg": 0.762077702434857,
+   "normals_over_deg": {
+    "0.1": 106,
+    "0.5": 3,
+    "1.0": 0,
+    "2.0": 0,
+    "5.0": 0
+   },
+   "influence": 0.0,
+   "morph_m": 0.0,
+   "morph_vertices_only_one_side": 0,
+   "triangles_equal": true
+  },
+  "shoe_strap1.R": {
+   "position_m": 1.5206634998321533e-05,
+   "normal_deg": 1.3304943922282981,
+   "normals_over_deg": {
+    "0.1": 103,
+    "0.5": 11,
+    "1.0": 2,
+    "2.0": 0,
+    "5.0": 0
+   },
+   "influence": 0.0,
+   "morph_m": 0.0,
+   "morph_vertices_only_one_side": 0,
+   "triangles_equal": true
+  },
+  "sock.L": {
+   "position_m": 1.4893710613250732e-05,
+   "normal_deg": 0.08816162783378091,
+   "normals_over_deg": {
+    "0.1": 0,
+    "0.5": 0,
+    "1.0": 0,
+    "2.0": 0,
+    "5.0": 0
+   },
+   "influence": 0.000982820987701416,
+   "morph_m": 0.0,
+   "morph_vertices_only_one_side": 0,
+   "triangles_equal": true
+  },
+  "sock.R": {
+   "position_m": 1.4893710613250732e-05,
+   "normal_deg": 0.09005874950992246,
+   "normals_over_deg": {
+    "0.1": 0,
+    "0.5": 0,
+    "1.0": 0,
+    "2.0": 0,
+    "5.0": 0
+   },
+   "influence": 0.0011691451072692871,
+   "morph_m": 0.0,
+   "morph_vertices_only_one_side": 0,
+   "triangles_equal": true
+  },
+  "sole.L": {
+   "position_m": 1.519918441772461e-05,
+   "normal_deg": 0.14775218195205575,
+   "normals_over_deg": {
+    "0.1": 42,
+    "0.5": 0,
+    "1.0": 0,
+    "2.0": 0,
+    "5.0": 0
+   },
+   "influence": 0.0,
+   "morph_m": 0.0,
+   "morph_vertices_only_one_side": 0,
+   "triangles_equal": true
+  },
+  "sole.R": {
+   "position_m": 1.5191733837127686e-05,
+   "normal_deg": 0.14702824217655552,
+   "normals_over_deg": {
+    "0.1": 44,
+    "0.5": 0,
+    "1.0": 0,
+    "2.0": 0,
+    "5.0": 0
+   },
+   "influence": 0.0,
+   "morph_m": 0.0,
+   "morph_vertices_only_one_side": 0,
+   "triangles_equal": true
+  },
+  "trouser_leg.L": {
+   "position_m": 1.5253815035976004e-05,
+   "normal_deg": 0.06892383184044715,
+   "normals_over_deg": {
+    "0.1": 0,
+    "0.5": 0,
+    "1.0": 0,
+    "2.0": 0,
+    "5.0": 0
+   },
+   "influence": 0.001140892505645752,
+   "morph_m": 0.0,
+   "morph_vertices_only_one_side": 0,
+   "triangles_equal": true
+  },
+  "trouser_leg.R": {
+   "position_m": 1.5250609067152254e-05,
+   "normal_deg": 0.06809070812610972,
+   "normals_over_deg": {
+    "0.1": 0,
+    "0.5": 0,
+    "1.0": 0,
+    "2.0": 0,
+    "5.0": 0
+   },
+   "influence": 0.0014171898365020752,
+   "morph_m": 0.0,
+   "morph_vertices_only_one_side": 0,
+   "triangles_equal": true
+  },
+  "trousers_waist": {
+   "position_m": 1.5165656805038452e-05,
+   "normal_deg": 0.06007243239635258,
+   "normals_over_deg": {
+    "0.1": 0,
+    "0.5": 0,
+    "1.0": 0,
+    "2.0": 0,
+    "5.0": 0
+   },
+   "influence": 0.00128173828125,
+   "morph_m": 0.0,
+   "morph_vertices_only_one_side": 0,
+   "triangles_equal": true
+  },
+  "undershirt": {
+   "position_m": 1.5228986740112305e-05,
+   "normal_deg": 0.17787451567211465,
+   "normals_over_deg": {
+    "0.1": 45,
+    "0.5": 0,
+    "1.0": 0,
+    "2.0": 0,
+    "5.0": 0
+   },
+   "influence": 0.0,
+   "morph_m": 0.0,
+   "morph_vertices_only_one_side": 0,
+   "triangles_equal": true
+  }
+ }
+}
