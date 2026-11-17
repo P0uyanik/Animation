@@ -404,9 +404,23 @@ def round_rim(ob, segments=2):
                 a, b = (v.index for v in e.verts)
                 if (a < n) == (b < n):
                     edges.add(e)
+    source = bm.verts.layers.int.get("ps_body_vertex")
+    original = {v: v[source] for v in bm.verts} if source is not None else {}
     if edges:
         bmesh.ops.bevel(bm, geom=list(edges), offset=thick * 0.48, offset_type="OFFSET", segments=int(segments),
                         profile=0.5, affect="EDGES", clamp_overlap=True)
+    if original:
+        # The bevel interpolates the integer skinning-source index of its new vertices between unrelated body
+        # vertices (garment weights then came from e.g. the forearm at a shorts leg rim). A new vertex takes the
+        # source of the nearest pre-existing vertex instead.
+        kept = [v for v in bm.verts if v in original]
+        tree = KDTree(len(kept))
+        for k, v in enumerate(kept):
+            tree.insert(v.co, k)
+        tree.balance()
+        for v in bm.verts:
+            if v not in original:
+                v[source] = original[kept[tree.find(v.co)[1]]]
     bm.to_mesh(ob.data)
     bm.free()
     ob.data.update()
