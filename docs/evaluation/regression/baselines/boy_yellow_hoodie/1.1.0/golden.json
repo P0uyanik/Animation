@@ -1,0 +1,2051 @@
+{
+ "blender": "5.3.0",
+ "character": "boy_yellow_hoodie",
+ "export": {
+  "buffers": {
+   "/meshes[0]/joints": [
+    19592,
+    0.75,
+    1.5,
+    0.0,
+    3.0
+   ],
+   "/meshes[0]/normals": [
+    14694,
+    0.0091939,
+    0.5773503,
+    -1.0,
+    1.0
+   ],
+   "/meshes[0]/positions": [
+    14694,
+    0.1320318,
+    0.3245236,
+    -0.1819147,
+    0.6480001
+   ],
+   "/meshes[0]/weights": [
+    19592,
+    0.25,
+    0.5,
+    0.0,
+    1.0
+   ],
+   "/meshes[10]/joints": [
+    680,
+    0.75,
+    1.5,
+    0.0,
+    3.0
+   ],
+   "/meshes[10]/normals": [
+    510,
+    0.0119375,
+    0.5773503,
+    -0.9973298,
+    0.9925426
+   ],
+   "/meshes[10]/positions": [
+    510,
+    0.2264859,
+    0.3512843,
+    -0.0290979,
+    0.6430882
+   ],
+   "/meshes[10]/weights": [
+    680,
+    0.25,
+    0.5,
+    0.0,
+    1.0
+   ],
+   "/meshes[11]/joints": [
+    392,
+    0.75,
+    1.5,
+    0.0,
+    3.0
+   ],
+   "/meshes[11]/normals": [
+    294,
+    0.0004223,
+    0.5773503,
+    -0.9984604,
+    0.9984608
+   ],
+   "/meshes[11]/positions": [
+    294,
+    0.2285112,
+    0.3229455,
+    0.0204,
+    0.5590678
+   ],
+   "/meshes[11]/weights": [
+    392,
+    0.25,
+    0.5,
+    0.0,
+    1.0
+   ],
+   "/meshes[12]/joints": [
+    392,
+    0.75,
+    1.5,
+    0.0,
+    3.0
+   ],
+   "/meshes[12]/normals": [
+    294,
+    0.0004223,
+    0.5773503,
+    -0.9984604,
+    0.9984608
+   ],
+   "/meshes[12]/positions": [
+    294,
+    0.2118446,
+    0.3229455,
+    -0.0296,
+    0.5590678
+   ],
+   "/meshes[12]/weights": [
+    392,
+    0.25,
+    0.5,
+    0.0,
+    1.0
+   ],
+   "/meshes[13]/joints": [
+    7944,
+    1.5,
+    3.0,
+    0.0,
+    6.0
+   ],
+   "/meshes[13]/normals": [
+    5958,
+    0.0030532,
+    0.5773503,
+    -0.9992114,
+    0.9999318
+   ],
+   "/meshes[13]/positions": [
+    5958,
+    0.3085225,
+    0.4465364,
+    -0.0183945,
+    0.795517
+   ],
+   "/meshes[13]/weights": [
+    7944,
+    0.25,
+    0.5,
+    0.0,
+    1.0
+   ],
+   "/meshes[14]/joints": [
+    7944,
+    1.5,
+    3.0,
+    0.0,
+    6.0
+   ],
+   "/meshes[14]/normals": [
+    5958,
+    -0.0031907,
+    0.5773503,
+    -0.9999317,
+    0.9992113
+   ],
+   "/meshes[14]/positions": [
+    5958,
+    0.202048,
+    0.4465364,
+    -0.1748634,
+    0.795517
+   ],
+   "/meshes[14]/weights": [
+    7944,
+    0.25,
+    0.5,
+    0.0,
+    1.0
+   ],
+   "/meshes[15]/joints": [
+    4424,
+    5.25,
+    10.5,
+    0.0,
+    21.0
+   ],
+   "/meshes[15]/normals": [
+    3318,
+    1e-07,
+    0.5773503,
+    -1.0,
+    1.0
+   ],
+   "/meshes[15]/positions": [
+    3318,
+    0.3156028,
+    0.4552413,
+    0.0269999,
+    0.815
+   ],
+   "/meshes[15]/weights": [
+    4424,
+    0.25,
+    0.5,
+    0.0,
+    1.0
+   ],
+   "/meshes[16]/joints": [
+    4424,
+    5.5,
+    11.0,
+    0.0,
+    22.0
+   ],
+   "/meshes[16]/normals": [
+    3318,
+    1e-07,
+    0.5773503,
+    -1.0,
+    1.0
+   ],
+   "/meshes[16]/positions": [
+    3318,
+    0.2729392,
+    0.455242,
+    -0.1010001,
+    0.815
+   ],
+   "/meshes[16]/weights": [
+    4424,
+    0.25,
+    0.5,
+    0.0,
+    1.0
+   ],
+   "/meshes[17]/joints": [
+    493376,
+    1.5,
+    3.0,
+    0.0,
+    6.0
+   ],
+   "/meshes[17]/normals": [
+    370032,
+    0.0391661,
+    0.5773503,
+    -0.9999959,
+    0.9999893
+   ],
+   "/meshes[17]/positions": [
+    370032,
+    0.3008576,
+    0.5567468,
+    -0.2360604,
+    1.1083164
+   ],
+   "/meshes[17]/weights": [
+    493376,
+    0.25,
+    0.5,
+    0.0,
+    1.0
+   ],
+   "/meshes[18]/joints": [
+    15244,
+    1.5,
+    3.0,
+    0.0,
+    6.0
+   ],
+   "/meshes[18]/normals": [
+    11433,
+    -0.0373009,
+    0.5773503,
+    -0.999931,
+    0.9998539
+   ],
+   "/meshes[18]/positions": [
+    11433,
+    0.2763154,
+    0.5145121,
+    -0.1848929,
+    1.0195597
+   ],
+   "/meshes[18]/weights": [
+    15244,
+    0.25,
+    0.5,
+    0.0,
+    1.0
+   ],
+   "/meshes[19]/joints": [
+    1368,
+    1.5,
+    3.0,
+    0.0,
+    6.0
+   ],
+   "/meshes[19]/normals": [
+    1026,
+    -0.0180782,
+    0.5773503,
+    -0.9957125,
+    0.9999681
+   ],
+   "/meshes[19]/positions": [
+    1026,
+    0.363873,
+    0.6300706,
+    -0.0684408,
+    1.1172783
+   ],
+   "/meshes[19]/weights": [
+    1368,
+    0.25,
+    0.5,
+    0.0,
+    1.0
+   ],
+   "/meshes[1]/joints": [
+    648,
+    0.75,
+    1.5,
+    0.0,
+    3.0
+   ],
+   "/meshes[1]/normals": [
+    486,
+    0.0803142,
+    0.5773503,
+    -0.9998091,
+    0.9998089
+   ],
+   "/meshes[1]/positions": [
+    486,
+    0.1688546,
+    0.3821721,
+    -0.146,
+    0.6634985
+   ],
+   "/meshes[1]/weights": [
+    648,
+    0.25,
+    0.5,
+    0.0,
+    1.0
+   ],
+   "/meshes[20]/joints": [
+    17200,
+    31.3677326,
+    34.7651498,
+    0.0,
+    47.0
+   ],
+   "/meshes[20]/normals": [
+    12900,
+    0.0002325,
+    0.5773503,
+    -0.9995724,
+    0.9998872
+   ],
+   "/meshes[20]/positions": [
+    12900,
+    0.2428352,
+    0.3028594,
+    -0.0380453,
+    0.454364
+   ],
+   "/meshes[20]/weights": [
+    17200,
+    0.25,
+    0.3656624,
+    0.0,
+    1.0
+   ],
+   "/meshes[21]/joints": [
+    17200,
+    52.2668023,
+    57.4470803,
+    0.0,
+    72.0
+   ],
+   "/meshes[21]/normals": [
+    12900,
+    -0.0018577,
+    0.5773503,
+    -0.999887,
+    0.9994829
+   ],
+   "/meshes[21]/positions": [
+    12900,
+    0.0336009,
+    0.3028594,
+    -0.3453371,
+    0.454364
+   ],
+   "/meshes[21]/weights": [
+    17200,
+    0.25,
+    0.3657456,
+    0.0,
+    1.0
+   ],
+   "/meshes[22]/joints": [
+    58888,
+    1.5,
+    3.0,
+    0.0,
+    6.0
+   ],
+   "/meshes[22]/normals": [
+    44166,
+    0.039774,
+    0.5773503,
+    -0.9999999,
+    0.9999993
+   ],
+   "/meshes[22]/positions": [
+    44166,
+    0.2827192,
+    0.5026657,
+    -0.1617171,
+    1.0139997
+   ],
+   "/meshes[22]/weights": [
+    58888,
+    0.25,
+    0.5,
+    0.0,
+    1.0
+   ],
+   "/meshes[23]/joints": [
+    1928,
+    19.2935685,
+    26.5773747,
+    2.0,
+    48.0
+   ],
+   "/meshes[23]/normals": [
+    1446,
+    -0.0096111,
+    0.5773503,
+    -1.0,
+    1.0
+   ],
+   "/meshes[23]/positions": [
+    1446,
+    0.1773333,
+    0.3711263,
+    -0.138,
+    0.7101869
+   ],
+   "/meshes[23]/weights": [
+    1928,
+    0.25,
+    0.3283801,
+    0.0355135,
+    0.7159516
+   ],
+   "/meshes[24]/joints": [
+    1832,
+    15.3215066,
+    22.5855361,
+    0.0,
+    48.0
+   ],
+   "/meshes[24]/normals": [
+    1374,
+    0.0097597,
+    0.5773503,
+    -0.9999167,
+    0.9991513
+   ],
+   "/meshes[24]/positions": [
+    1374,
+    0.2270327,
+    0.3822652,
+    -0.1307844,
+    0.7260721
+   ],
+   "/meshes[24]/weights": [
+    1832,
+    0.25,
+    0.3250655,
+    0.0,
+    0.9927108
+   ],
+   "/meshes[25]/joints": [
+    768,
+    7.0,
+    14.0,
+    0.0,
+    28.0
+   ],
+   "/meshes[25]/normals": [
+    576,
+    1e-07,
+    0.5773503,
+    -0.9938805,
+    0.9938806
+   ],
+   "/meshes[25]/positions": [
+    576,
+    0.2426666,
+    0.3085898,
+    -0.0551519,
+    0.49226
+   ],
+   "/meshes[25]/weights": [
+    768,
+    0.25,
+    0.5,
+    0.0,
+    1.0
+   ],
+   "/meshes[26]/joints": [
+    768,
+    13.25,
+    26.5,
+    0.0,
+    53.0
+   ],
+   "/meshes[26]/normals": [
+    576,
+    0.0732923,
+    0.5773503,
+    -0.9938805,
+    0.9938805
+   ],
+   "/meshes[26]/positions": [
+    576,
+    0.0502344,
+    0.3085898,
+    -0.328772,
+    0.49226
+   ],
+   "/meshes[26]/weights": [
+    768,
+    0.25,
+    0.5,
+    0.0,
+    1.0
+   ],
+   "/meshes[27]/joints": [
+    1544,
+    3.4851036,
+    5.1220214,
+    0.0,
+    8.0
+   ],
+   "/meshes[27]/normals": [
+    1158,
+    -0.0033399,
+    0.5773503,
+    -1.0,
+    1.0
+   ],
+   "/meshes[27]/positions": [
+    1158,
+    0.124438,
+    0.2256174,
+    -0.1333352,
+    0.392
+   ],
+   "/meshes[27]/weights": [
+    1544,
+    0.25,
+    0.3692544,
+    0.0,
+    1.0
+   ],
+   "/meshes[28]/joints": [
+    10376,
+    4.0,
+    5.3385391,
+    0.0,
+    8.0
+   ],
+   "/meshes[28]/normals": [
+    7782,
+    -0.007532,
+    0.5773503,
+    -0.9999812,
+    0.9999816
+   ],
+   "/meshes[28]/positions": [
+    7782,
+    0.1886252,
+    0.2765588,
+    -0.0855015,
+    0.5070032
+   ],
+   "/meshes[28]/weights": [
+    10376,
+    0.25,
+    0.3146106,
+    0.0,
+    0.6862684
+   ],
+   "/meshes[29]/joints": [
+    2184,
+    12.7806777,
+    17.8191592,
+    0.0,
+    28.0
+   ],
+   "/meshes[29]/normals": [
+    1638,
+    -0.0049476,
+    0.5773503,
+    -0.9999995,
+    0.9999996
+   ],
+   "/meshes[29]/positions": [
+    1638,
+    0.2459257,
+    0.349851,
+    -0.055422,
+    0.7013308
+   ],
+   "/meshes[29]/weights": [
+    2184,
+    0.25,
+    0.3828664,
+    0.0,
+    1.0
+   ],
+   "/meshes[2]/joints": [
+    7368,
+    0.75,
+    1.5,
+    0.0,
+    3.0
+   ],
+   "/meshes[2]/normals": [
+    5526,
+    0.0161338,
+    0.5773503,
+    -0.9999976,
+    1.0
+   ],
+   "/meshes[2]/positions": [
+    5526,
+    0.1036503,
+    0.3097176,
+    -0.2088281,
+    0.5519989
+   ],
+   "/meshes[2]/weights": [
+    7368,
+    0.25,
+    0.5,
+    0.0,
+    1.0
+   ],
+   "/meshes[30]/joints": [
+    2184,
+    24.6355311,
+    34.9734462,
+    0.0,
+    53.0
+   ],
+   "/meshes[30]/normals": [
+    1638,
+    -0.0366179,
+    0.5773503,
+    -0.9991825,
+    0.9999996
+   ],
+   "/meshes[30]/positions": [
+    1638,
+    0.1313752,
+    0.349851,
+    -0.3146687,
+    0.7013308
+   ],
+   "/meshes[30]/weights": [
+    2184,
+    0.25,
+    0.3826155,
+    0.0,
+    1.0
+   ],
+   "/meshes[31]/joints": [
+    9480,
+    10.7567511,
+    19.0073603,
+    0.0,
+    49.0
+   ],
+   "/meshes[31]/normals": [
+    7110,
+    0.0329968,
+    0.5773503,
+    -1.0,
+    1.0
+   ],
+   "/meshes[31]/positions": [
+    7110,
+    0.1747335,
+    0.3125103,
+    -0.1309928,
+    0.6720001
+   ],
+   "/meshes[31]/weights": [
+    9480,
+    0.25,
+    0.3540506,
+    0.0,
+    1.0
+   ],
+   "/meshes[32]/joints": [
+    848,
+    5.25,
+    10.5,
+    0.0,
+    21.0
+   ],
+   "/meshes[32]/normals": [
+    636,
+    0.0587881,
+    0.5773503,
+    -0.9980472,
+    0.9961861
+   ],
+   "/meshes[32]/positions": [
+    636,
+    0.3233257,
+    0.4573573,
+    0.0214984,
+    0.7825559
+   ],
+   "/meshes[32]/weights": [
+    848,
+    0.25,
+    0.5,
+    0.0,
+    1.0
+   ],
+   "/meshes[33]/joints": [
+    848,
+    5.5,
+    11.0,
+    0.0,
+    22.0
+   ],
+   "/meshes[33]/normals": [
+    636,
+    0.0557499,
+    0.5773503,
+    -0.9980463,
+    0.9961854
+   ],
+   "/meshes[33]/positions": [
+    636,
+    0.2806499,
+    0.4573582,
+    -0.1080268,
+    0.7825488
+   ],
+   "/meshes[33]/weights": [
+    848,
+    0.25,
+    0.5,
+    0.0,
+    1.0
+   ],
+   "/meshes[34]/joints": [
+    6200,
+    5.25,
+    10.5,
+    0.0,
+    21.0
+   ],
+   "/meshes[34]/normals": [
+    4650,
+    0.0265541,
+    0.5773503,
+    -1.0,
+    1.0
+   ],
+   "/meshes[34]/positions": [
+    4650,
+    0.304464,
+    0.4382249,
+    0.0284407,
+    0.7723186
+   ],
+   "/meshes[34]/weights": [
+    6200,
+    0.25,
+    0.5,
+    0.0,
+    1.0
+   ],
+   "/meshes[35]/joints": [
+    6200,
+    5.5,
+    11.0,
+    0.0,
+    22.0
+   ],
+   "/meshes[35]/normals": [
+    4650,
+    0.026554,
+    0.5773503,
+    -1.0,
+    1.0
+   ],
+   "/meshes[35]/positions": [
+    4650,
+    0.2618005,
+    0.4382256,
+    -0.0995593,
+    0.7723185
+   ],
+   "/meshes[35]/weights": [
+    6200,
+    0.25,
+    0.5,
+    0.0,
+    1.0
+   ],
+   "/meshes[36]/joints": [
+    7984,
+    5.25,
+    10.5,
+    0.0,
+    21.0
+   ],
+   "/meshes[36]/normals": [
+    5988,
+    -0.0191034,
+    0.5773503,
+    -1.0,
+    1.0
+   ],
+   "/meshes[36]/positions": [
+    5988,
+    0.3250199,
+    0.4700864,
+    0.0212267,
+    0.821
+   ],
+   "/meshes[36]/weights": [
+    7984,
+    0.25,
+    0.5,
+    0.0,
+    1.0
+   ],
+   "/meshes[37]/joints": [
+    7984,
+    5.5,
+    11.0,
+    0.0,
+    22.0
+   ],
+   "/meshes[37]/normals": [
+    5988,
+    -0.0191033,
+    0.5773503,
+    -1.0,
+    1.0
+   ],
+   "/meshes[37]/positions": [
+    5988,
+    0.2823564,
+    0.4700871,
+    -0.1067734,
+    0.821
+   ],
+   "/meshes[37]/weights": [
+    7984,
+    0.25,
+    0.5,
+    0.0,
+    1.0
+   ],
+   "/meshes[38]/joints": [
+    132,
+    1.5,
+    3.0,
+    0.0,
+    6.0
+   ],
+   "/meshes[38]/normals": [
+    99,
+    -0.2214566,
+    0.5773503,
+    -0.971723,
+    0.3539641
+   ],
+   "/meshes[38]/positions": [
+    99,
+    0.2880892,
+    0.4249333,
+    -0.0125,
+    0.7243
+   ],
+   "/meshes[38]/weights": [
+    132,
+    0.25,
+    0.5,
+    0.0,
+    1.0
+   ],
+   "/meshes[39]/joints": [
+    488,
+    12.5532787,
+    20.3262327,
+    0.0,
+    48.0
+   ],
+   "/meshes[39]/normals": [
+    366,
+    0.0,
+    0.5773503,
+    -1.0,
+    1.0
+   ],
+   "/meshes[39]/positions": [
+    366,
+    0.2166667,
+    0.3767241,
+    -0.046,
+    0.7
+   ],
+   "/meshes[39]/weights": [
+    488,
+    0.25,
+    0.3592345,
+    0.0,
+    1.0
+   ],
+   "/meshes[3]/joints": [
+    824,
+    0.75,
+    1.5,
+    0.0,
+    3.0
+   ],
+   "/meshes[3]/normals": [
+    618,
+    0.1173389,
+    0.5773503,
+    -0.9988045,
+    0.9979463
+   ],
+   "/meshes[3]/positions": [
+    618,
+    0.2021689,
+    0.3250062,
+    -0.0945298,
+    0.6695309
+   ],
+   "/meshes[3]/weights": [
+    824,
+    0.25,
+    0.5,
+    0.0,
+    1.0
+   ],
+   "/meshes[40]/joints": [
+    14756,
+    3.25,
+    6.5,
+    0.0,
+    13.0
+   ],
+   "/meshes[40]/normals": [
+    11067,
+    0.0214368,
+    0.5773503,
+    -0.9999984,
+    1.0
+   ],
+   "/meshes[40]/positions": [
+    11067,
+    0.0481556,
+    0.0699411,
+    -0.0719999,
+    0.1377727
+   ],
+   "/meshes[40]/weights": [
+    14756,
+    0.25,
+    0.5,
+    0.0,
+    1.0
+   ],
+   "/meshes[41]/joints": [
+    4516,
+    3.25,
+    6.5,
+    0.0,
+    13.0
+   ],
+   "/meshes[41]/normals": [
+    3387,
+    -0.0713451,
+    0.5773503,
+    -0.9999999,
+    0.9999999
+   ],
+   "/meshes[41]/positions": [
+    3387,
+    0.0776181,
+    0.0880636,
+    0.0079724,
+    0.1399998
+   ],
+   "/meshes[41]/weights": [
+    4516,
+    0.25,
+    0.5,
+    0.0,
+    1.0
+   ],
+   "/meshes[42]/joints": [
+    14756,
+    4.75,
+    9.5,
+    0.0,
+    19.0
+   ],
+   "/meshes[42]/normals": [
+    11067,
+    0.0214368,
+    0.5773503,
+    -0.9999984,
+    1.0
+   ],
+   "/meshes[42]/positions": [
+    11067,
+    0.0001556,
+    0.0699411,
+    -0.1377728,
+    0.1172857
+   ],
+   "/meshes[42]/weights": [
+    14756,
+    0.25,
+    0.5,
+    0.0,
+    1.0
+   ],
+   "/meshes[43]/joints": [
+    4516,
+    4.75,
+    9.5,
+    0.0,
+    19.0
+   ],
+   "/meshes[43]/normals": [
+    3387,
+    -0.0713451,
+    0.5773503,
+    -0.9999999,
+    0.9999999
+   ],
+   "/meshes[43]/positions": [
+    3387,
+    0.0296181,
+    0.0880636,
+    -0.1360276,
+    0.1399997
+   ],
+   "/meshes[43]/weights": [
+    4516,
+    0.25,
+    0.5,
+    0.0,
+    1.0
+   ],
+   "/meshes[44]/joints": [
+    728,
+    3.25,
+    6.5,
+    0.0,
+    13.0
+   ],
+   "/meshes[44]/normals": [
+    546,
+    0.0607715,
+    0.5773503,
+    -1.0,
+    1.0
+   ],
+   "/meshes[44]/positions": [
+    546,
+    0.0716148,
+    0.0792825,
+    0.0085907,
+    0.1354093
+   ],
+   "/meshes[44]/weights": [
+    728,
+    0.25,
+    0.5,
+    0.0,
+    1.0
+   ],
+   "/meshes[45]/joints": [
+    728,
+    4.75,
+    9.5,
+    0.0,
+    19.0
+   ],
+   "/meshes[45]/normals": [
+    546,
+    0.0607719,
+    0.5773503,
+    -1.0,
+    1.0
+   ],
+   "/meshes[45]/positions": [
+    546,
+    0.0236148,
+    0.0792825,
+    -0.1354093,
+    0.1070116
+   ],
+   "/meshes[45]/weights": [
+    728,
+    0.25,
+    0.5,
+    0.0,
+    1.0
+   ],
+   "/meshes[46]/joints": [
+    728,
+    3.25,
+    6.5,
+    0.0,
+    13.0
+   ],
+   "/meshes[46]/normals": [
+    546,
+    0.0665993,
+    0.5773503,
+    -1.0,
+    1.0
+   ],
+   "/meshes[46]/positions": [
+    546,
+    0.0623935,
+    0.0757497,
+    0.0086881,
+    0.135312
+   ],
+   "/meshes[46]/weights": [
+    728,
+    0.25,
+    0.5,
+    0.0,
+    1.0
+   ],
+   "/meshes[47]/joints": [
+    728,
+    4.75,
+    9.5,
+    0.0,
+    19.0
+   ],
+   "/meshes[47]/normals": [
+    546,
+    0.0665994,
+    0.5773503,
+    -1.0,
+    1.0
+   ],
+   "/meshes[47]/positions": [
+    546,
+    0.0143935,
+    0.0757496,
+    -0.1353119,
+    0.111013
+   ],
+   "/meshes[47]/weights": [
+    728,
+    0.25,
+    0.5,
+    0.0,
+    1.0
+   ],
+   "/meshes[48]/joints": [
+    200,
+    13.37,
+    13.9728308,
+    0.0,
+    19.0
+   ],
+   "/meshes[48]/normals": [
+    150,
+    0.0020833,
+    0.5773503,
+    -0.999406,
+    0.999406
+   ],
+   "/meshes[48]/positions": [
+    150,
+    0.0506667,
+    0.0740155,
+    -0.0519763,
+    0.129413
+   ],
+   "/meshes[48]/weights": [
+    200,
+    0.25,
+    0.3082297,
+    0.0,
+    1.0
+   ],
+   "/meshes[49]/joints": [
+    200,
+    15.585,
+    16.1797713,
+    0.0,
+    19.0
+   ],
+   "/meshes[49]/normals": [
+    150,
+    0.0020833,
+    0.5773503,
+    -0.999406,
+    0.999406
+   ],
+   "/meshes[49]/positions": [
+    150,
+    0.008,
+    0.0740155,
+    -0.105,
+    0.129413
+   ],
+   "/meshes[49]/weights": [
+    200,
+    0.25,
+    0.3088681,
+    0.0,
+    1.0
+   ],
+   "/meshes[4]/joints": [
+    824,
+    0.75,
+    1.5,
+    0.0,
+    3.0
+   ],
+   "/meshes[4]/normals": [
+    618,
+    0.0323658,
+    0.5773503,
+    -0.998841,
+    0.9978983
+   ],
+   "/meshes[4]/positions": [
+    618,
+    0.1436278,
+    0.3250056,
+    -0.1349162,
+    0.6695326
+   ],
+   "/meshes[4]/weights": [
+    824,
+    0.25,
+    0.5,
+    0.0,
+    1.0
+   ],
+   "/meshes[50]/joints": [
+    3464,
+    3.25,
+    6.5,
+    0.0,
+    13.0
+   ],
+   "/meshes[50]/normals": [
+    2598,
+    -0.0,
+    0.5773503,
+    -1.0,
+    1.0
+   ],
+   "/meshes[50]/positions": [
+    2598,
+    0.0396667,
+    0.0703884,
+    -0.0778001,
+    0.1458001
+   ],
+   "/meshes[50]/weights": [
+    3464,
+    0.25,
+    0.5,
+    0.0,
+    1.0
+   ],
+   "/meshes[51]/joints": [
+    3464,
+    4.75,
+    9.5,
+    0.0,
+    19.0
+   ],
+   "/meshes[51]/normals": [
+    2598,
+    -0.0,
+    0.5773503,
+    -1.0,
+    1.0
+   ],
+   "/meshes[51]/positions": [
+    2598,
+    -0.0083333,
+    0.0703884,
+    -0.1418751,
+    0.1458001
+   ],
+   "/meshes[51]/weights": [
+    3464,
+    0.25,
+    0.5,
+    0.0,
+    1.0
+   ],
+   "/meshes[52]/joints": [
+    1128,
+    13.1551418,
+    14.0622665,
+    0.0,
+    19.0
+   ],
+   "/meshes[52]/normals": [
+    846,
+    0.0418521,
+    0.5773503,
+    -1.0,
+    1.0
+   ],
+   "/meshes[52]/positions": [
+    846,
+    0.0895331,
+    0.1393383,
+    -0.0617155,
+    0.372
+   ],
+   "/meshes[52]/weights": [
+    1128,
+    0.25,
+    0.2938377,
+    0.0,
+    1.0
+   ],
+   "/meshes[53]/joints": [
+    1128,
+    11.8492908,
+    12.912897,
+    0.0,
+    19.0
+   ],
+   "/meshes[53]/normals": [
+    846,
+    0.0418639,
+    0.5773503,
+    -1.0,
+    1.0
+   ],
+   "/meshes[53]/positions": [
+    846,
+    0.0491052,
+    0.1393383,
+    -0.1229996,
+    0.372
+   ],
+   "/meshes[53]/weights": [
+    1128,
+    0.25,
+    0.2944344,
+    0.0,
+    1.0
+   ],
+   "/meshes[54]/joints": [
+    1352,
+    6.0073964,
+    7.8867727,
+    0.0,
+    15.0
+   ],
+   "/meshes[54]/normals": [
+    1014,
+    -0.0116143,
+    0.5773503,
+    -1.0,
+    1.0
+   ],
+   "/meshes[54]/positions": [
+    1014,
+    0.1229932,
+    0.2232366,
+    -0.12,
+    0.42
+   ],
+   "/meshes[54]/weights": [
+    1352,
+    0.25,
+    0.3699618,
+    0.0,
+    1.0
+   ],
+   "/meshes[55]/joints": [
+    1064,
+    0.75,
+    1.5,
+    0.0,
+    3.0
+   ],
+   "/meshes[55]/normals": [
+    798,
+    -1e-07,
+    0.5773503,
+    -1.0,
+    1.0
+   ],
+   "/meshes[55]/positions": [
+    798,
+    0.24,
+    0.3766315,
+    -0.03,
+    0.6679999
+   ],
+   "/meshes[55]/weights": [
+    1064,
+    0.25,
+    0.5,
+    0.0,
+    1.0
+   ],
+   "/meshes[5]/joints": [
+    448,
+    1.5,
+    3.0,
+    0.0,
+    6.0
+   ],
+   "/meshes[5]/normals": [
+    336,
+    0.0621548,
+    0.5773503,
+    -0.9907845,
+    0.997207
+   ],
+   "/meshes[5]/positions": [
+    336,
+    0.3413266,
+    0.4890668,
+    0.0434746,
+    0.8449671
+   ],
+   "/meshes[5]/weights": [
+    448,
+    0.25,
+    0.5,
+    0.0,
+    1.0
+   ],
+   "/meshes[6]/joints": [
+    448,
+    1.5,
+    3.0,
+    0.0,
+    6.0
+   ],
+   "/meshes[6]/normals": [
+    336,
+    0.0632621,
+    0.5773503,
+    -0.9907761,
+    0.9972089
+   ],
+   "/meshes[6]/positions": [
+    336,
+    0.2930096,
+    0.4890667,
+    -0.1012993,
+    0.8449671
+   ],
+   "/meshes[6]/weights": [
+    448,
+    0.25,
+    0.5,
+    0.0,
+    1.0
+   ],
+   "/meshes[7]/joints": [
+    344,
+    0.75,
+    1.5,
+    0.0,
+    3.0
+   ],
+   "/meshes[7]/normals": [
+    258,
+    0.0,
+    0.5773503,
+    -1.0,
+    1.0
+   ],
+   "/meshes[7]/positions": [
+    258,
+    0.2516666,
+    0.3262003,
+    0.087,
+    0.5529999
+   ],
+   "/meshes[7]/weights": [
+    344,
+    0.25,
+    0.5,
+    0.0,
+    1.0
+   ],
+   "/meshes[8]/joints": [
+    344,
+    0.75,
+    1.5,
+    0.0,
+    3.0
+   ],
+   "/meshes[8]/normals": [
+    258,
+    0.0,
+    0.5773503,
+    -1.0,
+    1.0
+   ],
+   "/meshes[8]/positions": [
+    258,
+    0.1856666,
+    0.3262003,
+    -0.111,
+    0.5529999
+   ],
+   "/meshes[8]/weights": [
+    344,
+    0.25,
+    0.5,
+    0.0,
+    1.0
+   ],
+   "/meshes[9]/joints": [
+    680,
+    0.75,
+    1.5,
+    0.0,
+    3.0
+   ],
+   "/meshes[9]/normals": [
+    510,
+    0.0145307,
+    0.5773503,
+    -0.9973298,
+    0.9925426
+   ],
+   "/meshes[9]/positions": [
+    510,
+    0.2415331,
+    0.3512843,
+    0.0158974,
+    0.6430882
+   ],
+   "/meshes[9]/weights": [
+    680,
+    0.25,
+    0.5,
+    0.0,
+    1.0
+   ],
+   "/morphs[0]/dpos": [
+    336,
+    -0.0024934,
+    0.0046464,
+    -0.011,
+    0.001
+   ],
+   "/morphs[0]/vertices": [
+    112,
+    55.5,
+    64.2300553,
+    0.0,
+    111.0
+   ],
+   "/morphs[1]/dpos": [
+    336,
+    -0.0011641,
+    0.0046464,
+    -0.011,
+    0.004
+   ],
+   "/morphs[1]/vertices": [
+    112,
+    55.5,
+    64.2300553,
+    0.0,
+    111.0
+   ],
+   "/morphs[2]/dpos": [
+    636,
+    -0.0106627,
+    0.015762,
+    -0.0380264,
+    0.0
+   ],
+   "/morphs[2]/vertices": [
+    212,
+    105.5,
+    121.965159,
+    0.0,
+    211.0
+   ],
+   "/morphs[3]/dpos": [
+    636,
+    -0.0106627,
+    0.015762,
+    -0.0380264,
+    0.0
+   ],
+   "/morphs[3]/vertices": [
+    212,
+    105.5,
+    121.965159,
+    0.0,
+    211.0
+   ],
+   "/morphs[4]/dpos": [
+    5988,
+    0.0019526,
+    0.0213664,
+    -0.0442424,
+    0.0442421
+   ],
+   "/morphs[4]/vertices": [
+    1996,
+    997.5,
+    1151.9581156,
+    0.0,
+    1995.0
+   ],
+   "/morphs[5]/dpos": [
+    5988,
+    0.0019526,
+    0.0213664,
+    -0.0442424,
+    0.0442421
+   ],
+   "/morphs[5]/vertices": [
+    1996,
+    997.5,
+    1151.9581156,
+    0.0,
+    1995.0
+   ],
+   "/morphs[6]/dpos": [
+    90,
+    0.0014507,
+    0.002657,
+    0.0,
+    0.008
+   ],
+   "/morphs[6]/vertices": [
+    30,
+    16.0,
+    18.6458217,
+    0.0,
+    32.0
+   ],
+   "/morphs[7]/dpos": [
+    99,
+    -0.0003943,
+    0.002581,
+    -0.0085,
+    0.0037
+   ],
+   "/morphs[7]/vertices": [
+    33,
+    16.0,
+    18.6189867,
+    0.0,
+    32.0
+   ]
+  },
+  "meshes": {
+   "backpack_body": {
+    "triangle_set_sha256": "372844d30b160baaffc748c46ab9b031fec1ed21dd5b4864b21e758ef2a1b4a5",
+    "triangles": 9792,
+    "vertex_joints_sha256": "e3de055aa5a96c93991260eb15aae6d7533bf1437926c76965cae8f1d37d9b2d",
+    "vertices": 4898
+   },
+   "backpack_handle": {
+    "triangle_set_sha256": "e4c129102caf546c1b9b770527593e8d835e24d146e867f67f761a499e674940",
+    "triangles": 320,
+    "vertex_joints_sha256": "dfd8530c852f392ff2f4bb5ce660a887efd34a02cd2053152fb471ac67647396",
+    "vertices": 162
+   },
+   "backpack_pocket": {
+    "triangle_set_sha256": "03309fc0e28263c46868015735333074eecd7d2c1442c43285873387d8d00844",
+    "triangles": 3680,
+    "vertex_joints_sha256": "3622d7f9ced868356fe584da0125861a87344ba2349cff7303bb6b66570de598",
+    "vertices": 1842
+   },
+   "backpack_strap.L": {
+    "triangle_set_sha256": "3674f01973fe42da21ebe4812a6fd4f63b9197c3e42d42473d6aa032a38426cb",
+    "triangles": 408,
+    "vertex_joints_sha256": "dc50df9092899c01fbb6233f557c122582799fb4787fba496e2f234d69260d6e",
+    "vertices": 206
+   },
+   "backpack_strap.R": {
+    "triangle_set_sha256": "b0866b8b8d70e62a13ea5024c06d7f43c6dd61849c0ee5bd63134ee240261427",
+    "triangles": 408,
+    "vertex_joints_sha256": "c33631960e654e33600ec7e897d9c89ee5c85ee587cb341aaef1261b4a3f17c7",
+    "vertices": 206
+   },
+   "brow.L": {
+    "triangle_set_sha256": "832c99ce0b11f47810ce4cfd7d1ab1fe29834ca6726c75eb233264aa95ac13ce",
+    "triangles": 220,
+    "vertex_joints_sha256": "156317cbef56fc15225552f7822f4d08e2c8d1d5bfe91cf3151404182ad0d575",
+    "vertices": 112
+   },
+   "brow.R": {
+    "triangle_set_sha256": "625b746078d300cd94a1b4d82f792bb618afc66a9821116f1d89710910e21488",
+    "triangles": 220,
+    "vertex_joints_sha256": "21f2270a86c1243bab17a37c725aa561eb002e2d3d78663d310fac03b8290be7",
+    "vertices": 112
+   },
+   "buckle.L": {
+    "triangle_set_sha256": "7f780177fddfa81e565ca4ca128bb1ef765d638c685acae29050d378be22c1d8",
+    "triangles": 168,
+    "vertex_joints_sha256": "c8ff0fe57523bb403f9693cc93a0e258ce2cf04d56b7132a181cdf7d6dc665a1",
+    "vertices": 86
+   },
+   "buckle.R": {
+    "triangle_set_sha256": "a68fbbd60104361d3e0b18dfa466863adcc64ebb2f810d0087affcf8006b7fd0",
+    "triangles": 168,
+    "vertex_joints_sha256": "5ce2ac06c11c45bd07d2e405bf8a6e7f7b11fc62db1927565aef230ed1a5a700",
+    "vertices": 86
+   },
+   "drawstring.L": {
+    "triangle_set_sha256": "64dfd63c68f0237b536db01d902ac660b3d45e91bdd18983061e1ca6eadd5825",
+    "triangles": 336,
+    "vertex_joints_sha256": "3690438e1d9b4beb5d8920abdbbe8dc4a296fd8df5036c34e89246e5bb786a66",
+    "vertices": 170
+   },
+   "drawstring.R": {
+    "triangle_set_sha256": "112abc52ec5131d3dc76cf76eddc1845dfb9fc85ddea1be5371caa638de7559a",
+    "triangles": 336,
+    "vertex_joints_sha256": "f1fcedf4de9521e4b94aa77e0fb8aff2187277e0b9436f43519830a86f1e5eaa",
+    "vertices": 170
+   },
+   "drawstring_tip.L": {
+    "triangle_set_sha256": "4ea241bea2d28e05854518700ae6a5c2b3406b45284bc80f47f3b5085f342615",
+    "triangles": 192,
+    "vertex_joints_sha256": "a0b222424c4d678f3f8e37dbe3cc94a66e445fa7757a6c85a0c01588d756280e",
+    "vertices": 98
+   },
+   "drawstring_tip.R": {
+    "triangle_set_sha256": "b25cd141269f5e1ba87c68ccb1b021c22fdc491f589645ff681612156ea883bd",
+    "triangles": 192,
+    "vertex_joints_sha256": "35ec452363cabe81fe27375a50f244cc70fdc11456ee115b916a91025281813d",
+    "vertices": 98
+   },
+   "ear.L": {
+    "triangle_set_sha256": "1aa68b35ebf8816a28bbe6b2ae6570bcaadde1c6811b1fb82706d2d2e686e5e7",
+    "triangles": 3968,
+    "vertex_joints_sha256": "f12b74246a14794234a9210b98eee4d48a6301732045f90af1ce3f39b93bde82",
+    "vertices": 1986
+   },
+   "ear.R": {
+    "triangle_set_sha256": "f7a7fe8bc9c9fd04edb8713496233047baacba546fc38be63e4aa8359ab2c3a3",
+    "triangles": 3968,
+    "vertex_joints_sha256": "43c24a7437ea29c81c9c0e7a705be827d7dbf42e297fdb10f199a50082264540",
+    "vertices": 1986
+   },
+   "eye.L": {
+    "triangle_set_sha256": "eb701528854abed6658f231ae81196fae116edee725598f803c2de84aa9a61f8",
+    "triangles": 2208,
+    "vertex_joints_sha256": "6ac5a17310261ab66c0d3c9b92dd30b508aca88dbc9eb748ff57fe354f84c3bb",
+    "vertices": 1106
+   },
+   "eye.R": {
+    "triangle_set_sha256": "dccb872197a386baf78a59e2b099f7d92ac0a30324b9a0c4c65e732d1eb9da69",
+    "triangles": 2208,
+    "vertex_joints_sha256": "3004a9442c552d1e9f3946e4d205e3a3b356ec6eb75dd5d0f11557611c4041f9",
+    "vertices": 1106
+   },
+   "hair_clumps": {
+    "triangle_set_sha256": "cdc7b4f578a0117928e5a2eb53af3965c8e70730df17cebca11cfd2e3802b62b",
+    "triangles": 246272,
+    "vertex_joints_sha256": "3c8c46bb8eeb92239701856fe6ee49b490b609ac8728da3620e9cb96c733c6d5",
+    "vertices": 123344
+   },
+   "hair_mass": {
+    "triangle_set_sha256": "7816108c70f674ba2fa0b74bd11b6e42df7bf9387c523d34a93acc90d5064eb3",
+    "triangles": 7504,
+    "vertex_joints_sha256": "699586ea0980db2faa24dd3404ee46244791420316565ed84c8e6a4861f8fe4d",
+    "vertices": 3811
+   },
+   "hair_strays": {
+    "triangle_set_sha256": "102802fce86ac2eb5be41330a27e4ddf39c8c0a3a90bbcc902894547b3f90166",
+    "triangles": 672,
+    "vertex_joints_sha256": "494490e86be385e3b81ac3cf47d2357a712784ffd8b64609dc4177214150332a",
+    "vertices": 342
+   },
+   "hand.L": {
+    "triangle_set_sha256": "f8d3c932111c6342ff5be88251aeb48e2e86e25b1ced948a3927a832b829ff73",
+    "triangles": 8596,
+    "vertex_joints_sha256": "3caef9ec364af04452ec9fcec02885b9cbd15840ba57d755f077264fccb99733",
+    "vertices": 4300
+   },
+   "hand.R": {
+    "triangle_set_sha256": "9e4befe3e14a069d711e385f74f5fdf48fcba72b5e6eecdd93f4f44915b8e8b4",
+    "triangles": 8596,
+    "vertex_joints_sha256": "4ecda4bd12dd03557c7c524005231d3d891bd349ff8b580206c2ad9c48e283ca",
+    "vertices": 4300
+   },
+   "head": {
+    "triangle_set_sha256": "32c2bb83e8f67d3c04c1a961722fd71364469fa701d4508e8f02b80b4b350f53",
+    "triangles": 29440,
+    "vertex_joints_sha256": "1cb6ffe057a2fc479e4b813e660d866560e1988d6124727a18e329cdfffcb7cf",
+    "vertices": 14722
+   },
+   "hood_back": {
+    "triangle_set_sha256": "3924f0441bf2d1b4ad1722a7ca4b4dd000ff45b019a70b0b49ec805f08c683b9",
+    "triangles": 960,
+    "vertex_joints_sha256": "9ecc016ec4ba0838ecfee82274ce63e9f1f88f0037c6e361ae4c4d02a3f0d284",
+    "vertices": 482
+   },
+   "hood_roll": {
+    "triangle_set_sha256": "94693be866e38e49bc1f8587801c2286277f7c8622de7c0dc0f2afb06ffad09d",
+    "triangles": 912,
+    "vertex_joints_sha256": "0381f94cca6ae50e4ac94482366b2295a153203108e50c33f76b9ebf475b0df6",
+    "vertices": 458
+   },
+   "hoodie_cuff.L": {
+    "triangle_set_sha256": "84f217e2be70e6bc72f7617f26277a2ff4cd25e01591e61eab4cb6dcda36eeaa",
+    "triangles": 256,
+    "vertex_joints_sha256": "85a75ed8d4faae9fa8f0fb54356aca8c81d1d69a07c02805210745b101db59a5",
+    "vertices": 192
+   },
+   "hoodie_cuff.R": {
+    "triangle_set_sha256": "979cc83684cc7d5792397a83c99396c778a00b96b680f5d23eac5f037270d69a",
+    "triangles": 256,
+    "vertex_joints_sha256": "5a6fe2a53617ece2e0156fc44b284bbe6ac492377b83dc662994ee272fdbf7dd",
+    "vertices": 192
+   },
+   "hoodie_hem": {
+    "triangle_set_sha256": "0626041eebce92968eed06e4711eb451dc1b7bf52b36a5e2e7d8d39877b2f8d3",
+    "triangles": 768,
+    "vertex_joints_sha256": "dbf8f3e2021e1e5fb8ba0bc4daaaa99469f0717d5f6d2f11fcc4f2772860d745",
+    "vertices": 386
+   },
+   "hoodie_pocket": {
+    "triangle_set_sha256": "8c8a3408586197f07793150680989579951580c72ebc2be5ef7ad0a9f53322c4",
+    "triangles": 5184,
+    "vertex_joints_sha256": "9d7b0b82abcc9c1faeb3e9da8ecea97dfec6d7a455276bf2116ee60f74801c95",
+    "vertices": 2594
+   },
+   "hoodie_sleeve.L": {
+    "triangle_set_sha256": "40576ab5588b63aa186c71c208fca7f1950ba5957bb94fc0893b8953c085fba7",
+    "triangles": 1088,
+    "vertex_joints_sha256": "6da8d0e6739bafde8f92dd197021f5c78568e097564bc84b324807c39fb4e2ac",
+    "vertices": 546
+   },
+   "hoodie_sleeve.R": {
+    "triangle_set_sha256": "c5b5d56c77ee00a298191e09bb2112ae408f9ab572acf6b2d5636eece6753918",
+    "triangles": 1088,
+    "vertex_joints_sha256": "2ddeaf9a669425aa437ae16e62c75dbc3a8761b572bb86d46fdd47901fbf4acd",
+    "vertices": 546
+   },
+   "hoodie_torso": {
+    "triangle_set_sha256": "bf6b3f7926a05d58e8653f528d6241aad140bd7613e5399c57e859a267e54e6a",
+    "triangles": 4736,
+    "vertex_joints_sha256": "88d498d35305c8acb1d7db32eff899116c09d204c96a6e6b18719ac107a63b72",
+    "vertices": 2370
+   },
+   "lash.L": {
+    "triangle_set_sha256": "5599d45a838ccd349dfe21d71dce03c13ca3640e611db2d1af5736060a462ce8",
+    "triangles": 420,
+    "vertex_joints_sha256": "ef5fe5cd93f9912b7fc780b697d4ebb0452cdc3054416e3929cf9c18f50784f4",
+    "vertices": 212
+   },
+   "lash.R": {
+    "triangle_set_sha256": "a8c7a32d9921c143de71c5f303e1c1fc5fed831c70f213dca71541509aaead59",
+    "triangles": 420,
+    "vertex_joints_sha256": "7535acadf307ee33242c954a96e83953bfad76f7440966b30e31eefca58e546f",
+    "vertices": 212
+   },
+   "lid_lower.L": {
+    "triangle_set_sha256": "4ee5b563b97f3d45e028c31be778b6c1f43d0cea2abf5e70d712e73a4b30aed3",
+    "triangles": 3096,
+    "vertex_joints_sha256": "23b698190e1461a2d2dc1a83a6b300c865cbdbb4270ed0d026128504b2ca4c33",
+    "vertices": 1550
+   },
+   "lid_lower.R": {
+    "triangle_set_sha256": "e19387e4259c9f2e022267888f9ca4f9b3260476b57b69a4d0ed03cf0d63f278",
+    "triangles": 3096,
+    "vertex_joints_sha256": "a5e0421204ff1813bf316a3e9244064eeb096050a21357f1ea52907cfca05c78",
+    "vertices": 1550
+   },
+   "lid_upper.L": {
+    "triangle_set_sha256": "6b77b35d795143c0bb8de41c5e1d805b2e303a5d20b1e24a5ec7d7c0cb6fb7b8",
+    "triangles": 3988,
+    "vertex_joints_sha256": "6a7231624ae45abb12c4431e6e31c7feb27d0bd36554095e519998a86cd8da8e",
+    "vertices": 1996
+   },
+   "lid_upper.R": {
+    "triangle_set_sha256": "905640dba0bb3d43b8d9cb51f5165d9d37de9e061a62bfdc8982a887a954c28b",
+    "triangles": 3988,
+    "vertex_joints_sha256": "c7f9d1fff2fb8790086c93ae1c329ccf05a9ef0e588d73baac88e77f5545148e",
+    "vertices": 1996
+   },
+   "mouth": {
+    "triangle_set_sha256": "2d49b427298f8fe54a2c0b4800398b37ccb8a4ac315f3065feae6d154c595c00",
+    "triangles": 40,
+    "vertex_joints_sha256": "4ed6d014e24085bf74ee4275586a1671e0063d9bb1789e3073dfb60f97ce0bf9",
+    "vertices": 33
+   },
+   "neck": {
+    "triangle_set_sha256": "91eafd46ca9fdc4d5f9ff7cc56c283f56c8ed31859b32445407151c1059b949c",
+    "triangles": 240,
+    "vertex_joints_sha256": "9309aba0b2aa02d0585b2d1df8e102d3103eeaec14065f96f86237bb326be928",
+    "vertices": 122
+   },
+   "shoe.L#0": {
+    "triangle_set_sha256": "f69fbadfb8e3b74ddb6d4d6f2a6e6b094c822ee8545d3112f9093e8abe083539",
+    "triangles": 7280,
+    "vertex_joints_sha256": "dcb4684f155edbec81893ff80622cc3c1ee80d2db710d8e1b15013d393b4ce49",
+    "vertices": 3689
+   },
+   "shoe.L#1": {
+    "triangle_set_sha256": "cd1793bd294ec37b139589dd1e99fe5f12c1187186155b20e43dbc0ac56b24fc",
+    "triangles": 2160,
+    "vertex_joints_sha256": "314327660292a37e6eb85ad922070cdd3099ac1cf280693dc1fbb9e220c52cb9",
+    "vertices": 1129
+   },
+   "shoe.R#0": {
+    "triangle_set_sha256": "ea8db852717d93eaef0bafa443851d74455c462107ef45a7eceb752f94636f41",
+    "triangles": 7280,
+    "vertex_joints_sha256": "9b1e701380e0f3b4aa13fdb24807270a5dfef5e38e811c318f97c616bd5a95c0",
+    "vertices": 3689
+   },
+   "shoe.R#1": {
+    "triangle_set_sha256": "743dad3256642fb5547f5c2c4521182b11d12572bc2a5eec940b22d1e1bf9b65",
+    "triangles": 2160,
+    "vertex_joints_sha256": "dbc3b9f0a449ee130a3f1efab952503cca828e291b30ea19ae378aabec49a84e",
+    "vertices": 1129
+   },
+   "shoe_strap0.L": {
+    "triangle_set_sha256": "89312e48856b04e84b997103ae2bc4a1a9a6ed02e390dcc3e54827efdff62d8d",
+    "triangles": 360,
+    "vertex_joints_sha256": "7ddbde4498ad00430f4d93144c322e3f1ec2afd2f80707b98a5e1b064193ed9e",
+    "vertices": 182
+   },
+   "shoe_strap0.R": {
+    "triangle_set_sha256": "3a3ae8be38cc88fed18506fd6c24083a63c550f2da04d2c47427148dc3e0cb0b",
+    "triangles": 360,
+    "vertex_joints_sha256": "ed238be1eab43f6424b0c8dbdc4b6369e1f67f458ffe2e890721a5920b22ad88",
+    "vertices": 182
+   },
+   "shoe_strap1.L": {
+    "triangle_set_sha256": "4501355bece937462113d9c10e1737346f50fa7019a5f71579c6e9ad8a897cd0",
+    "triangles": 360,
+    "vertex_joints_sha256": "41c27ba9b7468d83874b24a37e3e68f47b35fb3fc9b254a1558e189aeed3d5ef",
+    "vertices": 182
+   },
+   "shoe_strap1.R": {
+    "triangle_set_sha256": "016a116d1cea6d1ca3f2302cde5bed451c8335bdcdb40be982913d55db4c82b3",
+    "triangles": 360,
+    "vertex_joints_sha256": "adab208a12c2f61c06032aec8c24d2507d284630aeacda478403ef983ace82ce",
+    "vertices": 182
+   },
+   "sock.L": {
+    "triangle_set_sha256": "c79383dfea7a207e0c57d1de64edfeb7e760af76dcbd7dd2a000de9552005823",
+    "triangles": 96,
+    "vertex_joints_sha256": "db204f87ce718d18e21a8ae2b7c7385d56d90f4ec5a8e4fc384f158d1cf19be7",
+    "vertices": 50
+   },
+   "sock.R": {
+    "triangle_set_sha256": "4c9f203c6a232287293b3fd046f21e4ff384eaa19368e20e3e9d9c4ea7f8a75a",
+    "triangles": 96,
+    "vertex_joints_sha256": "c4269371343dc214f99b0a4b1e2c6c7371ca66786a68dde4fad16bbb84bb80b2",
+    "vertices": 50
+   },
+   "sole.L": {
+    "triangle_set_sha256": "c38ac0b6878015db6b63501b87155d30bd64a91b76524969d7b9d226b3558543",
+    "triangles": 1728,
+    "vertex_joints_sha256": "54b0961dd1153d2a64b2ed609b9a92e4bc4f020096791a2144d84b7d062d945d",
+    "vertices": 866
+   },
+   "sole.R": {
+    "triangle_set_sha256": "2496d3b2f43e7b1da31482ae538ee505235bb21441d6e3a9ffb9b3d19a39eb29",
+    "triangles": 1728,
+    "vertex_joints_sha256": "f8a3183b69b0a4ee9116b253ff81de24392ef2b5c3703d879fd904e6ba76b8a4",
+    "vertices": 866
+   },
+   "trouser_leg.L": {
+    "triangle_set_sha256": "871c0f580f1b84db7bc7fc090294aaea5f393aa51d0edbcdb395580689d3136f",
+    "triangles": 560,
+    "vertex_joints_sha256": "cc5de48e7594de64b7c600f0d39f0c1bd74c889cabc46a3456e2e81d893aaa17",
+    "vertices": 282
+   },
+   "trouser_leg.R": {
+    "triangle_set_sha256": "b33ee32e0a026f0e2810f135a4e537a59915661e297a032347dc1512259e35dd",
+    "triangles": 560,
+    "vertex_joints_sha256": "5a710b0aae6c21568ff14354e45e2883022bf26cd36abe5caaa14f20ccd38169",
+    "vertices": 282
+   },
+   "trousers_waist": {
+    "triangle_set_sha256": "52f483c28d32e1cce0ee01d02a2327377ba6f44d189ce76db1de5ee32301af9a",
+    "triangles": 672,
+    "vertex_joints_sha256": "f056f4a82d78d34b74d7682a72923d2b9ed378b6a0d5ee7cc16b281b4187a3d1",
+    "vertices": 338
+   },
+   "undershirt": {
+    "triangle_set_sha256": "b8a69c0bae798b6fda882fc5b3a3a6a95cad2d8785c5e1b587a32c9392ea1509",
+    "triangles": 528,
+    "vertex_joints_sha256": "a9f09a7ddd4b0bc1f30aa6988b2252696b01e664b07b171d7b4c54d327f263a1",
+    "vertices": 266
+   }
+  },
+  "meta_sha256": "6430c025ad0c05fd7b4173fff768a74770da19f089ef9088e50f817dd72a1b0f"
+ },
+ "fingerprint_sha256": "60b4f8fe40125cb39d65d63d735613786576576850a70ad73277046482842aa9",
+ "note": "Regression baseline candidate. Approved only once committed by the Supervisor (guarded path).",
+ "render": {
+  "denoiser": "OPENIMAGEDENOISE",
+  "engine": "cycles",
+  "height": 320,
+  "samples": 16,
+  "seed": 0
+ },
+ "renders": {
+  "face_closeup": "3b88d149f8687ab77008aa68e741629f9b91adda4d7467a7f387a97e1a71f4af",
+  "turn_back": "ccd483f80b4c41761ea837e35bf6c0d651de3d915cf8a36c4d4d9e44615edc09",
+  "turn_front": "d8c49994d69087b8f8d05a3b02b7dabac423398ef1a8c9ed4a96d216728a41f2",
+  "turn_left": "114b77e910bc99902305c5b80e64637bf6cd3166e2c618b6ab6df84a0b56f89b",
+  "turn_right": "e459d964b2512c743fc9a64c490bbb34e4f850ea44ab7db31f344b4dcbfb4180"
+ },
+ "schema": "plush-studio.regression-golden/1",
+ "source_commit": "725e8f167e415b86ed03fb62b3f1b63874211e94",
+ "spec_inputs": [
+  "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.spec.json",
+  "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.1.1.0.override.json"
+ ],
+ "spec_inputs_sha256": "c26530099efef1ee17cd4605767c3027cbbe87c99e5cc29b7923c8e0572a0ab6",
+ "spec_version": "1.1.0"
+}
