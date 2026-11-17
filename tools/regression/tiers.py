@@ -70,35 +70,38 @@ def character_ids() -> list[str]:
     return sorted(p.name for p in CHARACTERS.iterdir() if p.is_dir()) if CHARACTERS.is_dir() else []
 
 
-def character_config(cid: str) -> dict:
-    """Build inputs of the character's current version: the spec plus the overrides named in the fidelity baseline
-    (the single list of current character versions). Raises ValueError when the character cannot be regressed."""
-    spec = CHARACTERS / cid / "spec" / f"{cid}.spec.json"
+def character_config(cid: str, root: Path = ROOT) -> dict:
+    """Build inputs of the character's current version in the checkout `root`: the spec plus the overrides named in
+    the fidelity baseline (the single list of current character versions). Raises ValueError when the character
+    cannot be regressed."""
+    spec = root / "assets" / "characters" / cid / "spec" / f"{cid}.spec.json"
+    rel = spec.relative_to(root).as_posix()
     if not spec.is_file():
-        raise ValueError(f"{cid}: no spec at {spec.relative_to(ROOT).as_posix()}")
-    baseline = json.loads(FIDELITY_BASELINE.read_text(encoding="utf-8"))
+        raise ValueError(f"{cid}: no spec at {rel}")
+    fidelity_baseline = root / FIDELITY_BASELINE.relative_to(ROOT)
+    baseline = json.loads(fidelity_baseline.read_text(encoding="utf-8"))
     entry = baseline.get("characters", {}).get(cid)
     if entry is None:
         raise ValueError(f"{cid}: not listed in {FIDELITY_BASELINE.relative_to(ROOT).as_posix()}")
-    if entry.get("build") != spec.relative_to(ROOT).as_posix():
+    if entry.get("build") != rel:
         raise ValueError(f"{cid}: fidelity baseline builds {entry.get('build')}, expected the character spec")
     overrides = list(entry.get("overrides", []))
-    inputs = [spec.relative_to(ROOT).as_posix(), *overrides]
+    inputs = [rel, *overrides]
     for item in inputs:
-        if not (ROOT / item).is_file():
+        if not (root / item).is_file():
             raise ValueError(f"{cid}: build input missing: {item}")
     resolved = json.loads(spec.read_text(encoding="utf-8"))
     version = resolved.get("metadata", {}).get("spec_version", "")
     for item in overrides:
-        data = json.loads((ROOT / item).read_text(encoding="utf-8")).get("override", {})
+        data = json.loads((root / item).read_text(encoding="utf-8")).get("override", {})
         version = data.get("metadata", {}).get("spec_version", version)
     digest = hashlib.sha256()
     for item in inputs:
-        digest.update(item.encode() + b"\0" + portable_bytes(ROOT / item) + b"\0")
+        digest.update(item.encode() + b"\0" + portable_bytes(root / item) + b"\0")
     profile = resolved.get("rig", {}).get("engine_profile", DEFAULT_PROFILE)
     return {"character": cid, "spec": inputs[0], "overrides": overrides, "inputs": inputs,
             "spec_version": version or "unversioned", "spec_inputs_sha256": digest.hexdigest(),
-            "profile": profile, "fidelity": entry}
+            "profile": profile, "fidelity": entry, "root": str(root)}
 
 
 def git_changed(base: str) -> set[str]:

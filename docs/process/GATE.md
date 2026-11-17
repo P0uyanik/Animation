@@ -46,15 +46,23 @@ parallel: build (spec + the overrides of its current version, from `fidelity_bas
 (0.01 mm), engine export, fixed-camera renders (`views.json`: four turnaround views + face close-up at the head
 bone, 320 px, 16 samples, OIDN, seed 0, the shared render calibration), fidelity (drop > 2 points = FAIL).
 
-Approved baselines: `docs/evaluation/regression/baselines/<id>/<spec version>/` (`golden.json`,
-`fingerprint.json`, `images/*.png`), guarded, made on the CI runner from `main`'s spec inputs.
+Comparison ref (`--against origin/main`, CI and `check_all.py`): every character is also built from `origin/main`
+(a temporary git worktree) **on the same machine** with the same measuring tools (fingerprint tool, cameras).
+Builds are bit-reproducible on one machine but not across CPU families (T-041 finding: the boy's legacy
+`hair_clumps` mesh differs between GitHub runners), so identity is checked against `main` built here, not against
+files made elsewhere.
 
-- **Unchanged character** (its spec/override files are not in the diff vs `--base`): must be identical to the
-  baseline (= `main`): fingerprint byte-equal, engine export equal (order-independent summary, see below), every
-  render within the noise threshold. Any difference is a FAIL, even if it looks better. A baseline made from other
-  spec inputs (stale) or a missing baseline is a FAIL.
-- **Changed character** (pin bump / look task, path B): differences are listed for the owner; only fidelity can fail.
-  New baseline files come with the task (new files only) and need Supervisor approval.
+Approved baselines: `docs/evaluation/regression/baselines/<id>/<spec version>/` (`golden.json`,
+`fingerprint.json`, `images/*.png`), guarded. With a comparison ref they are compared for information (and must not
+be stale); without one (`run.py` without `--against`) the comparison against them is strict.
+
+- **Unchanged character** (its spec/override files are not in the diff vs `--base`): must be identical to `main`
+  built on this machine: fingerprint byte-equal, engine export equal (order-independent summary, see below), every
+  render within the noise threshold. Any difference is a FAIL, even if it looks better. A missing or stale approved
+  baseline (made from other spec inputs) is a FAIL too.
+- **Changed character** (pin bump / look task, path B): differences from `main` and from the baseline are listed for
+  the owner; only fidelity can fail. New baseline files come with the task (new files only) and need Supervisor
+  approval.
 
 Noise threshold (`tools/regression/render_noise_threshold.json`, guarded): measured with `run.py --noise` (every
 character built and rendered twice from one commit): boy max rmse 1.7e-5, girl max rmse 0.0028 / 0.37 % changed

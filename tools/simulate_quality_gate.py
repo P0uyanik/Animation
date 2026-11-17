@@ -253,11 +253,13 @@ class Simulations:
         out = ROOT / "build" / "t023-sim" / "changed-fingerprint"
         shutil.rmtree(out, ignore_errors=True)
         proc = run([sys.executable, "tools/regression/run.py", "--blender", self.blender, "--character",
-                    "boy_yellow_hoodie", "--no-fidelity", "--base", self.start_commit, "--out", str(out)],
+                    "boy_yellow_hoodie", "--no-fidelity", "--base", self.start_commit, "--against", self.start_commit,
+                    "--out", str(out)],
                    check=False, capture=True)
         print(proc.stdout)
         result = json.loads((out / "boy_yellow_hoodie" / "result.json").read_text(encoding="utf-8"))
-        fingerprint = [c for c in result["checks"] if c["name"] == "fingerprint"]
+        fingerprint = [c for c in result["checks"] if c["name"].startswith("fingerprint vs ")
+                       and not c["name"].endswith("baseline")]
         self.record("unchanged character treated as unchanged", True, result.get("unchanged"))
         self.record("changed unchanged-character fingerprint", "FAIL",
                     "PASS" if fingerprint and fingerprint[0]["ok"] else "FAIL")

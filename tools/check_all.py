@@ -628,6 +628,8 @@ def run_regression(executable: str, base: str, artifacts: Path, logs: Path, resu
         return regression_subchecks(merged, log)
     out = artifacts / "regression"
     command = [sys.executable, str(REGRESSION_RUNNER), "--blender", executable, "--out", str(out), "--base", base]
+    if git_ref_exists("origin/main"):
+        command += ["--against", "origin/main"]  # unchanged characters: identical to main built on this machine
     run_logged(command, log)
     try:
         report = json.loads((out / "regression.json").read_text(encoding="utf-8"))

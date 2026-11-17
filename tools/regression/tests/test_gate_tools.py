@@ -146,6 +146,23 @@ def test_compare():
         expect(any(c["name"] == "baseline" and not c["ok"] for c in checks), "stale baseline = FAIL")
         checks = R.compare(dict(cfg, spec_version="2.0.0"), dict(data), out, golden_root, True, noise)
         expect(any(c["name"] == "baseline" and not c["ok"] for c in checks), "missing baseline for unchanged = FAIL")
+        # Same-machine reference (origin/main built here): identity is required against it; the stored baseline
+        # (possibly made on another CPU) is information only.
+        Image.new("RGBA", (16, 16), (100, 100, 100, 255)).save(out / "renders" / "v.png")
+        ref_out = t / "ref"
+        (ref_out / "renders").mkdir(parents=True)
+        Image.new("RGBA", (16, 16), (100, 100, 100, 255)).save(ref_out / "renders" / "v.png")
+        (ref_out / "fingerprint.json").write_bytes(R.canonical(fp))
+        (out / "fingerprint.json").write_bytes(R.canonical(fp))
+        other_cpu = dict(data, fingerprint_sha256="H")
+        reference = dict(other_cpu)
+        checks = R.compare(cfg, other_cpu, out, golden_root, True, noise, reference, ref_out, "origin/main")
+        expect(all(c["ok"] for c in checks) and any(c["name"] == "fingerprint vs baseline" for c in checks),
+               "identical to main, differs from a baseline made elsewhere = PASS (baseline informational)")
+        checks = R.compare(cfg, dict(other_cpu, fingerprint_sha256="I"), out, golden_root, True, noise, reference,
+                           ref_out, "origin/main")
+        expect(any(c["name"] == "fingerprint vs origin/main" and not c["ok"] for c in checks),
+               "unchanged character differs from main built on the same machine = FAIL")
 
 
 def test_backup_scripts():

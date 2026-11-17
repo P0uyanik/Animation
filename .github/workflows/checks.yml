@@ -155,8 +155,9 @@ jobs:
       - name: Regression and unchanged-character guard
         if: steps.merge.outputs.clean == 'true'
         run: |
+          lscpu | grep -E "Model name|^CPU\(s\)|Flags" | cut -c1-160 || true
           python tools/regression/run.py --blender "$BLENDER" --character "${{ matrix.character }}" \
-            --out "build/regression/${{ matrix.character }}" --base origin/main --write-baseline \
+            --out "build/regression/${{ matrix.character }}" --base origin/main --against origin/main --write-baseline \
             --gate-report "build/regression/${{ matrix.character }}/check_all.json" || true
           python3 .github/scripts/show_failed_logs.py build/regression || true
       - name: Upload regression results

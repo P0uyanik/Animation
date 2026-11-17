@@ -48,12 +48,12 @@ GOLDEN_SCHEMA = "plush-studio.regression-golden/1"
 BASELINE_IMAGES = "images"  # not "renders": the repository .gitignore excludes every renders/ folder
 
 
-def run_logged(command, log: Path, env=None) -> int:
+def run_logged(command, log: Path, env=None, cwd: Path = ROOT) -> int:
     log.parent.mkdir(parents=True, exist_ok=True)
     with log.open("a", encoding="utf-8", errors="replace") as handle:
         handle.write("$ " + " ".join(str(c) for c in command) + "\n")
         handle.flush()
-        return subprocess.run([str(c) for c in command], cwd=ROOT, stdout=handle, stderr=subprocess.STDOUT,
+        return subprocess.run([str(c) for c in command], cwd=cwd, stdout=handle, stderr=subprocess.STDOUT,
                               env=env).returncode
 
 
@@ -188,29 +188,32 @@ class Step(Exception):
 
 
 def produce(cfg: dict, blender: str, out: Path, env: dict, fidelity: bool) -> dict:
-    """Build, fingerprint, export and render one character into `out`; return the measured data."""
+    """Build, export and render one character from the checkout cfg["root"] (this one, or a worktree of the
+    comparison ref) into `out`; return the measured data. Fingerprint tool, cameras and probe always come from this
+    checkout, so a comparison measures the pipeline, not the measuring tools."""
     cid = cfg["character"]
+    src = Path(cfg.get("root") or ROOT)
     log = out / "regression.log"
     build = out / "build"
     timings = {}
 
     def step(name, command):
         started = time.monotonic()
-        code = run_logged(command, log, env)
+        code = run_logged(command, log, env, src)
         timings[name] = round(time.monotonic() - started, 1)
         if code:
             raise Step(f"{name} failed (exit {code}); see {log.as_posix()}")
 
     # Fidelity renders the build variant its reference views match (fidelity_index.json render_variant): the
     # compare build (arms lowered, fur) is made only when fidelity needs it; the master is saved before it.
-    index = ROOT / "assets" / "characters" / cid / "references" / "annotations" / "fidelity_index.json"
+    index = src / "assets" / "characters" / cid / "references" / "annotations" / "fidelity_index.json"
     variant = json.loads(index.read_text(encoding="utf-8")).get("render_variant", "master") if index.is_file() else "master"
-    command = [blender, "-b", "--factory-startup", "-P", ROOT / "pipeline/charsys/build_character.py", "--",
-               "--spec", ROOT / cfg["spec"], "--out", build, "--no-glb"]
+    command = [blender, "-b", "--factory-startup", "-P", src / "pipeline/charsys/build_character.py", "--",
+               "--spec", src / cfg["spec"], "--out", build, "--no-glb"]
     if not (fidelity and variant == "compare"):
         command.append("--no-compare")
     for item in cfg["overrides"]:
-        command += ["--override", ROOT / item]
+        command += ["--override", src / item]
     step("build", command)
     master = build / f"{cid}_master.blend"
     if not master.is_file():
@@ -220,8 +223,8 @@ def produce(cfg: dict, blender: str, out: Path, env: dict, fidelity: bool) -> di
     fingerprint = json.loads((out / "fingerprint.raw.json").read_text(encoding="utf-8"))
     fingerprint.pop("file", None)
     (out / "fingerprint.json").write_bytes(canonical(fingerprint))
-    step("export", [blender, "-b", "--factory-startup", "-P", ROOT / "pipeline/charsys/export_engine.py", "--",
-                    "--blend", master, "--profile", ROOT / cfg["profile"], "--out", out / "engine_package"])
+    step("export", [blender, "-b", "--factory-startup", "-P", src / "pipeline/charsys/export_engine.py", "--",
+                    "--blend", master, "--profile", src / cfg["profile"], "--out", out / "engine_package"])
     export = export_summary(out / "engine_package")
     step("probe", [blender, "-b", "--factory-startup", "-P", HERE / "probe_head.py", "--", master, out / "head.json"])
     head = json.loads((out / "head.json").read_text(encoding="utf-8"))
@@ -230,7 +233,7 @@ def produce(cfg: dict, blender: str, out: Path, env: dict, fidelity: bool) -> di
     x, y, z = head["center"]
     width = close["width_head_lengths"] * head["length_m"]
     renders = out / "renders"
-    step("renders", [blender, "-b", "--factory-startup", "-P", ROOT / "pipeline/charsys/tools/groom_turnaround.py",
+    step("renders", [blender, "-b", "--factory-startup", "-P", src / "pipeline/charsys/tools/groom_turnaround.py",
                      "--", master, VIEWS, renders, "--height", views["render"]["height"],
                      "--samples", views["render"]["samples"], "--engine", views["render"]["engine"],
                      "--closeup", f"{close['id']}:{close['yaw_deg']}:{close['elevation_deg']}:{x},{y},{z}:{width:.6f}"])
@@ -266,8 +269,60 @@ def baseline_dir(root: Path, cfg: dict) -> Path:
     return root / cfg["character"] / cfg["spec_version"]
 
 
-def compare(cfg: dict, data: dict, out: Path, golden_root: Path, unchanged: bool, noise: dict) -> list[dict]:
-    """Checks for one character; returns [{name, ok, detail}]."""
+def fingerprint_difference(old: dict, new: dict) -> str:
+    objs = sorted(n for n in set(old.get("objects", {})) | set(new.get("objects", {}))
+                  if old.get("objects", {}).get(n) != new.get("objects", {}).get(n))
+    if not objs:
+        return "non-object fields differ (armatures/version)"
+    parts = []
+    for name in objs[:6]:
+        a, b = old.get("objects", {}).get(name) or {}, new.get("objects", {}).get(name) or {}
+        keys = sorted(k for k in set(a) | set(b) if a.get(k) != b.get(k))
+        extra = ""
+        if "centroid" in keys and a.get("centroid") and b.get("centroid"):
+            extra = f", centroid moved {max(abs(x - y) for x, y in zip(a['centroid'], b['centroid'])) * 1000:.4f} mm"
+        parts.append(f"{name} ({', '.join(keys)}{extra})")
+    return "objects differ: " + "; ".join(parts) + (f" (+{len(objs) - 6})" if len(objs) > 6 else "")
+
+
+def identity_checks(data: dict, fp_new: Path, ref: dict, fp_ref: Path, images_new: Path, images_ref: Path,
+                    noise: dict) -> list[tuple[str, bool, str]]:
+    """(aspect, equal, detail) for fingerprint, engine export and renders of two results."""
+    out = []
+    fp_ok = ref.get("fingerprint_sha256") == data["fingerprint_sha256"]
+    detail = "byte-equal"
+    if not fp_ok:
+        detail = (fingerprint_difference(json.loads(fp_ref.read_text(encoding="utf-8")),
+                                         json.loads(fp_new.read_text(encoding="utf-8")))
+                  if fp_ref.is_file() else "differs")
+    out.append(("fingerprint", fp_ok, detail))
+    differing = export_differences(ref.get("export", {}), data["export"])
+    out.append(("engine export", not differing, "equal" if not differing else "differs: " + ", ".join(differing[:6])
+                + (f" (+{len(differing) - 6})" if len(differing) > 6 else "")))
+    bad, worst = [], {}
+    for name in data["renders"]:
+        other = images_ref / f"{name}.png"
+        if not other.is_file():
+            bad.append(f"{name}: no image")
+            continue
+        diff = image_difference(other, images_new / f"{name}.png")
+        worst[name] = diff
+        if not within_noise(diff, noise):
+            bad.append(f"{name} rmse {diff['rmse']:.4f} changed {diff['changed_fraction']:.4f}")
+    top = max(worst.values(), key=lambda d: d["rmse"]) if worst else {"rmse": 0, "changed_fraction": 0}
+    out.append(("renders", not bad, (f"within noise (max rmse {top['rmse']:.4f} <= {noise['max_rmse']}, changed "
+                                     f"{top['changed_fraction']:.4f} <= {noise['max_changed_fraction']})")
+                if not bad else "; ".join(bad)))
+    return out
+
+
+def compare(cfg: dict, data: dict, out: Path, golden_root: Path, unchanged: bool, noise: dict,
+            reference: dict | None = None, ref_out: Path | None = None, ref_label: str = "") -> list[dict]:
+    """Checks for one character; returns [{name, ok, detail}].
+
+    With `reference` (the same character built from the comparison ref, normally origin/main, on this machine) an
+    unchanged character must be identical to it; the approved baseline is then compared for information only
+    (builds are only reproducible on the same CPU family). Without a reference the baseline comparison is strict."""
     checks = []
 
     def check(name, ok, detail=""):
@@ -276,6 +331,12 @@ def compare(cfg: dict, data: dict, out: Path, golden_root: Path, unchanged: bool
     if "fidelity" in data:
         f = data["fidelity"]
         check("fidelity", f["ok"], f"{f['score']:.2f} vs {float(f['baseline']):.2f} (drop {f['drop']:+.2f}, max {f['maximum_drop']})")
+    if reference is not None:
+        label = f"identical to {ref_label}" if unchanged else f"vs {ref_label} (spec changed, owner review)"
+        for aspect, equal, detail in identity_checks(data, out / "fingerprint.json", reference,
+                                                     ref_out / "fingerprint.json", out / "renders",
+                                                     ref_out / "renders", noise):
+            check(f"{aspect} vs {ref_label}", equal or not unchanged, f"{detail} [{label}]")
     gdir = baseline_dir(golden_root, cfg)
     gfile = gdir / "golden.json"
     if not gfile.is_file():
@@ -283,41 +344,16 @@ def compare(cfg: dict, data: dict, out: Path, golden_root: Path, unchanged: bool
               + ("" if unchanged else " (spec changed: new baseline needs owner approval)"))
         return checks
     golden = json.loads(gfile.read_text(encoding="utf-8"))
-    label = "identical to main" if unchanged else "vs baseline (spec changed, owner review)"
     if unchanged and golden.get("spec_inputs_sha256") != cfg["spec_inputs_sha256"]:
         check("baseline", False, "approved baseline was made from different spec inputs (stale baseline)")
-    fp_ok = golden.get("fingerprint_sha256") == data["fingerprint_sha256"]
-    detail = ""
-    if not fp_ok and (gdir / "fingerprint.json").is_file():
-        old = json.loads((gdir / "fingerprint.json").read_text(encoding="utf-8"))
-        new = json.loads((out / "fingerprint.json").read_text(encoding="utf-8"))
-        objs = sorted(n for n in set(old.get("objects", {})) | set(new.get("objects", {}))
-                      if old.get("objects", {}).get(n) != new.get("objects", {}).get(n))
-        detail = "objects differ: " + ", ".join(objs[:6]) + (f" (+{len(objs) - 6})" if len(objs) > 6 else "")
-        if not objs:
-            detail = "non-object fields differ (armatures/version)"
-    check("fingerprint", fp_ok or not unchanged, ("byte-equal" if fp_ok else detail) + f" [{label}]")
-    differing = export_differences(golden.get("export", {}), data["export"])
-    ex_ok = not differing
-    check("engine export", ex_ok or not unchanged,
-          ("equal" if ex_ok else "differs: " + ", ".join(differing[:6]) + (f" (+{len(differing) - 6})" if len(differing) > 6 else ""))
-          + f" [{label}]")
-    worst = {}
-    bad = []
-    for name in data["renders"]:
-        ref = gdir / BASELINE_IMAGES / f"{name}.png"
-        if not ref.is_file():
-            bad.append(f"{name}: no baseline image")
-            continue
-        diff = image_difference(ref, out / "renders" / f"{name}.png")
-        worst[name] = diff
-        if not within_noise(diff, noise):
-            bad.append(f"{name} rmse {diff['rmse']:.4f} changed {diff['changed_fraction']:.4f}")
-    data["render_differences"] = worst
-    top = max(worst.values(), key=lambda d: d["rmse"]) if worst else {"rmse": 0, "changed_fraction": 0}
-    check("renders", not bad or not unchanged,
-          (f"within noise (max rmse {top['rmse']:.4f} <= {noise['max_rmse']}, changed {top['changed_fraction']:.4f} <= "
-           f"{noise['max_changed_fraction']})" if not bad else "; ".join(bad)) + f" [{label}]")
+    strict = unchanged and reference is None
+    label = ("identical to the approved baseline" if strict else
+             "vs approved baseline, information" + ("" if unchanged else " (spec changed, owner review)"))
+    results = identity_checks(data, out / "fingerprint.json", golden, gdir / "fingerprint.json", out / "renders",
+                              gdir / BASELINE_IMAGES, noise)
+    data["baseline_comparison"] = {aspect: {"equal": equal, "detail": detail} for aspect, equal, detail in results}
+    for aspect, equal, detail in results:
+        check(aspect if strict else f"{aspect} vs baseline", equal or not strict, f"{detail} [{label}]")
     return checks
 
 
@@ -363,9 +399,23 @@ def regress(cid: str, a, env: dict, unchanged_ids: set[str], noise: dict) -> dic
             result["checks"].append({"name": "build determinism", "ok": result["noise"]["fingerprint_equal"]
                                      and result["noise"]["export_equal"], "detail": ""})
         else:
+            reference = ref_out = None
+            if a.against_root:
+                try:
+                    ref_cfg = tiers.character_config(cid, Path(a.against_root))
+                except ValueError as exc:  # e.g. a new character that is not on the comparison ref yet
+                    result["reference"] = f"not built from {a.against}: {exc}"
+                    if cid in unchanged_ids:
+                        raise Step(f"unchanged character cannot be built from {a.against}: {exc}")
+                else:
+                    ref_out = out / "reference"
+                    reference = produce(ref_cfg, a.blender, ref_out, env, False)
+                    result["reference"] = {"ref": a.against, "commit": a.against_commit,
+                                           "spec_inputs_sha256": ref_cfg["spec_inputs_sha256"], "measured": reference}
             data = produce(cfg, a.blender, out, env, not a.no_fidelity)
             result["measured"] = data
-            result["checks"] = compare(cfg, data, out, Path(a.baselines), cid in unchanged_ids, noise)
+            result["checks"] = compare(cfg, data, out, Path(a.baselines), cid in unchanged_ids, noise,
+                                       reference, ref_out, a.against)
             if a.write_baseline:
                 result["baseline_written"] = write_baseline(cfg, data, out, Path(a.out) / "baselines", a.blender).as_posix()
     except (Step, ValueError, OSError, KeyError, json.JSONDecodeError) as exc:
@@ -423,6 +473,8 @@ def main(argv=None) -> int:
     ap.add_argument("--write-baseline", action="store_true")
     ap.add_argument("--noise", action="store_true", help="build and render twice; report the differences")
     ap.add_argument("--gate-report", default="", help="also write a tools/check_all.py-style report (CI verdict)")
+    ap.add_argument("--against", default="", help="also build every character from this ref (git worktree) on this "
+                    "machine; unchanged characters must be identical to it (CI: origin/main)")
     a = ap.parse_args(argv)
     ids = a.character or tiers.character_ids()
     unknown = sorted(set(ids) - set(tiers.character_ids()))
@@ -439,9 +491,29 @@ def main(argv=None) -> int:
     env = blender_env()
     Path(a.out).mkdir(parents=True, exist_ok=True)
     started = time.monotonic()
-    with concurrent.futures.ThreadPoolExecutor(max_workers=a.jobs or len(ids) or 1) as pool:
-        results = list(pool.map(lambda cid: regress(cid, a, env, unchanged, noise), ids))
+    a.against_root = a.against_commit = ""
+    worktree = None
+    if a.against:
+        commit = subprocess.run(["git", "rev-parse", "--verify", f"{a.against}^{{commit}}"], cwd=ROOT, text=True,
+                                capture_output=True)
+        if commit.returncode:
+            raise SystemExit(f"--against ref not found: {a.against}")
+        a.against_commit = commit.stdout.strip()
+        worktree = Path(a.out).resolve() / "_against_worktree"
+        if worktree.exists():
+            subprocess.run(["git", "worktree", "remove", "--force", str(worktree)], cwd=ROOT, capture_output=True)
+            shutil.rmtree(worktree, ignore_errors=True)
+        subprocess.run(["git", "worktree", "add", "--detach", str(worktree), a.against_commit], cwd=ROOT, check=True,
+                       capture_output=True)
+        a.against_root = str(worktree)
+    try:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=a.jobs or len(ids) or 1) as pool:
+            results = list(pool.map(lambda cid: regress(cid, a, env, unchanged, noise), ids))
+    finally:
+        if worktree is not None:
+            subprocess.run(["git", "worktree", "remove", "--force", str(worktree)], cwd=ROOT, capture_output=True)
     report = {"schema": SCHEMA, "ok": all(r["ok"] for r in results), "characters": ids,
+              "against": {"ref": a.against, "commit": a.against_commit} if a.against else None,
               "changed_characters": sorted(changed & set(ids)), "seconds": round(time.monotonic() - started, 1),
               "noise_threshold": noise, "results": results}
     (Path(a.out) / "regression.json").write_bytes(canonical(report))
