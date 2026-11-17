@@ -1,0 +1,419 @@
+{
+ "format": "plush.personality",
+ "version": 0,
+ "status": "draft (T-053a); no reader yet; not approved",
+ "character": "girl_auburn_bun_glasses",
+ "owner_brief": "cheerful, intelligent",
+ "guide": "docs/characters/girl_auburn_bun_glasses/REFERENCE_BEHAVIOUR.md",
+ "tempo": {
+  "action_speed": {
+   "value": 1.1,
+   "unit": "multiplier",
+   "kind": "estimate",
+   "source": "WT reach 8-10 f (f012-f022) is brisk for a 0.3-0.4 H move"
+  },
+  "reach_frames": {
+   "value": [
+    8,
+    10
+   ],
+   "unit": "frames@24",
+   "kind": "measured",
+   "source": "WT f012-f022 (strips/wt_girl_reach_f004-060.jpg)"
+  },
+  "anticipation_frames": {
+   "value": [
+    5,
+    8
+   ],
+   "unit": "frames@24",
+   "kind": "default",
+   "source": "docs/references/VISUAL_TARGET.md (Motion and editorial rhythm)"
+  },
+  "settle_frames": {
+   "value": [
+    10,
+    16
+   ],
+   "unit": "frames@24",
+   "kind": "default",
+   "source": "docs/references/VISUAL_TARGET.md (Motion and editorial rhythm)"
+  },
+  "overshoot": {
+   "value": 0.04,
+   "unit": "fraction",
+   "kind": "estimate",
+   "source": "no visible overshoot at 2 f sampling (WT f022-f030)"
+  },
+  "hold_frames": {
+   "value": [
+    12,
+    40
+   ],
+   "unit": "frames@24",
+   "kind": "measured",
+   "source": "hand at chin >=12 f (WT f000-f012); point held >=38 f (WT f022-f060)"
+  },
+  "careful_place_frames": {
+   "value": 24,
+   "unit": "frames@24",
+   "kind": "measured",
+   "source": "PB f151-f175 lowering the boat; release f175-f187"
+  }
+ },
+ "energy": {
+  "level": {
+   "value": 0.65,
+   "unit": "0-1",
+   "kind": "estimate",
+   "source": "WT gestures and talking; PB S6 lean-in; #09/ref_46 walk with arm swing"
+  },
+  "idle_motion_amplitude": {
+   "value": 0.006,
+   "unit": "H",
+   "kind": "estimate",
+   "source": "WT: head and torso move with speech f020-f060"
+  },
+  "gesture_amplitude": {
+   "value": 0.6,
+   "unit": "0-1",
+   "kind": "reference",
+   "source": "WT full-arm point; ref_46 wave"
+  }
+ },
+ "posture": {
+  "slouch": {
+   "value": 0.0,
+   "unit": "0-1",
+   "kind": "reference",
+   "source": "char_B, lineup, ref_46: upright"
+  },
+  "head_pitch_deg": {
+   "value": 0,
+   "unit": "deg",
+   "kind": "reference",
+   "source": "char_B level head; tilts down only toward the task"
+  },
+  "head_tilt_deg": {
+   "value": 5,
+   "unit": "deg",
+   "kind": "estimate",
+   "source": "#09 girl Animation; ref_46 wave; WT f110"
+  },
+  "shoulders_forward": {
+   "value": 0.0,
+   "unit": "0-1",
+   "kind": "reference",
+   "source": "char_B, lineup"
+  },
+  "rest_hands": {
+   "value": [
+    "relaxed_at_sides",
+    "hand_to_chin",
+    "hands_on_table_rim"
+   ],
+   "unit": "enum",
+   "kind": "reference",
+   "source": "char_B, C1 / WT f000 / PB S6"
+  },
+  "weight_shift": {
+   "value": 0.2,
+   "unit": "0-1",
+   "kind": "estimate",
+   "source": "char_B, lineup: weight even, feet slightly apart"
+  },
+  "lean_toward_task": {
+   "value": 0.7,
+   "unit": "0-1",
+   "kind": "reference",
+   "source": "WT f022-f060, CW, PB S6"
+  }
+ },
+ "attention": {
+  "primary_target": {
+   "value": "task_object",
+   "unit": "enum",
+   "kind": "reference",
+   "source": "WT, CD, CW, PB S1/S3/S6"
+  },
+  "span_s": {
+   "value": 20,
+   "unit": "s",
+   "kind": "extrapolation",
+   "source": "focused, methodical handwork (PB S2 3.3 s continuous) suggests long attention"
+  },
+  "glance_at_others": {
+   "value": 0,
+   "unit": "per_min",
+   "kind": "measured",
+   "source": "never looks at another character in WT or PB"
+  },
+  "glance_hold_frames": {
+   "value": [
+    12,
+    24
+   ],
+   "unit": "frames@24",
+   "kind": "extrapolation",
+   "source": "if added while explaining (guide section 7)"
+  }
+ },
+ "boredom": {
+  "enabled": {
+   "value": false,
+   "unit": "bool",
+   "kind": "extrapolation",
+   "source": "not part of her brief; no bored face in any reference"
+  }
+ },
+ "gaze": {
+  "saccade_interval_s": {
+   "value": [
+    0.8,
+    2.0
+   ],
+   "unit": "s",
+   "kind": "estimate",
+   "source": "WT gaze shifts with gesture and speech"
+  },
+  "fixation_on_task": {
+   "value": 0.9,
+   "unit": "0-1",
+   "kind": "measured",
+   "source": "gaze on the object in WT and PB"
+  },
+  "eyes_lead_head_frames": {
+   "value": [
+    2,
+    4
+   ],
+   "unit": "frames@24",
+   "kind": "default",
+   "source": "docs/references/VISUAL_TARGET.md (Motion and editorial rhythm)"
+  },
+  "look_down_bias": {
+   "value": 0.5,
+   "unit": "0-1",
+   "kind": "reference",
+   "source": "down at the task in WT/PB; level in char_B, lineup"
+  }
+ },
+ "blink": {
+  "interval_frames": {
+   "value": {
+    "mean": 33,
+    "min": 25,
+    "max": 39
+   },
+   "unit": "frames@24",
+   "kind": "measured",
+   "source": "WT starts f015, f054, f079, f113"
+  },
+  "duration_frames": {
+   "value": [
+    3,
+    5
+   ],
+   "unit": "frames@24",
+   "kind": "measured",
+   "source": "WT f015-f019, f054-f057, f113-f115"
+  },
+  "closed_frames": {
+   "value": [
+    2,
+    3
+   ],
+   "unit": "frames@24",
+   "kind": "measured",
+   "source": "WT f016-f018, f055-f056"
+  },
+  "couple_to_action_change": {
+   "value": true,
+   "unit": "bool",
+   "kind": "measured",
+   "source": "WT f016 during chin->reach; WT f080-f084 with head/gaze drop"
+  },
+  "long_blink_on_gaze_drop": {
+   "value": {
+    "duration_frames": 7
+   },
+   "unit": "frames@24",
+   "kind": "measured",
+   "source": "WT f079-f085"
+  }
+ },
+ "face": {
+  "lid_rest": {
+   "value": 0.0,
+   "unit": "Blink weight",
+   "kind": "reference",
+   "source": "char_B; ref_34 Neutral; ref_45 Neutral"
+  },
+  "resting": {
+   "value": {
+    "MouthSmile": 0.25,
+    "BrowUp.L": 0.15,
+    "BrowUp.R": 0.15
+   },
+   "unit": "action units",
+   "kind": "estimate",
+   "source": "ref_34 Neutral; WT f110"
+  },
+  "expression_bias": {
+   "value": {
+    "BrowUp.L": 0.15,
+    "BrowUp.R": 0.15,
+    "EyeWide": 0.1,
+    "MouthSmile": 0.2,
+    "MouthFrown": -0.2,
+    "BrowDown": -0.15
+   },
+   "unit": "offset",
+   "kind": "estimate",
+   "source": "positive valence in every scene reference"
+  },
+  "asymmetry": {
+   "value": 0.1,
+   "unit": "0-1",
+   "kind": "reference",
+   "source": "ref_34 Confusion; wink tiles (Left/Right Eye Closed)"
+  }
+ },
+ "smile": {
+  "frequency": {
+   "value": 0.7,
+   "unit": "0-1",
+   "kind": "reference",
+   "source": "char_B, lineup, ref_30, ref_45, ref_46, WT f110, PB S6"
+  },
+  "default_mouth": {
+   "value": "closed_soft_smile",
+   "unit": "enum",
+   "kind": "reference",
+   "source": "ref_34 Neutral; reference index decision"
+  },
+  "open_smile_share": {
+   "value": 0.5,
+   "unit": "0-1",
+   "kind": "reference",
+   "source": "open: char_B, lineup, ref_46, PB S6; closed: ref_34 Smile, WT f110"
+  }
+ },
+ "gestures": {
+  "value": [
+   {
+    "name": "hand_to_chin_think",
+    "hand": "right",
+    "source": "WT f000-f012"
+   },
+   {
+    "name": "point_and_explain",
+    "hand": "right index",
+    "source": "WT f022-f060, CW"
+   },
+   {
+    "name": "flatten_and_crease",
+    "hand": "both, palms flat",
+    "source": "PB f032-f110, CD"
+   },
+   {
+    "name": "careful_place",
+    "hand": "both, fingertips",
+    "source": "PB f151-f190"
+   },
+   {
+    "name": "lean_on_rim",
+    "hand": "both gripping",
+    "source": "PB f242-f288"
+   },
+   {
+    "name": "wave",
+    "hand": "one, palm out",
+    "source": "ref_46"
+   },
+   {
+    "name": "hold_book",
+    "hand": "both",
+    "source": "ref_44 section 4"
+   },
+   {
+    "name": "offer_object",
+    "hand": "one",
+    "source": "ref_44 section 4"
+   }
+  ],
+  "unit": "list",
+  "kind": "reference",
+  "source": "see each entry"
+ },
+ "reaction": {
+  "delay_frames": {
+   "value": [
+    2,
+    4
+   ],
+   "unit": "frames@24",
+   "kind": "extrapolation",
+   "source": "not measurable at the cut; quick, alert reaction fits the brief"
+  },
+  "channel_order": {
+   "value": [
+    "eyes",
+    "brows",
+    "mouth",
+    "head"
+   ],
+   "unit": "enum",
+   "kind": "default",
+   "source": "docs/references/VISUAL_TARGET.md (Motion and editorial rhythm)"
+  },
+  "positive_style": {
+   "value": "lean in, open smile (MouthWide 0.7), brows up",
+   "unit": "text",
+   "kind": "reference",
+   "source": "PB f242-f288"
+  },
+  "engaged_style": {
+   "value": "wonder: EyeWide, brows up, MouthO, hand to chin; then point and explain",
+   "unit": "text",
+   "kind": "reference",
+   "source": "WT f000-f060"
+  }
+ },
+ "interaction": {
+  "prop_handling": {
+   "value": "careful",
+   "unit": "enum",
+   "kind": "reference",
+   "source": "PB S2, S4; CD"
+  },
+  "two_handed": {
+   "value": 0.9,
+   "unit": "0-1",
+   "kind": "reference",
+   "source": "PB S2, S4, S6; CD; ref_44 book"
+  },
+  "leads_task": {
+   "value": 0.8,
+   "unit": "0-1",
+   "kind": "reference",
+   "source": "PB S2 her hands hold the sheet; WT she explains; PB S4 she places the boat"
+  },
+  "contact_slowdown_frames": {
+   "value": [
+    4,
+    8
+   ],
+   "unit": "frames@24",
+   "kind": "measured",
+   "source": "PB f169-f181 slow approach to the water"
+  }
+ },
+ "gaps": [
+  "no look at another character",
+  "no idle video",
+  "speech only without audio (WT f020-f052)",
+  "negative emotions only as rig tiles",
+  "no glasses handling"
+ ]
+}
