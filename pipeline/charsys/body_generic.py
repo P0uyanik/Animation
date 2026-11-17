@@ -3,9 +3,14 @@ humanoid character, entirely from its spec. No character's dimensions live in th
 
 Spec (`spec.body`): {"generator": "body_generic/1", "height_m": <sole to top of skull>, "params": {...}} with every
 length a FRACTION OF height_m (angles in degrees):
-  head:     centre_z, half_width, half_depth, half_height, chin_taper (0..1), forward; optional profile_levels
-            [[z, centre_x, centre_y, half_width, front_depth, back_depth], ...] and profile_exponent
-  neck:     base_z, top_z, radius
+  head:     centre_z, half_width, half_depth, half_height, chin_taper (0..1), forward
+            optional face shape (absent = the plain ellipsoid, unchanged): lower_half_height (centre to chin; the
+            lower face length), lower_roundness (superellipse exponent of the front outline below the centre: 2 =
+            ellipse, 3-4 = full round cheeks and a wide jaw / broad short chin), lower_depth_roundness (the same for
+            the side profile: fuller cheeks at 3/4)
+            optional profile_levels [[z, centre_x, centre_y, half_width, front_depth, back_depth], ...] and
+            profile_exponent: an asymmetric head loft that replaces the ellipsoid (absent = unchanged)
+  neck:     base_z, top_z, radius, optional top_radius (thicker top blending into the jaw; default radius)
   torso:    levels: [[z, half_width, half_depth_front, half_depth_back], ...]  (bottom to top)
   shoulder: z, joint_x, clavicle_x
   arm:      angle_deg (below horizontal), upper_len, fore_len, radii [shoulder, elbow, wrist]
@@ -102,27 +107,46 @@ def hand_frames(P, H, J):
     return out
 
 
+def _superellipse_gain(t, n, cap=2.6):
+    """Width of a superellipse |u|^n + |t|^n = 1 relative to the ellipse (n = 2) at the normalised height t (0..1):
+    n > 2 gives a fuller, rounder lower face (cheeks carried down to a broad, short chin)."""
+    if n == 2.0:
+        return 1.0
+    t = min(t, 0.999)
+    return min(cap, (1.0 - t ** n) ** (1.0 / n) / math.sqrt(1.0 - t * t))
+
+
 def build_body(C, M, P, H, J, frames):
     """Body skin (head, neck, torso, arms, legs, feet; one remeshed surface) and the two hands. Returns
     [(object, role)] with roles 'skin' and 'hand'."""
     hp = P["head"]
-    if hp.get("profile_levels"):
+    if hp.get("profile_levels"):  # optional asymmetric head loft (absent = the ellipsoid below, unchanged)
         profile = [[x * H for x in level] for level in hp["profile_levels"]]
         head = G.profile_loft("_head", profile, C, n=float(hp.get("profile_exponent", 2.25)),
                               seg=int(hp.get("profile_segments", 64)), steps=int(hp.get("profile_steps", 56)))
+        cz = hp["centre_z"] * H
     else:
         head = G.uv_sphere("_head", (0, hp["forward"] * H, hp["centre_z"] * H), 1.0, C, 48, 24,
                            (hp["half_width"] * H, hp["half_depth"] * H, hp["half_height"] * H))
         cz, hh = hp["centre_z"] * H, hp["half_height"] * H
+        lhh = hp.get("lower_half_height", hp["half_height"]) * H  # optional head-shape options (defaults: unchanged)
+        nx, ny = float(hp.get("lower_roundness", 2.0)), float(hp.get("lower_depth_roundness", 2.0))
+        fy0 = hp["forward"] * H
         for v in head.data.vertices:  # rounder cranium, tapered jaw
-            t = max(0.0, (cz - v.co.z) / hh)
+            if v.co.z < cz and lhh != hh:
+                v.co.z = cz + (v.co.z - cz) * lhh / hh
+            t = max(0.0, (cz - v.co.z) / (lhh if v.co.z < cz else hh))
+            if t > 0 and (nx != 2.0 or ny != 2.0):
+                v.co.x *= _superellipse_gain(t, nx)
+                v.co.y = fy0 + (v.co.y - fy0) * _superellipse_gain(t, ny)
             k = 1 - hp["chin_taper"] * t * t
             v.co.x *= k
-            v.co.y = hp["forward"] * H + (v.co.y - hp["forward"] * H) * k
-    cz = hp["centre_z"] * H
+            v.co.y = fy0 + (v.co.y - fy0) * k
+    nr = P["neck"]["radius"] * H
+    ntr = P["neck"].get("top_radius", P["neck"]["radius"]) * H
     neck = G.tube("_neck", [Vector((0, 0, P["neck"]["base_z"] * H)), Vector((0, 0, P["neck"]["top_z"] * H)),
-                            Vector((0, hp["forward"] * H * 0.5, cz))], [P["neck"]["radius"] * H] * 3,
-                  [P["neck"]["radius"] * H] * 3, C, up_hint=(0, -1, 0))
+                            Vector((0, hp["forward"] * H * 0.5, cz))], [nr, ntr, ntr], [nr, ntr, ntr], C,
+                  up_hint=(0, -1, 0))
     rings = [G.superellipse_ring(0, 0, z * H, w * H, f * H, b * H, 2.4, 48) for z, w, f, b in P["torso"]["levels"]]
     torso = G.loft("_torso", rings, C)
     parts = [head, neck, torso]

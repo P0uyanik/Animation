@@ -9,6 +9,7 @@
 #include "model/character.h"
 #include "model/clip.h"
 #include "scene/asset_library.h"
+#include "scene/interaction.h"
 
 namespace plush {
 
@@ -42,6 +43,10 @@ struct CharacterDesc {
   vec3 position{0};
   float yawDeg = 0;
   LifeParams life;    // procedural breathing, weight shift, blinks, head follows gaze (off unless set)
+  Json dynamics;      // secondary-motion override of the package's "dynamics" block (null = as the package says)
+  // Without a base clip the shared "idle_relaxed" clip plays as the character's base layer (clip_layers.cpp, T-027).
+  // Scene JSON "autoIdle": false opts out.
+  bool autoIdle = true;
 };
 
 struct PropParent {
@@ -106,7 +111,10 @@ class SceneEvaluator {
   Result<void> load(const Scene& scene, const EvalOptions& options);
   std::shared_ptr<FrameSnapshot> evaluate(double frame) const;
   const Scene& scene() const { return scene_; }
-  Scene& mutableScene() { return scene_; }
+  Scene& mutableScene() {
+    resetDynamics();  // edits may change what drives the spring chains
+    return scene_;
+  }
   // Character data (for editors).
   struct CharacterInstance {
     CharacterAsset asset;
@@ -125,12 +133,17 @@ class SceneEvaluator {
   // Recompiles the scene's actions into generated tracks (called by load; call again after editing actions).
   Result<void> compileActions();
   // Bone frames (world space) of character c at a frame, after constraints.
+  // Includes secondary motion (spring chains, anim/secondary.h) when the character has it; poseOut stays kinematic.
   std::vector<mat4> characterGlobals(size_t c, double frame, Pose* poseOut = nullptr) const;
+  // Drops cached spring-chain states (done automatically on load and on mutableScene()).
+  void resetDynamics() const;
   mat4 objectWorld(size_t o, double frame) const;
   // Prop instance frames (world space). Prop parents are resolved in dependency order; parent switches are
   // rebased at their switch frame so random-access evaluation remains continuous.
   std::vector<mat4> propWorlds(double frame) const;
   mat4 propWorld(size_t prop, double frame) const;
+  // World position of a hand's palm contact point (interaction.h): the point that meets a prop's grasp socket.
+  vec3 handGripPoint(size_t c, char side, double frame) const;
 
  private:
   float waterHeight(size_t waterObject, vec2 localXZ, double frame) const;
@@ -163,6 +176,15 @@ class SceneEvaluator {
   float expressionWeight(size_t c, const std::string& morph, double frame) const;
  private:
   std::vector<ObjectDesc> authoredObjects_;  // objects as written, before actions set attachments and ripples
+  std::vector<PropDesc> authoredProps_;      // props as written, before interaction actions add parent switches
+  // Interaction actions (interaction.cpp): returns false for an action that is not a prop interaction.
+  Result<bool> compileInteraction(const Json& action, Clip& gen, InteractionContext& ctx);
+  Result<void> finishInteractions(Clip& gen, InteractionContext& ctx);
+  // Arm-body clearance (T-030, interaction.cpp): elbow poles and wrist-target pushes for every IK-driven arm.
+  void armClearancePass(Clip& gen, const InteractionContext& ctx);
+  void buildClearanceModels();
+  void writeArmPole(Clip& gen, size_t c, char side);
+  std::vector<BodyClearanceModel> clearance_;  // per character (built by compileActions)
   // Clip actions (type "clip", model/clip.h): per character, in start order; a "base" clip replaces the default pose
   // for the whole shot. Walk spans: frames where a walk owns the legs, hips and root.
   struct ClipLayer {
@@ -177,15 +199,28 @@ class SceneEvaluator {
     double clipFrame(double frame, double sceneFps) const;
   };
   std::vector<std::vector<ClipLayer>> clipLayers_;
+  // Automatic base idle (T-027): per character, the shared idle clip bound to it (prepared once by load); it plays
+  // only while the character has no base clip action, so recompiled actions decide (autoIdleLayer).
+  std::vector<std::optional<ClipLayer>> autoIdle_;
+  void prepareAutoIdle();
+  const ClipLayer* autoIdleLayer(size_t c) const;
+  std::vector<const ClipLayer*> activeClipLayers(size_t c) const;  // auto idle (if it applies) + the clip layers
   std::vector<std::vector<std::pair<double, double>>> walkSpans_;
   std::map<std::string, std::shared_ptr<const ClipData>> clipCache_;
   void applyClips(size_t c, double frame, Pose& pose, float& yawOffset) const;
+  // Clips, life, constraints: the pose before secondary motion.
+  std::vector<mat4> kinematicGlobals(size_t c, double frame, Pose* poseOut) const;
+  std::vector<std::shared_ptr<SpringChainSolver>> dynamics_;  // per character; null = no secondary motion
   void applyClipFingers(size_t c, double frame, Pose& pose) const;
  public:
   // Clip playback data of character c for a reference pose: the package's generated block if it matches the
   // reference version, else derived from the skeleton (same rules).
   RetargetData retargetData(size_t c, const ReferencePose& ref) const;
-  bool hasClipLayers(size_t c) const { return c < clipLayers_.size() && !clipLayers_[c].empty(); }
+  bool hasClipLayers(size_t c) const { return (c < clipLayers_.size() && !clipLayers_[c].empty()) || autoIdleLayer(c); }
+  // Arm-body clearance of character c's arm `side` at a frame (gap < 0: the arm is inside a body capsule), and the
+  // body model it is measured against (T-030, scene/interaction.h).
+  ArmClearance armClearanceAt(size_t c, char side, double frame) const;
+  const BodyClearanceModel* clearanceModel(size_t c) const { return c < clearance_.size() ? &clearance_[c] : nullptr; }
 };
 
 }  // namespace plush

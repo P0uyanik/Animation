@@ -1,0 +1,168 @@
+{
+ "label": "",
+ "render_dir": "<scratch>/final",
+ "checks": [
+  {
+   "name": "hair_back",
+   "slot": "M_hair",
+   "view": "sheet30_back",
+   "render_median_srgb": [
+    92.0,
+    54.0,
+    47.0
+   ],
+   "render_pixels": 24759,
+   "reference_median_srgb": [
+    93.0,
+    53.0,
+    43.0
+   ],
+   "reference_pixels": 8800,
+   "dE00": 1.55,
+   "dE00_luma_matched": 1.62,
+   "luma": [
+    61.6,
+    60.8
+   ],
+   "saturation": [
+    0.489,
+    0.538
+   ]
+  },
+  {
+   "name": "hair_front",
+   "slot": "M_hair",
+   "view": "sheet30_front",
+   "render_median_srgb": [
+    94.0,
+    56.0,
+    50.0
+   ],
+   "render_pixels": 12985,
+   "reference_median_srgb": [
+    107.0,
+    68.0,
+    55.0
+   ],
+   "reference_pixels": 4250,
+   "dE00": 5.03,
+   "dE00_luma_matched": 3.43,
+   "luma": [
+    63.6,
+    75.4
+   ],
+   "saturation": [
+    0.468,
+    0.486
+   ]
+  },
+  {
+   "name": "skin_front",
+   "slot": "M_skin_face",
+   "view": "sheet30_front",
+   "render_median_srgb": [
+    157.0,
+    129.0,
+    120.0
+   ],
+   "render_pixels": 8656,
+   "reference_median_srgb": [
+    198.0,
+    154.5,
+    139.0
+   ],
+   "reference_pixels": 1120,
+   "dE00": 10.5,
+   "dE00_luma_matched": 3.0,
+   "luma": [
+    134.3,
+    162.6
+   ],
+   "saturation": [
+    0.236,
+    0.298
+   ]
+  },
+  {
+   "name": "skin_back",
+   "slot": "M_skin_face",
+   "view": "sheet30_back",
+   "render_median_srgb": [
+    164.0,
+    134.0,
+    123.0
+   ],
+   "render_pixels": 2432,
+   "reference_median_srgb": [
+    215.0,
+    185.0,
+    172.0
+   ],
+   "reference_pixels": 1120,
+   "dE00": 15.09,
+   "dE00_luma_matched": 3.32,
+   "luma": [
+    139.6,
+    190.4
+   ],
+   "saturation": [
+    0.25,
+    0.2
+   ]
+  },
+  {
+   "name": "flower_front",
+   "slot": "M_hair_flower",
+   "view": "sheet30_front",
+   "render_median_srgb": [
+    119.0,
+    81.0,
+    67.0
+   ],
+   "render_pixels": 3354,
+   "reference_median_srgb": [
+    198.0,
+    138.0,
+    137.0
+   ],
+   "reference_pixels": 340,
+   "dE00": 26.27,
+   "dE00_luma_matched": 8.93,
+   "luma": [
+    88.1,
+    150.7
+   ],
+   "saturation": [
+    0.437,
+    0.308
+   ]
+  },
+  {
+   "name": "band_front",
+   "slot": "M_hair_band",
+   "view": "sheet30_front",
+   "render_median_srgb": [
+    121.0,
+    107.0,
+    101.0
+   ],
+   "render_pixels": 225,
+   "reference_median_srgb": [
+    128.0,
+    121.5,
+    126.5
+   ],
+   "reference_pixels": 140,
+   "dE00": 8.37,
+   "dE00_luma_matched": 6.89,
+   "luma": [
+    109.5,
+    123.2
+   ],
+   "saturation": [
+    0.165,
+    0.051
+   ]
+  }
+ ]
+}

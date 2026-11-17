@@ -1,4 +1,4 @@
-"""Render the T-015 sphere/patch swatch sheet in Cycles.
+"""Render the T-015 sphere/patch swatch sheet in Cycles or EEVEE.
 
 blender -b --factory-startup -P pipeline/charsys/materials/render_swatches.py -- \
   --out docs/evaluation/materials/T-015/swatch_sheet.png \
@@ -30,6 +30,7 @@ from materials import builder as MATERIALS  # noqa: E402
 import compare_harness as HARNESS  # noqa: E402
 import geom as G  # noqa: E402
 import render_calibration as RC  # noqa: E402
+import render_engine  # noqa: E402
 
 
 def parse():
@@ -39,8 +40,9 @@ def parse():
     parser.add_argument("--metadata", required=True)
     parser.add_argument("--width", type=int, default=480)
     parser.add_argument("--height", type=int, default=576,
-                        help="height of each Cycles render; the evidence sheet stacks all ten renders")
+                        help="height of each render; the evidence sheet stacks all ten renders")
     parser.add_argument("--samples", type=int, default=16)
+    parser.add_argument("--engine", choices=("cycles", "eevee"), default="cycles")
     parser.add_argument("--exposure", type=float, default=0.0)
     parser.add_argument("--view-transform", default="AgX")
     parser.add_argument("--save-blend", default="")
@@ -48,6 +50,9 @@ def parse():
                         help="'harness' (compare_harness.studio_lighting + AgX, the T-015 setup) or a render_calibration profile")
     parser.add_argument("--fibres-lod", choices=("close", "wide", "off"), default="close")
     parser.add_argument("--presets", default="", help="optional comma-separated subset for calibration probes")
+    parser.add_argument("--denoiser", choices=("oidn", "off"), default="oidn",
+                        help="'off' renders without a denoiser (use enough --samples to keep Monte Carlo noise "
+                             "below the fuzz floor)")
     return parser.parse_args(argv)
 
 
@@ -111,6 +116,26 @@ def roi(scene, camera, obj, width, height, fraction=0.5, offset=(0.0, 0.0)):
             round(cx + side * 0.5), round(cy + side * 0.5)]
 
 
+def square_roi(scene, camera, obj, width, height, side_px, offset_m):
+    """Square ROI of ``side_px`` centred at the object's projected centre plus ``offset_m`` (screen x right, y up)."""
+    centre = obj.matrix_world.translation
+    point = world_to_camera_view(scene, camera, centre + Vector((offset_m[0], 0.0, offset_m[1])))
+    cx, cy = point.x * width, (1 - point.y) * height
+    return [round(cx - side_px * 0.5), round(cy - side_px * 0.5),
+            round(cx + side_px * 0.5), round(cy + side_px * 0.5)]
+
+
+# VISUAL_TARGET "Common measurement setup" step 3: three unobstructed patches, report the median. Fuzz uses 64 x 64 px
+# flat-lit patches at H = 256 (left / centre / right of the flat swatch). Sheen needs form shading for its 31 px
+# form-removal blur, so its patches sit fully inside the key-lit side of the sphere (upper-left, left, top; centres at
+# 0.55 R so every corner stays on the surface - the T-019 single ROI reached past the silhouette into the backdrop).
+FUZZ_PATCH_OFFSETS_M = ((-0.13, 0.0), (0.0, 0.0), (0.13, 0.0))
+SHEEN_PATCH_ANGLES_DEG = (135.0, 180.0, 90.0)
+SHEEN_PATCH_RADIUS_FRACTION = 0.55
+FUZZ_PATCH_PX_AT_H256 = 64
+SHEEN_PATCH_PX_AT_H256 = 72
+
+
 def _png_chunk(kind, payload):
     return struct.pack(">I", len(payload)) + kind + payload + struct.pack(">I", binascii.crc32(kind + payload) & 0xffffffff)
 
@@ -159,13 +184,14 @@ def main():
     else:
         rig = RC.apply(scene, RC.load(args.lighting))
 
-    scene.render.engine = "CYCLES"
-    scene.cycles.device = "CPU"
-    scene.cycles.samples = args.samples
-    scene.cycles.use_denoising = True
-    scene.cycles.denoiser = "OPENIMAGEDENOISE"
+    engine_settings = render_engine.configure(scene, args.engine, args.samples, cycles_device="CPU",
+                                               cycles_denoiser="OPENIMAGEDENOISE")
+    if args.engine == "cycles":
+        # T-034: --denoiser off renders the raw Cycles estimate (OIDN survival metrics).
+        scene.cycles.use_denoising = args.denoiser == "oidn"
+        engine_settings["denoising"] = scene.cycles.use_denoising
     if max(args.width, args.height) > 640:
-        raise SystemExit("each Cycles swatch render must be <=640 px in both dimensions")
+        raise SystemExit("each swatch render must be <=640 px in both dimensions")
     scene.render.resolution_x = args.width
     scene.render.resolution_y = args.height
     scene.render.resolution_percentage = 100
@@ -241,13 +267,16 @@ def main():
         "height": args.height * len(entries),
         "render_width": args.width,
         "render_height": args.height,
-        "max_cycles_render_dimension_px": max(args.width, args.height),
+        ("max_cycles_render_dimension_px" if args.engine == "cycles" else
+         "max_eevee_render_dimension_px"): max(args.width, args.height),
         "samples": args.samples,
         "exposure": scene.view_settings.exposure,
         "view_transform": requested_transform,
-        "render_engine": "CYCLES",
-        "device": "CPU",
-        "denoiser": "OPENIMAGEDENOISE",
+        "render_engine": engine_settings["blender_engine"],
+        "engine_settings": engine_settings,
+        "device": "CPU" if args.engine == "cycles" else "N/A",
+        "denoiser": (("OPENIMAGEDENOISE" if args.denoiser == "oidn" else "none")
+                     if args.engine == "cycles" else "OFF"),
         "studio_light": ("pipeline/blender/compare_harness.py:studio_lighting" if rig is None else
                          "pipeline/charsys/render_calibration.json:" + args.lighting),
         "reference_size_m": library["reference_size_m"],
@@ -266,6 +295,17 @@ def main():
         patch_roi = roi(scene, camera, entry["patch"], args.width, args.height)
         sheen_roi = roi(scene, camera, entry["sphere"], args.width, args.height, 0.4, (-0.22, -0.22))
         neutral_roi = roi(scene, camera, entry["neutral"], args.width, args.height, 0.72)
+        px_per_m = args.width / 0.6
+        h_px = library["reference_size_m"] * px_per_m
+        fuzz_side = FUZZ_PATCH_PX_AT_H256 * h_px / 256.0
+        sheen_side = SHEEN_PATCH_PX_AT_H256 * h_px / 256.0
+        sphere_r = 0.125
+        fuzz_rois = [square_roi(scene, camera, entry["patch"], args.width, args.height, fuzz_side, off)
+                     for off in FUZZ_PATCH_OFFSETS_M]
+        sheen_rois = [square_roi(scene, camera, entry["sphere"], args.width, args.height, sheen_side,
+                                 (math.cos(math.radians(a)) * SHEEN_PATCH_RADIUS_FRACTION * sphere_r,
+                                  math.sin(math.radians(a)) * SHEEN_PATCH_RADIUS_FRACTION * sphere_r))
+                      for a in SHEEN_PATCH_ANGLES_DEG]
         sheet_offset = index * args.height
         frame_path = os.path.join(frame_dir, f"{index:02d}_{entry['preset'].replace('/', '_').replace(' ', '_')}.png")
         scene.render.filepath = frame_path
@@ -282,6 +322,8 @@ def main():
                              sheen_roi[2], sheen_roi[3] + sheet_offset],
             "neutral_roi_px": [neutral_roi[0], neutral_roi[1] + sheet_offset,
                                neutral_roi[2], neutral_roi[3] + sheet_offset],
+            "fuzz_rois_px": [[r[0], r[1] + sheet_offset, r[2], r[3] + sheet_offset] for r in fuzz_rois],
+            "sheen_rois_px": [[r[0], r[1] + sheet_offset, r[2], r[3] + sheet_offset] for r in sheen_rois],
             "projected_reference_px": metadata["projected_reference_px"],
         })
         for obj in entry["objects"]:

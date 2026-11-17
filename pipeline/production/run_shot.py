@@ -1,7 +1,7 @@
 """Runs one shot end to end: character sources -> engine packages -> C++ engine animation (bake) -> Blender render.
 
     python3 pipeline/production/run_shot.py --shot episodes/<ep>/shots/<shot>/shot.scene.json --blender <blender>
-        [--frames A-B] [--resolution W H] [--samples N] [--blend-only] [--video]
+        [--frames A-B] [--resolution W H] [--samples N] [--engine cycles|eevee] [--blend-only] [--video]
         [--stages prepare,bake,render,encode] [--run-dir <run-id or path>]
 
 The shot file is an engine scene (plush.scene) plus a "production" block, the only place a shot names its cast's
@@ -71,8 +71,11 @@ def sha256(path):
 
 def run(cmd, log):
     t = time.time()
-    p = subprocess.run(cmd, capture_output=True, text=True)
-    open(log, "w").write(p.stdout + p.stderr)
+    # Blender can emit UTF-8 diagnostics that are invalid in the Windows
+    # process code page. Logs must never turn a successful render into a
+    # UnicodeDecodeError.
+    p = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace")
+    open(log, "w", encoding="utf-8", errors="replace").write(p.stdout + p.stderr)
     if p.returncode != 0:
         raise SystemExit(f"step failed ({p.returncode}): {' '.join(cmd[:4])} ... see {log}\n{(p.stdout + p.stderr)[-1500:]}")
     return round(time.time() - t, 1)
@@ -156,7 +159,7 @@ def run_streamed(cmd, log, poll=None):
     """Like run(), but the log is written while the step runs (Studio shows its tail) and `poll` is called twice a
     second (frame progress). On cancel the step is stopped: SIGTERM, then SIGKILL after 10 s."""
     t = time.time()
-    with open(log, "w") as lf:
+    with open(log, "w", encoding="utf-8", errors="replace") as lf:
         p = subprocess.Popen(cmd, stdout=lf, stderr=subprocess.STDOUT, text=True)
         try:
             while p.poll() is None:
@@ -175,7 +178,7 @@ def run_streamed(cmd, log, poll=None):
     if poll:
         poll()
     if p.returncode != 0:
-        text = open(log).read()
+        text = open(log, encoding="utf-8", errors="replace").read()
         raise SystemExit(f"step failed ({p.returncode}): {' '.join(cmd[:4])} ... see {log}\n{text[-1500:]}")
     return round(time.time() - t, 1)
 
@@ -260,7 +263,10 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--shot", required=True)
     ap.add_argument("--blender")
-    ap.add_argument("--engine", default=os.path.join(ROOT, "build", "apps", "render-cli", "plush-render"))
+    ap.add_argument("--engine", choices=("cycles", "eevee"), default="cycles",
+                    help="Blender render engine (default: cycles)")
+    ap.add_argument("--bake-engine", default=os.path.join(ROOT, "build", "apps", "render-cli", "plush-render"),
+                    help="path to the plush-render executable used by the bake stage")
     ap.add_argument("--frames", default="")
     ap.add_argument("--resolution", type=int, nargs=2)
     ap.add_argument("--samples", type=int)
@@ -310,6 +316,7 @@ def main():
         "shot": os.path.relpath(shot_path, ROOT), "run_dir": run_out, "pid": os.getpid(), "state": "running",
         "stage": stages[0] if stages else "", "stages": stages, "stages_done": [], "frames": [fa, fb],
         "frames_done": 0, "frames_total": fb - fa + 1, "resolution": eff_res, "samples": a.samples or r.get("samples", 32),
+        "engine": a.engine,
         "light_scale": r.get("light_scale", 1.0), "exposure_ev": shot.get("render", {}).get("exposureEV", 0.0),
         "blend_only": a.blend_only, "error": "", "started": time.strftime("%Y-%m-%dT%H:%M:%S")})
     old = {s: signal.signal(s, _on_signal) for s in (signal.SIGTERM, signal.SIGINT)}
@@ -368,7 +375,7 @@ def stages_run(a, shot, shot_path, out, run_out, logs, stages, encode, status, f
     bake = os.path.join(run_out, "bake.json")
     if "bake" in stages:
         stage("bake")
-        cmd = [a.engine, resolved, "--bake", bake] + (["--frames", a.frames] if a.frames else [])
+        cmd = [a.bake_engine, resolved, "--bake", bake] + (["--frames", a.frames] if a.frames else [])
         rep["steps"]["engine_bake_s"] = step(cmd, os.path.join(logs, "bake.log"))
         done.append("bake")
     # 4. Blender render of the baked animation
@@ -381,6 +388,9 @@ def stages_run(a, shot, shot_path, out, run_out, logs, stages, encode, status, f
                "--cast", os.path.join(out, "cast.json"), "--out", render_dir,
                "--samples", str(a.samples or r.get("samples", 32)), "--light-scale", str(r.get("light_scale", 1.0))]
         cmd += (["--resolution", str(res[0]), str(res[1])] if res else []) + (["--frames", a.frames] if a.frames else [])
+        # Omit the default so the pre-T-020 Cycles invocation is unchanged.
+        # shot_render.py itself also defaults to Cycles.
+        cmd += ["--engine", "eevee"] if a.engine == "eevee" else []
         cmd += ["--blend-only"] if a.blend_only else []
         progress = {"n": -1}
 

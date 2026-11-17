@@ -1,0 +1,15 @@
+gaze boy: limits {'maxUpDeg': 20.0, 'maxDownDeg': 25.0, 'maxLeftDeg': 30.0, 'maxRightDeg': 30.0} max {"eye.L": {"up": 0.0, "down": 5.9, "left": 29.97, "right": 0.0}, "eye.R": {"up": 0.0, "down": 4.76, "left": 29.99, "right": 0.0}} off-camera max 66.99 -> PASS
+     head pitch (world) min 2.32 max 5.67
+gaze girl: limits {'maxUpDeg': 20.0, 'maxDownDeg': 25.0, 'maxLeftDeg': 30.0, 'maxRightDeg': 30.0} max {"eye.L": {"up": 0.0, "down": 3.59, "left": 0.0, "right": 30.0}, "eye.R": {"up": 0.0, "down": 4.39, "left": 0.0, "right": 29.98}} off-camera max 63.24 -> PASS
+     head pitch (world) min 2.89 max 7.82
+smooth boy: max 16.02 deg/frame, worst {"ratio": 0.8, "frame": 2, "role": "shin.L", "change_deg": 0.03824067672625492, "limit_deg": 0.04780084590781865, "boundary_window": false, "sources": ["base"]} -> PASS
+smooth girl: max 19.13 deg/frame, worst {"ratio": 0.8, "frame": 5, "role": "upperArm.R", "change_deg": 0.642719237350237, "limit_deg": 0.8033990466877962, "boundary_window": true, "sources": ["base", "2_clip_wave"]} -> PASS
+principles boy arm.L: ease 0.71 joint ease - arc - anticipation no settle no micro 1.33 deg / 5.10 mm
+principles boy arm.R: ease 0.41 joint ease 0.38 arc 0.269 anticipation yes settle yes micro 1.33 deg / 5.01 mm
+principles boy trunk: ease 0.83 joint ease - arc - anticipation no settle no micro 0.43 deg / 2.09 mm
+principles boy: symmetry index 0.293, trunk lateral tilt 0.71 deg
+principles girl arm.L: ease 0.31 joint ease 0.34 arc 0.169 anticipation yes settle yes micro - deg / - mm
+principles girl arm.R: ease 1.79 joint ease - arc - anticipation no settle no micro - deg / - mm
+principles girl trunk: ease 0.54 joint ease - arc - anticipation no settle no micro - deg / - mm
+principles girl: symmetry index 0.014, trunk lateral tilt 1.42 deg
+{"gaze": true, "smoothness": true}

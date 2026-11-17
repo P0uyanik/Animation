@@ -1,0 +1,95 @@
+{
+ "shot": "episodes/e906_acting_test/shots/s010/shot.scene.json",
+ "steps": {
+  "build_girl_s": 91.3,
+  "export_girl_s": 8.0,
+  "engine_bake_s": 0.5,
+  "blender_s": 136.7
+ },
+ "cast": {
+  "boy": {
+   "character_id": "boy_yellow_hoodie",
+   "status": "unpublished build from spec (experimental; not approved)",
+   "master_sha256": "d170f40edaf1c8672468bc569def396b844be1a9e26c38a4d05a8c6fb0b99f3d",
+   "package": "episodes/e906_acting_test/shots/s010/build/packages/boy_67254e24121c54fe"
+  },
+  "girl": {
+   "character_id": "girl_auburn_bun_glasses",
+   "status": "unpublished build from spec (experimental; not approved)",
+   "master_sha256": "b4f57523eac0713462af5e99c402b60c118f9088adcfc8eb9c6b4d65a9abe46e",
+   "package": "episodes/e906_acting_test/shots/s010/build/packages/girl_8bfb54c97fb8e1b1"
+  }
+ },
+ "prepare": {
+  "all_cached": false,
+  "cast": {
+   "boy": {
+    "master_state": "cached",
+    "package_state": "cached"
+   },
+   "girl": {
+    "master_state": "built",
+    "package_state": "built"
+   }
+  }
+ },
+ "render": {
+  "bake": "/home/user/Animation/episodes/e906_acting_test/shots/s010/build/runs/consolidation_final/bake.json",
+  "frames": [
+   1,
+   75
+  ],
+  "characters": {
+   "boy": {
+    "master": "/home/user/Animation/episodes/e906_acting_test/shots/s010/build/masters/boy_c9f6eba9a647f627/boy_yellow_hoodie_master.blend",
+    "baked_bones": 73,
+    "facial_controls": 4,
+    "unmapped_morphs": [],
+    "bones_left_to_drivers": [],
+    "max_bone_error_mm": 0.0006,
+    "max_bone_error_deg": 0.0,
+    "eye_objects": [
+     "eye.L",
+     "lid_lower.L",
+     "eye.R",
+     "lid_lower.R"
+    ],
+    "eye_socket_max_mm": 0.039,
+    "eye_socket_worst_frame": 63
+   },
+   "girl": {
+    "master": "/home/user/Animation/episodes/e906_acting_test/shots/s010/build/masters/girl_58d46f6de21d03d6/girl_auburn_bun_glasses_master.blend",
+    "baked_bones": 239,
+    "facial_controls": 30,
+    "unmapped_morphs": [],
+    "bones_left_to_drivers": [
+     "DEF-jaw"
+    ],
+    "max_bone_error_mm": 0.0015,
+    "max_bone_error_deg": 0.0,
+    "eye_objects": [
+     "eye.L.001",
+     "eye.R.001"
+    ],
+    "eye_socket_max_mm": 0.0004,
+    "eye_socket_worst_frame": 16
+   }
+  },
+  "not_rendered": [],
+  "world": {
+   "lights": 2,
+   "objects": 2
+  },
+  "props": {
+   "props": {},
+   "unknown_material_presets": []
+  },
+  "setup_s": 135.8,
+  "resolution": [
+   640,
+   360
+  ],
+  "samples": 16,
+  "engine": "cycles"
+ }
+}

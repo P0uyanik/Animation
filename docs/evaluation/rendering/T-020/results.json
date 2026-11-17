@@ -1,0 +1,42 @@
+{
+  "task": "T-020",
+  "date": "2026-11-16",
+  "blender": "5.3.0",
+  "device": "CPU",
+  "plush_render_built": false,
+  "comparison": {
+    "resolution": [320, 180],
+    "samples": 8,
+    "cycles_render_s": 0.9,
+    "eevee_render_s": 15.2,
+    "eevee_cold_start": true,
+    "image": "eevee_vs_cycles.png",
+    "image_sha256": "18c62ce192acc073d687e157c70b1f48acfaf8150b779c6cc8351b604afefd8d"
+  },
+  "cycles_compatibility": {
+    "fixture": "fleece swatch, 320x384, 8 samples, fibres off",
+    "baseline_source": "git archive HEAD before T-020 working-tree changes",
+    "baseline_sha256": "71d91ac3b5dd0a34f84e4caa017b2cec2c84f78b1e214b8fbd87cb787ea05155",
+    "omitted_engine_sha256": "71d91ac3b5dd0a34f84e4caa017b2cec2c84f78b1e214b8fbd87cb787ea05155",
+    "byte_identical": true
+  },
+  "eevee_settings": {
+    "blender_engine": "BLENDER_EEVEE",
+    "shadow_rays": 4,
+    "soft_shadows": true,
+    "fast_gi": true,
+    "fast_gi_method": "AMBIENT_OCCLUSION_ONLY",
+    "bloom": false
+  },
+  "checks": {
+    "syntax": "PASS",
+    "shared_settings": "PASS",
+    "run_shot_cycles": "PASS",
+    "run_shot_eevee": "PASS",
+    "shot_render_cycles": "PASS",
+    "shot_render_eevee": "PASS",
+    "swatch_eevee": "PASS",
+    "turnaround_eevee": "PASS",
+    "cycles_byte_identical": "PASS"
+  }
+}

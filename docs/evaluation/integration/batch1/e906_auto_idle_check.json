@@ -1,0 +1,96 @@
+{
+ "boy": {
+  "hips": {
+   "max_skin_matrix_diff": 0.0195,
+   "range_with": 0.054,
+   "range_without": 0.0595
+  },
+  "spine": {
+   "max_skin_matrix_diff": 0.0218,
+   "range_with": 0.0437,
+   "range_without": 0.0547
+  },
+  "chest": {
+   "max_skin_matrix_diff": 0.0242,
+   "range_with": 0.0799,
+   "range_without": 0.0595
+  },
+  "neck": {
+   "max_skin_matrix_diff": 0.0652,
+   "range_with": 0.0523,
+   "range_without": 0.0438
+  },
+  "head": {
+   "max_skin_matrix_diff": 0.0337,
+   "range_with": 0.0635,
+   "range_without": 0.0584
+  },
+  "upperArm.L": {
+   "max_skin_matrix_diff": 0.5375,
+   "range_with": 0.0866,
+   "range_without": 0.0595
+  },
+  "upperArm.R": {
+   "max_skin_matrix_diff": 0.5049,
+   "range_with": 1.0622,
+   "range_without": 1.0237
+  },
+  "hand.L": {
+   "max_skin_matrix_diff": 0.591,
+   "range_with": 0.0844,
+   "range_without": 0.0595
+  },
+  "hand.R": {
+   "max_skin_matrix_diff": 0.6936,
+   "range_with": 1.4716,
+   "range_without": 1.3981
+  }
+ },
+ "girl": {
+  "hips": {
+   "max_skin_matrix_diff": 0.0222,
+   "range_with": 0.0883,
+   "range_without": 0.0662
+  },
+  "spine": {
+   "max_skin_matrix_diff": 0.0093,
+   "range_with": 0.0738,
+   "range_without": 0.0646
+  },
+  "chest": {
+   "max_skin_matrix_diff": 0.0297,
+   "range_with": 0.1354,
+   "range_without": 0.1057
+  },
+  "neck": {
+   "max_skin_matrix_diff": 0.0177,
+   "range_with": 0.0998,
+   "range_without": 0.0718
+  },
+  "head": {
+   "max_skin_matrix_diff": 0.0353,
+   "range_with": 0.0996,
+   "range_without": 0.0716
+  },
+  "upperArm.L": {
+   "max_skin_matrix_diff": 0.3268,
+   "range_with": 1.4492,
+   "range_without": 1.4833
+  },
+  "upperArm.R": {
+   "max_skin_matrix_diff": 0.2958,
+   "range_with": 0.1382,
+   "range_without": 0.1057
+  },
+  "hand.L": {
+   "max_skin_matrix_diff": 0.3848,
+   "range_with": 1.8403,
+   "range_without": 1.915
+  },
+  "hand.R": {
+   "max_skin_matrix_diff": 0.4285,
+   "range_with": 0.1448,
+   "range_without": 0.1057
+  }
+ }
+}

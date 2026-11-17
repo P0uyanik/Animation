@@ -25,6 +25,22 @@ from mathutils import Vector
 from materials import builder as MATERIALS
 
 GROUPS = ("crown", "centre", "top", "side", "back")
+HAIR_MASS_GRID_M = 1e-4
+
+
+def _bake_hair_mass(G, ob):
+    """Bake Blender's threaded legacy noise, then remove sub-grid float drift.
+
+    The maximum coordinate change is 0.05 mm, versus 8 mm of mass noise, so
+    the appearance is unchanged while 0.01 mm fingerprints stop flapping.
+    """
+    if ob.modifiers:
+        G.apply_mods(ob)
+    grid = HAIR_MASS_GRID_M
+    for vertex in ob.data.vertices:
+        vertex.co = tuple(round(float(axis) / grid) * grid for axis in vertex.co)
+    ob.data.update()
+    return ob
 
 
 def build_hair(C, M, head, B, params=None, seed=11):
@@ -56,6 +72,7 @@ def build_hair(C, M, head, B, params=None, seed=11):
     bm.to_mesh(mass.data)
     bm.free()
     G.displace_noise(mass, float(felt.get("mass_amp_m", 0.008)), float(felt.get("mass_scale", 0.035)), subdiv=1)
+    _bake_hair_mass(G, mass)
     clumps = []
     stats = {"clumps": 0, "dropped": 0, "spikes": 0}
 
@@ -326,6 +343,7 @@ def build_hair_v2(C, M, head, B, params=None, seed=11):
         mass = cap
     elif P.get("scalp_cap"):
         mass = G.join([mass, scalp_cap(C, head, P["scalp_cap"])], "hair_mass")
+    _bake_hair_mass(G, mass)
     locks, parts = [], []
 
     R4 = random.Random(seed + 15485863)  # lock-shape variation only (keeps older layouts reproducible)
@@ -416,7 +434,12 @@ def build_hair_v2(C, M, head, B, params=None, seed=11):
         lock(f"hair.crown.{k}", root, mid, tip, R.uniform(*f["width"]) * j["wid"], R.uniform(*f["thick"]) * j["wid"], n,
              f["tip_frac"], f["split"], vary=f.get("shape_variation", True))
     # Families of locks lying close over the base mass.
-    for name in [k for k in fam if k != "crown"]:
+    # Preserve the historical default-family order (and therefore its seeded
+    # random draws), but make any spec-added families independent of JSON/dict
+    # insertion order.
+    family_names = [k for k in FAMILIES_V2 if k != "crown" and k in fam]
+    family_names += sorted(set(fam) - set(FAMILIES_V2) - {"crown"})
+    for name in family_names:
         f = fam[name]
         sides = (1, -1) if f.get("mirror") else (1,)
         for sx in sides:

@@ -11,14 +11,17 @@ Production geometry names a source file and object:
 ```
 
 The path must end in `.blend` or `.glb`. Small fixtures may instead use a `box`, `sphere`, or `cylinder` primitive,
-as in `content/assets/cup.asset.json` and `content/assets/paper_sheet.asset.json`.
+as in `content/assets/cup.asset.json`, `content/assets/felt_cup.asset.json` and `content/assets/paper_sheet.asset.json`.
+Primitive frames: a box and a sphere are centred on the origin; a cylinder stands on its base at the origin with its
+axis along +Y (so a `place` socket at `[0, 0, 0]` is the bottom). A cylinder may add the render-only hints
+`"open_top": true` and `"wall": <metres>` (a vessel: no top cap, solidified wall); the engine ignores them.
 
 Sockets are named local transforms with `translation`, `rotationDeg` (XYZ; X applied first), and per-axis `scale`.
 Names such as `grip`, `place`, and `contact` carry no hard-coded behavior. An optional `collision` is a `box`
 (`size`), `sphere` (`radius`), or capsule (`radius` and tip-to-tip `height`); it may have its own `transform`.
 
-Scenes place instances in `props` (geometry rendering/import is intentionally deferred; attachment transforms are
-evaluated by `SceneEvaluator`):
+Scenes place instances in `props` (attachment transforms are evaluated by `SceneEvaluator`; the Blender shot render
+draws primitive meshes, file meshes are not imported yet):
 
 ```json
 "props": [
@@ -77,3 +80,22 @@ matrix (16 numbers, engine axes/metres):
 ```
 
 For a scene with no props the block is omitted, so its bake JSON is unchanged.
+
+## Blender render (T-022)
+
+`pipeline/charsys/shot_render.py` creates one object per prop name found in the bake's `props` blocks. It reads the
+prop's asset id from the baked scene (`scene_path`) and the asset from the nearest `content/assets` above it, builds the
+primitive mesh in Blender axes and assigns the first `material_presets` entry through the shared material library
+(`pipeline/charsys/materials/presets.json`, e.g. `felt`). A preset name the library does not have gets a plain
+Principled material and is listed under `props.unknown_material_presets` in `shot_render.json` (the older fixtures
+`ceramic_glaze` / `paper_white` are such names). The object is keyed on every frame from the baked world matrix.
+
+## Hand interaction (T-022)
+
+The interaction actions (`grasp`/`reach` with `prop`, `hold`, `place`, `handover`; see
+`docs/ACTIONS_AND_DIRECTOR.md`) use a prop's sockets as grasp and place points. The grasp size comes from the
+primitive mesh (or the collision proxy for file meshes): a socket on a cylinder's side gives a cylindrical grasp of
+the cylinder's radius around its axis, a socket on a box face a grasp across that face, a sphere a spherical grasp.
+They generate the same `parentSwitch` entries and `<prop>.parent.weight` keys described above, at the contact
+frames. `content/assets/felt_cup.asset.json` has two grips, `grip` (upper, local +x) and `grip_b` (lower, local -x),
+so two hands can hold it at once during a hand-over.

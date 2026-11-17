@@ -20,6 +20,39 @@ python3 tools/fidelity/run.py --character <id> --build <master.blend | spec.json
     [--reference-index <json>]   # experiments only (for example, a trial camera yaw)
 ```
 
+## T-023 quality-gate integration (T-037)
+
+Character fidelity is an optional check inside the Blender tier of `tools/check_all.py`; unrelated changes do not
+run it. The gate runs `tools/fidelity/run.py` once for every affected fidelity-enabled character when any of these
+change relative to the gate's comparison base:
+
+- that character's `assets/characters/<id>/spec/` data (including overrides);
+- that character's `assets/characters/<id>/references/` data, including annotations; or
+- a shared body, face, groom/hair, garment, material, build-geometry, or render-calibration generator under
+  `pipeline/charsys/`.
+
+The guarded main-branch baseline is
+`docs/evaluation/characters/fidelity_baseline.json`. It records each character's score, exact build and overrides,
+and common render settings. The Blender-tier line in the at-most-ten-line summary reports the measured score and
+signed delta from that baseline. A score increase is informational. A drop of exactly 2.0 points is allowed; a drop
+**greater than 2.0 points fails** with `visual regression, needs owner review`. This automated rule does not change
+the binding rule above: reviewers still inspect the sheets.
+
+Each run writes `fidelity.json`, `report.md`, renders, and `sheets/*.png` below
+`build/check-all/<phase>/fidelity/<character>/`. The quality-gate artifact upload includes the side-by-side per-view
+sheets and `overview.png` on both success and failure.
+
+The baseline is a guarded path. It may be changed only in an explicit Supervisor-approved commit carrying the exact
+trailer:
+
+```
+Supervisor-Approved: docs/evaluation/characters/fidelity_baseline.json
+```
+
+Do not update the baseline as part of an ordinary character or generator change, and do not use an increase to
+auto-approve visual quality. A baseline update records an owner-reviewed decision; it does not alter the fidelity
+metrics, weights, or tolerances.
+
 - **`--build`** takes either a built `<id>_master.blend` or a spec `.json`. A spec is first built with
   `pipeline/charsys/build_character.py` (plus any `--override` files) into `<out>/build`. When
   `fidelity_index.json` asks for the `compare` variant (pose with the arms lowered), the tool uses the
@@ -221,6 +254,8 @@ listed as `render_regions_not_annotated`.
   - texture statistics;
   - polygon tracing and rasterisation;
   - byte-identical analysis output.
+- `python3 tools/fidelity/tests/test_ci.py` tests affected-character selection and the score-delta boundary,
+  including that a 2.0-point drop passes and any larger drop fails with the owner-review reason.
 - The analysis is deterministic: `--renders` on the same renders gives byte-identical `fidelity.json`, `report.md`
   and sheets (checked on both T-032 runs). The renders themselves come from Cycles (32 samples, OIDN). See the T-032
   README for the render repeatability measured on this machine.

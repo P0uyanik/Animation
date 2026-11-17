@@ -1,0 +1,100 @@
+{
+ "what": "girl 0.9.0 (same master), fidelity tool, 5 views, 640 px, Cycles 32 spp; only the T-031b Front fill differs (both with T-026 key/fill and key angle 28 deg)",
+ "decision": "Front fill not included: face skin not improved (dE00 3.49 -> 3.57, dL -0.99 -> +3.41) and body/garments worse",
+ "with_front": {
+  "score": 64.4828,
+  "subscores": {
+   "colour": 0.6413,
+   "landmarks": 0.7281,
+   "proportions": 0.6947,
+   "regions": 0.4483,
+   "silhouette": 0.6413,
+   "texture": 0.7125
+  },
+  "colour": {
+   "garment:blouse": {
+    "dL_median": 2.2247,
+    "de00_median": 9.2523,
+    "de00_luma_matched_median": 1.9243
+   },
+   "garment:shorts": {
+    "dL_median": 4.5131,
+    "de00_median": 5.6438,
+    "de00_luma_matched_median": 1.3943
+   },
+   "garment:vest": {
+    "dL_median": 5.3993,
+    "de00_median": 5.1932,
+    "de00_luma_matched_median": 1.7324
+   },
+   "hair": {
+    "dL_median": 0.8392,
+    "de00_median": 2.4866,
+    "de00_luma_matched_median": 2.0126
+   },
+   "hair_accessory": {
+    "dL_median": 0.0105,
+    "de00_median": 20.5423,
+    "de00_luma_matched_median": 12.4342
+   },
+   "skin_face": {
+    "dL_median": 3.4124,
+    "de00_median": 3.567,
+    "de00_luma_matched_median": 1.2647
+   },
+   "skin_limbs": {
+    "dL_median": 4.1605,
+    "de00_median": 3.5362,
+    "de00_luma_matched_median": 2.5731
+   }
+  }
+ },
+ "without_front": {
+  "score": 65.4989,
+  "subscores": {
+   "colour": 0.7167,
+   "landmarks": 0.7281,
+   "proportions": 0.6947,
+   "regions": 0.4483,
+   "silhouette": 0.6413,
+   "texture": 0.7009
+  },
+  "colour": {
+   "garment:blouse": {
+    "dL_median": -2.4173,
+    "de00_median": 5.4813,
+    "de00_luma_matched_median": 1.1159
+   },
+   "garment:shorts": {
+    "dL_median": 1.2486,
+    "de00_median": 2.6207,
+    "de00_luma_matched_median": 0.6942
+   },
+   "garment:vest": {
+    "dL_median": 1.7263,
+    "de00_median": 2.7589,
+    "de00_luma_matched_median": 2.0361
+   },
+   "hair": {
+    "dL_median": -1.2904,
+    "de00_median": 2.0336,
+    "de00_luma_matched_median": 1.7917
+   },
+   "hair_accessory": {
+    "dL_median": -3.591,
+    "de00_median": 20.5734,
+    "de00_luma_matched_median": 11.4403
+   },
+   "skin_face": {
+    "dL_median": -0.987,
+    "de00_median": 3.4881,
+    "de00_luma_matched_median": 0.9852
+   },
+   "skin_limbs": {
+    "dL_median": -0.3889,
+    "de00_median": 2.7086,
+    "de00_luma_matched_median": 1.4321
+   }
+  }
+ }
+}

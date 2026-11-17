@@ -1,0 +1,111 @@
+{
+ "limits": {
+  "boundary_factor": 1.25,
+  "max_deg_per_frame": 12.0
+ },
+ "sources": {
+  "base": {
+   "character_span": null,
+   "interior_max_deg": {
+    "boy": {
+     "upperArm.L": 0.28408998193566387,
+     "forearm.L": 0.34884471463816036,
+     "upperArm.R": 0.28434904760285534,
+     "forearm.R": 0.35585649200929376,
+     "thigh.L": 0.05591604293660233,
+     "shin.L": 0.053800899478373916,
+     "thigh.R": 0.04376760215040226,
+     "shin.R": 0.043767421381608135,
+     "hips": 0.04110971638547477,
+     "spine": 0.09239137362925338,
+     "chest": 0.33789030154481325,
+     "neck": 1.6913450908439918,
+     "head": 6.48845503919597
+    },
+    "girl": {
+     "upperArm.L": 0.2840423184470694,
+     "forearm.L": 0.3312890976692335,
+     "upperArm.R": 0.285425779288,
+     "forearm.R": 0.34276328115828475,
+     "thigh.L": 0.05508009437064893,
+     "shin.L": 0.052784986055537546,
+     "thigh.R": 0.044908614809499,
+     "shin.R": 0.04490837932380558,
+     "hips": 0.04181293790262875,
+     "spine": 0.08924896925211391,
+     "chest": 0.33143834267405964,
+     "neck": 0.7773214163256826,
+     "head": 2.47173912698408
+    }
+   }
+  },
+  "2_walk_None": {
+   "character_span": [
+    "girl",
+    1.0,
+    55.0
+   ],
+   "interior_max_deg": {
+    "girl": {
+     "upperArm.L": 20.172156191862435,
+     "forearm.L": 20.17285171027384,
+     "upperArm.R": 20.247027307313175,
+     "forearm.R": 20.251394382613626,
+     "thigh.L": 23.122743828585097,
+     "shin.L": 21.922349046568407,
+     "thigh.R": 20.697704577913107,
+     "shin.R": 20.697675019567683,
+     "hips": 20.379631214623004,
+     "spine": 20.379739436466725,
+     "chest": 20.379947611019606,
+     "neck": 17.699619906989113,
+     "head": 12.550670965814945
+    }
+   }
+  },
+  "keys_camera.position": {
+   "character_span": [
+    "camera.position",
+    1.0,
+    120.0
+   ],
+   "interior_max_deg": {}
+  }
+ },
+ "characters": {
+  "boy": {
+   "max_deg_per_frame": 6.0996546780244305,
+   "worst": {
+    "ratio": 0.8,
+    "frame": 5,
+    "role": "forearm.R",
+    "change_deg": 0.35585649200929376,
+    "limit_deg": 0.4448206150116172,
+    "boundary_window": false,
+    "sources": [
+     "base"
+    ]
+   },
+   "failures": [],
+   "pass": true
+  },
+  "girl": {
+   "max_deg_per_frame": 23.122743828585097,
+   "worst": {
+    "ratio": 0.8000042760563062,
+    "frame": 89,
+    "role": "upperArm.R",
+    "change_deg": 0.28542730490887935,
+    "limit_deg": 0.35678222411,
+    "boundary_window": false,
+    "sources": [
+     "base"
+    ]
+   },
+   "failures": [],
+   "pass": true
+  }
+ },
+ "boundary_windows": [],
+ "pass": true
+}

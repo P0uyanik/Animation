@@ -1,0 +1,69 @@
+{
+ "schema": "plush-studio.t026-girl-metrics/1",
+ "renders": "groom_turnaround.py sheet30_front 320x640, 32 spp + OIDN, character_neutral/1 as committed at each revision (before = main e94f3bc, after = this branch)",
+ "measure": "median display luma Y' of material-slot pixels from the --ids mask; face patches: forehead (150,170)-(170,180), key-side cheek (110,230)-(130,240), fill-side cheek (190,230)-(210,240), chin (152,244)-(168,252); legs = body_skin pixels below 55% of the frame",
+ "before": {
+  "forehead": 175.7,
+  "cheek_key": 98.8,
+  "cheek_fill": 104.3,
+  "chin": 111.1,
+  "face_patch_median": 107.7,
+  "face_band_rows_25_40pct": 112.5,
+  "legs": 140.4,
+  "hands": 162.0,
+  "face_to_legs_patch": 0.767,
+  "face_to_legs_band": 0.801,
+  "face_S50_band_pct": 22.1,
+  "legs_S50_pct": 23.8,
+  "face_RB": 1.28,
+  "legs_RB": 1.31
+ },
+ "after": {
+  "forehead": 175.9,
+  "cheek_key": 108.5,
+  "cheek_fill": 105.2,
+  "chin": 115.6,
+  "face_patch_median": 112.05,
+  "face_band_rows_25_40pct": 120.5,
+  "legs": 143.4,
+  "hands": 160.8,
+  "face_to_legs_patch": 0.781,
+  "face_to_legs_band": 0.84,
+  "face_S50_band_pct": 22.9,
+  "legs_S50_pct": 24.0,
+  "face_RB": 1.3,
+  "legs_RB": 1.31
+ },
+ "diagnosis_main_e94f3bc_320x640_16spp": {
+  "baseline": {
+   "face_band": 115.5,
+   "legs": 140.2
+  },
+  "hair_hidden": {
+   "face_band": 138.2,
+   "legs": 140.2
+  },
+  "glasses_hidden": {
+   "face_band": 117.4,
+   "legs": 140.2
+  },
+  "body_material_on_face": {
+   "face_band": 116.0,
+   "legs": 140.2
+  },
+  "subsurface_off": {
+   "face_band": 116.4,
+   "legs": 140.4
+  },
+  "key_only": {
+   "face_band": 38.3,
+   "legs": 93.7
+  },
+  "key_only_no_shadow_from_single_hair_object_max": {
+   "face_band": 45.8,
+   "note": "temple puffs; fringe 44.8; no single object explains the occlusion"
+  },
+  "note": "face band here = body_skin rows < 45% (includes neck and lids); cause = cast shadow/occlusion by the groom hood, not the material slot, preset, normals or SSS"
+ },
+ "fill_ratio_note": "key-side/fill-side cheek linear ratio 0.89 -> 1.07; the key-side cheek is below the glasses rim and carries blush, so this is not a valid VISUAL_TARGET fill-ratio sample"
+}

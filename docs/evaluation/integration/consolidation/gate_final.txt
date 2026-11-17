@@ -1,0 +1,9 @@
+FAIL Frozen assets: changed pipeline/blender/boy_pilot/fingerprint.py
+FAIL Guarded paths: REQUIRES SUPERVISOR APPROVAL: pipeline/charsys/materials/presets.json, pipeline/charsys/shot_render.py, pipeline/charsys/tests/face_expression_sheet.py, pipeline/charsys/tests/face_test.py, pipeline/charsys/tests/fixtures/face_synthetic_b.override.json (+13 more)
+PASS Shared-systems lint
+PASS C++ build
+PASS CTest
+PASS plush_tests
+PASS Python tests
+PASS Documentation links
+PASS Blender tier: boy_yellow_hoodie score 64.13 (-0.36 vs baseline 64.49); girl_auburn_bun_glasses score 65.45 (+0.04 vs baseline 65.41)

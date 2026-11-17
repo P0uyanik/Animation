@@ -80,6 +80,8 @@ Result<ImportedCharacter> loadImportedCharacter(const std::filesystem::path& man
   ic.rigSpecificBones = j.value("rig_specific_bones", std::vector<std::string>{});
   ic.capabilities = j.value("capabilities", Json::object());
   ic.asset.retargetBlock = j.value("retarget", Json());
+  if (auto dyn = dynamicsFromJson(j.value("dynamics", Json())); dyn) ic.asset.dynamics = std::move(*dyn);
+  else return fail("package: " + dyn.error().message);
   // Skeleton: parents precede children (checked).
   for (const Json& b : j.at("skeleton")) {
     Bone bone;

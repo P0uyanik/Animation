@@ -1,0 +1,375 @@
+{
+ "characters": {
+  "boy": {
+   "frames": [
+    1,
+    75
+   ],
+   "chains": {
+    "arm.L": {
+     "chain_length_m": 0.2322667160314191,
+     "moves": 2,
+     "major_moves": 0,
+     "ease_ratio_median": 0.7069785256266266,
+     "joint_ease_ratio_median": null,
+     "arc_curvature_median": null,
+     "arc_curvature_max": null,
+     "anticipation_present": false,
+     "anticipated_major_moves": 0,
+     "anticipation_roles": [],
+     "overshoot_settle_present": false,
+     "settled_major_moves": 0,
+     "overshoot_settle_roles": [],
+     "micro_motion_rms_deg": 0.15692108125013987,
+     "micro_motion_effector_rms_mm": 0.6353988888945116,
+     "move_list": [
+      {
+       "frames": [
+        0,
+        39
+       ],
+       "chord_m": 0.00403,
+       "arc_curvature": 0.00217,
+       "start_dip_ratio": -0.0,
+       "ease_ratio": 0.67516
+      },
+      {
+       "frames": [
+        39,
+        74
+       ],
+       "chord_m": 0.00375,
+       "arc_curvature": 0.00202,
+       "start_dip_ratio": -0.0,
+       "ease_ratio": 0.73879
+      }
+     ]
+    },
+    "arm.R": {
+     "chain_length_m": 0.23226669764673233,
+     "moves": 5,
+     "major_moves": 3,
+     "ease_ratio_median": 0.39434590599310293,
+     "joint_ease_ratio_median": 0.39109434728462455,
+     "arc_curvature_median": 0.24842806709889062,
+     "arc_curvature_max": 0.2883752340914893,
+     "anticipation_present": true,
+     "anticipated_major_moves": 1,
+     "anticipation_roles": [
+      "forearm.R",
+      "hand.R"
+     ],
+     "overshoot_settle_present": true,
+     "settled_major_moves": 1,
+     "overshoot_settle_roles": [
+      "forearm.R",
+      "hand.R"
+     ],
+     "micro_motion_rms_deg": 0.15692108125013987,
+     "micro_motion_effector_rms_mm": 0.6354006413872003,
+     "move_list": [
+      {
+       "frames": [
+        16,
+        20
+       ],
+       "chord_m": 0.08834,
+       "arc_curvature": 0.05162,
+       "start_dip_ratio": -0.0,
+       "ease_ratio": null
+      },
+      {
+       "frames": [
+        20,
+        35
+       ],
+       "chord_m": 0.32041,
+       "arc_curvature": 0.24843,
+       "start_dip_ratio": -0.0,
+       "ease_ratio": 0.2747
+      },
+      {
+       "frames": [
+        35,
+        38
+       ],
+       "chord_m": 0.01515,
+       "arc_curvature": 0.04025,
+       "start_dip_ratio": -0.0,
+       "ease_ratio": null
+      },
+      {
+       "frames": [
+        42,
+        45
+       ],
+       "chord_m": 0.03073,
+       "arc_curvature": 0.02584,
+       "start_dip_ratio": -0.0,
+       "ease_ratio": null
+      },
+      {
+       "frames": [
+        58,
+        74
+       ],
+       "chord_m": 0.27769,
+       "arc_curvature": 0.28838,
+       "start_dip_ratio": -0.0,
+       "ease_ratio": 0.51399
+      }
+     ]
+    },
+    "trunk": {
+     "chain_length_m": 0.34011149641003,
+     "moves": 1,
+     "major_moves": 0,
+     "ease_ratio_median": 2.028014706320519,
+     "joint_ease_ratio_median": null,
+     "arc_curvature_median": null,
+     "arc_curvature_max": null,
+     "anticipation_present": false,
+     "anticipated_major_moves": 0,
+     "anticipation_roles": [],
+     "overshoot_settle_present": false,
+     "settled_major_moves": 0,
+     "overshoot_settle_roles": [],
+     "micro_motion_rms_deg": 0.17030409493417503,
+     "micro_motion_effector_rms_mm": 0.7178562371485786,
+     "move_list": [
+      {
+       "frames": [
+        0,
+        74
+       ],
+       "chord_m": 0.00468,
+       "arc_curvature": 0.89648,
+       "start_dip_ratio": -0.0,
+       "ease_ratio": 2.02801
+      }
+     ]
+    }
+   },
+   "symmetry_index": 0.514012331539503,
+   "arm_mirror_difference_mean_deg": 43.73889016144473,
+   "trunk_lateral_tilt_mean_deg": 0.412575154975995,
+   "micro_motion_frames": "15 base-only frames"
+  },
+  "girl": {
+   "frames": [
+    1,
+    75
+   ],
+   "chains": {
+    "arm.L": {
+     "chain_length_m": 0.18000282103600163,
+     "moves": 10,
+     "major_moves": 8,
+     "ease_ratio_median": 0.2940256726045195,
+     "joint_ease_ratio_median": 0.31530839801534744,
+     "arc_curvature_median": 0.050726396619686524,
+     "arc_curvature_max": 0.3805025159991472,
+     "anticipation_present": true,
+     "anticipated_major_moves": 2,
+     "anticipation_roles": [
+      "forearm.L",
+      "hand.L"
+     ],
+     "overshoot_settle_present": true,
+     "settled_major_moves": 3,
+     "overshoot_settle_roles": [
+      "forearm.L",
+      "hand.L",
+      "upperArm.L"
+     ],
+     "micro_motion_rms_deg": null,
+     "micro_motion_effector_rms_mm": null,
+     "move_list": [
+      {
+       "frames": [
+        2,
+        7
+       ],
+       "chord_m": 0.05634,
+       "arc_curvature": 0.05086,
+       "start_dip_ratio": -0.0,
+       "ease_ratio": null
+      },
+      {
+       "frames": [
+        7,
+        25
+       ],
+       "chord_m": 0.2967,
+       "arc_curvature": 0.3805,
+       "start_dip_ratio": -0.0,
+       "ease_ratio": 0.29403
+      },
+      {
+       "frames": [
+        25,
+        28
+       ],
+       "chord_m": 0.02026,
+       "arc_curvature": 0.02982,
+       "start_dip_ratio": -0.0,
+       "ease_ratio": null
+      },
+      {
+       "frames": [
+        28,
+        31
+       ],
+       "chord_m": 0.0388,
+       "arc_curvature": 0.05059,
+       "start_dip_ratio": -0.0,
+       "ease_ratio": null
+      },
+      {
+       "frames": [
+        31,
+        34
+       ],
+       "chord_m": 0.03419,
+       "arc_curvature": 0.0505,
+       "start_dip_ratio": -0.0,
+       "ease_ratio": null
+      },
+      {
+       "frames": [
+        36,
+        39
+       ],
+       "chord_m": 0.03873,
+       "arc_curvature": 0.04932,
+       "start_dip_ratio": -0.0,
+       "ease_ratio": null
+      },
+      {
+       "frames": [
+        39,
+        42
+       ],
+       "chord_m": 0.03815,
+       "arc_curvature": 0.05159,
+       "start_dip_ratio": -0.0,
+       "ease_ratio": null
+      },
+      {
+       "frames": [
+        47,
+        50
+       ],
+       "chord_m": 0.0383,
+       "arc_curvature": 0.04443,
+       "start_dip_ratio": -0.0,
+       "ease_ratio": null
+      },
+      {
+       "frames": [
+        52,
+        68
+       ],
+       "chord_m": 0.29681,
+       "arc_curvature": 0.37797,
+       "start_dip_ratio": -0.0,
+       "ease_ratio": 0.28813
+      },
+      {
+       "frames": [
+        68,
+        74
+       ],
+       "chord_m": 0.05419,
+       "arc_curvature": 0.04705,
+       "start_dip_ratio": -0.0,
+       "ease_ratio": 0.33786
+      }
+     ]
+    },
+    "arm.R": {
+     "chain_length_m": 0.18000282103600163,
+     "moves": 2,
+     "major_moves": 0,
+     "ease_ratio_median": 0.5870925212058938,
+     "joint_ease_ratio_median": null,
+     "arc_curvature_median": null,
+     "arc_curvature_max": null,
+     "anticipation_present": false,
+     "anticipated_major_moves": 0,
+     "anticipation_roles": [],
+     "overshoot_settle_present": false,
+     "settled_major_moves": 0,
+     "overshoot_settle_roles": [],
+     "micro_motion_rms_deg": null,
+     "micro_motion_effector_rms_mm": null,
+     "move_list": [
+      {
+       "frames": [
+        0,
+        22
+       ],
+       "chord_m": 0.00158,
+       "arc_curvature": 0.00109,
+       "start_dip_ratio": -0.0,
+       "ease_ratio": 0.85968
+      },
+      {
+       "frames": [
+        22,
+        74
+       ],
+       "chord_m": 0.0044,
+       "arc_curvature": 0.00305,
+       "start_dip_ratio": -0.0,
+       "ease_ratio": 0.3145
+      }
+     ]
+    },
+    "trunk": {
+     "chain_length_m": 0.3899980066630073,
+     "moves": 2,
+     "major_moves": 0,
+     "ease_ratio_median": 0.6405712850234972,
+     "joint_ease_ratio_median": null,
+     "arc_curvature_median": null,
+     "arc_curvature_max": null,
+     "anticipation_present": false,
+     "anticipated_major_moves": 0,
+     "anticipation_roles": [],
+     "overshoot_settle_present": false,
+     "settled_major_moves": 0,
+     "overshoot_settle_roles": [],
+     "micro_motion_rms_deg": null,
+     "micro_motion_effector_rms_mm": null,
+     "move_list": [
+      {
+       "frames": [
+        0,
+        22
+       ],
+       "chord_m": 0.00272,
+       "arc_curvature": 0.03485,
+       "start_dip_ratio": -0.0,
+       "ease_ratio": 0.88788
+      },
+      {
+       "frames": [
+        22,
+        74
+       ],
+       "chord_m": 0.0082,
+       "arc_curvature": 0.05931,
+       "start_dip_ratio": -0.0,
+       "ease_ratio": 0.39326
+      }
+     ]
+    }
+   },
+   "symmetry_index": 0.12692876300284184,
+   "arm_mirror_difference_mean_deg": 78.57641132974423,
+   "trunk_lateral_tilt_mean_deg": 0.40590874464842375,
+   "micro_motion_frames": "not measured (fewer than 10 base-only frames)"
+  }
+ }
+}

@@ -1,0 +1,35 @@
+# One repository-relative path or glob per line. Directory entries end in '/'.
+# Matching changes require a commit trailer: Supervisor-Approved: <path>
+
+# Quality targets and tolerance-bearing sources.
+docs/references/VISUAL_TARGET.md
+**/presets.json
+**/*_preset*.json
+**/*target*.json
+**/*threshold*.json
+**/*tolerance*.json
+pipeline/reference_views.py
+pipeline/blender/boy_pilot/reproduce_v6.py
+pipeline/charsys/verify_charsys.py
+pipeline/charsys/shot_render.py
+pipeline/clips/measure_clips.py
+
+# Every existing and future test source.
+tests/
+**/tests/
+**/test_*.py
+**/*_test.py
+pipeline/clips/test_emotions.py
+
+# The gate and its policy data.
+tools/check_all.py
+tools/backup_repository.py
+tools/bpy_blender.py
+tools/simulate_quality_gate.py
+tools/frozen_manifest.txt
+tools/guarded_paths.txt
+tools/shared_character_allowlist.txt
+docs/evaluation/characters/fidelity_baseline.json
+.github/ci-dependencies.json
+.github/scripts/
+.github/workflows/

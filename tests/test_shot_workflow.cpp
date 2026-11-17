@@ -86,7 +86,7 @@ TEST_CASE("workflow: command and stage building") {
   CHECK(cmd[1] == (kRoot / "pipeline/production/run_shot.py").string());
   CHECK(joined.find("--shot " + shot.path.string()) != std::string::npos);
   CHECK(joined.find("--blender /opt/blender") != std::string::npos);
-  CHECK(joined.find("--engine /x/plush-render") != std::string::npos);
+  CHECK(joined.find("--bake-engine /x/plush-render") != std::string::npos);
   CHECK(joined.find("--run-dir run1") != std::string::npos);
   CHECK(joined.find("--stages prepare,bake,render ") != std::string::npos);
   CHECK(joined.find("--frames 5-7") != std::string::npos);

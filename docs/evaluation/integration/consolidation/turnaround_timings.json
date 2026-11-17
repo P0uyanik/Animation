@@ -1,0 +1,23 @@
+{
+ "open_s": 1.42,
+ "views": {
+  "sheet30_front": 199.38,
+  "sheet30_front_left": 143.21,
+  "sheet30_left": 91.75,
+  "sheet30_back": 120.1,
+  "face_front": 1268.22,
+  "face_34": 930.06
+ },
+ "lighting": "character_neutral/1",
+ "view_transform": "Standard",
+ "exposure": 0.0,
+ "engine": "cycles",
+ "engine_settings": {
+  "engine": "cycles",
+  "blender_engine": "CYCLES",
+  "samples": 64,
+  "denoising": true
+ },
+ "samples": 64,
+ "total_s": 2754.15
+}

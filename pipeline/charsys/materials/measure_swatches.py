@@ -179,6 +179,45 @@ def target_check(value, target):
     }
 
 
+def patch_check(values, target):
+    """VISUAL_TARGET "Common measurement setup" step 3 for three patches: report the median; a pass needs at least
+    two of the three patches in range and none missing its nearest limit by more than 20 % of that limit. This
+    implementation additionally requires the median itself to be in range (stricter, never looser)."""
+    median = float(np.median(values))
+    out = target_check(median, target)
+    out["patches"] = [round(float(v), 4) for v in values]
+    if target is None:
+        return out
+    lo, hi = target["range"]
+    inside = [lo <= v <= hi for v in values]
+    misses = [0.0 if ok else min(abs(v - lo) / abs(lo), abs(v - hi) / abs(hi)) for v, ok in zip(values, inside)]
+    out["patches_in_range"] = int(sum(inside))
+    out["max_patch_miss_fraction"] = round(max(misses), 4)
+    out["pass"] = bool(lo <= median <= hi and sum(inside) >= 2 and max(misses) <= 0.20)
+    out["rule"] = "median in range AND >=2/3 patches in range AND no patch misses its nearest limit by >20%"
+    return out
+
+
+def luma255(rgb):
+    return (0.2126 * rgb[:, :, 0] + 0.7152 * rgb[:, :, 1] + 0.0722 * rgb[:, :, 2]) * 255.0
+
+
+def fuzz_rms(rgb, projected_reference_px):
+    luma = luma255(resize_bilinear(rgb, 256.0 / projected_reference_px))
+    residual9 = luma - gaussian_blur(luma, 9)
+    return math.sqrt(float(np.mean(residual9 * residual9)))
+
+
+def sheen_ratio(rgb, projected_reference_px):
+    luma = luma255(resize_bilinear(rgb, 256.0 / projected_reference_px))
+    normalized = luma / np.maximum(gaussian_blur(luma, 31), 1e-6)
+    positive = normalized[normalized >= 1.0]
+    if len(positive) < 2:
+        return 1.0
+    p50, p90 = np.percentile(positive, [50, 90])
+    return float(p90 / max(p50, 1e-6))
+
+
 def measure(rgb, base_color, projected_reference_px, neutral_rgb=None, sheen_rgb=None):
     # VISUAL_TARGET defines the kernels at H=256.  Normalize before applying
     # them instead of silently treating a 42 px or 100 px crop as H=256.
@@ -254,6 +293,21 @@ def main():
         targets = library["presets"][swatch["preset"]]["targets"]
         checks = {name: target_check(raw[name], targets[name]) for name in
                   ("fuzz_rms_y255", "sheen_p90_p50", "saturation_retention_percent")}
+
+        def crops(key):
+            out = []
+            for bx0, by0, bx1, by1 in swatch.get(key) or []:
+                if not (0 <= bx0 < bx1 <= source_width and 0 <= by0 < by1 <= source_height):
+                    raise SystemExit(f"invalid {key} for {swatch['preset']}: {[bx0, by0, bx1, by1]}")
+                out.append(source_rgb[by0:by1, bx0:bx1])
+            return out
+        fuzz_crops, sheen_crops = crops("fuzz_rois_px"), crops("sheen_rois_px")
+        if fuzz_crops:
+            checks["fuzz_rms_y255"] = patch_check([fuzz_rms(c, projected_reference_px) for c in fuzz_crops],
+                                                  targets["fuzz_rms_y255"])
+        if sheen_crops:
+            checks["sheen_p90_p50"] = patch_check([sheen_ratio(c, projected_reference_px) for c in sheen_crops],
+                                                  targets["sheen_p90_p50"])
         applicable = [item["pass"] for item in checks.values() if item["pass"] is not None]
         results.append({
             "preset": swatch["preset"],
@@ -279,8 +333,12 @@ def main():
             "scale": "ROIs bilinear-resampled so the physical reference projects to H=256 px; source H>=180 px",
             "neutral_adaptation": "saturation measured after linear-RGB channel adaptation from a co-planar neutral card",
             "luma": "Y' = 0.2126 R + 0.7152 G + 0.0722 B, 0..255",
-            "fuzz_rms_y255": "RMS of luma minus a 9-pixel Gaussian kernel on the patch ROI",
-            "sheen_p90_p50": "P90/P50 of positive luma/(31-pixel Gaussian form blur) residuals in the sphere highlight ROI",
+            "fuzz_rms_y255": "RMS of luma minus a 9-pixel Gaussian kernel; median of three 64x64 px (at H=256) flat-patch "
+                             "ROIs when fuzz_rois_px is present, else the single patch ROI",
+            "sheen_p90_p50": "P90/P50 of positive luma/(31-pixel Gaussian form blur) residuals; median of three "
+                             "sphere ROIs fully inside the key-lit side when sheen_rois_px is present, else the "
+                             "single sphere highlight ROI",
+            "patch_rule": "VISUAL_TARGET common setup step 3 (>=2/3 patches in range, no miss >20%) plus median in range",
             "saturation": "(max-min)/max; retention is patch S50 divided by input-colour saturation",
         },
         "presets": results,

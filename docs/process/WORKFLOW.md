@@ -33,4 +33,35 @@ A question or a discussion is never an approval.
 - Frozen assets untouched; nothing published or approved without the owner.
 - The visual references are the target.
 
+## Work areas, conflicts and integration
+1. Before dispatch, the Supervisor compares the planned file lists. Parallel tasks never share files. Central files
+   (`presets.json`, `build_character.py` and character specs) belong to one active task at a time.
+2. For textual and hidden conflicts, the agent that owns the branch merges `main` into its branch (never rebases and
+   never force-pushes), runs `python tools/check_all.py` and pushes the result. The CI trial-merge report triggers
+   this work. For content conflicts, the Supervisor decides the resolution in one line. Product questions go to the
+   owner.
+3. Only the Supervisor merges into `main`, only from a CI-green integration commit, and only with owner approval;
+   approved changes may be batched. CI never merges or writes to a branch.
+4. Work is never lost: do not rebase, force-push or delete work branches. Work in progress is always committed and
+   pushed.
+
+`tools/check_all.py` is the common local and CI entry point. A guarded path is accepted only when a commit on the
+branch has the exact trailer `Supervisor-Approved: <path>`, added by the Supervisor. The Supervisor applies GitHub
+rulesets separately.
+
+The optional Blender tier also runs character fidelity when a character spec or references/annotations change, or
+when a shared body, face, groom, garment, material, geometry/build, or render-calibration generator changes. It runs
+`tools/fidelity/run.py` for every affected character, puts score and signed main-baseline delta on the Blender line
+of the at-most-ten-line summary, and uploads the side-by-side sheets. A score drop greater than 2.0 points fails as
+`visual regression, needs owner review`; an increase is informational. The main baseline is
+`docs/evaluation/characters/fidelity_baseline.json` and may change only in an explicit commit with the exact trailer
+`Supervisor-Approved: docs/evaluation/characters/fidelity_baseline.json`. See `docs/CHARACTER_FIDELITY.md` for the
+trigger list, artifacts, and interpretation.
+
+The relay creates its rotating verified local backup with:
+
+```powershell
+python tools/backup_repository.py --destination D:\Animation\backups --keep 7 --restore-test
+```
+
 The task history is in `TASK_LOG.md`.

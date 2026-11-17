@@ -1,0 +1,93 @@
+{
+ "tool": "tools/fidelity/run.py from origin/t-032-claude-fidelity (read-only, scratch worktree)",
+ "results": {
+  "0.7.1 (yarn, T-016/T-025)": {
+   "score": 63.04,
+   "hair_colour": {
+    "dC_median": -12.9617,
+    "dL_median": 7.7174,
+    "de00_luma_matched_median": 8.9204,
+    "de00_median": 10.5244,
+    "dh_median": 2.9267,
+    "reference_lab_median": [
+     28.9941,
+     16.508,
+     14.0157
+    ],
+    "render_lab_median": [
+     35.649,
+     6.3527,
+     6.0277
+    ],
+    "spread_ratio_median": 0.7772,
+    "views": 5
+   },
+   "hair_region": {
+    "area_ratio_median": 0.7683,
+    "iou_mean": 0.6418,
+    "views": 5
+   },
+   "hair_accessory_region": {
+    "area_ratio_median": 0.8309,
+    "iou_mean": 0.1632,
+    "views": 5
+   },
+   "hair_area": {
+    "by_view": {
+     "sheet30_back": -0.0764,
+     "sheet30_back_right": -0.2251,
+     "sheet30_front": -0.4014,
+     "sheet30_front_left": -0.2338,
+     "sheet30_left": -0.2414
+    },
+    "reference_median": 0.1196,
+    "relative_median": -0.2338,
+    "render_median": 0.0907
+   }
+  },
+  "0.8.0 (felt, T-033)": {
+   "score": 62.4849,
+   "hair_colour": {
+    "dC_median": -3.7849,
+    "dL_median": -1.6725,
+    "de00_luma_matched_median": 2.5698,
+    "de00_median": 2.8647,
+    "dh_median": -5.895,
+    "reference_lab_median": [
+     28.9941,
+     16.508,
+     14.0157
+    ],
+    "render_lab_median": [
+     26.708,
+     14.874,
+     10.2419
+    ],
+    "spread_ratio_median": 0.5864,
+    "views": 5
+   },
+   "hair_region": {
+    "area_ratio_median": 0.6432,
+    "iou_mean": 0.5379,
+    "views": 5
+   },
+   "hair_accessory_region": {
+    "area_ratio_median": 1.3429,
+    "iou_mean": 0.1964,
+    "views": 5
+   },
+   "hair_area": {
+    "by_view": {
+     "sheet30_back": -0.2346,
+     "sheet30_back_right": -0.347,
+     "sheet30_front": -0.5148,
+     "sheet30_front_left": -0.358,
+     "sheet30_left": -0.3673
+    },
+    "reference_median": 0.1196,
+    "relative_median": -0.358,
+    "render_median": 0.0757
+   }
+  }
+ }
+}

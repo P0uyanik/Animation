@@ -55,7 +55,15 @@ same.
 - Role bones get their engine role name; all other bones keep their source name (`source_name` is recorded for every
   bone).
 - Non-deform bones (Rigify `ORG-`, `MCH-`, controls) are not exported. A bone's parent is its nearest deform
-  ancestor.
+  ancestor. A deform bone with no deform ancestor (Rigify hangs `DEF-eye.*` under `ORG-eye.*` → `ORG-spine.006`, and
+  `DEF-shoulder.*` / `DEF-thigh.*` / `DEF-pelvis.*` under `ORG-` bones only) is parented to the deform twin
+  (`DEF-x` of `ORG-x`/`MCH-x`) of its nearest such ancestor: the bone Blender carries it with (exporter version 3,
+  T-030). Before, these were engine roots: the eyes stayed in character space while the head moved, and the shoulder
+  girdle did not follow the chest.
+- **Eye pivots (`eye_pivots`, T-030):** an eye role (`eye.*`) pivots at the centre of the spherical eyeball bound only to
+  it (least-squares sphere fit, rms residual < 2 % of the radius; reported with the rig's original head). The engine
+  rotates a bone about its head, so a rig eye bone on the front of the ball would swing the ball out of its socket as
+  the eyes look around. Skinning is unaffected (skin matrices are world transforms of the geometry).
 - **Re-parenting (recorded in `reparented`):** in a contiguous chain, a role bone whose deform parent is a helper is
   re-parented to the previous role. For the boy these are `forearm`, `hand`, `shin` and `foot`; their parents were
   the Rigify twist bones. The twist bones stay, as children of their original role bone.
@@ -95,6 +103,7 @@ rest pose reproduces the rest mesh exactly (tested, error < 1e-5 m).
 | `blink` | `close_s`, `hold_s`, `open_s`, `mean_interval_s` for the life-layer blink; an explicit scene `blinkInterval` wins | `spec.face.blink.timing` (M3.1) |
 | `walk` | `step_length` (m) or `step_scale` (× leg length); default `0.11 / 0.3451` per metre of leg, which keeps the original chibi characters at exactly 0.11 m | profile `walk` (optional) |
 | `hands` | `{"L": {"finger_dir": [...], "palm_normal": [...]}, "R": ...}`. Without it the importer derives each hand frame from its finger geometry | profile `hands` (optional) |
+| `dynamics` | Secondary motion: spring chains of bones, colliders, optional anchors (`docs/SECONDARY_MOTION.md`). Absent = off; an invalid block fails loading | rig property `ps_dynamics` written by a shared generator (groom/1 `hair.dynamics`, T-021); exporter version 3 |
 
 Engine side (generic, for every character):
 - **Walk** step = `walkStep(asset)`: explicit length, else scale × leg length (thigh → shin → foot).

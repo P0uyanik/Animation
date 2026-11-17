@@ -2,7 +2,8 @@
 animation (TD-42). Read-only on every character master.
 
     blender -b --factory-startup -P pipeline/charsys/shot_render.py -- --bake bake.json --cast cast.json --out <dir>
-        [--frames A-B] [--resolution W H] [--samples N] [--light-scale X] [--blend-only]
+        [--frames A-B] [--resolution W H] [--samples N] [--light-scale X]
+        [--engine cycles|eevee] [--blend-only]
 
 bake.json: the engine's shot bake (plush.shot_bake/1, `plush-render shot.scene.json --bake bake.json`).
 cast.json: {"<character name in the scene>": {"master": <master .blend>, "character_id": <root collection>,
@@ -15,8 +16,15 @@ Per character (any rig whose deform bones the package lists; nothing character-s
     facial controls) are left to their drivers, which read the keyed controls;
   * morphs: the rig's facial controls face_<morph> are keyed from the baked control weights (the master's drivers
     then produce every shape key, in-between and jaw rotation exactly as in Blender);
-  * camera, lights (sun, rect, sky) and box props are translated from the bake.
-Writes shot.blend (masters stay linked), frame_####.png, shot_render.json (timings, reconstruction error)."""
+  * camera, lights (sun, rect, sky) and box objects are translated from the bake;
+  * scene props (plush.asset/1, T-017/T-022): each prop in the bake's per-frame "props" block gets its asset's
+    primitive mesh (box / sphere centred; cylinder standing on its base along +Y, optionally "open_top" with a "wall"
+    thickness) and its first material preset from the shared library (pipeline/charsys/materials); the object is
+    keyed every frame from the baked world matrix. Assets are found by id in content/assets above the baked scene.
+  * eye sockets (T-030): on every frame, as Blender evaluates the applied bake, each eye's centre (sphere fit of its
+    evaluated eyeball, any mesh bound only to an "eye.*" role bone and without shape keys) is compared with its
+    socket (the rest centre carried by the head bone); the largest distance per character is reported.
+Writes shot.blend (masters stay linked), frame_####.png, shot_render.json (timings, reconstruction error, eye sockets)."""
 import argparse
 import json
 import math
@@ -25,10 +33,14 @@ import sys
 import time
 
 import bpy
+import bmesh
+import numpy as np
 from mathutils import Matrix, Vector
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import episode  # noqa: E402
+import render_engine  # noqa: E402
+from materials import builder as MATERIALS  # noqa: E402
 
 C = Matrix(((1, 0, 0, 0), (0, 0, 1, 0), (0, -1, 0, 0), (0, 0, 0, 1)))  # Blender -> engine axes
 Ci = C.inverted()
@@ -48,6 +60,7 @@ def parse():
     ap.add_argument("--resolution", type=int, nargs=2, default=None)
     ap.add_argument("--samples", type=int, default=32)
     ap.add_argument("--light-scale", type=float, default=1.0)
+    ap.add_argument("--engine", choices=("cycles", "eevee"), default="cycles")
     ap.add_argument("--blend-only", action="store_true")
     return ap.parse_args(argv)
 
@@ -82,7 +95,67 @@ def setup_character(ch, cast, scene):
     controls = [(k, f"face_{m}") for k, m in enumerate(ch["morphs"]) if f"face_{m}" in rig.keys()]
     unmapped = [m for m in ch["morphs"] if f"face_{m}" not in rig.keys() and "@" not in m]
     return {"rig": rig, "bones": bones, "controls": controls, "unmapped_morphs": unmapped,
-            "skipped_driven_bones": sorted(driven & set(src.values())), "master": info["master"]}
+            "skipped_driven_bones": sorted(driven & set(src.values())), "master": info["master"],
+            "eyes": eye_sockets(ov, rig, src)}
+
+
+def sphere_centre(points):
+    """Least-squares sphere centre of points (N x 3). Moves rigidly with the points, so it is the same eye point in
+    every frame whatever the gaze; for an eyeball it is the ball's centre, for a lid shell the centre it wraps."""
+    P = np.asarray(points, dtype=np.float64)
+    A = np.c_[2.0 * P, np.ones(len(P))]
+    x = np.linalg.lstsq(A, (P * P).sum(axis=1), rcond=None)[0]
+    return Vector(x[:3])
+
+
+def mesh_points(o, mesh=None):
+    me = mesh if mesh is not None else o.data
+    co = np.empty(len(me.vertices) * 3)
+    me.vertices.foreach_get("co", co)
+    co = co.reshape(-1, 3)
+    M = np.array(o.matrix_world)
+    return co @ M[:3, :3].T + M[:3, 3]
+
+
+def eye_sockets(ov, rig, src):
+    """Eye-socket alignment probes (T-030). For every eye role ("eye.*" in the package) the character's meshes bound
+    only to that role's bone (and without shape keys: blinking lids are not rigid) are its eye objects. Eye centre:
+    the sphere centre of the evaluated mesh. Socket centre: the rest eye centre (armature space) carried by the head
+    bone's evaluated pose, i.e. where the face holds the eye. An eye turning about its centre keeps the two equal; an
+    eye that does not follow the head, or swings about a pivot off its centre, drifts off."""
+    head = src.get("head")
+    if head is None or head not in rig.data.bones:
+        return []
+    bpy.context.view_layer.update()  # linked override objects have no evaluated matrix_world before this
+    Wi = rig.matrix_world.inverted()
+    out = []
+    for role, bone in sorted(src.items()):
+        if not role.startswith("eye.") or bone not in rig.data.bones:
+            continue
+        for o in ov.all_objects:
+            if o.type != "MESH" or not any(m.type == "ARMATURE" and m.object == rig for m in o.modifiers):
+                continue
+            if o.data.shape_keys is not None or len(o.data.vertices) < 4:
+                continue
+            used = {o.vertex_groups[g.group].name for v in o.data.vertices for g in v.groups if g.weight > 0}
+            if used != {bone}:
+                continue
+            out.append({"role": role, "object": o, "head": head, "rest_centre": Wi @ sphere_centre(mesh_points(o))})
+    return out
+
+
+def measure_eyes(st, deps):
+    """Largest eye-centre to socket-centre distance (m) of this character at the evaluated frame."""
+    rig, worst = st["rig"], 0.0
+    W = rig.matrix_world
+    for e in st["eyes"]:
+        hb = rig.pose.bones[e["head"]]
+        socket = W @ hb.matrix @ hb.bone.matrix_local.inverted() @ e["rest_centre"]
+        ev = e["object"].evaluated_get(deps)
+        centre = sphere_centre(mesh_points(ev, ev.to_mesh()))
+        ev.to_mesh_clear()
+        worst = max(worst, (centre - socket).length)
+    return worst
 
 
 def _key_bone(pb, P, Pp, frame):
@@ -174,6 +247,110 @@ def setup_world(bake, scene, light_scale):
     return rep
 
 
+def find_assets(scene_path):
+    """plush.asset/1 files by id, from the nearest content/assets above the baked scene."""
+    d = os.path.dirname(os.path.abspath(scene_path))
+    while True:
+        lib = os.path.join(d, "content", "assets")
+        if os.path.isdir(lib):
+            out = {}
+            for n in sorted(os.listdir(lib)):
+                if n.endswith(".asset.json"):
+                    j = json.load(open(os.path.join(lib, n)))
+                    out[j.get("id")] = j
+            return out
+        if os.path.dirname(d) == d:
+            return {}
+        d = os.path.dirname(d)
+
+
+def prop_mesh(name, asset):
+    """The asset's primitive as a Blender mesh in Blender axes (engine +Y up -> Blender +Z). Returns (mesh, note)."""
+    m = asset.get("mesh", {})
+    k = float(asset.get("scale", 1.0))
+    bm = bmesh.new()
+    note = ""
+    prim = m.get("primitive")
+    if prim == "cylinder":
+        r, h = m["radius"] * k, m["height"] * k
+        bmesh.ops.create_cone(bm, cap_ends=True, segments=40, radius1=r, radius2=r, depth=h)
+        bmesh.ops.translate(bm, verts=bm.verts, vec=(0, 0, h / 2))
+        if m.get("open_top"):  # a vessel: no top cap (a solidify modifier gives the wall)
+            top = [f for f in bm.faces if f.normal.z > 0.9 and min(v.co.z for v in f.verts) > h - 1e-6]
+            bmesh.ops.delete(bm, geom=top, context="FACES_ONLY")
+    elif prim == "sphere":
+        bmesh.ops.create_uvsphere(bm, u_segments=32, v_segments=16, radius=m["radius"] * k)
+    elif prim == "box":
+        sx, sy, sz = (v * k for v in m["size"])
+        bmesh.ops.create_cube(bm, size=1.0)
+        bmesh.ops.scale(bm, vec=(sx, sz, sy), verts=bm.verts)
+    else:  # file meshes are not imported here yet: a small placeholder cube, reported
+        bmesh.ops.create_cube(bm, size=0.05)
+        note = f"mesh source {m.get('path', '?')} not imported (placeholder)"
+    me = bpy.data.meshes.new(f"PROP_{name}")
+    bm.to_mesh(me)
+    bm.free()
+    for poly in me.polygons:
+        poly.use_smooth = prim in ("cylinder", "sphere")
+    return me, note
+
+
+def setup_props(bake, scene):
+    """One object per baked prop instance. Returns ({name: object}, report)."""
+    names = []
+    for fd in bake["frame_data"]:
+        for n in fd.get("props", {}):
+            if n not in names:
+                names.append(n)
+    rep = {"props": {}, "unknown_material_presets": []}
+    if not names:
+        return {}, rep
+    ids = {}
+    try:
+        sc = json.load(open(bake["scene_path"]))
+        ids = {p["name"]: p["id"] for p in sc.get("props", [])}
+    except (OSError, KeyError, ValueError):
+        pass
+    assets = find_assets(bake.get("scene_path", "."))
+    library = MATERIALS.load_library()["presets"]
+    objs = {}
+    for n in names:
+        asset = assets.get(ids.get(n), {"mesh": {}, "material_presets": []})
+        me, note = prop_mesh(n, asset)
+        ob = bpy.data.objects.new(f"prop.{n}", me)
+        scene.collection.objects.link(ob)
+        ob.rotation_mode = "QUATERNION"
+        m = asset.get("mesh", {})
+        if m.get("primitive") == "cylinder" and m.get("open_top"):
+            sol = ob.modifiers.new("wall", "SOLIDIFY")
+            sol.thickness = float(m.get("wall", 0.004)) * float(asset.get("scale", 1.0))
+            sol.offset = -1.0
+        preset = (asset.get("material_presets") or [None])[0]
+        if preset in library:
+            mat = MATERIALS.build_material(f"M_prop_{n}", preset)
+        else:
+            mat = bpy.data.materials.new(f"M_prop_{n}")
+            mat.use_nodes = True
+            if preset:
+                rep["unknown_material_presets"].append(preset)
+        me.materials.append(mat)
+        objs[n] = ob
+        rep["props"][n] = {"asset": ids.get(n), "primitive": m.get("primitive"), "material_preset": preset,
+                           "preset_found": preset in library, **({"note": note} if note else {})}
+    return objs, rep
+
+
+def key_props(objs, fd, frame):
+    for n, ob in objs.items():
+        if n not in fd.get("props", {}):
+            continue
+        M = Ci @ mat(fd["props"][n]) @ C  # engine world -> Blender world (mesh is built in Blender axes)
+        loc, rot, sca = M.decompose()
+        ob.location, ob.rotation_quaternion, ob.scale = loc, rot, sca
+        for path in ("location", "rotation_quaternion", "scale"):
+            ob.keyframe_insert(path, frame=frame)
+
+
 def key_camera(cam, c, frame):
     p, t = to_b(c["position"]), to_b(c["target"])
     cam.location = p
@@ -216,19 +393,30 @@ def main():
             raise SystemExit(f"cast has no master for character {ch['name']}")
         states[ch["name"]] = setup_character(ch, cast, scene)
     rep["world"] = setup_world(bake, scene, a.light_scale)
+    props, rep["props"] = setup_props(bake, scene)
     cam = bpy.data.objects.new("shot_camera", bpy.data.cameras.new("shot_camera"))
     scene.collection.objects.link(cam)
     scene.camera = cam
     frames = {fd["frame"]: fd for fd in bake["frame_data"]}
     err = {n: [0.0, 0.0] for n in states}
+    eyes = {n: [0.0, None] for n in states}
     for f in range(fa, fb + 1):
         fd = frames[f]
         key_camera(cam, fd["camera"], f)
+        key_props(props, fd, f)
         done = {n: apply_frame(st, fd["characters"][n], f) for n, st in states.items()}
         if any(late for _, late in done.values()):
             scene.frame_set(f)
             for n, (target, late) in done.items():
                 fix_late(states[n], target, late, f)
+        if any(st["eyes"] for st in states.values()):  # eye-socket alignment on every frame, as Blender evaluates it
+            scene.frame_set(f)
+            deps = bpy.context.evaluated_depsgraph_get()
+            for n, st in states.items():
+                if st["eyes"]:
+                    d = measure_eyes(st, deps)
+                    if d >= eyes[n][0]:
+                        eyes[n] = [d, f]
         for n, st in states.items():
             target = done[n][0]
             if f in (fa, (fa + fb) // 2, fb):  # check the reconstruction: evaluated bone poses == baked poses
@@ -240,11 +428,12 @@ def main():
     for n, st in states.items():
         rep["characters"][n] = {"master": st["master"], "baked_bones": len(st["bones"]), "facial_controls": len(st["controls"]),
                                 "unmapped_morphs": st["unmapped_morphs"], "bones_left_to_drivers": st["skipped_driven_bones"],
-                                "max_bone_error_mm": round(err[n][0] * 1000, 4), "max_bone_error_deg": round(err[n][1], 4)}
+                                "max_bone_error_mm": round(err[n][0] * 1000, 4), "max_bone_error_deg": round(err[n][1], 4),
+                                "eye_objects": [e["object"].name for e in st["eyes"]],
+                                "eye_socket_max_mm": round(eyes[n][0] * 1000, 4) if st["eyes"] else None,
+                                "eye_socket_worst_frame": eyes[n][1]}
     r = scene.render
-    r.engine = "CYCLES"
-    scene.cycles.samples = a.samples
-    scene.cycles.use_denoising = True
+    engine_settings = render_engine.configure(scene, a.engine, a.samples)
     w, h = a.resolution or (bake["render"]["width"], bake["render"]["height"])
     r.resolution_x, r.resolution_y, r.resolution_percentage = w, h, 100
     scene.view_settings.exposure = float(bake["render"].get("exposureEV", 0.0))
@@ -258,6 +447,9 @@ def main():
         rep["render_s"] = round(time.time() - t, 1)
         rep["render_s_per_frame"] = round(rep["render_s"] / (fb - fa + 1), 2)
     rep["resolution"], rep["samples"] = [w, h], a.samples
+    rep["engine"] = a.engine
+    if a.engine == "eevee":
+        rep["engine_settings"] = engine_settings
     json.dump(rep, open(os.path.join(a.out, "shot_render.json"), "w"), indent=1)
     print("[shot_render]", json.dumps(rep))
 

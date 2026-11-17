@@ -1,0 +1,102 @@
+{
+ "shot": "episodes/e905_props_test/shots/s010/shot.scene.json",
+ "steps": {
+  "build_girl_s": 98.6,
+  "export_girl_s": 9.5,
+  "engine_bake_s": 2.5,
+  "blender_s": 137.7
+ },
+ "cast": {
+  "boy": {
+   "character_id": "boy_yellow_hoodie",
+   "status": "unpublished build from spec (experimental; not approved)",
+   "master_sha256": "01a5f3098ac8cba025518172066e1b373e04d212e49830602de45009f6dc2ab2",
+   "package": "episodes/e905_props_test/shots/s010/build/packages/boy_b50bec228a126fa1"
+  },
+  "girl": {
+   "character_id": "girl_auburn_bun_glasses",
+   "status": "unpublished build from spec (experimental; not approved)",
+   "master_sha256": "e80d7670a82c73f4335b32dcaf5c577ac7e70ed6cdc4d5f4f6fd79c8b309c285",
+   "package": "episodes/e905_props_test/shots/s010/build/packages/girl_7e1b57182abe9f48"
+  }
+ },
+ "prepare": {
+  "all_cached": false,
+  "cast": {
+   "boy": {
+    "master_state": "cached",
+    "package_state": "cached"
+   },
+   "girl": {
+    "master_state": "built",
+    "package_state": "built"
+   }
+  }
+ },
+ "render": {
+  "bake": "/home/user/Animation/episodes/e905_props_test/shots/s010/build/runs/consolidation_final/bake.json",
+  "frames": [
+   1,
+   72
+  ],
+  "characters": {
+   "boy": {
+    "master": "/home/user/Animation/episodes/e905_props_test/shots/s010/build/masters/boy_c9f6eba9a647f627/boy_yellow_hoodie_master.blend",
+    "baked_bones": 73,
+    "facial_controls": 4,
+    "unmapped_morphs": [],
+    "bones_left_to_drivers": [],
+    "max_bone_error_mm": 0.0008,
+    "max_bone_error_deg": 0.0,
+    "eye_objects": [
+     "eye.L",
+     "lid_lower.L",
+     "eye.R",
+     "lid_lower.R"
+    ],
+    "eye_socket_max_mm": 0.1011,
+    "eye_socket_worst_frame": 17
+   },
+   "girl": {
+    "master": "/home/user/Animation/episodes/e905_props_test/shots/s010/build/masters/girl_58d46f6de21d03d6/girl_auburn_bun_glasses_master.blend",
+    "baked_bones": 239,
+    "facial_controls": 30,
+    "unmapped_morphs": [],
+    "bones_left_to_drivers": [
+     "DEF-jaw"
+    ],
+    "max_bone_error_mm": 0.0021,
+    "max_bone_error_deg": 0.0,
+    "eye_objects": [
+     "eye.L.001",
+     "eye.R.001"
+    ],
+    "eye_socket_max_mm": 0.0004,
+    "eye_socket_worst_frame": 48
+   }
+  },
+  "not_rendered": [],
+  "world": {
+   "lights": 2,
+   "objects": 4
+  },
+  "props": {
+   "props": {
+    "cup": {
+     "asset": "prop.felt_cup",
+     "primitive": "cylinder",
+     "material_preset": "felt",
+     "preset_found": true
+    }
+   },
+   "unknown_material_presets": []
+  },
+  "setup_s": 136.7,
+  "resolution": [
+   640,
+   360
+  ],
+  "samples": 16,
+  "engine": "cycles"
+ }
+}
