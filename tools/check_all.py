@@ -444,16 +444,33 @@ def check_plush_tests(build_dir: Path, config: str, logs: Path, build_ok: bool) 
     return Result("plush_tests", code == 0, "" if code == 0 else f"see {relative_log(log)}", relative_log(log), round(seconds, 2))
 
 
+def check_animcheck(build_dir: Path, config: str, logs: Path, build_ok: bool) -> Result:
+    """T-061: animation-principle metrics on the engine regression shots (tools/animcheck, thresholds.json)."""
+    log = logs / "animcheck.log"
+    if not build_ok:
+        return Result("animcheck", False, "not run because C++ build failed", relative_log(log))
+    names = ["plush-render.exe", "plush-render"]
+    render = next((p for n in names for p in (build_dir / "apps/render-cli" / config / n, build_dir / "apps/render-cli" / n)
+                   if p.is_file()), None)
+    if render is None:
+        return Result("animcheck", False, "plush-render not found", relative_log(log))
+    command = [sys.executable, str(ROOT / "tools/animcheck/run_gate.py"), "--render", str(render),
+               "--out", str(logs.parent / "animcheck")]
+    code, seconds = run_logged(command, log)
+    return Result("animcheck", code == 0, "" if code == 0 else f"see {relative_log(log)}", relative_log(log), round(seconds, 2))
+
+
 def check_cpp_tests(build_dir: Path, config: str, logs: Path, build_ok: bool) -> Result:
-    """CTest (incl. the frozen image regressions) and the doctest binary, reported on one line."""
+    """CTest (incl. the frozen image regressions), the doctest binary and animcheck (T-061), reported on one line."""
     ctest = check_ctest(build_dir, config, logs, build_ok)
     doctest = check_plush_tests(build_dir, config, logs, build_ok)
+    anim = check_animcheck(build_dir, config, logs, build_ok)
     subchecks = []
-    for item in (ctest, doctest):
+    for item in (ctest, doctest, anim):
         subchecks.append({"name": item.name, "ok": item.ok, "detail": item.detail, "log": item.log})
-    failed = [f"{item.name} ({item.detail})" if item.detail else item.name for item in (ctest, doctest) if not item.ok]
+    failed = [f"{item.name} ({item.detail})" if item.detail else item.name for item in (ctest, doctest, anim) if not item.ok]
     return Result("C++ tests", not failed, "" if not failed else "failed: " + "; ".join(failed),
-                  seconds=round(ctest.seconds + doctest.seconds, 2), subchecks=subchecks)
+                  seconds=round(ctest.seconds + doctest.seconds + anim.seconds, 2), subchecks=subchecks)
 
 
 def check_python_tests(logs: Path) -> Result:
@@ -462,6 +479,7 @@ def check_python_tests(logs: Path) -> Result:
         [sys.executable, str(ROOT / "pipeline/clips/tests/test_clip_files.py"), "--selftest"],
         [sys.executable, str(ROOT / "tools/fidelity/tests/test_ci.py")],
         [sys.executable, str(ROOT / "tools/regression/tests/test_gate_tools.py")],
+        [sys.executable, str(ROOT / "tools/animcheck/tests/test_animcheck.py")],
     ]
     cleanup_tests = ROOT / "tools/cleanup/run_tests.py"  # T-048 branch-cleanup tests, once merged
     if cleanup_tests.is_file():

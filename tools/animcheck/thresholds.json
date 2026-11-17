@@ -1,0 +1,13 @@
+{
+  "format": "plush.animcheck_thresholds",
+  "version": 1,
+  "set_by": "T-061 (2026-11-17); never loosened (docs/evaluation/animation/T-061/README.md, tools/animcheck/README.md)",
+  "min_chord_mm": 100,
+  "max_ease_ratio": 0.55,
+  "max_jerk": 0.45,
+  "max_first_step": 0.18,
+  "min_arc": 0.10,
+  "min_arc_screen": 0.10,
+  "max_step_mm": 130,
+  "max_rot_step_deg": 45
+}

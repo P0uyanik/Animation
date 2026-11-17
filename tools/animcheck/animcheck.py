@@ -19,8 +19,13 @@ space, per integer frame) and on the arm bones' global rotations:
 - **arc deviation**: the largest distance of the wrist path from the straight chord between the segment's ends,
   divided by the chord length (0 = straight line); in 3D (`arc`) and as the viewer sees it, projected through the
   bake's camera (`arc_screen`).
+- **onset / stop step**: the wrist speed of the first moving frame of the entry (`onset_step`) and of the last moving
+  frame of the exit (`stop_step`), divided by the segment's peak speed: how abruptly the motion leaves rest and
+  arrives at rest (a blend that starts at full spacing is a pop even when the rest of the curve is eased).
+- **jerk**: the largest change of wrist speed between consecutive frames inside a segment, divided by the segment's
+  peak speed (a velocity pop: a burst at a blend boundary, a hard start or stop).
 - **max per-frame step**: the largest wrist displacement between consecutive frames (mm) and the largest per-frame
-  rotation of upperArm / forearm / hand (degrees) in the window (pops).
+  rotation of upperArm / forearm / hand (degrees) in the window (strobing).
 - **overshoot / settle** (reported): how far the wrist passes the entry segment's end along the chord within the
   next 12 frames (% of the chord), and the frames from the entry's peak speed until the speed stays below 10 %.
 
@@ -250,7 +255,7 @@ def analyse_gesture(g: dict, ch: Character, frames: dict[int, dict], fps: float)
         seg = speed[a:b + 1]
         jerk = max(abs(seg[i + 1] - seg[i]) for i in range(len(seg) - 1)) / peak if len(seg) > 1 else 0.0
         res[name] = {"frames": [fs[a], fs[b + 1]], "ease_in": round(ein, 3), "ease_out": round(eout, 3),
-                     "jerk": round(jerk, 3),
+                     "jerk": round(jerk, 3), "onset_step": round(seg[0] / peak, 3), "stop_step": round(seg[-1] / peak, 3),
                      "peak_mm_per_frame": round(peak * 1000, 2), "arc": round(arc, 4), "arc_screen": round(arc_screen, 4), "chord_mm": round(chord * 1000, 1)}
     if "entry" in res:
         a, b = (fs.index(res["entry"]["frames"][0]), fs.index(res["entry"]["frames"][1]))
@@ -287,7 +292,7 @@ def analyse(bake: dict, scene: dict, scene_path: Path) -> dict:
 
 
 def check(report: dict, thresholds: dict) -> list[str]:
-    """Threshold failures (empty = pass). Segments shorter than min_chord_mm are not checked for ease / arc."""
+    """Threshold failures (empty = pass). Segments shorter than min_chord_mm are not checked for ease, jerk and arc."""
     fails = []
     t = thresholds
     for g in report["gestures"]:
@@ -305,6 +310,13 @@ def check(report: dict, thresholds: dict) -> list[str]:
             for k in ("ease_in", "ease_out"):
                 if s[k] > t["max_ease_ratio"]:
                     fails.append(f"{g['label']} {name}: {k} {s[k]} > {t['max_ease_ratio']}")
+            if s["jerk"] > t["max_jerk"]:
+                fails.append(f"{g['label']} {name}: jerk {s['jerk']} > {t['max_jerk']}")
+            k = "onset_step" if name == "entry" else "stop_step"
+            if s[k] > t["max_first_step"]:
+                fails.append(f"{g['label']} {name}: {k} {s[k]} > {t['max_first_step']}")
+            if s["arc_screen"] < t["min_arc_screen"]:
+                fails.append(f"{g['label']} {name}: screen arc {s['arc_screen']} < {t['min_arc_screen']}")
             if s["arc"] < t["min_arc"]:
                 fails.append(f"{g['label']} {name}: arc {s['arc']} < {t['min_arc']}")
     return fails
@@ -337,7 +349,7 @@ def main(argv=None) -> int:
             s = g.get(name)
             if s:
                 parts.append(f"{name} f{s['frames'][0]}-{s['frames'][1]} ease {s['ease_in']}/{s['ease_out']} "
-                             f"jerk {s['jerk']} "
+                             f"step {s['onset_step']}/{s['stop_step']} jerk {s['jerk']} "
                              f"arc {s['arc']} (screen {s['arc_screen']}) chord {s['chord_mm']} mm")
         if "entry" in g:
             parts.append(f"overshoot {g['entry']['overshoot_pct']} % settle {g['entry']['settle_frames']} f")

@@ -33,7 +33,7 @@ Result<AnimPrinciples> animPrinciplesFromJson(const Json& j) {
   }
   for (auto r : {number("maxBlendDegPerSec", p.maxBlendDegPerSec, 1, 1e4), number("minBlendSec", p.minBlendSec, 0, 10),
                  number("maxBlendSec", p.maxBlendSec, 0, 10), number("successionSec", p.successionSec, 0, 1), number("ikElbowLagSec", p.ikElbowLagSec, 0, 1),
-                 number("retimeMaxRate", p.retimeMaxRate, 1, 10), number("minArc", p.minArc, 0, 1),
+                 number("retimeMaxRate", p.retimeMaxRate, 1, 10), number("retimeContrast", p.retimeContrast, 0.1, 10), number("minArc", p.minArc, 0, 1),
                  number("breakdownMaxDeg", p.breakdownMaxDeg, 0, 90), number("breakdownMinChordM", p.breakdownMinChordM, 0, 10)})
     if (!r) return std::unexpected(r.error());
   if (p.maxBlendSec < p.minBlendSec) return fail("animPrinciples: maxBlendSec must be >= minBlendSec");
@@ -92,25 +92,29 @@ TimeWarp TimeWarp::easePreserving(const std::vector<double>& motion, double spee
   const size_t n = motion.size();
   const double peak = n ? *std::max_element(motion.begin(), motion.end()) : 0.0;
   if (n < 2 || peak <= 1e-12 || std::abs(speed - 1.0) < 1e-9) return lin;
-  // Normalised motion, smoothed over +-3 clip frames so the local rate changes gradually (no acceleration spikes
-  // where a slow part meets a fast one).
-  std::vector<double> w(n, 0.0);
+  // Movements: split at the local minima of the motion (lightly smoothed against noise); each frame gets its
+  // movement's peak, normalised by the clip's peak.
+  std::vector<double> sm(n, 0.0);
   for (size_t k = 0; k < n; ++k) {
-    double sum = 0, wsum = 0;
-    for (int d = -3; d <= 3; ++d) {
-      const long long j = (long long)k + d;
-      if (j < 0 || j >= (long long)n) continue;
-      const double kw = 4.0 - std::abs(d);
-      sum += kw * std::max(0.0, motion[size_t(j)]);
-      wsum += kw;
-    }
-    w[k] = sum / wsum;
+    const double a = motion[k > 0 ? k - 1 : k], b = motion[k], c = motion[k + 1 < n ? k + 1 : k];
+    sm[k] = 0.25 * std::max(0.0, a) + 0.5 * std::max(0.0, b) + 0.25 * std::max(0.0, c);
+  }
+  std::vector<double> w(n, 0.0);
+  size_t s0 = 0;
+  for (size_t k = 1; k <= n; ++k) {
+    const bool boundary = k == n || (k + 1 < n && sm[k] <= sm[k - 1] && sm[k] < sm[k + 1]);
+    if (!boundary) continue;
+    double mpeak = 0;
+    for (size_t j = s0; j < k; ++j) mpeak = std::max(mpeak, sm[j]);
+    for (size_t j = s0; j < k; ++j) w[j] = mpeak;
+    s0 = k;
   }
   const double wpeak = *std::max_element(w.begin(), w.end());
-  for (double& x : w) x /= wpeak;
+  if (wpeak <= 1e-12) return lin;
+  for (double& x : w) x = std::pow(x / wpeak, p.retimeContrast);
   // Duration of clip frame k in clip-frame units (linear: 1 / speed). Faster: d = 1 / (1 + a w), never below
-  // 1 / (speed x maxRate); slower: d = 1 + a w, never above maxRate / speed. Frames without motion (holds,
-  // extremes) keep (close to) their authored spacing; the fast in-betweens absorb the change.
+  // 1 / (speed x maxRate); slower: d = 1 + a w, never above maxRate / speed. Small movements (anticipations, settles)
+  // and holds keep (close to) their authored spacing; the big movements absorb the change, each at one rate.
   const bool faster = speed > 1;
   const double dmin = 1.0 / (speed * p.retimeMaxRate), dmax = p.retimeMaxRate / speed;
   auto dur = [&](double a, size_t k) {

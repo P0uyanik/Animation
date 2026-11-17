@@ -27,10 +27,13 @@ struct AnimPrinciples {
   double successionSec = 0.06;
   // IK gestures (touch, reach): the elbow's IK weight trails the shoulder's by this much (two-bone IK ".lag").
   double ikElbowLagSec = 0.1;
-  // Retiming: a clip played faster or slower than authored keeps the spacing around its extremes (slow parts) and
-  // changes the fast in-betweens more, instead of a linear scale. Local rate at most retimeMaxRate x the request.
+  // Retiming: a clip played faster or slower than authored is split into its movements (between the motion minima:
+  // reversals, holds, extremes); each movement gets one constant rate from its peak motion, so the big actions absorb
+  // the change while anticipations, settles and holds keep their authored spacing, and every movement keeps its own
+  // ease shape (rates change only where the motion is at a minimum). At most retimeMaxRate x the requested rate.
   bool easePreservingRetime = true;
   double retimeMaxRate = 1.15;
+  double retimeContrast = 1;  // exponent on a movement's normalised peak: > 1 keeps more of the smaller movements' spacing
   // Arcs: a blend whose wrist path deviates less than minArc (fraction of the chord) from a straight line gets a
   // breakdown: mid-blend the elbow opens or bends further (whichever curves the path; up to breakdownMaxDeg) so the
   // wrist travels on an arc instead of the straight chord.
@@ -40,7 +43,8 @@ struct AnimPrinciples {
 };
 
 // true | false | {"enabled", "maxBlendDegPerSec", "minBlendSec", "maxBlendSec", "successionSec", "ikElbowLagSec",
-// "easePreservingRetime", "retimeMaxRate", "minArc", "breakdownMaxDeg", "breakdownMinChordM"}; null = defaults.
+// "easePreservingRetime", "retimeMaxRate", "retimeContrast", "minArc", "breakdownMaxDeg", "breakdownMinChordM"};
+// null = defaults.
 Result<AnimPrinciples> animPrinciplesFromJson(const Json& j);
 
 // Quintic ease in/out (smootherstep): zero velocity and acceleration at both ends; peak slope 1.875 at x = 0.5.

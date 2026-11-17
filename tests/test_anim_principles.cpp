@@ -142,7 +142,7 @@ TEST_CASE("principles: ease-preserving retiming keeps the spacing at the extreme
       CHECK(c >= prev);
       prev = c;
     }
-    // scene time spent in the hold (clip frames 0..6) and in the stroke's eased first quarter vs the linear scale
+    // scene time spent in the hold (clip frames 0..6) and in the stroke's middle vs the linear scale
     auto sceneTime = [&](const TimeWarp& tw, double c0, double c1) {
       double a = 0, b = len;  // invert by bisection
       auto inv = [&](double c) {
@@ -163,6 +163,9 @@ TEST_CASE("principles: ease-preserving retiming keeps the spacing at the extreme
     CHECK(std::abs(holdW - authoredHold) < std::abs(holdL - authoredHold));
     if (speed > 1) CHECK(midW < midL);
     else CHECK(midW > midL);
+    // one constant rate inside a movement (its own ease shape is kept, only scaled): equal scene time for equal clip
+    // spans in the stroke's first and second half
+    CHECK(sceneTime(w, 9, 13) == doctest::Approx(sceneTime(w, 18, 22)).epsilon(1e-6));
     // the local rate stays within retimeMaxRate x the request
     for (double t = 0; t + 0.5 <= len; t += 0.5) {
       const double rate = (w.clipFrame(t + 0.5, false) - w.clipFrame(t, false)) / 0.5;
