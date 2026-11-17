@@ -4,6 +4,9 @@
  "hair": {"generator": "none"},
  "accessories": {"items": []},
  "components": {"face": ["eye.", "lid_", "lash.", "brow.", "mouth", "ear.", "nose"]},
+ "body": {"params": {"head": {"lower_roundness": 2.7, "lower_depth_roundness": 2.0, "chin_taper": 0.22, "lower_half_height": 0.162},
+                     "neck": {"top_radius": 0.04639}},
+          "note": "T-031b: its own head shape through the same body_generic options: a longer, softer oval lower face (less round than the girl's), plain neck"},
  "materials": {
   "target_colors_srgb": {"skin": [176, 128, 100]},
   "assignments": {"skin": {"preset": "skin-felt", "base_color_srgb": [176, 128, 100], "reference_size_m": 0.29278}}
@@ -29,10 +32,10 @@
   "nose": {"type": "button", "size_m": 0.026, "inset": 0.3, "offset_z_m": 0.004},
   "blush": {"srgb": [236, 120, 96], "below_eye_m": 0.038, "out_m": 0.014, "radius_m": 0.022, "intensity": 0.9, "softness": 0.5,
             "breakup": 0.4, "nose": false},
-  "skin": {"occlusion": {"distance_m": 0.1, "lift": 0.6, "warm_srgb": [204, 140, 106]}},
+  "skin": {"occlusion": {"distance_m": 0.1, "lift": 0.6, "warm_srgb": [204, 140, 106], "bleed": 0.4, "bleed_srgb": [240, 214, 196], "bleed_face_radius_m": 0.11, "bleed_body": 0.3}},
   "shape": {"cheek_roundness_m": 0.007, "cheek_radius_m": 0.045, "cheek_below_eye_m": 0.05, "cheek_x": 1.0,
             "chin_forward_m": 0.005, "chin_drop_m": 0.004, "forehead_height_m": 0.006, "forehead_fullness_m": 0.003},
-  "mouth": {"rest_shape": "open_smile", "half_width_m": 0.019, "lip_srgb": [190, 104, 92]},
+  "mouth": {"rest_shape": "open_smile", "half_width_m": 0.019, "rest_mix": {"MouthWide": 0.8, "MouthSmile": 0.4}, "lip_srgb": [190, 104, 92]},
   "expressions": {"optional": ["SmileClosed", "Thinking"]}
  }
 }
