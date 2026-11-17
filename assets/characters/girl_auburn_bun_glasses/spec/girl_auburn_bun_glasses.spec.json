@@ -279,7 +279,7 @@
    "note": "T-031b: positions below the (9 mm lower) eye line; the lower face extends 9 mm (fidelity: mouth, nose, chin 2-4 px high)"
   },
   "eyes": {
-   "radius_m": 0.044,
+   "radius_m": 0.046,
    "protrusion_m": 0.0132,
    "scale": [
     1.0,
@@ -469,13 +469,13 @@
   },
   "blush": {
    "srgb": [
-    238,
-    138,
-    132
+    236,
+    124,
+    122
    ],
    "below_eye_m": 0.036,
    "out_m": 0.03,
-   "radius_m": 0.033,
+   "radius_m": 0.036,
    "nose": true,
    "intensity": 1.0,
    "softness": 0.9,
@@ -646,10 +646,15 @@
      212,
      192
     ],
-    "samples": 16,
-    "bleed": 0.35
+    "samples": 32,
+    "bleed": 0.5,
+    "bleed_srgb": [
+     255,
+     240,
+     232
+    ]
    },
-   "note": "T-031: the grey face came from occlusion (protruding eyes, glasses, fringe) on a neutral felt base under the key-left calibration; felt scatters light into creases, so occluded areas shift warm and light instead of grey. Body and face share this material (body_skin), so the tones match. T-031b: + felt light bleed (bleed 0.35) and 16 AO samples (8 left mottled dark patches after denoising); with the shared calibration's front fill."
+   "note": "T-031: the grey face came from occlusion (protruding eyes, glasses, fringe) on a neutral felt base under the key-left calibration; felt scatters light into creases, so occluded areas shift warm and light instead of grey. Body and face share this material (body_skin), so the tones match. T-031b: + felt light bleed (bleed 0.5, near-neutral bleed tint so the limbs keep their hue) and 32 AO samples (8 left mottled dark patches after denoising); with the shared calibration's front fill."
   },
   "shape": {
    "cheek_roundness_m": 0.007,

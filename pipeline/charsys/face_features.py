@@ -188,7 +188,7 @@ def face_skin_material(name, skin_rgb, blush_cfg, spots, skin_cfg):
     compensation. Plush felt scatters light into creases, so creases read warm instead of grey: where the ambient
     occlusion (distance occlusion.distance_m) is high, the albedo shifts towards occlusion.warm_srgb by `lift`;
     optional occlusion.bleed (0 = off) adds the light felt scatters into shaded skin (emission of strength
-    bleed * occlusion, warm_srgb x local colour); occlusion.samples sets the AO samples (noise).
+    bleed * occlusion, bleed_srgb (default warm_srgb) x local colour); occlusion.samples sets the AO samples (noise).
     spots: [(xyz, radius, intensity)] in object coordinates (the skin object sits at the origin)."""
     m = G.material(name, tuple(skin_rgb), roughness=0.55, subsurface=0.2, sss_radius=(1.0, 0.45, 0.3), sss_scale=0.012,
                    specular=0.35)
@@ -269,7 +269,7 @@ def face_skin_material(name, skin_rgb, blush_cfg, spots, skin_cfg):
             gc.data_type = "RGBA"
             gc.blend_type = "MULTIPLY"
             gc.inputs["Factor"].default_value = 1.0
-            gc.inputs["A"].default_value = _lin(tuple(occ.get("warm_srgb", skin_rgb)))
+            gc.inputs["A"].default_value = _lin(tuple(occ.get("bleed_srgb", occ.get("warm_srgb", skin_rgb))))
             links.new(col, gc.inputs["B"])  # tinted by the local colour (the blush glows rosy)
             links.new(gc.outputs["Result"], p.inputs["Emission Color"])
             links.new(g.outputs[0], p.inputs["Emission Strength"])
