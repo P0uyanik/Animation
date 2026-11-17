@@ -1,0 +1,87 @@
+{
+ "character": "girl_auburn_bun_glasses",
+ "approach": "B",
+ "label": "sculpted: crown/fringe/bun/temple shells + carved ringlet curtain fused by voxel remesh into one sculpt",
+ "hair_build_s": 2.47,
+ "total_s": 5.76,
+ "hair_vertices": 302961,
+ "hair_faces": 302954,
+ "fibre_points": 217854,
+ "chain_bones": 0,
+ "peak_rss_mb": 1220.6,
+ "structures": {
+  "cap": {
+   "type": "scalp_cap",
+   "faces": 14706
+  },
+  "bun": {
+   "buns": 1,
+   "finish": "felt",
+   "type": "bun"
+  },
+  "crown": {
+   "shape": "gather",
+   "grid": [
+    200,
+    44
+   ],
+   "type": "felt_volume"
+  },
+  "fringe": {
+   "shape": "fringe",
+   "grid": [
+    64,
+    40
+   ],
+   "type": "felt_volume"
+  },
+  "fringe_part": {
+   "shape": "fringe",
+   "grid": [
+    48,
+    40
+   ],
+   "type": "felt_volume"
+  },
+  "temple_l": {
+   "shape": "mass",
+   "grid": [
+    56,
+    32
+   ],
+   "type": "felt_volume"
+  },
+  "temple_r": {
+   "shape": "mass",
+   "grid": [
+    56,
+    32
+   ],
+   "type": "felt_volume"
+  },
+  "curtain": {
+   "shape": "curtain",
+   "grid": [
+    200,
+    110
+   ],
+   "columns": 14,
+   "type": "study_curtain"
+  },
+  "band": {
+   "radius_m": 0.0754,
+   "type": "tie"
+  },
+  "flowers": {
+   "flowers": 3,
+   "type": "flowers"
+  }
+ },
+ "fused": {
+  "objects": 7,
+  "voxel_m": 0.0022,
+  "fibre_objects": 2
+ },
+ "spec_lines": 579,
+ "blend_mb": 27.25
+}

@@ -13,6 +13,10 @@ Outputs in --out (never inside assets/: publishing into the asset store is a sep
 Master structure (collections under the root collection named after the character id):
   <id>.body  <id>.face  <id>.hair  <id>.clothing  <id>.accessories  <id>.rig  <id>.landmarks  (+ <id>.fur in compare)
 Root collection custom properties: ps_character_id, ps_spec_sha256, ps_spec_version, ps_build, ps_role ("master").
+
+Generator versions (T-043, versions.py): every feature is built by the version the spec pins in spec.generators
+(missing pins = the frozen legacy defaults). The pins select the code path and the modules; unknown or retired
+versions stop the build. The resolved pins are recorded in build_report.json ("versions").
 """
 import argparse
 import json
@@ -26,14 +30,16 @@ from mathutils import Matrix, Vector
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-import body_v6 as B  # noqa: E402
+import body_helpers as BH  # noqa: E402  (shared helpers; identical copies of body_v6's)
+import body_v6 as B  # noqa: E402  (legacy body_v6/1 path only)
 import determinism as DETERMINISM  # noqa: E402
 import face as FACE  # noqa: E402
 import hair as HAIR  # noqa: E402
 import spec as S  # noqa: E402
+import versions as V  # noqa: E402
 from materials import builder as MATERIALS  # noqa: E402
 
-G = B.G
+import geom as G  # noqa: E402  (the same module as body_v6.G)
 COMPONENTS = {  # component -> object-name prefixes (exact names or prefixes ending with "." / "_")
     "body": ["head", "neck", "hand."],
     "face": ["eye.", "lid_", "lash.", "brow.", "mouth", "ear."],
@@ -179,12 +185,17 @@ def add_face_controls(rig, C, names):
     return made
 
 
+def family(pin):
+    return V.NONE if pin == V.NONE else V.parse(pin)[0]
+
+
 def main_generic(a, spec, info, out):
     """Generic path (body_generic/1): body, joints, rig fitting and skinning entirely from the spec; the generic face
     (spec.face.generator face_generic/1) and reusable accessories (spec.accessories.items) when the spec has them.
     Hair through the shared groom system (spec.hair.generator groom/1). Shared garments are opt-in through
     clothing.generator garment/1. The legacy boy path (below) is the compatibility baseline."""
-    import body_generic as BG
+    pins = info["versions"]["generators"]
+    BG = V.load("body", pins["body"])
     cid = spec["identity"]["id"]
     t0 = time.time()
     bpy.ops.wm.read_factory_settings(use_empty=True)
@@ -205,8 +216,8 @@ def main_generic(a, spec, info, out):
     parts = BG.build_body(C, M, P, H, J, frames)
     garment_objects = []
     garment_report = None
-    if spec.get("clothing", {}).get("generator") == "garment/1":
-        import garments as GAR
+    if family(pins["garment"]) == "garment":
+        GAR = V.load("garment", pins["garment"])
         garment_objects, garment_report = GAR.build(C, parts[0][0], spec["clothing"], P, H, J, G)
     head_bone = spec["rig"]["head_bone"]
     report = {"blender": bpy.app.version_string, "build": BUILD_ID + "+body_generic/1", "character_id": cid, **info}
@@ -217,17 +228,17 @@ def main_generic(a, spec, info, out):
     fc = None
     acc = []
     face_spec = spec.get("face", {})
-    if face_spec.get("generator") == "face_generic/1":
+    if family(pins["face"]) == "face_generic":
         import accessories as ACC
-        import face_generic as FG
+        FG = V.load("face", pins["face"])
         fc = FG.build(C, M, parts[0][0], spec, P, H, head_bone)  # also sets the eye-bone depth (P.eyes.y)
         report["face"] = fc["report"]
         face_parts = fc["eyes"] + [o for l in fc["lids"] for o in l[:3]]
         acc, report["accessories"] = ACC.build(C, spec.get("accessories", {}).get("items"), fc["landmarks"], fc["ctx"],
                                                face_parts, head_bone, fc["ears"], mats.get("assignments"))
     groom = []
-    if spec.get("hair", {}).get("generator") == "groom/1":  # shared spec-driven groom (hair structures are spec data)
-        import groom as GROOM
+    if family(pins["groom"]) == "groom":  # shared spec-driven groom (hair structures are spec data)
+        GROOM = V.load("groom", pins["groom"])
         hp = P["head"]
         frame = {"centre": (0, hp["forward"] * H, hp["centre_z"] * H),
                  "radii": (hp["half_width"] * H, hp["half_depth"] * H, hp["half_height"] * H)}
@@ -247,10 +258,10 @@ def main_generic(a, spec, info, out):
                 return None
             asg = dict(asg, overrides=MATERIALS.deep_merge(asg.get("overrides") or {}, overrides))
             return MATERIALS.add_fibres_from_assignment(ob, asg)
-        groom, report["hair"] = GROOM.build(C, parts[0][0], frame, spec["hair"], hair_material, B.face_y, hair_fibres)
+        groom, report["hair"] = GROOM.build(C, parts[0][0], frame, spec["hair"], hair_material, BH.face_y, hair_fibres)
     if a.timings:
         report["model_s"] = round(time.time() - t0, 1)
-    rig, rr = BG.rig_generic(C, f"rig_{cid}", parts, P, H, J, frames, spec["rig"].get("weight_rules", {}), B,
+    rig, rr = BG.rig_generic(C, f"rig_{cid}", parts, P, H, J, frames, spec["rig"].get("weight_rules", {}), BH,
                              spec["rig"].get("weight_smooth"))
     report["rig"] = rr
     if garment_objects:
@@ -370,10 +381,18 @@ def main():
     if os.path.commonpath([out, os.path.join(root, "assets")]) == os.path.join(root, "assets"):
         raise SystemExit("refusing to build into assets/: build elsewhere, then publish with asset_store.py")
     os.makedirs(out, exist_ok=True)
-    spec, info = S.load(a.spec, a.override)
+    spec, info = S.load(a.spec, a.override)  # validates every generator pin (unknown / retired versions fail here)
+    body = info["versions"]["generators"]["body"]
+    paths = {"body_generic/1": main_generic, "body_v6/1": main_legacy}  # one code path per released body version
+    if body not in paths:
+        raise V.VersionError(f"no build path for body version {body!r} (paths: {', '.join(sorted(paths))})")
+    return paths[body](a, spec, info, out)
+
+
+def main_legacy(a, spec, info, out):
+    """Legacy path (body_v6/1 with its face, clothing, accessories and materials; hair hair_clumps/*): the frozen
+    v6 boy baseline."""
     cid = spec["identity"]["id"]
-    if spec["body"].get("generator") == "body_generic/1":  # generic body path (any character); the legacy path follows
-        return main_generic(a, spec, info, out)
     B.configure(spec)
     t0 = time.time()
     bpy.ops.wm.read_factory_settings(use_empty=True)

@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "geom/json_io.h"
+#include "scene/face_layer.h"
 
 namespace plush {
 
@@ -28,6 +29,10 @@ struct EmotionDef {
   Gesture gesture;
   double onset = 0.4, hold = 1.5, release = 0.6;  // seconds
   bool linear = false;                            // intensity curve: "smooth" (smoothstep, default) or "linear"
+  // Living-face tunables while the emotion plays (T-046, optional "faceMotion" section, scene/face_layer.h): blink
+  // rhythm, eye darts, gaze bias, attention, brows and mouth corners as face channels. Used while life is on.
+  FaceMotion faceMotion;
+  bool hasFaceMotion = false;
   Json raw;                                       // the file as read (unknown fields are preserved by tools)
 };
 

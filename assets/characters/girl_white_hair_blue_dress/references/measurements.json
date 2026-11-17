@@ -1,0 +1,60 @@
+{
+ "method": "w01 alpha silhouette (exact background) + manual landmarks (landmarks.json); heights as fractions of the total height sole to bun top (H = 1138 px in w01); cross-checked on w15 side (H = 556 px) and w03",
+ "views": {
+  "id01_full": {
+   "figure_height_px": 1138,
+   "aspect": 2.535,
+   "width_head_incl_hair": 0.395,
+   "width_torso_incl_hair_and_arms": 0.386,
+   "width_legs": 0.171,
+   "width_feet_boots": 0.196,
+   "head_fraction (bun top to chin)": 0.376,
+   "note": "widths: max (head) / median rows (others); torso width includes the long side hair and arms, so it is not a body measure"
+  },
+  "c15_side": {
+   "figure_height_px": 556,
+   "eye_line": 0.275,
+   "chin": 0.365,
+   "hem": 0.734,
+   "boot_top": 0.86,
+   "head_depth_incl_hair (nose to hair back)": 0.315
+  }
+ },
+ "fractions_from_top (w01)": {
+  "notch_between_buns": 0.063,
+  "eye_line": 0.282,
+  "mouth": 0.33,
+  "chin": 0.376,
+  "collar_top": 0.404,
+  "waist_seam": 0.533,
+  "fingertips": 0.683,
+  "hem": 0.736,
+  "boot_top": 0.859,
+  "sole": 1.0,
+  "cross_check_w15": "eye 0.275, chin 0.365, hem 0.734, boot top 0.860 (agree within 0.011)"
+ },
+ "head_to_body": {
+  "heads_tall_excl_buns": 2.99,
+  "heads_tall_incl_buns": 2.66,
+  "definition": "(sole - notch between the buns) / (chin - notch) and H / (chin - bun top); the girl's sheets give 0.382 chin fraction incl. bun (2.62 heads), hers 0.376 (2.66)"
+ },
+ "face_ratios (w01, ear_width = 315 px ear centre to ear centre)": {
+  "eye_spacing/ear_width": 0.421,
+  "iris_radius/ear_width": 0.075,
+  "eye_white_width/ear_width": 0.195,
+  "mouth_below_eyes/ear_width": 0.175,
+  "chin_below_eyes/ear_width": 0.34,
+  "mouth_width/ear_width": 0.121,
+  "face_width/ear_width": 0.857,
+  "compare_girl": "girl: eye_spacing 0.365, mouth_below_eyes 0.173, chin_below_eyes 0.301 (her measurements.json): her eyes are set wider and are larger, and her lower face is longer"
+ },
+ "scale": {
+  "evidence": "w03 top viewport: her 955 px (sole 1267 to bun top 312) vs girl 983 px (to bun top 284) vs boy 976 px (to hair top 296); same floor line, perspective camera at chest height (+-1 %)",
+  "ratio_to_girl": 0.972,
+  "ratio_to_boy": 0.978,
+  "total_height_m_if_girl_is_1.10": 1.069,
+  "eye_line_from_feet": 0.717,
+  "eye_height_ratio_to_girl": 0.976,
+  "note": "girl total 1.10 m is the girl's measurements.json value; hers follows from it. Estimate, owner to confirm"
+ }
+}

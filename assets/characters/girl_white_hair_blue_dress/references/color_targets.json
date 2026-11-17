@@ -1,0 +1,251 @@
+{
+ "hair": {
+  "srgb": [
+   203,
+   190,
+   172
+  ],
+  "source": "w01 (444,262) +-8px, patch sd 6.6",
+  "alt": [
+   {
+    "srgb": [
+     220,
+     209,
+     197
+    ],
+    "source": "w01 (560,150) +-10px, patch sd 14.9"
+   },
+   {
+    "srgb": [
+     186,
+     177,
+     166
+    ],
+    "source": "w01 (250,470) +-6px, patch sd 17.5"
+   }
+  ],
+  "note": "off-white/cream felt; lit fringe; buns brighter, side locks in shade"
+ },
+ "skin": {
+  "srgb": [
+   220,
+   194,
+   175
+  ],
+  "source": "w01 (444,312) +-5px, patch sd 2.5",
+  "alt": [
+   {
+    "srgb": [
+     201,
+     165,
+     145
+    ],
+    "source": "w01 (444,445) +-5px, patch sd 4.7"
+   }
+  ]
+ },
+ "cheeks_blush": {
+  "srgb": [
+   212,
+   161,
+   139
+  ],
+  "source": "w01 (358,398) +-5px, patch sd 6.2",
+  "note": "R cheek is the warm-lit side; L cheek centre is paler (230,187,170) w01 (530,398)"
+ },
+ "iris": {
+  "srgb": [
+   63,
+   95,
+   124
+  ],
+  "source": "w01 (378,370) +-4px, patch sd 39.3",
+  "dark": [
+   18,
+   21,
+   25
+  ],
+  "note": "medium blue, lighter at the bottom, near-black top (lid shadow + pupil); cross-check M_Eye_Glass w10 (1317,1800) [42, 56, 83]"
+ },
+ "sclera": {
+  "srgb": [
+   177,
+   163,
+   149
+  ],
+  "source": "w01 (346,358) +-2px, patch sd 5.2",
+  "note": "in shade at the eye corner; the sclera reads near-white in lit areas"
+ },
+ "mouth_interior": {
+  "srgb": [
+   153,
+   80,
+   64
+  ],
+  "source": "w01 (444,413) +-2px, patch sd 32.0"
+ },
+ "dress": {
+  "srgb": [
+   154,
+   175,
+   186
+  ],
+  "source": "w01 (444,575) +-10px, patch sd 6.4",
+  "alt": [
+   {
+    "srgb": [
+     126,
+     148,
+     169
+    ],
+    "source": "w01 (444,770) +-10px, patch sd 18.2"
+   }
+  ],
+  "note": "muted powder blue; skirt is darker from its cable-knit relief"
+ },
+ "collar": {
+  "srgb": [
+   161,
+   178,
+   186
+  ],
+  "source": "w01 (420,516) +-4px, patch sd 6.9",
+  "note": "same yarn as the dress, slightly lighter (lit, flat)"
+ },
+ "cuffs": {
+  "srgb": [
+   149,
+   162,
+   169
+  ],
+  "source": "w01 (276,735) +-4px, patch sd 13.9"
+ },
+ "tights": {
+  "srgb": [
+   197,
+   187,
+   177
+  ],
+  "source": "w01 (385,955) +-6px, patch sd 4.1",
+  "note": "off-white cotton knit"
+ },
+ "boots": {
+  "srgb": [
+   162,
+   124,
+   90
+  ],
+  "source": "w01 (372,1085) +-10px, patch sd 23.9",
+  "note": "light camel/tan shaggy fleece; w10 swatch is darker"
+ },
+ "bow": {
+  "srgb": [
+   90,
+   109,
+   130
+  ],
+  "source": "w01 (318,160) +-4px, patch sd 14.7",
+  "alt": [
+   {
+    "srgb": [
+     77,
+     91,
+     116
+    ],
+    "source": "w10 (608,416) +-5px, patch sd 28.2"
+   }
+  ],
+  "note": "dusty denim blue felt, darker and greyer than the dress"
+ },
+ "swatches_w10": {
+  "hair_sphere": {
+   "srgb": [
+    193,
+    181,
+    172
+   ],
+   "source": "w10 (1225,308) +-20px, patch sd 13.8"
+  },
+  "skin_sphere": {
+   "srgb": [
+    198,
+    162,
+    149
+   ],
+   "source": "w10 (1225,550) +-20px, patch sd 10.5"
+  },
+  "dress_sphere": {
+   "srgb": [
+    113,
+    128,
+    146
+   ],
+   "source": "w10 (1225,825) +-20px, patch sd 22.9"
+  },
+  "tights_sphere": {
+   "srgb": [
+    199,
+    188,
+    181
+   ],
+   "source": "w10 (1225,1067) +-20px, patch sd 12.4"
+  },
+  "boots_sphere": {
+   "srgb": [
+    124,
+    85,
+    60
+   ],
+   "source": "w10 (1225,1317) +-20px, patch sd 16.6"
+  },
+  "hair_flat": {
+   "srgb": [
+    204,
+    193,
+    186
+   ],
+   "source": "w10 (1392,308) +-20px, patch sd 7.1"
+  },
+  "skin_flat": {
+   "srgb": [
+    204,
+    171,
+    157
+   ],
+   "source": "w10 (1392,550) +-20px, patch sd 3.7"
+  },
+  "dress_flat": {
+   "srgb": [
+    134,
+    150,
+    170
+   ],
+   "source": "w10 (1392,825) +-20px, patch sd 19.0"
+  },
+  "tights_flat": {
+   "srgb": [
+    205,
+    195,
+    187
+   ],
+   "source": "w10 (1392,1067) +-20px, patch sd 14.9"
+  },
+  "boots_flat": {
+   "srgb": [
+    130,
+    91,
+    67
+   ],
+   "source": "w10 (1392,1317) +-20px, patch sd 20.0"
+  },
+  "eye_glass": {
+   "srgb": [
+    42,
+    56,
+    83
+   ],
+   "source": "w10 (1317,1800) +-12px, patch sd 12.7"
+  }
+ },
+ "note": "Median sRGB of sampled patches. w01 = identity render (primary); w10 = look-dev swatch spheres (lit) and flat swatches, for calibration cross-checks. Shaded patches are marked; calibrate against w01 under the shared render calibration."
+}

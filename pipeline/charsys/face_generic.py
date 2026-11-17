@@ -33,6 +33,7 @@ from materials import builder as MATERIALS
 HERE = os.path.dirname(os.path.abspath(__file__))
 LIBRARY = os.path.join(HERE, "face_library", "expressions.json")
 SIDES = ((1, "L"), (-1, "R"))  # +x = the character's left
+GENERATOR_VERSIONS = ("face_generic/1",)  # versions implemented here (versions.py; released = immutable)
 INBETWEENS = (0.25, 0.5, 0.75)  # in-between keys "<key>@25/50/75" for rotation-type motions (blink)
 
 

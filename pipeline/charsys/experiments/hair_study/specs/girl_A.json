@@ -1,0 +1,699 @@
+{
+ "schema": "plush-studio.hair-study/1",
+ "approach": "A",
+ "label": "strand/lock groom: yarn locks swept to a yarn bun, yarn fringe locks, 42 felt ringlet locks",
+ "character_spec": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.spec.json",
+ "head_object": "body_skin",
+ "frame": {
+  "centre": [
+   0.0,
+   -0.003996400000000001,
+   0.8250044000000001
+  ],
+  "radii": [
+   0.1419983,
+   0.1350046,
+   0.1449956
+  ]
+ },
+ "hair": {
+  "generator": "groom/1",
+  "seed": 49,
+  "scalp_offset_m": 0.008,
+  "finish": "felt",
+  "yarn": {
+   "plies": 2,
+   "depth": 0.24,
+   "twist_per_m": 95.0,
+   "seg": 12,
+   "step_m": 0.003,
+   "fibre_lean": 0.6
+  },
+  "binding": {
+   "blend_z": [
+    0.6,
+    0.72
+   ]
+  },
+  "fibres": {
+   "slots": [
+    "hair"
+   ],
+   "layers": [
+    {
+     "name": "felt",
+     "overrides": {
+      "fibres": {
+       "density_per_cm2": 5.0,
+       "length_mm": 2.8,
+       "curl": 0.5,
+       "lean": 0.5
+      },
+      "surface": {
+       "saturation_compensation": 1.0
+      }
+     }
+    },
+    {
+     "name": "flyaways",
+     "overrides": {
+      "fibres": {
+       "density_per_cm2": 0.06,
+       "length_mm": 9.0,
+       "curl": 0.9,
+       "lean": 0.7
+      },
+      "surface": {
+       "saturation_compensation": 1.0
+      }
+     }
+    }
+   ]
+  },
+  "structures": [
+   {
+    "type": "scalp_cap",
+    "name": "cap",
+    "offset": 0.004,
+    "face_cut": [
+     -0.06,
+     0.9
+    ],
+    "hairline": [
+     [
+      0,
+      0.905
+     ],
+     [
+      40,
+      0.88
+     ],
+     [
+      70,
+      0.8
+     ],
+     [
+      100,
+      0.74
+     ],
+     [
+      140,
+      0.71
+     ],
+     [
+      180,
+      0.7
+     ]
+    ]
+   },
+   {
+    "type": "bun",
+    "name": "bun",
+    "buns": [
+     {
+      "az": 180,
+      "el": 74,
+      "lift": 0.0,
+      "radius": 0.088,
+      "height": 0.14,
+      "tilt": 0.6,
+      "wrap": "ccw",
+      "turns": 0.9,
+      "ropes": 5,
+      "rope_thick": 0.046,
+      "felt_radii": [
+       1.0,
+       1.0,
+       1.05
+      ],
+      "felt_lobes": [
+       {
+        "offset": [
+         0.1,
+         0.62,
+         0.05
+        ],
+        "radii": [
+         0.72,
+         0.66,
+         0.85
+        ],
+        "swirl": 1.2
+       },
+       {
+        "offset": [
+         0.1,
+         -0.68,
+         0.0
+        ],
+        "radii": [
+         0.72,
+         0.7,
+         0.85
+        ],
+        "swirl": -1.0
+       },
+       {
+        "offset": [
+         -0.4,
+         0.0,
+         0.25
+        ],
+        "radii": [
+         0.66,
+         0.72,
+         0.75
+        ],
+        "swirl": 0.8
+       }
+      ]
+     }
+    ],
+    "felt": {
+     "grooves": {
+      "count": 9,
+      "depth": 0.5,
+      "sharpness": 0.75,
+      "wander": 0.5,
+      "wavelength": 0.6
+     },
+     "lumps": {
+      "amount": 0.08,
+      "scale": 1.1
+     },
+     "resolution": [
+      72,
+      40
+     ]
+    },
+    "finish": "yarn"
+   },
+   {
+    "width": [
+     0.02,
+     0.026
+    ],
+    "thick": [
+     0.012,
+     0.016
+    ],
+    "lift": [
+     0.004,
+     0.01
+    ],
+    "target": {
+     "bun": 0
+    },
+    "finish": "yarn",
+    "type": "sweep",
+    "name": "sweep_front",
+    "count": 30,
+    "az": [
+     -75,
+     75
+    ],
+    "el_root": [
+     36,
+     44
+    ]
+   },
+   {
+    "width": [
+     0.02,
+     0.026
+    ],
+    "thick": [
+     0.012,
+     0.016
+    ],
+    "lift": [
+     0.004,
+     0.01
+    ],
+    "target": {
+     "bun": 0
+    },
+    "finish": "yarn",
+    "type": "sweep",
+    "name": "sweep_side_l",
+    "count": 12,
+    "az": [
+     75,
+     130
+    ],
+    "el_root": [
+     4,
+     14
+    ]
+   },
+   {
+    "width": [
+     0.02,
+     0.026
+    ],
+    "thick": [
+     0.012,
+     0.016
+    ],
+    "lift": [
+     0.004,
+     0.01
+    ],
+    "target": {
+     "bun": 0
+    },
+    "finish": "yarn",
+    "type": "sweep",
+    "name": "sweep_side_r",
+    "count": 12,
+    "az": [
+     -130,
+     -75
+    ],
+    "el_root": [
+     4,
+     14
+    ]
+   },
+   {
+    "width": [
+     0.02,
+     0.026
+    ],
+    "thick": [
+     0.012,
+     0.016
+    ],
+    "lift": [
+     0.004,
+     0.01
+    ],
+    "target": {
+     "bun": 0
+    },
+    "finish": "yarn",
+    "type": "sweep",
+    "name": "sweep_back",
+    "count": 26,
+    "az": [
+     130,
+     230
+    ],
+    "el_root": [
+     12,
+     18
+    ]
+   },
+   {
+    "type": "fringe",
+    "name": "fringe",
+    "finish": "yarn",
+    "root_az": [
+     -20,
+     -20,
+     -21,
+     -22,
+     -23,
+     -24,
+     -26
+    ],
+    "root_el": [
+     56,
+     70
+    ],
+    "tip_x": [
+     0.0,
+     0.03,
+     0.06,
+     0.09,
+     0.115,
+     -0.05,
+     -0.095
+    ],
+    "tip_z": [
+     0.885,
+     0.88,
+     0.87,
+     0.85,
+     0.82,
+     0.88,
+     0.85
+    ],
+    "tip_gap": 0.014,
+    "bulge": 0.03,
+    "width": [
+     0.026,
+     0.032
+    ],
+    "thick": [
+     0.016,
+     0.02
+    ],
+    "tip_frac": 0.5
+   },
+   {
+    "type": "locks",
+    "name": "side_curls",
+    "style": "curly",
+    "mirror": true,
+    "count": 4,
+    "az": [
+     90,
+     114
+    ],
+    "el_root": [
+     18,
+     30
+    ],
+    "el_leave": -5,
+    "lift": [
+     0.004,
+     0.014
+    ],
+    "hang_radii": [
+     0.18,
+     0.165
+    ],
+    "z_end": [
+     0.56,
+     0.66
+    ],
+    "flare": 0.05,
+    "width": [
+     0.028,
+     0.034
+    ],
+    "thick": [
+     0.022,
+     0.027
+    ],
+    "tip_frac": 0.6,
+    "curl": {
+     "radius": 0.012,
+     "pitch": 0.1,
+     "radius_growth": 0.25,
+     "start": 0.03,
+     "direction": "alternate",
+     "jitter": 0.3,
+     "start_jitter": 0.05,
+     "wobble": 0.3,
+     "wobble_wavelength": 0.16,
+     "sway": 0.01,
+     "ellipse": 0.3,
+     "tip": {
+      "from": 0.62,
+      "radius": 1.4,
+      "pitch": 0.5,
+      "ellipse": 1.0
+     }
+    },
+    "hang_jitter": 0.06,
+    "felt": {
+     "seg": 16,
+     "irregularity": 0.1,
+     "wavelength": 0.15,
+     "flatten": 0.15,
+     "flatten_twist": 1.2
+    },
+    "finish": "felt"
+   },
+   {
+    "type": "locks",
+    "name": "back_curls",
+    "style": "curly",
+    "count": 24,
+    "az": [
+     124,
+     236
+    ],
+    "el_root": [
+     16,
+     22
+    ],
+    "el_leave": -12,
+    "lift": [
+     0.0,
+     0.006
+    ],
+    "hang_radii": [
+     0.19,
+     0.175
+    ],
+    "z_end": [
+     0.42,
+     0.54
+    ],
+    "flare": 0.06,
+    "width": [
+     0.028,
+     0.034
+    ],
+    "thick": [
+     0.022,
+     0.027
+    ],
+    "tip_frac": 0.6,
+    "curl": {
+     "radius": 0.012,
+     "pitch": 0.1,
+     "radius_growth": 0.25,
+     "start": 0.03,
+     "direction": "alternate",
+     "jitter": 0.3,
+     "start_jitter": 0.05,
+     "wobble": 0.3,
+     "wobble_wavelength": 0.16,
+     "sway": 0.01,
+     "ellipse": 0.3,
+     "tip": {
+      "from": 0.62,
+      "radius": 1.4,
+      "pitch": 0.5,
+      "ellipse": 1.0
+     }
+    },
+    "hang_jitter": 0.08,
+    "rest_radii": [
+     0.17,
+     0.14
+    ],
+    "rest_z": 0.66,
+    "felt": {
+     "seg": 16,
+     "irregularity": 0.1,
+     "wavelength": 0.15,
+     "flatten": 0.15,
+     "flatten_twist": 1.2
+    },
+    "mirror": false,
+    "finish": "felt"
+   },
+   {
+    "type": "locks",
+    "name": "nape_curls",
+    "style": "curly",
+    "count": 10,
+    "az": [
+     140,
+     220
+    ],
+    "el_root": [
+     -14,
+     -6
+    ],
+    "el_leave": -32,
+    "lift": [
+     0.0,
+     0.006
+    ],
+    "hang_radii": [
+     0.16,
+     0.16
+    ],
+    "z_end": [
+     0.46,
+     0.56
+    ],
+    "flare": 0.08,
+    "width": [
+     0.028,
+     0.034
+    ],
+    "thick": [
+     0.022,
+     0.027
+    ],
+    "tip_frac": 0.6,
+    "curl": {
+     "radius": 0.012,
+     "pitch": 0.1,
+     "radius_growth": 0.25,
+     "start": 0.03,
+     "direction": "alternate",
+     "jitter": 0.3,
+     "start_jitter": 0.05,
+     "wobble": 0.3,
+     "wobble_wavelength": 0.16,
+     "sway": 0.01,
+     "ellipse": 0.3,
+     "tip": {
+      "from": 0.62,
+      "radius": 1.4,
+      "pitch": 0.5,
+      "ellipse": 1.0
+     }
+    },
+    "hang_jitter": 0.08,
+    "rest_radii": [
+     0.095,
+     0.095
+    ],
+    "rest_z": 0.66,
+    "felt": {
+     "seg": 16,
+     "irregularity": 0.1,
+     "wavelength": 0.15,
+     "flatten": 0.15,
+     "flatten_twist": 1.2
+    },
+    "mirror": false,
+    "finish": "felt"
+   },
+   {
+    "type": "tie",
+    "name": "band",
+    "bun": 0,
+    "height_frac": 0.2,
+    "radius_scale": 1.02,
+    "tube": 0.01,
+    "width_scale": 1.7,
+    "material": "hair_band"
+   },
+   {
+    "type": "flowers",
+    "name": "flowers",
+    "bun": 0,
+    "petals": 5,
+    "material": "hair_flower",
+    "centre_material": "hair_flower_centre",
+    "items": [
+     {
+      "around_deg": 50,
+      "height_frac": 0.25,
+      "size": 0.036,
+      "out": 0.024
+     },
+     {
+      "around_deg": 85,
+      "height_frac": 0.38,
+      "size": 0.032,
+      "out": 0.024
+     },
+     {
+      "around_deg": 22,
+      "height_frac": 0.45,
+      "size": 0.028,
+      "out": 0.024
+     }
+    ]
+   }
+  ],
+  "dynamics": {
+   "enabled": true,
+   "substep_hz": 240,
+   "preroll_s": 1.0,
+   "defaults": {
+    "stiffness": 90.0,
+    "stiffness_tip": 60.0,
+    "damping": 7.0,
+    "gravity": 0.5,
+    "drag": 0.8,
+    "limit_deg": 30.0,
+    "radius": 0.014
+   },
+   "structures": {
+    "side_curls": {
+     "bones": [
+      3,
+      4
+     ],
+     "bone_length": 0.06
+    },
+    "back_curls": {
+     "bones": [
+      3,
+      5
+     ],
+     "bone_length": 0.07
+    },
+    "nape_curls": {
+     "bones": [
+      3,
+      5
+     ],
+     "bone_length": 0.07
+    },
+    "bun": {
+     "bones": 1,
+     "stiffness": 140.0,
+     "stiffness_tip": 140.0,
+     "damping": 9.0,
+     "gravity": 0.3,
+     "limit_deg": 12.0,
+     "radius": 0.0
+    }
+   },
+   "colliders": [
+    {
+     "name": "head",
+     "type": "sphere",
+     "bone": "head",
+     "head_offset": [
+      0.0,
+      0.0,
+      -0.004
+     ],
+     "radius": 0.128
+    },
+    {
+     "name": "torso",
+     "type": "capsule",
+     "bone": "chest",
+     "a": [
+      0.0,
+      0.004,
+      0.4
+     ],
+     "b": [
+      0.0,
+      0.004,
+      0.56
+     ],
+     "radius": 0.082
+    },
+    {
+     "name": "shoulder_l",
+     "type": "sphere",
+     "bone": "chest",
+     "head_offset": [
+      0.1,
+      0.0,
+      -0.24
+     ],
+     "radius": 0.045
+    },
+    {
+     "name": "shoulder_r",
+     "type": "sphere",
+     "bone": "chest",
+     "head_offset": [
+      -0.1,
+      0.0,
+      -0.24
+     ],
+     "radius": 0.045
+    }
+   ]
+  }
+ }
+}

@@ -1,0 +1,1409 @@
+{
+ "asset_id": "girl_white_hair_blue_dress",
+ "created": "2026-11-17",
+ "task": "T-057",
+ "note": "Crops are in upload pixels [x0,y0,x1,y1]; views/<id>.jpg is that crop saved as JPEG at saved_scale (<=1). Uploads are read-only.",
+ "citation_keys": "w01..w15 = uploads/NN_*.webp (e.g. w04 = 04_facial_rig_expression_blueprint.webp); video keys WT fNNN / PB fNNN as in docs/characters/REFERENCE_INVENTORY.md",
+ "yaw_convention": "0 = camera in front; +90 = camera on the character's left (face points screen-left); 180 = behind (same as girl_auburn_bun_glasses)",
+ "decisions_proposed": {
+  "id": "girl_white_hair_blue_dress",
+  "scale": "about 2-3 % shorter than the boy and the girl (w03: 955 px vs 976/983 px sole to top); eye line about 2.4 % of her height lower than the girl's",
+  "hair_accessory": "blue felt BOW on her right side in front of the right bun (w01,w02,w03,w04,w10,w13,w14,w15, both videos); w05-w08 show a 4-petal flower instead: OPEN conflict, owner to decide",
+  "neutral_expression": "OPEN: w01/w03/w10/w15 neutral standing = small open smile with upper teeth; w02 Neutral tile, w04 NEUTRAL, w14 e1 = closed soft smile (as the girl's decision would suggest); owner to decide"
+ },
+ "priority_rules": [
+  "w01 = identity, colour and silhouette authority (= char_A_white_hair)",
+  "w02 top row + w15 top row = turnaround/silhouette",
+  "w07/w08 = hair construction and motion (accessory shape excepted)",
+  "w09/w10 = garments and materials (w01 colours win; w09 skirt/boot surface conflicts)",
+  "w04 + w14 = expression targets",
+  "w03 = world scale only",
+  "w11 false colours are never colour sources",
+  "printed numbers on the sheets (e.g. 'DIMENSION: 220 cm', '3.0m', '150m') are ignored (inconsistent)"
+ ],
+ "conflicts": "see docs/characters/girl_white_hair_blue_dress/REFERENCE_BEHAVIOUR.md section 8",
+ "missing_data": [
+  "back of the head at high elevation / top view of the buns (only w02 hair construction from above, small)",
+  "true right profile full body (w02 'Right' is a second left view; w14 head side is the only right profile)",
+  "closed-mouth neutral in a full-body view",
+  "soles from below (w02 'Stitching' tile only)",
+  "her own hands in close-up (w12 shows generic white hands)",
+  "any reference of her speaking with audio"
+ ],
+ "uploads": [
+  {
+   "file": "uploads/01_identity_front.webp",
+   "key": "w01",
+   "size": [
+    896,
+    1200
+   ],
+   "sha256": "4f0db4d4a40112f2012998bb8a0c071f14bba94e961dbf139fd78e8d64a9d98d",
+   "role": "identity authority (face, colours, silhouette)",
+   "same_file_as": "docs/references/char_A_white_hair.webp"
+  },
+  {
+   "file": "uploads/02_character_sheet.webp",
+   "key": "w02",
+   "size": [
+    896,
+    1200
+   ],
+   "sha256": "9720027da10fe22d78f87b464076ccfff29b2cbfb62c92c681493091a13905b6",
+   "role": "turnaround + proportions + 5 face tiles + hair/clothing breakdown"
+  },
+  {
+   "file": "uploads/03_lineup_three_characters_rigged.webp",
+   "key": "w03",
+   "size": [
+    1493,
+    2000
+   ],
+   "sha256": "336eb64787887f36b9a9345cebd2ad732f0d5ed59521ef9337961ef3422790c6",
+   "role": "world scale only",
+   "same_file_as": "assets/characters/girl_auburn_bun_glasses/references/uploads/ref_32.webp = docs/references/boy_pipeline/10_rig_overview_mockup_all_three.webp"
+  },
+  {
+   "file": "uploads/04_facial_rig_expression_blueprint.webp",
+   "key": "w04",
+   "size": [
+    1493,
+    2000
+   ],
+   "sha256": "51a6eeba821cc20a0568af2b10b4a33c4f28c6e0081f8c6bd9de29c29bd0f650",
+   "role": "face rig + 15-shape expression matrix (main expression authority with 14)"
+  },
+  {
+   "file": "uploads/05_body_topology_deformation_blueprint.webp",
+   "key": "w05",
+   "size": [
+    1493,
+    2000
+   ],
+   "sha256": "5f7fff5f0604141fce5149adc81a743a7e5d559e6259ca46c2c9d57272be0c5e",
+   "role": "construction + technical poses"
+  },
+  {
+   "file": "uploads/06_skeleton_skin_weight_blueprint.webp",
+   "key": "w06",
+   "size": [
+    1493,
+    2000
+   ],
+   "sha256": "e7fc37443f07ddc163332f9b29f9976ac75c223129f8b6f589c910f9e915755d",
+   "role": "construction only",
+   "same_file_as": "assets/characters/girl_auburn_bun_glasses/references/uploads/ref_37.webp"
+  },
+  {
+   "file": "uploads/07_hair_geometry_groom_blueprint.webp",
+   "key": "w07",
+   "size": [
+    1493,
+    2000
+   ],
+   "sha256": "3d1ccf168c95077b04440c30327ea10c96288e4d9db49190efeca60c028e525b",
+   "role": "hair construction authority (but flower accessory, see conflicts)"
+  },
+  {
+   "file": "uploads/08_hair_rig_secondary_motion_blueprint.webp",
+   "key": "w08",
+   "size": [
+    1493,
+    2000
+   ],
+   "sha256": "b16fd31363e6d778f9cf60aa4261a55ddc1f369ade995a57d122c1d4a3c0c11b",
+   "role": "hair rig + secondary motion intent"
+  },
+  {
+   "file": "uploads/09_dress_construction_deformation_blueprint.webp",
+   "key": "w09",
+   "size": [
+    1493,
+    2000
+   ],
+   "sha256": "1a396f69dd132841a62e1ac2248c21cd4c6517c43a7ff416843f0628a1bb0140",
+   "role": "dress/boot construction (plain skirt, smooth boots: see conflicts)"
+  },
+  {
+   "file": "uploads/10_material_texture_specification.webp",
+   "key": "w10",
+   "size": [
+    1493,
+    2000
+   ],
+   "sha256": "2b9db07c3111a3ba6eb8dd5a9465ae04a25267fc182408acfc494c5b2b7197eb",
+   "role": "materials authority (with 01 for colour)"
+  },
+  {
+   "file": "uploads/11_uv_layout_texel_density_blueprint.webp",
+   "key": "w11",
+   "size": [
+    1493,
+    2000
+   ],
+   "sha256": "4eda9314518ee608a325d6e3526aa7cd3826b6a33135d3f34abb28cb453092b7",
+   "role": "UV only; false colours"
+  },
+  {
+   "file": "uploads/12_hand_anatomy_object_interaction_blueprint.webp",
+   "key": "w12",
+   "size": [
+    1493,
+    2000
+   ],
+   "sha256": "7480016869dc620c372f1e68e75c9bb381e782957dd04afa557fff2ca9d03185",
+   "role": "generic hands; behaviour: grasp types"
+  },
+  {
+   "file": "uploads/13_pose_deformation_validation.webp",
+   "key": "w13",
+   "size": [
+    1493,
+    2000
+   ],
+   "sha256": "55af8c5f040e379f01750c9c5aa53b1af7582bea1ed61c4ce522cddc60a2076e",
+   "role": "poses + facial tests"
+  },
+  {
+   "file": "uploads/14_face_expression_mouth_shape_grid.webp",
+   "key": "w14",
+   "size": [
+    1493,
+    2000
+   ],
+   "sha256": "6b7f10b3c72a70d0d037820dbce2598a708bdc924210accd339f3927ad2aa31f",
+   "role": "expression + mouth-shape authority (with 04)"
+  },
+  {
+   "file": "uploads/15_canonical_identity_production_checklist.webp",
+   "key": "w15",
+   "size": [
+    1493,
+    2000
+   ],
+   "sha256": "4ade13c7bf09e0ed68985c6dc0f674433190a9b728a86fcfdf68d493964241ec",
+   "role": "canonical identity check + animation tiles"
+  }
+ ],
+ "views": [
+  {
+   "id": "id01_full",
+   "upload": 1,
+   "crop": [
+    200,
+    20,
+    680,
+    1180
+   ],
+   "kind": "turnaround",
+   "yaw_deg": 0,
+   "elevation_deg": 5,
+   "silhouette": true,
+   "pose": "relaxed stand, arms down",
+   "note": "identity authority; transparent background (alpha); open smile with upper teeth; = docs/references/char_A_white_hair.webp (same SHA-256)",
+   "saved_scale": 0.7759
+  },
+  {
+   "id": "id01_face",
+   "upload": 1,
+   "crop": [
+    270,
+    230,
+    620,
+    490
+   ],
+   "kind": "face",
+   "yaw_deg": 0,
+   "note": "face landmark source (landmarks.json)",
+   "saved_scale": 1.0
+  },
+  {
+   "id": "s02_front",
+   "upload": 2,
+   "crop": [
+    15,
+    38,
+    166,
+    314
+   ],
+   "kind": "turnaround",
+   "yaw_deg": 0,
+   "elevation_deg": 5,
+   "silhouette": true,
+   "pose": "A-pose, arms ~35 deg",
+   "note": "label 'Front'",
+   "saved_scale": 1.0
+  },
+  {
+   "id": "s02_front_left",
+   "upload": 2,
+   "crop": [
+    184,
+    38,
+    318,
+    314
+   ],
+   "kind": "turnaround",
+   "yaw_deg": -30,
+   "elevation_deg": 5,
+   "silhouette": true,
+   "pose": "A-pose, arms ~35 deg",
+   "note": "label 'Front-Left': face points screen-right, bow moves to centre: camera on her RIGHT side (same label use as the girl's #30)",
+   "saved_scale": 1.0
+  },
+  {
+   "id": "s02_left",
+   "upload": 2,
+   "crop": [
+    342,
+    38,
+    441,
+    314
+   ],
+   "kind": "turnaround",
+   "yaw_deg": 90,
+   "elevation_deg": 5,
+   "silhouette": true,
+   "pose": "A-pose, arms ~35 deg",
+   "note": "label 'Left': profile facing screen-left (camera on her left)",
+   "saved_scale": 1.0
+  },
+  {
+   "id": "s02_right",
+   "upload": 2,
+   "crop": [
+    470,
+    38,
+    566,
+    314
+   ],
+   "kind": "turnaround",
+   "yaw_deg": 80,
+   "elevation_deg": 5,
+   "silhouette": true,
+   "pose": "A-pose, arms ~35 deg",
+   "note": "label 'Right' but face points screen-left and no bow: a second LEFT-side view (as the girl's #30); true right profile only in 14 (f14_head_side)",
+   "saved_scale": 1.0
+  },
+  {
+   "id": "s02_back_right",
+   "upload": 2,
+   "crop": [
+    577,
+    38,
+    727,
+    314
+   ],
+   "kind": "turnaround",
+   "yaw_deg": 145,
+   "elevation_deg": 5,
+   "silhouette": true,
+   "pose": "A-pose, arms ~35 deg",
+   "note": "label 'Back-Right'",
+   "saved_scale": 1.0
+  },
+  {
+   "id": "s02_back",
+   "upload": 2,
+   "crop": [
+    734,
+    38,
+    884,
+    314
+   ],
+   "kind": "turnaround",
+   "yaw_deg": 180,
+   "elevation_deg": 5,
+   "silhouette": true,
+   "pose": "A-pose, arms ~35 deg",
+   "note": "label 'Back'",
+   "saved_scale": 1.0
+  },
+  {
+   "id": "s02_proportion",
+   "upload": 2,
+   "crop": [
+    28,
+    368,
+    205,
+    765
+   ],
+   "kind": "proportion",
+   "note": "proportion sheet; printed labels Height/Length/1/6/Arm/2mo/leg are illegible/inconsistent: ignored, figure measured instead",
+   "saved_scale": 1.0
+  },
+  {
+   "id": "s02_face_neutral",
+   "upload": 2,
+   "crop": [
+    262,
+    368,
+    448,
+    510
+   ],
+   "kind": "face_tile",
+   "label": "Neutral",
+   "saved_scale": 1.0
+  },
+  {
+   "id": "s02_face_happy",
+   "upload": 2,
+   "crop": [
+    262,
+    532,
+    352,
+    628
+   ],
+   "kind": "face_tile",
+   "label": "Happy",
+   "saved_scale": 1.0
+  },
+  {
+   "id": "s02_face_sad",
+   "upload": 2,
+   "crop": [
+    356,
+    532,
+    448,
+    628
+   ],
+   "kind": "face_tile",
+   "label": "Sad",
+   "saved_scale": 1.0
+  },
+  {
+   "id": "s02_face_surprised",
+   "upload": 2,
+   "crop": [
+    262,
+    652,
+    352,
+    748
+   ],
+   "kind": "face_tile",
+   "label": "Surprised",
+   "saved_scale": 1.0
+  },
+  {
+   "id": "s02_face_angry",
+   "upload": 2,
+   "crop": [
+    356,
+    652,
+    448,
+    748
+   ],
+   "kind": "face_tile",
+   "label": "Angry",
+   "saved_scale": 1.0
+  },
+  {
+   "id": "s02_hair_construction",
+   "upload": 2,
+   "crop": [
+    478,
+    368,
+    888,
+    555
+   ],
+   "kind": "hair",
+   "note": "wig shells: fringe+top, long back mass, bow placement, buns from above, side view",
+   "saved_scale": 1.0
+  },
+  {
+   "id": "s02_clothing",
+   "upload": 2,
+   "crop": [
+    478,
+    585,
+    888,
+    815
+   ],
+   "kind": "clothing",
+   "note": "dress front/back (back zip/seam), collar, sleeve cuffs, cable-knit swatch, fur swatch, boots front/side/back, sole stitching",
+   "saved_scale": 1.0
+  },
+  {
+   "id": "s02_technical",
+   "upload": 2,
+   "crop": [
+    8,
+    820,
+    460,
+    1200
+   ],
+   "kind": "construction",
+   "note": "skeleton front/side, face guide, hair/dress wireframes",
+   "saved_scale": 1.0
+  },
+  {
+   "id": "s02_tpose_modular",
+   "upload": 2,
+   "crop": [
+    470,
+    845,
+    892,
+    1196
+   ],
+   "kind": "construction",
+   "note": "T-pose; modular parts (bald head, dress body, separate legs/boots, hair cap)",
+   "saved_scale": 1.0
+  },
+  {
+   "id": "l03_top",
+   "upload": 3,
+   "crop": [
+    60,
+    260,
+    1400,
+    1300
+   ],
+   "kind": "lineup",
+   "note": "world scale: boy, girl, her; same file as girl ref_32 and boy #10 (SHA-256)",
+   "saved_scale": 0.6716
+  },
+  {
+   "id": "r04_front",
+   "upload": 4,
+   "crop": [
+    0,
+    200,
+    920,
+    940
+   ],
+   "kind": "face",
+   "yaw_deg": 0,
+   "note": "facial rig controls (front)",
+   "saved_scale": 0.9783
+  },
+  {
+   "id": "r04_3q",
+   "upload": 4,
+   "crop": [
+    920,
+    120,
+    1490,
+    940
+   ],
+   "kind": "face",
+   "yaw_deg": 30,
+   "note": "facial rig controls (3/4)",
+   "saved_scale": 1.0
+  },
+  {
+   "id": "m04_neutral",
+   "upload": 4,
+   "crop": [
+    60,
+    1046,
+    322,
+    1240
+   ],
+   "kind": "face_tile",
+   "label": "NEUTRAL",
+   "grid": [
+    0,
+    0
+   ],
+   "saved_scale": 1.0
+  },
+  {
+   "id": "m04_blink_both",
+   "upload": 4,
+   "crop": [
+    334,
+    1046,
+    596,
+    1240
+   ],
+   "kind": "face_tile",
+   "label": "BLINK (BOTH)",
+   "grid": [
+    0,
+    1
+   ],
+   "saved_scale": 1.0
+  },
+  {
+   "id": "m04_blink_l",
+   "upload": 4,
+   "crop": [
+    606,
+    1046,
+    868,
+    1240
+   ],
+   "kind": "face_tile",
+   "label": "BLINK L",
+   "grid": [
+    0,
+    2
+   ],
+   "saved_scale": 1.0
+  },
+  {
+   "id": "m04_blink_r",
+   "upload": 4,
+   "crop": [
+    876,
+    1046,
+    1138,
+    1240
+   ],
+   "kind": "face_tile",
+   "label": "BLINK R",
+   "grid": [
+    0,
+    3
+   ],
+   "saved_scale": 1.0
+  },
+  {
+   "id": "m04_squint",
+   "upload": 4,
+   "crop": [
+    60,
+    1280,
+    322,
+    1474
+   ],
+   "kind": "face_tile",
+   "label": "SQUINT",
+   "grid": [
+    1,
+    0
+   ],
+   "saved_scale": 1.0
+  },
+  {
+   "id": "m04_wide_open",
+   "upload": 4,
+   "crop": [
+    334,
+    1280,
+    596,
+    1474
+   ],
+   "kind": "face_tile",
+   "label": "WIDE-OPEN",
+   "grid": [
+    1,
+    1
+   ],
+   "saved_scale": 1.0
+  },
+  {
+   "id": "m04_smile",
+   "upload": 4,
+   "crop": [
+    606,
+    1280,
+    868,
+    1474
+   ],
+   "kind": "face_tile",
+   "label": "SMILE",
+   "grid": [
+    1,
+    2
+   ],
+   "saved_scale": 1.0
+  },
+  {
+   "id": "m04_frown",
+   "upload": 4,
+   "crop": [
+    876,
+    1280,
+    1138,
+    1474
+   ],
+   "kind": "face_tile",
+   "label": "FROWN",
+   "grid": [
+    1,
+    3
+   ],
+   "saved_scale": 1.0
+  },
+  {
+   "id": "m04_mouth_open",
+   "upload": 4,
+   "crop": [
+    60,
+    1514,
+    322,
+    1708
+   ],
+   "kind": "face_tile",
+   "label": "MOUTH OPEN",
+   "grid": [
+    2,
+    0
+   ],
+   "saved_scale": 1.0
+  },
+  {
+   "id": "m04_laugh",
+   "upload": 4,
+   "crop": [
+    334,
+    1514,
+    596,
+    1708
+   ],
+   "kind": "face_tile",
+   "label": "LAUGH",
+   "grid": [
+    2,
+    1
+   ],
+   "saved_scale": 1.0
+  },
+  {
+   "id": "m04_surprise",
+   "upload": 4,
+   "crop": [
+    606,
+    1514,
+    868,
+    1708
+   ],
+   "kind": "face_tile",
+   "label": "SURPRISE",
+   "grid": [
+    2,
+    2
+   ],
+   "saved_scale": 1.0
+  },
+  {
+   "id": "m04_sadness",
+   "upload": 4,
+   "crop": [
+    876,
+    1514,
+    1138,
+    1708
+   ],
+   "kind": "face_tile",
+   "label": "SADNESS",
+   "grid": [
+    2,
+    3
+   ],
+   "saved_scale": 1.0
+  },
+  {
+   "id": "m04_anger",
+   "upload": 4,
+   "crop": [
+    60,
+    1748,
+    322,
+    1942
+   ],
+   "kind": "face_tile",
+   "label": "ANGER",
+   "grid": [
+    3,
+    0
+   ],
+   "saved_scale": 1.0
+  },
+  {
+   "id": "m04_confusion",
+   "upload": 4,
+   "crop": [
+    334,
+    1748,
+    596,
+    1942
+   ],
+   "kind": "face_tile",
+   "label": "CONFUSION",
+   "grid": [
+    3,
+    1
+   ],
+   "saved_scale": 1.0
+  },
+  {
+   "id": "m04_pucker",
+   "upload": 4,
+   "crop": [
+    606,
+    1748,
+    868,
+    1942
+   ],
+   "kind": "face_tile",
+   "label": "PUCKER",
+   "grid": [
+    3,
+    2
+   ],
+   "saved_scale": 1.0
+  },
+  {
+   "id": "t05_front",
+   "upload": 5,
+   "crop": [
+    40,
+    100,
+    560,
+    900
+   ],
+   "kind": "construction",
+   "note": "body topology front (mesh, bones)",
+   "saved_scale": 0.75
+  },
+  {
+   "id": "t05_side",
+   "upload": 5,
+   "crop": [
+    600,
+    100,
+    900,
+    900
+   ],
+   "kind": "construction",
+   "note": "side; head/hair depth",
+   "saved_scale": 0.75
+  },
+  {
+   "id": "t05_poses",
+   "upload": 5,
+   "crop": [
+    0,
+    1570,
+    1493,
+    1990
+   ],
+   "kind": "pose",
+   "note": "technical poses: neutral, arms raised, sitting, kneeling, running, walking (eyes blank, flower accessory)",
+   "saved_scale": 0.4019
+  },
+  {
+   "id": "h07_structure",
+   "upload": 7,
+   "crop": [
+    20,
+    110,
+    750,
+    670
+   ],
+   "kind": "hair",
+   "note": "double top buns, flower accessory (!), fringe clumps, wavy side locks, scalp coverage",
+   "saved_scale": 0.8219
+  },
+  {
+   "id": "h07_clumps",
+   "upload": 7,
+   "crop": [
+    770,
+    110,
+    1480,
+    780
+   ],
+   "kind": "hair",
+   "note": "clump segmentation, wave direction guides",
+   "saved_scale": 0.8451
+  },
+  {
+   "id": "h07_fibre",
+   "upload": 7,
+   "crop": [
+    20,
+    700,
+    750,
+    1390
+   ],
+   "kind": "hair",
+   "note": "felt/wool fibre close-up: soft fuzzy halo, irregular density",
+   "saved_scale": 0.8219
+  },
+  {
+   "id": "h07_bun_accessory",
+   "upload": 7,
+   "crop": [
+    770,
+    800,
+    1480,
+    1390
+   ],
+   "kind": "hair",
+   "note": "bun breakdown; 4-petal flower accessory pinned at the bun base",
+   "saved_scale": 0.8451
+  },
+  {
+   "id": "h07_components",
+   "upload": 7,
+   "crop": [
+    1180,
+    1400,
+    1490,
+    1995
+   ],
+   "kind": "hair",
+   "note": "editable components: front bangs, top buns, back hair mass",
+   "saved_scale": 1.0
+  },
+  {
+   "id": "h08_rig",
+   "upload": 8,
+   "crop": [
+    30,
+    100,
+    1000,
+    840
+   ],
+   "kind": "hair",
+   "note": "hair rig hierarchy: 3-bone FK bun chains, back-mass chains, fringe/side locks",
+   "saved_scale": 0.6186
+  },
+  {
+   "id": "h08_motion",
+   "upload": 8,
+   "crop": [
+    640,
+    860,
+    1490,
+    1430
+   ],
+   "kind": "hair",
+   "note": "secondary motion: drag, delay, damped oscillation, follow-through, settling",
+   "saved_scale": 0.7059
+  },
+  {
+   "id": "d09_dress",
+   "upload": 9,
+   "crop": [
+    30,
+    30,
+    1480,
+    660
+   ],
+   "kind": "clothing",
+   "note": "dress + boots shape (here plain skirt, smooth clay-like boots: see conflicts)",
+   "saved_scale": 0.4138
+  },
+  {
+   "id": "d09_construction",
+   "upload": 9,
+   "crop": [
+    30,
+    670,
+    1480,
+    1345
+   ],
+   "kind": "clothing",
+   "note": "collar, cuffs, hem, lining, seams",
+   "saved_scale": 0.4138
+  },
+  {
+   "id": "d09_deformation",
+   "upload": 9,
+   "crop": [
+    30,
+    1350,
+    1480,
+    1990
+   ],
+   "kind": "clothing",
+   "note": "compress/stretch/wrinkle in poses",
+   "saved_scale": 0.4138
+  },
+  {
+   "id": "m10_lookdev",
+   "upload": 10,
+   "crop": [
+    480,
+    180,
+    1120,
+    1500
+   ],
+   "kind": "materials",
+   "yaw_deg": 0,
+   "note": "look-dev front: hair/ears, bow, eyes, skin, dress, tights, boots callouts",
+   "saved_scale": 0.6818
+  },
+  {
+   "id": "m10_swatches",
+   "upload": 10,
+   "crop": [
+    1130,
+    200,
+    1465,
+    1500
+   ],
+   "kind": "materials",
+   "note": "M_Hair_Felt, M_Skin_Flock, M_Dress_Knit, M_Tights_Cotton, M_Boots_Fleece",
+   "saved_scale": 0.6923
+  },
+  {
+   "id": "u11_uv",
+   "upload": 11,
+   "crop": [
+    0,
+    60,
+    1493,
+    1000
+   ],
+   "kind": "construction",
+   "note": "UV seams/layout; FALSE COLOURS (lavender hair, pink flower): never a colour source",
+   "saved_scale": 0.4019
+  },
+  {
+   "id": "g12_hands",
+   "upload": 12,
+   "crop": [
+    30,
+    120,
+    1480,
+    1400
+   ],
+   "kind": "interaction",
+   "note": "hand contact zones, grasp types (generic hands)",
+   "saved_scale": 0.4138
+  },
+  {
+   "id": "p13_neutral",
+   "upload": 13,
+   "crop": [
+    20,
+    70,
+    520,
+    1990
+   ],
+   "kind": "pose",
+   "note": "T-pose front, side (hands at sides), back",
+   "saved_scale": 0.3125
+  },
+  {
+   "id": "p13_deform",
+   "upload": 13,
+   "crop": [
+    520,
+    60,
+    1010,
+    1990
+   ],
+   "kind": "pose",
+   "note": "arm raise (open smile), deep knee bend/sitting, torso twist",
+   "saved_scale": 0.3109
+  },
+  {
+   "id": "p13_face_tests",
+   "upload": 13,
+   "crop": [
+    1020,
+    60,
+    1480,
+    1310
+   ],
+   "kind": "face_tile",
+   "note": "neutral (x2), high smile, surprised, blinking",
+   "saved_scale": 0.48
+  },
+  {
+   "id": "p13_hands_feet",
+   "upload": 13,
+   "crop": [
+    990,
+    1350,
+    1490,
+    1990
+   ],
+   "kind": "pose",
+   "note": "hands open/fist/pointing; boot contact/walking",
+   "saved_scale": 0.9375
+  },
+  {
+   "id": "f14_head_front",
+   "upload": 14,
+   "crop": [
+    0,
+    0,
+    373,
+    500
+   ],
+   "kind": "face",
+   "yaw_deg": 0,
+   "saved_scale": 1.0
+  },
+  {
+   "id": "f14_head_3q",
+   "upload": 14,
+   "crop": [
+    373,
+    0,
+    746,
+    500
+   ],
+   "kind": "face",
+   "yaw_deg": -30,
+   "saved_scale": 1.0
+  },
+  {
+   "id": "f14_head_side",
+   "upload": 14,
+   "crop": [
+    746,
+    0,
+    1119,
+    500
+   ],
+   "kind": "face",
+   "yaw_deg": -90,
+   "saved_scale": 1.0
+  },
+  {
+   "id": "f14_head_3q_other",
+   "upload": 14,
+   "crop": [
+    1119,
+    0,
+    1492,
+    500
+   ],
+   "kind": "face",
+   "yaw_deg": 30,
+   "saved_scale": 1.0
+  },
+  {
+   "id": "f14_e1_neutral_soft_smile",
+   "upload": 14,
+   "crop": [
+    0,
+    524,
+    307,
+    1000
+   ],
+   "kind": "face_tile",
+   "note": "unlabelled sheet; name = reading (T-057)",
+   "saved_scale": 1.0
+  },
+  {
+   "id": "f14_e2_happy_eyes_closed",
+   "upload": 14,
+   "crop": [
+    307,
+    524,
+    539,
+    1000
+   ],
+   "kind": "face_tile",
+   "note": "unlabelled sheet; name = reading (T-057)",
+   "saved_scale": 1.0
+  },
+  {
+   "id": "f14_e3_laugh",
+   "upload": 14,
+   "crop": [
+    539,
+    524,
+    747,
+    1000
+   ],
+   "kind": "face_tile",
+   "note": "unlabelled sheet; name = reading (T-057)",
+   "saved_scale": 1.0
+  },
+  {
+   "id": "f14_e4_sad",
+   "upload": 14,
+   "crop": [
+    747,
+    524,
+    979,
+    1000
+   ],
+   "kind": "face_tile",
+   "note": "unlabelled sheet; name = reading (T-057)",
+   "saved_scale": 1.0
+  },
+  {
+   "id": "f14_e5_surprised_o",
+   "upload": 14,
+   "crop": [
+    979,
+    524,
+    1207,
+    1000
+   ],
+   "kind": "face_tile",
+   "note": "unlabelled sheet; name = reading (T-057)",
+   "saved_scale": 1.0
+  },
+  {
+   "id": "f14_e6_worried_open",
+   "upload": 14,
+   "crop": [
+    1207,
+    524,
+    1493,
+    1000
+   ],
+   "kind": "face_tile",
+   "note": "unlabelled sheet; name = reading (T-057)",
+   "saved_scale": 1.0
+  },
+  {
+   "id": "f14_e7_soft_smile",
+   "upload": 14,
+   "crop": [
+    0,
+    1027,
+    299,
+    1500
+   ],
+   "kind": "face_tile",
+   "note": "unlabelled sheet; name = reading (T-057)",
+   "saved_scale": 1.0
+  },
+  {
+   "id": "f14_e8_side_glance_smile",
+   "upload": 14,
+   "crop": [
+    299,
+    1027,
+    597,
+    1500
+   ],
+   "kind": "face_tile",
+   "note": "unlabelled sheet; name = reading (T-057)",
+   "saved_scale": 1.0
+  },
+  {
+   "id": "f14_e9_wide_eyes_o",
+   "upload": 14,
+   "crop": [
+    597,
+    1027,
+    896,
+    1500
+   ],
+   "kind": "face_tile",
+   "note": "unlabelled sheet; name = reading (T-057)",
+   "saved_scale": 1.0
+  },
+  {
+   "id": "f14_e10_eyes_closed_calm",
+   "upload": 14,
+   "crop": [
+    896,
+    1027,
+    1194,
+    1500
+   ],
+   "kind": "face_tile",
+   "note": "unlabelled sheet; name = reading (T-057)",
+   "saved_scale": 1.0
+  },
+  {
+   "id": "f14_e11_half_lidded",
+   "upload": 14,
+   "crop": [
+    1194,
+    1027,
+    1493,
+    1500
+   ],
+   "kind": "face_tile",
+   "note": "unlabelled sheet; name = reading (T-057)",
+   "saved_scale": 1.0
+  },
+  {
+   "id": "f14_m1_closed_flat",
+   "upload": 14,
+   "crop": [
+    0,
+    1500,
+    299,
+    1735
+   ],
+   "kind": "mouth_tile",
+   "note": "lip-sync/expression mouth; name = reading (T-057)",
+   "saved_scale": 1.0
+  },
+  {
+   "id": "f14_m2_closed_smile",
+   "upload": 14,
+   "crop": [
+    299,
+    1500,
+    597,
+    1735
+   ],
+   "kind": "mouth_tile",
+   "note": "lip-sync/expression mouth; name = reading (T-057)",
+   "saved_scale": 1.0
+  },
+  {
+   "id": "f14_m3_open_smile_teeth",
+   "upload": 14,
+   "crop": [
+    597,
+    1500,
+    896,
+    1735
+   ],
+   "kind": "mouth_tile",
+   "note": "lip-sync/expression mouth; name = reading (T-057)",
+   "saved_scale": 1.0
+  },
+  {
+   "id": "f14_m4_round_o",
+   "upload": 14,
+   "crop": [
+    896,
+    1500,
+    1194,
+    1735
+   ],
+   "kind": "mouth_tile",
+   "note": "lip-sync/expression mouth; name = reading (T-057)",
+   "saved_scale": 1.0
+  },
+  {
+   "id": "f14_m5_frown_closed",
+   "upload": 14,
+   "crop": [
+    1194,
+    1500,
+    1493,
+    1735
+   ],
+   "kind": "mouth_tile",
+   "note": "lip-sync/expression mouth; name = reading (T-057)",
+   "saved_scale": 1.0
+  },
+  {
+   "id": "f14_m6_small_open_ah",
+   "upload": 14,
+   "crop": [
+    0,
+    1735,
+    299,
+    2000
+   ],
+   "kind": "mouth_tile",
+   "note": "lip-sync/expression mouth; name = reading (T-057)",
+   "saved_scale": 1.0
+  },
+  {
+   "id": "f14_m7_open_down_eh",
+   "upload": 14,
+   "crop": [
+    299,
+    1735,
+    597,
+    2000
+   ],
+   "kind": "mouth_tile",
+   "note": "lip-sync/expression mouth; name = reading (T-057)",
+   "saved_scale": 1.0
+  },
+  {
+   "id": "f14_m8_lopsided_flat",
+   "upload": 14,
+   "crop": [
+    597,
+    1735,
+    896,
+    2000
+   ],
+   "kind": "mouth_tile",
+   "note": "lip-sync/expression mouth; name = reading (T-057)",
+   "saved_scale": 1.0
+  },
+  {
+   "id": "f14_m9_deep_frown",
+   "upload": 14,
+   "crop": [
+    896,
+    1735,
+    1194,
+    2000
+   ],
+   "kind": "mouth_tile",
+   "note": "lip-sync/expression mouth; name = reading (T-057)",
+   "saved_scale": 1.0
+  },
+  {
+   "id": "f14_m10_lopsided_smile",
+   "upload": 14,
+   "crop": [
+    1194,
+    1735,
+    1493,
+    2000
+   ],
+   "kind": "mouth_tile",
+   "note": "lip-sync/expression mouth; name = reading (T-057)",
+   "saved_scale": 1.0
+  },
+  {
+   "id": "c15_front",
+   "upload": 15,
+   "crop": [
+    40,
+    70,
+    360,
+    660
+   ],
+   "kind": "turnaround",
+   "yaw_deg": 0,
+   "elevation_deg": 5,
+   "silhouette": true,
+   "pose": "relaxed stand, arms down",
+   "saved_scale": 1.0
+  },
+  {
+   "id": "c15_side",
+   "upload": 15,
+   "crop": [
+    370,
+    70,
+    660,
+    660
+   ],
+   "kind": "turnaround",
+   "yaw_deg": 90,
+   "elevation_deg": 5,
+   "silhouette": true,
+   "pose": "relaxed stand, arms down",
+   "saved_scale": 1.0
+  },
+  {
+   "id": "c15_back",
+   "upload": 15,
+   "crop": [
+    640,
+    70,
+    900,
+    660
+   ],
+   "kind": "turnaround",
+   "yaw_deg": 180,
+   "elevation_deg": 5,
+   "silhouette": true,
+   "pose": "relaxed stand, arms down",
+   "saved_scale": 1.0
+  },
+  {
+   "id": "c15_animation",
+   "upload": 15,
+   "crop": [
+    20,
+    1440,
+    1010,
+    1990
+   ],
+   "kind": "pose",
+   "note": "neutral (open smile), walk, wave, sitting holding up a small blue object",
+   "saved_scale": 0.6061
+  }
+ ]
+}

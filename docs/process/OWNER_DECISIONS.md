@@ -38,3 +38,116 @@ Everything that can be shared across characters must be designed as a reusable, 
 (code with no character names, configured by spec/preset data, tested on at least two characters or a synthetic
 configuration), never implemented separately per character. Character-specific legacy (boy 1.0.0/1.1.0) stays frozen
 and is migrated through new versions (Boy 2.0, roadmap V3b). Task prompts and reviews enforce this rule.
+
+## 2026-11-16: open-source tooling (owner-approved; installs allowed when needed)
+Priority: (1) Blender Geometry Nodes + hair curves for real fibre fuzz on felt, wool and yarn (shared material/groom
+builders); (2) EEVEE draft renders alongside Cycles finals (`--engine eevee|cycles`); (3) engine secondary motion
+(spring chains, shared layer) and a `run_shot` simulate stage using Blender's built-in Bullet rigid body, cloth,
+Dynamic Paint waves and particles (V4: water, ripples, sparkles, falling/floating props); (4) OpenTimelineIO edit
+export and Rhubarb Lip Sync with V5. Later/not now: OpenUSD (V7/V8), MaterialX, Filament, OpenVDB, Bullet in engine.
+
+## 2026-11-16: code-based first, hybrid only if proven necessary
+Continue improving the code-based shared systems (face v2, hair v2 r2, cloth rest-shape simulation, surface detail)
+before deciding on a hybrid workflow (optional sculpted asset slots). Decide by measurement (fidelity) plus the owner's
+visual verdict. Every system must be reusable across all current and future characters. Every task reports technical
+limitations that block reference quality, with a proposal for overcoming them.
+
+## 2026-11-17: branch cleanup after merges
+After each successful merge into `main`, the Supervisor deletes the merged task/integration branches (remote and
+local) only when: all checks passed on the merged `main`; a verified backup bundle (`git bundle verify`) containing
+those branches exists; and `git branch -r --merged origin/main` confirms each branch is fully contained in `main`.
+Never delete an unmerged branch, a branch with commits not in `main`, `relay-channel`, or `supervisor-state`.
+
+## 2026-11-17: continuous integration via `staging` (owner-approved)
+- `staging` = `main` + tasks reviewed and gate-tested by the Supervisor. Every new task branches from `origin/staging`
+  and merges `origin/staging` into itself before its final report (owning agent resolves conflicts, reruns check_all).
+- Merge promptly: a task is merged into `staging` the same day it is accepted; at most 3 tested tasks wait unapproved.
+- Standing approval (path A): validated technical changes (engine, tools, tests, CI, performance; no visible change)
+  go `staging` → `main` after a green gate and Supervisor review, with notification afterwards.
+- Path B: anything that changes the look (characters, materials, specs, renders) needs the owner's visual approval.
+- Rejections are undone on `staging` with revert commits only. `main` advances only by fast-forward to a gate-green
+  `staging` commit, with a verified backup before and merged-branch cleanup after (see 2026-11-17 branch cleanup).
+- Ownership map `docs/process/OWNERSHIP.md`: parallel tasks never share files; specs are split into per-area parts.
+
+## 2026-11-17: shared systems with versioned behaviour (owner-approved)
+Architecture: shared systems + versioned behaviour + character-specific data/assets (never character-specific code).
+- Each character spec pins the generator versions it uses; behaviour changes create a new version; a character
+  changes only when the owner approves its upgrade (before/after renders). At most two active versions per system.
+- Shared defaults stay neutral; new features are opt-in parameters (off = identical output).
+- Visual quality is never sacrificed for reusability. Any change to a shared system rebuilds and renders ALL
+  characters in CI: an unintended fingerprint change or a fidelity drop is a FAIL needing owner review, with
+  side-by-side render comparisons attached.
+- Order: finish/validate/merge all running and suspended work first; then spec parts + generator versioning +
+  all-character visual regression; then Boy 2.0 and new features.
+
+## 2026-11-17: girl 0.9.0 approved as an intermediate version
+The consolidated girl spec 0.9.0 is approved for `main` as an intermediate state, NOT as final visual approval.
+Open visual gaps (hair structure and colour, proportions, vest, boots, ears, hair accessories) remain tracked.
+
+## 2026-11-17: automation Phase 2 not built now
+PR-per-task automation (Phase 2) is deferred: the staging workflow, integrate.py and the quality gate already cover
+its benefits. Instead: a small push-triggered cleanup workflow deletes only branches fully merged into main (the
+cloud proxy blocks deletion), and the owner sets a main-branch ruleset once. Revisit Phase 2 with >4 permanent
+parallel Implementers, external reviewers, or if the owner prefers reviewing in GitHub.
+
+## 2026-11-17: delivery plan approved (docs/process/DELIVERY_PLAN.md, rev. 2)
+The overall approach is approved (no PR per task; READY signal + Supervisor merge queue; staging; fast path-A
+promotion; path-B visual approval via version pin bumps). Owner's four required improvements, now part of the plan:
+1. Parallel tasks within the same lane are allowed when their files and dependencies don't conflict (file claims).
+2. Full all-character regression is mandatory for any change to shared systems or visuals.
+3. Versioned changes must not alter existing characters unintentionally (unchanged-character guard in CI).
+4. Backups must be durable (backup tags, CI bundles with restore test, off-site copy) and the automatic branch
+   cleanup must be thoroughly tested (unit + end-to-end + dry run) before it deletes anything.
+The workflow must stay reliable, efficient and free of unnecessary bottlenecks.
+
+## 2026-11-17: backups on the owner PC; GitHub protection
+The owner's local computer is the off-site backup destination (read-only mirror + verified bundle, set up via
+Remote Control when the PC is online). The owner asked the Supervisor to handle GitHub security settings; the cloud
+proxy blocks settings changes, so the Supervisor prepared importable rulesets (docs/process/github-rulesets/).
+
+## 2026-11-17: roadmap priority v5
+Water simulation and paper folding are not priorities for now. Personalities: the boy is impatient and easily
+bored; the girl is cheerful and intelligent; both must show in movement, expression and behaviour (shared
+personality-profile system, data per character). A third character follows once the shared systems are complete and
+reliable. Approved: evaluate strand grooming vs sculpted hair and choose the best; explore GPU rendering options and
+costs before any extra expense; include dialogue and lip sync; develop detailed natural finger animation; include
+Blender checks in GitHub CI where practical. All implementations efficient and reusable across all characters.
+See docs/ROADMAP.md "Priority v5".
+
+## 2026-11-17: the references are the primary target
+The reference images, character models and videos were designed around each character's personality (boy:
+impatient and easily bored; girl: cheerful and intelligent) and already reflect those traits. Goal: match them as
+closely as possible in appearance, expressions, movements and animation quality. Always treat the original
+references as the primary target; improvements and personality features must support those designs, never change or
+contradict them.
+
+## 2026-11-17: no GPU rental available
+The owner cannot rent a GPU at present. Render planning assumes CPU only (cloud containers, and the owner's PC when
+available) until this changes; T-050's rental recommendation is on hold. Mitigations to evaluate before the
+benchmark scene: render settings tuned for CPU (resolution, samples + OIDN, adaptive sampling), splitting frame
+ranges across several cloud sessions, the owner's PC hardware, and only rendering final takes at full quality.
+
+## 2026-11-17: character details from the reference conflicts (T-053a)
+1. Boy: impatience stays subtle, calm and low-energy, as in the original references (small, slow fidgets in his base
+   tempo; no quick, abrupt or comic moves; no eye-rolls).
+2. Girl: eye colour brown.
+3. Girl: neutral mouth closed, with a gentle smile (open smile belongs to Happy).
+Apply consistently across models, animations and personality profiles; the original references stay the primary target.
+
+## 2026-11-17: third character
+The owner supplied 15 reference images for the third character (working id `girl_white_hair_blue_dress`). Personality:
+a little goofy, not very bright, bubbly and cheerful; reflected in expressions, movements and behaviour while staying
+faithful to the reference images (references remain the primary target). She is built (V6) once the shared systems
+are complete; reference intake and gap analysis (T-057) start now.
+
+## 2026-11-17: hair v3 approach; third character details
+1. **Hair v3 = hybrid C** (T-049): felted base volumes + a limited number of broad felt clumps/locks at the edges, face
+   keep-out as spec data. The final result must closely match the references; renders go to the owner for approval.
+2. Third character, "exactly as in the references" (Supervisor's application of the references, per T-057 §8):
+   - **Hair accessory: the blue felt bow** (identity render, 10 sheets, both videos, material spec "BOW"); the 4-petal
+     flower appears only in the technical hair/rig blueprints `w05`–`w08`.
+   - **Neutral mouth: closed soft smile** (all tiles labelled Neutral, videos at rest); lips slightly parted while
+     watching (behaviour); the small open smile of the turnaround/line-up renders is her presentation/Happy face.
+   - **Goofiness subtle**, as in the references (open-mouthed watching, following the others, comic face tiles; no big
+     comic moves).
+   - Dress: cable-knit skirt and knit bodice; boots: shaggy fleece (majority + material spec; `w09` is a construction sheet).

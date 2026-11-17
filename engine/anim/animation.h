@@ -71,6 +71,12 @@ struct GazeLimits {
   float maxDownDeg = 25.0f;
   float maxLeftDeg = 30.0f;
   float maxRightDeg = 30.0f;
+  // Neck assist (T-046): when a look target lies beyond the eyes' comfortable range (the soft limit's onset), the neck
+  // turns by the excess, up to these angles, so the eyes still reach it. 0 disables. A hand-keyed neck is left alone.
+  float assistYawDeg = 70.0f;
+  float assistPitchDeg = 35.0f;
+  float assistBodyYawDeg = 35.0f;  // beyond the neck's share the chest twists (yaw only), up to this angle
+  float assistLagSec = 0.2f;       // the assist follows the target this much later than the eyes (eyes lead)
 };
 
 quat eulerDegreesToQuat(vec3 degrees);  // XYZ order
@@ -105,8 +111,16 @@ struct LifeParams {
   float headLagSec = 0.2f;     // the head follows the eyes this much later
   GazeLimits gaze;             // eye travel relative to the final head pose
   bool blinkLids = true;       // false: blinks are a morph (character expression map), lid bones are not rotated
+  bool face = true;            // facial layer (scene/face_layer.h): living face while life is enabled (T-046)
   uint32_t seed = 1;
 };
+// Deterministic hash in [0, 1) used by the life and face layers.
+float lifeHash01(uint32_t a, uint32_t b);
+// Breathing signal in [-1, 1] at time t (seconds) for a life seed: the same breath cycle the life layer moves the
+// chest with (the face layer follows it).
+float breathSignal(double t, uint32_t seed);
+// Closes the upper lid bones ("lid.L", "lid.R") by `amount` (0..1); skeletons without lid bones are unchanged.
+void applyLidBlink(const Skeleton& skeleton, Pose& pose, float amount);
 void applyLife(const Skeleton& skeleton, const Clip& clip, const std::string& prefix, double frame, double fps,
                const mat4& world, const LifeParams& life, Pose& pose);
 // Blink closure in [0, 1] at time t (seconds) for an average interval; exposed for tests.
@@ -135,6 +149,6 @@ std::vector<vec3> fingertips(const Skeleton& skeleton, const Pose& pose, const m
 // Tracks: "<prefix>hand.L" = (curl, thumb, spread), "<prefix>hand.L.index" (x), "<prefix>hand.L.grasp" = sphere
 // centre (hand rest frame), "<prefix>hand.L.graspRadius" (x), "<prefix>hand.L.grasp.weight" (x). Same for R.
 void applyConstraints(const Skeleton& skeleton, const Clip& clip, const std::string& prefix, double frame,
-                      const mat4& world, Pose& pose, const GazeLimits& gaze = {});
+                      const mat4& world, Pose& pose, const GazeLimits& gaze = {}, double fps = 30.0);
 
 }  // namespace plush
