@@ -1,0 +1,85 @@
+{
+  "gridCoordinates": "row,column in bottom two mouth close-up strips, one-based",
+  "visemes": {
+    "rest": {
+      "description": "Neutral closed lips.",
+      "channels": {
+        "jawOpen": 0,
+        "mouthUp": 0
+      },
+      "grid": "1,1"
+    },
+    "AI": {
+      "description": "Open jaw for ah / eye.",
+      "channels": {
+        "jawOpen": 0.85,
+        "mouthUp": 0.04
+      },
+      "grid": "1,3"
+    },
+    "E": {
+      "description": "Spread lips for ee / eh.",
+      "channels": {
+        "jawOpen": 0.32,
+        "mouthUp": 0.32
+      },
+      "grid": "1,3"
+    },
+    "O": {
+      "description": "Open rounded lips for oh / aw.",
+      "channels": {
+        "jawOpen": 0.55,
+        "mouthUp": 0
+      },
+      "grid": "1,4"
+    },
+    "U": {
+      "description": "Small rounded opening for oo.",
+      "channels": {
+        "jawOpen": 0.24,
+        "mouthUp": 0
+      },
+      "grid": "2,1"
+    },
+    "FV": {
+      "description": "Lower lip near upper teeth for f / v.",
+      "channels": {
+        "jawOpen": 0.1,
+        "mouthUp": 0
+      },
+      "grid": "1,1"
+    },
+    "MBP": {
+      "description": "Bring lips together for m / b / p.",
+      "channels": {
+        "jawOpen": 0,
+        "mouthUp": 0
+      },
+      "grid": "1,1"
+    },
+    "L": {
+      "description": "Tongue raised behind upper teeth for l.",
+      "channels": {
+        "jawOpen": 0.35,
+        "mouthUp": 0
+      },
+      "grid": "1,3"
+    },
+    "WQ": {
+      "description": "Pursed onset for w / qu.",
+      "channels": {
+        "jawOpen": 0.13,
+        "mouthUp": 0
+      },
+      "grid": "2,1"
+    },
+    "C": {
+      "description": "Narrow, slightly parted consonant shape.",
+      "channels": {
+        "jawOpen": 0.17,
+        "mouthUp": 0.04
+      },
+      "grid": "1,1"
+    }
+  }
+}
