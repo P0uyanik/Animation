@@ -162,3 +162,8 @@ with the original references as the primary target.
    is assessed (old versions only where a frozen regression test needs them). Implemented by T-062 + Implementer rule.
 2. T-060 (Windows build): option B — install the C++ Build Tools on the owner's PC (owner approval for the install and
    licence). The owner frees space on D: personally; agents never delete or move the owner's personal files.
+
+## 2026-11-17: T-063 plan approved
+Start P6 (fidelity tool fixes, T-064) and P1 (face v2, T-065) now; the girl look round (T-059) follows the shared-system
+improvements (face v2, skin T-066, materials T-067). **Visual fidelity to the original references takes priority over
+numerical scores**; the fidelity score supports, never overrides, the owner's side-by-side judgement.

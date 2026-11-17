@@ -8,13 +8,16 @@ length a FRACTION OF height_m (angles in degrees):
             lower face length), lower_roundness (superellipse exponent of the front outline below the centre: 2 =
             ellipse, 3-4 = full round cheeks and a wide jaw / broad short chin), lower_depth_roundness (the same for
             the side profile: fuller cheeks at 3/4)
+            optional profile_levels [[z, centre_x, centre_y, half_width, front_depth, back_depth], ...] and
+            profile_exponent: an asymmetric head loft that replaces the ellipsoid (absent = unchanged)
   neck:     base_z, top_z, radius, optional top_radius (thicker top blending into the jaw; default radius)
   torso:    levels: [[z, half_width, half_depth_front, half_depth_back], ...]  (bottom to top)
   shoulder: z, joint_x, clavicle_x
   arm:      angle_deg (below horizontal), upper_len, fore_len, radii [shoulder, elbow, wrist]
   hand:     palm_len, palm_half_width, palm_half_thick, finger_len [index, middle, ring, pinky], finger_radius,
             thumb_len, thumb_radius, finger_curl (0..0.4)
-  leg:      hip_x, hip_z, knee_z, ankle_z, radii [thigh, knee, ankle]
+  leg:      hip_x, hip_z, knee_z, ankle_z, radii [thigh, knee, ankle]; optional ankle_x (feet set wider than the
+            hips, an A-stance; the knee follows linearly; default hip_x = straight vertical legs, unchanged)
   foot:     length, half_width, height, heel_back
   eyes:     x, z, y                      (eye bones for gaze; the eye meshes belong to the face, M3)
 Optional `spec.rig.joints`: {joint name: [x, y, z] in metres} overrides any derived joint.
@@ -66,8 +69,11 @@ def joints(P, H, overrides=None):
         hx = sx * P["leg"]["hip_x"] * H
         J[f"pelvis.{s}"] = Vector((hx, -0.3 * P["leg"]["hip_x"] * H, hip_z + 0.5 * (sh_z - hip_z) * 0.3))
         J[f"hip.{s}"] = Vector((hx, 0, hip_z))
-        J[f"knee.{s}"] = Vector((hx, -0.004 * H, P["leg"]["knee_z"] * H))
-        J[f"ankle.{s}"] = Vector((hx, 0, P["leg"]["ankle_z"] * H))
+        ax = sx * P["leg"].get("ankle_x", P["leg"]["hip_x"]) * H  # optional A-stance (default: vertical legs)
+        kt = (hip_z - P["leg"]["knee_z"] * H) / max(1e-9, hip_z - P["leg"]["ankle_z"] * H)
+        J[f"knee.{s}"] = Vector((hx + (ax - hx) * kt, -0.004 * H, P["leg"]["knee_z"] * H))
+        J[f"ankle.{s}"] = Vector((ax, 0, P["leg"]["ankle_z"] * H))
+        hx = ax  # the foot joints sit under the ankle
         fl, fh = P["foot"]["length"] * H, P["foot"]["height"] * H
         J[f"toe.{s}"] = Vector((hx, -0.55 * fl, 0.35 * fh))
         J[f"toe_tip.{s}"] = Vector((hx, -0.95 * fl, 0.35 * fh))
@@ -115,26 +121,58 @@ def _superellipse_gain(t, n, cap=2.6):
     return min(cap, (1.0 - t ** n) ** (1.0 / n) / math.sqrt(1.0 - t * t))
 
 
+def _dense_profile(levels, steps):
+    """Resample profile rows [z, values...] at `steps` + 1 evenly spaced heights with a Catmull-Rom curve through the
+    rows, so the loft (which samples exactly these heights) is smooth across the keys instead of terracing at each
+    one. Used only by the optional head profile loft."""
+    zs = [r[0] for r in levels]
+    out = []
+    for k in range(steps + 1):
+        z = zs[0] + (zs[-1] - zs[0]) * k / steps
+        i = max(0, min(len(levels) - 2, max(j for j in range(len(zs)) if zs[j] <= z) if z > zs[0] else 0))
+        t = (z - zs[i]) / max(1e-9, zs[i + 1] - zs[i])
+        p0, p1, p2, p3 = (levels[max(0, i - 1)], levels[i], levels[i + 1], levels[min(len(levels) - 1, i + 2)])
+        row = [z]
+        for c in range(1, len(p1)):
+            # non-uniform key spacing: tangents scaled to the local segment (finite differences over the neighbours)
+            h = zs[i + 1] - zs[i]
+            m1 = (p2[c] - p0[c]) / max(1e-9, p2[0] - p0[0]) * h
+            m2 = (p3[c] - p1[c]) / max(1e-9, p3[0] - p1[0]) * h
+            t2, t3 = t * t, t * t * t
+            v = ((2 * t3 - 3 * t2 + 1) * p1[c] + (t3 - 2 * t2 + t) * m1 + (-2 * t3 + 3 * t2) * p2[c]
+                 + (t3 - t2) * m2)
+            row.append(v if c < 3 else max(v, 1e-4))  # widths and depths stay positive
+        out.append(row)
+    return out
+
+
 def build_body(C, M, P, H, J, frames):
     """Body skin (head, neck, torso, arms, legs, feet; one remeshed surface) and the two hands. Returns
     [(object, role)] with roles 'skin' and 'hand'."""
     hp = P["head"]
-    head = G.uv_sphere("_head", (0, hp["forward"] * H, hp["centre_z"] * H), 1.0, C, 48, 24,
-                       (hp["half_width"] * H, hp["half_depth"] * H, hp["half_height"] * H))
-    cz, hh = hp["centre_z"] * H, hp["half_height"] * H
-    lhh = hp.get("lower_half_height", hp["half_height"]) * H  # optional head-shape options (defaults: unchanged)
-    nx, ny = float(hp.get("lower_roundness", 2.0)), float(hp.get("lower_depth_roundness", 2.0))
-    fy0 = hp["forward"] * H
-    for v in head.data.vertices:  # rounder cranium, tapered jaw
-        if v.co.z < cz and lhh != hh:
-            v.co.z = cz + (v.co.z - cz) * lhh / hh
-        t = max(0.0, (cz - v.co.z) / (lhh if v.co.z < cz else hh))
-        if t > 0 and (nx != 2.0 or ny != 2.0):
-            v.co.x *= _superellipse_gain(t, nx)
-            v.co.y = fy0 + (v.co.y - fy0) * _superellipse_gain(t, ny)
-        k = 1 - hp["chin_taper"] * t * t
-        v.co.x *= k
-        v.co.y = fy0 + (v.co.y - fy0) * k
+    if hp.get("profile_levels"):  # optional asymmetric head loft (absent = the ellipsoid below, unchanged)
+        profile = _dense_profile([[x * H for x in level] for level in hp["profile_levels"]],
+                                 int(hp.get("profile_steps", 56)))
+        head = G.profile_loft("_head", profile, C, n=float(hp.get("profile_exponent", 2.25)),
+                              seg=int(hp.get("profile_segments", 64)), steps=int(hp.get("profile_steps", 56)))
+        cz = hp["centre_z"] * H
+    else:
+        head = G.uv_sphere("_head", (0, hp["forward"] * H, hp["centre_z"] * H), 1.0, C, 48, 24,
+                           (hp["half_width"] * H, hp["half_depth"] * H, hp["half_height"] * H))
+        cz, hh = hp["centre_z"] * H, hp["half_height"] * H
+        lhh = hp.get("lower_half_height", hp["half_height"]) * H  # optional head-shape options (defaults: unchanged)
+        nx, ny = float(hp.get("lower_roundness", 2.0)), float(hp.get("lower_depth_roundness", 2.0))
+        fy0 = hp["forward"] * H
+        for v in head.data.vertices:  # rounder cranium, tapered jaw
+            if v.co.z < cz and lhh != hh:
+                v.co.z = cz + (v.co.z - cz) * lhh / hh
+            t = max(0.0, (cz - v.co.z) / (lhh if v.co.z < cz else hh))
+            if t > 0 and (nx != 2.0 or ny != 2.0):
+                v.co.x *= _superellipse_gain(t, nx)
+                v.co.y = fy0 + (v.co.y - fy0) * _superellipse_gain(t, ny)
+            k = 1 - hp["chin_taper"] * t * t
+            v.co.x *= k
+            v.co.y = fy0 + (v.co.y - fy0) * k
     nr = P["neck"]["radius"] * H
     ntr = P["neck"].get("top_radius", P["neck"]["radius"]) * H
     neck = G.tube("_neck", [Vector((0, 0, P["neck"]["base_z"] * H)), Vector((0, 0, P["neck"]["top_z"] * H)),
