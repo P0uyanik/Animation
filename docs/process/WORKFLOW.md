@@ -65,3 +65,40 @@ python tools/backup_repository.py --destination D:\Animation\backups --keep 7 --
 ```
 
 The task history is in `TASK_LOG.md`.
+
+## Supervisor integration helper
+
+`tools/integrate.py` is the Supervisor's Git-only, cross-platform integration entry point. Run it from any worktree
+of the repository. It never force-pushes, rebases, resets, or deletes an unmerged branch.
+
+Stage a pushed task branch into `staging` in an isolated temporary worktree:
+
+```powershell
+python tools/integrate.py stage t-042-codex-integrate-tool
+```
+
+The command fetches, rejects a branch with local/unpushed work or no commits beyond `origin/staging`, reports guarded
+paths missing `Supervisor-Approved: <path>` trailers, performs a `--no-ff` merge, and runs `tools/check_all.py`. Use
+`--blender <exe>` and `--build-dir <path>` to pass those options through. `--fast` explicitly runs only the fast
+tier and cannot be combined with `--blender`. A conflict or failed gate leaves remote `staging` unchanged. A green
+gate is recorded in the integration log commit and `TASK_LOG.md` before the normal (non-force) push.
+
+Promote a green `staging` after owner approval:
+
+```powershell
+python tools/integrate.py promote --backup-dir D:\Animation\backups --prune "t-*" --prune "integration/*"
+```
+
+Promotion re-runs the gate when `origin/staging` has no green gate record, creates and verifies a `git bundle --all`,
+requires `main` to fast-forward to `staging`, and pushes normally. Pruning is opt-in: only remote branches both listed
+by `git branch -r --merged origin/main` and matched by a `--prune` glob are deleted. `main`, `staging`,
+`relay-channel`, and `supervisor-state` are always retained; every deletion prints the branch and last commit.
+
+Undo an integrated merge by creating a revert commit on `staging`:
+
+```powershell
+python tools/integrate.py revert <merge-commit>
+```
+
+Every subcommand supports `--dry-run`. Reverts use `git revert -m 1` and a normal push; history is never reset or
+rewritten. Active task path ownership is recorded in `OWNERSHIP.md` before parallel work is dispatched.

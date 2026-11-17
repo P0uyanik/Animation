@@ -23,6 +23,7 @@ pipeline/clips/test_emotions.py
 
 # The gate and its policy data.
 tools/check_all.py
+tools/integrate.py
 tools/backup_repository.py
 tools/bpy_blender.py
 tools/simulate_quality_gate.py

@@ -644,8 +644,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--summary-file", default="", help="text summary path (default: <artifacts>/summary.txt)")
     parser.add_argument("--config", default="Release", help="CMake configuration")
     parser.add_argument("--blender", default="", help="Blender executable; supplying it always enables the Blender tier")
+    parser.add_argument("--fast", action="store_true", help="run only the fast tier (never run Blender checks)")
     parser.add_argument("--merge-status", default="", help="CI trial-merge status (normally 'clean')")
     args = parser.parse_args(argv)
+    if args.fast and args.blender:
+        parser.error("--fast and --blender are mutually exclusive")
 
     artifacts = resolve_path(args.artifacts_dir, ROOT / "build/check-all")
     build_dir = resolve_path(args.build_dir, ROOT / "build/quality-gate")
@@ -673,7 +676,7 @@ def main(argv: list[str] | None = None) -> int:
     results.append(check_plush_tests(build_dir, args.config, logs, build_result.ok))
     results.append(check_python_tests(logs))
     results.append(check_doc_links(logs))
-    blender_required = bool(args.blender) or blender_paths_changed(changes)
+    blender_required = not args.fast and (bool(args.blender) or blender_paths_changed(changes))
     results.append(check_blender(args.blender, artifacts, logs, blender_required, changes))
     if args.merge_status:
         tests_ok = all(result.ok for result in results)
