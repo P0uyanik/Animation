@@ -52,7 +52,7 @@
 | T-073 | Render benchmark on the owner's PC (CPU/GPU) | idea, unassigned (owner: not for Codex now) | — | `docs/tasks/T-073.md` |
 | T-074 | CPU-only Blender render optimisation study (Cycles/Eevee/denoise; quality first) | queued: starts when a slot frees | t-074-claude-cpu-render | `docs/tasks/T-074.md`; owner approved 2026-11-17 |
 | T-075 | Preserve approved character assets (immutable store, generator guard, reuse) | assigned 2026-11-17 | t-075-claude-approved-assets | `docs/tasks/T-075.md`; owner approved 2026-11-17 |
-| T-076 | Reference video analysis + architecture report (evaluation only; no implementation) | assigned 2026-11-17 | t-076-claude-reference-architecture | `docs/tasks/T-076.md`; owner request |
+| T-076 | Reference video analysis + architecture report (evaluation only) | **merged** 2026-11-17 | t-076-claude-reference-architecture (18fb94f) | `docs/architecture/REFERENCE_ARCHITECTURE_REPORT.md`; GitHub fast gate PASS; recommendations await owner decision |
 | T-048 | Branch cleanup workflow + tests | **in main** 2026-11-17 | t-048-claude-branch-cleanup (8f1c3ce), merge ae15c0b | 25/25 cleanup tests, full gate PASS; first real dry run after T-041 backups |
 | T-049 | Hair approach study (strand vs sculpted vs hybrid) | **in main** 2026-11-17; owner choice pending | t-049-claude-hair-study (e31e613) | recommends hybrid C (felted base volumes + few broad edge clumps, face keep-out as spec data); none reaches reference softness yet (fibre halo/volume, girl fringe) |
 | T-050 | GPU / render cost study (no spending) | **in main** 2026-11-17; owner decision pending | t-050-claude-render-cost (242c97c) | previews CPU; review/finals on rented RTX 4090 ≈ $0.84/finished min, ≈ $10–25/month; do not buy a GPU for cost alone |
