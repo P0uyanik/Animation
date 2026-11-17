@@ -64,22 +64,34 @@ Documentation: `docs/process/GATE.md` (new: how the gate, tiers, regression, cla
   - fast tier: "not required: fast tier";
   - full tier without Blender: FAIL ("this tier is never skipped");
   - on Windows CI: "runs on the linux gate".
-- **Unchanged-character guard against stored baselines, not a rebuild of `main` on every run.** Rebuilding `main`
-  would double the Blender time. The baselines are equal to `main`:
-  - they are made from `main`'s spec inputs;
-  - each one records the spec-input hash, so a stale baseline is a FAIL;
-  - they are guarded, so changing one needs Supervisor approval.
+- **Unchanged-character guard against `origin/main` built on the same machine.**
+  - Every regression job also builds each character from `origin/main` in a temporary git worktree on the same
+    machine (`run.py --against origin/main`; `check_all.py` passes this too). It uses the same measuring tools:
+    fingerprint tool, cameras and head probe.
+  - An unchanged character must equal that build: fingerprint byte-equal, engine export equal, renders within the
+    noise threshold.
+  - The approved baselines are then compared for information only, but they must exist and must not be stale (their
+    spec-input hash is checked). Without `--against`, the baseline comparison is strict.
+  - Why: the first design compared against stored baselines. Two CI runs of identical code on different GitHub
+    runners disagreed on the boy's legacy `hair_clumps` mesh (one runner matched my local baseline, the next did
+    not, and a re-run of the same job matched again). Builds are bit-reproducible on one machine, not across CPU
+    families. Cost: one extra build and render per character.
+  - A character is "unchanged" when none of its spec or override files is in the diff against `--base`. CI uses
+    `origin/main`.
+- **Engine export is compared package to package with tolerances.** Measured: two identical builds give the same
+  master (byte-equal fingerprints). But `export_engine.py` writes a different triangle and vertex order, with float
+  noise of about 1 ulp (56k index values differ). Neither `geometry.bin` bytes nor hashes of quantized positions
+  are stable: on the boy's `ear.L`, one vertex rounded differently in about half the runs. Against the same-machine
+  `main` build, the two packages are compared directly:
+  - `character.json` exactly (without byte hashes);
+  - every vertex matched within 0.01 mm;
+  - triangles equal as index sets;
+  - joints exact;
+  - weights and normals within 1e-4;
+  - morph buffers by statistics.
 
-  A character is "unchanged" when none of its spec or override files is in the diff against `--base`. CI uses
-  `origin/main`.
-- **Engine export comparison is order-independent.** Measured: two identical builds give the same master
-  (byte-equal fingerprints). But `export_engine.py` writes a different triangle and vertex order, with float noise
-  of 1.1e-6 or less (56k index values differ). So `geometry.bin` bytes cannot be compared. The summary compares:
-  - `character.json` exactly (without the byte hashes);
-  - per mesh, a hash of the sorted triangle set (positions at 0.01 mm) and of the sorted per-vertex joint tuples;
-  - per buffer, count and mean/rms/min/max within 1e-5.
-
-  Fixing the exporter's ordering is outside this write-set (open issue).
+  A 0.2 mm shift of one vertex is detected. Stored baselines keep only a statistics summary (information).
+  Canonical export order is outside this write-set (open issue).
 - **Fidelity in the regression** builds the `compare` variant (arms lowered, fur) when the character's
   `fidelity_index.json` asks for it (the boy). The first CI run without it scored the boy's A-pose master 56.61,
   a false 7.9-point drop.
@@ -117,8 +129,9 @@ Documentation: `docs/process/GATE.md` (new: how the gate, tiers, regression, cla
 | Claims | `python3 tools/integrate.py claims --check T-041/T-043/T-046/T-040r1/T-048` | all PASS (warnings only for `(stable)` reads) |
 | Noise measurement | `python3 tools/regression/run.py --noise --blender <bpy 5.3 shim>` | fingerprints byte-equal for both characters; export summary equal; renders: boy max rmse 1.7e-5, girl max rmse 0.0028, changed pixels 0.37 % |
 | Baselines + fidelity | `run.py --write-baseline --base origin/main` | boy fidelity 64.08 (baseline 64.49, drop 0.41), girl 65.48 (+0.07) |
-| Cross-machine (GitHub runner vs local baselines) | CI run 44111207498 (4d3295b), regression jobs | fingerprint, engine export and fidelity PASS for both characters (renders failed only because the images were not yet committed, see §4) |
-| Simulations (T-023 + T-041) | `python3 tools/simulate_quality_gate.py --task T-041`, then `--only changed_fingerprint --blender …` | all PASS: baseline, frozen file, shared character name, threshold unapproved/approved, broken C++ test, textual conflict, hidden conflict (alone / after merge), claim overlap (FAIL) / disjoint (PASS), write-set inside (PASS) / violation (FAIL), docs-only → fast, unknown path → full, changed unchanged-character fingerprint → FAIL (fingerprint and export both flag `backpack_body` after a 1 mm shift) |
+| Cross-machine (GitHub runner vs local baselines) | CI runs 44111207498 and 44115423238 | fingerprint, engine export and fidelity matched for both characters in the first run. In the second run the boy's `hair_clumps` differed on one runner; a re-run of the same job passed. This led to the same-machine comparison against `origin/main` |
+| Export stability | two boy builds of one commit compared with each other, twice | old quantized hash: 1 of 2 runs flagged `ear.L` (float noise at a rounding boundary); package comparison: equal in all 4 pairs tried (2 boy, 2 noise-run pairs), detects a 0.2 mm single-vertex shift |
+| Simulations (T-023 + T-041) | `python3 tools/simulate_quality_gate.py --task T-041`, then `--only changed_fingerprint --blender …` | all PASS: baseline, frozen file, shared character name, threshold unapproved/approved, broken C++ test, textual conflict, hidden conflict (alone / after merge), claim overlap (FAIL) / disjoint (PASS), write-set inside (PASS) / violation (FAIL), docs-only → fast, unknown path → full, changed unchanged-character fingerprint → FAIL (shared code shifts one boy mesh by 1 mm; the guard against the pre-change commit built on the same machine flags `backpack_body` in fingerprint and export) |
 | Backup | `python3 tools/backup_repository.py --remote <origin> --restore-test` | 58 branches, 349 MB bundle verified, 58 refs compared, 0 mismatches |
 | Backup tags | `backup_tags.py` against a scratch bare clone | tag for push and for a backup request created and pushed; a second run on the same tip creates nothing |
 | integrate dry runs | `promote --dry-run`, `backup staging --dry-run`, `writeset --task T-041` | as expected |
@@ -185,21 +198,24 @@ face close-up per character, in `docs/evaluation/regression/baselines/*/*/images
 3. **Exporter non-determinism:** `export_engine.py` writes a non-reproducible triangle and vertex order. The guard
    works around it with an order-independent summary. A follow-up task could make the export order canonical
    (lane B).
-4. **Girl render noise:** the girl's renders differ between two identical builds (rmse up to 0.0028, hair-fibre
+4. **Cross-machine builds:** the boy's legacy `hair_clumps` geometry differs between GitHub runners (different
+   CPUs). The same-machine comparison makes the guard independent of this, but stored baselines cannot be
+   byte-compared across machines. A pipeline follow-up could make `hair_clumps` CPU-independent.
+5. **Girl render noise:** the girl's renders differ between two identical builds (rmse up to 0.0028, hair-fibre
    area), even though her geometry fingerprint is byte-equal. The noise threshold absorbs this. A follow-up could
    make it bit-identical, as T-038b did for the boy's hair.
-5. **Animation regression shots** (idle, walk, wave, hand-over; plan §5.1 last column) are not part of the T-041
+6. **Animation regression shots** (idle, walk, wave, hand-over; plan §5.1 last column) are not part of the T-041
    acceptance criteria and are not implemented.
-6. **Required status check:** once this is merged, the rulesets should require the check "Gate verdict". This is
+7. **Required status check:** once this is merged, the rulesets should require the check "Gate verdict". This is
    an owner step, because the cloud proxy blocks settings APIs.
-7. **CI cost:**
+8. **CI cost:**
    - fast tier: about 6 min on linux;
    - full tier: about 21 min wall time (linux gate about 20 min, girl regression about 11 min, boy about 2.5 min,
      all in parallel).
 
    The linux gate's Blender tier (garment test, verify_charsys, determinism) dominates. Per-character jobs scale
    with the number of characters at no extra wall time.
-8. **Unreachable artifacts:** cloud sessions cannot download Actions artifacts (blob host blocked). Baselines were
+9. **Unreachable artifacts:** cloud sessions cannot download Actions artifacts (blob host blocked). Baselines were
    therefore made locally and verified on the runner, not downloaded from it.
 
 ## 10. Resource use

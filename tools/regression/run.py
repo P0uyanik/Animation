@@ -571,6 +571,9 @@ def main(argv=None) -> int:
     ap.add_argument("--against", default="", help="also build every character from this ref (git worktree) on this "
                     "machine; unchanged characters must be identical to it (CI: origin/main)")
     a = ap.parse_args(argv)
+    a.out = str(Path(a.out).resolve())  # Blender runs with the source checkout as working directory
+    if a.gate_report:
+        a.gate_report = str(Path(a.gate_report).resolve())
     ids = a.character or tiers.character_ids()
     unknown = sorted(set(ids) - set(tiers.character_ids()))
     if unknown:
