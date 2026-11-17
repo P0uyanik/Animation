@@ -178,7 +178,7 @@ jobs:
     name: windows gate
     needs: plan
     if: needs.plan.outputs.windows == 'true'
-    runs-on: windows-2025
+    runs-on: windows-2022
     timeout-minutes: 360
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
