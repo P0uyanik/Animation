@@ -4,8 +4,10 @@
 #include "scene/interaction.h"
 
 #include <algorithm>
+#include <atomic>
 #include <format>
 #include <optional>
+#include <unordered_map>
 
 #include "scene/scene.h"
 
@@ -306,6 +308,8 @@ BodyClearanceModel bodyClearanceModel(const Skeleton& sk, const std::vector<Skin
       P.restGap = g;
     }
   M.valid = true;
+  static std::atomic<unsigned long long> fits{0};
+  M.id = ++fits;
   return M;
 }
 
@@ -469,8 +473,9 @@ float armBodyGap(const BodyClearanceModel& M, const std::vector<mat4>& G, char s
 // (the body sections' axis): a forearm across the belly goes forward, an arm against the side goes sideways. The
 // centroid and the radial direction vary continuously with the pose, so the path does. The angle is the smallest along
 // that path at which the stage's worst gap reaches its target (coarse steps, then bisection).
-ArmPostPassResult applyArmBodyClearance(const Skeleton& sk, const BodyClearanceModel& M, const mat4& world, char side,
-                                        float pin, float keepHand, Pose& pose, const ArmPostPassOptions& o) {
+namespace {
+ArmPostPassResult armPostPass(const Skeleton& sk, const BodyClearanceModel& M, const mat4& world, char side, float pin,
+                              float keepHand, Pose& pose, const ArmPostPassOptions& o) {
   ArmPostPassResult out;
   if (!M.valid) return out;
   const ArmModel& A = M.arm[side == 'L' ? 0 : 1];
@@ -535,7 +540,8 @@ ArmPostPassResult applyArmBodyClearance(const Skeleton& sk, const BodyClearanceM
         float a = std::max(0.0f, t - 2 * o.step), b = t;
         for (int k = 0; k < 20; ++k) {
           const float m1 = a + (b - a) / 3, m2 = b - (b - a) / 3;
-          (at(m1, trial) < at(m2, trial) ? a : b) = (at(m1, trial) < at(m2, trial) ? m1 : m2);
+          if (at(m1, trial) < at(m2, trial)) a = m1;
+          else b = m2;
         }
         theta = 0.5f * (a + b);
         break;
@@ -561,6 +567,58 @@ ArmPostPassResult applyArmBodyClearance(const Skeleton& sk, const BodyClearanceM
   out.after = armState(M, B, G, A, side, o, false, pin, keepHand).gap;
   out.changed = true;
   return out;
+}
+
+// The post-pass is a pure function of (model, skeleton, world, side, pin, keepHand, pose, options), and an evaluation
+// asks for the same frame's pose many times (interaction compiles, secondary motion, prop worlds): the result is
+// memoised on the exact bytes of those inputs (per thread, bounded). Identical inputs give identical outputs, so this
+// changes nothing but the time.
+struct PassKey {
+  std::vector<unsigned char> bytes;
+  size_t hash = 0;
+  bool operator==(const PassKey& k) const { return hash == k.hash && bytes == k.bytes; }
+};
+struct PassKeyHash {
+  size_t operator()(const PassKey& k) const { return k.hash; }
+};
+struct PassValue {
+  quat upper, fore, hand;
+  ArmPostPassResult result;
+};
+template <class T>
+void putBytes(std::vector<unsigned char>& b, const T& v) {
+  const auto* p = reinterpret_cast<const unsigned char*>(&v);
+  b.insert(b.end(), p, p + sizeof(T));
+}
+}  // namespace
+
+ArmPostPassResult applyArmBodyClearance(const Skeleton& sk, const BodyClearanceModel& M, const mat4& world, char side,
+                                        float pin, float keepHand, Pose& pose, const ArmPostPassOptions& o) {
+  if (!M.valid) return {};
+  const ArmModel& A = M.arm[side == 'L' ? 0 : 1];
+  if (A.points.empty() || A.upper < 0 || A.fore < 0 || A.hand < 0) return {};
+  thread_local std::unordered_map<PassKey, PassValue, PassKeyHash> cache;
+  PassKey key;
+  key.bytes.reserve(64 + pose.local.size() * sizeof(quat));
+  putBytes(key.bytes, M.id), putBytes(key.bytes, &M), putBytes(key.bytes, &sk), putBytes(key.bytes, world), putBytes(key.bytes, side);
+  putBytes(key.bytes, pin), putBytes(key.bytes, keepHand), putBytes(key.bytes, pose.rootOffset);
+  putBytes(key.bytes, o.margin), putBytes(key.bytes, o.band), putBytes(key.bytes, o.armpit), putBytes(key.bytes, o.step);
+  putBytes(key.bytes, o.maxAngle), putBytes(key.bytes, o.maxSwing);
+  key.bytes.insert(key.bytes.end(), reinterpret_cast<const unsigned char*>(pose.local.data()),
+                   reinterpret_cast<const unsigned char*>(pose.local.data() + pose.local.size()));
+  size_t h = 1469598103934665603ull;  // FNV-1a
+  for (unsigned char c : key.bytes) h = (h ^ c) * 1099511628211ull;
+  key.hash = h;
+  if (auto it = cache.find(key); it != cache.end()) {
+    pose.local[size_t(A.upper)] = it->second.upper;
+    pose.local[size_t(A.fore)] = it->second.fore;
+    pose.local[size_t(A.hand)] = it->second.hand;
+    return it->second.result;
+  }
+  const ArmPostPassResult r = armPostPass(sk, M, world, side, pin, keepHand, pose, o);
+  if (cache.size() >= 8192) cache.clear();
+  cache.emplace(std::move(key), PassValue{pose.local[size_t(A.upper)], pose.local[size_t(A.fore)], pose.local[size_t(A.hand)], r});
+  return r;
 }
 
 namespace {

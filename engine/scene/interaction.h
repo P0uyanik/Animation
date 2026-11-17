@@ -97,6 +97,7 @@ struct BodyClearanceModel {
   ArmModel arm[2];  // 0 = L, 1 = R
   bool valid = false;
   std::string source;  // "mesh" (fitted to skinned vertices) or "skeleton" (proportions only, no arm points)
+  unsigned long long id = 0;  // unique per fit (copies share it): keys the post-pass memo (T-040)
 };
 // Fits the model to the character (needs hips, chest and the arm chains; invalid otherwise). The body fit uses the
 // 99th percentile of the offsets of torso-dominant vertices in the front half of each band (hands work in front; a
