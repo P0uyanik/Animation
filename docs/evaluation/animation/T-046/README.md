@@ -135,7 +135,8 @@ module** (Python 3.13) behind a small `blender -b … -P script -- args` wrapper
 - First run: everything PASS except guarded paths and `test_export_engine` 11/13. Its two failing checks expect
   the exporter's error text, which the first wrapper did not print for `SystemExit("message")`.
 - After fixing the wrapper (outside the repository): `test_export_engine` **13/13 ALL PASS**.
-- Final gate on the report commit: see §9.
+- **Final gate** on the merged commit (staging merged again): every check PASS, including the full Blender tier,
+  except **Guarded paths** (Supervisor trailers).
 - verify_charsys, determinism, face, groom, hair, garment and material-preset subchecks: PASS.
 
 ## 6. Baselines
@@ -204,7 +205,7 @@ module** (Python 3.13) behind a small `blender -b … -P script -- args` wrapper
 
 ## 9. Commits
 Branch `t-046-claude-facial-animation`. Commits: gaze assist; facial layer; tuning; opening-look fix; blinkClears +
-evidence; per-character faceMotion; staging merge; report. Final hash in the relay line.
+evidence; per-character faceMotion; staging merges (2); report. Gate was run on `aa1f1bb` (report-only commit follows).
 
 ## 10. Resource use
 Token usage is not exposed. Renders:
