@@ -1,0 +1,26 @@
+{
+    "name": "Protect backup tags",
+    "target": "tag",
+    "enforcement": "active",
+    "bypass_actors": [],
+    "conditions": {
+        "ref_name": {
+            "include": [
+                "refs/tags/backup/**",
+                "refs/tags/backup-*"
+            ],
+            "exclude": []
+        }
+    },
+    "rules": [
+        {
+            "type": "deletion"
+        },
+        {
+            "type": "update"
+        },
+        {
+            "type": "non_fast_forward"
+        }
+    ]
+}
