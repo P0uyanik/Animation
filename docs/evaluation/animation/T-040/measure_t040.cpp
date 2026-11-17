@@ -2,7 +2,7 @@
 // and arm, with the always-on post-pass and without it (not part of the build):
 //   g++ -std=c++23 -O2 -I engine docs/evaluation/animation/T-040/measure_t040.cpp -Lbuild/cpp/engine -lplush_scene \
 //       -lplush_model -lplush_fuzz -lplush_anim -lplush_geom -lplush_core -o m          (run from the repository root)
-//   ./m <shot.resolved.scene.json> [frame stride] > out.json
+//   ./m <shot.resolved.scene.json> [frame stride] [first frame] [last frame] > out.json
 // Mesh model, per character and frame (engine skinning: sum of w * G[j] * (rest - head_j)):
 // - body surface: every triangle whose three vertices are >= 90 % torso-carried (hips, spine, chest and their
 //   helpers; garments and accessories included; the hips' leg-carried sides down to the engine's pelvis bottom), hair
@@ -369,7 +369,9 @@ int main(int argc, char** argv) {
       std::vector<float> angS, angE;
       std::vector<vec3> wristOn, wristOff;
       Json frames = Json::array();
-      for (int f = s.frameStart; f <= s.frameEnd; f += stride) {
+      const int f0 = argc > 3 ? std::max(s.frameStart, std::atoi(argv[3])) : s.frameStart;
+      const int f1 = argc > 4 ? std::min(s.frameEnd, std::atoi(argv[4])) : s.frameEnd;
+      for (int f = f0; f <= f1; f += stride) {
         Pose pOn, pOff;
         const auto Gon = on.characterGlobals(c, f, &pOn), Goff = off.characterGlobals(c, f, &pOff);
         const float cOn = armBodyGap(M, Gon, sc), cOff = armBodyGap(M, Goff, sc);

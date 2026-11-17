@@ -127,6 +127,14 @@ struct SectionGap {
   float gap;
   vec3 worldGrad;
 };
+float profileRadius(const BodyCapsule& C, float y, float z) {
+  const size_t n = C.profile.size();
+  const float phi = std::atan2(std::abs(z), y);  // [0, pi]
+  const float t = std::clamp(phi / glm::pi<float>() * float(n) - 0.5f, 0.0f, float(n - 1));
+  const size_t i = std::min(n - 1, size_t(t));
+  const size_t j = std::min(n - 1, i + 1);
+  return glm::mix(C.profile[i], C.profile[j], t - float(i));
+}
 SectionGap sectionGapInv(const BodyCapsule& C, const mat4& Gb, const mat4& invGb, vec3 p, char side) {
   vec3 u = C.p1 - C.p0;
   const float L = glm::length(u);
@@ -140,6 +148,32 @@ SectionGap sectionGapInv(const BodyCapsule& C, const mat4& Gb, const mat4& invGb
   const vec3 sideDir = C.e1 * (side == 'L' ? 1.0f : -1.0f);
   float gap;
   vec3 local;
+  if (!C.profile.empty()) {
+    // Mesh-following cross-section: the radius r(phi) of the profile replaces the ellipse; rho = d / r(phi).
+    const float d = std::sqrt(y * y + z * z);
+    const float rl = profileRadius(C, y, z);
+    const vec3 rad = d > 1e-6f ? (C.e1 * y + C.e2 * z) / d : sideDir;
+    const float rho = d / rl;
+    if (ax <= 0 || round) {
+      const vec2 a(ax / rc, rho);
+      const float F = glm::length(a);
+      const vec2 grad(axSign * ax / (rc * rc), rho / rl);  // F * grad F in (axis, radial)
+      const float gl = glm::length(grad);
+      if (F < 1e-4f || gl < 1e-9f) {
+        gap = -std::min(rc, rl);
+        local = sideDir;
+      } else {
+        gap = (F - 1) * F / gl;
+        local = u * grad.x + rad * grad.y;
+      }
+    } else {
+      const float ro = std::max(d - rl, 0.0f);
+      gap = std::sqrt(ro * ro + ax * ax);
+      local = u * (axSign * ax) + ro * rad;
+    }
+    if (glm::length(local) < 1e-9f) local = sideDir;
+    return {gap, glm::normalize(mat3(Gb) * glm::normalize(local))};
+  }
   if (ax <= 0 || round) {
     const vec3 a(ax / rc, y / C.r1, z / C.r2);
     const float F = glm::length(a);
@@ -236,18 +270,45 @@ BodyClearanceModel bodyClearanceModel(const Skeleton& sk, const std::vector<Skin
     C.e1 = glm::normalize(vec3(1, 0, 0) - u * u.x);
     C.e2 = glm::normalize(glm::cross(C.e1, u));  // forward (+Z) for an upright segment
     C.cap0 = C.cap1 = false;
-    std::vector<float> side, front;
-    for (size_t i = 0; i < torso.size() + (withLegs ? pelvisLegs.size() : 0); ++i) {
-      const vec3& p = i < torso.size() ? torso[i] : pelvisLegs[i - torso.size()];
-      const float t = glm::dot(p - a, b - a) / glm::dot(b - a, b - a);
-      if (t < 0 || t > 1) continue;
-      const vec3 d = p - (a + t * (b - a));
-      if (glm::dot(d, C.e2) < 0) continue;  // front half only: hands work in front (hair, a backpack are not body)
-      side.push_back(std::abs(glm::dot(d, C.e1)));
-      front.push_back(glm::dot(d, C.e2));
-    }
+    std::vector<float> side, sideSigned, front;
+    auto gather = [&](const std::vector<vec3>& pts) {
+      for (const vec3& p : pts) {
+        const float t = glm::dot(p - a, b - a) / glm::dot(b - a, b - a);
+        if (t < 0 || t > 1) continue;
+        const vec3 d = p - (a + t * (b - a));
+        if (glm::dot(d, C.e2) < 0) continue;  // front half only: hands work in front (hair, a backpack are not body)
+        side.push_back(std::abs(glm::dot(d, C.e1)));
+        sideSigned.push_back(glm::dot(d, C.e1));
+        front.push_back(glm::dot(d, C.e2));
+      }
+    };
+    gather(torso);
+    if (withLegs) gather(pelvisLegs);
     C.r1 = std::clamp(percentile(side, 0.99f, rDefault), 0.02f, 0.5f);
     C.r2 = std::clamp(percentile(front, 0.99f, rDefault), 0.02f, 0.5f);
+    // The cross-section follows the mesh (T-040): an ellipse through the side and front extremes misses the
+    // rounded-square corners of a torso (a vest or a belly at 45 degrees stood up to ~1-2 cm out of it) and is too
+    // full where the body is narrower. Per angular bin, the largest radius of the slab's front-half vertices; a bin
+    // with too few vertices keeps the ellipse there. Mesh-sourced fits only (a skeleton fit keeps the ellipse).
+    if (fromMesh && side.size() >= 200) {
+      constexpr int kBins = 16;
+      std::vector<float> rmax(kBins, -1.0f);
+      std::vector<int> count(kBins, 0);
+      for (size_t i = 0; i < side.size(); ++i) {
+        const float x = sideSigned[i], z = front[i];
+        const float phi = std::atan2(std::abs(z), x);
+        const int b = std::clamp(int(phi / glm::pi<float>() * kBins), 0, kBins - 1);
+        rmax[size_t(b)] = std::max(rmax[size_t(b)], std::sqrt(x * x + z * z));
+        ++count[size_t(b)];
+      }
+      C.profile.resize(kBins);
+      for (int b = 0; b < kBins; ++b) {
+        const float phi = (float(b) + 0.5f) / kBins * glm::pi<float>();
+        const float c = std::cos(phi) / C.r1, sn = std::sin(phi) / C.r2;
+        const float ellipse = 1.0f / std::sqrt(c * c + sn * sn);
+        C.profile[size_t(b)] = std::clamp(count[size_t(b)] >= 8 ? rmax[size_t(b)] : ellipse, 0.02f, 0.5f);
+      }
+    }
     M.body.push_back(C);
   };
   const vec3 top = neck >= 0 ? head(neck) : head(chest) + vec3(0, 0.6f * shoulderHalf, 0);
@@ -396,7 +457,9 @@ BodyFrames bodyFrames(const BodyClearanceModel& M, const std::vector<mat4>& G) {
   return B;
 }
 bool postPassPoint(const ArmPoint& P, const ArmPostPassOptions& o) {
-  return !(P.part == 0 && P.along < o.armpit) && P.followUpper >= 0.5f;
+  // A point resting deep inside the body (interior geometry carried by the arm, e.g. a core mesh of an old package)
+  // is no arm surface: no rotation of the arm frees it, and chasing it turns the arm for nothing.
+  return !(P.part == 0 && P.along < o.armpit) && P.followUpper >= 0.5f && P.restGap >= -o.deepRest;
 }
 // Gap of a point for the post-pass: a point that rests nearer than the untouched threshold (margin + band) counts
 // from its rest gap, so the rest pose itself is never corrected.
@@ -603,7 +666,7 @@ ArmPostPassResult applyArmBodyClearance(const Skeleton& sk, const BodyClearanceM
   putBytes(key.bytes, M.id), putBytes(key.bytes, &M), putBytes(key.bytes, &sk), putBytes(key.bytes, world), putBytes(key.bytes, side);
   putBytes(key.bytes, pin), putBytes(key.bytes, keepHand), putBytes(key.bytes, pose.rootOffset);
   putBytes(key.bytes, o.margin), putBytes(key.bytes, o.band), putBytes(key.bytes, o.armpit), putBytes(key.bytes, o.step);
-  putBytes(key.bytes, o.maxAngle), putBytes(key.bytes, o.maxSwing);
+  putBytes(key.bytes, o.maxAngle), putBytes(key.bytes, o.maxSwing), putBytes(key.bytes, o.deepRest);
   key.bytes.insert(key.bytes.end(), reinterpret_cast<const unsigned char*>(pose.local.data()),
                    reinterpret_cast<const unsigned char*>(pose.local.data() + pose.local.size()));
   size_t h = 1469598103934665603ull;  // FNV-1a

@@ -73,6 +73,10 @@ struct BodyCapsule {
   vec3 e1{1, 0, 0}, e2{0, 0, 1}; // cross-section axes (unit, perpendicular to the segment)
   float r1 = 0.1f, r2 = 0.1f;
   bool cap0 = true, cap1 = true;  // round ends (false: a flat end where the next section joins)
+  // Cross-section radius profile fitted to the mesh (T-040): radius at the angle phi = atan2(|z|, x) in [0, pi]
+  // (x along e1, z along e2; the back mirrors the front), one value per equal angular bin, linear between bin
+  // centres. Empty: the ellipse (r1, r2). The ends' axial radius stays min(r1, r2).
+  std::vector<float> profile;
 };
 struct ArmPoint {
   glm::ivec4 joint{0};
@@ -142,15 +146,16 @@ constexpr float kArmBodyMargin = 0.009f;  // clearance kept between the arm and 
 // wrist axis, so contacts and held props stay exact; `keepHand` (IK or orientation-constraint weight) keeps the
 // hand's world rotation (a held cup stays upright).
 struct ArmPostPassOptions {
-  // Output floor above the body sections. Larger than the interaction margin: measured against the skinned mesh the
-  // fitted sections run up to ~10 mm inside the surface where an arm meets it (T-040 evidence), so 11 mm keeps the
-  // mesh itself clear.
-  float margin = 0.011f;
+  // Output floor above the body sections. The sections follow the mesh's cross-section (profile), so the floor only
+  // covers what a rigid per-bone section cannot: the torso skin blending between bones and the facets between
+  // vertices (T-040 evidence: an ellipse fit needed 11 mm and still left a vest corner 1 mm in).
+  float margin = 0.004f;
   float band = 0.004f;      // width of the C1 blend above the margin (metres)
   float armpit = 0.4f;      // upper-arm points nearer the shoulder pivot than this fraction are the armpit band:
                             // they fold with the shoulder joint and are not moved for (reported in armClearance only)
   float step = 0.01f;       // coarse search step along the correction path (radians), then bisection
   float maxAngle = 1.2f;    // longest correction searched (radians)
+  float deepRest = 0.02f;   // points resting deeper than this inside the body sections are interior, not surface
   float maxSwing = 0.35f;   // longest swing of a pinned arm (radians): a held hand is not worth a large elbow turn
 };
 struct ArmPostPassResult {
