@@ -574,7 +574,8 @@ def build(C, M, head, spec, P, H, head_bone="DEF-spine.006", eye_bone="DEF-eye.{
                 zn = z_nose + _f(fs.get("nose", {}), "offset_z_m", 0.0)
                 spots.append(((0.0, ctx.face_y(None, 0.0, zn), zn), _f(bl, "nose_radius_m", _f(bl, "radius_m", 0.025)),
                               _f(bl, "nose_intensity", _f(bl, "intensity", 1.0))))
-        M["face_skin"] = FF.face_skin_material("M_skin_face", skin_rgb, bl, spots, fs["skin"])
+        fc = (0.0, ctx.face_y(None, 0.0, z_nose), z_nose)  # face centre (bleed weighting)
+        M["face_skin"] = FF.face_skin_material("M_skin_face", skin_rgb, bl, spots, fs["skin"], fc)
         skin_assignment = MATERIALS.get_assignment(spec["materials"], "skin")
         if skin_assignment:
             MATERIALS.apply_from_assignment(M["face_skin"], skin_assignment, preserve_base_color=True)

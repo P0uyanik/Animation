@@ -183,12 +183,13 @@ def eye_material_layered(name, ecfg, r):
 
 
 # ------------------------------------------------------------------------------------------------ face skin
-def face_skin_material(name, skin_rgb, blush_cfg, spots, skin_cfg):
+def face_skin_material(name, skin_rgb, blush_cfg, spots, skin_cfg, face_centre=None):
     """Felt face skin: base colour, soft felt blush patches (intensity, softness, felt breakup) and an occlusion
     compensation. Plush felt scatters light into creases, so creases read warm instead of grey: where the ambient
     occlusion (distance occlusion.distance_m) is high, the albedo shifts towards occlusion.warm_srgb by `lift`;
     optional occlusion.bleed (0 = off) adds the light felt scatters into shaded skin (emission of strength
-    bleed * occlusion, bleed_srgb (default warm_srgb) x local colour); occlusion.samples sets the AO samples (noise).
+    bleed * occlusion, bleed_srgb (default warm_srgb) x local colour;
+    bleed_face_radius_m/bleed_body: full bleed within that radius of face_centre, bleed_body times it elsewhere); occlusion.samples sets the AO samples (noise).
     spots: [(xyz, radius, intensity)] in object coordinates (the skin object sits at the origin)."""
     m = G.material(name, tuple(skin_rgb), roughness=0.55, subsurface=0.2, sss_radius=(1.0, 0.45, 0.3), sss_scale=0.012,
                    specular=0.35)
@@ -265,6 +266,25 @@ def face_skin_material(name, skin_rgb, blush_cfg, spots, skin_cfg):
             g.operation = "MULTIPLY"
             links.new(inv.outputs[0], g.inputs[0])
             g.inputs[1].default_value = glow
+            fr = _f(occ, "bleed_face_radius_m", 0.0)
+            if fr > 0 and face_centre is not None:  # the face sits inside the hair: full bleed on the face, a
+                # fraction (bleed_body) elsewhere, fading over half the radius
+                dv = nodes.new("ShaderNodeVectorMath")
+                dv.operation = "DISTANCE"
+                dv.inputs[1].default_value = tuple(face_centre)
+                links.new(tc.outputs["Object"], dv.inputs[0])
+                fm2 = nodes.new("ShaderNodeMapRange")
+                fm2.interpolation_type = "SMOOTHSTEP"
+                fm2.inputs["From Min"].default_value = fr
+                fm2.inputs["From Max"].default_value = fr * 1.5
+                fm2.inputs["To Min"].default_value = 1.0
+                fm2.inputs["To Max"].default_value = _f(occ, "bleed_body", 1.0)
+                links.new(dv.outputs["Value"], fm2.inputs["Value"])
+                g2 = nodes.new("ShaderNodeMath")
+                g2.operation = "MULTIPLY"
+                links.new(g.outputs[0], g2.inputs[0])
+                links.new(fm2.outputs["Result"], g2.inputs[1])
+                g = g2
             gc = nodes.new("ShaderNodeMix")
             gc.data_type = "RGBA"
             gc.blend_type = "MULTIPLY"
