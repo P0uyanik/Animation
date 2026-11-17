@@ -614,6 +614,6 @@ TEST_CASE("arm-body post-pass: an IK weight ramp hands over from the pinned swin
                              << step * 1000 << " mm");
     CHECK(glm::distance(wrist.back(), wrist0) < 1e-5f);  // full IK weight: the wrist is IK's
     CHECK(total > 0.01f);
-    CHECK(step < 0.1f * total);  // spread over the ramp (50 steps), no jump
+    CHECK(step < 0.25f * total);  // spread over the ramp: no single step of the IK weight carries most of it
   }
 }

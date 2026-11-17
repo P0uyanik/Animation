@@ -519,18 +519,30 @@ ArmPostPassResult applyArmBodyClearance(const Skeleton& sk, const BodyClearanceM
       g = boneGlobals(sk, p, world);
       return armState(M, B, g, A, side, o, false, gp, kh).gap;
     };
+    // Along the path: the first angle that reaches the target. The swing stops at the path's first local maximum of
+    // the gap if that comes first (it does not cross a dip, so its angle stays continuous as the target grows; the
+    // free stage takes the rest). The free stage goes on to the target (its best angle if the path never reaches it).
     Pose trial;
-    float lo = 0, hi = -1, bestTheta = 0, bestGap = st.gap;
-    for (float theta = o.step; theta <= o.maxAngle + 1e-6f; theta += o.step) {
-      const float g = at(theta, trial);
-      if (g > bestGap) bestGap = g, bestTheta = theta;
+    float lo = 0, hi = -1, theta = 0, prevGap = st.gap;
+    for (float t = o.step; t <= o.maxAngle + 1e-6f; t += o.step) {
+      const float g = at(t, trial);
       if (g >= target) {
-        hi = theta;
+        hi = t;
         break;
       }
-      lo = theta;
+      if (swing && g < prevGap - 1e-6f) {  // past a local maximum: refine it in [t - 2 step, t]
+        float a = std::max(0.0f, t - 2 * o.step), b = t;
+        for (int k = 0; k < 20; ++k) {
+          const float m1 = a + (b - a) / 3, m2 = b - (b - a) / 3;
+          (at(m1, trial) < at(m2, trial) ? a : b) = (at(m1, trial) < at(m2, trial) ? m1 : m2);
+        }
+        theta = 0.5f * (a + b);
+        break;
+      }
+      if (g > prevGap) theta = t;
+      prevGap = std::max(prevGap, g);
+      lo = t;
     }
-    float theta = bestTheta;
     if (hi > 0) {
       for (int k = 0; k < 14; ++k) {
         const float mid = 0.5f * (lo + hi);
