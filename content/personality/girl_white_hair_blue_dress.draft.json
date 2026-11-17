@@ -480,5 +480,22 @@
     "no single-eye wink (w04 BLINK L/R close both eyes)",
     "neutral mouth open vs closed: owner decision pending",
     "intensity of the goofy/bubbly extrapolations: owner to confirm (references are calm and small in motion)"
-  ]
+  ],
+  "owner_decisions": {
+    "personality": {
+      "value": "a little goofy, not very bright, bubbly and cheerful; goofiness subtle as in the references",
+      "kind": "owner",
+      "source": "owner decision 2026-11-17"
+    },
+    "hair_accessory": {
+      "value": "blue felt bow (not the flower of the hair/rig blueprints)",
+      "kind": "owner",
+      "source": "owner decision 2026-11-17"
+    },
+    "neutral_mouth": {
+      "value": "closed soft smile at rest; lips slightly parted while watching; small open smile = presentation/Happy",
+      "kind": "owner",
+      "source": "owner decision 2026-11-17"
+    }
+  }
 }
