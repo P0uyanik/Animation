@@ -9,7 +9,8 @@ study_clumps  felted, leaf-shaped hair clumps (tapered, flattened, pointed, soft
                "rows": [{"count", "az": [a0, a1], "el": [lo, hi], "flow": "away" | "down" | "toward" | "stand",
                          "pole": {"az", "el"} (whorl for away/toward), "len_deg": [lo, hi], "lift": [root, tip],
                          "lift_power", "width": [lo, hi], "thick": [lo, hi], "jitter_deg", "converge" (fringe:
-                         tips pulled towards az 0 by this fraction), "curl_deg" (sideways bend of the tip)}],
+                         tips pulled towards az 0 by this fraction), "curl_deg" (sideways bend of the tip),
+                         "taper_power" (width profile 1 - s^p: 2.4 leaf, ~1.1 cone)}],
                "seg", "step_m", "grooves": n, "groove_depth", "irregularity"}
 study_curtain sculpted long-hair curtain: one thick felted shell hanging from the scalp over the back/shoulders, with
               ringlet columns and helical lobes carved into it (sculpted curls, approach B/C), rounded scalloped tips.
@@ -158,7 +159,8 @@ def build_clumps(st, ctx, R):
                 p, nrm = sc.at_dir(d, l0 + (l1 - l0) * s ** lp - 0.004 * (1 - s) ** 4)
                 path.append(p)
                 ups.append(nrm)
-            prof = [(1 - (i / (n - 1)) ** 2.4) ** 0.65 * (0.85 + 0.3 * math.sin(math.pi * i / (n - 1))) for i in range(n)]
+            tp = float(row.get("taper_power", 2.4))  # lower = more conical (spikes)
+            prof = [(1 - (i / (n - 1)) ** tp) ** 0.65 * (0.85 + 0.3 * math.sin(math.pi * i / (n - 1))) for i in range(n)]
             widths = [max(0.003, wl * p) for p in prof]
             thicks = [max(0.0025, tk * (0.6 + 0.4 * p)) * (0.35 + 0.65 * p) for p in prof]
             v_start = len(bucket.verts)
