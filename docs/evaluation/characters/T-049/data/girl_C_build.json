@@ -1,0 +1,95 @@
+{
+ "character": "girl_auburn_bun_glasses",
+ "approach": "C",
+ "label": "hybrid: felted crown/fringe/bun/temple shells + sculpted ringlet curtain + 11 felt ringlets at the edges",
+ "hair_build_s": 1.46,
+ "total_s": 8.13,
+ "hair_vertices": 128411,
+ "hair_faces": 128940,
+ "fibre_points": 469608,
+ "chain_bones": 47,
+ "peak_rss_mb": 1246.6,
+ "structures": {
+  "cap": {
+   "type": "scalp_cap",
+   "faces": 14706
+  },
+  "bun": {
+   "buns": 1,
+   "finish": "felt",
+   "type": "bun"
+  },
+  "crown": {
+   "shape": "gather",
+   "grid": [
+    200,
+    44
+   ],
+   "type": "felt_volume"
+  },
+  "fringe": {
+   "shape": "fringe",
+   "grid": [
+    64,
+    40
+   ],
+   "type": "felt_volume"
+  },
+  "fringe_part": {
+   "shape": "fringe",
+   "grid": [
+    48,
+    40
+   ],
+   "type": "felt_volume"
+  },
+  "temple_l": {
+   "shape": "mass",
+   "grid": [
+    56,
+    32
+   ],
+   "type": "felt_volume"
+  },
+  "temple_r": {
+   "shape": "mass",
+   "grid": [
+    56,
+    32
+   ],
+   "type": "felt_volume"
+  },
+  "curtain": {
+   "shape": "curtain",
+   "grid": [
+    200,
+    110
+   ],
+   "columns": 14,
+   "type": "study_curtain"
+  },
+  "edge_side": {
+   "locks": 4,
+   "style": "curly",
+   "finish": "felt",
+   "type": "locks"
+  },
+  "edge_back": {
+   "locks": 7,
+   "style": "curly",
+   "finish": "felt",
+   "type": "locks"
+  },
+  "band": {
+   "radius_m": 0.0754,
+   "type": "tie"
+  },
+  "flowers": {
+   "flowers": 3,
+   "type": "flowers"
+  }
+ },
+ "fused": null,
+ "spec_lines": 791,
+ "blend_mb": 17.71
+}

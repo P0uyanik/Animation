@@ -1,0 +1,53 @@
+{
+ "character": "boy_yellow_hoodie",
+ "approach": "B",
+ "label": "sculpted: the same base volume and clump shapes fused by voxel remesh into one smoothed felt sculpt",
+ "hair_build_s": 1.19,
+ "total_s": 1.29,
+ "hair_vertices": 259557,
+ "hair_faces": 259402,
+ "fibre_points": 156816,
+ "chain_bones": 0,
+ "peak_rss_mb": 661.9,
+ "structures": {
+  "cap": {
+   "type": "scalp_cap",
+   "faces": 8058
+  },
+  "base": {
+   "shape": "gather",
+   "grid": [
+    160,
+    40
+   ],
+   "type": "felt_volume"
+  },
+  "crown": {
+   "clumps": 6,
+   "type": "study_clumps"
+  },
+  "top": {
+   "clumps": 14,
+   "type": "study_clumps"
+  },
+  "fringe": {
+   "clumps": 6,
+   "type": "study_clumps"
+  },
+  "sides": {
+   "clumps": 10,
+   "type": "study_clumps"
+  },
+  "back": {
+   "clumps": 19,
+   "type": "study_clumps"
+  }
+ },
+ "fused": {
+  "objects": 6,
+  "voxel_m": 0.002,
+  "fibre_objects": 2
+ },
+ "spec_lines": 492,
+ "blend_mb": 13.89
+}

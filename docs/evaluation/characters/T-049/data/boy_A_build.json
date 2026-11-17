@@ -1,0 +1,45 @@
+{
+ "character": "boy_yellow_hoodie",
+ "approach": "A",
+ "label": "strand/lock groom: scalp cap + ~220 narrow felt locks (each C clump split in 2-3, plus an under-layer)",
+ "hair_build_s": 0.54,
+ "total_s": 1.36,
+ "hair_vertices": 78437,
+ "hair_faces": 80078,
+ "fibre_points": 400230,
+ "chain_bones": 292,
+ "peak_rss_mb": 604.1,
+ "structures": {
+  "cap": {
+   "type": "scalp_cap",
+   "faces": 8058
+  },
+  "under": {
+   "clumps": 70,
+   "type": "study_clumps"
+  },
+  "crown": {
+   "clumps": 12,
+   "type": "study_clumps"
+  },
+  "top": {
+   "clumps": 42,
+   "type": "study_clumps"
+  },
+  "fringe": {
+   "clumps": 12,
+   "type": "study_clumps"
+  },
+  "sides": {
+   "clumps": 30,
+   "type": "study_clumps"
+  },
+  "back": {
+   "clumps": 57,
+   "type": "study_clumps"
+  }
+ },
+ "fused": null,
+ "spec_lines": 547,
+ "blend_mb": 5.6
+}
