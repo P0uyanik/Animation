@@ -68,7 +68,7 @@ if ($Cpp) {
         if ($LASTEXITCODE -ne 0) { throw 'apt-get update failed' }
         & sudo apt-get install -y -q --no-install-recommends @packages
         if ($LASTEXITCODE -ne 0) { throw 'apt-get install failed' }
-        Add-Env 'LD_LIBRARY_PATH' "$oidnRoot/lib"
+        # No LD_LIBRARY_PATH: CMake's build-tree rpath finds OIDN, and setup-python owns that variable.
     }
 }
 

@@ -105,6 +105,9 @@ jobs:
           python tools/check_all.py --base "$CHECK_ALL_BASE_REF" --build-dir build/quality-gate \
             --artifacts-dir build/check-all/linux ${status:+--merge-status $status} "${extra[@]}" || true
           ccache --show-stats | head -5 || true
+      - name: Show failing logs
+        if: always()
+        run: python3 .github/scripts/show_failed_logs.py build/check-all || true
       - name: Upload report
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
@@ -155,6 +158,7 @@ jobs:
           python tools/regression/run.py --blender "$BLENDER" --character "${{ matrix.character }}" \
             --out "build/regression/${{ matrix.character }}" --base origin/main --write-baseline \
             --gate-report "build/regression/${{ matrix.character }}/check_all.json" || true
+          python3 .github/scripts/show_failed_logs.py build/regression || true
       - name: Upload regression results
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2

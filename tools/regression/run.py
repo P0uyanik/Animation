@@ -200,8 +200,14 @@ def produce(cfg: dict, blender: str, out: Path, env: dict, fidelity: bool) -> di
         if code:
             raise Step(f"{name} failed (exit {code}); see {log.as_posix()}")
 
+    # Fidelity renders the build variant its reference views match (fidelity_index.json render_variant): the
+    # compare build (arms lowered, fur) is made only when fidelity needs it; the master is saved before it.
+    index = ROOT / "assets" / "characters" / cid / "references" / "annotations" / "fidelity_index.json"
+    variant = json.loads(index.read_text(encoding="utf-8")).get("render_variant", "master") if index.is_file() else "master"
     command = [blender, "-b", "--factory-startup", "-P", ROOT / "pipeline/charsys/build_character.py", "--",
-               "--spec", ROOT / cfg["spec"], "--out", build, "--no-glb", "--no-compare"]
+               "--spec", ROOT / cfg["spec"], "--out", build, "--no-glb"]
+    if not (fidelity and variant == "compare"):
+        command.append("--no-compare")
     for item in cfg["overrides"]:
         command += ["--override", ROOT / item]
     step("build", command)
