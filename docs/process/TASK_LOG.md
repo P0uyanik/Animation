@@ -26,7 +26,7 @@
 | T-041 | Gate on GitHub, file claims, full regression, unchanged-character guard, durable backups | assigned (first batch) | t-041-claude-gate-claims | `docs/tasks/T-041.md` |
 | T-043 | Spec parts, per-feature generator versions, helpers out of body_v6 | **in main** 2026-11-17 | t-043-claude-spec-versions (b7da096), merge d5c1624 | zero character change (fingerprints byte-identical); full gate PASS; found exporter byte non-determinism → T-056 |
 | T-046 | Facial animation | **in main** 2026-11-17 | t-046-claude-facial-animation (fff86bb), merge 49c61de | shared face layer, gaze test 0.0004°; full gate PASS; visual quality waits on Boy 2.0 face controls + T-055; look-down hair occlusion → T-044/T-047 |
-| T-040r1 | Clearance from the real mesh, smooth correction | assigned (first batch) | t-040-claude-pose-clearance | `docs/tasks/T-040r1.md` |
+| T-040r1 | Clearance from the real mesh, smooth correction | **blocked → redesigned into T-047** 2026-11-17 | t-040-claude-pose-clearance (d3ed49f), not merged, kept | mesh SDF post-pass fixes the 3 clip tests and test time (150→51 s) but shots stay −5 to −19 mm with ≤ 13°/frame steps; root causes: no single inside/outside definition for layered open garments, and a pose-only post-pass cannot be temporally smooth |
 | T-053a | Reference behaviour and expression analysis; draft personality profiles | **in main** 2026-11-17 | t-053a-claude-reference-behaviour (2ff6d7c) | guides, schema, 2 draft profiles (96 cited values), review checklist; boy roadmap wording corrected to the references |
 | T-055 | Girl neutral mouth = closed gentle smile (new girl version, path B) | assigned 2026-11-17 | t-055-claude-girl-neutral-mouth | `docs/tasks/T-055.md`; owner decision 2026-11-17 |
 | T-057 | Third character: reference intake, behaviour and gap analysis | **in main** 2026-11-17 | t-057-claude-third-character-intake (6a14124) | 15 references, 86 crops, guide, draft profile (61 cited values), system gaps; 3 owner questions |
@@ -35,7 +35,8 @@
 | T-048 | Branch cleanup workflow + tests | **in main** 2026-11-17 | t-048-claude-branch-cleanup (8f1c3ce), merge ae15c0b | 25/25 cleanup tests, full gate PASS; first real dry run after T-041 backups |
 | T-049 | Hair approach study (strand vs sculpted vs hybrid) | assigned 2026-11-17 | t-049-claude-hair-study | `docs/tasks/T-049.md` |
 | T-050 | GPU / render cost study (no spending) | **in main** 2026-11-17; owner decision pending | t-050-claude-render-cost (242c97c) | previews CPU; review/finals on rented RTX 4090 ≈ $0.84/finished min, ≈ $10–25/month; do not buy a GPU for cost alone |
-| T-044 | Hair v3 | queued (after T-043) | — | — |
+| T-044 | Hair v3 | queued (after T-043 + T-049 decision) | — | — |
+| T-047 | Collision system (redesign of T-040/T-040r1/T-040r2) | queued (after T-045 and T-056) | — | one collision-body definition per character built by the pipeline and exported (body + closed garments, open garment parts as cloth), used by both engine and measuring tool; clearance as a temporally smoothed constraint inside the animation solve; shoulder/clavicle avoidance from T-045 first; hold/hand-over paths planned outside the body; reuse T-040r1 SDF code and test speed-up |
 | Boy F09 / H28 | Face and hair candidates for the boy | awaiting owner review | — | unpublished experiments |
 
 Tasks from now on are numbered T-001, T-002, …, and pass through the states in `WORKFLOW.md`.
