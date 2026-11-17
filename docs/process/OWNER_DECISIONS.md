@@ -167,3 +167,7 @@ with the original references as the primary target.
 Start P6 (fidelity tool fixes, T-064) and P1 (face v2, T-065) now; the girl look round (T-059) follows the shared-system
 improvements (face v2, skin T-066, materials T-067). **Visual fidelity to the original references takes priority over
 numerical scores**; the fidelity score supports, never overrides, the owner's side-by-side judgement.
+
+## 2026-11-17: facial geometry
+The characters still have significant facial geometry issues (chin, jawline, overall face shape). The underlying 3D
+head/face geometry must be improved to match the original references; added to face v2 (T-065) as its first criterion.
