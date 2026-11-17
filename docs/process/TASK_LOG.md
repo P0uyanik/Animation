@@ -25,7 +25,7 @@
 | T-040 | Arm-body clearance in all poses | **open, redesign** | t-040-claude-pose-clearance (2e81e45) | not merged: e905 −37.7 mm while wrist pinned, 3 clip tests over-corrected; split into T-040r1 (mesh-based clearance) and T-040r2 (hold/hand-over path planning, with T-047) |
 | T-041 | Gate on GitHub, file claims, full regression, unchanged-character guard, durable backups | assigned (first batch) | t-041-claude-gate-claims | `docs/tasks/T-041.md` |
 | T-043 | Spec parts, per-feature generator versions, helpers out of body_v6 | **in main** 2026-11-17 | t-043-claude-spec-versions (b7da096), merge d5c1624 | zero character change (fingerprints byte-identical); full gate PASS; found exporter byte non-determinism → T-056 |
-| T-046 | Facial animation | assigned (first batch) | t-046-claude-facial-animation | `docs/tasks/T-046.md` |
+| T-046 | Facial animation | **in main** 2026-11-17 | t-046-claude-facial-animation (fff86bb), merge 49c61de | shared face layer, gaze test 0.0004°; full gate PASS; visual quality waits on Boy 2.0 face controls + T-055; look-down hair occlusion → T-044/T-047 |
 | T-040r1 | Clearance from the real mesh, smooth correction | assigned (first batch) | t-040-claude-pose-clearance | `docs/tasks/T-040r1.md` |
 | T-053a | Reference behaviour and expression analysis; draft personality profiles | **in main** 2026-11-17 | t-053a-claude-reference-behaviour (2ff6d7c) | guides, schema, 2 draft profiles (96 cited values), review checklist; boy roadmap wording corrected to the references |
 | T-055 | Girl neutral mouth = closed gentle smile (new girl version, path B) | assigned 2026-11-17 | t-055-claude-girl-neutral-mouth | `docs/tasks/T-055.md`; owner decision 2026-11-17 |
