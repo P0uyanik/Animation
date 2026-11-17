@@ -1,0 +1,82 @@
+{
+ "character": "boy_yellow_hoodie",
+ "generator": "groom/2",
+ "candidate": "docs/evaluation/characters/T-044/candidates/boy.hair_v3.json",
+ "hair_build_s": 0.51,
+ "total_s": 2.0,
+ "hair_vertices": 48629,
+ "hair_faces": 49130,
+ "fibre_points": 3957846,
+ "chain_bones": 70,
+ "peak_rss_mb": 683.5,
+ "report": {
+  "generator": "groom/2",
+  "structures": {
+   "cap": {
+    "type": "scalp_cap",
+    "faces": 8058
+   },
+   "base": {
+    "shape": "gather",
+    "grid": [
+     160,
+     40
+    ],
+    "type": "felt_volume"
+   },
+   "crown": {
+    "clumps": 5,
+    "keepout_clamped": 0,
+    "type": "clumps"
+   },
+   "top": {
+    "clumps": 11,
+    "keepout_clamped": 0,
+    "type": "clumps"
+   },
+   "fringe": {
+    "clumps": 5,
+    "keepout_clamped": 5,
+    "type": "clumps"
+   },
+   "sides": {
+    "clumps": 10,
+    "keepout_clamped": 0,
+    "type": "clumps"
+   },
+   "back": {
+    "clumps": 15,
+    "keepout_clamped": 0,
+    "type": "clumps"
+   }
+  },
+  "objects": [
+   "hair_cap",
+   "hair_base",
+   "hair_crown",
+   "hair_top",
+   "hair_fringe",
+   "hair_sides",
+   "hair_back"
+  ],
+  "vertices": 48629,
+  "keepout": {
+   "az": 34.0,
+   "el_min": -6.0,
+   "violations": 0,
+   "by_object": {}
+  },
+  "fibres": {
+   "objects": 21,
+   "layers": [
+    "felt",
+    "halo",
+    "flyaways"
+   ]
+  },
+  "dynamics": {
+   "chains": 35
+  }
+ },
+ "blend_mb": 4.33
+}
