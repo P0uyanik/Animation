@@ -82,7 +82,8 @@ def test_claims():
     expect(task.write_set == ["a/b.py", "c/**"] and task.stable_depends == ["e/f.py"] and task.branch == "t-904-q",
            "task file parsed (Not: excluded)")
     real = I.load_claims()
-    expect(any(c.task == "T-041" for c in real), "OWNERSHIP.md parses")
+    # The live claims table changes as tasks start and finish: check that it parses, not which tasks it lists.
+    expect(len(real) >= 1 and all(c.task.startswith("T-") and c.write_set for c in real), "OWNERSHIP.md parses")
 
 
 def test_tiers():

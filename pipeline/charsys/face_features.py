@@ -480,7 +480,8 @@ def shape_head(head, ctx, sc, ex, ez, r):
 
 
 # ------------------------------------------------------------------------------------------------ mouth rest shape
-REST_SHAPES = {"closed_smile": {}, "open_smile": {"MouthWide": 0.8, "MouthSmile": 0.4}, "small_o": {"MouthO": 0.9}}
+REST_SHAPES = {"closed_smile": {}, "open_smile": {"MouthWide": 0.8, "MouthSmile": 0.4}, "small_o": {"MouthO": 0.9},
+               "pout": {"MouthFrown": 0.5, "MouthPout": 0.6}}  # pout (T-058): small sulky mouth, needs MouthPout
 
 
 def bake_rest_shape(objs, shape, mix=None):

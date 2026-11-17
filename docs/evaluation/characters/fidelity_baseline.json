@@ -20,7 +20,9 @@
     "girl_auburn_bun_glasses": {
       "score": 65.4074,
       "build": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.spec.json",
-      "overrides": [],
+      "overrides": [
+        "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.10.0.override.json"
+      ],
       "source": "docs/evaluation/integration/consolidation/fidelity/girl/fidelity.json"
     }
   }

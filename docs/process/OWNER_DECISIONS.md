@@ -156,3 +156,33 @@ are complete; reference intake and gap analysis (T-057) start now.
 Girl 0.10.0 (closed gentle-smile neutral, T-055) is approved as an intermediate version, **not** final visual approval.
 The next improvement round must address the remaining differences, especially mouth, cheeks, skin tone, eyes and hair,
 with the original references as the primary target.
+
+## 2026-11-17: animation evaluations use the current approved versions; T-060 locally
+1. Future animation evaluations and evidence must use the latest approved character versions, so the combined quality
+   is assessed (old versions only where a frozen regression test needs them). Implemented by T-062 + Implementer rule.
+2. T-060 (Windows build): option B — install the C++ Build Tools on the owner's PC (owner approval for the install and
+   licence). The owner frees space on D: personally; agents never delete or move the owner's personal files.
+
+## 2026-11-17: T-063 plan approved
+Start P6 (fidelity tool fixes, T-064) and P1 (face v2, T-065) now; the girl look round (T-059) follows the shared-system
+improvements (face v2, skin T-066, materials T-067). **Visual fidelity to the original references takes priority over
+numerical scores**; the fidelity score supports, never overrides, the owner's side-by-side judgement.
+
+## 2026-11-17: facial geometry
+The characters still have significant facial geometry issues (chin, jawline, overall face shape). The underlying 3D
+head/face geometry must be improved to match the original references; added to face v2 (T-065) as its first criterion.
+
+## 2026-11-17: GitHub Free, public repository; hair v3 merged as a system, round 2
+- The owner is on GitHub Free and made the repository public again to avoid Actions limits (CI and rulesets as before).
+- Hair v3 (`groom/2`) is approved for merging as a technical system; round 2 (T-070) improves its visual fidelity.
+  Current approved character versions stay unchanged until the owner approves new renders.
+
+## 2026-11-17: T-069 audit recommendations approved
+1. Boy candidates F09 (face) and H28 (hair): rejected (superseded by face v2 / hair v3) → archived.
+2. Root status docs: refresh `CURRENT_STATUS.md` and `NEXT_TASK.md` as pointers; archive the other five (T-071).
+3. Engine-era demo scenes: archive, except any a test/CTest still uses.
+4. Retire `hair_clumps/2` (experiments only) once its experiments are archived (no character pins it).
+5. `apps/export-obj`: archive (after T-060 releases the root CMakeLists).
+6. Boy 1.1.0 is described as "current approved", not "published".
+7. Blender-only tests run in the local full tier (not on GitHub) to save Actions time.
+8. Evidence size policy for future tasks (DELIVERY_PLAN §9b).

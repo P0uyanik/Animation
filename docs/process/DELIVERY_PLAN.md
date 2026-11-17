@@ -206,3 +206,11 @@ Next: T-045 body mechanics (C), T-047 collisions (C), Boy 2.0 look and hoodie (D
 3. ~~Choose the off-site backup copy~~ (your PC, §8.1 layer 3): turn on Remote Control on the PC once so the
    Supervisor can install the backup task.
 3. Review visual sheets when sent; everything else is handled without you.
+
+## 9b. Evidence size policy (owner-approved 2026-11-17)
+- Review sheets and contact sheets: JPEG (quality 80–85), long edge ≤ 2048 px; at least 512 px per view so the owner
+  can judge them.
+- PNG only for images a metric or regression reads (baselines, masks, measured renders).
+- Videos: H.264 MP4, ≤ 1280 px wide, ≤ 30 s for evidence; no raw frame sequences committed.
+- No build outputs, caches, logs or `.blend` files from experiments in the repository (masters of published versions
+  excepted).
