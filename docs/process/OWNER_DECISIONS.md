@@ -104,3 +104,32 @@ The workflow must stay reliable, efficient and free of unnecessary bottlenecks.
 The owner's local computer is the off-site backup destination (read-only mirror + verified bundle, set up via
 Remote Control when the PC is online). The owner asked the Supervisor to handle GitHub security settings; the cloud
 proxy blocks settings changes, so the Supervisor prepared importable rulesets (docs/process/github-rulesets/).
+
+## 2026-11-17: roadmap priority v5
+Water simulation and paper folding are not priorities for now. Personalities: the boy is impatient and easily
+bored; the girl is cheerful and intelligent; both must show in movement, expression and behaviour (shared
+personality-profile system, data per character). A third character follows once the shared systems are complete and
+reliable. Approved: evaluate strand grooming vs sculpted hair and choose the best; explore GPU rendering options and
+costs before any extra expense; include dialogue and lip sync; develop detailed natural finger animation; include
+Blender checks in GitHub CI where practical. All implementations efficient and reusable across all characters.
+See docs/ROADMAP.md "Priority v5".
+
+## 2026-11-17: the references are the primary target
+The reference images, character models and videos were designed around each character's personality (boy:
+impatient and easily bored; girl: cheerful and intelligent) and already reflect those traits. Goal: match them as
+closely as possible in appearance, expressions, movements and animation quality. Always treat the original
+references as the primary target; improvements and personality features must support those designs, never change or
+contradict them.
+
+## 2026-11-17: no GPU rental available
+The owner cannot rent a GPU at present. Render planning assumes CPU only (cloud containers, and the owner's PC when
+available) until this changes; T-050's rental recommendation is on hold. Mitigations to evaluate before the
+benchmark scene: render settings tuned for CPU (resolution, samples + OIDN, adaptive sampling), splitting frame
+ranges across several cloud sessions, the owner's PC hardware, and only rendering final takes at full quality.
+
+## 2026-11-17: character details from the reference conflicts (T-053a)
+1. Boy: impatience stays subtle, calm and low-energy, as in the original references (small, slow fidgets in his base
+   tempo; no quick, abrupt or comic moves; no eye-rolls).
+2. Girl: eye colour brown.
+3. Girl: neutral mouth closed, with a gentle smile (open smile belongs to Happy).
+Apply consistently across models, animations and personality profiles; the original references stay the primary target.
