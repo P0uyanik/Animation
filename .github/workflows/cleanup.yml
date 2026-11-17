@@ -41,7 +41,6 @@ jobs:
     timeout-minutes: 20
     env:
       GH_TOKEN: ${{ github.token }}
-      WORK: ${{ runner.temp }}/cleanup
     steps:
       - name: Check out main (tools, TASK_LOG)
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -69,6 +68,8 @@ jobs:
 
       - name: Gather backup.yml results, open tasks and dry-run confirmations
         run: |
+          # runner.temp is not available in job-level env (GitHub rejects the workflow); set WORK here instead
+          WORK="${WORK:-$RUNNER_TEMP/cleanup}"; if [ -n "${GITHUB_ENV:-}" ]; then echo "WORK=$WORK" >> "$GITHUB_ENV"; fi
           mkdir -p "$WORK"
           # Missing file = lookup failed; empty list = never ran. Both refuse every deletion.
           gh api "repos/${GITHUB_REPOSITORY}/actions/workflows/backup.yml/runs?branch=main&per_page=30" \
