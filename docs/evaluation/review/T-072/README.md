@@ -79,7 +79,7 @@ lines, §2.4) are harmless. The lint passes. The Supervisor may delete those fou
 registration line itself is unchanged, per "never edit an existing line"). Pins: `git grep hair_clumps/2` finds no
 spec, override, episode, content or fidelity-baseline pin; only H20–H35 (archived) and the frozen H28. Not affected:
 `hair_generic_test.py` (gate) calls `hair.py` directly, not the registry; `test_versions.py` "contradicts" check
-still raises the expected error. `test_versions.py`: 71/71 PASS (before: 72/72; the removed check is the
+still raises the expected error. `test_versions.py`: 71/71 PASS on `debd84f` (before: 72/72; after merging staging with T-044's groom/2: 73/73). The removed check is the
 per-released-version loop entry "released groom hair_clumps/2 resolves", expected after retiring).
 
 **For the Supervisor (T-071 owns the doc):** `docs/CHARACTER_SYSTEM_VERSIONS.md` line 61 should mark it retired, e.g.
@@ -123,14 +123,14 @@ prebuilt). First run on `501a69d`; re-run after `git merge origin/staging` (T-04
 ```
 PASS Frozen assets
 PASS Guarded paths
-PASS Write-set: T-072: 68 changed path(s) vs origin/staging, all inside the claim
+PASS Write-set: T-072: 69 changed path(s) vs origin/staging, all inside the claim
 PASS Shared-systems lint
 PASS C++ build
 PASS C++ tests                (CTest 4/4 incl. the 3 image regressions; doctest 33591/33591 assertions)
 PASS Python tests and links
-PASS Blender tier: full tier; regression boy_yellow_hoodie PASS (fidelity 64.06), girl_auburn_bun_glasses PASS (fidelity 65.42), girl_white_hair_blue_dress PASS
+PASS Blender tier: full tier; regression boy_yellow_hoodie PASS (fidelity 64.08), girl_auburn_bun_glasses PASS (fidelity 65.47), girl_white_hair_blue_dress PASS
 ```
 
 No guarded path was changed, so no trailer is needed. Blender: bpy 5.3.0 module via `tools/bpy_blender.py`, not a
-Blender binary. Also: `test_versions.py` 71/71; `make_t014_shot.py` old vs new output identical; `t010_sheets.py`
+Blender binary. (First run on `501a69d`: same, fidelity 64.06 / 65.42.) Also: `test_versions.py` 73/73 on the final state; `make_t014_shot.py` old vs new output identical; `t010_sheets.py`
 resolves the same repository root.
