@@ -406,8 +406,11 @@ struct ArmState {
   vec3 centroid{0};  // deficit-weighted centroid of the points closer than the threshold
   float weight = 0, fore = 0;  // total deficit weight; the share of it that follows the forearm
 };
+// `pin` / `keepHand`: a pinned arm can only swing about shoulder -> wrist, which does not move a point carried by the
+// hand (a sleeve skinned to the hand and the shoulder, not to the arm bones): such a point's deficit fades out with
+// the pin (continuously, so an IK weight ramp does not switch points on and off), instead of driving the swing.
 ArmState armState(const BodyClearanceModel& M, const BodyFrames& B, const std::vector<mat4>& G, const ArmModel& A,
-                  char side, const ArmPostPassOptions& o, bool directions) {
+                  char side, const ArmPostPassOptions& o, bool directions, float pin = 0, float keepHand = 0) {
   ArmState st;
   const float T = o.margin + o.band;
   for (const ArmPoint& P : A.points) {
@@ -419,6 +422,10 @@ ArmState armState(const BodyClearanceModel& M, const BodyFrames& B, const std::v
       const SectionGap sg = sectionGapInv(M.body[k], B.G[k], B.inv[k], p, side);
       const float g = passGap(P, sg.gap, o);
       if (g < gap) gap = g, n = sg.worldGrad;
+    }
+    if (pin > 0 && gap < T) {
+      const float swings = std::clamp(P.followUpper - P.followHand * keepHand, 0.0f, 1.0f);
+      gap += pin * (1 - swings) * (T - gap);
     }
     st.gap = std::min(st.gap, gap);
     if (!directions || gap >= T) continue;
@@ -468,7 +475,7 @@ ArmPostPassResult applyArmBodyClearance(const Skeleton& sk, const BodyClearanceM
   keepHand = std::clamp(std::max(keepHand, pin), 0.0f, 1.0f);
   std::vector<mat4> G = boneGlobals(sk, pose, world);
   const BodyFrames B = bodyFrames(M, G);
-  ArmState st = armState(M, B, G, A, side, o, true);
+  ArmState st = armState(M, B, G, A, side, o, true, pin, keepHand);
   out.before = out.after = st.gap;
   if (st.gap >= o.margin + o.band) return out;  // already clear: the pose is not touched
   const float target = targetGap(st.gap, o);
@@ -507,7 +514,7 @@ ArmPostPassResult applyArmBodyClearance(const Skeleton& sk, const BodyClearanceM
       const quat kept = glm::normalize(glm::inverse(rotationOf(g[size_t(A.fore)])) * handWorld);
       p.local[size_t(A.hand)] = keepHand >= 1 ? kept : glm::normalize(glm::slerp(handLocal, kept, keepHand));
       g = boneGlobals(sk, p, world);
-      return armState(M, B, g, A, side, o, false).gap;
+      return armState(M, B, g, A, side, o, false, pin, keepHand).gap;
     };
     Pose trial;
     float lo = 0, hi = -1, bestTheta = 0, bestGap = st.gap;
@@ -531,7 +538,7 @@ ArmPostPassResult applyArmBodyClearance(const Skeleton& sk, const BodyClearanceM
     if (theta <= 0) break;
     at(theta, pose);
     G = boneGlobals(sk, pose, world);
-    st = armState(M, B, G, A, side, o, true);
+    st = armState(M, B, G, A, side, o, true, pin, keepHand);
   }
   out.after = st.gap;
   out.changed = true;
