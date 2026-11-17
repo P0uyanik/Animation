@@ -1,3 +1,8 @@
+# ⛔ STOP — OLD TASK QUEUE CANCELLED (Supervisor, owner-ordered 2026-11-17)
+Do NOT start or continue T-042 or any task from the old local queue. Do not run Codex or Antigravity jobs, do not push
+task branches. All work now runs under docs/process/DELIVERY_PLAN.md on `main`, assigned only by the Supervisor.
+Your T-041 work is preserved as `archive/t-041-codex-local` (25e9798). Wait for a new assignment.
+
 # Local relay session: handover (read this first; it replaces the old session's history)
 
 Role: you are the RELAY on the owner's Windows PC. You run Codex (and Antigravity when its quota returns) for the

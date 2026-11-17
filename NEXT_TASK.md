@@ -1,3 +1,8 @@
+# ⛔ STOP — OLD TASK QUEUE CANCELLED (Supervisor, owner-ordered 2026-11-17)
+Do NOT start or continue T-042 or any task from the old local queue. Do not run Codex or Antigravity jobs, do not push
+task branches. All work now runs under docs/process/DELIVERY_PLAN.md on `main`, assigned only by the Supervisor.
+Your T-041 work is preserved as `archive/t-041-codex-local` (25e9798). Wait for a new assignment.
+
 # Next task
 
 0. **Working structure (2026-11-15):** Supervisor/Implementer workflow in `docs/process/` (owner-approved). Pending: GitHub push access to the project repository, then the Implementer chat setup. No development task is selected yet.
