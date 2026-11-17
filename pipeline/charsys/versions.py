@@ -118,6 +118,7 @@ _r("face", "face_generic", 1, "face_generic")
 _r("groom", "hair_clumps", 1, "hair", declared=False, note="legacy clump hair (hair.py)")
 _r("groom", "hair_clumps", 2, "hair", declared=False, note="legacy lock-family hair (hair.py; experiments)")
 _r("groom", "groom", 1, "groom")
+_r("groom", "groom", 2, "groom_hybrid")  # T-044 hair v3 (hybrid felt); opt-in, no character pins it yet
 _r("garment", "body_v6", 1, "body_v6", declared=False, note="legacy v6 clothing")
 _r("garment", "garment", 1, "garments")
 _r("accessories", "body_v6", 1, "body_v6", declared=False, note="legacy v6 backpack")
