@@ -62,6 +62,13 @@ criteria below). Approved additions: hair-approach study, GPU/render-cost study 
 dialogue + lip sync, detailed natural finger animation, Blender checks in GitHub CI where practical.
 Everything is a shared, spec/data-driven system: character differences live only in specs, profiles and assets.
 
+**Primary target (owner decision 2026-11-17):** the owner's reference images, character models and videos were
+designed around each character's personality, so they are the target for appearance, expressions, movement and
+animation quality. Personality profiles and every improvement are derived from and must support those references,
+never change or contradict them. T-053 starts by analysing the references (expressions, poses, timing, behaviour in
+`docs/references` and each character's `references/`) and encodes what they show; only gaps are filled, in the same
+spirit, and reviewed side by side with the references.
+
 | Phase | Work (task) | Starts when | Notes |
 | --- | --- | --- | --- |
 | 1 (running) | T-041 gate on GitHub incl. **Blender checks in CI where practical** (pinned Blender, parity with local), file claims, all-character regression, unchanged-character guard, backups · T-043 spec versions · T-046 facial animation · T-040r1 mesh-based arm clearance · T-048 branch cleanup | now | T-048 done (merging) |
