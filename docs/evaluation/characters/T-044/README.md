@@ -152,7 +152,7 @@ with no gravity or collision response.
 | | boy | girl | third |
 |---|---|---|---|
 | max lag in the turn | 11.8° | 14.2° | 14.2° |
-| hair vertices > 2 mm inside body/garments, rest → turn max | 0.14% | 0.11% → 0.13% | 0.30% |
+| hair vertices > 2 mm inside body/garments, rest → turn max | 0.14% | 0.11% → 0.13% | 0.30% (layout before the last side-lock change) |
 
 The girl's ringlets swing into the shoulders in the turn (deepest 28 mm at the extreme). The engine's colliders
 (`dynamics.colliders`, exported) are meant to resolve this; I did not run the engine solver.
