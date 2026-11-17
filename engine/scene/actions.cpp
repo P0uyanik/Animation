@@ -231,8 +231,15 @@ Result<void> SceneEvaluator::compileActions() {
     }
     if (d == d.parent_path()) break;
   }
+  buildBodyMechanics();  // T-045: actions see the body mechanics while they plan (reach poses, contacts)
   const std::vector<std::string> libraryWarnings = warnings_;
+  bodyCacheOn_ = false;  // generated tracks change while compiling: no cached drivers meanwhile
   auto r = compileActionsBody();
+  bodyCacheOn_ = true;
+  {
+    std::lock_guard<std::mutex> lock(*bodyMutex_);
+    for (auto& m : bodyCache_) m.clear();
+  }
   warnings_.insert(warnings_.begin(), libraryWarnings.begin(), libraryWarnings.end());
   buildFaceLayers();
   return r;

@@ -3,9 +3,12 @@
 #pragma once
 #include <filesystem>
 #include <map>
+#include <memory>
+#include <mutex>
 #include <optional>
 
 #include "anim/animation.h"
+#include "anim/body_mechanics.h"
 #include "model/character.h"
 #include "model/clip.h"
 #include "scene/asset_library.h"
@@ -51,6 +54,10 @@ struct CharacterDesc {
   // Per-character living-face tunables (T-046, same schema as an emotion's "faceMotion"): a constant layer under the
   // emotions, e.g. from a personality profile (null = the shared neutral face).
   Json faceMotion;
+  // Body mechanics (T-045, anim/body_mechanics.h): null / false = off (default); true = shared neutral tuning; an
+  // object = {"enabled", "personality": "<profile id>" (content/personality/<id>[.draft].json), and overrides of the
+  // BodyMechanicsParams fields by name, "limits": {...}}. Saved as written.
+  Json bodyMechanics;
 };
 
 struct PropParent {
@@ -145,8 +152,15 @@ class SceneEvaluator {
   // Bone frames (world space) of character c at a frame, after constraints.
   // Includes secondary motion (spring chains, anim/secondary.h) when the character has it; poseOut stays kinematic.
   std::vector<mat4> characterGlobals(size_t c, double frame, Pose* poseOut = nullptr) const;
-  // Drops cached spring-chain states (done automatically on load and on mutableScene()).
+  // Drops cached spring-chain states and body-mechanics drivers (done automatically on load and on mutableScene()).
   void resetDynamics() const;
+  // Body mechanics (T-045): whether the layer is on for character c, its resolved tuning and rig binding, the raw
+  // drivers at a frame (pose before the layer) and the filtered input the layer uses at a (fractional) frame.
+  bool bodyMechanicsActive(size_t c) const { return c < body_.size() && body_[c].params.enabled; }
+  const BodyMechanicsParams* bodyMechanicsParams(size_t c) const { return c < body_.size() ? &body_[c].params : nullptr; }
+  const BodyMechanicsRig* bodyMechanicsRig(size_t c) const { return c < body_.size() ? &body_[c].rig : nullptr; }
+  BodyDrivers bodyDrivers(size_t c, long long frame) const;
+  BodyMechanicsInput bodyMechanicsInput(size_t c, double frame) const;
   mat4 objectWorld(size_t o, double frame) const;
   // Prop instance frames (world space). Prop parents are resolved in dependency order; parent switches are
   // rebased at their switch frame so random-access evaluation remains continuous.
@@ -227,6 +241,20 @@ class SceneEvaluator {
   // Clips, life, constraints: the pose before secondary motion.
   std::vector<mat4> kinematicGlobals(size_t c, double frame, Pose* poseOut) const;
   std::vector<std::shared_ptr<SpringChainSolver>> dynamics_;  // per character; null = no secondary motion
+  // Body mechanics (T-045): per character tuning, rig binding and follow-through kernels (scene frames); raw drivers
+  // are cached per integer frame (not while actions compile: the generated tracks are still changing).
+  struct BodyMechanicsSetup {
+    BodyMechanicsParams params;
+    BodyMechanicsRig rig;
+    std::vector<float> fast, slow, weight;
+  };
+  std::vector<BodyMechanicsSetup> body_;
+  void buildBodyMechanics();
+  void applyBodyMechanicsAt(size_t c, double frame, Pose& pose) const;
+  BodyDrivers filteredDrivers(size_t c, long long frame, const std::vector<float>& kernel) const;
+  std::shared_ptr<std::mutex> bodyMutex_ = std::make_shared<std::mutex>();
+  mutable std::vector<std::map<long long, BodyDrivers>> bodyCache_;
+  bool bodyCacheOn_ = true;
   void applyClipFingers(size_t c, double frame, Pose& pose) const;
  public:
   // Clip playback data of character c for a reference pose: the package's generated block if it matches the

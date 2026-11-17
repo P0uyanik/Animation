@@ -1,0 +1,17 @@
+{
+  "format": "plush.body_mechanics_rig",
+  "version": 1,
+  "description": "Shared rig profile for the body-mechanics layer (T-045, engine/anim/body_mechanics.h). Candidate base names (\".L\"/\".R\" appended) for the clavicle and for hip helper bones that ride on the hips; the first present name wins, missing bones are skipped. Limits are shared defaults; a scene may override them per character (bodyMechanics.limits).",
+  "clavicle": ["clavicle", "shoulder", "DEF-shoulder"],
+  "hip_helpers": ["DEF-pelvis"],
+  "limits": {
+    "shrug_max_deg": 12,
+    "protract_max_deg": 10,
+    "lean_max_deg": 6,
+    "twist_max_deg": 8,
+    "side_max_deg": 3,
+    "pelvis_shift": 0.08,
+    "pelvis_roll_deg": 4,
+    "knee_soften": 0.004
+  }
+}
