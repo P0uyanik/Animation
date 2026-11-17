@@ -27,9 +27,10 @@
 | T-043 | Spec parts, per-feature generator versions, helpers out of body_v6 | assigned (first batch) | t-043-claude-spec-versions | `docs/tasks/T-043.md` |
 | T-046 | Facial animation | assigned (first batch) | t-046-claude-facial-animation | `docs/tasks/T-046.md` |
 | T-040r1 | Clearance from the real mesh, smooth correction | assigned (first batch) | t-040-claude-pose-clearance | `docs/tasks/T-040r1.md` |
+| T-053a | Reference behaviour and expression analysis; draft personality profiles | assigned 2026-11-17 | t-053a-claude-reference-behaviour | `docs/tasks/T-053a.md` |
 | T-048 | Branch cleanup workflow + tests | **in main** 2026-11-17 | t-048-claude-branch-cleanup (8f1c3ce), merge ae15c0b | 25/25 cleanup tests, full gate PASS; first real dry run after T-041 backups |
 | T-049 | Hair approach study (strand vs sculpted vs hybrid) | assigned 2026-11-17 | t-049-claude-hair-study | `docs/tasks/T-049.md` |
-| T-050 | GPU / render cost study (no spending) | assigned 2026-11-17 | t-050-claude-render-cost | `docs/tasks/T-050.md` |
+| T-050 | GPU / render cost study (no spending) | **in main** 2026-11-17; owner decision pending | t-050-claude-render-cost (242c97c) | previews CPU; review/finals on rented RTX 4090 ≈ $0.84/finished min, ≈ $10–25/month; do not buy a GPU for cost alone |
 | T-044 | Hair v3 | queued (after T-043) | — | — |
 | Boy F09 / H28 | Face and hair candidates for the boy | awaiting owner review | — | unpublished experiments |
 
