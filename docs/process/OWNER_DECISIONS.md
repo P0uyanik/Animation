@@ -126,3 +126,10 @@ The owner cannot rent a GPU at present. Render planning assumes CPU only (cloud 
 available) until this changes; T-050's rental recommendation is on hold. Mitigations to evaluate before the
 benchmark scene: render settings tuned for CPU (resolution, samples + OIDN, adaptive sampling), splitting frame
 ranges across several cloud sessions, the owner's PC hardware, and only rendering final takes at full quality.
+
+## 2026-11-17: character details from the reference conflicts (T-053a)
+1. Boy: impatience stays subtle, calm and low-energy, as in the original references (small, slow fidgets in his base
+   tempo; no quick, abrupt or comic moves; no eye-rolls).
+2. Girl: eye colour brown.
+3. Girl: neutral mouth closed, with a gentle smile (open smile belongs to Happy).
+Apply consistently across models, animations and personality profiles; the original references stay the primary target.

@@ -54,3 +54,8 @@ other points are reported with the shot and reason.
 | T-051 (finger animation) | girl: flat-palm creasing, fingertip holds, index point, chin touch; boy: curled fingers on the rim, corner grab |
 | T-053 (personality system) | values match `content/personality/*.draft.json` and their citations; blink/boredom generators reproduce the measured ranges; extrapolated behaviours (boy fidgets) stay small and keep the heavy lid |
 | T-054 (dialogue, lip sync) | girl talks with brows up and eyes on the object (`WT f020`–`f052`); boy never talks in the references: keep heavy lids, small jaw |
+
+
+## Owner decisions (2026-11-17), check on every review
+- Girl: brown irises in every render; neutral/rest mouth closed with a gentle smile (teeth only in Happy/talking).
+- Boy: impatience subtle, calm and low-energy; no quick, abrupt or comic fidgets; no eye-rolls; fidgets at his base tempo.

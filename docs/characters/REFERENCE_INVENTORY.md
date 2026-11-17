@@ -69,6 +69,9 @@ frames below), `VISUAL_TARGET.md` (global motion envelope: blink 4–7 f, holds 
 are ESTIMATES for all characters, refined per character here). `MOCAP_*.md` contain no character behaviour.
 
 ## Known conflicts in the references
+Resolved by the owner 2026-11-17: (1) girl's eyes are **brown**; (2) girl's neutral mouth is **closed with a gentle smile**;
+boy's impatience stays **subtle, calm and low-energy** as in the references.
+
 1. `ref_30` face tiles **Sad, Surprised, Angry** show **blue irises** (and Surprised a different face shape): they
    look borrowed from the white-haired girl. Use their brow/mouth shapes only; her irises are brown everywhere else.
 2. `ref_30` "Neutral" tile and the turnaround show an **open smile**; `ref_34` "Neutral" and the owner-approved
