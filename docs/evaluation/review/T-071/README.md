@@ -325,7 +325,32 @@ T-071 claim.
 
 ## 6. Gate, baselines, safety
 
-GATE_RESULTS_PLACEHOLDER
+Local gate on the merged branch (`c7f18dc`, `origin/staging` merged). The command was:
+
+```
+python3 tools/check_all.py --base origin/main --task T-071 --blender <bpy 5.3 wrapper> --regression-results <dir>
+```
+
+The regression results came from `tools/regression/run.py --character <id> --base origin/main --against origin/main`,
+run once per character on this machine, as the CI per-character jobs do. Total time: 804 s for the gate, plus about
+14 min for the three regression runs.
+
+```
+PASS Frozen assets
+FAIL Guarded paths: REQUIRES SUPERVISOR APPROVAL: tools/lipsync/test_lipsync.py
+PASS Write-set: T-071: 38 changed path(s) vs origin/staging, all inside the claim
+PASS Shared-systems lint
+PASS C++ build
+PASS C++ tests
+PASS Python tests and links
+PASS Blender tier: full tier; regression boy_yellow_hoodie PASS (fidelity 64.08), girl_auburn_bun_glasses PASS (fidelity 65.37), girl_white_hair_blue_dress PASS
+```
+
+- **Every character is unchanged**: identical to `main` built on this machine.
+- **The only FAIL is the expected guarded path.**
+- Blender was the bpy 5.3.0 module, not an official binary.
+- The regression and gate runs exceed the 10-minute foreground limit of this session's tool, so they ran as single
+  background commands. Their results were waited for before READY.
 
 - **Guarded paths that need a Supervisor trailer:**
   - `tools/lipsync/test_lipsync.py` (`**/test_*.py`): `Supervisor-Approved: tools/lipsync/test_lipsync.py`.
