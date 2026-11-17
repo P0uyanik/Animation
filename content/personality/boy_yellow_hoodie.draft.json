@@ -1,0 +1,422 @@
+{
+ "format": "plush.personality",
+ "version": 0,
+ "status": "draft (T-053a); no reader yet; not approved",
+ "character": "boy_yellow_hoodie",
+ "owner_brief": "impatient, easily bored",
+ "guide": "docs/characters/boy_yellow_hoodie/REFERENCE_BEHAVIOUR.md",
+ "tempo": {
+  "action_speed": {
+   "value": 1.0,
+   "unit": "multiplier",
+   "kind": "estimate",
+   "source": "no full-speed action of his is shown; PB S2 corner lift is ordinary speed (PB f044-f068)"
+  },
+  "reach_frames": {
+   "value": [
+    10,
+    16
+   ],
+   "unit": "frames@24",
+   "kind": "default",
+   "source": "docs/references/VISUAL_TARGET.md (Motion and editorial rhythm)"
+  },
+  "anticipation_frames": {
+   "value": [
+    4,
+    6
+   ],
+   "unit": "frames@24",
+   "kind": "extrapolation",
+   "source": "impatient: shorter end of the global 5-10 f range"
+  },
+  "settle_frames": {
+   "value": [
+    8,
+    12
+   ],
+   "unit": "frames@24",
+   "kind": "extrapolation",
+   "source": "low care; shorter end of the global 8-18 f range"
+  },
+  "overshoot": {
+   "value": 0.05,
+   "unit": "fraction",
+   "kind": "default",
+   "source": "docs/references/VISUAL_TARGET.md (Motion and editorial rhythm)"
+  },
+  "hold_frames": {
+   "value": [
+    24,
+    72
+   ],
+   "unit": "frames@24",
+   "kind": "measured",
+   "source": "heavy-lid stare unchanged through PB S1 (32 f) and S3 (39 f); WT f000-f120"
+  }
+ },
+ "energy": {
+  "level": {
+   "value": 0.3,
+   "unit": "0-1",
+   "kind": "estimate",
+   "source": "char_C, #08, #29 slouch; WT minimal body motion f000-f120"
+  },
+  "idle_motion_amplitude": {
+   "value": 0.003,
+   "unit": "H",
+   "kind": "estimate",
+   "source": "WT: body nearly still apart from blinks (frames/wt_2fps_*)"
+  },
+  "gesture_amplitude": {
+   "value": 0.3,
+   "unit": "0-1",
+   "kind": "estimate",
+   "source": "no large gesture in any scene reference; only #09 key animation is big"
+  }
+ },
+ "posture": {
+  "slouch": {
+   "value": 0.4,
+   "unit": "0-1",
+   "kind": "reference",
+   "source": "char_C; #29 'No Mesh Collisions' tile; C1"
+  },
+  "head_pitch_deg": {
+   "value": 12,
+   "unit": "deg",
+   "kind": "estimate",
+   "source": "char_C chin down; C1, WT, PB S1/S3 head down toward the object"
+  },
+  "shoulders_forward": {
+   "value": 0.4,
+   "unit": "0-1",
+   "kind": "reference",
+   "source": "char_C; #08 side views"
+  },
+  "rest_hands": {
+   "value": [
+    "both_in_pockets",
+    "one_in_pocket_one_hanging",
+    "on_table_rim_fingers_curled",
+    "forearm_on_rim"
+   ],
+   "unit": "enum",
+   "kind": "reference",
+   "source": "#08, #29, C1 / char_C / WT f002 / CW"
+  },
+  "weight_shift": {
+   "value": 0.5,
+   "unit": "0-1",
+   "kind": "reference",
+   "source": "#29 three-quarter turnaround (weight on one leg)"
+  },
+  "lean_toward_task": {
+   "value": 0.6,
+   "unit": "0-1",
+   "kind": "reference",
+   "source": "WT (leaning on the rim), CW, #26 Leaning & Support"
+  }
+ },
+ "attention": {
+  "primary_target": {
+   "value": "task_object",
+   "unit": "enum",
+   "kind": "reference",
+   "source": "C1, CD, CW, WT, PB S1/S3/S6: always looks at the object"
+  },
+  "span_s": {
+   "value": 8,
+   "unit": "s",
+   "kind": "extrapolation",
+   "source": "'easily bored': attention drifts after a few seconds without novelty; references show only <=5 s shots"
+  },
+  "glance_at_others": {
+   "value": 0,
+   "unit": "per_min",
+   "kind": "measured",
+   "source": "never looks at another character in WT or PB"
+  },
+  "glance_hold_frames": {
+   "value": [
+    6,
+    12
+   ],
+   "unit": "frames@24",
+   "kind": "extrapolation",
+   "source": "if added: eyes-only, short (see guide section 7)"
+  }
+ },
+ "boredom": {
+  "enabled": {
+   "value": true,
+   "unit": "bool",
+   "kind": "extrapolation",
+   "source": "owner brief; references show the bored look but no fidget"
+  },
+  "onset_s": {
+   "value": 3,
+   "unit": "s",
+   "kind": "extrapolation",
+   "source": "fidgets are not shown; first fidget after ~3 s of no new stimulus"
+  },
+  "fidget_interval_s": {
+   "value": [
+    2,
+    5
+   ],
+   "unit": "s",
+   "kind": "extrapolation",
+   "source": "not shown"
+  },
+  "fidget_set": {
+   "value": [
+    "finger_tap_on_rim",
+    "weight_shift_foot_to_foot",
+    "look_away_and_back",
+    "head_roll",
+    "small_sigh"
+   ],
+   "unit": "enum",
+   "kind": "extrapolation",
+   "source": "guide section 7; keep heavy lid and small amplitude"
+  },
+  "escalation": {
+   "value": "blink rate up, BrowDown +0.3, then reaches into the task (as PB S2)",
+   "unit": "text",
+   "kind": "extrapolation",
+   "source": "PB f044-f068 shows the reach; escalation order is invented"
+  }
+ },
+ "gaze": {
+  "saccade_interval_s": {
+   "value": [
+    1.5,
+    4.0
+   ],
+   "unit": "s",
+   "kind": "estimate",
+   "source": "few eye moves in WT; long fixations in PB S1/S3"
+  },
+  "fixation_on_task": {
+   "value": 0.9,
+   "unit": "0-1",
+   "kind": "measured",
+   "source": "gaze on the object in every analysed frame"
+  },
+  "eyes_lead_head_frames": {
+   "value": [
+    2,
+    4
+   ],
+   "unit": "frames@24",
+   "kind": "default",
+   "source": "docs/references/VISUAL_TARGET.md (Motion and editorial rhythm)"
+  },
+  "look_down_bias": {
+   "value": 0.7,
+   "unit": "0-1",
+   "kind": "reference",
+   "source": "WT, PB S1/S3/S6, CD, CW"
+  }
+ },
+ "blink": {
+  "interval_frames": {
+   "value": {
+    "mean": 30,
+    "min": 20,
+    "max": 96
+   },
+   "unit": "frames@24",
+   "kind": "measured",
+   "source": "WT: starts ~f020, f060, f081 (gaps 40, 21 f); PB S1+S3: none in 71 f sampled every 3 f -> long gaps also occur"
+  },
+  "duration_frames": {
+   "value": [
+    4,
+    6
+   ],
+   "unit": "frames@24",
+   "kind": "measured",
+   "source": "WT f081-f084 (closed f082-f083); first two +-1 f (fringe hides eye)"
+  },
+  "closed_frames": {
+   "value": [
+    2,
+    3
+   ],
+   "unit": "frames@24",
+   "kind": "measured",
+   "source": "WT f082-f083"
+  },
+  "couple_to_action_change": {
+   "value": false,
+   "unit": "bool",
+   "kind": "estimate",
+   "source": "his blinks do not coincide with visible action changes in WT"
+  },
+  "long_blink_on_gaze_drop": {
+   "value": false,
+   "unit": "bool",
+   "kind": "estimate",
+   "source": "not observed"
+  }
+ },
+ "face": {
+  "lid_rest": {
+   "value": 0.45,
+   "unit": "Blink weight",
+   "kind": "reference",
+   "source": "char_C; #28 r1c1; #08 Neutral; #12 Neutral: upper lid at mid-iris"
+  },
+  "resting": {
+   "value": {
+    "Blink.L": 0.45,
+    "Blink.R": 0.45,
+    "BrowDown": 0.15,
+    "MouthFrown": 0.2
+   },
+   "unit": "action units",
+   "kind": "estimate",
+   "source": "char_C; #28 r1c1"
+  },
+  "expression_bias": {
+   "value": {
+    "Blink.L": 0.35,
+    "Blink.R": 0.35,
+    "BrowDown": 0.15,
+    "MouthFrown": 0.15,
+    "MouthSmile": -0.2,
+    "MouthWide": -0.3
+   },
+   "unit": "offset",
+   "kind": "estimate",
+   "source": "most #28 tiles keep the heavy lid; only surprise/curious/excited open the eyes"
+  },
+  "asymmetry": {
+   "value": 0.2,
+   "unit": "0-1",
+   "kind": "reference",
+   "source": "#28 r2c3 Confused; #09 face strip tile 3 (one brow raised)"
+  }
+ },
+ "smile": {
+  "frequency": {
+   "value": 0.1,
+   "unit": "0-1",
+   "kind": "measured",
+   "source": "no smile in any scene reference (C1, CD, CW, WT, PB, lineup)"
+  },
+  "default_mouth": {
+   "value": "small_pout",
+   "unit": "enum",
+   "kind": "reference",
+   "source": "char_C, #08 Neutral"
+  },
+  "open_smile_share": {
+   "value": 0.2,
+   "unit": "0-1",
+   "kind": "reference",
+   "source": "#28: closed-eye/closed-mouth smiles (r1c2, r4c4) outnumber open ones (r3c2, r4c2)"
+  }
+ },
+ "gestures": {
+  "value": [
+   {
+    "name": "hands_in_pockets_idle",
+    "hand": "both|one",
+    "source": "#08, #29, C1, char_C"
+   },
+   {
+    "name": "lean_on_rim",
+    "hand": "both, fingers curled over the edge",
+    "source": "WT f000-f120, CW, #26"
+   },
+   {
+    "name": "grab_and_lift_corner",
+    "hand": "right",
+    "description": "joins a shared task by lifting a paper corner",
+    "source": "PB f044-f068"
+   },
+   {
+    "name": "loose_flail",
+    "hand": "both",
+    "description": "one knee up, arms flung out, eyes closed",
+    "source": "#09 Key Animation"
+   }
+  ],
+  "unit": "list",
+  "kind": "reference",
+  "source": "see each entry"
+ },
+ "reaction": {
+  "delay_frames": {
+   "value": [
+    4,
+    8
+   ],
+   "unit": "frames@24",
+   "kind": "extrapolation",
+   "source": "not measurable (PB S6 cuts in after the stimulus); slower start than the girl fits 'bored'"
+  },
+  "channel_order": {
+   "value": [
+    "eyes",
+    "brows",
+    "mouth",
+    "head"
+   ],
+   "unit": "enum",
+   "kind": "default",
+   "source": "docs/references/VISUAL_TARGET.md (Motion and editorial rhythm) (eyes/brows lead mouth/head by 2-4 f)"
+  },
+  "positive_style": {
+   "value": "eyes open fully, brows DOWN in concentration, small MouthO; no smile",
+   "unit": "text",
+   "kind": "reference",
+   "source": "PB f255-f288 (strips/pb_boy_face_s6.jpg)"
+  },
+  "engaged_style": {
+   "value": "stare at the object, heavy lid lifts to Blink 0.15-0.25",
+   "unit": "text",
+   "kind": "reference",
+   "source": "PB S6; WT f036"
+  }
+ },
+ "interaction": {
+  "prop_handling": {
+   "value": "practical",
+   "unit": "enum",
+   "kind": "reference",
+   "source": "PB S2 grabs/lifts corner; CD uneven fold, scraps on the desk"
+  },
+  "two_handed": {
+   "value": 0.6,
+   "unit": "0-1",
+   "kind": "reference",
+   "source": "holds paper with both hands PB S1/S3, CD; one hand in PB S2"
+  },
+  "leads_task": {
+   "value": 0.2,
+   "unit": "0-1",
+   "kind": "reference",
+   "source": "PB S2: helps the girl's fold; never leads"
+  },
+  "contact_slowdown_frames": {
+   "value": [
+    2,
+    3
+   ],
+   "unit": "frames@24",
+   "kind": "default",
+   "source": "docs/references/VISUAL_TARGET.md (Motion and editorial rhythm)"
+  }
+ },
+ "gaps": [
+  "no talking",
+  "no fidget or sigh shown",
+  "no look at another character",
+  "no walk/run acting (technical poses only)",
+  "no timing for laugh/anger/sad"
+ ]
+}
