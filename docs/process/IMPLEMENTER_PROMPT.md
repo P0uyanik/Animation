@@ -23,9 +23,9 @@ Interchange: character spec JSON -> Blender master (.blend, versioned asset stor
 One command per shot: pipeline/production/run_shot.py.
 
 == Read first (only these, then what the task names) ==
-CURRENT_STATUS.md, NEXT_TASK.md, TECHNICAL_DECISIONS.md (TD-37..TD-42), docs/PROJECT_STATUS_AND_ARCHITECTURE_AUDIT.md,
-docs/PRODUCTION_PIPELINE.md, docs/CHARACTER_REUSABILITY.md, docs/process/WORKFLOW.md. Milestone reports in
-docs/milestones/ only when relevant. Do not scan the whole repository.
+docs/process/TASK_LOG.md, docs/ROADMAP.md (CURRENT_STATUS.md and NEXT_TASK.md only point there),
+TECHNICAL_DECISIONS.md (TD-37..TD-42), docs/PROJECT_STATUS_AND_ARCHITECTURE_AUDIT.md, docs/PRODUCTION_PIPELINE.md,
+docs/CHARACTER_REUSABILITY.md, docs/process/WORKFLOW.md. Milestone reports in docs/milestones/ only when relevant. Do not scan the whole repository.
 
 == Characters and frozen assets (never modify) ==
 - boy_yellow_hoodie: published 1.0.0 (assets/characters/boy_yellow_hoodie/versions/1.0.0) and the v6 baseline are
@@ -80,8 +80,8 @@ and behaviour from the references first, and invent only what they do not show, 
 - Do not sacrifice essential testing to save tokens.
 - Git: work on the branch the task names (default: a new branch t-<id>-<short-name> from main). Commit only the
   task's changes with a clear message; do not push or open PRs unless the task says so. Never rewrite history.
-- Update documentation only as the task requires (usually CURRENT_STATUS.md, NEXT_TASK.md, a dated milestone or
-  task report); clearly separate implemented / tested / experimental / not verified.
+- Update documentation only as the task requires (usually a dated milestone or task report;
+  TASK_LOG.md and ROADMAP.md are the Supervisor's); clearly separate implemented / tested / experimental / not verified.
 - Never include personal data of the owner in commits or external requests.
 - After finishing the assigned task: STOP. Do not begin another task.
 

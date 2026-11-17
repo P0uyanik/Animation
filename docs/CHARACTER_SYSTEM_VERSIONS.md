@@ -54,12 +54,17 @@ characters' outputs. New specs (and new spec versions) should carry explicit pin
 | --- | --- | --- |
 | body | body_v6/1, body_generic/1 | `body_v6.py` (frozen), `body_generic.py` |
 | face | body_v6/1, face_generic/1 | `body_v6.py` + `face.py`, `face_generic.py` |
-| groom | hair_clumps/1, hair_clumps/2, groom/1 | `hair.py`, `groom.py` |
+| groom | hair_clumps/1, hair_clumps/2 (experiments only: no character pins it; used by the boy's experiments H20–H25), groom/1 | `hair.py`, `groom.py` |
 | garment | body_v6/1, garment/1 | `body_v6.py`, `garments/` |
 | accessories | body_v6/1, accessories/1 | `body_v6.py`, `accessories.py` |
 | rig | rigify_human/1 | `body_v6.rig_character` / `body_generic.rig_generic` |
 | materials | body_v6/1, albedo/1, presets/1 | `body_v6.make_materials`, `geom.material`, `materials/builder.py` + `presets.json` |
-| exporter | export/1-3 (retired), export/4 | `export_engine.py` |
+| exporter | export/1-3 (retired), export/4, export/5 (T-056) | `export_engine.py` |
+
+Exporter: `export/4` is the legacy default of every unpinned spec (`LEGACY_EXPORTER`; both current characters) and
+`run_shot`'s package cache key (`EXPORTER_VERSION = "4"`). `export/5` (T-056) is export/4 with order-stable,
+byte-reproducible output; it is used by specs that pin it and by masters without an embedded spec (test data,
+`EXPORTER_DEFAULT = "5"`). Evidence: [T-056](evaluation/characters/T-056/README.md).
 
 Spec sub-generators (`face.mouth.generator` `lips_jaw/*`, `face.blink.generator` `lid_seam/1`) stay spec data of
 their face version.

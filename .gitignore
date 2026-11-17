@@ -4,3 +4,6 @@ renders/
 *.tmp.png
 .cache/
 __pycache__/
+# T-071: session logs and the Dear ImGui window layout Studio writes into its working directory
+*.log
+imgui.ini
