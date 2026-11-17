@@ -77,7 +77,7 @@ Blender: bpy 5.3.0 module (Python 3.13 venv) through `tools/bpy_blender.py` as t
 - CLI loud failures: `build_character.py` with an override pinning `body_generic/9` → `ValueError ... contradicts`;
   pinning `export/3` → `ValueError ... exporter version 'export/3' is retired`; both exit code 1 before building.
 - Full gate `python3 tools/check_all.py --base origin/main --blender <bpy wrapper>` after `git merge origin/staging`:
-  **all PASS** on merge commit 659c835 (staging @ c563e18 merged): Frozen assets, Guarded paths, Shared-systems
+  **all PASS** on merge commit 659c835 (staging @ c563e18) and again on the final merge 0913127 (staging @ 62161d0, docs-only changes): Frozen assets, Guarded paths, Shared-systems
   lint, C++ build, CTest (4/4), plush_tests, Python tests, Documentation links, Blender tier (verify_charsys PASS,
   boy fingerprint, build determinism, test_export_engine, face tests, hair/groom, groom_generic_test,
   garment_generic_test, material presets, fidelity boy 64.07 (-0.42 vs baseline 64.49) and girl 65.46 (+0.05),
