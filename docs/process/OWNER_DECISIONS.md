@@ -79,3 +79,7 @@ Architecture: shared systems + versioned behaviour + character-specific data/ass
   side-by-side render comparisons attached.
 - Order: finish/validate/merge all running and suspended work first; then spec parts + generator versioning +
   all-character visual regression; then Boy 2.0 and new features.
+
+## 2026-11-17: girl 0.9.0 approved as an intermediate version
+The consolidated girl spec 0.9.0 is approved for `main` as an intermediate state, NOT as final visual approval.
+Open visual gaps (hair structure and colour, proportions, vest, boots, ears, hair accessories) remain tracked.
