@@ -41,6 +41,9 @@ TEST_CASE("emotion library: every file parses, names its clips, and its variants
   const auto dir = std::filesystem::path(PLUSH_SOURCE_DIR) / "content" / "emotions";
   int n = 0;
   for (const auto& entry : std::filesystem::directory_iterator(dir)) {
+    // Emotions are the *.emotion.json files; the folder also holds the shared face library (face_motion.json, T-046).
+    const std::string file = entry.path().filename().string();
+    if (file.size() < 13 || file.compare(file.size() - 13, 13, ".emotion.json") != 0) continue;
     auto j = parseJsonFile(entry.path());
     REQUIRE(j);
     auto e = emotionFromJson(*j);

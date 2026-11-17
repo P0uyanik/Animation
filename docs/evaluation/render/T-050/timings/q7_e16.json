@@ -1,0 +1,25 @@
+{
+ "master": "assets/characters/boy_yellow_hoodie/versions/1.0.0/boy_yellow_hoodie_master.blend",
+ "blender": "5.3.0",
+ "cpu_threads": 4,
+ "resolution": [
+  1920,
+  1080
+ ],
+ "cast": 2,
+ "engine_settings": {
+  "engine": "eevee",
+  "blender_engine": "BLENDER_EEVEE",
+  "samples": 16,
+  "soft_shadows": true,
+  "shadow_rays": 4,
+  "ambient_occlusion": true,
+  "fast_gi_method": "AMBIENT_OCCLUSION_ONLY",
+  "bloom": false
+ },
+ "open_s": 0.21,
+ "renders_s": [
+  34.24
+ ],
+ "total_s": 34.44
+}

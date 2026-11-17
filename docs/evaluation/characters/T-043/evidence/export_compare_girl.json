@@ -1,0 +1,328 @@
+{
+ "a": "base/girl/export",
+ "canonical_equal": false,
+ "canonical_differing_meshes": [
+  "ear.L",
+  "ear.R",
+  "eye.L",
+  "eye.R",
+  "garment.blouse.button.1",
+  "garment.blouse.button.2",
+  "garment.blouse.button.3",
+  "garment.blouse.button.4",
+  "garment.boots.sole.L",
+  "garment.boots.sole.R",
+  "garment.shorts.button.1",
+  "garment.shorts.button.2",
+  "garment.shorts.button.3",
+  "garment.vest.button.1",
+  "garment.vest.button.2",
+  "garment.vest.button.3",
+  "garment.vest.button.4",
+  "garment.vest.embroidery",
+  "garment.vest.embroidery_accent",
+  "garment.vest.pocket.L",
+  "garment.vest.pocket.R",
+  "hair_flowers_centres",
+  "hair_flowers_petals",
+  "lid_lower.L#0",
+  "lid_lower.R#0",
+  "lid_upper.L",
+  "lid_upper.R"
+ ],
+ "matched_equal": true,
+ "matched_differences": {},
+ "b": "new/girl/export",
+ "geometry_bytes_equal": false,
+ "geometry_size": [
+  27221796,
+  27221796
+ ],
+ "manifest_keys": {
+  "blink": "equal",
+  "capabilities": "equal",
+  "coordinates": "equal",
+  "discarded": "equal",
+  "dynamics": "equal",
+  "exporter_version": "equal",
+  "expression_bones": "equal",
+  "expressions": "equal",
+  "expressions_missing": "equal",
+  "eye_pivots": "equal",
+  "files": "differs (geometry.bin bytes)",
+  "format": "equal",
+  "materials": "equal",
+  "meshes": "equal",
+  "morph_inbetweens": "equal",
+  "morph_names": "equal",
+  "morphs": "equal",
+  "name": "equal",
+  "profile": "equal",
+  "reparented": "equal",
+  "retarget": "equal",
+  "rig_specific_bones": "equal",
+  "roles_present": "equal",
+  "skeleton": "equal",
+  "source": "equal",
+  "source.blend_sha256": "differs",
+  "version": "equal",
+  "versions": "ignored"
+ },
+ "differing_blocks": 62,
+ "worst_by_field": {
+  "positions": 0.05658978223800659,
+  "normals": 1.9319838881492615,
+  "indices": 1970.0,
+  "dpos": 7.450580596923828e-09
+ },
+ "blocks": {
+  "mesh[ear.L].positions": {
+   "elements": 2358,
+   "max_abs": 0.056589722633361816
+  },
+  "mesh[ear.L].normals": {
+   "elements": 2429,
+   "max_abs": 1.9319825768470764
+  },
+  "mesh[ear.L].indices": {
+   "elements": 5846,
+   "max_abs": 1970.0
+  },
+  "mesh[ear.R].positions": {
+   "elements": 2371,
+   "max_abs": 0.05658978223800659
+  },
+  "mesh[ear.R].normals": {
+   "elements": 2450,
+   "max_abs": 1.9319838881492615
+  },
+  "mesh[ear.R].indices": {
+   "elements": 5940,
+   "max_abs": 1697.0
+  },
+  "mesh[eye.L].normals": {
+   "elements": 241,
+   "max_abs": 1.1920928955078125e-07
+  },
+  "mesh[eye.L].indices": {
+   "elements": 6624,
+   "max_abs": 1103.0
+  },
+  "mesh[eye.R].normals": {
+   "elements": 255,
+   "max_abs": 1.1920928955078125e-07
+  },
+  "mesh[eye.R].indices": {
+   "elements": 6624,
+   "max_abs": 1102.0
+  },
+  "mesh[garment.blouse.button.1].normals": {
+   "elements": 77,
+   "max_abs": 1.1920928955078125e-07
+  },
+  "mesh[garment.blouse.button.1].indices": {
+   "elements": 652,
+   "max_abs": 113.0
+  },
+  "mesh[garment.blouse.button.2].normals": {
+   "elements": 85,
+   "max_abs": 1.1920928955078125e-07
+  },
+  "mesh[garment.blouse.button.2].indices": {
+   "elements": 652,
+   "max_abs": 113.0
+  },
+  "mesh[garment.blouse.button.3].normals": {
+   "elements": 95,
+   "max_abs": 1.1920928955078125e-07
+  },
+  "mesh[garment.blouse.button.3].indices": {
+   "elements": 652,
+   "max_abs": 113.0
+  },
+  "mesh[garment.blouse.button.4].normals": {
+   "elements": 87,
+   "max_abs": 1.1920928955078125e-07
+  },
+  "mesh[garment.blouse.button.4].indices": {
+   "elements": 652,
+   "max_abs": 113.0
+  },
+  "mesh[garment.boots.sole.L].normals": {
+   "elements": 151,
+   "max_abs": 5.960464477539063e-08
+  },
+  "mesh[garment.boots.sole.L].indices": {
+   "elements": 1848,
+   "max_abs": 308.0
+  },
+  "mesh[garment.boots.sole.R].normals": {
+   "elements": 135,
+   "max_abs": 1.1920928955078125e-07
+  },
+  "mesh[garment.boots.sole.R].indices": {
+   "elements": 1751,
+   "max_abs": 309.0
+  },
+  "mesh[garment.shorts.button.1].normals": {
+   "elements": 23,
+   "max_abs": 1.1920928955078125e-07
+  },
+  "mesh[garment.shorts.button.1].indices": {
+   "elements": 486,
+   "max_abs": 111.0
+  },
+  "mesh[garment.shorts.button.2].normals": {
+   "elements": 18,
+   "max_abs": 1.1920928955078125e-07
+  },
+  "mesh[garment.shorts.button.2].indices": {
+   "elements": 486,
+   "max_abs": 111.0
+  },
+  "mesh[garment.shorts.button.3].normals": {
+   "elements": 19,
+   "max_abs": 5.960464477539063e-08
+  },
+  "mesh[garment.shorts.button.3].indices": {
+   "elements": 486,
+   "max_abs": 111.0
+  },
+  "mesh[garment.vest.button.1].normals": {
+   "elements": 16,
+   "max_abs": 1.7881393432617188e-07
+  },
+  "mesh[garment.vest.button.1].indices": {
+   "elements": 486,
+   "max_abs": 111.0
+  },
+  "mesh[garment.vest.button.2].normals": {
+   "elements": 26,
+   "max_abs": 1.1920928955078125e-07
+  },
+  "mesh[garment.vest.button.2].indices": {
+   "elements": 486,
+   "max_abs": 111.0
+  },
+  "mesh[garment.vest.button.3].normals": {
+   "elements": 21,
+   "max_abs": 5.960464477539063e-08
+  },
+  "mesh[garment.vest.button.3].indices": {
+   "elements": 486,
+   "max_abs": 111.0
+  },
+  "mesh[garment.vest.button.4].normals": {
+   "elements": 18,
+   "max_abs": 1.1920928955078125e-07
+  },
+  "mesh[garment.vest.button.4].indices": {
+   "elements": 486,
+   "max_abs": 111.0
+  },
+  "mesh[garment.vest.embroidery].normals": {
+   "elements": 401,
+   "max_abs": 1.7881393432617188e-07
+  },
+  "mesh[garment.vest.embroidery].indices": {
+   "elements": 7300,
+   "max_abs": 46.0
+  },
+  "mesh[garment.vest.embroidery_accent].normals": {
+   "elements": 159,
+   "max_abs": 1.1920928955078125e-07
+  },
+  "mesh[garment.vest.embroidery_accent].indices": {
+   "elements": 2628,
+   "max_abs": 46.0
+  },
+  "mesh[garment.vest.pocket.L].normals": {
+   "elements": 99,
+   "max_abs": 1.1920928955078125e-07
+  },
+  "mesh[garment.vest.pocket.L].indices": {
+   "elements": 1080,
+   "max_abs": 180.0
+  },
+  "mesh[garment.vest.pocket.R].normals": {
+   "elements": 74,
+   "max_abs": 1.1920928955078125e-07
+  },
+  "mesh[garment.vest.pocket.R].indices": {
+   "elements": 1028,
+   "max_abs": 180.0
+  },
+  "mesh[hair_flowers_centres].normals": {
+   "elements": 60,
+   "max_abs": 1.1920928955078125e-07
+  },
+  "mesh[hair_flowers_centres].indices": {
+   "elements": 1332,
+   "max_abs": 85.0
+  },
+  "mesh[hair_flowers_petals].normals": {
+   "elements": 394,
+   "max_abs": 1.1920928955078125e-07
+  },
+  "mesh[hair_flowers_petals].indices": {
+   "elements": 6660,
+   "max_abs": 85.0
+  },
+  "mesh[lid_lower.L#0].normals": {
+   "elements": 96,
+   "max_abs": 1.1920928955078125e-07
+  },
+  "mesh[lid_lower.L#0].indices": {
+   "elements": 4595,
+   "max_abs": 634.0
+  },
+  "mesh[lid_lower.R#0].normals": {
+   "elements": 92,
+   "max_abs": 1.1920928955078125e-07
+  },
+  "mesh[lid_lower.R#0].indices": {
+   "elements": 3257,
+   "max_abs": 544.0
+  },
+  "mesh[lid_upper.L].normals": {
+   "elements": 251,
+   "max_abs": 1.7881393432617188e-07
+  },
+  "mesh[lid_upper.L].indices": {
+   "elements": 12135,
+   "max_abs": 1090.0
+  },
+  "mesh[lid_upper.R].positions": {
+   "elements": 1,
+   "max_abs": 7.450580596923828e-09
+  },
+  "mesh[lid_upper.R].normals": {
+   "elements": 208,
+   "max_abs": 5.662441253662109e-07
+  },
+  "mesh[lid_upper.R].indices": {
+   "elements": 11461,
+   "max_abs": 1113.0
+  },
+  "morph[68:Blink.R@75].dpos": {
+   "elements": 1,
+   "max_abs": 7.450580596923828e-09
+  },
+  "morph[68:Blink@75].dpos": {
+   "elements": 1,
+   "max_abs": 7.450580596923828e-09
+  },
+  "morph[68:RightEyeClosed@75].dpos": {
+   "elements": 1,
+   "max_abs": 7.450580596923828e-09
+  },
+  "morph[68:Squint@75].dpos": {
+   "elements": 1,
+   "max_abs": 7.450580596923828e-09
+  },
+  "morph[68:Squint].dpos": {
+   "elements": 1,
+   "max_abs": 7.450580596923828e-09
+  }
+ }
+}

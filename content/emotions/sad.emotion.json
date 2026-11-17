@@ -6,6 +6,23 @@
  "face": {
   "sad": 1.0
  },
+ "faceMotion": {
+  "blinkRate": 0.7,
+  "doubleBlink": 0.08,
+  "blinkDuration": 1.3,
+  "saccadeRate": 0.5,
+  "saccadeDeg": 1.2,
+  "longHold": 0.5,
+  "gazeBiasDeg": [
+   0.0,
+   -9.0
+  ],
+  "micro": 0.6,
+  "channels": {
+   "browSad": 0.6,
+   "mouthDown": 0.35
+  }
+ },
  "body": {
   "clip": "emo_sad"
  },
@@ -23,6 +40,11 @@
    },
    "body": {
     "clip": "emo_sob"
+   },
+   "faceMotion": {
+    "blinkRate": 1.7,
+    "doubleBlink": 0.35,
+    "saccadeRate": 0.8
    }
   }
  },

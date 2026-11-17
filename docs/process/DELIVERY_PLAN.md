@@ -87,7 +87,7 @@ Target: **merged within one Supervisor cycle** of the READY signal.
 1. Read the report and the diff; confirm the diff stays inside the declared write-set (lint enforces shared-systems rules).
 2. `tools/integrate.py stage t-NNN --dry-run`: trial merge into `staging`, must be conflict-free.
 3. Gate on the trial merge. The gate picks the tier from the changed paths (§5.1); the Supervisor can raise the tier but never lower it.
-4. Visual check: renders vs reference images for every affected character.
+4. Visual check: renders (and motion, for animation tasks) vs the owner's reference images, models and videos for every affected character. The references are the primary target; a change that contradicts them is rejected even if a metric improves.
 5. Pass → `integrate.py stage` (merge `--no-ff`, push `staging`), update TASK_LOG, archive the session.
 6. Promote:
    - **Path A (technical, no visual change):** fast-forward `main` to `staging` immediately (standing approval).

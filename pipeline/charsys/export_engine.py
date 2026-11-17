@@ -36,9 +36,30 @@ FORMAT, VERSION = "plush.imported_character", 1
 # 3 (T-030, developed in parallel): deform bones without a deform ancestor take the DEF twin of their Rigify ORG/MCH
 #    ancestor as parent; eye roles pivot at their eyeball's centre ("eye_pivots").
 # 4 (integration batch 1): both of the above together (the "dynamics" block, the DEF-parent fix and the eye pivots).
+# T-043: this number is the exporter's entry "export/4" in the per-feature version registry (versions.py); 1-3 are
+# retired. The literal stays here because run_shot.py reads it from this file's source for its package cache key.
+# A spec pinning another exporter version fails here; the manifest records every generator pin ("versions").
 EXPORTER_VERSION = "4"
+GENERATOR_VERSIONS = (f"export/{EXPORTER_VERSION}",)
 sys.path.insert(0, os.path.join(HERE, "..", "clips"))
 import retarget as RT  # noqa: E402  (shared clip retargeting rules; pure Python)
+
+sys.path.insert(0, HERE)
+import versions as V  # noqa: E402  (per-feature generator versions; pure Python)
+
+
+def version_record(root):
+    """Generator pins of the master's embedded spec (versions.record); checks that it pins this exporter. Masters
+    without an embedded spec (test data, older files) record only the exporter."""
+    txt = bpy.data.texts.get("ps_character_spec.json")
+    if txt is None:
+        return {"generators": {"exporter": GENERATOR_VERSIONS[0]}, "embedded_spec": False}
+    rec = V.record(json.loads(txt.as_string()))
+    pinned = rec["generators"]["exporter"]
+    if pinned not in GENERATOR_VERSIONS:
+        raise V.VersionError(f"{root.get('ps_character_id', root.name)} pins exporter {pinned!r}; this exporter is "
+                             f"{GENERATOR_VERSIONS[0]}")
+    return rec
 
 
 def to_engine(v):
@@ -181,6 +202,7 @@ def main():
         (c for c in bpy.data.collections if c.get("ps_character_id")), None)
     if root is None:
         raise SystemExit("character root collection not found (give --collection)")
+    versions = version_record(root)  # fails before any work when the spec pins another exporter version
     rigs = [o for o in root.all_objects if o.type == "ARMATURE"]
     if len(rigs) != 1:
         raise SystemExit(f"expected one armature in {root.name}, found {len(rigs)}")
@@ -410,7 +432,7 @@ def main():
                                         {k for k, v in expr_map.items() if v in {m["name"] for m in morphs}}),
            **({"walk": prof["walk"]} if "walk" in prof else {}), **({"hands": prof["hands"]} if "hands" in prof else {}),
            **({"retarget": retarget} if retarget else {}), **({"dynamics": dynamics} if dynamics else {}),
-           "exporter_version": EXPORTER_VERSION,
+           "exporter_version": EXPORTER_VERSION, "versions": versions,
            "discarded": prof.get("discarded", []) + ([f"meshes without armature (not exported): {skipped}"] if skipped else []),
            "files": {"geometry.bin": {"bytes": len(blob), "sha256": hashlib.sha256(bytes(blob)).hexdigest()}}}
     json.dump(man, open(os.path.join(out, "character.json"), "w"), indent=1)

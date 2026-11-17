@@ -31,6 +31,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 import geom as G  # noqa: E402  (same helpers as the legacy builder)
 
 SIDES = ((1, "L"), (-1, "R"))
+GENERATOR_VERSIONS = ("body_generic/1",)  # versions implemented here (versions.py; released = immutable)
 
 
 def _p(P, H, key, *names):
@@ -248,8 +249,8 @@ def rule_predicate(rule, part_name):
 
 def rig_generic(C, rig_name, parts, P, H, J, frames, rules, B, smooth=None):
     """Rigify rig fitted from the joint set, then heat weights filtered by the role rules, the legacy cleanup
-    (nearest weighted neighbour fill, 4 influences, normalise) and the nearest-bone fallback. B = body_v6 module
-    (only its generic weight helpers are used)."""
+    (nearest weighted neighbour fill, 4 influences, normalise) and the nearest-bone fallback. B = the module with the
+    generic weight helpers cleanup_weights / bind_to_nearest_bone (body_helpers; identical copies of body_v6's)."""
     import time
 
     import addon_utils

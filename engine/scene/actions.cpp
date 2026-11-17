@@ -216,6 +216,68 @@ void planShots(const SceneEvaluator& ev, Clip& gen, const std::vector<Beat>& bea
 }  // namespace
 
 Result<void> SceneEvaluator::compileActions() {
+  // Facial layer events (T-046) are gathered while the actions compile; the layers are built from them afterwards.
+  faces_.clear();  // actions query poses while compiling: no face motion from a previous compile meanwhile
+  faceTimelines_.assign(characters_.size(), {});
+  faceLibrary_ = defaultFaceLibrary();
+  for (auto d = std::filesystem::absolute(scene_.path).parent_path();; d = d.parent_path()) {
+    const auto f = d / "content" / "emotions" / "face_motion.json";
+    if (std::filesystem::exists(f)) {
+      auto j = parseJsonFile(f);
+      auto lib = j ? faceLibraryFromJson(*j) : Result<FaceLibrary>(std::unexpected(j.error()));
+      if (lib) faceLibrary_ = std::move(*lib);
+      else warnings_.push_back(std::format("{}: {} (built-in face defaults used)", f.string(), lib.error().message));
+      break;
+    }
+    if (d == d.parent_path()) break;
+  }
+  const std::vector<std::string> libraryWarnings = warnings_;
+  auto r = compileActionsBody();
+  warnings_.insert(warnings_.begin(), libraryWarnings.begin(), libraryWarnings.end());
+  buildFaceLayers();
+  return r;
+}
+
+void SceneEvaluator::buildFaceLayers() {
+  faces_.assign(characters_.size(), FaceLayer{});
+  if (faceTimelines_.size() != characters_.size()) faceTimelines_.assign(characters_.size(), {});
+  const double fps = scene_.rate.fps();
+  std::map<const ClipData*, std::shared_ptr<const FaceCurves>> curveCache;
+  for (size_t c = 0; c < characters_.size(); ++c) {
+    FaceTimeline tl = faceTimelines_[c];
+    if (const Json& fm = scene_.characters[c].faceMotion; !fm.is_null()) {  // the character's own face: a constant layer
+      auto m = faceMotionFromJson(fm);
+      if (m) tl.emotions.insert(tl.emotions.begin(), {FaceEnvelope{-1e30, 1e30, 0, 0, 1, false}, *m});
+      else warnings_.push_back(std::format("character '{}': {} (its faceMotion is ignored)", scene_.characters[c].name, m.error().message));
+    }
+    // Clip face curves: every clip layer (base, emotion posture and gesture, clip actions) whose clip has a "face" block.
+    for (const ClipLayer* L : activeClipLayers(c)) {
+      if (!L->clip) continue;
+      auto it = curveCache.find(L->clip.get());
+      if (it == curveCache.end()) {
+        auto cv = faceCurvesFromClipJson(L->clip->raw);
+        if (!cv) warnings_.push_back(std::format("clip '{}': {} (face curves skipped)", L->clip->name, cv.error().message));
+        it = curveCache.emplace(L->clip.get(), cv ? *cv : nullptr).first;
+      }
+      if (!it->second) continue;
+      FaceTimeline::Curves fc;
+      fc.env = L->base ? FaceEnvelope{-1e30, 1e30, 0, 0, L->weight, false}
+                       : FaceEnvelope{L->start, L->end, L->blendIn, L->blendOut, L->weight, L->linear};
+      fc.curves = it->second;
+      fc.start = L->start;
+      fc.speed = L->speed;
+      fc.clipFps = L->clip->fps;
+      tl.curves.push_back(std::move(fc));
+    }
+    std::vector<std::string> morphNames;
+    for (auto& mt : characters_[c].rig.morphs) morphNames.push_back(mt.name);
+    const CharacterAsset& asset = characters_[c].asset;
+    auto resolve = [&](const std::string& name) { return resolveExpression(asset, name, morphNames); };
+    faces_[c].build(faceLibrary_, resolve, std::move(tl), lifeParams(c), fps, scene_.frameStart, scene_.frameEnd);
+  }
+}
+
+Result<void> SceneEvaluator::compileActionsBody() {
   auto gen = std::make_shared<Clip>();
   warnings_.clear();
   clipLayers_.assign(characters_.size(), {});
@@ -326,6 +388,8 @@ Result<void> SceneEvaluator::compileActions() {
     bool hasPosture = false;
     std::vector<std::pair<std::string, float>> face;  // resolved morph -> weight
     bool explicitEnd = false;
+    FaceMotion faceMotion;  // living-face tunables (facial layer, T-046)
+    bool hasFaceMotion = false;
   };
   std::vector<PendingEmotion> pending;
 
@@ -345,6 +409,9 @@ Result<void> SceneEvaluator::compileActions() {
     if (*interaction) continue;
 
     if (type == "look") {
+      faceTimelines_[size_t(c)].lookStarts.push_back(start);  // a gaze shift: brows lift a little, maybe a blink
+      if (start > scene_.frameStart + 2)  // the look a shot opens with is the starting state, not a new focus
+        faceTimelines_[size_t(c)].attention.push_back({start, faceLibrary_.neutral.lookAttention});
       const std::string track = prefix + "lookAt";
       const int o = has(a, "object") ? objIndex(str(a, "object")) : -1;
       if (has(a, "object") && o < 0) return fail(std::format("look: unknown object '{}'", str(a, "object")));
@@ -715,7 +782,7 @@ Result<void> SceneEvaluator::compileActions() {
         }
         return out;
       };
-      PendingEmotion pe{c, env, {}, false, resolveFace(e->face), has(a, "end")};
+      PendingEmotion pe{c, env, {}, false, resolveFace(e->face), has(a, "end"), e->faceMotion, e->hasFaceMotion};
       auto addLayer = [&](const std::string& clipName, ClipLayer L, int loopOverride, const std::vector<std::string>& mask,
                           bool defer) -> Result<void> {
         const auto cf = findLibrary("clips", clipName + ".clip.json");
@@ -786,6 +853,11 @@ Result<void> SceneEvaluator::compileActions() {
   }
   for (auto& pe : pending) {
     for (const auto& [morph, w] : pe.face) emotionFace.push_back({pe.character, morph, pe.envelope, w});
+    if (pe.hasFaceMotion) {
+      const ClipLayer& e = pe.envelope;
+      faceTimelines_[size_t(pe.character)].emotions.push_back(
+          {FaceEnvelope{e.start, e.end, e.blendIn, e.blendOut, e.weight, e.linear}, pe.faceMotion});
+    }
     if (!pe.hasPosture) continue;
     pe.posture.start = pe.envelope.start;
     pe.posture.end = pe.envelope.end;
