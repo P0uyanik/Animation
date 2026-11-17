@@ -1,0 +1,77 @@
+{
+  "schema": "plush-studio.t039-body-proportions/1",
+  "character": "boy_yellow_hoodie",
+  "reference_views": [
+    "val27_front",
+    "val27_threequarter_right",
+    "val27_side_right",
+    "val27_back",
+    "val27_back_threequarter"
+  ],
+  "before": {
+    "source": "docs/evaluation/characters/T-032/boy/fidelity.json (frozen 1.1.0 build)",
+    "arm_length": {
+      "reference_median": 0.2614,
+      "render_median": 0.2106,
+      "relative_median": -0.2026
+    },
+    "shoulder_width": {
+      "reference_median": 0.1842,
+      "render_median": 0.1869,
+      "relative_median": 0.0012
+    },
+    "leg_gap_height": {
+      "reference_median": 0.2540,
+      "render_median": 0.1632,
+      "relative_median": -0.3574
+    },
+    "head_to_height_hair_inclusive": {
+      "reference_median": 0.3681,
+      "render_median": 0.3761,
+      "relative_median": 0.0197
+    }
+  },
+  "after": {
+    "source": "build/t039_fidelity_01/renders, measured with the T-032 proportion formulas",
+    "arm_length": {
+      "reference_median": 0.2614,
+      "render_median": 0.2911,
+      "relative_median": 0.1071,
+      "views": 5
+    },
+    "shoulder_width": {
+      "reference_median": 0.1842,
+      "render_median": 0.1821,
+      "relative_median": -0.0231,
+      "views": 4
+    },
+    "leg_gap_height_straight_views": {
+      "reference_median": 0.2607,
+      "render_median": 0.3157,
+      "relative_median": 0.2137,
+      "views": 2,
+      "by_view": {
+        "val27_front": {
+          "reference": 0.2540,
+          "render": 0.3340,
+          "relative": 0.3148
+        },
+        "val27_back": {
+          "reference": 0.2674,
+          "render": 0.2975,
+          "relative": 0.1125
+        }
+      }
+    },
+    "bare_skull_head_to_height_front": {
+      "target_range": [0.3000, 0.3200],
+      "render": 0.3144
+    }
+  },
+  "notes": [
+    "Relative difference is render/reference - 1.",
+    "The after build is body-only. Hair-inclusive head height from T-032 is not a valid bare-skull target.",
+    "Leg-gap evidence is restricted to front/back because oblique clothed references make the centre-column trouser gap unstable.",
+    "The reference joints are estimated through clothing to about +/-4 px; arm differences around 8% are within the documented annotation uncertainty."
+  ]
+}
