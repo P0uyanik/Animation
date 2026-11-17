@@ -78,6 +78,7 @@ def _felt():
     return groom_felt
 
 
+GENERATOR_VERSIONS = ("groom/1",)  # versions implemented here (versions.py; released = immutable)
 FINISHES = ("yarn", "felt")
 FINISH_TYPES = {"sweep", "fringe", "locks", "bun"}
 
