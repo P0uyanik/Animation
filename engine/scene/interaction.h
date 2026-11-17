@@ -163,10 +163,11 @@ constexpr float kArmBodyMargin = 0.009f;  // clearance kept between the arm and 
 // interactions): after the full pose is evaluated, upper arm (past the armpit band), forearm and hand are pushed out
 // of the body by the smallest change of the shoulder and elbow rotations. The body is the character's own skinned
 // torso surface (TorsoField, T-040r1), not the interaction sections. The result is a pure function of the evaluated
-// pose (no state): deterministic and frame-rate independent. Continuity in time comes from the solver: a fixed,
-// damped Gauss-Newton iteration from the evaluated pose, every arm point near the body weighted by how far it is below
-// its own target (a point entering the band starts with weight 0), so the corrected rotations are a continuous
-// function of the pose (no search, no point switches, no first-crossing jumps). Per arm point:
+// pose (no state): deterministic and frame-rate independent. The solver runs a fixed number of rounds; each takes a
+// direction (the deficit-weighted gradient of the points' gaps: weights fade to 0 at a point's target, so the
+// direction moves continuously with the pose) and the smallest angle along it at which the largest deficit reaches 0
+// (Newton steps, the crossing refined in its bracket); where the deficit stops falling first, the round stops at that
+// local minimum and the next direction takes the rest (no jump to a later crossing). Per arm point:
 //   gap >= margin + band: no demand (points resting nearer than that at rest count from their rest gap);
 //   below that: target = gap + s(margin + band - gap), s(x) = x^2 / 4band (x < 2band), x - band (beyond),
 // so the output gap is >= margin and its slope is continuous (the correction eases in as the arm starts to touch).
