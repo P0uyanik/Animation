@@ -35,7 +35,7 @@ Diagnostic progression (isolated hair-mass construction, 4 evaluations each): ba
 | `test_determinism.py --character all` | PASS (boy and girl) |
 | Girl fingerprints (0.1 mm and 0.01 mm) vs a build from the base commit | identical |
 | `verify_charsys.py` | PASS. v6 geometry: missing/extra/count mismatches none, worst numeric difference 0.0 m. `hair_mass` exact hash differs from v6 (informational), as it already did on the base commit. |
-| `tools/check_all.py --base origin/main` | see the task report / relay line |
+| `tools/check_all.py --base origin/main` (OIDN 2.3.3 found) | all PASS: frozen, guarded, lint, C++ build, CTest 4/4, plush_tests 83/83, Python tests, doc links, Blender tier (incl. determinism). Fidelity boy 64.07 (-0.42 vs 64.49), girl 65.38 (-0.03 vs 65.41), limit 2.00 |
 
 Max coordinate change of `hair_mass` vs the T-038 output (nearest-vertex match, 3811 vertices, 3752 faces): **max 0.082 mm** (≤ √3·0.05 mm, i.e. the removed per-axis snap), mean 0.047 mm, bbox ≤ 0.040 mm, centroid 0.001 mm. Against unsnapped Blender evaluation the change is float-ulp level, because the same Blender modifiers evaluate the same surface.
 
