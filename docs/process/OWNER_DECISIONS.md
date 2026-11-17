@@ -51,3 +51,9 @@ Continue improving the code-based shared systems (face v2, hair v2 r2, cloth res
 before deciding on a hybrid workflow (optional sculpted asset slots). Decide by measurement (fidelity) plus the owner's
 visual verdict. Every system must be reusable across all current and future characters. Every task reports technical
 limitations that block reference quality, with a proposal for overcoming them.
+
+## 2026-11-17: branch cleanup after merges
+After each successful merge into `main`, the Supervisor deletes the merged task/integration branches (remote and
+local) only when: all checks passed on the merged `main`; a verified backup bundle (`git bundle verify`) containing
+those branches exists; and `git branch -r --merged origin/main` confirms each branch is fully contained in `main`.
+Never delete an unmerged branch, a branch with commits not in `main`, `relay-channel`, or `supervisor-state`.
