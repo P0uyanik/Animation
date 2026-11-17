@@ -1,0 +1,332 @@
+{
+ "what": "mesh data of the master .blend of two clean builds of each spec at origin/staging d350f1d (bpy 5.3.0); fields: v = vertex coordinates in order, v_sorted = coordinate multiset, polys = polygon vertex lists in order, polys_set = polygon vertex sets, tris = loop triangles in order",
+ "same_master_exported_twice": "byte-identical (export/4, boy build 1: geometry.bin 77d9788d...): the exporter itself is deterministic; all variation is in the built master",
+ "meshes_differing_between_builds": {
+  "boy": {
+   "buckle.L": {
+    "differs": [
+     "polys",
+     "tris"
+    ],
+    "vertices": 86,
+    "max_polygon_size": 4
+   },
+   "buckle.R": {
+    "differs": [
+     "polys",
+     "tris"
+    ],
+    "vertices": 86,
+    "max_polygon_size": 4
+   },
+   "ear.L": {
+    "differs": [
+     "v",
+     "v_sorted",
+     "polys",
+     "polys_set",
+     "tris"
+    ],
+    "vertices": 1986,
+    "max_polygon_size": 4
+   },
+   "ear.R": {
+    "differs": [
+     "v",
+     "v_sorted",
+     "polys",
+     "polys_set",
+     "tris"
+    ],
+    "vertices": 1986,
+    "max_polygon_size": 4
+   },
+   "eye.L": {
+    "differs": [
+     "polys",
+     "tris"
+    ],
+    "vertices": 1106,
+    "max_polygon_size": 4
+   },
+   "eye.R": {
+    "differs": [
+     "polys",
+     "tris"
+    ],
+    "vertices": 1106,
+    "max_polygon_size": 4
+   },
+   "hood_back": {
+    "differs": [
+     "polys",
+     "tris"
+    ],
+    "vertices": 482,
+    "max_polygon_size": 4
+   },
+   "lid_lower.L": {
+    "differs": [
+     "v",
+     "v_sorted",
+     "polys",
+     "tris"
+    ],
+    "vertices": 1550,
+    "max_polygon_size": 5
+   },
+   "lid_lower.R": {
+    "differs": [
+     "polys",
+     "tris"
+    ],
+    "vertices": 1550,
+    "max_polygon_size": 5
+   },
+   "lid_upper.L": {
+    "differs": [
+     "v",
+     "v_sorted",
+     "polys",
+     "tris"
+    ],
+    "vertices": 1996,
+    "max_polygon_size": 5
+   },
+   "lid_upper.R": {
+    "differs": [
+     "v",
+     "v_sorted",
+     "polys",
+     "tris"
+    ],
+    "vertices": 1996,
+    "max_polygon_size": 5
+   },
+   "undershirt": {
+    "differs": [
+     "polys",
+     "tris"
+    ],
+    "vertices": 266,
+    "max_polygon_size": 4
+   }
+  },
+  "girl": {
+   "ear.L": {
+    "differs": [
+     "v",
+     "v_sorted",
+     "polys",
+     "polys_set",
+     "tris"
+    ],
+    "vertices": 1986,
+    "max_polygon_size": 4
+   },
+   "ear.R": {
+    "differs": [
+     "v",
+     "v_sorted",
+     "polys",
+     "polys_set",
+     "tris"
+    ],
+    "vertices": 1986,
+    "max_polygon_size": 4
+   },
+   "eye.L": {
+    "differs": [
+     "polys",
+     "tris"
+    ],
+    "vertices": 1106,
+    "max_polygon_size": 4
+   },
+   "eye.R": {
+    "differs": [
+     "polys",
+     "tris"
+    ],
+    "vertices": 1106,
+    "max_polygon_size": 4
+   },
+   "garment.blouse.button.1": {
+    "differs": [
+     "polys",
+     "tris"
+    ],
+    "vertices": 114,
+    "max_polygon_size": 4
+   },
+   "garment.blouse.button.2": {
+    "differs": [
+     "polys",
+     "tris"
+    ],
+    "vertices": 114,
+    "max_polygon_size": 4
+   },
+   "garment.blouse.button.3": {
+    "differs": [
+     "polys",
+     "tris"
+    ],
+    "vertices": 114,
+    "max_polygon_size": 4
+   },
+   "garment.blouse.button.4": {
+    "differs": [
+     "polys",
+     "tris"
+    ],
+    "vertices": 114,
+    "max_polygon_size": 4
+   },
+   "garment.boots.sole.L": {
+    "differs": [
+     "polys",
+     "tris"
+    ],
+    "vertices": 310,
+    "max_polygon_size": 4
+   },
+   "garment.boots.sole.R": {
+    "differs": [
+     "polys",
+     "tris"
+    ],
+    "vertices": 310,
+    "max_polygon_size": 4
+   },
+   "garment.shorts.button.1": {
+    "differs": [
+     "polys",
+     "tris"
+    ],
+    "vertices": 114,
+    "max_polygon_size": 4
+   },
+   "garment.shorts.button.2": {
+    "differs": [
+     "polys",
+     "tris"
+    ],
+    "vertices": 114,
+    "max_polygon_size": 4
+   },
+   "garment.shorts.button.3": {
+    "differs": [
+     "polys",
+     "tris"
+    ],
+    "vertices": 114,
+    "max_polygon_size": 4
+   },
+   "garment.vest.button.1": {
+    "differs": [
+     "polys",
+     "tris"
+    ],
+    "vertices": 114,
+    "max_polygon_size": 4
+   },
+   "garment.vest.button.2": {
+    "differs": [
+     "polys",
+     "tris"
+    ],
+    "vertices": 114,
+    "max_polygon_size": 4
+   },
+   "garment.vest.button.3": {
+    "differs": [
+     "polys",
+     "tris"
+    ],
+    "vertices": 114,
+    "max_polygon_size": 4
+   },
+   "garment.vest.button.4": {
+    "differs": [
+     "polys",
+     "tris"
+    ],
+    "vertices": 114,
+    "max_polygon_size": 4
+   },
+   "garment.vest.embroidery": {
+    "differs": [
+     "polys",
+     "tris"
+    ],
+    "vertices": 2600,
+    "max_polygon_size": 4
+   },
+   "garment.vest.embroidery_accent": {
+    "differs": [
+     "polys",
+     "tris"
+    ],
+    "vertices": 936,
+    "max_polygon_size": 4
+   },
+   "garment.vest.pocket.L": {
+    "differs": [
+     "polys",
+     "tris"
+    ],
+    "vertices": 182,
+    "max_polygon_size": 4
+   },
+   "garment.vest.pocket.R": {
+    "differs": [
+     "polys",
+     "tris"
+    ],
+    "vertices": 182,
+    "max_polygon_size": 4
+   },
+   "lid_lower.L": {
+    "differs": [
+     "polys",
+     "tris"
+    ],
+    "vertices": 1458,
+    "max_polygon_size": 5
+   },
+   "lid_lower.R": {
+    "differs": [
+     "polys",
+     "tris"
+    ],
+    "vertices": 1458,
+    "max_polygon_size": 5
+   },
+   "lid_upper.L": {
+    "differs": [
+     "polys",
+     "tris"
+    ],
+    "vertices": 2234,
+    "max_polygon_size": 5
+   },
+   "lid_upper.R": {
+    "differs": [
+     "v",
+     "v_sorted",
+     "polys",
+     "tris"
+    ],
+    "vertices": 2234,
+    "max_polygon_size": 5
+   }
+  }
+ },
+ "boy_hood_back_vertex_group_weights": {
+  "values_differing": 1125,
+  "max_abs": 1.7881393432617188e-07,
+  "source": "body_v6.py (frozen) parent_set(type='ARMATURE_AUTO') automatic weights"
+ },
+ "fingerprint_v2_0.01mm": "identical between the builds (order-independent), so the variation is order and ulp noise only"
+}

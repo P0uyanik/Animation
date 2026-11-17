@@ -1,0 +1,17 @@
+{
+ "shot": "episodes/e904_secondary_motion/shots/s010 (girl, spec + dynamics override; scratch copies of the shot file, frames 1-48)",
+ "a": "cast as committed: master pins export/4 (default) -> export/4 package",
+ "b": "same cast + docs/evaluation/characters/T-056/exporter5.override.json -> export/5 package (geometry.bin 18d29adf...)",
+ "bake": {
+  "command": "run_shot.py --stages prepare,bake --frames 1-48 (engine: build/apps/render-cli/plush-render --bake)",
+  "result": "bake.json files identical after replacing the run folder; the only differing line is characters[].package (the cache folder name of the package)",
+  "bytes": 2964416
+ },
+ "engine_preview": {
+  "command": "plush-render <resolved scene> --frame 24 --width 480 --height 360 --spp 16 (OIDN 2.3.3)",
+  "export4_twice": "byte-identical PNGs (the engine render is deterministic)",
+  "export4_vs_export5": {"rmse": 0.00187, "max_abs": 0.2706, "pixels_over_1_of_255": 1923, "pixels_over_8_of_255": 123, "pixels": 172800},
+  "existing_tolerance": "plush-render --compare default / CTest image regressions: max-rmse 0.03",
+  "image": "e904_f24_export4_export5_diffx8.png (left export/4, middle export/5, right |difference| x8): isolated speckles over the character, no shape or shading region change"
+ }
+}

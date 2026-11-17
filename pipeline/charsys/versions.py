@@ -131,6 +131,7 @@ _r("exporter", "export", 1, None, RETIRED, note="no retarget block")
 _r("exporter", "export", 2, None, RETIRED, note="retarget block")
 _r("exporter", "export", 3, None, RETIRED, note="dynamics block or DEF-parent fix (two parallel 3s)")
 _r("exporter", "export", 4, "export_engine", declared=False, note="dynamics + DEF-parent fix + eye pivots; the script")
+_r("exporter", "export", 5, "export_engine", declared=False, note="export/4 + order-stable, byte-reproducible output (T-056)")
 del _r
 
 # ---- legacy defaults: frozen. The spec field each feature's default comes from; its value maps to the pin of the same

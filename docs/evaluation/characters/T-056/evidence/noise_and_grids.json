@@ -1,0 +1,79 @@
+{
+ "what": "build-to-build noise of the raw (unrounded) export inputs in canonical vertex order, 7 masters per character (2 origin/staging + 5 export/5-pinned builds); expected straddles = sum|noise|/grid (a value whose noise crosses a rounding midpoint would still differ)",
+ "chosen": {
+  "position": "2^-15 m",
+  "morph_delta": "2^-14 m",
+  "weight": "1/2^10"
+ },
+ "first_choice_2^-17_observed": "girl run 3 of an earlier proof: one lid_upper.L 'Laugh' delta component crossed a 2^-17 midpoint (1 byte); with the chosen grids all 8 masters per character export identically",
+ "characters": {
+  "boy": {
+   "position_m": {
+    "noisy_components_per_pair": 38.7,
+    "max_noise": 5.960464477539063e-08,
+    "expected_straddles_per_pair": {
+     "2^-13": 0.0046,
+     "2^-14": 0.0092,
+     "2^-15": 0.0184,
+     "2^-16": 0.0367,
+     "2^-17": 0.0734
+    }
+   },
+   "weight": {
+    "noisy_components_per_pair": 1392.7,
+    "max_noise": 8.702589054943033e-08,
+    "expected_straddles_per_pair": {
+     "2^-8": 0.0038,
+     "2^-10": 0.0154,
+     "2^-12": 0.0615,
+     "2^-14": 0.246
+    }
+   },
+   "morph_delta_m": {
+    "noisy_components_per_pair": 1.2,
+    "max_noise": 7.450580596923828e-09,
+    "expected_straddles_per_pair": {
+     "2^-13": 0.0,
+     "2^-14": 0.0001,
+     "2^-15": 0.0001,
+     "2^-16": 0.0002,
+     "2^-17": 0.0004
+    }
+   }
+  },
+  "girl": {
+   "position_m": {
+    "noisy_components_per_pair": 22.0,
+    "max_noise": 5.960464477539063e-08,
+    "expected_straddles_per_pair": {
+     "2^-13": 0.0039,
+     "2^-14": 0.0078,
+     "2^-15": 0.0157,
+     "2^-16": 0.0313,
+     "2^-17": 0.0626
+    }
+   },
+   "weight": {
+    "noisy_components_per_pair": 0.0,
+    "max_noise": 0.0,
+    "expected_straddles_per_pair": {
+     "2^-8": 0.0,
+     "2^-10": 0.0,
+     "2^-12": 0.0,
+     "2^-14": 0.0
+    }
+   },
+   "morph_delta_m": {
+    "noisy_components_per_pair": 57.5,
+    "max_noise": 1.1175870895385742e-07,
+    "expected_straddles_per_pair": {
+     "2^-13": 0.0078,
+     "2^-14": 0.0155,
+     "2^-15": 0.0311,
+     "2^-16": 0.0622,
+     "2^-17": 0.1243
+    }
+   }
+  }
+ }
+}
