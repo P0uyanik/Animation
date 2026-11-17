@@ -62,7 +62,7 @@ by `VISUAL_TARGET.md`); this study uses its own extraction.
 | `CD` | all three | folding paper at a desk |
 | `CW` | all three | at the water table (still version of the video set-up) |
 | `lineup` | all three | standing line-up: girl open smile, boy heavy lids and pout |
-| `char_A_white_hair` | white-haired girl | out of scope |
+| `char_A_white_hair` | white-haired girl | analysed in T-057: see `docs/characters/girl_white_hair_blue_dress/REFERENCE_BEHAVIOUR.md` |
 
 Text documents: `VIDEO_BENCHMARKS.md` (summary: "the girl talks and gestures, the boy leans in" — confirmed by the
 frames below), `VISUAL_TARGET.md` (global motion envelope: blink 4–7 f, holds 8–18 f, anticipation 5–10 f; those

@@ -1,0 +1,184 @@
+{
+ "a": "base/boy/export",
+ "canonical_equal": false,
+ "canonical_differing_meshes": [
+  "buckle.L",
+  "buckle.R",
+  "ear.L",
+  "ear.R",
+  "eye.L",
+  "eye.R",
+  "hood_back",
+  "lid_lower.L",
+  "lid_lower.R",
+  "lid_upper.L",
+  "lid_upper.R",
+  "undershirt"
+ ],
+ "matched_equal": true,
+ "matched_differences": {},
+ "b": "base2/boy/export",
+ "geometry_bytes_equal": false,
+ "geometry_size": [
+  14030000,
+  14030000
+ ],
+ "manifest_keys": {
+  "capabilities": "equal",
+  "coordinates": "equal",
+  "discarded": "equal",
+  "exporter_version": "equal",
+  "expressions": "equal",
+  "expressions_missing": "equal",
+  "eye_pivots": "equal",
+  "files": "differs (geometry.bin bytes)",
+  "format": "equal",
+  "materials": "equal",
+  "meshes": "equal",
+  "morph_names": "equal",
+  "morphs": "equal",
+  "name": "equal",
+  "profile": "equal",
+  "reparented": "equal",
+  "retarget": "equal",
+  "rig_specific_bones": "equal",
+  "roles_present": "equal",
+  "skeleton": "equal",
+  "source": "equal",
+  "source.blend_sha256": "differs",
+  "version": "equal"
+ },
+ "differing_blocks": 31,
+ "worst_by_field": {
+  "normals": 1.7645460367202759,
+  "indices": 1979.0,
+  "positions": 0.07509595155715942,
+  "weights": 5.960464477539063e-08
+ },
+ "blocks": {
+  "mesh[buckle.L].normals": {
+   "elements": 47,
+   "max_abs": 1.1920928955078125e-07
+  },
+  "mesh[buckle.L].indices": {
+   "elements": 485,
+   "max_abs": 84.0
+  },
+  "mesh[buckle.R].normals": {
+   "elements": 24,
+   "max_abs": 1.1920928955078125e-07
+  },
+  "mesh[buckle.R].indices": {
+   "elements": 450,
+   "max_abs": 84.0
+  },
+  "mesh[ear.L].positions": {
+   "elements": 2980,
+   "max_abs": 0.07509595155715942
+  },
+  "mesh[ear.L].normals": {
+   "elements": 3129,
+   "max_abs": 1.7645458579063416
+  },
+  "mesh[ear.L].indices": {
+   "elements": 9226,
+   "max_abs": 1979.0
+  },
+  "mesh[ear.R].positions": {
+   "elements": 2980,
+   "max_abs": 0.07509595155715942
+  },
+  "mesh[ear.R].normals": {
+   "elements": 3193,
+   "max_abs": 1.7645460367202759
+  },
+  "mesh[ear.R].indices": {
+   "elements": 9226,
+   "max_abs": 1979.0
+  },
+  "mesh[eye.L].normals": {
+   "elements": 226,
+   "max_abs": 1.1920928955078125e-07
+  },
+  "mesh[eye.L].indices": {
+   "elements": 6624,
+   "max_abs": 1104.0
+  },
+  "mesh[eye.R].normals": {
+   "elements": 226,
+   "max_abs": 1.7881393432617188e-07
+  },
+  "mesh[eye.R].indices": {
+   "elements": 6624,
+   "max_abs": 1101.0
+  },
+  "mesh[hood_back].positions": {
+   "elements": 3,
+   "max_abs": 2.7755575615628914e-17
+  },
+  "mesh[hood_back].normals": {
+   "elements": 39,
+   "max_abs": 1.1920928955078125e-07
+  },
+  "mesh[hood_back].indices": {
+   "elements": 2416,
+   "max_abs": 478.0
+  },
+  "mesh[hood_back].weights": {
+   "elements": 858,
+   "max_abs": 5.960464477539063e-08
+  },
+  "mesh[lid_lower.L].normals": {
+   "elements": 110,
+   "max_abs": 1.1920928955078125e-07
+  },
+  "mesh[lid_lower.L].indices": {
+   "elements": 5870,
+   "max_abs": 734.0
+  },
+  "mesh[lid_lower.R].positions": {
+   "elements": 1,
+   "max_abs": 7.450580596923828e-09
+  },
+  "mesh[lid_lower.R].normals": {
+   "elements": 179,
+   "max_abs": 2.384185791015625e-07
+  },
+  "mesh[lid_lower.R].indices": {
+   "elements": 7654,
+   "max_abs": 698.0
+  },
+  "mesh[lid_upper.L].positions": {
+   "elements": 1,
+   "max_abs": 3.725290298461914e-09
+  },
+  "mesh[lid_upper.L].normals": {
+   "elements": 208,
+   "max_abs": 4.172325134277344e-07
+  },
+  "mesh[lid_upper.L].indices": {
+   "elements": 9480,
+   "max_abs": 996.0
+  },
+  "mesh[lid_upper.R].positions": {
+   "elements": 1,
+   "max_abs": 3.725290298461914e-09
+  },
+  "mesh[lid_upper.R].normals": {
+   "elements": 231,
+   "max_abs": 1.1920928955078125e-07
+  },
+  "mesh[lid_upper.R].indices": {
+   "elements": 11490,
+   "max_abs": 994.0
+  },
+  "mesh[undershirt].normals": {
+   "elements": 42,
+   "max_abs": 1.1920928955078125e-07
+  },
+  "mesh[undershirt].indices": {
+   "elements": 1584,
+   "max_abs": 265.0
+  }
+ }
+}
