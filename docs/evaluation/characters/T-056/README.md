@@ -99,7 +99,7 @@ cannot serve a stale one. The manifest's `exporter_version` records the version 
 * `python3 pipeline/charsys/tests/test_versions.py`: 67/67 PASS.
 * `python3 pipeline/charsys/tests/test_export_engine.py --blender …`: 13/13 PASS.
 * `ctest` (build/, OIDN 2.3.3): 4/4 PASS. `build/tests/plush_tests`: 78/78 test cases PASS.
-* Full gate after `git merge origin/staging`: see §9.
+* Full gate after `git merge origin/staging`: all checks PASS except the Guarded-paths approval (§9).
 
 Not tested: Windows; a real Blender 5.3 binary (only the bpy module); shots other than e904 s010 with export/5
 packages; the girl's T-055 spec work (untouched).
@@ -131,8 +131,26 @@ triangle order), and the bake is identical. Final renders come from the Blender 
    observed build. If a builder ever rotates them, export/5 output changes and the full-mode test reports it.
 
 ## 9. Gate
-Recorded in the commit that adds the gate result (merge of origin/staging, then
-`python3 tools/check_all.py --base origin/main --blender <bpy wrapper>`).
+After `git merge origin/staging` (54f003b, clean), `PLUSH_OIDN_ROOT=<oidn 2.3.3> python3 tools/check_all.py --base
+origin/main --blender <bpy wrapper>` (foreground wait):
+
+```
+PASS Frozen assets
+FAIL Guarded paths: REQUIRES SUPERVISOR APPROVAL: pipeline/charsys/tests/test_export_determinism.py,
+     pipeline/charsys/tests/test_versions.py
+PASS Shared-systems lint
+PASS C++ build
+PASS CTest
+PASS plush_tests
+PASS Python tests
+PASS Documentation links
+PASS Blender tier  (verify_charsys, boy fingerprint, build determinism, test_export_engine, face tests,
+                    hair/groom test, groom_generic_test, garment_generic_test, material presets: all PASS)
+```
+
+The only FAIL is the approval gate: every test source is guarded (`tools/guarded_paths.txt`: `**/tests/`), so the new
+test (in the task's write-set) and the one-line `test_versions.py` update need `Supervisor-Approved: <path>` commit
+trailers. The Implementer may not write those. Everything else passes.
 
 ## 10. Resource use
 Token usage: not available. Repeated work: the 3-run proof ran three times (two runs caught real determinism
