@@ -69,3 +69,4 @@ Supervisor: is woken by every comment or push on this PR and answers by session 
 T-048 READY 8f1c3ce cleanup workflow + pure select.py; 25/25 cleanup tests PASS (unit, e2e on scratch bare remote, workflow rehearsal); gate: guarded paths need Supervisor-Approved trailers, C++ fails only on missing embree in container; report docs/evaluation/process/T-048/README.md
 T-050 READY 242c97c Previews: CPU 640x360 16spp+OIDN (free); review: 1080p 64spp on rented RTX 4090; finals: 1080p 128spp+OIDN on rented RTX 4090 (~$0.84/finished min, ~$10-25/month); don't buy a GPU for render cost alone
 T-053a READY 2ff6d7c Reference behaviour/expression guides (boy, girl), draft personality schema + profiles, review checklist, report with contact sheets
+T-043 READY b7da096 per-feature generator versions + spec parts + body_helpers; all 4 character configs fingerprint byte-identical to staging, exports equal (order-independent); gate all PASS
