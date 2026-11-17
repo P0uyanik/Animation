@@ -28,6 +28,39 @@ GROUPS = ("crown", "centre", "top", "side", "back")
 HAIR_MASS_GRID_M = 1e-4
 
 
+def _canonical_topology(ob):
+    """Rebuild a bmesh-made mesh with a run-independent vertex and face order (T-038b).
+
+    bmesh (create_uvsphere, ops.delete, to_mesh) hands back the same polygons in a different order and with a
+    different first corner on every call. SUBSURF + DISPLACE evaluate the same surface either way, but the float
+    rounding follows the topology order, so the applied hair mass changed by float ulps (and in vertex order) from
+    run to run. Sorting vertices by position and faces by their smallest-index-first corner loop (winding kept)
+    makes Blender's own modifiers bit-reproducible; positions are untouched.
+    """
+    me = ob.data
+    if ob.modifiers or me.materials or me.uv_layers or me.shape_keys:
+        raise ValueError(f"{ob.name}: expected a plain mesh before canonicalization")
+    import bpy
+    co = [tuple(v.co) for v in me.vertices]
+    order = sorted(range(len(co)), key=lambda i: co[i])
+    if any(co[a] == co[b] for a, b in zip(order, order[1:])):
+        raise ValueError(f"{ob.name}: duplicate vertex positions, no canonical order")
+    new_index = {old: new for new, old in enumerate(order)}
+    faces = []
+    for p in me.polygons:
+        f = [new_index[i] for i in p.vertices]
+        k = f.index(min(f))
+        faces.append(tuple(f[k:] + f[:k]))
+    faces.sort()
+    new = bpy.data.meshes.new(me.name)
+    new.from_pydata([co[i] for i in order], [], faces)
+    new.shade_smooth()
+    old, ob.data = me, new
+    bpy.data.meshes.remove(old)
+    new.name = ob.name
+    return ob
+
+
 def _bake_hair_mass(G, ob):
     """Bake Blender's threaded legacy noise, then remove sub-grid float drift.
 
@@ -71,8 +104,9 @@ def build_hair(C, M, head, B, params=None, seed=11):
     bmesh.ops.delete(bm, geom=kill, context="FACES")
     bm.to_mesh(mass.data)
     bm.free()
+    _canonical_topology(mass)  # T-038b: the bmesh face order is run-dependent; see _canonical_topology
     G.displace_noise(mass, float(felt.get("mass_amp_m", 0.008)), float(felt.get("mass_scale", 0.035)), subdiv=1)
-    _bake_hair_mass(G, mass)
+    G.apply_mods(mass)  # deterministic now, so no 0.1 mm snapping on this path
     clumps = []
     stats = {"clumps": 0, "dropped": 0, "spikes": 0}
 
