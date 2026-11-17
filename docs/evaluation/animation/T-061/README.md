@@ -133,8 +133,12 @@ Local (`python3 tools/check_all.py --base origin/main --task T-061 --blender <bp
 and passed) did not finish locally: the session's worker restarted during the all-character regression (twice in
 this session), so the full tier is taken from CI.
 
-CI (GitHub "Quality gate", full tier, trial merge into staging), run on the pushed branch: see the relay line for the
-final run. On the first push every check passed except (a) **Guarded paths** (the Supervisor trailer an Implementer
+CI (GitHub "Quality gate", full tier, trial merge into staging), run 44193932269 on `ce37520` (staging merged):
+**every check PASS except Guarded paths** (and "Merge status", which only reports that a line failed): C++ build,
+C++ tests (incl. animcheck), Python tests and links, Blender tier with the regression jobs boy PASS (fidelity 66.41),
+girl PASS (64.40), white-haired girl PASS. **Gate verdict: red only because of the guarded-path trailer**
+(`Supervisor-Approved: <path>`), which an Implementer cannot add: Supervisor action needed for the six paths below.
+On the first push (run 44183710969) every check passed except (a) **Guarded paths** (the Supervisor trailer an Implementer
 cannot give: `tests/CMakeLists.txt`, `tests/test_anim_principles.cpp`, `tools/animcheck/tests/test_animcheck.py`,
 `tools/animcheck/thresholds.json`, `tools/check_all.py`, `tools/regression_paths.txt`) and (b) the T-062 cast check
 in the Python tests, which flagged my evidence shots for pinning old versions — fixed by the current-version casts
