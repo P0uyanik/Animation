@@ -9,10 +9,10 @@ The scenes reference their characters as `../characters/<name>.character.json`, 
 
 | Archived scene | Former path | Origin |
 | --- | --- | --- |
-| `compare_it4_boy.scene.json` | `content/scenes/` | iteration-4 Blender comparison harness (`archive/engine_era/pipeline/plush_views.py`) |
-| `milestone03_watertable.scene.json` | `content/scenes/` | milestone 03 (`archive/engine_era/tools/make_milestone03.py`) |
-| `watertable_v4.scene.json` | `content/scenes/` | iteration-4 water-table benchmark (`archive/engine_era/tools/make_watertable_v4.py`) |
-| `test_expressions_boy_dark_hair.scene.json` | `content/scenes/` | expression sheets (`archive/engine_era/tools/make_expression_sheet.py`) |
+| `compare_it4_boy.scene.json` | `content/scenes/` | iteration-4 Blender comparison harness (`../pipeline/plush_views.py`) |
+| `milestone03_watertable.scene.json` | `content/scenes/` | milestone 03 (`../tools/make_milestone03.py`) |
+| `watertable_v4.scene.json` | `content/scenes/` | iteration-4 water-table benchmark (`../tools/make_watertable_v4.py`) |
+| `test_expressions_boy_dark_hair.scene.json` | `content/scenes/` | expression sheets (`../tools/make_expression_sheet.py`) |
 | `test_expressions_girl_brown_glasses.scene.json` | `content/scenes/` | same |
 | `test_expressions_girl_white_hair.scene.json` | `content/scenes/` | same |
 | `test_hand_poses.scene.json` | `content/scenes/` | hand-pose visual check (iteration 3) |

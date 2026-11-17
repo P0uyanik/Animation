@@ -38,7 +38,7 @@ opens `milestone01_classroom` (`apps/studio/main.cpp:1531`). Markdown links to m
 | `tools/render_iteration4_evidence.sh` | same | 0 | `NEXT_STEPS.md:38` |
 | `pipeline/plush_views.py` | `archive/engine_era/pipeline/` | 0 | `docs/BLENDER_COMPARISON_HARNESS.md:14,50` |
 
-### 2.2 Engine-era demo scenes → `archive/scenes/` (owner decision 3)
+### 2.2 Engine-era demo scenes → `archive/engine_era/scenes/` (owner decision 3)
 
 None of these is named in `tests/CMakeLists.txt` (only `milestone01_classroom`, `test_face`, `test_lineup`), in any
 C++/Python test, tool, CI file or app. Their only code consumers were the archived generators above.

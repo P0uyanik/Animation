@@ -17,9 +17,9 @@ to the originals; `git log --follow` shows their history.
 | `tools/make_girl_v2.py` | `tools/make_girl_v2.py` | `content/characters/girl_white_hair_v2.character.json` (input of `regression_face_neutral`) |
 | `tools/make_lineup.py` | `tools/make_lineup.py` | `content/scenes/test_lineup.scene.json` (input of `regression_lineup_abc`) |
 | `tools/make_milestone02.py` | `tools/make_milestone02.py` | `content/scenes/milestone02_classroom.scene.json` |
-| `tools/make_milestone03.py` | `tools/make_milestone03.py` | `milestone03_watertable.scene.json` (now in `archive/scenes/`) |
-| `tools/make_watertable_v4.py` | `tools/make_watertable_v4.py` | `watertable_v4.scene.json` (now in `archive/scenes/`) |
-| `tools/make_expression_sheet.py` | `tools/make_expression_sheet.py` | `test_expressions_<character>.scene.json` (now in `archive/scenes/`) |
+| `tools/make_milestone03.py` | `tools/make_milestone03.py` | `milestone03_watertable.scene.json` (now in `archive/engine_era/scenes/`) |
+| `tools/make_watertable_v4.py` | `tools/make_watertable_v4.py` | `watertable_v4.scene.json` (now in `archive/engine_era/scenes/`) |
+| `tools/make_expression_sheet.py` | `tools/make_expression_sheet.py` | `test_expressions_<character>.scene.json` (now in `archive/engine_era/scenes/`) |
 | `tools/make_it4_comparison.py` | `tools/make_it4_comparison.py` | iteration-4 comparison sheets (`docs/iteration4`) |
 | `tools/render_iteration3_evidence.sh` | `tools/render_iteration3_evidence.sh` | iteration-3 renders (`docs/milestone03`) |
 | `tools/render_iteration4_evidence.sh` | `tools/render_iteration4_evidence.sh` | iteration-4 renders (`docs/iteration4`) |
