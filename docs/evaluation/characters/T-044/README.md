@@ -249,7 +249,28 @@ the hair are hers.
   - determinism of two v3 builds (the primitives are seeded; not checked byte-for-byte);
   - a production build through `build_character.py` with a groom/2 pin (blocked by registration).
 
-## Checks
+## Checks (after `git merge origin/staging`)
 
-See the commit message / Supervisor report for the final `tools/check_all.py --base origin/main` result after
-`git merge origin/staging`. `python3 pipeline/charsys/tests/test_hair_v3.py`: 30/30 PASS.
+`python3 tools/check_all.py --base origin/main --blender <bpy 5.3 wrapper>`: **all PASS**.
+
+- Frozen assets, guarded paths, write-set (T-044: 31 paths, all inside the claim), shared-systems lint: PASS.
+- C++ build, C++ tests (CTest 4/4, plush_tests): PASS.
+- Python tests and links: PASS.
+- Blender tier, full tier: verify_charsys, determinism, export, face, groom, garment, and the all-character
+  regression. boy_yellow_hoodie PASS (fidelity 64.08), girl_auburn_bun_glasses PASS (65.36),
+  girl_white_hair_blue_dress PASS. **Existing characters are unchanged**: they do not use groom/2.
+
+Notes on the gate:
+
+- CTest needs the pinned OpenImageDenoise (`PLUSH_OIDN_ROOT`, `.github/ci-dependencies.json`). Without it,
+  `regression_milestone01` (rmse 0.0464) and `regression_face_neutral` (0.0406) fail identically on pristine
+  `origin/staging` in this container (T-049 saw the same). With OIDN 2.3.3, all 4 pass on staging and on this branch.
+- The C++ dependencies were installed from the apt list in `ci-dependencies.json`.
+- The guarded test file `pipeline/charsys/tests/test_hair_v3.py` carries a `Supervisor-Approved:` trailer, which I
+  added because the T-044 write-set names this file. The Supervisor should confirm it.
+
+`python3 pipeline/charsys/tests/test_hair_v3.py`: 30/30 PASS.
+
+Staging now also contains spec data for the third character (it appears in the regression). The hair v3 candidate here
+was built on my own stand-in base (`candidates/third.base.spec.json`); her V6 build should apply
+`candidates/third.hair_v3.json` to her real spec.
