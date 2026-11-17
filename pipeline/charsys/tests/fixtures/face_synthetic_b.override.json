@@ -1,0 +1,41 @@
+{
+ "identity": {"id": "face_synthetic_b", "display_name": "Synthetic face B (T-031 generality test, not a character)"},
+ "metadata": {"spec_version": "0.0.1", "status": "synthetic test fixture (T-031): proves the face v2 options are general; never published"},
+ "hair": {"generator": "none"},
+ "accessories": {"items": []},
+ "components": {"face": ["eye.", "lid_", "lash.", "brow.", "mouth", "ear.", "nose"]},
+ "body": {"params": {"head": {"lower_roundness": 2.7, "lower_depth_roundness": 2.0, "chin_taper": 0.22, "lower_half_height": 0.162},
+                     "neck": {"top_radius": 0.04639}},
+          "note": "T-031b: its own head shape through the same body_generic options: a longer, softer oval lower face (less round than the girl's), plain neck"},
+ "materials": {
+  "target_colors_srgb": {"skin": [176, 128, 100]},
+  "assignments": {"skin": {"preset": "skin-felt", "base_color_srgb": [176, 128, 100], "reference_size_m": 0.29278}}
+ },
+ "face": {
+  "eyes": {
+   "radius_m": 0.03, "protrusion_m": 0.011, "spacing_m": 0.15, "offset_z_m": -0.004, "roll_deg": 9,
+   "shader": "layered/1",
+   "iris": {"srgb": [52, 118, 96], "inner_srgb": [150, 168, 80], "dark_srgb": [26, 64, 58], "limbal_srgb": [12, 30, 30],
+            "glow_srgb": [120, 190, 140], "shade_srgb": [20, 50, 46], "radius": 0.58, "pupil": 0.17, "limbal_width": 0.05,
+            "streaks": 0.45, "vertical_gradient": 0.3},
+   "sclera_srgb": [246, 242, 236],
+   "highlights": [[-0.18, 0.24, 0.1]],
+   "catchlight_strength": 2.0,
+   "wet_coat": {"weight": 1.0, "roughness": 0.02},
+   "lids": {"upper_edge_deg": 30, "upper_thickness_m": 0.0016, "upper_curve": 0.3, "lower_edge_deg": -35, "lower_curve": 0.15},
+   "lash": {"srgb": [20, 14, 14], "span_deg": 70, "thick_m": 0.0024, "outer": {"count": 0},
+            "strands": {"count": 7, "from_deg": 5, "to_deg": 82, "length_m": [0.004, 0.007, 0.009], "curl": 0.9, "width_m": 0.0011, "outward": 0.9}},
+   "lid_tracking": 0.3
+  },
+  "brows": {"style": "embroidered", "inner": 0.8, "outer": 1.0, "height": 1.9, "arch_m": 0.0005, "inner_drop_m": -0.003,
+            "outer_drop_m": 0.0, "thick_m": 0.0028, "depth_m": 0.0012, "taper": 0.1, "offset_m": 0.0008, "srgb": [30, 22, 22]},
+  "nose": {"type": "button", "size_m": 0.026, "inset": 0.3, "offset_z_m": 0.004},
+  "blush": {"srgb": [236, 120, 96], "below_eye_m": 0.038, "out_m": 0.014, "radius_m": 0.022, "intensity": 0.9, "softness": 0.5,
+            "breakup": 0.4, "nose": false},
+  "skin": {"occlusion": {"distance_m": 0.1, "lift": 0.6, "warm_srgb": [204, 140, 106], "bleed": 0.4, "bleed_srgb": [240, 214, 196], "bleed_face_radius_m": 0.11, "bleed_body": 0.3}},
+  "shape": {"cheek_roundness_m": 0.007, "cheek_radius_m": 0.045, "cheek_below_eye_m": 0.05, "cheek_x": 1.0,
+            "chin_forward_m": 0.005, "chin_drop_m": 0.004, "forehead_height_m": 0.006, "forehead_fullness_m": 0.003},
+  "mouth": {"rest_shape": "open_smile", "half_width_m": 0.019, "rest_mix": {"MouthWide": 0.8, "MouthSmile": 0.4}, "lip_srgb": [190, 104, 92]},
+  "expressions": {"optional": ["SmileClosed", "Thinking"]}
+ }
+}
