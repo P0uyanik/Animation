@@ -139,6 +139,32 @@ The engine-era archive README warns: **do not run** the generators still in `too
 `render_iteration*_evidence.sh`), because they overwrite CTest regression inputs. Moving those scripts (C5) and the
 clip evidence scripts (C6) is code under `tools/` and `pipeline/`, which is outside the claim and full tier. Not done.
 
+### 3.6 Scope addition: architecture docs (owner decision 2026-11-17, Supervisor message)
+
+Source: [OWNER_DECISIONS.md](../../../process/OWNER_DECISIONS.md), "architecture: renderer freeze, CPU render
+optimisation, docs, approved-asset preservation" (staging `7c32158`, merged), item 3 ("docs go with T-071").
+
+- `README.md`: the introduction now describes the pipeline as it is:
+  1. spec JSON → shared Blender generators;
+  2. the engine owns animation and writes `plush.shot_bake/1`;
+  3. Cycles renders the final shots;
+  4. Python tools (`run_shot`, fidelity, regression, gate).
+
+  Studio and `plush-render` are described as previews and existing tests only, with the renderer frozen. Build and
+  run instructions are unchanged.
+- `TECHNICAL_DECISIONS.md`: new **TD-43** "Engine renderer frozen; approved versions immutable (2026-11-17)". It says:
+  - the engine renderer serves previews and existing image tests only;
+  - look, material and render work happens only in Blender;
+  - `engine/render/` is guarded;
+  - approved versions are stored immutably in the asset store (T-075, in progress);
+  - CPU render profiles come from T-074.
+
+  Only this section was appended. TD-1..TD-42 are unchanged.
+- `docs/process/IMPLEMENTER_PROMPT.md`: one new rule under "Architecture rules":
+  - no new features in `engine/render/`;
+  - look and render changes go to the Blender pipeline;
+  - never write into `assets/characters/*/versions/`.
+
 ## 4. The tests the gate does not run
 
 Reconciling T-069's "18": the gate runs 4 Python scripts and `tools/cleanup/run_tests.py`, and in the Blender tier
@@ -323,7 +349,8 @@ GATE_RESULTS_PLACEHOLDER
   - `README.md`: architecture and requirements.
   - `DEVELOPMENT_LOG.md`: historical header.
   - `docs/CHARACTER_SYSTEM_VERSIONS.md`: export/5, hair_clumps/2.
-  - `docs/process/IMPLEMENTER_PROMPT.md`: reading list and status-file references.
+  - `docs/process/IMPLEMENTER_PROMPT.md`: reading list, status-file references, renderer/versions rule (§3.6).
+  - `TECHNICAL_DECISIONS.md`: TD-43 appended (§3.6).
   - `docs/archive/README.md`, `docs/archive/root_status/README.md`, `docs/archive/engine_era/README.md`: indexes.
   - Moves: §3.2.
   - This report and [check_all_wiring.diff](check_all_wiring.diff).

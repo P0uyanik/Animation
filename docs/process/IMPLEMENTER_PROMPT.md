@@ -42,6 +42,9 @@ docs/CHARACTER_REUSABILITY.md, docs/process/WORKFLOW.md. Milestone reports in do
   shot_render, run_shot, asset_store). Do not replace or refactor a system unless the task says so.
 - Do not change the architecture, introduce unrelated features or expand the task. If the task cannot be done as
   specified, or needs a decision, STOP and report the question instead of guessing.
+- The engine renderer (engine/render/) is frozen: no new features, previews and existing tests only (TD-43). Look,
+  material and render changes go to the Blender pipeline. Never write into assets/characters/*/versions/
+  (published and approved versions are immutable).
 - Validate shared capabilities on more than one character or configuration when the task says so; never claim
   support you did not test.
 

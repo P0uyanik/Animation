@@ -1,25 +1,27 @@
 # Plush Studio
 
 A reusable character-production and animation platform for short plush / felt / wool episodes (target: complete
-2–2.5 min episodes). Three parts, each with one job (TD-37..TD-42 in [TECHNICAL_DECISIONS.md](TECHNICAL_DECISIONS.md)):
+2–2.5 min episodes). How it works today (TD-37..TD-43 in [TECHNICAL_DECISIONS.md](TECHNICAL_DECISIONS.md)):
 
-- **Plush Studio** (`apps/studio`, C++): the product. Projects, characters, versions, episodes, shots, timeline and
-  the production workflow.
-- **Blender 5.3, headless** (`pipeline/charsys/`): the internal production backend. Character geometry, rig, face,
-  hair, clothing, materials and the final Cycles render. Never the user-facing application.
-- **C++ engine** (`engine/`): runtime animation (actions, clips, emotions, IK, interaction, life layer, playback) and
-  the bake hand-off to Blender. Its path tracer is for previews and the image regressions.
+1. **Character spec (JSON)** → the shared **Blender generators** (`pipeline/charsys/`, Blender 5.3 headless) build
+   each character: geometry, rig, face, hair, clothing, materials. Approved versions are stored immutably in the
+   asset store (`assets/characters/<id>/versions/`).
+2. The **C++ engine** (`engine/`) owns animation: clips, emotions, face, body mechanics, interaction, life layer. It
+   writes the shot bake (`plush.shot_bake/1`).
+3. **Blender Cycles renders the final shots** from the bake (TD-42). Look, material and render work happens only here.
+4. **Python tools** drive and check it: `pipeline/production/run_shot.py` (one command per shot), fidelity
+   (`tools/fidelity/`), regression (`tools/regression/`) and the quality gate (`tools/check_all.py`,
+   [docs/process/GATE.md](docs/process/GATE.md)).
 
-Production path: character spec → Blender master (versioned asset store) → engine package → shot scene → engine bake
-→ Blender render, one command per shot (`pipeline/production/run_shot.py`). Details:
+**Plush Studio** (`apps/studio`) and the engine's path tracer (`plush-render`) are for previews and the existing image
+tests; the engine renderer is frozen (no new features, TD-43). Details:
 [docs/PRODUCTION_PIPELINE.md](docs/PRODUCTION_PIPELINE.md),
 [docs/CHARACTER_REUSABILITY.md](docs/CHARACTER_REUSABILITY.md),
 [docs/CHARACTER_SYSTEM_VERSIONS.md](docs/CHARACTER_SYSTEM_VERSIONS.md). Status and plans:
 [CURRENT_STATUS.md](CURRENT_STATUS.md) (pointers to the task log and roadmap).
 
-Requirements: the C++ build below for the engine, Studio and `plush-render` (CPU only, no GPU needed). Character
-builds, final renders and the full test tier need Blender 5.3 (or the `bpy` 5.3 module); the quality gate is
-`tools/check_all.py` ([docs/process/GATE.md](docs/process/GATE.md)).
+Requirements: the C++ build below (CPU only, no GPU needed) for the engine, Studio and `plush-render`. Character
+builds, final renders and the full test tier need Blender 5.3 (or the `bpy` 5.3 module).
 
 ## What is in the box
 
@@ -27,7 +29,7 @@ builds, final renders and the full test tier need Blender 5.3 (or the `bpy` 5.3 
 | --- | --- |
 | `engine/` | Engine modules: `core`, `geom`, `anim`, `fuzz`, `model`, `scene`, `render` |
 | `apps/studio` | **Plush Studio**, the desktop application (Dear ImGui + OpenGL 3.3 preview) |
-| `apps/render-cli` | `plush-render`, headless engine renderer for stills, sequences and video (previews, regressions) |
+| `apps/render-cli` | `plush-render`: engine bake (`--bake`) and the frozen preview renderer (stills, sequences, image regressions) |
 | `pipeline/` | Blender backend (`charsys/`), clip tools (`clips/`), shot production (`production/run_shot.py`) |
 | `assets/characters/` | Character specs, references and the versioned asset store |
 | `content/` | Clips, emotions, scenes, and the engine-era SDF characters used by the image regressions |
