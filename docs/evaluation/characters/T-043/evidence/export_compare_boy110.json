@@ -1,0 +1,190 @@
+{
+ "a": "base/boy110/export",
+ "canonical_equal": false,
+ "canonical_differing_meshes": [
+  "buckle.L",
+  "buckle.R",
+  "ear.L",
+  "ear.R",
+  "eye.L",
+  "eye.R",
+  "hood_back",
+  "lid_lower.L",
+  "lid_lower.R",
+  "lid_upper.L",
+  "lid_upper.R",
+  "undershirt"
+ ],
+ "matched_equal": true,
+ "matched_differences": {},
+ "b": "new/boy110/export",
+ "geometry_bytes_equal": false,
+ "geometry_size": [
+  14030000,
+  14030000
+ ],
+ "manifest_keys": {
+  "capabilities": "equal",
+  "coordinates": "equal",
+  "discarded": "equal",
+  "exporter_version": "equal",
+  "expressions": "equal",
+  "expressions_missing": "equal",
+  "eye_pivots": "equal",
+  "files": "differs (geometry.bin bytes)",
+  "format": "equal",
+  "materials": "equal",
+  "meshes": "equal",
+  "morph_names": "equal",
+  "morphs": "equal",
+  "name": "equal",
+  "profile": "equal",
+  "reparented": "equal",
+  "retarget": "equal",
+  "rig_specific_bones": "equal",
+  "roles_present": "equal",
+  "skeleton": "equal",
+  "source": "equal",
+  "source.blend_sha256": "differs",
+  "version": "equal",
+  "versions": "ignored"
+ },
+ "differing_blocks": 32,
+ "worst_by_field": {
+  "normals": 1.7368332743644714,
+  "indices": 1983.0,
+  "positions": 0.07478004693984985,
+  "weights": 8.940696716308594e-08,
+  "dpos": 7.450580596923828e-09
+ },
+ "blocks": {
+  "mesh[buckle.L].normals": {
+   "elements": 68,
+   "max_abs": 1.1920928955078125e-07
+  },
+  "mesh[buckle.L].indices": {
+   "elements": 490,
+   "max_abs": 82.0
+  },
+  "mesh[buckle.R].normals": {
+   "elements": 47,
+   "max_abs": 1.1920928955078125e-07
+  },
+  "mesh[buckle.R].indices": {
+   "elements": 490,
+   "max_abs": 84.0
+  },
+  "mesh[ear.L].positions": {
+   "elements": 2979,
+   "max_abs": 0.07478004693984985
+  },
+  "mesh[ear.L].normals": {
+   "elements": 3152,
+   "max_abs": 1.7368332743644714
+  },
+  "mesh[ear.L].indices": {
+   "elements": 9452,
+   "max_abs": 1983.0
+  },
+  "mesh[ear.R].positions": {
+   "elements": 2982,
+   "max_abs": 0.07478004693984985
+  },
+  "mesh[ear.R].normals": {
+   "elements": 3187,
+   "max_abs": 1.7368329167366028
+  },
+  "mesh[ear.R].indices": {
+   "elements": 9452,
+   "max_abs": 1983.0
+  },
+  "mesh[eye.L].normals": {
+   "elements": 85,
+   "max_abs": 1.1920928955078125e-07
+  },
+  "mesh[eye.L].indices": {
+   "elements": 4865,
+   "max_abs": 1105.0
+  },
+  "mesh[eye.R].normals": {
+   "elements": 213,
+   "max_abs": 1.1920928955078125e-07
+  },
+  "mesh[eye.R].indices": {
+   "elements": 6624,
+   "max_abs": 1101.0
+  },
+  "mesh[hood_back].positions": {
+   "elements": 8,
+   "max_abs": 1.1102230246251565e-16
+  },
+  "mesh[hood_back].normals": {
+   "elements": 99,
+   "max_abs": 1.1920928955078125e-07
+  },
+  "mesh[hood_back].indices": {
+   "elements": 2880,
+   "max_abs": 478.0
+  },
+  "mesh[hood_back].weights": {
+   "elements": 1172,
+   "max_abs": 8.940696716308594e-08
+  },
+  "mesh[lid_lower.L].normals": {
+   "elements": 148,
+   "max_abs": 1.7881393432617188e-07
+  },
+  "mesh[lid_lower.L].indices": {
+   "elements": 6938,
+   "max_abs": 697.0
+  },
+  "mesh[lid_lower.R].normals": {
+   "elements": 169,
+   "max_abs": 1.1920928955078125e-07
+  },
+  "mesh[lid_lower.R].indices": {
+   "elements": 7653,
+   "max_abs": 698.0
+  },
+  "mesh[lid_upper.L].positions": {
+   "elements": 1,
+   "max_abs": 1.862645149230957e-09
+  },
+  "mesh[lid_upper.L].normals": {
+   "elements": 205,
+   "max_abs": 3.5762786865234375e-07
+  },
+  "mesh[lid_upper.L].indices": {
+   "elements": 11425,
+   "max_abs": 996.0
+  },
+  "mesh[lid_upper.R].positions": {
+   "elements": 2,
+   "max_abs": 7.450580596923828e-09
+  },
+  "mesh[lid_upper.R].normals": {
+   "elements": 257,
+   "max_abs": 1.3835728168487549e-05
+  },
+  "mesh[lid_upper.R].indices": {
+   "elements": 11418,
+   "max_abs": 996.0
+  },
+  "mesh[undershirt].normals": {
+   "elements": 128,
+   "max_abs": 1.1920928955078125e-07
+  },
+  "mesh[undershirt].indices": {
+   "elements": 1518,
+   "max_abs": 264.0
+  },
+  "morph[36:Blink].dpos": {
+   "elements": 1,
+   "max_abs": 1.862645149230957e-09
+  },
+  "morph[37:Blink].dpos": {
+   "elements": 1,
+   "max_abs": 7.450580596923828e-09
+  }
+ }
+}

@@ -243,6 +243,22 @@ void rotateLocal(Pose& pose, int bone, vec3 eulerDeg) {
 }
 }  // namespace
 
+float lifeHash01(uint32_t a, uint32_t b) { return hash01(a, b); }
+
+float breathSignal(double t, uint32_t seed) {
+  const float ph = hash01(seed, 1) * 6.283f;
+  const float breathT = 3.4f + 0.6f * hash01(seed, 4);
+  return float(std::sin(kTwoPi * t / breathT + ph));
+}
+
+void applyLidBlink(const Skeleton& sk, Pose& pose, float amount) {
+  if (amount <= 0 || pose.local.size() != sk.bones.size()) return;
+  for (const char* name : {"lid.L", "lid.R"}) {
+    int lid = sk.find(name);
+    if (lid >= 0) pose.local[size_t(lid)] = glm::slerp(pose.local[size_t(lid)], eulerDegreesToQuat(vec3(86, 0, 0)), amount);
+  }
+}
+
 float blinkAmount(double t, float interval, uint32_t seed, float closeS, float holdS, float openS) {
   if (interval <= 0 || t < 0) return 0.0f;
   // Blink k happens at the sum of k jittered intervals (0.55..1.45 of the mean); a blink closes in `close` s
@@ -276,8 +292,8 @@ void applyLife(const Skeleton& sk, const Clip& clip, const std::string& prefix, 
   if (!life.enabled || pose.local.size() != sk.bones.size()) return;
   const double t = frame / std::max(1.0, fps);
   const float ph = hash01(life.seed, 1) * 6.283f, ph2 = hash01(life.seed, 2) * 6.283f, ph3 = hash01(life.seed, 3) * 6.283f;
-  const float breathT = 3.4f + 0.6f * hash01(life.seed, 4), swayT = 6.5f + 2.0f * hash01(life.seed, 5);
-  const float b = life.breathing * float(std::sin(kTwoPi * t / breathT + ph));
+  const float swayT = 6.5f + 2.0f * hash01(life.seed, 5);
+  const float b = life.breathing * breathSignal(t, life.seed);
   const float w = life.sway * float(std::sin(kTwoPi * t / swayT + ph2));
   const int hips = sk.find("hips"), spine = sk.find("spine"), chest = sk.find("chest"), neck = sk.find("neck"),
             head = sk.find("head");
@@ -309,11 +325,7 @@ void applyLife(const Skeleton& sk, const Clip& clip, const std::string& prefix, 
                                0.6f * hd * float(std::sin(kTwoPi * t / 9.7 + ph2))));
   // Automatic blinks: the upper lids close over whatever the lid pose is.
   float bl = blinkAmount(t, life.blinkInterval, life.seed, life.blinkClose, life.blinkHold, life.blinkOpen);
-  if (bl > 0 && life.blinkLids)
-    for (const char* name : {"lid.L", "lid.R"}) {
-      int lid = sk.find(name);
-      if (lid >= 0) pose.local[size_t(lid)] = glm::slerp(pose.local[size_t(lid)], eulerDegreesToQuat(vec3(86, 0, 0)), bl);
-    }
+  if (life.blinkLids) applyLidBlink(sk, pose, bl);
 }
 
 namespace {
@@ -431,8 +443,77 @@ std::vector<vec3> fingertips(const Skeleton& sk, const Pose& pose, const mat4& w
   return tips;
 }
 
+namespace {
+// Neck assist (T-046): the eyes keep a comfortable range and the neck takes the rest. Measured from the eyes' midpoint
+// in the head frame: whatever the target lies beyond the soft limit's onset (yaw and pitch separately) turns the neck
+// about the head's own axes, capped by the assist limits. Two passes absorb the small shift of the eye pivots. The
+// result depends only on where the target is relative to the body, so a posture layer (an emotion bowing the head)
+// no longer changes where the eyes end up looking (test_emotions AC5 look_keeps_gaze).
+void assistGazeWithNeck(const Skeleton& sk, const Clip& clip, const std::string& prefix, const mat4& world, Pose& pose,
+                        int head, vec3 target, float weight, const GazeLimits& limits) {
+  const int neck = sk.find("neck");
+  if (neck < 0 || head < 0 || weight <= 0 || (limits.assistYawDeg <= 0 && limits.assistPitchDeg <= 0)) return;
+  {
+    auto it = clip.tracks.find(prefix + "neck.rot");
+    if (it != clip.tracks.end() && !it->second.keys.empty()) return;  // a hand-keyed neck wins
+  }
+  std::vector<int> eyes;
+  for (size_t i = 0; i < sk.bones.size(); ++i)
+    if (sk.bones[i].name.rfind("eye.", 0) == 0) eyes.push_back(int(i));
+  if (eyes.empty()) return;
+  auto onset = [](float limit) { return limit - std::min(5.0f, limit * 0.25f) - 0.25f; };
+  auto handKeyed = [&](int bone) {
+    auto it = clip.tracks.find(prefix + sk.bones[size_t(bone)].name + ".rot");
+    return it != clip.tracks.end() && !it->second.keys.empty();
+  };
+  const int chest = sk.find("chest") >= 0 ? sk.find("chest") : sk.find("spine");
+  const bool chestFree = chest >= 0 && chest != neck && !handKeyed(chest) && limits.assistBodyYawDeg > 0;
+  float usedYaw = 0, usedPitch = 0, usedBody = 0;
+  const float w = std::clamp(weight, 0.0f, 1.0f);
+  auto rotateBone = [&](const std::vector<mat4>& g, int bone, const quat& r) {
+    const int parent = sk.bones[size_t(bone)].parent;
+    const quat parentRot = glm::normalize(glm::quat_cast(parent >= 0 ? mat3(g[size_t(parent)]) : mat3(world)));
+    pose.local[size_t(bone)] = glm::normalize(glm::inverse(parentRot) * r * parentRot * pose.local[size_t(bone)]);
+  };
+  for (int pass = 0; pass < 4; ++pass) {
+    const std::vector<mat4> g = boneGlobals(sk, pose, world);
+    vec3 pivot(0);
+    for (int e : eyes) pivot += vec3(g[size_t(e)][3]);
+    pivot /= float(eyes.size());
+    const vec3 toTarget = target - pivot;
+    if (glm::length2(toTarget) < 1e-10f) return;
+    const mat3 headRot(g[size_t(head)]);
+    const vec3 d = glm::normalize(glm::transpose(headRot) * glm::normalize(toTarget));
+    const float yaw = glm::degrees(std::atan2(d.x, d.z));
+    const float pitch = glm::degrees(std::atan2(d.y, glm::length(vec2(d.x, d.z))));
+    const float yawOn = onset(yaw >= 0 ? limits.maxLeftDeg : limits.maxRightDeg);
+    const float pitchOn = onset(pitch >= 0 ? limits.maxUpDeg : limits.maxDownDeg);
+    const float exYaw = std::copysign(std::max(0.0f, std::abs(yaw) - yawOn), yaw) * w;
+    float exPitch = std::copysign(std::max(0.0f, std::abs(pitch) - pitchOn), pitch) * w;
+    float neckYaw = std::clamp(usedYaw + exYaw, -limits.assistYawDeg, limits.assistYawDeg) - usedYaw;
+    exPitch = std::clamp(usedPitch + exPitch, -limits.assistPitchDeg, limits.assistPitchDeg) - usedPitch;
+    float bodyYaw = 0;
+    if (chest >= 0 && chestFree)
+      bodyYaw = std::clamp(usedBody + (exYaw - neckYaw), -limits.assistBodyYawDeg, limits.assistBodyYawDeg) - usedBody;
+    if (std::abs(neckYaw) < 1e-4f && std::abs(exPitch) < 1e-4f && std::abs(bodyYaw) < 1e-4f) return;
+    usedYaw += neckYaw;
+    usedPitch += exPitch;
+    usedBody += bodyYaw;
+    std::vector<mat4> gn = g;
+    if (std::abs(bodyYaw) >= 1e-4f) {  // the chest twists about its own up axis; it carries the neck and head
+      rotateBone(g, chest, glm::angleAxis(glm::radians(bodyYaw), glm::normalize(mat3(g[size_t(chest)]) * vec3(0, 1, 0))));
+      gn = boneGlobals(sk, pose, world);
+    }
+    // World rotation about the head's up axis (yaw toward +X) and right axis (positive pitch looks up = -X rotation).
+    const mat3 hr(gn[size_t(head)]);
+    const vec3 up = glm::normalize(hr * vec3(0, 1, 0)), right = glm::normalize(hr * vec3(1, 0, 0));
+    rotateBone(gn, neck, glm::angleAxis(glm::radians(neckYaw), up) * glm::angleAxis(glm::radians(-exPitch), right));
+  }
+}
+}  // namespace
+
 void applyConstraints(const Skeleton& sk, const Clip& clip, const std::string& prefix, double frame, const mat4& world,
-                      Pose& pose, const GazeLimits& gaze) {
+                      Pose& pose, const GazeLimits& gaze, double fps) {
   for (size_t i = 0; i < sk.bones.size(); ++i) {
     std::string name = prefix + "ik." + sk.bones[i].name;
     const Track* t = clip.find(name);
@@ -461,6 +542,14 @@ void applyConstraints(const Skeleton& sk, const Clip& clip, const std::string& p
     vec3 target = t->evaluate(frame);
     float w = clip.evaluate(prefix + "lookAt.weight", frame, vec3(1)).x;
     const int head = sk.find("head");
+    // The assist aims at the target as it was a moment ago (averaged like the life layer's head follow): eyes lead.
+    vec3 lagged = target;
+    if (const double lag = gaze.assistLagSec * std::max(1.0, fps); lag > 0) {
+      lagged = vec3(0);
+      for (int i = 0; i < 6; ++i) lagged += t->evaluate(frame - lag * (0.5 + 0.3 * i));
+      lagged /= 6.0f;
+    }
+    assistGazeWithNeck(sk, clip, prefix, world, pose, head, lagged, w, gaze);
     const std::vector<mat4> globals = boneGlobals(sk, pose, world);
     for (size_t i = 0; i < sk.bones.size(); ++i)
       if (sk.bones[i].name.rfind("eye.", 0) == 0) aimEye(sk, pose, globals, world, int(i), head, target, w, gaze);

@@ -113,3 +113,29 @@ reliable. Approved: evaluate strand grooming vs sculpted hair and choose the bes
 costs before any extra expense; include dialogue and lip sync; develop detailed natural finger animation; include
 Blender checks in GitHub CI where practical. All implementations efficient and reusable across all characters.
 See docs/ROADMAP.md "Priority v5".
+
+## 2026-11-17: the references are the primary target
+The reference images, character models and videos were designed around each character's personality (boy:
+impatient and easily bored; girl: cheerful and intelligent) and already reflect those traits. Goal: match them as
+closely as possible in appearance, expressions, movements and animation quality. Always treat the original
+references as the primary target; improvements and personality features must support those designs, never change or
+contradict them.
+
+## 2026-11-17: no GPU rental available
+The owner cannot rent a GPU at present. Render planning assumes CPU only (cloud containers, and the owner's PC when
+available) until this changes; T-050's rental recommendation is on hold. Mitigations to evaluate before the
+benchmark scene: render settings tuned for CPU (resolution, samples + OIDN, adaptive sampling), splitting frame
+ranges across several cloud sessions, the owner's PC hardware, and only rendering final takes at full quality.
+
+## 2026-11-17: character details from the reference conflicts (T-053a)
+1. Boy: impatience stays subtle, calm and low-energy, as in the original references (small, slow fidgets in his base
+   tempo; no quick, abrupt or comic moves; no eye-rolls).
+2. Girl: eye colour brown.
+3. Girl: neutral mouth closed, with a gentle smile (open smile belongs to Happy).
+Apply consistently across models, animations and personality profiles; the original references stay the primary target.
+
+## 2026-11-17: third character
+The owner supplied 15 reference images for the third character (working id `girl_white_hair_blue_dress`). Personality:
+a little goofy, not very bright, bubbly and cheerful; reflected in expressions, movements and behaviour while staying
+faithful to the reference images (references remain the primary target). She is built (V6) once the shared systems
+are complete; reference intake and gap analysis (T-057) start now.
