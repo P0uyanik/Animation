@@ -185,6 +185,36 @@ def add_face_controls(rig, C, names):
     return made
 
 
+def build_clump_hair(C, head, spec, mats, hair_module):
+    """hair_clumps/* (hair.py, unchanged) on a body_generic head (T-058). hair.py places its clumps on an ellipsoid and
+    reads the body module's helpers; on the generic path that ellipsoid is spec data (spec.hair.ellipsoid_centre_m,
+    ellipsoid_radii_m) and the helpers are the shared copies. The material is the spec's "hair" slot (preset, with its
+    surface fibres when the preset has them)."""
+    import types
+
+    hs = spec["hair"]
+    hc, hr = Vector(hs["ellipsoid_centre_m"]), Vector(hs["ellipsoid_radii_m"])
+
+    def on_hair(az, el, lift=0.0):  # same rule as body_v6.on_hair, on the spec's ellipsoid
+        ra, re_ = math.radians(az), math.radians(el)
+        d = Vector((math.sin(ra) * math.cos(re_), -math.cos(ra) * math.cos(re_), math.sin(re_)))
+        p = hc + Vector((d.x * hr.x, d.y * hr.y, d.z * hr.z))
+        n = Vector((d.x / hr.x, d.y / hr.y, d.z / hr.z)).normalized()
+        return p + n * lift, n
+    shim = types.SimpleNamespace(G=G, on_hair=on_hair, clump=B.clump, face_y=BH.face_y, HAIR_C=hc, HAIR_R=hr)
+    asg = MATERIALS.get_assignment(mats, "hair")
+    rgb = tuple(mats.get("target_colors_srgb", {}).get("hair", (40, 32, 30)))
+    hm = MATERIALS.build_from_assignment("M_hair", asg) if asg else G.material("M_hair", rgb, roughness=0.9, sheen=0.4)
+    objs, stats = hair_module.build(C, {"hair": hm}, head, shim, hs)
+    fibres = []
+    if asg:
+        for ob in objs:
+            fb = MATERIALS.add_fibres_from_assignment(ob, asg)
+            if fb is not None:
+                fibres.append(fb.name)
+    return objs, {"generator": hs.get("generator"), "objects": [o.name for o in objs], "fibres": fibres, **stats}
+
+
 def family(pin):
     return V.NONE if pin == V.NONE else V.parse(pin)[0]
 
@@ -259,6 +289,9 @@ def main_generic(a, spec, info, out):
             asg = dict(asg, overrides=MATERIALS.deep_merge(asg.get("overrides") or {}, overrides))
             return MATERIALS.add_fibres_from_assignment(ob, asg)
         groom, report["hair"] = GROOM.build(C, parts[0][0], frame, spec["hair"], hair_material, BH.face_y, hair_fibres)
+    clump_hair = []
+    if family(pins["groom"]) == "hair_clumps":  # T-058: the pinned legacy clump hair on a generic body
+        clump_hair, report["hair"] = build_clump_hair(C, parts[0][0], spec, mats, V.load("groom", pins["groom"]))
     if a.timings:
         report["model_s"] = round(time.time() - t0, 1)
     rig, rr = BG.rig_generic(C, f"rig_{cid}", parts, P, H, J, frames, spec["rig"].get("weight_rules", {}), BH,
@@ -282,6 +315,12 @@ def main_generic(a, spec, info, out):
         names = fc["controls"]
     if groom:
         GROOM.bind(rig, groom, head_bone, spec["rig"].get("chest_bone", head_bone), spec["hair"].get("binding"))
+    for ob in clump_hair:  # rigid to the head, as on the legacy path
+        ob.parent = rig
+        ob.matrix_parent_inverse = rig.matrix_world.inverted()
+        vg = ob.vertex_groups.get(head_bone) or ob.vertex_groups.new(name=head_bone)
+        vg.add(list(range(len(ob.data.vertices))), 1.0, "REPLACE")
+        ob.modifiers.new("Armature", "ARMATURE").object = rig
 
     report["face_controls"] = add_face_controls(rig, C, names)
     if fc is not None:
