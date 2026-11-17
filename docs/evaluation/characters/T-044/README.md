@@ -23,10 +23,10 @@ Row 1 = reference, row 2 = hair v3; columns front, 3/4, side, back, face close-u
 - Boy: [sheets/boy_render_vs_reference.jpg](sheets/boy_render_vs_reference.jpg) (reference cameras val27, `character_neutral/1`)
 - Girl: [sheets/girl_render_vs_reference.jpg](sheets/girl_render_vs_reference.jpg) (reference cameras sheet30)
 - Third character: [sheets/third_render_vs_reference.jpg](sheets/third_render_vs_reference.jpg) (orthographic head cameras; she has no calibrated reference index yet)
-- Head turns (2 s, ±40° yaw, 12 fps): [boy](renders/boy_head_turn.gif) · [girl](renders/girl_head_turn.gif) ·
-  [third](renders/third_head_turn.gif); strips (every 3rd frame): [boy](renders/boy_head_turn.jpg) ·
-  [girl](renders/girl_head_turn.jpg) · [third](renders/third_head_turn.jpg)
-- Single stills: `renders/<character>_<front|threequarter|side|back|closeup>.jpg`.
+- Head turns (2 s, ±40° yaw, 12 fps): [boy](media/boy_head_turn.gif) · [girl](media/girl_head_turn.gif) ·
+  [third](media/third_head_turn.gif); strips (every 3rd frame): [boy](media/boy_head_turn.jpg) ·
+  [girl](media/girl_head_turn.jpg) · [third](media/third_head_turn.jpg)
+- Single stills: `media/<character>_<front|threequarter|side|back|closeup>.jpg`.
 
 Settings: boy/girl full views from `tools/fidelity/run.py` (Cycles 16 spp + OIDN, 640 px); close-ups from
 `groom_turnaround.py --closeup` (16 spp + OIDN); third character from `tools/preview.py` (16 spp + OIDN, 640 px tiles);
