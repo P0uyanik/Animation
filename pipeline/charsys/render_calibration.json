@@ -23,9 +23,9 @@
           "azimuth_deg": 35,
           "elevation_deg": 45,
           "strength": 2.6,
-          "angle_deg": 18,
+          "angle_deg": 28,
           "kelvin": 5800,
-          "source": "VISUAL_TARGET.md Key direction 25-45 deg from screen-left, elevation 35-55 deg, 5000-5800 K"
+          "source": "VISUAL_TARGET.md Key direction 25-45 deg from screen-left, elevation 35-55 deg, 5000-5800 K; T-031b: angle 18 -> 28 deg (softer shadow edges under fringes, glasses and chins, as the soft plush reference look)"
         },
         {
           "name": "Fill",
@@ -35,6 +35,15 @@
           "angle_deg": 40,
           "kelvin": 4800,
           "source": "VISUAL_TARGET.md Fill ratio 1.6-2.5:1, warm room/bounce 3500-4500 K"
+        },
+        {
+          "name": "Front",
+          "azimuth_deg": 0,
+          "elevation_deg": 8,
+          "strength": 0.7,
+          "angle_deg": 60,
+          "kelvin": 4500,
+          "source": "T-031b: soft warm frontal fill (large source near the camera, as the turnaround sheet's studio light): lifts faces and other camera-facing surfaces that the screen-left key leaves in shade (face skin was 17-18 L* and limb skin 5-8 L* darker than the reference; blouse 7 L* darker)"
         },
         {
           "name": "Rim",
@@ -48,7 +57,7 @@
       ],
       "azimuth_convention": "camera-relative: 0 = from the camera, +90 = from screen-left, 180 = from behind the subject",
       "units": "sun strengths in W/m2 (a sun of strength s gives a diffuse radiance of albedo*s*cos/pi); ambient is the uniform world radiance seen by everything but camera rays",
-      "calibration_note": "tuned on the T-015 swatch sheet (flat patches facing the camera): front-facing irradiance ~0.97 so a lit patch displays near its base colour; neutral R/B ~1.08 (VISUAL_TARGET 1.03-1.15)"
+      "calibration_note": "tuned on the T-015 swatch sheet (flat patches facing the camera): front-facing irradiance ~0.97 so a lit patch displays near its base colour; neutral R/B ~1.08 (VISUAL_TARGET 1.03-1.15); T-031b: + Front fill (0.7, 4500 K): front-facing irradiance ~1.19, measured with the fidelity tool on the girl (docs/evaluation/characters/T-031b)"
     }
   }
 }

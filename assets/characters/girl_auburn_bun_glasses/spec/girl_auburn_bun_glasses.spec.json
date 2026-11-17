@@ -42,7 +42,7 @@
     "half_height": 0.14948,
     "chin_taper": 0.12,
     "forward": -0.00412,
-    "lower_half_height": 0.14948,
+    "lower_half_height": 0.1588,
     "lower_roundness": 3.8,
     "lower_depth_roundness": 2.3,
     "shape_note": "T-031b: big round plush face (#30): superellipse lower outline (full cheeks carried down to a wide jaw and a broad, short chin at the chin landmark), lighter jaw taper; face width at the mouth line ~250 mm (reference ~265 mm incl. the cheek bulge); was a tapered ellipsoid (~170 mm at the mouth)"
@@ -275,7 +275,8 @@
   "layout": {
    "mouth_below_eye_m": 0.055,
    "nose_below_eye_m": 0.034,
-   "chin_below_eye_m": 0.096
+   "chin_below_eye_m": 0.096,
+   "note": "T-031b: positions below the (9 mm lower) eye line; the lower face extends 9 mm (fidelity: mouth, nose, chin 2-4 px high)"
   },
   "eyes": {
    "radius_m": 0.044,
@@ -425,13 +426,14 @@
     "weight": 1.0,
     "roughness": 0.03,
     "base_roughness": 0.35
-   }
+   },
+   "offset_z_m": -0.009
   },
   "brows": {
    "style": "felt",
    "inner": 0.55,
    "outer": 0.66,
-   "height": 1.43,
+   "height": 1.57,
    "arch_m": 0.003,
    "inner_drop_m": 0.001,
    "outer_drop_m": 0.006,
@@ -444,7 +446,7 @@
     54,
     38
    ],
-   "note": "T-031: thick dark-brown felt brows (#30, #34) placed in the skin band between the glasses rim top (z 0.832) and the fringe edge (z 0.846 at the eye centre, 0.832 at the outer end; measured on the 0.7.1 build): at 2.25 r they were under the fringe"
+   "note": "T-031: thick dark-brown felt brows (#30, #34) placed in the skin band between the glasses rim top (z 0.832) and the fringe edge (z 0.846 at the eye centre, 0.832 at the outer end; measured on the 0.7.1 build): at 2.25 r they were under the fringe; T-031b: eyes 9 mm lower (fidelity: eyes 5.6 px above the reference), height 1.57 r keeps the brows at the same place"
   },
   "ears": {
    "radii_m": [
@@ -484,7 +486,7 @@
   },
   "mouth": {
    "generator": "lips_jaw/2",
-   "half_width_m": 0.0155,
+   "half_width_m": 0.0175,
    "lip_height_m": 0.0028,
    "frown_m": -0.0022,
    "smile_up_m": 0.0055,
@@ -581,7 +583,7 @@
    "note": "T-031b: neutral = gentle open smile (#30 neutral tile and front views: friendly open D-shaped smile, upper teeth, tongue, red felt interior), baked as the rest shape; every action unit works on top",
    "rest_shape": "open_smile",
    "rest_mix": {
-    "MouthWide": 0.6,
+    "MouthWide": 0.85,
     "MouthSmile": 0.55
    }
   },
@@ -643,9 +645,11 @@
      252,
      212,
      192
-    ]
+    ],
+    "samples": 16,
+    "bleed": 0.35
    },
-   "note": "T-031: the grey face came from occlusion (protruding eyes, glasses, fringe) on a neutral felt base under the key-left calibration; felt scatters light into creases, so occluded areas shift warm and light instead of grey. Body and face share this material (body_skin), so the tones match."
+   "note": "T-031: the grey face came from occlusion (protruding eyes, glasses, fringe) on a neutral felt base under the key-left calibration; felt scatters light into creases, so occluded areas shift warm and light instead of grey. Body and face share this material (body_skin), so the tones match. T-031b: + felt light bleed (bleed 0.35) and 16 AO samples (8 left mottled dark patches after denoising); with the shared calibration's front fill."
   },
   "shape": {
    "cheek_roundness_m": 0.007,

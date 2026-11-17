@@ -186,7 +186,9 @@ def eye_material_layered(name, ecfg, r):
 def face_skin_material(name, skin_rgb, blush_cfg, spots, skin_cfg):
     """Felt face skin: base colour, soft felt blush patches (intensity, softness, felt breakup) and an occlusion
     compensation. Plush felt scatters light into creases, so creases read warm instead of grey: where the ambient
-    occlusion (distance occlusion.distance_m) is high, the albedo shifts towards occlusion.warm_srgb by `lift`.
+    occlusion (distance occlusion.distance_m) is high, the albedo shifts towards occlusion.warm_srgb by `lift`;
+    optional occlusion.bleed (0 = off) adds the light felt scatters into shaded skin (emission of strength
+    bleed * occlusion, warm_srgb x local colour); occlusion.samples sets the AO samples (noise).
     spots: [(xyz, radius, intensity)] in object coordinates (the skin object sits at the origin)."""
     m = G.material(name, tuple(skin_rgb), roughness=0.55, subsurface=0.2, sss_radius=(1.0, 0.45, 0.3), sss_scale=0.012,
                    specular=0.35)
@@ -257,6 +259,20 @@ def face_skin_material(name, skin_rgb, blush_cfg, spots, skin_cfg):
         mix.inputs["B"].default_value = _lin(tuple(occ.get("warm_srgb", skin_rgb)))
         links.new(f.outputs[0], mix.inputs["Factor"])
         col = mix.outputs["Result"]
+        glow = _f(occ, "bleed", 0.0)
+        if glow > 0:  # felt light bleed: occluded skin (under fringes, glasses, the chin) re-emits warm scattered light
+            g = nodes.new("ShaderNodeMath")
+            g.operation = "MULTIPLY"
+            links.new(inv.outputs[0], g.inputs[0])
+            g.inputs[1].default_value = glow
+            gc = nodes.new("ShaderNodeMix")
+            gc.data_type = "RGBA"
+            gc.blend_type = "MULTIPLY"
+            gc.inputs["Factor"].default_value = 1.0
+            gc.inputs["A"].default_value = _lin(tuple(occ.get("warm_srgb", skin_rgb)))
+            links.new(col, gc.inputs["B"])  # tinted by the local colour (the blush glows rosy)
+            links.new(gc.outputs["Result"], p.inputs["Emission Color"])
+            links.new(g.outputs[0], p.inputs["Emission Strength"])
     if col is not None:
         links.new(col, p.inputs["Base Color"])
     m["ps_face_shader"] = "skin/felt_face/1"
