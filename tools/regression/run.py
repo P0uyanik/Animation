@@ -165,6 +165,93 @@ def export_summary(package: Path) -> dict:
     return out
 
 
+POSITION_TOLERANCE_M = 1e-5   # 0.01 mm, the fingerprint grid
+ATTRIBUTE_TOLERANCE = 1e-4    # normals and skin weights
+
+
+def _match_vertices(a, b, tolerance):
+    """Index map a -> b pairing every vertex with one within `tolerance` (or None). Sorted order pairs almost all;
+    near-ties in the sort key (two vertices within float noise in x) are resolved by nearest neighbour."""
+    import numpy as np
+    if a.shape != b.shape:
+        return None
+    oa, ob = np.lexsort(a.T[::-1]), np.lexsort(b.T[::-1])
+    mapping = np.empty(len(a), dtype=np.int64)
+    mapping[oa] = ob
+    bad = np.nonzero(np.abs(a - b[mapping]).max(axis=1) > tolerance)[0]
+    if len(bad) > max(64, len(a) // 100):
+        return None
+    for i in bad:
+        nearest = int(np.argmin(np.abs(b - a[i]).max(axis=1)))
+        if np.abs(b[nearest] - a[i]).max() > tolerance:
+            return None
+        mapping[i] = nearest
+    if len(np.unique(mapping)) != len(mapping):
+        return None
+    return mapping
+
+
+def export_package_differences(new_pkg: Path, ref_pkg: Path) -> list[str]:
+    """Tolerance-aware equality of two engine packages built on the same machine (T-041 finding: the exporter writes
+    a different triangle/vertex order and float noise of about 1 ulp, so neither bytes nor quantized hashes are
+    stable). character.json must be equal (without byte hashes); every mesh must have the same vertices (within
+    0.01 mm), the same triangles (as index sets after matching), equal joints and weights/normals within 1e-4; every
+    other buffer (e.g. morph targets) within the statistics tolerance."""
+    import numpy as np
+    new_sum, ref_sum = export_summary(new_pkg), export_summary(ref_pkg)
+    diffs = []
+    if new_sum["meta_sha256"] != ref_sum["meta_sha256"]:
+        diffs.append("character.json")
+    metas, raws = [], []
+    for pkg in (new_pkg, ref_pkg):
+        metas.append(json.loads((pkg / "character.json").read_text(encoding="utf-8")))
+        raws.append((pkg / "geometry.bin").read_bytes() if (pkg / "geometry.bin").is_file() else b"")
+
+    def arr(raw, desc, width):
+        values = np.frombuffer(raw, np.dtype(DTYPES[desc["dtype"]]), int(desc["count"]), int(desc["offset"]))
+        return values.reshape(-1, width) if width else values
+
+    meshes = [{m.get("part", str(i)): m for i, m in enumerate(meta.get("meshes", []))} for meta in metas]
+    covered = set()
+    for name in sorted(set(meshes[0]) | set(meshes[1])):
+        m_new, m_ref = meshes[0].get(name), meshes[1].get(name)
+        if m_new is None or m_ref is None:
+            diffs.append(f"mesh {name} {'removed' if m_new is None else 'added'}")
+            continue
+        index = next(i for i, m in enumerate(metas[0]["meshes"]) if m is m_new)
+        covered.update(f"/meshes[{index}]/{k}" for k in ("positions", "normals", "indices", "joints", "weights"))
+        if "positions" not in m_new or "positions" not in m_ref:
+            continue
+        pa, pb = arr(raws[0], m_new["positions"], 3).astype(float), arr(raws[1], m_ref["positions"], 3).astype(float)
+        mapping = _match_vertices(pa, pb, POSITION_TOLERANCE_M)
+        if mapping is None:
+            diffs.append(f"mesh {name}: vertices")
+            continue
+        if "indices" in m_new:
+            ta = np.sort(mapping[arr(raws[0], m_new["indices"], 3).astype(np.int64)], axis=1)
+            tb = np.sort(arr(raws[1], m_ref["indices"], 3).astype(np.int64), axis=1)
+            ta, tb = ta[np.lexsort(ta.T[::-1])], tb[np.lexsort(tb.T[::-1])]
+            if ta.shape != tb.shape or not np.array_equal(ta, tb):
+                diffs.append(f"mesh {name}: triangles")
+        for key, exact in (("joints", True), ("weights", False), ("normals", False)):
+            if key not in m_new or key not in m_ref:
+                continue
+            width = 3 if key == "normals" else 4
+            va = arr(raws[0], m_new[key], width).astype(float)
+            vb = arr(raws[1], m_ref[key], width).astype(float)[mapping]
+            same = va.shape == vb.shape and bool(np.array_equal(va, vb) if exact
+                                                  else np.abs(va - vb).max(initial=0) <= ATTRIBUTE_TOLERANCE)
+            if not same:
+                diffs.append(f"mesh {name}: {key}")
+    for path in sorted(set(new_sum["buffers"]) | set(ref_sum["buffers"])):
+        if path in covered:
+            continue
+        x, y = new_sum["buffers"].get(path), ref_sum["buffers"].get(path)
+        if x is None or y is None or x[0] != y[0] or any(abs(u - v) > EXPORT_TOLERANCE for u, v in zip(x[1:], y[1:])):
+            diffs.append(f"buffer {path}")
+    return diffs
+
+
 def export_differences(old: dict, new: dict) -> list[str]:
     diffs = []
     if old.get("meta_sha256") != new.get("meta_sha256"):
@@ -296,8 +383,14 @@ def identity_checks(data: dict, fp_new: Path, ref: dict, fp_ref: Path, images_ne
                                          json.loads(fp_new.read_text(encoding="utf-8")))
                   if fp_ref.is_file() else "differs")
     out.append(("fingerprint", fp_ok, detail))
-    differing = export_differences(ref.get("export", {}), data["export"])
-    out.append(("engine export", not differing, "equal" if not differing else "differs: " + ", ".join(differing[:6])
+    new_pkg, ref_pkg = fp_new.parent / "engine_package", fp_ref.parent / "engine_package"
+    if (new_pkg / "character.json").is_file() and (ref_pkg / "character.json").is_file():
+        differing = export_package_differences(new_pkg, ref_pkg)
+        how = "equal (vertices matched within 0.01 mm)"
+    else:  # stored baseline: only the order-independent summary exists
+        differing = export_differences(ref.get("export", {}), data["export"])
+        how = "summary equal"
+    out.append(("engine export", not differing, how if not differing else "differs: " + ", ".join(differing[:6])
                 + (f" (+{len(differing) - 6})" if len(differing) > 6 else "")))
     bad, worst = [], {}
     for name in data["renders"]:
@@ -393,8 +486,10 @@ def regress(cid: str, a, env: dict, unchanged_ids: set[str], noise: dict) -> dic
             diffs = {name: image_difference(out / "run1" / "renders" / f"{name}.png",
                                             out / "run2" / "renders" / f"{name}.png") for name in first["renders"]}
             result["noise"] = {"fingerprint_equal": first["fingerprint_sha256"] == second["fingerprint_sha256"],
-                               "export_equal": not export_differences(first["export"], second["export"]),
-                               "export_differences": export_differences(first["export"], second["export"]), "renders": diffs,
+                               "export_equal": not export_package_differences(out / "run1" / "engine_package",
+                                                                              out / "run2" / "engine_package"),
+                               "export_differences": export_package_differences(out / "run1" / "engine_package",
+                                                                                out / "run2" / "engine_package"), "renders": diffs,
                                "timings_s": [first["timings_s"], second["timings_s"]]}
             result["checks"].append({"name": "build determinism", "ok": result["noise"]["fingerprint_equal"]
                                      and result["noise"]["export_equal"], "detail": ""})

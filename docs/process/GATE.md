@@ -69,9 +69,12 @@ character built and rendered twice from one commit): boy max rmse 1.7e-5, girl m
 pixels (hair fibres). Threshold: rmse 0.006, changed pixels 0.8 % (about 2× the measured noise).
 
 Engine export: two identical builds export the same geometry with a different triangle/vertex order and float noise
-≤ 1.1e-6, so `geometry.bin` bytes cannot be compared. The summary compares `character.json` exactly (without byte
-hashes), per mesh an order-independent hash of the triangle set (positions at 0.01 mm) and of the per-vertex joint
-tuples, and per buffer count/mean/rms/min/max within 1e-5.
+of about 1 ulp (≤ 1.1e-6), so neither `geometry.bin` bytes nor hashes of quantized positions are stable (a vertex
+can land on either side of a rounding boundary; measured on the boy's `ear.L`). Against `main` built on the same
+machine the two packages are compared directly: `character.json` exactly (without byte hashes), per mesh every
+vertex matched within 0.01 mm, triangles equal as index sets, joints equal, weights and normals within 1e-4, other
+buffers (morph targets) by count/mean/rms/min/max within 1e-5. Against a stored baseline (no package stored) only
+that statistics summary is compared, for information.
 
 ## 4. File claims and integration (`tools/integrate.py`)
 
