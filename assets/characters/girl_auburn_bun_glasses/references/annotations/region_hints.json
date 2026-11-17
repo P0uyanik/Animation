@@ -1,6 +1,7 @@
 {
  "schema": "plush-studio.fidelity-region-hints/1",
  "note": "Provenance of the region polygons in <view>.json (T-032): seed boxes [x0, y0, x1, y1] (hand-picked flat patches, lit and shaded) and zones (polygons where a region may appear) for tools/fidelity/annotate_regions.py; eyes and glasses are hand ellipses [cx, cy, rx, ry] read on 5x gridded zooms. Pixel coordinates in references/views/<view>.png (x right, y down).",
+ "t064_note": "T-064: sheet30_front skin seeds [80, 158, 92, 168] and [90, 165, 100, 175] added: the shaded right cheek and the skin around the right eye had been classified as hair.",
  "reference_dir": "assets/characters/girl_auburn_bun_glasses/references/views",
  "views": {
   "sheet30_front": {
@@ -8,7 +9,7 @@
    "colour_regions": {
     "hair": {"seeds": [[60, 75, 75, 90], [95, 15, 110, 30], [45, 200, 55, 215], [172, 185, 182, 200], [150, 70, 165, 85]], "zones": [[[0, 0], [1000, 0], [1000, 250], [0, 250]]]},
     "hair_accessory": {"seeds": [[138, 38, 150, 48]], "zones": [[[120, 20], [175, 20], [175, 62], [120, 62]]]},
-    "skin": {"seeds": [[100, 165, 135, 172], [100, 105, 130, 118], [12, 285, 22, 293], [85, 360, 98, 390], [130, 360, 143, 390]], "zones": [[[0, 70], [1000, 70], [1000, 404], [0, 404]]]},
+    "skin": {"seeds": [[100, 165, 135, 172], [100, 105, 130, 118], [12, 285, 22, 293], [85, 360, 98, 390], [130, 360, 143, 390], [80, 158, 92, 168], [90, 165, 100, 175]], "zones": [[[0, 70], [1000, 70], [1000, 404], [0, 404]]]},
     "garment:blouse": {"seeds": [[30, 235, 50, 260], [180, 235, 200, 260], [100, 192, 110, 198], [105, 215, 112, 245]], "zones": [[[0, 180], [1000, 180], [1000, 300], [0, 300]]]},
     "garment:vest": {"seeds": [[62, 255, 88, 290], [145, 255, 170, 290], [70, 215, 85, 235]], "zones": [[[55, 185], [180, 185], [180, 315], [55, 315]]]},
     "garment:shorts": {"seeds": [[75, 315, 100, 335], [130, 315, 155, 335], [108, 262, 125, 285]], "zones": [[[50, 250], [180, 250], [180, 360], [50, 360]]]},
