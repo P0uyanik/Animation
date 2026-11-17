@@ -77,7 +77,16 @@ Blender: bpy 5.3.0 module (Python 3.13 venv) through `tools/bpy_blender.py` as t
 - CLI loud failures: `build_character.py` with an override pinning `body_generic/9` → `ValueError ... contradicts`;
   pinning `export/3` → `ValueError ... exporter version 'export/3' is retired`; both exit code 1 before building.
 - Full gate `python3 tools/check_all.py --base origin/main --blender <bpy wrapper>` after `git merge origin/staging`:
-  GATE_RESULT_PLACEHOLDER
+  **all PASS** on merge commit 659c835 (staging @ c563e18 merged): Frozen assets, Guarded paths, Shared-systems
+  lint, C++ build, CTest (4/4), plush_tests, Python tests, Documentation links, Blender tier (verify_charsys PASS,
+  boy fingerprint, build determinism, test_export_engine, face tests, hair/groom, groom_generic_test,
+  garment_generic_test, material presets, fidelity boy 64.07 (-0.42 vs baseline 64.49) and girl 65.46 (+0.05),
+  both within the gate's tolerance; the master geometry is byte-identical to staging, so these score deltas are
+  render noise of this machine, not a character change).
+  Environment note: the first gate run failed CTest `regression_milestone01` / `regression_face_neutral`
+  (rmse 0.0464 / 0.0406 > 0.03) because this container had no Open Image Denoise; an unmodified origin/staging
+  build gives exactly the same rmse values there. With OIDN 2.3.3 (official x86_64 Linux binary,
+  `PLUSH_OIDN_ROOT`) all image regressions pass. No C++ file is changed by this task.
 
 ## 6. Zero change (AC4)
 Baseline: worktree of `origin/staging` @ 598b432; branch @ 7b1be40 (the later staging merge dcd07e0 only adds a task
@@ -123,8 +132,10 @@ None needed: geometry fingerprints are byte-identical, so no renders were made.
 
 ## 9. Commits
 Branch `t-043-claude-spec-versions`: 7b1be40 (code + tests), ba6fb4a (merge origin/staging), 07f8358 (versions
-doc), and the report commit.
+doc), 70cf4e4 report/evidence, 659c835 (merge origin/staging @ c563e18; no pipeline/charsys, assets or engine changes),
+and the final report commit.
 
 ## 10. Resource use
 Token usage not available. Builds: 5 staging builds (4 configurations + 1 noise repeat) and 4 branch builds, plus
-the gate.
+three gate runs (one complete without OIDN, one stopped when staging moved, the final one after the merge) plus one C++ check of
+origin/staging for the denoiser question.
