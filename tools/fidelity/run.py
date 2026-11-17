@@ -13,12 +13,14 @@ character_neutral/1); render flat region ids and project landmarks from bones/em
 (tools/fidelity/blender_render_side.py, same cameras); measure (tools/fidelity/analysis.py); write
   <out>/sheets/<view>.png       reference | render | silhouette+landmark difference | region outlines
   <out>/sheets/overview.png
+  <out>/masks/<view>.png        the measured region masks: reference | render (aligned) | disagreement (T-064)
   <out>/fidelity.json           every number, the score, the ranked differences and the (never applied) suggestions
   <out>/report.md               short report
 The score and the numbers support, but never replace, visual judgement: always look at the sheets."""
 import argparse
 import json
 import os
+import shutil
 import subprocess
 import sys
 
@@ -77,7 +79,7 @@ def resolve_build(a, cid, variant, out, log):
     blend = master
     if variant == "compare":
         cand = master.replace("_master.blend", "_compare.blend")
-        if os.path.exists(cand):
+        if cand != master and os.path.exists(cand):  # T-064: a build not named *_master.blend used to pass silently
             blend = cand
         else:
             prov["warning"] = "compare variant requested but not found next to the master; the master (A-pose) was used"
@@ -102,9 +104,14 @@ def render(a, cid, fidx, ref_index, views, out, log):
         if hide:
             src = os.path.join(out, "prepared_" + "_".join(h.strip("_.") for h in hide)[:60] + ".blend")
             blender(a.blender, RENDER_SIDE, [blend, a.index, rdir, "--prepare-only", src, "--hide", ",".join(hide)], log)
-        blender(a.blender, TURNAROUND, [src, a.index, rdir, "--views", ",".join(ids), "--height", str(a.height),
-                                         "--samples", str(a.samples)], log)
-        os.replace(os.path.join(rdir, "timings.json"), os.path.join(rdir, f"timings_{ids[0]}.json"))
+        if a.beauty_from:  # T-064: keep earlier beauty renders, redo only the measurement passes
+            for f in sorted(os.listdir(a.beauty_from)):
+                if f.startswith("timings") or f in {i + ".png" for i in ids}:
+                    shutil.copy2(os.path.join(a.beauty_from, f), os.path.join(rdir, f))
+        else:
+            blender(a.blender, TURNAROUND, [src, a.index, rdir, "--views", ",".join(ids), "--height", str(a.height),
+                                             "--samples", str(a.samples)], log)
+            os.replace(os.path.join(rdir, "timings.json"), os.path.join(rdir, f"timings_{ids[0]}.json"))
         blender(a.blender, RENDER_SIDE, [src, a.index, rdir, "--views", ",".join(ids), "--height", str(a.height),
                                           "--region-map", region_map], log)
         prov.setdefault("hidden_objects_prefix", {}).update({i: list(hide) for i in ids})
@@ -119,6 +126,7 @@ def report_md(cid, doc, out):
          f"- Build: `{doc['build'].get('spec') or doc['build'].get('master')}` -> `{doc['build'].get('rendered_blend')}`"
          + (f" + {', '.join('`' + x + '`' for x in doc['build'].get('overrides', []))}" if doc['build'].get('overrides') else "")
          + f" (variant: {doc['build']['variant']})",
+         *([f"- **Warning:** {doc['build']['warning']}"] if doc["build"].get("warning") else []),
          f"- Views: {', '.join(doc['views'])}",
          f"- Render: groom_turnaround.py, {doc['render']['lighting']}, {doc['render']['height']} px, {doc['render']['samples']} samples",
          "", f"## Fidelity score: {o['score']:.1f} / 100", "",
@@ -128,7 +136,12 @@ def report_md(cid, doc, out):
             "landmarks": f"mean error {o['landmark_nme_mean']:.3f} head heights" if o['landmark_nme_mean'] is not None else "-",
             "proportions": f"mean relative error {o['proportion_rel_error_mean'] * 100:.1f}%" if o['proportion_rel_error_mean'] is not None else "-",
             "colour": f"mean dE00 {o['colour_de00_mean']:.1f}" if o['colour_de00_mean'] is not None else "-",
-            "texture": f"mean abs log2 ratio {o['texture_log2_ratio_mean']:.2f}" if o['texture_log2_ratio_mean'] is not None else "-"}
+            "texture": f"mean abs log2 ratio {o['texture_log2_ratio_mean']:.2f}" if o['texture_log2_ratio_mean'] is not None else "-",
+            "hair": ", ".join(f"{k} {v * 100:.0f}" for k, v in o["hair"]["parts"].items() if v is not None),
+            "skin": "; ".join(f"{k} dE00 {v['de00_median']:.1f}, shade chroma {v['dC_shade_median']:+.1f}, "
+                              f"blush a* P90 {v['da_p90_median']:+.1f}" for k, v in o["skin"].items()) or "-",
+            "face": (", ".join(f"{k} {v:+.1f}" for k, v in o["face"]["difference_mean"].items() if v is not None)
+                     + f" ({o['face']['views']} views)") if o["face"]["views"] else "-"}
     for k, w in o["weights"].items():
         s = o["subscores"].get(k)
         L.append(f"| {k} (weight {w:.2f}) | {s * 100:.0f} | {meas[k]} |" if s is not None else f"| {k} | - | - |")
@@ -161,10 +174,13 @@ def main():
     ap.add_argument("--views", default="")
     ap.add_argument("--height", type=int, default=640)
     ap.add_argument("--samples", type=int, default=32)
+    ap.add_argument("--beauty-from", default="", help="re-run only the measurement passes (region ids, landmarks) "
+                    "and reuse the beauty renders of this earlier renders/ folder (same build required)")
     ap.add_argument("--renders", default="", help="reuse an earlier run's renders/ folder (analysis only)")
     ap.add_argument("--reference-index", default="", help="experiments only: another reference_index.json (e.g. a "
                     "trial camera yaw); default: the one named in fidelity_index.json")
     a = ap.parse_args()
+    a.beauty_from = os.path.abspath(a.beauty_from) if a.beauty_from else ""
     cid = a.character
     adir = os.path.join(ROOT, "assets", "characters", cid, "references", "annotations")
     fidx = json.load(open(os.path.join(adir, "fidelity_index.json")))
@@ -220,10 +236,13 @@ def main():
     os.makedirs(sdir, exist_ok=True)
     region_names = sorted(set().union(*[set(r["regions"]) for r in per_view.values()]))
     sheets = []
+    mdir = os.path.join(out, "masks")
+    os.makedirs(mdir, exist_ok=True)
     for v in views:
         s = SH.view_sheet(v, refs[v], per_view[v], extras[v], region_names)
         s.save(os.path.join(sdir, v + ".png"))
         sheets.append(s)
+        SH.mask_sheet(v, refs[v], extras[v], region_names).save(os.path.join(mdir, v + ".png"))
     SH.overview(sheets, os.path.join(sdir, "overview.png"))
     report_md(cid, doc, out)
     print(json.dumps({"score": round(overall["score"], 2), "out": out,

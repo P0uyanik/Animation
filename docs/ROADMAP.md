@@ -79,4 +79,13 @@ spirit, and reviewed side by side with the references.
 | 5 third character | V6: built from specs, assets and a profile only (references in `assets/characters/girl_white_hair_blue_dress/references/`; personality: a little goofy, not very bright, bubbly, cheerful) | readiness: T-041 guard, T-043 versions, hair v3, garment types, T-053 profiles all merged; boy and girl approved | then the owner sends the reference package |
 | 6 scenes | V5 benchmark scene in a simple set (lighting/camera presets, no water/paper) · V7 classroom kit · V8 first episode 2–2.5 min | after phase 4 | render budget from T-050 |
 
+**Architecture addendum (owner decision 2026-11-17)** — supports, never displaces, the character-quality priority:
+- Blender owns the look and the final render; the C++ engine owns animation (clips, emotions, face, body mechanics,
+  shot bake) and fast previews; its **renderer is frozen** (previews and existing tests only).
+- **Approved assets preserved (T-075, now):** approved versions stored immutably and reused; the generator cannot
+  overwrite them.
+- **CPU render optimisation (T-074):** study when a slot frees; render profiles (`preview`/`review`/`final`,
+  quality first) implemented before phase 6 (benchmark scene).
+- **Docs** describe this architecture (T-071).
+
 Parallelism follows `docs/process/DELIVERY_PLAN.md` (file claims, full regression for shared/visual changes).

@@ -167,3 +167,44 @@ with the original references as the primary target.
 Start P6 (fidelity tool fixes, T-064) and P1 (face v2, T-065) now; the girl look round (T-059) follows the shared-system
 improvements (face v2, skin T-066, materials T-067). **Visual fidelity to the original references takes priority over
 numerical scores**; the fidelity score supports, never overrides, the owner's side-by-side judgement.
+
+## 2026-11-17: facial geometry
+The characters still have significant facial geometry issues (chin, jawline, overall face shape). The underlying 3D
+head/face geometry must be improved to match the original references; added to face v2 (T-065) as its first criterion.
+
+## 2026-11-17: GitHub Free, public repository; hair v3 merged as a system, round 2
+- The owner is on GitHub Free and made the repository public again to avoid Actions limits (CI and rulesets as before).
+- Hair v3 (`groom/2`) is approved for merging as a technical system; round 2 (T-070) improves its visual fidelity.
+  Current approved character versions stay unchanged until the owner approves new renders.
+
+## 2026-11-17: T-069 audit recommendations approved
+1. Boy candidates F09 (face) and H28 (hair): rejected (superseded by face v2 / hair v3) → archived.
+2. Root status docs: refresh `CURRENT_STATUS.md` and `NEXT_TASK.md` as pointers; archive the other five (T-071).
+3. Engine-era demo scenes: archive, except any a test/CTest still uses.
+4. Retire `hair_clumps/2` (experiments only) once its experiments are archived (no character pins it).
+5. `apps/export-obj`: archive (after T-060 releases the root CMakeLists).
+6. Boy 1.1.0 is described as "current approved", not "published".
+7. Blender-only tests run in the local full tier (not on GitHub) to save Actions time.
+8. Evidence size policy for future tasks (DELIVERY_PLAN §9b).
+
+## 2026-11-17: third character accessory re-confirmed
+The owner pointed to the third character's material specification sheet (bow) as her design: she wears the **blue felt bow**.
+The 4-petal flower in the all-three turnaround sheet is not her look.
+
+## 2026-11-17: architecture: renderer freeze, CPU render optimisation, docs, approved-asset preservation
+1. **Engine renderer frozen:** the C++ engine's path tracer gets no new features; it stays for previews and its
+   existing tests. Look/material/render work happens only in Blender (TD-42). `engine/render/` is a guarded path.
+2. **CPU-only render optimisation** (T-074): evaluate Cycles, Eevee, denoising and other free options; **final
+   visual quality first**. Study now, presets implemented (path B) before the benchmark scene.
+3. **Documentation reflects the current architecture** (Blender = look and final render; engine = animation and
+   preview; Python = pipeline and checks): README, technical decisions, implementer prompt (with T-071).
+4. **Approved character assets are preserved and reusable:** each approved version is stored immutably
+   (`assets/characters/<id>/versions/<ver>/`, hashes), the generator cannot overwrite it, and shots can reuse the
+   stored master (T-075). `assets/characters/*/versions/` is a guarded path.
+These must not distract from the current priority (reference-quality characters): T-075 runs now (it protects the
+approved characters during the visual rounds); T-074 starts when a slot frees; docs go with T-071.
+
+## 2026-11-17: finish running tasks first
+No new tasks start until the running ones (T-060, T-061, T-065, T-070, T-071, T-072, T-075) finish. Each is merged
+as soon as it passes review and the gate, keeping `main` up to date so the owner can see the results. T-074 and the
+rest of the queue are on hold until the owner says otherwise.

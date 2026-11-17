@@ -37,3 +37,9 @@ docs/evaluation/characters/fidelity_baseline.json
 .github/ci-dependencies.json
 .github/scripts/
 .github/workflows/
+
+# Frozen engine renderer (owner decision 2026-11-17): previews and existing tests only, no new features.
+engine/render/
+
+# Published character versions are immutable (owner decision 2026-11-17, T-075).
+assets/characters/*/versions/
