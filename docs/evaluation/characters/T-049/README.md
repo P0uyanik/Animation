@@ -138,6 +138,20 @@ Notes on the numbers:
 - Not tested: the engine export/import of the study hair, determinism of the voxel fusion, GPU render times, and any
   third hairstyle beyond the two characters. A synthetic third style was not built.
 
+## Checks (after `git merge origin/staging`)
+
+- `python3 tools/check_doc_links.py`: pass.
+- `python3 tools/check_all.py --base origin/staging` (fast tier):
+  - pass: frozen assets, guarded paths, shared-systems lint, C++ build, plush_tests, Python tests, documentation
+    links;
+  - **CTest 2/4 fail:** `regression_milestone01` (rmse 0.0464, limit 0.03) and `regression_face_neutral`. Both fail
+    **identically on pristine `origin/staging`** in this container. The C++ dependencies here are Ubuntu packages
+    (Embree 4.3), not the pinned vcpkg ones. This branch changes no C++, engine or regression file.
+  - The Blender tier is selected because the paths are under `pipeline/charsys/`. It was **not run**: the code is
+    experiment-only, and nothing outside `experiments/hair_study` imports it.
+- The shared-systems lint first flagged character ids in the study scripts. These were moved to
+  `specs/characters.json` (data). The regenerated specs and sheets are byte-identical.
+
 ## Reproduce
 
 See [pipeline/charsys/experiments/hair_study/README.md](../../../../pipeline/charsys/experiments/hair_study/README.md).
