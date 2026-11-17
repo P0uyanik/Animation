@@ -116,7 +116,25 @@ change affects only expression keys, not the rest pose.
   (error < 1e-6), BrowDown.L leaving the right brow untouched, MouthPout forward, and the heavy rest lid.
 - `pipeline/charsys/tests/test_hoodie.py --blender`: **28/28 PASS**. Covers validation (bad values rejected), every
   part present with a material, bag on the back, pocket and cords in front, sleeves to the wrists, shoulders covered.
-- Full gate `python3 tools/check_all.py --base origin/main --blender <bpy 5.3 wrapper>` after `git merge
-  origin/staging`: see the result line below.
+- Full gate `python3 tools/check_all.py --base origin/main` after `git merge origin/staging` (merge `6d56f08`):
+
+  | Check | Result |
+  | --- | --- |
+  | Frozen assets | PASS |
+  | Shared-systems lint | PASS |
+  | C++ build, CTest, plush_tests | PASS |
+  | Python tests | PASS |
+  | Documentation links | PASS |
+  | Blender tier (run with `--blender`) | PASS: boy 1.x fidelity 64.07 (−0.42 vs baseline), girl 65.48 (+0.07); verify_charsys, determinism (boy and girl), export_engine 13/13, face, groom, hair, garment tests |
+  | Guarded paths | **needs Supervisor approval**: `test_boy2_face.py` and `test_hoodie.py` (new; in the write-set) and `test_versions.py` (base-spec fix, Part 1). Every test file is guarded, and only a Supervisor commit trailer `Supervisor-Approved: <path>` clears them |
+
+  Environment notes:
+  - The first run failed the C++ tier only because this container lacked embree, glm, nlohmann-json, glfw and GLEW.
+    These were installed with apt.
+  - With OIDN missing, the two engine image regressions (`regression_milestone01`, `regression_face_neutral`, RMSE
+    0.041 > 0.030) failed identically on unmodified `origin/main`.
+  - With the official OIDN 2.3.3 Linux binaries on `CMAKE_PREFIX_PATH` (CI gets OIDN from vcpkg), CTest passes.
+  - The Blender tier passed in the `--blender` run. The run with OIDN omitted `--blender` and reports "Blender
+    executable not found" for that line only.
 
 Blender: bpy 5.3.0 wheel (Python 3.13 venv) through `tools/bpy_blender.py`.
