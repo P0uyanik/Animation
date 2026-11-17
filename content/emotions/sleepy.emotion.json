@@ -7,6 +7,19 @@
   "squint": 0.4,
   "blink": 0.45
  },
+ "faceMotion": {
+  "blinkRate": 0.6,
+  "blinkDuration": 2.2,
+  "doubleBlink": 0.2,
+  "saccadeRate": 0.3,
+  "saccadeDeg": 0.8,
+  "gazeBiasDeg": [
+   0.0,
+   -6.0
+  ],
+  "micro": 0.4,
+  "breath": 1.6
+ },
  "body": {
   "clip": "emo_sleepy"
  },

@@ -9,6 +9,7 @@
 #include "model/character.h"
 #include "model/clip.h"
 #include "scene/asset_library.h"
+#include "scene/face_layer.h"
 #include "scene/interaction.h"
 
 namespace plush {
@@ -131,7 +132,13 @@ class SceneEvaluator {
   // Replaces material parameters by name (in-app look development).
   void updateMaterial(const Material& m);
   // Recompiles the scene's actions into generated tracks (called by load; call again after editing actions).
+  // Also rebuilds the facial layers (T-046) from the compiled emotions, looks and clips.
   Result<void> compileActions();
+  // Facial layer (scene/face_layer.h, T-046): active for character c while its life layer is on (and life "face" is
+  // not false). faceState is empty when it is not active.
+  bool faceActive(size_t c) const;
+  FaceState faceState(size_t c, double frame) const;
+  const FaceLayer* faceLayer(size_t c) const { return c < faces_.size() ? &faces_[c] : nullptr; }
   // Bone frames (world space) of character c at a frame, after constraints.
   // Includes secondary motion (spring chains, anim/secondary.h) when the character has it; poseOut stays kinematic.
   std::vector<mat4> characterGlobals(size_t c, double frame, Pose* poseOut = nullptr) const;
@@ -164,6 +171,12 @@ class SceneEvaluator {
   std::vector<PropAsset> propAssets_;
   std::vector<std::string> warnings_;
   static std::string blinkMorph(const CharacterInstance& ci);
+  // Facial layer (T-046): events gathered while actions compile, then one layer per character.
+  Result<void> compileActionsBody();
+  void buildFaceLayers();
+  FaceLibrary faceLibrary_;
+  std::vector<FaceTimeline> faceTimelines_;
+  std::vector<FaceLayer> faces_;
  public:
   // Camera at a frame (scene camera + camera.position/target/lens tracks).
   Camera cameraAt(double frame) const;
