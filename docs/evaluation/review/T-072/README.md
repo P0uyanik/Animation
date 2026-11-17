@@ -40,6 +40,11 @@ opens `milestone01_classroom` (`apps/studio/main.cpp:1531`). Markdown links to m
 
 ### 2.2 Engine-era demo scenes → `archive/engine_era/scenes/` (owner decision 3)
 
+(First placed in `archive/scenes/`. Staging commit `3c718ed` ("T-076 merged; claim released") left
+`docs/process/OWNERSHIP.md` **empty**, so the Write-set check falls back to `docs/tasks/T-072.md`, which has no
+`archive/scenes/**`. The scenes now sit under `archive/engine_era/`, inside both claim sources. **Supervisor: please
+restore OWNERSHIP.md** — every running task's claim is currently gone.)
+
 None of these is named in `tests/CMakeLists.txt` (only `milestone01_classroom`, `test_face`, `test_lineup`), in any
 C++/Python test, tool, CI file or app. Their only code consumers were the archived generators above.
 
