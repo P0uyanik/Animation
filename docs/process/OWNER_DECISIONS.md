@@ -89,3 +89,13 @@ PR-per-task automation (Phase 2) is deferred: the staging workflow, integrate.py
 its benefits. Instead: a small push-triggered cleanup workflow deletes only branches fully merged into main (the
 cloud proxy blocks deletion), and the owner sets a main-branch ruleset once. Revisit Phase 2 with >4 permanent
 parallel Implementers, external reviewers, or if the owner prefers reviewing in GitHub.
+
+## 2026-11-17: delivery plan approved (docs/process/DELIVERY_PLAN.md, rev. 2)
+The overall approach is approved (no PR per task; READY signal + Supervisor merge queue; staging; fast path-A
+promotion; path-B visual approval via version pin bumps). Owner's four required improvements, now part of the plan:
+1. Parallel tasks within the same lane are allowed when their files and dependencies don't conflict (file claims).
+2. Full all-character regression is mandatory for any change to shared systems or visuals.
+3. Versioned changes must not alter existing characters unintentionally (unchanged-character guard in CI).
+4. Backups must be durable (backup tags, CI bundles with restore test, off-site copy) and the automatic branch
+   cleanup must be thoroughly tested (unit + end-to-end + dry run) before it deletes anything.
+The workflow must stay reliable, efficient and free of unnecessary bottlenecks.
