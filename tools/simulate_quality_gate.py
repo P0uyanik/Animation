@@ -242,14 +242,14 @@ class Simulations:
         # Before every save of the master (legacy and generic build paths), shift one mesh by 1 mm.
         pattern = re.compile(r'^(\s*)(bpy\.ops\.wm\.save_as_mainfile\(filepath=(master|os\.path\.join\(out, f"\{cid\}_master\.blend"\)).*)$',
                              re.M)
-        probe = ('{0}_sim = sorted((o for o in bpy.data.objects if o.type == "MESH"), key=lambda o: o.name)[0]\n'
+        probe = ('{0}_sim = sorted((o for o in bpy.data.objects if o.type == "MESH" and not o.name.startswith("WGT")), key=lambda o: o.name)[0]\n'
                  '{0}_sim.data.transform(__import__("mathutils").Matrix.Translation((0.001, 0.0, 0.0)))'
                  '  # T-041 simulation: 1 mm shared-code geometry change\n')
         patched, count = pattern.subn(lambda m: probe.format(m.group(1)) + m.group(0), text)
         if count < 1:
             raise RuntimeError("build_character.py master save not found")
         path.write_text(patched, encoding="utf-8")
-        self.commit([str(path)], "T-041 simulation: shared code moves one boy vertex by 1 mm (no spec change)")
+        self.commit([str(path)], "T-041 simulation: shared code shifts one boy mesh by 1 mm (no spec change)")
         out = ROOT / "build" / "t023-sim" / "changed-fingerprint"
         shutil.rmtree(out, ignore_errors=True)
         proc = run([sys.executable, "tools/regression/run.py", "--blender", self.blender, "--character",
