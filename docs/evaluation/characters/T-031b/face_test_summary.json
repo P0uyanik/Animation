@@ -1,0 +1,51 @@
+{
+ "girl_0.9.0": {
+  "blender": "5.3.0",
+  "states": {
+   "neutral": {
+    "max_skin_stretch": 1.0,
+    "chin_drop_mm": 0.0,
+    "cavity_visible_pct": 91.4,
+    "eye_visible_pct": 76.1,
+    "lid_proud_mm": 4.92,
+    "mouth_open_mm": 18.2,
+    "corner_lift_mm": 9.83,
+    "corner_lift_L_mm": 9.82,
+    "corner_lift_R_mm": 9.82
+   },
+   "Blink": {
+    "max_skin_stretch": 1.0,
+    "chin_drop_mm": 0.0,
+    "cavity_visible_pct": 91.4,
+    "eye_visible_pct": 0.0,
+    "lid_proud_mm": 2.4,
+    "mouth_open_mm": 18.2,
+    "corner_lift_mm": 9.83,
+    "corner_lift_L_mm": 9.82,
+    "corner_lift_R_mm": 9.82
+   },
+   "Smile": {
+    "max_skin_stretch": 1.635,
+    "chin_drop_mm": 1.49,
+    "cavity_visible_pct": 34.6,
+    "eye_visible_pct": 74.3,
+    "lid_proud_mm": 4.91,
+    "mouth_open_mm": 39.14,
+    "corner_lift_mm": 20.46,
+    "corner_lift_L_mm": 20.46,
+    "corner_lift_R_mm": 20.46
+   },
+   "JawOpen": {
+    "max_skin_stretch": 3.726,
+    "chin_drop_mm": 6.78,
+    "cavity_visible_pct": 100.0,
+    "eye_visible_pct": 76.1,
+    "lid_proud_mm": 4.92,
+    "mouth_open_mm": 35.09,
+    "corner_lift_mm": 12.85,
+    "corner_lift_L_mm": 12.85,
+    "corner_lift_R_mm": 12.85
+   }
+  }
+ }
+}
