@@ -133,3 +133,9 @@ ranges across several cloud sessions, the owner's PC hardware, and only renderin
 2. Girl: eye colour brown.
 3. Girl: neutral mouth closed, with a gentle smile (open smile belongs to Happy).
 Apply consistently across models, animations and personality profiles; the original references stay the primary target.
+
+## 2026-11-17: third character
+The owner supplied 15 reference images for the third character (working id `girl_white_hair_blue_dress`). Personality:
+a little goofy, not very bright, bubbly and cheerful; reflected in expressions, movements and behaviour while staying
+faithful to the reference images (references remain the primary target). She is built (V6) once the shared systems
+are complete; reference intake and gap analysis (T-057) start now.
