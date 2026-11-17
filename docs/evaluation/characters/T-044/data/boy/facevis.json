@@ -1,0 +1,32 @@
+{
+ "front": {
+  "face": {
+   "t049": 0.981,
+   "occluding": 0.9774
+  },
+  "eyes": {
+   "t049": 1.0,
+   "occluding": 0.9986
+  }
+ },
+ "three_quarter_right": {
+  "face": {
+   "t049": 0.9464,
+   "occluding": 0.9913
+  },
+  "eyes": {
+   "t049": 0.9958,
+   "occluding": 1.0
+  }
+ },
+ "three_quarter_left": {
+  "face": {
+   "t049": 0.9404,
+   "occluding": 0.9806
+  },
+  "eyes": {
+   "t049": 0.9986,
+   "occluding": 1.0
+  }
+ }
+}

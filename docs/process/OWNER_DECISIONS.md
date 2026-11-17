@@ -176,3 +176,17 @@ head/face geometry must be improved to match the original references; added to f
 - The owner is on GitHub Free and made the repository public again to avoid Actions limits (CI and rulesets as before).
 - Hair v3 (`groom/2`) is approved for merging as a technical system; round 2 (T-070) improves its visual fidelity.
   Current approved character versions stay unchanged until the owner approves new renders.
+
+## 2026-11-17: T-069 audit recommendations approved
+1. Boy candidates F09 (face) and H28 (hair): rejected (superseded by face v2 / hair v3) → archived.
+2. Root status docs: refresh `CURRENT_STATUS.md` and `NEXT_TASK.md` as pointers; archive the other five (T-071).
+3. Engine-era demo scenes: archive, except any a test/CTest still uses.
+4. Retire `hair_clumps/2` (experiments only) once its experiments are archived (no character pins it).
+5. `apps/export-obj`: archive (after T-060 releases the root CMakeLists).
+6. Boy 1.1.0 is described as "current approved", not "published".
+7. Blender-only tests run in the local full tier (not on GitHub) to save Actions time.
+8. Evidence size policy for future tasks (DELIVERY_PLAN §9b).
+
+## 2026-11-17: third character accessory re-confirmed
+The owner pointed to the third character's material specification sheet (bow) as her design: she wears the **blue felt bow**.
+The 4-petal flower in the all-three turnaround sheet is not her look.

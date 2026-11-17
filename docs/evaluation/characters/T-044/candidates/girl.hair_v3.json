@@ -1,0 +1,909 @@
+{
+ "schema": "plush-studio.hair-candidate/1",
+ "task": "T-044",
+ "character_spec": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.spec.json",
+ "head_object": "body_skin",
+ "frame": {
+  "centre": [
+   0.0,
+   -0.0039964,
+   0.8250044
+  ],
+  "radii": [
+   0.1419983,
+   0.1350046,
+   0.1449956
+  ]
+ },
+ "overrides": {
+  "generators": {
+   "groom": "groom/2"
+  },
+  "hair": {
+   "generator": "groom/2",
+   "seed": 30,
+   "finish": "felt",
+   "face_keepout": {
+    "az": 34,
+    "el_min": 6
+   },
+   "structures": [
+    {
+     "type": "scalp_cap",
+     "name": "cap",
+     "offset": 0.004,
+     "face_cut": [
+      -0.06,
+      0.9
+     ],
+     "hairline": [
+      [
+       0,
+       0.905
+      ],
+      [
+       40,
+       0.88
+      ],
+      [
+       70,
+       0.8
+      ],
+      [
+       100,
+       0.74
+      ],
+      [
+       140,
+       0.71
+      ],
+      [
+       180,
+       0.7
+      ]
+     ]
+    },
+    {
+     "type": "bun",
+     "name": "bun",
+     "buns": [
+      {
+       "az": 180,
+       "el": 76,
+       "lift": 0.0,
+       "radius": 0.1,
+       "height": 0.16,
+       "tilt": 0.65,
+       "wrap": "ccw",
+       "turns": 0.9,
+       "ropes": 5,
+       "rope_thick": 0.046,
+       "felt_radii": [
+        0.72,
+        0.6,
+        0.85
+       ],
+       "felt_lobes": [
+        {
+         "offset": [
+          0.0,
+          0.62,
+          0.2
+         ],
+         "radii": [
+          0.72,
+          0.6,
+          0.9
+         ],
+         "swirl": 1.1
+        },
+        {
+         "offset": [
+          0.0,
+          -0.62,
+          0.14
+         ],
+         "radii": [
+          0.72,
+          0.6,
+          0.88
+         ],
+         "swirl": -1.0
+        }
+       ]
+      }
+     ],
+     "felt": {
+      "grooves": {
+       "count": 14,
+       "depth": 0.45,
+       "sharpness": 0.75,
+       "wander": 0.45,
+       "wavelength": 0.6
+      },
+      "lumps": {
+       "amount": 0.06,
+       "scale": 1.1
+      },
+      "resolution": [
+       80,
+       44
+      ]
+     }
+    },
+    {
+     "type": "felt_volume",
+     "name": "crown",
+     "shape": "gather",
+     "az": [
+      -180,
+      180
+     ],
+     "hairline_el": [
+      [
+       0,
+       40
+      ],
+      [
+       25,
+       36
+      ],
+      [
+       50,
+       20
+      ],
+      [
+       72,
+       2
+      ],
+      [
+       95,
+       0
+      ],
+      [
+       125,
+       10
+      ],
+      [
+       150,
+       14
+      ],
+      [
+       180,
+       14
+      ]
+     ],
+     "target": {
+      "bun": 0
+     },
+     "tuck": 0.97,
+     "height": [
+      0.022,
+      0.05,
+      0.03
+     ],
+     "inset": 0.004,
+     "part": {
+      "az": -18,
+      "width_deg": 3.5,
+      "depth": 0.5,
+      "length": 0.55
+     },
+     "grooves": {
+      "count": 44,
+      "depth": 0.26,
+      "sharpness": 0.6,
+      "wander": 0.35,
+      "wavelength": 0.5
+     },
+     "lumps": {
+      "amount": 0.05,
+      "scale": 1.0
+     },
+     "soft": [
+      0,
+      0,
+      0.3,
+      0.0
+     ],
+     "rim": 0.12,
+     "resolution": [
+      220,
+      48
+     ]
+    },
+    {
+     "type": "felt_volume",
+     "name": "fringe",
+     "shape": "fringe",
+     "root_az": [
+      -14,
+      -14,
+      -15,
+      -16,
+      -17,
+      -18,
+      -19
+     ],
+     "root_el": [
+      46,
+      53,
+      60,
+      67,
+      74,
+      81,
+      88
+     ],
+     "tip_az": [
+      4,
+      20,
+      36,
+      52,
+      64,
+      74,
+      84
+     ],
+     "tip_el": [
+      24,
+      17,
+      12,
+      8,
+      4,
+      0,
+      -4
+     ],
+     "tip_lift": [
+      0.006,
+      0.01,
+      0.014,
+      0.018,
+      0.022,
+      0.024,
+      0.024
+     ],
+     "bulge": 0.04,
+     "thick": [
+      0.032,
+      0.022
+     ],
+     "tip_scallop": 0.16,
+     "tip_jitter": 0.1,
+     "resolution": [
+      72,
+      40
+     ],
+     "grooves": {
+      "count": 9,
+      "depth": 0.32,
+      "sharpness": 0.6,
+      "wander": 0.35,
+      "wavelength": 0.5
+     },
+     "lumps": {
+      "amount": 0.05
+     },
+     "soft": [
+      0.08,
+      0.08,
+      0.05,
+      0.14
+     ],
+     "rim": 0.12,
+     "clearance": 0.003
+    },
+    {
+     "type": "felt_volume",
+     "name": "fringe_part",
+     "shape": "fringe",
+     "root_az": [
+      -22,
+      -22,
+      -23,
+      -24,
+      -25
+     ],
+     "root_el": [
+      48,
+      56,
+      64,
+      72,
+      80
+     ],
+     "tip_az": [
+      -30,
+      -44,
+      -58,
+      -72,
+      -84
+     ],
+     "tip_el": [
+      26,
+      18,
+      11,
+      4,
+      -2
+     ],
+     "tip_lift": [
+      0.006,
+      0.01,
+      0.014,
+      0.018,
+      0.022
+     ],
+     "bulge": 0.034,
+     "thick": [
+      0.03,
+      0.02
+     ],
+     "tip_scallop": 0.16,
+     "tip_jitter": 0.1,
+     "resolution": [
+      56,
+      40
+     ],
+     "grooves": {
+      "count": 7,
+      "depth": 0.32,
+      "sharpness": 0.6,
+      "wander": 0.35,
+      "wavelength": 0.5
+     },
+     "lumps": {
+      "amount": 0.05
+     },
+     "soft": [
+      0.08,
+      0.08,
+      0.05,
+      0.14
+     ],
+     "rim": 0.12,
+     "clearance": 0.003
+    },
+    {
+     "type": "felt_volume",
+     "name": "temple_l",
+     "shape": "mass",
+     "az": 84,
+     "el": 0,
+     "lift": -0.004,
+     "radii": [
+      0.05,
+      0.048,
+      0.08
+     ],
+     "axis": "up",
+     "swirl": 0.08,
+     "grooves": {
+      "count": 10,
+      "depth": 0.45,
+      "sharpness": 0.6,
+      "wander": 0.35,
+      "wavelength": 0.5
+     },
+     "lumps": {
+      "amount": 0.05
+     },
+     "resolution": [
+      56,
+      32
+     ]
+    },
+    {
+     "type": "felt_volume",
+     "name": "temple_r",
+     "shape": "mass",
+     "az": -84,
+     "el": 0,
+     "lift": -0.004,
+     "radii": [
+      0.05,
+      0.048,
+      0.08
+     ],
+     "axis": "up",
+     "swirl": 0.08,
+     "grooves": {
+      "count": 10,
+      "depth": 0.45,
+      "sharpness": 0.6,
+      "wander": 0.35,
+      "wavelength": 0.5
+     },
+     "lumps": {
+      "amount": 0.05
+     },
+     "resolution": [
+      56,
+      32
+     ]
+    },
+    {
+     "type": "curtain",
+     "name": "curtain",
+     "az": [
+      96,
+      264
+     ],
+     "root_el": [
+      [
+       96,
+       14
+      ],
+      [
+       125,
+       24
+      ],
+      [
+       180,
+       30
+      ]
+     ],
+     "leave_el": -6,
+     "z_end": [
+      [
+       96,
+       0.6
+      ],
+      [
+       130,
+       0.52
+      ],
+      [
+       180,
+       0.48
+      ]
+     ],
+     "rest_radii": [
+      0.165,
+      0.14
+     ],
+     "rest_z": 0.62,
+     "columns": 11,
+     "thick": 0.016,
+     "column_depth": 0.5,
+     "lobe": {
+      "pitch": 0.05,
+      "depth": 0.0,
+      "twist": 0.7
+     },
+     "scallop": 0.04,
+     "resolution": [
+      180,
+      100
+     ],
+     "inset": 0.004
+    },
+    {
+     "type": "locks",
+     "name": "ringlets_side",
+     "style": "curly",
+     "count": 2,
+     "az": [
+      72,
+      92
+     ],
+     "el_root": [
+      10,
+      20
+     ],
+     "el_leave": -12,
+     "lift": [
+      0.008,
+      0.024
+     ],
+     "hang_radii": [
+      0.2,
+      0.18
+     ],
+     "z_end": [
+      0.56,
+      0.62
+     ],
+     "flare": 0.05,
+     "width": [
+      0.026,
+      0.03
+     ],
+     "thick": [
+      0.024,
+      0.028
+     ],
+     "tip_frac": 0.7,
+     "curl": {
+      "radius": 0.018,
+      "pitch": 0.07,
+      "radius_growth": 0.25,
+      "start": 0.04,
+      "direction": "alternate",
+      "jitter": 0.12,
+      "start_jitter": 0.03,
+      "wobble": 0.1,
+      "wobble_wavelength": 0.16,
+      "sway": 0.004,
+      "ellipse": 1.0,
+      "tip": {
+       "from": 0.8,
+       "radius": 1.15,
+       "pitch": 0.8,
+       "ellipse": 1.0
+      }
+     },
+     "felt": {
+      "seg": 16,
+      "irregularity": 0.12,
+      "wavelength": 0.15,
+      "flatten": 0.12,
+      "flatten_twist": 1.2
+     },
+     "finish": "felt",
+     "mirror": true
+    },
+    {
+     "type": "locks",
+     "name": "ringlets_back",
+     "style": "curly",
+     "count": 8,
+     "az": [
+      128,
+      232
+     ],
+     "el_root": [
+      -12,
+      -4
+     ],
+     "el_leave": -28,
+     "lift": [
+      0.008,
+      0.024
+     ],
+     "hang_radii": [
+      0.2,
+      0.18
+     ],
+     "z_end": [
+      0.42,
+      0.48
+     ],
+     "flare": 0.05,
+     "width": [
+      0.026,
+      0.03
+     ],
+     "thick": [
+      0.024,
+      0.028
+     ],
+     "tip_frac": 0.7,
+     "curl": {
+      "radius": 0.019,
+      "pitch": 0.072,
+      "radius_growth": 0.25,
+      "start": 0.08,
+      "direction": "alternate",
+      "jitter": 0.12,
+      "start_jitter": 0.03,
+      "wobble": 0.1,
+      "wobble_wavelength": 0.16,
+      "sway": 0.004,
+      "ellipse": 1.0,
+      "tip": {
+       "from": 0.8,
+       "radius": 1.15,
+       "pitch": 0.8,
+       "ellipse": 1.0
+      }
+     },
+     "felt": {
+      "seg": 16,
+      "irregularity": 0.12,
+      "wavelength": 0.15,
+      "flatten": 0.12,
+      "flatten_twist": 1.2
+     },
+     "finish": "felt",
+     "hang_jitter": 0.04,
+     "rest_radii": [
+      0.19,
+      0.165
+     ],
+     "rest_z": 0.62
+    },
+    {
+     "type": "locks",
+     "name": "ringlets_outer",
+     "style": "curly",
+     "count": 3,
+     "az": [
+      106,
+      126
+     ],
+     "el_root": [
+      0,
+      10
+     ],
+     "el_leave": -20,
+     "lift": [
+      0.008,
+      0.024
+     ],
+     "hang_radii": [
+      0.2,
+      0.18
+     ],
+     "z_end": [
+      0.45,
+      0.52
+     ],
+     "flare": 0.05,
+     "width": [
+      0.026,
+      0.03
+     ],
+     "thick": [
+      0.024,
+      0.028
+     ],
+     "tip_frac": 0.7,
+     "curl": {
+      "radius": 0.019,
+      "pitch": 0.072,
+      "radius_growth": 0.25,
+      "start": 0.08,
+      "direction": "alternate",
+      "jitter": 0.12,
+      "start_jitter": 0.03,
+      "wobble": 0.1,
+      "wobble_wavelength": 0.16,
+      "sway": 0.004,
+      "ellipse": 1.0,
+      "tip": {
+       "from": 0.8,
+       "radius": 1.15,
+       "pitch": 0.8,
+       "ellipse": 1.0
+      }
+     },
+     "felt": {
+      "seg": 16,
+      "irregularity": 0.12,
+      "wavelength": 0.15,
+      "flatten": 0.12,
+      "flatten_twist": 1.2
+     },
+     "finish": "felt",
+     "mirror": true,
+     "rest_radii": [
+      0.2,
+      0.17
+     ],
+     "rest_z": 0.62
+    },
+    {
+     "type": "tie",
+     "name": "band",
+     "bun": 0,
+     "height_frac": 0.16,
+     "radius_scale": 1.04,
+     "tube": 0.011,
+     "width_scale": 1.7,
+     "material": "hair_band"
+    },
+    {
+     "type": "flowers",
+     "name": "flowers",
+     "bun": 0,
+     "petals": 5,
+     "material": "hair_flower",
+     "centre_material": "hair_flower_centre",
+     "items": [
+      {
+       "around_deg": 50,
+       "height_frac": 0.22,
+       "size": 0.04,
+       "out": 0.026
+      },
+      {
+       "around_deg": 85,
+       "height_frac": 0.34,
+       "size": 0.034,
+       "out": 0.026
+      },
+      {
+       "around_deg": 22,
+       "height_frac": 0.4,
+       "size": 0.03,
+       "out": 0.026
+      }
+     ]
+    }
+   ],
+   "binding": {
+    "blend_z": [
+     0.6,
+     0.72
+    ]
+   },
+   "fibres": {
+    "slots": [
+     "hair"
+    ],
+    "layers": [
+     {
+      "name": "felt",
+      "overrides": {
+       "fibres": {
+        "density_per_cm2": 28.0,
+        "length_mm": 2.2,
+        "curl": 0.45,
+        "lean": 0.6,
+        "lean_variation": 0.8
+       },
+       "surface": {
+        "saturation_compensation": 1.0
+       }
+      }
+     },
+     {
+      "name": "halo",
+      "overrides": {
+       "fibres": {
+        "density_per_cm2": 1.8,
+        "length_mm": 4.8,
+        "curl": 0.6,
+        "lean": 0.8,
+        "lean_variation": 0.9
+       },
+       "surface": {
+        "saturation_compensation": 1.0
+       }
+      }
+     },
+     {
+      "name": "flyaways",
+      "overrides": {
+       "fibres": {
+        "density_per_cm2": 0.05,
+        "length_mm": 9.0,
+        "curl": 0.95,
+        "lean": 0.7,
+        "lean_variation": 0.9
+       },
+       "surface": {
+        "saturation_compensation": 1.0
+       }
+      }
+     }
+    ]
+   },
+   "dynamics": {
+    "enabled": true,
+    "substep_hz": 240,
+    "preroll_s": 1.0,
+    "defaults": {
+     "stiffness": 90.0,
+     "stiffness_tip": 60.0,
+     "damping": 7.0,
+     "gravity": 0.5,
+     "drag": 0.8,
+     "limit_deg": 30.0,
+     "radius": 0.014
+    },
+    "structures": {
+     "ringlets_side": {
+      "bones": [
+       3,
+       4
+      ],
+      "bone_length": 0.06
+     },
+     "ringlets_back": {
+      "bones": [
+       3,
+       5
+      ],
+      "bone_length": 0.07
+     },
+     "ringlets_outer": {
+      "bones": [
+       3,
+       5
+      ],
+      "bone_length": 0.07
+     },
+     "bun": {
+      "bones": 3,
+      "stiffness": 140.0,
+      "stiffness_tip": 120.0,
+      "damping": 9.0,
+      "gravity": 0.3,
+      "limit_deg": 12.0,
+      "radius": 0.0
+     }
+    },
+    "colliders": [
+     {
+      "name": "head",
+      "type": "sphere",
+      "bone": "head",
+      "head_offset": [
+       0.0,
+       0.0,
+       -0.004
+      ],
+      "radius": 0.128
+     },
+     {
+      "name": "torso",
+      "type": "capsule",
+      "bone": "chest",
+      "a": [
+       0.0,
+       0.004,
+       0.4
+      ],
+      "b": [
+       0.0,
+       0.004,
+       0.56
+      ],
+      "radius": 0.082
+     },
+     {
+      "name": "shoulder_l",
+      "type": "sphere",
+      "bone": "chest",
+      "head_offset": [
+       0.1,
+       0.0,
+       -0.24
+      ],
+      "radius": 0.045
+     },
+     {
+      "name": "shoulder_r",
+      "type": "sphere",
+      "bone": "chest",
+      "head_offset": [
+       -0.1,
+       0.0,
+       -0.24
+      ],
+      "radius": 0.045
+     }
+    ]
+   }
+  },
+  "materials": {
+   "assignments": {
+    "hair": {
+     "preset": "felt hair",
+     "base_color_srgb": [
+      100,
+      64,
+      47
+     ],
+     "reference_size_m": 0.29278,
+     "source": "reference hair medium warm brown (color_targets hair 86,54,44 read too red under the felt sheen/saturation compensation; T-049)",
+     "overrides": {
+      "surface": {
+       "saturation_compensation": 1.0,
+       "sheen_weight": 0.15,
+       "sheen_roughness": 0.6
+      },
+      "nap": {
+       "fibre_gloss": 0.1,
+       "value_gain": 0.25,
+       "sheen_gain": 0.3
+      },
+      "fibres": {
+       "color_variation": 0.35,
+       "root_transparency": 0.2,
+       "tip_transparency": 0.6
+      }
+     }
+    }
+   }
+  }
+ }
+}
