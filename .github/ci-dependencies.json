@@ -2,7 +2,19 @@
   "oidn": {
     "version": "2.3.3",
     "url": "https://github.com/RenderKit/oidn/releases/download/v2.3.3/oidn-2.3.3.src.tar.gz",
-    "sha256": "ccf221535b4007607fb53d3ff5afa74de25413bb8ef5d03d215f46c7cc2f96cf"
+    "sha256": "ccf221535b4007607fb53d3ff5afa74de25413bb8ef5d03d215f46c7cc2f96cf",
+    "prebuilt": {
+      "linux": {
+        "url": "https://github.com/RenderKit/oidn/releases/download/v2.3.3/oidn-2.3.3.x86_64.linux.tar.gz",
+        "sha256": "3c385230d9e6f63527ba72f2229594dbac5051674219d72e0044b5d0b841796f",
+        "folder": "oidn-2.3.3.x86_64.linux"
+      },
+      "windows": {
+        "url": "https://github.com/RenderKit/oidn/releases/download/v2.3.3/oidn-2.3.3.x64.windows.zip",
+        "sha256": "30e41f6fe648536ef5657b45bccd2b27c6caed6461c832bde4949b0f965be0e0",
+        "folder": "oidn-2.3.3.x64.windows"
+      }
+    }
   },
   "bpy": {
     "version": "5.3.0",
@@ -14,5 +26,19 @@
       "url": "https://files.pythonhosted.org/packages/61/4f/2864babf5d1535d18dfce52fef02774e6d6de901cbdfb2acc46c2ba69fc3/bpy-5.3.0-cp313-cp313-win_amd64.whl",
       "sha256": "9501b722e49b61ac9dcc8b2fded7a0de4e9dc05852d75abe10b76baf4cc5fb5e"
     }
+  },
+  "apt": {
+    "note": "Ubuntu 24.04 packages for the linux C++ tier (embree 4.3.0, glfw 3.3.10); vcpkg stays the Windows path.",
+    "packages": [
+      "ninja-build",
+      "ccache",
+      "libembree-dev",
+      "libglm-dev",
+      "nlohmann-json3-dev",
+      "libglfw3-dev",
+      "libglew-dev",
+      "libstb-dev",
+      "doctest-dev"
+    ]
   }
 }

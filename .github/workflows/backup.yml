@@ -1,56 +1,128 @@
 name: Verified repository backup
 
+# Delivery plan rev. 2 §8.1 layers 1-2 (T-041).
+#  tags    every push to main/staging and every backup request (a pushed archive/backup-<UTC>-<branch> branch,
+#          e.g. from tools/integrate.py promote/backup) -> tag backup/<UTC date-time>/<branch> at the pushed tip.
+#          Cloud sessions cannot push tags (proxy 403); this job can (contents: write). Tags are never deleted.
+#  bundle  on every push to main, nightly and on demand: mirror of all branches and tags -> git bundle --all,
+#          git bundle verify, SHA-256, restore test (clone the bundle, compare every branch/tag SHA with the
+#          remote snapshot, run the fast tier on the restored main), uploaded as an artifact (90 days).
+#  release weekly (Sunday's nightly run, or on demand): release backup-<date> with the verified bundle.
+#          The 8 newest weekly releases and the first release of every month are kept; older weekly releases
+#          lose their release entry and asset, never their tag (backup-* tags are protected).
+
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+      - staging
+      - 'archive/backup-*'
   schedule:
     - cron: '17 2 * * *'
+  workflow_dispatch:
+    inputs:
+      release:
+        description: 'Also publish a weekly release from this run'
+        type: boolean
+        default: false
 
 permissions:
   contents: read
 
-concurrency:
-  group: verified-backup
-  cancel-in-progress: false
-
 jobs:
-  bundle:
+  tags:
+    name: Backup tag
+    if: github.event_name == 'push'
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    concurrency:
+      group: backup-tags
+      cancel-in-progress: false
     steps:
-      - name: Check out every ref
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           fetch-depth: 0
-          fetch-tags: true
+      - name: Create backup/<UTC>/<branch> tag
+        env:
+          REF_NAME: ${{ github.ref_name }}
+          SHA: ${{ github.sha }}
+          BEFORE: ${{ github.event.before }}
+        run: python3 .github/scripts/backup_tags.py --ref-name "$REF_NAME" --sha "$SHA" --before "$BEFORE" --push
+
+  bundle:
+    name: Verified bundle and restore test
+    if: github.event_name != 'push' || github.ref_name == 'main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    concurrency:
+      group: verified-backup
+      cancel-in-progress: false
+    outputs:
+      bundle: ${{ steps.bundle.outputs.bundle }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
           persist-credentials: false
-
-      - name: Fetch all remote refs
-        run: git fetch --force --prune origin '+refs/heads/*:refs/remotes/origin/*' '+refs/tags/*:refs/tags/*'
-
-      - name: Create and verify bundle
+      - name: Mirror every branch and tag, bundle, verify, checksum, restore test
+        id: bundle
+        env:
+          REMOTE_URL: ${{ github.server_url }}/${{ github.repository }}.git
+          GH_TOKEN: ${{ github.token }}
         run: |
-          mkdir -p build/backups
-          bundle="build/backups/animation-$(date -u +%Y%m%dT%H%M%SZ).bundle"
-          git bundle create "$bundle" --all
-          git bundle verify "$bundle" | tee build/backups/verify.txt
-          printf '%s\n' "$bundle" > build/backups/bundle-path.txt
-
-      - name: Restore into an empty folder and validate
+          auth="$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)"
+          python3 tools/backup_repository.py --remote "$REMOTE_URL" --destination build/backups \
+            --git-config "http.extraheader=AUTHORIZATION: basic $auth" --restore-test --keep 1 \
+            --report build/backups/backup_report.json --github-output "$GITHUB_OUTPUT"
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: '3.13'
+      - name: Install C++ dependencies for the fast tier
+        shell: pwsh
+        run: ./.github/scripts/install_ci_dependencies.ps1 -Platform linux -Cpp
+      - name: Fast tier on the restored main
         run: |
-          bundle="$(cat build/backups/bundle-path.txt)"
-          restore="$RUNNER_TEMP/animation-restore"
-          test ! -e "$restore"
-          git clone "$bundle" "$restore"
-          git -C "$restore" fsck --full
-          git -C "$restore" rev-parse --verify HEAD
-          printf 'restore PASS\n' > build/backups/restore.txt
-
+          restored="$(python3 -c "import json;print(json.load(open('build/backups/backup_report.json'))['restore']['worktree'])")"
+          cd "$restored"
+          CHECK_ALL_BRANCH=main python tools/check_all.py --base HEAD --build-dir build/quality-gate \
+            --artifacts-dir "$GITHUB_WORKSPACE/build/backups/restore-fast-tier"
       - name: Upload verified bundle at maximum retention
+        if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: verified-git-bundle-${{ github.run_id }}
-          path: build/backups/
+          path: |
+            build/backups/*.bundle
+            build/backups/*.sha256
+            build/backups/*.json
+            build/backups/*.txt
+            build/backups/restore-fast-tier/*.json
+            build/backups/restore-fast-tier/*.txt
           if-no-files-found: error
           retention-days: 90
           compression-level: 0
+
+  release:
+    name: Weekly backup release
+    needs: bundle
+    if: >-
+      (github.event_name == 'schedule' && github.event.schedule == '17 2 * * *') ||
+      (github.event_name == 'workflow_dispatch' && inputs.release)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: verified-git-bundle-${{ github.run_id }}
+          path: build/backups
+      - name: Publish backup-<date> (Sundays, or on demand) and prune old weekly releases
+        env:
+          GH_TOKEN: ${{ github.token }}
+          FORCE: ${{ github.event_name == 'workflow_dispatch' }}
+        run: python3 .github/scripts/backup_release.py --dir build/backups --force "$FORCE"

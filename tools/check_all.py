@@ -24,6 +24,8 @@ import tempfile
 import time
 
 from fidelity import ci as fidelity_ci
+import integrate
+from regression import tiers as regression_tiers
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -31,6 +33,8 @@ FROZEN_MANIFEST = ROOT / "tools" / "frozen_manifest.txt"
 GUARDED_PATHS = ROOT / "tools" / "guarded_paths.txt"
 CHARACTER_ALLOWLIST = ROOT / "tools" / "shared_character_allowlist.txt"
 FIDELITY_BASELINE = ROOT / "docs" / "evaluation" / "characters" / "fidelity_baseline.json"
+REGRESSION_RUNNER = ROOT / "tools" / "regression" / "run.py"
+WRITE_SET_BASE = "origin/staging"
 CODE_SUFFIXES = {".c", ".cc", ".cpp", ".cxx", ".h", ".hh", ".hpp", ".hxx", ".py"}
 TEXT_SUFFIXES = {".csv", ".json", ".md", ".py", ".txt", ".yaml", ".yml"}
 SHARED_PREFIXES = ("engine/", "apps/", "pipeline/charsys/", "pipeline/clips/")
@@ -217,6 +221,47 @@ def check_guarded(base: str, changes: set[str]) -> Result:
         return Result("Guarded paths", False, str(exc), seconds=round(time.monotonic() - started, 2))
 
 
+def current_branch() -> str:
+    for name in ("CHECK_ALL_BRANCH", "GITHUB_HEAD_REF", "GITHUB_REF_NAME"):
+        if os.environ.get(name):
+            return os.environ[name]
+    return git("branch", "--show-current", check=False).stdout.strip()
+
+
+def check_write_set(task: str, base: str) -> Result:
+    """Task branches may only change files inside their claim (docs/process/OWNERSHIP.md, plan section 3)."""
+    started = time.monotonic()
+    try:
+        branch = current_branch()
+        if task:
+            claim = integrate.find_claim(task)
+            label = task
+        else:
+            if not integrate.task_from_branch(branch):
+                return Result("Write-set", True, f"not a task branch ({branch or 'detached'})",
+                              seconds=round(time.monotonic() - started, 2))
+            claim = integrate.claim_for_branch(branch)
+            label = branch
+        if claim is None or not claim.write_set:
+            return Result("Write-set", False, f"no claim for {label} in docs/process/OWNERSHIP.md or docs/tasks",
+                          seconds=round(time.monotonic() - started, 2))
+        compare = WRITE_SET_BASE if git_ref_exists(WRITE_SET_BASE) else base
+        if git_ref_exists("MERGE_HEAD"):
+            # Trial merge with staging in progress: the merge result minus staging is exactly the task's change.
+            common = compare
+        else:
+            common = git("merge-base", compare, "HEAD", check=False).stdout.strip() or compare
+        paths = nul_paths(git("diff", "--name-only", "-z", common, "--").stdout)
+        paths |= nul_paths(git("ls-files", "--others", "--exclude-standard", "-z").stdout)
+        outside = integrate.write_set_violations(paths, claim)
+        detail = f"{claim.task}: {len(paths)} changed path(s) vs {compare}, all inside the claim"
+        if outside:
+            detail = f"{claim.task} changes files outside its claim: " + short(outside)
+        return Result("Write-set", not outside, detail, seconds=round(time.monotonic() - started, 2))
+    except (OSError, ValueError, subprocess.SubprocessError) as exc:
+        return Result("Write-set", False, str(exc), seconds=round(time.monotonic() - started, 2))
+
+
 def character_terms() -> list[str]:
     root = ROOT / "assets" / "characters"
     terms: dict[str, str] = {}
@@ -399,12 +444,28 @@ def check_plush_tests(build_dir: Path, config: str, logs: Path, build_ok: bool) 
     return Result("plush_tests", code == 0, "" if code == 0 else f"see {relative_log(log)}", relative_log(log), round(seconds, 2))
 
 
+def check_cpp_tests(build_dir: Path, config: str, logs: Path, build_ok: bool) -> Result:
+    """CTest (incl. the frozen image regressions) and the doctest binary, reported on one line."""
+    ctest = check_ctest(build_dir, config, logs, build_ok)
+    doctest = check_plush_tests(build_dir, config, logs, build_ok)
+    subchecks = []
+    for item in (ctest, doctest):
+        subchecks.append({"name": item.name, "ok": item.ok, "detail": item.detail, "log": item.log})
+    failed = [f"{item.name} ({item.detail})" if item.detail else item.name for item in (ctest, doctest) if not item.ok]
+    return Result("C++ tests", not failed, "" if not failed else "failed: " + "; ".join(failed),
+                  seconds=round(ctest.seconds + doctest.seconds, 2), subchecks=subchecks)
+
+
 def check_python_tests(logs: Path) -> Result:
     log = logs / "python-tests.log"
     tests = [
         [sys.executable, str(ROOT / "pipeline/clips/tests/test_clip_files.py"), "--selftest"],
         [sys.executable, str(ROOT / "tools/fidelity/tests/test_ci.py")],
+        [sys.executable, str(ROOT / "tools/regression/tests/test_gate_tools.py")],
     ]
+    cleanup_tests = ROOT / "tools/cleanup/run_tests.py"  # T-048 branch-cleanup tests, once merged
+    if cleanup_tests.is_file():
+        tests.append([sys.executable, str(cleanup_tests)])
     failed: list[str] = []
     started = time.monotonic()
     for index, command in enumerate(tests):
@@ -424,17 +485,21 @@ def check_doc_links(logs: Path) -> Result:
     return Result("Documentation links", code == 0, "" if code == 0 else f"see {relative_log(log)}", relative_log(log), round(seconds, 2))
 
 
-def blender_paths_changed(changes: set[str]) -> bool:
-    prefixes = (
-        "assets/characters/", "pipeline/charsys/", "pipeline/blender/",
-        "engine/render/", "apps/render-cli/", "content/materials/", "tests/regression/",
-    )
-    keywords = ("/material", "/groom", "/garment", "/render")
-    for path in changes:
-        lower = "/" + path.casefold()
-        if path.startswith(prefixes) or any(word in lower for word in keywords):
-            return True
-    return False
+def check_python_and_links(logs: Path) -> Result:
+    """Python tests and the Markdown link check, reported on one line (the summary has at most 10 lines)."""
+    tests, links = check_python_tests(logs), check_doc_links(logs)
+    subchecks = [{"name": r.name, "ok": r.ok, "detail": r.detail, "log": r.log} for r in (tests, links)]
+    failed = [f"{r.name} ({r.detail})" if r.detail else r.name for r in (tests, links) if not r.ok]
+    return Result("Python tests and links", not failed, "" if not failed else "failed: " + "; ".join(failed),
+                  seconds=round(tests.seconds + links.seconds, 2), subchecks=subchecks)
+
+
+def select_tier(changes: set[str]) -> dict:
+    """fast or full (tools/regression_paths.txt; unknown paths are full)."""
+    try:
+        return regression_tiers.classify(changes)
+    except (OSError, ValueError) as exc:
+        return {"tier": "full", "full_paths": [], "unknown_paths": [], "paths": {}, "error": str(exc)}
 
 
 def add_subcheck(subchecks: list[dict], name: str, ok: bool, detail: str = "", log: Path | None = None) -> None:
@@ -516,15 +581,85 @@ def run_fidelity_checks(
     return subchecks, details
 
 
-def check_blender(blender: str, artifacts: Path, logs: Path, required: bool, changes: set[str]) -> Result:
+def regression_subchecks(report: dict, log: Path | None) -> tuple[list[dict], list[str]]:
+    subchecks: list[dict] = []
+    details: list[str] = []
+    results = report.get("results", [])
+    expected = regression_tiers.character_ids()
+    seen = {item.get("character") for item in results}
+    for missing in sorted(set(expected) - seen):
+        add_subcheck(subchecks, f"regression {missing}", False, "no regression result (character not covered)", log)
+    for item in results:
+        failed = [c for c in item.get("checks", []) if not c.get("ok")]
+        kind = ("references only, not buildable yet" if item.get("not_buildable") else
+                "unchanged" if item.get("unchanged") else "spec changed")
+        fidelity = item.get("measured", {}).get("fidelity")
+        note = f"fidelity {fidelity['score']:.2f}" if fidelity else ""
+        detail = "; ".join(f"{c['name']}: {c['detail']}" for c in failed) or (
+            kind if item.get("not_buildable") else f"{kind}, identical{', ' + note if note else ''}")
+        if item.get("unchanged") is False and not failed:
+            detail = f"spec changed, needs owner visual review{', ' + note if note else ''}"
+        add_subcheck(subchecks, f"regression {item.get('character')}", item.get("ok", False) and not failed, detail, log)
+        details.append(f"{item.get('character')} {'PASS' if item.get('ok') and not failed else 'FAIL'}"
+                       + (f" ({note})" if note else ""))
+    return subchecks, details
+
+
+def run_regression(executable: str, base: str, artifacts: Path, logs: Path, results_dir: str,
+                   external: str = "") -> tuple[list[dict], list[str]]:
+    """All-character regression + unchanged-character guard (tools/regression/run.py), or its CI results."""
+    log = logs / "regression.log"
+    if external:
+        # CI: one job per character runs tools/regression/run.py in parallel; the "Gate verdict" job requires a
+        # passing report from each of them. Recorded here so the report says where the regression ran.
+        subchecks: list[dict] = []
+        add_subcheck(subchecks, "character regression", True,
+                     f"runs in {external} ({', '.join(regression_tiers.character_ids())}); required by the verdict")
+        return subchecks, [f"in {external}"]
+    if results_dir:
+        reports = sorted(Path(results_dir).rglob("regression.json"))
+        merged: dict = {"results": []}
+        for path in reports:
+            try:
+                merged["results"].extend(json.loads(path.read_text(encoding="utf-8")).get("results", []))
+            except (OSError, json.JSONDecodeError) as exc:
+                merged["results"].append({"character": path.parent.name, "ok": False,
+                                          "checks": [{"name": "report", "ok": False, "detail": str(exc)}]})
+        log.parent.mkdir(parents=True, exist_ok=True)
+        log.write_text("results from " + ", ".join(p.as_posix() for p in reports) + "\n", encoding="utf-8")
+        return regression_subchecks(merged, log)
+    out = artifacts / "regression"
+    command = [sys.executable, str(REGRESSION_RUNNER), "--blender", executable, "--out", str(out), "--base", base]
+    if git_ref_exists("origin/main"):
+        command += ["--against", "origin/main"]  # unchanged characters: identical to main built on this machine
+    run_logged(command, log)
+    try:
+        report = json.loads((out / "regression.json").read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        subchecks: list[dict] = []
+        add_subcheck(subchecks, "regression", False, f"runner produced no report; see {relative_log(log)}", log)
+        return subchecks, []
+    return regression_subchecks(report, log)
+
+
+def check_blender(blender: str, artifacts: Path, logs: Path, required: bool, changes: set[str],
+                  tier: dict | None = None, base: str = "", regression_results: str = "",
+                  regression_external: str = "", other_runner: str = "") -> Result:
+    tier = tier or {"tier": "fast"}
+    full = tier.get("tier") == "full"
+    if other_runner:
+        return Result("Blender tier", True, f"{tier.get('tier', 'fast')} tier; runs on the {other_runner} (not on "
+                      f"{sys.platform})", skipped=True)
     if not required:
-        return Result("Blender tier", True, skipped=True)
+        return Result("Blender tier", True, f"not required: fast tier ({len(changes)} changed path(s), none full)",
+                      skipped=True)
     started = time.monotonic()
     subchecks: list[dict] = []
     requested = blender or os.environ.get("BLENDER", "") or "blender"
     executable = shutil.which(requested) or requested
     if not Path(executable).is_file():
-        return Result("Blender tier", False, "Blender executable not found")
+        why = "full regression required by " + short(tier.get("full_paths", []), 3) if full else "--blender given"
+        return Result("Blender tier", False, f"Blender executable not found ({why}); this tier is never skipped")
 
     out = Path(tempfile.mkdtemp(prefix="blender-", dir=artifacts))
 
@@ -612,13 +747,23 @@ def check_blender(blender: str, artifacts: Path, logs: Path, required: bool, cha
         material_code, _ = run_logged([sys.executable, str(material_script)], material_log)
         add_subcheck(subchecks, "material presets", material_code == 0, "" if material_code == 0 else "material preset tests failed", material_log)
 
-    fidelity_subchecks, fidelity_details = run_fidelity_checks(executable, changes, artifacts, logs)
-    subchecks.extend(fidelity_subchecks)
+    regression_details: list[str] = []
+    if full:
+        # The full regression measures fidelity for every character, so the affected-character run is not repeated.
+        regression, regression_details = run_regression(executable, base, artifacts, logs, regression_results,
+                                                        regression_external)
+        subchecks.extend(regression)
+        fidelity_details: list[str] = []
+    else:
+        fidelity_subchecks, fidelity_details = run_fidelity_checks(executable, changes, artifacts, logs)
+        subchecks.extend(fidelity_subchecks)
 
     failed = [item["name"] for item in subchecks if not item["ok"]]
-    detail_parts = []
+    detail_parts = [f"{tier.get('tier', 'fast')} tier"]
     if failed:
         detail_parts.append("failed: " + short(failed))
+    if regression_details:
+        detail_parts.append("regression " + ", ".join(regression_details))
     if fidelity_details:
         detail_parts.append("; ".join(fidelity_details))
     return Result(
@@ -633,7 +778,7 @@ def summary_lines(results: list[Result]) -> list[str]:
     for result in results:
         state = "PASS" if result.ok else "FAIL"
         line = f"{state} {result.name}"
-        if result.name in {"Blender tier", "Merge status"} and result.detail:
+        if result.name in {"Blender tier", "Merge status", "Write-set"} and result.detail:
             line += f": {result.detail.replace(chr(10), ' ')}"
         elif not result.ok and result.detail:
             line += f": {result.detail.replace(chr(10), ' ')}"
@@ -656,6 +801,15 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--config", default="Release", help="CMake configuration")
     parser.add_argument("--blender", default="", help="Blender executable; supplying it always enables the Blender tier")
     parser.add_argument("--merge-status", default="", help="CI trial-merge status (normally 'clean')")
+    parser.add_argument("--task", default=os.environ.get("CHECK_ALL_TASK", ""),
+                        help="task ID for the Write-set check (default: from the branch name / OWNERSHIP.md branch)")
+    parser.add_argument("--full", action="store_true", help="force the full tier (all-character regression)")
+    parser.add_argument("--regression-results", default="",
+                        help="folder with regression.json files from tools/regression/run.py (CI per-character jobs)")
+    parser.add_argument("--regression-external", default="",
+                        help="CI only: the character regression runs in these separate jobs (verdict requires them)")
+    parser.add_argument("--blender-on-other-runner", default="",
+                        help="CI only: the Blender tier runs on this other runner (reported, never silent)")
     args = parser.parse_args(argv)
 
     artifacts = resolve_path(args.artifacts_dir, ROOT / "build/check-all")
@@ -676,16 +830,19 @@ def main(argv: list[str] | None = None) -> int:
     results: list[Result] = [
         check_frozen(),
         check_guarded(base, changes),
+        check_write_set(args.task, base),
         check_shared_character_lint(),
     ]
     build_result = check_cpp_build(build_dir, args.config, logs)
     results.append(build_result)
-    results.append(check_ctest(build_dir, args.config, logs, build_result.ok))
-    results.append(check_plush_tests(build_dir, args.config, logs, build_result.ok))
-    results.append(check_python_tests(logs))
-    results.append(check_doc_links(logs))
-    blender_required = bool(args.blender) or blender_paths_changed(changes)
-    results.append(check_blender(args.blender, artifacts, logs, blender_required, changes))
+    results.append(check_cpp_tests(build_dir, args.config, logs, build_result.ok))
+    results.append(check_python_and_links(logs))
+    tier = select_tier(changes)
+    if args.full:
+        tier["tier"] = "full"
+    blender_required = bool(args.blender) or tier["tier"] == "full"
+    results.append(check_blender(args.blender, artifacts, logs, blender_required, changes, tier, base,
+                                 args.regression_results, args.regression_external, args.blender_on_other_runner))
     if args.merge_status:
         tests_ok = all(result.ok for result in results)
         if args.merge_status == "clean" and tests_ok:
@@ -707,6 +864,9 @@ def main(argv: list[str] | None = None) -> int:
         "base": base,
         "changed_paths": sorted(changes),
         "blender_required": blender_required,
+        "tier": tier["tier"],
+        "tier_full_paths": tier.get("full_paths", []),
+        "tier_unknown_paths": tier.get("unknown_paths", []),
         "checks": [result.as_json() for result in results],
         "summary": lines,
     }

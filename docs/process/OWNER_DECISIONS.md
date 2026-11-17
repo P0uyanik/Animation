@@ -151,3 +151,8 @@ are complete; reference intake and gap analysis (T-057) start now.
    - **Goofiness subtle**, as in the references (open-mouthed watching, following the others, comic face tiles; no big
      comic moves).
    - Dress: cable-knit skirt and knit bodice; boots: shaggy fleece (majority + material spec; `w09` is a construction sheet).
+
+## 2026-11-17: girl 0.10.0 approved as intermediate
+Girl 0.10.0 (closed gentle-smile neutral, T-055) is approved as an intermediate version, **not** final visual approval.
+The next improvement round must address the remaining differences, especially mouth, cheeks, skin tone, eyes and hair,
+with the original references as the primary target.

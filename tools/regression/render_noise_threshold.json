@@ -1,0 +1,15 @@
+{
+ "schema": "plush-studio.regression-noise/1",
+ "max_rmse": 0.006,
+ "max_changed_fraction": 0.008,
+ "metric": "RGBA in [0,1]: rmse over all channels; changed_fraction = share of pixels whose largest channel difference exceeds 8/255",
+ "measured": {
+  "date": "2026-11-17",
+  "method": "tools/regression/run.py --noise: every character built, exported and rendered twice from the same commit (bpy 5.3.0, Linux x86_64, Cycles CPU, 16 samples, OIDN, seed 0), renders of the two runs compared",
+  "boy_yellow_hoodie": {"max_rmse": 1.7e-05, "max_changed_fraction": 0.0, "max_abs": 0.003922},
+  "girl_auburn_bun_glasses": {"max_rmse": 0.002807, "max_changed_fraction": 0.00373, "max_abs": 0.133333},
+  "fingerprints": "byte-equal for both characters",
+  "engine_export": "order-independent summary equal; raw geometry.bin differs (triangle/vertex order, float noise <= 1.1e-6)"
+ },
+ "rule": "threshold = about 2x the largest measured noise (girl front view), rounded up; any render above it is a FAIL for an unchanged character"
+}

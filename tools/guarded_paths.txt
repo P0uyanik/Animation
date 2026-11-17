@@ -28,6 +28,10 @@ tools/bpy_blender.py
 tools/simulate_quality_gate.py
 tools/frozen_manifest.txt
 tools/guarded_paths.txt
+tools/integrate.py
+tools/regression_paths.txt
+tools/regression/
+docs/evaluation/regression/baselines/
 tools/shared_character_allowlist.txt
 docs/evaluation/characters/fidelity_baseline.json
 .github/ci-dependencies.json
