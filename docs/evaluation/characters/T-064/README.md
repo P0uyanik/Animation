@@ -231,4 +231,12 @@ After `git merge origin/staging` (no fidelity, spec or generator file changed on
     `tools/fidelity/tests/test_metrics.py`. They need the Supervisor's `Supervisor-Approved:` trailers.
   - Not runnable here: the C++ tier (this container has no embree or OIDN; no C++ file changed) and the full Blender
     regression. CI runs both.
-- CI ("Quality gate" on the pushed branch): see the RELAY line and the final report for the verdict.
+- CI "Quality gate" run 44179166903 on `aa7b570` (full tier):
+  - PASS: Frozen assets, Write-set, Shared-systems lint, **C++ build, C++ tests**, Python tests and links.
+  - PASS: Blender tier. Regression is PASS for all three characters, with fidelity **boy 66.42** (baseline 66.41)
+    and **girl 64.40** (baseline 64.40).
+  - **FAIL: Guarded paths** (`fidelity_baseline.json`, `tools/fidelity/tests/test_metrics.py`), which need the
+    Supervisor's approval trailers.
+  - "Merge status: clean, tests FAIL after merge" follows from that same guarded-path failure.
+  - The Gate verdict is therefore **red only because of the two guarded paths**. It turns green once the Supervisor
+    adds `Supervisor-Approved:` trailers for both.
