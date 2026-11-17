@@ -186,3 +186,7 @@ head/face geometry must be improved to match the original references; added to f
 6. Boy 1.1.0 is described as "current approved", not "published".
 7. Blender-only tests run in the local full tier (not on GitHub) to save Actions time.
 8. Evidence size policy for future tasks (DELIVERY_PLAN §9b).
+
+## 2026-11-17: third character accessory re-confirmed
+The owner pointed to the third character's material specification sheet (bow) as her design: she wears the **blue felt bow**.
+The 4-petal flower in the all-three turnaround sheet is not her look.
