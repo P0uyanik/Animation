@@ -74,4 +74,20 @@ new base `frown_m`.
 
 ## Tests
 
-See the final report / gate summary below.
+Blender: bpy 5.3.0 module (Python 3.13) through `tools/bpy_blender.py`.
+
+`python3 tools/check_all.py --base origin/main --blender <bpy wrapper>` after `git merge origin/staging`:
+Frozen assets PASS · Guarded paths PASS · Shared-systems lint PASS · C++ build PASS · CTest PASS (4/4) ·
+plush_tests PASS (94/94 test cases) · Python tests PASS · Documentation links PASS · Blender tier PASS
+(verify_charsys boy geometry fingerprint ok; determinism boy 0 changed objects at 0.1 mm and 0.01 mm;
+girl 0.9.0 fidelity 65.36 vs baseline 65.41, −0.04 = render noise: her base spec is unchanged).
+
+Environment notes: this container had no embree/glm/nlohmann-json/GLEW dev packages (installed with apt) and no
+OIDN. Without OIDN, CTest `regression_milestone01` / `regression_face_neutral` fail with rmse 0.0464 / 0.0406, the
+same as T-043 recorded for unmodified staging. With the official OIDN 2.3.3 x86_64 Linux binary
+(`-DPLUSH_OIDN_ROOT`) all 4 pass. The branch changes no engine, content or test input (diff vs staging: this
+override + this folder).
+
+Unchanged characters: the boy and every other character have no changed file; the girl's 0.9.0 spec file is
+byte-identical (the 0.10.0 change is a separate override file). Not run: face_system_test/face_test on 0.10.0
+(render budget). The closed rest was checked geometrically instead (seam gap 0.0 mm).
