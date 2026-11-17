@@ -20,21 +20,21 @@
       "lights": [
         {
           "name": "Key",
-          "azimuth_deg": 35,
-          "elevation_deg": 45,
-          "strength": 2.6,
-          "angle_deg": 18,
+          "azimuth_deg": 30,
+          "elevation_deg": 40,
+          "strength": 2.27,
+          "angle_deg": 24,
           "kelvin": 5800,
-          "source": "VISUAL_TARGET.md Key direction 25-45 deg from screen-left, elevation 35-55 deg, 5000-5800 K"
+          "source": "VISUAL_TARGET.md Key direction 25-45 deg from screen-left, elevation 35-55 deg, 5000-5800 K; T-026: 30/40 deg (inside the range) so framing hair (fringe, temple locks) shadows less of the face, 24 deg source for a 0.03-0.10 H facial penumbra; strength renormalised to keep the front-facing irradiance of the calibration note"
         },
         {
           "name": "Fill",
-          "azimuth_deg": -50,
-          "elevation_deg": 15,
-          "strength": 0.95,
+          "azimuth_deg": -20,
+          "elevation_deg": 10,
+          "strength": 0.637,
           "angle_deg": 40,
           "kelvin": 4800,
-          "source": "VISUAL_TARGET.md Fill ratio 1.6-2.5:1, warm room/bounce 3500-4500 K"
+          "source": "VISUAL_TARGET.md Fill ratio 1.6-2.5:1, warm room/bounce 3500-4500 K; T-026: moved from -50/15 deg towards the camera axis so a face framed by hair, hoods or hats still receives it (the side fill was occluded by the girl's side curls); strength renormalised to the same front-facing irradiance"
         },
         {
           "name": "Rim",
