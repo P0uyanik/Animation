@@ -742,10 +742,6 @@ namespace {
 quat rotationOf(const mat4& m) {
   return glm::normalize(glm::quat_cast(mat3(glm::normalize(vec3(m[0])), glm::normalize(vec3(m[1])), glm::normalize(vec3(m[2])))));
 }
-quat rotationFromVector(vec3 w) {
-  const float a = glm::length(w);
-  return a > 1e-9f ? glm::angleAxis(a, w / a) : quat(1, 0, 0, 0);
-}
 
 // The post-pass body is carried by torso bones, which the arm pass never moves: their frames and inverses are computed
 // once per pass.
