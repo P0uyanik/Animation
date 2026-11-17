@@ -352,6 +352,13 @@ PASS Blender tier: full tier; regression boy_yellow_hoodie PASS (fidelity 64.08)
 - The regression and gate runs exceed the 10-minute foreground limit of this session's tool, so they ran as single
   background commands. Their results were waited for before READY.
 
+- **GitHub run on `ede6863` (FAIL "Python tests: test_gate_tools.py")**: the cause is not in this branch.
+  - CI trial-merged onto `origin/staging` = `3c718ed`, where `docs/process/OWNERSHIP.md` was emptied by mistake.
+    `test_gate_tools.py` then fails exactly one check: "OWNERSHIP.md parses".
+  - Reproduced: `ede6863` + `3c718ed`, no commit, gives `FAIL OWNERSHIP.md parses`, 1 failure.
+  - Staging `3687e2b` restored the file. With it merged (branch `3f2d87e` and later), the test passes: 0 failures,
+    locally and in a clean worktree with `CHECK_ALL_BASE_REF=origin/staging`.
+  - The test was not edited.
 - **Guarded paths that need a Supervisor trailer:**
   - `tools/lipsync/test_lipsync.py` (`**/test_*.py`): `Supervisor-Approved: tools/lipsync/test_lipsync.py`.
   - `.gitignore` is **not** guarded (not in `tools/guarded_paths.txt`), so it needs no trailer.
