@@ -33,7 +33,7 @@
 | T-056 | Order-stable, byte-reproducible engine export | assigned 2026-11-17 | t-056-claude-export-determinism | `docs/tasks/T-056.md` |
 | T-045 | Body mechanics: shoulders, clavicles, torso, weight shift | assigned 2026-11-17 | t-045-claude-body-mechanics | `docs/tasks/T-045.md` |
 | T-048 | Branch cleanup workflow + tests | **in main** 2026-11-17 | t-048-claude-branch-cleanup (8f1c3ce), merge ae15c0b | 25/25 cleanup tests, full gate PASS; first real dry run after T-041 backups |
-| T-049 | Hair approach study (strand vs sculpted vs hybrid) | assigned 2026-11-17 | t-049-claude-hair-study | `docs/tasks/T-049.md` |
+| T-049 | Hair approach study (strand vs sculpted vs hybrid) | **in main** 2026-11-17; owner choice pending | t-049-claude-hair-study (e31e613) | recommends hybrid C (felted base volumes + few broad edge clumps, face keep-out as spec data); none reaches reference softness yet (fibre halo/volume, girl fringe) |
 | T-050 | GPU / render cost study (no spending) | **in main** 2026-11-17; owner decision pending | t-050-claude-render-cost (242c97c) | previews CPU; review/finals on rented RTX 4090 ≈ $0.84/finished min, ≈ $10–25/month; do not buy a GPU for cost alone |
 | T-044 | Hair v3 | queued (after T-043 + T-049 decision) | — | — |
 | T-047 | Collision system (redesign of T-040/T-040r1/T-040r2) | queued (after T-045 and T-056) | — | one collision-body definition per character built by the pipeline and exported (body + closed garments, open garment parts as cloth), used by both engine and measuring tool; clearance as a temporally smoothed constraint inside the animation solve; shoulder/clavicle avoidance from T-045 first; hold/hand-over paths planned outside the body; reuse T-040r1 SDF code and test speed-up |
