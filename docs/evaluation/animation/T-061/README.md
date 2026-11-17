@@ -14,8 +14,8 @@ clip speed 1.5, near-linear hand paths, static accessories), plus a gate tool th
 - AC4 accessory spring chains through data (presets, attach by bone name), documented for T-044 / T-058
   ([ACCESSORY_CHAINS.md](ACCESSORY_CHAINS.md)): implemented and tested on the toy fixture; no shot shows it yet
   (no package has accessory bones; the exporter does not yet pass `attach` through, see there).
-- AC5 evidence: the T-045 shot (layer on) before / after, speed and wrist-path plots. Render budget **exceeded by a
-  partial render** (§7): after a later engine change I re-rendered 66 of the 132 "after" frames.
+- AC5 evidence: the T-045 shot (layer on) before / after with the current versions (boy 1.1.0, girl 0.10.0), speed
+  and wrist-path plots. Render budget **exceeded** (≈ 4.5 renders, §7).
 - **On by default.** Every clip action and IK gesture of every shot now uses the principles; scene
   `"animPrinciples": false` restores the old behaviour bit for bit (verified on the evidence shot's bake). All 104
   existing test cases and the 4 CTest regressions pass unchanged.
@@ -127,7 +127,19 @@ clip can be up to ~2 frames off the warped body timing (none of the evidence cli
   accessory bones (none exists yet); the exporter path for `attach`.
 
 ### 5a. Gate
-GATE_RESULTS
+Local (`python3 tools/check_all.py --base origin/main --task T-061 --blender <bpy 5.3 wrapper>`, after merging
+`origin/staging`): Frozen assets, Write-set, lint, C++ build, C++ tests (CTest 4/4, plush_tests 112/112, animcheck
+2/2 shots), Python tests and links all PASS; the Blender tier (verify_charsys, determinism, export, face, groom ran
+and passed) did not finish locally: the session's worker restarted during the all-character regression (twice in
+this session), so the full tier is taken from CI.
+
+CI (GitHub "Quality gate", full tier, trial merge into staging), run on the pushed branch: see the relay line for the
+final run. On the first push every check passed except (a) **Guarded paths** (the Supervisor trailer an Implementer
+cannot give: `tests/CMakeLists.txt`, `tests/test_anim_principles.cpp`, `tools/animcheck/tests/test_animcheck.py`,
+`tools/animcheck/thresholds.json`, `tools/check_all.py`, `tools/regression_paths.txt`) and (b) the T-062 cast check
+in the Python tests, which flagged my evidence shots for pinning old versions — fixed by the current-version casts
+(locally `test_run_shot_current.py` PASS). Regression jobs: boy PASS (fidelity 64.07), girl PASS (65.46),
+white-haired girl PASS (references only).
 
 ## 6. Baselines
 No frozen file, package, clip, spec or test data was edited. The existing 104 test cases and the 4 CTest regressions
@@ -136,17 +148,23 @@ No frozen file, package, clip, spec or test data was edited. The existing 104 te
 not affected by engine animation code (gate: Blender tier, §5a).
 
 ## 7. Visual results
-Shot: the T-045 evidence shot, body mechanics on, unchanged (`make_shot.py`): `shot_before` = `"animPrinciples":
-false`, `shot_after` = defaults. Boy published 1.0.0, girl built from her spec (experimental). Cycles 16 samples +
-OIDN, **480×270** (lower than T-045's 640×360 to fit the budget), 132 frames, `run_shot.py` in three chunks per
-render. **Budget:** two renders (before, after) plus a **re-render of after frames 67–132** after the final retiming
-change (the first after-render showed a superseded warp; frames 1–66 were bit-identical and reused — every rendered
-frame was checked against the final engine's bake). ≈ 2.5 renders in total.
+Shot: the T-045 evidence shot, body mechanics on, unchanged except the cast (`make_shot.py`): `shot_before` =
+`"animPrinciples": false`, `shot_after` = defaults. Cast: the **current approved versions** (`run_shot` cast
+`"current"`, owner decision 2026-11-17): boy **1.1.0**, girl **0.10.0** (`cast.json` of both builds). Cycles 16
+samples + OIDN, **480×270** (lower than T-045's 640×360 to save time), 132 frames, `run_shot.py` in chunks of
+16–40 frames (the session's worker restarted twice during rendering; finished chunks were kept). Every rendered frame
+was checked against a full-length bake of the final engine: all bone matrices equal.
+
+**Render budget exceeded.** Used ≈ 4.5 renders instead of 2: a first before/after pair with the T-045 cast (boy
+1.0.0, girl spec without overrides), a re-render of 66 "after" frames after the final retiming change, and then the
+before/after pair again with the current versions once the Supervisor note about current versions reached this
+session (it was sent before the first render but delivered only afterwards). Only the current-version renders are
+used here; the arm motion metrics of both casts are identical (`curves_summary.json` unchanged).
 - `t061_before_after.mp4`: before | after, 24 fps.
 - `before_after_sheet.jpg`: touch (f22–34), wave lift (f66–75) and lowering (f104–112), before over after.
 - `speed_profiles.png`, `wrist_paths.png`, `curves_summary.json`: from the engine bakes of both shots.
 
-What changed (production rigs, `curves_summary.json`):
+What changed (current versions, `curves_summary.json`):
 - **Wave lift (×1.5):** before, the 4-frame blend gives a burst then a dip before the clip's own lift (13 → 12 → 36
   mm/frame); after, one movement: slow start (1–3 mm/frame), fast middle (peak 88 vs 71 mm/frame: the retime puts the
   speed-up into the lift and keeps the anticipation's spacing), cushioned arrival. Boy ease-in 0.12 → 0.04.
@@ -173,7 +191,7 @@ Regression shots (test packages, gate): before → after, **19 → 0 threshold f
 Production evidence shot (no threshold fails before or after: there the auto idle starts with the arms down, so the
 old 4-frame blend has less to cover than on the A-posed test packages):
 
-| Gesture (production rigs) | ease in / out | onset / stop step | jerk | arc 3D in / out | arc screen in / out | max step mm / ° |
+| Gesture (current versions) | ease in / out | onset / stop step | jerk | arc 3D in / out | arc screen in / out | max step mm / ° |
 | --- | --- | --- | --- | --- | --- | --- |
 | boy touch @24 | 0.11 / 0.07 → **0.12 / 0.05** | 0.02 / 0.06 → **0.03 / 0.04** | 0.38 → **0.37** | 0.19 / 0.20 → **0.32 / 0.35** | 0.10 / 0.10 → **0.36 / 0.41** | 21 / 10 → **25 / 13** |
 | boy clip wave @66 x1.5 | 0.12 / 0.07 → **0.04 / 0.25** | 0.04 / 0.03 → **0.03 / 0.06** | 0.35 → **0.37** | 0.28 / 0.31 → **0.27 / 0.30** | 0.18 / 0.20 → **0.19 / 0.20** | 71 / 23 → **88 / 28** |
@@ -189,11 +207,15 @@ is the most visible change; `retimeMaxRate` / `easePreservingRetime` tune or swi
 ## 8. Problems, limitations, open questions
 1. **On by default** changes the motion of every existing shot with clip actions or touch / reach (intended by the
    task). Supervisor / owner: confirm, or switch it to opt-in (one default in `AnimPrinciples`).
-2. **Render budget exceeded** by a partial re-render (§7).
+2. **Render budget exceeded** (≈ 4.5 renders, §7).
+8. The animcheck gate shots use the engine test packages (boy 1.0.0, girl m3: the only committed packages, so the
+   check stays engine-only and runs in seconds); the evidence uses the current versions. The T-062 evaluation shots
+   (`content/scenes/eval/*`, current casts) could also be checked with animcheck in the Blender tier from their bakes
+   (not wired in this task: their casts need a Blender build).
 3. **Exporter**: `attach` / `presets` are not passed through by `export_engine.py` (pipeline, outside this task);
    chains with `"preset"` are. Proposal in [ACCESSORY_CHAINS.md](ACCESSORY_CHAINS.md) for T-058 / T-044.
-4. **Girl Blender reconstruction offset** seen in every render run (before and after alike, i.e. pre-existing):
-   `shot_render` reports `max_bone_error_mm` 15–19 mm (0° rotation) for the girl in chunks with a mid-gesture check
+4. **Girl Blender reconstruction offset** seen in every render run (before and after alike, both casts, i.e.
+   pre-existing): `shot_render` reports `max_bone_error_mm` 11–19 mm (0° rotation) for the girl in chunks with a mid-gesture check
    frame, 0.001 mm at rest. Translation only: probably the T-045 pivot carry on a connected bone in Blender. Not
    investigated (outside the write-set); worth a look by the T-045 / shot_render owner.
 5. Face curves of retimed clips follow the linear clock (≤ ~2 frames off), §4.
@@ -206,5 +228,6 @@ is the most visible change; `retimeMaxRate` / `easePreservingRetime` tune or swi
 Branch `t-061-claude-animation-principles`; head commit in the relay line (`RELAY_LOG.md`, branch `relay-channel`).
 
 ## 10. Resource use
-Token usage: not available. Compute: ≈ 75 min of Cycles rendering (2.5 renders), one full gate run, several
-engine-only bakes (seconds each). Repeated work: the after-render of frames 67–132 (see §7).
+Token usage: not available. Compute: ≈ 130 min of Cycles rendering (≈ 4.5 renders, §7), gate runs (local partial,
+CI full), many engine-only bakes (seconds each). Repeated work: the partial after re-render and the re-render with the
+current versions (§7).

@@ -293,10 +293,12 @@
  "production": {
   "cast": {
    "boy": {
-    "version_dir": "assets/characters/boy_yellow_hoodie/versions/1.0.0"
+    "character_id": "boy_yellow_hoodie",
+    "version": "current"
    },
    "girl": {
-    "spec": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.spec.json"
+    "character_id": "girl_auburn_bun_glasses",
+    "version": "current"
    }
   },
   "profile": "pipeline/charsys/rig_profiles/humanoid_rigify.json",
