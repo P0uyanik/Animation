@@ -15,9 +15,14 @@ import tempfile
 
 CLEANUP_DIR = Path(__file__).resolve().parents[1]
 
+# An empty, real config file (works on every platform, unlike os.devnull = "nul" on Windows).
+_CONFIG_DIR = tempfile.TemporaryDirectory(prefix="plush-cleanup-gitconfig-")
+_EMPTY_CONFIG = os.path.join(_CONFIG_DIR.name, "empty.gitconfig")
+open(_EMPTY_CONFIG, "w").close()
+
 GIT_ENV = {
-    "GIT_CONFIG_GLOBAL": os.devnull,
-    "GIT_CONFIG_SYSTEM": os.devnull,
+    "GIT_CONFIG_GLOBAL": _EMPTY_CONFIG,
+    "GIT_CONFIG_SYSTEM": _EMPTY_CONFIG,
     "GIT_CONFIG_NOSYSTEM": "1",
     "GIT_AUTHOR_NAME": "cleanup-test",
     "GIT_AUTHOR_EMAIL": "cleanup-test@example.invalid",
