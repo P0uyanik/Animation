@@ -390,3 +390,23 @@ TEST_CASE("facial layer: a blink closes the eyes whatever the expression (eye-op
   // Between blinks the surprise stays fully on.
   CHECK(ev->morphControlWeight(0, "Surprise", 300) + ev->morphControlWeight(0, "Surprise", 301) > 1.5f);
 }
+
+TEST_CASE("facial layer: a character's own faceMotion is a constant layer under the emotions") {
+  auto base = faceScene(kGirl, Json::array(), 1800);
+  auto fast = faceScene(kGirl, Json::array(), 1800);
+  fast->mutableScene().characters[0].faceMotion = Json::parse(R"({"blinkRate": 2.0, "channels": {"browDown": 0.2}})");
+  REQUIRE(fast->compileActions().has_value());
+  const size_t nBase = blinkOnsets(*base->faceLayer(0), 1, 1800).size(), nFast = blinkOnsets(*fast->faceLayer(0), 1, 1800).size();
+  MESSAGE("blinks in 60 s: neutral " << nBase << ", blinkRate 2 " << nFast);
+  CHECK(nFast >= nBase * 3 / 2);
+  CHECK(fast->morphControlWeight(0, "BrowDown", 100) == doctest::Approx(0.2f).epsilon(0.01));
+  // Saved with the scene and read back.
+  Json saved = sceneToJson(fast->scene());
+  CHECK(saved["characters"][0]["faceMotion"]["blinkRate"].get<double>() == doctest::Approx(2.0));
+  // A malformed block is reported, the scene still plays.
+  fast->mutableScene().characters[0].faceMotion = Json::parse(R"({"blinkRate": "often"})");
+  REQUIRE(fast->compileActions().has_value());
+  bool warned = false;
+  for (const auto& w : fast->warnings()) warned |= w.find("faceMotion") != std::string::npos;
+  CHECK(warned);
+}

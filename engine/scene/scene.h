@@ -48,6 +48,9 @@ struct CharacterDesc {
   // Without a base clip the shared "idle_relaxed" clip plays as the character's base layer (clip_layers.cpp, T-027).
   // Scene JSON "autoIdle": false opts out.
   bool autoIdle = true;
+  // Per-character living-face tunables (T-046, same schema as an emotion's "faceMotion"): a constant layer under the
+  // emotions, e.g. from a personality profile (null = the shared neutral face).
+  Json faceMotion;
 };
 
 struct PropParent {

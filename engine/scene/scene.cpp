@@ -262,6 +262,7 @@ Result<Scene> loadScene(const std::filesystem::path& path) {
       }
     }
     cd.dynamics = cj.value("dynamics", Json());
+    cd.faceMotion = cj.value("faceMotion", Json());
     s.characters.push_back(cd);
   }
   std::map<std::string, size_t> propsByName;
@@ -444,6 +445,7 @@ Json sceneToJson(const Scene& s) {
       cj["life"] = std::move(life);
     }
     if (!c.dynamics.is_null()) cj["dynamics"] = c.dynamics;
+    if (!c.faceMotion.is_null()) cj["faceMotion"] = c.faceMotion;
     chars.push_back(cj);
   }
   Json anim = Json::object();

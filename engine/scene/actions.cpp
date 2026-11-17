@@ -245,6 +245,11 @@ void SceneEvaluator::buildFaceLayers() {
   std::map<const ClipData*, std::shared_ptr<const FaceCurves>> curveCache;
   for (size_t c = 0; c < characters_.size(); ++c) {
     FaceTimeline tl = faceTimelines_[c];
+    if (const Json& fm = scene_.characters[c].faceMotion; !fm.is_null()) {  // the character's own face: a constant layer
+      auto m = faceMotionFromJson(fm);
+      if (m) tl.emotions.insert(tl.emotions.begin(), {FaceEnvelope{-1e30, 1e30, 0, 0, 1, false}, *m});
+      else warnings_.push_back(std::format("character '{}': {} (its faceMotion is ignored)", scene_.characters[c].name, m.error().message));
+    }
     // Clip face curves: every clip layer (base, emotion posture and gesture, clip actions) whose clip has a "face" block.
     for (const ClipLayer* L : activeClipLayers(c)) {
       if (!L->clip) continue;
