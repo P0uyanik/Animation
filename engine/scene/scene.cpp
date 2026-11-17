@@ -736,8 +736,7 @@ std::vector<mat4> SceneEvaluator::kinematicGlobals(size_t c, double frame, Pose*
   const FaceState fs = face ? faces_[c].evaluate(frame) : FaceState{};
   // Expression-driven bones (e.g. a jaw opening with the mouth): weight x rotation, from the package metadata.
   for (const auto& [morph, bones] : ci.asset.expressionBones) {
-    float w = expressionWeight(c, morph, frame);
-    if (auto it = fs.controls.find(morph); it != fs.controls.end()) w = std::clamp(w + it->second, 0.0f, 1.0f);
+    const float w = face ? morphControlWeight(c, morph, frame) : expressionWeight(c, morph, frame);
     if (w == 0.0f) continue;
     for (const auto& b : bones) {
       const int bi = ci.asset.skeleton.find(b.bone);
@@ -988,7 +987,10 @@ float SceneEvaluator::morphControlWeight(size_t c, const std::string& morph, dou
   if (faceActive(c)) {  // the facial layer: control offsets and its own blinks
     const FaceState fs = faces_[c].evaluate(frame);
     if (auto it = fs.controls.find(morph); it != fs.controls.end()) w = std::clamp(w + it->second, 0.0f, 1.0f);
-    if (morph == blinkMorph(characters_[c])) w = std::max(w, fs.blink);
+    const std::string blink = blinkMorph(characters_[c]);
+    if (morph == blink) w = std::max(w, fs.blink);
+    else if (!blink.empty() && faces_[c].clearsWithBlink(morph))  // eye-opening controls fade while the lids close
+      w *= 1.0f - std::clamp(std::max(fs.blink, expressionWeight(c, blink, frame)), 0.0f, 1.0f);
     return w;
   }
   if (life.enabled && morph == blinkMorph(characters_[c]))
@@ -1049,6 +1051,8 @@ std::shared_ptr<FrameSnapshot> SceneEvaluator::evaluate(double frame) const {
       float w = expressionWeight(c, mt.name, frame);
       if (auto it = fs.controls.find(mt.name); it != fs.controls.end()) w = std::clamp(w + it->second, 0.0f, 1.0f);
       if (mt.name == blink) w = std::max(w, blinkW);  // automatic blinks drive the character's blink morph
+      else if (face && !blink.empty() && faces_[c].clearsWithBlink(mt.name))  // eye-opening controls fade while the lids close
+        w *= 1.0f - std::clamp(std::max(blinkW, expressionWeight(c, blink, frame)), 0.0f, 1.0f);
       weights.push_back(w);
       names.push_back(mt.name);
     }

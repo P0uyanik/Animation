@@ -138,7 +138,8 @@ TEST_CASE("facial layer: per-control continuity on both characters and the manne
       for (const auto& m : names) w.push_back(ev->morphControlWeight(0, m, f));
       for (size_t i = 0; i < w.size() && !prev.empty(); ++i) {
         const float d = std::abs(w[i] - prev[i]);
-        const bool isBlink = names[i] == blink || names[i].rfind("Blink", 0) == 0;
+        // Blink controls and the eye-opening controls that fade with a blink (blinkClears) move at blink speed.
+        const bool isBlink = names[i] == blink || names[i].rfind("Blink", 0) == 0 || ev->faceLayer(0)->clearsWithBlink(names[i]);
         if (isBlink) maxBlinkStep = std::max(maxBlinkStep, d);
         else if (d > maxStep) maxStep = d, worst = names[i] + " @" + std::to_string(f);
       }
@@ -368,4 +369,24 @@ TEST_CASE("gaze assist: the neck takes what the eyes cannot reach, eyes lead, a 
   Pose p3 = restPose(sk);
   applyConstraints(sk, keyed, "a/", 20, mat4(1), p3, GazeLimits{}, 30);
   CHECK(angleDeg(p3.local[1], quat(1, 0, 0, 0)) < 1e-3f);
+}
+
+TEST_CASE("facial layer: a blink closes the eyes whatever the expression (eye-opening controls fade)") {
+  Json a = Json::parse(R"([{"type": "emotion", "character": "who", "name": "surprised", "start": 1, "end": 900}])");
+  auto ev = faceScene(kGirl, a, 900);
+  const FaceLayer* face = ev->faceLayer(0);
+  const auto& clears = face->blinkClears();
+  CHECK(std::find(clears.begin(), clears.end(), "EyeWide") != clears.end());
+  CHECK(std::find(clears.begin(), clears.end(), "Surprise") != clears.end());
+  int closedFrames = 0;
+  for (int f = 40; f < 880; ++f) {
+    const float b = ev->morphControlWeight(0, "Blink", f);
+    if (b > 0.999f) {
+      ++closedFrames;
+      for (const auto& m : clears) CHECK(ev->morphControlWeight(0, m, f) < 1e-3f);
+    }
+  }
+  CHECK(closedFrames > 0);
+  // Between blinks the surprise stays fully on.
+  CHECK(ev->morphControlWeight(0, "Surprise", 300) + ev->morphControlWeight(0, "Surprise", 301) > 1.5f);
 }

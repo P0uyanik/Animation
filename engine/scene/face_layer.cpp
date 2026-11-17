@@ -88,6 +88,7 @@ FaceLibrary defaultFaceLibrary() {
   lib.channels[kJaw] = {{"jawOpen"}};
   lib.channels[kMouthUp] = {{"mouthSmile"}};
   lib.channels[kMouthDown] = {{"mouthFrown"}};
+  lib.blinkClears = {kEyeWide, "surprised"};
   return lib;
 }
 
@@ -112,6 +113,14 @@ Result<FaceLibrary> faceLibraryFromJson(const Json& j) {
         if (!controls.empty()) list.push_back(std::move(controls));
       }
       lib.channels[name] = std::move(list);
+    }
+  }
+  if (auto bc = j.find("blinkClears"); bc != j.end()) {
+    if (!bc->is_array()) return fail("face_motion: 'blinkClears' must be a list of control names");
+    lib.blinkClears.clear();
+    for (auto& x : *bc) {
+      if (!x.is_string()) return fail("face_motion: 'blinkClears' entries must be strings");
+      lib.blinkClears.push_back(x.get<std::string>());
     }
   }
   if (auto nj = j.find("neutral"); nj != j.end()) {
@@ -188,6 +197,14 @@ void FaceLayer::build(const FaceLibrary& lib, const std::function<std::string(co
       }
     }
     channels_[name] = std::move(morphs);
+  }
+  blinkClears_.clear();
+  for (const std::string& name : lib.blinkClears) {
+    std::vector<std::string> ms;
+    if (auto it = channels_.find(name); it != channels_.end()) ms = it->second;
+    else if (std::string m = resolve(name); !m.empty()) ms.push_back(m);
+    for (const auto& m : ms)
+      if (std::find(blinkClears_.begin(), blinkClears_.end(), m) == blinkClears_.end()) blinkClears_.push_back(m);
   }
   // Emotion onsets with "attention" raise the brows.
   for (const auto& e : tl_.emotions)
@@ -314,6 +331,10 @@ vec2 FaceLayer::saccade(double frame) const {
   // A dart takes ~45 ms plus 2.5 ms per degree (main sequence), then the eyes hold.
   const double move = 0.045 + 0.0025 * glm::length(cur - prev);
   return glm::mix(prev, cur, smooth((frame - curFrame) / fps_ / move));
+}
+
+bool FaceLayer::clearsWithBlink(const std::string& morph) const {
+  return std::find(blinkClears_.begin(), blinkClears_.end(), morph) != blinkClears_.end();
 }
 
 void FaceLayer::addChannel(std::map<std::string, float>& out, const std::string& channel, float w) const {

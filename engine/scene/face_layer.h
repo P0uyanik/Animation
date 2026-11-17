@@ -57,6 +57,9 @@ struct FaceNeutral {
 struct FaceLibrary {
   // channel -> candidates in order; a candidate is a list of control names driven together (e.g. left + right brow).
   std::map<std::string, std::vector<std::vector<std::string>>> channels;
+  // Controls (channel, expression or morph names) that open the eyes: they fade out while the lids close, so a blink
+  // closes the eye whatever the expression (additive lid shapes do not compose: a wide-eyed lid stays open).
+  std::vector<std::string> blinkClears;
   FaceNeutral neutral;
 };
 FaceLibrary defaultFaceLibrary();  // engine expression names only (used when no library file is found)
@@ -114,6 +117,9 @@ class FaceLayer {
   const std::map<std::string, std::vector<std::string>>& channels() const { return channels_; }
   // Blink closure only (cheaper than evaluate).
   float blink(double frame) const;
+  // Morphs that fade out with a blink (FaceLibrary::blinkClears resolved for this character).
+  const std::vector<std::string>& blinkClears() const { return blinkClears_; }
+  bool clearsWithBlink(const std::string& morph) const;
 
  private:
   struct Params {  // blended at a frame
@@ -129,6 +135,7 @@ class FaceLayer {
   bool built_ = false;
   FaceNeutral n_;
   std::map<std::string, std::vector<std::string>> channels_;
+  std::vector<std::string> blinkClears_;
   FaceTimeline tl_;
   LifeParams life_;
   double fps_ = 30;

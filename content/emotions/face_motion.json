@@ -1,7 +1,7 @@
 {
  "format": "plush.face_motion",
  "version": 1,
- "description": "Shared facial-layer library (T-046, engine/scene/face_layer.h). 'channels': face channel -> candidate controls in order of preference; a candidate is one control or a list driven together (left + right). Names resolve per character through its expression map, else as morph names; the first candidate a character has is used, a character with none skips the channel. 'neutral': the living face's resting tunables, which emotion 'faceMotion' sections change while they play.",
+ "description": "Shared facial-layer library (T-046, engine/scene/face_layer.h). 'channels': face channel -> candidate controls in order of preference; a candidate is one control or a list driven together (left + right). Names resolve per character through its expression map, else as morph names; the first candidate a character has is used, a character with none skips the channel. 'blinkClears': controls that open the eyes and fade out while the lids close (a blink always closes the eye). 'neutral': the living face's resting tunables, which emotion 'faceMotion' sections change while they play.",
  "channels": {
   "browUp": [["browUp"], ["BrowUp.L", "BrowUp.R"]],
   "browDown": [["browDown"]],
@@ -12,6 +12,7 @@
   "mouthUp": [["mouthSmile"], ["MouthSmile"]],
   "mouthDown": [["mouthFrown"], ["MouthFrown"], ["frown"]]
  },
+ "blinkClears": ["eyeWide", "surprised", "WideOpen"],
  "neutral": {
   "blinkRate": 1.0,
   "doubleBlink": 0.12,
