@@ -405,7 +405,8 @@ Result<void> SceneEvaluator::compileActionsBody() {
 
     if (type == "look") {
       faceTimelines_[size_t(c)].lookStarts.push_back(start);  // a gaze shift: brows lift a little, maybe a blink
-      faceTimelines_[size_t(c)].attention.push_back({start, faceLibrary_.neutral.lookAttention});
+      if (start > scene_.frameStart + 2)  // the look a shot opens with is the starting state, not a new focus
+        faceTimelines_[size_t(c)].attention.push_back({start, faceLibrary_.neutral.lookAttention});
       const std::string track = prefix + "lookAt";
       const int o = has(a, "object") ? objIndex(str(a, "object")) : -1;
       if (has(a, "object") && o < 0) return fail(std::format("look: unknown object '{}'", str(a, "object")));

@@ -193,6 +193,7 @@ void FaceLayer::build(const FaceLibrary& lib, const std::function<std::string(co
   for (const auto& e : tl_.emotions)
     if (e.motion.attention && *e.motion.attention > 0) tl_.attention.push_back({e.env.start, float(*e.motion.attention * e.env.weight)});
   // Warped clocks (blinks and eye darts run faster or slower with the emotion): seconds of warped time per frame.
+  frameStart_ = frameStart;
   f0_ = std::min(frameStart, 0) - 2;
   const int f1 = std::max(frameEnd, frameStart) + 2;
   blinkClock_.assign(size_t(f1 - f0_ + 1), 0.0);
@@ -282,7 +283,7 @@ float FaceLayer::blink(double frame) const {
   // Gaze-shift blinks: a new look often comes with a blink.
   for (size_t j = 0; j < tl_.lookStarts.size(); ++j) {
     const double g = tl_.lookStarts[j];
-    if (g > frame || frame - g > fps_) continue;
+    if (g > frame || frame - g > fps_ || g <= frameStart_ + 2) continue;  // a look the shot opens with is no gaze shift
     if (lifeHash01(seed ^ kShiftSalt, uint32_t(j)) < params(g).gazeShiftBlink) amount = std::max(amount, shapeAt(g + 1, 1.0f, t));
   }
   return amount;

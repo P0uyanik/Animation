@@ -132,7 +132,7 @@ class FaceLayer {
   FaceTimeline tl_;
   LifeParams life_;
   double fps_ = 30;
-  int f0_ = 0;
+  int f0_ = 0, frameStart_ = 1;
   std::vector<double> blinkClock_, saccadeClock_;  // per frame from f0_ (seconds of warped time)
 };
 
