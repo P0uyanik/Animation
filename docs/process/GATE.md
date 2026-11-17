@@ -88,7 +88,7 @@ for the rulesets: **Gate verdict**.
 ## 6. Backups (`.github/workflows/backup.yml`, plan §8.1 layers 1–2)
 
 - **Tags:** every push to `main`/`staging` and every pushed backup request `archive/backup-<UTC>-<branch>` creates
-  `backup/<UTC date-time>/<branch>` (`.github/scripts/backup_tags.py`; Actions token with `contents: write`, because
+  `backup/<UTC yyyymmddTHHMMSSZ>/<branch>` (`.github/scripts/backup_tags.py`; Actions token with `contents: write`, because
   cloud sessions cannot push tags). A tip already tagged for that branch is not tagged again. Tags are never deleted.
 - **Bundle:** on every push to `main`, nightly (02:17 UTC) and on demand: bare snapshot of all remote branches and
   tags → `git bundle create --all` → `git bundle verify` → `.sha256` → restore test (mirror-clone the bundle,

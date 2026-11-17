@@ -322,7 +322,7 @@ def changed_since_merge_base(base: str, head: str = "HEAD") -> set[str]:
 
 
 def utc_stamp() -> str:
-    return dt.datetime.now(dt.timezone.utc).strftime("%Y%m%d-%H%M%S")
+    return dt.datetime.now(dt.timezone.utc).strftime("%Y%m%dT%H%M%SZ")
 
 
 # --------------------------------------------------------------------------- commands

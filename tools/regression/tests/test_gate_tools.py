@@ -148,8 +148,26 @@ def test_compare():
         expect(any(c["name"] == "baseline" and not c["ok"] for c in checks), "missing baseline for unchanged = FAIL")
 
 
+def test_backup_scripts():
+    sys.path.insert(0, str(ROOT / ".github" / "scripts"))
+    import backup_release
+    import backup_tags
+    sha = "a" * 40
+    expect(backup_tags.plan("main", sha, "", "20261117T150000Z", {}) == [("backup/20261117T150000Z/main", sha)],
+           "push to main -> backup/<UTC>/main")
+    expect(backup_tags.plan("archive/backup-20261117T141700Z-staging", sha, "", "x", {})
+           == [("backup/20261117T141700Z/staging", sha)], "backup request branch -> its stamp and branch")
+    expect(backup_tags.plan("main", sha, "", "x", {sha: ["backup/20261117T140000Z/main"]}) == [],
+           "tip already backed up is not tagged twice")
+    tags = [f"backup-2026-{m:02d}-{d:02d}" for m in (8, 9, 10, 11) for d in (2, 9, 16, 23, 30) if not (m == 11 and d > 16)]
+    pruned = backup_release.releases_to_prune(tags)
+    kept = set(tags) - set(pruned)
+    expect(len([t for t in kept if t >= "backup-2026-09-30"]) >= 8 and "backup-2026-08-02" in kept
+           and "backup-2026-09-02" in kept and "backup-2026-08-09" in pruned, "release retention: 8 newest + monthly")
+
+
 def main() -> int:
-    for test in (test_glob_overlap, test_claims, test_tiers, test_compare):
+    for test in (test_glob_overlap, test_claims, test_tiers, test_compare, test_backup_scripts):
         test()
     print(f"{'FAIL' if FAILURES else 'PASS'} gate tools: {len(FAILURES)} failure(s)")
     return 1 if FAILURES else 0

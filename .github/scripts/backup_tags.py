@@ -2,10 +2,10 @@
 """Create durable backup tags backup/<UTC date-time>/<branch> (plan §8.1 layer 1, T-041).
 
 Runs in .github/workflows/backup.yml on every push to main/staging and on every pushed backup request branch
-archive/backup-<YYYYmmdd-HHMMSS>-<branch> (cloud sessions cannot push tags; tools/integrate.py pushes the request).
+archive/backup-<YYYYmmddTHHMMSSZ>-<branch> (cloud sessions cannot push tags; tools/integrate.py pushes the request).
 A tip that already has a backup tag for the same branch is not tagged twice. Tags are never moved or deleted.
 
-    python backup_tags.py --ref-name <branch> --sha <sha> [--before <sha>] [--push] [--now YYYYmmdd-HHMMSS]
+    python backup_tags.py --ref-name <branch> --sha <sha> [--before <sha>] [--push] [--now YYYYmmddTHHMMSSZ]
 """
 
 from __future__ import annotations
@@ -16,7 +16,7 @@ import re
 import subprocess
 
 ZERO = "0" * 40
-REQUEST = re.compile(r"^archive/backup-(\d{8}-\d{6})-(.+)$")
+REQUEST = re.compile(r"^archive/backup-(\d{8}T\d{6}Z)-(.+)$")
 
 
 def git(*args, check=True):
@@ -46,7 +46,7 @@ def main() -> int:
     ap.add_argument("--now", default="")
     ap.add_argument("--push", action="store_true")
     a = ap.parse_args()
-    now = a.now or dt.datetime.now(dt.timezone.utc).strftime("%Y%m%d-%H%M%S")
+    now = a.now or dt.datetime.now(dt.timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     git("fetch", "--quiet", "origin", "+refs/tags/backup/*:refs/tags/backup/*", check=False)
     existing: dict[str, list[str]] = {}
     for line in git("for-each-ref", "--format=%(*objectname) %(objectname) %(refname:short)", "refs/tags/backup").stdout.splitlines():
