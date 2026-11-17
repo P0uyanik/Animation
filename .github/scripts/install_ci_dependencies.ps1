@@ -31,21 +31,20 @@ Get-VerifiedFile -Name $oidnName -Url $pins.oidn.url -Sha256 $pins.oidn.sha256 |
 $bpyPin = $pins.bpy.$Platform
 $bpyName = Split-Path -Leaf $bpyPin.url
 $bpyWheel = Get-VerifiedFile -Name $bpyName -Url $bpyPin.url -Sha256 $bpyPin.sha256
-& python -m pip install --disable-pip-version-check $bpyWheel
+$blenderPython = (Get-Command python).Source
+& $blenderPython -m pip install --disable-pip-version-check $bpyWheel
 if ($LASTEXITCODE -ne 0) { throw 'installing the verified bpy wheel failed' }
-& python -m pip install --disable-pip-version-check 'Pillow==11.3.0'
-if ($LASTEXITCODE -ne 0) { throw 'installing the pinned Pillow dependency failed' }
-& python -c "import bpy; assert bpy.app.version_string.startswith('$($pins.bpy.version)'); print(bpy.app.version_string)"
+& $blenderPython -m pip install --disable-pip-version-check 'Pillow==11.3.0'
+if ($LASTEXITCODE -ne 0) { throw 'installing Pillow into the Blender Python failed' }
+& $blenderPython -c "import bpy, PIL; assert bpy.app.version_string.startswith('$($pins.bpy.version)'); print(bpy.app.version_string, PIL.__version__)"
 if ($LASTEXITCODE -ne 0) { throw 'the pinned bpy module failed its import/version check' }
 
 if ($Platform -eq 'windows') {
     $shim = Join-Path $env:RUNNER_TEMP 'plush-bpy-blender.cmd'
-    $python = (Get-Command python).Source
-    Set-Content -LiteralPath $shim -Encoding ASCII -Value "@`"$python`" `"$root\tools\bpy_blender.py`" %*"
+    Set-Content -LiteralPath $shim -Encoding ASCII -Value "@`"$blenderPython`" `"$root\tools\bpy_blender.py`" %*"
 } else {
     $shim = Join-Path $env:RUNNER_TEMP 'plush-bpy-blender'
-    $python = (Get-Command python).Source
-    $body = "#!/usr/bin/env bash`nexec `"$python`" `"$root/tools/bpy_blender.py`" `"`$@`"`n"
+    $body = "#!/usr/bin/env bash`nexec `"$blenderPython`" `"$root/tools/bpy_blender.py`" `"`$@`"`n"
     Set-Content -LiteralPath $shim -Encoding utf8NoBOM -Value $body
     & chmod +x $shim
     if ($LASTEXITCODE -ne 0) { throw 'making the bpy shim executable failed' }

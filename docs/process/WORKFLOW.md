@@ -49,6 +49,14 @@ A question or a discussion is never an approval.
 branch has the exact trailer `Supervisor-Approved: <path>`, added by the Supervisor. The Supervisor applies GitHub
 rulesets separately.
 
+On a Windows machine without a C++ toolchain, run the remaining checks explicitly with:
+
+```powershell
+python tools/check_all.py --skip-cpp
+```
+
+This reports `C++ build`, `CTest`, and `plush_tests` as `SKIPPED`; it never reports unrun C++ checks as `PASS`.
+
 The optional Blender tier also runs character fidelity when a character spec or references/annotations change, or
 when a shared body, face, groom, garment, material, geometry/build, or render-calibration generator changes. It runs
 `tools/fidelity/run.py` for every affected character, puts score and signed main-baseline delta on the Blender line

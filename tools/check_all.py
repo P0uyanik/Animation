@@ -399,12 +399,24 @@ def check_plush_tests(build_dir: Path, config: str, logs: Path, build_ok: bool) 
     return Result("plush_tests", code == 0, "" if code == 0 else f"see {relative_log(log)}", relative_log(log), round(seconds, 2))
 
 
-def check_python_tests(logs: Path) -> Result:
+def resolve_blender(blender: str) -> str:
+    requested = blender or os.environ.get("BLENDER", "") or "blender"
+    return shutil.which(requested) or requested
+
+
+def check_python_tests(logs: Path, artifacts: Path, blender: str) -> Result:
     log = logs / "python-tests.log"
     tests = [
         [sys.executable, str(ROOT / "pipeline/clips/tests/test_clip_files.py"), "--selftest"],
         [sys.executable, str(ROOT / "tools/fidelity/tests/test_ci.py")],
     ]
+    determinism_test = ROOT / "pipeline/charsys/tests/test_determinism.py"
+    if determinism_test.is_file():
+        determinism_out = Path(tempfile.mkdtemp(prefix="determinism-", dir=artifacts))
+        tests.append([
+            sys.executable, str(determinism_test),
+            "--blender", resolve_blender(blender), "--out", str(determinism_out),
+        ])
     failed: list[str] = []
     started = time.monotonic()
     for index, command in enumerate(tests):
@@ -437,10 +449,13 @@ def blender_paths_changed(changes: set[str]) -> bool:
     return False
 
 
-def add_subcheck(subchecks: list[dict], name: str, ok: bool, detail: str = "", log: Path | None = None) -> None:
+def add_subcheck(
+    subchecks: list[dict], name: str, ok: bool, detail: str = "",
+    log: Path | None = None, *, skipped: bool = False,
+) -> None:
     subchecks.append({
         "name": name, "ok": bool(ok), "detail": detail,
-        "log": relative_log(log) if log else "",
+        "log": relative_log(log) if log else "", "skipped": skipped,
     })
 
 
@@ -473,6 +488,41 @@ def run_fidelity_checks(
     except (OSError, ValueError, TypeError, KeyError, json.JSONDecodeError) as exc:
         add_subcheck(subchecks, "character fidelity", False, f"invalid baseline: {exc}")
         return subchecks, details
+
+    if affected:
+        probe = artifacts / "fidelity-pillow-probe.py"
+        probe_result = artifacts / "fidelity-pillow-probe.json"
+        probe.write_text(
+            "import json\n"
+            "try:\n"
+            "    import PIL\n"
+            "    result = {'available': True, 'version': PIL.__version__}\n"
+            "except ImportError:\n"
+            "    result = {'available': False}\n"
+            f"with open({str(probe_result)!r}, 'w', encoding='utf-8') as out:\n"
+            "    json.dump(result, out)\n",
+            encoding="utf-8",
+        )
+        probe_log = logs / "fidelity-pillow-probe.log"
+        code, _ = run_logged([
+            executable, "-b", "--factory-startup", "-P", str(probe),
+        ], probe_log)
+        try:
+            pillow_available = bool(json.loads(probe_result.read_text(encoding="utf-8"))["available"])
+        except (OSError, KeyError, TypeError, json.JSONDecodeError):
+            pillow_available = None
+        if code or pillow_available is None:
+            detail = f"Pillow availability probe failed; see {relative_log(probe_log)}"
+            add_subcheck(subchecks, "character fidelity", False, detail, probe_log)
+            details.append(f"fidelity {detail}")
+            return subchecks, details
+        if not pillow_available:
+            detail = "not run: Pillow missing"
+            add_subcheck(
+                subchecks, "character fidelity", True, detail, probe_log, skipped=True,
+            )
+            details.append(f"fidelity {detail}")
+            return subchecks, details
 
     for character_id in affected:
         entry = characters[character_id]
@@ -521,8 +571,7 @@ def check_blender(blender: str, artifacts: Path, logs: Path, required: bool, cha
         return Result("Blender tier", True, skipped=True)
     started = time.monotonic()
     subchecks: list[dict] = []
-    requested = blender or os.environ.get("BLENDER", "") or "blender"
-    executable = shutil.which(requested) or requested
+    executable = resolve_blender(blender)
     if not Path(executable).is_file():
         return Result("Blender tier", False, "Blender executable not found")
 
@@ -620,7 +669,7 @@ def check_blender(blender: str, artifacts: Path, logs: Path, required: bool, cha
 def summary_lines(results: list[Result]) -> list[str]:
     lines = []
     for result in results:
-        state = "PASS" if result.ok else "FAIL"
+        state = "SKIPPED" if result.skipped else ("PASS" if result.ok else "FAIL")
         line = f"{state} {result.name}"
         if result.name in {"Blender tier", "Merge status"} and result.detail:
             line += f": {result.detail.replace(chr(10), ' ')}"
@@ -643,6 +692,10 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--json", default="", help="JSON report path (default: <artifacts>/check_all.json)")
     parser.add_argument("--summary-file", default="", help="text summary path (default: <artifacts>/summary.txt)")
     parser.add_argument("--config", default="Release", help="CMake configuration")
+    parser.add_argument(
+        "--skip-cpp", action="store_true",
+        help="skip the C++ build, CTest, and plush_tests checks (reported as SKIPPED)",
+    )
     parser.add_argument("--blender", default="", help="Blender executable; supplying it always enables the Blender tier")
     parser.add_argument("--merge-status", default="", help="CI trial-merge status (normally 'clean')")
     args = parser.parse_args(argv)
@@ -667,11 +720,18 @@ def main(argv: list[str] | None = None) -> int:
         check_guarded(base, changes),
         check_shared_character_lint(),
     ]
-    build_result = check_cpp_build(build_dir, args.config, logs)
-    results.append(build_result)
-    results.append(check_ctest(build_dir, args.config, logs, build_result.ok))
-    results.append(check_plush_tests(build_dir, args.config, logs, build_result.ok))
-    results.append(check_python_tests(logs))
+    if args.skip_cpp:
+        results.extend([
+            Result("C++ build", True, "disabled by --skip-cpp", skipped=True),
+            Result("CTest", True, "disabled by --skip-cpp", skipped=True),
+            Result("plush_tests", True, "disabled by --skip-cpp", skipped=True),
+        ])
+    else:
+        build_result = check_cpp_build(build_dir, args.config, logs)
+        results.append(build_result)
+        results.append(check_ctest(build_dir, args.config, logs, build_result.ok))
+        results.append(check_plush_tests(build_dir, args.config, logs, build_result.ok))
+    results.append(check_python_tests(logs, artifacts, args.blender))
     results.append(check_doc_links(logs))
     blender_required = bool(args.blender) or blender_paths_changed(changes)
     results.append(check_blender(args.blender, artifacts, logs, blender_required, changes))
