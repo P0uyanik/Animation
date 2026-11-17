@@ -118,10 +118,10 @@ def test_compare():
         cfg = {"character": "probe", "spec_version": "1.0.0", "spec_inputs_sha256": "abc", "inputs": []}
         golden_root = t / "golden"
         gdir = golden_root / "probe" / "1.0.0"
-        (gdir / "renders").mkdir(parents=True)
+        (gdir / "images").mkdir(parents=True)
         out = t / "out"
         (out / "renders").mkdir(parents=True)
-        Image.new("RGBA", (16, 16), (100, 100, 100, 255)).save(gdir / "renders" / "v.png")
+        Image.new("RGBA", (16, 16), (100, 100, 100, 255)).save(gdir / "images" / "v.png")
         Image.new("RGBA", (16, 16), (100, 100, 100, 255)).save(out / "renders" / "v.png")
         fp = {"objects": {"head": {"coords_hash": "1"}}}
         (gdir / "fingerprint.json").write_bytes(R.canonical(fp))

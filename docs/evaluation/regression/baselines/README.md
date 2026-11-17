@@ -2,7 +2,7 @@
 
 Approved per-character regression baselines for `tools/regression/run.py` (see `docs/process/GATE.md` §3).
 One folder per character and spec version: `golden.json` (spec inputs hash, fingerprint hash, order-independent
-engine-export summary, render hashes), `fingerprint.json` (format 2, 0.01 mm) and `renders/*.png` (fixed cameras of
+engine-export summary, render hashes), `fingerprint.json` (format 2, 0.01 mm) and `images/*.png` (fixed cameras of
 `tools/regression/views.json`). Guarded: changes need a `Supervisor-Approved:` trailer; a new character version adds
 a new folder (new files only) through an owner-approved pin-bump task.
 

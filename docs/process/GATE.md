@@ -47,7 +47,7 @@ parallel: build (spec + the overrides of its current version, from `fidelity_bas
 bone, 320 px, 16 samples, OIDN, seed 0, the shared render calibration), fidelity (drop > 2 points = FAIL).
 
 Approved baselines: `docs/evaluation/regression/baselines/<id>/<spec version>/` (`golden.json`,
-`fingerprint.json`, `renders/*.png`), guarded, made on the CI runner from `main`'s spec inputs.
+`fingerprint.json`, `images/*.png`), guarded, made on the CI runner from `main`'s spec inputs.
 
 - **Unchanged character** (its spec/override files are not in the diff vs `--base`): must be identical to the
   baseline (= `main`): fingerprint byte-equal, engine export equal (order-independent summary, see below), every

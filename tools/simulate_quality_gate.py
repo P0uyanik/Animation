@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import shutil
 import os
 from pathlib import Path
@@ -238,12 +239,16 @@ class Simulations:
         self.branch("changed-fingerprint")
         path = Path("pipeline/charsys/build_character.py")
         text = path.read_text(encoding="utf-8")
-        anchor = "    bpy.ops.wm.save_as_mainfile(filepath=master, compress=True)\n"
-        if text.count(anchor) != 1:
-            raise RuntimeError("build_character.py save anchor not found")
-        probe = ('    _sim = sorted((o for o in bpy.data.objects if o.type == "MESH"), key=lambda o: o.name)[0]\n'
-                 '    _sim.data.vertices[0].co.x += 0.001  # T-041 simulation: 1 mm shared-code geometry change\n')
-        path.write_text(text.replace(anchor, probe + anchor), encoding="utf-8")
+        # Before every save of the master (legacy and generic build paths), shift one mesh by 1 mm.
+        pattern = re.compile(r'^(\s*)(bpy\.ops\.wm\.save_as_mainfile\(filepath=(master|os\.path\.join\(out, f"\{cid\}_master\.blend"\)).*)$',
+                             re.M)
+        probe = ('{0}_sim = sorted((o for o in bpy.data.objects if o.type == "MESH"), key=lambda o: o.name)[0]\n'
+                 '{0}_sim.data.transform(__import__("mathutils").Matrix.Translation((0.001, 0.0, 0.0)))'
+                 '  # T-041 simulation: 1 mm shared-code geometry change\n')
+        patched, count = pattern.subn(lambda m: probe.format(m.group(1)) + m.group(0), text)
+        if count < 1:
+            raise RuntimeError("build_character.py master save not found")
+        path.write_text(patched, encoding="utf-8")
         self.commit([str(path)], "T-041 simulation: shared code moves one boy vertex by 1 mm (no spec change)")
         out = ROOT / "build" / "t023-sim" / "changed-fingerprint"
         shutil.rmtree(out, ignore_errors=True)

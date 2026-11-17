@@ -45,6 +45,7 @@ VIEWS = HERE / "views.json"
 NOISE = HERE / "render_noise_threshold.json"
 SCHEMA = "plush-studio.regression/1"
 GOLDEN_SCHEMA = "plush-studio.regression-golden/1"
+BASELINE_IMAGES = "images"  # not "renders": the repository .gitignore excludes every renders/ folder
 
 
 def run_logged(command, log: Path, env=None) -> int:
@@ -304,7 +305,7 @@ def compare(cfg: dict, data: dict, out: Path, golden_root: Path, unchanged: bool
     worst = {}
     bad = []
     for name in data["renders"]:
-        ref = gdir / "renders" / f"{name}.png"
+        ref = gdir / BASELINE_IMAGES / f"{name}.png"
         if not ref.is_file():
             bad.append(f"{name}: no baseline image")
             continue
@@ -324,9 +325,9 @@ def write_baseline(cfg: dict, data: dict, out: Path, dest_root: Path, blender: s
     dest = baseline_dir(dest_root, cfg)
     if dest.exists():
         shutil.rmtree(dest)
-    (dest / "renders").mkdir(parents=True)
+    (dest / BASELINE_IMAGES).mkdir(parents=True)
     for name in data["renders"]:
-        shutil.copy2(out / "renders" / f"{name}.png", dest / "renders" / f"{name}.png")
+        shutil.copy2(out / "renders" / f"{name}.png", dest / BASELINE_IMAGES / f"{name}.png")
     shutil.copy2(out / "fingerprint.json", dest / "fingerprint.json")
     commit = subprocess.run(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True, capture_output=True).stdout.strip()
     views = json.loads(VIEWS.read_text(encoding="utf-8"))
