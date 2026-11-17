@@ -344,6 +344,10 @@ def main():
         run_out = os.path.join(out, "runs", a.run_dir) if bare else os.path.abspath(a.run_dir)
     else:
         run_out = out
+    sys.path.insert(0, CHARSYS)
+    import asset_store  # the shared overwrite guard (T-075): shot outputs never go into a published version
+    asset_store.refuse_store_target(out, "shot build output")
+    asset_store.refuse_store_target(run_out, "run output")
     if a.mark_cancelled:
         if not a.run_dir:
             ap.error("--mark-cancelled needs --run-dir")
