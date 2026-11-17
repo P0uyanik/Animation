@@ -34,6 +34,8 @@
 | T-045 | Body mechanics: shoulders, clavicles, torso, weight shift | assigned 2026-11-17 | t-045-claude-body-mechanics | `docs/tasks/T-045.md` |
 | T-058 | Boy 2.0: integrate T-039 body, face with brow/mouth controls, hoodie garment (path B) | assigned 2026-11-17 (owner-approved 6th Implementer) | t-039-codex-boy2-body | `docs/tasks/T-058.md` |
 | T-059 | Girl look round: mouth (fuller lips, wider), cheeks lifted at rest (face generator soft-smile rest, new face version), skin tone, eyes (spacing/size), proportions, vest, boots, ears, accessories; with hair v3 | queued (after T-044, T-058, T-055) | — | owner 2026-11-17: references are the primary target |
+| T-060 | Windows build + CI green | assigned 2026-11-17 to Codex (local PC) | t-060-codex-windows-ci | `docs/tasks/T-060.md` |
+| T-054a | Lip-sync toolchain (offline tools, shared visemes) | queued for Codex after T-060 | t-054a-codex-lipsync-tools | `docs/tasks/T-054a.md` |
 | T-048 | Branch cleanup workflow + tests | **in main** 2026-11-17 | t-048-claude-branch-cleanup (8f1c3ce), merge ae15c0b | 25/25 cleanup tests, full gate PASS; first real dry run after T-041 backups |
 | T-049 | Hair approach study (strand vs sculpted vs hybrid) | **in main** 2026-11-17; owner choice pending | t-049-claude-hair-study (e31e613) | recommends hybrid C (felted base volumes + few broad edge clumps, face keep-out as spec data); none reaches reference softness yet (fibre halo/volume, girl fringe) |
 | T-050 | GPU / render cost study (no spending) | **in main** 2026-11-17; owner decision pending | t-050-claude-render-cost (242c97c) | previews CPU; review/finals on rented RTX 4090 ≈ $0.84/finished min, ≈ $10–25/month; do not buy a GPU for cost alone |
