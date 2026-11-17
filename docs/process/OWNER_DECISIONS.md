@@ -83,3 +83,9 @@ Architecture: shared systems + versioned behaviour + character-specific data/ass
 ## 2026-11-17: girl 0.9.0 approved as an intermediate version
 The consolidated girl spec 0.9.0 is approved for `main` as an intermediate state, NOT as final visual approval.
 Open visual gaps (hair structure and colour, proportions, vest, boots, ears, hair accessories) remain tracked.
+
+## 2026-11-17: automation Phase 2 not built now
+PR-per-task automation (Phase 2) is deferred: the staging workflow, integrate.py and the quality gate already cover
+its benefits. Instead: a small push-triggered cleanup workflow deletes only branches fully merged into main (the
+cloud proxy blocks deletion), and the owner sets a main-branch ruleset once. Revisit Phase 2 with >4 permanent
+parallel Implementers, external reviewers, or if the owner prefers reviewing in GitHub.
