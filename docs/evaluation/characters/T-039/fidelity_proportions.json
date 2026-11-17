@@ -1,0 +1,312 @@
+{
+ "schema": "plush-studio.t039-body-proportions/2",
+ "character": "boy_yellow_hoodie",
+ "reference_views": [
+  "val27_front",
+  "val27_threequarter_right",
+  "val27_side_right",
+  "val27_back",
+  "val27_back_threequarter"
+ ],
+ "head_units": {
+  "definition": "1 head unit (HU) = chin to top of the bare skull. Reference: chin-to-sole / (1 - 0.314) * 0.314 (the bare-skull fraction 0.314 is the T-039 assumption, the skull is hidden under the hair). Render: projected LM_chin to the top of the silhouette. Landmarks from T-032 annotations / tools/fidelity render landmarks; front view (val27_front) and three-quarter (val27_threequarter_right).",
+  "before_codex_wip_6f2b09f": {
+   "front": {
+    "chin_to_shoulder": {
+     "reference": 0.246,
+     "render": 0.181,
+     "ratio": 0.734
+    },
+    "shoulder_width": {
+     "reference": 0.677,
+     "render": 0.612,
+     "ratio": 0.903
+    },
+    "arm_shoulder_to_palm": {
+     "reference": 0.906,
+     "render": 0.915,
+     "ratio": 1.01
+    },
+    "palm_above_sole": {
+     "reference": 1.046,
+     "render": 1.068,
+     "ratio": 1.021
+    },
+    "palm_half_spread": {
+     "reference": 0.492,
+     "render": 0.361,
+     "ratio": 0.734
+    },
+    "foot_half_spread": {
+     "reference": 0.262,
+     "render": 0.172,
+     "ratio": 0.658
+    },
+    "height": {
+     "reference": 3.185,
+     "render": 3.162,
+     "ratio": 0.993
+    }
+   },
+   "threequarter_right": {
+    "chin_to_shoulder": {
+     "reference": 0.217,
+     "render": 0.176,
+     "ratio": 0.814
+    },
+    "shoulder_width": {
+     "reference": 0.607,
+     "render": 0.498,
+     "ratio": 0.821
+    },
+    "arm_shoulder_to_palm": {
+     "reference": 0.888,
+     "render": 0.864,
+     "ratio": 0.973
+    },
+    "palm_above_sole": {
+     "reference": 1.083,
+     "render": 1.136,
+     "ratio": 1.049
+    },
+    "palm_half_spread": {
+     "reference": 0.447,
+     "render": 0.295,
+     "ratio": 0.66
+    },
+    "foot_half_spread": {
+     "reference": 0.217,
+     "render": 0.14,
+     "ratio": 0.648
+    },
+    "height": {
+     "reference": 3.185,
+     "render": 3.176,
+     "ratio": 0.997
+    }
+   }
+  },
+  "after_final": {
+   "front": {
+    "chin_to_shoulder": {
+     "reference": 0.246,
+     "render": 0.248,
+     "ratio": 1.009
+    },
+    "shoulder_width": {
+     "reference": 0.677,
+     "render": 0.672,
+     "ratio": 0.993
+    },
+    "arm_shoulder_to_palm": {
+     "reference": 0.906,
+     "render": 0.895,
+     "ratio": 0.988
+    },
+    "palm_above_sole": {
+     "reference": 1.046,
+     "render": 1.033,
+     "ratio": 0.988
+    },
+    "palm_half_spread": {
+     "reference": 0.492,
+     "render": 0.514,
+     "ratio": 1.043
+    },
+    "foot_half_spread": {
+     "reference": 0.262,
+     "render": 0.234,
+     "ratio": 0.896
+    },
+    "height": {
+     "reference": 3.185,
+     "render": 3.159,
+     "ratio": 0.992
+    }
+   },
+   "threequarter_right": {
+    "chin_to_shoulder": {
+     "reference": 0.217,
+     "render": 0.237,
+     "ratio": 1.092
+    },
+    "shoulder_width": {
+     "reference": 0.607,
+     "render": 0.546,
+     "ratio": 0.9
+    },
+    "arm_shoulder_to_palm": {
+     "reference": 0.888,
+     "render": 0.819,
+     "ratio": 0.923
+    },
+    "palm_above_sole": {
+     "reference": 1.083,
+     "render": 1.135,
+     "ratio": 1.048
+    },
+    "palm_half_spread": {
+     "reference": 0.447,
+     "render": 0.419,
+     "ratio": 0.937
+    },
+    "foot_half_spread": {
+     "reference": 0.217,
+     "render": 0.191,
+     "ratio": 0.88
+    },
+    "height": {
+     "reference": 3.185,
+     "render": 3.181,
+     "ratio": 0.999
+    }
+   }
+  }
+ },
+ "fidelity_tool_relative_to_figure_height": {
+  "note": "tools/fidelity proportions divide by the figure height, which for the reference INCLUDES hair (~8% of the bare height) and for this body-only render does not; so body ratios read about +8% too long/wide even when the body matches in head units. Kept for continuity with T-032.",
+  "frozen_1_1_0": {
+   "source": "docs/evaluation/characters/T-032/boy/fidelity.json (frozen 1.1.0 build)",
+   "arm_length": {
+    "reference_median": 0.2614,
+    "render_median": 0.2106,
+    "relative_median": -0.2026
+   },
+   "shoulder_width": {
+    "reference_median": 0.1842,
+    "render_median": 0.1869,
+    "relative_median": 0.0012
+   },
+   "leg_gap_height": {
+    "reference_median": 0.254,
+    "render_median": 0.1632,
+    "relative_median": -0.3574
+   },
+   "head_to_height_hair_inclusive": {
+    "reference_median": 0.3681,
+    "render_median": 0.3761,
+    "relative_median": 0.0197
+   }
+  },
+  "codex_wip_6f2b09f": {
+   "arm_length": {
+    "reference_median": 0.2614,
+    "render_median": 0.2911,
+    "relative_median": 0.1071,
+    "by_view": {
+     "val27_back": 0.169,
+     "val27_back_threequarter": 0.1644,
+     "val27_front": 0.1071,
+     "val27_side_right": 0.1022,
+     "val27_threequarter_right": 0.0851
+    }
+   },
+   "shoulder_width": {
+    "reference_median": 0.1842,
+    "render_median": 0.1823,
+    "relative_median": -0.0231,
+    "by_view": {
+     "val27_back": 0.0426,
+     "val27_back_threequarter": -0.0363,
+     "val27_front": -0.01,
+     "val27_threequarter_right": -0.0958
+    }
+   },
+   "leg_gap_height": {
+    "reference_median": 0.1314,
+    "render_median": 0.3201,
+    "relative_median": 18.5645,
+    "by_view": {
+     "val27_back": 0.1125,
+     "val27_back_threequarter": 85.2201,
+     "val27_front": 0.3148,
+     "val27_threequarter_right": 36.8141
+    }
+   },
+   "figure_width": {
+    "reference_median": 0.3522,
+    "render_median": 0.3131,
+    "relative_median": -0.1169,
+    "by_view": {
+     "val27_back": -0.1484,
+     "val27_back_threequarter": -0.0772,
+     "val27_front": -0.1882,
+     "val27_side_right": -0.1169,
+     "val27_threequarter_right": -0.111
+    }
+   },
+   "head_to_height": {
+    "reference_median": 0.3681,
+    "render_median": 0.3149,
+    "relative_median": -0.1365,
+    "by_view": {
+     "val27_front": -0.1365,
+     "val27_side_right": -0.1134,
+     "val27_threequarter_right": -0.1447
+    }
+   }
+  },
+  "final": {
+   "arm_length": {
+    "reference_median": 0.2614,
+    "render_median": 0.2834,
+    "relative_median": 0.0844,
+    "by_view": {
+     "val27_back": 0.1433,
+     "val27_back_threequarter": 0.128,
+     "val27_front": 0.0844,
+     "val27_side_right": 0.0558,
+     "val27_threequarter_right": 0.0538
+    }
+   },
+   "shoulder_width": {
+    "reference_median": 0.1842,
+    "render_median": 0.1998,
+    "relative_median": 0.0701,
+    "by_view": {
+     "val27_back": 0.1452,
+     "val27_back_threequarter": 0.0509,
+     "val27_front": 0.0894,
+     "val27_threequarter_right": -0.0107
+    }
+   },
+   "leg_gap_height": {
+    "reference_median": 0.1314,
+    "render_median": 0.2999,
+    "relative_median": 17.502,
+    "by_view": {
+     "val27_back": 0.0381,
+     "val27_back_threequarter": 81.0801,
+     "val27_front": 0.2131,
+     "val27_threequarter_right": 34.7908
+    }
+   },
+   "figure_width": {
+    "reference_median": 0.3522,
+    "render_median": 0.347,
+    "relative_median": -0.0244,
+    "by_view": {
+     "val27_back": 0.0011,
+     "val27_back_threequarter": -0.0133,
+     "val27_front": -0.0244,
+     "val27_side_right": -0.1247,
+     "val27_threequarter_right": -0.0725
+    }
+   },
+   "head_to_height": {
+    "reference_median": 0.3681,
+    "render_median": 0.3147,
+    "relative_median": -0.1359,
+    "by_view": {
+     "val27_front": -0.1359,
+     "val27_side_right": -0.1305,
+     "val27_threequarter_right": -0.1515
+    }
+   }
+  }
+ },
+ "renders": {
+  "codex_wip": "build/t039_it1",
+  "final": "build/t039_it3 (Cycles, shared calibration, 640 px, 32 samples, OIDN)"
+ }
+}

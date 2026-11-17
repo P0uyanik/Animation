@@ -8,7 +8,9 @@ One implementation for every humanoid character; a character differs only by dat
   spec.face.blink         face.py lid_seam/1 (+ timing data for the engine)
   spec.face.smile_coupling
   spec.face.expressions   intensity / per-preset scale / weight overrides for the shared library
-                          (pipeline/charsys/face_library/expressions.json)
+                          (pipeline/charsys/face_library/expressions.json); optional `custom` presets (T-058)
+  spec.face.action_units  motion sizes; optional (T-058, off = unchanged output) `split` (per-side .L/.R copies of
+                          symmetric action units, e.g. BrowDown.L / MouthSmile.R) and `pout_m` (MouthPout)
 
 Shared functions never test a character's name; everything is placed from the eye bones, the head surface (ray
 casts on the head mesh) and landmarks derived from the layout. The legacy boy (body_v6) is not built here: his v6
@@ -425,6 +427,88 @@ def build_ears(C, M, ctx, ec, ez):
 
 
 # ------------------------------------------------------------------------------------------------ expression library
+SPLITTABLE = ("BrowDown", "BrowSad", "EyeSquint", "EyeWide", "MouthSmile", "MouthFrown", "MouthPout")
+
+
+def _smooth01(t):
+    t = min(1.0, max(0.0, t))
+    return t * t * (3 - 2 * t)
+
+
+def add_pout(objs, centre, cfg, mouth_half_w):
+    """Optional action unit MouthPout (T-058; spec.face.action_units.pout_m > 0): the lips and the skin around them push
+    forward (lower lip more) and narrow slightly. One displacement field applied to every given mesh (lips, interior,
+    head skin), so the lips stay on the skin. Returns the objects that got the key."""
+    import numpy as np
+    amount = _f(cfg, "pout_m", 0.0)
+    rx = _f(cfg, "pout_radius_m", 2.4 * mouth_half_w)
+    rz = rx * _f(cfg, "pout_radius_z", 0.75)
+    lower = _f(cfg, "pout_lower", 0.5)    # extra forward share below the mouth line (lower lip forward)
+    narrow = _f(cfg, "pout_narrow", 0.12)  # corners move in by this fraction of their x
+    done = []
+    for ob in objs:
+        me = ob.data
+        n = len(me.vertices)
+        mw = ob.matrix_world
+        mi = mw.inverted().to_3x3()
+        co = np.empty(n * 3)
+        (me.shape_keys.key_blocks[0].data if me.shape_keys else me.vertices).foreach_get("co", co)
+        co = co.reshape(n, 3)
+        delta = np.zeros((n, 3))
+        hit = False
+        for i in range(n):
+            p = mw @ Vector(co[i])
+            if p.y > centre.y + rx:  # front of the face only
+                continue
+            d = math.sqrt((p.x / rx) ** 2 + ((p.z - centre.z) / rz) ** 2)
+            if d >= 1.0:
+                continue
+            w = (1 - d * d) ** 2
+            fwd = amount * w * (1 + lower * _smooth01((centre.z - p.z) / rz * 2))
+            dw = Vector((-narrow * p.x * w, -fwd, 0.0))
+            delta[i] = mi @ dw
+            hit = True
+        if not hit:
+            continue
+        if me.shape_keys is None:
+            ob.shape_key_add(name="Basis")
+        k = ob.shape_key_add(name="MouthPout", from_mix=False)
+        k.value = 0.0
+        k.data.foreach_set("co", (co + delta).ravel())
+        done.append(ob.name)
+    return done
+
+
+def split_action_units(objs, names, blend_m):
+    """Optional per-side copies (T-058; spec.face.action_units.split): for every listed symmetric action unit X on any
+    mesh, keys X.L (the character's left, +x) and X.R carrying the motion on that side only, blended across the
+    midline over +-blend_m (world x), so X.L + X.R = X. Returns {X: [X.L, X.R]} for the units that exist."""
+    import numpy as np
+    made = {}
+    for name in names:
+        if name not in SPLITTABLE:
+            raise ValueError(f"face.action_units.split: {name!r} is not splittable ({', '.join(SPLITTABLE)})")
+        for ob in objs:
+            sk = ob.data.shape_keys
+            if sk is None or name not in sk.key_blocks:
+                continue
+            kb = sk.key_blocks
+            n = len(ob.data.vertices)
+            base = np.empty(n * 3)
+            kb[0].data.foreach_get("co", base)
+            full = np.empty(n * 3)
+            kb[name].data.foreach_get("co", full)
+            mw = ob.matrix_world
+            xs = np.array([(mw @ Vector(base[3 * i:3 * i + 3])).x for i in range(n)])
+            wl = np.array([_smooth01(0.5 + x / (2 * blend_m)) if blend_m > 0 else float(x > 0) for x in xs])
+            for side, w in (("L", wl), ("R", 1.0 - wl)):
+                k = ob.shape_key_add(name=f"{name}.{side}", from_mix=False)
+                k.value = 0.0
+                k.data.foreach_set("co", base + (full - base) * np.repeat(w, 3))
+            made[name] = [f"{name}.L", f"{name}.R"]
+    return made
+
+
 def _au_shape(kb, base, au, w, np):
     """Coordinates delta of action unit `au` at weight w on one mesh: piecewise along its in-between keys when it has
     them (rotation-type motions), else linear."""
@@ -458,6 +542,10 @@ def bake_presets(objs, lib, ecfg, au_names):
     presets = dict(lib["presets"])
     for name in ecfg.get("optional", []):
         presets[name] = lib["optional_presets"][name]
+    for name, w in (ecfg.get("custom") or {}).items():  # T-058: character presets as spec data (absent = unchanged)
+        if name in presets:
+            raise ValueError(f"face.expressions.custom: {name!r} already exists in the shared library (use override)")
+        presets[name] = w
     built, jaw = [], {}
     for p, w in presets.items():
         w = {**w, **over.get(p, {})}
@@ -650,6 +738,8 @@ def build(C, M, head, spec, P, H, head_bone="DEF-spine.006", eye_bone="DEF-eye.{
         rep["smile_coupling"] = FACE.add_smile_coupling(head, lids, mouth, lm, fs["smile_coupling"])
     for ob in [mouth, cavity, head] + [l[1] for l in lids]:
         _rename_key(ob, "Smile", "MouthSmile")
+    if _f(au, "pout_m", 0.0) > 0:  # T-058 opt-in MouthPout (before the rest-shape bake, which may use it)
+        rep["pout"] = add_pout([mouth, cavity, head], lm["mouth"], au, _f(mcfg, "half_width_m", 0.0125))
     if mcfg.get("rest_shape", "closed_smile") != "closed_smile":  # v2 mouth rest shape (baked into the basis)
         rep["mouth_rest_shape"] = {"shape": mcfg["rest_shape"],
                                    "objects": FF.bake_rest_shape([mouth, cavity, head], mcfg["rest_shape"],
@@ -657,6 +747,12 @@ def build(C, M, head, spec, P, H, head_bone="DEF-spine.006", eye_bone="DEF-eye.{
     au_names = [a for a in lib["action_units"]]
     lid_objs = [o for l in lids for o in l[:3]]
     face_objs = eyes + lid_objs + brows + [mouth, cavity, head]
+    # T-058 opt-in controls (absent = unchanged output): MouthPout and per-side copies of symmetric units
+    if _f(au, "pout_m", 0.0) > 0:
+        au_names.append("MouthPout")
+    if au.get("split"):
+        rep["split_action_units"] = split_action_units(face_objs, list(au["split"]), _f(au, "split_blend_m", 0.006))
+        au_names += [n for pair in rep["split_action_units"].values() for n in pair]
     present = sorted({k.name for o in face_objs if o.data.shape_keys for k in o.data.shape_keys.key_blocks[1:] if "@" not in k.name} | {"JawOpen"})
     au_built = [a for a in au_names if a in present]
     presets, jaw_w = bake_presets(face_objs, lib, fs.get("expressions", {}), set(au_built))
@@ -680,6 +776,9 @@ def build(C, M, head, spec, P, H, head_bone="DEF-spine.006", eye_bone="DEF-eye.{
                 "gaze envelope %.3f: the lids stand more than 25%% of the radius off the eyeball at rest (visible gap); "
                 "reduce the gaze range or the eye's ovalness (iris-sliding gaze is not implemented)" % env)
     engine = {k: v for k, v in lib["engine_expressions"].items() if v in set(au_built) | set(presets)}
+    for name in (fs.get("expressions", {}).get("custom") or {}):  # T-058: custom presets under their lowerCamel name
+        if name in presets:
+            engine.setdefault(name[0].lower() + name[1:], name)
     return {"eyes": eyes, "lids": lids, "brows": brows, "ears": ears, "nose": nose_obj, "mouth": mouth, "cavity": cavity, "landmarks": lm,
             "rigid": rigid, "frames": frames, "ctx": ctx, "controls": au_built + presets, "jaw_preset_weights": jaw_w,
             "engine_expressions": engine, "mouth_cfg": mcfg, "report": rep}

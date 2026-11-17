@@ -26,7 +26,7 @@ import sys
 import time
 
 import bpy
-from mathutils import Matrix
+from mathutils import Matrix, Vector
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -150,7 +150,7 @@ def animation_compat(rig, C, spec):
     return {"character_id": spec["identity"]["id"], "rest_pose": spec["animation"]["rest_pose"],
             "rig_generator": spec["rig"]["generator"], "armature_object": rig.name,
             "bones": len(rig.data.bones), "deform_bones": deform, "control_bones": controls,
-            "shape_keys": keys, "expression_shape_keys": spec["face"]["expression_shape_keys"],
+            "shape_keys": keys, "expression_shape_keys": spec.get("face", {}).get("expression_shape_keys", []),
             "face_controls": sorted(k for k in rig.keys() if k.startswith("face_")),
             "head_bone": spec["rig"]["head_bone"], "chest_bone": spec["rig"]["chest_bone"],
             "interchange": spec["animation"]["interchange"], "not_carried_by_gltf": spec["animation"]["not_carried_by_gltf"],
@@ -183,6 +183,36 @@ def add_face_controls(rig, C, names):
             var.targets[0].data_path = f'["{prop}"]'
             made[prop].append(o.name)
     return made
+
+
+def build_clump_hair(C, head, spec, mats, hair_module):
+    """hair_clumps/* (hair.py, unchanged) on a body_generic head (T-058). hair.py places its clumps on an ellipsoid and
+    reads the body module's helpers; on the generic path that ellipsoid is spec data (spec.hair.ellipsoid_centre_m,
+    ellipsoid_radii_m) and the helpers are the shared copies. The material is the spec's "hair" slot (preset, with its
+    surface fibres when the preset has them)."""
+    import types
+
+    hs = spec["hair"]
+    hc, hr = Vector(hs["ellipsoid_centre_m"]), Vector(hs["ellipsoid_radii_m"])
+
+    def on_hair(az, el, lift=0.0):  # same rule as body_v6.on_hair, on the spec's ellipsoid
+        ra, re_ = math.radians(az), math.radians(el)
+        d = Vector((math.sin(ra) * math.cos(re_), -math.cos(ra) * math.cos(re_), math.sin(re_)))
+        p = hc + Vector((d.x * hr.x, d.y * hr.y, d.z * hr.z))
+        n = Vector((d.x / hr.x, d.y / hr.y, d.z / hr.z)).normalized()
+        return p + n * lift, n
+    shim = types.SimpleNamespace(G=G, on_hair=on_hair, clump=B.clump, face_y=BH.face_y, HAIR_C=hc, HAIR_R=hr)
+    asg = MATERIALS.get_assignment(mats, "hair")
+    rgb = tuple(mats.get("target_colors_srgb", {}).get("hair", (40, 32, 30)))
+    hm = MATERIALS.build_from_assignment("M_hair", asg) if asg else G.material("M_hair", rgb, roughness=0.9, sheen=0.4)
+    objs, stats = hair_module.build(C, {"hair": hm}, head, shim, hs)
+    fibres = []
+    if asg:
+        for ob in objs:
+            fb = MATERIALS.add_fibres_from_assignment(ob, asg)
+            if fb is not None:
+                fibres.append(fb.name)
+    return objs, {"generator": hs.get("generator"), "objects": [o.name for o in objs], "fibres": fibres, **stats}
 
 
 def family(pin):
@@ -227,6 +257,7 @@ def main_generic(a, spec, info, out):
         report["garments"] = garment_report
     fc = None
     acc = []
+    face_spec = spec.get("face", {})
     if family(pins["face"]) == "face_generic":
         import accessories as ACC
         FG = V.load("face", pins["face"])
@@ -258,6 +289,9 @@ def main_generic(a, spec, info, out):
             asg = dict(asg, overrides=MATERIALS.deep_merge(asg.get("overrides") or {}, overrides))
             return MATERIALS.add_fibres_from_assignment(ob, asg)
         groom, report["hair"] = GROOM.build(C, parts[0][0], frame, spec["hair"], hair_material, BH.face_y, hair_fibres)
+    clump_hair = []
+    if family(pins["groom"]) == "hair_clumps":  # T-058: the pinned legacy clump hair on a generic body
+        clump_hair, report["hair"] = build_clump_hair(C, parts[0][0], spec, mats, V.load("groom", pins["groom"]))
     if a.timings:
         report["model_s"] = round(time.time() - t0, 1)
     rig, rr = BG.rig_generic(C, f"rig_{cid}", parts, P, H, J, frames, spec["rig"].get("weight_rules", {}), BH,
@@ -267,7 +301,7 @@ def main_generic(a, spec, info, out):
         report["garment_skinning"] = GAR.bind_to_body(rig, parts[0][0], garment_objects,
                                                        max_influences=int(spec["clothing"].get(
                                                            "max_influences", spec["rig"].get("max_influences", 4))))
-    names = list(spec["face"].get("expression_shape_keys", []))
+    names = list(face_spec.get("expression_shape_keys", []))
     if fc is not None:
         FG.bind_rigid(rig, fc["rigid"])
         empties = FG.add_landmarks(C, fc["landmarks"])
@@ -281,6 +315,12 @@ def main_generic(a, spec, info, out):
         names = fc["controls"]
     if groom:
         GROOM.bind(rig, groom, head_bone, spec["rig"].get("chest_bone", head_bone), spec["hair"].get("binding"))
+    for ob in clump_hair:  # rigid to the head, as on the legacy path
+        ob.parent = rig
+        ob.matrix_parent_inverse = rig.matrix_world.inverted()
+        vg = ob.vertex_groups.get(head_bone) or ob.vertex_groups.new(name=head_bone)
+        vg.add(list(range(len(ob.data.vertices))), 1.0, "REPLACE")
+        ob.modifiers.new("Armature", "ARMATURE").object = rig
 
     report["face_controls"] = add_face_controls(rig, C, names)
     if fc is not None:
@@ -300,8 +340,21 @@ def main_generic(a, spec, info, out):
                                            "mouth": fc["mouth"].name, "cavity": fc["cavity"].name,
                                            "action_units": fc["report"]["action_units"], "presets": fc["report"]["presets"],
                                            "accessories": [f.name for f, _ in acc] + [l.name for _, l in acc if l is not None]})
+    if fc is None:
+        hp = P["head"]
+        chin_z = float(hp.get("chin_z", hp["centre_z"] - hp["half_height"])) * H
+        chin_y = float(hp.get("chin_y", hp["forward"] - hp["half_depth"])) * H
+        em = bpy.data.objects.new("LM_chin", None)
+        em.location = Vector((0, chin_y, chin_z))
+        em.empty_display_size = 0.01
+        C.objects.link(em)
+        em.parent = rig
+        em.parent_type = "BONE"
+        em.parent_bone = head_bone
+        em.matrix_world = Matrix.Translation(em.location)
     components = {k: list(v) for k, v in (spec.get("components") or
-                                           {"body": ["body_skin", "hand."], "rig": ["rig_"]}).items()}
+                                           {"body": ["body_skin", "hand."], "rig": ["rig_"],
+                                            "landmarks": ["LM_"]}).items()}
     if garment_objects:
         components.setdefault("clothing", ["garment."])
     subs, unassigned = organise(C, cid, components)
@@ -315,14 +368,15 @@ def main_generic(a, spec, info, out):
         eb = {"JawOpen": [{"bone": "DEF-jaw", "axis_local": [1, 0, 0], "degrees": jdeg}]}
         eb.update({p: [{"bone": "DEF-jaw", "axis_local": [1, 0, 0], "degrees": round(jdeg * w, 4)}] for p, w in fc["jaw_preset_weights"].items()})
         C["ps_expression_bones"] = json.dumps(eb, sort_keys=True)
-        if spec["face"].get("blink", {}).get("timing"):
-            C["ps_blink_timing"] = json.dumps(spec["face"]["blink"]["timing"], sort_keys=True)
+        if face_spec.get("blink", {}).get("timing"):
+            C["ps_blink_timing"] = json.dumps(face_spec["blink"]["timing"], sort_keys=True)
     rig["ps_character_id"] = cid
     report["joints_m"] = {k: [round(c, 4) for c in v] for k, v in J.items()}
     bpy.ops.wm.save_as_mainfile(filepath=os.path.join(out, f"{cid}_master.blend"), compress=True)
     json.dump(describe_components(C, cid), open(os.path.join(out, "components.json"), "w"), indent=1)
     spec_r = json.loads(json.dumps(spec))  # resolved copy: the generated control list (the embedded spec stays as given)
-    spec_r["face"]["expression_shape_keys"] = names
+    if "face" in spec_r:
+        spec_r["face"]["expression_shape_keys"] = names
     json.dump(animation_compat(rig, C, spec_r), open(os.path.join(out, "animation_compat.json"), "w"), indent=1)
     json.dump(spec_r, open(os.path.join(out, "spec.resolved.json"), "w"), indent=1)
     if not a.no_glb:
@@ -332,6 +386,24 @@ def main_generic(a, spec, info, out):
                 o.select_set(True)
         bpy.ops.export_scene.gltf(filepath=os.path.join(out, f"{cid}.glb"), export_format="GLB", export_skins=True,
                                   export_morph=True, export_def_bones=True, export_animations=False, use_selection=True)
+    if not a.no_compare and spec.get("rig", {}).get("comparison_pose"):
+        bpy.context.view_layer.objects.active = rig
+        for pb in rig.pose.bones:
+            if "IK_FK" in pb.keys():
+                pb["IK_FK"] = 1.0
+        bpy.ops.object.mode_set(mode="POSE")
+        ang = float(spec["rig"]["comparison_pose"]["upper_arm_fk_rotation_y_deg"])
+        for s, sx in (("L", 1), ("R", -1)):
+            pb = rig.pose.bones.get(f"upper_arm_fk.{s}")
+            if pb is None:
+                continue
+            head_w = rig.matrix_world @ pb.head
+            rm = Matrix.Translation(head_w) @ Matrix.Rotation(math.radians(sx * ang), 4, "Y") @ Matrix.Translation(-head_w)
+            pb.matrix = rig.matrix_world.inverted() @ rm @ rig.matrix_world @ pb.matrix
+        bpy.ops.object.mode_set(mode="OBJECT")
+        bpy.context.view_layer.update()
+        C["ps_role"] = "evaluation"
+        bpy.ops.wm.save_as_mainfile(filepath=os.path.join(out, f"{cid}_compare.blend"))
     report["objects"] = sorted(o.name for o in C.all_objects)
     if a.timings:
         report["total_s"] = round(time.time() - t0, 1)

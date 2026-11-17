@@ -107,7 +107,10 @@ def test_spec_pins():
                   all(rec["generators"][f] == V.LEGACY_ALIASES.get(V._field(raw, fld), V._field(raw, fld) or V.NONE)
                       for f, fld in V.LEGACY_FIELDS.items()) and rec["generators"]["exporter"] == "export/4",
                   rec["generators"])
-    base = json.load(open(spec_files()[0]))
+    # base = the first published-style spec with every section (body-only development specs such as a *.2.0.0-dev
+    # spec sort first but have no hair section and a body_generic body, which would test a different rule)
+    base = json.load(open(next(p for p in spec_files() if all(k in json.load(open(p)) for k in S.SECTIONS)
+                               and "/" not in json.load(open(p))["body"].get("generator", ""))))
     pinned = copy.deepcopy(base)
     pins, _ = V.resolve_pins(base)
     pinned["generators"] = dict(pins)
@@ -204,7 +207,10 @@ def test_parts():
         over = {"override": {"metadata": {"spec_version": "9.9.9-test"}}}
         o_spec, _ = S.load(rp, [over])
         check(f"{name}: overrides apply after composition", o_spec["metadata"]["spec_version"] == "9.9.9-test")
-    base = json.load(open(spec_files()[0]))
+    # base = the first published-style spec with every section (body-only development specs such as a *.2.0.0-dev
+    # spec sort first but have no hair section and a body_generic body, which would test a different rule)
+    base = json.load(open(next(p for p in spec_files() if all(k in json.load(open(p)) for k in S.SECTIONS)
+                               and "/" not in json.load(open(p))["body"].get("generator", ""))))
     root, docs = S.split(base, parts=("face",))
     dup = dict(root, face=base["face"], parts={"face": docs["face"]})
     check("section defined twice rejected", raises(lambda: S.compose(dup), ValueError, "defined twice"))

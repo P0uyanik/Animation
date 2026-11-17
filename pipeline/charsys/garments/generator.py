@@ -16,7 +16,8 @@ from . import drape as cloth
 
 
 GENERATOR = "garment/1"
-ITEM_TYPES = {"top", "shirt", "vest", "shorts", "trousers", "dress", "skirt", "shoes", "boots"}
+ITEM_TYPES = {"top", "shirt", "vest", "shorts", "trousers", "dress", "skirt", "shoes", "boots",
+              "hoodie"}  # hoodie: T-058, garments/hoodie.py
 COLLARS = {"none", "crew", "rib", "shirt", "point", "v", "v-neck", "round"}
 EMBROIDERY_STYLES = {"flower", "sprig", "bouquet"}
 BUTTON_PLACEMENTS = {"centre", "edge", "waistband", "pockets", "positions"}
@@ -162,8 +163,8 @@ def validate(clothing):
         if raw.get("edge_finish", "flat") not in cloth.EDGE_FINISHES:
             raise ValueError(f"garment {name}.edge_finish must be one of {list(cloth.EDGE_FINISHES)}")
         if "shoulder_width" in raw:
-            if raw["type"] not in ("top", "shirt", "vest", "dress"):
-                raise ValueError(f"garment {name}.shoulder_width is supported on tops, vests and dresses")
+            if raw["type"] not in ("top", "shirt", "vest", "dress", "hoodie"):
+                raise ValueError(f"garment {name}.shoulder_width is supported on tops, hoodies, vests and dresses")
             _number(raw["shoulder_width"], f"garment {name}.shoulder_width", 0.0, 1.0)
         if "crotch" in raw:
             _validate_crotch(raw, name)
@@ -178,6 +179,9 @@ def validate(clothing):
             _number(raw["sole"]["width_m"], f"garment {name}.sole.width_m", 0.0, 0.05)
         if "embroidery" in raw:
             _validate_embroidery(raw, name)
+        if raw["type"] == "hoodie":
+            from . import hoodie
+            hoodie.validate(raw, name)
         for part in raw.get("materials", {}):
             _assignment(raw, part)
     return clothing
@@ -228,7 +232,7 @@ def _validate_buttons(raw, name):
 
 
 EMBROIDERY_TARGETS = {
-    "top": ("main",), "shirt": ("main",), "vest": ("main", "pocket.L", "pocket.R"),
+    "top": ("main",), "shirt": ("main",), "hoodie": ("main",), "vest": ("main", "pocket.L", "pocket.R"),
     "dress": ("main",), "shorts": ("main",), "trousers": ("main",), "skirt": ("main",),
     "shoes": ("main.L", "main.R"), "boots": ("main.L", "main.R"),
 }
@@ -1599,6 +1603,9 @@ def build(C, body, clothing, P, H, J, G):
             made, cov = _top(C, body, cfg, P, H, J, G, fit)
         elif cfg["type"] == "vest":
             made, cov = _top(C, body, cfg, P, H, J, G, fit, vest=True)
+        elif cfg["type"] == "hoodie":
+            from . import hoodie
+            made, cov = hoodie.build(C, body, cfg, P, H, J, G, fit)
         elif cfg["type"] in ("shorts", "trousers"):
             made, cov = _bottoms(C, body, cfg, P, H, J, G, fit)
         elif cfg["type"] == "skirt":
