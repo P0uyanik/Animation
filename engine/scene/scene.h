@@ -185,6 +185,7 @@ class SceneEvaluator {
   void buildClearanceModels();
   void writeArmPole(Clip& gen, size_t c, char side);
   std::vector<BodyClearanceModel> clearance_;  // per character (built by compileActions)
+  bool armClearance_ = true;  // the always-on arm-body clearance post-pass (T-040); off only for measurements
   // Clip actions (type "clip", model/clip.h): per character, in start order; a "base" clip replaces the default pose
   // for the whole shot. Walk spans: frames where a walk owns the legs, hips and root.
   struct ClipLayer {
@@ -221,6 +222,14 @@ class SceneEvaluator {
   // body model it is measured against (T-030, scene/interaction.h).
   ArmClearance armClearanceAt(size_t c, char side, double frame) const;
   const BodyClearanceModel* clearanceModel(size_t c) const { return c < clearance_.size() ? &clearance_[c] : nullptr; }
+  // The arm-body clearance post-pass (T-040) is always on; switching it off (measurements and tests comparing with
+  // the uncorrected pose) recompiles the actions, which see the pose through it.
+  Result<void> setArmBodyClearance(bool on) {
+    armClearance_ = on;
+    resetDynamics();
+    return compileActions();
+  }
+  bool armBodyClearance() const { return armClearance_; }
 };
 
 }  // namespace plush

@@ -114,39 +114,57 @@ float percentile(std::vector<float> v, float q, float fallback) {
 }
 
 
-// Signed gap of world point p to a body section whose owning bone has global Gb (gradient g in capsule-local
-// scaled coordinates). Scaled coordinates make the elliptical section round (radius min(r1, r2)); the map only
-// shrinks distances, so a gap measured here never overstates the true gap. Inside its slab the gap is radial; past a
-// capped end it is round; past a joined (flat) end it is the distance to the end disc.
+// Signed gap of world point p to a body section whose owning bone has global Gb. The section is elliptical (radii
+// r1 along e1, r2 along e2; round ends are half-ellipsoids with axial radius min(r1, r2)). The gap is the first-order
+// distance to that surface, (F - 1) / |grad F| for the implicit F = |(ax / rc, y / r1, z / r2)| (T-040; T-030 used
+// coordinates scaled to the smaller radius, which made a flat section read as deep as its narrow side everywhere:
+// up to several centimetres too conservative in front of a wide, shallow pelvis). It is exact on the surface and
+// along the axes, and its gradient is the outward normal. Past a joined (flat) end it is the distance to the end
+// disc.
 struct SectionGap {
   float gap;
   vec3 worldGrad;
 };
-SectionGap sectionGap(const BodyCapsule& C, const mat4& Gb, vec3 p, char side) {
+SectionGap sectionGapInv(const BodyCapsule& C, const mat4& Gb, const mat4& invGb, vec3 p, char side) {
   vec3 u = C.p1 - C.p0;
   const float L = glm::length(u);
   u = L > 1e-6f ? u / L : glm::normalize(glm::cross(C.e1, C.e2));
-  const float r = std::min(C.r1, C.r2), s1 = r / C.r1, s2 = r / C.r2;
-  const vec3 q0 = vec3(glm::inverse(Gb) * vec4(p, 1)) - C.p0;
-  const vec3 q(glm::dot(q0, u), glm::dot(q0, C.e1) * s1, glm::dot(q0, C.e2) * s2);
-  const float radial = glm::length(vec2(q.y, q.z));
-  const float ax = q.x < 0 ? -q.x : q.x > L ? q.x - L : 0.0f;
-  const bool round = (q.x < 0 && C.cap0) || (q.x > L && C.cap1);
+  const float rc = std::min(C.r1, C.r2);
+  const vec3 q0 = vec3(invGb * vec4(p, 1)) - C.p0;
+  const float x = glm::dot(q0, u), y = glm::dot(q0, C.e1), z = glm::dot(q0, C.e2);
+  const float ax = x < 0 ? -x : x > L ? x - L : 0.0f;
+  const float axSign = x < 0 ? -1.0f : 1.0f;
+  const bool round = (x < 0 && C.cap0) || (x > L && C.cap1);
+  const vec3 sideDir = C.e1 * (side == 'L' ? 1.0f : -1.0f);
   float gap;
-  vec3 g;
+  vec3 local;
   if (ax <= 0 || round) {
-    const vec3 d = q - vec3(std::clamp(q.x, 0.0f, L), 0, 0);
-    const float dist = glm::length(d);
-    gap = dist - r;
-    g = dist > 1e-6f ? d / dist : vec3(0, side == 'L' ? 1.0f : -1.0f, 0);
+    const vec3 a(ax / rc, y / C.r1, z / C.r2);
+    const float F = glm::length(a);
+    const vec3 grad(axSign * ax / (rc * rc), y / (C.r1 * C.r1), z / (C.r2 * C.r2));  // F * grad F
+    const float gl = glm::length(grad);
+    if (F < 1e-4f || gl < 1e-9f) {
+      gap = -rc;
+      local = sideDir;
+    } else {
+      gap = (F - 1) * F / gl;
+      local = u * grad.x + C.e1 * grad.y + C.e2 * grad.z;
+    }
   } else {
-    const float ro = std::max(radial - r, 0.0f);
+    const float rho = glm::length(vec2(y / C.r1, z / C.r2));
+    const vec2 g2(y / (C.r1 * C.r1), z / (C.r2 * C.r2));
+    const float gl = glm::length(g2);
+    const float radialGap = rho > 1e-4f && gl > 1e-9f ? (rho - 1) * rho / gl : -rc;
+    const float ro = std::max(radialGap, 0.0f);
     gap = std::sqrt(ro * ro + ax * ax);
-    const vec3 rad = radial > 1e-6f ? vec3(0, q.y, q.z) / radial : vec3(0);
-    g = glm::normalize(vec3(q.x < 0 ? -ax : ax, 0, 0) + ro * rad);
+    const vec3 rad = gl > 1e-9f ? (C.e1 * g2.x + C.e2 * g2.y) / gl : vec3(0);
+    local = u * (axSign * ax) + ro * rad;
   }
-  const vec3 local = u * g.x + C.e1 * (g.y * s1) + C.e2 * (g.z * s2);  // gradient of the scaled distance
-  return {gap, glm::normalize(mat3(Gb) * local)};
+  if (glm::length(local) < 1e-9f) local = sideDir;
+  return {gap, glm::normalize(mat3(Gb) * glm::normalize(local))};
+}
+SectionGap sectionGap(const BodyCapsule& C, const mat4& Gb, vec3 p, char side) {
+  return sectionGapInv(C, Gb, glm::inverse(Gb), p, side);
 }
 
 vec3 skinPoint(const ArmPoint& P, const std::vector<mat4>& G) {
@@ -175,7 +193,7 @@ BodyClearanceModel bodyClearanceModel(const Skeleton& sk, const std::vector<Skin
   // Skinned rest vertices by region (a vertex counts when >= 90 % of its weight is in one region).
   std::vector<int> region(sk.bones.size()), part(sk.bones.size());
   for (size_t b = 0; b < sk.bones.size(); ++b) region[b] = int(regionOf(sk, int(b))), part[b] = int(armPartOf(sk, int(b)));
-  std::vector<vec3> torso;
+  std::vector<vec3> torso, pelvisLegs;
   struct Cand { const SkinnedMesh* m; size_t v; };
   std::vector<Cand> armCand[2];
   for (const SkinnedMesh& m : meshes) {
@@ -187,6 +205,9 @@ BodyClearanceModel bodyClearanceModel(const Skeleton& sk, const std::vector<Skin
         w[region[size_t(j)]] += m.weights[v][k];
       }
       if (w[int(Region::Torso)] >= 0.9f) torso.push_back(m.rest.positions[v]);
+      // At the pelvis the hips' sides are often carried by the thighs (shorts, a skirt, the skin of the hip): there
+      // the body is torso and leg together (T-040; a torso-only fit found a 4 cm wide pelvis on some characters).
+      else if (w[int(Region::Torso)] + w[int(Region::Leg)] >= 0.9f) pelvisLegs.push_back(m.rest.positions[v]);
       // Arm surface: carried at least half by that arm (a sleeve between shoulder and hand included), nothing of the
       // head or legs; torso garment vertices with a little weight bleed onto the arm stay body.
       for (int s = 0; s < 2; ++s)
@@ -203,7 +224,7 @@ BodyClearanceModel bodyClearanceModel(const Skeleton& sk, const std::vector<Skin
   // by the spine or hips) and upper torso (chest -> neck, carried by the chest), each cut into short bands whose
   // radii fit the vertices of their own height slab (a waist is narrower than a belly). Bands meet with flat ends;
   // the lowest and highest are capsules with round ends.
-  auto band = [&](std::string name, int bone, vec3 a, vec3 b) {
+  auto band = [&](std::string name, int bone, vec3 a, vec3 b, bool withLegs) {
     BodyCapsule C;
     C.name = std::move(name);
     C.bone = bone;
@@ -214,7 +235,8 @@ BodyClearanceModel bodyClearanceModel(const Skeleton& sk, const std::vector<Skin
     C.e2 = glm::normalize(glm::cross(C.e1, u));  // forward (+Z) for an upright segment
     C.cap0 = C.cap1 = false;
     std::vector<float> side, front;
-    for (const vec3& p : torso) {
+    for (size_t i = 0; i < torso.size() + (withLegs ? pelvisLegs.size() : 0); ++i) {
+      const vec3& p = i < torso.size() ? torso[i] : pelvisLegs[i - torso.size()];
       const float t = glm::dot(p - a, b - a) / glm::dot(b - a, b - a);
       if (t < 0 || t > 1) continue;
       const vec3 d = p - (a + t * (b - a));
@@ -228,13 +250,13 @@ BodyClearanceModel bodyClearanceModel(const Skeleton& sk, const std::vector<Skin
   };
   const vec3 top = neck >= 0 ? head(neck) : head(chest) + vec3(0, 0.6f * shoulderHalf, 0);
   const vec3 bottom = head(hips) + 0.4f * (head(hips) - head(chest));
-  auto bands = [&](const char* name, int bone, vec3 a, vec3 b, int n) {
+  auto bands = [&](const char* name, int bone, vec3 a, vec3 b, int n, bool withLegs) {
     for (int i = 0; i < n; ++i)
-      band(std::format("{}_{}", name, i + 1), bone, glm::mix(a, b, float(i) / float(n)), glm::mix(a, b, float(i + 1) / float(n)));
+      band(std::format("{}_{}", name, i + 1), bone, glm::mix(a, b, float(i) / float(n)), glm::mix(a, b, float(i + 1) / float(n)), withLegs);
   };
-  bands("pelvis", hips, bottom, head(hips), 2);
-  bands("torso_lower", spine >= 0 ? spine : hips, head(hips), head(chest), 3);
-  bands("torso_upper", chest, head(chest), top, 2);
+  bands("pelvis", hips, bottom, head(hips), 2, true);
+  bands("torso_lower", spine >= 0 ? spine : hips, head(hips), head(chest), 3, false);
+  bands("torso_upper", chest, head(chest), top, 2, false);
   M.body.front().cap0 = true;
   M.body.back().cap1 = true;
   // Arm points: an even subsample (at most 600 per arm) of the arm surface, with skin weights and joint offsets.
@@ -259,7 +281,12 @@ BodyClearanceModel bodyClearanceModel(const Skeleton& sk, const std::vector<Skin
         P.weight[k] = m.weights[v][k];
         P.local[k] = p - sk.bones[size_t(j)].head;
         if (part[size_t(j)] == int(ArmPart::Fore) || part[size_t(j)] == int(ArmPart::Hand)) P.mobility += m.weights[v][k];
+        const int pj = part[size_t(j)];
+        if (pj != int(ArmPart::None)) P.followUpper += m.weights[v][k];
+        if (pj == int(ArmPart::Fore) || pj == int(ArmPart::Hand)) P.followFore += m.weights[v][k];
+        if (pj == int(ArmPart::Hand)) P.followHand += m.weights[v][k];
       }
+      P.along = glm::dot(p - su, sf - su) / std::max(1e-9f, glm::dot(sf - su, sf - su));
       const float du = segDist(p, su, sf), df = segDist(p, sf, sh), dh = segDist(p, sh, st);
       // The elbow half of the forearm counts with the upper arm: an elbow rests against the body's side.
       const float tf = glm::dot(p - sf, sh - sf) / std::max(1e-9f, glm::dot(sh - sf, sh - sf));
@@ -281,6 +308,8 @@ BodyClearanceModel bodyClearanceModel(const Skeleton& sk, const std::vector<Skin
   return M;
 }
 
+float bodySectionGap(const BodyCapsule& C, const mat4& Gb, vec3 p) { return sectionGap(C, Gb, p, 'L').gap; }
+
 ArmClearance armClearance(const BodyClearanceModel& M, const std::vector<mat4>& G, char side) {
   ArmClearance out;
   if (!M.valid) return out;
@@ -290,7 +319,7 @@ ArmClearance armClearance(const BodyClearanceModel& M, const std::vector<mat4>& 
     for (const BodyCapsule& C : M.body) {
       const SectionGap sg = sectionGap(C, G[size_t(C.bone)], p, side);
       const float gap = sg.gap - P.allowance;  // never deeper than at rest
-      if (P.part == 0) {  // upper arm: reported only
+      if (P.part == 0) {  // upper arm: reported only here (the T-040 post-pass clears it past the armpit band)
         out.upperGap = std::min(out.upperGap, gap);
         continue;
       }
@@ -339,6 +368,141 @@ void applyArmPoles(const Skeleton& sk, const Clip& clip, const std::string& pref
     const quat midAfter = glm::normalize(glm::quat_cast(mat3(boneGlobals(sk, pose, world)[size_t(mid)])));
     pose.local[i] = glm::normalize(glm::inverse(midAfter) * handBefore);
   }
+}
+
+// ------------------------------------------------------------------------ always-on arm-body clearance (T-040)
+namespace {
+
+quat rotationOf(const mat4& m) {
+  return glm::normalize(glm::quat_cast(mat3(glm::normalize(vec3(m[0])), glm::normalize(vec3(m[1])), glm::normalize(vec3(m[2])))));
+}
+
+struct WorstPoint {
+  float gap = 1e9f;
+  const ArmPoint* point = nullptr;
+  vec3 p{0}, n{0};
+};
+// The body sections are carried by torso bones, which the arm pass never moves: their inverses are computed once.
+struct BodyFrames {
+  std::vector<mat4> G, inv;
+};
+BodyFrames bodyFrames(const BodyClearanceModel& M, const std::vector<mat4>& G) {
+  BodyFrames B;
+  for (const BodyCapsule& C : M.body) B.G.push_back(G[size_t(C.bone)]), B.inv.push_back(glm::inverse(G[size_t(C.bone)]));
+  return B;
+}
+bool postPassPoint(const ArmPoint& P, const ArmPostPassOptions& o) {
+  return !(P.part == 0 && P.along < o.armpit) && P.followUpper >= 0.5f;
+}
+WorstPoint worstArmPoint(const BodyClearanceModel& M, const BodyFrames& B, const std::vector<mat4>& G, char side,
+                         const ArmPostPassOptions& o) {
+  WorstPoint w;
+  for (const ArmPoint& P : M.arm[side == 'L' ? 0 : 1].points) {
+    if (!postPassPoint(P, o)) continue;
+    const vec3 p = skinPoint(P, G);
+    for (size_t k = 0; k < M.body.size(); ++k) {
+      const SectionGap sg = sectionGapInv(M.body[k], B.G[k], B.inv[k], p, side);
+      const float gap = sg.gap - P.allowance;
+      if (gap < w.gap) w = {gap, &P, p, sg.worldGrad};
+    }
+  }
+  return w;
+}
+// C1 ramp of the target gap (see interaction.h).
+float targetGap(float gap, const ArmPostPassOptions& o) {
+  const float x = o.margin + o.band - gap, b = std::max(o.band, 1e-6f);
+  if (x <= 0) return gap;
+  return gap + (x < 2 * b ? x * x / (4 * b) : x - b);
+}
+void rotateBoneWorld(const Skeleton& sk, const std::vector<mat4>& G, const mat4& world, int bone, const quat& R, Pose& pose) {
+  const int parent = sk.bones[size_t(bone)].parent;
+  const quat pr = rotationOf(parent >= 0 ? G[size_t(parent)] : world);
+  pose.local[size_t(bone)] = glm::normalize(glm::inverse(pr) * R * pr * pose.local[size_t(bone)]);
+}
+quat rotationFromVector(vec3 w) {
+  const float a = glm::length(w);
+  return a > 1e-9f ? glm::angleAxis(a, w / a) : quat(1, 0, 0, 0);
+}
+
+}  // namespace
+
+float armBodyGap(const BodyClearanceModel& M, const std::vector<mat4>& G, char side, const ArmPostPassOptions& o) {
+  if (!M.valid) return 1e9f;
+  return worstArmPoint(M, bodyFrames(M, G), G, side, o).gap;
+}
+
+ArmPostPassResult applyArmBodyClearance(const Skeleton& sk, const BodyClearanceModel& M, const mat4& world, char side,
+                                        float pin, float keepHand, Pose& pose, const ArmPostPassOptions& o) {
+  ArmPostPassResult out;
+  if (!M.valid) return out;
+  const ArmModel& A = M.arm[side == 'L' ? 0 : 1];
+  if (A.points.empty() || A.upper < 0 || A.fore < 0 || A.hand < 0) return out;
+  pin = std::clamp(pin, 0.0f, 1.0f);
+  keepHand = std::clamp(std::max(keepHand, pin), 0.0f, 1.0f);
+  std::vector<mat4> G = boneGlobals(sk, pose, world);
+  const BodyFrames B = bodyFrames(M, G);
+  WorstPoint w = worstArmPoint(M, B, G, side, o);
+  out.before = out.after = w.gap;
+  if (w.gap >= o.margin + o.band) return out;  // already clear: the pose is not touched
+  const float target = targetGap(w.gap, o);
+  const quat handWorld = rotationOf(G[size_t(A.hand)]);
+  const quat handLocal = pose.local[size_t(A.hand)];
+  // Weights of the minimum-norm step: the shoulder carries most of a free arm's correction (the arm moves away as a
+  // whole and keeps its acting shape), the elbow less; a pinned (IK) arm only swings about shoulder -> wrist.
+  const float aS = 1 - pin, aE = 0.5f * (1 - pin), aT = pin;
+  float totalS = 0, totalE = 0, totalT = 0;
+  constexpr float kMaxTotal = 0.7f;  // radians per joint over the whole pass (a guard; real corrections are small)
+  Pose best = pose;
+  for (int it = 0; it < o.iterations && w.point && w.gap < target - 1e-4f; ++it) {
+    const ArmPoint& P = *w.point;
+    const vec3 s(G[size_t(A.upper)][3]), e(G[size_t(A.fore)][3]), h(G[size_t(A.hand)][3]);
+    const vec3 rs = w.p - s, re = w.p - e;
+    const float handFixed = P.followHand * keepHand;  // hand points keep their world rotation when the hand is kept
+    const vec3 Js = P.followUpper * glm::cross(rs, w.n);
+    const vec3 Je = P.followFore * glm::cross(re, w.n);
+    vec3 u = h - s;
+    u = glm::length(u) > 1e-6f ? glm::normalize(u) : vec3(0);
+    const float Jt = std::max(0.0f, P.followUpper - handFixed) * glm::dot(u, glm::cross(rs, w.n));
+    const float D = aS * glm::dot(Js, Js) + aE * glm::dot(Je, Je) + aT * Jt * Jt;
+    if (D < 1e-10f) break;
+    const float lambda = (target - w.gap) / D;
+    auto capped = [&](vec3 v, float& total) {
+      float a = glm::length(v);
+      const float lim = std::min(o.maxStep, std::max(0.0f, kMaxTotal - total));
+      if (a > lim) v *= lim / a, a = lim;
+      total += a;
+      return v;
+    };
+    const vec3 ws = capped(aS * lambda * Js, totalS), we = capped(aE * lambda * Je, totalE);
+    float th = aT * lambda * Jt;
+    {
+      const float lim = std::min(o.maxStep, std::max(0.0f, kMaxTotal - totalT));
+      th = std::clamp(th, -lim, lim);
+      totalT += std::abs(th);
+    }
+    const quat Rs = glm::normalize(glm::angleAxis(th, u) * rotationFromVector(ws));
+    if (glm::length(ws) + std::abs(th) + glm::length(we) < 1e-7f) break;
+    rotateBoneWorld(sk, G, world, A.upper, Rs, pose);
+    G = boneGlobals(sk, pose, world);
+    if (glm::length(we) > 0) {
+      rotateBoneWorld(sk, G, world, A.fore, rotationFromVector(we), pose);
+      G = boneGlobals(sk, pose, world);
+    }
+    // The hand: its own local rotation (it follows the forearm), or its world rotation as far as `keepHand` asks.
+    const quat kept = glm::normalize(glm::inverse(rotationOf(G[size_t(A.fore)])) * handWorld);
+    pose.local[size_t(A.hand)] = keepHand >= 1 ? kept : glm::normalize(glm::slerp(handLocal, kept, keepHand));
+    G = boneGlobals(sk, pose, world);
+    const WorstPoint next = worstArmPoint(M, B, G, side, o);
+    if (next.gap < w.gap - 1e-4f) {  // no progress (a point the free joints cannot move): keep the best pose
+      pose = best;
+      break;
+    }
+    w = next;
+    best = pose;
+  }
+  out.after = w.gap;
+  out.changed = true;
+  return out;
 }
 
 namespace {

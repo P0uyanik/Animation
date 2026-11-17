@@ -682,6 +682,8 @@ Result<void> SceneEvaluator::rebuildCharacter(size_t index, const CharacterAsset
     ci.coreMaterial.push_back(materialIndex(l.coreMaterial.empty() ? l.material : l.coreMaterial));
   }
   characters_[index] = std::move(ci);
+  if (index < clearance_.size())  // the arm-body model follows the edited body (T-040 post-pass)
+    clearance_[index] = bodyClearanceModel(characters_[index].asset.skeleton, characters_[index].rig.meshes);
   resetDynamics();
   return {};
 }
@@ -734,6 +736,18 @@ std::vector<mat4> SceneEvaluator::kinematicGlobals(size_t c, double frame, Pose*
   applyArmPoles(ci.asset.skeleton, clip, prefix, frame, world, pose);          // elbow outward (T-030)
   applyOrientConstraints(ci.asset.skeleton, clip, prefix, frame, world, pose);  // hand-prop interaction (T-022)
   if (clips) applyClipFingers(c, frame, pose);
+  // Arms out of the body, whatever moved them (T-040): the last pose step, on the full pose.
+  if (armClearance_ && c < clearance_.size() && clearance_[c].valid)
+    for (char side : {'L', 'R'}) {
+      const std::string hand = ci.asset.skeleton.bones[size_t(clearance_[c].arm[side == 'L' ? 0 : 1].hand)].name;
+      auto weightOf = [&](const std::string& track) {
+        const Track* t = clip.find(track);
+        if (!t || t->keys.empty()) return 0.0f;
+        return std::clamp(clip.evaluate(track + ".weight", frame, vec3(1)).x, 0.0f, 1.0f);
+      };
+      const float pin = weightOf(prefix + "ik." + hand), keep = weightOf(prefix + "orient." + hand);
+      applyArmBodyClearance(ci.asset.skeleton, clearance_[c], world, side, pin, keep, pose);
+    }
   if (poseOut) *poseOut = pose;
   return boneGlobals(ci.asset.skeleton, pose, world);
 }

@@ -81,6 +81,11 @@ struct ArmPoint {
   float mobility = 0;   // skin weight on the IK chain's forearm and hand (how much the point follows the wrist)
   int part = 0;         // 0 upper arm and elbow half of the forearm, 1 wrist half of the forearm, 2 hand
   float allowance = 0;  // <= 0: how deep the point rests against the body at rest (minus the margin)
+  // Pose post-pass (T-040): skin weight carried by the upper arm's subtree, by the forearm's subtree and by the
+  // hand's subtree (a sleeve weighted to the shoulder or spine follows the arm only partly), and the point's position
+  // along shoulder -> elbow (0 at the shoulder pivot, 1 at the elbow; > 1 past it).
+  float followUpper = 0, followFore = 0, followHand = 0;
+  float along = 1;
 };
 struct ArmModel {
   int upper = -1, fore = -1, hand = -1;
@@ -109,6 +114,9 @@ struct ArmClearance {
   std::string part, against;
 };
 ArmClearance armClearance(const BodyClearanceModel& model, const std::vector<mat4>& G, char side);
+// Signed gap (metres, < 0 inside) of world point p to one body section whose bone has global Gb (T-040: exposed for
+// fit checks against the mesh).
+float bodySectionGap(const BodyCapsule& section, const mat4& Gb, vec3 p);
 // Elbow pole tracks "<prefix>pole.<hand bone>" (world direction the elbow should point to) with ".weight": swings the
 // upper arm about the shoulder -> wrist axis, so the wrist stays where IK put it and only the elbow moves (the hand keeps
 // its world rotation; bone heads only, as G is built from pivots without scale). Runs after
@@ -116,6 +124,37 @@ ArmClearance armClearance(const BodyClearanceModel& model, const std::vector<mat
 void applyArmPoles(const Skeleton& skeleton, const Clip& clip, const std::string& prefix, double frame,
                    const mat4& world, Pose& pose);
 constexpr float kArmBodyMargin = 0.005f;  // clearance kept between the arm and the body capsules (metres)
+
+// ------------------------------------------------------------------------ always-on arm-body clearance (T-040)
+// A pose post-pass for every character and every source of arm motion (clips, base/auto idle, emotions, IK,
+// interactions): after the full pose is evaluated, upper arm (past the armpit band), forearm and hand are pushed out
+// of the body sections by the smallest change of the shoulder and elbow rotations (damped minimum-norm steps on the
+// worst point's gap gradient). The result is a pure function of the evaluated pose (no state): deterministic and
+// frame-rate independent, and continuous in time because the target gap is a C1 ramp of the arm's own gap:
+//   gap >= margin + band: untouched;
+//   below that: target = gap + s(margin + band - gap), s(x) = x^2 / 4band (x < 2band), x - band (beyond),
+// so the output gap is >= margin everywhere and its slope is continuous (no pop when the arm starts to touch).
+// `pin` (the arm's IK weight) keeps the wrist where IK put it: at pin 1 only the elbow swings about the shoulder ->
+// wrist axis, so contacts and held props stay exact; `keepHand` (IK or orientation-constraint weight) keeps the
+// hand's world rotation (a held cup stays upright).
+struct ArmPostPassOptions {
+  float margin = kArmBodyMargin;
+  float band = 0.004f;      // width of the C1 blend above the margin (metres)
+  float armpit = 0.4f;      // upper-arm points nearer the shoulder pivot than this fraction are the armpit band:
+                            // they fold with the shoulder joint and are not moved for (reported in armClearance only)
+  int iterations = 10;
+  float maxStep = 0.12f;    // radians per iteration and joint
+};
+struct ArmPostPassResult {
+  float before = 1e9f, after = 1e9f;  // worst gap (with the rest allowance) of the considered arm points
+  bool changed = false;
+};
+// Worst gap of one arm over the post-pass's points (all parts; the armpit band excluded).
+float armBodyGap(const BodyClearanceModel& model, const std::vector<mat4>& G, char side,
+                 const ArmPostPassOptions& options = {});
+ArmPostPassResult applyArmBodyClearance(const Skeleton& skeleton, const BodyClearanceModel& model, const mat4& world,
+                                        char side, float pin, float keepHand, Pose& pose,
+                                        const ArmPostPassOptions& options = {});
 
 // Compile state shared by the interaction actions of one compileActions() pass.
 struct InteractionContext {
