@@ -246,7 +246,11 @@ def check_write_set(task: str, base: str) -> Result:
             return Result("Write-set", False, f"no claim for {label} in docs/process/OWNERSHIP.md or docs/tasks",
                           seconds=round(time.monotonic() - started, 2))
         compare = WRITE_SET_BASE if git_ref_exists(WRITE_SET_BASE) else base
-        common = git("merge-base", compare, "HEAD", check=False).stdout.strip() or compare
+        if git_ref_exists("MERGE_HEAD"):
+            # Trial merge with staging in progress: the merge result minus staging is exactly the task's change.
+            common = compare
+        else:
+            common = git("merge-base", compare, "HEAD", check=False).stdout.strip() or compare
         paths = nul_paths(git("diff", "--name-only", "-z", common, "--").stdout)
         paths |= nul_paths(git("ls-files", "--others", "--exclude-standard", "-z").stdout)
         outside = integrate.write_set_violations(paths, claim)
