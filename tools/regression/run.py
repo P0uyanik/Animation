@@ -478,7 +478,16 @@ def regress(cid: str, a, env: dict, unchanged_ids: set[str], noise: dict) -> dic
     started = time.monotonic()
     result = {"schema": SCHEMA, "character": cid, "unchanged": cid in unchanged_ids, "checks": []}
     try:
-        cfg = tiers.character_config(cid)
+        try:
+            cfg = tiers.character_config(cid)
+        except tiers.NotBuildable as exc:
+            # Explicitly reported (never silent): a character with references but no spec cannot be built yet.
+            result["checks"].append({"name": "not buildable yet", "ok": True, "detail": str(exc)})
+            result["not_buildable"] = True
+            result["ok"] = True
+            result["seconds"] = round(time.monotonic() - started, 1)
+            (out / "result.json").write_bytes(canonical(result))
+            return result
         result.update(spec_version=cfg["spec_version"], spec_inputs_sha256=cfg["spec_inputs_sha256"])
         if a.noise:
             first = produce(cfg, a.blender, out / "run1", env, False)
@@ -541,7 +550,8 @@ def write_gate_report(path: Path, report: dict) -> None:
         failed = [c for c in r["checks"] if not c["ok"]]
         fidelity = r.get("measured", {}).get("fidelity")
         note = f", fidelity {fidelity['score']:.2f}" if fidelity else ""
-        kind = "unchanged, identical to main" if r.get("unchanged") else "spec changed, owner review"
+        kind = ("references only, not buildable yet" if r.get("not_buildable") else
+                "unchanged, identical to main" if r.get("unchanged") else "spec changed, owner review")
         detail = "; ".join(f"{c['name']}: {c['detail']}" for c in failed) or kind + note
         subchecks.append({"name": f"regression {r['character']}", "ok": r["ok"], "detail": detail, "log": ""})
         parts.append(f"{r['character']} {'PASS' if r['ok'] else 'FAIL'} ({detail})" if not r["ok"] else

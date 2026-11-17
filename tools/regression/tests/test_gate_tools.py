@@ -96,8 +96,8 @@ def test_tiers():
     expect(T.classify({"docs/process/GATE.md"}, real)["tier"] == "fast", "real rules: docs = fast")
     expect(T.classify({"tools/regression_paths.txt"}, real)["tier"] == "full", "real rules: classification = full")
     expect(T.classify({"something/new.txt"}, real)["tier"] == "full", "real rules: unknown = full")
-    ids = T.character_ids()
-    expect(len(ids) >= 2, "characters found")
+    ids = [cid for cid in T.character_ids() if T.buildable(cid)]
+    expect(len(ids) >= 2, "buildable characters found")
     for cid in ids:
         cfg = T.character_config(cid)
         expect(cfg["spec_inputs_sha256"] and cfg["spec_version"], f"config {cid}")

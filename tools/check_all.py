@@ -591,10 +591,12 @@ def regression_subchecks(report: dict, log: Path | None) -> tuple[list[dict], li
         add_subcheck(subchecks, f"regression {missing}", False, "no regression result (character not covered)", log)
     for item in results:
         failed = [c for c in item.get("checks", []) if not c.get("ok")]
-        kind = "unchanged" if item.get("unchanged") else "spec changed"
+        kind = ("references only, not buildable yet" if item.get("not_buildable") else
+                "unchanged" if item.get("unchanged") else "spec changed")
         fidelity = item.get("measured", {}).get("fidelity")
         note = f"fidelity {fidelity['score']:.2f}" if fidelity else ""
-        detail = "; ".join(f"{c['name']}: {c['detail']}" for c in failed) or f"{kind}, identical{', ' + note if note else ''}"
+        detail = "; ".join(f"{c['name']}: {c['detail']}" for c in failed) or (
+            kind if item.get("not_buildable") else f"{kind}, identical{', ' + note if note else ''}")
         if item.get("unchanged") is False and not failed:
             detail = f"spec changed, needs owner visual review{', ' + note if note else ''}"
         add_subcheck(subchecks, f"regression {item.get('character')}", item.get("ok", False) and not failed, detail, log)

@@ -70,12 +70,23 @@ def character_ids() -> list[str]:
     return sorted(p.name for p in CHARACTERS.iterdir() if p.is_dir()) if CHARACTERS.is_dir() else []
 
 
+class NotBuildable(ValueError):
+    """A character folder without any spec yet (references only, e.g. right after reference intake)."""
+
+
+def buildable(cid: str, root: Path = ROOT) -> bool:
+    spec_dir = root / "assets" / "characters" / cid / "spec"
+    return spec_dir.is_dir() and any(spec_dir.glob("*.json"))
+
+
 def character_config(cid: str, root: Path = ROOT) -> dict:
     """Build inputs of the character's current version in the checkout `root`: the spec plus the overrides named in
     the fidelity baseline (the single list of current character versions). Raises ValueError when the character
     cannot be regressed."""
     spec = root / "assets" / "characters" / cid / "spec" / f"{cid}.spec.json"
     rel = spec.relative_to(root).as_posix()
+    if not buildable(cid, root):
+        raise NotBuildable(f"{cid}: references only, no spec yet (not buildable; reported, not regressed)")
     if not spec.is_file():
         raise ValueError(f"{cid}: no spec at {rel}")
     fidelity_baseline = root / FIDELITY_BASELINE.relative_to(ROOT)
