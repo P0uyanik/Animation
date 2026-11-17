@@ -27,6 +27,7 @@ from mathutils import Matrix
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import body_v6 as B  # noqa: E402
+import determinism as DETERMINISM  # noqa: E402
 import face as FACE  # noqa: E402
 import hair as HAIR  # noqa: E402
 import spec as S  # noqa: E402
@@ -61,6 +62,9 @@ def parse():
     ap.add_argument("--override", action="append", default=[])
     ap.add_argument("--out", required=True)
     ap.add_argument("--fur-scale", type=float, default=1.0)
+    ap.add_argument("--seed", type=int, default=DETERMINISM.DEFAULT_SEED,
+                    help="seed for shared RNGs; character-specific seeds remain in the spec")
+    ap.add_argument("--timings", action="store_true", help="include non-reproducible elapsed times in build_report.json")
     ap.add_argument("--no-glb", action="store_true")
     ap.add_argument("--no-compare", action="store_true")
     return ap.parse_args(argv)
@@ -71,20 +75,20 @@ def organise(C, cid, components=None):
     spec.components when given (generic characters); COMPONENTS is the legacy (boy) default."""
     components = components or COMPONENTS
     subs = {}
-    for comp in components:
+    for comp in sorted(components):
         sc = bpy.data.collections.get(f"{cid}.{comp}") or bpy.data.collections.new(f"{cid}.{comp}")
         if sc.name not in C.children:
             C.children.link(sc)
         subs[comp] = sc
     unassigned = []
-    for ob in list(C.objects):
+    for ob in sorted(C.objects, key=lambda ob: ob.name):
         comp = component_of(ob.name, components)
         if comp is None:
             unassigned.append(ob.name)
             continue
         subs[comp].objects.link(ob)
         C.objects.unlink(ob)
-    for comp, sc in subs.items():
+    for comp, sc in sorted(subs.items()):
         sc["ps_component"] = comp
     return subs, unassigned
 
@@ -112,7 +116,7 @@ def stamp(C, spec, info, role):
 
 def describe_components(C, cid):
     out = {}
-    for sc in C.children:
+    for sc in sorted(C.children, key=lambda collection: collection.name):
         objs = []
         for o in sorted(sc.objects, key=lambda o: o.name):
             d = {"name": o.name, "type": o.type}
@@ -134,7 +138,7 @@ def animation_compat(rig, C, spec):
     deform = sorted(b.name for b in rig.data.bones if b.use_deform)
     controls = sorted(b.name for b in rig.data.bones if not b.name.startswith(("DEF-", "ORG-", "MCH-")))
     keys = {}
-    for o in C.all_objects:
+    for o in sorted(C.all_objects, key=lambda ob: ob.name):
         if o.type == "MESH" and o.data.shape_keys:
             keys[o.name] = [k.name for k in o.data.shape_keys.key_blocks if k.name != "Basis"]
     return {"character_id": spec["identity"]["id"], "rest_pose": spec["animation"]["rest_pose"],
@@ -160,7 +164,7 @@ def add_face_controls(rig, C, names):
         ui.update(min=0.0, max=1.0, soft_min=0.0, soft_max=1.0, default=0.0, description=f"Expression {n} (0-1)")
         rig.property_overridable_library_set(f'["{prop}"]', True)
         made[prop] = []
-        for o in C.all_objects:
+        for o in sorted(C.all_objects, key=lambda ob: ob.name):
             if o.type != "MESH" or not o.data.shape_keys or n not in o.data.shape_keys.key_blocks:
                 continue
             fc = o.data.shape_keys.key_blocks[n].driver_add("value")
@@ -184,6 +188,7 @@ def main_generic(a, spec, info, out):
     cid = spec["identity"]["id"]
     t0 = time.time()
     bpy.ops.wm.read_factory_settings(use_empty=True)
+    DETERMINISM.configure_blender(a.seed)
     C = bpy.data.collections.new(cid)
     bpy.context.scene.collection.children.link(C)
     H = float(spec["body"]["height_m"])
@@ -242,7 +247,8 @@ def main_generic(a, spec, info, out):
             asg = dict(asg, overrides=MATERIALS.deep_merge(asg.get("overrides") or {}, overrides))
             return MATERIALS.add_fibres_from_assignment(ob, asg)
         groom, report["hair"] = GROOM.build(C, parts[0][0], frame, spec["hair"], hair_material, B.face_y, hair_fibres)
-    report["model_s"] = round(time.time() - t0, 1)
+    if a.timings:
+        report["model_s"] = round(time.time() - t0, 1)
     rig, rr = BG.rig_generic(C, f"rig_{cid}", parts, P, H, J, frames, spec["rig"].get("weight_rules", {}), B,
                              spec["rig"].get("weight_smooth"))
     report["rig"] = rr
@@ -270,7 +276,8 @@ def main_generic(a, spec, info, out):
         skin = parts[0][0]
         report["jaw"] = FACE.add_jaw(rig, skin, fc["cavity"], fc["mouth"], fc["landmarks"], head_bone, fc["mouth_cfg"])
         FG.add_jaw_preset_drivers(rig, fc["jaw_preset_weights"], float(fc["mouth_cfg"].get("jaw_open_deg", 7.0)))
-        report["inbetween_drivers"] = FG.add_inbetween_drivers(rig, [o for o in C.all_objects if o.type == "MESH"])
+        report["inbetween_drivers"] = FG.add_inbetween_drivers(
+            rig, [o for o in sorted(C.all_objects, key=lambda ob: ob.name) if o.type == "MESH"])
         bpy.ops.object.select_all(action="DESELECT")  # the jaw adds a fifth influence on some skin vertices
         skin.select_set(True)
         bpy.context.view_layer.objects.active = skin
@@ -309,13 +316,16 @@ def main_generic(a, spec, info, out):
     json.dump(spec_r, open(os.path.join(out, "spec.resolved.json"), "w"), indent=1)
     if not a.no_glb:
         bpy.ops.object.select_all(action="DESELECT")
-        for o in C.all_objects:
+        for o in sorted(C.all_objects, key=lambda ob: ob.name):
             if o.type in ("MESH", "ARMATURE"):
                 o.select_set(True)
         bpy.ops.export_scene.gltf(filepath=os.path.join(out, f"{cid}.glb"), export_format="GLB", export_skins=True,
                                   export_morph=True, export_def_bones=True, export_animations=False, use_selection=True)
     report["objects"] = sorted(o.name for o in C.all_objects)
-    report["total_s"] = round(time.time() - t0, 1)
+    if a.timings:
+        report["total_s"] = round(time.time() - t0, 1)
+    if not a.timings:
+        DETERMINISM.strip_runtime_timings(report)
     json.dump(report, open(os.path.join(out, "build_report.json"), "w"), indent=1)
     print(json.dumps({k: v for k, v in report.items() if k not in ("objects", "joints_m")}, indent=1))
 
@@ -334,6 +344,7 @@ def main():
     B.configure(spec)
     t0 = time.time()
     bpy.ops.wm.read_factory_settings(use_empty=True)
+    DETERMINISM.configure_blender(a.seed)
     scene = bpy.context.scene
     C = bpy.data.collections.new(cid)
     scene.collection.children.link(C)
@@ -353,9 +364,11 @@ def main():
     pack, straps = B.build_backpack(C, M, hoodie["torso"])
     empties = B.add_landmarks(C, lms, head, ears)
     report = {"blender": bpy.app.version_string, "build": BUILD_ID, "character_id": cid, **info,
-              "hair": hair_stats, "model_s": round(time.time() - t0, 1)}
+              "hair": hair_stats}
+    if a.timings:
+        report["model_s"] = round(time.time() - t0, 1)
     report["face"] = FACE.add_expression_keys(lids, brows, mouth, head, B, spec["face"], eyes)
-    for ob in list(C.objects):
+    for ob in sorted(C.objects, key=lambda ob: ob.name):
         if ob.type == "MESH" and not ob.data.shape_keys and ob.modifiers:
             G.apply_mods(ob)
     cavity = FACE.cut_mouth_and_cavity(C, M, head, B, mcfg, mouth) if mcfg.get("generator") in ("lips_jaw/1", "lips_jaw/2") else None
@@ -392,7 +405,8 @@ def main():
     rig["ps_character_id"] = cid
     master = os.path.join(out, f"{cid}_master.blend")
     bpy.ops.wm.save_as_mainfile(filepath=master, compress=True)
-    report["master_s"] = round(time.time() - t0, 1)
+    if a.timings:
+        report["master_s"] = round(time.time() - t0, 1)
     json.dump(describe_components(C, cid), open(os.path.join(out, "components.json"), "w"), indent=1)
     json.dump(animation_compat(rig, C, spec), open(os.path.join(out, "animation_compat.json"), "w"), indent=1)
     json.dump(spec, open(os.path.join(out, "spec.resolved.json"), "w"), indent=1)
@@ -400,12 +414,14 @@ def main():
         glb = os.path.join(out, f"{cid}.glb")
         t = time.time()
         bpy.ops.object.select_all(action="DESELECT")
-        for o in C.all_objects:
+        for o in sorted(C.all_objects, key=lambda ob: ob.name):
             if o.type in ("MESH", "ARMATURE"):
                 o.select_set(True)
         bpy.ops.export_scene.gltf(filepath=glb, export_format="GLB", export_skins=True, export_morph=True,
                                   export_def_bones=True, export_animations=False, use_selection=True)
-        report["gltf"] = {"mb": round(os.path.getsize(glb) / 1e6, 1), "s": round(time.time() - t, 1)}
+        report["gltf"] = {"mb": round(os.path.getsize(glb) / 1e6, 1)}
+        if a.timings:
+            report["gltf"]["s"] = round(time.time() - t, 1)
     if not a.no_compare:  # evaluation file: comparison pose + fur on posed surfaces (not a reusable asset)
         bpy.context.view_layer.objects.active = rig
         for pb in rig.pose.bones:
@@ -430,7 +446,10 @@ def main():
         bpy.ops.wm.save_as_mainfile(filepath=os.path.join(out, f"{cid}_compare.blend"))
     report["landmarks_rest"] = {k: [round(c, 4) for c in v.location] for k, v in empties.items()}
     report["objects"] = sorted(o.name for o in C.all_objects)
-    report["total_s"] = round(time.time() - t0, 1)
+    if a.timings:
+        report["total_s"] = round(time.time() - t0, 1)
+    if not a.timings:
+        DETERMINISM.strip_runtime_timings(report)
     json.dump(report, open(os.path.join(out, "build_report.json"), "w"), indent=1)
     print(json.dumps({k: v for k, v in report.items() if k not in ("objects", "landmarks_rest")}, indent=1))
 
