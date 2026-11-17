@@ -50,7 +50,7 @@ struct FaceNeutral {
   // Amplitudes of the built-in motions (channel weights).
   float breathJaw = 0.025f;      // jaw opening at the top of an inhale
   float microBrow = 0.04f, microMouth = 0.045f;
-  float attentionBrow = 0.6f, attentionWide = 0.3f;
+  float attentionBrow = 0.45f, attentionWide = 0.3f;
 };
 
 // The shared face library (content/emotions/face_motion.json, format plush.face_motion/1).

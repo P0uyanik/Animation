@@ -28,7 +28,7 @@
   "breathJaw": 0.025,
   "microBrow": 0.04,
   "microMouth": 0.045,
-  "attentionBrow": 0.6,
+  "attentionBrow": 0.45,
   "attentionWide": 0.3
  },
  "source": "script",
