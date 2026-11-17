@@ -30,7 +30,7 @@
 | T-053a | Reference behaviour and expression analysis; draft personality profiles | **in main** 2026-11-17 | t-053a-claude-reference-behaviour (2ff6d7c) | guides, schema, 2 draft profiles (96 cited values), review checklist; boy roadmap wording corrected to the references |
 | T-055 | Girl neutral mouth = closed gentle smile (new girl version, path B) | assigned 2026-11-17 | t-055-claude-girl-neutral-mouth | `docs/tasks/T-055.md`; owner decision 2026-11-17 |
 | T-057 | Third character: reference intake, behaviour and gap analysis | **in main** 2026-11-17 | t-057-claude-third-character-intake (6a14124) | 15 references, 86 crops, guide, draft profile (61 cited values), system gaps; 3 owner questions |
-| T-056 | Order-stable, byte-reproducible engine export | assigned 2026-11-17 | t-056-claude-export-determinism | `docs/tasks/T-056.md` |
+| T-056 | Order-stable, byte-reproducible engine export | **in main** 2026-11-17 | t-056-claude-export-determinism (2eb191e), merge 8be2afe | export/5: 3/3 builds byte-identical per character; export/4 unchanged; full gate PASS |
 | T-045 | Body mechanics: shoulders, clavicles, torso, weight shift | assigned 2026-11-17 | t-045-claude-body-mechanics | `docs/tasks/T-045.md` |
 | T-058 | Boy 2.0: integrate T-039 body, face with brow/mouth controls, hoodie garment (path B) | assigned 2026-11-17 (owner-approved 6th Implementer) | t-039-codex-boy2-body | `docs/tasks/T-058.md` |
 | T-048 | Branch cleanup workflow + tests | **in main** 2026-11-17 | t-048-claude-branch-cleanup (8f1c3ce), merge ae15c0b | 25/25 cleanup tests, full gate PASS; first real dry run after T-041 backups |
