@@ -57,3 +57,14 @@ After each successful merge into `main`, the Supervisor deletes the merged task/
 local) only when: all checks passed on the merged `main`; a verified backup bundle (`git bundle verify`) containing
 those branches exists; and `git branch -r --merged origin/main` confirms each branch is fully contained in `main`.
 Never delete an unmerged branch, a branch with commits not in `main`, `relay-channel`, or `supervisor-state`.
+
+## 2026-11-17: continuous integration via `staging` (owner-approved)
+- `staging` = `main` + tasks reviewed and gate-tested by the Supervisor. Every new task branches from `origin/staging`
+  and merges `origin/staging` into itself before its final report (owning agent resolves conflicts, reruns check_all).
+- Merge promptly: a task is merged into `staging` the same day it is accepted; at most 3 tested tasks wait unapproved.
+- Standing approval (path A): validated technical changes (engine, tools, tests, CI, performance; no visible change)
+  go `staging` → `main` after a green gate and Supervisor review, with notification afterwards.
+- Path B: anything that changes the look (characters, materials, specs, renders) needs the owner's visual approval.
+- Rejections are undone on `staging` with revert commits only. `main` advances only by fast-forward to a gate-green
+  `staging` commit, with a verified backup before and merged-branch cleanup after (see 2026-11-17 branch cleanup).
+- Ownership map `docs/process/OWNERSHIP.md`: parallel tasks never share files; specs are split into per-area parts.
