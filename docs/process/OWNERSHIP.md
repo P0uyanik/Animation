@@ -16,7 +16,6 @@ means none. Branch is the task's branch; a task branch without a row falls back 
 
 | Task | Lane | Branch | Write-set | Depends on | Versions bumped |
 | --- | --- | --- | --- | --- | --- |
-| T-082 | C | `t-082-claude-collision-elbow` | `engine/scene/collision.{h,cpp}`, `engine/scene/interaction.{h,cpp}`, `engine/scene/actions.cpp`, `engine/model/**`, `pipeline/charsys/export_engine.py`, `tests/test_collision.cpp`, `tests/test_interaction.cpp`, `docs/evaluation/animation/T-047/**`, `docs/evaluation/animation/T-082/**`, `episodes/e905_props_test/make_shot.py`, `episodes/e905_props_test/shots/s010/shot.scene.json` (owner-approved re-staging) | — | `export` |
 | T-078 | E | `t-078-claude-progress-video` | `docs/evaluation/showcase/T-078/**` | — | — |
 | T-081 | D | `t-081-claude-girl-0-11-0` | `assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.11.0*`, `pipeline/charsys/face_generic.py`, `pipeline/charsys/face_features.py`, `pipeline/charsys/body_generic.py`, `pipeline/charsys/body_helpers.py`, `pipeline/charsys/tests/test_face_v2*.py`, `docs/evaluation/characters/T-081/**`, `assets/characters/girl_auburn_bun_glasses/versions/**`, `docs/evaluation/characters/fidelity_baseline.json` (girl entry), `docs/evaluation/regression/baselines/girl_auburn_bun_glasses/**` | `pipeline/charsys/versions.py` (stable) | `face_generic`, `body_generic` |
 
