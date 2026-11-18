@@ -106,12 +106,12 @@ keep-out (el −1°) and still reports 0 against the hair-wide window.
 | | boy | girl | third |
 |---|---|---|---|
 | chains / chain bones | 39 / 78 | 23 / 103 | 37 / 114 |
-| max lag in the turn | 11.8° | 14.2° | see note |
-| hair vertices > 2 mm inside body/garments, rest → turn max | 0.14 % (T-044 0.14 %) | 0.24 % → 0.25 % (T-044 0.11 → 0.13 %) | see note |
+| max lag in the turn | 11.8° | 14.2° | 14.2° |
+| hair vertices > 2 mm inside body/garments, rest → turn max | 0.14 % (T-044 0.14 %) | 0.24 % → 0.25 % (T-044 0.11 → 0.13 %) | 0.16 % → 0.16 % (T-044 0.30 %) |
 
 - The girl's plumper ringlets touch the shoulders more (deepest 29 mm at the turn extreme, as in T-044's 28 mm). The
   exported colliders are meant to resolve this in the engine; I did not run the engine solver.
-- Note (third): THIRD_MEASURE_NOTE
+- Third: the head-turn proxy integrates head yaw only (no gravity, no collision response), as in T-044.
 
 ### Build cost (`data/<c>_build.json`)
 
