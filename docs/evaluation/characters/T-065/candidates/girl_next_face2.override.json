@@ -40,10 +40,10 @@
     },
     "socket": {
      "band_deg": 6,
-     "lower_band_deg": 5,
+     "lower_band_deg": 2.5,
      "ramp_deg": 7,
      "reach_deg": 26,
-     "corner_deg": 58,
+     "corner_deg": 50,
      "clearance_m": 0.002
     }
    },

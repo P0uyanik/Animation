@@ -119,7 +119,7 @@
      "pupil": 0.26
     },
     "lids": {
-     "upper_edge_deg": 40,
+     "upper_edge_deg": 28,
      "upper_gap": 0.03,
      "upper_thickness_m": 0.0016,
      "lower_edge_deg": -46,
@@ -128,10 +128,10 @@
     },
     "socket": {
      "band_deg": 6,
-     "lower_band_deg": 5,
+     "lower_band_deg": 2.5,
      "ramp_deg": 7,
      "reach_deg": 26,
-     "corner_deg": 58,
+     "corner_deg": 50,
      "clearance_m": 0.002
     }
    },

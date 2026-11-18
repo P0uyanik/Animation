@@ -207,9 +207,32 @@ Landmark errors in eye-spacing units (`head_v2/outline_errors.md`):
 
 `head_v2/<who>_head_v2_geometry.png`: front, 3/4 and side, face parts only.
 
-**Render budget:**
-- All 24 Cycles stills went to AC 1–7 before the scope extension arrived. **The AC 1–7 Cycles sheets above therefore show the face on the previous head** (the face-level shape options), not on `body_generic/2`.
-- Re-rendering the owner sheets on the new head needs about 9 more stills, one front, one 3/4 and one Happy per character. That needs Supervisor/owner approval.
+### Final Cycles sheets on the fitted head
+
+Approved by the Supervisor: up to 12 extra stills; 9 were used. Each character has front Neutral, 3/4 Neutral and
+Happy. The sheets are in `head_v2/` and the stills in `head_v2/renders/`.
+
+![boy](head_v2/boy_final_face_vs_reference.png)
+![girl](head_v2/girl_final_face_vs_reference.png)
+![third](head_v2/third_final_face_vs_reference.png)
+
+Lid fixes in the same round (spec data only):
+- girl and third character: `lower_band_deg` 2.5 (was 5) and `corner_deg` 50;
+- third character: `upper_edge_deg` 28 (was 40). Her upper lid now meets the iris top, as in "14".
+
+**What I see [J]:**
+- **All three:** round lower faces with short soft jaws and small chins, matching the reference outlines.
+- **Girl:** her chin no longer melts into the neck.
+- **Third character:** the round full face of "14".
+
+**Remaining:**
+- A faint pink line still shows under the iris on the girl and the third character. It is weaker than before.
+- A faint horizontal shading band on the third character's lower face.
+- In the boy's Happy, the closed lid still shows a faint ring.
+- The skin colour belongs to T-066.
+- The boy's Sad/Surprised/Angry/Bored and the girl's Sad/Surprised/Angry stills in the AC 1–7 sheets above are from the previous head. They were not re-rendered: the extra budget went to front, 3/4 and Happy.
+
+Cycles total: 24 (AC 1–7) + 9 (criterion 0) = 33. The original budget was 24, plus 12 approved by the Supervisor.
 
 ## Tests
 
