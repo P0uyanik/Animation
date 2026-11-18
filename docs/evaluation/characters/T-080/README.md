@@ -34,12 +34,11 @@ Visual fidelity to the references comes first. The task file said 2.0.0 should *
   - `asset_store.py verify`: ok, no problems.
   - `tools/check_assets.py --base origin/staging`: **PASS**. Boy 2.0.0 is 29.6 MB; its master is 29.5 MB, under 95 MB.
   - `tools/check_cast.py`: **PASS** (6 shots).
-- **BLOCKED: three changes outside the T-080 write-set are needed.** All are verified locally and then reverted; the patches are in [`proposed/`](proposed/).
-  1. **`tools/regression/tiers.py` `character_config`** requires the baseline `build` to be `<id>.spec.json`, with versions as overrides. A complete versioned spec like `boy_yellow_hoodie.2.0.0.spec.json` raises "expected the character spec".
-     - This fails `test_gate_tools.py`, `test_run_shot_current.py` and the boy regression in the Blender tier.
-     - 2.0.0 cannot be expressed as an override of the legacy 1.x spec: `deep_merge` cannot delete keys, so the result would not be the published spec.
-     - Patch [`proposed/tiers_versioned_spec.patch`](proposed/tiers_versioned_spec.patch) accepts a `*.spec.json` directly in `assets/characters/<id>/spec/`.
-     - With it: both tests PASS. `tools/regression/run.py --character boy_yellow_hoodie --base origin/staging` → **PASS (changed)**: fidelity **67.63 vs 67.63** (drop 0.00, build from the merged code incl. the T-079 weight fix); baseline "no approved baseline at …/2.0.0 (spec changed)", which is reported, not failed.
+- **BLOCKED: changes outside the T-080 write-set.** Item 1 is now resolved on staging. For item 2 the patch was verified locally, then reverted; it is in [`proposed/`](proposed/).
+  1. ~~`tools/regression/tiers.py`~~ **resolved on staging** (`bc9a834`, "accept a published version spec as the current build"; merged into this branch).
+     - Before it, `character_config` rejected a complete versioned spec, which failed `test_gate_tools.py`, `test_run_shot_current.py` and the boy regression.
+     - After merging: both tests PASS.
+     - The boy regression ran with my equivalent local patch (same rule: a version spec in the character's spec folder), not with the staging code: **PASS (changed)**, fidelity **67.63 vs 67.63** (drop 0.00), baseline "no approved baseline at …/2.0.0 (spec changed)", reported, not failed.
   2. **`pipeline/charsys/tests/test_skin_presets.py` line 95**: "approved version names no presets/2 id" (T-066's opt-in guard) fails now that the owner approved 2.0.0.
      - Patch [`proposed/test_skin_presets_pin.patch`](proposed/test_skin_presets_pin.patch) keeps the guard against a *silent* opt-in: presets/2 skin ids are allowed only for a spec that pins `generators.materials = "presets/2"`.
      - With it: 24/24 PASS.
@@ -163,8 +162,8 @@ Command (full tier, this container):
 | Write-set | PASS (28 paths, all inside the widened T-080 claim) |
 | Shared-systems lint | PASS |
 | C++ build / C++ tests | FAIL **environment**: CMake cannot find `embree` 4 in this container, so no C++ was built or run. T-080 changes no C++ file; GitHub CI on the branch is the evidence. |
-| Python tests and links | FAIL: `test_gate_tools.py`, `test_run_shot_current.py` (`tiers.py`, §2a item 1). `test_skin_presets.py` fails too (§2a item 2; run separately). All three PASS with the proposed patches. Links PASS. |
-| Blender tier (full) | girl_auburn_bun_glasses PASS (64.41), girl_white_hair_blue_dress PASS. boy_yellow_hoodie FAIL with the same `tiers.py` error before building. With the `tiers.py` patch: **PASS** (fidelity 67.63, §2a). |
+| Python tests and links | FAIL on `96de404`: `test_gate_tools.py`, `test_run_shot_current.py` (`tiers.py`, §2a item 1; **both PASS after merging staging `e673e2c`**). `test_skin_presets.py` still FAILS 23/24 (§2a item 2; PASS with the proposed patch). Links PASS. |
+| Blender tier (full) | girl_auburn_bun_glasses PASS (64.41), girl_white_hair_blue_dress PASS. boy_yellow_hoodie FAIL on `96de404` with the `tiers.py` error before building. With the equivalent local patch: **PASS** (fidelity 67.63, §2a). I did not re-run the full gate after merging staging's fix. |
 
 Final run on `96de404`, with staging (`79a5ed1`) merged. Before the publish, the round-3 spec passed the gate on `ee610a3`, except the C++ build (environment).
 
@@ -222,7 +221,7 @@ Tool caveats (data outside this write-set):
 2. The owner should decide whether the backpack belongs on the default 2.0.0, given the turnaround and upload 01.
 3. Eye size and cheeks (§7 items 1–2) could get a data-only follow-up on the 2.x line, with owner approval of the face change.
 4. The groom/2 export bug does not reproduce on the generic build path (§4), with either round. The T-079 fix is still needed for the post-build candidate tool.
-5. **BLOCKED on three Supervisor-owned changes (§2a):** the `tiers.py` patch, the `test_skin_presets.py` patch, and guarded-path approval of the published version.
+5. **BLOCKED on two Supervisor-owned items (§2a):** the `test_skin_presets.py` patch, and guarded-path approval of the published version. The `tiers.py` item is resolved on staging.
 6. **2.0.0 regression baseline** (goldens) is for the Supervisor (§2a).
 
 ## 9. Commits
@@ -236,7 +235,9 @@ Branch `t-080-claude-boy-2-0-0`:
 - `58a160b`: round-3 close-ups;
 - merge of `origin/staging` (T-079, owner decisions);
 - `96de404`: publish 2.0.0, approved pointer, fidelity baseline;
-- the report + proposed patches commit (see the RELAY_LOG line).
+- `e0aad53`: report + proposed patches;
+- merge of `origin/staging` (`e673e2c`: tiers.py fix, T-060);
+- the final report commit (see the RELAY_LOG line).
 
 ## 10. Resource use
 - **Token usage:** not available.
