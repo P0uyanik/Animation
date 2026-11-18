@@ -91,9 +91,6 @@
       7.960000038146973,
       7.96999979019165
      ],
-     "lean_max_deg": 0.0,
-     "lean_max_frame": 0,
-     "lean_rate_deg": 0.0,
      "lift_rate_deg": 0.0,
      "max_step_off_deg": 0.15825873613357544,
      "max_step_on_deg": 0.15825873613357544,
@@ -103,6 +100,9 @@
      "swing_max_deg": 0.0,
      "swing_max_frame": 0,
      "swing_rate_deg": 0.0,
+     "turn_max_deg": 0.0,
+     "turn_max_frame": 0,
+     "turn_rate_deg": 0.0,
      "upper_gap_mm": -2.9842405319213867
     },
     "R": {
@@ -194,9 +194,6 @@
       13.449999809265137,
       13.069999694824219
      ],
-     "lean_max_deg": 0.0,
-     "lean_max_frame": 0,
-     "lean_rate_deg": 0.0,
      "lift_rate_deg": 0.0,
      "max_step_off_deg": 20.997562408447266,
      "max_step_on_deg": 20.997562408447266,
@@ -206,6 +203,9 @@
      "swing_max_deg": 0.0,
      "swing_max_frame": 0,
      "swing_rate_deg": 0.0,
+     "turn_max_deg": 0.0,
+     "turn_max_frame": 0,
+     "turn_rate_deg": 0.0,
      "upper_gap_mm": -1.8531829118728638
     }
    },
@@ -303,9 +303,6 @@
       1.2899999618530273,
       1.850000023841858
      ],
-     "lean_max_deg": 0.0,
-     "lean_max_frame": 0,
-     "lean_rate_deg": 0.0,
      "lift_rate_deg": 1.5034093856811523,
      "max_step_off_deg": 23.05790901184082,
      "max_step_on_deg": 21.870338439941406,
@@ -315,6 +312,9 @@
      "swing_max_deg": 0.0,
      "swing_max_frame": 0,
      "swing_rate_deg": 0.0,
+     "turn_max_deg": 0.0,
+     "turn_max_frame": 0,
+     "turn_rate_deg": 0.0,
      "upper_gap_mm": -18.447856903076172
     },
     "R": {
@@ -406,9 +406,6 @@
       1.5800000429153442,
       1.5
      ],
-     "lean_max_deg": 0.0,
-     "lean_max_frame": 0,
-     "lean_rate_deg": 0.0,
      "lift_rate_deg": 0.5131987929344177,
      "max_step_off_deg": 0.11190582066774368,
      "max_step_on_deg": 0.5395908355712891,
@@ -418,6 +415,9 @@
      "swing_max_deg": 0.0,
      "swing_max_frame": 0,
      "swing_rate_deg": 0.0,
+     "turn_max_deg": 0.0,
+     "turn_max_frame": 0,
+     "turn_rate_deg": 0.0,
      "upper_gap_mm": -19.817609786987305
     }
    },

@@ -64,9 +64,6 @@
       1.5499999523162842,
       1.3799999952316284
      ],
-     "lean_max_deg": 0.0,
-     "lean_max_frame": 0,
-     "lean_rate_deg": 0.0,
      "lift_rate_deg": 0.4987874925136566,
      "max_step_off_deg": 0.06852804124355316,
      "max_step_on_deg": 0.4731251299381256,
@@ -76,6 +73,9 @@
      "swing_max_deg": 0.0,
      "swing_max_frame": 0,
      "swing_rate_deg": 0.0,
+     "turn_max_deg": 0.0,
+     "turn_max_frame": 0,
+     "turn_rate_deg": 0.0,
      "upper_gap_mm": -19.428890228271484
     },
     "R": {
@@ -140,9 +140,6 @@
       39.400001525878906,
       22.770000457763672
      ],
-     "lean_max_deg": 0.0,
-     "lean_max_frame": 0,
-     "lean_rate_deg": 0.0,
      "lift_rate_deg": 1.5009877681732178,
      "max_step_off_deg": 31.441957473754883,
      "max_step_on_deg": 30.18657112121582,
@@ -152,6 +149,9 @@
      "swing_max_deg": 0.0,
      "swing_max_frame": 0,
      "swing_rate_deg": 0.0,
+     "turn_max_deg": 0.0,
+     "turn_max_frame": 0,
+     "turn_rate_deg": 0.0,
      "upper_gap_mm": -22.907238006591797
     }
    },

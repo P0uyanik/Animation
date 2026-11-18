@@ -1,11 +1,11 @@
-"""T-082 evidence: the off | T-047 on | T-082 on review sheet (JPEG, <= 2048 px) from the Cycles stills of
-docs/evaluation/animation/T-047/render_t047.py (tags boy_<view>_<variant>), the side strip and the side-by-side MP4
-of the boy's hand-over from Workbench frames seen from his right (tags boy_side_<variant>). Needs Pillow (and ffmpeg
-for --video).
+"""T-082 evidence: the review sheet and the side-by-side MP4 (needs Pillow, and ffmpeg for --video).
 
     python make_sheet_t082.py <stills dir> <out.jpg> <frame>
-    python make_sheet_t082.py --strip <frames dir> <out.png> <frame>
+        Cycles stills of the boy from docs/evaluation/animation/T-047/render_t047.py (tags boy_<front|q34>_<variant>):
+        old staging planning off | old staging T-047 | re-staged T-082, front and 3/4.
     python make_sheet_t082.py --video <frames dir> <out.mp4> <first> <last>
+        whole-shot frames from render_frames.py (tags t047_f#### and new_f####), each shot through its own camera:
+        T-047 (old staging) | T-082 (re-staged), side by side.
 """
 import os
 import subprocess
@@ -14,7 +14,7 @@ import tempfile
 
 from PIL import Image, ImageDraw, ImageFont
 
-COLS = [("planning OFF", "off"), ("T-047 ON (swing 84 deg)", "t047"), ("T-082 ON (swing 37 deg, lean 8 deg)", "t082")]
+COLS = [("old staging, planning OFF", "off"), ("old staging, T-047 ON", "t047"), ("re-staged, T-082 ON", "new")]
 
 
 def font(size):
@@ -30,7 +30,8 @@ def sheet(src, out, frame, cell=(512, 640)):
     W, H = cell[0] * len(COLS), head + len(rows) * (cell[1] + lab)
     img = Image.new("RGB", (W, H), (245, 245, 245))
     d = ImageDraw.Draw(img)
-    d.text((12, 10), f"T-082 boy, e905 f{frame}: off | T-047 on | T-082 on (Cycles 32 spp)", fill=(0, 0, 0), font=font(26))
+    d.text((12, 10), f"T-082 boy, e905 f{frame}: old staging off | T-047 on | re-staged T-082 (Cycles 32 spp)", fill=(0, 0, 0),
+           font=font(24))
     for r, (row_label, view) in enumerate(rows):
         y = head + r * (cell[1] + lab)
         for c, (col_label, variant) in enumerate(COLS):
@@ -43,28 +44,23 @@ def sheet(src, out, frame, cell=(512, 640)):
     img.save(out, "JPEG", quality=84)
 
 
-def strip(src, f, cell=(320, 400)):
-    img = Image.new("RGB", (cell[0] * len(COLS), cell[1] + 30), (245, 245, 245))
-    d = ImageDraw.Draw(img)
-    for c, (col_label, variant) in enumerate(COLS):
-        im = Image.open(os.path.join(src, f"boy_side_{variant}_f{f:04d}.png")).convert("RGB").resize(cell, Image.LANCZOS)
-        img.paste(im, (c * cell[0], 30))
-        d.text((c * cell[0] + 6, 6), f"{col_label}  f{f}", fill=(0, 0, 0), font=font(15))
-    return img
-
-
-def video(src, out, first, last):
+def video(src, out, first, last, cell=(640, 360)):
+    labels = [("T-047 (old staging)", "t047"), ("T-082 (re-staged)", "new")]
     with tempfile.TemporaryDirectory() as tmp:
         for f in range(first, last + 1):
-            strip(src, f).save(os.path.join(tmp, f"f{f - first:04d}.png"))
+            img = Image.new("RGB", (cell[0] * len(labels), cell[1] + 30), (245, 245, 245))
+            d = ImageDraw.Draw(img)
+            for c, (label, tag) in enumerate(labels):
+                im = Image.open(os.path.join(src, f"{tag}_f{f:04d}.png")).convert("RGB").resize(cell, Image.LANCZOS)
+                img.paste(im, (c * cell[0], 30))
+                d.text((c * cell[0] + 8, 6), f"{label}  f{f}", fill=(0, 0, 0), font=font(16))
+            img.save(os.path.join(tmp, f"f{f - first:04d}.png"))
         subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-framerate", "24", "-i", os.path.join(tmp, "f%04d.png"),
                         "-c:v", "libx264", "-pix_fmt", "yuv420p", "-crf", "23", out], check=True)
 
 
 if __name__ == "__main__":
-    if sys.argv[1] == "--strip":
-        strip(sys.argv[2], int(sys.argv[4])).save(sys.argv[3])
-    elif sys.argv[1] == "--video":
+    if sys.argv[1] == "--video":
         video(sys.argv[2], sys.argv[3], int(sys.argv[4]), int(sys.argv[5]))
     else:
         sheet(sys.argv[1], sys.argv[2], int(sys.argv[3]))
