@@ -5,6 +5,7 @@
 #include <doctest/doctest.h>
 
 #include <filesystem>
+#include <fstream>
 #include <memory>
 
 #include "scene/collision.h"
@@ -304,4 +305,116 @@ TEST_CASE("collision body: the elbow swing limit (T-082) is block data with a sh
   // a limited swing never clears more than the full range
   const auto rest = restGlobals(sk);
   CHECK(swungArmGap(*o->clearanceModel(0), rest, 'R', glm::radians(5.0f)) <= swungArmGap(*o->clearanceModel(0), rest, 'R') + 1e-6f);
+}
+
+// ---------------------------------------------------------------------------------------------------------- T-096
+// Head and hair volumes: opt-in (never derived or written unless asked), fitted to the head-carried vertices of every
+// character source (packages and the engine character), covering every one of them and close to the surface.
+TEST_CASE("head volumes: opt-in, cover the head-carried vertices closely, never in the package block (T-096)") {
+  for (const char* asset : {kBoy, kGirl, kGirlM2, kSdf}) {
+    auto ev = load(baseScene(asset));
+    const auto& ci = ev->characters()[0];
+    const Skeleton& sk = ci.asset.skeleton;
+    CollisionBody body = bodyOf(*ev);
+    CHECK(body.heads.empty());  // default: no head volumes
+    const Json before = collisionBodyToJson(body, sk);
+    addHeadVolumes(body, sk, ci.rig.meshes);
+    REQUIRE(!body.heads.empty());
+    CHECK(collisionBodyToJson(body, sk) == before);  // the block (export/6 parity) never carries them
+    const int head = sk.find("head");
+    std::vector<char> underHead(sk.bones.size(), 0);
+    for (size_t b = 0; b < sk.bones.size(); ++b)
+      for (int k = int(b); k >= 0; k = sk.bones[size_t(k)].parent) underHead[b] |= k == head;
+    const std::vector<mat4> G = restGlobals(sk);
+    const auto spheres = headSpheres(body, G);
+    float rmax = 0;
+    for (const auto& [c, r] : spheres) rmax = std::max(rmax, r);
+    size_t n = 0, covered = 0;
+    for (const SkinnedMesh& m : ci.rig.meshes)
+      for (size_t v = 0; v < m.rest.positions.size(); v += 7) {
+        float w = 0;
+        for (int k = 0; k < 4; ++k)
+          if (m.joints[v][k] >= 0 && underHead[size_t(m.joints[v][k])]) w += m.weights[v][k];
+        if (w < 0.5f) continue;
+        ++n;
+        for (const auto& [c, r] : spheres)
+          if (glm::distance(c, m.rest.positions[v]) <= r + 1e-5f) {
+            ++covered;
+            break;
+          }
+      }
+    MESSAGE(asset << ": " << spheres.size() << " head volumes, largest radius " << rmax * 1000 << " mm, " << covered << "/" << n << " vertices covered");
+    CHECK(covered == n);
+    CHECK(rmax <= 0.5f * std::sqrt(3.0f) * kHeadCell + 1e-4f);  // a sphere per voxel: the surface within ~1 cm
+  }
+}
+
+TEST_CASE("head volumes: the gap between two heads is signed and follows their distance (T-096)") {
+  auto ev = load(baseScene(kBoy));
+  const auto& ci = ev->characters()[0];
+  CollisionBody body = bodyOf(*ev), none = bodyOf(*ev);
+  addHeadVolumes(body, ci.asset.skeleton, ci.rig.meshes);
+  const std::vector<mat4> G = restGlobals(ci.asset.skeleton);
+  CHECK(headGap(body, G, none, G).gap > 1e8f);  // no head volumes: nothing to keep apart
+  float last = -1e9f;
+  for (float d : {0.5f, 0.6f, 0.8f, 1.0f}) {  // the same head shifted sideways by d: apart, the gap is exact
+    std::vector<mat4> H = G;
+    for (auto& m : H) m = glm::translate(mat4(1), vec3(d, 0, 0)) * m;
+    const HeadGap g = headGap(body, H, body, G);
+    MESSAGE("shift " << d << " m: gap " << g.gap * 1000 << " mm");
+    CHECK(g.gap > 0.0f);
+    if (last > -1e8f) CHECK(g.gap - last == doctest::Approx(0.2f).epsilon(0.1));  // follows the distance 1:1 sideways
+    last = g.gap;
+    CHECK(glm::distance(g.pointA - g.pointB, g.dir * g.gap) < 1e-4f);
+    CHECK(g.dir.x > 0.9f);  // from b's head towards a's
+  }
+  for (float d : {0.0f, 0.1f, 0.25f}) {  // overlapping heads: negative (a shell: not a depth)
+    std::vector<mat4> H = G;
+    for (auto& m : H) m = glm::translate(mat4(1), vec3(d, 0, 0)) * m;
+    CHECK(headGap(body, H, body, G).gap < 0.0f);
+  }
+}
+
+TEST_CASE("interaction options: the scene switch is checked, saved as written and off by default (T-096)") {
+  CHECK(!interactionOptionsFromJson(Json(nullptr))->headVolumes);
+  CHECK(interactionOptionsFromJson(Json{{"headVolumes", true}})->headClearance == doctest::Approx(0.03f));  // default
+  auto o = interactionOptionsFromJson(Json{{"headVolumes", true}, {"headClearance", 0.02}, {"followSharedProp", true}, {"visibleGrip", true}});
+  REQUIRE(o);
+  CHECK(o->headVolumes);
+  CHECK(o->headClearance == doctest::Approx(0.02f));
+  CHECK(o->followSharedProp);
+  CHECK(o->visibleGrip);
+  CHECK(!interactionOptionsFromJson(Json::array()));
+  CHECK(!interactionOptionsFromJson(Json{{"headVolume", true}}));  // a typo is an error, not silently off
+  CHECK(!interactionOptionsFromJson(Json{{"headVolumes", 1}}));
+  CHECK(!interactionOptionsFromJson(Json{{"headClearance", 0.5}}));
+  CHECK(!interactionOptionsFromJson(Json{{"headClearance", -0.01}}));
+  // Saved as written; a bad block is a load error.
+  Scene s = baseScene(kBoy);
+  s.interaction = Json{{"visibleGrip", true}};
+  CHECK(sceneToJson(s)["interaction"] == s.interaction);
+  CHECK(!sceneToJson(baseScene(kBoy)).contains("interaction"));
+  const fs::path tmp = fs::temp_directory_path() / "t096_bad_interaction.scene.json";
+  Json j = sceneToJson(s);
+  j["interaction"] = {{"followSharedProp", "yes"}};
+  { std::ofstream(tmp) << j.dump(); }
+  CHECK(!loadScene(tmp));
+  fs::remove(tmp);
+}
+
+// Zero change by default: an absent block, an empty one and one with every option off evaluate identically.
+TEST_CASE("interaction options: every option off is exactly the behaviour before T-096") {
+  Scene base = keyedIntoBody(kBoy, true);
+  base.actions.push_back({{"type", "look"}, {"character", "a"}, {"start", 10}, {"target", {0.3, 0.6, 0.5}}});
+  auto ref = load(base);
+  for (const Json& block : {Json::object(), Json{{"headVolumes", false}, {"followSharedProp", false}, {"visibleGrip", false}}}) {
+    Scene s = base;
+    s.interaction = block;
+    auto ev = load(s);
+    CHECK(ev->warnings() == ref->warnings());
+    for (int f = 1; f <= 40; ++f) {
+      const auto A = ref->characterGlobals(0, f), B = ev->characterGlobals(0, f);
+      for (size_t b = 0; b < A.size(); ++b) CHECK(A[b] == B[b]);
+    }
+  }
 }

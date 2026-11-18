@@ -216,8 +216,34 @@ ArmClearance armClearance(const BodyClearanceModel& M, const std::vector<mat4>& 
   return out;
 }
 
+// T-096: the head clearance tilt "<prefix>headTilt" (world rotation vector, radians) turns the neck about its own head
+// (the joint), after IK and look-at; the eyes keep their world rotation, so the gaze stays on its target.
+void applyHeadTilt(const Skeleton& sk, const Clip& clip, const std::string& prefix, double frame, const mat4& world, Pose& pose) {
+  const Track* t = clip.find(prefix + "headTilt");
+  if (!t || t->keys.empty()) return;
+  const vec3 rv = t->evaluate(frame);
+  const int neck = sk.find("neck");
+  if (neck < 0 || glm::length(rv) < 1e-7f) return;
+  auto rotOf = [](const mat4& M) {
+    return glm::normalize(glm::quat_cast(mat3(glm::normalize(vec3(M[0])), glm::normalize(vec3(M[1])), glm::normalize(vec3(M[2])))));
+  };
+  std::vector<mat4> G = boneGlobals(sk, pose, world);
+  std::vector<std::pair<int, quat>> eyes;
+  for (size_t b = 0; b < sk.bones.size(); ++b)
+    if (sk.bones[b].name.rfind("eye.", 0) == 0) eyes.push_back({int(b), rotOf(G[b])});
+  const int parent = sk.bones[size_t(neck)].parent;
+  const quat parentRot = rotOf(parent >= 0 ? G[size_t(parent)] : world);
+  pose.local[size_t(neck)] = glm::normalize(glm::inverse(parentRot) * fromRotationVector(rv) * parentRot * pose.local[size_t(neck)]);
+  for (const auto& [e, before] : eyes) {  // bones come parent first: an eye's parent is already where it ends up
+    G = boneGlobals(sk, pose, world);
+    const int ep = sk.bones[size_t(e)].parent;
+    pose.local[size_t(e)] = glm::normalize(glm::inverse(rotOf(ep >= 0 ? G[size_t(ep)] : world)) * before);
+  }
+}
+
 void applyArmPoles(const Skeleton& sk, const Clip& clip, const std::string& prefix, double frame, const mat4& world,
                    Pose& pose) {
+  applyHeadTilt(sk, clip, prefix, frame, world, pose);  // T-096 (runs at the same point of the pose path; no track: no-op)
   for (size_t i = 0; i < sk.bones.size(); ++i) {
     const std::string name = prefix + "pole." + sk.bones[i].name, swingName = prefix + "swing." + sk.bones[i].name;
     const Track* t = clip.find(name);
@@ -576,11 +602,21 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
   };
   // Reach + grasp of `socket` on prop p, arriving at `contact` (shared by reach/grasp and the hand-over receiver).
   auto reachTo = [&](const Hand& h, int p, const std::string& socket, double start, double contact, bool grasp,
-                     const std::string& what) -> Result<Plan> {
+                     const std::string& what, bool turnedGrip = false) -> Result<Plan> {
     if (contact < start + 6) return fail(std::format("{}: contact must be at least 6 frames after start", what));
     Plan pl = plan(h, p, socket, contact);
     const vec3 natural = boneAt(h, h.bone, start);
-    const vec3 approach = pl.wrist - pl.inward * 0.05f + kUp * 0.02f;
+    vec3 back = -pl.inward * 0.05f;
+    if (turnedGrip) {  // T-096 visibleGrip: never back off towards the body (the forearm would enter it)
+      vec3 toBody = boneAt(h, h.root, contact) - pl.socket;
+      toBody.y = 0;
+      if (glm::length(toBody) > 1e-6f) {
+        toBody = glm::normalize(toBody);
+        back -= toBody * std::max(0.0f, glm::dot(back, toBody));
+        back = glm::length(back) > 1e-6f ? glm::normalize(back) * 0.05f : vec3(0);
+      }
+    }
+    const vec3 approach = pl.wrist + back + kUp * (turnedGrip && glm::length(back) < 0.025f ? 0.05f : 0.02f);
     const double pre = contact - std::min(6.0, 0.4 * (contact - start));
     warnReach(h, pl.wrist, contact, what);
     key(gen, h.ik, start, clip.evaluate(h.ik + ".weight", start, vec3(0)).x > 0 ? clip.evaluate(h.ik, start, natural) : natural);
@@ -607,6 +643,106 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
     }
     correct(h, contact, [&] { return socketWorld(p, socket, contact)[3] - vec4(handGripPoint(size_t(h.c), h.side, contact), 1); });
     return pl;
+  };
+  // T-096 visibleGrip (interaction option, opt-in): on a round prop (a cylinder's side: the grasp shape has an axis)
+  // the same grip fits anywhere around the axis, so the palm may meet the prop at the socket turned about it. The
+  // grasp takes the smallest turn (kGripStep steps, at most kGripTurnMax either way) that puts the palm's side of the
+  // prop at least kGripHide away from the shot camera (seen from above), so the hand is beside or behind the prop and
+  // the prop stays in view; when no allowed turn gets there, the allowed turn that gets furthest. Allowed: the palm's
+  // side within kGripFaceMax of the direction to the character's shoulder (a hand never grips the far side of a prop)
+  // and, for a hand-over receiver, at least kGripApart from the giver's socket (the hands do not meet), and an arm that
+  // stays clear of the body (the planner's limb capsules for that grip, elbow within its swing limit: at least the
+  // margin, or as clear as the authored grip). An authored grip that already keeps the prop in view, or a box or
+  // sphere, keeps the authored socket. A turned grip often
+  // holds the prop's near side (palm away from the body, as one takes a glass): its approach backs off sideways and
+  // up, never towards the body (reachTo), so the short forearm does not enter it. The turned socket is added to
+  // this scene's copy of the prop asset as "<socket>@<character>.<hand>" (the asset file is unchanged); a grasp uses
+  // only its position.
+  const bool visibleGrip = interactionOptionsFromJson(scene_.interaction).value_or(InteractionOptions{}).visibleGrip;
+  auto visibleSocket = [&](const Hand& hh, int p, const std::string& socket, double f, const std::string& avoid) -> std::string {
+    constexpr float kGripTurnMax = 90.0f, kGripStep = 5.0f, kGripHide = 65.0f, kGripFaceMax = 100.0f, kGripApart = 90.0f;  // degrees
+    PropAsset& A = propAssets_[size_t(p)];
+    const AssetTransform st = A.sockets.at(socket);
+    const GraspShape gs = graspShape(A, st.translation);
+    if (glm::length(gs.axis) < 1e-6f) return socket;
+    const vec3 ax = glm::normalize(gs.axis);
+    const mat4 P = propWorld(size_t(p), f);
+    auto turned = [&](vec3 t, float deg) { return gs.centre + glm::angleAxis(glm::radians(deg), ax) * (t - gs.centre); };
+    auto outward = [&](vec3 t) {  // horizontal world direction from the prop's axis to the point
+      const vec3 onAxis = gs.centre + ax * glm::dot(t - gs.centre, ax);
+      vec3 o = vec3(P * vec4(t, 1)) - vec3(P * vec4(onAxis, 1));
+      o.y = 0;
+      return glm::length(o) > 1e-6f ? glm::normalize(o) : vec3(0);
+    };
+    const vec3 c0 = vec3(P * vec4(gs.centre, 1));
+    auto flat = [](vec3 v) {
+      v.y = 0;
+      return glm::length(v) > 1e-6f ? glm::normalize(v) : vec3(0);
+    };
+    const vec3 toCam = flat(cameraAt(f).position - c0), toChar = flat(boneAt(hh, hh.root, f) - c0);
+    const vec3 avoidDir = avoid.empty() || !A.sockets.count(avoid) ? vec3(0) : outward(A.sockets.at(avoid).translation);
+    if (toCam == vec3(0) || toChar == vec3(0)) return socket;
+    const float cosHide = std::cos(glm::radians(kGripHide)), cosFace = std::cos(glm::radians(kGripFaceMax)),
+                cosApart = std::cos(glm::radians(kGripApart));
+    if (glm::dot(outward(st.translation), toCam) <= cosHide) return socket;  // the authored grip already keeps it in view
+    // The arm's clearance for a grip (the planner's own measure: forearm and hand capsules against the body), with the
+    // elbow from a two-bone solve in the arm's present plane, swung within the character's limit as the planner would.
+    const BodyClearanceModel* M = size_t(hh.c) < clearance_.size() && clearance_[size_t(hh.c)].valid ? &clearance_[size_t(hh.c)] : nullptr;
+    auto armGap = [&](vec3 t) -> float {
+      if (!M) return 1e9f;
+      AssetTransform probe = st;
+      probe.translation = t;
+      const std::string tmp = socket + "@probe";
+      A.sockets[tmp] = probe;
+      const Plan pl = plan(hh, p, tmp, f);
+      A.sockets.erase(tmp);
+      const Skeleton& sk = characters_[size_t(hh.c)].asset.skeleton;
+      std::vector<mat4> G = characterGlobals(size_t(hh.c), f);
+      const vec3 S(G[size_t(hh.root)][3]), E0(G[size_t(hh.mid)][3]), W = pl.wrist;
+      const float a = glm::distance(sk.bones[size_t(hh.root)].head, sk.bones[size_t(hh.mid)].head);
+      const float b = glm::distance(sk.bones[size_t(hh.mid)].head, sk.bones[size_t(hh.bone)].head);
+      const float d = std::clamp(glm::distance(S, W), 1e-4f, a + b - 1e-5f);
+      const vec3 u = glm::normalize(W - S);
+      vec3 pole = (E0 - S) - u * glm::dot(E0 - S, u);
+      pole = glm::length(pole) > 1e-6f ? glm::normalize(pole) : glm::normalize(glm::cross(u, kUp));
+      const float x = (a * a - b * b + d * d) / (2 * d), r = std::sqrt(std::max(0.0f, a * a - x * x));
+      const vec3 restDir = glm::normalize(sk.bones[size_t(hh.bone)].head - sk.bones[size_t(hh.mid)].head);
+      float bestGap = -1e9f;
+      const float lim = std::min(M->collision.maxElbowSwing, glm::radians(30.0f));
+      for (float th = -lim; th <= lim + 1e-4f; th += glm::radians(5.0f)) {
+        const vec3 E = S + u * x + (glm::angleAxis(th, u) * pole) * r;
+        const vec3 fd = W - E;
+        if (glm::length(fd) < 1e-6f) continue;
+        G[size_t(hh.mid)] = glm::translate(mat4(1), E) * glm::mat4_cast(glm::rotation(restDir, glm::normalize(fd)));
+        G[size_t(hh.bone)] = glm::translate(mat4(1), W) * mat4(pl.R);
+        bestGap = std::max(bestGap, limbClearance(M->collision, G, hh.side).gap);
+      }
+      return bestGap;
+    };
+    const float need = std::min(kArmBodyMargin, armGap(st.translation));  // never worse than the margin (or the authored)
+    float best = 0, bestCam = glm::dot(outward(st.translation), toCam);
+    for (float t = kGripStep; t <= kGripTurnMax + 1e-3f; t += kGripStep) {
+      bool hit = false;
+      for (float deg : {t, -t}) {
+        const vec3 o = outward(turned(st.translation, deg));
+        const float onChar = glm::dot(o, toChar);
+        if (o == vec3(0) || onChar < cosFace || (avoidDir != vec3(0) && glm::dot(o, avoidDir) > cosApart)) continue;
+        const float onCam = glm::dot(o, toCam);
+        if (onCam >= bestCam - 1e-4f || armGap(turned(st.translation, deg)) < need) continue;
+        best = deg, bestCam = onCam;  // the best so far (smallest turn first)
+        if (onCam <= cosHide) {
+          hit = true;
+          break;
+        }
+      }
+      if (hit) break;
+    }
+    if (best == 0) return socket;
+    AssetTransform t = st;
+    t.translation = turned(st.translation, best);
+    const std::string name = std::format("{}@{}.{}", socket, hh.who, hh.side);
+    A.sockets[name] = t;
+    return name;
   };
   // Lets go: fingers open, the wrist backs away from the prop and the arm returns to its own animation by `end`.
   auto release = [&](const Hand& h, const quat& orient, double from, double end, vec3 retreat) {
@@ -662,19 +798,20 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
     const std::string what = std::format("{} '{}'", type, str(a, "prop"));
     const int p = propIndex(str(a, "prop"));
     if (p < 0) return fail(std::format("{}: unknown prop '{}'", type, str(a, "prop")));
-    const std::string socket = str(a, "socket", "grip");
-    if (auto r = requireSocket(p, socket, what); !r) return std::unexpected(r.error());
+    const std::string authoredSocket = str(a, "socket", "grip");
+    if (auto r = requireSocket(p, authoredSocket, what); !r) return std::unexpected(r.error());
     if (auto it = ctx.hands.find({c, h.side}); it != ctx.hands.end() && it->second.prop >= 0)
       return fail(std::format("{}: '{}' already holds '{}' in hand.{}", what, who, scene_.props[size_t(it->second.prop)].name, h.side));
     const double contact = num(a, "contact", start + 14);
     const bool grasp = flag(a, "grasp", true);
-    auto pl = reachTo(h, p, socket, start, contact, grasp, what);
+    const std::string socket = grasp && visibleGrip ? visibleSocket(h, p, authoredSocket, contact, "") : authoredSocket;
+    auto pl = reachTo(h, p, socket, start, contact, grasp, what, socket != authoredSocket);
     if (!pl) return std::unexpected(pl.error());
     ctx.contacts.push_back({c, h.side, contact, p, socket, false, vec3(0)});
     if (grasp) {
       if (auto r = addSwitch(p, contact, PropParent{PropParent::Kind::Character, who, std::string("hand.") + h.side}, what); !r)
         return std::unexpected(r.error());
-      ctx.hands[{c, h.side}] = {p, pl->orient};
+      ctx.hands[{c, h.side}] = {p, pl->orient, socket};
       if (look) gazeOn(h, p, start, contact + 8);
     } else {
       const double end = num(a, "end", contact + 12);
@@ -764,8 +901,8 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
   if (!p) return std::unexpected(p.error());
   if (auto it = ctx.hands.find({rc, r.side}); it != ctx.hands.end() && it->second.prop >= 0)
     return fail(std::format("handover: '{}' already holds '{}' in hand.{}", to, scene_.props[size_t(it->second.prop)].name, r.side));
-  const std::string toSocket = str(a, "toSocket", "grip_b");
-  if (auto rs = requireSocket(*p, toSocket, "handover"); !rs) return std::unexpected(rs.error());
+  const std::string authoredToSocket = str(a, "toSocket", "grip_b");
+  if (auto rs = requireSocket(*p, authoredToSocket, "handover"); !rs) return std::unexpected(rs.error());
   const double contact = num(a, "contact", start + 18), rStart = num(a, "receiverStart", start + 4);
   const double rel = num(a, "release", contact + 4), end = num(a, "end", rel + 12);
   if (contact < start + 6 || contact < rStart + 6 || rel < contact + 1 || end < rel + 8)
@@ -773,6 +910,9 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
   // Giver: brings the prop to the meeting point a little before contact and holds it still until it lets go.
   const quat gOrient = ctx.hands[{c, h.side}].orient;
   const vec3 origin = vec3(propWorld(size_t(*p), start)[3]);
+  // T-096 visibleGrip: the receiver's grip turned to keep the prop in view, away from the giver's (the prop keeps its
+  // orientation from the start of the hand-over to the contact, so its sides are known now).
+  const std::string toSocket = visibleGrip ? visibleSocket(r, *p, authoredToSocket, contact, ctx.hands[{c, h.side}].socket) : authoredToSocket;
   vec3 meet;
   if (auto at = vecOpt(a, "at")) {
     meet = *at;
@@ -796,7 +936,7 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
     correct(h, still, [&] { return m - vec3(propWorld(size_t(*p), still)[3]); });
     for (auto& k : gen.tracks[h.ik].keys)  // still means still: contact repeats the corrected meeting key
       if (std::abs(k.frame - contact) < 1e-6) k.value = clip.evaluate(h.ik, still, wristM);
-    return reachTo(r, *p, toSocket, rStart, contact, true, what);
+    return reachTo(r, *p, toSocket, rStart, contact, true, what, toSocket != authoredToSocket);
   };
   // T-030: the meeting point must leave both arms (forearm and hand surface) outside their own bodies and within
   // both reaches. Candidates on a grid around the requested point (3 cm steps, then 1 cm steps around the best); the
@@ -868,7 +1008,8 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
   if (auto rs = addSwitch(*p, contact, PropParent{PropParent::Kind::Character, to, std::string("hand.") + r.side}, what); !rs)
     return std::unexpected(rs.error());
   ctx.contacts.push_back({rc, r.side, contact, *p, toSocket, false, vec3(0)});
-  ctx.hands[{rc, r.side}] = {*p, pl->orient};
+  ctx.shared.push_back({c, h.side, *p, ctx.hands[{c, h.side}].socket, contact, rel, end});
+  ctx.hands[{rc, r.side}] = {*p, pl->orient, toSocket};
   ctx.hands[{c, h.side}].prop = -1;
   // Giver lets go after the receiver holds it and draws the hand back towards its own shoulder.
   key(gen, h.ik, rel, clip.evaluate(h.ik, contact, wristM));
@@ -895,6 +1036,9 @@ void SceneEvaluator::buildClearanceModels() {
                                         c < scene_.characters.size() ? scene_.characters[c].name : ci.asset.name, b.error().message));
     clearance_.push_back(bodyClearanceModel(ci.asset.skeleton, ci.rig.meshes, ci.asset.collisionBlock));
   }
+  // T-096 (opt-in): head and hair volumes, always derived from the character's own meshes (never from the package).
+  if (auto io = interactionOptionsFromJson(scene_.interaction); io && io->headVolumes)
+    for (size_t c = 0; c < characters_.size(); ++c) addHeadVolumes(clearance_[c].collision, characters_[c].asset.skeleton, characters_[c].rig.meshes);
 }
 
 // Planned elbow swing (T-047; replaces T-030's fixed outward pole): per frame, the smallest swing of the elbow about
@@ -1407,6 +1551,37 @@ Result<void> SceneEvaluator::finishInteractions(Clip& gen, InteractionContext& c
     }
   } restore{this, idleNotPrepared};
   armClearancePass(gen, ctx);
+  const InteractionOptions io = interactionOptionsFromJson(scene_.interaction).value_or(InteractionOptions{});
+  // T-096 followSharedProp: while giver and receiver both hold the prop, the receiver's hand carries it (its parent)
+  // and may still move a little (an arm near full reach follows the shoulder's idle sway): the giver's palm follows
+  // its own socket at every frame of the shared span (contact corrections below, in time order after the receiver's
+  // contact), and the giver's return path takes the last offset out gradually, so the release does not step.
+  struct SharedFix {
+    const InteractionContext::Shared* s;
+    std::string ik;
+    vec3 before{0};
+  };
+  std::vector<SharedFix> sharedFix;
+  if (io.followSharedProp)
+    for (const auto& sh : ctx.shared) {
+      if (sh.socket.empty() || sh.prop < 0) continue;
+      const int hb = characterSocketBone(size_t(sh.character), std::string("hand.") + sh.side);
+      if (hb < 0) continue;
+      const std::string ik = scene_.characters[size_t(sh.character)].name + "/ik." + characters_[size_t(sh.character)].asset.skeleton.bones[size_t(hb)].name;
+      Track& t = gen.tracks[ik];
+      if (t.keys.empty()) continue;
+      for (double f = std::floor(sh.from) + 1; f <= sh.to + 1e-9; f += 1) {
+        bool has = false;
+        for (const Key& k : t.keys) has |= std::abs(k.frame - f) < 1e-6;
+        if (!has) {
+          const vec3 v = t.evaluate(f);
+          auto at = std::lower_bound(t.keys.begin(), t.keys.end(), f, [](const Key& k, double x) { return k.frame < x; });
+          t.keys.insert(at, Key{f, v, Interp::Linear});
+        }
+        ctx.contacts.push_back({sh.character, sh.side, f, sh.prop, sh.socket, false, vec3(0)});
+      }
+      sharedFix.push_back({&sh, ik, t.evaluate(sh.to)});
+    }
   // Later actions (clips, walks, other interactions) may change the body at an earlier contact: re-correct every
   // contact in time order, so each one is exact in the final animation.
   std::stable_sort(ctx.contacts.begin(), ctx.contacts.end(),
@@ -1424,6 +1599,15 @@ Result<void> SceneEvaluator::finishInteractions(Clip& gen, InteractionContext& c
       warnings_.push_back(std::format("interaction: '{}' hand.{} misses '{}' socket '{}' by {:.1f} mm at frame {} (out of reach?)",
                                       scene_.characters[size_t(k.character)].name, k.side, scene_.props[size_t(k.prop)].name,
                                       k.socket, e * 1000, k.frame));
+  }
+  for (const SharedFix& sf : sharedFix) {  // fade the release offset out over the giver's return
+    Track& t = gen.tracks[sf.ik];
+    const vec3 off = t.evaluate(sf.s->to) - sf.before;
+    for (Key& k : t.keys)
+      if (k.frame > sf.s->to + 1e-6 && k.frame < sf.s->end - 1e-6) {
+        const float u = float((k.frame - sf.s->to) / (sf.s->end - sf.s->to));
+        k.value += off * (1.0f - u * u * (3.0f - 2.0f * u));
+      }
   }
   // The contact corrections moved some wrists a little: the swings follow (they do not move wrists or hands).
   for (size_t c = 0; c < clearance_.size(); ++c) {
@@ -1451,6 +1635,120 @@ Result<void> SceneEvaluator::finishInteractions(Clip& gen, InteractionContext& c
         warnings_.push_back(std::format("interaction: '{}' arm {} passes {:.1f} mm into the body at frame {} (target inside the body?)",
                                         who, side, -worst * 1000, at));
     }
+  }
+  if (io.headVolumes) {
+    // T-096 head clearance (interaction option headVolumes): every pair of characters with head volumes keeps
+    // headClearance between them. Per frame where the volumes come closer, both heads tilt away from each other about
+    // their neck (the same angle each: the smallest kHeadTiltStep multiple up to kHeadTiltMax that opens the gap, as
+    // the pose plays back); then the smallest envelope above those angles whose rate is at most kHeadTiltRate per
+    // frame, so a head eases away and back. The tilt is a generated "<who>/headTilt" track (applyHeadTilt: after IK
+    // and look-at, so the head follow and the neck assist do not aim it back; the eyes keep their gaze), axis per frame
+    // the one that moves the closest head point horizontally away from the other head. Neck only: arms, hands and held
+    // props stay where they are. "<who>/collision.headTilt.<other>" records the angle (degrees) for measurements.
+    const float need = io.headClearance;
+    constexpr float kHeadTiltMax = 15.0f, kHeadTiltStep = 0.5f, kHeadTiltRate = 0.6f;  // degrees, degrees per frame
+    const int fs = scene_.frameStart - 1, n = scene_.frameEnd - scene_.frameStart + 3;
+    for (size_t a = 0; a < characters_.size(); ++a)
+      for (size_t b = a + 1; b < characters_.size(); ++b) {
+        if (a >= clearance_.size() || b >= clearance_.size() || clearance_[a].collision.heads.empty() || clearance_[b].collision.heads.empty()) continue;
+        const size_t who[2] = {a, b};
+        int neck[2], head[2];
+        std::string track[2];
+        std::vector<vec3> base[2];
+        std::optional<Track> saved[2];
+        bool ok = true;
+        for (int k = 0; k < 2; ++k) {
+          const Skeleton& sk = characters_[who[k]].asset.skeleton;
+          neck[k] = sk.find("neck");
+          head[k] = sk.find("head");
+          ok = ok && neck[k] >= 0 && head[k] >= 0;
+          track[k] = scene_.characters[who[k]].name + "/headTilt";
+          if (auto it = gen.tracks.find(track[k]); it != gen.tracks.end() && !it->second.keys.empty()) saved[k] = it->second;
+          for (int i = 0; i < n; ++i) base[k].push_back(saved[k] ? saved[k]->evaluate(fs + i) : vec3(0));
+        }
+        if (!ok) continue;
+        std::vector<float> needDeg(size_t(n), 0.0f);
+        std::vector<vec3> axis[2] = {std::vector<vec3>(size_t(n), vec3(0)), std::vector<vec3>(size_t(n), vec3(0))};
+        std::vector<char> hasAxis(size_t(n), 0);
+        auto setTilt = [&](int k, const std::vector<float>& deg) {
+          std::vector<Key> keys;
+          for (int i = 0; i < n; ++i)
+            keys.push_back({double(fs + i), base[k][size_t(i)] + axis[k][size_t(i)] * glm::radians(deg[size_t(i)]), Interp::Linear});
+          gen.tracks[track[k]].keys = std::move(keys);
+        };
+        const std::vector<float> zero(size_t(n), 0.0f);
+        for (int k = 0; k < 2; ++k) setTilt(k, zero);
+        auto gapAt = [&](int i) {
+          return headGap(clearance_[a].collision, characterGlobals(a, fs + i), clearance_[b].collision, characterGlobals(b, fs + i));
+        };
+        bool any = false;
+        for (int i = 0; i < n; ++i) {
+          const std::vector<mat4> GG[2] = {characterGlobals(a, fs + i), characterGlobals(b, fs + i)};
+          const HeadGap g = headGap(clearance_[a].collision, GG[0], clearance_[b].collision, GG[1]);
+          // Away from the other head: horizontally, head bone to head bone (inside an overlap the closest spheres'
+          // direction says little about how the heads separate).
+          vec3 away = vec3(GG[0][size_t(head[0])][3]) - vec3(GG[1][size_t(head[1])][3]);
+          away.y = 0;
+          away = glm::length(away) > 1e-6f ? glm::normalize(away) : g.dir;
+          const vec3 dirs[2] = {away, -away}, pts[2] = {g.pointA, g.pointB};
+          for (int k = 0; k < 2; ++k) {
+            const vec3 ax = glm::cross(pts[k] - vec3(GG[k][size_t(neck[k])][3]), dirs[k]);
+            if (glm::length(ax) > 1e-6f) axis[k][size_t(i)] = glm::normalize(ax);
+          }
+          hasAxis[size_t(i)] = axis[0][size_t(i)] != vec3(0) && axis[1][size_t(i)] != vec3(0);
+          if (g.gap >= need || !hasAxis[size_t(i)]) continue;
+          any = true;
+          float best = 0, bestGap = g.gap;
+          std::vector<float> one(size_t(n), 0.0f);
+          for (float t = kHeadTiltStep; t <= kHeadTiltMax + 1e-4f; t += kHeadTiltStep) {
+            one[size_t(i)] = t;
+            for (int k = 0; k < 2; ++k) setTilt(k, one);
+            const float gg = gapAt(i).gap;
+            if (gg > bestGap) bestGap = gg, best = t;
+            if (gg >= need) break;
+          }
+          needDeg[size_t(i)] = best;
+          for (int k = 0; k < 2; ++k) setTilt(k, zero);
+        }
+        if (!any) {
+          for (int k = 0; k < 2; ++k)  // nothing to do: the tracks are as they were
+            if (saved[k]) gen.tracks[track[k]] = *saved[k];
+            else gen.tracks.erase(track[k]);
+          continue;
+        }
+        // Frames without their own axis (ramps) take the nearest frame's.
+        for (int k = 0; k < 2; ++k)
+          for (int i = 0; i < n; ++i) {
+            if (hasAxis[size_t(i)]) continue;
+            for (int d = 1; d < n; ++d) {
+              if (i - d >= 0 && hasAxis[size_t(i - d)]) {
+                axis[k][size_t(i)] = axis[k][size_t(i - d)];
+                break;
+              }
+              if (i + d < n && hasAxis[size_t(i + d)]) {
+                axis[k][size_t(i)] = axis[k][size_t(i + d)];
+                break;
+              }
+            }
+          }
+        std::vector<float> env = needDeg;
+        for (int i = 1; i < n; ++i) env[size_t(i)] = std::max(env[size_t(i)], env[size_t(i - 1)] - kHeadTiltRate);
+        for (int i = n - 2; i >= 0; --i) env[size_t(i)] = std::max(env[size_t(i)], env[size_t(i + 1)] - kHeadTiltRate);
+        for (int k = 0; k < 2; ++k) setTilt(k, env);
+        for (int k = 0; k < 2; ++k) {
+          std::vector<Key> keys;
+          for (int i = 0; i < n; ++i) keys.push_back({double(fs + i), vec3(env[size_t(i)]), Interp::Linear});
+          gen.tracks[scene_.characters[who[k]].name + "/collision.headTilt." + scene_.characters[who[1 - k]].name].keys = std::move(keys);
+        }
+        float worst = 1e9f;
+        int at = 0;
+        for (int i = 1; i < n - 1; ++i)
+          if (const float g = gapAt(i).gap; g < worst) worst = g, at = fs + i;
+        if (worst < need - 0.0005f)
+          warnings_.push_back(std::format("interaction: the heads of '{}' and '{}' come within {:.1f} mm at frame {} (head clearance {:.0f} mm, "
+                                          "head tilt limit {:.0f} deg): move them apart",
+                                          scene_.characters[a].name, scene_.characters[b].name, worst * 1000, at, need * 1000, kHeadTiltMax));
+      }
   }
   return {};
 }

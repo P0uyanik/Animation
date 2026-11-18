@@ -110,7 +110,28 @@ struct Scene {
   // Animation principles (T-061, anim/principles.h): null / true = on with the shared defaults, false = off (the
   // behaviour before T-061), an object = field overrides. Saved as written.
   Json animPrinciples = nullptr;
+  // Interaction options (T-096, opt-in): the scene key "interaction" (absent = all off, the behaviour before T-096).
+  // Parsed and checked by interactionOptionsFromJson; saved as written.
+  Json interaction = nullptr;
 };
+
+// The scene's "interaction" block (T-096). Every field is optional and off by default:
+//   "headVolumes": bool      head and hair volumes in each character's collision body (scene/collision.h); the
+//                            characters' heads keep at least headClearance apart (a small, rate-limited neck tilt
+//                            away from the other head, interaction.cpp)
+//   "headClearance": metres  clearance kept between two characters' head volumes (default 0.03: wool and hair fibres stand off the mesh, in [0, 0.1])
+//   "followSharedProp": bool hand-over: while both hands hold the prop (receiver's contact -> giver's release) the
+//                            giver's palm follows its own socket, wherever the receiver's hand carries the prop
+//   "visibleGrip": bool      grasps keep the held prop visible from the shot camera: the palm meets the prop on its
+//                            socket's far side from the camera when the prop has a mirrored socket ("<socket>_far"
+//                            is not needed: see interaction.cpp)
+struct InteractionOptions {
+  bool headVolumes = false;
+  float headClearance = 0.03f;
+  bool followSharedProp = false;
+  bool visibleGrip = false;
+};
+Result<InteractionOptions> interactionOptionsFromJson(const Json& j);
 
 Result<Scene> loadScene(const std::filesystem::path& path);
 Json sceneToJson(const Scene& scene);

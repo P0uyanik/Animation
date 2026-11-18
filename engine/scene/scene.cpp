@@ -353,6 +353,10 @@ Result<Scene> loadScene(const std::filesystem::path& path) {
     if (auto r = animPrinciplesFromJson(*it); !r) return std::unexpected(r.error());
     s.animPrinciples = *it;
   }
+  if (auto it = j.find("interaction"); it != j.end() && !it->is_null()) {  // T-096 (opt-in)
+    if (auto r = interactionOptionsFromJson(*it); !r) return fail(std::format("{}: {}", path.string(), r.error().message));
+    s.interaction = *it;
+  }
   if (auto it = j.find("animation"); it != j.end() && it->is_object()) {
     for (auto& [track, keys] : it->items()) {
       Track t;
@@ -478,7 +482,27 @@ Json sceneToJson(const Scene& s) {
   if (!s.actions.empty()) j["actions"] = s.actions;
   if (s.director.is_object()) j["director"] = s.director;
   if (!s.animPrinciples.is_null()) j["animPrinciples"] = s.animPrinciples;
+  if (!s.interaction.is_null()) j["interaction"] = s.interaction;
   return j;
+}
+
+Result<InteractionOptions> interactionOptionsFromJson(const Json& j) {
+  InteractionOptions o;
+  if (j.is_null()) return o;
+  if (!j.is_object()) return fail("interaction: expected an object");
+  for (const auto& [k, v] : j.items()) {
+    if (k == "headVolumes" || k == "followSharedProp" || k == "visibleGrip") {
+      if (!v.is_boolean()) return fail(std::format("interaction: {} must be true or false", k));
+      (k == "headVolumes" ? o.headVolumes : k == "followSharedProp" ? o.followSharedProp : o.visibleGrip) = v.get<bool>();
+    } else if (k == "headClearance") {
+      if (!v.is_number() || !(v.get<float>() >= 0 && v.get<float>() <= 0.1f))
+        return fail("interaction: headClearance must be a number of metres in [0, 0.1]");
+      o.headClearance = v.get<float>();
+    } else {
+      return fail(std::format("interaction: unknown option '{}'", k));
+    }
+  }
+  return o;
 }
 
 Result<void> saveScene(const Scene& scene, const std::filesystem::path& path) {

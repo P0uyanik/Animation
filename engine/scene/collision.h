@@ -19,6 +19,7 @@
 //     "limbs": [{"name": "forearm.L"|"hand.L"|..., "bone", "side": "L"|"R", "a":[3], "b":[3], "r", "allowance"}...]}
 #pragma once
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "anim/animation.h"
@@ -56,9 +57,18 @@ struct CollisionLimb {
   float allowance = 0;  // <= 0: how deep the limb rests against the body at rest, minus the margin (it may rest that
                         // deep, never deeper; 0 for a limb that is clear at rest)
 };
+// A head volume (T-096): a sphere carried rigidly by one bone (centre relative to the bone's rest head).
+struct CollisionSphere {
+  int bone = -1;
+  vec3 centre{0};
+  float r = 0.05f;
+};
 struct CollisionBody {
   std::vector<CollisionSection> sections;
   std::vector<CollisionLimb> limbs;
+  // Head and hair volumes (T-096, opt-in): empty unless addHeadVolumes() ran. Never written to or read from the
+  // package block (export/6 is unchanged); always derived here from the character's own meshes.
+  std::vector<CollisionSphere> heads;
   float margin = kCollisionMargin;
   float maxElbowSwing = glm::radians(kDefaultMaxElbowSwingDeg);  // radians (T-082)
   bool valid = false;
@@ -76,6 +86,30 @@ Result<CollisionBody> collisionBodyFromJson(const Json& j, const Skeleton& skele
 Json collisionBodyToJson(const CollisionBody& body, const Skeleton& skeleton);
 // The package's block if it has one (and it is valid for this skeleton), else derived from the meshes.
 CollisionBody collisionBodyFor(const Json& packageBlock, const Skeleton& skeleton, const std::vector<SkinnedMesh>& meshes);
+
+// Head and hair volumes (T-096): a shell of small spheres over the rest vertices carried by the head bone and its
+// descendants (>= 50 % of the weight: skin, hair, ears, eyes, glasses; not the neck), all carried by the head bone:
+// the vertices are grouped in kHeadCell voxels, each group one sphere (centre: the middle of the group's bounding box,
+// radius: its farthest vertex, at least kHeadMinRadius; so at most half a voxel diagonal, 13 mm). The union covers
+// every one of those vertices and follows the surface within about one sphere radius (a few millimetres; the hair
+// mass, a bun or curls included): head shapes are not convex and long hair reaches the shoulders, so no single round
+// volume fits them. The union is a shell over the surface, so headGap() is exact while the heads are apart and
+// negative (but not a depth) once the shells overlap. No-op (heads stay empty) without a
+// "head" bone or with fewer than 50 such vertices.
+constexpr float kHeadCell = 0.015f;       // metres
+constexpr float kHeadMinRadius = 0.002f;  // metres
+constexpr float kHeadNearGap = 0.05f;     // metres: gaps below this are found through a grid (exact either way)
+void addHeadVolumes(CollisionBody& body, const Skeleton& skeleton, const std::vector<SkinnedMesh>& meshes);
+// Head volumes of a body for bone globals G, in world space (centre, radius).
+std::vector<std::pair<vec3, float>> headSpheres(const CollisionBody& body, const std::vector<mat4>& G);
+// Signed gap between two characters' head volumes (metres; negative = overlapping), the closest points on each
+// (world) and the unit direction from b's point towards a's (moving a along it, or b against it, opens the gap).
+// 1e9 when either body has no head volumes.
+struct HeadGap {
+  float gap = 1e9f;
+  vec3 pointA{0}, pointB{0}, dir{0};
+};
+HeadGap headGap(const CollisionBody& a, const std::vector<mat4>& Ga, const CollisionBody& b, const std::vector<mat4>& Gb);
 
 // Signed gap of a world point to one section whose bone has global Gb, and the unit world direction that increases
 // it. Elliptical sections are measured in scaled coordinates that make them round (radius min(r1, r2)); the map only
