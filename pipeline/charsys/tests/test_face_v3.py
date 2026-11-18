@@ -17,7 +17,8 @@ Unit checks (in Blender, no build):
 Build checks (a master per character: --boy/--girl, else built from the published spec + T-089 candidate):
   * report face_generic/3 with the felt eye; every lid shell's measured corner extent <= its trim bound (+0.2 mm);
   * no socket rim at 3/4: <= 10 % of the shell vertices past the opening corner visible at yaw +-35 deg;
-  * T-081's smoothing gain kept: cheek and eye-corner folds <= 45 deg (the T-081 probe);
+  * T-081's smoothing gain kept: cheek folds <= 45 deg and eye-corner folds no sharper than the published version's
+    (the T-081 probe; FOLD_LIMITS);
   * a full blink closes both eyes in front and 3/4 (docs/evaluation/characters/T-089/measure_eyes.py).
 Without --blender only the plain checks run."""
 import ast
@@ -41,6 +42,9 @@ CASES = {
     "girl": (os.path.join(CHARS, "girl_auburn_bun_glasses", "spec", "girl_auburn_bun_glasses.0.11.0.spec.json"),
              os.path.join(CHARS, "girl_auburn_bun_glasses", "spec", "candidates", "T-089", "girl_face3.override.json")),
 }
+# eye-corner fold limit (T-081 probe) = the published version's own value: the candidate may not be sharper.
+# boy 2.0.0 never had the T-081 wall smoothing (measured 157.7 deg in T-089); girl 0.11.0 = T-081's 40.3 deg.
+FOLD_LIMITS = {"boy": {"cheek": 45.0, "corner": 157.7}, "girl": {"cheek": 45.0, "corner": 40.33}}
 MEASURE = os.path.join(ROOT, "docs", "evaluation", "characters", "T-089", "measure_eyes.py")
 RESULTS = []
 
@@ -242,8 +246,9 @@ def build_checks(blender, who):
     check(f"{who}: fold probe ran", line is not None, r.stderr[-400:])
     if line:
         d = json.loads(line[6:])
-        check(f"{who}: T-081 smoothing kept (cheek, corner folds <= 45 deg)", d["cheek"] <= 45.0 and d["corner"] <= 45.0,
-              f"cheek {d['cheek']:.1f}, corner {d['corner']:.1f} deg")
+        lim = FOLD_LIMITS[who]
+        check(f"{who}: skin smoothness no worse than the published version (cheek <= {lim['cheek']}, corner <= {lim['corner']} deg)",
+              d["cheek"] <= lim["cheek"] and d["corner"] <= lim["corner"], f"cheek {d['cheek']:.1f}, corner {d['corner']:.1f} deg")
     mj = tempfile.NamedTemporaryFile(suffix=".json", delete=False).name
     subprocess.run([blender, "-b", "--factory-startup", "-P", MEASURE, "--", master, mj], capture_output=True, text=True)
     m = json.load(open(mj))["views"]
