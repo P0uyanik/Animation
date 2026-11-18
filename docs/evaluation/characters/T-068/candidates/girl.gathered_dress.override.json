@@ -36,6 +36,7 @@
      "flare": 0.1,
      "shoulder_width": 1.0,
      "armhole": "closed",
+     "sleeve_start": 0.0,
      "collar": {
       "type": "round",
       "width_m": 0.032,

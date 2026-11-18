@@ -265,7 +265,9 @@ rejects a `backpack/1` item with a pointer here: accessories are rigid to the he
 
 **`armhole: "closed"`** (`top`, `shirt`, `hoodie`, `dress` with sleeves): the torso panel keeps the faces of the
 armhole region, so with a dropped shoulder the sleeve and torso panels meet under the arm and no skin shows there.
-Default `"cut"` (unchanged).
+Default `"cut"` (unchanged). `sleeve_start` (0-0.1, `top`, `shirt`, `dress`; default 0.10) is the share of the arm
+where the sleeve panel begins; 0 covers the whole shoulder cap (with `armhole: "closed"`, a sleeve without a gap at
+the shoulder).
 
 **Gathered skirt with hem rib** (`skirt`, and a `dress`'s skirt): `gathers {count, depth_m, waist_depth_m}` adds soft
 outward folds (fullness) growing from the waist to the hem; `bands.hem_rib {height_m, ridges, relief_m, thickness_m,

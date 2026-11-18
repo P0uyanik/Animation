@@ -27,7 +27,6 @@ import math
 from mathutils import Vector
 from mathutils.bvhtree import BVHTree
 
-import bpy
 
 from . import generator as GEN
 from . import shapes as S
@@ -79,16 +78,16 @@ def _superellipsoid(G, C, name, centre, radii, n, segs=40, rings=24):
 def _outer_objects(body, worn, skip=("drawstring", "tip")):
     """BVHs of the body and of every garment piece built before this item (the bag sits over them), except the parts
     in ``skip``."""
-    deps = bpy.context.evaluated_depsgraph_get()
-    bvhs = [BVHTree.FromObject(body, deps)]
+    bvhs = [S.bvh_of(body)]
     for ob in worn:
         if ob.type == "MESH" and ob.get("ps_garment_part") not in skip:
-            bvhs.append(BVHTree.FromObject(ob, deps))
+            bvhs.append(S.bvh_of(ob))
     return bvhs
 
 
-def _torso_vertices(body, P, H, fit):
-    """Body vertices of the torso and shoulders (no arm, neck or leg vertices): the straps' weight sources."""
+def _torso_surface(body, P, H, fit):
+    """Body vertices of the torso and shoulders (no arm, neck or leg vertices): the surface the strap path is
+    projected from."""
     tf = fit.torso
     shoulder_z = P["shoulder"]["z"] * H
     hip_z = P["leg"]["hip_z"] * H
@@ -97,6 +96,29 @@ def _torso_vertices(body, P, H, fit):
     return [v.index for v in body.data.vertices
             if hip_z < v.co.z < neck_top and abs(v.co.x) < 0.92 * joint_x and
             (v.co.z < shoulder_z - 0.5 * GEN.ARMHOLE_DEPTH_ROOT_RADII * fit.arm_root or abs(v.co.x) < 0.8 * joint_x)]
+
+
+def _torso_vertices(body, P, H, fit):
+    """Body vertices of the chest, back and shoulder tops: the straps' weight sources. Kept away from the arm roots,
+    the neck and the hips, so no arm, neck or leg influence reaches a strap."""
+    shoulder_z = P["shoulder"]["z"] * H
+    hip_z = P["leg"]["hip_z"] * H
+    neck_r = P["neck"]["radius"] * H
+    joint_x = P["shoulder"]["joint_x"] * H
+    arm_bottom = shoulder_z - GEN.ARMHOLE_DEPTH_ROOT_RADII * fit.arm_root
+    low = hip_z + 0.35 * (shoulder_z - hip_z)
+    out = []
+    for v in body.data.vertices:
+        c = v.co
+        if not low < c.z < shoulder_z + 0.5 * (P["neck"]["base_z"] * H - shoulder_z) + 0.02 * fit.torso:
+            continue
+        if c.z > arm_bottom - 0.01 * fit.torso:  # shoulder band: between the neck and the arm root
+            if not neck_r * 0.9 < abs(c.x) < 0.62 * joint_x:
+                continue
+        elif abs(c.x) > 0.62 * joint_x and c.z > arm_bottom - 0.04 * fit.torso:
+            continue
+        out.append(v.index)
+    return out
 
 
 def build(C, body, cfg, P, H, J, G, fit, worn=()):
@@ -136,8 +158,7 @@ def build(C, body, cfg, P, H, J, G, fit, worn=()):
             co.y += (1 - min(1.0, u) ** 2) * puff * 0.12 * depth
     bag.data.update()
     pieces = [("main", bag)]
-    deps = bpy.context.evaluated_depsgraph_get()
-    bag_bvh = BVHTree.FromObject(bag, deps)
+    bag_bvh = S.bvh_of(bag)
 
     def on_bag(x, z, lift):
         hit, nrm = S.outer_hit([bag_bvh], Vector((x, yc, z)), Vector((0, 1, 0)), 0.5)
@@ -181,13 +202,12 @@ def build(C, body, cfg, P, H, J, G, fit, worn=()):
                                                  1.0, C, 12, 8, (pull * 0.28, pull * 0.12, pull * 0.6))))
         if pocket_top is not None:
             pw, ptz, pyc, pd = pocket_top
-            deps = bpy.context.evaluated_depsgraph_get()
             pocket_ob = next(ob for part, ob in pieces if part == "pocket")
-            pbvh = BVHTree.FromObject(pocket_ob, deps)
+            pbvh = S.bvh_of(pocket_ob)
             pz_path = []
             for k in range(15):
                 u = -0.78 + 1.56 * k / 14
-                hit, nrm = S.outer_hit([pbvh], Vector((u * 0.5 * pw, pyc, ptz - 0.12 * (ptz - zc))), Vector((0, 1, 0)), 0.5)
+                hit, nrm = S.outer_hit([pbvh], Vector((u * 0.5 * pw, pyc, ptz - 0.06 * height)), Vector((0, 1, 0)), 0.5)
                 if hit is not None:
                     pz_path.append(hit + nrm * zr * 0.6)
             if len(pz_path) > 4:
@@ -227,7 +247,7 @@ def build(C, body, cfg, P, H, J, G, fit, worn=()):
         # straps run under a hood lying on the back (the hood is not a surface they ride on)
         strap_bvhs = _outer_objects(body, worn, skip=("drawstring", "tip", "hood"))[1:]
         # the strap path is projected from the torso skin (never an arm) through the clothing layers lying on it
-        torso_set = set(_torso_vertices(body, P, H, fit))
+        torso_set = set(_torso_surface(body, P, H, fit))
         tfaces = [tuple(p.vertices) for p in body.data.polygons if all(i in torso_set for i in p.vertices)]
         torso_bvh = BVHTree.FromPolygons([v.co.copy() for v in body.data.vertices], tfaces, all_triangles=False)
         stack_gap = _num(sc, "layer_gap_m", 0.02 * tf)

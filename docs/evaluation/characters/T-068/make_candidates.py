@@ -134,7 +134,7 @@ def girl_dress():
     blue = [150, 178, 214]
     dress = {"type": "dress", "name": "dress", "ease_m": 0.012, "sleeve_length": 0.95, "sleeve_puff_m": 0.016,
              "sleeve_puff_peak": 0.6, "length": 0.42, "flare": 0.1,
-             "shoulder_width": 1.0, "armhole": "closed",
+             "shoulder_width": 1.0, "armhole": "closed", "sleeve_start": 0.0,
              "collar": {"type": "round", "width_m": 0.032, "gap_m": 0.008, "slope": 0.45, "tip_round": 0.6},
              "gathers": {"count": 14, "depth_m": 0.014, "waist_depth_m": 0.002},
              "bands": {"cuff": True, "cuff_radius_m": 0.005, "waist": True,

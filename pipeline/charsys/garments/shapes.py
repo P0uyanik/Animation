@@ -128,6 +128,15 @@ def ribbon(G, C, name, points, normals, width, thickness, round_share=0.45, prof
     return G.new_object(name, verts, faces, C)
 
 
+def bvh_of(ob):
+    """BVH of a mesh object's own data in world space (valid right after the object was created, unlike a depsgraph
+    BVH)."""
+    from mathutils.bvhtree import BVHTree
+    mw = ob.matrix_world
+    return BVHTree.FromPolygons([mw @ v.co for v in ob.data.vertices], [tuple(p.vertices) for p in ob.data.polygons],
+                                all_triangles=False)
+
+
 def outer_hit(bvhs, point, direction, reach=0.4):
     """Outermost surface along a line: cast from ``point + direction * reach`` back along ``-direction`` against
     every BVH and return the first (outermost) (location, normal) or (None, None)."""

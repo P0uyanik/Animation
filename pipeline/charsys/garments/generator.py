@@ -173,6 +173,10 @@ def validate(clothing):
             if raw["type"] not in ("top", "shirt", "vest", "dress", "hoodie"):
                 raise ValueError(f"garment {name}.shoulder_width is supported on tops, hoodies, vests and dresses")
             _number(raw["shoulder_width"], f"garment {name}.shoulder_width", 0.0, 1.0)
+        if "sleeve_start" in raw:
+            if raw["type"] not in ("top", "shirt", "dress"):
+                raise ValueError(f"garment {name}.sleeve_start is supported on tops and dresses")
+            _number(raw["sleeve_start"], f"garment {name}.sleeve_start", 0.0, 0.1)
         if "armhole" in raw:
             if raw["type"] not in ("top", "shirt", "hoodie", "dress") or raw["armhole"] not in ARMHOLES:
                 raise ValueError(f"garment {name}.armhole must be one of {list(ARMHOLES)} on a sleeved top")
@@ -963,6 +967,7 @@ def _top(C, body, cfg, P, H, J, G, fit, vest=False):
     edge = _armhole_edge(fit, cfg, shoulder_z, arm_bottom, P["neck"]["radius"] * H)
     torso_margin = 0.015 * fit.torso
     closed_armhole = sleeve > 0 and cfg.get("armhole", "cut") == "closed"
+    sleeve_start = float(cfg.get("sleeve_start", 0.10))  # T-068: share of the arm where the sleeve panel begins
 
     def selector(c):
         torso = hem_z <= c.z <= top_z
@@ -974,11 +979,11 @@ def _top(C, body, cfg, P, H, J, G, fit, vest=False):
                 torso = False
             if vest and torso and c.y < -front * 0.35 and abs(c.x) < opening:
                 torso = False
-        return torso or (sleeve > 0 and fit.in_sleeve(c, 0.10, sleeve))
+        return torso or (sleeve > 0 and fit.in_sleeve(c, sleeve_start, sleeve))
 
     puff = float(cfg.get("sleeve_puff_m", 0.0)) if sleeve > 0 else 0.0
     peak = float(cfg.get("sleeve_puff_peak", 0.6))
-    start = 0.10
+    start = sleeve_start
 
     def sleeve_volume(c, normal):
         if puff <= 0:
