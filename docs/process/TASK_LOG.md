@@ -78,7 +78,7 @@
 | T-089b | [Visual] Face polish: boy heavy lids, girl rounder face (Phase D) | running 2026-11-18 (owner ~22:50Z) | t-089b-claude-face-polish | `docs/tasks/T-089b.md`; path B |
 | T-093b | [Visual] Garment completion: boy trousers/shoes, girl leg split (Phase D) | running 2026-11-18 (owner ~22:50Z) | t-093b-claude-garment-completion | `docs/tasks/T-093b.md`; path B |
 | T-097-0 | [Personality] Acting interface (`engine/scene/acting.h`, build stubs) | Supervisor, 2026-11-18 | integration/t-097-0 | owner ~23:00Z; replaces T-097S |
-| T-097A | [Personality] Emotion blending (continuous state, cross-fades) | running after T-097-0 | t-097a-claude-emotion-blending | `docs/tasks/T-097A.md`; path A |
+| T-097A | [Personality] Emotion blending (continuous state, cross-fades) | merged 2026-11-18 (impl `session_01NPjxeNjUr2gFKXDuc9XTvZ`, d4fcbd5): opt-in blend, 12 transition tests, all bakes identical | t-097a-claude-emotion-blending | `docs/tasks/T-097A.md`; path A |
 | T-097B | [Personality] Personality-driven reactions | running 2026-11-18 (after T-104) | t-097b-claude-reactions | `docs/tasks/T-097B.md`; path A |
 | T-097C | [Personality] Acting signature and consistency checks (animcheck) | running 2026-11-18 (after T-104) | t-097c-claude-acting-checks | `docs/tasks/T-097C.md`; path A |
 | T-097-boy | [Personality] Boy acting (Phase D) | approved; after T-097A and T-097B merge | t-097-boy-claude-acting | `docs/tasks/T-097B.md`; path B |
