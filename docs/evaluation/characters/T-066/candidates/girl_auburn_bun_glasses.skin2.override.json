@@ -1,0 +1,50 @@
+{
+ "character_id": "girl_auburn_bun_glasses",
+ "note": "T-066 candidate (path B, evaluation only; never an approved version): girl 0.10.0 + the presets/2 skin family. Apply on top of the 0.10.0 override. Changes only skin data: the skin slot opts into skin-felt/2, the face colour is porcelain-peach, the felt light bleed (emission, the glowing creases) is off and the occlusion lift is gentler, the blush is warmer, a little larger and softer, the nose a little pinker (ref_30/ref_34).",
+ "override": {
+  "materials": {
+   "albedo_srgb": {
+    "skin": [
+     238,
+     202,
+     184
+    ]
+   },
+   "assignments": {
+    "skin": {
+     "preset": "skin-felt/2",
+     "base_color_srgb": [
+      238,
+      202,
+      184
+     ],
+     "reference_size_m": 0.29278
+    }
+   }
+  },
+  "face": {
+   "skin": {
+    "occlusion": {
+     "lift": 0.5,
+     "warm_srgb": [
+      240,
+      196,
+      176
+     ],
+     "bleed": 0.0
+    }
+   },
+   "blush": {
+    "srgb": [
+     238,
+     122,
+     118
+    ],
+    "softness": 0.85,
+    "intensity": 1.0,
+    "radius_m": 0.045,
+    "nose_intensity": 0.7
+   }
+  }
+ }
+}

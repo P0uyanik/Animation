@@ -1,0 +1,15 @@
+{
+ "character_id": "boy_yellow_hoodie",
+ "note": "T-066 candidate (path B, evaluation only; never an approved version): boy 1.1.0 + the presets/2 skin family. The boy builds on the frozen legacy path (body_v6/1), which does not read materials.assignments.skin, so docs/evaluation/characters/T-066/apply_skin_candidate.py applies this assignment to the built master's skin materials (M_skin: head, neck, hands; M_ear) after the build. Opting the boy in for real needs a legacy-path hook outside T-066's write-set (see README).",
+ "override": {
+  "materials": {
+   "assignments": {
+    "skin": {"preset": "skin-felt/2", "base_color_srgb": [236, 190, 166], "reference_size_m": 0.29}
+   }
+  }
+ },
+ "legacy_post_build": {
+  "materials": ["M_skin", "M_ear"],
+  "blush_srgb": [226, 128, 112]
+ }
+}

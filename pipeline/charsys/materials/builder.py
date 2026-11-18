@@ -14,6 +14,12 @@ import os
 SCHEMA = "plush-studio.material-presets/1"
 HERE = os.path.dirname(os.path.abspath(__file__))
 PRESETS_PATH = os.path.join(HERE, "presets.json")
+# T-066 skin family (presets/2): a separate, self-contained library. Its preset ids are opt-in only: a spec that names a
+# presets/1 id resolves from presets.json exactly as before; only an id of skin_presets.json resolves from here.
+SKIN_SCHEMA = "plush-studio.material-presets/2"
+SKIN_FAMILY = "presets/2"
+SKIN_PRESETS_PATH = os.path.join(HERE, "skin_presets.json")
+SKIN_CREASE_FIELDS = ("distance_fraction", "samples", "strength")
 KINDS = {"noise", "yarn", "knit", "weave", "denim"}
 FIBRE_LODS = {"close", "wide", "off"}
 FIBRE_GROUP = "PS Shared Surface Fibres/1"
@@ -69,6 +75,78 @@ def load_library(path=PRESETS_PATH):
     if errors:
         raise ValueError("invalid material preset library: " + "; ".join(errors))
     return data
+
+
+def load_skin_library(path=SKIN_PRESETS_PATH):
+    """The presets/2 skin family (T-066). Validated with the presets/1 rules plus the ``skin`` section rules."""
+    with open(path, encoding="utf-8") as handle:
+        data = json.load(handle)
+    errors = validate_skin_library(data)
+    if errors:
+        raise ValueError("invalid skin preset library: " + "; ".join(errors))
+    return data
+
+
+def _skin_section_errors(skin, label):
+    errors = []
+    if not isinstance(skin, dict):
+        return [f"{label} must be an object"]
+    if skin.get("emission") is not False:
+        errors.append(f"{label}.emission must be false (presets/2 skin is non-emissive: creases never glow)")
+    radius = skin.get("subsurface_radius")
+    if (not isinstance(radius, list) or len(radius) != 3 or
+            not all(isinstance(v, (int, float)) and not isinstance(v, bool) and 0 < v <= 2 for v in radius)):
+        errors.append(f"{label}.subsurface_radius must be three numbers in (0, 2]")
+    crease = skin.get("crease")
+    if not isinstance(crease, dict) or not isinstance(crease.get("enabled"), bool):
+        errors.append(f"{label}.crease.enabled must be a boolean")
+        crease = {}
+    for field in SKIN_CREASE_FIELDS:
+        value = crease.get(field)
+        if isinstance(value, bool) or not isinstance(value, (int, float)) or value < 0:
+            errors.append(f"{label}.crease.{field} must be non-negative")
+    if isinstance(crease.get("strength"), (int, float)) and crease["strength"] > 1:
+        errors.append(f"{label}.crease.strength must be at most 1")
+    tint = crease.get("tint_srgb")
+    if (not isinstance(tint, list) or len(tint) != 3 or
+            not all(isinstance(v, (int, float)) and 0 <= v <= 255 for v in tint)):
+        errors.append(f"{label}.crease.tint_srgb must be three 0..255 values")
+    flock = skin.get("flock")
+    if not isinstance(flock, dict) or not isinstance(flock.get("enabled"), bool):
+        errors.append(f"{label}.flock.enabled must be a boolean")
+        flock = {}
+    if not isinstance(flock.get("scale_per_reference"), (int, float)) or flock.get("scale_per_reference", 0) <= 0:
+        errors.append(f"{label}.flock.scale_per_reference must be positive")
+    albedo = flock.get("albedo")
+    if isinstance(albedo, bool) or not isinstance(albedo, (int, float)) or not 0 <= albedo <= 0.15:
+        errors.append(f"{label}.flock.albedo must be in 0..0.15 (subtle)")
+    return errors
+
+
+def validate_skin_library(data):
+    errors = []
+    if data.get("schema") != SKIN_SCHEMA:
+        errors.append(f"schema must be {SKIN_SCHEMA}")
+    if data.get("family") != SKIN_FAMILY:
+        errors.append(f"family must be {SKIN_FAMILY}")
+    if data.get("kind") != "skin":
+        errors.append("kind must be skin")
+    common = dict(data, schema=SCHEMA)
+    common["defaults"] = {k: v for k, v in (data.get("defaults") or {}).items() if k != "skin"}
+    errors += validate_library(common)
+    presets = data.get("presets") if isinstance(data.get("presets"), dict) else {}
+    try:
+        names = set(load_library()["presets"])
+    except (OSError, ValueError):
+        names = set()
+    for name, raw in presets.items():
+        if name in names:
+            errors.append(f"{name}: skin preset ids must not reuse a presets/1 id")
+        if not isinstance(raw, dict):
+            continue
+        resolved = deep_merge((data.get("defaults") or {}).get("skin") or {}, raw.get("skin") or {})
+        errors += _skin_section_errors(resolved, f"{name}.skin")
+    return errors
 
 
 def _range_errors(value, label):
@@ -194,13 +272,33 @@ def validate_library(data):
     return errors
 
 
-def resolve_preset(name, overrides=None, library=None):
+def is_skin_preset(name):
+    """True for an opt-in presets/2 skin id (T-066)."""
+    if not isinstance(name, str) or not os.path.exists(SKIN_PRESETS_PATH):
+        return False
+    return name in load_skin_library()["presets"]
+
+
+def library_for(name, library=None):
+    """The library a preset id resolves from: ``library`` (default presets.json) when it holds the id, otherwise the
+    presets/2 skin family. presets/1 ids therefore always resolve exactly as before."""
     library = library or load_library()
+    if name in library["presets"]:
+        return library
+    if is_skin_preset(name):
+        return load_skin_library()
+    return library
+
+
+def resolve_preset(name, overrides=None, library=None):
+    library = library_for(name, library)
     if name not in library["presets"]:
         raise KeyError(f"unknown material preset: {name}")
     resolved = deep_merge(library["defaults"], library["presets"][name])
     resolved = deep_merge(resolved, overrides)
     resolved["name"] = name
+    if library.get("family") == SKIN_FAMILY:
+        resolved["family"] = SKIN_FAMILY
     return resolved
 
 
@@ -223,13 +321,13 @@ def validate_assignments(materials_spec, library=None):
         if not isinstance(assignment, dict):
             errors.append(f"{label} must be an object")
             continue
-        if assignment.get("preset") not in library["presets"]:
+        if assignment.get("preset") not in library["presets"] and not is_skin_preset(assignment.get("preset")):
             errors.append(f"{label}.preset is unknown: {assignment.get('preset')}")
         color = assignment.get("base_color_srgb")
         if (not isinstance(color, list) or len(color) != 3 or
                 not all(isinstance(v, (int, float)) and 0 <= v <= 255 for v in color)):
             errors.append(f"{label}.base_color_srgb must be three 0..255 values")
-        ref = assignment.get("reference_size_m", library["reference_size_m"])
+        ref = assignment.get("reference_size_m", library_for(assignment.get("preset"), library)["reference_size_m"])
         if not isinstance(ref, (int, float)) or ref <= 0:
             errors.append(f"{label}.reference_size_m must be positive")
         if "overrides" in assignment and not isinstance(assignment["overrides"], dict):
@@ -571,6 +669,77 @@ def _nap_layer(material, principled, vector, reference, nap, base):
     return mask
 
 
+def _skin_layer(material, principled, vector, reference, skin, base):
+    """T-066 presets/2 skin extras, after the shared fibre/relief layers (so they act on the final albedo graph):
+
+    - emission off: any emission feeding the skin (e.g. a face graph's felt light bleed) is disconnected and zeroed,
+      so shaded creases can never glow (the T-063/T-065 "glowing crease" finding);
+    - subsurface radius: a warm, red-led scatter profile (light travels further in red: porcelain-peach, not grey);
+    - crease: the ambient occlusion within ``distance_fraction`` x reference darkens the albedo towards a warm tint by
+      up to ``strength`` (multiply: creases read warm and slightly deeper, never lighter than the skin around them);
+    - flock: a very fine (``scale_per_reference``) albedo speckle of +-``albedo``, the flocked felt fuzz that a bump
+      alone loses under OIDN.
+    """
+    nodes, links = material.node_tree.nodes, material.node_tree.links
+    if not skin.get("emission", False):
+        for name in ("Emission Strength", "Emission Color"):
+            socket = _input(principled, name)
+            if socket is None:
+                continue
+            for link in list(socket.links):
+                links.remove(link)
+        _set(principled, 0.0, "Emission Strength")
+    _set(principled, tuple(float(v) for v in skin["subsurface_radius"]), "Subsurface Radius")
+
+    crease = skin.get("crease") or {}
+    if crease.get("enabled") and float(crease.get("strength", 0.0)) > 0.0:
+        ao = _new(nodes, "ShaderNodeAmbientOcclusion", "Skin Crease Occlusion")
+        ao.samples = max(1, int(crease.get("samples", 16)))
+        ao.inputs["Distance"].default_value = reference * float(crease["distance_fraction"])
+        factor = _new(nodes, "ShaderNodeMath", "Skin Crease Factor")
+        factor.operation = "MULTIPLY_ADD"  # (AO - 1) * -strength = (1 - AO) * strength
+        factor.use_clamp = True
+        links.new(ao.outputs["AO"], factor.inputs[0])
+        factor.inputs[1].default_value = -float(crease["strength"])
+        factor.inputs[2].default_value = float(crease["strength"])
+        source = next((link.from_socket for link in base.links), None)
+        mix = _new(nodes, "ShaderNodeMixRGB", "Skin Crease Warmth")
+        mix.blend_type = "MULTIPLY"
+        links.new(factor.outputs[0], mix.inputs[0])
+        if source is None:
+            mix.inputs[1].default_value = base.default_value
+        else:
+            links.new(source, mix.inputs[1])
+        mix.inputs[2].default_value = (*_srgb_to_linear(tuple(crease["tint_srgb"])), 1)
+        links.new(mix.outputs[0], base)
+
+    flock = skin.get("flock") or {}
+    amount = float(flock.get("albedo", 0.0))
+    if flock.get("enabled") and amount > 0.0:
+        noise = _new(nodes, "ShaderNodeTexNoise", "Skin Flock")
+        _set(noise, float(flock["scale_per_reference"]), "Scale")
+        _set(noise, 2.0, "Detail")
+        _set(noise, 0.6, "Roughness")
+        links.new(vector, noise.inputs["Vector"])
+        modulation = _new(nodes, "ShaderNodeMapRange", "Skin Flock Albedo")
+        modulation.clamp = True
+        modulation.inputs["From Min"].default_value = 0.3
+        modulation.inputs["From Max"].default_value = 0.7
+        modulation.inputs["To Min"].default_value = 1.0 - amount
+        modulation.inputs["To Max"].default_value = 1.0 + amount
+        links.new(noise.outputs["Fac"], modulation.inputs["Value"])
+        source = next((link.from_socket for link in base.links), None)
+        mix = _new(nodes, "ShaderNodeMixRGB", "Skin Flock Mix")
+        mix.blend_type = "MULTIPLY"
+        mix.inputs[0].default_value = 1.0
+        if source is None:
+            mix.inputs[1].default_value = base.default_value
+        else:
+            links.new(source, mix.inputs[1])
+        links.new(modulation.outputs["Result"], mix.inputs[2])
+        links.new(mix.outputs[0], base)
+
+
 def _add_rim_layer(material, principled, preset, base_color, breakup=None, sheen_tint=0.0):
     silhouette = preset["silhouette"]
     if not silhouette.get("enabled"):
@@ -642,7 +811,7 @@ def apply_preset(material, preset_name, base_color_srgb=None, reference_size_m=N
     Existing colour links (for example the face blush and procedural iris) can
     be preserved while the shared fibre, roughness and sheen response is added.
     """
-    library = load_library()
+    library = library_for(preset_name)
     preset = resolve_preset(preset_name, overrides, library)
     color = tuple(base_color_srgb or preset["swatch_srgb"])
     reference = float(reference_size_m or library["reference_size_m"])
@@ -707,6 +876,8 @@ def apply_preset(material, preset_name, base_color_srgb=None, reference_size_m=N
     micro_breakup = _micro_relief(material, principled, anis.outputs[0], reference, preset["micro_relief"], base)
     _surface_detail(material, principled, ref.outputs[0], reference, preset.get("surface_detail"), base)
     _nap_layer(material, principled, anis.outputs[0], reference, preset["nap"], base)
+    if preset.get("family") == SKIN_FAMILY:
+        _skin_layer(material, principled, ref.outputs[0], reference, preset["skin"], base)
     if float(surface["alpha"]) < 1.0:
         try:
             material.surface_render_method = "DITHERED"
@@ -716,6 +887,8 @@ def apply_preset(material, preset_name, base_color_srgb=None, reference_size_m=N
     _add_shadow_transmission(material, float(surface.get("shadow_transmission", 0.0)))
     material["ps_material_preset"] = preset_name
     material["ps_material_reference_size_m"] = reference
+    if preset.get("family") == SKIN_FAMILY:
+        material["ps_material_family"] = SKIN_FAMILY
     return material
 
 
