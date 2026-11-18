@@ -8,6 +8,8 @@
   - `boy_1.1.0_vs_2.0.0/preview/preview.jpg` + `preview.json`: the recorded first frame the sheet required.
   - `recipe.resolved.json`, `sheet.json` (cameras, pose probe: upper arm 5.5 deg (1.1.0) and 12 deg (2.0.0) from
     straight down, Blender version, seconds), `log.txt`.
+  - Face rows use `"fit": "head"`: framed on the head bounds of all columns (lowest `LM_chin` to the highest
+    rendered point, +15% below / +5% above), measured once, one camera for every column (Supervisor fix).
   - The first `sheet` call without a preview was refused; a preview of an earlier recipe edit was rejected as
     "made for a different recipe" (both in the run log of this task, not repeated here).
 - `girl_0.10.0_vs_0.11.0.recipe.json`: the T-081 strict comparison as a recipe; the girl's references are an A-pose

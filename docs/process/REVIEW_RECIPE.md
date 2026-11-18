@@ -11,7 +11,7 @@ wasted on the wrong pose or version. Tool: `tools/review/recipe.py`. Examples:
 | `baseline.version` | the published baseline (`versions/index.json`); must be the current approved version unless `allow_not_current` is true |
 | `candidate` | one of: `{"version"}` (published), `{"spec", "overrides", "sha"}` (built into `<out>/build/`), `{"blend"}` |
 | `compare` | `variant` (`compare` = arms down, `master` = A-pose) and the matching `pose` (`arms_down` / `apose`) |
-| `cameras` | lens, one elevation, body/face framing (fixed target and frame height, not framed per model) and the six rows: `front`, `threequarter`, `side`, `back`, `face_front`, `face_threequarter`. A row names a `reference_view` (its yaw comes from `reference_index.json`) or a reference file + crop + `yaw_deg` |
+| `cameras` | lens, one elevation, body/face framing (fixed target and frame height; face rows may use `"fit": "head"`: head bounds of all columns, one camera for all) and the six rows: `front`, `threequarter`, `side`, `back`, `face_front`, `face_threequarter`. A row names a `reference_view` (its yaw comes from `reference_index.json`) or a reference file + crop + `yaw_deg` |
 | `light.calibration` | the light rig (`pipeline/charsys/render_calibration.json`, normally `character_neutral/1`) |
 | `render` / `preview` | samples and width of the sheet render (Cycles) and of the cheap preview (Cycles ≤ 8 spp or Workbench, ≤ 240 px) |
 | `ai_target` (optional) | Higgsfield images per row; shown as a column labelled "AI target" |

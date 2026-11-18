@@ -1,8 +1,8 @@
 {
- "recipe_sha256": "13d72dcb1e4794e3daff89eda229b76dd2d0d372157604f5bc6bb8136d5b2895",
+ "recipe_sha256": "c81b5ce45c8db85e31de7d3b9e858cc9df779efdcf0dde51b5201716a72e5f0d",
  "status": "pass",
  "problems": [],
- "at": "2026-11-18T15:03:10+00:00",
+ "at": "2026-11-18T15:13:08+00:00",
  "settings": {
   "engine": "cycles",
   "samples": 2,
@@ -26,7 +26,7 @@
      "L": 5.52,
      "R": 5.52
     },
-    "seconds": 2.1
+    "seconds": 2.0
    },
    "candidate": {
     "blend": "assets/characters/boy_yellow_hoodie/versions/2.0.0/boy_yellow_hoodie_master.blend",
@@ -37,7 +37,7 @@
      "L": 12.0,
      "R": 12.0
     },
-    "seconds": 46.9
+    "seconds": 46.8
    }
   },
   "views": {
@@ -107,10 +107,10 @@
     "target": [
      0.0,
      0.0,
-     0.84
+     0.8856
     ],
-    "distance_m": 0.8944,
-    "frame_height_m": 0.46,
+    "distance_m": 0.9831,
+    "frame_height_m": 0.5056,
     "resolution": [
      120,
      120
@@ -122,15 +122,19 @@
     "target": [
      0.0,
      0.0,
-     0.84
+     0.8856
     ],
-    "distance_m": 0.8944,
-    "frame_height_m": 0.46,
+    "distance_m": 0.9831,
+    "frame_height_m": 0.5056,
     "resolution": [
      120,
      120
     ]
    }
+  },
+  "head_bounds": {
+   "chin_z": 0.696,
+   "top_z": 1.1173
   }
  }
 }

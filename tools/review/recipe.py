@@ -264,9 +264,13 @@ def validate(recipe, root=ROOT, check_git=True):
     framing = cams.get("framing") or {}
     for f in ("body", "face"):
         fr = framing.get(f)
-        if not (isinstance(fr, dict) and isinstance(fr.get("target"), list) and len(fr["target"]) == 3
-                and float(fr.get("frame_height_m", 0)) > 0 and float(fr.get("aspect", 0)) > 0):
-            problems.append(f"cameras.framing.{f}: needs target [x, y, z], frame_height_m > 0 and aspect > 0")
+        fixed = (isinstance(fr, dict) and isinstance(fr.get("target"), list) and len(fr["target"]) == 3
+                 and float(fr.get("frame_height_m", 0)) > 0)
+        head = (isinstance(fr, dict) and f == "face" and fr.get("fit") == "head"
+                and 0 <= float(fr.get("margin", 0.05)) <= 0.5)
+        if not ((fixed or head) and float((fr or {}).get("aspect", 0)) > 0):
+            problems.append(f"cameras.framing.{f}: needs aspect > 0 and either target [x, y, z] + frame_height_m > 0"
+                            + (" or fit \"head\" (+ margin 0..0.5)" if f == "face" else ""))
     lens, elev = cams.get("lens_mm", 70.0), cams.get("elevation_deg")
     if not isinstance(elev, (int, float)):
         problems.append("cameras.elevation_deg: required (one elevation for every view: identical cameras)")
@@ -302,10 +306,13 @@ def validate(recipe, root=ROOT, check_git=True):
             problems.append(f"cameras.rows.{r}: no yaw (give yaw_deg or a reference_view)")
             continue
         fr = framing.get(kind) or {}
-        views.append({"name": r, "label": label, "framing": kind, "yaw_deg": float(yaw),
-                      "elevation_deg": float(elev) if isinstance(elev, (int, float)) else 0.0,
-                      "target": fr.get("target"), "frame_height_m": fr.get("frame_height_m"),
-                      "aspect": fr.get("aspect")})
+        view = {"name": r, "label": label, "framing": kind, "yaw_deg": float(yaw),
+                "elevation_deg": float(elev) if isinstance(elev, (int, float)) else 0.0,
+                "target": fr.get("target"), "frame_height_m": fr.get("frame_height_m"), "aspect": fr.get("aspect")}
+        if fr.get("fit") == "head":  # framed on the head bounds of all columns (one camera for every column)
+            view.update(fit="head", margin=float(fr.get("margin", 0.05)),
+                        margin_below=float(fr.get("margin_below", 0.15)), target=None, frame_height_m=None)
+        views.append(view)
         refs[r] = ref
     res["cameras"] = {"lens_mm": float(lens), "sensor_mm": float(cams.get("sensor_mm", 36.0)), "views": views}
     res["references"] = refs
@@ -433,7 +440,8 @@ def render_job(resolved, cols, out, settings):
     return {"out": out, "engine": settings["engine"], "samples": settings["samples"], "px": settings["px"],
             "lens_mm": resolved["cameras"]["lens_mm"], "sensor_mm": resolved["cameras"]["sensor_mm"],
             "calibration": resolved["light"]["calibration"], "columns": cols,
-            "views": [{k: v[k] for k in ("name", "yaw_deg", "elevation_deg", "target", "frame_height_m", "aspect")}
+            "views": [{k: v[k] for k in ("name", "yaw_deg", "elevation_deg", "target", "frame_height_m", "aspect",
+                                          "fit", "margin", "margin_below") if k in v}
                       for v in resolved["cameras"]["views"]]}
 
 

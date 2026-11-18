@@ -63,7 +63,7 @@ class AffectedCharacterTests(unittest.TestCase):
 
 
 def load_tests(loader, tests, pattern):
-    """CI runs this file (tools/check_all.py); it also runs the T-087 tests of tools/fidelity/run.py and of the review
+    """CI runs this file (tools/check_all.py); it also runs the T-087 tests of tools/fidelity/run.py, tools/regression/run.py and of the review
     recipe (tools/review/tests/test_recipe.py)."""
     here = Path(__file__).resolve().parent
     for path in (here, here.parents[1] / "review" / "tests"):
@@ -71,7 +71,9 @@ def load_tests(loader, tests, pattern):
             sys.path.insert(0, str(path))
     import test_run  # noqa: E402
     import test_recipe  # noqa: E402
+    import test_regression_flag  # noqa: E402
     tests.addTests(loader.loadTestsFromModule(test_run))
+    tests.addTests(loader.loadTestsFromModule(test_regression_flag))
     tests.addTests(loader.loadTestsFromModule(test_recipe))
     return tests
 

@@ -6,7 +6,10 @@ job.json (written by tools/review/recipe.py, never by hand):
   {"out": dir, "engine": "cycles"|"workbench", "samples": n, "px": n, "lens_mm": f, "sensor_mm": f,
    "calibration": "character_neutral/1",
    "columns": [{"tag": str, "blend": path, "comparison_pose": {"upper_arm_fk_rotation_y_deg": f} | null}],
-   "views": [{"name": str, "yaw_deg": f, "elevation_deg": f, "target": [x, y, z], "frame_height_m": f, "aspect": f}]}
+   "views": [{"name": str, "yaw_deg": f, "elevation_deg": f, "target": [x, y, z], "frame_height_m": f, "aspect": f}
+             | {"name": str, ..., "fit": "head", "margin": f, "aspect": f}]}
+A view with "fit": "head" is framed on the head bounds (the lowest LM_chin to the highest renderable top, plus
+margin x that height above and margin_below (default 0.15) below), measured over ALL columns first, so every column still gets the same camera.
 
 Every column is rendered in this ONE run with the same fixed cameras (not framed per model), the same light rig (the
 shared calibration, re-aimed per camera direction like every other evaluation render), world, exposure, samples and
@@ -62,6 +65,47 @@ def arm_probe(rig):
     return out
 
 
+def open_column(col):
+    bpy.ops.wm.open_mainfile(filepath=os.path.abspath(col["blend"]))
+    rig = next((o for o in bpy.data.objects if o.type == "ARMATURE"), None)
+    if rig is not None and col.get("comparison_pose"):
+        apply_comparison_pose(rig, float(col["comparison_pose"]["upper_arm_fk_rotation_y_deg"]))
+    return bpy.context.scene, rig
+
+
+def head_bounds(sc):
+    """(chin z, top z) of the opened character: LM_chin (the builder's face landmark) and the highest point of the
+    renderable meshes/curves (evaluated bounding boxes, rig widgets excluded)."""
+    chin = bpy.data.objects.get("LM_chin")
+    if chin is None:
+        raise SystemExit("head framing needs the LM_chin landmark empty")
+    deps = bpy.context.evaluated_depsgraph_get()
+    top = max((o.evaluated_get(deps).matrix_world @ Vector(c)).z for o in sc.objects
+              if o.type in ("MESH", "CURVES") and not o.hide_render and not o.name.startswith("WGT")
+              for c in o.evaluated_get(deps).bound_box)
+    return chin.matrix_world.translation.z, top
+
+
+def fit_views(job):
+    """Resolves "fit": "head" views to one fixed target/frame height shared by every column."""
+    fits = [v for v in job["views"] if v.get("fit") == "head"]
+    if not fits:
+        return None
+    lo, hi = 1e9, -1e9
+    for col in job["columns"]:
+        sc, _ = open_column(col)
+        c, t = head_bounds(sc)
+        lo, hi = min(lo, c), max(hi, t)
+    for v in fits:
+        h = hi - lo
+        # LM_chin sits on the underside of the jaw, above the lowest visible chin/jaw line: more room below
+        bottom = lo - h * float(v.get("margin_below", 0.15))
+        top = hi + h * float(v.get("margin", 0.05))
+        v["target"] = [0.0, 0.0, round((bottom + top) / 2, 4)]
+        v["frame_height_m"] = round(top - bottom, 4)
+    return {"chin_z": round(lo, 4), "top_z": round(hi, 4)}
+
+
 def main():
     job = json.load(open(sys.argv[sys.argv.index("--") + 1]))
     out = os.path.abspath(job["out"])
@@ -71,6 +115,7 @@ def main():
     engine, spp, px = job["engine"], int(job["samples"]), int(job["px"])
     result = {"engine": engine, "samples": spp, "px": px, "lens_mm": lens, "sensor_mm": sensor,
               "calibration": job.get("calibration"), "blender": bpy.app.version_string, "columns": {}, "views": {}}
+    result["head_bounds"] = fit_views(job)
     for col in job["columns"]:
         t0 = time.time()
         bpy.ops.wm.open_mainfile(filepath=os.path.abspath(col["blend"]))

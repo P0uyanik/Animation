@@ -13,7 +13,7 @@
   "elevation_deg": 6,
   "framing": {
    "body": {"target": [0.0, 0.0, 0.56], "frame_height_m": 1.26, "aspect": 1.6},
-   "face": {"target": [0.0, 0.0, 0.84], "frame_height_m": 0.46, "aspect": 1.0}
+   "face": {"fit": "head", "margin": 0.05, "aspect": 1.0}
   },
   "rows": {
    "front": {"reference_view": "val27_front"},

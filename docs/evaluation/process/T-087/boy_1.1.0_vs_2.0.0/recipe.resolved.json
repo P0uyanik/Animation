@@ -2,7 +2,7 @@
  "schema": "plush-studio.review-recipe/1",
  "character": "boy_yellow_hoodie",
  "task": "T-087",
- "recipe_sha256": "13d72dcb1e4794e3daff89eda229b76dd2d0d372157604f5bc6bb8136d5b2895",
+ "recipe_sha256": "c81b5ce45c8db85e31de7d3b9e858cc9df779efdcf0dde51b5201716a72e5f0d",
  "inputs": {
   "main": "ab9fd4c"
  },
@@ -111,13 +111,12 @@
     "framing": "face",
     "yaw_deg": 0.0,
     "elevation_deg": 6.0,
-    "target": [
-     0.0,
-     0.0,
-     0.84
-    ],
-    "frame_height_m": 0.46,
-    "aspect": 1.0
+    "target": null,
+    "frame_height_m": null,
+    "aspect": 1.0,
+    "fit": "head",
+    "margin": 0.05,
+    "margin_below": 0.15
    },
    {
     "name": "face_threequarter",
@@ -125,13 +124,12 @@
     "framing": "face",
     "yaw_deg": -35.0,
     "elevation_deg": 6.0,
-    "target": [
-     0.0,
-     0.0,
-     0.84
-    ],
-    "frame_height_m": 0.46,
-    "aspect": 1.0
+    "target": null,
+    "frame_height_m": null,
+    "aspect": 1.0,
+    "fit": "head",
+    "margin": 0.05,
+    "margin_below": 0.15
    }
   ]
  },

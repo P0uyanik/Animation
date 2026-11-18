@@ -97,6 +97,16 @@ class ValidateTests(unittest.TestCase):
         r["cameras"]["rows"]["side"]["yaw_deg"] = 90
         refused(self, r, "differs from the reference yaw")
 
+    def test_face_rows_can_fit_the_head(self):
+        res = R.validate(copy.deepcopy(BOY), check_git=False)
+        face = [v for v in res["cameras"]["views"] if v["framing"] == "face"]
+        self.assertTrue(all(v["fit"] == "head" and v["target"] is None for v in face))
+        job = R.render_job(res, [], "/x", res["preview"])
+        self.assertEqual({v["fit"] for v in job["views"] if "fit" in v}, {"head"})
+        r = copy.deepcopy(BOY)
+        r["cameras"]["framing"]["body"] = {"fit": "head", "aspect": 1.6}  # body rows need a fixed camera
+        refused(self, r, "cameras.framing.body")
+
     def test_light_and_cheap_preview(self):
         r = copy.deepcopy(BOY)
         r["light"]["calibration"] = "studio_bright/9"
