@@ -1,0 +1,24 @@
+{
+  "models": {
+    "face_landmarker.task": "64184e229b263107bc2b804c6625db1341ff2bb731874b0bcc2fe6544e0bc9ff",
+    "pose_landmarker_full.task": "4eaa5eb7a98365221087693fcc286334cf0858e2eb6e15b506aa4a7ecdcec4ad"
+  },
+  "videos": {
+    "paperboat": {
+      "file": "video_paperboat.mp4",
+      "sha256": "31fa6189014db231131f2dce4912a6c8814affa69bfd5df797f61142cfb260f5",
+      "fps": 24.0,
+      "width": 854,
+      "height": 480,
+      "frames": 289
+    },
+    "watertable": {
+      "file": "video_watertable.mp4",
+      "sha256": "b8101437d65fced27e461858214ea64712307f6d81a70b75305d75320e2dca5b",
+      "fps": 24.0,
+      "width": 828,
+      "height": 1108,
+      "frames": 121
+    }
+  }
+}
