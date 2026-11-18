@@ -15,7 +15,6 @@ now and what starts next; it does not restate the plan.
 ## 1. Running now (Phase A)
 | Task | What | Implementer | Merges after |
 | --- | --- | --- | --- |
-| T-087 | Review recipe lock + fidelity fixes | cloud `session_01NPjxeLy8LE79Ttrgoxqp6S` | READY + full CI |
 
 ## 2. Next
 1. T-086 CI efficiency: starts now that T-085 is merged (T-088 merged b3a96f3).

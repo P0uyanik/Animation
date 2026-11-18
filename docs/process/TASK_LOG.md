@@ -63,7 +63,7 @@
 | T-084 | Independent project audit (Codex): fidelity, gaps, workflow efficiency, tool usage | **merged** 2026-11-18 with the Supervisor audit and the comparison (`docs/audit/`) | t-084-codex-project-audit (ec1d316) | evaluation only |
 | T-085 | Renderer optional in the build (Phase A) | merged 2026-11-18 (integration/t-085; impl `session_01NPjxePZB1du3ZStJN4c7EC`, 2357ffe; local gate 3m20s without Embree) | t-085-claude-renderer-optional | `docs/tasks/T-085.md`; path A |
 | T-086 | CI efficiency (Phase A; after T-085) | assigned 2026-11-18, round 2 | t-086-claude-ci-efficiency | `docs/tasks/T-086.md`; path A |
-| T-087 | Comparison recipe lock + fidelity fixes (Phase A) | running 2026-11-18 14:53Z, cloud `session_01NPjxeLy8LE79Ttrgoxqp6S`, input ab9fd4c | t-087-claude-review-recipe | `docs/tasks/T-087.md`; path A |
+| T-087 | Comparison recipe lock + fidelity fixes (Phase A) | merged 2026-11-18 (integration/t-087; impl `session_01NPjxeLy8LE79Ttrgoxqp6S`, 0bea972; fidelity drop > 2 now flags owner review) | t-087-claude-review-recipe | `docs/tasks/T-087.md`; path A |
 | T-088 | Version-switch script (Phase A) | merged 2026-11-18 (integration/t-088; impl `session_01NPjxeLdCn1De2R4uRrMMYo`, 6915e3b) | t-088-claude-version-switch | `docs/tasks/T-088.md`; path A |
 | T-053 | Personality profiles 1.0.0 (reader, limits, animcheck check) | **merged** 2026-11-18 (owner-approved) | t-053-claude-personality (f62fedb), integration 50fc612 | GitHub full gate PASS; some profile fields await engine layers |
 | T-048 | Branch cleanup workflow + tests | **in main** 2026-11-17 | t-048-claude-branch-cleanup (8f1c3ce), merge ae15c0b | 25/25 cleanup tests, full gate PASS; first real dry run after T-041 backups |

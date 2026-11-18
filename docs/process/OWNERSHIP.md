@@ -16,6 +16,5 @@ means none. Branch is the task's branch; a task branch without a row falls back 
 
 | Task | Lane | Branch | Write-set | Depends on | Versions bumped |
 | --- | --- | --- | --- | --- | --- |
-| T-087 | E | t-087-claude-review-recipe | `tools/review/**`, `tools/fidelity/run.py`, `tools/fidelity/ci.py`, `tools/fidelity/tests/**`, `tools/regression/run.py`, `docs/process/REVIEW_RECIPE.md`, `docs/process/IMPLEMENTER_PROMPT.md`, `docs/evaluation/process/T-087/**` | — | — |
 
 Supervisor-only files: docs/process/TASK_LOG.md, docs/ROADMAP.md, docs/process/OWNER_DECISIONS.md, docs/tasks/**.
