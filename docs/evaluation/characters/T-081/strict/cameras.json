@@ -1,0 +1,111 @@
+{
+ "masters": {
+  "0.10.0": "built from girl_auburn_bun_glasses.spec.json + 0.10.0.override.json",
+  "0.11.0": "built from girl_auburn_bun_glasses.0.11.0.spec.json (= 9f20c2d/6b18b3c)"
+ },
+ "lighting": "character_neutral/1",
+ "views": {
+  "body_front": {
+   "yaw_deg": 0,
+   "elevation_deg": 5.0,
+   "lens_mm": 70.0,
+   "target": [
+    0.0,
+    0.0,
+    0.56
+   ],
+   "distance_m": 2.45,
+   "frame_height_m": 1.26,
+   "resolution": [
+    360,
+    576
+   ],
+   "samples": 16
+  },
+  "body_34": {
+   "yaw_deg": -45,
+   "elevation_deg": 5.0,
+   "lens_mm": 70.0,
+   "target": [
+    0.0,
+    0.0,
+    0.56
+   ],
+   "distance_m": 2.45,
+   "frame_height_m": 1.26,
+   "resolution": [
+    360,
+    576
+   ],
+   "samples": 16
+  },
+  "body_side": {
+   "yaw_deg": 90,
+   "elevation_deg": 5.0,
+   "lens_mm": 70.0,
+   "target": [
+    0.0,
+    0.0,
+    0.56
+   ],
+   "distance_m": 2.45,
+   "frame_height_m": 1.26,
+   "resolution": [
+    360,
+    576
+   ],
+   "samples": 16
+  },
+  "body_back": {
+   "yaw_deg": 180,
+   "elevation_deg": 5.0,
+   "lens_mm": 70.0,
+   "target": [
+    0.0,
+    0.0,
+    0.56
+   ],
+   "distance_m": 2.45,
+   "frame_height_m": 1.26,
+   "resolution": [
+    360,
+    576
+   ],
+   "samples": 16
+  },
+  "face_front": {
+   "yaw_deg": 0,
+   "elevation_deg": 5.0,
+   "lens_mm": 70.0,
+   "target": [
+    0.0,
+    0.0,
+    0.735
+   ],
+   "distance_m": 0.7,
+   "frame_height_m": 0.36,
+   "resolution": [
+    360,
+    360
+   ],
+   "samples": 16
+  },
+  "face_34": {
+   "yaw_deg": -45,
+   "elevation_deg": 5.0,
+   "lens_mm": 70.0,
+   "target": [
+    0.0,
+    0.0,
+    0.735
+   ],
+   "distance_m": 0.7,
+   "frame_height_m": 0.36,
+   "resolution": [
+    360,
+    360
+   ],
+   "samples": 16
+  }
+ }
+}

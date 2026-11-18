@@ -8,10 +8,18 @@
    "status": "approved",
    "spec_sha256": "7adbe217da2786326aa45dd048fae85586e5904f85df02bd501de10206da39cc",
    "approval_notes": "approved as an intermediate version, NOT final visual approval (OWNER_DECISIONS 2026-11-17)"
+  },
+  "0.11.0": {
+   "created": "2026-11-18T12:35:40+00:00",
+   "parent": "0.10.0",
+   "notes": "Girl 0.11.0 (T-081; complete spec girl_auburn_bun_glasses.0.11.0.spec.json): face_generic/2 + body_generic/2 fitted head with soft_smile rest, skin-felt/2 (materials pin presets/2), hair v3 groom/2 round 3 (T-079), vest details (T-068), personality profile 1.0.0, socket-wall smoothing (cheek/eye-corner folds), fuller lips, larger ears, head on the collar. Built with pinned bpy 5.3.0, deterministic environment (determinism.ENVIRONMENT, -t 1); geometry fingerprint identical to the build reviewed in the strict comparison.",
+   "status": "approved",
+   "spec_sha256": "4966133aa0eb1e00c06b107082223b7184d561dbe6f08e7c8790abf7b238dcf6",
+   "approval_notes": "owner approved as current 2026-11-18 after strict comparison (OWNER_DECISIONS)"
   }
  },
  "pointers": {
-  "approved": "0.10.0",
+  "approved": "0.11.0",
   "reference": null
  },
  "history": [
@@ -28,6 +36,20 @@
    "previous": null,
    "by": "owner (docs/process/OWNER_DECISIONS.md 2026-11-17)",
    "notes": "approved as an intermediate version, NOT final visual approval (OWNER_DECISIONS 2026-11-17)"
+  },
+  {
+   "at": "2026-11-18T12:35:40+00:00",
+   "action": "publish",
+   "version": "0.11.0",
+   "status": "candidate"
+  },
+  {
+   "at": "2026-11-18T12:35:40+00:00",
+   "action": "approve",
+   "version": "0.11.0",
+   "previous": "0.10.0",
+   "by": "owner (docs/process/OWNER_DECISIONS.md 2026-11-18)",
+   "notes": "owner approved as current 2026-11-18 after strict comparison (OWNER_DECISIONS)"
   }
  ]
 }

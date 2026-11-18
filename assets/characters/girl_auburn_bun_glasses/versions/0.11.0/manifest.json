@@ -1,0 +1,53 @@
+{
+ "character_id": "girl_auburn_bun_glasses",
+ "version": "0.11.0",
+ "parent": "0.10.0",
+ "created": "2026-11-18T12:35:40+00:00",
+ "notes": "Girl 0.11.0 (T-081; complete spec girl_auburn_bun_glasses.0.11.0.spec.json): face_generic/2 + body_generic/2 fitted head with soft_smile rest, skin-felt/2 (materials pin presets/2), hair v3 groom/2 round 3 (T-079), vest details (T-068), personality profile 1.0.0, socket-wall smoothing (cheek/eye-corner folds), fuller lips, larger ears, head on the collar. Built with pinned bpy 5.3.0, deterministic environment (determinism.ENVIRONMENT, -t 1); geometry fingerprint identical to the build reviewed in the strict comparison.",
+ "spec_sha256": "4966133aa0eb1e00c06b107082223b7184d561dbe6f08e7c8790abf7b238dcf6",
+ "spec_version": "0.11.0",
+ "build": "charsys/1+body_generic/1",
+ "blender": "5.3.0",
+ "identity_changes": [
+  "face",
+  "hair",
+  "clothing",
+  "materials"
+ ],
+ "identity_change_approved_by": "owner (docs/process/OWNER_DECISIONS.md 2026-11-18: girl 0.11.0 is the new current)",
+ "files": {
+  "girl_auburn_bun_glasses_master.blend": {
+   "sha256": "561e723ec58479625e5813094f7d839242f95b49ab6b4dfd55ef61f17ab056bd",
+   "bytes": 25864509
+  },
+  "spec.json": {
+   "sha256": "d44cbb3ebfe87ef16aaa0e429f462c503c5a45e805da725028d35db920477b3d",
+   "bytes": 52730
+  },
+  "components.json": {
+   "sha256": "f663267e42a11870e1e7a2e887030dd314cff02fe702afa125573066a83f33e8",
+   "bytes": 24777
+  },
+  "animation_compat.json": {
+   "sha256": "56d1c3108251f0bab571bdb4574a06431cd98b47d3ce6f4a6a2c80ceac2efb30",
+   "bytes": 16199
+  },
+  "build_report.json": {
+   "sha256": "de896a9af8a479c263ad67a54065a5a35af9a6f01e8acd48759cb7bcecefb4cc",
+   "bytes": 29171
+  },
+  "spec.resolved.json": {
+   "sha256": "25a0e844219603b43126bf0b8d1365f6682d4641a964ac74018fe7853311b52f",
+   "bytes": 53216
+  }
+ },
+ "rig": {
+  "rigify_bones": 523,
+  "deform_bones": 186,
+  "unweighted_after_cleanup": 0
+ },
+ "spec_resolved": "spec.resolved.json is the build's fitted spec (body_generic writes fitted values); spec.json is the input spec it was built from (hash = spec_sha256)",
+ "not_stored": {
+  "girl_auburn_bun_glasses.glb": "not needed for reuse: shots link the master and engine packages are exported from it (run_shot.py); reproducible from the master"
+ }
+}
