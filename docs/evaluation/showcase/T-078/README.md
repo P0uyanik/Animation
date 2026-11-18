@@ -1,4 +1,4 @@
-# T-078: progress video — current approved | new versions
+# T-078: progress video — previous | new current
 
 Implementer: Claude (cloud) · evaluation, evidence only · branch `t-078-claude-progress-video` (from `origin/staging`).
 No system, spec, preset or published version was changed. Blender: **bpy 5.3.0 module** (Python 3.13) through
@@ -7,8 +7,9 @@ No system, spec, preset or published version was changed. Blender: **bpy 5.3.0 m
 ## Result
 
 - **Video:** [T-078_progress_current_vs_new.mp4](T-078_progress_current_vs_new.mp4) — 1280×720, 24 fps, H.264,
-  5.0 s (shot frames 13–132). Left: **current approved** (boy 1.1.0 · girl 0.10.0). Right: **new versions**
-  (boy 2.0.0 · girl 0.11.0, not yet approved).
+  5.0 s (shot frames 13–132). Left: **previous** (boy 1.1.0 · girl 0.10.0, the approved versions when the shot was rendered). Right: **new current**
+  (boy 2.0.0 · girl 0.11.0, owner-approved as current 2026-11-18, `docs/process/OWNER_DECISIONS.md`; labels updated after
+  the approval, frames unchanged).
 - **Still sheet:** [T-078_still_sheet.jpg](T-078_still_sheet.jpg) (frame 99, the wave, 1280×838 JPEG) with the caption.
 
 ![still](T-078_still_sheet.jpg)
@@ -16,7 +17,7 @@ No system, spec, preset or published version was changed. Blender: **bpy 5.3.0 m
 **Caption (3 lines)**
 1. Same shot, camera, light and animation (reach_touch_wave, principles + personality on); only the characters differ.
 2. New: face v2 on the fitted head, porcelain-peach felt skin, hair v3 round 3, sneakers/backpack/hood, vest details.
-3. Boy 2.0.0 and girl 0.11.0 await owner approval; nothing is published.
+3. Boy 2.0.0 and girl 0.11.0: owner-approved as current 2026-11-18. Known gaps: see the T-078 README.
 
 ## What is combined (right side)
 

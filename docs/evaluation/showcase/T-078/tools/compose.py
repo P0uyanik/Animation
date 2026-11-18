@@ -16,12 +16,12 @@ from PIL import Image, ImageDraw, ImageFont
 
 FONT = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
 BOLD = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
-LEFT = ("CURRENT APPROVED", "boy 1.1.0  ·  girl 0.10.0")
-RIGHT = ("NEW VERSIONS (not yet approved)", "boy 2.0.0  ·  girl 0.11.0")
+LEFT = ("PREVIOUS", "boy 1.1.0  ·  girl 0.10.0")
+RIGHT = ("NEW CURRENT", "boy 2.0.0  ·  girl 0.11.0, owner-approved 2026-11-18")
 CAPTION = [
     "Same shot, camera, light and animation (reach_touch_wave, principles + personality on); only the characters differ.",
     "New: face v2 on the fitted head, porcelain-peach felt skin, hair v3 round 3, sneakers/backpack/hood, vest details.",
-    "Boy 2.0.0 and girl 0.11.0 await owner approval; nothing is published. Known gaps: see the T-078 README.",
+    "Boy 2.0.0 and girl 0.11.0: owner-approved as current 2026-11-18. Known gaps: see the T-078 README.",
 ]
 
 
