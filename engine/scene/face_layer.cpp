@@ -389,4 +389,34 @@ FaceState FaceLayer::evaluate(double frame) const {
   return s;
 }
 
+// ------------------------------------------------------------------ personality face (T-053)
+float personalityFaceOffset(const PersonalityFace& f, const std::string& control, float activity, float watching) {
+  float off = 0;
+  if (auto it = f.rest.find(control); it != f.rest.end()) off += it->second;
+  if (activity > 0)
+    if (auto it = f.bias.find(control); it != f.bias.end()) off += it->second * std::clamp(activity, 0.0f, 1.0f);
+  if (watching > 0)
+    if (auto it = f.watching.find(control); it != f.watching.end()) off += it->second * std::clamp(watching, 0.0f, 1.0f);
+  return off;
+}
+
+std::map<std::string, float> resolvePersonalityOffsets(const std::map<std::string, float>& au,
+                                                       const std::map<std::string, std::vector<std::string>>& aliases,
+                                                       const std::function<std::string(const std::string&)>& resolve) {
+  std::map<std::string, float> out;
+  for (const auto& [name, w] : au) {
+    std::string control;
+    if (auto a = aliases.find(name); a != aliases.end()) {
+      for (const auto& cand : a->second)
+        if (control = resolve(cand); !control.empty()) break;
+    } else {
+      control = resolve(name);
+    }
+    if (control.empty() || w == 0.0f) continue;
+    auto [it, fresh] = out.emplace(control, w);
+    if (!fresh && std::abs(w) > std::abs(it->second)) it->second = w;
+  }
+  return out;
+}
+
 }  // namespace plush

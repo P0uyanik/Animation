@@ -11,6 +11,17 @@ Spec (``clothing.garments[]`` item, ``type: "hoodie"``; every key optional, defa
   sleeve_length (default 1.0), ease_m, bands {hem, cuff, rib_ridges, cuff_rib_ridges, cuff_radius_m}
   dropped_shoulder {start (0..0.1, sleeve start along the arm), margin_m} or false (the shared top's sleeves)
   hood {rim_radius_m, rim_rise_m, rim_lift_m, v_depth_m, v_overlap_m, bag_width_m, bag_height_m, bag_depth_m, bag_drop_m}
+       T-068 volume (all optional; omitted = the T-058 hood exactly):
+         rim_back_radius_m  the rim roll is thicker at the back and sides (blends to rim_radius_m at the V)
+         bag_fullness (0..1) the bag keeps a rounded pillow shape: its body side hugs the outer surface of the hoodie
+                            and the neck (instead of being flattened to 15 % of its depth), its outside stays round
+         bag_rise_m          the bag's top stands up behind the neck, above the rim
+         bag_taper (0..1)    the bag narrows towards its rounded bottom (a U-shaped hood lying on the back)
+         bag_n               superellipse exponent of the bag outline (2 = ellipse, larger = fuller corners)
+         bag_gap_m           gap kept between the bag's body side and the hoodie
+         edge_radius_m, edge_drop (0..1)  the soft roll along the bag's opening edge (radius, how far down the bag)
+  armhole: "cut" (default) or "closed" (T-068: no armhole in the torso panel; with a dropped shoulder the sleeve and
+       torso panels then meet under the arm, closing the underarm gap)
   pocket {width_bottom_m, width_top_m, height_m, above_hem_m, depth_m, opening_slant, rim_radius_m} or false
   drawstrings {spacing_m, length_m, radius_m, tip_length_m, tip_radius_m, swing_m} or false
   materials {main, band, hood, pocket, drawstring, tip}: part material assignments (default: main / band)
@@ -34,7 +45,9 @@ def _num(d, key, default):
 def validate(raw, name):
     """Hoodie-specific keys (the shared top keys are validated by generator.validate)."""
     for block, keys, hi in (("hood", ("rim_radius_m", "rim_rise_m", "rim_lift_m", "v_depth_m", "v_overlap_m", "bag_width_m",
-                                      "bag_height_m", "bag_depth_m", "bag_drop_m"), 0.3),
+                                      "bag_height_m", "bag_depth_m", "bag_drop_m", "rim_back_radius_m", "bag_rise_m",
+                                      "bag_gap_m", "edge_radius_m"), 0.3),
+                            ("hood", ("bag_fullness", "bag_taper", "edge_drop"), 1.0),
                             ("pocket", ("width_bottom_m", "width_top_m", "height_m", "above_hem_m", "depth_m",
                                         "rim_radius_m", "opening_slant"), 0.4),
                             ("drawstrings", ("spacing_m", "length_m", "radius_m", "tip_length_m", "tip_radius_m",
@@ -55,6 +68,11 @@ def validate(raw, name):
             GEN._number(ds["start"], f"garment {name}.dropped_shoulder.start", 0.0, 0.1)
         if "margin_m" in ds:
             GEN._number(ds["margin_m"], f"garment {name}.dropped_shoulder.margin_m", 0.0, 0.05)
+    hood = raw.get("hood")
+    if isinstance(hood, dict) and "bag_n" in hood:
+        GEN._number(hood["bag_n"], f"garment {name}.hood.bag_n", 1.5, 6.0)
+    if raw.get("armhole", "cut") not in GEN.ARMHOLES:
+        raise ValueError(f"garment {name}.armhole must be one of {list(GEN.ARMHOLES)}")
     bands = raw.get("bands")
     if isinstance(bands, dict) and "cuff_rib_ridges" in bands:
         if not isinstance(bands["cuff_rib_ridges"], int) or not 0 <= bands["cuff_rib_ridges"] <= 12:
@@ -85,7 +103,62 @@ def _solidify(ob, thickness):
     ob.select_set(False)
 
 
-def _hood(G, C, cfg, P, H, fit, top_z, te, thick, bvh):
+def _volume_bag(G, C, cfg, hc, w, h, d, zc, top_z, rim_r, thick, outer):
+    """T-068 full hood bag: a superellipsoid whose body side hugs the outer surface (hoodie + neck) and whose outside
+    stays round; it narrows towards the bottom (``bag_taper``) and its top stands up behind the neck (``bag_rise_m``)."""
+    from . import shapes as S
+    fullness = _num(hc, "bag_fullness", 0.6)
+    taper = _num(hc, "bag_taper", 0.0)
+    rise = _num(hc, "bag_rise_m", 0.0)
+    gap = _num(hc, "bag_gap_m", thick)
+    n = _num(hc, "bag_n", 2.0)
+    zc = zc + 0.5 * rise
+    hh = h + 0.5 * rise
+    depth = d * (1.0 + 2.0 * fullness)
+
+    def floor(x, z):
+        hit, _ = S.outer_hit(outer, Vector((x, 0.0, z)), Vector((0, 1, 0)), 0.6)
+        return hit.y if hit is not None else 0.0
+
+    yb = floor(0.0, zc)
+    yc = yb + gap + 0.5 * depth
+    bag = S.superellipsoid(G, C, f"garment.{cfg['name']}.hood.bag", (0.0, yc, zc), (w, 0.5 * depth, hh), n, 40, 22)
+    for v in bag.data.vertices:
+        co = v.co
+        down = max(0.0, min(1.0, (zc - co.z) / max(hh, 1e-9)))
+        co.x *= 1.0 - taper * down ** 1.5
+        target = floor(co.x, co.z) + gap
+        if co.y < yc:  # the body side: from the silhouette (s = 0) down onto the clothing (s = 1)
+            s = (yc - co.y) / (0.5 * depth)
+            co.y = yc + (target - yc) * s
+        co.y = max(co.y, target)
+    bag.data.update()
+    return bag
+
+
+def _bag_edge(bag, hc, w, h, zc, radius):
+    """The hood's opening edge: a U-shaped roll on the outside of the bag, from one upper corner down to
+    ``edge_drop`` of the bag and up to the other corner."""
+    from mathutils.bvhtree import BVHTree
+    from . import shapes as S
+    deps = bpy.context.evaluated_depsgraph_get()
+    tree = BVHTree.FromObject(bag, deps)
+    lo_z = min(v.co.z for v in bag.data.vertices)
+    hi_z = max(v.co.z for v in bag.data.vertices)
+    half = max(abs(v.co.x) for v in bag.data.vertices)
+    drop = _num(hc, "edge_drop", 0.55)
+    pts = []
+    for k in range(17):
+        u = -1 + 2 * k / 16
+        x = u * half * 0.8
+        z = hi_z - (hi_z - lo_z) * (0.18 + drop * math.sqrt(max(0.0, 1 - u * u)))
+        hit, nrm = S.outer_hit([tree], Vector((x, 0.0, z)), Vector((0, 1, 0)), 0.6)
+        if hit is not None:
+            pts.append(hit + nrm * radius * 0.4)
+    return pts
+
+
+def _hood(G, C, cfg, P, H, fit, top_z, te, thick, bvh, outer=None):
     """Rim (thick rolled tube around the neck, V at the front) and the hood bag lying on the upper back."""
     hc = cfg.get("hood") if isinstance(cfg.get("hood"), dict) else {}
     neck_r = P["neck"]["radius"] * H
@@ -118,8 +191,17 @@ def _hood(G, C, cfg, P, H, fit, top_z, te, thick, bvh):
             out.append(Vector((x, y, z)))
         return out
     pts = list(reversed(chest(ends[0], -1))) + pts + chest(ends[1], 1)
-    rim = G.tube(f"garment.{cfg['name']}.hood.rim", pts, [rim_r] * len(pts), [rim_r * 0.8] * len(pts), C,
-                 up_hint=(0, 0, 1), seg=12, cap_start="round", cap_end="round")
+    if "rim_back_radius_m" in hc:  # T-068: thicker roll at the back and sides
+        rb = _num(hc, "rim_back_radius_m", rim_r)
+        radii = []
+        for p in pts:
+            back = max(0.0, min(1.0, 0.5 + 0.5 * p.y / max(r0, 1e-9)))
+            radii.append(rim_r + (rb - rim_r) * back ** 1.2)
+        rim = G.tube(f"garment.{cfg['name']}.hood.rim", pts, radii, [r * 0.85 for r in radii], C,
+                     up_hint=(0, 0, 1), seg=16, cap_start="round", cap_end="round")
+    else:
+        rim = G.tube(f"garment.{cfg['name']}.hood.rim", pts, [rim_r] * len(pts), [rim_r * 0.8] * len(pts), C,
+                     up_hint=(0, 0, 1), seg=12, cap_start="round", cap_end="round")
     rim["ps_weight_anchor"] = (0.0, 0.0, top_z)
     out.append(("hood", rim))
     # the bag: a flattened half ellipsoid on the upper back, its top tucked under the rim
@@ -129,21 +211,30 @@ def _hood(G, C, cfg, P, H, fit, top_z, te, thick, bvh):
     drop = _num(hc, "bag_drop_m", 0.045 * fit.torso)
     zc = top_z - drop
     yb = _back_y(bvh, 0.0, zc, 0.06)
-    bag = G.uv_sphere(f"garment.{cfg['name']}.hood.bag", (0, yb - d * 0.35, zc), 1.0, C, 32, 16, (w, d * 1.6, h))
-    for v in bag.data.vertices:  # flatten the body-side half onto the back
-        if v.co.y < yb:
-            v.co.y = yb - (yb - v.co.y) * 0.15
+    if "bag_fullness" in hc:  # T-068: a full, rounded hood lying on the back (not collapsed)
+        bag = _volume_bag(G, C, cfg, hc, w, h, d, zc, top_z, rim_r, thick, outer)
+    else:
+        bag = G.uv_sphere(f"garment.{cfg['name']}.hood.bag", (0, yb - d * 0.35, zc), 1.0, C, 32, 16, (w, d * 1.6, h))
+        for v in bag.data.vertices:  # flatten the body-side half onto the back
+            if v.co.y < yb:
+                v.co.y = yb - (yb - v.co.y) * 0.15
     bag["ps_weight_anchor"] = (0.0, yb, zc)
     out.append(("hood", bag))
     # the seam where the bag's opening edge lies on the back (a soft roll across the bag's lower edge)
-    seam = []
-    for k in range(13):
-        u = -1 + 2 * k / 12
-        x = u * w * 0.92
-        z = zc - h * 0.55 * math.sqrt(max(0.0, 1 - u * u)) + h * 0.15
-        seam.append(Vector((x, _back_y(bvh, x, z, yb) + d * 0.6 * (1 - u * u) + rim_r * 0.3, z)))
-    roll = G.tube(f"garment.{cfg['name']}.hood.edge", seam, [rim_r * 0.45] * len(seam), [rim_r * 0.35] * len(seam), C,
-                  up_hint=(0, 1, 0), seg=8, cap_start="round", cap_end="round")
+    if "bag_fullness" in hc:  # T-068: the opening edge lies on the rounded bag
+        er = _num(hc, "edge_radius_m", rim_r * 0.45)
+        seam = _bag_edge(bag, hc, w, h, zc, er)
+        roll = G.tube(f"garment.{cfg['name']}.hood.edge", seam, [er] * len(seam), [er * 0.75] * len(seam), C,
+                      up_hint=(0, 1, 0), seg=10, cap_start="round", cap_end="round")
+    else:
+        seam = []
+        for k in range(13):
+            u = -1 + 2 * k / 12
+            x = u * w * 0.92
+            z = zc - h * 0.55 * math.sqrt(max(0.0, 1 - u * u)) + h * 0.15
+            seam.append(Vector((x, _back_y(bvh, x, z, yb) + d * 0.6 * (1 - u * u) + rim_r * 0.3, z)))
+        roll = G.tube(f"garment.{cfg['name']}.hood.edge", seam, [rim_r * 0.45] * len(seam), [rim_r * 0.35] * len(seam), C,
+                      up_hint=(0, 1, 0), seg=8, cap_start="round", cap_end="round")
     roll["ps_weight_anchor"] = (0.0, yb, zc)
     out.append(("hood", roll))
     return out
@@ -281,7 +372,7 @@ def build(C, body, cfg, P, H, J, G, fit):
     hc = hood if isinstance(hood, dict) else {}
     v_depth = _num(hc, "v_depth_m", 0.05 * fit.torso)
     if hood is not False:
-        extra += _hood(G, C, cfg, P, H, fit, top_z, te, thick, bvh)
+        extra += _hood(G, C, cfg, P, H, fit, top_z, te, thick, bvh, outer=[bvh, BVHTree.FromObject(body, deps)])
     if cfg.get("pocket", True) is not False:
         extra += _pocket(G, C, cfg, H, fit, hem_z, bvh)
     if cfg.get("drawstrings", True) is not False:

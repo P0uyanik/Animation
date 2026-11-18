@@ -213,3 +213,9 @@ rest of the queue are on hold until the owner says otherwise.
 The owner lifted the "no new tasks" hold: define and start the next tasks of the plan (`docs/process/IMPLEMENTATION_PLAN.md`)
 and handle questions while the owner is away (~8 h). The original Supervisor session stays Supervisor (handover
 reversed). Path B results wait for the owner's render approval; Codex stays on T-060 only.
+
+## 2026-11-18: overnight results approved as shared systems
+Approved and merged as opt-in shared systems (approved character versions unchanged until new versions are approved):
+T-065 face v2 + fitted head, T-066 skin, T-068 garment details, T-053 personality profiles, T-070 hair round 2.
+Hair: round 3 requested (boy crown from the close-up sheet, girl curls/fringe, third fringe/waves). Collisions (T-047):
+before/after renders first, then the owner decides.

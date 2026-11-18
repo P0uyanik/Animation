@@ -9,6 +9,7 @@ python3 tools/animcheck/animcheck.py --bake bake.json [--scene shot.scene.json] 
 python3 tools/animcheck/run_gate.py --render build/apps/render-cli/plush-render [--out build/check-all/animcheck]
 python3 tools/animcheck/make_shots.py        # rewrites shots/*.scene.json from the T-045 evidence shot
 python3 tools/animcheck/tests/test_animcheck.py
+python3 tools/animcheck/personality.py --bake bake.json --scene shot.scene.json [--json report.json]   # T-053
 ```
 
 ## Regression shots (`shots/`)
@@ -19,6 +20,7 @@ Engine test packages (`tests/data/imported`: boy 1.0.0, girl m3), body mechanics
 | --- | --- |
 | `wave_touch` | the T-045 evidence shot: idle → touch (IK pointing gesture) → `wave` clip at speed 1.5 with a 4-frame blend in, both characters |
 | `clip_gestures` | library clips at their default blends and three speeds: `point` ×1, `wave` mirrored ×1.5, `gest_shrug` ×0.8 |
+| `personality` | T-053: both packages with their personality profiles, life and body mechanics on: 4.8 s idle watching the task object, then the boy's one-hand reach into the task (touch, planned 16 f, hold 72 f) and the girl's `point` clip and brisk touch (planned 13 f) |
 
 ## Metrics
 
@@ -57,3 +59,21 @@ too small for these ratios to mean anything at 24 fps.
 | `max_rot_step_deg` | 45 | 1/8 turn per frame: beyond it a limb rotation strobes. After T-061: 41°. |
 
 Measured values for both shots before / after T-061: `docs/evaluation/animation/T-061/README.md`.
+
+## Personality check (T-053, `personality.py`)
+
+For shots whose characters carry a `"personality"` profile, `run_gate.py` also measures the bake against the
+profile's `limits` (`content/personality/<id>.json`, `content/personality/SCHEMA.md`); report `<out>/personality.json`.
+
+| Measure | How | Limit |
+| --- | --- | --- |
+| blink duration | runs of the blink morph above 0.1 that reach 0.5 (cut-off runs at the shot ends skipped) | every blink in `blink_duration_frames` ± 1 f |
+| blink interval | start-to-start of rhythm events (a blink within 10 f of the previous one is its double blink) | mean in `blink_interval_frames` |
+| reach | touch / reach entry segment (as above) | `reach_frames` ± 1 f |
+| hold | longest run after the entry within 10 % of the entry chord, ending by the exit's fastest frame | `hold_frames` ± 1 f |
+| idle motion | median head speed outside every gesture window, in head widths (H) per frame | `idle_motion_max_H_per_frame` |
+
+Reported only: clip gestures' entry / hold / peak speed, each entry's peak wrist speed (H/f), the idle head amplitude
+(H) next to the profile's `energy.idle_motion_amplitude`. H = x extent of the package's head / skin vertices above
+the head bone. Frame values at 24 fps. Unit tests: `tests/test_animcheck.py` (class `PersonalityCheck`).
+

@@ -9,6 +9,7 @@
 
 #include "anim/animation.h"
 #include "anim/body_mechanics.h"
+#include "anim/personality.h"
 #include "anim/principles.h"
 #include "model/character.h"
 #include "model/clip.h"
@@ -59,6 +60,11 @@ struct CharacterDesc {
   // object = {"enabled", "personality": "<profile id>" (content/personality/<id>[.draft].json), and overrides of the
   // BodyMechanicsParams fields by name, "limits": {...}}. Saved as written.
   Json bodyMechanics;
+  // Personality profile (T-053, anim/personality.h): null / false = none (default: behaviour as before T-053); a string
+  // = profile id (content/personality/<id>[.draft].json, found by walking up from the scene file). It tunes the life
+  // layer (blinks, idle amplitude, head lag), the face (rest offsets, expression bias, mouth while watching), clip
+  // tempo and, when body mechanics is on without its own "personality", the body mechanics. Saved as written.
+  Json personality;
 };
 
 struct PropParent {
@@ -163,6 +169,13 @@ class SceneEvaluator {
   bool bodyMechanicsActive(size_t c) const { return c < body_.size() && body_[c].params.enabled; }
   const BodyMechanicsParams* bodyMechanicsParams(size_t c) const { return c < body_.size() ? &body_[c].params : nullptr; }
   const BodyMechanicsRig* bodyMechanicsRig(size_t c) const { return c < body_.size() ? &body_[c].rig : nullptr; }
+  // Personality (T-053): the resolved profile of character c (null = none) and the clip tempo its gestures play at.
+  const PersonalityProfile* personality(size_t c) const {
+    return c < persona_.size() && persona_[c].profile ? &*persona_[c].profile : nullptr;
+  }
+  double clipTempo(size_t c) const { return c < persona_.size() ? persona_[c].tempo : 1.0; }
+  // Face offset of the personality on morph `morph` of character c at a frame (0 without a profile).
+  float personalityFaceOffset(size_t c, const std::string& morph, double frame) const;
   BodyDrivers bodyDrivers(size_t c, long long frame) const;
   BodyMechanicsInput bodyMechanicsInput(size_t c, double frame) const;
   mat4 objectWorld(size_t o, double frame) const;
@@ -268,6 +281,20 @@ class SceneEvaluator {
   };
   std::vector<BodyMechanicsSetup> body_;
   void buildBodyMechanics();
+  // Personality (T-053): resolved per character when actions compile (before body mechanics and the face layers).
+  struct PersonaSetup {
+    std::optional<PersonalityProfile> profile;
+    PersonalityFace face;                               // resolved to this character's morphs
+    std::vector<std::string> activityMorphs;            // morphs whose animated weight is "expression activity"
+    std::vector<std::pair<double, double>> watchSpans;  // look actions (mouth while watching)
+    double tempo = 1.0;                                 // clip clock multiplier of gestures (1 = none)
+    std::optional<PersonalityRange> speedLimit;         // effective gesture clip speed (limits.action_speed)
+    float neutralIdleH = 0.004f;                        // shared neutral idle amplitude (head widths)
+  };
+  std::vector<PersonaSetup> persona_;
+  void buildPersonalities();
+  float expressionActivity(size_t c, double frame) const;
+  double layerClipFrame(size_t c, const ClipLayer& L, double frame) const;  // clip_layers.cpp: clipFrame x tempo
   void applyBodyMechanicsAt(size_t c, double frame, Pose& pose) const;
   BodyDrivers filteredDrivers(size_t c, long long frame, const std::vector<float>& kernel) const;
   std::shared_ptr<std::mutex> bodyMutex_ = std::make_shared<std::mutex>();

@@ -1,0 +1,264 @@
+{
+ "override": {
+  "identity": {
+   "id": "third_char_face_test",
+   "display_name": "third character face v2 head-only test (T-065, not a character build)"
+  },
+  "generators": {
+   "face": "face_generic/2",
+   "groom": "none",
+   "body": "body_generic/2"
+  },
+  "hair": {
+   "generator": "none"
+  },
+  "accessories": {
+   "items": []
+  },
+  "materials": {
+   "albedo_srgb": {
+    "skin": [
+     248,
+     218,
+     204
+    ]
+   },
+   "target_colors_srgb": {
+    "skin": [
+     248,
+     218,
+     204
+    ]
+   }
+  },
+  "face": {
+   "generator": "face_generic/2",
+   "layout": {
+    "mouth_below_eye_m": 0.05,
+    "nose_below_eye_m": 0.027,
+    "chin_below_eye_m": 0.1072
+   },
+   "shape": {
+    "cheek_fullness_m": 0.004,
+    "cheek_radius_m": 0.055,
+    "cheek_below_eye_m": 0.05,
+    "cheek_x": 1.05,
+    "cheek_forward": 0.45,
+    "note": "face v2 shape on top of the body_generic/2 head fitted to the reference outlines (cheek volume only)"
+   },
+   "skin": {
+    "occlusion": {
+     "lift": 0.35,
+     "bleed": 0.2
+    }
+   },
+   "blush": {
+    "srgb": [
+     238,
+     128,
+     126
+    ],
+    "below_eye_m": 0.042,
+    "out_m": 0.022,
+    "radius_m": 0.042,
+    "intensity": 1.0,
+    "nose": true,
+    "nose_intensity": 0.4
+   },
+   "nose": {
+    "type": "small_round",
+    "size_m": 0.011,
+    "height_m": 0.004
+   },
+   "eyes": {
+    "radius_m": 0.046,
+    "spacing_m": 0.134,
+    "offset_z_m": -0.016,
+    "protrusion_m": 0.009,
+    "scale": [
+     1.0,
+     0.86,
+     1.0
+    ],
+    "gaze_range_deg": [
+     12,
+     6
+    ],
+    "iris": {
+     "srgb": [
+      64,
+      112,
+      182
+     ],
+     "inner_srgb": [
+      118,
+      168,
+      222
+     ],
+     "dark_srgb": [
+      30,
+      56,
+      112
+     ],
+     "limbal_srgb": [
+      18,
+      30,
+      64
+     ],
+     "glow_srgb": [
+      140,
+      190,
+      236
+     ],
+     "shade_srgb": [
+      26,
+      48,
+      96
+     ],
+     "radius": 0.62,
+     "pupil": 0.26
+    },
+    "lids": {
+     "upper_edge_deg": 28,
+     "upper_gap": 0.03,
+     "upper_thickness_m": 0.0016,
+     "lower_edge_deg": -46,
+     "lower_gap": 0.015,
+     "lower_thickness_m": 0.0008
+    },
+    "socket": {
+     "band_deg": 6,
+     "lower_band_deg": 0.5,
+     "ramp_deg": 7,
+     "reach_deg": 26,
+     "corner_deg": 50,
+     "clearance_m": 0.0006,
+     "cover_sides": true,
+     "lower_ramp_deg": 1.5
+    }
+   },
+   "brows": {
+    "shape": "short_arc",
+    "srgb": [
+     178,
+     150,
+     128
+    ],
+    "height": 1.55,
+    "thick_m": 0.0022,
+    "depth_m": 0.0008
+   },
+   "cheeks": {
+    "raise_m": 0.004,
+    "forward_m": 0.003,
+    "radius_m": 0.042,
+    "below_eye_m": 0.05,
+    "x": 1.05
+   },
+   "mouth": {
+    "half_width_m": 0.011,
+    "lip_srgb": [
+     226,
+     150,
+     150
+    ],
+    "rest_shape": "soft_smile",
+    "frown_m": -0.002,
+    "rest_mix": {
+     "MouthSmile": 0.3,
+     "CheekRaise": 0.7,
+     "MouthWide": 0.0
+    },
+    "fullness": {
+     "upper": 1.1,
+     "lower": 1.3,
+     "forward_m": 0.0008
+    }
+   },
+   "expressions": {
+    "override": {
+     "Smile": {
+      "CheekRaise": 1.0
+     },
+     "Laugh": {
+      "CheekRaise": 1.0
+     }
+    }
+   }
+  },
+  "body": {
+   "generator": "body_generic/2",
+   "params": {
+    "head": {
+     "outline": {
+      "eye_z": 0.78454,
+      "unit": 0.13814,
+      "chin_t": 0.8,
+      "front_eye_width": 1.08,
+      "front": [
+       [
+        0.18,
+        1.07
+       ],
+       [
+        0.33,
+        1.05
+       ],
+       [
+        0.48,
+        0.96
+       ],
+       [
+        0.63,
+        0.75
+       ],
+       [
+        0.74,
+        0.45
+       ],
+       [
+        0.8,
+        0.15
+       ]
+      ],
+      "side": [
+       [
+        0.24,
+        0.064
+       ],
+       [
+        0.32,
+        0.11
+       ],
+       [
+        0.4,
+        0.08
+       ],
+       [
+        0.48,
+        0.05
+       ],
+       [
+        0.56,
+        0.0
+       ],
+       [
+        0.64,
+        -0.016
+       ],
+       [
+        0.72,
+        -0.05
+       ],
+       [
+        0.8,
+        -0.1
+       ]
+      ],
+      "side_blend": 0.5
+     }
+    }
+   }
+  }
+ }
+}
