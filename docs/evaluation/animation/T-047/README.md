@@ -173,11 +173,41 @@ Not tested:
     exporter paths and is never skipped, so GitHub CI runs it.
 - GitHub CI on the branch is the evidence for the full tier.
 
-## 7. Visual results
-No renders. Change: the girl's hanging arms (e904, e905, e906) are turned out by up to 16° at the shoulder. They hung
-9–32 mm inside her collision body: her puffed sleeves into her vest. The e905 hand-over arms take a different elbow
-path and meeting point. The boy's clip arms in e905/e906 and every animcheck arm are unchanged. The references were not
-compared; that needs the owner (8.3).
+## 7. Visual results (renders added on the Supervisor's request, 2026-11-18; no code change)
+Casts: the **current approved versions**, boy 1.1.0 and girl 0.10.0, both published. They come from copies of the e905
+s010 and e904 s010 shots whose cast is `{"character_id": ..., "version": "current"}`
+(`shots/*/shot.scene.json`). On these casts the collision numbers match section 5 exactly
+(`clearance_e905_s010_current_cast.json`, `clearance_e904_s010_current_cast.json`).
+
+How the renders were made:
+- Planning OFF uses the same scene plus `{"type": "collision", "enabled": false}` per character; its bake is
+  `bake_off.json`.
+- Each bake was turned into a `shot.blend` (`shot_render.py --blend-only`). `render_t047.py` then renders one character
+  with the camera in front of it or 45° to its right. The camera box is the same for OFF and ON.
+- The other character is excluded from the view layer, and in e905 the small table in front of the girl is hidden.
+  Nothing else changes.
+
+| File | Content |
+| --- | --- |
+| `t047_e905_f42_cycles_sheet.jpg` | 8 Cycles stills (32 spp, OIDN): e905 **f42**, the frame with the largest corrections (boy R elbow swing −84°, girl L lift 16°). Girl and boy; front and 3/4; OFF and ON. |
+| `t047_e905_f35_e904_f6_workbench_sheet.jpg` | Workbench extras: e905 f35 (girl R reaching, elbow swing −32°) and e904 f6 (girl R lift 9°). |
+| `t047_e905_girl_off_on.mp4` | The girl in e905, frames 1–72, front, OFF \| ON side by side (Workbench, 960×640, H.264, 3 s). |
+
+What the renders show:
+- **Boy, e905 f42**:
+  - OFF: the right forearm and hand holding the cup sink into his chest; only the cup shows in front of the face.
+  - ON: the forearm is outside, with the elbow turned out and up beside the head (the 84° swing, wrist and cup
+    unchanged). This is the largest visible change. It reads as a raised "wing" elbow, which the references do not
+    show for a hand-over.
+  - It is the T-040 −72 mm case. An alternative that plans the hold or meeting point lower and further out (wrist path
+    planning) would look more natural (8.2).
+- **Girl, e905 f42 / e904 f6**:
+  - Her hanging arm stands slightly away from the vest (lift 9–16° at the shoulder). OFF, the puffed sleeve
+    overlaps the vest side.
+  - The change is small at review size; in the e904 front pair it is barely visible.
+  - Her reaching right arm (e905 f35) turns its elbow out a little.
+- Identity, materials, face and hair are unchanged; only arm poses differ. The renders were not compared with the
+  owner's reference images or videos for pose: that is the owner's decision.
 
 ## 8. Problems, limitations and open questions
 1. **Register export/6** (outside this write-set): `pipeline/charsys/versions.py` needs
@@ -194,9 +224,8 @@ compared; that needs the owner (8.3).
    - Capping the swing at 20° and pushing the wrist instead made it worse (16.9°). This was reverted.
    - Decision needed: accept, or a follow-up that plans the reach path (IK target via-points) outside the body instead
      of swinging the elbow.
-3. **Visual change in path A**: the corrected arms look different from before (section 7), with up to 16° of shoulder
-   lift on the girl. They now rest against the body instead of inside it. Please review on a render before
-   promotion.
+3. **Visual change in path A**: the corrected arms look different from before (section 7 has the renders): up to 16°
+   of shoulder lift on the girl and a raised elbow on the e905 giver. Owner decision.
    - Open choice: if the owner prefers the old silhouette, the girl's vest-side sections (99th percentile front-half
      fit) or her limb core would have to be thinner, which is a definition change.
 4. **Not in the body or not planned**:
