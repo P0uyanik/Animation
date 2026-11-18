@@ -23,6 +23,7 @@ ROOT = os.path.abspath(os.path.join(CHARSYS, "..", ".."))
 sys.path.insert(0, CHARSYS)
 
 import spec as SPEC  # noqa: E402
+import versions as V  # noqa: E402
 from materials import builder as MATERIALS  # noqa: E402
 
 RESULTS = []
@@ -92,7 +93,9 @@ def main():
     for cid, entry in baseline["characters"].items():
         spec, _ = SPEC.load(os.path.join(ROOT, entry["build"]), [os.path.join(ROOT, p) for p in entry.get("overrides", [])])
         ids = preset_ids(spec)
-        check(f"{cid} approved version names no presets/2 id", not any(MATERIALS.is_skin_preset(v) for v in ids.values()), ids)
+        pins, _ = V.resolve_pins(spec)  # presets/2 skin ids only with an explicit generators.materials presets/2 pin
+        check(f"{cid} approved version names presets/2 ids only with the presets/2 pin",
+              pins["materials"] == "presets/2" or not any(MATERIALS.is_skin_preset(v) for v in ids.values()), ids)
 
     # candidates opt in and validate
     found = sorted(glob.glob(os.path.join(CANDIDATES, "*.override.json")))
