@@ -35,8 +35,14 @@ T081 = {
                   "note": "T-081 (0.11.0): neutral = closed gentle smile with lifted cheeks (owner decisions 2026-11-17/18, ref_34 Neutral): face_generic/2 rest_shape soft_smile (MouthSmile 0.35 + CheekRaise 0.8 baked, lips closed, no teeth or tongue at rest); open smile with teeth and tongue only from MouthWide/JawOpen (Smile, Laugh, Surprise, MouthOpen, talking). Lips a little wider, fuller and pinker than the T-065 candidate (ref_34 mouth tiles, T-059)."},
         "ears": {"radii_m": [0.013, 0.025, 0.034]},
     },
-    "body": {"params": {"neck": {"radius": 0.054, "top_radius": 0.061,
-                                 "note": "T-081: wider neck (was 0.04639 / 0.055) so the neck reads less like a stalk under the broad chin (sheet30 front); its length is unchanged"}}},
+    "body": {"params": {
+        "neck": {"base_z": 0.63309, "radius": 0.054, "top_radius": 0.061,
+                 "note": "T-081: the head sits on the collar as in sheet30/ref_30 (almost no visible neck): neck base and shoulder line raised by 0.03 x height (29 mm; base_z 0.60309 -> 0.63309), head, face and hair unchanged; wider neck (was 0.04639 / 0.055)"},
+        "shoulder": {"z": 0.63309},
+        "torso": {"levels": [[0.2732, 0.08763, 0.06186, 0.06392], [0.30928, 0.10103, 0.06804, 0.06804],
+                             [0.37113, 0.09485, 0.06598, 0.06392], [0.4433, 0.09278, 0.06804, 0.06186],
+                             [0.54077, 0.09897, 0.0701, 0.06392], [0.62278, 0.09485, 0.06392, 0.05979],
+                             [0.65887, 0.06392, 0.05155, 0.05155]]}}},
     "animation": {"personality": {"profile": "girl_auburn_bun_glasses", "profile_version": "1.0.0",
                                   "path": "content/personality/girl_auburn_bun_glasses.json",
                                   "note": "T-053 personality profile referenced by this version (scenes opt in with \"personality\": \"girl_auburn_bun_glasses\")"}},
@@ -46,7 +52,7 @@ HISTORY = ("0.11.0 (T-081, complete spec girl_auburn_bun_glasses.0.11.0.spec.jso
            "candidates): face_generic/2 + body_generic/2 fitted head (T-065) with the closed gentle smile + lifted cheeks "
            "at rest (soft_smile) and brown eyes kept; skin-felt/2 porcelain-peach skin, warmer lower blush (T-066); "
            "hair v3 groom/2 round 3 (T-079; round 2 T-070); vest patch pockets + cross-stitch decals (T-068); personality profile 1.0.0 "
-           "(T-053); socket-wall smoothing (cheek/eye-corner folds fixed), fuller wider lips, larger ears, wider neck "
+           "(T-053); socket-wall smoothing (cheek/eye-corner folds fixed), fuller wider lips, larger ears, wider and shorter neck (shoulders raised 29 mm) "
            "(T-081, T-059 targets); unpublished, awaiting owner visual approval; not the current version")
 
 

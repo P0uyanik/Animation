@@ -106,11 +106,11 @@
     }
    },
    "neck": {
-    "base_z": 0.60309,
+    "base_z": 0.63309,
     "top_z": 0.71134,
     "radius": 0.054,
     "top_radius": 0.061,
-    "note": "T-081: wider neck (was 0.04639 / 0.055) so the neck reads less like a stalk under the broad chin (sheet30 front); its length is unchanged"
+    "note": "T-081: the head sits on the collar as in sheet30/ref_30 (almost no visible neck): neck base and shoulder line raised by 0.03 x height (29 mm; base_z 0.60309 -> 0.63309), head, face and hair unchanged; wider neck (was 0.04639 / 0.055)"
    },
    "torso": {
     "levels": [
@@ -139,19 +139,19 @@
       0.06186
      ],
      [
-      0.52577,
+      0.54077,
       0.09897,
       0.0701,
       0.06392
      ],
      [
-      0.59278,
+      0.62278,
       0.09485,
       0.06392,
       0.05979
      ],
      [
-      0.62887,
+      0.65887,
       0.06392,
       0.05155,
       0.05155
@@ -159,7 +159,7 @@
     ]
    },
    "shoulder": {
-    "z": 0.60309,
+    "z": 0.63309,
     "joint_x": 0.10103,
     "clavicle_x": 0.02062
    },
@@ -2606,7 +2606,7 @@
    "0.8.0: RETIRED, never published and not used: the label was given independently to two different branch-local specs (T-031 face v2 and T-033 felted hair v2); T-031b's branch-local '0.9.0' (face r2 only) is likewise superseded by the combined 0.9.0 below",
    "0.9.0 (V4 consolidation, integration/consolidated): ONE combined spec. face, body.params.head, body.params.neck, identity.approved_decisions.neutral_expression from T-031b (face v2 r2: round plush face, open-smile neutral, blush, eyes); hair (structures, finish, fibres, components.finish, provenance) and materials.assignments.hair from T-033b (felted hair v2 r2); clothing.garments and clothing.provenance from T-034 (garment fibres, cloth drape); hair.dynamics from T-021 (girl_auburn_bun_glasses.dynamics.override.json, values unchanged, now part of the base spec); all other sections unchanged from 0.7.1; unpublished",
    "0.10.0 (T-055, girl_auburn_bun_glasses.0.10.0.override.json on top of the frozen 0.9.0 spec): owner decision 2026-11-17, neutral/rest mouth = closed gentle smile (face.mouth.rest_shape closed_smile: the lips_jaw/2 neutral, corners raised by frown_m -0.0022 -> -0.0042, lips closed, no teeth or tongue at rest); open smile with teeth and tongue only in Happy/Smile/Laugh and talking shapes; eyes stay brown; explicit generator pins (the 0.9.0 defaults); everything else identical to 0.9.0; unpublished",
-   "0.11.0 (T-081, complete spec girl_auburn_bun_glasses.0.11.0.spec.json; base spec + 0.10.0 + the approved candidates): face_generic/2 + body_generic/2 fitted head (T-065) with the closed gentle smile + lifted cheeks at rest (soft_smile) and brown eyes kept; skin-felt/2 porcelain-peach skin, warmer lower blush (T-066); hair v3 groom/2 round 3 (T-079; round 2 T-070); vest patch pockets + cross-stitch decals (T-068); personality profile 1.0.0 (T-053); socket-wall smoothing (cheek/eye-corner folds fixed), fuller wider lips, larger ears, wider neck (T-081, T-059 targets); unpublished, awaiting owner visual approval; not the current version"
+   "0.11.0 (T-081, complete spec girl_auburn_bun_glasses.0.11.0.spec.json; base spec + 0.10.0 + the approved candidates): face_generic/2 + body_generic/2 fitted head (T-065) with the closed gentle smile + lifted cheeks at rest (soft_smile) and brown eyes kept; skin-felt/2 porcelain-peach skin, warmer lower blush (T-066); hair v3 groom/2 round 3 (T-079; round 2 T-070); vest patch pockets + cross-stitch decals (T-068); personality profile 1.0.0 (T-053); socket-wall smoothing (cheek/eye-corner folds fixed), fuller wider lips, larger ears, wider and shorter neck (shoulders raised 29 mm) (T-081, T-059 targets); unpublished, awaiting owner visual approval; not the current version"
   ]
  },
  "components": {
