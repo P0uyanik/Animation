@@ -66,7 +66,7 @@ std::vector<vec3> headPoints(const SceneEvaluator& ev, size_t c, double f, std::
   return out;
 }
 
-float cloudDistance(const std::vector<vec3>& A, const std::vector<vec3>& B, float cell = 0.03f) {
+float cloudDistance(const std::vector<vec3>& A, const std::vector<vec3>& B, float cell = 0.06f) {
   auto key = [&](vec3 p) {
     const glm::ivec3 i = glm::ivec3(glm::floor(p / cell));
     return (long long)(i.x + 4096) * 100000000LL + (long long)(i.y + 4096) * 10000LL + (long long)(i.z + 4096);
@@ -220,7 +220,22 @@ int main(int argc, char** argv) {
     }
     out["heads"] = {{"min_mesh_distance_mm", minD * 1000}, {"min_mesh_frame", atD}, {"min_volume_gap_mm", minV * 1000},
                     {"min_volume_frame", atV}, {"head_points", {selA.empty() ? 0 : 1, selB.empty() ? 0 : 1}},
-                    {"per_frame_[f,mesh_mm(30=at_least),volume_gap_mm]", per}};
+                    {"per_frame_[f,mesh_mm(60=at_least),volume_gap_mm]", per}};
+    // The planned head tilt (degrees; generated "<who>/collision.headTilt.<other>") and its largest change per frame.
+    Json tj = Json::array();
+    for (size_t c = 0; c < 2; ++c) {
+      const std::string t = ev.scene().characters[c].name + "/collision.headTilt." + ev.scene().characters[1 - c].name;
+      float mx = 0, rate = 0;
+      int at = 0, first = 0, last = 0;
+      for (int f = ev.scene().frameStart; f <= ev.scene().frameEnd; ++f) {
+        const float v = ev.scene().animation.evaluate(t, f, vec3(0)).x;
+        if (v > mx) mx = v, at = f;
+        if (v > 0.05f) last = f, first = first ? first : f;
+        if (f > ev.scene().frameStart) rate = std::max(rate, std::abs(v - ev.scene().animation.evaluate(t, f - 1, vec3(0)).x));
+      }
+      tj.push_back({{"character", ev.scene().characters[c].name}, {"max_tilt_deg", mx}, {"at_frame", at}, {"max_rate_deg_per_frame", rate}, {"tilted_frames", {first, last}}});
+    }
+    out["head_tilt"] = tj;
     Json hv = Json::array();
     for (size_t c = 0; c < 2; ++c) hv.push_back({{"character", ev.scene().characters[c].name}, {"head_volumes", bodies[c].heads.size()}});
     out["head_volumes"] = hv;

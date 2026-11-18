@@ -1,0 +1,2 @@
+docs/evaluation/animation/T-096/shots/e905_s010_current/build/packages/boy_3e9366c80a115e78: vertices 126563, spheres 7824, surface samples 30906, outer surface to nearest vertex mm p50 4.09707 p90 7.56557 p99 10.0389 max 14.2724
+docs/evaluation/animation/T-096/shots/e905_s010_current/build/packages/girl_d2335d2ca1aa8e59: vertices 222422, spheres 11069, surface samples 36372, outer surface to nearest vertex mm p50 4.26717 p90 7.8894 p99 10.446 max 13.8959
