@@ -2,36 +2,40 @@
 
     python3 episodes/e907_exchange/make_shot.py [--boy-package <pkg dir> --girl-package <pkg dir>]
 
-2.75 s at 24 fps, cast "current" (boy 2.0.0, girl 0.11.0 today). The boy and the girl stand side by side behind a
-small table, both opened towards the camera as in the references (PB f12/157/272, WT f24: the children stand next to
-each other at a table and the camera sees both faces). He picks a felt cup up from the table with his inner (right)
-hand and offers it; she takes it with her inner (left) hand at the cup's other handle. Shared interaction actions
-only (scene/interaction.h: grasp, hold, handover, hold) plus look and emotion actions.
+2.75 s at 24 fps, cast "current" (boy 2.0.0, girl 0.11.0 today). The boy and the girl stand side by side at a small
+table, both opened towards the camera as in the references (PB f12/157/272, WT f24: the children stand next to each
+other and the camera sees both faces in three-quarter view). He picks a felt cup up with his inner (right) hand and
+offers it; she takes it with her inner (left) hand at the cup's other handle. Shared actions only (scene/interaction.h:
+grasp, hold, handover, hold; look; emotion); no engine or character change.
 
-Beats (scene frames; "who notices, who acts, who reacts"):
-- f1    she is busy with the table in front of her; he looks at the cup.
-- f6    he acts: reaches for the cup (contact f18) and lifts it towards her (hold f20..f30), still looking at it.
-- f22   she notices: her eyes go to the offered cup (the observer glances first) ...
-- f30   ... and only then her hand answers: her reach starts eight frames after the glance (contact f44).
-- f30   he looks up at her face while he holds the cup out ("here").
-- f44..f50 both hands share the cup (her contact f44, his release f50); she is pleased (happy from f42) and looks up
-        at his face at f48; the accepted frame is f47.
-- f50.. he lets go and draws his hand back, glances at her, then looks off to the side (impatient, low-key; boy
-        REFERENCE_BEHAVIOUR); she draws the cup towards herself (hold f52..f64).
+Beats (scene frames; who notices, who acts, who reacts), also written into the shot as x_t095_staging.beats:
+- f1      she is busy with the table in front of her; he looks at the cup.
+- f4..18  he acts: reaches for the cup (contact f18) and offers it (hold f20..f28), looking at it.
+- f20     she notices: her eyes go to the offered cup (the observer glances first) ...
+- f27     ... and only then her hand answers: her reach starts 7 frames after the glance (contact f45).
+- f29     he glances up at her face while he holds the cup out; f44 back to the cup.
+- f45..51 both hands share the cup (her contact f45, his release f51); she is pleased (happy from f43) and looks up
+          at his face from f49; accepted frame f48.
+- f51..   he lets go and draws his hand back, glances at her (f53), then looks off to his side (f59; impatient,
+          low-key); she draws the cup towards herself (hold f53..f65).
 
-Staging (derived from the two current rigs, not tuned per character). Natural hand as in e905 (T-082): an easy,
-almost straight arm held forward and a little down (ARM_REACH of the arm length, ARM_DROP below horizontal), from the
-package skeleton's shoulder of the inner arm.
-- Both turn TURN degrees from facing the camera towards each other (references: three-quarter faces, never profiles;
-  at 68 degrees, e905, her near eye went behind her hair and glasses).
-- He stands on the camera's right, she on its left, so each one's inner hand is the hand nearer the other: his
-  right, her left. The cup's grip handle (local +x) faces him, grip_b (-x) faces her.
-- Her natural hand is across the cup from his (cup width + HANDOVER_GAP); her position follows from that. This
-  sets the shoulder spacing from the two arm lengths and shoulder widths.
-- The cup stands on the table under his natural hand (PICKUP forward of it) and is only lifted (LIFT).
-- Camera: in front, CAMERA_ELEV degrees above the target, the target between the heads' and the cup's heights; the
-  distance frames the two heads and the cup with FRAME_MARGIN (16:9, 32 mm on a 36 mm film width).
-The derived numbers are written into the shot (x_t095_staging): a shot is data, this script is the derivation.
+Staging (derived from the two current rigs: package skeletons and head extents; nothing per character in the code):
+- Natural hand (T-082): an easy, almost straight arm, ARM_REACH of the arm length, ARM_DROP below horizontal, from the
+  inner arm's shoulder, pointing ARM_IN towards the partner. Both turn TURN from the camera towards each other.
+  He stands on the camera's right, she on its left, so the inner hands are his right and her left.
+- The cup (CUP_YAW) stands with its grip handle at his natural hand; her natural hand is placed at its other handle
+  (grip_b), which sets her position and so the shoulder spacing. The hand-over point keeps her handle at her natural
+  hand height (her 18 cm arm has no slack; his 27 cm arm takes the difference).
+- Why these numbers (measured, T-095 README): with the cup between two side-by-side bodies, each inner hand holds the
+  handle that faces its own body; CUP_YAW 0 needed elbow swings to 54 deg, a 15 deg torso turn and gave rotation
+  pops up to 117 deg/frame, CUP_YAW -75 none. Heads with hair are 0.47 m wide together: ARM_IN keeps the head bones
+  0.59 m apart (ARM_IN 0: 0.49 m, hair touching).
+- Faces: the cup is beside them, so the gaze turns sideways; the neck and chest assists would turn the faces to
+  profile (the e905 failure). The heads take only HEAD_FOLLOW of a gaze turn, the neck assist is capped (NECK_YAW),
+  there is no chest twist (BODY_YAW), and her neck pitch is GIRL_NECK_PITCH: the eyes do the looking, both faces stay
+  at about 51 deg from the camera.
+- Camera: in front, CAMERA_ELEV above the target between the table and the head tops; the distance frames both heads
+  and the table with FRAME_MARGIN (16:9, 32 mm on a 36 mm film width).
 Without packages it uses defaults measured on the current packages (boy 2.0.0, girl 0.11.0)."""
 import argparse
 import array
@@ -212,8 +216,8 @@ def main():
                        "profile": "pipeline/charsys/rig_profiles/humanoid_rigify.json",
                        "render": {"resolution": [640, 360], "samples": 16, "light_scale": 1.0}},
         "x_t095_staging": {
-            "rule": "side by side behind a table, both turned TURN from the camera towards each other; natural inner "
-                    "hands (ARM_REACH, ARM_DROP), hers across the cup from his; camera in front, CAMERA_ELEV above",
+            "rule": "side by side at a table, both turned TURN from the camera towards each other; natural inner "
+                    "hands (ARM_REACH, ARM_DROP, ARM_IN), hers at the cup's other handle; camera in front, CAMERA_ELEV above",
             "beats": F, "turn_deg": TURN, "arm_in_deg": ARM_IN, "arm_reach": ARM_REACH, "arm_drop_rad": ARM_DROP,
             "boy_arm_length": round(B["arm"], 4), "girl_arm_length": round(G["arm"], 4),
             "boy_right_shoulder_rest": r4(B["shoulder"]["R"]), "girl_left_shoulder_rest": r4(G["shoulder"]["L"]),

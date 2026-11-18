@@ -414,7 +414,7 @@
   }
  },
  "x_t095_staging": {
-  "rule": "side by side behind a table, both turned TURN from the camera towards each other; natural inner hands (ARM_REACH, ARM_DROP), hers across the cup from his; camera in front, CAMERA_ELEV above",
+  "rule": "side by side at a table, both turned TURN from the camera towards each other; natural inner hands (ARM_REACH, ARM_DROP, ARM_IN), hers at the cup's other handle; camera in front, CAMERA_ELEV above",
   "beats": {
    "end": 66,
    "grasp": 4,
