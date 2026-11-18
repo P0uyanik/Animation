@@ -232,8 +232,8 @@ Landmark errors in eye-spacing units (`head_v2/outline_errors.md`):
     - CheekRaise;
     - soft-smile corner lift 3.1–3.5 mm;
     - third: no eye overlap, blue iris.
-- Gate (GitHub "Quality gate" run 44195415311 on `2315636`, after `git merge origin/staging`): Frozen assets, Write-set
-  (17 paths, all in the claim), Shared-systems lint, C++ build, C++ tests, Python tests and links, Blender tier (full;
+- Gate (GitHub "Quality gate" run 44205655505 on `2e2ea3c`, criterion 0 included, after `git merge origin/staging`; same result as run 44195415311 on `2315636`): Frozen assets, Write-set
+  (35 paths, all in the claim), Shared-systems lint, C++ build, C++ tests, Python tests and links, Blender tier (full;
   regression + unchanged-character guard jobs for boy, girl, third character: all PASS) **PASS**. **FAIL only:** Guarded
   paths, `pipeline/charsys/tests/test_face_v2.py` (new test, needs Supervisor approval), and the derived "Merge status"
   line that follows from it. Locally (bpy wrapper) the same, plus C++ build (embree not installed in this container) and
