@@ -239,3 +239,8 @@ Owner reviewed T-079 (hair v3 round 3): the characters look closer to the origin
 Standing direction: continue improving visual fidelity, round after round, until the characters match the references
 as closely as possible (each round ends with a side-by-side sheet against the references for owner approval). The
 "finish running tasks, then review" hold still applies to starting the next round.
+
+## 2026-11-18: Codex assigned T-083 (fidelity gap report)
+Owner: "give a task to codex to analyze our videos to compare with references and to create a report to know how far
+we are from the original references". Codex (owner's PC, via relay) gets T-083, evaluation only (docs). This widens
+the earlier "Codex only T-060" rule by this one task.
