@@ -35,3 +35,5 @@ targets for round 2 alongside the files above.
 
 Note: in file 17 the accessory seen from behind reads more like the older flower shape than the bow in file 18. The
 owner decision is a **bow** (file 18 is canonical for the accessory).
+
+**Owner decision 2026-11-18: all supervisor suggestions above accepted** (`docs/process/OWNER_DECISIONS.md`).

@@ -27,3 +27,5 @@ because the new images disagree with each other or with the earlier references:
   Supervisor suggestion: plain felt cords with dark tips (matches the face shots and the earlier references).
 - **Face marks:** B01–B03 show two small marks above the brows and B02 a small brown nose dot, which the earlier
   references show only faintly. Keep subtle.
+
+**Owner decision 2026-11-18: all supervisor suggestions above accepted** (`docs/process/OWNER_DECISIONS.md`).

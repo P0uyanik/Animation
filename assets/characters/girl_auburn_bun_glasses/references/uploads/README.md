@@ -30,3 +30,5 @@ Points the owner should confirm (the new images disagree with the earlier refere
 - **Hair accessories (G03, G04, G05):** scrunchie colour varies (blue-grey in G04, brown in G05) and the flowers vary
   (one pink in G04; pink and blue in G03). Supervisor suggestion: blue-grey scrunchie with one pink felt flower (G04),
   matching `ref_30`.
+
+**Owner decision 2026-11-18: all supervisor suggestions above accepted** (`docs/process/OWNER_DECISIONS.md`).
