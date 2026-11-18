@@ -125,8 +125,7 @@ _r("groom", "groom", 1, "groom")
 _r("groom", "groom", 2, "groom_hybrid")  # T-044 hair v3 (hybrid felt); opt-in, no character pins it yet
 _r("garment", "body_v6", 1, "body_v6", declared=False, note="legacy v6 clothing")
 _r("garment", "garment", 1, "garments")
-_r("garment", "garment", 2, "garments_v2", declared=False,
-   note="T-093 garment outlines and accessories (planned; opt-in; declared=True once the module lands)")
+_r("garment", "garment", 2, "garments_v2")  # T-093 garment outlines + accessories + reach correctives; opt-in
 _r("accessories", "body_v6", 1, "body_v6", declared=False, note="legacy v6 backpack")
 _r("accessories", "accessories", 1, "accessories", declared=False)
 _r("rig", "rigify_human", 1, None, declared=False, note="Rigify human (body_v6.rig_character / body_generic.rig_generic)")

@@ -812,6 +812,8 @@ def check_blender(blender: str, artifacts: Path, logs: Path, required: bool, cha
                                     str(ROOT / "pipeline/charsys/tests/test_render_engine.py")], None),
         ("materials r2 graphs", [executable, "-b", "--factory-startup", "-P",
                                  str(ROOT / "pipeline/charsys/tests/test_materials_r2_graphs.py")], None),  # T-092
+        ("garments v2 quick", [sys.executable, str(ROOT / "pipeline/charsys/tests/test_garments_v2.py"),
+                               "--blender", executable, "--quick"], None),  # T-093 pin + validate (full run: local)
         ("groom dynamics", [executable, "-b", "--factory-startup", "-P",
                             str(ROOT / "pipeline/charsys/tests/groom_dynamics_test.py"), "--",
                             str(out / "groom_dynamics_test.json")], out / "groom_dynamics_test.json"),
