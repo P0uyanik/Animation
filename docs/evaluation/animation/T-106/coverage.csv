@@ -1,0 +1,7 @@
+clip,character,reviewed_frames,reviewed_s,face_returned,face_matched,face_matched_pct,pose_matched,blinks,partial_dips,blinks_per_visible_min
+paperboat,boy,101,4.20833,34,34,33.66,12,0,1,0.0
+paperboat,girl,105,4.375,80,80,76.19,23,0,0,0.0
+paperboat,white_haired_girl,117,4.875,63,63,53.85,0,3,0,36.92
+watertable,boy,121,5.04167,70,70,57.85,0,3,0,35.7
+watertable,girl,121,5.04167,105,105,86.78,0,3,1,35.7
+watertable,white_haired_girl,121,5.04167,67,67,55.37,0,3,0,35.7
