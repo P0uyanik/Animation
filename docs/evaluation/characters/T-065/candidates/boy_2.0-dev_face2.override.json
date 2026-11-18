@@ -1,0 +1,137 @@
+{
+ "override": {
+  "generators": {
+   "face": "face_generic/2",
+   "body": "body_generic/2"
+  },
+  "face": {
+   "generator": "face_generic/2",
+   "layout": {
+    "mouth_below_eye_m": 0.06,
+    "chin_below_eye_m": 0.0816
+   },
+   "shape": {
+    "cheek_fullness_m": 0.006,
+    "cheek_radius_m": 0.05,
+    "cheek_below_eye_m": 0.045,
+    "cheek_x": 1.05,
+    "cheek_forward": 0.35,
+    "note": "face v2 shape on top of the body_generic/2 head fitted to the reference outlines (cheek volume only)"
+   },
+   "skin": {
+    "occlusion": {
+     "lift": 0.35,
+     "bleed": 0.2
+    }
+   },
+   "eyes": {
+    "protrusion_m": 0.0,
+    "scale": [
+     1.0,
+     0.8,
+     1.0
+    ],
+    "gaze_range_deg": [
+     16,
+     8
+    ],
+    "lids": {
+     "upper_gap": 0.03,
+     "upper_thickness_m": 0.0016,
+     "lower_edge_deg": -34,
+     "lower_gap": 0.025,
+     "lower_thickness_m": 0.001
+    },
+    "socket": {
+     "band_deg": 9,
+     "lower_band_deg": 6,
+     "ramp_deg": 8,
+     "reach_deg": 26,
+     "corner_deg": 52,
+     "clearance_m": 0.0006
+    }
+   },
+   "brows": {
+    "shape": "flat_stroke",
+    "height": 0.72,
+    "inner": 0.4,
+    "outer": 0.95,
+    "thick_m": 0.0042,
+    "depth_m": 0.0012
+   }
+  },
+  "body": {
+   "generator": "body_generic/2",
+   "params": {
+    "head": {
+     "outline": {
+      "eye_z": 0.76726,
+      "unit": 0.13412,
+      "chin_t": 0.6,
+      "front_eye_width": 1.03,
+      "front": [
+       [
+        0.23,
+        0.93
+       ],
+       [
+        0.37,
+        0.86
+       ],
+       [
+        0.47,
+        0.76
+       ],
+       [
+        0.54,
+        0.65
+       ],
+       [
+        0.585,
+        0.3
+       ]
+      ],
+      "side": [
+       [
+        0.1,
+        0.067
+       ],
+       [
+        0.17,
+        0.107
+       ],
+       [
+        0.24,
+        0.08
+       ],
+       [
+        0.31,
+        0.04
+       ],
+       [
+        0.37,
+        0.013
+       ],
+       [
+        0.44,
+        -0.027
+       ],
+       [
+        0.51,
+        -0.08
+       ],
+       [
+        0.57,
+        -0.16
+       ],
+       [
+        0.6,
+        -0.27
+       ]
+      ]
+     }
+    }
+   }
+  }
+ }
+}
