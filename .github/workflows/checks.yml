@@ -230,10 +230,11 @@ jobs:
         run: |
           New-Item -ItemType Directory -Force -Path $env:VCPKG_DEFAULT_BINARY_CACHE | Out-Null
           ./.github/scripts/install_ci_dependencies.ps1 -Platform windows -Cpp
-          # numpy: the fidelity metrics tests need it; on Linux it arrives (unpinned) with the bpy wheel, which the
-          # windows job does not install.
-          python -m pip install --disable-pip-version-check numpy
-          if ($LASTEXITCODE -ne 0) { throw 'installing numpy failed' }
+          # numpy + Pillow: the only third-party imports of the Python tests check_all runs (fidelity metrics, face,
+          # hair, export determinism, gate tools). Linux gets numpy (unpinned) with the bpy wheel and Pillow pinned 11.3.0;
+          # the windows job installs no bpy, so it installs both here.
+          python -m pip install --disable-pip-version-check numpy 'Pillow==11.3.0'
+          if ($LASTEXITCODE -ne 0) { throw 'installing numpy/Pillow failed' }
           # The manifest toolchain reuses this same install tree during CMake configuration.
           & "$env:VCPKG_INSTALLATION_ROOT/vcpkg" install --triplet x64-windows "--x-install-root=$pwd/build/quality-gate/vcpkg_installed"
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
