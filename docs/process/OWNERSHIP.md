@@ -17,6 +17,5 @@ means none. Branch is the task's branch; a task branch without a row falls back 
 | Task | Lane | Branch | Write-set | Depends on | Versions bumped |
 | --- | --- | --- | --- | --- | --- |
 | T-090b | E | t-090b-codex-fit-proposals | `docs/evaluation/characters/T-090b/**` | `tools/fit/**` (stable), `tools/review/**` (stable) | — |
-| T-093 | D | t-093-claude-garments | `pipeline/charsys/garments_v2/**`, `pipeline/charsys/tests/test_garments_v2*.py`, `assets/characters/{boy_yellow_hoodie,girl_auburn_bun_glasses}/spec/candidates/T-093/**`, `docs/evaluation/characters/T-093/**` | `pipeline/charsys/garments/**` (stable), `pipeline/charsys/body_generic.py` (stable), `pipeline/charsys/build_character.py` (stable), `pipeline/charsys/groom_hybrid.py` (stable), `pipeline/charsys/versions.py` (stable), `pipeline/charsys/materials/**` (stable), `tools/review/**` (stable), `tools/fit/**` (stable), `assets/characters/*/spec/*.json` (stable), `assets/characters/*/references/**` (stable) | `garment` |
 
 Supervisor-only files: docs/process/TASK_LOG.md, docs/ROADMAP.md, docs/process/OWNER_DECISIONS.md, docs/tasks/**.
