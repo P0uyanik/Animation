@@ -1,0 +1,13 @@
+--- pipeline/charsys/tests/deform_test.py	2026-11-17 23:59:58.275111525 +0000
++++ scratch/deform_test_nomask.py	2026-11-18 00:26:52.727412035 +0000
+@@ -20,6 +20,10 @@
+ os.makedirs(OUT, exist_ok=True)
+ bpy.ops.wm.open_mainfile(filepath=os.path.abspath(src))
+ rig = next(o for o in bpy.data.objects if o.type == "ARMATURE" and not o.name.startswith("WGT"))
++for _o in bpy.data.objects:
++    for _m in getattr(_o, "modifiers", []):
++        if _m.type == "MASK":
++            _m.show_viewport = _m.show_render = False
+ meshes = [o for o in bpy.data.objects if o.type == "MESH" and any(m.type == "ARMATURE" for m in o.modifiers) and not o.name.startswith("WGT")]
+ for pb in rig.pose.bones:
+     if "IK_FK" in pb.keys():

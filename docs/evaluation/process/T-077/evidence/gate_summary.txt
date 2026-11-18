@@ -1,0 +1,8 @@
+PASS Frozen assets
+FAIL Guarded paths: REQUIRES SUPERVISOR APPROVAL: tools/check_all.py
+PASS Write-set: T-077: 1 changed path(s) vs origin/staging, all inside the claim
+PASS Shared-systems lint
+PASS C++ build
+PASS C++ tests
+PASS Python tests and links
+PASS Blender tier: fast tier
