@@ -100,7 +100,7 @@
       "surface": {
         "roughness": 0.74,
         "specular_ior_level": 0.24,
-        "subsurface_weight": 0.38,
+        "subsurface_weight": 0.5,
         "subsurface_scale_fraction": 0.05,
         "sheen_weight": 0.5,
         "sheen_roughness": 0.42,
@@ -137,7 +137,7 @@
           "distance_fraction": 0.04,
           "samples": 16,
           "tint_srgb": [240, 186, 168],
-          "strength": 0.3
+          "strength": 0.22
         },
         "flock": {
           "enabled": true,

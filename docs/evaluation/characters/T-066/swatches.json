@@ -1,0 +1,164 @@
+{
+  "schema": "plush-studio.material-swatches/1",
+  "blender": "5.3.0",
+  "image": "swatch_sheet.png",
+  "width": 480,
+  "height": 1152,
+  "render_width": 480,
+  "render_height": 576,
+  "max_cycles_render_dimension_px": 576,
+  "samples": 16,
+  "exposure": 0.0,
+  "view_transform": "Standard",
+  "render_engine": "CYCLES",
+  "engine_settings": {
+    "engine": "cycles",
+    "blender_engine": "CYCLES",
+    "samples": 16,
+    "denoising": true
+  },
+  "device": "CPU",
+  "denoiser": "OPENIMAGEDENOISE",
+  "studio_light": "pipeline/charsys/render_calibration.json:character_neutral/1",
+  "reference_size_m": 0.256,
+  "projected_reference_px": 204.8,
+  "fibres_lod": "close",
+  "swatches": [
+    {
+      "preset": "skin-felt",
+      "base_color_srgb": [
+        202,
+        176,
+        169
+      ],
+      "patch_roi_px": [
+        190,
+        318,
+        290,
+        418
+      ],
+      "sheen_roi_px": [
+        156,
+        60,
+        236,
+        140
+      ],
+      "neutral_roi_px": [
+        392,
+        40,
+        432,
+        80
+      ],
+      "fuzz_rois_px": [
+        [
+          110,
+          342,
+          162,
+          394
+        ],
+        [
+          214,
+          342,
+          266,
+          394
+        ],
+        [
+          318,
+          342,
+          370,
+          394
+        ]
+      ],
+      "sheen_rois_px": [
+        [
+          172,
+          76,
+          230,
+          134
+        ],
+        [
+          156,
+          115,
+          214,
+          173
+        ],
+        [
+          211,
+          60,
+          269,
+          118
+        ]
+      ],
+      "projected_reference_px": 204.8
+    },
+    {
+      "preset": "skin-felt/2",
+      "base_color_srgb": [
+        236,
+        196,
+        172
+      ],
+      "patch_roi_px": [
+        190,
+        894,
+        290,
+        994
+      ],
+      "sheen_roi_px": [
+        156,
+        636,
+        236,
+        716
+      ],
+      "neutral_roi_px": [
+        392,
+        616,
+        432,
+        656
+      ],
+      "fuzz_rois_px": [
+        [
+          110,
+          918,
+          162,
+          970
+        ],
+        [
+          214,
+          918,
+          266,
+          970
+        ],
+        [
+          318,
+          918,
+          370,
+          970
+        ]
+      ],
+      "sheen_rois_px": [
+        [
+          172,
+          652,
+          230,
+          710
+        ],
+        [
+          156,
+          691,
+          214,
+          749
+        ],
+        [
+          211,
+          636,
+          269,
+          694
+        ]
+      ],
+      "projected_reference_px": 204.8
+    }
+  ],
+  "render_s": 10.71,
+  "total_s": 12.01
+}
