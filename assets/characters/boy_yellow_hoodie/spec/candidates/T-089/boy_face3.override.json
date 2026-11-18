@@ -17,7 +17,7 @@
                "corner_close_deg": 3, "corner_blend_deg": 5}
    },
    "brows": {"inner": 0.45, "outer": 0.45, "height": 0.95},
-   "blink": {"overlap_deg": 14}
+   "blink": {"overlap_deg": 22}
   },
   "metadata": {
    "notes": "T-089 candidate (unpublished): face_generic/3 on boy 2.0.0. Fitted to the original references (val27, hero24) and B01-B03: wide D-shaped felt eye (flat level lid line, round lower contour rising to the outer corner, lower roll), r 52 mm spherical eyeball, lid shells trimmed at the corners and at the back (no 3/4 rim), felt eye shading (matte iris, one crisp highlight, matte lid line), short brows higher up. Never publish or approve without an owner decision; the version bump is T-094."
