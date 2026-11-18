@@ -1,0 +1,8 @@
+PASS Frozen assets
+FAIL Guarded paths: REQUIRES SUPERVISOR APPROVAL: .github/ci-dependencies.json, .github/scripts/install_ci_dependencies.ps1, .github/workflows/checks.yml, tests/CMakeLists.txt, tests/test_engine.cpp (+2 more)
+FAIL Write-set: T-085 changes files outside its claim: apps/render-cli/main.cpp, tests/test_engine.cpp, tests/test_render.cpp
+PASS Shared-systems lint
+PASS C++ build
+PASS C++ tests: renderer tests SKIPPED (PLUSH_BUILD_RENDERER=OFF): 5 path tracer doctest cases + 3 image regressions; run by the linux renderer CI job
+PASS Python tests and links
+FAIL Blender tier: Blender executable not found (full regression required by apps/render-cli/CMakeLists.txt, apps/render-cli/main.cpp, engine/CMakeLists.txt (+1 more)); this tier is never skipped

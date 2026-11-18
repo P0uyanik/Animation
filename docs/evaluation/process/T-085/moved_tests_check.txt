@@ -1,0 +1,20 @@
+tests/test_engine.cpp (ab9fd4c..f4e50e3): 174 lines removed in 3 blocks, 0 lines added
+tests/test_render.cpp: 185 lines = 12 new header lines + 173 moved lines
+  block 1: 65 lines starting 'namespace {'
+  block 2: 72 lines starting 'TEST_CASE("path tracer renders deterministically") {'
+  block 3: 34 lines starting 'TEST_CASE("glass lets light through and does not cast shadows") {'
+moved part of test_render.cpp identical to the removed blocks (joined by one blank line): True
+new header lines (the only lines not moved):
+  | // Engine path tracer tests (built only with PLUSH_BUILD_RENDERER=ON). Moved verbatim from test_engine.cpp (T-085).
+  | #include <doctest/doctest.h>
+  | 
+  | #include <memory>
+  | 
+  | #include "render/bsdf.h"
+  | #include "render/image.h"
+  | #include "render/pathtracer.h"
+  | #include "scene/scene.h"
+  | 
+  | using namespace plush;
+  | 
+git diff --color-moved=plain line classes: {'moved-old': 174, 'moved-new': 177, 'plain-removed': 0, 'plain-added': 8}

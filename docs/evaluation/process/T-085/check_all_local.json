@@ -1,0 +1,167 @@
+{
+  "schema": "plush.quality-gate/1",
+  "verdict": "FAIL",
+  "platform": "linux",
+  "base": "origin/main",
+  "changed_paths": [
+    ".github/ci-dependencies.json",
+    ".github/scripts/install_ci_dependencies.ps1",
+    ".github/workflows/checks.yml",
+    "CMakeLists.txt",
+    "apps/render-cli/CMakeLists.txt",
+    "apps/render-cli/main.cpp",
+    "apps/studio/CMakeLists.txt",
+    "cmake/Dependencies.cmake",
+    "engine/CMakeLists.txt",
+    "tests/CMakeLists.txt",
+    "tests/test_engine.cpp",
+    "tests/test_render.cpp",
+    "tools/check_all.py",
+    "vcpkg.json"
+  ],
+  "blender_required": true,
+  "tier": "full",
+  "tier_full_paths": [
+    "apps/render-cli/CMakeLists.txt",
+    "apps/render-cli/main.cpp",
+    "engine/CMakeLists.txt",
+    "tools/check_all.py"
+  ],
+  "tier_unknown_paths": [],
+  "checks": [
+    {
+      "name": "Frozen assets",
+      "ok": true,
+      "detail": "",
+      "log": "",
+      "seconds": 4.25,
+      "skipped": false,
+      "subchecks": [
+        {
+          "name": "Frozen assets",
+          "ok": true,
+          "detail": "",
+          "log": ""
+        },
+        {
+          "name": "Published versions",
+          "ok": true,
+          "detail": "",
+          "log": "build/check-all/local/logs/check-assets.log"
+        }
+      ]
+    },
+    {
+      "name": "Guarded paths",
+      "ok": false,
+      "detail": "REQUIRES SUPERVISOR APPROVAL: .github/ci-dependencies.json, .github/scripts/install_ci_dependencies.ps1, .github/workflows/checks.yml, tests/CMakeLists.txt, tests/test_engine.cpp (+2 more)",
+      "log": "",
+      "seconds": 0.02,
+      "skipped": false,
+      "subchecks": []
+    },
+    {
+      "name": "Write-set",
+      "ok": false,
+      "detail": "T-085 changes files outside its claim: apps/render-cli/main.cpp, tests/test_engine.cpp, tests/test_render.cpp",
+      "log": "",
+      "seconds": 0.03,
+      "skipped": false,
+      "subchecks": []
+    },
+    {
+      "name": "Shared-systems lint",
+      "ok": true,
+      "detail": "",
+      "log": "",
+      "seconds": 0.09,
+      "skipped": false,
+      "subchecks": []
+    },
+    {
+      "name": "C++ build",
+      "ok": true,
+      "detail": "",
+      "log": "build/check-all/local/logs/cpp-build.log",
+      "seconds": 80.65,
+      "skipped": false,
+      "subchecks": []
+    },
+    {
+      "name": "C++ tests",
+      "ok": true,
+      "detail": "",
+      "log": "",
+      "seconds": 106.89,
+      "skipped": false,
+      "subchecks": [
+        {
+          "name": "CTest",
+          "ok": true,
+          "detail": "",
+          "log": "build/check-all/local/logs/ctest.log"
+        },
+        {
+          "name": "plush_tests",
+          "ok": true,
+          "detail": "",
+          "log": "build/check-all/local/logs/plush-tests.log"
+        },
+        {
+          "name": "animcheck",
+          "ok": true,
+          "detail": "",
+          "log": "build/check-all/local/logs/animcheck.log"
+        },
+        {
+          "name": "renderer tests",
+          "ok": true,
+          "skipped": true,
+          "detail": "SKIPPED (PLUSH_BUILD_RENDERER=OFF): 5 path tracer doctest cases + 3 image regressions; run by the linux renderer CI job",
+          "log": ""
+        }
+      ]
+    },
+    {
+      "name": "Python tests and links",
+      "ok": true,
+      "detail": "",
+      "log": "",
+      "seconds": 8.02,
+      "skipped": false,
+      "subchecks": [
+        {
+          "name": "Python tests",
+          "ok": true,
+          "detail": "",
+          "log": "build/check-all/local/logs/python-tests.log"
+        },
+        {
+          "name": "Documentation links",
+          "ok": true,
+          "detail": "",
+          "log": "build/check-all/local/logs/doc-links.log"
+        }
+      ]
+    },
+    {
+      "name": "Blender tier",
+      "ok": false,
+      "detail": "Blender executable not found (full regression required by apps/render-cli/CMakeLists.txt, apps/render-cli/main.cpp, engine/CMakeLists.txt (+1 more)); this tier is never skipped",
+      "log": "",
+      "seconds": 0.0,
+      "skipped": false,
+      "subchecks": []
+    }
+  ],
+  "summary": [
+    "PASS Frozen assets",
+    "FAIL Guarded paths: REQUIRES SUPERVISOR APPROVAL: .github/ci-dependencies.json, .github/scripts/install_ci_dependencies.ps1, .github/workflows/checks.yml, tests/CMakeLists.txt, tests/test_engine.cpp (+2 more)",
+    "FAIL Write-set: T-085 changes files outside its claim: apps/render-cli/main.cpp, tests/test_engine.cpp, tests/test_render.cpp",
+    "PASS Shared-systems lint",
+    "PASS C++ build",
+    "PASS C++ tests: renderer tests SKIPPED (PLUSH_BUILD_RENDERER=OFF): 5 path tracer doctest cases + 3 image regressions; run by the linux renderer CI job",
+    "PASS Python tests and links",
+    "FAIL Blender tier: Blender executable not found (full regression required by apps/render-cli/CMakeLists.txt, apps/render-cli/main.cpp, engine/CMakeLists.txt (+1 more)); this tier is never skipped"
+  ]
+}
