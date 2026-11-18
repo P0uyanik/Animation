@@ -42,7 +42,7 @@ treat a missing parameter as 0 / neutral (opt-in, owner decision 2026-11-17).
 | `face` | `resting` (reference reading: absolute action-unit weights; documentation), `rest_offset` (offsets on the model's own neutral, applied at all times), `expression_bias` (per action unit, offset −1..1 added × the expression activity), `watching_mouth` (offsets while a look action plays), `lid_rest` (Blink weight at rest, reference reading), `asymmetry` (0-1) | face (evaluator morph composition) |
 | `smile` | `frequency` (0-1), `default_mouth` (enum), `open_smile_share` (0-1) | smile choice |
 | `gestures` | record whose `value` is a list of `{name, description, hand, source}` (named gestures the character is shown doing) | gesture library selection |
-| `reaction` | `delay_frames` (stimulus → first face change), `channel_order` (e.g. `["eyes","brows","mouth","head"]`), `positive_style`, `engaged_style` | reaction director |
+| `reaction` | `delay_frames` (stimulus → first face change), `channel_order` (e.g. `["eyes","brows","mouth","head"]`), `positive_style`, `engaged_style`; T-097B (all optional): `intensity_scale`, `tempo_scale`, `hold_scale`, `gaze_shift`, `gesture_min_intensity`, `events` (see below) | reaction planner (`scene/reaction.h`) |
 | `interaction` | `prop_handling` (enum: `careful`, `practical`, ...), `two_handed` (0-1), `leads_task` (0-1), `contact_slowdown_frames` | prop / partner behaviour |
 | `gaps` | free-text list of behaviour the references do not show | review |
 | `limits` | `blink_interval_frames`, `blink_duration_frames`, `reach_frames`, `hold_frames`, `action_speed` (ranges `[lo, hi]`), `idle_motion_max_H_per_frame`, `face_offset_max` (numbers), `head_pitch_deg` (range) | engine clamps (with a warning) and `tools/animcheck/personality.py` |
@@ -60,7 +60,38 @@ treat a missing parameter as 0 / neutral (opt-in, owner decision 2026-11-17).
 | `limits.reach_frames` | actions (read only) | a reach / touch whose `contact − start` lies outside gives a warning |
 
 Read but not applied yet (no engine layer for them; see the T-053 report): attention, boredom / fidgets, saccade
-interval, look-down bias, smile choice, gestures, reaction, interaction.
+interval, look-down bias, smile choice, gestures, interaction; reaction `channel_order` / `*_style` (text).
+
+## Reactions (T-097B, `scene/reaction.h`)
+The reaction planner maps an event (`object_appears`, `partner_acts`, `success`, `failure`, or a custom event name) to
+a plan per character: notice delay, emotion and intensity, preferred gesture, gaze habit and duration
+(`ReactionPlan`, `scene/acting.h`). Every field below is optional; a missing field keeps the shared,
+character-independent default, so a profile without them plans exactly like no profile. Not yet wired into scene
+playback (a later task schedules plans as actions); no bake changes.
+
+| Field (`reaction.`) | Unit / range | Neutral default | Effect |
+| --- | --- | --- | --- |
+| `delay_frames` | `frames@24`, number or `[lo, hi]` (middle used), ≥ 0 | the timing profile's `reaction_delay` beat when the scene uses one, else 6 | notice delay at salience 1 |
+| `intensity_scale` | multiplier, (0, 4] | 1 | `PersonalityModulation.intensityScale`: the emotion system multiplies the event intensity by it once |
+| `tempo_scale` | multiplier, (0, 4], > 1 slower | 1 | notice delay and duration ×; `modulation.tempoScale` |
+| `hold_scale` | multiplier, (0, 4] | 1 | duration × (on top of tempo); `modulation.holdScale` |
+| `gaze_shift` | 0-1 (0 looks away, 1 looks at the source) | the event's default | gaze habit for every event without its own |
+| `gesture_min_intensity` | 0-1 | 0.35 | expressed intensity (event intensity × `intensity_scale`) a gesture needs |
+| `events.<event>` | object: `emotion` (name in `content/emotions`), `intensity` (0-1), `duration_s` (> 0), `gaze_shift` (0-1), `gestures` (clip library names, most preferred first) | the shared event defaults | replaces only the fields it names |
+
+Shared event defaults (calibration: `docs/evaluation/animation/T-097B/README.md`):
+
+| Event | Emotion | Intensity | Duration | Gaze |
+| --- | --- | --- | --- | --- |
+| `object_appears` | curious | 0.7 | 1.5 s | 1.0 |
+| `partner_acts` | curious | 0.5 | 1.0 s | 0.8 |
+| `success` | happy | 0.8 | 1.6 s | 0.7 |
+| `failure` | sad | 0.6 | 1.5 s | 0.3 |
+| custom | none (only a profile `events` entry gives one) | 0 | 1.0 s | 0.5 |
+
+Salience s (0-1) of the event: notice delay × (2 − s), intensity × s, duration × (0.5 + 0.5 s); s ≤ 0 is not
+noticed. No gesture is chosen without a profile (`gestures` names library clips); a scene may pass the clips a
+character has, and the first available preference wins. Shipped profiles set only `delay_frames` (unchanged data).
 
 Face weights use the shared action units of `pipeline/charsys/face_library/expressions.json`.
 All frame values are at 24 fps.

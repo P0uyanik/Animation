@@ -183,6 +183,48 @@ Result<PersonalityProfile> personalityFromJson(const Json& j, const std::string&
     r.strings(wrap, "gestures", "g", p.gestures);
   }
 
+  // T-097B reaction section (optional; text fields such as channel_order / positive_style stay documentation).
+  const Json& reaction = sectionOf(j, "reaction");
+  PersonalityReaction& R = p.reaction;
+  r.range(reaction, "reaction", "delay_frames", R.delayFrames);
+  r.number(reaction, "reaction", "intensity_scale", R.intensityScale);
+  r.number(reaction, "reaction", "tempo_scale", R.tempoScale);
+  r.number(reaction, "reaction", "hold_scale", R.holdScale);
+  r.number(reaction, "reaction", "gaze_shift", R.gazeShift);
+  r.number(reaction, "reaction", "gesture_min_intensity", R.gestureMinIntensity);
+  auto within = [&](const std::optional<float>& v, const char* key, float lo, float hi, bool openLo) {
+    if (v && (!std::isfinite(*v) || (openLo ? *v <= lo : *v < lo) || *v > hi))
+      r.bad("reaction", key, openLo ? "out of range (0, 4]" : "must lie in [0, 1]");
+  };
+  if (R.delayFrames && R.delayFrames->lo < 0) r.bad("reaction", "delay_frames", "must be >= 0");
+  within(R.intensityScale, "intensity_scale", 0, 4, true);
+  within(R.tempoScale, "tempo_scale", 0, 4, true);
+  within(R.holdScale, "hold_scale", 0, 4, true);
+  within(R.gazeShift, "gaze_shift", 0, 1, false);
+  within(R.gestureMinIntensity, "gesture_min_intensity", 0, 1, false);
+  if (const Json* ev = recordOf(reaction, "events")) {
+    if (!ev->is_object()) r.bad("reaction", "events", "must be an object of event -> reaction");
+    else
+      for (const auto& [name, e] : ev->items()) {
+        if (!e.is_object()) {
+          r.bad("reaction", "events", "entries must be objects");
+          break;
+        }
+        PersonalityReactionEvent out;
+        const std::string sec = "reaction.events." + name;
+        const char* S = sec.c_str();
+        r.text(e, "emotion", out.emotion);
+        r.number(e, S, "intensity", out.intensity);
+        r.number(e, S, "duration_s", out.durationS);
+        r.number(e, S, "gaze_shift", out.gazeShift);
+        r.strings(e, S, "gestures", out.gestures);
+        if (out.intensity && (*out.intensity < 0 || *out.intensity > 1)) r.bad(S, "intensity", "must lie in [0, 1]");
+        if (out.durationS && *out.durationS <= 0) r.bad(S, "duration_s", "must be > 0");
+        if (out.gazeShift && (*out.gazeShift < 0 || *out.gazeShift > 1)) r.bad(S, "gaze_shift", "must lie in [0, 1]");
+        R.events[name] = std::move(out);
+      }
+  }
+
   const Json& lim = sectionOf(j, "limits");
   PersonalityLimits& L = p.limits;
   r.range(lim, "limits", "blink_interval_frames", L.blinkIntervalFrames);
