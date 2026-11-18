@@ -1,0 +1,215 @@
+{
+ "schema": "plush-studio.review-recipe/1",
+ "character": "girl_auburn_bun_glasses",
+ "task": "T-089",
+ "recipe_sha256": "444ce489161ae353b6f2676d745ff74a041c274894c975965b9d993636028f14",
+ "inputs": {
+  "main": "4910b69"
+ },
+ "compare": {
+  "variant": "master",
+  "pose": "apose",
+  "allow_apose": true,
+  "allow_variant_mismatch": false,
+  "reference_variant": "master"
+ },
+ "columns": [
+  {
+   "role": "baseline",
+   "tag": "baseline",
+   "label": "0.11.0 (current)",
+   "kind": "version",
+   "version": "0.11.0",
+   "status": "approved",
+   "approved_pointer": "0.11.0",
+   "spec_sha256": "4966133aa0eb1e00c06b107082223b7184d561dbe6f08e7c8790abf7b238dcf6",
+   "blend": "assets/characters/girl_auburn_bun_glasses/versions/0.11.0/girl_auburn_bun_glasses_master.blend",
+   "source_variant": "master",
+   "comparison_pose": null
+  },
+  {
+   "role": "candidate",
+   "tag": "candidate",
+   "label": "T-089 face_generic/3",
+   "kind": "spec",
+   "spec": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.11.0.spec.json",
+   "overrides": [
+    "assets/characters/girl_auburn_bun_glasses/spec/candidates/T-089/girl_face3.override.json"
+   ],
+   "sha": "c3ecc40",
+   "comparison_pose": null,
+   "source_variant": "master",
+   "spec_sha256": "fa45efffb19c5f1a3fa072a053c6989a60a380f35272c62eda0f6832cfc4e279"
+  }
+ ],
+ "cameras": {
+  "lens_mm": 70.0,
+  "sensor_mm": 36.0,
+  "views": [
+   {
+    "name": "front",
+    "label": "front",
+    "framing": "body",
+    "yaw_deg": 0.0,
+    "elevation_deg": 5.0,
+    "target": [
+     0.0,
+     0.0,
+     0.56
+    ],
+    "frame_height_m": 1.26,
+    "aspect": 1.6
+   },
+   {
+    "name": "threequarter",
+    "label": "3/4",
+    "framing": "body",
+    "yaw_deg": -45.0,
+    "elevation_deg": 5.0,
+    "target": [
+     0.0,
+     0.0,
+     0.56
+    ],
+    "frame_height_m": 1.26,
+    "aspect": 1.6
+   },
+   {
+    "name": "side",
+    "label": "side",
+    "framing": "body",
+    "yaw_deg": 90.0,
+    "elevation_deg": 5.0,
+    "target": [
+     0.0,
+     0.0,
+     0.56
+    ],
+    "frame_height_m": 1.26,
+    "aspect": 1.6
+   },
+   {
+    "name": "back",
+    "label": "back",
+    "framing": "body",
+    "yaw_deg": 180.0,
+    "elevation_deg": 5.0,
+    "target": [
+     0.0,
+     0.0,
+     0.56
+    ],
+    "frame_height_m": 1.26,
+    "aspect": 1.6
+   },
+   {
+    "name": "face_front",
+    "label": "face front",
+    "framing": "face",
+    "yaw_deg": 0.0,
+    "elevation_deg": 5.0,
+    "target": [
+     0.0,
+     0.0,
+     0.775
+    ],
+    "frame_height_m": 0.32,
+    "aspect": 1.0
+   },
+   {
+    "name": "face_threequarter",
+    "label": "face 3/4",
+    "framing": "face",
+    "yaw_deg": -45.0,
+    "elevation_deg": 5.0,
+    "target": [
+     0.0,
+     0.0,
+     0.775
+    ],
+    "frame_height_m": 0.32,
+    "aspect": 1.0
+   }
+  ]
+ },
+ "references": {
+  "front": {
+   "file": "assets/characters/girl_auburn_bun_glasses/references/views/sheet30_front.png",
+   "crop": null,
+   "label": "sheet30_front"
+  },
+  "threequarter": {
+   "file": "assets/characters/girl_auburn_bun_glasses/references/views/sheet30_front_left.png",
+   "crop": null,
+   "label": "sheet30_front_left"
+  },
+  "side": {
+   "file": "assets/characters/girl_auburn_bun_glasses/references/views/sheet30_left.png",
+   "crop": null,
+   "label": "sheet30_left"
+  },
+  "back": {
+   "file": "assets/characters/girl_auburn_bun_glasses/references/views/sheet30_back.png",
+   "crop": null,
+   "label": "sheet30_back"
+  },
+  "face_front": {
+   "file": "assets/characters/girl_auburn_bun_glasses/references/uploads/ref_30.webp",
+   "crop": [
+    440,
+    620,
+    712,
+    840
+   ],
+   "label": "ref_30 Neutral"
+  },
+  "face_threequarter": {
+   "file": "assets/characters/girl_auburn_bun_glasses/references/uploads/ref_30.webp",
+   "crop": [
+    345,
+    90,
+    490,
+    260
+   ],
+   "label": "ref_30 front-left"
+  }
+ },
+ "light": {
+  "calibration": "character_neutral/1"
+ },
+ "render": {
+  "engine": "cycles",
+  "samples": 16,
+  "px": 360
+ },
+ "preview": {
+  "engine": "cycles",
+  "samples": 2,
+  "px": 120
+ },
+ "ai_target": {
+  "label": "AI target",
+  "images": {
+   "face_front": {
+    "file": "assets/characters/girl_auburn_bun_glasses/references/uploads/higgsfield_G01_face_front_rest_smile_2026-11-18.webp",
+    "crop": [
+     100,
+     300,
+     1393,
+     1500
+    ],
+    "label": "G01"
+   },
+   "face_threequarter": {
+    "file": "assets/characters/girl_auburn_bun_glasses/references/uploads/higgsfield_G02_face_threequarter_2026-11-18.webp",
+    "crop": [
+     100,
+     300,
+     1393,
+     1500
+    ],
+    "label": "G02"
+   }
+  }
+ }
+}
