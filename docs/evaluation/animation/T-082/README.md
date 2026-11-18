@@ -138,7 +138,23 @@ Not tested:
 - No frozen asset, spec, package, baseline image, `content/` or `tests/data/` file was changed.
 - export/4 and export/5 output is unchanged.
 - The e905 shot builds stay in ignored `build/` folders.
-- `tools/check_all.py --base origin/staging --task T-082 --blender <bpy 5.3 wrapper>`: GATE_PLACEHOLDER
+- `tools/check_all.py --base origin/staging --task T-082 --blender <bpy 5.3 wrapper>`, on the final branch (staging
+  581b01d merged). The Blender tier used the bpy 5.3.0 module behind a `blender` wrapper.
+  - PASS: Frozen assets, Shared-systems lint, C++ build, Python tests and links. In the Blender tier, everything
+    except the boy regression passed.
+  - **FAIL Guarded paths**: `tests/test_collision.cpp` and `tests/test_interaction.cpp`. These are the task's own
+    test files: test cases were added, and nothing was loosened. They need Supervisor approval.
+  - **FAIL Write-set**: `episodes/e905_props_test/make_shot.py` and `shots/s010/shot.scene.json`. This is the
+    owner-approved re-staging (8.1); the claim needs widening.
+  - **FAIL C++ tests**: only the CTest image regressions `regression_milestone01` (rmse 0.0464) and
+    `regression_face_neutral` (rmse 0.0406). These are the values T-047 recorded on staging in containers without
+    Open Image Denoise. `plush_tests` passes 129/129.
+  - **FAIL Blender tier, regression boy_yellow_hoodie**: "engine export differs: character.json". The fingerprint is
+    byte-equal, the renders are within noise and fidelity is 66.41 vs 66.41.
+    - **origin/staging fails identically in this container**: `tools/regression/run.py --character
+      boy_yellow_hoodie --base origin/staging`, run in an origin/staging worktree with the same wrapper.
+    - The exported `character.json` carries no `collision` block, so the exporter change does not reach it.
+    - GitHub CI, with its pinned dependencies, is the evidence for this tier.
 
 ## 7. Visual results
 Renders are made from the current-cast bakes (boy 1.1.0, girl 0.10.0):
