@@ -1,0 +1,30 @@
+{
+ "schema": "plush-studio.review-recipe/1",
+ "task": "T-087",
+ "note": "Recipe demonstration: previous approved boy 1.1.0 vs the current 2.0.0 (both published) in the compare variant (arms down) that the #27 references show.",
+ "character": "boy_yellow_hoodie",
+ "inputs": {"main": "ab9fd4c"},
+ "baseline": {"version": "1.1.0", "label": "1.1.0", "allow_not_current": true},
+ "candidate": {"version": "2.0.0", "label": "2.0.0"},
+ "compare": {"variant": "compare", "pose": "arms_down"},
+ "cameras": {
+  "lens_mm": 70,
+  "sensor_mm": 36,
+  "elevation_deg": 6,
+  "framing": {
+   "body": {"target": [0.0, 0.0, 0.56], "frame_height_m": 1.26, "aspect": 1.6},
+   "face": {"target": [0.0, 0.0, 0.84], "frame_height_m": 0.46, "aspect": 1.0}
+  },
+  "rows": {
+   "front": {"reference_view": "val27_front"},
+   "threequarter": {"reference_view": "val27_threequarter_right"},
+   "side": {"reference_view": "val27_side_right"},
+   "back": {"reference_view": "val27_back"},
+   "face_front": {"reference": {"file": "views/hero24_front.png", "crop": [40, 60, 560, 620], "label": "hero24 face"}, "yaw_deg": 0},
+   "face_threequarter": {"reference_view": "val27_threequarter_right", "crop": [10, 0, 230, 240]}
+  }
+ },
+ "light": {"calibration": "character_neutral/1"},
+ "render": {"engine": "cycles", "samples": 16, "px": 360},
+ "preview": {"engine": "cycles", "samples": 2, "px": 120}
+}

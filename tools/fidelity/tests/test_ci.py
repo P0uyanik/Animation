@@ -22,11 +22,25 @@ class ScoreDeltaTests(unittest.TestCase):
         self.assertTrue(result.ok)
         self.assertEqual(result.delta, -2.0)
 
-    def test_more_than_two_point_drop_fails_with_required_reason(self):
+    def test_exactly_two_point_drop_is_not_flagged(self):
+        self.assertFalse(ci.compare_score(62.0, 64.0).needs_owner_review)
+
+    def test_more_than_two_point_drop_flags_owner_review_instead_of_failing(self):
+        # T-087 rule change (owner-approved round 2 plan A3): PASS with a warning and a summary line
         result = ci.compare_score(61.99, 64.0)
-        self.assertFalse(result.ok)
+        self.assertTrue(result.ok)
+        self.assertTrue(result.needs_owner_review)
         self.assertIn("-2.01", result.detail)
+        self.assertIn("WARNING", result.detail)
         self.assertIn("visual regression, needs owner review", result.detail)
+        line = ci.summary_line("girl", result)
+        self.assertTrue(line.startswith("NEEDS OWNER REVIEW: girl fidelity"))
+        self.assertEqual(ci.summary_line("boy", ci.compare_score(66.5, 64.0)), "boy fidelity score 66.50 (+2.50 vs baseline 64.00)")
+
+    def test_large_drop_still_reported(self):
+        result = ci.compare_score(40.0, 64.0)
+        self.assertTrue(result.needs_owner_review)
+        self.assertIn("-24.00", result.detail)
 
 
 class AffectedCharacterTests(unittest.TestCase):
@@ -46,6 +60,20 @@ class AffectedCharacterTests(unittest.TestCase):
 
     def test_unrelated_change_selects_none(self):
         self.assertEqual(ci.affected_characters({"docs/README.md"}, self.characters), [])
+
+
+def load_tests(loader, tests, pattern):
+    """CI runs this file (tools/check_all.py); it also runs the T-087 tests of tools/fidelity/run.py and of the review
+    recipe (tools/review/tests/test_recipe.py)."""
+    here = Path(__file__).resolve().parent
+    for path in (here, here.parents[1] / "review" / "tests"):
+        if str(path) not in sys.path:
+            sys.path.insert(0, str(path))
+    import test_run  # noqa: E402
+    import test_recipe  # noqa: E402
+    tests.addTests(loader.loadTestsFromModule(test_run))
+    tests.addTests(loader.loadTestsFromModule(test_recipe))
+    return tests
 
 
 if __name__ == "__main__":
