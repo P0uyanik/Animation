@@ -30,13 +30,16 @@ Rows:
 Single stills: `renders/0.10.0/*.jpg` and `renders/0.11.0/*.jpg` (round-3 hair). Both versions were rendered the same way: 400 px,
 16 spp, orthographic, with `tools/render_views.py`.
 
-**Cycles stills used: 24 of 24.**
+**Cycles stills used: 34 in total.** That is 24 in the original budget plus the Supervisor's 10-still allowance for
+the round-3 / neck rework. Breakdown:
 - 1 iteration close-up.
 - 12 sheet stills with hair round 2 (6 per version).
 - 5 fidelity views (round 2).
-- 5 round-3 stills for 0.11.0: 4 body views and the face front.
+- 5 round-3 stills before the neck fix (superseded, not on the sheet).
+- 5 final stills for 0.11.0: 4 body views and the face front.
+- 5 fidelity views for the final build.
 
-The 0.11.0 **face 3/4 tile is the round-2 still** (labelled on the sheet); the budget had no still left for it.
+The 0.11.0 **face 3/4 tile is an earlier still** (round-2 hair, long neck), labelled on the sheet.
 The round-2 stills of 0.11.0 are kept in `renders/0.11.0_hair_round2/`.
 
 ## 4. Files changed
@@ -124,8 +127,13 @@ the eye's sides.
 - mouth: half width 19 → 20.5 mm, lip height 2.8 → 3.4 mm, fuller (upper ×1.45, lower ×1.8, forward 1.4 mm), pinker
   lips (222, 142, 140); ref_34 mouth tiles;
 - ears a little larger: radii (13, 25, 34) mm, were (11, 21, 29); sheet30 front;
-- neck wider: radius 46.4 → 54 mm, top 55 → 61 mm. The neck read as a thin stalk under the broad chin; its length is
-  unchanged (§7);
+- **neck (Supervisor review):** the head now sits on the collar as in sheet30 and ref_30, with almost no visible neck.
+  - The shoulder line, neck base and top torso levels are raised by 0.03 × height (29 mm): shoulder z and neck
+    base_z 0.60309 → 0.63309; torso levels 5–6 +0.03, level 4 +0.015.
+  - The neck is wider: radius 46.4 → 54 mm, top 55 → 61 mm.
+  - The head, face, hair and glasses do not move.
+  - Three variants were tested (workbench). Also lifting the blouse collar made the flaps stand up, so it is not used;
+  - the garments refit through the garment/1 collision with no warnings;
 - cheeks lifted at rest (soft_smile + CheekRaise 0.8), skin, eyes, vest and hair come from the candidates above.
   Boots are unchanged: no approved boot candidate exists, and garment/1 has no fleece-cuff option.
 
@@ -135,13 +143,18 @@ the eye's sides.
 | `python3 pipeline/charsys/tests/test_face_v2_socket_wall.py --blender <bpy wrapper> --girl011 <0.11.0 master>` | **ALL PASS 12/12**: pins; brown iris; soft_smile rest with MouthWide 0 and CheekRaise > 0; personality 1.0.0 referenced; 0.11.0 not current; no other spec uses the new options; wall smoothing ran (9354 vertices); upper shells ≤ 8 % visible; cheek max 22.2°, corner max 40.3° (≤ 45°) |
 | `python3 pipeline/charsys/tests/test_skin_presets.py` | PASS 24/24 (the approved versions still name no presets/2 id) |
 | full build `build_character.py --spec …0.11.0.spec.json` (with GLB) | OK. Pins as §5.1; hair report without warnings |
-| fidelity `tools/fidelity/run.py` (640 px, 32 spp, as the baseline) | **scored with hair round 2, not re-run for round 3 (no still budget left)**: 0.11.0 **62.81**; baseline 0.10.0 **64.40** (−1.6, inside the 2-point policy; see §7) |
+| fidelity `tools/fidelity/run.py` (640 px, 32 spp, as the baseline) | **final 0.11.0 (round-3 hair, neck fix): 62.29**. Baseline 0.10.0: 64.40 (**−2.1**, just past the 2-point regression policy, which applies to the current version; 0.11.0 is a candidate). Intermediate round-2 build: 62.81 |
 | `python3 tools/check_all.py --base origin/staging --task T-081 --blender <bpy wrapper>` | see §6.1 |
 
-Fidelity parts (0.11.0 vs 0.10.0 overall):
-- better: colour dE00 5.57 (was 5.73);
-- worse: figure IoU 0.80 (was 0.83), landmarks 0.086 (was 0.080), proportions 12.6 % (was 11.4 %), texture 0.44
-  (was 0.39).
+Fidelity parts, final 0.11.0 vs 0.10.0:
+- figure IoU 0.796 (was 0.825);
+- landmarks 0.087 (was 0.080);
+- proportions 12.3 % (was 11.4 %);
+- colour dE00 5.79 (was 5.73);
+- texture 0.48 (was 0.39);
+- hair sub-score 60 (round 2: 59).
+
+The sheets are in `fidelity/`.
 
 Ranked differences (fidelity/report.md):
 - gap between the legs too long;
@@ -150,7 +163,7 @@ Ranked differences (fidelity/report.md):
 - arms short;
 - blouse and vest silhouettes smaller.
 
-The hair items were measured on round 2. Round 3 (now in 0.11.0) changes the girl hair: T-079 reports face visibility ≥ round 2 in every view. A fidelity re-score of round 3 needs 5 more stills. The body proportion items
+The hair items come from the hair data (T-079 round 3: hair accessory area +110 %, hair over 25 % of the face the reference leaves visible). The blouse silhouette got smaller after the shoulder raise (−45 %). The leg and arm items are older and unchanged. The body proportion items
 are older and unchanged here.
 
 ### 6.1 Gate
@@ -184,9 +197,8 @@ T-065 boy, girl and third-character candidates, which do not set the new options
 
 **Remaining differences:**
 1. **Fringe.** With the round-3 hair, the temples and sides are fuller. In the front face close-up, though, the forehead is still bare: the swept fringe does not come down over the forehead to the brows the way it does in ref_30 and ref_34. This is hair data (T-079), not this task's face. It may also come partly from the fitted head (`body_generic/2`) sitting differently under the hair keep-out than the head T-079 was tuned on.
-2. **Neck long.** It is wider now, but the head still sits higher above the collar than in sheet30, where the chin
-   nearly meets the collar. Shortening it moves the head joint, hair frame and glasses. That is a body-proportion
-   change with rig impact, not done here.
+2. **Neck:** fixed (§5.4). The raised shoulder line makes the torso about 29 mm longer and the arms start higher. The
+   fidelity tool still reports the arms 26 % short and the blouse silhouette smaller.
 3. **Lower lid.** A pale band shows under the iris: the lower lid shell is 14.5 % exposed. The reference shows a soft
    skin-coloured lower lid. `lower_gap`, `lower_thickness_m` and `lower_band_deg` did not reduce it (3 trials). It
    needs a darker or skin-matched lid rim, or thinner lower shells.
@@ -200,13 +212,21 @@ T-065 boy, girl and third-character candidates, which do not set the new options
 ## 8. Problems and questions for the Supervisor
 - **Supervisor messages (2026-11-18, read after the first READY@ec1ce08):**
   - (1) groom/2 export IndexError: the round-3 0.11.0 master exports with `export_engine.py` (rc 0, `character.json` + `geometry.bin`), so I did not need the T-078 cleanup workaround.
-  - (2) Round-3 hair: done, see §5.1. The gate in §6.1 ran on the round-2 spec. Round 3 changes only the 0.11.0 hair data, which no approved version uses, plus the copied input file. The T-081 test was re-run on the round-3 master: 12/12.
+  - (2) Round-3 hair: done, see §5.1.
+  - (3) Review of ec1ce08:
+    - round 3: done;
+    - **T-079 branch copied, not merged**: its `groom_hybrid.py` fix is outside the T-081 claim, and the write-set check would fail;
+    - 0.11.0 exports without the fix;
+    - neck: fixed with spec data (§5.4);
+    - fidelity: re-scored;
+    - sheet: re-rendered.
+  - The gate in §6.1 ran on the round-2 spec. Since then only the 0.11.0 spec (which no approved version uses) and T-081 evidence changed. The T-081 test on the final master: 12/12. Final build: build_character OK, export_engine OK, hair keep-out violations 0.
 - **Guarded path:** the new `pipeline/charsys/tests/test_face_v2_socket_wall.py` needs the `Supervisor-Approved:` trailer.
 - **`presets/2` is not registered** (T-080 registers it). 0.11.0 pins `presets/1` and uses the skin-felt/2 id; switch
   the pin once it is registered.
 - **0.11.0 is a complete spec, not an override** (§5.1). If the layout must be an override, `spec.deep_merge` needs a
   delete marker (shared code; not in this write-set).
-- **Fidelity (round 2) is 1.6 points below the 0.10.0 baseline**, mostly in the hair and silhouette metrics (T-070 hair). The
+- **Fidelity is 2.1 points below the 0.10.0 baseline (62.29 vs 64.40)**, mostly in the hair and silhouette metrics (T-070 hair). The
   visual comparison favours 0.11.0. The owner decides, as with T-070 ("visual fidelity over scores").
 
 ## 9. Commits
