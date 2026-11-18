@@ -304,14 +304,9 @@
     "legacy_reason": "T-078 progress video: combined candidate overrides of the merged shared systems (evidence only, not a version)"
    },
    "girl": {
-    "spec": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.spec.json",
-    "overrides": [
-     "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.10.0.override.json",
-     "docs/evaluation/characters/T-065/candidates/girl_next_face2.override.json",
-     "docs/evaluation/characters/T-066/candidates/girl_auburn_bun_glasses.skin2.override.json",
-     "docs/evaluation/characters/T-068/candidates/girl.vest_details.override.json"
-    ],
-    "legacy_reason": "T-078 progress video: combined candidate overrides of the merged shared systems (evidence only, not a version)"
+    "spec": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.11.0.spec.json",
+    "overrides": [],
+    "legacy_reason": "T-078 progress video: girl 0.11.0 (T-081, t-081-claude-girl-0-11-0@9f20c2d), built from that commit; not yet current"
    }
   },
   "profile": "pipeline/charsys/rig_profiles/humanoid_rigify.json",
@@ -329,7 +324,7 @@
   "derived_from": "content/scenes/eval/reach_touch_wave/shot.scene.json",
   "side": "new",
   "note": "identical to the source except cast, character-level personality (T-053) and this block; principles (T-061) are on by default (null)",
-  "hair": "the masters are post-processed with hair v3 (T-070 build_candidate.py): boy docs/evaluation/showcase/T-078/candidates/boy.hair_v3.2.0-dev.json, girl docs/evaluation/characters/T-070/candidates/girl.hair_v3.json; the post-processed master is placed in run_shot's build cache for this cast",
+  "hair": "girl 0.11.0 has groom/2 hair (T-079 round 3) in its spec; boy: see cast",
   "camera": "same position/target as the source shot; portrait 640x720 panel with focalMm 58 (Blender AUTO sensor fit on the 720 px height) = a slightly wider-than-exact centre crop of a 1280x720 render of the source camera (35 mm), so the characters fill the panel; identical on both sides"
  }
 }
