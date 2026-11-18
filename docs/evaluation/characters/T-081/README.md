@@ -7,7 +7,7 @@ geometry iteration only; they are not evidence.
 
 ## 1. Objective
 A new girl version `0.11.0` that combines every approved improvement: face v2 with the fitted head, skin presets/2,
-hair v3 round 2, vest details and the personality profile. It also fixes the sharp cheek folds and applies the T-059
+hair v3 round 3 (T-079; the Supervisor asked for it in place of round 2), vest details and the personality profile. It also fixes the sharp cheek folds and applies the T-059
 targets the systems now allow. Approved 0.10.0 stays unchanged and stays the current version.
 
 ## 2. Result
@@ -27,10 +27,17 @@ Rows:
 - face close-up. References: the ref_30 "Neutral" tile and the ref_34 "Neutral" tile.
 - face 3/4. Reference: the ref_30 front-left view.
 
-Single stills: `renders/0.10.0/*.jpg` and `renders/0.11.0/*.jpg`. Both versions were rendered the same way: 400 px,
+Single stills: `renders/0.10.0/*.jpg` and `renders/0.11.0/*.jpg` (round-3 hair). Both versions were rendered the same way: 400 px,
 16 spp, orthographic, with `tools/render_views.py`.
 
-**Cycles stills used: 19 of 24.** That is 1 iteration close-up, 12 sheet stills (6 per version) and 5 fidelity views.
+**Cycles stills used: 24 of 24.**
+- 1 iteration close-up.
+- 12 sheet stills with hair round 2 (6 per version).
+- 5 fidelity views (round 2).
+- 5 round-3 stills for 0.11.0: 4 body views and the face front.
+
+The 0.11.0 **face 3/4 tile is the round-2 still** (labelled on the sheet); the budget had no still left for it.
+The round-2 stills of 0.11.0 are kept in `renders/0.11.0_hair_round2/`.
 
 ## 4. Files changed
 | Path | Purpose |
@@ -54,7 +61,7 @@ Merge order, later wins:
 3. T-065 `girl_next_face2.override`
 4. T-066 `girl_auburn_bun_glasses.skin2.override`
 5. T-068 `girl.vest_details.override`
-6. T-070 `girl.hair_v3.json` (its `overrides`)
+6. T-079 round-3 `girl.hair_v3.json` (its `overrides`), from branch `t-079-claude-hair-v3-r3@7d3c424`, which is not yet in staging. It is copied byte-for-byte to `inputs/girl.hair_v3_r3.json`; identical at 860f855 and 7d3c424.
 7. the T-081 choices
 
 The result is written by `tools/make_spec.py`.
@@ -62,7 +69,7 @@ The result is written by `tools/make_spec.py`.
 - **Why a complete `.spec.json`, not an override:** `spec.deep_merge` can only add or replace keys. The base spec's
   groom/1 hair has dynamics entries for structures that groom/2 no longer has (`temple_puffs`, `side_curls`, …).
   groom/2 validation rejects them, so an override on top of the base cannot build. The hair section is therefore
-  replaced as a whole by the T-070 hair, keeping the descriptive `components`.
+  replaced as a whole by the T-079 hair, keeping the descriptive `components`.
   - `fidelity_baseline.json`-style use: `build` = the 0.11.0 spec, no overrides.
 - **Generator pins:**
   - `body_generic/2`, `face_generic/2`, `groom/2`, `garment/1`, `accessories/1`, `rigify_human/1`, `export/4`.
@@ -78,7 +85,7 @@ The result is written by `tools/make_spec.py`.
 | rest mouth | 0.10.0 `closed_smile` (frown −4.2 mm) vs T-065 `soft_smile` + rest_mix (MouthSmile 0.35, CheekRaise 0.8, frown −2.5 mm) | **soft_smile** (lips closed, no teeth/tongue; MouthWide 0) | owner decision "closed gentle smile at rest **with lifted cheeks**"; T-059 asks for cheeks lifted at rest; ref_34 Neutral |
 | skin occlusion | T-065 lift 0.35 / bleed 0.2 vs T-066 lift 1.1 to warm (248,210,190) / bleed 0 | **T-066** | T-066 is the approved skin family and is non-emissive (no glowing creases) |
 | blush | 0.9.0/T-065 vs T-066 | **T-066** (warmer, lower, out from the rims) | ref_30/ref_34 blush below the glasses rims |
-| hair | base groom/1 vs T-070 groom/2 round 2 | **T-070 round 2** in full | task (round 3, T-079, follows as 0.11.1) |
+| hair | base groom/1 vs T-070 round 2 vs T-079 round 3 | **T-079 round 3** in full | Supervisor message 2026-11-18 (owner rule: latest, most reference-faithful): swept soft fringe, more varied ringlets |
 | eyes | base vs T-065 | **T-065** (protrusion 4 mm, scale y 0.8, socket); iris **brown** (128, 74, 38) kept | owner decision |
 | vest | 0.9.0 embroidery flowers vs T-068 | **T-068** patch pockets + cross-stitch decals | #41 vest construction sheet |
 
@@ -128,7 +135,7 @@ the eye's sides.
 | `python3 pipeline/charsys/tests/test_face_v2_socket_wall.py --blender <bpy wrapper> --girl011 <0.11.0 master>` | **ALL PASS 12/12**: pins; brown iris; soft_smile rest with MouthWide 0 and CheekRaise > 0; personality 1.0.0 referenced; 0.11.0 not current; no other spec uses the new options; wall smoothing ran (9354 vertices); upper shells ≤ 8 % visible; cheek max 22.2°, corner max 40.3° (≤ 45°) |
 | `python3 pipeline/charsys/tests/test_skin_presets.py` | PASS 24/24 (the approved versions still name no presets/2 id) |
 | full build `build_character.py --spec …0.11.0.spec.json` (with GLB) | OK. Pins as §5.1; hair report without warnings |
-| fidelity `tools/fidelity/run.py` (640 px, 32 spp, as the baseline) | 0.11.0 **62.81**; baseline 0.10.0 **64.40** (−1.6, inside the 2-point policy; see §7) |
+| fidelity `tools/fidelity/run.py` (640 px, 32 spp, as the baseline) | **scored with hair round 2, not re-run for round 3 (no still budget left)**: 0.11.0 **62.81**; baseline 0.10.0 **64.40** (−1.6, inside the 2-point policy; see §7) |
 | `python3 tools/check_all.py --base origin/staging --task T-081 --blender <bpy wrapper>` | see §6.1 |
 
 Fidelity parts (0.11.0 vs 0.10.0 overall):
@@ -143,7 +150,7 @@ Ranked differences (fidelity/report.md):
 - arms short;
 - blouse and vest silhouettes smaller.
 
-The hair items come from the approved T-070 round 2; T-079 round 3 changes the girl hair. The body proportion items
+The hair items were measured on round 2. Round 3 (now in 0.11.0) changes the girl hair: T-079 reports face visibility ≥ round 2 in every view. A fidelity re-score of round 3 needs 5 more stills. The body proportion items
 are older and unchanged here.
 
 ### 6.1 Gate
@@ -176,8 +183,7 @@ T-065 boy, girl and third-character candidates, which do not set the new options
 - vest: patch pockets and cross-stitch decals.
 
 **Remaining differences:**
-1. **Fringe missing.** The forehead is bare in front and 3/4; the references have a side-swept fringe to the brows.
-   This is the T-070 round-2 hair; T-079 round 3 (girl swept fringe) follows as 0.11.1.
+1. **Fringe.** With the round-3 hair, the temples and sides are fuller. In the front face close-up, though, the forehead is still bare: the swept fringe does not come down over the forehead to the brows the way it does in ref_30 and ref_34. This is hair data (T-079), not this task's face. It may also come partly from the fitted head (`body_generic/2`) sitting differently under the hair keep-out than the head T-079 was tuned on.
 2. **Neck long.** It is wider now, but the head still sits higher above the collar than in sheet30, where the chin
    nearly meets the collar. Shortening it moves the head joint, hair frame and glasses. That is a body-proportion
    change with rig impact, not done here.
@@ -192,12 +198,15 @@ T-065 boy, girl and third-character candidates, which do not set the new options
 8. **Proportions** (fidelity): legs read long and arms short. These are unchanged from 0.10.0.
 
 ## 8. Problems and questions for the Supervisor
+- **Supervisor messages (2026-11-18, read after the first READY@ec1ce08):**
+  - (1) groom/2 export IndexError: the round-3 0.11.0 master exports with `export_engine.py` (rc 0, `character.json` + `geometry.bin`), so I did not need the T-078 cleanup workaround.
+  - (2) Round-3 hair: done, see §5.1. The gate in §6.1 ran on the round-2 spec. Round 3 changes only the 0.11.0 hair data, which no approved version uses, plus the copied input file. The T-081 test was re-run on the round-3 master: 12/12.
 - **Guarded path:** the new `pipeline/charsys/tests/test_face_v2_socket_wall.py` needs the `Supervisor-Approved:` trailer.
 - **`presets/2` is not registered** (T-080 registers it). 0.11.0 pins `presets/1` and uses the skin-felt/2 id; switch
   the pin once it is registered.
 - **0.11.0 is a complete spec, not an override** (§5.1). If the layout must be an override, `spec.deep_merge` needs a
   delete marker (shared code; not in this write-set).
-- **Fidelity is 1.6 points below the 0.10.0 baseline**, mostly in the hair and silhouette metrics (T-070 hair). The
+- **Fidelity (round 2) is 1.6 points below the 0.10.0 baseline**, mostly in the hair and silhouette metrics (T-070 hair). The
   visual comparison favours 0.11.0. The owner decides, as with T-070 ("visual fidelity over scores").
 
 ## 9. Commits

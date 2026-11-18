@@ -46,6 +46,7 @@ def label(im, text):
 
 def main():
     cur, new, out = sys.argv[1:4]
+    notes = dict(a.split("=", 1) for a in sys.argv[4:] if "=" in a)  # optional <shot>=<label suffix>
     turn = Image.open(TURN)
     tw = turn.width / 6.0  # girl row: bottom third, six columns (front, back-left, left, right, front-right, back)
     girl_row = [turn.crop((int(i * tw), 1330, int((i + 1) * tw), 2000)) for i in range(6)]
@@ -69,7 +70,7 @@ def main():
             im = Image.open(p) if os.path.exists(p) else None
             if im is not None and shot.startswith("body"):
                 im = autocrop(im)
-            row.append(label(fit(im, w=300) if im is not None else Image.new("RGB", (H, H), (60, 0, 0)), f"{tag} {name}"))
+            row.append(label(fit(im, w=300) if im is not None else Image.new("RGB", (H, H), (60, 0, 0)), f"{tag} {name}" + (f" {notes[shot]}" if tag.startswith("0.11") and shot in notes else "")))
         tiles.append(row)
     w = max(sum(t.width for t in r) for r in tiles)
     sheet = Image.new("RGB", (w, H * len(tiles)), (92, 92, 96))
