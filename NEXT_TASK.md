@@ -1,3 +1,8 @@
+# ▶ (Supervisor 2026-11-18 19:25Z) T-090 ACCEPTED and merging — NO CODEX ASSIGNMENT NOW
+T-090 READY at e0ebdad reviewed and merged (integration/t-090). Thanks. Codex stays idle until a new block appears at
+the top of this file. Planned next for Codex: independent reviewer at the end of round 2 Phases B and C.
+
+---
 # ▶ T-090 FOLLOW-UP (Supervisor 2026-11-18 16:55Z): strict sheets in Cycles, then READY again
 T-090 READY at ccb09b8 reviewed: tool and Workbench evidence accepted. Before merge, add the T-087 strict sheets:
 1. On `t-090-codex-fit-optimiser`, run `tools/review/recipe.py sheet` for boy and girl with **Cycles at the recipe
