@@ -117,12 +117,16 @@ _r("body", "body_generic", 2, "body_generic")  # T-065 head fitted to reference 
 _r("face", "body_v6", 1, "body_v6", declared=False, note="legacy v6 face with face.py expression keys")
 _r("face", "face_generic", 1, "face_generic")
 _r("face", "face_generic", 2, "face_generic")  # T-065 face v2 (lids in skin, brows, soft_smile/parted); opt-in
+_r("face", "face_generic", 3, "face_generic_v3", declared=False,
+   note="T-089 face/eyes round 3 (planned; opt-in; declared=True once the module lands)")
 _r("groom", "hair_clumps", 1, "hair", declared=False, note="legacy clump hair (hair.py)")
 _r("groom", "hair_clumps", 2, "hair", declared=False, note="legacy lock-family hair (hair.py; experiments)")
 _r("groom", "groom", 1, "groom")
 _r("groom", "groom", 2, "groom_hybrid")  # T-044 hair v3 (hybrid felt); opt-in, no character pins it yet
 _r("garment", "body_v6", 1, "body_v6", declared=False, note="legacy v6 clothing")
 _r("garment", "garment", 1, "garments")
+_r("garment", "garment", 2, "garments_v2", declared=False,
+   note="T-093 garment outlines and accessories (planned; opt-in; declared=True once the module lands)")
 _r("accessories", "body_v6", 1, "body_v6", declared=False, note="legacy v6 backpack")
 _r("accessories", "accessories", 1, "accessories", declared=False)
 _r("rig", "rigify_human", 1, None, declared=False, note="Rigify human (body_v6.rig_character / body_generic.rig_generic)")
@@ -132,6 +136,8 @@ _r("materials", "presets", 1, "materials.builder", declared=False,
    note="material preset library plush-studio.material-presets/1")
 _r("materials", "presets", 2, "materials.builder", declared=False,
    note="presets/1 + the presets/2 skin family (skin_presets.json, plush-studio.material-presets/2; T-066)")
+_r("materials", "presets", 3, "materials.builder", declared=False,
+   note="T-092 materials round 2 (planned; opt-in new preset ids in a new library file)")
 _r("exporter", "export", 1, None, RETIRED, note="no retarget block")
 _r("exporter", "export", 2, None, RETIRED, note="retarget block")
 _r("exporter", "export", 3, None, RETIRED, note="dynamics block or DEF-parent fix (two parallel 3s)")
