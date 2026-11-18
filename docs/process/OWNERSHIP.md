@@ -23,6 +23,5 @@ means none. Branch is the task's branch; a task branch without a row falls back 
 | T-068 | D | `t-068-claude-garment-details` | `pipeline/charsys/garments/**`, `pipeline/charsys/accessories.py`, `pipeline/charsys/tests/test_garment*.py`, `docs/evaluation/characters/T-068/**` | — | `garment`, `accessories` |
 | T-047 | C | `t-047-claude-collisions` | `engine/scene/collision.{h,cpp}`, `engine/scene/interaction.{h,cpp}`, `engine/scene/actions.cpp`, `engine/model/**`, `pipeline/charsys/export_engine.py`, `tests/test_collision.cpp`, `tests/test_interaction.cpp`, `docs/evaluation/animation/T-047/**` | — | `export` |
 | T-053 | C | `t-053-claude-personality` | `engine/anim/personality.{h,cpp}`, `engine/anim/body_mechanics.cpp`, `engine/scene/scene.{h,cpp}`, `engine/scene/face_layer.{h,cpp}`, `engine/scene/emotion.{h,cpp}`, `engine/scene/clip_layers.cpp`, `content/personality/**`, `tools/animcheck/**`, `tests/test_personality.cpp`, `docs/evaluation/animation/T-053/**` | — | — |
-| T-077 | A | `t-077-claude-gate-wiring` | `tools/check_all.py`, `tools/regression_paths.txt`, `docs/evaluation/process/T-077/**` | — | — |
 
 Supervisor-only files: docs/process/TASK_LOG.md, docs/ROADMAP.md, docs/process/OWNER_DECISIONS.md, docs/tasks/**.
