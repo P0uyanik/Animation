@@ -1,0 +1,2 @@
+# Published character versions are hash-checked byte for byte (tools/check_assets.py): never convert line endings.
+assets/characters/*/versions/** -text
