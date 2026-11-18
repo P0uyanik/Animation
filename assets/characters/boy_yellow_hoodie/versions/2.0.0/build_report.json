@@ -1,0 +1,1604 @@
+{
+ "blender": "5.3.0",
+ "build": "charsys/1+body_generic/1",
+ "character_id": "boy_yellow_hoodie",
+ "spec_path": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.0.0.spec.json",
+ "overrides": [],
+ "spec_sha256": "0e16c320af27ca9e4485aafe72e4a42340962cc1c1641afcaaeccc4898e0d3a4",
+ "versions": {
+  "generators": {
+   "body": "body_generic/2",
+   "face": "face_generic/2",
+   "groom": "groom/2",
+   "garment": "garment/1",
+   "accessories": "none",
+   "rig": "rigify_human/1",
+   "materials": "presets/2",
+   "exporter": "export/4"
+  },
+  "pinned_in_spec": [
+   "accessories",
+   "body",
+   "exporter",
+   "face",
+   "garment",
+   "groom",
+   "materials",
+   "rig"
+  ],
+  "defaulted": []
+ },
+ "material_presets": {
+  "skin": "skin-felt/2",
+  "hair": "felt hair"
+ },
+ "garments": {
+  "generator": "garment/1",
+  "items": [
+   {
+    "name": "hoodie",
+    "type": "hoodie",
+    "objects": [
+     "garment.hoodie.main",
+     "garment.hoodie.band.hem",
+     "garment.hoodie.rib.hem_1",
+     "garment.hoodie.rib.hem_2",
+     "garment.hoodie.rib.hem_3",
+     "garment.hoodie.band.cuff.L",
+     "garment.hoodie.band.cuff.R",
+     "garment.hoodie.rib.cuff.L_1",
+     "garment.hoodie.rib.cuff.L_2",
+     "garment.hoodie.rib.cuff.L_3",
+     "garment.hoodie.rib.cuff.R_1",
+     "garment.hoodie.rib.cuff.R_2",
+     "garment.hoodie.rib.cuff.R_3",
+     "garment.hoodie.hood.rim",
+     "garment.hoodie.hood.bag",
+     "garment.hoodie.hood.edge",
+     "garment.hoodie.pocket",
+     "garment.hoodie.pocket.edge.top",
+     "garment.hoodie.pocket.opening.L",
+     "garment.hoodie.pocket.opening.R",
+     "garment.hoodie.drawstring.L",
+     "garment.hoodie.drawstring.tip.L",
+     "garment.hoodie.drawstring.R",
+     "garment.hoodie.drawstring.tip.R"
+    ],
+    "covered_body_faces": 24025,
+    "mask_body": true,
+    "material_presets": [
+     "buttons/plastic",
+     "cotton knit",
+     "fleece"
+    ],
+    "fibres": [
+     {
+      "object": "garment.hoodie.main.fibres",
+      "source": "garment.hoodie.main",
+      "preset": "fleece",
+      "lod": "close"
+     },
+     {
+      "object": "garment.hoodie.band.hem.fibres",
+      "source": "garment.hoodie.band.hem",
+      "preset": "fleece",
+      "lod": "close"
+     },
+     {
+      "object": "garment.hoodie.rib.hem_1.fibres",
+      "source": "garment.hoodie.rib.hem_1",
+      "preset": "fleece",
+      "lod": "close"
+     },
+     {
+      "object": "garment.hoodie.rib.hem_2.fibres",
+      "source": "garment.hoodie.rib.hem_2",
+      "preset": "fleece",
+      "lod": "close"
+     },
+     {
+      "object": "garment.hoodie.rib.hem_3.fibres",
+      "source": "garment.hoodie.rib.hem_3",
+      "preset": "fleece",
+      "lod": "close"
+     },
+     {
+      "object": "garment.hoodie.band.cuff.L.fibres",
+      "source": "garment.hoodie.band.cuff.L",
+      "preset": "fleece",
+      "lod": "close"
+     },
+     {
+      "object": "garment.hoodie.band.cuff.R.fibres",
+      "source": "garment.hoodie.band.cuff.R",
+      "preset": "fleece",
+      "lod": "close"
+     },
+     {
+      "object": "garment.hoodie.rib.cuff.L_1.fibres",
+      "source": "garment.hoodie.rib.cuff.L_1",
+      "preset": "fleece",
+      "lod": "close"
+     },
+     {
+      "object": "garment.hoodie.rib.cuff.L_2.fibres",
+      "source": "garment.hoodie.rib.cuff.L_2",
+      "preset": "fleece",
+      "lod": "close"
+     },
+     {
+      "object": "garment.hoodie.rib.cuff.L_3.fibres",
+      "source": "garment.hoodie.rib.cuff.L_3",
+      "preset": "fleece",
+      "lod": "close"
+     },
+     {
+      "object": "garment.hoodie.rib.cuff.R_1.fibres",
+      "source": "garment.hoodie.rib.cuff.R_1",
+      "preset": "fleece",
+      "lod": "close"
+     },
+     {
+      "object": "garment.hoodie.rib.cuff.R_2.fibres",
+      "source": "garment.hoodie.rib.cuff.R_2",
+      "preset": "fleece",
+      "lod": "close"
+     },
+     {
+      "object": "garment.hoodie.rib.cuff.R_3.fibres",
+      "source": "garment.hoodie.rib.cuff.R_3",
+      "preset": "fleece",
+      "lod": "close"
+     },
+     {
+      "object": "garment.hoodie.hood.rim.fibres",
+      "source": "garment.hoodie.hood.rim",
+      "preset": "fleece",
+      "lod": "close"
+     },
+     {
+      "object": "garment.hoodie.hood.bag.fibres",
+      "source": "garment.hoodie.hood.bag",
+      "preset": "fleece",
+      "lod": "close"
+     },
+     {
+      "object": "garment.hoodie.hood.edge.fibres",
+      "source": "garment.hoodie.hood.edge",
+      "preset": "fleece",
+      "lod": "close"
+     },
+     {
+      "object": "garment.hoodie.pocket.fibres",
+      "source": "garment.hoodie.pocket",
+      "preset": "fleece",
+      "lod": "close"
+     },
+     {
+      "object": "garment.hoodie.pocket.edge.top.fibres",
+      "source": "garment.hoodie.pocket.edge.top",
+      "preset": "fleece",
+      "lod": "close"
+     },
+     {
+      "object": "garment.hoodie.pocket.opening.L.fibres",
+      "source": "garment.hoodie.pocket.opening.L",
+      "preset": "fleece",
+      "lod": "close"
+     },
+     {
+      "object": "garment.hoodie.pocket.opening.R.fibres",
+      "source": "garment.hoodie.pocket.opening.R",
+      "preset": "fleece",
+      "lod": "close"
+     },
+     {
+      "object": "garment.hoodie.drawstring.L.fibres",
+      "source": "garment.hoodie.drawstring.L",
+      "preset": "cotton knit",
+      "lod": "close"
+     },
+     {
+      "object": "garment.hoodie.drawstring.R.fibres",
+      "source": "garment.hoodie.drawstring.R",
+      "preset": "cotton knit",
+      "lod": "close"
+     }
+    ]
+   },
+   {
+    "gusset": {
+     "crotch_z_m": 0.2907,
+     "bottom_z_m": 0.1528,
+     "reach_m": 0.0581,
+     "half_width_m": 0.0461
+    },
+    "name": "trousers",
+    "type": "trousers",
+    "objects": [
+     "garment.trousers.main",
+     "garment.trousers.gusset"
+    ],
+    "covered_body_faces": 13671,
+    "mask_body": true,
+    "material_presets": [
+     "fleece"
+    ],
+    "fibres": [
+     {
+      "object": "garment.trousers.main.fibres",
+      "source": "garment.trousers.main",
+      "preset": "fleece",
+      "lod": "close"
+     },
+     {
+      "object": "garment.trousers.gusset.fibres",
+      "source": "garment.trousers.gusset",
+      "preset": "fleece",
+      "lod": "close"
+     }
+    ]
+   },
+   {
+    "name": "shoes",
+    "type": "sneakers",
+    "objects": [
+     "garment.shoes.main.L",
+     "garment.shoes.sole.L",
+     "garment.shoes.toe_cap.L",
+     "garment.shoes.tongue.L",
+     "garment.shoes.laces.L_1",
+     "garment.shoes.laces.L_2",
+     "garment.shoes.laces.L_3",
+     "garment.shoes.collar.L",
+     "garment.shoes.main.R",
+     "garment.shoes.sole.R",
+     "garment.shoes.toe_cap.R",
+     "garment.shoes.tongue.R",
+     "garment.shoes.laces.R_1",
+     "garment.shoes.laces.R_2",
+     "garment.shoes.laces.R_3",
+     "garment.shoes.collar.R"
+    ],
+    "covered_body_faces": 7084,
+    "mask_body": true,
+    "material_presets": [
+     "cotton knit",
+     "felt"
+    ],
+    "fibres": [
+     {
+      "object": "garment.shoes.main.L.fibres",
+      "source": "garment.shoes.main.L",
+      "preset": "felt",
+      "lod": "close"
+     },
+     {
+      "object": "garment.shoes.sole.L.fibres",
+      "source": "garment.shoes.sole.L",
+      "preset": "felt",
+      "lod": "close"
+     },
+     {
+      "object": "garment.shoes.toe_cap.L.fibres",
+      "source": "garment.shoes.toe_cap.L",
+      "preset": "felt",
+      "lod": "close"
+     },
+     {
+      "object": "garment.shoes.tongue.L.fibres",
+      "source": "garment.shoes.tongue.L",
+      "preset": "felt",
+      "lod": "close"
+     },
+     {
+      "object": "garment.shoes.laces.L_1.fibres",
+      "source": "garment.shoes.laces.L_1",
+      "preset": "cotton knit",
+      "lod": "close"
+     },
+     {
+      "object": "garment.shoes.laces.L_2.fibres",
+      "source": "garment.shoes.laces.L_2",
+      "preset": "cotton knit",
+      "lod": "close"
+     },
+     {
+      "object": "garment.shoes.laces.L_3.fibres",
+      "source": "garment.shoes.laces.L_3",
+      "preset": "cotton knit",
+      "lod": "close"
+     },
+     {
+      "object": "garment.shoes.collar.L.fibres",
+      "source": "garment.shoes.collar.L",
+      "preset": "felt",
+      "lod": "close"
+     },
+     {
+      "object": "garment.shoes.main.R.fibres",
+      "source": "garment.shoes.main.R",
+      "preset": "felt",
+      "lod": "close"
+     },
+     {
+      "object": "garment.shoes.sole.R.fibres",
+      "source": "garment.shoes.sole.R",
+      "preset": "felt",
+      "lod": "close"
+     },
+     {
+      "object": "garment.shoes.toe_cap.R.fibres",
+      "source": "garment.shoes.toe_cap.R",
+      "preset": "felt",
+      "lod": "close"
+     },
+     {
+      "object": "garment.shoes.tongue.R.fibres",
+      "source": "garment.shoes.tongue.R",
+      "preset": "felt",
+      "lod": "close"
+     },
+     {
+      "object": "garment.shoes.laces.R_1.fibres",
+      "source": "garment.shoes.laces.R_1",
+      "preset": "cotton knit",
+      "lod": "close"
+     },
+     {
+      "object": "garment.shoes.laces.R_2.fibres",
+      "source": "garment.shoes.laces.R_2",
+      "preset": "cotton knit",
+      "lod": "close"
+     },
+     {
+      "object": "garment.shoes.laces.R_3.fibres",
+      "source": "garment.shoes.laces.R_3",
+      "preset": "cotton knit",
+      "lod": "close"
+     },
+     {
+      "object": "garment.shoes.collar.R.fibres",
+      "source": "garment.shoes.collar.R",
+      "preset": "felt",
+      "lod": "close"
+     }
+    ]
+   },
+   {
+    "backpack": {
+     "bag_centre_m": [
+      0.0,
+      0.132,
+      0.4456
+     ],
+     "size_m": [
+      0.19,
+      0.075,
+      0.2
+     ],
+     "straps": 2,
+     "torso_weight_sources": 2136
+    },
+    "name": "backpack",
+    "type": "backpack",
+    "objects": [
+     "garment.backpack.main",
+     "garment.backpack.pocket",
+     "garment.backpack.zip.main",
+     "garment.backpack.zip.puller.main",
+     "garment.backpack.zip.pocket",
+     "garment.backpack.zip.puller.pocket",
+     "garment.backpack.handle",
+     "garment.backpack.strap.L",
+     "garment.backpack.strap.R"
+    ],
+    "covered_body_faces": 0,
+    "mask_body": false,
+    "material_presets": [
+     "buttons/plastic",
+     "felt"
+    ],
+    "fibres": [
+     {
+      "object": "garment.backpack.main.fibres",
+      "source": "garment.backpack.main",
+      "preset": "felt",
+      "lod": "close"
+     },
+     {
+      "object": "garment.backpack.pocket.fibres",
+      "source": "garment.backpack.pocket",
+      "preset": "felt",
+      "lod": "close"
+     },
+     {
+      "object": "garment.backpack.handle.fibres",
+      "source": "garment.backpack.handle",
+      "preset": "felt",
+      "lod": "close"
+     },
+     {
+      "object": "garment.backpack.strap.L.fibres",
+      "source": "garment.backpack.strap.L",
+      "preset": "felt",
+      "lod": "close"
+     },
+     {
+      "object": "garment.backpack.strap.R.fibres",
+      "source": "garment.backpack.strap.R",
+      "preset": "felt",
+      "lod": "close"
+     }
+    ]
+   }
+  ],
+  "objects": 51,
+  "fibres_lod": "close",
+  "covered_body_faces": 41492,
+  "masked_items": [
+   "hoodie",
+   "trousers",
+   "shoes"
+  ],
+  "mask_margin_m": 0.016560000000000002,
+  "hide_body_faces": true,
+  "collision": {
+   "enabled": true,
+   "offset_m": 0.0022080000000000003,
+   "radius_m": 0.08832000000000001,
+   "falloff_m": 0.022080000000000002,
+   "passes": 3
+  },
+  "body_fit": {
+   "measures_m": {
+    "arm_root_radius": 0.035,
+    "thigh_radius": 0.049,
+    "torso_depth": 0.132544,
+    "head_height": 0.318001
+   },
+   "scale": {
+    "arm": 1.1667,
+    "leg": 1.0889,
+    "torso": 1.0591,
+    "head": 1.0966,
+    "body": 1.104
+   }
+  }
+ },
+ "face": {
+  "generator": "face_generic/2",
+  "shape": {
+   "cheek_fullness_m": 0.006
+  },
+  "nose": {
+   "type": "small_round",
+   "tip_m": [
+    0.0,
+    -0.1433,
+    0.747
+   ]
+  },
+  "eyes": {
+   "L": {
+    "centre_m": [
+     0.068,
+     -0.0978,
+     0.778
+    ],
+    "radius_m": 0.042,
+    "front_protrusion_m": 0.0,
+    "gaze_envelope": 1.0713,
+    "lid_gap_upper": 0.082,
+    "lid_gap_lower": 0.082
+   },
+   "R": {
+    "centre_m": [
+     -0.068,
+     -0.0978,
+     0.778
+    ],
+    "radius_m": 0.042,
+    "front_protrusion_m": 0.0,
+    "gaze_envelope": 1.0713,
+    "lid_gap_upper": 0.082,
+    "lid_gap_lower": 0.082
+   }
+  },
+  "socket_refined_faces": 2700,
+  "lid_socket": {
+   "L": {
+    "vertices": 10847,
+    "opening": 2201,
+    "moved_max_m": 0.0125
+   },
+   "R": {
+    "vertices": 10849,
+    "opening": 2200,
+    "moved_max_m": 0.0125
+   },
+   "smoothed_vertices": 9580
+  },
+  "blink_overlap_deg": 6.27,
+  "blink": {
+   "L": {
+    "lid": "lid_upper.L",
+    "edge_upper_deg": 6.0,
+    "edge_lower_deg": -34.4,
+    "close_deg": 46.7,
+    "flatten": 0.0
+   },
+   "R": {
+    "lid": "lid_upper.R",
+    "edge_upper_deg": 6.0,
+    "edge_lower_deg": -34.4,
+    "close_deg": 46.7,
+    "flatten": 0.0
+   }
+  },
+  "smile_coupling": {
+   "head_vertices": 21339,
+   "cheek_radius_m": [
+    0.0469,
+    0.0469
+   ],
+   "eye_squint_deg": 5.0,
+   "intensity": 1.0,
+   "asymmetry": 0.0
+  },
+  "lids_follow_skin": [
+   "lid_lower.L:MouthSmile",
+   "lid_lower.R:MouthSmile"
+  ],
+  "pout": [
+   "mouth",
+   "mouth_cavity",
+   "body_skin"
+  ],
+  "mouth_rest_shape": {
+   "shape": "pout",
+   "objects": [
+    "mouth",
+    "mouth_cavity",
+    "body_skin"
+   ]
+  },
+  "split_action_units": {
+   "BrowDown": [
+    "BrowDown.L",
+    "BrowDown.R"
+   ],
+   "EyeSquint": [
+    "EyeSquint.L",
+    "EyeSquint.R"
+   ],
+   "MouthSmile": [
+    "MouthSmile.L",
+    "MouthSmile.R"
+   ],
+   "MouthFrown": [
+    "MouthFrown.L",
+    "MouthFrown.R"
+   ]
+  },
+  "action_units": [
+   "Blink.L",
+   "Blink.R",
+   "EyeWide",
+   "EyeSquint",
+   "BrowUp.L",
+   "BrowUp.R",
+   "BrowDown",
+   "BrowSad",
+   "MouthSmile",
+   "MouthFrown",
+   "MouthWide",
+   "MouthO",
+   "JawOpen",
+   "MouthPout",
+   "BrowDown.L",
+   "BrowDown.R",
+   "EyeSquint.L",
+   "EyeSquint.R",
+   "MouthSmile.L",
+   "MouthSmile.R",
+   "MouthFrown.L",
+   "MouthFrown.R"
+  ],
+  "action_units_missing": [],
+  "presets": [
+   "Blink",
+   "LeftEyeClosed",
+   "RightEyeClosed",
+   "Squint",
+   "WideOpen",
+   "Smile",
+   "Frown",
+   "Surprise",
+   "Sadness",
+   "Anger",
+   "Confusion",
+   "Laugh",
+   "MouthOpen",
+   "Worried",
+   "Curious",
+   "Bored",
+   "Skeptical"
+  ],
+  "lid_shell_exposed": {
+   "lid_upper.L": 0.037,
+   "lid_upper.R": 0.037,
+   "lid_lower.L": 0.034,
+   "lid_lower.R": 0.035
+  },
+  "notes": [
+   "non-spherical eyeball (scale [1.0, 0.8, 1.0]): the lids clear its rigid gaze sweep over gaze_range_deg [16, 8] (envelope 1.071)"
+  ]
+ },
+ "accessories": {},
+ "hair": {
+  "generator": "groom/2",
+  "structures": {
+   "cap": {
+    "type": "scalp_cap",
+    "faces": 14834
+   },
+   "base": {
+    "shape": "gather",
+    "grid": [
+     160,
+     40
+    ],
+    "type": "felt_volume"
+   },
+   "whorl": {
+    "clumps": 5,
+    "keepout_clamped": 0,
+    "type": "clumps"
+   },
+   "crown": {
+    "clumps": 9,
+    "keepout_clamped": 0,
+    "type": "clumps"
+   },
+   "top": {
+    "clumps": 14,
+    "keepout_clamped": 0,
+    "type": "clumps"
+   },
+   "fringe": {
+    "clumps": 4,
+    "keepout_clamped": 4,
+    "type": "clumps"
+   },
+   "fringe_centre": {
+    "clumps": 1,
+    "keepout_clamped": 1,
+    "type": "clumps"
+   },
+   "sides": {
+    "clumps": 10,
+    "keepout_clamped": 0,
+    "type": "clumps"
+   },
+   "back": {
+    "clumps": 19,
+    "keepout_clamped": 0,
+    "type": "clumps"
+   }
+  },
+  "objects": [
+   "hair_cap",
+   "hair_base",
+   "hair_whorl",
+   "hair_crown",
+   "hair_top",
+   "hair_fringe",
+   "hair_fringe_centre",
+   "hair_sides",
+   "hair_back"
+  ],
+  "vertices": 60868,
+  "keepout": {
+   "az": 34.0,
+   "el_min": -6.0,
+   "violations": 0,
+   "by_object": {}
+  },
+  "fibres": {
+   "objects": 27,
+   "layers": [
+    "felt",
+    "halo",
+    "flyaways"
+   ]
+  },
+  "dynamics": {
+   "chains": 48
+  }
+ },
+ "rig": {
+  "rigify_bones": 507,
+  "deform_bones": 170,
+  "fit_profile": "rigify_human_metarig/1",
+  "weighted_objects": 3,
+  "vertices": 96372,
+  "unweighted_after_heat": 1683,
+  "unweighted_after_cleanup": 0,
+  "nearest_bone_fallback": []
+ },
+ "garment_skinning": {
+  "method": "nearest_body_weights/1",
+  "objects": 51,
+  "vertices": 106064,
+  "max_source_distance_m": 0.19132,
+  "collision_proxy": "garment.collider.body_skin",
+  "collision": {
+   "method": "shrinkwrap_outside_after_armature/1",
+   "enabled": true,
+   "offset_m": 0.002208,
+   "radius_m": 0.08832,
+   "falloff_m": 0.02208,
+   "passes": 3
+  },
+  "mask": {
+   "worn": [
+    "backpack",
+    "hoodie",
+    "shoes",
+    "trousers"
+   ],
+   "masked_items": [
+    "hoodie",
+    "shoes",
+    "trousers"
+   ],
+   "hidden_body_vertices": 39276,
+   "hidden_body_faces": 39652,
+   "visible_body_faces": 54058,
+   "collision_weighted_vertices": 79868
+  },
+  "per_object": {
+   "garment.hoodie.main": {
+    "vertices": 50266,
+    "nearest_source_vertices": 23801
+   },
+   "garment.hoodie.band.hem": {
+    "vertices": 392,
+    "nearest_source_vertices": 110
+   },
+   "garment.hoodie.rib.hem_1": {
+    "vertices": 392,
+    "nearest_source_vertices": 70
+   },
+   "garment.hoodie.rib.hem_2": {
+    "vertices": 392,
+    "nearest_source_vertices": 92
+   },
+   "garment.hoodie.rib.hem_3": {
+    "vertices": 392,
+    "nearest_source_vertices": 57
+   },
+   "garment.hoodie.band.cuff.L": {
+    "vertices": 264,
+    "nearest_source_vertices": 116
+   },
+   "garment.hoodie.band.cuff.R": {
+    "vertices": 264,
+    "nearest_source_vertices": 113
+   },
+   "garment.hoodie.rib.cuff.L_1": {
+    "vertices": 264,
+    "nearest_source_vertices": 62
+   },
+   "garment.hoodie.rib.cuff.L_2": {
+    "vertices": 264,
+    "nearest_source_vertices": 55
+   },
+   "garment.hoodie.rib.cuff.L_3": {
+    "vertices": 264,
+    "nearest_source_vertices": 54
+   },
+   "garment.hoodie.rib.cuff.R_1": {
+    "vertices": 264,
+    "nearest_source_vertices": 63
+   },
+   "garment.hoodie.rib.cuff.R_2": {
+    "vertices": 264,
+    "nearest_source_vertices": 54
+   },
+   "garment.hoodie.rib.cuff.R_3": {
+    "vertices": 264,
+    "nearest_source_vertices": 53
+   },
+   "garment.hoodie.hood.rim": {
+    "vertices": 1010,
+    "nearest_source_vertices": 1
+   },
+   "garment.hoodie.hood.bag": {
+    "vertices": 842,
+    "nearest_source_vertices": 1
+   },
+   "garment.hoodie.hood.edge": {
+    "vertices": 232,
+    "nearest_source_vertices": 1
+   },
+   "garment.hoodie.pocket": {
+    "vertices": 650,
+    "nearest_source_vertices": 1
+   },
+   "garment.hoodie.pocket.edge.top": {
+    "vertices": 202,
+    "nearest_source_vertices": 1
+   },
+   "garment.hoodie.pocket.opening.L": {
+    "vertices": 114,
+    "nearest_source_vertices": 1
+   },
+   "garment.hoodie.pocket.opening.R": {
+    "vertices": 114,
+    "nearest_source_vertices": 1
+   },
+   "garment.hoodie.drawstring.L": {
+    "vertices": 105,
+    "nearest_source_vertices": 1
+   },
+   "garment.hoodie.drawstring.tip.L": {
+    "vertices": 112,
+    "nearest_source_vertices": 1
+   },
+   "garment.hoodie.drawstring.R": {
+    "vertices": 105,
+    "nearest_source_vertices": 1
+   },
+   "garment.hoodie.drawstring.tip.R": {
+    "vertices": 112,
+    "nearest_source_vertices": 1
+   },
+   "garment.trousers.main": {
+    "vertices": 29456,
+    "nearest_source_vertices": 13456
+   },
+   "garment.trousers.gusset": {
+    "vertices": 646,
+    "nearest_source_vertices": 323
+   },
+   "garment.shoes.main.L": {
+    "vertices": 3774,
+    "nearest_source_vertices": 1
+   },
+   "garment.shoes.sole.L": {
+    "vertices": 386,
+    "nearest_source_vertices": 1
+   },
+   "garment.shoes.toe_cap.L": {
+    "vertices": 1580,
+    "nearest_source_vertices": 1
+   },
+   "garment.shoes.tongue.L": {
+    "vertices": 144,
+    "nearest_source_vertices": 1
+   },
+   "garment.shoes.laces.L_1": {
+    "vertices": 122,
+    "nearest_source_vertices": 1
+   },
+   "garment.shoes.laces.L_2": {
+    "vertices": 122,
+    "nearest_source_vertices": 1
+   },
+   "garment.shoes.laces.L_3": {
+    "vertices": 122,
+    "nearest_source_vertices": 1
+   },
+   "garment.shoes.collar.L": {
+    "vertices": 1048,
+    "nearest_source_vertices": 1
+   },
+   "garment.shoes.main.R": {
+    "vertices": 3774,
+    "nearest_source_vertices": 1
+   },
+   "garment.shoes.sole.R": {
+    "vertices": 386,
+    "nearest_source_vertices": 1
+   },
+   "garment.shoes.toe_cap.R": {
+    "vertices": 1580,
+    "nearest_source_vertices": 1
+   },
+   "garment.shoes.tongue.R": {
+    "vertices": 144,
+    "nearest_source_vertices": 1
+   },
+   "garment.shoes.laces.R_1": {
+    "vertices": 122,
+    "nearest_source_vertices": 1
+   },
+   "garment.shoes.laces.R_2": {
+    "vertices": 122,
+    "nearest_source_vertices": 1
+   },
+   "garment.shoes.laces.R_3": {
+    "vertices": 122,
+    "nearest_source_vertices": 1
+   },
+   "garment.shoes.collar.R": {
+    "vertices": 1048,
+    "nearest_source_vertices": 1
+   },
+   "garment.backpack.main": {
+    "vertices": 922,
+    "nearest_source_vertices": 1
+   },
+   "garment.backpack.pocket": {
+    "vertices": 482,
+    "nearest_source_vertices": 1
+   },
+   "garment.backpack.zip.main": {
+    "vertices": 188,
+    "nearest_source_vertices": 1
+   },
+   "garment.backpack.zip.puller.main": {
+    "vertices": 86,
+    "nearest_source_vertices": 1
+   },
+   "garment.backpack.zip.pocket": {
+    "vertices": 128,
+    "nearest_source_vertices": 1
+   },
+   "garment.backpack.zip.puller.pocket": {
+    "vertices": 86,
+    "nearest_source_vertices": 1
+   },
+   "garment.backpack.handle": {
+    "vertices": 202,
+    "nearest_source_vertices": 1
+   },
+   "garment.backpack.strap.L": {
+    "vertices": 864,
+    "nearest_source_vertices": 113
+   },
+   "garment.backpack.strap.R": {
+    "vertices": 864,
+    "nearest_source_vertices": 114
+   }
+  }
+ },
+ "face_controls": {
+  "face_Blink.L": [
+   "lash.L",
+   "lid_upper.L"
+  ],
+  "face_Blink.R": [
+   "lash.R",
+   "lid_upper.R"
+  ],
+  "face_EyeWide": [
+   "body_skin",
+   "garment.collider.body_skin",
+   "lash.L",
+   "lash.R",
+   "lid_lower.L",
+   "lid_lower.R",
+   "lid_upper.L",
+   "lid_upper.R"
+  ],
+  "face_EyeSquint": [
+   "lash.L",
+   "lash.R",
+   "lid_lower.L",
+   "lid_lower.R",
+   "lid_upper.L",
+   "lid_upper.R"
+  ],
+  "face_BrowUp.L": [
+   "brow.L"
+  ],
+  "face_BrowUp.R": [
+   "brow.R"
+  ],
+  "face_BrowDown": [
+   "brow.L",
+   "brow.R"
+  ],
+  "face_BrowSad": [
+   "brow.L",
+   "brow.R"
+  ],
+  "face_MouthSmile": [
+   "body_skin",
+   "garment.collider.body_skin",
+   "lid_lower.L",
+   "lid_lower.R",
+   "mouth",
+   "mouth_cavity"
+  ],
+  "face_MouthFrown": [
+   "mouth",
+   "mouth_cavity"
+  ],
+  "face_MouthWide": [
+   "mouth",
+   "mouth_cavity"
+  ],
+  "face_MouthO": [
+   "mouth",
+   "mouth_cavity"
+  ],
+  "face_JawOpen": [
+   "mouth",
+   "mouth_cavity"
+  ],
+  "face_MouthPout": [
+   "body_skin",
+   "garment.collider.body_skin",
+   "mouth",
+   "mouth_cavity"
+  ],
+  "face_BrowDown.L": [
+   "brow.L",
+   "brow.R"
+  ],
+  "face_BrowDown.R": [
+   "brow.L",
+   "brow.R"
+  ],
+  "face_EyeSquint.L": [
+   "lash.L",
+   "lash.R",
+   "lid_lower.L",
+   "lid_lower.R",
+   "lid_upper.L",
+   "lid_upper.R"
+  ],
+  "face_EyeSquint.R": [
+   "lash.L",
+   "lash.R",
+   "lid_lower.L",
+   "lid_lower.R",
+   "lid_upper.L",
+   "lid_upper.R"
+  ],
+  "face_MouthSmile.L": [
+   "body_skin",
+   "garment.collider.body_skin",
+   "lid_lower.L",
+   "lid_lower.R",
+   "mouth",
+   "mouth_cavity"
+  ],
+  "face_MouthSmile.R": [
+   "body_skin",
+   "garment.collider.body_skin",
+   "lid_lower.L",
+   "lid_lower.R",
+   "mouth",
+   "mouth_cavity"
+  ],
+  "face_MouthFrown.L": [
+   "mouth",
+   "mouth_cavity"
+  ],
+  "face_MouthFrown.R": [
+   "mouth",
+   "mouth_cavity"
+  ],
+  "face_Blink": [
+   "lash.L",
+   "lash.R",
+   "lid_upper.L",
+   "lid_upper.R"
+  ],
+  "face_LeftEyeClosed": [
+   "lash.L",
+   "lid_upper.L"
+  ],
+  "face_RightEyeClosed": [
+   "lash.R",
+   "lid_upper.R"
+  ],
+  "face_Squint": [
+   "body_skin",
+   "garment.collider.body_skin",
+   "lash.L",
+   "lash.R",
+   "lid_lower.L",
+   "lid_lower.R",
+   "lid_upper.L",
+   "lid_upper.R",
+   "mouth",
+   "mouth_cavity"
+  ],
+  "face_WideOpen": [
+   "body_skin",
+   "brow.L",
+   "brow.R",
+   "garment.collider.body_skin",
+   "lash.L",
+   "lash.R",
+   "lid_lower.L",
+   "lid_lower.R",
+   "lid_upper.L",
+   "lid_upper.R",
+   "mouth",
+   "mouth_cavity"
+  ],
+  "face_Smile": [
+   "body_skin",
+   "garment.collider.body_skin",
+   "lash.L",
+   "lash.R",
+   "lid_lower.L",
+   "lid_lower.R",
+   "lid_upper.L",
+   "lid_upper.R",
+   "mouth",
+   "mouth_cavity"
+  ],
+  "face_Frown": [
+   "brow.L",
+   "brow.R",
+   "mouth",
+   "mouth_cavity"
+  ],
+  "face_Surprise": [
+   "body_skin",
+   "brow.L",
+   "brow.R",
+   "garment.collider.body_skin",
+   "lash.L",
+   "lash.R",
+   "lid_lower.L",
+   "lid_lower.R",
+   "lid_upper.L",
+   "lid_upper.R",
+   "mouth",
+   "mouth_cavity"
+  ],
+  "face_Sadness": [
+   "brow.L",
+   "brow.R",
+   "lash.L",
+   "lash.R",
+   "lid_upper.L",
+   "lid_upper.R",
+   "mouth",
+   "mouth_cavity"
+  ],
+  "face_Anger": [
+   "body_skin",
+   "brow.L",
+   "brow.R",
+   "garment.collider.body_skin",
+   "lash.L",
+   "lash.R",
+   "lid_lower.L",
+   "lid_lower.R",
+   "lid_upper.L",
+   "lid_upper.R",
+   "mouth",
+   "mouth_cavity"
+  ],
+  "face_Confusion": [
+   "brow.L",
+   "brow.R",
+   "lash.L",
+   "lash.R",
+   "lid_lower.L",
+   "lid_lower.R",
+   "lid_upper.L",
+   "lid_upper.R",
+   "mouth",
+   "mouth_cavity"
+  ],
+  "face_Laugh": [
+   "body_skin",
+   "garment.collider.body_skin",
+   "lash.L",
+   "lash.R",
+   "lid_lower.L",
+   "lid_lower.R",
+   "lid_upper.L",
+   "lid_upper.R",
+   "mouth",
+   "mouth_cavity"
+  ],
+  "face_MouthOpen": [
+   "mouth",
+   "mouth_cavity"
+  ],
+  "face_Worried": [
+   "body_skin",
+   "brow.L",
+   "brow.R",
+   "garment.collider.body_skin",
+   "lash.L",
+   "lash.R",
+   "lid_lower.L",
+   "lid_lower.R",
+   "lid_upper.L",
+   "lid_upper.R",
+   "mouth",
+   "mouth_cavity"
+  ],
+  "face_Curious": [
+   "body_skin",
+   "brow.L",
+   "garment.collider.body_skin",
+   "lash.L",
+   "lash.R",
+   "lid_lower.L",
+   "lid_lower.R",
+   "lid_upper.L",
+   "lid_upper.R",
+   "mouth",
+   "mouth_cavity"
+  ],
+  "face_Bored": [
+   "body_skin",
+   "brow.L",
+   "brow.R",
+   "garment.collider.body_skin",
+   "lash.L",
+   "lash.R",
+   "lid_upper.L",
+   "lid_upper.R",
+   "mouth",
+   "mouth_cavity"
+  ],
+  "face_Skeptical": [
+   "body_skin",
+   "brow.L",
+   "brow.R",
+   "garment.collider.body_skin",
+   "lash.R",
+   "lid_lower.L",
+   "lid_lower.R",
+   "lid_upper.R",
+   "mouth",
+   "mouth_cavity"
+  ]
+ },
+ "jaw": {
+  "body_skin": 922,
+  "pivot": [
+   0.0,
+   0.008,
+   0.751
+  ]
+ },
+ "inbetween_drivers": 204,
+ "joints_m": {
+  "spine_0": [
+   0.0,
+   0.0,
+   0.3397
+  ],
+  "spine_1": [
+   0.0,
+   0.0,
+   0.4099
+  ],
+  "spine_2": [
+   0.0,
+   0.0,
+   0.4801
+  ],
+  "spine_3": [
+   0.0,
+   0.0,
+   0.5503
+  ],
+  "spine_4": [
+   0.0,
+   0.0,
+   0.6206
+  ],
+  "spine_5": [
+   0.0,
+   0.0,
+   0.6603
+  ],
+  "neck_top": [
+   0.0,
+   0.0,
+   0.7
+  ],
+  "head_top": [
+   0.0,
+   0.01,
+   1.014
+  ],
+  "clavicle.L": [
+   0.018,
+   0.0,
+   0.6206
+  ],
+  "shoulder.L": [
+   0.1105,
+   0.0,
+   0.6206
+  ],
+  "elbow.L": [
+   0.208,
+   0.0,
+   0.5231
+  ],
+  "wrist.L": [
+   0.2991,
+   0.0,
+   0.432
+  ],
+  "hand_end.L": [
+   0.3479,
+   0.0,
+   0.3832
+  ],
+  "pelvis.L": [
+   0.0649,
+   -0.0195,
+   0.3818
+  ],
+  "hip.L": [
+   0.0649,
+   0.0,
+   0.3397
+  ],
+  "knee.L": [
+   0.0728,
+   -0.0041,
+   0.218
+  ],
+  "ankle.L": [
+   0.0811,
+   0.0,
+   0.09
+  ],
+  "toe.L": [
+   0.0811,
+   -0.0725,
+   0.0245
+  ],
+  "toe_tip.L": [
+   0.0811,
+   -0.1252,
+   0.0245
+  ],
+  "heel_in.L": [
+   0.0361,
+   0.04,
+   0.0
+  ],
+  "heel_out.L": [
+   0.1261,
+   0.04,
+   0.0
+  ],
+  "clavicle.R": [
+   -0.018,
+   0.0,
+   0.6206
+  ],
+  "shoulder.R": [
+   -0.1105,
+   0.0,
+   0.6206
+  ],
+  "elbow.R": [
+   -0.208,
+   0.0,
+   0.5231
+  ],
+  "wrist.R": [
+   -0.2991,
+   0.0,
+   0.432
+  ],
+  "hand_end.R": [
+   -0.3479,
+   0.0,
+   0.3832
+  ],
+  "pelvis.R": [
+   -0.0649,
+   -0.0195,
+   0.3818
+  ],
+  "hip.R": [
+   -0.0649,
+   0.0,
+   0.3397
+  ],
+  "knee.R": [
+   -0.0728,
+   -0.0041,
+   0.218
+  ],
+  "ankle.R": [
+   -0.0811,
+   0.0,
+   0.09
+  ],
+  "toe.R": [
+   -0.0811,
+   -0.0725,
+   0.0245
+  ],
+  "toe_tip.R": [
+   -0.0811,
+   -0.1252,
+   0.0245
+  ],
+  "heel_in.R": [
+   -0.0361,
+   0.04,
+   0.0
+  ],
+  "heel_out.R": [
+   -0.1261,
+   0.04,
+   0.0
+  ]
+ },
+ "objects": [
+  "LM_chin",
+  "LM_ear_L",
+  "LM_ear_R",
+  "LM_eye_L",
+  "LM_eye_R",
+  "LM_mouth",
+  "LM_nose",
+  "body_skin",
+  "brow.L",
+  "brow.R",
+  "ear.L",
+  "ear.R",
+  "eye.L",
+  "eye.R",
+  "garment.backpack.handle",
+  "garment.backpack.handle.fibres",
+  "garment.backpack.main",
+  "garment.backpack.main.fibres",
+  "garment.backpack.pocket",
+  "garment.backpack.pocket.fibres",
+  "garment.backpack.strap.L",
+  "garment.backpack.strap.L.fibres",
+  "garment.backpack.strap.R",
+  "garment.backpack.strap.R.fibres",
+  "garment.backpack.zip.main",
+  "garment.backpack.zip.pocket",
+  "garment.backpack.zip.puller.main",
+  "garment.backpack.zip.puller.pocket",
+  "garment.collider.body_skin",
+  "garment.hoodie.band.cuff.L",
+  "garment.hoodie.band.cuff.L.fibres",
+  "garment.hoodie.band.cuff.R",
+  "garment.hoodie.band.cuff.R.fibres",
+  "garment.hoodie.band.hem",
+  "garment.hoodie.band.hem.fibres",
+  "garment.hoodie.drawstring.L",
+  "garment.hoodie.drawstring.L.fibres",
+  "garment.hoodie.drawstring.R",
+  "garment.hoodie.drawstring.R.fibres",
+  "garment.hoodie.drawstring.tip.L",
+  "garment.hoodie.drawstring.tip.R",
+  "garment.hoodie.hood.bag",
+  "garment.hoodie.hood.bag.fibres",
+  "garment.hoodie.hood.edge",
+  "garment.hoodie.hood.edge.fibres",
+  "garment.hoodie.hood.rim",
+  "garment.hoodie.hood.rim.fibres",
+  "garment.hoodie.main",
+  "garment.hoodie.main.fibres",
+  "garment.hoodie.pocket",
+  "garment.hoodie.pocket.edge.top",
+  "garment.hoodie.pocket.edge.top.fibres",
+  "garment.hoodie.pocket.fibres",
+  "garment.hoodie.pocket.opening.L",
+  "garment.hoodie.pocket.opening.L.fibres",
+  "garment.hoodie.pocket.opening.R",
+  "garment.hoodie.pocket.opening.R.fibres",
+  "garment.hoodie.rib.cuff.L_1",
+  "garment.hoodie.rib.cuff.L_1.fibres",
+  "garment.hoodie.rib.cuff.L_2",
+  "garment.hoodie.rib.cuff.L_2.fibres",
+  "garment.hoodie.rib.cuff.L_3",
+  "garment.hoodie.rib.cuff.L_3.fibres",
+  "garment.hoodie.rib.cuff.R_1",
+  "garment.hoodie.rib.cuff.R_1.fibres",
+  "garment.hoodie.rib.cuff.R_2",
+  "garment.hoodie.rib.cuff.R_2.fibres",
+  "garment.hoodie.rib.cuff.R_3",
+  "garment.hoodie.rib.cuff.R_3.fibres",
+  "garment.hoodie.rib.hem_1",
+  "garment.hoodie.rib.hem_1.fibres",
+  "garment.hoodie.rib.hem_2",
+  "garment.hoodie.rib.hem_2.fibres",
+  "garment.hoodie.rib.hem_3",
+  "garment.hoodie.rib.hem_3.fibres",
+  "garment.shoes.collar.L",
+  "garment.shoes.collar.L.fibres",
+  "garment.shoes.collar.R",
+  "garment.shoes.collar.R.fibres",
+  "garment.shoes.laces.L_1",
+  "garment.shoes.laces.L_1.fibres",
+  "garment.shoes.laces.L_2",
+  "garment.shoes.laces.L_2.fibres",
+  "garment.shoes.laces.L_3",
+  "garment.shoes.laces.L_3.fibres",
+  "garment.shoes.laces.R_1",
+  "garment.shoes.laces.R_1.fibres",
+  "garment.shoes.laces.R_2",
+  "garment.shoes.laces.R_2.fibres",
+  "garment.shoes.laces.R_3",
+  "garment.shoes.laces.R_3.fibres",
+  "garment.shoes.main.L",
+  "garment.shoes.main.L.fibres",
+  "garment.shoes.main.R",
+  "garment.shoes.main.R.fibres",
+  "garment.shoes.sole.L",
+  "garment.shoes.sole.L.fibres",
+  "garment.shoes.sole.R",
+  "garment.shoes.sole.R.fibres",
+  "garment.shoes.toe_cap.L",
+  "garment.shoes.toe_cap.L.fibres",
+  "garment.shoes.toe_cap.R",
+  "garment.shoes.toe_cap.R.fibres",
+  "garment.shoes.tongue.L",
+  "garment.shoes.tongue.L.fibres",
+  "garment.shoes.tongue.R",
+  "garment.shoes.tongue.R.fibres",
+  "garment.trousers.gusset",
+  "garment.trousers.gusset.fibres",
+  "garment.trousers.main",
+  "garment.trousers.main.fibres",
+  "hair_back",
+  "hair_back.fibres",
+  "hair_back.fibres.001",
+  "hair_back.fibres.002",
+  "hair_base",
+  "hair_base.fibres",
+  "hair_base.fibres.001",
+  "hair_base.fibres.002",
+  "hair_cap",
+  "hair_cap.fibres",
+  "hair_cap.fibres.001",
+  "hair_cap.fibres.002",
+  "hair_crown",
+  "hair_crown.fibres",
+  "hair_crown.fibres.001",
+  "hair_crown.fibres.002",
+  "hair_fringe",
+  "hair_fringe.fibres",
+  "hair_fringe.fibres.001",
+  "hair_fringe.fibres.002",
+  "hair_fringe_centre",
+  "hair_fringe_centre.fibres",
+  "hair_fringe_centre.fibres.001",
+  "hair_fringe_centre.fibres.002",
+  "hair_sides",
+  "hair_sides.fibres",
+  "hair_sides.fibres.001",
+  "hair_sides.fibres.002",
+  "hair_top",
+  "hair_top.fibres",
+  "hair_top.fibres.001",
+  "hair_top.fibres.002",
+  "hair_whorl",
+  "hair_whorl.fibres",
+  "hair_whorl.fibres.001",
+  "hair_whorl.fibres.002",
+  "hand.L",
+  "hand.R",
+  "lash.L",
+  "lash.R",
+  "lid_lower.L",
+  "lid_lower.R",
+  "lid_upper.L",
+  "lid_upper.R",
+  "mouth",
+  "mouth_cavity",
+  "rig_boy_yellow_hoodie"
+ ]
+}

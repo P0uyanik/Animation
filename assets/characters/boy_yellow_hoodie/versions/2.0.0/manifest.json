@@ -1,0 +1,56 @@
+{
+ "character_id": "boy_yellow_hoodie",
+ "version": "2.0.0",
+ "parent": "1.1.0",
+ "created": "2026-11-18T11:44:45+00:00",
+ "notes": "Boy 2.0.0 (T-080): generic path, body_generic/2 fitted head + face_generic/2, skin-felt/2 (presets/2), hair v3 round 3 (groom/2, T-079 data), garment/1 hoodie with hood volume and closed armholes, joggers, sneakers, backpack; personality profile 1.0.0 referenced. Spec assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.0.0.spec.json. Built with bpy 5.3.0 module, determinism.subprocess_env. Fidelity 67.63 (1.1.0: 66.41).",
+ "spec_sha256": "0e16c320af27ca9e4485aafe72e4a42340962cc1c1641afcaaeccc4898e0d3a4",
+ "spec_version": "2.0.0",
+ "build": "charsys/1+body_generic/1",
+ "blender": "5.3.0",
+ "identity_changes": [
+  "identity",
+  "proportions",
+  "face",
+  "hair",
+  "clothing",
+  "accessories",
+  "materials"
+ ],
+ "identity_change_approved_by": "owner, docs/process/OWNER_DECISIONS.md 2026-11-18 (\"I approve Boy 2.0.0 as the new current version.\")",
+ "files": {
+  "boy_yellow_hoodie_master.blend": {
+   "sha256": "c810c653c5b4a4555adae4886a3834d6305c99bbbc484543a26e67aec48c98a6",
+   "bytes": 29485055
+  },
+  "spec.json": {
+   "sha256": "6d27cfca1d3341446b5d10ce97a9be0b2be81b3116fb6fee8dc0b8a1994d3f6b",
+   "bytes": 34818
+  },
+  "components.json": {
+   "sha256": "c2823c39b8afd10d3589a5a5efb0cd5c39bc650798618ac0c51b6b8e5b642a4b",
+   "bytes": 27354
+  },
+  "animation_compat.json": {
+   "sha256": "f4e1de1ed49a5091286944a131bec6d1bb41c223807604989cc1eb4840d32371",
+   "bytes": 14882
+  },
+  "build_report.json": {
+   "sha256": "9849abebddcd3eb9d9037c6e2048aa903b73a0f92ad2232dfd6e581a9d8ce995",
+   "bytes": 32333
+  },
+  "spec.resolved.json": {
+   "sha256": "2fbf1c03513d684ae6c6151e04f7da852321e019810e9f2163731bb2db520160",
+   "bytes": 35443
+  }
+ },
+ "rig": {
+  "rigify_bones": 507,
+  "deform_bones": 170,
+  "unweighted_after_cleanup": 0
+ },
+ "spec_resolved": "spec.resolved.json is the build's fitted spec (body_generic writes fitted values); spec.json is the input spec it was built from (hash = spec_sha256)",
+ "not_stored": {
+  "boy_yellow_hoodie.glb": "not needed for reuse: shots link the master and engine packages are exported from it (run_shot.py); reproducible from the master"
+ }
+}
