@@ -17,7 +17,7 @@ now and what starts next; it does not restate the plan.
 | --- | --- | --- | --- |
 
 ## 2. Next
-1. T-086 CI efficiency: starts now that T-085 is merged (T-088 merged b3a96f3).
+1. Phase A merged: T-085, T-086, T-087, T-088. Follow-up noted: `.github/scripts/select_base.sh` compares staging with origin/main (fallback full run on staging can drop to fast when main is pushed first).
 2. Phase A exit: T-085..T-088 merged, all workflows on `main` green.
 3. Phases B and C (max 6 parallel): T-089, T-092, T-093, T-095, T-096, T-098L; T-090 as the 7th slot frees up or
    after T-089's first face fit is reviewed. Task files written from `ROUND2_PLAN.md` before start.
