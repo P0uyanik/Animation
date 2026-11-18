@@ -64,6 +64,21 @@ double SceneEvaluator::ClipLayer::clipFrame(double f, double sceneFps) const {
   return std::max(0.0, f - start) * speed * clip->fps / std::max(1e-9, sceneFps);
 }
 
+// Personality tempo (T-053): gestures and clip actions (not base clips or the automatic idle) play their clock
+// `tempo` x faster, the effective speed (scene speed x tempo) kept inside the profile's limits.action_speed. A
+// one-shot clip that finishes early holds its last frame until the layer blends out. Tempo 1 = the plain clock.
+double SceneEvaluator::layerClipFrame(size_t c, const ClipLayer& L, double frame) const {
+  const double f = L.clipFrame(frame, scene_.rate.fps());
+  if (L.base || L.tier == 0 || c >= persona_.size() || !persona_[c].profile) return f;
+  const PersonaSetup& ps = persona_[c];
+  double tempo = ps.tempo;
+  if (ps.speedLimit && L.speed > 0) tempo = double(ps.speedLimit->clamp(float(L.speed * tempo))) / L.speed;
+  if (tempo == 1.0) return f;
+  const double t = f * tempo;
+  if (L.clip->loop) return t;
+  return std::min(t, L.clip->duration() * L.clip->fps);
+}
+
 void SceneEvaluator::applyBreakdowns(size_t c, const ClipLayer& L, double f, Pose& pose) const {
   const Skeleton& sk = characters_[c].asset.skeleton;
   auto bone = [&](const std::string& role) {
@@ -195,7 +210,6 @@ void SceneEvaluator::applyClips(size_t c, double frame, Pose& pose, float& yawOf
   const CharacterAsset& asset = characters_[c].asset;
   const std::string prefix = scene_.characters[c].name + "/";
   const Clip& anim = scene_.animation;
-  const double fps = scene_.rate.fps();
   // walk ownership of legs, hips and root (ramps over 4 frames at each end)
   double walk = 0;
   for (auto [s, e] : walkSpans_[c]) {
@@ -210,7 +224,7 @@ void SceneEvaluator::applyClips(size_t c, double frame, Pose& pose, float& yawOf
     const ClipLayer& L = *layer;
     const double env = L.envelope(frame);
     if (env <= 0) continue;
-    const ClipSample s = sampleClip(*L.clip, L.clipFrame(frame, fps), L.mirror);
+    const ClipSample s = sampleClip(*L.clip, layerClipFrame(c, L, frame), L.mirror);
     if (L.base) {
       // Generated action motion (walk arm swing, reach lean) is kept as a change relative to the default pose.
       std::vector<std::pair<int, quat>> deltas;
@@ -293,7 +307,7 @@ void SceneEvaluator::applyClipFingers(size_t c, double frame, Pose& pose) const 
     bool any = false;
     for (const auto& r : L.binding.roles) any |= r.bone >= 0 && isFingerRole(r.name) && inMask(*L.clip, r.name, L.mirror);
     if (!any) continue;
-    const ClipSample s = sampleClip(*L.clip, L.clipFrame(frame, scene_.rate.fps()), L.mirror);
+    const ClipSample s = sampleClip(*L.clip, layerClipFrame(c, L, frame), L.mirror);
     const float fe = float(L.principles ? L.envelopeRank(frame, successionRank("f0a")) : env);
     applyClipSample(sk, L.binding, s, pose, [&](const std::string& role) {
       return (isFingerRole(role) && inMask(*L.clip, role, L.mirror) && !handOwned(role)) ? fe : 0.0f;

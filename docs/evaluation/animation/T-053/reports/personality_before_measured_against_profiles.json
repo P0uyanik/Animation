@@ -1,0 +1,173 @@
+{
+ "format": "plush.animcheck_personality",
+ "version": 1,
+ "scene": "T-053 evidence (before): personality profiles, idle + one gesture each (T-053) - BEFORE (no profiles)",
+ "fps": 24.0,
+ "characters": [
+  {
+   "character": "boy",
+   "personality": "boy_yellow_hoodie",
+   "profile": "content/personality/boy_yellow_hoodie.json",
+   "profile_version": "1.0.0",
+   "limits": {
+    "blink_interval_frames": [
+     20,
+     96
+    ],
+    "blink_duration_frames": [
+     4,
+     6
+    ],
+    "reach_frames": [
+     10,
+     16
+    ],
+    "hold_frames": [
+     24,
+     72
+    ],
+    "action_speed": [
+     0.8,
+     1.0
+    ],
+    "idle_motion_max_H_per_frame": 0.004,
+    "face_offset_max": 0.3,
+    "head_pitch_deg": [
+     5,
+     20
+    ]
+   },
+   "head_width_m": 0.3195,
+   "blinks": {
+    "morph": "Blink",
+    "count": 2,
+    "frames": [
+     122,
+     241
+    ],
+    "durations": [
+     4.0,
+     4.0
+    ],
+    "double_blinks": [],
+    "intervals": [
+     119.0
+    ],
+    "mean_interval": 119.0
+   },
+   "gestures": [
+    {
+     "label": "boy touch @116",
+     "reach_frames": 12.0,
+     "chord_mm": 110.9,
+     "checked": true,
+     "peak_H_per_frame": 0.0633,
+     "hold_frames": 25.0,
+     "kind": "touch"
+    }
+   ],
+   "idle": {
+    "frames": 138,
+    "median_head_H_per_frame": 0.00113,
+    "p95_head_H_per_frame": 0.00268,
+    "head_amplitude_H": 0.01639,
+    "profile_idle_motion_amplitude_H": 0.003
+   },
+   "failures": [
+    "boy: mean blink interval 119.0 f@24 outside [20.0, 96.0]"
+   ]
+  },
+  {
+   "character": "girl",
+   "personality": "girl_auburn_bun_glasses",
+   "profile": "content/personality/girl_auburn_bun_glasses.json",
+   "profile_version": "1.0.0",
+   "limits": {
+    "blink_interval_frames": [
+     25,
+     39
+    ],
+    "blink_duration_frames": [
+     3,
+     5
+    ],
+    "reach_frames": [
+     8,
+     10
+    ],
+    "hold_frames": [
+     12,
+     40
+    ],
+    "action_speed": [
+     1.0,
+     1.25
+    ],
+    "idle_motion_max_H_per_frame": 0.006,
+    "face_offset_max": 0.2,
+    "head_pitch_deg": [
+     -5,
+     10
+    ]
+   },
+   "head_width_m": 0.3039,
+   "blinks": {
+    "morph": "Blink",
+    "count": 4,
+    "frames": [
+     73,
+     118,
+     173,
+     245
+    ],
+    "durations": [
+     5.0,
+     5.0,
+     6.0,
+     5.0
+    ],
+    "double_blinks": [],
+    "intervals": [
+     45.0,
+     55.0,
+     72.0
+    ],
+    "mean_interval": 57.33
+   },
+   "gestures": [
+    {
+     "label": "girl clip point @110",
+     "reach_frames": 14.0,
+     "chord_mm": 236.6,
+     "checked": true,
+     "peak_H_per_frame": 0.1063,
+     "hold_frames": 28.0,
+     "kind": "clip"
+    },
+    {
+     "label": "girl touch @200",
+     "reach_frames": 9.0,
+     "chord_mm": 97.6,
+     "checked": false,
+     "peak_H_per_frame": 0.0733,
+     "hold_frames": 10.0,
+     "kind": "touch"
+    }
+   ],
+   "idle": {
+    "frames": 96,
+    "median_head_H_per_frame": 0.00143,
+    "p95_head_H_per_frame": 0.00335,
+    "head_amplitude_H": 0.0247,
+    "profile_idle_motion_amplitude_H": 0.006
+   },
+   "failures": [
+    "girl: mean blink interval 57.33 f@24 outside [25.0, 39.0]"
+   ]
+  }
+ ],
+ "failures": [
+  "boy: mean blink interval 119.0 f@24 outside [20.0, 96.0]",
+  "girl: mean blink interval 57.33 f@24 outside [25.0, 39.0]"
+ ]
+}
