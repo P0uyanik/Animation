@@ -1,0 +1,48 @@
+[version_switch] DRY RUN: nothing is written
+1. validate  OK
+2. build     blender -b --factory-startup -t 1 -P <scratch worktree>/pipeline/charsys/build_character.py -- --spec <scratch worktree>/assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.12.0.spec.json --out <scratch worktree>/build/version_switch/girl_auburn_bun_glasses-0.12.0/build --no-glb
+   publish   asset_store publish --character girl_auburn_bun_glasses --store <scratch worktree>/assets/characters/girl_auburn_bun_glasses/versions --build <scratch worktree>/build/version_switch/girl_auburn_bun_glasses-0.12.0/build --version 0.12.0 --notes "girl_auburn_bun_glasses 0.12.0 (T-088): spec assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.12.0.spec.json" --without-glb
+             -> assets/characters/girl_auburn_bun_glasses/versions/0.12.0/ (parent 0.11.0)
+3. approve   asset_store approve --character girl_auburn_bun_glasses --store <scratch worktree>/assets/characters/girl_auburn_bun_glasses/versions --version 0.12.0 --by "owner (docs/process/OWNER_DECISIONS.md scratch)" --notes "new current version: \"scratch demonstration\" Recorded by T-088 (tools/version_switch.py)."
+4. baseline  python3 <scratch worktree>/tools/fidelity/run.py --character girl_auburn_bun_glasses --build <scratch worktree>/build/version_switch/girl_auburn_bun_glasses-0.12.0/build/girl_auburn_bun_glasses_master.blend --blender blender --out <scratch worktree>/build/version_switch/girl_auburn_bun_glasses-0.12.0/fidelity --height 640 --samples 32
+             docs/evaluation/characters/fidelity_baseline.json: girl_auburn_bun_glasses -> build assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.12.0.spec.json, overrides [], source docs/evaluation/characters/T-088/fidelity/fidelity.json, rebaseline from 0.11.0 (score 62.2949)
+5. golden    python3 <scratch worktree>/tools/regression/run.py --blender blender --out <scratch worktree>/build/version_switch/girl_auburn_bun_glasses-0.12.0/regression --character girl_auburn_bun_glasses --changed girl_auburn_bun_glasses --no-fidelity --write-baseline
+             -> docs/evaluation/regression/baselines/girl_auburn_bun_glasses/0.12.0/
+6. checks    tools/check_cast.py, tools/check_assets.py, pipeline/production/tests/test_run_shot_current.py, pipeline/charsys/tests/test_versions.py, pipeline/charsys/tests/test_skin_presets.py, pipeline/charsys/tests/test_asset_store_guard.py, tools/regression/tests/test_gate_tools.py, pipeline/charsys/tests/test_material_presets.py; then: no other file changed
+             need Blender (listed, not run): pipeline/charsys/tests/test_determinism.py, pipeline/charsys/tests/test_export_determinism.py, pipeline/charsys/tests/test_face_v2.py, pipeline/charsys/tests/test_face_v2_socket_wall.py, pipeline/charsys/tests/test_garment_details.py
+7. files     (predicted; report.md only when the fidelity run writes one; spec.resolved.json because the body generator fits the spec)
+     assets/characters/girl_auburn_bun_glasses/versions/0.12.0/girl_auburn_bun_glasses_master.blend
+     assets/characters/girl_auburn_bun_glasses/versions/0.12.0/spec.json
+     assets/characters/girl_auburn_bun_glasses/versions/0.12.0/components.json
+     assets/characters/girl_auburn_bun_glasses/versions/0.12.0/animation_compat.json
+     assets/characters/girl_auburn_bun_glasses/versions/0.12.0/build_report.json
+     assets/characters/girl_auburn_bun_glasses/versions/0.12.0/manifest.json
+     assets/characters/girl_auburn_bun_glasses/versions/0.12.0/spec.resolved.json
+     assets/characters/girl_auburn_bun_glasses/versions/index.json
+     docs/evaluation/characters/fidelity_baseline.json
+     docs/evaluation/characters/T-088/fidelity/fidelity.json
+     docs/evaluation/characters/T-088/fidelity/report.md
+     docs/evaluation/regression/baselines/girl_auburn_bun_glasses/0.12.0/golden.json
+     docs/evaluation/regression/baselines/girl_auburn_bun_glasses/0.12.0/fingerprint.json
+     docs/evaluation/regression/baselines/girl_auburn_bun_glasses/0.12.0/images/turn_front.png
+     docs/evaluation/regression/baselines/girl_auburn_bun_glasses/0.12.0/images/turn_right.png
+     docs/evaluation/regression/baselines/girl_auburn_bun_glasses/0.12.0/images/turn_back.png
+     docs/evaluation/regression/baselines/girl_auburn_bun_glasses/0.12.0/images/turn_left.png
+     docs/evaluation/regression/baselines/girl_auburn_bun_glasses/0.12.0/images/face_closeup.png
+   trailers  (predicted)
+     Supervisor-Approved: assets/characters/girl_auburn_bun_glasses/versions/0.12.0/animation_compat.json
+     Supervisor-Approved: assets/characters/girl_auburn_bun_glasses/versions/0.12.0/build_report.json
+     Supervisor-Approved: assets/characters/girl_auburn_bun_glasses/versions/0.12.0/components.json
+     Supervisor-Approved: assets/characters/girl_auburn_bun_glasses/versions/0.12.0/girl_auburn_bun_glasses_master.blend
+     Supervisor-Approved: assets/characters/girl_auburn_bun_glasses/versions/0.12.0/manifest.json
+     Supervisor-Approved: assets/characters/girl_auburn_bun_glasses/versions/0.12.0/spec.json
+     Supervisor-Approved: assets/characters/girl_auburn_bun_glasses/versions/0.12.0/spec.resolved.json
+     Supervisor-Approved: assets/characters/girl_auburn_bun_glasses/versions/index.json
+     Supervisor-Approved: docs/evaluation/characters/fidelity_baseline.json
+     Supervisor-Approved: docs/evaluation/regression/baselines/girl_auburn_bun_glasses/0.12.0/fingerprint.json
+     Supervisor-Approved: docs/evaluation/regression/baselines/girl_auburn_bun_glasses/0.12.0/golden.json
+     Supervisor-Approved: docs/evaluation/regression/baselines/girl_auburn_bun_glasses/0.12.0/images/face_closeup.png
+     Supervisor-Approved: docs/evaluation/regression/baselines/girl_auburn_bun_glasses/0.12.0/images/turn_back.png
+     Supervisor-Approved: docs/evaluation/regression/baselines/girl_auburn_bun_glasses/0.12.0/images/turn_front.png
+     Supervisor-Approved: docs/evaluation/regression/baselines/girl_auburn_bun_glasses/0.12.0/images/turn_left.png
+     Supervisor-Approved: docs/evaluation/regression/baselines/girl_auburn_bun_glasses/0.12.0/images/turn_right.png

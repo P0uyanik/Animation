@@ -1,0 +1,53 @@
+[test_version_switch] PASS dry run: valid switch exits 0
+[test_version_switch] PASS dry run shows 1. validate  OK
+[test_version_switch] PASS dry run shows 2. build
+[test_version_switch] PASS dry run shows publish
+[test_version_switch] PASS dry run shows 3. approve
+[test_version_switch] PASS dry run shows 4. baseline
+[test_version_switch] PASS dry run shows 5. golden
+[test_version_switch] PASS dry run shows 6. checks
+[test_version_switch] PASS dry run shows 7. files
+[test_version_switch] PASS dry run shows trailers
+[test_version_switch] PASS dry run lists the predicted trailers
+[test_version_switch] PASS dry run lists the Blender test as not run
+[test_version_switch] PASS dry run writes nothing (fixture byte-identical, no work folder)
+[test_version_switch] PASS full switch exits 0
+[test_version_switch] PASS published 1.1.0 (manifest, no .glb)
+[test_version_switch] PASS approved pointer moved with the decision note
+[test_version_switch] PASS baseline entry: build, score, source
+[test_version_switch] PASS baseline entry: rebaseline note
+[test_version_switch] PASS baseline: other entry and settings untouched
+[test_version_switch] PASS fidelity evidence copied
+[test_version_switch] PASS golden baseline written
+[test_version_switch] PASS tools run in order: build, fidelity, regression, then checks
+[test_version_switch] PASS checks: affected tests + tests naming the character; Blender test listed only
+[test_version_switch] PASS exact trailer block for every guarded path written
+[test_version_switch] PASS other character byte-identical
+[test_version_switch] PASS older version and golden byte-identical
+[test_version_switch] PASS store verifies
+[test_version_switch] PASS run report written to the work folder
+[test_version_switch] PASS second run of the same version refused
+[test_version_switch] PASS refused: spec name the gate refuses
+[test_version_switch] PASS refused: skin-felt/2 without presets/2 pin
+[test_version_switch] PASS refused: skin-felt/2 with presets/1 pin
+[test_version_switch] PASS accepted: skin-felt/2 with the presets/2 pin
+[test_version_switch] PASS refused: golden baseline already there
+[test_version_switch] PASS refused: spec_version differs from --version
+[test_version_switch] PASS refused: override changes spec_version
+[test_version_switch] PASS refused: claim does not cover the writes
+[test_version_switch] PASS refused: no claim
+[test_version_switch] PASS refused: decision missing
+[test_version_switch] PASS refused: decision not recorded
+[test_version_switch] PASS refused: version already published
+[test_version_switch] PASS refused: identity change without approval
+[test_version_switch] PASS accepted: identity change with the owner's approval
+[test_version_switch] PASS refused: unresolvable generator pin
+[test_version_switch] PASS refused: another character's spec
+[test_version_switch] PASS refused: wrong identity
+[test_version_switch] PASS refused: work folder inside a store
+[test_version_switch] PASS refused: no --blender outside --dry-run
+[test_version_switch] PASS a failing tool stops the switch and lists what was written
+[test_version_switch] PASS a change to another character is reported as a failure
+[test_version_switch] PASS trailers are still printed after a failed check
+[test_version_switch] PASS the real repository's baseline and store indexes are unchanged
+[test_version_switch] 52/52 passed

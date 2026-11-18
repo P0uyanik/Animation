@@ -36,3 +36,41 @@ overwrites them.
   geometry fingerprints (`fingerprint_v2`, 0.1 mm and 0.01 mm) against the stored master. `.blend` bytes are not
   reproducible between builds; the fingerprint is the comparison. The all-character regression keeps building
   from the pinned specs and comparing renders.
+
+## Making a version current: `tools/version_switch.py` (T-088)
+One command for what took five serial fixes on 2026-11-18 (boy 2.0.0, girl 0.11.0). Run it on the task branch whose
+claim the Supervisor has widened to the version folder, `index.json`, the character's golden baselines,
+`fidelity_baseline.json` and `docs/evaluation/characters/<task>/`, after the owner decision is recorded:
+
+```
+python3 tools/version_switch.py --character <id> --version <x.y.z> --spec <spec> [--overrides <file> ...] \
+    --task T-NNN --decision "<owner wording>" --decision-ref "docs/process/OWNER_DECISIONS.md <date>" \
+    --blender <exe> [--identity-change-approved-by "<who, when>"] [--fidelity-json <earlier fidelity.json>] [--dry-run]
+```
+
+1. **Validate** (nothing is written until everything passes; all problems are listed at once): version `x.y.z`,
+   never used in the store, no golden baseline for it yet; the spec and overrides lie in the character's own
+   `spec/` folder, load, carry `identity.id` = the character and `metadata.spec_version` = the version; every
+   generator pin resolves; the materials pin covers the preset families used (a `presets/2` id such as
+   `skin-felt/2` needs `generators.materials = "presets/2"`); `tools/regression/tiers.py` accepts the build inputs
+   and reads the same spec_version; identity changes against the approved parent carry the owner's approval; the
+   decision is given and its file mentions the version; the task's claim covers every path the run writes.
+2. **Build and publish**: `build_character.py` with the determinism environment (one thread, fixed seed), then
+   `asset_store.py publish --without-glb` (refuses an existing or reused version).
+3. **Approve**: `asset_store.py approve --by "owner (<decision-ref>)"` with the decision as the note.
+4. **Fidelity baseline**: the score (`tools/fidelity/run.py` on the build at the baseline's render settings, or
+   `--fidelity-json`) goes to `docs/evaluation/characters/<task>/fidelity/`; only this character's entry changes
+   (build, overrides, score, source, `rebaseline` with the previous version, score and source).
+5. **Golden baseline**: `tools/regression/run.py --write-baseline` for this character, copied to
+   `docs/evaluation/regression/baselines/<id>/<version>/` (never overwritten).
+6. **Checks**: `tools/check_cast.py`, `tools/check_assets.py`, the plain-Python tests that read current versions and
+   every other plain-Python test naming the character (tests that need Blender are listed for a separate run);
+   then every other version, character, golden and baseline entry is compared with its hash from before the run.
+7. **Trailers**: prints the exact `Supervisor-Approved: <path>` block for every guarded path written (also in
+   `<work>/version_switch.json`); the Supervisor puts it on the approval commit.
+
+`--dry-run` validates and prints every step, command, file and the predicted trailer block without writing anything.
+A failure after step 2 stops the run and lists what was already written; a published version stays published, so
+continue by hand from the failed step (or publish a new version number). The tool only calls `asset_store.py`; the
+guard, `tools/check_assets.py` and the frozen manifest are unchanged. Tests: `tools/tests/test_version_switch.py`
+(fixture repository in a temporary folder, fake Blender tools).
