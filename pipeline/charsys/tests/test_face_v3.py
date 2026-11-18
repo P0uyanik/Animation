@@ -19,7 +19,8 @@ Build checks (a master per character: --boy/--girl, else built from the publishe
   * no socket rim at 3/4: <= 10 % of the shell vertices past the opening corner visible at yaw +-35 deg;
   * T-081's smoothing gain kept: cheek folds <= 45 deg and eye-corner folds no sharper than the published version's
     (the T-081 probe; FOLD_LIMITS);
-  * a full blink closes both eyes in front and 3/4 (docs/evaluation/characters/T-089/measure_eyes.py).
+  * a full blink closes both eyes in front and 3/4 (docs/evaluation/characters/T-089/measure_eyes.py): visible
+    residue <= max(2 mm2, 1.25 x the published version's own residue, BLINK_PUBLISHED_MM2).
 Without --blender only the plain checks run."""
 import ast
 import glob
@@ -45,6 +46,9 @@ CASES = {
 # eye-corner fold limit (T-081 probe) = the published version's own value: the candidate may not be sharper.
 # boy 2.0.0 never had the T-081 wall smoothing (measured 157.7 deg in T-089); girl 0.11.0 = T-081's 40.3 deg.
 FOLD_LIMITS = {"boy": {"cheek": 45.0, "corner": 157.7}, "girl": {"cheek": 45.0, "corner": 40.33}}
+# full-blink residue (mm2 of eyeball still visible, measure_eyes.py) of the PUBLISHED versions: the near eye's outer
+# corner at 3/4 keeps a sliver on girl 0.11.0 (23.3 mm2, measured in T-089); boy 2.0.0 closes fully (0).
+BLINK_PUBLISHED_MM2 = {"boy": 0.0, "girl": 23.3}
 MEASURE = os.path.join(ROOT, "docs", "evaluation", "characters", "T-089", "measure_eyes.py")
 RESULTS = []
 
@@ -252,9 +256,12 @@ def build_checks(blender, who):
     mj = tempfile.NamedTemporaryFile(suffix=".json", delete=False).name
     subprocess.run([blender, "-b", "--factory-startup", "-P", MEASURE, "--", master, mj], capture_output=True, text=True)
     m = json.load(open(mj))["views"]
-    shut = {v: [s for s in ("L", "R") if m[v]["blink100"][s].get("visible") and m[v]["blink100"][s]["area_mm2"] > 2.0]
+    lim = max(2.0, 1.25 * BLINK_PUBLISHED_MM2[who])
+    shut = {v: {s: m[v]["blink100"][s]["area_mm2"] for s in ("L", "R")
+                if m[v]["blink100"][s].get("visible") and m[v]["blink100"][s]["area_mm2"] > lim}
             for v in ("front", "threequarter")}
-    check(f"{who}: full blink closes both eyes (front, 3/4)", not any(shut.values()), json.dumps(shut))
+    check(f"{who}: full blink closes both eyes (front, 3/4; residue <= {lim:.1f} mm2, published {BLINK_PUBLISHED_MM2[who]})",
+          not any(shut.values()), json.dumps(shut))
 
 
 def main():
