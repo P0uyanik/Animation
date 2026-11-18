@@ -12,15 +12,20 @@ now and what starts next; it does not restate the plan.
   independent reviewer at the end of Phases B and C.
 - Task files use `docs/tasks/_TEMPLATE.md`: the write-set lists every file a solution may touch.
 
-## 1. Running now (Phase A)
-| Task | What | Implementer | Merges after |
-| --- | --- | --- | --- |
+## 1. Running now (Phases B and C, started 2026-11-18 16:33Z on the owner's OK; Phase A merged)
+| Task | What | Implementer |
+| --- | --- | --- |
+| T-089 | Face and eyes round 3 (felt-eye mode) | cloud `session_01NPjxeKcdki5txX1RmMHzfK` |
+| T-090 | Reference-fit optimiser | Codex (owner's PC, `NEXT_TASK.md`) |
+| T-092 | Materials round 2 | cloud `session_01NPjxeMpD6F8ufQRUAj7USK` |
+| T-093 | Garments and accessories | cloud `session_01NPjxeKE4CbSHUrHeuTF8mL` |
+| T-095 | Two-person exchange | cloud `session_01NPjxeLCrJJXDARJ14smDu3` |
+| T-096 | Clearance and visible grip | cloud `session_01NPjxeKWVBHRxiSkeK5hvaE` |
 
 ## 2. Next
 1. Phase A merged: T-085, T-086, T-087, T-088. Follow-up noted: `.github/scripts/select_base.sh` compares staging with origin/main (fallback full run on staging can drop to fast when main is pushed first).
 2. Phase A exit: T-085..T-088 merged, all workflows on `main` green.
-3. Phases B and C (max 6 parallel): T-089, T-092, T-093, T-095, T-096, T-098L; T-090 as the 7th slot frees up or
-   after T-089's first face fit is reviewed. Task files written from `ROUND2_PLAN.md` before start.
+3. T-098L after T-095's blocking pass. Before T-094: extend `tools/version_switch.py` `preset_family()` for presets/3; flip `face_generic/3` and `garment/2` to declared=True when their modules merge.
 4. Phase D (T-091, T-097, T-094): only after the owner approves Phase B's visual quality.
 
 ## 3. Out of scope (until the owner reopens it)

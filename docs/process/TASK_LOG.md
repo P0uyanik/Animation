@@ -65,12 +65,12 @@
 | T-086 | CI efficiency (Phase A; after T-085) | merged 2026-11-18 (integration/t-086; impl `session_01NPjxeMKxxbz8PAeMxy28Tp`, 6479b13; est. ~200–270 → ~66–73 runner-min per promotion) | t-086-claude-ci-efficiency | `docs/tasks/T-086.md`; path A |
 | T-087 | Comparison recipe lock + fidelity fixes (Phase A) | merged 2026-11-18 (integration/t-087; impl `session_01NPjxeLy8LE79Ttrgoxqp6S`, 0bea972; fidelity drop > 2 now flags owner review) | t-087-claude-review-recipe | `docs/tasks/T-087.md`; path A |
 | T-088 | Version-switch script (Phase A) | merged 2026-11-18 (integration/t-088; impl `session_01NPjxeLdCn1De2R4uRrMMYo`, 6915e3b) | t-088-claude-version-switch | `docs/tasks/T-088.md`; path A |
-| T-089 | Face and eye system round 3 (Phase B) | assigned 2026-11-18, round 2 | t-089-claude-face-eyes-r3 | `docs/tasks/T-089.md`; path B |
+| T-089 | Face and eye system round 3 (Phase B) | running 2026-11-18 16:33Z (owner OK ~16:30Z), cloud `session_01NPjxeKcdki5txX1RmMHzfK`, input 4910b69 | t-089-claude-face-eyes-r3 | `docs/tasks/T-089.md`; path B |
 | T-090 | Reference-fit optimiser (Phase B) | assigned to Codex 2026-11-18 16:25Z (owner) | t-090-codex-fit-optimiser | `docs/tasks/T-090.md`; path B |
-| T-092 | Materials round 2 (Phase B) | assigned 2026-11-18, round 2 | t-092-claude-materials | `docs/tasks/T-092.md`; path B |
-| T-093 | Garment outlines and accessories (Phase B) | assigned 2026-11-18, round 2 | t-093-claude-garments | `docs/tasks/T-093.md`; path B |
-| T-095 | Readable two-person exchange (Phase C) | assigned 2026-11-18, round 2 | t-095-claude-exchange | `docs/tasks/T-095.md`; path B |
-| T-096 | Inter-character clearance and visible grip (Phase C) | assigned 2026-11-18, round 2 | t-096-claude-clearance-grip | `docs/tasks/T-096.md`; path B |
+| T-092 | Materials round 2 (Phase B) | running 2026-11-18 16:33Z (owner OK ~16:30Z), cloud `session_01NPjxeMpD6F8ufQRUAj7USK`, input 4910b69 | t-092-claude-materials | `docs/tasks/T-092.md`; path B |
+| T-093 | Garment outlines and accessories (Phase B) | running 2026-11-18 16:33Z (owner OK ~16:30Z), cloud `session_01NPjxeKE4CbSHUrHeuTF8mL`, input 4910b69 | t-093-claude-garments | `docs/tasks/T-093.md`; path B |
+| T-095 | Readable two-person exchange (Phase C) | running 2026-11-18 16:33Z (owner OK ~16:30Z), cloud `session_01NPjxeLCrJJXDARJ14smDu3`, input 4910b69 | t-095-claude-exchange | `docs/tasks/T-095.md`; path B |
+| T-096 | Inter-character clearance and visible grip (Phase C) | running 2026-11-18 16:33Z (owner OK ~16:30Z), cloud `session_01NPjxeKWVBHRxiSkeK5hvaE`, input 4910b69 | t-096-claude-clearance-grip | `docs/tasks/T-096.md`; path B |
 | T-098L | Limited environment/lighting/render experiment (Phase C; after T-095 blocking) | assigned 2026-11-18, round 2 | t-098l-claude-set-experiment | `docs/tasks/T-098L.md`; path B |
 | T-053 | Personality profiles 1.0.0 (reader, limits, animcheck check) | **merged** 2026-11-18 (owner-approved) | t-053-claude-personality (f62fedb), integration 50fc612 | GitHub full gate PASS; some profile fields await engine layers |
 | T-048 | Branch cleanup workflow + tests | **in main** 2026-11-17 | t-048-claude-branch-cleanup (8f1c3ce), merge ae15c0b | 25/25 cleanup tests, full gate PASS; first real dry run after T-041 backups |
