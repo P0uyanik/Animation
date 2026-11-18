@@ -12,16 +12,41 @@ T-080 builds boy version **2.0.0**, which combines:
 - sneakers, backpack and the hood/underarm fix;
 - personality profile 1.0.0.
 
-Visual fidelity to the references comes first. 2.0.0 is **not** made current: 1.0.0 and 1.1.0 are unchanged.
+Visual fidelity to the references comes first. The task file said 2.0.0 should **not** be made current.
+
+**Update 2026-11-18 (owner decision, `docs/process/OWNER_DECISIONS.md`):** "I approve Boy 2.0.0 as the new current version." The Supervisor widened the T-080 claim to `assets/characters/boy_yellow_hoodie/versions/**` and the boy entry of `fidelity_baseline.json`. T-080 therefore publishes 2.0.0, moves the `approved` pointer and updates the boy baseline (§2a). 1.0.0 and 1.1.0 stay unchanged in the store.
 
 ## 2. Result
 **Complete, path B (owner review on renders).**
 - `boy_yellow_hoodie.2.0.0.spec.json` builds on the generic path.
 - It exports to the engine. Its fidelity score is **67.63**, against the approved 1.1.0 baseline of 66.41 (+1.22). With round-2 hair it was 67.51.
-- 2.0.0 is not pinned anywhere: `fidelity_baseline.json`, the published versions and `assets/characters/*/versions/` are untouched.
+- After the owner's approval, 2.0.0 is published and current (§2a). Before that, nothing pointed to it.
 - Gate: see §5.1.
 
-## Owner sheets (reference | 1.1.0 current | 2.0.0 candidate)
+## 2a. Publish (after the owner's approval)
+- **Spec:** points at the merged T-079 file (`docs/evaluation/characters/T-079/candidates/boy.hair_v3.json`; byte-identical to the copy I used before, which is now removed). Its metadata says "approved (current)" and records the owner's approval. The spec sha256 is `0e16c320…`; only the metadata changed, not the build data.
+- **Build:** `build_character.py` on the merged code, which includes T-079's scalp-cap stale-weight fix. Environment: `determinism.subprocess_env` values (PYTHONHASHSEED 0, single-thread math libraries), `--no-glb --no-compare`, the same as the 1.1.0 entry. Hair keep-out 0. The engine export passes: 170 bones, 78 meshes, 315 morph blocks.
+- **Publish:** `asset_store.py publish --version 2.0.0 --parent 1.1.0 --without-glb --identity-change-approved-by "owner, OWNER_DECISIONS 2026-11-18 …"`. Then `approve --version 2.0.0 --by "owner (…2026-11-18)"`.
+  - Pointers: `approved` → **2.0.0** (previous 1.1.0); `reference` stays 1.0.0.
+  - The tool leaves 1.1.0's `status` as "approved". It only moves the pointer, and the history is append-only.
+- **`fidelity_baseline.json`, boy entry:** build = the 2.0.0 spec, no overrides, score **67.6344**, source `T-080/fidelity/fidelity.json`. The previous 1.1.0 score (66.4143) and source are kept under `rebaseline`. The girl entry is untouched.
+- **Checks:**
+  - `asset_store.py verify`: ok, no problems.
+  - `tools/check_assets.py --base origin/staging`: **PASS**. Boy 2.0.0 is 29.6 MB; its master is 29.5 MB, under 95 MB.
+  - `tools/check_cast.py`: **PASS** (6 shots).
+- **BLOCKED: three changes outside the T-080 write-set are needed.** All are verified locally and then reverted; the patches are in [`proposed/`](proposed/).
+  1. **`tools/regression/tiers.py` `character_config`** requires the baseline `build` to be `<id>.spec.json`, with versions as overrides. A complete versioned spec like `boy_yellow_hoodie.2.0.0.spec.json` raises "expected the character spec".
+     - This fails `test_gate_tools.py`, `test_run_shot_current.py` and the boy regression in the Blender tier.
+     - 2.0.0 cannot be expressed as an override of the legacy 1.x spec: `deep_merge` cannot delete keys, so the result would not be the published spec.
+     - Patch [`proposed/tiers_versioned_spec.patch`](proposed/tiers_versioned_spec.patch) accepts a `*.spec.json` directly in `assets/characters/<id>/spec/`.
+     - With it: both tests PASS. `tools/regression/run.py --character boy_yellow_hoodie --base origin/staging` → **PASS (changed)**: fidelity **67.63 vs 67.63** (drop 0.00, build from the merged code incl. the T-079 weight fix); baseline "no approved baseline at …/2.0.0 (spec changed)", which is reported, not failed.
+  2. **`pipeline/charsys/tests/test_skin_presets.py` line 95**: "approved version names no presets/2 id" (T-066's opt-in guard) fails now that the owner approved 2.0.0.
+     - Patch [`proposed/test_skin_presets_pin.patch`](proposed/test_skin_presets_pin.patch) keeps the guard against a *silent* opt-in: presets/2 skin ids are allowed only for a spec that pins `generators.materials = "presets/2"`.
+     - With it: 24/24 PASS.
+  3. **Guarded paths:** the new `assets/characters/boy_yellow_hoodie/versions/2.0.0/*` and `index.json` need Supervisor approval (expected for a publish).
+- **Regression baseline:** `docs/evaluation/regression/baselines/boy_yellow_hoodie/` holds only `1.1.0/`. Golden fingerprint and renders for 2.0.0 need `tools/regression/run.py --write-baseline` and a Supervisor commit (guarded path, not in my claim).
+
+## Owner sheets (reference | 1.1.0 | 2.0.0)
 
 - **All views:** [sheets/owner_sheet.jpg](sheets/owner_sheet.jpg)
 - **Per view:**
@@ -48,7 +73,9 @@ How the stills were made:
 | --- | --- |
 | `assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.0.0.spec.json` | NEW: the 2.0.0 spec. It is one self-contained file, generated by `make_spec.py`. |
 | `pipeline/charsys/versions.py` | Registers `materials presets/2` → `materials.builder`, `declared=False`. It is one appended line; no existing line was changed. |
-| `docs/evaluation/characters/T-080/inputs/boy.hair_v3.r3.json` | Unchanged copy of T-079's `candidates/boy.hair_v3.json` at `t-079-claude-hair-v3-r3@7d3c424`. T-079 is not in staging yet. After T-079 merges, `make_spec.py` can point at T-079's file directly. |
+| `assets/characters/boy_yellow_hoodie/versions/2.0.0/**`, `versions/index.json` | Published 2.0.0 (read-only, hashed) and the `approved` pointer → 2.0.0 (§2a). |
+| `docs/evaluation/characters/fidelity_baseline.json` | Boy entry → 2.0.0, 67.6344 (§2a). |
+| `docs/evaluation/characters/T-080/proposed/*.patch` | Proposed changes outside the write-set, for the Supervisor (§2a). Not applied. |
 | `docs/evaluation/characters/T-080/make_spec.py` | Composes the spec from the 2.0.0-dev spec and the candidates. All conflict choices live in this file. `--check` verifies that the spec file is up to date. |
 | `docs/evaluation/characters/T-080/make_sheets.py` | Makes the owner sheets. |
 | `docs/evaluation/characters/T-080/sheets/*.jpg` | Owner sheets. |
@@ -79,7 +106,7 @@ Every section comes from the approved candidates, applied to `boy_yellow_hoodie.
    - `skin-felt/2` with porcelain-peach 236/190/166, used for both the skin slot and the face albedo;
    - blush 226/128/112.
    - On the generic path `materials.assignments` applies directly. No post-build step is needed, unlike on 1.1.0.
-3. **Hair v3 round 3.** T-079's boy data (copied into `inputs/`): top whorl, upright crown leaves, no horn tufts. Its `felt hair` material (25/22/21) is unchanged. It needs no new groom keys and validates with the staging `groom_hybrid` (T-079 changed code only for the scalp-cap weight fix). The `hair_clumps/1` section of 2.0.0-dev is replaced as a whole.
+3. **Hair v3 round 3.** T-079's boy data (`docs/evaluation/characters/T-079/candidates/boy.hair_v3.json`, merged in staging): top whorl, upright crown leaves, no horn tufts. Its `felt hair` material (25/22/21) is unchanged. It needs no new groom keys and validates with the staging `groom_hybrid` (T-079 changed code only for the scalp-cap weight fix). The `hair_clumps/1` section of 2.0.0-dev is replaced as a whole.
 4. **Garment details.** T-068's clothing, taken as a whole. I checked that it is a strict superset of 2.0.0-dev's clothing:
    - hood volume and `armhole: closed`;
    - trousers length 0.985;
@@ -121,7 +148,7 @@ The normal generic build runs `groom_hybrid.bind` on its own hair objects. The s
 | `python3 pipeline/charsys/tests/test_material_presets.py` | ALL PASS 54/54 |
 
 Not run:
-- Animation regression shots (idle, walk, wave, hand-over) with 2.0.0. `run_shot` cast "current" is still 1.1.0, and 2.0.0 is not current.
+- Animation regression shots (idle, walk, wave, hand-over) with 2.0.0: not run by me. Now that 2.0.0 is current, `run_shot` cast "current" resolves to it through `fidelity_baseline.json`, so the next shot run uses it.
 - The engine solver on the new hair and backpack.
 
 ### 5.1 Gate
@@ -132,18 +159,14 @@ Command (full tier, this container):
 | Check | Result |
 | --- | --- |
 | Frozen assets | PASS |
-| Guarded paths | PASS (no guarded paths touched, so none needs approval) |
-| Write-set | PASS (20 paths, all inside the T-080 claim) |
+| Guarded paths | FAIL: **needs Supervisor approval** of the published `versions/2.0.0/*` and `versions/index.json` (§2a) |
+| Write-set | PASS (28 paths, all inside the widened T-080 claim) |
 | Shared-systems lint | PASS |
-| C++ build / C++ tests | FAIL **environment**: CMake cannot find `embree` 4 in this container, so no C++ was built or run. Same as T-066. T-080 changes no C++ file; GitHub CI on the branch is the evidence. |
-| Python tests and links | PASS. An earlier run failed on documentation links in my copied fidelity `report.md`; I fixed it in `5405684`. |
-| Blender tier (full) | **PASS**. Regression: boy_yellow_hoodie PASS (fidelity 66.42, unchanged-character guard); girl_auburn_bun_glasses PASS (64.40); girl_white_hair_blue_dress PASS |
+| C++ build / C++ tests | FAIL **environment**: CMake cannot find `embree` 4 in this container, so no C++ was built or run. T-080 changes no C++ file; GitHub CI on the branch is the evidence. |
+| Python tests and links | FAIL: `test_gate_tools.py`, `test_run_shot_current.py` (`tiers.py`, §2a item 1). `test_skin_presets.py` fails too (§2a item 2; run separately). All three PASS with the proposed patches. Links PASS. |
+| Blender tier (full) | girl_auburn_bun_glasses PASS (64.41), girl_white_hair_blue_dress PASS. boy_yellow_hoodie FAIL with the same `tiers.py` error before building. With the `tiers.py` patch: **PASS** (fidelity 67.63, §2a). |
 
-This is the final run on `ee610a3`: round-3 hair, with staging merged in.
-
-Paths failing only for the environment: the C++ build and tests (embree). Nothing else is guarded or failing.
-
-Note: `fidelity/fidelity.json` still names the sheets with their original `.png` names from the tool run. The committed copies are `.jpg`.
+Final run on `96de404`, with staging (`79a5ed1`) merged. Before the publish, the round-3 spec passed the gate on `ee610a3`, except the C++ build (environment).
 
 ### Fidelity subscores (support only; the sheets decide)
 | | 1.1.0 (T-064 baseline) | 2.0.0 (round-2 hair) | **2.0.0 (round-3 hair, final)** |
@@ -199,7 +222,8 @@ Tool caveats (data outside this write-set):
 2. The owner should decide whether the backpack belongs on the default 2.0.0, given the turnaround and upload 01.
 3. Eye size and cheeks (§7 items 1–2) could get a data-only follow-up on the 2.x line, with owner approval of the face change.
 4. The groom/2 export bug does not reproduce on the generic build path (§4), with either round. The T-079 fix is still needed for the post-build candidate tool.
-5. **Merge order:** `inputs/boy.hair_v3.r3.json` duplicates T-079's candidate file. If T-079 changes that data before it merges, re-run `make_spec.py` (or point it at T-079's file).
+5. **BLOCKED on three Supervisor-owned changes (§2a):** the `tiers.py` patch, the `test_skin_presets.py` patch, and guarded-path approval of the published version.
+6. **2.0.0 regression baseline** (goldens) is for the Supervisor (§2a).
 
 ## 9. Commits
 Branch `t-080-claude-boy-2-0-0`:
@@ -209,7 +233,10 @@ Branch `t-080-claude-boy-2-0-0`:
 - `5405684`: report, doc-links fix (first READY, round-2 hair);
 - `ee610a3`: round-3 hair, fidelity and sheets updated;
 - `39aa35c`: report for round 3, final gate;
-- the round-3 close-ups commit (see the RELAY_LOG line).
+- `58a160b`: round-3 close-ups;
+- merge of `origin/staging` (T-079, owner decisions);
+- `96de404`: publish 2.0.0, approved pointer, fidelity baseline;
+- the report + proposed patches commit (see the RELAY_LOG line).
 
 ## 10. Resource use
 - **Token usage:** not available.
