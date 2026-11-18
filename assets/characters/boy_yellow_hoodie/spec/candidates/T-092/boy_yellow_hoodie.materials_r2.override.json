@@ -1,0 +1,259 @@
+{
+ "character_id": "boy_yellow_hoodie",
+ "task": "T-092",
+ "base": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.0.0.spec.json",
+ "note": "T-092 candidate (path B, evaluation only; never an approved version): boy 2.0.0 + T-092 presets/3: soft hoodie fleece, quiet trouser pile, warm skin (skin-felt/3). Changes only material assignments (materials.assignments and garment material entries); the garments list is the approved one with only material keys changed. The materials pin stays as approved (T-094 sets generators.materials = presets/3 at the version bump).",
+ "override": {
+  "materials": {
+   "assignments": {
+    "skin": {
+     "preset": "skin-felt/3",
+     "base_color_srgb": [
+      236,
+      190,
+      166
+     ],
+     "reference_size_m": 0.29
+    }
+   }
+  },
+  "clothing": {
+   "garments": [
+    {
+     "type": "hoodie",
+     "name": "hoodie",
+     "ease_m": 0.02,
+     "sleeve_length": 0.98,
+     "sleeve_puff_m": 0.012,
+     "sleeve_puff_peak": 0.55,
+     "hem_z_m": 0.33,
+     "bands": {
+      "hem": true,
+      "cuff": true,
+      "rib_ridges": 3,
+      "cuff_rib_ridges": 3,
+      "cuff_radius_m": 0.0045
+     },
+     "shoulder_width": 1.0,
+     "dropped_shoulder": {
+      "start": 0.0,
+      "margin_m": 0.04
+     },
+     "hood": {
+      "rim_radius_m": 0.021,
+      "rim_rise_m": 0.05,
+      "rim_lift_m": 0.038,
+      "bag_height_m": 0.08,
+      "bag_drop_m": 0.05,
+      "bag_depth_m": 0.03,
+      "v_depth_m": 0.07,
+      "rim_back_radius_m": 0.03,
+      "bag_fullness": 0.7,
+      "bag_width_m": 0.1,
+      "bag_rise_m": 0.02,
+      "bag_taper": 0.45,
+      "bag_n": 2.4,
+      "edge_drop": 0.5,
+      "edge_radius_m": 0.008
+     },
+     "pocket": {
+      "width_bottom_m": 0.1,
+      "width_top_m": 0.072,
+      "height_m": 0.115,
+      "above_hem_m": 0.02,
+      "depth_m": 0.016,
+      "rim_radius_m": 0.0045
+     },
+     "drawstrings": {
+      "spacing_m": 0.02,
+      "length_m": 0.1,
+      "radius_m": 0.0034,
+      "tip_length_m": 0.011,
+      "tip_radius_m": 0.0042
+     },
+     "material": {
+      "preset": "hoodie fleece/3",
+      "base_color_srgb": [
+       204,
+       152,
+       62
+      ],
+      "reference_size_m": 0.3
+     },
+     "materials": {
+      "drawstring": {
+       "preset": "cotton knit",
+       "base_color_srgb": [
+        222,
+        206,
+        182
+       ],
+       "reference_size_m": 0.05
+      },
+      "tip": {
+       "preset": "buttons/plastic",
+       "base_color_srgb": [
+        204,
+        190,
+        168
+       ],
+       "reference_size_m": 0.02
+      }
+     },
+     "edge_finish": "rounded",
+     "armhole": "closed"
+    },
+    {
+     "type": "trousers",
+     "name": "trousers",
+     "length": 0.985,
+     "ease_m": 0.016,
+     "puff_m": 0.006,
+     "puff_inner": 0.6,
+     "waist_z_m": 0.4,
+     "cuff": false,
+     "bands": {
+      "waist": false,
+      "cuff": false
+     },
+     "crotch": {
+      "type": "gusset",
+      "depth": 0.7
+     },
+     "material": {
+      "preset": "trouser pile/3",
+      "base_color_srgb": [
+       38,
+       34,
+       34
+      ],
+      "reference_size_m": 0.3
+     },
+     "edge_finish": "rounded"
+    },
+    {
+     "type": "sneakers",
+     "name": "shoes",
+     "ease_m": 0.012,
+     "thickness_m": 0.0035,
+     "length_extra_m": 0.012,
+     "width_extra_m": 0.006,
+     "height_m": 0.072,
+     "plan_n": 2.6,
+     "dome_n": 2.6,
+     "toe_flare": 0.1,
+     "toe_drop": 0.3,
+     "sole": {
+      "thickness_m": 0.016,
+      "wrap_m": 0.008,
+      "margin_m": 0.002
+     },
+     "toe_cap": {
+      "length": 0.27,
+      "slope": 0.5,
+      "thickness_m": 0.002
+     },
+     "laces": {
+      "count": 3,
+      "radius_m": 0.0026,
+      "span": 0.6,
+      "start": 0.08,
+      "end": 0.75
+     },
+     "collar": {
+      "radius_m": 0.0055,
+      "rise_m": 0.06,
+      "back_share": 0.15,
+      "falloff_m": 0.05
+     },
+     "opening": {
+      "length_m": 0.004,
+      "offset_m": 0.004
+     },
+     "tongue": {
+      "thickness_m": 0.003
+     },
+     "material": {
+      "preset": "felt",
+      "base_color_srgb": [
+       206,
+       156,
+       70
+      ],
+      "reference_size_m": 0.15
+     },
+     "materials": {
+      "sole": {
+       "preset": "felt",
+       "base_color_srgb": [
+        232,
+        222,
+        206
+       ],
+       "reference_size_m": 0.15
+      },
+      "laces": {
+       "preset": "cotton knit",
+       "base_color_srgb": [
+        232,
+        222,
+        206
+       ],
+       "reference_size_m": 0.05
+      }
+     }
+    },
+    {
+     "type": "backpack",
+     "name": "backpack",
+     "width_m": 0.19,
+     "height_m": 0.2,
+     "depth_m": 0.075,
+     "top_drop_m": 0.075,
+     "clearance_m": 0.003,
+     "roundness": 3.2,
+     "puff": 0.6,
+     "pocket": {
+      "width": 0.74,
+      "height": 0.42,
+      "depth_m": 0.022,
+      "drop": 0.22
+     },
+     "zip": {
+      "radius_m": 0.0018,
+      "puller_m": 0.008
+     },
+     "straps": {
+      "width_m": 0.022,
+      "thickness_m": 0.005,
+      "shoulder": 0.5,
+      "lift_m": 0.005
+     },
+     "handle": {
+      "radius_m": 0.003
+     },
+     "material": {
+      "preset": "felt",
+      "base_color_srgb": [
+       68,
+       56,
+       68
+      ],
+      "reference_size_m": 0.2
+     },
+     "materials": {
+      "zip": {
+       "preset": "buttons/plastic",
+       "base_color_srgb": [
+        52,
+        44,
+        52
+       ],
+       "reference_size_m": 0.02
+      }
+     }
+    }
+   ]
+  }
+ }
+}

@@ -1,0 +1,182 @@
+{
+  "schema": "plush-studio.material-presets/3",
+  "family": "presets/3",
+  "kind": "fabric_and_skin",
+  "note": "T-092 materials round 2 (presets/3). Self-contained: the defaults below are this file's own, so later edits to presets.json (presets/1) or skin_presets.json (presets/2) never change a presets/3 preset, and no presets/1 or presets/2 id is redefined here. A spec opts in only by naming one of these ids in materials.assignments.<slot>.preset or a garment material entry; every spec that names a presets/1 or presets/2 id builds exactly as before. Fabric targets: B08 hoodie fleece, B09 trousers, G07 vest felt, G08 shorts and boot cuffs, the boy's 01 closeup sheet and the girl's ref_42 material sheet. Every fibrous preset carries one uniform fibre halo (low colour and lean variation, root/tip fade) through the shared Geometry Nodes group PS Shared Surface Fibres/1; clump (nap) and albedo breakup are kept low so the fabrics read dense and even, not mottled or speckled.",
+  "reference_size_m": 0.256,
+  "defaults": {
+    "surface": {
+      "roughness": 0.8,
+      "metallic": 0.0,
+      "specular_ior_level": 0.3,
+      "ior": 1.45,
+      "alpha": 1.0,
+      "transmission_weight": 0.0,
+      "subsurface_weight": 0.0,
+      "subsurface_scale_fraction": 0.04,
+      "sheen_weight": 0.0,
+      "sheen_roughness": 0.5,
+      "saturation_compensation": 1.0,
+      "sheen_tint": 0.0,
+      "shadow_transmission": 0.0
+    },
+    "fibre": {
+      "kind": "noise",
+      "scale_per_reference": 180.0,
+      "detail": 8.0,
+      "roughness": 0.7,
+      "distortion": 0.0,
+      "anisotropy": [1.0, 1.0, 1.0],
+      "strength": 0.25,
+      "distance_fraction": 0.003
+    },
+    "micro_relief": {
+      "enabled": true,
+      "scale_per_reference": 64.0,
+      "detail": 4.0,
+      "roughness": 0.72,
+      "strength": 1.0,
+      "distance_fraction": 0.003,
+      "color_strength": 0.4,
+      "roughness_variation": 0.4
+    },
+    "nap": {
+      "enabled": false,
+      "scale_per_reference": 12.0,
+      "detail": 2.0,
+      "roughness": 0.5,
+      "distortion": 0.6,
+      "threshold": 0.52,
+      "softness": 0.08,
+      "value_gain": 0.0,
+      "value_shadow": 0.0,
+      "sheen_gain": 0.0,
+      "roughness_drop": 0.0,
+      "fibre_gloss": 0.0,
+      "anisotropy": [1.0, 1.0, 1.0],
+      "bump_strength": 0.0,
+      "distance_fraction": 0.01
+    },
+    "fibres": {
+      "enabled": false,
+      "density_per_cm2": 0.0,
+      "length_mm": 4.0,
+      "curl": 0.2,
+      "lean": 0.25,
+      "lod": 0.25,
+      "color_variation": 0.0,
+      "lean_variation": 0.0,
+      "root_transparency": 0.0,
+      "tip_transparency": 0.0
+    },
+    "silhouette": {
+      "enabled": false,
+      "mode": "sheen_layer",
+      "weight": 0.4,
+      "width": 2.2,
+      "roughness": 0.8
+    }
+  },
+  "presets": {
+    "hoodie fleece/3": {
+      "description": "Soft, dense hoodie fleece (B08, 01 closeups): an even, fine curly pile with a uniform bright fibre halo at the silhouette; broad sheen tinted with the dye, no mottled clumps.",
+      "swatch_srgb": [204, 152, 62],
+      "surface": {"roughness": 0.95, "sheen_weight": 0.55, "sheen_roughness": 0.62, "sheen_tint": 0.55, "saturation_compensation": 1.0},
+      "fibre": {"kind": "noise", "scale_per_reference": 64.0, "detail": 6.0, "roughness": 0.72, "distortion": 1.0, "anisotropy": [1.0, 0.85, 1.0], "strength": 0.42, "distance_fraction": 0.0045},
+      "micro_relief": {"scale_per_reference": 96.0, "strength": 0.8, "color_strength": 0.15, "roughness_variation": 0.2},
+      "surface_detail": {"enabled": true, "lump_scale_per_reference": 6.0, "lump_strength": 0.25, "lump_albedo": 0.03, "fibre_direction": [1.0, 1.0, 2.0], "fibre_scale_per_reference": 28.0, "fibre_strength": 0.12, "fibre_albedo": 0.03, "irregularity": 1.2, "distance_fraction": 0.03},
+      "nap": {"enabled": true, "scale_per_reference": 22.0, "threshold": 0.6, "softness": 0.08, "value_gain": 0.15, "value_shadow": 0.0, "sheen_gain": 0.35, "roughness_drop": 0.1, "fibre_gloss": 0.2, "anisotropy": [1.0, 1.0, 0.5]},
+      "fibres": {"enabled": true, "density_per_cm2": 40.0, "length_mm": 4.6, "curl": 0.35, "lean": 0.45, "lod": 0.25, "color_variation": 0.15, "lean_variation": 0.35, "root_transparency": 0.3, "tip_transparency": 0.5},
+      "silhouette": {"enabled": true, "weight": 0.8},
+      "targets": {
+        "fuzz_rms_y255": {"range": [3.0, 8.0], "source": "VISUAL_TARGET.md: Surface fuzz amount, felt/fleece"},
+        "sheen_p90_p50": {"range": [1.08, 1.22], "source": "VISUAL_TARGET.md: Sheen/roughness read, cloth/felt"},
+        "saturation_retention_percent": {"range": [75.0, 110.0], "source": "VISUAL_TARGET.md: Material colour saturation"}
+      }
+    },
+    "trouser pile/3": {
+      "description": "Quiet dark trouser pile (01 closeups, B09): a short, dense, even pile; low albedo and clump contrast so dark fabric reads as soft cloth, not coarse shag; dye-tinted sheen keeps charcoal from greying.",
+      "swatch_srgb": [38, 34, 34],
+      "surface": {"roughness": 0.96, "sheen_weight": 0.4, "sheen_roughness": 0.58, "sheen_tint": 0.6, "saturation_compensation": 1.0},
+      "fibre": {"kind": "noise", "scale_per_reference": 72.0, "detail": 6.0, "roughness": 0.7, "distortion": 0.8, "anisotropy": [1.0, 0.85, 1.0], "strength": 0.2, "distance_fraction": 0.0035},
+      "micro_relief": {"scale_per_reference": 110.0, "strength": 0.5, "color_strength": 0.08, "roughness_variation": 0.15},
+      "surface_detail": {"enabled": true, "lump_scale_per_reference": 6.0, "lump_strength": 0.18, "lump_albedo": 0.02, "fibre_direction": [1.0, 1.0, 2.5], "fibre_scale_per_reference": 30.0, "fibre_strength": 0.1, "fibre_albedo": 0.02, "irregularity": 1.0, "distance_fraction": 0.025},
+      "nap": {"enabled": true, "scale_per_reference": 24.0, "threshold": 0.6, "softness": 0.08, "value_gain": 0.06, "value_shadow": 0.0, "sheen_gain": 0.25, "roughness_drop": 0.05, "fibre_gloss": 0.1, "anisotropy": [1.0, 1.0, 0.5]},
+      "fibres": {"enabled": true, "density_per_cm2": 48.0, "length_mm": 3.0, "curl": 0.25, "lean": 0.5, "lod": 0.25, "color_variation": 0.12, "lean_variation": 0.3, "root_transparency": 0.3, "tip_transparency": 0.55},
+      "silhouette": {"enabled": true, "weight": 0.7},
+      "targets": {
+        "fuzz_rms_y255": {"range": [1.0, 6.0], "source": "VISUAL_TARGET.md: Surface fuzz amount, felt/fleece; T-092 quiet pile (lower ceiling than fleece)"},
+        "sheen_p90_p50": {"range": [1.05, 1.22], "source": "VISUAL_TARGET.md: Sheen/roughness read, cloth/felt"},
+        "saturation_retention_percent": null
+      }
+    },
+    "vest felt/3": {
+      "description": "Dense, smooth pressed wool felt (G07, ref_42 vest): a fine, even boucle pebble, no bright nap speckle, a short uniform fuzz halo.",
+      "swatch_srgb": [144, 104, 104],
+      "surface": {"roughness": 0.93, "sheen_weight": 0.35, "sheen_roughness": 0.65, "sheen_tint": 0.7, "saturation_compensation": 1.06},
+      "fibre": {"kind": "noise", "scale_per_reference": 90.0, "detail": 6.0, "roughness": 0.7, "distortion": 0.6, "anisotropy": [1.0, 1.0, 1.0], "strength": 0.3, "distance_fraction": 0.0025},
+      "micro_relief": {"scale_per_reference": 120.0, "strength": 0.6, "color_strength": 0.1, "roughness_variation": 0.15},
+      "surface_detail": {"enabled": true, "lump_scale_per_reference": 5.0, "lump_strength": 0.2, "lump_albedo": 0.025, "fibre_direction": [1.0, 1.0, 1.4], "fibre_scale_per_reference": 30.0, "fibre_strength": 0.1, "fibre_albedo": 0.02, "irregularity": 1.2, "distance_fraction": 0.025},
+      "nap": {"enabled": false},
+      "fibres": {"enabled": true, "density_per_cm2": 30.0, "length_mm": 2.2, "curl": 0.4, "lean": 0.35, "lod": 0.25, "color_variation": 0.12, "lean_variation": 0.4, "root_transparency": 0.35, "tip_transparency": 0.6},
+      "silhouette": {"enabled": true, "weight": 0.6},
+      "targets": {
+        "fuzz_rms_y255": {"range": [1.5, 6.0], "source": "VISUAL_TARGET.md: Surface fuzz amount, felt/fleece; T-092 dense smooth felt"},
+        "sheen_p90_p50": {"range": [1.05, 1.22], "source": "VISUAL_TARGET.md: Sheen/roughness read, cloth/felt"},
+        "saturation_retention_percent": {"range": [75.0, 110.0], "source": "VISUAL_TARGET.md: Material colour saturation"}
+      }
+    },
+    "cuff fleece/3": {
+      "description": "Cream sherpa fleece for boot cuffs (G08): soft curly clumps with long, leaning, fading fibres so the cuff reads as a soft fleece roll, not a hard rim.",
+      "swatch_srgb": [222, 206, 182],
+      "surface": {"roughness": 0.97, "sheen_weight": 0.6, "sheen_roughness": 0.7, "sheen_tint": 0.4, "saturation_compensation": 1.0},
+      "fibre": {"kind": "noise", "scale_per_reference": 30.0, "detail": 8.0, "roughness": 0.75, "distortion": 2.0, "anisotropy": [1.0, 0.85, 1.0], "strength": 0.5, "distance_fraction": 0.008},
+      "micro_relief": {"scale_per_reference": 64.0, "strength": 0.6, "color_strength": 0.1, "roughness_variation": 0.2},
+      "surface_detail": {"enabled": true, "lump_scale_per_reference": 10.0, "lump_strength": 0.35, "lump_albedo": 0.05, "fibre_direction": [1.0, 1.0, 1.2], "fibre_scale_per_reference": 24.0, "fibre_strength": 0.15, "fibre_albedo": 0.03, "irregularity": 2.0, "distance_fraction": 0.03},
+      "nap": {"enabled": true, "scale_per_reference": 18.0, "threshold": 0.58, "softness": 0.08, "value_gain": 0.1, "value_shadow": 0.05, "sheen_gain": 0.4, "roughness_drop": 0.1, "fibre_gloss": 0.15, "anisotropy": [1.0, 1.0, 1.0], "bump_strength": 0.3, "distance_fraction": 0.01},
+      "fibres": {"enabled": true, "density_per_cm2": 50.0, "length_mm": 6.5, "curl": 0.6, "lean": 0.45, "lod": 0.25, "color_variation": 0.12, "lean_variation": 0.6, "root_transparency": 0.25, "tip_transparency": 0.6},
+      "silhouette": {"enabled": true, "weight": 0.9},
+      "targets": {
+        "fuzz_rms_y255": {"range": [3.0, 8.0], "source": "VISUAL_TARGET.md: Surface fuzz amount, felt/fleece"},
+        "sheen_p90_p50": {"range": [1.08, 1.22], "source": "VISUAL_TARGET.md: Sheen/roughness read, cloth/felt"},
+        "saturation_retention_percent": null
+      }
+    },
+    "brushed cotton/3": {
+      "description": "Quiet, matte brushed cotton (G08 shorts, ref_42 shirt and shorts): a very fine plain weave under a soft brushed surface, so a blouse or shorts read as cloth without the coarse texture of woven cotton at shot size.",
+      "swatch_srgb": [110, 114, 103],
+      "surface": {"roughness": 0.9, "sheen_weight": 0.22, "sheen_roughness": 0.6, "sheen_tint": 0.6},
+      "fibre": {"kind": "weave", "scale_per_reference": 70.0, "detail": 3.0, "roughness": 0.55, "distortion": 0.2, "anisotropy": [1.0, 1.0, 1.0], "strength": 0.12, "distance_fraction": 0.0018},
+      "micro_relief": {"scale_per_reference": 140.0, "strength": 0.4, "color_strength": 0.05, "roughness_variation": 0.1},
+      "surface_detail": {"enabled": true, "lump_scale_per_reference": 5.0, "lump_strength": 0.15, "lump_albedo": 0.02, "fibre_direction": [1.0, 1.0, 4.0], "fibre_scale_per_reference": 40.0, "fibre_strength": 0.06, "fibre_albedo": 0.015, "irregularity": 1.0, "distance_fraction": 0.018},
+      "nap": {"enabled": false},
+      "fibres": {"enabled": true, "density_per_cm2": 10.0, "length_mm": 1.2, "curl": 0.2, "lean": 0.4, "lod": 0.25, "color_variation": 0.1, "lean_variation": 0.4, "root_transparency": 0.4, "tip_transparency": 0.7},
+      "silhouette": {"enabled": true, "weight": 0.55},
+      "targets": {
+        "fuzz_rms_y255": {"range": [0.5, 5.0], "source": "VISUAL_TARGET.md: Surface fuzz amount, fabric surface; T-092 quiet brushed cotton"},
+        "sheen_p90_p50": {"range": [1.03, 1.2], "source": "VISUAL_TARGET.md: Sheen/roughness read, cloth/felt"},
+        "saturation_retention_percent": {"range": [75.0, 110.0], "source": "VISUAL_TARGET.md: Material colour saturation"}
+      }
+    },
+    "skin-felt/3": {
+      "description": "Warm porcelain-peach felt skin (T-092; skin-felt/2 plus warmth): a redder subsurface profile, a dye-tinted, lower rim sheen (less white lift on thin hands), warmer creases and a broad occlusion warmth that darkens and warms skin in shadow, under hair and glasses, and between the fingers. Non-emissive.",
+      "swatch_srgb": [236, 196, 172],
+      "surface": {"roughness": 0.76, "specular_ior_level": 0.22, "subsurface_weight": 0.5, "subsurface_scale_fraction": 0.05, "sheen_weight": 0.4, "sheen_roughness": 0.45, "sheen_tint": 0.6},
+      "fibre": {"kind": "noise", "scale_per_reference": 220.0, "detail": 6.0, "roughness": 0.7, "distortion": 0.6, "anisotropy": [1.0, 0.9, 1.0], "strength": 0.12, "distance_fraction": 0.0012},
+      "micro_relief": {"scale_per_reference": 120.0, "strength": 0.5, "distance_fraction": 0.0012, "color_strength": 0.03, "roughness_variation": 0.08},
+      "silhouette": {"enabled": true, "weight": 0.5, "width": 2.6, "roughness": 0.6},
+      "skin": {
+        "emission": false,
+        "subsurface_radius": [1.0, 0.42, 0.26],
+        "crease": {"enabled": true, "distance_fraction": 0.04, "samples": 16, "tint_srgb": [234, 172, 150], "strength": 0.26},
+        "flock": {"enabled": true, "scale_per_reference": 700.0, "albedo": 0.035},
+        "warmth": {"enabled": true, "distance_fraction": 0.16, "samples": 16, "tint_srgb": [226, 162, 140], "strength": 0.3}
+      },
+      "targets": {
+        "fuzz_rms_y255": {"range": [0.0, 3.0], "source": "VISUAL_TARGET.md: Skin remains below 3/255"},
+        "sheen_p90_p50": {"range": [1.12, 1.32], "source": "VISUAL_TARGET.md: Sheen/roughness read, skin"},
+        "saturation_retention_percent": {"range": [75.0, 110.0], "source": "VISUAL_TARGET.md: Material colour saturation"}
+      }
+    }
+  }
+}

@@ -1,0 +1,4 @@
+2026-11-18T16:55:00Z preview start: recipe fe86a96ad43a {'engine': 'cycles', 'samples': 2, 'px': 120}
+2026-11-18T16:59:24Z preview pass: /tmp/claude-0/-home-user-Animation/62df57c7-2a76-5d85-bea8-8636d6c8cd34/scratchpad/sheet_boy_yellow_hoodie/preview/preview.jpg
+2026-11-18T17:04:16Z sheet start: recipe fe86a96ad43a {'engine': 'cycles', 'samples': 16, 'px': 360}
+2026-11-18T17:19:32Z sheet written: /tmp/claude-0/-home-user-Animation/62df57c7-2a76-5d85-bea8-8636d6c8cd34/scratchpad/sheet_boy_yellow_hoodie/sheet.jpg 840x2048

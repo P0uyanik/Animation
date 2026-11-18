@@ -1,0 +1,2 @@
+2026-11-18T17:34:28Z sheet start: recipe 5ce9ddb5f6df {'engine': 'cycles', 'samples': 16, 'px': 360}
+2026-11-18T17:53:09Z sheet written: /tmp/claude-0/-home-user-Animation/62df57c7-2a76-5d85-bea8-8636d6c8cd34/scratchpad/sheet_girl_auburn_bun_glasses/sheet.jpg 840x2048

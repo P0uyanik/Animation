@@ -20,6 +20,14 @@ SKIN_SCHEMA = "plush-studio.material-presets/2"
 SKIN_FAMILY = "presets/2"
 SKIN_PRESETS_PATH = os.path.join(HERE, "skin_presets.json")
 SKIN_CREASE_FIELDS = ("distance_fraction", "samples", "strength")
+# T-092 materials round 2 (presets/3): a third self-contained library (fabric ids and one skin id). Opt-in only: an id
+# of presets.json or skin_presets.json always resolves from its own file first, so presets/1 and presets/2 build
+# exactly as before; only an id of presets_r2.json resolves from here. A presets/3 preset with a ``skin`` section gets
+# the presets/2 skin layer plus the optional ``skin.warmth`` occlusion warmth (see _skin_warmth).
+R2_SCHEMA = "plush-studio.material-presets/3"
+R2_FAMILY = "presets/3"
+R2_PRESETS_PATH = os.path.join(HERE, "presets_r2.json")
+SKIN_WARMTH_FIELDS = ("distance_fraction", "samples", "strength")
 KINDS = {"noise", "yarn", "knit", "weave", "denim"}
 FIBRE_LODS = {"close", "wide", "off"}
 FIBRE_GROUP = "PS Shared Surface Fibres/1"
@@ -146,6 +154,70 @@ def validate_skin_library(data):
             continue
         resolved = deep_merge((data.get("defaults") or {}).get("skin") or {}, raw.get("skin") or {})
         errors += _skin_section_errors(resolved, f"{name}.skin")
+    return errors
+
+
+def load_r2_library(path=R2_PRESETS_PATH):
+    """The presets/3 family (T-092). Validated with the presets/1 rules plus the skin rules for skin presets."""
+    with open(path, encoding="utf-8") as handle:
+        data = json.load(handle)
+    errors = validate_r2_library(data)
+    if errors:
+        raise ValueError("invalid presets/3 library: " + "; ".join(errors))
+    return data
+
+
+def _skin_warmth_errors(warmth, label):
+    if warmth is None:
+        return []
+    if not isinstance(warmth, dict) or not isinstance(warmth.get("enabled"), bool):
+        return [f"{label}.enabled must be a boolean"]
+    errors = []
+    for field in SKIN_WARMTH_FIELDS:
+        value = warmth.get(field)
+        if isinstance(value, bool) or not isinstance(value, (int, float)) or value < 0:
+            errors.append(f"{label}.{field} must be non-negative")
+    if isinstance(warmth.get("strength"), (int, float)) and warmth["strength"] > 0.6:
+        errors.append(f"{label}.strength must be at most 0.6 (a warm shading cue, not a recolour)")
+    if isinstance(warmth.get("distance_fraction"), (int, float)) and warmth["distance_fraction"] > 0.5:
+        errors.append(f"{label}.distance_fraction must be at most 0.5")
+    tint = warmth.get("tint_srgb")
+    if (not isinstance(tint, list) or len(tint) != 3 or
+            not all(isinstance(v, (int, float)) and not isinstance(v, bool) and 0 <= v <= 255 for v in tint)):
+        errors.append(f"{label}.tint_srgb must be three 0..255 values")
+    elif not (tint[0] >= tint[1] >= tint[2]):
+        errors.append(f"{label}.tint_srgb must be warm (R >= G >= B)")
+    return errors
+
+
+def validate_r2_library(data):
+    errors = []
+    if data.get("schema") != R2_SCHEMA:
+        errors.append(f"schema must be {R2_SCHEMA}")
+    if data.get("family") != R2_FAMILY:
+        errors.append(f"family must be {R2_FAMILY}")
+    common = dict(data, schema=SCHEMA)
+    if "skin" in (data.get("defaults") or {}):
+        errors.append("defaults must not contain skin (only skin presets carry a complete skin section)")
+    errors += validate_library(common)
+    presets = data.get("presets") if isinstance(data.get("presets"), dict) else {}
+    try:
+        taken = set(load_library()["presets"])
+    except (OSError, ValueError):
+        taken = set()
+    try:
+        taken |= set(load_skin_library()["presets"])
+    except (OSError, ValueError):
+        pass
+    for name, raw in presets.items():
+        if name in taken:
+            errors.append(f"{name}: presets/3 ids must not reuse a presets/1 or presets/2 id")
+        if not isinstance(name, str) or not name.endswith("/3"):
+            errors.append(f"{name}: presets/3 ids end in /3")
+        if not isinstance(raw, dict) or "skin" not in raw:
+            continue
+        errors += _skin_section_errors(raw["skin"], f"{name}.skin")
+        errors += _skin_warmth_errors((raw["skin"] or {}).get("warmth"), f"{name}.skin.warmth")
     return errors
 
 
@@ -279,14 +351,42 @@ def is_skin_preset(name):
     return name in load_skin_library()["presets"]
 
 
+def is_r2_preset(name):
+    """True for an opt-in presets/3 id (T-092)."""
+    if not isinstance(name, str) or not os.path.exists(R2_PRESETS_PATH):
+        return False
+    return name in load_r2_library()["presets"]
+
+
+def is_known_preset(name):
+    """True for an id of any preset family (presets/1, the presets/2 skin family, presets/3)."""
+    return isinstance(name, str) and (name in load_library()["presets"] or is_skin_preset(name) or is_r2_preset(name))
+
+
+def preset_family(name):
+    """The family string ("presets/1", "presets/2", "presets/3") an id resolves from, or None when unknown."""
+    if not isinstance(name, str):
+        return None
+    if name in load_library()["presets"]:
+        return "presets/1"
+    if is_skin_preset(name):
+        return SKIN_FAMILY
+    if is_r2_preset(name):
+        return R2_FAMILY
+    return None
+
+
 def library_for(name, library=None):
     """The library a preset id resolves from: ``library`` (default presets.json) when it holds the id, otherwise the
-    presets/2 skin family. presets/1 ids therefore always resolve exactly as before."""
+    presets/2 skin family, otherwise presets/3. presets/1 and presets/2 ids therefore always resolve exactly as
+    before."""
     library = library or load_library()
     if name in library["presets"]:
         return library
     if is_skin_preset(name):
         return load_skin_library()
+    if is_r2_preset(name):
+        return load_r2_library()
     return library
 
 
@@ -299,6 +399,8 @@ def resolve_preset(name, overrides=None, library=None):
     resolved["name"] = name
     if library.get("family") == SKIN_FAMILY:
         resolved["family"] = SKIN_FAMILY
+    elif library.get("family") == R2_FAMILY:
+        resolved["family"] = R2_FAMILY
     return resolved
 
 
@@ -321,7 +423,8 @@ def validate_assignments(materials_spec, library=None):
         if not isinstance(assignment, dict):
             errors.append(f"{label} must be an object")
             continue
-        if assignment.get("preset") not in library["presets"] and not is_skin_preset(assignment.get("preset")):
+        if (assignment.get("preset") not in library["presets"] and not is_skin_preset(assignment.get("preset")) and
+                not is_r2_preset(assignment.get("preset"))):
             errors.append(f"{label}.preset is unknown: {assignment.get('preset')}")
         color = assignment.get("base_color_srgb")
         if (not isinstance(color, list) or len(color) != 3 or
@@ -740,6 +843,37 @@ def _skin_layer(material, principled, vector, reference, skin, base):
         links.new(mix.outputs[0], base)
 
 
+def _skin_warmth(material, reference, warmth, base):
+    """T-092 presets/3 occlusion warmth: a broad ambient occlusion (``distance_fraction`` x reference, much wider than
+    the crease) multiplies the albedo towards a warm, deeper ``tint_srgb`` by up to ``strength``. Open, convex skin
+    (cheeks, forehead in the open) keeps its colour; skin in shadow - under a fringe or glasses, under the chin,
+    between fingers and on the small, enclosed hands - turns warmer and slightly deeper, as dyed felt does where
+    light scatters between folds. Albedo only (no emission): shadows can never glow."""
+    if not warmth or not warmth.get("enabled") or float(warmth.get("strength", 0.0)) <= 0.0:
+        return None
+    nodes, links = material.node_tree.nodes, material.node_tree.links
+    ao = _new(nodes, "ShaderNodeAmbientOcclusion", "Skin Warmth Occlusion")
+    ao.samples = max(1, int(warmth.get("samples", 16)))
+    ao.inputs["Distance"].default_value = reference * float(warmth["distance_fraction"])
+    factor = _new(nodes, "ShaderNodeMath", "Skin Warmth Factor")
+    factor.operation = "MULTIPLY_ADD"  # (1 - AO) * strength
+    factor.use_clamp = True
+    links.new(ao.outputs["AO"], factor.inputs[0])
+    factor.inputs[1].default_value = -float(warmth["strength"])
+    factor.inputs[2].default_value = float(warmth["strength"])
+    source = next((link.from_socket for link in base.links), None)
+    mix = _new(nodes, "ShaderNodeMixRGB", "Skin Warmth Mix")
+    mix.blend_type = "MULTIPLY"
+    links.new(factor.outputs[0], mix.inputs[0])
+    if source is None:
+        mix.inputs[1].default_value = base.default_value
+    else:
+        links.new(source, mix.inputs[1])
+    mix.inputs[2].default_value = (*_srgb_to_linear(tuple(warmth["tint_srgb"])), 1)
+    links.new(mix.outputs[0], base)
+    return mix
+
+
 def _add_rim_layer(material, principled, preset, base_color, breakup=None, sheen_tint=0.0):
     silhouette = preset["silhouette"]
     if not silhouette.get("enabled"):
@@ -878,6 +1012,9 @@ def apply_preset(material, preset_name, base_color_srgb=None, reference_size_m=N
     _nap_layer(material, principled, anis.outputs[0], reference, preset["nap"], base)
     if preset.get("family") == SKIN_FAMILY:
         _skin_layer(material, principled, ref.outputs[0], reference, preset["skin"], base)
+    elif preset.get("family") == R2_FAMILY and preset.get("skin"):
+        _skin_layer(material, principled, ref.outputs[0], reference, preset["skin"], base)
+        _skin_warmth(material, reference, preset["skin"].get("warmth"), base)
     if float(surface["alpha"]) < 1.0:
         try:
             material.surface_render_method = "DITHERED"
@@ -889,6 +1026,8 @@ def apply_preset(material, preset_name, base_color_srgb=None, reference_size_m=N
     material["ps_material_reference_size_m"] = reference
     if preset.get("family") == SKIN_FAMILY:
         material["ps_material_family"] = SKIN_FAMILY
+    elif preset.get("family") == R2_FAMILY:
+        material["ps_material_family"] = R2_FAMILY
     return material
 
 

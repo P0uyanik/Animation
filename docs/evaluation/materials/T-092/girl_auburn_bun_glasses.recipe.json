@@ -1,0 +1,104 @@
+{
+ "schema": "plush-studio.review-recipe/1",
+ "task": "T-092",
+ "note": "T-092 materials round 2: current approved girl_auburn_bun_glasses 0.11.0 vs the same spec with the T-092 candidate override (presets/3: material assignments only). Same cameras, light (character_neutral/1), samples as the T-087 recipe.",
+ "character": "girl_auburn_bun_glasses",
+ "inputs": {
+  "main": "4910b69"
+ },
+ "baseline": {
+  "version": "0.11.0",
+  "label": "0.11.0"
+ },
+ "candidate": {
+  "spec": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.11.0.spec.json",
+  "overrides": [
+   "assets/characters/girl_auburn_bun_glasses/spec/candidates/T-092/girl_auburn_bun_glasses.materials_r2.override.json"
+  ],
+  "sha": "7868e2d",
+  "label": "0.11.0 + T-092"
+ },
+ "compare": {
+  "variant": "master",
+  "pose": "apose",
+  "allow_apose": true
+ },
+ "cameras": {
+  "lens_mm": 70,
+  "sensor_mm": 36,
+  "elevation_deg": 5,
+  "framing": {
+   "body": {
+    "target": [
+     0.0,
+     0.0,
+     0.56
+    ],
+    "frame_height_m": 1.26,
+    "aspect": 1.6
+   },
+   "face": {
+    "target": [
+     0.0,
+     0.0,
+     0.735
+    ],
+    "frame_height_m": 0.36,
+    "aspect": 1.0
+   }
+  },
+  "rows": {
+   "front": {
+    "reference_view": "sheet30_front"
+   },
+   "threequarter": {
+    "reference_view": "sheet30_front_left"
+   },
+   "side": {
+    "reference_view": "sheet30_left"
+   },
+   "back": {
+    "reference_view": "sheet30_back"
+   },
+   "face_front": {
+    "reference": {
+     "file": "uploads/ref_30.webp",
+     "crop": [
+      440,
+      620,
+      712,
+      840
+     ],
+     "label": "ref_30 Neutral"
+    },
+    "yaw_deg": 0
+   },
+   "face_threequarter": {
+    "reference": {
+     "file": "uploads/ref_30.webp",
+     "crop": [
+      345,
+      90,
+      490,
+      260
+     ],
+     "label": "ref_30 front-left"
+    },
+    "yaw_deg": -45
+   }
+  }
+ },
+ "light": {
+  "calibration": "character_neutral/1"
+ },
+ "render": {
+  "engine": "cycles",
+  "samples": 16,
+  "px": 360
+ },
+ "preview": {
+  "engine": "cycles",
+  "samples": 2,
+  "px": 120
+ }
+}

@@ -226,8 +226,10 @@ def main():
     neutral_material = G.material("M_swatch_neutral", (128, 128, 128), roughness=1.0, specular=0.0)
     library = MATERIALS.load_library()
     selected = [item.strip() for item in args.presets.split(",") if item.strip()] or list(library["presets"])
-    # presets/1 ids by default; ids of the presets/2 skin family (T-066, skin_presets.json) only when named
-    unknown = [name for name in selected if name not in library["presets"] and not MATERIALS.is_skin_preset(name)]
+    # presets/1 ids by default; ids of the presets/2 skin family (T-066, skin_presets.json) and of presets/3 (T-092,
+    # presets_r2.json) only when named
+    unknown = [name for name in selected if name not in library["presets"] and not MATERIALS.is_skin_preset(name)
+               and not MATERIALS.is_r2_preset(name)]
     if unknown:
         raise SystemExit(f"unknown presets: {unknown}")
     entries = []
