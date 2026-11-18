@@ -18,12 +18,21 @@ The boy's largest gain was at three-quarter, where visible-eye IoU rose from 0.2
 
 Grey shows the reference figure, magenta the aligned candidate contour, teal the annotated eye region and gold the visible candidate eye pixels. White lines join reference landmarks to their measured positions. Scores average figure IoU, annotated eye IoU and normalised landmark agreement in each view. Higher is better for the composite and IoU. Lower is better for the individual landmark errors in the CSVs.
 
-Both `recipe.py preview` runs passed. Upper arms measured 12° from vertical in both boy columns and 32° in both girl columns. The reviewed previews preceded the 320 px Workbench renders. Each six-row sheet uses the T-087 renderer, pose checks and compositor, with reference, approved and candidate columns and identical cameras for both builds. **The official T-087 strict sheets are pending.** The unmodified `recipe.py sheet` rejects `render.engine=workbench` and requires Cycles. The saved recipes specify 1-sample Cycles for that stage. All images delivered here used Workbench for the Blender columns.
+Both `recipe.py preview` runs passed. Upper arms measured 12° from vertical in both boy columns and 32° in both girl columns. The reviewed previews preceded the 320 px Workbench renders. Each six-row sheet uses the T-087 renderer, pose checks and compositor, with reference, approved and candidate columns and identical cameras for both builds.
 
 | Character | Recipe | Preview record | Workbench sheet record |
 | --- | --- | --- | --- |
 | Boy | [Input](boy/recipe.json) · [Resolved](boy/recipe.resolved.json) | [Pose and cameras](boy/preview.json) | [Settings, cameras and times](boy/workbench-sheet.json) |
 | Girl | [Input](girl/recipe.json) · [Resolved](girl/recipe.resolved.json) | [Pose and cameras](girl/preview.json) | [Settings, cameras and times](girl/workbench-sheet.json) |
+
+## T-087 strict Cycles sheets
+
+| Character | Strict sheet | Recipe |
+| --- | --- | --- |
+| Boy, approved 2.0.0 | [Reference, approved and fit candidate](boy/strict-sheet.jpg) | [Boy strict recipe](boy/strict-recipe.json) |
+| Girl, approved 0.11.0 | [Reference, approved and fit candidate](girl/strict-sheet.jpg) | [Girl strict recipe](girl/strict-recipe.json) |
+
+Both strict recipes passed the 2-spp, 120 px Cycles preview before the 16-spp, 360 px sheet render. Both use `fit: head` for the front and three-quarter face cameras. On both 840 x 2048 JPEGs, the approved and candidate face rows show the full head from hair top to chin at both angles. The T-087 reference crops clip the boy's hair and chin in front view and the girl's bun at both angles.
 
 ## Wall time
 
