@@ -6698,7 +6698,7 @@
     "vertices": 130
    }
   },
-  "meta_sha256": "9ee83a76df79d1439c33df255c2628a263ed1510202d95cafb5849ca562cec23"
+  "meta_sha256": "127cc33ac5d1adc436fbfdf1072dcd9ee7cf9fc95f653775b0b396a8137ab5e2"
  },
  "fingerprint_sha256": "8ea415de21f043d2e568e532fe51f770dbd23f3c427cc8a8d6a9d7e732be2fc5",
  "note": "Regression baseline candidate. Approved only once committed by the Supervisor (guarded path).",
@@ -6710,17 +6710,17 @@
   "seed": 0
  },
  "renders": {
-  "face_closeup": "fadb496e8f38b670f3130f06200923b180ddc58fd2a1f95edb685ec2f7f2a29a",
-  "turn_back": "34e0636b2f8dce79164e197961580fd63268586ab161e76154b1b66ff9825332",
-  "turn_front": "4c709124f0b4531e9e62fd63c5bb26f3e97e44bd5b0cb11b3af4b103a4fd6f80",
-  "turn_left": "a9c132eeb3a1a0d917bfe6980e39675e45033af8f455d812b1290a41ea12fc68",
-  "turn_right": "ca9650a9717e193739b711870bc9b8a20d84bf560789f7b4375d46647215fa6a"
+  "face_closeup": "922f8530f37a9239c5db768841c58c2227dc1ffabcfe09932601f95e2283c904",
+  "turn_back": "66aa42d42977189691adb9e70be035dc46610e1aace7bba8e9fc8138a6800f87",
+  "turn_front": "3d3f619026b829a5974fddfc0e7f1a6d0cb484369bf1c4c880e2c950f3fbb563",
+  "turn_left": "5aeec928bf892cefe36a17f3148f415e35efca22b6b63e93f99fb0072b521478",
+  "turn_right": "7cb028dba9ae1f1e1fb485b5ec3a663316de7952a1159ff30263332f6affb290"
  },
  "schema": "plush-studio.regression-golden/1",
- "source_commit": "678c9edb557e38670eef5fe0a78ac90f733d5cd2",
+ "source_commit": "34b0bcc30c2fcde6f91ed4c3565a24d9fbdc4dcb",
  "spec_inputs": [
   "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.11.0.spec.json"
  ],
- "spec_inputs_sha256": "eb45d79c0f28bac6f228d569e25200285d871bbd0a6cafb503259331474296b2",
+ "spec_inputs_sha256": "40d4310fe512635db34249451b491fb9a61c0e4b61451a5acff8115840802966",
  "spec_version": "0.11.0"
 }
