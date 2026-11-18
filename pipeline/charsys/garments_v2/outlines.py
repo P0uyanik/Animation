@@ -10,6 +10,12 @@ leg_split (``shorts``): bloomer legs read as two legs. From ``start`` thigh radi
   (share of the distance; a smooth ramp below the split top, ``hem_amount`` of it kept at the hem, so the hem bands
   follow), but never past the body's own inner leg surface (measured) less ``clearance_m`` and the garment
   thickness, so the inner wall ends between the legs and a crease opens at the front and back centre; the gusset is shortened by ``gusset_rise`` (share of its drop).
+  Opt-in crotch arch (T-093b; the defaults keep the T-093 output): the shell's crotch bridge joins the two legs at
+  the front and back centre, so pulling the inner halves apart only stretches it and the hem reads as one band
+  between the legs. ``crotch_lift`` (0..0.95, default 0 = off) raises the fabric near the centre line into an inverted
+  V: at the centre the hem rises by that share of the split height, falling off to no lift at ``arch_width`` hip
+  joint offsets from the centre with exponent ``arch_power``; every piece below the split top (gusset included) is
+  compressed into the space above the arch, so the rows keep their order.
 cuff_roll (``boots``): a turned-down fleece cuff around the top of the shaft instead of the ``garment/1`` cuff tube:
   ``height_m`` deep, ``thickness_m`` proud of the shaft at its fullest, rolling over the rim into the boot down to
   ``inner_m``; ``lumps`` (0..1) gives the felt roll a soft irregular surface. Material part ``cuff`` (falls back to
@@ -24,7 +30,8 @@ from garments import shapes as S
 
 HEM_BREAK = {"height_m": 0.05, "flare_m": 0.004, "folds": 2, "fold_depth_m": 0.002, "front_drop_m": 0.006,
              "pleats": 0, "pleat_depth_m": 0.002}
-LEG_SPLIT = {"amount": 0.6, "start": 0.5, "hem_amount": 1.0, "clearance_m": 0.002, "gusset_rise": 0.5}
+LEG_SPLIT = {"amount": 0.6, "start": 0.5, "hem_amount": 1.0, "clearance_m": 0.002, "gusset_rise": 0.5,
+             "crotch_lift": 0.0, "arch_width": 0.6, "arch_power": 2.0}
 CUFF_ROLL = {"height_m": 0.03, "thickness_m": 0.008, "inner_m": 0.012, "lumps": 0.15, "segments": 72}
 
 
@@ -54,7 +61,8 @@ def validate_hem_break(v, name):
 def validate_leg_split(v, name):
     _check(v, name, "leg_split", LEG_SPLIT, {"amount": (0.0, 1.0), "start": (0.0, 1.5), "hem_amount": (0.0, 1.0),
                                             "clearance_m": (0.0, 0.02),
-                                            "gusset_rise": (0.0, 1.0)})
+                                            "gusset_rise": (0.0, 1.0), "crotch_lift": (0.0, 0.95),
+                                            "arch_width": (0.1, 1.5), "arch_power": (0.5, 4.0)})
 
 
 def validate_cuff_roll(v, name):
@@ -160,6 +168,29 @@ def leg_split(cfg, mine, P, H, J, fit, body=None):
     inner = {s: _inner_surface(body, s, bottom, crotch, cell) for s in (1.0, -1.0)} if body is not None else None
     span = max(crotch - bottom, 1e-9)
     moved, max_move, gap = 0, 0.0, None
+    # the crotch arch first, on the unsplit shell (the bridge faces join vertices that start near the centre line)
+    lift = float(st["crotch_lift"])
+    arch = None
+    if lift > 0.0:
+        aw = float(st["arch_width"]) * hx[1.0]
+        ap = float(st["arch_power"])
+        arched = 0
+        for ob in mine:
+            if ob.type != "MESH":
+                continue
+            inv, mw = ob.matrix_world.inverted(), ob.matrix_world
+            for v in ob.data.vertices:
+                p = mw @ v.co
+                if not p.z < crotch or abs(p.x) >= aw:
+                    continue
+                za = bottom + lift * span * (1.0 - (abs(p.x) / aw) ** ap)  # the arch (new hem) at this x
+                f = max(0.0, (p.z - bottom) / span)
+                q = Vector((p.x, p.y, za + f * (crotch - za)))
+                v.co = inv @ q
+                arched += 1
+            ob.data.update()
+        arch = {"crotch_lift": lift, "arch_top_z_m": round(bottom + lift * span, 4), "arch_half_width_m": round(aw, 4),
+                "vertices_arched": arched}
     for ob in mine:
         if ob.type != "MESH" or ob.get("ps_garment_part") == "gusset":
             continue
@@ -203,8 +234,11 @@ def leg_split(cfg, mine, P, H, J, fit, body=None):
         for v, p in zip(ob.data.vertices, gp):
             v.co = inv @ Vector((p.x, p.y, top - (top - p.z) * (1.0 - rise)))
         ob.data.update()
-    return {"split_top_z_m": round(crotch, 4), "hem_z_m": round(bottom, 4), "vertices_moved": moved,
-            "max_move_m": round(max_move, 5), "hem_gap_m": gap, "gusset_rise": rise}
+    out = {"split_top_z_m": round(crotch, 4), "hem_z_m": round(bottom, 4), "vertices_moved": moved,
+           "max_move_m": round(max_move, 5), "hem_gap_m": gap, "gusset_rise": rise}
+    if arch:
+        out["arch"] = arch
+    return out
 
 
 def cuff_roll(C, body, cfg, mine, P, H, J, G, fit):

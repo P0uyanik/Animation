@@ -1,0 +1,387 @@
+{
+ "override": {
+  "generators": {
+   "garment": "garment/2"
+  },
+  "clothing": {
+   "generator": "garment/2",
+   "provenance": "T-058: char_C, #08 turnaround and clothing breakdown: mustard-yellow fleece hoodie (hood down, kangaroo pocket, cream drawstrings, ribbed cuffs and hem, loose), charcoal-black fleece joggers (loose, bunched at the ankle), yellow suede sneakers with cream soles and toe caps. T-068 candidate: sneakers (sole, toe cap, laces, collar, tongue), backpack (bag, straps over the shoulders, front pocket, zips), hood volume and underarm fix; read from canon29 front/side/back/3-4 and val27; values are my estimates, tuned by eye.",
+   "hide_body_faces": true,
+   "mask_margin_m": 0.015,
+   "collision": {
+    "enabled": true,
+    "offset_m": 0.002,
+    "radius_m": 0.08,
+    "falloff_m": 0.02,
+    "passes": 3
+   },
+   "max_influences": 4,
+   "defaults": {
+    "thickness_m": 0.0025,
+    "ease_m": 0.012,
+    "seam_radius_m": 0.0016
+   },
+   "garments": [
+    {
+     "type": "hoodie",
+     "name": "hoodie",
+     "ease_m": 0.02,
+     "sleeve_length": 0.98,
+     "sleeve_puff_m": 0.012,
+     "sleeve_puff_peak": 0.55,
+     "hem_z_m": 0.33,
+     "bands": {
+      "hem": true,
+      "cuff": true,
+      "rib_ridges": 3,
+      "cuff_rib_ridges": 3,
+      "cuff_radius_m": 0.0045
+     },
+     "shoulder_width": 1.0,
+     "dropped_shoulder": {
+      "start": 0.0,
+      "margin_m": 0.04
+     },
+     "hood": {
+      "rim_radius_m": 0.021,
+      "rim_rise_m": 0.05,
+      "rim_lift_m": 0.038,
+      "bag_height_m": 0.08,
+      "bag_drop_m": 0.05,
+      "bag_depth_m": 0.03,
+      "v_depth_m": 0.07,
+      "rim_back_radius_m": 0.03,
+      "bag_fullness": 0.7,
+      "bag_width_m": 0.1,
+      "bag_rise_m": 0.02,
+      "bag_taper": 0.45,
+      "bag_n": 2.4,
+      "edge_drop": 0.5,
+      "edge_radius_m": 0.008
+     },
+     "pocket": {
+      "width_bottom_m": 0.1,
+      "width_top_m": 0.072,
+      "height_m": 0.115,
+      "above_hem_m": 0.02,
+      "depth_m": 0.016,
+      "rim_radius_m": 0.0045
+     },
+     "drawstrings": {
+      "spacing_m": 0.02,
+      "length_m": 0.1,
+      "radius_m": 0.0034,
+      "tip_length_m": 0.011,
+      "tip_radius_m": 0.0042
+     },
+     "material": {
+      "preset": "fleece",
+      "base_color_srgb": [
+       204,
+       152,
+       62
+      ],
+      "reference_size_m": 0.3
+     },
+     "materials": {
+      "drawstring": {
+       "preset": "felt",
+       "base_color_srgb": [
+        226,
+        210,
+        184
+       ],
+       "reference_size_m": 0.05
+      },
+      "tip": {
+       "preset": "felt",
+       "base_color_srgb": [
+        62,
+        52,
+        48
+       ],
+       "reference_size_m": 0.02
+      }
+     },
+     "edge_finish": "rounded",
+     "armhole": "closed"
+    },
+    {
+     "type": "trousers",
+     "name": "trousers",
+     "length": 0.9865474905134607,
+     "ease_m": 0.016,
+     "puff_m": 0.006,
+     "puff_inner": 0.6,
+     "waist_z_m": 0.4,
+     "cuff": false,
+     "bands": {
+      "waist": false,
+      "cuff": false
+     },
+     "crotch": {
+      "type": "gusset",
+      "depth": 0.24162885384246072
+     },
+     "material": {
+      "preset": "fleece",
+      "base_color_srgb": [
+       38,
+       34,
+       34
+      ],
+      "reference_size_m": 0.3
+     },
+     "edge_finish": "rounded",
+     "hem_break": {
+      "height_m": 0.06,
+      "flare_m": 0.004,
+      "folds": 2,
+      "fold_depth_m": 0.0025,
+      "front_drop_m": 0.008
+     }
+    },
+    {
+     "type": "sneakers",
+     "name": "shoes",
+     "ease_m": 0.012,
+     "thickness_m": 0.0035,
+     "length_extra_m": 0.006084805895616872,
+     "width_extra_m": 0.0013325754783979496,
+     "height_m": 0.06354481539654953,
+     "plan_n": 2.6,
+     "dome_n": 2.6,
+     "toe_flare": 0.1,
+     "toe_drop": 0.36,
+     "sole": {
+      "thickness_m": 0.014,
+      "wrap_m": 0.007,
+      "margin_m": 0.0015
+     },
+     "toe_cap": {
+      "length": 0.27,
+      "slope": 0.5,
+      "thickness_m": 0.002
+     },
+     "laces": {
+      "count": 3,
+      "radius_m": 0.0026,
+      "span": 0.6,
+      "start": 0.08,
+      "end": 0.75
+     },
+     "collar": {
+      "radius_m": 0.0055,
+      "rise_m": 0.06,
+      "back_share": 0.15,
+      "falloff_m": 0.05
+     },
+     "opening": {
+      "length_m": 0.004,
+      "offset_m": 0.004
+     },
+     "tongue": {
+      "thickness_m": 0.003
+     },
+     "material": {
+      "preset": "felt",
+      "base_color_srgb": [
+       206,
+       156,
+       70
+      ],
+      "reference_size_m": 0.15
+     },
+     "materials": {
+      "sole": {
+       "preset": "felt",
+       "base_color_srgb": [
+        232,
+        222,
+        206
+       ],
+       "reference_size_m": 0.15
+      },
+      "laces": {
+       "preset": "cotton knit",
+       "base_color_srgb": [
+        232,
+        222,
+        206
+       ],
+       "reference_size_m": 0.05
+      },
+      "stripe": {
+       "preset": "felt",
+       "base_color_srgb": [
+        240,
+        236,
+        228
+       ],
+       "reference_size_m": 0.05
+      }
+     },
+     "stripes": {
+      "count": 2,
+      "width_m": 0.007,
+      "gap_m": 0.005,
+      "slope": 0.75,
+      "centre": -0.12,
+      "z_range": [
+       0.2,
+       0.95
+      ],
+      "side_min": 0.38
+     }
+    },
+    {
+     "type": "backpack",
+     "name": "backpack",
+     "width_m": 0.175,
+     "height_m": 0.22,
+     "depth_m": 0.068,
+     "top_drop_m": 0.07,
+     "clearance_m": 0.003,
+     "roundness": 5.5,
+     "puff": 0.15,
+     "pocket": {
+      "width": 0.64,
+      "height": 0.33,
+      "depth_m": 0.022,
+      "drop": 0.28
+     },
+     "zip": false,
+     "straps": {
+      "width_m": 0.022,
+      "thickness_m": 0.005,
+      "shoulder": 0.5,
+      "lift_m": 0.005
+     },
+     "handle": {
+      "radius_m": 0.004,
+      "width_m": 0.034
+     },
+     "material": {
+      "preset": "felt",
+      "base_color_srgb": [
+       44,
+       48,
+       74
+      ],
+      "reference_size_m": 0.2
+     },
+     "materials": {
+      "zip": {
+       "preset": "buttons/plastic",
+       "base_color_srgb": [
+        52,
+        44,
+        52
+       ],
+       "reference_size_m": 0.02
+      },
+      "flap": {
+       "preset": "felt",
+       "base_color_srgb": [
+        44,
+        48,
+        74
+       ],
+       "reference_size_m": 0.2
+      },
+      "tab": {
+       "preset": "felt",
+       "base_color_srgb": [
+        44,
+        48,
+        74
+       ],
+       "reference_size_m": 0.2
+      },
+      "pocket_flap": {
+       "preset": "felt",
+       "base_color_srgb": [
+        44,
+        48,
+        74
+       ],
+       "reference_size_m": 0.2
+      },
+      "pocket": {
+       "preset": "felt",
+       "base_color_srgb": [
+        44,
+        48,
+        74
+       ],
+       "reference_size_m": 0.2
+      },
+      "strap": {
+       "preset": "felt",
+       "base_color_srgb": [
+        44,
+        48,
+        74
+       ],
+       "reference_size_m": 0.2
+      },
+      "handle": {
+       "preset": "felt",
+       "base_color_srgb": [
+        44,
+        48,
+        74
+       ],
+       "reference_size_m": 0.2
+      },
+      "buckle": {
+       "preset": "felt",
+       "base_color_srgb": [
+        44,
+        48,
+        74
+       ],
+       "reference_size_m": 0.2
+      }
+     },
+     "flap": {
+      "drop": 0.5,
+      "corner": 0.45,
+      "wrap": 0.75,
+      "side_cover": 1.0,
+      "thickness_m": 0.006,
+      "lift_m": 0.003,
+      "dip_m": 0.004,
+      "edge_m": 0.0026
+     },
+     "tab": {
+      "width_m": 0.014,
+      "length_m": 0.03,
+      "start": 0.3,
+      "thickness_m": 0.0035,
+      "buckle_m": 0.015,
+      "buckle": "ring"
+     },
+     "pocket_flap": {
+      "drop": 0.45,
+      "corner": 0.45,
+      "wrap": 0.3,
+      "side_cover": 1.0,
+      "thickness_m": 0.0045,
+      "lift_m": 0.002,
+      "edge_m": 0.002
+     },
+     "clean_fibres": [
+      "flap_edge",
+      "pocket_flap_edge",
+      "tab",
+      "buckle"
+     ]
+    }
+   ]
+  },
+  "metadata": {
+   "notes": "T-093b candidate (unpublished): T-093 garment/2 candidate with the T-090b trousers/shoes fit values (trousers.crotch.depth=0.2416, trousers.length=0.9865, shoes.height_m=0.06354, shoes.width_extra_m=0.001333, shoes.length_extra_m=0.006085). Never publish or approve without an owner decision."
+  }
+ }
+}
