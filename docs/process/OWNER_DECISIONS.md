@@ -208,3 +208,8 @@ approved characters during the visual rounds); T-074 starts when a slot frees; d
 No new tasks start until the running ones (T-060, T-061, T-065, T-070, T-071, T-072, T-075) finish. Each is merged
 as soon as it passes review and the gate, keeping `main` up to date so the owner can see the results. T-074 and the
 rest of the queue are on hold until the owner says otherwise.
+
+## 2026-11-18: queue resumed; Supervisor decides overnight
+The owner lifted the "no new tasks" hold: define and start the next tasks of the plan (`docs/process/IMPLEMENTATION_PLAN.md`)
+and handle questions while the owner is away (~8 h). The original Supervisor session stays Supervisor (handover
+reversed). Path B results wait for the owner's render approval; Codex stays on T-060 only.
