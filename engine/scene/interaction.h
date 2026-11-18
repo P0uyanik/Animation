@@ -34,6 +34,7 @@
 
 #include "anim/animation.h"
 #include "model/character.h"
+#include "scene/collision.h"
 
 namespace plush {
 
@@ -57,23 +58,13 @@ void applyOrientConstraints(const Skeleton& skeleton, const Clip& clip, const st
 vec3 rotationVector(const quat& q);
 quat fromRotationVector(vec3 v);
 
-// ------------------------------------------------------------------------------------- arm-body clearance (T-030)
-// Body: a stack of short collision capsules (sections) along the spine from the shared roles (hips, spine?, chest,
-// neck?), each fitted to its own height slab of the skinned rest meshes (garments included). Points are stored relative to the owning bone's head (engine rest frames have identity
-// rotation, so the axes are character axes: +X the character's left, +Y up, +Z forward). A body capsule has an
-// elliptical cross-section (radii r1 along e1, r2 along e2): torso sections are wider than deep, so a round capsule
-// would either cut into the sides or float off the belly.
-// Arm: samples of the arm's own skinned surface (sleeve, cuff, hand; with their real skin weights), not bone
-// capsules. Garments do not always follow the arm bones the way skin does (a sleeve weighted between shoulder and
-// hand stretches along the shoulder-wrist chord when the elbow bends), and that surface is what must stay outside.
-struct BodyCapsule {
-  std::string name;  // "pelvis_<i>", "torso_lower_<i>", "torso_upper_<i>"
-  int bone = -1;
-  vec3 p0{0}, p1{0};             // axis segment (relative to the bone head, rest frame)
-  vec3 e1{1, 0, 0}, e2{0, 0, 1}; // cross-section axes (unit, perpendicular to the segment)
-  float r1 = 0.1f, r2 = 0.1f;
-  bool cap0 = true, cap1 = true;  // round ends (false: a flat end where the next section joins)
-};
+// ------------------------------------------------------------------------------------- arm-body clearance (T-030, T-047)
+// The character's collision body (scene/collision.h, T-047) is what the arms are planned and measured against: torso
+// sections (BodyCapsule = CollisionSection: short elliptical capsules along the spine, fitted to the skinned rest
+// meshes, garments included) and per-bone limb capsules (the wrist half of each forearm and each hand). The rest pose
+// is clear by construction. ArmPoint samples of the arm's skinned surface (T-030) remain for the upper arm and elbow
+// half of the forearm, which rest against the body's side: they are reported (upperGap), not planned.
+using BodyCapsule = CollisionSection;
 struct ArmPoint {
   glm::ivec4 joint{0};
   vec4 weight{0};
@@ -87,35 +78,39 @@ struct ArmModel {
   std::vector<ArmPoint> points;
 };
 struct BodyClearanceModel {
-  std::vector<BodyCapsule> body;
+  std::vector<BodyCapsule> body;  // = collision.sections
   ArmModel arm[2];  // 0 = L, 1 = R
+  CollisionBody collision;
   bool valid = false;
   std::string source;  // "mesh" (fitted to skinned vertices) or "skeleton" (proportions only, no arm points)
 };
-// Fits the model to the character (needs hips, chest and the arm chains; invalid otherwise). The body fit uses the
-// 99th percentile of the offsets of torso-dominant vertices in the front half of each band (hands work in front; a
-// backpack or long hair behind is not body to a hand).
-BodyClearanceModel bodyClearanceModel(const Skeleton& skeleton, const std::vector<SkinnedMesh>& meshes);
-// Smallest gap (metres; negative = inside) between one arm's hand and wrist-half forearm surface and the body capsules for posed
-// bone globals G, relative to the rest pose: a point that rests against the body (allowance) counts from its rest
-// depth, so the gap says how much deeper than at rest it is; every other point is measured from the body surface. `push` is the unit world direction that moves the worst point out of the body (the gradient of the
-// gap), `mobility` how much that point follows the wrist; `part` / `against` name it. `upperGap` is the same for the
-// upper arm and the elbow half of the forearm, reported only: a plush upper arm and elbow rest against the body's
-// side (the elbow pole keeps them outward).
+// Builds the model: the collision body from the package's "collision" block when it has a valid one, else derived
+// from the meshes (needs hips, chest and the arm chains; invalid otherwise).
+BodyClearanceModel bodyClearanceModel(const Skeleton& skeleton, const std::vector<SkinnedMesh>& meshes,
+                                      const Json& collisionBlock = Json());
+// Smallest gap (metres; negative = inside) between one arm's limb capsules (forearm wrist half, hand) and the body
+// sections for posed bone globals G. `push` is the unit world direction that moves the worst point out of the body
+// (the gradient of the gap), `mobility` how much that point follows the wrist (hand 1, forearm 0.6); `part` /
+// `against` name it. `upperGap` is the surface-sample gap of the upper arm and the elbow half of the forearm,
+// reported only (relative to their rest depth).
 struct ArmClearance {
   float gap = 1e9f, upperGap = 1e9f, mobility = 1;
-  float rawGap = 1e9f;  // forearm/hand surface to the body without the rest-contact allowance
+  float rawGap = 1e9f;  // = gap (the collision body has no rest allowance)
   vec3 push{0}, point{0};  // point: the worst arm point (world)
   std::string part, against;
 };
 ArmClearance armClearance(const BodyClearanceModel& model, const std::vector<mat4>& G, char side);
-// Elbow pole tracks "<prefix>pole.<hand bone>" (world direction the elbow should point to) with ".weight": swings the
+// The arm's clearance after the smallest elbow swing that clears its forearm (what the planner's swing will give it;
+// the wrist and hand stay). Used to score candidate wrist positions before the swing is planned.
+float swungArmGap(const BodyClearanceModel& model, const std::vector<mat4>& G, char side);
+// Elbow swing tracks "<prefix>swing.<hand bone>" (x: radians about the shoulder -> wrist axis; planned by the T-047
+// collision planner) and elbow pole tracks "<prefix>pole.<hand bone>" (world direction the elbow should point to) with ".weight": swing the
 // upper arm about the shoulder -> wrist axis, so the wrist stays where IK put it and only the elbow moves (the hand keeps
 // its world rotation; bone heads only, as G is built from pivots without scale). Runs after
 // IK and before the orientation constraint (scene.cpp).
 void applyArmPoles(const Skeleton& skeleton, const Clip& clip, const std::string& prefix, double frame,
                    const mat4& world, Pose& pose);
-constexpr float kArmBodyMargin = 0.005f;  // clearance kept between the arm and the body capsules (metres)
+constexpr float kArmBodyMargin = kCollisionMargin;  // clearance kept between the arm and the body (metres)
 
 // Compile state shared by the interaction actions of one compileActions() pass.
 struct InteractionContext {
