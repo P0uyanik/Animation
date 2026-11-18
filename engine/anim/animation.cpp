@@ -138,7 +138,11 @@ float angleBetween(vec3 x, vec3 y) {
 }  // namespace
 
 void solveTwoBoneIK(const Skeleton& sk, Pose& pose, const mat4& world, int end, vec3 target, float weight) {
-  if (end < 0 || weight <= 0) return;
+  solveTwoBoneIK(sk, pose, world, end, target, weight, weight);
+}
+
+void solveTwoBoneIK(const Skeleton& sk, Pose& pose, const mat4& world, int end, vec3 target, float weight, float midWeight) {
+  if (end < 0 || (weight <= 0 && midWeight <= 0)) return;
   int mid = sk.bones[size_t(end)].parent;
   if (mid < 0) return;
   int root = sk.bones[size_t(mid)].parent;
@@ -162,7 +166,7 @@ void solveTwoBoneIK(const Skeleton& sk, Pose& pose, const mat4& world, int end, 
   // World order: bend the elbow (r1), restore the shoulder-to-wrist direction (r0), then swing it onto the target (r2).
   quat aNew = pose.local[size_t(root)] * (r2 * r0), bNew = pose.local[size_t(mid)] * r1;
   pose.local[size_t(root)] = glm::slerp(pose.local[size_t(root)], aNew, std::clamp(weight, 0.0f, 1.0f));
-  pose.local[size_t(mid)] = glm::slerp(pose.local[size_t(mid)], bNew, std::clamp(weight, 0.0f, 1.0f));
+  pose.local[size_t(mid)] = glm::slerp(pose.local[size_t(mid)], bNew, std::clamp(midWeight, 0.0f, 1.0f));
 }
 
 void aimBone(const Skeleton& sk, Pose& pose, const mat4& world, int bone, vec3 target, float weight, float maxAngleDeg) {
@@ -520,7 +524,12 @@ void applyConstraints(const Skeleton& sk, const Clip& clip, const std::string& p
     const Track* t = clip.find(name);
     if (!t || t->keys.empty()) continue;
     float w = clip.evaluate(name + ".weight", frame, vec3(1)).x;
-    solveTwoBoneIK(sk, pose, world, int(i), t->evaluate(frame), w);
+    if (const Track* lag = clip.find(name + ".lag"); lag && !lag->keys.empty()) {
+      const float wm = clip.evaluate(name + ".weight", frame - double(lag->evaluate(frame).x), vec3(1)).x;
+      solveTwoBoneIK(sk, pose, world, int(i), t->evaluate(frame), w, wm);
+    } else {
+      solveTwoBoneIK(sk, pose, world, int(i), t->evaluate(frame), w);
+    }
   }
   for (char side : {'L', 'R'}) {
     std::string base = prefix + "hand." + side;

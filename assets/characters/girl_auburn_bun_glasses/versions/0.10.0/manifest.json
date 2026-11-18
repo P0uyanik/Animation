@@ -1,0 +1,48 @@
+{
+ "character_id": "girl_auburn_bun_glasses",
+ "version": "0.10.0",
+ "parent": null,
+ "created": "2026-11-17T22:19:30+00:00",
+ "notes": "Girl 0.10.0 (spec + override 0.10.0: closed gentle-smile neutral, T-055). Owner wording (OWNER_DECISIONS 2026-11-17): \"approved as an intermediate version, not final visual approval\". Built by T-075 with pinned bpy 5.3.0, deterministic environment (determinism.subprocess_env, -t 1).",
+ "spec_sha256": "7adbe217da2786326aa45dd048fae85586e5904f85df02bd501de10206da39cc",
+ "spec_version": "0.10.0",
+ "build": "charsys/1+body_generic/1",
+ "blender": "5.3.0",
+ "identity_changes": [],
+ "identity_change_approved_by": null,
+ "files": {
+  "girl_auburn_bun_glasses_master.blend": {
+   "sha256": "8557e129f8129c444b9b5ba4b19a6317bc23e8aa08529fdc867db1e340392a86",
+   "bytes": 19192252
+  },
+  "spec.json": {
+   "sha256": "338a293bd464a2982cbb8dbc04f3b8e666f4fb1f2301125c3eb15ea4ddf6e537",
+   "bytes": 44981
+  },
+  "components.json": {
+   "sha256": "b17d10e343ff3534c67056059892479204a56ba334928715cb0fb649ac5d0f45",
+   "bytes": 21545
+  },
+  "animation_compat.json": {
+   "sha256": "ee158460a593d43f511c241fd9a5f22400d6f639a4ca7d1d139d4b204e007ec2",
+   "bytes": 17878
+  },
+  "build_report.json": {
+   "sha256": "0163f4c2d9384160c00e598a5d3dcba5b32be2733019dc261073f6292c6b0b35",
+   "bytes": 25694
+  },
+  "spec.resolved.json": {
+   "sha256": "e74d4beda0e83bfa7f7bcb32b61272226bdcc6c97cf3233cd860f58a72be582a",
+   "bytes": 45450
+  }
+ },
+ "rig": {
+  "rigify_bones": 577,
+  "deform_bones": 240,
+  "unweighted_after_cleanup": 0
+ },
+ "spec_resolved": "spec.resolved.json is the build's fitted spec (body_generic writes fitted values); spec.json is the input spec it was built from (hash = spec_sha256)",
+ "not_stored": {
+  "girl_auburn_bun_glasses.glb": "not needed for reuse: shots link the master and engine packages are exported from it (run_shot.py); reproducible from the master"
+ }
+}

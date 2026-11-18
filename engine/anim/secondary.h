@@ -39,6 +39,7 @@ struct SpringParams {
 struct SpringChain {
   std::string name;
   std::string group;               // e.g. the groom structure it came from (overrides may address a group)
+  std::string preset;              // spring preset the parameters started from ("" = the block's defaults)
   std::vector<std::string> bones;  // root first; each bone is the child of the previous one
   vec3 tip{0};                     // rest-space end point of the last bone
   SpringParams params;
@@ -65,14 +66,30 @@ struct DynamicsSpec {
   float prerollSec = 1.0f;
   std::vector<SpringChain> chains;
   std::vector<DynamicsCollider> colliders;
+  // Accessory secondary motion (T-061): named spring presets (added to / replacing the built-in ones) and chains
+  // attached to garment or accessory bones by name, resolved against the skeleton (resolveAccessoryChains).
+  std::map<std::string, SpringParams> presets;
+  std::vector<Json> attach;
 };
+
+// Built-in spring presets for accessory chains (T-061; values and rationale in docs/SECONDARY_MOTION.md):
+// "drawstring" (a light cord: soft, swings, settles slowly), "strap" (a heavier band: stiffer, little swing),
+// "bow_tail" (ribbon ends: soft, high air drag), "tassel" (a short heavy tip: soft, gravity dominated).
+const std::map<std::string, SpringParams>& builtinSpringPresets();
+// Turns the spec's "attach" entries into chains: {"name", "bones": [...] | "prefix": "<p>" (bones named <p><n>,
+// <p>.<n>, <p>_<n> or <p>-<n>, in number order, each the child of the previous), "preset"?, "group"? (default: the
+// preset), "tip"? (default: the last segment extended by its own length, or 3 cm along the bone from its parent for
+// a single bone), "colliders"?, "anchor"?, spring keys as for chains}. The entries are consumed. A missing bone,
+// prefix without bones, unknown preset or a bone already in a chain is an error.
+Result<void> resolveAccessoryChains(DynamicsSpec& spec, const Skeleton& skeleton);
 
 // Package "dynamics" block (engine axes, rest space). A null/absent block gives a disabled spec.
 Result<DynamicsSpec> dynamicsFromJson(const Json& j);
 Json dynamicsToJson(const DynamicsSpec& spec);
 // Scene override (scene character "dynamics"): false | true | {"enabled", "substep_hz", "preroll_s",
-// "chains": {"<chain name>" | "<group>" | "*": {stiffness, stiffness_tip, damping, gravity, drag, limit_deg, radius}}}.
-// More specific keys win: "*" first, then the group, then the chain name.
+// "chains": {"<chain name>" | "<group>" | "*": {stiffness, stiffness_tip, damping, gravity, drag, limit_deg, radius}},
+// "presets": {...}, "attach": [...]}. More specific keys win: "*" first, then the group, then the chain name.
+// "attach" adds accessory chains (resolveAccessoryChains) and switches the layer on unless "enabled" is false.
 Result<void> applyDynamicsOverride(DynamicsSpec& spec, const Json& over);
 
 // The evaluated spring-chain layer of one character. Thread safe (an internal cache guarded by a mutex).

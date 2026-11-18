@@ -50,7 +50,109 @@ quat arc(vec3 a, vec3 b) {
   return glm::angleAxis(std::acos(d), glm::normalize(axis));
 }
 
+Result<void> readPresets(const Json& j, std::map<std::string, SpringParams>& out, const std::string& where) {
+  auto it = j.find("presets");
+  if (it == j.end()) return {};
+  if (!it->is_object()) return fail(where + ": presets must be an object");
+  for (auto& [name, pj] : it->items()) {
+    if (!pj.is_object()) return fail(where + ": preset " + name + " must be an object");
+    SpringParams p;
+    if (auto b = builtinSpringPresets().find(name); b != builtinSpringPresets().end()) p = b->second;
+    if (auto o = out.find(name); o != out.end()) p = o->second;
+    readParams(pj, p);
+    if (auto r = checkParams(p, "preset " + name); !r) return r;
+    out[name] = p;
+  }
+  return {};
+}
+
+const SpringParams* findPreset(const DynamicsSpec& s, const std::string& name) {
+  if (auto it = s.presets.find(name); it != s.presets.end()) return &it->second;
+  if (auto it = builtinSpringPresets().find(name); it != builtinSpringPresets().end()) return &it->second;
+  return nullptr;
+}
+
 }  // namespace
+
+const std::map<std::string, SpringParams>& builtinSpringPresets() {
+  // stiffness 1/s^2, stiffness_tip, damping 1/s, gravity x g, drag 1/s, limit_deg, radius m
+  static const std::map<std::string, SpringParams> presets = {
+      {"drawstring", {25.0f, 15.0f, 3.0f, 1.0f, 0.6f, 70.0f, 0.006f}},
+      {"strap", {90.0f, 70.0f, 8.0f, 0.6f, 0.4f, 35.0f, 0.01f}},
+      {"bow_tail", {40.0f, 25.0f, 4.0f, 0.8f, 1.2f, 55.0f, 0.008f}},
+      {"tassel", {30.0f, 20.0f, 3.5f, 1.0f, 0.8f, 60.0f, 0.008f}},
+  };
+  return presets;
+}
+
+Result<void> resolveAccessoryChains(DynamicsSpec& spec, const Skeleton& sk) {
+  std::vector<Json> entries = std::move(spec.attach);
+  spec.attach.clear();
+  for (const Json& e : entries) {
+    if (!e.is_object()) return fail("dynamics attach: entries must be objects");
+    SpringChain ch;
+    ch.name = e.value("name", e.value("prefix", ""));
+    ch.preset = e.value("preset", "");
+    ch.group = e.value("group", ch.preset);
+    if (ch.name.empty()) return fail("dynamics attach: an entry needs a name (or a prefix)");
+    for (const auto& c : spec.chains)
+      if (c.name == ch.name) return fail("dynamics attach: chain name " + ch.name + " is already used");
+    if (auto it = e.find("bones"); it != e.end()) {
+      if (!it->is_array()) return fail("dynamics attach " + ch.name + ": bones must be a list");
+      for (const Json& b : *it) ch.bones.push_back(b.get<std::string>());
+    } else if (auto pre = e.find("prefix"); pre != e.end() && pre->is_string()) {
+      const std::string prefix = pre->get<std::string>();
+      std::vector<std::pair<long, std::string>> found;
+      for (const auto& b : sk.bones) {
+        if (b.name.size() <= prefix.size() || b.name.compare(0, prefix.size(), prefix) != 0) continue;
+        std::string rest = b.name.substr(prefix.size());
+        if (rest[0] == '.' || rest[0] == '_' || rest[0] == '-') rest = rest.substr(1);
+        if (rest.empty() || !std::all_of(rest.begin(), rest.end(), [](char ch) { return ch >= '0' && ch <= '9'; })) continue;
+        found.push_back({std::stol(rest), b.name});
+      }
+      std::sort(found.begin(), found.end());
+      for (auto& [_, n] : found) ch.bones.push_back(n);
+      if (ch.bones.empty()) return fail("dynamics attach " + ch.name + ": no bones named " + prefix + "<number>");
+    } else {
+      return fail("dynamics attach " + ch.name + ": give bones or prefix");
+    }
+    std::vector<int> idx;
+    for (const auto& n : ch.bones) {
+      const int b = sk.find(n);
+      if (b < 0) return fail("dynamics attach " + ch.name + ": bone " + n + " not in the skeleton");
+      idx.push_back(b);
+    }
+    if (e.contains("tip")) {
+      ch.tip = readVec3(e, "tip", vec3(0));
+    } else if (idx.size() >= 2) {
+      const vec3 a = sk.bones[size_t(idx[idx.size() - 2])].head, b = sk.bones[size_t(idx.back())].head;
+      ch.tip = b + (b - a);
+    } else {
+      const int parent = sk.bones[size_t(idx[0])].parent;
+      const vec3 h = sk.bones[size_t(idx[0])].head;
+      vec3 dir = parent >= 0 ? h - sk.bones[size_t(parent)].head : vec3(0, -1, 0);
+      if (glm::length2(dir) < 1e-12f) dir = vec3(0, -1, 0);
+      ch.tip = h + glm::normalize(dir) * 0.03f;
+    }
+    ch.params = SpringParams{};
+    if (!ch.preset.empty()) {
+      const SpringParams* p = findPreset(spec, ch.preset);
+      if (!p) return fail("dynamics attach " + ch.name + ": unknown preset " + ch.preset);
+      ch.params = *p;
+    }
+    readParams(e, ch.params);
+    if (auto r = checkParams(ch.params, "attach " + ch.name); !r) return r;
+    for (const Json& n : e.value("colliders", Json::array())) ch.colliders.push_back(n.get<std::string>());
+    if (auto a = e.find("anchor"); a != e.end() && a->is_object()) {
+      ch.anchorBone = a->value("bone", "");
+      for (const Json& w : a->value("weights", Json::array())) ch.anchorWeights.push_back(w.get<float>());
+      if (ch.anchorBone.empty() || ch.anchorWeights.size() != ch.bones.size() + 1)
+        return fail("dynamics attach " + ch.name + ": anchor needs a bone and one weight per joint");
+    }
+    spec.chains.push_back(std::move(ch));
+  }
+  return {};
+}
 
 Result<DynamicsSpec> dynamicsFromJson(const Json& j) {
   DynamicsSpec s;
@@ -82,13 +184,24 @@ Result<DynamicsSpec> dynamicsFromJson(const Json& j) {
   }
   SpringParams defaults;
   if (auto it = j.find("defaults"); it != j.end() && it->is_object()) readParams(*it, defaults);
+  if (auto r = readPresets(j, s.presets, "dynamics"); !r) return std::unexpected(r.error());
+  if (auto it = j.find("attach"); it != j.end()) {
+    if (!it->is_array()) return fail("dynamics: attach must be a list");
+    for (const Json& a : *it) s.attach.push_back(a);
+  }
   for (const Json& c : j.value("chains", Json::array())) {
     SpringChain ch;
     ch.name = c.value("name", "");
     ch.group = c.value("group", "");
+    ch.preset = c.value("preset", "");
     for (const Json& b : c.value("bones", Json::array())) ch.bones.push_back(b.get<std::string>());
     ch.tip = readVec3(c, "tip", vec3(0));
     ch.params = defaults;
+    if (!ch.preset.empty()) {
+      const SpringParams* p = findPreset(s, ch.preset);
+      if (!p) return fail("dynamics: chain " + ch.name + ": unknown preset " + ch.preset);
+      ch.params = *p;
+    }
     readParams(c, ch.params);
     for (const Json& n : c.value("colliders", Json::array())) ch.colliders.push_back(n.get<std::string>());
     if (auto a = c.find("anchor"); a != c.end() && a->is_object()) {
@@ -118,11 +231,18 @@ Json dynamicsToJson(const DynamicsSpec& s) {
   for (const auto& c : s.chains) {
     Json cj = paramsToJson(c.params);
     cj.update({{"name", c.name}, {"group", c.group}, {"bones", c.bones}, {"tip", v3(c.tip)}, {"colliders", c.colliders}});
+    if (!c.preset.empty()) cj["preset"] = c.preset;
     if (!c.anchorBone.empty()) cj["anchor"] = {{"bone", c.anchorBone}, {"weights", c.anchorWeights}};
     chains.push_back(cj);
   }
   j["colliders"] = cols;
   j["chains"] = chains;
+  if (!s.presets.empty()) {
+    Json pj = Json::object();
+    for (const auto& [name, p] : s.presets) pj[name] = paramsToJson(p);
+    j["presets"] = pj;
+  }
+  if (!s.attach.empty()) j["attach"] = s.attach;
   return j;
 }
 
@@ -133,6 +253,12 @@ Result<void> applyDynamicsOverride(DynamicsSpec& s, const Json& o) {
     return {};
   }
   if (!o.is_object()) return fail("scene dynamics override must be a boolean or an object");
+  if (auto r = readPresets(o, s.presets, "scene dynamics override"); !r) return r;
+  if (auto it = o.find("attach"); it != o.end()) {  // accessory chains: switch the layer on (unless "enabled": false)
+    if (!it->is_array()) return fail("scene dynamics override: attach must be a list");
+    for (const Json& a : *it) s.attach.push_back(a);
+    if (!it->empty() && readBool(o, "enabled", true)) s.enabled = true;
+  }
   if (o.contains("enabled")) s.enabled = s.enabled && readBool(o, "enabled", true);
   s.substepHz = readFloat(o, "substep_hz", s.substepHz);
   s.prerollSec = readFloat(o, "preroll_s", s.prerollSec);

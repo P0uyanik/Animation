@@ -3,6 +3,7 @@
 # Scope patterns also reject newly added files in frozen collections.
 # scope: assets/characters/boy_yellow_hoodie/versions/1.0.0/*
 # scope: assets/characters/boy_yellow_hoodie/versions/1.1.0/*
+# scope: assets/characters/girl_auburn_bun_glasses/versions/0.10.0/*
 # scope: docs/evaluation/boy_pilot/cloud_v6_baseline/*
 # scope: docs/evaluation/boy_pilot/pilot_v6*
 # scope: pipeline/blender/boy_pilot/*
@@ -23,6 +24,19 @@ c376d5c62d5f68c486efd6017a7d73410bd4fd7d  assets/characters/boy_yellow_hoodie/ve
 a0e798376ba6f1c69e3ac88a908e8a4cfb58e677  assets/characters/boy_yellow_hoodie/versions/1.0.0/components.json
 faa602f2dadc8429766503110f3bc3ae4e9f6b03  assets/characters/boy_yellow_hoodie/versions/1.0.0/manifest.json
 49104af2cb1f603ac6bf597ab7963256c80db33b  assets/characters/boy_yellow_hoodie/versions/1.0.0/spec.json
+b0e41220b301735b81459260fdec37e4576667fc  assets/characters/boy_yellow_hoodie/versions/1.1.0/animation_compat.json
+69f498661131a627aed751ad9f9041f153816011  assets/characters/boy_yellow_hoodie/versions/1.1.0/boy_yellow_hoodie_master.blend
+431a68b9d998f3dff2ca1b5d0123cba30877e533  assets/characters/boy_yellow_hoodie/versions/1.1.0/build_report.json
+6fd18859acdd04b5a7ad7cf0c49e80ecd60ca07b  assets/characters/boy_yellow_hoodie/versions/1.1.0/components.json
+a6dc58d56a30f7c323c23df456d2750400d3b865  assets/characters/boy_yellow_hoodie/versions/1.1.0/manifest.json
+0e0354c553e1284e9097e8902d95b3ee1df29e9a  assets/characters/boy_yellow_hoodie/versions/1.1.0/spec.json
+da46d2d78aec00893bf8deb32929a15ef0518d4f  assets/characters/girl_auburn_bun_glasses/versions/0.10.0/animation_compat.json
+e6bab3657a372419d217320c2581b2ff685b7f99  assets/characters/girl_auburn_bun_glasses/versions/0.10.0/build_report.json
+62581f2352b9ac509669e1f29daad75beb1d9ba1  assets/characters/girl_auburn_bun_glasses/versions/0.10.0/components.json
+73d3051fb141c7be8a3b10371e30196befe74f17  assets/characters/girl_auburn_bun_glasses/versions/0.10.0/girl_auburn_bun_glasses_master.blend
+636a0dfcf086a8738b6b2600026b969655b83ed5  assets/characters/girl_auburn_bun_glasses/versions/0.10.0/manifest.json
+d62dddc4105f077d631cd4e026370a7375a44fc5  assets/characters/girl_auburn_bun_glasses/versions/0.10.0/spec.json
+13ee758946d0b650304c11bc399ae428a2d258bc  assets/characters/girl_auburn_bun_glasses/versions/0.10.0/spec.resolved.json
 91c09134aa30796f3fd2d6020f18e9be2a06d922  docs/evaluation/boy_pilot/cloud_v6_baseline/build_report.json
 55fda6989328d1df1062940943c216aff6526a52  docs/evaluation/boy_pilot/cloud_v6_baseline/cloud_v6_file_hashes.txt
 ae1ada02856129a84033c96f33667b08dc853b42  docs/evaluation/boy_pilot/cloud_v6_baseline/extra_metrics.json

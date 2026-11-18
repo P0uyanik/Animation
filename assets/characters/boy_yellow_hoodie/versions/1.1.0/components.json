@@ -1,0 +1,669 @@
+{
+ "accessories": [
+  {
+   "name": "backpack_body",
+   "type": "MESH",
+   "vertices": 4898,
+   "faces": 4896,
+   "materials": [
+    "M_backpack_felt"
+   ],
+   "vertex_groups": 1,
+   "shape_keys": []
+  },
+  {
+   "name": "backpack_handle",
+   "type": "MESH",
+   "vertices": 162,
+   "faces": 170,
+   "materials": [
+    "M_webbing"
+   ],
+   "vertex_groups": 1,
+   "shape_keys": []
+  },
+  {
+   "name": "backpack_pocket",
+   "type": "MESH",
+   "vertices": 1842,
+   "faces": 1840,
+   "materials": [
+    "M_backpack_felt"
+   ],
+   "vertex_groups": 1,
+   "shape_keys": []
+  },
+  {
+   "name": "backpack_strap.L",
+   "type": "MESH",
+   "vertices": 206,
+   "faces": 216,
+   "materials": [
+    "M_webbing"
+   ],
+   "vertex_groups": 1,
+   "shape_keys": []
+  },
+  {
+   "name": "backpack_strap.R",
+   "type": "MESH",
+   "vertices": 206,
+   "faces": 216,
+   "materials": [
+    "M_webbing"
+   ],
+   "vertex_groups": 1,
+   "shape_keys": []
+  },
+  {
+   "name": "buckle.L",
+   "type": "MESH",
+   "vertices": 86,
+   "faces": 96,
+   "materials": [
+    "M_buckle"
+   ],
+   "vertex_groups": 1,
+   "shape_keys": []
+  },
+  {
+   "name": "buckle.R",
+   "type": "MESH",
+   "vertices": 86,
+   "faces": 96,
+   "materials": [
+    "M_buckle"
+   ],
+   "vertex_groups": 1,
+   "shape_keys": []
+  }
+ ],
+ "body": [
+  {
+   "name": "hand.L",
+   "type": "MESH",
+   "vertices": 4300,
+   "faces": 4298,
+   "materials": [
+    "M_skin"
+   ],
+   "vertex_groups": 21,
+   "shape_keys": []
+  },
+  {
+   "name": "hand.R",
+   "type": "MESH",
+   "vertices": 4300,
+   "faces": 4298,
+   "materials": [
+    "M_skin"
+   ],
+   "vertex_groups": 21,
+   "shape_keys": []
+  },
+  {
+   "name": "head",
+   "type": "MESH",
+   "vertices": 14722,
+   "faces": 14720,
+   "materials": [
+    "M_skin"
+   ],
+   "vertex_groups": 1,
+   "shape_keys": []
+  },
+  {
+   "name": "neck",
+   "type": "MESH",
+   "vertices": 122,
+   "faces": 144,
+   "materials": [
+    "M_skin"
+   ],
+   "vertex_groups": 9,
+   "shape_keys": []
+  }
+ ],
+ "clothing": [
+  {
+   "name": "drawstring.L",
+   "type": "MESH",
+   "vertices": 170,
+   "faces": 180,
+   "materials": [
+    "M_cream"
+   ],
+   "vertex_groups": 1,
+   "shape_keys": []
+  },
+  {
+   "name": "drawstring.R",
+   "type": "MESH",
+   "vertices": 170,
+   "faces": 180,
+   "materials": [
+    "M_cream"
+   ],
+   "vertex_groups": 1,
+   "shape_keys": []
+  },
+  {
+   "name": "drawstring_tip.L",
+   "type": "MESH",
+   "vertices": 98,
+   "faces": 108,
+   "materials": [
+    "M_cord_tip"
+   ],
+   "vertex_groups": 1,
+   "shape_keys": []
+  },
+  {
+   "name": "drawstring_tip.R",
+   "type": "MESH",
+   "vertices": 98,
+   "faces": 108,
+   "materials": [
+    "M_cord_tip"
+   ],
+   "vertex_groups": 1,
+   "shape_keys": []
+  },
+  {
+   "name": "hood_back",
+   "type": "MESH",
+   "vertices": 482,
+   "faces": 512,
+   "materials": [
+    "M_hoodie_fleece"
+   ],
+   "vertex_groups": 9,
+   "shape_keys": []
+  },
+  {
+   "name": "hood_roll",
+   "type": "MESH",
+   "vertices": 458,
+   "faces": 480,
+   "materials": [
+    "M_hoodie_fleece"
+   ],
+   "vertex_groups": 9,
+   "shape_keys": []
+  },
+  {
+   "name": "hoodie_cuff.L",
+   "type": "MESH",
+   "vertices": 192,
+   "faces": 128,
+   "materials": [
+    "M_hoodie_fleece"
+   ],
+   "vertex_groups": 5,
+   "shape_keys": []
+  },
+  {
+   "name": "hoodie_cuff.R",
+   "type": "MESH",
+   "vertices": 192,
+   "faces": 128,
+   "materials": [
+    "M_hoodie_fleece"
+   ],
+   "vertex_groups": 5,
+   "shape_keys": []
+  },
+  {
+   "name": "hoodie_hem",
+   "type": "MESH",
+   "vertices": 386,
+   "faces": 480,
+   "materials": [
+    "M_hoodie_fleece"
+   ],
+   "vertex_groups": 15,
+   "shape_keys": []
+  },
+  {
+   "name": "hoodie_pocket",
+   "type": "MESH",
+   "vertices": 2594,
+   "faces": 2592,
+   "materials": [
+    "M_hoodie_fleece"
+   ],
+   "vertex_groups": 15,
+   "shape_keys": []
+  },
+  {
+   "name": "hoodie_sleeve.L",
+   "type": "MESH",
+   "vertices": 546,
+   "faces": 576,
+   "materials": [
+    "M_hoodie_fleece"
+   ],
+   "vertex_groups": 5,
+   "shape_keys": []
+  },
+  {
+   "name": "hoodie_sleeve.R",
+   "type": "MESH",
+   "vertices": 546,
+   "faces": 576,
+   "materials": [
+    "M_hoodie_fleece"
+   ],
+   "vertex_groups": 5,
+   "shape_keys": []
+  },
+  {
+   "name": "hoodie_torso",
+   "type": "MESH",
+   "vertices": 2370,
+   "faces": 2432,
+   "materials": [
+    "M_hoodie_fleece"
+   ],
+   "vertex_groups": 15,
+   "shape_keys": []
+  },
+  {
+   "name": "shoe.L",
+   "type": "MESH",
+   "vertices": 4722,
+   "faces": 4720,
+   "materials": [
+    "M_shoe_felt",
+    "M_sole"
+   ],
+   "vertex_groups": 1,
+   "shape_keys": []
+  },
+  {
+   "name": "shoe.R",
+   "type": "MESH",
+   "vertices": 4722,
+   "faces": 4720,
+   "materials": [
+    "M_shoe_felt",
+    "M_sole"
+   ],
+   "vertex_groups": 1,
+   "shape_keys": []
+  },
+  {
+   "name": "shoe_strap0.L",
+   "type": "MESH",
+   "vertices": 182,
+   "faces": 192,
+   "materials": [
+    "M_sole"
+   ],
+   "vertex_groups": 1,
+   "shape_keys": []
+  },
+  {
+   "name": "shoe_strap0.R",
+   "type": "MESH",
+   "vertices": 182,
+   "faces": 192,
+   "materials": [
+    "M_sole"
+   ],
+   "vertex_groups": 1,
+   "shape_keys": []
+  },
+  {
+   "name": "shoe_strap1.L",
+   "type": "MESH",
+   "vertices": 182,
+   "faces": 192,
+   "materials": [
+    "M_sole"
+   ],
+   "vertex_groups": 1,
+   "shape_keys": []
+  },
+  {
+   "name": "shoe_strap1.R",
+   "type": "MESH",
+   "vertices": 182,
+   "faces": 192,
+   "materials": [
+    "M_sole"
+   ],
+   "vertex_groups": 1,
+   "shape_keys": []
+  },
+  {
+   "name": "sock.L",
+   "type": "MESH",
+   "vertices": 50,
+   "faces": 72,
+   "materials": [
+    "M_sock"
+   ],
+   "vertex_groups": 19,
+   "shape_keys": []
+  },
+  {
+   "name": "sock.R",
+   "type": "MESH",
+   "vertices": 50,
+   "faces": 72,
+   "materials": [
+    "M_sock"
+   ],
+   "vertex_groups": 19,
+   "shape_keys": []
+  },
+  {
+   "name": "sole.L",
+   "type": "MESH",
+   "vertices": 866,
+   "faces": 864,
+   "materials": [
+    "M_sole"
+   ],
+   "vertex_groups": 1,
+   "shape_keys": []
+  },
+  {
+   "name": "sole.R",
+   "type": "MESH",
+   "vertices": 866,
+   "faces": 864,
+   "materials": [
+    "M_sole"
+   ],
+   "vertex_groups": 1,
+   "shape_keys": []
+  },
+  {
+   "name": "trouser_leg.L",
+   "type": "MESH",
+   "vertices": 282,
+   "faces": 320,
+   "materials": [
+    "M_trousers_fleece"
+   ],
+   "vertex_groups": 19,
+   "shape_keys": []
+  },
+  {
+   "name": "trouser_leg.R",
+   "type": "MESH",
+   "vertices": 282,
+   "faces": 320,
+   "materials": [
+    "M_trousers_fleece"
+   ],
+   "vertex_groups": 19,
+   "shape_keys": []
+  },
+  {
+   "name": "trousers_waist",
+   "type": "MESH",
+   "vertices": 338,
+   "faces": 384,
+   "materials": [
+    "M_trousers_fleece"
+   ],
+   "vertex_groups": 19,
+   "shape_keys": []
+  },
+  {
+   "name": "undershirt",
+   "type": "MESH",
+   "vertices": 266,
+   "faces": 288,
+   "materials": [
+    "M_cream"
+   ],
+   "vertex_groups": 1,
+   "shape_keys": []
+  }
+ ],
+ "face": [
+  {
+   "name": "brow.L",
+   "type": "MESH",
+   "vertices": 112,
+   "faces": 120,
+   "materials": [
+    "M_brow"
+   ],
+   "vertex_groups": 1,
+   "shape_keys": [
+    "Basis",
+    "BrowDown"
+   ]
+  },
+  {
+   "name": "brow.R",
+   "type": "MESH",
+   "vertices": 112,
+   "faces": 120,
+   "materials": [
+    "M_brow"
+   ],
+   "vertex_groups": 1,
+   "shape_keys": [
+    "Basis",
+    "BrowDown"
+   ]
+  },
+  {
+   "name": "ear.L",
+   "type": "MESH",
+   "vertices": 1986,
+   "faces": 1984,
+   "materials": [
+    "M_ear"
+   ],
+   "vertex_groups": 1,
+   "shape_keys": []
+  },
+  {
+   "name": "ear.R",
+   "type": "MESH",
+   "vertices": 1986,
+   "faces": 1984,
+   "materials": [
+    "M_ear"
+   ],
+   "vertex_groups": 1,
+   "shape_keys": []
+  },
+  {
+   "name": "eye.L",
+   "type": "MESH",
+   "vertices": 1106,
+   "faces": 1152,
+   "materials": [
+    "M_eye"
+   ],
+   "vertex_groups": 1,
+   "shape_keys": []
+  },
+  {
+   "name": "eye.R",
+   "type": "MESH",
+   "vertices": 1106,
+   "faces": 1152,
+   "materials": [
+    "M_eye"
+   ],
+   "vertex_groups": 1,
+   "shape_keys": []
+  },
+  {
+   "name": "lash.L",
+   "type": "MESH",
+   "vertices": 212,
+   "faces": 220,
+   "materials": [
+    "M_lash"
+   ],
+   "vertex_groups": 1,
+   "shape_keys": [
+    "Basis",
+    "Blink"
+   ]
+  },
+  {
+   "name": "lash.R",
+   "type": "MESH",
+   "vertices": 212,
+   "faces": 220,
+   "materials": [
+    "M_lash"
+   ],
+   "vertex_groups": 1,
+   "shape_keys": [
+    "Basis",
+    "Blink"
+   ]
+  },
+  {
+   "name": "lid_lower.L",
+   "type": "MESH",
+   "vertices": 1550,
+   "faces": 1612,
+   "materials": [
+    "M_skin"
+   ],
+   "vertex_groups": 1,
+   "shape_keys": []
+  },
+  {
+   "name": "lid_lower.R",
+   "type": "MESH",
+   "vertices": 1550,
+   "faces": 1612,
+   "materials": [
+    "M_skin"
+   ],
+   "vertex_groups": 1,
+   "shape_keys": []
+  },
+  {
+   "name": "lid_upper.L",
+   "type": "MESH",
+   "vertices": 1996,
+   "faces": 2058,
+   "materials": [
+    "M_skin"
+   ],
+   "vertex_groups": 1,
+   "shape_keys": [
+    "Basis",
+    "Blink"
+   ]
+  },
+  {
+   "name": "lid_upper.R",
+   "type": "MESH",
+   "vertices": 1996,
+   "faces": 2058,
+   "materials": [
+    "M_skin"
+   ],
+   "vertex_groups": 1,
+   "shape_keys": [
+    "Basis",
+    "Blink"
+   ]
+  },
+  {
+   "name": "mouth",
+   "type": "MESH",
+   "vertices": 33,
+   "faces": 20,
+   "materials": [
+    "M_mouth"
+   ],
+   "vertex_groups": 1,
+   "shape_keys": [
+    "Basis",
+    "Smile",
+    "JawOpen"
+   ]
+  }
+ ],
+ "fur": [],
+ "hair": [
+  {
+   "name": "hair_clumps",
+   "type": "MESH",
+   "vertices": 123344,
+   "faces": 123136,
+   "materials": [
+    "M_hair_felt"
+   ],
+   "vertex_groups": 1,
+   "shape_keys": []
+  },
+  {
+   "name": "hair_mass",
+   "type": "MESH",
+   "vertices": 3811,
+   "faces": 3752,
+   "materials": [
+    "M_hair_felt"
+   ],
+   "vertex_groups": 1,
+   "shape_keys": []
+  },
+  {
+   "name": "hair_strays",
+   "type": "MESH",
+   "vertices": 342,
+   "faces": 360,
+   "materials": [
+    "M_hair_felt"
+   ],
+   "vertex_groups": 1,
+   "shape_keys": []
+  }
+ ],
+ "landmarks": [
+  {
+   "name": "LM_chin",
+   "type": "EMPTY"
+  },
+  {
+   "name": "LM_ear_L",
+   "type": "EMPTY"
+  },
+  {
+   "name": "LM_ear_R",
+   "type": "EMPTY"
+  },
+  {
+   "name": "LM_eye_L",
+   "type": "EMPTY"
+  },
+  {
+   "name": "LM_eye_R",
+   "type": "EMPTY"
+  },
+  {
+   "name": "LM_mouth",
+   "type": "EMPTY"
+  },
+  {
+   "name": "LM_nose",
+   "type": "EMPTY"
+  }
+ ],
+ "rig": [
+  {
+   "name": "rig_boy_yellow_hoodie",
+   "type": "ARMATURE",
+   "bones": 410,
+   "deform_bones": 73
+  }
+ ]
+}
