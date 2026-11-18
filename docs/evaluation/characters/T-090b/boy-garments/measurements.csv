@@ -1,0 +1,14 @@
+view,measure,unit,reference,start,best
+val27_front,trousers region IoU,fraction,1,0.672802604320805,0.6959001782531195
+val27_front,hem_trousers lowest visible edge y,px,510.0,494,497
+val27_front,shoes region IoU,fraction,1,0.5636226840966801,0.611496633868462
+val27_front,visible shoe area,px^2,6120,10506,9439
+val27_front,crotch to sole gap,px,143.0,111.0,126.0
+val27_threequarter_right,trousers region IoU,fraction,1,0.6705511202678341,0.6945892041433442
+val27_threequarter_right,hem_trousers lowest visible edge y,px,510.0,498,505
+val27_threequarter_right,shoes region IoU,fraction,1,0.530069560623404,0.5743089738735327
+val27_threequarter_right,visible shoe area,px^2,6971,10406,9660
+val27_side_right,trousers region IoU,fraction,1,0.577767288175596,0.5782527446858211
+val27_side_right,hem_trousers lowest visible edge y,px,513.0,514,516
+val27_side_right,shoes region IoU,fraction,1,0.6514671442347431,0.6794983960338291
+val27_side_right,visible shoe area,px^2,4896,7092,6622

@@ -1,0 +1,459 @@
+{
+  "spec_sha256": "0e16c320af27ca9e4485aafe72e4a42340962cc1c1641afcaaeccc4898e0d3a4",
+  "seed": 4,
+  "budget": 3,
+  "height": 512,
+  "bounds": {
+    "clothing.garments.1.crotch.depth": [
+      0.1,
+      0.7
+    ],
+    "clothing.garments.1.length": [
+      0.985,
+      1
+    ],
+    "clothing.garments.2.height_m": [
+      0.058,
+      0.072
+    ],
+    "clothing.garments.2.width_extra_m": [
+      0.001,
+      0.006
+    ],
+    "clothing.garments.2.length_extra_m": [
+      0.005,
+      0.012
+    ]
+  },
+  "variant": "compare",
+  "start": 0,
+  "best": 1,
+  "iterations": [
+    {
+      "trial": 0,
+      "parameters": {
+        "clothing.garments.1.crotch.depth": 0.7,
+        "clothing.garments.1.length": 0.985,
+        "clothing.garments.2.height_m": 0.072,
+        "clothing.garments.2.length_extra_m": 0.012,
+        "clothing.garments.2.width_extra_m": 0.006
+      },
+      "score": 61.104673361984375,
+      "views": {
+        "val27_front": {
+          "score": 61.82126442087426,
+          "figure_iou": 0.8518737439413643,
+          "eye_iou": 0.3548387096774194,
+          "landmarks": {
+            "chin": {
+              "target": [
+                118.0,
+                215.0
+              ],
+              "candidate": [
+                117.10190659567618,
+                215.10572531622103
+              ],
+              "error_head": 0.004411195549059227,
+              "score": 0.9955888044509408
+            },
+            "nose": {
+              "target": [
+                118.0,
+                187.0
+              ],
+              "candidate": [
+                116.97554080381451,
+                188.27867000152867
+              ],
+              "error_head": 0.007992431901293099,
+              "score": 0.9920075680987069
+            }
+          },
+          "alignment": {
+            "scale": 1.3215524671582228,
+            "ox": -50,
+            "oy": -52
+          },
+          "fit_score": 73.35035466312024,
+          "garment_iou": {
+            "trousers": 0.672802604320805,
+            "shoes": 0.5636226840966801
+          }
+        },
+        "val27_threequarter_right": {
+          "score": 60.03103404456191,
+          "figure_iou": 0.8660350885330304,
+          "eye_iou": 0.3710843373493976,
+          "landmarks": {
+            "chin": {
+              "target": [
+                157.5,
+                217.0
+              ],
+              "candidate": [
+                143.01145168852858,
+                213.9545622626071
+              ],
+              "error_head": 0.0711786474425549,
+              "score": 0.9288213525574451
+            },
+            "nose": {
+              "target": [
+                160.0,
+                186.0
+              ],
+              "candidate": [
+                164.84262958099325,
+                188.55560074694375
+              ],
+              "error_head": 0.02632498291216315,
+              "score": 0.9736750170878369
+            }
+          },
+          "alignment": {
+            "scale": 1.3815290614250935,
+            "ox": -57,
+            "oy": -70
+          },
+          "fit_score": 72.9455870235023,
+          "garment_iou": {
+            "trousers": 0.6705511202678341,
+            "shoes": 0.530069560623404
+          }
+        },
+        "val27_side_right": {
+          "score": 61.461721620516954,
+          "figure_iou": 0.7806864219611669,
+          "eye_iou": 0.14204545454545456,
+          "landmarks": {
+            "chin": {
+              "target": [
+                182.0,
+                217.0
+              ],
+              "candidate": [
+                154.7807811655122,
+                210.9449167183305
+              ],
+              "error_head": 0.13406048988400834,
+              "score": 0.8659395101159917
+            },
+            "nose": {
+              "target": [
+                196.0,
+                183.0
+              ],
+              "candidate": [
+                189.14466300727645,
+                186.81055182773346
+              ],
+              "error_head": 0.03770774265616208,
+              "score": 0.9622922573438379
+            }
+          },
+          "alignment": {
+            "scale": 1.360381861575179,
+            "ox": -62,
+            "oy": -65
+          },
+          "fit_score": 61.228258674551206,
+          "garment_iou": {
+            "trousers": 0.577767288175596,
+            "shoes": 0.6514671442347431
+          }
+        }
+      },
+      "blend": "trial-000/build/boy_yellow_hoodie_compare.blend",
+      "build_s": 143.55143729998963,
+      "render_s": 12.886504800000694,
+      "wall_s": 157.26573529996676,
+      "fit_score": 69.17473345372458
+    },
+    {
+      "trial": 1,
+      "parameters": {
+        "clothing.garments.1.crotch.depth": 0.24162885384246072,
+        "clothing.garments.1.length": 0.9865474905134607,
+        "clothing.garments.2.height_m": 0.06354481539654953,
+        "clothing.garments.2.length_extra_m": 0.006084805895616872,
+        "clothing.garments.2.width_extra_m": 0.0013325754783979496
+      },
+      "score": 63.90076884763514,
+      "views": {
+        "val27_front": {
+          "score": 65.36984060607907,
+          "figure_iou": 0.8541657687168657,
+          "eye_iou": 0.35824175824175825,
+          "landmarks": {
+            "chin": {
+              "target": [
+                118.0,
+                215.0
+              ],
+              "candidate": [
+                116.69766267051187,
+                215.05801761331355
+              ],
+              "error_head": 0.006359165841669233,
+              "score": 0.9936408341583308
+            },
+            "nose": {
+              "target": [
+                118.0,
+                187.0
+              ],
+              "candidate": [
+                116.57084635603385,
+                188.13531778145625
+              ],
+              "error_head": 0.00890351026358373,
+              "score": 0.9910964897364163
+            }
+          },
+          "alignment": {
+            "scale": 1.3262641004756608,
+            "ox": -51,
+            "oy": -53
+          },
+          "fit_score": 73.49253963019991,
+          "garment_iou": {
+            "trousers": 0.6959001782531195,
+            "shoes": 0.611496633868462
+          }
+        },
+        "val27_threequarter_right": {
+          "score": 63.44490890084384,
+          "figure_iou": 0.8659851043160476,
+          "eye_iou": 0.32517482517482516,
+          "landmarks": {
+            "chin": {
+              "target": [
+                157.5,
+                217.0
+              ],
+              "candidate": [
+                143.44600587110043,
+                214.991186673436
+              ],
+              "error_head": 0.06825400730117834,
+              "score": 0.9317459926988216
+            },
+            "nose": {
+              "target": [
+                160.0,
+                186.0
+              ],
+              "candidate": [
+                165.43376483575727,
+                189.41005465619548
+              ],
+              "error_head": 0.030842113594591918,
+              "score": 0.9691578864054081
+            }
+          },
+          "alignment": {
+            "scale": 1.3914378855283165,
+            "ox": -58,
+            "oy": -71
+          },
+          "fit_score": 71.38706230143293,
+          "garment_iou": {
+            "trousers": 0.6945892041433442,
+            "shoes": 0.5743089738735327
+          }
+        },
+        "val27_side_right": {
+          "score": 62.88755703598251,
+          "figure_iou": 0.7803846623022811,
+          "eye_iou": 0.10614525139664804,
+          "landmarks": {
+            "chin": {
+              "target": [
+                182.0,
+                217.0
+              ],
+              "candidate": [
+                155.52241914418312,
+                210.88896364518075
+              ],
+              "error_head": 0.1306425302945424,
+              "score": 0.8693574697054576
+            },
+            "nose": {
+              "target": [
+                196.0,
+                183.0
+              ],
+              "candidate": [
+                190.00386472813608,
+                186.67203164924467
+              ],
+              "error_head": 0.033803737158551825,
+              "score": 0.9661962628414482
+            }
+          },
+          "alignment": {
+            "scale": 1.3650359219979473,
+            "ox": -62,
+            "oy": -66
+          },
+          "fit_score": 60.143559332412735,
+          "garment_iou": {
+            "trousers": 0.5782527446858211,
+            "shoes": 0.6794983960338291
+          }
+        }
+      },
+      "blend": "trial-001/build/boy_yellow_hoodie_compare.blend",
+      "build_s": 125.06017800001428,
+      "render_s": 10.419897299958393,
+      "wall_s": 136.05386869999347,
+      "fit_score": 68.34105375468187
+    },
+    {
+      "trial": 2,
+      "parameters": {
+        "clothing.garments.1.crotch.depth": 0.580318202897015,
+        "clothing.garments.1.length": 0.9895897752154386,
+        "clothing.garments.2.height_m": 0.07106877764031377,
+        "clothing.garments.2.length_extra_m": 0.01145204607251269,
+        "clothing.garments.2.width_extra_m": 0.004703213626150529
+      },
+      "score": 62.26097091279607,
+      "views": {
+        "val27_front": {
+          "score": 62.60586408165243,
+          "figure_iou": 0.8538057064046203,
+          "eye_iou": 0.3548387096774194,
+          "landmarks": {
+            "chin": {
+              "target": [
+                118.0,
+                215.0
+              ],
+              "candidate": [
+                117.10190659567618,
+                215.10572531622103
+              ],
+              "error_head": 0.004411195549059227,
+              "score": 0.9955888044509408
+            },
+            "nose": {
+              "target": [
+                118.0,
+                187.0
+              ],
+              "candidate": [
+                116.97554080381451,
+                188.27867000152867
+              ],
+              "error_head": 0.007992431901293099,
+              "score": 0.9920075680987069
+            }
+          },
+          "alignment": {
+            "scale": 1.3215524671582228,
+            "ox": -50,
+            "oy": -52
+          },
+          "fit_score": 73.41475341189545,
+          "garment_iou": {
+            "trousers": 0.6787263114121072,
+            "shoes": 0.5733909702209414
+          }
+        },
+        "val27_threequarter_right": {
+          "score": 61.71081228016037,
+          "figure_iou": 0.8673568536726431,
+          "eye_iou": 0.3084862385321101,
+          "landmarks": {
+            "chin": {
+              "target": [
+                157.5,
+                217.0
+              ],
+              "candidate": [
+                143.72616568668474,
+                214.96923566643517
+              ],
+              "error_head": 0.06693622002025192,
+              "score": 0.9330637799797481
+            },
+            "nose": {
+              "target": [
+                160.0,
+                186.0
+              ],
+              "candidate": [
+                165.63535435455378,
+                189.4795143808655
+              ],
+              "error_head": 0.03184138608896778,
+              "score": 0.9681586139110322
+            }
+          },
+          "alignment": {
+            "scale": 1.3864657695521745,
+            "ox": -57,
+            "oy": -70
+          },
+          "fit_score": 70.88180963833811,
+          "garment_iou": {
+            "trousers": 0.6808661468067281,
+            "shoes": 0.5533500987964792
+          }
+        },
+        "val27_side_right": {
+          "score": 62.4662363765754,
+          "figure_iou": 0.7813415428013454,
+          "eye_iou": 0.14204545454545456,
+          "landmarks": {
+            "chin": {
+              "target": [
+                182.0,
+                217.0
+              ],
+              "candidate": [
+                154.7807811655122,
+                210.9449167183305
+              ],
+              "error_head": 0.13406048988400834,
+              "score": 0.8659395101159917
+            },
+            "nose": {
+              "target": [
+                196.0,
+                183.0
+              ],
+              "candidate": [
+                189.14466300727645,
+                186.81055182773346
+              ],
+              "error_head": 0.03770774265616208,
+              "score": 0.9622922573438379
+            }
+          },
+          "alignment": {
+            "scale": 1.360381861575179,
+            "ox": -62,
+            "oy": -65
+          },
+          "fit_score": 61.2500960358905,
+          "garment_iou": {
+            "trousers": 0.5865895407862117,
+            "shoes": 0.6627351867452963
+          }
+        }
+      },
+      "blend": "trial-002/build/boy_yellow_hoodie_compare.blend",
+      "build_s": 111.14774339995347,
+      "render_s": 9.6066606999957,
+      "wall_s": 121.1223006999935,
+      "fit_score": 68.51555302870801
+    }
+  ],
+  "wall_s": 414.5513471000013,
+  "fit_best": 0,
+  "selection": "100 x mean visible garment region IoU, equal weight for both garments and the three views"
+}

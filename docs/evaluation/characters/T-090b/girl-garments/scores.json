@@ -1,0 +1,459 @@
+{
+  "spec_sha256": "4966133aa0eb1e00c06b107082223b7184d561dbe6f08e7c8790abf7b238dcf6",
+  "seed": 4,
+  "budget": 3,
+  "height": 512,
+  "bounds": {
+    "clothing.garments.0.sleeve_length": [
+      0.97,
+      1
+    ],
+    "clothing.garments.0.sleeve_puff_m": [
+      0.024,
+      0.032
+    ],
+    "clothing.garments.2.crotch.depth": [
+      0.2,
+      0.8
+    ],
+    "clothing.garments.2.puff_inner": [
+      0.3,
+      0.8
+    ],
+    "clothing.garments.2.length": [
+      0.24,
+      0.35
+    ]
+  },
+  "variant": "master",
+  "start": 0,
+  "best": 2,
+  "iterations": [
+    {
+      "trial": 0,
+      "parameters": {
+        "clothing.garments.0.sleeve_length": 0.97,
+        "clothing.garments.0.sleeve_puff_m": 0.024,
+        "clothing.garments.2.crotch.depth": 0.8,
+        "clothing.garments.2.length": 0.24,
+        "clothing.garments.2.puff_inner": 0.8
+      },
+      "score": 48.97762809501382,
+      "views": {
+        "sheet30_front": {
+          "score": 56.76617844555663,
+          "figure_iou": 0.8082590119726433,
+          "eye_iou": 0.39501779359430605,
+          "landmarks": {
+            "chin": {
+              "target": [
+                117.5,
+                180.0
+              ],
+              "candidate": [
+                115.96711473412685,
+                182.36383800279737
+              ],
+              "error_head": 0.01619167311205134,
+              "score": 0.9838083268879486
+            },
+            "nose": {
+              "target": [
+                117.5,
+                154.0
+              ],
+              "candidate": [
+                115.98581565840064,
+                157.13280568052656
+              ],
+              "error_head": 0.019997378653259908,
+              "score": 0.9800026213467401
+            }
+          },
+          "alignment": {
+            "scale": 1.0981933451677637,
+            "ox": -25,
+            "oy": -62
+          },
+          "fit_score": 72.83940932280979,
+          "garment_iou": {
+            "blouse": 0.42470685044229584,
+            "shorts": 0.7106167184688369
+          }
+        },
+        "sheet30_front_left": {
+          "score": 45.4939929057309,
+          "figure_iou": 0.7951312584112706,
+          "eye_iou": 0.18861209964412812,
+          "landmarks": {
+            "chin": {
+              "target": [
+                124.0,
+                178.0
+              ],
+              "candidate": [
+                119.63776328647606,
+                179.60121496905276
+              ],
+              "error_head": 0.027016434391222147,
+              "score": 0.9729835656087779
+            },
+            "nose": {
+              "target": [
+                128.0,
+                153.0
+              ],
+              "candidate": [
+                136.59349726372878,
+                155.06128089316383
+              ],
+              "error_head": 0.051379388945153634,
+              "score": 0.9486206110548464
+            }
+          },
+          "alignment": {
+            "scale": 1.2025533248271276,
+            "ox": -61,
+            "oy": -91
+          },
+          "fit_score": 64.81818154624037,
+          "garment_iou": {
+            "blouse": 0.23351118174594165,
+            "shorts": 0.6763686763686764
+          }
+        },
+        "sheet30_left": {
+          "score": 44.67271293375394,
+          "figure_iou": 0.7440991814352698,
+          "eye_iou": 0.2967032967032967,
+          "landmarks": {
+            "chin": {
+              "target": [
+                28.0,
+                178.0
+              ],
+              "candidate": [
+                49.19699632849871,
+                179.3283990654794
+              ],
+              "error_head": 0.12348011860742836,
+              "score": 0.8765198813925716
+            },
+            "nose": {
+              "target": [
+                16.0,
+                153.0
+              ],
+              "candidate": [
+                27.046289976713382,
+                155.2567740014072
+              ],
+              "error_head": 0.06554921256545437,
+              "score": 0.9344507874345456
+            }
+          },
+          "alignment": {
+            "scale": 1.1970876518208247,
+            "ox": -67,
+            "oy": -88
+          },
+          "fit_score": 64.87626041840416,
+          "garment_iou": {
+            "blouse": 0.2196372239747634,
+            "shorts": 0.6738170347003155
+          }
+        }
+      },
+      "blend": "trial-000/build/girl_auburn_bun_glasses_master.blend",
+      "build_s": 152.84136319998652,
+      "render_s": 17.563750499975868,
+      "wall_s": 171.29036639997503,
+      "fit_score": 67.51128376248477
+    },
+    {
+      "trial": 1,
+      "parameters": {
+        "clothing.garments.0.sleeve_length": 0.977081442692123,
+        "clothing.garments.0.sleeve_puff_m": 0.024825328273845728,
+        "clothing.garments.2.crotch.depth": 0.43763494556640864,
+        "clothing.garments.2.length": 0.25704694978826514,
+        "clothing.garments.2.puff_inner": 0.33325754783979494
+      },
+      "score": 48.89877873414364,
+      "views": {
+        "sheet30_front": {
+          "score": 57.41485183575578,
+          "figure_iou": 0.8089367508040152,
+          "eye_iou": 0.39501779359430605,
+          "landmarks": {
+            "chin": {
+              "target": [
+                117.5,
+                180.0
+              ],
+              "candidate": [
+                115.96711473412685,
+                182.36383800279737
+              ],
+              "error_head": 0.01619167311205134,
+              "score": 0.9838083268879486
+            },
+            "nose": {
+              "target": [
+                117.5,
+                154.0
+              ],
+              "candidate": [
+                115.98581565840064,
+                157.13280568052656
+              ],
+              "error_head": 0.019997378653259908,
+              "score": 0.9800026213467401
+            }
+          },
+          "alignment": {
+            "scale": 1.0981933451677637,
+            "ox": -25,
+            "oy": -62
+          },
+          "fit_score": 72.86200061718885,
+          "garment_iou": {
+            "blouse": 0.42746913580246915,
+            "shorts": 0.7208279009126467
+          }
+        },
+        "sheet30_front_left": {
+          "score": 45.39461781123479,
+          "figure_iou": 0.7945961600708701,
+          "eye_iou": 0.18861209964412812,
+          "landmarks": {
+            "chin": {
+              "target": [
+                124.0,
+                178.0
+              ],
+              "candidate": [
+                119.63776328647606,
+                179.60121496905276
+              ],
+              "error_head": 0.027016434391222147,
+              "score": 0.9729835656087779
+            },
+            "nose": {
+              "target": [
+                128.0,
+                153.0
+              ],
+              "candidate": [
+                136.59349726372878,
+                155.06128089316383
+              ],
+              "error_head": 0.051379388945153634,
+              "score": 0.9486206110548464
+            }
+          },
+          "alignment": {
+            "scale": 1.2025533248271276,
+            "ox": -61,
+            "oy": -91
+          },
+          "fit_score": 64.80034493489369,
+          "garment_iou": {
+            "blouse": 0.23523421588594703,
+            "shorts": 0.6726581403387487
+          }
+        },
+        "sheet30_left": {
+          "score": 43.88686655544034,
+          "figure_iou": 0.7441107535851905,
+          "eye_iou": 0.2967032967032967,
+          "landmarks": {
+            "chin": {
+              "target": [
+                28.0,
+                178.0
+              ],
+              "candidate": [
+                49.19699632849871,
+                179.3283990654794
+              ],
+              "error_head": 0.12348011860742836,
+              "score": 0.8765198813925716
+            },
+            "nose": {
+              "target": [
+                16.0,
+                153.0
+              ],
+              "candidate": [
+                27.046289976713382,
+                155.2567740014072
+              ],
+              "error_head": 0.06554921256545437,
+              "score": 0.9344507874345456
+            }
+          },
+          "alignment": {
+            "scale": 1.1970876518208247,
+            "ox": -67,
+            "oy": -88
+          },
+          "fit_score": 64.87664615673486,
+          "garment_iou": {
+            "blouse": 0.22130503144654087,
+            "shorts": 0.6564322996622659
+          }
+        }
+      },
+      "blend": "trial-001/build/girl_auburn_bun_glasses_master.blend",
+      "build_s": 161.853299600014,
+      "render_s": 15.444749800022691,
+      "wall_s": 177.72729770001024,
+      "fit_score": 67.51299723627247
+    },
+    {
+      "trial": 2,
+      "parameters": {
+        "clothing.garments.0.sleeve_length": 0.9768597538995983,
+        "clothing.garments.0.sleeve_puff_m": 0.027205494366080153,
+        "clothing.garments.2.crotch.depth": 0.557815886164732,
+        "clothing.garments.2.length": 0.28109965055663455,
+        "clothing.garments.2.puff_inner": 0.34436881620173876
+      },
+      "score": 49.303272347402775,
+      "views": {
+        "sheet30_front": {
+          "score": 57.64093253812843,
+          "figure_iou": 0.8095764033264033,
+          "eye_iou": 0.4010007147962831,
+          "landmarks": {
+            "chin": {
+              "target": [
+                117.5,
+                180.0
+              ],
+              "candidate": [
+                116.96711473412685,
+                182.36383800279737
+              ],
+              "error_head": 0.013926197912903044,
+              "score": 0.9860738020870969
+            },
+            "nose": {
+              "target": [
+                117.5,
+                154.0
+              ],
+              "candidate": [
+                116.98581565840064,
+                157.13280568052656
+              ],
+              "error_head": 0.018245526193823282,
+              "score": 0.9817544738061768
+            }
+          },
+          "alignment": {
+            "scale": 1.0981933451677637,
+            "ox": -24,
+            "oy": -62
+          },
+          "fit_score": 73.14970853564411,
+          "garment_iou": {
+            "blouse": 0.4283519410017413,
+            "shorts": 0.7244667097608274
+          }
+        },
+        "sheet30_front_left": {
+          "score": 45.60614755420258,
+          "figure_iou": 0.7953779079668926,
+          "eye_iou": 0.18861209964412812,
+          "landmarks": {
+            "chin": {
+              "target": [
+                124.0,
+                178.0
+              ],
+              "candidate": [
+                119.63776328647606,
+                179.60121496905276
+              ],
+              "error_head": 0.027016434391222147,
+              "score": 0.9729835656087779
+            },
+            "nose": {
+              "target": [
+                128.0,
+                153.0
+              ],
+              "candidate": [
+                136.59349726372878,
+                155.06128089316383
+              ],
+              "error_head": 0.051379388945153634,
+              "score": 0.9486206110548464
+            }
+          },
+          "alignment": {
+            "scale": 1.2025533248271276,
+            "ox": -61,
+            "oy": -91
+          },
+          "fit_score": 64.82640319809443,
+          "garment_iou": {
+            "blouse": 0.23594874100719423,
+            "shorts": 0.6761742100768574
+          }
+        },
+        "sheet30_left": {
+          "score": 44.66273694987729,
+          "figure_iou": 0.7442266486786763,
+          "eye_iou": 0.3062730627306273,
+          "landmarks": {
+            "chin": {
+              "target": [
+                28.0,
+                178.0
+              ],
+              "candidate": [
+                50.19699632849871,
+                179.3283990654794
+              ],
+              "error_head": 0.12928320008772992,
+              "score": 0.87071679991227
+            },
+            "nose": {
+              "target": [
+                16.0,
+                153.0
+              ],
+              "candidate": [
+                28.046289976713382,
+                155.2567740014072
+              ],
+              "error_head": 0.07125500634648743,
+              "score": 0.9287449936535126
+            }
+          },
+          "alignment": {
+            "scale": 1.1970876518208247,
+            "ox": -66,
+            "oy": -88
+          },
+          "fit_score": 65.00768693973983,
+          "garment_iou": {
+            "blouse": 0.25996055226824455,
+            "shorts": 0.6332941867293013
+          }
+        }
+      },
+      "blend": "trial-002/build/girl_auburn_bun_glasses_master.blend",
+      "build_s": 162.82535910001025,
+      "render_s": 18.291697899985593,
+      "wall_s": 181.81184640002903,
+      "fit_score": 67.66126622449279
+    }
+  ],
+  "wall_s": 530.9460787000135,
+  "fit_best": 2,
+  "selection": "100 x mean visible garment region IoU, equal weight for both garments and the three views"
+}
