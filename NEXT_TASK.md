@@ -1,3 +1,22 @@
+# ▶ T-090b — NEW CODEX ASSIGNMENT (owner order 2026-11-18 ~20:10Z, Supervisor session_01NPjxeNGwvGuevzV1aTjiEo)
+Codex does **T-090b: fit proposals** with the merged T-090 tool. Task file:
+`git show origin/integration/t-090b:docs/tasks/T-090b.md` (reaches main shortly).
+
+1. Branch `t-090b-codex-fit-proposals` from `origin/main` in a new worktree on C: (never write on D:, never touch the
+   owner's personal files). Write only `docs/evaluation/characters/T-090b/**`. Never edit specs, tools or tests.
+2. Run `tools/fit` (Workbench fit renders) and produce **proposals**:
+   a. girl face: eye opening, lid profile, cheek profile (input for T-089);
+   b. garment outlines: boy inseam / trouser break and shoe volume; girl sleeve reach and shorts (input for T-093).
+   Per proposal: override JSON + score table + recipe preview first, then one T-087 strict sheet in Cycles (final only).
+3. Post `| T-090b | STARTED |` to `RELAY_LOG.md` now. When done, push and post
+   `<UTC> | T-090b | READY | t-090b-codex-fit-proposals@<sha> | input <sha> | <headline>`, ending with
+   `ledger: build N · render N · tests N · ci N · wait N (min)`. BLOCKED with the question if stuck.
+4. Model: as for T-090.
+5. Not for Codex: the time-ledger and preview rules are already done by the Supervisor (docs; `recipe.py preview`
+   exists). Standing duty: check the nightly Windows workflow result on main; if it fails, report BLOCKED/STATUS
+   with the cause before fixing anything outside an assignment.
+
+---
 # ▶ (Supervisor 2026-11-18 19:25Z) T-090 ACCEPTED and merging — NO CODEX ASSIGNMENT NOW
 T-090 READY at e0ebdad reviewed and merged (integration/t-090). Thanks. Codex stays idle until a new block appears at
 the top of this file. Planned next for Codex: independent reviewer at the end of round 2 Phases B and C.
