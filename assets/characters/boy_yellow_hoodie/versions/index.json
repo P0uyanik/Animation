@@ -15,10 +15,18 @@
    "status": "approved",
    "spec_sha256": "38def66c6776cc3ceb4e023132a14e6f674d0361da0eaf3f26a398cf6a0b5de2",
    "approval_notes": "current approved (OWNER_DECISIONS 2026-11-17, T-069 #6); recorded in the store by T-075"
+  },
+  "2.0.0": {
+   "created": "2026-11-18T11:44:45+00:00",
+   "parent": "1.1.0",
+   "notes": "Boy 2.0.0 (T-080): generic path, body_generic/2 fitted head + face_generic/2, skin-felt/2 (presets/2), hair v3 round 3 (groom/2, T-079 data), garment/1 hoodie with hood volume and closed armholes, joggers, sneakers, backpack; personality profile 1.0.0 referenced. Spec assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.0.0.spec.json. Built with bpy 5.3.0 module, determinism.subprocess_env. Fidelity 67.63 (1.1.0: 66.41).",
+   "status": "approved",
+   "spec_sha256": "0e16c320af27ca9e4485aafe72e4a42340962cc1c1641afcaaeccc4898e0d3a4",
+   "approval_notes": "new current version: \"I approve Boy 2.0.0 as the new current version.\" Recorded in the store by T-080."
   }
  },
  "pointers": {
-  "approved": "1.1.0",
+  "approved": "2.0.0",
   "reference": "1.0.0"
  },
  "history": [
@@ -41,6 +49,20 @@
    "previous": null,
    "by": "owner (docs/process/OWNER_DECISIONS.md 2026-11-17)",
    "notes": "current approved (OWNER_DECISIONS 2026-11-17, T-069 #6); recorded in the store by T-075"
+  },
+  {
+   "at": "2026-11-18T11:44:45+00:00",
+   "action": "publish",
+   "version": "2.0.0",
+   "status": "candidate"
+  },
+  {
+   "at": "2026-11-18T11:44:48+00:00",
+   "action": "approve",
+   "version": "2.0.0",
+   "previous": "1.1.0",
+   "by": "owner (docs/process/OWNER_DECISIONS.md 2026-11-18)",
+   "notes": "new current version: \"I approve Boy 2.0.0 as the new current version.\" Recorded in the store by T-080."
   }
  ]
 }

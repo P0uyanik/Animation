@@ -13,7 +13,7 @@
  "identity": {
   "id": "boy_yellow_hoodie",
   "display_name": "Boy in the yellow hoodie",
-  "identity_lock": "Successor to frozen 1.0.0 and approved 1.1.0; NOT approved and NOT current (path B: the owner approves 2.0.0 on renders)",
+  "identity_lock": "Successor to frozen 1.0.0 and 1.1.0; current approved version (owner, docs/process/OWNER_DECISIONS.md 2026-11-18)",
   "references": "assets/characters/boy_yellow_hoodie/references/reference_index.json"
  },
  "proportions": {
@@ -1869,7 +1869,7 @@
  },
  "metadata": {
   "spec_version": "2.0.0",
-  "status": "unpublished candidate (T-080); not approved, not pinned as current",
+  "status": "approved (current); published to the asset store as 2.0.0 by T-080",
   "scope": "generic path: body_generic/2 fitted head, face_generic/2, skin-felt/2 (presets/2), groom/2 hair v3 round 3, garment/1 hoodie (hood volume, closed armholes), joggers, sneakers, backpack; personality profile 1.0.0",
   "parent_versions": [
    "1.0.0",
@@ -1880,7 +1880,7 @@
    "base": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.0.0-dev.spec.json",
    "face": "docs/evaluation/characters/T-065/candidates/boy_2.0-dev_face2.override.json",
    "skin": "docs/evaluation/characters/T-066/candidates/boy_yellow_hoodie.skin2.override.json",
-   "hair": "docs/evaluation/characters/T-080/inputs/boy.hair_v3.r3.json",
+   "hair": "docs/evaluation/characters/T-079/candidates/boy.hair_v3.json",
    "outfit": "docs/evaluation/characters/T-068/candidates/boy_2.0.0-dev.garment_details.override.json",
    "personality": "content/personality/boy_yellow_hoodie.json"
   },
@@ -1893,7 +1893,11 @@
    "materials pin presets/2 (registered in versions.py by T-080); exporter export/4 kept (as 2.0.0-dev and the girl 0.10.0).",
    "personality: profile boy_yellow_hoodie 1.0.0 referenced from animation.personality (data only; the engine reads content/personality/<id>.json through the scene's \"personality\" field)."
   ],
-  "approval": null
+  "approval": {
+   "by": "owner",
+   "date": "2026-11-18",
+   "record": "docs/process/OWNER_DECISIONS.md 2026-11-18: \"I approve Boy 2.0.0 as the new current version.\""
+  }
  },
  "components": {
   "body": [

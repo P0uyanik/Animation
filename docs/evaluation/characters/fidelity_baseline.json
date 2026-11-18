@@ -10,18 +10,16 @@
   },
   "characters": {
     "boy_yellow_hoodie": {
-      "score": 66.4143,
-      "build": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.spec.json",
-      "overrides": [
-        "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.1.1.0.override.json"
-      ],
-      "source": "docs/evaluation/characters/T-064/boy/fidelity.json",
+      "score": 67.6344,
+      "build": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.0.0.spec.json",
+      "overrides": [],
+      "source": "docs/evaluation/characters/T-080/fidelity/fidelity.json",
       "rebaseline": {
-        "task": "T-064",
-        "tool": "fixed fidelity tool (segmentation, alignment, hair/skin/face parts)",
-        "previous_score": 64.4891,
-        "same_renders_old_tool": 64.0781,
-        "same_renders_new_tool": 66.4143
+        "task": "T-080",
+        "reason": "owner decision 2026-11-18 (docs/process/OWNER_DECISIONS.md): boy 2.0.0 is the new current version",
+        "previous_version": "1.1.0",
+        "previous_score": 66.4143,
+        "previous_source": "docs/evaluation/characters/T-064/boy/fidelity.json"
       }
     },
     "girl_auburn_bun_glasses": {

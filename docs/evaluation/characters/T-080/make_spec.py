@@ -6,9 +6,8 @@ Inputs (read only):
   base   assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.0.0-dev.spec.json (generic path)
   face   docs/evaluation/characters/T-065/candidates/boy_2.0-dev_face2.override.json  (face_generic/2 + body_generic/2)
   skin   docs/evaluation/characters/T-066/candidates/boy_yellow_hoodie.skin2.override.json (skin-felt/2, presets/2)
-  hair   docs/evaluation/characters/T-080/inputs/boy.hair_v3.r3.json (groom/2 round 3: an unchanged copy of
-         docs/evaluation/characters/T-079/candidates/boy.hair_v3.json at t-079-claude-hair-v3-r3@7d3c424; T-079 is
-         not in staging yet. Supervisor 2026-11-18: use round 3 instead of round 2)
+  hair   docs/evaluation/characters/T-079/candidates/boy.hair_v3.json (groom/2 round 3; Supervisor 2026-11-18:
+         round 3 instead of round 2)
   outfit docs/evaluation/characters/T-068/candidates/boy_2.0.0-dev.garment_details.override.json
   personality content/personality/boy_yellow_hoodie.json (profile 1.0.0, T-053)
 
@@ -30,7 +29,7 @@ BASE = f"{SPEC_DIR}/boy_yellow_hoodie.2.0.0-dev.spec.json"
 OUT = f"{SPEC_DIR}/boy_yellow_hoodie.2.0.0.spec.json"
 FACE = "docs/evaluation/characters/T-065/candidates/boy_2.0-dev_face2.override.json"
 SKIN = "docs/evaluation/characters/T-066/candidates/boy_yellow_hoodie.skin2.override.json"
-HAIR = "docs/evaluation/characters/T-080/inputs/boy.hair_v3.r3.json"  # copy of T-079 candidates/boy.hair_v3.json @7d3c424
+HAIR = "docs/evaluation/characters/T-079/candidates/boy.hair_v3.json"  # hair v3 round 3 (T-079, merged)
 OUTFIT = "docs/evaluation/characters/T-068/candidates/boy_2.0.0-dev.garment_details.override.json"
 PERSONALITY = "content/personality/boy_yellow_hoodie.json"
 
@@ -86,11 +85,11 @@ def compose():
     # personality reference
     s["animation"]["personality"] = {"profile": pers["character"], "profile_version": pers["profile_version"],
                                      "path": PERSONALITY, "owner_brief": pers["owner_brief"]}
-    s["identity"]["identity_lock"] = ("Successor to frozen 1.0.0 and approved 1.1.0; NOT approved and NOT current "
-                                      "(path B: the owner approves 2.0.0 on renders)")
+    s["identity"]["identity_lock"] = ("Successor to frozen 1.0.0 and 1.1.0; current approved version (owner, "
+                                      "docs/process/OWNER_DECISIONS.md 2026-11-18)")
     s["metadata"] = {
         "spec_version": "2.0.0",
-        "status": "unpublished candidate (T-080); not approved, not pinned as current",
+        "status": "approved (current); published to the asset store as 2.0.0 by T-080",
         "scope": "generic path: body_generic/2 fitted head, face_generic/2, skin-felt/2 (presets/2), groom/2 hair v3 "
                  "round 3, garment/1 hoodie (hood volume, closed armholes), joggers, sneakers, backpack; personality "
                  "profile 1.0.0",
@@ -98,7 +97,9 @@ def compose():
         "sources": {"base": BASE, "face": FACE, "skin": SKIN, "hair": HAIR, "outfit": OUTFIT,
                     "personality": PERSONALITY},
         "choices": CHOICES,
-        "approval": None,
+        "approval": {"by": "owner", "date": "2026-11-18",
+                     "record": "docs/process/OWNER_DECISIONS.md 2026-11-18: \"I approve Boy 2.0.0 as the new "
+                               "current version.\""},
     }
     s["generators"] = {k: s["generators"][k] for k in
                        ("body", "face", "groom", "garment", "accessories", "rig", "materials", "exporter")}
