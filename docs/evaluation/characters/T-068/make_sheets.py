@@ -3,9 +3,9 @@
     python3 docs/evaluation/characters/T-068/make_sheets.py <renders dir> <out dir>
 
 <renders dir> holds the groom_turnaround.py outputs in sub-folders boy_current, boy_candidate, girl_current,
-girl_vest, girl_dress (one <view>.png per reference view). Crops are fractions of the frame height; every image is
-scaled to the same height first, so the reference and the render line up roughly (the cameras use the reference
-views' yaw/elevation/focal and frame the character's bounding box)."""
+girl_vest, girl_dress (one <view>.png per reference view). Crops are fractions of each image's own character height
+(detected against the background), so the reference and the render line up although their framing differs (the
+render cameras use the reference views' yaw/elevation/focal and frame the character's bounding box)."""
 import os
 import sys
 
@@ -19,9 +19,9 @@ H = 640
 
 # item -> (rows of (reference path, current folder or None, candidate folder, view, crop y0, y1))
 ITEMS = {
-    "sneakers": [(f"{BOY_REF}/val27_front.png", "boy_current", "boy_candidate", "val27_front", 0.78, 1.0),
-                 (f"{BOY_REF}/val27_side_right.png", "boy_current", "boy_candidate", "val27_side_right", 0.78, 1.0)],
-    "backpack": [(f"{BOY_REF}/val27_back.png", "boy_current", "boy_candidate", "val27_back", 0.3, 0.72),
+    "sneakers": [(f"{BOY_REF}/val27_front.png", "boy_current", "boy_candidate", "val27_front", 0.82, 1.0),
+                 (f"{BOY_REF}/val27_side_right.png", "boy_current", "boy_candidate", "val27_side_right", 0.82, 1.0)],
+    "backpack": [(f"{BOY_REF}/canon29_back.png", "boy_current", "boy_candidate", "val27_back", 0.3, 0.72),
                  (f"{BOY_REF}/val27_side_right.png", "boy_current", "boy_candidate", "val27_side_right", 0.3, 0.72),
                  (f"{BOY_REF}/val27_front.png", "boy_current", "boy_candidate", "val27_front", 0.3, 0.72)],
     "hoodie_hood_underarm": [
@@ -37,14 +37,40 @@ ITEMS = {
 }
 
 
+def extent(im):
+    """Vertical and horizontal extent of the character: rows/columns with enough pixels that differ from the
+    background colour (median of the four corners)."""
+    small = im.resize((im.width // 2, im.height // 2))
+    px = small.load()
+    w, h = small.size
+    corners = [px[1, 1], px[w - 2, 1], px[1, h - 2], px[w - 2, h - 2]]
+    bg = tuple(sorted(c[i] for c in corners)[1] for i in range(3))
+
+    def fg(x, y):
+        return sum(abs(a - b) for a, b in zip(px[x, y], bg)) > 60
+    rows = [y for y in range(h) if sum(fg(x, y) for x in range(0, w, 2)) > 0.04 * w / 2]
+    cols = [x for x in range(w) if sum(fg(x, y) for y in range(0, h, 2)) > 0.02 * h / 2]
+    if not rows or not cols:
+        return 0, 0, im.width, im.height
+    return cols[0] * 2, rows[0] * 2, cols[-1] * 2 + 2, rows[-1] * 2 + 2
+
+
 def tile(path, y0, y1):
+    """Crop [y0, y1] of the character's own height (not the frame), scaled to a common height."""
     if path is None or not os.path.exists(path):
-        im = Image.new("RGB", (H // 2, H), (60, 60, 64))
-        ImageDraw.Draw(im).text((10, H // 2), "n/a (new type)", fill=(220, 220, 220))
-    else:
-        im = Image.open(path).convert("RGB")
-        im = im.resize((max(1, round(im.width * H / im.height)), H))
-    return im.crop((0, round(y0 * H), im.width, round(y1 * H)))
+        im = Image.new("RGB", (H // 2, H // 2), (60, 60, 64))
+        ImageDraw.Draw(im).text((10, H // 4), "n/a (new type)", fill=(220, 220, 220))
+        return im
+    im = Image.open(path).convert("RGB")
+    x0, top, x1, bottom = extent(im)
+    span = bottom - top
+    a, b = top + y0 * span, top + y1 * span
+    pad = 0.08 * span
+    crop = im.crop((max(0, round(x0 - pad)), max(0, round(a - 0.02 * span)), min(im.width, round(x1 + pad)),
+                    min(im.height, round(b + 0.02 * span))))
+    out_h = round(H * 0.5 * max(0.35, (y1 - y0)) / 0.5) if y1 - y0 < 0.99 else H
+    out_h = min(out_h, H)
+    return crop.resize((max(1, round(crop.width * out_h / crop.height)), out_h))
 
 
 def main():
@@ -69,6 +95,8 @@ def main():
                 sheet.paste(t, (x, y + 16))
                 x += col_w[c] + 8
             y += h
+        if sheet.height > 1300:  # keep the repository light
+            sheet = sheet.resize((round(sheet.width * 1300 / sheet.height), 1300))
         sheet.save(os.path.join(out, f"{item}.png"))
         print("wrote", item)
 
