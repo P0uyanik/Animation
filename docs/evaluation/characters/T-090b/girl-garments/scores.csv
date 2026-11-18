@@ -1,0 +1,33 @@
+view,measure,start,best
+all,garment score / 100,48.97762809501382,49.303272347402775
+all,stock fit score / 100,67.51128376248477,67.66126622449279
+sheet30_front,garment score / 100,56.76617844555663,57.64093253812843
+sheet30_front,stock fit score / 100,72.83940932280979,73.14970853564411
+sheet30_front,figure IoU,0.8082590119726433,0.8095764033264033
+sheet30_front,eye IoU,0.39501779359430605,0.4010007147962831
+sheet30_front,blouse region IoU,0.42470685044229584,0.4283519410017413
+sheet30_front,shorts region IoU,0.7106167184688369,0.7244667097608274
+sheet30_front,chin error (head heights),0.01619167311205134,0.013926197912903044
+sheet30_front,nose error (head heights),0.019997378653259908,0.018245526193823282
+sheet30_front,sleeve reach L absolute error (% shoulder to palm),49.019999999999996,47.89999999999999
+sheet30_front,sleeve reach R absolute error (% shoulder to palm),22.159999999999997,22.159999999999997
+sheet30_front,hem_shorts lowest visible edge y absolute error (px),7.0,8.0
+sheet30_front,crotch to sole gap absolute error (px),5.0,6.0
+sheet30_front_left,garment score / 100,45.4939929057309,45.60614755420258
+sheet30_front_left,stock fit score / 100,64.81818154624037,64.82640319809443
+sheet30_front_left,figure IoU,0.7951312584112706,0.7953779079668926
+sheet30_front_left,eye IoU,0.18861209964412812,0.18861209964412812
+sheet30_front_left,blouse region IoU,0.23351118174594165,0.23594874100719423
+sheet30_front_left,shorts region IoU,0.6763686763686764,0.6761742100768574
+sheet30_front_left,chin error (head heights),0.027016434391222147,0.027016434391222147
+sheet30_front_left,nose error (head heights),0.051379388945153634,0.051379388945153634
+sheet30_front_left,hem_shorts lowest visible edge y absolute error (px),5.0,7.0
+sheet30_left,garment score / 100,44.67271293375394,44.66273694987729
+sheet30_left,stock fit score / 100,64.87626041840416,65.00768693973983
+sheet30_left,figure IoU,0.7440991814352698,0.7442266486786763
+sheet30_left,eye IoU,0.2967032967032967,0.3062730627306273
+sheet30_left,blouse region IoU,0.2196372239747634,0.25996055226824455
+sheet30_left,shorts region IoU,0.6738170347003155,0.6332941867293013
+sheet30_left,chin error (head heights),0.12348011860742836,0.12928320008772992
+sheet30_left,nose error (head heights),0.06554921256545437,0.07125500634648743
+sheet30_left,hem_shorts lowest visible edge y absolute error (px),10.0,14.0

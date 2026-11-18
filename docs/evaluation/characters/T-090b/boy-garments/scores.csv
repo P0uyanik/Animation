@@ -1,0 +1,31 @@
+view,measure,start,best
+all,garment score / 100,61.104673361984375,63.90076884763514
+all,stock fit score / 100,69.17473345372458,68.34105375468187
+val27_front,garment score / 100,61.82126442087426,65.36984060607907
+val27_front,stock fit score / 100,73.35035466312024,73.49253963019991
+val27_front,figure IoU,0.8518737439413643,0.8541657687168657
+val27_front,eye IoU,0.3548387096774194,0.35824175824175825
+val27_front,trousers region IoU,0.672802604320805,0.6959001782531195
+val27_front,shoes region IoU,0.5636226840966801,0.611496633868462
+val27_front,chin error (head heights),0.004411195549059227,0.006359165841669233
+val27_front,nose error (head heights),0.007992431901293099,0.00890351026358373
+val27_front,hem_trousers lowest visible edge y absolute error (px),16.0,13.0
+val27_front,crotch to sole gap absolute error (px),32.0,17.0
+val27_threequarter_right,garment score / 100,60.03103404456191,63.44490890084384
+val27_threequarter_right,stock fit score / 100,72.9455870235023,71.38706230143293
+val27_threequarter_right,figure IoU,0.8660350885330304,0.8659851043160476
+val27_threequarter_right,eye IoU,0.3710843373493976,0.32517482517482516
+val27_threequarter_right,trousers region IoU,0.6705511202678341,0.6945892041433442
+val27_threequarter_right,shoes region IoU,0.530069560623404,0.5743089738735327
+val27_threequarter_right,chin error (head heights),0.0711786474425549,0.06825400730117834
+val27_threequarter_right,nose error (head heights),0.02632498291216315,0.030842113594591918
+val27_threequarter_right,hem_trousers lowest visible edge y absolute error (px),12.0,5.0
+val27_side_right,garment score / 100,61.461721620516954,62.88755703598251
+val27_side_right,stock fit score / 100,61.228258674551206,60.143559332412735
+val27_side_right,figure IoU,0.7806864219611669,0.7803846623022811
+val27_side_right,eye IoU,0.14204545454545456,0.10614525139664804
+val27_side_right,trousers region IoU,0.577767288175596,0.5782527446858211
+val27_side_right,shoes region IoU,0.6514671442347431,0.6794983960338291
+val27_side_right,chin error (head heights),0.13406048988400834,0.1306425302945424
+val27_side_right,nose error (head heights),0.03770774265616208,0.033803737158551825
+val27_side_right,hem_trousers lowest visible edge y absolute error (px),1.0,3.0

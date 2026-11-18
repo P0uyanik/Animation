@@ -1,0 +1,22 @@
+{
+  "clothing.garments.0.sleeve_length": [
+    0.97,
+    1
+  ],
+  "clothing.garments.0.sleeve_puff_m": [
+    0.024,
+    0.032
+  ],
+  "clothing.garments.2.crotch.depth": [
+    0.2,
+    0.8
+  ],
+  "clothing.garments.2.puff_inner": [
+    0.3,
+    0.8
+  ],
+  "clothing.garments.2.length": [
+    0.24,
+    0.35
+  ]
+}
