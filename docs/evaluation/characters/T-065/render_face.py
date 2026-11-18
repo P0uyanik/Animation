@@ -51,7 +51,8 @@ def main():
         sc.cycles.device = "CPU"
         sc.cycles.use_denoising = True
     sc.render.resolution_x = sc.render.resolution_y = tile
-    rig = next(o for o in bpy.data.objects if o.type == "ARMATURE" and "ps_face_parts" in o.keys())
+    rig = next((o for o in bpy.data.objects if o.type == "ARMATURE" and "ps_face_parts" in o.keys()),
+               next(o for o in bpy.data.objects if o.type == "ARMATURE" and any(k.startswith("face_") for k in o.keys())))  # legacy masters
     lm = {o.name[3:]: o.matrix_world.translation.copy() for o in bpy.data.objects if o.name.startswith("LM_")}
     centre = (lm["eye_L"] + lm["eye_R"]) / 2 * 0.62 + lm["chin"] * 0.38
     centre.z += float(arg(argv, "--dz", 0.0))

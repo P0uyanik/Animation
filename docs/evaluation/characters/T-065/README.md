@@ -9,9 +9,35 @@ Renders: Cycles CPU, 16 spp + OIDN, 384 px, orthographic face framing, shared ca
 
 ## Result in one look
 
-![boy](boy_face_vs_reference.png)
-![girl](girl_face_vs_reference.png)
-![third](third_face_vs_reference.png)
+**Final owner sheets.** Each sheet shows face v2 on the fitted head (`body_generic/2`). Columns: reference | current approved version | candidate, front then 3/4. All are in `head_v2/`, as JPEG ≤ 2048 px.
+
+![overview](head_v2/overview_owner_sheet.jpg)
+
+- Per character:
+  - [boy](head_v2/boy_owner_sheet.jpg). Current = published 1.1.0, rendered here with the same framing and light. The published master was not changed; I checked its checksum.
+  - [girl](head_v2/girl_owner_sheet.jpg). Current = 0.10.0, using T-055's stills: same calibration, slightly different framing.
+  - [third character](head_v2/third_owner_sheet.jpg). Head-only test; she has no approved version yet.
+- Outline overlays and landmark errors: see "Criterion 0" below.
+
+**Remaining differences (honest list, visual first):**
+1. **Skin colour** (T-066).
+   - The boy's skin is tan; the reference is porcelain peach.
+   - The girl's and the third character's skin is greyish pink.
+2. **Hair** (T-044). The boy's is a clump helmet, the girl's are tubular ringlets, and the third character has none in this test.
+3. **Lower lid.** A faint pink line shows under the iris on the girl and the third character. It is weaker than before.
+4. **Third character.**
+   - A faint horizontal shading band on her lower face.
+   - The socket edge still reads slightly at the outer corner in 3/4.
+5. **Boy.**
+   - In Happy, a faint ring of the closed shell.
+   - The 3/4 cheeks are still less full than #28.
+6. **Girl.**
+   - The neck is long (body data, T-059).
+   - Her Angry brows are weaker than ref_34.
+7. **Expressions on the old head.** The Sad, Surprised, Angry and Bored stills in the AC 1–7 expression sheets below are on the previous head.
+8. **Side profile below the eyes.** It differs by cheek volume; only the chin set-back is fitted (see Criterion 0).
+
+The sheets below are the AC 1–7 evidence on the previous head.
 
 Sheets (reference row on top, candidate below):
 
@@ -232,7 +258,7 @@ Lid fixes in the same round (spec data only):
 - The skin colour belongs to T-066.
 - The boy's Sad/Surprised/Angry/Bored and the girl's Sad/Surprised/Angry stills in the AC 1–7 sheets above are from the previous head. They were not re-rendered: the extra budget went to front, 3/4 and Happy.
 
-Cycles total: 24 (AC 1–7) + 9 (criterion 0) = 33. The original budget was 24, plus 12 approved by the Supervisor.
+Cycles total: 24 (AC 1–7) + 9 candidate + 2 current boy 1.1.0 (criterion 0) = 35. The original budget was 24, plus 12 approved by the Supervisor.
 
 ## Tests
 
