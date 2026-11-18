@@ -286,3 +286,14 @@ recommendations only; no major implementation before the owner decides. Round 2 
   boy 2.1.0 / girl 0.12.0. Out of scope: third character, T-051, T-101–T-103, full environment, T-099, full T-074.
 - **T-090 reference-fit optimiser included** in Phase B.
 - **Fresh Supervisor session for round 2: yes.** The previous Supervisor session hands over and goes idle.
+
+## 2026-11-18 (~19:20Z): Phase B review of T-092 and T-093 strict sheets (relayed by the previous Supervisor session)
+- **T-092 materials (presets/3): approved** as the material system improvement. It enters the characters with the
+  Phase D versions (boy 2.1.0, girl 0.12.0) through T-094, as planned. Nothing becomes current now.
+- **T-093 garments: not approved yet; one more refinement round** on the same task (the system-only, opt-in merge
+  stays; nothing becomes current). Focus: boy backpack per B06 (rounded flap, tab closure, front flap pocket, top grab
+  loop, navy felt; B07 only for depth/strap path); girl collar and vest edges cleanly finished (no torn or frayed
+  geometry, rounded blouse collar); less visible vest penetration in reach; sleeves, split bloomers with gathered
+  cuffs, sneakers (cream soles, white stripes; B09 only for laces/stitching/toe cap), plain felt drawstrings with dark
+  tips. Deliverable: updated T-087 strict sheets with the AI-target column and the reach before/after sheet, also on
+  top of T-092 presets/3.
