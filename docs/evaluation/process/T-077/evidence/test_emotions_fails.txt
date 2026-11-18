@@ -1,0 +1,7 @@
+happy/laugh  AC2 face 1.2e-08 clip 3.1e+00 deg boy-girl 0.000 deg FAIL | AC3 worst ('hand.L', 3.019, 0.49999895416015727) ('hand.L', 3.019, 0.4999992748001933) PASS | AC6 ['laugh', 'squint'] FAIL
+sad/cry      AC2 face 2.4e-08 clip 1.9e+00 deg boy-girl 0.000 deg FAIL | AC3 worst ('hand.L', 4.395, 0.5000018285893041) ('hand.L', 4.395, 0.5000021320384952) PASS | AC6 ['sad', 'squint'] FAIL
+afraid       AC2 face 2.4e-08 clip 1.5e+00 deg boy-girl 0.000 deg FAIL | AC3 worst ('hand.R', 29.103, 0.5000003518669157) ('hand.L', 27.986, 0.5000004744157307) PASS | AC6 ['WideOpen', 'Worried'] FAIL
+sleepy       AC2 face 1.2e-08 clip 1.0e+00 deg boy-girl 0.000 deg FAIL | AC3 worst ('head', 7.176, 0.49999967868993267) ('chest', 4.67, 0.5000002060462845) PASS | AC6 ['squint'] FAIL
+SUMMARY {'AC2': False, 'AC3': True, 'AC6': False, 'AC4': True, 'AC5': False}
+--- same run, animPrinciples=false in every scene:
+SUMMARY {'AC2': True, 'AC3': True, 'AC6': True, 'AC4': True, 'AC5': False}
