@@ -329,3 +329,17 @@ Owner, after the strict sheets: "approve T-093 and T-089". With T-092 already ap
   needs a rounder, fuller face and wider-open eyes (Codex's T-090b girl-face proposals are input for that round).
 - Nothing becomes current until the Phase D versions (T-094: boy 2.1.0, girl 0.12.0). **Phase D is not started**; the
   owner decides which Phase D tasks run.
+
+## 2026-11-18 (~22:50Z): Phase D approved (relayed by the previous Supervisor session)
+Owner: "yes pass it to the supervisor and approve T-106 for codex". Distribution:
+- **Now (cloud):** T-091 hair round 4; T-089b face polish (boy heavy lids, girl rounder face and wider eyes; the T-090b
+  girl-face proposal is not adopted as is); T-093b garment completion (T-090b boy trousers/shoes proposal as a
+  candidate, girl shorts leg-split control); T-104 continues. **T-097S** acting system (reaction model, emotion
+  modulation and blending, animcheck signature checks; formats and code only) starts as soon as T-104 merges,
+  because both claim `engine/anim/personality.*`, `content/personality/*` and `tools/animcheck/**`.
+- **After T-097S:** T-097B (boy) and T-097G (girl) acting in parallel, each only its own character's files. The
+  white-haired girl is out of scope now.
+- **After T-091, T-089b and T-093b are owner-approved:** T-094 boy 2.1.0 and girl 0.12.0 via the T-088 script and
+  T-087 strict sheets; then the e907 exchange is re-rendered with T-097B/G acting. The owner approves before current.
+- **Codex: T-106** reference performance extraction (offline MediaPipe on the two reference videos; data table and
+  contact sheets; tooling and evaluation only).

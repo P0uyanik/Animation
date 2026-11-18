@@ -16,6 +16,10 @@ means none. Branch is the task's branch; a task branch without a row falls back 
 
 | Task | Lane | Branch | Write-set | Depends on | Versions bumped |
 | --- | --- | --- | --- | --- | --- |
+| T-091 | D | t-091-claude-hair-r4 | `pipeline/charsys/groom_r4.py`, `pipeline/charsys/groom_r4/**`, `pipeline/charsys/tests/test_hair_r4*.py`, `assets/characters/{boy_yellow_hoodie,girl_auburn_bun_glasses}/spec/candidates/T-091/**`, `docs/evaluation/characters/T-091/**` | `pipeline/charsys/groom_hybrid.py` (stable), `pipeline/charsys/versions.py` (stable) | `groom` |
+| T-089b | D | t-089b-claude-face-polish | `pipeline/charsys/face_generic_v3.py`, `pipeline/charsys/face_v3/**`, `pipeline/charsys/tests/test_face_v3*.py`, `assets/characters/{boy_yellow_hoodie,girl_auburn_bun_glasses}/spec/candidates/T-089b/**`, `docs/evaluation/characters/T-089b/**` | `tools/fit/**` (stable) | — |
+| T-093b | D | t-093b-claude-garment-completion | `pipeline/charsys/garments_v2/**`, `pipeline/charsys/tests/test_garments_v2*.py`, `assets/characters/{boy_yellow_hoodie,girl_auburn_bun_glasses}/spec/candidates/T-093b/**`, `docs/evaluation/characters/T-093b/**` | `tools/fit/**` (stable) | — |
+| T-106 | E | t-106-codex-perf-extract | `tools/perf_extract/**`, `docs/evaluation/animation/T-106/**` | `docs/references/**` (stable) | — |
 | T-104 | C | t-104-claude-timing-calibration | `content/timing/**`, `content/personality/*.json`, `engine/anim/personality.{h,cpp}`, `engine/scene/interaction.{h,cpp}`, `engine/scene/scene.{h,cpp}`, `tests/test_timing_profile.cpp`, `tests/CMakeLists.txt`, `tools/animcheck/**`, `episodes/e907_exchange/**`, `content/scenes/eval/exchange/**`, `docs/evaluation/animation/T-104/**` | `docs/references/**` (stable) | — |
 
 Supervisor-only files: docs/process/TASK_LOG.md, docs/ROADMAP.md, docs/process/OWNER_DECISIONS.md, docs/tasks/**.
