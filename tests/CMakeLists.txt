@@ -2,7 +2,12 @@ add_executable(plush_tests test_main.cpp test_engine.cpp test_imported_character
                            test_asset_library.cpp test_secondary.cpp test_interaction.cpp test_face_layer.cpp
                            test_body_mechanics.cpp test_anim_principles.cpp
                            test_personality.cpp test_collision.cpp)
-target_link_libraries(plush_tests PRIVATE plush_scene plush_render doctest::doctest plush_warnings)
+target_link_libraries(plush_tests PRIVATE plush_scene doctest::doctest plush_warnings)
+if(PLUSH_BUILD_RENDERER)
+  # Engine path tracer unit tests (5 doctest cases): only with the frozen renderer (T-085).
+  target_sources(plush_tests PRIVATE test_render.cpp)
+  target_link_libraries(plush_tests PRIVATE plush_render)
+endif()
 target_compile_definitions(plush_tests PRIVATE PLUSH_SOURCE_DIR="${CMAKE_SOURCE_DIR}")
 # Plush Studio production workflow (no OpenGL), built when the studio is built.
 if(TARGET plush_shot_workflow)
@@ -11,6 +16,15 @@ if(TARGET plush_shot_workflow)
   target_compile_definitions(plush_tests PRIVATE PLUSH_RENDER_CLI="$<TARGET_FILE:plush-render>")
 endif()
 add_test(NAME plush_tests COMMAND plush_tests)
+
+if(NOT PLUSH_BUILD_RENDERER)
+  # Reported as "Not Run (Skipped)" by ctest: the renderer tests are skipped, not silently dropped.
+  add_test(NAME renderer_tests_skipped
+    COMMAND ${CMAKE_COMMAND} -E echo
+            "SKIPPED: PLUSH_BUILD_RENDERER=OFF - 5 path tracer doctest cases (tests/test_render.cpp) and 3 image regressions (regression_milestone01, regression_face_neutral, regression_lineup_abc) not built")
+  set_tests_properties(renderer_tests_skipped PROPERTIES SKIP_REGULAR_EXPRESSION "SKIPPED: PLUSH_BUILD_RENDERER=OFF")
+  return()
+endif()
 
 # Look regression: Milestone 01 is frozen (scene + character copy) and must keep rendering the same.
 # Intentional look changes in the engine require re-baselining the reference image (see DEVELOPMENT_LOG.md).

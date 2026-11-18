@@ -28,17 +28,19 @@
     }
   },
   "apt": {
-    "note": "Ubuntu 24.04 packages for the linux C++ tier (embree 4.3.0, glfw 3.3.10); vcpkg stays the Windows path.",
+    "note": "Ubuntu 24.04 packages for the linux C++ tier (glfw 3.3.10); vcpkg stays the Windows path. Embree 4.3.0 only for the renderer job (renderer_packages).",
     "packages": [
       "ninja-build",
       "ccache",
-      "libembree-dev",
       "libglm-dev",
       "nlohmann-json3-dev",
       "libglfw3-dev",
       "libglew-dev",
       "libstb-dev",
       "doctest-dev"
+    ],
+    "renderer_packages": [
+      "libembree-dev"
     ]
   }
 }

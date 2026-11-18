@@ -476,6 +476,20 @@ def check_animcheck(build_dir: Path, config: str, logs: Path, build_ok: bool) ->
     return Result("animcheck", code == 0, "" if code == 0 else f"see {relative_log(log)}", relative_log(log), round(seconds, 2))
 
 
+def renderer_skip(build_dir: Path) -> Result | None:
+    """T-085: report (never hide) the renderer tests a PLUSH_BUILD_RENDERER=OFF build skips."""
+    cache = build_dir / "CMakeCache.txt"
+    try:
+        text = cache.read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        return None
+    match = re.search(r"^PLUSH_BUILD_RENDERER:BOOL=(\S+)$", text, re.MULTILINE)
+    if match and match.group(1).upper() in {"ON", "TRUE", "1", "YES", "Y"}:
+        return None
+    return Result("renderer tests", True, "SKIPPED (PLUSH_BUILD_RENDERER=OFF): 5 path tracer doctest cases + 3 image "
+                  "regressions; run by the linux renderer CI job", skipped=True)
+
+
 def check_cpp_tests(build_dir: Path, config: str, logs: Path, build_ok: bool) -> Result:
     """CTest (incl. the frozen image regressions), the doctest binary and animcheck (T-061), reported on one line."""
     ctest = check_ctest(build_dir, config, logs, build_ok)
@@ -484,6 +498,9 @@ def check_cpp_tests(build_dir: Path, config: str, logs: Path, build_ok: bool) ->
     subchecks = []
     for item in (ctest, doctest, anim):
         subchecks.append({"name": item.name, "ok": item.ok, "detail": item.detail, "log": item.log})
+    skip = renderer_skip(build_dir) if build_ok else None
+    if skip is not None:
+        subchecks.append({"name": skip.name, "ok": True, "skipped": True, "detail": skip.detail, "log": ""})
     failed = [f"{item.name} ({item.detail})" if item.detail else item.name for item in (ctest, doctest, anim) if not item.ok]
     return Result("C++ tests", not failed, "" if not failed else "failed: " + "; ".join(failed),
                   seconds=round(ctest.seconds + doctest.seconds + anim.seconds, 2), subchecks=subchecks)
@@ -853,6 +870,10 @@ def summary_lines(results: list[Result]) -> list[str]:
             line += f": {result.detail.replace(chr(10), ' ')}"
         elif not result.ok and result.detail:
             line += f": {result.detail.replace(chr(10), ' ')}"
+        else:
+            skipped = [f"{item['name']} {item['detail']}" for item in result.subchecks if item.get("skipped")]
+            if skipped:
+                line += ": " + "; ".join(skipped)
         lines.append(line)
     return lines
 

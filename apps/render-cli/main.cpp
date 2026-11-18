@@ -9,7 +9,9 @@
 #include <optional>
 #include <string>
 
+#ifdef PLUSH_HAS_RENDERER
 #include "render/image.h"
+#endif
 #include "scene/scene.h"
 #include "scene/shot_bake.h"
 
@@ -143,8 +145,12 @@ int main(int argc, char** argv) {
     logError("{}", r.error().message);
     return 1;
   }
+#ifdef PLUSH_HAS_RENDERER
   logInfo("scene '{}' prepared in {:.2f}s ({} threads, denoiser {})", scene->name, total.seconds(), workerCount(),
           denoiserAvailable() ? "on" : "unavailable");
+#else
+  logInfo("scene '{}' prepared in {:.2f}s ({} threads, renderer not built)", scene->name, total.seconds(), workerCount());
+#endif
 
   if (!bakePath.empty()) {  // animation hand-off to a production renderer (see engine/scene/shot_bake.h)
     if (frameB == frameA && frameA == scene->frameStart) frameB = scene->frameEnd;  // default: the whole shot
@@ -160,6 +166,11 @@ int main(int argc, char** argv) {
     for (const auto& w : evaluator.warnings()) logInfo("warning: {}", w);
     return 0;
   }
+#ifndef PLUSH_HAS_RENDERER
+  (void)overwrite, (void)hdr, (void)maxRmse, (void)sequence;
+  logError("built without the renderer (PLUSH_BUILD_RENDERER=OFF): only --bake is available");
+  return 1;
+#else
   PathTracer tracer;
   for (int f = frameA; f <= frameB; ++f) {
     fs::path target = sequence ? outdir / std::format("frame_{:04d}.png", f) : out;
@@ -222,4 +233,5 @@ int main(int argc, char** argv) {
   }
   logInfo("done in {:.1f}s", total.seconds());
   return 0;
+#endif
 }
