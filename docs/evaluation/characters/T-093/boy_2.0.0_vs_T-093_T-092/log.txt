@@ -1,0 +1,4 @@
+2026-11-18T20:04:57Z preview start: recipe f63583a92032 {'engine': 'cycles', 'samples': 2, 'px': 120}
+2026-11-18T20:09:00Z preview pass: /tmp/claude-0/-home-user-Animation/6ff557f3-7505-5a5a-94b4-b78ac3739ce7/scratchpad/r2_boy_2.0.0_vs_T-093_T-092/preview/preview.jpg
+2026-11-18T20:45:37Z sheet start: recipe f63583a92032 {'engine': 'cycles', 'samples': 16, 'px': 360}
+2026-11-18T20:59:46Z sheet written: /tmp/claude-0/-home-user-Animation/6ff557f3-7505-5a5a-94b4-b78ac3739ce7/scratchpad/r2_boy_2.0.0_vs_T-093_T-092/sheet.jpg 1120x2048

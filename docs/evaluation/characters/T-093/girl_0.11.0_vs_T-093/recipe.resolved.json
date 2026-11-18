@@ -2,7 +2,7 @@
  "schema": "plush-studio.review-recipe/1",
  "character": "girl_auburn_bun_glasses",
  "task": "T-093",
- "recipe_sha256": "b5fb0c2063442ad5c10640bfbf6b0c5c5afe1b096d249ca2c4581771e83bdc28",
+ "recipe_sha256": "7eb11008557582cfc0d74088860d6899e69ecd8bb692df63aac9548b86ecb964",
  "inputs": {
   "main": "4910b69"
  },
@@ -36,7 +36,7 @@
    "overrides": [
     "assets/characters/girl_auburn_bun_glasses/spec/candidates/T-093/girl_auburn_bun_glasses.T-093.override.json"
    ],
-   "sha": "b83a37a",
+   "sha": "12f9d1e",
    "comparison_pose": null,
    "source_variant": "master",
    "spec_sha256": "fa45efffb19c5f1a3fa072a053c6989a60a380f35272c62eda0f6832cfc4e279"
@@ -219,6 +219,11 @@
     "file": "assets/characters/girl_auburn_bun_glasses/references/uploads/higgsfield_G04_fringe_hairline_2026-11-18.webp",
     "crop": null,
     "label": "G04 scrunchie, flower"
+   },
+   "threequarter": {
+    "file": "assets/characters/girl_auburn_bun_glasses/references/uploads/higgsfield_G07_vest_blouse_macro_2026-11-18.webp",
+    "crop": null,
+    "label": "G07 vest, blouse"
    }
   }
  }

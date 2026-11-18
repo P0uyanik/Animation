@@ -1,74 +1,228 @@
 {
- "blend": "girl_auburn_bun_glasses_master.blend",
- "blender": "5.3.0",
  "reach": {
   "axis": "X",
   "deg": -75.0
  },
- "metric": "distance of garment.vest.main vertices (evaluated) to the posed torso skin, metres",
- "rest": {
-  "keys": {
-   "garment.vest.edge.1:corrective.reach.R": 0.0,
-   "garment.vest.edge.2:corrective.reach.R": 0.0,
-   "garment.vest.edge.3:corrective.reach.L": 0.0,
-   "garment.vest.embroidery:corrective.reach.L": 0.0,
-   "garment.vest.embroidery:corrective.reach.R": 0.0,
-   "garment.vest.embroidery_accent:corrective.reach.L": 0.0,
-   "garment.vest.embroidery_accent:corrective.reach.R": 0.0,
-   "garment.vest.main:corrective.reach.L": 0.0,
-   "garment.vest.main:corrective.reach.R": 0.0
+ "columns": [
+  {
+   "label": "0.11.0",
+   "blend": "g0/girl_auburn_bun_glasses_master.blend",
+   "keys_muted": false,
+   "blender": "5.3.0",
+   "rest": {
+    "keys": {},
+    "flare": {
+     "max": 0.06131,
+     "p99": 0.0537,
+     "p95": 0.04628,
+     "mean": 0.0347,
+     "vertices": 24362
+    },
+    "penetration": {
+     "inside": 51,
+     "max_depth": 0.00096,
+     "p95_depth": 0.00084
+    }
+   },
+   "arms_down": {
+    "keys": {},
+    "flare": {
+     "max": 0.06144,
+     "p99": 0.05152,
+     "p95": 0.04576,
+     "mean": 0.03311,
+     "vertices": 24362
+    }
+   },
+   "reach": {
+    "keys": {},
+    "flare": {
+     "max": 0.09904,
+     "p99": 0.08407,
+     "p95": 0.04673,
+     "mean": 0.03347,
+     "vertices": 24362
+    },
+    "penetration": {
+     "inside": 1127,
+     "max_depth": 0.02991,
+     "p95_depth": 0.02352
+    }
+   }
   },
-  "flare": {
-   "max": 0.06131,
-   "p99": 0.0537,
-   "p95": 0.04628,
-   "mean": 0.0347,
-   "vertices": 24362
-  }
- },
- "arms_down": {
-  "keys": {
-   "garment.vest.edge.1:corrective.reach.R": 0.0,
-   "garment.vest.edge.2:corrective.reach.R": 0.0,
-   "garment.vest.edge.3:corrective.reach.L": 0.0,
-   "garment.vest.embroidery:corrective.reach.L": 0.0,
-   "garment.vest.embroidery:corrective.reach.R": 0.0,
-   "garment.vest.embroidery_accent:corrective.reach.L": 0.0,
-   "garment.vest.embroidery_accent:corrective.reach.R": 0.0,
-   "garment.vest.main:corrective.reach.L": 0.0,
-   "garment.vest.main:corrective.reach.R": 0.0
+  {
+   "label": "T-093 keys muted",
+   "blend": "candidate/girl_auburn_bun_glasses_master.blend",
+   "keys_muted": true,
+   "blender": "5.3.0",
+   "rest": {
+    "keys": {
+     "garment.vest.edge.1:corrective.reach.L": 0.0,
+     "garment.vest.edge.1:corrective.reach.R": 0.0,
+     "garment.vest.edge.2:corrective.reach.L": 0.0,
+     "garment.vest.edge.2:corrective.reach.R": 0.0,
+     "garment.vest.edge.3:corrective.reach.L": 0.0,
+     "garment.vest.edge.3:corrective.reach.R": 0.0,
+     "garment.vest.embroidery:corrective.reach.L": 0.0,
+     "garment.vest.embroidery:corrective.reach.R": 0.0,
+     "garment.vest.embroidery_accent:corrective.reach.L": 0.0,
+     "garment.vest.embroidery_accent:corrective.reach.R": 0.0,
+     "garment.vest.main:corrective.reach.L": 0.0,
+     "garment.vest.main:corrective.reach.R": 0.0
+    },
+    "flare": {
+     "max": 0.05858,
+     "p99": 0.04991,
+     "p95": 0.0452,
+     "mean": 0.03451,
+     "vertices": 23976
+    },
+    "penetration": {
+     "inside": 110,
+     "max_depth": 0.00097,
+     "p95_depth": 0.0009
+    }
+   },
+   "arms_down": {
+    "keys": {
+     "garment.vest.edge.1:corrective.reach.L": 0.0,
+     "garment.vest.edge.1:corrective.reach.R": 0.0,
+     "garment.vest.edge.2:corrective.reach.L": 0.0,
+     "garment.vest.edge.2:corrective.reach.R": 0.0,
+     "garment.vest.edge.3:corrective.reach.L": 0.0,
+     "garment.vest.edge.3:corrective.reach.R": 0.0,
+     "garment.vest.embroidery:corrective.reach.L": 0.0,
+     "garment.vest.embroidery:corrective.reach.R": 0.0,
+     "garment.vest.embroidery_accent:corrective.reach.L": 0.0,
+     "garment.vest.embroidery_accent:corrective.reach.R": 0.0,
+     "garment.vest.main:corrective.reach.L": 0.0,
+     "garment.vest.main:corrective.reach.R": 0.0
+    },
+    "flare": {
+     "max": 0.0566,
+     "p99": 0.04959,
+     "p95": 0.04502,
+     "mean": 0.03387,
+     "vertices": 23976
+    }
+   },
+   "reach": {
+    "keys": {
+     "garment.vest.edge.1:corrective.reach.L": 1.0,
+     "garment.vest.edge.1:corrective.reach.R": 1.0,
+     "garment.vest.edge.2:corrective.reach.L": 1.0,
+     "garment.vest.edge.2:corrective.reach.R": 1.0,
+     "garment.vest.edge.3:corrective.reach.L": 1.0,
+     "garment.vest.edge.3:corrective.reach.R": 1.0,
+     "garment.vest.embroidery:corrective.reach.L": 1.0,
+     "garment.vest.embroidery:corrective.reach.R": 1.0,
+     "garment.vest.embroidery_accent:corrective.reach.L": 1.0,
+     "garment.vest.embroidery_accent:corrective.reach.R": 1.0,
+     "garment.vest.main:corrective.reach.L": 1.0,
+     "garment.vest.main:corrective.reach.R": 1.0
+    },
+    "flare": {
+     "max": 0.05425,
+     "p99": 0.04873,
+     "p95": 0.04456,
+     "mean": 0.0329,
+     "vertices": 23976
+    },
+    "penetration": {
+     "inside": 1104,
+     "max_depth": 0.02516,
+     "p95_depth": 0.01791
+    }
+   }
   },
-  "flare": {
-   "max": 0.06144,
-   "p99": 0.05152,
-   "p95": 0.04576,
-   "mean": 0.03311,
-   "vertices": 24362
+  {
+   "label": "T-093",
+   "blend": "candidate/girl_auburn_bun_glasses_master.blend",
+   "keys_muted": false,
+   "blender": "5.3.0",
+   "rest": {
+    "keys": {
+     "garment.vest.edge.1:corrective.reach.L": 0.0,
+     "garment.vest.edge.1:corrective.reach.R": 0.0,
+     "garment.vest.edge.2:corrective.reach.L": 0.0,
+     "garment.vest.edge.2:corrective.reach.R": 0.0,
+     "garment.vest.edge.3:corrective.reach.L": 0.0,
+     "garment.vest.edge.3:corrective.reach.R": 0.0,
+     "garment.vest.embroidery:corrective.reach.L": 0.0,
+     "garment.vest.embroidery:corrective.reach.R": 0.0,
+     "garment.vest.embroidery_accent:corrective.reach.L": 0.0,
+     "garment.vest.embroidery_accent:corrective.reach.R": 0.0,
+     "garment.vest.main:corrective.reach.L": 0.0,
+     "garment.vest.main:corrective.reach.R": 0.0
+    },
+    "flare": {
+     "max": 0.05858,
+     "p99": 0.04991,
+     "p95": 0.0452,
+     "mean": 0.03451,
+     "vertices": 23976
+    },
+    "penetration": {
+     "inside": 110,
+     "max_depth": 0.00097,
+     "p95_depth": 0.0009
+    }
+   },
+   "arms_down": {
+    "keys": {
+     "garment.vest.edge.1:corrective.reach.L": 0.0,
+     "garment.vest.edge.1:corrective.reach.R": 0.0,
+     "garment.vest.edge.2:corrective.reach.L": 0.0,
+     "garment.vest.edge.2:corrective.reach.R": 0.0,
+     "garment.vest.edge.3:corrective.reach.L": 0.0,
+     "garment.vest.edge.3:corrective.reach.R": 0.0,
+     "garment.vest.embroidery:corrective.reach.L": 0.0,
+     "garment.vest.embroidery:corrective.reach.R": 0.0,
+     "garment.vest.embroidery_accent:corrective.reach.L": 0.0,
+     "garment.vest.embroidery_accent:corrective.reach.R": 0.0,
+     "garment.vest.main:corrective.reach.L": 0.0,
+     "garment.vest.main:corrective.reach.R": 0.0
+    },
+    "flare": {
+     "max": 0.0566,
+     "p99": 0.04959,
+     "p95": 0.04502,
+     "mean": 0.03387,
+     "vertices": 23976
+    }
+   },
+   "reach": {
+    "keys": {
+     "garment.vest.edge.1:corrective.reach.L": 1.0,
+     "garment.vest.edge.1:corrective.reach.R": 1.0,
+     "garment.vest.edge.2:corrective.reach.L": 1.0,
+     "garment.vest.edge.2:corrective.reach.R": 1.0,
+     "garment.vest.edge.3:corrective.reach.L": 1.0,
+     "garment.vest.edge.3:corrective.reach.R": 1.0,
+     "garment.vest.embroidery:corrective.reach.L": 1.0,
+     "garment.vest.embroidery:corrective.reach.R": 1.0,
+     "garment.vest.embroidery_accent:corrective.reach.L": 1.0,
+     "garment.vest.embroidery_accent:corrective.reach.R": 1.0,
+     "garment.vest.main:corrective.reach.L": 1.0,
+     "garment.vest.main:corrective.reach.R": 1.0
+    },
+    "flare": {
+     "max": 0.0547,
+     "p99": 0.04875,
+     "p95": 0.04461,
+     "mean": 0.03288,
+     "vertices": 23976
+    },
+    "penetration": {
+     "inside": 495,
+     "max_depth": 0.01918,
+     "p95_depth": 0.00398
+    }
+   }
   }
- },
- "reach_keys": {
-  "garment.vest.edge.1:corrective.reach.R": 1.0,
-  "garment.vest.edge.2:corrective.reach.R": 1.0,
-  "garment.vest.edge.3:corrective.reach.L": 1.0,
-  "garment.vest.embroidery:corrective.reach.L": 1.0,
-  "garment.vest.embroidery:corrective.reach.R": 1.0,
-  "garment.vest.embroidery_accent:corrective.reach.L": 1.0,
-  "garment.vest.embroidery_accent:corrective.reach.R": 1.0,
-  "garment.vest.main:corrective.reach.L": 1.0,
-  "garment.vest.main:corrective.reach.R": 1.0
- },
- "before": {
-  "max": 0.09904,
-  "p99": 0.08407,
-  "p95": 0.04673,
-  "mean": 0.03347,
-  "vertices": 24362
- },
- "after": {
-  "max": 0.06773,
-  "p99": 0.04968,
-  "p95": 0.04486,
-  "mean": 0.03281,
-  "vertices": 24362
+ ],
+ "metrics": {
+  "flare": "distance of garment.vest.main vertices (evaluated) to the posed torso skin, m",
+  "penetration": "vest main vertices on the inner side of the posed blouse main piece, depth in m"
  }
 }

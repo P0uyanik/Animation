@@ -1,8 +1,8 @@
 {
- "recipe_sha256": "80e78a0ff2e058a88796abd4903eec993ec2ebb6af18ebfaf80948b82cfdbc64",
+ "recipe_sha256": "2109d9e3b83abcae4905f3a277d58dc9e5b6b1de0956e0a5d563d04dc1a39589",
  "status": "pass",
  "problems": [],
- "at": "2026-11-18T17:50:17+00:00",
+ "at": "2026-11-18T20:00:46+00:00",
  "settings": {
   "engine": "cycles",
   "samples": 2,
@@ -26,7 +26,7 @@
      "L": 12.0,
      "R": 12.0
     },
-    "seconds": 68.9
+    "seconds": 71.8
    },
    "candidate": {
     "blend": "<out>/build/candidate/boy_yellow_hoodie_compare.blend",
@@ -35,7 +35,7 @@
      "L": 12.0,
      "R": 12.0
     },
-    "seconds": 68.6
+    "seconds": 71.9
    }
   },
   "views": {

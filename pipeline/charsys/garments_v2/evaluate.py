@@ -105,3 +105,30 @@ def key_values(objects, prefix="corrective."):
     """Evaluated driver values of the corrective keys (name -> value)."""
     bpy.context.view_layer.update()
     return {f"{ob.name}:{k.name}": round(k.value, 4) for ob, k in corrective_keys(objects, prefix)}
+
+
+def penetration(outer, inner_pieces, reach=0.03):
+    """How far the evaluated ``outer`` piece sinks into the evaluated inner layer (``inner_pieces``, e.g. the blouse
+    under a vest): vertices of ``outer`` on the inner side of the nearest inner surface, with their depth (m)."""
+    verts, faces = [], []
+    for ob in inner_pieces:
+        pts = _evaluated_points(ob)
+        dg = bpy.context.evaluated_depsgraph_get()
+        e = ob.evaluated_get(dg)
+        m = e.to_mesh()
+        base = len(verts)
+        verts += pts
+        faces += [tuple(base + i for i in p.vertices) for p in m.polygons]
+        e.to_mesh_clear()
+    bvh = BVHTree.FromPolygons(verts, faces, all_triangles=False)
+    depths = []
+    for p in _evaluated_points(outer):
+        loc, nrm, _, _ = bvh.find_nearest(p, reach)
+        if loc is not None:
+            side = (p - loc).dot(nrm.normalized())
+            if side < 0:
+                depths.append(-side)
+    depths.sort()
+    n = len(depths)
+    return {"inside": n, "max_depth": round(depths[-1], 5) if n else 0.0,
+            "p95_depth": round(depths[int(0.95 * (n - 1))], 5) if n else 0.0}

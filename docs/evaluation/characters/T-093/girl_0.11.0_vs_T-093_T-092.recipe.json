@@ -1,0 +1,140 @@
+{
+ "schema": "plush-studio.review-recipe/1",
+ "task": "T-093",
+ "note": "T-093 round 2, combined look (review only): the T-093 candidate with the T-092 presets/3 material candidate merged field by field (make_combined.py, candidates/T-092 read-only); garment/2 outlines and accessories on the current girl 0.11.0. Her sheet30 references are an A-pose turnaround and her spec has no comparison pose, so the A-pose masters are compared on purpose (as T-081/T-087). AI-target column: G08 (bloomers, boots) front, G07 (vest, blouse, collar macro) 3/4, ref_41 garment sheet (original reference, side and back figures) side and back, G04 (scrunchie, flower) face 3/4.",
+ "character": "girl_auburn_bun_glasses",
+ "inputs": {
+  "main": "4910b69"
+ },
+ "baseline": {
+  "version": "0.11.0",
+  "label": "0.11.0"
+ },
+ "candidate": {
+  "spec": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.11.0.spec.json",
+  "overrides": [
+   "assets/characters/girl_auburn_bun_glasses/spec/candidates/T-093/girl_auburn_bun_glasses.T-093+T-092.combined.override.json"
+  ],
+  "sha": "12f9d1e",
+  "label": "0.11.0 + T-093 garment/2 + T-092 presets/3"
+ },
+ "compare": {
+  "variant": "master",
+  "pose": "apose",
+  "allow_apose": true
+ },
+ "cameras": {
+  "lens_mm": 70,
+  "sensor_mm": 36,
+  "elevation_deg": 5,
+  "framing": {
+   "body": {
+    "target": [
+     0.0,
+     0.0,
+     0.56
+    ],
+    "frame_height_m": 1.26,
+    "aspect": 1.6
+   },
+   "face": {
+    "target": [
+     0.0,
+     0.0,
+     0.735
+    ],
+    "frame_height_m": 0.36,
+    "aspect": 1.0
+   }
+  },
+  "rows": {
+   "front": {
+    "reference_view": "sheet30_front"
+   },
+   "threequarter": {
+    "reference_view": "sheet30_front_left"
+   },
+   "side": {
+    "reference_view": "sheet30_left"
+   },
+   "back": {
+    "reference_view": "sheet30_back"
+   },
+   "face_front": {
+    "reference": {
+     "file": "uploads/ref_30.webp",
+     "crop": [
+      440,
+      620,
+      712,
+      840
+     ],
+     "label": "ref_30 Neutral"
+    },
+    "yaw_deg": 0
+   },
+   "face_threequarter": {
+    "reference": {
+     "file": "uploads/ref_30.webp",
+     "crop": [
+      345,
+      90,
+      490,
+      260
+     ],
+     "label": "ref_30 front-left"
+    },
+    "yaw_deg": -45
+   }
+  }
+ },
+ "light": {
+  "calibration": "character_neutral/1"
+ },
+ "render": {
+  "engine": "cycles",
+  "samples": 16,
+  "px": 360
+ },
+ "preview": {
+  "engine": "cycles",
+  "samples": 2,
+  "px": 120
+ },
+ "ai_target": {
+  "images": {
+   "front": {
+    "file": "uploads/higgsfield_G08_shorts_boots_2026-11-18.webp",
+    "label": "G08 bloomers, boots"
+   },
+   "side": {
+    "file": "uploads/ref_41.webp",
+    "crop": [
+     400,
+     150,
+     612,
+     875
+    ],
+    "label": "ref_41 garment side"
+   },
+   "back": {
+    "file": "uploads/ref_41.webp",
+    "crop": [
+     625,
+     150,
+     962,
+     875
+    ],
+    "label": "ref_41 garment back"
+   },
+   "face_threequarter": {
+    "file": "uploads/higgsfield_G04_fringe_hairline_2026-11-18.webp",
+    "label": "G04 scrunchie, flower"
+   },
+   "threequarter": {
+    "file": "uploads/higgsfield_G07_vest_blouse_macro_2026-11-18.webp",
+    "label": "G07 vest, blouse"
+   }
+  }
+ }
+}
