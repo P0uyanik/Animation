@@ -1,4 +1,4 @@
-"""T-065: face_generic/2 (opt-in face v2) checks.
+"""T-065: face_generic/2 (opt-in face v2) and body_generic/2 (head fitted to reference outlines) checks.
 
     python3 pipeline/charsys/tests/test_face_v2.py --blender <exe> [--boy <master>] [--girl <master>] [--third <master>]
 
@@ -72,6 +72,18 @@ def build(blender, who):
 
 UNIT = r'''
 import numpy as np
+import body_generic as BG, geom as G
+RESULT["body_declared"] = list(BG.GENERATOR_VERSIONS)
+# body_generic/2 head outline fit on a plain ellipsoid head: chin depth and the front half widths follow the table
+C = bpy.data.collections.new("t"); bpy.context.scene.collection.children.link(C)
+hd = G.uv_sphere("_h", (0, 0, 0.8), 1.0, C, 96, 64, (0.14, 0.13, 0.15))
+ol = {"eye_z": 0.8, "unit": 0.12, "chin_t": 0.8, "front": [[0.3, 1.0], [0.5, 0.9], [0.7, 0.55], [0.8, 0.15]],
+      "side": [[0.4, 0.05], [0.6, 0.0], [0.8, -0.12]]}
+BG.fit_head_outline(hd, ol, 1.0)
+zs = [v.co.z for v in hd.data.vertices]
+RESULT["fit_chin_t"] = (0.8 - min(v.co.z for v in hd.data.vertices if abs(v.co.x) < 0.02 and v.co.y < 0)) / 0.12
+RESULT["fit_widths"] = [max(abs(v.co.x) for v in hd.data.vertices if abs(v.co.z - (0.8 - t * 0.12)) < 0.003) / 0.12 for t in (0.3, 0.5, 0.7)]
+RESULT["fit_above_unchanged"] = max(abs(v.co.x) for v in hd.data.vertices if v.co.z > 0.85) > 0.13
 import face_generic as FG, face_features as FF
 RESULT["dispatch"] = [FG.face_version({"generators": {"face": "face_generic/2"}, "face": {}}),
                       FG.face_version({"face": {"generator": "face_generic/2"}}),
@@ -144,10 +156,16 @@ def main():
           f"MouthSmile {bk['MouthSmile']}, MouthFrown {bk['MouthFrown']}")
     check("other keys move with the rest", abs(bk["EyeWide"][2] - 0.5) < 1e-6 and abs(bk["EyeWide"][0] - 1.0) < 1e-6, str(bk["EyeWide"]))
     check("face_generic/1 build path never calls v2 code", u["v1_isolated"])
+    check("body_generic declares /1 and /2", u["body_declared"] == ["body_generic/1", "body_generic/2"], str(u["body_declared"]))
+    check("head outline fit: chin depth", abs(u["fit_chin_t"] - 0.8) < 0.02, f"{u['fit_chin_t']:.3f}")
+    check("head outline fit: front half widths", all(abs(a - b) < 0.04 for a, b in zip(u["fit_widths"], (1.0, 0.9, 0.55))),
+          str([round(w, 3) for w in u["fit_widths"]]))
+    check("head outline fit: head above the eye line unchanged", u["fit_above_unchanged"])
     for who in ("boy", "girl", "third"):
         blend, rep = build(blender, who)
         f = rep["face"]
         check(f"{who}: built with face_generic/2", f.get("generator") == "face_generic/2" and rep["versions"]["generators"]["face"] == "face_generic/2")
+        check(f"{who}: built with body_generic/2 (head fitted to the reference outline)", rep["versions"]["generators"]["body"] == "body_generic/2")
         ex = f.get("lid_shell_exposed", {})
         ups = [v for k, v in ex.items() if k.startswith("lid_upper")]
         check(f"{who}: lids blended (upper lid shells <= 8 % visible from the front)", ups and max(ups) <= 0.08, str(ex))

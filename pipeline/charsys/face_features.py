@@ -763,7 +763,9 @@ def lid_socket(head, ctx, sides, cfg):
         newd = dc + (newd - dc) * fw
         q[cand] = uc * newd[:, None]
         far = np.where(zu > 0.5, du - band_up, dl - band_lo) > math.radians(3.0)
-        smooth_sel.append(np.where(cand)[0][far & ~inside & (fw > 0.05)])
+        wsm = (zu * (1 - bu) + (1 - zu) * (1 - bl)) * fw * cf + (1 - cf) * fw  # where the skin covers the shells
+        keep = far & ~inside & (wsm > 0.02)
+        smooth_sel.append((np.where(cand)[0][keep], wsm[keep]))
         # lid-following weights (EyeWide): the skin from just inside the edge to the crease, over the eye's width
         azw = 1.0 - _smooth((np.abs(a) - fa) / math.radians(35.0))
         azw = azw * (1.0 - _smooth((dc - (s["r_up_out"] + clear)) / (0.35 * s["r"])))  # skin away from the eye moves less
@@ -781,8 +783,10 @@ def lid_socket(head, ctx, sides, cfg):
     it = int(_f(cfg, "smooth_iterations", 4))
     if it > 0 and smooth_sel:
         sel = np.zeros(len(p), bool)
-        for idx_s in smooth_sel:
+        wsel = np.zeros(len(p))
+        for idx_s, w_s in smooth_sel:
             sel[idx_s] = True
+            wsel[idx_s] = np.maximum(wsel[idx_s], w_s)
         me = head.data
         ed = np.empty(len(me.edges) * 2, dtype=np.int64)
         me.edges.foreach_get("vertices", ed)
@@ -794,7 +798,7 @@ def lid_socket(head, ctx, sides, cfg):
             np.add.at(acc, ed[:, 0], p[ed[:, 1]])
             np.add.at(acc, ed[:, 1], p[ed[:, 0]])
             avg = acc / np.maximum(deg, 1)[:, None]
-            p[sel] += 0.5 * (avg[sel] - p[sel])
+            p[sel] += (0.5 * wsel[sel])[:, None] * (avg[sel] - p[sel])  # fades out with the cover: no groove at its edge
         rep["smoothed_vertices"] = int(sel.sum())
     write(p)
     ctx.invalidate()

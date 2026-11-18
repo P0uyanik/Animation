@@ -95,6 +95,8 @@ write-set (see "Needed from the Supervisor").
 | Girl next + face v2 | girl spec + 0.10.0 override | outline 0.6, cheeks 15 mm, recede 10 mm; eyes flattened 0.8, protrusion 4 mm (was 13.2); brows `soft_arch`, lighter; `soft_smile` with CheekRaise; lips wider (19 mm half width) and fuller (upper ×1.3, lower ×1.6) |
 | Third character head-only test | girl body, no hair, no glasses | pale skin (248, 218, 204); blue iris; eyes r 46 mm, 134 mm apart, 16 mm lower; `short_arc` brows; tiny mouth, `soft_smile` rest; variant `third_headonly_parted_face2.override.json` = `parted` rest |
 
+The face-shape values in the table are the ones the AC 1–7 Cycles stills were rendered with. The candidate files now hold the criterion-0 version: the `body_generic/2` head outline, no face-level outline, length, recede or jaw options, and reduced cheek fullness (boy 6 mm, girl 3 mm + the inherited 7 mm, third 4 mm + 7 mm).
+
 Rebuild:
 
 ```text
@@ -144,9 +146,76 @@ python3 docs/evaluation/characters/T-065/make_sheets.py docs/evaluation/characte
 8. **Brows behind the fringe** are placement only. A fringe keep-out above the brows belongs to hair v3 (T-044).
 9. **Fidelity scores were not run** (judgement first, per the owner). T-064 owns the fidelity tool fixes.
 
+## Criterion 0 (scope extension): head geometry fitted to the references — `body_generic/2`
+
+The owner's request about chin, jawline and face shape arrived as a Supervisor message after my first READY. I
+verified it in `docs/tasks/T-065.md` on staging and did it on the same branch.
+
+### Head version
+
+- **Code:** `pipeline/charsys/body_generic.py`, `fit_head_outline`. It declares `body_generic/2`.
+- **Opt-in:** the new spec data `body.params.head.outline`. A head without `outline` builds exactly as before (byte-identical).
+- **What it does to the head primitive, before the body remesh:**
+  1. Scales the lower head vertically so the chin sits `chin_t` eye spacings below the eye line.
+  2. Scales every horizontal slice of the lower face to the reference's front half width. With `front_eye_width`, widths are relative to the reference face width at the eye line, so the cranium keeps its width.
+  3. Fits the side profile below mid-face, relative to mid-face (how far the chin sits back from the mouth and cheeks).
+- Above mid-face the reference silhouette is cheek volume and the eye. Forcing the face front to it made a muzzle, so the cheeks come from the face options instead.
+- The remesh then smooths the whole head. The ellipsoid head gets a denser mesh (96×64) when fitted, and the neck tube narrows inside the fitted head so it cannot show through the receded jaw.
+- **Outline data:** `head_outlines.json`, read by hand on 2–6× gridded zooms of the reference views. This is the repository's landmark method; automatic skin segmentation was tried and was unreliable (blush, glasses, ears).
+  - Boy: val27_front / val27_side_right.
+  - Girl: sheet30_front / sheet30_left. Her cheeks are partly behind hair and her side profile behind the glasses: ±2 px.
+  - Third: uploads 01 / 15.
+
+### Candidates and tools
+
+- The candidates pin `body_generic/2`; their face-level outline options were removed (the head now carries the shape).
+- Cheek volume was reduced, because it stacked on the fitted head and made a crease.
+- Tools:
+  - `outline_measure.py`: the built head's outline, in the reference's units;
+  - `outline_sheets.py`: overlays and error table.
+
+### Evidence (`head_v2/`)
+
+Outline overlays: green = the reference outline, blue = before (current version), red = after.
+
+![boy](head_v2/boy_outline_overlay.png)
+![girl](head_v2/girl_outline_overlay.png)
+![third](head_v2/third_outline_overlay.png)
+
+Landmark errors in eye-spacing units (`head_v2/outline_errors.md`):
+
+| Character | Version | chin depth | front outline (mean abs) | side outline (mean abs) | cheek width | jaw width |
+| --- | --- | ---: | ---: | ---: | ---: | ---: |
+| boy | before | +0.005 | 0.093 | 0.075 | +0.077 | +0.104 |
+| boy | after | +0.000 | 0.031 | 0.068 | +0.011 | +0.013 |
+| girl | before | −0.035 | 0.143 | 0.415 | +0.048 | +0.212 |
+| girl | after | +0.030 | 0.087 | 0.279 | +0.017 | +0.010 |
+| third | before (face v2 test, v1 head) | −0.240 | 0.089 | 0.390 | −0.084 | — |
+| third | after | −0.005 | 0.010 | 0.257 | −0.020 | +0.005 |
+
+**What I see [J]:**
+- **Boy.** The lower outline now follows char_C's round U into a small soft chin, and the neck is hidden.
+- **Girl.** The long jaw that sloped into the neck (her "before" side profile had no chin) becomes a short round lower face with a small chin.
+- **Third character.** The flat-bottomed lower face becomes the round full face of "14".
+
+**Limits:**
+- **Side error stays 0.26–0.28 for the girl and the third character, by design.** This measure compares the silhouette, and the reference silhouette below the eyes is the cheeks. I fit only the chin set-back to it, so the remaining difference is cheek volume.
+- The chin underside is flatter than the reference.
+- A faint horizontal shading band remains on the third character's lower face in the geometry previews.
+
+### Geometry previews (workbench, not Cycles)
+
+`head_v2/<who>_head_v2_geometry.png`: front, 3/4 and side, face parts only.
+
+**Render budget:**
+- All 24 Cycles stills went to AC 1–7 before the scope extension arrived. **The AC 1–7 Cycles sheets above therefore show the face on the previous head** (the face-level shape options), not on `body_generic/2`.
+- Re-rendering the owner sheets on the new head needs about 9 more stills, one front, one 3/4 and one Happy per character. That needs Supervisor/owner approval.
+
 ## Tests
 
-- `python3 pipeline/charsys/tests/test_face_v2.py --blender <bpy wrapper> --boy/--girl/--third <masters>`: **33/33 PASS**.
+- `python3 pipeline/charsys/tests/test_face_v2.py --blender <bpy wrapper> --boy/--girl/--third <masters>`: **40/40 PASS**
+  on the final candidates (`body_generic/2` head and face v2). This adds the `body_generic/2` checks: declaration, outline fit on a
+  synthetic head (chin depth, widths, cranium unchanged), and the candidates pinned to it.
   - Unit checks:
     - pin dispatch;
     - declaration;
@@ -191,7 +260,9 @@ python3 docs/evaluation/characters/T-065/make_sheets.py docs/evaluation/characte
 
 ## Needed from the Supervisor / other tasks
 
-- **`pipeline/charsys/versions.py`**: append `_r("face", "face_generic", 2, "face_generic")`. This is outside the write-set; `build_candidate.py` and the test register it in-process meanwhile.
+- **`pipeline/charsys/versions.py`**: append `_r("face", "face_generic", 2, "face_generic")` and `_r("body", "body_generic", 2, "body_generic")`.
+- **`pipeline/charsys/build_character.py`**: add `"body_generic/2": main_generic` to the build-path table. This is outside the claim; the candidate driver patches it in-process.
+- **About 9 more Cycles stills**, to re-render the owner sheets on the fitted head. This is outside the write-set; `build_candidate.py` and the test register it in-process meanwhile.
 - **Character spec versions** for an owner-approved pin bump (path B). The candidate overrides here are the data to start from.
 - **T-044 (hair)**: a fringe keep-out above the brows, so brow acting stays visible.
 - **T-066 (skin)**: a skin preset that keeps creases warm but not glowing. The candidates turn the felt occlusion lift/bleed down.

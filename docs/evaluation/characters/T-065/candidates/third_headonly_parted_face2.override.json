@@ -6,7 +6,8 @@
   },
   "generators": {
    "face": "face_generic/2",
-   "groom": "none"
+   "groom": "none",
+   "body": "body_generic/2"
   },
   "hair": {
    "generator": "none"
@@ -35,20 +36,15 @@
    "layout": {
     "mouth_below_eye_m": 0.05,
     "nose_below_eye_m": 0.027,
-    "chin_below_eye_m": 0.09
+    "chin_below_eye_m": 0.1072
    },
    "shape": {
-    "outline_roundness": 0.7,
-    "outline_exponent": 2.1,
-    "outline_top_below_eye_m": 0.0,
-    "cheek_fullness_m": 0.012,
+    "cheek_fullness_m": 0.004,
     "cheek_radius_m": 0.055,
     "cheek_below_eye_m": 0.05,
     "cheek_x": 1.05,
     "cheek_forward": 0.45,
-    "lower_face_recede_m": 0.012,
-    "recede_from_below_eye_m": 0.045,
-    "jaw_depth_roundness": 0.5
+    "note": "face v2 shape on top of the body_generic/2 head fitted to the reference outlines (cheek volume only)"
    },
    "skin": {
     "occlusion": {
@@ -185,6 +181,79 @@
      },
      "Laugh": {
       "CheekRaise": 1.0
+     }
+    }
+   }
+  },
+  "body": {
+   "generator": "body_generic/2",
+   "params": {
+    "head": {
+     "outline": {
+      "eye_z": 0.78454,
+      "unit": 0.13814,
+      "chin_t": 0.8,
+      "front_eye_width": 1.08,
+      "front": [
+       [
+        0.18,
+        1.07
+       ],
+       [
+        0.33,
+        1.05
+       ],
+       [
+        0.48,
+        0.96
+       ],
+       [
+        0.63,
+        0.75
+       ],
+       [
+        0.74,
+        0.45
+       ],
+       [
+        0.8,
+        0.15
+       ]
+      ],
+      "side": [
+       [
+        0.24,
+        0.064
+       ],
+       [
+        0.32,
+        0.11
+       ],
+       [
+        0.4,
+        0.08
+       ],
+       [
+        0.48,
+        0.05
+       ],
+       [
+        0.56,
+        0.0
+       ],
+       [
+        0.64,
+        -0.016
+       ],
+       [
+        0.72,
+        -0.05
+       ],
+       [
+        0.8,
+        -0.1
+       ]
+      ]
      }
     }
    }

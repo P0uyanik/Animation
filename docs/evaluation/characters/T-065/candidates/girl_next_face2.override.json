@@ -1,22 +1,18 @@
 {
  "override": {
   "generators": {
-   "face": "face_generic/2"
+   "face": "face_generic/2",
+   "body": "body_generic/2"
   },
   "face": {
    "generator": "face_generic/2",
    "shape": {
-    "outline_roundness": 0.6,
-    "outline_exponent": 2.2,
-    "outline_top_below_eye_m": 0.01,
-    "cheek_fullness_m": 0.008,
+    "cheek_fullness_m": 0.003,
     "cheek_radius_m": 0.05,
     "cheek_below_eye_m": 0.05,
     "cheek_x": 1.1,
     "cheek_forward": 0.4,
-    "lower_face_recede_m": 0.01,
-    "recede_from_below_eye_m": 0.05,
-    "jaw_depth_roundness": 0.4
+    "note": "face v2 shape on top of the body_generic/2 head fitted to the reference outlines (cheek volume only)"
    },
    "skin": {
     "occlusion": {
@@ -95,6 +91,74 @@
      },
      "Squint": {
       "CheekRaise": 0.6
+     }
+    }
+   },
+   "layout": {
+    "chin_below_eye_m": 0.0957
+   }
+  },
+  "body": {
+   "generator": "body_generic/2",
+   "params": {
+    "head": {
+     "outline": {
+      "eye_z": 0.79175,
+      "unit": 0.11958,
+      "chin_t": 0.825,
+      "front_eye_width": 1.16,
+      "front": [
+       [
+        0.1,
+        1.14
+       ],
+       [
+        0.31,
+        1.07
+       ],
+       [
+        0.52,
+        0.9
+       ],
+       [
+        0.62,
+        0.7
+       ],
+       [
+        0.72,
+        0.46
+       ],
+       [
+        0.8,
+        0.25
+       ],
+       [
+        0.825,
+        0.1
+       ]
+      ],
+      "side": [
+       [
+        0.32,
+        0.08
+       ],
+       [
+        0.5,
+        0.02
+       ],
+       [
+        0.66,
+        0.02
+       ],
+       [
+        0.76,
+        -0.04
+       ],
+       [
+        0.82,
+        -0.16
+       ]
+      ]
      }
     }
    }
