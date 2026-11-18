@@ -24,11 +24,11 @@
 
 | view | figure IoU | landmark error (head heights) | sheet |
 |---|---|---|---|
-| sheet30_front | 0.810 | 0.042 | [sheet](sheets/sheet30_front.png) |
-| sheet30_front_left | 0.796 | 0.076 | [sheet](sheets/sheet30_front_left.png) |
-| sheet30_left | 0.743 | 0.059 | [sheet](sheets/sheet30_left.png) |
-| sheet30_back_right | 0.778 | 0.146 | [sheet](sheets/sheet30_back_right.png) |
-| sheet30_back | 0.852 | 0.113 | [sheet](sheets/sheet30_back.png) |
+| sheet30_front | 0.810 | 0.042 | sheets/sheet30_front.png (not committed; see overview.jpg) |
+| sheet30_front_left | 0.796 | 0.076 | sheets/sheet30_front_left.png (not committed; see overview.jpg) |
+| sheet30_left | 0.743 | 0.059 | sheets/sheet30_left.png (not committed; see overview.jpg) |
+| sheet30_back_right | 0.778 | 0.146 | sheets/sheet30_back_right.png (not committed; see overview.jpg) |
+| sheet30_back | 0.852 | 0.113 | sheets/sheet30_back.png (not committed; see overview.jpg) |
 
 ## Largest differences (ranked)
 
