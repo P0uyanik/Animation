@@ -32,7 +32,7 @@
      "type": "top",
      "name": "blouse",
      "sleeve_length": 1.0,
-     "sleeve_puff_m": 0.03,
+     "sleeve_puff_m": 0.0321,
      "sleeve_puff_peak": 0.58,
      "hem_z_m": 0.34,
      "collar": {
@@ -310,7 +310,7 @@
      "name": "shorts",
      "length": 0.24,
      "ease_m": 0.013,
-     "puff_m": 0.03,
+     "puff_m": 0.038,
      "puff_inner": 0.35,
      "cuff": true,
      "bands": {
@@ -370,9 +370,9 @@
      "leg_split": {
       "amount": 0.8,
       "start": 0.12,
-      "crotch_lift": 0.55,
-      "arch_width": 1.0,
-      "arch_power": 1.6
+      "crotch_lift": 0.3,
+      "arch_width": 0.7,
+      "arch_power": 1.0
      },
      "hem_break": {
       "height_m": 0.045,

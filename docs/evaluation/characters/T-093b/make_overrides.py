@@ -19,9 +19,11 @@ CH = os.path.join(ROOT, "assets", "characters")
 T090B = os.path.join(ROOT, "docs", "evaluation", "characters", "T-090b")
 
 # T-093b fit (tools/fit + garment_score.py, fit/girl/): winning values, see README.md
-FIT = {"clothing.garments.0.sleeve_length": None, "clothing.garments.0.sleeve_puff_m": None,
-       "clothing.garments.2.length": None, "clothing.garments.2.leg_split.crotch_lift": None}
-GIRL_ARCH = {"crotch_lift": 0.55, "arch_width": 1.0, "arch_power": 1.6}
+FIT = {"clothing.garments.0.sleeve_puff_m": 0.0321,   # round 3 trial 3 (sleeve length stays 1.0: rounds 1-2)
+       "clothing.garments.2.puff_m": 0.038}            # round 3 trial 3: fuller legs (sheet30 front/3/4)
+# crotch arch: round 3 trial 3 had lift 0.168 (still one band on the sheet); 0.3 with the smoothstep falloff is the
+# visual choice and scores higher (fit/girl5, garment 51.66 vs trial 3 51.54 and T-093 50.15)
+GIRL_ARCH = {"crotch_lift": 0.3, "arch_width": 0.7, "arch_power": 1.0}
 
 
 def t093(cid):

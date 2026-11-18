@@ -13,8 +13,8 @@ leg_split (``shorts``): bloomer legs read as two legs. From ``start`` thigh radi
   Opt-in crotch arch (T-093b; the defaults keep the T-093 output): the shell's crotch bridge joins the two legs at
   the front and back centre, so pulling the inner halves apart only stretches it and the hem reads as one band
   between the legs. ``crotch_lift`` (0..0.95, default 0 = off) raises the fabric near the centre line into an inverted
-  V: at the centre the hem rises by that share of the split height, falling off to no lift at ``arch_width`` hip
-  joint offsets from the centre with exponent ``arch_power``; every piece below the split top (gusset included) is
+  V: at the centre the hem rises by that share of the split height, falling off smoothly (smoothstep of (|x| / w) ** ``arch_power``) to no lift at
+  w = ``arch_width`` hip joint offsets from the centre; every piece below the split top (gusset included) is
   compressed into the space above the arch, so the rows keep their order.
 cuff_roll (``boots``): a turned-down fleece cuff around the top of the shaft instead of the ``garment/1`` cuff tube:
   ``height_m`` deep, ``thickness_m`` proud of the shaft at its fullest, rolling over the rim into the boot down to
@@ -183,7 +183,8 @@ def leg_split(cfg, mine, P, H, J, fit, body=None):
                 p = mw @ v.co
                 if not p.z < crotch or abs(p.x) >= aw:
                     continue
-                za = bottom + lift * span * (1.0 - (abs(p.x) / aw) ** ap)  # the arch (new hem) at this x
+                # the arch (new hem) at this x: smooth falloff, no slope break where it meets the leg hem
+                za = bottom + lift * span * (1.0 - _smooth((abs(p.x) / aw) ** ap))
                 f = max(0.0, (p.z - bottom) / span)
                 q = Vector((p.x, p.y, za + f * (crotch - za)))
                 v.co = inv @ q
