@@ -261,7 +261,7 @@ jobs:
           if (Test-Path $summary) { Write-Host "===== $summary"; Get-Content $summary }
           $failed = @()
           if (Test-Path $summary) {
-            $failed = Select-String -Path $summary -Pattern 'FAIL' | ForEach-Object { $_.Line }
+            $failed = Select-String -Path $summary -Pattern 'FAIL' | ForEach-Object { $_.Line }
           }
           Get-ChildItem build/check-all/windows/logs -Filter *.log -ErrorAction SilentlyContinue | ForEach-Object {
             $log = $_
