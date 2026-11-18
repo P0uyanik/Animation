@@ -1,0 +1,15 @@
+{
+  "face": {
+    "eyes": {
+      "lids": {
+        "lower_edge_deg": -47.39628763286816,
+        "upper_curve": 0.142290935631345,
+        "upper_edge_deg": 45.40135705448743
+      },
+      "protrusion_m": 0.005020216803340584
+    },
+    "shape": {
+      "cheek_fullness_m": 0.0022584751351741802
+    }
+  }
+}

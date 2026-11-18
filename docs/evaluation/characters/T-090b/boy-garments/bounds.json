@@ -1,0 +1,22 @@
+{
+  "clothing.garments.1.crotch.depth": [
+    0.1,
+    0.7
+  ],
+  "clothing.garments.1.length": [
+    0.985,
+    1
+  ],
+  "clothing.garments.2.height_m": [
+    0.058,
+    0.072
+  ],
+  "clothing.garments.2.width_extra_m": [
+    0.001,
+    0.006
+  ],
+  "clothing.garments.2.length_extra_m": [
+    0.005,
+    0.012
+  ]
+}
