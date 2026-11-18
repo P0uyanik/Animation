@@ -32,9 +32,9 @@
      "trim": {
       "up_outer_deg": 66,
       "lo_outer_deg": 62,
-      "back": 0.3,
       "cover_margin": 0.06,
-      "soft": 0.1
+      "soft": 0.1,
+      "lo_back": 0.3
      }
     },
     "socket": {
@@ -45,6 +45,9 @@
      0.8,
      1.0
     ]
+   },
+   "blink": {
+    "overlap_deg": 6
    }
   },
   "metadata": {
