@@ -85,6 +85,7 @@
 | T-097-girl | [Personality] Girl acting (Phase D) | approved; after T-097A and T-097B merge | t-097-girl-claude-acting | `docs/tasks/T-097G.md`; path B |
 | T-094 | [Visual] Boy 2.1.0 + girl 0.12.0 (Phase D) | approved; after T-091, T-089b, T-093b are owner-approved | t-094-claude-versions | `docs/tasks/T-094.md`; path B |
 | T-106 | [Personality] Reference performance extraction (Codex) | merged 2026-11-18 (Codex, 043fef3): 85 timed observations, face detection 61 % on stylised faces; tool tests need opencv/mediapipe (local venv), not in the gate | t-106-codex-perf-extract | `docs/tasks/T-106.md`; path A |
+| T-107 | [Visual/Interaction] Independent review of Phases B and C (Codex) | assigned to Codex 2026-11-18 23:00Z (standing approval) | t-107-codex-bc-review | `docs/tasks/T-107.md`; path A |
 | T-053 | Personality profiles 1.0.0 (reader, limits, animcheck check) | **merged** 2026-11-18 (owner-approved) | t-053-claude-personality (f62fedb), integration 50fc612 | GitHub full gate PASS; some profile fields await engine layers |
 | T-048 | Branch cleanup workflow + tests | **in main** 2026-11-17 | t-048-claude-branch-cleanup (8f1c3ce), merge ae15c0b | 25/25 cleanup tests, full gate PASS; first real dry run after T-041 backups |
 | T-049 | Hair approach study (strand vs sculpted vs hybrid) | **in main** 2026-11-17; owner choice pending | t-049-claude-hair-study (e31e613) | recommends hybrid C (felted base volumes + few broad edge clumps, face keep-out as spec data); none reaches reference softness yet (fibre halo/volume, girl fringe) |

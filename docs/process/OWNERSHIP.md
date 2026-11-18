@@ -16,6 +16,7 @@ means none. Branch is the task's branch; a task branch without a row falls back 
 
 | Task | Lane | Branch | Write-set | Depends on | Versions bumped |
 | --- | --- | --- | --- | --- | --- |
+| T-107 | E | t-107-codex-bc-review | `docs/audit/round2_bc_review/**` | — | — |
 | T-097A | C | t-097a-claude-emotion-blending | `engine/scene/emotion.{h,cpp}`, `engine/scene/actions.cpp`, `engine/scene/face_layer.{h,cpp}`, `tests/test_emotion_blend.cpp`, `tests/test_emotions.cpp`, `docs/EMOTIONS.md`, `docs/evaluation/animation/T-097A/**` | `engine/scene/acting.h` (stable) | — |
 | T-091 | D | t-091-claude-hair-r4 | `pipeline/charsys/groom_r4.py`, `pipeline/charsys/groom_r4/**`, `pipeline/charsys/tests/test_hair_r4*.py`, `assets/characters/{boy_yellow_hoodie,girl_auburn_bun_glasses}/spec/candidates/T-091/**`, `docs/evaluation/characters/T-091/**` | `pipeline/charsys/groom_hybrid.py` (stable), `pipeline/charsys/versions.py` (stable) | `groom` |
 | T-089b | D | t-089b-claude-face-polish | `pipeline/charsys/face_generic_v3.py`, `pipeline/charsys/face_v3/**`, `pipeline/charsys/tests/test_face_v3*.py`, `assets/characters/{boy_yellow_hoodie,girl_auburn_bun_glasses}/spec/candidates/T-089b/**`, `docs/evaluation/characters/T-089b/**` | `tools/fit/**` (stable) | — |
