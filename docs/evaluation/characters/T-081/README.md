@@ -127,6 +127,28 @@ Done after the decision and the wider claim were on staging (a08d94d):
   | Write-set | FAIL **only** for the Supervisor's `integration/tiers-version-spec` files (`tools/regression/tiers.py`, `tools/regression/tests/test_gate_tools.py`, `docs/process/OWNERSHIP.md`), merged here unchanged; they leave the diff once that branch is on staging |
   | C++ build / tests | FAIL, environment only (no `embree` in this container) |
 
+- **presets/2 pin (Supervisor review on the T-080 stack, integration/t-080 a3283ef merged).**
+  - What changed: 0.11.0 now pins `generators.materials = "presets/2"`, the skin family its `skin-felt/2` belongs to.
+    T-080 registered presets/2 in `versions.py`, and T-080's `test_skin_presets.py` requires the explicit pin.
+  - Spec diff: that one line.
+  - Deterministic rebuild: geometry/material **fingerprint identical** to the published build. Only the garment-drape
+    timings in `build_report.json` differ.
+  - My unmerged `versions/0.11.0` was republished: the store index was reset to staging's, then publish and approve
+    ran again. 0.10.0 is byte-identical.
+  - `fidelity_baseline.json` is unchanged: same spec path, identical geometry.
+  - The 0.11.0 golden baseline was rewritten, because the spec digest changed. Against the old golden: fingerprint
+    byte-equal, renders within noise, fidelity 62.29 vs 62.29.
+  - Tests: `test_skin_presets.py` **24/24**; `test_face_v2_socket_wall.py` **8/8**. Its "0.11.0 is not current" check
+    became "fidelity baseline and approved pointer both name 0.11.0" plus the presets/2 pin check, after the owner
+    decision.
+
+- **Full gate on the T-080 stack** (after the presets/2 pin):
+  - Blender tier **PASS**: boy 2.0.0 67.63, girl 0.11.0 62.28, third character PASS.
+  - Frozen assets, lint, Python tests and links: PASS.
+  - Write-set FAIL only on T-080's files (`integration/t-080`, not yet on staging).
+  - Guarded paths: the 0.11.0 version files, index and golden need approval trailers.
+  - C++: environment only (no embree).
+
 ## 4. Files changed
 | Path | Purpose |
 | --- | --- |
@@ -162,9 +184,7 @@ The result is written by `tools/make_spec.py`.
   - `fidelity_baseline.json`-style use: `build` = the 0.11.0 spec, no overrides.
 - **Generator pins:**
   - `body_generic/2`, `face_generic/2`, `groom/2`, `garment/1`, `accessories/1`, `rigify_human/1`, `export/4`.
-  - `materials` stays `presets/1`. The skin-felt/2 preset id resolves through the presets/2 skin family by id
-    (T-066 routing), and `presets/2` is not registered in `versions.py`. T-080 registers it; that file is read-only
-    for this task. Once it is registered, switching the pin is a one-line follow-up (0.11.x).
+  - `materials` is `presets/2` (pinned after T-080 registered it; see §3b).
 - **Personality:** `animation.personality` = profile `girl_auburn_bun_glasses` 1.0.0 with its path (T-053). Scenes
   still opt in with `"personality"`.
 
