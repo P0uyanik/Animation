@@ -9,7 +9,9 @@
 //   - reads status.json, lists runs, maps timeline frames to a run's rendered frames;
 //   - saves edits by merging them into the source shot file (only an explicit list of edit paths may change).
 // No OpenGL, no ImGui: unit-tested in tests/test_shot_workflow.cpp.
+#ifndef _WIN32
 #include <sys/types.h>
+#endif
 
 #include <filesystem>
 #include <optional>
@@ -23,12 +25,21 @@
 namespace plush::workflow {
 
 namespace fs = std::filesystem;
+#ifdef _WIN32
+using ProcessId = unsigned long;
+#else
+using ProcessId = pid_t;
+#endif
 using OJson = nlohmann::ordered_json;  // keeps a file's key order on save
 
 // ------------------------------------------------------------------ configuration
 struct Config {
   fs::path root;            // repository root (shots live in <root>/episodes)
+#ifdef _WIN32
+  fs::path python = "python";
+#else
   fs::path python = "python3";
+#endif
   fs::path runShot;         // <root>/pipeline/production/run_shot.py
   fs::path engine;          // plush-render (from the build configuration)
   std::string blender;      // Blender executable
@@ -108,6 +119,12 @@ struct FrameView {
 };
 FrameView mapFrame(const RunInfo& run, int frame);
 
+struct ProcInfo {
+  ProcessId pid;
+  std::string cmd;
+};
+bool processExists(ProcessId pid);
+
 // A child process in its own process group (run_shot.py and everything it starts: Blender, ffmpeg ...).
 class Job {
  public:
@@ -119,27 +136,28 @@ class Job {
   Result<void> start(const std::vector<std::string>& argv, const fs::path& logFile);
   bool running();                 // non-blocking (reaps the child when it has exited)
   int exitCode() const { return exitCode_; }
-  pid_t pid() const { return pid_; }
-  pid_t pgid() const { return pgid_; }
+  ProcessId pid() const { return pid_; }
+  ProcessId pgid() const { return pgid_; }
+  std::vector<ProcInfo> members() const;
   struct CancelResult {
     bool wasRunning = false, graceful = false, forced = false, groupGone = false;
     double seconds = 0;
   };
-  // SIGTERM to the whole group, SIGKILL after `graceSeconds`; waits until no process of the group is left.
+  // Signal the group, then forcibly stop remaining descendants after graceSeconds.
   CancelResult cancel(double graceSeconds = 8.0);
   bool waitFor(double seconds);  // waits for the child to exit
  private:
+#ifdef _WIN32
+  void* process_ = nullptr;
+  void* job_ = nullptr;
+  ProcessId pid_ = 0, pgid_ = 0;
+#else
   void reapGroup();
-  pid_t pid_ = -1, pgid_ = -1;
+  ProcessId pid_ = -1, pgid_ = -1;
+#endif
   int exitCode_ = -1;
   bool exited_ = true;
 };
-// Processes currently in a process group (from /proc): pid and command line. Used for orphan checks.
-struct ProcInfo {
-  pid_t pid;
-  std::string cmd;
-};
-std::vector<ProcInfo> processGroupMembers(pid_t pgid);
 // Makes this process the reaper of its orphaned descendants (Linux), so a cancelled job leaves no zombies.
 void becomeSubreaper();
 

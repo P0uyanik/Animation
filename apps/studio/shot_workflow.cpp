@@ -1,11 +1,13 @@
 #include "shot_workflow.h"
 
+#ifndef _WIN32
 #include <fcntl.h>
 #include <signal.h>
 #include <sys/wait.h>
 #include <unistd.h>
 #ifdef __linux__
 #include <sys/prctl.h>
+#endif
 #endif
 
 #include <algorithm>
@@ -133,7 +135,11 @@ std::string newRunId() {
   auto t = std::chrono::system_clock::now();
   std::time_t tt = std::chrono::system_clock::to_time_t(t);
   std::tm tm{};
+#ifdef _WIN32
+  localtime_s(&tm, &tt);
+#else
   localtime_r(&tt, &tm);
+#endif
   int ms = int(std::chrono::duration_cast<std::chrono::milliseconds>(t.time_since_epoch()).count() % 1000);
   char buf[64];
   std::snprintf(buf, sizeof buf, "%04d%02d%02d-%02d%02d%02d-%03d", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour,
@@ -179,7 +185,9 @@ RunStatus parseStatus(const Json& j) {
   return s;
 }
 
+#ifndef _WIN32
 RunStatus readStatus(const fs::path& statusFile) { return parseStatus(readJson(statusFile)); }
+#endif
 
 std::string latestRunId(const ShotInfo& shot) {
   std::ifstream f(shot.runsDir() / "latest");
@@ -221,6 +229,7 @@ FrameView mapFrame(const RunInfo& run, int frame) {
   return v;
 }
 
+#ifndef _WIN32
 Job::~Job() {
   if (!exited_) cancel(2.0);
 }
@@ -279,6 +288,8 @@ bool Job::running() {
   return true;
 }
 
+#endif
+
 bool Job::waitFor(double seconds) {
   double t0 = now();
   while (running()) {
@@ -288,15 +299,16 @@ bool Job::waitFor(double seconds) {
   return true;
 }
 
+#ifndef _WIN32
 Job::CancelResult Job::cancel(double graceSeconds) {
   CancelResult r;
   double t0 = now();
-  r.wasRunning = running() || !processGroupMembers(pgid_).empty();
+  r.wasRunning = running() || !members().empty();
   if (pgid_ <= 0) return r;
   auto groupAlive = [&] {
     running();
     reapGroup();
-    return ::kill(-pgid_, 0) == 0 && !processGroupMembers(pgid_).empty();
+    return ::kill(-pgid_, 0) == 0 && !members().empty();
   };
   ::kill(-pgid_, SIGTERM);
   while (groupAlive() && now() - t0 < graceSeconds) std::this_thread::sleep_for(std::chrono::milliseconds(25));
@@ -313,9 +325,11 @@ Job::CancelResult Job::cancel(double graceSeconds) {
   return r;
 }
 
-std::vector<ProcInfo> processGroupMembers(pid_t pgid) {
+bool processExists(ProcessId pid) { return ::kill(pid, 0) == 0 || errno == EPERM; }
+
+std::vector<ProcInfo> Job::members() const {
   std::vector<ProcInfo> out;
-  if (pgid <= 0) return out;
+  if (pgid_ <= 0) return out;
   std::error_code ec;
   for (const auto& d : fs::directory_iterator("/proc", ec)) {
     const std::string n = d.path().filename().string();
@@ -328,7 +342,7 @@ std::vector<ProcInfo> processGroupMembers(pid_t pgid) {
     char state = 0;
     long ppid = 0, pg = 0;
     rest >> state >> ppid >> pg;
-    if (pg != pgid || state == 'Z') continue;  // zombies are dead (only waiting to be reaped)
+    if (pg != pgid_ || state == 'Z') continue;  // zombies are dead (only waiting to be reaped)
     std::ifstream cf(d.path() / "cmdline");
     std::string cmd((std::istreambuf_iterator<char>(cf)), std::istreambuf_iterator<char>());
     std::replace(cmd.begin(), cmd.end(), '\0', ' ');
@@ -336,6 +350,8 @@ std::vector<ProcInfo> processGroupMembers(pid_t pgid) {
   }
   return out;
 }
+
+#endif
 
 void becomeSubreaper() {
 #ifdef __linux__
@@ -350,6 +366,9 @@ std::string tailFile(const fs::path& file, int lines) {
   std::streamoff size = f.tellg(), from = std::max<std::streamoff>(0, size - 16384);
   f.seekg(from);
   std::string text((std::istreambuf_iterator<char>(f)), std::istreambuf_iterator<char>());
+#ifdef _WIN32
+  for (size_t cr = 0; (cr = text.find("\r\n", cr)) != std::string::npos; ++cr) text.erase(cr, 1);
+#endif
   size_t pos = text.size();
   for (int n = 0; n <= lines && pos != std::string::npos && pos > 0; ++n) pos = text.rfind('\n', pos - 1);
   return pos == std::string::npos || pos == 0 ? text : text.substr(pos + 1);
