@@ -1,0 +1,138 @@
+{
+  "schema": "plush-studio.material-metrics/1",
+  "visual_target": "docs/references/VISUAL_TARGET.md#materials",
+  "image": "swatch_sheet.png",
+  "image_sha256": "294c3b9c347c7dc744be041719f9d93a5629e19b5b16e6497912986315d6b0c2",
+  "metadata_sha256": "1d6c605dec63cf21c49748c2cd00efb6bd916e19bcb6683882d2ab36357f08fa",
+  "measurement": {
+    "colour_space": "exact 8-bit display-sRGB PNG samples (stdlib decoder; no Blender reload conversion)",
+    "scale": "ROIs bilinear-resampled so the physical reference projects to H=256 px; source H>=180 px",
+    "neutral_adaptation": "saturation measured after linear-RGB channel adaptation from a co-planar neutral card",
+    "luma": "Y' = 0.2126 R + 0.7152 G + 0.0722 B, 0..255",
+    "fuzz_rms_y255": "RMS of luma minus a 9-pixel Gaussian kernel; median of three 64x64 px (at H=256) flat-patch ROIs when fuzz_rois_px is present, else the single patch ROI",
+    "sheen_p90_p50": "P90/P50 of positive luma/(31-pixel Gaussian form blur) residuals; median of three sphere ROIs fully inside the key-lit side when sheen_rois_px is present, else the single sphere highlight ROI",
+    "patch_rule": "VISUAL_TARGET common setup step 3 (>=2/3 patches in range, no miss >20%) plus median in range",
+    "saturation": "(max-min)/max; retention is patch S50 divided by input-colour saturation"
+  },
+  "presets": [
+    {
+      "preset": "skin-felt",
+      "patch_roi_px": [
+        190,
+        318,
+        290,
+        418
+      ],
+      "projected_reference_px": 204.8,
+      "metrics": {
+        "fuzz_rms_y255": {
+          "value": 0.4622,
+          "target": [
+            0.0,
+            3.0
+          ],
+          "pass": true,
+          "source": "VISUAL_TARGET.md: Skin remains below 3/255",
+          "patches": [
+            0.4523,
+            0.4653,
+            0.4622
+          ],
+          "patches_in_range": 3,
+          "max_patch_miss_fraction": 0.0,
+          "rule": "median in range AND >=2/3 patches in range AND no patch misses its nearest limit by >20%"
+        },
+        "sheen_p90_p50": {
+          "value": 1.0068,
+          "target": [
+            1.12,
+            1.32
+          ],
+          "pass": false,
+          "source": "VISUAL_TARGET.md: Sheen/roughness read, skin",
+          "patches": [
+            1.012,
+            1.0052,
+            1.0068
+          ],
+          "patches_in_range": 0,
+          "max_patch_miss_fraction": 0.1025,
+          "rule": "median in range AND >=2/3 patches in range AND no patch misses its nearest limit by >20%"
+        },
+        "saturation_retention_percent": {
+          "value": 96.9629,
+          "target": [
+            75.0,
+            110.0
+          ],
+          "pass": true,
+          "source": "VISUAL_TARGET.md: Material colour saturation"
+        },
+        "saturation_p50_percent": 15.8405,
+        "saturation_p90_percent": 16.3379,
+        "input_saturation_percent": 16.3366
+      },
+      "pass": false
+    },
+    {
+      "preset": "skin-felt/2",
+      "patch_roi_px": [
+        190,
+        894,
+        290,
+        994
+      ],
+      "projected_reference_px": 204.8,
+      "metrics": {
+        "fuzz_rms_y255": {
+          "value": 0.3421,
+          "target": [
+            0.0,
+            3.0
+          ],
+          "pass": true,
+          "source": "VISUAL_TARGET.md: Skin remains below 3/255",
+          "patches": [
+            0.3436,
+            0.3419,
+            0.3421
+          ],
+          "patches_in_range": 3,
+          "max_patch_miss_fraction": 0.0,
+          "rule": "median in range AND >=2/3 patches in range AND no patch misses its nearest limit by >20%"
+        },
+        "sheen_p90_p50": {
+          "value": 1.0028,
+          "target": [
+            1.12,
+            1.32
+          ],
+          "pass": false,
+          "source": "VISUAL_TARGET.md: Sheen/roughness read, skin",
+          "patches": [
+            1.0028,
+            1.0027,
+            1.0029
+          ],
+          "patches_in_range": 0,
+          "max_patch_miss_fraction": 0.1047,
+          "rule": "median in range AND >=2/3 patches in range AND no patch misses its nearest limit by >20%"
+        },
+        "saturation_retention_percent": {
+          "value": 104.5266,
+          "target": [
+            75.0,
+            110.0
+          ],
+          "pass": true,
+          "source": "VISUAL_TARGET.md: Material colour saturation"
+        },
+        "saturation_p50_percent": 28.3462,
+        "saturation_p90_percent": 28.9092,
+        "input_saturation_percent": 27.1186
+      },
+      "pass": false
+    }
+  ],
+  "pass": false
+}

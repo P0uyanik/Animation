@@ -1,0 +1,21 @@
+{
+  "format": "plush.personality_action_units",
+  "version": 1,
+  "note": "T-053: shared, character-independent data of the personality reader (anim/personality.h). aliases: shared action units (pipeline/charsys/face_library/expressions.json) -> candidate control names (expression or morph) in order; a character uses the first it has. neutral_idle_motion_amplitude_H: the idle amplitude (head widths) at which the life layer keeps its shared sway / head drift (energy.idle_motion_amplitude / this = scale).",
+  "neutral_idle_motion_amplitude_H": 0.004,
+  "aliases": {
+    "Blink.L": ["Blink.L", "blinkLeft", "Blink"],
+    "Blink.R": ["Blink.R", "blinkRight", "Blink"],
+    "BrowUp.L": ["BrowUp.L", "browUp"],
+    "BrowUp.R": ["BrowUp.R", "browUp"],
+    "BrowDown": ["BrowDown", "browDown"],
+    "BrowSad": ["BrowSad", "browSad", "Worried"],
+    "EyeWide": ["EyeWide", "eyeWide"],
+    "EyeSquint": ["EyeSquint", "squint"],
+    "MouthSmile": ["MouthSmile", "mouthSmile", "smile"],
+    "MouthFrown": ["MouthFrown", "mouthFrown", "frown"],
+    "MouthWide": ["MouthWide", "mouthWide"],
+    "MouthO": ["MouthO", "mouthO"],
+    "JawOpen": ["JawOpen", "jawOpen"]
+  }
+}

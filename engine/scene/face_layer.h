@@ -106,6 +106,20 @@ struct FaceState {
   std::map<std::string, float> controls;  // resolved control (morph) -> weight added to its animated value
 };
 
+// Personality face (T-053, anim/personality.h), resolved to one character's controls (morph names): constant rest
+// offsets, an expression bias added in proportion to the expression activity (0..1) and the mouth while the character
+// watches (look actions, 0..1 envelope). Offsets add to the control's animated weight (the result is clamped to 0..1).
+struct PersonalityFace {
+  std::map<std::string, float> rest, bias, watching;
+  bool empty() const { return rest.empty() && bias.empty() && watching.empty(); }
+};
+float personalityFaceOffset(const PersonalityFace& f, const std::string& control, float activity, float watching);
+// Resolves action-unit offsets to controls: `resolve` maps a name to the character's morph ("" = none). Several
+// action units on one control keep the offset of largest magnitude (e.g. Blink.L and Blink.R on a single Blink).
+std::map<std::string, float> resolvePersonalityOffsets(const std::map<std::string, float>& au,
+                                                       const std::map<std::string, std::vector<std::string>>& aliases,
+                                                       const std::function<std::string(const std::string&)>& resolve);
+
 class FaceLayer {
  public:
   // `resolve` maps a control name (expression or morph) to the character's morph, or "" if it has none.

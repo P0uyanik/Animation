@@ -35,7 +35,7 @@ from materials import builder as MATERIALS
 HERE = os.path.dirname(os.path.abspath(__file__))
 LIBRARY = os.path.join(HERE, "face_library", "expressions.json")
 SIDES = ((1, "L"), (-1, "R"))  # +x = the character's left
-GENERATOR_VERSIONS = ("face_generic/1",)  # versions implemented here (versions.py; released = immutable)
+GENERATOR_VERSIONS = ("face_generic/1", "face_generic/2")  # versions implemented here (versions.py; released = immutable)
 INBETWEENS = (0.25, 0.5, 0.75)  # in-between keys "<key>@25/50/75" for rotation-type motions (blink)
 
 
@@ -633,7 +633,10 @@ def add_jaw_preset_drivers(rig, jaw_weights, angle_deg):
 # ------------------------------------------------------------------------------------------------ build
 def build(C, M, head, spec, P, H, head_bone="DEF-spine.006", eye_bone="DEF-eye.{s}"):
     """Builds the face on the head mesh `head` (any skin mesh with a face). Updates P['eyes']['y'] so the eye bones
-    sit at the eye centres. Returns a dict with objects, landmarks, rigid bindings, names and a report."""
+    sit at the eye centres. Returns a dict with objects, landmarks, rigid bindings, names and a report.
+    A spec pinned to face_generic/2 builds through build_v2 (T-065); face_generic/1 continues below unchanged."""
+    if face_version(spec) == 2:
+        return build_v2(C, M, head, spec, P, H, head_bone, eye_bone)
     fs = spec["face"]
     L = fs.get("layout", {})
     ecfg = fs.get("eyes", {})
@@ -805,3 +808,247 @@ def bind_rigid(rig, pairs):
             vg.add(list(range(len(ob.data.vertices))), w, "REPLACE")
         m = ob.modifiers.new("Armature", "ARMATURE")
         m.object = rig
+
+
+# ================================================================================================ face_generic/2 (T-065)
+# Opt-in by the spec's face pin (generators.face or face.generator = "face_generic/2"). Everything face_generic/1 does,
+# plus (spec data; see face_features "face_generic/2"):
+#   lids blended into the skin   face.eyes.socket {band_deg, lower_band_deg, ramp_deg, reach_deg, clearance_m,
+#                                inner_scale, follow_reach_deg}: the head skin wraps the lid shells, only a lid band shows;
+#                                the socket skin follows every lid motion (Blink.*, EyeWide, EyeSquint, the smile's
+#                                lower-lid lift) through shape keys on the head
+#   round, full-cheeked faces    face.shape: outline_roundness/exponent, face_width_m, lower_face_length_m,
+#                                cheek_fullness_m, jaw_depth_roundness (+ the face_generic/1 shape options)
+#   cheek lift                   face.cheeks -> action unit CheekRaise; mouth.rest_shape "soft_smile" (closed smile
+#                                with cheek lift), "parted"; rest_mix honoured for every rest shape; Smile/Frown/CheekRaise
+#                                keep their absolute targets over a baked rest
+#   brows                        face.brows.shape "flat_stroke" | "soft_arch" | "short_arc" presets, tapered both ends
+#   lips                         face.mouth.fullness {upper, lower, forward_m, lower_forward}
+def face_version(spec):
+    """2 when the spec pins face_generic/2 (generators.face, else face.generator), otherwise 1."""
+    pin = (spec.get("generators") or {}).get("face") or (spec.get("face") or {}).get("generator")
+    return 2 if pin == "face_generic/2" else 1
+
+
+def _lid_geometry(sx, ecfg, r):
+    """The lid planes and radii exactly as build_eyes makes them (unit eye frame)."""
+    lids_cfg = ecfg.get("lids", {})
+    e_up, k_up = math.radians(_f(lids_cfg, "upper_edge_deg", 40)), _f(lids_cfg, "upper_back_tilt", 1.0)
+    e_lo, k_lo = math.radians(_f(lids_cfg, "lower_edge_deg", -45)), _f(lids_cfg, "lower_tilt", 0.3)
+    env = gaze_envelope(sx, ecfg)
+    need = env * 1.01 - 1.0 if env > 1.0 else 0.0
+    r_up = r * (1 + max(_f(lids_cfg, "upper_gap", 0.06), need))
+    r_lo = r * (1 + max(_f(lids_cfg, "lower_gap", 0.03), need))
+    q_up = Vector((0, -math.cos(e_up), math.sin(e_up))) * r_up
+    q_lo = Vector((0, -math.cos(e_lo), math.sin(e_lo))) * r_lo
+    return {"q_up": q_up, "k_up": k_up, "r_up": r_up, "q_lo": q_lo, "k_lo": k_lo, "r_lo": r_lo,
+            "r_up_out": r_up + _f(lids_cfg, "upper_thickness_m", 0.0018),
+            "r_lo_out": r_lo + _f(lids_cfg, "lower_thickness_m", 0.0012), "lids_cfg": lids_cfg}
+
+
+def build_brows_v2(C, ctx, bc, au, ex, ez, r):
+    """face_generic/2 brows: shape preset (brows.shape) under the spec values, a soft stroke tapered at both ends with
+    rounded caps, re-projected on the face for every key (BrowUp.<side>, BrowDown, BrowSad)."""
+    bc = FF.brow_config(bc)
+    mat = (FF.brow_material("M_brow_generic", bc, MATERIALS) if bc.get("style") else
+           G.material("M_brow_generic", tuple(bc.get("srgb", (110, 70, 52))), roughness=0.8))
+    up_m, down_m, in_m, sad_m = (_f(au, "brow_up_m", 0.006), _f(au, "brow_down_m", 0.005), _f(au, "brow_in_m", 0.003),
+                                 _f(au, "brow_sad_m", 0.005))
+    sad_out = _f(au, "brow_sad_outer", 0.4)
+
+    def tube(name, pts):
+        n = len(pts)
+        return G.tube(name, pts, FF.brow_widths(bc, n), [_f(bc, "depth_m", 0.0012)] * n, C, up_hint=(0, -1, 0), seg=10,
+                      cap_start="round", cap_end="round")
+    brows = []
+    for sx, side in SIDES:
+        b = tube(f"brow.{side}", _brow_points(ctx, sx, ex, ez, r, bc))
+        G.assign(b, mat)
+        b.shape_key_add(name="Basis")
+        for name, kw in ((f"BrowUp.{side}", {"up": up_m}),
+                         ("BrowDown", {"inner_dz": -down_m, "inner_dx": in_m, "up": -0.2 * down_m}),
+                         ("BrowSad", {"inner_dz": sad_m, "outer_dz": -sad_out * sad_m})):
+            tmp = tube("_tmp_brow", _brow_points(ctx, sx, ex, ez, r, bc, **kw))
+            k = b.shape_key_add(name=name)
+            k.value = 0.0
+            for i, v in enumerate(tmp.data.vertices):
+                k.data[i].co = v.co
+            me = tmp.data
+            bpy.data.objects.remove(tmp, do_unlink=True)
+            bpy.data.meshes.remove(me)
+        brows.append(b)
+    return brows
+
+
+def build_v2(C, M, head, spec, P, H, head_bone="DEF-spine.006", eye_bone="DEF-eye.{s}"):
+    """face_generic/2 build (see the block comment above). Same outputs as face_generic/1's build."""
+    fs = spec["face"]
+    L = fs.get("layout", {})
+    ecfg = fs.get("eyes", {})
+    lib = load_library()
+    ex, ez = P["eyes"]["x"] * H, P["eyes"]["z"] * H
+    if "spacing_m" in ecfg or "offset_z_m" in ecfg:
+        ex = _f(ecfg, "spacing_m", 2 * ex) / 2
+        ez = ez + _f(ecfg, "offset_z_m", 0.0)
+        P["eyes"]["x"], P["eyes"]["z"] = ex / H, ez / H
+    r = _f(ecfg, "radius_m", 0.03)
+    z_mouth = ez - _f(L, "mouth_below_eye_m", 0.05)
+    ctx = FaceContext(head, z_mouth, r)
+    rep = {"generator": "face_generic/2"}
+    skin_rgb = tuple(spec["materials"].get("albedo_srgb", {}).get("skin") or spec["materials"]["target_colors_srgb"]["skin"])
+    bl = fs.get("blush")
+    z_nose = ez - _f(L, "nose_below_eye_m", 0.03)
+    if fs.get("shape"):  # head proportions first (v1 options, then the v2 round-face options)
+        sh = FF.shape_face_v2(head, ctx, fs["shape"], ex, ez, r, ez - _f(L, "chin_below_eye_m", 0.09))
+        sh.update(FF.shape_head(head, ctx, {k: v for k, v in fs["shape"].items() if k != "cheek_roundness_m"}, ex, ez, r))
+        rep["shape"] = sh
+    if fs.get("skin"):
+        spots = []
+        if bl:
+            for sx, _ in SIDES:
+                bx, bz = sx * (ex + _f(bl, "out_m", 0.0)), ez - _f(bl, "below_eye_m", 0.04)
+                spots.append(((bx, ctx.face_y(None, bx, bz), bz), _f(bl, "radius_m", 0.025), _f(bl, "intensity", 1.0)))
+            if bl.get("nose"):
+                zn = z_nose + _f(fs.get("nose", {}), "offset_z_m", 0.0)
+                spots.append(((0.0, ctx.face_y(None, 0.0, zn), zn), _f(bl, "nose_radius_m", _f(bl, "radius_m", 0.025)),
+                              _f(bl, "nose_intensity", _f(bl, "intensity", 1.0))))
+        fc = (0.0, ctx.face_y(None, 0.0, z_nose), z_nose)
+        M["face_skin"] = FF.face_skin_material("M_skin_face", skin_rgb, bl, spots, fs["skin"], fc)
+        skin_assignment = MATERIALS.get_assignment(spec["materials"], "skin")
+        if skin_assignment:
+            MATERIALS.apply_from_assignment(M["face_skin"], skin_assignment, preserve_base_color=True)
+        FF.carry_base_to_rim(M["face_skin"])
+    elif bl:
+        spots = []
+        for sx, _ in SIDES:
+            bx, bz = sx * (ex + _f(bl, "out_m", 0.0)), ez - _f(bl, "below_eye_m", 0.04)
+            spots.append((bx, ctx.face_y(None, bx, bz), bz))
+        if bl.get("nose"):
+            spots.append((0.0, ctx.face_y(None, 0.0, z_nose), z_nose))
+        M["face_skin"] = G.blush_skin_material("M_skin_face", skin_rgb, tuple(bl.get("srgb", (226, 150, 150))), spots,
+                                               _f(bl, "radius_m", 0.025), subsurface=0.2)
+        skin_assignment = MATERIALS.get_assignment(spec["materials"], "skin")
+        if skin_assignment:
+            MATERIALS.apply_from_assignment(M["face_skin"], skin_assignment, preserve_base_color=True)
+    else:
+        M["face_skin"] = M["skin"]
+    G.assign(head, M["face_skin"])
+    nc = fs.get("nose", {})
+    nose_obj = None
+    if nc.get("type"):
+        nose_obj, nose_tip = FF.build_nose(C, M, head, ctx, nc, z_nose)
+        z_nose = nose_tip.z
+        rep["nose"] = {"type": nc["type"], "tip_m": [round(v, 4) for v in nose_tip]}
+    elif nc:
+        ny = ctx.face_y(None, 0.0, z_nose)
+        G.brush(head, (0.0, ny + _f(nc, "radius_m", 0.016) * 0.3, z_nose), _f(nc, "radius_m", 0.016), (0, -_f(nc, "height_m", 0.004), 0))
+        ctx.invalidate()
+    lm = {"mouth": Vector((0.0, ctx.face_y(None, 0.0, z_mouth), z_mouth))}
+    zc = ez - _f(L, "chin_below_eye_m", 0.09)
+    lm["chin"] = Vector((0.0, ctx.face_y(None, 0.0, zc), zc))
+    lm["nose"] = Vector((0.0, ctx.face_y(None, 0.0, z_nose), z_nose))
+    eyes, lids, frames, einfo = build_eyes(C, M, ctx, ecfg, ex, ez, _f(ecfg, "protrusion_m", 0.015),
+                                           MATERIALS.get_assignment(spec["materials"], "eyes"))
+    P["eyes"]["y"] = lids[0][3].y / H
+    rep["eyes"] = einfo
+    for (sx, side), (up, lo, lash, c) in zip(SIDES, lids):
+        lm[f"eye_{side}"] = frames[side] @ Vector((0, -r, 0))
+    # lids blended into the skin: the head wraps the lid shells (before anything else is placed on the surface)
+    sock_cfg = ecfg.get("socket", {})
+    socket_w = {}
+    if sock_cfg.get("enabled", True):
+        if int(sock_cfg.get("refine_cuts", 2)) > 0:
+            rep["socket_refined_faces"] = FF.refine_eye_regions(head, [frames[s] for _, s in SIDES], r,
+                                                                _f(sock_cfg, "refine_reach", 1.8), int(sock_cfg.get("refine_cuts", 2)))
+            ctx.invalidate()
+        sides = []
+        for sx, side in SIDES:
+            lg = _lid_geometry(sx, ecfg, r)
+            sides.append({"sx": sx, "side": side, "T": frames[side], "r": r, "r_up_out": lg["r_up_out"], "r_lo_out": lg["r_lo_out"],
+                          "up_edge": FF.lid_edges(lambda a, lg=lg: _lid_edge(lg["q_up"], lg["k_up"], lg["r_up"], a, lg["lids_cfg"], True),
+                                                  corner_deg=_f(sock_cfg, "corner_deg", 60.0)),
+                          "lo_edge": FF.lid_edges(lambda a, lg=lg: _lid_edge(lg["q_lo"], lg["k_lo"], lg["r_lo"], a, lg["lids_cfg"], False),
+                                                  corner_deg=_f(sock_cfg, "corner_deg", 60.0))})
+        rep["lid_socket"], socket_w = FF.lid_socket(head, ctx, sides, sock_cfg)
+    ears = build_ears(C, M, ctx, fs.get("ears", {}), ez) if fs.get("ears") else []
+    for (sx, side), e in zip(SIDES, ears):
+        lm[f"ear_{side}"] = e.location.copy()
+    if not ears:
+        for sx, side in SIDES:
+            lm[f"ear_{side}"] = Vector((ctx.side_x(sx, 0.0, ez - 0.01) or sx * 0.1, 0.0, ez - 0.01))
+    au = fs.get("action_units", {})
+    brows = build_brows_v2(C, ctx, fs.get("brows", {}), au, ex, ez, r) if fs.get("brows") else []
+    mcfg = dict(fs["mouth"])
+    M.setdefault("lip", G.material("M_lip_generic", tuple(mcfg.get("lip_srgb", skin_rgb)), roughness=0.5, subsurface=0.15))
+    mouth = FACE.build_mouth_lips(C, M, head, ctx, mcfg)
+    cavity = FACE.cut_mouth_and_cavity(C, M, head, ctx, mcfg, mouth)
+    full = FF.lip_fullness(mouth, mcfg)
+    if full:
+        rep["lip_fullness"] = full
+    closed = {}
+    off = _f(fs.get("blink", {}), "closed_offset_m", 0.0012) / r
+    for _, side in SIDES:
+        env = einfo[side]["gaze_envelope"]
+        closed[side] = 1.0 if env <= 1.0 else max(env * 1.005 - off, 1 + einfo[side]["lid_gap_lower"] - _f(ecfg.get("lids", {}), "lower_gap", 0.03))
+    bcfg = dict(fs.get("blink", {}))
+    widened = max(einfo[side]["lid_gap_lower"] - _f(ecfg.get("lids", {}), "lower_gap", 0.03) for _, side in SIDES)
+    if widened > 0:
+        bcfg["overlap_deg"] = _f(bcfg, "overlap_deg", 3.0) + math.degrees(widened)
+        rep["blink_overlap_deg"] = round(bcfg["overlap_deg"], 2)
+    rep["blink"] = eye_action_units(eyes, lids, frames, r, bcfg, au, closed)
+    if socket_w:  # the socket skin follows its lid in every lid motion
+        wide_up, wide_lo = _f(au, "wide_upper_deg", 10), _f(au, "wide_lower_deg", 6)
+        # A closing lid (Blink, EyeSquint, the smile's lower-lid lift) slides out from under the crease, so the skin
+        # stays; an opening lid (EyeWide) retracts under it, so the skin above the crease rises with it.
+        FF.socket_key(head, "EyeWide", socket_w, {k: v for _, s in SIDES for k, v in (((s, "up"), -wide_up), ((s, "lo"), wide_lo))})
+    if fs.get("smile_coupling"):
+        rep["smile_coupling"] = FACE.add_smile_coupling(head, lids, mouth, lm, fs["smile_coupling"])
+        FF.taper_key_front(head, "Smile", lm["mouth"].y + 0.03)  # no step on the cheeks at the coupling's cut-off
+    for ob in [mouth, cavity, head] + [l[1] for l in lids]:
+        _rename_key(ob, "Smile", "MouthSmile")
+    if fs.get("cheeks"):
+        cr = FF.add_cheek_raise(head, lm, fs["cheeks"], ex, ez)
+        if cr:
+            rep["cheek_raise"] = cr
+    if socket_w:  # the lower lids ride on the cheek skin (smile, cheek lift)
+        rep["lids_follow_skin"] = FF.lids_follow_skin(head, [l[1] for l in lids], ("MouthSmile", "CheekRaise"))
+    if _f(au, "pout_m", 0.0) > 0:
+        rep["pout"] = add_pout([mouth, cavity, head], lm["mouth"], au, _f(mcfg, "half_width_m", 0.0125))
+    if mcfg.get("rest_shape", "closed_smile") != "closed_smile" or mcfg.get("rest_mix"):
+        rep["mouth_rest_shape"] = {"shape": mcfg.get("rest_shape", "closed_smile"),
+                                   "objects": FF.bake_rest_shape_v2([mouth, cavity, head] + [l[1] for l in lids],
+                                                                    mcfg.get("rest_shape", "closed_smile"), mcfg.get("rest_mix"))}
+    au_names = [a for a in lib["action_units"]]
+    if rep.get("cheek_raise"):
+        au_names.append("CheekRaise")
+    lid_objs = [o for l in lids for o in l[:3]]
+    face_objs = eyes + lid_objs + brows + [mouth, cavity, head]
+    if _f(au, "pout_m", 0.0) > 0:
+        au_names.append("MouthPout")
+    if au.get("split"):
+        rep["split_action_units"] = split_action_units(face_objs, list(au["split"]), _f(au, "split_blend_m", 0.006))
+        au_names += [n for pair in rep["split_action_units"].values() for n in pair]
+    present = sorted({k.name for o in face_objs if o.data.shape_keys for k in o.data.shape_keys.key_blocks[1:] if "@" not in k.name} | {"JawOpen"})
+    au_built = [a for a in au_names if a in present]
+    presets, jaw_w = bake_presets(face_objs, lib, fs.get("expressions", {}), set(au_built))
+    rep["action_units"] = au_built
+    rep["action_units_missing"] = [a for a in au_names if a not in au_built]
+    rep["presets"] = presets
+    if socket_w:
+        rep["lid_shell_exposed"] = FF.shell_exposure(head, [l[0] for l in lids] + [l[1] for l in lids])
+    rigid = [(o, head_bone) for o in brows + ears + [mouth, cavity] + ([nose_obj] if nose_obj else [])] + [(e, eye_bone.format(s=s)) for e, (_, s) in zip(eyes, SIDES)]
+    track = _f(ecfg, "lid_tracking", 0.0)
+    rigid.extend(FACE.lid_bindings(lids, head_bone, eye_bone, track, tuple(side for _, side in SIDES)))
+    sc = ecfg.get("scale", [1, 1, 1])
+    if max(abs(float(k) - 1.0) for k in sc) > 1e-6:
+        env = max(einfo[s]["gaze_envelope"] for _, s in SIDES)
+        rep.setdefault("notes", []).append(
+            "non-spherical eyeball (scale %s): the lids clear its rigid gaze sweep over gaze_range_deg %s (envelope %.3f)"
+            % (sc, ecfg.get("gaze_range_deg", [20.0, 12.0]), env))
+    engine = {k: v for k, v in lib["engine_expressions"].items() if v in set(au_built) | set(presets)}
+    for name in (fs.get("expressions", {}).get("custom") or {}):
+        if name in presets:
+            engine.setdefault(name[0].lower() + name[1:], name)
+    return {"eyes": eyes, "lids": lids, "brows": brows, "ears": ears, "nose": nose_obj, "mouth": mouth, "cavity": cavity, "landmarks": lm,
+            "rigid": rigid, "frames": frames, "ctx": ctx, "controls": au_built + presets, "jaw_preset_weights": jaw_w,
+            "engine_expressions": engine, "mouth_cfg": mcfg, "report": rep}
