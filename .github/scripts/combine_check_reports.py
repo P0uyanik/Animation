@@ -6,7 +6,7 @@
 
 Reports are check_all.json files (tools/check_all.py, tools/regression/run.py --gate-report, trial-merge conflicts).
 Checks with the same name are merged into one line. With --needs-json the run also FAILS when a required job did not
-succeed or a required report is missing: the linux gate always, one regression report per character on the full
+succeed or a required report is missing: the linux gate and the linux renderer job (T-085) always, one regression report per character on the full
 tier, the windows report when the windows job ran. Exit 1 on any FAIL (the required "Gate verdict" check).
 """
 
@@ -47,13 +47,13 @@ def main() -> int:
     problems: list[str] = []
     if args.needs_json:
         needs = json.loads(args.needs_json)
-        required = {"plan": True, "linux": True, "regression": args.tier == "full", "windows": args.windows == "true"}
+        required = {"plan": True, "linux": True, "renderer": True, "regression": args.tier == "full", "windows": args.windows == "true"}
         for job, must in required.items():
             result = needs.get(job, {}).get("result", "missing")
             if must and result != "success":
                 problems.append(f"job {job} {result}")
         artifacts = {path.relative_to(args.root).parts[0] for path, _ in reports}
-        expected = ["quality-linux"]
+        expected = ["quality-linux", "quality-renderer"]  # T-085: the one renderer-ON job is required
         if args.tier == "full":
             expected += [f"regression-{c}" for c in json.loads(args.characters or "[]")]
         if args.windows == "true":

@@ -15,12 +15,10 @@ now and what starts next; it does not restate the plan.
 ## 1. Running now (Phase A)
 | Task | What | Implementer | Merges after |
 | --- | --- | --- | --- |
-| T-085 | Renderer optional in the build | cloud `session_01NPjxePZB1du3ZStJN4c7EC` | READY + full CI on `integration/t-085` |
 | T-087 | Review recipe lock + fidelity fixes | cloud `session_01NPjxeLy8LE79Ttrgoxqp6S` | READY + full CI |
-| T-088 | Version-switch script | cloud `session_01NPjxeLdCn1De2R4uRrMMYo` | READY + full CI |
 
 ## 2. Next
-1. T-086 CI efficiency: starts when T-085 is merged (shared `checks.yml`).
+1. T-086 CI efficiency: starts now that T-085 is merged (T-088 merged b3a96f3).
 2. Phase A exit: T-085..T-088 merged, all workflows on `main` green.
 3. Phases B and C (max 6 parallel): T-089, T-092, T-093, T-095, T-096, T-098L; T-090 as the 7th slot frees up or
    after T-089's first face fit is reviewed. Task files written from `ROUND2_PLAN.md` before start.
