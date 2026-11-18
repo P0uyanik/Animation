@@ -48,3 +48,9 @@ for the owner; commit it (JPEG) with the recipe, `recipe.resolved.json` and `she
 - `tools/fidelity/run.py` never falls back to an A-pose master: a missing compare variant is an error
   (`--variant master` measures the master on purpose and is recorded). Reference views may hide parts the reference
   does not show, but never a garment (`garment.*`); `fidelity.json` records the objects actually hidden.
+
+## Previews vs final renders (owner decision 2026-11-18 ~20:00Z)
+- While iterating, render lightweight previews only: geometry and silhouette work on Workbench, material and look work
+  on low-sample Cycles crops (`recipe.py preview` settings).
+- Final review sheets, owner approvals and regression goldens always use the full T-087 review settings in Cycles.
+  Previews never count for approval or regression.

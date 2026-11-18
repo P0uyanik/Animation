@@ -103,6 +103,8 @@ Visual comparisons: write a review recipe, run its cheap preview, then one stric
 9. Commit hash(es) and branch.
 10. Resource use: actual token usage if exposed, otherwise state "not available". Never estimate. Note any
     repeated or unnecessary work.
+11. Time ledger, one line from timestamps the tools already print (no extra logging or messages):
+    `ledger: build N · render N · tests N · ci N · wait N (min)`.
 
 == Delivering the report ==
 Report to the Supervisor with send_message to the Supervisor session id given in your task prompt. Fallback (if

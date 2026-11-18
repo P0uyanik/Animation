@@ -20,3 +20,4 @@ trailer at merge.
 ## Reporting
 send_message to the Supervisor session (relay line as fallback):
 `<UTC> | T-NNN | READY|BLOCKED|STATUS | <branch@sha> | input <SHA> | <one line>`.
+READY ends with one line `ledger: build N · render N · tests N · ci N · wait N (min)`.

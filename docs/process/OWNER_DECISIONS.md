@@ -303,3 +303,11 @@ Owner: "Let's keep one main Supervisor responsible for architecture, task planni
 independent reviewer. We can use short-lived specialist architects only when deeper technical analysis is genuinely
 needed, to avoid unnecessary token costs and coordination overhead." Recorded as `docs/process/DELIVERY_PLAN.md` §0
 (roles, specialist architects, track labels in `TASK_LOG.md`). No change to current priorities or running tasks.
+
+## 2026-11-18 (~20:00Z): two small optimisations (relayed by the previous Supervisor session)
+Approved: (1) a time ledger, one line per READY report (build, render, tests, CI, wait in minutes, from timestamps the
+tools already print); (2) lightweight previews while iterating (Workbench for geometry, low-sample Cycles crops for
+looks), full T-087 Cycles settings mandatory for final sheets, approvals and goldens. Not approved: build caching,
+selective regressions. Owner: "Keep both implementations lightweight and avoid unnecessary token consumption,
+excessive logging, or additional agent communication." Applies to new tasks and rework rounds; running tasks are not
+interrupted. Recorded in `IMPLEMENTER_PROMPT.md` (report item 11), `docs/tasks/_TEMPLATE.md`, `REVIEW_RECIPE.md`.
