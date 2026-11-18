@@ -17,12 +17,17 @@ from . import drape as cloth
 
 GENERATOR = "garment/1"
 ITEM_TYPES = {"top", "shirt", "vest", "shorts", "trousers", "dress", "skirt", "shoes", "boots",
-              "hoodie"}  # hoodie: T-058, garments/hoodie.py
+              "hoodie",  # hoodie: T-058, garments/hoodie.py
+              "sneakers", "backpack"}  # T-068: garments/sneakers.py, garments/backpack.py
 COLLARS = {"none", "crew", "rib", "shirt", "point", "v", "v-neck", "round"}
-EMBROIDERY_STYLES = {"flower", "sprig", "bouquet"}
+EMBROIDERY_STYLES = {"flower", "sprig", "bouquet", "cross_stitch"}  # cross_stitch: T-068 (pattern decals)
+STITCH_CHARS = {".": None, " ": None, "x": "embroidery", "X": "embroidery", "o": "embroidery_accent",
+                "O": "embroidery_accent"}
 BUTTON_PLACEMENTS = {"centre", "edge", "waistband", "pockets", "positions"}
 CROTCH_TYPES = {"none", "gusset"}
 EDGE_STYLES = ("rolled", "piped")
+ARMHOLES = ("cut", "closed")
+POCKET_SHAPES = ("puff", "patch")  # T-068: "patch" = flat patch pocket on the panel (vests)  # T-068: "closed" keeps the torso panel under a dropped-shoulder sleeve
 
 # T-025, proportion-relative distances. Every ease, offset, mask margin and collision distance in a spec (and every
 # internal margin that used to be a fraction of the height) is defined on the neutral body_generic proportions at
@@ -156,6 +161,8 @@ def validate(clothing):
             if raw["type"] == "skirt":
                 raise ValueError(f"garment {name}.bands.edge_roll_m is not supported on skirts (lofted, no shell)")
             _number(bands["edge_roll_m"], f"garment {name}.bands.edge_roll_m", 0.0, 0.03)
+        if isinstance(bands, dict) and "hem_rib" in bands:
+            _validate_hem_rib(raw, name)
         if isinstance(bands, dict) and bands.get("edge_style", "rolled") not in EDGE_STYLES:
             raise ValueError(f"garment {name}.bands.edge_style must be one of {list(EDGE_STYLES)}")
         if "drape" in raw:
@@ -166,6 +173,13 @@ def validate(clothing):
             if raw["type"] not in ("top", "shirt", "vest", "dress", "hoodie"):
                 raise ValueError(f"garment {name}.shoulder_width is supported on tops, hoodies, vests and dresses")
             _number(raw["shoulder_width"], f"garment {name}.shoulder_width", 0.0, 1.0)
+        if "sleeve_start" in raw:
+            if raw["type"] not in ("top", "shirt", "dress"):
+                raise ValueError(f"garment {name}.sleeve_start is supported on tops and dresses")
+            _number(raw["sleeve_start"], f"garment {name}.sleeve_start", 0.0, 0.1)
+        if "armhole" in raw:
+            if raw["type"] not in ("top", "shirt", "hoodie", "dress") or raw["armhole"] not in ARMHOLES:
+                raise ValueError(f"garment {name}.armhole must be one of {list(ARMHOLES)} on a sleeved top")
         if "crotch" in raw:
             _validate_crotch(raw, name)
         if raw.get("buttons") not in (None, 0) and not isinstance(raw.get("buttons"), int):
@@ -179,12 +193,60 @@ def validate(clothing):
             _number(raw["sole"]["width_m"], f"garment {name}.sole.width_m", 0.0, 0.05)
         if "embroidery" in raw:
             _validate_embroidery(raw, name)
+        if isinstance(raw.get("pockets"), dict):
+            pc = raw["pockets"]
+            if pc.get("shape", "puff") not in POCKET_SHAPES:
+                raise ValueError(f"garment {name}.pockets.shape must be one of {list(POCKET_SHAPES)}")
+            for key in ("corner",):
+                if key in pc:
+                    _number(pc[key], f"garment {name}.pockets.{key}", 0.0, 1.0)
+            for key in ("width_m", "height_m", "depth_m", "above_hem_m", "top_roll_m", "inset_m"):
+                if key in pc:
+                    _number(pc[key], f"garment {name}.pockets.{key}", 0.0, 0.2)
+        if "gathers" in raw:
+            _validate_gathers(raw, name)
         if raw["type"] == "hoodie":
             from . import hoodie
             hoodie.validate(raw, name)
+        elif raw["type"] == "sneakers":
+            from . import sneakers
+            sneakers.validate(raw, name)
+        elif raw["type"] == "backpack":
+            from . import backpack
+            backpack.validate(raw, name)
         for part in raw.get("materials", {}):
             _assignment(raw, part)
     return clothing
+
+
+def _validate_gathers(raw, name):
+    g = raw["gathers"]
+    if raw["type"] not in ("skirt", "dress"):
+        raise ValueError(f"garment {name}.gathers is supported on skirts and dresses")
+    if not isinstance(g, dict):
+        raise ValueError(f"garment {name}.gathers must be an object")
+    if "count" in g and (not isinstance(g["count"], int) or not 3 <= g["count"] <= 64):
+        raise ValueError(f"garment {name}.gathers.count must be an integer in [3, 64]")
+    for key in ("depth_m", "waist_depth_m"):
+        if key in g:
+            _number(g[key], f"garment {name}.gathers.{key}", 0.0, 0.05)
+
+
+def _validate_hem_rib(raw, name):
+    rib = raw["bands"]["hem_rib"]
+    if raw["type"] not in ("skirt", "dress"):
+        raise ValueError(f"garment {name}.bands.hem_rib is supported on skirts and dresses")
+    if rib is True or rib is False:
+        return
+    if not isinstance(rib, dict):
+        raise ValueError(f"garment {name}.bands.hem_rib must be an object or a boolean")
+    if "ridges" in rib and (not isinstance(rib["ridges"], int) or not 0 <= rib["ridges"] <= 256):
+        raise ValueError(f"garment {name}.bands.hem_rib.ridges must be an integer in [0, 256]")
+    for key in ("height_m", "relief_m", "thickness_m", "lift_m"):
+        if key in rib:
+            _number(rib[key], f"garment {name}.bands.hem_rib.{key}", 0.0, 0.1)
+    if "gather" in rib:
+        _number(rib["gather"], f"garment {name}.bands.hem_rib.gather", 0.0, 1.0)
 
 
 def _validate_crotch(raw, name):
@@ -234,7 +296,8 @@ def _validate_buttons(raw, name):
 EMBROIDERY_TARGETS = {
     "top": ("main",), "shirt": ("main",), "hoodie": ("main",), "vest": ("main", "pocket.L", "pocket.R"),
     "dress": ("main",), "shorts": ("main",), "trousers": ("main",), "skirt": ("main",),
-    "shoes": ("main.L", "main.R"), "boots": ("main.L", "main.R"),
+    "shoes": ("main.L", "main.R"), "boots": ("main.L", "main.R"), "sneakers": ("main.L", "main.R"),
+    "backpack": ("main",),
 }
 
 
@@ -256,10 +319,17 @@ def _validate_embroidery(raw, name):
             raise ValueError(f"{label}.target must be one of {list(targets)} for a {raw['type']}")
         if m.get("style", emb.get("style", "flower")) not in EMBROIDERY_STYLES:
             raise ValueError(f"{label}.style must be one of {sorted(EMBROIDERY_STYLES)}")
-        for key in ("size_m", "relief_m"):
+        for key in ("size_m", "relief_m", "stitch_m"):
             if key in m:
                 _number(m[key], f"{label}.{key}", 0.0, 0.2)
-    for key in ("size_m", "relief_m"):
+        if m.get("style", emb.get("style", "flower")) == "cross_stitch":
+            pattern = m.get("pattern", emb.get("pattern"))
+            if (not isinstance(pattern, list) or not pattern or
+                    any(not isinstance(r, str) or len(r) != len(pattern[0]) for r in pattern) or
+                    any(ch not in STITCH_CHARS for r in pattern for ch in r) or len(pattern) > 40 or len(pattern[0]) > 40):
+                raise ValueError(f"{label}.pattern must be a list of equal-length rows (<= 40 x 40) of "
+                                 f"{''.join(sorted(STITCH_CHARS))!r}")
+    for key in ("size_m", "relief_m", "stitch_m"):
         if key in emb:
             _number(emb[key], f"garment {name}.embroidery.{key}", 0.0, 0.2)
     for part in ("embroidery", "embroidery_accent"):
@@ -726,6 +796,29 @@ def _embroidery(G, C, cfg, targets, z_range, P, H):
                 blob(acc_v if k % 2 else main_v, acc_f if k % 2 else main_f, c + d * (r * 0.72) - b * (r * 0.15),
                      d, d.cross(n).normalized(), n, r * 0.30, r * 0.12, relief * 0.8)
             blob(main_v, main_f, c - b * (r * 0.05), t, b, n, r * 0.12, r * 0.12, relief * 0.9)
+        elif style == "cross_stitch":
+            # T-068: a counted cross-stitch decal from a pattern grid, every stitch conformed to the surface
+            pattern = m.get("pattern", emb.get("pattern"))
+            rows, cols = len(pattern), len(pattern[0])
+            stitch = float(m.get("stitch_m", emb.get("stitch_m", size / max(rows, cols))))
+            arm = stitch * 0.5 * 1.15
+            for i, row in enumerate(pattern):
+                for j, ch in enumerate(row):
+                    part = STITCH_CHARS[ch]
+                    if part is None:
+                        continue
+                    q = point + t * ((j - 0.5 * (cols - 1)) * stitch) + b * ((0.5 * (rows - 1) - i) * stitch)
+                    hit = bvh.ray_cast(q + n * 0.05, -n, 0.1)
+                    if hit[0] is None:
+                        continue
+                    hn = hit[1].normalized()
+                    if hn.dot(n) < 0:
+                        hn = -hn
+                    c_st = hit[0] + hn * (relief * 0.6)
+                    vs, fs = (main_v, main_f) if part == "embroidery" else (acc_v, acc_f)
+                    for d in ((t + b).normalized(), (t - b).normalized()):
+                        e = hn.cross(d).normalized()
+                        blob(vs, fs, c_st, d, e, hn, arm, stitch * 0.17, relief * 0.7)
         else:  # sprig: a short stem with leaves alternating along it
             leaves = max(2, int(m.get("leaves", emb.get("leaves", 4))))
             blob(main_v, main_f, c, b, t, n, r, r * 0.07, relief * 0.6)
@@ -873,6 +966,8 @@ def _top(C, body, cfg, P, H, J, G, fit, vest=False):
     arm_bottom = shoulder_z - ARMHOLE_DEPTH_ROOT_RADII * fit.arm_root
     edge = _armhole_edge(fit, cfg, shoulder_z, arm_bottom, P["neck"]["radius"] * H)
     torso_margin = 0.015 * fit.torso
+    closed_armhole = sleeve > 0 and cfg.get("armhole", "cut") == "closed"
+    sleeve_start = float(cfg.get("sleeve_start", 0.10))  # T-068: share of the arm where the sleeve panel begins
 
     def selector(c):
         torso = hem_z <= c.z <= top_z
@@ -880,15 +975,15 @@ def _top(C, body, cfg, P, H, J, G, fit, vest=False):
             w, front, back = _torso_dims(P, H, c.z)
             torso = abs(c.x) <= w + torso_margin and -front - torso_margin <= c.y <= back + torso_margin
             # Leave an actual armhole. A shell copied from the underarm concavity is trapped when the arm lowers.
-            if c.z > arm_bottom and abs(c.x) > edge(c.z, w):
+            if c.z > arm_bottom and abs(c.x) > edge(c.z, w) and not closed_armhole:
                 torso = False
             if vest and torso and c.y < -front * 0.35 and abs(c.x) < opening:
                 torso = False
-        return torso or (sleeve > 0 and fit.in_sleeve(c, 0.10, sleeve))
+        return torso or (sleeve > 0 and fit.in_sleeve(c, sleeve_start, sleeve))
 
     puff = float(cfg.get("sleeve_puff_m", 0.0)) if sleeve > 0 else 0.0
     peak = float(cfg.get("sleeve_puff_peak", 0.6))
-    start = 0.10
+    start = sleeve_start
 
     def sleeve_volume(c, normal):
         if puff <= 0:
@@ -993,10 +1088,22 @@ def _top(C, body, cfg, P, H, J, G, fit, vest=False):
                       float(pc.get("depth_m", 0.004 * fit.torso)))
         z = hem_z + float(pc.get("above_hem_m", 0.055)) * fit.torso
         w, front, _ = _torso_dims(P, H, z)
+        patch = pc.get("shape", "puff") == "patch"
+        if patch:
+            main_bvh = BVHTree.FromObject(main, bpy.context.evaluated_depsgraph_get())
         for sx, side in ((1, "L"), (-1, "R")):
             centre = (sx * min(w * 0.5, w - pw), -front - te - thick - pd, z)
-            ob = G.uv_sphere(f"garment.{cfg['name']}.pocket.{side}", centre, 1.0, C, 20, 10,
-                             (pw, pd, ph))
+            if patch:  # T-068: a flat patch pocket sewn onto the panel, clear of the open front
+                cx = sx * max(abs(centre[0]), opening + float(pc.get("inset_m", 0.006)) * fit.torso + 1.1 * pw)
+                ob, roll = _patch_pocket(G, C, cfg, pc, main_bvh, cx, z, pw, ph, pd, side)
+                if roll is not None:
+                    _feature(objects, roll, cfg, "pocket_edge", _mat_for(
+                        G, cfg, next((p for p in ("pocket_edge", "edge", "pockets") if p in cfg.get("materials", {})),
+                                     "pockets"), H), G)
+                    roll["ps_weight_anchor"] = (centre[0], -front, centre[2])
+            else:
+                ob = G.uv_sphere(f"garment.{cfg['name']}.pocket.{side}", centre, 1.0, C, 20, 10,
+                                 (pw, pd, ph))
             ob["ps_weight_anchor"] = (centre[0], -front, centre[2])
             _feature(objects, ob, cfg, "pockets", pm, G)
             pockets[f"pocket.{side}"] = ob
@@ -1031,6 +1138,50 @@ def _top(C, body, cfg, P, H, J, G, fit, vest=False):
         _placed_buttons(objects, G, C, cfg, H, fit, bvh, points, placement)
     _add_embroidery(objects, G, C, cfg, {"main": main, **pockets}, (hem_z, top_z), P, H)
     return objects, covered
+
+
+def _patch_pocket(G, C, cfg, pc, bvh, cx, cz, pw, ph, pd, side):
+    """T-068 patch pocket: a panel of half size (pw, ph) sewn flat onto the garment surface around (cx, cz), with
+    rounded bottom corners (``corner``, share of the half height), a soft bulge of ``depth_m`` and an optional rolled
+    top edge (``top_roll_m``). Returns (pocket, top roll or None)."""
+    corner = float(pc.get("corner", 0.5))
+    thick = max(cfg["thickness_m"], 0.0015)
+    cols, rows = 16, 12
+    verts, faces, top = [], [], []
+    for j in range(rows + 1):
+        v = -1 + 2 * j / rows
+        f = 1.0
+        if corner > 0 and v < -1 + 2 * corner:
+            q = (-1 + 2 * corner - v) / (2 * corner)
+            f = math.sqrt(max(0.0, 1.0 - q * q)) * 0.85 + 0.15 * (1 - q)
+        for i in range(cols + 1):
+            u = -1 + 2 * i / cols
+            x, z = cx + u * pw * f, cz + v * ph
+            point, t, b, n = _surface_frame(bvh, x, z, "front", f"garment {cfg['name']}: pocket.{side}")
+            if point.y > 0:
+                raise ValueError(f"garment {cfg['name']}: pocket.{side} misses the front panel (open front?)")
+            bulge = pd * (1 - u ** 4) * (1 - abs(v) ** 4)
+            p = point + n * (cfg["thickness_m"] + 0.0005 + bulge)
+            verts.append(tuple(p))
+            if j == rows:
+                top.append(p + n * thick * 0.5)
+    for j in range(rows):
+        for i in range(cols):
+            a = j * (cols + 1) + i
+            faces.append((a, a + 1, a + cols + 2, a + cols + 1))
+    ob = G.new_object(f"garment.{cfg['name']}.pocket.{side}", verts, faces, C)
+    mod = ob.modifiers.new("garment_thickness", "SOLIDIFY")
+    mod.thickness, mod.offset = thick, 1.0
+    bpy.context.view_layer.objects.active = ob
+    ob.select_set(True)
+    bpy.ops.object.modifier_apply(modifier=mod.name)
+    ob.select_set(False)
+    roll = None
+    rr = float(pc.get("top_roll_m", 0.0))
+    if rr > 0:
+        roll = G.tube(f"garment.{cfg['name']}.pocket_edge.{side}", top, [rr] * len(top), [rr * 0.8] * len(top), C,
+                      up_hint=(0, -1, 0), seg=8, cap_start="round", cap_end="round")
+    return ob, roll
 
 
 def _gusset(G, C, cfg, P, H, J, fit, bottom_z, hip_z, ankle_z, puff, inner):
@@ -1202,6 +1353,27 @@ def _skirt_ring(z, width, front, back):
     return points
 
 
+def _skirt_ring_fine(z, width, front, back, seg, gathers, amp, extra=0.0, ridges=0, relief=0.0):
+    """T-068: the skirt ring with ``seg`` points; ``gathers`` soft outward folds of amplitude ``amp`` (gathered
+    fullness), ``extra`` added all round and ``ridges`` vertical rib ridges of ``relief``."""
+    points = []
+    for k in range(seg):
+        angle = 2 * math.pi * (k + 0.5) / seg
+        c, s = math.cos(angle), math.sin(angle)
+        x = width * math.copysign(abs(c) ** (2 / 2.4), c)
+        y_extent = back if s > 0 else front
+        y = y_extent * math.copysign(abs(s) ** (2 / 2.4), s)
+        d = Vector((x, y, 0.0))
+        d = d.normalized() if d.length > 1e-9 else Vector((1, 0, 0))
+        add = extra
+        if gathers:
+            add += amp * 0.5 * (1.0 + math.cos(gathers * angle))
+        if ridges:
+            add += relief * 0.5 * (1.0 + math.cos(ridges * angle))
+        points.append((x + d.x * add, y + d.y * add, z))
+    return points
+
+
 def _skirt(C, cfg, P, H, J, G, fit, part="main"):
     ease, thick = cfg["ease_m"], cfg["thickness_m"]
     hip_z, ankle_z = P["leg"]["hip_z"] * H, P["leg"]["ankle_z"] * H
@@ -1209,10 +1381,36 @@ def _skirt(C, cfg, P, H, J, G, fit, part="main"):
     length = float(cfg.get("length", 0.66))
     bottom_z = waist_z - (float(cfg["length_m"]) if "length_m" in cfg else length * (waist_z - ankle_z))
     flare = float(cfg.get("flare_m", float(cfg.get("flare", 0.08)) * fit.leg))
-    rings = []
-    for k in range(17):
-        t = k / 16
-        z = bottom_z + (waist_z - bottom_z) * t
+    gathers = cfg.get("gathers")
+    bands = cfg.get("bands", {})
+    if bands is True:
+        bands = {"waist": True, "hem": True}
+    rib = bands.get("hem_rib") if isinstance(bands, dict) else None
+    rib = ({} if rib is True else rib) if rib not in (None, False) else None
+    fine = gathers is not None or rib is not None  # T-068: gathered skirt / hem rib (fine rings); else T-018 rings
+    gather_count = int(gathers.get("count", 16)) if gathers else 0
+    gather_depth = float(gathers.get("depth_m", 0.008 * fit.leg)) if gathers else 0.0
+    gather_waist = float(gathers.get("waist_depth_m", 0.25 * gather_depth)) if gathers else 0.0
+    rib_h = float(rib.get("height_m", 0.022 * fit.leg)) if rib is not None else 0.0
+    rib_keep = float(rib.get("gather", 0.35)) if rib is not None else 1.0
+    seg = max(64, gather_count * 8) if fine else 8
+
+    def amp(z):
+        if not gathers:
+            return 0.0
+        t = max(0.0, min(1.0, (z - bottom_z) / max(waist_z - bottom_z, 1e-9)))
+        a = gather_waist + (gather_depth - gather_waist) * (1.0 - t) ** 0.9
+        if rib is not None and z < bottom_z + 1.4 * rib_h:  # the rib band gathers the hem in
+            u = max(0.0, (z - bottom_z) / (1.4 * rib_h))
+            a *= rib_keep + (1.0 - rib_keep) * _smoothstep(u)
+        return a
+
+    def ring_at(z, width, front, back, extra=0.0, ridges=0, relief=0.0):
+        if not fine:
+            return _skirt_ring(z, width, front, back)
+        return _skirt_ring_fine(z, width, front, back, seg, gather_count, amp(z), extra, ridges, relief)
+
+    def dims(z, t):
         down = 1 - t
         if z >= hip_z:
             w, front, back = _torso_dims(P, H, z)
@@ -1224,7 +1422,14 @@ def _skirt(C, cfg, P, H, J, G, fit, part="main"):
             front = back = lr
             s = fit.leg
         add = ease * s + thick + flare * down
-        rings.append(_skirt_ring(z, w + add, front + add, back + add))
+        return w + add, front + add, back + add
+
+    rings = []
+    count = 25 if fine else 17
+    for k in range(count):
+        t = k / (count - 1)
+        z = bottom_z + (waist_z - bottom_z) * t
+        rings.append(ring_at(z, *dims(z, t)))
     ob = G.loft(f"garment.{cfg['name']}.{part}", rings, C, cap_bottom=False, cap_top=False)
     if thick > 0:
         mod = ob.modifiers.new("garment_thickness", "SOLIDIFY")
@@ -1234,11 +1439,30 @@ def _skirt(C, cfg, P, H, J, G, fit, part="main"):
         bpy.ops.object.modifier_apply(modifier=mod.name)
         ob.select_set(False)
     objects = []
+    main_ob = ob
     _feature(objects, ob, cfg, part, _mat_for(G, cfg, part, H), G)
-    bands = cfg.get("bands", {})
-    if bands is True:
-        bands = {"waist": True, "hem": True}
     bm = _mat_for(G, cfg, "band", H)
+    if rib is not None:
+        # T-068: knitted rib band at the hem: a thick band over the skirt's lower edge with vertical rib ridges
+        ridges = int(rib.get("ridges", 64))
+        relief = float(rib.get("relief_m", 0.0012))
+        rib_t = float(rib.get("thickness_m", max(thick, 0.002)))
+        over = float(rib.get("lift_m", thick + 0.001))
+        band_rings = []
+        for z, grow, rel in ((bottom_z - 0.15 * rib_h, -0.4 * rib_t, 0.5), (bottom_z - 0.05 * rib_h, 0.2 * rib_t, 0.9),
+                             (bottom_z + 0.35 * rib_h, over, 1.0), (bottom_z + 0.75 * rib_h, over, 1.0),
+                             (bottom_z + rib_h, over * 0.9, 0.9), (bottom_z + 1.08 * rib_h, 0.2 * over, 0.4)):
+            t = (z - bottom_z) / max(waist_z - bottom_z, 1e-9)
+            band_rings.append(ring_at(z, *dims(z, max(0.0, t)), extra=grow, ridges=ridges, relief=relief * rel))
+        band = G.loft(f"garment.{cfg['name']}.band.hem_rib", band_rings, C, cap_bottom=False, cap_top=False)
+        mod = band.modifiers.new("garment_thickness", "SOLIDIFY")
+        mod.thickness, mod.offset = rib_t, -1.0
+        bpy.context.view_layer.objects.active = band
+        band.select_set(True)
+        bpy.ops.object.modifier_apply(modifier=mod.name)
+        band.select_set(False)
+        _feature(objects, band, cfg, "band", bm, G)
+    ob = main_ob
     if bands.get("waist"):
         _feature(objects, _torso_ring(G, C, f"garment.{cfg['name']}.band.waist", P, H, waist_z,
                                      ease * fit.torso + thick, cfg["seam_radius_m"] * 1.3), cfg, "band", bm, G)
@@ -1606,6 +1830,12 @@ def build(C, body, clothing, P, H, J, G):
         elif cfg["type"] == "hoodie":
             from . import hoodie
             made, cov = hoodie.build(C, body, cfg, P, H, J, G, fit)
+        elif cfg["type"] == "sneakers":
+            from . import sneakers
+            made, cov = sneakers.build(C, body, cfg, P, H, J, G, fit)
+        elif cfg["type"] == "backpack":
+            from . import backpack
+            made, cov = backpack.build(C, body, cfg, P, H, J, G, fit, worn=list(objects))
         elif cfg["type"] in ("shorts", "trousers"):
             made, cov = _bottoms(C, body, cfg, P, H, J, G, fit)
         elif cfg["type"] == "skirt":
@@ -1651,6 +1881,8 @@ def build(C, body, clothing, P, H, J, G):
             item_report_extra["buttons"] = cfg["_buttons_report"]
         if cfg.get("_gusset_report"):
             item_report_extra["gusset"] = cfg["_gusset_report"]
+        if cfg.get("_backpack_report"):
+            item_report_extra["backpack"] = cfg["_backpack_report"]
         if cfg["name"] in item_report_drape:
             item_report_extra["drape"] = item_report_drape[cfg["name"]]
         item_report.append({**item_report_extra, "name": cfg["name"], "type": cfg["type"], "objects": [o.name for o in objects[before:]],

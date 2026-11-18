@@ -10,6 +10,17 @@ length a FRACTION OF height_m (angles in degrees):
             the side profile: fuller cheeks at 3/4)
             optional profile_levels [[z, centre_x, centre_y, half_width, front_depth, back_depth], ...] and
             profile_exponent: an asymmetric head loft that replaces the ellipsoid (absent = unchanged)
+            body_generic/2 (T-065) head fitted to reference outlines: optional `outline` {eye_z, unit, chin_t,
+            front: [[t, half_width], ...], side: [[t, forward], ...]} (eye_z and unit = the eye spacing as fractions
+            of height_m; t = depth below the eye line and the values in units of the eye spacing, as measured on the
+            character's front / side reference views). The lower head is scaled so the chin sits chin_t below the
+            eye line, every horizontal slice of the lower face takes the front half width, and the face front takes
+            the side profile (the back of the head stays); the remesh then smooths it (absent = unchanged).
+            With front_eye_width (the reference's half width at the eye line, same units) the widths are taken
+            relative to it, so the head keeps its own width at the eye line and takes the reference's shape below.
+            The side profile is applied below mid-face only, relative to it (the chin's set-back from the mouth
+            and cheeks); above it the reference silhouette is cheek volume and the eye, made by the face options.
+            side_blend (default 0.15 of the eye-to-chin depth): how gradually the side fit starts below mid-face
   neck:     base_z, top_z, radius, optional top_radius (thicker top blending into the jaw; default radius)
   torso:    levels: [[z, half_width, half_depth_front, half_depth_back], ...]  (bottom to top)
   shoulder: z, joint_x, clavicle_x
@@ -34,7 +45,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 import geom as G  # noqa: E402  (same helpers as the legacy builder)
 
 SIDES = ((1, "L"), (-1, "R"))
-GENERATOR_VERSIONS = ("body_generic/1",)  # versions implemented here (versions.py; released = immutable)
+GENERATOR_VERSIONS = ("body_generic/1", "body_generic/2")  # versions implemented here (versions.py; released = immutable)
 
 
 def _p(P, H, key, *names):
@@ -146,6 +157,86 @@ def _dense_profile(levels, steps):
     return out
 
 
+def _interp(rows, t):
+    if t <= rows[0][0]:
+        return rows[0][1]
+    for (t0, v0), (t1, v1) in zip(rows, rows[1:]):
+        if t <= t1:
+            return v0 + (v1 - v0) * (t - t0) / max(1e-9, t1 - t0)
+    return rows[-1][1]
+
+
+def fit_head_outline(head, ol, H):
+    """body_generic/2: fits the lower face of the head primitive to front and side outlines measured on the
+    references (see the module docstring, head.outline). Works in place on the head mesh before the body remesh."""
+    ze, u = float(ol["eye_z"]) * H, float(ol["unit"]) * H
+    chin_t = float(ol["chin_t"])
+    me = head.data
+    vs = me.vertices
+    ys = [v.co.y for v in vs]
+    yc = 0.5 * (min(ys) + max(ys))
+    # 1. chin height: the lower head is scaled vertically so its front-most bottom point sits chin_t below the eyes
+    front_low = [v.co.z for v in vs if abs(v.co.x) < 0.15 * u and v.co.y < yc]
+    z_now = min(front_low)
+    z_tgt = ze - chin_t * u
+    k = (ze - z_tgt) / max(1e-9, ze - z_now)
+    for v in vs:
+        if v.co.z < ze:
+            v.co.z = ze - (ze - v.co.z) * k
+    # slice statistics after the vertical fit
+    nb = 64
+    bins = [[] for _ in range(nb + 1)]
+    for v in vs:
+        if z_tgt - 1e-6 <= v.co.z <= ze:
+            bins[int(round((ze - v.co.z) / max(1e-9, ze - z_tgt) * nb))].append(v)
+    eye_band = [v for v in vs if abs(v.co.z - ze) < 0.04 * u]  # the head at the eye line (reference for both fits)
+    w0 = max((abs(v.co.x) for v in eye_band), default=None)
+    f0 = min((v.co.y for v in eye_band), default=None)
+    rel = (w0 / (float(ol["front_eye_width"]) * u)) if (w0 and ol.get("front_eye_width")) else 1.0  # keep the
+    # cranium's width: the outline's widths relative to the reference face width at the eye line
+    front = ([[0.0, w0 / u]] + [[r[0], r[1] * rel] for r in ol.get("front", []) if r[0] > 0]) if w0 else ol.get("front", [])
+    side = [[0.0, 0.0]] + [r for r in ol.get("side", []) if r[0] > 0]
+    # the side profile is used below mid-face only, relative to it (the chin's set-back from the cheeks and mouth):
+    # above, the reference silhouette is the cheek volume and the eye, which the face options make
+    t_m = 0.5 * chin_t
+    i_m = int(round(t_m / chin_t * nb))
+    ds = [None] * len(bins)
+    for i, b in enumerate(bins):
+        if not b:
+            continue
+        t = i / nb * chin_t
+        # 2. front outline: the slice keeps its own shape, scaled to the outline's half width
+        if front:
+            wcur = max(abs(v.co.x) for v in b)
+            s = max(0.35, min(1.6, _interp(front, t) * u / max(1e-6, wcur)))
+            for v in b:
+                v.co.x *= s
+    base_i = next((j for j in range(i_m, len(bins)) if bins[j]), None)
+    if ol.get("side") and base_i is not None:
+        base_y = min(v.co.y for v in bins[base_i])
+        off_m = _interp(side, t_m)
+        for i, b in enumerate(bins):
+            if not b or i < base_i:
+                continue
+            t = i / nb * chin_t
+            q = max(0.0, min(1.0, (t - t_m) / (float(ol.get("side_blend", 0.15)) * chin_t)))
+            ds[i] = ((base_y - (_interp(side, t) - off_m) * u) - min(v.co.y for v in b)) * q * q * (3 - 2 * q)
+    # 3. side profile: offsets smoothed between slices (no ridges), applied with a broad lateral falloff; the back
+    # half of the head stays
+    if any(d is not None for d in ds):
+        idx = [i for i, d in enumerate(ds) if d is not None]
+        for i in idx:
+            near = [ds[j] for j in idx if abs(j - i) <= 3]
+            dsm = sum(near) / len(near)
+            b = bins[i]
+            fcur = min(v.co.y for v in b)
+            wcur = max(max(abs(v.co.x) for v in b), 1e-6)
+            for v in b:
+                w = max(0.0, min(1.0, (yc - v.co.y) / max(1e-6, yc - fcur))) * (1.0 - min(1.0, abs(v.co.x) / wcur) ** 4)
+                v.co.y += dsm * w
+    me.update()
+
+
 def build_body(C, M, P, H, J, frames):
     """Body skin (head, neck, torso, arms, legs, feet; one remeshed surface) and the two hands. Returns
     [(object, role)] with roles 'skin' and 'hand'."""
@@ -157,7 +248,8 @@ def build_body(C, M, P, H, J, frames):
                               seg=int(hp.get("profile_segments", 64)), steps=int(hp.get("profile_steps", 56)))
         cz = hp["centre_z"] * H
     else:
-        head = G.uv_sphere("_head", (0, hp["forward"] * H, hp["centre_z"] * H), 1.0, C, 48, 24,
+        seg, rings = (96, 64) if hp.get("outline") else (48, 24)  # body_generic/2: a denser head for the outline fit
+        head = G.uv_sphere("_head", (0, hp["forward"] * H, hp["centre_z"] * H), 1.0, C, seg, rings,
                            (hp["half_width"] * H, hp["half_depth"] * H, hp["half_height"] * H))
         cz, hh = hp["centre_z"] * H, hp["half_height"] * H
         lhh = hp.get("lower_half_height", hp["half_height"]) * H  # optional head-shape options (defaults: unchanged)
@@ -173,10 +265,14 @@ def build_body(C, M, P, H, J, frames):
             k = 1 - hp["chin_taper"] * t * t
             v.co.x *= k
             v.co.y = fy0 + (v.co.y - fy0) * k
+    if hp.get("outline"):  # body_generic/2 head: lower face fitted to the reference outlines (absent = unchanged)
+        fit_head_outline(head, hp["outline"], H)
     nr = P["neck"]["radius"] * H
     ntr = P["neck"].get("top_radius", P["neck"]["radius"]) * H
+    tip = ntr * 0.5 if hp.get("outline") else ntr  # body_generic/2: the neck narrows inside the fitted head, so it
+    # does not show through the receded jaw and chin
     neck = G.tube("_neck", [Vector((0, 0, P["neck"]["base_z"] * H)), Vector((0, 0, P["neck"]["top_z"] * H)),
-                            Vector((0, hp["forward"] * H * 0.5, cz))], [nr, ntr, ntr], [nr, ntr, ntr], C,
+                            Vector((0, hp["forward"] * H * 0.5, cz))], [nr, ntr, tip], [nr, ntr, tip], C,
                   up_hint=(0, -1, 0))
     rings = [G.superellipse_ring(0, 0, z * H, w * H, f * H, b * H, 2.4, 48) for z, w, f, b in P["torso"]["levels"]]
     torso = G.loft("_torso", rings, C)

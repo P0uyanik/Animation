@@ -1,0 +1,50 @@
+{
+ "boy": {
+  "before": {
+   "chin_depth_err": 0.005,
+   "front_mean_abs_err": 0.093,
+   "side_mean_abs_err": 0.075,
+   "cheek_width_err": 0.077,
+   "jaw_width_err": 0.104
+  },
+  "after": {
+   "chin_depth_err": 0.0,
+   "front_mean_abs_err": 0.031,
+   "side_mean_abs_err": 0.068,
+   "cheek_width_err": 0.011,
+   "jaw_width_err": 0.013
+  }
+ },
+ "girl": {
+  "before": {
+   "chin_depth_err": -0.035,
+   "front_mean_abs_err": 0.143,
+   "side_mean_abs_err": 0.415,
+   "cheek_width_err": 0.048,
+   "jaw_width_err": 0.212
+  },
+  "after": {
+   "chin_depth_err": 0.03,
+   "front_mean_abs_err": 0.087,
+   "side_mean_abs_err": 0.279,
+   "cheek_width_err": 0.017,
+   "jaw_width_err": 0.01
+  }
+ },
+ "third": {
+  "before": {
+   "chin_depth_err": -0.24,
+   "front_mean_abs_err": 0.089,
+   "side_mean_abs_err": 0.39,
+   "cheek_width_err": -0.084,
+   "jaw_width_err": null
+  },
+  "after": {
+   "chin_depth_err": -0.005,
+   "front_mean_abs_err": 0.01,
+   "side_mean_abs_err": 0.257,
+   "cheek_width_err": -0.02,
+   "jaw_width_err": 0.005
+  }
+ }
+}

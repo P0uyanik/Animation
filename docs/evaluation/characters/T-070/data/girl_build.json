@@ -1,0 +1,136 @@
+{
+ "character": "girl_auburn_bun_glasses",
+ "generator": "groom/2",
+ "candidate": "docs/evaluation/characters/T-070/candidates/girl.hair_v3.json",
+ "hair_build_s": 1.32,
+ "total_s": 6.68,
+ "hair_vertices": 161763,
+ "hair_faces": 162556,
+ "fibre_points": 3712902,
+ "chain_bones": 103,
+ "peak_rss_mb": 1372.0,
+ "report": {
+  "generator": "groom/2",
+  "structures": {
+   "cap": {
+    "type": "scalp_cap",
+    "faces": 14706
+   },
+   "bun": {
+    "buns": 1,
+    "finish": "felt",
+    "type": "bun"
+   },
+   "crown": {
+    "shape": "gather",
+    "grid": [
+     220,
+     48
+    ],
+    "type": "felt_volume"
+   },
+   "fringe": {
+    "shape": "fringe",
+    "grid": [
+     72,
+     40
+    ],
+    "type": "felt_volume"
+   },
+   "fringe_part": {
+    "shape": "fringe",
+    "grid": [
+     56,
+     40
+    ],
+    "type": "felt_volume"
+   },
+   "temple_l": {
+    "shape": "mass",
+    "grid": [
+     56,
+     32
+    ],
+    "type": "felt_volume"
+   },
+   "temple_r": {
+    "shape": "mass",
+    "grid": [
+     56,
+     32
+    ],
+    "type": "felt_volume"
+   },
+   "curtain": {
+    "shape": "curtain",
+    "grid": [
+     180,
+     100
+    ],
+    "columns": 13,
+    "type": "curtain"
+   },
+   "ringlets_side": {
+    "locks": 6,
+    "style": "curly",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "ringlets_back": {
+    "locks": 10,
+    "style": "curly",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "ringlets_outer": {
+    "locks": 6,
+    "style": "curly",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "band": {
+    "radius_m": 0.0967,
+    "type": "tie"
+   },
+   "flowers": {
+    "flowers": 3,
+    "type": "flowers"
+   }
+  },
+  "objects": [
+   "hair_cap",
+   "hair_bun",
+   "hair_crown",
+   "hair_fringe",
+   "hair_fringe_part",
+   "hair_temple_l",
+   "hair_temple_r",
+   "hair_curtain",
+   "hair_ringlets_side",
+   "hair_ringlets_back",
+   "hair_ringlets_outer",
+   "hair_band",
+   "hair_flowers_petals",
+   "hair_flowers_centres"
+  ],
+  "vertices": 161763,
+  "keepout": {
+   "az": 34.0,
+   "el_min": 5.0,
+   "violations": 0,
+   "by_object": {}
+  },
+  "fibres": {
+   "objects": 33,
+   "layers": [
+    "felt",
+    "halo",
+    "flyaways"
+   ]
+  },
+  "dynamics": {
+   "chains": 23
+  }
+ },
+ "blend_mb": 19.44
+}

@@ -113,8 +113,10 @@ _r = REGISTRY.register
 # ---- built-in versions (released versions are immutable; append new numbers, never edit an existing line) ----
 _r("body", "body_v6", 1, "body_v6", declared=False, note="legacy v6 builder (frozen file)")
 _r("body", "body_generic", 1, "body_generic")
+_r("body", "body_generic", 2, "body_generic")  # T-065 head fitted to reference outlines; opt-in, no character pins it yet
 _r("face", "body_v6", 1, "body_v6", declared=False, note="legacy v6 face with face.py expression keys")
 _r("face", "face_generic", 1, "face_generic")
+_r("face", "face_generic", 2, "face_generic")  # T-065 face v2 (lids in skin, brows, soft_smile/parted); opt-in
 _r("groom", "hair_clumps", 1, "hair", declared=False, note="legacy clump hair (hair.py)")
 _r("groom", "hair_clumps", 2, "hair", declared=False, note="legacy lock-family hair (hair.py; experiments)")
 _r("groom", "groom", 1, "groom")

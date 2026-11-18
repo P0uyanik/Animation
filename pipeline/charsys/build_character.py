@@ -422,7 +422,7 @@ def main():
     os.makedirs(out, exist_ok=True)
     spec, info = S.load(a.spec, a.override)  # validates every generator pin (unknown / retired versions fail here)
     body = info["versions"]["generators"]["body"]
-    paths = {"body_generic/1": main_generic, "body_v6/1": main_legacy}  # one code path per released body version
+    paths = {"body_generic/1": main_generic, "body_generic/2": main_generic, "body_v6/1": main_legacy}  # one code path per released body version
     if body not in paths:
         raise V.VersionError(f"no build path for body version {body!r} (paths: {', '.join(sorted(paths))})")
     return paths[body](a, spec, info, out)

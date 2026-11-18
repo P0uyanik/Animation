@@ -52,3 +52,8 @@ the benchmark scene), **T-073** PC render benchmark (Codex idea, not assigned).
 ## 4. Owner approvals still open
 Face v2 (after criterion-0 sheets) · T-070 renders · lifting the "no new tasks" hold · T-076 recommendations ·
 optional: GitHub rulesets import, close-up reference sheets for the girl and third character, PC backup.
+
+## 5. Follow-ups noted 2026-11-18 (not started; owner decides when)
+- **Face follow-up:** third character 3/4 eye-socket rim (lid shells must end at the corners, T-065 report) and the girl's sharp cheek folds below the eye rims (T-066 fix report, `docs/evaluation/characters/T-066/fix/README.md`).
+- **Old failing tests (T-077):** deform_test MASK crash, spring-chain joint gaps (engine vs shot_render), AC5 cup out of reach + emotion layers vs T-061 principles; decisions listed in `docs/evaluation/process/T-077/README.md`.
+- **Pin bumps:** register `presets/2`, `garment`/`accessories` versions and the boy skin legacy hook when the girl look round (T-059) and Boy 2.0 round 2 pin the new systems.

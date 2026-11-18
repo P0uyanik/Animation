@@ -290,7 +290,7 @@ def main():
             sheen_rgb = source_rgb[sy0:sy1, sx0:sx1]
         raw = measure(source_rgb[y0:y1, x0:x1], swatch["base_color_srgb"], projected_reference_px,
                       neutral_rgb, sheen_rgb)
-        targets = library["presets"][swatch["preset"]]["targets"]
+        targets = MATERIALS.library_for(swatch["preset"], library)["presets"][swatch["preset"]]["targets"]
         checks = {name: target_check(raw[name], targets[name]) for name in
                   ("fuzz_rms_y255", "sheen_p90_p50", "saturation_retention_percent")}
 

@@ -226,15 +226,17 @@ def main():
     neutral_material = G.material("M_swatch_neutral", (128, 128, 128), roughness=1.0, specular=0.0)
     library = MATERIALS.load_library()
     selected = [item.strip() for item in args.presets.split(",") if item.strip()] or list(library["presets"])
-    unknown = [name for name in selected if name not in library["presets"]]
+    # presets/1 ids by default; ids of the presets/2 skin family (T-066, skin_presets.json) only when named
+    unknown = [name for name in selected if name not in library["presets"] and not MATERIALS.is_skin_preset(name)]
     if unknown:
         raise SystemExit(f"unknown presets: {unknown}")
     entries = []
     for index, name in enumerate(selected):
         x = 0.0
-        preset = library["presets"][name]
+        preset_library = MATERIALS.library_for(name, library)
+        preset = preset_library["presets"][name]
         material = MATERIALS.build_material("M_swatch_" + name, name, preset["swatch_srgb"],
-                                            library["reference_size_m"])
+                                            preset_library["reference_size_m"])
         bpy.ops.mesh.primitive_uv_sphere_add(segments=64, ring_count=32, radius=0.125,
                                              location=(x, 0.0, 0.18))
         sphere = bpy.context.object
@@ -250,7 +252,7 @@ def main():
         bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
         G.assign(neutral, neutral_material)
         generated_fibres = [MATERIALS.add_fibres_geometry(surface, name, preset["swatch_srgb"],
-                                                            library["reference_size_m"], lod=args.fibres_lod)
+                                                            preset_library["reference_size_m"], lod=args.fibres_lod)
                             for surface in (sphere, fabric_fibre_source)]
         objects = [sphere, fabric, caption, neutral] + [item for item in generated_fibres if item is not None]
         for obj in objects:

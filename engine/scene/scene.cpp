@@ -264,6 +264,11 @@ Result<Scene> loadScene(const std::filesystem::path& path) {
     cd.dynamics = cj.value("dynamics", Json());
     cd.faceMotion = cj.value("faceMotion", Json());
     cd.bodyMechanics = cj.value("bodyMechanics", Json());
+    cd.personality = cj.value("personality", Json());
+    if (!cd.personality.is_null() && !cd.personality.is_string() && !cd.personality.is_boolean())
+      return fail(std::format("character '{}': personality must be a profile id or false", cd.name));
+    if (cd.personality.is_boolean() && cd.personality.get<bool>())
+      return fail(std::format("character '{}': personality true names no profile (use its id)", cd.name));
     s.characters.push_back(cd);
   }
   std::map<std::string, size_t> propsByName;
@@ -452,6 +457,7 @@ Json sceneToJson(const Scene& s) {
     if (!c.dynamics.is_null()) cj["dynamics"] = c.dynamics;
     if (!c.faceMotion.is_null()) cj["faceMotion"] = c.faceMotion;
     if (!c.bodyMechanics.is_null()) cj["bodyMechanics"] = c.bodyMechanics;
+    if (!c.personality.is_null()) cj["personality"] = c.personality;
     chars.push_back(cj);
   }
   Json anim = Json::object();
@@ -757,7 +763,9 @@ std::vector<mat4> SceneEvaluator::kinematicGlobals(size_t c, double frame, Pose*
   const FaceState fs = face ? faces_[c].evaluate(frame) : FaceState{};
   // Expression-driven bones (e.g. a jaw opening with the mouth): weight x rotation, from the package metadata.
   for (const auto& [morph, bones] : ci.asset.expressionBones) {
-    const float w = face ? morphControlWeight(c, morph, frame) : expressionWeight(c, morph, frame);
+    float w = face ? morphControlWeight(c, morph, frame) : expressionWeight(c, morph, frame);
+    if (!face)
+      if (const float po = personalityFaceOffset(c, morph, frame); po != 0.0f) w = std::clamp(w + po, 0.0f, 1.0f);
     if (w == 0.0f) continue;
     for (const auto& b : bones) {
       const int bi = ci.asset.skeleton.find(b.bone);
@@ -987,7 +995,51 @@ LifeParams SceneEvaluator::lifeParams(size_t c) const {
   if (a.blinkClose > 0) life.blinkClose = a.blinkClose;
   if (a.blinkHold >= 0 && a.blinkClose > 0) life.blinkHold = a.blinkHold;
   if (a.blinkOpen > 0) life.blinkOpen = a.blinkOpen;
+  // Personality (T-053): blink rhythm and shape, idle amplitude, eyes-lead-head lag (frames at 24 fps). Explicit
+  // scene values win (blinkInterval: clamped into the profile's limits, see buildPersonalities).
+  if (const PersonalityProfile* P = personality(c)) {
+    if (P->blinkIntervalMean && !life.blinkIntervalSet) life.blinkInterval = *P->blinkIntervalMean / 24.0f;
+    if (life.blinkIntervalSet && P->limits.blinkIntervalFrames && life.blinkInterval > 0)
+      life.blinkInterval = P->limits.blinkIntervalFrames->clamp(life.blinkInterval * 24.0f) / 24.0f;
+    if (P->blinkDurationFrames) {
+      // Whole blink = close + shut + open; the lids stay shut for the measured closed frames (at most half the
+      // blink) and close faster than they open (40 : 60, VISUAL_TARGET facial micro-timing).
+      const float total = P->blinkDurationFrames->mid() / 24.0f;
+      const float shut = std::min(P->blinkClosedFrames ? P->blinkClosedFrames->mid() / 24.0f : 0.25f * total, 0.5f * total);
+      life.blinkHold = shut;
+      life.blinkClose = 0.4f * (total - shut);
+      life.blinkOpen = 0.6f * (total - shut);
+    }
+    if (P->idleMotionAmplitudeH) {  // idle amplitude relative to the shared neutral (content/personality/shared.json)
+      const float k = std::clamp(*P->idleMotionAmplitudeH / std::max(1e-6f, persona_[c].neutralIdleH), 0.25f, 2.0f);
+      life.sway *= k;
+      life.headDrift *= k;
+      life.breathing *= std::sqrt(k);  // breathing stays visible on a still character
+    }
+    if (P->eyesLeadHeadFrames && life.headLagSec == LifeParams{}.headLagSec) life.headLagSec = P->eyesLeadHeadFrames->mid() / 24.0f;
+  }
   return life;
+}
+
+// ------------------------------------------------------------------ personality face (T-053)
+float SceneEvaluator::expressionActivity(size_t c, double frame) const {
+  if (c >= persona_.size()) return 0.0f;
+  float a = 0;
+  for (const auto& m : persona_[c].activityMorphs) a = std::max(a, expressionWeight(c, m, frame));
+  return std::clamp(a, 0.0f, 1.0f);
+}
+
+float SceneEvaluator::personalityFaceOffset(size_t c, const std::string& morph, double frame) const {
+  if (c >= persona_.size() || !persona_[c].profile || persona_[c].face.empty()) return 0.0f;
+  const PersonaSetup& ps = persona_[c];
+  float watch = 0;
+  for (auto [s, e] : ps.watchSpans) {
+    const double ramp = 6.0;  // frames, as an expression action's default ramp
+    const double w = frame < s ? (frame - (s - ramp)) / ramp : frame > e ? (e + ramp - frame) / ramp : 1.0;
+    watch = std::max(watch, float(std::clamp(w, 0.0, 1.0)));
+  }
+  const float act = ps.face.bias.count(morph) ? expressionActivity(c, frame) : 0.0f;
+  return plush::personalityFaceOffset(ps.face, morph, act, watch);
 }
 
 Camera SceneEvaluator::cameraAt(double frame) const {
@@ -1006,6 +1058,7 @@ Camera SceneEvaluator::cameraAt(double frame) const {
 
 float SceneEvaluator::morphControlWeight(size_t c, const std::string& morph, double frame) const {
   float w = expressionWeight(c, morph, frame);
+  if (const float po = personalityFaceOffset(c, morph, frame); po != 0.0f) w = std::clamp(w + po, 0.0f, 1.0f);
   const LifeParams life = lifeParams(c);
   if (faceActive(c)) {  // the facial layer: control offsets and its own blinks
     const FaceState fs = faces_[c].evaluate(frame);
@@ -1072,6 +1125,7 @@ std::shared_ptr<FrameSnapshot> SceneEvaluator::evaluate(double frame) const {
                                                      life.blinkClose, life.blinkHold, life.blinkOpen);
     for (auto& mt : ci.rig.morphs) {
       float w = expressionWeight(c, mt.name, frame);
+      if (const float po = personalityFaceOffset(c, mt.name, frame); po != 0.0f) w = std::clamp(w + po, 0.0f, 1.0f);
       if (auto it = fs.controls.find(mt.name); it != fs.controls.end()) w = std::clamp(w + it->second, 0.0f, 1.0f);
       if (mt.name == blink) w = std::max(w, blinkW);  // automatic blinks drive the character's blink morph
       else if (face && !blink.empty() && faces_[c].clearsWithBlink(mt.name))  // eye-opening controls fade while the lids close
@@ -1186,7 +1240,91 @@ std::shared_ptr<FrameSnapshot> SceneEvaluator::evaluate(double frame) const {
 }
 
 // ------------------------------------------------------------------ body mechanics (T-045, anim/body_mechanics.h)
+// ------------------------------------------------------------------ personality (T-053, anim/personality.h)
+void SceneEvaluator::buildPersonalities() {
+  persona_.assign(characters_.size(), PersonaSetup{});
+  bool any = false;
+  for (const auto& cd : scene_.characters) any |= cd.personality.is_string();
+  if (!any) return;  // no profile: nothing changes (behaviour before T-053)
+  // Shared data: action-unit aliases and the neutral idle amplitude (content/personality/shared.json).
+  PersonalityActionUnits units = defaultPersonalityActionUnits();
+  float neutralIdleH = 0.004f;
+  if (auto f = findPersonalityFile(scene_.path, "shared"); !f.empty()) {
+    auto j = parseJsonFile(f);
+    auto u = j ? personalityActionUnitsFromJson(*j) : Result<PersonalityActionUnits>(std::unexpected(j.error()));
+    if (u) {
+      units = std::move(*u);
+      neutralIdleH = readFloat(*j, "neutral_idle_motion_amplitude_H", neutralIdleH);
+    } else warnings_.push_back(std::format("{}: {} (built-in personality defaults used)", f.string(), u.error().message));
+  }
+  for (size_t c = 0; c < characters_.size(); ++c) {
+    const CharacterDesc& cd = scene_.characters[c];
+    if (!cd.personality.is_string()) continue;
+    const std::string id = cd.personality.get<std::string>();
+    const auto file = findPersonalityFile(scene_.path, id);
+    auto prof = file.empty() ? Result<PersonalityProfile>(fail("not found in content/personality")) : loadPersonality(file);
+    if (!prof) {
+      warnings_.push_back(std::format("character '{}': personality '{}': {} (no personality used)", cd.name, id, prof.error().message));
+      continue;
+    }
+    for (auto& w : clampPersonalityToLimits(*prof)) warnings_.push_back(std::format("character '{}': {}", cd.name, w));
+    PersonaSetup& ps = persona_[c];
+    ps.neutralIdleH = neutralIdleH;
+    // Explicit scene values outside the profile's limits are clamped (lifeParams); say so once.
+    if (cd.life.blinkIntervalSet && prof->limits.blinkIntervalFrames && cd.life.blinkInterval > 0 &&
+        !prof->limits.blinkIntervalFrames->contains(cd.life.blinkInterval * 24.0f))
+      warnings_.push_back(std::format("character '{}': blinkInterval {:g} s outside personality '{}' limits [{:g}, {:g}] frames (clamped)",
+                                      cd.name, cd.life.blinkInterval, id, prof->limits.blinkIntervalFrames->lo,
+                                      prof->limits.blinkIntervalFrames->hi));
+    // Face: action units -> this character's controls.
+    const CharacterInstance& ci = characters_[c];
+    std::vector<std::string> morphNames;
+    for (auto& mt : ci.rig.morphs) morphNames.push_back(mt.name);
+    auto resolve = [&](const std::string& name) { return resolveExpression(ci.asset, name, morphNames); };
+    ps.face.rest = resolvePersonalityOffsets(prof->faceRestOffset, units.aliases, resolve);
+    ps.face.bias = resolvePersonalityOffsets(prof->faceExpressionBias, units.aliases, resolve);
+    ps.face.watching = resolvePersonalityOffsets(prof->faceWatching, units.aliases, resolve);
+    const std::string blink = blinkMorph(ci);
+    for (const auto& m : morphNames)
+      if (m != blink && std::find(ps.activityMorphs.begin(), ps.activityMorphs.end(), m) == ps.activityMorphs.end())
+        ps.activityMorphs.push_back(m);
+    // Look actions: spans while the character watches (until the action's end, its next look or the shot's end).
+    std::vector<std::pair<double, double>> looks;
+    if (scene_.actions.is_array())
+      for (const auto& a : scene_.actions)
+        if (a.is_object() && a.value("type", std::string()) == "look" && a.value("character", std::string()) == cd.name &&
+            a.contains("start") && a["start"].is_number())
+          looks.push_back({a["start"].get<double>(), a.contains("end") && a["end"].is_number() ? a["end"].get<double>() : -1.0});
+    std::sort(looks.begin(), looks.end());
+    for (size_t i = 0; i < looks.size(); ++i) {
+      double e = looks[i].second;
+      if (e < 0) e = i + 1 < looks.size() ? looks[i + 1].first : double(scene_.frameEnd);
+      ps.watchSpans.push_back({looks[i].first, e});
+    }
+    // Reaches (planned by the actions): their entry time against the profile's limits, reported (not changed).
+    if (prof->limits.reachFrames && scene_.actions.is_array()) {
+      const double per24 = 24.0 / std::max(1.0, scene_.rate.fps());
+      for (const auto& a : scene_.actions) {
+        if (!a.is_object() || a.value("character", std::string()) != cd.name) continue;
+        const std::string type = a.value("type", std::string());
+        if ((type != "reach" && type != "touch") || !a.contains("start") || !a.contains("contact") || !a["start"].is_number() ||
+            !a["contact"].is_number())
+          continue;
+        const double frames = (a["contact"].get<double>() - a["start"].get<double>()) * per24;
+        if (!prof->limits.reachFrames->contains(float(frames), 0.5f))
+          warnings_.push_back(std::format("character '{}': {} at {:g} takes {:g} frames@24 to contact, outside personality '{}' "
+                                          "reach limits [{:g}, {:g}]", cd.name, type, a["start"].get<double>(), frames, id,
+                                          prof->limits.reachFrames->lo, prof->limits.reachFrames->hi));
+      }
+    }
+    ps.tempo = prof->actionSpeed.value_or(1.0f);
+    ps.speedLimit = prof->limits.actionSpeed;
+    ps.profile = std::move(*prof);
+  }
+}
+
 void SceneEvaluator::buildBodyMechanics() {
+  buildPersonalities();  // T-053: profiles first (body mechanics, life and face layers read them)
   body_.assign(characters_.size(), BodyMechanicsSetup{});
   {
     std::lock_guard<std::mutex> lock(*bodyMutex_);
@@ -1224,17 +1362,18 @@ void SceneEvaluator::buildBodyMechanics() {
     b.params.enabled = true;
     b.params.seed = cd.life.seed * 0x2545F491u + 7u;
     applyBodyMechanicsLimits(b.params, profile.limits);
-    if (j.is_object()) {
-      if (auto id = readString(j, "personality"); !id.empty()) {
-        auto f = findLibrary("personality", id + ".json");
-        if (f.empty()) f = findLibrary("personality", id + ".draft.json");
-        auto pj = f.empty() ? Result<Json>(fail("not found")) : parseJsonFile(f);
-        if (pj) applyPersonalityToBodyMechanics(b.params, *pj);
-        else warnings_.push_back(std::format("character '{}': body mechanics personality '{}': {} (neutral tuning used)", cd.name, id,
-                                             pj.error().message));
-      }
-      applyBodyMechanicsOverrides(b.params, j);
+    // Personality: the body mechanics' own "personality" (profile id) wins; else the character's profile (T-053).
+    const std::string ownId = j.is_object() ? readString(j, "personality") : std::string();
+    if (!ownId.empty()) {
+      const auto f = findPersonalityFile(scene_.path, ownId);
+      auto pr = f.empty() ? Result<PersonalityProfile>(fail("not found")) : loadPersonality(f);
+      if (pr) applyPersonalityToBodyMechanics(b.params, *pr);
+      else warnings_.push_back(std::format("character '{}': body mechanics personality '{}': {} (neutral tuning used)", cd.name,
+                                           ownId, pr.error().message));
+    } else if (const PersonalityProfile* P = personality(c)) {
+      applyPersonalityToBodyMechanics(b.params, *P);
     }
+    if (j.is_object()) applyBodyMechanicsOverrides(b.params, j);
     b.rig = bindBodyMechanics(characters_[c].asset.skeleton, profile);
     b.fast = followKernel(0.0f, float(std::max(2.0, 0.5 * b.params.settleFrames * perFrame24)), b.params.overshoot);
     b.slow = followKernel(float(b.params.lagFrames * perFrame24), float(b.params.settleFrames * perFrame24), b.params.overshoot);
