@@ -297,3 +297,9 @@ recommendations only; no major implementation before the owner decides. Round 2 
   cuffs, sneakers (cream soles, white stripes; B09 only for laces/stitching/toe cap), plain felt drawstrings with dark
   tips. Deliverable: updated T-087 strict sheets with the AI-target column and the reach before/after sheet, also on
   top of T-092 presets/3.
+
+## 2026-11-18 (~19:40Z): roles (relayed by the previous Supervisor session)
+Owner: "Let's keep one main Supervisor responsible for architecture, task planning, and coordination, with Codex as an
+independent reviewer. We can use short-lived specialist architects only when deeper technical analysis is genuinely
+needed, to avoid unnecessary token costs and coordination overhead." Recorded as `docs/process/DELIVERY_PLAN.md` §0
+(roles, specialist architects, track labels in `TASK_LOG.md`). No change to current priorities or running tasks.

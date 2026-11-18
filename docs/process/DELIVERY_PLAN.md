@@ -7,6 +7,18 @@ Goal: every finished, verified task reaches `main` quickly, without a pile-up of
 
 ---
 
+## 0. Roles (owner decision 2026-11-18 ~19:40Z)
+- **One main Supervisor:** architecture, priorities, task planning, claims, merges and owner contact. A fresh session
+  per round, started from `docs/process/SUPERVISOR_HANDOVER.md`.
+- **Codex (owner's PC):** independent reviewer at the end of each phase (strict-sheet and frame review against the
+  references, like T-083 and T-084), plus tasks the owner assigns (always at the top of `NEXT_TASK.md`).
+- **Short-lived specialist architects,** only when deep technical analysis is genuinely needed (for example later:
+  an interaction foundation with object affordances and a verb library, the continuous emotion space, the
+  per-character reaction model). One session writes a design doc and the task files, then is archived. No permanent
+  area Supervisors.
+- **Tracks:** every task in `TASK_LOG.md` carries a track label (Visual, Interaction or Personality; Infra for workflow and CI tasks) so the owner sees
+  progress per area.
+
 ## 1. Principles
 
 1. **No waiting merge requests.** A task is either *in progress*, *ready* (waiting at most one Supervisor cycle), or *merged*. Nothing sits "open" for days.
