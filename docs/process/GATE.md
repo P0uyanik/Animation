@@ -45,7 +45,8 @@ when that version is published, otherwise a build from spec + overrides) and rec
   rewritten.
 
 The Blender tier is never skipped silently: on the fast tier it says so; on the full tier a missing Blender is a
-FAIL; on Windows CI it states that it runs on the linux job.
+FAIL; on Windows CI it states that it runs on the linux job; on a task branch without `[full]` it states that it
+runs on the `integration/*` gate (§5).
 
 ## 2. Tiers (`tools/regression_paths.txt`, guarded)
 
@@ -108,15 +109,63 @@ that statistics summary is compared, for information.
 | `promote [--dry-run]` | backup request for `main` (branch `archive/backup-<UTC>-main`), then fast-forward `main` to `staging` |
 | `backup <branch>…` | backup request branches `archive/backup-<UTC>-<branch>` |
 
-## 5. CI (`.github/workflows/checks.yml`)
+## 5. CI (`.github/workflows/checks.yml`, `windows.yml`, `ci-status.yml`; run rules T-086)
 
 Push to `t-*`, `integration/*`, `staging`, `main`. Jobs: **plan** (comparison base and trial-merge target: task
-branches use `origin/staging`, `staging`/`integration/*` use `origin/main`; tier), **linux gate** (apt libraries,
-pinned OIDN prebuilt, pinned bpy, ccache; gate on the trial merge), **regression \<character\>** (full tier only, one
-job per character, in parallel; also uploads baseline candidates), **windows gate** (on `staging`/`main` pushes or
-`[ci windows]` in the head commit message; vcpkg with a binary cache; C++ and Python tiers), **Gate verdict**
-(combines all reports into ≤ 10 lines, fails on any FAIL, a missing report or a failed required job). Required check
-for the rulesets: **Gate verdict**.
+branches use `origin/staging`, `staging`/`integration/*` use `origin/main`; tier; "already verified" lookup),
+**linux gate** (apt libraries, pinned OIDN prebuilt, pinned bpy, ccache; gate on the trial merge), **linux renderer**
+(the one renderer-ON build, T-085), **regression \<character\>** (full tier only, one job per character, in
+parallel; also uploads baseline candidates), **Gate verdict** (combines all reports into ≤ 10 lines, fails on any
+FAIL, a missing report or a failed required job). Required check for the rulesets: **Gate verdict**.
+
+Tiers per branch:
+
+| Branch | Tier |
+| --- | --- |
+| `t-*` (task) | **fast**, whatever the paths. If the paths would need the full tier, the "Blender tier" line says so and that it runs on the `integration/*` gate (never silent). `[full]` in the head commit message runs the full tier on the task branch. |
+| `integration/*` | decided by the paths (§2: one full path makes it full); `[full]` raises it. This is the one full gate run of a promotion. |
+| `staging`, `main` | the same commit already passed → no second run (§5.1); otherwise the paths decide, as on `integration/*`. |
+
+### 5.1 One full gate run per promotion
+
+A promotion is: `integration/<x>` passes the gate, then `staging` and `main` are fast-forwarded to **that same
+commit** (pushed together). The rule:
+
+- On a **push** to `staging` or `main`, the plan job runs `tools/ci_status.py verified` for the pushed SHA. If a
+  Quality gate run **for exactly this commit** succeeded on `integration/*` (for `main` also on `staging`) with
+  every required job green (plan, linux gate, linux renderer, Gate verdict, and — when the promoted range
+  `<previous tip>..SHA` contains a full path — every `regression <character>` job), all gate jobs are skipped and
+  **Gate verdict** passes with `PASS Already verified: Quality gate run <id> on <branch> …` (a link to that run).
+  The required check on the commit is therefore green from the run that actually tested it.
+- `main` waits (up to 150 min, polling once a minute on one small runner) for a run of the same commit that is still
+  in progress on `staging`/`integration/*`; `staging` waits only for `integration/*`, so they never wait for each
+  other. If the newest finished run for the commit **failed**, the verdict fails with that run's link (no rerun).
+- No run for this commit (e.g. a direct push) → the full gate runs on that branch exactly as before. A
+  `workflow_dispatch` run always runs the full gate.
+- The backup workflow (`backup.yml`, §6) is unchanged and still runs on every push to `main` and `staging`.
+
+### 5.2 Windows (`.github/workflows/windows.yml`)
+
+Not part of any push run. **Nightly** on `main` (03:43 UTC) and **`workflow_dispatch`** on any branch (same base and
+trial-merge rules, `.github/scripts/select_base.sh`): `tools/check_all.py` C++ and Python tiers with vcpkg (the
+Blender tier and the regression are reported as running on linux). **Binding on its own result**: a failing gate
+fails the workflow, which then shows red in the CI status (§5.3) until a run passes. vcpkg binary cache key:
+`vcpkg-x64-windows-<MSVC version>-<vcpkg ports commit>-<hash(vcpkg.json, vcpkg-configuration.json)>` (no branch or
+commit), saved only from `main`, so every branch restores the same packages (GitHub caches from the default branch
+are visible to all branches).
+
+### 5.3 Monitoring: latest result of every workflow on `main`
+
+```
+python tools/ci_status.py status [--branch main]     # needs GH_TOKEN/GITHUB_TOKEN or the gh CLI
+```
+
+One line per workflow in the repository: `PASS|FAIL|WARN <workflow>: decisive <newest completed result that was
+not cancelled/skipped>; newest <newest run>`. Workflows that never ran on `main` (e.g. `relay-notify`, which lives
+on `relay-channel`) are listed with the branch they last ran on; a workflow whose last 30 runs were all cancelled is
+a WARN. Exit 1 on any FAIL. The **CI status (main)** workflow (`ci-status.yml`) runs it after every completed `main`
+run of the other workflows, daily at 06:41 UTC and on demand, writes the table to its job summary and is red while
+any workflow is red on `main`.
 
 ## 6. Backups (`.github/workflows/backup.yml`, plan §8.1 layers 1–2)
 
