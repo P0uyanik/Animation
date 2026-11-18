@@ -27,6 +27,8 @@ def ov(path):
 
 
 T081 = {
+    # skin-felt/2 belongs to the presets/2 skin family (T-066), registered in versions.py by T-080: pin it explicitly
+    "generators": {"materials": "presets/2"},
     "face": {
         "eyes": {"socket": {"wall_smooth_iterations": 10,
                             "note": "T-081: relaxes the socket wall (face_generic/2 opt-in): the sharp folds at the eye corners and below the eye rims (dark specks under skin-felt/2) go from max 92 deg to 40 deg"}},

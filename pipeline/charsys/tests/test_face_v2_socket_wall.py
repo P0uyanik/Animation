@@ -5,7 +5,8 @@
 Plain checks (no Blender):
   * 0.11.0 spec loads and pins face_generic/2, body_generic/2, groom/2; brown iris; the rest mouth is the closed
     gentle smile with lifted cheeks (soft_smile, MouthWide 0, CheekRaise > 0); it references personality 1.0.0;
-  * the approved current version stays 0.10.0 (fidelity_baseline.json does not name 0.11.0);
+  * 0.11.0 is the current version (owner decision 2026-11-18): fidelity baseline and approved pointer agree; it pins
+    presets/2 for its skin-felt/2 skin;
   * the new socket options default to the T-065 behaviour (no spec except 0.11.0 sets them).
 Build checks (a master built from the 0.11.0 spec; --girl011 reuses one):
   * the wall smoothing ran (report lid_socket.wall_smoothed_vertices > 0);
@@ -84,9 +85,17 @@ def plain():
     check("references personality profile 1.0.0", p.get("profile") == "girl_auburn_bun_glasses" and p.get("profile_version") == "1.0.0"
           and os.path.exists(os.path.join(ROOT, p.get("path", "-"))))
     check("socket wall smoothing opted in", s["face"]["eyes"]["socket"].get("wall_smooth_iterations", 0) > 0)
+    # 0.11.0 is the current version since the owner decision of 2026-11-18 (docs/process/OWNER_DECISIONS.md): the
+    # fidelity baseline builds it, the asset store's approved pointer names it, and 0.10.0 stays published
     base = json.load(open(os.path.join(ROOT, "docs", "evaluation", "characters", "fidelity_baseline.json")))
     cur = base["characters"]["girl_auburn_bun_glasses"]
-    check("0.11.0 is not the current version", "0.11.0" not in json.dumps(cur), cur["build"])
+    index = json.load(open(os.path.join(ROOT, "assets", "characters", "girl_auburn_bun_glasses", "versions", "index.json")))
+    check("current version: fidelity baseline and approved pointer both name 0.11.0",
+          cur["build"].endswith("girl_auburn_bun_glasses.0.11.0.spec.json") and not cur.get("overrides")
+          and index["pointers"]["approved"] == "0.11.0" and "0.10.0" in index["versions"],
+          f"{cur['build']} / approved {index['pointers']['approved']}")
+    check("0.11.0 pins the presets/2 skin family it uses", s["generators"].get("materials") == "presets/2"
+          and s["materials"]["assignments"]["skin"]["preset"] == "skin-felt/2")
     others = [f for f in glob.glob(os.path.join(ROOT, "assets", "characters", "*", "spec", "*.json")) if os.path.abspath(f) != SPEC_011]
     users = [os.path.basename(f) for f in others if any(k in open(f).read() for k in ("wall_smooth_iterations", "corner_blend_deg", "corner_close_deg"))]
     check("no other spec sets the new socket options", not users, ", ".join(users))

@@ -4,7 +4,7 @@
  "character_id": "girl_auburn_bun_glasses",
  "spec_path": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.11.0.spec.json",
  "overrides": [],
- "spec_sha256": "e5d13daf789f0a63e08b9b101916d7debbfb01ad51b38368ccb6515da126a679",
+ "spec_sha256": "4966133aa0eb1e00c06b107082223b7184d561dbe6f08e7c8790abf7b238dcf6",
  "versions": {
   "generators": {
    "body": "body_generic/2",
@@ -13,7 +13,7 @@
    "garment": "garment/1",
    "accessories": "accessories/1",
    "rig": "rigify_human/1",
-   "materials": "presets/1",
+   "materials": "presets/2",
    "exporter": "export/4"
   },
   "pinned_in_spec": [
@@ -49,7 +49,7 @@
       "max_move_m": 0.00909,
       "mean_move_m": 0.0003,
       "collider_faces": 25389,
-      "seconds": 11.76,
+      "seconds": 11.58,
       "part": "main",
       "fabric": "cotton",
       "frames": 30,
@@ -185,7 +185,7 @@
       "max_move_m": 0.08158,
       "mean_move_m": 0.02216,
       "collider_faces": 29777,
-      "seconds": 19.67,
+      "seconds": 21.15,
       "part": "main",
       "fabric": "felt",
       "frames": 30,
@@ -319,7 +319,7 @@
       "max_move_m": 0.02745,
       "mean_move_m": 0.00692,
       "collider_faces": 14695,
-      "seconds": 6.96,
+      "seconds": 8.33,
       "part": "main",
       "fabric": "felt",
       "frames": 30,
