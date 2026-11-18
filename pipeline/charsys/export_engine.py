@@ -44,9 +44,14 @@ FORMAT, VERSION = "plush.imported_character", 1
 #    the pinned version selects the code path. EXPORTER_VERSION stays "4" (the legacy default every unpinned spec
 #    resolves to and run_shot's cache key; a master pinning export/5 never had an export/4 package). Masters without
 #    an embedded spec (test data) export as EXPORTER_DEFAULT.
+# 6 (T-047): export/5 + the "collision" block (one collision body per character: torso sections and limb capsules,
+#    collision_block() below; engine/scene/collision.h). Opt-in by pinning export/6; export/4 and export/5 output is
+#    unchanged byte for byte. T-082 adds the block's "max_elbow_swing_deg" (export/6 is not registered yet, so no
+#    released package carries a block without it).
 EXPORTER_VERSION = "4"
 EXPORTER_DEFAULT = "5"
-GENERATOR_VERSIONS = (f"export/{EXPORTER_VERSION}", f"export/{EXPORTER_DEFAULT}")
+EXPORTER_COLLISION = "6"
+GENERATOR_VERSIONS = (f"export/{EXPORTER_VERSION}", f"export/{EXPORTER_DEFAULT}", f"export/{EXPORTER_COLLISION}")
 # export/5 grids (powers of two: exact in float32, so the rounding survives the float32 write). Chosen from the noise
 # measured over 7 builds of each character (docs/evaluation/characters/T-056): a value whose build-to-build noise
 # crosses a rounding midpoint still differs, so each grid is coarse enough to make that unlikely (expected <= 0.02
@@ -319,6 +324,197 @@ def eye_pivots(rig, root, skel_by_source, canonical=False):
     return rep
 
 
+# ---- export/6: the character's collision body (T-047) ----
+# The same fit as engine/scene/collision.cpp deriveCollisionBody (the engine derives it for packages without this
+# block; the block freezes it with the character version). Engine axes and names; points relative to the carrying
+# bone's rest head. Inputs: the exported skeleton (engine names, parents, heads) and per mesh the exported rest
+# positions (engine axes, float32 as written), joints and weights.
+COLLISION_MARGIN = 0.005
+# Largest elbow swing the engine's arm planner may use (T-082; engine/scene/collision.h kDefaultMaxElbowSwingDeg):
+# the shared default, written into the block so a character version freezes it (a spec-level value can replace it).
+COLLISION_MAX_ELBOW_SWING_DEG = 30.0
+LIMB_RADIUS_QUANTILE = 0.5
+
+
+def _quantile(v, q, fallback, min_count=20):
+    v = np.asarray(v, dtype=np.float32)
+    if len(v) < min_count:
+        return np.float32(fallback)
+    k = min(len(v) - 1, int(np.float32(q) * np.float32(len(v) - 1)))
+    return np.partition(v, k)[k]
+
+
+def collision_block(skel, mesh_arrays):
+    names = [b["name"] for b in skel]
+    idx = {n: i for i, n in enumerate(names)}
+    par = [idx[b["parent"]] if b["parent"] is not None else -1 for b in skel]
+    head = np.array([b["head"] for b in skel], dtype=np.float32)
+
+    def finger(n):
+        return len(n) >= 4 and ((n[0] == "f" and n[1].isdigit()) or n.startswith("thumb"))
+
+    def region(b):  # 0 other, 1 torso, 2 arm L, 3 arm R, 4 leg, 5 head
+        while b >= 0:
+            n = names[b]
+            if n.startswith(("upperArm.", "forearm.", "hand.")) or (finger(n) and "." in n):
+                return 2 if n.endswith("L") else 3
+            if n.startswith(("thigh.", "shin.", "foot.", "toe")):
+                return 4
+            if n in ("neck", "head") or n.startswith("eye."):
+                return 5
+            if n in ("hips", "spine", "chest"):
+                return 1
+            b = par[b]
+        return 0
+
+    def part(b):  # 0 none, 1 upper, 2 fore, 3 hand
+        while b >= 0:
+            n = names[b]
+            if n.startswith("hand.") or finger(n):
+                return 3
+            if n.startswith("forearm."):
+                return 2
+            if n.startswith("upperArm."):
+                return 1
+            b = par[b]
+        return 0
+    for r in ("hips", "chest", "hand.L", "hand.R"):
+        if r not in idx:
+            return None
+    hips, chest = idx["hips"], idx["chest"]
+    spine, neck = idx.get("spine", -1), idx.get("neck", -1)
+    hand = [idx["hand.L"], idx["hand.R"]]
+    fore = [par[h] for h in hand]
+    upper = [par[f] if f >= 0 else -1 for f in fore]
+    if min(upper) < 0:
+        return None
+    reg = np.array([region(b) for b in range(len(names))])
+    prt = np.array([part(b) for b in range(len(names))])
+    torso, fores, hands = [], [[], []], [[], []]
+    for P, J, W in mesh_arrays:
+        J = J.astype(np.int64)
+        valid = (J >= 0) & (J < len(names)) & (W > 0)
+        Jc = np.clip(J, 0, len(names) - 1)
+        w = np.zeros((len(P), 6), dtype=np.float32)
+        wp = np.zeros((len(P), 2, 4), dtype=np.float32)
+        for k in range(J.shape[1]):
+            wk = np.where(valid[:, k], W[:, k], 0).astype(np.float32)
+            r = reg[Jc[:, k]]
+            np.add.at(w, (np.arange(len(P)), r), wk)
+            for s, rr in ((0, 2), (1, 3)):
+                m = r == rr
+                np.add.at(wp, (np.arange(len(P))[m], s, prt[Jc[m, k]]), wk[m])
+        torso.append(P[w[:, 1] >= 0.9])
+        ok = (w[:, 5] + w[:, 4]) < 0.1
+        for s in range(2):
+            fores[s].append(P[ok & (wp[:, s, 2] >= 0.5)])
+            hands[s].append(P[ok & (wp[:, s, 3] >= 0.5)])
+    torso = np.concatenate(torso) if torso else np.zeros((0, 3), np.float32)
+    shoulder_half = np.float32(0.5) * np.float32(np.linalg.norm(head[upper[0]] - head[upper[1]]))
+    r_default = np.float32(0.95) * shoulder_half
+    sections = []
+
+    def norm(v):
+        return v / np.float32(np.linalg.norm(v))
+
+    def band(name, bone, a, b):
+        u = norm(b - a)
+        e1 = norm(np.array([1, 0, 0], np.float32) - u * u[0])
+        e2 = norm(np.cross(e1, u))
+        ab = b - a
+        t = (torso - a) @ ab / np.float32(ab @ ab)
+        sel = (t >= 0) & (t <= 1)
+        d = torso[sel] - (a + t[sel, None] * ab)
+        front = d @ e2
+        keep = front >= 0
+        side = np.abs(d[keep] @ e1)
+        r1 = float(np.clip(_quantile(side, 0.99, r_default), 0.02, 0.5))
+        r2 = float(np.clip(_quantile(front[keep], 0.99, r_default), 0.02, 0.5))
+        sections.append({"name": name, "bone": names[bone], "p0": (a - head[bone]).tolist(), "p1": (b - head[bone]).tolist(),
+                         "e1": e1.tolist(), "e2": e2.tolist(), "r1": r1, "r2": r2, "cap0": False, "cap1": False})
+    top = head[neck] if neck >= 0 else head[chest] + np.array([0, 0.6 * shoulder_half, 0], np.float32)
+    bottom = head[hips] + np.float32(0.4) * (head[hips] - head[chest])
+
+    def bands(name, bone, a, b, n):
+        for i in range(n):
+            band(f"{name}_{i + 1}", bone, a + (b - a) * np.float32(i / n), a + (b - a) * np.float32((i + 1) / n))
+    bands("pelvis", hips, bottom, head[hips], 2)
+    bands("torso_lower", spine if spine >= 0 else hips, head[hips], head[chest], 3)
+    bands("torso_upper", chest, head[chest], top, 2)
+    sections[0]["cap0"] = True
+    sections[-1]["cap1"] = True
+    limbs = []
+    # (the rest-pose clearance fix of the engine fit is applied by the engine when it loads the block's limbs only if
+    # they come from its own derivation; here the same loop runs on the same numbers)
+    sec_np = [(idx[s["bone"]], np.array(s["p0"], np.float32), np.array(s["p1"], np.float32), np.array(s["e1"], np.float32),
+               np.array(s["e2"], np.float32), np.float32(s["r1"]), np.float32(s["r2"]), s["cap0"], s["cap1"]) for s in sections]
+
+    def section_gap(sec, p):  # rest frames: the bone's global is a translation to its head
+        bone, p0, p1, e1, e2, r1, r2, c0, c1 = sec
+        u = p1 - p0
+        L = np.float32(np.linalg.norm(u))
+        u = u / L if L > 1e-6 else norm(np.cross(e1, e2))
+        r = min(r1, r2)
+        s1, s2 = r / r1, r / r2
+        q0 = (p - head[bone]) - p0
+        qx, qy, qz = np.float32(q0 @ u), np.float32(q0 @ e1) * s1, np.float32(q0 @ e2) * s2
+        radial = np.float32(np.hypot(qy, qz))
+        ax = -qx if qx < 0 else (qx - L if qx > L else np.float32(0))
+        rnd = (qx < 0 and c0) or (qx > L and c1)
+        if ax <= 0 or rnd:
+            return float(np.linalg.norm([qx - np.clip(qx, 0, L), qy, qz]) - r)
+        ro = max(radial - r, 0.0)
+        return float(np.sqrt(ro * ro + ax * ax))
+
+    def seg_gap(a, b, r):
+        return min(section_gap(sec, a + (b - a) * np.float32(i / 8)) - r for i in range(9) for sec in sec_np)
+    for s, side in enumerate("LR"):
+        e, wr = head[fore[s]], head[hand[s]]
+        fore_len = np.float32(np.linalg.norm(wr - e))
+        fr = [head[idx[f"f{k}a.{side}"]] for k in range(4) if f"f{k}a.{side}" in idx]
+        d = (np.mean(fr, axis=0).astype(np.float32) - wr) if fr else (wr - e)
+        d = norm(d) if np.linalg.norm(d) > 1e-6 else norm(wr - e)
+        uf = norm(wr - e)
+        F = np.concatenate(fores[s]) if fores[s] else np.zeros((0, 3), np.float32)
+        H = np.concatenate(hands[s]) if hands[s] else np.zeros((0, 3), np.float32)
+
+        def radial(P, o, u, t0, t1):
+            t = (P - o) @ u
+            sel = (t >= t0) & (t <= t1)
+            return np.linalg.norm((P[sel] - o) - u * t[sel, None], axis=1), t[sel]
+        t0 = np.float32(0.5)
+        rf, _ = radial(F, e, uf, t0 * fore_len, fore_len)
+        f_r = float(np.clip(_quantile(rf, LIMB_RADIUS_QUANTILE, np.float32(0.18) * fore_len, 10), 0.008, 0.08))
+        hand_len = max(np.float32(0.02), np.float32(0.75) * fore_len)
+        rh, along = radial(H, wr, d, -0.01, 2.0 * hand_len)
+        h_r = float(np.clip(_quantile(rh, LIMB_RADIUS_QUANTILE, np.float32(0.3) * hand_len, 10), 0.008, 0.06))
+        tip = max(h_r + 0.005, float(_quantile(along, 0.98, hand_len, 10)))
+        hb = d * np.float32(max(0.005, tip - h_r))
+        while seg_gap(e + uf * (t0 * fore_len), wr, f_r) < COLLISION_MARGIN and t0 < 0.85:
+            t0 = np.float32(t0 + 0.05)
+        r0 = f_r
+        while seg_gap(e + uf * (t0 * fore_len), wr, f_r) < COLLISION_MARGIN and f_r > 0.6 * r0:
+            f_r -= 0.001
+        r0 = h_r
+        while seg_gap(wr, wr + hb, h_r) < COLLISION_MARGIN and h_r > 0.6 * r0:
+            h_r -= 0.001
+        f_allow = min(0.0, seg_gap(e + uf * (t0 * fore_len), wr, f_r) - COLLISION_MARGIN)
+        h_allow = min(0.0, seg_gap(wr, wr + hb, h_r) - COLLISION_MARGIN)
+        limbs.append({"name": f"forearm.{side}", "bone": names[fore[s]], "side": side, "a": (uf * (t0 * fore_len)).tolist(),
+                      "b": (uf * fore_len).tolist(), "r": float(np.float32(f_r)), "allowance": f_allow})
+        limbs.append({"name": f"hand.{side}", "bone": names[hand[s]], "side": side, "a": [0.0, 0.0, 0.0],
+                      "b": hb.tolist(), "r": float(np.float32(h_r)), "allowance": h_allow})
+    rnd = lambda v: [round(float(x), 6) for x in v]  # noqa: E731
+    for sct in sections:
+        for k in ("p0", "p1", "e1", "e2"):
+            sct[k] = rnd(sct[k])
+        sct["r1"], sct["r2"] = round(sct["r1"], 6), round(sct["r2"], 6)
+    for lb in limbs:
+        lb["a"], lb["b"], lb["r"], lb["allowance"] = rnd(lb["a"]), rnd(lb["b"]), round(lb["r"], 6), round(lb["allowance"], 6)
+    return {"format": "plush.collision_body", "version": 1, "margin": COLLISION_MARGIN,
+            "max_elbow_swing_deg": COLLISION_MAX_ELBOW_SWING_DEG, "sections": sections, "limbs": limbs}
+
+
 def main():
     argv =sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
     ap = argparse.ArgumentParser()
@@ -424,6 +620,7 @@ def main():
         blob += arr.tobytes()
         return {"offset": off, "count": int(arr.size), "dtype": np.dtype(dtype).name}
     meshes, morphs, mats, problems = [], [], {}, []
+    collision_meshes = [] if out_version == EXPORTER_COLLISION else None  # export/6 only
     canon_report = {"ties_left": {}, "unrounded_normals": {}}
     deps = bpy.context.evaluated_depsgraph_get()
     objs = [o for o in root.all_objects if o.type == "MESH" and not o.name.startswith(("WGT-", "LM_"))
@@ -542,6 +739,8 @@ def main():
                                "roughness": round(float(p.inputs["Roughness"].default_value), 4) if p else 0.5,
                                "sheen": round(float(p.inputs["Sheen Weight"].default_value), 4) if p and "Sheen Weight" in p.inputs else 0.0}
             mi_index = len(meshes)
+            if collision_meshes is not None:
+                collision_meshes.append((to_engine(co[used]).astype(np.float32), J[used], W[used].astype(np.float32)))
             meshes.append({"part": o.name if len(set(tmat.tolist())) == 1 else f"{o.name}#{mi}", "source_object": o.name,
                            "material": mname, "vertices": int(len(used)),
                            "positions": put(to_engine(co[used]), np.float32), "normals": put(to_engine(nrm[used]), np.float32),
@@ -594,6 +793,9 @@ def main():
         retarget = RT.derive({s["name"]: s["head"] for s in skel}, RT.reference_pose(prof["reference_pose"]))
         retarget["profile"] = prof["profile"]
     dynamics = export_dynamics(rig, engine_name, dnames)
+    collision = collision_block(skel, collision_meshes) if collision_meshes is not None else None
+    if collision_meshes is not None and collision is None:
+        raise SystemExit("export/6: the skeleton lacks the roles of a collision body (hips, chest, both arm chains)")
     man = {"format": FORMAT, "version": VERSION, "name": root.get("ps_character_id", root.name),
            "source": {"blend": os.path.basename(a.blend), **({} if canonical else {"blend_sha256": src_sha}),
                       "spec_sha256": root.get("ps_spec_sha256"),
@@ -614,6 +816,7 @@ def main():
                                         {k for k, v in expr_map.items() if v in {m["name"] for m in morphs}}),
            **({"walk": prof["walk"]} if "walk" in prof else {}), **({"hands": prof["hands"]} if "hands" in prof else {}),
            **({"retarget": retarget} if retarget else {}), **({"dynamics": dynamics} if dynamics else {}),
+           **({"collision": collision} if collision else {}),
            "exporter_version": out_version, "versions": versions,
            "discarded": prof.get("discarded", []) + ([f"meshes without armature (not exported): {skipped}"] if skipped else []),
            "files": {"geometry.bin": {"bytes": len(blob), "sha256": hashlib.sha256(bytes(blob)).hexdigest()}}}
@@ -624,4 +827,5 @@ def main():
         print(f"[export_engine] export/{out_version} canonical: {json.dumps(canon_report, sort_keys=True)}")
 
 
-main()
+if __name__ == "__main__":  # Blender -P runs this file as __main__; importing it (tests) only defines the functions
+    main()

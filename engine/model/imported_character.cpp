@@ -80,6 +80,7 @@ Result<ImportedCharacter> loadImportedCharacter(const std::filesystem::path& man
   ic.rigSpecificBones = j.value("rig_specific_bones", std::vector<std::string>{});
   ic.capabilities = j.value("capabilities", Json::object());
   ic.asset.retargetBlock = j.value("retarget", Json());
+  ic.asset.collisionBlock = j.value("collision", Json());  // T-047 collision body (export/6); checked by the scene
   if (auto dyn = dynamicsFromJson(j.value("dynamics", Json())); dyn) ic.asset.dynamics = std::move(*dyn);
   else return fail("package: " + dyn.error().message);
   // Skeleton: parents precede children (checked).

@@ -25,6 +25,8 @@
 //              IK (reach, touch, foot plants) and look are applied afterwards and keep priority. Library clips are
 //              found in content/clips/<name>.clip.json above the scene file.
 //   reach/grasp {.., prop, ..}, hold, place, handover  prop interactions at asset sockets (scene/interaction.h)
+//   collision  {character, enabled=true}  enabled:false plans this character's arms without its collision body
+//              (scene/collision.h; for A/B measurements)
 //   emotion    {character, name:<library name>[/<variant>], start, end?, intensity=1}  a shared emotion
 //              (plush.emotion/1, scene/emotion.h, docs/EMOTIONS.md) found in content/emotions/<name>.emotion.json above
 //              the scene file: its face mix becomes expression weights (generated per-frame keys added to the
@@ -326,6 +328,21 @@ Result<void> SceneEvaluator::compileActionsBody() {
       if (scene_.characters[c].name == n) return int(c);
     return -1;
   };
+  // Collision planning switch (T-047): {"type": "collision", "character", "enabled": false} plans that character's
+  // arms without its collision body (for A/B measurements); applies to the whole shot, whatever its frame.
+  // "maxElbowSwingDeg" (T-082, 0..120) overrides the character's elbow swing limit (collision.h) for this shot.
+  for (const Json* ap : actions) {
+    if (str(*ap, "type") != "collision") continue;
+    const int c = charIndex(str(*ap, "character"));
+    if (c < 0) return fail(std::format("action 'collision': unknown character '{}'", str(*ap, "character")));
+    const auto en = ap->find("enabled");
+    if (en != ap->end() && en->is_boolean() && !en->get<bool>() && size_t(c) < clearance_.size()) clearance_[size_t(c)].valid = false;
+    if (const auto ms = ap->find("maxElbowSwingDeg"); ms != ap->end()) {
+      if (!ms->is_number() || !(ms->get<float>() >= 0 && ms->get<float>() <= 120))
+        return fail("action 'collision': maxElbowSwingDeg must be a number in [0, 120]");
+      if (size_t(c) < clearance_.size()) clearance_[size_t(c)].collision.maxElbowSwing = glm::radians(ms->get<float>());
+    }
+  }
   auto objIndex = [&](const std::string& n) -> int {
     for (size_t o = 0; o < scene_.objects.size(); ++o)
       if (scene_.objects[o].name == n) return int(o);
@@ -586,6 +603,8 @@ Result<void> SceneEvaluator::compileActionsBody() {
     auto interaction = compileInteraction(a, *gen, interactions);
     if (!interaction) return fail(interaction.error().message);
     if (*interaction) continue;
+
+    if (type == "collision") continue;  // read above
 
     if (type == "look") {
       faceTimelines_[size_t(c)].lookStarts.push_back(start);  // a gaze shift: brows lift a little, maybe a blink

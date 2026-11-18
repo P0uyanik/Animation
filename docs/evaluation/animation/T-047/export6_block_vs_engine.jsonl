@@ -1,0 +1,9 @@
+{"package": "tests/data/imported/boy_yellow_hoodie_1.0.0", "max_point_diff_mm": 0.0005, "max_radius_diff_mm": 0.0004}
+{"package": "tests/data/imported/girl_auburn_bun_glasses_m2", "max_point_diff_mm": 0.0005, "max_radius_diff_mm": 0.0005}
+{"package": "tests/data/imported/girl_auburn_bun_glasses_m3", "max_point_diff_mm": 0.0005, "max_radius_diff_mm": 0.0005}
+{"package": "tests/data/imported/toy_fixture", "max_point_diff_mm": 0.0003, "max_radius_diff_mm": 0.0004}
+{"package": "episodes/e905_props_test/shots/s010/build/packages/boy_089f7fe12ed62136", "max_point_diff_mm": 0.0005, "max_radius_diff_mm": 0.0005}
+{"package": "episodes/e905_props_test/shots/s010/build/packages/girl_f5c3f855144c8847", "max_point_diff_mm": 0.0005, "max_radius_diff_mm": 0.0005}
+{"package": "episodes/e906_acting_test/shots/s010/build/packages/boy_bddc15061377547f", "max_point_diff_mm": 0.0005, "max_radius_diff_mm": 0.0005}
+{"package": "episodes/e906_acting_test/shots/s010/build/packages/girl_365b58ba052f8432", "max_point_diff_mm": 0.0005, "max_radius_diff_mm": 0.0005}
+{"package": "episodes/e904_secondary_motion/shots/s010/build/packages/girl_03d98c2e358397a0", "max_point_diff_mm": 0.0005, "max_radius_diff_mm": 0.0005}

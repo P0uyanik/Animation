@@ -85,6 +85,9 @@ struct CharacterAsset {
   // Generated retarget data of an imported package ("retarget" block written by export_engine.py; null if the
   // package has none, then clip playback derives the same data from the skeleton). See model/clip.h.
   Json retargetBlock;
+  // Collision body of an imported package ("collision" block, export/6; null if the package has none, then the scene
+  // derives the same body from the skinned meshes). See scene/collision.h (T-047).
+  Json collisionBlock;
   // Secondary motion (package "dynamics" block, anim/secondary.h); disabled when the package has none.
   DynamicsSpec dynamics;
   std::vector<Expression> expressions;
