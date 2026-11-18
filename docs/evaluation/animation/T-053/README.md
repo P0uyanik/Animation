@@ -99,13 +99,17 @@ Not tested: the third character in motion (no package); Blender tier locally (se
 - Frozen assets, published versions, guarded engine renderer: untouched (gate "Frozen assets" PASS).
 - Regression shots `wave_touch` and `clip_gestures` bake byte-identical to `origin/staging` (body mechanics read the
   same values through the shared reader).
-- `check_all.py --base origin/staging --task T-053` (local): Frozen assets PASS, Write-set PASS (all paths inside the
-  claim), Shared-systems lint PASS, C++ build PASS, C++ tests PASS with OIDN (CTest + plush_tests + animcheck), Python
-  tests and links PASS. **Guarded paths: requires Supervisor approval for `tests/test_personality.cpp` and
+- `check_all.py --base origin/staging --task T-053 --build-dir build` (local, build with the pinned OIDN 2.3.3):
+  Frozen assets PASS, Write-set PASS (28 paths, all inside the claim), Shared-systems lint PASS, C++ build PASS,
+  C++ tests PASS (CTest 4/4 incl. the frozen image regressions, plush_tests, animcheck incl. personality), Python tests
+  and links PASS. With the default `build/quality-gate` dir (configured without OIDN in this container) the two
+  frozen image regressions fail for lack of the denoiser only (rmse 0.046 / 0.041), unrelated to T-053.
+- **Guarded paths: requires Supervisor approval for `tests/test_personality.cpp` and
   `tools/animcheck/tests/test_animcheck.py`** (both inside the claim: the test stub was registered for this task; the
-  animcheck tests gain a `PersonalityCheck` class, no existing test changed or loosened; `thresholds.json` untouched).
-  Blender tier: the gate requires it (content/personality is classed as full regression); not completed locally,
-  GitHub CI on the branch is the evidence. No character spec, generator, material or exporter changed, so the
+  animcheck tests gain a `PersonalityCheck` class; no existing test changed or loosened; `thresholds.json` untouched).
+- **Blender tier: not completed locally.** The gate requires it (content/personality is classed as full regression).
+  A local run with the bpy 5.3.0 shim (`tools/bpy_blender.py`) was killed with the session worker (exit 137) before it
+  finished; GitHub CI on the branch is the evidence. No character spec, generator, material or exporter changed, so the
   unchanged-character guard is expected to pass.
 
 ## 7. Visual results (current approved versions: boy 1.1.0, girl 0.10.0, via run_shot cast "current")
