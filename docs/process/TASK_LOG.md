@@ -46,7 +46,7 @@
 | T-067 | P3 fleece/felt/knit materials round | queued (after T-066) | — | T-063 P3 |
 | T-068 | Garment details (sneakers, backpack, hood fix, vest details, gathered skirt), opt-in under garment/1 | **merged** 2026-11-18 (owner-approved as system) | t-068-claude-garment-details (c9618a0), integration 50fc612 | GitHub full gate PASS |
 | T-069 | Codebase audit: outdated/unused/duplicate/legacy code and assets (report only) | **in main** 2026-11-17 | t-069-claude-legacy-audit (afe0e63) | little dead code; no shared-system consolidation possible (frozen/pinned); cleanup plan C1–C9 + 8 owner questions; 18 Python tests not run by the gate |
-| T-070 | Hair v3 round 2 (groom/2), opt-in | **merged** 2026-11-18 (owner-approved as system); **round 3 running** (t-070-claude-hair-v3-r3) | t-070-claude-hair-v3-r2 (c54800b), integration 50fc612 | GitHub full gate PASS |
+| T-070 | Hair v3 round 2 (groom/2), opt-in | **merged** 2026-11-18 (owner-approved as system); round 3 → T-079 | t-070-claude-hair-v3-r2 (c54800b), integration 50fc612 | GitHub full gate PASS |
 | T-071 | Docs cleanup (archive/consolidate, current architecture docs, TD-43) + 18 ungated tests investigated | **merged** 2026-11-17 | t-071-claude-docs-cleanup (420786b) | combined integration e812539; 14 ungated tests: 11 PASS, 3 pre-existing failures (wiring on hold) |
 | T-072 | Code/asset cleanup (60 files archived, hair_clumps/2 retired) | **merged** 2026-11-17 | t-072-claude-code-cleanup (3ccc28d) | combined integration e812539, GitHub full gate PASS |
 | T-073 | Render benchmark on the owner's PC (CPU/GPU) | idea, unassigned (owner: not for Codex now) | — | `docs/tasks/T-073.md` |
@@ -55,6 +55,7 @@
 | T-076 | Reference video analysis + architecture report (evaluation only) | **merged** 2026-11-17 | t-076-claude-reference-architecture (18fb94f) | `docs/architecture/REFERENCE_ARCHITECTURE_REPORT.md`; GitHub fast gate PASS; recommendations await owner decision |
 | T-077 | Gate wiring (4 fast + 5 Blender subchecks, check_assets); 3 failing tests root-caused, not wired | **merged** 2026-11-18 | t-077-claude-gate-wiring (ece60d4), integration db78cb2 | GitHub full gate PASS; check_all.py changes now run the full tier |
 | T-078 | Progress video: combined new systems vs current approved (evidence only) | assigned 2026-11-18 | t-078-claude-progress-video | `docs/tasks/T-078.md`; owner request |
+| T-079 | Hair v3 round 3 (boy crown from close-ups, girl curls/fringe, third fringe/waves) | assigned 2026-11-18 | t-079-claude-hair-v3-r3 | `docs/tasks/T-079.md`; path B; owner decision |
 | T-053 | Personality profiles 1.0.0 (reader, limits, animcheck check) | **merged** 2026-11-18 (owner-approved) | t-053-claude-personality (f62fedb), integration 50fc612 | GitHub full gate PASS; some profile fields await engine layers |
 | T-048 | Branch cleanup workflow + tests | **in main** 2026-11-17 | t-048-claude-branch-cleanup (8f1c3ce), merge ae15c0b | 25/25 cleanup tests, full gate PASS; first real dry run after T-041 backups |
 | T-049 | Hair approach study (strand vs sculpted vs hybrid) | **in main** 2026-11-17; owner choice pending | t-049-claude-hair-study (e31e613) | recommends hybrid C (felted base volumes + few broad edge clumps, face keep-out as spec data); none reaches reference softness yet (fibre halo/volume, girl fringe) |
