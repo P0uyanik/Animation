@@ -66,7 +66,7 @@
 | T-087 | Comparison recipe lock + fidelity fixes (Phase A) | merged 2026-11-18 (integration/t-087; impl `session_01NPjxeLy8LE79Ttrgoxqp6S`, 0bea972; fidelity drop > 2 now flags owner review) | t-087-claude-review-recipe | `docs/tasks/T-087.md`; path A |
 | T-088 | Version-switch script (Phase A) | merged 2026-11-18 (integration/t-088; impl `session_01NPjxeLdCn1De2R4uRrMMYo`, 6915e3b) | t-088-claude-version-switch | `docs/tasks/T-088.md`; path A |
 | T-089 | Face and eye system round 3 (Phase B) | assigned 2026-11-18, round 2 | t-089-claude-face-eyes-r3 | `docs/tasks/T-089.md`; path B |
-| T-090 | Reference-fit optimiser (Phase B) | assigned 2026-11-18, round 2 | t-090-claude-fit-optimiser | `docs/tasks/T-090.md`; path B |
+| T-090 | Reference-fit optimiser (Phase B) | assigned to Codex 2026-11-18 16:25Z (owner) | t-090-codex-fit-optimiser | `docs/tasks/T-090.md`; path B |
 | T-092 | Materials round 2 (Phase B) | assigned 2026-11-18, round 2 | t-092-claude-materials | `docs/tasks/T-092.md`; path B |
 | T-093 | Garment outlines and accessories (Phase B) | assigned 2026-11-18, round 2 | t-093-claude-garments | `docs/tasks/T-093.md`; path B |
 | T-095 | Readable two-person exchange (Phase C) | assigned 2026-11-18, round 2 | t-095-claude-exchange | `docs/tasks/T-095.md`; path B |
