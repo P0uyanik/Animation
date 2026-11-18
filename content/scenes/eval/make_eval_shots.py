@@ -31,6 +31,9 @@ SHOTS = {
              "Wave and reaction: the girl waves, the boy reacts and waves back (e906 acting test).", None),
     "handover": ("episodes/e905_props_test/shots/s010/shot.scene.json",
                  "Hand-over: the boy picks up a cup and hands it to the girl (e905 props test).", None),
+    "exchange": ("episodes/e907_exchange/shots/s010/shot.scene.json",
+                 "Two-person exchange: he offers a cup, she notices (glance first), then takes it; both faces and the cup "
+                 "visible while both hands share it (e907, T-095).", None),
     "emotions": ("episodes/e902_emotion_test/shots/s010/shot.scene.json",
                  "Emotion sequence: every shared emotion and its variants on both characters (e902).", None),
 }

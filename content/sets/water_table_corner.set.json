@@ -1,0 +1,594 @@
+{
+ "format": "plush.set",
+ "version": 1,
+ "id": "water_table_corner",
+ "description": "T-098L experiment: a minimal procedural classroom water-table corner (warm wood floor and rug, cream back wall with a window, a water table, a toy shelf with bins, a drawing on the wall), a window key / wool rim / fill light rig and one soft depth-of-field camera preset. Boxes, rect lights and a sky only: exactly what pipeline/charsys/shot_render.py translates today.",
+ "convention": "engine axes, metres, +Y up; the shot's characters stand around the origin facing +Z and the shot camera looks from +Z towards -Z (the e907 exchange layout). The set replaces the shot's world (objects not kept, all lights) and leaves characters, props, actions and camera framing untouched.",
+ "keep_objects": [
+  "table_top",
+  "table_leg"
+ ],
+ "materials": [
+  {
+   "name": "table_mat",
+   "type": "standard",
+   "baseColor": [
+    0.58,
+    0.4,
+    0.24
+   ],
+   "roughness": 0.7,
+   "specular": 0.3
+  },
+  {
+   "name": "set_floor",
+   "type": "standard",
+   "baseColor": [
+    0.52,
+    0.36,
+    0.22
+   ],
+   "roughness": 0.8,
+   "specular": 0.3
+  },
+  {
+   "name": "set_rug",
+   "type": "standard",
+   "baseColor": [
+    0.42,
+    0.58,
+    0.55
+   ],
+   "roughness": 0.95,
+   "specular": 0.2
+  },
+  {
+   "name": "set_wall",
+   "type": "standard",
+   "baseColor": [
+    0.66,
+    0.56,
+    0.44
+   ],
+   "roughness": 0.9,
+   "specular": 0.2
+  },
+  {
+   "name": "set_wood",
+   "type": "standard",
+   "baseColor": [
+    0.62,
+    0.44,
+    0.27
+   ],
+   "roughness": 0.7,
+   "specular": 0.3
+  },
+  {
+   "name": "set_water",
+   "type": "standard",
+   "baseColor": [
+    0.38,
+    0.58,
+    0.72
+   ],
+   "roughness": 0.3,
+   "specular": 0.5
+  },
+  {
+   "name": "set_bin_green",
+   "type": "standard",
+   "baseColor": [
+    0.5,
+    0.66,
+    0.36
+   ],
+   "roughness": 0.8,
+   "specular": 0.3
+  },
+  {
+   "name": "set_bin_pink",
+   "type": "standard",
+   "baseColor": [
+    0.84,
+    0.52,
+    0.56
+   ],
+   "roughness": 0.8,
+   "specular": 0.3
+  },
+  {
+   "name": "set_paper",
+   "type": "standard",
+   "baseColor": [
+    0.93,
+    0.9,
+    0.82
+   ],
+   "roughness": 0.9,
+   "specular": 0.2
+  },
+  {
+   "name": "set_drawing",
+   "type": "standard",
+   "baseColor": [
+    0.9,
+    0.72,
+    0.3
+   ],
+   "roughness": 0.9,
+   "specular": 0.2
+  }
+ ],
+ "objects": [
+  {
+   "name": "set_floor",
+   "group": "room",
+   "min": [
+    -1.6,
+    -0.05,
+    -1.4
+   ],
+   "max": [
+    2.1,
+    0.0,
+    2.9
+   ],
+   "material": "set_floor"
+  },
+  {
+   "name": "set_rug",
+   "group": "room",
+   "min": [
+    -0.95,
+    0.0,
+    -0.6
+   ],
+   "max": [
+    0.95,
+    0.004,
+    0.7
+   ],
+   "material": "set_rug"
+  },
+  {
+   "name": "set_side_wall_back",
+   "group": "room",
+   "min": [
+    -1.6,
+    0.0,
+    -1.4
+   ],
+   "max": [
+    -1.5,
+    3.0,
+    0.4
+   ],
+   "material": "set_wall"
+  },
+  {
+   "name": "set_side_wall_below_window",
+   "group": "room",
+   "min": [
+    -1.6,
+    0.0,
+    0.4
+   ],
+   "max": [
+    -1.5,
+    0.6,
+    1.6
+   ],
+   "material": "set_wall"
+  },
+  {
+   "name": "set_side_wall_above_window",
+   "group": "room",
+   "min": [
+    -1.6,
+    1.9,
+    0.4
+   ],
+   "max": [
+    -1.5,
+    3.0,
+    1.6
+   ],
+   "material": "set_wall"
+  },
+  {
+   "name": "set_side_wall_front",
+   "group": "room",
+   "min": [
+    -1.6,
+    0.0,
+    1.6
+   ],
+   "max": [
+    -1.5,
+    3.0,
+    2.9
+   ],
+   "material": "set_wall"
+  },
+  {
+   "name": "set_wall_right_side",
+   "group": "room",
+   "min": [
+    2.0,
+    0.0,
+    -1.4
+   ],
+   "max": [
+    2.1,
+    3.0,
+    2.9
+   ],
+   "material": "set_wall"
+  },
+  {
+   "name": "set_wall_front",
+   "group": "room",
+   "min": [
+    -1.6,
+    0.0,
+    2.8
+   ],
+   "max": [
+    2.1,
+    3.0,
+    2.9
+   ],
+   "material": "set_wall"
+  },
+  {
+   "name": "set_ceiling",
+   "group": "room",
+   "min": [
+    -1.6,
+    2.4,
+    -1.4
+   ],
+   "max": [
+    2.1,
+    2.5,
+    2.9
+   ],
+   "material": "set_wall"
+  },
+  {
+   "name": "set_wall_left",
+   "group": "back_wall",
+   "min": [
+    -4.0,
+    0.0,
+    -1.4
+   ],
+   "max": [
+    -1.25,
+    3.0,
+    -1.3
+   ],
+   "material": "set_wall"
+  },
+  {
+   "name": "set_wall_right",
+   "group": "back_wall",
+   "min": [
+    -0.45,
+    0.0,
+    -1.4
+   ],
+   "max": [
+    4.0,
+    3.0,
+    -1.3
+   ],
+   "material": "set_wall"
+  },
+  {
+   "name": "set_wall_below_window",
+   "group": "back_wall",
+   "min": [
+    -1.25,
+    0.0,
+    -1.4
+   ],
+   "max": [
+    -0.45,
+    0.75,
+    -1.3
+   ],
+   "material": "set_wall"
+  },
+  {
+   "name": "set_wall_above_window",
+   "group": "back_wall",
+   "min": [
+    -1.25,
+    1.55,
+    -1.4
+   ],
+   "max": [
+    -0.45,
+    3.0,
+    -1.3
+   ],
+   "material": "set_wall"
+  },
+  {
+   "name": "set_window_sill",
+   "group": "back_wall",
+   "min": [
+    -1.3,
+    0.72,
+    -1.3
+   ],
+   "max": [
+    -0.4,
+    0.75,
+    -1.2
+   ],
+   "material": "set_wood"
+  },
+  {
+   "name": "set_window_mullion_v",
+   "group": "back_wall",
+   "min": [
+    -0.87,
+    0.75,
+    -1.37
+   ],
+   "max": [
+    -0.83,
+    1.55,
+    -1.33
+   ],
+   "material": "set_wood"
+  },
+  {
+   "name": "set_window_mullion_h",
+   "group": "back_wall",
+   "min": [
+    -1.25,
+    1.13,
+    -1.37
+   ],
+   "max": [
+    -0.45,
+    1.17,
+    -1.33
+   ],
+   "material": "set_wood"
+  },
+  {
+   "name": "set_water_table_tub",
+   "group": "water_table",
+   "min": [
+    -1.35,
+    0.0,
+    -1.0
+   ],
+   "max": [
+    -0.7,
+    0.42,
+    -0.5
+   ],
+   "material": "set_wood"
+  },
+  {
+   "name": "set_water_table_water",
+   "group": "water_table",
+   "min": [
+    -1.3,
+    0.42,
+    -0.95
+   ],
+   "max": [
+    -0.75,
+    0.435,
+    -0.55
+   ],
+   "material": "set_water"
+  },
+  {
+   "name": "set_water_table_rim",
+   "group": "water_table",
+   "min": [
+    -1.37,
+    0.435,
+    -1.02
+   ],
+   "max": [
+    -0.68,
+    0.455,
+    -0.98
+   ],
+   "material": "set_wood"
+  },
+  {
+   "name": "set_shelf",
+   "group": "shelf",
+   "min": [
+    0.55,
+    0.0,
+    -1.3
+   ],
+   "max": [
+    1.45,
+    0.95,
+    -0.98
+   ],
+   "material": "set_wood"
+  },
+  {
+   "name": "set_shelf_bin_green",
+   "group": "shelf",
+   "min": [
+    0.62,
+    0.52,
+    -1.2
+   ],
+   "max": [
+    0.96,
+    0.82,
+    -0.95
+   ],
+   "material": "set_bin_green"
+  },
+  {
+   "name": "set_shelf_bin_pink",
+   "group": "shelf",
+   "min": [
+    1.04,
+    0.52,
+    -1.2
+   ],
+   "max": [
+    1.38,
+    0.82,
+    -0.95
+   ],
+   "material": "set_bin_pink"
+  },
+  {
+   "name": "set_drawing_paper",
+   "group": "drawing",
+   "min": [
+    0.15,
+    1.02,
+    -1.3
+   ],
+   "max": [
+    0.47,
+    1.3,
+    -1.295
+   ],
+   "material": "set_paper"
+  },
+  {
+   "name": "set_drawing_sun",
+   "group": "drawing",
+   "min": [
+    0.22,
+    1.12,
+    -1.295
+   ],
+   "max": [
+    0.34,
+    1.24,
+    -1.29
+   ],
+   "material": "set_drawing"
+  }
+ ],
+ "lights": [
+  {
+   "name": "window_key",
+   "type": "rect",
+   "center": [
+    -1.45,
+    1.25,
+    1.0
+   ],
+   "aim": [
+    0.0,
+    0.75,
+    0.0
+   ],
+   "size": [
+    1.0,
+    1.2
+   ],
+   "color": [
+    1.0,
+    0.88,
+    0.72
+   ],
+   "intensity": 2.0
+  },
+  {
+   "name": "wool_rim",
+   "type": "rect",
+   "center": [
+    0.15,
+    1.65,
+    -0.95
+   ],
+   "aim": [
+    0.0,
+    0.85,
+    0.0
+   ],
+   "size": [
+    1.0,
+    0.4
+   ],
+   "color": [
+    1.0,
+    0.92,
+    0.8
+   ],
+   "intensity": 6.0
+  },
+  {
+   "name": "fill",
+   "type": "rect",
+   "center": [
+    1.3,
+    0.9,
+    2.0
+   ],
+   "aim": [
+    0.0,
+    0.7,
+    0.0
+   ],
+   "size": [
+    1.5,
+    1.5
+   ],
+   "color": [
+    0.86,
+    0.9,
+    1.0
+   ],
+   "intensity": 0.4
+  },
+  {
+   "name": "window_sun",
+   "type": "sun",
+   "direction": [
+    0.3,
+    -0.5,
+    0.8
+   ],
+   "angleDeg": 3.0,
+   "color": [
+    1.0,
+    0.9,
+    0.75
+   ],
+   "intensity": 1.2
+  },
+  {
+   "name": "window_sky",
+   "type": "sky",
+   "color": [
+    0.96,
+    0.92,
+    0.84
+   ],
+   "intensity": 2.0
+  }
+ ],
+ "camera": {
+  "name": "soft_dof",
+  "framing": "keep",
+  "fStop": 1.2,
+  "focus": "target"
+ },
+ "render": {
+  "exposureEV": -0.3
+ }
+}

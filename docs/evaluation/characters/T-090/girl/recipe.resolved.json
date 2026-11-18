@@ -1,0 +1,188 @@
+{
+ "schema": "plush-studio.review-recipe/1",
+ "character": "girl_auburn_bun_glasses",
+ "task": "T-090",
+ "recipe_sha256": "361b0f6ccefdf8ddfb94217c1cbc6fe1918c194320417eb053fd2e65e466e214",
+ "inputs": {
+  "main": "12559bb86671ea6d72697faa9877b4db5e250c30"
+ },
+ "compare": {
+  "variant": "master",
+  "pose": "apose",
+  "allow_apose": true,
+  "allow_variant_mismatch": false,
+  "reference_variant": "master"
+ },
+ "columns": [
+  {
+   "role": "baseline",
+   "tag": "baseline",
+   "label": "0.11.0",
+   "kind": "version",
+   "version": "0.11.0",
+   "status": "approved",
+   "approved_pointer": "0.11.0",
+   "spec_sha256": "4966133aa0eb1e00c06b107082223b7184d561dbe6f08e7c8790abf7b238dcf6",
+   "blend": "assets\\characters\\girl_auburn_bun_glasses\\versions\\0.11.0\\girl_auburn_bun_glasses_master.blend",
+   "source_variant": "master",
+   "comparison_pose": null
+  },
+  {
+   "role": "candidate",
+   "tag": "candidate",
+   "label": "Face fit",
+   "kind": "spec",
+   "spec": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.11.0.spec.json",
+   "overrides": [
+    "docs/evaluation/characters/T-090/girl/proposal.json"
+   ],
+   "sha": "12559bb",
+   "comparison_pose": null,
+   "source_variant": "master",
+   "spec_sha256": "37c3bfb06385a52c7bb8aed37dc951c8c14b86f9cc1535fc9e3d2c4a29745e95"
+  }
+ ],
+ "cameras": {
+  "lens_mm": 70.0,
+  "sensor_mm": 36.0,
+  "views": [
+   {
+    "name": "front",
+    "label": "front",
+    "framing": "body",
+    "yaw_deg": 0.0,
+    "elevation_deg": 5.0,
+    "target": [
+     0.0,
+     0.0,
+     0.56
+    ],
+    "frame_height_m": 1.26,
+    "aspect": 1.6
+   },
+   {
+    "name": "threequarter",
+    "label": "3/4",
+    "framing": "body",
+    "yaw_deg": -45.0,
+    "elevation_deg": 5.0,
+    "target": [
+     0.0,
+     0.0,
+     0.56
+    ],
+    "frame_height_m": 1.26,
+    "aspect": 1.6
+   },
+   {
+    "name": "side",
+    "label": "side",
+    "framing": "body",
+    "yaw_deg": 90.0,
+    "elevation_deg": 5.0,
+    "target": [
+     0.0,
+     0.0,
+     0.56
+    ],
+    "frame_height_m": 1.26,
+    "aspect": 1.6
+   },
+   {
+    "name": "back",
+    "label": "back",
+    "framing": "body",
+    "yaw_deg": 180.0,
+    "elevation_deg": 5.0,
+    "target": [
+     0.0,
+     0.0,
+     0.56
+    ],
+    "frame_height_m": 1.26,
+    "aspect": 1.6
+   },
+   {
+    "name": "face_front",
+    "label": "face front",
+    "framing": "face",
+    "yaw_deg": 0.0,
+    "elevation_deg": 5.0,
+    "target": null,
+    "frame_height_m": null,
+    "aspect": 1,
+    "fit": "head",
+    "margin": 0.05,
+    "margin_below": 0.15
+   },
+   {
+    "name": "face_threequarter",
+    "label": "face 3/4",
+    "framing": "face",
+    "yaw_deg": -45.0,
+    "elevation_deg": 5.0,
+    "target": null,
+    "frame_height_m": null,
+    "aspect": 1,
+    "fit": "head",
+    "margin": 0.05,
+    "margin_below": 0.15
+   }
+  ]
+ },
+ "references": {
+  "front": {
+   "file": "assets\\characters\\girl_auburn_bun_glasses\\references\\views\\sheet30_front.png",
+   "crop": null,
+   "label": "sheet30_front"
+  },
+  "threequarter": {
+   "file": "assets\\characters\\girl_auburn_bun_glasses\\references\\views\\sheet30_front_left.png",
+   "crop": null,
+   "label": "sheet30_front_left"
+  },
+  "side": {
+   "file": "assets\\characters\\girl_auburn_bun_glasses\\references\\views\\sheet30_left.png",
+   "crop": null,
+   "label": "sheet30_left"
+  },
+  "back": {
+   "file": "assets\\characters\\girl_auburn_bun_glasses\\references\\views\\sheet30_back.png",
+   "crop": null,
+   "label": "sheet30_back"
+  },
+  "face_front": {
+   "file": "assets\\characters\\girl_auburn_bun_glasses\\references\\uploads\\ref_30.webp",
+   "crop": [
+    440,
+    620,
+    712,
+    840
+   ],
+   "label": "ref_30 Neutral"
+  },
+  "face_threequarter": {
+   "file": "assets\\characters\\girl_auburn_bun_glasses\\references\\uploads\\ref_30.webp",
+   "crop": [
+    345,
+    90,
+    490,
+    260
+   ],
+   "label": "ref_30 front-left"
+  }
+ },
+ "light": {
+  "calibration": "character_neutral/1"
+ },
+ "render": {
+  "engine": "cycles",
+  "samples": 1,
+  "px": 220
+ },
+ "preview": {
+  "engine": "workbench",
+  "samples": 1,
+  "px": 220
+ }
+}

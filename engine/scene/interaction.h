@@ -107,9 +107,15 @@ float swungArmGap(const BodyClearanceModel& model, const std::vector<mat4>& G, c
 // collision planner) and elbow pole tracks "<prefix>pole.<hand bone>" (world direction the elbow should point to) with ".weight": swing the
 // upper arm about the shoulder -> wrist axis, so the wrist stays where IK put it and only the elbow moves (the hand keeps
 // its world rotation; bone heads only, as G is built from pivots without scale). Runs after
-// IK and before the orientation constraint (scene.cpp).
+// IK and before the orientation constraint (scene.cpp). It also applies the T-096 head clearance tilt
+// "<prefix>headTilt" (applyHeadTilt) at the same point of the pose path; without that track nothing changes.
 void applyArmPoles(const Skeleton& skeleton, const Clip& clip, const std::string& prefix, double frame,
                    const mat4& world, Pose& pose);
+// T-096 head clearance tilt: "<prefix>headTilt" (world rotation vector, radians; planned by the interaction option
+// headVolumes) turns the neck about its joint after IK and look-at (the head follow and the neck assist would aim it
+// back); the eye bones keep their world rotation, so the gaze stays on its target.
+void applyHeadTilt(const Skeleton& skeleton, const Clip& clip, const std::string& prefix, double frame, const mat4& world,
+                   Pose& pose);
 constexpr float kArmBodyMargin = kCollisionMargin;  // clearance kept between the arm and the body (metres)
 
 // Compile state shared by the interaction actions of one compileActions() pass.
@@ -117,6 +123,7 @@ struct InteractionContext {
   struct Hold {
     int prop = -1;            // held prop, -1 = empty hand
     quat orient{1, 0, 0, 0};  // the hand's world orientation while holding
+    std::string socket;       // the prop socket the palm holds (T-096)
   };
   std::map<std::pair<int, char>, Hold> hands;  // (character, side)
   // Exact contacts, re-corrected after all actions are compiled (later actions can change the body at a contact).
@@ -137,6 +144,16 @@ struct InteractionContext {
     double from = 0, to = 0;
   };
   std::vector<Freeze> frozen;
+  // Hand-overs (T-096): the giver still holds the prop by `socket` while the receiver already carries it (receiver's
+  // contact -> giver's release). With the scene's interaction option followSharedProp the giver's palm follows.
+  struct Shared {
+    int character = -1;
+    char side = 'R';
+    int prop = -1;
+    std::string socket;
+    double from = 0, to = 0, end = 0;  // contact, release, end of the giver's return
+  };
+  std::vector<Shared> shared;
   bool parentsChecked = false;  // authored prop parents are checked before the first interaction evaluates props
 };
 

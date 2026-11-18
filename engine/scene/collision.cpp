@@ -4,6 +4,9 @@
 #include <algorithm>
 #include <cmath>
 #include <format>
+#include <map>
+#include <tuple>
+#include <unordered_map>
 
 #include "model/character.h"
 
@@ -275,6 +278,87 @@ CollisionBody deriveCollisionBody(const Skeleton& sk, const std::vector<SkinnedM
     M.limbs.push_back(H);
   }
   return M;
+}
+
+void addHeadVolumes(CollisionBody& M, const Skeleton& sk, const std::vector<SkinnedMesh>& meshes) {
+  M.heads.clear();
+  const int head = sk.find("head");
+  if (head < 0) return;
+  std::vector<char> underHead(sk.bones.size(), 0);
+  for (size_t b = 0; b < sk.bones.size(); ++b)
+    for (int k = int(b); k >= 0; k = sk.bones[size_t(k)].parent)
+      if (k == head) underHead[b] = 1;
+  // Voxel groups of the head-carried rest vertices (ordered map: the result does not depend on hashing).
+  std::map<std::tuple<int, int, int>, std::vector<vec3>> cells;
+  size_t count = 0;
+  for (const SkinnedMesh& m : meshes)
+    for (size_t v = 0; v < m.rest.positions.size() && v < m.joints.size() && v < m.weights.size(); ++v) {
+      float w = 0;
+      for (int k = 0; k < 4; ++k) {
+        const int j = m.joints[v][k];
+        if (j >= 0 && size_t(j) < sk.bones.size() && underHead[size_t(j)] && m.weights[v][k] > 0) w += m.weights[v][k];
+      }
+      if (w < 0.5f) continue;
+      const vec3 p = m.rest.positions[v];
+      const glm::ivec3 i = glm::ivec3(glm::floor(p / kHeadCell));
+      cells[{i.x, i.y, i.z}].push_back(p);
+      ++count;
+    }
+  if (count < 50) return;
+  const vec3 hb = sk.bones[size_t(head)].head;
+  for (const auto& [key, pts] : cells) {
+    vec3 lo(1e9f), hi(-1e9f);
+    for (const vec3& p : pts) lo = glm::min(lo, p), hi = glm::max(hi, p);
+    const vec3 c = 0.5f * (lo + hi);
+    float r = 0;
+    for (const vec3& p : pts) r = std::max(r, glm::distance(p, c));
+    M.heads.push_back({head, c - hb, std::max(r, kHeadMinRadius)});
+  }
+}
+
+std::vector<std::pair<vec3, float>> headSpheres(const CollisionBody& M, const std::vector<mat4>& G) {
+  std::vector<std::pair<vec3, float>> out;
+  out.reserve(M.heads.size());
+  for (const CollisionSphere& s : M.heads)
+    if (s.bone >= 0 && size_t(s.bone) < G.size()) out.push_back({vec3(G[size_t(s.bone)] * vec4(s.centre, 1)), s.r});
+  return out;
+}
+
+HeadGap headGap(const CollisionBody& a, const std::vector<mat4>& Ga, const CollisionBody& b, const std::vector<mat4>& Gb) {
+  HeadGap out;
+  const auto A = headSpheres(a, Ga), B = headSpheres(b, Gb);
+  if (A.empty() || B.empty()) return out;
+  auto consider = [&](const std::pair<vec3, float>& sa, const std::pair<vec3, float>& sb) {
+    const vec3 d = sa.first - sb.first;
+    const float L = glm::length(d), g = L - sa.second - sb.second;
+    if (g >= out.gap) return;
+    out.gap = g;
+    out.dir = L > 1e-6f ? d / L : vec3(0, 1, 0);
+    out.pointA = sa.first - out.dir * sa.second;
+    out.pointB = sb.first + out.dir * sb.second;
+  };
+  // Near pairs through a grid over b's spheres (cell = the search reach); exact for gaps below kHeadNearGap. Farther
+  // heads: every pair (rare: a pass only measures far heads once per frame).
+  float rmax = 0;
+  for (const auto& s : A) rmax = std::max(rmax, s.second);
+  for (const auto& s : B) rmax = std::max(rmax, s.second);
+  const float cell = 2.0f * rmax + kHeadNearGap;
+  std::unordered_map<long long, std::vector<int>> grid;
+  auto key = [](glm::ivec3 i) { return ((long long)(i.x + 100000) * 200003LL + (long long)(i.y + 100000)) * 200003LL + (long long)(i.z + 100000); };
+  for (size_t j = 0; j < B.size(); ++j) grid[key(glm::ivec3(glm::floor(B[j].first / cell)))].push_back(int(j));
+  for (const auto& sa : A) {
+    const glm::ivec3 i = glm::ivec3(glm::floor(sa.first / cell));
+    for (int dx = -1; dx <= 1; ++dx)
+      for (int dy = -1; dy <= 1; ++dy)
+        for (int dz = -1; dz <= 1; ++dz)
+          if (auto it = grid.find(key(i + glm::ivec3(dx, dy, dz))); it != grid.end())
+            for (int j : it->second) consider(sa, B[size_t(j)]);
+  }
+  if (out.gap < kHeadNearGap) return out;
+  out = HeadGap{};
+  for (const auto& sa : A)
+    for (const auto& sb : B) consider(sa, sb);
+  return out;
 }
 
 Json collisionBodyToJson(const CollisionBody& body, const Skeleton& sk) {

@@ -1,0 +1,272 @@
+{
+ "format": "plush.scene",
+ "version": 1,
+ "name": "T-096 diagnostic lean-in (the e905 spacing): boy and girl (cast \"current\") face each other across the table and both look at a point between them at hand height; no props",
+ "frameRate": [
+  24,
+  1
+ ],
+ "frameStart": 1,
+ "frameEnd": 48,
+ "render": {
+  "width": 640,
+  "height": 360,
+  "spp": 32,
+  "maxDepth": 8,
+  "exposureEV": 0.3,
+  "denoise": true,
+  "denoiseBlend": 0.85,
+  "clamp": 12
+ },
+ "camera": {
+  "position": [
+   -0.87,
+   0.9,
+   1.519
+  ],
+  "target": [
+   0.0,
+   0.5,
+   0.0
+  ],
+  "focalMm": 32,
+  "fStop": 0,
+  "focusDistance": -1
+ },
+ "materials": [
+  {
+   "name": "floor_mat",
+   "type": "standard",
+   "baseColor": [
+    0.46,
+    0.44,
+    0.42
+   ],
+   "roughness": 0.85,
+   "specular": 0.3
+  },
+  {
+   "name": "wall_mat",
+   "type": "standard",
+   "baseColor": [
+    0.62,
+    0.6,
+    0.55
+   ],
+   "roughness": 0.9,
+   "specular": 0.3
+  },
+  {
+   "name": "table_mat",
+   "type": "standard",
+   "baseColor": [
+    0.42,
+    0.3,
+    0.2
+   ],
+   "roughness": 0.7,
+   "specular": 0.3
+  }
+ ],
+ "lights": [
+  {
+   "type": "rect",
+   "corner": [
+    -2.0,
+    1.0,
+    2.0
+   ],
+   "edgeU": [
+    1.2,
+    0,
+    0.6
+   ],
+   "edgeV": [
+    0,
+    1.4,
+    0
+   ],
+   "color": [
+    1.0,
+    0.95,
+    0.88
+   ],
+   "intensity": 3.0
+  },
+  {
+   "type": "sun",
+   "direction": [
+    0.3,
+    -0.6,
+    -0.7
+   ],
+   "angleDeg": 4,
+   "color": [
+    1.0,
+    0.92,
+    0.82
+   ],
+   "intensity": 1.4
+  },
+  {
+   "type": "sky",
+   "color": [
+    0.6,
+    0.62,
+    0.66
+   ],
+   "intensity": 0.4
+  }
+ ],
+ "objects": [
+  {
+   "name": "floor",
+   "kind": "box",
+   "min": [
+    -4,
+    -0.05,
+    -3
+   ],
+   "max": [
+    4,
+    0,
+    4
+   ],
+   "material": "floor_mat"
+  },
+  {
+   "name": "wall",
+   "kind": "box",
+   "min": [
+    -4,
+    0,
+    -1.4
+   ],
+   "max": [
+    4,
+    3,
+    -1.3
+   ],
+   "material": "wall_mat"
+  },
+  {
+   "name": "table_top",
+   "kind": "box",
+   "min": [
+    -0.0808,
+    0.4395,
+    -0.0754
+   ],
+   "max": [
+    0.0792,
+    0.4695,
+    0.0846
+   ],
+   "material": "table_mat"
+  },
+  {
+   "name": "table_leg",
+   "kind": "box",
+   "min": [
+    -0.0258,
+    0.0,
+    -0.0204
+   ],
+   "max": [
+    0.0242,
+    0.4395,
+    0.0296
+   ],
+   "material": "table_mat"
+  }
+ ],
+ "props": [],
+ "characters": [
+  {
+   "name": "boy",
+   "asset": "(set by run_shot)",
+   "position": [
+    -0.2296,
+    0,
+    -0.1315
+   ],
+   "yawDeg": 68.0,
+   "life": {
+    "blinkInterval": 2.2
+   }
+  },
+  {
+   "name": "girl",
+   "asset": "(set by run_shot)",
+   "position": [
+    0.2296,
+    0,
+    0.1315
+   ],
+   "yawDeg": -68.0,
+   "life": {
+    "blinkInterval": 2.6,
+    "gaze": {
+     "assistPitchDeg": 20.0
+    }
+   }
+  }
+ ],
+ "actions": [
+  {
+   "type": "clip",
+   "character": "boy",
+   "clip": "idle_relaxed",
+   "base": true
+  },
+  {
+   "type": "clip",
+   "character": "girl",
+   "clip": "idle_relaxed",
+   "base": true
+  },
+  {
+   "type": "look",
+   "character": "boy",
+   "start": 1,
+   "end": 48,
+   "target": [
+    0.0,
+    0.55,
+    0.0
+   ]
+  },
+  {
+   "type": "look",
+   "character": "girl",
+   "start": 1,
+   "end": 48,
+   "target": [
+    0.0,
+    0.55,
+    0.0
+   ]
+  }
+ ],
+ "production": {
+  "cast": {
+   "boy": {
+    "character_id": "boy_yellow_hoodie",
+    "version": "current"
+   },
+   "girl": {
+    "character_id": "girl_auburn_bun_glasses",
+    "version": "current"
+   }
+  },
+  "profile": "pipeline/charsys/rig_profiles/humanoid_rigify.json",
+  "render": {
+   "resolution": [
+    640,
+    360
+   ],
+   "samples": 16,
+   "light_scale": 1.0
+  }
+ }
+}

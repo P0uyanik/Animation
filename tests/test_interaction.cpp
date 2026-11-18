@@ -4,6 +4,8 @@
 #include <filesystem>
 #include <memory>
 
+#include "scene/asset_library.h"
+#include "scene/collision.h"
 #include "scene/interaction.h"
 #include "scene/scene.h"
 
@@ -48,6 +50,10 @@ std::unique_ptr<SceneEvaluator> load(const Scene& scene) {
 Result<void> tryLoad(const Scene& scene) {
   SceneEvaluator ev;
   return ev.load(scene, EvalOptions{2.5f, 1.0f, false, 0});
+}
+
+float angleDegOf(quat a, quat b) {
+  return glm::degrees(2.0f * std::acos(std::min(1.0f, std::abs(glm::dot(glm::normalize(a), glm::normalize(b))))));
 }
 
 vec3 bonePos(const SceneEvaluator& ev, size_t c, const char* bone, double f) {
@@ -465,4 +471,201 @@ TEST_CASE("arm-body clearance: a held-still hand-over close to the giver's chest
       CHECK(elbowUp < elbowFull - 0.01f);  // the elbow stays at least 1 cm lower
     }
   }
+}
+
+// ---------------------------------------------------------------------------------------------------------- T-096
+namespace {
+
+// Two characters face to face, both looking down at a point between them (cup height): their heads bow towards it
+// until the crowns meet (big heads: the crown is 0.3 to 0.4 m above the head joint).
+Scene leanIn(float halfDistance, const Json& interaction) {
+  Scene scene = baseScene();
+  scene.frameEnd = 48;
+  scene.characters.push_back(character("a", kBoy, vec3(-halfDistance, 0, 0), 90));
+  scene.characters.push_back(character("b", kGirl, vec3(halfDistance, 0, 0), -90));
+  scene.actions = Json::parse(R"([
+      {"type": "look", "character": "a", "start": 1, "end": 48, "target": [0.0, 0.5, 0.0]},
+      {"type": "look", "character": "b", "start": 1, "end": 48, "target": [0.0, 0.5, 0.0]}])");
+  scene.interaction = interaction;
+  return scene;
+}
+
+float headGapAt(const SceneEvaluator& ev, double f) {
+  CollisionBody a, b;
+  addHeadVolumes(a, ev.characters()[0].asset.skeleton, ev.characters()[0].rig.meshes);
+  addHeadVolumes(b, ev.characters()[1].asset.skeleton, ev.characters()[1].rig.meshes);
+  return headGap(a, ev.characterGlobals(0, f), b, ev.characterGlobals(1, f)).gap;
+}
+
+quat rotOf(const mat4& M) {
+  return glm::normalize(glm::quat_cast(mat3(glm::normalize(vec3(M[0])), glm::normalize(vec3(M[1])), glm::normalize(vec3(M[2])))));
+}
+
+}  // namespace
+
+// T-096: with the scene's interaction option headVolumes the two heads (and their hair) keep the clearance; only the
+// necks tilt (rate limited), arms, hands, the torso and the gaze stay as they were. Without it nothing changes.
+TEST_CASE("head clearance: heads leaning in over a point keep the clearance by a small neck tilt only (T-096)") {
+  // The case is real: without the option the heads meet.
+  auto off = load(leanIn(0.28f, nullptr));
+  float offGap = 1e9f;
+  for (int f = 1; f <= 48; ++f) offGap = std::min(offGap, headGapAt(*off, f));
+  MESSAGE("without head volumes: closest head volumes " << offGap * 1000 << " mm");
+  REQUIRE(offGap < 0.0f);
+  CHECK(off->scene().animation.find("a/headTilt") == nullptr);
+  auto on = load(leanIn(0.28f, Json{{"headVolumes", true}, {"headClearance", 0.01}}));
+  for (const auto& w : on->warnings()) MESSAGE(w);
+  CHECK(on->warnings().empty());
+  float onGap = 1e9f, tilt = 0, rate = 0;
+  const Clip& clip = on->scene().animation;
+  for (int f = 1; f <= 48; ++f) {
+    onGap = std::min(onGap, headGapAt(*on, f));
+    for (const char* who : {"a", "b"}) {
+      const std::string t = std::string(who) + "/collision.headTilt." + (who[0] == 'a' ? "b" : "a");
+      tilt = std::max(tilt, clip.evaluate(t, f, vec3(0)).x);
+      if (f > 1) rate = std::max(rate, std::abs(clip.evaluate(t, f, vec3(0)).x - clip.evaluate(t, f - 1, vec3(0)).x));
+    }
+    for (size_t c = 0; c < 2; ++c) {
+      const auto G0 = off->characterGlobals(c, f), G1 = on->characterGlobals(c, f);
+      const Skeleton& sk = on->characters()[c].asset.skeleton;
+      for (const char* bone : {"hand.R", "hand.L", "forearm.R", "chest", "neck"})  // the neck's joint stays too
+        CHECK(glm::distance(vec3(G0[size_t(sk.find(bone))][3]), vec3(G1[size_t(sk.find(bone))][3])) < 1e-5f);
+      for (size_t b = 0; b < sk.bones.size(); ++b)  // the eyes keep their world rotation: the gaze stays on target
+        if (sk.bones[b].name.rfind("eye.", 0) == 0) CHECK(angleDegOf(rotOf(G0[b]), rotOf(G1[b])) < 0.05f);
+    }
+  }
+  MESSAGE("with head volumes: closest " << onGap * 1000 << " mm, largest tilt " << tilt << " deg, " << rate << " deg/frame");
+  CHECK(onGap >= 0.01f - 0.0005f);
+  CHECK(tilt > 0.0f);
+  CHECK(tilt <= 15.0f + 1e-3f);
+  CHECK(rate <= 0.6f + 1e-3f);
+}
+
+// T-096 (the e905 2.0.0 cup-hold drift): between the receiver's contact and the giver's release the receiver's hand
+// carries the prop; when it moves (here a hold in the shared span; in e905 the receiver's arm at full reach follows
+// her shoulder's sway, 4.5 mm), the giver's still hand drifted off its socket. With followSharedProp the giver's palm
+// follows its socket every frame, and its return takes the remaining offset out gradually.
+TEST_CASE("hand-over: with followSharedProp the giver's palm stays on its socket while the receiver moves the prop (T-096)") {
+  float stillStep = 0;
+  for (bool follow : {false, true}) {
+    Scene scene = baseScene();
+    scene.characters.push_back(character("giver", kBoy, vec3(-0.18f, 0, 0), 90));
+    scene.characters.push_back(character("receiver", kGirl, vec3(0.18f, 0, 0), -90));
+    auto probe = load(scene);
+    scene.props.push_back(cupFor(*probe, 0, "cup", -90, vec3(0.85f, -0.45f, 0.04f)));
+    scene.actions = Json::parse(R"([
+        {"type": "grasp", "character": "giver", "hand": "R", "prop": "cup", "start": 4, "contact": 18},
+        {"type": "handover", "character": "giver", "hand": "R", "to": "receiver", "toHand": "R",
+         "start": 30, "receiverStart": 32, "contact": 50, "release": 56, "end": 68},
+        {"type": "hold", "character": "receiver", "hand": "R", "start": 51, "end": 56, "by": [0.0, 0.006, 0.006]}])");
+    if (follow) scene.interaction = Json{{"followSharedProp", true}};
+    auto ev = load(scene);
+    for (const auto& w : ev->warnings()) MESSAGE(w);
+    CHECK(ev->warnings().empty());
+    float drift = 0, step = 0;
+    for (double f = 50; f <= 56; f += 0.5) drift = std::max(drift, glm::distance(ev->handGripPoint(0, 'R', f), socketWorld(*ev, 0, "grip", f)));
+    for (int f = 50; f < 68; ++f) step = std::max(step, glm::distance(bonePos(*ev, 0, "hand.R", f + 1), bonePos(*ev, 0, "hand.R", f)));
+    MESSAGE((follow ? "follow" : "still") << ": giver palm off its socket up to " << drift * 1000 << " mm; largest wrist step " << step * 1000 << " mm/frame");
+    if (follow) {
+      CHECK(drift < 0.0005f);
+      CHECK(step <= stillStep + 0.002f);  // the return takes the offset out gradually: no snap at the release
+    } else {
+      CHECK(drift > 0.005f);  // the case is real
+      stillStep = step;
+    }
+    CHECK(glm::distance(ev->handGripPoint(1, 'R', 56), socketWorld(*ev, 0, "grip_b", 56)) < 0.0005f);
+    checkContinuous(*ev, 0, {18, 50}, 1, 90);
+  }
+}
+
+// T-096: with visibleGrip a grasp on a round prop whose authored grip faces the shot camera takes the same grip
+// turned about the prop's axis, so the hand is beside the prop instead of in front of it: the palm meets the prop
+// on a side 65 deg from the camera, or as far as the arm allows while it stays clear of the body (never the far
+// side from the character); contacts stay exact and the planner has nothing to report. A hand-over receiver's
+// turned grip keeps at least 90 deg from the giver's. Without the option the authored socket is used.
+TEST_CASE("visible grip: a grasp turns the palm's side of a round prop away from the camera (T-096)") {
+  for (const char* asset : {kBoy, kGirl, kSdf}) {
+    Scene scene = baseScene();
+    scene.frameEnd = 40;
+    scene.characters.push_back(character("actor", asset, vec3(0), 0));
+    auto probe = load(scene);
+    // Grip faces the right hand (the character's right is -x); the camera looks from that side.
+    scene.props.push_back(cupFor(*probe, 0, "cup", 180, vec3(0.04f, -0.45f, 0.85f)));
+    const vec3 cupAt = scene.props[0].transform.translation;
+    scene.camera.position = cupAt + vec3(-1.5f, 0.3f, 0.2f);
+    scene.camera.target = cupAt;
+    scene.actions = Json::parse(R"([
+        {"type": "grasp", "character": "actor", "hand": "R", "prop": "cup", "start": 5, "contact": 20},
+        {"type": "hold", "character": "actor", "hand": "R", "start": 22, "end": 36, "by": [0, 0.04, 0]}])");
+    auto side = [&](const SceneEvaluator& ev, double f) {  // horizontal direction from the cup's axis to the palm
+      const mat4 P = ev.propWorld(0, f);
+      vec3 o = ev.handGripPoint(0, 'R', f) - vec3(P * vec4(0, 0.05f, 0, 1));
+      o.y = 0;
+      return glm::normalize(o);
+    };
+    auto flat = [](vec3 v) { v.y = 0; return glm::normalize(v); };
+    auto plain = load(scene);
+    scene.interaction = Json{{"visibleGrip", true}};
+    auto vis = load(scene);
+    for (const auto& w : vis->warnings()) MESSAGE(w);
+    CHECK(vis->warnings().empty());
+    const vec3 toCam = flat(scene.camera.position - cupAt), toChar = flat(bonePos(*vis, 0, "upperArm.R", 20) - cupAt);
+    const float before = glm::degrees(std::acos(std::clamp(glm::dot(side(*plain, 20), toCam), -1.0f, 1.0f)));
+    const float after = glm::degrees(std::acos(std::clamp(glm::dot(side(*vis, 20), toCam), -1.0f, 1.0f)));
+    const float own = glm::degrees(std::acos(std::clamp(glm::dot(side(*vis, 20), toChar), -1.0f, 1.0f)));
+    MESSAGE(asset << ": palm side from the camera " << before << " -> " << after << " deg, from the character " << own << " deg");
+    CHECK(before < 30.0f);  // the case is real: the authored grip faces the camera
+    CHECK(after >= before + 40.0f);
+    CHECK(own <= 100.0f + 0.5f);
+    CHECK(fullIkClearance(*vis, 0, 'R', 1, 40).first >= 0.0f);
+    // On the cup's wall at the grip height, and it rides along exactly (the palm stays where it took the cup).
+    const mat4 P = vis->propWorld(0, 20);
+    const vec3 local = vec3(glm::inverse(P) * vec4(vis->handGripPoint(0, 'R', 20), 1));
+    CHECK(glm::length(vec2(local.x, local.z)) == doctest::Approx(0.04f).epsilon(0.05));
+    CHECK(local.y == doctest::Approx(0.066f).epsilon(0.05));
+    for (double f = 20; f <= 36; f += 0.5)
+      CHECK(glm::distance(vec3(glm::inverse(vis->propWorld(0, f)) * vec4(vis->handGripPoint(0, 'R', f), 1)), local) < 0.0005f);
+    CHECK(glm::distance(plain->handGripPoint(0, 'R', 20), socketWorld(*plain, 0, "grip", 20)) < 0.005f);  // off: authored
+    checkContinuous(*vis, 0, {20}, 1, 40);
+  }
+}
+
+TEST_CASE("visible grip: a hand-over receiver's turned grip keeps away from the giver's (T-096)") {
+  Scene scene = baseScene();
+  scene.characters.push_back(character("giver", kBoy, vec3(-0.18f, 0, 0), 90));
+  scene.characters.push_back(character("receiver", kGirl, vec3(0.18f, 0, 0), -90));
+  auto probe = load(scene);
+  scene.props.push_back(cupFor(*probe, 0, "cup", -90, vec3(0.85f, -0.45f, 0.04f)));
+  const vec3 cupAt = scene.props[0].transform.translation;
+  // The camera on the receiver's grip side (-z): her authored grip_b faces it.
+  scene.camera.position = cupAt + vec3(0.1f, 0.3f, -1.5f);
+  scene.camera.target = cupAt;
+  scene.actions = Json::parse(R"([
+      {"type": "grasp", "character": "giver", "hand": "R", "prop": "cup", "start": 4, "contact": 18},
+      {"type": "handover", "character": "giver", "hand": "R", "to": "receiver", "toHand": "R",
+       "start": 30, "receiverStart": 32, "contact": 50, "release": 55, "end": 68}])");
+  auto plain = load(scene);
+  scene.interaction = Json{{"visibleGrip", true}, {"followSharedProp", true}};
+  auto ev = load(scene);
+  for (const auto& w : ev->warnings()) MESSAGE(w);
+  CHECK(ev->warnings().empty());
+  auto side = [&](const SceneEvaluator& e, size_t c, double f) {
+    const mat4 P = e.propWorld(0, f);
+    vec3 o = e.handGripPoint(c, 'R', f) - vec3(P * vec4(0, 0.05f, 0, 1));
+    o.y = 0;
+    return glm::normalize(o);
+  };
+  auto fromCam = [&](const SceneEvaluator& e) {
+    vec3 toCam = scene.camera.position - vec3(e.propWorld(0, 50)[3]);
+    toCam.y = 0;
+    return glm::degrees(std::acos(std::clamp(glm::dot(side(e, 1, 52), glm::normalize(toCam)), -1.0f, 1.0f)));
+  };
+  const float apart = glm::degrees(std::acos(std::clamp(glm::dot(side(*ev, 0, 52), side(*ev, 1, 52)), -1.0f, 1.0f)));
+  MESSAGE("receiver's palm side " << fromCam(*plain) << " -> " << fromCam(*ev) << " deg from the camera, " << apart << " deg from the giver's");
+  CHECK(apart >= 90.0f - 0.5f);
+  CHECK(fromCam(*plain) < 30.0f);  // the case is real
+  CHECK(fromCam(*ev) >= fromCam(*plain) + 40.0f);
+  CHECK(fullIkClearance(*ev, 1, 'R', 1, 90).first >= 0.0f);
+  CHECK(glm::distance(ev->handGripPoint(0, 'R', 52), socketWorld(*ev, 0, "grip", 52)) < 0.0005f);  // giver on its socket
+  checkContinuous(*ev, 0, {18, 50}, 1, 90);
 }
