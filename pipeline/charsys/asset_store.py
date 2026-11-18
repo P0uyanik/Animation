@@ -45,13 +45,21 @@ VERSION_RE = re.compile(r"^\d+\.\d+\.\d+$")
 STORES_GLOB = os.path.join(ROOT, "assets", "characters")
 
 
+def _inside(path, root):
+    """True when `path` lies in `root`. Paths on different Windows drives are never inside (commonpath raises)."""
+    try:
+        return os.path.commonpath([path, root]) == root
+    except ValueError:
+        return False
+
+
 def store_of(path):
     """The asset store (a versions/ folder) that contains `path`, or None. A store is either a repository store
     (assets/characters/<id>/versions) or any folder holding an index.json whose ancestors include `path`'s
     published version folders (test stores in temporary folders)."""
     p = os.path.abspath(path)
     chars = os.path.abspath(STORES_GLOB)
-    if os.path.commonpath([p, chars]) == chars:
+    if _inside(p, chars):
         parts = os.path.relpath(p, chars).split(os.sep)
         if len(parts) >= 2 and parts[1] == "versions":
             return os.path.join(chars, parts[0], "versions")
@@ -295,7 +303,7 @@ def restore(a):
     if not v["ok"]:
         raise SystemExit(f"stored version {ver} failed verification: {v['problems']}")
     to = os.path.abspath(a.to)
-    if os.path.commonpath([to, sd]) == sd or store_of(to):
+    if _inside(to, sd) or store_of(to):
         raise SystemExit("restore target must be outside the store")
     if os.path.exists(to) and os.listdir(to):
         raise SystemExit("restore target must be new or empty")
