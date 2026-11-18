@@ -1,11 +1,14 @@
 """T-080 owner sheets: reference | 1.1.0 (current approved) | 2.0.0 (candidate).
 
-    python3 docs/evaluation/characters/T-080/make_sheets.py <fid20_sheets_dir> <cu11_dir> <cu20_dir> <out_dir>
+    python3 docs/evaluation/characters/T-080/make_sheets.py <fid20_sheets_dir> <cu11_dir> <cu20_dir> <out_dir> \
+        [<fid20_renders_dir>]
 
 Body views: the reference and the aligned render panel of the fidelity tool's per-view sheets (tools/fidelity,
 same cameras, 640 px / 32 spp, character_neutral/1, compare variant = arms down). 1.1.0 = the render panel of the
 stored T-064 sheets (docs/evaluation/characters/T-064/boy/sheets, the current fidelity baseline renders); 2.0.0 =
-this task's run. Face close-ups: groom_turnaround.py --closeup front / 3/4 (yaw -35), both versions, same camera.
+this task's run. Face close-ups: groom_turnaround.py --closeup front / 3/4 (yaw -35), same camera; the 2.0.0
+close-ups were rendered with the round-2 hair (face identical in round 3), so with <fid20_renders_dir> the face rows
+also get head crops of the round-3 fidelity renders (320 x 640, upscaled; no extra still).
 Reference strip: the 2026-11-17 owner turnaround (boy row) and the boy's close-up upload 01."""
 import os
 import sys
@@ -71,6 +74,8 @@ def stack(rows, path):
 
 def main():
     fid20, cu11, cu20, out = sys.argv[1:5]
+    rend = sys.argv[5] if len(sys.argv) > 5 else None
+    head = (50, 55, 270, 275)
     os.makedirs(out, exist_ok=True)
     labels = ["reference (val27, owner)", "1.1.0 current (approved)", "2.0.0 candidate (T-080)"]
     rows = []
@@ -84,11 +89,18 @@ def main():
     face_ref = up.crop((0, 668, 746, 1330))  # upload 01, face close-up tile
     tfront = turn.crop((20, 0, 290, 275))
     t34 = turn.crop((320, 0, 590, 275))
-    fr = row([face_ref, tfront, Image.open(os.path.join(cu11, "front.png")), Image.open(os.path.join(cu20, "front.png"))],
-             ["reference: upload 01 close-up", "reference: turnaround front", "1.1.0 current", "2.0.0 candidate"],
-             "face close-up, front")
-    fq = row([t34, Image.open(os.path.join(cu11, "q34.png")), Image.open(os.path.join(cu20, "q34.png"))],
-             ["reference: turnaround 3/4", "1.1.0 current", "2.0.0 candidate"], "face close-up, 3/4 (yaw -35)")
+    c20 = "2.0.0 face (close-up, round-2 hair)" if rend else "2.0.0 candidate"
+    fcells = [face_ref, tfront, Image.open(os.path.join(cu11, "front.png")), Image.open(os.path.join(cu20, "front.png"))]
+    flabs = ["reference: upload 01 close-up", "reference: turnaround front", "1.1.0 current", c20]
+    qcells = [t34, Image.open(os.path.join(cu11, "q34.png")), Image.open(os.path.join(cu20, "q34.png"))]
+    qlabs = ["reference: turnaround 3/4", "1.1.0 current", c20]
+    if rend:
+        fcells.append(Image.open(os.path.join(rend, "val27_front.png")).convert("RGB").crop(head))
+        qcells.append(Image.open(os.path.join(rend, "val27_threequarter_right.png")).convert("RGB").crop(head))
+        flabs.append("2.0.0 final (round-3 hair, crop)")
+        qlabs.append("2.0.0 final 3/4 (val27 cam, crop)")
+    fr = row(fcells, flabs, "face close-up, front")
+    fq = row(qcells, qlabs, "face close-up, 3/4 (yaw -35; crop: val27 3/4 camera)")
     stack([fr, fq], os.path.join(out, "sheet_face.jpg"))
     stack(rows + [fr, fq], os.path.join(out, "owner_sheet.jpg"))
     strip = Image.new("RGB", (turn.width, 700), (238, 238, 238))

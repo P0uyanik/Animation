@@ -6,7 +6,9 @@ Inputs (read only):
   base   assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.0.0-dev.spec.json (generic path)
   face   docs/evaluation/characters/T-065/candidates/boy_2.0-dev_face2.override.json  (face_generic/2 + body_generic/2)
   skin   docs/evaluation/characters/T-066/candidates/boy_yellow_hoodie.skin2.override.json (skin-felt/2, presets/2)
-  hair   docs/evaluation/characters/T-070/candidates/boy.hair_v3.json                  (groom/2, round 2)
+  hair   docs/evaluation/characters/T-080/inputs/boy.hair_v3.r3.json (groom/2 round 3: an unchanged copy of
+         docs/evaluation/characters/T-079/candidates/boy.hair_v3.json at t-079-claude-hair-v3-r3@7d3c424; T-079 is
+         not in staging yet. Supervisor 2026-11-18: use round 3 instead of round 2)
   outfit docs/evaluation/characters/T-068/candidates/boy_2.0.0-dev.garment_details.override.json
   personality content/personality/boy_yellow_hoodie.json (profile 1.0.0, T-053)
 
@@ -28,7 +30,7 @@ BASE = f"{SPEC_DIR}/boy_yellow_hoodie.2.0.0-dev.spec.json"
 OUT = f"{SPEC_DIR}/boy_yellow_hoodie.2.0.0.spec.json"
 FACE = "docs/evaluation/characters/T-065/candidates/boy_2.0-dev_face2.override.json"
 SKIN = "docs/evaluation/characters/T-066/candidates/boy_yellow_hoodie.skin2.override.json"
-HAIR = "docs/evaluation/characters/T-070/candidates/boy.hair_v3.json"
+HAIR = "docs/evaluation/characters/T-080/inputs/boy.hair_v3.r3.json"  # copy of T-079 candidates/boy.hair_v3.json @7d3c424
 OUTFIT = "docs/evaluation/characters/T-068/candidates/boy_2.0.0-dev.garment_details.override.json"
 PERSONALITY = "content/personality/boy_yellow_hoodie.json"
 
@@ -39,9 +41,10 @@ CHOICES = [
     "albedo, blush 226/128/112 (T-066's legacy blush colour, now in face.blush.srgb); T-065's dev blush placement kept.",
     "face skin occlusion: T-065's lift 0.35 kept; bleed 0 instead of T-065's 0.2 (conflict): presets/2 is "
     "non-emissive by rule and removes the bleed anyway; the references (upload 01, canon29) show no glowing creases.",
-    "hair: T-070 round-2 groom/2 data unchanged (structures, fibres, dynamics, keep-out) and its hair material "
-    "(felt hair 25/22/21); the 2.0.0-dev hair_clumps/1 section is replaced as a whole. Hair frame = the generic "
-    "path's head frame from the body params (centre/radii within 2 mm of the T-070 frame). Round 3 (T-079) = 2.0.1.",
+    "hair: T-079 round-3 groom/2 data unchanged (top whorl, upright crown, no horn tufts; Supervisor 2026-11-18: "
+    "round 3 instead of round 2) and its hair material (felt hair 25/22/21); the 2.0.0-dev hair_clumps/1 section "
+    "is replaced as a whole. Hair frame = the generic path's head frame from the body params (centre/radii within "
+    "2 mm of the T-070/T-079 frame).",
     "outfit: T-068 clothing taken as a whole (hood volume, closed armholes, trousers length 0.985, sneakers type, "
     "backpack garment); accessories stay none (the backpack is a garment type, T-068).",
     "materials pin presets/2 (registered in versions.py by T-080); exporter export/4 kept (as 2.0.0-dev and the "
@@ -68,7 +71,7 @@ def compose():
     s["generators"].update(outfit.get("generators", {}))
     s["accessories"] = {"generator": "none", "items": [],
                         "note": "T-068/T-080: the backpack is built as a garment type (clothing.garments[backpack])"}
-    # hair v3 round 2 (whole hair section) + its material assignment
+    # hair v3 round 3 (whole hair section) + its material assignment
     s["hair"] = copy.deepcopy(hair["overrides"]["hair"])
     s["generators"].update(hair["overrides"]["generators"])
     s["materials"] = SPEC.deep_merge(s["materials"], hair["overrides"].get("materials", {}))
@@ -89,7 +92,7 @@ def compose():
         "spec_version": "2.0.0",
         "status": "unpublished candidate (T-080); not approved, not pinned as current",
         "scope": "generic path: body_generic/2 fitted head, face_generic/2, skin-felt/2 (presets/2), groom/2 hair v3 "
-                 "round 2, garment/1 hoodie (hood volume, closed armholes), joggers, sneakers, backpack; personality "
+                 "round 3, garment/1 hoodie (hood volume, closed armholes), joggers, sneakers, backpack; personality "
                  "profile 1.0.0",
         "parent_versions": ["1.0.0", "1.1.0", "2.0.0-dev"],
         "sources": {"base": BASE, "face": FACE, "skin": SKIN, "hair": HAIR, "outfit": OUTFIT,

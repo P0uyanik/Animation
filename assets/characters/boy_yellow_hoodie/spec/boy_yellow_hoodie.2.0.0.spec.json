@@ -794,24 +794,24 @@
     ],
     "target": {
      "az": 180,
-     "el": 66
+     "el": 80
     },
     "tuck": 1.0,
     "height": [
-     0.022,
-     0.04,
-     0.04
+     0.016,
+     0.028,
+     0.03
     ],
     "inset": 0.004,
     "grooves": {
      "count": 30,
-     "depth": 0.2,
+     "depth": 0.22,
      "sharpness": 0.6,
      "wander": 0.4,
      "wavelength": 0.5
     },
     "lumps": {
-     "amount": 0.14,
+     "amount": 0.12,
      "scale": 1.2
     },
     "soft": [
@@ -829,51 +829,101 @@
    {
     "seg": 18,
     "grooves": 2,
-    "groove_depth": 0.05,
-    "irregularity": 0.13,
+    "groove_depth": 0.06,
+    "irregularity": 0.12,
     "type": "clumps",
-    "name": "crown",
+    "name": "whorl",
     "rows": [
      {
-      "count": 4,
+      "count": 5,
       "az": [
        -180,
        180
       ],
       "el": [
-       64,
+       80,
+       86
+      ],
+      "flow": "away",
+      "pole": {
+       "az": 180,
+       "el": 80
+      },
+      "len_deg": [
+       16,
+       22
+      ],
+      "lift": [
+       0.028,
+       0.05,
+       0.04
+      ],
+      "width": [
+       0.05,
+       0.058
+      ],
+      "thick": [
+       0.026,
+       0.03
+      ],
+      "jitter_deg": 10,
+      "curl_deg": 40,
+      "lift_power": 0.8,
+      "taper_power": 2.0,
+      "lift_peak": 0.5
+     }
+    ]
+   },
+   {
+    "seg": 18,
+    "grooves": 2,
+    "groove_depth": 0.06,
+    "irregularity": 0.12,
+    "type": "clumps",
+    "name": "crown",
+    "rows": [
+     {
+      "count": 6,
+      "az": [
+       -180,
+       180
+      ],
+      "el": [
+       66,
        74
       ],
       "flow": "away",
       "pole": {
        "az": 180,
-       "el": 66
+       "el": 80
       },
       "len_deg": [
-       14,
-       18
+       10,
+       14
       ],
       "lift": [
-       0.035,
-       0.115
-      ],
-      "width": [
-       0.11,
+       0.03,
        0.12
       ],
-      "thick": [
-       0.06,
-       0.066
+      "width": [
+       0.095,
+       0.105
       ],
-      "jitter_deg": 10,
-      "curl_deg": 6,
-      "lift_power": 0.5,
-      "taper_power": 1.5,
+      "thick": [
+       0.044,
+       0.05
+      ],
+      "jitter_deg": 6,
+      "curl_deg": 4,
+      "lift_power": 1.0,
+      "taper_power": 1.6,
       "az_list": [
-       -28,
-       32,
+       -38,
+       36,
+       100,
        150,
-       210
+       205,
+       262
       ]
      },
      {
@@ -883,13 +933,13 @@
        180
       ],
       "el": [
-       62,
-       76
+       66,
+       78
       ],
       "flow": "away",
       "pole": {
        "az": 180,
-       "el": 66
+       "el": 80
       },
       "len_deg": [
        30,
@@ -901,12 +951,12 @@
        0.06
       ],
       "width": [
-       0.012,
-       0.016
+       0.01,
+       0.014
       ],
       "thick": [
-       0.009,
-       0.012
+       0.008,
+       0.011
       ],
       "jitter_deg": 25,
       "curl_deg": 70,
@@ -914,9 +964,9 @@
       "taper_power": 1.6,
       "lift_peak": 0.45,
       "az_list": [
-       -60,
-       10,
-       110
+       -70,
+       20,
+       130
       ]
      }
     ]
@@ -924,48 +974,48 @@
    {
     "seg": 18,
     "grooves": 2,
-    "groove_depth": 0.05,
-    "irregularity": 0.13,
+    "groove_depth": 0.06,
+    "irregularity": 0.12,
     "type": "clumps",
     "name": "top",
     "rows": [
      {
-      "count": 12,
+      "count": 14,
       "az": [
        -180,
        180
       ],
       "el": [
-       42,
-       60
+       50,
+       66
       ],
       "flow": "away",
       "pole": {
        "az": 180,
-       "el": 66
+       "el": 80
       },
       "len_deg": [
-       36,
-       50
+       44,
+       58
       ],
       "lift": [
-       0.03,
-       0.07,
-       0.07
+       0.026,
+       0.056,
+       0.05
       ],
       "width": [
-       0.08,
-       0.094
+       0.068,
+       0.08
       ],
       "thick": [
-       0.04,
-       0.048
+       0.03,
+       0.036
       ],
       "jitter_deg": 12,
-      "curl_deg": 14,
+      "curl_deg": 16,
       "lift_power": 0.8,
-      "taper_power": 1.6,
-      "lift_peak": 0.6,
+      "taper_power": 2.2,
+      "lift_peak": 0.5,
       "flick_m": 0.012
      }
     ]
@@ -973,8 +1023,8 @@
    {
     "seg": 18,
     "grooves": 2,
-    "groove_depth": 0.05,
-    "irregularity": 0.13,
+    "groove_depth": 0.06,
+    "irregularity": 0.12,
     "type": "clumps",
     "name": "fringe",
     "rows": [
@@ -991,11 +1041,11 @@
       "flow": "down",
       "pole": {
        "az": 180,
-       "el": 66
+       "el": 80
       },
       "len_deg": [
-       40,
-       50
+       42,
+       52
       ],
       "lift": [
        0.016,
@@ -1003,17 +1053,17 @@
        0.022
       ],
       "width": [
-       0.074,
-       0.086
+       0.064,
+       0.074
       ],
       "thick": [
-       0.036,
-       0.042
+       0.03,
+       0.034
       ],
       "jitter_deg": 8,
-      "curl_deg": 12,
+      "curl_deg": 14,
       "converge": 0.1,
-      "taper_power": 1.6,
+      "taper_power": 2.2,
       "lift_peak": 0.6
      }
     ],
@@ -1026,8 +1076,8 @@
    {
     "seg": 18,
     "grooves": 2,
-    "groove_depth": 0.05,
-    "irregularity": 0.13,
+    "groove_depth": 0.06,
+    "irregularity": 0.12,
     "type": "clumps",
     "name": "fringe_centre",
     "rows": [
@@ -1044,7 +1094,7 @@
       "flow": "down",
       "pole": {
        "az": 180,
-       "el": 66
+       "el": 80
       },
       "len_deg": [
        56,
@@ -1052,20 +1102,20 @@
       ],
       "lift": [
        0.018,
-       0.034,
-       0.024
+       0.03,
+       0.022
       ],
       "width": [
-       0.1,
-       0.1
+       0.084,
+       0.084
       ],
       "thick": [
-       0.05,
-       0.05
+       0.04,
+       0.04
       ],
       "jitter_deg": 3,
       "curl_deg": 6,
-      "taper_power": 1.7,
+      "taper_power": 2.2,
       "lift_peak": 0.5,
       "az_list": [
        3
@@ -1074,23 +1124,23 @@
     ],
     "keepout": {
      "az": 34,
-     "el_min": -1,
+     "el_min": 0,
      "margin_deg": 1
     }
    },
    {
     "seg": 18,
     "grooves": 2,
-    "groove_depth": 0.05,
-    "irregularity": 0.13,
+    "groove_depth": 0.06,
+    "irregularity": 0.12,
     "type": "clumps",
     "name": "sides",
     "rows": [
      {
       "count": 2,
       "az": [
-       44,
-       64
+       47,
+       66
       ],
       "el": [
        8,
@@ -1099,36 +1149,36 @@
       "flow": "down",
       "pole": {
        "az": 180,
-       "el": 66
+       "el": 80
       },
       "len_deg": [
-       32,
-       38
+       34,
+       40
       ],
       "lift": [
        0.008,
-       0.02,
-       0.02
+       0.018,
+       0.018
       ],
       "width": [
-       0.062,
-       0.07
+       0.056,
+       0.062
       ],
       "thick": [
-       0.03,
-       0.036
+       0.026,
+       0.03
       ],
       "jitter_deg": 8,
       "curl_deg": 10,
-      "taper_power": 1.6,
-      "lift_peak": 0.6,
-      "flick_m": 0.01
+      "taper_power": 2.2,
+      "lift_peak": 0.55,
+      "flick_m": 0.014
      },
      {
       "count": 2,
       "az": [
-       -64,
-       -44
+       -66,
+       -47
       ],
       "el": [
        8,
@@ -1137,30 +1187,30 @@
       "flow": "down",
       "pole": {
        "az": 180,
-       "el": 66
+       "el": 80
       },
       "len_deg": [
-       32,
-       38
+       34,
+       40
       ],
       "lift": [
        0.008,
-       0.02,
-       0.02
+       0.018,
+       0.018
       ],
       "width": [
-       0.062,
-       0.07
+       0.056,
+       0.062
       ],
       "thick": [
-       0.03,
-       0.036
+       0.026,
+       0.03
       ],
       "jitter_deg": 8,
       "curl_deg": 10,
-      "taper_power": 1.6,
-      "lift_peak": 0.6,
-      "flick_m": 0.01
+      "taper_power": 2.2,
+      "lift_peak": 0.55,
+      "flick_m": 0.014
      },
      {
       "count": 3,
@@ -1175,30 +1225,30 @@
       "flow": "down",
       "pole": {
        "az": 180,
-       "el": 66
+       "el": 80
       },
       "len_deg": [
-       22,
-       32
+       26,
+       36
       ],
       "lift": [
-       0.012,
-       0.03,
-       0.03
+       0.01,
+       0.026,
+       0.026
       ],
       "width": [
-       0.074,
-       0.086
+       0.064,
+       0.074
       ],
       "thick": [
-       0.034,
-       0.04
+       0.028,
+       0.034
       ],
       "jitter_deg": 14,
       "curl_deg": 16,
-      "taper_power": 1.6,
-      "lift_peak": 0.6,
-      "flick_m": 0.01
+      "taper_power": 2.2,
+      "lift_peak": 0.55,
+      "flick_m": 0.014
      },
      {
       "count": 3,
@@ -1213,43 +1263,43 @@
       "flow": "down",
       "pole": {
        "az": 180,
-       "el": 66
+       "el": 80
       },
       "len_deg": [
-       22,
-       32
+       26,
+       36
       ],
       "lift": [
-       0.012,
-       0.03,
-       0.03
+       0.01,
+       0.026,
+       0.026
       ],
       "width": [
-       0.074,
-       0.086
+       0.064,
+       0.074
       ],
       "thick": [
-       0.034,
-       0.04
+       0.028,
+       0.034
       ],
       "jitter_deg": 14,
       "curl_deg": 16,
-      "taper_power": 1.6,
-      "lift_peak": 0.6,
-      "flick_m": 0.01
+      "taper_power": 2.2,
+      "lift_peak": 0.55,
+      "flick_m": 0.014
      }
     ]
    },
    {
     "seg": 18,
     "grooves": 2,
-    "groove_depth": 0.05,
-    "irregularity": 0.13,
+    "groove_depth": 0.06,
+    "irregularity": 0.12,
     "type": "clumps",
     "name": "back",
     "rows": [
      {
-      "count": 9,
+      "count": 10,
       "az": [
        118,
        242
@@ -1261,33 +1311,33 @@
       "flow": "down",
       "pole": {
        "az": 180,
-       "el": 66
+       "el": 80
       },
       "len_deg": [
-       30,
-       42
+       34,
+       46
       ],
       "lift": [
-       0.026,
-       0.05,
-       0.05
+       0.022,
+       0.044,
+       0.044
       ],
       "width": [
-       0.08,
-       0.092
+       0.068,
+       0.078
       ],
       "thick": [
-       0.04,
-       0.048
+       0.03,
+       0.036
       ],
       "jitter_deg": 14,
       "curl_deg": 16,
-      "taper_power": 1.6,
-      "lift_peak": 0.6,
-      "flick_m": 0.01
+      "taper_power": 2.2,
+      "lift_peak": 0.55,
+      "flick_m": 0.014
      },
      {
-      "count": 8,
+      "count": 9,
       "az": [
        124,
        236
@@ -1299,30 +1349,30 @@
       "flow": "down",
       "pole": {
        "az": 180,
-       "el": 66
+       "el": 80
       },
       "len_deg": [
-       18,
-       26
+       20,
+       28
       ],
       "lift": [
-       0.02,
-       0.038,
-       0.036
+       0.016,
+       0.032,
+       0.03
       ],
       "width": [
-       0.07,
-       0.082
+       0.06,
+       0.07
       ],
       "thick": [
-       0.036,
-       0.042
+       0.028,
+       0.032
       ],
       "jitter_deg": 14,
       "curl_deg": 16,
-      "taper_power": 1.6,
-      "lift_peak": 0.6,
-      "flick_m": 0.01
+      "taper_power": 2.2,
+      "lift_peak": 0.55,
+      "flick_m": 0.014
      }
     ]
    }
@@ -1413,6 +1463,11 @@
      "bones": 2,
      "bone_length": 0.03,
      "stiffness": 200.0
+    },
+    "whorl": {
+     "bones": 2,
+     "bone_length": 0.025,
+     "stiffness": 220.0
     }
    },
    "colliders": [
@@ -1815,7 +1870,7 @@
  "metadata": {
   "spec_version": "2.0.0",
   "status": "unpublished candidate (T-080); not approved, not pinned as current",
-  "scope": "generic path: body_generic/2 fitted head, face_generic/2, skin-felt/2 (presets/2), groom/2 hair v3 round 2, garment/1 hoodie (hood volume, closed armholes), joggers, sneakers, backpack; personality profile 1.0.0",
+  "scope": "generic path: body_generic/2 fitted head, face_generic/2, skin-felt/2 (presets/2), groom/2 hair v3 round 3, garment/1 hoodie (hood volume, closed armholes), joggers, sneakers, backpack; personality profile 1.0.0",
   "parent_versions": [
    "1.0.0",
    "1.1.0",
@@ -1825,7 +1880,7 @@
    "base": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.0.0-dev.spec.json",
    "face": "docs/evaluation/characters/T-065/candidates/boy_2.0-dev_face2.override.json",
    "skin": "docs/evaluation/characters/T-066/candidates/boy_yellow_hoodie.skin2.override.json",
-   "hair": "docs/evaluation/characters/T-070/candidates/boy.hair_v3.json",
+   "hair": "docs/evaluation/characters/T-080/inputs/boy.hair_v3.r3.json",
    "outfit": "docs/evaluation/characters/T-068/candidates/boy_2.0.0-dev.garment_details.override.json",
    "personality": "content/personality/boy_yellow_hoodie.json"
   },
@@ -1833,7 +1888,7 @@
    "face/head: T-065 boy face v2 candidate taken unchanged (face_generic/2 layout, cheeks, eyes, lids, socket, flat-stroke brows; body_generic/2 head outline fitted to the reference outlines).",
    "skin: T-066 skin-felt/2 (presets/2) with the porcelain-peach colour 236/190/166 for the skin slot and the face albedo, blush 226/128/112 (T-066's legacy blush colour, now in face.blush.srgb); T-065's dev blush placement kept.",
    "face skin occlusion: T-065's lift 0.35 kept; bleed 0 instead of T-065's 0.2 (conflict): presets/2 is non-emissive by rule and removes the bleed anyway; the references (upload 01, canon29) show no glowing creases.",
-   "hair: T-070 round-2 groom/2 data unchanged (structures, fibres, dynamics, keep-out) and its hair material (felt hair 25/22/21); the 2.0.0-dev hair_clumps/1 section is replaced as a whole. Hair frame = the generic path's head frame from the body params (centre/radii within 2 mm of the T-070 frame). Round 3 (T-079) = 2.0.1.",
+   "hair: T-079 round-3 groom/2 data unchanged (top whorl, upright crown, no horn tufts; Supervisor 2026-11-18: round 3 instead of round 2) and its hair material (felt hair 25/22/21); the 2.0.0-dev hair_clumps/1 section is replaced as a whole. Hair frame = the generic path's head frame from the body params (centre/radii within 2 mm of the T-070/T-079 frame).",
    "outfit: T-068 clothing taken as a whole (hood volume, closed armholes, trousers length 0.985, sneakers type, backpack garment); accessories stay none (the backpack is a garment type, T-068).",
    "materials pin presets/2 (registered in versions.py by T-080); exporter export/4 kept (as 2.0.0-dev and the girl 0.10.0).",
    "personality: profile boy_yellow_hoodie 1.0.0 referenced from animation.personality (data only; the engine reads content/personality/<id>.json through the scene's \"personality\" field)."
