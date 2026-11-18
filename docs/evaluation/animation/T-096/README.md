@@ -113,8 +113,12 @@ value is a load error.
   (`data/existing_shot_bakes_base_vs_branch.txt`). The T-082 latest copy without the switch
   (`shots/e905_s010_current`) also bakes identically before and after the change (`233d57e6…`).
 - Measurements: `build/measure_t096 <resolved scene> [--interaction ...] --vis 17,25,30,40,46,48,50,52`.
-- Not run: the frozen image regressions need the renderer (OFF here; `engine/render/` is untouched); see 6 for
-  `tools/check_all.py`.
+- `tools/check_all.py --base origin/main`: PASS for frozen assets, write-set (26 paths, all in the claim),
+  shared-systems lint, C++ build, C++ tests, Python tests and links. FAIL (expected) for guarded paths: the two test
+  files need the Supervisor-Approved trailer at merge. Blender tier (bpy 5.3 module via a `blender` wrapper; no
+  Blender binary here): **PASS**, full tier, regression boy / girl / third unchanged (fidelity 67.42 / 62.21).
+- Not run here: the frozen image regressions need the renderer (OFF here; `engine/render/` is untouched), and the
+  linux renderer CI job runs them.
 
 ## 6. Baselines
 - No frozen, published or exporter file changed (`git diff --stat 4910b69` lists only the write-set and this folder).
