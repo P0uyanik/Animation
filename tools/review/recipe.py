@@ -448,7 +448,12 @@ def render(resolved, exe, out, settings, log):
     with open(jpath, "w") as f:
         json.dump(job, f, indent=1)
     run_blender(exe, RENDER_SIDE, [jpath], log)
-    return rdir, load_json(os.path.join(rdir, "render_result.json"))
+    result = load_json(os.path.join(rdir, "render_result.json"))
+    for info in result.get("columns", {}).values():  # portable record: no machine-specific paths
+        b = os.path.abspath(info.get("blend", ""))
+        info["blend"] = (os.path.relpath(b, ROOT) if b.startswith(ROOT + os.sep) else
+                         "<out>/" + os.path.relpath(b, out) if b.startswith(out + os.sep) else os.path.basename(b))
+    return rdir, result
 
 
 def preview_record_ok(out, resolved):

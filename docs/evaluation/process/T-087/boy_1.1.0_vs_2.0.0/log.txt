@@ -1,0 +1,6 @@
+2026-11-18T15:01:16Z preview start: recipe e8d0a93a0d98 {'engine': 'cycles', 'samples': 2, 'px': 120}
+2026-11-18T15:02:07Z preview pass: <out>/preview/preview.jpg
+2026-11-18T15:02:20Z preview start: recipe 13d72dcb1e47 {'engine': 'cycles', 'samples': 2, 'px': 120}
+2026-11-18T15:03:10Z preview pass: <out>/preview/preview.jpg
+2026-11-18T15:03:15Z sheet start: recipe 13d72dcb1e47 {'engine': 'cycles', 'samples': 16, 'px': 360}
+2026-11-18T15:08:12Z sheet written: <out>/sheet.jpg 840x2048
