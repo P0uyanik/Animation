@@ -1,0 +1,390 @@
+[1mdiff --git a/tests/test_engine.cpp b/tests/test_engine.cpp[m
+[1mindex 16bbee9..0f4de16 100644[m
+[1m--- a/tests/test_engine.cpp[m
+[1m+++ b/tests/test_engine.cpp[m
+[36m@@ -201,72 +201,6 @@[m [mTEST_CASE("rest pose skinning is the identity") {[m
+   CHECK(q.y == doctest::Approx(0.5f).epsilon(0.001));[m
+ }[m
+ [m
+[1;35m-namespace {[m
+[1;35m-// Average BSDF sampling weight = directional albedo (should be <= 1).[m
+[1;35m-float albedoEstimate(const Material& mat, bool fiber, vec3 wo, int n = 20000) {[m
+[1;35m-  ShadingPoint sp;[m
+[1;35m-  sp.material = &mat;[m
+[1;35m-  sp.base = mat.baseColor;[m
+[1;35m-  sp.fiber = fiber;[m
+[1;35m-  sp.ng = sp.ns = vec3(0, 0, 1);[m
+[1;35m-  sp.tangent = vec3(1, 0, 0);[m
+[1;35m-  prepareShading(sp, wo);[m
+[1;35m-  Rng rng(5);[m
+[1;35m-  double sum = 0;[m
+[1;35m-  for (int i = 0; i < n; ++i) {[m
+[1;35m-    BsdfSample s;[m
+[1;35m-    if (sampleBsdf(sp, wo, rng.next(), rng.next2(), rng.next2(), s)) sum += luminance(s.weight);[m
+[1;35m-  }[m
+[1;35m-  return float(sum / n);[m
+[1;35m-}[m
+[1;35m-}  // namespace[m
+[1;35m-[m
+[1;35m-TEST_CASE("materials conserve energy") {[m
+[1;35m-  Material plush;[m
+[1;35m-  plush.type = MaterialType::Plush;[m
+[1;35m-  plush.baseColor = vec3(1);[m
+[1;35m-  plush.sheen = 1;[m
+[1;35m-  float a = albedoEstimate(plush, false, glm::normalize(vec3(0.3f, 0, 1)));[m
+[1;35m-  CHECK(a <= 1.05f);[m
+[1;35m-  CHECK(a > 0.6f);[m
+[1;35m-  Material std_;[m
+[1;35m-  std_.baseColor = vec3(1);[m
+[1;35m-  std_.coat = 1;[m
+[1;35m-  std_.roughness = 0.3f;[m
+[1;35m-  float b = albedoEstimate(std_, false, glm::normalize(vec3(0.5f, 0, 1)));[m
+[1;35m-  CHECK(b <= 1.08f);[m
+[1;35m-  CHECK(b > 0.7f);[m
+[1;35m-  Material fiber;[m
+[1;35m-  fiber.type = MaterialType::Fiber;[m
+[1;35m-  fiber.baseColor = vec3(0.999f);[m
+[1;35m-  fiber.betaM = 0.3f;[m
+[1;35m-  fiber.betaN = 0.6f;[m
+[1;35m-  float c = albedoEstimate(fiber, true, glm::normalize(vec3(0.2f, 0.1f, 1)));[m
+[1;35m-  CHECK(c <= 1.1f);[m
+[1;35m-  CHECK(c > 0.7f);[m
+[1;35m-}[m
+[1;35m-[m
+[1;35m-TEST_CASE("bsdf sampling pdf matches evaluation") {[m
+[1;35m-  Material m;[m
+[1;35m-  m.baseColor = vec3(0.6f);[m
+[1;35m-  m.roughness = 0.4f;[m
+[1;35m-  m.coat = 0.5f;[m
+[1;35m-  ShadingPoint sp;[m
+[1;35m-  sp.material = &m;[m
+[1;35m-  sp.base = m.baseColor;[m
+[1;35m-  vec3 wo = glm::normalize(vec3(0.4f, 0.2f, 1));[m
+[1;35m-  prepareShading(sp, wo);[m
+[1;35m-  Rng rng(3);[m
+[1;35m-  for (int i = 0; i < 200; ++i) {[m
+[1;35m-    BsdfSample s;[m
+[1;35m-    if (!sampleBsdf(sp, wo, rng.next(), rng.next2(), rng.next2(), s)) continue;[m
+[1;35m-    float pdf;[m
+[1;35m-    vec3 f = evalBsdf(sp, wo, s.wi, pdf);[m
+[1;35m-    CHECK(pdf == doctest::Approx(s.pdf).epsilon(0.001));[m
+[1;35m-    CHECK(glm::distance(f / pdf, s.weight) < 1e-3f);[m
+[1;35m-  }[m
+[1;35m-}[m
+[1;35m-[m
+ TEST_CASE("scene json round trip") {[m
+   Scene s;[m
+   s.name = "t";[m
+[36m@@ -302,79 +236,6 @@[m [mTEST_CASE("scene json round trip") {[m
+   CHECK(back->animation.evaluate("camera.position", 1, vec3(0)).z == doctest::Approx(3));[m
+ }[m
+ [m
+[1;35m-TEST_CASE("path tracer renders deterministically") {[m
+[1;35m-  auto snap = std::make_shared<FrameSnapshot>();[m
+[1;35m-  Material m;[m
+[1;35m-  m.name = "white";[m
+[1;35m-  snap->materials.push_back(m);[m
+[1;35m-  snap->meshes.push_back({std::make_shared<Mesh>(makeBoxMesh(vec3(-1, -0.1f, -1), vec3(1, 0, 1))), 0});[m
+[1;35m-  Light sun;[m
+[1;35m-  sun.direction = glm::normalize(vec3(0.3f, -1, 0.2f));[m
+[1;35m-  sun.intensity = 3;[m
+[1;35m-  snap->lights.push_back(sun);[m
+[1;35m-  snap->camera.position = vec3(0, 1, 2);[m
+[1;35m-  snap->camera.target = vec3(0);[m
+[1;35m-  RenderSettings rs;[m
+[1;35m-  rs.width = 32;[m
+[1;35m-  rs.height = 24;[m
+[1;35m-  rs.spp = 4;[m
+[1;35m-  PathTracer pt;[m
+[1;35m-  auto a = pt.render(snap, rs);[m
+[1;35m-  auto b = pt.render(snap, rs);[m
+[1;35m-  double sum = 0;[m
+[1;35m-  bool same = true;[m
+[1;35m-  for (size_t i = 0; i < a.color.pixels.size(); ++i) {[m
+[1;35m-    sum += luminance(a.color.pixels[i]);[m
+[1;35m-    same = same && a.color.pixels[i] == b.color.pixels[i];[m
+[1;35m-  }[m
+[1;35m-  CHECK(sum > 1.0);[m
+[1;35m-  CHECK(same);[m
+[1;35m-}[m
+[1;35m-[m
+[1;35m-TEST_CASE("subsurface random walk returns about the base albedo under uniform light") {[m
+[1;35m-  // A large sphere (radius >> mean free path) under a uniform white sky: a purely subsurface material should[m
+[1;35m-  // reflect close to its base colour (that is what the albedo inversion is for), and a white one about 1.[m
+[1;35m-  SdfPart part;[m
+[1;35m-  part.voxelSize = 0.01f;[m
+[1;35m-  SdfPrim s;[m
+[1;35m-  s.radii = vec3(0.3f);[m
+[1;35m-  part.prims.push_back(s);[m
+[1;35m-  auto sphere = std::make_shared<Mesh>(meshSdfPart(part));[m
+[1;35m-  for (float a : {0.5f, 0.95f}) {[m
+[1;35m-    auto snap = std::make_shared<FrameSnapshot>();[m
+[1;35m-    Material m;[m
+[1;35m-    m.name = "sss";[m
+[1;35m-    m.baseColor = vec3(a);[m
+[1;35m-    m.specular = 0;[m
+[1;35m-    m.subsurface = 1;[m
+[1;35m-    m.subsurfaceRadius = vec3(0.01f);[m
+[1;35m-    snap->materials.push_back(m);[m
+[1;35m-    snap->meshes.push_back({sphere, 0});[m
+[1;35m-    Light sky;[m
+[1;35m-    sky.type = Light::Type::Sky;[m
+[1;35m-    sky.intensity = 1;[m
+[1;35m-    snap->lights.push_back(sky);[m
+[1;35m-    snap->camera.position = vec3(0, 0, 2);[m
+[1;35m-    snap->camera.target = vec3(0);[m
+[1;35m-    snap->camera.focalMm = 200;[m
+[1;35m-    snap->camera.fStop = 0;[m
+[1;35m-    RenderSettings rs;[m
+[1;35m-    rs.width = 16;[m
+[1;35m-    rs.height = 16;[m
+[1;35m-    rs.spp = 256;[m
+[1;35m-    rs.denoise = false;[m
+[1;35m-    rs.maxDepth = 64;[m
+[1;35m-    rs.clamp = 1e6f;[m
+[1;35m-    PathTracer pt;[m
+[1;35m-    auto out = pt.render(snap, rs);[m
+[1;35m-    double sum = 0;[m
+[1;35m-    for (const vec3& c : out.color.pixels) sum += luminance(c);[m
+[1;35m-    double mean = sum / double(out.color.pixels.size());[m
+[1;35m-    MESSAGE("base " << a << " -> mean radiance " << mean);[m
+[1;35m-    CHECK(mean == doctest::Approx(a).epsilon(0.12));[m
+[1;35m-  }[m
+[1;35m-}[m
+[1;35m-[m
+ TEST_CASE("surface fibers grow outwards and follow deformation") {[m
+   SdfPart part;[m
+   part.voxelSize = 0.004f;[m
+[36m@@ -474,41 +335,6 @@[m [mTEST_CASE("lock groups build tapered cores and an outward halo") {[m
+   CHECK(fibers.curveOffsets.size() == fibers.fiberCount + 1);[m
+ }[m
+ [m
+[1;35m-TEST_CASE("glass lets light through and does not cast shadows") {[m
+[1;35m-  auto make = [](bool withGlass) {[m
+[1;35m-    auto snap = std::make_shared<FrameSnapshot>();[m
+[1;35m-    Material white;[m
+[1;35m-    white.name = "white";[m
+[1;35m-    Material glass;[m
+[1;35m-    glass.name = "glass";[m
+[1;35m-    glass.type = MaterialType::Glass;[m
+[1;35m-    glass.thin = true;[m
+[1;35m-    glass.baseColor = vec3(1);[m
+[1;35m-    glass.castsShadow = false;[m
+[1;35m-    snap->materials = {white, glass};[m
+[1;35m-    snap->meshes.push_back({std::make_shared<Mesh>(makeBoxMesh(vec3(-1, -0.1f, -1), vec3(1, 0, 1))), 0});[m
+[1;35m-    if (withGlass) snap->meshes.push_back({std::make_shared<Mesh>(makeBoxMesh(vec3(-0.5f, 0.5f, -0.5f), vec3(0.5f, 0.51f, 0.5f))), 1});[m
+[1;35m-    Light sun;[m
+[1;35m-    sun.direction = vec3(0, -1, 0);[m
+[1;35m-    sun.intensity = 3;[m
+[1;35m-    snap->lights.push_back(sun);[m
+[1;35m-    snap->camera.position = vec3(0, 0.3f, 0.6f);[m
+[1;35m-    snap->camera.target = vec3(0, 0, 0);[m
+[1;35m-    snap->camera.fStop = 0;[m
+[1;35m-    return snap;[m
+[1;35m-  };[m
+[1;35m-  RenderSettings rs;[m
+[1;35m-  rs.width = 16;[m
+[1;35m-  rs.height = 12;[m
+[1;35m-  rs.spp = 8;[m
+[1;35m-  PathTracer pt;[m
+[1;35m-  auto a = pt.render(make(false), rs), b = pt.render(make(true), rs);[m
+[1;35m-  double la = 0, lb = 0;[m
+[1;35m-  for (auto& p : a.color.pixels) la += luminance(p);[m
+[1;35m-  for (auto& p : b.color.pixels) lb += luminance(p);[m
+[1;35m-  CHECK(lb > 0.8 * la);  // the floor under the glass pane is still lit[m
+[1;35m-}[m
+[1;35m-[m
+ TEST_CASE("finger poses close the hand and a grasp adapts to the object's size") {[m
+   // Hand of the iteration-4 characters (left side): hand bone, thumb and four two-segment fingers.[m
+   Skeleton sk;[m
+[1mdiff --git a/tests/test_render.cpp b/tests/test_render.cpp[m
+[1mnew file mode 100644[m
+[1mindex 0000000..d11c5c8[m
+[1m--- /dev/null[m
+[1m+++ b/tests/test_render.cpp[m
+[36m@@ -0,0 +1,185 @@[m
+[32m+[m[32m// Engine path tracer tests (built only with PLUSH_BUILD_RENDERER=ON). Moved verbatim from test_engine.cpp (T-085).[m
+[32m+[m[32m#include <doctest/doctest.h>[m
+[1;36m+[m
+[32m+[m[32m#include <memory>[m
+[1;36m+[m
+[32m+[m[32m#include "render/bsdf.h"[m
+[32m+[m[32m#include "render/image.h"[m
+[32m+[m[32m#include "render/pathtracer.h"[m
+[32m+[m[32m#include "scene/scene.h"[m
+[1;36m+[m
+[32m+[m[32musing namespace plush;[m
+[1;36m+[m
+[1;36m+[m[1;36mnamespace {[m
+[1;36m+[m[1;36m// Average BSDF sampling weight = directional albedo (should be <= 1).[m
+[1;36m+[m[1;36mfloat albedoEstimate(const Material& mat, bool fiber, vec3 wo, int n = 20000) {[m
+[1;36m+[m[1;36m  ShadingPoint sp;[m
+[1;36m+[m[1;36m  sp.material = &mat;[m
+[1;36m+[m[1;36m  sp.base = mat.baseColor;[m
+[1;36m+[m[1;36m  sp.fiber = fiber;[m
+[1;36m+[m[1;36m  sp.ng = sp.ns = vec3(0, 0, 1);[m
+[1;36m+[m[1;36m  sp.tangent = vec3(1, 0, 0);[m
+[1;36m+[m[1;36m  prepareShading(sp, wo);[m
+[1;36m+[m[1;36m  Rng rng(5);[m
+[1;36m+[m[1;36m  double sum = 0;[m
+[1;36m+[m[1;36m  for (int i = 0; i < n; ++i) {[m
+[1;36m+[m[1;36m    BsdfSample s;[m
+[1;36m+[m[1;36m    if (sampleBsdf(sp, wo, rng.next(), rng.next2(), rng.next2(), s)) sum += luminance(s.weight);[m
+[1;36m+[m[1;36m  }[m
+[1;36m+[m[1;36m  return float(sum / n);[m
+[1;36m+[m[1;36m}[m
+[1;36m+[m[1;36m}  // namespace[m
+[1;36m+[m
+[1;36m+[m[1;36mTEST_CASE("materials conserve energy") {[m
+[1;36m+[m[1;36m  Material plush;[m
+[1;36m+[m[1;36m  plush.type = MaterialType::Plush;[m
+[1;36m+[m[1;36m  plush.baseColor = vec3(1);[m
+[1;36m+[m[1;36m  plush.sheen = 1;[m
+[1;36m+[m[1;36m  float a = albedoEstimate(plush, false, glm::normalize(vec3(0.3f, 0, 1)));[m
+[1;36m+[m[1;36m  CHECK(a <= 1.05f);[m
+[1;36m+[m[1;36m  CHECK(a > 0.6f);[m
+[1;36m+[m[1;36m  Material std_;[m
+[1;36m+[m[1;36m  std_.baseColor = vec3(1);[m
+[1;36m+[m[1;36m  std_.coat = 1;[m
+[1;36m+[m[1;36m  std_.roughness = 0.3f;[m
+[1;36m+[m[1;36m  float b = albedoEstimate(std_, false, glm::normalize(vec3(0.5f, 0, 1)));[m
+[1;36m+[m[1;36m  CHECK(b <= 1.08f);[m
+[1;36m+[m[1;36m  CHECK(b > 0.7f);[m
+[1;36m+[m[1;36m  Material fiber;[m
+[1;36m+[m[1;36m  fiber.type = MaterialType::Fiber;[m
+[1;36m+[m[1;36m  fiber.baseColor = vec3(0.999f);[m
+[1;36m+[m[1;36m  fiber.betaM = 0.3f;[m
+[1;36m+[m[1;36m  fiber.betaN = 0.6f;[m
+[1;36m+[m[1;36m  float c = albedoEstimate(fiber, true, glm::normalize(vec3(0.2f, 0.1f, 1)));[m
+[1;36m+[m[1;36m  CHECK(c <= 1.1f);[m
+[1;36m+[m[1;36m  CHECK(c > 0.7f);[m
+[1;36m+[m[1;36m}[m
+[1;36m+[m
+[1;36m+[m[1;36mTEST_CASE("bsdf sampling pdf matches evaluation") {[m
+[1;36m+[m[1;36m  Material m;[m
+[1;36m+[m[1;36m  m.baseColor = vec3(0.6f);[m
+[1;36m+[m[1;36m  m.roughness = 0.4f;[m
+[1;36m+[m[1;36m  m.coat = 0.5f;[m
+[1;36m+[m[1;36m  ShadingPoint sp;[m
+[1;36m+[m[1;36m  sp.material = &m;[m
+[1;36m+[m[1;36m  sp.base = m.baseColor;[m
+[1;36m+[m[1;36m  vec3 wo = glm::normalize(vec3(0.4f, 0.2f, 1));[m
+[1;36m+[m[1;36m  prepareShading(sp, wo);[m
+[1;36m+[m[1;36m  Rng rng(3);[m
+[1;36m+[m[1;36m  for (int i = 0; i < 200; ++i) {[m
+[1;36m+[m[1;36m    BsdfSample s;[m
+[1;36m+[m[1;36m    if (!sampleBsdf(sp, wo, rng.next(), rng.next2(), rng.next2(), s)) continue;[m
+[1;36m+[m[1;36m    float pdf;[m
+[1;36m+[m[1;36m    vec3 f = evalBsdf(sp, wo, s.wi, pdf);[m
+[1;36m+[m[1;36m    CHECK(pdf == doctest::Approx(s.pdf).epsilon(0.001));[m
+[1;36m+[m[1;36m    CHECK(glm::distance(f / pdf, s.weight) < 1e-3f);[m
+[1;36m+[m[1;36m  }[m
+[1;36m+[m[1;36m}[m
+[1;36m+[m
+[1;36m+[m[1;36mTEST_CASE("path tracer renders deterministically") {[m
+[1;36m+[m[1;36m  auto snap = std::make_shared<FrameSnapshot>();[m
+[1;36m+[m[1;36m  Material m;[m
+[1;36m+[m[1;36m  m.name = "white";[m
+[1;36m+[m[1;36m  snap->materials.push_back(m);[m
+[1;36m+[m[1;36m  snap->meshes.push_back({std::make_shared<Mesh>(makeBoxMesh(vec3(-1, -0.1f, -1), vec3(1, 0, 1))), 0});[m
+[1;36m+[m[1;36m  Light sun;[m
+[1;36m+[m[1;36m  sun.direction = glm::normalize(vec3(0.3f, -1, 0.2f));[m
+[1;36m+[m[1;36m  sun.intensity = 3;[m
+[1;36m+[m[1;36m  snap->lights.push_back(sun);[m
+[1;36m+[m[1;36m  snap->camera.position = vec3(0, 1, 2);[m
+[1;36m+[m[1;36m  snap->camera.target = vec3(0);[m
+[1;36m+[m[1;36m  RenderSettings rs;[m
+[1;36m+[m[1;36m  rs.width = 32;[m
+[1;36m+[m[1;36m  rs.height = 24;[m
+[1;36m+[m[1;36m  rs.spp = 4;[m
+[1;36m+[m[1;36m  PathTracer pt;[m
+[1;36m+[m[1;36m  auto a = pt.render(snap, rs);[m
+[1;36m+[m[1;36m  auto b = pt.render(snap, rs);[m
+[1;36m+[m[1;36m  double sum = 0;[m
+[1;36m+[m[1;36m  bool same = true;[m
+[1;36m+[m[1;36m  for (size_t i = 0; i < a.color.pixels.size(); ++i) {[m
+[1;36m+[m[1;36m    sum += luminance(a.color.pixels[i]);[m
+[1;36m+[m[1;36m    same = same && a.color.pixels[i] == b.color.pixels[i];[m
+[1;36m+[m[1;36m  }[m
+[1;36m+[m[1;36m  CHECK(sum > 1.0);[m
+[1;36m+[m[1;36m  CHECK(same);[m
+[1;36m+[m[1;36m}[m
+[1;36m+[m
+[1;36m+[m[1;36mTEST_CASE("subsurface random walk returns about the base albedo under uniform light") {[m
+[1;36m+[m[1;36m  // A large sphere (radius >> mean free path) under a uniform white sky: a purely subsurface material should[m
+[1;36m+[m[1;36m  // reflect close to its base colour (that is what the albedo inversion is for), and a white one about 1.[m
+[1;36m+[m[1;36m  SdfPart part;[m
+[1;36m+[m[1;36m  part.voxelSize = 0.01f;[m
+[1;36m+[m[1;36m  SdfPrim s;[m
+[1;36m+[m[1;36m  s.radii = vec3(0.3f);[m
+[1;36m+[m[1;36m  part.prims.push_back(s);[m
+[1;36m+[m[1;36m  auto sphere = std::make_shared<Mesh>(meshSdfPart(part));[m
+[1;36m+[m[1;36m  for (float a : {0.5f, 0.95f}) {[m
+[1;36m+[m[1;36m    auto snap = std::make_shared<FrameSnapshot>();[m
+[1;36m+[m[1;36m    Material m;[m
+[1;36m+[m[1;36m    m.name = "sss";[m
+[1;36m+[m[1;36m    m.baseColor = vec3(a);[m
+[1;36m+[m[1;36m    m.specular = 0;[m
+[1;36m+[m[1;36m    m.subsurface = 1;[m
+[1;36m+[m[1;36m    m.subsurfaceRadius = vec3(0.01f);[m
+[1;36m+[m[1;36m    snap->materials.push_back(m);[m
+[1;36m+[m[1;36m    snap->meshes.push_back({sphere, 0});[m
+[1;36m+[m[1;36m    Light sky;[m
+[1;36m+[m[1;36m    sky.type = Light::Type::Sky;[m
+[1;36m+[m[1;36m    sky.intensity = 1;[m
+[1;36m+[m[1;36m    snap->lights.push_back(sky);[m
+[1;36m+[m[1;36m    snap->camera.position = vec3(0, 0, 2);[m
+[1;36m+[m[1;36m    snap->camera.target = vec3(0);[m
+[1;36m+[m[1;36m    snap->camera.focalMm = 200;[m
+[1;36m+[m[1;36m    snap->camera.fStop = 0;[m
+[1;36m+[m[1;36m    RenderSettings rs;[m
+[1;36m+[m[1;36m    rs.width = 16;[m
+[1;36m+[m[1;36m    rs.height = 16;[m
+[1;36m+[m[1;36m    rs.spp = 256;[m
+[1;36m+[m[1;36m    rs.denoise = false;[m
+[1;36m+[m[1;36m    rs.maxDepth = 64;[m
+[1;36m+[m[1;36m    rs.clamp = 1e6f;[m
+[1;36m+[m[1;36m    PathTracer pt;[m
+[1;36m+[m[1;36m    auto out = pt.render(snap, rs);[m
+[1;36m+[m[1;36m    double sum = 0;[m
+[1;36m+[m[1;36m    for (const vec3& c : out.color.pixels) sum += luminance(c);[m
+[1;36m+[m[1;36m    double mean = sum / double(out.color.pixels.size());[m
+[1;36m+[m[1;36m    MESSAGE("base " << a << " -> mean radiance " << mean);[m
+[1;36m+[m[1;36m    CHECK(mean == doctest::Approx(a).epsilon(0.12));[m
+[1;36m+[m[1;36m  }[m
+[1;36m+[m[1;36m}[m
+[1;36m+[m
+[1;36m+[m[1;36mTEST_CASE("glass lets light through and does not cast shadows") {[m
+[1;36m+[m[1;36m  auto make = [](bool withGlass) {[m
+[1;36m+[m[1;36m    auto snap = std::make_shared<FrameSnapshot>();[m
+[1;36m+[m[1;36m    Material white;[m
+[1;36m+[m[1;36m    white.name = "white";[m
+[1;36m+[m[1;36m    Material glass;[m
+[1;36m+[m[1;36m    glass.name = "glass";[m
+[1;36m+[m[1;36m    glass.type = MaterialType::Glass;[m
+[1;36m+[m[1;36m    glass.thin = true;[m
+[1;36m+[m[1;36m    glass.baseColor = vec3(1);[m
+[1;36m+[m[1;36m    glass.castsShadow = false;[m
+[1;36m+[m[1;36m    snap->materials = {white, glass};[m
+[1;36m+[m[1;36m    snap->meshes.push_back({std::make_shared<Mesh>(makeBoxMesh(vec3(-1, -0.1f, -1), vec3(1, 0, 1))), 0});[m
+[1;36m+[m[1;36m    if (withGlass) snap->meshes.push_back({std::make_shared<Mesh>(makeBoxMesh(vec3(-0.5f, 0.5f, -0.5f), vec3(0.5f, 0.51f, 0.5f))), 1});[m
+[1;36m+[m[1;36m    Light sun;[m
+[1;36m+[m[1;36m    sun.direction = vec3(0, -1, 0);[m
+[1;36m+[m[1;36m    sun.intensity = 3;[m
+[1;36m+[m[1;36m    snap->lights.push_back(sun);[m
+[1;36m+[m[1;36m    snap->camera.position = vec3(0, 0.3f, 0.6f);[m
+[1;36m+[m[1;36m    snap->camera.target = vec3(0, 0, 0);[m
+[1;36m+[m[1;36m    snap->camera.fStop = 0;[m
+[1;36m+[m[1;36m    return snap;[m
+[1;36m+[m[1;36m  };[m
+[1;36m+[m[1;36m  RenderSettings rs;[m
+[1;36m+[m[1;36m  rs.width = 16;[m
+[1;36m+[m[1;36m  rs.height = 12;[m
+[1;36m+[m[1;36m  rs.spp = 8;[m
+[1;36m+[m[1;36m  PathTracer pt;[m
+[1;36m+[m[1;36m  auto a = pt.render(make(false), rs), b = pt.render(make(true), rs);[m
+[1;36m+[m[1;36m  double la = 0, lb = 0;[m
+[1;36m+[m[1;36m  for (auto& p : a.color.pixels) la += luminance(p);[m
+[1;36m+[m[1;36m  for (auto& p : b.color.pixels) lb += luminance(p);[m
+[1;36m+[m[1;36m  CHECK(lb > 0.8 * la);  // the floor under the glass pane is still lit[m
+[1;36m+[m[1;36m}[m

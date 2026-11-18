@@ -1,0 +1,11 @@
+# doctest test cases: main ab9fd4c (renderer ON, as today) vs this branch ON vs OFF
+main ab9fd4c (default = renderer ON): 129 cases
+branch PLUSH_BUILD_RENDERER=ON: 129 cases
+branch PLUSH_BUILD_RENDERER=OFF: 124 cases
+branch ON vs main: identical
+OFF = ON minus:
+  bsdf sampling pdf matches evaluation
+  glass lets light through and does not cast shadows
+  materials conserve energy
+  path tracer renders deterministically
+  subsurface random walk returns about the base albedo under uniform light

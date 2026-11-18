@@ -1,0 +1,14 @@
+$ ctest --test-dir <repo>/build/quality-gate --output-on-failure -C Release
+Internal ctest changing into directory: <repo>/build/quality-gate
+Test project <repo>/build/quality-gate
+    Start 1: plush_tests
+1/2 Test #1: plush_tests ......................   Passed   50.11 sec
+    Start 2: renderer_tests_skipped
+2/2 Test #2: renderer_tests_skipped ...........***Skipped   0.01 sec
+
+100% tests passed, 0 tests failed out of 2
+
+Total Test time (real) =  50.13 sec
+
+The following tests did not run:
+	  2 - renderer_tests_skipped (Skipped)

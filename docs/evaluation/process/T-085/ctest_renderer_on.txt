@@ -1,0 +1,17 @@
+Test project <repo>/build/on
+    Start 1: plush_tests
+1/4 Test #1: plush_tests ......................   Passed   53.01 sec
+    Start 2: regression_milestone01
+2/4 Test #2: regression_milestone01 ...........   Passed    2.75 sec
+    Start 3: regression_face_neutral
+3/4 Test #3: regression_face_neutral ..........   Passed    3.97 sec
+    Start 4: regression_lineup_abc
+4/4 Test #4: regression_lineup_abc ............   Passed   10.51 sec
+
+100% tests passed, 0 tests failed out of 4
+
+Total Test time (real) =  70.24 sec
+
+real	1m10.249s
+user	2m29.734s
+sys	0m3.270s

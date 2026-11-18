@@ -1,4 +1,3 @@
-find_package(GLEW REQUIRED)
 # Production workflow (shot discovery, jobs, status, frame mapping, merge-save): no UI, unit-tested in plush_tests.
 add_library(plush_shot_workflow STATIC shot_workflow.cpp)
 if(WIN32)
@@ -6,6 +5,10 @@ if(WIN32)
 endif()
 target_include_directories(plush_shot_workflow PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(plush_shot_workflow PUBLIC plush_scene PRIVATE plush_warnings)
+if(NOT PLUSH_BUILD_STUDIO_APP)
+  return()  # the app needs the renderer (PLUSH_BUILD_RENDERER); the workflow library above is built either way
+endif()
+find_package(GLEW REQUIRED)
 add_executable(plush-studio main.cpp)
 target_link_libraries(plush-studio PRIVATE plush_scene plush_render plush_imgui plush_shot_workflow GLEW::GLEW plush_warnings)
 # The studio launches the command-line renderer for animation jobs.

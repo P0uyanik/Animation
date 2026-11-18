@@ -5,6 +5,8 @@ name: Quality gate
 #   linux       tools/check_all.py on the trial-merge result: frozen, guarded, write-set, lint, C++ build + tests,
 #               Python tests, links, Blender tier (the per-character regression runs in the jobs below)
 #   regression  full tier only: one job per character in assets/characters, in parallel (tools/regression/run.py)
+#   renderer    the one PLUSH_BUILD_RENDERER=ON build (T-085): frozen engine path tracer, plush-studio, renderer
+#               doctest cases and the frozen image regressions; every other job builds with the renderer OFF
 #   windows     staging/main pushes (or "[ci windows]" in the head commit message): C++ and Python tiers
 #   verdict     combines every report into <= 10 lines and fails if any check or required job failed
 
@@ -84,7 +86,7 @@ jobs:
           path: ~/.cache/ccache
           key: ccache-linux-${{ github.sha }}
           restore-keys: ccache-linux-
-      - name: Install pinned dependencies (apt C++ libraries, OIDN, bpy)
+      - name: Install pinned dependencies (apt C++ libraries without Embree/OIDN, bpy)
         shell: pwsh
         run: ./.github/scripts/install_ci_dependencies.ps1 -Platform linux -Cpp -Bpy
       - name: Trial merge
@@ -118,6 +120,90 @@ jobs:
             build/check-all/**/*.txt
             build/check-all/**/*.log
             build/check-all/**/*.png
+          if-no-files-found: error
+          retention-days: 30
+
+  renderer:
+    name: linux renderer
+    needs: plan
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+          persist-credentials: true  # repo is private: later `git fetch` steps need the job token (read-only)
+      - name: Fetch main and staging
+        run: git fetch --no-tags origin +main:refs/remotes/origin/main +staging:refs/remotes/origin/staging
+      - name: Cache pinned downloads
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        with:
+          path: ${{ runner.temp }}/plush-pinned-dependencies
+          key: pinned-linux-${{ hashFiles('.github/ci-dependencies.json') }}
+      - name: Cache ccache
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        with:
+          path: ~/.cache/ccache
+          key: ccache-linux-renderer-${{ github.sha }}
+          restore-keys: ccache-linux-renderer-
+      - name: Install pinned dependencies (apt C++ libraries, Embree, OIDN)
+        shell: pwsh
+        run: ./.github/scripts/install_ci_dependencies.ps1 -Platform linux -Cpp -Renderer
+      - name: Trial merge
+        id: merge
+        run: bash .github/scripts/trial_merge.sh "${{ needs.plan.outputs.merge_target }}" build/check-all/renderer
+      - name: Build and test with the renderer ON
+        id: renderer
+        if: steps.merge.outputs.clean == 'true'
+        env:
+          CMAKE_C_COMPILER_LAUNCHER: ccache
+          CMAKE_CXX_COMPILER_LAUNCHER: ccache
+        run: |
+          logs=build/check-all/renderer/logs
+          mkdir -p "$logs"
+          build=fail
+          tests=fail
+          if { cmake -S . -B build/renderer -G Ninja -DCMAKE_BUILD_TYPE=Release -DPLUSH_BUILD_RENDERER=ON \
+                 -DPLUSH_BUILD_STUDIO=ON -DPLUSH_BUILD_TESTS=ON -DPLUSH_OIDN_ROOT="$PLUSH_OIDN_ROOT" &&
+               cmake --build build/renderer --parallel; } > "$logs/renderer-build.log" 2>&1 &&
+             test -x build/renderer/apps/studio/plush-studio && test -x build/renderer/apps/render-cli/plush-render; then
+            build=pass
+            ctest --test-dir build/renderer --output-on-failure > "$logs/renderer-ctest.log" 2>&1 && tests=pass
+          fi
+          echo "build=$build" >> "$GITHUB_OUTPUT"
+          echo "tests=$tests" >> "$GITHUB_OUTPUT"
+          tail -n 15 "$logs/renderer-ctest.log" 2>/dev/null || tail -n 40 "$logs/renderer-build.log"
+          ccache --show-stats | head -5 || true
+      - name: Write renderer report
+        if: always()
+        env:
+          BUILD: ${{ steps.renderer.outputs.build || 'not run' }}
+          TESTS: ${{ steps.renderer.outputs.tests || 'not run' }}
+        run: |
+          # Same check names as the linux gate, so the verdict merges them into its existing lines (<= 10 lines).
+          python3 - build/check-all/renderer/check_all.json <<'PY'
+          import json, os, sys
+          build, tests = os.environ["BUILD"], os.environ["TESTS"]
+          checks = [
+              {"name": "C++ build", "ok": build == "pass",
+               "detail": "" if build == "pass" else f"renderer ON build {build}: see renderer-build.log"},
+              {"name": "C++ tests", "ok": tests == "pass",
+               "detail": "" if tests == "pass" else f"renderer ON ctest {tests}: see renderer-ctest.log"},
+          ]
+          verdict = "PASS" if all(c["ok"] for c in checks) else "FAIL"
+          json.dump({"schema": "plush.quality-gate/1", "verdict": verdict, "platform": "linux-renderer",
+                     "checks": checks, "summary": [f"{'PASS' if c['ok'] else 'FAIL'} {c['name']}" for c in checks]},
+                    open(sys.argv[1], "w"), indent=2)
+          PY
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: quality-renderer
+          path: |
+            build/check-all/renderer/**/*.json
+            build/check-all/renderer/**/*.log
+            build/renderer/regression_*.png
           if-no-files-found: error
           retention-days: 30
 
@@ -223,7 +309,7 @@ jobs:
           path: ${{ runner.temp }}/vcpkg-binary-cache
           key: vcpkg-${{ steps.tools.outputs.abi }}-${{ hashFiles('vcpkg.json', 'vcpkg-configuration.json') }}
           restore-keys: vcpkg-${{ steps.tools.outputs.abi }}-
-      - name: Install pinned dependencies (OIDN, vcpkg manifest)
+      - name: Install pinned dependencies (vcpkg manifest, no renderer feature)
         shell: pwsh
         env:
           VCPKG_DEFAULT_BINARY_CACHE: ${{ runner.temp }}/vcpkg-binary-cache
@@ -294,7 +380,7 @@ jobs:
   verdict:
     name: Gate verdict
     if: ${{ !cancelled() }}
-    needs: [plan, linux, regression, windows]
+    needs: [plan, linux, renderer, regression, windows]
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:

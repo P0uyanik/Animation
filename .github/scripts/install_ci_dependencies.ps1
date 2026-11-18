@@ -2,9 +2,13 @@ param(
     [Parameter(Mandatory = $true)]
     [ValidateSet('linux', 'windows')]
     [string]$Platform,
-    # C++ tier: Ubuntu packages (linux; vcpkg stays the Windows path) and the pinned OIDN 2.3.3 prebuilt, which
-    # the frozen image regressions need (without OIDN: rmse 0.046 > 0.03, T-001 finding).
+    # C++ tier: Ubuntu packages (linux; vcpkg stays the Windows path). No Embree/OIDN: the default build has
+    # PLUSH_BUILD_RENDERER=OFF (T-085).
     [switch]$Cpp,
+    # Renderer job only (PLUSH_BUILD_RENDERER=ON): Embree (apt renderer_packages on linux; the vcpkg "renderer"
+    # feature on Windows) and the pinned OIDN 2.3.3 prebuilt, which the frozen image regressions need (without
+    # OIDN: rmse 0.046 > 0.03, T-001 finding).
+    [switch]$Renderer,
     # Blender tier: the checksum-pinned bpy wheel, Pillow and a `blender` shim (tools/bpy_blender.py).
     [switch]$Bpy
 )
@@ -41,9 +45,24 @@ function Add-Env([string]$Name, [string]$Value) {
     "$Name=$Value" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 }
 
-if (-not $Cpp -and -not $Bpy) { throw 'nothing to install: pass -Cpp and/or -Bpy' }
+if (-not $Cpp -and -not $Renderer -and -not $Bpy) { throw 'nothing to install: pass -Cpp, -Renderer and/or -Bpy' }
 
-if ($Cpp) {
+function Install-AptPackages([string[]]$Packages) {
+    & sudo apt-get update -q
+    if ($LASTEXITCODE -ne 0) { throw 'apt-get update failed' }
+    & sudo apt-get install -y -q --no-install-recommends @Packages
+    if ($LASTEXITCODE -ne 0) { throw 'apt-get install failed' }
+}
+
+if ($Cpp -and $Platform -eq 'linux') {
+    $packages = @($pins.apt.packages)
+    if ($Renderer) { $packages += @($pins.apt.renderer_packages) }
+    Install-AptPackages $packages
+} elseif ($Renderer -and $Platform -eq 'linux') {
+    Install-AptPackages @($pins.apt.renderer_packages)
+}
+
+if ($Renderer) {
     # OIDN source archive stays pinned (reviewed input); the prebuilt binary is what the build links.
     $oidnName = "oidn-$($pins.oidn.version).src.tar.gz"
     Get-VerifiedFile -Name $oidnName -Url $pins.oidn.url -Sha256 $pins.oidn.sha256 | Out-Null
@@ -62,14 +81,8 @@ if ($Cpp) {
     Add-Env 'PLUSH_OIDN_ROOT' $oidnRoot
     if ($Platform -eq 'windows') {
         "$oidnRoot\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-    } else {
-        $packages = @($pins.apt.packages)
-        & sudo apt-get update -q
-        if ($LASTEXITCODE -ne 0) { throw 'apt-get update failed' }
-        & sudo apt-get install -y -q --no-install-recommends @packages
-        if ($LASTEXITCODE -ne 0) { throw 'apt-get install failed' }
-        # No LD_LIBRARY_PATH: CMake's build-tree rpath finds OIDN, and setup-python owns that variable.
     }
+    # No LD_LIBRARY_PATH on linux: CMake's build-tree rpath finds OIDN, and setup-python owns that variable.
 }
 
 if ($Bpy) {
