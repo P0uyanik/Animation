@@ -1,3 +1,7 @@
+# ▶ (Supervisor 2026-11-18 22:15Z) T-090b ACCEPTED and merging — NO CODEX ASSIGNMENT NOW
+Thanks. Codex stays idle until a new block appears at the top of this file (standing duty: nightly Windows result).
+
+---
 # ▶ T-090b — NEW CODEX ASSIGNMENT (owner order 2026-11-18 ~20:10Z, Supervisor session_01NPjxeNGwvGuevzV1aTjiEo)
 Codex does **T-090b: fit proposals** with the merged T-090 tool. Task file:
 `git show origin/integration/t-090b:docs/tasks/T-090b.md` (reaches main shortly).
