@@ -1,8 +1,9 @@
 # T-079: hair v3 round 3 (`groom/2`): boy crown/whorl, girl ringlets and fringe, third character fringe and waves
 
 Date: 2026-11-18. Blender: bpy module 5.3.0 (Linux, CPU, Cycles + OIDN) through `tools/bpy_blender.py`.
-Status: **candidate for owner review (path B).** Nothing is published, approved or promoted. No character spec changed
-and **no generator code changed** (`groom_hybrid.py` untouched): round 3 is candidate data only, shown through the spec
+Status: **candidate for owner review (path B).** Nothing is published, approved or promoted. No character spec changed.
+The visual round 3 is candidate data only; the one generator change is a bug fix requested by the Supervisor (scalp-cap
+stale vertex weights, see below), which changes no geometry. Round 3 is shown through the spec
 overrides in [candidates/](candidates/). Approved characters cannot change: no published spec pins `groom/2`
 (checked by the new test and the regression guard, see Checks).
 
@@ -57,6 +58,21 @@ roundness and volume)
   (0.14), more wave jitter/wobble, calmer tips (no outward noodle flicks).
 - Fluffier surface: halo fibre layer denser (7 / cm², was 4) and curlier (0.3, was 0.08), more flyaways; crown
   grooves 24 × 0.06 (was 40 × 0.14), so the crown no longer shows vertical ridges.
+
+## Bug fix: scalp-cap stale vertex weights (Supervisor request, found in T-078)
+
+`groom/2` builds the scalp cap with `hair.scalp_cap` (a bmesh copy of the head mesh), so the cap inherited the head's
+deform weights without the head's vertex groups. On a generic head (`body_skin`, many groups) these stale group indices
+made `export_engine.eye_pivots` fail with `IndexError` (T-078 worked around it with a post-step,
+`docs/evaluation/showcase/T-078/tools/clean_stale_weights.py`). Fix at the cause: `groom_hybrid.drop_stale_weights(ob)`
+removes weight entries whose group index does not exist on the object, and `groom_hybrid.build` calls it on the scalp
+cap before binding (valid entries are kept; a mesh without stale entries is untouched). `hair.py`/groom/1 are not
+changed; no character pins groom/2, so no existing build changes.
+
+Evidence: the round-3 girl candidate built before the fix carried 19,219 stale entries on `hair_cap` and
+`export_engine.py --profile humanoid_rigify.json` failed with `IndexError: index 6 out of range, size 2`; rebuilt with
+the fix: 0 stale entries, export succeeds (186 bones, 75 meshes, 281 morph blocks). The boy (dedicated head) had none.
+Test: `pipeline/charsys/tests/test_hair_v3_r3_weights.py` (Blender; 6/6 PASS; plain Python: SKIP).
 
 ## Measurements
 
@@ -128,8 +144,9 @@ The third character's denser halo raises her fibre count by 35 %; she is the slo
 - `docs/evaluation/characters/T-079/` — this report; `candidates/` (overrides, `characters.json`, third base spec,
   copied from T-070); `tools/` (copied from T-070, `make_candidates.py` with round-3 data, `make_sheets.py` round-3
   labels, new `make_boy_closeup_sheet.py` and `iter.sh` iteration helper); `sheets/`, `media/`, `data/`.
-- Not changed: `pipeline/charsys/groom_hybrid.py`, `pipeline/charsys/materials/presets.json` (allowed by the
-  write-set, not needed).
+- `pipeline/charsys/groom_hybrid.py` — `drop_stale_weights` + its call on the scalp cap in `build` (bug fix above).
+- `pipeline/charsys/tests/test_hair_v3_r3_weights.py` — Blender test for the fix (6 checks).
+- Not changed: `pipeline/charsys/materials/presets.json`.
 
 ### Reproduce
 
@@ -149,20 +166,20 @@ $B -b --factory-startup -P docs/evaluation/characters/T-079/tools/face_visibilit
 
 ## Checks
 
-After `git merge origin/staging` (23f10e4), on commit 6a5e424:
+Final run after the bug fix and `git merge origin/staging`, on commit 7a44d4d:
 `python3 tools/check_all.py --base origin/main --task T-079 --full --blender <bpy 5.3 wrapper>` with the pinned
 OpenImageDenoise 2.3.3 (`PLUSH_OIDN_ROOT`, checksum-verified prebuilt) and the apt list from `.github/ci-dependencies.json`:
 
-- PASS: frozen assets; write-set (T-079: 41 paths vs origin/staging, all inside the claim); shared-systems lint;
+- PASS: frozen assets; write-set (T-079: 44 paths vs origin/staging, all inside the claim); shared-systems lint;
   C++ build; C++ tests; Python tests and links; Blender tier, full (verify_charsys, determinism, export, face, groom,
-  groom dynamics, garment, all-character regression: boy_yellow_hoodie PASS (fidelity 66.43, baseline 66.41),
-  girl_auburn_bun_glasses PASS (64.41, baseline 64.40), girl_white_hair_blue_dress PASS (no spec yet)). Existing
-  characters are unchanged: none pins groom/2.
-- **FAIL (guarded path, needs Supervisor approval):** `pipeline/charsys/tests/test_hair_v3_r3.py` — the new test
-  file named by the T-079 write-set (`pipeline/charsys/tests/test_hair_v3*.py`). I did not add a
-  `Supervisor-Approved` trailer myself. This is the only failing check.
+  groom dynamics, garment, all-character regression: boy_yellow_hoodie PASS (fidelity 66.42, baseline 66.41),
+  girl_auburn_bun_glasses PASS (64.40, baseline 64.40), girl_white_hair_blue_dress PASS (no spec yet)). Existing
+  characters are unchanged: none pins groom/2. (The run before the fix, on 6a5e424, gave the same result.)
+- **FAIL (guarded paths, need Supervisor approval):** the two new test files named by the write-set
+  (`pipeline/charsys/tests/test_hair_v3*.py`): `test_hair_v3_r3.py` and `test_hair_v3_r3_weights.py`. I did not add
+  `Supervisor-Approved` trailers myself. These are the only failing checks.
 
-`python3 pipeline/charsys/tests/test_hair_v3_r3.py`: 25/25 PASS; `test_hair_v3_r2.py`: 20/20 PASS;
+`test_hair_v3_r3_weights.py` (Blender): 6/6 PASS. `python3 pipeline/charsys/tests/test_hair_v3_r3.py`: 25/25 PASS; `test_hair_v3_r2.py`: 20/20 PASS;
 `test_hair_v3.py`: 30/30 PASS.
 
 Not tested: engine import/playback of round-3 packages; the engine hair solver; head-turn motion proxy; GPU render
