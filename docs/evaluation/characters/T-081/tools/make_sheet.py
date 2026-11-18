@@ -26,6 +26,17 @@ def fit(im, h=H, w=None):
     return im
 
 
+def autocrop(im, margin=8):
+    """Crops a render to the character (pixels that differ from the corner background colour)."""
+    from PIL import ImageChops
+    im = im.convert("RGB")
+    bg = Image.new("RGB", im.size, im.getpixel((0, 0)))
+    box = ImageChops.difference(im, bg).convert("L").point(lambda v: 255 if v > 12 else 0).getbbox()
+    if not box:
+        return im
+    return im.crop((max(box[0] - margin, 0), max(box[1] - margin, 0), min(box[2] + margin, im.width), min(box[3] + margin, im.height)))
+
+
 def label(im, text):
     d = ImageDraw.Draw(im)
     d.rectangle((0, 0, im.width, 18), fill=(20, 20, 20))
@@ -45,7 +56,7 @@ def main():
         ("back", [Image.open(os.path.join(REF, "views", "sheet30_back.png")), girl_row[5]], "body_180"),
         ("face", [Image.open(os.path.join(REF, "uploads", "ref_30.webp")).crop((440, 620, 712, 840)),
                   Image.open(os.path.join(REF, "uploads", "ref_34.webp")).crop((1066, 66, 1270, 286))], "face_0"),
-        ("face 3/4", [Image.open(os.path.join(REF, "uploads", "ref_30.webp")).crop((440, 620, 712, 840))], "face_30"),
+        ("face 3/4", [Image.open(os.path.join(REF, "uploads", "ref_30.webp")).crop((345, 90, 490, 260))], "face_30"),
     ]
     tiles = []
     for name, refs, shot in rows:
@@ -55,7 +66,10 @@ def main():
             row.append(Image.new("RGB", (230 if not name.startswith("face") else 300, H), (92, 92, 96)))
         for tag, d in (("0.10.0 current", cur), ("0.11.0 candidate", new)):
             p = os.path.join(d, shot + ".png")
-            row.append(label(fit(Image.open(p)) if os.path.exists(p) else Image.new("RGB", (H, H), (60, 0, 0)), f"{tag} {name}"))
+            im = Image.open(p) if os.path.exists(p) else None
+            if im is not None and shot.startswith("body"):
+                im = autocrop(im)
+            row.append(label(fit(im, w=300) if im is not None else Image.new("RGB", (H, H), (60, 0, 0)), f"{tag} {name}"))
         tiles.append(row)
     w = max(sum(t.width for t in r) for r in tiles)
     sheet = Image.new("RGB", (w, H * len(tiles)), (92, 92, 96))
