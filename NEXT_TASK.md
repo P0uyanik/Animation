@@ -1,3 +1,14 @@
+# ▶ T-090 FOLLOW-UP (Supervisor 2026-11-18 16:55Z): strict sheets in Cycles, then READY again
+T-090 READY at ccb09b8 reviewed: tool and Workbench evidence accepted. Before merge, add the T-087 strict sheets:
+1. On `t-090-codex-fit-optimiser`, run `tools/review/recipe.py sheet` for boy and girl with **Cycles at the recipe
+   defaults (16 spp, as in docs/evaluation/process/T-087/)**, columns: reference | 2.0.0 / 0.11.0 approved | fit
+   candidate (the proposal overrides). Cheap first frame (`recipe.py preview`) first, as the recipe requires.
+2. Check the face rows show the head from hair top to chin (T-087 "fit": "head"); in your Workbench sheet the face
+   rows stop at the eyes. If recipe.py crops wrongly, say so in the READY line (do not edit tools/review/).
+3. Commit the JPEG sheets (≤ 2048 px) to `docs/evaluation/characters/T-090/{boy,girl}/`, push, then post
+   `<UTC> | T-090 | READY | t-090-codex-fit-optimiser@<sha> | input 12559bb | strict sheets added`.
+
+---
 # ▶ T-090 — NEW CODEX ASSIGNMENT (owner-ordered 2026-11-18 ~16:20Z, round 2 Supervisor session_01NPjxeNGwvGuevzV1aTjiEo)
 Codex does **only T-090: reference-fit optimiser** (round 2 Phase B, B2).
 
