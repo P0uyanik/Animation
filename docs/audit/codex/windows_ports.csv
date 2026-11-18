@@ -1,0 +1,15 @@
+port,installed_version,scope,observed_install_wall,consumer_or_observed_benefit
+vcpkg-cmake-config,2026-07-21,transitive/helper,150 ms,package configuration fixup helper
+vcpkg-cmake,2025-08-07,transitive/helper,233 ms,port configure/build helper
+doctest,2.5.3,direct manifest,13 s,C++ test harness (104 cases passed directly)
+hwloc,2.14.0#1,transitive/helper,17 min,TBB hardware topology in Embree chain
+tbb,2023.2.0,transitive/helper,57 s,Embree task scheduler
+embree,4.4.1,direct manifest,1.4 h,plush_render CPU ray intersections (frozen preview/regressions)
+egl-registry,2025-05-27,transitive/helper,2.6 s,graphics headers for desktop dependency chain
+opengl-registry,2026-08-03,transitive/helper,25 s,desktop GL headers/metadata
+opengl,2022-12-04#3,transitive/helper,300 ms,system GL link target for desktop chain
+glew,2.3.1,direct manifest,37 s,plush-studio OpenGL extension loader; local diagnostic GUI disabled
+glfw3,3.5.1,direct manifest,7.7 s,window/context for studio via ImGui; local diagnostic GUI disabled
+glm,1.0.3,direct manifest,9.5 s,"plush_core math, shared by animation, scene and preview"
+nlohmann-json,3.12.0#2,direct manifest,5.6 s,plush_geom and scene/package/shot JSON
+stb,2026-08-02,direct manifest,2.4 s,image writing for plush_render regressions
