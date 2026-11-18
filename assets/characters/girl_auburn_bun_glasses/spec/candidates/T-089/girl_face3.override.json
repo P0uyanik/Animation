@@ -1,0 +1,54 @@
+{
+ "override": {
+  "generators": {
+   "face": "face_generic/3"
+  },
+  "face": {
+   "generator": "face_generic/3",
+   "eyes": {
+    "radius_m": 0.048,
+    "shader": "felt/1",
+    "iris": {
+     "radius": 0.5,
+     "pupil": 0.24
+    },
+    "felt": {
+     "roughness": 0.8,
+     "sheen": 0.4,
+     "highlight": [
+      0.2,
+      0.2,
+      0.08
+     ],
+     "highlight_softness": 0.05,
+     "highlight_strength": 1.5,
+     "lid_line": {
+      "roughness": 0.9,
+      "sheen": 0.3
+     },
+     "round_iris": true
+    },
+    "lids": {
+     "trim": {
+      "up_outer_deg": 66,
+      "lo_outer_deg": 62,
+      "back": 0.3,
+      "cover_margin": 0.06,
+      "soft": 0.1
+     }
+    },
+    "socket": {
+     "lower_band_deg": 1.0
+    },
+    "scale": [
+     0.9,
+     0.8,
+     1.0
+    ]
+   }
+  },
+  "metadata": {
+   "notes": "T-089 candidate (unpublished): face_generic/3 on girl 0.11.0. Larger round eyes (r 42 -> 48 mm; ref_30/sheet30, G01-G03), lid shells trimmed at the corners and at the back (no 3/4 rim inside the glasses), lower lid band tucked (no bright shelf), felt eye shading (matte iris, one crisp highlight upper screen-right, matte lid line). The oval eyeball is kept and narrowed in x (scale 0.9, 0.8, 1; felt round_iris keeps the iris round) so its side stays under the skin at 3/4: a spherical eye raised the eye-corner folds to 55-69 deg (T-081 metric). Never publish or approve without an owner decision; the version bump is T-094."
+  }
+ }
+}
