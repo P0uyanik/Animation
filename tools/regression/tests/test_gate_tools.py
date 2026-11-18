@@ -184,8 +184,42 @@ def test_backup_scripts():
            and "backup-2026-09-02" in kept and "backup-2026-08-09" in pruned, "release retention: 8 newest + monthly")
 
 
+def test_version_spec_build():
+    """The fidelity baseline may build a published version spec (<id>.<x.y.z>.spec.json) of the same character."""
+    with tempfile.TemporaryDirectory() as temp:
+        root = Path(temp)
+        spec_dir = root / "assets" / "characters" / "probe" / "spec"
+        spec_dir.mkdir(parents=True)
+        base = {"identity": {"id": "probe"}, "metadata": {"spec_version": "1.0.0"}}
+        (spec_dir / "probe.spec.json").write_text(json.dumps(base), encoding="utf-8")
+        version = {"identity": {"id": "probe"}, "metadata": {"spec_version": "1.2.0"}}
+        (spec_dir / "probe.1.2.0.spec.json").write_text(json.dumps(version), encoding="utf-8")
+        (spec_dir / "other.1.2.0.spec.json").write_text(json.dumps({"identity": {"id": "other"}}), encoding="utf-8")
+        (spec_dir / "probe.9.9.9.spec.json").write_text(json.dumps({"identity": {"id": "other"}}), encoding="utf-8")
+        fb = root / T.FIDELITY_BASELINE.relative_to(T.ROOT)
+        fb.parent.mkdir(parents=True)
+
+        def config(build):
+            fb.write_text(json.dumps({"characters": {"probe": {"build": build, "overrides": []}}}), encoding="utf-8")
+            try:
+                return T.character_config("probe", root)
+            except ValueError:
+                return None
+
+        cfg = config("assets/characters/probe/spec/probe.1.2.0.spec.json")
+        expect(cfg is not None and cfg["spec"].endswith("probe.1.2.0.spec.json") and cfg["spec_version"] == "1.2.0",
+               "version spec build accepted, its version used")
+        cfg = config("assets/characters/probe/spec/probe.spec.json")
+        expect(cfg is not None and cfg["spec_version"] == "1.0.0", "character spec build still accepted")
+        expect(config("assets/characters/probe/spec/other.1.2.0.spec.json") is None, "another character's spec refused")
+        expect(config("assets/characters/probe/spec/probe.9.9.9.spec.json") is None, "identity.id mismatch refused")
+        expect(config("assets/characters/probe/spec/probe.3.0.0.spec.json") is None, "missing version spec refused")
+        expect(config("docs/x/probe.1.2.0.spec.json") is None, "spec outside the character folder refused")
+
+
 def main() -> int:
-    for test in (test_glob_overlap, test_claims, test_tiers, test_compare, test_backup_scripts):
+    for test in (test_glob_overlap, test_claims, test_tiers, test_version_spec_build, test_compare,
+                 test_backup_scripts):
         test()
     print(f"{'FAIL' if FAILURES else 'PASS'} gate tools: {len(FAILURES)} failure(s)")
     return 1 if FAILURES else 0
