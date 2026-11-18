@@ -212,6 +212,11 @@ OpenImageDenoise 2.3.3 (`PLUSH_OIDN_ROOT`) and the apt list from `.github/ci-dep
   named by the T-070 write-set (`pipeline/charsys/tests/test_hair_v3*.py`). I did not add a `Supervisor-Approved`
   trailer myself.
 
+GitHub "Quality gate" run 44211775029 (commit 7f72ea6, full tier): the same result: every check PASS
+(regressions boy 66.42, girl 64.41, third PASS) except **Guarded paths** (`test_hair_v3_r2.py`) and **Merge status**
+("tests FAIL after merge", which only repeats the guarded-path failure). The Gate verdict is therefore red until the
+Supervisor approves that file.
+
 `python3 pipeline/charsys/tests/test_hair_v3_r2.py`: 20/20 PASS; `test_hair_v3.py` (T-044): 30/30 PASS.
 
 Not tested: engine import/playback of round-2 packages; the engine hair solver; a production build through
