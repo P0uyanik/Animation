@@ -271,3 +271,8 @@ for round 2. Where they disagree with each other or with the earlier references,
 - **Girl collar:** rounded blouse collar (earlier references); G07 only for vest felt, embroidery, buttons and pocket.
 - **Girl hair accessories:** blue-grey scrunchie with one pink felt flower (G04, `ref_30`).
 - **Third character accessory:** the blue felt bow of `18_higgsfield_W02_blue_felt_bow` is canonical (no flower).
+
+## 2026-11-18: two independent project audits before round 2
+Owner: verify main is complete, then two independent, critical audits: Codex (T-084, `docs/audit/CODEX_PROJECT_AUDIT.md`)
+and Supervisor (`docs/audit/SUPERVISOR_PROJECT_AUDIT.md`), then `docs/audit/PROJECT_AUDIT_COMPARISON.md`. Findings and
+recommendations only; no major implementation before the owner decides. Round 2 waits for this.
