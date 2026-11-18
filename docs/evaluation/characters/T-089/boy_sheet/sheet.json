@@ -1,12 +1,12 @@
 {
- "recipe_sha256": "0dff16dc8cfa6f941a76ad526b8fd83d21d4b7a622cc4949d7d529a8664283a3",
+ "recipe_sha256": "30dc804bb6019aaaa6161a5543d18c75b12db11e0cfa2372ec211a0e626edbc3",
  "sheet": "sheet.jpg",
  "size": [
   1120,
   2048
  ],
- "at": "2026-11-18T18:28:31+00:00",
- "preview": "preview 2026-11-18T18:13:03+00:00",
+ "at": "2026-11-18T20:21:27+00:00",
+ "preview": "preview 2026-11-18T20:06:26+00:00",
  "preview_override": null,
  "render_result": {
   "engine": "cycles",
@@ -26,7 +26,7 @@
      "L": 12.0,
      "R": 12.0
     },
-    "seconds": 404.7
+    "seconds": 387.0
    },
    "candidate": {
     "blend": "<out>/build/candidate/boy_yellow_hoodie_compare.blend",
@@ -35,7 +35,7 @@
      "L": 12.0,
      "R": 12.0
     },
-    "seconds": 384.6
+    "seconds": 378.0
    }
   },
   "views": {
