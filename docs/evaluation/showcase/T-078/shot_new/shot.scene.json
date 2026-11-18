@@ -300,7 +300,8 @@
      "docs/evaluation/characters/T-065/candidates/boy_2.0-dev_face2.override.json",
      "docs/evaluation/characters/T-068/candidates/boy_2.0.0-dev.garment_details.override.json",
      "docs/evaluation/showcase/T-078/candidates/boy_skin2_generic.override.json"
-    ]
+    ],
+    "legacy_reason": "T-078 progress video: combined candidate overrides of the merged shared systems (evidence only, not a version)"
    },
    "girl": {
     "spec": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.spec.json",
@@ -309,7 +310,8 @@
      "docs/evaluation/characters/T-065/candidates/girl_next_face2.override.json",
      "docs/evaluation/characters/T-066/candidates/girl_auburn_bun_glasses.skin2.override.json",
      "docs/evaluation/characters/T-068/candidates/girl.vest_details.override.json"
-    ]
+    ],
+    "legacy_reason": "T-078 progress video: combined candidate overrides of the merged shared systems (evidence only, not a version)"
    }
   },
   "profile": "pipeline/charsys/rig_profiles/humanoid_rigify.json",
