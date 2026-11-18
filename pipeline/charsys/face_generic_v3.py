@@ -243,7 +243,9 @@ def build(C, M, head, spec, P, H, head_bone="DEF-spine.006", eye_bone="DEF-eye.{
         rep["lid_shell_exposed"] = FF.shell_exposure(head, [l[0] for l in lids] + [l[1] for l in lids])
         corner = _f(sock_cfg, "corner_deg", 60.0)
         shells = [l[0] for l in lids] + [l[1] for l in lids]
-        rep["lid_shell_exposed_3q"] = {f"yaw_{int(y)}": LIDS.exposure_from(head, shells, frames, y, corner, r)
+        sk = M.get("face_skin")
+        rep["lid_shell_exposed_3q"] = {f"yaw_{int(y)}": LIDS.exposure_from(head, shells, frames, y, corner, r,
+                                                                         sk.name if sk else None)
                                        for y in (-35.0, 35.0)}
     rep["lid_corner_extent_m"] = {}
     for (sx, side), (up, lo, lash, c) in zip(SIDES, lids):  # over the basis and every lid key (blink, wide, squint)

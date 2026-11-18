@@ -114,10 +114,22 @@ def corner_extent(ob, T, sx):
     return outer, inner
 
 
-def exposure_from(head, shells, frames, yaw_deg, corner_deg, r):
+def _shell_vertices(ob, skin_material_name=None):
+    """Vertex indices of the shell itself: with several materials (lash strands joined into a lower lid), only the
+    vertices of faces with the skin material; otherwise every vertex."""
+    me = ob.data
+    names = [m.name if m else "" for m in me.materials]
+    if not skin_material_name or len(names) < 2 or skin_material_name not in names:
+        return range(len(me.vertices))
+    k = names.index(skin_material_name)
+    return sorted({i for p in me.polygons if p.material_index == k for i in p.vertices})
+
+
+def exposure_from(head, shells, frames, yaw_deg, corner_deg, r, skin_material_name=None):
     """3/4 socket-rim diagnostic. For a camera direction at yaw_deg (0 = front, +90 = the character's left), each shell
     on the side that turns its OUTER corner to that camera: the fraction of its vertices past the opening's corner
-    (sx * x > r * sin(corner_deg) in the eye frame) that no head skin hides along the view ray. 0 = no visible rim."""
+    (sx * x > r * sin(corner_deg) in the eye frame) that no head skin hides along the view ray. 0 = no visible rim.
+    Lash strands joined into a lid (other material) are not shell and are not counted."""
     from mathutils.bvhtree import BVHTree
     mw = head.matrix_world
     me = head.data
@@ -133,8 +145,9 @@ def exposure_from(head, shells, frames, yaw_deg, corner_deg, r):
             continue
         Ti = frames[side].inverted()
         tot = vis = 0
-        for v in ob.data.vertices:
-            w = ob.matrix_world @ v.co
+        verts = ob.data.vertices
+        for vi in _shell_vertices(ob, skin_material_name):
+            w = ob.matrix_world @ verts[vi].co
             if sx * (Ti @ w).x <= xs:
                 continue
             tot += 1
