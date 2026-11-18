@@ -2,7 +2,8 @@
 
     python3 pipeline/charsys/tests/test_garments_v2.py --blender <exe> [--quick]
         [--boy-master <built boy 2.0.0 + T-093 candidate master.blend>]
-        [--girl-master <built girl 0.11.0 + T-093 candidate master.blend>]
+        [--girl-master <built girl 0.11.0 + T-093 candidate master.blend>] [--girl-base-master <girl 0.11.0>]
+        [--boy-base-master <boy 2.0.0>]
 
 Checks (each line PASS/FAIL; exit code 1 on any FAIL):
   pin       garment/2 is registered and loads garments_v2, which declares it (GENERATOR_VERSIONS); the published specs
@@ -19,8 +20,10 @@ Checks (each line PASS/FAIL; exit code 1 on any FAIL):
   girl      rolled cuff on both boots (proud of the shaft, over its rim); split bloomer legs (gap between the inner
             surfaces below the crotch); one flower on the bun.
   corrective (criterion 3): corrective.reach.L/R exist on the vest with drivers; arms down (compare rotation) keeps
-            them at 0; in the reach pose they reach 1 and reduce the vest flare (max and p99 distance of the vest to the
-            posed torso skin) compared with the same pose with the keys muted.
+            them at 0; in the reach pose they reach 1. Round 2: the vest flare in reach (max / p99 distance to the
+            posed torso skin; arm-weight cap + keys) is below 0.11.0's and within 1 cm of rest; the driven keys reduce
+            the vest's penetration into the blouse against the muted keys, and it is below 0.11.0's; no penetration
+            at rest; no fibres on the collar or the vest edges.
 --quick runs only pin + validate (no builds)."""
 import json
 import os
@@ -164,6 +167,16 @@ bad(girl, "vest", ("correctives", "reach", "gate"), 1.0, "correctives.reach.gate
 bad(girl, "vest", ("correctives", "reach", "arm_bone"), "DEF-upper_arm.L", "arm_bone without {side} rejected")
 bad(girl, "vest", ("correctives", "twist"), {}, "unknown corrective rejected")
 bad(girl, "vest", ("correctives", "reach", "arm_hi"), 0.2, "arm_hi below arm_lo rejected")
+bad(girl, "vest", ("correctives", "arm_weights", "cap"), 1.5, "arm_weights.cap 1.5 rejected")
+bad(girl, "vest", ("correctives", "arm_weights", "to"), "DEF-shoulder.L", "arm_weights.to without {side} rejected")
+bad(girl, "vest", ("correctives", "reach", "over"), "blouse", "reach.over must be a list")
+bad(girl, "vest", ("clean_fibres",), [], "empty clean_fibres rejected")
+bad(girl, "blouse", ("collar_clear", "over"), [], "collar_clear.over empty rejected")
+bad(girl, "blouse", ("collar_clear", "max_lift_m"), 0.5, "collar_clear.max_lift_m 0.5 rejected")
+bad(girl, "vest", ("collar_clear",), {"over": ["blouse"]}, "collar_clear on a vest rejected")
+bad(girl, "shorts", ("hem_break", "pleats"), 2.5, "hem_break.pleats 2.5 rejected")
+bad(boy, "backpack", ("tab", "buckle"), "zip", "tab.buckle 'zip' rejected")
+bad(boy, "backpack", ("flap", "edge_m"), 0.5, "flap.edge_m 0.5 rejected")
 RESULT["validate"] = out
 import versions
 mod = versions.load("garment", "garment/2")
@@ -226,7 +239,8 @@ RESULT["keys"] = sorted({k.name for _, k in keys})
 RESULT["drivers"] = sorted({k.name for ob, k in keys
                             if ob.data.shape_keys.animation_data and any(d.data_path == 'key_blocks["%%s"].value' %% k.name
                                                                           for d in ob.data.shape_keys.animation_data.drivers)})
-RESULT["rest"] = {"values": EV.key_values(vest), "flare": EV.flare(body, main)}
+blouse = [o for o in bpy.data.objects if o.get("ps_garment_item") == "blouse" and o.get("ps_garment_part") == "main"]
+RESULT["rest"] = {"values": EV.key_values(vest), "flare": EV.flare(body, main), "pen": EV.penetration(main, blouse)}
 EV.rotate_upper_arms(rig, 35.0, axis="Y", mirror=True)  # the compare variant's arms-down rotation
 RESULT["arms_down"] = {"values": EV.key_values(vest)}
 EV.rest(rig)
@@ -234,8 +248,14 @@ EV.rotate_upper_arms(rig, -75.0, axis="X")  # reach
 RESULT["reach"] = {"values": EV.key_values(vest)}
 EV.mute(vest, True)
 RESULT["reach"]["before"] = EV.flare(body, main)
+RESULT["reach"]["pen_before"] = EV.penetration(main, blouse)
 EV.mute(vest, False)
 RESULT["reach"]["after"] = EV.flare(body, main)
+RESULT["reach"]["pen_after"] = EV.penetration(main, blouse)
+col = objs.get("garment.blouse.collar")
+RESULT["collar_fibres"] = len([c for c in col.children if c.get("ps_fibres_source") == col.name]) if col else None
+RESULT["edge_fibres"] = sum(len([c for c in o.children if c.get("ps_fibres_source") == o.name])
+                            for o in vest if o.get("ps_garment_part") in ("edge", "pocket_edge"))
 ''' % CHARSYS
 
 
@@ -295,8 +315,9 @@ def test_boy(blender, blend, base_blend):
     check("the trouser hem reaches the shoe (break)", tr[0][2] <= sh[1][2] + 0.01, f"hem {tr[0][2]:.4f} shoe top {sh[1][2]:.4f}")
 
 
-def test_girl(blender, blend):
+def test_girl(blender, blend, base_blend):
     r = inspect(blender, blend, GIRL_PROBE)
+    base = inspect(blender, base_blend, GIRL_PROBE)
     bb = r["bbox"]
     for s in "LR":
         cuff, shaft = bb.get(f"garment.boots.cuff.{s}"), bb[f"garment.boots.main.{s}"]
@@ -314,10 +335,19 @@ def test_girl(blender, blend):
           r["arms_down"]["values"])
     check("reach pose: correctives at 1", all(v > 0.95 for v in r["reach"]["values"].values()),
           sorted(set(r["reach"]["values"].values())))
-    b, a = r["reach"]["before"], r["reach"]["after"]
-    check("reach: the corrective reduces the vest flare (max and p99 to the torso skin)",
-          a["max"] < b["max"] and a["p99"] < b["p99"], f"before {b} after {a} rest {r['rest']['flare']}")
-    print("[test_garments_v2] reach flare", json.dumps({"rest": r["rest"]["flare"], "before": b, "after": a}))
+    b0, a = base["reach"]["after"], r["reach"]["after"]
+    check("reach: the vest flare (max and p99 to the torso skin) is below 0.11.0's and at most 1 cm above rest",
+          a["max"] < b0["max"] and a["p99"] < b0["p99"] and a["max"] <= r["rest"]["flare"]["max"] + 0.01,
+          f"0.11.0 {b0} candidate {a} rest {r['rest']['flare']}")
+    pb, pm, pa = base["reach"]["pen_after"], r["reach"]["pen_before"], r["reach"]["pen_after"]
+    check("reach: the driven keys reduce the vest's penetration into the blouse (count and p95 depth)",
+          pa["inside"] < pm["inside"] and pa["p95_depth"] < pm["p95_depth"], f"muted {pm} driven {pa}")
+    check("reach: the vest's penetration into the blouse is below 0.11.0's",
+          pa["inside"] < pb["inside"] and pa["p95_depth"] < pb["p95_depth"], f"0.11.0 {pb} candidate {pa}")
+    check("rest: no new penetration (p95 depth under 2 mm)", r["rest"]["pen"]["p95_depth"] < 0.002, r["rest"]["pen"])
+    check("the collar and the vest edges are cleanly finished (no fibres)",
+          r["collar_fibres"] == 0 and r["edge_fibres"] == 0, f"collar {r['collar_fibres']} edges {r['edge_fibres']}")
+    print("[test_garments_v2] reach", json.dumps({"rest": r["rest"], "0.11.0": base["reach"], "candidate": r["reach"]}))
 
 
 def main():
@@ -330,7 +360,8 @@ def main():
         boy_base = arg("--boy-base-master") or build(blender, BOY, [], "boy_yellow_hoodie")
         test_boy(blender, boy, boy_base)
         girl = arg("--girl-master") or build(blender, GIRL, [GIRL_OVR], "girl_auburn_bun_glasses")
-        test_girl(blender, girl)
+        girl_base = arg("--girl-base-master") or build(blender, GIRL, [], "girl_auburn_bun_glasses")
+        test_girl(blender, girl, girl_base)
     print(f"[test_garments_v2] {sum(RESULTS)}/{len(RESULTS)} passed")
     sys.exit(0 if all(RESULTS) else 1)
 
