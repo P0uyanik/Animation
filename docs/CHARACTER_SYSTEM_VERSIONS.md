@@ -53,7 +53,7 @@ characters' outputs. New specs (and new spec versions) should carry explicit pin
 | Feature | Versions (status) | Implemented by |
 | --- | --- | --- |
 | body | body_v6/1, body_generic/1 | `body_v6.py` (frozen), `body_generic.py` |
-| face | body_v6/1, face_generic/1, face_generic/2 (T-065, opt-in), face_generic/3 (T-089, planned) | `body_v6.py` + `face.py`, `face_generic.py`, `face_generic_v3.py` |
+| face | body_v6/1, face_generic/1, face_generic/2 (T-065, opt-in), face_generic/3 (T-089, opt-in) | `body_v6.py` + `face.py`, `face_generic.py`, `face_generic_v3.py` |
 | groom | hair_clumps/1, hair_clumps/2 (retired by T-072; its experiments are archived, incl. the frozen H28 candidate), groom/1 | `hair.py`, `groom.py` |
 | garment | body_v6/1, garment/1, garment/2 (T-093, opt-in) | `body_v6.py`, `garments/`, `garments_v2/` |
 | accessories | body_v6/1, accessories/1 | `body_v6.py`, `accessories.py` |

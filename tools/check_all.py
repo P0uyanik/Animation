@@ -521,6 +521,7 @@ def check_python_tests(logs: Path) -> Result:
         [sys.executable, str(ROOT / "pipeline/charsys/tests/test_materials_r2.py")],  # T-092 presets/3
         [sys.executable, str(ROOT / "pipeline/production/tests/test_sets.py")],  # T-098L set data
         [sys.executable, str(ROOT / "tools/fit/tests/test_fit.py")],  # T-090 fit optimiser
+        [sys.executable, str(ROOT / "pipeline/charsys/tests/test_face_v3.py")],  # T-089 face/3 (plain checks)
         [sys.executable, str(ROOT / "pipeline/charsys/tests/test_boy2_face.py")],  # T-058 spec checks, no Blender (T-077)
     ]
     cleanup_tests = ROOT / "tools/cleanup/run_tests.py"  # T-048 branch-cleanup tests, once merged
