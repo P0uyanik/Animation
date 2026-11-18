@@ -701,12 +701,18 @@ def lid_socket(head, ctx, sides, cfg):
     clear = _f(cfg, "clearance_m", 0.0006)
     inner = _f(cfg, "inner_scale", 0.95)
     corner = math.radians(_f(cfg, "corner_deg", 60.0))
+    # T-081 (opt-in; defaults = the T-065 constants, so existing builds are unchanged): azimuth width over which the
+    # skin at an eye corner changes from the lid band (behind the shell) to covering the shell, and over which the
+    # lid edges close in beyond the corner. A wider blend turns the step at the corner into a gentle slope.
+    cblend = math.radians(_f(cfg, "corner_blend_deg", 10.0))
+    cclose = math.radians(_f(cfg, "corner_close_deg", 12.0))
     follow_reach = math.radians(_f(cfg, "follow_reach_deg", _f(cfg, "reach_deg", 24.0) * 0.6))
     fa = math.radians(_f(cfg, "follow_azimuth_deg", 40.0))
     world, write = _head_coords(head)
     p = world.copy()
     weights, rep = {}, {}
     smooth_sel = []
+    wall_sel = []  # T-081: the socket wall (lid band and ramp outside the opening), for the opt-in wall smoothing
     soft = _f(cfg, "cover_softness", 0.12)
 
     ramp_lo = math.radians(_f(cfg, "lower_ramp_deg", _f(cfg, "ramp_deg", 6.0)))  # steeper lower wall (less lit slope)
@@ -740,7 +746,7 @@ def lid_socket(head, ctx, sides, cfg):
         # beyond the corner the edges close in towards their mean (the opening ends)
         over = np.abs(a) - corner
         mid = (e_up + e_lo) / 2
-        k = _smooth(over / math.radians(12.0))
+        k = _smooth(over / cclose)
         e_up = e_up + (mid - e_up) * k
         e_lo = e_lo + (mid - e_lo) * k
         du, dl = e - e_up, e_lo - e
@@ -748,12 +754,12 @@ def lid_socket(head, ctx, sides, cfg):
         radial = _f(cfg, "radial_reach", 0.4) * s["r"]
         t_in = s["r"] * inner
         cr = _f(cfg, "carve_reach", 0.15) * s["r"]  # only skin close in front of the eye is carved (not the corners' skin)
-        fo = (1.0 - _smooth((np.abs(a) - (corner - math.radians(10.0))) / math.radians(10.0))) * (1.0 - _smooth((dc - s["r"] - cr) / cr))
+        fo = (1.0 - _smooth((np.abs(a) - (corner - cblend)) / cblend)) * (1.0 - _smooth((dc - s["r"] - cr) / cr))
         behind = np.where(dc > t_in, dc + (t_in - dc) * fo, dc)  # the opening: skin in front of the eyeball moves behind it
         nu, bu = profile(du, dc, band_up, s["r_up_out"] + clear, behind, radial)
         nl, bl = profile(dl, dc, band_lo, s["r_lo_out"] + clear, behind, radial, ramp_lo)
         # beyond the eye corners there is no opening and no lid band: the skin only covers the shells
-        cf = 1.0 - _smooth((np.abs(a) - corner) / math.radians(10.0) + 0.5)
+        cf = 1.0 - _smooth((np.abs(a) - corner) / cblend + 0.5)
         kk = soft * radial / 0.4
         for nn, R_s in ((nu, s["r_up_out"] + clear), (nl, s["r_lo_out"] + clear)):
             cov = 0.5 * (dc + R_s + np.sqrt((dc - R_s) ** 2 + kk * kk))
@@ -772,6 +778,7 @@ def lid_socket(head, ctx, sides, cfg):
         wsm = (zu * (1 - bu) + (1 - zu) * (1 - bl)) * fw * cf + (1 - cf) * fw  # where the skin covers the shells
         keep = far & ~inside & (wsm > 0.02)
         smooth_sel.append((np.where(cand)[0][keep], wsm[keep]))
+        wall_sel.append(np.where(cand)[0][~far & ~inside & (fw * np.maximum(cf, 0.0) + (1 - cf) * fw > 0.02)])
         # lid-following weights (EyeWide): the skin from just inside the edge to the crease, over the eye's width
         azw = 1.0 - _smooth((np.abs(a) - fa) / math.radians(35.0))
         azw = azw * (1.0 - _smooth((dc - (s["r_up_out"] + clear)) / (0.35 * s["r"])))  # skin away from the eye moves less
@@ -806,6 +813,31 @@ def lid_socket(head, ctx, sides, cfg):
             avg = acc / np.maximum(deg, 1)[:, None]
             p[sel] += (0.5 * wsel[sel])[:, None] * (avg[sel] - p[sel])  # fades out with the cover: no groove at its edge
         rep["smoothed_vertices"] = int(sel.sum())
+    # T-081 (opt-in, default 0 = unchanged): relax the socket wall itself. Pulling a refined, irregular cheek surface
+    # radially onto the lid profile leaves narrow pleats in the wall at the eye corners (sharp folds that shade as
+    # dark specks); a few Laplacian passes over the wall and the covered skin, with the opening's own vertices fixed,
+    # remove them while keeping the wall's depth profile.
+    wit = int(_f(cfg, "wall_smooth_iterations", 0))
+    if wit > 0 and wall_sel:
+        sel = np.zeros(len(p), bool)
+        for idx_s in wall_sel:
+            sel[idx_s] = True
+        for idx_s, w_s in smooth_sel:
+            sel[idx_s[w_s > 0.2]] = True
+        me = head.data
+        ed = np.empty(len(me.edges) * 2, dtype=np.int64)
+        me.edges.foreach_get("vertices", ed)
+        ed = ed.reshape(-1, 2)
+        ed = ed[sel[ed[:, 0]] | sel[ed[:, 1]]]
+        deg = np.bincount(ed.ravel(), minlength=len(p)).astype(float)
+        f = _f(cfg, "wall_smooth_factor", 0.5)
+        for _ in range(wit):
+            acc = np.zeros_like(p)
+            np.add.at(acc, ed[:, 0], p[ed[:, 1]])
+            np.add.at(acc, ed[:, 1], p[ed[:, 0]])
+            avg = acc / np.maximum(deg, 1)[:, None]
+            p[sel] += f * (avg[sel] - p[sel])
+        rep["wall_smoothed_vertices"] = int(sel.sum())
     write(p)
     ctx.invalidate()
     return rep, weights
