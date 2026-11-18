@@ -212,7 +212,11 @@
    "character": "boy",
    "start": 1,
    "end": 264,
-   "object": "plinth_boy"
+   "target": [
+    -0.4089,
+    0.46,
+    0.2114
+   ]
   },
   {
    "type": "touch",
@@ -233,7 +237,11 @@
    "character": "girl",
    "start": 1,
    "end": 108,
-   "object": "plinth_girl"
+   "target": [
+    0.0892,
+    0.43,
+    0.1281
+   ]
   },
   {
    "type": "look",
@@ -253,7 +261,11 @@
    "character": "girl",
    "start": 192,
    "end": 264,
-   "object": "plinth_girl"
+   "target": [
+    0.0892,
+    0.43,
+    0.1281
+   ]
   },
   {
    "type": "touch",

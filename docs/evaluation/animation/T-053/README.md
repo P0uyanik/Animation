@@ -121,11 +121,18 @@ render was needed to judge timing, posture and blinks.
 | blink duration (f@24) | 4, 4 → 4–5 | 5–6 → 3–4 | [4, 6] / [3, 5] |
 | reach entry (f@24) | 12 → 12 | point 14 → 12, touch 9 → 9 | [10, 16] / [8, 10] |
 | hold (f@24) | 25 → 24 | touch 10 → 10 (small move, reported) | [24, 72] / [12, 40] |
-| idle head speed (H/f, median) | 0.00119 → 0.00109 | 0.00155 → 0.00159 | ≤ 0.004 / ≤ 0.006 |
+| idle head speed (H/f, median) | 0.00113 → 0.00112 | 0.00143 → 0.00150 | ≤ 0.004 / ≤ 0.006 |
+| idle head amplitude (H, half range; reported) | 0.016 → 0.020 | 0.025 → 0.027 | profile estimate 0.003 / 0.006 |
 
 Before, both characters break their own blink limits (the shared 3.6 s interval); after, everything is inside.
 Visible: the boy slouches with his head down toward the task and blinks at his measured rhythm; the girl stands
-upright, points a little more briskly (tempo 1.1) and blinks quickly and often. Nothing changes the models.
+upright, points a little more briskly (tempo 1.1) and blinks quickly and often. Nothing changes the models. Both
+characters watch the top of their task object (look target = the touch point; a first version aimed at the object's
+centre near the floor and made both crane down, in before and after alike: fixed before these renders). The girl
+still pitches her head steeply to watch her low, close plinth (T-045 staging made for the old test package), equally
+before and after: staging, not personality. Posture differences in the stills are small (the boy's slouch and head
+pitch were already on via body mechanics in T-045 shots; here "before" has neutral body mechanics); the profiles show
+mostly in timing: blinks, the girl's brisker point, the boy's head lag.
 
 Files: `preview_before_after.mp4` (engine preview, side by side, 264 f), `sheet_before_after.jpg` (key frames).
 
@@ -141,7 +148,7 @@ Files: `preview_before_after.mp4` (engine preview, side by side, 264 f), `sheet_
    The touch planner pops at short plans: a 9–12 f touch gives jerk 0.49–0.77 (> 0.45, T-061) with or without profiles,
    so the girl's 8–10 f reach is only reachable with a 13 f plan (measured entry 9 f). Worth a T-061-style fix.
 4. **Reported, not gated**: peak wrist speeds (boy touch 0.068 H/f, girl point 0.115 H/f) exceed the VISUAL_TARGET
-   primary-action envelope 0.018–0.045 H/f, and the idle head amplitude (boy 0.039 H, girl 0.030 H half range)
+   primary-action envelope 0.018–0.045 H/f, and the idle head amplitude (boy 0.020 H, girl 0.027 H half range; before the profiles 0.016 / 0.025 H)
    exceeds the profiles' `idle_motion_amplitude` estimates (0.003 / 0.006 H). Both come from the shared idle/body
    layers and library clips; the profiles have no reference-backed range for them, so I did not invent limits.
 5. Read but not applied (no engine layer yet): attention, boredom / fidgets, saccades, smile choice, gestures,

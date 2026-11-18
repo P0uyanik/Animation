@@ -67,13 +67,13 @@ def personality_scene(profiles: bool):
             ch["personality"] = {"boy": "boy_yellow_hoodie", "girl": "girl_auburn_bun_glasses"}[ch["name"]]
     tb, tg = targets["boy"], targets["girl"]
     scene["actions"] = [
-        {"type": "look", "character": "boy", "start": 1, "end": 264, "object": tb["object"]},
+        {"type": "look", "character": "boy", "start": 1, "end": 264, "target": tb["target"]},
         {"type": "touch", "character": "boy", "hand": "R", "object": tb["object"], "target": tb["target"],
          "start": 116, "contact": 132, "end": 204},
-        {"type": "look", "character": "girl", "start": 1, "end": 108, "object": tg["object"]},
+        {"type": "look", "character": "girl", "start": 1, "end": 108, "target": tg["target"]},
         {"type": "look", "character": "girl", "start": 108, "end": 192, "camera": True},
         {"type": "clip", "character": "girl", "clip": "point", "start": 110},
-        {"type": "look", "character": "girl", "start": 192, "end": 264, "object": tg["object"]},
+        {"type": "look", "character": "girl", "start": 192, "end": 264, "target": tg["target"]},
         {"type": "touch", "character": "girl", "hand": "R", "object": tg["object"], "target": tg["target"],
          "start": 200, "contact": 213, "end": 240},
     ]

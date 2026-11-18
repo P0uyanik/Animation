@@ -68,9 +68,9 @@
    ],
    "idle": {
     "frames": 138,
-    "median_head_H_per_frame": 0.00119,
-    "p95_head_H_per_frame": 0.00276,
-    "head_amplitude_H": 0.04556,
+    "median_head_H_per_frame": 0.00113,
+    "p95_head_H_per_frame": 0.00268,
+    "head_amplitude_H": 0.01639,
     "profile_idle_motion_amplitude_H": 0.003
    },
    "failures": [
@@ -156,9 +156,9 @@
    ],
    "idle": {
     "frames": 96,
-    "median_head_H_per_frame": 0.00155,
-    "p95_head_H_per_frame": 0.00364,
-    "head_amplitude_H": 0.02742,
+    "median_head_H_per_frame": 0.00143,
+    "p95_head_H_per_frame": 0.00335,
+    "head_amplitude_H": 0.0247,
     "profile_idle_motion_amplitude_H": 0.006
    },
    "failures": [
