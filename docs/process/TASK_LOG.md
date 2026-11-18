@@ -79,8 +79,9 @@
 | T-093b | [Visual] Garment completion: boy trousers/shoes, girl leg split (Phase D) | running 2026-11-18 (owner ~22:50Z) | t-093b-claude-garment-completion | `docs/tasks/T-093b.md`; path B |
 | T-097-0 | [Personality] Acting interface (`engine/scene/acting.h`, build stubs) | Supervisor, 2026-11-18 | integration/t-097-0 | owner ~23:00Z; replaces T-097S |
 | T-097A | [Personality] Emotion blending (continuous state, cross-fades) | merged 2026-11-18 (impl `session_01NPjxeNjUr2gFKXDuc9XTvZ`, d4fcbd5): opt-in blend, 12 transition tests, all bakes identical | t-097a-claude-emotion-blending | `docs/tasks/T-097A.md`; path A |
-| T-097B | [Personality] Personality-driven reactions | running 2026-11-18 (after T-104) | t-097b-claude-reactions | `docs/tasks/T-097B.md`; path A |
+| T-097B | [Personality] Personality-driven reactions | merged 2026-11-18 (impl `session_01NPjxePinCzX6KJExevL73v`, 9531cef): reaction planner, optional profile fields, calibrated on T-104/T-106; not yet wired into playback (T-097D) | t-097b-claude-reactions | `docs/tasks/T-097B.md`; path A |
 | T-097C | [Personality] Acting signature and consistency checks (animcheck) | merged 2026-11-18 (impl `session_01NPjxeLZM6nKHK3wzXeaZ7w`, 8f315a7): gesture amplitude, notice delay, still-hold flags; warn only; scene `events` key read by the tool (T-097B to match) | t-097c-claude-acting-checks | `docs/tasks/T-097C.md`; path A |
+| T-097D | [Personality] Wire reactions into playback (scene events -> plans -> blended emotions) | running 2026-11-18 (standing approval) | t-097d-claude-reaction-playback | `docs/tasks/T-097D.md`; path A |
 | T-097-boy | [Personality] Boy acting (Phase D) | approved; after T-097A and T-097B merge | t-097-boy-claude-acting | `docs/tasks/T-097B.md`; path B |
 | T-097-girl | [Personality] Girl acting (Phase D) | approved; after T-097A and T-097B merge | t-097-girl-claude-acting | `docs/tasks/T-097G.md`; path B |
 | T-094 | [Visual] Boy 2.1.0 + girl 0.12.0 (Phase D) | approved; after T-091, T-089b, T-093b are owner-approved | t-094-claude-versions | `docs/tasks/T-094.md`; path B |
