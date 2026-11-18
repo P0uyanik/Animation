@@ -3,7 +3,7 @@
     python3 docs/evaluation/characters/T-081/tools/make_spec.py
 
 0.11.0 = the frozen base spec + the approved 0.10.0 override + the owner-approved candidates, in this order (later
-wins): T-065 face v2 + fitted head, T-066 skin presets/2, T-068 vest details, T-070 hair v3 round 2 (groom/2), then
+wins): T-065 face v2 + fitted head, T-066 skin presets/2, T-068 vest details, T-079 hair v3 round 3 (groom/2, copied to T-081/inputs/), then
 the T-081 choices below. A complete spec file instead of an override: an override can only add keys, and groom/2
 needs the groom/1 hair keys (structure names in hair.dynamics, yarn, scalp offset) removed."""
 import json
@@ -45,7 +45,7 @@ T081 = {
 HISTORY = ("0.11.0 (T-081, complete spec girl_auburn_bun_glasses.0.11.0.spec.json; base spec + 0.10.0 + the approved "
            "candidates): face_generic/2 + body_generic/2 fitted head (T-065) with the closed gentle smile + lifted cheeks "
            "at rest (soft_smile) and brown eyes kept; skin-felt/2 porcelain-peach skin, warmer lower blush (T-066); "
-           "hair v3 groom/2 round 2 (T-070); vest patch pockets + cross-stitch decals (T-068); personality profile 1.0.0 "
+           "hair v3 groom/2 round 3 (T-079; round 2 T-070); vest patch pockets + cross-stitch decals (T-068); personality profile 1.0.0 "
            "(T-053); socket-wall smoothing (cheek/eye-corner folds fixed), fuller wider lips, larger ears, wider neck "
            "(T-081, T-059 targets); unpublished, awaiting owner visual approval; not the current version")
 
@@ -56,13 +56,13 @@ def main():
     for p in (E + "T-065/candidates/girl_next_face2.override.json",
               E + "T-066/candidates/girl_auburn_bun_glasses.skin2.override.json",
               E + "T-068/candidates/girl.vest_details.override.json",
-              E + "T-070/candidates/girl.hair_v3.json"):
+              E + "T-081/inputs/girl.hair_v3_r3.json"):
         o = deep_merge(o, ov(p))
     o = deep_merge(o, T081)
     hair = o.pop("hair")
     s = deep_merge(base, o)
     hair["components"] = base["hair"]["components"]
-    hair["provenance"] = "T-070 hair v3 round 2 (groom/2) candidate data, docs/evaluation/characters/T-070/candidates/girl.hair_v3.json"
+    hair["provenance"] = "T-079 hair v3 round 3 (groom/2) girl candidate data (branch t-079-claude-hair-v3-r3@7d3c424, docs/evaluation/characters/T-079/candidates/girl.hair_v3.json; copied to docs/evaluation/characters/T-081/inputs/girl.hair_v3_r3.json); round 2 = T-070"
     s["hair"] = hair
     md = s["metadata"]
     md["history"] = json.load(open(os.path.join(ROOT, G + "girl_auburn_bun_glasses.0.10.0.override.json")))["override"]["metadata"]["history"]
