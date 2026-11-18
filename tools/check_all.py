@@ -518,6 +518,7 @@ def check_python_tests(logs: Path) -> Result:
         [sys.executable, str(ROOT / "tools/fidelity/tests/test_metrics.py")],  # fidelity metric functions (T-077)
         [sys.executable, str(ROOT / "tools/lipsync/test_lipsync.py")],  # T-054a lip sync (T-077)
         [sys.executable, str(ROOT / "tools/tests/test_version_switch.py")],  # T-088 version switch
+        [sys.executable, str(ROOT / "pipeline/charsys/tests/test_materials_r2.py")],  # T-092 presets/3
         [sys.executable, str(ROOT / "pipeline/charsys/tests/test_boy2_face.py")],  # T-058 spec checks, no Blender (T-077)
     ]
     cleanup_tests = ROOT / "tools/cleanup/run_tests.py"  # T-048 branch-cleanup tests, once merged
@@ -809,6 +810,8 @@ def check_blender(blender: str, artifacts: Path, logs: Path, required: bool, cha
     for name, command, json_out in (
         ("render engine selector", [executable, "-b", "--factory-startup", "-P",
                                     str(ROOT / "pipeline/charsys/tests/test_render_engine.py")], None),
+        ("materials r2 graphs", [executable, "-b", "--factory-startup", "-P",
+                                 str(ROOT / "pipeline/charsys/tests/test_materials_r2_graphs.py")], None),  # T-092
         ("groom dynamics", [executable, "-b", "--factory-startup", "-P",
                             str(ROOT / "pipeline/charsys/tests/groom_dynamics_test.py"), "--",
                             str(out / "groom_dynamics_test.json")], out / "groom_dynamics_test.json"),
