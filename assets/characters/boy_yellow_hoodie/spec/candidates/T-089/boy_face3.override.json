@@ -13,7 +13,7 @@
     "lids": {"upper_roll_deg": 7, "lower_roll_deg": 14, "lower_gap": 0.015,
              "trim": {"up_outer_deg": 64, "lo_outer_deg": 62, "back": 0.3, "cover_margin": 0.06, "soft": 0.1}},
     "lash": {"span_deg": 62, "thick_m": 0.0036, "flare": 0.15},
-    "socket": {"corner_deg": 60, "band_deg": 3, "lower_band_deg": 0.5, "wall_smooth_iterations": 10,
+    "socket": {"corner_deg": 60, "band_deg": 3, "lower_band_deg": 0.5, "wall_smooth_iterations": 25,
                "corner_close_deg": 3, "corner_blend_deg": 5}
    },
    "brows": {"inner": 0.45, "outer": 0.45, "height": 0.95},
