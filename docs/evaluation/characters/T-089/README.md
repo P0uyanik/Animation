@@ -12,7 +12,7 @@ build reports **identical** to their published `build_report.json`, and fidelity
 | strict sheet (T-087 recipe) | [boy_2.0.0_vs_face3_strict.jpg](boy_sheet/boy_2.0.0_vs_face3_strict.jpg) | [girl_0.11.0_vs_face3_strict.jpg](girl_sheet/girl_0.11.0_vs_face3_strict.jpg) |
 | blink / glance strip | [boy_blink_glance_strip.jpg](boy_sheet/boy_blink_glance_strip.jpg) | [girl_blink_glance_strip.jpg](girl_sheet/girl_blink_glance_strip.jpg) |
 | recipe | [boy_2.0.0_vs_face3.recipe.json](boy_2.0.0_vs_face3.recipe.json) | [girl_0.11.0_vs_face3.recipe.json](girl_0.11.0_vs_face3.recipe.json) |
-| first frame (preview) | [boy_first_frame_preview.jpg](boy_preview/boy_first_frame_preview.jpg) | `girl_sheet/preview.jpg` |
+| first frame (preview) | [boy_first_frame_preview.jpg](boy_preview/boy_first_frame_preview.jpg) | [preview.jpg](girl_sheet/preview.jpg) |
 
 Sheet columns: original reference | current approved | T-089 candidate | AI target (Higgsfield B01/B02, G01/G02;
 face rows only). The strips are head-only renders (no hair, clothing or glasses) of neutral, blink 50 %, blink 100 %
