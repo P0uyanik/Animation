@@ -73,7 +73,7 @@ Current character versions: boy 1.1.0 and girl 0.10.0, from e901/e905 `run_shot`
 ### 4.2 `test_shot_eyes.py`: girl "baked bones reproduced 0.829 mm" (limit < 0.01 mm)
 
 - **Reproduced:** 8/9 checks pass, and only that one fails
-  ([test_shot_eyes.log](evidence/test_shot_eyes.log)). The eye checks pass: boy 0.078 mm, girl 0.0006 mm.
+  (log `evidence/test_shot_eyes.log`, not committed: `*.log` is git-ignored). The eye checks pass: boy 0.078 mm, girl 0.0006 mm.
 - **The bone:** a scratch copy of `shot_render.py` records the per-bone error
   ([shot_eyes_perbone.json](evidence/shot_eyes_perbone.json)). Only one bone exceeds the limit:
   **`DYN-back_curls.01.4`, 0.829 mm at frame 72**. It is the last segment of a girl hair-dynamics chain, with
