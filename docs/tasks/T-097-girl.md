@@ -14,7 +14,7 @@ cheerful and alert; quick glances; pointing and hand-to-chin; an open "delighted
 ## Acceptance criteria
 1. Tune `content/personality/girl_auburn_bun_glasses.json` (reaction, tempo, gaze habit, gesture preferences, limits) toward the T-106
    measurements; document each value's source.
-2. Character gesture clips and an expression override file for this character only (new files with the character
+2. Character gesture clips and character-prefixed emotion files (`content/emotions/<char>_*.emotion.json`) (new files with the character
    prefix); for the girl the open "delighted" mouth is an acting-beat expression, rest face unchanged.
 3. One solo test shot folder `episodes/e908_girl_acting/` (new) showing notice -> reaction -> gesture -> hold to an
    event; animcheck incl. the T-097C acting checks passes with no warnings for this character.
@@ -22,7 +22,7 @@ cheerful and alert; quick glances; pointing and hand-to-chin; an open "delighted
 5. Evidence: cheap preview first, then a short Cycles clip + strip vs the reference moments; time-ledger line.
 
 ## Write-set
-`content/personality/girl_auburn_bun_glasses.json`, `content/clips/girl_*.clip.json` (new), `content/expressions/girl_auburn_bun_glasses*.json` (new),
+`content/personality/girl_auburn_bun_glasses.json`, `content/clips/girl_*.clip.json` (new), `content/emotions/girl_*.emotion.json` (new),
 `episodes/e908_girl_acting/**` (new), `tests/acting/test_girl_signature.py` (new),
 `docs/evaluation/animation/T-097-girl/**`.
 
