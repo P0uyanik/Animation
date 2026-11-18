@@ -16,7 +16,5 @@ means none. Branch is the task's branch; a task branch without a row falls back 
 
 | Task | Lane | Branch | Write-set | Depends on | Versions bumped |
 | --- | --- | --- | --- | --- | --- |
-| T-078 | E | `t-078-claude-progress-video` | `docs/evaluation/showcase/T-078/**` | — | — |
-| T-081 | D | `t-081-claude-girl-0-11-0` | `assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.11.0*`, `pipeline/charsys/face_generic.py`, `pipeline/charsys/face_features.py`, `pipeline/charsys/body_generic.py`, `pipeline/charsys/body_helpers.py`, `pipeline/charsys/tests/test_face_v2*.py`, `docs/evaluation/characters/T-081/**`, `assets/characters/girl_auburn_bun_glasses/versions/**`, `docs/evaluation/characters/fidelity_baseline.json` (girl entry), `docs/evaluation/regression/baselines/girl_auburn_bun_glasses/**` | `pipeline/charsys/versions.py` (stable) | `face_generic`, `body_generic` |
 
 Supervisor-only files: docs/process/TASK_LOG.md, docs/ROADMAP.md, docs/process/OWNER_DECISIONS.md, docs/tasks/**.
