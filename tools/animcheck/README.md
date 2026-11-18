@@ -10,6 +10,7 @@ python3 tools/animcheck/run_gate.py --render build/apps/render-cli/plush-render 
 python3 tools/animcheck/make_shots.py        # rewrites shots/*.scene.json from the T-045 evidence shot
 python3 tools/animcheck/tests/test_animcheck.py
 python3 tools/animcheck/personality.py --bake bake.json --scene shot.scene.json [--json report.json]   # T-053
+python3 tools/animcheck/acting.py --scene shot.scene.json [--bake bake.json] [--json report.json]      # T-097C, warns only
 ```
 
 ## Regression shots (`shots/`)
@@ -77,3 +78,19 @@ Reported only: clip gestures' entry / hold / peak speed, each entry's peak wrist
 (H) next to the profile's `energy.idle_motion_amplitude`. H = x extent of the package's head / skin vertices above
 the head bone. Frame values at 24 fps. Unit tests: `tests/test_animcheck.py` (class `PersonalityCheck`).
 
+## Acting rule (T-097C, `acting.py`, warnings only)
+
+Acting signature and consistency against each character's personality profile: every limit is read from the
+profile (`content/personality/<id>.json`), nothing names a character. `run_gate.py` runs it on every shot whose
+characters carry a profile: each flag is a `WARN <shot>: acting: …` line, each shot gets one summary line
+(`INFO <shot>: acting: N characters, M warnings (warnings only)`), report `<out>/acting.json`. It never fails the
+gate; no existing check or threshold changed (`timing_still_mm_per_frame` is reused, not added).
+
+| Rule | Measure | Flag when | Limit read from |
+| --- | --- | --- | --- |
+| gesture amplitude (bake) | clip gestures only (touch / reach go where the layout puts the target): largest angle at the shoulder (`upperArm.<side>` pivot) between the window's first shoulder-to-wrist line and a later one, ÷ 180° (0.5 = hanging arm raised to horizontal) | above limit + 0.10 | `limits.gesture_amplitude_max`, else `energy.gesture_amplitude` |
+| notice delay (scene) | first `look` of the character starting within 48 f@24 after an event (not at the shot's first frame); events = the scene's optional `events` list (`{"time": s, "name", "source"}`, the `ReactionEvent` fields of `engine/scene/acting.h`; tool-side only, the engine ignores the key), else every other character's non-`look` action start | delay < low end | `reaction.delay_frames[0]`, else `reaction_delay` of `content/timing/reference_timing.json` |
+| still hold (bake) | longest run in which the character's wrists and head move < `timing_still_mm_per_frame` | run < reference `hold[0]` × `tempo.hold_scale` | `tempo.hold_scale` (default 1); `quick` (= `beat_scale` < 1 or `action_speed` > 1) is marked: faster beats, never shorter holds |
+
+Frame values at 24 fps. Unit tests: `tests/test_animcheck.py` (class `ActingRule`, small synthetic fixtures). Results
+on the regression shots and a deliberately out-of-character variant: `docs/evaluation/animation/T-097C/README.md`.

@@ -9,7 +9,9 @@ profile (T-053), every measured blink / reach / hold / idle value within the pro
 personality.py); the report is <out>/animcheck.json (one entry per shot, with all metrics and the failures) and
 <out>/personality.json (the personality reports). T-104: the timing rule (tools/animcheck/timing.py) runs on every shot
 and only warns (short beats against content/timing/reference_timing.json, shots without a hold): its warnings are
-printed as WARN lines and written to <out>/timing.json, never counted as failures.
+printed as WARN lines and written to <out>/timing.json, never counted as failures. T-097C: the acting rule
+(tools/animcheck/acting.py: gesture amplitude, notice delay, still hold against each personality profile) runs on
+shots with profiles and only warns as well: WARN lines, one summary line per shot, <out>/acting.json.
 """
 from __future__ import annotations
 
@@ -24,6 +26,7 @@ sys.path.insert(0, str(HERE))
 import animcheck  # noqa: E402
 import personality  # noqa: E402
 import timing  # noqa: E402
+import acting  # noqa: E402
 
 
 def main(argv=None) -> int:
@@ -42,6 +45,7 @@ def main(argv=None) -> int:
     report = {"format": "plush.animcheck_gate", "version": 1, "thresholds": thresholds, "shots": []}
     persona = {"format": "plush.animcheck_personality_gate", "version": 1, "shots": []}
     timings = {"format": "plush.animcheck_timing_gate", "version": 1, "shots": []}
+    actings = {"format": "plush.animcheck_acting_gate", "version": 1, "shots": []}
     failures = []
     for shot in shots:
         scene = json.loads(shot.read_text())
@@ -68,7 +72,13 @@ def main(argv=None) -> int:
             failures += [f"{shot.name}: personality: {f}" for f in prep["failures"]]
             print(f"{'PASS' if not prep['failures'] else 'FAIL'} {shot.name}: personality limits, "
                   f"{len(prep['characters'])} characters, {len(prep['failures'])} failures")
+            act = acting.analyse(scene, shot, json.loads(bake.read_text()), thresholds)  # T-097C: warnings only
+            actings["shots"].append({"shot": shot.name, "result": act})
+            for w in act["warnings"]:
+                print(f"WARN {shot.name}: acting: {w}")
+            print(f"INFO {shot.name}: {acting.summary(act)}")
     report["failures"] = failures
+    (out / "acting.json").write_text(json.dumps(actings, indent=1) + "\n")
     (out / "timing.json").write_text(json.dumps(timings, indent=1) + "\n")
     (out / "animcheck.json").write_text(json.dumps(report, indent=1) + "\n")
     (out / "personality.json").write_text(json.dumps(persona, indent=1) + "\n")
