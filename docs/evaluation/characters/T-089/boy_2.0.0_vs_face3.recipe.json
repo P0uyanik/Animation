@@ -7,7 +7,7 @@
  "baseline": {"version": "2.0.0", "label": "2.0.0 (current)"},
  "candidate": {"spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.0.0.spec.json",
                "overrides": ["assets/characters/boy_yellow_hoodie/spec/candidates/T-089/boy_face3.override.json"],
-               "sha": "cb3cc81", "label": "T-089 face_generic/3"},
+               "sha": "2d8cb87", "label": "T-089 face_generic/3"},
  "compare": {"variant": "compare", "pose": "arms_down"},
  "cameras": {
   "lens_mm": 70,
