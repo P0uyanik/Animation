@@ -31,6 +31,7 @@ that is not obvious from it.
 | Cloud Implementer → Supervisor | `send_message` to **your** session id | works once Implementers have your id (§5); relay as fallback |
 | Supervisor ↔ owner's PC (local relay session running Codex) | **relay**: append a line to `RELAY_LOG.md` (and orders in `NEXT_TASK.md`) on branch `relay-channel`, push | the PC relay polls `relay-channel`; its reports are pushed to `RELAY_LOG.md` and a GitHub Action posts them as a comment on PR P0uyanik/Animation#2 |
 | GitHub CI results, relay reports | PR P0uyanik/Animation#2 activity | `subscribe_pr_activity` (one session at a time: the old Supervisor unsubscribes at handover) |
+| Supervisor → Advisor (old session `session_01NPjxeNTmHt2DtBN8F8uLqB`, owner decision 2026-11-18) | relay line `- <UTC> NEW SUPERVISOR → ADVISOR: <question>` on `relay-channel` | Advisor → Supervisor: `send_message`. Advisor checks hourly or when the owner pings it; it never merges, assigns or messages Implementers |
 | Reading any session's progress | `list_sessions children`, `list_events` | read-only fallback, no trust needed |
 
 Relay line format: `<UTC> | T-NNN | READY|BLOCKED|STATUS|ALIVE | <branch@sha> | <one line>`; Supervisor lines start
