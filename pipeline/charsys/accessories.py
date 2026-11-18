@@ -12,7 +12,11 @@ glasses/1:
   lens:    enabled (thin clear discs; parented to the head bone, not exported to the engine, which has no
            transparent materials)
   material: srgb, roughness, metallic
-The frame (rims, bridge, temples) is one object "<name>"; lenses "<name>_lens"."""
+The frame (rims, bridge, temples) is one object "<name>"; lenses "<name>_lens".
+
+backpack/1 (T-068): not an accessory here. Accessories are rigid to the head bone; a backpack must follow the torso
+and its straps the shoulders, so it is the shared garment type "backpack" in clothing.garments
+(pipeline/charsys/garments/backpack.py). An accessories item of type backpack/1 is rejected with that pointer."""
 import math
 
 import bpy
@@ -209,6 +213,9 @@ def build(C, items, lm, ctx, face_parts, head_bone, obstacles=(), material_assig
             frame, lens, r = build_glasses(C, it, lm, ctx, face_parts, head_bone, obstacles, material_assignments)
             out.append((frame, lens))
             rep[it.get("name", "glasses")] = r
+        elif it.get("type") == "backpack/1":
+            raise SystemExit("accessory backpack/1: wear the backpack through clothing.garments (type \"backpack\", "
+                             "garment/1), so the bag follows the torso and the straps the shoulders")
         else:
             raise SystemExit(f"unsupported accessory type: {it.get('type')}")
     return out, rep
