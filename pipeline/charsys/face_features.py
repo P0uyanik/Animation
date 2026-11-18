@@ -709,7 +709,9 @@ def lid_socket(head, ctx, sides, cfg):
     smooth_sel = []
     soft = _f(cfg, "cover_softness", 0.12)
 
-    def profile(delta, dc, band, R_s, behind, radial):
+    ramp_lo = math.radians(_f(cfg, "lower_ramp_deg", _f(cfg, "ramp_deg", 6.0)))  # steeper lower wall (less lit slope)
+
+    def profile(delta, dc, band, R_s, behind, radial, ramp=ramp):
         """Skin radius along one lid: behind the eye under the lid band, then over the shell (a smooth maximum of the
         face and the shell's outer radius, so the face is only raised where the shell would show). Continuous in
         delta, starting from the opening's own value (behind) at the edge."""
@@ -749,7 +751,7 @@ def lid_socket(head, ctx, sides, cfg):
         fo = (1.0 - _smooth((np.abs(a) - (corner - math.radians(10.0))) / math.radians(10.0))) * (1.0 - _smooth((dc - s["r"] - cr) / cr))
         behind = np.where(dc > t_in, dc + (t_in - dc) * fo, dc)  # the opening: skin in front of the eyeball moves behind it
         nu, bu = profile(du, dc, band_up, s["r_up_out"] + clear, behind, radial)
-        nl, bl = profile(dl, dc, band_lo, s["r_lo_out"] + clear, behind, radial)
+        nl, bl = profile(dl, dc, band_lo, s["r_lo_out"] + clear, behind, radial, ramp_lo)
         # beyond the eye corners there is no opening and no lid band: the skin only covers the shells
         cf = 1.0 - _smooth((np.abs(a) - corner) / math.radians(10.0) + 0.5)
         kk = soft * radial / 0.4
@@ -760,7 +762,11 @@ def lid_socket(head, ctx, sides, cfg):
         zu = _smooth((du - dl) / math.radians(8.0) + 0.5)  # 1 = nearer the upper lid (further above it than below the lower)
         newd = np.where(inside, behind, zu * nu + (1 - zu) * nl)
         fw = _smooth((-uc[:, 1] - 0.05) / 0.35)  # the socket fades out towards the eye's sides
-        newd = dc + (newd - dc) * fw
+        dd = newd - dc
+        if cfg.get("cover_sides"):  # keep the cover over the shells at the eye's sides (only the carving fades)
+            newd = dc + np.where(dd > 0, dd * _smooth((-uc[:, 1] - 0.05) / 0.12), dd * fw)  # short fade at the region edge
+        else:
+            newd = dc + dd * fw
         q[cand] = uc * newd[:, None]
         far = np.where(zu > 0.5, du - band_up, dl - band_lo) > math.radians(3.0)
         wsm = (zu * (1 - bu) + (1 - zu) * (1 - bl)) * fw * cf + (1 - cf) * fw  # where the skin covers the shells
@@ -1134,3 +1140,4 @@ def taper_key_front(head, name, y_cut, width=0.012):
     w = 1.0 - _smooth((y - (y_cut - width)) / width)
     kb[name].data.foreach_set("co", (base + (cur - base) * w[:, None]).ravel())
     return True
+

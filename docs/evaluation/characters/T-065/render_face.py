@@ -45,6 +45,9 @@ def main():
         sc.display.shading.light = "STUDIO"
         sc.display.shading.color_type = "MATERIAL"
         sc.display.shading.show_cavity = True
+    elif engine == "EEVEE":  # iteration previews (not evidence)
+        sc.render.engine = "BLENDER_EEVEE"
+        sc.eevee.taa_render_samples = 16
     else:
         sc.render.engine = "CYCLES"
         sc.cycles.samples = int(arg(argv, "--samples", 16))

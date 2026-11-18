@@ -74,15 +74,15 @@
     "radius_m": 0.046,
     "spacing_m": 0.134,
     "offset_z_m": -0.016,
-    "protrusion_m": 0.004,
+    "protrusion_m": 0.009,
     "scale": [
      1.0,
-     0.78,
+     0.86,
      1.0
     ],
     "gaze_range_deg": [
-     16,
-     8
+     12,
+     6
     ],
     "iris": {
      "srgb": [
@@ -123,16 +123,18 @@
      "upper_gap": 0.03,
      "upper_thickness_m": 0.0016,
      "lower_edge_deg": -46,
-     "lower_gap": 0.025,
-     "lower_thickness_m": 0.001
+     "lower_gap": 0.015,
+     "lower_thickness_m": 0.0008
     },
     "socket": {
      "band_deg": 6,
-     "lower_band_deg": 2.5,
+     "lower_band_deg": 0.5,
      "ramp_deg": 7,
      "reach_deg": 26,
      "corner_deg": 50,
-     "clearance_m": 0.002
+     "clearance_m": 0.0006,
+     "cover_sides": true,
+     "lower_ramp_deg": 1.5
     }
    },
    "brows": {
@@ -252,7 +254,8 @@
         0.8,
         -0.1
        ]
-      ]
+      ],
+      "side_blend": 0.5
      }
     }
    }

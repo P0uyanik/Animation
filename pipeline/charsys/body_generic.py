@@ -19,7 +19,8 @@ length a FRACTION OF height_m (angles in degrees):
             With front_eye_width (the reference's half width at the eye line, same units) the widths are taken
             relative to it, so the head keeps its own width at the eye line and takes the reference's shape below.
             The side profile is applied below mid-face only, relative to it (the chin's set-back from the mouth
-            and cheeks); above it the reference silhouette is cheek volume and the eye, made by the face options
+            and cheeks); above it the reference silhouette is cheek volume and the eye, made by the face options.
+            side_blend (default 0.15 of the eye-to-chin depth): how gradually the side fit starts below mid-face
   neck:     base_z, top_z, radius, optional top_radius (thicker top blending into the jaw; default radius)
   torso:    levels: [[z, half_width, half_depth_front, half_depth_back], ...]  (bottom to top)
   shoulder: z, joint_x, clavicle_x
@@ -218,7 +219,7 @@ def fit_head_outline(head, ol, H):
             if not b or i < base_i:
                 continue
             t = i / nb * chin_t
-            q = max(0.0, min(1.0, (t - t_m) / (0.15 * chin_t)))
+            q = max(0.0, min(1.0, (t - t_m) / (float(ol.get("side_blend", 0.15)) * chin_t)))
             ds[i] = ((base_y - (_interp(side, t) - off_m) * u) - min(v.co.y for v in b)) * q * q * (3 - 2 * q)
     # 3. side profile: offsets smoothed between slices (no ridges), applied with a broad lateral falloff; the back
     # half of the head stays

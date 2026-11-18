@@ -19,15 +19,40 @@ Renders: Cycles CPU, 16 spp + OIDN, 384 px, orthographic face framing, shared ca
   - [third character](head_v2/third_owner_sheet.jpg). Head-only test; she has no approved version yet.
 - Outline overlays and landmark errors: see "Criterion 0" below.
 
+**Third character fixes (Supervisor review of cff0393):** see [head_v2/third_fix_sheet.jpg](head_v2/third_fix_sheet.jpg).
+Panels: reference | before | after, front (Cycles) and 3/4.
+
+![third fix](head_v2/third_fix_sheet.jpg)
+
+1. **Bright pink line under the eyes: fixed.**
+   - Cause, measured with a profile through the socket: her eye was set 4 mm out, behind the cheek in front of it. The skin made a ledge about 18 % of the eye radius in front of the eyeball, and its lit, blush-tinted top was the line.
+   - Fix (her spec data only):
+     - `protrusion_m` 9 mm;
+     - eyeball `scale` y 0.86;
+     - `gaze_range_deg` [12, 6], which narrows the lid gap;
+     - `lower_gap` 0.015, `lower_thickness_m` 0.8 mm;
+     - socket `clearance_m` 0.6 mm, `lower_band_deg` 0.5.
+2. **Horizontal crease across the lower face: fixed.**
+   - Cause: the head's side-profile fit started at mid-face over a short blend.
+   - Fix: a new opt-in `head.outline.side_blend`, default 0.15, so other characters are unchanged. She uses 0.5.
+3. **Socket edge at the outer eye corner in 3/4: reduced, not fixed.**
+   - New opt-in `eyes.socket.cover_sides`: the skin keeps covering the shells at the eye's sides, with a short fade.
+   - `lower_ramp_deg` was also added; it is opt-in and in her spec, but showed no visible effect.
+   - Two further attempts failed and were reverted:
+     - a wider blend-back made diagonal creases;
+     - trimming the shells beyond the corners left holes in Blink.
+   - A faint rim remains at the far eye's outer side in 3/4. A real fix needs the lid shells built to end at the corners, with their Blink motion adapted. That is a larger change than this budget allowed.
+- Defaults are unchanged, so the boy and girl candidates are unchanged.
+- **Budget:** the Supervisor counted 3 stills left; only 1 was (11 of 12 had been used, including the 2 current-boy stills). So the after-fix front is Cycles and the after-fix 3/4 is an EEVEE preview, labelled as such.
+- Test: 40/40 PASS on the final candidates.
+
 **Remaining differences (honest list, visual first):**
 1. **Skin colour** (T-066).
    - The boy's skin is tan; the reference is porcelain peach.
    - The girl's and the third character's skin is greyish pink.
 2. **Hair** (T-044). The boy's is a clump helmet, the girl's are tubular ringlets, and the third character has none in this test.
 3. **Lower lid.** A faint pink line shows under the iris on the girl and the third character. It is weaker than before.
-4. **Third character.**
-   - A faint horizontal shading band on her lower face.
-   - The socket edge still reads slightly at the outer corner in 3/4.
+4. **Third character.** A faint rim at the far eye's outer corner in 3/4 (see the fixes above). The under-eye line and the lower-face crease are fixed.
 5. **Boy.**
    - In Happy, a faint ring of the closed shell.
    - The 3/4 cheeks are still less full than #28.
