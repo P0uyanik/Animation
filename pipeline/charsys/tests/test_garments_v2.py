@@ -300,12 +300,17 @@ def test_boy(blender, blend, base_blend):
             ok = ok and any(b[0][0] > xc for b in st) and any(b[1][0] < xc for b in st)
         check(f"stripes on the {s} upper, on both side walls", ok, f"{len(st)} stripes")
     fl, bag, pk = bb.get("garment.backpack.flap"), bb.get("garment.backpack.main"), bb.get("garment.backpack.pocket")
+    # the flap's front (lower) edge on the centre line: its piping when present (round 2 wraps the flap down the bag's
+    # sides, so the flap's own bounding-box bottom is a side corner, not the front edge)
+    fe = bb.get("garment.backpack.flap_edge") or fl
     check("flap covers the top of the bag, on its outer face",
-          fl is not None and fl[1][2] >= bag[1][2] - 0.002 and fl[0][2] > pk[1][2] - 0.01 and fl[1][1] >= bag[1][1])
+          fl is not None and fl[1][2] >= bag[1][2] - 0.002 and fe[0][2] > pk[1][2] - 0.01 and fl[1][1] >= bag[1][1],
+          f"flap top {fl[1][2] if fl else None} bag top {bag[1][2]:.4f} front edge {fe[0][2] if fe else None} pocket top {pk[1][2]:.4f}")
     tab, buckle = bb.get("garment.backpack.tab"), bb.get("garment.backpack.buckle")
     check("tab and buckle on the flap's centre line, below its edge",
           tab is not None and buckle is not None and abs(0.5 * (tab[0][0] + tab[1][0])) < 0.005
-          and buckle[0][2] < fl[0][2] + 0.01)
+          and buckle[0][2] < fe[0][2] + 0.01, f"tab x {tab and 0.5 * (tab[0][0] + tab[1][0])} buckle bottom "
+          f"{buckle and buckle[0][2]} front edge {fe and fe[0][2]}")
     pf = bb.get("garment.backpack.pocket_flap")
     check("pocket flap on the pocket", pf is not None and pf[1][2] >= pk[1][2] - 0.002 and pf[1][1] >= pk[1][1])
     check("no zips on the flap pack (B06)", not any(".zip" in x for x in n))

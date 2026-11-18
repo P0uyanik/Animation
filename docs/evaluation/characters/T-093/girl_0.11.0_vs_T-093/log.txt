@@ -1,0 +1,4 @@
+2026-11-18T20:00:46Z preview start: recipe 7eb110085575 {'engine': 'cycles', 'samples': 2, 'px': 120}
+2026-11-18T20:04:57Z preview pass: /tmp/claude-0/-home-user-Animation/6ff557f3-7505-5a5a-94b4-b78ac3739ce7/scratchpad/r2_girl_0.11.0_vs_T-093/preview/preview.jpg
+2026-11-18T20:27:20Z sheet start: recipe 7eb110085575 {'engine': 'cycles', 'samples': 16, 'px': 360}
+2026-11-18T20:45:37Z sheet written: /tmp/claude-0/-home-user-Animation/6ff557f3-7505-5a5a-94b4-b78ac3739ce7/scratchpad/r2_girl_0.11.0_vs_T-093/sheet.jpg 1120x2048
