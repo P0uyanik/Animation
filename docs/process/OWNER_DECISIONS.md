@@ -233,3 +233,9 @@ No new tasks after the running ones (T-060, T-078, T-079, T-080, T-081, T-082). 
 (path B after the owner's render approval). Then the owner reviews all results (progress video with boy 2.0.0 and
 girl 0.11.0, hair round 3, collisions) to find issues and plan the next round. Follow-ups noted in
 `docs/process/IMPLEMENTATION_PLAN.md` §5 stay unstarted until then.
+
+## 2026-11-18: hair round 3 approved; keep improving fidelity until the characters match the references
+Owner reviewed T-079 (hair v3 round 3): the characters look closer to the original references; merged as a system.
+Standing direction: continue improving visual fidelity, round after round, until the characters match the references
+as closely as possible (each round ends with a side-by-side sheet against the references for owner approval). The
+"finish running tasks, then review" hold still applies to starting the next round.

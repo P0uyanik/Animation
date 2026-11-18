@@ -17,7 +17,6 @@ means none. Branch is the task's branch; a task branch without a row falls back 
 | Task | Lane | Branch | Write-set | Depends on | Versions bumped |
 | --- | --- | --- | --- | --- | --- |
 | T-060 | A | `t-060-codex-windows-ci` | `.github/workflows/checks.yml`, `.github/scripts/install_ci_dependencies.ps1`, `.github/ci-dependencies.json`, `CMakeLists.txt`, `cmake/**`, `vcpkg.json`, `docs/evaluation/process/T-060/**`, `pipeline/production/run_shot.py`, `.gitattributes`, `apps/studio/CMakeLists.txt`, `apps/studio/main.cpp`, `apps/studio/shot_job_windows.cpp`, `apps/studio/shot_workflow.{cpp,h}`, `tests/test_clips.cpp`, `tests/test_shot_workflow.cpp` | — | — |
-| T-079 | D | `t-079-claude-hair-v3-r3` | `pipeline/charsys/groom_hybrid.py`, `pipeline/charsys/tests/test_hair_v3*.py`, `pipeline/charsys/materials/presets.json`, `docs/evaluation/characters/T-079/**` | — | `groom` |
 | T-082 | C | `t-082-claude-collision-elbow` | `engine/scene/collision.{h,cpp}`, `engine/scene/interaction.{h,cpp}`, `engine/scene/actions.cpp`, `engine/model/**`, `pipeline/charsys/export_engine.py`, `tests/test_collision.cpp`, `tests/test_interaction.cpp`, `docs/evaluation/animation/T-047/**`, `docs/evaluation/animation/T-082/**` | — | `export` |
 | T-078 | E | `t-078-claude-progress-video` | `docs/evaluation/showcase/T-078/**` | — | — |
 | T-080 | D | `t-080-claude-boy-2-0-0` | `assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.0.0*`, `pipeline/charsys/versions.py`, `docs/evaluation/characters/T-080/**` | — | `materials` |
