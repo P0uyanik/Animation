@@ -200,4 +200,19 @@ $B -b --factory-startup -P pipeline/charsys/experiments/hair_study/measure.py --
 
 ## Checks
 
-CHECKS_SECTION
+After `git merge origin/staging` (e449ef1):
+`python3 tools/check_all.py --base origin/main --task T-070 --full --blender <bpy 5.3 wrapper>` with the pinned
+OpenImageDenoise 2.3.3 (`PLUSH_OIDN_ROOT`) and the apt list from `.github/ci-dependencies.json`:
+
+- PASS: frozen assets; write-set (T-070: 47 paths, all inside the claim); shared-systems lint; C++ build; C++ tests;
+  Python tests and links; Blender tier, full (verify_charsys, determinism, export, face, groom, garment, all-character
+  regression: boy_yellow_hoodie PASS (fidelity 66.42), girl_auburn_bun_glasses PASS (64.40),
+  girl_white_hair_blue_dress PASS (no spec yet, not buildable)). Existing characters are unchanged: none pins groom/2.
+- **FAIL (guarded path, needs Supervisor approval):** `pipeline/charsys/tests/test_hair_v3_r2.py` — the new test file
+  named by the T-070 write-set (`pipeline/charsys/tests/test_hair_v3*.py`). I did not add a `Supervisor-Approved`
+  trailer myself.
+
+`python3 pipeline/charsys/tests/test_hair_v3_r2.py`: 20/20 PASS; `test_hair_v3.py` (T-044): 30/30 PASS.
+
+Not tested: engine import/playback of round-2 packages; the engine hair solver; a production build through
+`build_character.py` with a groom/2 pin (no character pins it); GPU render times.
