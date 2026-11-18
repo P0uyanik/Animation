@@ -1,7 +1,91 @@
-> **Status (2026-11-18): reversed by owner decision.** The original Supervisor session
-> `session_01NPjxeNTmHt2DtBN8F8uLqB` is the Supervisor again. Its session cannot receive `send_message`
-> (permanent elevation), so Implementers and the PC relay report via `RELAY_LOG.md` on `relay-channel`
-> (posted to PR #2, which wakes the Supervisor). The contents below remain the reference for a future handover.
+# Round 2 Supervisor handover (2026-11-18). READ THIS FIRST
+
+The owner approved a **fresh Supervisor session for round 2**. You are that Supervisor. The previous Supervisor
+session (`session_01NPjxeNTmHt2DtBN8F8uLqB`) handed over and is idle; it is not your advisor and does not coordinate.
+The older handover below (2026-11-17, "Option A") is background only, where it does not contradict this section.
+
+## 1. Read, in this order
+1. `docs/process/ROUND2_PLAN.md`: the approved plan. Phases A→B/C→D, scope, execution strategy.
+2. `docs/process/OWNER_DECISIONS.md`: the last entries from 2026-11-18 (round 2 approved, procedural characters,
+   Higgsfield design points, boy 2.0.0 and girl 0.11.0 current).
+3. `docs/audit/PROJECT_AUDIT_COMPARISON.md`, then the two audits if needed.
+4. `docs/process/TASK_LOG.md`, `OWNERSHIP.md` (claims; empty when you start), `docs/tasks/T-085..T-088.md`
+   (Phase A task files, written and ready).
+5. `docs/process/DELIVERY_PLAN.md`, `GATE.md`, `IMPLEMENTER_PROMPT.md`, `ASSET_STORE.md`.
+
+## 2. State at handover (2026-11-18 ~15:00 UTC)
+- `main` = `staging`: everything approved is merged. Boy **2.0.0** and girl **0.11.0** are current (published,
+  golden baselines). The audits, plan and owner references are in `docs/audit/`, `docs/process/` and
+  `assets/characters/*/references/uploads/`.
+- No implementer session is running. Codex (owner's PC) is idle after T-084.
+- CI notes:
+  - the backup workflow's restore test was red on `main` since 01:30Z (missing numpy/Pillow); fixed in the
+    handover merge, so verify it turns green;
+  - the Windows job rebuilds vcpkg for over 1 h on every main/staging push until T-085 and T-086 land.
+
+## 3. What to do first (Phase A)
+1. **Claim and start** T-085, T-087 and T-088 as three cloud implementers (disjoint files; T-086 starts after T-085
+   merges, because they share `checks.yml`). Use `docs/process/IMPLEMENTER_PROMPT.md` and the task files. Each
+   implementer's first message must include the task file path, the branch name, the input SHA (`origin/main`),
+   the write-set, and the instruction to report READY with the input SHA.
+2. **A5 coordination fixes (yours):**
+   - relay notifications only for READY, BLOCKED and STATUS lines (`relay-notify` workflow on `relay-channel`);
+   - refresh `IMPLEMENTATION_PLAN.md` (stale: it says "Codex: T-060 only") and `IMPLEMENTER_PROMPT.md`;
+   - task files must list every file a solution may touch.
+3. Merge Phase A through integration branches with full CI. Then write the Phase B and C task files from
+   `ROUND2_PLAN.md` and start them: at most 6 in parallel, disjoint claims, T-090 after T-089's first fit is
+   reviewed or as the 7th slot frees up.
+4. Phase D starts **only after the owner approves Phase B's visual quality**.
+
+## 4. Communication (you are NOT elevated; keep it that way)
+- **Cloud implementers ↔ you:** `send_message` works both ways, so give implementers **your** session id. The
+  `RELAY_LOG.md` line on branch `relay-channel` (posted to PR P0uyanik/Animation#2) remains the fallback.
+- **GitHub activity:** subscribe to PR P0uyanik/Animation#2 with `subscribe_pr_activity` (the old session has
+  unsubscribed). It delivers relay reports and CI results.
+- **Codex (owner's PC):** assignments go **at the top of `NEXT_TASK.md`** on `relay-channel`; the PC session reads
+  that file every ~5 min and replies with `| T-NNN | STARTED/READY |` lines in `RELAY_LOG.md`. A line only in
+  `RELAY_LOG.md` is NOT seen as an assignment (lesson from T-084).
+- **Never** call `confirm_repository_trust`, `request_computer_folder` or anything that elevates the session.
+
+## 5. Merge mechanics (what works; see `docs/process/GATE.md`)
+1. `integration/<task>` from `origin/staging`, `git merge --no-ff` the task branch.
+2. Add an **empty commit with one `Supervisor-Approved: <exact path>` line per guarded path**. Compute the list
+   with:
+   ```
+   python3 - <<'X'
+   import sys,subprocess;sys.path.insert(0,'tools');import check_all as C
+   ch=set(subprocess.run(['git','diff','--name-only','origin/staging','HEAD'],capture_output=True,text=True).stdout.split())
+   a=C.approval_trailers('origin/staging');print('
+'.join('Supervisor-Approved: '+p for p in sorted(ch) if any(C.matches(p,q) for q in C.guarded_patterns()) and p not in a))
+   X
+   ```
+3. Update `TASK_LOG.md` (merged), remove the claim row from `OWNERSHIP.md` (keep the table header; an empty table
+   is valid), then run `python3 tools/regression/tests/test_gate_tools.py` and `tools/check_doc_links.py`.
+4. Push the integration branch and wait for the GitHub run. When it is green, fast-forward `staging` and `main` to it.
+5. Stacking is fine: build the next integration branch on top of a running one. Fast-forward in order.
+6. **Rules:**
+   - never force-push or rewrite history;
+   - never delete unmerged branches;
+   - never modify frozen or published assets;
+   - never loosen tests or thresholds;
+   - commit trailers `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>` and
+     `Claude-Session: <your session URL>`;
+   - no model IDs in commits.
+7. When reading a file before writing it in Python, assert on its length (one emptied `OWNERSHIP.md` reached `main`
+   once).
+
+## 6. Owner preferences (unchanged)
+- **Style:** short, plain answers, outcomes not process. When the owner asks a question, answer it; do not assign
+  work.
+- **Scope:** never start a task the owner has not approved. Path B (visual) needs owner approval on strict sheets
+  before merge or before a version becomes current.
+- **Priority:** visual fidelity to the original references beats scores.
+- **Costs:** keep tokens low. The audits found coordination cost exceeding implementation cost, so avoid
+  no-action turns.
+- **Archiving:** archive finished implementer sessions after their merge (owner: "finished tasks have to be merged
+  and archived").
+
+---
 
 # Supervisor handover (2026-11-17, Option A: non-elevated Supervisor)
 

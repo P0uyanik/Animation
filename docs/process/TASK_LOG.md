@@ -61,6 +61,10 @@
 | T-082 | Collisions follow-up: natural e905 re-staging (no elbow correction needed), merged with T-047 | **merged** 2026-11-18 (owner: "merge T-082") | t-082-claude-collision-elbow (f6098bc), integration/t-082 | GitHub full gate (integration run) |
 | T-083 | Fidelity gap report: our rendered videos/sheets vs the original references (Codex, evaluation only) | **merged** 2026-11-18 (overall visual match 4/10; T-078 + final T-080/T-081 sheets not yet included) | t-083-codex-fidelity-gap-report (ac20992) | `docs/evaluation/review/T-083/README.md`; path A docs |
 | T-084 | Independent project audit (Codex): fidelity, gaps, workflow efficiency, tool usage | **merged** 2026-11-18 with the Supervisor audit and the comparison (`docs/audit/`) | t-084-codex-project-audit (ec1d316) | evaluation only |
+| T-085 | Renderer optional in the build (Phase A) | assigned 2026-11-18, round 2 | t-085-claude-renderer-optional | `docs/tasks/T-085.md`; path A |
+| T-086 | CI efficiency (Phase A; after T-085) | assigned 2026-11-18, round 2 | t-086-claude-ci-efficiency | `docs/tasks/T-086.md`; path A |
+| T-087 | Comparison recipe lock + fidelity fixes (Phase A) | assigned 2026-11-18, round 2 | t-087-claude-review-recipe | `docs/tasks/T-087.md`; path A |
+| T-088 | Version-switch script (Phase A) | assigned 2026-11-18, round 2 | t-088-claude-version-switch | `docs/tasks/T-088.md`; path A |
 | T-053 | Personality profiles 1.0.0 (reader, limits, animcheck check) | **merged** 2026-11-18 (owner-approved) | t-053-claude-personality (f62fedb), integration 50fc612 | GitHub full gate PASS; some profile fields await engine layers |
 | T-048 | Branch cleanup workflow + tests | **in main** 2026-11-17 | t-048-claude-branch-cleanup (8f1c3ce), merge ae15c0b | 25/25 cleanup tests, full gate PASS; first real dry run after T-041 backups |
 | T-049 | Hair approach study (strand vs sculpted vs hybrid) | **in main** 2026-11-17; owner choice pending | t-049-claude-hair-study (e31e613) | recommends hybrid C (felted base volumes + few broad edge clumps, face keep-out as spec data); none reaches reference softness yet (fibre halo/volume, girl fringe) |

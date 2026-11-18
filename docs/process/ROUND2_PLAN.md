@@ -1,6 +1,6 @@
-# Round 2 plan: REVISED DRAFT for owner approval (2026-11-18, revision 2)
+# Round 2 plan: APPROVED by the owner 2026-11-18 (revision 2)
 
-**Status:** proposal only. **No task starts until the owner explicitly approves execution.**
+**Status:** approved for execution 2026-11-18 ("approve execution, fresh supervisor yes, include T-090"). Phase A first.
 
 **Inputs:**
 - `docs/audit/CODEX_PROJECT_AUDIT.md`

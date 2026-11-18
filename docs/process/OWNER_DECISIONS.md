@@ -276,3 +276,13 @@ for round 2. Where they disagree with each other or with the earlier references,
 Owner: verify main is complete, then two independent, critical audits: Codex (T-084, `docs/audit/CODEX_PROJECT_AUDIT.md`)
 and Supervisor (`docs/audit/SUPERVISOR_PROJECT_AUDIT.md`), then `docs/audit/PROJECT_AUDIT_COMPARISON.md`. Findings and
 recommendations only; no major implementation before the owner decides. Round 2 waits for this.
+
+## 2026-11-18: round 2 approved (character creation stays procedural)
+- Owner agrees with Codex on the main audit disagreement: **character creation stays code-driven, procedural and
+  reusable**; no manually sculpted or authored character meshes. Better procedural algorithms are welcome.
+- Round 2 plan `docs/process/ROUND2_PLAN.md` (revision 2) **approved for execution**: Phase A workflow/CI/coordination
+  first; Phase B faces, eyes, materials, garments; Phase C (parallel) two-character interaction + one limited
+  environment/lighting/render experiment; Phase D (after owner approves Phase B visuals) hair, personality/acting,
+  boy 2.1.0 / girl 0.12.0. Out of scope: third character, T-051, T-101–T-103, full environment, T-099, full T-074.
+- **T-090 reference-fit optimiser included** in Phase B.
+- **Fresh Supervisor session for round 2: yes.** The previous Supervisor session hands over and goes idle.
