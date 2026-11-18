@@ -1,0 +1,10 @@
+{
+  "note": "T-078 (evidence only): T-066 boy skin candidate (boy_yellow_hoodie.skin2.override.json) restated for the boy 2.0.0-dev generic build path. T-066's legacy_post_build step is not needed there: the generic path reads materials.assignments.skin directly. Same values: skin-felt/2, base (236,190,166), blush (226,128,112). albedo_srgb.skin set to the same colour so the face graph and body agree.",
+  "override": {
+    "materials": {
+      "albedo_srgb": {"skin": [236, 190, 166]},
+      "assignments": {"skin": {"preset": "skin-felt/2", "base_color_srgb": [236, 190, 166], "reference_size_m": 0.29}}
+    },
+    "face": {"blush": {"srgb": [226, 128, 112]}}
+  }
+}
