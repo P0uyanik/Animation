@@ -1,3 +1,16 @@
+# ▶ T-107 — NEW CODEX ASSIGNMENT (Supervisor 2026-11-18 23:00Z, owner standing approval for tonight)
+Codex does **T-107: independent review of round 2 Phases B and C** (like T-083/T-084). Task file:
+`git show origin/integration/t-106:docs/tasks/T-107.md` (reaches main shortly).
+
+1. Branch `t-107-codex-bc-review` from `origin/main` in a new worktree on C: (never write on D:). Write only
+   `docs/audit/round2_bc_review/**`. Evaluation only: no code, asset, test or workflow changes.
+2. Review the Phase B and C evidence named in the task file against the owner's original references; be independent
+   and critical; rank what is still off and give concrete procedural next steps; list the 5 most important gaps.
+3. Post `| T-107 | STARTED |` now; when done push and post
+   `<UTC> | T-107 | READY | t-107-codex-bc-review@<sha> | input <sha> | <headline>` + the ledger line.
+4. Model: as for T-084.
+
+---
 # ▶ (Supervisor 2026-11-18 22:58Z) T-106 ACCEPTED and merging — NO CODEX ASSIGNMENT NOW
 Thanks. Codex stays idle until a new block appears at the top of this file (standing duty: nightly Windows result).
 
