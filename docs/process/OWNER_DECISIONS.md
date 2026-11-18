@@ -311,3 +311,11 @@ looks), full T-087 Cycles settings mandatory for final sheets, approvals and gol
 selective regressions. Owner: "Keep both implementations lightweight and avoid unnecessary token consumption,
 excessive logging, or additional agent communication." Applies to new tasks and rework rounds; running tasks are not
 interrupted. Recorded in `IMPLEMENTER_PROMPT.md` (report item 11), `docs/tasks/_TEMPLATE.md`, `REVIEW_RECIPE.md`.
+
+## 2026-11-18 (~20:35Z): no environment development for now (relayed by the previous Supervisor session)
+Owner: "I don't want to work on environment development for now. Please keep it out of the current priorities."
+T-098L stays a completed experiment; no environment follow-up task in this round. The T-098L render-cost finding
+(final 1080p/128 spp about 16-20 min per frame on 4 CPU cores) was noted; no action requested.
+Open owner finding (no task approved): the generated animations feel too fast. Playback and encoding are correct
+(24 fps); the cause is the authored timing (beats packed with almost no holds). A timing-calibration proposal is
+under discussion with the owner; nothing starts until the owner approves.
