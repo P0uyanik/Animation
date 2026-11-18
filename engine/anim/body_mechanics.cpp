@@ -1,5 +1,7 @@
 #include "anim/body_mechanics.h"
 
+#include "anim/personality.h"
+
 #include <algorithm>
 #include <cmath>
 #include <numbers>
@@ -35,25 +37,6 @@ bool descendant(const Skeleton& sk, int b, int ancestor) {
   for (int x = sk.bones[size_t(b)].parent; x >= 0; x = sk.bones[size_t(x)].parent)
     if (x == ancestor) return true;
   return false;
-}
-// Value of a personality record ({"value": ...}) or a plain number; lists give their mean. NaN when absent.
-float recordValue(const Json& section, const char* key) {
-  if (!section.is_object()) return NAN;
-  auto it = section.find(key);
-  if (it == section.end()) return NAN;
-  const Json& v = it->is_object() && it->contains("value") ? (*it)["value"] : *it;
-  if (v.is_number()) return v.get<float>();
-  if (v.is_array() && !v.empty()) {
-    float s = 0;
-    int n = 0;
-    for (const auto& x : v)
-      if (x.is_number()) s += x.get<float>(), ++n;
-    return n ? s / float(n) : NAN;
-  }
-  return NAN;
-}
-void setIf(float& dst, float v) {
-  if (std::isfinite(v)) dst = v;
 }
 }  // namespace
 
@@ -94,23 +77,33 @@ void applyBodyMechanicsLimits(BodyMechanicsParams& p, const Json& l) {
   p.kneeSoften = readFloat(l, "knee_soften", p.kneeSoften);
 }
 
+// Personality (T-053): the shared reader (anim/personality.h) resolves the profile; this maps its tempo, energy and
+// posture onto the layer. Missing parameters keep the shared defaults.
+void applyPersonalityToBodyMechanics(BodyMechanicsParams& p, const PersonalityProfile& pr) {
+  auto setIf = [](float& dst, const std::optional<float>& v) {
+    if (v && std::isfinite(*v)) dst = *v;
+  };
+  // Frame values in profiles are at 24 fps; the layer keeps them at 24 fps too (converted where used).
+  if (pr.settleFrames) p.settleFrames = pr.settleFrames->mid();
+  setIf(p.overshoot, pr.overshoot);
+  if (pr.anticipationFrames) p.lagFrames = std::clamp(pr.anticipationFrames->mid() * 0.35f, 1.0f, 4.0f);
+  setIf(p.energy, pr.energyLevel);
+  setIf(p.gesture, pr.gestureAmplitude);
+  setIf(p.slouch, pr.slouch);
+  setIf(p.headPitchDeg, pr.headPitchDeg);
+  setIf(p.shouldersForward, pr.shouldersForward);
+  setIf(p.weightShift, pr.weightShift);
+  setIf(p.leanTowardTask, pr.leanTowardTask);
+}
+
+// JSON form (kept for callers that hold a parsed profile): read through the same reader; a section-only object
+// (no "format") is accepted as a profile. An unreadable profile changes nothing.
 void applyPersonalityToBodyMechanics(BodyMechanicsParams& p, const Json& j) {
   if (!j.is_object()) return;
-  const Json none;
-  const Json& tempo = j.contains("tempo") ? j["tempo"] : none;
-  const Json& energy = j.contains("energy") ? j["energy"] : none;
-  const Json& posture = j.contains("posture") ? j["posture"] : none;
-  // Frame values in profiles are at 24 fps; the layer keeps them at 24 fps too (converted where used).
-  setIf(p.settleFrames, recordValue(tempo, "settle_frames"));
-  setIf(p.overshoot, recordValue(tempo, "overshoot"));
-  if (float a = recordValue(tempo, "anticipation_frames"); std::isfinite(a)) p.lagFrames = std::clamp(a * 0.35f, 1.0f, 4.0f);
-  setIf(p.energy, recordValue(energy, "level"));
-  setIf(p.gesture, recordValue(energy, "gesture_amplitude"));
-  setIf(p.slouch, recordValue(posture, "slouch"));
-  setIf(p.headPitchDeg, recordValue(posture, "head_pitch_deg"));
-  setIf(p.shouldersForward, recordValue(posture, "shoulders_forward"));
-  setIf(p.weightShift, recordValue(posture, "weight_shift"));
-  setIf(p.leanTowardTask, recordValue(posture, "lean_toward_task"));
+  Json copy = j;
+  if (!copy.contains("format")) copy["format"] = "plush.personality";
+  if (!copy.contains("version")) copy["version"] = 0;
+  if (auto pr = personalityFromJson(copy)) applyPersonalityToBodyMechanics(p, *pr);
 }
 
 void applyBodyMechanicsOverrides(BodyMechanicsParams& p, const Json& o) {
