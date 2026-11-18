@@ -15,6 +15,8 @@ spec.hair (generator "groom/2"):
                   "flow": "away" | "down" | "toward" | "stand", "pole": {"az", "el"} (whorl for away/toward/stand),
                   "len_deg": [lo, hi], "lift": [root, tip], "lift_power", "width": [lo, hi], "thick": [lo, hi],
                   "jitter_deg", "converge" (tips pulled towards az 0 by this fraction), "curl_deg" (sideways bend),
+                  "lift": [root, peak, tip] + "lift_peak" (0..1, default 0.6) arches the clump up and back down
+                  towards the scalp (tufts that curl back, rounded puffy clumps; T-070),
                   "flick_m" (outward flick of the last third of the tip), "taper_power" (width profile 1 - s^p:
                   ~2.4 leaf, ~1.1 cone), "az_list" (explicit root azimuths instead of an even spread)}],
                  "seg", "step_m", "grooves", "groove_depth", "irregularity", "keepout" (overrides the hair keep-out)}
@@ -31,7 +33,8 @@ spec.hair (generator "groom/2"):
                 el_min (the brow line); locks rooted inside the window are rejected by validation; felt fringe tips
                 (tip_az/tip_el form) inside the window must stay at or above el_min. The build reports the hair
                 vertices found inside the window in front of the face ("keepout": {"violations": n}).
-  fibres, dynamics, binding, seed, scalp_offset_m, finish: as groom/1 (groom.py). Dynamics: "clumps" structures get
+  fibres, dynamics, binding, seed, scalp_offset_m, finish: as groom/1 (groom.py); a fibre layer may set
+                "shaft_radius_mm" (+ "tip_ratio") for a constant shaft width (fine long roving fibres; T-070). Dynamics: "clumps" structures get
                 one spring chain per clump (every k-th), "locks" one per lock, "bun" a chain of n bones per bun
                 (3-bone FK chains as in the hair-rig blueprints); ties, bows and flowers on a bun follow its chain.
 Materials: each structure names a slot ("material", default "hair"); presets in materials/presets.json (hair v3 uses
@@ -160,8 +163,11 @@ def build_clumps(st, ctx, R):
                 if abs(fa) < float(keep["az"]) and fe < float(keep["el_min"]):
                     d1 = G1.Scalp.direction(fa, float(keep["el_min"]) + R.uniform(0, 3))
                     clamped += 1
-            l0, l1 = [float(x) for x in row.get("lift", [0.0, 0.02])]
+            lift = [float(x) for x in row.get("lift", [0.0, 0.02])]
+            l0, l1 = lift[0], lift[-1]
             lp = float(row.get("lift_power", 1.6))
+            arch = lift[1] if len(lift) == 3 else None  # T-070: [root, peak, tip] arches the clump back to the scalp
+            pk = float(row.get("lift_peak", 0.6))
             flick = float(row.get("flick_m", 0.0))
             wl = rr(R, row["width"])
             tk = rr(R, row["thick"])
@@ -181,7 +187,13 @@ def build_clumps(st, ctx, R):
                     if abs(fa) < float(keep["az"]) + float(keep.get("margin_deg", 2.0)) and fe < lim:
                         d = G1.Scalp.direction(fa, lim)
                 fl = flick * max(0.0, (s - 0.66) / 0.34) ** 2
-                p, nrm = sc.at_dir(d, l0 + (l1 - l0) * s ** lp + fl - 0.004 * (1 - s) ** 4)
+                if arch is None:
+                    h = l0 + (l1 - l0) * s ** lp
+                elif s <= pk:
+                    h = l0 + (arch - l0) * (1 - (1 - s / pk) ** 2) ** (1.0 / lp)
+                else:
+                    h = arch + (l1 - arch) * ((s - pk) / (1 - pk)) ** 2
+                p, nrm = sc.at_dir(d, h + fl - 0.004 * (1 - s) ** 4)
                 path.append(p)
                 ups.append(nrm)
             tp = float(row.get("taper_power", 2.4))
@@ -350,6 +362,11 @@ def validate(hair_spec):
                         errs.append(f"hair.structures[{i}].rows[{j}] (clumps) needs '{k}'")
                 if row.get("flow", "away") not in ("away", "down", "toward", "stand"):
                     errs.append(f"hair.structures[{i}].rows[{j}] flow must be away, down, toward or stand")
+                lift = row.get("lift", [0.0, 0.02])
+                if not (isinstance(lift, list) and len(lift) in (2, 3)):
+                    errs.append(f"hair.structures[{i}].rows[{j}] lift must be [root, tip] or [root, peak, tip]")
+                if not 0.05 <= float(row.get("lift_peak", 0.6)) <= 0.95:
+                    errs.append(f"hair.structures[{i}].rows[{j}] lift_peak must be within 0.05..0.95")
         elif t == "felt_bow":
             if "bun" not in s and not all(k in s for k in ("az", "el")):
                 errs.append(f"hair.structures[{i}] (felt_bow) needs 'bun' or 'az' and 'el'")
@@ -373,6 +390,11 @@ def validate(hair_spec):
                     if abs(float(a)) < ka and float(e) < ke:
                         errs.append(f"hair.structures[{i}] fringe tip ({a}, {e}) is inside the face keep-out")
                         break
+    for k, layer in enumerate((hair_spec.get("fibres") or {}).get("layers") or []):
+        if "shaft_radius_mm" in layer and not 0.0 < float(layer["shaft_radius_mm"]) <= 2.0:
+            errs.append(f"hair.fibres.layers[{k}].shaft_radius_mm must be within (0, 2]")
+        if "tip_ratio" in layer and not 0.0 <= float(layer["tip_ratio"]) <= 1.0:
+            errs.append(f"hair.fibres.layers[{k}].tip_ratio must be within 0..1")
     errs += validate_dynamics(hair_spec)
     return errs
 
@@ -408,6 +430,45 @@ def keepout_violations(objs, scalp, keep, depth_m=0.03):
                 if d.length > r_s - 0.002 and d.length < r_s + depth_m:
                     n += 1
     return n
+
+
+SHAFT_GROUP = "PS Fibre Fixed Shaft/1"
+
+
+def fixed_shaft(fo, radius, tip_ratio):
+    """T-070: a constant fibre shaft (radius at the root, radius x tip_ratio at the tip) after the shared fibre group,
+    whose shaft width scales with fibre length (0.16 x length): long, fine roving fibres for a smooth halo. Opt-in per
+    fibre layer ("shaft_radius_mm", "tip_ratio"); layers without it are unchanged."""
+    import bpy
+    g = bpy.data.node_groups.get(SHAFT_GROUP)
+    if g is None:
+        g = bpy.data.node_groups.new(SHAFT_GROUP, "GeometryNodeTree")
+        g.interface.new_socket(name="Geometry", in_out="INPUT", socket_type="NodeSocketGeometry")
+        for nm in ("Radius", "Tip Ratio"):
+            g.interface.new_socket(name=nm, in_out="INPUT", socket_type="NodeSocketFloat")
+        g.interface.new_socket(name="Geometry", in_out="OUTPUT", socket_type="NodeSocketGeometry")
+        n, ln = g.nodes, g.links
+        gi, go = n.new("NodeGroupInput"), n.new("NodeGroupOutput")
+        par = n.new("GeometryNodeSplineParameter")
+        tip = n.new("ShaderNodeMath")
+        tip.operation = "MULTIPLY"
+        ln.new(gi.outputs["Radius"], tip.inputs[0])
+        ln.new(gi.outputs["Tip Ratio"], tip.inputs[1])
+        mr = n.new("ShaderNodeMapRange")
+        mr.clamp = True
+        ln.new(par.outputs["Factor"], mr.inputs["Value"])
+        ln.new(gi.outputs["Radius"], mr.inputs["To Min"])
+        ln.new(tip.outputs[0], mr.inputs["To Max"])
+        sr = n.new("GeometryNodeSetCurveRadius")
+        ln.new(gi.outputs["Geometry"], sr.inputs["Curve"])
+        ln.new(mr.outputs["Result"], sr.inputs["Radius"])
+        ln.new(sr.outputs["Curve"], go.inputs["Geometry"])
+    m = fo.modifiers.new("PS Fibre Fixed Shaft", "NODES")
+    m.node_group = g
+    for item in g.interface.items_tree:
+        if item.item_type == "SOCKET" and item.in_out == "INPUT" and item.name in ("Radius", "Tip Ratio"):
+            getattr(m.properties.inputs, item.identifier).value = radius if item.name == "Radius" else tip_ratio
+    fo["ps_fibre_shaft_m"] = radius
 
 
 def build(C, head, frame, hair_spec, material, face_y, fibres=None):
@@ -481,6 +542,8 @@ def build(C, head, frame, hair_spec, material, face_y, fibres=None):
                 for layer in fb.get("layers", [{}]):
                     fo = fibres(ob, slot_of[ob.name], layer.get("overrides") or {})
                     if fo is not None:
+                        if layer.get("shaft_radius_mm"):
+                            fixed_shaft(fo, float(layer["shaft_radius_mm"]) / 1000.0, float(layer.get("tip_ratio", 0.35)))
                         fo.parent = ob
                         fo.matrix_parent_inverse = ob.matrix_world.inverted()
                         fo["ps_groom_fibres"] = layer.get("name", "fibres")

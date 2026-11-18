@@ -1,0 +1,53 @@
+{
+ "blend": "girl_white_hair_blue_dress_hairv3.blend",
+ "rest": {
+  "front": {
+   "face": 0.9595,
+   "eyes": 1.0
+  },
+  "three_quarter": {
+   "face": 0.8084,
+   "eyes": 0.9047
+  },
+  "penetration": {
+   "head_inside_frac": 0.13592,
+   "other_inside_frac": 0.00162,
+   "other_deepest_mm": 8.6,
+   "sampled": 8027
+  }
+ },
+ "turn": {
+  "frames": 48,
+  "max_lag_deg": 14.19257428748317,
+  "penetration_max": {
+   "head_inside_frac": 0.13592,
+   "other_inside_frac": 0.00162,
+   "other_deepest_mm": 8.6
+  },
+  "visibility_at_extremes": {
+   "psi_40": {
+    "front": {
+     "face": 0.9601,
+     "eyes": 1.0
+    },
+    "three_quarter": {
+     "face": 0.8079,
+     "eyes": 0.9047
+    }
+   },
+   "psi_-40": {
+    "front": {
+     "face": 0.9601,
+     "eyes": 1.0
+    },
+    "three_quarter": {
+     "face": 0.8073,
+     "eyes": 0.9047
+    }
+   }
+  },
+  "chains": 37,
+  "render_s_per_frame": null
+ },
+ "measure_s": 489.4
+}

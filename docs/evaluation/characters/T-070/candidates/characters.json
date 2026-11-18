@@ -1,0 +1,80 @@
+{
+ "note": "T-044/T-070: per-character data for the hair v3 candidates (kept out of code: shared-systems lint).",
+ "boy": {
+  "id": "boy_yellow_hoodie",
+  "spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.spec.json",
+  "head_object": "head",
+  "frame": {
+   "centre": [
+    0.0,
+    0.008,
+    0.855
+   ],
+   "radii": [
+    0.16,
+    0.154,
+    0.159
+   ]
+  },
+  "hair_srgb": [
+   25,
+   22,
+   21
+  ],
+  "hair_note": "T-070: 25/22/21 (charcoal of the 2026-11-17 turnaround; 19/16/15 rendered near-black)"
+ },
+ "girl": {
+  "id": "girl_auburn_bun_glasses",
+  "spec": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.spec.json",
+  "head_object": "body_skin",
+  "frame": {
+   "centre": [
+    0.0,
+    -0.0039964,
+    0.8250044
+   ],
+   "radii": [
+    0.1419983,
+    0.1350046,
+    0.1449956
+   ]
+  },
+  "hair_srgb": [
+   100,
+   64,
+   47
+  ],
+  "hair_note": "reference hair medium warm brown (color_targets hair 86,54,44 read too red under the felt sheen/saturation compensation; T-049)"
+ },
+ "third": {
+  "id": "girl_white_hair_blue_dress",
+  "spec": "docs/evaluation/characters/T-044/candidates/third.base.spec.json",
+  "stand_in_spec": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.spec.json",
+  "colours": "assets/characters/girl_white_hair_blue_dress/references/color_targets.json",
+  "rest_mouth": "closed_smile",
+  "head_object": "body_skin",
+  "frame": {
+   "centre": [
+    0.0,
+    -0.0039964,
+    0.8250044
+   ],
+   "radii": [
+    0.1419983,
+    0.1350046,
+    0.1449956
+   ]
+  },
+  "hair_srgb": [
+   214,
+   202,
+   186
+  ],
+  "bow_srgb": [
+   90,
+   109,
+   130
+  ],
+  "hair_note": "references/color_targets.json hair: off-white/cream felt (w01)"
+ }
+}
