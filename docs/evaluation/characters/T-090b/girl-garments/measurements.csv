@@ -1,0 +1,16 @@
+view,measure,unit,reference,start,best
+sheet30_front,blouse region IoU,fraction,1,0.42470685044229584,0.4283519410017413
+sheet30_front,lowest visible blouse edge y,px,299,288,288
+sheet30_front,sleeve reach L,% shoulder to palm,116.83,67.81,68.93
+sheet30_front,sleeve reach R,% shoulder to palm,90.17,68.01,68.01
+sheet30_front,shorts region IoU,fraction,1,0.7106167184688369,0.7244667097608274
+sheet30_front,hem_shorts lowest visible edge y,px,347.0,354,355
+sheet30_front,crotch to sole gap,px,116.0,111.0,110.0
+sheet30_front_left,blouse region IoU,fraction,1,0.23351118174594165,0.23594874100719423
+sheet30_front_left,lowest visible blouse edge y,px,300,284,284
+sheet30_front_left,shorts region IoU,fraction,1,0.6763686763686764,0.6761742100768574
+sheet30_front_left,hem_shorts lowest visible edge y,px,348.0,353,355
+sheet30_left,blouse region IoU,fraction,1,0.2196372239747634,0.25996055226824455
+sheet30_left,lowest visible blouse edge y,px,277,276,277
+sheet30_left,shorts region IoU,fraction,1,0.6738170347003155,0.6332941867293013
+sheet30_left,hem_shorts lowest visible edge y,px,347.0,357,361

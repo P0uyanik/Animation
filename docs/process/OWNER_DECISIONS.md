@@ -319,3 +319,52 @@ T-098L stays a completed experiment; no environment follow-up task in this round
 Open owner finding (no task approved): the generated animations feel too fast. Playback and encoding are correct
 (24 fps); the cause is the authored timing (beats packed with almost no holds). A timing-calibration proposal is
 under discussion with the owner; nothing starts until the owner approves.
+
+## 2026-11-18 (~22:35Z): Phase B approved (relayed by the previous Supervisor session)
+Owner, after the strict sheets: "approve T-093 and T-089". With T-092 already approved, **Phase B is complete**.
+- **T-093 garments (round 2, garment/2):** approved as the garment system (B06 flap backpack, cleaner collar and vest
+  edges, reach correctives).
+- **T-089 face and eyes round 3 (face_generic/3):** approved as the next face step. Notes for later face rounds: the
+  boy keeps the new eye size but must keep sleepy heavy lids (the candidate reads slightly too alert); the girl still
+  needs a rounder, fuller face and wider-open eyes (Codex's T-090b girl-face proposals are input for that round).
+- Nothing becomes current until the Phase D versions (T-094: boy 2.1.0, girl 0.12.0). **Phase D is not started**; the
+  owner decides which Phase D tasks run.
+
+## 2026-11-18 (~22:50Z): Phase D approved (relayed by the previous Supervisor session)
+Owner: "yes pass it to the supervisor and approve T-106 for codex". Distribution:
+- **Now (cloud):** T-091 hair round 4; T-089b face polish (boy heavy lids, girl rounder face and wider eyes; the T-090b
+  girl-face proposal is not adopted as is); T-093b garment completion (T-090b boy trousers/shoes proposal as a
+  candidate, girl shorts leg-split control); T-104 continues. **T-097S** acting system (reaction model, emotion
+  modulation and blending, animcheck signature checks; formats and code only) starts as soon as T-104 merges,
+  because both claim `engine/anim/personality.*`, `content/personality/*` and `tools/animcheck/**`.
+- **After T-097S** (split ~23:00Z, see below): T-097-boy and T-097-girl acting in parallel, each only its own character's files. The
+  white-haired girl is out of scope now.
+- **After T-091, T-089b and T-093b are owner-approved:** T-094 boy 2.1.0 and girl 0.12.0 via the T-088 script and
+  T-087 strict sheets; then the e907 exchange is re-rendered with T-097B/G acting. The owner approves before current.
+- **Codex: T-106** reference performance extraction (offline MediaPipe on the two reference videos; data table and
+  contact sheets; tooling and evaluation only).
+
+## 2026-11-18 (~23:00Z): T-097S split (relayed by the previous Supervisor session)
+Owner judged T-097S too large; replaced by: **T-097-0** acting interface (`engine/scene/acting.h` + build stubs, the
+Supervisor, merged first), then in parallel **T-097A** emotion blending, **T-097B** personality-driven reactions and
+**T-097C** acting signature checks (small, when a slot frees up). The per-character acting tasks are renamed
+**T-097-boy** and **T-097-girl** (after T-097A and T-097B merge; own character's files and solo test shots only).
+The white-haired girl stays later. All other Phase D instructions stand.
+
+## 2026-11-18 (~23:10Z): standing approval for tonight (relayed by the previous Supervisor session)
+Owner (verbatim): "You have my approval to proceed without waiting for any further confirmations from me tonight.
+treat all currently proposed and queued Round 2 tasks as approved, and continue the work according to the execution
+order and dependencies you already defined. You do not need additional approval from me to move the work forward,
+including starting the next tasks when their prerequisites are met. continue in the planned sequence, run parallel
+tasks where appropriate, and only interrupt the flow if you hit a real blocker or need a major scope decision beyond
+the current approved plan."
+How the Supervisor applies it:
+- Start each queued task when its prerequisites are met (T-097-0 -> T-097A + T-097B -> T-097C when a slot frees ->
+  T-097-boy + T-097-girl; T-094 after T-091, T-089b, T-093b), at most 6 cloud tasks, Codex T-106 as assigned.
+- Visual results (T-091, T-089b, T-093b, T-104, acting test shots): the Supervisor reviews the strict sheets against
+  the original references; clearly closer -> merge as an opt-in system and continue; not clearly better -> one more
+  focused round instead of merging. Every strict sheet is kept for the owner's morning review.
+- T-094: build and publish boy 2.1.0 and girl 0.12.0, render the sheets and the re-rendered exchange, but leave the
+  current pointers on boy 2.0.0 / girl 0.11.0 until the owner has seen the result.
+- Standing rules unchanged. Interrupt the owner only for a real blocker or a scope decision beyond the plan
+  (environment, third character, GPU, new dependencies). Morning: one short summary (merged, waiting, sheets, costs).

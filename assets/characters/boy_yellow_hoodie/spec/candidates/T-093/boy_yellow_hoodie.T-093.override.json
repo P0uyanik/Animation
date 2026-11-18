@@ -237,18 +237,18 @@
     {
      "type": "backpack",
      "name": "backpack",
-     "width_m": 0.17,
-     "height_m": 0.21,
-     "depth_m": 0.07,
+     "width_m": 0.175,
+     "height_m": 0.22,
+     "depth_m": 0.068,
      "top_drop_m": 0.07,
      "clearance_m": 0.003,
-     "roundness": 3.8,
-     "puff": 0.5,
+     "roundness": 5.5,
+     "puff": 0.15,
      "pocket": {
-      "width": 0.66,
-      "height": 0.34,
-      "depth_m": 0.02,
-      "drop": 0.27
+      "width": 0.64,
+      "height": 0.33,
+      "depth_m": 0.022,
+      "drop": 0.28
      },
      "zip": false,
      "straps": {
@@ -258,8 +258,8 @@
       "lift_m": 0.005
      },
      "handle": {
-      "radius_m": 0.0035,
-      "width_m": 0.03
+      "radius_m": 0.004,
+      "width_m": 0.034
      },
      "material": {
       "preset": "felt",
@@ -345,28 +345,38 @@
       }
      },
      "flap": {
-      "drop": 0.46,
-      "corner": 0.6,
-      "wrap": 0.7,
+      "drop": 0.5,
+      "corner": 0.45,
+      "wrap": 0.75,
       "side_cover": 1.0,
-      "thickness_m": 0.005,
-      "lift_m": 0.0012,
-      "dip_m": 0.006
+      "thickness_m": 0.006,
+      "lift_m": 0.003,
+      "dip_m": 0.004,
+      "edge_m": 0.0026
      },
      "tab": {
-      "width_m": 0.013,
-      "length_m": 0.022,
+      "width_m": 0.014,
+      "length_m": 0.03,
       "start": 0.3,
-      "thickness_m": 0.0032,
-      "buckle_m": 0.01
+      "thickness_m": 0.0035,
+      "buckle_m": 0.015,
+      "buckle": "ring"
      },
      "pocket_flap": {
-      "drop": 0.42,
-      "corner": 0.55,
+      "drop": 0.45,
+      "corner": 0.45,
       "wrap": 0.3,
       "side_cover": 1.0,
-      "thickness_m": 0.003
-     }
+      "thickness_m": 0.0045,
+      "lift_m": 0.002,
+      "edge_m": 0.002
+     },
+     "clean_fibres": [
+      "flap_edge",
+      "pocket_flap_edge",
+      "tab",
+      "buckle"
+     ]
     }
    ]
   },

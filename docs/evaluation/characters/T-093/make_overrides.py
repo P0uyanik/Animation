@@ -55,14 +55,20 @@ def boy():
     bp = item(cl, "backpack")
     # B06 (canonical): rounded lid flap with a tab closure, a front pocket with its own flap, top grab loop, navy
     # felt; B07 only for depth and strap path. Zips belong to B07's design, so none here.
-    bp.update({"width_m": 0.17, "height_m": 0.21, "depth_m": 0.07, "top_drop_m": 0.07, "roundness": 3.8, "puff": 0.5})
+    # round 2 (owner: "still reads as the old rounded pouch"): a boxy, flat-fronted bag (roundness, little puff), a
+    # thick flap with a piped edge, a ring closure on the tab, a rectangular front pocket with its own piped flap
+    bp.update({"width_m": 0.175, "height_m": 0.22, "depth_m": 0.068, "top_drop_m": 0.07, "roundness": 5.5,
+               "puff": 0.15})
     bp["zip"] = False
-    bp["pocket"] = {"width": 0.66, "height": 0.34, "depth_m": 0.02, "drop": 0.27}
-    bp["handle"] = {"radius_m": 0.0035, "width_m": 0.03}
-    bp["flap"] = {"drop": 0.46, "corner": 0.6, "wrap": 0.7, "side_cover": 1.0, "thickness_m": 0.005, "lift_m": 0.0012,
-                  "dip_m": 0.006}
-    bp["tab"] = {"width_m": 0.013, "length_m": 0.022, "start": 0.3, "thickness_m": 0.0032, "buckle_m": 0.01}
-    bp["pocket_flap"] = {"drop": 0.42, "corner": 0.55, "wrap": 0.3, "side_cover": 1.0, "thickness_m": 0.003}
+    bp["pocket"] = {"width": 0.64, "height": 0.33, "depth_m": 0.022, "drop": 0.28}
+    bp["handle"] = {"radius_m": 0.004, "width_m": 0.034}
+    bp["flap"] = {"drop": 0.5, "corner": 0.45, "wrap": 0.75, "side_cover": 1.0, "thickness_m": 0.006, "lift_m": 0.003,
+                  "dip_m": 0.004, "edge_m": 0.0026}
+    bp["tab"] = {"width_m": 0.014, "length_m": 0.03, "start": 0.3, "thickness_m": 0.0035, "buckle_m": 0.015,
+                 "buckle": "ring"}
+    bp["pocket_flap"] = {"drop": 0.45, "corner": 0.45, "wrap": 0.3, "side_cover": 1.0, "thickness_m": 0.0045,
+                         "lift_m": 0.002, "edge_m": 0.002}
+    bp["clean_fibres"] = ["flap_edge", "pocket_flap_edge", "tab", "buckle"]  # crisp piping and closure
     # navy felt (B06, owner decision 2026-11-18). The ONE `material` entry changed by this task: the bag colour is
     # a design point, not a fabric preset (preset and size unchanged); T-092 does not target the backpack.
     navy = {"preset": "felt", "base_color_srgb": [44, 48, 74], "reference_size_m": 0.2}
@@ -83,16 +89,32 @@ def girl():
     # sleeve reach (sheet30 front, #41): long puffed sleeves to the wrist; rounded blouse collar (earlier references,
     # owner decision 2026-11-18), broad rounded lobes lying flat over the vest
     bl.update({"sleeve_length": 1.0, "sleeve_puff_m": 0.03, "sleeve_puff_peak": 0.58})
-    bl["collar"] = {"type": "round", "width_m": 0.05, "gap_m": 0.012, "slope": 0.3, "tip_round": 0.55, "lift_m": 0.026}
+    bl["collar"] = {"type": "round", "width_m": 0.048, "gap_m": 0.012, "slope": 0.5, "tip_round": 0.55, "lift_m": 0.034}
+    # round 2 (owner: collar and vest edges cleanly finished, no fringe): no fibres on the collar, the collar lifted
+    # off the vest (its surface and fibres no longer show through); the blouse keeps its panel under the sleeve
+    # top (closed armhole), so no skin shows at the vest's armholes
+    bl["clean_fibres"] = ["collar"]
+    bl["collar_clear"] = {"over": ["vest"], "gap_m": 0.008, "smooth": 20, "max_lift_m": 0.02}
+    bl["armhole"] = "closed"
+    bl["sleeve_start"] = 0.0  # the sleeve covers the shoulder cap (skin showed between the vest and the sleeve)
     vest = item(cl, "vest")
     # reach correctives (Codex: the vest flares in reach): the panels near the armhole copy the arm-root weights, so the
     # correction also reaches vertices carried entirely by the arm (arm_hi > 1)
-    vest["correctives"] = {"reach": {"deg": -75.0, "strength": 1.0, "arm_lo": 0.4, "arm_hi": 2.0}}
+    # round 2 (owner: further reduce the vest in reach): the vest is no longer carried by the arm (arm-weight cap:
+    # this alone removes the flare), and the reach keys keep the vest outside the posed blouse sleeve at the shoulder
+    # (layer order; strength 0 = no extra pull towards the torso, which only fought the collision once capped)
+    vest["correctives"] = {"arm_weights": {"cap": 0.2},
+                           "reach": {"deg": -75.0, "strength": 0.0, "over": ["blouse"], "over_gap_m": 0.003}}
+    vest["clean_fibres"] = ["edge", "pocket_edge"]
+    vest["shoulder_width"] = 0.9  # a little more blouse at the shoulders (sheet30, #41)
     sh = item(cl, "shorts")
     # split bloomers (#41, G08): two gathered legs, the gusset short and high
     sh["crotch"] = {"type": "gusset", "depth": 0.25}
     sh["puff_inner"] = 0.35
     sh["leg_split"] = {"amount": 0.8, "start": 0.12}
+    # gathered cuffs (G08, #41): vertical gathers puff above the cuff band
+    sh["hem_break"] = {"height_m": 0.045, "flare_m": 0.0, "folds": 0, "fold_depth_m": 0.0, "front_drop_m": 0.0,
+                       "pleats": 18, "pleat_depth_m": 0.0035}
     bt = item(cl, "boots")
     # cream turned-down fleece cuff (G08, #41 boots tile): shape here; the fleece material is T-092's
     bt["cuff_roll"] = {"height_m": 0.032, "thickness_m": 0.009, "inner_m": 0.014, "lumps": 0.2}

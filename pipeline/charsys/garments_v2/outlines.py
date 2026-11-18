@@ -3,7 +3,8 @@
 hem_break (``trousers`` / ``shorts``): the hem settles on the shoe. Over ``height_m`` above the hem the leg flares
   out by up to ``flare_m`` at the hem, bunches into ``folds`` soft horizontal folds of ``fold_depth_m`` (slightly
   slanted around the leg so they do not read as rings) and the front of the hem drops ``front_drop_m`` onto the
-  shoe. Every piece of the item is moved (shell, bands, seams), so they stay together.
+  shoe; ``pleats`` vertical gathers of ``pleat_depth_m`` above the hem (a gathered cuff, e.g. on bloomers). Every
+  piece of the item is moved (shell, bands, seams), so they stay together.
 leg_split (``shorts``): bloomer legs read as two legs. From ``start`` thigh radii below the hip line down to the
   hem, the inner half of each leg (facing the other leg) is drawn towards its own leg's axis by up to ``amount``
   (share of the distance; a smooth ramp below the split top, ``hem_amount`` of it kept at the hem, so the hem bands
@@ -21,7 +22,8 @@ from mathutils import Vector
 from garments import generator as GEN
 from garments import shapes as S
 
-HEM_BREAK = {"height_m": 0.05, "flare_m": 0.004, "folds": 2, "fold_depth_m": 0.002, "front_drop_m": 0.006}
+HEM_BREAK = {"height_m": 0.05, "flare_m": 0.004, "folds": 2, "fold_depth_m": 0.002, "front_drop_m": 0.006,
+             "pleats": 0, "pleat_depth_m": 0.002}
 LEG_SPLIT = {"amount": 0.6, "start": 0.5, "hem_amount": 1.0, "clearance_m": 0.002, "gusset_rise": 0.5}
 CUFF_ROLL = {"height_m": 0.03, "thickness_m": 0.008, "inner_m": 0.012, "lumps": 0.15, "segments": 72}
 
@@ -35,7 +37,8 @@ def _check(v, name, field, defaults, ranges):
         if key not in defaults:
             raise ValueError(f"garment {name}.{field}.{key}: unknown field (known: {sorted(defaults)})")
         lo, hi = ranges[key]
-        if isinstance(defaults[key], int) and not isinstance(defaults[key], bool) and key in ("folds", "segments"):
+        if isinstance(defaults[key], int) and not isinstance(defaults[key], bool) and key in ("folds", "segments",
+                                                                                              "pleats"):
             if not isinstance(val, int) or isinstance(val, bool) or not lo <= val <= hi:
                 raise ValueError(f"garment {name}.{field}.{key} must be an integer in [{lo}, {hi}]")
         else:
@@ -44,7 +47,8 @@ def _check(v, name, field, defaults, ranges):
 
 def validate_hem_break(v, name):
     _check(v, name, "hem_break", HEM_BREAK, {"height_m": (0.005, 0.3), "flare_m": (0.0, 0.05), "folds": (0, 6),
-                                            "fold_depth_m": (0.0, 0.02), "front_drop_m": (0.0, 0.05)})
+                                            "fold_depth_m": (0.0, 0.02), "front_drop_m": (0.0, 0.05),
+                                            "pleats": (0, 40), "pleat_depth_m": (0.0, 0.02)})
 
 
 def validate_leg_split(v, name):
@@ -93,6 +97,7 @@ def hem_break(cfg, mine, P, H, J, fit):
     axes = _leg_axes(main, bottom, 0.25 * h)
     flare, depth = float(st["flare_m"]) * fit.leg, float(st["fold_depth_m"]) * fit.leg
     drop, folds = float(st["front_drop_m"]) * fit.leg, int(st["folds"])
+    pleats, pdepth = int(st["pleats"]), float(st["pleat_depth_m"]) * fit.leg
     moved, max_move = 0, 0.0
     for ob in mine:
         if ob.type != "MESH":
@@ -114,7 +119,9 @@ def hem_break(cfg, mine, P, H, J, fit):
             a = math.atan2(d.y, d.x)
             w = (1.0 - u) ** 2
             ripple = math.sin(math.pi * folds * u + 0.7 * math.sin(2.0 * a)) * math.sin(math.pi * u) if folds else 0.0
-            dr = flare * w + depth * ripple
+            # vertical pleats gathered into the hem band: tight at the band, fullest just above it, gone at the top
+            pleat = pdepth * (0.5 + 0.5 * math.cos(pleats * a)) * math.sin(math.pi * min(1.0, 1.4 * u)) ** 0.7 if pleats else 0.0
+            dr = flare * w + depth * ripple + pleat
             dz = -drop * max(0.0, -d.y) ** 1.5 * w
             q = p + d * dr + Vector((0.0, 0.0, dz))
             v.co = inv @ q

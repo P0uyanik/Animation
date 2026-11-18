@@ -1,0 +1,5321 @@
+{
+ "annotations": {
+  "sheet30_back": "assets/characters/girl_auburn_bun_glasses/references/annotations/sheet30_back.json",
+  "sheet30_back_right": "assets/characters/girl_auburn_bun_glasses/references/annotations/sheet30_back_right.json",
+  "sheet30_front": "assets/characters/girl_auburn_bun_glasses/references/annotations/sheet30_front.json",
+  "sheet30_front_left": "assets/characters/girl_auburn_bun_glasses/references/annotations/sheet30_front_left.json",
+  "sheet30_left": "assets/characters/girl_auburn_bun_glasses/references/annotations/sheet30_left.json"
+ },
+ "build": {
+  "build_argument": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.11.0.spec.json",
+  "hidden_objects": {
+   "sheet30_back": [],
+   "sheet30_back_right": [],
+   "sheet30_front": [],
+   "sheet30_front_left": [],
+   "sheet30_left": []
+  },
+  "hidden_objects_prefix": {
+   "sheet30_back": [],
+   "sheet30_back_right": [],
+   "sheet30_front": [],
+   "sheet30_front_left": [],
+   "sheet30_left": []
+  },
+  "master": "<out>/build/girl_auburn_bun_glasses_master.blend",
+  "overrides": [
+   "assets/characters/girl_auburn_bun_glasses/spec/candidates/T-089/girl_face3.override.json"
+  ],
+  "region_rules_added": [],
+  "rendered_blend": "<out>/build/girl_auburn_bun_glasses_master.blend",
+  "spec": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.11.0.spec.json",
+  "variant": "master"
+ },
+ "character": "girl_auburn_bun_glasses",
+ "note": "Scores support, but never replace, visual judgement: the side-by-side sheets are the review material.",
+ "overall": {
+  "colour": {
+   "garment:blouse": {
+    "dC_median": 1.4077,
+    "dL_median": -7.8594,
+    "de00_luma_matched_median": 1.4674,
+    "de00_median": 7.1481,
+    "dh_median": 0.6419,
+    "reference_lab_median": [
+     79.3726,
+     3.1341,
+     4.0923
+    ],
+    "render_lab_median": [
+     68.116,
+     3.7872,
+     5.0693
+    ],
+    "spread_ratio_median": 1.2695,
+    "views": 4
+   },
+   "garment:boots": {
+    "dC_median": 1.5759,
+    "dL_median": -0.7082,
+    "de00_luma_matched_median": 1.0115,
+    "de00_median": 1.2629,
+    "dh_median": -1.7768,
+    "reference_lab_median": [
+     38.3512,
+     14.1252,
+     16.8582
+    ],
+    "render_lab_median": [
+     38.9952,
+     15.6029,
+     17.8465
+    ],
+    "spread_ratio_median": 0.9064,
+    "views": 5
+   },
+   "garment:shorts": {
+    "dC_median": 0.3795,
+    "dL_median": 0.8798,
+    "de00_luma_matched_median": 0.6577,
+    "de00_median": 1.6526,
+    "dh_median": -3.5222,
+    "reference_lab_median": [
+     44.1853,
+     -2.0379,
+     6.4021
+    ],
+    "render_lab_median": [
+     43.4472,
+     -1.5949,
+     7.0941
+    ],
+    "spread_ratio_median": 0.3449,
+    "views": 5
+   },
+   "garment:vest": {
+    "dC_median": -2.3201,
+    "dL_median": -2.0621,
+    "de00_luma_matched_median": 1.9351,
+    "de00_median": 3.6864,
+    "dh_median": 5.3417,
+    "reference_lab_median": [
+     36.9642,
+     16.1175,
+     6.7279
+    ],
+    "render_lab_median": [
+     37.6812,
+     13.4306,
+     7.2072
+    ],
+    "spread_ratio_median": 0.3948,
+    "views": 5
+   },
+   "hair": {
+    "dC_median": -3.8118,
+    "dL_median": 3.4848,
+    "de00_luma_matched_median": 3.7566,
+    "de00_median": 4.6376,
+    "dh_median": 8.5564,
+    "reference_lab_median": [
+     28.9941,
+     16.508,
+     14.0157
+    ],
+    "render_lab_median": [
+     31.6973,
+     11.6763,
+     13.4002
+    ],
+    "spread_ratio_median": 0.4771,
+    "views": 5
+   },
+   "hair_accessory": {
+    "dC_median": -5.4543,
+    "dL_median": -4.8533,
+    "de00_luma_matched_median": 8.8937,
+    "de00_median": 16.5694,
+    "dh_median": 126.8913,
+    "reference_lab_median": [
+     50.6428,
+     20.4595,
+     9.2196
+    ],
+    "render_lab_median": [
+     41.5088,
+     -0.622,
+     0.6042
+    ],
+    "spread_ratio_median": 1.1065,
+    "views": 5
+   },
+   "skin_face": {
+    "dC_median": -2.4394,
+    "dL_median": -3.1363,
+    "de00_luma_matched_median": 3.1848,
+    "de00_median": 11.0874,
+    "dh_median": 8.2487,
+    "reference_lab_median": [
+     69.1524,
+     13.8336,
+     14.8442
+    ],
+    "render_lab_median": [
+     66.0161,
+     9.7313,
+     14.3019
+    ],
+    "spread_ratio_median": 1.4682,
+    "views": 3
+   },
+   "skin_limbs": {
+    "dC_median": 3.4492,
+    "dL_median": -0.0554,
+    "de00_luma_matched_median": 3.5569,
+    "de00_median": 4.3417,
+    "dh_median": 8.556,
+    "reference_lab_median": [
+     69.7319,
+     9.4599,
+     10.5922
+    ],
+    "render_lab_median": [
+     69.6765,
+     9.8079,
+     15.9854
+    ],
+    "spread_ratio_median": 0.7922,
+    "views": 5
+   }
+  },
+  "colour_de00_mean": 5.8262,
+  "differences": [
+   {
+    "key": "leg_gap_height",
+    "kind": "proportion",
+    "rank": 1,
+    "severity": 6.5123,
+    "text": "visible gap between the legs (crotch to sole) 33% too long relative to height"
+   },
+   {
+    "key": "hair_accessory",
+    "kind": "region",
+    "rank": 2,
+    "severity": 6.0101,
+    "text": "hair_accessory silhouette overlap 0.10; render area +109%"
+   },
+   {
+    "key": "garment:blouse",
+    "kind": "region",
+    "rank": 3,
+    "severity": 5.3959,
+    "text": "blouse silhouette overlap 0.19; render area -44%"
+   },
+   {
+    "key": "arm_length",
+    "kind": "proportion",
+    "rank": 4,
+    "severity": 5.2317,
+    "text": "arms 26% too short relative to height"
+   },
+   {
+    "key": "hair:face_cover",
+    "kind": "hair",
+    "rank": 5,
+    "severity": 5.1984,
+    "text": "hair covers 26% of the face that the reference shows uncovered"
+   },
+   {
+    "key": "eyes",
+    "kind": "region",
+    "rank": 6,
+    "severity": 5.097,
+    "text": "eyes silhouette overlap 0.24; render area -15%"
+   },
+   {
+    "key": "garment:vest",
+    "kind": "region",
+    "rank": 7,
+    "severity": 4.5869,
+    "text": "vest silhouette overlap 0.31; render area -34%"
+   },
+   {
+    "key": "skin_limbs",
+    "kind": "region",
+    "rank": 8,
+    "severity": 4.2738,
+    "text": "skin_limbs silhouette overlap 0.36; render area -42%"
+   },
+   {
+    "key": "hair_accessory",
+    "kind": "colour",
+    "rank": 9,
+    "severity": 4.1424,
+    "text": "hair accessory colour dE00 16.6 (render darker by 5 L*, less saturated by 5 C*, hue shifted 127 deg towards yellow/green); luma-matched dE00 8.9"
+   },
+   {
+    "key": "glasses",
+    "kind": "region",
+    "rank": 10,
+    "severity": 4.0835,
+    "text": "glasses silhouette overlap 0.39; render area -8%"
+   },
+   {
+    "key": "hand",
+    "kind": "landmark",
+    "rank": 11,
+    "severity": 3.6414,
+    "text": "hands off by 0.18 head heights, render higher by 0.09"
+   },
+   {
+    "key": "garment:blouse:fuzz",
+    "kind": "texture",
+    "rank": 12,
+    "severity": 3.0918,
+    "text": "blouse fuzz / fibre texture +192% vs reference"
+   },
+   {
+    "key": "skin_face",
+    "kind": "region",
+    "rank": 13,
+    "severity": 3.0315,
+    "text": "skin_face silhouette overlap 0.55; render area +20%"
+   },
+   {
+    "key": "garment:shorts",
+    "kind": "region",
+    "rank": 14,
+    "severity": 3.0131,
+    "text": "shorts silhouette overlap 0.55; render area -21%"
+   },
+   {
+    "key": "eye_spacing_to_head",
+    "kind": "proportion",
+    "rank": 15,
+    "severity": 2.8295,
+    "text": "eye spacing 14% too narrow relative to head height"
+   },
+   {
+    "key": "eye_width_to_head",
+    "kind": "proportion",
+    "rank": 16,
+    "severity": 2.7792,
+    "text": "eyes 14% too small (width relative to head height)"
+   },
+   {
+    "key": "skin_face",
+    "kind": "colour",
+    "rank": 17,
+    "severity": 2.7718,
+    "text": "skin face colour dE00 11.1 (render darker by 3 L*, hue shifted 8 deg towards yellow/green); luma-matched dE00 3.2"
+   },
+   {
+    "key": "hair",
+    "kind": "region",
+    "rank": 18,
+    "severity": 2.6838,
+    "text": "hair silhouette overlap 0.60; render area +12%"
+   },
+   {
+    "key": "garment:shorts:fuzz",
+    "kind": "texture",
+    "rank": 19,
+    "severity": 2.6472,
+    "text": "shorts fuzz / fibre texture -60% vs reference"
+   },
+   {
+    "key": "skin_face:fuzz",
+    "kind": "texture",
+    "rank": 20,
+    "severity": 2.5778,
+    "text": "skin face fuzz / fibre texture +144% vs reference"
+   },
+   {
+    "key": "garment:boots",
+    "kind": "region",
+    "rank": 21,
+    "severity": 2.5696,
+    "text": "boots silhouette overlap 0.61; render area +28%"
+   },
+   {
+    "key": "shoulder_width",
+    "kind": "proportion",
+    "rank": 22,
+    "severity": 2.4954,
+    "text": "shoulders 12% too narrow relative to height"
+   },
+   {
+    "key": "skin_limbs:fuzz",
+    "kind": "texture",
+    "rank": 23,
+    "severity": 2.0427,
+    "text": "skin limbs fuzz / fibre texture -51% vs reference"
+   },
+   {
+    "key": "ear_top_L",
+    "kind": "visibility",
+    "rank": 24,
+    "severity": 2.0,
+    "text": "ear tops (ear_top_L) hidden in the render but visible in the reference (2 of 5 views)"
+   },
+   {
+    "key": "ear_top_R",
+    "kind": "visibility",
+    "rank": 25,
+    "severity": 2.0,
+    "text": "ear tops (ear_top_R) hidden in the render but visible in the reference (2 of 5 views)"
+   },
+   {
+    "key": "garment:boots:fuzz",
+    "kind": "texture",
+    "rank": 26,
+    "severity": 1.9605,
+    "text": "boots fuzz / fibre texture -49% vs reference"
+   },
+   {
+    "key": "hairline",
+    "kind": "landmark",
+    "rank": 27,
+    "severity": 1.9269,
+    "text": "hairline off by 0.10 head heights, render higher by 0.06"
+   },
+   {
+    "key": "figure_width",
+    "kind": "proportion",
+    "rank": 28,
+    "severity": 1.8855,
+    "text": "overall silhouette 9% too narrow relative to height"
+   },
+   {
+    "key": "skin_face:shade",
+    "kind": "skin",
+    "rank": 29,
+    "severity": 1.8854,
+    "text": "skin face chroma in shade -7.5 C* (grey cast)"
+   },
+   {
+    "key": "skin_face:blush",
+    "kind": "skin",
+    "rank": 30,
+    "severity": 1.84,
+    "text": "skin face warmth / blush (a* P90) -7.4 (weaker)"
+   },
+   {
+    "key": "eye_area_to_head",
+    "kind": "proportion",
+    "rank": 31,
+    "severity": 1.8124,
+    "text": "eye area 18% too small relative to head height squared"
+   },
+   {
+    "key": "garment:blouse",
+    "kind": "colour",
+    "rank": 32,
+    "severity": 1.787,
+    "text": "blouse colour dE00 7.1 (render darker by 8 L*); luma-matched dE00 1.5"
+   },
+   {
+    "key": "hair:outline",
+    "kind": "hair",
+    "rank": 33,
+    "severity": 1.6963,
+    "text": "hair outline more ragged / stringy than the reference (+0.42 log2)"
+   },
+   {
+    "key": "eye_inner",
+    "kind": "landmark",
+    "rank": 34,
+    "severity": 1.6288,
+    "text": "inner eye corners off by 0.08 head heights, render lower by 0.08"
+   },
+   {
+    "key": "hair:relief",
+    "kind": "hair",
+    "rank": 35,
+    "severity": 1.6026,
+    "text": "hair lock relief weaker (fused, helmet-like) than the reference (-0.80 log2)"
+   },
+   {
+    "key": "chin",
+    "kind": "visibility",
+    "rank": 36,
+    "severity": 1.5,
+    "text": "chin (chin) hidden in the render but visible in the reference (1 of 5 views)"
+   },
+   {
+    "key": "eye_L",
+    "kind": "visibility",
+    "rank": 37,
+    "severity": 1.5,
+    "text": "eye centres (eye_L) hidden in the render but visible in the reference (1 of 5 views)"
+   },
+   {
+    "key": "iris_L",
+    "kind": "visibility",
+    "rank": 38,
+    "severity": 1.5,
+    "text": "irises (iris_L) hidden in the render but visible in the reference (1 of 5 views)"
+   },
+   {
+    "key": "mouth",
+    "kind": "visibility",
+    "rank": 39,
+    "severity": 1.5,
+    "text": "mouth centre (mouth) hidden in the render but visible in the reference (1 of 5 views)"
+   },
+   {
+    "key": "nose",
+    "kind": "visibility",
+    "rank": 40,
+    "severity": 1.5,
+    "text": "nose tip (nose) hidden in the render but visible in the reference (1 of 5 views)"
+   },
+   {
+    "key": "hair_area",
+    "kind": "proportion",
+    "rank": 41,
+    "severity": 1.4739,
+    "text": "hair volume (silhouette area) +15%"
+   },
+   {
+    "key": "face:lid_dL",
+    "kind": "face",
+    "rank": 42,
+    "severity": 1.4657,
+    "text": "lids vs face skin, lightness +5.9 L* vs the reference (paler lids (shell domes))"
+   },
+   {
+    "key": "hair_length",
+    "kind": "proportion",
+    "rank": 43,
+    "severity": 1.4379,
+    "text": "hair length +14%"
+   },
+   {
+    "key": "hair:fuzz",
+    "kind": "texture",
+    "rank": 44,
+    "severity": 1.3091,
+    "text": "hair fuzz / fibre texture -36% vs reference"
+   },
+   {
+    "key": "hem_shorts_height",
+    "kind": "proportion",
+    "rank": 45,
+    "severity": 1.2212,
+    "text": "shorts hem 2.4% of the height too low"
+   },
+   {
+    "key": "eye_outer",
+    "kind": "landmark",
+    "rank": 46,
+    "severity": 1.1872,
+    "text": "outer eye corners off by 0.06 head heights, render lower by 0.05"
+   },
+   {
+    "key": "hair",
+    "kind": "colour",
+    "rank": 47,
+    "severity": 1.1594,
+    "text": "hair colour dE00 4.6 (render lighter by 3 L*, less saturated by 4 C*, hue shifted 9 deg towards yellow/green); luma-matched dE00 3.8"
+   },
+   {
+    "key": "iris",
+    "kind": "landmark",
+    "rank": 48,
+    "severity": 1.1327,
+    "text": "irises off by 0.06 head heights, render lower by 0.03"
+   },
+   {
+    "key": "skin_limbs",
+    "kind": "colour",
+    "rank": 49,
+    "severity": 1.0854,
+    "text": "skin limbs colour dE00 4.3 (render more saturated by 3 C*, hue shifted 9 deg towards yellow/green); luma-matched dE00 3.6"
+   },
+   {
+    "key": "foot",
+    "kind": "landmark",
+    "rank": 50,
+    "severity": 1.0644,
+    "text": "feet off by 0.05 head heights"
+   },
+   {
+    "key": "eye",
+    "kind": "landmark",
+    "rank": 51,
+    "severity": 1.0605,
+    "text": "eye centres off by 0.05 head heights"
+   },
+   {
+    "key": "garment:vest",
+    "kind": "colour",
+    "rank": 52,
+    "severity": 0.9216,
+    "text": "vest colour dE00 3.7; luma-matched dE00 1.9"
+   },
+   {
+    "key": "brow_inner",
+    "kind": "landmark",
+    "rank": 53,
+    "severity": 0.878,
+    "text": "inner brow ends off by 0.04 head heights"
+   },
+   {
+    "key": "skin_limbs:blush",
+    "kind": "skin",
+    "rank": 54,
+    "severity": 0.8669,
+    "text": "skin limbs warmth / blush (a* P90) -3.5 (weaker)"
+   },
+   {
+    "key": "neck",
+    "kind": "landmark",
+    "rank": 55,
+    "severity": 0.826,
+    "text": "neck off by 0.04 head heights, render lower by 0.02"
+   },
+   {
+    "key": "hair_width_at_eyes",
+    "kind": "proportion",
+    "rank": 56,
+    "severity": 0.7315,
+    "text": "hair width at the temples (eye level) +7%"
+   },
+   {
+    "key": "shoulder",
+    "kind": "landmark",
+    "rank": 57,
+    "severity": 0.7125,
+    "text": "shoulders off by 0.04 head heights"
+   },
+   {
+    "key": "nose",
+    "kind": "landmark",
+    "rank": 58,
+    "severity": 0.7084,
+    "text": "nose tip off by 0.04 head heights"
+   },
+   {
+    "key": "brow_outer",
+    "kind": "landmark",
+    "rank": 59,
+    "severity": 0.684,
+    "text": "outer brow ends off by 0.03 head heights, render lower by 0.02"
+   },
+   {
+    "key": "mouth_corner",
+    "kind": "landmark",
+    "rank": 60,
+    "severity": 0.598,
+    "text": "mouth corners off by 0.03 head heights, render lower by 0.02"
+   },
+   {
+    "key": "face:blush_da",
+    "kind": "face",
+    "rank": 61,
+    "severity": 0.5288,
+    "text": "cheek blush vs face skin -2.1 a* vs the reference (weaker blush)"
+   },
+   {
+    "key": "hair_accessory:fuzz",
+    "kind": "texture",
+    "rank": 62,
+    "severity": 0.5279,
+    "text": "hair accessory fuzz / fibre texture -17% vs reference"
+   },
+   {
+    "key": "mouth",
+    "kind": "landmark",
+    "rank": 63,
+    "severity": 0.5183,
+    "text": "mouth centre off by 0.03 head heights, render lower by 0.02"
+   },
+   {
+    "key": "chin",
+    "kind": "landmark",
+    "rank": 64,
+    "severity": 0.4522,
+    "text": "chin off by 0.02 head heights, render lower by 0.01"
+   },
+   {
+    "key": "garment:shorts",
+    "kind": "colour",
+    "rank": 65,
+    "severity": 0.4131,
+    "text": "shorts colour dE00 1.7; luma-matched dE00 0.7"
+   },
+   {
+    "key": "face:lid_dC",
+    "kind": "face",
+    "rank": 66,
+    "severity": 0.4032,
+    "text": "lids vs face skin, chroma -1.6 C* vs the reference (greyer lids)"
+   },
+   {
+    "key": "garment:vest:fuzz",
+    "kind": "texture",
+    "rank": 67,
+    "severity": 0.3482,
+    "text": "vest fuzz / fibre texture -11% vs reference"
+   },
+   {
+    "key": "garment:boots",
+    "kind": "colour",
+    "rank": 68,
+    "severity": 0.3157,
+    "text": "boots colour dE00 1.3; luma-matched dE00 1.0"
+   },
+   {
+    "key": "skin_limbs:shade",
+    "kind": "skin",
+    "rank": 69,
+    "severity": 0.3117,
+    "text": "skin limbs chroma in shade -1.2 C* (grey cast)"
+   },
+   {
+    "key": "hair:sheen",
+    "kind": "texture",
+    "rank": 70,
+    "severity": 0.2055,
+    "text": "hair sheen highlights -7% vs reference"
+   },
+   {
+    "key": "hair_accessory:sheen",
+    "kind": "texture",
+    "rank": 71,
+    "severity": 0.1877,
+    "text": "hair accessory sheen highlights +7% vs reference"
+   },
+   {
+    "key": "garment:shorts:sheen",
+    "kind": "texture",
+    "rank": 72,
+    "severity": 0.1707,
+    "text": "shorts sheen highlights -6% vs reference"
+   },
+   {
+    "key": "eye_line",
+    "kind": "proportion",
+    "rank": 73,
+    "severity": 0.1308,
+    "text": "eye line 0.3% of the height too low"
+   },
+   {
+    "key": "garment:boots:sheen",
+    "kind": "texture",
+    "rank": 74,
+    "severity": 0.1101,
+    "text": "boots sheen highlights -4% vs reference"
+   },
+   {
+    "key": "hem_vest_height",
+    "kind": "proportion",
+    "rank": 75,
+    "severity": 0.1036,
+    "text": "vest hem 0.2% of the height too high"
+   },
+   {
+    "key": "garment:blouse:sheen",
+    "kind": "texture",
+    "rank": 76,
+    "severity": 0.0981,
+    "text": "blouse sheen highlights +3% vs reference"
+   },
+   {
+    "key": "skin_limbs:sheen",
+    "kind": "texture",
+    "rank": 77,
+    "severity": 0.0808,
+    "text": "skin limbs sheen highlights -3% vs reference"
+   },
+   {
+    "key": "skin_face:sheen",
+    "kind": "texture",
+    "rank": 78,
+    "severity": 0.0719,
+    "text": "skin face sheen highlights +3% vs reference"
+   },
+   {
+    "key": "mouth_line",
+    "kind": "proportion",
+    "rank": 79,
+    "severity": 0.0494,
+    "text": "mouth 0.1% of the height too low"
+   },
+   {
+    "key": "head_to_height",
+    "kind": "proportion",
+    "rank": 80,
+    "severity": 0.0414,
+    "text": "head 0% too small relative to the body"
+   },
+   {
+    "key": "garment:vest:sheen",
+    "kind": "texture",
+    "rank": 81,
+    "severity": 0.0232,
+    "text": "vest sheen highlights +1% vs reference"
+   },
+   {
+    "key": "hair:strand",
+    "kind": "hair",
+    "rank": 82,
+    "severity": 0.0078,
+    "text": "hair strand direction more directional (ropes, rows or grooves) than the reference (+0.00 log2)"
+   }
+  ],
+  "face": {
+   "difference_mean": {
+    "blush_da": -2.1151,
+    "lid_dC": -1.6129,
+    "lid_dL": 5.8627
+   },
+   "score_mean": 0.6685,
+   "views": 2
+  },
+  "figure_iou_mean": 0.7954,
+  "hair": {
+   "face_cover_mean": 0.2599,
+   "mean_abs_log2_outline": 0.4241,
+   "mean_abs_log2_relief": 0.8013,
+   "mean_abs_log2_strand": 0.0687,
+   "mean_log2_outline": 0.4241,
+   "mean_log2_relief": -0.8013,
+   "mean_log2_strand": 0.002,
+   "parts": {
+    "face_cover": 0.1336,
+    "outline": 0.5759,
+    "relief": 0.5993,
+    "shape": 0.5974,
+    "strand": 0.9313,
+    "volume": 0.7571
+   },
+   "score": 0.5991,
+   "volume_abs_rel_mean": 0.1214
+  },
+  "hidden_in_render": {
+   "chin": [
+    "sheet30_left"
+   ],
+   "ear_top_L": [
+    "sheet30_front",
+    "sheet30_left"
+   ],
+   "ear_top_R": [
+    "sheet30_front",
+    "sheet30_front_left"
+   ],
+   "eye_L": [
+    "sheet30_left"
+   ],
+   "iris_L": [
+    "sheet30_left"
+   ],
+   "mouth": [
+    "sheet30_left"
+   ],
+   "nose": [
+    "sheet30_left"
+   ]
+  },
+  "landmark_nme_mean": 0.0872,
+  "landmarks": {
+   "brow_inner_L": {
+    "dx_head_mean": 0.0074,
+    "dy_head_mean": 0.0044,
+    "error_head_mean": 0.0439,
+    "views": 2
+   },
+   "brow_outer_L": {
+    "dx_head_mean": 0.0225,
+    "dy_head_mean": 0.0235,
+    "error_head_mean": 0.0342,
+    "views": 2
+   },
+   "chin": {
+    "dx_head_mean": -0.018,
+    "dy_head_mean": 0.0129,
+    "error_head_mean": 0.0226,
+    "views": 2
+   },
+   "eye_L": {
+    "dx_head_mean": 0.0146,
+    "dy_head_mean": 0.0238,
+    "error_head_mean": 0.0374,
+    "views": 2
+   },
+   "eye_R": {
+    "dx_head_mean": 0.0505,
+    "dy_head_mean": 0.0201,
+    "error_head_mean": 0.0687,
+    "views": 2
+   },
+   "eye_inner_L": {
+    "dx_head_mean": 0.0238,
+    "dy_head_mean": 0.0898,
+    "error_head_mean": 0.0932,
+    "views": 3
+   },
+   "eye_inner_R": {
+    "dx_head_mean": 0.0006,
+    "dy_head_mean": 0.0629,
+    "error_head_mean": 0.0697,
+    "views": 2
+   },
+   "eye_outer_L": {
+    "dx_head_mean": -0.002,
+    "dy_head_mean": 0.0476,
+    "error_head_mean": 0.0532,
+    "views": 3
+   },
+   "eye_outer_R": {
+    "dx_head_mean": 0.036,
+    "dy_head_mean": 0.046,
+    "error_head_mean": 0.0655,
+    "views": 2
+   },
+   "foot_L": {
+    "dx_head_mean": 0.0156,
+    "dy_head_mean": -0.0067,
+    "error_head_mean": 0.0689,
+    "views": 5
+   },
+   "foot_R": {
+    "dx_head_mean": 0.006,
+    "dy_head_mean": 0.0032,
+    "error_head_mean": 0.0375,
+    "views": 5
+   },
+   "hairline": {
+    "dx_head_mean": 0.0754,
+    "dy_head_mean": -0.0573,
+    "error_head_mean": 0.0963,
+    "views": 2
+   },
+   "hand_L": {
+    "dx_head_mean": 0.0255,
+    "dy_head_mean": -0.0955,
+    "error_head_mean": 0.1921,
+    "views": 5
+   },
+   "hand_R": {
+    "dx_head_mean": -0.0175,
+    "dy_head_mean": -0.0874,
+    "error_head_mean": 0.172,
+    "views": 5
+   },
+   "hem_shorts": {
+    "dx_head_mean": -0.0032,
+    "dy_head_mean": 0.0784,
+    "error_head_mean": 0.0784,
+    "views": 4
+   },
+   "hem_vest": {
+    "dx_head_mean": -0.0252,
+    "dy_head_mean": 0.0348,
+    "error_head_mean": 0.0558,
+    "views": 5
+   },
+   "iris_L": {
+    "dx_head_mean": 0.016,
+    "dy_head_mean": 0.0324,
+    "error_head_mean": 0.0441,
+    "views": 2
+   },
+   "iris_R": {
+    "dx_head_mean": 0.0533,
+    "dy_head_mean": 0.0287,
+    "error_head_mean": 0.0691,
+    "views": 2
+   },
+   "mouth": {
+    "dx_head_mean": 0.0088,
+    "dy_head_mean": 0.0176,
+    "error_head_mean": 0.0259,
+    "views": 2
+   },
+   "mouth_corner_L": {
+    "dx_head_mean": 0.0008,
+    "dy_head_mean": 0.0168,
+    "error_head_mean": 0.0236,
+    "views": 2
+   },
+   "mouth_corner_R": {
+    "dx_head_mean": 0.0164,
+    "dy_head_mean": 0.0166,
+    "error_head_mean": 0.0362,
+    "views": 2
+   },
+   "neck": {
+    "dx_head_mean": -0.0225,
+    "dy_head_mean": 0.0245,
+    "error_head_mean": 0.0413,
+    "views": 3
+   },
+   "nose": {
+    "dx_head_mean": 0.0197,
+    "dy_head_mean": 0.0166,
+    "error_head_mean": 0.0354,
+    "views": 2
+   },
+   "shoulder_L": {
+    "dx_head_mean": -0.0496,
+    "dy_head_mean": -0.0067,
+    "error_head_mean": 0.0525,
+    "views": 3
+   },
+   "shoulder_R": {
+    "dx_head_mean": -0.0135,
+    "dy_head_mean": -0.0129,
+    "error_head_mean": 0.0187,
+    "views": 3
+   }
+  },
+  "proportion_rel_error_mean": 0.1098,
+  "proportions": {
+   "arm_length": {
+    "by_view": {
+     "sheet30_front": -0.2616,
+     "sheet30_front_left": -0.3004,
+     "sheet30_left": -0.1864
+    },
+    "reference_median": 0.2198,
+    "relative_median": -0.2616,
+    "render_median": 0.1538
+   },
+   "eye_area_to_head": {
+    "by_view": {
+     "sheet30_front": -0.1515,
+     "sheet30_front_left": -0.211
+    },
+    "reference_median": 0.0326,
+    "relative_median": -0.1812,
+    "render_median": 0.0268
+   },
+   "eye_line": {
+    "by_view": {
+     "sheet30_front": -0.0,
+     "sheet30_front_left": 0.0182
+    },
+    "reference_median": 0.2906,
+    "relative_median": 0.0091,
+    "render_median": 0.2932
+   },
+   "eye_spacing_to_head": {
+    "by_view": {
+     "sheet30_front": 0.0008,
+     "sheet30_front_left": -0.2838
+    },
+    "reference_median": 0.2644,
+    "relative_median": -0.1415,
+    "render_median": 0.229
+   },
+   "eye_width_to_head": {
+    "by_view": {
+     "sheet30_front": -0.1769,
+     "sheet30_front_left": -0.1011
+    },
+    "reference_median": 0.1641,
+    "relative_median": -0.139,
+    "render_median": 0.1405
+   },
+   "figure_width": {
+    "by_view": {
+     "sheet30_back": -0.1137,
+     "sheet30_back_right": -0.1729,
+     "sheet30_front": -0.0943,
+     "sheet30_front_left": -0.0887,
+     "sheet30_left": -0.0317
+    },
+    "reference_median": 0.4671,
+    "relative_median": -0.0943,
+    "render_median": 0.3864
+   },
+   "hair_area": {
+    "by_view": {
+     "sheet30_back": 0.3113,
+     "sheet30_back_right": 0.0713,
+     "sheet30_front": 0.1474,
+     "sheet30_front_left": 0.1159,
+     "sheet30_left": 0.1868
+    },
+    "reference_median": 0.1141,
+    "relative_median": 0.1474,
+    "render_median": 0.1354
+   },
+   "hair_length": {
+    "by_view": {
+     "sheet30_back": 0.1797,
+     "sheet30_back_right": 0.1456,
+     "sheet30_front": 0.1438,
+     "sheet30_front_left": 0.1244,
+     "sheet30_left": 0.0053
+    },
+    "reference_median": 0.5777,
+    "relative_median": 0.1438,
+    "render_median": 0.6482
+   },
+   "hair_width_at_eyes": {
+    "by_view": {
+     "sheet30_front": 0.2247,
+     "sheet30_front_left": -0.0784
+    },
+    "reference_median": 0.3154,
+    "relative_median": 0.0732,
+    "render_median": 0.3356
+   },
+   "head_to_height": {
+    "by_view": {
+     "sheet30_front": -0.0028,
+     "sheet30_front_left": -0.0013
+    },
+    "reference_median": 0.3794,
+    "relative_median": -0.0021,
+    "render_median": 0.3786
+   },
+   "hem_shorts_height": {
+    "by_view": {
+     "sheet30_back": 0.0765,
+     "sheet30_back_right": 0.0519,
+     "sheet30_front": 0.0134,
+     "sheet30_front_left": -0.001
+    },
+    "reference_median": 0.7478,
+    "relative_median": 0.0327,
+    "render_median": 0.7722
+   },
+   "hem_vest_height": {
+    "by_view": {
+     "sheet30_back": 0.0766,
+     "sheet30_back_right": 0.0454,
+     "sheet30_front": -0.0032,
+     "sheet30_front_left": -0.0237,
+     "sheet30_left": -0.0228
+    },
+    "reference_median": 0.6579,
+    "relative_median": -0.0032,
+    "render_median": 0.6558
+   },
+   "leg_gap_height": {
+    "by_view": {
+     "sheet30_back": 0.6979,
+     "sheet30_back_right": null,
+     "sheet30_front": -0.0467
+    },
+    "reference_median": 0.116,
+    "relative_median": 0.3256,
+    "render_median": 0.1969
+   },
+   "mouth_line": {
+    "by_view": {
+     "sheet30_front": 0.0009,
+     "sheet30_front_left": 0.0049
+    },
+    "reference_median": 0.3421,
+    "relative_median": 0.0029,
+    "render_median": 0.3431
+   },
+   "shoulder_width": {
+    "by_view": {
+     "sheet30_front": -0.0121,
+     "sheet30_front_left": -0.2374
+    },
+    "reference_median": 0.1568,
+    "relative_median": -0.1248,
+    "render_median": 0.1381
+   }
+  },
+  "regions": {
+   "eyes": {
+    "area_ratio_median": 0.8494,
+    "iou_mean": 0.2355,
+    "views": 3
+   },
+   "garment:blouse": {
+    "area_ratio_median": 0.5593,
+    "iou_mean": 0.1906,
+    "views": 5
+   },
+   "garment:boots": {
+    "area_ratio_median": 1.2835,
+    "iou_mean": 0.6146,
+    "views": 5
+   },
+   "garment:shorts": {
+    "area_ratio_median": 0.791,
+    "iou_mean": 0.548,
+    "views": 5
+   },
+   "garment:vest": {
+    "area_ratio_median": 0.6618,
+    "iou_mean": 0.312,
+    "views": 5
+   },
+   "glasses": {
+    "area_ratio_median": 0.9191,
+    "iou_mean": 0.3875,
+    "views": 3
+   },
+   "hair": {
+    "area_ratio_median": 1.1233,
+    "iou_mean": 0.5974,
+    "views": 5
+   },
+   "hair_accessory": {
+    "area_ratio_median": 2.0932,
+    "iou_mean": 0.0985,
+    "views": 5
+   },
+   "skin_face": {
+    "area_ratio_median": 1.1999,
+    "iou_mean": 0.5453,
+    "views": 3
+   },
+   "skin_limbs": {
+    "area_ratio_median": 0.5785,
+    "iou_mean": 0.3589,
+    "views": 5
+   }
+  },
+  "score": 62.535,
+  "skin": {
+   "skin_face": {
+    "dC_shade_median": -7.5416,
+    "da_p90_median": -7.36,
+    "de00_median": 11.0874,
+    "grey_cast_median": 7.5416,
+    "score_mean": 0.5239,
+    "views": 3
+   },
+   "skin_limbs": {
+    "dC_shade_median": -1.2466,
+    "da_p90_median": -3.4675,
+    "de00_median": 4.3417,
+    "grey_cast_median": 1.2466,
+    "score_mean": 0.7912,
+    "views": 5
+   }
+  },
+  "subscores": {
+   "colour": 0.7087,
+   "face": 0.6685,
+   "hair": 0.5991,
+   "landmarks": 0.7093,
+   "proportions": 0.6339,
+   "regions": 0.4358,
+   "silhouette": 0.5908,
+   "skin": 0.6575,
+   "texture": 0.6781
+  },
+  "texture": {
+   "garment:blouse": {
+    "fuzz_ratio_median": 2.9198,
+    "sheen_ratio_median": 1.0346,
+    "views": 4
+   },
+   "garment:boots": {
+    "fuzz_ratio_median": 0.5069,
+    "sheen_ratio_median": 0.9626,
+    "views": 5
+   },
+   "garment:shorts": {
+    "fuzz_ratio_median": 0.3995,
+    "sheen_ratio_median": 0.9426,
+    "views": 5
+   },
+   "garment:vest": {
+    "fuzz_ratio_median": 0.8863,
+    "sheen_ratio_median": 1.0081,
+    "views": 5
+   },
+   "hair": {
+    "fuzz_ratio_median": 0.6353,
+    "sheen_ratio_median": 0.9312,
+    "views": 5
+   },
+   "hair_accessory": {
+    "fuzz_ratio_median": 0.8328,
+    "sheen_ratio_median": 1.0672,
+    "views": 5
+   },
+   "skin_face": {
+    "fuzz_ratio_median": 2.4434,
+    "sheen_ratio_median": 1.0252,
+    "views": 3
+   },
+   "skin_limbs": {
+    "fuzz_ratio_median": 0.4927,
+    "sheen_ratio_median": 0.9724,
+    "views": 5
+   }
+  },
+  "texture_log2_ratio_mean": 0.4829,
+  "weights": {
+   "colour": 0.1,
+   "face": 0.05,
+   "hair": 0.15,
+   "landmarks": 0.15,
+   "proportions": 0.1,
+   "regions": 0.1,
+   "silhouette": 0.2,
+   "skin": 0.1,
+   "texture": 0.05
+  }
+ },
+ "per_view": {
+  "sheet30_back": {
+   "alignment": {
+    "offset_px": [
+     -27,
+     -38
+    ],
+    "scale": 0.8822,
+    "scale_figure_height": 0.8822,
+    "scale_source": "figure height",
+    "search_shift_px": [
+     0,
+     0
+    ]
+   },
+   "colour": {
+    "garment:boots": {
+     "dC": 1.0821,
+     "dL": -0.8057,
+     "de00": 1.1214,
+     "de00_luma_matched": 0.8848,
+     "dh_deg": -1.7768,
+     "reference_lab": [
+      38.3512,
+      13.9601,
+      16.8582
+     ],
+     "reference_srgb": [
+      120,
+      81,
+      64
+     ],
+     "render_lab": [
+      37.5455,
+      15.1918,
+      17.2289
+     ],
+     "render_srgb": [
+      120,
+      79,
+      61
+     ],
+     "spread_de00": {
+      "reference": 4.5383,
+      "render": 5.5911
+     },
+     "spread_ratio": 1.232
+    },
+    "garment:shorts": {
+     "dC": 0.6587,
+     "dL": 0.8798,
+     "de00": 1.0527,
+     "de00_luma_matched": 0.6743,
+     "dh_deg": -3.2409,
+     "reference_lab": [
+      42.5673,
+      -1.763,
+      6.3736
+     ],
+     "reference_srgb": [
+      102,
+      101,
+      90
+     ],
+     "render_lab": [
+      43.4472,
+      -1.5393,
+      7.1068
+     ],
+     "render_srgb": [
+      105,
+      103,
+      91
+     ],
+     "spread_de00": {
+      "reference": 8.6227,
+      "render": 2.9741
+     },
+     "spread_ratio": 0.3449
+    },
+    "garment:vest": {
+     "dC": -2.4735,
+     "dL": -3.87,
+     "de00": 3.8879,
+     "de00_luma_matched": 2.3144,
+     "dh_deg": 5.888,
+     "reference_lab": [
+      35.4389,
+      16.1673,
+      6.7006
+     ],
+     "reference_srgb": [
+      111,
+      73,
+      73
+     ],
+     "render_lab": [
+      31.5689,
+      13.2188,
+      7.1473
+     ],
+     "render_srgb": [
+      98,
+      66,
+      64
+     ],
+     "spread_de00": {
+      "reference": 7.6665,
+      "render": 2.3468
+     },
+     "spread_ratio": 0.3061
+    },
+    "hair": {
+     "dC": -2.5476,
+     "dL": 5.8022,
+     "de00": 5.5266,
+     "de00_luma_matched": 3.3172,
+     "dh_deg": 8.9693,
+     "reference_lab": [
+      25.8027,
+      15.6114,
+      13.0441
+     ],
+     "reference_srgb": [
+      89,
+      51,
+      42
+     ],
+     "render_lab": [
+      31.605,
+      11.7105,
+      13.4002
+     ],
+     "render_srgb": [
+      98,
+      67,
+      54
+     ],
+     "spread_de00": {
+      "reference": 6.9384,
+      "render": 2.9034
+     },
+     "spread_ratio": 0.4185
+    },
+    "hair_accessory": {
+     "dC": -22.1444,
+     "dL": -0.6723,
+     "de00": 21.012,
+     "de00_luma_matched": 21.0036,
+     "dh_deg": 152.235,
+     "reference_lab": [
+      40.3161,
+      17.5376,
+      16.0894
+     ],
+     "reference_srgb": [
+      130,
+      84,
+      70
+     ],
+     "render_lab": [
+      39.6438,
+      -1.6008,
+      -0.422
+     ],
+     "render_srgb": [
+      90,
+      94,
+      94
+     ],
+     "spread_de00": {
+      "reference": 3.3786,
+      "render": 9.7375
+     },
+     "spread_ratio": 2.8821
+    },
+    "skin_limbs": {
+     "dC": 6.1023,
+     "dL": 3.5837,
+     "de00": 5.0457,
+     "de00_luma_matched": 4.2102,
+     "dh_deg": 9.4623,
+     "reference_lab": [
+      67.9437,
+      9.406,
+      10.5048
+     ],
+     "reference_srgb": [
+      190,
+      159,
+      147
+     ],
+     "render_lab": [
+      71.5274,
+      10.8189,
+      17.0617
+     ],
+     "render_srgb": [
+      206,
+      167,
+      145
+     ],
+     "spread_de00": {
+      "reference": 9.5725,
+      "render": 4.4929
+     },
+     "spread_ratio": 0.4694
+    }
+   },
+   "edge_roughness": {
+    "reference": 1.1186,
+    "render": 1.4685
+   },
+   "figure_iou": 0.852,
+   "hair": {
+    "log2_ratio": {
+     "outline": 0.4582,
+     "relief": -0.9933,
+     "strand": 0.0669
+    },
+    "reference": {
+     "outline": 1.237,
+     "relief": 0.0885,
+     "strand": 0.5184
+    },
+    "render": {
+     "outline": 1.6993,
+     "relief": 0.0445,
+     "strand": 0.543
+    }
+   },
+   "head_height_px": 172.3772,
+   "hidden_in_render": [],
+   "landmark_nme": 0.1134,
+   "landmarks": {
+    "foot_L": {
+     "dx_head": 0.0381,
+     "dy_head": 0.0006,
+     "error_head": 0.0381,
+     "reference": [
+      89.0,
+      463.0
+     ],
+     "render": [
+      95.57,
+      463.11
+     ]
+    },
+    "foot_R": {
+     "dx_head": -0.0345,
+     "dy_head": 0.0006,
+     "error_head": 0.0345,
+     "reference": [
+      138.0,
+      463.0
+     ],
+     "render": [
+      132.05,
+      463.11
+     ]
+    },
+    "hand_L": {
+     "dx_head": 0.1584,
+     "dy_head": -0.0481,
+     "error_head": 0.1655,
+     "reference": [
+      13.0,
+      297.0
+     ],
+     "render": [
+      40.31,
+      288.71
+     ]
+    },
+    "hand_R": {
+     "dx_head": -0.1492,
+     "dy_head": -0.0481,
+     "error_head": 0.1567,
+     "reference": [
+      213.0,
+      297.0
+     ],
+     "render": [
+      187.29,
+      288.71
+     ]
+    },
+    "hem_shorts": {
+     "dx_head": 0.0046,
+     "dy_head": 0.1521,
+     "error_head": 0.1521,
+     "reference": [
+      113.0,
+      347.0
+     ],
+     "render": [
+      113.79,
+      373.21
+     ]
+    },
+    "hem_vest": {
+     "dx_head": 0.0045,
+     "dy_head": 0.1335,
+     "error_head": 0.1335,
+     "reference": [
+      113.0,
+      305.0
+     ],
+     "render": [
+      113.77,
+      328.01
+     ]
+    }
+   },
+   "not_projected": [],
+   "proportions": {
+    "figure_width": {
+     "reference": 0.4705,
+     "relative": -0.1137,
+     "render": 0.417
+    },
+    "hair_area": {
+     "reference": 0.1459,
+     "relative": 0.3113,
+     "render": 0.1913
+    },
+    "hair_length": {
+     "reference": 0.5777,
+     "relative": 0.1797,
+     "render": 0.6815
+    },
+    "hem_shorts_height": {
+     "reference": 0.7462,
+     "relative": 0.0765,
+     "render": 0.8033
+    },
+    "hem_vest_height": {
+     "reference": 0.6543,
+     "relative": 0.0766,
+     "render": 0.7044
+    },
+    "leg_gap_height": {
+     "reference": 0.116,
+     "relative": 0.6979,
+     "render": 0.1969
+    }
+   },
+   "reference_islands_removed_px": {},
+   "regions": {
+    "garment:blouse": {
+     "area_ratio": 0.0157,
+     "iou": 0.003,
+     "reference_px": 2927.0,
+     "render_px": 46.0
+    },
+    "garment:boots": {
+     "area_ratio": 1.0621,
+     "iou": 0.7442,
+     "reference_px": 5235.0,
+     "render_px": 5560.0
+    },
+    "garment:shorts": {
+     "area_ratio": 0.791,
+     "iou": 0.3496,
+     "reference_px": 4598.0,
+     "render_px": 3637.0
+    },
+    "garment:vest": {
+     "area_ratio": 0.613,
+     "iou": 0.104,
+     "reference_px": 3982.0,
+     "render_px": 2441.0
+    },
+    "hair": {
+     "area_ratio": 1.3095,
+     "iou": 0.676,
+     "reference_px": 30476.0,
+     "render_px": 39907.0
+    },
+    "hair_accessory": {
+     "area_ratio": 0.4645,
+     "iou": 0.0,
+     "reference_px": 2185.0,
+     "render_px": 1015.0
+    },
+    "skin_limbs": {
+     "area_ratio": 0.3626,
+     "iou": 0.3364,
+     "reference_px": 4857.0,
+     "render_px": 1761.0
+    }
+   },
+   "render_regions_not_annotated": [
+    "eyes",
+    "glasses",
+    "skin_face"
+   ],
+   "render_unclassified_fraction": 0.0,
+   "skin": {
+    "skin_limbs": {
+     "dC_shade": 4.2938,
+     "dL": 3.5837,
+     "da_p90": -3.2583,
+     "de00": 5.0457,
+     "de00_luma_matched": 4.2102,
+     "grey_cast": 0.0,
+     "reference": {
+      "C_light": 11.8818,
+      "C_median": 14.2037,
+      "C_shade": 14.4585,
+      "L_median": 70.319,
+      "a_p90": 15.3848,
+      "n": 3826
+     },
+     "render": {
+      "C_light": 20.6085,
+      "C_median": 20.3001,
+      "C_shade": 18.7523,
+      "L_median": 72.4282,
+      "a_p90": 12.1264,
+      "n": 1662
+     },
+     "score": 0.739
+    }
+   },
+   "texture": {
+    "garment:boots": {
+     "fuzz_ratio": 0.5179,
+     "reference": {
+      "fuzz_hf_rms": 5.1623,
+      "laplacian_var": 410.1177,
+      "saturation_median": 0.4769,
+      "sheen_p90_p50": 1.1228
+     },
+     "render": {
+      "fuzz_hf_rms": 2.6733,
+      "laplacian_var": 62.283,
+      "saturation_median": 0.4779,
+      "sheen_p90_p50": 1.0859
+     },
+     "sheen_ratio": 0.9671
+    },
+    "garment:shorts": {
+     "fuzz_ratio": 0.2967,
+     "reference": {
+      "fuzz_hf_rms": 3.2472,
+      "laplacian_var": 91.8872,
+      "saturation_median": 0.1188,
+      "sheen_p90_p50": 1.0932
+     },
+     "render": {
+      "fuzz_hf_rms": 0.9636,
+      "laplacian_var": 10.6212,
+      "saturation_median": 0.1364,
+      "sheen_p90_p50": 1.0274
+     },
+     "sheen_ratio": 0.9398
+    },
+    "garment:vest": {
+     "fuzz_ratio": 1.2243,
+     "reference": {
+      "fuzz_hf_rms": 1.6719,
+      "laplacian_var": 32.2128,
+      "saturation_median": 0.3448,
+      "sheen_p90_p50": 1.0539
+     },
+     "render": {
+      "fuzz_hf_rms": 2.047,
+      "laplacian_var": 53.2713,
+      "saturation_median": 0.3606,
+      "sheen_p90_p50": 1.0659
+     },
+     "sheen_ratio": 1.0114
+    },
+    "hair": {
+     "fuzz_ratio": 0.7158,
+     "reference": {
+      "fuzz_hf_rms": 4.432,
+      "laplacian_var": 222.3744,
+      "saturation_median": 0.5408,
+      "sheen_p90_p50": 1.2309
+     },
+     "render": {
+      "fuzz_hf_rms": 3.1724,
+      "laplacian_var": 116.109,
+      "saturation_median": 0.4623,
+      "sheen_p90_p50": 1.1009
+     },
+     "sheen_ratio": 0.8944
+    },
+    "hair_accessory": {
+     "fuzz_ratio": 0.6617,
+     "reference": {
+      "fuzz_hf_rms": 4.7875,
+      "laplacian_var": 366.2848,
+      "saturation_median": 0.4729,
+      "sheen_p90_p50": 1.091
+     },
+     "render": {
+      "fuzz_hf_rms": 3.1679,
+      "laplacian_var": 88.5855,
+      "saturation_median": 0.0556,
+      "sheen_p90_p50": 1.1567
+     },
+     "sheen_ratio": 1.0602
+    },
+    "skin_limbs": {
+     "fuzz_ratio": 0.2164,
+     "reference": {
+      "fuzz_hf_rms": 3.5326,
+      "laplacian_var": 106.2501,
+      "saturation_median": 0.2056,
+      "sheen_p90_p50": 1.0416
+     },
+     "render": {
+      "fuzz_hf_rms": 0.7645,
+      "laplacian_var": 4.2921,
+      "saturation_median": 0.2946,
+      "sheen_p90_p50": 1.0128
+     },
+     "sheen_ratio": 0.9724
+    }
+   }
+  },
+  "sheet30_back_right": {
+   "alignment": {
+    "offset_px": [
+     -41,
+     -62
+    ],
+    "scale": 0.9421,
+    "scale_figure_height": 0.9421,
+    "scale_source": "figure height",
+    "search_shift_px": [
+     7,
+     1
+    ]
+   },
+   "colour": {
+    "garment:blouse": {
+     "dC": 1.7425,
+     "dL": -12.2094,
+     "de00": 11.3391,
+     "de00_luma_matched": 1.624,
+     "dh_deg": 8.3558,
+     "reference_lab": [
+      63.0734,
+      3.9374,
+      4.2711
+     ],
+     "reference_srgb": [
+      163,
+      150,
+      145
+     ],
+     "render_lab": [
+      50.864,
+      4.2574,
+      6.2372
+     ],
+     "render_srgb": [
+      133,
+      118,
+      111
+     ],
+     "spread_de00": {
+      "reference": 7.4152,
+      "render": 3.6859
+     },
+     "spread_ratio": 0.4971
+    },
+    "garment:boots": {
+     "dC": 0.7772,
+     "dL": -0.7082,
+     "de00": 0.7737,
+     "de00_luma_matched": 0.4872,
+     "dh_deg": -0.6385,
+     "reference_lab": [
+      37.7432,
+      14.1252,
+      16.5312
+     ],
+     "reference_srgb": [
+      119,
+      80,
+      63
+     ],
+     "render_lab": [
+      37.035,
+      14.82,
+      16.958
+     ],
+     "render_srgb": [
+      118,
+      78,
+      61
+     ],
+     "spread_de00": {
+      "reference": 5.2775,
+      "render": 4.7836
+     },
+     "spread_ratio": 0.9064
+    },
+    "garment:shorts": {
+     "dC": -0.1227,
+     "dL": 1.6849,
+     "de00": 1.6526,
+     "de00_luma_matched": 0.4709,
+     "dh_deg": -2.6357,
+     "reference_lab": [
+      43.6778,
+      -2.0615,
+      7.1261
+     ],
+     "reference_srgb": [
+      105,
+      104,
+      91
+     ],
+     "render_lab": [
+      45.3627,
+      -1.703,
+      7.0941
+     ],
+     "render_srgb": [
+      109,
+      108,
+      96
+     ],
+     "spread_de00": {
+      "reference": 8.5439,
+      "render": 2.4882
+     },
+     "spread_ratio": 0.2912
+    },
+    "garment:vest": {
+     "dC": -2.3201,
+     "dL": -3.8114,
+     "de00": 3.6864,
+     "de00_luma_matched": 1.9351,
+     "dh_deg": 3.9531,
+     "reference_lab": [
+      36.9642,
+      15.9896,
+      7.0809
+     ],
+     "reference_srgb": [
+      115,
+      77,
+      76
+     ],
+     "render_lab": [
+      33.1528,
+      13.4118,
+      7.0829
+     ],
+     "render_srgb": [
+      102,
+      70,
+      67
+     ],
+     "spread_de00": {
+      "reference": 7.8141,
+      "render": 3.0852
+     },
+     "spread_ratio": 0.3948
+    },
+    "hair": {
+     "dC": -3.0339,
+     "dL": 4.2562,
+     "de00": 4.715,
+     "de00_luma_matched": 3.3745,
+     "dh_deg": 8.4724,
+     "reference_lab": [
+      27.8871,
+      16.1093,
+      13.6818
+     ],
+     "reference_srgb": [
+      95,
+      56,
+      46
+     ],
+     "render_lab": [
+      32.1433,
+      11.9199,
+      13.6227
+     ],
+     "render_srgb": [
+      100,
+      68,
+      55
+     ],
+     "spread_de00": {
+      "reference": 6.8356,
+      "render": 2.7365
+     },
+     "spread_ratio": 0.4003
+    },
+    "hair_accessory": {
+     "dC": -20.4316,
+     "dL": -9.1339,
+     "de00": 24.1582,
+     "de00_luma_matched": 22.5013,
+     "dh_deg": 171.5593,
+     "reference_lab": [
+      50.6428,
+      20.4595,
+      9.2196
+     ],
+     "reference_srgb": [
+      159,
+      107,
+      106
+     ],
+     "render_lab": [
+      41.5088,
+      -1.9332,
+      -0.5477
+     ],
+     "render_srgb": [
+      94,
+      99,
+      99
+     ],
+     "spread_de00": {
+      "reference": 7.2699,
+      "render": 8.0442
+     },
+     "spread_ratio": 1.1065
+    },
+    "skin_limbs": {
+     "dC": 5.1604,
+     "dL": -2.5225,
+     "de00": 4.1003,
+     "de00_luma_matched": 3.615,
+     "dh_deg": 8.2798,
+     "reference_lab": [
+      71.9706,
+      8.733,
+      10.546
+     ],
+     "reference_srgb": [
+      200,
+      170,
+      158
+     ],
+     "render_lab": [
+      69.4481,
+      9.8079,
+      16.1009
+     ],
+     "render_srgb": [
+      198,
+      163,
+      141
+     ],
+     "spread_de00": {
+      "reference": 6.6738,
+      "render": 5.2867
+     },
+     "spread_ratio": 0.7922
+    }
+   },
+   "edge_roughness": {
+    "reference": 1.0591,
+    "render": 1.3899
+   },
+   "figure_iou": 0.7775,
+   "hair": {
+    "log2_ratio": {
+     "outline": 0.8654,
+     "relief": -0.8983,
+     "strand": 0.045
+    },
+    "reference": {
+     "outline": 1.1239,
+     "relief": 0.0838,
+     "strand": 0.5197
+    },
+    "render": {
+     "outline": 2.0475,
+     "relief": 0.045,
+     "strand": 0.5361
+    }
+   },
+   "head_height_px": 172.0,
+   "hidden_in_render": [],
+   "landmark_nme": 0.1461,
+   "landmarks": {
+    "foot_L": {
+     "dx_head": 0.0973,
+     "dy_head": -0.0667,
+     "error_head": 0.118,
+     "reference": [
+      88.0,
+      462.0
+     ],
+     "render": [
+      104.74,
+      450.53
+     ]
+    },
+    "foot_R": {
+     "dx_head": -0.0421,
+     "dy_head": 0.0045,
+     "error_head": 0.0423,
+     "reference": [
+      138.0,
+      462.0
+     ],
+     "render": [
+      130.76,
+      462.78
+     ]
+    },
+    "hand_L": {
+     "dx_head": 0.3056,
+     "dy_head": -0.098,
+     "error_head": 0.321,
+     "reference": [
+      17.0,
+      293.0
+     ],
+     "render": [
+      69.57,
+      276.15
+     ]
+    },
+    "hand_R": {
+     "dx_head": -0.2034,
+     "dy_head": -0.0229,
+     "error_head": 0.2047,
+     "reference": [
+      210.0,
+      297.0
+     ],
+     "render": [
+      175.02,
+      293.06
+     ]
+    },
+    "hem_shorts": {
+     "dx_head": -0.0683,
+     "dy_head": 0.1074,
+     "error_head": 0.1074,
+     "reference": [
+      113.0,
+      347.0
+     ],
+     "render": [
+      101.26,
+      365.47
+     ]
+    },
+    "hem_vest": {
+     "dx_head": -0.1051,
+     "dy_head": 0.0835,
+     "error_head": 0.0835,
+     "reference": [
+      113.0,
+      305.0
+     ],
+     "render": [
+      94.92,
+      319.35
+     ]
+    }
+   },
+   "not_projected": [],
+   "proportions": {
+    "figure_width": {
+     "reference": 0.4671,
+     "relative": -0.1729,
+     "render": 0.3864
+    },
+    "hair_area": {
+     "reference": 0.1546,
+     "relative": 0.0713,
+     "render": 0.1656
+    },
+    "hair_length": {
+     "reference": 0.5789,
+     "relative": 0.1456,
+     "render": 0.6632
+    },
+    "hem_shorts_height": {
+     "reference": 0.7478,
+     "relative": 0.0519,
+     "render": 0.7866
+    },
+    "hem_vest_height": {
+     "reference": 0.6557,
+     "relative": 0.0454,
+     "render": 0.6855
+    },
+    "leg_gap_height": {
+     "reference": 0.0175,
+     "relative": null,
+     "render": 0.0041
+    }
+   },
+   "reference_islands_removed_px": {},
+   "regions": {
+    "garment:blouse": {
+     "area_ratio": 0.0786,
+     "iou": 0.0273,
+     "reference_px": 2582.0,
+     "render_px": 203.0
+    },
+    "garment:boots": {
+     "area_ratio": 0.9668,
+     "iou": 0.6133,
+     "reference_px": 5608.0,
+     "render_px": 5422.0
+    },
+    "garment:shorts": {
+     "area_ratio": 0.6622,
+     "iou": 0.3961,
+     "reference_px": 4678.0,
+     "render_px": 3098.0
+    },
+    "garment:vest": {
+     "area_ratio": 0.604,
+     "iou": 0.1567,
+     "reference_px": 4265.0,
+     "render_px": 2576.0
+    },
+    "hair": {
+     "area_ratio": 1.0695,
+     "iou": 0.6826,
+     "reference_px": 32145.0,
+     "render_px": 34379.0
+    },
+    "hair_accessory": {
+     "area_ratio": 1.9247,
+     "iou": 0.0,
+     "reference_px": 385.0,
+     "render_px": 741.0
+    },
+    "skin_limbs": {
+     "area_ratio": 0.4346,
+     "iou": 0.3242,
+     "reference_px": 4464.0,
+     "render_px": 1940.0
+    }
+   },
+   "render_regions_not_annotated": [
+    "eyes",
+    "glasses",
+    "skin_face"
+   ],
+   "render_unclassified_fraction": 0.0,
+   "skin": {
+    "skin_limbs": {
+     "dC_shade": 3.3877,
+     "dL": -2.5225,
+     "da_p90": -0.4763,
+     "de00": 4.1003,
+     "de00_luma_matched": 3.615,
+     "grey_cast": 0.0,
+     "reference": {
+      "C_light": 11.5504,
+      "C_median": 13.9794,
+      "C_shade": 13.4908,
+      "L_median": 72.9972,
+      "a_p90": 13.6117,
+      "n": 3622
+     },
+     "render": {
+      "C_light": 19.9793,
+      "C_median": 19.1667,
+      "C_shade": 16.8785,
+      "L_median": 70.2864,
+      "a_p90": 13.1354,
+      "n": 1695
+     },
+     "score": 0.8242
+    }
+   },
+   "texture": {
+    "garment:blouse": {
+     "fuzz_ratio": 4.3668,
+     "reference": {
+      "fuzz_hf_rms": 1.7183,
+      "laplacian_var": 28.7035,
+      "saturation_median": 0.1078,
+      "sheen_p90_p50": 1.0304
+     },
+     "render": {
+      "fuzz_hf_rms": 7.5035,
+      "laplacian_var": 457.3779,
+      "saturation_median": 0.1679,
+      "sheen_p90_p50": 1.0977
+     },
+     "sheen_ratio": 1.0654
+    },
+    "garment:boots": {
+     "fuzz_ratio": 0.5069,
+     "reference": {
+      "fuzz_hf_rms": 5.0172,
+      "laplacian_var": 363.2999,
+      "saturation_median": 0.479,
+      "sheen_p90_p50": 1.1306
+     },
+     "render": {
+      "fuzz_hf_rms": 2.5432,
+      "laplacian_var": 57.2956,
+      "saturation_median": 0.4733,
+      "sheen_p90_p50": 1.0739
+     },
+     "sheen_ratio": 0.9498
+    },
+    "garment:shorts": {
+     "fuzz_ratio": 0.3355,
+     "reference": {
+      "fuzz_hf_rms": 3.5522,
+      "laplacian_var": 119.303,
+      "saturation_median": 0.1207,
+      "sheen_p90_p50": 1.0981
+     },
+     "render": {
+      "fuzz_hf_rms": 1.1917,
+      "laplacian_var": 11.6193,
+      "saturation_median": 0.1304,
+      "sheen_p90_p50": 1.035
+     },
+     "sheen_ratio": 0.9426
+    },
+    "garment:vest": {
+     "fuzz_ratio": 1.0663,
+     "reference": {
+      "fuzz_hf_rms": 1.815,
+      "laplacian_var": 44.7711,
+      "saturation_median": 0.3482,
+      "sheen_p90_p50": 1.0556
+     },
+     "render": {
+      "fuzz_hf_rms": 1.9354,
+      "laplacian_var": 40.4975,
+      "saturation_median": 0.35,
+      "sheen_p90_p50": 1.0641
+     },
+     "sheen_ratio": 1.0081
+    },
+    "hair": {
+     "fuzz_ratio": 0.6353,
+     "reference": {
+      "fuzz_hf_rms": 4.5226,
+      "laplacian_var": 231.2457,
+      "saturation_median": 0.5306,
+      "sheen_p90_p50": 1.2131
+     },
+     "render": {
+      "fuzz_hf_rms": 2.8731,
+      "laplacian_var": 88.5428,
+      "saturation_median": 0.4615,
+      "sheen_p90_p50": 1.0922
+     },
+     "sheen_ratio": 0.9003
+    },
+    "hair_accessory": {
+     "fuzz_ratio": 0.8513,
+     "reference": {
+      "fuzz_hf_rms": 3.5267,
+      "laplacian_var": 57.846,
+      "saturation_median": 0.3552,
+      "sheen_p90_p50": 1.0518
+     },
+     "render": {
+      "fuzz_hf_rms": 3.0022,
+      "laplacian_var": 94.6141,
+      "saturation_median": 0.055,
+      "sheen_p90_p50": 1.1283
+     },
+     "sheen_ratio": 1.0727
+    },
+    "skin_limbs": {
+     "fuzz_ratio": 0.4984,
+     "reference": {
+      "fuzz_hf_rms": 3.7538,
+      "laplacian_var": 120.2715,
+      "saturation_median": 0.2029,
+      "sheen_p90_p50": 1.0498
+     },
+     "render": {
+      "fuzz_hf_rms": 1.8708,
+      "laplacian_var": 27.6125,
+      "saturation_median": 0.2798,
+      "sheen_p90_p50": 1.0191
+     },
+     "sheen_ratio": 0.9708
+    }
+   }
+  },
+  "sheet30_front": {
+   "alignment": {
+    "offset_px": [
+     -25,
+     -62
+    ],
+    "scale": 0.8777,
+    "scale_figure_height": 0.8336,
+    "scale_source": "body landmarks (8)",
+    "search_shift_px": [
+     2,
+     3
+    ]
+   },
+   "colour": {
+    "garment:blouse": {
+     "dC": 1.3827,
+     "dL": -3.2865,
+     "de00": 2.6933,
+     "de00_luma_matched": 1.3107,
+     "dh_deg": -0.829,
+     "reference_lab": [
+      78.4618,
+      2.9806,
+      3.9715
+     ],
+     "reference_srgb": [
+      203,
+      192,
+      187
+     ],
+     "render_lab": [
+      75.1753,
+      3.8836,
+      5.0218
+     ],
+     "render_srgb": [
+      196,
+      182,
+      176
+     ],
+     "spread_de00": {
+      "reference": 2.576,
+      "render": 3.5679
+     },
+     "spread_ratio": 1.385
+    },
+    "garment:boots": {
+     "dC": 2.4633,
+     "dL": -1.2422,
+     "de00": 1.944,
+     "de00_luma_matched": 1.6106,
+     "dh_deg": -2.5702,
+     "reference_lab": [
+      40.3673,
+      14.2007,
+      17.5935
+     ],
+     "reference_srgb": [
+      126,
+      86,
+      67
+     ],
+     "render_lab": [
+      39.125,
+      16.6069,
+      18.7845
+     ],
+     "render_srgb": [
+      126,
+      81,
+      62
+     ],
+     "spread_de00": {
+      "reference": 5.6435,
+      "render": 4.0822
+     },
+     "spread_ratio": 0.7233
+    },
+    "garment:shorts": {
+     "dC": 0.9151,
+     "dL": 1.6511,
+     "de00": 1.9329,
+     "de00_luma_matched": 1.1082,
+     "dh_deg": -5.9521,
+     "reference_lab": [
+      45.009,
+      -2.1767,
+      6.4021
+     ],
+     "reference_srgb": [
+      107,
+      107,
+      96
+     ],
+     "render_lab": [
+      46.6601,
+      -1.7043,
+      7.4856
+     ],
+     "render_srgb": [
+      113,
+      111,
+      98
+     ],
+     "spread_de00": {
+      "reference": 6.2232,
+      "render": 1.6555
+     },
+     "spread_ratio": 0.266
+    },
+    "garment:vest": {
+     "dC": -1.5038,
+     "dL": 2.5111,
+     "de00": 2.793,
+     "de00_luma_matched": 1.7221,
+     "dh_deg": 5.3417,
+     "reference_lab": [
+      38.4281,
+      16.1175,
+      6.7279
+     ],
+     "reference_srgb": [
+      119,
+      81,
+      80
+     ],
+     "render_lab": [
+      40.9392,
+      14.0934,
+      7.4932
+     ],
+     "render_srgb": [
+      123,
+      88,
+      85
+     ],
+     "spread_de00": {
+      "reference": 8.8573,
+      "render": 3.3718
+     },
+     "spread_ratio": 0.3807
+    },
+    "hair": {
+     "dC": -4.9725,
+     "dL": 1.5493,
+     "de00": 4.3497,
+     "de00_luma_matched": 4.1775,
+     "dh_deg": 8.5564,
+     "reference_lab": [
+      30.148,
+      17.0445,
+      14.5574
+     ],
+     "reference_srgb": [
+      102,
+      60,
+      49
+     ],
+     "render_lab": [
+      31.6973,
+      11.4304,
+      13.1754
+     ],
+     "render_srgb": [
+      98,
+      67,
+      54
+     ],
+     "spread_de00": {
+      "reference": 7.2244,
+      "render": 3.8943
+     },
+     "spread_ratio": 0.5391
+    },
+    "hair_accessory": {
+     "dC": -2.9219,
+     "dL": -16.6015,
+     "de00": 15.7496,
+     "de00_luma_matched": 1.6259,
+     "dh_deg": -1.9307,
+     "reference_lab": [
+      63.5387,
+      21.859,
+      9.6791
+     ],
+     "reference_srgb": [
+      197,
+      139,
+      138
+     ],
+     "render_lab": [
+      46.9372,
+      19.4626,
+      7.8448
+     ],
+     "render_srgb": [
+      147,
+      99,
+      99
+     ],
+     "spread_de00": {
+      "reference": 4.3131,
+      "render": 10.5883
+     },
+     "spread_ratio": 2.4549
+    },
+    "skin_face": {
+     "dC": -2.4394,
+     "dL": -3.1363,
+     "de00": 4.0474,
+     "de00_luma_matched": 3.1848,
+     "dh_deg": 8.2487,
+     "reference_lab": [
+      69.1524,
+      13.8336,
+      14.8442
+     ],
+     "reference_srgb": [
+      203,
+      159,
+      143
+     ],
+     "render_lab": [
+      66.0161,
+      10.171,
+      14.6706
+     ],
+     "render_srgb": [
+      188,
+      153,
+      135
+     ],
+     "spread_de00": {
+      "reference": 6.2826,
+      "render": 9.2243
+     },
+     "spread_ratio": 1.4682
+    },
+    "skin_limbs": {
+     "dC": 1.7958,
+     "dL": -0.0554,
+     "de00": 2.7026,
+     "de00_luma_matched": 2.7023,
+     "dh_deg": 8.556,
+     "reference_lab": [
+      69.7319,
+      11.2765,
+      12.9375
+     ],
+     "reference_srgb": [
+      199,
+      163,
+      148
+     ],
+     "render_lab": [
+      69.6765,
+      10.1916,
+      15.9854
+     ],
+     "render_srgb": [
+      199,
+      163,
+      142
+     ],
+     "spread_de00": {
+      "reference": 6.6185,
+      "render": 5.6115
+     },
+     "spread_ratio": 0.8478
+    }
+   },
+   "edge_roughness": {
+    "reference": 1.0864,
+    "render": 1.413
+   },
+   "face": {
+    "difference": {
+     "blush_da": 2.3072,
+     "lid_dC": -0.7003,
+     "lid_dL": 3.8872
+    },
+    "reference": {
+     "L": {
+      "blush_da": 0.179,
+      "lid_dC": -0.7556,
+      "lid_dL": 2.2448
+     },
+     "R": {
+      "blush_da": 4.5426,
+      "lid_dC": 2.5909,
+      "lid_dL": -12.9604
+     }
+    },
+    "render": {
+     "L": {
+      "blush_da": 5.0785,
+      "lid_dC": -0.1113,
+      "lid_dL": -5.5351
+     },
+     "R": {
+      "blush_da": 4.2575,
+      "lid_dC": 0.5458,
+      "lid_dL": 2.594
+     }
+    },
+    "score": 0.8134
+   },
+   "figure_iou": 0.81,
+   "hair": {
+    "face_cover": 0.0597,
+    "log2_ratio": {
+     "outline": 0.3576,
+     "relief": -0.4257,
+     "strand": 0.0647
+    },
+    "reference": {
+     "outline": 1.4226,
+     "relief": 0.0874,
+     "strand": 0.6303
+    },
+    "render": {
+     "outline": 1.8228,
+     "relief": 0.0651,
+     "strand": 0.6593
+    }
+   },
+   "head_height_px": 174.0,
+   "hidden_in_render": [
+    "ear_top_L",
+    "ear_top_R"
+   ],
+   "landmark_nme": 0.0416,
+   "landmarks": {
+    "brow_inner_L": {
+     "dx_head": -0.0348,
+     "dy_head": 0.0148,
+     "error_head": 0.0378,
+     "reference": [
+      135.0,
+      108.0
+     ],
+     "render": [
+      128.94,
+      110.57
+     ]
+    },
+    "brow_outer_L": {
+     "dx_head": 0.0099,
+     "dy_head": 0.0252,
+     "error_head": 0.0271,
+     "reference": [
+      157.0,
+      110.0
+     ],
+     "render": [
+      158.71,
+      114.39
+     ]
+    },
+    "chin": {
+     "dx_head": -0.0096,
+     "dy_head": 0.0122,
+     "error_head": 0.0155,
+     "reference": [
+      117.5,
+      180.0
+     ],
+     "render": [
+      115.82,
+      182.12
+     ]
+    },
+    "eye_L": {
+     "dx_head": -0.0141,
+     "dy_head": 0.015,
+     "error_head": 0.0206,
+     "reference": [
+      142.5,
+      140.0
+     ],
+     "render": [
+      140.05,
+      142.6
+     ]
+    },
+    "eye_R": {
+     "dx_head": -0.0135,
+     "dy_head": 0.015,
+     "error_head": 0.0202,
+     "reference": [
+      94.0,
+      140.0
+     ],
+     "render": [
+      91.64,
+      142.6
+     ]
+    },
+    "eye_inner_L": {
+     "dx_head": 0.0217,
+     "dy_head": 0.066,
+     "error_head": 0.0695,
+     "reference": [
+      126.0,
+      139.0
+     ],
+     "render": [
+      129.78,
+      150.48
+     ]
+    },
+    "eye_inner_R": {
+     "dx_head": -0.0293,
+     "dy_head": 0.066,
+     "error_head": 0.0722,
+     "reference": [
+      107.0,
+      139.0
+     ],
+     "render": [
+      101.9,
+      150.48
+     ]
+    },
+    "eye_outer_L": {
+     "dx_head": -0.0283,
+     "dy_head": 0.0403,
+     "error_head": 0.0492,
+     "reference": [
+      160.0,
+      136.0
+     ],
+     "render": [
+      155.08,
+      143.02
+     ]
+    },
+    "eye_outer_R": {
+     "dx_head": -0.0023,
+     "dy_head": 0.0403,
+     "error_head": 0.0404,
+     "reference": [
+      77.0,
+      136.0
+     ],
+     "render": [
+      76.6,
+      143.02
+     ]
+    },
+    "foot_L": {
+     "dx_head": -0.0418,
+     "dy_head": 0.015,
+     "error_head": 0.0444,
+     "reference": [
+      142.0,
+      462.0
+     ],
+     "render": [
+      134.72,
+      464.6
+     ]
+    },
+    "foot_R": {
+     "dx_head": 0.0107,
+     "dy_head": 0.0099,
+     "error_head": 0.0146,
+     "reference": [
+      95.0,
+      462.0
+     ],
+     "render": [
+      96.86,
+      463.73
+     ]
+    },
+    "hairline": {
+     "dx_head": 0.0246,
+     "dy_head": -0.0374,
+     "error_head": 0.0448,
+     "reference": [
+      117.5,
+      92.0
+     ],
+     "render": [
+      121.77,
+      85.48
+     ]
+    },
+    "hand_L": {
+     "dx_head": -0.1027,
+     "dy_head": -0.1203,
+     "error_head": 0.1581,
+     "reference": [
+      210.0,
+      288.0
+     ],
+     "render": [
+      192.14,
+      267.07
+     ]
+    },
+    "hand_R": {
+     "dx_head": 0.1119,
+     "dy_head": -0.1203,
+     "error_head": 0.1642,
+     "reference": [
+      20.0,
+      288.0
+     ],
+     "render": [
+      39.46,
+      267.07
+     ]
+    },
+    "hem_shorts": {
+     "dx_head": -0.0097,
+     "dy_head": 0.0413,
+     "error_head": 0.0413,
+     "reference": [
+      117.5,
+      347.0
+     ],
+     "render": [
+      115.81,
+      354.18
+     ]
+    },
+    "hem_vest": {
+     "dx_head": -0.0096,
+     "dy_head": 0.0095,
+     "error_head": 0.0095,
+     "reference": [
+      117.5,
+      306.0
+     ],
+     "render": [
+      115.82,
+      307.66
+     ]
+    },
+    "iris_L": {
+     "dx_head": -0.0112,
+     "dy_head": 0.0322,
+     "error_head": 0.0341,
+     "reference": [
+      142.0,
+      137.0
+     ],
+     "render": [
+      140.05,
+      142.6
+     ]
+    },
+    "iris_R": {
+     "dx_head": 0.0037,
+     "dy_head": 0.0322,
+     "error_head": 0.0324,
+     "reference": [
+      91.0,
+      137.0
+     ],
+     "render": [
+      91.64,
+      142.6
+     ]
+    },
+    "mouth": {
+     "dx_head": -0.0095,
+     "dy_head": 0.0158,
+     "error_head": 0.0184,
+     "reference": [
+      117.5,
+      163.0
+     ],
+     "render": [
+      115.84,
+      165.75
+     ]
+    },
+    "mouth_corner_L": {
+     "dx_head": -0.0142,
+     "dy_head": 0.0263,
+     "error_head": 0.0299,
+     "reference": [
+      127.0,
+      159.0
+     ],
+     "render": [
+      124.53,
+      163.57
+     ]
+    },
+    "mouth_corner_R": {
+     "dx_head": -0.0106,
+     "dy_head": 0.0263,
+     "error_head": 0.0283,
+     "reference": [
+      109.0,
+      159.0
+     ],
+     "render": [
+      107.15,
+      163.57
+     ]
+    },
+    "neck": {
+     "dx_head": -0.0069,
+     "dy_head": 0.0212,
+     "error_head": 0.0223,
+     "reference": [
+      117.0,
+      200.0
+     ],
+     "render": [
+      115.8,
+      203.69
+     ]
+    },
+    "nose": {
+     "dx_head": -0.0095,
+     "dy_head": 0.0167,
+     "error_head": 0.0192,
+     "reference": [
+      117.5,
+      154.0
+     ],
+     "render": [
+      115.84,
+      156.91
+     ]
+    },
+    "shoulder_L": {
+     "dx_head": -0.0123,
+     "dy_head": -0.0075,
+     "error_head": 0.0145,
+     "reference": [
+      155.0,
+      205.0
+     ],
+     "render": [
+      152.85,
+      203.69
+     ]
+    },
+    "shoulder_R": {
+     "dx_head": -0.0071,
+     "dy_head": -0.0075,
+     "error_head": 0.0104,
+     "reference": [
+      80.0,
+      205.0
+     ],
+     "render": [
+      78.76,
+      203.69
+     ]
+    }
+   },
+   "not_projected": [],
+   "proportions": {
+    "arm_length": {
+     "reference": 0.2215,
+     "relative": -0.2616,
+     "render": 0.1635
+    },
+    "eye_area_to_head": {
+     "reference": 0.0374,
+     "relative": -0.1515,
+     "render": 0.0317
+    },
+    "eye_line": {
+     "reference": 0.2939,
+     "relative": -0.0,
+     "render": 0.2939
+    },
+    "eye_spacing_to_head": {
+     "reference": 0.2787,
+     "relative": 0.0008,
+     "render": 0.279
+    },
+    "eye_width_to_head": {
+     "reference": 0.1847,
+     "relative": -0.1769,
+     "render": 0.152
+    },
+    "figure_width": {
+     "reference": 0.4803,
+     "relative": -0.0943,
+     "render": 0.435
+    },
+    "hair_area": {
+     "reference": 0.0815,
+     "relative": 0.1474,
+     "render": 0.0935
+    },
+    "hair_length": {
+     "reference": 0.5175,
+     "relative": 0.1438,
+     "render": 0.592
+    },
+    "hair_width_at_eyes": {
+     "reference": 0.2969,
+     "relative": 0.2247,
+     "render": 0.3637
+    },
+    "head_to_height": {
+     "reference": 0.3816,
+     "relative": -0.0028,
+     "render": 0.3805
+    },
+    "hem_shorts_height": {
+     "reference": 0.7478,
+     "relative": 0.0134,
+     "render": 0.7579
+    },
+    "hem_vest_height": {
+     "reference": 0.6579,
+     "relative": -0.0032,
+     "render": 0.6558
+    },
+    "leg_gap_height": {
+     "reference": 0.2544,
+     "relative": -0.0467,
+     "render": 0.2425
+    },
+    "mouth_line": {
+     "reference": 0.3443,
+     "relative": 0.0009,
+     "render": 0.3446
+    },
+    "shoulder_width": {
+     "reference": 0.1645,
+     "relative": -0.0121,
+     "render": 0.1625
+    }
+   },
+   "reference_islands_removed_px": {
+    "hair": 647,
+    "skin_face": -363
+   },
+   "regions": {
+    "eyes": {
+     "area_ratio": 0.8551,
+     "iou": 0.3953,
+     "reference_px": 1132.0,
+     "render_px": 968.0
+    },
+    "garment:blouse": {
+     "area_ratio": 1.1398,
+     "iou": 0.4222,
+     "reference_px": 6547.0,
+     "render_px": 7462.0
+    },
+    "garment:boots": {
+     "area_ratio": 1.4992,
+     "iou": 0.5997,
+     "reference_px": 5026.0,
+     "render_px": 7535.0
+    },
+    "garment:shorts": {
+     "area_ratio": 0.9106,
+     "iou": 0.7009,
+     "reference_px": 5501.0,
+     "render_px": 5009.0
+    },
+    "garment:vest": {
+     "area_ratio": 0.719,
+     "iou": 0.5233,
+     "reference_px": 7615.0,
+     "render_px": 5475.0
+    },
+    "glasses": {
+     "area_ratio": 1.1099,
+     "iou": 0.7757,
+     "reference_px": 2720.0,
+     "render_px": 3019.0
+    },
+    "hair": {
+     "area_ratio": 1.1233,
+     "iou": 0.5192,
+     "reference_px": 16943.0,
+     "render_px": 19032.0
+    },
+    "hair_accessory": {
+     "area_ratio": 2.781,
+     "iou": 0.2097,
+     "reference_px": 621.0,
+     "render_px": 1727.0
+    },
+    "skin_face": {
+     "area_ratio": 1.2877,
+     "iou": 0.6979,
+     "reference_px": 6403.0,
+     "render_px": 8245.0
+    },
+    "skin_limbs": {
+     "area_ratio": 0.6636,
+     "iou": 0.328,
+     "reference_px": 4649.0,
+     "render_px": 3085.0
+    }
+   },
+   "render_regions_not_annotated": [],
+   "render_unclassified_fraction": 0.0,
+   "skin": {
+    "skin_face": {
+     "dC_shade": -7.5416,
+     "dL": -3.1363,
+     "da_p90": -7.36,
+     "de00": 4.0474,
+     "de00_luma_matched": 3.1848,
+     "grey_cast": 7.5416,
+     "reference": {
+      "C_light": 15.9648,
+      "C_median": 19.8177,
+      "C_shade": 23.4432,
+      "L_median": 70.6429,
+      "a_p90": 19.8288,
+      "n": 2772
+     },
+     "render": {
+      "C_light": 19.9676,
+      "C_median": 18.3952,
+      "C_shade": 15.9017,
+      "L_median": 67.2802,
+      "a_p90": 12.4688,
+      "n": 5118
+     },
+     "score": 0.6459
+    },
+    "skin_limbs": {
+     "dC_shade": -4.4862,
+     "dL": -0.0554,
+     "da_p90": -4.9086,
+     "de00": 2.7026,
+     "de00_luma_matched": 2.7023,
+     "grey_cast": 4.4862,
+     "reference": {
+      "C_light": 14.4137,
+      "C_median": 17.699,
+      "C_shade": 21.983,
+      "L_median": 71.2308,
+      "a_p90": 16.8271,
+      "n": 3367
+     },
+     "render": {
+      "C_light": 20.4198,
+      "C_median": 19.2882,
+      "C_shade": 17.4968,
+      "L_median": 70.8882,
+      "a_p90": 11.9185,
+      "n": 2739
+     },
+     "score": 0.7754
+    }
+   },
+   "texture": {
+    "garment:blouse": {
+     "fuzz_ratio": 1.4728,
+     "reference": {
+      "fuzz_hf_rms": 1.6599,
+      "laplacian_var": 26.223,
+      "saturation_median": 0.0773,
+      "sheen_p90_p50": 1.0162
+     },
+     "render": {
+      "fuzz_hf_rms": 2.4447,
+      "laplacian_var": 50.3611,
+      "saturation_median": 0.1031,
+      "sheen_p90_p50": 1.0357
+     },
+     "sheen_ratio": 1.0191
+    },
+    "garment:boots": {
+     "fuzz_ratio": 0.5853,
+     "reference": {
+      "fuzz_hf_rms": 4.5116,
+      "laplacian_var": 299.0362,
+      "saturation_median": 0.4724,
+      "sheen_p90_p50": 1.115
+     },
+     "render": {
+      "fuzz_hf_rms": 2.6404,
+      "laplacian_var": 65.4553,
+      "saturation_median": 0.5074,
+      "sheen_p90_p50": 1.0737
+     },
+     "sheen_ratio": 0.963
+    },
+    "garment:shorts": {
+     "fuzz_ratio": 0.4839,
+     "reference": {
+      "fuzz_hf_rms": 3.1282,
+      "laplacian_var": 79.4615,
+      "saturation_median": 0.1122,
+      "sheen_p90_p50": 1.0873
+     },
+     "render": {
+      "fuzz_hf_rms": 1.5138,
+      "laplacian_var": 19.1682,
+      "saturation_median": 0.1316,
+      "sheen_p90_p50": 1.0356
+     },
+     "sheen_ratio": 0.9524
+    },
+    "garment:vest": {
+     "fuzz_ratio": 0.8863,
+     "reference": {
+      "fuzz_hf_rms": 6.122,
+      "laplacian_var": 432.0714,
+      "saturation_median": 0.3418,
+      "sheen_p90_p50": 1.1171
+     },
+     "render": {
+      "fuzz_hf_rms": 5.4261,
+      "laplacian_var": 320.904,
+      "saturation_median": 0.3191,
+      "sheen_p90_p50": 1.1189
+     },
+     "sheen_ratio": 1.0016
+    },
+    "hair": {
+     "fuzz_ratio": 0.6345,
+     "reference": {
+      "fuzz_hf_rms": 4.9029,
+      "laplacian_var": 283.7392,
+      "saturation_median": 0.5341,
+      "sheen_p90_p50": 1.1758
+     },
+     "render": {
+      "fuzz_hf_rms": 3.1111,
+      "laplacian_var": 109.1918,
+      "saturation_median": 0.4615,
+      "sheen_p90_p50": 1.0996
+     },
+     "sheen_ratio": 0.9352
+    },
+    "hair_accessory": {
+     "fuzz_ratio": 0.8328,
+     "reference": {
+      "fuzz_hf_rms": 4.9284,
+      "laplacian_var": 299.2363,
+      "saturation_median": 0.3144,
+      "sheen_p90_p50": 1.0545
+     },
+     "render": {
+      "fuzz_hf_rms": 4.1044,
+      "laplacian_var": 180.8635,
+      "saturation_median": 0.3563,
+      "sheen_p90_p50": 1.1254
+     },
+     "sheen_ratio": 1.0672
+    },
+    "skin_face": {
+     "fuzz_ratio": 2.4434,
+     "reference": {
+      "fuzz_hf_rms": 4.1937,
+      "laplacian_var": 117.7677,
+      "saturation_median": 0.2818,
+      "sheen_p90_p50": 1.0537
+     },
+     "render": {
+      "fuzz_hf_rms": 10.247,
+      "laplacian_var": 1104.8746,
+      "saturation_median": 0.2805,
+      "sheen_p90_p50": 1.0849
+     },
+     "sheen_ratio": 1.0297
+    },
+    "skin_limbs": {
+     "fuzz_ratio": 0.6114,
+     "reference": {
+      "fuzz_hf_rms": 2.2709,
+      "laplacian_var": 25.2969,
+      "saturation_median": 0.2615,
+      "sheen_p90_p50": 1.0384
+     },
+     "render": {
+      "fuzz_hf_rms": 1.3885,
+      "laplacian_var": 7.7837,
+      "saturation_median": 0.2915,
+      "sheen_p90_p50": 1.0185
+     },
+     "sheen_ratio": 0.9807
+    }
+   }
+  },
+  "sheet30_front_left": {
+   "alignment": {
+    "offset_px": [
+     -61,
+     -90
+    ],
+    "scale": 0.9611,
+    "scale_figure_height": 0.9138,
+    "scale_source": "body landmarks (8)",
+    "search_shift_px": [
+     -10,
+     3
+    ]
+   },
+   "colour": {
+    "garment:blouse": {
+     "dC": 0.5527,
+     "dL": -19.6368,
+     "de00": 15.0422,
+     "de00_luma_matched": 0.5034,
+     "dh_deg": 2.1128,
+     "reference_lab": [
+      80.6935,
+      3.2876,
+      3.7356
+     ],
+     "reference_srgb": [
+      210,
+      198,
+      193
+     ],
+     "render_lab": [
+      61.0567,
+      3.4972,
+      4.2823
+     ],
+     "render_srgb": [
+      157,
+      145,
+      140
+     ],
+     "spread_de00": {
+      "reference": 2.0402,
+      "render": 2.5562
+     },
+     "spread_ratio": 1.2529
+    },
+    "garment:boots": {
+     "dC": 1.5759,
+     "dL": 0.644,
+     "de00": 1.3349,
+     "de00_luma_matched": 1.2135,
+     "dh_deg": -2.3285,
+     "reference_lab": [
+      38.3512,
+      14.0497,
+      17.2511
+     ],
+     "reference_srgb": [
+      120,
+      81,
+      63
+     ],
+     "render_lab": [
+      38.9952,
+      15.783,
+      17.8465
+     ],
+     "render_srgb": [
+      125,
+      82,
+      64
+     ],
+     "spread_de00": {
+      "reference": 6.8464,
+      "render": 3.9325
+     },
+     "spread_ratio": 0.5744
+    },
+    "garment:shorts": {
+     "dC": 0.3795,
+     "dL": -8.231,
+     "de00": 7.938,
+     "de00_luma_matched": 0.5827,
+     "dh_deg": -3.5222,
+     "reference_lab": [
+      50.133,
+      -1.8991,
+      6.308
+     ],
+     "reference_srgb": [
+      121,
+      120,
+      109
+     ],
+     "render_lab": [
+      41.902,
+      -1.5949,
+      6.7822
+     ],
+     "render_srgb": [
+      101,
+      99,
+      88
+     ],
+     "spread_de00": {
+      "reference": 5.8471,
+      "render": 3.7261
+     },
+     "spread_ratio": 0.6373
+    },
+    "garment:vest": {
+     "dC": -3.3036,
+     "dL": -2.0621,
+     "de00": 3.3275,
+     "de00_luma_matched": 2.8104,
+     "dh_deg": 6.235,
+     "reference_lab": [
+      39.7433,
+      17.1973,
+      6.9426
+     ],
+     "reference_srgb": [
+      124,
+      83,
+      83
+     ],
+     "render_lab": [
+      37.6812,
+      13.4306,
+      7.2072
+     ],
+     "render_srgb": [
+      114,
+      81,
+      78
+     ],
+     "spread_de00": {
+      "reference": 5.2145,
+      "render": 3.7623
+     },
+     "spread_ratio": 0.7215
+    },
+    "hair": {
+     "dC": -3.8118,
+     "dL": 3.4848,
+     "de00": 4.6376,
+     "de00_luma_matched": 3.7566,
+     "dh_deg": 8.7955,
+     "reference_lab": [
+      28.9941,
+      16.508,
+      14.0157
+     ],
+     "reference_srgb": [
+      98,
+      58,
+      47
+     ],
+     "render_lab": [
+      32.4789,
+      11.6763,
+      13.4927
+     ],
+     "render_srgb": [
+      101,
+      69,
+      56
+     ],
+     "spread_de00": {
+      "reference": 7.1456,
+      "render": 3.4095
+     },
+     "spread_ratio": 0.4771
+    },
+    "hair_accessory": {
+     "dC": -5.4543,
+     "dL": 17.8361,
+     "de00": 16.5694,
+     "de00_luma_matched": 8.8937,
+     "dh_deg": 126.8913,
+     "reference_lab": [
+      22.1868,
+      6.2447,
+      0.9824
+     ],
+     "reference_srgb": [
+      63,
+      50,
+      52
+     ],
+     "render_lab": [
+      40.023,
+      -0.622,
+      0.6042
+     ],
+     "render_srgb": [
+      94,
+      95,
+      93
+     ],
+     "spread_de00": {
+      "reference": 13.1423,
+      "render": 11.2948
+     },
+     "spread_ratio": 0.8594
+    },
+    "skin_face": {
+     "dC": -0.6609,
+     "dL": -13.4448,
+     "de00": 11.0874,
+     "de00_luma_matched": 2.3007,
+     "dh_deg": 7.1545,
+     "reference_lab": [
+      73.269,
+      11.8737,
+      13.4744
+     ],
+     "reference_srgb": [
+      211,
+      172,
+      156
+     ],
+     "render_lab": [
+      59.8242,
+      9.7313,
+      14.3019
+     ],
+     "render_srgb": [
+      170,
+      137,
+      120
+     ],
+     "spread_de00": {
+      "reference": 5.3406,
+      "render": 7.8952
+     },
+     "spread_ratio": 1.4783
+    },
+    "skin_limbs": {
+     "dC": 1.3112,
+     "dL": -4.6362,
+     "de00": 4.494,
+     "de00_luma_matched": 2.4674,
+     "dh_deg": 8.1032,
+     "reference_lab": [
+      68.5242,
+      10.5861,
+      12.793
+     ],
+     "reference_srgb": [
+      195,
+      160,
+      145
+     ],
+     "render_lab": [
+      63.8879,
+      9.3623,
+      15.2754
+     ],
+     "render_srgb": [
+      181,
+      148,
+      128
+     ],
+     "spread_de00": {
+      "reference": 7.1598,
+      "render": 8.9304
+     },
+     "spread_ratio": 1.2473
+    }
+   },
+   "edge_roughness": {
+    "reference": 1.052,
+    "render": 1.3669
+   },
+   "face": {
+    "difference": {
+     "blush_da": -6.5375,
+     "lid_dC": -2.5254,
+     "lid_dL": 7.8382
+    },
+    "reference": {
+     "L": {
+      "blush_da": -2.2211,
+      "lid_dC": 0.6236,
+      "lid_dL": -4.912
+     },
+     "R": {
+      "blush_da": 6.191,
+      "lid_dC": 2.1307,
+      "lid_dL": -6.5328
+     }
+    },
+    "render": {
+     "L": {
+      "blush_da": null,
+      "lid_dC": -3.2104,
+      "lid_dL": -2.7377
+     },
+     "R": {
+      "blush_da": -0.3465,
+      "lid_dC": 0.9139,
+      "lid_dL": 6.9693
+     }
+    },
+    "score": 0.5237
+   },
+   "figure_iou": 0.7959,
+   "hair": {
+    "face_cover": 0.1032,
+    "log2_ratio": {
+     "outline": 0.2125,
+     "relief": -0.9365,
+     "strand": -0.0673
+    },
+    "reference": {
+     "outline": 1.5866,
+     "relief": 0.0987,
+     "strand": 0.6843
+    },
+    "render": {
+     "outline": 1.8384,
+     "relief": 0.0516,
+     "strand": 0.6531
+    }
+   },
+   "head_height_px": 172.0,
+   "hidden_in_render": [
+    "ear_top_R"
+   ],
+   "landmark_nme": 0.0748,
+   "landmarks": {
+    "brow_inner_L": {
+     "dx_head": 0.0496,
+     "dy_head": -0.0059,
+     "error_head": 0.05,
+     "reference": [
+      141.0,
+      113.0
+     ],
+     "render": [
+      149.54,
+      111.99
+     ]
+    },
+    "brow_outer_L": {
+     "dx_head": 0.0352,
+     "dy_head": 0.0218,
+     "error_head": 0.0413,
+     "reference": [
+      150.0,
+      113.0
+     ],
+     "render": [
+      156.05,
+      116.74
+     ]
+    },
+    "chin": {
+     "dx_head": -0.0264,
+     "dy_head": 0.0137,
+     "error_head": 0.0297,
+     "reference": [
+      124.0,
+      178.0
+     ],
+     "render": [
+      119.47,
+      180.35
+     ]
+    },
+    "eye_L": {
+     "dx_head": 0.0433,
+     "dy_head": 0.0326,
+     "error_head": 0.0542,
+     "reference": [
+      145.0,
+      137.0
+     ],
+     "render": [
+      152.44,
+      142.61
+     ]
+    },
+    "eye_R": {
+     "dx_head": 0.1144,
+     "dy_head": 0.0252,
+     "error_head": 0.1172,
+     "reference": [
+      102.0,
+      137.0
+     ],
+     "render": [
+      121.69,
+      141.33
+     ]
+    },
+    "eye_inner_L": {
+     "dx_head": 0.0286,
+     "dy_head": 0.0817,
+     "error_head": 0.0866,
+     "reference": [
+      138.0,
+      138.0
+     ],
+     "render": [
+      142.93,
+      152.06
+     ]
+    },
+    "eye_inner_R": {
+     "dx_head": 0.0304,
+     "dy_head": 0.0598,
+     "error_head": 0.0671,
+     "reference": [
+      120.0,
+      139.0
+     ],
+     "render": [
+      125.23,
+      149.29
+     ]
+    },
+    "eye_outer_L": {
+     "dx_head": 0.0266,
+     "dy_head": 0.0409,
+     "error_head": 0.0488,
+     "reference": [
+      152.0,
+      136.0
+     ],
+     "render": [
+      156.58,
+      143.04
+     ]
+    },
+    "eye_outer_R": {
+     "dx_head": 0.0744,
+     "dy_head": 0.0518,
+     "error_head": 0.0906,
+     "reference": [
+      85.0,
+      135.0
+     ],
+     "render": [
+      97.79,
+      143.9
+     ]
+    },
+    "foot_L": {
+     "dx_head": -0.0792,
+     "dy_head": 0.015,
+     "error_head": 0.0806,
+     "reference": [
+      128.0,
+      462.0
+     ],
+     "render": [
+      114.38,
+      464.58
+     ]
+    },
+    "foot_R": {
+     "dx_head": 0.0281,
+     "dy_head": -0.0018,
+     "error_head": 0.0282,
+     "reference": [
+      83.0,
+      462.0
+     ],
+     "render": [
+      87.83,
+      461.7
+     ]
+    },
+    "hairline": {
+     "dx_head": 0.1262,
+     "dy_head": -0.0771,
+     "error_head": 0.1479,
+     "reference": [
+      126.0,
+      101.0
+     ],
+     "render": [
+      147.71,
+      87.75
+     ]
+    },
+    "hand_L": {
+     "dx_head": -0.2292,
+     "dy_head": -0.2017,
+     "error_head": 0.3053,
+     "reference": [
+      190.0,
+      292.0
+     ],
+     "render": [
+      150.58,
+      257.31
+     ]
+    },
+    "hand_R": {
+     "dx_head": 0.151,
+     "dy_head": -0.0839,
+     "error_head": 0.1727,
+     "reference": [
+      17.0,
+      290.0
+     ],
+     "render": [
+      42.97,
+      275.57
+     ]
+    },
+    "hem_shorts": {
+     "dx_head": 0.0606,
+     "dy_head": 0.0129,
+     "error_head": 0.0129,
+     "reference": [
+      110.0,
+      348.0
+     ],
+     "render": [
+      120.43,
+      350.22
+     ]
+    },
+    "hem_vest": {
+     "dx_head": 0.1009,
+     "dy_head": -0.0266,
+     "error_head": 0.0266,
+     "reference": [
+      110.0,
+      308.0
+     ],
+     "render": [
+      127.36,
+      303.42
+     ]
+    },
+    "iris_L": {
+     "dx_head": 0.0433,
+     "dy_head": 0.0326,
+     "error_head": 0.0542,
+     "reference": [
+      145.0,
+      137.0
+     ],
+     "render": [
+      152.44,
+      142.61
+     ]
+    },
+    "iris_R": {
+     "dx_head": 0.1028,
+     "dy_head": 0.0252,
+     "error_head": 0.1059,
+     "reference": [
+      104.0,
+      137.0
+     ],
+     "render": [
+      121.69,
+      141.33
+     ]
+    },
+    "mouth": {
+     "dx_head": 0.0272,
+     "dy_head": 0.0194,
+     "error_head": 0.0334,
+     "reference": [
+      126.0,
+      161.0
+     ],
+     "render": [
+      130.67,
+      164.34
+     ]
+    },
+    "mouth_corner_L": {
+     "dx_head": 0.0157,
+     "dy_head": 0.0073,
+     "error_head": 0.0173,
+     "reference": [
+      134.0,
+      161.0
+     ],
+     "render": [
+      136.71,
+      162.25
+     ]
+    },
+    "mouth_corner_R": {
+     "dx_head": 0.0435,
+     "dy_head": 0.007,
+     "error_head": 0.0441,
+     "reference": [
+      118.0,
+      161.0
+     ],
+     "render": [
+      125.48,
+      162.2
+     ]
+    },
+    "neck": {
+     "dx_head": -0.0598,
+     "dy_head": 0.0118,
+     "error_head": 0.061,
+     "reference": [
+      112.0,
+      200.0
+     ],
+     "render": [
+      101.71,
+      202.03
+     ]
+    },
+    "nose": {
+     "dx_head": 0.0489,
+     "dy_head": 0.0165,
+     "error_head": 0.0516,
+     "reference": [
+      128.0,
+      153.0
+     ],
+     "render": [
+      136.41,
+      155.83
+     ]
+    },
+    "shoulder_L": {
+     "dx_head": -0.1134,
+     "dy_head": -0.0263,
+     "error_head": 0.1164,
+     "reference": [
+      146.0,
+      205.0
+     ],
+     "render": [
+      126.5,
+      200.48
+     ]
+    },
+    "shoulder_R": {
+     "dx_head": -0.0195,
+     "dy_head": -0.0191,
+     "error_head": 0.0273,
+     "reference": [
+      78.0,
+      207.0
+     ],
+     "render": [
+      74.65,
+      203.71
+     ]
+    }
+   },
+   "not_projected": [],
+   "proportions": {
+    "arm_length": {
+     "reference": 0.2198,
+     "relative": -0.3004,
+     "render": 0.1538
+    },
+    "eye_area_to_head": {
+     "reference": 0.0278,
+     "relative": -0.211,
+     "render": 0.0219
+    },
+    "eye_line": {
+     "reference": 0.2873,
+     "relative": 0.0182,
+     "render": 0.2925
+    },
+    "eye_spacing_to_head": {
+     "reference": 0.25,
+     "relative": -0.2838,
+     "render": 0.1791
+    },
+    "eye_width_to_head": {
+     "reference": 0.1435,
+     "relative": -0.1011,
+     "render": 0.129
+    },
+    "figure_width": {
+     "reference": 0.4232,
+     "relative": -0.0887,
+     "render": 0.3857
+    },
+    "hair_area": {
+     "reference": 0.092,
+     "relative": 0.1159,
+     "render": 0.1027
+    },
+    "hair_length": {
+     "reference": 0.5351,
+     "relative": 0.1244,
+     "render": 0.6016
+    },
+    "hair_width_at_eyes": {
+     "reference": 0.3338,
+     "relative": -0.0784,
+     "render": 0.3076
+    },
+    "head_to_height": {
+     "reference": 0.3772,
+     "relative": -0.0013,
+     "render": 0.3767
+    },
+    "hem_shorts_height": {
+     "reference": 0.75,
+     "relative": -0.001,
+     "render": 0.7492
+    },
+    "hem_vest_height": {
+     "reference": 0.6623,
+     "relative": -0.0237,
+     "render": 0.6466
+    },
+    "mouth_line": {
+     "reference": 0.3399,
+     "relative": 0.0049,
+     "render": 0.3416
+    },
+    "shoulder_width": {
+     "reference": 0.1491,
+     "relative": -0.2374,
+     "render": 0.1137
+    }
+   },
+   "reference_islands_removed_px": {
+    "hair": 929,
+    "skin_face": -457
+   },
+   "regions": {
+    "eyes": {
+     "area_ratio": 0.8032,
+     "iou": 0.1948,
+     "reference_px": 823.0,
+     "render_px": 661.0
+    },
+    "garment:blouse": {
+     "area_ratio": 0.6408,
+     "iou": 0.254,
+     "reference_px": 6802.0,
+     "render_px": 4359.0
+    },
+    "garment:boots": {
+     "area_ratio": 1.2835,
+     "iou": 0.5578,
+     "reference_px": 5468.0,
+     "render_px": 7018.0
+    },
+    "garment:shorts": {
+     "area_ratio": 0.7617,
+     "iou": 0.6762,
+     "reference_px": 5492.0,
+     "render_px": 4183.0
+    },
+    "garment:vest": {
+     "area_ratio": 0.9428,
+     "iou": 0.473,
+     "reference_px": 6035.0,
+     "render_px": 5690.0
+    },
+    "glasses": {
+     "area_ratio": 0.9191,
+     "iou": 0.2444,
+     "reference_px": 2064.0,
+     "render_px": 1897.0
+    },
+    "hair": {
+     "area_ratio": 1.0814,
+     "iou": 0.553,
+     "reference_px": 19130.0,
+     "render_px": 20687.0
+    },
+    "hair_accessory": {
+     "area_ratio": 2.2284,
+     "iou": 0.1505,
+     "reference_px": 521.0,
+     "render_px": 1161.0
+    },
+    "skin_face": {
+     "area_ratio": 1.1999,
+     "iou": 0.6882,
+     "reference_px": 5008.0,
+     "render_px": 6009.0
+    },
+    "skin_limbs": {
+     "area_ratio": 0.6463,
+     "iou": 0.3104,
+     "reference_px": 4764.0,
+     "render_px": 3079.0
+    }
+   },
+   "render_regions_not_annotated": [],
+   "render_unclassified_fraction": 0.0005,
+   "skin": {
+    "skin_face": {
+     "dC_shade": -5.0813,
+     "dL": -13.4448,
+     "da_p90": -4.9031,
+     "de00": 11.0874,
+     "de00_luma_matched": 2.3007,
+     "grey_cast": 5.0813,
+     "reference": {
+      "C_light": 14.8521,
+      "C_median": 17.3796,
+      "C_shade": 22.0703,
+      "L_median": 74.0598,
+      "a_p90": 18.6868,
+      "n": 2083
+     },
+     "render": {
+      "C_light": 18.1724,
+      "C_median": 17.5336,
+      "C_shade": 16.989,
+      "L_median": 60.5796,
+      "a_p90": 13.7837,
+      "n": 3497
+     },
+     "score": 0.664
+    },
+    "skin_limbs": {
+     "dC_shade": -1.2466,
+     "dL": -4.6362,
+     "da_p90": -3.4675,
+     "de00": 4.494,
+     "de00_luma_matched": 2.4674,
+     "grey_cast": 1.2466,
+     "reference": {
+      "C_light": 13.8801,
+      "C_median": 16.8611,
+      "C_shade": 18.7084,
+      "L_median": 69.3929,
+      "a_p90": 17.0144,
+      "n": 3707
+     },
+     "render": {
+      "C_light": 18.9043,
+      "C_median": 18.5218,
+      "C_shade": 17.4618,
+      "L_median": 65.6261,
+      "a_p90": 13.5469,
+      "n": 2259
+     },
+     "score": 0.8211
+    }
+   },
+   "texture": {
+    "garment:blouse": {
+     "fuzz_ratio": 0.7256,
+     "reference": {
+      "fuzz_hf_rms": 2.621,
+      "laplacian_var": 64.4808,
+      "saturation_median": 0.0685,
+      "sheen_p90_p50": 1.0186
+     },
+     "render": {
+      "fuzz_hf_rms": 1.9017,
+      "laplacian_var": 26.6918,
+      "saturation_median": 0.1067,
+      "sheen_p90_p50": 1.0386
+     },
+     "sheen_ratio": 1.0196
+    },
+    "garment:boots": {
+     "fuzz_ratio": 0.4224,
+     "reference": {
+      "fuzz_hf_rms": 5.1545,
+      "laplacian_var": 359.1056,
+      "saturation_median": 0.482,
+      "sheen_p90_p50": 1.1276
+     },
+     "render": {
+      "fuzz_hf_rms": 2.1774,
+      "laplacian_var": 40.767,
+      "saturation_median": 0.4928,
+      "sheen_p90_p50": 1.0727
+     },
+     "sheen_ratio": 0.9513
+    },
+    "garment:shorts": {
+     "fuzz_ratio": 0.3995,
+     "reference": {
+      "fuzz_hf_rms": 3.6729,
+      "laplacian_var": 128.0252,
+      "saturation_median": 0.1017,
+      "sheen_p90_p50": 1.0844
+     },
+     "render": {
+      "fuzz_hf_rms": 1.4674,
+      "laplacian_var": 16.5501,
+      "saturation_median": 0.1316,
+      "sheen_p90_p50": 1.0408
+     },
+     "sheen_ratio": 0.9598
+    },
+    "garment:vest": {
+     "fuzz_ratio": 0.8358,
+     "reference": {
+      "fuzz_hf_rms": 5.3854,
+      "laplacian_var": 369.1129,
+      "saturation_median": 0.3465,
+      "sheen_p90_p50": 1.1069
+     },
+     "render": {
+      "fuzz_hf_rms": 4.5011,
+      "laplacian_var": 206.0331,
+      "saturation_median": 0.3231,
+      "sheen_p90_p50": 1.1284
+     },
+     "sheen_ratio": 1.0194
+    },
+    "hair": {
+     "fuzz_ratio": 0.6842,
+     "reference": {
+      "fuzz_hf_rms": 4.6801,
+      "laplacian_var": 263.6761,
+      "saturation_median": 0.5278,
+      "sheen_p90_p50": 1.1809
+     },
+     "render": {
+      "fuzz_hf_rms": 3.2019,
+      "laplacian_var": 110.1002,
+      "saturation_median": 0.4579,
+      "sheen_p90_p50": 1.0997
+     },
+     "sheen_ratio": 0.9312
+    },
+    "hair_accessory": {
+     "fuzz_ratio": 0.9145,
+     "reference": {
+      "fuzz_hf_rms": 4.2929,
+      "laplacian_var": 114.0291,
+      "saturation_median": 0.1374,
+      "sheen_p90_p50": 1.0997
+     },
+     "render": {
+      "fuzz_hf_rms": 3.9258,
+      "laplacian_var": 165.4147,
+      "saturation_median": 0.055,
+      "sheen_p90_p50": 1.1781
+     },
+     "sheen_ratio": 1.0713
+    },
+    "skin_face": {
+     "fuzz_ratio": 1.4804,
+     "reference": {
+      "fuzz_hf_rms": 5.6238,
+      "laplacian_var": 262.5884,
+      "saturation_median": 0.2476,
+      "sheen_p90_p50": 1.0445
+     },
+     "render": {
+      "fuzz_hf_rms": 8.3255,
+      "laplacian_var": 696.294,
+      "saturation_median": 0.2886,
+      "sheen_p90_p50": 1.0709
+     },
+     "sheen_ratio": 1.0252
+    },
+    "skin_limbs": {
+     "fuzz_ratio": 0.3855,
+     "reference": {
+      "fuzz_hf_rms": 3.9541,
+      "laplacian_var": 135.742,
+      "saturation_median": 0.2512,
+      "sheen_p90_p50": 1.0567
+     },
+     "render": {
+      "fuzz_hf_rms": 1.5243,
+      "laplacian_var": 12.9968,
+      "saturation_median": 0.2905,
+      "sheen_p90_p50": 1.0273
+     },
+     "sheen_ratio": 0.9722
+    }
+   }
+  },
+  "sheet30_left": {
+   "alignment": {
+    "offset_px": [
+     -64,
+     -77
+    ],
+    "scale": 0.9382,
+    "scale_figure_height": 0.8924,
+    "scale_source": "body landmarks (3)",
+    "search_shift_px": [
+     3,
+     2
+    ]
+   },
+   "colour": {
+    "garment:blouse": {
+     "dC": 1.4327,
+     "dL": -3.5094,
+     "de00": 2.9572,
+     "de00_luma_matched": 1.6312,
+     "dh_deg": -5.5672,
+     "reference_lab": [
+      80.2833,
+      2.4555,
+      4.213
+     ],
+     "reference_srgb": [
+      207,
+      197,
+      191
+     ],
+     "render_lab": [
+      76.7739,
+      3.6908,
+      5.1169
+     ],
+     "render_srgb": [
+      201,
+      187,
+      180
+     ],
+     "spread_de00": {
+      "reference": 2.7738,
+      "render": 3.5673
+     },
+     "spread_ratio": 1.2861
+    },
+    "garment:boots": {
+     "dC": 1.8098,
+     "dL": 0.8749,
+     "de00": 1.2629,
+     "de00_luma_matched": 1.0115,
+     "dh_deg": -0.8694,
+     "reference_lab": [
+      38.3081,
+      14.1611,
+      16.7546
+     ],
+     "reference_srgb": [
+      120,
+      81,
+      64
+     ],
+     "render_lab": [
+      39.183,
+      15.6029,
+      17.9022
+     ],
+     "render_srgb": [
+      125,
+      82,
+      64
+     ],
+     "spread_de00": {
+      "reference": 3.8951,
+      "render": 5.2195
+     },
+     "spread_ratio": 1.34
+    },
+    "garment:shorts": {
+     "dC": -0.2448,
+     "dL": -0.7634,
+     "de00": 0.9678,
+     "de00_luma_matched": 0.6577,
+     "dh_deg": -3.5362,
+     "reference_lab": [
+      44.1853,
+      -2.0379,
+      7.1962
+     ],
+     "reference_srgb": [
+      106,
+      105,
+      93
+     ],
+     "render_lab": [
+      43.4219,
+      -1.5382,
+      7.069
+     ],
+     "render_srgb": [
+      105,
+      103,
+      91
+     ],
+     "spread_de00": {
+      "reference": 9.8172,
+      "render": 4.6446
+     },
+     "spread_ratio": 0.4731
+    },
+    "garment:vest": {
+     "dC": 0.4848,
+     "dL": 8.1216,
+     "de00": 6.9223,
+     "de00_luma_matched": 0.8558,
+     "dh_deg": 3.6869,
+     "reference_lab": [
+      33.0709,
+      14.6984,
+      6.4925
+     ],
+     "reference_srgb": [
+      103,
+      69,
+      68
+     ],
+     "render_lab": [
+      41.1925,
+      14.6804,
+      7.6482
+     ],
+     "render_srgb": [
+      125,
+      88,
+      85
+     ],
+     "spread_de00": {
+      "reference": 6.5259,
+      "render": 4.1371
+     },
+     "spread_ratio": 0.6339
+    },
+    "hair": {
+     "dC": -5.5603,
+     "dL": -0.5257,
+     "de00": 4.0171,
+     "de00_luma_matched": 3.9956,
+     "dh_deg": 6.5348,
+     "reference_lab": [
+      31.957,
+      17.0445,
+      15.4994
+     ],
+     "reference_srgb": [
+      107,
+      64,
+      52
+     ],
+     "render_lab": [
+      31.4313,
+      11.5085,
+      13.1538
+     ],
+     "render_srgb": [
+      98,
+      67,
+      54
+     ],
+     "spread_de00": {
+      "reference": 6.3804,
+      "render": 3.105
+     },
+     "spread_ratio": 0.4866
+    },
+    "hair_accessory": {
+     "dC": 1.7324,
+     "dL": -4.8533,
+     "de00": 4.7067,
+     "de00_luma_matched": 1.0507,
+     "dh_deg": -1.7063,
+     "reference_lab": [
+      57.5467,
+      21.8048,
+      8.9729
+     ],
+     "reference_srgb": [
+      180,
+      124,
+      124
+     ],
+     "render_lab": [
+      52.6934,
+      23.6833,
+      8.9309
+     ],
+     "render_srgb": [
+      169,
+      110,
+      111
+     ],
+     "spread_de00": {
+      "reference": 7.5109,
+      "render": 7.054
+     },
+     "spread_ratio": 0.9392
+    },
+    "skin_face": {
+     "dC": -6.9172,
+     "dL": 23.8344,
+     "de00": 21.5083,
+     "de00_luma_matched": 6.3347,
+     "dh_deg": 13.7547,
+     "reference_lab": [
+      49.5077,
+      16.3948,
+      15.9739
+     ],
+     "reference_srgb": [
+      153,
+      107,
+      91
+     ],
+     "render_lab": [
+      73.3421,
+      8.462,
+      13.5471
+     ],
+     "render_srgb": [
+      205,
+      174,
+      156
+     ],
+     "spread_de00": {
+      "reference": 4.9086,
+      "render": 2.073
+     },
+     "spread_ratio": 0.4223
+    },
+    "skin_limbs": {
+     "dC": 3.4492,
+     "dL": 3.3859,
+     "de00": 4.3417,
+     "de00_luma_matched": 3.5569,
+     "dh_deg": 11.4374,
+     "reference_lab": [
+      72.7046,
+      9.4599,
+      10.5922
+     ],
+     "reference_srgb": [
+      203,
+      172,
+      160
+     ],
+     "render_lab": [
+      76.0906,
+      8.9134,
+      15.2349
+     ],
+     "render_srgb": [
+      215,
+      181,
+      160
+     ],
+     "spread_de00": {
+      "reference": 6.5203,
+      "render": 2.8599
+     },
+     "spread_ratio": 0.4386
+    }
+   },
+   "edge_roughness": {
+    "reference": 1.0692,
+    "render": 1.3901
+   },
+   "face": null,
+   "figure_iou": 0.7415,
+   "hair": {
+    "face_cover": 0.6169,
+    "log2_ratio": {
+     "outline": 0.2266,
+     "relief": -0.7527,
+     "strand": -0.0995
+    },
+    "reference": {
+     "outline": 1.6783,
+     "relief": 0.0794,
+     "strand": 0.6092
+    },
+    "render": {
+     "outline": 1.9638,
+     "relief": 0.0471,
+     "strand": 0.5686
+    }
+   },
+   "head_height_px": 172.0,
+   "hidden_in_render": [
+    "chin",
+    "ear_top_L",
+    "eye_L",
+    "iris_L",
+    "mouth",
+    "nose"
+   ],
+   "landmark_nme": 0.0601,
+   "landmarks": {
+    "eye_inner_L": {
+     "dx_head": 0.0211,
+     "dy_head": 0.1218,
+     "error_head": 0.1236,
+     "reference": [
+      24.0,
+      138.0
+     ],
+     "render": [
+      27.64,
+      158.94
+     ]
+    },
+    "eye_outer_L": {
+     "dx_head": -0.0043,
+     "dy_head": 0.0615,
+     "error_head": 0.0616,
+     "reference": [
+      37.0,
+      136.0
+     ],
+     "render": [
+      36.27,
+      146.57
+     ]
+    },
+    "foot_L": {
+     "dx_head": 0.0634,
+     "dy_head": 0.0028,
+     "error_head": 0.0635,
+     "reference": [
+      63.0,
+      462.0
+     ],
+     "render": [
+      73.91,
+      462.48
+     ]
+    },
+    "foot_R": {
+     "dx_head": 0.0679,
+     "dy_head": 0.0028,
+     "error_head": 0.068,
+     "reference": [
+      63.0,
+      462.0
+     ],
+     "render": [
+      74.68,
+      462.48
+     ]
+    },
+    "hand_L": {
+     "dx_head": -0.0048,
+     "dy_head": -0.0096,
+     "error_head": 0.0107,
+     "reference": [
+      73.0,
+      287.0
+     ],
+     "render": [
+      72.17,
+      285.35
+     ]
+    },
+    "hand_R": {
+     "dx_head": 0.0023,
+     "dy_head": -0.1617,
+     "error_head": 0.1617,
+     "reference": [
+      75.0,
+      287.0
+     ],
+     "render": [
+      75.39,
+      259.19
+     ]
+    },
+    "hem_vest": {
+     "dx_head": -0.1168,
+     "dy_head": -0.0261,
+     "error_head": 0.0261,
+     "reference": [
+      60.0,
+      306.0
+     ],
+     "render": [
+      39.91,
+      301.52
+     ]
+    },
+    "neck": {
+     "dx_head": -0.0007,
+     "dy_head": 0.0406,
+     "error_head": 0.0407,
+     "reference": [
+      74.0,
+      200.0
+     ],
+     "render": [
+      73.88,
+      206.99
+     ]
+    },
+    "shoulder_L": {
+     "dx_head": -0.023,
+     "dy_head": 0.0137,
+     "error_head": 0.0268,
+     "reference": [
+      77.0,
+      207.0
+     ],
+     "render": [
+      73.05,
+      209.36
+     ]
+    },
+    "shoulder_R": {
+     "dx_head": -0.0139,
+     "dy_head": -0.0121,
+     "error_head": 0.0185,
+     "reference": [
+      77.0,
+      207.0
+     ],
+     "render": [
+      74.6,
+      204.92
+     ]
+    }
+   },
+   "not_projected": [
+    "hem_shorts"
+   ],
+   "proportions": {
+    "arm_length": {
+     "reference": 0.1756,
+     "relative": -0.1864,
+     "render": 0.1429
+    },
+    "figure_width": {
+     "reference": 0.3421,
+     "relative": -0.0317,
+     "render": 0.3313
+    },
+    "hair_area": {
+     "reference": 0.1141,
+     "relative": 0.1868,
+     "render": 0.1354
+    },
+    "hair_length": {
+     "reference": 0.6447,
+     "relative": 0.0053,
+     "render": 0.6482
+    },
+    "hem_vest_height": {
+     "reference": 0.6579,
+     "relative": -0.0228,
+     "render": 0.6429
+    }
+   },
+   "reference_islands_removed_px": {
+    "hair": 1153,
+    "skin_face": -197
+   },
+   "regions": {
+    "eyes": {
+     "area_ratio": 0.8494,
+     "iou": 0.1162,
+     "reference_px": 239.0,
+     "render_px": 203.0
+    },
+    "garment:blouse": {
+     "area_ratio": 0.5593,
+     "iou": 0.2464,
+     "reference_px": 2024.0,
+     "render_px": 1132.0
+    },
+    "garment:boots": {
+     "area_ratio": 1.5544,
+     "iou": 0.5578,
+     "reference_px": 3701.0,
+     "render_px": 5753.0
+    },
+    "garment:shorts": {
+     "area_ratio": 1.0153,
+     "iou": 0.6175,
+     "reference_px": 2610.0,
+     "render_px": 2650.0
+    },
+    "garment:vest": {
+     "area_ratio": 0.6618,
+     "iou": 0.3027,
+     "reference_px": 3817.0,
+     "render_px": 2526.0
+    },
+    "glasses": {
+     "area_ratio": 0.526,
+     "iou": 0.1423,
+     "reference_px": 384.0,
+     "render_px": 202.0
+    },
+    "hair": {
+     "area_ratio": 1.1561,
+     "iou": 0.5564,
+     "reference_px": 23716.0,
+     "render_px": 27419.0
+    },
+    "hair_accessory": {
+     "area_ratio": 2.0932,
+     "iou": 0.1322,
+     "reference_px": 955.0,
+     "render_px": 1999.0
+    },
+    "skin_face": {
+     "area_ratio": 0.4144,
+     "iou": 0.2498,
+     "reference_px": 2657.0,
+     "render_px": 1101.0
+    },
+    "skin_limbs": {
+     "area_ratio": 0.5785,
+     "iou": 0.4956,
+     "reference_px": 2885.0,
+     "render_px": 1669.0
+    }
+   },
+   "render_regions_not_annotated": [],
+   "render_unclassified_fraction": 0.0046,
+   "skin": {
+    "skin_face": {
+     "dC_shade": -10.8942,
+     "dL": 23.8344,
+     "da_p90": -11.9858,
+     "de00": 21.5083,
+     "de00_luma_matched": 6.3347,
+     "grey_cast": 10.8942,
+     "reference": {
+      "C_light": 22.0,
+      "C_median": 23.0361,
+      "C_shade": 27.2215,
+      "L_median": 49.7833,
+      "a_p90": 21.9668,
+      "n": 1540
+     },
+     "render": {
+      "C_light": 16.1387,
+      "C_median": 16.1053,
+      "C_shade": 16.3273,
+      "L_median": 74.6404,
+      "a_p90": 9.981,
+      "n": 416
+     },
+     "score": 0.2617
+    },
+    "skin_limbs": {
+     "dC_shade": -1.4444,
+     "dL": 3.3859,
+     "da_p90": -3.7441,
+     "de00": 4.3417,
+     "de00_luma_matched": 3.5569,
+     "grey_cast": 1.4444,
+     "reference": {
+      "C_light": 11.5634,
+      "C_median": 14.3798,
+      "C_shade": 18.8993,
+      "L_median": 73.9361,
+      "a_p90": 14.305,
+      "n": 2214
+     },
+     "render": {
+      "C_light": 16.8308,
+      "C_median": 17.8999,
+      "C_shade": 17.455,
+      "L_median": 76.8533,
+      "a_p90": 10.5609,
+      "n": 1402
+     },
+     "score": 0.7964
+    }
+   },
+   "texture": {
+    "garment:blouse": {
+     "fuzz_ratio": 5.2674,
+     "reference": {
+      "fuzz_hf_rms": 0.8386,
+      "laplacian_var": 5.9191,
+      "saturation_median": 0.0766,
+      "sheen_p90_p50": 1.0137
+     },
+     "render": {
+      "fuzz_hf_rms": 4.4171,
+      "laplacian_var": 70.3448,
+      "saturation_median": 0.0968,
+      "sheen_p90_p50": 1.0639
+     },
+     "sheen_ratio": 1.0495
+    },
+    "garment:boots": {
+     "fuzz_ratio": 0.4359,
+     "reference": {
+      "fuzz_hf_rms": 4.8949,
+      "laplacian_var": 342.7029,
+      "saturation_median": 0.4754,
+      "sheen_p90_p50": 1.1032
+     },
+     "render": {
+      "fuzz_hf_rms": 2.1339,
+      "laplacian_var": 39.6416,
+      "saturation_median": 0.4754,
+      "sheen_p90_p50": 1.0619
+     },
+     "sheen_ratio": 0.9626
+    },
+    "garment:shorts": {
+     "fuzz_ratio": 0.4022,
+     "reference": {
+      "fuzz_hf_rms": 3.5047,
+      "laplacian_var": 111.3276,
+      "saturation_median": 0.1264,
+      "sheen_p90_p50": 1.1039
+     },
+     "render": {
+      "fuzz_hf_rms": 1.4095,
+      "laplacian_var": 14.8613,
+      "saturation_median": 0.1333,
+      "sheen_p90_p50": 1.0346
+     },
+     "sheen_ratio": 0.9372
+    },
+    "garment:vest": {
+     "fuzz_ratio": 0.5991,
+     "reference": {
+      "fuzz_hf_rms": 5.389,
+      "laplacian_var": 316.0379,
+      "saturation_median": 0.3482,
+      "sheen_p90_p50": 1.1213
+     },
+     "render": {
+      "fuzz_hf_rms": 3.2286,
+      "laplacian_var": 115.7067,
+      "saturation_median": 0.3333,
+      "sheen_p90_p50": 1.0794
+     },
+     "sheen_ratio": 0.9626
+    },
+    "hair": {
+     "fuzz_ratio": 0.6009,
+     "reference": {
+      "fuzz_hf_rms": 4.5957,
+      "laplacian_var": 267.6506,
+      "saturation_median": 0.5281,
+      "sheen_p90_p50": 1.1621
+     },
+     "render": {
+      "fuzz_hf_rms": 2.7615,
+      "laplacian_var": 83.5795,
+      "saturation_median": 0.4571,
+      "sheen_p90_p50": 1.0909
+     },
+     "sheen_ratio": 0.9387
+    },
+    "hair_accessory": {
+     "fuzz_ratio": 0.6716,
+     "reference": {
+      "fuzz_hf_rms": 6.4223,
+      "laplacian_var": 529.5528,
+      "saturation_median": 0.3079,
+      "sheen_p90_p50": 1.0868
+     },
+     "render": {
+      "fuzz_hf_rms": 4.3131,
+      "laplacian_var": 218.8921,
+      "saturation_median": 0.36,
+      "sheen_p90_p50": 1.0889
+     },
+     "sheen_ratio": 1.002
+    },
+    "skin_face": {
+     "fuzz_ratio": 4.2643,
+     "reference": {
+      "fuzz_hf_rms": 2.3032,
+      "laplacian_var": 34.1085,
+      "saturation_median": 0.3882,
+      "sheen_p90_p50": 1.0922
+     },
+     "render": {
+      "fuzz_hf_rms": 9.8215,
+      "laplacian_var": 1096.8258,
+      "saturation_median": 0.2381,
+      "sheen_p90_p50": 1.1173
+     },
+     "sheen_ratio": 1.023
+    },
+    "skin_limbs": {
+     "fuzz_ratio": 0.4927,
+     "reference": {
+      "fuzz_hf_rms": 3.1392,
+      "laplacian_var": 59.6199,
+      "saturation_median": 0.212,
+      "sheen_p90_p50": 1.0393
+     },
+     "render": {
+      "fuzz_hf_rms": 1.5465,
+      "laplacian_var": 10.9963,
+      "saturation_median": 0.2679,
+      "sheen_p90_p50": 1.0238
+     },
+     "sheen_ratio": 0.9851
+    }
+   }
+  }
+ },
+ "reference_head_fraction": 0.3772,
+ "reference_index": "assets/characters/girl_auburn_bun_glasses/references/reference_index.json",
+ "render": {
+  "height": 640,
+  "lighting": "character_neutral/1",
+  "region_objects": {
+   "body_skin": "skin",
+   "brow.L": "face_detail",
+   "brow.R": "face_detail",
+   "ear.L": "skin",
+   "ear.R": "skin",
+   "eye.L": "eyes",
+   "eye.R": "eyes",
+   "garment.blouse.band.cuff.L": "garment:blouse",
+   "garment.blouse.band.cuff.R": "garment:blouse",
+   "garment.blouse.button.1": "garment:blouse",
+   "garment.blouse.button.2": "garment:blouse",
+   "garment.blouse.button.3": "garment:blouse",
+   "garment.blouse.button.4": "garment:blouse",
+   "garment.blouse.collar": "garment:blouse",
+   "garment.blouse.main": "garment:blouse",
+   "garment.boots.band.cuff.L": "garment:boots",
+   "garment.boots.band.cuff.L.fibres": "garment:boots",
+   "garment.boots.band.cuff.R": "garment:boots",
+   "garment.boots.band.cuff.R.fibres": "garment:boots",
+   "garment.boots.lining.L": "garment:boots",
+   "garment.boots.lining.L.fibres": "garment:boots",
+   "garment.boots.lining.R": "garment:boots",
+   "garment.boots.lining.R.fibres": "garment:boots",
+   "garment.boots.main.L": "garment:boots",
+   "garment.boots.main.L.fibres": "garment:boots",
+   "garment.boots.main.R": "garment:boots",
+   "garment.boots.main.R.fibres": "garment:boots",
+   "garment.boots.sole.L": "garment:boots",
+   "garment.boots.sole.L.fibres": "garment:boots",
+   "garment.boots.sole.R": "garment:boots",
+   "garment.boots.sole.R.fibres": "garment:boots",
+   "garment.shorts.band.cuff.L": "garment:shorts",
+   "garment.shorts.band.cuff.R": "garment:shorts",
+   "garment.shorts.band.waist": "garment:shorts",
+   "garment.shorts.button.1": "garment:shorts",
+   "garment.shorts.button.2": "garment:shorts",
+   "garment.shorts.button.3": "garment:shorts",
+   "garment.shorts.gusset": "garment:shorts",
+   "garment.shorts.main": "garment:shorts",
+   "garment.vest.button.1": "garment:vest",
+   "garment.vest.button.2": "garment:vest",
+   "garment.vest.button.3": "garment:vest",
+   "garment.vest.button.4": "garment:vest",
+   "garment.vest.edge.1": "garment:vest",
+   "garment.vest.edge.1.fibres": "garment:vest",
+   "garment.vest.edge.2": "garment:vest",
+   "garment.vest.edge.2.fibres": "garment:vest",
+   "garment.vest.edge.3": "garment:vest",
+   "garment.vest.edge.3.fibres": "garment:vest",
+   "garment.vest.embroidery": "garment:vest",
+   "garment.vest.embroidery.fibres": "garment:vest",
+   "garment.vest.embroidery_accent": "garment:vest",
+   "garment.vest.embroidery_accent.fibres": "garment:vest",
+   "garment.vest.main": "garment:vest",
+   "garment.vest.main.fibres": "garment:vest",
+   "garment.vest.pocket.L": "garment:vest",
+   "garment.vest.pocket.L.fibres": "garment:vest",
+   "garment.vest.pocket.R": "garment:vest",
+   "garment.vest.pocket.R.fibres": "garment:vest",
+   "garment.vest.pocket_edge.L": "garment:vest",
+   "garment.vest.pocket_edge.L.fibres": "garment:vest",
+   "garment.vest.pocket_edge.R": "garment:vest",
+   "garment.vest.pocket_edge.R.fibres": "garment:vest",
+   "glasses": "glasses",
+   "glasses_lens": "glasses",
+   "hair_band": "hair_accessory",
+   "hair_bun": "hair",
+   "hair_bun.fibres": "hair",
+   "hair_bun.fibres.001": "hair",
+   "hair_bun.fibres.002": "hair",
+   "hair_cap": "hair",
+   "hair_cap.fibres": "hair",
+   "hair_cap.fibres.001": "hair",
+   "hair_cap.fibres.002": "hair",
+   "hair_crown": "hair",
+   "hair_crown.fibres": "hair",
+   "hair_crown.fibres.001": "hair",
+   "hair_crown.fibres.002": "hair",
+   "hair_curtain": "hair",
+   "hair_curtain.fibres": "hair",
+   "hair_curtain.fibres.001": "hair",
+   "hair_curtain.fibres.002": "hair",
+   "hair_flowers_centres": "hair_accessory",
+   "hair_flowers_petals": "hair_accessory",
+   "hair_fringe": "hair",
+   "hair_fringe.fibres": "hair",
+   "hair_fringe.fibres.001": "hair",
+   "hair_fringe.fibres.002": "hair",
+   "hair_fringe_part": "hair",
+   "hair_fringe_part.fibres": "hair",
+   "hair_fringe_part.fibres.001": "hair",
+   "hair_fringe_part.fibres.002": "hair",
+   "hair_fringe_sweep": "hair",
+   "hair_fringe_sweep.fibres": "hair",
+   "hair_fringe_sweep.fibres.001": "hair",
+   "hair_fringe_sweep.fibres.002": "hair",
+   "hair_ringlets_back": "hair",
+   "hair_ringlets_back.fibres": "hair",
+   "hair_ringlets_back.fibres.001": "hair",
+   "hair_ringlets_back.fibres.002": "hair",
+   "hair_ringlets_back_b": "hair",
+   "hair_ringlets_back_b.fibres": "hair",
+   "hair_ringlets_back_b.fibres.001": "hair",
+   "hair_ringlets_back_b.fibres.002": "hair",
+   "hair_ringlets_outer": "hair",
+   "hair_ringlets_outer.fibres": "hair",
+   "hair_ringlets_outer.fibres.001": "hair",
+   "hair_ringlets_outer.fibres.002": "hair",
+   "hair_ringlets_outer_b": "hair",
+   "hair_ringlets_outer_b.fibres": "hair",
+   "hair_ringlets_outer_b.fibres.001": "hair",
+   "hair_ringlets_outer_b.fibres.002": "hair",
+   "hair_ringlets_side": "hair",
+   "hair_ringlets_side.fibres": "hair",
+   "hair_ringlets_side.fibres.001": "hair",
+   "hair_ringlets_side.fibres.002": "hair",
+   "hair_ringlets_side_b": "hair",
+   "hair_ringlets_side_b.fibres": "hair",
+   "hair_ringlets_side_b.fibres.001": "hair",
+   "hair_ringlets_side_b.fibres.002": "hair",
+   "hair_temple_l": "hair",
+   "hair_temple_l.fibres": "hair",
+   "hair_temple_l.fibres.001": "hair",
+   "hair_temple_l.fibres.002": "hair",
+   "hair_temple_r": "hair",
+   "hair_temple_r.fibres": "hair",
+   "hair_temple_r.fibres.001": "hair",
+   "hair_temple_r.fibres.002": "hair",
+   "hand.L": "skin",
+   "hand.R": "skin",
+   "lash.L": "face_detail",
+   "lash.R": "face_detail",
+   "lid_lower.L": "skin",
+   "lid_lower.R": "skin",
+   "lid_upper.L": "skin",
+   "lid_upper.R": "skin",
+   "mouth": "face_detail",
+   "mouth_cavity": "face_detail"
+  },
+  "samples": 32,
+  "tool": "pipeline/charsys/tools/groom_turnaround.py"
+ },
+ "schema": "plush-studio.fidelity/1",
+ "suggestions": [
+  {
+   "current": 0.048,
+   "kind": "proportion",
+   "path": "face.eyes.radius_m",
+   "reason": "eye_width_to_head render/reference 0.86 (median over views)",
+   "suggested": 0.0561
+  },
+  {
+   "current": 0.0598,
+   "kind": "proportion",
+   "path": "body.params.eyes.x",
+   "reason": "eye_spacing_to_head render/reference 0.86 (median over views)",
+   "suggested": 0.069
+  },
+  {
+   "current": 0.0979,
+   "kind": "proportion",
+   "path": "body.params.arm.upper_len",
+   "reason": "arm_length render/reference 0.74 (median over views)",
+   "suggested": 0.14
+  },
+  {
+   "current": 0.0876,
+   "kind": "proportion",
+   "path": "body.params.arm.fore_len",
+   "reason": "arm_length render/reference 0.74 (median over views)",
+   "suggested": 0.1253
+  },
+  {
+   "current": 0.101,
+   "kind": "proportion",
+   "path": "body.params.shoulder.joint_x",
+   "reason": "shoulder_width render/reference 0.88 (median over views)",
+   "suggested": 0.1147
+  },
+  {
+   "current": [
+    214,
+    210,
+    210
+   ],
+   "kind": "colour",
+   "path": "clothing.garments[0].material.base_color_srgb",
+   "reason": "garment:blouse dE00 7.1 (luma-matched 1.5); mean Lab shift [11.3, -0.7, -1.0] (first-order; a large lightness share points at lighting/exposure as much as at the base colour; re-measure)",
+   "suggested": [
+    244,
+    242,
+    244
+   ]
+  },
+  {
+   "current": [
+    144,
+    104,
+    104
+   ],
+   "kind": "colour",
+   "path": "clothing.garments[1].material.base_color_srgb",
+   "reason": "garment:vest dE00 3.7 (luma-matched 1.9); mean Lab shift [-0.7, 2.7, -0.5] (first-order; a large lightness share points at lighting/exposure as much as at the base colour; re-measure)",
+   "suggested": [
+    146,
+    100,
+    103
+   ]
+  },
+  {
+   "current": [
+    100,
+    64,
+    47
+   ],
+   "kind": "colour",
+   "path": "materials.assignments.hair.base_color_srgb",
+   "reason": "hair dE00 4.6 (luma-matched 3.8); mean Lab shift [-2.7, 4.8, 0.6] (first-order; a large lightness share points at lighting/exposure as much as at the base colour; re-measure)",
+   "suggested": [
+    99,
+    54,
+    40
+   ]
+  },
+  {
+   "current": [
+    238,
+    202,
+    184
+   ],
+   "kind": "colour",
+   "path": "materials.assignments.skin.base_color_srgb",
+   "reason": "skin_face dE00 11.1 (luma-matched 3.2); skin_limbs dE00 4.3 (luma-matched 3.6); mean Lab shift [1.6, 1.9, -2.4] (first-order; a large lightness share points at lighting/exposure as much as at the base colour; re-measure)",
+   "suggested": [
+    244,
+    205,
+    193
+   ]
+  },
+  {
+   "current": [
+    238,
+    202,
+    184
+   ],
+   "kind": "colour",
+   "path": "materials.albedo_srgb.skin",
+   "reason": "skin_face dE00 11.1 (luma-matched 3.2); skin_limbs dE00 4.3 (luma-matched 3.6); mean Lab shift [1.6, 1.9, -2.4] (first-order; a large lightness share points at lighting/exposure as much as at the base colour; re-measure)",
+   "suggested": [
+    244,
+    205,
+    193
+   ]
+  }
+ ],
+ "views": [
+  "sheet30_front",
+  "sheet30_front_left",
+  "sheet30_left",
+  "sheet30_back_right",
+  "sheet30_back"
+ ]
+}

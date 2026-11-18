@@ -22,7 +22,7 @@ now and what starts next; it does not restate the plan.
 | T-095 | Two-person exchange | cloud `session_01NPjxeLCrJJXDARJ14smDu3` |
 | T-096 | Clearance and visible grip | cloud `session_01NPjxeKWVBHRxiSkeK5hvaE` |
 
-## 2. Next
+## 2. Next (2026-11-18 22:35Z: Phase B approved by the owner; Phase C merged; Phase D waits for the owner's choice of tasks)
 1. Phase A merged: T-085, T-086, T-087, T-088. Follow-up noted: `.github/scripts/select_base.sh` compares staging with origin/main (fallback full run on staging can drop to fast when main is pushed first).
 2. Phase A exit: T-085..T-088 merged, all workflows on `main` green.
 3. T-098L after T-095's blocking pass. Before T-094: extend `tools/version_switch.py` `preset_family()` for presets/3; flip `face_generic/3` and `garment/2` to declared=True when their modules merge.

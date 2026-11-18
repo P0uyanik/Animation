@@ -1,4 +1,4 @@
-2026-11-18T17:46:14Z preview start: recipe 80e78a0ff2e0 {'engine': 'cycles', 'samples': 2, 'px': 120}
-2026-11-18T17:50:17Z preview pass: /tmp/claude-0/-home-user-Animation/6ff557f3-7505-5a5a-94b4-b78ac3739ce7/scratchpad/rv_boy_2.0.0_vs_T-093/preview/preview.jpg
-2026-11-18T17:55:09Z sheet start: recipe 80e78a0ff2e0 {'engine': 'cycles', 'samples': 16, 'px': 360}
-2026-11-18T18:08:56Z sheet written: /tmp/claude-0/-home-user-Animation/6ff557f3-7505-5a5a-94b4-b78ac3739ce7/scratchpad/rv_boy_2.0.0_vs_T-093/sheet.jpg 1120x2048
+2026-11-18T19:56:32Z preview start: recipe 2109d9e3b83a {'engine': 'cycles', 'samples': 2, 'px': 120}
+2026-11-18T20:00:46Z preview pass: /tmp/claude-0/-home-user-Animation/6ff557f3-7505-5a5a-94b4-b78ac3739ce7/scratchpad/r2_boy_2.0.0_vs_T-093/preview/preview.jpg
+2026-11-18T20:13:47Z sheet start: recipe 2109d9e3b83a {'engine': 'cycles', 'samples': 16, 'px': 360}
+2026-11-18T20:27:20Z sheet written: /tmp/claude-0/-home-user-Animation/6ff557f3-7505-5a5a-94b4-b78ac3739ce7/scratchpad/r2_boy_2.0.0_vs_T-093/sheet.jpg 1120x2048

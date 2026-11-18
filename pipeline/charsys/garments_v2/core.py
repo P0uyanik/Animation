@@ -13,7 +13,7 @@ import json
 
 from garments import generator as GEN
 
-from . import correctives, outlines, pack, shoes
+from . import correctives, finish, outlines, pack, shoes
 
 GENERATOR = "garment/2"
 V1 = GEN.GENERATOR
@@ -26,7 +26,9 @@ ITEM_FIELDS = {
     "boots": ("cuff_roll",),
 }
 CORRECTIVE_TYPES = ("top", "shirt", "vest", "hoodie", "dress")
-V2_FIELDS = sorted({f for fs in ITEM_FIELDS.values() for f in fs} | {"correctives"})
+COLLAR_TYPES = ("top", "shirt", "dress")
+ANY_TYPE = ("clean_fibres",)
+V2_FIELDS = sorted({f for fs in ITEM_FIELDS.values() for f in fs} | {"correctives", "collar_clear"} | set(ANY_TYPE))
 CORRECTIVES_PROP = "ps_garment2_correctives"
 
 
@@ -45,7 +47,10 @@ def validate(clothing):
                 continue
             name = raw.get("name", raw.get("type"))
             for f in _fields_of(raw):
-                allowed = CORRECTIVE_TYPES if f == "correctives" else [t for t, fs in ITEM_FIELDS.items() if f in fs]
+                if f in ANY_TYPE:
+                    continue
+                allowed = (CORRECTIVE_TYPES if f == "correctives" else COLLAR_TYPES if f == "collar_clear" else
+                           [t for t, fs in ITEM_FIELDS.items() if f in fs])
                 if raw.get("type") not in allowed:
                     raise ValueError(f"garment {name}.{f} ({GENERATOR}) is supported on {sorted(allowed)}")
             if "stripes" in raw:
@@ -61,6 +66,13 @@ def validate(clothing):
                 outlines.validate_cuff_roll(raw["cuff_roll"], name)
             if "correctives" in raw:
                 correctives.validate(raw["correctives"], name)
+            if "clean_fibres" in raw:
+                finish.validate_clean(raw["clean_fibres"], name)
+            if "collar_clear" in raw:
+                finish.validate_collar_clear(raw["collar_clear"], name)
+                if raw.get("collar") in (None, "none") or (isinstance(raw.get("collar"), dict) and
+                                                         raw["collar"].get("type", "none") == "none"):
+                    raise ValueError(f"garment {name}.collar_clear needs a collar")
     GEN.validate(v1_view(clothing))
     return clothing
 
@@ -84,7 +96,7 @@ def v1_view(clothing):
     return out
 
 
-def _finish_new(new, cfg, lod, anchor=None, clearance=0.0):
+def _finish_new(new, cfg, lod, anchor=None, clean=(), clearance=0.0):
     """Shared finishing of pieces added by garment/2 (already tagged through GEN._feature): rest-clearance override,
     weight anchor of the item (rigid pieces) and the shared surface fibres."""
     fibres = []
@@ -92,7 +104,7 @@ def _finish_new(new, cfg, lod, anchor=None, clearance=0.0):
         ob[GEN.CLEARANCE_PROP] = float(clearance)
         if anchor is not None:
             ob["ps_weight_anchor"] = tuple(anchor)
-        f = GEN.add_fibres(ob, lod)
+        f = None if clean and finish._matches(ob.get("ps_garment_part", ""), clean) else GEN.add_fibres(ob, lod)
         if f is not None:
             fibres.append(f)
     return fibres
@@ -128,14 +140,19 @@ def build(C, body, clothing, P, H, J, G):
         if cfg.get("correctives") not in (None, False):
             corr[cfg["name"]] = cfg["correctives"]
             info["correctives"] = sorted(cfg["correctives"])
+        removed = []
+        if cfg.get("clean_fibres"):
+            removed = finish.clean_fibres(mine, cfg["clean_fibres"])
+            info["clean_fibres"] = {"parts": list(cfg["clean_fibres"]), "fibres_removed": len(removed)}
         fibres = []
         if new:
             anchor = next((ob["ps_weight_anchor"] for ob in mine if "ps_weight_anchor" in ob), None)
             rigid = cfg["type"] in ("backpack", "sneakers")
-            fibres = _finish_new(new, cfg, lod, anchor if rigid else None)
+            fibres = _finish_new(new, cfg, lod, anchor if rigid else None, cfg.get("clean_fibres") or [])
         for entry in report["items"]:
             if entry["name"] == cfg["name"]:
                 entry["objects"] += [o.name for o in new]
+                entry["fibres"] = [f for f in entry["fibres"] if f["object"] not in removed]
                 entry["fibres"] += [{"object": f.name, "source": f[GEN.FIBRES_PROP], "preset": f["ps_material_preset"],
                                      "lod": f["ps_fibres_lod"]} for f in fibres]
                 entry["material_presets"] = sorted(set(entry["material_presets"]) |
@@ -143,6 +160,21 @@ def build(C, body, clothing, P, H, J, G):
         if info:
             v2_report[cfg["name"]] = info
         ordered += mine + new
+    # final pass: collars over the outer layers (needs every item built)
+    for raw in clothing["garments"]:
+        cfg = GEN._merge(clothing.get("defaults"), raw)
+        if not cfg.get("collar_clear"):
+            continue
+        collar = next((o for o in ordered if o.get("ps_garment_item") == cfg["name"]
+                       and o.get("ps_garment_part") == "collar"), None)
+        over = set(cfg["collar_clear"]["over"])
+        outer = [o for o in ordered if o.get("ps_garment_item") in over and o.type == "MESH"]
+        if collar is None or not outer:
+            raise ValueError(f"garment {cfg['name']}.collar_clear: no collar or no piece of {sorted(over)}")
+        inner = [o for o in ordered if o.get("ps_garment_item") == cfg["name"] and o.type == "MESH"
+                 and o.get("ps_garment_part") == "main"]
+        v2_report.setdefault(cfg["name"], {})["collar_clear"] = finish.collar_clear(collar, outer, cfg["collar_clear"],
+                                                                                   inner)
     for ob in ordered:
         ob["ps_garment_generator"] = GENERATOR
     body[CORRECTIVES_PROP] = json.dumps(corr, sort_keys=True)
@@ -159,6 +191,8 @@ def bind_to_body(rig, body, garments, neighbours=1, max_influences=4, worn=None)
     out = GEN.bind_to_body(rig, body, garments, neighbours=neighbours, max_influences=max_influences, worn=worn)
     corr = json.loads(body.get(CORRECTIVES_PROP, "{}") or "{}")
     if corr:
-        out["correctives"] = {name: correctives.add(rig, [o for o in garments if o.get("ps_garment_item") == name], cfg)
+        out["correctives"] = {name: correctives.add(rig, [o for o in garments if o.get("ps_garment_item") == name], cfg,
+                                                    max_influences, [o for o in garments
+                                                                     if o.get("ps_garment_item") != name])
                               for name, cfg in sorted(corr.items())}
     return out

@@ -1,8 +1,8 @@
 {
- "recipe_sha256": "b5fb0c2063442ad5c10640bfbf6b0c5c5afe1b096d249ca2c4581771e83bdc28",
+ "recipe_sha256": "7eb11008557582cfc0d74088860d6899e69ecd8bb692df63aac9548b86ecb964",
  "status": "pass",
  "problems": [],
- "at": "2026-11-18T17:54:42+00:00",
+ "at": "2026-11-18T20:04:57+00:00",
  "settings": {
   "engine": "cycles",
   "samples": 2,
@@ -24,7 +24,7 @@
      "L": 32.0,
      "R": 32.0
     },
-    "seconds": 82.1
+    "seconds": 77.0
    },
    "candidate": {
     "blend": "<out>/build/candidate/girl_auburn_bun_glasses_master.blend",
@@ -33,7 +33,7 @@
      "L": 32.0,
      "R": 32.0
     },
-    "seconds": 87.7
+    "seconds": 76.8
    }
   },
   "views": {

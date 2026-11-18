@@ -117,12 +117,13 @@ _r("body", "body_generic", 2, "body_generic")  # T-065 head fitted to reference 
 _r("face", "body_v6", 1, "body_v6", declared=False, note="legacy v6 face with face.py expression keys")
 _r("face", "face_generic", 1, "face_generic")
 _r("face", "face_generic", 2, "face_generic")  # T-065 face v2 (lids in skin, brows, soft_smile/parted); opt-in
-_r("face", "face_generic", 3, "face_generic_v3", declared=False,
-   note="T-089 face/eyes round 3 (planned; opt-in; declared=True once the module lands)")
+_r("face", "face_generic", 3, "face_generic_v3")  # T-089 face/eyes round 3 + felt-eye mode; opt-in
 _r("groom", "hair_clumps", 1, "hair", declared=False, note="legacy clump hair (hair.py)")
 _r("groom", "hair_clumps", 2, "hair", declared=False, note="legacy lock-family hair (hair.py; experiments)")
 _r("groom", "groom", 1, "groom")
 _r("groom", "groom", 2, "groom_hybrid")  # T-044 hair v3 (hybrid felt); opt-in, no character pins it yet
+_r("groom", "groom", 3, "groom_r4", declared=False,
+   note="T-091 hair round 4 (planned; opt-in; declared=True once the module lands)")
 _r("garment", "body_v6", 1, "body_v6", declared=False, note="legacy v6 clothing")
 _r("garment", "garment", 1, "garments")
 _r("garment", "garment", 2, "garments_v2")  # T-093 garment outlines + accessories + reach correctives; opt-in

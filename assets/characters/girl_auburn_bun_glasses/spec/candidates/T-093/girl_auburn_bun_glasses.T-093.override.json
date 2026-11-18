@@ -37,11 +37,11 @@
      "hem_z_m": 0.34,
      "collar": {
       "type": "round",
-      "width_m": 0.05,
+      "width_m": 0.048,
       "gap_m": 0.012,
-      "slope": 0.3,
+      "slope": 0.5,
       "tip_round": 0.55,
-      "lift_m": 0.026
+      "lift_m": 0.034
      },
      "buttons": {
       "count": 4,
@@ -88,7 +88,20 @@
       "volume_band_m": 0.003,
       "smooth": 3,
       "seed": 34
-     }
+     },
+     "clean_fibres": [
+      "collar"
+     ],
+     "collar_clear": {
+      "over": [
+       "vest"
+      ],
+      "gap_m": 0.008,
+      "smooth": 20,
+      "max_lift_m": 0.02
+     },
+     "armhole": "closed",
+     "sleeve_start": 0.0
     },
     {
      "type": "vest",
@@ -232,7 +245,7 @@
       ],
       "reference_size_m": 0.3
      },
-     "shoulder_width": 1.0,
+     "shoulder_width": 0.9,
      "buttons": {
       "count": 4,
       "placement": "edge",
@@ -275,13 +288,22 @@
       "seed": 34
      },
      "correctives": {
+      "arm_weights": {
+       "cap": 0.2
+      },
       "reach": {
        "deg": -75.0,
-       "strength": 1.0,
-       "arm_lo": 0.4,
-       "arm_hi": 2.0
+       "strength": 0.0,
+       "over": [
+        "blouse"
+       ],
+       "over_gap_m": 0.003
       }
-     }
+     },
+     "clean_fibres": [
+      "edge",
+      "pocket_edge"
+     ]
     },
     {
      "type": "shorts",
@@ -348,6 +370,15 @@
      "leg_split": {
       "amount": 0.8,
       "start": 0.12
+     },
+     "hem_break": {
+      "height_m": 0.045,
+      "flare_m": 0.0,
+      "folds": 0,
+      "fold_depth_m": 0.0,
+      "front_drop_m": 0.0,
+      "pleats": 18,
+      "pleat_depth_m": 0.0035
      }
     },
     {

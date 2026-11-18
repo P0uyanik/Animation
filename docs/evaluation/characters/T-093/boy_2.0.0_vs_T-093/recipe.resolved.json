@@ -2,7 +2,7 @@
  "schema": "plush-studio.review-recipe/1",
  "character": "boy_yellow_hoodie",
  "task": "T-093",
- "recipe_sha256": "80e78a0ff2e058a88796abd4903eec993ec2ebb6af18ebfaf80948b82cfdbc64",
+ "recipe_sha256": "2109d9e3b83abcae4905f3a277d58dc9e5b6b1de0956e0a5d563d04dc1a39589",
  "inputs": {
   "main": "4910b69"
  },
@@ -38,7 +38,7 @@
    "overrides": [
     "assets/characters/boy_yellow_hoodie/spec/candidates/T-093/boy_yellow_hoodie.T-093.override.json"
    ],
-   "sha": "b83a37a",
+   "sha": "12f9d1e",
    "comparison_pose": null,
    "source_variant": "compare",
    "spec_sha256": "95893b3b8acc7df59f6b44343cc9f733f093e8fbc120c273c221c11e77300091"
@@ -204,6 +204,16 @@
     "file": "assets/characters/boy_yellow_hoodie/references/uploads/02_higgsfield_B06_backpack_back_2026-11-18.webp",
     "crop": null,
     "label": "B06 flap backpack"
+   },
+   "face_front": {
+    "file": "assets/characters/boy_yellow_hoodie/references/uploads/02_higgsfield_B01_face_front_2026-11-18.webp",
+    "crop": null,
+    "label": "B01 face, drawstrings"
+   },
+   "face_threequarter": {
+    "file": "assets/characters/boy_yellow_hoodie/references/uploads/02_higgsfield_B02_face_threequarter_2026-11-18.webp",
+    "crop": null,
+    "label": "B02 3/4, drawstrings"
    }
   }
  }

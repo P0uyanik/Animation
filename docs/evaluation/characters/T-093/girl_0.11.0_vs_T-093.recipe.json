@@ -1,7 +1,7 @@
 {
  "schema": "plush-studio.review-recipe/1",
  "task": "T-093",
- "note": "Garment outlines and accessories (garment/2) on the current girl 0.11.0. Her sheet30 references are an A-pose turnaround and her spec has no comparison pose, so the A-pose masters are compared on purpose (as T-081/T-087). AI-target column: G08 (bloomers, boots) front; the ref_41 garment construction sheet (original reference, side and back figures) side and back; G04 (bun accessories) face 3/4.",
+ "note": "T-093 round 2: garment/2 outlines and accessories on the current girl 0.11.0. Her sheet30 references are an A-pose turnaround and her spec has no comparison pose, so the A-pose masters are compared on purpose (as T-081/T-087). AI-target column: G08 (bloomers, boots) front, G07 (vest, blouse, collar macro) 3/4, ref_41 garment sheet (original reference, side and back figures) side and back, G04 (scrunchie, flower) face 3/4.",
  "character": "girl_auburn_bun_glasses",
  "inputs": {
   "main": "4910b69"
@@ -15,7 +15,7 @@
   "overrides": [
    "assets/characters/girl_auburn_bun_glasses/spec/candidates/T-093/girl_auburn_bun_glasses.T-093.override.json"
   ],
-  "sha": "b83a37a",
+  "sha": "12f9d1e",
   "label": "0.11.0 + T-093 garment/2"
  },
  "compare": {
@@ -130,6 +130,10 @@
    "face_threequarter": {
     "file": "uploads/higgsfield_G04_fringe_hairline_2026-11-18.webp",
     "label": "G04 scrunchie, flower"
+   },
+   "threequarter": {
+    "file": "uploads/higgsfield_G07_vest_blouse_macro_2026-11-18.webp",
+    "label": "G07 vest, blouse"
    }
   }
  }

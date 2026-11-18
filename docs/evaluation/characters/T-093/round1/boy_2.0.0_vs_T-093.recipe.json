@@ -1,0 +1,37 @@
+{
+ "schema": "plush-studio.review-recipe/1",
+ "task": "T-093",
+ "note": "Garment outlines and accessories (garment/2) on the current boy 2.0.0, compare variant (arms down) as the val27 references. AI target: B09 (trousers, sneakers) on the front row, B06 (flap backpack, canonical) on the back row.",
+ "character": "boy_yellow_hoodie",
+ "inputs": {"main": "4910b69"},
+ "baseline": {"version": "2.0.0", "label": "2.0.0"},
+ "candidate": {"spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.0.0.spec.json",
+               "overrides": ["assets/characters/boy_yellow_hoodie/spec/candidates/T-093/boy_yellow_hoodie.T-093.override.json"],
+               "sha": "b83a37a", "label": "2.0.0 + T-093 garment/2"},
+ "compare": {"variant": "compare", "pose": "arms_down"},
+ "cameras": {
+  "lens_mm": 70,
+  "sensor_mm": 36,
+  "elevation_deg": 6,
+  "framing": {
+   "body": {"target": [0.0, 0.0, 0.56], "frame_height_m": 1.26, "aspect": 1.6},
+   "face": {"fit": "head", "margin": 0.05, "aspect": 1.0}
+  },
+  "rows": {
+   "front": {"reference_view": "val27_front"},
+   "threequarter": {"reference_view": "val27_threequarter_right"},
+   "side": {"reference_view": "val27_side_right"},
+   "back": {"reference_view": "val27_back"},
+   "face_front": {"reference": {"file": "views/hero24_front.png", "crop": [40, 60, 560, 620], "label": "hero24 face"}, "yaw_deg": 0},
+   "face_threequarter": {"reference_view": "val27_threequarter_right", "crop": [10, 0, 230, 240]}
+  }
+ },
+ "light": {"calibration": "character_neutral/1"},
+ "render": {"engine": "cycles", "samples": 16, "px": 360},
+ "preview": {"engine": "cycles", "samples": 2, "px": 120},
+ "ai_target": {"images": {
+  "front": {"file": "uploads/02_higgsfield_B09_trousers_sneakers_2026-11-18.webp", "label": "B09 trousers, sneakers"},
+  "side": {"file": "uploads/02_higgsfield_B07_backpack_side_2026-11-18.webp", "label": "B07 pack depth, straps"},
+  "back": {"file": "uploads/02_higgsfield_B06_backpack_back_2026-11-18.webp", "label": "B06 flap backpack"}
+ }}
+}
