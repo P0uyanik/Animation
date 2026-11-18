@@ -1,4 +1,4 @@
-# Implementer standing instructions (approved by the owner, 2026-11-15)
+# Implementer standing instructions (approved by the owner, 2026-11-15; refreshed for round 2, 2026-11-18)
 
 Paste the text below as the first message of the Implementer chat.
 
@@ -28,10 +28,11 @@ TECHNICAL_DECISIONS.md (TD-37..TD-42), docs/PROJECT_STATUS_AND_ARCHITECTURE_AUDI
 docs/CHARACTER_REUSABILITY.md, docs/process/WORKFLOW.md. Milestone reports in docs/milestones/ only when relevant. Do not scan the whole repository.
 
 == Characters and frozen assets (never modify) ==
-- boy_yellow_hoodie: published 1.0.0 (assets/characters/boy_yellow_hoodie/versions/1.0.0) and the v6 baseline are
-  FROZEN. His F09 (face) / H28 (hair) candidates are unapproved experiments; do not change them.
-- girl_auburn_bun_glasses: spec 0.3.0 (body M2, face M3/M3.1, glasses). Experimental; NOT published. Hair (M4) and
-  clothing (M5) not built. Her references are in assets/characters/girl_auburn_bun_glasses/references/.
+- Current (approved, published) versions: boy_yellow_hoodie 2.0.0 and girl_auburn_bun_glasses 0.11.0 (see
+  docs/evaluation/characters/fidelity_baseline.json). Every published version under
+  assets/characters/*/versions/ and every file in tools/frozen_manifest.txt is immutable. Characters are fully
+  procedural (code + spec JSON); there are no sculpted meshes.
+- References: assets/characters/*/references/ (original references first; Higgsfield images are "AI target" only).
 - Frozen image regressions (ctest) and the existing test data packages must stay valid.
 - Never publish, approve or promote any character version or asset. Only the owner approves.
 
@@ -64,7 +65,7 @@ improvements must support the reference designs, never change or contradict them
 and behaviour from the references first, and invent only what they do not show, in the same spirit.
 
 == Environment ==
-- Repository: https://github.com/P0uyanik/Animation (state at handover: commit 7ff08cc on main).
+- Repository: https://github.com/P0uyanik/Animation. Branch from origin/main; your task prompt names the input SHA.
 - C++: cmake + ninja into build/ (cmake -S . -B build -G Ninja; cmake --build build). Tests: ctest in build/, and
   build/tests/plush_tests (doctest).
 - Blender: tests and tools need Blender 5.3. If no Blender binary is available, use the bpy 5.3 module (Python 3.13):
@@ -103,10 +104,12 @@ and behaviour from the references first, and invent only what they do not show, 
     repeated or unnecessary work.
 
 == Delivering the report ==
-Report to the Supervisor by appending one line to RELAY_LOG.md on branch relay-channel and pushing it
-(`<UTC> | T-NNN | READY|BLOCKED|STATUS | <branch@sha> | <one line>`; fetch the branch by name first, never rewrite
-it). That wakes the Supervisor within about a minute. Do not use send_message to the Supervisor: its session
-accepts messages only from the owner's trusted devices, so it is refused. Then stop; do not wait for CI.
+Report to the Supervisor with send_message to the Supervisor session id given in your task prompt. Fallback (if
+send_message is refused): append one line to RELAY_LOG.md on branch relay-channel and push it (fetch the branch by
+name first, never rewrite it). Line format, both channels:
+`<UTC> | T-NNN | READY|BLOCKED|STATUS | <branch@sha> | input <input SHA> | <one line>`.
+Only READY, BLOCKED and STATUS lines notify the Supervisor; send STATUS only at real milestones. Every line carries
+the input SHA. Then stop; do not wait for CI.
 
 Wait for your first task prompt. Do not start any work before you receive it.
 ```

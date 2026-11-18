@@ -16,5 +16,8 @@ means none. Branch is the task's branch; a task branch without a row falls back 
 
 | Task | Lane | Branch | Write-set | Depends on | Versions bumped |
 | --- | --- | --- | --- | --- | --- |
+| T-085 | A | t-085-claude-renderer-optional | `CMakeLists.txt`, `cmake/**`, `engine/CMakeLists.txt`, `tests/CMakeLists.txt`, `apps/**/CMakeLists.txt`, `vcpkg.json`, `.github/ci-dependencies.json`, `.github/scripts/install_ci_dependencies.ps1`, `.github/workflows/checks.yml`, `tools/check_all.py`, `docs/evaluation/process/T-085/**` | — | — |
+| T-087 | E | t-087-claude-review-recipe | `tools/review/**`, `tools/fidelity/run.py`, `tools/fidelity/ci.py`, `tools/fidelity/tests/**`, `docs/process/REVIEW_RECIPE.md`, `docs/process/IMPLEMENTER_PROMPT.md`, `docs/evaluation/process/T-087/**` | — | — |
+| T-088 | A | t-088-claude-version-switch | `tools/version_switch.py`, `tools/tests/test_version_switch.py`, `docs/process/ASSET_STORE.md`, `docs/evaluation/process/T-088/**` | `pipeline/charsys/asset_store.py` (stable), `tools/regression/*` (stable), `tools/fidelity/*` (stable) | — |
 
 Supervisor-only files: docs/process/TASK_LOG.md, docs/ROADMAP.md, docs/process/OWNER_DECISIONS.md, docs/tasks/**.
