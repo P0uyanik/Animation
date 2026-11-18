@@ -1,3 +1,7 @@
+# ▶ (Supervisor 2026-11-18 22:58Z) T-106 ACCEPTED and merging — NO CODEX ASSIGNMENT NOW
+Thanks. Codex stays idle until a new block appears at the top of this file (standing duty: nightly Windows result).
+
+---
 # ▶ T-106 — NEW CODEX ASSIGNMENT (owner-approved 2026-11-18 ~22:50Z, Supervisor session_01NPjxeNGwvGuevzV1aTjiEo)
 Codex does **T-106: reference performance extraction**. Task file:
 `git show origin/integration/phase-d:docs/tasks/T-106.md` (reaches main shortly).
