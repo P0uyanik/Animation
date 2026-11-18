@@ -10,6 +10,7 @@
 #include <functional>
 #include <map>
 
+#include "scene/emotion.h"
 #include "scene/scene.h"
 
 namespace plush {
@@ -47,11 +48,13 @@ double SceneEvaluator::ClipLayer::envelopeRank(double f, int rank) const {
 }
 
 double SceneEvaluator::ClipLayer::envelope(double f) const {
+  if (sampled) return envelopeRank(f, 0) * sampled->weightAt(f);
   if (!principles) return envelopeRank(f, 0);
   return std::max(envelopeRank(f, 0), envelopeRank(f, 4));  // rank 0 leads the blend in, rank 4 trails the blend out
 }
 
 double SceneEvaluator::ClipLayer::clipFrame(double f, double sceneFps) const {
+  if (sampled && !sampled->clock.empty()) return sampled->clockAt(f);
   if (clockIn > 0 || clockOut > 0) {
     // Slow-in / slow-out that survives blending: the clip's clock accelerates with the blend in and decelerates with
     // the blend out, so a clip that starts or ends in motion still leaves and arrives with zero velocity.

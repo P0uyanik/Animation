@@ -38,12 +38,24 @@ Result<std::optional<float>> optNumber(const Json& j, const char* k) {
 }
 }  // namespace
 
+double sampledCurve(const std::vector<float>& v, double start, double f) {
+  const double x = f - start;
+  if (v.empty() || x < 0 || x > double(v.size() - 1)) return 0;
+  const size_t k = std::min(size_t(x), v.size() - 1);
+  if (k + 1 >= v.size()) return v[k];
+  // Catmull-Rom between samples: C1 between frames (secondary motion samples there), kept within the neighbours.
+  const double u = x - double(k), p0 = v[k > 0 ? k - 1 : k], p1 = v[k], p2 = v[k + 1], p3 = v[k + 2 < v.size() ? k + 2 : k + 1];
+  const double y = 0.5 * (2 * p1 + (p2 - p0) * u + (2 * p0 - 5 * p1 + 4 * p2 - p3) * u * u + (3 * p1 - p0 - 3 * p2 + p3) * u * u * u);
+  return std::clamp(y, std::min({p0, p1, p2, p3}), std::max({p0, p1, p2, p3}));
+}
+
 double FaceEnvelope::at(double f) const {
   if (f < start || f > end) return 0;
   auto ramp = [this](double x) { return linear ? std::clamp(x, 0.0, 1.0) : double(smooth(x)); };
   const double in = blendIn > 0 ? ramp((f - start) / blendIn) : 1.0;
   const double out = blendOut > 0 && end < 1e29 ? ramp((end - f) / blendOut) : 1.0;
-  return weight * in * out;
+  if (!curve) return weight * in * out;
+  return weight * in * out * sampledCurve(*curve, curveStart, f);
 }
 
 Result<FaceMotion> faceMotionFromJson(const Json& j) {
