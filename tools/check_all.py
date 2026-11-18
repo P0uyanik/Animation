@@ -183,6 +183,22 @@ def check_frozen() -> Result:
     )
 
 
+def check_frozen_and_assets(base: str, logs: Path) -> Result:
+    """Frozen manifest and the published character-version stores (tools/check_assets.py, T-075), one summary line."""
+    frozen = check_frozen()
+    log = logs / "check-assets.log"
+    command = [sys.executable, str(ROOT / "tools/check_assets.py"), "--json", str(logs / "check_assets.json")]
+    if base:
+        command += ["--base", base]
+    code, seconds = run_logged(command, log)
+    assets = Result("Published versions", code == 0, "" if code == 0 else f"check_assets failed; see {relative_log(log)}",
+                    relative_log(log), round(seconds, 2))
+    subchecks = [{"name": r.name, "ok": r.ok, "detail": r.detail, "log": r.log} for r in (frozen, assets)]
+    failed = [r.detail or r.name for r in (frozen, assets) if not r.ok]
+    return Result("Frozen assets", not failed, "; ".join(failed), seconds=round(frozen.seconds + assets.seconds, 2),
+                  subchecks=subchecks)
+
+
 def guarded_patterns() -> list[str]:
     patterns = []
     for raw in GUARDED_PATHS.read_text(encoding="utf-8").splitlines():
@@ -481,6 +497,10 @@ def check_python_tests(logs: Path) -> Result:
         [sys.executable, str(ROOT / "tools/regression/tests/test_gate_tools.py")],
         [sys.executable, str(ROOT / "pipeline/production/tests/test_run_shot_current.py")],  # T-062 cast check
         [sys.executable, str(ROOT / "tools/animcheck/tests/test_animcheck.py")],  # T-061 animation metrics
+        [sys.executable, str(ROOT / "pipeline/charsys/tests/test_versions.py")],  # T-043 version registry (T-077)
+        [sys.executable, str(ROOT / "tools/fidelity/tests/test_metrics.py")],  # fidelity metric functions (T-077)
+        [sys.executable, str(ROOT / "tools/lipsync/test_lipsync.py")],  # T-054a lip sync (T-077)
+        [sys.executable, str(ROOT / "pipeline/charsys/tests/test_boy2_face.py")],  # T-058 spec checks, no Blender (T-077)
     ]
     cleanup_tests = ROOT / "tools/cleanup/run_tests.py"  # T-048 branch-cleanup tests, once merged
     if cleanup_tests.is_file():
@@ -766,6 +786,38 @@ def check_blender(blender: str, artifacts: Path, logs: Path, required: bool, cha
         material_code, _ = run_logged([sys.executable, str(material_script)], material_log)
         add_subcheck(subchecks, "material presets", material_code == 0, "" if material_code == 0 else "material preset tests failed", material_log)
 
+    # T-077 (from T-071): self-contained Blender tests that ran nowhere before (each a few seconds, plus about a minute
+    # for the shared boy 2.0.0-dev build). Slow shot-level tests stay nightly/local (docs/evaluation/process/T-077).
+    for name, command, json_out in (
+        ("render engine selector", [executable, "-b", "--factory-startup", "-P",
+                                    str(ROOT / "pipeline/charsys/tests/test_render_engine.py")], None),
+        ("groom dynamics", [executable, "-b", "--factory-startup", "-P",
+                            str(ROOT / "pipeline/charsys/tests/groom_dynamics_test.py"), "--",
+                            str(out / "groom_dynamics_test.json")], out / "groom_dynamics_test.json"),
+        ("export determinism", [sys.executable, str(ROOT / "pipeline/charsys/tests/test_export_determinism.py"),
+                                "--blender", executable, "--out", str(out / "export-determinism")], None),
+    ):
+        log = logs / f"blender-{name.replace(' ', '-')}.log"
+        code, _ = run_logged(command, log)
+        ok = code == 0 and (json_out is None or json_pass(json_out))
+        add_subcheck(subchecks, name, ok, "" if ok else f"{name} failed", log)
+
+    boy2_log = logs / "blender-boy2.log"
+    boy2_out = out / "boy2"
+    boy2_code, _ = run_logged([
+        executable, "-b", "--factory-startup", "-P", str(ROOT / "pipeline/charsys/build_character.py"), "--",
+        "--spec", str(ROOT / "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.0.0-dev.spec.json"),
+        "--out", str(boy2_out), "--no-glb", "--no-compare",
+    ], boy2_log)
+    boy2_master = boy2_out / "boy_yellow_hoodie_master.blend"
+    for script in ("test_boy2_face.py", "test_hoodie.py"):
+        if boy2_code == 0 and boy2_master.is_file():
+            code, _ = run_logged([sys.executable, str(ROOT / "pipeline/charsys/tests" / script), "--blender", executable,
+                                  "--master", str(boy2_master)], boy2_log, append=True)
+        else:
+            code = 1
+        add_subcheck(subchecks, script[:-3], code == 0, "" if code == 0 else f"{script} failed", boy2_log)
+
     regression_details: list[str] = []
     if full:
         # The full regression measures fidelity for every character, so the affected-character run is not repeated.
@@ -847,7 +899,7 @@ def main(argv: list[str] | None = None) -> int:
         return 1
 
     results: list[Result] = [
-        check_frozen(),
+        check_frozen_and_assets(base, logs),
         check_guarded(base, changes),
         check_write_set(args.task, base),
         check_shared_character_lint(),
