@@ -10,7 +10,8 @@ For every character in assets/characters (or the given ones), in parallel:
   3. export     pipeline/charsys/export_engine.py (engine package; digest without the .blend byte hash)
   4. renders    pipeline/charsys/tools/groom_turnaround.py with the fixed cameras of tools/regression/views.json
                 (turnaround + face close-up, low samples, fixed seed, OIDN)
-  5. fidelity   tools/fidelity/run.py, score vs docs/evaluation/characters/fidelity_baseline.json (drop > 2 = FAIL)
+  5. fidelity   tools/fidelity/run.py, score vs docs/evaluation/characters/fidelity_baseline.json (drop > 2 = PASS,
+                flagged "needs owner review": T-087 rule change, tools/fidelity/ci.compare_score)
   6. compare    against the approved baseline docs/evaluation/regression/baselines/<id>/<spec version>/
 Characters whose spec inputs are unchanged versus --base must be identical to the approved baseline (= main):
 fingerprint byte-equal, export digest equal, every render within the measured noise threshold
@@ -40,6 +41,8 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 sys.path.insert(0, str(HERE))
 import tiers  # noqa: E402
+sys.path.insert(0, str(HERE.parent))
+from fidelity import ci as fidelity_ci  # noqa: E402  (T-087: one fidelity-drop policy for every gate path)
 
 VIEWS = HERE / "views.json"
 NOISE = HERE / "render_noise_threshold.json"
@@ -274,6 +277,21 @@ class Step(Exception):
     pass
 
 
+def fidelity_result(score: float, baseline: float, maximum: float) -> dict:
+    """Fidelity entry of a character result. T-087: a drop above `maximum` passes, flagged "needs owner review"
+    (tools/fidelity/ci.compare_score, the policy of every gate path); image checks are unaffected."""
+    drop = round(float(baseline) - float(score), 4)
+    policy = fidelity_ci.compare_score(score, baseline, maximum)
+    return {"score": round(float(score), 4), "baseline": baseline, "drop": drop, "maximum_drop": maximum,
+            "ok": policy.ok, "needs_owner_review": policy.needs_owner_review}
+
+
+def owner_review_note(result: dict) -> str:
+    f = result.get("measured", {}).get("fidelity") or {}
+    return (f"; {fidelity_ci.OWNER_REVIEW_FLAG.upper()}: fidelity drop {f['drop']:+.2f} > {f['maximum_drop']}"
+            if f.get("needs_owner_review") else "")
+
+
 def produce(cfg: dict, blender: str, out: Path, env: dict, fidelity: bool) -> dict:
     """Build, export and render one character from the checkout cfg["root"] (this one, or a worktree of the
     comparison ref) into `out`; return the measured data. Fingerprint tool, cameras and probe always come from this
@@ -346,9 +364,7 @@ def produce(cfg: dict, blender: str, out: Path, env: dict, fidelity: bool) -> di
             raise Step(f"fidelity failed (exit {code}); see {log.as_posix()}")
         score = json.loads((fout / "fidelity.json").read_text(encoding="utf-8"))["overall"]["score"]
         maximum = float(baseline["policy"]["maximum_score_drop"])
-        drop = round(float(entry["score"]) - float(score), 4)
-        result["fidelity"] = {"score": round(float(score), 4), "baseline": entry["score"], "drop": drop,
-                              "maximum_drop": maximum, "ok": drop <= maximum}
+        result["fidelity"] = fidelity_result(score, entry["score"], maximum)
     return result
 
 
@@ -423,7 +439,9 @@ def compare(cfg: dict, data: dict, out: Path, golden_root: Path, unchanged: bool
 
     if "fidelity" in data:
         f = data["fidelity"]
-        check("fidelity", f["ok"], f"{f['score']:.2f} vs {float(f['baseline']):.2f} (drop {f['drop']:+.2f}, max {f['maximum_drop']})")
+        check("fidelity", f["ok"], f"{f['score']:.2f} vs {float(f['baseline']):.2f} (drop {f['drop']:+.2f}, max {f['maximum_drop']})"
+              + (f"; {fidelity_ci.OWNER_REVIEW_FLAG.upper()} (drop above the maximum, PASS with warning)"
+                 if f.get("needs_owner_review") else ""))
     if reference is not None:
         label = f"identical to {ref_label}" if unchanged else f"vs {ref_label} (spec changed, owner review)"
         for aspect, equal, detail in identity_checks(data, out / "fingerprint.json", reference,
@@ -539,6 +557,7 @@ def summary(results: list[dict]) -> str:
         text = f"{state} {r['character']} ({kind})"
         if failed:
             text += ": " + "; ".join(f"{c['name']} {c['detail']}" for c in failed)
+        text += owner_review_note(r)
         parts.append(text)
     return "\n".join(parts)
 
@@ -549,7 +568,7 @@ def write_gate_report(path: Path, report: dict) -> None:
     for r in report["results"]:
         failed = [c for c in r["checks"] if not c["ok"]]
         fidelity = r.get("measured", {}).get("fidelity")
-        note = f", fidelity {fidelity['score']:.2f}" if fidelity else ""
+        note = (f", fidelity {fidelity['score']:.2f}" if fidelity else "") + owner_review_note(r)
         kind = ("references only, not buildable yet" if r.get("not_buildable") else
                 "unchanged, identical to main" if r.get("unchanged") else "spec changed, owner review")
         detail = "; ".join(f"{c['name']}: {c['detail']}" for c in failed) or kind + note

@@ -1,0 +1,30 @@
+{
+ "schema": "plush-studio.review-recipe/1",
+ "task": "T-087",
+ "note": "The T-081 strict comparison expressed as a recipe: the girl's sheet30 references are an A-pose turnaround, so the A-pose master is requested explicitly (compare.allow_apose).",
+ "character": "girl_auburn_bun_glasses",
+ "inputs": {"main": "ab9fd4c"},
+ "baseline": {"version": "0.10.0", "label": "0.10.0", "allow_not_current": true},
+ "candidate": {"version": "0.11.0", "label": "0.11.0"},
+ "compare": {"variant": "master", "pose": "apose", "allow_apose": true},
+ "cameras": {
+  "lens_mm": 70,
+  "sensor_mm": 36,
+  "elevation_deg": 5,
+  "framing": {
+   "body": {"target": [0.0, 0.0, 0.56], "frame_height_m": 1.26, "aspect": 1.6},
+   "face": {"target": [0.0, 0.0, 0.735], "frame_height_m": 0.36, "aspect": 1.0}
+  },
+  "rows": {
+   "front": {"reference_view": "sheet30_front"},
+   "threequarter": {"reference_view": "sheet30_front_left"},
+   "side": {"reference_view": "sheet30_left"},
+   "back": {"reference_view": "sheet30_back"},
+   "face_front": {"reference": {"file": "uploads/ref_30.webp", "crop": [440, 620, 712, 840], "label": "ref_30 Neutral"}, "yaw_deg": 0},
+   "face_threequarter": {"reference": {"file": "uploads/ref_30.webp", "crop": [345, 90, 490, 260], "label": "ref_30 front-left"}, "yaw_deg": -45}
+  }
+ },
+ "light": {"calibration": "character_neutral/1"},
+ "render": {"engine": "cycles", "samples": 16, "px": 360},
+ "preview": {"engine": "cycles", "samples": 2, "px": 120}
+}

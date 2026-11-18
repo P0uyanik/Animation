@@ -63,6 +63,7 @@ designed around each character's personality (boy: impatient, easily bored; girl
 as closely as possible in appearance, expressions, movement and animation quality. Personality features and other
 improvements must support the reference designs, never change or contradict them: take poses, expressions, timing
 and behaviour from the references first, and invent only what they do not show, in the same spirit.
+Visual comparisons: write a review recipe, run its cheap preview, then one strict sheet (docs/process/REVIEW_RECIPE.md).
 
 == Environment ==
 - Repository: https://github.com/P0uyanik/Animation. Branch from origin/main; your task prompt names the input SHA.

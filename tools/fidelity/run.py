@@ -4,6 +4,7 @@
         [--override <override.json> ...] [--out <dir>] [--views id,...] [--height 640] [--samples 32]
         [--renders <dir>]   (reuse renders from an earlier run: analysis only, no Blender)
         [--reference-index <json>]   (experiments only: e.g. trial camera angles)
+        [--variant master|compare]   (measure this build variant on purpose; recorded)
 
 Character data (assets/characters/<id>/references/annotations/): fidelity_index.json (views, build variant, region
 rules) and one <view>.json per reference view (hand-annotated landmarks and region polygons).
@@ -16,7 +17,10 @@ character_neutral/1); render flat region ids and project landmarks from bones/em
   <out>/masks/<view>.png        the measured region masks: reference | render (aligned) | disagreement (T-064)
   <out>/fidelity.json           every number, the score, the ranked differences and the (never applied) suggestions
   <out>/report.md               short report
-The score and the numbers support, but never replace, visual judgement: always look at the sheets."""
+The score and the numbers support, but never replace, visual judgement: always look at the sheets.
+T-087: a missing compare variant is an error (never a silent A-pose fallback); reference views may hide parts the
+reference does not show, but never a garment (garment.<item>.*), and fidelity.json records the objects actually hidden;
+garment.<item>.* objects are measured against an annotated accessory:<item> region."""
 import argparse
 import json
 import os
@@ -61,12 +65,44 @@ def blender(exe, script, args, log):
         raise SystemExit(f"Blender step failed ({os.path.basename(script)}), see {log}")
 
 
+class BuildError(SystemExit):
+    """A build input that does not match the requested render variant (T-087: never a silent fallback)."""
+
+
+def variant_blend(master, variant):
+    """The .blend that holds `variant` for the build `master`; raises BuildError instead of falling back.
+    T-087: the old code silently rendered the A-pose master when the compare variant was missing (10 of 26 boy 2.0.0
+    evidence stills were rendered that way)."""
+    if variant == "master":
+        return master
+    if variant != "compare":
+        raise BuildError(f"fidelity: unknown render variant {variant!r} (master or compare)")
+    if master.endswith("_compare.blend"):
+        return master
+    if not master.endswith("_master.blend"):
+        raise BuildError(f"fidelity: the reference views need the compare variant (arms lowered), but the build "
+                         f"{os.path.basename(master)} is not named <id>_master.blend or <id>_compare.blend, so its "
+                         "variant is unknown. Pass the <id>_compare.blend, or --variant master to measure the A-pose "
+                         "master on purpose.")
+    cand = master[:-len("_master.blend")] + "_compare.blend"
+    if not os.path.exists(cand):
+        raise BuildError(f"fidelity: the reference views need the compare variant (arms lowered), but "
+                         f"{os.path.basename(cand)} does not exist next to {os.path.basename(master)}. Build it "
+                         "(build_character.py without --no-compare), or pass --variant master to measure the A-pose "
+                         "master on purpose. The A-pose master is never used as a silent fallback.")
+    return cand
+
+
 def resolve_build(a, cid, variant, out, log):
     """-> (blend path for the requested variant, provenance dict)."""
     prov = {"build_argument": a.build, "variant": variant}
+    if getattr(a, "variant_requested", ""):
+        prov["variant_explicitly_requested"] = True
     if a.build.endswith(".json"):
         bdir = os.path.join(out, "build")
         args = ["--spec", os.path.abspath(a.build), "--out", bdir, "--no-glb"]
+        if variant == "master":
+            args.append("--no-compare")
         for o in a.override:
             args += ["--override", os.path.abspath(o)]
         blender(a.blender, BUILDER, args, log)
@@ -76,34 +112,75 @@ def resolve_build(a, cid, variant, out, log):
     else:
         master = os.path.abspath(a.build)
     prov["master"] = master
-    blend = master
-    if variant == "compare":
-        cand = master.replace("_master.blend", "_compare.blend")
-        if cand != master and os.path.exists(cand):  # T-064: a build not named *_master.blend used to pass silently
-            blend = cand
-        else:
-            prov["warning"] = "compare variant requested but not found next to the master; the master (A-pose) was used"
-    prov["rendered_blend"] = blend
-    return blend, prov
+    prov["rendered_blend"] = variant_blend(master, variant)
+    return prov["rendered_blend"], prov
 
 
-def render(a, cid, fidx, ref_index, views, out, log):
-    variant = fidx.get("render_variant", "master")
+def effective_hide(prefixes):
+    """-> (applied prefixes, ignored prefixes). T-087: a reference view may hide parts the reference does not show,
+    but never a garment the build declares (garment/1 objects are named garment.<item>.*): visible garments, such as
+    a backpack, are always rendered and measured."""
+    applied, ignored = [], []
+    for p in prefixes:
+        (ignored if p.startswith("garment.") or p in ("garment", "garment.") else applied).append(p)
+    return applied, ignored
+
+
+def garment_alias_rules(annotations):
+    """Region rules that let garment/1 objects (garment.<item>.*, classified garment:<item> by the render side) be
+    measured against an annotated accessory:<item> region (T-087: a backpack built as a garment/1 item
+    scored IoU 0 because the annotations call it accessory:backpack). Appended after the character's own rules."""
+    items = sorted({r.split(":", 1)[1] for ann in annotations.values() for r in ann.get("regions", {})
+                    if r.startswith("accessory:")})
+    return [[f"garment.{i}.*", f"accessory:{i}"] for i in items]
+
+
+def prepared_objects(log):
+    """Object names that blender_render_side.py --prepare-only actually hid (its last JSON line in the log)."""
+    try:
+        lines = open(log).read().splitlines()
+    except OSError:
+        return None
+    for line in reversed(lines):
+        if line.startswith("{") and '"prepared"' in line:
+            try:
+                return json.loads(line).get("hidden", [])
+            except ValueError:
+                return None
+    return None
+
+
+def render(a, cid, fidx, ref_index, views, out, log, annotations=None):
+    variant = a.variant_requested or fidx.get("render_variant", "master")
     blend, prov = resolve_build(a, cid, variant, out, log)
     rdir = os.path.join(out, "renders")
     os.makedirs(rdir, exist_ok=True)
     region_map = os.path.join(out, "region_map.json")
+    rules = list(fidx.get("region_rules", [])) + garment_alias_rules(annotations or {})
     with open(region_map, "w") as f:
-        json.dump({"rules": fidx.get("region_rules", [])}, f)
+        json.dump({"rules": rules}, f)
+    prov["region_rules_added"] = garment_alias_rules(annotations or {})
     by_hide = {}
     for v in ref_index["views"]:
         if v["id"] in views:
-            by_hide.setdefault(tuple(v.get("hide_objects_prefix", [])), []).append(v["id"])
+            applied, ignored = effective_hide(v.get("hide_objects_prefix", []))
+            if ignored:
+                prov.setdefault("hide_prefixes_ignored", {})[v["id"]] = ignored
+            by_hide.setdefault(tuple(applied), []).append(v["id"])
     for hide, ids in sorted(by_hide.items()):
         src = blend
+        hidden = []
         if hide:
             src = os.path.join(out, "prepared_" + "_".join(h.strip("_.") for h in hide)[:60] + ".blend")
             blender(a.blender, RENDER_SIDE, [blend, a.index, rdir, "--prepare-only", src, "--hide", ",".join(hide)], log)
+            hidden = prepared_objects(log)
+            if hidden is None:
+                raise SystemExit(f"fidelity: could not read which objects --prepare-only hid; see {log}")
+            unmatched = [p for p in hide if not any(n.startswith(p) for n in hidden)]
+            if unmatched:  # T-087: record what really happened, not the requested prefixes
+                prov.setdefault("hide_prefixes_unmatched", {}).update({i: unmatched for i in ids})
+            if not hidden:
+                src = blend  # nothing matched: render the build itself
         if a.beauty_from:  # T-064: keep earlier beauty renders, redo only the measurement passes
             for f in sorted(os.listdir(a.beauty_from)):
                 if f.startswith("timings") or f in {i + ".png" for i in ids}:
@@ -115,6 +192,7 @@ def render(a, cid, fidx, ref_index, views, out, log):
         blender(a.blender, RENDER_SIDE, [src, a.index, rdir, "--views", ",".join(ids), "--height", str(a.height),
                                           "--region-map", region_map], log)
         prov.setdefault("hidden_objects_prefix", {}).update({i: list(hide) for i in ids})
+        prov.setdefault("hidden_objects", {}).update({i: sorted(hidden) for i in ids})
     return rdir, prov
 
 
@@ -127,6 +205,13 @@ def report_md(cid, doc, out):
          + (f" + {', '.join('`' + x + '`' for x in doc['build'].get('overrides', []))}" if doc['build'].get('overrides') else "")
          + f" (variant: {doc['build']['variant']})",
          *([f"- **Warning:** {doc['build']['warning']}"] if doc["build"].get("warning") else []),
+         *([f"- Variant `{doc['build']['variant']}` explicitly requested (--variant)"]
+           if doc["build"].get("variant_explicitly_requested") else []),
+         *([f"- Hidden objects ({v}): {', '.join(o) or 'none'}" for v, o in sorted(doc["build"].get("hidden_objects", {}).items()) if o]),
+         *([f"- Hide prefixes that matched no object ({v}): {', '.join(p)}"
+            for v, p in sorted(doc["build"].get("hide_prefixes_unmatched", {}).items())]),
+         *([f"- Hide prefixes ignored (garments are always measured) ({v}): {', '.join(p)}"
+            for v, p in sorted(doc["build"].get("hide_prefixes_ignored", {}).items())]),
          f"- Views: {', '.join(doc['views'])}",
          f"- Render: groom_turnaround.py, {doc['render']['lighting']}, {doc['render']['height']} px, {doc['render']['samples']} samples",
          "", f"## Fidelity score: {o['score']:.1f} / 100", "",
@@ -177,10 +262,14 @@ def main():
     ap.add_argument("--beauty-from", default="", help="re-run only the measurement passes (region ids, landmarks) "
                     "and reuse the beauty renders of this earlier renders/ folder (same build required)")
     ap.add_argument("--renders", default="", help="reuse an earlier run's renders/ folder (analysis only)")
+    ap.add_argument("--variant", default="", choices=["", "master", "compare"],
+                    help="render this build variant on purpose instead of fidelity_index.json render_variant (recorded "
+                    "in fidelity.json); without it a missing variant is an error, never a fallback")
     ap.add_argument("--reference-index", default="", help="experiments only: another reference_index.json (e.g. a "
                     "trial camera yaw); default: the one named in fidelity_index.json")
     a = ap.parse_args()
     a.beauty_from = os.path.abspath(a.beauty_from) if a.beauty_from else ""
+    a.variant_requested = a.variant
     cid = a.character
     adir = os.path.join(ROOT, "assets", "characters", cid, "references", "annotations")
     fidx = json.load(open(os.path.join(adir, "fidelity_index.json")))
@@ -190,15 +279,15 @@ def main():
     out = os.path.abspath(a.out or os.path.join("fidelity_out", cid))
     os.makedirs(out, exist_ok=True)
     log = os.path.join(out, "blender.log")
+    anns = {v: json.load(open(os.path.join(adir, v + ".json"))) for v in views}
     if a.renders:
         rdir = os.path.abspath(a.renders)
         prev = os.path.join(os.path.dirname(rdir), "fidelity.json")
         prov = json.load(open(prev))["build"] if os.path.exists(prev) else {"build_argument": a.build, "variant": fidx.get("render_variant", "master")}
     else:
         open(log, "w").close()
-        rdir, prov = render(a, cid, fidx, ref_index, views, out, log)
+        rdir, prov = render(a, cid, fidx, ref_index, views, out, log, anns)
     ref_dir = os.path.join(ROOT, "assets", "characters", cid, "references", "views")
-    anns = {v: json.load(open(os.path.join(adir, v + ".json"))) for v in views}
     refs = {v: A.load_reference(ref_dir, anns[v]) for v in views}
     # head height fraction of the reference (for views without a visible chin)
     fr = []
