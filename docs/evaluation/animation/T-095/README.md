@@ -95,7 +95,7 @@ the camera; the faces are three-quarter, never profile, and the heads are close.
 | `python3 docs/evaluation/animation/T-095/measure_t095.py --bake ... --scene ...` | `measure_exchange.json`, table below |
 | `python3 tools/check_cast.py --base origin/main` | **PASS** (7 shots, including `eval/exchange`) |
 | `python3 content/scenes/eval/make_eval_shots.py --check` | **FAIL on `eval/handover` only**. It fails identically at 4910b69, before this task (8.1). `eval/exchange` is current. |
-| `python3 tools/check_all.py --base 4910b69 --task T-095` | PASS: frozen assets, guarded paths, write-set (13 paths, all inside the claim), shared-systems lint, C++ build, C++ tests, Python tests and links. The Blender tier needs `--blender`; see the READY line for that run. |
+| `python3 tools/check_all.py --base 4910b69 --task T-095` | PASS: frozen assets, guarded paths, write-set (13 paths, all inside the claim), shared-systems lint, C++ build, C++ tests, Python tests and links. With `--blender <bpy 5.3 wrapper>`: **PASS overall** (rc 0), Blender tier full: boy_yellow_hoodie PASS (fidelity 67.42), girl_auburn_bun_glasses PASS (62.28), girl_white_hair_blue_dress PASS. |
 
 **Clearance and rates (every frame, collision body).**
 
