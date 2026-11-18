@@ -93,7 +93,6 @@ TEST_CASE("personality: the shipped profiles parse into typed parameters within 
     CHECK(p->limits.holdFrames.has_value());
     CHECK(p->limits.actionSpeed.has_value());
     CHECK(p->limits.idleMotionMaxHPerFrame.has_value());
-    CHECK(p->limits.gesturePeakSpeedMaxHPerFrame.has_value());
     CHECK(p->faceRestOffset.empty());  // every neutral cue is in the character models (owner decisions)
     PersonalityProfile copy = *p;
     CHECK(clampPersonalityToLimits(copy).empty());  // the data respects its own limits

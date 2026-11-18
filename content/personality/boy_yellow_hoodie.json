@@ -495,12 +495,6 @@
       "kind": "reference",
       "source": "WT: body nearly still apart from blinks; lower part of the 0.001-0.006 H/f living-hold band of docs/references/VISUAL_TARGET.md"
     },
-    "gesture_peak_speed_max_H_per_frame": {
-      "value": 0.03,
-      "unit": "H/f",
-      "kind": "extrapolation",
-      "source": "low energy (energy.level 0.3): lower part of the 0.018-0.045 H/f peak hand speed of docs/references/VISUAL_TARGET.md"
-    },
     "face_offset_max": {
       "value": 0.3,
       "unit": "0-1",

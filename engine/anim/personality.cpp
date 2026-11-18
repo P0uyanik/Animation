@@ -187,7 +187,6 @@ Result<PersonalityProfile> personalityFromJson(const Json& j, const std::string&
   r.range(lim, "limits", "hold_frames", L.holdFrames);
   r.range(lim, "limits", "action_speed", L.actionSpeed);
   r.number(lim, "limits", "idle_motion_max_H_per_frame", L.idleMotionMaxHPerFrame);
-  r.number(lim, "limits", "gesture_peak_speed_max_H_per_frame", L.gesturePeakSpeedMaxHPerFrame);
   r.number(lim, "limits", "face_offset_max", L.faceOffsetMax);
   r.range(lim, "limits", "head_pitch_deg", L.headPitchDeg);
   if (L.actionSpeed && L.actionSpeed->lo <= 0) r.bad("limits", "action_speed", "must be > 0");

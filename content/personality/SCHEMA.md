@@ -45,7 +45,7 @@ treat a missing parameter as 0 / neutral (opt-in, owner decision 2026-11-17).
 | `reaction` | `delay_frames` (stimulus → first face change), `channel_order` (e.g. `["eyes","brows","mouth","head"]`), `positive_style`, `engaged_style` | reaction director |
 | `interaction` | `prop_handling` (enum: `careful`, `practical`, ...), `two_handed` (0-1), `leads_task` (0-1), `contact_slowdown_frames` | prop / partner behaviour |
 | `gaps` | free-text list of behaviour the references do not show | review |
-| `limits` | `blink_interval_frames`, `blink_duration_frames`, `reach_frames`, `hold_frames`, `action_speed` (ranges `[lo, hi]`), `idle_motion_max_H_per_frame`, `gesture_peak_speed_max_H_per_frame`, `face_offset_max` (numbers), `head_pitch_deg` (range) | engine clamps (with a warning) and `tools/animcheck/personality.py` |
+| `limits` | `blink_interval_frames`, `blink_duration_frames`, `reach_frames`, `hold_frames`, `action_speed` (ranges `[lo, hi]`), `idle_motion_max_H_per_frame`, `face_offset_max` (numbers), `head_pitch_deg` (range) | engine clamps (with a warning) and `tools/animcheck/personality.py` |
 
 ## What the engine applies (T-053)
 | Parameter | Layer | Mapping |

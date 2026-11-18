@@ -41,7 +41,6 @@ struct PersonalityLimits {
   std::optional<PersonalityRange> holdFrames;            // hold between a gesture's entry and exit, frames at 24 fps
   std::optional<PersonalityRange> actionSpeed;           // effective clip speed of gestures (scene speed x tempo)
   std::optional<float> idleMotionMaxHPerFrame;           // head centroid speed outside gestures (head widths / frame)
-  std::optional<float> gesturePeakSpeedMaxHPerFrame;     // peak wrist speed of a gesture (head widths / frame)
   std::optional<float> faceOffsetMax;                    // |rest / bias / watching offset| per control
   std::optional<PersonalityRange> headPitchDeg;          // posture head pitch
 };

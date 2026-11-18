@@ -4,8 +4,10 @@
 
     python3 tools/animcheck/run_gate.py --render <plush-render> [--out build/check-all/animcheck]
 
-Exit 0 = every gesture of every shot within the thresholds; the report is <out>/animcheck.json (one entry per shot,
-with all metrics and the failures).
+Exit 0 = every gesture of every shot within the thresholds and, for shots whose characters have a personality
+profile (T-053), every measured blink / reach / hold / idle value within the profile's limits (tools/animcheck/
+personality.py); the report is <out>/animcheck.json (one entry per shot, with all metrics and the failures) and
+<out>/personality.json (the personality reports).
 """
 from __future__ import annotations
 
@@ -18,6 +20,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 import animcheck  # noqa: E402
+import personality  # noqa: E402
 
 
 def main(argv=None) -> int:
@@ -34,6 +37,7 @@ def main(argv=None) -> int:
         print("FAIL no regression shots in", HERE / "shots")
         return 1
     report = {"format": "plush.animcheck_gate", "version": 1, "thresholds": thresholds, "shots": []}
+    persona = {"format": "plush.animcheck_personality_gate", "version": 1, "shots": []}
     failures = []
     for shot in shots:
         scene = json.loads(shot.read_text())
@@ -50,8 +54,15 @@ def main(argv=None) -> int:
         failures += [f"{shot.name}: {f}" for f in fails]
         n = len(res["gestures"])
         print(f"{'PASS' if not fails else 'FAIL'} {shot.name}: {n} gestures, {len(fails)} failures")
+        if any(isinstance(c.get("personality"), str) for c in scene.get("characters", [])):
+            prep = personality.analyse(json.loads(bake.read_text()), scene, shot, thresholds)
+            persona["shots"].append({"shot": shot.name, "result": prep})
+            failures += [f"{shot.name}: personality: {f}" for f in prep["failures"]]
+            print(f"{'PASS' if not prep['failures'] else 'FAIL'} {shot.name}: personality limits, "
+                  f"{len(prep['characters'])} characters, {len(prep['failures'])} failures")
     report["failures"] = failures
     (out / "animcheck.json").write_text(json.dumps(report, indent=1) + "\n")
+    (out / "personality.json").write_text(json.dumps(persona, indent=1) + "\n")
     for f in failures:
         print("FAIL", f)
     return 1 if failures else 0

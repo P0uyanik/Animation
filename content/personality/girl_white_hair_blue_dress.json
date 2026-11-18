@@ -560,12 +560,6 @@
       "kind": "estimate",
       "source": "living-hold band of docs/references/VISUAL_TARGET.md (energy.level 0.55)"
     },
-    "gesture_peak_speed_max_H_per_frame": {
-      "value": 0.04,
-      "unit": "H/f",
-      "kind": "estimate",
-      "source": "peak hand speed band of docs/references/VISUAL_TARGET.md (energy.level 0.55)"
-    },
     "face_offset_max": {
       "value": 0.2,
       "unit": "0-1",
