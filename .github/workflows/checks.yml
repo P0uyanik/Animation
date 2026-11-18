@@ -178,8 +178,8 @@ jobs:
     name: windows gate
     needs: plan
     if: needs.plan.outputs.windows == 'true'
-    runs-on: windows-2025
-    timeout-minutes: 120
+    runs-on: windows-2022
+    timeout-minutes: 360
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
@@ -190,16 +190,39 @@ jobs:
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
           python-version: '3.13'
+      - name: Trial merge
+        id: merge
+        shell: bash
+        run: |
+          bash .github/scripts/trial_merge.sh "${{ needs.plan.outputs.merge_target }}" build/check-all/windows
+          grep -qx 'clean=true' "$GITHUB_OUTPUT"
+          echo "Windows branch commit $(git rev-parse HEAD), branch tree $(git rev-parse 'HEAD^{tree}'), tested tree $(git write-tree)" >> "$GITHUB_STEP_SUMMARY"
       - name: Cache pinned downloads
         uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
         with:
           path: ${{ runner.temp }}/plush-pinned-dependencies
           key: pinned-windows-${{ hashFiles('.github/ci-dependencies.json') }}
-      - name: Cache vcpkg binary packages
-        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+      - name: Locate VS 2022 and vcpkg
+        id: tools
+        shell: pwsh
+        run: |
+          $vswhere = "${env:ProgramFiles(x86)}/Microsoft Visual Studio/Installer/vswhere.exe"
+          $vs = & $vswhere -latest -products * -version '[17.0,18.0)' -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
+          if (!$vs) { throw 'VS 2022 x64 tools missing' }
+          $msvc = (Get-Content "$vs/VC/Auxiliary/Build/Microsoft.VCToolsVersion.default.txt" -Raw).Trim()
+          $vcpkg = (Get-Item $env:VCPKG_INSTALLATION_ROOT).FullName.Replace('\', '/')
+          $ports = git -c "safe.directory=$vcpkg" -C $vcpkg rev-parse HEAD
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          "VCPKG_VISUAL_STUDIO_PATH=$vs" >> $env:GITHUB_ENV
+          "CMAKE_TOOLCHAIN_FILE=$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake" >> $env:GITHUB_ENV
+          "abi=x64-windows-$msvc-$ports" >> $env:GITHUB_OUTPUT
+      - name: Restore vcpkg binary packages
+        id: packages
+        uses: actions/cache/restore@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
         with:
           path: ${{ runner.temp }}/vcpkg-binary-cache
-          key: vcpkg-windows-${{ hashFiles('vcpkg.json', 'vcpkg-configuration.json') }}
+          key: vcpkg-${{ steps.tools.outputs.abi }}-${{ hashFiles('vcpkg.json', 'vcpkg-configuration.json') }}
+          restore-keys: vcpkg-${{ steps.tools.outputs.abi }}-
       - name: Install pinned dependencies (OIDN, vcpkg manifest)
         shell: pwsh
         env:
@@ -207,22 +230,55 @@ jobs:
         run: |
           New-Item -ItemType Directory -Force -Path $env:VCPKG_DEFAULT_BINARY_CACHE | Out-Null
           ./.github/scripts/install_ci_dependencies.ps1 -Platform windows -Cpp
-          & "$env:VCPKG_INSTALLATION_ROOT/vcpkg" install --triplet x64-windows
+          # numpy + Pillow: the only third-party imports of the Python tests check_all runs (fidelity metrics, face,
+          # hair, export determinism, gate tools). Linux gets numpy (unpinned) with the bpy wheel and Pillow pinned 11.3.0;
+          # the windows job installs no bpy, so it installs both here.
+          python -m pip install --disable-pip-version-check numpy 'Pillow==11.3.0'
+          if ($LASTEXITCODE -ne 0) { throw 'installing numpy/Pillow failed' }
+          # The manifest toolchain reuses this same install tree during CMake configuration.
+          & "$env:VCPKG_INSTALLATION_ROOT/vcpkg" install --triplet x64-windows "--x-install-root=$pwd/build/quality-gate/vcpkg_installed"
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          "CMAKE_TOOLCHAIN_FILE=$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-          "VCPKG_ROOT=$env:VCPKG_INSTALLATION_ROOT" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-      - name: Trial merge
-        id: merge
-        shell: bash
-        run: bash .github/scripts/trial_merge.sh "${{ needs.plan.outputs.merge_target }}" build/check-all/windows
+      - name: Save vcpkg binary packages
+        if: steps.packages.outputs.cache-hit != 'true'
+        uses: actions/cache/save@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        with:
+          path: ${{ runner.temp }}/vcpkg-binary-cache
+          key: ${{ steps.packages.outputs.cache-primary-key }}
       - name: Gate (C++ and Python; the Blender tier and regression run on linux)
         if: steps.merge.outputs.clean == 'true'
         shell: pwsh
         env:
           CHECK_ALL_BASE_REF: ${{ needs.plan.outputs.base }}
+          CMAKE_GENERATOR: Ninja
+          CC: cl
+          CXX: cl
         run: |
-          python tools/check_all.py --base "$env:CHECK_ALL_BASE_REF" --build-dir build/quality-gate --artifacts-dir build/check-all/windows --blender-on-other-runner "linux gate"
-          exit 0
+          & "$env:VCPKG_VISUAL_STUDIO_PATH/Common7/Tools/Launch-VsDevShell.ps1" -Arch amd64 -HostArch amd64 -SkipAutomaticLocation
+          $mergeArgs = if ('${{ needs.plan.outputs.merge_target }}') { '--merge-status', 'clean' }
+          python tools/check_all.py --base "$env:CHECK_ALL_BASE_REF" --build-dir build/quality-gate --artifacts-dir build/check-all/windows --blender-on-other-runner "linux gate" @mergeArgs
+          exit $LASTEXITCODE
+      - name: Show failing gate logs
+        if: failure()
+        shell: pwsh
+        run: |
+          # Make Windows gate failures readable in the job output without downloading the artifact.
+          $summary = 'build/check-all/windows/summary.txt'
+          if (Test-Path $summary) { Write-Host "===== $summary"; Get-Content $summary }
+          $failed = @()
+          if (Test-Path $summary) {
+            $failed = Select-String -Path $summary -Pattern 'FAIL' | ForEach-Object { $_.Line }
+          }
+          Get-ChildItem build/check-all/windows/logs -Filter *.log -ErrorAction SilentlyContinue | ForEach-Object {
+            $log = $_
+            $stem = $log.BaseName -replace '[-_]', ' '
+            $isFailed = ($failed | Where-Object { ($_ -replace '[-_]', ' ') -match [regex]::Escape($stem) }).Count -gt 0
+            $hasError = Select-String -Path $log.FullName -Pattern 'FAIL|Error|Traceback' -Quiet
+            if ($isFailed -or $hasError) {
+              Write-Host "::group::tail -n 80 $($log.Name)"
+              Get-Content $log.FullName -Tail 80
+              Write-Host '::endgroup::'
+            }
+          }
       - name: Upload report
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2

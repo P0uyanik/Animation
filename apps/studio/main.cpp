@@ -2,6 +2,9 @@
 // Viewport (OpenGL preview), outliner, inspector (objects, lights, camera,
 // materials, character shapes and bones), timeline with keyframes, and an
 // in-app path-traced render view. The scene file is the document.
+#ifdef _WIN32
+#define NOMINMAX
+#endif
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <imgui.h>
@@ -1166,10 +1169,20 @@ Json folderState(const fs::path& d) {
 
 std::string psList() {
   std::string out;
-  if (FILE* p = ::popen("ps -eo pid,pgid,ppid,stat,args --sort=pid", "r")) {
+#ifdef _WIN32
+  FILE* p = ::_popen("powershell -NoProfile -Command \"Get-CimInstance Win32_Process | "
+                     "ForEach-Object { '{0} {1} {2}' -f $_.ProcessId,$_.ParentProcessId,$_.CommandLine }\"", "r");
+#else
+  FILE* p = ::popen("ps -eo pid,pgid,ppid,stat,args --sort=pid", "r");
+#endif
+  if (p) {
     char buf[4096];
     while (fgets(buf, sizeof buf, p)) out += buf;
+#ifdef _WIN32
+    ::_pclose(p);
+#else
     ::pclose(p);
+#endif
   }
   return out;
 }
@@ -1454,9 +1467,9 @@ void tickScript(App& a, ProdScript& ps) {
       }
       if (!(a.jobStatus.stage == "render" && a.jobStatus.framesDone >= 1)) return;
       id = a.jobRunId;
-      pid_t pg = a.prodJob.pgid();
+      auto pg = a.prodJob.pgid();
       Json before = Json::array();
-      for (auto& p : workflow::processGroupMembers(pg)) before.push_back({{"pid", p.pid}, {"cmd", p.cmd}});
+      for (auto& p : a.prodJob.members()) before.push_back({{"pid", p.pid}, {"cmd", p.cmd}});
       std::ofstream(ps.dir / "processes_before_cancel.txt") << psList();
       ps.out["process_group"] = pg;
       ps.out["group_before_cancel"] = before;
@@ -1465,7 +1478,7 @@ void tickScript(App& a, ProdScript& ps) {
       std::string after = psList();
       std::ofstream(ps.dir / "processes_after_cancel.txt") << after;
       Json groupAfter = Json::array();
-      for (auto& p : workflow::processGroupMembers(pg)) groupAfter.push_back({{"pid", p.pid}, {"cmd", p.cmd}});
+      for (auto& p : a.prodJob.members()) groupAfter.push_back({{"pid", p.pid}, {"cmd", p.cmd}});
       // survivors: any process whose command line names this run (run_shot.py --run-dir <id>, Blender --bake
       // .../runs/<id>/bake.json, ffmpeg ...), and every process of the job's group from before the cancel
       Json survivors = Json::array();
@@ -1473,7 +1486,7 @@ void tickScript(App& a, ProdScript& ps) {
       for (std::string l; std::getline(lines, l);)
         if (l.find(id) != std::string::npos && l.find(" ps -eo") == std::string::npos) survivors.push_back(l);
       for (auto& b : before) {
-        bool alive = ::kill(b["pid"].get<pid_t>(), 0) == 0;
+        bool alive = workflow::processExists(b["pid"].get<workflow::ProcessId>());
         if (alive) survivors.push_back(std::format("pid {} still exists", b["pid"].get<int>()));
       }
       ps.out["group_after_cancel"] = groupAfter;
