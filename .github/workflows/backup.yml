@@ -81,6 +81,10 @@ jobs:
       - name: Install C++ dependencies for the fast tier
         shell: pwsh
         run: ./.github/scripts/install_ci_dependencies.ps1 -Platform linux -Cpp
+      - name: Install Python test dependencies for the fast tier
+        # numpy + Pillow: third-party imports of the Python tests check_all runs (same pin as the quality gate).
+        # Missing since the T-077 gate wiring, which made the restore test fail on every push to main.
+        run: python -m pip install --disable-pip-version-check numpy 'Pillow==11.3.0'
       - name: Fast tier on the restored main
         run: |
           restored="$(python3 -c "import json;print(json.load(open('build/backups/backup_report.json'))['restore']['worktree'])")"
