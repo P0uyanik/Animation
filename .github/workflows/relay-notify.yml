@@ -20,6 +20,8 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           new=$(git diff HEAD~1 HEAD -- RELAY_LOG.md | sed -n 's/^+\([^+].*\)/\1/p')
+          # Round 2 (A5): only READY, BLOCKED and STATUS lines wake the Supervisor.
+          new=$(printf '%s\n' "$new" | grep -E '\| *(READY|BLOCKED|STATUS) *\|' || true)
           [ -n "$new" ] || exit 0
           printf 'Relay report:\n```\n%s\n```\n' "$new" > body.txt
           gh pr comment 2 --repo "$GITHUB_REPOSITORY" --body-file body.txt

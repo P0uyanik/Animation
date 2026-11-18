@@ -1,3 +1,9 @@
+# ▶ ROUND 2 (2026-11-18, new Supervisor session_01NPjxeNGwvGuevzV1aTjiEo): NO CODEX ASSIGNMENT RIGHT NOW
+T-084 is DONE and merged. Codex stays idle until a new block appears at the top of this file. Planned: independent
+reviewer at the end of round 2 Phases B and C. Report lines (`| T-NNN | READY/BLOCKED/STATUS |`) still go to
+`RELAY_LOG.md`; only READY, BLOCKED and STATUS lines are posted to PR #2 now.
+
+---
 # ▶ T-084 — NEW CODEX ASSIGNMENT (owner-ordered 2026-11-18, Supervisor): independent PROJECT AUDIT
 Everything above T-060/T-054a below is DONE (T-060 merged). Codex now does **only T-084**:
 
