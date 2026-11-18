@@ -141,7 +141,34 @@ Not tested:
 - `tools/check_all.py --base origin/staging --task T-082 --blender <bpy 5.3 wrapper>`: GATE_PLACEHOLDER
 
 ## 7. Visual results
-VISUAL_PLACEHOLDER
+Renders are made from the current-cast bakes (boy 1.1.0, girl 0.10.0):
+- each bake becomes a `shot.blend` (`shot_render.py --blend-only`);
+- per-character stills use `../T-047/render_t047.py` (the girl excluded, the table hidden, the camera box from
+  f42);
+- whole-shot frames use `render_frames.py`, through each shot's own camera.
+
+| File | Content |
+| --- | --- |
+| `t082_e905_f42_boy_cycles_sheet.jpg` | **6 Cycles stills** (32 spp) of the boy at f42, front and 3/4: old staging with planning off \| old staging with T-047 \| re-staged T-082. |
+| `t082_e905_restaged_shot_camera_frames.jpg` | The re-staged shot through its camera: f17 (pick-up), f30, f38, f46 (her contact), f51 (his release), f60 (Cycles 12 spp). |
+| `t082_e905_handover_t047_vs_restaged.mp4` | The whole shot, f1 to f72: T-047 (old staging, old camera) \| T-082 (re-staged, new camera), side by side (Cycles 12 spp, 1280×390, H.264, 3 s). |
+
+What the renders show:
+- **Old staging:**
+  - With planning off, his forearm sinks into his chest.
+  - With T-047, the cup is in front of his chin and the elbow is raised.
+  - In the whole shot the two heads overlap while she reaches.
+- **Re-staged:**
+  - He picks the cup up from the table at his own hand height. He holds it out forward and low on an easy arm,
+    elbow down, head down, with heavy lids and no extra motion. This matches his references (low, practical hands,
+    elbows in, low-key).
+  - She reaches with a nearly straight arm and takes it with her right hand; their right hands meet without crossing
+    their bodies.
+  - Their heads come close at the moment of the hand-over (f38 to f51); her hair brushes his fringe. The references
+    show them this close (`pb f272`, `f287`).
+- Identity, materials, face and hair are unchanged.
+- Changed by the re-staging: their positions (offset, 0.5 m apart), the table position, the camera, and her neck
+  assist.
 
 ## 8. Problems, limitations and open questions
 1. **Write-set**: `episodes/e905_props_test/make_shot.py` and `shots/s010/shot.scene.json` are outside T-082's claim.
