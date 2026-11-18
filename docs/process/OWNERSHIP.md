@@ -20,5 +20,7 @@ means none. Branch is the task's branch; a task branch without a row falls back 
 | T-079 | D | `t-079-claude-hair-v3-r3` | `pipeline/charsys/groom_hybrid.py`, `pipeline/charsys/tests/test_hair_v3*.py`, `pipeline/charsys/materials/presets.json`, `docs/evaluation/characters/T-079/**` | — | `groom` |
 | T-047 | C | `t-047-claude-collisions` | `engine/scene/collision.{h,cpp}`, `engine/scene/interaction.{h,cpp}`, `engine/scene/actions.cpp`, `engine/model/**`, `pipeline/charsys/export_engine.py`, `tests/test_collision.cpp`, `tests/test_interaction.cpp`, `docs/evaluation/animation/T-047/**` | — | `export` |
 | T-078 | E | `t-078-claude-progress-video` | `docs/evaluation/showcase/T-078/**` | — | — |
+| T-080 | D | `t-080-claude-boy-2-0-0` | `assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.0.0*`, `pipeline/charsys/versions.py`, `docs/evaluation/characters/T-080/**` | — | `materials` |
+| T-081 | D | `t-081-claude-girl-0-11-0` | `assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.11.0*`, `pipeline/charsys/face_generic.py`, `pipeline/charsys/face_features.py`, `pipeline/charsys/body_generic.py`, `pipeline/charsys/body_helpers.py`, `pipeline/charsys/tests/test_face_v2*.py`, `docs/evaluation/characters/T-081/**` | `pipeline/charsys/versions.py` (stable) | `face_generic`, `body_generic` |
 
 Supervisor-only files: docs/process/TASK_LOG.md, docs/ROADMAP.md, docs/process/OWNER_DECISIONS.md, docs/tasks/**.

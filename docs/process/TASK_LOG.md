@@ -56,6 +56,8 @@
 | T-077 | Gate wiring (4 fast + 5 Blender subchecks, check_assets); 3 failing tests root-caused, not wired | **merged** 2026-11-18 | t-077-claude-gate-wiring (ece60d4), integration db78cb2 | GitHub full gate PASS; check_all.py changes now run the full tier |
 | T-078 | Progress video: combined new systems vs current approved (evidence only) | assigned 2026-11-18 | t-078-claude-progress-video | `docs/tasks/T-078.md`; owner request |
 | T-079 | Hair v3 round 3 (boy crown from close-ups, girl curls/fringe, third fringe/waves) | assigned 2026-11-18 | t-079-claude-hair-v3-r3 | `docs/tasks/T-079.md`; path B; owner decision |
+| T-080 | Boy 2.0.0: all approved improvements in one version (Boy 2.0 round 2) | assigned 2026-11-18 | t-080-claude-boy-2-0-0 | `docs/tasks/T-080.md`; path B; owner decision |
+| T-081 | Girl 0.11.0: all approved improvements + cheek-fold fix (girl look round, T-059) | assigned 2026-11-18 | t-081-claude-girl-0-11-0 | `docs/tasks/T-081.md`; path B; owner decision |
 | T-053 | Personality profiles 1.0.0 (reader, limits, animcheck check) | **merged** 2026-11-18 (owner-approved) | t-053-claude-personality (f62fedb), integration 50fc612 | GitHub full gate PASS; some profile fields await engine layers |
 | T-048 | Branch cleanup workflow + tests | **in main** 2026-11-17 | t-048-claude-branch-cleanup (8f1c3ce), merge ae15c0b | 25/25 cleanup tests, full gate PASS; first real dry run after T-041 backups |
 | T-049 | Hair approach study (strand vs sculpted vs hybrid) | **in main** 2026-11-17; owner choice pending | t-049-claude-hair-study (e31e613) | recommends hybrid C (felted base volumes + few broad edge clumps, face keep-out as spec data); none reaches reference softness yet (fibre halo/volume, girl fringe) |
