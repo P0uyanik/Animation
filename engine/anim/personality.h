@@ -52,6 +52,9 @@ struct PersonalityProfile {
   // tempo
   std::optional<float> actionSpeed, overshoot, carefulPlaceFrames;
   std::optional<PersonalityRange> reachFrames, anticipationFrames, settleFrames, holdFrames;
+  // T-104: multipliers on the beat durations of a timing profile (TimingProfile below; > 1 = slower / longer). Read
+  // only when a scene opts into a timing profile; missing = 1.
+  std::optional<float> beatScale, holdScale;
   // energy
   std::optional<float> energyLevel, idleMotionAmplitudeH, gestureAmplitude;
   // posture
@@ -92,6 +95,32 @@ Result<PersonalityProfile> loadPersonality(const std::filesystem::path& file);
 std::filesystem::path findPersonalityFile(const std::filesystem::path& from, const std::string& id);
 // Clamps the profile's own parameters into its limits; returns one warning per clamped value.
 std::vector<std::string> clampPersonalityToLimits(PersonalityProfile& p);
+
+// Timing profile (T-104): calibrated beat durations as data (content/timing/<name>.timing.json,
+// plush.timing_profile/1, content/timing/README.md), derived from the reference timing table
+// (content/timing/reference_timing.json). Opt-in per scene ("timing": "<name>"); without it every shared default stays
+// as it was. Frames at 24 fps.
+//   beats:  reach, anticipation, settle, hold, shared_hold, place, release, return, reaction_delay (frames)
+//   travel: scale-aware carry speed in arm lengths per frame (mean over an eased move): a carry over distance d with
+//           an arm of length L takes d / (L * arm_lengths_per_frame) frames, clamped into [min_frames, max_frames];
+//           doll-sized and human-sized characters then take the same time for the same move relative to their arms.
+// A character's personality scales it: beat durations x tempo.beat_scale, holds x tempo.hold_scale.
+struct TimingProfile {
+  std::string name, status;
+  std::filesystem::path path;
+  std::map<std::string, float> beats;  // frames at 24 fps
+  float armLengthsPerFrame = 0.06f, travelMinFrames = 10, travelMaxFrames = 24;
+  // Beat duration in frames (`fallback` when the profile has no such beat), scaled by the personality: holds
+  // (hold, shared_hold) by tempo.hold_scale, every other beat by tempo.beat_scale.
+  double frames(const std::string& beat, double fallback, const PersonalityProfile* who = nullptr) const;
+  // Scale-aware travel time of a carry over `distance` metres by an arm of `armLength` metres (see above), scaled by
+  // tempo.beat_scale, then clamped into [min_frames, max_frames].
+  double travelFrames(double distance, double armLength, const PersonalityProfile* who = nullptr) const;
+};
+Result<TimingProfile> timingProfileFromJson(const Json& j, const std::string& name = {});
+Result<TimingProfile> loadTimingProfile(const std::filesystem::path& file);
+// Finds content/timing/<name>.timing.json by walking up from `from` (a scene file or directory); empty if none.
+std::filesystem::path findTimingProfileFile(const std::filesystem::path& from, const std::string& name);
 
 // Body mechanics (defined in body_mechanics.cpp): tempo, energy and posture of the typed profile; missing = neutral.
 void applyPersonalityToBodyMechanics(BodyMechanicsParams& p, const PersonalityProfile& profile);

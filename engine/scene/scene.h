@@ -113,6 +113,10 @@ struct Scene {
   // Interaction options (T-096, opt-in): the scene key "interaction" (absent = all off, the behaviour before T-096).
   // Parsed and checked by interactionOptionsFromJson; saved as written.
   Json interaction = nullptr;
+  // Timing profile (T-104, opt-in): the scene key "timing" names content/timing/<name>.timing.json (anim/personality.h
+  // TimingProfile). Absent / null = the shared interaction timing defaults (the behaviour before T-104). It only sets
+  // the defaults of action frames a scene leaves out; frames written in an action always win. Saved as written.
+  Json timing = nullptr;
 };
 
 // The scene's "interaction" block (T-096). Every field is optional and off by default:

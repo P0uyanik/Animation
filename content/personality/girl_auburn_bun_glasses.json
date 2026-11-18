@@ -55,6 +55,18 @@
       "kind": "measured",
       "source": "hand at chin >=12 f (WT f000-f012); point held >=38 f (WT f022-f060)"
     },
+    "beat_scale": {
+      "value": 0.85,
+      "unit": "multiplier on timing-profile beats",
+      "kind": "estimate",
+      "source": "T-104: quicker hands: WT reach to point 10 f (f012-f022), the short end of the reach range"
+    },
+    "hold_scale": {
+      "value": 1.25,
+      "unit": "multiplier on timing-profile holds",
+      "kind": "estimate",
+      "source": "T-104: but with holds: WT chin hold 12 f before the reach, point hold f022-f060 (>= 38 f), end hold 16 f"
+    },
     "careful_place_frames": {
       "value": 24,
       "unit": "frames@24",

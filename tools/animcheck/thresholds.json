@@ -9,5 +9,6 @@
   "min_arc": 0.10,
   "min_arc_screen": 0.10,
   "max_step_mm": 130,
-  "max_rot_step_deg": 45
+  "max_rot_step_deg": 45,
+  "timing_still_mm_per_frame": 5.0
 }

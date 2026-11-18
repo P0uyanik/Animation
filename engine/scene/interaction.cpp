@@ -462,6 +462,21 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
   if (type == "grasp" && !a.contains("prop")) return fail("grasp: give 'prop' (a scene prop instance)");
   if (!reach && type != "hold" && type != "place" && type != "handover") return false;
   const Clip& clip = scene_.animation;
+  if (!ctx.timingResolved) {  // T-104: the scene's opt-in timing profile
+    ctx.timingResolved = true;
+    if (scene_.timing.is_string()) {
+      const std::string name = scene_.timing.get<std::string>();
+      const auto file = findTimingProfileFile(scene_.path, name);
+      if (file.empty()) return fail(std::format("timing profile '{}' not found in content/timing", name));
+      auto t = loadTimingProfile(file);
+      if (!t) return std::unexpected(t.error());
+      ctx.timing = std::move(*t);
+    }
+  }
+  // Default length of a beat for character `who` (the shared default `fallback` without a timing profile).
+  auto beat = [&](const char* name, double fallback, int who) {
+    return ctx.timing ? ctx.timing->frames(name, fallback, personality(size_t(who))) : fallback;
+  };
 
   auto charIndex = [&](const std::string& n) -> int {
     for (size_t c = 0; c < scene_.characters.size(); ++c)
@@ -802,7 +817,7 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
     if (auto r = requireSocket(p, authoredSocket, what); !r) return std::unexpected(r.error());
     if (auto it = ctx.hands.find({c, h.side}); it != ctx.hands.end() && it->second.prop >= 0)
       return fail(std::format("{}: '{}' already holds '{}' in hand.{}", what, who, scene_.props[size_t(it->second.prop)].name, h.side));
-    const double contact = num(a, "contact", start + 14);
+    const double contact = num(a, "contact", start + beat("reach", 14, c));
     const bool grasp = flag(a, "grasp", true);
     const std::string socket = grasp && visibleGrip ? visibleSocket(h, p, authoredSocket, contact, "") : authoredSocket;
     auto pl = reachTo(h, p, socket, start, contact, grasp, what, socket != authoredSocket);
@@ -814,7 +829,7 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
       ctx.hands[{c, h.side}] = {p, pl->orient, socket};
       if (look) gazeOn(h, p, start, contact + 8);
     } else {
-      const double end = num(a, "end", contact + 12);
+      const double end = num(a, "end", contact + beat("hold", 12, c));
       key(gen, h.ik, contact + 2, clip.evaluate(h.ik, contact, vec3(0)));
       release(h, pl->orient, contact + 2, std::max(end, contact + 10), -pl->inward * 0.05f + kUp * 0.02f);
       if (look) {
@@ -828,12 +843,15 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
   if (type == "hold") {
     auto p = held(h, "hold");
     if (!p) return std::unexpected(p.error());
-    const double end = num(a, "end", start + 16);
-    if (end <= start) return fail("hold: end must be after start");
-    const quat orient = ctx.hands[{c, h.side}].orient;
     const vec3 origin = vec3(propWorld(size_t(*p), start)[3]);
     const auto at = vecOpt(a, "at"), by = vecOpt(a, "by");
     const vec3 target = at ? *at : origin + (by ? *by : vec3(0));
+    double hold = 16;
+    if (ctx.timing)  // T-104: long enough to read and to carry the prop at the profile's arm-relative speed
+      hold = std::max(beat("hold", 16, c), ctx.timing->travelFrames(glm::length(target - origin), h.armLength, personality(size_t(c))));
+    const double end = num(a, "end", start + hold);
+    if (end <= start) return fail("hold: end must be after start");
+    const quat orient = ctx.hands[{c, h.side}].orient;
     const vec3 wrist = clip.evaluate(h.ik, start, vec3(0));
     key(gen, h.ik, start, wrist);
     key(gen, h.ik, end, wrist + (target - origin));
@@ -851,7 +869,7 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
     if (!p) return std::unexpected(p.error());
     const std::string socket = str(a, "socket", "place");
     if (auto r = requireSocket(*p, socket, "place"); !r) return std::unexpected(r.error());
-    const double contact = num(a, "contact", start + 16), end = num(a, "end", contact + 14);
+    const double contact = num(a, "contact", start + beat("place", 16, c)), end = num(a, "end", contact + beat("release", 14, c));
     if (contact < start + 6 || end < contact + 8) return fail("place: needs contact >= start + 6 and end >= contact + 8");
     std::optional<PropParent> onto;
     vec3 target(0);
@@ -903,8 +921,9 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
     return fail(std::format("handover: '{}' already holds '{}' in hand.{}", to, scene_.props[size_t(it->second.prop)].name, r.side));
   const std::string authoredToSocket = str(a, "toSocket", "grip_b");
   if (auto rs = requireSocket(*p, authoredToSocket, "handover"); !rs) return std::unexpected(rs.error());
-  const double contact = num(a, "contact", start + 18), rStart = num(a, "receiverStart", start + 4);
-  const double rel = num(a, "release", contact + 4), end = num(a, "end", rel + 12);
+  const double rStart = num(a, "receiverStart", start + beat("reaction_delay", 4, rc));
+  const double contact = num(a, "contact", ctx.timing ? rStart + beat("reach", 18, rc) : start + 18);
+  const double rel = num(a, "release", contact + beat("shared_hold", 4, c)), end = num(a, "end", rel + beat("release", 12, c));
   if (contact < start + 6 || contact < rStart + 6 || rel < contact + 1 || end < rel + 8)
     return fail("handover: needs contact >= start + 6, contact >= receiverStart + 6, release > contact, end >= release + 8");
   // Giver: brings the prop to the meeting point a little before contact and holds it still until it lets go.

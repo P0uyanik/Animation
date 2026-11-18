@@ -33,6 +33,7 @@
 #include <vector>
 
 #include "anim/animation.h"
+#include "anim/personality.h"
 #include "model/character.h"
 #include "scene/collision.h"
 
@@ -155,6 +156,17 @@ struct InteractionContext {
   };
   std::vector<Shared> shared;
   bool parentsChecked = false;  // authored prop parents are checked before the first interaction evaluates props
+  // Timing profile (T-104, the scene's opt-in "timing" key; anim/personality.h TimingProfile), resolved at the first
+  // interaction action. It changes only the defaults of frames an action leaves out (without it: the defaults listed
+  // at the top of this file):
+  //   reach / grasp  contact = start + reach;  grasp:false end = contact + hold
+  //   hold           end = start + max(hold, travel frames of the carry distance for this arm)
+  //   place          contact = start + place;  end = contact + release
+  //   handover       receiverStart = start + reaction_delay (receiver); contact = receiverStart + reach (receiver);
+  //                  release = contact + shared_hold; end = release + release (giver)
+  // each scaled by the acting character's personality (tempo.beat_scale / tempo.hold_scale) when it has one.
+  std::optional<TimingProfile> timing;
+  bool timingResolved = false;
 };
 
 }  // namespace plush

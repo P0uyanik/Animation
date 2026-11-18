@@ -357,6 +357,11 @@ Result<Scene> loadScene(const std::filesystem::path& path) {
     if (auto r = interactionOptionsFromJson(*it); !r) return fail(std::format("{}: {}", path.string(), r.error().message));
     s.interaction = *it;
   }
+  if (auto it = j.find("timing"); it != j.end() && !it->is_null()) {  // T-104 (opt-in)
+    if (!it->is_string() || it->get<std::string>().empty())
+      return fail(std::format("{}: timing must name a timing profile (content/timing/<name>.timing.json)", path.string()));
+    s.timing = *it;
+  }
   if (auto it = j.find("animation"); it != j.end() && it->is_object()) {
     for (auto& [track, keys] : it->items()) {
       Track t;
@@ -483,6 +488,7 @@ Json sceneToJson(const Scene& s) {
   if (s.director.is_object()) j["director"] = s.director;
   if (!s.animPrinciples.is_null()) j["animPrinciples"] = s.animPrinciples;
   if (!s.interaction.is_null()) j["interaction"] = s.interaction;
+  if (!s.timing.is_null()) j["timing"] = s.timing;
   return j;
 }
 

@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Unit tests for tools/animcheck (T-061) on synthetic bakes: a constant-speed straight wrist move must fail the
 thresholds (ease, onset step, arc), an eased move on an arc round the shoulder must pass; segmentation, projection
-and the gesture windows are checked on known inputs. T-053: the personality check (personality.py) on a synthetic
+and the gesture windows are checked on known inputs. T-104: the timing rule (timing.py) warns on short beats and
+shots without a hold, never fails. T-053: the personality check (personality.py) on a synthetic
 package (head width from geometry, blinks, double blinks, reach / hold / idle) against a profile's limits."""
 from __future__ import annotations
 
@@ -16,6 +17,7 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent))
 import animcheck  # noqa: E402
 import personality  # noqa: E402
+import timing  # noqa: E402
 
 THRESHOLDS = json.loads((HERE.parent / "thresholds.json").read_text())
 
@@ -202,6 +204,69 @@ class PersonalityCheck(unittest.TestCase):
             scene["characters"][0]["personality"] = "nobody"
             rep = personality.analyse(bake, scene, path, THRESHOLDS)
         self.assertEqual(len(rep["failures"]), 1)
+
+
+class TimingRule(unittest.TestCase):
+    """T-104 timing rule against content/timing/reference_timing.json."""
+    REF = timing.load_reference()
+
+    def scene(self, actions, end=66):
+        return {"name": "t", "frameRate": [24, 1], "frameStart": 1, "frameEnd": end, "actions": actions}
+
+    def test_reference_table_has_the_beats(self):
+        for b in ("reach", "hold", "shared_hold", "place", "release", "anticipation", "settle"):
+            lo, hi = self.REF[b]
+            self.assertLessEqual(lo, hi)
+
+    def test_t095_exchange_beats_are_flagged_and_defaults_count(self):
+        acts = [{"type": "grasp", "character": "boy", "prop": "cup", "start": 4, "contact": 18},
+                {"type": "hold", "character": "boy", "start": 20, "end": 28, "by": [0, 0.01, 0]},
+                {"type": "handover", "character": "boy", "to": "girl", "start": 28, "receiverStart": 27, "contact": 45,
+                 "release": 51, "end": 61},
+                {"type": "place", "character": "girl", "start": 70}]  # defaults: contact 86, end 100
+        res = timing.analyse(self.scene(acts, end=101), thresholds=THRESHOLDS, reference=self.REF)
+        text = "\n".join(res["warnings"])
+        self.assertIn("hold reach f20-f28 8 f", text)
+        self.assertIn("shared_hold f45-f51 6 f", text)
+        self.assertIn("release f51-f61 10 f", text)
+        self.assertIn("place f70-f86 16 f", text)  # engine default 16 < reference 20
+        self.assertIn("no hold: end hold 1 f", text)
+        self.assertNotIn("grasp reach", text)  # 14 f is inside the reference
+
+    def test_calibrated_beats_pass(self):
+        acts = [{"type": "grasp", "character": "boy", "prop": "cup", "start": 11, "contact": 30},
+                {"type": "hold", "character": "boy", "start": 35, "end": 45, "by": [0, 0.01, 0]},
+                {"type": "handover", "character": "boy", "to": "girl", "start": 45, "receiverStart": 42, "contact": 64,
+                 "release": 82, "end": 99}]
+        res = timing.analyse(self.scene(acts, end=129), thresholds=THRESHOLDS, reference=self.REF)
+        self.assertEqual(res["warnings"], [])
+
+    def test_bake_still_run(self):
+        # moves until f30, then still (sub-threshold breathing) to f60: a 30 f hold; moving all the time: no hold
+        def settles(f):
+            return (0.01 * min(f, 30), 0.0002 * math.sin(f), 0.0)
+
+        def restless(f):
+            return (0.006 * f, 0.0, 0.0)
+        with tempfile.TemporaryDirectory() as d:
+            ok = timing.analyse(self.scene([], end=60), make_bake(Path(d), settles), THRESHOLDS, self.REF)
+            self.assertEqual(ok["holds"]["longest_still_frames"], 30)
+            self.assertEqual(ok["warnings"], [])
+            bad = timing.analyse(self.scene([], end=60), make_bake(Path(d), restless), THRESHOLDS, self.REF)
+            self.assertEqual(bad["holds"]["longest_still_frames"], 0)
+            self.assertTrue(any(w.startswith("no hold") for w in bad["warnings"]))
+
+    def test_only_warns(self):
+        with tempfile.TemporaryDirectory() as d:
+            scene = Path(d) / "s.scene.json"
+            scene.write_text(json.dumps(self.scene([{"type": "handover", "character": "a", "to": "b", "start": 1}], end=20)))
+            self.assertEqual(timing.main(["--scene", str(scene)]), 0)
+
+    def test_thresholds_only_added(self):
+        self.assertEqual(THRESHOLDS["timing_still_mm_per_frame"], 5.0)
+        for k, v in {"min_chord_mm": 100, "max_ease_ratio": 0.55, "max_jerk": 0.45, "max_first_step": 0.18, "min_arc": 0.10,
+                     "min_arc_screen": 0.10, "max_step_mm": 130, "max_rot_step_deg": 45}.items():
+            self.assertEqual(THRESHOLDS[k], v)
 
 
 if __name__ == "__main__":

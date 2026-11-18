@@ -1,0 +1,63 @@
+{
+ "format": "plush.reference_timing",
+ "version": 1,
+ "task": "T-104 (2026-11-18)",
+ "fps": 24,
+ "frame_convention": "0-based video frames (T-076 citations: PB fNNN = docs/references/video_paperboat.mp4, WT fNNN = docs/references/video_watertable.mp4)",
+ "method": [
+  "T-076 frame analysis (docs/architecture/REFERENCE_ARCHITECTURE_REPORT.md: shot table, cuts PB f032/f112/f151/f191/f239, WT single shot)",
+  "per-character guides docs/characters/*/REFERENCE_BEHAVIOUR.md section 4 (strips at 2 f sampling)",
+  "T-104 motion energy: mean absolute frame difference per frame (ffmpeg gray, PB 160x90 whole frame; WT 120x160 crop 414x554+0+0 = the girl), a run is a hold where the energy stays under 0.6 (WT crop) / 0.5 (PB) after a move; peak = largest energy of the move",
+  "kind: measured = read on frames or energy curves; estimate = docs/references/VISUAL_TARGET.md (Motion and editorial rhythm, 1 s sampling)"
+ ],
+ "observations": [
+  {"id": "wt_chin_hold", "video": "WT", "frames": [0, 12], "duration_f": 12, "beat": "pre_hold", "kind": "measured",
+   "what": "girl: hand at the chin, 'oh' mouth, before the reach (anticipation hold)", "evidence": "WT crop energy 0.2-0.3 f005-f011; girl guide section 4"},
+  {"id": "wt_reach_point", "video": "WT", "frames": [12, 22], "duration_f": 10, "beat": "reach", "kind": "measured",
+   "what": "girl: hand leaves the chin and points at the boat", "evidence": "WT crop energy rises f012 (0.6) -> peak f023 (4.6); guide: arm pointing by f022, 8-10 f"},
+  {"id": "wt_reach_settle", "video": "WT", "frames": [23, 33], "duration_f": 10, "beat": "settle", "kind": "measured",
+   "what": "girl: pointing arm comes to rest (speed from peak to under 10 %)", "evidence": "WT crop energy 4.6 at f023 -> 0.5 at f033, slow-out over 10 f, no visible overshoot"},
+  {"id": "wt_point_hold", "video": "WT", "frames": [33, 50], "duration_f": 17, "beat": "hold", "kind": "measured",
+   "what": "girl: pointing pose held still (talking), longer gesture hold f022-f060 (>= 38 f)", "evidence": "WT crop energy 0.2-0.5 f033-f050; guide: point + talk hold f022 -> f060"},
+  {"id": "wt_straighten", "video": "WT", "frames": [51, 104], "duration_f": 53, "beat": "return", "kind": "measured",
+   "what": "girl: straightens up, arm down, settles to the closed smile (camera push-in from about f064 adds to the energy)", "evidence": "WT crop energy 0.7 f051 -> peak 5.4 f085 -> 0.5 f104"},
+  {"id": "wt_end_hold", "video": "WT", "frames": [104, 120], "duration_f": 16, "beat": "hold", "kind": "measured",
+   "what": "girl: closed soft smile, upright (end pose)", "evidence": "WT crop energy 0.1-0.5 f104-f111 (blink f113-f115)"},
+  {"id": "pb_s1_stare", "video": "PB", "frames": [0, 31], "duration_f": 32, "beat": "hold", "kind": "measured",
+   "what": "S1 wide: all three at work, very little motion (boy's heavy-lid stare)", "evidence": "PB energy 1.9 -> 0.1 (camera drift only); boy guide: no change of expression"},
+  {"id": "pb_s2_shared", "video": "PB", "frames": [40, 70], "duration_f": 30, "beat": "shared_hold", "kind": "measured",
+   "what": "S2 insert: several hands share the sheet (W and B enter f040-f046, corner lifted and creased f050-f070)", "evidence": "report S2 row; PB energy 2.2-6.7 (slow push-in throughout)"},
+  {"id": "pb_s2_boat_hold", "video": "PB", "frames": [96, 111], "duration_f": 16, "beat": "shared_hold", "kind": "measured",
+   "what": "S2: girl holds the finished boat with both hands", "evidence": "PB energy 6.2 at f096 -> 0.5 at f111"},
+  {"id": "pb_s3_move", "video": "PB", "frames": [117, 135], "duration_f": 18, "beat": "move", "kind": "measured",
+   "what": "S3 wide: small head moves (W drowsy f121-f128)", "evidence": "PB energy 0.9 f117 -> peak 4.1 f120 -> 1.0 f135"},
+  {"id": "pb_s3_hold", "video": "PB", "frames": [136, 150], "duration_f": 15, "beat": "hold", "kind": "measured",
+   "what": "S3 wide: settled, still to the cut", "evidence": "PB energy 0.1-0.6 f136-f150"},
+  {"id": "pb_s4_lower", "video": "PB", "frames": [151, 171], "duration_f": 20, "beat": "place", "kind": "measured",
+   "what": "S4: girl lowers the boat with both hands to the water (slow, even, slow-in to the contact)", "evidence": "PB energy rises 1.3 f152 -> 3.7 f162, falls to 1.3 f172 (contact f168-f172); report: contact about f175 (24 f)"},
+  {"id": "pb_s4_release", "video": "PB", "frames": [172, 190], "duration_f": 18, "beat": "release", "kind": "measured",
+   "what": "S4: fingers open and withdraw after the contact", "evidence": "frames f172-f190 (strip); girl guide: release f175-f187 (12 f)"},
+  {"id": "pb_s6_stare", "video": "PB", "frames": [264, 288], "duration_f": 25, "beat": "hold", "kind": "measured",
+   "what": "S6: boy's engaged stare held to the end (crane move continues)", "evidence": "boy guide section 4: about f255-f264 to the end"},
+  {"id": "wt_blinks", "video": "WT", "frames": [15, 115], "duration_f": 5, "beat": "blink", "kind": "measured",
+   "what": "girl blinks 3-7 f, start-to-start 25-39 f; boy 4-6 f", "evidence": "guides section 4"}
+ ],
+ "beats": {
+  "reach":        {"frames": [10, 20], "kind": "measured", "from": ["wt_reach_point", "pb_s4_lower"], "note": "one-hand entry to a pose or contact: 10 f empty-handed pointing; a reach to a contact needs its slow-in (2-4 f under 0.008 H/f, VISUAL_TARGET) so 12-20 f"},
+  "anticipation": {"frames": [5, 12], "kind": "measured+estimate", "from": ["wt_chin_hold"], "note": "the pose held (or compressed) before a hand action; VISUAL_TARGET 5-10 f, WT chin hold 12 f"},
+  "settle":       {"frames": [8, 18], "kind": "measured+estimate", "from": ["wt_reach_settle"], "note": "peak to under 10 % speed; WT 10 f, VISUAL_TARGET 8-18 f"},
+  "hold":         {"frames": [12, 32], "kind": "measured", "from": ["wt_point_hold", "wt_end_hold", "pb_s3_hold", "pb_s1_stare"], "note": "readable key-pose dwell after a beat: 15-17 f after a gesture, 32 f for a stare; VISUAL_TARGET 8-18 f"},
+  "shared_hold":  {"frames": [16, 30], "kind": "measured", "from": ["pb_s2_boat_hold", "pb_s2_shared"], "note": "an object held by both hands / two characters before it moves on"},
+  "place":        {"frames": [20, 24], "kind": "measured", "from": ["pb_s4_lower"], "note": "a careful lower to a contact"},
+  "release":      {"frames": [12, 18], "kind": "measured", "from": ["pb_s4_release"], "note": "fingers open and the hand withdraws after a contact"},
+  "return":       {"frames": [18, 53], "kind": "measured", "from": ["wt_straighten", "pb_s3_move"], "note": "a body or arm going back to rest after the beat"},
+  "beat_interval": {"frames": [18, 36], "kind": "estimate", "from": [], "note": "one readable primary beat every 0.75-1.5 s (VISUAL_TARGET overall tempo)"},
+  "reaction_delay": {"frames": [4, 10], "kind": "measured+estimate", "from": ["wt_chin_hold"], "note": "observer notices (eyes) and the hand answers after the glance; gaze leads a hand target by 2-5 f (VISUAL_TARGET), WT eyes on the boat before the reach"}
+ },
+ "e907_t095_before": {
+  "shot": "episodes/e907_exchange/shots/s010 (T-095, 66 f, 2.75 s)",
+  "beats_f": {"his_reach": [4, 18], "his_offer": [20, 28], "her_glance_to_reach": [20, 27], "her_reach": [27, 45],
+              "shared_hold": [45, 51], "his_release_return": [51, 61], "her_draw": [53, 65]},
+  "short_vs_reference": ["his_offer hold 8 f < hold 12", "shared_hold 6 f < shared_hold 16", "his_release_return 10 f < release 12", "end hold after her draw 1 f < hold 12"]
+ }
+}
