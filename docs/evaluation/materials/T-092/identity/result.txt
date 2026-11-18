@@ -1,0 +1,10 @@
+input boy_yellow_hoodie built in 104s
+input girl_auburn_bun_glasses built in 91s
+branch boy_yellow_hoodie built in 97s
+branch girl_auburn_bun_glasses built in 86s
+IDENTICAL boy_yellow_hoodie/boy_yellow_hoodie_master.fp.json
+IDENTICAL boy_yellow_hoodie/boy_yellow_hoodie_master.graphs.json
+IDENTICAL girl_auburn_bun_glasses/girl_auburn_bun_glasses_master.fp.json
+IDENTICAL girl_auburn_bun_glasses/girl_auburn_bun_glasses_master.graphs.json
+
+[exited with code 0]
