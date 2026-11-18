@@ -75,7 +75,7 @@ def main():
             sheet.paste(b, (x + (widths[i] - b.width) // 2, top + H + 6))
             x += widths[i] + 6
         d.text((8, top + H // 2), "reference", fill=(0, 0, 0))
-        d.text((8, top + H + H // 2), "hair v3 r2", fill=(0, 0, 0))
+        d.text((8, top + H + H // 2), "hair v3 r3", fill=(0, 0, 0))
         if max(sheet.size) > 2048:
             k = 2048 / max(sheet.size)
             sheet = sheet.resize((round(sheet.width * k), round(sheet.height * k)), Image.LANCZOS)
