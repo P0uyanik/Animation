@@ -257,3 +257,17 @@ Owner reviewed the strict comparison sheet (reference | 0.10.0 | 0.11.0, identic
 score drop (64.40 → 62.29, from the wider hair silhouette) is accepted by the owner; visually 0.11.0 is closer
 (skin, hair colour, curls, neck, face). The hair width goes into hair round 4. T-081 publishes 0.11.0, moves the
 `approved` pointer and the girl entry of `fidelity_baseline.json`, then merges.
+
+## 2026-11-18: design points from the owner's Higgsfield reference set (owner: "accept suggestions")
+The new references (stored in each character's `references/uploads/`, listed in their README) are primary targets
+for round 2. Where they disagree with each other or with the earlier references, the owner accepted:
+- **Boy backpack:** the flap design of `02_higgsfield_B06_backpack_back` (rounded flap, tab closure, front flap pocket,
+  top grab loop, navy felt) is canonical; B07's zipped side-pocket design is used only for depth and strap path.
+- **Boy sneakers:** cream soles and white stripes (earlier references and B07); B09 only for laces, stitching, toe cap.
+- **Boy drawstrings:** plain felt cords with dark tips (B01/B02), not braided cords with metal tips (B08).
+- **Girl fringe:** centre parting with two swept sections, as in G01, G02 and G04.
+- **Girl back hair:** soft transition from the back section into the ringlets (earlier `ref_30`); G05 only for the
+  bun, scrunchie and ringlet shape, not its horizontal ridge.
+- **Girl collar:** rounded blouse collar (earlier references); G07 only for vest felt, embroidery, buttons and pocket.
+- **Girl hair accessories:** blue-grey scrunchie with one pink felt flower (G04, `ref_30`).
+- **Third character accessory:** the blue felt bow of `18_higgsfield_W02_blue_felt_bow` is canonical (no flower).
