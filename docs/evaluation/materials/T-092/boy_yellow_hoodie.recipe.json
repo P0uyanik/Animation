@@ -1,0 +1,95 @@
+{
+ "schema": "plush-studio.review-recipe/1",
+ "task": "T-092",
+ "note": "T-092 materials round 2: current approved boy_yellow_hoodie 2.0.0 vs the same spec with the T-092 candidate override (presets/3: material assignments only). Same cameras, light (character_neutral/1), samples as the T-087 recipe.",
+ "character": "boy_yellow_hoodie",
+ "inputs": {
+  "main": "4910b69"
+ },
+ "baseline": {
+  "version": "2.0.0",
+  "label": "2.0.0"
+ },
+ "candidate": {
+  "spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.0.0.spec.json",
+  "overrides": [
+   "assets/characters/boy_yellow_hoodie/spec/candidates/T-092/boy_yellow_hoodie.materials_r2.override.json"
+  ],
+  "sha": "7868e2d",
+  "label": "2.0.0 + T-092"
+ },
+ "compare": {
+  "variant": "compare",
+  "pose": "arms_down"
+ },
+ "cameras": {
+  "lens_mm": 70,
+  "sensor_mm": 36,
+  "elevation_deg": 6,
+  "framing": {
+   "body": {
+    "target": [
+     0.0,
+     0.0,
+     0.56
+    ],
+    "frame_height_m": 1.26,
+    "aspect": 1.6
+   },
+   "face": {
+    "fit": "head",
+    "margin": 0.05,
+    "aspect": 1.0
+   }
+  },
+  "rows": {
+   "front": {
+    "reference_view": "val27_front"
+   },
+   "threequarter": {
+    "reference_view": "val27_threequarter_right"
+   },
+   "side": {
+    "reference_view": "val27_side_right"
+   },
+   "back": {
+    "reference_view": "val27_back"
+   },
+   "face_front": {
+    "reference": {
+     "file": "views/hero24_front.png",
+     "crop": [
+      40,
+      60,
+      560,
+      620
+     ],
+     "label": "hero24 face"
+    },
+    "yaw_deg": 0
+   },
+   "face_threequarter": {
+    "reference_view": "val27_threequarter_right",
+    "crop": [
+     10,
+     0,
+     230,
+     240
+    ]
+   }
+  }
+ },
+ "light": {
+  "calibration": "character_neutral/1"
+ },
+ "render": {
+  "engine": "cycles",
+  "samples": 16,
+  "px": 360
+ },
+ "preview": {
+  "engine": "cycles",
+  "samples": 2,
+  "px": 120
+ }
+}
