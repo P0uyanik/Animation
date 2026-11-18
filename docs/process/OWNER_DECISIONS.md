@@ -227,3 +227,9 @@ references. Mechanism: new shared systems are combined into **new character vers
 them, so every shot and test follows automatically. Old versions stay frozen and are used only with a stated
 `legacy_reason`. Next: after the progress video (T-078), new boy and girl versions combining face v2 + fitted head,
 skin presets/2, hair v3 (round 3 when approved), garment details and personality profiles.
+
+## 2026-11-18: finish the running tasks, then stop and review
+No new tasks after the running ones (T-060, T-078, T-079, T-080, T-081, T-082). Each is merged as soon as it passes
+(path B after the owner's render approval). Then the owner reviews all results (progress video with boy 2.0.0 and
+girl 0.11.0, hair round 3, collisions) to find issues and plan the next round. Follow-ups noted in
+`docs/process/IMPLEMENTATION_PLAN.md` §5 stay unstarted until then.
