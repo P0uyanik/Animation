@@ -7,7 +7,7 @@
  "baseline": {"version": "0.11.0", "label": "0.11.0 (current)"},
  "candidate": {"spec": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.11.0.spec.json",
                "overrides": ["assets/characters/girl_auburn_bun_glasses/spec/candidates/T-089/girl_face3.override.json"],
-               "sha": "cb3cc81", "label": "T-089 face_generic/3"},
+               "sha": "c3ecc40", "label": "T-089 face_generic/3"},
  "compare": {"variant": "master", "pose": "apose", "allow_apose": true},
  "cameras": {
   "lens_mm": 70,
