@@ -250,3 +250,10 @@ the earlier "Codex only T-060" rule by this one task.
   `approved` pointer and the boy entry of `fidelity_baseline.json` (score 67.63 vs 66.41), then merges.
 - Girl 0.11.0: owner wants a side-by-side sheet (original references | 0.10.0 | 0.11.0, identical angles and
   lighting) before deciding. **The girl's current version stays 0.10.0 until the owner approves a change.**
+
+## 2026-11-18: girl 0.11.0 is the new current
+Owner reviewed the strict comparison sheet (reference | 0.10.0 | 0.11.0, identical cameras and lighting,
+`docs/evaluation/characters/T-081/girl_0.10.0_vs_0.11.0_strict.jpg`) and approved 0.11.0 as current. The fidelity
+score drop (64.40 → 62.29, from the wider hair silhouette) is accepted by the owner; visually 0.11.0 is closer
+(skin, hair colour, curls, neck, face). The hair width goes into hair round 4. T-081 publishes 0.11.0, moves the
+`approved` pointer and the girl entry of `fidelity_baseline.json`, then merges.
