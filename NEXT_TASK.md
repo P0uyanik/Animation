@@ -1,3 +1,20 @@
+# ▶ T-106 — NEW CODEX ASSIGNMENT (owner-approved 2026-11-18 ~22:50Z, Supervisor session_01NPjxeNGwvGuevzV1aTjiEo)
+Codex does **T-106: reference performance extraction**. Task file:
+`git show origin/integration/phase-d:docs/tasks/T-106.md` (reaches main shortly).
+
+1. Branch `t-106-codex-perf-extract` from `origin/main` in a new worktree on C: (never write on D:, never touch the
+   owner's personal files). Write only `tools/perf_extract/**` and `docs/evaluation/animation/T-106/**`.
+2. Offline MediaPipe analysis (Apache-2.0; install dependencies locally to the tool, e.g. a venv under the worktree)
+   of `docs/references/video_paperboat.mp4` and `docs/references/video_watertable.mp4`: per character (boy, girl,
+   white-haired girl where visible) expression changes, gaze/glance timing, blink rate, head motion, beat durations.
+3. Output: a data table (JSON + CSV) and small evidence contact sheets (JPEG <= 2048 px), as calibration targets for
+   T-097B/G (acting) and T-104 (timing). No changes to characters, engine or tests outside the write-set.
+4. Post `| T-106 | STARTED |` to `RELAY_LOG.md` now. When done, push and post
+   `<UTC> | T-106 | READY | t-106-codex-perf-extract@<sha> | input <sha> | <headline>`, ending with
+   `ledger: build N · render N · tests N · ci N · wait N (min)`. BLOCKED with the question if stuck.
+5. Model: as for T-090.
+
+---
 # ▶ (Supervisor 2026-11-18 22:15Z) T-090b ACCEPTED and merging — NO CODEX ASSIGNMENT NOW
 Thanks. Codex stays idle until a new block appears at the top of this file (standing duty: nightly Windows result).
 
