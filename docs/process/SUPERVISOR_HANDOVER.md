@@ -105,3 +105,31 @@ GitHub rulesets import (`docs/process/github-rulesets/`).
 **Follow-ups noted for the Supervisor:** `docs/CHARACTER_SYSTEM_VERSIONS.md` mentions `hair_clumps/2` (retired by
 T-072); `docs/process/IMPLEMENTER_PROMPT.md` reporting rule now says: report to the Supervisor session by
 `send_message`, relay as fallback.
+
+## 7. Addendum (gaps found after the first handover)
+- **Local gate environment.** The old container built C++ with `embree_DIR=/usr/lib/x86_64-linux-gnu/cmake/embree-4.3.0`
+  and `PLUSH_OIDN_ROOT=/home/user/deps/oidn-2.3.3.x86_64.linux`, and ran Blender through a bpy-module shim (no
+  Blender binary; pass `--blender <shim>` to `check_all.py`). A new container may lack all three: use **GitHub CI on an
+  `integration/*` branch as the evidence** (that is the rule anyway) and run locally only the cheap checks
+  (`tools/regression/tests/test_gate_tools.py`, `tools/check_doc_links.py`, `tools/integrate.py claims`, the
+  guarded/frozen one-liner in §3). Use a separate build dir per worktree if you do build.
+- **Owner reference images** sent in chat are not saved to disk automatically: follow `docs/process/REFERENCE_INTAKE.md`
+  (shared uploads go to `assets/references/owner_uploads/` or the character's `references/uploads/`; `docs/references`
+  is frozen). Images can be recovered byte-exact from your own session transcript (`~/.claude/projects/*/*.jsonl`).
+- **Face v2 (T-065) owner context.** AC1–7 sheets were shown on 2026-11-17. Supervisor assessment given to the owner:
+  lids clearly better (no shell domes); still off: boy face too wide/flat (lower face and chin), girl/third bright
+  lower-lid line, third character upper lid too high + socket edge visible in 3/4, high forehead; skin is T-066. The
+  owner deferred the decision until the criterion-0 head-geometry sheets. Recommendation pending: merge as an opt-in
+  system only (characters unchanged), like hair v3.
+- **T-076 report** (`docs/architecture/REFERENCE_ARCHITECTURE_REPORT.md`): recommendations (G1–G10: two-hand grasps,
+  lean/self-contact verbs, profile reader + limits, file-mesh props, light/camera presets, unified prop path, bake
+  events, sequence assembly) await an owner decision; nothing was scheduled from it.
+- **PC backup** (owner allowed the PC as a backup destination) is not set up: it would need Remote Control (elevation),
+  so it stays open; GitHub-side backups run via `.github/workflows/backup.yml` (archive/backup-* branches, tags made
+  by Actions). Ask the owner before any PC-side setup; do it via the relay, never by elevating.
+- **Leftover integration branches** (`integration/t-061`, `integration/t-071`, `integration/t-075`,
+  `integration/batch-061-075-071`, `integration/t-064`) are merged; the cleanup workflow (T-048) handles them; never
+  delete branches by hand.
+- **Remote Control:** the owner's PC currently shares no folder with cloud sessions and the old Supervisor's Remote
+  Control link to the PC session is gone. Do not try to restore it from a cloud Supervisor (needs elevation). If the
+  owner wants direct PC access again, recommend a separate, dedicated session for that, never the Supervisor.
