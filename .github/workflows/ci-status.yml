@@ -1,0 +1,39 @@
+name: CI status (main)
+
+# T-086 (docs/process/GATE.md §5.3). Lists the latest result of EVERY workflow on main (tools/ci_status.py status):
+# the newest run and the newest decisive result (not cancelled/skipped), so a red workflow cannot hide behind
+# cancelled or running ones. Fails (red, with the table in the job summary) while any workflow's newest decisive
+# result on main is a failure. Runs after every main run of the other workflows, daily, and on demand.
+
+on:
+  workflow_run:
+    workflows: [Quality gate, Verified repository backup, Windows gate, Branch cleanup]
+    types: [completed]
+    branches: [main]
+  schedule:
+    - cron: '41 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: ci-status-main
+  cancel-in-progress: true
+
+jobs:
+  status:
+    name: Latest result of every workflow on main
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+          sparse-checkout: tools/ci_status.py
+          sparse-checkout-cone-mode: false
+      - name: List the latest result of every workflow on main
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 tools/ci_status.py status --branch main --exclude "CI status (main)" --summary "$GITHUB_STEP_SUMMARY"
