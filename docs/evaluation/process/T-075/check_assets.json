@@ -1,0 +1,35 @@
+{
+ "base": "origin/staging",
+ "pass": true,
+ "problems": [],
+ "stores": {
+  "boy_yellow_hoodie": {
+   "bytes": {
+    "1.0.0": 19888740,
+    "1.1.0": 6998939
+   },
+   "ok": true,
+   "pointers": {
+    "approved": "1.1.0",
+    "reference": "1.0.0"
+   },
+   "versions": [
+    "1.0.0",
+    "1.1.0"
+   ]
+  },
+  "girl_auburn_bun_glasses": {
+   "bytes": {
+    "0.10.0": 19349712
+   },
+   "ok": true,
+   "pointers": {
+    "approved": "0.10.0",
+    "reference": null
+   },
+   "versions": [
+    "0.10.0"
+   ]
+  }
+ }
+}

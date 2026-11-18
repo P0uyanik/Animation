@@ -10,20 +10,34 @@
   },
   "characters": {
     "boy_yellow_hoodie": {
-      "score": 64.4891,
+      "score": 66.4143,
       "build": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.spec.json",
       "overrides": [
         "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.1.1.0.override.json"
       ],
-      "source": "docs/evaluation/characters/T-032/boy/fidelity.json"
+      "source": "docs/evaluation/characters/T-064/boy/fidelity.json",
+      "rebaseline": {
+        "task": "T-064",
+        "tool": "fixed fidelity tool (segmentation, alignment, hair/skin/face parts)",
+        "previous_score": 64.4891,
+        "same_renders_old_tool": 64.0781,
+        "same_renders_new_tool": 66.4143
+      }
     },
     "girl_auburn_bun_glasses": {
-      "score": 65.4074,
+      "score": 64.4042,
       "build": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.spec.json",
       "overrides": [
         "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.10.0.override.json"
       ],
-      "source": "docs/evaluation/integration/consolidation/fidelity/girl/fidelity.json"
+      "source": "docs/evaluation/characters/T-064/girl/fidelity.json",
+      "rebaseline": {
+        "task": "T-064",
+        "tool": "fixed fidelity tool (segmentation, alignment, hair/skin/face parts) and the corrected sheet30_front annotation",
+        "previous_score": 65.4074,
+        "same_renders_old_tool": 65.4199,
+        "same_renders_new_tool": 64.4042
+      }
     }
   }
 }

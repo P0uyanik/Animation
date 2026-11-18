@@ -134,6 +134,10 @@ _r("exporter", "export", 3, None, RETIRED, note="dynamics block or DEF-parent fi
 _r("exporter", "export", 4, "export_engine", declared=False, note="dynamics + DEF-parent fix + eye pivots; the script")
 _r("exporter", "export", 5, "export_engine", declared=False, note="export/4 + order-stable, byte-reproducible output (T-056)")
 del _r
+# ---- retirements (status changes only; the registration lines above stay as released) ----
+# hair_clumps/2: CP-2 lock-family hair, used only by the boy's H20-H35 experiments (archived in T-072; F09/H28 rejected
+# by the owner 2026-11-17). No character spec or override pins it (owner decision 2026-11-17, item 4).
+REGISTRY.retire("groom", "hair_clumps/2")
 
 # ---- legacy defaults: frozen. The spec field each feature's default comes from; its value maps to the pin of the same
 # name (a pre-T-043 field already names the exact version it builds with), "none" to none, and the legacy builder's

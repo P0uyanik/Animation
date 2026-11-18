@@ -1,0 +1,33 @@
+{
+ "character_id": "girl_auburn_bun_glasses",
+ "versions": {
+  "0.10.0": {
+   "created": "2026-11-17T22:19:30+00:00",
+   "parent": null,
+   "notes": "Girl 0.10.0 (spec + override 0.10.0: closed gentle-smile neutral, T-055). Owner wording (OWNER_DECISIONS 2026-11-17): \"approved as an intermediate version, not final visual approval\". Built by T-075 with pinned bpy 5.3.0, deterministic environment (determinism.subprocess_env, -t 1).",
+   "status": "approved",
+   "spec_sha256": "7adbe217da2786326aa45dd048fae85586e5904f85df02bd501de10206da39cc",
+   "approval_notes": "approved as an intermediate version, NOT final visual approval (OWNER_DECISIONS 2026-11-17)"
+  }
+ },
+ "pointers": {
+  "approved": "0.10.0",
+  "reference": null
+ },
+ "history": [
+  {
+   "at": "2026-11-17T22:19:30+00:00",
+   "action": "publish",
+   "version": "0.10.0",
+   "status": "candidate"
+  },
+  {
+   "at": "2026-11-17T22:19:30+00:00",
+   "action": "approve",
+   "version": "0.10.0",
+   "previous": null,
+   "by": "owner (docs/process/OWNER_DECISIONS.md 2026-11-17)",
+   "notes": "approved as an intermediate version, NOT final visual approval (OWNER_DECISIONS 2026-11-17)"
+  }
+ ]
+}

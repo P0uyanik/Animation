@@ -9,10 +9,10 @@ endfunction()
 
 plush_module(plush_core SOURCES core/core.cpp DEPS glm::glm Threads::Threads)
 plush_module(plush_geom SOURCES geom/json_io.cpp DEPS plush_core nlohmann_json::nlohmann_json)
-plush_module(plush_anim SOURCES anim/animation.cpp anim/secondary.cpp anim/body_mechanics.cpp DEPS plush_geom)
+plush_module(plush_anim SOURCES anim/animation.cpp anim/secondary.cpp anim/body_mechanics.cpp anim/principles.cpp anim/personality.cpp DEPS plush_geom)
 plush_module(plush_fuzz SOURCES fuzz/fuzz.cpp DEPS plush_geom)
 plush_module(plush_model SOURCES model/sdf.cpp model/character.cpp model/imported_character.cpp model/clip.cpp DEPS plush_geom plush_anim plush_fuzz)
-plush_module(plush_scene SOURCES scene/asset_library.cpp scene/scene.cpp scene/actions.cpp scene/shot_bake.cpp scene/clip_layers.cpp scene/emotion.cpp scene/face_layer.cpp scene/interaction.cpp DEPS plush_model)
+plush_module(plush_scene SOURCES scene/asset_library.cpp scene/scene.cpp scene/actions.cpp scene/shot_bake.cpp scene/clip_layers.cpp scene/emotion.cpp scene/face_layer.cpp scene/interaction.cpp scene/collision.cpp DEPS plush_model)
 plush_module(plush_render SOURCES render/bsdf.cpp render/pathtracer.cpp render/image.cpp DEPS plush_geom embree plush_stb)
 
 if(OpenImageDenoise_FOUND)

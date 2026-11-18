@@ -133,3 +133,7 @@ class LipSyncTests(unittest.TestCase):
         schema = json.loads((HERE / "plush.visemes.schema.json").read_text())
         self.assertEqual(set(schema["properties"]["frames"]["items"]["propertyNames"]["enum"]), ids)
         self.assertEqual(set(extract.RHUBARB_SHAPES.values()) | set(extract.SPELLINGS.values()), ids)
+
+
+if __name__ == "__main__":
+    unittest.main()

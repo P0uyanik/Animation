@@ -7,10 +7,18 @@
    "notes": "Reference: pilot v6 rebuilt by charsys from boy_yellow_hoodie.spec.json (geometry identical to v6), plus rig facial controls face_*. Owner visual approval of face and hair still pending.",
    "status": "reference",
    "spec_sha256": "d9cb91d43905c0a51207b685a6f0eebfe83fec2fe0c12c7c92fc11dff5a8755d"
+  },
+  "1.1.0": {
+   "created": "2026-11-17T22:18:47+00:00",
+   "parent": "1.0.0",
+   "notes": "Current approved boy (fidelity baseline: spec 1.0.0 + override 1.1.0, T-014 spec-driven eyelid tracking). Owner wording (OWNER_DECISIONS 2026-11-17): \"current approved\". Built by T-075 with pinned bpy 5.3.0, deterministic environment (determinism.subprocess_env, -t 1).",
+   "status": "approved",
+   "spec_sha256": "38def66c6776cc3ceb4e023132a14e6f674d0361da0eaf3f26a398cf6a0b5de2",
+   "approval_notes": "current approved (OWNER_DECISIONS 2026-11-17, T-069 #6); recorded in the store by T-075"
   }
  },
  "pointers": {
-  "approved": null,
+  "approved": "1.1.0",
   "reference": "1.0.0"
  },
  "history": [
@@ -19,6 +27,20 @@
    "action": "publish",
    "version": "1.0.0",
    "status": "reference"
+  },
+  {
+   "at": "2026-11-17T22:18:47+00:00",
+   "action": "publish",
+   "version": "1.1.0",
+   "status": "candidate"
+  },
+  {
+   "at": "2026-11-17T22:18:47+00:00",
+   "action": "approve",
+   "version": "1.1.0",
+   "previous": null,
+   "by": "owner (docs/process/OWNER_DECISIONS.md 2026-11-17)",
+   "notes": "current approved (OWNER_DECISIONS 2026-11-17, T-069 #6); recorded in the store by T-075"
   }
  ]
 }

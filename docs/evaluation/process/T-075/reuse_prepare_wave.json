@@ -1,0 +1,17 @@
+{
+ "shot": "content/scenes/eval/wave/shot.scene.json",
+ "cast": {
+  "boy": {
+   "source": "current 1.1.0 (published 1.1.0)",
+   "master": "assets/characters/boy_yellow_hoodie/versions/1.1.0/boy_yellow_hoodie_master.blend",
+   "master_state": "published (read only)",
+   "version": "1.1.0"
+  },
+  "girl": {
+   "source": "current 0.10.0 (published 0.10.0)",
+   "master": "assets/characters/girl_auburn_bun_glasses/versions/0.10.0/girl_auburn_bun_glasses_master.blend",
+   "master_state": "published (read only)",
+   "version": "0.10.0"
+  }
+ }
+}
