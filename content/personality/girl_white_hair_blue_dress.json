@@ -1,7 +1,8 @@
 {
   "format": "plush.personality",
   "version": 0,
-  "status": "draft (T-057); no reader yet; not approved",
+  "profile_version": "1.0.0",
+  "status": "candidate 1.0.0 (T-053, 2026-11-18): promoted from the T-053a/T-057 draft, read by the engine (anim/personality.h); path B, awaiting the owner's approval of the profile clips",
   "character": "girl_white_hair_blue_dress",
   "owner_brief": "a little goofy, not very bright, bubbly and cheerful (owner 2026-11-17)",
   "guide": "docs/characters/girl_white_hair_blue_dress/REFERENCE_BEHAVIOUR.md",
@@ -272,7 +273,14 @@
       },
       "unit": "action units",
       "kind": "estimate",
-      "source": "m04_neutral, f14_e1 (closed); w01 open variant pending owner (conflict 8.2)"
+      "source": "m04_neutral, f14_e1 (closed); w01 open variant pending owner (conflict 8.2)",
+      "note": "reference reading (absolute action-unit weights on a neutral-open face); documentation only: the approved model carries its own neutral, the engine applies rest_offset"
+    },
+    "rest_offset": {
+      "value": {},
+      "unit": "offset on the model neutral",
+      "kind": "reference",
+      "source": "none: her closed soft smile at rest belongs in her model (V6, not built yet; owner decision 2026-11-17)"
     },
     "watching_mouth": {
       "value": {
@@ -281,7 +289,8 @@
       },
       "unit": "action units",
       "kind": "estimate",
-      "source": "lips parted while watching: WT f000-f018, f066-f084; PB f249-f288"
+      "source": "lips parted while watching: WT f000-f018, f066-f084; PB f249-f288",
+      "note": "applied by the engine while a look action of hers plays (lips parted while watching, owner decision 2026-11-17)"
     },
     "expression_bias": {
       "value": {
@@ -304,9 +313,10 @@
       "source": "f14_m8/m10 lopsided mouths, f14_e8 side glance, m04_confusion (sided mouth AUs missing: SYSTEM_GAPS.md)"
     },
     "mouth_rest": {
-      "value": "pending: open small smile (w01, w10, w15, lineup) vs closed soft smile (m04_neutral, f14_e1, s02_face_neutral)",
+      "value": "closed_soft_smile",
+      "unit": "enum",
       "kind": "owner",
-      "source": "REFERENCE_BEHAVIOUR.md section 8.2"
+      "source": "owner decision 2026-11-17 (third character details): closed soft smile at rest; lips slightly parted while watching; small open smile = presentation/Happy"
     }
   },
   "smile": {
@@ -317,10 +327,10 @@
       "source": "w01, w10, w13, w15, lineup, PB S6; closed/neutral in WT and PB S1/S3"
     },
     "default_mouth": {
-      "value": "soft_smile",
+      "value": "closed_soft_smile",
       "unit": "enum",
-      "kind": "reference",
-      "source": "open/closed variant pending (conflict 8.2)"
+      "kind": "owner",
+      "source": "owner decision 2026-11-17 (neutral mouth: closed soft smile)"
     },
     "open_smile_share": {
       "value": 0.5,
@@ -496,6 +506,80 @@
       "value": "closed soft smile at rest; lips slightly parted while watching; small open smile = presentation/Happy",
       "kind": "owner",
       "source": "owner decision 2026-11-17"
+    }
+  },
+  "limits": {
+    "blink_interval_frames": {
+      "value": [
+        37,
+        50
+      ],
+      "unit": "frames@24",
+      "kind": "measured",
+      "source": "blink.interval_frames min/max"
+    },
+    "blink_duration_frames": {
+      "value": [
+        3,
+        6
+      ],
+      "unit": "frames@24",
+      "kind": "measured",
+      "source": "blink.duration_frames"
+    },
+    "reach_frames": {
+      "value": [
+        8,
+        12
+      ],
+      "unit": "frames@24",
+      "kind": "extrapolation",
+      "source": "tempo.reach_frames"
+    },
+    "hold_frames": {
+      "value": [
+        19,
+        121
+      ],
+      "unit": "frames@24",
+      "kind": "measured",
+      "source": "tempo.hold_frames (long open-mouthed watching)"
+    },
+    "action_speed": {
+      "value": [
+        0.9,
+        1.1
+      ],
+      "unit": "multiplier",
+      "kind": "estimate",
+      "source": "subtle goofiness, no big comic moves (owner decision 2026-11-17); tempo.action_speed 1.0"
+    },
+    "idle_motion_max_H_per_frame": {
+      "value": 0.005,
+      "unit": "H/f",
+      "kind": "estimate",
+      "source": "living-hold band of docs/references/VISUAL_TARGET.md (energy.level 0.55)"
+    },
+    "gesture_peak_speed_max_H_per_frame": {
+      "value": 0.04,
+      "unit": "H/f",
+      "kind": "estimate",
+      "source": "peak hand speed band of docs/references/VISUAL_TARGET.md (energy.level 0.55)"
+    },
+    "face_offset_max": {
+      "value": 0.2,
+      "unit": "0-1",
+      "kind": "estimate",
+      "source": "largest expression_bias magnitude (BrowDown -0.2)"
+    },
+    "head_pitch_deg": {
+      "value": [
+        -5,
+        10
+      ],
+      "unit": "deg",
+      "kind": "reference",
+      "source": "posture.head_pitch_deg 0, head tilt 6"
     }
   }
 }

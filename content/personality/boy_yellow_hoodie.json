@@ -1,7 +1,8 @@
 {
   "format": "plush.personality",
   "version": 0,
-  "status": "draft (T-053a); no reader yet; not approved",
+  "profile_version": "1.0.0",
+  "status": "candidate 1.0.0 (T-053, 2026-11-18): promoted from the T-053a/T-057 draft, read by the engine (anim/personality.h); path B, awaiting the owner's approval of the profile clips",
   "character": "boy_yellow_hoodie",
   "owner_brief": "impatient, easily bored",
   "guide": "docs/characters/boy_yellow_hoodie/REFERENCE_BEHAVIOUR.md",
@@ -290,20 +291,24 @@
       },
       "unit": "action units",
       "kind": "estimate",
-      "source": "char_C; #28 r1c1"
+      "source": "char_C; #28 r1c1",
+      "note": "reference reading (absolute action-unit weights on a neutral-open face); documentation only: the approved model carries its own neutral, the engine applies rest_offset"
+    },
+    "rest_offset": {
+      "value": {},
+      "unit": "offset on the model neutral",
+      "kind": "reference",
+      "source": "none: the heavy upper lid, low flat brows and small pout are modelled in his neutral (char_C, #08/#28 Neutral, REFERENCE_BEHAVIOUR.md section 1 \"present even in T-pose\"); a rest offset would double them"
     },
     "expression_bias": {
       "value": {
-        "Blink.L": 0.35,
-        "Blink.R": 0.35,
-        "BrowDown": 0.15,
-        "MouthFrown": 0.15,
         "MouthSmile": -0.2,
         "MouthWide": -0.3
       },
       "unit": "offset",
       "kind": "estimate",
-      "source": "most #28 tiles keep the heavy lid; only surprise/curious/excited open the eyes"
+      "source": "smaller smiles than the shared emotions: Happy = small closed smile MouthSmile 0.6, Gentle smile 0.35, Happy open MouthWide 0.6 (#28 r1c2, r4c4, r3c2; smile.frequency 0.1)",
+      "note": "T-053: the draft's Blink.L/R +0.35, BrowDown +0.15 and MouthFrown +0.15 are not applied: the heavy lid is in the model, and surprise / curiosity / concentration must open his eyes and raise his brows fully (#28 r1c4, r2c4, PB S6), Happy has no frown (#28 r1c2)"
     },
     "asymmetry": {
       "value": 0.2,
@@ -436,6 +441,80 @@
       "value": "subtle, calm and low-energy, exactly as in the references; boredom signals are small, slow and in his base tempo (never quick, abrupt or comic)",
       "kind": "owner",
       "source": "owner decision 2026-11-17"
+    }
+  },
+  "limits": {
+    "blink_interval_frames": {
+      "value": [
+        20,
+        96
+      ],
+      "unit": "frames@24",
+      "kind": "measured",
+      "source": "WT start-to-start 21 f and 40 f; PB S1+S3 71 f without a blink; blink.interval_frames min/max"
+    },
+    "blink_duration_frames": {
+      "value": [
+        4,
+        6
+      ],
+      "unit": "frames@24",
+      "kind": "measured",
+      "source": "WT blinks 4-6 f each (strips/wt_boy_eyes_f000-120.jpg); inside the 4-7 f envelope of docs/references/VISUAL_TARGET.md"
+    },
+    "reach_frames": {
+      "value": [
+        10,
+        16
+      ],
+      "unit": "frames@24",
+      "kind": "default",
+      "source": "docs/references/VISUAL_TARGET.md primary action 10-24 f, his calm shorter end (tempo.reach_frames)"
+    },
+    "hold_frames": {
+      "value": [
+        24,
+        72
+      ],
+      "unit": "frames@24",
+      "kind": "measured",
+      "source": "long unchanged stares PB S1 (32 f), S3 (39 f), WT f000-f120 (tempo.hold_frames)"
+    },
+    "action_speed": {
+      "value": [
+        0.8,
+        1.0
+      ],
+      "unit": "multiplier",
+      "kind": "owner",
+      "source": "owner decision 2026-11-17: no quick or abrupt moves; small, slow moves in his base tempo (docs/process/OWNER_DECISIONS.md)"
+    },
+    "idle_motion_max_H_per_frame": {
+      "value": 0.004,
+      "unit": "H/f",
+      "kind": "reference",
+      "source": "WT: body nearly still apart from blinks; lower part of the 0.001-0.006 H/f living-hold band of docs/references/VISUAL_TARGET.md"
+    },
+    "gesture_peak_speed_max_H_per_frame": {
+      "value": 0.03,
+      "unit": "H/f",
+      "kind": "extrapolation",
+      "source": "low energy (energy.level 0.3): lower part of the 0.018-0.045 H/f peak hand speed of docs/references/VISUAL_TARGET.md"
+    },
+    "face_offset_max": {
+      "value": 0.3,
+      "unit": "0-1",
+      "kind": "estimate",
+      "source": "largest expression_bias magnitude (MouthWide -0.3)"
+    },
+    "head_pitch_deg": {
+      "value": [
+        5,
+        20
+      ],
+      "unit": "deg",
+      "kind": "reference",
+      "source": "chin down toward the object (char_C, C1, WT, PB S1/S3); posture.head_pitch_deg 12"
     }
   }
 }

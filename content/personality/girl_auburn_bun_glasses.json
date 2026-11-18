@@ -1,7 +1,8 @@
 {
   "format": "plush.personality",
   "version": 0,
-  "status": "draft (T-053a); no reader yet; not approved",
+  "profile_version": "1.0.0",
+  "status": "candidate 1.0.0 (T-053, 2026-11-18): promoted from the T-053a/T-057 draft, read by the engine (anim/personality.h); path B, awaiting the owner's approval of the profile clips",
   "character": "girl_auburn_bun_glasses",
   "owner_brief": "cheerful, intelligent",
   "guide": "docs/characters/girl_auburn_bun_glasses/REFERENCE_BEHAVIOUR.md",
@@ -257,7 +258,14 @@
       },
       "unit": "action units",
       "kind": "estimate",
-      "source": "ref_34 Neutral; WT f110"
+      "source": "ref_34 Neutral; WT f110",
+      "note": "reference reading (absolute action-unit weights on a neutral-open face); documentation only: the approved model carries its own neutral, the engine applies rest_offset"
+    },
+    "rest_offset": {
+      "value": {},
+      "unit": "offset on the model neutral",
+      "kind": "reference",
+      "source": "none: the closed gentle-smile neutral is modelled in girl 0.10.0 (T-055, owner decision 2026-11-17 \"neutral mouth closed, with a gentle smile\"); a rest MouthSmile would open or exaggerate it"
     },
     "expression_bias": {
       "value": {
@@ -282,7 +290,8 @@
       "value": "closed_gentle_smile",
       "jaw_open": 0.0,
       "kind": "owner",
-      "source": "owner decision 2026-11-17"
+      "source": "owner decision 2026-11-17",
+      "note": "owner decision applied: closed gentle smile at rest (model); open smile only in Happy / success (smile.open_smile_share)"
     }
   },
   "smile": {
@@ -432,6 +441,80 @@
       "value": "closed, with a gentle smile (open smile = Happy)",
       "kind": "owner",
       "source": "owner decision 2026-11-17"
+    }
+  },
+  "limits": {
+    "blink_interval_frames": {
+      "value": [
+        25,
+        39
+      ],
+      "unit": "frames@24",
+      "kind": "measured",
+      "source": "blink.interval_frames min/max (WT)"
+    },
+    "blink_duration_frames": {
+      "value": [
+        3,
+        5
+      ],
+      "unit": "frames@24",
+      "kind": "measured",
+      "source": "blink.duration_frames (WT)"
+    },
+    "reach_frames": {
+      "value": [
+        8,
+        10
+      ],
+      "unit": "frames@24",
+      "kind": "measured",
+      "source": "brisk reaches 8-10 f (tempo.reach_frames, WT)"
+    },
+    "hold_frames": {
+      "value": [
+        12,
+        40
+      ],
+      "unit": "frames@24",
+      "kind": "measured",
+      "source": "tempo.hold_frames (WT, PB)"
+    },
+    "action_speed": {
+      "value": [
+        1.0,
+        1.25
+      ],
+      "unit": "multiplier",
+      "kind": "estimate",
+      "source": "brisk but careful (tempo.action_speed 1.1; careful_place_frames 24)"
+    },
+    "idle_motion_max_H_per_frame": {
+      "value": 0.006,
+      "unit": "H/f",
+      "kind": "default",
+      "source": "upper end of the living-hold band of docs/references/VISUAL_TARGET.md (energy.level 0.65)"
+    },
+    "gesture_peak_speed_max_H_per_frame": {
+      "value": 0.045,
+      "unit": "H/f",
+      "kind": "default",
+      "source": "peak hand speed 0.018-0.045 H/f of docs/references/VISUAL_TARGET.md"
+    },
+    "face_offset_max": {
+      "value": 0.2,
+      "unit": "0-1",
+      "kind": "estimate",
+      "source": "largest expression_bias magnitude (MouthSmile 0.2, MouthFrown -0.2)"
+    },
+    "head_pitch_deg": {
+      "value": [
+        -5,
+        10
+      ],
+      "unit": "deg",
+      "kind": "reference",
+      "source": "upright head, looks down at the task by the gaze (posture.head_pitch_deg 0)"
     }
   }
 }
