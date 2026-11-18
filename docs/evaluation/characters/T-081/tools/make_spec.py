@@ -3,7 +3,7 @@
     python3 docs/evaluation/characters/T-081/tools/make_spec.py
 
 0.11.0 = the frozen base spec + the approved 0.10.0 override + the owner-approved candidates, in this order (later
-wins): T-065 face v2 + fitted head, T-066 skin presets/2, T-068 vest details, T-079 hair v3 round 3 (groom/2, copied to T-081/inputs/), then
+wins): T-065 face v2 + fitted head, T-066 skin presets/2, T-068 vest details, T-079 hair v3 round 3 (groom/2), then
 the T-081 choices below. A complete spec file instead of an override: an override can only add keys, and groom/2
 needs the groom/1 hair keys (structure names in hair.dynamics, yarn, scalp offset) removed."""
 import json
@@ -62,7 +62,7 @@ def main():
     for p in (E + "T-065/candidates/girl_next_face2.override.json",
               E + "T-066/candidates/girl_auburn_bun_glasses.skin2.override.json",
               E + "T-068/candidates/girl.vest_details.override.json",
-              E + "T-081/inputs/girl.hair_v3_r3.json"):
+              E + "T-079/candidates/girl.hair_v3.json"):
         o = deep_merge(o, ov(p))
     o = deep_merge(o, T081)
     hair = o.pop("hair")
