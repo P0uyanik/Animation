@@ -138,6 +138,14 @@ her renders are the slowest.
 5. **Not hair:** the face is longer and the skin darker/more orange than the turnaround (unchanged boy build under
    `character_neutral/1`); the head proportions make the hair look relatively larger.
 
+6. **Not compared against the boy close-up upload.** `assets/characters/boy_yellow_hoodie/references/uploads/
+   01_closeups_hair_top_crown_face_fleece_2026-11-17.webp` (top-down view, crown close-up) reached this branch with
+   the staging merge after the iterations were done, so round 2 was not tuned against it. A visual check afterwards
+   shows: (a) the clumps radiate as a rosette from a whorl near the **top** of the head, while my flow pole sits at
+   the back crown (az 180°, el 66°); (b) the clumps are long, rounded-tip petals with visible fibre wisps, longer and
+   more separated than mine; (c) the crown tufts are petals curling up out of that whorl. Matching it needs a
+   further iteration (pole near el ~80°, longer petal clumps, crown tufts around the whorl).
+
 ### Girl
 1. **Fringe:** now covers the forehead to the brows, but reads as a full, even fringe; the reference is clearly
    side-swept from the part with a rolled edge and a little forehead showing on the sweep side.
