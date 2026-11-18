@@ -83,7 +83,10 @@ def test_claims():
            "task file parsed (Not: excluded)")
     real = I.load_claims()
     # The live claims table changes as tasks start and finish: check that it parses, not which tasks it lists.
-    expect(len(real) >= 1 and all(c.task.startswith("T-") and c.write_set for c in real), "OWNERSHIP.md parses")
+    # An empty table is valid (no task running); the header must still be there so new rows parse.
+    header = "| Task | Lane | Branch | Write-set | Depends on | Versions bumped |"
+    ownership = (ROOT / "docs" / "process" / "OWNERSHIP.md").read_text(encoding="utf-8")
+    expect(header in ownership and all(c.task.startswith("T-") and c.write_set for c in real), "OWNERSHIP.md parses")
 
 
 def test_tiers():
