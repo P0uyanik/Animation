@@ -1,6 +1,7 @@
 // T-047: the collision system (scene/collision.h): one collision body per character, derived from the package (or
 // read from its export/6 "collision" block), queried for clearance, and used by the arm planner (interaction.cpp) so
-// that clip, hand-keyed and IK arms stay outside the body, smoothly, while contacts stay exact.
+// that clip, hand-keyed and IK arms stay outside the body, smoothly, while contacts stay exact. T-082: the elbow
+// swing limit (block field and scene override).
 #include <doctest/doctest.h>
 
 #include <filesystem>
@@ -263,4 +264,44 @@ TEST_CASE("collision planning: the collision action is checked like any action")
   auto r = ev.load(s, EvalOptions{2.5f, 1.0f, false, 0});
   REQUIRE_FALSE(r);
   CHECK(r.error().message.find("ghost") != std::string::npos);
+}
+
+TEST_CASE("collision body: the elbow swing limit (T-082) is block data with a shared default and a scene override") {
+  auto ev = load(baseScene(kBoy));
+  const auto& ci = ev->characters()[0];
+  const Skeleton& sk = ci.asset.skeleton;
+  const CollisionBody D = deriveCollisionBody(sk, ci.rig.meshes);
+  CHECK(glm::degrees(D.maxElbowSwing) == doctest::Approx(kDefaultMaxElbowSwingDeg));
+  Json block = collisionBodyToJson(D, sk);
+  CHECK(block["max_elbow_swing_deg"].get<float>() == doctest::Approx(kDefaultMaxElbowSwingDeg));
+  block["max_elbow_swing_deg"] = 45;
+  auto R = collisionBodyFromJson(block, sk);
+  REQUIRE(R);
+  CHECK(glm::degrees(R->maxElbowSwing) == doctest::Approx(45.0f));
+  block.erase("max_elbow_swing_deg");  // optional: a T-047 block gets the shared default
+  R = collisionBodyFromJson(block, sk);
+  REQUIRE(R);
+  CHECK(glm::degrees(R->maxElbowSwing) == doctest::Approx(kDefaultMaxElbowSwingDeg));
+  for (float bad : {-1.0f, 150.0f}) {
+    block["max_elbow_swing_deg"] = bad;
+    CHECK_FALSE(collisionBodyFromJson(block, sk));
+  }
+  // the scene's collision action overrides it per character for the shot; a bad value is a load error
+  Scene s = baseScene(kBoy);
+  s.actions = Json::parse(R"([{"type": "collision", "character": "a", "maxElbowSwingDeg": 12}])");
+  auto o = load(s);
+  REQUIRE(o->clearanceModel(0));
+  CHECK(glm::degrees(o->clearanceModel(0)->collision.maxElbowSwing) == doctest::Approx(12.0f));
+  for (const char* bad : {R"([{"type": "collision", "character": "a", "maxElbowSwingDeg": 200}])",
+                          R"([{"type": "collision", "character": "a", "maxElbowSwingDeg": "wide"}])"}) {
+    Scene b = baseScene(kBoy);
+    b.actions = Json::parse(bad);
+    SceneEvaluator e;
+    auto r = e.load(b, EvalOptions{2.5f, 1.0f, false, 0});
+    REQUIRE_FALSE(r);
+    CHECK(r.error().message.find("maxElbowSwingDeg") != std::string::npos);
+  }
+  // a limited swing never clears more than the full range
+  const auto rest = restGlobals(sk);
+  CHECK(swungArmGap(*o->clearanceModel(0), rest, 'R', glm::radians(5.0f)) <= swungArmGap(*o->clearanceModel(0), rest, 'R') + 1e-6f);
 }

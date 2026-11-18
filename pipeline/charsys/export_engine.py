@@ -46,7 +46,8 @@ FORMAT, VERSION = "plush.imported_character", 1
 #    an embedded spec (test data) export as EXPORTER_DEFAULT.
 # 6 (T-047): export/5 + the "collision" block (one collision body per character: torso sections and limb capsules,
 #    collision_block() below; engine/scene/collision.h). Opt-in by pinning export/6; export/4 and export/5 output is
-#    unchanged byte for byte.
+#    unchanged byte for byte. T-082 adds the block's "max_elbow_swing_deg" (export/6 is not registered yet, so no
+#    released package carries a block without it).
 EXPORTER_VERSION = "4"
 EXPORTER_DEFAULT = "5"
 EXPORTER_COLLISION = "6"
@@ -329,6 +330,9 @@ def eye_pivots(rig, root, skel_by_source, canonical=False):
 # bone's rest head. Inputs: the exported skeleton (engine names, parents, heads) and per mesh the exported rest
 # positions (engine axes, float32 as written), joints and weights.
 COLLISION_MARGIN = 0.005
+# Largest elbow swing the engine's arm planner may use (T-082; engine/scene/collision.h kDefaultMaxElbowSwingDeg):
+# the shared default, written into the block so a character version freezes it (a spec-level value can replace it).
+COLLISION_MAX_ELBOW_SWING_DEG = 30.0
 LIMB_RADIUS_QUANTILE = 0.5
 
 
@@ -507,7 +511,8 @@ def collision_block(skel, mesh_arrays):
         sct["r1"], sct["r2"] = round(sct["r1"], 6), round(sct["r2"], 6)
     for lb in limbs:
         lb["a"], lb["b"], lb["r"], lb["allowance"] = rnd(lb["a"]), rnd(lb["b"]), round(lb["r"], 6), round(lb["allowance"], 6)
-    return {"format": "plush.collision_body", "version": 1, "margin": COLLISION_MARGIN, "sections": sections, "limbs": limbs}
+    return {"format": "plush.collision_body", "version": 1, "margin": COLLISION_MARGIN,
+            "max_elbow_swing_deg": COLLISION_MAX_ELBOW_SWING_DEG, "sections": sections, "limbs": limbs}
 
 
 def main():

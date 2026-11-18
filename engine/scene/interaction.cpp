@@ -1303,9 +1303,9 @@ void SceneEvaluator::armClearancePass(Clip& gen, const InteractionContext& ctx) 
       gen.tracks[who + "/collision.push." + sk.bones[size_t(A.hand)].name].keys = std::move(pk);
       // 3. torso lean (T-082): frames the limited swing and the wrist push leave short (a held-still hand-over, where
       // the wrist may not move) get a small lean of the upper body away from the forearm. Per frame the smallest lean
-      // (kLeanStep steps up to kLeanMax) whose limited swing clears the arm; then the smallest envelope above it with
-      // a rate of at most kLeanRate per frame (direction: the need-weighted mean, as the arm lift). The IK keeps the
-      // wrists where they are, so contacts and holds stay exact.
+      // (kLeanStep steps up to kLeanMax, eight level directions) whose limited swing clears the arm; then, per span of
+      // such frames, one direction and the smallest envelope above the needs with a rate of at most kLeanRate per
+      // frame. The IK keeps the wrists where they are, so contacts and holds stay exact.
       if (const int spine = sk.find("spine"); spine >= 0) {
         constexpr float kLeanMax = 8.0f, kLeanStep = 0.25f, kLeanRate = 0.5f;  // degrees, degrees per frame
         const std::string leanTrack = who + "/spine.rot";
@@ -1347,17 +1347,27 @@ void SceneEvaluator::armClearancePass(Clip& gen, const InteractionContext& ctx) 
           anyLean |= needLean[i] != vec3(0);
         }
         if (anyLean) {
-          std::vector<float> mag(static_cast<size_t>(n)), env(static_cast<size_t>(n));
-          for (int i = 0; i < n; ++i) env[size_t(i)] = mag[size_t(i)] = glm::length(needLean[size_t(i)]);
-          for (int i = 1; i < n; ++i) env[size_t(i)] = std::max(env[size_t(i)], env[size_t(i - 1)] - kLeanRate);
-          for (int i = n - 2; i >= 0; --i) env[size_t(i)] = std::max(env[size_t(i)], env[size_t(i + 1)] - kLeanRate);
-          for (int i = 0; i < n; ++i) {
-            vec3 dir(0);
-            for (int k = 0; k < n; ++k) {
-              const float wk = mag[size_t(k)] - kLeanRate * float(std::abs(i - k));
-              if (wk > 0) dir += wk * needLean[size_t(k)] / mag[size_t(k)];
+          // One direction per contiguous span of frames that need a lean (the need-weighted mean, so the direction
+          // never turns between frames); its size is the smallest envelope above the span's needs with a rate of at
+          // most kLeanRate per frame.
+          std::fill(lean.begin(), lean.end(), vec3(0));
+          for (int i = 0; i < n;) {
+            if (needLean[size_t(i)] == vec3(0)) {
+              ++i;
+              continue;
             }
-            lean[size_t(i)] = glm::length(dir) > 1e-9f ? glm::normalize(dir) * env[size_t(i)] : vec3(0);
+            int j = i;
+            vec3 dir(0);
+            for (; j < n && needLean[size_t(j)] != vec3(0); ++j) dir += needLean[size_t(j)];
+            if (glm::length(dir) > 1e-6f) {
+              dir = glm::normalize(dir);
+              std::vector<float> env(static_cast<size_t>(n), 0.0f);
+              for (int k = i; k < j; ++k) env[size_t(k)] = std::max(0.0f, glm::dot(needLean[size_t(k)], dir));
+              for (int k = 1; k < n; ++k) env[size_t(k)] = std::max(env[size_t(k)], env[size_t(k - 1)] - kLeanRate);
+              for (int k = n - 2; k >= 0; --k) env[size_t(k)] = std::max(env[size_t(k)], env[size_t(k + 1)] - kLeanRate);
+              for (int k = 0; k < n; ++k) lean[size_t(k)] += dir * env[size_t(k)];
+            }
+            i = j;
           }
           setLean(lean);
           // The planned lean itself (euler degrees), for measurements; nothing evaluates it.

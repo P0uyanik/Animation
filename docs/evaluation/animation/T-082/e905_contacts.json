@@ -1,0 +1,18 @@
+{
+ "planned": {
+  "boy_grasp_f17_mm": 4.2146846681134775e-05,
+  "boy_held_f17_51_max_mm": 0.00024360093811992556,
+  "girl_grasp_f46_mm": 0.0001982907997444272,
+  "girl_held_f46_72_max_mm": 0.0002003729168791324,
+  "prop_jump_at_switches_mm": 0.0001854057190939784,
+  "warnings": []
+ },
+ "unplanned": {
+  "boy_grasp_f17_mm": 4.2146846681134775e-05,
+  "boy_held_f17_51_max_mm": 0.00025334712699986994,
+  "girl_grasp_f46_mm": 7.216398080345243e-05,
+  "girl_held_f46_72_max_mm": 7.563806866528466e-05,
+  "prop_jump_at_switches_mm": 0.00018907454796135426,
+  "warnings": []
+ }
+}
