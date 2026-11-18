@@ -1,7 +1,18 @@
-# ▶ ROUND 2 (2026-11-18, new Supervisor session_01NPjxeNGwvGuevzV1aTjiEo): NO CODEX ASSIGNMENT RIGHT NOW
-T-084 is DONE and merged. Codex stays idle until a new block appears at the top of this file. Planned: independent
-reviewer at the end of round 2 Phases B and C. Report lines (`| T-NNN | READY/BLOCKED/STATUS |`) still go to
-`RELAY_LOG.md`; only READY, BLOCKED and STATUS lines are posted to PR #2 now.
+# ▶ T-090 — NEW CODEX ASSIGNMENT (owner-ordered 2026-11-18 ~16:20Z, round 2 Supervisor session_01NPjxeNGwvGuevzV1aTjiEo)
+Codex does **only T-090: reference-fit optimiser** (round 2 Phase B, B2).
+
+1. `git fetch origin` and read the task file: `git show origin/integration/round2-bc:docs/tasks/T-090.md`
+   (it reaches main shortly; the round 2 plan is `docs/process/ROUND2_PLAN.md`, review procedure
+   `docs/process/REVIEW_RECIPE.md`).
+2. Create branch `t-090-codex-fit-optimiser` from `origin/main` (12559bb or newer) in a new worktree on C:
+   (e.g. `C:/AnimationWT/t090-codex`). Never write on D:, never touch the owner's personal files.
+3. Write only `tools/fit/**` (incl. `tools/fit/tests/**`) and `docs/evaluation/characters/T-090/**`. Never change
+   character specs, published versions, frozen files or tests outside `tools/fit/`. Cheap Workbench renders only
+   (Blender 5.3 on the PC); evidence JPEG ≤ 2048 px.
+4. Use the model you used for T-084 (Astra).
+5. Post `<UTC> | T-090 | STARTED | t-090-codex-fit-optimiser | input <sha> | started` to `RELAY_LOG.md` now. When
+   done: push the branch, then `<UTC> | T-090 | READY | t-090-codex-fit-optimiser@<sha> | input <sha> | <headline>`
+   (BLOCKED with the question if stuck). Only READY/BLOCKED/STATUS lines reach the Supervisor.
 
 ---
 # ▶ T-084 — NEW CODEX ASSIGNMENT (owner-ordered 2026-11-18, Supervisor): independent PROJECT AUDIT
