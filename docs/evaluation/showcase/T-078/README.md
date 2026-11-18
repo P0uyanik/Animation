@@ -9,7 +9,7 @@ No system, spec, preset or published version was changed. Blender: **bpy 5.3.0 m
 - **Video:** [T-078_progress_current_vs_new.mp4](T-078_progress_current_vs_new.mp4) — 1280×720, 24 fps, H.264,
   5.0 s (shot frames 13–132). Left: **current approved** (boy 1.1.0 · girl 0.10.0). Right: **new versions**
   (boy 2.0.0 · girl 0.11.0, not yet approved).
-- **Still sheet:** [T-078_still_sheet.jpg](T-078_still_sheet.jpg) (frame __STILL__, 1280×838 JPEG) with the caption.
+- **Still sheet:** [T-078_still_sheet.jpg](T-078_still_sheet.jpg) (frame 99, the wave, 1280×838 JPEG) with the caption.
 
 ![still](T-078_still_sheet.jpg)
 
@@ -53,7 +53,7 @@ round 2 via T-070's post-build tool). They rendered correctly (11 frames, not us
 - Cycles CPU (4 cores), **16 spp + OIDN** (run_shot's review settings), every **2nd frame** rendered and held
   (60 renders per side) — the task's budget option. `tools/render_step.py` renders the run_shot `shot.blend`
   (run_shot has no frame step).
-- Time per frame: current ≈ __TCUR__ s, new ≈ __TNEW__ s (wall clock, 640×720).
+- Time per frame: current ≈ 36 s, new ≈ 55 s (wall clock, 640×720; the first ~13 current frames shared the CPU with another render). Total ≈ 36 min + 55 min.
 - Composite: `tools/compose.py` (labels, divider, ffmpeg libx264 CRF 18).
 
 ## Known gaps (honest list)
@@ -63,7 +63,15 @@ round 2 via T-070's post-build tool). They rendered correctly (11 frames, not us
    (`IndexError` in `eye_pivots`). Worked around for the superseded candidates only, with
    `tools/clean_stale_weights.py` (in-folder). The final 2.0.0 / 0.11.0 builds do not show it (normal build path);
    the shared fix is T-079.
-2. __VISUAL_GAPS__
+2. **What still looks off on the new side (seen in the video):**
+   - Boy hair (round 3): reads as a ragged, spiky charcoal mass; some crown tips look stringy rather than the
+     rounded fleece tufts of the turnaround.
+   - Boy clothes: the fleece fibres on the hoodie and especially the trousers look fuzzy/hairy, not smooth felt.
+   - During the reach and touch (about 1.0–2.2 s) both characters bow their heads far enough that the hair hides the
+     faces. This happens on both sides, so it comes from the shot animation, not the new versions.
+   - Girl: while her right arm reaches, the open vest flares away from the body; the round-3 ringlets are softer and
+     browner (closer to the references) but the bun surface is fuzzy.
+   - Boots are unchanged (no approved boot candidate, T-081).
 3. Every 2nd frame is held, so motion is 12 renders/s inside a 24 fps video (slight stepping on fast arm moves).
 4. Right-side specs are not on staging yet (see above); the shot file pins them with a `legacy_reason`.
 
