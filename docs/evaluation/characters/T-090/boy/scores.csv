@@ -1,0 +1,42 @@
+view,measure,start,best
+all,score / 100,67.69563503480197,70.53324432025376
+val27_front,score,71.75990192857911,74.13125361256098
+val27_front,figure_iou,0.8532673715523652,0.8585216674619356
+val27_front,eye_iou,0.35135135135135137,0.420533070088845
+val27_front,brow_inner_L error (head heights),0.08341378419057675,0.09228560283311961
+val27_front,brow_inner_R error (head heights),0.08181780777338611,0.08853952638987678
+val27_front,brow_outer_L error (head heights),0.09896662127506069,0.10848261815471154
+val27_front,brow_outer_R error (head heights),0.10181626232692757,0.10959214577961193
+val27_front,chin error (head heights),0.004976559098614776,0.009580980783141681
+val27_front,eye_L error (head heights),0.03957537392814726,0.03943491574327149
+val27_front,eye_R error (head heights),0.03195474168126534,0.029155141446524126
+val27_front,eye_inner_L error (head heights),0.058938041886144904,0.0551204444499174
+val27_front,eye_inner_R error (head heights),0.05218362227024028,0.045970059804445955
+val27_front,eye_outer_L error (head heights),0.05515006891514635,0.05329383337562715
+val27_front,eye_outer_R error (head heights),0.043515187109961835,0.04684177671048496
+val27_front,mouth error (head heights),0.013607974622914328,0.022404681069459493
+val27_front,nose error (head heights),0.007765600524077084,0.015820952721170317
+val27_threequarter_right,score,69.78212316715926,74.73526732922605
+val27_threequarter_right,figure_iou,0.8675449878912179,0.8721924696932573
+val27_threequarter_right,eye_iou,0.28604382929642447,0.4304635761589404
+val27_threequarter_right,brow_inner_L error (head heights),0.10159631254309348,0.10591867555928164
+val27_threequarter_right,brow_inner_R error (head heights),0.08112241937930617,0.08909268410234635
+val27_threequarter_right,brow_outer_L error (head heights),0.10441523043736646,0.1102899956330612
+val27_threequarter_right,brow_outer_R error (head heights),0.09533788477453814,0.09980800632021802
+val27_threequarter_right,chin error (head heights),0.06776630371296537,0.06560500834698464
+val27_threequarter_right,eye_L error (head heights),0.04196554522953587,0.03759520978894988
+val27_threequarter_right,eye_R error (head heights),0.034768991921566524,0.03519539454241571
+val27_threequarter_right,eye_inner_L error (head heights),0.06304924428685665,0.051963131526533986
+val27_threequarter_right,eye_inner_R error (head heights),0.014709672253547156,0.00958865629817711
+val27_threequarter_right,eye_outer_L error (head heights),0.04649094143550548,0.04415212479373161
+val27_threequarter_right,eye_outer_R error (head heights),0.08679051179417249,0.08598640811600533
+val27_threequarter_right,mouth error (head heights),0.012888555142648332,0.01780173435717763
+val27_threequarter_right,nose error (head heights),0.03072497533614381,0.03477730829552397
+val27_side_right,score,61.54488000866753,62.73321201897427
+val27_side_right,figure_iou,0.7824053936494128,0.7877933629832364
+val27_side_right,eye_iou,0.12222222222222222,0.15422885572139303
+val27_side_right,chin error (head heights),0.13431593815241374,0.1330670341224637
+val27_side_right,eye_R error (head heights),0.03443011167688037,0.03469759953139696
+val27_side_right,eye_inner_R error (head heights),0.0031296840141407842,0.0016595376622865255
+val27_side_right,eye_outer_R error (head heights),0.07895454574671382,0.08416365384444198
+val27_side_right,nose error (head heights),0.040575798467894685,0.04654146551641585
