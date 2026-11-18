@@ -1,0 +1,137 @@
+{
+ "override": {
+  "clothing": {
+   "generator": "garment/1",
+   "provenance": "T-068 type demonstration: gathered skirt with hem rib (girl_white_hair_blue_dress d09_dress / c15_front) on the girl's body; values are my estimates.",
+   "description": [
+    "cream collared blouse, puffy long sleeves, cuffs, 4-5 buttons",
+    "open dusty-rose boucle vest, dark embroidered motifs, patch pockets, wooden buttons",
+    "sage felted bloomer shorts, gathered cuffs, 3 waist buttons",
+    "brown fleece boots, darker soles"
+   ],
+   "hide_body_faces": true,
+   "mask_margin_m": 0.015,
+   "collision": {
+    "enabled": true,
+    "offset_m": 0.002,
+    "radius_m": 0.08,
+    "falloff_m": 0.02,
+    "passes": 3
+   },
+   "max_influences": 4,
+   "defaults": {
+    "thickness_m": 0.002,
+    "ease_m": 0.008,
+    "seam_radius_m": 0.0012
+   },
+   "garments": [
+    {
+     "type": "dress",
+     "name": "dress",
+     "ease_m": 0.012,
+     "sleeve_length": 0.95,
+     "sleeve_puff_m": 0.016,
+     "sleeve_puff_peak": 0.6,
+     "length": 0.42,
+     "flare": 0.1,
+     "shoulder_width": 1.0,
+     "armhole": "closed",
+     "collar": {
+      "type": "round",
+      "width_m": 0.032,
+      "gap_m": 0.008,
+      "slope": 0.45,
+      "tip_round": 0.6
+     },
+     "gathers": {
+      "count": 14,
+      "depth_m": 0.014,
+      "waist_depth_m": 0.002
+     },
+     "bands": {
+      "cuff": true,
+      "cuff_radius_m": 0.005,
+      "waist": true,
+      "hem_rib": {
+       "height_m": 0.02,
+       "ridges": 72,
+       "relief_m": 0.0012,
+       "gather": 0.7,
+       "lift_m": 0.0015
+      }
+     },
+     "material": {
+      "preset": "cotton knit",
+      "base_color_srgb": [
+       150,
+       178,
+       214
+      ],
+      "reference_size_m": 0.2
+     },
+     "edge_finish": "rounded"
+    },
+    {
+     "type": "boots",
+     "name": "boots",
+     "height": 0.45,
+     "ease_m": 0.022,
+     "cuff": true,
+     "bands": {
+      "cuff": true,
+      "cuff_radius_m": 0.009
+     },
+     "sole": {
+      "thickness_m": 0.008,
+      "width_m": 0.004
+     },
+     "material": {
+      "preset": "boot fleece",
+      "base_color_srgb": [
+       132,
+       88,
+       68
+      ],
+      "reference_size_m": 0.15,
+      "overrides": {
+       "surface": {
+        "sheen_weight": 0.25
+       }
+      }
+     },
+     "materials": {
+      "band": {
+       "preset": "boot fleece",
+       "base_color_srgb": [
+        138,
+        94,
+        74
+       ],
+       "reference_size_m": 0.15,
+       "overrides": {
+        "surface": {
+         "sheen_weight": 0.25
+        }
+       }
+      },
+      "sole": {
+       "preset": "felt",
+       "base_color_srgb": [
+        78,
+        52,
+        42
+       ],
+       "reference_size_m": 0.15
+      }
+     },
+     "shaft_width_m": 0.012,
+     "toe_volume_m": 0.014,
+     "edge_finish": "rounded"
+    }
+   ]
+  },
+  "metadata": {
+   "status": "T-068 type demonstration only (not an outfit proposal; unpublished, not approved)"
+  }
+ }
+}

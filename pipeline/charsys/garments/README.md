@@ -41,7 +41,7 @@ The character spec uses this shape:
 ```
 
 Supported item types are `top`/`shirt`, `vest`, `shorts`, `trousers`,
-`dress`, `skirt`, `shoes`, and `boots`. Ratios (`sleeve_length`, `length`,
+`dress`, `skirt`, `shoes`, `boots`, `hoodie` (T-058), `sneakers` and `backpack` (T-068, below). Ratios (`sleeve_length`, `length`,
 `height`) are in `[0, 1]` over the corresponding limb span. Metric overrides
 use a `_m` suffix. Shared fields are `thickness_m`, `ease_m` (alias
 `offset_m`), `bands`, `seam_lines`, and `material`.
@@ -227,3 +227,56 @@ survives denoising.
 It is enabled on `felt`, `woven cotton`, `cotton knit`, `denim`, `fleece` and `boot fleece`. `skin-felt` carries a
 tuned block that is disabled: a character opts in with `"overrides": {"surface_detail": {"enabled": true}}`. It works
 on any garment or skin assignment through the same overrides.
+
+## Garment detail types (T-068)
+
+All generic and opt-in; with none of these types or fields, every existing spec builds exactly as before (no
+character data in the code, every size is spec data scaled by the generic body measures).
+
+**`sneakers`** (`garments/sneakers.py`). A low chunky shoe built around the `body_generic` foot rather than offset
+from it, so it reads as a sneaker whatever the foot shape. Parts per foot: `main.<side>` (the upper: a dome over a
+superellipse plan, open around the ankle), `sole.<side>` (a flat slab whose rim wraps up the upper), `toe_cap.<side>`
+(a cap over the front of the upper; its edge follows the region boundary, not the face grid), `laces.<side>_<k>`,
+`collar.<side>` (a padded roll around the opening) and `tongue.<side>`. Fields: `height_m`, `length_extra_m`,
+`width_extra_m`, `plan_n`, `dome_n`, `toe_flare`, `toe_drop`, `sole {thickness_m, wrap_m, margin_m}`,
+`opening {radius_m, length_m, offset_m}`, `toe_cap {length, slope, thickness_m}`, `laces {count, radius_m, span,
+start, end}`, `collar {radius_m, rise_m, falloff_m, back_share}` (the upper rises around the opening into an ankle
+collar, more at the heel), `tongue {width_m, thickness_m}`; any block can be `false`. Material parts: `main`, `sole`,
+`toe_cap` (else `sole`), `laces` (else `band`, else `sole`), `collar`, `tongue` (else `main`). Pieces are rigid to the
+foot; the foot inside the shoe is recorded as covered (masked when `hide_body_faces`).
+
+**`backpack`** (`garments/backpack.py`). Worn through the clothing list, after the garments it sits on: the bag
+(`main`, a superellipsoid whose body side is flattened onto the outer clothing) lies on the upper back, with a front
+`pocket`, `zip.main`/`zip.pocket` with pullers and a top `handle`. Two `strap.<side>` run from under the bag's top
+edge over the shoulder, down the front of the chest and back under the arm into the bag's side. The strap path is
+projected from the torso skin through the clothing layers lying on it (`straps.layer_gap_m`; a sleeve beyond a larger
+gap is never used) and passes under a hood. Bag, pocket, zips and handle are rigid to the upper back; every strap
+vertex copies the weights of the nearest torso vertex (`ps_body_vertex`), never an arm vertex. Fields: `width_m`,
+`height_m`, `depth_m`, `top_drop_m`, `clearance_m`, `roundness`, `puff`, `pocket {width, height, depth_m, drop}`,
+`zip {radius_m, puller_m}`, `straps {width_m, thickness_m, shoulder, front_drop_m, lift_m, layer_gap_m}`,
+`handle {radius_m, width_m}`. Material parts: `main`, `pocket`, `strap`, `zip` (else `band`), `puller` (else `zip`),
+`handle` (else `strap`). A backpack covers no skin (`mask_body` is rejected). `accessories.py` (`accessories/1`)
+rejects a `backpack/1` item with a pointer here: accessories are rigid to the head bone.
+
+**Hoodie hood volume** (`hood`, `hoodie` only): `rim_back_radius_m` (thicker roll at the back and sides),
+`bag_fullness` (switches the bag to a full pillow whose body side hugs the hoodie and the neck), `bag_rise_m`,
+`bag_taper`, `bag_n`, `bag_gap_m`, `edge_radius_m`, `edge_drop` (the opening-edge roll on the bag). Without
+`bag_fullness` / `rim_back_radius_m` the T-058 hood is built unchanged.
+
+**`armhole: "closed"`** (`top`, `shirt`, `hoodie`, `dress` with sleeves): the torso panel keeps the faces of the
+armhole region, so with a dropped shoulder the sleeve and torso panels meet under the arm and no skin shows there.
+Default `"cut"` (unchanged).
+
+**Gathered skirt with hem rib** (`skirt`, and a `dress`'s skirt): `gathers {count, depth_m, waist_depth_m}` adds soft
+outward folds (fullness) growing from the waist to the hem; `bands.hem_rib {height_m, ridges, relief_m, thickness_m,
+lift_m, gather}` adds a knitted rib band (`band.hem_rib`, material part `band`) over the skirt's lower edge, with
+vertical rib ridges; the folds are drawn in towards the band (`gather` = the share kept at the hem). Either field
+switches the skirt to finer rings; without them the T-018 skirt is built unchanged.
+
+**Vest details**: `pockets.shape: "patch"` (default `"puff"`, the ellipsoid pockets) makes flat patch pockets sewn
+onto the panel, conformed to its surface, with rounded bottom corners (`corner`), a soft bulge (`depth_m`), an
+optional rolled top edge (`top_roll_m`, part `pocket_edge`, else `edge`, else `pockets`) and a gap to the open front
+(`inset_m`); the object names stay `pocket.<side>`, so embroidery targets and pocket buttons work unchanged.
+Embroidery style **`cross_stitch`** is a counted cross-stitch decal from a `pattern` grid (rows of equal length;
+`x` = embroidery material, `o` = accent, `.` = empty; at most 40 x 40) with cell size `stitch_m` (default
+`size_m` / cells); every stitch is conformed to the target surface, so decals wrap curved panels, pockets and boots.
