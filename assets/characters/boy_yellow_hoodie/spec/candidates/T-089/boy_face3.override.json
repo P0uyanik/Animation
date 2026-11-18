@@ -43,7 +43,8 @@
       "soft": 0.1,
       "up_back": -0.1,
       "lo_back": 0.3
-     }
+     },
+     "upper_edge_deg": 14
     },
     "lash": {
      "span_deg": 62,
@@ -60,9 +61,10 @@
     }
    },
    "brows": {
-    "inner": 0.45,
-    "outer": 0.45,
-    "height": 0.95
+    "inner": 0.4,
+    "outer": 0.5,
+    "height": 1.2,
+    "thick_m": 0.0028
    },
    "blink": {
     "overlap_deg": 12
