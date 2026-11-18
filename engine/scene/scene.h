@@ -119,7 +119,7 @@ struct Scene {
 //   "headVolumes": bool      head and hair volumes in each character's collision body (scene/collision.h); the
 //                            characters' heads keep at least headClearance apart (a small, rate-limited neck tilt
 //                            away from the other head, interaction.cpp)
-//   "headClearance": metres  clearance kept between two characters' head volumes (default 0.01, in [0, 0.1])
+//   "headClearance": metres  clearance kept between two characters' head volumes (default 0.03: wool and hair fibres stand off the mesh, in [0, 0.1])
 //   "followSharedProp": bool hand-over: while both hands hold the prop (receiver's contact -> giver's release) the
 //                            giver's palm follows its own socket, wherever the receiver's hand carries the prop
 //   "visibleGrip": bool      grasps keep the held prop visible from the shot camera: the palm meets the prop on its
@@ -127,7 +127,7 @@ struct Scene {
 //                            is not needed: see interaction.cpp)
 struct InteractionOptions {
   bool headVolumes = false;
-  float headClearance = 0.01f;
+  float headClearance = 0.03f;
   bool followSharedProp = false;
   bool visibleGrip = false;
 };

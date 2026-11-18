@@ -377,6 +377,7 @@ TEST_CASE("head volumes: the gap between two heads is signed and follows their d
 
 TEST_CASE("interaction options: the scene switch is checked, saved as written and off by default (T-096)") {
   CHECK(!interactionOptionsFromJson(Json(nullptr))->headVolumes);
+  CHECK(interactionOptionsFromJson(Json{{"headVolumes", true}})->headClearance == doctest::Approx(0.03f));  // default
   auto o = interactionOptionsFromJson(Json{{"headVolumes", true}, {"headClearance", 0.02}, {"followSharedProp", true}, {"visibleGrip", true}});
   REQUIRE(o);
   CHECK(o->headVolumes);

@@ -79,7 +79,7 @@ value is a load error.
 - Neck only: hands, forearms, chest and the neck joint do not move (test: < 0.01 mm).
 - Frames it cannot clear within 15° are reported as a warning: "move them apart".
 - `<who>/collision.headTilt.<other>` records the angle for measurements.
-- **Placement of the hook (Supervisor, please confirm):** `applyHeadTilt` is called from the start of
+- **Placement of the hook (confirmed by the Supervisor):** `applyHeadTilt` is called from the start of
   `applyArmPoles` (interaction.cpp). That point of the pose path is after IK and look-at, so `scene.cpp` stays
   switch-parsing only. A separate one-line call in `kinematicGlobals` would be cleaner, but it is outside the
   write-set. Without the track it is a no-op.
@@ -140,12 +140,14 @@ value is a load error.
 1. **Tilt limit.** 15° clears the e905 hand-over and the lean-in at the e905 spacing. At 0.95 of that spacing the
    lean-in keeps −2.1 mm (volumes; 11.1 mm between vertices) and the engine warns. Closer staging needs re-staging,
    not a larger tilt.
-2. **Visual clearance vs mesh clearance.** Fibres need about 3 cm of mesh clearance to read as apart. Should
-   `headClearance` default to 0.03 for felt characters? The default stays 0.01, as the task names no number.
+2. **Visual clearance vs mesh clearance.** Fibres need about 3 cm of mesh clearance to read as apart, so
+   `headClearance` defaults to **0.03** (Supervisor, 2026-11-18). It is a mesh (volume) clearance. Through the shot
+   camera at f46/f50 the hair masses still overlap in silhouette (the girl stands behind the boy in depth). That is a
+   staging matter, tuned by T-095 (spacing and camera).
 3. **Receiver reach (e905).** The girl's arm is at 103 % of its length after her contact (her idle sway). The drift
    is fixed on the giver's side; moving her ~5 mm closer in `make_shot.py` (T-095/T-082 staging, outside this task)
    would remove the cause.
-4. `applyHeadTilt` placement (4.2): confirm, or approve a one-line `scene.cpp` call.
+4. `applyHeadTilt` placement (4.2): confirmed by the Supervisor (2026-11-18).
 5. `shots/` hold the diagnostic copies with cast `"current"`. Their `build/` folders are not committed (gitignored).
 
 ## 9. Commits
