@@ -7,8 +7,8 @@ Body views: the reference and the aligned render panel of the fidelity tool's pe
 same cameras, 640 px / 32 spp, character_neutral/1, compare variant = arms down). 1.1.0 = the render panel of the
 stored T-064 sheets (docs/evaluation/characters/T-064/boy/sheets, the current fidelity baseline renders); 2.0.0 =
 this task's run. Face close-ups: groom_turnaround.py --closeup front / 3/4 (yaw -35), same camera; the 2.0.0
-close-ups were rendered with the round-2 hair (face identical in round 3), so with <fid20_renders_dir> the face rows
-also get head crops of the round-3 fidelity renders (320 x 640, upscaled; no extra still).
+close-ups for the final sheets are the round-3 build's. Optional <fid20_renders_dir> adds head crops of the fidelity
+renders (used only for an interim sheet before the round-3 close-ups were rendered).
 Reference strip: the 2026-11-17 owner turnaround (boy row) and the boy's close-up upload 01."""
 import os
 import sys
@@ -100,7 +100,7 @@ def main():
         flabs.append("2.0.0 final (round-3 hair, crop)")
         qlabs.append("2.0.0 final 3/4 (val27 cam, crop)")
     fr = row(fcells, flabs, "face close-up, front")
-    fq = row(qcells, qlabs, "face close-up, 3/4 (yaw -35; crop: val27 3/4 camera)")
+    fq = row(qcells, qlabs, "face close-up, 3/4 (yaw -35" + ("; crop: val27 3/4 camera)" if rend else ")"))
     stack([fr, fq], os.path.join(out, "sheet_face.jpg"))
     stack(rows + [fr, fq], os.path.join(out, "owner_sheet.jpg"))
     strip = Image.new("RGB", (turn.width, 700), (238, 238, 238))

@@ -41,8 +41,7 @@ How the stills were made:
   - The 2.0.0 panels come from this task's fidelity run with round-3 hair.
   - The 1.1.0 panels are cropped from the stored T-064 baseline sheets (`docs/evaluation/characters/T-064/boy/sheets`). These are the renders the current baseline score of 66.41 was measured on, so no re-render was needed.
 - **Face close-ups:** `groom_turnaround.py --closeup`, front and yaw −35, centre z 0.80, width 0.36 m, 640 px, 32 spp. Both versions were built in this session.
-  - The 2.0.0 close-ups were rendered **before** the switch to round 3, so they show round-2 hair. The face, skin and eyes are the same in round 3.
-  - Round-3 hair on the face is shown in an extra column: a head crop of the round-3 fidelity renders (320 × 640, upscaled, so it is soft). This keeps within the 24-still budget; see §10.
+  - The 2.0.0 close-ups are from the final round-3 build. They were re-rendered after the switch, under the Supervisor's re-render allowance of ≤ 10 stills for the round-3 update; see §10.
 
 ## 3. Files changed
 | Path | Purpose |
@@ -187,7 +186,7 @@ Tool caveats (data outside this write-set):
 1. **Eyes too small.** The fidelity eye area is 0.56 × the reference. The reference eyes are larger almond shapes with more white showing. This is face v2 data (`eyes.radius_m`, lid gaps). I did not change it because it is the approved T-065 state.
 2. **Cheeks/face.** The reference face is wider and rounder at the cheeks, with strong rosy blush patches. 2.0.0's cheeks are narrower, and its blush is smaller and paler.
 3. **Faint ring around each eye.** This is the socket/lid edge in the face v2 skin, visible in the front close-up. Known from T-065.
-4. **Hair (round 3).** Much closer than round 2: upright pointed crown leaves from a top whorl, and a central fringe clump toward the brows (face sheet, last column). Still different:
+4. **Hair (round 3).** Much closer than round 2: upright pointed crown leaves from a top whorl, and a central fringe clump toward the brows (face sheet). Still different:
    - The outline is larger and wider than the reference (hair outline log2 +0.57).
    - The crown leaves are thinner and more scattered than the reference's few broad petals.
    - The side/back mass is fuller.
@@ -209,14 +208,18 @@ Branch `t-080-claude-boy-2-0-0`:
 - `53ae8ac`: sheets, fidelity, scripts;
 - `5405684`: report, doc-links fix (first READY, round-2 hair);
 - `ee610a3`: round-3 hair, fidelity and sheets updated;
-- the report commit (see the RELAY_LOG line).
+- `39aa35c`: report for round 3, final gate;
+- the round-3 close-ups commit (see the RELAY_LOG line).
 
 ## 10. Resource use
 - **Token usage:** not available.
-- **Cycles evidence-quality stills (32 spp): 24 of the 24 allowed.**
-  - 5: 2.0.0 round-3 fidelity (compare), used.
-  - 5: 2.0.0 round-2 fidelity (compare); superseded by round 3, kept as the round-2 comparison.
-  - 4: close-ups (2 per version), used.
+- **Cycles evidence-quality stills (32 spp): 26 in total.**
+  - First round, 19 of the 24 allowed:
+    - 5: 2.0.0 round-2 fidelity (compare); superseded by round 3, kept as the round-2 comparison.
+    - 4: close-ups (2 per version); the 2.0.0 pair was superseded by round 3.
+  - Round-3 update, 7 of the ≤ 10 the Supervisor allowed:
+    - 5: round-3 fidelity (compare), used.
+    - 2: round-3 face close-ups, used.
   - **10 wasted:**
     - 5: a first 2.0.0 fidelity run on the A-pose master. I built with `--no-compare`, so there was no compare variant. Score 60.65, not comparable.
     - 5: a 1.1.0 fidelity run with the same mistake (60.13).
@@ -233,5 +236,5 @@ python3 tools/fidelity/run.py --character boy_yellow_hoodie --build $W/b20/boy_y
 # 1.1.0 for the close-ups: build_character.py --spec …/boy_yellow_hoodie.spec.json --override …/1.1.0.override.json --out $W/b11
 for v in 11 20; do $B -b --factory-startup -P pipeline/charsys/tools/groom_turnaround.py -- $W/b$v/boy_yellow_hoodie_master.blend \
   <empty {"views":[]}> $W/cu$v --height 640 --samples 32 --closeup 'front:0:0:0,0,0.80:0.36' --closeup 'q34:-35:0:0,0,0.80:0.36'; done
-python3 docs/evaluation/characters/T-080/make_sheets.py $W/fid20/sheets $W/cu11 $W/cu20 docs/evaluation/characters/T-080/sheets $W/fid20/renders
+python3 docs/evaluation/characters/T-080/make_sheets.py $W/fid20/sheets $W/cu11 $W/cu20 docs/evaluation/characters/T-080/sheets
 ```
