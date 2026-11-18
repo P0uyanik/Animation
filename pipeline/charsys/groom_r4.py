@@ -18,7 +18,8 @@ spec.hair (generator "groom/3"): every groom/2 structure type (see groom_hybrid.
                "items": [{"root": [az, el], "tip": [az, el], ...per-mass keys}]   explicit masses, and/or
                "rows":  [{"count", "az": [a0, a1] | "az_list", "el": [lo, hi], "flow": "away"|"down"|"toward",
                           "pole": {"az", "el"}, "len_deg": [lo, hi], "jitter_deg", ...per-mass keys}]}
-              per-mass keys: "width": m | [lo, hi], "depth" (0.8), "lift": [root, peak, tip] (m), "lift_peak" (0.5),
+              per-mass keys: "width": m | [lo, hi], "depth" (0.8), "lift": [root, peak, tip] (m, arch; "lift_peak"
+              0.5) or [root, tip] (rising curve root + (tip - root) s^"lift_power", default 1.6: standing petals),
               "hold" (0.45), "taper_power" (1.6), "flick_m" (outward flick of the last third), "curl_deg"
               (sideways bend), "layer" (int, default 0), "sweep" (0..1: bends the path out along a great circle
               through the tip's side, for swept fringe sections), "root_width" (fraction of width at the root, 0.7)
@@ -132,8 +133,7 @@ def build_masses(st, ctx, R):
         width = _rr(R, p.get("width", 0.08))
         depth = float(p.get("depth", 0.8))
         lift = [float(x) for x in p.get("lift", [0.0, 0.02, 0.01])]
-        if len(lift) == 2:
-            lift = [lift[0], (lift[0] + lift[1]) / 2, lift[1]]
+        lpow = float(p.get("lift_power", 1.6))  # [root, tip]: h = root + (tip - root) s^lift_power (rising petals)
         pk = float(p.get("lift_peak", 0.5))
         hold = float(p.get("hold", 0.45))
         tpow = float(p.get("taper_power", 1.6))
@@ -143,7 +143,7 @@ def build_masses(st, ctx, R):
         sweep = float(p.get("sweep", 0.0))
         rw = float(p.get("root_width", 0.7))
         ang = math.acos(max(-1.0, min(1.0, d0.dot(d1))))
-        arc = sc.radii.length / math.sqrt(3) * max(ang, 0.05) + abs(lift[2] - lift[0])
+        arc = sc.radii.length / math.sqrt(3) * max(ang, 0.05) + abs(lift[-1] - lift[0])
         n = max(8, int(arc / step))
         side = d0.cross(d1)
         side = side.normalized() if side.length > 1e-6 else d0.orthogonal().normalized()
@@ -157,8 +157,14 @@ def build_masses(st, ctx, R):
                 d = (Matrix.Rotation(curl * s * s, 3, d0) @ d).normalized()
             if keep:
                 d, c = _keep_dir(d, keep, float(keep.get("margin_deg", 2.0)))
+                if c and not hit and i >= 4:  # the mass ends where it meets the keep-out (shortened, re-tapered):
+                    # clamping the rest of the path would pile it up at the brow line
+                    hit = True
+                    break
                 hit = hit or c
-            if s <= pk:
+            if len(lift) == 2:
+                h = lift[0] + (lift[1] - lift[0]) * s ** lpow
+            elif s <= pk:
                 h = lift[0] + (lift[1] - lift[0]) * math.sin(0.5 * math.pi * s / pk)
             else:
                 h = lift[1] + (lift[2] - lift[1]) * _smooth((s - pk) / (1 - pk))
@@ -168,13 +174,18 @@ def build_masses(st, ctx, R):
             path.append(pt)
             ups.append(nrm)
         clamped += hit
-        # stable section frame: the width lies along `side` (across the flow), the depth along side x tangent, turned
-        # to the scalp normal's side. The scalp normal alone flips the section where a mass rises steeply (standing
-        # crown petals), which twisted it into a rosette.
+        n = len(path)
+        # stable section frame: the width lies across the actual path along the scalp (normal x tangent; where the
+        # mass rises steeply and that is degenerate, `side`, across the great circle), the depth along width x
+        # tangent turned to the scalp normal's side. The scalp normal alone flipped the section of steep crown petals
+        # (rosettes); a frame from the unclamped path turned the width into the face window where the keep-out
+        # clamps the path along the brow line.
         tang = [(path[min(i + 1, n - 1)] - path[max(i - 1, 0)]).normalized() for i in range(n)]
         frame_ups = []
         for i in range(n):
-            nn = side.cross(tang[i])
+            si = ups[i].cross(tang[i])  # across the actual (clamped, curled) path, along the scalp
+            si = si.normalized() if si.length > 0.3 else side
+            nn = si.cross(tang[i])
             nn = nn.normalized() if nn.length > 1e-6 else ups[i]
             frame_ups.append(nn if nn.dot(ups[i]) >= 0 else -nn)
         ups = frame_ups

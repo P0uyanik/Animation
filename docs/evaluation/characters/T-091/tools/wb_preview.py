@@ -61,6 +61,10 @@ lo = Vector((min(p.x for p in src), min(p.y for p in src), min(p.z for p in src)
 hi = Vector((max(p.x for p in src), max(p.y for p in src), max(p.z for p in src)))
 centre = (lo + hi) / 2
 size = max(hi.x - lo.x, hi.y - lo.y, hi.z - lo.z) * 1.08
+if "--frame" in opt:  # fixed framing "cx,cy,cz,size" (same camera for every build)
+    f = [float(x) for x in opt["--frame"].split(",")]
+    centre, size = Vector(f[:3]), f[3]
+print("FRAME", ",".join(f"{x:.3f}" for x in centre), f"{size:.3f}")
 sc.render.engine = "BLENDER_WORKBENCH"
 sh = sc.display.shading
 sh.light = "STUDIO"
