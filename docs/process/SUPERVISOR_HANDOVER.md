@@ -1,3 +1,8 @@
+> **Status (2026-11-18): reversed by owner decision.** The original Supervisor session
+> `session_01NPjxeNTmHt2DtBN8F8uLqB` is the Supervisor again. Its session cannot receive `send_message`
+> (permanent elevation), so Implementers and the PC relay report via `RELAY_LOG.md` on `relay-channel`
+> (posted to PR #2, which wakes the Supervisor). The contents below remain the reference for a future handover.
+
 # Supervisor handover (2026-11-17, Option A: non-elevated Supervisor)
 
 Read this first, then `docs/process/DELIVERY_PLAN.md`, `docs/process/OWNER_DECISIONS.md`, `docs/ROADMAP.md`,
