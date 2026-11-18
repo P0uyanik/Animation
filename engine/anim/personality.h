@@ -45,6 +45,25 @@ struct PersonalityLimits {
   std::optional<PersonalityRange> headPitchDeg;          // posture head pitch
 };
 
+// T-097B: how a character reacts to events (optional section "reaction", content/personality/SCHEMA.md). Every field
+// is optional; a missing field keeps the shared, character-independent reaction defaults (scene/reaction.h).
+struct PersonalityReactionEvent {
+  std::string emotion;                // emotion name (content/emotions/<name>.emotion.json); "" = the shared default
+  std::optional<float> intensity;     // 0..1 at salience 1 (replaces the shared default of the event)
+  std::optional<float> durationS;     // seconds at salience 1 (replaces the shared default of the event)
+  std::optional<float> gazeShift;     // 0 (looks away) .. 1 (looks at the source) for this event
+  std::vector<std::string> gestures;  // clip library names, most preferred first
+};
+struct PersonalityReaction {
+  std::optional<PersonalityRange> delayFrames;  // notice delay at salience 1 (frames at 24 fps; middle used)
+  std::optional<float> intensityScale;          // multiplies emotion intensity (PersonalityModulation)
+  std::optional<float> tempoScale;              // multiplies notice delay and reaction duration (> 1 = slower)
+  std::optional<float> holdScale;               // multiplies the reaction duration only (on top of tempo)
+  std::optional<float> gazeShift;               // gaze habit for every event without its own
+  std::optional<float> gestureMinIntensity;     // expressed intensity a gesture needs
+  std::map<std::string, PersonalityReactionEvent> events;  // object_appears, partner_acts, success, failure, <custom>
+};
+
 struct PersonalityProfile {
   std::string id;                 // file stem (character id)
   std::string character, profileVersion, status;
@@ -85,6 +104,7 @@ struct PersonalityProfile {
   std::optional<float> smileFrequency, openSmileShare;
   std::string defaultMouth;
   std::vector<std::string> gestures;
+  PersonalityReaction reaction;  // T-097B
   PersonalityLimits limits;
 };
 

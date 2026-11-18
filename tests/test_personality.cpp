@@ -370,3 +370,43 @@ TEST_CASE("personality: reach timing outside the limits, bad values and unknown 
   std::ofstream(bad) << R"({"name": "x", "frameStart": 1, "frameEnd": 2, "characters": [{"name": "a", "asset": "a.json", "personality": 3}]})";
   CHECK_FALSE(loadScene(bad).has_value());
 }
+
+TEST_CASE("personality: the reaction section (T-097B) is optional and typed") {
+  auto none = personalityFromJson(profileJson("{}"), "none");
+  REQUIRE(none.has_value());
+  CHECK_FALSE(none->reaction.delayFrames);
+  CHECK_FALSE(none->reaction.intensityScale);
+  CHECK_FALSE(none->reaction.tempoScale);
+  CHECK_FALSE(none->reaction.holdScale);
+  CHECK_FALSE(none->reaction.gazeShift);
+  CHECK_FALSE(none->reaction.gestureMinIntensity);
+  CHECK(none->reaction.events.empty());
+  auto full = personalityFromJson(profileJson(R"({"reaction": {
+      "delay_frames": {"value": [3, 5], "unit": "frames@24", "kind": "estimate", "source": "test"},
+      "channel_order": {"value": ["eyes", "brows"], "unit": "enum"},
+      "intensity_scale": {"value": 1.2, "unit": "x"}, "tempo_scale": 0.9, "hold_scale": 1.1, "gaze_shift": 0.6,
+      "gesture_min_intensity": 0.5,
+      "events": {"value": {"success": {"emotion": "happy", "intensity": 0.7, "duration_s": 1.2, "gaze_shift": 0.4,
+                                       "gestures": ["nod", {"name": "clap"}]}}}}})"), "full");
+  REQUIRE_MESSAGE(full.has_value(), (full ? "" : full.error().message));
+  const PersonalityReaction& r = full->reaction;
+  CHECK(r.delayFrames->lo == doctest::Approx(3));
+  CHECK(r.delayFrames->hi == doctest::Approx(5));
+  CHECK(*r.intensityScale == doctest::Approx(1.2));
+  CHECK(*r.tempoScale == doctest::Approx(0.9));
+  CHECK(*r.holdScale == doctest::Approx(1.1));
+  CHECK(*r.gazeShift == doctest::Approx(0.6));
+  CHECK(*r.gestureMinIntensity == doctest::Approx(0.5));
+  REQUIRE(r.events.count("success"));
+  const PersonalityReactionEvent& e = r.events.at("success");
+  CHECK(e.emotion == "happy");
+  CHECK(*e.intensity == doctest::Approx(0.7));
+  CHECK(*e.durationS == doctest::Approx(1.2));
+  CHECK(*e.gazeShift == doctest::Approx(0.4));
+  CHECK(e.gestures == std::vector<std::string>{"nod", "clap"});
+  // Shipped profiles: their existing reaction.delay_frames is now typed; nothing else in the section is set.
+  auto boy = loadPersonality(kRoot / "content/personality/boy_yellow_hoodie.json");
+  REQUIRE(boy.has_value());
+  CHECK(boy->reaction.delayFrames->lo == doctest::Approx(4));
+  CHECK(boy->reaction.delayFrames->hi == doctest::Approx(8));
+}
