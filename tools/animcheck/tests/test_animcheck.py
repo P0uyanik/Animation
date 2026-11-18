@@ -3,7 +3,8 @@
 thresholds (ease, onset step, arc), an eased move on an arc round the shoulder must pass; segmentation, projection
 and the gesture windows are checked on known inputs. T-104: the timing rule (timing.py) warns on short beats and
 shots without a hold, never fails. T-053: the personality check (personality.py) on a synthetic
-package (head width from geometry, blinks, double blinks, reach / hold / idle) against a profile's limits."""
+package (head width from geometry, blinks, double blinks, reach / hold / idle) against a profile's limits. T-097C: the
+acting rule (acting.py) flags gesture amplitude, notice delay and missing holds against each profile, never fails."""
 from __future__ import annotations
 
 import json
@@ -18,6 +19,7 @@ sys.path.insert(0, str(HERE.parent))
 import animcheck  # noqa: E402
 import personality  # noqa: E402
 import timing  # noqa: E402
+import acting  # noqa: E402
 
 THRESHOLDS = json.loads((HERE.parent / "thresholds.json").read_text())
 
@@ -267,6 +269,119 @@ class TimingRule(unittest.TestCase):
         for k, v in {"min_chord_mm": 100, "max_ease_ratio": 0.55, "max_jerk": 0.45, "max_first_step": 0.18, "min_arc": 0.10,
                      "min_arc_screen": 0.10, "max_step_mm": 130, "max_rot_step_deg": 45}.items():
             self.assertEqual(THRESHOLDS[k], v)
+
+
+def make_acting_project(tmp: Path, profile: dict, wrist_at=None, actions=(), frames=range(1, 81), events=None):
+    """A project with content/personality/p.json = profile, a package whose right arm is 0.5 m long (upperArm.R head
+    to hand.R head) and, when wrist_at is given, a bake in which hand.R is offset by wrist_at(frame) (head, shoulder still)."""
+    (tmp / "content/personality").mkdir(parents=True)
+    (tmp / "content/personality/p.json").write_text(json.dumps({"format": "plush.personality", "version": 0, **profile}))
+    pkg = tmp / "character.json"
+    pkg.write_text(json.dumps({"skeleton": [{"name": "head", "head": [0, 1.5, 0]}, {"name": "upperArm.R", "head": [0, 1.3, 0]},
+                                            {"name": "hand.R", "head": [0.5, 1.3, 0]}], "meshes": []}))
+    scene = {"name": "acting", "frameRate": [24, 1], "frameStart": frames[0], "frameEnd": frames[-1],
+             "characters": [{"name": "who", "personality": "p"}, {"name": "other"}], "actions": list(actions)}
+    if events is not None:
+        scene["events"] = events
+    bake = None
+    if wrist_at:
+        ident = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+        data = []
+        for f in frames:
+            p = wrist_at(f)
+            m = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, p[0], p[1], p[2], 1]
+            data.append({"frame": f, "camera": {"position": [0, 0.5, 3], "target": [0, 0.5, 0], "up": [0, 1, 0]},
+                         "characters": {"who": {"skin": ident + ident + m, "morphs": []}}})
+        bake = {"format": "plush.shot_bake", "version": 1, "fps": [24, 1], "frames": [frames[0], frames[-1]],
+                "characters": [{"name": "who", "package": str(pkg), "supported": True, "morphs": [],
+                                "bones": ["head", "upperArm.R", "hand.R"]}], "frame_data": data}
+    return scene, tmp / "shot.scene.json", bake
+
+
+def lift(deg, a=20, n=12, back_at=50):
+    """Wrist offset: the 0.5 m arm swings up about the shoulder by `deg` (eased over n frames), still until back_at,
+    eased return over n frames."""
+    def at(f):
+        x = smootherstep(min(max((f - a) / n, 0), 1)) - smootherstep(min(max((f - back_at) / n, 0), 1))
+        t = math.radians(deg * x)
+        return (0.5 * math.cos(t) - 0.5, 0.5 * math.sin(t), 0.0)
+    return at
+
+
+class ActingRule(unittest.TestCase):
+    """T-097C acting rule: limits from each profile, flags only."""
+    REF = timing.load_reference()
+    CLIP = {"type": "clip", "character": "who", "clip": "c", "start": 20, "end": 62, "blendOut": 0}
+
+    def run_rule(self, profile, **kw):
+        with tempfile.TemporaryDirectory() as d:
+            scene, path, bake = make_acting_project(Path(d), profile, **kw)
+            return acting.analyse(scene, path, bake, THRESHOLDS, self.REF)
+
+    def test_gesture_amplitude_within_profile(self):
+        calm = {"energy": {"gesture_amplitude": {"value": 0.3}}}
+        small = self.run_rule(calm, wrist_at=lift(54), actions=[self.CLIP])  # 54 deg = 0.3
+        self.assertEqual(small["characters"][0]["gestures"][0]["amplitude"], 0.3)
+        self.assertEqual(small["warnings"], [])
+        big = self.run_rule(calm, wrist_at=lift(108), actions=[self.CLIP])  # 0.6 > 0.3 + 0.1
+        self.assertEqual(len(big["warnings"]), 1)
+        self.assertIn("amplitude 0.60 (108 deg) > profile 0.3", big["warnings"][0])
+        # limits.gesture_amplitude_max wins over energy.gesture_amplitude
+        wide = self.run_rule({**calm, "limits": {"gesture_amplitude_max": {"value": 0.6}}}, wrist_at=lift(108),
+                             actions=[self.CLIP])
+        self.assertEqual(wide["warnings"], [])
+        # touch / reach go to a target: not a gesture amplitude
+        touch = self.run_rule(calm, wrist_at=lift(108), actions=[{"type": "touch", "character": "who", "hand": "R",
+                                                                  "start": 20, "contact": 32, "end": 50}])
+        self.assertEqual(touch["characters"][0]["gestures"], [])
+
+    def test_first_glance_after_notice_delay(self):
+        prof = {"reaction": {"delay_frames": {"value": [4, 8]}}}
+        partner = {"type": "touch", "character": "other", "hand": "R", "start": 30}
+        early = self.run_rule(prof, actions=[partner, {"type": "look", "character": "who", "start": 1, "end": 31},
+                                             {"type": "look", "character": "who", "start": 31, "camera": True}])
+        self.assertEqual([g["delay_frames"] for g in early["characters"][0]["glances"]], [1.0])
+        self.assertEqual(len(early["warnings"]), 1)
+        self.assertIn("1 f after 'other touch' (f30) < notice delay 4 f", early["warnings"][0])
+        late = self.run_rule(prof, actions=[partner, {"type": "look", "character": "who", "start": 36, "camera": True}])
+        self.assertEqual(late["warnings"], [])
+        # explicit events (ReactionEvent time in seconds) replace partner action starts
+        ev = self.run_rule(prof, actions=[partner, {"type": "look", "character": "who", "start": 27, "camera": True}],
+                           events=[{"time": 1.0, "name": "boat appears"}])  # f1 + 24 = f25
+        self.assertEqual(len(ev["warnings"]), 1)
+        self.assertIn("'boat appears'", ev["warnings"][0])
+        # own actions are no event, a look long after the event is no reaction
+        own = self.run_rule(prof, actions=[{"type": "clip", "character": "who", "clip": "c", "start": 30},
+                                           {"type": "look", "character": "who", "start": 31, "camera": True},
+                                           {"type": "touch", "character": "other", "start": 2}])
+        self.assertEqual(own["warnings"], [])
+
+    def test_quick_character_still_holds(self):
+        quick = {"tempo": {"beat_scale": {"value": 0.85}, "hold_scale": {"value": 1.25}}}
+        need = self.REF["hold"][0] * 1.25
+        ok = self.run_rule(quick, wrist_at=lift(36, a=10, back_at=50))  # still f22-f50: 28 f
+        self.assertTrue(ok["characters"][0]["quick"])
+        self.assertEqual(ok["characters"][0]["hold"]["required"], need)
+        self.assertEqual(ok["warnings"], [])
+        busy = self.run_rule(quick, wrist_at=lambda f: (0.0, 0.006 * f, 0.0))
+        self.assertEqual(len(busy["warnings"]), 1)
+        self.assertIn("quick character never holds", busy["warnings"][0])
+        # the same short hold passes a profile without a hold_scale: the requirement is read from the profile
+        def short(f):  # moving 6 mm/f except still f30-f44: 14 f
+            return (0.0, 0.006 * (min(f, 30) + max(f - 44, 0)), 0.0)
+        self.assertEqual(self.run_rule({}, wrist_at=short)["warnings"], [])
+        self.assertEqual(len(self.run_rule(quick, wrist_at=short)["warnings"]), 1)
+
+    def test_only_warns(self):
+        with tempfile.TemporaryDirectory() as d:
+            scene, path, _ = make_acting_project(Path(d), {"reaction": {"delay_frames": {"value": [4, 8]}}},
+                                                 actions=[{"type": "touch", "character": "other", "start": 30},
+                                                          {"type": "look", "character": "who", "start": 30}])
+            path.write_text(json.dumps(scene))
+            self.assertEqual(acting.main(["--scene", str(path)]), 0)
+            scene["characters"][0]["personality"] = "missing"
+            rep = acting.analyse(scene, path, None, THRESHOLDS, self.REF)
+            self.assertEqual(rep["warnings"], ["who: personality 'missing' not found"])
 
 
 if __name__ == "__main__":
