@@ -66,6 +66,15 @@ def _number(value, label, low=None, high=None):
     return value
 
 
+def _library_preset(name):
+    """T-092: an opt-in id of a later preset family (presets/3) that the material builder resolves."""
+    try:
+        from materials import builder as material_builder
+        return material_builder.is_r2_preset(name)
+    except (ImportError, OSError, ValueError):
+        return False
+
+
 def _assignment(cfg, part="main"):
     value = cfg.get("materials", {}).get(part)
     if value is None and part in ("bodice", "skirt"):
@@ -76,7 +85,7 @@ def _assignment(cfg, part="main"):
         value = {"preset": value}
     if not isinstance(value, dict) or not value.get("preset"):
         raise ValueError(f"garment {cfg.get('name', cfg.get('type'))}.{part} needs a material preset")
-    if value["preset"] not in MATERIAL_PRESETS:
+    if value["preset"] not in MATERIAL_PRESETS and not _library_preset(value["preset"]):  # T-092: presets/3 ids
         raise ValueError(f"unknown garment material preset: {value['preset']}")
     color = value.get("base_color_srgb", cfg.get("base_color_srgb"))
     if color is not None and (not isinstance(color, list) or len(color) != 3 or

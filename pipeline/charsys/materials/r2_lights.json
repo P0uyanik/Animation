@@ -1,0 +1,25 @@
+{
+  "schema": "plush-studio.render-calibration/1",
+  "note": "T-092 judging rigs (this task's own data file; pipeline/charsys/render_calibration.json is read-only and unchanged). Load with render_calibration.load(name, path=<this file>). character_warm_indoor/1 is character_neutral/1 with the same directions, angles, backdrop, view transform and exposure, and warm colour temperatures (ref_42 'Warm Indoor' validation tile); each strength is scaled by Y(neutral kelvin)/Y(warm kelvin) so the luminance of the front-facing irradiance stays that of the neutral rig and only the colour of the light changes.",
+  "profiles": {
+    "character_warm_indoor/1": {
+      "description": "Warm indoor judging rig for T-092 material patches: character_neutral/1 geometry with a 3800 K key, 3200 K fill, 4200 K rim and 4200 K ambient, luminance-normalised to the neutral rig.",
+      "view_transform": "Standard",
+      "look": "None",
+      "exposure": 0.0,
+      "gamma": 1.0,
+      "backdrop_srgb": [96, 92, 95],
+      "backdrop_source": "character_neutral/1 (unchanged, so only the subject's light changes)",
+      "ambient": {"color_kelvin": 4200, "strength": 0.421},
+      "lights": [
+        {"name": "Key", "azimuth_deg": 30, "elevation_deg": 40, "strength": 3.167, "angle_deg": 28, "kelvin": 3800,
+         "source": "character_neutral/1 Key; 2.27 x Y(5800 K) 0.918 / Y(3800 K) 0.658"},
+        {"name": "Fill", "azimuth_deg": -20, "elevation_deg": 10, "strength": 0.883, "angle_deg": 40, "kelvin": 3200,
+         "source": "character_neutral/1 Fill; 0.637 x Y(4800 K) 0.793 / Y(3200 K) 0.572"},
+        {"name": "Rim", "azimuth_deg": 160, "elevation_deg": 35, "strength": 1.755, "angle_deg": 10, "kelvin": 4200,
+         "source": "character_neutral/1 Rim; 1.4 x Y(5600 K) 0.894 / Y(4200 K) 0.713"}
+      ],
+      "azimuth_convention": "camera-relative: 0 = from the camera, +90 = from screen-left, 180 = from behind the subject"
+    }
+  }
+}

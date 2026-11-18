@@ -1,0 +1,35 @@
+{
+ "blender": "5.3.0",
+ "ids": {
+  "boot fleece": "ba48d5c89197ba396a6a0dae0e7afc1737847064c0ee76f6e9ed410ba0099b04",
+  "buttons/plastic": "258ee4131bd94b0ef2de233230b633da0b8b7836520303d9e741c7833d4cbb5b",
+  "cotton knit": "ae53aef8c3b41be66a3696db9df41648eb33363f4b50be49334a2b7d8a7d816a",
+  "denim": "f055eb7e644988f0cb589f359e6432bd163afe6f30ecb01d5442226b62aa51e2",
+  "felt": "f09ee7c9ebcbd253e65ee6e414be8a44ee8dc7105ec13de6db30bb86d4204682",
+  "felt hair": "18cfd85a6b4e841882b2078997b1db55960907b21cf5b6b1afd339cfaa05ee43",
+  "fleece": "0338d7120f1522d59411ca10384627edf74a18a92182decfd698fd050c39ef53",
+  "glasses/acrylic": "181cbf4f9758e80ec23b11c9f9f67d79d8664d56d8839418e52a23dc59d4a74d",
+  "skin-felt": "b797def975d1555040e779c4738ec256cb1e6ebe16ee2d159c93e07efabb82b6",
+  "skin-felt/2": "c16a185b78936099bb12c3ed168dea4e6f96ca3ba5abe3166fa89fe87bbbf734",
+  "wool yarn": "0546f347389de56d23598d811a1488c6c1d002b53364584fa79e249d134a4547",
+  "woven cotton": "dfdfe039b12dba076427b9a29daba38fa3df6274964b204cd655903a848fbe91"
+ },
+ "input_sha": "4910b69",
+ "note": "Node-graph digests (ids) and resolved-preset digests (resolved) of every presets/1 and presets/2 id, written from the input SHA's builder (test_materials_r2_graphs.py --write-golden). Never regenerate from a branch that changes them.",
+ "resolved": {
+  "boot fleece": "28d8f125fb6c7b092aca82ef6f80231c97d1cd94010fe44f22e633e68d6fbd20",
+  "buttons/plastic": "0603a7886cf235df61f6ec0e2504cb7406dd32f2cbc27168d4914a45c8e9edcd",
+  "cotton knit": "32609ff201932dd41f225ff0f9cbb43c30412bd88279449062ea3379ead65688",
+  "denim": "12da3ec76f8c4da689e7adc8fd1d4cd66e49a8156d4249d25f73dfdf7421091d",
+  "felt": "fd2a373b9b5685df89eebc4ecc7a54546d7a38e1c4d5f6feb4d2ffe99255cd90",
+  "felt hair": "f5389a360da89fd067f1b5ab459b8206cdb2d26d9e801cbdef5cce48138ec724",
+  "fleece": "14d0f85d211bacee60c8b9f0d73c6fce812889a9034609ed29cf614ebbfa5196",
+  "glasses/acrylic": "48134b4f635d1ec39dfa9a424281535afe4b4f56cf5d9c2c4ab3fc9072aad9d7",
+  "skin-felt": "b59de0338cef3cca3509e897dabf822a6b4fa80ce76071dcdc069101ab55935b",
+  "skin-felt/2": "2ddccfe33100dd09a42f7b689ad2eb1d9e916e4b3b51487ed45f9aaf41377318",
+  "wool yarn": "6052d371abc826824e172d9a3339009d55bd5b5c9dc5d002c2d4db806dc31f1d",
+  "woven cotton": "e364dd3754c1e858265872382a7977429638ce83b0dbfd4c5fddd11dbeae6705"
+ },
+ "schema": "plush-studio.material-graph-golden/1",
+ "task": "T-092"
+}

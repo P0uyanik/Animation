@@ -1,0 +1,37 @@
+{
+ "schema": "plush-studio.material-patch-plan/1",
+ "task": "T-092",
+ "note": "Before = the slot's assignment in the current approved spec (boy 2.0.0, girl 0.11.0); after = the T-092 candidate override's assignment (presets/3). Targets: the spec's materials.target_colors_srgb (from the original references), the cuff from the G08 owner-accepted design image (AI target, cuff fleece median).",
+ "form_radius_m": 0.06,
+ "elevation_deg": 6,
+ "lights": [
+  {"name": "character_neutral/1", "file": "render_calibration.json", "tag": "neutral"},
+  {"name": "character_warm_indoor/1", "file": "r2_lights.json", "tag": "warm"}
+ ],
+ "materials": [
+  {"label": "boy_hoodie", "target_srgb": [192, 145, 80], "target_source": "boy 2.0.0 materials.target_colors_srgb.hoodie",
+   "before": {"preset": "fleece", "base_color_srgb": [204, 152, 62], "reference_size_m": 0.3},
+   "after": {"preset": "hoodie fleece/3", "base_color_srgb": [204, 152, 62], "reference_size_m": 0.3}},
+  {"label": "boy_trousers", "target_srgb": [40, 33, 32], "target_source": "boy 2.0.0 materials.target_colors_srgb.trousers",
+   "before": {"preset": "fleece", "base_color_srgb": [38, 34, 34], "reference_size_m": 0.3},
+   "after": {"preset": "trouser pile/3", "base_color_srgb": [38, 34, 34], "reference_size_m": 0.3}},
+  {"label": "boy_skin", "target_srgb": [193, 144, 122], "target_source": "boy 2.0.0 materials.target_colors_srgb.skin",
+   "before": {"preset": "skin-felt/2", "base_color_srgb": [236, 190, 166], "reference_size_m": 0.29},
+   "after": {"preset": "skin-felt/3", "base_color_srgb": [236, 190, 166], "reference_size_m": 0.29}},
+  {"label": "girl_vest", "target_srgb": [110, 76, 74], "target_source": "girl 0.11.0 materials.target_colors_srgb.vest_garment",
+   "before": {"preset": "felt", "base_color_srgb": [144, 104, 104], "reference_size_m": 0.3},
+   "after": {"preset": "vest felt/3", "base_color_srgb": [118, 82, 80], "reference_size_m": 0.3}},
+  {"label": "girl_blouse", "target_srgb": [203, 193, 190], "target_source": "girl 0.11.0 materials.target_colors_srgb.shirt",
+   "before": {"preset": "woven cotton", "base_color_srgb": [214, 210, 210], "reference_size_m": 0.3},
+   "after": {"preset": "brushed cotton/3", "base_color_srgb": [214, 210, 210], "reference_size_m": 0.3}},
+  {"label": "girl_shorts", "target_srgb": [99, 107, 100], "target_source": "girl 0.11.0 materials.target_colors_srgb.shorts_garment",
+   "before": {"preset": "woven cotton", "base_color_srgb": [110, 114, 103], "reference_size_m": 0.3},
+   "after": {"preset": "brushed cotton/3", "base_color_srgb": [110, 114, 103], "reference_size_m": 0.3}},
+  {"label": "girl_boot_cuff", "target_srgb": [210, 190, 168], "target_source": "G08 (owner-accepted design, AI target): median of both cream cuffs",
+   "before": {"preset": "boot fleece", "base_color_srgb": [138, 94, 74], "reference_size_m": 0.15, "overrides": {"surface": {"sheen_weight": 0.25}}},
+   "after": {"preset": "cuff fleece/3", "base_color_srgb": [240, 222, 196], "reference_size_m": 0.15}},
+  {"label": "girl_skin", "target_srgb": [202, 176, 169], "target_source": "girl 0.11.0 materials.target_colors_srgb.skin",
+   "before": {"preset": "skin-felt/2", "base_color_srgb": [238, 202, 184], "reference_size_m": 0.29278},
+   "after": {"preset": "skin-felt/3", "base_color_srgb": [238, 202, 184], "reference_size_m": 0.29278}}
+ ]
+}
