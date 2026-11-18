@@ -84,10 +84,13 @@ interaction, a new `content/sets/` experiment folder).
 | 1 | **T-089b** | Face polish: boy regains sleepy heavy lids with the new eye size; girl rounder, fuller face and wider-open eyes | now |
 | 1 | **T-093b** | Garment completion: T-090b boy trousers/shoes proposal as a candidate; girl shorts leg-split control, then re-fit | now |
 | 1 | **T-104** | Animation timing calibration (running since ~21:40Z) | running |
-| 2 | **T-097S** | Acting system (shared): reaction model, emotion modulation by profile, blending, animcheck signature checks; formats and code only | when T-104 merges |
-| 3 | **T-097B / T-097G** | Boy / girl acting, each only its own character's files (boy subtle, delayed interest; girl cheerful, alert, open "delighted" mouth for acting beats) | after T-097S |
-| 4 | **T-094** | Boy 2.1.0 and girl 0.12.0 (T-089 + T-089b, T-092, T-093 + T-093b, T-091) via the T-088 script; e907 re-render with T-097B/G acting; owner approves before current | after T-091, T-089b, T-093b are owner-approved |
-| — | **T-106** | Codex: reference performance extraction (MediaPipe) as calibration targets for T-097B/G and T-104 | now |
+| 2a | **T-097-0** | Acting interface (Supervisor): `engine/scene/acting.h` + build stubs, merged first | done first |
+| 2b | **T-097A** | Emotion blending: continuous state, cross-fades; emotions drive face, posture, gaze and tempo together | after T-097-0 |
+| 2b | **T-097B** | Personality-driven reactions: event -> notice delay, emotion, intensity, gesture, gaze habit, duration | when T-104 merges |
+| 2b | **T-097C** | Acting signature and consistency checks in animcheck (flag only) | when T-104 merges and a slot frees up |
+| 3 | **T-097-boy / T-097-girl** | Boy / girl acting, each only its own character's files (boy subtle, delayed interest; girl cheerful, alert, open "delighted" mouth for acting beats) | after T-097A and T-097B |
+| 4 | **T-094** | Boy 2.1.0 and girl 0.12.0 (T-089 + T-089b, T-092, T-093 + T-093b, T-091) via the T-088 script; e907 re-render with T-097-boy/girl acting; owner approves before current | after T-091, T-089b, T-093b are owner-approved |
+| — | **T-106** | Codex: reference performance extraction (MediaPipe) as calibration targets for T-097-boy/girl and T-104 | now |
 
 ---: | --- | --- | --- | --- |
 | D1 | **T-091** | **Hair round 4 (groom data and algorithm):**<br>- fewer, larger, overlapping masses (footprint, depth, overlap, taper before fibre count);<br>- boy: crown petals with deep channels;<br>- girl: centre parting with two swept sections, soft back transition, narrower silhouette, ringlet taper;<br>- a bounded directional-fibre experiment;<br>- the face keep-out test stays. | [C+S] (+ directional fibres [C]) | M |

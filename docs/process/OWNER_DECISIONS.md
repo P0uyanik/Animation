@@ -337,9 +337,16 @@ Owner: "yes pass it to the supervisor and approve T-106 for codex". Distribution
   candidate, girl shorts leg-split control); T-104 continues. **T-097S** acting system (reaction model, emotion
   modulation and blending, animcheck signature checks; formats and code only) starts as soon as T-104 merges,
   because both claim `engine/anim/personality.*`, `content/personality/*` and `tools/animcheck/**`.
-- **After T-097S:** T-097B (boy) and T-097G (girl) acting in parallel, each only its own character's files. The
+- **After T-097S** (split ~23:00Z, see below): T-097-boy and T-097-girl acting in parallel, each only its own character's files. The
   white-haired girl is out of scope now.
 - **After T-091, T-089b and T-093b are owner-approved:** T-094 boy 2.1.0 and girl 0.12.0 via the T-088 script and
   T-087 strict sheets; then the e907 exchange is re-rendered with T-097B/G acting. The owner approves before current.
 - **Codex: T-106** reference performance extraction (offline MediaPipe on the two reference videos; data table and
   contact sheets; tooling and evaluation only).
+
+## 2026-11-18 (~23:00Z): T-097S split (relayed by the previous Supervisor session)
+Owner judged T-097S too large; replaced by: **T-097-0** acting interface (`engine/scene/acting.h` + build stubs, the
+Supervisor, merged first), then in parallel **T-097A** emotion blending, **T-097B** personality-driven reactions and
+**T-097C** acting signature checks (small, when a slot frees up). The per-character acting tasks are renamed
+**T-097-boy** and **T-097-girl** (after T-097A and T-097B merge; own character's files and solo test shots only).
+The white-haired girl stays later. All other Phase D instructions stand.

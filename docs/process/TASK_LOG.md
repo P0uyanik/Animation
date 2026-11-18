@@ -77,9 +77,12 @@
 | T-091 | [Visual] Hair round 4 (Phase D) | running 2026-11-18 (owner ~22:50Z) | t-091-claude-hair-r4 | `docs/tasks/T-091.md`; path B |
 | T-089b | [Visual] Face polish: boy heavy lids, girl rounder face (Phase D) | running 2026-11-18 (owner ~22:50Z) | t-089b-claude-face-polish | `docs/tasks/T-089b.md`; path B |
 | T-093b | [Visual] Garment completion: boy trousers/shoes, girl leg split (Phase D) | running 2026-11-18 (owner ~22:50Z) | t-093b-claude-garment-completion | `docs/tasks/T-093b.md`; path B |
-| T-097S | [Personality] Acting system: reaction model, emotion modulation and blending (Phase D) | approved; starts when T-104 merges (shared personality/animcheck files) | t-097s-claude-acting-system | `docs/tasks/T-097S.md`; path A |
-| T-097B | [Personality] Boy acting (Phase D) | approved; after T-097S | t-097b-claude-boy-acting | `docs/tasks/T-097B.md`; path B |
-| T-097G | [Personality] Girl acting (Phase D) | approved; after T-097S | t-097g-claude-girl-acting | `docs/tasks/T-097G.md`; path B |
+| T-097-0 | [Personality] Acting interface (`engine/scene/acting.h`, build stubs) | Supervisor, 2026-11-18 | integration/t-097-0 | owner ~23:00Z; replaces T-097S |
+| T-097A | [Personality] Emotion blending (continuous state, cross-fades) | running after T-097-0 | t-097a-claude-emotion-blending | `docs/tasks/T-097A.md`; path A |
+| T-097B | [Personality] Personality-driven reactions | approved; starts when T-104 merges (personality files) | t-097b-claude-reactions | `docs/tasks/T-097B.md`; path A |
+| T-097C | [Personality] Acting signature and consistency checks (animcheck) | approved; starts when T-104 merges and a slot frees up | t-097c-claude-acting-checks | `docs/tasks/T-097C.md`; path A |
+| T-097-boy | [Personality] Boy acting (Phase D) | approved; after T-097A and T-097B merge | t-097-boy-claude-acting | `docs/tasks/T-097B.md`; path B |
+| T-097-girl | [Personality] Girl acting (Phase D) | approved; after T-097A and T-097B merge | t-097-girl-claude-acting | `docs/tasks/T-097G.md`; path B |
 | T-094 | [Visual] Boy 2.1.0 + girl 0.12.0 (Phase D) | approved; after T-091, T-089b, T-093b are owner-approved | t-094-claude-versions | `docs/tasks/T-094.md`; path B |
 | T-106 | [Personality] Reference performance extraction (Codex) | assigned to Codex 2026-11-18 (owner ~22:50Z) | t-106-codex-perf-extract | `docs/tasks/T-106.md`; path A |
 | T-053 | Personality profiles 1.0.0 (reader, limits, animcheck check) | **merged** 2026-11-18 (owner-approved) | t-053-claude-personality (f62fedb), integration 50fc612 | GitHub full gate PASS; some profile fields await engine layers |

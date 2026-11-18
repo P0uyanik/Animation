@@ -1,7 +1,7 @@
 add_executable(plush_tests test_main.cpp test_engine.cpp test_imported_character.cpp test_clips.cpp test_emotions.cpp
                            test_asset_library.cpp test_secondary.cpp test_interaction.cpp test_face_layer.cpp
                            test_body_mechanics.cpp test_anim_principles.cpp
-                           test_personality.cpp test_collision.cpp)
+                           test_personality.cpp test_collision.cpp test_reaction.cpp test_emotion_blend.cpp)
 target_link_libraries(plush_tests PRIVATE plush_scene doctest::doctest plush_warnings)
 if(PLUSH_BUILD_RENDERER)
   # Engine path tracer unit tests (5 doctest cases): only with the frozen renderer (T-085).
