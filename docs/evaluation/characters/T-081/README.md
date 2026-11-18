@@ -74,6 +74,59 @@ How it was rendered:
 large, round, wide-open eyes. The fidelity numbers favour 0.10.0's narrower hair silhouette. Visually, 0.11.0 is
 closer in colour, material and hair shape. The owner decides; 0.10.0 stays current until then.
 
+## 3b. Switch to current (owner decision 2026-11-18, `docs/process/OWNER_DECISIONS.md`: "girl 0.11.0 is the new current")
+Done after the decision and the wider claim were on staging (a08d94d):
+- **Hair data source:** `tools/make_spec.py` reads the merged T-079 girl round-3 hair data
+  (`docs/evaluation/characters/T-079/candidates/girl.hair_v3.json`, byte-identical to the copy in `inputs/`).
+  - The 0.11.0 spec stays **byte-identical** to the approved ba46394 version.
+  - A rebuild on merged staging, which includes T-079's `groom_hybrid.py` scalp-cap fix, has an **identical geometry
+    fingerprint**.
+- **Published** `assets/characters/girl_auburn_bun_glasses/versions/0.11.0/` with `asset_store.py publish`
+  (parent 0.10.0, identity change approved by the owner per OWNER_DECISIONS, without the .glb as for 0.10.0).
+  - Built in the deterministic environment (`determinism.ENVIRONMENT`, `-t 1`); fingerprint identical to the build
+    reviewed in the strict comparison.
+  - `asset_store.py verify` passes.
+  - **0.10.0 is byte-identical** (sha256 of every file, checked before and after).
+
+  | File | Size |
+  |---|---|
+  | `girl_auburn_bun_glasses_master.blend` | 25.9 MB |
+  | `spec.resolved.json` | 53 KB |
+  | `spec.json` | 53 KB |
+  | `build_report.json` | 29 KB |
+  | `components.json` | 25 KB |
+  | `animation_compat.json` | 16 KB |
+  | `manifest.json` | 2 KB |
+
+  No file is anywhere near the 95 MB limit.
+- **Approved pointer** moved 0.10.0 → 0.11.0 (`asset_store.py approve`), with the notes "owner approved as current
+  2026-11-18 after strict comparison (OWNER_DECISIONS)".
+- **`fidelity_baseline.json`, girl entry only** (the boy entry is untouched):
+  - build = `girl_auburn_bun_glasses.0.11.0.spec.json`, no overrides;
+  - score 62.2949, source = `fidelity/fidelity.json`;
+  - rebaseline note: task T-081, previous 0.10.0 / 64.4042, reason "owner-approved new current after strict visual
+    comparison; score drop from the wider hair silhouette, accepted by the owner".
+- **Resolving `current`:**
+  - `run_shot` cast `current` now resolves to `versions/0.11.0`.
+  - The regression tool accepts a version spec through the Supervisor's `integration/tiers-version-spec` (bc9a834),
+    which I merged unchanged.
+- **Regression golden baseline:** `docs/evaluation/regression/baselines/girl_auburn_bun_glasses/0.11.0/`, written by
+  `tools/regression/run.py --character girl_auburn_bun_glasses --write-baseline`.
+  - The same run measured fidelity 62.30 against 62.29.
+  - The 0.10.0 and 0.9.0 baselines are untouched (sha256 checked).
+
+- **Full gate after the switch:** `python3 tools/check_all.py --base origin/staging --task T-081 --blender <bpy wrapper>`.
+
+  | Check | Result |
+  | --- | --- |
+  | Frozen assets | PASS |
+  | Shared-systems lint | PASS |
+  | Python tests and links | PASS |
+  | Blender tier (full) | **PASS**: regression girl_auburn_bun_glasses PASS (current = 0.11.0, fidelity 62.23 vs 62.29); boy_yellow_hoodie PASS (66.41); girl_white_hair_blue_dress PASS |
+  | Guarded paths | FAIL, **needs Supervisor approval trailers**: `versions/0.11.0/*`, `versions/index.json`, `docs/evaluation/regression/baselines/girl_auburn_bun_glasses/0.11.0/*`, `pipeline/charsys/tests/test_face_v2_socket_wall.py` |
+  | Write-set | FAIL **only** for the Supervisor's `integration/tiers-version-spec` files (`tools/regression/tiers.py`, `tools/regression/tests/test_gate_tools.py`, `docs/process/OWNERSHIP.md`), merged here unchanged; they leave the diff once that branch is on staging |
+  | C++ build / tests | FAIL, environment only (no `embree` in this container) |
+
 ## 4. Files changed
 | Path | Purpose |
 | --- | --- |
