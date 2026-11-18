@@ -42,6 +42,38 @@ the round-3 / neck rework. Breakdown:
 The 0.11.0 **face 3/4 tile is an earlier still** (round-2 hair, long neck), labelled on the sheet.
 The round-2 stills of 0.11.0 are kept in `renders/0.11.0_hair_round2/`.
 
+## 3a. Strict comparison for the owner's decision (0.10.0 vs 0.11.0)
+
+![strict](girl_0.10.0_vs_0.11.0_strict.jpg)
+
+[girl_0.10.0_vs_0.11.0_strict.jpg](girl_0.10.0_vs_0.11.0_strict.jpg). Columns: original reference | 0.10.0 current |
+0.11.0 candidate (final, 9f20c2d/6b18b3c).
+
+How it was rendered:
+- Both versions were rendered fresh **in one Blender run** (`tools/strict_render.py`).
+- They share **identical fixed cameras**: not framed per model, perspective 70 mm, elevation 5°, with the yaw of each
+  reference view from `reference_index.json` (front 0°, 3/4 −45° = sheet30 front-left, side 90° = sheet30 left,
+  back 180°; face front 0°, face 3/4 −45° = ref_30 front-left).
+- Same calibration lights (`character_neutral/1`), world and exposure; Cycles 16 spp + OIDN, seed 0; 360×576 px body,
+  360×360 px face.
+- Same rest pose (A-pose); every face control is at 0, which is each version's own neutral.
+- No older stills are reused. The earlier owner sheet's 3/4 rows used +35°, the mirror of the reference's front-left;
+  this sheet uses the reference yaw.
+- Single stills and the camera record are in `strict/`. 12 new Cycles stills.
+
+| View | Closer in 0.10.0 | Closer in 0.11.0 | Fidelity per view, 0.10.0 → 0.11.0 (figure IoU ↑ / landmark error ↓, head heights) |
+| --- | --- | --- | --- |
+| front | slightly tighter hair silhouette (IoU) | skin colour, hair colour (warm brown, not red-brown), ringlet shape, bun size and flowers, head on the collar (short neck), vest decals, softer face, blush | 0.847 → 0.810 / 0.049 → **0.043** |
+| 3/4 | silhouette IoU (narrower hair mass) | hair colour and ringlets, round full cheek, blush, short neck, vest pockets | 0.842 → 0.796 / 0.065 → 0.076 |
+| side | silhouette IoU | ringlet volume down the back, bun shape, skin, short neck | 0.778 → 0.743 / 0.055 → 0.059 |
+| back | silhouette IoU | rounder high bun; ringlets curl as in the turnaround back (0.10.0 is a red, stringy curtain); hair colour | 0.868 → 0.852 / 0.096 → 0.113 |
+| face front | darker, crisper upper lash line | porcelain-peach skin, no glowing creases or cheek specks, soft blush below the rims, fuller lips, round lower face, neck hidden by the collar | (no per-view face score; face part 70 → 69) |
+| face 3/4 | — | skin, blush, round cheek, no grey goggle shading in the lens | — |
+
+**Neither version** has the side-swept fringe over the forehead, the cream fleece boot cuff, or the reference's
+large, round, wide-open eyes. The fidelity numbers favour 0.10.0's narrower hair silhouette. Visually, 0.11.0 is
+closer in colour, material and hair shape. The owner decides; 0.10.0 stays current until then.
+
 ## 4. Files changed
 | Path | Purpose |
 | --- | --- |
@@ -51,6 +83,7 @@ The round-2 stills of 0.11.0 are kept in `renders/0.11.0_hair_round2/`.
 | `docs/evaluation/characters/T-081/tools/make_spec.py` | writes the 0.11.0 spec reproducibly from the base spec, 0.10.0, the candidates and the T-081 choices |
 | `docs/evaluation/characters/T-081/tools/render_views.py` | evaluation renders (body/head/face views, Cycles or Workbench) |
 | `docs/evaluation/characters/T-081/tools/make_sheet.py` | owner sheet |
+| `docs/evaluation/characters/T-081/tools/strict_render.py`, `make_strict_sheet.py` | strict comparison: identical fixed cameras, one run |
 
 Documentation and evidence: this README, `girl_0.11.0_owner_sheet.jpg`, `renders/`, and `fidelity/` (`fidelity.json`,
 `report.md`, `overview.jpg`). Not changed: `face_generic.py`, `body_generic.py`, `body_helpers.py`, `versions.py`,
