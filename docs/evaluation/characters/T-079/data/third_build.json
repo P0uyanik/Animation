@@ -1,0 +1,107 @@
+{
+ "character": "girl_white_hair_blue_dress",
+ "generator": "groom/2",
+ "candidate": "docs/evaluation/characters/T-079/candidates/third.hair_v3.json",
+ "hair_build_s": 1.14,
+ "total_s": 9.57,
+ "hair_vertices": 138833,
+ "hair_faces": 139630,
+ "fibre_points": 10322562,
+ "chain_bones": 145,
+ "peak_rss_mb": 1924.5,
+ "report": {
+  "generator": "groom/2",
+  "structures": {
+   "cap": {
+    "type": "scalp_cap",
+    "faces": 14706
+   },
+   "buns": {
+    "buns": 2,
+    "finish": "felt",
+    "type": "bun"
+   },
+   "crown": {
+    "shape": "gather",
+    "grid": [
+     220,
+     48
+    ],
+    "type": "felt_volume"
+   },
+   "fringe": {
+    "clumps": 19,
+    "keepout_clamped": 7,
+    "type": "clumps"
+   },
+   "temples": {
+    "clumps": 4,
+    "keepout_clamped": 0,
+    "type": "clumps"
+   },
+   "back_mass": {
+    "shape": "curtain",
+    "grid": [
+     180,
+     100
+    ],
+    "columns": 10,
+    "type": "curtain"
+   },
+   "side_locks": {
+    "locks": 6,
+    "style": "curly",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "back_locks": {
+    "locks": 12,
+    "style": "curly",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "outer_locks": {
+    "locks": 4,
+    "style": "curly",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "bow": {
+    "size_m": 0.17,
+    "loops": 4,
+    "type": "felt_bow"
+   }
+  },
+  "objects": [
+   "hair_cap",
+   "hair_buns",
+   "hair_crown",
+   "hair_fringe",
+   "hair_temples",
+   "hair_back_mass",
+   "hair_side_locks",
+   "hair_back_locks",
+   "hair_outer_locks",
+   "hair_bow"
+  ],
+  "vertices": 138833,
+  "keepout": {
+   "az": 34.0,
+   "el_min": 4.0,
+   "violations": 0,
+   "by_object": {}
+  },
+  "fibres": {
+   "objects": 30,
+   "layers": [
+    "felt",
+    "halo",
+    "flyaways"
+   ]
+  },
+  "dynamics": {
+   "chains": 47
+  }
+ },
+ "blend_mb": 19.03
+}

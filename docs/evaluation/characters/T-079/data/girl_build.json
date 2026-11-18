@@ -1,0 +1,163 @@
+{
+ "character": "girl_auburn_bun_glasses",
+ "generator": "groom/2",
+ "candidate": "docs/evaluation/characters/T-079/candidates/girl.hair_v3.json",
+ "hair_build_s": 1.57,
+ "total_s": 7.51,
+ "hair_vertices": 169447,
+ "hair_faces": 170380,
+ "fibre_points": 4222872,
+ "chain_bones": 112,
+ "peak_rss_mb": 1390.2,
+ "report": {
+  "generator": "groom/2",
+  "structures": {
+   "cap": {
+    "type": "scalp_cap",
+    "faces": 14706
+   },
+   "bun": {
+    "buns": 1,
+    "finish": "felt",
+    "type": "bun"
+   },
+   "crown": {
+    "shape": "gather",
+    "grid": [
+     220,
+     48
+    ],
+    "type": "felt_volume"
+   },
+   "fringe": {
+    "shape": "fringe",
+    "grid": [
+     72,
+     40
+    ],
+    "type": "felt_volume"
+   },
+   "fringe_part": {
+    "shape": "fringe",
+    "grid": [
+     56,
+     40
+    ],
+    "type": "felt_volume"
+   },
+   "fringe_sweep": {
+    "clumps": 7,
+    "keepout_clamped": 0,
+    "type": "clumps"
+   },
+   "temple_l": {
+    "shape": "mass",
+    "grid": [
+     56,
+     32
+    ],
+    "type": "felt_volume"
+   },
+   "temple_r": {
+    "shape": "mass",
+    "grid": [
+     56,
+     32
+    ],
+    "type": "felt_volume"
+   },
+   "curtain": {
+    "shape": "curtain",
+    "grid": [
+     180,
+     100
+    ],
+    "columns": 13,
+    "type": "curtain"
+   },
+   "ringlets_side": {
+    "locks": 4,
+    "style": "curly",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "ringlets_side_b": {
+    "locks": 2,
+    "style": "curly",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "ringlets_back": {
+    "locks": 7,
+    "style": "curly",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "ringlets_back_b": {
+    "locks": 6,
+    "style": "curly",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "ringlets_outer": {
+    "locks": 4,
+    "style": "curly",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "ringlets_outer_b": {
+    "locks": 2,
+    "style": "curly",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "band": {
+    "radius_m": 0.0967,
+    "type": "tie"
+   },
+   "flowers": {
+    "flowers": 3,
+    "type": "flowers"
+   }
+  },
+  "objects": [
+   "hair_cap",
+   "hair_bun",
+   "hair_crown",
+   "hair_fringe",
+   "hair_fringe_part",
+   "hair_fringe_sweep",
+   "hair_temple_l",
+   "hair_temple_r",
+   "hair_curtain",
+   "hair_ringlets_side",
+   "hair_ringlets_side_b",
+   "hair_ringlets_back",
+   "hair_ringlets_back_b",
+   "hair_ringlets_outer",
+   "hair_ringlets_outer_b",
+   "hair_band",
+   "hair_flowers_petals",
+   "hair_flowers_centres"
+  ],
+  "vertices": 169447,
+  "keepout": {
+   "az": 34.0,
+   "el_min": 5.0,
+   "violations": 0,
+   "by_object": {}
+  },
+  "fibres": {
+   "objects": 45,
+   "layers": [
+    "felt",
+    "halo",
+    "flyaways"
+   ]
+  },
+  "dynamics": {
+   "chains": 26
+  }
+ },
+ "blend_mb": 19.77
+}

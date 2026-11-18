@@ -432,6 +432,29 @@ def keepout_violations(objs, scalp, keep, depth_m=0.03):
     return n
 
 
+def drop_stale_weights(ob):
+    """T-079: remove vertex-weight entries whose group index does not exist on the object. The scalp cap is cut from
+    the head mesh (hair.scalp_cap, bmesh copy), so it inherits the head's deform weights without the head's vertex
+    groups; on a generic head with many groups these stale indices made export_engine fail with IndexError (found in
+    T-078). Valid entries are kept; returns the number of entries removed (0 for a mesh without stale weights)."""
+    import bmesh
+    n = len(ob.vertex_groups)
+    if not any(g.group >= n for v in ob.data.vertices for g in v.groups):
+        return 0
+    bm = bmesh.new()
+    bm.from_mesh(ob.data)
+    dl = bm.verts.layers.deform.active
+    removed = 0
+    for v in bm.verts:
+        dv = v[dl]
+        for k in [k for k in dv.keys() if k >= n]:
+            del dv[k]
+            removed += 1
+    bm.to_mesh(ob.data)
+    bm.free()
+    return removed
+
+
 SHAFT_GROUP = "PS Fibre Fixed Shaft/1"
 
 
@@ -497,6 +520,7 @@ def build(C, head, frame, hair_spec, material, face_y, fibres=None):
         R = random.Random(seed * 7919 + i)
         if t == "scalp_cap":
             ob = G1._hair().scalp_cap(C, head, s)
+            drop_stale_weights(ob)
             ob.name = ob.data.name = f"hair_{name}"
             G1.HAIR_G().assign(ob, material(s.get("material", "hair")))
             slot_of[ob.name] = s.get("material", "hair")
