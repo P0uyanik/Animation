@@ -25,18 +25,16 @@
       }
     },
     "girl_auburn_bun_glasses": {
-      "score": 64.4042,
-      "build": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.spec.json",
-      "overrides": [
-        "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.10.0.override.json"
-      ],
-      "source": "docs/evaluation/characters/T-064/girl/fidelity.json",
+      "score": 62.2949,
+      "build": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.11.0.spec.json",
+      "overrides": [],
+      "source": "docs/evaluation/characters/T-081/fidelity/fidelity.json",
       "rebaseline": {
-        "task": "T-064",
-        "tool": "fixed fidelity tool (segmentation, alignment, hair/skin/face parts) and the corrected sheet30_front annotation",
-        "previous_score": 65.4074,
-        "same_renders_old_tool": 65.4199,
-        "same_renders_new_tool": 64.4042
+        "task": "T-081",
+        "reason": "owner-approved new current after strict visual comparison (docs/process/OWNER_DECISIONS.md 2026-11-18); score drop from the wider hair silhouette, accepted by the owner",
+        "previous_version": "0.10.0",
+        "previous_score": 64.4042,
+        "previous_source": "docs/evaluation/characters/T-064/girl/fidelity.json"
       }
     }
   }
