@@ -94,8 +94,19 @@ def character_config(cid: str, root: Path = ROOT) -> dict:
     entry = baseline.get("characters", {}).get(cid)
     if entry is None:
         raise ValueError(f"{cid}: not listed in {FIDELITY_BASELINE.relative_to(ROOT).as_posix()}")
-    if entry.get("build") != rel:
-        raise ValueError(f"{cid}: fidelity baseline builds {entry.get('build')}, expected the character spec")
+    build = entry.get("build")
+    if build != rel:
+        # A published version spec of the same character is also accepted:
+        # assets/characters/<id>/spec/<id>.<x.y.z>[-tag].spec.json whose identity.id is <id>.
+        pattern = rf"assets/characters/{re.escape(cid)}/spec/{re.escape(cid)}\.\d+\.\d+\.\d+(-[a-z0-9]+)?\.spec\.json"
+        if not isinstance(build, str) or not re.fullmatch(pattern, build):
+            raise ValueError(f"{cid}: fidelity baseline builds {build}, expected the character spec or a version spec")
+        spec = root / build
+        if not spec.is_file():
+            raise ValueError(f"{cid}: build input missing: {build}")
+        if json.loads(spec.read_text(encoding="utf-8")).get("identity", {}).get("id") != cid:
+            raise ValueError(f"{cid}: {build} is not a spec of {cid} (identity.id differs)")
+        rel = build
     overrides = list(entry.get("overrides", []))
     inputs = [rel, *overrides]
     for item in inputs:

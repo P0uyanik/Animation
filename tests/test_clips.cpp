@@ -4,7 +4,11 @@
 // block against the data derived from the skeleton.
 #include <doctest/doctest.h>
 
+#ifdef _WIN32
+#include <process.h>
+#else
 #include <unistd.h>
+#endif
 
 #include <cstdlib>
 #include <fstream>
@@ -156,7 +160,12 @@ std::map<std::string, std::pair<vec3, vec3>> expectedFrames(const ReferencePose&
   return out;
 }
 fs::path writeTemp(const std::string& name, const Json& j) {
-  fs::path d = fs::temp_directory_path() / std::format("plush_clips_{}", ::getpid());
+#ifdef _WIN32
+  const auto pid = ::_getpid();
+#else
+  const auto pid = ::getpid();
+#endif
+  fs::path d = fs::temp_directory_path() / std::format("plush_clips_{}", pid);
   fs::create_directories(d);
   std::ofstream(d / name) << j.dump();
   return d / name;

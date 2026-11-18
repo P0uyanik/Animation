@@ -3,8 +3,11 @@
 // dummy process tree (child + grandchildren): progress, cancel (graceful and forced), no orphans.
 #include <doctest/doctest.h>
 
-#include <signal.h>
+#ifdef _WIN32
+#include <process.h>
+#else
 #include <unistd.h>
+#endif
 
 #include <chrono>
 #include <fstream>
@@ -19,7 +22,12 @@ namespace fs = std::filesystem;
 namespace {
 const fs::path kRoot = PLUSH_SOURCE_DIR;
 fs::path tempDir(const std::string& name) {
-  fs::path d = fs::temp_directory_path() / std::format("plush_wf_{}_{}", name, ::getpid());
+#ifdef _WIN32
+  const auto pid = ::_getpid();
+#else
+  const auto pid = ::getpid();
+#endif
+  fs::path d = fs::temp_directory_path() / std::format("plush_wf_{}_{}", name, pid);
   fs::remove_all(d);
   fs::create_directories(d);
   return d;
@@ -27,6 +35,13 @@ fs::path tempDir(const std::string& name) {
 void writeFile(const fs::path& p, const std::string& text) {
   fs::create_directories(p.parent_path());
   std::ofstream(p) << text;
+}
+void setEnv(const char* key, std::string value) {
+#ifdef _WIN32
+  REQUIRE(_putenv_s(key, value.c_str()) == 0);
+#else
+  REQUIRE((value.empty() ? unsetenv(key) : setenv(key, value.c_str(), 1)) == 0);
+#endif
 }
 std::string readFile(const fs::path& p) {
   std::ifstream f(p);
@@ -82,8 +97,12 @@ TEST_CASE("workflow: command and stage building") {
   auto cmd = wf::buildCommand(cfg, shot, "run1", s);
   std::string joined;
   for (auto& c : cmd) joined += c + " ";
+#ifdef _WIN32
+  CHECK(cmd[0] == "python");
+#else
   CHECK(cmd[0] == "python3");
-  CHECK(cmd[1] == (kRoot / "pipeline/production/run_shot.py").string());
+#endif
+  CHECK(fs::path(cmd[1]) == kRoot / "pipeline/production/run_shot.py");
   CHECK(joined.find("--shot " + shot.path.string()) != std::string::npos);
   CHECK(joined.find("--blender /opt/blender") != std::string::npos);
   CHECK(joined.find("--bake-engine /x/plush-render") != std::string::npos);
@@ -102,13 +121,13 @@ TEST_CASE("workflow: command and stage building") {
   // Blender from the environment, then the settings file
   fs::path d = tempDir("cfg");
   writeFile(d / "settings.json", R"({"blender": "/from/settings"})");
-  setenv("PLUSH_STUDIO_SETTINGS", (d / "settings.json").c_str(), 1);
-  setenv("PLUSH_BLENDER", "/from/env", 1);
+  setEnv("PLUSH_STUDIO_SETTINGS", (d / "settings.json").string());
+  setEnv("PLUSH_BLENDER", "/from/env");
   CHECK(wf::makeConfig(kRoot, "", "").blender == "/from/env");
-  unsetenv("PLUSH_BLENDER");
+  setEnv("PLUSH_BLENDER", "");
   CHECK(wf::makeConfig(kRoot, "", "").blender == "/from/settings");
   CHECK(wf::makeConfig(kRoot, "", "").blenderSource.find("settings file") == 0);
-  unsetenv("PLUSH_STUDIO_SETTINGS");
+  setEnv("PLUSH_STUDIO_SETTINGS", "");
   CHECK(wf::newRunId().size() == 19);
   fs::remove_all(d);
 }
@@ -290,13 +309,27 @@ TEST_CASE("workflow: job runner on a dummy process tree (progress, cancel, no or
   wf::becomeSubreaper();
   fs::path d = tempDir("job");
   SUBCASE("progress through status.json, normal exit") {
+#ifdef _WIN32
+    std::vector<std::string> command{"python", "-c", R"PY(
+import json, pathlib, sys, time
+d = pathlib.Path(sys.argv[1])
+for i in range(1, 4):
+    tmp = d / 's.tmp'
+    tmp.write_text(json.dumps(dict(format='plush.run_status', state='done' if i == 3 else 'running',
+                                   frames=[5, 7], frames_done=i, frames_total=3)))
+    tmp.replace(d / 'status.json')
+    time.sleep(0.3)
+)PY", d.string()};
+#else
     std::string script = std::format(
         "for i in 1 2 3; do printf '{{\"format\":\"plush.run_status\",\"state\":\"%s\",\"frames\":[5,7],\"frames_done\":%d,"
         "\"frames_total\":3}}' $([ $i = 3 ] && echo done || echo running) $i > {0}/s.tmp && mv {0}/s.tmp {0}/status.json; "
         "sleep 0.3; done",
         d.string());
+    std::vector<std::string> command{"sh", "-c", script};
+#endif
     wf::Job job;
-    REQUIRE(job.start({"sh", "-c", script}, d / "job.log"));
+    REQUIRE(job.start(command, d / "job.log"));
     int maxSeen = 0, polls = 0;
     while (job.running()) {
       auto st = wf::readStatus(d / "status.json");
@@ -315,11 +348,22 @@ TEST_CASE("workflow: job runner on a dummy process tree (progress, cancel, no or
   }
   SUBCASE("graceful cancel stops child and grandchildren") {
     wf::Job job;
-    REQUIRE(job.start({"sh", "-c", "sleep 60 & sh -c 'sleep 61 & wait' & wait"}, d / "job.log"));
+#ifdef _WIN32
+    std::vector<std::string> command{"python", "-c", R"PY(
+import subprocess, sys, time
+sleeper = [sys.executable, '-c', 'import time; time.sleep(60)']
+subprocess.Popen(sleeper)
+subprocess.Popen([sys.executable, '-c', 'import subprocess, time; subprocess.Popen(' + repr(sleeper) + '); time.sleep(61)'])
+time.sleep(60)
+)PY"};
+#else
+    std::vector<std::string> command{"sh", "-c", "sleep 60 & sh -c 'sleep 61 & wait' & wait"};
+#endif
+    REQUIRE(job.start(command, d / "job.log"));
     std::vector<wf::ProcInfo> before;
     for (int i = 0; i < 100 && before.size() < 4; ++i) {
       std::this_thread::sleep_for(std::chrono::milliseconds(20));
-      before = wf::processGroupMembers(job.pgid());
+      before = job.members();
     }
     CHECK(before.size() == 4);  // sh, sleep 60, sh, sleep 61
     auto r = job.cancel(5.0);
@@ -327,17 +371,28 @@ TEST_CASE("workflow: job runner on a dummy process tree (progress, cancel, no or
     CHECK(r.graceful);
     CHECK_FALSE(r.forced);
     CHECK(r.groupGone);
-    CHECK(wf::processGroupMembers(job.pgid()).empty());
-    for (auto& p : before) CHECK(::kill(p.pid, 0) != 0);  // no orphan, no zombie
+    CHECK(job.members().empty());
+    for (auto& p : before) CHECK_FALSE(wf::processExists(p.pid));  // no orphan, no zombie
     CHECK_FALSE(job.running());
   }
   SUBCASE("forced cancel when the tree ignores SIGTERM") {
     wf::Job job;
-    REQUIRE(job.start({"sh", "-c", "trap '' TERM; sleep 60 & sleep 61 & wait"}, d / "job.log"));
+#ifdef _WIN32
+    std::vector<std::string> command{"python", "-c", R"PY(
+import signal, subprocess, sys, time
+signal.signal(signal.SIGBREAK, signal.SIG_IGN)
+for seconds in (60, 61):
+    subprocess.Popen([sys.executable, '-c', 'import time; time.sleep(%d)' % seconds])
+time.sleep(60)
+)PY"};
+#else
+    std::vector<std::string> command{"sh", "-c", "trap '' TERM; sleep 60 & sleep 61 & wait"};
+#endif
+    REQUIRE(job.start(command, d / "job.log"));
     std::vector<wf::ProcInfo> before;
     for (int i = 0; i < 100 && before.size() < 3; ++i) {
       std::this_thread::sleep_for(std::chrono::milliseconds(20));
-      before = wf::processGroupMembers(job.pgid());
+      before = job.members();
     }
     CHECK(before.size() == 3);
     auto r = job.cancel(0.5);
@@ -345,7 +400,7 @@ TEST_CASE("workflow: job runner on a dummy process tree (progress, cancel, no or
     CHECK_FALSE(r.graceful);
     CHECK(r.forced);
     CHECK(r.groupGone);
-    for (auto& p : before) CHECK(::kill(p.pid, 0) != 0);
+    for (auto& p : before) CHECK_FALSE(wf::processExists(p.pid));
   }
   SUBCASE("tail of a log") {
     writeFile(d / "t.log", "a\nb\nc\nd\n");

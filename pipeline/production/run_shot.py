@@ -118,12 +118,21 @@ def sha256(path):
     return h.hexdigest()
 
 
+
+def launchable(cmd):
+    """A .py tool path (e.g. a test's fake Blender) cannot be executed directly on Windows (WinError 193): run it
+    with this Python there; everything else is executed as given."""
+    if os.name == "nt" and cmd and str(cmd[0]).lower().endswith(".py"):
+        return [sys.executable] + list(cmd)
+    return cmd
+
+
 def run(cmd, log):
     t = time.time()
     # Blender can emit UTF-8 diagnostics that are invalid in the Windows
     # process code page. Logs must never turn a successful render into a
     # UnicodeDecodeError.
-    p = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace")
+    p = subprocess.run(launchable(cmd), capture_output=True, text=True, encoding="utf-8", errors="replace")
     open(log, "w", encoding="utf-8", errors="replace").write(p.stdout + p.stderr)
     if p.returncode != 0:
         raise SystemExit(f"step failed ({p.returncode}): {' '.join(cmd[:4])} ... see {log}\n{(p.stdout + p.stderr)[-1500:]}")
@@ -209,7 +218,7 @@ def run_streamed(cmd, log, poll=None):
     second (frame progress). On cancel the step is stopped: SIGTERM, then SIGKILL after 10 s."""
     t = time.time()
     with open(log, "w", encoding="utf-8", errors="replace") as lf:
-        p = subprocess.Popen(cmd, stdout=lf, stderr=subprocess.STDOUT, text=True)
+        p = subprocess.Popen(launchable(cmd), stdout=lf, stderr=subprocess.STDOUT, text=True)
         try:
             while p.poll() is None:
                 if poll:
