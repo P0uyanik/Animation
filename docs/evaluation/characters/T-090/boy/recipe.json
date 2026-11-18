@@ -1,0 +1,94 @@
+{
+  "schema": "plush-studio.review-recipe/1",
+  "task": "T-090",
+  "character": "boy_yellow_hoodie",
+  "inputs": {
+    "main": "12559bb86671ea6d72697faa9877b4db5e250c30"
+  },
+  "baseline": {
+    "version": "2.0.0",
+    "label": "2.0.0"
+  },
+  "candidate": {
+    "spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.0.0.spec.json",
+    "overrides": [
+      "docs/evaluation/characters/T-090/boy/proposal.json"
+    ],
+    "sha": "12559bb",
+    "label": "Face fit"
+  },
+  "compare": {
+    "variant": "compare",
+    "pose": "arms_down"
+  },
+  "cameras": {
+    "lens_mm": 70,
+    "sensor_mm": 36,
+    "elevation_deg": 6,
+    "framing": {
+      "body": {
+        "target": [
+          0.0,
+          0.0,
+          0.56
+        ],
+        "frame_height_m": 1.26,
+        "aspect": 1.6
+      },
+      "face": {
+        "fit": "head",
+        "margin": 0.05,
+        "aspect": 1
+      }
+    },
+    "rows": {
+      "front": {
+        "reference_view": "val27_front"
+      },
+      "threequarter": {
+        "reference_view": "val27_threequarter_right"
+      },
+      "side": {
+        "reference_view": "val27_side_right"
+      },
+      "back": {
+        "reference_view": "val27_back"
+      },
+      "face_front": {
+        "reference": {
+          "file": "views/hero24_front.png",
+          "crop": [
+            40,
+            60,
+            560,
+            620
+          ],
+          "label": "hero24 face"
+        },
+        "yaw_deg": 0
+      },
+      "face_threequarter": {
+        "reference_view": "val27_threequarter_right",
+        "crop": [
+          10,
+          0,
+          230,
+          240
+        ]
+      }
+    }
+  },
+  "light": {
+    "calibration": "character_neutral/1"
+  },
+  "render": {
+    "engine": "cycles",
+    "px": 220,
+    "samples": 1
+  },
+  "preview": {
+    "engine": "workbench",
+    "px": 220,
+    "samples": 1
+  }
+}
