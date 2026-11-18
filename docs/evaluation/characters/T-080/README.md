@@ -34,7 +34,7 @@ Visual fidelity to the references comes first. The task file said 2.0.0 should *
   - `asset_store.py verify`: ok, no problems.
   - `tools/check_assets.py --base origin/staging`: **PASS**. Boy 2.0.0 is 29.6 MB; its master is 29.5 MB, under 95 MB.
   - `tools/check_cast.py`: **PASS** (6 shots).
-- **BLOCKED: changes outside the T-080 write-set.** Item 1 is now resolved on staging. For item 2 the patch was verified locally, then reverted; it is in [`proposed/`](proposed/).
+- **Outside the T-080 write-set:** Item 1 is now resolved on staging. For item 2 the patch was verified locally, then reverted; it is in [`proposed/`](proposed/).
   1. ~~`tools/regression/tiers.py`~~ **resolved on staging** (`bc9a834`, "accept a published version spec as the current build"; merged into this branch).
      - Before it, `character_config` rejected a complete versioned spec, which failed `test_gate_tools.py`, `test_run_shot_current.py` and the boy regression.
      - After merging: both tests PASS.
@@ -43,7 +43,23 @@ Visual fidelity to the references comes first. The task file said 2.0.0 should *
      - Patch [`proposed/test_skin_presets_pin.patch`](proposed/test_skin_presets_pin.patch) keeps the guard against a *silent* opt-in: presets/2 skin ids are allowed only for a spec that pins `generators.materials = "presets/2"`.
      - With it: 24/24 PASS.
   3. **Guarded paths:** the new `assets/characters/boy_yellow_hoodie/versions/2.0.0/*` and `index.json` need Supervisor approval (expected for a publish).
-- **Regression baseline:** `docs/evaluation/regression/baselines/boy_yellow_hoodie/` holds only `1.1.0/`. Golden fingerprint and renders for 2.0.0 need `tools/regression/run.py --write-baseline` and a Supervisor commit (guarded path, not in my claim).
+- **Regression baseline (claim widened by the Supervisor):** `tools/regression/run.py --character boy_yellow_hoodie --base origin/staging --write-baseline` → PASS (changed).
+  - The candidate is committed under `docs/evaluation/regression/baselines/boy_yellow_hoodie/2.0.0/`: `golden.json`, `fingerprint.json` (sha256 `084fbf16…`) and `images/` (turn_front/left/right/back, face_closeup).
+  - 1.1.0 is untouched. It becomes approved with the Supervisor's guarded-path approval.
+- **Published file sizes** (`versions/2.0.0/`), all well under 95 MB:
+
+  | File | Size |
+  | --- | --- |
+  | `boy_yellow_hoodie_master.blend` | 29.49 MB |
+  | `spec.resolved.json` | 0.04 MB |
+  | `build_report.json` | 0.03 MB |
+  | `components.json` | 0.03 MB |
+  | `spec.json` | 0.03 MB |
+  | `animation_compat.json` | 0.01 MB |
+  | `manifest.json` | < 0.01 MB |
+
+  `versions/1.0.0`, `versions/1.1.0` and `regression/baselines/boy_yellow_hoodie/1.1.0` are byte-identical to staging (git diff empty).
+- **`approval_notes`** in `index.json` reads: new current version: "I approve Boy 2.0.0 as the new current version." Recorded in the store by T-080. This was written before the Supervisor's suggested wording arrived. The history is append-only, so I left it, and it carries the same meaning.
 
 ## Owner sheets (reference | 1.1.0 | 2.0.0)
 
@@ -158,14 +174,16 @@ Command (full tier, this container):
 | Check | Result |
 | --- | --- |
 | Frozen assets | PASS |
-| Guarded paths | FAIL: **needs Supervisor approval** of the published `versions/2.0.0/*` and `versions/index.json` (§2a) |
-| Write-set | PASS (28 paths, all inside the widened T-080 claim) |
+| Guarded paths | FAIL: **needs Supervisor approval at merge** (expected for a publish): `assets/characters/boy_yellow_hoodie/versions/2.0.0/*`, `versions/index.json`, `docs/evaluation/regression/baselines/boy_yellow_hoodie/2.0.0/*` |
+| Write-set | PASS (36 paths, all inside the widened T-080 claim) |
 | Shared-systems lint | PASS |
 | C++ build / C++ tests | FAIL **environment**: CMake cannot find `embree` 4 in this container, so no C++ was built or run. T-080 changes no C++ file; GitHub CI on the branch is the evidence. |
-| Python tests and links | FAIL on `96de404`: `test_gate_tools.py`, `test_run_shot_current.py` (`tiers.py`, §2a item 1; **both PASS after merging staging `e673e2c`**). `test_skin_presets.py` still FAILS 23/24 (§2a item 2; PASS with the proposed patch). Links PASS. |
-| Blender tier (full) | girl_auburn_bun_glasses PASS (64.41), girl_white_hair_blue_dress PASS. boy_yellow_hoodie FAIL on `96de404` with the `tiers.py` error before building. With the equivalent local patch: **PASS** (fidelity 67.63, §2a). I did not re-run the full gate after merging staging's fix. |
+| Python tests and links | **PASS** |
+| Blender tier (full) | **PASS**: boy_yellow_hoodie PASS (**fidelity 67.63** = new baseline, current = 2.0.0), girl_auburn_bun_glasses PASS (64.40), girl_white_hair_blue_dress PASS |
 
-Final run on `96de404`, with staging (`79a5ed1`) merged. Before the publish, the round-3 spec passed the gate on `ee610a3`, except the C++ build (environment).
+Final run on `e160584` (staging `e673e2c` merged, which includes the `tiers.py` fix `bc9a834`).
+
+Not in the gate, run separately: `pipeline/charsys/tests/test_skin_presets.py` **FAILS 23/24** (§2a item 2). Its line-95 guard forbids presets/2 in any approved version. The proposed patch is in `proposed/`; with it, 24/24.
 
 ### Fidelity subscores (support only; the sheets decide)
 | | 1.1.0 (T-064 baseline) | 2.0.0 (round-2 hair) | **2.0.0 (round-3 hair, final)** |
@@ -221,7 +239,7 @@ Tool caveats (data outside this write-set):
 2. The owner should decide whether the backpack belongs on the default 2.0.0, given the turnaround and upload 01.
 3. Eye size and cheeks (§7 items 1–2) could get a data-only follow-up on the 2.x line, with owner approval of the face change.
 4. The groom/2 export bug does not reproduce on the generic build path (§4), with either round. The T-079 fix is still needed for the post-build candidate tool.
-5. **BLOCKED on two Supervisor-owned items (§2a):** the `test_skin_presets.py` patch, and guarded-path approval of the published version. The `tiers.py` item is resolved on staging.
+5. **For the Supervisor (§2a):** apply the `test_skin_presets.py` patch (the test is outside the gate, but fails standalone), and approve the guarded paths at merge. The `tiers.py` item is resolved on staging.
 6. **2.0.0 regression baseline** (goldens) is for the Supervisor (§2a).
 
 ## 9. Commits
@@ -237,6 +255,8 @@ Branch `t-080-claude-boy-2-0-0`:
 - `96de404`: publish 2.0.0, approved pointer, fidelity baseline;
 - `e0aad53`: report + proposed patches;
 - merge of `origin/staging` (`e673e2c`: tiers.py fix, T-060);
+- `5537ea5`: report (BLOCKED line);
+- `e160584`: 2.0.0 regression baseline candidate;
 - the final report commit (see the RELAY_LOG line).
 
 ## 10. Resource use
