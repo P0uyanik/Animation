@@ -1,0 +1,509 @@
+{
+ "note": "T-089 eye-opening measurements (measure_eyes.py; ray casts, eyeball pixels not hidden by skin/lids/lashes/brows; hair and glasses excluded). Width/height in mm in the view plane; width_to_eye_spacing uses the eye-centre spacing (boy 136 mm, girl 116 mm; projected cos 35 deg at 3/4). Reference ratios from the original references' landmarks (annotations eye_inner/eye_outer vs eye_L/eye_R): boy val27 front 0.48, 3/4 0.50 (mean of both eyes); girl sheet30 front 0.66.",
+ "characters": {
+  "boy": {
+   "front/neutral/L": {
+    "published": {
+     "width_mm": 48.75,
+     "height_mm": 26.5,
+     "area_mm2": 1031.1,
+     "outer_corner_lift_mm": -8.25,
+     "width_to_eye_spacing": 0.358
+    },
+    "candidate": {
+     "width_mm": 63.75,
+     "height_mm": 39.25,
+     "area_mm2": 2054.6,
+     "outer_corner_lift_mm": -6.06,
+     "width_to_eye_spacing": 0.469
+    }
+   },
+   "front/neutral/R": {
+    "published": {
+     "width_mm": 48.75,
+     "height_mm": 26.5,
+     "area_mm2": 1030.3,
+     "outer_corner_lift_mm": -8.39,
+     "width_to_eye_spacing": 0.358
+    },
+    "candidate": {
+     "width_mm": 63.75,
+     "height_mm": 39.0,
+     "area_mm2": 2053.6,
+     "outer_corner_lift_mm": -6.02,
+     "width_to_eye_spacing": 0.469
+    }
+   },
+   "front/blink50/L": {
+    "published": {
+     "width_mm": 39.5,
+     "height_mm": 7.5,
+     "area_mm2": 250.8,
+     "outer_corner_lift_mm": 4.11,
+     "width_to_eye_spacing": 0.29
+    },
+    "candidate": {
+     "width_mm": 56.75,
+     "height_mm": 12.25,
+     "area_mm2": 583.8,
+     "outer_corner_lift_mm": 13.95,
+     "width_to_eye_spacing": 0.417
+    }
+   },
+   "front/blink50/R": {
+    "published": {
+     "width_mm": 39.75,
+     "height_mm": 7.5,
+     "area_mm2": 250.6,
+     "outer_corner_lift_mm": 4.33,
+     "width_to_eye_spacing": 0.292
+    },
+    "candidate": {
+     "width_mm": 56.75,
+     "height_mm": 12.25,
+     "area_mm2": 583.5,
+     "outer_corner_lift_mm": 14.03,
+     "width_to_eye_spacing": 0.417
+    }
+   },
+   "front/blink100/L": {
+    "published": {
+     "visible": false
+    },
+    "candidate": {
+     "visible": false
+    }
+   },
+   "front/blink100/R": {
+    "published": {
+     "visible": false
+    },
+    "candidate": {
+     "visible": false
+    }
+   },
+   "front/glance/L": {
+    "published": {
+     "width_mm": 49.25,
+     "height_mm": 27.0,
+     "area_mm2": 1070.6,
+     "outer_corner_lift_mm": -7.98,
+     "width_to_eye_spacing": 0.362
+    },
+    "candidate": {
+     "width_mm": 63.75,
+     "height_mm": 39.25,
+     "area_mm2": 2024.4,
+     "outer_corner_lift_mm": -6.31,
+     "width_to_eye_spacing": 0.469
+    }
+   },
+   "front/glance/R": {
+    "published": {
+     "width_mm": 48.0,
+     "height_mm": 26.25,
+     "area_mm2": 990.2,
+     "outer_corner_lift_mm": -8.92,
+     "width_to_eye_spacing": 0.353
+    },
+    "candidate": {
+     "width_mm": 63.75,
+     "height_mm": 38.75,
+     "area_mm2": 2052.5,
+     "outer_corner_lift_mm": -5.71,
+     "width_to_eye_spacing": 0.469
+    }
+   },
+   "threequarter/neutral/L": {
+    "published": {
+     "width_mm": 30.25,
+     "height_mm": 26.5,
+     "area_mm2": 653.5,
+     "outer_corner_lift_mm": -2.89,
+     "width_to_eye_spacing": 0.272
+    },
+    "candidate": {
+     "width_mm": 38.75,
+     "height_mm": 38.25,
+     "area_mm2": 1223.2,
+     "outer_corner_lift_mm": -5.64,
+     "width_to_eye_spacing": 0.348
+    }
+   },
+   "threequarter/neutral/R": {
+    "published": {
+     "width_mm": 50.0,
+     "height_mm": 26.25,
+     "area_mm2": 1032.8,
+     "outer_corner_lift_mm": -8.35,
+     "width_to_eye_spacing": 0.449
+    },
+    "candidate": {
+     "width_mm": 66.25,
+     "height_mm": 39.75,
+     "area_mm2": 2146.4,
+     "outer_corner_lift_mm": -4.68,
+     "width_to_eye_spacing": 0.595
+    }
+   },
+   "threequarter/blink50/L": {
+    "published": {
+     "width_mm": 23.25,
+     "height_mm": 7.75,
+     "area_mm2": 138.8,
+     "outer_corner_lift_mm": 0.9,
+     "width_to_eye_spacing": 0.209
+    },
+    "candidate": {
+     "width_mm": 32.5,
+     "height_mm": 11.5,
+     "area_mm2": 286.5,
+     "outer_corner_lift_mm": 7.69,
+     "width_to_eye_spacing": 0.292
+    }
+   },
+   "threequarter/blink50/R": {
+    "published": {
+     "width_mm": 41.5,
+     "height_mm": 8.25,
+     "area_mm2": 282.4,
+     "outer_corner_lift_mm": 5.39,
+     "width_to_eye_spacing": 0.372
+    },
+    "candidate": {
+     "width_mm": 60.0,
+     "height_mm": 14.75,
+     "area_mm2": 693.5,
+     "outer_corner_lift_mm": 15.84,
+     "width_to_eye_spacing": 0.539
+    }
+   },
+   "threequarter/blink100/L": {
+    "published": {
+     "visible": false
+    },
+    "candidate": {
+     "visible": false
+    }
+   },
+   "threequarter/blink100/R": {
+    "published": {
+     "visible": false
+    },
+    "candidate": {
+     "visible": false
+    }
+   },
+   "threequarter/glance/L": {
+    "published": {
+     "width_mm": 32.0,
+     "height_mm": 27.25,
+     "area_mm2": 704.7,
+     "outer_corner_lift_mm": -2.2,
+     "width_to_eye_spacing": 0.287
+    },
+    "candidate": {
+     "width_mm": 38.75,
+     "height_mm": 38.5,
+     "area_mm2": 1222.9,
+     "outer_corner_lift_mm": -5.97,
+     "width_to_eye_spacing": 0.348
+    }
+   },
+   "threequarter/glance/R": {
+    "published": {
+     "width_mm": 50.5,
+     "height_mm": 26.0,
+     "area_mm2": 1018.9,
+     "outer_corner_lift_mm": -8.04,
+     "width_to_eye_spacing": 0.453
+    },
+    "candidate": {
+     "width_mm": 66.25,
+     "height_mm": 39.25,
+     "area_mm2": 2164.2,
+     "outer_corner_lift_mm": -4.34,
+     "width_to_eye_spacing": 0.595
+    }
+   },
+   "side/neutral/L": {
+    "published": {
+     "visible": false
+    },
+    "candidate": {
+     "visible": false
+    }
+   },
+   "side/neutral/R": {
+    "published": {
+     "width_mm": 17.5,
+     "height_mm": 25.0,
+     "area_mm2": 310.0,
+     "outer_corner_lift_mm": -6.93
+    },
+    "candidate": {
+     "width_mm": 28.0,
+     "height_mm": 39.5,
+     "area_mm2": 869.1,
+     "outer_corner_lift_mm": -1.42
+    }
+   }
+  },
+  "girl": {
+   "front/neutral/L": {
+    "published": {
+     "width_mm": 59.0,
+     "height_mm": 53.25,
+     "area_mm2": 2395.8,
+     "outer_corner_lift_mm": 15.81,
+     "width_to_eye_spacing": 0.509
+    },
+    "candidate": {
+     "width_mm": 61.25,
+     "height_mm": 59.0,
+     "area_mm2": 2778.9,
+     "outer_corner_lift_mm": 17.8,
+     "width_to_eye_spacing": 0.528
+    }
+   },
+   "front/neutral/R": {
+    "published": {
+     "width_mm": 58.75,
+     "height_mm": 53.25,
+     "area_mm2": 2396.0,
+     "outer_corner_lift_mm": 15.84,
+     "width_to_eye_spacing": 0.506
+    },
+    "candidate": {
+     "width_mm": 61.25,
+     "height_mm": 59.0,
+     "area_mm2": 2776.2,
+     "outer_corner_lift_mm": 17.77,
+     "width_to_eye_spacing": 0.528
+    }
+   },
+   "front/blink50/L": {
+    "published": {
+     "width_mm": 57.75,
+     "height_mm": 19.75,
+     "area_mm2": 998.0,
+     "outer_corner_lift_mm": 8.99,
+     "width_to_eye_spacing": 0.498
+    },
+    "candidate": {
+     "width_mm": 60.25,
+     "height_mm": 21.25,
+     "area_mm2": 1160.8,
+     "outer_corner_lift_mm": 10.28,
+     "width_to_eye_spacing": 0.519
+    }
+   },
+   "front/blink50/R": {
+    "published": {
+     "width_mm": 57.75,
+     "height_mm": 19.75,
+     "area_mm2": 999.2,
+     "outer_corner_lift_mm": 9.05,
+     "width_to_eye_spacing": 0.498
+    },
+    "candidate": {
+     "width_mm": 60.25,
+     "height_mm": 21.25,
+     "area_mm2": 1160.8,
+     "outer_corner_lift_mm": 10.33,
+     "width_to_eye_spacing": 0.519
+    }
+   },
+   "front/blink100/L": {
+    "published": {
+     "visible": false
+    },
+    "candidate": {
+     "visible": false
+    }
+   },
+   "front/blink100/R": {
+    "published": {
+     "visible": false
+    },
+    "candidate": {
+     "visible": false
+    }
+   },
+   "front/glance/L": {
+    "published": {
+     "width_mm": 58.75,
+     "height_mm": 54.0,
+     "area_mm2": 2358.2,
+     "outer_corner_lift_mm": 17.61,
+     "width_to_eye_spacing": 0.506
+    },
+    "candidate": {
+     "width_mm": 61.25,
+     "height_mm": 59.0,
+     "area_mm2": 2776.5,
+     "outer_corner_lift_mm": 17.82,
+     "width_to_eye_spacing": 0.528
+    }
+   },
+   "front/glance/R": {
+    "published": {
+     "width_mm": 58.5,
+     "height_mm": 51.75,
+     "area_mm2": 2343.3,
+     "outer_corner_lift_mm": 15.75,
+     "width_to_eye_spacing": 0.504
+    },
+    "candidate": {
+     "width_mm": 61.0,
+     "height_mm": 59.0,
+     "area_mm2": 2747.9,
+     "outer_corner_lift_mm": 17.7,
+     "width_to_eye_spacing": 0.526
+    }
+   },
+   "threequarter/neutral/L": {
+    "published": {
+     "width_mm": 44.5,
+     "height_mm": 53.25,
+     "area_mm2": 1654.9,
+     "outer_corner_lift_mm": 22.25,
+     "width_to_eye_spacing": 0.468
+    },
+    "candidate": {
+     "width_mm": 46.0,
+     "height_mm": 59.25,
+     "area_mm2": 1890.3,
+     "outer_corner_lift_mm": 25.37,
+     "width_to_eye_spacing": 0.484
+    }
+   },
+   "threequarter/neutral/R": {
+    "published": {
+     "width_mm": 66.75,
+     "height_mm": 53.0,
+     "area_mm2": 2394.0,
+     "outer_corner_lift_mm": 2.81,
+     "width_to_eye_spacing": 0.702
+    },
+    "candidate": {
+     "width_mm": 68.75,
+     "height_mm": 59.0,
+     "area_mm2": 2771.2,
+     "outer_corner_lift_mm": -0.71,
+     "width_to_eye_spacing": 0.723
+    }
+   },
+   "threequarter/blink50/L": {
+    "published": {
+     "width_mm": 43.75,
+     "height_mm": 19.75,
+     "area_mm2": 741.2,
+     "outer_corner_lift_mm": 12.92,
+     "width_to_eye_spacing": 0.46
+    },
+    "candidate": {
+     "width_mm": 45.0,
+     "height_mm": 21.25,
+     "area_mm2": 854.7,
+     "outer_corner_lift_mm": 14.24,
+     "width_to_eye_spacing": 0.474
+    }
+   },
+   "threequarter/blink50/R": {
+    "published": {
+     "width_mm": 66.75,
+     "height_mm": 19.5,
+     "area_mm2": 1018.9,
+     "outer_corner_lift_mm": 3.52,
+     "width_to_eye_spacing": 0.702
+    },
+    "candidate": {
+     "width_mm": 68.75,
+     "height_mm": 21.25,
+     "area_mm2": 1166.8,
+     "outer_corner_lift_mm": 1.33,
+     "width_to_eye_spacing": 0.723
+    }
+   },
+   "threequarter/blink100/L": {
+    "published": {
+     "visible": false
+    },
+    "candidate": {
+     "visible": false
+    }
+   },
+   "threequarter/blink100/R": {
+    "published": {
+     "width_mm": 7.25,
+     "height_mm": 4.25,
+     "area_mm2": 23.3,
+     "outer_corner_lift_mm": 7.31,
+     "width_to_eye_spacing": 0.076
+    },
+    "candidate": {
+     "width_mm": 9.75,
+     "height_mm": 15.75,
+     "area_mm2": 55.2,
+     "outer_corner_lift_mm": 17.56,
+     "width_to_eye_spacing": 0.103
+    }
+   },
+   "threequarter/glance/L": {
+    "published": {
+     "width_mm": 45.25,
+     "height_mm": 54.25,
+     "area_mm2": 1651.3,
+     "outer_corner_lift_mm": 22.18,
+     "width_to_eye_spacing": 0.476
+    },
+    "candidate": {
+     "width_mm": 46.75,
+     "height_mm": 59.0,
+     "area_mm2": 1920.2,
+     "outer_corner_lift_mm": 25.5,
+     "width_to_eye_spacing": 0.492
+    }
+   },
+   "threequarter/glance/R": {
+    "published": {
+     "width_mm": 67.75,
+     "height_mm": 51.75,
+     "area_mm2": 2362.6,
+     "outer_corner_lift_mm": 0.67,
+     "width_to_eye_spacing": 0.713
+    },
+    "candidate": {
+     "width_mm": 69.25,
+     "height_mm": 58.75,
+     "area_mm2": 2752.7,
+     "outer_corner_lift_mm": -2.25,
+     "width_to_eye_spacing": 0.729
+    }
+   },
+   "side/neutral/L": {
+    "published": {
+     "visible": false
+    },
+    "candidate": {
+     "visible": false
+    }
+   },
+   "side/neutral/R": {
+    "published": {
+     "width_mm": 34.75,
+     "height_mm": 49.75,
+     "area_mm2": 821.3,
+     "outer_corner_lift_mm": -16.35
+    },
+    "candidate": {
+     "width_mm": 37.0,
+     "height_mm": 57.5,
+     "area_mm2": 1001.1,
+     "outer_corner_lift_mm": -19.77
+    }
+   }
+  }
+ }
+}
