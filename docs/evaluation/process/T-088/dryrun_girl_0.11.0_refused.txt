@@ -1,0 +1,5 @@
+[version_switch] DRY RUN: nothing is written
+1. validate  FAILED
+     - girl_auburn_bun_glasses 0.11.0 is already published (or the number was used before): published versions are immutable and numbers are never reused; choose a new version
+     - docs/evaluation/regression/baselines/girl_auburn_bun_glasses/0.11.0 already exists: a golden baseline is never overwritten
+     - the T-088 claim does not cover: assets/characters/girl_auburn_bun_glasses/versions/0.11.0/**, assets/characters/girl_auburn_bun_glasses/versions/index.json, docs/evaluation/characters/T-088/fidelity/**, docs/evaluation/characters/fidelity_baseline.json, docs/evaluation/regression/baselines/girl_auburn_bun_glasses/0.11.0/** (the Supervisor widens the claim before the switch)
