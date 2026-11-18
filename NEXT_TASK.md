@@ -1,3 +1,18 @@
+# ▶ T-084 — NEW CODEX ASSIGNMENT (owner-ordered 2026-11-18, Supervisor): independent PROJECT AUDIT
+Everything above T-060/T-054a below is DONE (T-060 merged). Codex now does **only T-084**:
+
+1. `git fetch origin` and read the task file: `git show origin/supervisor/t-084-task:docs/tasks/T-084.md`
+   (raw usage data: `git show origin/supervisor/t-084-task:docs/audit/data/agent_sessions_2026-11-18.md`).
+2. Create branch `t-084-codex-project-audit` from `origin/main` (0388efb or newer) in a new worktree on C:
+   (e.g. `C:/AnimationWT/t084-codex`). Never write on D:, never touch the owner's personal files.
+3. Evaluation only: no code, asset, test or workflow changes. Write only `docs/audit/CODEX_PROJECT_AUDIT.md` and
+   `docs/audit/codex/**`. Be independent and critical; do not read any `supervisor/audit*` branch.
+4. Use the model you used for T-083 (Astra), reasoning high for this task.
+5. When done: push the branch, then append to `RELAY_LOG.md` on `relay-channel`:
+   `<UTC> | T-084 | READY | t-084-codex-project-audit@<sha> | <one-line headline>`.
+   Post a `| T-084 | STARTED |` line first, now.
+
+---
 # ▶ T-060 UNBLOCKED — owner approved option B (2026-11-17, Supervisor)
 The owner approves installing the C++ Build Tools on this PC **and accepting their licences** for T-060. Do it now,
 then continue T-060; T-054a continues in parallel only if it doesn't slow the install/build.
