@@ -31,7 +31,8 @@ float angleDeg(quat a, quat b) {
 }  // namespace
 
 // --compare <package dir> <block.json>: the engine's derivation of the package against a collision block (e.g. the
-// export/6 block computed by collision_block_from_package.py); prints the largest differences.
+// export/6 block computed by collision_block_from_package.py); prints the largest differences (radius: radii and
+// rest allowances).
 int compareBlock(const char* pkg, const char* blockPath) {
   auto ic = loadImportedCharacter(std::string(pkg) + "/character.json");
   if (!ic) return std::fprintf(stderr, "%s\n", ic.error().message.c_str()), 1;
@@ -50,7 +51,7 @@ int compareBlock(const char* pkg, const char* blockPath) {
   for (size_t i = 0; i < d.limbs.size(); ++i) {
     const auto &a = d.limbs[i], &b = block->limbs[i];
     dp = std::max({dp, glm::length(a.a - b.a), glm::length(a.b - b.b)});
-    dr = std::max(dr, std::abs(a.r - b.r));
+    dr = std::max({dr, std::abs(a.r - b.r), std::abs(a.allowance - b.allowance)});
   }
   std::printf("{\"package\": \"%s\", \"max_point_diff_mm\": %.4f, \"max_radius_diff_mm\": %.4f}\n", pkg, dp * 1000, dr * 1000);
   return 0;

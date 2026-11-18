@@ -1,0 +1,10 @@
+{
+ "boy": {
+  "cup_surface_min_gap_mm": 27.958377838134766,
+  "frame": 42
+ },
+ "girl": {
+  "cup_surface_min_gap_mm": 33.763893127441406,
+  "frame": 68
+ }
+}
