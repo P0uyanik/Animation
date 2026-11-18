@@ -1,4 +1,4 @@
-// T-082 measurement (T-047's tool plus the largest planned elbow swing, torso lean and elbow height):  arm clearance on the character's collision body (engine/scene/collision.h: the same body the
+// T-082 measurement (T-047's tool plus the largest planned elbow swing, torso turn and elbow height):  arm clearance on the character's collision body (engine/scene/collision.h: the same body the
 // planner uses), every frame, both arms of every character, with collision planning on and off, plus the rotation
 // the planning adds to the arm bones (relative to the chest) and its change per frame, and how much faster per frame
 // the planned arm turns than the unplanned one ("speed_up": max over frames and bones of the planned bone's rotation
@@ -136,11 +136,11 @@ int main(int argc, char** argv) {
       // The largest planned elbow swing (degrees) and the elbow's height above the shoulder along the chest's up axis
       // (mm; a "wing" elbow rises towards or above the shoulder), planning on and off.
       for (int f = scene->frameStart; f <= scene->frameEnd; ++f) {
-        const float lv = glm::length(clip.evaluate(who + "/collision.lean." + hb, f, vec3(0)));  // planned torso lean (deg)
+        const float lv = glm::length(clip.evaluate(who + "/collision.turn." + hb, f, vec3(0)));  // planned torso turn (deg)
         if (lv > leanMax) leanMax = lv, leanAt = f;
         if (f > scene->frameStart)
-          leanRate = std::max(leanRate, glm::length(clip.evaluate(who + "/collision.lean." + hb, f, vec3(0)) -
-                                                    clip.evaluate(who + "/collision.lean." + hb, f - 1, vec3(0))));
+          leanRate = std::max(leanRate, glm::length(clip.evaluate(who + "/collision.turn." + hb, f, vec3(0)) -
+                                                    clip.evaluate(who + "/collision.turn." + hb, f - 1, vec3(0))));
         const float sw = std::abs(glm::degrees(clip.evaluate(who + "/swing." + hb, f, vec3(0)).x));
         if (sw > swingMax) swingMax = sw, swingAt = f;
         const auto G = on.characterGlobals(c, f), H = no.characterGlobals(c, f);
@@ -151,7 +151,7 @@ int main(int argc, char** argv) {
         if (up(G) > elbowUpOn) elbowUpOn = up(G), elbowAt = f;
         elbowUpOff = std::max(elbowUpOff, up(H));
       }
-      jc["arms"][s] = {{"lean_max_deg", leanMax}, {"lean_max_frame", leanAt}, {"lean_rate_deg", leanRate}, {"swing_max_deg", swingMax}, {"swing_max_frame", swingAt}, {"elbow_above_shoulder_max_mm", elbowUpOn},
+      jc["arms"][s] = {{"turn_max_deg", leanMax}, {"turn_max_frame", leanAt}, {"turn_rate_deg", leanRate}, {"swing_max_deg", swingMax}, {"swing_max_frame", swingAt}, {"elbow_above_shoulder_max_mm", elbowUpOn},
                        {"elbow_above_shoulder_frame", elbowAt}, {"elbow_above_shoulder_off_max_mm", elbowUpOff}, {"swing_rate_deg", swingRate}, {"lift_rate_deg", liftRate}, {"push_rate_mm", pushRate},{"gap_mm", gapOn * 1000}, {"gap_frame", atOn}, {"gap_part", partOn}, {"gap_off_mm", gapOff * 1000},
                        {"gap_off_frame", atOff}, {"upper_gap_mm", upperOn * 1000}, {"added_deg", added},
                        {"added_step_deg", step}, {"added_step_frame", atStep}, {"speed_up_deg", speedUp},

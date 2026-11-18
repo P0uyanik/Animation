@@ -961,7 +961,7 @@ SwingNeed swingNeed(const CollisionBody& M, std::vector<mat4> G, int upper, int 
 // Clearance of an arm for globals G after the best elbow swing up to `limit` (planning scores: the swing is planned
 // later for the final motion, so a candidate is judged with the swing it will get). The hand-over point is scored
 // with the full range (limit < 0: kSwingMax, as in T-047): a point the full swing would clear is one the limited
-// swing, the wrist push and the torso lean clear together, and the receiver's reach stays as T-047 planned it.
+// swing, the wrist push and the torso turn clear together, and the receiver's reach stays as T-047 planned it.
 float swungArmGap(const BodyClearanceModel& model, const std::vector<mat4>& G, char side, float limit) {
   if (!model.valid) return 1e9f;
   const ArmModel& A = model.arm[side == 'L' ? 0 : 1];
@@ -996,7 +996,7 @@ void SceneEvaluator::writeArmPole(Clip& gen, size_t c, char side) {
     const std::vector<mat4> G = characterGlobals(c, f);
     need[size_t(i)] = swingNeed(M.collision, G, A.upper, A.fore, A.hand, side, w * (kArmBodyMargin + 0.0005f), M.collision.maxElbowSwing);
     // Beyond the limit (T-082) the swing only goes as far as keeping the forearm out of the body (contact, not the
-    // margin): the last resort once the hand-over point, the wrist push and the torso lean have done what they can.
+    // margin): the last resort once the hand-over point, the wrist push and the torso turn have done what they can.
     if (const SwingNeed& s = need[size_t(i)]; s.needed && !s.reachable && w > 0) {
       const SwingNeed out = swingNeed(M.collision, G, A.upper, A.fore, A.hand, side, 0.0005f, kSwingMax);
       if (out.reachable && std::min(out.pos, out.neg) > M.collision.maxElbowSwing) need[size_t(i)] = out;
@@ -1301,13 +1301,15 @@ void SceneEvaluator::armClearancePass(Clip& gen, const InteractionContext& ctx) 
       std::vector<Key> pk;
       for (int i = 0; i < n; ++i) pk.push_back({double(fs - 1 + i), push[size_t(i)], Interp::Linear});
       gen.tracks[who + "/collision.push." + sk.bones[size_t(A.hand)].name].keys = std::move(pk);
-      // 3. torso lean (T-082): frames the limited swing and the wrist push leave short (a held-still hand-over, where
-      // the wrist may not move) get a small lean of the upper body away from the forearm. Per frame the smallest lean
-      // (kLeanStep steps up to kLeanMax, eight level directions) whose limited swing clears the arm; then, per span of
-      // such frames, one direction and the smallest envelope above the needs with a rate of at most kLeanRate per
-      // frame. The IK keeps the wrists where they are, so contacts and holds stay exact.
+      // 3. torso turn (T-082): frames the limited swing and the wrist push leave short (a held-still hand-over, where
+      // the wrist may not move) get a small turn of the upper body about its own vertical axis, so the arm's shoulder
+      // leads towards the hand (as a person turns into a hand-over at close range). Never a lean: leaning back away
+      // from a held object reads wrong for every character reference. Per frame the smallest turn (kLeanStep steps up
+      // to kLeanMax, either way) whose limited swing clears the arm; then, per span of such frames, one direction and
+      // the smallest envelope above the needs with a rate of at most kLeanRate per frame. The IK keeps the wrists where
+      // they are, so contacts and holds stay exact.
       if (const int spine = sk.find("spine"); spine >= 0) {
-        constexpr float kLeanMax = 8.0f, kLeanStep = 0.25f, kLeanRate = 0.5f;  // degrees, degrees per frame
+        constexpr float kLeanMax = 15.0f, kLeanStep = 0.25f, kLeanRate = 0.5f;  // degrees, degrees per frame
         const std::string leanTrack = who + "/spine.rot";
         const std::optional<Track> savedLean = gen.tracks.count(leanTrack) ? std::optional<Track>(gen.tracks[leanTrack]) : std::nullopt;
         const auto dp = characters_[c].asset.defaultPose.find("spine");
@@ -1325,29 +1327,31 @@ void SceneEvaluator::armClearancePass(Clip& gen, const InteractionContext& ctx) 
         for (int f = fs; f <= fe; ++f) {
           const size_t i = size_t(f - (fs - 1));
           if (w[i] <= 1e-3f || gapAt(f) >= required(f) - 0.0005f) continue;
-          gen.tracks.erase(swing);  // the lean is judged with the swing it will get (limited), not the current one
+          gen.tracks.erase(swing);  // the turn is judged with the swing it will get (limited), not the current one
           setLean(lean);
           const float req = required(f) - 0.0005f;
           float best = swungArmGap(clearance_[c], characterGlobals(c, f), side, clearance_[c].collision.maxElbowSwing);
           vec3 found(0), bestLean(0);
-          // Eight level directions (euler degrees about the spine's local X and Z); the smallest lean that clears
-          // wins, else the one with the largest gap.
+          // The turn (euler degrees about the spine's local Y), both ways; the smallest that clears wins, else the one
+          // with the largest gap.
           for (float L = kLeanStep; L <= kLeanMax + 1e-4f && found == vec3(0); L += kLeanStep)
-            for (int k = 0; k < 8 && found == vec3(0); ++k) {
-              const float a = glm::radians(45.0f * float(k));
-              const vec3 e = vec3(std::cos(a), 0, std::sin(a)) * L;
+            for (float sgn : {1.0f, -1.0f}) {
+              const vec3 e(0, sgn * L, 0);
               lean[i] = e;
               setLean(lean);
               const float g = swungArmGap(clearance_[c], characterGlobals(c, f), side, clearance_[c].collision.maxElbowSwing);
               if (g > best) best = g, bestLean = e;
-              if (g >= req) found = e;
+              if (g >= req) {
+                found = e;
+                break;
+              }
             }
           lean[i] = vec3(0);
           needLean[i] = found != vec3(0) ? found : bestLean;  // best effort; the final check reports what is left
           anyLean |= needLean[i] != vec3(0);
         }
         if (anyLean) {
-          // One direction per contiguous span of frames that need a lean (the need-weighted mean, so the direction
+          // One direction per contiguous span of frames that need a turn (the need-weighted mean, so the direction
           // never turns between frames); its size is the smallest envelope above the span's needs with a rate of at
           // most kLeanRate per frame.
           std::fill(lean.begin(), lean.end(), vec3(0));
@@ -1370,17 +1374,17 @@ void SceneEvaluator::armClearancePass(Clip& gen, const InteractionContext& ctx) 
             i = j;
           }
           setLean(lean);
-          // The planned lean itself (euler degrees), for measurements; nothing evaluates it.
+          // The planned turn itself (euler degrees), for measurements; nothing evaluates it.
           std::vector<Key> lk;
           for (int i = 0; i < n; ++i) lk.push_back({double(fs - 1 + i), lean[size_t(i)], Interp::Linear});
-          gen.tracks[who + "/collision.lean." + sk.bones[size_t(A.hand)].name].keys = std::move(lk);
+          gen.tracks[who + "/collision.turn." + sk.bones[size_t(A.hand)].name].keys = std::move(lk);
         } else if (savedLean) {
           gen.tracks[leanTrack] = *savedLean;
         } else {
           gen.tracks.erase(leanTrack);
         }
         if (savedS) gen.tracks[swing] = *savedS;
-        if (anyLean) writeArmPole(gen, c, side);  // the swing for the leaned body
+        if (anyLean) writeArmPole(gen, c, side);  // the swing for the turned body
       }
     }
   }

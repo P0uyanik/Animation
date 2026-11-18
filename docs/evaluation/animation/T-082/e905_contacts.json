@@ -1,18 +1,20 @@
 {
  "planned": {
-  "boy_grasp_f17_mm": 4.2146846681134775e-05,
-  "boy_held_f17_51_max_mm": 0.00024360093811992556,
-  "girl_grasp_f46_mm": 0.0001982907997444272,
-  "girl_held_f46_72_max_mm": 0.0002003729168791324,
-  "prop_jump_at_switches_mm": 0.0001854057190939784,
+  "boy_grasp_f17_mm": 6.155189475975931e-05,
+  "boy_held_f17_51_max_mm": 0.00025680195540189743,
+  "girl_grasp_f46_mm": 1.3431725164991803e-05,
+  "girl_held_f46_72_max_mm": 6.135430157883093e-05,
+  "prop_jump_at_switches_mm": 0.00018674817692954093,
   "warnings": []
  },
  "unplanned": {
-  "boy_grasp_f17_mm": 4.2146846681134775e-05,
-  "boy_held_f17_51_max_mm": 0.00025334712699986994,
-  "girl_grasp_f46_mm": 7.216398080345243e-05,
-  "girl_held_f46_72_max_mm": 7.563806866528466e-05,
-  "prop_jump_at_switches_mm": 0.00018907454796135426,
-  "warnings": []
+  "boy_grasp_f17_mm": 6.155189475975931e-05,
+  "boy_held_f17_51_max_mm": 1.2562774419784546,
+  "girl_grasp_f46_mm": 7.242792344186455e-05,
+  "girl_held_f46_72_max_mm": 0.00012737007637042552,
+  "prop_jump_at_switches_mm": 0.0004141611570958048,
+  "warnings": [
+   "handover (giver): 'boy' cannot reach with hand.R at frame 46 (6 mm short); move them closer"
+  ]
  }
 }

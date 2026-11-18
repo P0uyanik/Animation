@@ -20,13 +20,13 @@
  },
  "camera": {
   "position": [
-   0.1,
-   0.98,
-   1.6
+   -0.904,
+   0.9,
+   1.498
   ],
   "target": [
    0.0,
-   0.6,
+   0.5,
    0.0
   ],
   "focalMm": 32,
@@ -153,14 +153,14 @@
    "name": "table_top",
    "kind": "box",
    "min": [
-    -0.1414,
-    0.4175,
-    0.0692
+    -0.0962,
+    0.4479,
+    -0.0776
    ],
    "max": [
-    0.0386,
-    0.4475,
-    0.2292
+    0.0638,
+    0.4779,
+    0.0824
    ],
    "material": "table_mat"
   },
@@ -168,14 +168,14 @@
    "name": "table_leg",
    "kind": "box",
    "min": [
-    -0.0764,
+    -0.0412,
     0.0,
-    0.1142
+    -0.0226
    ],
    "max": [
-    -0.0264,
-    0.4175,
-    0.1642
+    0.0088,
+    0.4479,
+    0.0274
    ],
    "material": "table_mat"
   }
@@ -186,9 +186,9 @@
    "id": "prop.felt_cup",
    "transform": {
     "translation": [
-     -0.0414,
-     0.4475,
-     0.1592
+     -0.0162,
+     0.4779,
+     0.0024
     ],
     "rotationDeg": [
      0,
@@ -208,9 +208,9 @@
    "name": "boy",
    "asset": "(set by run_shot)",
    "position": [
-    -0.19,
-    0.0,
-    0.0
+    -0.2142,
+    0,
+    -0.1293
    ],
    "yawDeg": 68.0,
    "life": {
@@ -221,13 +221,16 @@
    "name": "girl",
    "asset": "(set by run_shot)",
    "position": [
-    0.19,
+    0.2142,
     0.0,
-    0.0
+    0.1293
    ],
    "yawDeg": -68.0,
    "life": {
-    "blinkInterval": 2.6
+    "blinkInterval": 2.6,
+    "gaze": {
+     "assistPitchDeg": 20.0
+    }
    }
   }
  ],
@@ -260,9 +263,9 @@
    "start": 19,
    "end": 30,
    "by": [
-    0.03,
-    0.1,
-    -0.01
+    -0.0012,
+    0.01,
+    0.0297
    ]
   },
   {
@@ -278,9 +281,9 @@
    "release": 51,
    "end": 63,
    "at": [
-    -0.0405,
-    0.5295,
-    0.0093
+    -0.0193,
+    0.4879,
+    0.0767
    ]
   },
   {
@@ -301,9 +304,9 @@
    "start": 1,
    "end": 26,
    "target": [
-    -0.19,
+    -0.2142,
     0.78,
-    0.0
+    -0.1293
    ]
   },
   {
@@ -337,31 +340,45 @@
    "light_scale": 1.0
   }
  },
- "x_t022_derivation": {
-  "grip_from_right_shoulder_in_arm_lengths": [
-   0.85,
-   -0.45,
-   0.06
-  ],
+ "x_t082_staging": {
+  "rule": "natural hands: an easy arm, ARM_REACH of its length, ARM_DROP below horizontal; the cup at his, hers across the cup; offset so the right hands line up",
+  "arm_reach": 0.93,
+  "arm_drop_rad": 0.35,
+  "handover_gap": 0.03,
+  "cheat_deg": 22.0,
   "boy_arm_length": 0.2323,
+  "girl_arm_length": 0.18,
   "boy_right_shoulder_rest": [
    -0.118,
    0.618,
    0.0
   ],
-  "grip_socket_world": [
-   -0.0564,
-   0.5135,
-   0.1963
+  "girl_right_shoulder_rest": [
+   -0.097999,
+   0.584997,
+   -0.0
   ],
-  "cup_yaw": "boy yaw + 180: grip (local +x) faces his right, grip_b faces the girl's right",
-  "table_top": "cup base height",
-  "handover_at": "midpoint of the two right shoulders, 0.4 x the shorter arm lower",
-  "girl_arm_length": 0.18,
+  "boy_natural_hand": [
+   -0.0703,
+   0.5439,
+   0.0561
+  ],
+  "girl_natural_hand": [
+   0.0317,
+   0.5439,
+   0.0973
+  ],
+  "grip_socket_world": [
+   -0.0312,
+   0.5439,
+   0.0395
+  ],
   "handover_point": [
-   -0.0405,
-   0.5295,
-   0.0093
-  ]
+   -0.0193,
+   0.4879,
+   0.0767
+  ],
+  "girl_neck_pitch_deg": 20.0,
+  "cup_yaw": "boy yaw + 180: grip (local +x) faces his right, grip_b faces the girl's right"
  }
 }

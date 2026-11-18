@@ -412,7 +412,8 @@ TEST_CASE("arm-body clearance: the hand-over meeting point keeps both arms outsi
 // T-082: the giver of a held-still hand-over close to its own chest (the e905 case): the wrist may not move while it
 // holds still, so T-047 cleared the forearm with a large elbow swing (a "wing" elbow beside the head). With the swing
 // limit the elbow stays low: the swing stays near the limit (beyond it only as far as keeping the forearm out of the
-// body), a small torso lean (<= 8 deg, <= 0.5 deg/frame) does the rest, the arm stays outside and contacts exact.
+// body), a small turn of the upper body (<= 15 deg about its vertical axis, <= 0.5 deg/frame; never a lean back) does
+// the rest, the arm stays outside and contacts exact.
 TEST_CASE("arm-body clearance: a held-still hand-over close to the giver's chest keeps the elbow low (swing limit)") {
   Scene scene = baseScene();
   scene.characters.push_back(character("giver", kBoy, vec3(-0.19f, 0, 0), 68));
@@ -435,30 +436,32 @@ TEST_CASE("arm-body clearance: a held-still hand-over close to the giver's chest
     auto ev = load(s);
     for (const auto& w : ev->warnings()) MESSAGE(w);
     const Clip& clip = ev->scene().animation;
-    float swing = 0, lean = 0, leanRate = 0, elbowUp = -1e9f;
+    float swing = 0, turn = 0, turnRate = 0, elbowUp = -1e9f;
     for (int f = 1; f <= 72; ++f) {
       swing = std::max(swing, std::abs(glm::degrees(clip.evaluate("giver/swing.hand.R", f, vec3(0)).x)));
-      lean = std::max(lean, glm::length(clip.evaluate("giver/collision.lean.hand.R", f, vec3(0))));
+      const vec3 t = clip.evaluate("giver/collision.turn.hand.R", f, vec3(0));
+      turn = std::max(turn, glm::length(t));
+      CHECK(std::abs(t.x) + std::abs(t.z) < 1e-6f);  // a turn about the vertical axis only, no lean
       if (f > 1)
-        leanRate = std::max(leanRate, glm::length(clip.evaluate("giver/collision.lean.hand.R", f, vec3(0)) -
-                                                  clip.evaluate("giver/collision.lean.hand.R", f - 1, vec3(0))));
+        turnRate = std::max(turnRate, glm::length(clip.evaluate("giver/collision.turn.hand.R", f, vec3(0)) -
+                                                  clip.evaluate("giver/collision.turn.hand.R", f - 1, vec3(0))));
       elbowUp = std::max(elbowUp, bonePos(*ev, 0, "forearm.R", f).y - bonePos(*ev, 0, "upperArm.R", f).y);
     }
     const auto [gap, gapAt] = fullIkClearance(*ev, 0, 'R', 1, 72);
-    MESSAGE("limit " << limit << ": swing " << swing << " deg, lean " << lean << " deg (" << leanRate << " deg/frame), elbow "
+    MESSAGE("limit " << limit << ": swing " << swing << " deg, turn " << turn << " deg (" << turnRate << " deg/frame), elbow "
                      << elbowUp * 1000 << " mm above the shoulder, gap " << gap * 1000 << " mm (frame " << gapAt << ")");
     CHECK(ev->warnings().empty());
     CHECK(gap >= 0.0f);
     CHECK(glm::distance(ev->handGripPoint(1, 'R', 46), socketWorld(*ev, 0, "grip_b", 46)) < 0.005f);
     CHECK(glm::distance(ev->handGripPoint(0, 'R', 17), socketWorld(*ev, 0, "grip", 17)) < 0.005f);
-    CHECK(leanRate <= 0.5f + 1e-3f);
-    CHECK(lean <= 8.0f + 1e-3f);
+    CHECK(turnRate <= 0.5f + 1e-3f);
+    CHECK(turn <= 15.0f + 1e-3f);
     checkContinuous(*ev, 0, {17, 46}, 1, 72);
     if (limit > 100) {
       swingFull = swing, elbowFull = elbowUp;
       CHECK(swingFull > 40.0f);  // the case is real: the full range swings the elbow far
     } else {
-      CHECK(swing <= limit + 0.01f);   // here the limit (plus the lean) is enough: no swing beyond it
+      CHECK(swing <= limit + 0.01f);   // here the limit (plus the turn) is enough: no swing beyond it
       CHECK(elbowUp < elbowFull - 0.01f);  // the elbow stays at least 1 cm lower
     }
   }
