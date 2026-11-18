@@ -244,3 +244,9 @@ as closely as possible (each round ends with a side-by-side sheet against the re
 Owner: "give a task to codex to analyze our videos to compare with references and to create a report to know how far
 we are from the original references". Codex (owner's PC, via relay) gets T-083, evaluation only (docs). This widens
 the earlier "Codex only T-060" rule by this one task.
+
+## 2026-11-18: boy 2.0.0 is the new current; girl 0.11.0 pending a strict comparison
+- Owner: "I approve Boy 2.0.0 as the new current version." T-080 publishes 2.0.0 into the asset store, moves the
+  `approved` pointer and the boy entry of `fidelity_baseline.json` (score 67.63 vs 66.41), then merges.
+- Girl 0.11.0: owner wants a side-by-side sheet (original references | 0.10.0 | 0.11.0, identical angles and
+  lighting) before deciding. **The girl's current version stays 0.10.0 until the owner approves a change.**
