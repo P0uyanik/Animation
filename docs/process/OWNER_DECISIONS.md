@@ -219,3 +219,17 @@ Approved and merged as opt-in shared systems (approved character versions unchan
 T-065 face v2 + fitted head, T-066 skin, T-068 garment details, T-053 personality profiles, T-070 hair round 2.
 Hair: round 3 requested (boy crown from the close-up sheet, girl curls/fringe, third fringe/waves). Collisions (T-047):
 before/after renders first, then the owner decides.
+
+## 2026-11-18: always work with the latest, most reference-faithful character versions
+All work (evaluations, shots, videos, new tasks) uses the latest character versions that most closely match the original
+references. Mechanism: new shared systems are combined into **new character versions** as soon as they are approved
+(pin bump), the owner approves those versions on renders, and the cast `"current"` (fidelity baseline) then points to
+them, so every shot and test follows automatically. Old versions stay frozen and are used only with a stated
+`legacy_reason`. Next: after the progress video (T-078), new boy and girl versions combining face v2 + fitted head,
+skin presets/2, hair v3 (round 3 when approved), garment details and personality profiles.
+
+## 2026-11-18: finish the running tasks, then stop and review
+No new tasks after the running ones (T-060, T-078, T-079, T-080, T-081, T-082). Each is merged as soon as it passes
+(path B after the owner's render approval). Then the owner reviews all results (progress video with boy 2.0.0 and
+girl 0.11.0, hair round 3, collisions) to find issues and plan the next round. Follow-ups noted in
+`docs/process/IMPLEMENTATION_PLAN.md` §5 stay unstarted until then.
