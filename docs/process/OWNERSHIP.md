@@ -17,6 +17,5 @@ means none. Branch is the task's branch; a task branch without a row falls back 
 | Task | Lane | Branch | Write-set | Depends on | Versions bumped |
 | --- | --- | --- | --- | --- | --- |
 | T-104 | C | t-104-claude-timing-calibration | `content/timing/**`, `content/personality/*.json`, `engine/anim/personality.{h,cpp}`, `engine/scene/interaction.{h,cpp}`, `engine/scene/scene.{h,cpp}`, `tests/test_timing_profile.cpp`, `tests/CMakeLists.txt`, `tools/animcheck/**`, `episodes/e907_exchange/**`, `content/scenes/eval/exchange/**`, `docs/evaluation/animation/T-104/**` | `docs/references/**` (stable) | — |
-| T-090b | E | t-090b-codex-fit-proposals | `docs/evaluation/characters/T-090b/**` | `tools/fit/**` (stable), `tools/review/**` (stable) | — |
 
 Supervisor-only files: docs/process/TASK_LOG.md, docs/ROADMAP.md, docs/process/OWNER_DECISIONS.md, docs/tasks/**.
