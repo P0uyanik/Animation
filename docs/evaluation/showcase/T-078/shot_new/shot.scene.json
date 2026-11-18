@@ -295,13 +295,9 @@
  "production": {
   "cast": {
    "boy": {
-    "spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.0.0-dev.spec.json",
-    "overrides": [
-     "docs/evaluation/characters/T-065/candidates/boy_2.0-dev_face2.override.json",
-     "docs/evaluation/characters/T-068/candidates/boy_2.0.0-dev.garment_details.override.json",
-     "docs/evaluation/showcase/T-078/candidates/boy_skin2_generic.override.json"
-    ],
-    "legacy_reason": "T-078 progress video: combined candidate overrides of the merged shared systems (evidence only, not a version)"
+    "spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.0.0.spec.json",
+    "overrides": [],
+    "legacy_reason": "T-078 progress video: boy 2.0.0 (T-080, t-080-claude-boy-2-0-0@39aa35c), built from that commit; not yet current"
    },
    "girl": {
     "spec": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.11.0.spec.json",
@@ -324,7 +320,7 @@
   "derived_from": "content/scenes/eval/reach_touch_wave/shot.scene.json",
   "side": "new",
   "note": "identical to the source except cast, character-level personality (T-053) and this block; principles (T-061) are on by default (null)",
-  "hair": "girl 0.11.0 has groom/2 hair (T-079 round 3) in its spec; boy: see cast",
+  "hair": "both new versions carry groom/2 hair (T-079 round 3) in their own specs; masters built with build_character.py at the T-080/T-081 commits (no post-build step)",
   "camera": "same position/target as the source shot; portrait 640x720 panel with focalMm 58 (Blender AUTO sensor fit on the 720 px height) = a slightly wider-than-exact centre crop of a 1280x720 render of the source camera (35 mm), so the characters fill the panel; identical on both sides"
  }
 }
