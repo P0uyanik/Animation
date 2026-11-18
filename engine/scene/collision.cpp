@@ -285,7 +285,8 @@ Json collisionBodyToJson(const CollisionBody& body, const Skeleton& sk) {
   for (const CollisionLimb& l : body.limbs)
     limbs.push_back({{"name", l.name}, {"bone", sk.bones[size_t(l.bone)].name}, {"side", std::string(1, l.side)},
                      {"a", vec(l.a)}, {"b", vec(l.b)}, {"r", l.r}, {"allowance", l.allowance}});
-  return {{"format", "plush.collision_body"}, {"version", 1}, {"margin", body.margin}, {"sections", sections}, {"limbs", limbs}};
+  return {{"format", "plush.collision_body"}, {"version", 1}, {"margin", body.margin},
+          {"max_elbow_swing_deg", glm::degrees(body.maxElbowSwing)}, {"sections", sections}, {"limbs", limbs}};
 }
 
 Result<CollisionBody> collisionBodyFromJson(const Json& j, const Skeleton& sk) {
@@ -295,6 +296,9 @@ Result<CollisionBody> collisionBodyFromJson(const Json& j, const Skeleton& sk) {
   M.source = "package";
   try {
     M.margin = j.value("margin", kCollisionMargin);
+    const float swingDeg = j.value("max_elbow_swing_deg", kDefaultMaxElbowSwingDeg);
+    if (!(swingDeg >= 0 && swingDeg <= 120)) throw std::runtime_error("max_elbow_swing_deg must be in [0, 120]");
+    M.maxElbowSwing = glm::radians(swingDeg);
     auto bone = [&](const Json& e) -> int {
       const int b = sk.find(e.at("bone").get<std::string>());
       if (b < 0) throw std::runtime_error("unknown bone " + e.at("bone").get<std::string>());

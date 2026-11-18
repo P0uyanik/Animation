@@ -903,7 +903,9 @@ void SceneEvaluator::buildClearanceModels() {
 // no swing, so a clear clip or IK arm is unchanged. The required margin follows the IK weight: kArmBodyMargin at full
 // IK, contact-but-not-inside (0) for a clip arm. One swing direction per contiguous span (the one needing the smaller
 // angle), then the smallest envelope above the need whose rate is at most kSwingRate per frame: the elbow starts
-// moving before the forearm gets close and never steps.
+// moving before the forearm gets close and never steps. The swing never exceeds the character's limit
+// (CollisionBody::maxElbowSwing, T-082): the elbow stays low and the arm calm; what the limited swing cannot clear
+// is left to the hand-over point choice and the wrist push (armClearancePass).
 namespace {
 constexpr float kSwingRate = 0.02618f;  // 1.5 deg per frame
 constexpr float kSwingMax = 2.1f;      // 120 deg
@@ -924,13 +926,14 @@ float forearmGap(const CollisionBody& M, std::vector<mat4>& G, const mat4& fore0
   G[size_t(fore)] = fore0;
   return g;
 }
-// Smallest positive and negative swings that reach `need` (out: +-kSwingMax * 1.5 marks "none reaches it"; then
-// `best` is the angle with the largest gap).
+// Smallest positive and negative swings up to `limit` (<= kSwingMax) that reach `need` (out: +-kSwingMax * 1.5
+// marks "none reaches it"; then `best` is the angle within the limit with the largest gap).
 struct SwingNeed {
   float pos = 0, neg = 0, best = 0;
   bool needed = false, reachable = true;
 };
-SwingNeed swingNeed(const CollisionBody& M, std::vector<mat4> G, int upper, int fore, int hand, char side, float need) {
+SwingNeed swingNeed(const CollisionBody& M, std::vector<mat4> G, int upper, int fore, int hand, char side, float need, float limit) {
+  const float maxAngle = std::clamp(limit, 0.0f, kSwingMax);
   SwingNeed out;
   const mat4 fore0 = G[size_t(fore)];
   float bestGap = forearmGap(M, G, fore0, upper, fore, hand, side, 0);
@@ -938,7 +941,9 @@ SwingNeed swingNeed(const CollisionBody& M, std::vector<mat4> G, int upper, int 
   out.needed = true;
   out.pos = out.neg = 1.5f * kSwingMax;
   constexpr float step = 0.0218f;  // 1.25 deg
-  for (float t = step; t <= kSwingMax + 1e-6f; t += step) {
+  const int steps = maxAngle > 0 ? int(std::ceil(maxAngle / step - 1e-4f)) : 0;  // the last step lands on the limit
+  for (int k = 1; k <= steps; ++k) {
+    const float t = std::min(float(k) * step, maxAngle);
     for (float sgn : {1.0f, -1.0f}) {
       float& slot = sgn > 0 ? out.pos : out.neg;
       if (slot <= kSwingMax) continue;  // found already
@@ -953,12 +958,14 @@ SwingNeed swingNeed(const CollisionBody& M, std::vector<mat4> G, int upper, int 
 }
 }  // namespace
 
-// Clearance of an arm for globals G after the best elbow swing (planning scores: the swing is planned later for the
-// final motion, so a candidate is judged with the swing it will get).
-float swungArmGap(const BodyClearanceModel& model, const std::vector<mat4>& G, char side) {
+// Clearance of an arm for globals G after the best elbow swing up to `limit` (planning scores: the swing is planned
+// later for the final motion, so a candidate is judged with the swing it will get). The hand-over point is scored
+// with the full range (limit < 0: kSwingMax, as in T-047): a point the full swing would clear is one the limited
+// swing, the wrist push and the torso lean clear together, and the receiver's reach stays as T-047 planned it.
+float swungArmGap(const BodyClearanceModel& model, const std::vector<mat4>& G, char side, float limit) {
   if (!model.valid) return 1e9f;
   const ArmModel& A = model.arm[side == 'L' ? 0 : 1];
-  const SwingNeed n = swingNeed(model.collision, G, A.upper, A.fore, A.hand, side, kArmBodyMargin + 0.0005f);
+  const SwingNeed n = swingNeed(model.collision, G, A.upper, A.fore, A.hand, side, kArmBodyMargin + 0.0005f, limit < 0 ? kSwingMax : limit);
   float theta = 0;
   if (n.needed) theta = !n.reachable ? n.best : n.pos <= n.neg ? n.pos : -n.neg;
   std::vector<mat4> H = G;
@@ -986,7 +993,14 @@ void SceneEvaluator::writeArmPole(Clip& gen, size_t c, char side) {
     const double f = double(fs + i);
     const Track* t = scene_.animation.find(ik);
     const float w = t && !t->keys.empty() ? std::clamp(scene_.animation.evaluate(ik + ".weight", f, vec3(1)).x, 0.0f, 1.0f) : 0.0f;
-    need[size_t(i)] = swingNeed(M.collision, characterGlobals(c, f), A.upper, A.fore, A.hand, side, w * (kArmBodyMargin + 0.0005f));
+    const std::vector<mat4> G = characterGlobals(c, f);
+    need[size_t(i)] = swingNeed(M.collision, G, A.upper, A.fore, A.hand, side, w * (kArmBodyMargin + 0.0005f), M.collision.maxElbowSwing);
+    // Beyond the limit (T-082) the swing only goes as far as keeping the forearm out of the body (contact, not the
+    // margin): the last resort once the hand-over point, the wrist push and the torso lean have done what they can.
+    if (const SwingNeed& s = need[size_t(i)]; s.needed && !s.reachable && w > 0) {
+      const SwingNeed out = swingNeed(M.collision, G, A.upper, A.fore, A.hand, side, 0.0005f, kSwingMax);
+      if (out.reachable && std::min(out.pos, out.neg) > M.collision.maxElbowSwing) need[size_t(i)] = out;
+    }
     any |= need[size_t(i)].needed;
   }
   if (!any) return;
@@ -1287,6 +1301,77 @@ void SceneEvaluator::armClearancePass(Clip& gen, const InteractionContext& ctx) 
       std::vector<Key> pk;
       for (int i = 0; i < n; ++i) pk.push_back({double(fs - 1 + i), push[size_t(i)], Interp::Linear});
       gen.tracks[who + "/collision.push." + sk.bones[size_t(A.hand)].name].keys = std::move(pk);
+      // 3. torso lean (T-082): frames the limited swing and the wrist push leave short (a held-still hand-over, where
+      // the wrist may not move) get a small lean of the upper body away from the forearm. Per frame the smallest lean
+      // (kLeanStep steps up to kLeanMax) whose limited swing clears the arm; then the smallest envelope above it with
+      // a rate of at most kLeanRate per frame (direction: the need-weighted mean, as the arm lift). The IK keeps the
+      // wrists where they are, so contacts and holds stay exact.
+      if (const int spine = sk.find("spine"); spine >= 0) {
+        constexpr float kLeanMax = 8.0f, kLeanStep = 0.25f, kLeanRate = 0.5f;  // degrees, degrees per frame
+        const std::string leanTrack = who + "/spine.rot";
+        const std::optional<Track> savedLean = gen.tracks.count(leanTrack) ? std::optional<Track>(gen.tracks[leanTrack]) : std::nullopt;
+        const auto dp = characters_[c].asset.defaultPose.find("spine");
+        const vec3 rest0 = dp == characters_[c].asset.defaultPose.end() ? vec3(0) : dp->second;
+        std::vector<vec3> leanBase(static_cast<size_t>(n));
+        for (int i = 0; i < n; ++i) leanBase[size_t(i)] = savedLean ? savedLean->evaluate(fs - 1 + i) : rest0;
+        auto setLean = [&](const std::vector<vec3>& lean) {
+          std::vector<Key> keys;
+          for (int i = 0; i < n; ++i) keys.push_back({double(fs - 1 + i), leanBase[size_t(i)] + lean[size_t(i)], Interp::Linear});
+          gen.tracks[leanTrack].keys = std::move(keys);
+        };
+        std::vector<vec3> lean(static_cast<size_t>(n), vec3(0)), needLean(static_cast<size_t>(n), vec3(0));
+        bool anyLean = false;
+        const std::optional<Track> savedS = gen.tracks.count(swing) ? std::optional<Track>(gen.tracks[swing]) : std::nullopt;
+        for (int f = fs; f <= fe; ++f) {
+          const size_t i = size_t(f - (fs - 1));
+          if (w[i] <= 1e-3f || gapAt(f) >= required(f) - 0.0005f) continue;
+          gen.tracks.erase(swing);  // the lean is judged with the swing it will get (limited), not the current one
+          setLean(lean);
+          const float req = required(f) - 0.0005f;
+          float best = swungArmGap(clearance_[c], characterGlobals(c, f), side, clearance_[c].collision.maxElbowSwing);
+          vec3 found(0), bestLean(0);
+          // Eight level directions (euler degrees about the spine's local X and Z); the smallest lean that clears
+          // wins, else the one with the largest gap.
+          for (float L = kLeanStep; L <= kLeanMax + 1e-4f && found == vec3(0); L += kLeanStep)
+            for (int k = 0; k < 8 && found == vec3(0); ++k) {
+              const float a = glm::radians(45.0f * float(k));
+              const vec3 e = vec3(std::cos(a), 0, std::sin(a)) * L;
+              lean[i] = e;
+              setLean(lean);
+              const float g = swungArmGap(clearance_[c], characterGlobals(c, f), side, clearance_[c].collision.maxElbowSwing);
+              if (g > best) best = g, bestLean = e;
+              if (g >= req) found = e;
+            }
+          lean[i] = vec3(0);
+          needLean[i] = found != vec3(0) ? found : bestLean;  // best effort; the final check reports what is left
+          anyLean |= needLean[i] != vec3(0);
+        }
+        if (anyLean) {
+          std::vector<float> mag(static_cast<size_t>(n)), env(static_cast<size_t>(n));
+          for (int i = 0; i < n; ++i) env[size_t(i)] = mag[size_t(i)] = glm::length(needLean[size_t(i)]);
+          for (int i = 1; i < n; ++i) env[size_t(i)] = std::max(env[size_t(i)], env[size_t(i - 1)] - kLeanRate);
+          for (int i = n - 2; i >= 0; --i) env[size_t(i)] = std::max(env[size_t(i)], env[size_t(i + 1)] - kLeanRate);
+          for (int i = 0; i < n; ++i) {
+            vec3 dir(0);
+            for (int k = 0; k < n; ++k) {
+              const float wk = mag[size_t(k)] - kLeanRate * float(std::abs(i - k));
+              if (wk > 0) dir += wk * needLean[size_t(k)] / mag[size_t(k)];
+            }
+            lean[size_t(i)] = glm::length(dir) > 1e-9f ? glm::normalize(dir) * env[size_t(i)] : vec3(0);
+          }
+          setLean(lean);
+          // The planned lean itself (euler degrees), for measurements; nothing evaluates it.
+          std::vector<Key> lk;
+          for (int i = 0; i < n; ++i) lk.push_back({double(fs - 1 + i), lean[size_t(i)], Interp::Linear});
+          gen.tracks[who + "/collision.lean." + sk.bones[size_t(A.hand)].name].keys = std::move(lk);
+        } else if (savedLean) {
+          gen.tracks[leanTrack] = *savedLean;
+        } else {
+          gen.tracks.erase(leanTrack);
+        }
+        if (savedS) gen.tracks[swing] = *savedS;
+        if (anyLean) writeArmPole(gen, c, side);  // the swing for the leaned body
+      }
     }
   }
 }

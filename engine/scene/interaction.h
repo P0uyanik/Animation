@@ -100,9 +100,9 @@ struct ArmClearance {
   std::string part, against;
 };
 ArmClearance armClearance(const BodyClearanceModel& model, const std::vector<mat4>& G, char side);
-// The arm's clearance after the smallest elbow swing that clears its forearm (what the planner's swing will give it;
+// The arm's clearance after the smallest elbow swing (up to `limit`, < 0: the full range) that clears its forearm;
 // the wrist and hand stay). Used to score candidate wrist positions before the swing is planned.
-float swungArmGap(const BodyClearanceModel& model, const std::vector<mat4>& G, char side);
+float swungArmGap(const BodyClearanceModel& model, const std::vector<mat4>& G, char side, float limit = -1.0f);
 // Elbow swing tracks "<prefix>swing.<hand bone>" (x: radians about the shoulder -> wrist axis; planned by the T-047
 // collision planner) and elbow pole tracks "<prefix>pole.<hand bone>" (world direction the elbow should point to) with ".weight": swing the
 // upper arm about the shoulder -> wrist axis, so the wrist stays where IK put it and only the elbow moves (the hand keeps

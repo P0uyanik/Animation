@@ -14,7 +14,7 @@
 // (hips, spine, chest, neck, upperArm/forearm/hand.L/R, finger roles): no character names.
 //
 // Package block (engine axes, metres, points relative to the carrying bone's rest head):
-//   "collision": {"format": "plush.collision_body", "version": 1, "margin": 0.005,
+//   "collision": {"format": "plush.collision_body", "version": 1, "margin": 0.005, "max_elbow_swing_deg": 30 (optional),
 //     "sections": [{"name", "bone", "p0":[3], "p1":[3], "e1":[3], "e2":[3], "r1", "r2", "cap0", "cap1"}...],
 //     "limbs": [{"name": "forearm.L"|"hand.L"|..., "bone", "side": "L"|"R", "a":[3], "b":[3], "r", "allowance"}...]}
 #pragma once
@@ -29,6 +29,11 @@ namespace plush {
 struct SkinnedMesh;
 
 constexpr float kCollisionMargin = 0.005f;  // clearance planned between a limb capsule and the body (metres)
+// Largest elbow swing the arm planner may use to clear a forearm (T-082): beyond it the elbow would rise beside the
+// head (a "wing" elbow, T-047 e905: 84 deg), so the planner moves the hand-over point or pushes the wrist instead.
+// Character data: the package block's "max_elbow_swing_deg", overridden per shot by the scene's collision action
+// ("maxElbowSwingDeg"); this shared default applies when neither gives one.
+constexpr float kDefaultMaxElbowSwingDeg = 30.0f;
 
 // A body section: axis p0 -> p1 (relative to the carrying bone's rest head; engine rest frames have identity rotation,
 // so these are character axes: +X the character's left, +Y up, +Z forward) with an elliptical cross-section (r1
@@ -55,6 +60,7 @@ struct CollisionBody {
   std::vector<CollisionSection> sections;
   std::vector<CollisionLimb> limbs;
   float margin = kCollisionMargin;
+  float maxElbowSwing = glm::radians(kDefaultMaxElbowSwingDeg);  // radians (T-082)
   bool valid = false;
   std::string source;  // "package" (the package's collision block) or "derived" (fitted here from the rest meshes)
 };
