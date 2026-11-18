@@ -319,3 +319,13 @@ T-098L stays a completed experiment; no environment follow-up task in this round
 Open owner finding (no task approved): the generated animations feel too fast. Playback and encoding are correct
 (24 fps); the cause is the authored timing (beats packed with almost no holds). A timing-calibration proposal is
 under discussion with the owner; nothing starts until the owner approves.
+
+## 2026-11-18 (~22:35Z): Phase B approved (relayed by the previous Supervisor session)
+Owner, after the strict sheets: "approve T-093 and T-089". With T-092 already approved, **Phase B is complete**.
+- **T-093 garments (round 2, garment/2):** approved as the garment system (B06 flap backpack, cleaner collar and vest
+  edges, reach correctives).
+- **T-089 face and eyes round 3 (face_generic/3):** approved as the next face step. Notes for later face rounds: the
+  boy keeps the new eye size but must keep sleepy heavy lids (the candidate reads slightly too alert); the girl still
+  needs a rounder, fuller face and wider-open eyes (Codex's T-090b girl-face proposals are input for that round).
+- Nothing becomes current until the Phase D versions (T-094: boy 2.1.0, girl 0.12.0). **Phase D is not started**; the
+  owner decides which Phase D tasks run.
