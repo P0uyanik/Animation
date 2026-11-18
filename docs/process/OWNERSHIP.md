@@ -16,6 +16,8 @@ means none. Branch is the task's branch; a task branch without a row falls back 
 
 | Task | Lane | Branch | Write-set | Depends on | Versions bumped |
 | --- | --- | --- | --- | --- | --- |
+| T-097-boy | C | t-097-boy-claude-acting | `content/personality/boy_yellow_hoodie.json`, `content/clips/boy_*.clip.json`, `content/expressions/boy_yellow_hoodie*.json`, `episodes/e908_boy_acting/**`, `tests/acting/test_boy_signature.py`, `docs/evaluation/animation/T-097-boy/**` | `engine/scene/reaction.{h,cpp}` (stable), `tools/animcheck/**` (stable) | — |
+| T-097-girl | C | t-097-girl-claude-acting | `content/personality/girl_auburn_bun_glasses.json`, `content/clips/girl_*.clip.json`, `content/expressions/girl_auburn_bun_glasses*.json`, `episodes/e908_girl_acting/**`, `tests/acting/test_girl_signature.py`, `docs/evaluation/animation/T-097-girl/**` | `engine/scene/reaction.{h,cpp}` (stable), `tools/animcheck/**` (stable) | — |
 | T-097D | C | t-097d-claude-reaction-playback | `engine/scene/actions.cpp`, `engine/scene/scene.{h,cpp}`, `tests/test_reaction_playback.cpp`, `tests/CMakeLists.txt`, `docs/PRODUCTION_PIPELINE.md`, `docs/evaluation/animation/T-097D/**` | `engine/scene/reaction.{h,cpp}` (stable), `engine/scene/emotion.{h,cpp}` (stable) | — |
 | T-107 | E | t-107-codex-bc-review | `docs/audit/round2_bc_review/**` | — | — |
 | T-091 | D | t-091-claude-hair-r4 | `pipeline/charsys/groom_r4.py`, `pipeline/charsys/groom_r4/**`, `pipeline/charsys/tests/test_hair_r4*.py`, `assets/characters/{boy_yellow_hoodie,girl_auburn_bun_glasses}/spec/candidates/T-091/**`, `docs/evaluation/characters/T-091/**` | `pipeline/charsys/groom_hybrid.py` (stable), `pipeline/charsys/versions.py` (stable) | `groom` |
