@@ -130,6 +130,8 @@ _r("materials", "body_v6", 1, "body_v6", declared=False, note="legacy v6 albedo 
 _r("materials", "albedo", 1, "geom", declared=False, note="generic path without preset assignments (geom.material)")
 _r("materials", "presets", 1, "materials.builder", declared=False,
    note="material preset library plush-studio.material-presets/1")
+_r("materials", "presets", 2, "materials.builder", declared=False,
+   note="presets/1 + the presets/2 skin family (skin_presets.json, plush-studio.material-presets/2; T-066)")
 _r("exporter", "export", 1, None, RETIRED, note="no retarget block")
 _r("exporter", "export", 2, None, RETIRED, note="retarget block")
 _r("exporter", "export", 3, None, RETIRED, note="dynamics block or DEF-parent fix (two parallel 3s)")
