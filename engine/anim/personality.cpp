@@ -110,6 +110,10 @@ Result<PersonalityProfile> personalityFromJson(const Json& j, const std::string&
   r.number(tempo, "tempo", "overshoot", p.overshoot);
   r.range(tempo, "tempo", "hold_frames", p.holdFrames);
   r.number(tempo, "tempo", "careful_place_frames", p.carefulPlaceFrames);
+  r.number(tempo, "tempo", "beat_scale", p.beatScale);  // T-104 (timing profiles only)
+  r.number(tempo, "tempo", "hold_scale", p.holdScale);
+  if (p.beatScale && *p.beatScale <= 0) r.bad("tempo", "beat_scale", "must be > 0");
+  if (p.holdScale && *p.holdScale <= 0) r.bad("tempo", "hold_scale", "must be > 0");
   if (p.actionSpeed && *p.actionSpeed <= 0) r.bad("tempo", "action_speed", "must be > 0");
 
   const Json& energy = sectionOf(j, "energy");
@@ -208,6 +212,79 @@ Result<PersonalityProfile> loadPersonality(const std::filesystem::path& file) {
   auto p = personalityFromJson(*j, id);
   if (p) p->path = file;
   return p;
+}
+
+// ------------------------------------------------------------------ timing profile (T-104)
+double TimingProfile::frames(const std::string& beat, double fallback, const PersonalityProfile* who) const {
+  auto it = beats.find(beat);
+  const double f = it != beats.end() ? double(it->second) : fallback;
+  const bool hold = beat == "hold" || beat == "shared_hold";
+  const std::optional<float> s = who ? (hold ? who->holdScale : who->beatScale) : std::nullopt;
+  return std::round(f * (s ? double(*s) : 1.0));
+}
+
+double TimingProfile::travelFrames(double distance, double armLength, const PersonalityProfile* who) const {
+  double f = travelMinFrames;
+  if (armLength > 1e-6 && armLengthsPerFrame > 1e-6) f = std::ceil(distance / (armLength * armLengthsPerFrame));
+  f = std::round(f * (who && who->beatScale ? double(*who->beatScale) : 1.0));
+  return std::clamp(f, double(travelMinFrames), double(travelMaxFrames));  // the floor and ceiling of any move
+}
+
+Result<TimingProfile> timingProfileFromJson(const Json& j, const std::string& name) {
+  if (!j.is_object() || j.value("format", std::string()) != "plush.timing_profile") return fail("not a plush.timing_profile file");
+  if (!j.contains("version") || !j["version"].is_number_integer() || j["version"].get<int>() != 1)
+    return fail(std::format("timing profile: unsupported version {}", j.contains("version") ? j["version"].dump() : "(none)"));
+  TimingProfile t;
+  t.name = name.empty() ? j.value("name", std::string()) : name;
+  t.status = j.contains("status") && j["status"].is_string() ? j["status"].get<std::string>() : "";
+  const std::string where = std::format("timing profile '{}'", t.name);
+  if (auto it = j.find("beats"); it != j.end()) {
+    if (!it->is_object()) return fail(where + ": beats must be an object of beat -> frames");
+    for (const auto& [k, v] : it->items()) {
+      const Json* x = v.is_object() && v.contains("value") ? &v["value"] : &v;
+      if (!x->is_number() || !std::isfinite(x->get<double>()) || x->get<double>() < 1)
+        return fail(std::format("{}: beats.{} must be a number of frames >= 1", where, k));
+      t.beats[k] = x->get<float>();
+    }
+  }
+  if (auto it = j.find("travel"); it != j.end()) {
+    if (!it->is_object()) return fail(where + ": travel must be an object");
+    auto get = [&](const char* k, float& out) -> bool {
+      if (!it->contains(k)) return true;
+      const Json& v = (*it)[k];
+      const Json* x = v.is_object() && v.contains("value") ? &v["value"] : &v;
+      if (!x->is_number() || x->get<double>() <= 0) return false;
+      out = x->get<float>();
+      return true;
+    };
+    if (!get("arm_lengths_per_frame", t.armLengthsPerFrame) || !get("min_frames", t.travelMinFrames) ||
+        !get("max_frames", t.travelMaxFrames) || t.travelMinFrames > t.travelMaxFrames)
+      return fail(where + ": travel needs arm_lengths_per_frame > 0 and 0 < min_frames <= max_frames");
+  }
+  return t;
+}
+
+Result<TimingProfile> loadTimingProfile(const std::filesystem::path& file) {
+  auto j = parseJsonFile(file);
+  if (!j) return std::unexpected(j.error());
+  std::string name = file.filename().string();
+  if (name.ends_with(".timing.json")) name.resize(name.size() - std::strlen(".timing.json"));
+  auto t = timingProfileFromJson(*j, name);
+  if (t) t->path = file;
+  return t;
+}
+
+std::filesystem::path findTimingProfileFile(const std::filesystem::path& from, const std::string& name) {
+  if (from.empty() || name.empty() || name.find('/') != std::string::npos || name.find('\\') != std::string::npos) return {};
+  std::error_code ec;
+  auto d = std::filesystem::absolute(from, ec);
+  if (ec) return {};
+  if (!std::filesystem::is_directory(d, ec)) d = d.parent_path();
+  for (;; d = d.parent_path()) {
+    auto cand = d / "content" / "timing" / (name + ".timing.json");
+    if (std::filesystem::exists(cand, ec)) return cand;
+    if (d == d.parent_path()) return {};
+  }
 }
 
 std::filesystem::path findPersonalityFile(const std::filesystem::path& from, const std::string& id) {

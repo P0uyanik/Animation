@@ -1,0 +1,104 @@
+{
+ "format": "plush.animcheck_timing",
+ "version": 1,
+ "scene": "e907_exchange s010: T-095 readable two-person exchange - he offers a cup, she notices, takes it",
+ "timing_profile": null,
+ "beats": [
+  {
+   "beat": "reach",
+   "character": "boy",
+   "action": "grasp",
+   "frames": [
+    4,
+    18
+   ],
+   "length": 14,
+   "reference": [
+    10,
+    20
+   ]
+  },
+  {
+   "beat": "reach",
+   "character": "boy",
+   "action": "hold",
+   "frames": [
+    20,
+    28
+   ],
+   "length": 8,
+   "reference": [
+    10,
+    20
+   ]
+  },
+  {
+   "beat": "reach",
+   "character": "girl",
+   "action": "handover",
+   "frames": [
+    27,
+    45
+   ],
+   "length": 18,
+   "reference": [
+    10,
+    20
+   ]
+  },
+  {
+   "beat": "shared_hold",
+   "character": "boy",
+   "action": "handover",
+   "frames": [
+    45,
+    51
+   ],
+   "length": 6,
+   "reference": [
+    16,
+    30
+   ]
+  },
+  {
+   "beat": "release",
+   "character": "boy",
+   "action": "handover",
+   "frames": [
+    51,
+    61
+   ],
+   "length": 10,
+   "reference": [
+    12,
+    18
+   ]
+  },
+  {
+   "beat": "reach",
+   "character": "girl",
+   "action": "hold",
+   "frames": [
+    53,
+    65
+   ],
+   "length": 12,
+   "reference": [
+    10,
+    20
+   ]
+  }
+ ],
+ "holds": {
+  "longest_still_frames": 14,
+  "at": [
+   17,
+   31
+  ]
+ },
+ "warnings": [
+  "short beat: boy hold reach f20-f28 8 f < reference 10 f",
+  "short beat: boy handover shared_hold f45-f51 6 f < reference 16 f",
+  "short beat: boy handover release f51-f61 10 f < reference 12 f"
+ ]
+}

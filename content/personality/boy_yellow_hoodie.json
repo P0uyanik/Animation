@@ -54,6 +54,18 @@
       "unit": "frames@24",
       "kind": "measured",
       "source": "heavy-lid stare unchanged through PB S1 (32 f) and S3 (39 f); WT f000-f120"
+    },
+    "beat_scale": {
+      "value": 1.2,
+      "unit": "multiplier on timing-profile beats",
+      "kind": "estimate",
+      "source": "T-104 owner brief for timing: slower, reluctant; low energy (energy.level 0.3), minimal body motion WT f000-f120"
+    },
+    "hold_scale": {
+      "value": 1.0,
+      "unit": "multiplier on timing-profile holds",
+      "kind": "estimate",
+      "source": "his long stares are already long (PB S1 32 f, S6 >= 24 f); the calibrated holds stay as they are"
     }
   },
   "energy": {

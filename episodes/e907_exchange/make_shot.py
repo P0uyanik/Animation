@@ -71,6 +71,63 @@ F = {"end": 66, "grasp": 4, "his_contact": 18, "offer": (20, 28), "her_glance": 
      "her_contact": 45, "her_happy": 43, "her_look_up": 49, "accept": 48, "his_release": 51, "his_end": 61,
      "his_look_off": 59, "her_draw": (53, 65)}
 
+# T-104: the calibrated timing profile (opt-in, --timing calibrated): beats from content/timing/<name>.timing.json,
+# scaled per character by content/personality/<id>.json tempo.beat_scale / tempo.hold_scale; written to OUT_TIMED.
+OUT_TIMED = os.path.join(ROOT, "episodes", "e907_exchange", "shots", "s010_{}", "shot.scene.json")
+
+
+def rnd(x):
+    """Rounds half up like the engine (std::round for positive frame counts)."""
+    return int(math.floor(x + 0.5))
+
+
+class Timing:
+    """Mirror of anim/personality.h TimingProfile::frames / travelFrames (engine tests check the same numbers)."""
+
+    def __init__(self, name):
+        prof = json.load(open(os.path.join(ROOT, "content", "timing", f"{name}.timing.json")))
+        val = lambda v: v["value"] if isinstance(v, dict) else v  # noqa: E731
+        self.name, self.beats = name, {k: val(v) for k, v in prof["beats"].items()}
+        t = prof.get("travel", {})
+        self.alpf = val(t.get("arm_lengths_per_frame", 0.06))
+        self.tmin, self.tmax = val(t.get("min_frames", 10)), val(t.get("max_frames", 24))
+        self.scale = {}
+        for who, cid in CAST.items():
+            tempo = json.load(open(os.path.join(ROOT, "content", "personality", f"{cid}.json"))).get("tempo", {})
+            self.scale[who] = (val(tempo.get("beat_scale", 1.0)), val(tempo.get("hold_scale", 1.0)))
+
+    def f(self, beat, who):
+        bs, hs = self.scale[who]
+        return rnd(self.beats[beat] * (hs if beat in ("hold", "shared_hold") else bs))
+
+    def travel(self, dist, arm, who):
+        n = rnd(math.ceil(dist / (arm * self.alpf)) * self.scale[who][0])
+        return min(max(n, self.tmin), self.tmax)
+
+
+def calibrated_beats(T, offer_dist, boy_arm, her_reach_dist, girl_arm, draw_dist):
+    """The T-095 beat order with calibrated lengths (scene frames; same keys as F). Who acts sets the scale."""
+    b = {}
+    b["grasp"] = 1 + T.f("anticipation", "boy")                              # he looks at the cup first (reluctant)
+    b["his_contact"] = b["grasp"] + T.f("reach", "boy")
+    o0 = b["his_contact"] + T.f("anticipation", "boy") // 2                  # the grip settles before the lift
+    b["offer"] = (o0, o0 + T.travel(offer_dist, boy_arm, "boy"))
+    b["her_glance"] = o0                                                     # she notices as the cup moves
+    b["her_reach"] = o0 + max(T.f("reaction_delay", "girl"), T.f("anticipation", "girl"))  # eyes first, then the hand
+    b["his_look_up"] = b["offer"][1]                                         # holding it out, he glances at her
+    b["her_contact"] = b["her_reach"] + max(T.f("reach", "girl"), T.travel(her_reach_dist, girl_arm, "girl"))
+    b["her_happy"] = b["her_contact"] - 2
+    b["his_release"] = b["her_contact"] + T.f("shared_hold", "boy")          # both hands share the cup
+    b["accept"] = b["her_contact"] + T.f("hold", "girl") // 3
+    b["her_look_up"] = b["accept"] + 2
+    b["his_end"] = b["his_release"] + T.f("release", "boy")
+    b["his_look_off"] = b["his_end"] + T.f("anticipation", "boy")
+    d0 = b["his_release"] + 2
+    b["her_draw"] = (d0, d0 + T.travel(draw_dist, girl_arm, "girl"))
+    b["end"] = max(b["her_draw"][1], b["his_look_off"]) + T.f("hold", "girl")  # end hold
+    return b
+
+
 # defaults: measured on the current packages (boy 2.0.0, girl 0.11.0), see --boy-package / --girl-package
 DEFAULT_RIG = {"boy": {"shoulder": {"R": [-0.1105, 0.6206, 0.0], "L": [0.1105, 0.6206, 0.0]}, "arm": 0.2667,
                        "head": [0.0, 0.7, 0.0], "top": 1.1132, "head_half_width": 0.2312},
@@ -124,6 +181,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--boy-package")
     ap.add_argument("--girl-package")
+    ap.add_argument("--timing", help="T-104 timing profile name (content/timing/<name>.timing.json); writes OUT_TIMED")
     a = ap.parse_args()
     B = rig(a.boy_package) if a.boy_package else DEFAULT_RIG["boy"]
     G = rig(a.girl_package) if a.girl_package else DEFAULT_RIG["girl"]
@@ -171,10 +229,22 @@ def main():
     her_task = r4([girl_pos[0] + yaw_rot(gyaw, (0, 0, 0.35))[0], cup[1], girl_pos[2] + yaw_rot(gyaw, (0, 0, 0.35))[2]])
     off_side = r4([boy_pos[0] + 1.2, 0.6, boy_pos[2] + 1.0])  # his "bored" glance: away from her, to his left
     offered = r4([cup[0] + offer_by[0], cup[1] + 0.05, cup[2] + offer_by[2]])
+    F_ = F
+    DRAW_BY = [-0.03, 0.03, -0.02]
+    timing = None
+    if a.timing:
+        T = Timing(a.timing)
+        her_shoulder = [girl_pos[i] + yaw_rot(gyaw, G["shoulder"]["L"])[i] for i in range(3)]
+        her_rest = [her_shoulder[0], her_shoulder[1] - G["arm"], her_shoulder[2]]  # arm hanging
+        her_reach_dist = math.dist([meet[i] + gb_off[i] for i in range(3)], her_rest)
+        F_ = calibrated_beats(T, math.hypot(*offer_by), B["arm"], her_reach_dist, G["arm"], math.hypot(*DRAW_BY))
+        timing = {"profile": f"content/timing/{a.timing}.timing.json", "scale": T.scale,
+                  "offer_dist": round(math.hypot(*offer_by), 4), "her_reach_dist": round(her_reach_dist, 4),
+                  "before_beats": F, "seconds_before": round(F["end"] / 24, 3), "seconds_after": round(F_["end"] / 24, 3)}
     shot = {
         "format": "plush.scene", "version": 1,
         "name": "e907_exchange s010: T-095 readable two-person exchange - he offers a cup, she notices, takes it",
-        "frameRate": [24, 1], "frameStart": 1, "frameEnd": F["end"],
+        "frameRate": [24, 1], "frameStart": 1, "frameEnd": F_["end"],
         "render": {"width": 640, "height": 360, "spp": 32, "maxDepth": 8, "exposureEV": 0.3, "denoise": True,
                    "denoiseBlend": 0.85, "clamp": 12},
         "camera": {"position": cam, "target": target, "focalMm": FOCAL, "fStop": 0, "focusDistance": -1},
@@ -196,29 +266,29 @@ def main():
         "actions": [
             {"type": "clip", "character": "boy", "clip": "idle_relaxed", "base": True},
             {"type": "clip", "character": "girl", "clip": "idle_relaxed", "base": True},
-            {"type": "look", "character": "girl", "start": 1, "end": F["her_glance"] - 1, "target": her_task},
-            {"type": "grasp", "character": "boy", "hand": "R", "prop": "cup", "socket": "grip", "start": F["grasp"],
-             "contact": F["his_contact"]},
-            {"type": "hold", "character": "boy", "hand": "R", "start": F["offer"][0], "end": F["offer"][1], "by": offer_by},
-            {"type": "look", "character": "girl", "start": F["her_glance"], "end": F["her_reach"], "target": offered},
+            {"type": "look", "character": "girl", "start": 1, "end": F_["her_glance"] - 1, "target": her_task},
+            {"type": "grasp", "character": "boy", "hand": "R", "prop": "cup", "socket": "grip", "start": F_["grasp"],
+             "contact": F_["his_contact"]},
+            {"type": "hold", "character": "boy", "hand": "R", "start": F_["offer"][0], "end": F_["offer"][1], "by": offer_by},
+            {"type": "look", "character": "girl", "start": F_["her_glance"], "end": F_["her_reach"], "target": offered},
             {"type": "handover", "character": "boy", "hand": "R", "to": "girl", "toHand": "L", "toSocket": "grip_b",
-             "start": F["offer"][1], "receiverStart": F["her_reach"], "contact": F["her_contact"],
-             "release": F["his_release"], "end": F["his_end"], "at": meet},
-            {"type": "look", "character": "boy", "start": F["his_look_up"], "end": F["her_contact"] - 2, "target": girl_face},
-            {"type": "look", "character": "boy", "start": F["her_contact"] - 1, "end": F["his_release"], "target": offered},
-            {"type": "hold", "character": "girl", "hand": "L", "start": F["her_draw"][0], "end": F["her_draw"][1],
-             "by": [-0.03, 0.03, -0.02]},
-            {"type": "look", "character": "girl", "start": F["her_look_up"], "end": F["end"], "target": boy_face},
-            {"type": "look", "character": "boy", "start": F["his_release"] + 2, "end": F["his_look_off"] - 1, "target": girl_face},
-            {"type": "look", "character": "boy", "start": F["his_look_off"], "end": F["end"], "target": off_side},
-            {"type": "emotion", "character": "girl", "name": "happy", "start": F["her_happy"], "end": 90, "intensity": 0.7}],
+             "start": F_["offer"][1], "receiverStart": F_["her_reach"], "contact": F_["her_contact"],
+             "release": F_["his_release"], "end": F_["his_end"], "at": meet},
+            {"type": "look", "character": "boy", "start": F_["his_look_up"], "end": F_["her_contact"] - 2, "target": girl_face},
+            {"type": "look", "character": "boy", "start": F_["her_contact"] - 1, "end": F_["his_release"], "target": offered},
+            {"type": "hold", "character": "girl", "hand": "L", "start": F_["her_draw"][0], "end": F_["her_draw"][1],
+             "by": DRAW_BY},
+            {"type": "look", "character": "girl", "start": F_["her_look_up"], "end": F_["end"], "target": boy_face},
+            {"type": "look", "character": "boy", "start": F_["his_release"] + 2, "end": F_["his_look_off"] - 1, "target": girl_face},
+            {"type": "look", "character": "boy", "start": F_["his_look_off"], "end": F_["end"], "target": off_side},
+            {"type": "emotion", "character": "girl", "name": "happy", "start": F_["her_happy"], "end": max(90, F_["end"] + 24), "intensity": 0.7}],
         "production": {"cast": {n: {"character_id": cid, "version": "current"} for n, cid in CAST.items()},
                        "profile": "pipeline/charsys/rig_profiles/humanoid_rigify.json",
                        "render": {"resolution": [640, 360], "samples": 16, "light_scale": 1.0}},
         "x_t095_staging": {
             "rule": "side by side at a table, both turned TURN from the camera towards each other; natural inner "
                     "hands (ARM_REACH, ARM_DROP, ARM_IN), hers at the cup's other handle; camera in front, CAMERA_ELEV above",
-            "beats": F, "turn_deg": TURN, "arm_in_deg": ARM_IN, "arm_reach": ARM_REACH, "arm_drop_rad": ARM_DROP,
+            "beats": F_, "turn_deg": TURN, "arm_in_deg": ARM_IN, "arm_reach": ARM_REACH, "arm_drop_rad": ARM_DROP,
             "boy_arm_length": round(B["arm"], 4), "girl_arm_length": round(G["arm"], 4),
             "boy_right_shoulder_rest": r4(B["shoulder"]["R"]), "girl_left_shoulder_rest": r4(G["shoulder"]["L"]),
             "boy_natural_hand": bh, "girl_natural_hand": gh, "grip_socket_world": grip, "handover_point": meet,
@@ -226,11 +296,17 @@ def main():
             "shoulder_spacing": round(abs(boy_pos[0] - girl_pos[0]), 4), "head_bone_distance_rest": round(head_dist, 4),
             "camera_distance": round(dist, 3), "girl_neck_pitch_deg": GIRL_NECK_PITCH, "neck_yaw_assist_deg": NECK_YAW, "head_follow": HEAD_FOLLOW, "body_yaw_assist_deg": BODY_YAW,
             "cup_yaw_deg": CUP_YAW}}
-    os.makedirs(os.path.dirname(OUT), exist_ok=True)
-    with open(OUT, "w", encoding="utf-8", newline="\n") as f:
+    out = OUT
+    if timing:
+        shot["name"] = shot["name"].replace("s010:", f"s010_{a.timing}:") + f" (T-104 {a.timing} timing)"
+        shot["timing"] = a.timing
+        shot["x_t104_timing"] = timing
+        out = OUT_TIMED.format(a.timing)
+    os.makedirs(os.path.dirname(out), exist_ok=True)
+    with open(out, "w", encoding="utf-8", newline="\n") as f:
         json.dump(shot, f, indent=1)
         f.write("\n")
-    print(os.path.relpath(OUT, ROOT), json.dumps(shot["x_t095_staging"]))
+    print(os.path.relpath(out, ROOT), json.dumps(shot["x_t095_staging"]))
 
 
 main()

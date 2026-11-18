@@ -1,0 +1,25 @@
+{
+ "format": "plush.timing_profile",
+ "version": 1,
+ "name": "calibrated",
+ "status": "candidate (T-104, 2026-11-18): opt-in only (scene key \"timing\": \"calibrated\"); the shared engine defaults stay the default until the owner approves",
+ "reference": "content/timing/reference_timing.json",
+ "beats": {
+  "reach":          {"value": 16, "unit": "frames@24", "reference": [10, 20], "source": "reach to a contact: WT f012-f022 (10 f, no contact) plus the 2-4 f slow-in a contact needs; PB S4 lower 20 f"},
+  "anticipation":   {"value": 8,  "unit": "frames@24", "reference": [5, 12],  "source": "WT f000-f012 chin hold; VISUAL_TARGET 5-10 f"},
+  "settle":         {"value": 12, "unit": "frames@24", "reference": [8, 18],  "source": "WT f023-f033 (10 f); VISUAL_TARGET 8-18 f"},
+  "hold":           {"value": 16, "unit": "frames@24", "reference": [12, 32], "source": "WT point hold f033-f050 (17 f), end hold f104-f120 (16 f), PB S3 f136-f150 (15 f)"},
+  "shared_hold":    {"value": 18, "unit": "frames@24", "reference": [16, 30], "source": "PB S2 boat held with both hands f096-f111 (16 f); shared sheet f040-f070"},
+  "place":          {"value": 22, "unit": "frames@24", "reference": [20, 24], "source": "PB S4 lower f151-f171 (20 f; report 24 f)"},
+  "release":        {"value": 14, "unit": "frames@24", "reference": [12, 18], "source": "PB S4 release f172-f190; girl guide 12 f"},
+  "return":         {"value": 20, "unit": "frames@24", "reference": [18, 53], "source": "PB S3 move f117-f135 (18 f); WT straighten f051-f104"},
+  "reaction_delay": {"value": 6,  "unit": "frames@24", "reference": [4, 10],  "source": "eyes first, then the hand; VISUAL_TARGET gaze leads a hand target by 2-5 f"},
+  "beat_interval":  {"value": 24, "unit": "frames@24", "reference": [18, 36], "source": "VISUAL_TARGET overall tempo: one primary beat every 0.75-1.5 s"}
+ },
+ "travel": {
+  "arm_lengths_per_frame": {"value": 0.045, "unit": "arm lengths per frame (mean of an eased move)", "source": "VISUAL_TARGET peak hand speed 0.018-0.045 H/f (H about 1.1 m here), an eased move averages about half its peak: 0.01-0.025 m/f = 0.04-0.09 boy arm lengths per frame; the slow end, because handwork in the references is careful (PB S4 lower 20 f). In arm lengths, so a short (doll-sized) arm takes longer for the same distance: e907 girl (18 cm arm) needs >= 21 f to reach the cup without her forearm entering her vest (T-104 measure_t082 sweep: 17 f -3.1 mm, 20 f +1.0 mm and 25 deg elbow swing, 22 f +1.0 mm and 5 deg)"},
+  "min_frames": {"value": 10, "unit": "frames@24", "source": "reach lower bound (WT f012-f022)"},
+  "max_frames": {"value": 28, "unit": "frames@24", "source": "primary action 10-24 f (VISUAL_TARGET) plus the slow-in of a contact; a reach of more than one arm length"}
+ },
+ "personality": "per character: content/personality/<id>.json tempo.beat_scale (every beat except holds) and tempo.hold_scale (hold, shared_hold)"
+}
