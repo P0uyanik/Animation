@@ -350,3 +350,21 @@ Supervisor, merged first), then in parallel **T-097A** emotion blending, **T-097
 **T-097C** acting signature checks (small, when a slot frees up). The per-character acting tasks are renamed
 **T-097-boy** and **T-097-girl** (after T-097A and T-097B merge; own character's files and solo test shots only).
 The white-haired girl stays later. All other Phase D instructions stand.
+
+## 2026-11-18 (~23:10Z): standing approval for tonight (relayed by the previous Supervisor session)
+Owner (verbatim): "You have my approval to proceed without waiting for any further confirmations from me tonight.
+treat all currently proposed and queued Round 2 tasks as approved, and continue the work according to the execution
+order and dependencies you already defined. You do not need additional approval from me to move the work forward,
+including starting the next tasks when their prerequisites are met. continue in the planned sequence, run parallel
+tasks where appropriate, and only interrupt the flow if you hit a real blocker or need a major scope decision beyond
+the current approved plan."
+How the Supervisor applies it:
+- Start each queued task when its prerequisites are met (T-097-0 -> T-097A + T-097B -> T-097C when a slot frees ->
+  T-097-boy + T-097-girl; T-094 after T-091, T-089b, T-093b), at most 6 cloud tasks, Codex T-106 as assigned.
+- Visual results (T-091, T-089b, T-093b, T-104, acting test shots): the Supervisor reviews the strict sheets against
+  the original references; clearly closer -> merge as an opt-in system and continue; not clearly better -> one more
+  focused round instead of merging. Every strict sheet is kept for the owner's morning review.
+- T-094: build and publish boy 2.1.0 and girl 0.12.0, render the sheets and the re-rendered exchange, but leave the
+  current pointers on boy 2.0.0 / girl 0.11.0 until the owner has seen the result.
+- Standing rules unchanged. Interrupt the owner only for a real blocker or a scope decision beyond the plan
+  (environment, third character, GPU, new dependencies). Morning: one short summary (merged, waiting, sheets, costs).
