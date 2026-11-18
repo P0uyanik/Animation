@@ -295,3 +295,13 @@ no Blender in the workflow, use the existing (unknown) computer, no GPU purchase
   Blender-built characters.
 - **Trade-off:** Cycles is slower (8.6 s per frame at 640×360 / 32 samples in the pilot), and lighting translation
   is approximate.
+
+## TD-43 Engine renderer frozen; approved versions immutable (2026-11-17)
+Owner decision 2026-11-17 ([OWNER_DECISIONS.md](docs/process/OWNER_DECISIONS.md), "architecture: renderer freeze").
+- **The engine path tracer is frozen:** it gets no new features and stays for previews (Studio, `plush-render`) and its
+  existing image tests (CTest). All look, material and render work happens in the Blender pipeline (TD-42).
+  `engine/render/` is a guarded path (`tools/guarded_paths.txt`).
+- **Approved character versions are stored immutably** in the asset store (`assets/characters/<id>/versions/<ver>/`,
+  hashes; guarded path). The generator never overwrites them, and shots can reuse a stored master (T-075, in progress).
+- **CPU render profiles** for the final Blender renders come from the T-074 study (Cycles, Eevee, denoising; final
+  visual quality first).

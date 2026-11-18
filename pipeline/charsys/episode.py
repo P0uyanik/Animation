@@ -92,6 +92,9 @@ def main():
     out = os.path.abspath(a.out)
     if os.path.commonpath([out, os.path.abspath(a.version_dir)]) == os.path.abspath(a.version_dir):
         raise SystemExit("shot files must not be written into the asset store")
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import asset_store  # plain Python; the shared overwrite guard (T-075): no store, not only this version
+    asset_store.refuse_store_target(out, "shot files")
     os.makedirs(os.path.dirname(out), exist_ok=True)
     bpy.ops.wm.read_factory_settings(use_empty=True)
     ov, rig, info = link_character(a.version_dir)

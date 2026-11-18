@@ -1,0 +1,194 @@
+{
+ "pass": true,
+ "checks": [
+  {
+   "check": "publish 1.0.0",
+   "pass": true,
+   "detail": null
+  },
+  {
+   "check": "overwrite of a published version refused (non-zero exit)",
+   "pass": true,
+   "detail": null
+  },
+  {
+   "check": "refused overwrite leaves every store file byte-identical (incl. index.json)",
+   "pass": true,
+   "detail": null
+  },
+  {
+   "check": "reusing a version number recorded in the index refused (folder removed)",
+   "pass": true,
+   "detail": null
+  },
+  {
+   "check": "refused publish writes nothing",
+   "pass": true,
+   "detail": null
+  },
+  {
+   "check": "publish from a build folder inside the store refused",
+   "pass": true,
+   "detail": null
+  },
+  {
+   "check": "store_of finds the store for paths inside it",
+   "pass": true,
+   "detail": "/tmp/ps_store_guard_palhazxb/versions"
+  },
+  {
+   "check": "repository stores are recognised (no file needed)",
+   "pass": true,
+   "detail": null
+  },
+  {
+   "check": "refuse_store_target refuses the store and accepts a build folder",
+   "pass": true,
+   "detail": null
+  },
+  {
+   "check": "restore into the store refused",
+   "pass": true,
+   "detail": null
+  },
+  {
+   "check": "publish 1.1.0 without the glb",
+   "pass": true,
+   "detail": null
+  },
+  {
+   "check": "manifest records the glb as not stored; no glb file; no staging folder left",
+   "pass": true,
+   "detail": [
+    "animation_compat.json",
+    "build_report.json",
+    "c_test_master.blend",
+    "components.json",
+    "spec.json"
+   ]
+  },
+  {
+   "check": "verify passes for both versions",
+   "pass": true,
+   "detail": null
+  },
+  {
+   "check": "1.0.0 untouched by the 1.1.0 publish",
+   "pass": true,
+   "detail": null
+  },
+  {
+   "check": "approve with notes",
+   "pass": true,
+   "detail": null
+  },
+  {
+   "check": "approval notes recorded in the entry and the history",
+   "pass": true,
+   "detail": {
+    "approved": "1.1.0",
+    "reference": "1.0.0"
+   }
+  },
+  {
+   "check": "body_generic build: spec.json is the recomposed input spec, spec.resolved.json the fitted output",
+   "pass": true,
+   "detail": null
+  },
+  {
+   "check": "verify of that version passes",
+   "pass": true,
+   "detail": null
+  },
+  {
+   "check": "legacy build with a spec that differs from its stamped hash still refused",
+   "pass": true,
+   "detail": null
+  },
+  {
+   "check": "fitted spec of another identity refused",
+   "pass": true,
+   "detail": null
+  },
+  {
+   "check": "inputs that do not match the stamped hash refused",
+   "pass": true,
+   "detail": null
+  },
+  {
+   "check": "run_shot refuses a shot build folder inside the store",
+   "pass": true,
+   "detail": null
+  },
+  {
+   "check": "run_shot refuses a --run-dir inside the store",
+   "pass": true,
+   "detail": null
+  },
+  {
+   "check": "check_assets passes on an untouched store",
+   "pass": true,
+   "detail": null
+  },
+  {
+   "check": "a new version folder plus approve passes",
+   "pass": true,
+   "detail": null
+  },
+  {
+   "check": "a modified published file fails (hash and diff)",
+   "pass": true,
+   "detail": null
+  },
+  {
+   "check": "restored file passes again",
+   "pass": true,
+   "detail": null
+  },
+  {
+   "check": "a pointer to a missing version fails",
+   "pass": true,
+   "detail": null
+  },
+  {
+   "check": "rewritten index history fails",
+   "pass": true,
+   "detail": null
+  },
+  {
+   "check": "an edited entry of a published version fails",
+   "pass": true,
+   "detail": null
+  },
+  {
+   "check": "a file added to a published version fails",
+   "pass": true,
+   "detail": null
+  },
+  {
+   "check": "an unindexed version folder fails",
+   "pass": true,
+   "detail": null
+  },
+  {
+   "check": "clean again",
+   "pass": true,
+   "detail": null
+  },
+  {
+   "check": "generator into published boy_yellow_hoodie 1.0.0 refused, files byte-identical",
+   "pass": true,
+   "detail": 1
+  },
+  {
+   "check": "generator into published boy_yellow_hoodie 1.1.0 refused, files byte-identical",
+   "pass": true,
+   "detail": 1
+  },
+  {
+   "check": "generator into published girl_auburn_bun_glasses 0.10.0 refused, files byte-identical",
+   "pass": true,
+   "detail": 1
+  }
+ ]
+}

@@ -94,9 +94,14 @@ std::vector<mat4> skinningMatrices(const Skeleton& skeleton, const Pose& pose, c
 std::vector<mat4> boneGlobals(const Skeleton& skeleton, const Pose& pose, const mat4& world);
 // Analytic two-bone IK: rotates the end bone's parent and grandparent so the end pivot reaches `target`.
 void solveTwoBoneIK(const Skeleton& skeleton, Pose& pose, const mat4& world, int endBone, vec3 target, float weight);
+// Same with separate blend weights for the root (shoulder) and the middle joint (elbow): a middle weight that trails
+// the root weight gives successive breaking (the shoulder leads, the elbow follows; T-061). Equal weights = above.
+void solveTwoBoneIK(const Skeleton& skeleton, Pose& pose, const mat4& world, int endBone, vec3 target, float weight,
+                    float midWeight);
 // Points a bone's rest +Z axis at a world target (eyes), limited to maxAngleDeg.
 void aimBone(const Skeleton& skeleton, Pose& pose, const mat4& world, int bone, vec3 target, float weight, float maxAngleDeg);
-// Constraint tracks: "<prefix>ik.<bone>" (+ ".weight"), "<prefix>lookAt" (+ ".weight", aims every "eye.*" bone).
+// Constraint tracks: "<prefix>ik.<bone>" (+ ".weight"; optional ".lag" = x frames the middle joint's weight trails
+// the root's, T-061), "<prefix>lookAt" (+ ".weight", aims every "eye.*" bone).
 // Procedural "life" layered on top of the keyed pose, so a character never stands frozen and nobody has to key
 // breathing or blinks: breathing (chest/spine/shoulders), slow weight shift (hips with leg compensation), small
 // head drift, automatic blinks, and the head following the gaze ("<prefix>lookAt") with a lag. Deterministic:

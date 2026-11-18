@@ -1,7 +1,27 @@
 # Plush Studio
 
-A personal, standalone 3D animation production application for stylized plush / felt / wool
-characters (see `docs/` and the state files in this folder). No Blender, no cloud, no GPU required.
+A reusable character-production and animation platform for short plush / felt / wool episodes (target: complete
+2–2.5 min episodes). How it works today (TD-37..TD-43 in [TECHNICAL_DECISIONS.md](TECHNICAL_DECISIONS.md)):
+
+1. **Character spec (JSON)** → the shared **Blender generators** (`pipeline/charsys/`, Blender 5.3 headless) build
+   each character: geometry, rig, face, hair, clothing, materials. Approved versions are stored immutably in the
+   asset store (`assets/characters/<id>/versions/`).
+2. The **C++ engine** (`engine/`) owns animation: clips, emotions, face, body mechanics, interaction, life layer. It
+   writes the shot bake (`plush.shot_bake/1`).
+3. **Blender Cycles renders the final shots** from the bake (TD-42). Look, material and render work happens only here.
+4. **Python tools** drive and check it: `pipeline/production/run_shot.py` (one command per shot), fidelity
+   (`tools/fidelity/`), regression (`tools/regression/`) and the quality gate (`tools/check_all.py`,
+   [docs/process/GATE.md](docs/process/GATE.md)).
+
+**Plush Studio** (`apps/studio`) and the engine's path tracer (`plush-render`) are for previews and the existing image
+tests; the engine renderer is frozen (no new features, TD-43). Details:
+[docs/PRODUCTION_PIPELINE.md](docs/PRODUCTION_PIPELINE.md),
+[docs/CHARACTER_REUSABILITY.md](docs/CHARACTER_REUSABILITY.md),
+[docs/CHARACTER_SYSTEM_VERSIONS.md](docs/CHARACTER_SYSTEM_VERSIONS.md). Status and plans:
+[CURRENT_STATUS.md](CURRENT_STATUS.md) (pointers to the task log and roadmap).
+
+Requirements: the C++ build below (CPU only, no GPU needed) for the engine, Studio and `plush-render`. Character
+builds, final renders and the full test tier need Blender 5.3 (or the `bpy` 5.3 module).
 
 ## What is in the box
 
@@ -9,10 +29,14 @@ characters (see `docs/` and the state files in this folder). No Blender, no clou
 | --- | --- |
 | `engine/` | Engine modules: `core`, `geom`, `anim`, `fuzz`, `model`, `scene`, `render` |
 | `apps/studio` | **Plush Studio**, the desktop application (Dear ImGui + OpenGL 3.3 preview) |
-| `apps/render-cli` | `plush-render`, headless renderer for stills, sequences and video |
-| `content/` | Characters (`*.character.json`) and scenes (`*.scene.json`) |
+| `apps/render-cli` | `plush-render`: engine bake (`--bake`) and the frozen preview renderer (stills, sequences, image regressions) |
+| `pipeline/` | Blender backend (`charsys/`), clip tools (`clips/`), shot production (`production/run_shot.py`) |
+| `assets/characters/` | Character specs, references and the versioned asset store |
+| `content/` | Clips, emotions, scenes, and the engine-era SDF characters used by the image regressions |
+| `episodes/` | Episodes and shots |
+| `tools/` | Quality gate, regression, fidelity and process tools |
 | `docs/AUTHENTICATION_AND_TRUST.md` | Local trust boundary, job flow, and credential/token handling |
-| `tests/` | Unit and integration tests (doctest) |
+| `tests/` | C++ unit and integration tests (doctest) and the frozen image regressions (CTest) |
 
 ## Build (Linux, verified)
 

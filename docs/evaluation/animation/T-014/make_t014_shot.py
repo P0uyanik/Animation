@@ -3,7 +3,7 @@ import argparse
 import json
 import os
 
-ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", ".."))
 SOURCE = os.path.join(ROOT, "episodes", "e903_test_video", "shots", "s010", "shot.scene.json")
 SPEC = "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.spec.json"
 OVERRIDE = "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.1.1.0.override.json"

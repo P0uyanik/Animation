@@ -32,17 +32,90 @@ bool inMask(const ClipData& c, const std::string& role, bool mirror) {
 }
 }  // namespace
 
-double SceneEvaluator::ClipLayer::envelope(double f) const {
+double SceneEvaluator::ClipLayer::envelopeRank(double f, int rank) const {
   if (base) return weight;
-  if (f < start || f > end) return 0;
-  auto ramp = [this](double x) { return linear ? std::clamp(x, 0.0, 1.0) : smooth01(x); };
-  double in = blendIn > 0 ? ramp((f - start) / blendIn) : 1.0;
-  double out = blendOut > 0 && end < 1e29 ? ramp((end - f) / blendOut) : 1.0;
+  // Successive breaking: each rank blends in `succession` frames after the previous one, and blends out the same
+  // amount later (the trunk leads, the extremities trail past `end` by at most 4 x succession). A cut (ramp 0) has
+  // no offset at that end.
+  const double din = principles && blendIn > 0 ? rank * succession : 0.0;
+  const double dout = principles && blendOut > 0 ? std::clamp(rank, 0, 4) * succession : 0.0;
+  if (f < start + din || f > end + dout) return 0;
+  auto ramp = [this](double x) { return principles ? easeInOut(x) : linear ? std::clamp(x, 0.0, 1.0) : smooth01(x); };
+  double in = blendIn > 0 ? ramp((f - start - din) / blendIn) : 1.0;
+  double out = blendOut > 0 && end < 1e29 ? ramp((end + dout - f) / blendOut) : 1.0;
   return weight * in * out;
 }
 
+double SceneEvaluator::ClipLayer::envelope(double f) const {
+  if (!principles) return envelopeRank(f, 0);
+  return std::max(envelopeRank(f, 0), envelopeRank(f, 4));  // rank 0 leads the blend in, rank 4 trails the blend out
+}
+
 double SceneEvaluator::ClipLayer::clipFrame(double f, double sceneFps) const {
+  if (clockIn > 0 || clockOut > 0) {
+    // Slow-in / slow-out that survives blending: the clip's clock accelerates with the blend in and decelerates with
+    // the blend out, so a clip that starts or ends in motion still leaves and arrives with zero velocity.
+    const double length = end < 1e29 ? end - start : 1e30;
+    const double t = plush::easedClock(f - start, length, clockIn, end < 1e29 ? clockOut : 0.0);
+    if (warp) return warp->clipFrame(t, clip->loop);
+    return std::max(0.0, t) * speed * clip->fps / std::max(1e-9, sceneFps);
+  }
+  if (warp) return warp->clipFrame(f - start, clip->loop);
   return std::max(0.0, f - start) * speed * clip->fps / std::max(1e-9, sceneFps);
+}
+
+void SceneEvaluator::applyBreakdowns(size_t c, const ClipLayer& L, double f, Pose& pose) const {
+  const Skeleton& sk = characters_[c].asset.skeleton;
+  auto bone = [&](const std::string& role) {
+    auto it = L.binding.roleIndex.find(role);
+    return it == L.binding.roleIndex.end() ? -1 : L.binding.roles[size_t(it->second)].bone;
+  };
+  for (int s = 0; s < 2; ++s) {
+    if (L.breakIn[s] == 0 && L.breakOut[s] == 0) continue;
+    const std::string side = s == 0 ? ".L" : ".R";
+    if (!inMask(*L.clip, "forearm" + side, L.mirror)) continue;
+    // The elbow's own blend progress (rank 2): the breakdown peaks halfway through it.
+    const double d = 2 * L.succession;
+    double deg = 0;
+    if (L.blendIn > 0) {
+      const double x = (f - L.start - d) / L.blendIn;
+      if (x > 0 && x < 1) deg += L.breakIn[s] * 4 * x * (1 - x);
+    }
+    if (L.blendOut > 0 && L.end < 1e29) {
+      const double x = (L.end + d - f) / L.blendOut;
+      if (x > 0 && x < 1) deg += L.breakOut[s] * 4 * x * (1 - x);
+    }
+    if (deg == 0) continue;
+    const int fore = bone("forearm" + side);
+    if (fore < 0) continue;
+    const quat q = elbowOpening(sk, pose, bone("upperArm" + side), fore, bone("hand" + side), float(deg * L.weight));
+    pose.local[size_t(fore)] = glm::normalize(q * pose.local[size_t(fore)]);
+  }
+}
+
+std::vector<SceneEvaluator::ClipLayerPlan> SceneEvaluator::clipLayerPlans(size_t c) const {
+  std::vector<ClipLayerPlan> out;
+  if (c >= clipLayers_.size()) return out;
+  for (const ClipLayer& L : clipLayers_[c]) {
+    if (L.base || L.tier != 2) continue;
+    ClipLayerPlan p;
+    p.clip = L.clip ? L.clip->name : "";
+    p.start = L.start;
+    p.end = L.end;
+    p.blendIn = L.blendIn;
+    p.blendOut = L.blendOut;
+    p.succession = L.succession;
+    p.clockIn = L.clockIn;
+    p.clockOut = L.clockOut;
+    p.principles = L.principles;
+    p.warped = L.warp && !L.warp->isLinear();
+    for (int s = 0; s < 2; ++s) {
+      p.breakIn[s] = L.breakIn[s];
+      p.breakOut[s] = L.breakOut[s];
+    }
+    out.push_back(p);
+  }
+  return out;
 }
 
 RetargetData SceneEvaluator::retargetData(size_t c, const ReferencePose& ref) const {
@@ -169,7 +242,8 @@ void SceneEvaluator::applyClips(size_t c, double frame, Pose& pose, float& yawOf
     }
     auto weightOf = [&](const std::string& role) {
       if (isFingerRole(role) || handKeyed(role) || !inMask(*L.clip, role, L.mirror)) return 0.0f;
-      return float(isWalkRole(role) ? env * (1 - walk) : env);
+      const double e = L.principles ? L.envelopeRank(frame, successionRank(role)) : env;
+      return float(isWalkRole(role) ? e * (1 - walk) : e);
     };
     if (L.tier == 1) {
       // Emotion layers blend in the clip's own (semantic, reference-space) rotations: each driven role's local
@@ -193,8 +267,9 @@ void SceneEvaluator::applyClips(size_t c, double frame, Pose& pose, float& yawOf
       continue;
     }
     applyClipSample(sk, L.binding, s, pose, weightOf);
+    if (L.principles) applyBreakdowns(c, L, frame, pose);
     if (L.clip->hasRoot() || L.clip->hasHeading()) {
-      const float wr = float(env * (1 - walk));
+      const float wr = float((L.principles ? L.envelopeRank(frame, 0) : env) * (1 - walk));
       pose.rootOffset = glm::mix(pose.rootOffset, s.root * L.binding.legLength, wr);
       yawOffset = glm::mix(yawOffset, s.heading, wr);
     }
@@ -219,8 +294,9 @@ void SceneEvaluator::applyClipFingers(size_t c, double frame, Pose& pose) const 
     for (const auto& r : L.binding.roles) any |= r.bone >= 0 && isFingerRole(r.name) && inMask(*L.clip, r.name, L.mirror);
     if (!any) continue;
     const ClipSample s = sampleClip(*L.clip, L.clipFrame(frame, scene_.rate.fps()), L.mirror);
+    const float fe = float(L.principles ? L.envelopeRank(frame, successionRank("f0a")) : env);
     applyClipSample(sk, L.binding, s, pose, [&](const std::string& role) {
-      return (isFingerRole(role) && inMask(*L.clip, role, L.mirror) && !handOwned(role)) ? float(env) : 0.0f;
+      return (isFingerRole(role) && inMask(*L.clip, role, L.mirror) && !handOwned(role)) ? fe : 0.0f;
     });
   }
 }

@@ -1,5 +1,9 @@
 # Development log
 
+> Historical log of the engine-era sessions (2026-11-13 to 2026-11-15), kept here because `tests/CMakeLists.txt`
+> cites it for re-baselining the image regressions. Later work is logged in
+> [docs/process/TASK_LOG.md](docs/process/TASK_LOG.md) and the task reports (`docs/milestones/`, `docs/evaluation/`).
+
 ## 2026-11-13 — Session 1: foundation to first rendered milestone
 
 **Context change:** brief now requires a fully standalone app (no Blender), the existing unknown computer,

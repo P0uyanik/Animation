@@ -23,9 +23,9 @@ Interchange: character spec JSON -> Blender master (.blend, versioned asset stor
 One command per shot: pipeline/production/run_shot.py.
 
 == Read first (only these, then what the task names) ==
-CURRENT_STATUS.md, NEXT_TASK.md, TECHNICAL_DECISIONS.md (TD-37..TD-42), docs/PROJECT_STATUS_AND_ARCHITECTURE_AUDIT.md,
-docs/PRODUCTION_PIPELINE.md, docs/CHARACTER_REUSABILITY.md, docs/process/WORKFLOW.md. Milestone reports in
-docs/milestones/ only when relevant. Do not scan the whole repository.
+docs/process/TASK_LOG.md, docs/ROADMAP.md (CURRENT_STATUS.md and NEXT_TASK.md only point there),
+TECHNICAL_DECISIONS.md (TD-37..TD-42), docs/PROJECT_STATUS_AND_ARCHITECTURE_AUDIT.md, docs/PRODUCTION_PIPELINE.md,
+docs/CHARACTER_REUSABILITY.md, docs/process/WORKFLOW.md. Milestone reports in docs/milestones/ only when relevant. Do not scan the whole repository.
 
 == Characters and frozen assets (never modify) ==
 - boy_yellow_hoodie: published 1.0.0 (assets/characters/boy_yellow_hoodie/versions/1.0.0) and the v6 baseline are
@@ -42,6 +42,9 @@ docs/milestones/ only when relevant. Do not scan the whole repository.
   shot_render, run_shot, asset_store). Do not replace or refactor a system unless the task says so.
 - Do not change the architecture, introduce unrelated features or expand the task. If the task cannot be done as
   specified, or needs a decision, STOP and report the question instead of guessing.
+- The engine renderer (engine/render/) is frozen: no new features, previews and existing tests only (TD-43). Look,
+  material and render changes go to the Blender pipeline. Never write into assets/characters/*/versions/
+  (published and approved versions are immutable).
 - Validate shared capabilities on more than one character or configuration when the task says so; never claim
   support you did not test.
 
@@ -80,8 +83,8 @@ and behaviour from the references first, and invent only what they do not show, 
 - Do not sacrifice essential testing to save tokens.
 - Git: work on the branch the task names (default: a new branch t-<id>-<short-name> from main). Commit only the
   task's changes with a clear message; do not push or open PRs unless the task says so. Never rewrite history.
-- Update documentation only as the task requires (usually CURRENT_STATUS.md, NEXT_TASK.md, a dated milestone or
-  task report); clearly separate implemented / tested / experimental / not verified.
+- Update documentation only as the task requires (usually a dated milestone or task report;
+  TASK_LOG.md and ROADMAP.md are the Supervisor's); clearly separate implemented / tested / experimental / not verified.
 - Never include personal data of the owner in commits or external requests.
 - After finishing the assigned task: STOP. Do not begin another task.
 
@@ -98,6 +101,12 @@ and behaviour from the references first, and invent only what they do not show, 
 9. Commit hash(es) and branch.
 10. Resource use: actual token usage if exposed, otherwise state "not available". Never estimate. Note any
     repeated or unnecessary work.
+
+== Delivering the report ==
+Send the report to the Supervisor session with send_message (claude-code-remote), using the Supervisor session id
+given in your task prompt (not "@parent"). Also append one line to RELAY_LOG.md on branch relay-channel
+(`<UTC> | T-NNN | READY|BLOCKED | <branch@sha> | <one line>`, fetch the branch by name first, never rewrite it):
+that is the fallback if send_message is refused. Then stop; do not wait for CI.
 
 Wait for your first task prompt. Do not start any work before you receive it.
 ```
