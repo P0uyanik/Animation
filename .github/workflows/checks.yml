@@ -252,6 +252,28 @@ jobs:
           $mergeArgs = if ('${{ needs.plan.outputs.merge_target }}') { '--merge-status', 'clean' }
           python tools/check_all.py --base "$env:CHECK_ALL_BASE_REF" --build-dir build/quality-gate --artifacts-dir build/check-all/windows --blender-on-other-runner "linux gate" @mergeArgs
           exit $LASTEXITCODE
+      - name: Show failing gate logs
+        if: failure()
+        shell: pwsh
+        run: |
+          # Make Windows gate failures readable in the job output without downloading the artifact.
+          $summary = 'build/check-all/windows/summary.txt'
+          if (Test-Path $summary) { Write-Host "===== $summary"; Get-Content $summary }
+          $failed = @()
+          if (Test-Path $summary) {
+            $failed = Select-String -Path $summary -Pattern 'FAIL' | ForEach-Object { $_.Line }
+          }
+          Get-ChildItem build/check-all/windows/logs -Filter *.log -ErrorAction SilentlyContinue | ForEach-Object {
+            $log = $_
+            $stem = $log.BaseName -replace '[-_]', ' '
+            $isFailed = ($failed | Where-Object { ($_ -replace '[-_]', ' ') -match [regex]::Escape($stem) }).Count -gt 0
+            $hasError = Select-String -Path $log.FullName -Pattern 'FAIL|Error|Traceback' -Quiet
+            if ($isFailed -or $hasError) {
+              Write-Host "::group::tail -n 80 $($log.Name)"
+              Get-Content $log.FullName -Tail 80
+              Write-Host '::endgroup::'
+            }
+          }
       - name: Upload report
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
