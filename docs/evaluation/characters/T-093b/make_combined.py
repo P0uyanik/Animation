@@ -14,8 +14,9 @@ import os
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..", ".."))
 CH = os.path.join(ROOT, "assets", "characters")
-# base candidate per character (T-093b): the girl's crotch arch + fit; the boy's T-090b trousers/shoes variant
-CHARS = {"boy_yellow_hoodie": ("2.0.0", "T-093b-T090b"), "girl_auburn_bun_glasses": ("0.11.0", "T-093b")}
+# base candidate (T-093b): the girl's crotch arch + fit. The boy's T-090b trousers/shoes variant was dropped on the
+# strict sheet (README.md), so the boy keeps T-093's own combined override (candidates/T-093).
+CHARS = {"girl_auburn_bun_glasses": ("0.11.0", "T-093b")}
 
 
 def deep_merge(a, b):
