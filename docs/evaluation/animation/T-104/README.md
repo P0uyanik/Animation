@@ -74,7 +74,7 @@ hand speeds; it is data, no special case.
 | Command | Result |
 | --- | --- |
 | `cmake --build build` (PLUSH_BUILD_STUDIO=OFF, renderer OFF) | builds, no warnings |
-| `build/tests/plush_tests` | **132 / 132** cases (127 before + 5 new), 43076 assertions |
+| `build/tests/plush_tests` | **132 / 132** cases (127 before + 5 new); after merging origin/main `482879f` (T-097-0 stubs): **134 / 134**, 43083 assertions |
 | `ctest` (build/) | 1 passed, renderer tests skipped (renderer OFF, as before) |
 | `python3 tools/animcheck/tests/test_animcheck.py` | **14 / 14** (8 before + 6 `TimingRule`) |
 | `python3 tools/animcheck/run_gate.py --render build/apps/render-cli/plush-render` | PASS (clip_gestures 6, personality 3 + limits, wave_touch 4); timing: 0 warnings |
@@ -101,6 +101,7 @@ hand speeds; it is data, no special case.
 | animcheck regression bakes | clip_gestures `18e02718`, personality `21e2eed6`, wave_touch `229382dc` | identical |
 | `make_shot.py` without `--timing` (with the packages) | `s010/shot.scene.json` | byte-identical |
 | doctest | 127 / 127 | 127 old cases pass |
+| after merging origin/main (`14edc55`) | | e907 s010 `8588f191`, s010_calibrated `0807ad2c`, regression bakes identical |
 
 No face, garment, material, environment, published-version or frozen file is touched. `content/scenes/eval/exchange`
 is unchanged (the eval copy of the default s010).
@@ -128,7 +129,9 @@ bake is byte-identical to the one it was rendered from, so it was not rendered a
 6. Workbench needs a GPU here, so the cheap preview used Cycles at 4 spp (allowed by REVIEW_RECIPE).
 
 ## 9. Commits
-`git log b59880a..t-104-claude-timing-calibration`; the READY line names the final SHA.
+`git log b59880a..t-104-claude-timing-calibration`; the READY line names the final SHA. `tests/CMakeLists.txt` was merged
+with main's T-097-0 registration (both additions kept). The second commit's `Claude-Session` trailer names the wrong
+session id (pushed; history not rewritten).
 
 ## 10. Resource use
 Token usage: not available.
