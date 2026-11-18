@@ -19,6 +19,8 @@
 
 namespace plush {
 
+struct SampledLayerCurves;  // scene/emotion.h (T-097A)
+
 struct ObjectDesc {
   enum class Kind { Box, Sdf, PaperBoat, Water };
   std::string name;
@@ -274,6 +276,8 @@ class SceneEvaluator {
     double succession = 0;
     std::shared_ptr<const TimeWarp> warp;
     float breakIn[2] = {0, 0}, breakOut[2] = {0, 0};
+    // Blended emotion posture (T-097A, scene/emotion.h): per-frame weight (x the envelope) and clip clock; null = none.
+    std::shared_ptr<const SampledLayerCurves> sampled;
     double envelope(double frame) const;  // weight x blend in/out at a scene frame (any rank still blending)
     double envelopeRank(double frame, int rank) const;  // the same for one succession rank
     double clipFrame(double frame, double sceneFps) const;
