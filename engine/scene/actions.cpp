@@ -575,6 +575,7 @@ Result<void> SceneEvaluator::compileActionsBody() {
     std::string morph;
     ClipLayer envelope;  // timing only (start, end, ramps, weight = intensity, curve)
     float weight;
+    std::shared_ptr<const SampledLayerCurves> curve = nullptr;  // blended emotions (T-097A): the state's weight instead
   };
   std::vector<FaceContribution> emotionFace;
   std::set<std::string> missingFace;
@@ -588,6 +589,18 @@ Result<void> SceneEvaluator::compileActionsBody() {
     bool hasFaceMotion = false;
   };
   std::vector<PendingEmotion> pending;
+  struct BlendedEmotion {  // emotion actions with "blend" (T-097A): played from a continuous state per character
+    int character;
+    std::string key;  // state name: the library name, with "/variant" for a variant
+    EmotionDef def;
+    double start, end;  // scene frames (end < 0: rise + hold)
+    float intensity;
+    PersonalityModulation mod;
+    double rise, decay, hold;  // seconds, modulated
+    bool keep;                 // true: plays on top, false: fades the character's other blended emotions out
+    float pleasantness, energy;
+  };
+  std::vector<BlendedEmotion> blended;
 
   for (const Json* ap : actions) {
     const Json& a = *ap;
@@ -987,6 +1000,27 @@ Result<void> SceneEvaluator::compileActionsBody() {
       if (!j) return fail(j.error().message);
       auto e = emotionFromJson(*j, variant);
       if (!e) return fail(std::format("{}: {}", file.string(), e.error().message));
+      if (const Json bl = a.value("blend", Json()); !bl.is_null() && !(bl.is_boolean() && !bl.get<bool>())) {
+        // Blended play (T-097A): compiled after all actions, from the character's continuous emotion state.
+        if (!bl.is_boolean() && !bl.is_object()) return fail(std::format("emotion '{}': 'blend' must be true or an object", full));
+        const Json bo = bl.is_object() ? bl : Json::object();
+        auto mod = modulationFromJson(a.value("modulation", Json()));
+        if (!mod) return fail(std::format("emotion '{}': {}", full, mod.error().message));
+        const double rise = num(bo, "rise", e->rise >= 0 ? e->rise : e->onset);
+        const double decay = num(bo, "decay", e->decay >= 0 ? e->decay : e->release);
+        if (rise < 0 || decay < 0) return fail(std::format("emotion '{}': negative rise or decay", full));
+        const EmotionTiming tm = modulatedTiming(rise, e->hold, decay, float(std::clamp(num(a, "intensity", 1.0), 0.0, 1.0)), *mod);
+        const Json af = a.value("affect", Json::object());
+        BlendedEmotion b{c, full, *e, start, has(a, "end") ? num(a, "end", 0) : -1.0, tm.intensity, *mod, tm.rise, tm.decay,
+                         tm.hold, bo.value("keep", false),
+                         std::clamp(float(num(af, "pleasantness", e->pleasantness)), -1.f, 1.f),
+                         std::clamp(float(num(af, "energy", e->energy)), -1.f, 1.f)};
+        if (b.end >= 0 && b.end <= start) return fail("emotion: end must be after start");
+        blended.push_back(std::move(b));
+        beats.push_back({Beat::Kind::Expression, c, -1, start, start, 0, 0, 0,
+                         has(a, "end") ? num(a, "end", 0) : start + (tm.rise + tm.hold + tm.decay) * scene_.rate.fps(), vec3(0), vec3(0)});
+        continue;
+      }
       const double fps = scene_.rate.fps();
       const double intensity = std::clamp(num(a, "intensity", 1.0), 0.0, 1.0);
       double onset = e->onset * fps, release = e->release * fps;
@@ -1070,6 +1104,193 @@ Result<void> SceneEvaluator::compileActionsBody() {
     }
     return fail(std::format("unknown action type '{}'", type));
   }
+  // Blended emotions (T-097A, docs/EMOTIONS.md section 3b): per character, one continuous state (EmotionBlender) fed
+  // by the blended emotion actions in time order; face, faceMotion (gaze), posture weights and clip tempo all read it.
+  auto compileBlended = [&]() -> Result<void> {
+    const double fps = scene_.rate.fps();
+    const int f0 = scene_.frameStart - 1, f1 = scene_.frameEnd + 1;
+    const size_t frames = size_t(f1 - f0 + 1);
+    std::vector<int> chars;
+    for (const auto& b : blended)
+      if (std::find(chars.begin(), chars.end(), b.character) == chars.end()) chars.push_back(b.character);
+    for (int c : chars) {
+      const std::string who = scene_.characters[size_t(c)].name;
+      const CharacterAsset& asset = characters_[size_t(c)].asset;
+      std::vector<const BlendedEmotion*> list;
+      for (const auto& b : blended)
+        if (b.character == c) list.push_back(&b);
+      std::stable_sort(list.begin(), list.end(), [](const BlendedEmotion* x, const BlendedEmotion* y) { return x->start < y->start; });
+      // Events in time order: each action starts (rise to its intensity) and releases (decay to 0) after its hold, or
+      // `decay` before its explicit end. A release is skipped once something else re-targeted that emotion.
+      struct Event {
+        double t;
+        int kind;  // 0 start, 1 release
+        const BlendedEmotion* b;
+      };
+      std::vector<Event> events;
+      for (const BlendedEmotion* b : list) {
+        const double t = b->start / fps;
+        events.push_back({t, 0, b});
+        events.push_back({std::max(t, b->end >= 0 ? b->end / fps - b->decay : t + b->rise + b->hold), 1, b});
+      }
+      std::stable_sort(events.begin(), events.end(), [](const Event& x, const Event& y) { return x.t < y.t; });
+      EmotionBlender B;
+      std::map<std::string, float> target;
+      std::map<std::string, const BlendedEmotion*> latest;  // key -> the action that last set it
+      std::map<std::string, std::pair<float, float>> affect;
+      auto retargetAffect = [&](double t, double rise, double decay) {
+        std::vector<std::pair<std::string, float>> w(target.begin(), target.end());
+        const auto [p, e] = impliedAffect(w, affect);
+        B.retargetAffect(t, p, e, rise, decay);
+      };
+      for (const Event& ev : events) {
+        const BlendedEmotion& b = *ev.b;
+        if (ev.kind == 0) {
+          if (!b.keep)
+            for (auto& [k, w] : target)
+              if (k != b.key && w > 0) {
+                B.retargetEmotion(ev.t, k, 0.f, latest[k]->rise, latest[k]->decay);
+                w = 0;
+              }
+          B.retargetEmotion(ev.t, b.key, b.intensity, b.rise, b.decay);
+          target[b.key] = b.intensity;
+          latest[b.key] = &b;
+          affect[b.key] = {b.pleasantness, b.energy};
+          retargetAffect(ev.t, b.rise, b.decay);
+        } else {
+          const EmotionChannel* ch = B.channel(b.key);
+          if (!ch || ch->lastRetarget() > b.start / fps + 1e-9) continue;
+          B.retargetEmotion(ev.t, b.key, 0.f, b.rise, b.decay);
+          target[b.key] = 0;
+          retargetAffect(ev.t, b.rise, b.decay);
+        }
+      }
+      // Sample the state per scene frame.
+      const std::vector<std::string>& keys = B.names();
+      std::vector<std::vector<float>> w(keys.size(), std::vector<float>(frames, 0.f));
+      std::vector<float> energy(frames, 0.f);
+      for (size_t k = 0; k < frames; ++k) {
+        const EmotionState st = B.evaluate(double(f0 + int(k)) / fps);
+        for (size_t i = 0; i < keys.size(); ++i) w[i][k] = st.weights[i].second;
+        energy[k] = st.energy;
+      }
+      std::vector<std::string> morphNames;
+      for (auto& mt : characters_[size_t(c)].rig.morphs) morphNames.push_back(mt.name);
+      double firstStart = 1e30;
+      for (const BlendedEmotion* b : list) firstStart = std::min(firstStart, b->start);
+      std::vector<size_t> postureKeys;
+      std::vector<ClipLayer> postures;
+      std::vector<std::shared_ptr<SampledLayerCurves>> postureCurves;
+      for (size_t i = 0; i < keys.size(); ++i) {
+        const BlendedEmotion& b = *latest.at(keys[i]);
+        const EmotionDef& e = b.def;
+        auto curve = std::make_shared<SampledLayerCurves>();
+        curve->start = f0;
+        curve->weight = w[i];
+        // Face: the emotion's mix x its state weight (missing morphs: one warning, as for plain emotions).
+        for (const auto& [ename2, fw] : e.face) {
+          const std::string morph = resolveExpression(asset, ename2, morphNames);
+          if (morph.empty()) {
+            if (missingFace.insert(who + "|" + keys[i] + "|" + ename2).second)
+              warnings_.push_back(std::format("emotion '{}': character '{}' has no morph for expression '{}' (face part skipped, body plays)", keys[i], who, ename2));
+            continue;
+          }
+          emotionFace.push_back({c, morph, ClipLayer{}, fw, curve});
+        }
+        // Living face and gaze: the faceMotion section x the state weight; gazeShift removes the averted-gaze bias;
+        // attention pulses at every start of the emotion.
+        if (e.hasFaceMotion) {
+          FaceMotion m = e.faceMotion;
+          if (m.gazeBiasDeg) m.gazeBiasDeg = *m.gazeBiasDeg * (1.f - b.mod.gazeShift);
+          const std::optional<float> att = m.attention;
+          m.attention.reset();
+          FaceEnvelope env{-1e30, 1e30, 0, 0, 1, false};
+          env.curve = std::make_shared<const std::vector<float>>(w[i]);
+          env.curveStart = f0;
+          faceTimelines_[size_t(c)].emotions.push_back({env, m});
+          if (att && *att > 0)
+            for (const BlendedEmotion* x : list)
+              if (x->key == keys[i]) faceTimelines_[size_t(c)].attention.push_back({x->start, *att * x->intensity});
+        }
+        // Posture: one layer per emotion over the whole range; its weight and clock come from the state.
+        if (!e.bodyClip.empty()) {
+          const auto cf = findLibrary("clips", e.bodyClip + ".clip.json");
+          if (cf.empty()) return fail(std::format("emotion '{}': clip '{}' not found in content/clips", keys[i], e.bodyClip));
+          auto cl = cachedClip(cf);
+          if (!cl) return std::unexpected(cl.error());
+          ClipLayer L;
+          L.clip = *cl;
+          const bool loop = e.bodyLoop < 0 ? L.clip->loop : e.bodyLoop == 1;
+          if (loop != L.clip->loop || !e.bodyMask.empty()) {
+            auto copy = std::make_shared<ClipData>(*L.clip);
+            copy->loop = loop;
+            if (!e.bodyMask.empty()) copy->mask = e.bodyMask;
+            L.clip = copy;
+          }
+          L.tier = 1;
+          L.start = firstStart;  // all blended postures share a start: they apply in state order, below later gestures
+          L.end = f1;
+          L.blendIn = L.blendOut = 0;
+          L.weight = 1;
+          L.binding = bindClip(asset.skeleton, L.clip->reference, retargetData(size_t(c), L.clip->reference));
+          for (const auto& r : L.binding.roles)
+            if (r.bone < 0 && L.clip->tracks.count(r.name) && r.name.rfind("eye.", 0) != 0)
+              warnings_.push_back(std::format("emotion '{}' clip '{}': character '{}' has no role '{}' (not played)", keys[i], L.clip->name, who, r.name));
+          auto pc = std::make_shared<SampledLayerCurves>();
+          pc->start = f0;
+          pc->weight.assign(frames, 0.f);
+          pc->clock.assign(frames, 0.0);
+          const double rate = L.clip->fps / fps;  // clip frames per scene frame at tempo 1
+          for (size_t k = 1; k < frames; ++k) {
+            const double tempo = 0.5 * (emotionTempo(energy[k - 1], b.mod) + emotionTempo(energy[k], b.mod));
+            pc->clock[k] = pc->clock[k - 1] + (double(f0) + double(k) > firstStart ? tempo * rate : 0.0);
+          }
+          L.sampled = pc;
+          postureCurves.push_back(pc);
+          postureKeys.push_back(i);
+          postures.push_back(std::move(L));
+        }
+        // Gesture of each action of this emotion: one-shot at its offset (x tempoScale), clock at the state's tempo then.
+        for (const BlendedEmotion* x : list) {
+          if (x->key != keys[i] || !x->def.hasGesture) continue;
+          const auto& g = x->def.gesture;
+          const auto gf = findLibrary("clips", g.clip + ".clip.json");
+          if (gf.empty()) return fail(std::format("emotion '{}': clip '{}' not found in content/clips", keys[i], g.clip));
+          auto gl = cachedClip(gf);
+          if (!gl) return std::unexpected(gl.error());
+          ClipLayer G;
+          G.clip = *gl;
+          G.tier = 1;
+          G.start = x->start + g.offset * x->mod.tempoScale * fps;
+          const size_t gk = size_t(std::clamp(G.start - f0, 0.0, double(frames - 1)));
+          G.speed = emotionTempo(energy[gk], x->mod);
+          G.end = G.start + G.clip->duration() * fps / G.speed;
+          G.blendIn = g.blendIn * x->mod.tempoScale * fps;
+          G.blendOut = g.blendOut * x->mod.tempoScale * fps;
+          G.weight = x->intensity;
+          G.linear = x->def.linear;
+          G.mirror = g.mirror;
+          G.binding = bindClip(asset.skeleton, G.clip->reference, retargetData(size_t(c), G.clip->reference));
+          for (const auto& [ename2, fw] : g.face) {
+            const std::string morph = resolveExpression(asset, ename2, morphNames);
+            if (!morph.empty()) emotionFace.push_back({c, morph, G, fw});
+          }
+          clipLayers_[size_t(c)].push_back(std::move(G));
+        }
+      }
+      // Posture weights: the state weights as sequential override weights, so the layers give the normalized blend
+      // (1 - S) x underlying pose + sum w_i x posture_i, whatever the order.
+      for (size_t k = 0; k < frames; ++k) {
+        std::vector<float> ws;
+        for (size_t p : postureKeys) ws.push_back(w[p][k]);
+        const std::vector<float> ow = overrideWeights(ws);
+        for (size_t p = 0; p < postureCurves.size(); ++p) postureCurves[p]->weight[k] = ow[p];
+      }
+      for (auto& L : postures) clipLayers_[size_t(c)].push_back(std::move(L));
+      sortLayers(c);
+    }
+    return {};
+  };
   // Consecutive emotions of a character crossfade: when one starts before the previous one has ended, the previous
   // one releases from that start over (its release + the new onset), and the new one's onset takes the same time.
   // The sum keeps a transition no faster than the faster of the two ramps it replaces, whatever the two postures.
@@ -1104,6 +1325,7 @@ Result<void> SceneEvaluator::compileActionsBody() {
     clipLayers_[size_t(pe.character)].push_back(std::move(pe.posture));
     sortLayers(pe.character);
   }
+  if (auto r = compileBlended(); !r) return r;
   // Emotion faces: per morph, the track as compiled so far plus every emotion's weight x envelope, written as
   // per-frame keys over the scene range (hand keys on the morph still win: generated tracks are only a fallback).
   std::map<std::pair<int, std::string>, std::vector<const FaceContribution*>> faceByMorph;
@@ -1118,7 +1340,8 @@ Result<void> SceneEvaluator::compileActionsBody() {
     std::vector<Key> keys;
     for (int f = scene_.frameStart - 1; f <= scene_.frameEnd + 1; ++f) {
       double v = old && !old->keys.empty() ? old->evaluate(f).x : def;
-      for (const FaceContribution* fc : list) v += fc->envelope.envelope(f) * fc->weight;
+      for (const FaceContribution* fc : list)
+        v += (fc->curve ? fc->curve->weightAt(f) : fc->envelope.envelope(f)) * fc->weight;
       keys.push_back({double(f), vec3(float(std::clamp(v, 0.0, 1.0))), Interp::Linear});
     }
     gen->tracks[track].keys = std::move(keys);

@@ -66,11 +66,17 @@ FaceLibrary defaultFaceLibrary();  // engine expression names only (used when no
 Result<FaceLibrary> faceLibraryFromJson(const Json& j);
 
 // Envelope of an emotion or clip layer in scene frames (same shape as clip layers: smoothstep or linear ramps).
+// Blended emotions (T-097A, scene/emotion.h) instead give a sampled weight curve: one value per scene frame from
+// `curveStart`, linearly interpolated (0 outside), multiplied into the envelope. Null = the ramps only.
 struct FaceEnvelope {
   double start = 0, end = 1e30, blendIn = 0, blendOut = 0, weight = 1;
   bool linear = false;
+  std::shared_ptr<const std::vector<float>> curve;
+  double curveStart = 0;
   double at(double frame) const;
 };
+// A per-frame sampled curve (values at start, start + 1, ...) at a scene frame: linear between samples, 0 outside.
+double sampledCurve(const std::vector<float>& values, double start, double frame);
 
 // Channel curves of a clip ("face": {"tracks": {"<channel>": [[clipFrame, value], ...]}}).
 struct FaceCurves {

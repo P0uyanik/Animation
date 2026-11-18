@@ -66,10 +66,60 @@ emotion mask. Gestures start and end in the relaxed pose.
   explicit `end` the new emotion's end moves by the extra onset time. The sum keeps a transition no faster than the
   faster of the two ramps it replaces.
 
+## 3b. Blended emotions: a continuous state (T-097A, opt-in)
+An emotion action with `"blend"` plays from the character's **continuous emotion state** (`EmotionState`,
+`engine/scene/acting.h`) instead of its own envelope. Actions without `blend` (and every existing file, shot and bake)
+take the path of section 3 unchanged.
+```json
+{"type": "emotion", "character": "girl", "name": "surprised", "start": 18, "blend": true,
+ "affect": {"pleasantness": 0.2, "energy": 0.9}, "modulation": {"tempoScale": 1.3, "intensityScale": 0.8}}
+```
+| Field | Meaning |
+| --- | --- |
+| `blend` | `true` or `{rise?, decay?, keep?}`: rise / decay in seconds (default: the file's `blend.rise` / `blend.decay`, else `timing.onset` / `timing.release`); `keep: true` plays on top of the other blended emotions instead of replacing them |
+| `affect` | optional `{pleasantness, energy}` (-1..1) of this emotion; default: the file's `affect`, else 0 |
+| `modulation` | optional `PersonalityModulation` (`intensityScale`, `tempoScale`, `holdScale`, `gazeShift`, `preferredGestures`); chosen by T-097B, applied here |
+| `end`, `intensity` | as in section 3: the release starts `decay` before `end` (without `end`: after rise + hold) |
+
+Optional file fields (format stays `plush.emotion/1`; plain play ignores them): `"blend": {"rise", "decay"}` and
+`"affect": {"pleasantness", "energy"}`. No library file sets them today.
+
+**State dynamics** (`EmotionChannel`, `EmotionBlender` in `engine/scene/emotion.{h,cpp}`): every emotion weight
+(0..1), the pleasantness and the energy (-1..1) are channels. A blended action re-targets, at its start, its own weight
+to its intensity over its rise time and (unless `keep`) every other blended emotion of the character to 0 over that
+emotion's decay time; at its release it re-targets its weight to 0 over its decay (skipped if something re-targeted it
+in between). Pleasantness and energy move to the weight-averaged affect of the target weights (scaled down when the
+weights sum to less than 1). A move is a cubic Hermite segment from the current value **and velocity** to the target,
+arriving at rest: from rest it is exactly the smoothstep ramp of plain emotions, and a move re-targeted mid-way keeps
+value and velocity (C1, no jump, no kink). Rise is used when the value increases, decay when it decreases. Values are
+clamped to the channel's range.
+
+**What reads the state** (sampled once per scene frame, Catmull-Rom between frames, which is C1 where secondary motion samples):
+- **Face:** per morph, Σ (state weight × face weight) on top of the morph's track, like section 3.
+- **Posture:** one tier-1 layer per blended emotion for the whole range (`ClipLayer::sampled`). The per-frame state
+  weights become sequential override weights (`overrideWeights`), so the postures give the normalized blend
+  (1 − S) × underlying pose + Σ wᵢ × postureᵢ, whatever their order. Blended postures share their start, so they apply
+  below every later gesture.
+- **Gaze and living face:** the emotion's `faceMotion` × its state weight (gaze bias, blink rhythm, eye darts,
+  channels); `attention` pulses at every start of the emotion (× intensity).
+- **Tempo:** posture clip clocks integrate (1 + 0.25 × energy) / tempoScale (`emotionTempo`, `kEnergyTempo`), so a
+  loop speeds up or slows down with the state without a phase jump. Gestures play at the tempo of their start.
+
+**Personality modulation** (applied, not chosen; `modulatedTiming`): intensity × `intensityScale` (clamped to 1);
+rise, decay, gesture offset and gesture blends × `tempoScale`; hold × `tempoScale` × `holdScale`; `gazeShift` 1
+removes the emotion's averted-gaze bias (0 keeps it). `preferredGestures` is carried but not used here (T-097B chooses).
+
+C++ use (T-097B): a `ReactionPlan` maps to `EmotionBlender::retarget(time, plan.target, rise, decay)` with the timing
+from `modulatedTiming`; `EmotionBlender::evaluate(t)` gives the `EmotionState` at any time (random access).
+
+Tests: `tests/test_emotion_blend.cpp` (continuity of value and velocity, bounded rates under random re-targets,
+cross-fade sums, normalized override weights, modulation, and in a scene on the girl test package: no face or body pops
+at quarter frames, gaze, loop tempo, plain emotions unchanged). Evidence: `docs/evaluation/animation/T-097A/`.
+
 ## 4. Layering (order of a character's pose)
 1. Keyed and generated tracks.
 2. Base clip (tier 0).
-3. **Emotion postures and gestures (tier 1, by start).**
+3. **Emotion postures and gestures (tier 1, by start; blended postures share the first blended start).**
 4. Clip actions (tier 2, in action order) override their masks; walk keeps hips, legs and root; hand keys win.
 5. Life layer, then constraints (IK reach/touch/foot plants, hand pose, look) — they keep priority over emotions.
 
