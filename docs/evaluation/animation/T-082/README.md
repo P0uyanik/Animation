@@ -158,10 +158,28 @@ Not tested:
 - export/4 and export/5 output is unchanged (`test_export_engine.py` 13/13).
 - The shot builds live in ignored `build/` folders. The e905 working copy used for the bakes
   (`episodes/e905_props_test/shots/t082_current/`) was not committed.
-- `tools/check_all.py --base origin/staging --task T-082 --blender <bpy 5.3 wrapper>`: see the gate block below
-  (filled in from the run).
-
-GATE_RESULTS_PLACEHOLDER
+- `tools/check_all.py --base origin/staging --task T-082 --blender <bpy 5.3 wrapper>` was run on the branch with
+  `origin/staging` 581b01d merged in. The Blender tier used the bpy 5.3.0 module (Python 3.13) behind a `blender`
+  wrapper, not a Blender executable.
+  - PASS: Frozen assets, Shared-systems lint, C++ build, Python tests and links. The Blender tier's export, face,
+    garment, groom, determinism and verify_charsys checks passed. Only its regression part failed (below).
+  - **FAIL Guarded paths**: `tests/test_collision.cpp` and `tests/test_interaction.cpp` need Supervisor approval.
+    They are this task's own test files, inside the claimed write-set; only test cases were added, and no existing
+    check was loosened.
+  - **FAIL Write-set** in that run: `episodes/e905_props_test/shots/t082_current/shot.scene.json`. This was my
+    untracked working copy of the e905 shot, never committed. It was moved out of the repository after the run.
+    The committed diff touches only claimed paths.
+  - **FAIL C++ tests**: only the two CTest image regressions, `regression_milestone01` (rmse 0.0464) and
+    `regression_face_neutral` (rmse 0.0406). These are the same values T-047 recorded on staging in a container
+    without Open Image Denoise. `plush_tests` passes 129/129.
+  - **FAIL Blender tier, regression boy_yellow_hoodie**: "engine export differs: character.json". The fingerprint
+    is byte-equal, the renders are within noise and fidelity is 66.41 vs 66.41.
+    - **origin/staging fails identically in this container**: `tools/regression/run.py --character
+      boy_yellow_hoodie --base origin/staging`, run in an origin/staging worktree with the same wrapper.
+    - The exported `character.json` carries no `collision` block, so the T-082 exporter change does not reach it.
+    - The cause is the environment (the bpy module build of the master), not this task. GitHub CI, with its pinned
+      dependencies, is the evidence for this tier.
+    - girl_auburn_bun_glasses and girl_white_hair_blue_dress PASS.
 
 ## 7. Visual results
 All renders use the e905 current-cast bakes: planning off, T-047 on (the T-047 code) and T-082 on. Each one becomes a
