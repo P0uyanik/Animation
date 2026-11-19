@@ -68,7 +68,7 @@ current); branch `t-109-claude-face-r4`. Blender for everything here: the **bpy 
 - T-115: the adjustable lower-face, eye-opening and lid-profile parameters, with the current values and tried ranges,
   are in [fit_parameters.json](fit_parameters.json).
 
-## Measurements (build reports; test_face_v4 on the sheet's candidate masters, [log](test_face_v4.log))
+## Measurements (build reports; test_face_v4 on the sheet's candidate masters)
 | | current | T-109 | limit |
 |---|---|---|---|
 | girl lower-lid shell exposed (front ray test, `lid_shell_exposed`) | 0.509 | **0.048** (0.0 before the rest-smile change) | ≤ 0.05 |
