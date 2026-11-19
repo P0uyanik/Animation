@@ -198,6 +198,8 @@ any workflow is red on `main`.
 - **Superseded runs**: a newer push cancels the running Quality gate only on `t-*` and `integration/*`. `main`,
   `staging`, `workflow_dispatch` runs, the backup workflow, nightly Windows and every scheduled workflow are never
   cancelled (each `main`/`staging`/manual run has its own concurrency group).
+- **ccache** (from T-128 §2c): every compiling job runs `ccache -z` first, so `ccache --show-stats -v` reports this
+  run's hit rate (the old figure was cumulative); `CCACHE_BASEDIR=<workspace>`, `CCACHE_COMPILERCHECK=content`.
 - **Per-test durations**: every command `check_all.py` runs is timed (`durations` in each `check_all.json`, and
   `durations.txt` next to it, slowest first); the Gate verdict job summary shows the slowest 25 across all jobs.
   Parallel shard jobs finish sooner but use more runner minutes per run (each installs bpy); see the T-127 numbers.

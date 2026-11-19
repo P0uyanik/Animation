@@ -187,7 +187,11 @@ jobs:
           CHECK_ALL_BASE_REF: ${{ needs.plan.outputs.base }}
           CMAKE_C_COMPILER_LAUNCHER: ccache
           CMAKE_CXX_COMPILER_LAUNCHER: ccache
+          # T-127 (from T-128 §2c): per-run hit rate (stats reset), path-independent hashing, compiler by content.
+          CCACHE_BASEDIR: ${{ github.workspace }}
+          CCACHE_COMPILERCHECK: content
         run: |
+          ccache -z
           status=clean
           [ -n "${{ needs.plan.outputs.merge_target }}" ] || status=''
           extra=()
@@ -201,7 +205,7 @@ jobs:
             "integration/* gate (task branches run the fast tier; add [full] to the commit message to run it here)")
           python tools/check_all.py --base "$CHECK_ALL_BASE_REF" --build-dir build/quality-gate \
             --artifacts-dir build/check-all/linux ${status:+--merge-status $status} "${extra[@]}" || true
-          ccache --show-stats | head -5 || true
+          ccache --show-stats -v | grep -E 'Hits|Misses|Cache size|Uncacheable' || true
       - name: Show failing logs
         if: always()
         run: python3 .github/scripts/show_failed_logs.py build/check-all || true
@@ -261,9 +265,13 @@ jobs:
         env:
           CMAKE_C_COMPILER_LAUNCHER: ccache
           CMAKE_CXX_COMPILER_LAUNCHER: ccache
+          # T-127 (from T-128 §2c): per-run hit rate (stats reset), path-independent hashing, compiler by content.
+          CCACHE_BASEDIR: ${{ github.workspace }}
+          CCACHE_COMPILERCHECK: content
         run: |
           logs=build/check-all/renderer/logs
           mkdir -p "$logs"
+          ccache -z
           build=fail
           tests=fail
           if { cmake -S . -B build/renderer -G Ninja -DCMAKE_BUILD_TYPE=Release -DPLUSH_BUILD_RENDERER=ON \
@@ -276,7 +284,7 @@ jobs:
           echo "build=$build" >> "$GITHUB_OUTPUT"
           echo "tests=$tests" >> "$GITHUB_OUTPUT"
           tail -n 15 "$logs/renderer-ctest.log" 2>/dev/null || tail -n 40 "$logs/renderer-build.log"
-          ccache --show-stats | head -5 || true
+          ccache --show-stats -v | grep -E 'Hits|Misses|Cache size|Uncacheable' || true
       - name: Write renderer report
         if: always()
         env:
@@ -418,13 +426,18 @@ jobs:
           CHECK_ALL_BASE_REF: ${{ needs.plan.outputs.base }}
           CMAKE_C_COMPILER_LAUNCHER: ccache
           CMAKE_CXX_COMPILER_LAUNCHER: ccache
+          # T-127 (from T-128 §2c): per-run hit rate (stats reset), path-independent hashing, compiler by content.
+          CCACHE_BASEDIR: ${{ github.workspace }}
+          CCACHE_COMPILERCHECK: content
         run: |
           # Same tier flags as the linux gate's full tier, so the regression unit reports the same way.
+          ccache -z 2>/dev/null || true
           python tools/check_all.py --base "$CHECK_ALL_BASE_REF" --build-dir build/quality-gate \
             --artifacts-dir "build/check-all/blender-${{ matrix.shard.shard }}" \
             --blender-shard "${{ matrix.shard.shard }}/${{ needs.plan.outputs.blender_shard_count }}" \
             --full --regression-external "linux regression jobs" || true
           cat "build/check-all/blender-${{ matrix.shard.shard }}/durations.txt" 2>/dev/null || true
+          if [ "${{ matrix.shard.engine }}" = true ]; then ccache --show-stats -v | grep -E 'Hits|Misses|Cache size|Uncacheable' || true; fi
       - name: Show failing logs
         if: always()
         run: python3 .github/scripts/show_failed_logs.py build/check-all || true
