@@ -17,6 +17,7 @@ means none. Branch is the task's branch; a task branch without a row falls back 
 | Task | Lane | Branch | Write-set | Depends on | Versions bumped |
 | --- | --- | --- | --- | --- | --- |
 | T-109 | D | t-109-claude-face-r4 | `pipeline/charsys/face_generic_v3.py`, `pipeline/charsys/face_v3/**`, `pipeline/charsys/face_library/**` (mouth shapes, additive), `pipeline/charsys/tests/test_face_v4*.py`, `assets/characters/{boy_yellow_hoodie,girl_auburn_bun_glasses}/spec/candidates/T-109/**`, `docs/evaluation/characters/T-109/**` | materials (T-110), groom, garments (read-only) | — |
+| T-112c | C | t-112c-claude-verb-hands | `engine/scene/verbs.{h,cpp}`, `engine/scene/interaction.{h,cpp}` (hand-shape and graspFace keys only), `tests/test_verbs.cpp`, `episodes/e907_exchange/shots/s010_verbs/**`, `docs/ACTIONS_AND_DIRECTOR.md`, `docs/evaluation/animation/T-112c/**` | `engine/anim/**`, `content/hand_shapes/**` (read-only) | — |
 | T-107 | E | t-107-codex-bc-review | `docs/audit/round2_bc_review/**` | — | — |
 
 Supervisor-only files: docs/process/TASK_LOG.md, docs/ROADMAP.md, docs/process/OWNER_DECISIONS.md, docs/tasks/**.
