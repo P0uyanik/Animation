@@ -404,3 +404,8 @@ Owner: "We have to go forward. No stop." Start each next task as soon as its pre
 T-114; T-111 -> T-112a -> T-112b + T-051; T-102 at the end); do not idle for the owner or Codex. Hard limits unchanged:
 no version becomes current beyond the approved T-094 switch without the owner, no loosened tests or thresholds, frozen
 assets untouched.
+
+## 2026-11-19 (~09:20Z): new independent review of the current state (relayed by the previous Supervisor session)
+T-107 reviewed boy 2.0.0 / girl 0.11.0 (input 45679f3), now outdated. The owner wants a new independent Codex review of
+the current state covering every improvement since: **T-116** (`docs/tasks/T-116.md`), evaluation only, right after
+T-115 READY.
