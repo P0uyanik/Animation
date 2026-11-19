@@ -490,3 +490,10 @@ Codex does **T-129**, a fidelity score calibration analysis (option C): where th
 with the owner's visual verdicts and why, with ranked metric-change proposals (analysis only, existing data only). The
 independent character review (T-123 part 2) stays at the end of round 4. Reason: Codex tokens are limited, so
 prioritise work that stays useful across future versions. (The workflow evaluation is renumbered **T-130**.)
+
+## 2026-11-19 (~15:05Z): boy 2.2.0 / girl 0.13.0 become current (relayed)
+Owner, verbatim: "approve 2.2.0 and 0.13.0 as current". **T-131** runs the T-088 version switch (as T-094 step 2):
+test_store first; approve; rebaseline fidelity_baseline.json (boy 67.72 -> 67.25, girl 65.01 -> 64.13, owner-accepted:
+the gains are lid colour, lens shelf and expressions, which the score does not measure, see T-129); golden baselines;
+full gate before promotion; stop and report on any failure, nothing loosened. Hair r5, garments r3 and fingers stay
+opt-in for 2.3.0 / 0.14.0.
