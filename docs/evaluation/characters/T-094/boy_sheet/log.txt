@@ -1,0 +1,4 @@
+2026-11-19T01:32:21Z preview start: recipe 4892e7380d0a {'engine': 'cycles', 'samples': 2, 'px': 120}
+2026-11-19T01:36:49Z preview pass: /tmp/claude-0/-home-user-Animation/14222c7e-a906-5c09-9dbf-a99dcfaf54aa/scratchpad/rv-boy/preview/preview.jpg
+2026-11-19T01:37:35Z sheet start: recipe 4892e7380d0a {'engine': 'cycles', 'samples': 16, 'px': 360}
+2026-11-19T01:51:22Z sheet written: /tmp/claude-0/-home-user-Animation/14222c7e-a906-5c09-9dbf-a99dcfaf54aa/scratchpad/rv-boy/sheet.jpg 1120x2048

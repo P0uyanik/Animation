@@ -16,6 +16,13 @@
    "status": "approved",
    "spec_sha256": "4966133aa0eb1e00c06b107082223b7184d561dbe6f08e7c8790abf7b238dcf6",
    "approval_notes": "owner approved as current 2026-11-18 after strict comparison (OWNER_DECISIONS)"
+  },
+  "0.12.0": {
+   "created": "2026-11-19T01:50:35+00:00",
+   "parent": "0.11.0",
+   "notes": "girl_auburn_bun_glasses 0.12.0 (T-094): spec assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.12.0.spec.json",
+   "status": "candidate",
+   "spec_sha256": "7977c73619ae5dac7fe019978adc89c003011cb689da427d234bcaf9b98887e6"
   }
  },
  "pointers": {
@@ -50,6 +57,12 @@
    "previous": "0.10.0",
    "by": "owner (docs/process/OWNER_DECISIONS.md 2026-11-18)",
    "notes": "owner approved as current 2026-11-18 after strict comparison (OWNER_DECISIONS)"
+  },
+  {
+   "at": "2026-11-19T01:50:35+00:00",
+   "action": "publish",
+   "version": "0.12.0",
+   "status": "candidate"
   }
  ]
 }
