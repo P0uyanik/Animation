@@ -18,7 +18,6 @@ means none. Branch is the task's branch; a task branch without a row falls back 
 | --- | --- | --- | --- | --- | --- |
 | T-127 | E | t-127-claude-ci-speed | `.github/workflows/**`, `.github/scripts/**`, `tools/check_all.py`, `tools/ci/**`, `docs/process/GATE.md`, `docs/evaluation/ci/T-127/**` | — | — |
 | T-125 | E | t-125-claude-motion-checks | `tools/motion_checks/**`, `docs/evaluation/animation/T-125/**` | — | — |
-| T-129 | E | t-129-codex-score-calibration | `docs/evaluation/process/T-129/**` | — | — |
 | T-131 | D | t-131-claude-version-switch | `assets/characters/{boy_yellow_hoodie,girl_auburn_bun_glasses}/versions/index.json`, `docs/evaluation/characters/fidelity_baseline.json`, `docs/evaluation/regression/baselines/{boy_yellow_hoodie/2.2.0,girl_auburn_bun_glasses/0.13.0}/**`, `docs/evaluation/characters/T-131/**` | `assets/characters/*/versions/{2.2.0,0.13.0}/**` (stable) | `boy_yellow_hoodie`, `girl_auburn_bun_glasses` |
 | T-126a | B | t-126a-claude-body-face | `assets/characters/girl_white_hair_blue_dress/spec/**`, `docs/evaluation/characters/T-126/body_face/**` | — | `girl_white_hair_blue_dress` |
 | T-126b | B | t-126b-claude-hair | `pipeline/charsys/groom_r5.py`, `pipeline/charsys/tests/test_hair_r5.py`, `docs/evaluation/characters/T-126/hair/**` | — | `groom` |
