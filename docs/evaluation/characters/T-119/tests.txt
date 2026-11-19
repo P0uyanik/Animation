@@ -14,7 +14,7 @@
 [test_garments_r3] PASS its ids resolve as presets/3 from their own file
 [test_garments_r3] PASS older ids are not ids of the new file and still resolve from their own files
 [test_garments_r3] PASS skin-felt-limbs/3 is skin-felt/3 with a shorter subsurface scale and a lower rim weight only ['silhouette.weight', 'surface.subsurface_scale_fraction']
-[test_garments_r3] PASS garments/, garments_v2/, their tests and the older preset files are unchanged against origin/integration/r4-start []
+[test_garments_r3] PASS garments/, garments_v2/, their tests and the older preset files are unchanged against origin/main []
 [test_garments_r3] PASS girl: the candidate clothing block validates
 [test_garments_r3] PASS girl: garment/3 without a new field has the published block as its garment/2 view
 [test_garments_r3] PASS girl: the garment/2 view of the candidate carries no garment/3 field
@@ -32,6 +32,14 @@
 [test_garments_r3] PASS ankle_close.ease_m 0.5 rejected
 [test_garments_r3] PASS ankle_close unknown key rejected
 [test_garments_r3] PASS ankle_close on a hoodie rejected
+[test_garments_r3] PASS collar_seat.thickness_m 0.5 rejected
+[test_garments_r3] PASS rib_cuff.ribs 200 rejected
+[test_garments_r3] PASS rib_cuff.height_m 0 rejected
+[test_garments_r3] PASS rib_cuff unknown key rejected
+[test_garments_r3] PASS rib_cuff on shorts rejected
+[test_garments_r3] PASS rib_cuff without sleeve cuff bands rejected
+[test_garments_r3] PASS rib_cuff validates on a hoodie (plain band, ribs 0)
+[test_garments_r3] PASS the component fixture block validates, has no vest and no collar 'over'
 [test_garments_r3] PASS collar_seat without a round collar rejected
 [test_garments_r3] PASS cuff_gather without cuff bands rejected
 [test_garments_r3] PASS a garment/2 block is not a garment/3 block
@@ -54,4 +62,13 @@
 [test_garments_r3] PASS girl: a default build has the published material names (no limb material)
 [test_garments_r3] PASS boy: a default build has every garment piece and hand identical to the published 2.1.0 master (64, [])
 [test_garments_r3] PASS boy: a default build has the published material names (no limb material)
-[test_garments_r3] 54/54 passed
+[test_garments_r3] parts {"vest": [], "cuffs": {"L": {"vertices": 1008, "part": "rib_cuff", "wales": 14, "bones": ["DEF-forearm.L.001", "DEF-hand.L"], "generator": "garment/3", "armature": true, "beyond_ring_m": 0.009351091639152043, "mean_radius_m": 0.03438575561743895}, "R": {"vertices": 1008, "part": "rib_cuff", "wales": 14, "bones": ["DEF-forearm.R.001", "DEF-hand.R"], "generator": "garment/3", "armature": true, "beyond_ring_m": 0.009350755364728153, "mean_radius_m": 0.034371428780721754}}, "collar_thickness_m": 0.004000000165421548}
+[test_garments_r3] PASS fixture: no vest; the collar has the configured thickness 0.004
+[test_garments_r3] PASS rib cuff L: a garment/3 piece of part rib_cuff, skinned, beyond the sleeve's seam ring 0.0094
+[test_garments_r3] PASS rib cuff L: 14 wales round the band 14
+[test_garments_r3] PASS rib cuff L: carried by arm bones only ['DEF-forearm.L.001', 'DEF-hand.L']
+[test_garments_r3] PASS rib cuff R: a garment/3 piece of part rib_cuff, skinned, beyond the sleeve's seam ring 0.0094
+[test_garments_r3] PASS rib cuff R: 14 wales round the band 14
+[test_garments_r3] PASS rib cuff R: carried by arm bones only ['DEF-forearm.R.001', 'DEF-hand.R']
+[test_garments_r3] PASS fixture: the collar on its own bodice is chest-carried and lies closer than the current one (p95 < 1.6 cm) (0.0243, 0.01405)
+[test_garments_r3] 70/70 passed

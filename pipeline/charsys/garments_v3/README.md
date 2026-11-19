@@ -11,7 +11,8 @@ Pin it with `"generators": {"garment": "garment/3"}` **and** `"clothing": {"gene
 
 | item type | field | what it does | module |
 |---|---|---|---|
-| `top`, `shirt`, `dress` (round collar) | `collar_seat` | the collar is set on the neckline and laid over the layers under it (body, the item's own main piece, the `over` items); it is carried by the chest and the shoulders, not by the head or the arm, and a reach key keeps it over the posed layers. Replaces `collar_clear` on that item | `collar.py` |
+| `top`, `shirt`, `dress` (round collar) | `collar_seat` | the rounded (Peter Pan) collar: set on the neckline and laid over the layers under it (body, the item's own main piece, the `over` items; `over` may be empty); carried by the chest and the shoulders, not by the head or the arm; a reach key keeps it over the posed layers; `thickness_m` for a knitted collar. Replaces `collar_clear` on that item | `collar.py` |
+| `top`, `shirt`, `dress`, `hoodie` (sleeve cuff bands) | `rib_cuff` | a close cuff band from each sleeve's seam ring towards the hand (pieces `garment.<item>.ribcuff.L/R`, part `rib_cuff`), with `ribs` wales along the arm (`ribs: 0` = a plain cuff) | `ribs.py` |
 | `shorts` | `cuff_gather` | each cuff band is resized to its thigh (measured on the body) and the shell is gathered into the two bands, with a recessed cleft between the lobes; the bands never overlap | `cuffs.py` |
 | `trousers` | `ankle_close` | a close inner cuff in the trouser fabric on the leg skin from above the hem into the shoe (pieces `garment.<item>.ankle.L/R`, part `ankle`), skinned like the skin under it, so no skin shows between hem and shoe in any ankle pose | `ankle.py` |
 
@@ -24,6 +25,8 @@ Notes
   with a large ease), the collar rides on that neckline and its outer edge stands off the shoulder behind it.
 - The reach key of the collar is driven like the `garment/2` reach correctives (arm forward swing, Blender driver);
   the engine export carries it as a morph target but nothing drives it in the engine yet.
-- `ankle_close` pieces get the shared surface fibres of their fabric, like any `garment/1` piece.
+- `ankle_close` and `rib_cuff` pieces get the shared surface fibres of their fabric, like any `garment/1` piece.
+- `rib_cuff` adds a band; it does not gather the sleeve (use `sleeve_puff_m` for a fuller sleeve end) and it keeps the
+  `garment/1` seam ring.
 - The opt-in limb skin of T-119 is not part of this package: `materials.assignments.skin_limbs` (hands) is read by
   `build_character.py`, its preset comes from `pipeline/charsys/materials/skin_presets_r3.json`.

@@ -1,0 +1,251 @@
+{
+ "override": {
+  "generators": {
+   "garment": "garment/3"
+  },
+  "clothing": {
+   "generator": "garment/3",
+   "provenance": "T-024: outfit from references #41 (garment construction sheet, exploded view) and the sheet30 views; heights read on sheet30_front at 2.35 mm/px (sole to bun top 1.10 m). Colours: #41 flat-garment medians (references/color_targets.json *_garment) checked against sheet30 medians. Values are my estimates where not measured. 0.7.1 (T-025): gusset, edge/waistband buttons, shoulder_width, rolled edge, pocket bouquets and boot shaft/toe volume read from #41 (front and exploded views); values are my estimates. T-034: build-time cloth rest shape (drape) for the blouse, vest and bloomers, rounded solidified edges on every item and a slimmer boot cuff, tuned by eye against sheet30 front/left; values are my estimates. T-068 candidate: vest details from #41 (exploded view, seams & details tiles): flat patch pockets with rounded bottoms and a dark rolled top edge; counted cross-stitch decals (dark bow motifs on the upper fronts, pale zig-zag 'mountains' over the hem and on the pockets) instead of raised flowers. Pattern grids and sizes are my estimates.",
+   "description": [
+    "cream collared blouse, puffy long sleeves, cuffs, 4-5 buttons",
+    "open dusty-rose boucle vest, dark embroidered motifs, patch pockets, wooden buttons",
+    "sage felted bloomer shorts, gathered cuffs, 3 waist buttons",
+    "brown fleece boots, darker soles"
+   ],
+   "hide_body_faces": true,
+   "mask_margin_m": 0.015,
+   "collision": {
+    "enabled": true,
+    "offset_m": 0.002,
+    "radius_m": 0.08,
+    "falloff_m": 0.02,
+    "passes": 3
+   },
+   "max_influences": 4,
+   "defaults": {
+    "thickness_m": 0.002,
+    "ease_m": 0.008,
+    "seam_radius_m": 0.0012
+   },
+   "garments": [
+    {
+     "type": "top",
+     "name": "blouse",
+     "sleeve_length": 1.0,
+     "sleeve_puff_m": 0.0321,
+     "sleeve_puff_peak": 0.58,
+     "hem_z_m": 0.34,
+     "collar": {
+      "type": "round",
+      "width_m": 0.036,
+      "gap_m": 0.004,
+      "slope": 0.5,
+      "tip_round": 0.7,
+      "lift_m": 0.0
+     },
+     "buttons": {
+      "count": 4,
+      "radius_m": 0.0042
+     },
+     "bands": {
+      "cuff": true,
+      "cuff_radius_m": 0.0042
+     },
+     "material": {
+      "preset": "brushed cotton/3",
+      "base_color_srgb": [
+       214,
+       210,
+       210
+      ],
+      "reference_size_m": 0.3
+     },
+     "materials": {
+      "buttons": {
+       "preset": "buttons/plastic",
+       "base_color_srgb": [
+        226,
+        220,
+        210
+       ],
+       "reference_size_m": 0.02
+      }
+     },
+     "edge_finish": "rounded",
+     "drape": {
+      "enabled": true,
+      "fabric": "cotton",
+      "gather": 0.3,
+      "gravity": 0.4,
+      "overrides": {
+       "bending": 4.0
+      },
+      "pin": [
+       "edges",
+       "volume"
+      ],
+      "edge_band_m": 0.004,
+      "volume_band_m": 0.003,
+      "smooth": 3,
+      "seed": 34
+     },
+     "clean_fibres": [
+      "collar"
+     ],
+     "armhole": "closed",
+     "sleeve_start": 0.0,
+     "collar_seat": {
+      "over": [],
+      "thickness_m": 0.004
+     },
+     "rib_cuff": {
+      "height_m": 0.022,
+      "ribs": 14,
+      "depth_m": 0.0015,
+      "thickness_m": 0.003
+     }
+    },
+    {
+     "type": "shorts",
+     "name": "shorts",
+     "length": 0.24,
+     "ease_m": 0.013,
+     "puff_m": 0.038,
+     "puff_inner": 0.35,
+     "cuff": true,
+     "bands": {
+      "waist": true,
+      "cuff": true,
+      "cuff_radius_m": 0.0045
+     },
+     "material": {
+      "preset": "brushed cotton/3",
+      "base_color_srgb": [
+       110,
+       114,
+       103
+      ],
+      "reference_size_m": 0.3
+     },
+     "waist_z_m": 0.41,
+     "crotch": {
+      "type": "gusset",
+      "depth": 0.25
+     },
+     "buttons": {
+      "count": 3,
+      "placement": "waistband",
+      "radius_m": 0.0045,
+      "spread": 0.35
+     },
+     "materials": {
+      "buttons": {
+       "preset": "buttons/plastic",
+       "base_color_srgb": [
+        150,
+        92,
+        62
+       ],
+       "reference_size_m": 0.02
+      }
+     },
+     "edge_finish": "rounded",
+     "drape": {
+      "enabled": true,
+      "fabric": "felt",
+      "gather": 0.35,
+      "gravity": 0.5,
+      "overrides": {
+       "bending": 2.0
+      },
+      "pin": [
+       "edges",
+       "volume"
+      ],
+      "edge_band_m": 0.004,
+      "volume_band_m": 0.003,
+      "smooth": 2,
+      "seed": 34
+     },
+     "leg_split": {
+      "amount": 0.8,
+      "start": 0.12,
+      "crotch_lift": 0.3,
+      "arch_width": 0.7,
+      "arch_power": 1.0
+     },
+     "hem_break": {
+      "height_m": 0.045,
+      "flare_m": 0.0,
+      "folds": 0,
+      "fold_depth_m": 0.0,
+      "front_drop_m": 0.0,
+      "pleats": 18,
+      "pleat_depth_m": 0.0035
+     }
+    },
+    {
+     "type": "boots",
+     "name": "boots",
+     "height": 0.45,
+     "ease_m": 0.022,
+     "cuff": true,
+     "bands": {
+      "cuff": true,
+      "cuff_radius_m": 0.009
+     },
+     "sole": {
+      "thickness_m": 0.008,
+      "width_m": 0.004
+     },
+     "material": {
+      "preset": "boot fleece",
+      "base_color_srgb": [
+       132,
+       88,
+       68
+      ],
+      "reference_size_m": 0.15,
+      "overrides": {
+       "surface": {
+        "sheen_weight": 0.25
+       }
+      }
+     },
+     "materials": {
+      "band": {
+       "preset": "cuff fleece/3",
+       "base_color_srgb": [
+        240,
+        222,
+        196
+       ],
+       "reference_size_m": 0.15
+      },
+      "sole": {
+       "preset": "felt",
+       "base_color_srgb": [
+        78,
+        52,
+        42
+       ],
+       "reference_size_m": 0.15
+      }
+     },
+     "shaft_width_m": 0.012,
+     "toe_volume_m": 0.014,
+     "edge_finish": "rounded",
+     "cuff_roll": {
+      "height_m": 0.032,
+      "thickness_m": 0.009,
+      "inner_m": 0.014,
+      "lumps": 0.2
+     }
+    }
+   ]
+  },
+  "metadata": {
+   "notes": "T-119 component fixture on 0.12.0 (not a candidate): Peter Pan collar on its own bodice and rib cuffs."
+  }
+ }
+}

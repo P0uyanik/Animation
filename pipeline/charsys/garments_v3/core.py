@@ -4,8 +4,8 @@ Order per call of ``build``:
   1. ``validate``: the new fields are checked here; the rest of the block is checked by ``garment/2``'s validator on
      the "garment/2 view" of the block (the same block with the new fields removed and the generator renamed).
   2. ``garment/2`` builds every item from that view.
-  3. Per item, the new fields: ``cuff_gather`` (shorts), ``ankle_close`` (trousers), then ``collar_seat`` (needs
-     every item built: the collar is laid on the layers under it).
+  3. Per item, the new fields: ``cuff_gather`` (shorts), ``ankle_close`` (trousers), ``rib_cuff`` (sleeves), then
+     ``collar_seat`` (needs every item built: the collar is laid on the layers under it).
 ``bind_to_body`` binds with ``garment/2`` (weights, collision, its correctives), then carries each seated collar by
 the chest and adds its reach keys. Character-agnostic: every size comes from the spec, the rig or the body."""
 import copy
@@ -14,13 +14,13 @@ import json
 from garments import generator as GEN
 from garments_v2 import core as V2
 
-from . import ankle, collar, cuffs
+from . import ankle, collar, cuffs, ribs
 
 GENERATOR = "garment/3"
 PREVIOUS = V2.GENERATOR
 # item type -> the garment/3 fields it accepts
-ITEM_FIELDS = {"shorts": ("cuff_gather",), "trousers": ("ankle_close",), "top": ("collar_seat",),
-               "shirt": ("collar_seat",), "dress": ("collar_seat",)}
+ITEM_FIELDS = {"shorts": ("cuff_gather",), "trousers": ("ankle_close",), "top": ("collar_seat", "rib_cuff"),
+               "shirt": ("collar_seat", "rib_cuff"), "dress": ("collar_seat", "rib_cuff"), "hoodie": ("rib_cuff",)}
 V3_FIELDS = sorted({f for fs in ITEM_FIELDS.values() for f in fs})
 SEAT_PROP = "ps_garment3_collar_seat"
 
@@ -46,6 +46,11 @@ def validate(clothing):
                 raise ValueError(f"garment {name}.cuff_gather needs the cuff bands (cuff / bands.cuff)")
         if "ankle_close" in raw:
             ankle.validate(raw["ankle_close"], name)
+        if "rib_cuff" in raw:
+            ribs.validate(raw["rib_cuff"], name)
+            bands = raw.get("bands")
+            if not (bands is True or (isinstance(bands, dict) and bands.get("cuff"))):
+                raise ValueError(f"garment {name}.rib_cuff needs the sleeve cuff bands (bands.cuff)")
         if "collar_seat" in raw:
             collar.validate(raw["collar_seat"], name, names)
             c = raw.get("collar")
@@ -88,6 +93,9 @@ def build(C, body, clothing, P, H, J, G):
             info["cuff_gather"] = cuffs.gather(cfg, mine, body, fit)
         if cfg.get("ankle_close") not in (None, False):
             made, info["ankle_close"] = ankle.close(C, body, cfg, mine, H, G, fit)
+            new += made
+        if cfg.get("rib_cuff") not in (None, False):
+            made, info["rib_cuff"] = ribs.add(C, body, cfg, mine, J, H, G, fit)
             new += made
         if cfg.get("collar_seat") not in (None, False):
             seats[cfg["name"]] = cfg["collar_seat"]

@@ -1,0 +1,128 @@
+{
+ "set": "girl_components",
+ "engine": "cycles",
+ "samples": 4,
+ "px": 300,
+ "light": "character_neutral/1 (render_calibration)",
+ "lens_mm": 70.0,
+ "blender": "5.3.0",
+ "columns": [
+  {
+   "label": "current",
+   "blend": "girl_auburn_bun_glasses_master.blend"
+  },
+  {
+   "label": "fixture",
+   "blend": "girl_auburn_bun_glasses_master.blend"
+  }
+ ],
+ "shots": [
+  {
+   "name": "collar_front",
+   "label": "rest | Peter Pan collar, front",
+   "pose": [
+    [
+     "upper_arm_fk.{s}",
+     "Y",
+     35.0,
+     "LR",
+     true
+    ]
+   ],
+   "camera": {
+    "target": [
+     0.0,
+     -0.02,
+     0.6
+    ],
+    "frame_height_m": 0.26,
+    "yaw_deg": 0.0,
+    "elevation_deg": 8.0
+   },
+   "hidden_prefixes": [
+    "hair"
+   ]
+  },
+  {
+   "name": "collar_side",
+   "label": "rest | Peter Pan collar, 3/4",
+   "pose": [
+    [
+     "upper_arm_fk.{s}",
+     "Y",
+     35.0,
+     "LR",
+     true
+    ]
+   ],
+   "camera": {
+    "target": [
+     0.0,
+     -0.01,
+     0.6
+    ],
+    "frame_height_m": 0.26,
+    "yaw_deg": 50.0,
+    "elevation_deg": 10.0
+   },
+   "hidden_prefixes": [
+    "hair"
+   ]
+  },
+  {
+   "name": "cuff",
+   "label": "rest | sleeve cuff",
+   "pose": [
+    [
+     "upper_arm_fk.{s}",
+     "Y",
+     35.0,
+     "LR",
+     true
+    ]
+   ],
+   "camera": {
+    "target": [
+     0.09,
+     0.0,
+     0.44
+    ],
+    "frame_height_m": 0.16,
+    "yaw_deg": 55.0,
+    "elevation_deg": 4.0
+   },
+   "hidden_prefixes": []
+  },
+  {
+   "name": "cuff_reach",
+   "label": "full reach (one arm, 75 deg) | sleeve cuff",
+   "pose": [
+    [
+     "upper_arm_fk.{s}",
+     "Y",
+     35.0,
+     "LR",
+     true
+    ],
+    [
+     "upper_arm_fk.{s}",
+     "X",
+     -75.0,
+     "L",
+     false
+    ]
+   ],
+   "camera": {
+    "target": [
+     0.1,
+     -0.19,
+     0.6
+    ],
+    "frame_height_m": 0.2,
+    "yaw_deg": 60.0,
+    "elevation_deg": 8.0
+   },
+   "hidden_prefixes": []
+  }
+ ]
+}

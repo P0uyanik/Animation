@@ -1,6 +1,6 @@
 """T-119 evidence renders: current against candidate in the poses of the task (same cameras and lights per row).
 
-    blender -b --factory-startup -P docs/evaluation/characters/T-119/pose_shots.py -- <out dir> <girl|boy>
+    blender -b --factory-startup -P docs/evaluation/characters/T-119/pose_shots.py -- <out dir> <girl|boy|girl_components>
         <label>=<master.blend> ... [--samples 16] [--px 360] [--engine cycles|workbench] [--only shot,shot]
 
 Each column opens one A-pose master and renders every shot of the set. A shot is a pose (FK bones rotated about a
@@ -37,6 +37,16 @@ SHOTS = {
          "cam": ((0.0, 0.0, 0.33), 0.34, 0.0, 3.0)},
         {"name": "bloomers_back", "label": "rest | bloomer cuffs, 3/4 back", "pose": ARMS_DOWN,
          "cam": ((0.0, 0.0, 0.33), 0.34, 150.0, 3.0)},
+    ],
+    # the two reusable components of the scope addition, on the fixture build (components/, not a candidate)
+    "girl_components": [
+        {"name": "collar_front", "label": "rest | Peter Pan collar, front", "pose": ARMS_DOWN, "hide": ("hair",),
+         "cam": ((0.0, -0.02, 0.60), 0.26, 0.0, 8.0)},
+        {"name": "collar_side", "label": "rest | Peter Pan collar, 3/4", "pose": ARMS_DOWN, "hide": ("hair",),
+         "cam": ((0.0, -0.01, 0.60), 0.26, 50.0, 10.0)},
+        {"name": "cuff", "label": "rest | sleeve cuff", "pose": ARMS_DOWN, "cam": ((0.09, 0.0, 0.44), 0.16, 55.0, 4.0)},
+        {"name": "cuff_reach", "label": "full reach (one arm, 75 deg) | sleeve cuff",
+         "pose": ARMS_DOWN + [("upper_arm_fk.{s}", "X", -75.0, "L", False)], "cam": ((0.1, -0.19, 0.6), 0.2, 60.0, 8.0)},
     ],
     "boy": [
         {"name": "ankle_rest", "label": "rest | ankle, side", "pose": ARMS_DOWN,

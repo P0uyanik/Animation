@@ -24,7 +24,9 @@ and driven by the arm's forward swing from 0 (``gate`` 0), so a half reach gets 
 
   {"over": ["vest"], "gap_m": 0.0015, "over_gap_m": 0.004, "max_droop_deg": 80, "bend_deg": 30, "smooth": 4,
    "step_deg": 6, "reach_smooth": 8, "chest_bone": "DEF-spine.003", "shoulder_bone": "DEF-shoulder.{side}",
-   "shoulder_share": 0.35, "reach": {"deg": -75.0}}
+   "shoulder_share": 0.35, "reach": {"deg": -75.0}, "thickness_m": 0.0}
+``over`` may be empty: the collar then lies on its own garment (a Peter Pan collar on a dress or blouse bodice).
+``thickness_m`` > 0 sets the collar's own thickness (a knitted collar is thicker than its fabric shell); 0 keeps it.
 Character-agnostic: sizes from the spec's collar block and the body measures, bones by configured name."""
 import math
 
@@ -36,9 +38,9 @@ from garments_v2 import correctives as CORR
 
 SEAT = {"over": [], "gap_m": 0.0015, "over_gap_m": 0.004, "max_droop_deg": 80.0, "bend_deg": 30.0, "smooth": 4,
         "step_deg": 6.0, "reach_smooth": 8, "chest_bone": "DEF-spine.003", "shoulder_bone": "DEF-shoulder.{side}",
-        "shoulder_share": 0.35, "reach": {"deg": -75.0}}
+        "shoulder_share": 0.35, "reach": {"deg": -75.0}, "thickness_m": 0.0}
 RANGES = {"gap_m": (0.0, 0.02), "over_gap_m": (0.0, 0.03), "max_droop_deg": (0.0, 89.0), "step_deg": (0.5, 45.0),
-          "bend_deg": (0.0, 90.0), "shoulder_share": (0.0, 0.8)}
+          "bend_deg": (0.0, 90.0), "shoulder_share": (0.0, 0.8), "thickness_m": (0.0, 0.02)}
 MIN_DROOP_DEG = -45.0  # a strip may rise this far above the horizontal to clear what is under it
 HEAD_GAP = 0.001  # clearance kept from skin that faces down on the collar (jaw, back of the head)
 OWN_REACH, OVER_REACH = 0.006, 0.04  # how far above a collar point a piece of the item / an over item is looked for
@@ -200,6 +202,8 @@ def seat(cfg, objects, body, P, H, fit):
     inv = mw.inverted()
     pts = [mw @ v.co for v in me.vertices]
     thick = sum((pts[i + h] - pts[i]).length for i in range(h)) / h
+    if float(st["thickness_m"]) > 0.0:
+        thick = float(st["thickness_m"])
     own = [o for o in objects if o.get("ps_garment_item") == name and o.get("ps_garment_part") == "main"
            and o.type == "MESH"]
     over = [o for o in objects if o.get("ps_garment_item") in set(st["over"]) and o.type == "MESH"]

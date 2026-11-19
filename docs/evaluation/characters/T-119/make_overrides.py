@@ -8,7 +8,11 @@ girl  girl_auburn_bun_glasses.T-119.override.json  0.12.0 + garment/3: blouse ``
       lift and ``collar_clear``), shorts ``cuff_gather`` (the T-093b crotch arch is switched off: the gather
       separates the legs).
 boy   boy_yellow_hoodie.T-119.override.json        2.1.0 + garment/3: trousers ``ankle_close``; skin preset
-      ``skin-felt-limbs/3`` (skin_presets_r3.json)."""
+      ``skin-felt-limbs/3`` (skin_presets_r3.json).
+demo  components/girl_auburn_bun_glasses.components-demo.override.json  NOT a candidate: a fixture for the two
+      reusable components of the scope addition (third-character readiness). 0.12.0 without the vest, so the
+      Peter Pan collar lies on its own bodice (``collar_seat`` with no ``over``, a thicker knitted collar), and
+      ``rib_cuff`` on the blouse sleeves."""
 import copy
 import json
 import os
@@ -34,9 +38,10 @@ def item(clothing, name):
     return next(g for g in clothing["garments"] if g["name"] == name)
 
 
-def write(cid, override, note):
+def write(cid, override, note, name=None):
     override.setdefault("metadata", {})["notes"] = note
-    path = os.path.join(HERE, f"{cid}.T-119.override.json")
+    path = os.path.join(HERE, name or f"{cid}.T-119.override.json")
+    os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "w") as f:
         json.dump({"override": override}, f, indent=1)
         f.write("\n")
@@ -70,6 +75,22 @@ def boy():
           f"T-119 candidate on {version}: garment/3 ankle_close (trousers) and skin preset {BOY_SKIN}.")
 
 
+def components_demo():
+    cid, version = GIRL
+    clothing = copy.deepcopy(spec(cid, version)["clothing"])
+    clothing["generator"] = "garment/3"
+    clothing["garments"] = [g for g in clothing["garments"] if g["name"] != "vest"]
+    blouse = item(clothing, "blouse")
+    blouse.pop("collar_clear", None)
+    blouse["collar"] = dict(blouse["collar"], lift_m=0.0, width_m=0.036, gap_m=0.004, tip_round=0.7)
+    blouse["collar_seat"] = {"over": [], "thickness_m": 0.004}
+    blouse["rib_cuff"] = {"height_m": 0.022, "ribs": 14, "depth_m": 0.0015, "thickness_m": 0.003}
+    write(cid, {"generators": {"garment": "garment/3"}, "clothing": clothing},
+          f"T-119 component fixture on {version} (not a candidate): Peter Pan collar on its own bodice and rib cuffs.",
+          os.path.join("components", f"{cid}.components-demo.override.json"))
+
+
 if __name__ == "__main__":
     girl()
     boy()
+    components_demo()

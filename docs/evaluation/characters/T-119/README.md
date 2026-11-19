@@ -2,7 +2,8 @@
 
 Candidates on the current cast (girl 0.12.0, boy 2.1.0). Nothing is published or made current; published versions,
 `*.spec.json`, `fidelity_baseline.json`, `garments/`, `garments_v2/` and the three older preset files are untouched.
-Input `integration/r4-start@5a90975` (the task prompt's input; the task file names `origin/main`).
+Input `integration/r4-start@5a90975` (the task prompt's input; the task file names `origin/main`), later merged with
+`origin/main@de4c81e` at the Supervisor's request (see "Merge with main").
 
 ## Result per criterion
 
@@ -13,12 +14,13 @@ Input `integration/r4-start@5a90975` (the task prompt's input; the task file nam
 | 1 | boy: ankle notch closed through ankle flexion | **met**: no skin between hem and shoe at rest, toes up 25 deg, toes down 30 deg; the hem's ragged outline is unchanged and now shows trouser fabric | [boy sheet](boy/boy_2.1.0_vs_T-119_strict.jpg) rows 1-4, [measures](measures_boy.json) |
 | 2 | boy limb skin within 5 L* of the reference (T-116 method) | **not met: 18.5 -> 14.9 L\***. Deliberate, see "Limb skin" below: the number is set by the reference's shadowed neck, and closing it with hand tone turns the hand brown next to the cheek | [fidelity](fidelity/), [hand tone](evidence/hand_tone_val27_front.json), [pickup](evidence/pickup_hand_tone.jpg) |
 | 3 | candidate overrides here; one cheap preview each, then one strict sheet each | done | `*.T-119.override.json`, `girl/`, `boy/` |
-| 4 | plain tests; default builds identical | 54/54; default builds identical in every garment piece, hand and material name | [tests.txt](tests.txt) |
+| 4 | plain tests; default builds identical | 70/70; default builds identical in every garment piece, hand and material name (re-checked after the merge) | [tests.txt](tests.txt) |
+| + | scope addition (owner ~11:55Z): Peter Pan collar and rib cuffs as reusable components, readiness note | done; her dress, skirt, model, spec and renders were not made | [note](third_character_readiness.md), [components preview](components/components_preview.jpg) |
 
 ## What was built
 - **`garment/3`** (`pipeline/charsys/garments_v3/`, opt-in, registered in `versions.py`): extends `garment/2` by import.
-  New item fields `collar_seat` (round collars), `cuff_gather` (shorts), `ankle_close` (trousers); see the package
-  README. A `garment/3` block without a new field builds the `garment/2` geometry.
+  New item fields `collar_seat` (round collars), `cuff_gather` (shorts), `ankle_close` (trousers) and, from the scope
+  addition, `rib_cuff` (sleeves); see the package README. A `garment/3` block without a new field builds the `garment/2` geometry.
 - **`skin_presets_r3.json`** (new file of the presets/3 family, id `skin-felt-limbs/3`) and its lookup in
   `materials/builder.py` (lookup only: no shader code changed).
 - **Opt-in hook in `build_character.py`** (6 lines): `materials.assignments.skin_limbs`, when present, gives the hands
@@ -26,6 +28,31 @@ Input `integration/r4-start@5a90975` (the task prompt's input; the task file nam
   `M_skin_face`), both built from the one `skin` slot. Without the slot the build is exactly as before.
 - Overrides: `make_overrides.py` writes both from the published specs. The girl's override also sets the collar's
   fixed lift to 0 and the T-093b crotch arch off (the seat and the gather replace them).
+
+## Scope addition: components for both girls
+The task file gained a bounded addition while this work ran (third-character readiness, design input only). Two
+reusable, parameterised components came out of it, both in `garment/3`:
+- **Peter Pan collar** = the `garment/1` round collar + `collar_seat`. `over` may be empty (the collar then lies on its
+  own bodice, as on the third character's dress) and `thickness_m` sets a knitted collar's thickness.
+- **Rib cuff** = new field `rib_cuff` on sleeved items: a close band beyond the sleeve's seam ring with `ribs` wales
+  (`ribs: 0` = a plain cuff).
+
+Fixture (the auburn girl without her vest; **not a candidate**): [override](components/girl_auburn_bun_glasses.components-demo.override.json),
+[4 spp preview](components/components_preview.jpg). On it the collar lies on the bodice with a median 1.8 mm over its
+gap (p95 10 mm) and reads as two rounded lobes meeting at the front. That is also the clearest evidence for the collar
+limit below: without the vest's raised neckline the same collar code sits flat. The rib wales are shallow at the
+default depth and show mainly in the reach tile. What the third character's dress still needs is in
+[third_character_readiness.md](third_character_readiness.md). The T-119 candidates and their sheets are unchanged by
+the addition (same vertex hashes as the sheeted builds).
+
+## Merge with main
+`origin/main@de4c81e` is merged into the branch (normal merge). The one conflict, `build_character.py`, keeps both
+opt-in hooks: T-121's hand mesh (`body.hands`) first, then the limb skin slot, so the limb material lands on whichever
+hands were built. After the merge:
+- default builds of 2.1.0 and 0.12.0 still match the published masters in every garment piece, hand and material name;
+- the T-119 overrides also build on main's new candidate versions (boy 2.2.0, girl 0.13.0);
+- T-118 `hair_r5` + T-121 `hands_r2` + T-119 overrides build together on both characters, and the boy's `hands_r2`
+  hands carry `M_skin_limbs` / `skin-felt-limbs/3`. These combinations were built and inspected, not rendered.
 
 ## Garments: numbers (measure.py on the built masters, current against candidate)
 
@@ -105,13 +132,15 @@ hands. That is outside this task's write-set and I did not attempt it.
   before any change here against the published master; that noise is not from this task.
 
 ## Tests
-`python3 pipeline/charsys/tests/test_garments_r3.py --blender <b> [masters...]` -> 54/54 ([tests.txt](tests.txt)).
-Also run, unchanged and passing: `test_garments_v2.py --quick` 45/45 and `test_garments_v2_t093b.py --quick` 9/9 (their
-git check skips: no `origin/main` in this clone), the `garment/1` guard `tests/garment_generic_test.py` (exit 0, 12 min),
-`test_versions.py` 107/107,
+`python3 pipeline/charsys/tests/test_garments_r3.py --blender <b> [masters...]` -> 70/70 on the merged branch
+([tests.txt](tests.txt)). Also run on the merged branch, unchanged and passing: `test_garments_v2.py --quick` 46/46
+(with its git check against `origin/main`) and `test_garments_v2_t093b.py --quick` 9/9, `test_hands_r2.py` 49/49,
+`test_versions.py` 119/119,
 `test_materials_r2.py` 104/104, `test_materials_r2_graphs.py` 52/52, `test_skin_presets.py` 24/24,
 `test_material_presets.py` 54/54, `test_skin_material.py` 10/10, `tools/tests/test_version_switch.py` 96/96,
-`tools/check_doc_links.py`. Not run: the full (non-quick) `test_garments_v2.py`, `tools/check_all.py`, CI.
+`tools/check_doc_links.py`. The `garment/1` guard `tests/garment_generic_test.py` passed (exit 0, 12 min) before the
+merge and the scope addition; it was not repeated after them (neither touches `garments/`). Not run: the full
+(non-quick) `test_garments_v2.py`, `test_hair_r5.py`, `tools/check_all.py`, CI.
 Blender: bpy 5.3.0 module behind a `blender` wrapper (`tools/bpy_blender.py`).
 
 ## Reproduce
@@ -126,4 +155,4 @@ blender -b --factory-startup -P docs/evaluation/characters/T-119/measure.py -- <
 python3 tools/fidelity/run.py --character boy_yellow_hoodie --build <master> --blender <b> --out <dir>
 ```
 
-ledger: build 49 · render 53 · tests 21 · ci 0 · wait 0 (min)
+ledger: build 58 · render 55 · tests 27 · ci 0 · wait 0 (min)

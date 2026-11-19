@@ -4,6 +4,7 @@
         [--girl-current <0.12.0 master.blend>] [--girl-master <0.12.0 + T-119 master.blend>]
         [--boy-current <2.1.0 master.blend>]   [--boy-master <2.1.0 + T-119 master.blend>]
         [--girl-default <master built from the published 0.12.0 spec with this code>] [--boy-default <same, 2.1.0>]
+        [--girl-components <0.12.0 + components-demo master.blend>]
 
 Checks (each line PASS/FAIL; exit code 1 on any FAIL):
   plain     (no Blender) garment/3 is registered to garments_v3 and garment/1 and garment/2 keep their lines; the
@@ -21,6 +22,9 @@ Checks (each line PASS/FAIL; exit code 1 on any FAIL):
             leaves some in every pose); the hands use the limb preset, the current hands do not.
   default   (build) a master built from each published spec with this code has every garment piece, hand and
             material name identical to the published master (vertex hash).
+  parts     (build, scope addition) the component fixture (the girl without her vest): the Peter Pan collar lies on
+            its own bodice at the configured thickness, chest-carried; each sleeve has a rib cuff band beyond its
+            seam ring with the configured number of wales, skinned without head or torso-only weights.
 --quick runs plain and validate only. Masters given on the command line are used instead of building them."""
 import json
 import os
@@ -35,7 +39,8 @@ sys.path.insert(0, CHARSYS)
 CH = os.path.join(ROOT, "assets", "characters")
 T119 = os.path.join(ROOT, "docs", "evaluation", "characters", "T-119")
 CAST = {"girl": ("girl_auburn_bun_glasses", "0.12.0"), "boy": ("boy_yellow_hoodie", "2.1.0")}
-V3_FIELDS = ("collar_seat", "cuff_gather", "ankle_close")
+V3_FIELDS = ("collar_seat", "cuff_gather", "ankle_close", "rib_cuff")
+FIXTURE = os.path.join(T119, "components", "girl_auburn_bun_glasses.components-demo.override.json")
 OLDER_PRESETS = ("presets.json", "skin_presets.json", "presets_r2.json")
 GUARDED = ["pipeline/charsys/garments", "pipeline/charsys/garments_v2", "pipeline/charsys/tests/test_garments_v2.py",
            "pipeline/charsys/tests/test_garments_v2_t093b.py", "pipeline/charsys/tests/test_garment_details.py",
@@ -196,6 +201,23 @@ bad("girl", "blouse", "cuff_gather", {}, "cuff_gather on a top")
 bad("boy", "trousers", "ankle_close", {"ease_m": 0.5}, "ankle_close.ease_m 0.5")
 bad("boy", "trousers", "ankle_close", {"sock": True}, "ankle_close unknown key")
 bad("boy", "hoodie", "ankle_close", {}, "ankle_close on a hoodie")
+bad("girl", "blouse", "collar_seat", {"thickness_m": 0.5}, "collar_seat.thickness_m 0.5")
+bad("girl", "blouse", "rib_cuff", {"ribs": 200}, "rib_cuff.ribs 200")
+bad("girl", "blouse", "rib_cuff", {"height_m": 0.0}, "rib_cuff.height_m 0")
+bad("girl", "blouse", "rib_cuff", {"wales": 3}, "rib_cuff unknown key")
+bad("girl", "shorts", "rib_cuff", {}, "rib_cuff on shorts")
+c = copy.deepcopy(blocks["girl"])
+item(c, "blouse")["rib_cuff"] = {}
+item(c, "blouse")["bands"] = {"cuff": False}
+out.append(["rib_cuff without sleeve cuff bands rejected", raises(lambda: V3.validate(c))])
+c = copy.deepcopy(blocks["boy"])
+item(c, "hoodie")["rib_cuff"] = {"ribs": 0}
+out.append(["rib_cuff validates on a hoodie (plain band, ribs 0)", V3.validate(c) is not None])
+fixture = json.load(open(%r))["override"]["clothing"]
+out.append(["the component fixture block validates, has no vest and no collar 'over'",
+            V3.validate(copy.deepcopy(fixture)) is not None
+            and not any(g["name"] == "vest" for g in fixture["garments"])
+            and item(fixture, "blouse")["collar_seat"]["over"] == [] and "rib_cuff" in item(fixture, "blouse")])
 c = copy.deepcopy(blocks["girl"])
 item(c, "blouse")["collar"] = "none"
 out.append(["collar_seat without a round collar rejected", raises(lambda: V3.validate(c))])
@@ -226,6 +248,63 @@ def digest(path):
 RESULT["a"], RESULT["mats_a"] = digest(%r)
 RESULT["b"], RESULT["mats_b"] = digest(%r)
 '''
+
+
+PARTS = r'''
+from mathutils import Vector
+bpy.ops.wm.open_mainfile(filepath=MASTER)
+rig = next(o for o in bpy.data.objects if o.type == "ARMATURE")
+out = {"vest": [o.name for o in bpy.data.objects if o.get("ps_garment_item") == "vest"], "cuffs": {}}
+collar = bpy.data.objects["garment.blouse.collar"]
+h = len(collar.data.vertices) // 2
+out["collar_thickness_m"] = sum((collar.data.vertices[i + h].co - collar.data.vertices[i].co).length
+                                for i in range(h)) / h
+for side in ("L", "R"):
+    ring = bpy.data.objects[f"garment.blouse.band.cuff.{side}"]
+    cuff = bpy.data.objects[f"garment.blouse.ribcuff.{side}"]
+    pts = [cuff.matrix_world @ v.co for v in cuff.data.vertices]
+    count = len(pts) // 18  # 2 walls x 9 sections
+    row = pts[4 * count:5 * count]  # the outer wall's middle section
+    mid = sum(row, Vector((0.0, 0.0, 0.0))) / count
+    radii = [(p - mid).length for p in row]
+    wales = sum(1 for k in range(count) if radii[k] > radii[k - 1] + 1e-6 and radii[k] >= radii[(k + 1) % count] - 1e-9)
+    shoulder = rig.matrix_world @ rig.data.bones[f"DEF-upper_arm.{side}"].head_local
+    def centre(o):
+        return sum((o.matrix_world @ v.co for v in o.data.vertices), Vector((0.0, 0.0, 0.0))) / len(o.data.vertices)
+    names = {g.index: g.name for g in cuff.vertex_groups}
+    bones = sorted({names[g.group] for v in cuff.data.vertices for g in v.groups
+                    if g.weight > 0.01 and not names[g.group].startswith("ps_")})
+    out["cuffs"][side] = {"vertices": len(pts), "part": cuff.get("ps_garment_part"), "wales": wales, "bones": bones,
+                          "generator": cuff.get("ps_garment_generator"),
+                          "armature": any(m.type == "ARMATURE" for m in cuff.modifiers),
+                          "beyond_ring_m": (centre(cuff) - shoulder).length - (centre(ring) - shoulder).length,
+                          "mean_radius_m": sum(radii) / count}
+RESULT.update(out)
+'''
+
+
+def test_parts(blender, current, fixture):
+    r = probe(blender, "MASTER = %r\n" % fixture + PARTS)
+    spec = json.load(open(FIXTURE))["override"]["clothing"]
+    blouse = next(g for g in spec["garments"] if g["name"] == "blouse")
+    print("[test_garments_r3] parts", json.dumps(r))
+    check("fixture: no vest; the collar has the configured thickness",
+          not r["vest"] and abs(r["collar_thickness_m"] - blouse["collar_seat"]["thickness_m"]) < 2e-4,
+          round(r["collar_thickness_m"], 5))
+    for side, c in r["cuffs"].items():
+        check(f"rib cuff {side}: a garment/3 piece of part rib_cuff, skinned, beyond the sleeve's seam ring",
+              c["part"] == "rib_cuff" and c["generator"] == "garment/3" and c["armature"]
+              and c["beyond_ring_m"] > 0.003, round(c["beyond_ring_m"], 4))
+        check(f"rib cuff {side}: {blouse['rib_cuff']['ribs']} wales round the band",
+              c["wales"] == blouse["rib_cuff"]["ribs"], c["wales"])
+        check(f"rib cuff {side}: carried by arm bones only", c["bones"]
+              and all(b.startswith(("DEF-forearm", "DEF-hand", "DEF-upper_arm")) for b in c["bones"]), c["bones"])
+    m = measure(blender, "girl", current, fixture)
+    cur, new = m["current"], m["candidate"]
+    check("fixture: the collar on its own bodice is chest-carried and lies closer than the current one (p95 < 1.6 cm)",
+          new["collar_bones"] == ["DEF-shoulder.L", "DEF-shoulder.R", "DEF-spine.003"]
+          and new["poses"]["rest"]["stand_off_m"]["p95"] < min(0.016, cur["poses"]["rest"]["stand_off_m"]["p95"]),
+          (cur["poses"]["rest"]["stand_off_m"]["p95"], new["poses"]["rest"]["stand_off_m"]["p95"]))
 
 
 def measure(blender, which, current, candidate):
@@ -288,7 +367,7 @@ def main():
     test_plain()
     if blender:
         triples = [(who, override_path(who), spec_path(who)) for who in ("girl", "boy")]
-        for name, ok in probe(blender, VALIDATE % (triples, V3_FIELDS))["validate"]:
+        for name, ok in probe(blender, VALIDATE % (triples, V3_FIELDS, FIXTURE))["validate"]:
             check(name, ok)
         if "--quick" not in sys.argv:
             masters = {}
@@ -299,6 +378,7 @@ def main():
             test_boy(blender, *masters["boy"])
             for who in ("girl", "boy"):
                 test_default(blender, who, arg(f"--{who}-default") or masters[who][0])
+            test_parts(blender, masters["girl"][0], arg("--girl-components") or build(blender, "girl", [FIXTURE]))
     else:
         print("[test_garments_r3] SKIP Blender checks (no --blender)")
     print(f"[test_garments_r3] {sum(RESULTS)}/{len(RESULTS)} passed")
