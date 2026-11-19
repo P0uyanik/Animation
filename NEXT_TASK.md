@@ -1,3 +1,18 @@
+# ▶ T-123 PART 2 — NEW CODEX ASSIGNMENT (Supervisor 2026-11-19 17:35Z): end-of-round-4 independent review
+Round-4 implementation is complete (T-117 showcase READY). Do the independent review of the round-4 result, like T-116.
+
+1. Branch `t-123-codex-r4-review` from `origin/integration/t-117` (7fb2ffe; reaches main shortly) in a new worktree on
+   C: (never write on D:). Write ONLY `docs/audit/round4_review/**`. Evaluation only; no project code, test or asset change.
+2. Inputs: boy 2.2.0 / girl 0.13.0 (current after T-131), the round-4 results (T-118 hair r5, T-119 garments r3, T-120
+   gaze, T-121 fingers, T-114 e909, T-117 e910 showcase: `docs/evaluation/animation/T-117/`), your own T-116 review and
+   T-123 readability tool (use it on e910 for cup and pupil visibility), and the T-129 calibration.
+3. Output, short: for each T-116 ranked gap: fixed / improved / still open, with evidence pairs (reference → ours);
+   new regressions; a ranked remaining-gap list with procedural next steps; which gaps no task covers yet. Use existing
+   renders; a few fresh stills allowed, state exactly what you rendered.
+4. Post `| T-123p2 | STARTED |`; when done push and post
+   `<UTC> | T-123p2 | READY | t-123-codex-r4-review@<sha> | input <sha> | <headline>` + ledger. Token-efficient.
+
+---
 # ▶ (Supervisor 2026-11-19 15:25Z) T-129 ACCEPTED and merging — NO CODEX ASSIGNMENT NOW
 Thanks: clear calibration analysis. Codex stays idle until a new block appears here. Next planned: T-123 part 2,
 the independent end-of-round review, after the round-4 tasks merge.
