@@ -29,11 +29,11 @@
 
 | view | figure IoU | landmark error (head heights) | sheet |
 |---|---|---|---|
-| val27_front | 0.854 | 0.039 | [sheet](sheets/val27_front.png) |
-| val27_threequarter_right | 0.852 | 0.051 | [sheet](sheets/val27_threequarter_right.png) |
-| val27_side_right | 0.804 | 0.073 | [sheet](sheets/val27_side_right.png) |
-| val27_back | 0.822 | 0.029 | [sheet](sheets/val27_back.png) |
-| val27_back_threequarter | 0.840 | 0.057 | [sheet](sheets/val27_back_threequarter.png) |
+| val27_front | 0.854 | 0.039 | [sheet](sheets/val27_front.jpg) |
+| val27_threequarter_right | 0.852 | 0.051 | [sheet](sheets/val27_threequarter_right.jpg) |
+| val27_side_right | 0.804 | 0.073 | [sheet](sheets/val27_side_right.jpg) |
+| val27_back | 0.822 | 0.029 | [sheet](sheets/val27_back.jpg) |
+| val27_back_threequarter | 0.840 | 0.057 | [sheet](sheets/val27_back_threequarter.jpg) |
 
 ## Largest differences (ranked)
 
