@@ -16,7 +16,10 @@ Build checks (a master per character: --boy/--girl, else built from the current 
   * every test_face_v3 build check with T-089b's limits unchanged (felt eye; lid shells within their corner bounds;
     <= 10 % 3/4 socket rim; cheek folds <= 45 deg, eye-corner folds no sharper than the published limit; full blink
     closes in front and 3/4 within 1.25 x the published residue) and T-089b's lid-line-at-glance check;
-  * fuller lower face: head half width at the cheek-pad and jaw levels >= the published master's + LOWER_MIN_MM;
+  * fuller lower face: head half width (head and jaw skin, front half) at the cheek-pad level >= the published master's
+    + LOWER_MIN_MM, and a rounder jaw: the median distance from the head axis of the head skin 30-60 deg off forward
+    at the jaw level (the front corners the jaw option fills; the front-view width there is set by the sides) >= the
+    published master's + JAW_MIN_MM;
   * no identity drift in eyes or brows: eye centres, eyeball scale and brow bounds within DRIFT_MM of the published
     master (the lower-face options act below the eyes);
   * girl lens shelf: the lower lid shell is hidden by the skin (lid_shell_exposed of lid_lower <= SHELF_MAX; 0.12.0:
@@ -46,6 +49,7 @@ CANDIDATES = {
 }
 V3.CASES = {k: (v[0], v[1]) for k, v in CANDIDATES.items()}
 LOWER_MIN_MM = 3.0
+JAW_MIN_MM = 2.0
 DRIFT_MM = 0.5
 SHELF_MAX = 0.05
 check = V3.check
@@ -62,11 +66,23 @@ me.vertices.foreach_get("co", co)
 mw = np.array(head.matrix_world)
 p = co.reshape(-1, 3) @ mw[:3, :3].T + mw[:3, 3]
 eyes = {s: bpy.data.objects[f"eye.{s}"] for s in "LR"}
-yc = float(np.median(p[np.abs(p[:, 2] - eyes["L"].matrix_world.translation.z) < 0.08, 1]))
+band = np.abs(p[:, 2] - eyes["L"].matrix_world.translation.z) < 0.08
+yc = 0.5 * float(p[band, 1].min() + p[band, 1].max())  # middle of the head's depth (as lower_face.py)
+# head skin only (head + jaw bone weight >= 0.5): at a small character's jaw height the A-pose shoulders are wider
+gis = {vg.index for vg in head.vertex_groups if vg.name in ("DEF-spine.006", "DEF-jaw")}  # head and jaw bones
+hw = np.zeros(len(me.vertices))
+for v in me.vertices:
+    for g in v.groups:
+        if g.group in gis:
+            hw[v.index] += g.weight
+is_head = hw >= 0.5 if gis else np.ones(len(me.vertices), bool)
 out = {"width": {}, "eyes": {}, "brows": {}}
 for name, z in levels.items():
-    m = (np.abs(p[:, 2] - z) < 0.002) & (p[:, 1] < yc)
+    m = (np.abs(p[:, 2] - z) < 0.002) & (p[:, 1] < yc) & is_head
     out["width"][name] = float(np.abs(p[m, 0]).max()) if m.any() else 0.0
+    az = np.degrees(np.arctan2(np.abs(p[:, 0]), yc - p[:, 1]))  # 0 = straight forward
+    mc = m & (az > 30) & (az < 60)
+    out.setdefault("corner", {})[name] = float(np.median(np.hypot(p[mc, 0], p[mc, 1] - yc))) if mc.any() else 0.0
 for s, e in eyes.items():
     out["eyes"][s] = [list(e.matrix_world.translation), list(e.matrix_world.to_scale())]
 for s in "LR":
@@ -157,9 +173,11 @@ def v4_checks(blender, who, master):
     if a is None or b is None:
         check(f"{who}: shape probe ran", False)
         return
-    gain = {k: round((b["width"][k] - a["width"][k]) * 1000, 2) for k in levels}
-    check(f"{who}: fuller lower face (half width +>= {LOWER_MIN_MM} mm at cheek-pad and jaw levels)",
-          all(v >= LOWER_MIN_MM for v in gain.values()), json.dumps(gain))
+    gain = round((b["width"]["cheek_pad"] - a["width"]["cheek_pad"]) * 1000, 2)
+    check(f"{who}: fuller lower face (front half width +>= {LOWER_MIN_MM} mm at the cheek-pad level)",
+          gain >= LOWER_MIN_MM, f"{gain} mm")
+    jaw = round((b["corner"]["jaw"] - a["corner"]["jaw"]) * 1000, 2)
+    check(f"{who}: rounder jaw (jaw-corner radius, 30-60 deg off forward, +>= {JAW_MIN_MM} mm)", jaw >= JAW_MIN_MM, f"{jaw} mm")
     drift = 0.0
     for s_ in "LR":
         drift = max(drift, max(abs(x - y) for x, y in zip(a["eyes"][s_][0], b["eyes"][s_][0])) * 1000,

@@ -28,8 +28,8 @@ def shape_lower_face(head, ctx, cfg, ex, ez, z_mouth, z_chin):
     rep = {}
     world, write = _head_coords(head)
     p = world.copy()
-    head_m = (p[:, 2] > z_chin - 0.04) & (p[:, 2] < ez + 0.06)
-    yc = float(np.median(p[head_m, 1]))  # head axis (front/back centre) at face height
+    head_m = (p[:, 2] > z_chin) & (p[:, 2] < ez + 0.06)
+    yc = 0.5 * float(p[head_m, 1].min() + p[head_m, 1].max())  # head axis: middle of the head's depth at face height
     front = np.clip((yc - p[:, 1]) / 0.02, 0.0, 1.0)  # 1 in front of the head's centre, fading over 2 cm
     rad_dir = np.stack([p[:, 0], p[:, 1] - yc, np.zeros(len(p))], axis=1)
     rad_dir /= np.maximum(np.linalg.norm(rad_dir, axis=1, keepdims=True), 1e-9)
