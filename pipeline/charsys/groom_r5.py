@@ -26,8 +26,11 @@ spec.hair (generator "groom/4"): everything of groom/3 plus
               moves the right side along the list so the two sides differ). Each lock becomes its own structure
               "<name>_<kk>" (left) / "<name>_r<kk>" (right, mirrored structures) with the dynamics settings of
               <name>.
-  flowers items with "turn" {"toward": [az, el], "amount": 0..1}: the flower turns about its seat on the bun from
-              facing straight out of the bun towards that head direction.
+  accessories               one attachment rule for flowers and felt bows. Both sit on a bun (bun, around_deg,
+              height_frac, out); a felt_bow can also sit on the scalp (az, el, out), and a flower item with "attach":
+              {"az", "el", "out"} moves from the bun to that scalp point. "turn": {"toward": [az, el], "amount":
+              0..1} (flower item or felt_bow structure) then turns the accessory about its seat from facing straight
+              out towards that head direction.
 Face keep-out, fibres, dynamics and binding are groom/3's."""
 import copy
 import math
@@ -260,22 +263,39 @@ def validate(hair_spec):
                 errs.append(f"{where}.stagger.end_scale factors must be positive")
             elif not all(k in s for k in ("count", "az", "z_end")):
                 errs.append(f"{where} (staggered locks) needs count, az and z_end")
-        elif t == "flowers":
-            for j, it in enumerate(s.get("items") or []):
+        elif t in ("flowers", "felt_bow"):
+            for j, it in enumerate((s.get("items") or []) if t == "flowers" else [s]):
+                w = f"{where}.items[{j}]" if t == "flowers" else where
                 tn = it.get("turn")
                 if tn is not None and not (isinstance(tn, dict) and isinstance(tn.get("toward"), list)
                                            and len(tn["toward"]) == 2 and 0.0 <= float(tn.get("amount", 1.0)) <= 1.0):
-                    errs.append(f"{where}.items[{j}].turn must be {{\"toward\": [az, el], \"amount\": 0..1}}")
+                    errs.append(f"{w}.turn must be {{\"toward\": [az, el], \"amount\": 0..1}}")
+                at = it.get("attach") if t == "flowers" else None
+                if at is not None and not (isinstance(at, dict) and "az" in at and "el" in at):
+                    errs.append(f"{w}.attach must be {{\"az\", \"el\", \"out\"}}")
     if errs:
         return errs
     return R4.validate(lower(hair_spec)[0])
 
 
-# --------------------------------------------------------------------------------------------------------- flowers
-def turn_flowers(hair_spec, head, frame, objs):
-    """Rotates every flower with a "turn" about its seat on the bun; returns the turned angles (degrees)."""
+# ----------------------------------------------------------------------------------------------------- accessories
+def _seat(ctx, st, it):
+    """The attachment point of an accessory as its builder placed it: (point, outward direction). On a bun
+    (bun, around_deg, height_frac, out) or, for a felt_bow without "bun", on the scalp (az, el, out)."""
+    if st["type"] == "felt_bow" and "bun" not in st:
+        return ctx["scalp"].at(float(st["az"]), float(st["el"]), float(st.get("out", 0.008)))
+    hf, out = (0.15, 0.006) if st["type"] == "felt_bow" else (0.2, 0.0)
+    c, radial, _ = G1._bun_point(ctx, st, float(it.get("around_deg", 0)), float(it.get("height_frac", hf)),
+                                 float(it.get("out", out)))
+    return c, radial
+
+
+def place_accessories(hair_spec, head, frame, objs):
+    """The shared attachment rule of flowers and felt bows: a flower item with "attach" moves rigidly from its bun
+    seat to the scalp point; "turn" then rotates the accessory about its seat. Returns what was done."""
     sts = hair_spec["structures"]
-    todo = [s for s in sts if s.get("type") == "flowers" and any(it.get("turn") for it in s["items"])]
+    todo = [s for s in sts if (s.get("type") == "flowers" and any(it.get("turn") or it.get("attach") for it in
+                                                                   s["items"])) or (s.get("type") == "felt_bow" and s.get("turn"))]
     if not todo:
         return {}
     scalp = G1.Scalp(head, frame["centre"], frame["radii"], float(hair_spec.get("scalp_offset_m", 0.008)))
@@ -286,23 +306,33 @@ def turn_flowers(hair_spec, head, frame, objs):
     by_name = {o.name: o for o in objs}
     done = {}
     for s in todo:
-        name = s.get("name", "flowers")
-        n = len(s["items"])
-        for j, it in enumerate(s["items"]):
-            tn = it.get("turn")
-            if not tn:
+        name = s.get("name", s["type"])
+        flowers = s["type"] == "flowers"
+        items = s["items"] if flowers else [s]
+        for j, it in enumerate(items):
+            tn, at = it.get("turn"), it.get("attach") if flowers else None
+            if not (tn or at):
                 continue
-            c, radial, _ = G1._bun_point(ctx, s, float(it["around_deg"]), float(it.get("height_frac", 0.2)),
-                                         float(it.get("out", 0.0)))
-            target = G1.Scalp.direction(float(tn["toward"][0]), float(tn["toward"][1]))
-            q = radial.rotation_difference(G1.slerp(radial, target, float(tn.get("amount", 1.0))))
-            for part in ("petals", "centres"):
-                me = by_name[f"hair_{name}_{part}"].data
-                per = len(me.vertices) // n
+            c, n = _seat(ctx, s, it)
+            moves = []  # (rotation about `about`, then the seat moves to `to`)
+            if at:
+                c1, n1 = scalp.at(float(at["az"]), float(at["el"]), float(at.get("out", 0.006)))
+                moves.append((n.rotation_difference(n1), c, c1))
+                c, n = c1, n1
+            if tn:
+                target = G1.Scalp.direction(float(tn["toward"][0]), float(tn["toward"][1]))
+                q = n.rotation_difference(G1.slerp(n, target, float(tn.get("amount", 1.0))))
+                moves.append((q, c, c))
+                done.setdefault("turned_deg", {})[f"{name}.{j}" if flowers else name] = round(math.degrees(q.angle), 2)
+            if at:
+                done.setdefault("attached", []).append(f"{name}.{j}")
+            for part in (("petals", "centres") if flowers else (None,)):
+                me = by_name[f"hair_{name}_{part}" if part else f"hair_{name}"].data
+                per = len(me.vertices) // len(items)
                 for v in me.vertices[j * per:(j + 1) * per]:
-                    v.co = c + q @ (v.co - c)
+                    for q, about, to in moves:
+                        v.co = to + q @ (v.co - about)
                 me.update()
-            done[f"{name}.{j}"] = round(math.degrees(q.angle), 2)
     return done
 
 
@@ -314,9 +344,9 @@ def build(C, head, frame, hair_spec, material, face_y, fibres=None):
         raise SystemExit("groom/4: " + "; ".join(errs))
     low, info = lower(hair_spec, sum(float(x) for x in frame["radii"]) / 3)
     objs, rep = R4.build(C, head, frame, low, material, face_y, fibres)
-    turned = turn_flowers(hair_spec, head, frame, objs)
-    if turned:
-        info["turned_flowers_deg"] = turned
+    placed = place_accessories(hair_spec, head, frame, objs)
+    if placed:
+        info["accessories"] = placed
     rep["generator"] = GENERATOR
     rep["lowered"] = info
     return objs, rep

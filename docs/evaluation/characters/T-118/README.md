@@ -21,8 +21,9 @@ names.
 - **Staggered lock ends** (`locks` with `"stagger"`). Offsets added to `z_end` per lock, and end-scale factors. Each
   lock becomes its own structure (`<name>_00`, `<name>_r00` on the mirrored side) with the dynamics settings of the
   original name.
-- **Turned flowers** (flower items with `"turn"`). The flower rotates about its seat on the bun towards a head
-  direction.
+- **Accessory attachment** (one rule for flowers and felt bows). `"turn"` rotates the accessory about its seat
+  towards a head direction; a flower item with `"attach"` moves from the bun to a scalp point, where a bow can
+  already sit.
 
 Registry: one line in `pipeline/charsys/versions.py` (`groom/4` → `groom_r5`). `build_character.py` needed no change:
 it loads the pinned groom module through the registry.
@@ -82,7 +83,7 @@ head will still hide part of the glance.
 ## Checks
 | check | result |
 |---|---|
-| `python3 pipeline/charsys/tests/test_hair_r5.py` (new, plain) | 56/56 PASS |
+| `python3 pipeline/charsys/tests/test_hair_r5.py` (new, plain) | 58/58 PASS |
 | `test_hair_r4.py`, `test_versions.py`, `test_hair_v3_r3.py` (plain) | 37/37, 107/107, 25/25 PASS |
 | default build, hash check (`tools/hash_check.py`, [boy](checks/boy_default_hash.json), [girl](checks/girl_default_hash.json)) | the current hair built by groom/3 and by groom/4 has the same SHA-256 (boy 52,296 vertices, girl 167,510); the released groom files and `build_character.py` are unchanged against 5a90975 |
 | face keep-out on the candidate builds | boy 0, girl 0 violations |
@@ -99,3 +100,7 @@ equal.
 - Girl: each staggered ringlet is its own object (21 single-lock objects instead of 4), so the candidate has 93
   fibre objects. Chain names of staggered locks change (`ringlets_back_03.00`).
 - Girl: the face keep-out (el 5 inside az ±34) still limits how far the sweeps come down over the centre forehead.
+
+## Third character (owner scope addition, design input only)
+[third_character_readiness.md](third_character_readiness.md): what groom/4 can express for `girl_white_hair_blue_dress`,
+what is missing, and a rough parameter sketch. She was not built, specified or rendered.
