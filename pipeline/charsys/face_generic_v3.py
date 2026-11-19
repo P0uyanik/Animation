@@ -18,6 +18,7 @@ from face_generic import (SIDES, FaceContext, _f, _lid_edge, _lid_geometry, _ren
                           build_ears, build_eyes, eye_action_units, load_library, split_action_units)
 from face_v3 import felt_eye as FELT
 from face_v3 import lids as LIDS
+from face_v3 import lower_face as LOWER
 from face_v3 import socket as SOCKET
 from materials import builder as MATERIALS
 from mathutils import Vector
@@ -69,6 +70,11 @@ def build(C, M, head, spec, P, H, head_bone="DEF-spine.006", eye_bone="DEF-eye.{
     if fs.get("shape"):  # head proportions first (v1 options, then the v2 round-face options)
         sh = FF.shape_face_v2(head, ctx, fs["shape"], ex, ez, r, ez - _f(L, "chin_below_eye_m", 0.09))
         sh.update(FF.shape_head(head, ctx, {k: v for k, v in fs["shape"].items() if k != "cheek_roundness_m"}, ex, ez, r))
+        if fs["shape"].get("lower_face"):  # T-109 (opt-in): low cheek pads, rounder jaw
+            lf = LOWER.shape_lower_face(head, ctx, fs["shape"]["lower_face"], ex, ez, z_mouth,
+                                        ez - _f(L, "chin_below_eye_m", 0.09))
+            if lf:
+                sh["lower_face"] = lf
         rep["shape"] = sh
     if fs.get("skin"):
         spots = []
@@ -131,6 +137,13 @@ def build(C, M, head, spec, P, H, head_bone="DEF-spine.006", eye_bone="DEF-eye.{
             LIDS.roll_lid([up, lash], frames[side], rolls[side]["up"])
         if rolls[side]["lo"] is not None:
             LIDS.roll_lid([lo], frames[side], rolls[side]["lo"])
+    lo_fit = {}
+    if (ecfg.get("lids") or {}).get("lower_fit"):  # T-109 (opt-in): the lower lid follows the eyeball (no shelf)
+        fit = ecfg["lids"]["lower_fit"]
+        for (sx, side), (up, lo, lash, c) in zip(SIDES, lids):
+            lg = _lid_geometry(sx, ecfg, r)
+            rep.setdefault("lower_fit", {})[side] = LIDS.fit_lower_lid(lo, frames[side], ecfg, r, lg["r_lo"], fit)
+            lo_fit[side] = (LIDS.lower_fit_radius(frames[side], ecfg, r, fit), lg["r_lo"])
     if any(v is not None for rr in rolls.values() for v in rr.values()):
         rep["lid_roll_deg"] = {"upper": _f(ecfg.get("lids", {}), "upper_roll_deg", 0.0),
                                "lower": _f(ecfg.get("lids", {}), "lower_roll_deg", 0.0)}
@@ -170,6 +183,7 @@ def build(C, M, head, spec, P, H, head_bone="DEF-spine.006", eye_bone="DEF-eye.{
                             "eye_clearance": _f(tc, "eye_clearance", 0.0)} for z in ("up", "lo")}
             sides.append({"sx": sx, "side": side, "T": frames[side], "r": r, "r_up_out": lg["r_up_out"], "r_lo_out": lg["r_lo_out"],
                           "trim": trim,
+                          **({"lo_fit": lo_fit[side][0], "r_lo": lo_fit[side][1]} if side in lo_fit else {}),
                           "up_edge": FF.lid_edges(LIDS.rolled_edge(lambda a, lg=lg: _lid_edge(lg["q_up"], lg["k_up"], lg["r_up"], a, lg["lids_cfg"], True),
                                                                    rolls[side]["up"]), corner_deg=_f(sock_cfg, "corner_deg", 60.0)),
                           "lo_edge": FF.lid_edges(LIDS.rolled_edge(lambda a, lg=lg: _lid_edge(lg["q_lo"], lg["k_lo"], lg["r_lo"], a, lg["lids_cfg"], False),

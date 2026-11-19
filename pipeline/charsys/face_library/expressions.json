@@ -109,9 +109,23 @@
    "MouthFrown": 0.2,
    "MouthO": 0.2,
    "EyeSquint": 0.3
+  },
+  "SmileOpen": {
+   "MouthWide": 0.8,
+   "MouthO": 0.35,
+   "MouthSmile": 0.6,
+   "JawOpen": 0.25,
+   "EyeSquint": 0.2,
+   "CheekRaise": 0.6
+  },
+  "Pout": {
+   "MouthPout": 1.0,
+   "MouthFrown": 0.35,
+   "MouthO": 0.15,
+   "BrowDown": 0.25
   }
  },
- "optional_presets_note": "Not in any reference; named in the M3 request. Built only when a character lists them in spec.face.expressions.optional. SmileClosed and Thinking (T-031): closed-mouth smile and a thinking face (one brow up, small pursed mouth) for expression sheets; opt-in per spec.",
+ "optional_presets_note": "Not in any reference; named in the M3 request. Built only when a character lists them in spec.face.expressions.optional. SmileClosed and Thinking (T-031): closed-mouth smile and a thinking face (one brow up, small pursed mouth) for expression sheets; opt-in per spec. SmileOpen and Pout (T-109): the open D-shaped smile with lifted cheeks (girl ref_30) and the closed sulky pout (boy hero24 / #08) as named presets the emotion library can drive; units a face does not build (CheekRaise, MouthPout) are skipped.",
  "aliases": {
   "Happy": "Smile",
   "Sad": "Sadness",
@@ -133,6 +147,8 @@
   "confused": "Confusion",
   "blinkLeft": "LeftEyeClosed",
   "blinkRight": "RightEyeClosed",
-  "mouthOpen": "MouthOpen"
+  "mouthOpen": "MouthOpen",
+  "smileOpen": "SmileOpen",
+  "pout": "Pout"
  }
 }

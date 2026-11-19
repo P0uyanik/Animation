@@ -155,3 +155,65 @@ def exposure_from(head, shells, frames, yaw_deg, corner_deg, r, skin_material_na
                 vis += 1
         out[ob.name] = {"past_corner_vertices": tot, "visible": vis, "fraction": round(vis / max(tot, 1), 3)}
     return out
+
+
+# ------------------------------------------------------------------------------------------------ T-109: lower lid fit
+def _gaze_inverses(T, ecfg):
+    """Inverse matrices M_g^-1 (frame units) of the eyeball's rigid gaze rotations over gaze_range_deg: in the eye
+    frame the turned eyeball is M_g applied to the radius-r sphere, M_g = A^-1 R_g A (A = the frame's 3x3)."""
+    import numpy as np
+    A = np.array(T.to_3x3())
+    Ai = np.linalg.inv(A)
+    gy, gp = (float(v) for v in ecfg.get("gaze_range_deg", [20.0, 12.0]))
+    out = []
+    for i in range(11):
+        for j in range(7):
+            R = np.array(Matrix.Rotation(math.radians(-gy + 2 * gy * i / 10), 3, "Z")
+                         @ Matrix.Rotation(math.radians(-gp + 2 * gp * j / 6), 3, "X"))
+            out.append(np.linalg.inv(Ai @ R @ A))
+    return out
+
+
+def local_envelope(u, Minv):
+    """Per-direction gaze envelope (unit directions u (N, 3) in the eye frame; 1 = the eyeball surface): the largest
+    radius the rigidly turned eyeball reaches along each direction. face_generic/2 builds every lid at the largest
+    value over ALL directions (gaze_envelope); for an oval eye that value comes from the corners, so below and above
+    the eye the lids stand off the eyeball."""
+    import numpy as np
+    env = np.zeros(len(u))
+    for Mi in Minv:
+        env = np.maximum(env, 1.0 / np.maximum(np.linalg.norm(u @ Mi.T, axis=1), 1e-9))
+    return env
+
+
+def lower_fit_radius(T, ecfg, r, fit):
+    """spec.face.eyes.lids.lower_fit = {"gap": g, "thickness_m": t (optional)}: a function (unit directions in the eye
+    frame) -> the fitted outer radius r * (envelope(u) + g) (+ the lid thickness). The lower lid shell and the socket
+    skin over it are pulled in to it where they stood further out (never pushed out)."""
+    Minv = _gaze_inverses(T, ecfg)
+    g = _f(fit, "gap", 0.02)
+    return lambda u: r * (local_envelope(u, Minv) + g)
+
+
+def fit_lower_lid(ob, T, ecfg, r, r_lo, fit):
+    """Pulls the lower lid shell (and the lash strands joined into it) in towards the eyeball along its eye-frame
+    radius: a vertex at radius rho in direction u moves to rho - max(0, r_lo - r_fit(u)), so the shell keeps its
+    thickness and its edge follows the eyeball instead of standing off it (the grey shelf of an oval eye under
+    glasses). Object data in world space (identity matrix). Returns a report."""
+    import numpy as np
+    me = ob.data
+    n = len(me.vertices)
+    co = np.empty(n * 3)
+    me.vertices.foreach_get("co", co)
+    co = co.reshape(n, 3)
+    Tm = np.array(T)
+    Ti = np.linalg.inv(Tm)
+    q = co @ Ti[:3, :3].T + Ti[:3, 3]
+    d = np.linalg.norm(q, axis=1)
+    u = q / np.maximum(d, 1e-12)[:, None]
+    shift = np.maximum(0.0, r_lo - lower_fit_radius(T, ecfg, r, fit)(u))
+    q = u * (d - shift)[:, None]
+    me.vertices.foreach_set("co", (q @ Tm[:3, :3].T + Tm[:3, 3]).ravel())
+    me.update()
+    return {"gap": _f(fit, "gap", 0.02), "shift_max_m": round(float(shift.max()), 5),
+            "shift_mean_m": round(float(shift.mean()), 5)}

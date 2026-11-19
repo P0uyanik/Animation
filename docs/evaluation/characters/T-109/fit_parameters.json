@@ -1,0 +1,45 @@
+{
+ "schema": "plush-studio.fit-parameters/1",
+ "task": "T-109",
+ "for": "T-115 (Codex fit search on the face-round-4 parameters). Paths are spec keys under face (dotted); every value is an override on the current spec (boy 2.1.0, girl 0.12.0) on top of the T-109 candidate. Ranges are where the T-109 checks (test_face_v4.py: folds, 3/4 rim, blink residue, lid line at glance, shelf) were seen to hold or are expected to; outside them, re-run test_face_v4.py on the result.",
+ "candidates": {
+  "boy_yellow_hoodie": "assets/characters/boy_yellow_hoodie/spec/candidates/T-109/boy_face4.override.json",
+  "girl_auburn_bun_glasses": "assets/characters/girl_auburn_bun_glasses/spec/candidates/T-109/girl_face4.override.json"
+ },
+ "groups": {
+  "lower_face": {
+   "note": "face_v3/lower_face.py (new, opt-in) and the face_generic/2 outline options. Lengths in metres.",
+   "parameters": {
+    "shape.lower_face.cheek_pad_m": {"boy": 0.016, "girl": 0.014, "range": [0.0, 0.024]},
+    "shape.lower_face.cheek_pad_radius_m": {"boy": 0.07, "girl": 0.07, "range": [0.045, 0.09]},
+    "shape.lower_face.cheek_pad_x": {"boy": 1.3, "girl": 1.3, "range": [0.9, 1.5]},
+    "shape.lower_face.cheek_pad_below_eye_m": {"boy": 0.035, "girl": 0.05, "range": [0.03, 0.07]},
+    "shape.lower_face.cheek_pad_height": {"boy": 0.9, "girl": 0.9, "range": [0.7, 1.3]},
+    "shape.lower_face.jaw_round_m": {"boy": 0.006, "girl": 0.010, "range": [0.0, 0.014], "note": "jaw_down > 0.2 with jaw_round_m >= 0.01 leaves a crease along the boy's jaw in 3/4"},
+    "shape.lower_face.jaw_x": {"boy": 0.7, "girl": 0.6, "range": [0.45, 0.8]},
+    "shape.lower_face.jaw_down": {"boy": 0.0, "girl": 0.5, "range": [0.0, 0.5]},
+    "shape.outline_roundness": {"boy": 0.6, "girl": 0.9, "range": [0.0, 1.0]},
+    "shape.outline_exponent": {"boy": 2.4, "girl": 2.6, "range": [2.0, 3.0]},
+    "shape.cheek_fullness_m": {"boy": 0.006, "girl": 0.01, "range": [0.0, 0.014], "note": "existing cheekbone fullness (face_generic/2)"}
+   }
+  },
+  "eye_opening": {
+   "note": "Eyeball shape and lid edges (face_generic/2-3). Girl: x scale above about 1.03 sharpens the eye-corner fold past the published limit and raises the 3/4 rim above 10 % (T-089b).",
+   "parameters": {
+    "eyes.scale": {"boy": [1.0, 1.0, 1.0], "girl": [1.03, 0.8, 1.0], "range_x": [0.95, 1.05], "range_y": [0.75, 1.0]},
+    "eyes.lids.upper_edge_deg": {"boy": 4, "girl": 47, "range_boy": [0, 8], "range_girl": [42, 50], "note": "girl 52 hid the lid line in a 15 deg glance (T-089b)"},
+    "eyes.lids.lower_edge_deg": {"boy": -34, "girl": -50, "range_boy": [-40, -28], "range_girl": [-54, -44]}
+   }
+  },
+  "lid_profile": {
+   "note": "Lid curve, roll (D-shaped opening) and the T-109 lower-lid fit.",
+   "parameters": {
+    "eyes.lids.upper_curve": {"boy": -0.05, "girl": 0.12, "range": [-0.15, 0.2]},
+    "eyes.lids.lower_curve": {"boy": 0.05, "girl": 0.06, "range": [-0.05, 0.15]},
+    "eyes.lids.upper_roll_deg": {"boy": 7, "girl": 0, "range": [-5, 12]},
+    "eyes.lids.lower_roll_deg": {"boy": 14, "girl": 0, "range": [0, 18]},
+    "eyes.lids.lower_fit.gap": {"boy": null, "girl": 0.005, "range": [0.0, 0.03], "note": "girl only (oval eye under glasses); 0.02 still left a pale band (lower-lid exposure 0.28), 0.005 hides it (0.05)"}
+   }
+  }
+ }
+}
