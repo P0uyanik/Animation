@@ -1,0 +1,598 @@
+{
+ "eye_shape_T150": {
+  "auburn 122 front": {
+   "eyes": 2,
+   "in_band": 0.5,
+   "score": 0.7627
+  },
+  "auburn 122 strict": {
+   "eyes": 2,
+   "in_band": 0.5,
+   "score": 0.8052
+  },
+  "white_haired 126 pass2": {
+   "eyes": 2,
+   "in_band": 0.4643,
+   "score": 0.7433
+  },
+  "white_haired 133 proposal": {
+   "eyes": 2,
+   "in_band": 0.3571,
+   "score": 0.708
+  }
+ },
+ "face_state_blend": 0.2,
+ "face_states_T122": {
+  "boy_yellow_hoodie": {
+   "after": {
+    "lid": {
+     "dL": 2.3429,
+     "de00": 2.2378,
+     "score": 0.8881
+    },
+    "mouths": {
+     "boy_Smile": {
+      "curve": 0.0,
+      "open": 0.2933,
+      "reference": {
+       "curve": 0.0847,
+       "line_cols": 21,
+       "open": 0.0245
+      },
+      "render": {
+       "curve": -0.1084,
+       "line_cols": 35,
+       "open": 0.0834
+      },
+      "score": 0.1466
+     },
+     "boy_reluctant (Pout)": {
+      "curve": 0.4287,
+      "open": 0.2403,
+      "reference": {
+       "curve": 0.0212,
+       "line_cols": 31,
+       "open": 0.0217
+      },
+      "render": {
+       "curve": -0.0645,
+       "line_cols": 35,
+       "open": 0.0903
+      },
+      "score": 0.3345
+     }
+    },
+    "parts": {
+     "expressions": 0.2406,
+     "lid": 0.8881,
+     "shelf": null
+    },
+    "score": 0.5643,
+    "version": "2.2.0"
+   },
+   "before": {
+    "lid": {
+     "dL": -4.7764,
+     "de00": 4.1595,
+     "score": 0.792
+    },
+    "mouths": {
+     "boy_Smile": {
+      "curve": 0.0,
+      "open": 0.271,
+      "reference": {
+       "curve": 0.0847,
+       "line_cols": 21,
+       "open": 0.0245
+      },
+      "render": {
+       "curve": -0.0984,
+       "line_cols": 35,
+       "open": 0.0903
+      },
+      "score": 0.1355
+     },
+     "boy_reluctant (Pout)": {
+      "curve": 0.3638,
+      "open": 0.2315,
+      "reference": {
+       "curve": 0.0212,
+       "line_cols": 31,
+       "open": 0.0217
+      },
+      "render": {
+       "curve": -0.0742,
+       "line_cols": 35,
+       "open": 0.0937
+      },
+      "score": 0.2976
+     }
+    },
+    "parts": {
+     "expressions": 0.2166,
+     "lid": 0.792,
+     "shelf": null
+    },
+    "score": 0.5043,
+    "version": "2.1.0"
+   }
+  },
+  "girl_auburn_bun_glasses": {
+   "after": {
+    "lid": {
+     "dL": -3.3911,
+     "de00": 4.8391,
+     "score": 0.758
+    },
+    "mouths": {
+     "girl_Laugh": {
+      "curve": 0.4745,
+      "open": 0.6111,
+      "reference": {
+       "curve": 0.0363,
+       "line_cols": 40,
+       "open": 0.197
+      },
+      "render": {
+       "curve": 0.1151,
+       "line_cols": 37,
+       "open": 0.3224
+      },
+      "score": 0.5428
+     },
+     "girl_delighted (SmileOpen)": {
+      "curve": 0.9678,
+      "open": 0.5382,
+      "reference": {
+       "curve": 0.059,
+       "line_cols": 45,
+       "open": 0.1452
+      },
+      "render": {
+       "curve": 0.0639,
+       "line_cols": 33,
+       "open": 0.2697
+      },
+      "score": 0.753
+     }
+    },
+    "parts": {
+     "expressions": 0.6479,
+     "lid": 0.758,
+     "shelf": 1.0
+    },
+    "score": 0.802,
+    "shelf": {
+     "fraction": 0.0,
+     "score": 1.0
+    },
+    "version": "0.13.0"
+   },
+   "before": {
+    "lid": {
+     "dL": -9.5283,
+     "de00": 8.1036,
+     "score": 0.5948
+    },
+    "mouths": {
+     "girl_Laugh": {
+      "curve": 0.4099,
+      "open": 0.8021,
+      "reference": {
+       "curve": 0.0363,
+       "line_cols": 40,
+       "open": 0.197
+      },
+      "render": {
+       "curve": -0.0522,
+       "line_cols": 38,
+       "open": 0.2456
+      },
+      "score": 0.606
+     },
+     "girl_delighted (SmileOpen)": {
+      "curve": 0.0,
+      "open": 0.4758,
+      "reference": {
+       "curve": 0.059,
+       "line_cols": 45,
+       "open": 0.1452
+      },
+      "render": {
+       "curve": -0.1867,
+       "line_cols": 38,
+       "open": 0.0691
+      },
+      "score": 0.2379
+     }
+    },
+    "parts": {
+     "expressions": 0.4219,
+     "lid": 0.5948,
+     "shelf": 1.0
+    },
+    "score": 0.6723,
+    "shelf": {
+     "fraction": 0.0,
+     "score": 1.0
+    },
+    "version": "0.12.0"
+   }
+  }
+ },
+ "hair_local_T049_girl": {
+  "A": {
+   "back_locks": {
+    "angle_diff_deg": 11.0445,
+    "coherence_ref": 0.3107,
+    "coherence_ren": 0.3046,
+    "de00_luma_matched": 0.9477,
+    "log2_fuzz": -0.1134,
+    "log2_sheen": -0.078,
+    "parts": {
+     "colour": 0.9526,
+     "direction": 0.8711,
+     "fuzz": 0.8866,
+     "sheen": 0.8439
+    },
+    "score": 0.8886
+   },
+   "crown": {
+    "angle_diff_deg": 27.8266,
+    "coherence_ref": 0.3589,
+    "coherence_ren": 0.0235,
+    "de00_luma_matched": 2.6577,
+    "log2_fuzz": -0.1361,
+    "log2_sheen": -0.0151,
+    "parts": {
+     "colour": 0.8671,
+     "direction": 0.3554,
+     "fuzz": 0.8639,
+     "sheen": 0.9699
+    },
+    "score": 0.7641
+   },
+   "fringe": {
+    "angle_diff_deg": 9.2518,
+    "coherence_ref": 0.1451,
+    "coherence_ren": 0.1639,
+    "de00_luma_matched": 6.2207,
+    "log2_fuzz": 0.1244,
+    "log2_sheen": 0.0285,
+    "parts": {
+     "colour": 0.689,
+     "direction": 0.8784,
+     "fuzz": 0.8756,
+     "sheen": 0.9429
+    },
+    "score": 0.8465
+   }
+  },
+  "B": {
+   "back_locks": {
+    "angle_diff_deg": 10.6899,
+    "coherence_ref": 0.3107,
+    "coherence_ren": 0.2173,
+    "de00_luma_matched": 0.9504,
+    "log2_fuzz": 0.0579,
+    "log2_sheen": -0.0665,
+    "parts": {
+     "colour": 0.9525,
+     "direction": 0.7878,
+     "fuzz": 0.9421,
+     "sheen": 0.867
+    },
+    "score": 0.8874
+   },
+   "crown": {
+    "angle_diff_deg": 8.8794,
+    "coherence_ref": 0.3589,
+    "coherence_ren": 0.1697,
+    "de00_luma_matched": 2.3447,
+    "log2_fuzz": -0.0696,
+    "log2_sheen": -0.0073,
+    "parts": {
+     "colour": 0.8828,
+     "direction": 0.7122,
+     "fuzz": 0.9304,
+     "sheen": 0.9853
+    },
+    "score": 0.8777
+   },
+   "fringe": {
+    "angle_diff_deg": 29.7683,
+    "coherence_ref": 0.1451,
+    "coherence_ren": 0.0954,
+    "de00_luma_matched": 5.5314,
+    "log2_fuzz": 0.1095,
+    "log2_sheen": 0.0111,
+    "parts": {
+     "colour": 0.7234,
+     "direction": 0.6195,
+     "fuzz": 0.8905,
+     "sheen": 0.9779
+    },
+    "score": 0.8028
+   }
+  },
+  "C": {
+   "back_locks": {
+    "angle_diff_deg": 12.8497,
+    "coherence_ref": 0.3107,
+    "coherence_ren": 0.2587,
+    "de00_luma_matched": 1.0282,
+    "log2_fuzz": -0.0296,
+    "log2_sheen": -0.0755,
+    "parts": {
+     "colour": 0.9486,
+     "direction": 0.8052,
+     "fuzz": 0.9704,
+     "sheen": 0.8491
+    },
+    "score": 0.8933
+   },
+   "crown": {
+    "angle_diff_deg": 4.1522,
+    "coherence_ref": 0.3589,
+    "coherence_ren": 0.1923,
+    "de00_luma_matched": 2.419,
+    "log2_fuzz": -0.041,
+    "log2_sheen": -0.0021,
+    "parts": {
+     "colour": 0.879,
+     "direction": 0.7872,
+     "fuzz": 0.959,
+     "sheen": 0.9957
+    },
+    "score": 0.9052
+   },
+   "fringe": {
+    "angle_diff_deg": 24.4801,
+    "coherence_ref": 0.1451,
+    "coherence_ren": 0.1422,
+    "de00_luma_matched": 5.4096,
+    "log2_fuzz": 0.1071,
+    "log2_sheen": 0.0094,
+    "parts": {
+     "colour": 0.7295,
+     "direction": 0.7251,
+     "fuzz": 0.8929,
+     "sheen": 0.9811
+    },
+    "score": 0.8322
+   }
+  }
+ },
+ "pairs": [
+  {
+   "character": "girl",
+   "cohort": "owner version",
+   "local_note": "",
+   "pair": "0.7.1 -> 0.9.0",
+   "preferred": "after",
+   "task": "consolidation",
+   "v1_agree": true,
+   "v1_delta": 2.3656,
+   "v2_agree": true,
+   "v2_base_delta": 2.4571,
+   "v2_delta": 2.4571,
+   "v2_face_states": false
+  },
+  {
+   "character": "boy",
+   "cohort": "owner version",
+   "local_note": "",
+   "pair": "1.1.0 -> 2.0.0",
+   "preferred": "after",
+   "task": "T-080",
+   "v1_agree": true,
+   "v1_delta": 1.2201,
+   "v2_agree": true,
+   "v2_base_delta": 0.2087,
+   "v2_delta": 0.2087,
+   "v2_face_states": false
+  },
+  {
+   "character": "boy",
+   "cohort": "owner version",
+   "local_note": "",
+   "pair": "2.0.0 -> 2.1.0",
+   "preferred": "after",
+   "task": "T-094",
+   "v1_agree": true,
+   "v1_delta": 0.0901,
+   "v2_agree": true,
+   "v2_base_delta": 0.6166,
+   "v2_delta": 0.6166,
+   "v2_face_states": false
+  },
+  {
+   "character": "boy",
+   "cohort": "review candidate",
+   "local_note": "",
+   "pair": "2.1.0 -> 2.2.0",
+   "preferred": "after",
+   "task": "T-122",
+   "v1_agree": false,
+   "v1_delta": -0.4698,
+   "v2_agree": true,
+   "v2_base_delta": -0.6808,
+   "v2_delta": 0.656,
+   "v2_face_states": true
+  },
+  {
+   "character": "boy",
+   "cohort": "owner system",
+   "local_note": "",
+   "pair": "2.0.0 -> 2.0.0 + face3",
+   "preferred": "after",
+   "task": "T-089",
+   "v1_agree": true,
+   "v1_delta": 1.2518,
+   "v2_agree": true,
+   "v2_base_delta": 1.3843,
+   "v2_delta": 1.3843,
+   "v2_face_states": false
+  },
+  {
+   "character": "boy",
+   "cohort": "owner design",
+   "local_note": "",
+   "pair": "A -> C",
+   "preferred": "after",
+   "task": "T-049",
+   "v1_agree": true,
+   "v1_delta": 0.6245,
+   "v2_agree": true,
+   "v2_base_delta": 0.529,
+   "v2_delta": 0.529,
+   "v2_face_states": false
+  },
+  {
+   "character": "boy",
+   "cohort": "owner design",
+   "local_note": "",
+   "pair": "B -> C",
+   "preferred": "after",
+   "task": "T-049",
+   "v1_agree": true,
+   "v1_delta": 0.5464,
+   "v2_agree": true,
+   "v2_base_delta": 0.5332,
+   "v2_delta": 0.5332,
+   "v2_face_states": false
+  },
+  {
+   "character": "girl",
+   "cohort": "owner version",
+   "local_note": "",
+   "pair": "0.10.0 -> 0.11.0",
+   "preferred": "after",
+   "task": "T-081",
+   "v1_agree": false,
+   "v1_delta": -2.1093,
+   "v2_agree": true,
+   "v2_base_delta": 0.473,
+   "v2_delta": 0.473,
+   "v2_face_states": false
+  },
+  {
+   "character": "girl",
+   "cohort": "owner version",
+   "local_note": "",
+   "pair": "0.11.0 -> 0.12.0",
+   "preferred": "after",
+   "task": "T-094",
+   "v1_agree": true,
+   "v1_delta": 2.7187,
+   "v2_agree": true,
+   "v2_base_delta": 3.4052,
+   "v2_delta": 3.4052,
+   "v2_face_states": false
+  },
+  {
+   "character": "girl",
+   "cohort": "review candidate",
+   "local_note": "",
+   "pair": "0.12.0 -> 0.13.0",
+   "preferred": "after",
+   "task": "T-122",
+   "v1_agree": false,
+   "v1_delta": -0.8833,
+   "v2_agree": true,
+   "v2_base_delta": -1.6661,
+   "v2_delta": 1.2617,
+   "v2_face_states": true
+  },
+  {
+   "character": "girl",
+   "cohort": "owner system",
+   "local_note": "",
+   "pair": "0.11.0 -> 0.11.0 + face3",
+   "preferred": "after",
+   "task": "T-089",
+   "v1_agree": true,
+   "v1_delta": 0.2586,
+   "v2_agree": true,
+   "v2_base_delta": 0.0862,
+   "v2_delta": 0.0862,
+   "v2_face_states": false
+  },
+  {
+   "character": "girl",
+   "cohort": "owner design",
+   "local_note": "hair_local A 0.833 -> C 0.877",
+   "pair": "A -> C",
+   "preferred": "after",
+   "task": "T-049",
+   "v1_agree": true,
+   "v1_delta": 2.3411,
+   "v2_agree": true,
+   "v2_base_delta": 2.3863,
+   "v2_delta": 2.3863,
+   "v2_face_states": false
+  },
+  {
+   "character": "girl",
+   "cohort": "owner design",
+   "local_note": "hair_local B 0.856 -> C 0.877",
+   "pair": "B -> C",
+   "preferred": "after",
+   "task": "T-049",
+   "v1_agree": false,
+   "v1_delta": -1.1086,
+   "v2_agree": false,
+   "v2_base_delta": -0.9897,
+   "v2_delta": -0.9897,
+   "v2_face_states": false
+  }
+ ],
+ "schema": "plush-studio.fidelity-v2-evaluation/1",
+ "summary": {
+  "owner design": {
+   "pairs": 4,
+   "v1_agree": 3,
+   "v2_agree": 3
+  },
+  "owner system": {
+   "pairs": 2,
+   "v1_agree": 2,
+   "v2_agree": 2
+  },
+  "owner version": {
+   "pairs": 5,
+   "v1_agree": 4,
+   "v2_agree": 5
+  },
+  "pairs": 13,
+  "review candidate": {
+   "pairs": 2,
+   "v1_agree": 0,
+   "v2_agree": 2
+  },
+  "v1_agree": 9,
+  "v2_agree": 12
+ },
+ "weights_v1": {
+  "colour": 0.1,
+  "face": 0.05,
+  "hair": 0.15,
+  "landmarks": 0.15,
+  "proportions": 0.1,
+  "regions": 0.1,
+  "silhouette": 0.2,
+  "skin": 0.1,
+  "texture": 0.05
+ },
+ "weights_v2": {
+  "colour": 0.1,
+  "face": 0.12,
+  "hair": 0.15,
+  "landmarks": 0.15,
+  "proportions": 0.1,
+  "regions": 0.1,
+  "silhouette": 0.13,
+  "skin": 0.1,
+  "texture": 0.05
+ }
+}
