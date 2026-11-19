@@ -1,0 +1,102 @@
+{
+ "base_spec": "assets/characters/girl_white_hair_blue_dress/spec/girl_white_hair_blue_dress.0.1.0.spec.json @ 05c5602 (t-126a-claude-body-face)",
+ "note": "T-126d materials override (candidate, opt-in). Replaces the base spec's placeholder materials.assignments (skin, hair, hair_bow). Garment materials are entries of clothing.garments[*].materials owned by T-126c; garment_materials below lists the preset + calibrated base colour per garment part for the combine step.",
+ "override": {
+  "materials": {
+   "assignments": {
+    "skin": {
+     "preset": "skin-flock/3",
+     "base_color_srgb": [
+      228,
+      211,
+      197
+     ],
+     "reference_size_m": 0.29278,
+     "source": "T-126d: references/color_targets.json skin (w01 (444,312) +-5px, patch sd 2.5); base colour calibrated (patches.plan.json, patch_metrics.json)"
+    },
+    "hair": {
+     "preset": "felt hair cream/3",
+     "base_color_srgb": [
+      211,
+      204,
+      188
+     ],
+     "reference_size_m": 0.29278,
+     "source": "T-126d: references/color_targets.json hair (w01 (444,262) +-8px, patch sd 6.6); base colour calibrated (patches.plan.json, patch_metrics.json)"
+    },
+    "hair_bow": {
+     "preset": "bow felt/3",
+     "base_color_srgb": [
+      89,
+      114,
+      142
+     ],
+     "reference_size_m": 0.06,
+     "source": "T-126d: references/color_targets.json bow (w01 (318,160) +-4px, patch sd 14.7); base colour calibrated (patches.plan.json, patch_metrics.json)"
+    }
+   }
+  }
+ },
+ "garment_materials": {
+  "dress_body": {
+   "preset": "cable knit/3",
+   "base_color_srgb": [
+    158,
+    189,
+    208
+   ],
+   "reference_size_m": 0.3,
+   "source": "T-126d: references/color_targets.json dress (w01 (444,575) +-10px, patch sd 6.4); base colour calibrated (patches.plan.json, patch_metrics.json)"
+  },
+  "dress_skirt": {
+   "preset": "cable knit/3",
+   "base_color_srgb": [
+    158,
+    189,
+    208
+   ],
+   "reference_size_m": 0.3,
+   "source": "T-126d: references/color_targets.json dress (w01 (444,575) +-10px, patch sd 6.4); base colour calibrated (patches.plan.json, patch_metrics.json)"
+  },
+  "collar": {
+   "preset": "cable knit/3",
+   "base_color_srgb": [
+    165,
+    192,
+    208
+   ],
+   "reference_size_m": 0.3,
+   "source": "T-126d: cable knit/3, collar target (161,178,186) = dress yarn lit flat; base scaled from the calibrated dress base"
+  },
+  "rib_cuff": {
+   "preset": "cable knit/3",
+   "base_color_srgb": [
+    158,
+    189,
+    208
+   ],
+   "reference_size_m": 0.3,
+   "source": "T-126d: references/color_targets.json dress (w01 (444,575) +-10px, patch sd 6.4); base colour calibrated (patches.plan.json, patch_metrics.json)"
+  },
+  "tights": {
+   "preset": "cotton tights/3",
+   "base_color_srgb": [
+    207,
+    204,
+    199
+   ],
+   "reference_size_m": 0.3,
+   "source": "T-126d: references/color_targets.json tights (w01 (385,955) +-6px, patch sd 4.1); base colour calibrated (patches.plan.json, patch_metrics.json)"
+  },
+  "boots": {
+   "preset": "boot shag/3",
+   "base_color_srgb": [
+    169,
+    135,
+    100
+   ],
+   "reference_size_m": 0.3,
+   "source": "T-126d: references/color_targets.json boots (w01 (372,1085) +-10px, patch sd 23.9); base colour calibrated (patches.plan.json, patch_metrics.json)"
+  }
+ }
+}
