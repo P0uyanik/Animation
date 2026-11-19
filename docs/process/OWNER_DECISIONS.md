@@ -534,3 +534,13 @@ renderer/SDF/apps ~5.5k LOC still built and run per CI; hand-written hair spline
 Binding: no negative effect on existing work/stability; no test, threshold, golden or required check removed or
 weakened (nightly move needs a documented equivalent); current/candidate characters unchanged; archive not delete; a
 revert path; green full gate before each merge; no branch deletion. Phase 1+2 keep priority within the 6-session cap.
+
+## 2026-11-19 ~20:45Z: A1 changed to full removal (relayed by the original Supervisor)
+Owner: "I approve changing A1 to a full removal of genuinely unused legacy code from main. I also approve removing tests
+that exclusively cover the deleted legacy functionality, provided they have no relevance to any active system. Before
+removing anything, carefully verify all dependencies, preserve the legacy code and tests through a permanent Git tag,
+and ensure all active functionality and regression tests remain intact. Do not remove any shared components still
+needed by the current engine, especially collision-related SDF functionality. Run all required checks before merging,
+and make sure the entire change can be safely reverted." T-142 updated: dependency report first (to owner), permanent
+tag `archive/legacy-engine-renderer-2026-11-19`, one revertible commit, full gate + nightly Windows + backup runs.
+A2/A4/A3 unchanged.
