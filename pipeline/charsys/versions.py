@@ -122,8 +122,7 @@ _r("groom", "hair_clumps", 1, "hair", declared=False, note="legacy clump hair (h
 _r("groom", "hair_clumps", 2, "hair", declared=False, note="legacy lock-family hair (hair.py; experiments)")
 _r("groom", "groom", 1, "groom")
 _r("groom", "groom", 2, "groom_hybrid")  # T-044 hair v3 (hybrid felt); opt-in, no character pins it yet
-_r("groom", "groom", 3, "groom_r4", declared=False,
-   note="T-091 hair round 4 (planned; opt-in; declared=True once the module lands)")
+_r("groom", "groom", 3, "groom_r4")  # T-091 hair round 4/5 (clump masses, directional fibres); opt-in
 _r("garment", "body_v6", 1, "body_v6", declared=False, note="legacy v6 clothing")
 _r("garment", "garment", 1, "garments")
 _r("garment", "garment", 2, "garments_v2")  # T-093 garment outlines + accessories + reach correctives; opt-in
