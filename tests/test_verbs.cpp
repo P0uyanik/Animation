@@ -728,7 +728,7 @@ TEST_CASE("verbs T-112b: hand.<s>.band keys from a site's fingers block (Step at
     return keep->scene().animation.generated->find("actor/hand.R.band");
   };
   // side_a: grip at 66 mm on the cup's axis, band [0.045, 0.09], thumb opposed -> (-0.021, 0.024, 0).
-  const Track* t = bandOf(R"({"type": "pick_up", "character": "actor", "prop": "cup", "set": "a", "start": 5, "fingers": true})", Json());
+  const Track* t = bandOf(R"({"type": "pick_up", "character": "actor", "prop": "cup", "set": "a", "start": 5, "fingers": true})", "none");
   REQUIRE(t);
   REQUIRE(t->keys.size() == 1);
   CHECK(t->keys[0].frame == 5);
@@ -736,11 +736,11 @@ TEST_CASE("verbs T-112b: hand.<s>.band keys from a site's fingers block (Step at
   CHECK(t->keys[0].value.x == doctest::Approx(0.045 - 0.066).epsilon(1e-4));
   CHECK(t->keys[0].value.y == doctest::Approx(0.09 - 0.066).epsilon(1e-4));
   CHECK(t->keys[0].value.z == 0);
-  // With a profile the band is written; without one (legacy expansion) and with "fingers": false it is not.
+  // With a profile the band is written; with "timing": "none" (legacy expansion) and with "fingers": false it is not.
   const Track* p = bandOf(R"({"type": "pick_up", "character": "actor", "prop": "cup", "set": "a", "start": 5})", "calibrated");
   REQUIRE(p);
   CHECK(p->keys[0].frame == 5 + calibrated().frames("anticipation", 8, nullptr));  // the reach start, after the anticipation
-  CHECK(bandOf(R"({"type": "pick_up", "character": "actor", "prop": "cup", "set": "a", "start": 5})", Json()) == nullptr);
+  CHECK(bandOf(R"({"type": "pick_up", "character": "actor", "prop": "cup", "set": "a", "start": 5})", "none") == nullptr);
   CHECK(bandOf(R"({"type": "pick_up", "character": "actor", "prop": "cup", "set": "a", "start": 5, "fingers": false})", "calibrated") ==
         nullptr);
 }
