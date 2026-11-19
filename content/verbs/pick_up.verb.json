@@ -1,0 +1,18 @@
+{
+ "format": "plush.verb",
+ "version": 1,
+ "id": "pick_up",
+ "description": "Reach for a free prop and take it in one hand (design docs/architecture/INTERACTION_AFFORDANCES.md 4.1). Lowers to the grasp primitive; fallbacks are today's engine defaults (design 3.3).",
+ "requires": {"hand_state": "empty", "prop_state": "free", "affordances": "optional"},
+ "phases": [
+  {"name": "look", "beat": "reaction_delay", "fallback_f": 4, "curve": "linear", "drives": ["gaze"], "target": "prop"},
+  {"name": "anticipate", "beat": "anticipation", "fallback_f": 8, "curve": "hold", "drives": ["hold_pose"], "optional": true},
+  {"name": "approach", "beat": "reach", "share": "approach", "fallback_f": 14, "curve": "ease_in_out",
+   "drives": ["ik", "orient", "hand_shape:open"], "constraints": ["reachable"]},
+  {"name": "contact", "beat": "reach", "share": "contact", "curve": "slow_in",
+   "drives": ["ik", "hand_shape:closed", "grasp_weight"], "constraints": ["palm_on_socket<=0.5mm", "reachable"],
+   "events": ["parent:hand"]},
+  {"name": "settle", "beat": "settle", "fallback_f": 12, "curve": "slow_out", "drives": ["hold_pose"], "optional": true}
+ ],
+ "lowers_to": "grasp"
+}

@@ -41,12 +41,14 @@
 // in the way, focuses on the subject with a shallow aperture for close-ups and pushes in gently during each shot.
 // Any hand-keyed camera track overrides the director.
 #include <algorithm>
+#include <array>
 #include <format>
 #include <set>
 
 #include "scene/emotion.h"
 #include "scene/reaction.h"
 #include "scene/scene.h"
+#include "scene/verbs.h"
 
 namespace plush {
 namespace {
@@ -401,6 +403,46 @@ Result<void> SceneEvaluator::compileActionsBody() {
     auto pr = animPrinciplesFromJson(scene_.animPrinciples);
     principles_ = pr ? *pr : AnimPrinciples{};
   }
+  // T-112a: verb actions (pick_up, carry, place with "verb": true) expand into primitive actions first
+  // (scene/verbs.h, a pure pre-pass); a scene without one never enters it and compiles its authored list.
+  std::optional<VerbExpansion> verbs;
+  std::optional<TimingProfile> verbTiming;
+  if (hasVerbAction(scene_.actions)) {
+    VerbContext vc;
+    vc.frameStart = scene_.frameStart;
+    if (scene_.timing.is_string()) {
+      const auto file = findTimingProfileFile(scene_.path, scene_.timing.get<std::string>());
+      if (file.empty()) return fail(std::format("timing profile '{}' not found in content/timing", scene_.timing.get<std::string>()));
+      auto t = loadTimingProfile(file);
+      if (!t) return std::unexpected(t.error());
+      verbTiming = std::move(*t);
+      vc.timing = &*verbTiming;
+    }
+    for (size_t c = 0; c < scene_.characters.size(); ++c) {
+      VerbContext::Character vch{scene_.characters[c].name, personality(c)};
+      const Skeleton& sk = characters_[c].asset.skeleton;
+      for (char side : {'L', 'R'}) {
+        const int hb = characterSocketBone(c, std::string("hand.") + side);
+        const int mb = hb >= 0 ? sk.bones[size_t(hb)].parent : -1, rb = mb >= 0 ? sk.bones[size_t(mb)].parent : -1;
+        if (rb >= 0)
+          vch.armLength[side == 'L' ? 0 : 1] = glm::distance(sk.bones[size_t(rb)].head, sk.bones[size_t(mb)].head) +
+                                               glm::distance(sk.bones[size_t(mb)].head, sk.bones[size_t(hb)].head);
+      }
+      vc.characters.push_back(vch);
+    }
+    for (size_t p = 0; p < scene_.props.size(); ++p)
+      vc.props.push_back({scene_.props[p].name, p < propAssets_.size() ? &propAssets_[p] : nullptr, scene_.props[p].transform,
+                          scene_.props[p].parent});
+    vc.verb = [&](const std::string& id) -> Result<VerbDef> {
+      const auto file = findVerbFile(scene_.path, id);
+      if (file.empty()) return fail(std::format("verb '{}' not found in content/verbs", id));
+      return loadVerb(file);
+    };
+    auto x = expandVerbs(scene_.actions, vc);
+    if (!x) return fail(x.error().message());
+    verbs = std::move(*x);
+  }
+  const Json& authoredActions = verbs ? verbs->actions : scene_.actions;
   reactionActions_ = Json::array();
   if (!scene_.events.is_null()) {  // T-097D: opt-in reaction events, played as generated actions
     auto ra = planReactionActions();
@@ -411,8 +453,8 @@ Result<void> SceneEvaluator::compileActionsBody() {
   InteractionContext interactions;
 
   std::vector<const Json*> actions;
-  if (scene_.actions.is_array())
-    for (const Json& a : scene_.actions) actions.push_back(&a);
+  if (authoredActions.is_array())
+    for (const Json& a : authoredActions) actions.push_back(&a);
   for (const Json& a : reactionActions_) actions.push_back(&a);  // after the authored ones: ties keep authored first
   auto startOf = [](const Json* a) { return num(*a, "start", num(*a, "frame", 0)); };
   std::stable_sort(actions.begin(), actions.end(), [&](const Json* a, const Json* b) { return startOf(a) < startOf(b); });
@@ -724,7 +766,24 @@ Result<void> SceneEvaluator::compileActionsBody() {
       const int oc = has(a, "atCharacter") ? charIndex(str(a, "atCharacter")) : -1;
       if (has(a, "atCharacter") && oc < 0) return fail(std::format("look: unknown character '{}'", str(a, "atCharacter")));
       const int ocHead = oc >= 0 ? characters_[size_t(oc)].asset.skeleton.find("head") : -1;
+      // "atProp" (T-112a): a prop's middle (the centre of its primitive mesh or collision proxy), as it moves.
+      int op = -1;
+      if (has(a, "atProp")) {
+        for (size_t p = 0; p < scene_.props.size(); ++p)
+          if (scene_.props[p].name == str(a, "atProp")) op = int(p);
+        if (op < 0) return fail(std::format("look: unknown prop '{}'", str(a, "atProp")));
+      }
+      vec3 propMiddle(0);
+      if (op >= 0 && size_t(op) < propAssets_.size()) {
+        const PropAsset& pa = propAssets_[size_t(op)];
+        if (pa.mesh.kind == AssetMeshSource::Kind::Primitive) {
+          if (pa.mesh.primitive == AssetMeshSource::Primitive::Cylinder) propMiddle = vec3(0, 0.5f * pa.mesh.height * pa.scaleMetres, 0);
+        } else if (pa.collision) {
+          propMiddle = pa.collision->transform.translation;
+        }
+      }
       auto target = [&](double f) {
+        if (op >= 0) return vec3(propWorld(size_t(op), f) * vec4(propMiddle, 1));
         if (o >= 0) return objPos(o, f);
         if (oc >= 0) {
           if (ocHead < 0) return scene_.characters[size_t(oc)].position + vec3(0, 0.6f, 0);
@@ -1470,6 +1529,44 @@ Result<void> SceneEvaluator::compileActionsBody() {
     gen->tracks[track].keys = std::move(keys);
   }
   if (auto r = finishInteractions(*gen, interactions); !r) return r;
+  if (verbs) {  // T-112a: the verbs' constraints on the compiled motion (read only); under a verb they are errors
+    auto ci = [&](const std::string& n) {
+      for (size_t c = 0; c < scene_.characters.size(); ++c)
+        if (scene_.characters[c].name == n) return c;
+      return size_t(0);
+    };
+    auto pi = [&](const std::string& n) {
+      for (size_t p = 0; p < scene_.props.size(); ++p)
+        if (scene_.props[p].name == n) return p;
+      return size_t(0);
+    };
+    auto chain = [&](const std::string& who, char side) {  // hand, forearm, upper arm bones
+      const int hb = characterSocketBone(ci(who), std::string("hand.") + side);
+      const auto& B = characters_[ci(who)].asset.skeleton.bones;
+      const int mb = hb >= 0 ? B[size_t(hb)].parent : -1;
+      return std::array<int, 3>{hb, mb, mb >= 0 ? B[size_t(mb)].parent : -1};
+    };
+    VerbGeometry g;
+    g.shoulder = [&](const std::string& who, char side, double f) {
+      const int rb = chain(who, side)[2];
+      return rb < 0 ? vec3(0) : vec3(characterGlobals(ci(who), f)[size_t(rb)][3]);
+    };
+    g.wristTarget = [&](const std::string& who, char side, double f) {
+      const int hb = chain(who, side)[0];
+      if (hb < 0) return vec3(0);
+      return scene_.animation.evaluate(who + "/ik." + characters_[ci(who)].asset.skeleton.bones[size_t(hb)].name, f, vec3(0));
+    };
+    g.armLength = [&](const std::string& who, char side) {
+      const auto k = chain(who, side);
+      if (k[2] < 0) return 0.0f;
+      const auto& B = characters_[ci(who)].asset.skeleton.bones;
+      return glm::distance(B[size_t(k[2])].head, B[size_t(k[1])].head) + glm::distance(B[size_t(k[1])].head, B[size_t(k[0])].head);
+    };
+    g.palm = [&](const std::string& who, char side, double f) { return handGripPoint(ci(who), side, f); };
+    g.propWorld = [&](const std::string& prop, double f) { return propWorld(pi(prop), f); };
+    g.asset = [&](const std::string& prop) -> const PropAsset* { return pi(prop) < propAssets_.size() ? &propAssets_[pi(prop)] : nullptr; };
+    if (auto errors = checkVerbConstraints(*verbs, g); !errors.empty()) return fail(errors.front().message());
+  }
   if (scene_.director.is_object()) planShots(*this, *gen, beats);
   return {};
 }

@@ -1,0 +1,13 @@
+{
+ "format": "plush.verb",
+ "version": 1,
+ "id": "carry",
+ "description": "Carry a held prop to a point or by an offset, world orientation kept (design 4.2). Lowers to the hold primitive.",
+ "requires": {"hand_state": "holding", "prop_state": "held", "affordances": "optional"},
+ "phases": [
+  {"name": "manipulate", "beat": "hold", "fallback_f": 16, "travel": true, "curve": "ease_in_out",
+   "drives": ["ik", "orient"], "constraints": ["upright", "reachable"]},
+  {"name": "settle", "beat": "settle", "fallback_f": 12, "curve": "hold", "drives": ["hold_pose"], "optional": true}
+ ],
+ "lowers_to": "hold"
+}
