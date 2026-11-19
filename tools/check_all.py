@@ -523,6 +523,7 @@ def check_python_tests(logs: Path) -> Result:
         [sys.executable, str(ROOT / "tools/lipsync/test_lipsync.py")],  # T-054a lip sync (T-077)
         [sys.executable, str(ROOT / "tools/tests/test_version_switch.py")],  # T-088 version switch
         [sys.executable, str(ROOT / "pipeline/charsys/tests/test_materials_r2.py")],  # T-092 presets/3
+        [sys.executable, str(ROOT / "pipeline/charsys/tests/test_felt_surface.py")],  # T-110 presets/4
         [sys.executable, str(ROOT / "pipeline/production/tests/test_sets.py")],  # T-098L set data
         [sys.executable, str(ROOT / "tools/fit/tests/test_fit.py")],  # T-090 fit optimiser
         [sys.executable, str(ROOT / "pipeline/charsys/tests/test_face_v3.py")],  # T-089 face/3 (plain checks)
@@ -883,6 +884,8 @@ def check_blender(blender: str, artifacts: Path, logs: Path, required: bool, cha
                                     str(ROOT / "pipeline/charsys/tests/test_render_engine.py")], None),
         ("materials r2 graphs", [executable, "-b", "--factory-startup", "-P",
                                  str(ROOT / "pipeline/charsys/tests/test_materials_r2_graphs.py")], None),  # T-092
+        ("felt surface graphs", [executable, "-b", "--factory-startup", "-P",
+                                 str(ROOT / "pipeline/charsys/tests/test_felt_surface_graphs.py")], None),  # T-110
         ("garments v2 quick", [sys.executable, str(ROOT / "pipeline/charsys/tests/test_garments_v2.py"),
                                "--blender", executable, "--quick"], None),  # T-093 pin + validate (full run: local)
         ("groom dynamics", [executable, "-b", "--factory-startup", "-P",
