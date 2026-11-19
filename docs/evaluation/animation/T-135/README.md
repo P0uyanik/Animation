@@ -65,3 +65,29 @@ girl `hand.L` f104–114 (`--window`), in [e1a/](e1a/). The segmented moves of `
   but still loses 41 % of the peak in one frame (60.0 → 35.3).
 - **New:** the boy's wrist nearly stops for one frame at **f52** (7.7 → 0.9 → 5.8 mm/f), in the drift before the
   reach. The baseline has 8.0 there. The hips turn slightly at the same time (0.10 °/f, f50–51).
+
+### E1a+b+c: e910 `s010_e1` vs `s010` (T-134 `1443e7c`)
+
+Same method as above. `s010` from this engine build is still frame-identical to the baseline. Data: [e1abc/](e1abc/).
+
+| | baseline s010 | E1a | E1a+b+c |
+| --- | --- | --- | --- |
+| boy f57–76: stall / 1-frame drop / 2-frame drop (mm/f, share of peak) | 0.24 / 11.8 / 19.4 (0.64) | 0.03 / 12.7 / 18.8 (0.53) | 0.05 / 9.3 / 17.6 (0.59 of 29.6) |
+| girl f104–114: stall / 1-frame drop / 2-frame drop | 0.11 / 31.0 / 40.2 (0.77) | 0.01 / 24.7 / 33.8 (0.56) | 0.00 / 19.1 / 29.6 (0.56 of 52.7) |
+| chest lead (onset / peak, f) boy · girl | – · – | +11/+4 · ≈+2/+4 | +11/+3 · +12/+3 |
+| clavicle `DEF-shoulder` rotation | 0.05 °/f | 0.05 | 0.05 (no lead) |
+| hips rotation peak boy · girl (°/f) | 0.05 · 0.06 | 0.10 · 0.24 | 0.09 · 0.24 (no translation) |
+| boy wrist at the f53 hitch (mm/f, f52–54) | 7.1 6.0 7.0 | 7.7 0.9 5.8 | 7.7 3.1 6.2 |
+| boy carry f81–97: deviation mm (share), bulge up | 0 (straight) | 0 | 16 (0.12), +0.35 |
+| boy carry f100–110 | 0 (straight) | 0 | 9 (0.12), +0.41 |
+| girl f104–115 hips / chest (°/f) | ≤0.03 / ≤0.15 | – | 0.24→0.03 by f108 / 1.06 at f106 → 0.12 by f110; hand rotation same as baseline (peak 30 °/f f107–108, 0 from f112) |
+| after contact, 30 f: head max °/f · hair max / mean °/f, swings > 0.5 °/f: boy | 0.08 · 3.2 / 0.86, 4 | – | 0.07 · 5.5 / 2.4, 5 |
+| girl | 0.08 · 24 / 7.7, 4 | – | 0.07 · 24 / 8.8, 6 |
+
+- Slow-down after the peak: softer than baseline for the girl, about the same for the boy.
+- Clavicle: does not rotate, so there is no clavicle lead.
+- Hips: a small turn for the girl only (0.24 °/f at f104).
+- f53 hitch: reduced from 0.9 to 3.1 mm/f, but still deeper than baseline (6.0).
+- Carries: now arc upward, by 12 % of the chord.
+- Girl's reach end (f109–110): no turn spike. The chest turn has faded by f110 and the hand rotation matches baseline.
+- After contact: the head is unchanged and does not react. Hair moves more (boy mean ×2.8) and swings 1–2 more times.
