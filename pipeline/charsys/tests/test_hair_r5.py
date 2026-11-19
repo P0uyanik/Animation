@@ -70,6 +70,81 @@ def hair(*sts, **kw):
     return dict({"generator": "groom/4", "structures": [{"type": "scalp_cap", "name": "cap"}] + list(sts)}, **kw)
 
 
+WAVY = {"type": "locks", "name": "waves", "style": "wavy", "count": 3, "az": [100, 160], "el_root": [0, 5],
+        "hang_radii": [0.17, 0.15], "z_end": [0.4, 0.44], "width": 0.04, "thick": 0.03, "mirror": True,
+        "wave": {"amplitude": 0.015, "wavelength": 0.12, "depth": 0.3},
+        "stagger": {"z_end": [0.0, 0.05], "phase_deg": [0, 30]}}
+
+
+def third_character():
+    """T-126b: designed wave phase and the hair-surface accessory seat (generic), and the third character's override."""
+    low, info = G5.lower(hair(WAVY))
+    locks = [s for s in low["structures"] if s["type"] == "locks"]
+    check("wave phase: staggered wavy locks validate", G5.validate(hair(WAVY)) == [], G5.validate(hair(WAVY)))
+    check("wave phase: every lock is built straight and carries its designed wave",
+          len(locks) == 6 and all(s["wave"]["amplitude"] == 0.0 and s[G5.WAVE_KEY]["amplitude"] == 0.015
+                                  and s[G5.WAVE_KEY]["wavelength"] == 0.12 and s[G5.WAVE_KEY]["depth"] == 0.3
+                                  for s in locks))
+    check("wave phase: the list repeats over the locks; the mirrored side adds 180 degrees",
+          [s[G5.WAVE_KEY]["phase_deg"] for s in locks] == [0, 30, 0, 180, 210, 180])
+    check("wave phase: the source spec is not changed by lowering", WAVY["wave"]["amplitude"] == 0.015
+          and G5.WAVE_KEY not in WAVY)
+    plain = dict(WAVY, stagger={"z_end": [0.0, 0.05]})
+    check("wave phase: staggered locks without phase_deg keep the groom/3 wave (no designed wave)",
+          all(G5.WAVE_KEY not in s and s["wave"]["amplitude"] == 0.015
+              for s in G5.lower(hair(plain))[0]["structures"] if s["type"] == "locks"))
+    curly = dict(LOCKS, stagger=dict(LOCKS["stagger"], phase_deg=[0, 30]))
+    check("wave phase: refused on locks that are not wavy", any("phase_deg" in e for e in G5.validate(hair(curly))))
+    check("wave phase: an empty phase list is refused",
+          G5.validate(hair(dict(WAVY, stagger={"phase_deg": []}))) != [])
+    check("wave phase: depth outside 0..1 is refused",
+          G5.validate(hair(dict(WAVY, wave=dict(WAVY["wave"], depth=1.5)))) != [])
+    bow = {"type": "felt_bow", "name": "bow", "az": -40, "el": 45, "out": 0.004, "size": 0.1}
+    check("accessory seat: \"hair\" validates on a felt bow", G5.validate(hair(dict(bow, seat="hair"))) == [])
+    check("accessory seat: an unknown seat is refused",
+          any("seat" in e for e in G5.validate(hair(dict(bow, seat="scalp_top")))))
+    check("accessory seat: a spec with only a seat is still a groom/3 spec for the build (lowered to itself)",
+          G5.lower(hair(dict(bow, seat="hair")))[0]["structures"][1].get("seat") == "hair"
+          and not G5.lower(hair(dict(bow, seat="hair")))[1])
+    src = open(os.path.join(CHARSYS, "groom_r5.py")).read()
+    names = [os.path.basename(os.path.dirname(os.path.dirname(p))) for p in
+             glob.glob(os.path.join(ROOT, "assets", "characters", "*", "references", ""))]
+    check("groom_r5 names no character", names and not any(n in src for n in names), names)
+    p = os.path.join(ROOT, "docs", "evaluation", "characters", "T-126", "hair", "candidates",
+                     "girl_white_hair_blue_dress.hair.override.json")
+    if not os.path.exists(p):
+        return
+    ov = json.load(open(p))["override"]
+    hs = ov["hair"]
+    check("third: the override changes only generators.groom and hair, and pins groom/4",
+          set(ov) == {"generators", "hair"} and ov["generators"] == {"groom": "groom/4"} and hs["generator"] == "groom/4")
+    check("third: the hair validates", G5.validate(hs) == [], G5.validate(hs)[:3])
+    buns = by_name(hs, "buns")["buns"]
+    check("third: two top buns, mirrored, wrapped in opposite directions",
+          len(buns) == 2 and buns[0]["az"] == -buns[1]["az"] and buns[0]["el"] >= 45
+          and {b["wrap"] for b in buns} == {"cw", "ccw"} and all(b["turns"] >= 1 for b in buns))
+    wav = [s for s in hs["structures"] if s["type"] == "locks"]
+    check("third: every lock structure is wavy with a designed phase, staggered tapered ends",
+          len(wav) >= 4 and all(s["style"] == "wavy" and s["stagger"].get("phase_deg") and s["stagger"].get("z_end")
+                                and s["end_scale"] < 0.6 for s in wav))
+    back = by_name(hs, "back_locks")["stagger"]["phase_deg"]
+    check("third: neighbouring back locks wave roughly together (phase spread under a quarter wave)",
+          max(((a - b + 180) % 360) - 180 for a in back for b in back) <= 90, back)
+    check("third: fringe clumps and wavy side locks in front of the ears",
+          len(by_name(hs, "fringe")["items"]) >= 5 and by_name(hs, "side_locks").get("mirror")
+          and by_name(hs, "side_locks")["az"][0] > hs["face_keepout"]["az"])
+    bw = by_name(hs, "bow")
+    tails = [l for l in bw["loops"] if 180 < l["angle_deg"] % 360 < 360]
+    check("third: a felt bow (two loops, two shorter and narrower tails), seated on the hair surface",
+          bw["type"] == "felt_bow" and bw.get("seat") == "hair" and len(bw["loops"]) == 4 and len(tails) == 2
+          and all(t["width"] < l["width"] and t["length"] < l["length"] for t in tails for l in bw["loops"]
+                  if l not in tails) and not any(s["type"] == "flowers" for s in hs["structures"]))
+    low, info = G5.lower(hs)
+    dyn = low["dynamics"]["structures"]
+    check("third: every lowered lock keeps a dynamics chain setting; buns have one",
+          all(s["name"] in dyn for s in low["structures"] if s["type"] == "locks") and "buns" in dyn)
+
+
 def main():
     check("groom_r5 declares groom/4", G5.GENERATOR_VERSIONS == ("groom/4",))
     check("registry: groom/4 is implemented by groom_r5", V.REGISTRY.entry("groom", "groom/4")["module"] == "groom_r5")
@@ -227,6 +302,7 @@ def main():
             check("girl: one flower, nearer the front and turned to the front quarter",
                   len(by_name(hs, "flowers")["items"]) == 1 and abs(f1["around_deg"]) < abs(f0["around_deg"])
                   and 0 < f1["turn"]["toward"][0] < 45 and f1["turn"]["amount"] > 0)
+    third_character()
     n = len(RESULTS)
     print(f"[test_hair_r5] {sum(RESULTS)}/{n} passed")
     return 0 if all(RESULTS) else 1
