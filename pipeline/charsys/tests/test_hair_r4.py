@@ -148,15 +148,22 @@ def main():
     check("valid minimal masses spec accepted", not errs_with(
         {"type": "masses", "name": "m", "items": [{"root": [90, 30], "tip": [90, 0], "width": 0.08}]}))
 
-    # the approved specs never pin groom/3 (all published specs and overrides outside candidates)
+    # the approved specs never pin groom/3: the base spec, every override and the spec of the store's approved
+    # version (T-094 adds new candidate version specs that do pin it; only the owner makes one approved)
     pinned = []
     for c in CHARS.values():
         d = os.path.join(ROOT, "assets", "characters", c[0], "spec")
+        with open(os.path.join(ROOT, "assets", "characters", c[0], "versions", "index.json")) as fh:
+            approved = json.load(fh)["pointers"]["approved"]
         for f in os.listdir(d):
-            if f.endswith(".json"):
-                if "groom/3" in open(os.path.join(d, f)).read():
-                    pinned.append(f)
-    check("no published spec or override outside candidates/ pins groom/3", not pinned, pinned)
+            if not f.endswith(".json"):
+                continue
+            versioned = f.endswith(".spec.json") and f != c[0] + ".spec.json"
+            if versioned and f != f"{c[0]}.{approved}.spec.json":
+                continue  # a candidate version spec (not approved)
+            if "groom/3" in open(os.path.join(d, f)).read():
+                pinned.append(f)
+    check("no approved spec, base spec or override outside candidates/ pins groom/3", not pinned, pinned)
 
     ok = all(RESULTS)
     print(f"[test_hair_r4] {'ALL PASS' if ok else 'FAILED'} ({sum(RESULTS)}/{len(RESULTS)})")
