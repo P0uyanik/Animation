@@ -1,0 +1,93 @@
+{
+ "format": "plush.golden_hashes",
+ "input_sha": "6df7e8e",
+ "note": "SHA-256 of the generated clip and the engine plush.shot_bake/1 output per scene (tests/test_bake_golden.cpp). Content scenes use the imported test packages tests/data/imported (boy_yellow_hoodie_1.0.0, girl_auburn_bun_glasses_m3) as their cast: engine regression only. One hash set per toolchain; regenerate only for an intended change named in the commit.",
+ "task": "T-112a",
+ "toolchains": {
+  "linux-x86_64-gcc-13": {
+   "scenes": {
+    "content/scenes/eval/exchange/shot.scene.json": {
+     "bake": "98747664b3944c16e7a57cff678ca13f32f9925715653d984f425afb9892bc91",
+     "clip": "9fb50e1ed38e1760526bbb9ca93632568eebe9e0d88fa256682befa37d799e52"
+    },
+    "content/scenes/eval/handover/shot.scene.json": {
+     "bake": "00b3c98077bf44699972a8890bc673d26d2e34844a737ae6ea2db1e888c84c1b",
+     "clip": "0bf29917a0f5989c1faa417fefb5de535b232c8bb03f6d0d6753b5533e840269"
+    },
+    "episodes/e901_clip_test/shots/s010/shot.scene.json": {
+     "bake": "f254fb2aaa8dfc620d211de7bd317e0fd6138d2a6236a5338be2753e0f3ae0ad",
+     "clip": "be1117b281e4e2b808da584bd5829d2698345abce016565c5fbe014d1849d202"
+    },
+    "episodes/e905_props_test/shots/s010/shot.scene.json": {
+     "bake": "2944af2bd01be2ca2788fd5c854aac1a073e0af17d3f8daf962cf0424a3e38a3",
+     "clip": "ca227fb6ffa28d14bc73322d256ab6855c3e54a6d8fb1ecb92251168ed078ab7"
+    },
+    "episodes/e907_exchange/shots/s010/shot.scene.json": {
+     "bake": "dcd8f48f0f62a6a45eb1d34435d1848cb374e1c0fb2c5fe04a3725619abf1c8b",
+     "clip": "9fb50e1ed38e1760526bbb9ca93632568eebe9e0d88fa256682befa37d799e52"
+    },
+    "episodes/e907_exchange/shots/s010_calibrated/shot.scene.json": {
+     "bake": "7e05e0b0b19368beb6cd706c5b51cd21a9ff66580a1bb3f6acf91b3a6f0352f3",
+     "clip": "c5355919b5dd31de3722fa3cd14a933a2b33fc50d22eb8a90db4af8e155a7042"
+    },
+    "test_interaction/handover/boy_to_girl": {
+     "bake": "12e53aa2e7cc82216a86802e889548ac7841616200f9570ee796a22e13ae5f74",
+     "clip": "fd1f335ea78dd87d79c4e43a3aa9deb223118be9d8cb2d6a8f01c28194243d4c"
+    },
+    "test_interaction/handover/girl_to_boy": {
+     "bake": "dcfe8a175e394218d54830809013f8d3556bd1498180ed6d16cfec018d1b0953",
+     "clip": "668bff83bc2e1f550e0f1eb11ad58756f3a9cedd33721d49cd0046c148983103"
+    },
+    "test_interaction/holdIntoBody/boy": {
+     "bake": "6bb146be5b93257249c27559eaa06e9abebfe38f7a22a9104f00de6b51b6f975",
+     "clip": "f0f78f0a5225f9407084090570ffb5684b2762c569e2f72a8be9456d52dd05bd"
+    },
+    "test_interaction/holdIntoBody/girl": {
+     "bake": "6ffd334bb969e91feb69daf2a4c61e82f9ec06b2b1b4115a914b33eba2f966f1",
+     "clip": "2af9e8cf2fb9be5dd0b7272b29047b4c52f5b7ee369660927d1450626705ce51"
+    },
+    "test_interaction/meetingPoint/boy_to_girl": {
+     "bake": "af6869c71266197c296116a290d9bb73e96e9178f61b6065b52c7fec7e07f58d",
+     "clip": "114c874fcf9dd2e2d9c37c23ea2a1a8fd2840608013bddbeb2548dfc5aa1c641"
+    },
+    "test_interaction/meetingPoint/girl_to_boy": {
+     "bake": "1379b74e09b6ba85c86fc642de30e844640e95e86ed1fdf8be37ae80f60bfa55",
+     "clip": "3b5d804ff380772aaef90113a2fa1191f0e1ed9adb5a400fcf005a26d1a07d71"
+    },
+    "test_interaction/pickUpAndPlace/boy": {
+     "bake": "10727cecf6d2262ac11f0a3781ffffeab5fe3cad72d05f1c354d7e2f966871e5",
+     "clip": "7d94e416e5ed879f013f56c53f203700bd47118b5946d5a0baa6a47c5a448b11"
+    },
+    "test_interaction/pickUpAndPlace/engine": {
+     "bake": "4598dd691741cc0e3e847753391959293af6b1e18c8d0cd0a799c29f00748740",
+     "clip": "6bc29af7e0b7d17e58d2ecdd57594213262a29e0bda31da7afbcee60965f87a8"
+    },
+    "test_interaction/pickUpAndPlace/girl": {
+     "bake": "bd5be7ca32cfe21e5b530ad7c91bc600d0404020890e7d488e16a9a45a32e600",
+     "clip": "2beee0dfc692f2d27867dea9731bb5284049ecf518f29ed37a008dba84fdfb08"
+    },
+    "test_interaction/sharedFollow/off": {
+     "bake": "3be137748ce92cf2ece42e255d6c2c95ab351132e247cbfd8632d62a8890e29c",
+     "clip": "362d4112dd88773c31f19f663a3c0cb2e947e24403bccbeeb3e8f3e3709f45d3"
+    },
+    "test_interaction/sharedFollow/on": {
+     "bake": "4de829add29bb219e953f636d9f63d23c868ab820f98514ea479b59d84aaa6b7",
+     "clip": "5938960cc5a3606984286c3f32149a04b822d76f60b2e195966a8985181f737b"
+    },
+    "test_interaction/visibleGrip/boy": {
+     "bake": "6f8219d638706c3a4a9e7bae2aac42461fb575e6a391cf72bce41642c5b2dd5a",
+     "clip": "f8de777b718cb4f0bce33eef799c9d90044cdaea37b60afa0c37dabf72826b87"
+    },
+    "test_interaction/visibleGrip/engine": {
+     "bake": "c0ac3d8cfb5e109c6ae3967e91f3c7d25966e14f60388d2cf6d3564a6ee8d4e7",
+     "clip": "639da7a89be26e611471a86d855fde895f64e6d7b40dbbdeba857a632bcb6c12"
+    },
+    "test_interaction/visibleGrip/girl": {
+     "bake": "8f6410876c68e784154a62cac81d4ff5bbca8fb01c746f2f2476188195957986",
+     "clip": "831dc6eb8767f1ef9ab39d3f65b5557f48e8659b231f09beb3db9bfc6b683573"
+    }
+   }
+  }
+ },
+ "version": 1
+}
