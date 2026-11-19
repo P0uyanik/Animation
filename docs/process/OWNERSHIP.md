@@ -16,6 +16,6 @@ means none. Branch is the task's branch; a task branch without a row falls back 
 
 | Task | Lane | Branch | Write-set | Depends on | Versions bumped |
 | --- | --- | --- | --- | --- | --- |
-| T-113 | C | t-113-claude-expressions | `pipeline/charsys/face_library/{expressions.json,README.md}`, `pipeline/charsys/face_v3/lids.py` (closed-lid fit only), `content/emotions/{boy,girl}_*.emotion.json`, `content/personality/*.json` (emotion references only), `episodes/e908_*/shots/s010/shot.scene.json`, `pipeline/charsys/tests/test_expressions_r3*.py`, `tests/acting/test_*_signature.py`, `docs/evaluation/characters/T-113/**` | engine (read-only) | — |
+| T-114 | C | t-114-claude-two-char-acting | `episodes/e909_two_char_acting/**`, `tests/acting/test_e909_beats.py`, `docs/evaluation/animation/T-114/**` | engine, content (read-only) | — |
 
 Supervisor-only files: docs/process/TASK_LOG.md, docs/ROADMAP.md, docs/process/OWNER_DECISIONS.md, docs/tasks/**.
