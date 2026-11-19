@@ -130,6 +130,55 @@ Result<PropAsset> loadSceneAsset(const std::filesystem::path& scenePath, const s
 
 mat4 objectMatrix(vec3 pos, float yawDeg, float scale) { return objectMatrixLocal(pos, yawDeg, scale); }
 
+Result<std::vector<SceneEvent>> reactionEventsFromJson(const Json& j) {
+  std::vector<SceneEvent> out;
+  if (j.is_null()) return out;
+  if (!j.is_array()) return fail("events must be a list");
+  static const std::pair<const char*, ReactionEvent::Kind> kinds[] = {
+      {"object_appears", ReactionEvent::Kind::ObjectAppears}, {"partner_acts", ReactionEvent::Kind::PartnerActs},
+      {"success", ReactionEvent::Kind::Success},              {"failure", ReactionEvent::Kind::Failure},
+      {"custom", ReactionEvent::Kind::Custom}};
+  for (const Json& e : j) {
+    if (!e.is_object()) return fail("events: every event must be an object");
+    SceneEvent se;
+    ReactionEvent& r = se.event;
+    auto text = [&](const char* k) -> Result<std::string> {
+      auto it = e.find(k);
+      if (it == e.end() || it->is_null()) return std::string();
+      if (!it->is_string()) return fail(std::format("events: '{}' must be a string", k));
+      return it->get<std::string>();
+    };
+    auto kind = text("kind"), name = text("name"), source = text("source");
+    if (!kind) return std::unexpected(kind.error());
+    if (!name) return std::unexpected(name.error());
+    if (!source) return std::unexpected(source.error());
+    r.name = *name;
+    r.source = *source;
+    if (!kind->empty()) {
+      const auto* k = std::find_if(std::begin(kinds), std::end(kinds), [&](const auto& p) { return *kind == p.first; });
+      if (k == std::end(kinds)) return fail(std::format("events: unknown kind '{}'", *kind));
+      r.kind = k->second;
+    }
+    if (r.kind == ReactionEvent::Kind::Custom && r.name.empty()) return fail("events: a custom event needs a 'name'");
+    const Json t = e.value("time", Json());
+    if (!t.is_number() || !(t.get<double>() >= 0)) return fail(std::format("event '{}': 'time' must be seconds >= 0", r.name));
+    r.time = t.get<double>();
+    const Json sal = e.value("salience", Json(1.0));
+    if (!sal.is_number() || !(sal.get<double>() >= 0 && sal.get<double>() <= 1))
+      return fail(std::format("event '{}': 'salience' must be in [0, 1]", r.name));
+    r.salience = sal.get<float>();
+    if (auto it = e.find("characters"); it != e.end() && !it->is_null()) {
+      if (!it->is_array()) return fail(std::format("event '{}': 'characters' must be a list of names", r.name));
+      for (const Json& n : *it) {
+        if (!n.is_string()) return fail(std::format("event '{}': 'characters' must be a list of names", r.name));
+        se.characters.push_back(n.get<std::string>());
+      }
+    }
+    out.push_back(std::move(se));
+  }
+  return out;
+}
+
 Result<Scene> loadScene(const std::filesystem::path& path) {
   auto jr = parseJsonFile(path);
   if (!jr) return std::unexpected(jr.error());
@@ -362,6 +411,15 @@ Result<Scene> loadScene(const std::filesystem::path& path) {
       return fail(std::format("{}: timing must name a timing profile (content/timing/<name>.timing.json)", path.string()));
     s.timing = *it;
   }
+  if (auto it = j.find("events"); it != j.end() && !it->is_null()) {  // T-097D (opt-in)
+    auto ev = reactionEventsFromJson(*it);
+    if (!ev) return fail(std::format("{}: {}", path.string(), ev.error().message));
+    for (const SceneEvent& e : *ev)
+      for (const std::string& n : e.characters)
+        if (std::none_of(s.characters.begin(), s.characters.end(), [&](const CharacterDesc& c) { return c.name == n; }))
+          return fail(std::format("{}: event '{}': unknown character '{}'", path.string(), e.event.name, n));
+    s.events = *it;
+  }
   if (auto it = j.find("animation"); it != j.end() && it->is_object()) {
     for (auto& [track, keys] : it->items()) {
       Track t;
@@ -489,6 +547,7 @@ Json sceneToJson(const Scene& s) {
   if (!s.animPrinciples.is_null()) j["animPrinciples"] = s.animPrinciples;
   if (!s.interaction.is_null()) j["interaction"] = s.interaction;
   if (!s.timing.is_null()) j["timing"] = s.timing;
+  if (!s.events.is_null()) j["events"] = s.events;
   return j;
 }
 

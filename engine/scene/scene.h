@@ -13,6 +13,7 @@
 #include "anim/principles.h"
 #include "model/character.h"
 #include "model/clip.h"
+#include "scene/acting.h"
 #include "scene/asset_library.h"
 #include "scene/face_layer.h"
 #include "scene/interaction.h"
@@ -119,7 +120,22 @@ struct Scene {
   // TimingProfile). Absent / null = the shared interaction timing defaults (the behaviour before T-104). It only sets
   // the defaults of action frames a scene leaves out; frames written in an action always win. Saved as written.
   Json timing = nullptr;
+  // Reaction events (T-097D, opt-in): the scene key "events" (absent = no reactions, the behaviour before T-097D). Each
+  // event is planned per reacting character (scene/reaction.h) and played as generated look, blended emotion and
+  // gesture actions (actions.cpp; docs/PRODUCTION_PIPELINE.md "Scene events"). Checked by reactionEventsFromJson;
+  // saved as written.
+  Json events = nullptr;
 };
+
+// One entry of a scene's "events" list (T-097D): the event and the characters that react to it (empty = every scene
+// character). Fields: "time" (seconds from frameStart), "kind" ("object_appears", "partner_acts", "success", "failure",
+// "custom"; default "custom"), "name", "source" (a character or object name, "" = the scene), "salience" (0..1,
+// default 1), "characters" (optional list of names).
+struct SceneEvent {
+  ReactionEvent event;
+  std::vector<std::string> characters;
+};
+Result<std::vector<SceneEvent>> reactionEventsFromJson(const Json& j);
 
 // The scene's "interaction" block (T-096). Every field is optional and off by default:
 //   "headVolumes": bool      head and hair volumes in each character's collision body (scene/collision.h); the
@@ -173,6 +189,9 @@ class SceneEvaluator {
   const std::vector<CharacterInstance>& characters() const { return characters_; }
   // Non-fatal problems found while compiling actions (e.g. an expression a character does not have).
   const std::vector<std::string>& warnings() const { return warnings_; }
+  // Actions generated from the scene's "events" by the last compile (T-097D; empty without events), in the scene's
+  // action format: a scene with these appended to its "actions" is what animcheck's acting rule reads.
+  const Json& reactionActions() const { return reactionActions_; }
   int materialIndex(const std::string& name) const;
   // Replaces a character's asset (after in-app editing) and rebuilds its rig.
   Result<void> rebuildCharacter(size_t index, const CharacterAsset& asset, const EvalOptions& options);
@@ -231,6 +250,9 @@ class SceneEvaluator {
   std::vector<CharacterInstance> characters_;
   std::vector<PropAsset> propAssets_;
   std::vector<std::string> warnings_;
+  // Reaction events (T-097D): the actions generated from scene_.events by the last compile (look, emotion, clip).
+  Json reactionActions_ = Json::array();
+  Result<Json> planReactionActions();
   static std::string blinkMorph(const CharacterInstance& ci);
   // Facial layer (T-046): events gathered while actions compile, then one layer per character.
   Result<void> compileActionsBody();
