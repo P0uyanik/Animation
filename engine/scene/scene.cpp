@@ -405,6 +405,10 @@ Result<Scene> loadScene(const std::filesystem::path& path) {
     if (auto r = animPrinciplesFromJson(*it); !r) return std::unexpected(r.error());
     s.animPrinciples = *it;
   }
+  if (auto it = j.find("reachMechanics"); it != j.end() && !it->is_null()) {  // T-134 (opt-in)
+    if (auto r = reachMechanicsFromJson(*it); !r) return fail(std::format("{}: {}", path.string(), r.error().message));
+    s.reachMechanics = *it;
+  }
   if (auto it = j.find("interaction"); it != j.end() && !it->is_null()) {  // T-096 (opt-in)
     if (auto r = interactionOptionsFromJson(*it); !r) return fail(std::format("{}: {}", path.string(), r.error().message));
     s.interaction = *it;
@@ -553,6 +557,7 @@ Json sceneToJson(const Scene& s) {
   if (!s.actions.empty()) j["actions"] = s.actions;
   if (s.director.is_object()) j["director"] = s.director;
   if (!s.animPrinciples.is_null()) j["animPrinciples"] = s.animPrinciples;
+  if (!s.reachMechanics.is_null()) j["reachMechanics"] = s.reachMechanics;
   if (!s.interaction.is_null()) j["interaction"] = s.interaction;
   if (!s.timing.is_null()) j["timing"] = s.timing;
   if (!s.gazeLegibility.is_null()) j["gazeLegibility"] = s.gazeLegibility;

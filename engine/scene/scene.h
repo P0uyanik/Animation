@@ -143,6 +143,9 @@ struct Scene {
   // Animation principles (T-061, anim/principles.h): null / true = on with the shared defaults, false = off (the
   // behaviour before T-061), an object = field overrides. Saved as written.
   Json animPrinciples = nullptr;
+  // Reach mechanics (T-134, anim/principles.h, opt-in): absent / null / false = off, true = shared defaults, an
+  // object = field overrides. Parsed and checked by reachMechanicsFromJson; saved as written.
+  Json reachMechanics = nullptr;
   // Interaction options (T-096, opt-in): the scene key "interaction" (absent = all off, the behaviour before T-096).
   // Parsed and checked by interactionOptionsFromJson; saved as written.
   Json interaction = nullptr;

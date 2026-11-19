@@ -40,6 +40,61 @@ Result<AnimPrinciples> animPrinciplesFromJson(const Json& j) {
   return p;
 }
 
+Result<ReachMechanics> reachMechanicsFromJson(const Json& j) {
+  ReachMechanics m;
+  if (j.is_null()) return m;
+  if (j.is_boolean()) {
+    m.enabled = j.get<bool>();
+    return m;
+  }
+  if (!j.is_object()) return fail("reachMechanics: expected true, false or an object");
+  m.enabled = true;
+  auto flag = [&](const char* key, bool& out) -> Result<void> {
+    auto it = j.find(key);
+    if (it == j.end()) return {};
+    if (!it->is_boolean()) return fail(std::format("reachMechanics: '{}' must be true or false", key));
+    out = it->get<bool>();
+    return {};
+  };
+  auto number = [&](const char* key, double& out, double lo, double hi) -> Result<void> {
+    auto it = j.find(key);
+    if (it == j.end()) return {};
+    if (!it->is_number()) return fail(std::format("reachMechanics: '{}' must be a number", key));
+    const double v = it->get<double>();
+    if (!(v >= lo && v <= hi)) return fail(std::format("reachMechanics: '{}' must be in [{}, {}]", key, lo, hi));
+    out = v;
+    return {};
+  };
+  for (auto r : {flag("enabled", m.enabled), flag("ease", m.ease), flag("anticipation", m.anticipation),
+                 number("easePeak", m.easePeak, 0.3, 0.7), number("anticipationSec", m.anticipationSec, 0, 2),
+                 number("counter", m.counter, 0, 1), number("leanDeg", m.leanDeg, 0, 20), number("twistDeg", m.twistDeg, 0, 20),
+                 number("shoulderM", m.shoulderM, 0, 0.05), number("hipShare", m.hipShare, 0, 0.5),
+                 number("successionSec", m.successionSec, 0, 0.5), number("leadPeak", m.leadPeak, 0.2, 1),
+                 number("recoverSec", m.recoverSec, 0.1, 5), number("headStabilize", m.headStabilize, 0, 1)})
+    if (!r) return std::unexpected(r.error());
+  return m;
+}
+
+double reachEase(double x, double peak) {
+  x = std::clamp(x, 0.0, 1.0);
+  // Warp x so the quintic's midpoint (its peak speed) sits at `peak`; the exponent stays above 2/3, so the speed and
+  // the acceleration are still zero at x = 0.
+  const double g = std::clamp(std::log(0.5) / std::log(std::clamp(peak, 0.3, 0.7)), 0.7, 2.0);
+  return easeInOut(std::pow(x, g));
+}
+
+double reachLead(double x, double a, double r, const ReachMechanics& m) {
+  if (x <= -a || x >= 1 + r) return 0;
+  if (x > 1) return 1 - easeInOut((x - 1) / r);
+  const double peak = std::clamp(m.leadPeak, 0.2, 1.0);
+  if (x >= peak) return 1;
+  // Counter move: down to -counter over the first 60 % of the anticipation, then one ease up to the full lead.
+  const double dip = -a + 0.6 * a;
+  if (a > 0 && x < dip) return -m.counter * easeInOut((x + a) / (0.6 * a));
+  const double from = a > 0 ? -m.counter : 0.0, x0 = a > 0 ? dip : 0.0;
+  return from + (1 - from) * easeInOut((x - x0) / (peak - x0));
+}
+
 double easeInOut(double x) {
   x = std::clamp(x, 0.0, 1.0);
   return x * x * x * (x * (x * 6 - 15) + 10);

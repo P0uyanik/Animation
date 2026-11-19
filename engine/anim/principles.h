@@ -47,6 +47,47 @@ struct AnimPrinciples {
 // null = defaults.
 Result<AnimPrinciples> animPrinciplesFromJson(const Json& j);
 
+// Reach mechanics (T-134): slow-in / slow-out, anticipation, arcs and overlap for the prop reaches of the hand-prop
+// interactions (scene/interaction.cpp: reach / grasp and the hand-over receiver, so also the verbs pick_up and pass).
+// Scene setting "reachMechanics" (scene/scene.h): absent / null / false = off (the tracks before T-134, bit for bit),
+// true = on with these defaults, an object = field overrides ("enabled" defaults to true in an object).
+struct ReachMechanics {
+  bool enabled = false;
+  // E1a ease: the wrist target travels one curve through the reach's three points (start, approach, contact) on a
+  // slow-in / slow-out profile (zero speed and acceleration at the start and at the contact), keyed every frame,
+  // instead of the three smooth keys, whose path has a corner at the approach point. easePeak: the fraction of the
+  // reach at which the wrist is fastest (< 0.5: a longer slow-out into the contact). With the mechanics on, the
+  // collision planner's wrist push also stops at pinned frames (a ramp no longer resumes right after a contact).
+  bool ease = true;
+  double easePeak = 0.45;
+  // E1a anticipation: the body leads the hand. From anticipationSec before the reach starts the torso first moves a
+  // little away from the prop (counter, fraction of the lead) and then leans and turns towards it (leanDeg about the
+  // horizontal axis across the reach, twistDeg about the vertical: the reaching shoulder comes forward; both scaled
+  // down for props close to the shoulder), each link successionSec before the next (hips -> spine -> chest ->
+  // shoulder -> wrist); the hips take hipShare of it and the shoulder joint advances shoulderM towards the prop. The
+  // lead is full at leadPeak of the reach, is held to the contact and is given back over recoverSec. The wrists of
+  // IK-driven arms stay on their targets (the arm is solved again from the moved shoulder). A lead that would cost
+  // the reaching arm its room against the body at the contact is reduced (quarter steps) until it does not.
+  bool anticipation = true;
+  double anticipationSec = 0.25;
+  double counter = 0.25;
+  double leanDeg = 4.0, twistDeg = 5.0;
+  double shoulderM = 0.012;
+  double hipShare = 0.2;
+  double successionSec = 0.06;
+  double leadPeak = 0.6;
+  double recoverSec = 0.6;
+  double headStabilize = 0.7;  // share of the torso lead the neck takes back (the eyes keep their aim)
+};
+// null | true | false | {"enabled", "ease", "easePeak", "anticipation", "anticipationSec", "counter", "leanDeg",
+// "twistDeg", "shoulderM", "hipShare", "successionSec", "leadPeak", "recoverSec", "headStabilize"}.
+Result<ReachMechanics> reachMechanicsFromJson(const Json& j);
+// Slow-in / slow-out travel fraction at x in [0, 1] with the peak speed at `peak` (0.5 = easeInOut).
+double reachEase(double x, double peak);
+// Body lead envelope at x = (frame - reach start) / (contact - reach start): 0 before -a (a = anticipation / reach
+// length), dips to -counter, crosses 0 near x = 0, 1 from leadPeak to the contact (x = 1), back to 0 by 1 + r.
+double reachLead(double x, double a, double r, const ReachMechanics& m);
+
 // Quintic ease in/out (smootherstep): zero velocity and acceleration at both ends; peak slope 1.875 at x = 0.5.
 double easeInOut(double x);
 constexpr double kEasePeakSlope = 1.875;
