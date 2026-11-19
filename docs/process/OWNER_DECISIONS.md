@@ -552,3 +552,14 @@ T-151 (independent dependency map for A1/T-142, compared with T-142's report bef
 ## 2026-11-19 ~22:20Z: token economy for all sessions (relayed by the original Supervisor)
 Keep token use as low as reasonably possible; essential work only; STATUS/READY in a few lines; short reports and
 READMEs; no re-reading large files or re-running renders without need. Added to IMPLEMENTER_PROMPT.md.
+
+## 2026-11-19 ~22:45Z: A1/T-142 decisions D1–D3 (relayed by the original Supervisor)
+- D1 = option B: keep Studio Production, Viewport, Timeline; remove the obsolete Render panel; replace readImageRgb8
+  with stb_image. Remove the legacy renderer only after the remaining Studio is verified (Linux + nightly Windows
+  build, shot_workflow tests, headless smoke run that opens a scene and steps the timeline), with evidence.
+- D3 confirmed: keep all SDF, fuzz and shared character code used by active systems (sdf.* whole, character.*, fuzz/).
+- D2: main has no branch protection or rulesets; the "required check" is our own (ci_status.py REQUIRED_JOBS, gate
+  verdict needs, combine_check_reports.py, check_all renderer_skip). Update all in the SAME commit that removes the
+  renderer job; prove with a green full run plus a T-127-style broken-commit probe that still turns the gate red.
+  Tag first (archive/legacy-engine-renderer-<date> via backup), one revertible commit, manual nightly Windows + backup runs.
+- Owner wants the third character's combined 0.1.0 published as a CANDIDATE (not current).
