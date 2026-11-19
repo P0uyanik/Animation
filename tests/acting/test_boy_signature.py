@@ -25,6 +25,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "tools" / "animcheck"))
 import acting  # noqa: E402
+import animcheck  # noqa: E402
 import personality  # noqa: E402
 
 PROFILE = json.loads((ROOT / "content/personality/boy_yellow_hoodie.json").read_text())
@@ -125,8 +126,8 @@ class Signature(unittest.TestCase):
         self.assertAlmostEqual(e["blend"]["rise"], float(lift["duration_s"]), places=3)
         self.assertAlmostEqual(e["timing"]["onset"], float(lift["duration_s"]), places=3)
         self.assertAlmostEqual(e["timing"]["hold"], float(hold["duration_s"]), delta=0.01)
-        self.assertAlmostEqual(EVENTS["partner_acts"]["duration_s"], float(lift["duration_s"]) + float(hold["duration_s"]),
-                               delta=0.05)
+        # the raised head is held at least as long as WT shows (it holds to the clip's end: open-ended)
+        self.assertGreaterEqual(EVENTS["partner_acts"]["duration_s"], float(lift["duration_s"]) + float(hold["duration_s"]))
 
     def test_head_lift_roll(self):
         # T-106 WT [60, 81): about 5 deg roll at his expressed intensity.
@@ -175,14 +176,21 @@ class Shot(unittest.TestCase):
         self.assertEqual((lo + hi) / 2, b["delay_frames"])  # the planner's notice delay at salience 1
         self.assertEqual(b["end_hold"][1] - b["end_hold"][0], int(rows("watertable", "acting_beat", 87)[0]["duration_frames"]))
         ev = SCENE["events"][0]
-        self.assertEqual(ev["name"], "partner_acts")
+        self.assertEqual(ev["kind"], "partner_acts")
+        self.assertEqual(ev["source"], "")  # off screen: no look target, the glance is authored
         self.assertAlmostEqual(SCENE["frameStart"] + ev["time"] * 24, b["event"], places=3)
         ch = SCENE["characters"][0]
         self.assertEqual(ch["personality"], "boy_yellow_hoodie")
         self.assertEqual(SCENE["production"]["cast"]["boy"]["version"], "current")
-        types = [(a["type"], a.get("name") or a.get("clip")) for a in SCENE["actions"]]
-        self.assertIn(("emotion", EVENTS["partner_acts"]["emotion"]), types)
-        self.assertIn(("clip", EVENTS["partner_acts"]["gestures"][0]), types)
+        # The reaction is generated from `events` (T-097D): nothing authored duplicates it.
+        types = {a["type"] for a in SCENE["actions"]}
+        self.assertNotIn("emotion", types)
+        self.assertEqual([a for a in SCENE["actions"] if a["type"] == "clip" and not a.get("base")], [])
+        # The planned notice frame (delay_frames middle, salience 1) is the WT beat, and the shrug's rest lead puts the
+        # arm's first move at the authored gesture beat.
+        self.assertEqual(notice_frame(SCENE), b["notice"])
+        self.assertEqual(b["gesture"] - b["notice"], 21 + 10)  # head lift rises 21 f (WT [60, 81)), settles 10 f
+        self.assertGreaterEqual(b["notice"] + lead_frames(), b["gesture"])  # the arm is still at rest at that beat
 
     def test_acting_check_scene_only(self):
         rep = acting.analyse(SCENE, SHOT_DIR / "shot.scene.json")
@@ -192,6 +200,34 @@ class Shot(unittest.TestCase):
 
 
 @unittest.skipUnless(RESOLVED.exists() and RENDER.exists(), "needs a prepared e908 shot and plush-render")
+def notice_frame(scene):
+    """Mirror of the T-097B planner's notice delay at salience 1 (reaction.h): middle of delay_frames x (2 - s)."""
+    ev = scene["events"][0]
+    lo, hi = val(R["delay_frames"])
+    s = ev.get("salience", 1.0)
+    return round(scene["frameStart"] + ev["time"] * 24 + (lo + hi) / 2 * (2 - s))
+
+
+def lead_frames():
+    """Rest frames before the shrug's arm leaves its rest pose (> 0.5 deg on upperArm.R)."""
+    c, idle = clip("boy_reluctant_shrug"), clip("idle_relaxed")
+    rest = idle["tracks"]["upperArm.R"]["keys"][0][1:]
+    return next(k[0] for k in c["tracks"]["upperArm.R"]["keys"] if qangle(k[1:], rest) > 0.5)
+
+
+def with_reaction(scene):
+    """The scene as the acting rule reads it (T-097D): the generated reaction actions appended, mirrored from the
+    profile (emotion and gesture at the notice frame; no look: the event has no source). The bake tests check that the
+    bake shows them at those frames."""
+    out = json.loads(json.dumps(scene))
+    f, e = notice_frame(scene), EVENTS["partner_acts"]
+    out["actions"] += [{"type": "emotion", "character": "boy", "name": e["emotion"], "start": f, "blend": True,
+                        "intensity": e["intensity"], "modulation": {"intensityScale": val(R["intensity_scale"]),
+                                                                    "gazeShift": e["gaze_shift"]}},
+                       {"type": "clip", "character": "boy", "clip": e["gestures"][0], "start": f}]
+    return out
+
+
 class Baked(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -206,7 +242,7 @@ class Baked(unittest.TestCase):
         cls.tmp.cleanup()
 
     def test_acting_rule_no_warnings(self):
-        rep = acting.analyse(self.scene, RESOLVED, self.bake)
+        rep = acting.analyse(with_reaction(self.scene), RESOLVED, self.bake)
         self.assertEqual(rep["warnings"], [])
         c = rep["characters"][0]
         self.assertTrue(c["gestures"])
@@ -215,10 +251,30 @@ class Baked(unittest.TestCase):
         self.assertGreaterEqual(c["hold"]["longest_still_frames_24"], c["hold"]["required"])
 
     def test_personality_limits(self):
-        rep = personality.analyse(self.bake, self.scene, RESOLVED) if hasattr(personality, "analyse") else None
+        rep = personality.analyse(self.bake, with_reaction(self.scene), RESOLVED) if hasattr(personality, "analyse") else None
         if rep is None:
             self.skipTest("personality.analyse not available")
         self.assertEqual(rep["failures"], [])
+
+
+    def test_generated_reaction_plays_at_the_planned_frames(self):
+        """The bake shows the generated reaction: the face starts at the notice frame, the arm at the gesture beat."""
+        ch = self.bake["characters"][0]
+        f0, n = self.bake["frames"][0], notice_frame(self.scene)
+        wide = ch["morphs"].index("EyeWide")
+        w = [fd["characters"]["boy"]["morphs"][wide] for fd in self.bake["frame_data"]]
+        self.assertLess(max(w[: n - f0]), 0.02)        # nothing before he notices
+        self.assertGreater(w[n - f0 + 21], 0.25)       # lids up after the 21 f rise
+        pkg = json.loads(Path(ch["package"]).read_text())
+        head = next(b["head"] for b in pkg["skeleton"] if b["name"] == "hand.R")
+        i = ch["bones"].index("hand.R")
+        P = [animcheck.pivot(fd["characters"]["boy"]["skin"][16 * i:16 * i + 16], head) for fd in self.bake["frame_data"]]
+        speed = [1000 * math.dist(a, b) for a, b in zip(P, P[1:])]  # speed[k]: frame f0 + k -> f0 + k + 1
+        g = self.scene["x_t097boy_staging"]["beats"]["gesture"]
+        shrug = max(speed[g - f0: g - f0 + 60])
+        self.assertGreater(shrug, 5.0)  # the shrug (mm/f)
+        # before it only the layer's small blend-in settle (the arm goes to the clip's rest pose), well under the shrug
+        self.assertLess(max(speed[n - f0: g - f0]), 0.3 * shrug)
 
 
 if __name__ == "__main__":

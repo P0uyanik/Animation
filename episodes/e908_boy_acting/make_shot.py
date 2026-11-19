@@ -2,7 +2,7 @@
 
     python3 episodes/e908_boy_acting/make_shot.py
 
-6.5 s at 24 fps, cast "current" (boy_yellow_hoodie 2.0.0 today), personality profile on. The boy stands at a small
+7.5 s at 24 fps, cast "current" (boy_yellow_hoodie 2.0.0 today), personality profile on. The boy stands at a small
 table and watches a felt cup on it, bored (heavy lids, head down; T-106 PB [0, 32), WT [0, 27)). An off-screen partner
 points at the cup (scene `events`: partner_acts). He keeps the same watch for a long beat and only then answers:
 a blink and a short sidelong glance with the eyes, his lids lift and his head comes up a little with a small roll
@@ -18,9 +18,10 @@ WT (docs/evaluation/animation/T-106/performance.csv, boy rows), the moment the g
   [87, 121) holds the raised head, small closed mouth (34 f)          end hold after the shrug (END_HOLD = 34 f)
   (no gesture shown)                                                  GESTURE: boy_reluctant_shrug (extrapolation)
 
-Until T-097D (scene events -> reaction playback) lands, the reaction is authored as explicit actions with the values
-the profile's reaction.events.partner_acts plans (emotion, gaze shift, gesture), and the T-106 notice delay; the
-`events` key is read by the T-097C acting check (tools/animcheck/acting.py)."""
+The reaction is generated from the scene `events` (T-097D): the planner reads the profile (reaction.delay_frames
+middle 21 f, events.partner_acts: boy_interested at 0.7 x intensity_scale 0.6, duration, boy_reluctant_shrug, whose
+rest lead holds the reluctant beat). The event has no source (the partner is off screen, so there is nothing to look
+at); the blink and the short sidelong glance at the notice are authored, as the reference shows them."""
 import json
 import os
 
@@ -41,11 +42,11 @@ BLINK_F = 5         # explicit blink at the notice (T-106 WT [60, 68) envelope 8
 GLANCE_F = 11       # sidelong glance, eyes only, <= 12 f (REFERENCE_BEHAVIOUR.md section 7)
 RISE_F = 21         # boy_interested onset 0.875 s (T-106 WT [60, 81))
 SETTLE_F = 10       # head lift settles before the gesture (T-104 settle 8-18 f)
-GESTURE = NOTICE + RISE_F + SETTLE_F
-GESTURE_BLEND = 6
-GESTURE_BLEND_OUT = 12  # back into the drifting idle without a bump
+GESTURE = NOTICE + RISE_F + SETTLE_F  # the arm leaves rest here (the shrug clip's rest lead, make_clips.py LEAD_F)
+GESTURE_BLEND_OUT = 6  # the generated clip action's default blend
 END_HOLD = 34       # T-106 WT [87, 121)
-END = GESTURE + SHRUG["frame_count"] + GESTURE_BLEND_OUT + END_HOLD
+MOTION_END = NOTICE + SHRUG["frame_count"] - SHRUG.get("x_rest_tail_frames", 0)  # the arm is back at rest
+END = MOTION_END + GESTURE_BLEND_OUT + END_HOLD
 
 TABLE_TOP = 0.4695
 TABLE = {"min": [-0.12, 0.4395, 0.2], "max": [0.16, TABLE_TOP, 0.44]}
@@ -90,30 +91,23 @@ def main():
         "characters": [{"name": "boy", "asset": "(set by run_shot)", "position": [0.0, 0.0, 0.0], "yawDeg": -12.0,
                         "personality": "boy_yellow_hoodie",
                         "life": {"headFollow": 0.3, "gaze": {"assistYawDeg": 15.0, "assistBodyYawDeg": 0.0}}}],
-        "events": [{"time": round(t_event, 5), "name": "partner_acts", "source": "partner (off screen)"}],
+        "events": [{"time": round(t_event, 5), "kind": "partner_acts", "name": "partner points (off screen)", "source": ""}],
         "actions": [
             {"type": "clip", "character": "boy", "clip": "idle_relaxed", "base": True},
             {"type": "look", "character": "boy", "start": F0, "end": NOTICE - 1, "target": cup_top},
             {"type": "expression", "character": "boy", "name": "blink", "start": NOTICE, "end": NOTICE + BLINK_F,
              "weight": 1.0, "ramp": 2},
             {"type": "look", "character": "boy", "start": NOTICE, "end": NOTICE + GLANCE_F, "target": glance},
-            {"type": "look", "character": "boy", "start": NOTICE + GLANCE_F + 1, "end": END, "target": cup_top},
-            {"type": "emotion", "character": "boy", "name": PARTNER["emotion"], "start": NOTICE, "end": END + 1,
-             "intensity": PARTNER["intensity"], "blend": True,
-             "modulation": {"intensityScale": REACTION["intensity_scale"]["value"], "gazeShift": PARTNER["gaze_shift"],
-                            "preferredGestures": PARTNER["gestures"]}},
-            {"type": "clip", "character": "boy", "clip": PARTNER["gestures"][0], "start": GESTURE,
-             "end": GESTURE + SHRUG["frame_count"] + GESTURE_BLEND_OUT,
-             "blendIn": GESTURE_BLEND, "blendOut": GESTURE_BLEND_OUT}],
+            {"type": "look", "character": "boy", "start": NOTICE + GLANCE_F + 1, "end": END, "target": cup_top}],
         "production": {"cast": {"boy": {"character_id": "boy_yellow_hoodie", "version": "current"}},
                        "profile": "pipeline/charsys/rig_profiles/humanoid_rigify.json",
                        "render": {"resolution": [640, 360], "samples": 16, "light_scale": 1.0}},
         "x_t097boy_staging": {
             "beats": {"event": EVENT, "notice": NOTICE, "delay_frames": DELAY, "blink": [NOTICE, NOTICE + BLINK_F],
                       "glance": [NOTICE, NOTICE + GLANCE_F], "rise_end": NOTICE + RISE_F, "gesture": GESTURE,
-                      "gesture_end": GESTURE + SHRUG["frame_count"], "end_hold": [END - END_HOLD, END], "end": END},
+                      "gesture_end": MOTION_END, "end_hold": [END - END_HOLD, END], "end": END},
             "reference": "docs/evaluation/animation/T-106/performance.csv (watertable, boy rows)",
-            "reaction": "profile reaction.events.partner_acts, authored explicitly until T-097D lands"},
+            "reaction": "generated from events (T-097D) with profile reaction.events.partner_acts; blink and glance authored"},
     }
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     with open(OUT, "w") as f:

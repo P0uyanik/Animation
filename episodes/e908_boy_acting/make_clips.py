@@ -23,7 +23,11 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 CLIPS = os.path.join(ROOT, "content", "clips")
 
 SHRUG_SCALE = 0.45  # share of gest_shrug's swing: energy.gesture_amplitude 0.3 (small, low energy)
-LEAD_F, RISE_F, HOLD_F, FALL_F = 2, 30, 10, 8  # frames@24: rest, slow reluctant rise, short dwell, quicker fall
+# frames@24: rest, slow reluctant rise, short dwell, quicker fall. The reaction planner (T-097D) starts the gesture with
+# the emotion at the notice frame; the reluctant beat (the head lift rises 21 f and settles 10 f first, T-106 WT [60, 81))
+# is the clip's rest lead: 31 f + 2 rest frames, so the arm leaves rest about 33 f after he notices
+LEAD_F, RISE_F, HOLD_F, FALL_F = 33, 30, 10, 8
+TAIL_F = 14  # rest frames after the fall: the layer's blend-out (no explicit end) happens over rest, not over the fall
 SRC_PEAK, SRC_HOLD_END = 23, 38  # gest_shrug frames (30 fps): its rise ends f23, its peak dwell ends f38 (end f51)
 SHRUG_ROLES = ["chest", "upperArm.R", "forearm.R", "hand.R"]
 # degrees about the role's x / z axes at intensity 1; the boy expresses boy_interested at about 0.42 (event 0.7 x
@@ -95,7 +99,7 @@ def shrug():
     src = json.load(open(os.path.join(CLIPS, "gest_shrug.clip.json")))
     idle = json.load(open(os.path.join(CLIPS, "idle_relaxed.clip.json")))
     sfps, last = src["fps"], src["frame_count"] - 1
-    n = LEAD_F + RISE_F + HOLD_F + FALL_F + 1
+    n = LEAD_F + RISE_F + HOLD_F + FALL_F + TAIL_F + 1
     tracks = {}
     for role in SHRUG_ROLES:
         sk = src["tracks"][role]["keys"]
@@ -108,8 +112,8 @@ def shrug():
                 sf = (f - LEAD_F) / RISE_F * SRC_PEAK
             elif f <= LEAD_F + RISE_F + HOLD_F:  # dwell: SRC_PEAK..SRC_HOLD_END
                 sf = SRC_PEAK + (f - LEAD_F - RISE_F) / HOLD_F * (SRC_HOLD_END - SRC_PEAK)
-            else:  # fall: FALL_F frames cover SRC_HOLD_END..end
-                sf = SRC_HOLD_END + (f - LEAD_F - RISE_F - HOLD_F) / FALL_F * (last - SRC_HOLD_END)
+            else:  # fall: FALL_F frames cover SRC_HOLD_END..end, then the rest tail
+                sf = min(last, SRC_HOLD_END + (f - LEAD_F - RISE_F - HOLD_F) / FALL_F * (last - SRC_HOLD_END))
             q = sample(sk, sf)
             dev = qmul(qinv(rest_src), q)  # gest_shrug's own deviation from its rest, applied to the idle rest
             keys.append(qmul(rest, scale_from([1, 0, 0, 0], dev, SHRUG_SCALE)))
@@ -123,12 +127,13 @@ def shrug():
     peak, fall0 = LEAD_F + RISE_F, LEAD_F + RISE_F + HOLD_F
     face = {"note": "T-046 facial layer channels (clip frames): mouth corners down a little with the shoulder (unimpressed); "
                     "brows stay low (no browUp: the shared shrug's surprise brows do not fit him, REFERENCE_BEHAVIOUR.md section 2)",
-            "tracks": {"mouthDown": [[0, 0.0], [LEAD_F + 4, 0.03], [peak, 0.22], [fall0, 0.2], [n - 1, 0.0]],
-                       "browDown": [[0, 0.0], [peak, 0.12], [fall0, 0.12], [n - 1, 0.0]]}}
+            "tracks": {"mouthDown": [[0, 0.0], [LEAD_F + 4, 0.03], [peak, 0.22], [fall0, 0.2], [fall0 + FALL_F, 0.0], [n - 1, 0.0]],
+                       "browDown": [[0, 0.0], [peak, 0.12], [fall0, 0.12], [fall0 + FALL_F, 0.0], [n - 1, 0.0]]}}
     out = header(src, "boy_reluctant_shrug", n,
                  f"Boy: reluctant one-sided shrug (right arm, palm turns up a little): gest_shrug at {SHRUG_SCALE:g} of its "
                  f"swing, slow rise {RISE_F} f, {HOLD_F} f dwell, quicker fall {FALL_F} f (T-097-boy)", SHRUG_ROLES)
     out["face"] = face
+    out["x_rest_tail_frames"] = TAIL_F  # motion ends this many frames before the clip end (make_shot.py end hold)
     out["tracks"] = tracks
     return out
 

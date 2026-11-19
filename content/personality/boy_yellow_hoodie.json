@@ -417,12 +417,12 @@
         "partner_acts": {
           "emotion": "boy_interested",
           "intensity": 0.7,
-          "duration_s": 2.3,
+          "duration_s": 5.0,
           "gaze_shift": 0.2,
           "gestures": [
             "boy_reluctant_shrug"
           ],
-          "source": "T-106 WT: the girl points [39, 61); he answers late with blink + head lift [60, 81) (0.875 s) and holds [87, 121) (1.42 s): 2.3 s; gaze stays on the table (0.2); the shrug is an extrapolation (no gesture shown), small and slow"
+          "source": "T-106 WT: the girl points [39, 61); he answers late with blink + head lift [60, 81) (0.875 s) and keeps the raised head [87, 121) until the clip ends (open-ended, >= 2.3 s from the blink); 5.0 s holds it through his late reluctant gesture (boy_reluctant_shrug, rest lead 33 f, extrapolation: no gesture shown) and a 34 f hold, in the spirit of his long stares (tempo.hold_frames up to 72 f); gaze stays on the table (0.2)"
         },
         "object_appears": {
           "emotion": "boy_interested",
