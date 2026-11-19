@@ -1,0 +1,290 @@
+{
+ "format": "plush.reach_measures",
+ "version": 1,
+ "bake": "<t134 run>/s010/bake.json",
+ "fps": 24.0,
+ "frames": [
+  1,
+  192
+ ],
+ "bones": {
+  "boy.L": {
+   "wrist": "hand.L",
+   "shoulder": "DEF-shoulder.L",
+   "shoulder_shift": "upperArm.L",
+   "torso": "chest",
+   "hip": "hips",
+   "hip_shift": "hips",
+   "neck": "neck",
+   "head": "head",
+   "hair": "54 bones (DYN-back.00.0..)"
+  },
+  "boy.R": {
+   "wrist": "hand.R",
+   "shoulder": "DEF-shoulder.R",
+   "shoulder_shift": "upperArm.R",
+   "torso": "chest",
+   "hip": "hips",
+   "hip_shift": "hips",
+   "neck": "neck",
+   "head": "head",
+   "hair": "54 bones (DYN-back.00.0..)"
+  },
+  "girl.L": {
+   "wrist": "hand.L",
+   "shoulder": "DEF-shoulder.L",
+   "shoulder_shift": "upperArm.L",
+   "torso": "chest",
+   "hip": "hips",
+   "hip_shift": "hips",
+   "neck": "neck",
+   "head": "head",
+   "hair": "105 bones (DYN-bun.0.0..)"
+  },
+  "girl.R": {
+   "wrist": "hand.R",
+   "shoulder": "DEF-shoulder.R",
+   "shoulder_shift": "upperArm.R",
+   "torso": "chest",
+   "hip": "hips",
+   "hip_shift": "hips",
+   "neck": "neck",
+   "head": "head",
+   "hair": "105 bones (DYN-bun.0.0..)"
+  }
+ },
+ "options": {
+  "v_on": 1.5,
+  "gap": 3,
+  "min_chord": 60.0,
+  "edge": 0.1,
+  "pre": 24,
+  "post": 36,
+  "joint_floor": 0.25,
+  "settle_frac": 0.1
+ },
+ "moves": [
+  {
+   "character": "boy",
+   "side": "R",
+   "start": 57,
+   "end": 76,
+   "peak_frame": 66,
+   "kind": "extend",
+   "path": {
+    "chord_mm": 145.38233002635627,
+    "max_dev_mm": 45.48419487693524,
+    "dev_ratio": 0.3128591684332576,
+    "dev_at": 0.6842105263157895,
+    "arc_ratio": 1.8115199762825924,
+    "bulge_up": 0.4953637643563043
+   },
+   "velocity": {
+    "stall": 0.2414800152663646,
+    "stall_at": 0.6578947368421053,
+    "dec2": 19.42371508802453,
+    "frames": 19,
+    "peak_mm_f": 30.143293990545363,
+    "peak_m_s": 0.7234390557730888,
+    "peak_at": 0.4473684210526316,
+    "ease_in": 0.2631578947368421,
+    "ease_out": 0.3684210526315789,
+    "peak_acc": 7.101684076104041,
+    "peak_dec": 11.753533644366703,
+    "onset_step": 0.23559747910535356,
+    "stop_step": 0.12152774944098835
+   },
+   "anticipation": {
+    "shoulder": {
+     "onset_lead": null,
+     "peak_lead": null,
+     "busy": false,
+     "peak": 0.0486770098424277
+    },
+    "shoulder_shift": {
+     "onset_lead": null,
+     "peak_lead": null,
+     "busy": false,
+     "peak": 0.4624915256202996
+    },
+    "torso": {
+     "onset_lead": null,
+     "peak_lead": null,
+     "busy": false,
+     "peak": 0.2493473551835228
+    },
+    "hip": {
+     "onset_lead": null,
+     "peak_lead": null,
+     "busy": false,
+     "peak": 0.045517184633810236
+    },
+    "hip_shift": {
+     "onset_lead": null,
+     "peak_lead": null,
+     "busy": false,
+     "peak": 0.06655511861060462
+    }
+   },
+   "overlap": {
+    "torso": {
+     "peak_offset": 35,
+     "settle": 28,
+     "settle_capped": false,
+     "after_ratio": 2.0320409272974436,
+     "peak": 0.41648667635992
+    },
+    "neck": {
+     "peak_offset": -5,
+     "settle": 0,
+     "settle_capped": false,
+     "after_ratio": 0.024259723948311527,
+     "peak": 7.364997739380235
+    },
+    "head": {
+     "peak_offset": -8,
+     "settle": 0,
+     "settle_capped": false,
+     "after_ratio": 0.23054210723581595,
+     "peak": 0.3460807601208182
+    },
+    "hair": {
+     "peak_offset": -4,
+     "settle": 0,
+     "settle_capped": false,
+     "after_ratio": 0.05624505187746005,
+     "peak": 47.80586772065826
+    }
+   }
+  },
+  {
+   "character": "girl",
+   "side": "L",
+   "start": 104,
+   "end": 114,
+   "peak_frame": 109,
+   "kind": "extend",
+   "path": {
+    "chord_mm": 147.22193177302174,
+    "max_dev_mm": 51.66286287821373,
+    "dev_ratio": 0.3509182514862293,
+    "dev_at": 0.6,
+    "arc_ratio": 1.4099112325608238,
+    "bulge_up": -0.5959281440214896
+   },
+   "velocity": {
+    "stall": 0.11049205001962757,
+    "stall_at": 0.65,
+    "dec2": 40.15786840729952,
+    "frames": 10,
+    "peak_mm_f": 52.36673135264833,
+    "peak_m_s": 1.2568015524635598,
+    "peak_at": 0.45,
+    "ease_in": 0.3,
+    "ease_out": 0.5,
+    "peak_acc": 26.52972443744116,
+    "peak_dec": 30.99157714069598,
+    "onset_step": 0.062394899094682,
+    "stop_step": 0.13156125181512374
+   },
+   "anticipation": {
+    "shoulder": {
+     "onset_lead": null,
+     "peak_lead": null,
+     "busy": false,
+     "peak": 0.04718185757736138
+    },
+    "shoulder_shift": {
+     "onset_lead": null,
+     "peak_lead": null,
+     "busy": false,
+     "peak": 0.340992601568381
+    },
+    "torso": {
+     "onset_lead": null,
+     "peak_lead": null,
+     "busy": false,
+     "peak": 0.1560637060756897
+    },
+    "hip": {
+     "onset_lead": null,
+     "peak_lead": null,
+     "busy": false,
+     "peak": 0.06324365841391416
+    },
+    "hip_shift": {
+     "onset_lead": null,
+     "peak_lead": null,
+     "busy": false,
+     "peak": 0.04800461784527299
+    }
+   },
+   "overlap": {
+    "torso": {
+     "peak_offset": 40,
+     "settle": 36,
+     "settle_capped": true,
+     "after_ratio": 9.613826086429691,
+     "peak": 1.3674791877107089
+    },
+    "neck": {
+     "peak_offset": 18,
+     "settle": 28,
+     "settle_capped": false,
+     "after_ratio": 57.21089311712596,
+     "peak": 9.28232653737617
+    },
+    "head": {
+     "peak_offset": 41,
+     "settle": 36,
+     "settle_capped": true,
+     "after_ratio": 14.215064202789488,
+     "peak": 1.351471849460139
+    },
+    "hair": {
+     "peak_offset": 33,
+     "settle": 36,
+     "settle_capped": true,
+     "after_ratio": 60.158057662097335,
+     "peak": 23.975590160355658
+    }
+   }
+  }
+ ],
+ "summary": {
+  "moves": 2,
+  "extend": 2,
+  "velocity.stall": 0.1759860326429961,
+  "velocity.dec2": 29.790791747662023,
+  "path.max_dev_mm": 48.57352887757449,
+  "path.dev_ratio": 0.33188870995974346,
+  "path.arc_ratio": 1.6107156044217081,
+  "velocity.frames": 14.5,
+  "velocity.peak_m_s": 0.9901203041183243,
+  "velocity.peak_at": 0.4486842105263158,
+  "velocity.ease_in": 0.28157894736842104,
+  "velocity.ease_out": 0.4342105263157895,
+  "velocity.peak_acc": 16.8157042567726,
+  "velocity.peak_dec": 21.372555392531343,
+  "velocity.onset_step": 0.14899618910001777,
+  "velocity.stop_step": 0.12654450062805606,
+  "lead.shoulder.median": null,
+  "lead.shoulder.share_leading": 0.0,
+  "lead.shoulder_shift.median": null,
+  "lead.shoulder_shift.share_leading": 0.0,
+  "lead.torso.median": null,
+  "lead.torso.share_leading": 0.0,
+  "lead.hip.median": null,
+  "lead.hip.share_leading": 0.0,
+  "lead.hip_shift.median": null,
+  "lead.hip_shift.share_leading": 0.0,
+  "overlap.torso.peak_offset": 37.5,
+  "overlap.torso.settle": 32.0,
+  "overlap.neck.peak_offset": 6.5,
+  "overlap.neck.settle": 14.0,
+  "overlap.head.peak_offset": 16.5,
+  "overlap.head.settle": 18.0,
+  "overlap.hair.peak_offset": 14.5,
+  "overlap.hair.settle": 18.0
+ }
+}

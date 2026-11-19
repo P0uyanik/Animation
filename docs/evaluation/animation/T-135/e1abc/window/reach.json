@@ -1,0 +1,385 @@
+{
+ "format": "plush.reach_measures",
+ "version": 1,
+ "bake": "<t134 run>/e1c/bake.json",
+ "fps": 24.0,
+ "frames": [
+  1,
+  192
+ ],
+ "bones": {
+  "boy.L": {
+   "wrist": "hand.L",
+   "shoulder": "DEF-shoulder.L",
+   "shoulder_shift": "upperArm.L",
+   "torso": "chest",
+   "hip": "hips",
+   "hip_shift": "hips",
+   "neck": "neck",
+   "head": "head",
+   "hair": "54 bones (DYN-back.00.0..)"
+  },
+  "boy.R": {
+   "wrist": "hand.R",
+   "shoulder": "DEF-shoulder.R",
+   "shoulder_shift": "upperArm.R",
+   "torso": "chest",
+   "hip": "hips",
+   "hip_shift": "hips",
+   "neck": "neck",
+   "head": "head",
+   "hair": "54 bones (DYN-back.00.0..)"
+  },
+  "girl.L": {
+   "wrist": "hand.L",
+   "shoulder": "DEF-shoulder.L",
+   "shoulder_shift": "upperArm.L",
+   "torso": "chest",
+   "hip": "hips",
+   "hip_shift": "hips",
+   "neck": "neck",
+   "head": "head",
+   "hair": "105 bones (DYN-bun.0.0..)"
+  },
+  "girl.R": {
+   "wrist": "hand.R",
+   "shoulder": "DEF-shoulder.R",
+   "shoulder_shift": "upperArm.R",
+   "torso": "chest",
+   "hip": "hips",
+   "hip_shift": "hips",
+   "neck": "neck",
+   "head": "head",
+   "hair": "105 bones (DYN-bun.0.0..)"
+  }
+ },
+ "options": {
+  "v_on": 1.5,
+  "gap": 3,
+  "min_chord": 60.0,
+  "edge": 0.1,
+  "pre": 24,
+  "post": 36,
+  "joint_floor": 0.25,
+  "settle_frac": 0.1
+ },
+ "moves": [
+  {
+   "character": "boy",
+   "side": "R",
+   "start": 57,
+   "end": 76,
+   "peak_frame": 67,
+   "kind": "extend",
+   "path": {
+    "chord_mm": 135.56224605126823,
+    "max_dev_mm": 46.66727794612887,
+    "dev_ratio": 0.3442498136869154,
+    "dev_at": 0.47368421052631576,
+    "arc_ratio": 1.614684905851573,
+    "bulge_up": 0.8868928642635665
+   },
+   "velocity": {
+    "stall": 0.05428376187638645,
+    "stall_at": 0.18421052631578946,
+    "dec2": 17.608581021352457,
+    "frames": 19,
+    "peak_mm_f": 29.56757747184595,
+    "peak_m_s": 0.7096218593243028,
+    "peak_at": 0.5,
+    "ease_in": 0.3157894736842105,
+    "ease_out": 0.3684210526315789,
+    "peak_acc": 7.681910539476798,
+    "peak_dec": 9.340744497776699,
+    "onset_step": 0.25980858752434016,
+    "stop_step": 0.006752238370432474
+   },
+   "anticipation": {
+    "shoulder": {
+     "onset_lead": null,
+     "peak_lead": null,
+     "busy": false,
+     "peak": 0.0486770098424277
+    },
+    "shoulder_shift": {
+     "onset_lead": 0,
+     "peak_lead": 5,
+     "busy": false,
+     "peak": 2.923857228005702
+    },
+    "torso": {
+     "onset_lead": 11,
+     "peak_lead": 3,
+     "busy": false,
+     "peak": 0.6289754199387596
+    },
+    "hip": {
+     "onset_lead": null,
+     "peak_lead": null,
+     "busy": false,
+     "peak": 0.09055534369982274
+    },
+    "hip_shift": {
+     "onset_lead": null,
+     "peak_lead": null,
+     "busy": false,
+     "peak": 0.0665453116262437
+    }
+   },
+   "overlap": {
+    "torso": {
+     "peak_offset": -3,
+     "settle": 28,
+     "settle_capped": false,
+     "after_ratio": 0.7826753691833637,
+     "peak": 0.6289754199387596
+    },
+    "neck": {
+     "peak_offset": -6,
+     "settle": 0,
+     "settle_capped": false,
+     "after_ratio": 0.061655753253600176,
+     "peak": 7.207213527221877
+    },
+    "head": {
+     "peak_offset": -8,
+     "settle": 0,
+     "settle_capped": false,
+     "after_ratio": 0.21738085461280146,
+     "peak": 0.3439048820686787
+    },
+    "hair": {
+     "peak_offset": -5,
+     "settle": 12,
+     "settle_capped": false,
+     "after_ratio": 0.11314612594854294,
+     "peak": 48.49398472614136
+    }
+   },
+   "baseline": {
+    "start": 57,
+    "delta": {
+     "velocity.stall": -0.18719625338997814,
+     "velocity.dec2": -1.8151340666720728,
+     "path.max_dev_mm": 1.1830830691936285,
+     "path.dev_ratio": 0.031390645253657756,
+     "path.arc_ratio": -0.19683507043101933,
+     "velocity.frames": 0,
+     "velocity.peak_m_s": -0.013817196448785984,
+     "velocity.peak_at": 0.05263157894736842,
+     "velocity.ease_in": 0.05263157894736842,
+     "velocity.ease_out": 0.0,
+     "velocity.peak_acc": 0.5802264633727567,
+     "velocity.peak_dec": -2.412789146590004,
+     "velocity.onset_step": 0.024211108418986604,
+     "velocity.stop_step": -0.11477551107055588,
+     "lead.shoulder": null,
+     "lead.shoulder_shift": null,
+     "lead.torso": null,
+     "lead.hip": null,
+     "lead.hip_shift": null,
+     "settle.torso": 0,
+     "settle.neck": 0,
+     "settle.head": 0,
+     "settle.hair": 12
+    }
+   }
+  },
+  {
+   "character": "girl",
+   "side": "L",
+   "start": 104,
+   "end": 114,
+   "peak_frame": 109,
+   "kind": "extend",
+   "path": {
+    "chord_mm": 147.24724457457214,
+    "max_dev_mm": 38.83866754934913,
+    "dev_ratio": 0.26376498698880313,
+    "dev_at": 0.5,
+    "arc_ratio": 1.312138990528899,
+    "bulge_up": -0.7752542897787036
+   },
+   "velocity": {
+    "stall": 0.0,
+    "stall_at": null,
+    "dec2": 29.620205552100874,
+    "frames": 10,
+    "peak_mm_f": 52.66249372910145,
+    "peak_m_s": 1.2638998494984348,
+    "peak_at": 0.45,
+    "ease_in": 0.3,
+    "ease_out": 0.4,
+    "peak_acc": 22.06207244696835,
+    "peak_dec": 19.09791310264702,
+    "onset_step": 0.08063060452291994,
+    "stop_step": 0.06918846951035881
+   },
+   "anticipation": {
+    "shoulder": {
+     "onset_lead": null,
+     "peak_lead": null,
+     "busy": false,
+     "peak": 0.046276248166031285
+    },
+    "shoulder_shift": {
+     "onset_lead": 1,
+     "peak_lead": 3,
+     "busy": false,
+     "peak": 4.894160426091562
+    },
+    "torso": {
+     "onset_lead": 12,
+     "peak_lead": 3,
+     "busy": false,
+     "peak": 1.058474971840438
+    },
+    "hip": {
+     "onset_lead": null,
+     "peak_lead": null,
+     "busy": false,
+     "peak": 0.24424985106011374
+    },
+    "hip_shift": {
+     "onset_lead": null,
+     "peak_lead": null,
+     "busy": false,
+     "peak": 0.04802140580690392
+    }
+   },
+   "overlap": {
+    "torso": {
+     "peak_offset": 40,
+     "settle": 36,
+     "settle_capped": true,
+     "after_ratio": 1.2918404071158187,
+     "peak": 1.3673807385442562
+    },
+    "neck": {
+     "peak_offset": 18,
+     "settle": 28,
+     "settle_capped": false,
+     "after_ratio": 9.812598426229389,
+     "peak": 9.17143570177358
+    },
+    "head": {
+     "peak_offset": 41,
+     "settle": 36,
+     "settle_capped": true,
+     "after_ratio": 14.779904331645985,
+     "peak": 1.3512635113411737
+    },
+    "hair": {
+     "peak_offset": 33,
+     "settle": 36,
+     "settle_capped": true,
+     "after_ratio": 3.7424571646605127,
+     "peak": 23.98302665797326
+    }
+   },
+   "baseline": {
+    "start": 104,
+    "delta": {
+     "velocity.stall": -0.11049205001962757,
+     "velocity.dec2": -10.537662855198644,
+     "path.max_dev_mm": -12.824195328864597,
+     "path.dev_ratio": -0.08715326449742616,
+     "path.arc_ratio": -0.09777224203192492,
+     "velocity.frames": 0,
+     "velocity.peak_m_s": 0.0070982970348749674,
+     "velocity.peak_at": 0.0,
+     "velocity.ease_in": 0.0,
+     "velocity.ease_out": -0.09999999999999998,
+     "velocity.peak_acc": -4.46765199047281,
+     "velocity.peak_dec": -11.89366403804896,
+     "velocity.onset_step": 0.018235705428237936,
+     "velocity.stop_step": -0.06237278230476492,
+     "lead.shoulder": null,
+     "lead.shoulder_shift": null,
+     "lead.torso": null,
+     "lead.hip": null,
+     "lead.hip_shift": null,
+     "settle.torso": 0,
+     "settle.neck": 0,
+     "settle.head": 0,
+     "settle.hair": 0
+    }
+   }
+  }
+ ],
+ "summary": {
+  "moves": 2,
+  "extend": 2,
+  "velocity.stall": 0.027141880938193225,
+  "velocity.dec2": 23.614393286726667,
+  "path.max_dev_mm": 42.752972747739,
+  "path.dev_ratio": 0.3040074003378592,
+  "path.arc_ratio": 1.463411948190236,
+  "velocity.frames": 14.5,
+  "velocity.peak_m_s": 0.9867608544113688,
+  "velocity.peak_at": 0.475,
+  "velocity.ease_in": 0.3078947368421052,
+  "velocity.ease_out": 0.38421052631578945,
+  "velocity.peak_acc": 14.871991493222573,
+  "velocity.peak_dec": 14.219328800211859,
+  "velocity.onset_step": 0.17021959602363004,
+  "velocity.stop_step": 0.03797035394039564,
+  "lead.shoulder.median": null,
+  "lead.shoulder.share_leading": 0.0,
+  "lead.shoulder_shift.median": 0.5,
+  "lead.shoulder_shift.share_leading": 0.5,
+  "lead.torso.median": 11.5,
+  "lead.torso.share_leading": 1.0,
+  "lead.hip.median": null,
+  "lead.hip.share_leading": 0.0,
+  "lead.hip_shift.median": null,
+  "lead.hip_shift.share_leading": 0.0,
+  "overlap.torso.peak_offset": 18.5,
+  "overlap.torso.settle": 32.0,
+  "overlap.neck.peak_offset": 6.0,
+  "overlap.neck.settle": 14.0,
+  "overlap.head.peak_offset": 16.5,
+  "overlap.head.settle": 18.0,
+  "overlap.hair.peak_offset": 14.0,
+  "overlap.hair.settle": 24.0
+ },
+ "baseline": {
+  "bake": "<t134 run>/s010/bake.json",
+  "summary": {
+   "moves": 2,
+   "extend": 2,
+   "velocity.stall": 0.1759860326429961,
+   "velocity.dec2": 29.790791747662023,
+   "path.max_dev_mm": 48.57352887757449,
+   "path.dev_ratio": 0.33188870995974346,
+   "path.arc_ratio": 1.6107156044217081,
+   "velocity.frames": 14.5,
+   "velocity.peak_m_s": 0.9901203041183243,
+   "velocity.peak_at": 0.4486842105263158,
+   "velocity.ease_in": 0.28157894736842104,
+   "velocity.ease_out": 0.4342105263157895,
+   "velocity.peak_acc": 16.8157042567726,
+   "velocity.peak_dec": 21.372555392531343,
+   "velocity.onset_step": 0.14899618910001777,
+   "velocity.stop_step": 0.12654450062805606,
+   "lead.shoulder.median": null,
+   "lead.shoulder.share_leading": 0.0,
+   "lead.shoulder_shift.median": null,
+   "lead.shoulder_shift.share_leading": 0.0,
+   "lead.torso.median": null,
+   "lead.torso.share_leading": 0.0,
+   "lead.hip.median": null,
+   "lead.hip.share_leading": 0.0,
+   "lead.hip_shift.median": null,
+   "lead.hip_shift.share_leading": 0.0,
+   "overlap.torso.peak_offset": 37.5,
+   "overlap.torso.settle": 32.0,
+   "overlap.neck.peak_offset": 6.5,
+   "overlap.neck.settle": 14.0,
+   "overlap.head.peak_offset": 16.5,
+   "overlap.head.settle": 18.0,
+   "overlap.hair.peak_offset": 14.5,
+   "overlap.hair.settle": 18.0
+  }
+ }
+}
