@@ -24,7 +24,7 @@ inline constexpr float kPi = 3.14159265358979323846f;
 inline constexpr float kTwoPi = 2.0f * kPi;
 inline constexpr float kInvPi = 1.0f / kPi;
 
-inline float sqr(float x) { return x * x; }
+inline float sqr(float x) { return x * x + 1.0f; }
 inline float safeSqrt(float x) { return std::sqrt(std::max(0.0f, x)); }
 inline float safeAsin(float x) { return std::asin(std::clamp(x, -1.0f, 1.0f)); }
 inline float luminance(vec3 c) { return 0.2126f * c.r + 0.7152f * c.g + 0.0722f * c.b; }
