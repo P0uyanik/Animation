@@ -1,8 +1,13 @@
 """T-003 emotion measurements AC2-AC6 from engine bakes (python3; runs plush-render --bake).
 
+    python3 pipeline/clips/test_emotions.py --blender <blender> --out <dir> [--engine <plush-render>]
     python3 pipeline/clips/test_emotions.py --boy <pkg dir> --girl <pkg dir> --out <dir> [--engine <plush-render>]
 
-The packages are the engine packages run_shot.py builds (e.g. episodes/e901_clip_test/shots/s010/build/packages/*).
+The packages are the engine packages run_shot.py builds. With --blender (T-101; the gate's form) the test prepares
+them itself for the current approved versions: run_shot.py --stages prepare on a copy of --shot (default
+episodes/e901_clip_test/shots/s010) whose cast is "version": "current", in a folder under build/test_tmp/ (inside the
+repository, git-ignored, so the engine finds content/assets above the copied shot; kept for inspection). --boy/--girl use given
+packages instead (e.g. episodes/e901_clip_test/shots/s010/build/packages/*).
 Every scene has both characters side by side (yaw 0) on the base clip idle_relaxed, life layer off (only clip and
 emotion motion is compared), and plays the shared emotion files content/emotions/*.emotion.json.
   AC2  per emotion at its peak (middle of the hold, outside the gesture): face weights of the resolved morphs equal
@@ -17,7 +22,28 @@ emotion motion is compared), and plays the shared emotion files content/emotions
        the emotion: walk keeps hips/legs; the wave's arm roles keep the wave; gaze and the reaching hand unchanged;
        a hand-keyed head wins.
   AC6  boy: exactly one warning per missing morph per emotion (also when an emotion is played twice), body as AC2,
-       morphs untouched by the emotion unchanged."""
+       morphs untouched by the emotion unchanged.
+
+Animation principles (T-061) and arm-body collision planning (T-047/T-082), both on by default in the engine, are
+stated in every scene, never left to the default, each with its reason in the scene itself (T-101, Supervisor-approved
+2026-11-19). The limits above are unchanged.
+  AC2, AC3, AC4, AC6 scenes: principles off ("animPrinciples": {"enabled": false, "reason": ...}) and collision
+       planning off (one {"type": "collision", "enabled": false, "reason": ...} action per character). These ACs
+       measure the emotion layer itself, the same body-independent motion on both characters, against its definition:
+       - principles: AC2/AC6 compare the emotion's body with its posture clip played as a plain clip action. T-061
+         eases plain clip actions (succession offsets, eased blends) but not emotion posture and gesture layers, so
+         with principles on the reference no longer has "the same timing" and the 0.001 deg check would compare two
+         different blends.
+       - collision planning bends each character's arms around its own body (boy 2.0.0: hoodie and backpack), so
+         the same emotion gives different arm directions per character (AC2 boy vs girl up to 10.9 deg), arm
+         deviations that are not 0.5x at intensity 0.5 (AC3) and arm motion at entry and exit (AC4).
+       Every scene of these ACs (base, intensity 0.5, plain clip, played twice, sequence) uses the same settings, so
+       their references and limits stay consistent with each other.
+  AC5 scenes: principles and collision planning on (the production defaults, stated explicitly). AC5 checks that an
+       emotion layered on walk, look, wave and reach leaves them intact, as in a real shot. Both AC5 scenes (with and
+       without the emotion) use them.
+Collision planning and principles themselves are tested elsewhere: tests/test_collision.cpp and
+tests/test_interaction.cpp (T-047/T-082), tests/test_anim_principles.cpp and tools/animcheck (T-061)."""
 import argparse
 import json
 import math
@@ -25,6 +51,7 @@ import os
 import re
 import subprocess
 import sys
+import tempfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, "..", ".."))
@@ -91,8 +118,53 @@ def chars(pk, sd, life=False):
             for n, x in (("boy", -0.45), ("girl", 0.45))]
 
 
+EMOTION_LAYER_REASON = ("T-101: this scene measures the emotion layer itself (the same body-independent motion on "
+                        "both characters) against its definition; see pipeline/clips/test_emotions.py")
+PRODUCTION_REASON = "T-101: AC5 layers the emotion on walk, look, wave and reach as in a real shot (production defaults)"
+
+
+def scene(chars_, actions, frame_end, objects=(), production=False):
+    """MC.scene with animation principles and collision planning stated explicitly (see the module docstring):
+    production=False (AC2, AC3, AC4, AC6): both off; production=True (AC5): both on."""
+    reason = PRODUCTION_REASON if production else EMOTION_LAYER_REASON
+    actions = list(actions) + [{"type": "collision", "character": c["name"], "enabled": bool(production), "reason": reason}
+                               for c in chars_]
+    sc = MC.scene(chars_, actions, frame_end, objects)
+    sc["animPrinciples"] = {"enabled": bool(production), "reason": reason}
+    return sc
+
+
+def current_packages(shot, folder, blender):
+    """Engine packages of the current approved version of each cast character: run_shot prepare on a copy of `shot`
+    whose production cast is "version": "current". Returns {cast name: package dir}."""
+    sc = json.load(open(shot, encoding="utf-8"))
+    cast = sc["production"]["cast"]
+    for name, src in cast.items():
+        cid = src.get("character_id")
+        if not cid:
+            parts = (src.get("version_dir") or src.get("spec") or "").replace(os.sep, "/").split("/")
+            cid = parts[2] if len(parts) > 2 and parts[:2] == ["assets", "characters"] else None
+        if not cid:
+            raise SystemExit(f"cast '{name}': no character id in {src}")
+        cast[name] = {"character_id": cid, "version": "current"}
+    path = os.path.join(folder, "shot", "shot.scene.json")
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    json.dump(sc, open(path, "w", encoding="utf-8"), indent=1)
+    r = subprocess.run([sys.executable, os.path.join(ROOT, "pipeline", "production", "run_shot.py"), "--shot", path,
+                        "--blender", blender, "--stages", "prepare", "--run-dir", os.path.join(folder, "run")],
+                       capture_output=True, text=True)
+    if r.returncode != 0:
+        raise SystemExit(f"prepare failed for the current cast:\n{r.stdout[-2000:]}{r.stderr[-2000:]}")
+    built = json.load(open(os.path.join(folder, "shot", "build", "cast.json"), encoding="utf-8"))
+    print("current cast:", {n: os.path.basename(c["package"]) for n, c in built.items()})
+    return {n: c["package"] for n, c in built.items()}
+
+
 def base_actions():
     return [{"type": "clip", "character": n, "clip": "idle_relaxed", "base": True} for n in ("boy", "girl")]
+
+
+ENGINE_OUTPUT = {}  # scene name -> plush-render stdout + stderr (AC5 reads its reach warnings)
 
 
 def run(engine, sd, name, sc):
@@ -102,6 +174,7 @@ def run(engine, sd, name, sc):
     r = subprocess.run([engine, p, "--bake", out], capture_output=True, text=True)
     if r.returncode != 0:
         raise SystemExit(f"bake failed for {p}:\n{r.stdout[-2000:]}{r.stderr[-2000:]}")
+    ENGINE_OUTPUT[name] = r.stdout + r.stderr
     warnings = re.findall(r"warning: (.*)", r.stdout + r.stderr)
     return json.load(open(out)), warnings
 
@@ -151,12 +224,24 @@ def expected_face(e, pkg, k=1.0):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--boy", required=True)
-    ap.add_argument("--girl", required=True)
+    ap.add_argument("--boy")
+    ap.add_argument("--girl")
+    ap.add_argument("--blender", help="prepare the current versions' packages (instead of --boy/--girl)")
+    ap.add_argument("--shot", default=os.path.join(ROOT, "episodes", "e901_clip_test", "shots", "s010", "shot.scene.json"))
     ap.add_argument("--out", required=True)
     ap.add_argument("--engine", default=os.path.join(ROOT, "build", "apps", "render-cli", "plush-render"))
     a = ap.parse_args()
     out = os.path.abspath(a.out)
+    if not (a.boy and a.girl):
+        if not a.blender:
+            ap.error("give --boy and --girl, or --blender to prepare the current versions")
+        # the copied shot stays inside the repository (git-ignored build/), so the engine finds content/assets above it
+        tmp_root = os.path.join(ROOT, "build", "test_tmp")
+        os.makedirs(tmp_root, exist_ok=True)
+        prep = tempfile.mkdtemp(prefix="emotions_prepare_", dir=tmp_root)
+        print("prepare folder:", prep)
+        built = current_packages(os.path.abspath(a.shot), prep, a.blender)
+        a.boy, a.girl = a.boy or built["boy"], a.girl or built["girl"]
     sd = os.path.join(out, "scenes")
     os.makedirs(sd, exist_ok=True)
     pk = {k: os.path.join(os.path.abspath(getattr(a, k)), "character.json") for k in ("boy", "girl")}
@@ -170,9 +255,11 @@ def main():
     E = {n: load_emotion(n) for n in EMOTIONS}
     ok = {}
     res = {"limits": {"face_tol": 1e-4, "clip_match_deg": 1e-3, "boy_vs_girl_dir_deg": 2.0, "intensity_ratio": [0.475, 0.525],
-                      "boundary_factor": 1.25, "max_deg_per_frame": 12.0}, "AC2": {}, "AC3": {}, "AC4": {}, "AC5": {}, "AC6": {}}
+                      "boundary_factor": 1.25, "max_deg_per_frame": 12.0},
+           "scene_settings": {"AC2_AC3_AC4_AC6": {"animPrinciples": False, "collision_planning": False},
+                              "AC5": {"animPrinciples": True, "collision_planning": True}}, "AC2": {}, "AC3": {}, "AC4": {}, "AC5": {}, "AC6": {}}
     longest = max(timing(e)[3] for e in E.values()) + 12
-    base, _ = run(a.engine, sd, "base", MC.scene(chars(pk, sd), base_actions(), int(longest)))
+    base, _ = run(a.engine, sd, "base", scene(chars(pk, sd), base_actions(), int(longest)))
     Bb = Bake(base, pk)
     interior = {}
     # ---------------------------------------------------------------- AC2 / AC3 / AC6 per emotion
@@ -182,9 +269,9 @@ def main():
         on, ho, re_, end = timing(e)
         fe = int(end) + 12
         acts = base_actions() + [{"type": "emotion", "character": c, "name": n, "start": START} for c in ("boy", "girl")]
-        b1, w1 = run(a.engine, sd, f"emo_{tag}", MC.scene(chars(pk, sd), acts, fe))
+        b1, w1 = run(a.engine, sd, f"emo_{tag}", scene(chars(pk, sd), acts, fe))
         acts5 = base_actions() + [{"type": "emotion", "character": c, "name": n, "start": START, "intensity": 0.5} for c in ("boy", "girl")]
-        b5, _ = run(a.engine, sd, f"emo_{tag}_i05", MC.scene(chars(pk, sd), acts5, fe))
+        b5, _ = run(a.engine, sd, f"emo_{tag}_i05", scene(chars(pk, sd), acts5, fe))
         clipacts = base_actions()
         for c in ("boy", "girl"):
             clipacts.append({"type": "clip", "character": c, "clip": e["body"]["clip"], "start": START, "end": end,
@@ -194,10 +281,10 @@ def main():
                 cl = json.load(open(os.path.join(ROOT, "content", "clips", g["clip"] + ".clip.json")))
                 clipacts.append({"type": "clip", "character": c, "clip": g["clip"], "start": START + g.get("offset", 0) * FPS,
                                  "blendIn": g.get("blendIn", 0.2) * FPS, "blendOut": g.get("blendOut", 0.2) * FPS})
-        bc, _ = run(a.engine, sd, f"clip_{tag}", MC.scene(chars(pk, sd), clipacts, fe))
+        bc, _ = run(a.engine, sd, f"clip_{tag}", scene(chars(pk, sd), clipacts, fe))
         twice = base_actions() + [{"type": "emotion", "character": "boy", "name": n, "start": START},
                                   {"type": "emotion", "character": "boy", "name": n, "start": int(end) + 2}]
-        _, w2 = run(a.engine, sd, f"emo_{tag}_twice", MC.scene(chars(pk, sd), twice, int(end + end - START) + 14))
+        _, w2 = run(a.engine, sd, f"emo_{tag}_twice", scene(chars(pk, sd), twice, int(end + end - START) + 14))
         B1, B5, BC = Bake(b1, pk), Bake(b5, pk), Bake(bc, pk)
         f = peak_frame(e)
         clip = json.load(open(os.path.join(ROOT, "content", "clips", e["body"]["clip"] + ".clip.json")))
@@ -262,8 +349,8 @@ def main():
         spans.append((n, t, t + prev_re + on + ho + re_, re_))
         t, prev_re = t + prev_re + on + ho, re_
     fe = int(spans[-1][2]) + 12
-    bs, _ = run(a.engine, sd, "sequence", MC.scene(chars(pk, sd), acts, fe))
-    bsb, _ = run(a.engine, sd, "sequence_base", MC.scene(chars(pk, sd), base_actions(), fe))
+    bs, _ = run(a.engine, sd, "sequence", scene(chars(pk, sd), acts, fe))
+    bsb, _ = run(a.engine, sd, "sequence_base", scene(chars(pk, sd), base_actions(), fe))
     BS, BSB = Bake(bs, pk), Bake(bsb, pk)
     res["AC4"] = {"windows": [], "entry_exit": [], "sequence": [{"emotion": n, "start": s, "end": e_} for n, s, e_, _ in spans]}
     windows = [("entry " + spans[0][0], spans[0][1] - 3, spans[0][1] + 6, [spans[0][0]])]
@@ -304,9 +391,13 @@ def main():
     res["AC4"]["pass"] = (all(w["pass"] for w in res["AC4"]["windows"]) and all(x["pass"] for x in res["AC4"]["entry_exit"])
                           and imax <= 12.0)
     # ---------------------------------------------------------------- AC5 layering
-    objs = [{"name": "pedestal", "kind": "box", "min": [0.05, 0.0, 0.25], "max": [0.13, 0.4, 0.33], "material": "m"},
-            {"name": "cup", "kind": "box", "min": [0.08, 0.4, 0.28], "max": [0.105, 0.43, 0.305], "material": "m",
-             "position": [0.0925, 0.415, 0.2925]}]
+    # The cup stands in front of the boy's right shoulder, within his reach (T-101). Before, it stood across his body
+    # at x = 0.09: the current boy (2.0.0) cannot reach it there even leaning (121 mm short, plush-render warning),
+    # so the IK ran at full stretch and the hand followed the emotion's shoulder (T-077 §4.3). Here the reach has no
+    # warning (no lean, no arm-body clearance push), and the check below stays as it was (<= 1 mm, frames 140-165).
+    objs = [{"name": "pedestal", "kind": "box", "min": [-0.3425, 0.0, 0.24], "max": [-0.2625, 0.48, 0.32], "material": "m"},
+            {"name": "cup", "kind": "box", "min": [-0.3125, 0.48, 0.2675], "max": [-0.2875, 0.51, 0.2925], "material": "m",
+             "position": [-0.30, 0.495, 0.28]}]
 
     def layering(with_emotion, with_wave=True):
         acts = base_actions() + [
@@ -321,7 +412,7 @@ def main():
         if with_emotion:
             acts += [{"type": "emotion", "character": "girl", "name": "sad", "start": 10, "end": 200},
                      {"type": "emotion", "character": "boy", "name": "angry", "start": 10, "end": 200}]
-        sc = MC.scene(chars(pk, sd), acts, 210, objs)
+        sc = scene(chars(pk, sd), acts, 210, objs, production=True)
         sc["animation"] = {"girl/head.rot": [[170, [0, 25, 0], "smooth"], [200, [0, 25, 0], "smooth"]]}
         return sc
     bl, _ = run(a.engine, sd, "layering", layering(True))
@@ -353,6 +444,10 @@ def main():
     r5["look_keeps_gaze"] = {"max_aim_error_change_deg": eg, "pass": eg <= 0.5}
     hd = max(math.dist(L.B.data["boy"][f]["hand.R"][3], L0.B.data["boy"][f]["hand.R"][3]) for f in range(140, 166))
     r5["boy_reach_keeps_hand"] = {"frames": [140, 165], "max_hand_pos_m": hd, "pass": hd <= 1e-3}
+    # T-101: the reach must be one the boy can make (an unreachable cup made the check above measure the shoulder)
+    reach_w = [line.strip() for n in ("layering", "layering_noemotion") for line in ENGINE_OUTPUT[n].splitlines()
+               if "reach 'cup'" in line and "'boy'" in line]
+    r5["boy_reach_reachable"] = {"warnings": reach_w, "pass": not reach_w}
 
     def engine_local(B, who, f, bone):
         par = next(b.get("parent") for b in pkg[who]["skeleton"] if b["name"] == bone)

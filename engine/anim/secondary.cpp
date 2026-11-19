@@ -32,6 +32,12 @@ Result<void> checkParams(const SpringParams& p, const std::string& where) {
 
 Json v3(vec3 v) { return Json::array({v.x, v.y, v.z}); }
 
+// Collider push / segment-length passes per joint and step (T-101), and how far inside a collider a joint may stay
+// after the first pass (well under the collision test's 0.1 mm).
+constexpr int kColliderPasses = 16;
+constexpr float kColliderTolerance = 2e-5f;
+constexpr float kArcPi = 3.14159265358979f;
+
 vec3 closestOnSegment(vec3 p, vec3 a, vec3 b) {
   const vec3 ab = b - a;
   const float l2 = glm::dot(ab, ab);
@@ -39,15 +45,19 @@ vec3 closestOnSegment(vec3 p, vec3 a, vec3 b) {
   return a + ab * std::clamp(glm::dot(p - a, ab) / l2, 0.0f, 1.0f);
 }
 
-// Shortest-arc rotation taking unit vector a to unit vector b.
+// Shortest-arc rotation taking unit vector a to unit vector b. The angle is atan2(|a x b|, a . b), exact to float
+// precision at every angle (T-101: acos(a . b) near 1, and the old identity cut-off at a . b > 1 - 1e-7, lost up to
+// ~4.5e-4 rad, which write() turned into joint gaps of 0.01-0.04 mm on 3-8 cm chain segments).
 quat arc(vec3 a, vec3 b) {
-  const float d = std::clamp(glm::dot(a, b), -1.0f, 1.0f);
-  if (d > 1.0f - 1e-7f) return quat(1, 0, 0, 0);
+  const float d = glm::dot(a, b);
   vec3 axis = glm::cross(a, b);
-  if (glm::length(axis) < 1e-7f) {  // opposite: any perpendicular axis
-    axis = glm::cross(a, std::abs(a.x) < 0.9f ? vec3(1, 0, 0) : vec3(0, 1, 0));
+  const float s = glm::length(axis);
+  if (s < 1e-9f) {
+    if (d > 0) return quat(1, 0, 0, 0);  // parallel
+    axis = glm::cross(a, std::abs(a.x) < 0.9f ? vec3(1, 0, 0) : vec3(0, 1, 0));  // opposite: any perpendicular axis
+    return glm::angleAxis(kArcPi, glm::normalize(axis));
   }
-  return glm::angleAxis(std::acos(d), glm::normalize(axis));
+  return glm::angleAxis(std::atan2(s, d), axis / s);
 }
 
 Result<void> readPresets(const Json& j, std::map<std::string, SpringParams>& out, const std::string& where) {
@@ -408,18 +418,31 @@ void SpringChainSolver::step(State& s, double dtd, const std::vector<mat4>& g) c
         }
         p[k] = p[k - 1] + dir * ch.length[k - 1];
         // colliders: never closer than the radius, nor than the kinematic joint itself is (so a rest shape that
-        // touches a collider is not pushed away)
-        for (int ci : ch.colliders) {
-          const Shape& sh = shapes[size_t(ci)];
-          const float want = sh.r + ch.p.radius;
-          const vec3 qk = closestOnSegment(xk[o + k], sh.a, sh.b);
-          const float minD = std::min(want, glm::distance(xk[o + k], qk));
-          const vec3 q = closestOnSegment(p[k], sh.a, sh.b);
-          const vec3 off = p[k] - q;
-          const float dist = glm::length(off);
-          if (dist >= minD) continue;
-          const vec3 nrm = dist > 1e-7f ? off / dist : glm::normalize(xk[o + k] - qk + vec3(0, 1e-6f, 0));
-          p[k] = q + nrm * minD;
+        // touches a collider is not pushed away). A push moves the joint off its segment length, and write() places
+        // each bone rigidly from x[k] towards x[k+1], so a length error would open a gap at the next joint (T-101:
+        // a connected bone in Blender cannot reproduce it). After a push the segment length is restored (the joint
+        // swings around p[k-1]); push and length alternate until the joint is outside every collider, and the
+        // length is always restored last. A joint that touches no collider takes the same path as before.
+        for (int pass = 0; pass < kColliderPasses; ++pass) {
+          bool pushed = false;
+          for (int ci : ch.colliders) {
+            const Shape& sh = shapes[size_t(ci)];
+            const float want = sh.r + ch.p.radius;
+            const vec3 qk = closestOnSegment(xk[o + k], sh.a, sh.b);
+            const float minD = std::min(want, glm::distance(xk[o + k], qk));
+            const vec3 q = closestOnSegment(p[k], sh.a, sh.b);
+            const vec3 off = p[k] - q;
+            const float dist = glm::length(off);
+            // after the first pass, a joint within the tolerance of the surface counts as outside
+            if (dist >= minD - (pass > 0 ? kColliderTolerance : 0.0f)) continue;
+            const vec3 nrm = dist > 1e-7f ? off / dist : glm::normalize(xk[o + k] - qk + vec3(0, 1e-6f, 0));
+            p[k] = q + nrm * minD;
+            pushed = true;
+          }
+          if (!pushed) break;
+          const vec3 ds = p[k] - p[k - 1];
+          const float ls = glm::length(ds);
+          p[k] = p[k - 1] + (ls > 1e-9f ? ds / ls : dir) * ch.length[k - 1];
         }
       }
     }

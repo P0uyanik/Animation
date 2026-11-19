@@ -1,0 +1,72 @@
+{
+ "source": "boy_yellow_hoodie_master.blend",
+ "rig": "rig_boy_yellow_hoodie",
+ "poses": {
+  "shoulder_raise": {
+   "sign": 1,
+   "effect": 0.2942,
+   "max_stretch": 54.714,
+   "p99_stretch": 1.0,
+   "min_compress": 0.154,
+   "p01_compress": 0.983
+  },
+  "shoulder_forward": {
+   "sign": 1,
+   "effect": 0.2217,
+   "max_stretch": 44.965,
+   "p99_stretch": 1.0,
+   "min_compress": 0.112,
+   "p01_compress": 0.978
+  },
+  "elbow_90": {
+   "sign": 1,
+   "effect": 0.1236,
+   "max_stretch": 2.927,
+   "p99_stretch": 1.0,
+   "min_compress": 0.065,
+   "p01_compress": 1.0
+  },
+  "wrist_60": {
+   "sign": 1,
+   "effect": 0.0573,
+   "max_stretch": 4.309,
+   "p99_stretch": 1.0,
+   "min_compress": 0.278,
+   "p01_compress": 1.0
+  },
+  "hip_forward_80": {
+   "sign": -1,
+   "effect": 0.1167,
+   "max_stretch": 96.251,
+   "p99_stretch": 1.221,
+   "min_compress": 0.015,
+   "p01_compress": 0.901
+  },
+  "knee_90": {
+   "sign": 1,
+   "effect": 0.1242,
+   "max_stretch": 14.385,
+   "p99_stretch": 1.0,
+   "min_compress": 0.021,
+   "p01_compress": 0.962
+  },
+  "ankle_30": {
+   "sign": -1,
+   "effect": 0.045,
+   "max_stretch": 8.738,
+   "p99_stretch": 1.0,
+   "min_compress": 0.139,
+   "p01_compress": 0.998
+  },
+  "fingers_curl_70": {
+   "sign": 1,
+   "effect": 0.3393,
+   "max_stretch": 3.346,
+   "p99_stretch": 1.0,
+   "min_compress": 0.063,
+   "p01_compress": 1.0
+  }
+ },
+ "missing_controls": [],
+ "unmeasured_meshes": {}
+}

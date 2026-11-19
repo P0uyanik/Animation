@@ -1,0 +1,10 @@
+[test_shot_eyes] PASS prepare and bake
+[test_shot_eyes] PASS shot_render --blend-only
+[test_shot_eyes] PASS every frame applied [1, 72]
+[test_shot_eyes] PASS boy: eye objects found ['eye.L', 'eye.R']
+[test_shot_eyes] PASS boy: eye centre to socket <= 0.5 mm over all frames 0.0052 mm (worst frame 16)
+[test_shot_eyes] PASS boy: baked bones reproduced 0.0015 mm
+[test_shot_eyes] PASS girl: eye objects found ['eye.L.001', 'eye.R.001']
+[test_shot_eyes] PASS girl: eye centre to socket <= 0.5 mm over all frames 0.0092 mm (worst frame 36)
+[test_shot_eyes] PASS girl: baked bones reproduced 0.0015 mm
+[test_shot_eyes] ALL PASS (9/9)
