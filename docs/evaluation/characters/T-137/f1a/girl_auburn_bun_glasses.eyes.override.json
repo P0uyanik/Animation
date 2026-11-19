@@ -3,8 +3,8 @@
   "eyes": {
    "yaw_deg": 0,
    "iris": {
-    "radius": 0.446,
-    "pupil": 0.223
+    "radius": 0.47,
+    "pupil": 0.235
    },
    "lids": {
     "upper_edge_deg": 38,
@@ -40,7 +40,7 @@
     "ramp_deg": 12,
     "reach_deg": 36,
     "carve_reach": 0.42,
-    "corner_deg": 46,
+    "corner_deg": 42,
     "clearance_m": 0.002,
     "smooth_iterations": 24,
     "cover_softness": 0.3
