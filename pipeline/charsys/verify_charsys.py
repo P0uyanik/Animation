@@ -47,6 +47,7 @@ def compare_fingerprints(base, new, tol=5e-4):
 
 
 def main():
+    raise SystemExit("T-127 probe: deliberately broken")
     ap = argparse.ArgumentParser()
     ap.add_argument("--blender", required=True)
     ap.add_argument("--out", required=True)
