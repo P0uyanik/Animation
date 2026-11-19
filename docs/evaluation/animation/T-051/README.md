@@ -81,7 +81,9 @@ Closest boy-girl digit points at the shared hold (f45-f51), minus both skin radi
 | `build/tests/plush_tests` | **186 / 186** cases (179 before + 7 new), 765360 assertions; golden `interaction_hashes.json` (linux-x86_64-gcc-13) passes unchanged |
 | `build/tests/plush_tests -tc="*T-051*"` | 7 / 7 (below) |
 | `ctest` (build/) | plush_tests passed; renderer tests skipped (renderer OFF, as before) |
-| `tools/check_all.py --base d2567cb --task T-051` | see section 6 |
+| `tools/check_all.py --base d2567cb --task T-051 --blender <bpy 5.3 wrapper>` | Frozen PASS, Write-set PASS (18 paths, all in the claim), Shared-systems lint PASS, C++ build / tests PASS, Python tests and links PASS, **Blender tier PASS** (full tier: boy fidelity 67.42 vs baseline 67.63, girl 62.23 vs 62.29, white-haired girl PASS); Guarded paths FAIL = needs the `Supervisor-Approved:` trailer (expected) |
+
+Blender: no binary on this runner; bpy 5.3.0 module through `tools/bpy_blender.py` (as the CI adapter).
 
 New cases (`tests/test_hand_shapes.cpp`; boy = `boy_yellow_hoodie_1.0.0`, girl = `girl_auburn_bun_glasses_m3` test
 packages, engine = `girl_white_hair` SDF skeleton, as every engine test):
@@ -129,3 +131,11 @@ prop (no small-prop scene at this SHA); Windows / clang toolchains (CI).
 - Strict sheet (Cycles 32 spp, 480x360, identical cameras / lights / samples per row):
   `t051_hands_strict_sheet.jpg`. Rows: front (the boy's hand), back (the girl's hand), top (both wraps); columns:
   reference key frames (T-053a `pb_hands*`), single search, per-finger grasp.
+- What changed: front, the boy's fingers now wrap the cup (creases of four separate curls; before, the flat hand
+  stood off the wall); top, before the boy's thumb tip is inside the cup at the rim (the -8 mm penetration of
+  section 4), after it lies on the outside; back, the girl's hand is nearly the same at this scale (her single-search
+  fingers were already close), her fingers are slightly more closed.
+- What stayed identical: wrist, palm, arms, cup, both bodies, camera and lights (same frame, same cast).
+- Deviation from the references: the references show short, separate fingers with visible tips (girl at PB f098
+  holding the boat with fingertips on both sides). The current hand meshes are mitten-like (fingers share one skin),
+  so separate fingertips do not read even with per-finger curls; that is the character mesh, not this task's scope.
