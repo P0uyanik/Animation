@@ -1,0 +1,40 @@
+{
+ "format": "plush.animcheck_acting",
+ "version": 1,
+ "scene": "e908_boy_acting s010: T-097-boy solo acting - bored watch, late interest, reluctant shrug, hold",
+ "characters": [
+  {
+   "character": "boy",
+   "personality": "boy_yellow_hoodie",
+   "warnings": [],
+   "quick": false,
+   "glances": [
+    {
+     "event": "partner points (off screen)",
+     "event_frame": 29.999919999999996,
+     "look_frame": 51.0,
+     "delay_frames": 21.0,
+     "notice_delay_frames": 16.0
+    }
+   ],
+   "gestures": [
+    {
+     "label": "boy clip boy_reluctant_shrug @50.99992",
+     "amplitude": 0.099,
+     "swing_deg": 17.8,
+     "limit": 0.3
+    }
+   ],
+   "hold": {
+    "longest_still_frames": 96,
+    "at": [
+     1,
+     97
+    ],
+    "longest_still_frames_24": 96.0,
+    "required": 12.0
+   }
+  }
+ ],
+ "warnings": []
+}

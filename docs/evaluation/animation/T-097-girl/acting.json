@@ -1,0 +1,47 @@
+{
+ "format": "plush.animcheck_acting",
+ "version": 1,
+ "scene": "e908_girl_acting s010: T-097-girl solo acting - notice, wonder (hand to chin), point, delighted hold",
+ "characters": [
+  {
+   "character": "girl",
+   "personality": "girl_auburn_bun_glasses",
+   "warnings": [],
+   "quick": true,
+   "glances": [
+    {
+     "event": "object_appears",
+     "event_frame": 13.0,
+     "look_frame": 17.5,
+     "delay_frames": 4.5,
+     "notice_delay_frames": 4.0
+    },
+    {
+     "event": "success",
+     "event_frame": 83.9992,
+     "look_frame": 90.0,
+     "delay_frames": 6.0,
+     "notice_delay_frames": 4.0
+    }
+   ],
+   "gestures": [
+    {
+     "label": "girl clip girl_wonder_point @17.5",
+     "amplitude": 0.545,
+     "swing_deg": 98.2,
+     "limit": 0.6
+    }
+   ],
+   "hold": {
+    "longest_still_frames": 44,
+    "at": [
+     111,
+     155
+    ],
+    "longest_still_frames_24": 44.0,
+    "required": 15.0
+   }
+  }
+ ],
+ "warnings": []
+}

@@ -1,0 +1,372 @@
+{
+ "format": "plush.scene",
+ "version": 1,
+ "name": "e908_girl_acting s010: T-097-girl solo acting - notice, wonder (hand to chin), point, delighted hold",
+ "frameRate": [
+  24,
+  1
+ ],
+ "frameStart": 1,
+ "frameEnd": 155,
+ "render": {
+  "width": 640,
+  "height": 360,
+  "spp": 32,
+  "maxDepth": 8,
+  "exposureEV": 0.3,
+  "denoise": true,
+  "denoiseBlend": 0.85,
+  "clamp": 12
+ },
+ "camera": {
+  "position": [
+   0.5654,
+   0.7967,
+   1.4148
+  ],
+  "target": [
+   -0.02,
+   0.62,
+   0.1
+  ],
+  "focalMm": 40.0,
+  "fStop": 0,
+  "focusDistance": -1
+ },
+ "materials": [
+  {
+   "name": "floor_mat",
+   "type": "standard",
+   "baseColor": [
+    0.46,
+    0.44,
+    0.42
+   ],
+   "roughness": 0.85,
+   "specular": 0.3
+  },
+  {
+   "name": "wall_mat",
+   "type": "standard",
+   "baseColor": [
+    0.62,
+    0.6,
+    0.55
+   ],
+   "roughness": 0.9,
+   "specular": 0.3
+  },
+  {
+   "name": "table_mat",
+   "type": "standard",
+   "baseColor": [
+    0.42,
+    0.3,
+    0.2
+   ],
+   "roughness": 0.7,
+   "specular": 0.3
+  }
+ ],
+ "lights": [
+  {
+   "type": "rect",
+   "corner": [
+    -2.0,
+    1.0,
+    2.0
+   ],
+   "edgeU": [
+    1.2,
+    0,
+    0.6
+   ],
+   "edgeV": [
+    0,
+    1.4,
+    0
+   ],
+   "color": [
+    1.0,
+    0.95,
+    0.88
+   ],
+   "intensity": 3.0
+  },
+  {
+   "type": "sun",
+   "direction": [
+    0.3,
+    -0.6,
+    -0.7
+   ],
+   "angleDeg": 4,
+   "color": [
+    1.0,
+    0.92,
+    0.82
+   ],
+   "intensity": 1.4
+  },
+  {
+   "type": "sky",
+   "color": [
+    0.6,
+    0.62,
+    0.66
+   ],
+   "intensity": 0.4
+  }
+ ],
+ "objects": [
+  {
+   "name": "floor",
+   "kind": "box",
+   "min": [
+    -4,
+    -0.05,
+    -3
+   ],
+   "max": [
+    4,
+    0,
+    4
+   ],
+   "material": "floor_mat"
+  },
+  {
+   "name": "wall",
+   "kind": "box",
+   "min": [
+    -4,
+    0,
+    -1.4
+   ],
+   "max": [
+    4,
+    3,
+    -1.3
+   ],
+   "material": "wall_mat"
+  },
+  {
+   "name": "table_top",
+   "kind": "box",
+   "min": [
+    -0.15,
+    0.37,
+    0.12
+   ],
+   "max": [
+    0.15,
+    0.4,
+    0.52
+   ],
+   "material": "table_mat"
+  },
+  {
+   "name": "table_leg",
+   "kind": "box",
+   "min": [
+    -0.02,
+    0.0,
+    0.3
+   ],
+   "max": [
+    0.02,
+    0.37,
+    0.34
+   ],
+   "material": "table_mat"
+  },
+  {
+   "name": "cup_spot",
+   "kind": "box",
+   "min": [
+    -0.013099999999999999,
+    0.402,
+    0.4129
+   ],
+   "max": [
+    0.0169,
+    0.43200000000000005,
+    0.4429
+   ],
+   "material": "table_mat"
+  }
+ ],
+ "props": [
+  {
+   "name": "cup",
+   "id": "prop.felt_cup",
+   "transform": {
+    "translation": [
+     0.0019,
+     0.4,
+     0.4279
+    ],
+    "rotationDeg": [
+     0,
+     0,
+     0
+    ],
+    "scale": [
+     1,
+     1,
+     1
+    ]
+   }
+  }
+ ],
+ "characters": [
+  {
+   "name": "girl",
+   "asset": "(set by run_shot)",
+   "position": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "yawDeg": 0.0,
+   "personality": "girl_auburn_bun_glasses",
+   "life": {
+    "blinkInterval": 1.6666,
+    "headFollow": 0.35,
+    "gaze": {
+     "assistPitchDeg": 5.0,
+     "assistBodyYawDeg": 0.0
+    }
+   }
+  }
+ ],
+ "events": [
+  {
+   "time": 0.5,
+   "kind": "object_appears",
+   "name": "object_appears",
+   "source": "cup_spot",
+   "characters": [
+    "girl"
+   ]
+  },
+  {
+   "time": 3.4583,
+   "kind": "success",
+   "name": "success",
+   "source": "",
+   "characters": [
+    "girl"
+   ]
+  }
+ ],
+ "actions": [
+  {
+   "type": "clip",
+   "character": "girl",
+   "clip": "idle_relaxed",
+   "base": true
+  },
+  {
+   "type": "look",
+   "character": "girl",
+   "start": 1,
+   "end": 16.5,
+   "target": [
+    0.9,
+    0.72,
+    1.2
+   ]
+  },
+  {
+   "type": "look",
+   "character": "girl",
+   "start": 48,
+   "end": 89,
+   "target": [
+    0.0019,
+    0.45,
+    0.4279
+   ]
+  },
+  {
+   "type": "look",
+   "character": "girl",
+   "start": 90,
+   "end": 155,
+   "camera": true
+  }
+ ],
+ "production": {
+  "cast": {
+   "girl": {
+    "character_id": "girl_auburn_bun_glasses",
+    "version": "current"
+   }
+  },
+  "profile": "pipeline/charsys/rig_profiles/humanoid_rigify.json",
+  "render": {
+   "resolution": [
+    640,
+    360
+   ],
+   "samples": 16,
+   "light_scale": 1.0
+  }
+ },
+ "x_t097_girl": {
+  "generator": "episodes/e908_girl_acting/make_shot.py",
+  "beats": {
+   "E1_object_appears": 13,
+   "notice": 17.5,
+   "reaction": 17.5,
+   "clip_start": 17.5,
+   "chin": 33.3,
+   "leave_chin": 48.3,
+   "point_start": 55.3,
+   "point": 72.3,
+   "point_hold_end": 94.3,
+   "drawn_back": 114.3,
+   "straight": 129.3,
+   "E2_success": 84,
+   "delighted": 88.5,
+   "watch": 48,
+   "look_up": 90,
+   "end": 155
+  },
+  "planned_reactions": [
+   {
+    "type": "look",
+    "character": "girl",
+    "start": 17.5,
+    "end": 49.9,
+    "back": true,
+    "object": "cup_spot"
+   },
+   {
+    "type": "emotion",
+    "character": "girl",
+    "name": "girl_wonder",
+    "start": 17.5,
+    "end": 61.9,
+    "intensity": 0.7,
+    "blend": true
+   },
+   {
+    "type": "clip",
+    "character": "girl",
+    "clip": "girl_wonder_point",
+    "start": 17.5
+   },
+   {
+    "type": "emotion",
+    "character": "girl",
+    "name": "girl_delighted",
+    "start": 88.499,
+    "end": 145.499,
+    "intensity": 0.9,
+    "blend": true
+   }
+  ],
+  "reference": "T-106 watertable girl acting beats (docs/evaluation/animation/T-106/performance.csv)"
+ }
+}

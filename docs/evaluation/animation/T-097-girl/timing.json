@@ -1,0 +1,15 @@
+{
+ "format": "plush.animcheck_timing",
+ "version": 1,
+ "scene": "e908_girl_acting s010: T-097-girl solo acting - notice, wonder (hand to chin), point, delighted hold",
+ "timing_profile": null,
+ "beats": [],
+ "holds": {
+  "longest_still_frames": 44,
+  "at": [
+   111,
+   155
+  ]
+ },
+ "warnings": []
+}

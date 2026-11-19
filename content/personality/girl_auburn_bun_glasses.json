@@ -2,7 +2,7 @@
   "format": "plush.personality",
   "version": 0,
   "profile_version": "1.0.0",
-  "status": "candidate 1.0.0 (T-053, 2026-11-18): promoted from the T-053a/T-057 draft, read by the engine (anim/personality.h); path B, awaiting the owner's approval of the profile clips",
+  "status": "candidate 1.0.0 (T-053, 2026-11-18): promoted from the T-053a/T-057 draft, read by the engine (anim/personality.h); T-097-girl (2026-11-19): blink, gaze, reaction and gesture values tuned toward the T-106 watertable / paperboat measurements (each record's source); path B, awaiting the owner's approval of the profile clips",
   "character": "girl_auburn_bun_glasses",
   "owner_brief": "cheerful, intelligent",
   "guide": "docs/characters/girl_auburn_bun_glasses/REFERENCE_BEHAVIOUR.md",
@@ -20,7 +20,7 @@
       ],
       "unit": "frames@24",
       "kind": "measured",
-      "source": "WT f012-f022 (strips/wt_girl_reach_f004-060.jpg)"
+      "source": "WT f012-f022 (strips/wt_girl_reach_f004-060.jpg); T-104 wt_reach_point 10 f. T-106 WT [22, 39) 17 f is the reach WITH the lean in (tempo.reference_beats.lean_and_point)"
     },
     "anticipation_frames": {
       "value": [
@@ -72,6 +72,20 @@
       "unit": "frames@24",
       "kind": "measured",
       "source": "PB f151-f175 lowering the boat; release f175-f187"
+    },
+    "reference_beats": {
+      "value": {
+        "hand_at_chin": 15,
+        "leave_chin": 7,
+        "lean_and_point": 17,
+        "point_hold": 22,
+        "draw_back": 20,
+        "straighten": 15,
+        "end_hold": 25
+      },
+      "unit": "frames@24",
+      "kind": "measured",
+      "source": "docs/evaluation/animation/T-106/performance.csv watertable girl acting beats [0,15) [15,22) [22,39) [39,61) [61,81) [81,96) [96,121); played by content/clips/girl_wonder_point.clip.json (authored x tempo.action_speed)"
     }
   },
   "energy": {
@@ -163,12 +177,12 @@
     },
     "glance_hold_frames": {
       "value": [
-        12,
+        7,
         24
       ],
       "unit": "frames@24",
-      "kind": "extrapolation",
-      "source": "if added while explaining (guide section 7)"
+      "kind": "measured",
+      "source": "docs/evaluation/animation/T-106/performance.csv: quick eye adjustments PB girl gaze [125,132) 7 f, WT [81,96) 15 f; holds WT [96,121) 25 f (was [12, 24], an extrapolation)"
     }
   },
   "boredom": {
@@ -182,18 +196,18 @@
   "gaze": {
     "saccade_interval_s": {
       "value": [
-        0.8,
-        2.0
+        0.6,
+        2.5
       ],
       "unit": "s",
-      "kind": "estimate",
-      "source": "WT gaze shifts with gesture and speech"
+      "kind": "measured",
+      "source": "docs/evaluation/animation/T-106/performance.csv girl gaze segments: WT 0.92 / 2.46 / 0.63 / 1.04 s, PB 1.33 / 0.54 / 0.29 / 0.79 s (median 0.85 s; the 0.29 s PB adjustment is a quick glance inside one fixation)"
     },
     "fixation_on_task": {
       "value": 0.9,
       "unit": "0-1",
       "kind": "measured",
-      "source": "gaze on the object in WT and PB"
+      "source": "gaze on the object in WT and PB (T-053a); T-106 docs/evaluation/animation/T-106/performance.csv: every WT/PB girl gaze row is on the task (down at the work surface / boat, eye line low while pointing)"
     },
     "eyes_lead_head_frames": {
       "value": [
@@ -220,7 +234,7 @@
       },
       "unit": "frames@24",
       "kind": "measured",
-      "source": "WT starts f015, f054, f079, f113"
+      "source": "WT starts f015, f054, f079, f113 (T-053a). T-106 docs/evaluation/animation/T-106/performance.csv: f015, f054, f079 (spacings 39 / 25 f; f113 is a partial dip), 35.7 blinks / visible min = 40 f; a shot may set that rate (scene blinkInterval 1.667 s, e908)"
     },
     "duration_frames": {
       "value": [
@@ -229,7 +243,7 @@
       ],
       "unit": "frames@24",
       "kind": "measured",
-      "source": "WT f015-f019, f054-f057, f113-f115"
+      "source": "WT f015-f019, f054-f057, f113-f115 (T-053a); T-106 docs/evaluation/animation/T-106/performance.csv: [15,20) and [54,59) 5 f envelopes incl. the half-open frames (the upper end)"
     },
     "closed_frames": {
       "value": [
@@ -252,7 +266,7 @@
       },
       "unit": "frames@24",
       "kind": "measured",
-      "source": "WT f079-f085"
+      "source": "WT f079-f085 (T-053a 7 f); T-106 docs/evaluation/animation/T-106/performance.csv [79,87) 8 f envelope incl. the half-open frames"
     }
   },
   "face": {
@@ -331,12 +345,21 @@
       {
         "name": "hand_to_chin_think",
         "hand": "right",
-        "source": "WT f000-f012"
+        "source": "WT f000-f012; T-106 WT [0,15)",
+        "clip": "girl_chin_think"
       },
       {
         "name": "point_and_explain",
         "hand": "right index",
-        "source": "WT f022-f060, CW"
+        "source": "WT f022-f060, CW; T-106 WT [22,61)",
+        "clip": "girl_point_down"
+      },
+      {
+        "name": "wonder_point",
+        "hand": "right",
+        "clip": "girl_wonder_point",
+        "description": "hand to chin in wonder, then leans in and points down, holds, draws back and straightens",
+        "source": "T-106 WT [0,96) (the watertable signature)"
       },
       {
         "name": "flatten_and_crease",
@@ -376,12 +399,12 @@
   "reaction": {
     "delay_frames": {
       "value": [
-        2,
-        4
+        4,
+        6
       ],
       "unit": "frames@24",
-      "kind": "extrapolation",
-      "source": "not measurable at the cut; quick, alert reaction fits the brief"
+      "kind": "measured",
+      "source": "content/timing/reference_timing.json beats.reaction_delay 4-10 f (T-104: eyes on the object before the hand); alert: the low end (was [2, 4], an extrapolation below the measured range)"
     },
     "channel_order": {
       "value": [
@@ -404,7 +427,69 @@
       "value": "wonder: EyeWide, brows up, MouthO, hand to chin; then point and explain",
       "unit": "text",
       "kind": "reference",
-      "source": "WT f000-f060"
+      "source": "WT f000-f060; T-106 docs/evaluation/animation/T-106/performance.csv WT [0,15) hand at chin, eyes wide, mouth rounded; [22,39) leans and points down; [39,61) closes her mouth"
+    },
+    "gaze_shift": {
+      "value": 0.9,
+      "unit": "0-1",
+      "kind": "measured",
+      "source": "docs/evaluation/animation/T-106/performance.csv: she looks at the source of every WT/PB beat (gaze.fixation_on_task 0.9)"
+    },
+    "gesture_min_intensity": {
+      "value": 0.3,
+      "unit": "0-1",
+      "kind": "estimate",
+      "source": "WT f000-f015: the hand goes to the chin at a mild wonder (no big surprise); shared default 0.35"
+    },
+    "hold_scale": {
+      "value": 1.25,
+      "unit": "multiplier",
+      "kind": "estimate",
+      "source": "T-104 tempo.hold_scale (quick hands, longer holds); T-106 WT point hold [39,61) 0.92 s and end hold [96,121) 1.04 s"
+    },
+    "delighted_style": {
+      "value": "acting beat: open smile (the model's Smile preset via emotion happy), brows up, slight squint; returns to the modelled closed smile",
+      "unit": "text",
+      "kind": "reference",
+      "source": "docs/evaluation/animation/T-106/performance.csv PB girl [255,289) 'leans on the rim with a wide open smile'; owner decision 2026-11-17 (rest = closed gentle smile, open smile = Happy)"
+    },
+    "tempo_scale": {
+      "value": 0.9,
+      "unit": "multiplier",
+      "kind": "estimate",
+      "source": "quick and alert (owner brief; tempo.beat_scale 0.85, T-104): notice delay and duration x 0.9; the planned delay stays >= delay_frames low end (5 x 0.9 = 4.5 f)"
+    },
+    "events": {
+      "value": {
+        "object_appears": {
+          "emotion": "girl_wonder",
+          "intensity": 0.7,
+          "duration_s": 1.2,
+          "gaze_shift": 1.0,
+          "gestures": [
+            "girl_wonder_point",
+            "girl_chin_think"
+          ]
+        },
+        "partner_acts": {
+          "emotion": "curious",
+          "intensity": 0.5,
+          "duration_s": 1.1,
+          "gaze_shift": 0.9,
+          "gestures": [
+            "girl_point_down"
+          ]
+        },
+        "success": {
+          "emotion": "girl_delighted",
+          "intensity": 0.9,
+          "duration_s": 1.4,
+          "gaze_shift": 0.6
+        }
+      },
+      "unit": "object",
+      "kind": "measured",
+      "source": "docs/evaluation/animation/T-106/performance.csv: object_appears = WT [0, 39) wonder with the hand at the chin, then the point (girl_wonder_point); duration 1.2 s x tempo_scale 0.9 x hold_scale 1.25 = 1.35 s (32 f): the wonder covers the rise and the chin hold (14 + 15 f) and releases as she leaves the chin, so the mouth is closed in the point hold (WT [39, 61)); success = PB [255, 289) wide open smile 1.42 s (girl_delighted; 1.4 s x 1.125 = 1.58 s); partner_acts = WT [22, 61) points and explains (girl_point_down, 1.1 s). Played by T-097D from scene events (e908)"
     }
   },
   "interaction": {
@@ -441,7 +526,8 @@
     "no idle video",
     "speech only without audio (WT f020-f052)",
     "negative emotions only as rig tiles",
-    "no glasses handling"
+    "no glasses handling",
+    "T-097-girl: a planned look lasts at most its reaction (gaze_shift <= 1), so a sustained watch beyond the wonder is authored in the shot (e908)"
   ],
   "owner_decisions": {
     "eye_colour": {
@@ -459,11 +545,11 @@
     "blink_interval_frames": {
       "value": [
         25,
-        39
+        40
       ],
       "unit": "frames@24",
       "kind": "measured",
-      "source": "blink.interval_frames min/max (WT)"
+      "source": "blink.interval_frames min (WT spacing 25 f) / T-106 watertable rate interval 40 f (35.7 blinks / visible min)"
     },
     "blink_duration_frames": {
       "value": [
@@ -521,6 +607,12 @@
       "unit": "deg",
       "kind": "reference",
       "source": "upright head, looks down at the task by the gaze (posture.head_pitch_deg 0)"
+    },
+    "gesture_amplitude_max": {
+      "value": 0.6,
+      "unit": "0-1",
+      "kind": "measured",
+      "source": "energy.gesture_amplitude (WT full-arm point); T-106 WT hand to chin + point: e908 girl_wonder_point swing 0.54 (97 deg at the shoulder)"
     }
   }
 }

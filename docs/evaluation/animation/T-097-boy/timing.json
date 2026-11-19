@@ -1,0 +1,15 @@
+{
+ "format": "plush.animcheck_timing",
+ "version": 1,
+ "scene": "e908_boy_acting s010: T-097-boy solo acting - bored watch, late interest, reluctant shrug, hold",
+ "timing_profile": null,
+ "beats": [],
+ "holds": {
+  "longest_still_frames": 96,
+  "at": [
+   1,
+   97
+  ]
+ },
+ "warnings": []
+}
