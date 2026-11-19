@@ -14,7 +14,7 @@ Pin it with `"generators": {"garment": "garment/2"}` **and** `"clothing": {"gene
 | `sneakers` | `stripes` | slanted felt bands laid on the side walls of the upper (part `stripe`) | `shoes.py` |
 | `backpack` | `flap`, `tab`, `pocket_flap` | rounded lid flap over the bag, tab closure with a loop, flap over the front pocket (parts `flap`, `tab`, `buckle`, `pocket_flap`); use with `zip: false` for a flap bag | `pack.py` |
 | `trousers`, `shorts` | `hem_break` | the hem settles on the shoe: flare, soft slanted folds, front drop | `outlines.py` |
-| `shorts` | `leg_split` | bloomer legs read as two legs: the inner halves are drawn to their leg axes (never past the measured inner leg surface); shorter gusset | `outlines.py` |
+| `shorts` | `leg_split` | bloomer legs read as two legs: the inner halves are drawn to their leg axes (never past the measured inner leg surface); shorter gusset; opt-in crotch arch (`crotch_lift`, `arch_width`, `arch_power`, T-093b): the hem rises into an inverted V at the front/back centre so the crotch bridge no longer spans the legs as one band | `outlines.py` |
 | `boots` | `cuff_roll` | turned-down cuff rolled over the shaft rim (part `cuff`, falls back to `band`); replaces the `garment/1` cuff tube | `outlines.py` |
 | `top`, `shirt`, `vest`, `hoodie`, `dress` | `correctives.reach` | shape keys `corrective.reach.L/R` that keep the piece on the torso when the arm reaches, driven by the arm's forward swing | `correctives.py` |
 

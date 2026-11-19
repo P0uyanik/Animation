@@ -1,0 +1,158 @@
+{
+ "spec_sha256": "13f1d9973e02f5800d0bd2193686f9e811b3184afb016232f9003c539e018bfb",
+ "seed": 4,
+ "budget": 1,
+ "height": 512,
+ "bounds": {
+  "clothing.garments.1.crotch.depth": [
+   0.1,
+   0.7
+  ],
+  "clothing.garments.1.length": [
+   0.985,
+   1
+  ],
+  "clothing.garments.2.height_m": [
+   0.058,
+   0.072
+  ],
+  "clothing.garments.2.width_extra_m": [
+   0.001,
+   0.006
+  ],
+  "clothing.garments.2.length_extra_m": [
+   0.005,
+   0.012
+  ]
+ },
+ "variant": "compare",
+ "start": 0,
+ "best": 0,
+ "iterations": [
+  {
+   "trial": 0,
+   "parameters": {
+    "clothing.garments.1.crotch.depth": 0.12,
+    "clothing.garments.1.length": 1.0,
+    "clothing.garments.2.height_m": 0.06,
+    "clothing.garments.2.length_extra_m": 0.006,
+    "clothing.garments.2.width_extra_m": 0.0015
+   },
+   "score": 67.80369673328883,
+   "views": {
+    "val27_front": {
+     "score": 72.8534324576688,
+     "figure_iou": 0.8549217783990108,
+     "eye_iou": 0.3392116182572614,
+     "landmarks": {
+      "chin": {
+       "target": [
+        118.0,
+        215.0
+       ],
+       "candidate": [
+        116.86827133774736,
+        215.72079871158127
+       ],
+       "error_head": 0.006545244624010232,
+       "score": 0.9934547553759898
+      },
+      "nose": {
+       "target": [
+        118.0,
+        187.0
+       ],
+       "candidate": [
+        116.7409083082076,
+        188.749778004369
+       ],
+       "error_head": 0.01051560122840658,
+       "score": 0.9894843987715934
+      }
+     },
+     "alignment": {
+      "scale": 1.3276385404673556,
+      "ox": -51,
+      "oy": -53
+     }
+    },
+    "val27_threequarter_right": {
+     "score": 71.25954122230623,
+     "figure_iou": 0.8641220495106505,
+     "eye_iou": 0.3229166666666667,
+     "landmarks": {
+      "chin": {
+       "target": [
+        157.5,
+        217.0
+       ],
+       "candidate": [
+        143.66669617032315,
+        214.63823595008859
+       ],
+       "error_head": 0.06746859618203806,
+       "score": 0.932531403817962
+      },
+      "nose": {
+       "target": [
+        160.0,
+        186.0
+       ],
+       "candidate": [
+        165.70936678288479,
+        189.01287746970797
+       ],
+       "error_head": 0.03103636283422369,
+       "score": 0.9689636371657763
+      }
+     },
+     "alignment": {
+      "scale": 1.3927314967161115,
+      "ox": -58,
+      "oy": -72
+     }
+    },
+    "val27_side_right": {
+     "score": 59.298116519891465,
+     "figure_iou": 0.7773365995477549,
+     "eye_iou": 0.08379888268156424,
+     "landmarks": {
+      "chin": {
+       "target": [
+        182.0,
+        217.0
+       ],
+       "candidate": [
+        155.55884580710048,
+        211.22626891185098
+       ],
+       "error_head": 0.13011631809475535,
+       "score": 0.8698836819052447
+      },
+      "nose": {
+       "target": [
+        196.0,
+        183.0
+       ],
+       "candidate": [
+        190.08611395910904,
+        186.97865102282947
+       ],
+       "error_head": 0.034267655170395026,
+       "score": 0.965732344829605
+      }
+     },
+     "alignment": {
+      "scale": 1.364880273660205,
+      "ox": -62,
+      "oy": -66
+     }
+    }
+   },
+   "build_s": 103.09364729699996,
+   "render_s": 20.974446814999965,
+   "wall_s": 124.34795213099983
+  }
+ ],
+ "wall_s": 124.43080583799997
+}
