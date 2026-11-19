@@ -1,0 +1,53 @@
+{
+ "job": {
+  "out": "/tmp/claude-0/-home-user-Animation/d342fd75-5865-5d6c-9785-a0a4000a97b9/scratchpad/fb",
+  "engine": "cycles",
+  "samples": 16,
+  "px": 300,
+  "frame": "eyes",
+  "states": [
+   "neutral",
+   "blink50",
+   "blink100",
+   "glance"
+  ],
+  "views": {
+   "front": 0,
+   "threequarter": -35
+  },
+  "columns": [
+   {
+    "tag": "2.0.0",
+    "blend": "assets/characters/boy_yellow_hoodie/versions/2.0.0/boy_yellow_hoodie_master.blend"
+   },
+   {
+    "tag": "T-089",
+    "blend": "/tmp/claude-0/-home-user-Animation/d342fd75-5865-5d6c-9785-a0a4000a97b9/scratchpad/b089/boy_yellow_hoodie_master.blend"
+   },
+   {
+    "tag": "T-089b",
+    "blend": "/tmp/claude-0/-home-user-Animation/d342fd75-5865-5d6c-9785-a0a4000a97b9/scratchpad/sheet_boy/build/candidate/boy_yellow_hoodie_master.blend"
+   }
+  ],
+  "render_only": [
+   "T-089",
+   "T-089b"
+  ]
+ },
+ "blender": "5.3.0",
+ "columns": {
+  "T-089": {
+   "blend": "/tmp/claude-0/-home-user-Animation/d342fd75-5865-5d6c-9785-a0a4000a97b9/scratchpad/b089/boy_yellow_hoodie_master.blend",
+   "seconds": 238.1
+  },
+  "T-089b": {
+   "blend": "/tmp/claude-0/-home-user-Animation/d342fd75-5865-5d6c-9785-a0a4000a97b9/scratchpad/sheet_boy/build/candidate/boy_yellow_hoodie_master.blend",
+   "seconds": 229.5
+  }
+ },
+ "target": [
+  0.0,
+  -0.0978442132472992,
+  0.7829996347427368
+ ]
+}

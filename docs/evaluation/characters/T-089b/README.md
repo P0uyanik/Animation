@@ -34,8 +34,17 @@ them under `changes_from_T-089`).
 - Face (`face.shape`, the existing face_generic/2 round-face options): outline superellipse (roundness 0.9,
   exponent 2.6), lower face 16 mm wider per side at its widest (band 40 mm below the eye line), cheek fullness
   3 → 10 mm (radius 50 → 55 mm), rounded jaw corners (0.6, 3/4 view). Layout (mouth, nose, chin) unchanged.
-- Eyes: radius 48 mm kept; the eyeball is narrowed less (x scale 0.9 → **1.03**); lid edges opened (43/−46 →
-  52/−54 deg); upper outer trim 66 → 72 deg; blink overlap 14 → 33 deg (the wider eye needs it to close at 3/4).
+- Eyes: radius 48 mm kept; the eyeball is narrowed less (x scale 0.9 → **1.03**); lid edges opened slightly
+  (43/−46 → 47/−50 deg); upper outer trim 66 → 72 deg; blink overlap 14 → 33 deg (the wider eye needs it to close
+  at 3/4). Lid tracking stays 0.3 (#34).
+  - Lid edges: a first candidate used 52/−54. Its Cycles strip showed that in a 15 deg glance the upper lid line went
+    under the skin and a pale lid band opened above the eye. Ray cast: lash area at glance / rest per eye 0.14 (52/−54,
+    also with scale 0.9), 0.70 at 47/−50, T-089 0.68.
+  - 43/−46 leaves a 10.7 % 3/4 socket rim (limit 10 %).
+  - Lid tracking 0.45/0.6, larger skin clearance, upper gap and gaze range did not fix it. Trim 66 leaves a 52–90 mm²
+    3/4 blink sliver.
+  - The lid edges hardly change the measured opening (the socket skin sets it). test_face_v3b now checks the lid
+    line at glance.
 - Socket: wall smoothing 10 → 25 and the new **corner relax** (25 passes, below).
 
 ## Code: one opt-in `face_v3` socket option
@@ -55,7 +64,7 @@ fixed. Isolated on girl builds (T-081 fold probe, eye corner; 0.11.0 = 40.3 deg)
 | + x scale 1.0, wall smoothing 25 | 46.9 |
 | + x scale 0.97, wall smoothing 40, corner blend/close | 54.4 |
 | + x scale 1.0, wall 25, **corner relax 20** | **32.0** |
-| final (x 1.03, corner relax 25) | **34.4** |
+| final (x 1.03, lids 47/−50, corner relax 25) | **35.8** |
 
 Default path unchanged: the T-089 girl candidate rebuilt with the new code gives the identical face build report and
 identical `body_skin` vertices (the lid/ear meshes hold the same vertex sets; only their vertex order differs between
@@ -69,7 +78,7 @@ builds, from code this task did not touch). No character name in the shared code
 | **boy T-089b** | **62.25** | **29.75** | **0.48** (reference ≈ 0.45) | 65.75 × 30.75 | 28.25 × 30.5 |
 | girl 0.11.0 (T-089 README) | 59.0 | 53.3 | 0.90 | 66.8 × 53.0 | 34.8 × 49.8 |
 | girl T-089 | 61.25 | 59.0 | 0.96 | 68.75 × 59.0 | 37.0 × 57.5 |
-| **girl T-089b** | **68.5** | **60.0** | 0.88 | 77.5 × 60.0 | 38.25 × 60.0 |
+| **girl T-089b** | **68.25** | **60.0** | 0.88 | 77.5 × 60.0 | 38.5 × 59.75 |
 
 Girl eye width / eye-centre spacing (116 mm build spacing, the T-089 README's ratio): 0.51 (0.11.0) → 0.53 (T-089)
 → **0.59** (T-089b); reference 0.66 (sheet30). The opening height stays near 60 mm whatever the lid edges do: the
@@ -80,16 +89,18 @@ Checks per candidate (from `test_face_v3b.py`, on the masters the sheets were bu
 | | boy T-089 → T-089b | girl T-089 → T-089b | limit |
 |---|---|---|---|
 | full blink residue front / 3/4 (mm²) | 0 / 0 → 0 / 0 | 0 / 27.2 → 0 / **8.4** | boy 2, girl 29.1 |
-| 3/4 socket rim (share of past-corner shell visible) | 4.5 % → 8.8 % | 0.5 % → 7.8 % | 10 % |
-| cheek / eye-corner folds (deg) | 12.2 / 59.5 → 12.2 / 59.5 | 19.5 / 35.2 → **14.2 / 34.4** | 45 / published (157.7, 40.3) |
+| 3/4 socket rim (share of past-corner shell visible) | 4.5 % → 8.8 % | 0.5 % → 8.3 % | 10 % |
+| cheek / eye-corner folds (deg) | 12.2 / 59.5 → 12.2 / 59.5 | 19.5 / 35.2 → **14.2 / 35.8** | 45 / published (157.7, 40.3) |
 
 ## Tests
 - `python3 pipeline/charsys/tests/test_face_v3b.py --blender <bpy wrapper> --unit --boy <T-089b boy master> --girl <T-089b girl master>`
-  → **39/39 PASS**. New file. It reuses every test_face_v3 plain, unit and build check, with the same limits, on the
+  → **41/41 PASS**. New file. It reuses every test_face_v3 plain, unit and build check, with the same limits, on the
   T-089b candidates. It adds:
   - corner relax is opt-in (default 0); only the girl candidate sets it, and it ran;
   - boy: opening height/width ≤ 0.52 (0.478), width ≥ 60 mm (62.25);
-  - girl: width ≥ 66 mm (68.5); the round-face options are in the build report.
+  - girl: width ≥ 66 mm (68.25); the round-face options are in the build report;
+  - the upper lid line is visible in a 15 deg glance (lash area at glance ≥ 0.5 × rest, per eye; boy 0.97/0.99,
+    girl 1.08/0.70). The rejected 52/−54 girl lids give 0.14.
 - `python3 pipeline/charsys/tests/test_face_v3.py` (plain) 7/7; `test_versions.py` 94/94.
 - Not run: `ctest` and the engine image regressions (no engine or renderer file touched); `verify_charsys.py`;
   fidelity (`tools/fidelity`).
@@ -104,5 +115,13 @@ Checks per candidate (from `test_face_v3b.py`, on the masters the sheets were bu
    still cut the top of the iris slightly (sheet face rows). That is lash/lid-line styling, outside this task.
 4. **Boy 3/4 rim 8.8 %** (T-089 4.5 %). The lower lid edge exposes a little more upper shell past the corner. It is
    within the 10 % bound and not visible in the sheet's face 3/4 row.
-5. Boy eye-corner fold 59.5 deg (unchanged from T-089; T-089 open point 1). The corner relax might help here too;
+5. **Girl glance and half blink (strip).** At glance, a small pale lid-band sliver remains at the upper-outer corner,
+   between the lid line and the eye. It is much smaller than with 52/−54 lids, and the lid line stays. Blink 50 % reads
+   more closed than T-089's, because the 33 deg overlap needed for the 3/4 full blink also moves the half blink.
+6. Boy eye-corner fold 59.5 deg (unchanged from T-089; T-089 open point 1). The corner relax might help here too;
    not tried, to keep the boy change to the lids only.
+
+## Time
+`ledger: build 45 · render 95 · tests 5 · ci 0 · wait 7 (min)`. Builds and renders partly overlapped (4 cores). The
+render total includes one girl sheet run that was stopped and two re-renders after the lid fix. The wait total covers
+the bpy install and a worker restart, which cost part of the first strips.

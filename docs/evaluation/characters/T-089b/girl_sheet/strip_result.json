@@ -1,0 +1,48 @@
+{
+ "job": {
+  "out": "/tmp/claude-0/-home-user-Animation/d342fd75-5865-5d6c-9785-a0a4000a97b9/scratchpad/fg",
+  "engine": "cycles",
+  "samples": 16,
+  "px": 300,
+  "frame": "eyes",
+  "states": [
+   "neutral",
+   "blink50",
+   "blink100",
+   "glance"
+  ],
+  "views": {
+   "front": 0,
+   "threequarter": -35
+  },
+  "columns": [
+   {
+    "tag": "0.11.0",
+    "blend": "assets/characters/girl_auburn_bun_glasses/versions/0.11.0/girl_auburn_bun_glasses_master.blend"
+   },
+   {
+    "tag": "T-089",
+    "blend": "/tmp/claude-0/-home-user-Animation/d342fd75-5865-5d6c-9785-a0a4000a97b9/scratchpad/g089/girl_auburn_bun_glasses_master.blend"
+   },
+   {
+    "tag": "T-089b",
+    "blend": "/tmp/claude-0/-home-user-Animation/d342fd75-5865-5d6c-9785-a0a4000a97b9/scratchpad/sheet_girl/build/candidate/girl_auburn_bun_glasses_master.blend"
+   }
+  ],
+  "render_only": [
+   "T-089b"
+  ]
+ },
+ "blender": "5.3.0",
+ "columns": {
+  "T-089b": {
+   "blend": "/tmp/claude-0/-home-user-Animation/d342fd75-5865-5d6c-9785-a0a4000a97b9/scratchpad/sheet_girl/build/candidate/girl_auburn_bun_glasses_master.blend",
+   "seconds": 244.1
+  }
+ },
+ "target": [
+  0.0,
+  -0.08930840343236923,
+  0.772999107837677
+ ]
+}

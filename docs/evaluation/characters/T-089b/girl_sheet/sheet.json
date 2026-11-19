@@ -1,12 +1,12 @@
 {
- "recipe_sha256": "9700a5b2fb7b96276405372c33610ce365a40ac2a37045963ff4ef8ff563e514",
+ "recipe_sha256": "a2c8430eadba9120e77731bf9a76355f0ad6c017f069bf78a0faafcf94dc41f4",
  "sheet": "sheet.jpg",
  "size": [
   1120,
   2048
  ],
- "at": "2026-11-18T23:55:52+00:00",
- "preview": "preview 2026-11-18T23:36:00+00:00",
+ "at": "2026-11-19T01:23:16+00:00",
+ "preview": "preview 2026-11-19T01:04:52+00:00",
  "preview_override": null,
  "render_result": {
   "engine": "cycles",
@@ -24,7 +24,7 @@
      "L": 32.0,
      "R": 32.0
     },
-    "seconds": 532.5
+    "seconds": 483.5
    },
    "candidate": {
     "blend": "<out>/build/candidate/girl_auburn_bun_glasses_master.blend",
@@ -33,7 +33,7 @@
      "L": 32.0,
      "R": 32.0
     },
-    "seconds": 493.2
+    "seconds": 471.0
    }
   },
   "views": {
