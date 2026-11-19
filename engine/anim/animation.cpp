@@ -361,6 +361,7 @@ HandBones findHand(const Skeleton& sk, char side) {
 // (= -n left, n right) and thumb axis normalize(0.35 e + curl axis), which reduce exactly to the convention.
 struct HandAxes {
   vec3 curl, spread, thumb;
+  vec3 dir{0, -1, 0}, normal{1, 0, 0};  // finger direction and palm normal (rest frame, orthonormal)
 };
 HandAxes handAxes(const Skeleton& sk, char side) {
   const HandFrame& f = side == 'L' ? sk.handL : sk.handR;
@@ -368,7 +369,7 @@ HandAxes handAxes(const Skeleton& sk, char side) {
   vec3 n = glm::length(f.palmNormal) > 1e-6f ? f.palmNormal : vec3(side == 'L' ? -1.0f : 1.0f, 0, 0);
   n = glm::normalize(n - d * glm::dot(n, d));
   vec3 c = glm::cross(d, n), e = side == 'L' ? -n : n;
-  return {c, e, glm::normalize(0.35f * e + c)};
+  return {c, e, glm::normalize(0.35f * e + c), d, n};
 }
 quat fingerRot(const HandAxes& ax, float angleDeg, float spreadDeg) {
   return glm::angleAxis(glm::radians(angleDeg), ax.curl) * glm::angleAxis(glm::radians(spreadDeg), ax.spread);
@@ -384,11 +385,351 @@ vec3 chainTip(const Skeleton& sk, const mat4& handGlobal, int handBone, const Fi
   mat4 gb = ga * glm::translate(mat4(1), hb - ha) * glm::mat4_cast(rb);
   return vec3(gb * vec4(hb - ha, 1));  // tip: one more segment of the same length beyond b's head
 }
+float tipRadius(const Skeleton& sk, const HandBones& h) {
+  std::vector<vec3> roots;
+  for (const auto& f : h.fingers)
+    if (HandBones::ok(f)) roots.push_back(sk.bones[size_t(f.a)].head);
+  if (roots.size() < 2) return 0;
+  float sum = 0;
+  for (size_t i = 1; i < roots.size(); ++i) sum += glm::distance(roots[i - 1], roots[i]);
+  return 0.5f * sum / float(roots.size() - 1);
+}
+
+// T-051 per-finger pose and grasp. Each digit is a two-segment chain driven by (curl of segment a, curl of segment b,
+// spread); the thumb by (curl, opposition, abduction). With a grasp, every digit is searched on its own against the
+// object's surface (cylinder, sphere or box-face slab): the curl closes until a finger point (knuckle, segment
+// middles, tip; skin radius from the skeleton) touches; when the knuckle stops it first the distal segment closes on
+// until the tip touches. With a band, the spread (thumb: abduction) is searched so the tip lies inside the band.
+void applyHandPosePerFinger(const Skeleton& sk, Pose& pose, const mat4& world, char side, const HandBones& h,
+                            const HandPose& hp) {
+  const HandAxes ax = handAxes(sk, side);
+  const float kA = 75.0f, kB = 95.0f;  // full-curl angles of the first and second segment (as the single search)
+  struct Digit {
+    float a = 0, b = 0, spread = 0;  // finger: curls of the two segments, spread (deg); thumb: curl, curl, abduction
+    float opp = 0;                   // thumb only: opposition 0..1
+  };
+  auto fingerBase = [&](int k) {
+    float c = hp.curl;
+    if (k == 3 && hp.index >= 0) c = hp.index;
+    float sp = hp.spread;
+    if (hp.finger[size_t(k)]) c = hp.finger[size_t(k)]->x, sp = hp.finger[size_t(k)]->y;
+    c = std::clamp(c, 0.0f, 1.0f);
+    return Digit{c, c, sp * 7.0f * (float(k) - 1.5f), 0};
+  };
+  Digit thumbBase;
+  thumbBase.a = thumbBase.b = std::clamp(hp.thumbPose ? hp.thumbPose->y : hp.thumb, 0.0f, 1.0f);
+  thumbBase.opp = hp.thumbPose ? std::clamp(hp.thumbPose->x, 0.0f, 1.0f) : 0.0f;
+  // Opposition turns the thumb about the finger direction so its tip moves in front of the palm; abduction turns it
+  // about the palm normal (positive towards the fingers).
+  vec3 oppAxis = ax.dir, abdAxis = ax.normal;
+  if (HandBones::ok(h.thumb)) {
+    const vec3 u = sk.bones[size_t(h.thumb.b)].head - sk.bones[size_t(h.thumb.a)].head;
+    if (glm::dot(glm::cross(ax.dir, u), ax.normal) < 0) oppAxis = -oppAxis;
+    vec3 m(0);
+    int n = 0;
+    for (const auto& f : h.fingers)
+      if (HandBones::ok(f)) m += sk.bones[size_t(f.a)].head, ++n;
+    if (n > 0 && glm::dot(glm::cross(ax.normal, u), m / float(n) - sk.bones[size_t(h.thumb.a)].head) < 0) abdAxis = -abdAxis;
+  }
+  auto fingerRots = [&](const Digit& d) {
+    return std::pair{fingerRot(ax, d.a * kA, d.spread), fingerRot(ax, d.b * kB, 0)};
+  };
+  auto thumbRots = [&](const Digit& d) {
+    const quat ra = glm::angleAxis(glm::radians(d.spread), abdAxis) * glm::angleAxis(glm::radians(d.opp * 60.0f), oppAxis) *
+                    thumbRot(ax, d.a * 55.0f);
+    return std::pair{ra, thumbRot(ax, d.b * 45.0f)};
+  };
+  auto set = [&](const FingerChain& f, std::pair<quat, quat> r) { setChain(pose, f, r.first, r.second); };
+  std::array<Digit, 4> base{};
+  for (int k = 0; k < 4; ++k) base[size_t(k)] = fingerBase(k);
+  auto weightOf = [&](int k) {
+    const auto& w = hp.digitWeight[size_t(k)];
+    return std::clamp(w ? *w : hp.graspWeight, 0.0f, 1.0f);
+  };
+  const bool grasping = hp.grasp && [&] {
+    for (int k = 0; k < 5; ++k)
+      if (weightOf(k) > 0) return true;
+    return false;
+  }();
+  if (!grasping) {
+    for (int k = 0; k < 4; ++k)
+      if (HandBones::ok(h.fingers[k])) set(h.fingers[k], fingerRots(base[size_t(k)]));
+    if (HandBones::ok(h.thumb)) set(h.thumb, thumbRots(thumbBase));
+    return;
+  }
+  // Pose the base first: the hand bone's global frame does not depend on the digits.
+  const mat4 handGlobal = boneGlobals(sk, pose, world)[size_t(h.hand)];
+  const vec3 centre = vec3(handGlobal * vec4(hp.graspCentre, 1));
+  const float scale = glm::length(vec3(handGlobal[0]));
+  const float R = hp.graspRadius * scale;
+  const float tipR = std::max(tipRadius(sk, h), 0.001f) * scale;
+  const bool face = glm::length(hp.graspFace) > 1e-6f;
+  const vec3 faceN = face ? glm::normalize(vec3(handGlobal * vec4(hp.graspFace, 0))) : vec3(0);
+  const vec3 axis = glm::length(hp.graspAxis) > 1e-6f ? glm::normalize(vec3(handGlobal * vec4(hp.graspAxis, 0))) : vec3(0);
+  const bool cyl = !face && glm::length(axis) > 0;
+  auto surf = [&](vec3 p) {  // signed distance to the object's surface (negative inside)
+    vec3 q = p - centre;
+    if (face) return std::abs(glm::dot(q, faceN)) - R;
+    if (cyl) q -= axis * glm::dot(q, axis);
+    return glm::length(q) - R;
+  };
+  struct Points {
+    vec3 knuckle, tip, mid1, mid2;
+  };
+  auto points = [&](const FingerChain& f, std::pair<quat, quat> r) {
+    const vec3 ha = sk.bones[size_t(f.a)].head, hb = sk.bones[size_t(f.b)].head;
+    const mat4 ga = handGlobal * glm::translate(mat4(1), ha - sk.bones[size_t(h.hand)].head) * glm::mat4_cast(r.first);
+    const mat4 gb = ga * glm::translate(mat4(1), hb - ha) * glm::mat4_cast(r.second);
+    Points p;
+    p.knuckle = vec3(gb[3]);
+    p.tip = vec3(gb * vec4(hb - ha, 1));
+    p.mid1 = 0.5f * (vec3(ga[3]) + p.knuckle);
+    p.mid2 = 0.5f * (p.knuckle + p.tip);
+    return p;
+  };
+  auto gapAll = [&](const Points& p) {
+    return std::min({surf(p.knuckle), surf(p.tip), surf(p.mid1), surf(p.mid2)}) - tipR;
+  };
+  // Smallest t in [lo, hi] with g(t) <= 0 (bisection; g decreasing towards contact); hi if never.
+  auto firstContact = [](auto g, float lo, float hi) {
+    if (g(lo) <= 0) return lo;
+    if (g(hi) > 0) return hi;
+    for (int it = 0; it < 16; ++it) {
+      const float mid = 0.5f * (lo + hi);
+      (g(mid) <= 0 ? hi : lo) = mid;
+    }
+    return hi;
+  };
+  // Close one digit on the surface from its base: both segments together until any point touches, then (the knuckle
+  // or a segment touched first) the distal segment alone until the tip touches.
+  auto close = [&](const FingerChain& f, Digit d, auto rots) {
+    Digit t = d;
+    auto g = [&](float x) {
+      t.a = t.b = x;
+      return gapAll(points(f, rots(t)));
+    };
+    // Already touching open (a flat face on the palm): extend a little (at most 0.3 of a full curl) until clear.
+    float lo0 = 0;
+    while (g(lo0) <= 0 && lo0 > -0.3f) lo0 -= 0.05f;
+    const float c = firstContact(g, lo0, 1.0f);
+    t.a = t.b = c;
+    auto tipGap = [&](const Digit& x) { return surf(points(f, rots(x)).tip) - tipR; };
+    if (tipGap(t) > 0.0005f * scale) {
+      const float cb = firstContact([&](float x) { t.b = x; return tipGap(t); }, c, 1.25f);
+      t.b = cb;
+    }
+    if (c >= 1.0f && tipGap(t) > 0.0005f * scale) {
+      // Never touched closing both segments together (a short finger): the proximal curl that lets the distal
+      // segment reach the surface, least curl first; else the closest approach.
+      Digit best = t;
+      float bestGap = tipGap(t);
+      for (int i = 0; i <= 20; ++i) {
+        Digit x = d;
+        x.a = 0.05f * float(i);
+        x.b = x.a;
+        if (gapAll(points(f, rots(x))) <= 0) break;  // the proximal segment would enter the object
+        for (int j = 0; j <= 25; ++j) {
+          x.b = x.a + (1.25f - x.a) * float(j) / 25.0f;
+          const Points p = points(f, rots(x));
+          const float g = surf(p.tip) - tipR;
+          if (std::min({surf(p.knuckle), surf(p.mid1), surf(p.mid2)}) - tipR < -0.0002f * scale) break;
+          if (g < bestGap) bestGap = g, best = x;
+          if (g <= 0) break;
+        }
+        if (bestGap <= 0.0005f * scale) break;
+      }
+      t = best;
+    }
+    return t;
+  };
+  // Band: the tip's distance from the centre along the axis, shifted into [lo, hi] by the spread (abduction).
+  const bool band = hp.band && cyl;
+  const float lo = hp.bandLo * scale, hi = hp.bandHi * scale;
+  auto height = [&](vec3 p) { return glm::dot(p - centre, axis); };
+  auto intoBand = [&](const FingerChain& f, Digit d, auto rots, float target) {
+    auto solved = [&](float s) {
+      Digit t = d;
+      t.spread = d.spread + s;
+      return close(f, t, rots);
+    };
+    auto err = [&](float s) {
+      const Digit t = solved(s);
+      return height(points(f, rots(t)).tip) - target;
+    };
+    // Grow a bracket outwards from no extra spread (the nearest solution, never a far one), then bisect.
+    const float e0 = err(0);
+    if (std::abs(e0) < 0.0002f * scale) return solved(0);
+    float bestS = 0, bestE = std::abs(e0);
+    auto touches = [&](float sp) { return surf(points(f, rots(solved(sp))).tip) - tipR <= 0.001f * scale; };
+    for (float step : {2.0f, 4.0f, 8.0f, 16.0f, 30.0f}) {
+      for (float sgn : {1.0f, -1.0f}) {
+        const float sb = sgn * step;
+        if (!touches(sb)) continue;  // a spread that misses the object is no solution
+        const float eb = err(sb);
+        if (std::abs(eb) < bestE) bestE = std::abs(eb), bestS = sb;
+        if ((eb > 0) == (e0 > 0)) continue;
+        float a = sgn * (step == 2.0f ? 0.0f : 0.5f * step), b = sb, ea = err(a);
+        if ((ea > 0) != (e0 > 0)) a = 0, ea = e0;
+        for (int it = 0; it < 14; ++it) {
+          const float m = 0.5f * (a + b), em = err(m);
+          if ((em > 0) == (ea > 0)) a = m, ea = em;
+          else b = m;
+        }
+        return solved(a);
+      }
+    }
+    return solved(bestS);
+  };
+  std::array<Digit, 4> fin = base;
+  std::array<bool, 4> searched{};
+  for (int k = 0; k < 4; ++k) {
+    if (!HandBones::ok(h.fingers[k]) || weightOf(k) <= 0) continue;
+    if (hp.finger[size_t(k)] && hp.finger[size_t(k)]->z >= 0.5f) continue;  // free: keeps its curl
+    Digit start = base[size_t(k)];
+    start.a = start.b = 0;
+    fin[size_t(k)] = close(h.fingers[k], start, fingerRots);
+    searched[size_t(k)] = true;
+  }
+  if (band) {
+    // Target heights: the natural contact heights moved as a whole into the band (the finger skin inside it); if
+    // the fingers span more than the band, spaced evenly across it in their order.
+    const float bl = lo + tipR, bh = std::max(lo + tipR, hi - tipR);
+    std::vector<int> ks;
+    std::vector<float> hs;
+    for (int k = 0; k < 4; ++k)
+      if (searched[size_t(k)]) ks.push_back(k), hs.push_back(height(points(h.fingers[k], fingerRots(fin[size_t(k)])).tip));
+    if (!ks.empty()) {
+      const float mn = *std::min_element(hs.begin(), hs.end()), mx = *std::max_element(hs.begin(), hs.end());
+      std::vector<float> target(hs.size());
+      if (mx - mn <= bh - bl) {
+        const float shift = mn < bl ? bl - mn : mx > bh ? bh - mx : 0.0f;
+        for (size_t i = 0; i < hs.size(); ++i) target[i] = hs[i] + shift;
+      } else {
+        for (size_t i = 0; i < hs.size(); ++i) target[i] = bl + (hs[i] - mn) / (mx - mn) * (bh - bl);
+      }
+      for (size_t i = 0; i < ks.size(); ++i) {
+        if (std::abs(target[i] - hs[i]) < 0.0002f * scale) continue;
+        Digit start = base[size_t(ks[i])];
+        start.a = start.b = 0;
+        fin[size_t(ks[i])] = intoBand(h.fingers[ks[i]], start, fingerRots, target[i]);
+      }
+    }
+  }
+  for (int k = 0; k < 4; ++k) {
+    if (!HandBones::ok(h.fingers[k])) continue;
+    const float w = searched[size_t(k)] ? weightOf(k) : 0.0f;
+    const Digit &b0 = base[size_t(k)], &g = fin[size_t(k)];
+    set(h.fingers[k], fingerRots(Digit{glm::mix(b0.a, g.a, w), glm::mix(b0.b, g.b, w), glm::mix(b0.spread, g.spread, w), 0}));
+  }
+  if (!HandBones::ok(h.thumb)) return;
+  const float wt = weightOf(4);
+  if (wt <= 0) {
+    set(h.thumb, thumbRots(thumbBase));
+    return;
+  }
+  // Thumb grasp: the thumb is aimed at a direction g(phi) in the plane of the grasp axis and the finger direction
+  // (phi = 0: along the axis, on the thumb's side; phi > 0: turned away from the fingers, round the object's other
+  // side), then curled onto the surface about the axis across g and the palm normal (its tip moves towards the
+  // object). Opposed: the smallest phi that puts the tip on the other half of the object from the fingertips (split
+  // by the plane through the axis and the palm normal), on the surface and inside the band; along: the phi nearest 0
+  // that is on the surface and inside the band; tucked: aimed along the fingers, curl at most 0.6.
+  const vec3 ha = sk.bones[size_t(h.thumb.a)].head, u0 = sk.bones[size_t(h.thumb.b)].head - ha;
+  const mat3 toRest = glm::transpose(mat3(handGlobal)) / (scale * scale);  // world direction -> hand rest frame
+  vec3 up = cyl ? glm::normalize(toRest * axis) : ax.curl;  // the grasp axis in the rest frame (box / sphere: across)
+  if (glm::dot(up, u0) < 0) up = -up;
+  vec3 away = -ax.dir;  // away from the fingers, kept perpendicular to `up`
+  away = away - up * glm::dot(away, up);
+  away = glm::length(away) > 1e-6f ? glm::normalize(away) : glm::normalize(glm::cross(up, ax.normal));
+  struct ThumbG {
+    float phi = 0, c = 0, cb = 0;
+  };
+  auto aimAt = [&](float phi) {
+    const vec3 g = hp.thumbMode == HandPose::Thumb::Tucked ? ax.dir
+                                                            : std::cos(glm::radians(phi)) * up + std::sin(glm::radians(phi)) * away;
+    const quat q = glm::rotation(glm::normalize(u0), glm::normalize(g));
+    vec3 kk = glm::cross(glm::normalize(g), ax.normal);
+    kk = glm::length(kk) > 1e-6f ? glm::normalize(kk) : ax.curl;
+    return std::pair{q, kk};
+  };
+  auto graspRots = [&](const ThumbG& t) {
+    const auto [q, kk] = aimAt(t.phi);
+    return std::pair{glm::angleAxis(glm::radians(t.c * 80.0f), kk) * q,
+                     glm::angleAxis(glm::radians(t.cb * 70.0f), glm::inverse(q) * kk)};
+  };
+  // Curl from the most extended position that is clear of the object to the first contact, then the distal segment
+  // on until the tip touches.
+  auto closeThumb = [&](float phi, float cMax) {
+    ThumbG t{phi, 0, 0};
+    auto g = [&](float c) {
+      t.c = t.cb = c;
+      return gapAll(points(h.thumb, graspRots(t)));
+    };
+    float lo0 = 0;
+    while (g(lo0) <= 0 && lo0 > -0.6f) lo0 -= 0.1f;
+    t.c = t.cb = firstContact(g, lo0, cMax);
+    if (surf(points(h.thumb, graspRots(t)).tip) - tipR > 0.0005f * scale)
+      t.cb = firstContact([&](float x) { t.cb = x; return surf(points(h.thumb, graspRots(t)).tip) - tipR; }, t.c, 1.25f);
+    return t;
+  };
+  const vec3 palmN = glm::normalize(vec3(handGlobal * vec4(ax.normal, 0)));
+  vec3 split = cyl ? glm::cross(axis, palmN) : glm::cross(palmN, glm::normalize(vec3(handGlobal * vec4(ax.curl, 0))));
+  split = glm::length(split) > 1e-6f ? glm::normalize(split) : vec3(1, 0, 0);
+  float fingerSide = 0;
+  for (int k = 0; k < 4; ++k)
+    if (HandBones::ok(h.fingers[k])) fingerSide += glm::dot(points(h.fingers[k], fingerRots(fin[size_t(k)])).tip - centre, split);
+  const float sideSign = fingerSide >= 0 ? 1.0f : -1.0f;
+  const float bl = lo + tipR, bh = std::max(lo + tipR, hi - tipR);
+  auto score = [&](const ThumbG& t) {  // 0 = an acceptable thumb; else how far from one (metres)
+    const vec3 tip = points(h.thumb, graspRots(t)).tip;
+    float e = std::abs(surf(tip) - tipR);
+    if (band) e += std::max({0.0f, bl - height(tip), height(tip) - bh});
+    if (hp.thumbMode == HandPose::Thumb::Opposed) e += std::max(0.0f, sideSign * glm::dot(tip - centre, split) + tipR);
+    return e;
+  };
+  ThumbG gt;
+  if (hp.thumbMode == HandPose::Thumb::Tucked) {
+    gt = closeThumb(0, 0.6f);
+  } else {
+    float best = 1e9f;
+    for (int i = 0; i <= 72; ++i) {  // opposed: 0 .. 180 deg; along: 0, +-2.5, +-5 .. +-90 deg
+      const float phi = hp.thumbMode == HandPose::Thumb::Along ? 2.5f * float((i + 1) / 2) * (i % 2 ? 1.0f : -1.0f)
+                                                                : 2.5f * float(i);
+      if (std::abs(phi) > 180.0f) break;
+      const ThumbG t = closeThumb(phi, 1.0f);
+      const float e = score(t);
+      if (e < 0.0005f * scale) {
+        gt = t;
+        break;
+      }
+      if (e < best) best = e, gt = t;
+    }
+  }
+  const auto b0 = thumbRots(thumbBase), g1 = graspRots(gt);
+  setChain(pose, h.thumb, glm::slerp(b0.first, g1.first, wt), glm::slerp(b0.second, g1.second, wt));
+}
 }  // namespace
+
+bool HandPose::perFinger() const {
+  if (band || glm::length(graspFace) > 0 || thumbPose) return true;
+  for (const auto& f : finger)
+    if (f) return true;
+  for (const auto& w : digitWeight)
+    if (w) return true;
+  return false;
+}
+
+float fingertipRadius(const Skeleton& sk, char side) {
+  HandBones h = findHand(sk, side);
+  return h.valid() ? tipRadius(sk, h) : 0.0f;
+}
 
 void applyHandPose(const Skeleton& sk, Pose& pose, const mat4& world, char side, const HandPose& hp) {
   HandBones h = findHand(sk, side);
   if (!h.valid()) return;
+  if (hp.perFinger()) {
+    applyHandPosePerFinger(sk, pose, world, side, h, hp);
+    return;
+  }
   const HandAxes ax = handAxes(sk, side);
   const float kA = 75.0f, kB = 95.0f;  // full-curl angles of the first and second segment
   auto fingerCurl = [&](int k) { return k == 3 && hp.index >= 0 ? hp.index : hp.curl; };
@@ -517,6 +858,69 @@ void assistGazeWithNeck(const Skeleton& sk, const Clip& clip, const std::string&
 }
 }  // namespace
 
+namespace {
+// T-051 optional per-finger tracks of one hand ("<prefix>hand.<s>"): band, box face, finger / thumb overrides and the
+// stagger. Nothing is set when none of them has keys, so the hand pose stays the single search (byte-identical).
+void perFingerTracks(const Clip& clip, const std::string& base, double frame, HandPose& hp) {
+  auto keyed = [&](const std::string& name) {
+    const Track* t = clip.find(name);
+    return t && !t->keys.empty() ? t : nullptr;
+  };
+  const Track* band = keyed(base + ".band");
+  if (band) {
+    const vec3 b = band->evaluate(frame);
+    hp.band = true;
+    hp.bandLo = std::min(b.x, b.y);
+    hp.bandHi = std::max(b.x, b.y);
+    const int m = int(std::lround(b.z));
+    hp.thumbMode = m == 1 ? HandPose::Thumb::Along : m == 2 ? HandPose::Thumb::Tucked : HandPose::Thumb::Opposed;
+  }
+  if (const Track* t = keyed(base + ".graspFace")) hp.graspFace = t->evaluate(frame);
+  std::array<const Track*, 4> fk{};
+  for (int k = 0; k < 4; ++k) fk[size_t(k)] = keyed(std::format("{}.f{}", base, k));
+  const Track* thumb = keyed(base + ".thumb");
+  // Stagger (frames per finger): with a band 1 unless a stagger track says otherwise; without one only on request.
+  const Track* st = keyed(base + ".stagger");
+  const float step = st ? std::max(0.0f, st->evaluate(frame).x) : band ? 1.0f : 0.0f;
+  if (step <= 0) {
+    for (int k = 0; k < 4; ++k)
+      if (fk[size_t(k)]) hp.finger[size_t(k)] = fk[size_t(k)]->evaluate(frame);
+    if (thumb) hp.thumbPose = vec2(thumb->evaluate(frame));
+    return;
+  }
+  // Closing (grasp weight, else curl, not falling): index first, little last; opening: little first, index last.
+  // Each finger reads its curl and grasp weight `lag` frames late; the thumb goes with the index.
+  const vec3 rest(0.25f, 0.15f, 0.0f);
+  auto signal = [&](double f) {
+    return hp.grasp ? clip.evaluate(base + ".grasp.weight", f, vec3(1)).x : clip.evaluate(base, f, rest).x;
+  };
+  // Direction over the whole stagger window (flat over it: every lag reads the same value either way).
+  const bool closing = signal(frame) >= signal(frame - 3.0 * double(step) - 1.0);
+  auto lagOf = [&](int k) {  // k = 0..3 finger (3 = index), 4 = thumb
+    const int order = k == 4 ? 0 : 3 - k;  // index 0 .. little 3
+    return double(step) * double(closing ? order : 3 - order);
+  };
+  for (int k = 0; k < 4; ++k) {
+    const double f = frame - lagOf(k);
+    vec3 v;
+    if (fk[size_t(k)]) {
+      v = fk[size_t(k)]->evaluate(f);
+    } else {
+      const vec3 hv = clip.evaluate(base, f, rest);
+      float c = hv.x;
+      if (k == 3)
+        if (const Track* ti = keyed(base + ".index")) c = ti->evaluate(f).x;
+      v = vec3(c, hv.z, 0);
+    }
+    hp.finger[size_t(k)] = v;
+    if (hp.grasp) hp.digitWeight[size_t(k)] = clip.evaluate(base + ".grasp.weight", f, vec3(1)).x;
+  }
+  const double ft = frame - lagOf(4);
+  hp.thumbPose = thumb ? vec2(thumb->evaluate(ft)) : vec2(0.0f, clip.evaluate(base, ft, rest).y);
+  if (hp.grasp) hp.digitWeight[4] = clip.evaluate(base + ".grasp.weight", ft, vec3(1)).x;
+}
+}  // namespace
+
 void applyConstraints(const Skeleton& sk, const Clip& clip, const std::string& prefix, double frame, const mat4& world,
                       Pose& pose, const GazeLimits& gaze, double fps) {
   for (size_t i = 0; i < sk.bones.size(); ++i) {
@@ -546,6 +950,7 @@ void applyConstraints(const Skeleton& sk, const Clip& clip, const std::string& p
       hp.graspAxis = clip.evaluate(base + ".graspAxis", frame, vec3(0));
       hp.graspWeight = clip.evaluate(base + ".grasp.weight", frame, vec3(1)).x;
     }
+    perFingerTracks(clip, base, frame, hp);
     applyHandPose(sk, pose, world, side, hp);
   }
   if (const Track* t = clip.find(prefix + "lookAt"); t && !t->keys.empty()) {

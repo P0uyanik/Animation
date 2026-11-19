@@ -1,0 +1,22 @@
+{
+  "format": "plush.hand_shape",
+  "version": 1,
+  "id": "pinch",
+  "kind": "grasp",
+  "description": "Index and thumb close on a small piece (paper corners, small parts); the other fingers curl 0.6 and stay out of the search. Design 2.3.",
+  "approach": {
+    "curl": 0.1,
+    "thumb": 0.2,
+    "spread": 0.1,
+    "index": 0.1
+  },
+  "pose": {
+    "curl": 0.6,
+    "thumb": 0.2,
+    "spread": 0.1,
+    "index": 0.1
+  },
+  "search": "pinch",
+  "thumb": "opposed",
+  "pinch_radius": 0.01
+}

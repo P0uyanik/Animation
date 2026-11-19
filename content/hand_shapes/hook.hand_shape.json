@@ -1,0 +1,19 @@
+{
+  "format": "plush.hand_shape",
+  "version": 1,
+  "id": "hook",
+  "kind": "grasp",
+  "description": "Fingers hooked through a handle or strap (baskets, bags); no contact search. Design 2.3.",
+  "approach": {
+    "curl": 0.2,
+    "thumb": 0.1,
+    "spread": 0.0
+  },
+  "pose": {
+    "curl": 0.7,
+    "thumb": 0.1,
+    "spread": 0.0
+  },
+  "search": "none",
+  "thumb": "along"
+}

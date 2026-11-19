@@ -1,0 +1,19 @@
+{
+  "format": "plush.hand_shape",
+  "version": 1,
+  "id": "count_1",
+  "kind": "gesture",
+  "description": "Counting one: index up, the other fingers curled under the thumb.",
+  "pose": {
+    "curl": 0.9,
+    "thumb": 0.7,
+    "spread": 0.0,
+    "thumb_opposition": 0.6,
+    "fingers": {
+      "index": {
+        "curl": 0.0,
+        "spread": 0.0
+      }
+    }
+  }
+}

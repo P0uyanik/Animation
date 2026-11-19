@@ -1,0 +1,19 @@
+{
+  "format": "plush.hand_shape",
+  "version": 1,
+  "id": "palm",
+  "kind": "grasp",
+  "description": "Flat hand on a face (box sides, two-handed carries); no contact search. Design 2.3.",
+  "approach": {
+    "curl": 0.08,
+    "thumb": 0.3,
+    "spread": 0.0
+  },
+  "pose": {
+    "curl": 0.15,
+    "thumb": 0.35,
+    "spread": 0.0
+  },
+  "search": "none",
+  "thumb": "along"
+}

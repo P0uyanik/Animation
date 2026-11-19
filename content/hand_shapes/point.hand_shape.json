@@ -1,0 +1,19 @@
+{
+  "format": "plush.hand_shape",
+  "version": 1,
+  "id": "point",
+  "kind": "gesture",
+  "description": "Index finger pointing, the other fingers curled, thumb over them (reference: pointing / explaining).",
+  "pose": {
+    "curl": 0.85,
+    "thumb": 0.6,
+    "spread": 0.0,
+    "thumb_opposition": 0.4,
+    "fingers": {
+      "index": {
+        "curl": 0.0,
+        "spread": 0.0
+      }
+    }
+  }
+}
