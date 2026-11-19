@@ -916,7 +916,11 @@ std::vector<mat4> SceneEvaluator::kinematicGlobals(size_t c, double frame, Pose*
     for (size_t b = 0; b < ci.asset.skeleton.bones.size(); ++b)
       if (ci.asset.skeleton.bones[b].name.rfind("eye.", 0) == 0) pose.local[b] = glm::normalize(pose.local[b] * dq);
   }
-  if (legible.enabled) clampEyesToGazeRange(ci.asset.skeleton, world, pose, legible.rangeDeg);  // darts and blinks too
+  if (legible.enabled) {  // darts and blinks too; a chained look keeps its eyes near centre (eyeShareDeg)
+    vec2 range = legible.rangeDeg;
+    if (legible.chain && legible.eyeShareDeg.x >= 0) range = glm::min(range, legible.eyeShareDeg + vec2(2.0f));
+    clampEyesToGazeRange(ci.asset.skeleton, world, pose, range);
+  }
   applyArmPoles(ci.asset.skeleton, clip, prefix, frame, world, pose);          // elbow outward (T-030)
   applyOrientConstraints(ci.asset.skeleton, clip, prefix, frame, world, pose);  // hand-prop interaction (T-022)
   if (clips) applyClipFingers(c, frame, pose);
@@ -1153,6 +1157,13 @@ Result<GazeLegibility> gazeLegibilityFromJson(const Json& j, GazeLegibility base
         if (ck == "enabled") {
           if (!cv.is_boolean()) return bad("'chain.enabled' must be true or false");
           base.chain = cv.get<bool>();
+          continue;
+        }
+        if (ck == "eyeShareDeg") {
+          if (!cv.is_array() || cv.size() != 2 || !cv[0].is_number() || !cv[1].is_number() || cv[0].get<float>() < 0 ||
+              cv[1].get<float>() < 0)
+            return bad("'chain.eyeShareDeg' must be [yaw, pitch], both 0 or more");
+          base.eyeShareDeg = vec2(cv[0].get<float>(), cv[1].get<float>());
           continue;
         }
         if (!field) return bad("unknown chain key '" + ck + "'");
@@ -1469,7 +1480,8 @@ void turnChainForGaze(const Skeleton& sk, const Clip& clip, const std::string& p
     return glm::mix(laggedTarget, t->evaluate(frame) + liveOffset, p);
   };
   auto comfortable = [](float limit) { return limit - std::min(5.0f, limit * 0.25f) - 0.25f; };
-  const vec2 eyeComfort(comfortable(lg.rangeDeg.x), comfortable(lg.rangeDeg.y));
+  vec2 eyeComfort(comfortable(lg.rangeDeg.x), comfortable(lg.rangeDeg.y));
+  if (lg.eyeShareDeg.x >= 0) eyeComfort = glm::min(eyeComfort, lg.eyeShareDeg);
   const vec2 neckCap(std::max({0.0f, lg.headYawDeg, lg.neckYawDeg}), std::max({0.0f, lg.headPitchDeg, lg.neckPitchDeg}));
   const vec2 torsoCap(std::max(0.0f, lg.torsoYawDeg), std::max(0.0f, lg.torsoPitchDeg));
   // One stage: turn `bones` (parent first, by share) until the near eye sits at `comfort` from the target, up to cap.
