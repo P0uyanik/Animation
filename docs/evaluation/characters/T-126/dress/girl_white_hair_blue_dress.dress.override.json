@@ -84,7 +84,7 @@
      },
      "collar": {
       "type": "round",
-      "width_m": 0.034,
+      "width_m": 0.036,
       "gap_m": 0.003,
       "slope": 0.5,
       "tip_round": 0.85,
@@ -99,11 +99,11 @@
       "cuff_radius_m": 0.003,
       "hem_rib": {
        "ridges": 90,
-       "height_m": 0.016,
-       "relief_m": 0.0014,
+       "height_m": 0.018,
+       "relief_m": 0.0016,
        "gather": 0.6,
-       "thickness_m": 0.003,
-       "lift_m": 0.0045
+       "thickness_m": 0.0025,
+       "lift_m": 0.001
       }
      },
      "rib_cuff": {
@@ -229,12 +229,12 @@
       "leaf_rows": 5,
       "leaf_slope": 0.55,
       "top": 0.94,
-      "bottom_m": 0.024,
+      "bottom_m": 0.02,
       "subdivide": 2
      },
      "cloth_sim": {
-      "pin_top": 0.12,
-      "pin_blend": 0.1
+      "pin_top": 0.03,
+      "pin_blend": 0.05
      }
     },
     {
@@ -249,7 +249,7 @@
      },
      "sole": {
       "thickness_m": 0.007,
-      "width_m": 0.003
+      "width_m": 0.0
      },
      "material": {
       "preset": "boot fleece",

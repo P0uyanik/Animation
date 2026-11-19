@@ -25,6 +25,12 @@ Checks (each line PASS/FAIL; exit code 1 on any FAIL):
   parts     (build, scope addition) the component fixture (the girl without her vest): the Peter Pan collar lies on
             its own bodice at the configured thickness, chest-carried; each sleeve has a rib cuff band beyond its
             seam ring with the configured number of wales, skinned without head or torso-only weights.
+  t126      (T-126c additions) plain: the third character's dress override pins garment/3 and holds tights, dress
+            and boots; garments_v3/ and cloth_sim/ name no character. validate (Blender): her block validates, its
+            garment/2 view has no tights item and no new field, bad values / unknown keys / wrong item types are
+            rejected, the skirt pattern height stays in 0..1. build: on the T-070 draft body the tights are one
+            masked skin-following piece, the skirt is refined, tagged for the cloth simulation and pinned at the
+            waist only, every dress piece carries the ps_fibre UV map, each boot has its sole stitches.
 --quick runs plain and validate only. Masters given on the command line are used instead of building them."""
 import json
 import os
@@ -362,9 +368,135 @@ def test_default(blender, who, built):
           r["mats_a"] == r["mats_b"] and "M_skin_limbs" not in r["mats_b"])
 
 
+T126 = os.path.join(ROOT, "docs", "evaluation", "characters", "T-126", "dress")
+T126_OVERRIDE = os.path.join(T126, "girl_white_hair_blue_dress.dress.override.json")
+T126_BASE = os.path.join(ROOT, "docs", "evaluation", "characters", "T-070", "candidates", "third.base.spec.json")
+T126_FIELDS = ("fibre_uv", "skirt_pattern", "cloth_sim", "sole_stitch")
+T126_VALIDATE = r'''
+import copy
+import garments_v3 as V3
+from garments_v3 import pattern
+def raises(fn):
+    try:
+        fn()
+    except ValueError:
+        return True
+    return False
+out = []
+block = json.load(open(%r))["override"]["clothing"]
+out.append(["T-126: the dress override block validates", V3.validate(copy.deepcopy(block)) is not None])
+view = V3.v2_view(block)
+out.append(["T-126: its garment/2 view has no tights item and no garment/3 field",
+            not any(g["type"] == "tights" for g in view["garments"])
+            and not any(f in g for g in view["garments"] for f in %r) and len(view["garments"]) == 2])
+def item(c, name):
+    return next(g for g in c["garments"] if g["name"] == name)
+def bad(name, field, value, label):
+    c = copy.deepcopy(block)
+    g = item(c, name)
+    g[field] = dict(g.get(field) or {}, **value) if isinstance(value, dict) and isinstance(g.get(field), dict) else value
+    out.append(["T-126: " + label + " rejected", raises(lambda: V3.validate(c))])
+bad("dress", "skirt_pattern", {"panels": 0}, "skirt_pattern.panels 0")
+bad("dress", "skirt_pattern", {"relief_m": 0.5}, "skirt_pattern.relief_m 0.5")
+bad("dress", "skirt_pattern", {"lace": 1}, "skirt_pattern unknown key")
+bad("boots", "skirt_pattern", {"panels": 8}, "skirt_pattern on boots")
+bad("dress", "fibre_uv", {"swap": 1}, "fibre_uv.swap 1")
+bad("dress", "fibre_uv", "yes", "fibre_uv as text")
+bad("dress", "cloth_sim", {"pin_top": 2.0}, "cloth_sim.pin_top 2")
+bad("boots", "cloth_sim", {"pin_top": 0.1}, "cloth_sim on boots")
+bad("boots", "sole_stitch", {"pitch_m": 0.0}, "sole_stitch.pitch_m 0")
+bad("dress", "sole_stitch", {"pitch_m": 0.01}, "sole_stitch on a dress")
+bad("tights", "length", 0.5, "tights unknown field")
+bad("tights", "ease_m", 0.5, "tights.ease_m 0.5")
+bad("tights", "collar_seat", {}, "collar_seat on tights")
+c = copy.deepcopy(block)
+item(c, "boots").pop("sole")
+out.append(["T-126: sole_stitch without a sole rejected", raises(lambda: V3.validate(c))])
+c = copy.deepcopy(block)
+c["garments"].append(copy.deepcopy(item(c, "tights")))
+out.append(["T-126: two tights items of one name rejected", raises(lambda: V3.validate(c))])
+st = dict(pattern.PATTERN)
+hs = [pattern.height(u / 97.0, v / 89.0, st) for u in range(97) for v in range(90)]
+out.append(["T-126: the skirt pattern height stays in 0..1 and uses the range", min(hs) >= 0.0 and 0.9 < max(hs) <= 1.0])
+out.append(["T-126: a panel without leaves and cable is flat",
+            max(pattern.height(u / 50.0, 0.3, dict(st, cable_share=0.0, leaf_rows=0)) for u in range(50)) == 0.0])
+RESULT["validate"] = out
+'''
+T126_PROBE = r'''
+import json
+bpy.ops.wm.open_mainfile(filepath=%r)
+obs = {o.name: o for o in bpy.data.objects if o.name.startswith("garment.")}
+body = bpy.data.objects["body_skin"]
+skirt, tights = obs["garment.dress.skirt"], obs["garment.tights.main"]
+pin = [d.value for d in skirt.data.attributes["ps_cloth_pin"].data]
+zs = [v.co.z for v in skirt.data.vertices]
+z0, z1 = min(zs), max(zs)
+RESULT["r"] = {
+    "tights_parts": sorted(n for n in obs if n.startswith("garment.tights.") and not n.endswith(".fibres")),
+    "tights_body_attr": "ps_body_vertex" in tights.data.attributes, "tights_verts": len(tights.data.vertices),
+    "tights_z": [min(v.co.z for v in tights.data.vertices), max(v.co.z for v in tights.data.vertices)],
+    "masked": list(body.get("ps_garment_mask_items", [])),
+    "skirt_verts": len(skirt.data.vertices), "sim": json.loads(skirt.get("ps_cloth_sim", "null")),
+    "pin_top": min(z for z, p in zip(zs, pin) if p >= 0.999) > z0 + 0.9 * (z1 - z0),
+    "pin_free": sum(1 for p in pin if p == 0.0) / len(pin),
+    "uv": sorted(n for n, o in obs.items() if o.type == "MESH" and o.get("ps_garment_item") == "dress"
+                 and "ps_fibre" not in o.data.uv_layers),
+    "stitch": {n: len(o.data.vertices) for n, o in obs.items() if ".stitch." in n and o.type == "MESH"},
+    "generator": sorted({o.get("ps_garment_generator") for o in obs.values() if o.get("ps_garment_generator")}),
+}
+'''
+
+
+def test_t126_plain():
+    ovr = json.load(open(T126_OVERRIDE))["override"]
+    types = [g["type"] for g in ovr["clothing"]["garments"]]
+    check("T-126: the dress override pins garment/3 and holds tights, dress and boots",
+          ovr["generators"] == {"garment": "garment/3"} and ovr["clothing"]["generator"] == "garment/3"
+          and types == ["tights", "dress", "boots"], types)
+    dress = next(g for g in ovr["clothing"]["garments"] if g["type"] == "dress")
+    check("T-126: the dress reuses the T-119 components (collar_seat on a round collar, rib_cuff)",
+          dress["collar"]["type"] == "round" and dress["collar_seat"]["over"] == [] and dress["rib_cuff"]["ribs"] > 0)
+    named = []
+    for folder in ("garments_v3", "cloth_sim"):
+        for f in sorted(os.listdir(os.path.join(CHARSYS, folder))):
+            if f.endswith(".py"):
+                text = open(os.path.join(CHARSYS, folder, f)).read()
+                named += [f"{folder}/{f}" for w in ("girl_", "boy_", "white_hair", "auburn", "hoodie_yellow") if w in text]
+    check("T-126: garments_v3/ and cloth_sim/ name no character", not named, named)
+
+
+def test_t126_build(blender, master):
+    r = probe(blender, T126_PROBE % master)["r"]
+    print("[test_garments_r3] t126", json.dumps(r))
+    check("T-126: the tights are one skin-following piece from the feet to the waist, masked like other items",
+          r["tights_parts"] == ["garment.tights.main"] and r["tights_body_attr"] and r["tights_verts"] > 1000
+          and r["tights_z"][0] < 0.02 and r["tights_z"][1] > 0.3 and "tights" in r["masked"], r["tights_z"])
+    check("T-126: the skirt is refined for the pattern and tagged for the cloth simulation, pinned at the waist only",
+          r["skirt_verts"] > 20000 and isinstance(r["sim"], dict) and r["pin_top"] and r["pin_free"] > 0.8,
+          (r["skirt_verts"], r["sim"], round(r["pin_free"], 3)))
+    check("T-126: every dress piece carries the ps_fibre UV map", r["uv"] == [], r["uv"])
+    check("T-126: each boot has its sole stitches", sorted(r["stitch"]) == ["garment.boots.stitch.L",
+                                                                           "garment.boots.stitch.R"]
+          and all(n >= 48 for n in r["stitch"].values()), r["stitch"])
+    check("T-126: every piece is tagged garment/3", r["generator"] == ["garment/3"], r["generator"])
+
+
+def build_t126(blender):
+    out = tempfile.mkdtemp(prefix="t126_")
+    run_blender(blender, os.path.join(CHARSYS, "build_character.py"),
+                ["--spec", T126_BASE, "--out", out, "--no-glb", "--no-compare", "--override", T126_OVERRIDE])
+    return os.path.join(out, "girl_white_hair_blue_dress_master.blend")
+
+
 def main():
     blender = arg("--blender")
     test_plain()
+    test_t126_plain()
+    if blender:
+        for name, ok in probe(blender, T126_VALIDATE % (T126_OVERRIDE, V3_FIELDS + T126_FIELDS))["validate"]:
+            check(name, ok)
+        if "--quick" not in sys.argv:
+            test_t126_build(blender, arg("--t126-master") or build_t126(blender))
     if blender:
         triples = [(who, override_path(who), spec_path(who)) for who in ("girl", "boy")]
         for name, ok in probe(blender, VALIDATE % (triples, V3_FIELDS, FIXTURE))["validate"]:

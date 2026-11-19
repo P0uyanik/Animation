@@ -36,8 +36,8 @@ SHOTS = {
          "hide": ("hair",)},
     ],
     "crops": [
-        {"name": "collar", "label": "collar | front", "pose": DOWN, "cam": ((0.0, -0.02, 0.645), 0.20, 0.0, 6.0), "hide": ("hair",)},
-        {"name": "collar_34", "label": "collar | 3/4", "pose": DOWN, "cam": ((0.0, -0.02, 0.645), 0.20, 45.0, 10.0), "hide": ("hair",)},
+        {"name": "collar", "label": "collar | front", "pose": DOWN, "cam": ((0.0, -0.02, 0.575), 0.20, 0.0, 6.0), "hide": ("hair",)},
+        {"name": "collar_34", "label": "collar | 3/4", "pose": DOWN, "cam": ((0.0, -0.02, 0.575), 0.20, 45.0, 10.0), "hide": ("hair",)},
         {"name": "cuff", "label": "sleeve and rib cuff (A-pose)", "pose": A_POSE, "cam": ((0.17, 0.0, 0.47), 0.17, 15.0, 6.0)},
         {"name": "hem", "label": "skirt pattern and rib hem", "pose": DOWN, "cam": ((0.0, -0.08, 0.35), 0.26, -15.0, 2.0)},
         {"name": "boots", "label": "boots and tights | 3/4", "pose": DOWN, "cam": ((0.0, -0.02, 0.07), 0.30, 40.0, 8.0)},

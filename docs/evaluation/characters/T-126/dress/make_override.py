@@ -39,10 +39,10 @@ def clothing(plain=False):
         "sleeve_length": 0.97, "sleeve_start": 0.0, "armhole": "closed", "sleeve_puff_m": 0.014, "sleeve_puff_peak": 0.72,
         "waist_z_m": 0.467, "length_m": 0.203, "flare": 0.072,
         "gathers": {"count": 12, "depth_m": 0.014, "waist_depth_m": 0.004},
-        "collar": {"type": "round", "width_m": 0.034, "gap_m": 0.003, "slope": 0.5, "tip_round": 0.85, "lift_m": 0.0},
+        "collar": {"type": "round", "width_m": 0.036, "gap_m": 0.003, "slope": 0.5, "tip_round": 0.85, "lift_m": 0.0},
         "collar_seat": {"over": [], "thickness_m": 0.004},
         "bands": {"cuff": True, "cuff_radius_m": 0.003,
-                  "hem_rib": {"ridges": 90, "height_m": 0.016, "relief_m": 0.0014, "gather": 0.6, "thickness_m": 0.003, "lift_m": 0.0045}},
+                  "hem_rib": {"ridges": 90, "height_m": 0.018, "relief_m": 0.0016, "gather": 0.6, "thickness_m": 0.0025, "lift_m": 0.001}},
         "rib_cuff": {"height_m": 0.03, "ribs": 18, "depth_m": 0.0026, "thickness_m": 0.004, "tighten": 0.08},
         "material": knit(DRESS, 0.0036, not plain),
         "materials": {"collar": knit(COLLAR, 0.0036, not plain), "band": knit(CUFFS, 0.0036, not plain)},
@@ -52,7 +52,7 @@ def clothing(plain=False):
     }
     boots = {
         "type": "boots", "name": "boots", "height": 0.46, "ease_m": 0.02, "cuff": True,
-        "bands": {"cuff": True, "cuff_radius_m": 0.009}, "sole": {"thickness_m": 0.007, "width_m": 0.003},
+        "bands": {"cuff": True, "cuff_radius_m": 0.009}, "sole": {"thickness_m": 0.007, "width_m": 0.0},
         "material": {"preset": "boot fleece", "base_color_srgb": BOOTS, "reference_size_m": 0.15,
                      "overrides": {"surface": {"sheen_weight": 0.25}}},
         "materials": {"band": {"preset": "cuff fleece/3", "base_color_srgb": BOOTS, "reference_size_m": 0.15},
@@ -64,8 +64,8 @@ def clothing(plain=False):
     if not plain:
         dress["fibre_uv"] = True
         dress["skirt_pattern"] = {"panels": 12, "relief_m": 0.005, "cable_share": 0.4, "twists": 3.5, "leaf_rows": 5,
-                                  "leaf_slope": 0.55, "top": 0.94, "bottom_m": 0.024, "subdivide": 2}
-        dress["cloth_sim"] = {"pin_top": 0.12, "pin_blend": 0.1}
+                                  "leaf_slope": 0.55, "top": 0.94, "bottom_m": 0.02, "subdivide": 2}
+        dress["cloth_sim"] = {"pin_top": 0.03, "pin_blend": 0.05}
         tights = {"type": "tights", "name": "tights", "waist_z_m": 0.4, "ease_m": 0.0025, "thickness_m": 0.0012,
                   "fibre_uv": True, "material": knit(TIGHTS, 0.0022, True, fuzz_mm=0.8, strength=0.35)}
         boots["sole_stitch"] = {"pitch_m": 0.009, "radius_m": 0.0017, "length": 0.55, "above_m": 0.012}

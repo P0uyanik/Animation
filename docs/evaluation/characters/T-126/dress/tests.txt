@@ -1,0 +1,99 @@
+[test_garments_r3] PASS garment/3 is registered to garments_v3
+[test_garments_r3] PASS the garment/1 and garment/2 registry lines are kept
+[test_garments_r3] PASS garments_v3 declares garment/3
+[test_garments_r3] PASS girl: the published spec pins garment/2, has no garment/3 field and no skin_limbs slot ('garment/2', [])
+[test_garments_r3] PASS girl: the T-119 override loads on the published spec and pins garment/3
+[test_garments_r3] PASS girl: the override changes no garment material entry
+[test_garments_r3] PASS boy: the published spec pins garment/2, has no garment/3 field and no skin_limbs slot ('garment/2', [])
+[test_garments_r3] PASS boy: the T-119 override loads on the published spec and pins garment/3
+[test_garments_r3] PASS boy: the override changes no garment material entry
+[test_garments_r3] PASS boy: the override adds the skin_limbs slot with an id of skin_presets_r3.json and keeps the skin slot skin-felt-limbs/3
+[test_garments_r3] PASS boy: the candidate material assignments validate
+[test_garments_r3] PASS an unknown skin_limbs preset id is rejected
+[test_garments_r3] PASS skin_presets_r3.json validates as a presets/3 library with new ids ending in /3 ['skin-felt-limbs/3']
+[test_garments_r3] PASS its ids resolve as presets/3 from their own file
+[test_garments_r3] PASS older ids are not ids of the new file and still resolve from their own files
+[test_garments_r3] PASS skin-felt-limbs/3 is skin-felt/3 with a shorter subsurface scale and a lower rim weight only ['silhouette.weight', 'surface.subsurface_scale_fraction']
+[test_garments_r3] PASS garments/, garments_v2/, their tests and the older preset files are unchanged against origin/main []
+[test_garments_r3] PASS T-126: the dress override pins garment/3 and holds tights, dress and boots ['tights', 'dress', 'boots']
+[test_garments_r3] PASS T-126: the dress reuses the T-119 components (collar_seat on a round collar, rib_cuff)
+[test_garments_r3] PASS T-126: garments_v3/ and cloth_sim/ name no character []
+[test_garments_r3] PASS T-126: the dress override block validates
+[test_garments_r3] PASS T-126: its garment/2 view has no tights item and no garment/3 field
+[test_garments_r3] PASS T-126: skirt_pattern.panels 0 rejected
+[test_garments_r3] PASS T-126: skirt_pattern.relief_m 0.5 rejected
+[test_garments_r3] PASS T-126: skirt_pattern unknown key rejected
+[test_garments_r3] PASS T-126: skirt_pattern on boots rejected
+[test_garments_r3] PASS T-126: fibre_uv.swap 1 rejected
+[test_garments_r3] PASS T-126: fibre_uv as text rejected
+[test_garments_r3] PASS T-126: cloth_sim.pin_top 2 rejected
+[test_garments_r3] PASS T-126: cloth_sim on boots rejected
+[test_garments_r3] PASS T-126: sole_stitch.pitch_m 0 rejected
+[test_garments_r3] PASS T-126: sole_stitch on a dress rejected
+[test_garments_r3] PASS T-126: tights unknown field rejected
+[test_garments_r3] PASS T-126: tights.ease_m 0.5 rejected
+[test_garments_r3] PASS T-126: collar_seat on tights rejected
+[test_garments_r3] PASS T-126: sole_stitch without a sole rejected
+[test_garments_r3] PASS T-126: two tights items of one name rejected
+[test_garments_r3] PASS T-126: the skirt pattern height stays in 0..1 and uses the range
+[test_garments_r3] PASS T-126: a panel without leaves and cable is flat
+[test_garments_r3] PASS T-126: the tights are one skin-following piece from the feet to the waist, masked like other items [-0.003386578056961298, 0.4018715023994446]
+[test_garments_r3] PASS T-126: the skirt is refined for the pattern and tagged for the cloth simulation, pinned at the waist only (76800, {'pin_blend': 0.05, 'pin_top': 0.03}, 0.905)
+[test_garments_r3] PASS T-126: every dress piece carries the ps_fibre UV map []
+[test_garments_r3] PASS T-126: each boot has its sole stitches {'garment.boots.stitch.L': 246, 'garment.boots.stitch.R': 246}
+[test_garments_r3] PASS T-126: every piece is tagged garment/3 ['garment/3']
+[test_garments_r3] PASS girl: the candidate clothing block validates
+[test_garments_r3] PASS girl: garment/3 without a new field has the published block as its garment/2 view
+[test_garments_r3] PASS girl: the garment/2 view of the candidate carries no garment/3 field
+[test_garments_r3] PASS boy: the candidate clothing block validates
+[test_garments_r3] PASS boy: garment/3 without a new field has the published block as its garment/2 view
+[test_garments_r3] PASS boy: the garment/2 view of the candidate carries no garment/3 field
+[test_garments_r3] PASS collar_seat.gap_m 0.5 rejected
+[test_garments_r3] PASS collar_seat unknown key rejected
+[test_garments_r3] PASS collar_seat.over naming no item rejected
+[test_garments_r3] PASS collar_seat.shoulder_bone without {side} rejected
+[test_garments_r3] PASS collar_seat on a vest rejected
+[test_garments_r3] PASS cuff_gather.pleats 2.5 rejected
+[test_garments_r3] PASS cuff_gather.height_m 0 rejected
+[test_garments_r3] PASS cuff_gather on a top rejected
+[test_garments_r3] PASS ankle_close.ease_m 0.5 rejected
+[test_garments_r3] PASS ankle_close unknown key rejected
+[test_garments_r3] PASS ankle_close on a hoodie rejected
+[test_garments_r3] PASS collar_seat.thickness_m 0.5 rejected
+[test_garments_r3] PASS rib_cuff.ribs 200 rejected
+[test_garments_r3] PASS rib_cuff.height_m 0 rejected
+[test_garments_r3] PASS rib_cuff unknown key rejected
+[test_garments_r3] PASS rib_cuff on shorts rejected
+[test_garments_r3] PASS rib_cuff without sleeve cuff bands rejected
+[test_garments_r3] PASS rib_cuff validates on a hoodie (plain band, ribs 0)
+[test_garments_r3] PASS the component fixture block validates, has no vest and no collar 'over'
+[test_garments_r3] PASS collar_seat without a round collar rejected
+[test_garments_r3] PASS cuff_gather without cuff bands rejected
+[test_garments_r3] PASS a garment/2 block is not a garment/3 block
+[test_garments_r3] PASS the seated collar is carried by the chest and the shoulders only ['DEF-shoulder.L', 'DEF-shoulder.R', 'DEF-spine.003']
+[test_garments_r3] PASS the current collar carries head or arm weight (what the seat removes)
+[test_garments_r3] PASS rest: the collar stands off the layers under it less than the current one (p95) and under 3 cm (0.0243, 0.02204)
+[test_garments_r3] PASS half_reach: the collar stands off the layers under it less than the current one (p95) and under 3 cm (0.02451, 0.02152)
+[test_garments_r3] PASS full_reach: the collar stands off the layers under it less than the current one (p95) and under 3 cm (0.02488, 0.02063)
+[test_garments_r3] PASS half_reach: the collar stays within 3 cm of its rest place (the current one is carried further) (0.03351, 0.00804)
+[test_garments_r3] PASS full_reach: the collar stays within 3 cm of its rest place (the current one is carried further) (0.06447, 0.02436)
+[test_garments_r3] PASS the two cuff bands do not overlap (the current ones do) (-0.0545, 0.001)
+[test_garments_r3] PASS the shell does not hang below the cuff bands (the current one does) (0.0177, 0.0)
+[test_garments_r3] PASS rest: no uncovered skin round the ankle (the current build leaves some) (21.42, 0.0)
+[test_garments_r3] PASS toes_up: no uncovered skin round the ankle (the current build leaves some) (21.6, 0.0)
+[test_garments_r3] PASS toes_down: no uncovered skin round the ankle (the current build leaves some) (33.81, 0.0)
+[test_garments_r3] PASS the candidate hands use skin-felt-limbs/3 on their own material, the current hands skin-felt/3 ('skin-felt/3', 'skin-felt-limbs/3')
+[test_garments_r3] PASS girl: a default build has every garment piece and hand identical to the published 0.12.0 master (41, [])
+[test_garments_r3] PASS girl: a default build has the published material names (no limb material)
+[test_garments_r3] PASS boy: a default build has every garment piece and hand identical to the published 2.1.0 master (64, [])
+[test_garments_r3] PASS boy: a default build has the published material names (no limb material)
+[test_garments_r3] parts {"vest": [], "cuffs": {"L": {"vertices": 1008, "part": "rib_cuff", "wales": 14, "bones": ["DEF-forearm.L.001", "DEF-hand.L"], "generator": "garment/3", "armature": true, "beyond_ring_m": 0.009351091639152043, "mean_radius_m": 0.03438575561743895}, "R": {"vertices": 1008, "part": "rib_cuff", "wales": 14, "bones": ["DEF-forearm.R.001", "DEF-hand.R"], "generator": "garment/3", "armature": true, "beyond_ring_m": 0.009350755364728153, "mean_radius_m": 0.034371428780721754}}, "collar_thickness_m": 0.004000000165421548}
+[test_garments_r3] PASS fixture: no vest; the collar has the configured thickness 0.004
+[test_garments_r3] PASS rib cuff L: a garment/3 piece of part rib_cuff, skinned, beyond the sleeve's seam ring 0.0094
+[test_garments_r3] PASS rib cuff L: 14 wales round the band 14
+[test_garments_r3] PASS rib cuff L: carried by arm bones only ['DEF-forearm.L.001', 'DEF-hand.L']
+[test_garments_r3] PASS rib cuff R: a garment/3 piece of part rib_cuff, skinned, beyond the sleeve's seam ring 0.0094
+[test_garments_r3] PASS rib cuff R: 14 wales round the band 14
+[test_garments_r3] PASS rib cuff R: carried by arm bones only ['DEF-forearm.R.001', 'DEF-hand.R']
+[test_garments_r3] PASS fixture: the collar on its own bodice is chest-carried and lies closer than the current one (p95 < 1.6 cm) (0.0243, 0.01405)
+[test_garments_r3] 97/97 passed
