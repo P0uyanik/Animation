@@ -544,3 +544,7 @@ needed by the current engine, especially collision-related SDF functionality. Ru
 and make sure the entire change can be safely reverted." T-142 updated: dependency report first (to owner), permanent
 tag `archive/legacy-engine-renderer-2026-11-19`, one revertible commit, full gate + nightly Windows + backup runs.
 A2/A4/A3 unchanged.
+
+## 2026-11-19 ~20:55Z: Codex does T-150 then T-151 (relayed by the original Supervisor)
+Owner order: Codex (about 40% allowance left) does T-150 (eye-shape targets for both girls, forwarded to T-137) then
+T-151 (independent dependency map for A1/T-142, compared with T-142's report before any deletion). Analysis only.

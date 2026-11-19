@@ -151,3 +151,5 @@ Tasks from now on are numbered T-001, T-002, …, and pass through the states in
 | T-142 | [Infra] A1 FULL removal of unused legacy renderer/SDF chars/apps (Opus; owner ~20:45Z) | written 2026-11-19 (owner ~20:30Z), after T-141 or free slot | t-142-claude-legacy-removal | docs/tasks/T-142.md |
 | T-143 | [Cleanup] A4 T-102 extension (Sonnet) | written 2026-11-19 (owner ~20:30Z), after T-141 or free slot | t-143 | docs/tasks/T-143.md |
 | T-144 | [Cleanup] A3 retire unpinned generator versions, plan first (Opus) | written 2026-11-19 (owner ~20:30Z), last | t-144 | docs/tasks/T-144.md |
+| T-150 | [Evaluation] Eye-shape targets for both girls (Codex) | assigned 2026-11-19 on relay-channel (e9ab05fe) | t-150-codex | relay NEXT_TASK.md |
+| T-151 | [Audit] Independent A1 legacy dependency map (Codex) | assigned 2026-11-19 on relay-channel (e9ab05fe) | t-151-codex | relay NEXT_TASK.md |
