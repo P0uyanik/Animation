@@ -140,8 +140,13 @@ def write_strips(issues, ctx, out, n):
                 x0, y0, x1, y1 = iss["bbox_px"]
                 cx, cy = (iss["worst_tile_px"][0] + 8, iss["worst_tile_px"][1] + 8)
                 t = fr.index(iss["peak_frame"])
-                fmap = (flicker.flips(data["denoised"], t, ctx["thr"]["flicker"]["eps"],
-                                      ctx["thr"]["flicker"]["flip_min"]) * 255).astype(np.uint8)
+                ft = ctx["thr"]["flicker"]
+                if "vector" in data:  # the motion-compensated flips the check counted
+                    w = flicker.compensated(data, t)
+                    fmap = flicker.flips(w["denoised"], 1, ft["eps"], ft["flip_min"]) & w["same"]
+                else:
+                    fmap = flicker.flips(data["denoised"], t, ft["eps"], ft["flip_min"])
+                fmap = (fmap * 255).astype(np.uint8)
                 panels += EV.frame_crops(data["denoised"], fr, iss["peak_frame"], cx, cy, fmap)
             else:
                 p = point_of(shot, iss, ctx["thr"])
