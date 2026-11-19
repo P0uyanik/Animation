@@ -1,0 +1,53 @@
+{
+ "character_id": "girl_auburn_bun_glasses",
+ "version": "0.12.0",
+ "parent": "0.11.0",
+ "created": "2026-11-19T01:50:35+00:00",
+ "notes": "girl_auburn_bun_glasses 0.12.0 (T-094): spec assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.12.0.spec.json",
+ "spec_sha256": "7977c73619ae5dac7fe019978adc89c003011cb689da427d234bcaf9b98887e6",
+ "spec_version": "0.12.0",
+ "build": "charsys/1+body_generic/1",
+ "blender": "5.3.0",
+ "identity_changes": [
+  "face",
+  "hair",
+  "clothing",
+  "materials"
+ ],
+ "identity_change_approved_by": "owner, docs/process/OWNER_DECISIONS.md 2026-11-18 (T-092 approved ~19:20Z; T-089 and T-093 approved ~22:35Z; Phase D incl. T-094 ~22:50Z; standing approval ~23:10Z)",
+ "files": {
+  "girl_auburn_bun_glasses_master.blend": {
+   "sha256": "fe7ba69585acb1ac698197fd0970c931fc53cd2574c40b7f5fac5595d668da90",
+   "bytes": 32183107
+  },
+  "spec.json": {
+   "sha256": "daae5098a82a866215a59719688aaf0ee83e494d9677a56de6d12efe402b6ab3",
+   "bytes": 56641
+  },
+  "components.json": {
+   "sha256": "0bf22184ba091904fb6da5793671d0f37c3d3f190f0f42e695be6187b1dcf190",
+   "bytes": 24869
+  },
+  "animation_compat.json": {
+   "sha256": "52c861a59ccbbfec0d75a6872ae196f24df495046fa3722658f16703872848b7",
+   "bytes": 16469
+  },
+  "build_report.json": {
+   "sha256": "58dfb76e6a8139daffb94a1b40ea4307e8afd1fe06641b328f57821a3b6fffc2",
+   "bytes": 34401
+  },
+  "spec.resolved.json": {
+   "sha256": "161bd88e77f8185861368a9cd492e15553507cc555ff7760ad4dc21d0b87b4e7",
+   "bytes": 57127
+  }
+ },
+ "rig": {
+  "rigify_bones": 522,
+  "deform_bones": 185,
+  "unweighted_after_cleanup": 0
+ },
+ "spec_resolved": "spec.resolved.json is the build's fitted spec (body_generic writes fitted values); spec.json is the input spec it was built from (hash = spec_sha256)",
+ "not_stored": {
+  "girl_auburn_bun_glasses.glb": "not needed for reuse: shots link the master and engine packages are exported from it (run_shot.py); reproducible from the master"
+ }
+}

@@ -1,0 +1,53 @@
+{
+ "character_id": "boy_yellow_hoodie",
+ "version": "2.1.0",
+ "parent": "2.0.0",
+ "created": "2026-11-19T01:40:22+00:00",
+ "notes": "boy_yellow_hoodie 2.1.0 (T-094): spec assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.1.0.spec.json",
+ "spec_sha256": "d70f55c6c9796b3cfdeef5844b4ff90f553c64597e6b5f6d1be176a00bf73634",
+ "spec_version": "2.1.0",
+ "build": "charsys/1+body_generic/1",
+ "blender": "5.3.0",
+ "identity_changes": [
+  "face",
+  "hair",
+  "clothing",
+  "materials"
+ ],
+ "identity_change_approved_by": "owner, docs/process/OWNER_DECISIONS.md 2026-11-18 (T-092 approved ~19:20Z; T-089 and T-093 approved ~22:35Z; Phase D incl. T-094 ~22:50Z; standing approval ~23:10Z)",
+ "files": {
+  "boy_yellow_hoodie_master.blend": {
+   "sha256": "529fd6ae2acf17dfec659463c4d68a5e0336ecb561862554cd271b53339b58f5",
+   "bytes": 32364164
+  },
+  "spec.json": {
+   "sha256": "66c9c9114773c30823ecdb1a2a192c6f003c9145a54353bb78b6417b84a1b586",
+   "bytes": 36205
+  },
+  "components.json": {
+   "sha256": "040247fd44e01d8b7f72c0d149e652bbe6f724d56a3a1e22c513574c062d2035",
+   "bytes": 30478
+  },
+  "animation_compat.json": {
+   "sha256": "8662799083ee526bc3d03be7fced725bd1c6e1bceebe1328a737edea74cac098",
+   "bytes": 13014
+  },
+  "build_report.json": {
+   "sha256": "9c275d44f9542711a84855bb40500c98cde6fc9ef2bc70fd0a0b5803c893e0ac",
+   "bytes": 39727
+  },
+  "spec.resolved.json": {
+   "sha256": "7954558ac0f7329e6baa971b5ca30e98b4794e505e5044226ddd24b597663463",
+   "bytes": 36831
+  }
+ },
+ "rig": {
+  "rigify_bones": 459,
+  "deform_bones": 122,
+  "unweighted_after_cleanup": 0
+ },
+ "spec_resolved": "spec.resolved.json is the build's fitted spec (body_generic writes fitted values); spec.json is the input spec it was built from (hash = spec_sha256)",
+ "not_stored": {
+  "boy_yellow_hoodie.glb": "not needed for reuse: shots link the master and engine packages are exported from it (run_shot.py); reproducible from the master"
+ }
+}
