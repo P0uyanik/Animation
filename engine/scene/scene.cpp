@@ -726,6 +726,7 @@ Result<void> SceneEvaluator::load(const Scene& scene, const EvalOptions& opt) {
     std::lock_guard<std::mutex> lock(*bodyMutex_);
     for (auto& m : bodyCache_) m.clear();
   }
+  buildLiveGaze();  // T-136 E3 (only characters with the opt-in gaze chain)
   // Secondary motion after the actions are compiled (action planning sees the kinematic pose).
   dynamics_.assign(characters_.size(), nullptr);
   for (size_t c = 0; c < characters_.size(); ++c) {
@@ -897,8 +898,18 @@ std::vector<mat4> SceneEvaluator::kinematicGlobals(size_t c, double frame, Pose*
   if (face && !morphBlink) applyLidBlink(ci.asset.skeleton, pose, fs.blink);
   // Body mechanics (T-045): shoulders, torso, weight shift and pivot carry, before IK and look-at so they work on it.
   if (bodyMechanicsActive(c)) applyBodyMechanicsAt(c, frame, pose);
-  if (legible.enabled) turnHeadForGaze(ci.asset.skeleton, clip, prefix, frame, scene_.rate.fps(), world, pose, legible);
+  // Gaze chain (T-136 E3, opt-in): the exact live target of an atProp / atCharacter look, torso + neck + head.
+  vec3 liveOffset(0);
+  double sinceLook = -1;
+  const bool live = legible.enabled && legible.chain && liveGazeOffset(c, frame, liveOffset, &sinceLook);
+  if (legible.enabled && legible.chain)
+    turnChainForGaze(ci.asset.skeleton, clip, prefix, frame, scene_.rate.fps(), world, pose, legible, liveOffset,
+                     live ? sinceLook : -1.0);
+  else if (legible.enabled)
+    turnHeadForGaze(ci.asset.skeleton, clip, prefix, frame, scene_.rate.fps(), world, pose, legible);
   applyConstraints(ci.asset.skeleton, clip, prefix, frame, world, pose, life.gaze, scene_.rate.fps());
+  if (live)
+    aimEyesAt(ci.asset.skeleton, world, pose, clip.find(prefix + "lookAt")->evaluate(frame) + liveOffset, std::clamp(clip.evaluate(prefix + "lookAt.weight", frame, vec3(1)).x, 0.0f, 1.0f));
   if (face && (fs.eyeOffsetDeg.x != 0 || fs.eyeOffsetDeg.y != 0)) {  // eye darts and gaze bias on top of the aim
     const quat dq = glm::angleAxis(glm::radians(fs.eyeOffsetDeg.x), vec3(0, 1, 0)) *
                     glm::angleAxis(glm::radians(-fs.eyeOffsetDeg.y), vec3(1, 0, 0));
@@ -1128,6 +1139,26 @@ Result<GazeLegibility> gazeLegibilityFromJson(const Json& j, GazeLegibility base
       if (!v.is_number() || v.get<float>() < 0) return bad("'" + key + "' must be a number, 0 or more");
       (key == "leadFrames" ? base.leadFrames : key == "turnFrames" ? base.turnFrames
        : key == "headYawDeg" ? base.headYawDeg : base.headPitchDeg) = v.get<float>();
+    } else if (key == "chain") {  // T-136 E3
+      if (v.is_boolean()) {
+        base.chain = v.get<bool>();
+        continue;
+      }
+      if (!v.is_object()) return bad("'chain' must be true, false or an object");
+      base.chain = true;
+      for (auto& [ck, cv] : v.items()) {
+        float* field = ck == "neckYawDeg" ? &base.neckYawDeg : ck == "neckPitchDeg" ? &base.neckPitchDeg
+                       : ck == "torsoYawDeg" ? &base.torsoYawDeg : ck == "torsoPitchDeg" ? &base.torsoPitchDeg
+                       : ck == "torsoLagFrames" ? &base.torsoLagFrames : nullptr;
+        if (ck == "enabled") {
+          if (!cv.is_boolean()) return bad("'chain.enabled' must be true or false");
+          base.chain = cv.get<bool>();
+          continue;
+        }
+        if (!field) return bad("unknown chain key '" + ck + "'");
+        if (!cv.is_number() || cv.get<float>() < 0) return bad("'chain." + ck + "' must be a number, 0 or more");
+        *field = cv.get<float>();
+      }
     } else {
       return bad("unknown key '" + key + "'");
     }
@@ -1304,6 +1335,221 @@ void turnHeadForGaze(const Skeleton& sk, const Clip& clip, const std::string& pr
     pose.local[size_t(neck)] = glm::normalize(glm::inverse(parentRot) * r * parentRot * pose.local[size_t(neck)]);
   }
   if (weight < 1) pose.local[size_t(neck)] = glm::normalize(glm::slerp(neckBefore, pose.local[size_t(neck)], weight));
+}
+
+void SceneEvaluator::buildLiveGaze() {
+  // Pass 1 reads every pose with the keyed targets; pass 2 with pass 1's live targets, so two characters in eye contact
+  // see each other's corrected heads.
+  liveGaze_.clear();
+  for (int pass = 0; pass < 2; ++pass) buildLiveGazePass();
+}
+
+void SceneEvaluator::buildLiveGazePass() {
+  std::vector<std::vector<vec4>> out(characters_.size());
+  for (size_t c = 0; c < characters_.size(); ++c) {
+    const GazeLegibility g = gazeLegibility(c);
+    if (!g.enabled || !g.chain) continue;
+    for (int f = scene_.frameStart; f <= scene_.frameEnd; ++f) {
+      vec3 live(0), keyed(0);
+      // The offset applies the same to every sample of the lagged target (the live target's motion is the keyed one's).
+      double lookStart = f;
+      const bool ok = liveGazeTarget(c, f, live, keyed, &lookStart);
+      if (ok) {
+        // Relative to the track's own value at f (the keys are every 3 frames, linear between).
+        const vec3 track = scene_.animation.find(scene_.characters[c].name + "/lookAt")->evaluate(f);
+        out[c].push_back(vec4(live - track, float(f - lookStart) + 1.0f));
+      } else {
+        out[c].push_back(vec4(0));
+      }
+    }
+  }
+  liveGaze_ = std::move(out);
+}
+
+bool SceneEvaluator::liveGazeOffset(size_t c, double frame, vec3& offset, double* sinceStart) const {
+  if (c >= liveGaze_.size() || liveGaze_[c].empty()) return false;
+  const std::vector<vec4>& v = liveGaze_[c];
+  const double x = frame - scene_.frameStart;
+  if (x < 0 || x > double(v.size() - 1)) return false;
+  const size_t i = size_t(x);
+  const size_t j = std::min(i + 1, v.size() - 1);
+  if (v[i].w <= 0 || v[j].w <= 0) return false;  // a look change between the two frames: the keyed target
+  const float u = float(x - double(i));
+  offset = glm::mix(vec3(v[i]), vec3(v[j]), u);
+  if (sinceStart) *sinceStart = double(v[i].w) - 1.0 + double(u);
+  return true;
+}
+
+bool SceneEvaluator::liveGazeTarget(size_t c, double frame, vec3& live, vec3& keyed, double* lookStartOut) const {
+  if (c >= scene_.characters.size() || !scene_.actions.is_array()) return false;
+  const std::string& name = scene_.characters[c].name;
+  const Track* track = scene_.animation.find(name + "/lookAt");
+  if (!track || track->keys.empty()) return false;
+  const Json* look = nullptr;  // the latest authored look of c that has started
+  double lookStart = -1e30;
+  for (const Json& a : scene_.actions) {
+    if (!a.is_object() || a.value("type", "") != "look" || a.value("character", "") != name) continue;
+    const double st = a.contains("start") && a["start"].is_number() ? a["start"].get<double>() : double(scene_.frameStart);
+    if (st <= frame && st >= lookStart) {
+      look = &a;
+      lookStart = st;
+    }
+  }
+  if (!look || (!look->contains("atProp") && !look->contains("atCharacter"))) return false;
+  if (lookStartOut) *lookStartOut = lookStart;
+  if (look->contains("atProp")) {  // the prop's middle, as the look action keys it (actions.cpp), but every frame
+    const std::string prop = (*look)["atProp"].is_string() ? (*look)["atProp"].get<std::string>() : "";
+    bool found = false;
+    for (size_t p = 0; p < scene_.props.size() && p < propAssets_.size(); ++p) {
+      if (scene_.props[p].name != prop) continue;
+      found = true;
+      const PropAsset& pa = propAssets_[p];
+      vec3 middle(0);
+      if (pa.mesh.kind == AssetMeshSource::Kind::Primitive) {
+        if (pa.mesh.primitive == AssetMeshSource::Primitive::Cylinder) middle = vec3(0, 0.5f * pa.mesh.height * pa.scaleMetres, 0);
+      } else if (pa.collision) {
+        middle = pa.collision->transform.translation;
+      }
+      live = keyed = vec3(propWorld(p, frame) * vec4(middle, 1));
+      break;
+    }
+    if (!found) return false;
+  } else {  // eye contact: the midpoint of the partner's eyes; the track keys a point before its face
+    const std::string other = (*look)["atCharacter"].is_string() ? (*look)["atCharacter"].get<std::string>() : "";
+    size_t oc = scene_.characters.size();
+    for (size_t i = 0; i < scene_.characters.size(); ++i)
+      if (scene_.characters[i].name == other) oc = i;
+    if (oc >= characters_.size() || oc == c) return false;
+    const Skeleton& sk = characters_[oc].asset.skeleton;
+    const int head = sk.find("head");
+    const std::vector<int> eyes = eyeBones(sk);
+    if (head < 0 || eyes.empty()) return false;
+    const std::vector<mat4> g = kinematicGlobals(oc, frame, nullptr);
+    live = vec3(0);
+    for (int e : eyes) live += vec3(g[size_t(e)][3]);
+    live /= float(eyes.size());
+    keyed = vec3(g[size_t(head)] * vec4(0, 0.11f, 0.09f, 1));
+  }
+  // A generated look (reaction events) may have taken the track over: then the keyed value is somewhere else. The track
+  // was keyed while the actions compiled, so a moving prop can drift from it by some centimetres (e910: 13 cm).
+  return glm::distance(track->evaluate(frame), keyed) < 0.25f;
+}
+
+void turnChainForGaze(const Skeleton& sk, const Clip& clip, const std::string& prefix, double frame, double fps,
+                      const mat4& world, Pose& pose, const GazeLegibility& lg, vec3 liveOffset, double sinceLookStart) {
+  const Track* t = clip.find(prefix + "lookAt");
+  const int head = sk.find("head");
+  if (!t || t->keys.empty() || head < 0) return;
+  const std::vector<int> eyes = eyeBones(sk);
+  if (eyes.empty()) return;
+  const bool keyedNeck = clip.find(prefix + "neck.rot") && !clip.find(prefix + "neck.rot")->keys.empty();
+  const double scale = std::max(1.0, fps) / 24.0;
+  // The target as it was `lag` .. `lag` + turnFrames ago (bell-weighted), moved onto the live target.
+  auto lagged = [&](double lag, float& weight) {
+    constexpr int kSamples = 8;
+    vec3 target(0);
+    float total = 0;
+    weight = 0;
+    for (int i = 0; i < kSamples; ++i) {
+      const double u = (i + 0.5) / kSamples;
+      const float k = float(0.5 - 0.5 * std::cos(2.0 * 3.14159265358979 * u));
+      const double f = frame - lag * scale - lg.turnFrames * scale * u;
+      target += k * t->evaluate(f);
+      weight += k * clip.evaluate(prefix + "lookAt.weight", f, vec3(1)).x;
+      total += k;
+    }
+    weight = std::clamp(weight / total, 0.0f, 1.0f);
+    const vec3 laggedTarget = target / total + liveOffset;
+    // Pursuit: once the look has settled (all samples inside it), ease onto the current target.
+    if (sinceLookStart < 0) return laggedTarget;
+    const double settled = (lag + lg.turnFrames) * scale;
+    const float p = smoothstep01(float(std::clamp((sinceLookStart - settled) / std::max(1.0, lg.turnFrames * scale), 0.0, 1.0)));
+    if (p <= 0) return laggedTarget;
+    weight = glm::mix(weight, std::clamp(clip.evaluate(prefix + "lookAt.weight", frame, vec3(1)).x, 0.0f, 1.0f), p);
+    return glm::mix(laggedTarget, t->evaluate(frame) + liveOffset, p);
+  };
+  auto comfortable = [](float limit) { return limit - std::min(5.0f, limit * 0.25f) - 0.25f; };
+  const vec2 eyeComfort(comfortable(lg.rangeDeg.x), comfortable(lg.rangeDeg.y));
+  const vec2 neckCap(std::max({0.0f, lg.headYawDeg, lg.neckYawDeg}), std::max({0.0f, lg.headPitchDeg, lg.neckPitchDeg}));
+  const vec2 torsoCap(std::max(0.0f, lg.torsoYawDeg), std::max(0.0f, lg.torsoPitchDeg));
+  // One stage: turn `bones` (parent first, by share) until the near eye sits at `comfort` from the target, up to cap.
+  auto stage = [&](vec3 target, float weight, vec2 comfort, vec2 cap, const std::vector<std::pair<int, float>>& bones) {
+    if (weight <= 0 || bones.empty()) return;
+    std::vector<quat> before;
+    for (const auto& b : bones) before.push_back(pose.local[size_t(b.first)]);
+    vec2 used(0);
+    for (int pass = 0; pass < 10; ++pass) {
+      std::vector<mat4> g = boneGlobals(sk, pose, world);
+      const mat3 headRot(g[size_t(head)]);
+      // Per axis, the turn h that puts every eye inside its comfortable range (a - h within +-comfort): the smallest
+      // such turn back towards the stage's rest, or, when the eyes straddle a near target wider than the range
+      // (vergence), the middle, so both eyes share the shortfall.
+      vec2 error(0);
+      vec2 lo(-1e9f), hi(1e9f);
+      for (int e : eyes) {
+        const vec3 to = target - vec3(g[size_t(e)][3]);
+        if (glm::length2(to) < 1e-10f) return;
+        const vec2 a = gazeAngles(glm::normalize(glm::transpose(headRot) * glm::normalize(to)));
+        lo = glm::max(lo, a - comfort);
+        hi = glm::min(hi, a + comfort);
+      }
+      for (int axis = 0; axis < 2; ++axis)
+        error[axis] = lo[axis] > hi[axis] ? 0.5f * (lo[axis] + hi[axis]) : std::clamp(-used[axis], lo[axis], hi[axis]);
+      const vec2 step = glm::clamp(used + error, -cap, cap) - used;
+      if (std::abs(step.x) < 1e-3f && std::abs(step.y) < 1e-3f) break;
+      used += step;
+      const vec3 up = glm::normalize(headRot * vec3(0, 1, 0)), right = glm::normalize(headRot * vec3(1, 0, 0));
+      for (const auto& [bone, share] : bones) {
+        const quat r = glm::angleAxis(glm::radians(step.x * share), up) * glm::angleAxis(glm::radians(-step.y * share), right);
+        const int parent = sk.bones[size_t(bone)].parent;
+        const quat parentRot = glm::normalize(glm::quat_cast(parent >= 0 ? mat3(g[size_t(parent)]) : mat3(world)));
+        pose.local[size_t(bone)] = glm::normalize(glm::inverse(parentRot) * r * parentRot * pose.local[size_t(bone)]);
+        g = boneGlobals(sk, pose, world);
+      }
+    }
+    if (weight < 1)
+      for (size_t i = 0; i < bones.size(); ++i)
+        pose.local[size_t(bones[i].first)] = glm::normalize(glm::slerp(before[i], pose.local[size_t(bones[i].first)], weight));
+  };
+  auto present = [&](std::initializer_list<std::pair<const char*, float>> list) {
+    std::vector<std::pair<int, float>> out;
+    float total = 0;
+    for (const auto& [n, s] : list)
+      if (const int b = sk.find(n); b >= 0) {
+        out.push_back({b, s});
+        total += s;
+      }
+    for (auto& b : out) b.second /= std::max(1e-6f, total);
+    return out;
+  };
+  // Torso first (it carries the head), on the target the head had torsoLagFrames earlier: it takes only what lies
+  // beyond the eyes' comfortable range plus the neck's full share.
+  float wTorso = 0, wNeck = 0;
+  const vec3 torsoTarget = lagged(lg.leadFrames + lg.torsoLagFrames, wTorso);
+  stage(torsoTarget, wTorso, eyeComfort + neckCap, torsoCap, present({{"spine", 0.4f}, {"chest", 0.6f}}));
+  // Then the neck and head, as T-120's head turn but with the larger cap (a hand-keyed neck is left alone).
+  if (!keyedNeck) {
+    const vec3 neckTarget = lagged(lg.leadFrames, wNeck);
+    stage(neckTarget, wNeck, eyeComfort, neckCap, present({{"neck", 0.5f}, {"head", 0.5f}}));
+  }
+}
+
+void aimEyesAt(const Skeleton& sk, const mat4& world, Pose& pose, vec3 target, float weight) {
+  if (weight <= 0) return;
+  const std::vector<mat4> g = boneGlobals(sk, pose, world);
+  for (int e : eyeBones(sk)) {
+    const vec3 forward = glm::normalize(vec3(g[size_t(e)][2]));
+    const vec3 to = target - vec3(g[size_t(e)][3]);
+    if (glm::length2(to) < 1e-10f) continue;
+    const vec3 wanted = glm::normalize(to);
+    const vec3 axis = glm::cross(forward, wanted);
+    const float s = glm::length(axis);
+    if (s < 1e-7f) continue;
+    const quat r = glm::angleAxis(std::atan2(s, glm::dot(forward, wanted)) * std::min(1.0f, weight), axis / s);
+    const int parent = sk.bones[size_t(e)].parent;
+    const quat pr = glm::normalize(glm::quat_cast(parent >= 0 ? mat3(g[size_t(parent)]) : mat3(world)));
+    pose.local[size_t(e)] = glm::normalize(glm::inverse(pr) * r * pr * pose.local[size_t(e)]);
+  }
 }
 
 void clampEyesToGazeRange(const Skeleton& sk, const mat4& world, Pose& pose, vec2 rangeDeg) {

@@ -208,7 +208,8 @@
   "rangeDeg": [
    16,
    8
-  ]
+  ],
+  "chain": true
  },
  "characters": [
   {

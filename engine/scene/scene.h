@@ -105,12 +105,31 @@ struct GazeLegibility {
   float turnFrames = 8.0f;      // frames at 24 fps the head's turn eases over
   float headYawDeg = -1.0f;     // most the head turns for a look; negative = life.gaze.assistYawDeg
   float headPitchDeg = -1.0f;   // negative = life.gaze.assistPitchDeg
+  // Gaze chain (T-136 E3, opt-in key "chain": true or {"neckYawDeg", "neckPitchDeg", "torsoYawDeg", "torsoPitchDeg",
+  // "torsoLagFrames"}; absent = off, the T-120 behaviour). The eyes still lead; beyond their comfortable range the
+  // head and neck take over (split between the neck and head bones, up to neck*Deg, at least head*Deg) and, beyond
+  // that, the torso (chest and spine, up to torso*Deg, torsoLagFrames after the head), so a look reaches its target.
+  // The eyes then aim at the look's exact, live target: a prop's middle ("atProp", the cup), or the midpoint of the
+  // partner's eyes ("atCharacter": held eye contact), instead of the 3-frame keyed track.
+  bool chain = false;
+  float neckYawDeg = 50.0f, neckPitchDeg = 40.0f;
+  float torsoYawDeg = 25.0f, torsoPitchDeg = 25.0f;
+  float torsoLagFrames = 3.0f;
 };
 // `j` on top of `base` (the scene's setting under a character's). Null keeps base; an object without "enabled" is on.
 Result<GazeLegibility> gazeLegibilityFromJson(const Json& j, GazeLegibility base = {});
 // The head's share of a legible look (see GazeLegibility): rotates the neck, before the eyes are aimed.
 void turnHeadForGaze(const Skeleton& skeleton, const Clip& clip, const std::string& prefix, double frame, double fps,
                      const mat4& world, Pose& pose, const GazeLegibility& legibility);
+// The gaze chain's share of a legible look (T-136, GazeLegibility::chain): torso, then neck and head, before the eyes
+// are aimed. `liveOffset` moves the keyed lookAt target onto the exact live target (0 = the track as keyed). Once a
+// look has settled (sinceLookStart past its lead and turn), the chain follows a moving target without the lead lag
+// (pursuit), easing over turnFrames; sinceLookStart < 0 = always lagged.
+void turnChainForGaze(const Skeleton& skeleton, const Clip& clip, const std::string& prefix, double frame, double fps,
+                      const mat4& world, Pose& pose, const GazeLegibility& legibility, vec3 liveOffset,
+                      double sinceLookStart = -1);
+// Aims every "eye.*" bone exactly at `target` (blended by weight 0..1).
+void aimEyesAt(const Skeleton& skeleton, const mat4& world, Pose& pose, vec3 target, float weight);
 // Hard clamp of every "eye.*" bone's direction to +-rangeDeg [yaw, pitch] relative to the head.
 void clampEyesToGazeRange(const Skeleton& skeleton, const mat4& world, Pose& pose, vec2 rangeDeg);
 
@@ -325,6 +344,15 @@ class SceneEvaluator {
   // Effective life parameters of character c (scene values + the character's blink timing).
   LifeParams lifeParams(size_t c) const;
   GazeLegibility gazeLegibility(size_t c) const;
+  // The exact live target of character c's current look (T-136 E3) and the keyed track's value it replaces; false when
+  // the current look is not an "atProp" / "atCharacter" look or a generated look has taken over the track.
+  bool liveGazeTarget(size_t c, double frame, vec3& live, vec3& keyed, double* lookStart = nullptr) const;
+  // Live-target offsets (live - keyed) per frame from frameStart, w = frames since the look started + 1 (0 = none); built once at load, before the
+  // secondary motion exists (a held prop's pose is read through its holder), and read with liveGazeOffset.
+  void buildLiveGaze();
+  void buildLiveGazePass();
+  bool liveGazeOffset(size_t c, double frame, vec3& offset, double* sinceStart = nullptr) const;
+  std::vector<std::vector<vec4>> liveGaze_;
   BlinkSchedule blinkSchedule(size_t c) const;  // the scene's setting with the character's on top (T-136)
   FaceState faceEval(size_t c, double frame) const;  // faces_[c].evaluate with the blink schedule applied  // the scene's setting with the character's on top (T-120)
   // Animated weight of morph `morph` of character c at `frame`.
