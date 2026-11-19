@@ -23,6 +23,13 @@
    "status": "approved",
    "spec_sha256": "0e16c320af27ca9e4485aafe72e4a42340962cc1c1641afcaaeccc4898e0d3a4",
    "approval_notes": "new current version: \"I approve Boy 2.0.0 as the new current version.\" Recorded in the store by T-080."
+  },
+  "2.1.0": {
+   "created": "2026-11-19T01:40:22+00:00",
+   "parent": "2.0.0",
+   "notes": "boy_yellow_hoodie 2.1.0 (T-094): spec assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.1.0.spec.json",
+   "status": "candidate",
+   "spec_sha256": "d70f55c6c9796b3cfdeef5844b4ff90f553c64597e6b5f6d1be176a00bf73634"
   }
  },
  "pointers": {
@@ -63,6 +70,12 @@
    "previous": "1.1.0",
    "by": "owner (docs/process/OWNER_DECISIONS.md 2026-11-18)",
    "notes": "new current version: \"I approve Boy 2.0.0 as the new current version.\" Recorded in the store by T-080."
+  },
+  {
+   "at": "2026-11-19T01:40:22+00:00",
+   "action": "publish",
+   "version": "2.1.0",
+   "status": "candidate"
   }
  ]
 }
