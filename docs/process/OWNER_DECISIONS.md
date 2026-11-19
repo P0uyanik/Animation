@@ -415,3 +415,14 @@ Pre-approved new task **T-117** (`docs/tasks/T-117.md`): one ~8 s, 192-frame boy
 versions with all merged opt-in improvements as shot-level overrides (faces, expressions, verbs + finger grasps,
 reactions, gaze), review-quality 640x360 MP4 + contact sheet + short issue list. Starts automatically when T-113 and T-114
 are on main; current versions and fidelity_baseline.json stay unchanged. Other queued work continues in parallel.
+
+## 2026-11-19 (~11:40Z): round 4 starts now (relayed by the previous Supervisor session)
+Owner: "i agree, use fable for three". Use the weekly capacity before the next reset (Sat 2026-11-21 00:00 UTC);
+run work in parallel where write-sets do not overlap, about 7 sessions in total.
+- T-118 hair round 5, T-119 garments round 3 + limb skin tone, T-120 gaze legibility: Fable 5.2.
+- T-121 finger separation, T-122 candidate versions boy 2.2.0 / girl 0.13.0 (published as candidates only; not
+  current; fidelity_baseline.json unchanged without explicit owner approval): Opus 5.5.
+- T-123 (Codex): readability check tool (cup and pupil visibility per frame), then the end-of-round review.
+- T-110 felt surface: PARKED (small gain, hoodie colour worse, +21-24% render time); branch kept.
+- Unchanged: T-114 -> T-117 (Opus 5.5, merged round-4 results as opt-in overrides only); T-102 at the end. Hard limits
+  unchanged.
