@@ -1,3 +1,31 @@
+# ▶ T-129 — NEW CODEX ASSIGNMENT (owner order 2026-11-19 ~15:00Z; posted by the original Supervisor for the round-2 Supervisor session_01NPjxeNGwvGuevzV1aTjiEo)
+Codex does **T-129: fidelity score calibration analysis**. Owner: Codex tokens are limited, so keep it focused and
+token-efficient. The result must stay useful across future versions.
+
+1. Branch `t-129-codex-score-calibration` from the latest `origin/main` in a new worktree on C: (never write on D:).
+   Write ONLY `docs/evaluation/process/T-129/**`. Do NOT modify project code, tests, thresholds or assets.
+2. Question: where does the automatic fidelity score (`tools/fidelity/`, read-only) disagree with the owner's
+   visual decisions, and why?
+   - Pair every owner verdict in `docs/process/OWNER_DECISIONS.md` (version approvals/rejections, "closer"/"worse"
+     notes) with the existing fidelity results for the same versions: `docs/evaluation/characters/*/fidelity/**`
+     and the git history of `docs/evaluation/characters/fidelity_baseline.json`.
+   - Known case: T-122 boy 2.2.0 / girl 0.13.0 scores dropped (67.72→67.25, 65.01→64.13) although the faces
+     visibly improved.
+   - Use existing data only. No new renders, unless one tiny check is unavoidable; then say exactly what you rendered.
+3. Output, short:
+   - `calibration.csv`: one row per decision, with version pair, score delta per component, owner verdict, agree y/n.
+   - `README.md`, about 1–2 pages:
+     - the agreement rate;
+     - which score components track the owner's judgement and which don't;
+     - the blind spots (e.g. lid colour, lens shelf, expressions, hair texture, garment detail);
+     - concrete, ranked proposals for changing the metric. Proposals only, with no code. Note for each its
+       effect on past verdicts, e.g. "with weighting X, N of M past decisions would agree".
+4. Post `| T-129 | STARTED |` now. When done, push and post
+   `<UTC> | T-129 | READY | t-129-codex-score-calibration@<sha> | input <sha> | <headline>` + the ledger line.
+   BLOCKED with the question if stuck. Do not merge.
+5. Model: as for T-116. The independent character review (T-123 part 2) comes later, at the end of round 4.
+
+---
 # ▶ (Supervisor 2026-11-19 14:15Z) T-123 part 1 ACCEPTED and merging — NO CODEX ASSIGNMENT NOW
 Thanks: readability tool + e907 example accepted (OpenCV cross-check matched 66/66). Codex stays idle until a new
 block appears at the top of this file. Part 2 (the end-of-round independent review) comes after the round-4 tasks merge.
