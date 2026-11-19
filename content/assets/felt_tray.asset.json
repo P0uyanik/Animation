@@ -1,0 +1,61 @@
+{
+  "format": "plush.asset",
+  "version": 1,
+  "id": "prop.felt_tray",
+  "licence": "CC0-1.0",
+  "attribution": "Plush Studio project; generated from a box primitive (centred; T-112b two-handed affordance example, docs/architecture/INTERACTION_AFFORDANCES.md 2.6)",
+  "mesh": {
+    "primitive": "box",
+    "size": [0.30, 0.03, 0.20]
+  },
+  "material_presets": [
+    "felt"
+  ],
+  "scale": 1.0,
+  "sockets": {
+    "side_l": {
+      "translation": [-0.15, 0.0, 0.0],
+      "rotationDeg": [0.0, 0.0, 0.0],
+      "scale": [1.0, 1.0, 1.0]
+    },
+    "side_r": {
+      "translation": [0.15, 0.0, 0.0],
+      "rotationDeg": [0.0, 0.0, 0.0],
+      "scale": [1.0, 1.0, 1.0]
+    },
+    "under": {
+      "translation": [0.0, -0.015, 0.0],
+      "rotationDeg": [0.0, 0.0, 0.0],
+      "scale": [1.0, 1.0, 1.0]
+    },
+    "place": {
+      "translation": [0.0, -0.015, 0.0],
+      "rotationDeg": [0.0, 0.0, 0.0],
+      "scale": [1.0, 1.0, 1.0]
+    },
+    "top": {
+      "translation": [0.0, 0.015, 0.0],
+      "rotationDeg": [0.0, 0.0, 0.0],
+      "scale": [1.0, 1.0, 1.0]
+    }
+  },
+  "collision": {
+    "type": "box",
+    "size": [0.30, 0.03, 0.20]
+  },
+  "affordances": {
+    "format": "plush.affordances", "version": 1,
+    "size_class": "large", "weight_class": "medium", "hands": "two",
+    "pivot": [0, 0, 0],
+    "upright": {"axis": [0, 1, 0], "max_tilt_deg": 8},
+    "grasp_sites": [
+      {"id": "side_l", "socket": "side_l", "hand": "L", "shape": "palm", "approach": [-1, 0, 0]},
+      {"id": "side_r", "socket": "side_r", "hand": "R", "shape": "palm", "approach": [1, 0, 0]},
+      {"id": "under",  "socket": "under",  "hand": "any", "shape": "cradle", "approach": [0, -1, 0]}
+    ],
+    "grasp_sets": [{"id": "both_sides", "sites": ["side_l", "side_r"], "simultaneous_frames": 2}],
+    "place": {"socket": "place", "surface_normal": [0, 1, 0], "settle": "rigid"},
+    "push_pull": {"axis": [0, 0, 1], "sites": ["side_l", "side_r"], "friction": "slide"},
+    "deform": {"mode": "rigid"}
+  }
+}

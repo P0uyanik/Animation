@@ -65,18 +65,20 @@ world rotation, applied after IK), `<who>/hand.<side>` and its grasp tracks, `<w
   without a clear meeting point are scene warnings. A contact the body is in the way of cannot be moved (the prop is
   where the author put it): stage props in front of the body.
 
-### Verbs (T-112a, `engine/scene/verbs.{h,cpp}`, `content/verbs/*.verb.json`)
+### Verbs (T-112a, T-112b; `engine/scene/verbs.{h,cpp}`, `content/verbs/*.verb.json`)
 A verb action is expanded **before** the compile into the primitive actions above (plus generated `look` actions),
 with every frame filled from the verb's phases (design: `docs/architecture/INTERACTION_AFFORDANCES.md`). A scene
 without a verb action is compiled exactly as before.
 
 | Type | Fields | Lowers to |
 | --- | --- | --- |
-| `pick_up` | `hand`="R", `prop`, `set` / `site` (prop affordances) or `socket`, `start`?, `contact`?, `anticipate`?, `settle`?, `look`=true | `grasp` |
-| `carry` | `hand`, `prop`?, `start`?, `end`?, `at:[x,y,z]` or `by:[dx,dy,dz]`, `settle`?, `look` | `hold` |
-| `place` with `"verb": true` | `hand`, `prop`?, `start`?, `contact`?, `end`?, `at` or `onto:{prop, socket}`, `socket`?, `settle`?, `look` | `place` |
+| `pick_up` | `hand`="R" or `hands`:["L","R"] (T-112b), `prop`, `set` / `site` (prop affordances) or `socket`, `start`?, `contact`?, `anticipate`?, `settle`?, `fingers`?, `look`=true | `grasp` (+ a follower `grasp` for the second hand) |
+| `carry` | `hand` or `hands`, `prop`?, `start`?, `end`?, `at:[x,y,z]` or `by:[dx,dy,dz]`, `settle`?, `look` | `hold` |
+| `place` with `"verb": true` | `hand` or `hands`, `prop`?, `start`?, `contact`?, `end`?, `at` or `onto:{prop, socket}`, `socket`?, `settle`?, `react`?, `look` | `place` |
+| `pass` (T-112b) | `hand`="R", `to`, `toHand`="R", `prop`?, `toSet` / `toSite` / `toSocket`?, `start`?, `receiverStart`?, `contact`?, `release`?, `end`?, `at`?, `settle`?, `react`?, `look` | `handover` |
 
-- **Chaining.** A verb without `start` begins where the previous verb of the same hand ended, settle included.
+- **Chaining.** A verb without `start` begins where the previous verb of the same hand ended, settle included. After
+  a `pass` the receiving hand's next verb begins at the giver's release.
 - **Phases.** The phases are look, anticipate, approach, contact, manipulate, release and settle. Each takes its beat
   from the scene's timing profile (`"timing"`), times the character's personality tempo. Without a profile it takes
   today's default: reach 14, hold 16, place 16, release 14, and a gaze lead of 4.
@@ -86,8 +88,45 @@ without a verb action is compiled exactly as before.
 - **Look.** With a profile the look is a generated `look` at the prop (or at the place target). It ends where the
   anticipation starts, so the eyes lead the hand.
 - **Grasp site.** `set` or `site` names a grasp site of the prop's `affordances` (`docs/ASSET_LIBRARY.md`). Without
-  them, the first one-site set this hand may use is taken, else `socket` (default `grip`). T-112a supports the `wrap`
-  hand shape only. Two-hand sets and `pass` come in T-112b.
+  them, the first one-site set this hand may use is taken, else `socket` (default `grip`).
+- **Hand shapes (T-112b).** A site's `shape` other than `wrap` goes into the grasp as `"shape"` (and its `approach`
+  side as `"approach"`). `reachTo` then keys the shape's open pose on the approach and its closed pose at contact,
+  with no contact search, and the release opens it again. `wrap` is today's grasp, unchanged.
+
+  | shape | open (curl, thumb, spread) | closed |
+  | --- | --- | --- |
+  | `palm` | 0.08, 0.3, 0 | 0.15, 0.35, 0 |
+  | `hook` | 0.2, 0.1, 0 | 0.7, 0.1, 0 |
+  | `cradle` | 0.1, 0.25, 0.2 | 0.3, 0.25, 0.2 |
+  | `pinch` | 0.1, 0.2, 0.1, index 0.1 | 0.6, 0.5, 0.1, index 0.35 (a fixed pose; the per-finger pinch search is T-051's) |
+- **Finger band (T-112b).** A site's `fingers` block goes into the grasp as `"band"` + `"thumb"`. The grasp then
+  keys `hand.<s>.band` = (lo, hi, thumb) as Step keys at the reach start. lo and hi are the band relative to the grasp
+  centre along the grasp axis (metres); thumb is 0 opposed, 1 along, 2 tucked. T-051 reads the track; before T-051
+  it changes nothing. The band is written when the scene has a timing profile or the action sets `"fingers": true`
+  (never with `"fingers": false`). Without a profile the expansion stays the T-112a legacy one.
+- **Two hands (T-112b).** Set `"hands": ["L", "R"]`; the first hand leads. `set` names a two-site grasp set, else the
+  asset's first two-site set is used. Its sites are matched to the two hands by their `hand`. The leading hand's
+  grasp makes it the prop's parent. The second hand is a follower grasp (`"follower": true`): it contacts
+  clamp(round(reaction_delay / 3), 1, `simultaneous_frames`) frames after the leader. From its contact to the place
+  contact, its wrist is keyed in the prop frame at every frame. The clearance pass holds that span still, and the
+  palm is corrected onto its socket at every frame with the other contacts. `carry` and `place` act through the
+  leading hand, and both hands let go at the place contact. A prop with `"hands": "two"` (the felt tray,
+  `content/assets/felt_tray.asset.json`) needs `hands`. A two-site set without `hands` is an error.
+- **Pass (T-112b).** The receiver's look, reach and contact, the shared hold and the giver's release are the
+  `handover` frames. Without a profile they are today's handover defaults (receiverStart +4, contact +18, release +4,
+  end +12), tested key for key. With a profile, the look and reach beats are the receiver's (`reaction_delay`,
+  `reach`) and the shared hold and release beats are the giver's. The receiver's socket is `toSocket`, else
+  `toSite` / `toSet`, else the asset's `handover.receive` set, else `grip_b`.
+- **Reactions (T-112b).** `"react": true` on `pass` / `place` adds an event when the scene has `"events"`. For a
+  pass, the event is `partner_acts` (source the giver, at the pass start, for the receiver). For a place, it is
+  `success` (at the settle start). The event is planned with the scene's own events (T-097D). A reacting pass has a
+  single gaze source:
+  - the receiver's reach starts at the reaction's notice (`planReaction`: reaction_delay x tempo, never under the
+    personality's `delay_frames` low end) + 4 f, rounded up to a whole frame;
+  - the handover plays no gaze of its own;
+  - the giver's gaze is generated as `look` actions (at the prop until the release, then at the receiver);
+  - the reaction's look (at the giver) is the receiver's notice, and from the reach start a generated `look` puts
+    the receiver's eyes on the prop until contact + 8.
 - **Failures are load errors,** formatted `verb '<verb>': character '<who>', prop '<prop>': <code>: <reason>`.
   - Checked while expanding:
     - `hand_full` and `hand_empty`;
@@ -101,16 +140,26 @@ without a verb action is compiled exactly as before.
     - `target_occupied` (another prop already sits on that socket);
     - `onto_self`;
     - `unknown_target`;
-    - `no_start`.
+    - `no_start`;
+    - T-112b: `same_hand` (the receiver is the giving hand);
+    - `hands_meet` (the same socket, or finger bands that overlap on the same side of the prop);
+    - `shared_too_short` (shared hold under 6 f, for authored or profile frames; the no-profile default of 4 f is
+      today's handover);
+    - `bad_hand`;
+    - a two-hand prop given one hand, a two-hand pass, or a carry with `hands` of a prop held in one (`two_hands`).
   - Checked on the compiled motion (`checkVerbConstraints`):
     - `out_of_reach` (the wrist target is more than 5 mm past 0.98 x arm length; the error gives the shortfall);
     - `contact_error` (palm more than 0.5 mm off its socket at contact, or the place socket more than 0.5 mm off its
       target);
-    - `upright_exceeded` (the prop's `upright` axis tilts past `max_tilt_deg` in a carry or a lower).
+    - `upright_exceeded` (the prop's `upright` axis tilts past `max_tilt_deg` in a carry or a lower);
+    - T-112b: `out_of_reach` for the pass receiver and giver, and for the second hand of a two-hand carry or place;
+    - `arm_in_body`: an arm of a two-hand grasp, or of a pass at its meeting point, inside the body at full IK
+      weight. This check needs the compile's `armGap` binding (VerbGeometry). Without the binding it is skipped,
+      and the compile's own warning remains.
 
   The same reach written as primitives stays a warning.
-- **Not in T-112a:** `pass`, two-hand sets and the follower hand, hand shapes other than `wrap`, reaction events from
-  verbs (`react`), the outside-body and surface-normal constraints, and verbs for generated (reaction) actions.
+- **Not yet:** the surface-normal constraint, per-finger contact on the band (T-051), a two-hand `pass`, the
+  `under` cradle site as a one-hand set, and verbs for generated (reaction) actions.
 
 ## Director (automatic camera)
 ```json
