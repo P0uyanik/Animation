@@ -1,0 +1,5269 @@
+{
+ "blender": "5.3.0",
+ "coordinate_grid_m": 1e-05,
+ "format": "character-geometry-fingerprint/2",
+ "objects": {
+  "body_skin": {
+   "bbox": [
+    [
+     -0.3195,
+     -0.1454,
+     0.0003
+    ],
+    [
+     0.3195,
+     0.1625,
+     1.014
+    ]
+   ],
+   "centroid": [
+    0.0,
+    -0.038806,
+    0.632481
+   ],
+   "coords_hash": "6a9eeb00238f9746",
+   "faces": 109968,
+   "materials": [
+    "M_skin_face"
+   ],
+   "rms_radius": 0.287149,
+   "shape_keys": [
+    "Basis",
+    "EyeWide",
+    "MouthSmile",
+    "MouthPout",
+    "MouthSmile.L",
+    "MouthSmile.R",
+    "Squint",
+    "WideOpen",
+    "Smile",
+    "Surprise",
+    "Anger",
+    "Laugh",
+    "Worried",
+    "Curious",
+    "Pout",
+    "Bored",
+    "Skeptical"
+   ],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-jaw",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_garment_mask"
+   ],
+   "vertices": 110192
+  },
+  "brow.L": {
+   "bbox": [
+    [
+     0.0464,
+     -0.1224,
+     0.8374
+    ],
+    [
+     0.0949,
+     -0.1018,
+     0.8419
+    ]
+   ],
+   "centroid": [
+    0.070593,
+    -0.112602,
+    0.839284
+   ],
+   "coords_hash": "969dcb4032027c19",
+   "faces": 140,
+   "materials": [
+    "M_brow_generic"
+   ],
+   "rms_radius": 0.021459,
+   "shape_keys": [
+    "Basis",
+    "BrowUp.L",
+    "BrowDown",
+    "BrowSad",
+    "BrowDown.L",
+    "BrowDown.R",
+    "WideOpen",
+    "Frown",
+    "Surprise",
+    "Sadness",
+    "Anger",
+    "Confusion",
+    "Worried",
+    "Curious",
+    "Pout",
+    "Bored",
+    "Skeptical"
+   ],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-spine.006"
+   ],
+   "vertices": 132
+  },
+  "brow.R": {
+   "bbox": [
+    [
+     -0.0949,
+     -0.1224,
+     0.8374
+    ],
+    [
+     -0.0464,
+     -0.1017,
+     0.8419
+    ]
+   ],
+   "centroid": [
+    -0.070593,
+    -0.112595,
+    0.839284
+   ],
+   "coords_hash": "08cc97ba1fcd2ad0",
+   "faces": 140,
+   "materials": [
+    "M_brow_generic"
+   ],
+   "rms_radius": 0.02146,
+   "shape_keys": [
+    "Basis",
+    "BrowUp.R",
+    "BrowDown",
+    "BrowSad",
+    "BrowDown.L",
+    "BrowDown.R",
+    "WideOpen",
+    "Frown",
+    "Surprise",
+    "Sadness",
+    "Anger",
+    "Confusion",
+    "Worried",
+    "Pout",
+    "Bored",
+    "Skeptical"
+   ],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-spine.006"
+   ],
+   "vertices": 132
+  },
+  "ear.L": {
+   "bbox": [
+    [
+     -0.0138,
+     -0.0267,
+     -0.0359
+    ],
+    [
+     0.0124,
+     0.0276,
+     0.0359
+    ]
+   ],
+   "centroid": [
+    -0.000248,
+    0.000271,
+    2.8e-05
+   ],
+   "coords_hash": "af596d35361aa485",
+   "faces": 1984,
+   "materials": [
+    "M_skin_face"
+   ],
+   "rms_radius": 0.029243,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-spine.006"
+   ],
+   "vertices": 1986
+  },
+  "ear.R": {
+   "bbox": [
+    [
+     -0.0124,
+     -0.0267,
+     -0.0359
+    ],
+    [
+     0.0138,
+     0.0276,
+     0.0359
+    ]
+   ],
+   "centroid": [
+    0.000248,
+    0.000271,
+    2.8e-05
+   ],
+   "coords_hash": "99b8c9eeb9dee64a",
+   "faces": 1984,
+   "materials": [
+    "M_skin_face"
+   ],
+   "rms_radius": 0.029243,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-spine.006"
+   ],
+   "vertices": 1986
+  },
+  "eye.L": {
+   "bbox": [
+    [
+     -0.052,
+     -0.052,
+     -0.052
+    ],
+    [
+     0.052,
+     0.052,
+     0.052
+    ]
+   ],
+   "centroid": [
+    -0.0,
+    0.0,
+    0.0
+   ],
+   "coords_hash": "5bee56bd7b9d3ef2",
+   "faces": 1152,
+   "materials": [
+    "M_eye_felt"
+   ],
+   "rms_radius": 0.052,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-eye.L"
+   ],
+   "vertices": 1106
+  },
+  "eye.R": {
+   "bbox": [
+    [
+     -0.052,
+     -0.052,
+     -0.052
+    ],
+    [
+     0.052,
+     0.052,
+     0.052
+    ]
+   ],
+   "centroid": [
+    -0.0,
+    0.0,
+    0.0
+   ],
+   "coords_hash": "5bee56bd7b9d3ef2",
+   "faces": 1152,
+   "materials": [
+    "M_eye_felt"
+   ],
+   "rms_radius": 0.052,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-eye.R"
+   ],
+   "vertices": 1106
+  },
+  "garment.backpack.buckle": {
+   "bbox": [
+    [
+     -0.0108,
+     0.1681,
+     0.3991
+    ],
+    [
+     0.0108,
+     0.1717,
+     0.4153
+    ]
+   ],
+   "centroid": [
+    0.000168,
+    0.169902,
+    0.407192
+   ],
+   "coords_hash": "81882fe2bf33742f",
+   "faces": 384,
+   "materials": [
+    "M_garment.backpack.buckle"
+   ],
+   "rms_radius": 0.009369,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_collision"
+   ],
+   "vertices": 392
+  },
+  "garment.backpack.flap": {
+   "bbox": [
+    [
+     -0.0962,
+     0.0868,
+     0.3881
+    ],
+    [
+     0.0962,
+     0.1728,
+     0.5596
+    ]
+   ],
+   "centroid": [
+    1.2e-05,
+    0.134168,
+    0.531503
+   ],
+   "coords_hash": "875c5bc7443ae5fc",
+   "faces": 906,
+   "materials": [
+    "M_garment.backpack.flap"
+   ],
+   "rms_radius": 0.075599,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_collision"
+   ],
+   "vertices": 868
+  },
+  "garment.backpack.flap_edge": {
+   "bbox": [
+    [
+     -0.0666,
+     0.1692,
+     0.4371
+    ],
+    [
+     0.0666,
+     0.1754,
+     0.4479
+    ]
+   ],
+   "centroid": [
+    0.0,
+    0.172632,
+    0.44124
+   ],
+   "coords_hash": "ca33f429bd693df3",
+   "faces": 632,
+   "materials": [
+    "M_garment.backpack.flap.001"
+   ],
+   "rms_radius": 0.041248,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_collision"
+   ],
+   "vertices": 626
+  },
+  "garment.backpack.handle": {
+   "bbox": [
+    [
+     -0.0396,
+     0.1189,
+     0.5421
+    ],
+    [
+     0.0396,
+     0.1245,
+     0.5687
+    ]
+   ],
+   "centroid": [
+    0.0,
+    0.121745,
+    0.553028
+   ],
+   "coords_hash": "c1363e497cf8ec8b",
+   "faces": 208,
+   "materials": [
+    "M_garment.backpack.handle"
+   ],
+   "rms_radius": 0.029394,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_collision"
+   ],
+   "vertices": 202
+  },
+  "garment.backpack.main": {
+   "bbox": [
+    [
+     -0.0875,
+     0.0895,
+     0.3306
+    ],
+    [
+     0.0875,
+     0.1638,
+     0.5506
+    ]
+   ],
+   "centroid": [
+    -0.0,
+    0.128272,
+    0.440568
+   ],
+   "coords_hash": "3f5ce2234e6d3874",
+   "faces": 960,
+   "materials": [
+    "M_garment.backpack.main"
+   ],
+   "rms_radius": 0.112776,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_collision"
+   ],
+   "vertices": 922
+  },
+  "garment.backpack.pocket": {
+   "bbox": [
+    [
+     -0.056,
+     0.1429,
+     0.3427
+    ],
+    [
+     0.056,
+     0.1649,
+     0.4153
+    ]
+   ],
+   "centroid": [
+    -0.0,
+    0.153869,
+    0.378968
+   ],
+   "coords_hash": "a1b22574eacecf0a",
+   "faces": 512,
+   "materials": [
+    "M_garment.backpack.pocket"
+   ],
+   "rms_radius": 0.049625,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_collision"
+   ],
+   "vertices": 482
+  },
+  "garment.backpack.pocket_flap": {
+   "bbox": [
+    [
+     -0.0615,
+     0.1471,
+     0.379
+    ],
+    [
+     0.0615,
+     0.1714,
+     0.4218
+    ]
+   ],
+   "centroid": [
+    0.0,
+    0.160958,
+    0.409955
+   ],
+   "coords_hash": "fd4fae70d67409ab",
+   "faces": 358,
+   "materials": [
+    "M_garment.backpack.pocket_flap"
+   ],
+   "rms_radius": 0.042165,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_collision"
+   ],
+   "vertices": 328
+  },
+  "garment.backpack.pocket_flap_edge": {
+   "bbox": [
+    [
+     -0.0573,
+     0.1659,
+     0.383
+    ],
+    [
+     0.0573,
+     0.1733,
+     0.4052
+    ]
+   ],
+   "centroid": [
+    -0.0,
+    0.17065,
+    0.390003
+   ],
+   "coords_hash": "7d2429192f504228",
+   "faces": 632,
+   "materials": [
+    "M_garment.backpack.pocket_flap.001"
+   ],
+   "rms_radius": 0.038364,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_collision"
+   ],
+   "vertices": 626
+  },
+  "garment.backpack.strap.L": {
+   "bbox": [
+    [
+     0.0411,
+     -0.0836,
+     0.4033
+    ],
+    [
+     0.1526,
+     0.1012,
+     0.6841
+    ]
+   ],
+   "centroid": [
+    0.104067,
+    0.014936,
+    0.555616
+   ],
+   "coords_hash": "153e939b542cd4d0",
+   "faces": 854,
+   "materials": [
+    "M_garment.backpack.strap"
+   ],
+   "rms_radius": 0.105488,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_collision"
+   ],
+   "vertices": 864
+  },
+  "garment.backpack.strap.R": {
+   "bbox": [
+    [
+     -0.1526,
+     -0.0837,
+     0.4033
+    ],
+    [
+     -0.0403,
+     0.1011,
+     0.6841
+    ]
+   ],
+   "centroid": [
+    -0.104169,
+    0.014954,
+    0.555672
+   ],
+   "coords_hash": "397bf8a3da6131c6",
+   "faces": 854,
+   "materials": [
+    "M_garment.backpack.strap"
+   ],
+   "rms_radius": 0.105495,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_collision"
+   ],
+   "vertices": 864
+  },
+  "garment.backpack.tab": {
+   "bbox": [
+    [
+     -0.007,
+     0.164,
+     0.4066
+    ],
+    [
+     0.007,
+     0.1766,
+     0.4708
+    ]
+   ],
+   "centroid": [
+    -1.5e-05,
+    0.170343,
+    0.438686
+   ],
+   "coords_hash": "63d95927df54f3e2",
+   "faces": 158,
+   "materials": [
+    "M_garment.backpack.tab"
+   ],
+   "rms_radius": 0.021181,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_collision"
+   ],
+   "vertices": 168
+  },
+  "garment.collider.body_skin": {
+   "bbox": [
+    [
+     -0.3195,
+     -0.1454,
+     0.0003
+    ],
+    [
+     0.3195,
+     0.1625,
+     1.014
+    ]
+   ],
+   "centroid": [
+    0.0,
+    -0.038806,
+    0.632481
+   ],
+   "coords_hash": "6a9eeb00238f9746",
+   "faces": 109968,
+   "materials": [
+    "M_skin_face"
+   ],
+   "rms_radius": 0.287149,
+   "shape_keys": [
+    "Basis",
+    "EyeWide",
+    "MouthSmile",
+    "MouthPout",
+    "MouthSmile.L",
+    "MouthSmile.R",
+    "Squint",
+    "WideOpen",
+    "Smile",
+    "Surprise",
+    "Anger",
+    "Laugh",
+    "Worried",
+    "Curious",
+    "Pout",
+    "Bored",
+    "Skeptical"
+   ],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-jaw",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_garment_mask"
+   ],
+   "vertices": 110192
+  },
+  "garment.hoodie.band.cuff.L": {
+   "bbox": [
+    [
+     0.253,
+     -0.058,
+     0.3934
+    ],
+    [
+     0.3376,
+     0.0579,
+     0.4781
+    ]
+   ],
+   "centroid": [
+    0.29418,
+    0.0,
+    0.43462
+   ],
+   "coords_hash": "c4c9507327f4555e",
+   "faces": 256,
+   "materials": [
+    "M_garment.hoodie.band.004"
+   ],
+   "rms_radius": 0.053706,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_collision"
+   ],
+   "vertices": 264
+  },
+  "garment.hoodie.band.cuff.R": {
+   "bbox": [
+    [
+     -0.3377,
+     -0.058,
+     0.3935
+    ],
+    [
+     -0.253,
+     0.0579,
+     0.4781
+    ]
+   ],
+   "centroid": [
+    -0.296474,
+    0.0,
+    0.436914
+   ],
+   "coords_hash": "3dd6e0a6766c0fbf",
+   "faces": 256,
+   "materials": [
+    "M_garment.hoodie.band.005"
+   ],
+   "rms_radius": 0.053706,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_collision"
+   ],
+   "vertices": 264
+  },
+  "garment.hoodie.band.hem": {
+   "bbox": [
+    [
+     -0.1355,
+     -0.0975,
+     0.3279
+    ],
+    [
+     0.1355,
+     0.0959,
+     0.3324
+    ]
+   ],
+   "centroid": [
+    0.002765,
+    -0.000495,
+    0.330056
+   ],
+   "coords_hash": "0b6bda5bcb4ee509",
+   "faces": 384,
+   "materials": [
+    "M_garment.hoodie.band"
+   ],
+   "rms_radius": 0.115268,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_collision"
+   ],
+   "vertices": 392
+  },
+  "garment.hoodie.drawstring.L": {
+   "bbox": [
+    [
+     0.0166,
+     -0.1096,
+     0.5212
+    ],
+    [
+     0.0259,
+     -0.089,
+     0.624
+    ]
+   ],
+   "centroid": [
+    0.02107,
+    -0.099589,
+    0.583772
+   ],
+   "coords_hash": "0bcaf83019d93b48",
+   "faces": 104,
+   "materials": [
+    "M_garment.hoodie.drawstring"
+   ],
+   "rms_radius": 0.036128,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_collision"
+   ],
+   "vertices": 105
+  },
+  "garment.hoodie.drawstring.R": {
+   "bbox": [
+    [
+     -0.0259,
+     -0.1096,
+     0.5212
+    ],
+    [
+     -0.0166,
+     -0.089,
+     0.624
+    ]
+   ],
+   "centroid": [
+    -0.02107,
+    -0.099583,
+    0.583772
+   ],
+   "coords_hash": "8dc95f36bc99eb3b",
+   "faces": 104,
+   "materials": [
+    "M_garment.hoodie.drawstring"
+   ],
+   "rms_radius": 0.036126,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_collision"
+   ],
+   "vertices": 105
+  },
+  "garment.hoodie.drawstring.tip.L": {
+   "bbox": [
+    [
+     0.015,
+     -0.1101,
+     0.5077
+    ],
+    [
+     0.0242,
+     -0.102,
+     0.5243
+    ]
+   ],
+   "centroid": [
+    0.019571,
+    -0.106021,
+    0.516018
+   ],
+   "coords_hash": "87bff8d52d49323b",
+   "faces": 120,
+   "materials": [
+    "M_garment.hoodie.tip"
+   ],
+   "rms_radius": 0.007121,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_collision"
+   ],
+   "vertices": 112
+  },
+  "garment.hoodie.drawstring.tip.R": {
+   "bbox": [
+    [
+     -0.0242,
+     -0.1101,
+     0.5077
+    ],
+    [
+     -0.015,
+     -0.1019,
+     0.5243
+    ]
+   ],
+   "centroid": [
+    -0.019571,
+    -0.106005,
+    0.516018
+   ],
+   "coords_hash": "752dbd91d84d8e85",
+   "faces": 120,
+   "materials": [
+    "M_garment.hoodie.tip"
+   ],
+   "rms_radius": 0.007121,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_collision"
+   ],
+   "vertices": 112
+  },
+  "garment.hoodie.hood.bag": {
+   "bbox": [
+    [
+     -0.1,
+     -0.0024,
+     0.568
+    ],
+    [
+     0.1,
+     0.1366,
+     0.7358
+    ]
+   ],
+   "centroid": [
+    -0.0,
+    0.101309,
+    0.653991
+   ],
+   "coords_hash": "89a7e953f78dfd45",
+   "faces": 880,
+   "materials": [
+    "M_garment.hoodie.hood"
+   ],
+   "rms_radius": 0.081914,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_collision"
+   ],
+   "vertices": 842
+  },
+  "garment.hoodie.hood.edge": {
+   "bbox": [
+    [
+     -0.0897,
+     0.0999,
+     0.6173
+    ],
+    [
+     0.0897,
+     0.136,
+     0.7225
+    ]
+   ],
+   "centroid": [
+    -3e-06,
+    0.119741,
+    0.668921
+   ],
+   "coords_hash": "a4bead1529bb838b",
+   "faces": 240,
+   "materials": [
+    "M_garment.hoodie.hood"
+   ],
+   "rms_radius": 0.073274,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_collision"
+   ],
+   "vertices": 232
+  },
+  "garment.hoodie.hood.rim": {
+   "bbox": [
+    [
+     -0.1322,
+     -0.1201,
+     0.6124
+    ],
+    [
+     0.1321,
+     0.1509,
+     0.763
+    ]
+   ],
+   "centroid": [
+    3e-06,
+    -0.016001,
+    0.681782
+   ],
+   "coords_hash": "3e8e1890408def05",
+   "faces": 1024,
+   "materials": [
+    "M_garment.hoodie.hood"
+   ],
+   "rms_radius": 0.110878,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_collision"
+   ],
+   "vertices": 1010
+  },
+  "garment.hoodie.main": {
+   "bbox": [
+    [
+     -0.3336,
+     -0.1006,
+     0.3195
+    ],
+    [
+     0.3336,
+     0.0916,
+     0.6798
+    ]
+   ],
+   "centroid": [
+    -4e-06,
+    -0.001835,
+    0.513246
+   ],
+   "coords_hash": "808d11bbf0ce3c5f",
+   "faces": 50270,
+   "materials": [
+    "M_garment.hoodie.main"
+   ],
+   "rms_radius": 0.183204,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_collision"
+   ],
+   "vertices": 50266
+  },
+  "garment.hoodie.pocket": {
+   "bbox": [
+    [
+     -0.1019,
+     -0.1162,
+     0.3494
+    ],
+    [
+     0.1019,
+     -0.0661,
+     0.4651
+    ]
+   ],
+   "centroid": [
+    0.0,
+    -0.102902,
+    0.407467
+   ],
+   "coords_hash": "4dd0979aafe75e66",
+   "faces": 648,
+   "materials": [
+    "M_garment.hoodie.pocket"
+   ],
+   "rms_radius": 0.064439,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_collision"
+   ],
+   "vertices": 650
+  },
+  "garment.hoodie.pocket.edge.top": {
+   "bbox": [
+    [
+     -0.0569,
+     -0.1158,
+     0.4605
+    ],
+    [
+     0.0569,
+     -0.1006,
+     0.4695
+    ]
+   ],
+   "centroid": [
+    -0.0,
+    -0.108056,
+    0.465
+   ],
+   "coords_hash": "2e9bf1f9b9f8f69c",
+   "faces": 208,
+   "materials": [
+    "M_garment.hoodie.pocket"
+   ],
+   "rms_radius": 0.040136,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_collision"
+   ],
+   "vertices": 202
+  },
+  "garment.hoodie.pocket.opening.L": {
+   "bbox": [
+    [
+     0.051,
+     -0.0963,
+     0.3947
+    ],
+    [
+     0.0925,
+     -0.0786,
+     0.4682
+    ]
+   ],
+   "centroid": [
+    0.071768,
+    -0.08753,
+    0.43146
+   ],
+   "coords_hash": "7d6433d36dc51b27",
+   "faces": 120,
+   "materials": [
+    "M_garment.hoodie.pocket"
+   ],
+   "rms_radius": 0.032364,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_collision"
+   ],
+   "vertices": 114
+  },
+  "garment.hoodie.pocket.opening.R": {
+   "bbox": [
+    [
+     -0.0925,
+     -0.0963,
+     0.3947
+    ],
+    [
+     -0.051,
+     -0.0787,
+     0.4682
+    ]
+   ],
+   "centroid": [
+    -0.071768,
+    -0.087565,
+    0.43146
+   ],
+   "coords_hash": "3f868fd594d0d97c",
+   "faces": 120,
+   "materials": [
+    "M_garment.hoodie.pocket"
+   ],
+   "rms_radius": 0.032358,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_collision"
+   ],
+   "vertices": 114
+  },
+  "garment.hoodie.rib.cuff.L_1": {
+   "bbox": [
+    [
+     0.2537,
+     -0.0546,
+     0.3996
+    ],
+    [
+     0.3315,
+     0.0545,
+     0.4774
+    ]
+   ],
+   "centroid": [
+    0.291465,
+    0.0,
+    0.437335
+   ],
+   "coords_hash": "232fa9374d28f403",
+   "faces": 256,
+   "materials": [
+    "M_garment.hoodie.band.006"
+   ],
+   "rms_radius": 0.053509,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_collision"
+   ],
+   "vertices": 264
+  },
+  "garment.hoodie.rib.cuff.L_2": {
+   "bbox": [
+    [
+     0.2509,
+     -0.0547,
+     0.4022
+    ],
+    [
+     0.3289,
+     0.0547,
+     0.4802
+    ]
+   ],
+   "centroid": [
+    0.288747,
+    0.0,
+    0.440047
+   ],
+   "coords_hash": "02c61f5ae0e435c0",
+   "faces": 256,
+   "materials": [
+    "M_garment.hoodie.band.007"
+   ],
+   "rms_radius": 0.053658,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_collision"
+   ],
+   "vertices": 264
+  },
+  "garment.hoodie.rib.cuff.L_3": {
+   "bbox": [
+    [
+     0.2481,
+     -0.0549,
+     0.4048
+    ],
+    [
+     0.3263,
+     0.0548,
+     0.483
+    ]
+   ],
+   "centroid": [
+    0.286028,
+    0.0,
+    0.442759
+   ],
+   "coords_hash": "d6fa1200906110a2",
+   "faces": 256,
+   "materials": [
+    "M_garment.hoodie.band.008"
+   ],
+   "rms_radius": 0.053807,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_collision"
+   ],
+   "vertices": 264
+  },
+  "garment.hoodie.rib.cuff.R_1": {
+   "bbox": [
+    [
+     -0.3315,
+     -0.0546,
+     0.3996
+    ],
+    [
+     -0.2537,
+     0.0545,
+     0.4774
+    ]
+   ],
+   "centroid": [
+    -0.293759,
+    0.0,
+    0.439629
+   ],
+   "coords_hash": "33cfc7ac2ef378d8",
+   "faces": 256,
+   "materials": [
+    "M_garment.hoodie.band.009"
+   ],
+   "rms_radius": 0.053509,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_collision"
+   ],
+   "vertices": 264
+  },
+  "garment.hoodie.rib.cuff.R_2": {
+   "bbox": [
+    [
+     -0.3289,
+     -0.0547,
+     0.4022
+    ],
+    [
+     -0.2509,
+     0.0547,
+     0.4802
+    ]
+   ],
+   "centroid": [
+    -0.291047,
+    0.0,
+    0.442347
+   ],
+   "coords_hash": "064bf2b4752f0f76",
+   "faces": 256,
+   "materials": [
+    "M_garment.hoodie.band.010"
+   ],
+   "rms_radius": 0.053658,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_collision"
+   ],
+   "vertices": 264
+  },
+  "garment.hoodie.rib.cuff.R_3": {
+   "bbox": [
+    [
+     -0.3263,
+     -0.0549,
+     0.4048
+    ],
+    [
+     -0.2481,
+     0.0548,
+     0.483
+    ]
+   ],
+   "centroid": [
+    -0.288335,
+    0.0,
+    0.445066
+   ],
+   "coords_hash": "dcad007f42ecbf2b",
+   "faces": 256,
+   "materials": [
+    "M_garment.hoodie.band.011"
+   ],
+   "rms_radius": 0.053807,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_collision"
+   ],
+   "vertices": 264
+  },
+  "garment.hoodie.rib.hem_1": {
+   "bbox": [
+    [
+     -0.1354,
+     -0.0978,
+     0.3324
+    ],
+    [
+     0.1355,
+     0.0957,
+     0.3349
+    ]
+   ],
+   "centroid": [
+    0.002762,
+    -0.00066,
+    0.333574
+   ],
+   "coords_hash": "175572573e2a62f8",
+   "faces": 384,
+   "materials": [
+    "M_garment.hoodie.band.001"
+   ],
+   "rms_radius": 0.116066,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_collision"
+   ],
+   "vertices": 392
+  },
+  "garment.hoodie.rib.hem_2": {
+   "bbox": [
+    [
+     -0.1354,
+     -0.099,
+     0.336
+    ],
+    [
+     0.1354,
+     0.0964,
+     0.3386
+    ]
+   ],
+   "centroid": [
+    0.002768,
+    -0.000828,
+    0.33713
+   ],
+   "coords_hash": "cf0782fe03974978",
+   "faces": 384,
+   "materials": [
+    "M_garment.hoodie.band.002"
+   ],
+   "rms_radius": 0.116893,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_collision"
+   ],
+   "vertices": 392
+  },
+  "garment.hoodie.rib.hem_3": {
+   "bbox": [
+    [
+     -0.1356,
+     -0.1,
+     0.3395
+    ],
+    [
+     0.1353,
+     0.0969,
+     0.3459
+    ]
+   ],
+   "centroid": [
+    0.002746,
+    -0.000984,
+    0.34082
+   ],
+   "coords_hash": "83cf258993a310b3",
+   "faces": 384,
+   "materials": [
+    "M_garment.hoodie.band.003"
+   ],
+   "rms_radius": 0.117315,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_collision"
+   ],
+   "vertices": 392
+  },
+  "garment.shoes.collar.L": {
+   "bbox": [
+    [
+     0.0303,
+     -0.0656,
+     0.0774
+    ],
+    [
+     0.1319,
+     0.0478,
+     0.1052
+    ]
+   ],
+   "centroid": [
+    0.080968,
+    -0.023334,
+    0.093325
+   ],
+   "coords_hash": "51940441587d2c5c",
+   "faces": 1024,
+   "materials": [
+    "M_garment.shoes.main.002"
+   ],
+   "rms_radius": 0.048434,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_collision"
+   ],
+   "vertices": 1032
+  },
+  "garment.shoes.collar.R": {
+   "bbox": [
+    [
+     -0.1319,
+     -0.0656,
+     0.0773
+    ],
+    [
+     -0.0303,
+     0.0478,
+     0.1052
+    ]
+   ],
+   "centroid": [
+    -0.081125,
+    -0.023336,
+    0.093325
+   ],
+   "coords_hash": "d40ed1bd8dd50f0d",
+   "faces": 1024,
+   "materials": [
+    "M_garment.shoes.main.005"
+   ],
+   "rms_radius": 0.048432,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_collision"
+   ],
+   "vertices": 1032
+  },
+  "garment.shoes.laces.L_1": {
+   "bbox": [
+    [
+     0.0429,
+     -0.0619,
+     0.0839
+    ],
+    [
+     0.1193,
+     -0.0546,
+     0.108
+    ]
+   ],
+   "centroid": [
+    0.08112,
+    -0.058278,
+    0.092936
+   ],
+   "coords_hash": "242646f7c9cdeabc",
+   "faces": 128,
+   "materials": [
+    "M_garment.shoes.laces"
+   ],
+   "rms_radius": 0.031155,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_collision"
+   ],
+   "vertices": 122
+  },
+  "garment.shoes.laces.L_2": {
+   "bbox": [
+    [
+     0.0429,
+     -0.0721,
+     0.0717
+    ],
+    [
+     0.1193,
+     -0.0648,
+     0.0998
+    ]
+   ],
+   "centroid": [
+    0.08112,
+    -0.068489,
+    0.08183
+   ],
+   "coords_hash": "1367de7491c11e07",
+   "faces": 128,
+   "materials": [
+    "M_garment.shoes.laces"
+   ],
+   "rms_radius": 0.031553,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_collision"
+   ],
+   "vertices": 122
+  },
+  "garment.shoes.laces.L_3": {
+   "bbox": [
+    [
+     0.0399,
+     -0.0836,
+     0.0614
+    ],
+    [
+     0.1221,
+     -0.0753,
+     0.0848
+    ]
+   ],
+   "centroid": [
+    0.081058,
+    -0.079511,
+    0.069345
+   ],
+   "coords_hash": "27cc7887b5a33cdc",
+   "faces": 128,
+   "materials": [
+    "M_garment.shoes.laces"
+   ],
+   "rms_radius": 0.033242,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_collision"
+   ],
+   "vertices": 122
+  },
+  "garment.shoes.laces.R_1": {
+   "bbox": [
+    [
+     -0.1193,
+     -0.0619,
+     0.0839
+    ],
+    [
+     -0.0429,
+     -0.0546,
+     0.108
+    ]
+   ],
+   "centroid": [
+    -0.08112,
+    -0.058278,
+    0.092936
+   ],
+   "coords_hash": "550587cb24dac151",
+   "faces": 128,
+   "materials": [
+    "M_garment.shoes.laces.001"
+   ],
+   "rms_radius": 0.031155,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_collision"
+   ],
+   "vertices": 122
+  },
+  "garment.shoes.laces.R_2": {
+   "bbox": [
+    [
+     -0.1193,
+     -0.0721,
+     0.0717
+    ],
+    [
+     -0.0429,
+     -0.0648,
+     0.0998
+    ]
+   ],
+   "centroid": [
+    -0.08112,
+    -0.068489,
+    0.08183
+   ],
+   "coords_hash": "ebf74fe925588c8a",
+   "faces": 128,
+   "materials": [
+    "M_garment.shoes.laces.001"
+   ],
+   "rms_radius": 0.031553,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_collision"
+   ],
+   "vertices": 122
+  },
+  "garment.shoes.laces.R_3": {
+   "bbox": [
+    [
+     -0.1224,
+     -0.0836,
+     0.0614
+    ],
+    [
+     -0.04,
+     -0.0753,
+     0.0848
+    ]
+   ],
+   "centroid": [
+    -0.08117,
+    -0.079508,
+    0.069341
+   ],
+   "coords_hash": "d93a68a85fd18c11",
+   "faces": 128,
+   "materials": [
+    "M_garment.shoes.laces.001"
+   ],
+   "rms_radius": 0.033251,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_collision"
+   ],
+   "vertices": 122
+  },
+  "garment.shoes.main.L": {
+   "bbox": [
+    [
+     0.0172,
+     -0.1412,
+     -0.0131
+    ],
+    [
+     0.145,
+     0.0561,
+     0.1012
+    ]
+   ],
+   "centroid": [
+    0.081114,
+    -0.057042,
+    0.04196
+   ],
+   "coords_hash": "010054e6ee78af53",
+   "faces": 3584,
+   "materials": [
+    "M_garment.shoes.main"
+   ],
+   "rms_radius": 0.077766,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_collision"
+   ],
+   "vertices": 3584
+  },
+  "garment.shoes.main.R": {
+   "bbox": [
+    [
+     -0.145,
+     -0.1412,
+     -0.0131
+    ],
+    [
+     -0.0172,
+     0.0561,
+     0.1012
+    ]
+   ],
+   "centroid": [
+    -0.081111,
+    -0.057042,
+    0.041958
+   ],
+   "coords_hash": "64fb83d554e4edcf",
+   "faces": 3584,
+   "materials": [
+    "M_garment.shoes.main.003"
+   ],
+   "rms_radius": 0.077765,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_collision"
+   ],
+   "vertices": 3584
+  },
+  "garment.shoes.sole.L": {
+   "bbox": [
+    [
+     0.0159,
+     -0.1427,
+     -0.0271
+    ],
+    [
+     0.1463,
+     0.0576,
+     -0.004
+    ]
+   ],
+   "centroid": [
+    0.08112,
+    -0.042526,
+    -0.015238
+   ],
+   "coords_hash": "aa5dec5b59d42b4d",
+   "faces": 448,
+   "materials": [
+    "M_garment.shoes.sole"
+   ],
+   "rms_radius": 0.08551,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_collision"
+   ],
+   "vertices": 386
+  },
+  "garment.shoes.sole.R": {
+   "bbox": [
+    [
+     -0.1463,
+     -0.1427,
+     -0.0271
+    ],
+    [
+     -0.0159,
+     0.0576,
+     -0.004
+    ]
+   ],
+   "centroid": [
+    -0.08112,
+    -0.042526,
+    -0.015238
+   ],
+   "coords_hash": "0f651c40ce3b75f2",
+   "faces": 448,
+   "materials": [
+    "M_garment.shoes.sole.002"
+   ],
+   "rms_radius": 0.08551,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_collision"
+   ],
+   "vertices": 386
+  },
+  "garment.shoes.stripe.L.i1": {
+   "bbox": [
+    [
+     0.0188,
+     -0.0448,
+     -0.0032
+    ],
+    [
+     0.022,
+     -0.0054,
+     0.0461
+    ]
+   ],
+   "centroid": [
+    0.020186,
+    -0.025047,
+    0.021493
+   ],
+   "coords_hash": "5b0b086d1beb8a7b",
+   "faces": 182,
+   "materials": [
+    "M_garment.shoes.stripe"
+   ],
+   "rms_radius": 0.017587,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_collision"
+   ],
+   "vertices": 192
+  },
+  "garment.shoes.stripe.L.i2": {
+   "bbox": [
+    [
+     0.018,
+     -0.0569,
+     -0.0032
+    ],
+    [
+     0.0228,
+     -0.0174,
+     0.0463
+    ]
+   ],
+   "centroid": [
+    0.019526,
+    -0.037104,
+    0.021511
+   ],
+   "coords_hash": "b5102c791b9765bf",
+   "faces": 182,
+   "materials": [
+    "M_garment.shoes.stripe"
+   ],
+   "rms_radius": 0.017628,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_collision"
+   ],
+   "vertices": 192
+  },
+  "garment.shoes.stripe.L.o1": {
+   "bbox": [
+    [
+     0.1402,
+     -0.0448,
+     -0.0032
+    ],
+    [
+     0.1434,
+     -0.0054,
+     0.0461
+    ]
+   ],
+   "centroid": [
+    0.142063,
+    -0.025047,
+    0.021493
+   ],
+   "coords_hash": "cd4a144e3d9dd10a",
+   "faces": 182,
+   "materials": [
+    "M_garment.shoes.stripe"
+   ],
+   "rms_radius": 0.017587,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_collision"
+   ],
+   "vertices": 192
+  },
+  "garment.shoes.stripe.L.o2": {
+   "bbox": [
+    [
+     0.1395,
+     -0.0569,
+     -0.0032
+    ],
+    [
+     0.1443,
+     -0.0174,
+     0.0463
+    ]
+   ],
+   "centroid": [
+    0.142732,
+    -0.037104,
+    0.021511
+   ],
+   "coords_hash": "919396f617430541",
+   "faces": 182,
+   "materials": [
+    "M_garment.shoes.stripe"
+   ],
+   "rms_radius": 0.017628,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_collision"
+   ],
+   "vertices": 192
+  },
+  "garment.shoes.stripe.R.i1": {
+   "bbox": [
+    [
+     -0.022,
+     -0.0448,
+     -0.0032
+    ],
+    [
+     -0.0188,
+     -0.0054,
+     0.0461
+    ]
+   ],
+   "centroid": [
+    -0.020177,
+    -0.025047,
+    0.021493
+   ],
+   "coords_hash": "ec429068d4793e8f",
+   "faces": 182,
+   "materials": [
+    "M_garment.shoes.stripe"
+   ],
+   "rms_radius": 0.017587,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_collision"
+   ],
+   "vertices": 192
+  },
+  "garment.shoes.stripe.R.i2": {
+   "bbox": [
+    [
+     -0.0228,
+     -0.0569,
+     -0.0032
+    ],
+    [
+     -0.0179,
+     -0.0174,
+     0.0463
+    ]
+   ],
+   "centroid": [
+    -0.019508,
+    -0.037104,
+    0.021511
+   ],
+   "coords_hash": "5c692c3572ea5718",
+   "faces": 182,
+   "materials": [
+    "M_garment.shoes.stripe"
+   ],
+   "rms_radius": 0.017628,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_collision"
+   ],
+   "vertices": 192
+  },
+  "garment.shoes.stripe.R.o1": {
+   "bbox": [
+    [
+     -0.1434,
+     -0.0448,
+     -0.0032
+    ],
+    [
+     -0.1402,
+     -0.0054,
+     0.0461
+    ]
+   ],
+   "centroid": [
+    -0.142054,
+    -0.025047,
+    0.021493
+   ],
+   "coords_hash": "b271c5ae9148b1ec",
+   "faces": 182,
+   "materials": [
+    "M_garment.shoes.stripe"
+   ],
+   "rms_radius": 0.017587,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_collision"
+   ],
+   "vertices": 192
+  },
+  "garment.shoes.stripe.R.o2": {
+   "bbox": [
+    [
+     -0.1443,
+     -0.0569,
+     -0.0032
+    ],
+    [
+     -0.1395,
+     -0.0174,
+     0.0463
+    ]
+   ],
+   "centroid": [
+    -0.142714,
+    -0.037104,
+    0.021511
+   ],
+   "coords_hash": "c203764510b56f87",
+   "faces": 182,
+   "materials": [
+    "M_garment.shoes.stripe"
+   ],
+   "rms_radius": 0.017628,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_collision"
+   ],
+   "vertices": 192
+  },
+  "garment.shoes.toe_cap.L": {
+   "bbox": [
+    [
+     0.0128,
+     -0.1465,
+     -0.0172
+    ],
+    [
+     0.1494,
+     -0.0815,
+     0.0318
+    ]
+   ],
+   "centroid": [
+    0.081119,
+    -0.120662,
+    0.00531
+   ],
+   "coords_hash": "348676536ee2ce35",
+   "faces": 1602,
+   "materials": [
+    "M_garment.shoes.sole.001"
+   ],
+   "rms_radius": 0.041044,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_collision"
+   ],
+   "vertices": 1604
+  },
+  "garment.shoes.toe_cap.R": {
+   "bbox": [
+    [
+     -0.1494,
+     -0.1465,
+     -0.0172
+    ],
+    [
+     -0.0128,
+     -0.0815,
+     0.0318
+    ]
+   ],
+   "centroid": [
+    -0.081122,
+    -0.120662,
+    0.005311
+   ],
+   "coords_hash": "f6b07a7514c700a2",
+   "faces": 1602,
+   "materials": [
+    "M_garment.shoes.sole.003"
+   ],
+   "rms_radius": 0.041045,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_collision"
+   ],
+   "vertices": 1604
+  },
+  "garment.shoes.tongue.L": {
+   "bbox": [
+    [
+     0.0553,
+     -0.08,
+     0.0779
+    ],
+    [
+     0.1063,
+     -0.0422,
+     0.1053
+    ]
+   ],
+   "centroid": [
+    0.081108,
+    -0.060221,
+    0.096939
+   ],
+   "coords_hash": "2d8d5cb2adc5c1ca",
+   "faces": 134,
+   "materials": [
+    "M_garment.shoes.main.001"
+   ],
+   "rms_radius": 0.02349,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_collision"
+   ],
+   "vertices": 144
+  },
+  "garment.shoes.tongue.R": {
+   "bbox": [
+    [
+     -0.1063,
+     -0.08,
+     0.0779
+    ],
+    [
+     -0.0553,
+     -0.0422,
+     0.1053
+    ]
+   ],
+   "centroid": [
+    -0.081097,
+    -0.060216,
+    0.096939
+   ],
+   "coords_hash": "3fabcf0874eec380",
+   "faces": 134,
+   "materials": [
+    "M_garment.shoes.main.004"
+   ],
+   "rms_radius": 0.023501,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_collision"
+   ],
+   "vertices": 144
+  },
+  "garment.trousers.gusset": {
+   "bbox": [
+    [
+     -0.0455,
+     -0.0617,
+     0.262
+    ],
+    [
+     0.0457,
+     0.0596,
+     0.3031
+    ]
+   ],
+   "centroid": [
+    -6e-06,
+    -3.5e-05,
+    0.281222
+   ],
+   "coords_hash": "01bf7ba9aa7a921e",
+   "faces": 644,
+   "materials": [
+    "M_garment.trousers.gusset"
+   ],
+   "rms_radius": 0.051095,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_collision"
+   ],
+   "vertices": 646
+  },
+  "garment.trousers.main": {
+   "bbox": [
+    [
+     -0.1421,
+     -0.0946,
+     0.0799
+    ],
+    [
+     0.1421,
+     0.0919,
+     0.4016
+    ]
+   ],
+   "centroid": [
+    -0.0,
+    -0.002075,
+    0.252907
+   ],
+   "coords_hash": "9a1b42f3b3f90205",
+   "faces": 29690,
+   "materials": [
+    "M_garment.trousers.main"
+   ],
+   "rms_radius": 0.134863,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-foot.L",
+    "DEF-foot.R",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-hand.R",
+    "DEF-pelvis.L",
+    "DEF-pelvis.R",
+    "DEF-shin.L",
+    "DEF-shin.L.001",
+    "DEF-shin.R",
+    "DEF-shin.R.001",
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine",
+    "DEF-spine.001",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-thigh.L",
+    "DEF-thigh.L.001",
+    "DEF-thigh.R",
+    "DEF-thigh.R.001",
+    "DEF-toe.L",
+    "DEF-toe.R",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001",
+    "ps_collision"
+   ],
+   "vertices": 29684
+  },
+  "hair_back": {
+   "bbox": [
+    [
+     -0.1716,
+     0.0978,
+     0.7292
+    ],
+    [
+     0.1682,
+     0.23,
+     0.9309
+    ]
+   ],
+   "centroid": [
+    0.001789,
+    0.173315,
+    0.826835
+   ],
+   "coords_hash": "750b121f072d4e41",
+   "faces": 4482,
+   "materials": [
+    "M_hair"
+   ],
+   "rms_radius": 0.100261,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-spine.006",
+    "DYN-back.00.0",
+    "DYN-back.00.1",
+    "DYN-back.01.0",
+    "DYN-back.01.1",
+    "DYN-back.02.0",
+    "DYN-back.02.1",
+    "DYN-back.03.0",
+    "DYN-back.03.1",
+    "DYN-back.04.0",
+    "DYN-back.04.1",
+    "DYN-back.05.0",
+    "DYN-back.05.1"
+   ],
+   "vertices": 4386
+  },
+  "hair_base": {
+   "bbox": [
+    [
+     -0.1862,
+     -0.1165,
+     0.7714
+    ],
+    [
+     0.1853,
+     0.1963,
+     1.0569
+    ]
+   ],
+   "centroid": [
+    2e-06,
+    0.035759,
+    0.948944
+   ],
+   "coords_hash": "795c6e912ab64bd4",
+   "faces": 12800,
+   "materials": [
+    "M_hair"
+   ],
+   "rms_radius": 0.137599,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-spine.006"
+   ],
+   "vertices": 12800
+  },
+  "hair_cap": {
+   "bbox": [
+    [
+     -0.1639,
+     -0.0739,
+     0.7259
+    ],
+    [
+     0.1639,
+     0.1665,
+     1.018
+    ]
+   ],
+   "centroid": [
+    1e-06,
+    0.067155,
+    0.903524
+   ],
+   "coords_hash": "84ce68b7aaa81e54",
+   "faces": 14820,
+   "materials": [
+    "M_hair"
+   ],
+   "rms_radius": 0.142554,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-spine.006"
+   ],
+   "vertices": 15010
+  },
+  "hair_crown": {
+   "bbox": [
+    [
+     -0.1181,
+     -0.1126,
+     0.9787
+    ],
+    [
+     0.1192,
+     0.1207,
+     1.0657
+    ]
+   ],
+   "centroid": [
+    -0.000204,
+    0.00822,
+    1.020939
+   ],
+   "coords_hash": "60f77eb81adcd70c",
+   "faces": 3240,
+   "materials": [
+    "M_hair"
+   ],
+   "rms_radius": 0.081503,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-spine.006",
+    "DYN-crown.00.0",
+    "DYN-crown.00.1",
+    "DYN-crown.01.0",
+    "DYN-crown.01.1",
+    "DYN-crown.02.0",
+    "DYN-crown.02.1",
+    "DYN-crown.03.0",
+    "DYN-crown.03.1",
+    "DYN-crown.04.0",
+    "DYN-crown.04.1",
+    "DYN-crown.05.0",
+    "DYN-crown.05.1"
+   ],
+   "vertices": 3144
+  },
+  "hair_fringe": {
+   "bbox": [
+    [
+     -0.1402,
+     -0.1733,
+     0.8535
+    ],
+    [
+     0.1405,
+     -0.0348,
+     1.02
+    ]
+   ],
+   "centroid": [
+    0.000113,
+    -0.122253,
+    0.936855
+   ],
+   "coords_hash": "e28c08983c299921",
+   "faces": 3312,
+   "materials": [
+    "M_hair"
+   ],
+   "rms_radius": 0.090661,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-spine.006",
+    "DYN-fringe.00.0",
+    "DYN-fringe.00.1",
+    "DYN-fringe.01.0",
+    "DYN-fringe.01.1",
+    "DYN-fringe.02.0",
+    "DYN-fringe.02.1",
+    "DYN-fringe.03.0",
+    "DYN-fringe.03.1"
+   ],
+   "vertices": 3248
+  },
+  "hair_fringe_centre": {
+   "bbox": [
+    [
+     -0.0598,
+     -0.181,
+     0.8546
+    ],
+    [
+     0.0627,
+     -0.0279,
+     1.0306
+    ]
+   ],
+   "centroid": [
+    -0.00057,
+    -0.133786,
+    0.947609
+   ],
+   "coords_hash": "8cbd550748fb05e6",
+   "faces": 936,
+   "materials": [
+    "M_hair"
+   ],
+   "rms_radius": 0.06842,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-spine.006",
+    "DYN-fringe_centre.00.0",
+    "DYN-fringe_centre.00.1"
+   ],
+   "vertices": 920
+  },
+  "hair_sides": {
+   "bbox": [
+    [
+     -0.2602,
+     -0.0828,
+     0.7946
+    ],
+    [
+     0.2589,
+     0.0862,
+     0.9557
+    ]
+   ],
+   "centroid": [
+    -0.003359,
+    0.001776,
+    0.871242
+   ],
+   "coords_hash": "70e8fa5fe969fd63",
+   "faces": 2808,
+   "materials": [
+    "M_hair"
+   ],
+   "rms_radius": 0.20975,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-spine.006",
+    "DYN-sides.00.0",
+    "DYN-sides.00.1",
+    "DYN-sides.01.0",
+    "DYN-sides.01.1",
+    "DYN-sides.02.0",
+    "DYN-sides.02.1",
+    "DYN-sides.03.0",
+    "DYN-sides.03.1"
+   ],
+   "vertices": 2744
+  },
+  "hair_top": {
+   "bbox": [
+    [
+     -0.2757,
+     -0.1505,
+     0.8548
+    ],
+    [
+     0.2711,
+     0.2802,
+     1.0531
+    ]
+   ],
+   "centroid": [
+    0.000656,
+    0.057369,
+    0.964425
+   ],
+   "coords_hash": "8b33c80f1e03ceac",
+   "faces": 8280,
+   "materials": [
+    "M_hair"
+   ],
+   "rms_radius": 0.189551,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-spine.006"
+   ],
+   "vertices": 8136
+  },
+  "hair_whorl": {
+   "bbox": [
+    [
+     -0.1031,
+     -0.0885,
+     0.9987
+    ],
+    [
+     0.0648,
+     0.1022,
+     1.0929
+    ]
+   ],
+   "centroid": [
+    -0.008555,
+    0.012384,
+    1.039039
+   ],
+   "coords_hash": "ace181971c9188e2",
+   "faces": 1944,
+   "materials": [
+    "M_hair"
+   ],
+   "rms_radius": 0.063787,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-spine.006",
+    "DYN-whorl.00.0",
+    "DYN-whorl.00.1",
+    "DYN-whorl.01.0",
+    "DYN-whorl.01.1",
+    "DYN-whorl.02.0",
+    "DYN-whorl.02.1"
+   ],
+   "vertices": 1896
+  },
+  "hand.L": {
+   "bbox": [
+    [
+     0.2908,
+     -0.0611,
+     0.3563
+    ],
+    [
+     0.368,
+     0.0448,
+     0.4406
+    ]
+   ],
+   "centroid": [
+    0.330393,
+    -0.006132,
+    0.396665
+   ],
+   "coords_hash": "e77fea8b5bb320f1",
+   "faces": 1240,
+   "materials": [
+    "M_skin"
+   ],
+   "rms_radius": 0.042965,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-f_index.01.L",
+    "DEF-f_index.02.L",
+    "DEF-f_index.03.L",
+    "DEF-f_middle.01.L",
+    "DEF-f_middle.02.L",
+    "DEF-f_middle.03.L",
+    "DEF-f_pinky.01.L",
+    "DEF-f_pinky.02.L",
+    "DEF-f_pinky.03.L",
+    "DEF-f_ring.01.L",
+    "DEF-f_ring.02.L",
+    "DEF-f_ring.03.L",
+    "DEF-forearm.L",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R.001",
+    "DEF-hand.L",
+    "DEF-palm.01.L",
+    "DEF-palm.02.L",
+    "DEF-palm.03.L",
+    "DEF-palm.04.L",
+    "DEF-thumb.01.L",
+    "DEF-thumb.02.L",
+    "DEF-thumb.03.L"
+   ],
+   "vertices": 1242
+  },
+  "hand.R": {
+   "bbox": [
+    [
+     -0.368,
+     -0.0611,
+     0.3563
+    ],
+    [
+     -0.2908,
+     0.0448,
+     0.4406
+    ]
+   ],
+   "centroid": [
+    -0.330393,
+    -0.006132,
+    0.396666
+   ],
+   "coords_hash": "0d4ae89853c3795a",
+   "faces": 1240,
+   "materials": [
+    "M_skin"
+   ],
+   "rms_radius": 0.042966,
+   "shape_keys": [],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-f_index.01.R",
+    "DEF-f_index.02.R",
+    "DEF-f_index.03.R",
+    "DEF-f_middle.01.R",
+    "DEF-f_middle.02.R",
+    "DEF-f_middle.03.R",
+    "DEF-f_pinky.01.R",
+    "DEF-f_pinky.02.R",
+    "DEF-f_pinky.03.R",
+    "DEF-f_ring.01.R",
+    "DEF-f_ring.02.R",
+    "DEF-f_ring.03.R",
+    "DEF-forearm.L.001",
+    "DEF-forearm.R",
+    "DEF-forearm.R.001",
+    "DEF-hand.R",
+    "DEF-palm.01.R",
+    "DEF-palm.02.R",
+    "DEF-palm.03.R",
+    "DEF-palm.04.R",
+    "DEF-thumb.01.R",
+    "DEF-thumb.02.R",
+    "DEF-thumb.03.R"
+   ],
+   "vertices": 1242
+  },
+  "lash.L": {
+   "bbox": [
+    [
+     0.0187,
+     -0.1358,
+     0.7706
+    ],
+    [
+     0.1173,
+     -0.104,
+     0.7879
+    ]
+   ],
+   "centroid": [
+    0.067758,
+    -0.118173,
+    0.78001
+   ],
+   "coords_hash": "e58868d25b0af83c",
+   "faces": 240,
+   "materials": [
+    "M_lash_generic"
+   ],
+   "rms_radius": 0.038819,
+   "shape_keys": [
+    "Basis",
+    "Blink.L@25",
+    "Blink.L@50",
+    "Blink.L@75",
+    "Blink.L",
+    "EyeWide",
+    "EyeSquint",
+    "EyeSquint.L",
+    "EyeSquint.R",
+    "Blink@25",
+    "Blink@50",
+    "Blink@75",
+    "Blink",
+    "LeftEyeClosed@25",
+    "LeftEyeClosed@50",
+    "LeftEyeClosed@75",
+    "LeftEyeClosed",
+    "Squint@25",
+    "Squint@50",
+    "Squint@75",
+    "Squint",
+    "WideOpen",
+    "Smile@25",
+    "Smile@50",
+    "Smile@75",
+    "Smile",
+    "Surprise",
+    "Sadness@25",
+    "Sadness@50",
+    "Sadness@75",
+    "Sadness",
+    "Anger",
+    "Confusion",
+    "Laugh@25",
+    "Laugh@50",
+    "Laugh@75",
+    "Laugh",
+    "Worried",
+    "Curious",
+    "Bored@25",
+    "Bored@50",
+    "Bored@75",
+    "Bored"
+   ],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-eye.L",
+    "DEF-spine.006"
+   ],
+   "vertices": 232
+  },
+  "lash.R": {
+   "bbox": [
+    [
+     -0.1173,
+     -0.1358,
+     0.7706
+    ],
+    [
+     -0.0187,
+     -0.104,
+     0.7879
+    ]
+   ],
+   "centroid": [
+    -0.067758,
+    -0.118164,
+    0.78001
+   ],
+   "coords_hash": "be7bcbfe35bc3434",
+   "faces": 240,
+   "materials": [
+    "M_lash_generic"
+   ],
+   "rms_radius": 0.038819,
+   "shape_keys": [
+    "Basis",
+    "Blink.R@25",
+    "Blink.R@50",
+    "Blink.R@75",
+    "Blink.R",
+    "EyeWide",
+    "EyeSquint",
+    "EyeSquint.L",
+    "EyeSquint.R",
+    "Blink@25",
+    "Blink@50",
+    "Blink@75",
+    "Blink",
+    "RightEyeClosed@25",
+    "RightEyeClosed@50",
+    "RightEyeClosed@75",
+    "RightEyeClosed",
+    "Squint@25",
+    "Squint@50",
+    "Squint@75",
+    "Squint",
+    "WideOpen",
+    "Smile@25",
+    "Smile@50",
+    "Smile@75",
+    "Smile",
+    "Surprise",
+    "Sadness@25",
+    "Sadness@50",
+    "Sadness@75",
+    "Sadness",
+    "Anger",
+    "Confusion",
+    "Laugh@25",
+    "Laugh@50",
+    "Laugh@75",
+    "Laugh",
+    "Worried",
+    "Curious",
+    "Bored@25",
+    "Bored@50",
+    "Bored@75",
+    "Bored",
+    "Skeptical@25",
+    "Skeptical@50",
+    "Skeptical@75",
+    "Skeptical"
+   ],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-eye.R",
+    "DEF-spine.006"
+   ],
+   "vertices": 232
+  },
+  "lid_lower.L": {
+   "bbox": [
+    [
+     0.0277,
+     -0.124,
+     0.7267
+    ],
+    [
+     0.1155,
+     -0.0956,
+     0.7674
+    ]
+   ],
+   "centroid": [
+    0.077158,
+    -0.105797,
+    0.741108
+   ],
+   "coords_hash": "cadc25f6b05edbdd",
+   "faces": 401,
+   "materials": [
+    "M_skin_face"
+   ],
+   "rms_radius": 0.026443,
+   "shape_keys": [
+    "Basis",
+    "EyeWide",
+    "EyeSquint",
+    "MouthSmile",
+    "EyeSquint.L",
+    "EyeSquint.R",
+    "MouthSmile.L",
+    "MouthSmile.R",
+    "Squint",
+    "WideOpen",
+    "Smile",
+    "Surprise",
+    "Anger",
+    "Confusion",
+    "Laugh",
+    "Worried",
+    "Curious",
+    "Skeptical"
+   ],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-eye.L",
+    "DEF-spine.006"
+   ],
+   "vertices": 446
+  },
+  "lid_lower.R": {
+   "bbox": [
+    [
+     -0.1155,
+     -0.124,
+     0.7267
+    ],
+    [
+     -0.0277,
+     -0.0956,
+     0.7674
+    ]
+   ],
+   "centroid": [
+    -0.077158,
+    -0.105787,
+    0.741108
+   ],
+   "coords_hash": "498f68242d139a5a",
+   "faces": 401,
+   "materials": [
+    "M_skin_face"
+   ],
+   "rms_radius": 0.026443,
+   "shape_keys": [
+    "Basis",
+    "EyeWide",
+    "EyeSquint",
+    "MouthSmile",
+    "EyeSquint.L",
+    "EyeSquint.R",
+    "MouthSmile.L",
+    "MouthSmile.R",
+    "Squint",
+    "WideOpen",
+    "Smile",
+    "Surprise",
+    "Anger",
+    "Confusion",
+    "Laugh",
+    "Worried",
+    "Curious",
+    "Skeptical"
+   ],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-eye.R",
+    "DEF-spine.006"
+   ],
+   "vertices": 446
+  },
+  "lid_upper.L": {
+   "bbox": [
+    [
+     0.0129,
+     -0.1344,
+     0.766
+    ],
+    [
+     0.1176,
+     -0.0739,
+     0.8331
+    ]
+   ],
+   "centroid": [
+    0.062407,
+    -0.096434,
+    0.812794
+   ],
+   "coords_hash": "cfe12e9a6f9899bf",
+   "faces": 1320,
+   "materials": [
+    "M_skin_face.lid"
+   ],
+   "rms_radius": 0.037737,
+   "shape_keys": [
+    "Basis",
+    "Blink.L@25",
+    "Blink.L@50",
+    "Blink.L@75",
+    "Blink.L",
+    "EyeWide",
+    "EyeSquint",
+    "EyeSquint.L",
+    "EyeSquint.R",
+    "Blink@25",
+    "Blink@50",
+    "Blink@75",
+    "Blink",
+    "LeftEyeClosed@25",
+    "LeftEyeClosed@50",
+    "LeftEyeClosed@75",
+    "LeftEyeClosed",
+    "Squint@25",
+    "Squint@50",
+    "Squint@75",
+    "Squint",
+    "WideOpen",
+    "Smile@25",
+    "Smile@50",
+    "Smile@75",
+    "Smile",
+    "Surprise",
+    "Sadness@25",
+    "Sadness@50",
+    "Sadness@75",
+    "Sadness",
+    "Anger",
+    "Confusion",
+    "Laugh@25",
+    "Laugh@50",
+    "Laugh@75",
+    "Laugh",
+    "Worried",
+    "Curious",
+    "Bored@25",
+    "Bored@50",
+    "Bored@75",
+    "Bored"
+   ],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-eye.L",
+    "DEF-spine.006"
+   ],
+   "vertices": 1330
+  },
+  "lid_upper.R": {
+   "bbox": [
+    [
+     -0.1176,
+     -0.1344,
+     0.766
+    ],
+    [
+     -0.0129,
+     -0.0739,
+     0.8331
+    ]
+   ],
+   "centroid": [
+    -0.062407,
+    -0.096424,
+    0.812794
+   ],
+   "coords_hash": "e06e62ea3ef194be",
+   "faces": 1320,
+   "materials": [
+    "M_skin_face.lid"
+   ],
+   "rms_radius": 0.037737,
+   "shape_keys": [
+    "Basis",
+    "Blink.R@25",
+    "Blink.R@50",
+    "Blink.R@75",
+    "Blink.R",
+    "EyeWide",
+    "EyeSquint",
+    "EyeSquint.L",
+    "EyeSquint.R",
+    "Blink@25",
+    "Blink@50",
+    "Blink@75",
+    "Blink",
+    "RightEyeClosed@25",
+    "RightEyeClosed@50",
+    "RightEyeClosed@75",
+    "RightEyeClosed",
+    "Squint@25",
+    "Squint@50",
+    "Squint@75",
+    "Squint",
+    "WideOpen",
+    "Smile@25",
+    "Smile@50",
+    "Smile@75",
+    "Smile",
+    "Surprise",
+    "Sadness@25",
+    "Sadness@50",
+    "Sadness@75",
+    "Sadness",
+    "Anger",
+    "Confusion",
+    "Laugh@25",
+    "Laugh@50",
+    "Laugh@75",
+    "Laugh",
+    "Worried",
+    "Curious",
+    "Bored@25",
+    "Bored@50",
+    "Bored@75",
+    "Bored",
+    "Skeptical@25",
+    "Skeptical@50",
+    "Skeptical@75",
+    "Skeptical"
+   ],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-eye.R",
+    "DEF-spine.006"
+   ],
+   "vertices": 1330
+  },
+  "mouth": {
+   "bbox": [
+    [
+     -0.0072,
+     -0.1364,
+     0.7145
+    ],
+    [
+     0.0072,
+     -0.1317,
+     0.7204
+    ]
+   ],
+   "centroid": [
+    0.0,
+    -0.134393,
+    0.716984
+   ],
+   "coords_hash": "7f303b6a7172cf17",
+   "faces": 48,
+   "materials": [
+    "M_mouth_line",
+    "M_lip_generic"
+   ],
+   "rms_radius": 0.004854,
+   "shape_keys": [
+    "Basis",
+    "MouthSmile",
+    "JawOpen",
+    "MouthFrown",
+    "MouthWide",
+    "MouthO",
+    "MouthPout",
+    "MouthSmile.L",
+    "MouthSmile.R",
+    "MouthFrown.L",
+    "MouthFrown.R",
+    "Squint",
+    "WideOpen",
+    "Smile",
+    "Frown",
+    "Surprise",
+    "Sadness",
+    "Anger",
+    "Confusion",
+    "Laugh",
+    "MouthOpen",
+    "Worried",
+    "Curious",
+    "Pout",
+    "Bored",
+    "Skeptical"
+   ],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-jaw",
+    "DEF-spine.006"
+   ],
+   "vertices": 78
+  },
+  "mouth_cavity": {
+   "bbox": [
+    [
+     -0.007,
+     -0.1357,
+     0.7156
+    ],
+    [
+     0.007,
+     -0.1327,
+     0.7182
+    ]
+   ],
+   "centroid": [
+    0.0,
+    -0.134349,
+    0.716994
+   ],
+   "coords_hash": "1482fc820f5888d3",
+   "faces": 108,
+   "materials": [
+    "M_mouth_inner_shaded"
+   ],
+   "rms_radius": 0.004459,
+   "shape_keys": [
+    "Basis",
+    "MouthSmile",
+    "JawOpen",
+    "MouthFrown",
+    "MouthWide",
+    "MouthO",
+    "MouthPout",
+    "MouthSmile.L",
+    "MouthSmile.R",
+    "MouthFrown.L",
+    "MouthFrown.R",
+    "Squint",
+    "WideOpen",
+    "Smile",
+    "Frown",
+    "Surprise",
+    "Sadness",
+    "Anger",
+    "Confusion",
+    "Laugh",
+    "MouthOpen",
+    "Worried",
+    "Curious",
+    "Pout",
+    "Bored",
+    "Skeptical"
+   ],
+   "type": "MESH",
+   "vertex_groups": [
+    "DEF-jaw",
+    "DEF-spine.006"
+   ],
+   "vertices": 130
+  },
+  "rig_boy_yellow_hoodie": {
+   "bones": 459,
+   "deform_bones": 122,
+   "type": "ARMATURE"
+  }
+ }
+}

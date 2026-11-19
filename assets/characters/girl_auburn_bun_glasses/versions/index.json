@@ -29,12 +29,13 @@
    "created": "2026-11-19T12:05:35+00:00",
    "parent": "0.12.0",
    "notes": "girl_auburn_bun_glasses 0.13.0 (T-122): candidate only, not current; parent 0.12.0 + T-109 face r4 + T-113 closed_fit + T-115 girl proposal. Spec assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.13.0.spec.json",
-   "status": "candidate",
-   "spec_sha256": "fddb6a48347d45f228a687cf6dd2ffb6784ada82b6fd07f30c3bece9351d87e0"
+   "status": "approved",
+   "spec_sha256": "fddb6a48347d45f228a687cf6dd2ffb6784ada82b6fd07f30c3bece9351d87e0",
+   "approval_notes": "new current version: \"Owner 2026-11-19 (~15:05Z, \"approve 2.2.0 and 0.13.0 as current\"): boy 2.2.0 and girl 0.13.0 become current. Fidelity score drop owner-accepted (boy 2.1.0 67.72 -> 2.2.0 67.25, girl 0.12.0 65.01 -> 0.13.0 64.13): the gains are the lid colour, the lens shelf and the expressions, which the score does not measure (see T-129).\" Recorded by T-131 (tools/version_switch.py)."
   }
  },
  "pointers": {
-  "approved": "0.12.0",
+  "approved": "0.13.0",
   "reference": null
  },
  "history": [
@@ -85,6 +86,14 @@
    "action": "publish",
    "version": "0.13.0",
    "status": "candidate"
+  },
+  {
+   "at": "2026-11-19T15:10:48+00:00",
+   "action": "approve",
+   "version": "0.13.0",
+   "previous": "0.12.0",
+   "by": "owner (docs/process/OWNER_DECISIONS.md 2026-11-19)",
+   "notes": "new current version: \"Owner 2026-11-19 (~15:05Z, \"approve 2.2.0 and 0.13.0 as current\"): boy 2.2.0 and girl 0.13.0 become current. Fidelity score drop owner-accepted (boy 2.1.0 67.72 -> 2.2.0 67.25, girl 0.12.0 65.01 -> 0.13.0 64.13): the gains are the lid colour, the lens shelf and the expressions, which the score does not measure (see T-129).\" Recorded by T-131 (tools/version_switch.py)."
   }
  ]
 }
