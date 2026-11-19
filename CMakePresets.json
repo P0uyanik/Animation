@@ -1,0 +1,22 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {"major": 3, "minor": 24, "patch": 0},
+  "configurePresets": [
+    {
+      "name": "fast-dev",
+      "displayName": "T-128 opt-in: ccache + mold (Linux, Ninja, Release)",
+      "description": "Opt-in only; plain 'cmake -B build' is unchanged. Revert: delete this preset.",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/fast-dev",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_PROJECT_TOP_LEVEL_INCLUDES": "${sourceDir}/cmake/opt_in/fast_build.cmake"
+      }
+    }
+  ],
+  "buildPresets": [{"name": "fast-dev", "configurePreset": "fast-dev"}],
+  "testPresets": [
+    {"name": "fast-dev", "configurePreset": "fast-dev", "output": {"outputOnFailure": true},
+     "execution": {"jobs": 4}}
+  ]
+}
