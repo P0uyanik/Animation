@@ -334,7 +334,7 @@ def fit_closed_lids(up, lash, T, ecfg, r, fit, close_key, closed_thickness_m=Non
 
 def curve_closed_lash(lash, T, r, cfg, a_close, seam_deg):
     """spec.face.eyes.lids.closed_fit.lash_curve = {"out_m": o, "sag_deg": s, "corner_lift_deg": l, "blend_deg": b,
-    "seam_deg": e (default: lids.lower_edge_deg), "above_seam_deg": d, "keys": {key name: sag factor}} (T-137, opt-in;
+    "seam_deg": e (default: lids.lower_edge_deg), "above_seam_deg": d, "span": [inner, outer], "keys": {key name: sag factor}} (T-137, opt-in;
     absent = the lash keys are not touched).
 
     A closing upper lid carries its lash line past the lid seam and on under the lower lid (lid_seam overlap), where
@@ -343,7 +343,8 @@ def curve_closed_lash(lash, T, r, cfg, a_close, seam_deg):
     median closing rotation. With w = smoothstep((seam + above + blend - e_k) / blend) (0 while the lash is still above
     the seam, 1 at and below it), each vertex
       * turns about the frame's x axis by w times the angle that puts the line on the target curve
-        seam + above - sag_deg * (1 - u^2) + corner_lift_deg * u^2 (u = 0 at the middle of the rest lash line, 1 at its ends): the lash
+        seam + above - sag_deg * (1 - u^2) + corner_lift_deg * u^2 (u = 0 at the middle and 1 at the ends of span, default the rest lash line; span is the
+        visible opening when the socket skin hides part of the lash line): the lash
         stops at the seam, its middle sags and its corners rise (the downward curve of a closed felt eye);
       * goes to its rest radius + out_m (w-weighted): in front of the lower lid and the skin over it.
     Lash strands keep their offsets from the line. keys maps a key name (in-betweens "Name@NN" and sided "Name.L" use
@@ -374,7 +375,10 @@ def curve_closed_lash(lash, T, r, cfg, a_close, seam_deg):
     rho0 = np.linalg.norm(q0, axis=1)
     core = rho0 <= np.percentile(rho0, 50.0) + 1e-6 * r  # the lash line itself (strands stand further out)
     line0 = np.polyval(np.polyfit(q0[core, 0], th0[core], 2), q0[:, 0])  # its rest elevation along x
-    x_lo, x_hi = float(q0[core, 0].min()), float(q0[core, 0].max())  # u: 0 at the line's middle, 1 at its ends
+    x_lo, x_hi = float(q0[core, 0].min()), float(q0[core, 0].max())  # u: 0 at the curve's middle, 1 at its ends
+    if cfg.get("span"):  # the visible opening, in eye radii from the eye's axis, signed towards the outer corner
+        sx = 1.0 if lash.name.split(".")[-1][:1] == "L" else -1.0
+        x_lo, x_hi = sorted(sx * float(v) * r for v in cfg["span"])
     u2 = np.clip(np.abs(q0[:, 0] - 0.5 * (x_lo + x_hi)) / max(0.5 * (x_hi - x_lo), 1e-9), 0.0, 1.2) ** 2
     rep = {"out_m": out_m, "sag_deg": round(math.degrees(sag), 2), "corner_lift_deg": round(math.degrees(lift), 2),
            "seam_deg": round(math.degrees(e_s), 2), "blend_deg": round(math.degrees(blend), 2), "keys": {}}
