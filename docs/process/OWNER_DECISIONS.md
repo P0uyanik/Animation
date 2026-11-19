@@ -563,3 +563,8 @@ READMEs; no re-reading large files or re-running renders without need. Added to 
   renderer job; prove with a green full run plus a T-127-style broken-commit probe that still turns the gate red.
   Tag first (archive/legacy-engine-renderer-<date> via backup), one revertible commit, manual nightly Windows + backup runs.
 - Owner wants the third character's combined 0.1.0 published as a CANDIDATE (not current).
+
+## 2026-11-19 ~23:30Z — Phase 3 S1a/S1b/S1c postponed
+Owner (relayed by the original Supervisor and the round-2 Supervisor): Phase 3 S1a (staging preview), S1b (acting
+preview) and S1c (final render) of the 8 s shot are POSTPONED. Do not start them overnight. Replacement tasks to
+follow; until then no tasks outside the approved list. Supersedes the S1a/S1b/S1c items in SUPERVISOR_HANDOVER_R3.md.
