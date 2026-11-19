@@ -1,0 +1,4 @@
+{
+ "note": "T-121 opt-in: separated-finger hand mesh (pipeline/charsys/hands_r2.py). Shot-level or candidate override; not a version change.",
+ "override": {"body": {"hands": "hands_r2/1"}}
+}

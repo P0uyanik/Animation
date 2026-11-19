@@ -244,6 +244,12 @@ def main_generic(a, spec, info, out):
     else:
         M = {"skin": G.material("M_skin", skin_rgb, roughness=0.55, subsurface=0.2, sss_radius=(1, 0.4, 0.25), sss_scale=0.01)}
     parts = BG.build_body(C, M, P, H, J, frames)
+    hands_report = None
+    if spec["body"].get("hands"):  # T-121 opt-in hand mesh (separated fingers); absent = unchanged
+        import hands_r2 as HANDS
+        if spec["body"]["hands"] not in HANDS.GENERATOR_VERSIONS:
+            raise V.VersionError(f"body.hands = {spec['body']['hands']!r}: known {HANDS.GENERATOR_VERSIONS}")
+        parts, hands_report = HANDS.replace_hands(C, M, parts, P, H, J, frames, G)
     garment_objects = []
     garment_report = None
     if family(pins["garment"]) == "garment":
@@ -255,6 +261,8 @@ def main_generic(a, spec, info, out):
         report["material_presets"] = {slot: cfg["preset"] for slot, cfg in mats["assignments"].items()}
     if garment_report is not None:
         report["garments"] = garment_report
+    if hands_report is not None:
+        report["hands"] = hands_report
     fc = None
     acc = []
     face_spec = spec.get("face", {})

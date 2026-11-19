@@ -1,0 +1,10 @@
+{
+ "note": "T-121 default-build check: boy 2.1.0 built without the override on the task branch and on the input commit (Blender 5.3.0 bpy, --no-compare), fingerprint_v2 at a 0.01 mm grid",
+ "spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.1.0.spec.json",
+ "input": "5a90975",
+ "fingerprint_sha256_input": "fec81dee926f1266c5c0b41d3a096eeb4c2e4fd0ee23464e9a3897099b5d5241",
+ "fingerprint_sha256_branch": "fec81dee926f1266c5c0b41d3a096eeb4c2e4fd0ee23464e9a3897099b5d5241",
+ "fingerprint_identical": true,
+ "build_report_identical": true,
+ "glb_note": "the two .glb files differ in a few bytes; GLB bytes are not part of the project's determinism check (build determinism uses --no-glb, export byte-reproducibility is export_engine's)"
+}
