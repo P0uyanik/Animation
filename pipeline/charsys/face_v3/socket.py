@@ -107,6 +107,8 @@ def lid_socket_v3(head, ctx, sides, cfg):
         behind = np.where(dc > t_in, dc + (t_in - dc) * fo, dc)  # the opening: skin in front of the eyeball moves behind it
         R_up = _trimmed_radius(uc, s, s["r_up_out"], clear, "up")  # v3: past a shell's trim the skin covers the eyeball
         R_lo = _trimmed_radius(uc, s, s["r_lo_out"], clear, "lo")
+        if s.get("lo_fit") is not None:  # T-109 (opt-in): the lower lid follows the eyeball; the skin over it too
+            R_lo = np.minimum(R_lo, s["lo_fit"](uc) + s["r_lo_out"] - s["r_lo"] + clear)
         nu, bu = profile(du, dc, band_up, R_up, behind, radial)
         nl, bl = profile(dl, dc, band_lo, R_lo, behind, radial, ramp_lo)
         # beyond the eye corners there is no opening and no lid band: the skin only covers the shells

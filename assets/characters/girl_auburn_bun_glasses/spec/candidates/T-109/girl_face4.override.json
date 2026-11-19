@@ -1,0 +1,37 @@
+{
+ "override": {
+  "face": {
+   "shape": {
+    "lower_face": {
+     "cheek_pad_m": 0.014,
+     "cheek_pad_radius_m": 0.07,
+     "cheek_pad_height": 0.9,
+     "cheek_pad_x": 1.3,
+     "cheek_pad_below_eye_m": 0.05,
+     "cheek_pad_forward": 0.0,
+     "cheek_pad_top_below_eye_m": 0.03,
+     "jaw_round_m": 0.010,
+     "jaw_x": 0.6,
+     "jaw_down": 0.5,
+     "jaw_band_m": 0.025
+    }
+   },
+   "eyes": {
+    "lids": {
+     "lower_fit": {"gap": 0.005}
+    }
+   },
+   "mouth": {
+    "rest_mix": {"MouthWide": 0.0, "MouthSmile": 0.5, "CheekRaise": 0.9}
+   },
+   "expressions": {
+    "optional": ["Worried", "Curious", "SmileClosed", "Thinking", "SmileOpen"]
+   }
+  }
+ },
+ "metadata": {
+  "task": "T-109",
+  "base": "girl_auburn_bun_glasses.0.12.0.spec.json",
+  "notes": "T-109 candidate (unpublished): face round 4 on girl 0.12.0 (current). Fuller, rounder lower face (face_v3 lower_face: low cheek pads + rounder jaw, ref_30); no grey shelf under the lenses (eyes.lids.lower_fit: the lower lid shell and the socket skin over it follow the oval eyeball's own gaze envelope per direction instead of the global value, 1.09 r); closed rest smile a little fuller (owner: neutral = closed soft smile); optional SmileOpen preset (ref_30 open D smile) for the emotion library. T-115 fit parameters: docs/evaluation/characters/T-109/fit_parameters.json."
+ }
+}
