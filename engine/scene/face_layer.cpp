@@ -318,6 +318,147 @@ float FaceLayer::blink(double frame) const {
   return amount;
 }
 
+double FaceLayer::blinkFrames(double startFrame, float scale) const {
+  const float d = params(startFrame).blinkDuration * scale;
+  return (std::max(1e-3f, life_.blinkClose) + std::max(0.0f, life_.blinkHold) + std::max(1e-3f, life_.blinkOpen)) * d * fps_;
+}
+
+std::vector<ScheduledBlink> FaceLayer::blinkPlan(const BlinkSchedule& sc) const {
+  std::vector<ScheduledBlink> plan;
+  if (!built_ || life_.blinkInterval <= 0 || blinkClock_.size() < 2) return plan;
+  using Kind = ScheduledBlink::Kind;
+  const uint32_t seed = life_.seed;
+  const double rate = fps_ / 24.0, window = sc.preferWindowFrames * rate, shortBeat = sc.shortBeatFrames * rate;
+  const double frameEnd = f0_ + double(blinkClock_.size()) - 3.0, tauEnd = blinkClock_.back();
+  auto inBeat = [&](double a, double b) {  // the beat [a, b] overlaps; returns the overlapping beat's end or -1e30
+    double last = -1e30;
+    for (const auto& [s, e] : sc.keyBeats)
+      if (a <= e + 0.5 && b >= s - 0.5) last = std::max(last, e);
+    return last;
+  };
+  struct Cand {
+    double frame;
+    bool dbl;
+    Kind kind;
+  };
+  std::vector<Cand> cands;
+  // Rhythm blinks: the personality's jittered schedule on the emotion-warped clock (as in blink(frame)).
+  double start = 0;
+  for (uint32_t k = 0;; ++k) {
+    start += life_.blinkInterval * (0.55 + 0.9 * lifeHash01(seed, k));
+    if (start > tauEnd) break;
+    const double sf = clockInverse(blinkClock_, start);
+    if (sf + blinkFrames(sf, 1.0f) < frameStart_) continue;
+    cands.push_back({sf, lifeHash01(seed ^ kDoubleSalt, k) < params(sf).doubleBlink, Kind::Rhythm});
+  }
+  // Preferred moments: gaze shifts (look starts after the shot's opening look) and action changes.
+  struct Pref {
+    double frame;
+    int look;  // index in lookStarts, -1 = an action change
+    bool used;
+  };
+  std::vector<Pref> prefs;
+  for (size_t j = 0; j < tl_.lookStarts.size(); ++j)
+    if (const double g = tl_.lookStarts[j]; g > frameStart_ + 2 && g <= frameEnd) prefs.push_back({g, int(j), false});
+  for (double a : sc.actionChanges)
+    if (a > frameStart_ + 2 && a <= frameEnd) prefs.push_back({a, -1, false});
+  std::sort(prefs.begin(), prefs.end(), [](const Pref& a, const Pref& b) { return a.frame < b.frame; });
+  // Snap: a rhythm blink moves onto the nearest free preferred moment within the window (outside key beats).
+  auto nearestPref = [&](double f, double len) -> Pref* {
+    Pref* best = nullptr;
+    for (Pref& p : prefs)
+      if (!p.used && std::abs(p.frame + 1 - f) <= window && inBeat(p.frame + 1, p.frame + 1 + len) < -1e29 &&
+          (!best || std::abs(p.frame + 1 - f) < std::abs(best->frame + 1 - f)))
+        best = &p;
+    return best;
+  };
+  for (Cand& c : cands)
+    if (Pref* p = nearestPref(c.frame, blinkFrames(c.frame, 1.0f))) {
+      c.frame = p->frame + 1;
+      c.kind = Kind::Shift;
+      p->used = true;
+    }
+  // Gaze shifts nothing landed on keep their chance of a blink (the face layer's gazeShiftBlink).
+  for (Pref& p : prefs)
+    if (!p.used && p.look >= 0 && lifeHash01(seed ^ kShiftSalt, uint32_t(p.look)) < params(p.frame).gazeShiftBlink) {
+      cands.push_back({p.frame + 1, false, Kind::Shift});
+      p.used = true;
+    }
+  // Key beats: no closure inside. A double first loses its second blink; else the blink moves.
+  auto extent = [&](const Cand& c) {
+    const double len = blinkFrames(c.frame, 1.0f);
+    return c.dbl ? len + (0.05 + 0.12) * fps_ + blinkFrames(c.frame, 0.85f) : len;
+  };
+  for (Cand& c : cands) {
+    if (inBeat(c.frame, c.frame + extent(c)) < -1e29) continue;
+    if (c.dbl) {
+      c.dbl = false;
+      if (inBeat(c.frame, c.frame + extent(c)) < -1e29) continue;
+    }
+    if (Pref* p = nearestPref(c.frame, extent(c))) {
+      c.frame = p->frame + 1;
+      c.kind = Kind::Shift;
+      p->used = true;
+      continue;
+    }
+    for (int guard = 0; guard < 16; ++guard) {  // just after the beat (beats may chain)
+      const double e = inBeat(c.frame, c.frame + extent(c));
+      if (e < -1e29) break;
+      c.frame = e + 1;
+    }
+  }
+  std::sort(cands.begin(), cands.end(), [](const Cand& a, const Cand& b) { return a.frame < b.frame; });
+  // Short beats: the stretches between preferred moments and key-beat edges.
+  std::vector<double> edges{double(frameStart_), frameEnd + 1};
+  for (const Pref& p : prefs) edges.push_back(p.frame);
+  for (const auto& [s, e] : sc.keyBeats) edges.insert(edges.end(), {s, e + 1});
+  std::sort(edges.begin(), edges.end());
+  auto beatOf = [&](double f) {  // [begin, end) of the beat holding frame f
+    auto it = std::upper_bound(edges.begin(), edges.end(), f);
+    const double b = it == edges.begin() ? -1e30 : *(it - 1), e = it == edges.end() ? 1e30 : *it;
+    return std::pair<double, double>(b, e);
+  };
+  std::vector<Cand> kept;
+  for (const Cand& c0 : cands) {
+    Cand c = c0;
+    const auto [b, e] = beatOf(c.frame - 1);  // a shift blink (at g + 1) belongs to the beat its look opens
+    const bool isShort = e - b < shortBeat;
+    if (isShort) c.dbl = false;
+    if (!kept.empty()) {
+      Cand& prev = kept.back();
+      const auto [pb, pe] = beatOf(prev.frame - 1);
+      const bool sameShort = isShort && pb == b;
+      const bool overlaps = c.frame < prev.frame + extent(prev) + 2;
+      if (sameShort || overlaps) {
+        if (c.kind == Kind::Shift && prev.kind != Kind::Shift) prev = c;  // a blink at the shift wins
+        continue;
+      }
+    }
+    kept.push_back(c);
+  }
+  for (size_t i = 0; i < kept.size(); ++i) {
+    const Cand& c = kept[i];
+    plan.push_back({c.frame, 1.0f, c.kind});
+    if (c.dbl) {
+      const double gap = 0.05 + 0.07 * lifeHash01(seed ^ kGapSalt, uint32_t(i));
+      plan.push_back({c.frame + blinkFrames(c.frame, 1.0f) + gap * fps_, 0.85f, Kind::Double});
+    }
+  }
+  return plan;
+}
+
+float FaceLayer::blink(double frame, const BlinkSchedule& sc) const {
+  if (!sc.enabled) return blink(frame);
+  if (!built_ || life_.blinkInterval <= 0) return 0.0f;
+  float amount = 0;
+  for (const ScheduledBlink& b : blinkPlan(sc)) {
+    const float d = params(b.frame).blinkDuration * b.scale;
+    amount = std::max(amount, blinkShape(frame / fps_ - b.frame / fps_, std::max(1e-3f, life_.blinkClose) * d,
+                                         std::max(0.0f, life_.blinkHold) * d, std::max(1e-3f, life_.blinkOpen) * d));
+  }
+  return amount;
+}
+
 vec2 FaceLayer::saccade(double frame) const {
   const double tau = clock(saccadeClock_, frame);
   const uint32_t seed = life_.seed;

@@ -71,7 +71,21 @@ struct CharacterDesc {
   // Gaze legibility (T-120, opt-in): the character key "gazeLegibility" (see GazeLegibility below). Null = the scene's
   // "gazeLegibility"; false = off for this character. Saved as written.
   Json gazeLegibility;
+  // Blink scheduling (T-136, opt-in): the character key "blinkSchedule" (see BlinkSchedule below). Null = the scene's;
+  // false = off for this character. Saved as written.
+  Json blinkSchedule;
 };
+
+// Blink scheduling (T-136 E2, opt-in; absent = off, the behaviour before T-136). Scene key "blinkSchedule" (every
+// character with a face layer) and / or character key "blinkSchedule" (that character; its fields win, its key beats
+// add to the scene's): true, false or
+// {"enabled", "keyBeats": [{"start", "end", "characters": [names] (absent = all), "name"}], "shortBeatFrames",
+//  "preferWindowFrames", "actionChanges": true | false | [frames]}.
+// Key beats keep the eyes open; blinks prefer gaze shifts and action changes (by default the starts of the
+// character's non-look actions, and a pass's contact and release, for giver and receiver); at most one blink per
+// short beat. The planning itself is FaceLayer::blinkPlan (scene/face_layer.h). Needs the face layer (life on).
+// Characters without one keep their life-layer blinks.
+Result<BlinkSchedule> blinkScheduleFromJson(const Json& j, const std::string& character, BlinkSchedule base = {});
 
 // Gaze legibility (T-120, opt-in; absent = off, the behaviour before T-120). Scene key "gazeLegibility" (every
 // character) and / or character key "gazeLegibility" (that character; its fields win over the scene's): true, false or
@@ -165,6 +179,8 @@ struct Scene {
   Json events = nullptr;
   // Gaze legibility (T-120, opt-in): the scene key "gazeLegibility" (absent = off). See GazeLegibility; saved as written.
   Json gazeLegibility = nullptr;
+  // Blink scheduling (T-136, opt-in): the scene key "blinkSchedule" (absent = off). See BlinkSchedule; saved as written.
+  Json blinkSchedule = nullptr;
 };
 
 // One entry of a scene's "events" list (T-097D): the event and the characters that react to it (empty = every scene
@@ -308,7 +324,9 @@ class SceneEvaluator {
   float morphControlWeight(size_t c, const std::string& morph, double frame) const;
   // Effective life parameters of character c (scene values + the character's blink timing).
   LifeParams lifeParams(size_t c) const;
-  GazeLegibility gazeLegibility(size_t c) const;  // the scene's setting with the character's on top (T-120)
+  GazeLegibility gazeLegibility(size_t c) const;
+  BlinkSchedule blinkSchedule(size_t c) const;  // the scene's setting with the character's on top (T-136)
+  FaceState faceEval(size_t c, double frame) const;  // faces_[c].evaluate with the blink schedule applied  // the scene's setting with the character's on top (T-120)
   // Animated weight of morph `morph` of character c at `frame`.
   float expressionWeight(size_t c, const std::string& morph, double frame) const;
  private:

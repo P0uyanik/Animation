@@ -317,6 +317,9 @@ Result<Scene> loadScene(const std::filesystem::path& path) {
     cd.gazeLegibility = cj.value("gazeLegibility", Json());
     if (auto r = gazeLegibilityFromJson(cd.gazeLegibility); !r)
       return fail(std::format("character '{}': {}", cd.name, r.error().message));
+    cd.blinkSchedule = cj.value("blinkSchedule", Json());
+    if (auto r = blinkScheduleFromJson(cd.blinkSchedule, cd.name); !r)
+      return fail(std::format("character '{}': {}", cd.name, r.error().message));
     if (!cd.personality.is_null() && !cd.personality.is_string() && !cd.personality.is_boolean())
       return fail(std::format("character '{}': personality must be a profile id or false", cd.name));
     if (cd.personality.is_boolean() && cd.personality.get<bool>())
@@ -412,6 +415,10 @@ Result<Scene> loadScene(const std::filesystem::path& path) {
   if (auto it = j.find("gazeLegibility"); it != j.end() && !it->is_null()) {  // T-120 (opt-in)
     if (auto r = gazeLegibilityFromJson(*it); !r) return fail(std::format("{}: {}", path.string(), r.error().message));
     s.gazeLegibility = *it;
+  }
+  if (auto it = j.find("blinkSchedule"); it != j.end() && !it->is_null()) {  // T-136 (opt-in)
+    if (auto r = blinkScheduleFromJson(*it, ""); !r) return fail(std::format("{}: {}", path.string(), r.error().message));
+    s.blinkSchedule = *it;
   }
   if (auto it = j.find("timing"); it != j.end() && !it->is_null()) {  // T-104 (opt-in)
     if (!it->is_string() || it->get<std::string>().empty())
@@ -533,6 +540,7 @@ Json sceneToJson(const Scene& s) {
     if (!c.bodyMechanics.is_null()) cj["bodyMechanics"] = c.bodyMechanics;
     if (!c.personality.is_null()) cj["personality"] = c.personality;
     if (!c.gazeLegibility.is_null()) cj["gazeLegibility"] = c.gazeLegibility;
+    if (!c.blinkSchedule.is_null()) cj["blinkSchedule"] = c.blinkSchedule;
     chars.push_back(cj);
   }
   Json anim = Json::object();
@@ -556,6 +564,7 @@ Json sceneToJson(const Scene& s) {
   if (!s.interaction.is_null()) j["interaction"] = s.interaction;
   if (!s.timing.is_null()) j["timing"] = s.timing;
   if (!s.gazeLegibility.is_null()) j["gazeLegibility"] = s.gazeLegibility;
+  if (!s.blinkSchedule.is_null()) j["blinkSchedule"] = s.blinkSchedule;
   if (!s.events.is_null()) j["events"] = s.events;
   return j;
 }
@@ -858,7 +867,7 @@ std::vector<mat4> SceneEvaluator::kinematicGlobals(size_t c, double frame, Pose*
   mat4 world = objectMatrixLocal(pos, yaw, 1.0f);
   // Facial layer (T-046): blink, eye darts and control offsets of the living face.
   const bool face = faceActive(c);
-  const FaceState fs = face ? faces_[c].evaluate(frame) : FaceState{};
+  const FaceState fs = face ? faceEval(c, frame) : FaceState{};
   // Expression-driven bones (e.g. a jaw opening with the mouth): weight x rotation, from the package metadata.
   for (const auto& [morph, bones] : ci.asset.expressionBones) {
     float w = face ? morphControlWeight(c, morph, frame) : expressionWeight(c, morph, frame);
@@ -1126,6 +1135,86 @@ Result<GazeLegibility> gazeLegibilityFromJson(const Json& j, GazeLegibility base
   return base;
 }
 
+Result<BlinkSchedule> blinkScheduleFromJson(const Json& j, const std::string& character, BlinkSchedule base) {
+  auto bad = [](const std::string& m) { return std::unexpected(Error{"blinkSchedule: " + m}); };
+  if (j.is_null()) return base;
+  if (j.is_boolean()) {
+    base.enabled = j.get<bool>();
+    return base;
+  }
+  if (!j.is_object()) return bad("must be true, false or an object");
+  base.enabled = true;
+  for (auto& [key, v] : j.items()) {
+    if (key == "enabled") {
+      if (!v.is_boolean()) return bad("'enabled' must be true or false");
+      base.enabled = v.get<bool>();
+    } else if (key == "shortBeatFrames" || key == "preferWindowFrames") {
+      if (!v.is_number() || v.get<float>() < 0) return bad("'" + key + "' must be a number, 0 or more");
+      (key == "shortBeatFrames" ? base.shortBeatFrames : base.preferWindowFrames) = v.get<float>();
+    } else if (key == "actionChanges") {
+      if (!v.is_boolean() && !v.is_array()) return bad("'actionChanges' must be true, false or a list of frames");
+      if (v.is_array())
+        for (const Json& f : v) {
+          if (!f.is_number()) return bad("'actionChanges' frames must be numbers");
+          base.actionChanges.push_back(f.get<double>());
+        }
+    } else if (key == "keyBeats") {
+      if (!v.is_array()) return bad("'keyBeats' must be a list");
+      for (const Json& b : v) {
+        if (!b.is_object() || !b.contains("start") || !b.contains("end") || !b["start"].is_number() || !b["end"].is_number() ||
+            b["end"].get<double>() < b["start"].get<double>())
+          return bad("a key beat needs numbers 'start' <= 'end'");
+        bool mine = true;
+        if (auto ch = b.find("characters"); ch != b.end()) {
+          if (!ch->is_array()) return bad("a key beat's 'characters' must be a list of names");
+          mine = character.empty();
+          for (const Json& n : *ch) {
+            if (!n.is_string()) return bad("a key beat's 'characters' must be a list of names");
+            if (n.get<std::string>() == character) mine = true;
+          }
+        }
+        for (auto& [bk, bv] : b.items())
+          if (bk != "start" && bk != "end" && bk != "characters" && bk != "name") return bad("unknown key beat key '" + bk + "'");
+        if (mine) base.keyBeats.push_back({b["start"].get<double>(), b["end"].get<double>()});
+      }
+    } else {
+      return bad("unknown key '" + key + "'");
+    }
+  }
+  return base;
+}
+
+BlinkSchedule SceneEvaluator::blinkSchedule(size_t c) const {
+  BlinkSchedule b;
+  if (c >= scene_.characters.size() || (scene_.blinkSchedule.is_null() && scene_.characters[c].blinkSchedule.is_null()))
+    return b;
+  const std::string& name = scene_.characters[c].name;
+  if (auto r = blinkScheduleFromJson(scene_.blinkSchedule, name)) b = *r;
+  if (auto r = blinkScheduleFromJson(scene_.characters[c].blinkSchedule, name, b)) b = *r;
+  if (!b.enabled) return b;
+  // Action changes: explicit frames, else (or "actionChanges": true) the character's own action starts.
+  auto autoChanges = [](const Json& j) {
+    const Json* a = j.is_object() ? (j.contains("actionChanges") ? &j["actionChanges"] : nullptr) : nullptr;
+    return !a || (a->is_boolean() && a->get<bool>());
+  };
+  if (autoChanges(scene_.blinkSchedule) && autoChanges(scene_.characters[c].blinkSchedule))
+    for (const Json& a : scene_.actions) {
+      if (!a.is_object()) continue;
+      const std::string type = a.value("type", ""), who = a.value("character", ""), to = a.value("to", "");
+      if (type == "look" || type == "emotion" || (who != name && to != name)) continue;
+      auto add = [&](const char* key) {
+        if (auto it = a.find(key); it != a.end() && it->is_number()) b.actionChanges.push_back(it->get<double>());
+      };
+      if (who == name) add("start");
+      if (type == "pass") {
+        if (to == name) add("receiverStart");
+        add("contact");
+        add("release");
+      }
+    }
+  return b;
+}
+
 GazeLegibility SceneEvaluator::gazeLegibility(size_t c) const {
   GazeLegibility g;
   if (auto r = gazeLegibilityFromJson(scene_.gazeLegibility)) g = *r;
@@ -1316,7 +1405,7 @@ float SceneEvaluator::morphControlWeight(size_t c, const std::string& morph, dou
   if (const float po = personalityFaceOffset(c, morph, frame); po != 0.0f) w = std::clamp(w + po, 0.0f, 1.0f);
   const LifeParams life = lifeParams(c);
   if (faceActive(c)) {  // the facial layer: control offsets and its own blinks
-    const FaceState fs = faces_[c].evaluate(frame);
+    const FaceState fs = faceEval(c, frame);
     if (auto it = fs.controls.find(morph); it != fs.controls.end()) w = std::clamp(w + it->second, 0.0f, 1.0f);
     const std::string blink = blinkMorph(characters_[c]);
     if (morph == blink) w = std::max(w, fs.blink);
@@ -1337,7 +1426,13 @@ bool SceneEvaluator::faceActive(size_t c) const {
 }
 
 FaceState SceneEvaluator::faceState(size_t c, double frame) const {
-  return faceActive(c) ? faces_[c].evaluate(frame) : FaceState{};
+  return faceActive(c) ? faceEval(c, frame) : FaceState{};
+}
+
+FaceState SceneEvaluator::faceEval(size_t c, double frame) const {
+  FaceState fs = faces_[c].evaluate(frame);
+  if (const BlinkSchedule bs = blinkSchedule(c); bs.enabled) fs.blink = faces_[c].blink(frame, bs);
+  return fs;
 }
 
 // Animated weight of a morph channel (track "<name>/expr.<morph>", else the character's default expression).
@@ -1372,7 +1467,7 @@ std::shared_ptr<FrameSnapshot> SceneEvaluator::evaluate(double frame) const {
     std::vector<std::string> names;
     const LifeParams life = lifeParams(c);
     const bool face = faceActive(c);
-    const FaceState fs = face ? faces_[c].evaluate(frame) : FaceState{};
+    const FaceState fs = face ? faceEval(c, frame) : FaceState{};
     const std::string blink = life.enabled ? blinkMorph(ci) : std::string();
     const float blinkW = blink.empty() ? 0.0f
                          : face        ? fs.blink
