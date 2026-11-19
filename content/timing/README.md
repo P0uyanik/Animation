@@ -8,11 +8,12 @@ Animation timing as data, calibrated against the reference videos (`docs/referen
 | `reference_timing.json` | `plush.reference_timing/1` | The reference timing table: every measured observation (video, 0-based frame range, beat, evidence) and the beat ranges derived from them (`beats.<beat>.frames = [low, high]`). Read by the animcheck timing rule (`tools/animcheck/timing.py`). |
 | `calibrated.timing.json` | `plush.timing_profile/1` | The calibrated timing profile: one value per beat inside its reference range, and the scale-aware travel speed. Read by the engine (`anim/personality.h` `TimingProfile`) and by `episodes/e907_exchange/make_shot.py --timing calibrated`. |
 
-## Status: opt-in
+## Status: default (T-104d, owner decision 2026-11-19)
 
-The profile is a **candidate**. A shot uses it only with the scene key `"timing": "calibrated"`; every other shot keeps
-the shared engine defaults (`scene/interaction.h`) and bakes bit for bit as before. Making it the default is a separate
-one-line change once the owner approves.
+The calibrated profile is the **default**: a scene without a `"timing"` key uses it. `"timing": "none"` keeps the shared
+engine defaults (`scene/interaction.h`); a named profile that cannot be found is a load error. A scene outside a content
+tree with no profile above it falls back to the shared defaults silently. Details: `docs/PRODUCTION_PIPELINE.md`,
+"Animation timing". Every existing shot baked bit for bit the same after the switch (`docs/evaluation/animation/T-104d/`).
 
 ## What the profile sets
 - **Engine defaults** for interaction frames a scene leaves out (`scene/interaction.h`, `InteractionContext::timing`):

@@ -485,15 +485,19 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
   if (type == "grasp" && !a.contains("prop")) return fail("grasp: give 'prop' (a scene prop instance)");
   if (!reach && type != "hold" && type != "place" && type != "handover") return false;
   const Clip& clip = scene_.animation;
-  if (!ctx.timingResolved) {  // T-104: the scene's opt-in timing profile
+  if (!ctx.timingResolved) {  // T-104: the scene's timing profile (T-104d: calibrated unless the scene says otherwise)
     ctx.timingResolved = true;
-    if (scene_.timing.is_string()) {
-      const std::string name = scene_.timing.get<std::string>();
+    if (const std::string name = scene_.timingProfile(); !name.empty()) {
       const auto file = findTimingProfileFile(scene_.path, name);
-      if (file.empty()) return fail(std::format("timing profile '{}' not found in content/timing", name));
-      auto t = loadTimingProfile(file);
-      if (!t) return std::unexpected(t.error());
-      ctx.timing = std::move(*t);
+      // A profile the scene names must exist; the implicit default may be missing (a scene outside a content tree),
+      // and then the shared defaults apply, as a missing personality profile does.
+      if (file.empty() && !scene_.timing.is_null())
+        return fail(std::format("timing profile '{}' not found in content/timing", name));
+      if (!file.empty()) {
+        auto t = loadTimingProfile(file);
+        if (!t) return std::unexpected(t.error());
+        ctx.timing = std::move(*t);
+      }
     }
   }
   // Default length of a beat for character `who` (the shared default `fallback` without a timing profile).

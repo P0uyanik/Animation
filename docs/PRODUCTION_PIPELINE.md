@@ -190,6 +190,26 @@ appended to `actions` is what the acting rule checks. Generated looks use two lo
 use too: `"atCharacter": "<name>"` (look at that character's face) and `"back": true` (return to the earlier gaze).
 Tests: `tests/test_reaction_playback.cpp`; evidence: `docs/evaluation/animation/T-097D/`.
 
+## Animation timing: the calibrated profile is the default (T-104, T-104d)
+The scene key `timing` names a timing profile, `content/timing/<name>.timing.json` (`content/timing/README.md`).
+It sets the defaults of interaction frames a scene leaves out, and the notice delay of event reactions. Frames written
+in an action always win.
+
+| Scene key | Timing used |
+| --- | --- |
+| absent (or `null`) | `calibrated`, the default since T-104d (owner decision 2026-11-19) |
+| `"timing": "<name>"` | that profile; a load error if `content/timing/<name>.timing.json` is not found above the scene |
+| `"timing": "none"` | the shared engine defaults (`engine/scene/interaction.h`), the behaviour before T-104d |
+
+- If a scene has no key and no `content/timing` folder exists above it (a scene outside a content tree), it uses the
+  shared defaults without a warning, the same way a missing personality profile is handled.
+- The tempo scales of a character's personality (`tempo.beat_scale`, `tempo.hold_scale`) apply to every profile.
+- Saving a scene keeps the key as written: an absent key stays absent.
+- No existing shot changed when the default was switched: every shot in the repository writes out the interaction
+  frames the profile would set. The bakes are byte-identical before and after (`docs/evaluation/animation/T-104d/`).
+- `episodes/e907_exchange/make_shot.py` still builds the authored exchange from the shared beats unless it is run with
+  `--timing calibrated` (`s010_calibrated`).
+
 ## Not covered yet
 - **Props:** SDF props, water and paper boats are not baked (listed as `objects_not_baked`).
 - **Engine-only characters** (SDF) cannot be rendered in Blender.

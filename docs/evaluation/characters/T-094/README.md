@@ -100,3 +100,27 @@ and gated), the full `tools/check_all.py` gate, and C++ ctest (no C++ change).
 
 ## Exchange
 See `exchange/README.md`.
+
+## Step 2: 2.1.0 and 0.12.0 made current (2026-11-19)
+Owner decision 2026-11-19 ~02:55Z (`docs/process/OWNER_DECISIONS.md`, round 2 close-out item 1: current "once the
+exchange re-render is finished and its CI is green"). Green: Quality gate run 44449190108 at `ea02ce1` (contains
+step 1), checked before the switch.
+
+`tools/version_switch.py --approve-published` (new; fixture tests 96/96) per character, on the published versions:
+approve (pointer and history note with the decision); `fidelity_baseline.json` entry (build = the version spec,
+score reused from `fidelity/<id>/fidelity.json`: boy 67.7245, girl 65.0136, with the rebaseline note from 2.0.0 /
+0.11.0); golden baselines `docs/evaluation/regression/baselines/{boy_yellow_hoodie/2.1.0,girl_auburn_bun_glasses/0.12.0}/`.
+
+| check | result |
+|---|---|
+| current (run_shot `current_source`, asset_store `list`) | boy 2.1.0, girl 0.12.0 (published masters) |
+| published version folders | byte-identical (sha256 before/after) |
+| `check_cast.py --base origin/main` | PASS (7 shots) |
+| `check_assets.py` | PASS (2 stores) |
+| `tools/regression/run.py --character <id> --changed <id> --no-fidelity` (fresh rebuild vs the new golden) | boy PASS, girl PASS |
+| `test_hair_r4.py` | **FAIL 36/37**: its guard "no approved spec pins groom/3" now sees the approved 2.1.0 / 0.12.0 specs |
+| `test_materials_r2.py` | **FAIL 102/104**: compares the T-092 candidates (built on 2.0.0 / 0.11.0) with the approved spec, now 2.1.0 / 0.12.0 |
+| `test_store.py` | needs the untracked local render `renders/charsys/ref_1.0.0` (known, not gated) |
+
+Both failing guards are outside the T-094 write-set and are consequences of the switch the owner approved; they are
+left unchanged for the Supervisor (no test loosened here).

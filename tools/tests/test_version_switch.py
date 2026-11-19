@@ -24,7 +24,13 @@ tools/regression/run.py. The real repository is only read (and checked to be unc
    version (status candidate) and copies the score to <task>/fidelity/<id>/, but the approved pointer, the whole
    fidelity_baseline.json and the golden root are byte-identical, the regression tool is never called, and only the
    version folder, the store index and the score evidence are written (exact trailer block); a second character of
-   the same task publishes next to the first; a check that edits the baseline file is reported."""
+   the same task publishes next to the first; a check that edits the baseline file is reported.
+7. T-094 step 2 --approve-published on a version published with --publish-only: dry run writes nothing; the run
+   approves with the decision note, writes the baseline entry from the publish-only score (source = that report,
+   rebaseline note), writes the golden baseline, runs the checks; never builds, publishes or re-scores; the version
+   folder and the other character stay byte-identical; exact trailers (index, baseline, golden). Refused: version
+   not published, already approved, no fidelity report, spec that is not the published build's, both modes at once.
+   --fidelity-json from a work folder copies the report with its sheets as JPEG and rewrites the links."""
 from __future__ import annotations
 
 import contextlib
@@ -124,6 +130,15 @@ def tree_hash(root: Path) -> str:
     return h.hexdigest()
 
 
+def write_fidelity(out: Path, score=61.23456) -> None:
+    """A fidelity run's outputs: score, report.md linking one side-by-side sheet (a real PNG)."""
+    from PIL import Image
+    write(out / "fidelity.json", {"overall": {"score": score}})
+    write(out / "report.md", "# fidelity\n\n| view | sheet |\n|---|---|\n| front | [sheet](sheets/v_front.png) |\n")
+    (out / "sheets").mkdir(parents=True, exist_ok=True)
+    Image.new("RGB", (8, 4), (200, 100, 50)).save(out / "sheets" / "v_front.png")
+
+
 class FakeRunner(VS.Runner):
     def __init__(self, fail=(), side_effect=None):
         self.calls: list[str] = []
@@ -147,8 +162,7 @@ class FakeRunner(VS.Runner):
             spec, _ = S.load(opt("--spec"), opt("--override", many=True))
             fake_build(Path(opt("--out")), spec)
         elif name == "run.py" and "fidelity" in script:
-            write(Path(opt("--out")) / "fidelity.json", {"overall": {"score": 61.23456}})
-            write(Path(opt("--out")) / "report.md", "# fidelity\n")
+            write_fidelity(Path(opt("--out")))
         elif name == "run.py" and "regression" in script:
             cid = opt("--character")
             spec_path = Path(self.root) / f"assets/characters/{cid}/spec/{cid}.1.1.0.spec.json"
@@ -430,8 +444,12 @@ def test_publish_only(tmp: Path):
     report = json.loads((tmp / "run" / "work" / "version_switch.json").read_text())
     check("publish-only: written files are the version, the index and the score evidence only",
           report["ok"] and report["publish_only"] and sorted(report["written"]) == sorted(
-              expect + [f"docs/evaluation/characters/{TASK}/fidelity/{A}/{n}" for n in ("fidelity.json", "report.md")]),
+              expect + [f"docs/evaluation/characters/{TASK}/fidelity/{A}/{n}"
+                        for n in ("fidelity.json", "report.md", "sheets/v_front.jpg")]),
           report["written"])
+    check("publish-only: the report's sheet is copied as JPEG and the link rewritten",
+          (ev / "sheets" / "v_front.jpg").is_file() and not (ev / "sheets" / "v_front.png").exists()
+          and "sheets/v_front.jpg" in (ev / "report.md").read_text() and ".png" not in (ev / "report.md").read_text())
     check("publish-only: other character and older version byte-identical",
           tree_hash(root / f"assets/characters/{B}") == beta_before and tree_hash(store / "1.0.0") == old_before)
     check("publish-only: store verifies", AS.verify_version(str(store), "1.1.0", require_readonly=False)["ok"])
@@ -462,6 +480,120 @@ def test_publish_only(tmp: Path):
           and f"docs/evaluation/regression/baselines/{A}/1.1.0/golden.json" in out, out)
 
 
+def published_fixture(tmp: Path) -> Path:
+    """Fixture with tc_alpha 1.1.0 published by --publish-only (candidate, score evidence under T-900/fidelity/)."""
+    root = fixture(tmp)
+    runner = FakeRunner()
+    runner.root = root
+    code, out = run_main(argv(root, tmp / "publish-work", **{"--publish-only": []}), runner)
+    assert code == 0, out
+    return root
+
+
+def ap_argv(root: Path, work: Path | None, **over):
+    return argv(root, work, **{"--approve-published": [], "--decision": "I approve Alpha 1.1.0 as current.", **over})
+
+
+def test_approve_published(tmp: Path):
+    root = published_fixture(tmp / "dry")
+    before = tree_hash(root)
+    code, out = run_main(ap_argv(root, tmp / "dry" / "work", **{"--dry-run": []}))
+    check("approve-published dry run exits 0", code == 0, out)
+    check("approve-published dry run: no build, approve + baseline + golden shown",
+          "2. publish   skipped (--approve-published)" in out and "3. approve" in out and "--write-baseline" in out
+          and "build_character.py" not in out, out)
+    check("approve-published dry run writes nothing", tree_hash(root) == before and not (tmp / "dry" / "work").exists())
+
+    root = published_fixture(tmp / "run")
+    store = root / f"assets/characters/{A}/versions"
+    vdir_before = tree_hash(store / "1.1.0")
+    beta_before = tree_hash(root / f"assets/characters/{B}")
+    baseline_before = json.loads((root / VS.FIDELITY_BASELINE).read_text())
+    ev = f"docs/evaluation/characters/{TASK}/fidelity/{A}"
+    ev_before = tree_hash(root / ev)
+    runner = FakeRunner()
+    runner.root = root
+    code, out = run_main(ap_argv(root, tmp / "run" / "work"), runner)
+    check("approve-published run exits 0", code == 0, out)
+    idx = json.loads((store / "index.json").read_text())
+    check("approve-published: approved pointer moved with the decision note",
+          idx["pointers"]["approved"] == "1.1.0" and idx["versions"]["1.1.0"]["status"] == "approved"
+          and idx["history"][-1]["action"] == "approve" and "I approve Alpha 1.1.0" in idx["history"][-1]["notes"]
+          and idx["history"][-1]["by"] == f"owner ({DECISION_REF})", idx["history"][-1])
+    entry = json.loads((root / VS.FIDELITY_BASELINE).read_text())["characters"][A]
+    check("approve-published: baseline entry from the publish-only score", entry["score"] == 61.2346
+          and entry["build"] == f"assets/characters/{A}/spec/{A}.1.1.0.spec.json" and entry["overrides"] == []
+          and entry["source"] == f"{ev}/fidelity.json" and entry["rebaseline"]["previous_version"] == "1.0.0"
+          and entry["rebaseline"]["previous_score"] == 60.0, entry)
+    check("approve-published: other baseline entry untouched",
+          json.loads((root / VS.FIDELITY_BASELINE).read_text())["characters"][B] == baseline_before["characters"][B])
+    check("approve-published: golden baseline written", all(
+        (root / f"docs/evaluation/regression/baselines/{A}/1.1.0/{f}").is_file() for f in GOLDEN_FILES))
+    check("approve-published: no build, no publish, no new score; regression then checks",
+          "build_character.py" not in runner.calls and runner.calls[0] == "run.py" and runner.calls.count("run.py") == 1
+          and "check_cast.py" in runner.calls[1:], runner.calls)
+    check("approve-published: version folder, evidence and other character byte-identical",
+          tree_hash(store / "1.1.0") == vdir_before and tree_hash(root / ev) == ev_before
+          and tree_hash(root / f"assets/characters/{B}") == beta_before)
+    trailers = [line for line in out.splitlines() if line.startswith("Supervisor-Approved:")]
+    expect = sorted([f"assets/characters/{A}/versions/index.json", VS.FIDELITY_BASELINE]
+                    + [f"docs/evaluation/regression/baselines/{A}/1.1.0/{f}" for f in GOLDEN_FILES])
+    check("approve-published: exact trailers (index, baseline, golden)",
+          trailers == [f"Supervisor-Approved: {p}" for p in expect], "\n".join(trailers))
+    report = json.loads((tmp / "run" / "work" / "version_switch.json").read_text())
+    check("approve-published: written = index, baseline, golden only", report["ok"] and report["approve_published"]
+          and sorted(report["written"]) == expect, report["written"])
+    check("approve-published: store verifies", AS.verify_version(str(store), "1.1.0", require_readonly=False)["ok"])
+    # a second run: already approved
+    before = tree_hash(root)
+    code, out = run_main(ap_argv(root, tmp / "run" / "work2"), FakeRunner())
+    check("refused: approve-published of an approved version", code == 1 and "already approved" in out
+          and tree_hash(root) == before, out)
+
+    def ap_refused(name, expect, prepare=None, publish=True, **over):
+        r = published_fixture(tmp / name) if publish else fixture(tmp / name)
+        if prepare:
+            prepare(r)
+        before = tree_hash(r)
+        runner = FakeRunner()
+        runner.root = r
+        code, out = run_main(ap_argv(r, tmp / name / "work", **over), runner)
+        check(f"refused: approve-published, {name}", code == 1 and expect in out and not runner.calls
+              and tree_hash(r) == before, out)
+
+    ap_refused("not published", "is not published", publish=False)
+    ap_refused("no fidelity report", "no fidelity report",
+               lambda r: [os.remove(p) for p in (r / ev).rglob("*") if p.is_file()])
+    ap_refused("spec is not the published build's", "not the one tc_alpha 1.1.0 was built from",
+               lambda r: write(r / f"assets/characters/{A}/spec/{A}.1.1.0.spec.json",
+                               make_spec(A, "1.1.0", face={"eyes": "green"})))
+    ap_refused("claim without the baseline file", f"the {TASK} claim does not cover: {VS.FIDELITY_BASELINE}",
+               lambda r: write(r / f"docs/tasks/{TASK}.md", f"## Write-set\n`assets/characters/{A}/versions/**`, "
+                               f"`docs/evaluation/regression/baselines/{A}/**`, `docs/evaluation/characters/{TASK}/**`\n"))
+    r = published_fixture(tmp / "both")
+    try:
+        with contextlib.redirect_stderr(io.StringIO()):
+            VS.main(ap_argv(r, None, **{"--publish-only": []}), FakeRunner())
+        both = False
+    except SystemExit as exc:
+        both = exc.code == 2
+    check("refused: --publish-only with --approve-published", both)
+    # --fidelity-json from elsewhere: report and sheets copied (JPEG, links rewritten)
+    r = published_fixture(tmp / "ext")
+    for p in sorted((r / ev).rglob("*"), reverse=True):
+        p.unlink() if p.is_file() else p.rmdir()
+    ext = tmp / "ext" / "fid"
+    write_fidelity(ext, score=63.5)
+    runner = FakeRunner()
+    runner.root = r
+    code, out = run_main(ap_argv(r, tmp / "ext" / "work", **{"--fidelity-json": str(ext / "fidelity.json")}), runner)
+    text = (r / ev / "report.md").read_text() if (r / ev / "report.md").is_file() else ""
+    check("approve-published --fidelity-json: score, report and JPEG sheet copied, links rewritten", code == 0
+          and json.loads((r / VS.FIDELITY_BASELINE).read_text())["characters"][A]["score"] == 63.5
+          and (r / ev / "sheets" / "v_front.jpg").is_file() and "sheets/v_front.jpg" in text and ".png" not in text,
+          out)
+
+
 def real_repo_hash() -> str:
     h = hashlib.sha256()
     for p in [ROOT / VS.FIDELITY_BASELINE, *sorted((ROOT / "assets" / "characters").glob("*/versions/index.json"))]:
@@ -474,7 +606,7 @@ def main() -> int:
     with tempfile.TemporaryDirectory() as tmp:
         tmp = Path(tmp)
         for test in (test_dry_run, test_full_switch, test_inconsistencies, test_failures, test_presets3,
-                     test_publish_only):
+                     test_publish_only, test_approve_published):
             sub = tmp / test.__name__
             sub.mkdir()
             test(sub)

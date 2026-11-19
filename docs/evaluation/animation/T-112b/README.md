@@ -50,11 +50,10 @@ Reaction notice delay (frames after the pass start; the reach starts at the next
   describes belongs to T-051's `applyHandPose`.
 - **Tray scale.** At full size (0.30 x 0.20 m, design 2.6) the tray is too deep for the doll-sized test girl to hold
   in front of her, so the tests scale the instance to 0.6 (`transform.scale`). The asset keeps the design's size.
-- **T-104d coupling.** Every "profile" gate (optional phases, band, shared-hold check) reads the profile the compile
-  resolved (`VerbContext::timing`). Once T-104d makes calibrated the default, a scene without a `timing` key gets the
-  profile. The legacy-equivalence tests then need `"timing": "none"`; their scenes have no timing key today. Checked
-  here: absent key = legacy (T-112a and T-112b equivalence tests). `"timing": "none"` cannot be checked before T-104d
-  merges, because today it is looked up as a profile file named "none".
+- **T-104d (merged here from integration/t-110).** Every "profile" gate (optional phases, band, shared-hold check)
+  reads the profile the compile resolved (`VerbContext::timing`, via `scene_.timingProfile()`). An absent key is now
+  calibrated; `"timing": "none"` is the legacy expansion. Tested: `"none"` gives no band (legacy), an absent key
+  gives the band; the legacy-equivalence scenes state `"none"` (`baseScene()`).
 
 ## 3. s010_verbs: the full exchange
 `episodes/e907_exchange/shots/s010_verbs/shot.scene.json`. Current approved versions (boy 2.0.0, girl 0.11.0, cast
@@ -97,7 +96,7 @@ shots PASS.
 - `tests/golden/interaction_hashes.json` is unchanged and the golden test passes. Non-verb scenes never enter the
   expander, the hook appends nothing without verb events, and the new grasp keys are absent from every authored scene.
 - e907 s010_calibrated bake (run_shot, sha256): `0807ad2c`, as recorded in T-104.
-- ctest (build/, renderer off): 2/2; plush_tests: all cases pass (171 earlier + 27 verb cases).
+- ctest (build/, renderer off): 2/2; plush_tests: 199/199 after merging integration/t-110.
 - Image regressions (build-r/, renderer on): `regression_milestone01` (rmse 0.0464) and `regression_face_neutral`
   (0.0406) fail here, with identical values from the input SHA's renderer built in a clean worktree. The cause is
   this environment, which has no Open Image Denoise ("denoiser unavailable"); the scenes contain no interaction

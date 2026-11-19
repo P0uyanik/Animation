@@ -1,0 +1,34 @@
+{
+ "task": "T-110",
+ "what": "default build unchanged: girl 0.12.0 spec (presets/3, no presets/4) built with the T-110 code (e542661) vs a clean control build at integration/t-094b (ea02ce1, same command, determinism.subprocess_env, bpy 5.3.0 module, --no-glb --no-compare)",
+ "files": {
+  "components.json": {
+   "control": "0bf22184ba091904fb6da5793671d0f37c3d3f190f0f42e695be6187b1dcf190",
+   "t110": "0bf22184ba091904fb6da5793671d0f37c3d3f190f0f42e695be6187b1dcf190",
+   "identical": true
+  },
+  "animation_compat.json": {
+   "control": "52c861a59ccbbfec0d75a6872ae196f24df495046fa3722658f16703872848b7",
+   "t110": "52c861a59ccbbfec0d75a6872ae196f24df495046fa3722658f16703872848b7",
+   "identical": true
+  },
+  "spec.resolved.json": {
+   "control": "161bd88e77f8185861368a9cd492e15553507cc555ff7760ad4dc21d0b87b4e7",
+   "t110": "161bd88e77f8185861368a9cd492e15553507cc555ff7760ad4dc21d0b87b4e7",
+   "identical": true
+  },
+  "build_report.json": {
+   "control": "72328d2d436f403b327f147be1da364e82cdab522794ff662ef930f6df2e30be",
+   "t110": "9f3a52b53c6720eb499d0ef13388460f0ab8015786a59d67893177e671789fd5",
+   "identical": false
+  },
+  "girl_auburn_bun_glasses_master.blend": {
+   "control": "afd6d8f8ed7a77ae307135b54b35f91c2701e2dbd752bec48cf2e3852854f49b",
+   "t110": "951c2cea9eae26edb0f5f3077072258987f283b7be097d8a834b65e546a40160",
+   "identical": false
+  }
+ },
+ "build_report_diff": "only 3 runtime 'seconds' fields (timings)",
+ "blend_content": "objects, materials, node groups, meshes, curves, collections, material node graphs and custom properties identical; vertex order of ear.L/R and lid meshes differs (identical vertex sets). The same vertex-order difference appears between the clean control build and the published 0.12.0 master, so it is pre-existing run-to-run non-determinism of the build (bpy module), not T-110.",
+ "halo_objects_in_default_build": []
+}

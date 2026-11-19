@@ -269,8 +269,8 @@ Result<Json> SceneEvaluator::planReactionActions() {
   };
   ReactionContext ctx;
   std::optional<TimingProfile> timing;
-  if (scene_.timing.is_string()) {  // T-104: the scene's timing profile gives the shared notice delay
-    const auto file = findTimingProfileFile(scene_.path, scene_.timing.get<std::string>());
+  if (const std::string name = scene_.timingProfile(); !name.empty()) {  // T-104: the timing profile's notice delay
+    const auto file = findTimingProfileFile(scene_.path, name);
     if (auto t = file.empty() ? Result<TimingProfile>(fail("not found")) : loadTimingProfile(file)) timing = std::move(*t);
   }
   if (timing) ctx.timing = &*timing;
@@ -412,13 +412,18 @@ Result<void> SceneEvaluator::compileActionsBody() {
     vc.frameStart = scene_.frameStart;
     vc.fps = scene_.rate.fps();
     vc.events = !scene_.events.is_null();  // T-112b: "react" adds events only when the scene opted into them
-    if (scene_.timing.is_string()) {
-      const auto file = findTimingProfileFile(scene_.path, scene_.timing.get<std::string>());
-      if (file.empty()) return fail(std::format("timing profile '{}' not found in content/timing", scene_.timing.get<std::string>()));
-      auto t = loadTimingProfile(file);
-      if (!t) return std::unexpected(t.error());
-      verbTiming = std::move(*t);
-      vc.timing = &*verbTiming;
+    // The scene's timing profile, resolved as the interaction compile does (T-104d: calibrated unless the scene says
+    // "none"; a named profile must exist, the implicit default may be missing outside a content tree).
+    if (const std::string name = scene_.timingProfile(); !name.empty()) {
+      const auto file = findTimingProfileFile(scene_.path, name);
+      if (file.empty() && !scene_.timing.is_null())
+        return fail(std::format("timing profile '{}' not found in content/timing", name));
+      if (!file.empty()) {
+        auto t = loadTimingProfile(file);
+        if (!t) return std::unexpected(t.error());
+        verbTiming = std::move(*t);
+        vc.timing = &*verbTiming;
+      }
     }
     for (size_t c = 0; c < scene_.characters.size(); ++c) {
       VerbContext::Character vch{scene_.characters[c].name, personality(c)};

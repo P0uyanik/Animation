@@ -1,0 +1,28 @@
+"""Joint gaps of chained bones in a plush.shot_bake: |child_skin*head - parent_skin*head| for connected children."""
+import json, sys
+bake = json.load(open(sys.argv[1]))
+prefix = sys.argv[2] if len(sys.argv) > 2 else ""
+out = {}
+for ch in bake["characters"]:
+    pkg = json.load(open(ch["package"]))
+    sk = {b["name"]: b for b in pkg["skeleton"]}
+    names = ch["bones"]
+    idx = {n: i for i, n in enumerate(names)}
+    worst, nf, total = (0, None, None), set(), 0
+    dyn = set()
+    for c in pkg.get("dynamics", {}).get("chains", []):
+        dyn.update(c["bones"])
+    pairs = [(sk[n]["parent"], n) for n in names if n in dyn and sk[n].get("parent") in dyn]
+    for fd in bake["frame_data"]:
+        s = fd["characters"][ch["name"]]["skin"]
+        def tr(b, p):
+            i = idx[b]; m = s[16 * i:16 * i + 16]
+            return [sum(m[c * 4 + r] * p[c] for c in range(3)) + m[12 + r] for r in range(3)]
+        for par, n in pairs:
+            h = sk[n]["head"]
+            d = sum((a - b) ** 2 for a, b in zip(tr(n, h), tr(par, h))) ** 0.5
+            if d > 1e-5: nf.add(fd["frame"])
+            if d > worst[0]: worst = (d, n, fd["frame"])
+    out[ch["name"]] = {"chain_pairs": len(pairs), "max_gap_mm": round(worst[0] * 1000, 4), "bone": worst[1], "frame": worst[2],
+                       "frames_over_0.01mm": len(nf)}
+print(prefix, json.dumps(out))

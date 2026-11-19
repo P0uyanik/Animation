@@ -460,14 +460,18 @@ def check_plush_tests(build_dir: Path, config: str, logs: Path, build_ok: bool) 
     return Result("plush_tests", code == 0, "" if code == 0 else f"see {relative_log(log)}", relative_log(log), round(seconds, 2))
 
 
+def plush_render_executable(build_dir: Path, config: str) -> Path | None:
+    names = ["plush-render.exe", "plush-render"]
+    return next((p for n in names for p in (build_dir / "apps/render-cli" / config / n, build_dir / "apps/render-cli" / n)
+                 if p.is_file()), None)
+
+
 def check_animcheck(build_dir: Path, config: str, logs: Path, build_ok: bool) -> Result:
     """T-061: animation-principle metrics on the engine regression shots (tools/animcheck, thresholds.json)."""
     log = logs / "animcheck.log"
     if not build_ok:
         return Result("animcheck", False, "not run because C++ build failed", relative_log(log))
-    names = ["plush-render.exe", "plush-render"]
-    render = next((p for n in names for p in (build_dir / "apps/render-cli" / config / n, build_dir / "apps/render-cli" / n)
-                   if p.is_file()), None)
+    render = plush_render_executable(build_dir, config)
     if render is None:
         return Result("animcheck", False, "plush-render not found", relative_log(log))
     command = [sys.executable, str(ROOT / "tools/animcheck/run_gate.py"), "--render", str(render),
@@ -519,6 +523,7 @@ def check_python_tests(logs: Path) -> Result:
         [sys.executable, str(ROOT / "tools/lipsync/test_lipsync.py")],  # T-054a lip sync (T-077)
         [sys.executable, str(ROOT / "tools/tests/test_version_switch.py")],  # T-088 version switch
         [sys.executable, str(ROOT / "pipeline/charsys/tests/test_materials_r2.py")],  # T-092 presets/3
+        [sys.executable, str(ROOT / "pipeline/charsys/tests/test_felt_surface.py")],  # T-110 presets/4
         [sys.executable, str(ROOT / "pipeline/production/tests/test_sets.py")],  # T-098L set data
         [sys.executable, str(ROOT / "tools/fit/tests/test_fit.py")],  # T-090 fit optimiser
         [sys.executable, str(ROOT / "pipeline/charsys/tests/test_face_v3.py")],  # T-089 face/3 (plain checks)
@@ -707,9 +712,69 @@ def run_regression(executable: str, base: str, artifacts: Path, logs: Path, resu
     return regression_subchecks(report, log)
 
 
+def current_published_masters() -> dict[str, Path | str]:
+    """Per character of the fidelity baseline: the published master of its current approved version (run_shot's
+    "current" resolution), or the reason there is none."""
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("run_shot_for_gate", ROOT / "pipeline/production/run_shot.py")
+    run_shot = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(run_shot)
+    baseline = json.loads((ROOT / "docs/evaluation/characters/fidelity_baseline.json").read_text(encoding="utf-8"))
+    masters: dict[str, Path | str] = {}
+    for cid in sorted(baseline.get("characters", {})):
+        try:
+            source = run_shot.current_source(cid, str(ROOT))
+        except SystemExit as exc:
+            masters[cid] = f"no current version: {exc.code}"
+            continue
+        vdir = source.get("version_dir")
+        found = sorted((ROOT / vdir).glob("*_master.blend")) if vdir else []
+        masters[cid] = found[0] if found else f"current version {source['resolved']['version']} has no published master"
+    return masters
+
+
+def t101_checks(executable: str, engine: Path | None, out: Path, logs: Path, subchecks: list[dict]) -> None:
+    """T-101: the three tests T-077 root-caused (docs/evaluation/process/T-077 §4), on the current approved versions.
+    deform_test on each current published master (a measurement without limits: it fails when a pose control is
+    missing or a mesh cannot be measured); test_shot_eyes and test_emotions run their shot with cast "current" (they
+    need plush-render for the bake)."""
+    for cid, master in current_published_masters().items():
+        name = f"deform_test {cid}"
+        log = logs / f"blender-deform-{cid}.log"
+        if not isinstance(master, Path):
+            log.write_text(f"{master}\n", encoding="utf-8")
+            add_subcheck(subchecks, name, False, master, log)
+            continue
+        code, _ = run_logged([executable, "-b", "--factory-startup", "-P", str(ROOT / "pipeline/charsys/tests/deform_test.py"),
+                              "--", str(master), str(out / f"deform-{cid}")], log)
+        ok = code == 0 and (out / f"deform-{cid}" / "deform_test.json").is_file()
+        add_subcheck(subchecks, name, ok, "" if ok else "deform_test failed", log)
+    if engine is None:
+        for name in ("test_shot_eyes", "test_emotions"):
+            add_subcheck(subchecks, name, False, "plush-render not found (needed for the bake)")
+        return
+    log = logs / "blender-shot-eyes.log"
+    code, _ = run_logged([sys.executable, str(ROOT / "pipeline/charsys/tests/test_shot_eyes.py"), "--blender", executable,
+                          "--cast", "current", "--bake-engine", str(engine)], log)
+    add_subcheck(subchecks, "test_shot_eyes", code == 0, "" if code == 0 else "test_shot_eyes failed", log)
+    # The emotion scenes and bakes must sit inside the repository (the engine finds content/ above a scene) and are
+    # large, so they go to build/test_tmp; only the measurements are copied next to the other artifacts.
+    tmp_root = ROOT / "build" / "test_tmp"
+    tmp_root.mkdir(parents=True, exist_ok=True)
+    emo_out = Path(tempfile.mkdtemp(prefix="check_all_emotions_", dir=tmp_root))
+    log = logs / "blender-emotions.log"
+    code, _ = run_logged([sys.executable, str(ROOT / "pipeline/clips/test_emotions.py"), "--blender", executable,
+                          "--engine", str(engine), "--out", str(emo_out)], log)
+    measurements = emo_out / "emotion_measurements.json"
+    if measurements.is_file():
+        shutil.copy2(measurements, out / "emotion_measurements.json")
+    shutil.rmtree(emo_out, ignore_errors=True)
+    add_subcheck(subchecks, "test_emotions", code == 0, "" if code == 0 else "test_emotions failed", log)
+
+
 def check_blender(blender: str, artifacts: Path, logs: Path, required: bool, changes: set[str],
                   tier: dict | None = None, base: str = "", regression_results: str = "",
-                  regression_external: str = "", other_runner: str = "") -> Result:
+                  regression_external: str = "", other_runner: str = "", engine: Path | None = None) -> Result:
     tier = tier or {"tier": "fast"}
     full = tier.get("tier") == "full"
     if other_runner:
@@ -819,6 +884,8 @@ def check_blender(blender: str, artifacts: Path, logs: Path, required: bool, cha
                                     str(ROOT / "pipeline/charsys/tests/test_render_engine.py")], None),
         ("materials r2 graphs", [executable, "-b", "--factory-startup", "-P",
                                  str(ROOT / "pipeline/charsys/tests/test_materials_r2_graphs.py")], None),  # T-092
+        ("felt surface graphs", [executable, "-b", "--factory-startup", "-P",
+                                 str(ROOT / "pipeline/charsys/tests/test_felt_surface_graphs.py")], None),  # T-110
         ("garments v2 quick", [sys.executable, str(ROOT / "pipeline/charsys/tests/test_garments_v2.py"),
                                "--blender", executable, "--quick"], None),  # T-093 pin + validate (full run: local)
         ("groom dynamics", [executable, "-b", "--factory-startup", "-P",
@@ -847,6 +914,8 @@ def check_blender(blender: str, artifacts: Path, logs: Path, required: bool, cha
         else:
             code = 1
         add_subcheck(subchecks, script[:-3], code == 0, "" if code == 0 else f"{script} failed", boy2_log)
+
+    t101_checks(executable, engine, out, logs, subchecks)
 
     regression_details: list[str] = []
     if full:
@@ -947,7 +1016,8 @@ def main(argv: list[str] | None = None) -> int:
         tier["tier"] = "full"
     blender_required = bool(args.blender) or tier["tier"] == "full"
     results.append(check_blender(args.blender, artifacts, logs, blender_required, changes, tier, base,
-                                 args.regression_results, args.regression_external, args.blender_on_other_runner))
+                                 args.regression_results, args.regression_external, args.blender_on_other_runner,
+                                 plush_render_executable(build_dir, args.config) if build_result.ok else None))
     if args.merge_status:
         tests_ok = all(result.ok for result in results)
         if args.merge_status == "clean" and tests_ok:

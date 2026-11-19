@@ -1,0 +1,28 @@
+"""Try a cup placement in the AC5 layering scenes: bake with and without the emotion, report hand drift."""
+import json, sys, glob, math, subprocess, os
+sys.path.insert(0, "pipeline/clips")
+import measure_clips as MC
+S = "<scratch>"
+ENG = sys.argv[1]
+cx, top, cz = map(float, sys.argv[2:5])
+P = glob.glob("build/test_tmp/emotions_prepare_*/shot/build/packages")[0]
+pk = {"boy": glob.glob(P + "/boy_*/character.json")[0], "girl": glob.glob(P + "/girl_*/character.json")[0]}
+objs = [{"name": "pedestal", "kind": "box", "min": [cx - 0.0425, 0.0, cz - 0.04], "max": [cx + 0.0375, top, cz + 0.04], "material": "m"},
+        {"name": "cup", "kind": "box", "min": [cx - 0.0125, top, cz - 0.0125], "max": [cx + 0.0125, top + 0.03, cz + 0.0125],
+         "material": "m", "position": [cx, top + 0.015, cz]}]
+B = {}
+for n in ("layering", "layering_noemotion"):
+    sc = json.load(open(f"build/test_tmp/emo1/scenes/{n}.scene.json"))
+    sc["objects"] = objs
+    p = f"build/test_tmp/emo1/scenes/try_{n}.scene.json"
+    json.dump(sc, open(p, "w"))
+    r = subprocess.run([ENG, p, "--bake", p + ".bake.json"], capture_output=True, text=True)
+    w = [l for l in (r.stdout + r.stderr).splitlines() if "warn" in l and "boy" in l]
+    print(n, "warnings:", w)
+    B[n] = MC.Baked(json.load(open(p + ".bake.json")), pk).data["boy"]
+L, L0 = B["layering"], B["layering_noemotion"]
+d = {f: math.dist(L[f]["hand.R"][3], L0[f]["hand.R"][3]) for f in range(130, 176)}
+print("max 140-165 mm:", round(max(d[f] for f in range(140, 166)) * 1000, 3))
+print(" ".join(f"{f}:{d[f]*1000:.2f}" for f in range(134, 172)))
+print("sh-hand at 140:", round(math.dist(L0[140]["upperArm.R"][3], L0[140]["hand.R"][3]), 3), "shoulder shift 140 mm:",
+      round(math.dist(L0[140]["upperArm.R"][3], L[140]["upperArm.R"][3]) * 1000, 1))

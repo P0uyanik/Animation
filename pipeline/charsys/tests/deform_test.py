@@ -6,7 +6,12 @@ Poses (FK controls, defined by intent; the rotation sign is chosen by measuring 
 bone-axis convention is assumed): shoulder raise 70 deg, shoulder forward 60, elbow 90, wrist 60, hip forward 80,
 knee 90, ankle 30, finger curl 70 (all finger segments and thumb), on the left side. Per pose, over every mesh with
 an Armature modifier: max and 99th-percentile edge stretch, min and 1st-percentile edge compression (posed / rest
-length). Writes deform_test.json and deform_sheet.png (workbench renders)."""
+length). Writes deform_test.json and deform_sheet.png (workbench renders).
+
+Vertices and edges both come from the evaluated mesh (T-101): a garment MASK modifier hides covered skin, so the
+evaluated mesh has fewer vertices than o.data and its edges must be indexed in the evaluated mesh, not in o.data.
+The script is a measurement (no stretch limits); it exits 1 when a pose control is missing or a mesh could not be
+measured, so a harness error is never reported as a result."""
 import json
 import math
 import os
@@ -27,15 +32,21 @@ for pb in rig.pose.bones:
 deps = bpy.context.evaluated_depsgraph_get
 
 
-def world_pts(ob):
+def world_pts(ob, edges=False):
     ev = ob.evaluated_get(deps())
     me = ev.to_mesh()
     c = np.empty(len(me.vertices) * 3)
     me.vertices.foreach_get("co", c)
+    e = None
+    if edges:  # edge indices of the evaluated (possibly masked) mesh, matching the vertices read above
+        e = np.empty(len(me.edges) * 2, dtype=np.int64)
+        me.edges.foreach_get("vertices", e)
+        e = e.reshape(-1, 2)
     ev.to_mesh_clear()
     c = c.reshape(-1, 3)
     M = np.array(ob.matrix_world)
-    return c @ M[:3, :3].T + M[:3, 3]
+    p = c @ M[:3, :3].T + M[:3, 3]
+    return (p, e) if edges else p
 
 
 def reset():
@@ -54,8 +65,9 @@ def bone_tail(name):
 
 
 reset()
-REST = {o.name: world_pts(o) for o in meshes}
-EDGES = {o.name: np.array([e.vertices[:] for e in o.data.edges]) for o in meshes}
+REST, EDGES = {}, {}
+for o in meshes:
+    REST[o.name], EDGES[o.name] = world_pts(o, edges=True)
 FINGERS = [f"{f}.0{k}.L" for f in ("f_index", "f_middle", "f_ring", "f_pinky", "thumb") for k in (1, 2, 3)]
 # (pose name, controls, axis, angle, measure(), goal sign): goal > 0 means the measure should increase
 POSES = [("shoulder_raise", ["upper_arm_fk.L"], 2, 70, lambda: bone_tail("forearm_fk.L").z, +1),
@@ -66,7 +78,7 @@ POSES = [("shoulder_raise", ["upper_arm_fk.L"], 2, 70, lambda: bone_tail("forear
          ("knee_90", ["shin_fk.L"], 0, 90, lambda: bone_tail("shin_fk.L").y, +1),
          ("ankle_30", ["foot_fk.L"], 0, 30, lambda: bone_tail("foot_fk.L").z, +1),
          ("fingers_curl_70", [f for f in FINGERS], 0, 70, lambda: -sum((bone_tail(f) - bone_head("hand_fk.L")).length for f in FINGERS if f in rig.pose.bones), +1)]
-R = {"source": os.path.basename(src), "rig": rig.name, "poses": {}, "missing_controls": []}
+R = {"source": os.path.basename(src), "rig": rig.name, "poses": {}, "missing_controls": [], "unmeasured_meshes": {}}
 tiles = []
 for name, ctrls, axis, ang, measure, goal in POSES:
     ctrls = [c for c in ctrls if c in rig.pose.bones]
@@ -95,7 +107,10 @@ for name, ctrls, axis, ang, measure, goal in POSES:
     st = []
     for o in meshes:
         P1, P0, E = world_pts(o), REST[o.name], EDGES[o.name]
-        if len(E) == 0 or len(P1) != len(P0):
+        if len(E) == 0:
+            continue
+        if len(P1) != len(P0):
+            R["unmeasured_meshes"].setdefault(o.name, []).append(name)  # topology changed with the pose
             continue
         l0 = np.linalg.norm(P0[E[:, 0]] - P0[E[:, 1]], axis=1)
         l1 = np.linalg.norm(P1[E[:, 0]] - P1[E[:, 1]], axis=1)
@@ -125,3 +140,5 @@ json.dump(R, open(os.path.join(OUT, "deform_test.json"), "w"), indent=1)
 for k, v in R["poses"].items():
     print("[deform_test]", k, v)
 print("[deform_test] missing:", R["missing_controls"])
+print("[deform_test] unmeasured:", R["unmeasured_meshes"])
+sys.exit(1 if R["missing_controls"] or R["unmeasured_meshes"] else 0)

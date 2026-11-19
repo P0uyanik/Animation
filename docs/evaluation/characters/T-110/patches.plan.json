@@ -1,0 +1,305 @@
+{
+ "schema": "plush-studio.material-patch-plan/1",
+ "task": "T-110",
+ "note": "Before = the slot's assignment in boy 2.1.0 / girl 0.12.0 (T-094, presets/3); after = the same assignment with the T-110 presets/4 id (same colour, reference size and overrides). Rendered with pipeline/charsys/materials/render_patches_r2.py (unchanged; the plan is data) and composed with compose_patches_r2.py.",
+ "form_radius_m": 0.06,
+ "elevation_deg": 6,
+ "lights": [
+  {
+   "name": "character_neutral/1",
+   "file": "render_calibration.json",
+   "tag": "neutral"
+  },
+  {
+   "name": "character_warm_indoor/1",
+   "file": "r2_lights.json",
+   "tag": "warm"
+  }
+ ],
+ "materials": [
+  {
+   "label": "boy_skin",
+   "target_srgb": [
+    193,
+    144,
+    122
+   ],
+   "target_source": "boy 2.1.0 materials.target_colors_srgb.skin",
+   "before": {
+    "preset": "skin-felt/3",
+    "base_color_srgb": [
+     236,
+     190,
+     166
+    ],
+    "reference_size_m": 0.29
+   },
+   "after": {
+    "preset": "felt skin/4",
+    "base_color_srgb": [
+     236,
+     190,
+     166
+    ],
+    "reference_size_m": 0.29
+   }
+  },
+  {
+   "label": "boy_hoodie",
+   "target_srgb": [
+    192,
+    145,
+    80
+   ],
+   "target_source": "boy 2.1.0 target_colors_srgb.hoodie",
+   "before": {
+    "preset": "hoodie fleece/3",
+    "base_color_srgb": [
+     204,
+     152,
+     62
+    ],
+    "reference_size_m": 0.3
+   },
+   "after": {
+    "preset": "hoodie fleece/4",
+    "base_color_srgb": [
+     204,
+     152,
+     62
+    ],
+    "reference_size_m": 0.3
+   }
+  },
+  {
+   "label": "boy_trousers",
+   "target_srgb": [
+    40,
+    33,
+    32
+   ],
+   "target_source": "boy 2.1.0 target_colors_srgb.trousers",
+   "before": {
+    "preset": "trouser pile/3",
+    "base_color_srgb": [
+     38,
+     34,
+     34
+    ],
+    "reference_size_m": 0.3
+   },
+   "after": {
+    "preset": "trouser pile/4",
+    "base_color_srgb": [
+     38,
+     34,
+     34
+    ],
+    "reference_size_m": 0.3
+   }
+  },
+  {
+   "label": "boy_hair",
+   "target_srgb": [
+    48,
+    39,
+    35
+   ],
+   "target_source": "boy 2.1.0 target_colors_srgb.hair",
+   "before": {
+    "preset": "felt hair",
+    "base_color_srgb": [
+     25,
+     22,
+     21
+    ],
+    "reference_size_m": 0.32,
+    "overrides": {
+     "surface": {
+      "saturation_compensation": 1.4,
+      "sheen_weight": 0.15,
+      "sheen_roughness": 0.6
+     },
+     "nap": {
+      "fibre_gloss": 0.1,
+      "value_gain": 0.25,
+      "sheen_gain": 0.3
+     },
+     "fibres": {
+      "color_variation": 0.35,
+      "root_transparency": 0.2,
+      "tip_transparency": 0.6
+     }
+    }
+   },
+   "after": {
+    "preset": "felt hair/4",
+    "base_color_srgb": [
+     25,
+     22,
+     21
+    ],
+    "reference_size_m": 0.32,
+    "overrides": {
+     "surface": {
+      "saturation_compensation": 1.4,
+      "sheen_weight": 0.15,
+      "sheen_roughness": 0.6
+     },
+     "nap": {
+      "fibre_gloss": 0.1,
+      "value_gain": 0.25,
+      "sheen_gain": 0.3
+     },
+     "fibres": {
+      "color_variation": 0.35,
+      "root_transparency": 0.2,
+      "tip_transparency": 0.6
+     }
+    }
+   }
+  },
+  {
+   "label": "boy_shoe",
+   "target_srgb": [
+    185,
+    138,
+    77
+   ],
+   "target_source": "boy 2.1.0 target_colors_srgb.shoe_yellow",
+   "before": {
+    "preset": "felt",
+    "base_color_srgb": [
+     206,
+     156,
+     70
+    ],
+    "reference_size_m": 0.15
+   },
+   "after": {
+    "preset": "felt/4",
+    "base_color_srgb": [
+     206,
+     156,
+     70
+    ],
+    "reference_size_m": 0.15
+   }
+  },
+  {
+   "label": "girl_skin",
+   "target_srgb": [
+    202,
+    176,
+    169
+   ],
+   "target_source": "girl 0.12.0 materials.target_colors_srgb.skin",
+   "before": {
+    "preset": "skin-felt/3",
+    "base_color_srgb": [
+     238,
+     202,
+     184
+    ],
+    "reference_size_m": 0.29278
+   },
+   "after": {
+    "preset": "felt skin/4",
+    "base_color_srgb": [
+     238,
+     202,
+     184
+    ],
+    "reference_size_m": 0.29278
+   }
+  },
+  {
+   "label": "girl_vest",
+   "target_srgb": [
+    116,
+    80,
+    80
+   ],
+   "target_source": "girl 0.12.0 target_colors_srgb.vest",
+   "before": {
+    "preset": "vest felt/3",
+    "base_color_srgb": [
+     118,
+     82,
+     80
+    ],
+    "reference_size_m": 0.3
+   },
+   "after": {
+    "preset": "vest felt/4",
+    "base_color_srgb": [
+     118,
+     82,
+     80
+    ],
+    "reference_size_m": 0.3
+   }
+  },
+  {
+   "label": "girl_hair",
+   "target_srgb": [
+    86,
+    54,
+    44
+   ],
+   "target_source": "girl 0.12.0 target_colors_srgb.hair",
+   "before": {
+    "preset": "felt hair",
+    "base_color_srgb": [
+     100,
+     64,
+     47
+    ],
+    "reference_size_m": 0.29278,
+    "overrides": {
+     "surface": {
+      "saturation_compensation": 1.0,
+      "sheen_weight": 0.15,
+      "sheen_roughness": 0.6
+     },
+     "nap": {
+      "fibre_gloss": 0.1,
+      "value_gain": 0.25,
+      "sheen_gain": 0.3
+     },
+     "fibres": {
+      "color_variation": 0.35,
+      "root_transparency": 0.2,
+      "tip_transparency": 0.6
+     }
+    }
+   },
+   "after": {
+    "preset": "felt hair/4",
+    "base_color_srgb": [
+     100,
+     64,
+     47
+    ],
+    "reference_size_m": 0.29278,
+    "overrides": {
+     "surface": {
+      "saturation_compensation": 1.0,
+      "sheen_weight": 0.15,
+      "sheen_roughness": 0.6
+     },
+     "nap": {
+      "fibre_gloss": 0.1,
+      "value_gain": 0.25,
+      "sheen_gain": 0.3
+     },
+     "fibres": {
+      "color_variation": 0.35,
+      "root_transparency": 0.2,
+      "tip_transparency": 0.6
+     }
+    }
+   }
+  }
+ ]
+}
