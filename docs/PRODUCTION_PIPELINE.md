@@ -150,6 +150,46 @@ bones, Blender camera, frames, settings and pixels, all identical.
   - Cycles 8.6 s per frame at 640×360 / 32 samples (17.9 s at 960×540).
 - **Evidence:** `docs/evaluation/production/M32_s010_*` (contact sheet, mp4, run report).
 
+## Scene events: reactions in playback (T-097D)
+A shot can list things that happen in it under the optional scene key `events` (opt-in: without it nothing changes,
+and every existing shot bakes byte-identical). Each event is planned for every reacting character by the reaction
+planner (`engine/scene/reaction.h`, T-097B: the character's `personality` profile, else the shared defaults) and played
+as generated actions:
+
+```json
+"events": [
+  {"time": 1.0, "kind": "object_appears", "name": "ball appears", "source": "ball"},
+  {"time": 2.5, "kind": "partner_acts", "name": "boy waves", "source": "boy", "salience": 0.6, "characters": ["girl"]}
+]
+```
+
+| Field | Meaning |
+| --- | --- |
+| `time` | seconds from `frameStart` (required, >= 0) |
+| `kind` | `object_appears`, `partner_acts`, `success`, `failure` or `custom` (default `custom`; a custom event needs `name`, which is the key of a profile's `reaction.events` entry) |
+| `name` | label (logs, animcheck) |
+| `source` | the character or scene object that causes it (`""` = the scene); the actor of `partner_acts` does not react to it |
+| `salience` | 0..1 (default 1): how noticeable it is (later, weaker, shorter reaction; 0 = not noticed) |
+| `characters` | optional list of the characters that react (default: every scene character) |
+
+These are the fields of `plush::ReactionEvent` (`engine/scene/acting.h`); animcheck's acting rule
+(`tools/animcheck/acting.py`, T-097C) reads `time`, `name` and `source` of the same list. Per reacting character, at
+`time` + the planned notice delay (frame `frameStart + (time + delay) x fps`):
+- **Look** at the source (a character's face or the object), held for the reaction's gaze habit (`gazeShift` x its
+  duration, at least 3 frames), then back to the earlier gaze. A character without an earlier look turns in and out
+  over 8 frames (`lookAt.weight`), so nothing changes before the reaction. No look for a scene event without a source.
+- **Emotion** (the planned one, at the planned intensity) as a blended emotion action (T-097A `blend`), released after
+  the planned duration (it replaces the character's other blended emotions, the T-097A default); the profile's intensity scale and gaze shift are its `modulation` (the plan's timing already
+  holds the tempo and hold scales). Skipped with a warning if `content/emotions` has no such emotion.
+- **Gesture**: the profile's preferred gesture for the event (the first one `content/clips` has), as a clip action at
+  the same frame, when the expressed intensity reaches the gesture threshold.
+
+The generated actions are deterministic (events by time, then scene character order) and follow the authored actions
+at equal frames. `SceneEvaluator::reactionActions()` returns them in the scene's action format: the scene with them
+appended to `actions` is what the acting rule checks. Generated looks use two look options that authored looks may
+use too: `"atCharacter": "<name>"` (look at that character's face) and `"back": true` (return to the earlier gaze).
+Tests: `tests/test_reaction_playback.cpp`; evidence: `docs/evaluation/animation/T-097D/`.
+
 ## Not covered yet
 - **Props:** SDF props, water and paper boats are not baked (listed as `objects_not_baked`).
 - **Engine-only characters** (SDF) cannot be rendered in Blender.

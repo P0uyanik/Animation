@@ -1,0 +1,181 @@
+{
+ "garments": [
+  "blouse",
+  "shorts"
+ ],
+ "trials": [
+  {
+   "trial": 0,
+   "parameters": {
+    "clothing.garments.0.sleeve_length": 1.0,
+    "clothing.garments.0.sleeve_puff_m": 0.03,
+    "clothing.garments.2.leg_split.crotch_lift": 0.55,
+    "clothing.garments.2.length": 0.24
+   },
+   "fit_score": 67.45209743837172,
+   "garment_score": 49.12789615679237,
+   "views": {
+    "sheet30_front": {
+     "blouse": {
+      "iou": 0.42395220936848094
+     },
+     "shorts": {
+      "iou": 0.6754298941798942,
+      "hem_err_px": 0.0
+     },
+     "score": 54.969105177418754
+    },
+    "sheet30_front_left": {
+     "blouse": {
+      "iou": 0.2364934796108466
+     },
+     "shorts": {
+      "iou": 0.6339160839160839,
+      "hem_err_px": 8.0
+     },
+     "score": 43.52047817634652
+    },
+    "sheet30_left": {
+     "blouse": {
+      "iou": 0.28829160530191456
+     },
+     "shorts": {
+      "iou": 0.6895904970303219,
+      "hem_err_px": 5.0
+     },
+     "score": 48.894105116611826
+    }
+   }
+  },
+  {
+   "trial": 1,
+   "parameters": {
+    "clothing.garments.0.sleeve_length": 0.977081442692123,
+    "clothing.garments.0.sleeve_puff_m": 0.024825328273845728,
+    "clothing.garments.2.leg_split.crotch_lift": 0.5084232970442724,
+    "clothing.garments.2.length": 0.2492983362481446
+   },
+   "fit_score": 67.4547114244162,
+   "garment_score": 47.69062776279062,
+   "views": {
+    "sheet30_front": {
+     "blouse": {
+      "iou": 0.4052505966587112
+     },
+     "shorts": {
+      "iou": 0.683253430319061,
+      "hem_err_px": 0.0
+     },
+     "score": 54.42520134888862
+    },
+    "sheet30_front_left": {
+     "blouse": {
+      "iou": 0.21452490581833403
+     },
+     "shorts": {
+      "iou": 0.6418636995827538,
+      "hem_err_px": 7.0
+     },
+     "score": 42.81943027005439
+    },
+    "sheet30_left": {
+     "blouse": {
+      "iou": 0.23617693522906794
+     },
+     "shorts": {
+      "iou": 0.6803680981595092,
+      "hem_err_px": 7.0
+     },
+     "score": 45.827251669428854
+    }
+   }
+  },
+  {
+   "trial": 2,
+   "parameters": {
+    "clothing.garments.0.sleeve_length": 0.9711361737950119,
+    "clothing.garments.0.sleeve_puff_m": 0.02540235379073712,
+    "clothing.garments.2.leg_split.crotch_lift": 0.6198779752009974,
+    "clothing.garments.2.length": 0.2634519221447422
+   },
+   "fit_score": 67.44875683134752,
+   "garment_score": 47.24802122657896,
+   "views": {
+    "sheet30_front": {
+     "blouse": {
+      "iou": 0.40409256071906674
+     },
+     "shorts": {
+      "iou": 0.6845493562231759,
+      "hem_err_px": 1.0
+     },
+     "score": 54.43209584711213
+    },
+    "sheet30_front_left": {
+     "blouse": {
+      "iou": 0.21350078492935637
+     },
+     "shorts": {
+      "iou": 0.6336049939309867,
+      "hem_err_px": 6.0
+     },
+     "score": 42.35528894301716
+    },
+    "sheet30_left": {
+     "blouse": {
+      "iou": 0.23566627125345987
+     },
+     "shorts": {
+      "iou": 0.6634673065386922,
+      "hem_err_px": 8.0
+     },
+     "score": 44.9566788896076
+    }
+   }
+  },
+  {
+   "trial": 3,
+   "parameters": {
+    "clothing.garments.0.sleeve_length": 0.9929548780751631,
+    "clothing.garments.0.sleeve_puff_m": 0.02577542540552254,
+    "clothing.garments.2.leg_split.crotch_lift": 0.5646720032699254,
+    "clothing.garments.2.length": 0.256600958606487
+   },
+   "fit_score": 67.441707249646,
+   "garment_score": 47.92219148955291,
+   "views": {
+    "sheet30_front": {
+     "blouse": {
+      "iou": 0.4106105343366035
+     },
+     "shorts": {
+      "iou": 0.6834710743801653,
+      "hem_err_px": 1.0
+     },
+     "score": 54.70408043583844
+    },
+    "sheet30_front_left": {
+     "blouse": {
+      "iou": 0.2191380569758948
+     },
+     "shorts": {
+      "iou": 0.6325427275898151,
+      "hem_err_px": 7.0
+     },
+     "score": 42.5840392282855
+    },
+    "sheet30_left": {
+     "blouse": {
+      "iou": 0.2551859099804305
+     },
+     "shorts": {
+      "iou": 0.674383186110265,
+      "hem_err_px": 7.0
+     },
+     "score": 46.47845480453478
+    }
+   }
+  }
+ ],
+ "best": 0
+}

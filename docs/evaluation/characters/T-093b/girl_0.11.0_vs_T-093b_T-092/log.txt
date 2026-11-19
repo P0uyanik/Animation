@@ -1,0 +1,4 @@
+2026-11-18T23:57:11Z preview start: recipe f1b3a6534fc8 {'engine': 'cycles', 'samples': 2, 'px': 120}
+2026-11-19T00:01:27Z preview pass: rv_girl92/preview/preview.jpg
+2026-11-19T00:01:27Z sheet start: recipe f1b3a6534fc8 {'engine': 'cycles', 'samples': 16, 'px': 360}
+2026-11-19T00:19:27Z sheet written: rv_girl92/sheet.jpg 1120x2048

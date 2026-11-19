@@ -1,0 +1,181 @@
+{
+ "garments": [
+  "blouse",
+  "shorts"
+ ],
+ "trials": [
+  {
+   "trial": 0,
+   "parameters": {
+    "clothing.garments.0.sleeve_length": 1.0,
+    "clothing.garments.0.sleeve_puff_m": 0.03,
+    "clothing.garments.2.leg_split.crotch_lift": 0.55,
+    "clothing.garments.2.length": 0.24
+   },
+   "fit_score": 67.45042010186134,
+   "garment_score": 49.12789615679237,
+   "views": {
+    "sheet30_front": {
+     "blouse": {
+      "iou": 0.42395220936848094
+     },
+     "shorts": {
+      "iou": 0.6754298941798942,
+      "hem_err_px": 0.0
+     },
+     "score": 54.969105177418754
+    },
+    "sheet30_front_left": {
+     "blouse": {
+      "iou": 0.2364934796108466
+     },
+     "shorts": {
+      "iou": 0.6339160839160839,
+      "hem_err_px": 8.0
+     },
+     "score": 43.52047817634652
+    },
+    "sheet30_left": {
+     "blouse": {
+      "iou": 0.28829160530191456
+     },
+     "shorts": {
+      "iou": 0.6895904970303219,
+      "hem_err_px": 5.0
+     },
+     "score": 48.894105116611826
+    }
+   }
+  },
+  {
+   "trial": 1,
+   "parameters": {
+    "clothing.garments.0.sleeve_length": 1.0,
+    "clothing.garments.0.sleeve_puff_m": 0.03296714795704292,
+    "clothing.garments.2.leg_split.crotch_lift": 0.6487983913914241,
+    "clothing.garments.2.length": 0.26827350851331155
+   },
+   "fit_score": 67.47997977004515,
+   "garment_score": 49.198364613515906,
+   "views": {
+    "sheet30_front": {
+     "blouse": {
+      "iou": 0.42372721261925
+     },
+     "shorts": {
+      "iou": 0.6875515251442704,
+      "hem_err_px": 1.0
+     },
+     "score": 55.56393688817602
+    },
+    "sheet30_front_left": {
+     "blouse": {
+      "iou": 0.24359904633564838
+     },
+     "shorts": {
+      "iou": 0.6313340227507755,
+      "hem_err_px": 5.0
+     },
+     "score": 43.74665345432119
+    },
+    "sheet30_left": {
+     "blouse": {
+      "iou": 0.3081395348837209
+     },
+     "shorts": {
+      "iou": 0.6575505350772889,
+      "hem_err_px": 8.0
+     },
+     "score": 48.28450349805049
+    }
+   }
+  },
+  {
+   "trial": 2,
+   "parameters": {
+    "clothing.garments.0.sleeve_length": 1.0,
+    "clothing.garments.0.sleeve_puff_m": 0.033816206543006405,
+    "clothing.garments.2.leg_split.crotch_lift": 0.5693672747612388,
+    "clothing.garments.2.length": 0.2637336286058857
+   },
+   "fit_score": 67.45983368624842,
+   "garment_score": 49.344133315317386,
+   "views": {
+    "sheet30_front": {
+     "blouse": {
+      "iou": 0.4218691237307258
+     },
+     "shorts": {
+      "iou": 0.6877476882430648,
+      "hem_err_px": 1.0
+     },
+     "score": 55.48084059868953
+    },
+    "sheet30_front_left": {
+     "blouse": {
+      "iou": 0.2368502316006176
+     },
+     "shorts": {
+      "iou": 0.6369470945359931,
+      "hem_err_px": 6.0
+     },
+     "score": 43.68986630683053
+    },
+    "sheet30_left": {
+     "blouse": {
+      "iou": 0.3137608069164265
+     },
+     "shorts": {
+      "iou": 0.6634730538922156,
+      "hem_err_px": 8.0
+     },
+     "score": 48.8616930404321
+    }
+   }
+  },
+  {
+   "trial": 3,
+   "parameters": {
+    "clothing.garments.0.sleeve_length": 1.0,
+    "clothing.garments.0.sleeve_puff_m": 0.0325958982125477,
+    "clothing.garments.2.leg_split.crotch_lift": 0.6752251229376556,
+    "clothing.garments.2.length": 0.24339617893959434
+   },
+   "fit_score": 67.44766732519572,
+   "garment_score": 49.85512220342931,
+   "views": {
+    "sheet30_front": {
+     "blouse": {
+      "iou": 0.42328741271938103
+     },
+     "shorts": {
+      "iou": 0.6709698775239987,
+      "hem_err_px": 0.0
+     },
+     "score": 54.71286451216899
+    },
+    "sheet30_front_left": {
+     "blouse": {
+      "iou": 0.23697513669658515
+     },
+     "shorts": {
+      "iou": 0.6345044572627163,
+      "hem_err_px": 8.0
+     },
+     "score": 43.57397969796507
+    },
+    "sheet30_left": {
+     "blouse": {
+      "iou": 0.3415877640203933
+     },
+     "shorts": {
+      "iou": 0.683982683982684,
+      "hem_err_px": 5.0
+     },
+     "score": 51.27852240015387
+    }
+   }
+  }
+ ],
+ "best": 3
+}

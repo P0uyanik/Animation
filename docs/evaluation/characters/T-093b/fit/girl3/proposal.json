@@ -1,0 +1,439 @@
+{
+  "clothing": {
+    "garments": [
+      {
+        "type": "top",
+        "name": "blouse",
+        "sleeve_length": 1.0,
+        "sleeve_puff_m": 0.032119481116221524,
+        "sleeve_puff_peak": 0.58,
+        "hem_z_m": 0.34,
+        "collar": {
+          "type": "round",
+          "width_m": 0.048,
+          "gap_m": 0.012,
+          "slope": 0.5,
+          "tip_round": 0.55,
+          "lift_m": 0.034
+        },
+        "buttons": {
+          "count": 4,
+          "radius_m": 0.0042
+        },
+        "bands": {
+          "cuff": true,
+          "cuff_radius_m": 0.0042
+        },
+        "material": {
+          "preset": "woven cotton",
+          "base_color_srgb": [
+            214,
+            210,
+            210
+          ],
+          "reference_size_m": 0.3
+        },
+        "materials": {
+          "buttons": {
+            "preset": "buttons/plastic",
+            "base_color_srgb": [
+              226,
+              220,
+              210
+            ],
+            "reference_size_m": 0.02
+          }
+        },
+        "edge_finish": "rounded",
+        "drape": {
+          "enabled": true,
+          "fabric": "cotton",
+          "gather": 0.3,
+          "gravity": 0.4,
+          "overrides": {
+            "bending": 4.0
+          },
+          "pin": [
+            "edges",
+            "volume"
+          ],
+          "edge_band_m": 0.004,
+          "volume_band_m": 0.003,
+          "smooth": 3,
+          "seed": 34
+        },
+        "clean_fibres": [
+          "collar"
+        ],
+        "collar_clear": {
+          "over": [
+            "vest"
+          ],
+          "gap_m": 0.008,
+          "smooth": 20,
+          "max_lift_m": 0.02
+        },
+        "armhole": "closed",
+        "sleeve_start": 0.0
+      },
+      {
+        "type": "vest",
+        "name": "vest",
+        "ease_m": 0.03,
+        "hem_z_m": 0.34,
+        "open_front_m": 0.024,
+        "pockets": {
+          "shape": "patch",
+          "width_m": 0.025,
+          "height_m": 0.026,
+          "depth_m": 0.004,
+          "above_hem_m": 0.04,
+          "corner": 0.55,
+          "top_roll_m": 0.0042,
+          "inset_m": 0.012
+        },
+        "bands": {
+          "edge_roll_m": 0.005
+        },
+        "embroidery": {
+          "size_m": 0.045,
+          "relief_m": 0.0025,
+          "petals": 5,
+          "leaves": 2,
+          "motifs": [
+            {
+              "u": 0.55,
+              "v": 0.74,
+              "style": "cross_stitch",
+              "pattern": [
+                "x.......x",
+                "xx.....xx",
+                "xxx...xxx",
+                ".xxxoxxx.",
+                "..xooox..",
+                ".xxxoxxx.",
+                "xxx...xxx",
+                "xx.....xx",
+                "x.......x"
+              ],
+              "stitch_m": 0.0062
+            },
+            {
+              "u": -0.55,
+              "v": 0.74,
+              "style": "cross_stitch",
+              "pattern": [
+                "x.......x",
+                "xx.....xx",
+                "xxx...xxx",
+                ".xxxoxxx.",
+                "..xooox..",
+                ".xxxoxxx.",
+                "xxx...xxx",
+                "xx.....xx",
+                "x.......x"
+              ],
+              "stitch_m": 0.0062
+            },
+            {
+              "u": 0.6,
+              "v": 0.08,
+              "style": "cross_stitch",
+              "pattern": [
+                "......o.......o......",
+                ".....ooo.....ooo.....",
+                "....oo.oo...oo.oo....",
+                "...oo...oo.oo...oo...",
+                "..oo.....ooo.....oo..",
+                ".oo.......o.......oo."
+              ],
+              "stitch_m": 0.0042
+            },
+            {
+              "u": -0.6,
+              "v": 0.08,
+              "style": "cross_stitch",
+              "pattern": [
+                "......o.......o......",
+                ".....ooo.....ooo.....",
+                "....oo.oo...oo.oo....",
+                "...oo...oo.oo...oo...",
+                "..oo.....ooo.....oo..",
+                ".oo.......o.......oo."
+              ],
+              "stitch_m": 0.0042
+            },
+            {
+              "u": 0.0,
+              "v": 0.45,
+              "target": "pocket.L",
+              "style": "cross_stitch",
+              "pattern": [
+                "....oo.oo...oo.oo....",
+                "...oo...oo.oo...oo...",
+                "..oo.....ooo.....oo..",
+                ".oo.......o.......oo."
+              ],
+              "stitch_m": 0.003
+            },
+            {
+              "u": 0.0,
+              "v": 0.45,
+              "target": "pocket.R",
+              "style": "cross_stitch",
+              "pattern": [
+                "....oo.oo...oo.oo....",
+                "...oo...oo.oo...oo...",
+                "..oo.....ooo.....oo..",
+                ".oo.......o.......oo."
+              ],
+              "stitch_m": 0.003
+            }
+          ],
+          "material": {
+            "preset": "felt",
+            "base_color_srgb": [
+              58,
+              32,
+              38
+            ],
+            "reference_size_m": 0.05
+          },
+          "accent_material": {
+            "preset": "wool yarn",
+            "base_color_srgb": [
+              196,
+              186,
+              176
+            ],
+            "reference_size_m": 0.05
+          }
+        },
+        "material": {
+          "preset": "felt",
+          "base_color_srgb": [
+            144,
+            104,
+            104
+          ],
+          "reference_size_m": 0.3
+        },
+        "shoulder_width": 0.9,
+        "buttons": {
+          "count": 4,
+          "placement": "edge",
+          "side": "left",
+          "radius_m": 0.0055,
+          "v0": 0.62
+        },
+        "materials": {
+          "buttons": {
+            "preset": "buttons/plastic",
+            "base_color_srgb": [
+              150,
+              92,
+              62
+            ],
+            "reference_size_m": 0.02
+          },
+          "pocket_edge": {
+            "preset": "felt",
+            "base_color_srgb": [
+              58,
+              32,
+              38
+            ],
+            "reference_size_m": 0.05
+          }
+        },
+        "edge_finish": "rounded",
+        "drape": {
+          "enabled": true,
+          "fabric": "felt",
+          "pin": [
+            "top"
+          ],
+          "top_band_m": 0.06,
+          "gravity": 0.6,
+          "overrides": {
+            "bending": 15.0
+          },
+          "seed": 34
+        },
+        "correctives": {
+          "arm_weights": {
+            "cap": 0.2
+          },
+          "reach": {
+            "deg": -75.0,
+            "strength": 0.0,
+            "over": [
+              "blouse"
+            ],
+            "over_gap_m": 0.003
+          }
+        },
+        "clean_fibres": [
+          "edge",
+          "pocket_edge"
+        ]
+      },
+      {
+        "type": "shorts",
+        "name": "shorts",
+        "length": 0.24,
+        "ease_m": 0.013,
+        "puff_m": 0.03801915483162604,
+        "puff_inner": 0.35,
+        "cuff": true,
+        "bands": {
+          "waist": true,
+          "cuff": true,
+          "cuff_radius_m": 0.0045
+        },
+        "material": {
+          "preset": "woven cotton",
+          "base_color_srgb": [
+            110,
+            114,
+            103
+          ],
+          "reference_size_m": 0.3
+        },
+        "waist_z_m": 0.41,
+        "crotch": {
+          "type": "gusset",
+          "depth": 0.25
+        },
+        "buttons": {
+          "count": 3,
+          "placement": "waistband",
+          "radius_m": 0.0045,
+          "spread": 0.35
+        },
+        "materials": {
+          "buttons": {
+            "preset": "buttons/plastic",
+            "base_color_srgb": [
+              150,
+              92,
+              62
+            ],
+            "reference_size_m": 0.02
+          }
+        },
+        "edge_finish": "rounded",
+        "drape": {
+          "enabled": true,
+          "fabric": "felt",
+          "gather": 0.35,
+          "gravity": 0.5,
+          "overrides": {
+            "bending": 2.0
+          },
+          "pin": [
+            "edges",
+            "volume"
+          ],
+          "edge_band_m": 0.004,
+          "volume_band_m": 0.003,
+          "smooth": 2,
+          "seed": 34
+        },
+        "leg_split": {
+          "amount": 0.8,
+          "start": 0.12,
+          "crotch_lift": 0.16817452141799266,
+          "arch_width": 0.7080559343751961,
+          "arch_power": 1.0
+        },
+        "hem_break": {
+          "height_m": 0.045,
+          "flare_m": 0.0,
+          "folds": 0,
+          "fold_depth_m": 0.0,
+          "front_drop_m": 0.0,
+          "pleats": 18,
+          "pleat_depth_m": 0.0035
+        }
+      },
+      {
+        "type": "boots",
+        "name": "boots",
+        "height": 0.45,
+        "ease_m": 0.022,
+        "cuff": true,
+        "bands": {
+          "cuff": true,
+          "cuff_radius_m": 0.009
+        },
+        "sole": {
+          "thickness_m": 0.008,
+          "width_m": 0.004
+        },
+        "material": {
+          "preset": "boot fleece",
+          "base_color_srgb": [
+            132,
+            88,
+            68
+          ],
+          "reference_size_m": 0.15,
+          "overrides": {
+            "surface": {
+              "sheen_weight": 0.25
+            }
+          }
+        },
+        "materials": {
+          "band": {
+            "preset": "boot fleece",
+            "base_color_srgb": [
+              138,
+              94,
+              74
+            ],
+            "reference_size_m": 0.15,
+            "overrides": {
+              "surface": {
+                "sheen_weight": 0.25
+              }
+            }
+          },
+          "sole": {
+            "preset": "felt",
+            "base_color_srgb": [
+              78,
+              52,
+              42
+            ],
+            "reference_size_m": 0.15
+          },
+          "cuff": {
+            "preset": "boot fleece",
+            "base_color_srgb": [
+              232,
+              220,
+              198
+            ],
+            "reference_size_m": 0.15,
+            "overrides": {
+              "surface": {
+                "sheen_weight": 0.25
+              }
+            }
+          }
+        },
+        "shaft_width_m": 0.012,
+        "toe_volume_m": 0.014,
+        "edge_finish": "rounded",
+        "cuff_roll": {
+          "height_m": 0.032,
+          "thickness_m": 0.009,
+          "inner_m": 0.014,
+          "lumps": 0.2
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,49 @@
+{
+ "garments": [
+  "blouse",
+  "shorts"
+ ],
+ "trials": [
+  {
+   "trial": 0,
+   "parameters": {
+    "clothing.garments.2.length": 0.24
+   },
+   "fit_score": 67.46098693577814,
+   "garment_score": 50.14911740492704,
+   "views": {
+    "sheet30_front": {
+     "blouse": {
+      "iou": 0.42395220936848094
+     },
+     "shorts": {
+      "iou": 0.7037872683319903,
+      "hem_err_px": 2.0
+     },
+     "score": 56.386973885023565
+    },
+    "sheet30_front_left": {
+     "blouse": {
+      "iou": 0.24359508435742552
+     },
+     "shorts": {
+      "iou": 0.6732949590092447,
+      "hem_err_px": 5.0
+     },
+     "score": 45.84450216833351
+    },
+    "sheet30_left": {
+     "blouse": {
+      "iou": 0.28829160530191456
+     },
+     "shorts": {
+      "iou": 0.6760259179265659,
+      "hem_err_px": 5.0
+     },
+     "score": 48.21587616142402
+    }
+   }
+  }
+ ],
+ "best": 0
+}

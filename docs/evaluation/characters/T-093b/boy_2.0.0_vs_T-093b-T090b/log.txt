@@ -1,0 +1,4 @@
+2026-11-18T23:00:34Z preview start: recipe 42b953723ceb {'engine': 'cycles', 'samples': 2, 'px': 120}
+2026-11-18T23:04:34Z preview pass: rv_boy_t090b/preview/preview.jpg
+2026-11-18T23:15:41Z sheet start: recipe 42b953723ceb {'engine': 'cycles', 'samples': 16, 'px': 360}
+2026-11-18T23:29:11Z sheet written: rv_boy_t090b/sheet.jpg 1120x2048
