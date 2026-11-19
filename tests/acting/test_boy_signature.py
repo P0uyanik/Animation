@@ -199,7 +199,6 @@ class Shot(unittest.TestCase):
         self.assertEqual(g["delay_frames"], 21.0)
 
 
-@unittest.skipUnless(RESOLVED.exists() and RENDER.exists(), "needs a prepared e908 shot and plush-render")
 def notice_frame(scene):
     """Mirror of the T-097B planner's notice delay at salience 1 (reaction.h): middle of delay_frames x (2 - s)."""
     ev = scene["events"][0]
@@ -228,6 +227,7 @@ def with_reaction(scene):
     return out
 
 
+@unittest.skipUnless(RESOLVED.exists() and RENDER.exists(), "needs a prepared e908 shot and plush-render")
 class Baked(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
