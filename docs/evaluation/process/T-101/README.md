@@ -176,13 +176,15 @@ lights, objects) are identical.
     regression_lineup_abc).
   - `plush_tests -tc="secondary motion*"`: 7/7 test cases.
 - `deform_test.py` on boy 2.0.0 and girl 0.11.0 published masters: exit 0, `missing: []`, `unmeasured: {}`.
-- `test_shot_eyes.py` (e905, cast current), 9/9 PASS:
-  - boy eye 0.0052 mm, bones 0.0015 mm;
-  - girl eye 0.0092 mm, bones 0.0015 mm.
+- `test_shot_eyes.py` (e905, cast current), final engine: **11/11 PASS**.
+  - Boy: eye 0.0052 mm, bones 0.0008 mm, chains 0.0002 mm over 48 joints.
+  - Girl: eye 0.0092 mm, bones 0.0008 mm, chains 0.0002 mm over 86 joints.
+  - With the input engine it also passes 11/11 (chains: girl 0.0077 mm, boy 0.0022 mm); see §3.2.
 - `test_emotions.py --blender` (e901 cast current, final engine): AC2, AC3, AC4, AC5 and AC6 all PASS. AC4 worst ratio
   0.83, entry/exit 0.0°, hand drift 2.3e-7 m.
-- `tools/check_all.py` wiring: the new `t101_checks` was run directly with the final engine (deform_test ×2,
-  test_shot_eyes, test_emotions). The full Blender tier (verify_charsys, regression and so on) was **not** run here;
+- `tools/check_all.py` wiring: the new `t101_checks` was run directly with the final engine. All 4 subchecks pass
+  (deform_test boy, deform_test girl, test_shot_eyes, test_emotions with AC2–AC6 PASS), in 22 min under CPU
+  contention. The full Blender tier (verify_charsys, regression and so on) was **not** run here;
   the gate runs it.
 - Fast gate tools: `test_gate_tools.py`, `fidelity/tests/test_ci.py`, `test_run_shot_current.py` and
   `check_doc_links.py` pass.
