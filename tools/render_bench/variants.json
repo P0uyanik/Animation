@@ -196,6 +196,35 @@
     "render.threads": 2,
     "cycles.samples": 16
    }
+  },
+  "sss_burley": {
+   "description": "skin/lip subsurface method Random Walk -> Christensen-Burley (render-time, shot copy only)",
+   "sss_method": "BURLEY"
+  },
+  "thr05_b6": {
+   "description": "combined: adaptive 0.05 + bounces max 6/diffuse 2/glossy 2/transmission 4 + persistent data",
+   "set": {
+    "cycles.adaptive_threshold": 0.05,
+    "cycles.max_bounces": 6,
+    "cycles.diffuse_bounces": 2,
+    "cycles.glossy_bounces": 2,
+    "cycles.transmission_bounces": 4,
+    "render.use_persistent_data": true
+   }
+  },
+  "thr03": {
+   "description": "128 spp, adaptive threshold 0.03",
+   "set": {
+    "cycles.adaptive_threshold": 0.03
+   }
+  },
+  "review16": {
+   "description": "review candidate: 16 spp, adaptive 0.05, persistent data",
+   "set": {
+    "cycles.samples": 16,
+    "cycles.adaptive_threshold": 0.05,
+    "render.use_persistent_data": true
+   }
   }
  }
 }

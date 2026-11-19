@@ -222,6 +222,14 @@ def main():
     for k, v in settings.items():
         set_path(scene, k, v)
     toggles = apply_toggles(scene, var.get("toggles", []))
+    if var.get("sss_method"):
+        n = 0
+        for m in bpy.data.materials:
+            for nd in (m.node_tree.nodes if m.node_tree else []):
+                if nd.type == "BSDF_PRINCIPLED" and nd.inputs["Subsurface Weight"].default_value > 0:
+                    nd.subsurface_method = var["sss_method"]
+                    n += 1
+        toggles["sss_method"] = n
     if var.get("fibre_keep") is not None:
         toggles["fibre_keep"] = fibre_density(scene, float(var["fibre_keep"]))
     if var.get("shadow_catcher_fg"):
