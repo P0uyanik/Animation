@@ -5,7 +5,7 @@
    "yaw_deg": 0,
    "iris": {
     "radius": 0.446,
-    "pupil": 0.212
+    "pupil": 0.223
    },
    "lids": {
     "upper_edge_deg": 38,
@@ -17,11 +17,24 @@
     "lower_thickness_m": 0.0005
    },
    "lash": {
+    "srgb": [
+     96,
+     58,
+     42
+    ],
     "span_deg": 52,
-    "thick_m": 0.0032,
+    "thick_m": 0.0034,
     "strands": {
      "from_deg": 22,
-     "to_deg": 48
+     "to_deg": 48,
+     "length_m": [
+      0.002,
+      0.0028,
+      0.0032
+     ]
+    },
+    "lower_strands": {
+     "count": 0
     }
    },
    "socket": {

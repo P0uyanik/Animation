@@ -130,7 +130,7 @@ def pupils(part, out, a):
         d = os.path.join(out, c["tag"])
         os.makedirs(d, exist_ok=True)
         subprocess.run([sys.executable, os.path.join(ROOT, "tools", "bpy_blender.py"), "-b", "--factory-startup",
-                        os.path.abspath(c["blend"]), "-P", os.path.join(HERE, "pupil_masks.py"), "--", d],
+                        "-P", os.path.join(HERE, "pupil_masks.py"), "--", os.path.abspath(c["blend"]), d],
                        stdout=open(os.path.join(d, "log.txt"), "w"), stderr=subprocess.STDOUT, cwd=ROOT, check=True)
         readability.main([d, "--frames", "1", "2", "--eye", "char.L=51", "--eye", "char.R=102", "--cup-threshold", "0",
                           "--pupil-threshold", "8", "--out", d])

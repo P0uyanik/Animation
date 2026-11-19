@@ -1,6 +1,6 @@
 """T-137 pupil ID masks of one character master at shot size (640 x 360), for tools/review/readability.py.
 
-    blender -b --factory-startup <master.blend> -P pupil_masks.py -- <out dir>
+    blender -b --factory-startup -P pupil_masks.py -- <master.blend> <out dir>
 
 Uses the T-123 ID material unchanged (docs/evaluation/tools/T-123/render_masks.material: the painted pupil disc on the
 front half of each eyeball, from spec.resolved.json next to the master). Left pupil = 51, right = 102. The glasses lens
@@ -21,7 +21,8 @@ spec = importlib.util.spec_from_file_location("render_masks", os.path.join(ROOT,
 RM = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(RM)
 
-out = sys.argv[sys.argv.index("--") + 1]
+blend, out = sys.argv[sys.argv.index("--") + 1:][:2]
+bpy.ops.wm.open_mainfile(filepath=os.path.abspath(blend))
 cfg = json.load(open(os.path.join(os.path.dirname(bpy.data.filepath), "spec.resolved.json")))["face"]["eyes"]
 sc = bpy.context.scene
 for o in list(sc.objects):
