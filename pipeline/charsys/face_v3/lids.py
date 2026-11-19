@@ -326,6 +326,69 @@ def fit_closed_lids(up, lash, T, ecfg, r, fit, close_key, closed_thickness_m=Non
                 rep["keys"][k.name] = round(float(shift.max()), 5)
         ob.data.update()
         rep.setdefault("shift_max_m", {})[ob.name] = round(moved, 5)
+    if fit.get("lash_curve") and lash is not None:  # T-137 (opt-in): the closed eye shows a dark lash curve
+        rep["lash_curve"] = curve_closed_lash(lash, T, r, fit["lash_curve"], a_close)
+    return rep
+
+
+def curve_closed_lash(lash, T, r, cfg, a_close):
+    """spec.face.eyes.lids.closed_fit.lash_curve = {"out_m": o, "sag_deg": s, "corner_lift_deg": l, "start": c0,
+    "thicken": t, "keys": {key name: sag factor}} (T-137, opt-in; absent = the lash keys are not touched).
+
+    A closing upper lid carries its lash line down to the lid seam, where the lower lid shell and the socket skin over
+    it (both further out than the upper lid) cover it: a closed eye shows no lash. For every shape key of the lash
+    that closes it (closure c per vertex, as fit_closed_lids), weighted w = smoothstep((c - start) / (1 - start)):
+      * the lash moves out along its eye-frame radius by w * out_m (in front of the lower lid and its skin);
+      * it turns about the frame's x axis by w * (sag_deg * (1 - u^2) - corner_lift_deg * u^2) downwards, u = the
+        vertex's rest |x| over the lash's half-width: the middle sags, the corners rise (a downward curve);
+      * thicken (optional, default 1): its rest offset from the lash's rest centre radius is scaled, w-weighted.
+    keys maps a key name (in-betweens "Name@NN" use Name's entry) to a factor on sag_deg and corner_lift_deg
+    (0 = straight line, negative = an upward arc for a laughing eye); keys not listed use 1. Open keys (c = 0) and
+    the basis do not change. Returns a report."""
+    import numpy as np
+    kb = lash.data.shape_keys.key_blocks if lash.data.shape_keys else None
+    if kb is None:
+        return {"skipped": "no shape keys"}
+    out_m, sag, lift = _f(cfg, "out_m", 0.003), math.radians(_f(cfg, "sag_deg", 6.0)), math.radians(_f(cfg, "corner_lift_deg", 4.0))
+    start, thicken = min(_f(cfg, "start", 0.6), 0.999), _f(cfg, "thicken", 1.0)
+    factors = cfg.get("keys") or {}
+    Tm = np.array(T)
+    Ti = np.linalg.inv(Tm)
+    mw = np.array(lash.matrix_world)
+    mwi = np.linalg.inv(mw)
+    n = len(lash.data.vertices)
+
+    def frame_coords(data):
+        co = np.empty(n * 3)
+        data.foreach_get("co", co)
+        w = co.reshape(n, 3) @ mw[:3, :3].T + mw[:3, 3]
+        return w @ Ti[:3, :3].T + Ti[:3, 3]
+
+    q0 = frame_coords(kb[0].data)
+    th0 = np.arctan2(q0[:, 2], -q0[:, 1])
+    rho0 = np.linalg.norm(q0, axis=1)
+    mid = float(np.median(rho0))
+    u2 = np.clip(np.abs(q0[:, 0]) / max(float(np.abs(q0[:, 0]).max()), 1e-9), 0.0, 1.0) ** 2
+    rep = {"out_m": out_m, "sag_deg": round(math.degrees(sag), 2), "corner_lift_deg": round(math.degrees(lift), 2),
+           "start": start, "keys": {}}
+    for k in kb[1:]:
+        q = frame_coords(k.data)
+        c = np.clip((th0 - np.arctan2(q[:, 2], -q[:, 1])) / a_close, 0.0, 1.0)
+        w = _smoothstep((c - start) / (1.0 - start))
+        if w.max() < 1e-6:
+            continue
+        f = float(factors.get(k.name.split("@")[0], factors.get(k.name.split("@")[0].split(".")[0], 1.0)))
+        ang = w * f * (sag * (1.0 - u2) - lift * u2)  # + = the front moves down (rotation about the frame's x axis)
+        ca, sa = np.cos(ang), np.sin(ang)
+        y, z = q[:, 1] * ca - q[:, 2] * sa, q[:, 1] * sa + q[:, 2] * ca
+        q = np.stack([q[:, 0], y, z], axis=1)
+        rho = np.linalg.norm(q, axis=1)
+        new = rho + w * out_m + w * (thicken - 1.0) * (rho0 - mid)
+        q = q * (new / np.maximum(rho, 1e-12))[:, None]
+        wco = q @ Tm[:3, :3].T + Tm[:3, 3]
+        k.data.foreach_set("co", (wco @ mwi[:3, :3].T + mwi[:3, 3]).ravel())
+        rep["keys"][k.name] = round(float(w.max()), 3)
+    lash.data.update()
     return rep
 
 

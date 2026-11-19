@@ -1,0 +1,36 @@
+{
+ "_note": "T-137 F1a: auburn girl eyes through the glasses, override on 0.13.0 (see README.md). Eyes only.",
+ "face": {
+  "eyes": {
+   "yaw_deg": 0,
+   "iris": {
+    "radius": 0.446,
+    "pupil": 0.212
+   },
+   "lids": {
+    "upper_edge_deg": 38,
+    "lower_edge_deg": -36,
+    "upper_curve": 1.0,
+    "lower_curve": 0.15,
+    "upper_roll_deg": -18,
+    "upper_gap": 0.012,
+    "lower_thickness_m": 0.0005
+   },
+   "lash": {
+    "span_deg": 52,
+    "thick_m": 0.0032,
+    "strands": {
+     "from_deg": 22,
+     "to_deg": 48
+    }
+   },
+   "socket": {
+    "ramp_deg": 12,
+    "reach_deg": 36,
+    "carve_reach": 0.42,
+    "corner_deg": 46,
+    "clearance_m": 0.0035
+   }
+  }
+ }
+}
