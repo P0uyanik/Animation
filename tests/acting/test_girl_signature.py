@@ -219,6 +219,33 @@ class Bake(unittest.TestCase):
         self.assertEqual(out.returncode, 0, out.stdout + out.stderr)
         self.assertNotIn("FAIL", out.stdout)
 
+    def test_library_clips_pass_animcheck(self):
+        """girl_chin_think and girl_point_down on her package (the bake's), with her profile and life: T-061 metrics."""
+        import subprocess
+        render = ROOT / "build" / "apps" / "render-cli" / "plush-render"
+        if not render.is_file():
+            self.skipTest("no engine build (build/apps/render-cli/plush-render)")
+        scene = json.loads(json.dumps(self.s))
+        scene["characters"][0]["asset"] = next(c for c in self.bake["characters"] if c["name"] == "girl")["package"]
+        scene["actions"] = [{"type": "clip", "character": "girl", "clip": "idle_relaxed", "base": True},
+                            {"type": "look", "character": "girl", "start": 1, "end": 200, "target": [0.0, 0.45, 0.42]},
+                            {"type": "clip", "character": "girl", "clip": "girl_chin_think", "start": 10},
+                            {"type": "clip", "character": "girl", "clip": "girl_point_down", "start": 80}]
+        scene["frameEnd"] = 170
+        scene.pop("events", None)
+        scene.pop("production", None)
+        out = SHOT.parent / "build" / "test_library_clips"
+        out.mkdir(parents=True, exist_ok=True)
+        sp, bp = out / "lib.scene.json", out / "lib.bake.json"
+        sp.write_text(json.dumps(scene))
+        r = subprocess.run([str(render), str(sp), "--bake", str(bp)], capture_output=True, text=True)
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        self.assertNotIn("warning", (r.stdout + r.stderr).lower())
+        r = subprocess.run([sys.executable, str(ROOT / "tools" / "animcheck" / "animcheck.py"), "--bake", str(bp), "--scene", str(sp),
+                            "--thresholds", str(ROOT / "tools" / "animcheck" / "thresholds.json"), "--check"], capture_output=True, text=True)
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        self.assertNotIn("FAIL", r.stdout)
+
     def test_hand_at_chin(self):
         import measure_girl
         rows = {r["frame"]: r for r in measure_girl.measure(self.bake)}

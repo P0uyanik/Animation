@@ -215,7 +215,7 @@
    "yawDeg": 0.0,
    "personality": "girl_auburn_bun_glasses",
    "life": {
-    "blinkInterval": 1.6667,
+    "blinkInterval": 1.6666,
     "headFollow": 0.35,
     "gaze": {
      "assistPitchDeg": 5.0,

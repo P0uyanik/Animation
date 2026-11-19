@@ -22,7 +22,7 @@ content/personality/girl_auburn_bun_glasses.json), so a clip authored at 24 fps 
 the reference durations.
 
 Clips (24 fps, right arm, mirrorable; mask hips, spine, chest, right arm and fingers; rest = the shared stance arms):
-  girl_chin_think   rest -> hand to chin (brisk 14 f) -> hold 15 f -> lower (14 f)                  invented rise / lower
+  girl_chin_think   rest -> hand to chin (brisk 14 f) -> hold 15 f -> lower (18 f)                  invented rise / lower
   girl_point_down   rest -> lean and point down (17 f) -> hold 22 f -> draw back (20 f) -> straighten (15 f)
   girl_wonder_point the watertable sequence in one: rise to the chin, hold 15 f, leave the chin 7 f, lean and point
                     17 f, hold 22 f, draw back 20 f, straighten 15 f, rest
@@ -136,10 +136,10 @@ def clip_chin_think():
     a = 2
     b = a + cf(GB.WONDER[0][1])   # brisk rise (girl_beats.WONDER)
     c = b + cf(15)   # WT chin hold [0, 15)
-    d = c + cf(14)   # lower (invented, a short return)
-    n = int(math.ceil(d + cf(3)))
+    d = c + cf(18)   # lower (invented; long enough for animcheck's ease-out limit)
+    n = int(math.ceil(d + cf(8)))  # a held rest tail: the wrist and fingers arrive after the shoulder (succession)
     beats = [CP.Beat(a, rest, anticipation=0.06, ant=0.15, overshoot=0.03, settle=0.25, power=1.5),
-             CP.Beat(b, chin, power=2.0), CP.Beat(c, chin, power=1.8), CP.Beat(d, rest)]
+             CP.Beat(b, chin, power=2.0), CP.Beat(c, chin, power=2.4), CP.Beat(d, rest)]
     keys = CP.perform(beats, n, delays())
     k = [(a, 0.0, dict(power=2.0)), (b, 0.25, dict(power=2.0)), (c, 0.25, dict(power=2.0)), (d, 0.0, None)]
     return finish(keys, k, n, "girl_chin_think",

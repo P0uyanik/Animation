@@ -5,8 +5,10 @@ face stays the modelled closed gentle smile. Everything is character data (profi
 shot; no shared code, shared test or other character was changed by this task.
 
 Clip: [e908_s010.mp4](e908_s010.mp4) (Cycles, 640×360, 16 samples, 156 frames @24) ·
-strip: [strip.jpg](strip.jpg) (reference moments above, e908 below) · cheap preview first:
-[preview_strip.jpg](preview_strip.jpg) (Cycles 8 samples, 480×270, eight key frames).
+strip: [strip.jpg](strip.jpg) (reference moments above, e908 below) · cheap previews first (Cycles 8 samples,
+480×270): [preview_strip.jpg](preview_strip.jpg) (eight key frames of the first full pass: the camera at 16° and the
+lean hid her face at the point and the delight, the cup stood in front of the hand) and
+[preview_after_fixes.jpg](preview_after_fixes.jpg) (f040 wonder, f100 delighted with the camera at 7° and the glance up).
 
 ## The shot: `episodes/e908_girl_acting/shots/s010`
 `make_shot.py` writes it (cast `"current"`, girl 0.11.0). She stands at a small table with a felt cup. Beats (scene
@@ -42,7 +44,7 @@ profile's `reaction.events` carry the same choices for the planner (below).
 | `content/clips/girl_point_down.clip.json` | rest → lean and point down 17 f → hold 22 f → draw back 20 f → straighten 15 f |
 | `content/clips/girl_wonder_point.clip.json` | the watertable signature in one clip (rise, WT [0, 96) beats); used in e908 |
 | `episodes/e908_girl_acting/` | `make_shot.py`, `make_girl_clips.py` (Blender, shared clip helpers read-only), `girl_arm_ik.py` (pose solver on her proportions), `girl_beats.py` (beat table shared by clips and shot), `calibrate_clips.py` + `clip_calibration.json`, `measure_girl.py`, the shot |
-| `tests/acting/test_girl_signature.py` | 19 signature tests (data always; bake checks when a bake exists) |
+| `tests/acting/test_girl_signature.py` | 20 signature tests (data always; bake checks when a bake exists, the library-clip check also needs the engine build) |
 | this folder | evidence: reports of the final bake (`acting.json`, `personality.json`, `animcheck.json`, `timing.json`, `e908_measure.json`), `make_strip.py`, clip, strips |
 
 ## Profile values and sources
@@ -73,9 +75,11 @@ profile's `reaction.events` carry the same choices for the planner (below).
 | T-104 timing (`timing.py`) | 0 warnings |
 | hand at chin (wonder hold f37–f49) | knuckles 26 mm mean (max 28) from the chin point under her chin: the curled fingers rest against it |
 | index at the cup (point hold) | 1.1° mean (max 2.7°) off the cup |
-| delighted mouth | `Smile` 0 before the success event, 0.9 in the beat, 0 at f156 (closed rest smile) |
+| delighted mouth | `Smile` 0 before the success event, 0.9 in the beat, 0 from f136 to the end (closed rest smile) |
+| engine warnings (bake log) | none (an earlier `blinkInterval` of 1.6667 s rounded above the 40 f limit and was clamped with a warning; now 1.6666 s) |
+| library clips `girl_chin_think`, `girl_point_down` on her package (`animcheck.py --check`) | pass (the lower of `girl_chin_think` needed 18 f and a stronger ease, it failed `ease_out` / `stop_step` at 14 f) |
 
-Commands: `python3 tests/acting/test_girl_signature.py` (19 OK with the bake), `build/tests/plush_tests`
+Commands: `python3 tests/acting/test_girl_signature.py` (20 OK with the bake and the engine build; 16 + 4 skipped without a bake), `build/tests/plush_tests`
 (157/157), `python3 tools/animcheck/run_gate.py --render build/apps/render-cli/plush-render` (all PASS, acting
 0 warnings), `python3 pipeline/clips/tests/test_clip_files.py --selftest` (the girl clips PASS).
 

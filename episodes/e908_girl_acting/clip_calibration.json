@@ -105,6 +105,22 @@
     -0.46,
     0.88
    ]
+  },
+  {
+   "chin_mean_mm": 34.1,
+   "chin_max_mm": 36.0,
+   "point_mean_deg": 1.1,
+   "point_max_deg": 2.7,
+   "chin_target_before": [
+    0.012,
+    0.672,
+    0.11
+   ],
+   "point_dir_before": [
+    0.0,
+    -0.46,
+    0.88
+   ]
   }
  ],
  "cup": [

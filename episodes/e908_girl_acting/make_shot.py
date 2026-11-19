@@ -42,7 +42,7 @@ if os.path.isfile(_cal) and "cup" in json.load(open(_cal)):
 CAMERA_AZ, CAMERA_ELEV, CAMERA_DIST = 24.0, 7.0, 1.45  # from her left front, a little above (WT three-quarter): the pointing arm is in front of her, the face stays readable when she leans in
 CAMERA_TARGET = [-0.02, 0.62, 0.10]
 FOCAL = 40.0
-BLINK_S = round(40 / 24, 4)  # T-106 watertable girl: 35.7 blinks per visible minute = one per 40 f (inside limits.blink_interval_frames)
+BLINK_S = math.floor(40 / 24 * 1e4) / 1e4  # T-106 watertable girl: 35.7 blinks per visible minute = one per 40 f (inside limits.blink_interval_frames)
 
 # beats (scene frames)
 E1 = 13
