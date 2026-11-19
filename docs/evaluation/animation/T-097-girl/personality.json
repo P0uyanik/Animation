@@ -44,40 +44,40 @@
     "count": 4,
     "frames": [
      41,
-     66,
+     67,
      95,
-     132
+     133
     ],
     "durations": [
+     4.0,
      3.0,
-     3.0,
-     3.0,
+     4.0,
      3.0
     ],
     "double_blinks": [],
     "intervals": [
-     25.0,
-     29.0,
-     37.0
+     26.0,
+     28.0,
+     38.0
     ],
-    "mean_interval": 30.33
+    "mean_interval": 30.67
    },
    "gestures": [
     {
-     "label": "girl clip girl_wonder_point @19",
-     "reach_frames": 10.0,
-     "chord_mm": 246.7,
+     "label": "girl clip girl_wonder_point @17.5",
+     "reach_frames": 9.0,
+     "chord_mm": 247.1,
      "checked": true,
-     "peak_H_per_frame": 0.2283,
+     "peak_H_per_frame": 0.2241,
      "hold_frames": 29.0,
      "kind": "clip"
     }
    ],
    "idle": {
-    "frames": 5,
-    "median_head_H_per_frame": 0.00395,
+    "frames": 4,
+    "median_head_H_per_frame": 0.004,
     "p95_head_H_per_frame": 0.00405,
-    "head_amplitude_H": 0.00944,
+    "head_amplitude_H": 0.00797,
     "profile_idle_motion_amplitude_H": 0.006
    },
    "failures": []
