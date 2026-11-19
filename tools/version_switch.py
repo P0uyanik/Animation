@@ -4,7 +4,7 @@
     python3 tools/version_switch.py --character <id> --version <x.y.z> --spec <path> [--overrides <file> ...] \
         --task T-NNN --decision "<owner wording>" --decision-ref "docs/process/OWNER_DECISIONS.md <date>" \
         --blender <exe> [--notes "..."] [--identity-change-approved-by "..."] [--fidelity-json <fidelity.json>] \
-        [--work <dir>] [--dry-run]
+        [--work <dir>] [--dry-run] [--publish-only]
 
 Steps, in this order (each one only after the previous one succeeded):
   1. validate   everything below is checked before anything is written, and every problem is reported at once:
@@ -31,6 +31,14 @@ Steps, in this order (each one only after the previous one succeeded):
                 other baseline entries and goldens are hashed before and after).
   7. trailers   prints the exact "Supervisor-Approved: <path>" block for every guarded path (tools/guarded_paths.txt)
                 this run wrote; the Supervisor adds it to the approval commit.
+
+--publish-only (T-094) runs steps 1, 2, the fidelity score of step 4 and step 6 only: the new version is validated,
+built and published (its status stays "candidate"), and the score is copied to
+docs/evaluation/characters/<task>/fidelity/<id>/ for the owner's review. It does NOT approve (no pointer moves), does
+NOT touch docs/evaluation/characters/fidelity_baseline.json and does NOT write a golden baseline; step 6 checks that
+(the whole baseline file, the store pointers and the golden root are compared before and after). Making the version
+current later is a normal run without --publish-only on a new number, or by hand (asset_store approve + baseline +
+golden), after the owner's decision.
 
 --dry-run runs step 1 and prints every step, command and file without writing anything (exit 1 when step 1 finds a
 problem). The frozen-manifest and immutability checks are not changed: this tool only calls asset_store.py, which
@@ -142,12 +150,10 @@ def golden_files() -> list[str]:
 
 
 def preset_family(preset_id):
-    """(name, number) of the material preset family an id resolves from, or None when unknown."""
-    if MATERIALS.is_skin_preset(preset_id):
-        return V.parse(MATERIALS.load_skin_library()["family"])
-    if preset_id in MATERIALS.load_library()["presets"]:
-        return ("presets", 1)
-    return None
+    """(name, number) of the material preset family an id resolves from (presets/1, the presets/2 skin family, the
+    T-092 presets/3 library), or None when unknown. materials.builder decides, so the build and this check agree."""
+    family = MATERIALS.preset_family(preset_id)
+    return V.parse(family) if family else None
 
 
 def presets_problems(spec: dict) -> list[str]:
@@ -190,7 +196,10 @@ class Plan:
         self.store = root / "assets" / "characters" / self.cid / "versions"
         self.version_dir = self.store / self.version
         self.golden_dir = root / GOLDEN_ROOT / self.cid / self.version
-        self.evidence_dir = root / "docs" / "evaluation" / "characters" / self.task / "fidelity"
+        self.publish_only = bool(getattr(a, "publish_only", False))
+        # publish-only: one task may publish several characters, so the evidence goes into a folder per character
+        self.evidence_dir = (root / "docs" / "evaluation" / "characters" / self.task / "fidelity"
+                             / (self.cid if self.publish_only else ""))
         self.work = Path(os.path.abspath(a.work)) if a.work else root / "build" / "version_switch" / f"{self.cid}-{self.version}"
         self.spec_rel = self.overrides_rel = None
         self.spec = None
@@ -330,8 +339,10 @@ class Plan:
         return [f"{rel(self.root, self.version_dir)}/{n}" for n in names]
 
     def predicted_writes(self) -> list[str]:
-        return (self.version_files() + [rel(self.root, self.store / "index.json"), FIDELITY_BASELINE]
-                + [f"{rel(self.root, self.evidence_dir)}/{n}" for n in ("fidelity.json", "report.md")]
+        evidence = [f"{rel(self.root, self.evidence_dir)}/{n}" for n in ("fidelity.json", "report.md")]
+        if self.publish_only:  # no baseline entry, no golden baseline
+            return self.version_files() + [rel(self.root, self.store / "index.json")] + evidence
+        return (self.version_files() + [rel(self.root, self.store / "index.json"), FIDELITY_BASELINE] + evidence
                 + [f"{rel(self.root, self.golden_dir)}/{n}" for n in golden_files()])
 
     # ----------------------------------------------------------------------- commands
@@ -420,6 +431,14 @@ def snapshot(plan: Plan) -> dict[str, str]:
         if p.is_file():
             out[rel(root, p)] = sha256_file(p)
     data = read_json(root / FIDELITY_BASELINE)
+    if plan.publish_only:  # the whole baseline file and the store pointers of this character stay as they are
+        out[FIDELITY_BASELINE] = sha256_file(root / FIDELITY_BASELINE)
+        idx = AS.load_index(str(plan.store), plan.cid)
+        kept = {"pointers": idx.get("pointers"), "versions": {k: v for k, v in idx.get("versions", {}).items()
+                                                              if k != plan.version}}
+        out["<store pointers and existing versions>"] = hashlib.sha256(
+            json.dumps(kept, sort_keys=True).encode()).hexdigest()
+        return out
     others = {k: v for k, v in data.items() if k != "characters"}
     others["characters"] = {k: v for k, v in data.get("characters", {}).items() if k != plan.cid}
     out["<fidelity_baseline other entries>"] = hashlib.sha256(json.dumps(others, sort_keys=True).encode()).hexdigest()
@@ -442,7 +461,7 @@ def execute(plan: Plan, runner: Runner) -> int:
     plan.work.mkdir(parents=True, exist_ok=True)
     before = snapshot(plan)
     written = plan.written
-    report = {"character": cid, "version": ver, "task": plan.task, "steps": []}
+    report = {"character": cid, "version": ver, "task": plan.task, "publish_only": plan.publish_only, "steps": []}
 
     def step(name, detail):
         print(f"[version_switch] {name}: {detail}", flush=True)
@@ -455,7 +474,11 @@ def execute(plan: Plan, runner: Runner) -> int:
     step("publish", asset_store(plan.publish_argv()))
     written += [rel(root, p) for p in sorted(plan.version_dir.iterdir())] + [rel(root, plan.store / "index.json")]
     # 3. approve
-    step("approve", asset_store(plan.approve_argv()))
+    if plan.publish_only:
+        step("approve", "skipped (--publish-only): the approved pointer stays on "
+                        f"{AS.load_index(str(plan.store), cid)['pointers'].get('approved')}")
+    else:
+        step("approve", asset_store(plan.approve_argv()))
     # 4. fidelity score + baseline entry
     if plan.a.fidelity_json:
         fsrc = Path(plan.a.fidelity_json)
@@ -470,6 +493,16 @@ def execute(plan: Plan, runner: Runner) -> int:
         if src.is_file():
             shutil.copyfile(src, plan.evidence_dir / name)
             written.append(rel(root, plan.evidence_dir / name))
+    if plan.publish_only:
+        prev = plan.previous.get("score")
+        drop = (float(prev) - float(score)) if prev is not None else None
+        limit = (read_json(root / FIDELITY_BASELINE).get("policy") or {}).get("maximum_score_drop")
+        step("score", f"{cid} {ver}: {round(float(score), 4)} (current {plan.parent}: {prev})"
+                      + (f"; drop {round(drop, 4)} > {limit}: owner review" if drop is not None and limit is not None
+                         and drop > limit else "")
+                      + f"; {FIDELITY_BASELINE} not changed (--publish-only)")
+        step("golden", "skipped (--publish-only): no golden baseline written")
+        return finish(plan, runner, before, report)
     data = read_json(root / FIDELITY_BASELINE)
     data.setdefault("characters", {})[cid] = plan.new_entry(score)
     write_json(root / FIDELITY_BASELINE, data)
@@ -489,7 +522,16 @@ def execute(plan: Plan, runner: Runner) -> int:
     shutil.copytree(cand, plan.golden_dir)
     written += [rel(root, p) for p in sorted(plan.golden_dir.rglob("*")) if p.is_file()]
     step("golden", rel(root, plan.golden_dir))
-    # 6. cast check, affected tests, nothing else touched
+    return finish(plan, runner, before, report)
+
+
+def finish(plan: Plan, runner: Runner, before: dict, report: dict) -> int:
+    """Steps 6 and 7: cast check, affected tests, nothing else touched; trailers."""
+    root, logs, written = plan.root, plan.work / "logs", plan.written
+
+    def step(name, detail):
+        print(f"[version_switch] {name}: {detail}", flush=True)
+        report["steps"].append({"step": name, "detail": detail})
     run, need_blender = plan.tests()
     failed = []
     for t in run:
@@ -499,7 +541,7 @@ def execute(plan: Plan, runner: Runner) -> int:
         if runner.run([sys.executable, str(root / t)], logs / "checks.log", root):
             failed.append(t)
     after = snapshot(plan)
-    new = (rel(root, plan.version_dir) + "/", rel(root, plan.golden_dir) + "/")
+    new = (rel(root, plan.version_dir) + "/",) + (() if plan.publish_only else (rel(root, plan.golden_dir) + "/",))
     touched = sorted(k for k in set(before) | set(after) if before.get(k) != after.get(k) and not k.startswith(new))
     if touched:
         failed.append("files outside this switch changed: " + ", ".join(touched))
@@ -519,10 +561,29 @@ def execute(plan: Plan, runner: Runner) -> int:
 def dry_run(plan: Plan) -> int:
     a = plan.a
     run, need_blender = plan.tests() if plan.spec is not None else ([], [])
-    lines = ["[version_switch] DRY RUN: nothing is written",
+    lines = ["[version_switch] DRY RUN: nothing is written" + (" (--publish-only)" if plan.publish_only else ""),
              f"1. validate  {'OK' if not plan.problems else 'FAILED'}"]
     lines += [f"     - {p}" for p in plan.problems]
-    if plan.spec is not None and not plan.problems:
+    if plan.spec is not None and not plan.problems and plan.publish_only:
+        lines += [
+            f"2. build     {' '.join(plan.build_command())}",
+            f"   publish   asset_store {' '.join(json.dumps(x) if ' ' in x else x for x in plan.publish_argv())}",
+            f"             -> {rel(plan.root, plan.version_dir)}/ (parent {plan.parent}; status candidate)",
+            "3. approve   skipped (--publish-only): no pointer moves",
+            "4. score     " + (f"score from {a.fidelity_json}" if a.fidelity_json else ' '.join(plan.fidelity_command())),
+            f"             -> {rel(plan.root, plan.evidence_dir)}/; {FIDELITY_BASELINE} not changed (--publish-only)",
+            "5. golden    skipped (--publish-only): no golden baseline",
+            "6. checks    " + ", ".join(run) + "; then: no other file changed (baseline file, pointers, goldens)",
+        ]
+        if need_blender:
+            lines.append("             need Blender (listed, not run): " + ", ".join(need_blender))
+        writes = plan.predicted_writes()
+        lines.append("7. files     (predicted; report.md only when the fidelity run writes one"
+                     + ("; spec.resolved.json because the body generator fits the spec" if plan.fitted else "") + ")")
+        lines += [f"     {w}" for w in writes]
+        lines.append("   trailers  (predicted)")
+        lines += [f"     {t}" for t in trailer_block(writes, plan.root)]
+    elif plan.spec is not None and not plan.problems:
         lines += [
             f"2. build     {' '.join(plan.build_command())}",
             f"   publish   asset_store {' '.join(json.dumps(x) if ' ' in x else x for x in plan.publish_argv())}",
@@ -564,6 +625,9 @@ def parse(argv=None):
     ap.add_argument("--fidelity-json", default="", help="reuse the fidelity.json of an earlier run of this build")
     ap.add_argument("--work", default="", help="new or empty work folder (default build/version_switch/<id>-<ver>)")
     ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--publish-only", action="store_true",
+                    help="validate, build, publish and score only: no approve, no fidelity_baseline.json change, no "
+                         "golden baseline (T-094)")
     ap.add_argument("--root", default=str(ROOT), help=argparse.SUPPRESS)  # tests: a fixture repository
     a = ap.parse_args(argv)
     a.spec = os.path.relpath(os.path.abspath(a.spec), a.root) if os.path.isabs(a.spec) else a.spec

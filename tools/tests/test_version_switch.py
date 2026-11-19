@@ -17,7 +17,14 @@ tools/regression/run.py. The real repository is only read (and checked to be unc
    writes; owner decision missing or not recorded. Also: published / reused version, identity change without
    approval, unresolvable pin, another character's files, wrong identity, work folder inside a store.
 4. Failures during the run: a failing tool stops the switch; a check that changes another character's files is
-   reported; a second run of the same version is refused."""
+   reported; a second run of the same version is refused.
+5. T-094: presets/3 ids (T-092 library) resolve to presets/3: accepted with the presets/3 pin (also mixed with a
+   presets/2 skin id), refused with the presets/2 or default pin.
+6. T-094 --publish-only: dry run writes nothing and marks approve/baseline/golden as skipped; a run publishes the
+   version (status candidate) and copies the score to <task>/fidelity/<id>/, but the approved pointer, the whole
+   fidelity_baseline.json and the golden root are byte-identical, the regression tool is never called, and only the
+   version folder, the store index and the score evidence are written (exact trailer block); a second character of
+   the same task publishes next to the first; a check that edits the baseline file is reported."""
 from __future__ import annotations
 
 import contextlib
@@ -348,6 +355,113 @@ def test_failures(tmp: Path):
     check("trailers are still printed after a failed check", "Supervisor-Approved:" in out)
 
 
+def test_presets3(tmp: Path):
+    check("preset_family: presets/1, presets/2 skin, presets/3",
+          VS.preset_family("felt") == ("presets", 1) and VS.preset_family("skin-felt/2") == ("presets", 2)
+          and VS.preset_family("hoodie fleece/3") == ("presets", 3) and VS.preset_family("skin-felt/3") == ("presets", 3)
+          and VS.preset_family("no such preset") is None)
+    ok = {"--dry-run": [], "--identity-change-approved-by": "owner, 2099-01-01"}  # materials is an identity section
+    for name, assignments, pin in [
+            ("presets/3 spec with the presets/3 pin", {"skin": {"preset": "skin-felt/3"}}, "presets/3"),
+            ("presets/3 + presets/2 + presets/1 ids with the presets/3 pin",
+             {"skin": {"preset": "skin-felt/2"}, "hoodie": {"preset": "hoodie fleece/3"}, "felt": {"preset": "felt"}},
+             "presets/3")]:
+        root = fixture(tmp / name.replace("/", "_"))
+        spec = make_spec(A, "1.1.0", generators={"materials": pin})
+        spec["materials"]["assignments"] = {k: dict(v, base_color_srgb=[200, 180, 170]) for k, v in assignments.items()}
+        set_spec(root, spec)
+        code, out = run_main(argv(root, None, **ok))
+        check(f"accepted: {name}", code == 0 and "1. validate  OK" in out, out)
+    refused(tmp, "presets/3 id with the presets/2 pin", "belong(s) to presets/3, but the materials pin is presets/2",
+            lambda r: set_spec(r, make_spec(A, "1.1.0", preset="hoodie fleece/3",
+                                            generators={"materials": "presets/2"})))
+    refused(tmp, "presets/3 id with the default pin", "belong(s) to presets/3",
+            lambda r: set_spec(r, make_spec(A, "1.1.0", preset="skin-felt/3")))
+
+
+def test_publish_only(tmp: Path):
+    po = {"--publish-only": []}
+    root = fixture(tmp / "dry")
+    before = tree_hash(root)
+    code, out = run_main(argv(root, tmp / "dry" / "work", **po, **{"--dry-run": []}))
+    check("publish-only dry run exits 0", code == 0, out)
+    check("publish-only dry run: approve, baseline and golden skipped", "3. approve   skipped" in out
+          and "5. golden    skipped" in out and f"{VS.FIDELITY_BASELINE} not changed" in out
+          and "--write-baseline" not in out and f"     {VS.FIDELITY_BASELINE}\n" not in out + "\n", out)
+    check("publish-only dry run writes nothing", tree_hash(root) == before and not (tmp / "dry" / "work").exists())
+
+    root = fixture(tmp / "run")
+    store = root / f"assets/characters/{A}/versions"
+    idx_before = json.loads((store / "index.json").read_text())
+    baseline_before = (root / VS.FIDELITY_BASELINE).read_bytes()
+    golden_before = tree_hash(root / "docs/evaluation/regression/baselines")
+    beta_before = tree_hash(root / f"assets/characters/{B}")
+    old_before = tree_hash(store / "1.0.0")
+    runner = FakeRunner()
+    runner.root = root
+    code, out = run_main(argv(root, tmp / "run" / "work", **po), runner)
+    check("publish-only run exits 0", code == 0, out)
+    idx = json.loads((store / "index.json").read_text())
+    check("publish-only: version published as candidate", (store / "1.1.0" / "manifest.json").is_file()
+          and idx["versions"]["1.1.0"]["status"] == "candidate" and idx["versions"]["1.1.0"]["parent"] == "1.0.0",
+          idx["versions"].get("1.1.0"))
+    check("publish-only: pointers unchanged, no approve entry", idx["pointers"] == idx_before["pointers"]
+          and not any(h["action"] == "approve" and h["version"] == "1.1.0" for h in idx["history"]), idx["pointers"])
+    check("publish-only: fidelity_baseline.json byte-identical",
+          (root / VS.FIDELITY_BASELINE).read_bytes() == baseline_before)
+    check("publish-only: no golden baseline (golden root byte-identical)",
+          tree_hash(root / "docs/evaluation/regression/baselines") == golden_before
+          and not (root / f"docs/evaluation/regression/baselines/{A}/1.1.0").exists())
+    ev = root / f"docs/evaluation/characters/{TASK}/fidelity/{A}"
+    check("publish-only: score evidence in <task>/fidelity/<id>/",
+          json.loads((ev / "fidelity.json").read_text())["overall"]["score"] == 61.23456 and (ev / "report.md").is_file())
+    check("publish-only: the regression tool is never called; build, fidelity, then checks",
+          runner.calls[:2] == ["build_character.py", "run.py"] and runner.calls.count("run.py") == 1
+          and "check_cast.py" in runner.calls[2:], runner.calls)
+    check("publish-only: score and skipped steps reported", "approve: skipped (--publish-only)" in out
+          and "61.2346 (current 1.0.0: 60.0)" in out and "golden: skipped" in out, out)
+    vdir = f"assets/characters/{A}/versions/1.1.0"
+    expect = sorted([f"{vdir}/{n}" for n in (f"{A}_master.blend", "animation_compat.json", "build_report.json",
+                                             "components.json", "manifest.json", "spec.json")]
+                    + [f"assets/characters/{A}/versions/index.json"])
+    trailers = [line for line in out.splitlines() if line.startswith("Supervisor-Approved:")]
+    check("publish-only: exact trailer block (version folder + index only)",
+          trailers == [f"Supervisor-Approved: {p}" for p in expect], "\n".join(trailers))
+    report = json.loads((tmp / "run" / "work" / "version_switch.json").read_text())
+    check("publish-only: written files are the version, the index and the score evidence only",
+          report["ok"] and report["publish_only"] and sorted(report["written"]) == sorted(
+              expect + [f"docs/evaluation/characters/{TASK}/fidelity/{A}/{n}" for n in ("fidelity.json", "report.md")]),
+          report["written"])
+    check("publish-only: other character and older version byte-identical",
+          tree_hash(root / f"assets/characters/{B}") == beta_before and tree_hash(store / "1.0.0") == old_before)
+    check("publish-only: store verifies", AS.verify_version(str(store), "1.1.0", require_readonly=False)["ok"])
+    # a second character of the same task publishes next to the first (evidence per character)
+    write(root / f"assets/characters/{B}/spec/{B}.2.0.0.spec.json", make_spec(B, "2.0.0"))
+    write(root / f"docs/tasks/{TASK}.md", f"# {TASK}\n\n## Write-set\n`assets/characters/{A}/versions/**`, "
+          f"`assets/characters/{B}/versions/**`, `docs/evaluation/characters/{TASK}/**`\n")
+    write(root / "docs/process/OWNER_DECISIONS.md", "# Owner decisions\n\n## 2099-01-01\nAlpha 1.1.0, Beta 2.0.0.\n")
+    code, out = run_main(argv(root, tmp / "run" / "work-b", **po, **{
+        "--character": B, "--version": "2.0.0", "--spec": f"assets/characters/{B}/spec/{B}.2.0.0.spec.json"}), runner)
+    check("publish-only: second character of the same task (narrow claim without baseline/golden paths)",
+          code == 0 and (root / f"docs/evaluation/characters/{TASK}/fidelity/{B}/fidelity.json").is_file()
+          and (root / f"docs/evaluation/characters/{TASK}/fidelity/{A}/fidelity.json").is_file()
+          and (root / VS.FIDELITY_BASELINE).read_bytes() == baseline_before, out)
+    # a check that edits the baseline file is reported
+    root = fixture(tmp / "touch")
+    runner = FakeRunner(side_effect=("test_alpha_only.py", lambda: write(root / VS.FIDELITY_BASELINE, {"x": 1})))
+    runner.root = root
+    code, out = run_main(argv(root, tmp / "touch" / "work", **po), runner)
+    check("publish-only: a change to fidelity_baseline.json is reported", code == 1
+          and f"files outside this switch changed: {VS.FIDELITY_BASELINE}" in out, out)
+    root = fixture(tmp / "touch-golden")
+    runner = FakeRunner(side_effect=("test_alpha_only.py", lambda: write(
+        root / f"docs/evaluation/regression/baselines/{A}/1.1.0/golden.json", "{}")))
+    runner.root = root
+    code, out = run_main(argv(root, tmp / "touch-golden" / "work", **po), runner)
+    check("publish-only: a golden written for the new version is reported", code == 1
+          and f"docs/evaluation/regression/baselines/{A}/1.1.0/golden.json" in out, out)
+
+
 def real_repo_hash() -> str:
     h = hashlib.sha256()
     for p in [ROOT / VS.FIDELITY_BASELINE, *sorted((ROOT / "assets" / "characters").glob("*/versions/index.json"))]:
@@ -359,7 +473,8 @@ def main() -> int:
     real = real_repo_hash()
     with tempfile.TemporaryDirectory() as tmp:
         tmp = Path(tmp)
-        for test in (test_dry_run, test_full_switch, test_inconsistencies, test_failures):
+        for test in (test_dry_run, test_full_switch, test_inconsistencies, test_failures, test_presets3,
+                     test_publish_only):
             sub = tmp / test.__name__
             sub.mkdir()
             test(sub)
