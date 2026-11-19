@@ -15,7 +15,7 @@ approved version ("version": "current", run_shot.current_source), as evaluations
 own (pinned) cast. "baked bones reproduced" (< 0.01 mm) needs the engine's spring chains to stay joint-continuous
 (engine/anim/secondary.cpp, T-101): the DYN chain bones are connected in Blender. shot_render checks that on a few
 frames only, so the test also measures the joint gaps of every spring chain over all baked frames (same 0.01 mm).
-T-101: with the input engine, e905 on the current versions passes shot_render's 3 frames but has a 0.37 mm girl gap
+T-101: with the input engine, e905 on its own pinned cast passes shot_render's 3 frames but has a 0.37 mm girl gap
 at frame 48.)"""
 import argparse
 import json

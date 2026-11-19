@@ -14,7 +14,7 @@ reachable.
 | Test | Before (current versions) | Root cause fixed where | After |
 | --- | --- | --- | --- |
 | `pipeline/charsys/tests/deform_test.py` | IndexError (girl) | test harness: edges came from the unmasked mesh | 8/8 poses on both masters, exit 0 |
-| `pipeline/charsys/tests/test_shot_eyes.py` | passes its 3 sampled frames, but girl chain gaps of 0.37 mm at frame 48 (see below) | engine: `SpringChainSolver` (`engine/anim/secondary.cpp`); test: all-frames check | 10/10 PASS (§6) |
+| `pipeline/charsys/tests/test_shot_eyes.py` | passes on the current versions; the gap bug shows on older casts (see below) | engine: `SpringChainSolver` (`engine/anim/secondary.cpp`); test: all-frames check | 11/11 PASS (§6) |
 | `pipeline/clips/test_emotions.py` | AC2, AC3, AC4, AC5, AC6 FAIL | test scene data and stated intent (§4) | AC2–AC6 PASS |
 
 ## 2. Files changed
@@ -72,12 +72,20 @@ Tests (doctest):
   could not see this.
 
 **test_shot_eyes on the current versions.** With the input engine, e905 with cast "current" passes all 9 original
-checks (girl "baked bones reproduced" 0.0015 mm). shot_render samples only frames 1, 36 and 72, and the current girl's
-worst gap, 0.367 mm, is at frame 48. On girl 0.10.0 (T-077) the worst gap fell on frame 72.
+checks (girl "baked bones reproduced" 0.0015 mm). It also passes the new all-frames check (girl 0.0077 mm over 86
+chain joints, boy 0.0022 mm over 48).
+
+The current girl 0.11.0 does not reproduce the T-077 failure in e905. Neither does any shot that already casts the
+current versions: e907 and e908 stay at most 0.0091 mm with the input engine (§5). The bug shows on shots with older
+pinned casts:
+- e901: 23.8 mm on 75 frames;
+- e904 s010: 14.2 mm;
+- e905 on its own cast: 0.367 mm at frame 48. shot_render samples only frames 1, 36 and 72, so its 3-frame check
+  missed that frame.
 
 So the test now also measures every spring-chain joint over all baked frames, with the same 0.01 mm limit as
-"baked bones reproduced". This is a new check; no existing check changed. Results on e905 with cast current are in
-§6: the input engine fails it, the final engine passes.
+"baked bones reproduced". This is a new check; no existing check changed. It catches a gap on any frame of any
+future version.
 
 ### 3.3 test_emotions (T-077 §4.3)
 
