@@ -6,9 +6,10 @@ Reference first: every timing and face value below is read from the T-106 boy ro
 Status: implemented and tested on the current boy (2.0.0); not approved (the owner reviews the clip and strip).
 
 ## Evidence
-- `e908_boy_acting_s010.mp4`: Cycles, 640×360, 16 samples, the whole shot (f1-f179, 7.5 s).
+- `e908_boy_acting_s010.mp4`: Cycles (bpy 5.3.0, CPU), 640×360, 16 samples, the whole shot (f1-f179, 7.5 s); rendered
+  in four run_shot chunks (a container restart killed the first single run), encoded with ffmpeg (x264, crf 23).
 - `strip_vs_watertable.jpg`: top row the reference moments (WT f20, f50, f62, f81, f110), bottom row the same beats of
-  e908 (f20, f45, f53, f72, f160), from the Cycles frames.
+  e908 (f20, f45, f53, f72, f112 shrug, f165); f45 lands on a life blink (f43), from the Cycles frames.
 - `acting.json`, `personality.json`, `timing.json`, `animcheck.json`: the animcheck reports of the final bake.
 - Cheap previews (Cycles 8 spp, 480×270, single frames) were used while iterating; not committed.
 
