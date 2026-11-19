@@ -96,13 +96,25 @@
   "min_tile_pixels": 64,
   "tile_min_run": 3,
   "held_noise": {
-   "default": 0.03
+   "default": 0.03,
+   "background": 0.002,
+   "hair": 0.056,
+   "fibres": 0.045,
+   "skin": 0.027,
+   "cloth": 0.021
   },
   "flip_share": {
-   "default": 0.3
+   "default": 0.3,
+   "background": 0.01,
+   "hair": 0.405,
+   "fibres": 0.384,
+   "skin": 0.18,
+   "cloth": 0.161
   },
   "tile_flip_share": {
-   "default": 0.6
+   "default": 0.6,
+   "hair": 0.88,
+   "fibres": 0.82
   },
   "near_depth_tol": 0.01,
   "near_normal_tol_deg": 10.0,

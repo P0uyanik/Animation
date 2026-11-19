@@ -25,6 +25,10 @@ import run as RUN  # noqa: E402
 import shot as SH  # noqa: E402
 
 THR = RUN.load_thresholds()
+# flicker fixtures are synthetic: they use the generic limits (the "default" entries), not the per-region numbers
+# measured on e907 / e909
+FLICKER_GENERIC = {**THR["flicker"], **{k: {"default": THR["flicker"][k]["default"]}
+                                        for k in ("held_noise", "flip_share", "tile_flip_share")}}
 F = 40
 
 
@@ -210,11 +214,23 @@ class Flicker(unittest.TestCase):
     def tearDown(self):
         self.tmp.cleanup()
 
-    def run_frames(self, lum, **kw):
+    def run_frames(self, lum, thr=FLICKER_GENERIC, **kw):
         d = os.path.join(self.tmp.name, "f")
         FX.write_frames(d, lum, **kw)
         fr, data = FR.load_dir(d)
-        return flicker.find(fr, data, THR["flicker"])
+        return flicker.find(fr, data, thr)
+
+    def test_region_limits(self):
+        # the same hair noise passes the measured hair limit and fails the generic one
+        lum = np.full((12, self.H, self.W), 0.4) + self.rng.normal(0, 0.001, (12, self.H, self.W))
+        lum[:, 8:40, 24:56] += self.rng.normal(0, 0.018, (12, 32, 32))  # held noise ~0.045 relative
+        index = np.zeros((12, self.H, self.W), np.uint8)
+        index[:, 8:40, 24:56] = 1
+        iss, st = self.run_frames(lum, index=index)
+        self.assertIn(("held_noise", "hair"), {(i["kind"], i["region"]) for i in iss})
+        self.assertLess(st["hair"]["denoised_noise_median"], THR["flicker"]["held_noise"]["hair"])
+        iss, _ = self.run_frames(lum, thr=THR["flicker"], index=index)
+        self.assertNotIn(("held_noise", "hair"), {(i["kind"], i["region"]) for i in iss})
 
     def test_clean_static_frames(self):
         lum = np.full((12, self.H, self.W), 0.5) + self.rng.normal(0, 0.002, (12, self.H, self.W))
