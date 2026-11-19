@@ -14,7 +14,7 @@ reachable.
 | Test | Before (current versions) | Root cause fixed where | After |
 | --- | --- | --- | --- |
 | `pipeline/charsys/tests/deform_test.py` | IndexError (girl) | test harness: edges came from the unmasked mesh | 8/8 poses on both masters, exit 0 |
-| `pipeline/charsys/tests/test_shot_eyes.py` | girl "baked bones reproduced" 0.37 mm (e905) | engine: `SpringChainSolver` (`engine/anim/secondary.cpp`) | 9/9 PASS, girl 0.0015 mm |
+| `pipeline/charsys/tests/test_shot_eyes.py` | passes its 3 sampled frames, but girl chain gaps of 0.37 mm at frame 48 (see below) | engine: `SpringChainSolver` (`engine/anim/secondary.cpp`); test: all-frames check | 10/10 PASS (§6) |
 | `pipeline/clips/test_emotions.py` | AC2, AC3, AC4, AC5, AC6 FAIL | test scene data and stated intent (§4) | AC2–AC6 PASS |
 
 ## 2. Files changed
@@ -24,7 +24,7 @@ reachable.
 | `engine/anim/secondary.cpp` | segment length restored after a collider push; exact `arc()` (atan2) |
 | `tests/test_secondary.cpp` | new case: a collider push on inner joints keeps the chain joint-continuous (< 0.01 mm) |
 | `pipeline/charsys/tests/deform_test.py` | vertices and edges both from the evaluated mesh; exit 1 on a missing control or an unmeasured mesh |
-| `pipeline/charsys/tests/test_shot_eyes.py` | `--cast current` (default): runs a copy of the shot on the current versions; `--bake-engine` |
+| `pipeline/charsys/tests/test_shot_eyes.py` | `--cast current` (default): runs a copy of the shot on the current versions; `--bake-engine`; new check: spring chains joint-continuous over all baked frames (< 0.01 mm) |
 | `pipeline/clips/test_emotions.py` | reachable cup; principles and collision planning stated per scene; `--blender` prepares the current versions |
 | `tools/check_all.py` (guarded) | Blender tier: `deform_test` per current published master, `test_shot_eyes`, `test_emotions` |
 | `docs/evaluation/process/T-101/**` | this report and its evidence |
@@ -70,6 +70,14 @@ Tests (doctest):
   - The joint stays outside the sphere: 64.998 mm ≥ 65 − 0.1.
 - The existing collision test is unchanged and passes. It only pushed the tip, which leaves no visible gap, so it
   could not see this.
+
+**test_shot_eyes on the current versions.** With the input engine, e905 with cast "current" passes all 9 original
+checks (girl "baked bones reproduced" 0.0015 mm). shot_render samples only frames 1, 36 and 72, and the current girl's
+worst gap, 0.367 mm, is at frame 48. On girl 0.10.0 (T-077) the worst gap fell on frame 72.
+
+So the test now also measures every spring-chain joint over all baked frames, with the same 0.01 mm limit as
+"baked bones reproduced". This is a new check; no existing check changed. Results on e905 with cast current are in
+§6: the input engine fails it, the final engine passes.
 
 ### 3.3 test_emotions (T-077 §4.3)
 
