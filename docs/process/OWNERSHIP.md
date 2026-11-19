@@ -20,7 +20,6 @@ means none. Branch is the task's branch; a task branch without a row falls back 
 | T-126a | B | t-126a-claude-body-face | `assets/characters/girl_white_hair_blue_dress/spec/**`, `docs/evaluation/characters/T-126/body_face/**` | — | `girl_white_hair_blue_dress` |
 | T-126b | B | t-126b-claude-hair | `pipeline/charsys/groom_r5.py`, `pipeline/charsys/tests/test_hair_r5.py`, `docs/evaluation/characters/T-126/hair/**` | — | `groom` |
 | T-126c | B | t-126c-claude-dress | `pipeline/charsys/garments_v3/**`, `pipeline/charsys/tests/test_garments_r3.py`, `pipeline/charsys/cloth_sim/**`, `docs/evaluation/characters/T-126/dress/**` | — | `garment` |
-| T-117 | C | t-117-claude-showcase | `episodes/e910_showcase/**`, `docs/evaluation/animation/T-117/**` | engine, content, characters (read-only) | — |
 | T-124 | E | t-124-claude-render-opt | `docs/evaluation/rendering/T-124/**`, `tools/render_bench/**`, `pipeline/charsys/render_profiles.json`, `pipeline/charsys/shot_render.py`, `pipeline/charsys/render_engine.py` | — | — |
 
 Supervisor-only files: docs/process/TASK_LOG.md, docs/ROADMAP.md, docs/process/OWNER_DECISIONS.md, docs/tasks/**.
