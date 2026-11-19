@@ -70,7 +70,7 @@ def _library_preset(name):
     """T-092: an opt-in id of a later preset family (presets/3) that the material builder resolves."""
     try:
         from materials import builder as material_builder
-        return material_builder.is_r2_preset(name)
+        return material_builder.is_known_preset(name)  # T-110: any later family (presets/3, presets/4)
     except (ImportError, OSError, ValueError):
         return False
 

@@ -1,0 +1,122 @@
+{
+ "engine": "cycles",
+ "samples": 16,
+ "px": 360,
+ "lens_mm": 70.0,
+ "sensor_mm": 36.0,
+ "calibration": "character_neutral/1",
+ "blender": "5.3.0",
+ "columns": {
+  "baseline": {
+   "blend": "/home/user/Animation/assets/characters/girl_auburn_bun_glasses/versions/0.12.0/girl_auburn_bun_glasses_master.blend",
+   "comparison_pose": null,
+   "arm_angle_from_down_deg": {
+    "L": 32.0,
+    "R": 32.0
+   },
+   "seconds": 461.4
+  },
+  "candidate": {
+   "blend": "/tmp/claude-0/-home-user-Animation/185c208a-5178-5e0b-a956-316a4f38ae54/scratchpad/final_girl_0.12.0/build/candidate/girl_auburn_bun_glasses_master.blend",
+   "comparison_pose": null,
+   "arm_angle_from_down_deg": {
+    "L": 32.0,
+    "R": 32.0
+   },
+   "seconds": 558.5
+  }
+ },
+ "views": {
+  "front": {
+   "yaw_deg": 0.0,
+   "elevation_deg": 5.0,
+   "target": [
+    0.0,
+    0.0,
+    0.56
+   ],
+   "distance_m": 2.45,
+   "frame_height_m": 1.26,
+   "resolution": [
+    360,
+    576
+   ]
+  },
+  "threequarter": {
+   "yaw_deg": -45.0,
+   "elevation_deg": 5.0,
+   "target": [
+    0.0,
+    0.0,
+    0.56
+   ],
+   "distance_m": 2.45,
+   "frame_height_m": 1.26,
+   "resolution": [
+    360,
+    576
+   ]
+  },
+  "side": {
+   "yaw_deg": 90.0,
+   "elevation_deg": 5.0,
+   "target": [
+    0.0,
+    0.0,
+    0.56
+   ],
+   "distance_m": 2.45,
+   "frame_height_m": 1.26,
+   "resolution": [
+    360,
+    576
+   ]
+  },
+  "back": {
+   "yaw_deg": 180.0,
+   "elevation_deg": 5.0,
+   "target": [
+    0.0,
+    0.0,
+    0.56
+   ],
+   "distance_m": 2.45,
+   "frame_height_m": 1.26,
+   "resolution": [
+    360,
+    576
+   ]
+  },
+  "face_front": {
+   "yaw_deg": 0.0,
+   "elevation_deg": 5.0,
+   "target": [
+    0.0,
+    0.0,
+    0.775
+   ],
+   "distance_m": 0.6222,
+   "frame_height_m": 0.32,
+   "resolution": [
+    360,
+    360
+   ]
+  },
+  "face_threequarter": {
+   "yaw_deg": -45.0,
+   "elevation_deg": 5.0,
+   "target": [
+    0.0,
+    0.0,
+    0.775
+   ],
+   "distance_m": 0.6222,
+   "frame_height_m": 0.32,
+   "resolution": [
+    360,
+    360
+   ]
+  }
+ },
+ "head_bounds": null
+}

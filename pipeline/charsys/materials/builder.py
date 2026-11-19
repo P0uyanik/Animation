@@ -28,6 +28,13 @@ R2_SCHEMA = "plush-studio.material-presets/3"
 R2_FAMILY = "presets/3"
 R2_PRESETS_PATH = os.path.join(HERE, "presets_r2.json")
 SKIN_WARMTH_FIELDS = ("distance_fraction", "samples", "strength")
+# T-110 felt surface (presets/4): a fourth library whose ids extend an existing presets/1..3 id ("extends") with an
+# optional "patch" (the felt micro-surface, e.g. a less plastic skin) and a "halo" section for the one shared
+# Geometry Nodes fibre halo (felt_halo.py). Opt-in only: ids of the older libraries resolve from their own files
+# first, so presets/1..3 build exactly as before; nothing halo-related runs for them.
+FELT_SCHEMA = "plush-studio.material-presets/4"
+FELT_FAMILY = "presets/4"
+FELT_PRESETS_PATH = os.path.join(HERE, "presets_felt.json")
 KINDS = {"noise", "yarn", "knit", "weave", "denim"}
 FIBRE_LODS = {"close", "wide", "off"}
 FIBRE_GROUP = "PS Shared Surface Fibres/1"
@@ -221,6 +228,109 @@ def validate_r2_library(data):
     return errors
 
 
+def _felt_raw(path=FELT_PRESETS_PATH):
+    with open(path, encoding="utf-8") as handle:
+        return json.load(handle)
+
+
+def _felt_base_library(base):
+    """The presets/1..3 library an ``extends`` id resolves from (None when unknown or itself presets/4)."""
+    if not isinstance(base, str):
+        return None
+    if base in load_library()["presets"]:
+        return load_library()
+    if is_skin_preset(base):
+        return load_skin_library()
+    if is_r2_preset(base):
+        return load_r2_library()
+    return None
+
+
+def _felt_resolve_all(data):
+    """{id: fully resolved preset} of a presets/4 library (base preset + patch + halo defaults + halo)."""
+    from materials import felt_halo  # noqa: F401  (plain Python part only)
+    out = {}
+    for name, raw in (data.get("presets") or {}).items():
+        base_lib = _felt_base_library(raw.get("extends"))
+        base = resolve_preset(raw["extends"], None, base_lib)
+        base_family = base.pop("family", "presets/1")
+        base.pop("name", None)
+        resolved = deep_merge(base, raw.get("patch") or {})
+        resolved["halo"] = deep_merge(data.get("halo_defaults") or {}, raw.get("halo") or {})
+        resolved["base_family"] = base_family
+        resolved["extends"] = raw["extends"]
+        if raw.get("description"):
+            resolved["description"] = raw["description"]
+        out[name] = resolved
+    return out
+
+
+def validate_felt_library(data):
+    from materials import felt_halo
+    errors = []
+    if data.get("schema") != FELT_SCHEMA:
+        errors.append(f"schema must be {FELT_SCHEMA}")
+    if data.get("family") != FELT_FAMILY:
+        errors.append(f"family must be {FELT_FAMILY}")
+    reference = data.get("reference_size_m")
+    if isinstance(reference, bool) or not isinstance(reference, (int, float)) or reference <= 0:
+        errors.append("reference_size_m must be positive")
+    halo_defaults = data.get("halo_defaults")
+    if not isinstance(halo_defaults, dict):
+        errors.append("halo_defaults must be an object")
+    presets = data.get("presets")
+    if not isinstance(presets, dict) or not presets:
+        return errors + ["presets must be a non-empty object"]
+    taken = set(load_library()["presets"]) | set(load_skin_library()["presets"]) | set(load_r2_library()["presets"])
+    for name, raw in presets.items():
+        if not isinstance(name, str) or not name.endswith("/4"):
+            errors.append(f"{name}: presets/4 ids end in /4")
+        if name in taken:
+            errors.append(f"{name}: presets/4 ids must not reuse a presets/1..3 id")
+        if not isinstance(raw, dict):
+            errors.append(f"preset {name} must be an object")
+            continue
+        unknown = sorted(set(raw) - {"extends", "description", "patch", "halo"})
+        if unknown:
+            errors.append(f"{name} has unknown keys {unknown}")
+        if _felt_base_library(raw.get("extends")) is None:
+            errors.append(f"{name}.extends must name a presets/1..3 id (got {raw.get('extends')!r})")
+        if "patch" in raw and not isinstance(raw["patch"], dict):
+            errors.append(f"{name}.patch must be an object")
+        if not isinstance(raw.get("halo", {}), dict):
+            errors.append(f"{name}.halo must be an object")
+    if errors:
+        return errors
+    for name, resolved in _felt_resolve_all(data).items():
+        errors += felt_halo.halo_errors(resolved["halo"], f"{name}.halo")
+        probe = {k: v for k, v in resolved.items() if k not in ("halo", "base_family", "extends")}
+        common = {"schema": SCHEMA, "reference_size_m": data["reference_size_m"],
+                  "defaults": {s: {} for s in ("surface", "fibre", "micro_relief", "nap", "fibres", "silhouette")},
+                  "presets": {name: probe}}
+        errors += validate_library(common)
+        if "skin" in resolved:
+            errors += _skin_section_errors(resolved["skin"], f"{name}.skin")
+            errors += _skin_warmth_errors(resolved["skin"].get("warmth"), f"{name}.skin.warmth")
+    return errors
+
+
+def load_felt_library(path=FELT_PRESETS_PATH):
+    """The presets/4 family (T-110) as an ordinary library: every id fully resolved, empty defaults."""
+    data = _felt_raw(path)
+    errors = validate_felt_library(data)
+    if errors:
+        raise ValueError("invalid presets/4 library: " + "; ".join(errors))
+    return {"schema": FELT_SCHEMA, "family": FELT_FAMILY, "reference_size_m": data["reference_size_m"],
+            "defaults": {}, "presets": _felt_resolve_all(data)}
+
+
+def is_felt_preset(name):
+    """True for an opt-in presets/4 id (T-110)."""
+    if not isinstance(name, str) or not name.endswith("/4") or not os.path.exists(FELT_PRESETS_PATH):
+        return False
+    return name in (_felt_raw().get("presets") or {})
+
+
 def _range_errors(value, label):
     if value is None:
         return []
@@ -360,7 +470,8 @@ def is_r2_preset(name):
 
 def is_known_preset(name):
     """True for an id of any preset family (presets/1, the presets/2 skin family, presets/3)."""
-    return isinstance(name, str) and (name in load_library()["presets"] or is_skin_preset(name) or is_r2_preset(name))
+    return isinstance(name, str) and (name in load_library()["presets"] or is_skin_preset(name) or is_r2_preset(name)
+                                      or is_felt_preset(name))
 
 
 def preset_family(name):
@@ -373,6 +484,8 @@ def preset_family(name):
         return SKIN_FAMILY
     if is_r2_preset(name):
         return R2_FAMILY
+    if is_felt_preset(name):
+        return FELT_FAMILY
     return None
 
 
@@ -387,6 +500,8 @@ def library_for(name, library=None):
         return load_skin_library()
     if is_r2_preset(name):
         return load_r2_library()
+    if is_felt_preset(name):
+        return load_felt_library()
     return library
 
 
@@ -401,6 +516,8 @@ def resolve_preset(name, overrides=None, library=None):
         resolved["family"] = SKIN_FAMILY
     elif library.get("family") == R2_FAMILY:
         resolved["family"] = R2_FAMILY
+    elif library.get("family") == FELT_FAMILY:
+        resolved["family"] = FELT_FAMILY
     return resolved
 
 
@@ -424,7 +541,7 @@ def validate_assignments(materials_spec, library=None):
             errors.append(f"{label} must be an object")
             continue
         if (assignment.get("preset") not in library["presets"] and not is_skin_preset(assignment.get("preset")) and
-                not is_r2_preset(assignment.get("preset"))):
+                not is_r2_preset(assignment.get("preset")) and not is_felt_preset(assignment.get("preset"))):
             errors.append(f"{label}.preset is unknown: {assignment.get('preset')}")
         color = assignment.get("base_color_srgb")
         if (not isinstance(color, list) or len(color) != 3 or
@@ -1010,9 +1127,10 @@ def apply_preset(material, preset_name, base_color_srgb=None, reference_size_m=N
     micro_breakup = _micro_relief(material, principled, anis.outputs[0], reference, preset["micro_relief"], base)
     _surface_detail(material, principled, ref.outputs[0], reference, preset.get("surface_detail"), base)
     _nap_layer(material, principled, anis.outputs[0], reference, preset["nap"], base)
-    if preset.get("family") == SKIN_FAMILY:
+    layer_family = preset.get("base_family", preset.get("family"))  # presets/4: the layers of the extended id
+    if layer_family == SKIN_FAMILY:
         _skin_layer(material, principled, ref.outputs[0], reference, preset["skin"], base)
-    elif preset.get("family") == R2_FAMILY and preset.get("skin"):
+    elif layer_family == R2_FAMILY and preset.get("skin"):
         _skin_layer(material, principled, ref.outputs[0], reference, preset["skin"], base)
         _skin_warmth(material, reference, preset["skin"].get("warmth"), base)
     if float(surface["alpha"]) < 1.0:
@@ -1028,6 +1146,13 @@ def apply_preset(material, preset_name, base_color_srgb=None, reference_size_m=N
         material["ps_material_family"] = SKIN_FAMILY
     elif preset.get("family") == R2_FAMILY:
         material["ps_material_family"] = R2_FAMILY
+    elif preset.get("family") == FELT_FAMILY:
+        material["ps_material_family"] = FELT_FAMILY
+        if (preset.get("halo") or {}).get("enabled"):
+            from materials import felt_halo
+            material[felt_halo.HALO_MATERIAL_PROP] = json.dumps(
+                {"preset": preset_name, "base_color_srgb": [float(c) for c in color], "reference_size_m": reference,
+                 "overrides": overrides or {}}, sort_keys=True)
     return material
 
 
@@ -1295,6 +1420,26 @@ def add_fibres_geometry(obj, preset_name, base_color_srgb=None, reference_size_m
     library = load_library()
     preset = resolve_preset(preset_name, overrides, library)
     fibres = preset["fibres"]
+    halo = preset.get("halo") if preset.get("family") == FELT_FAMILY else None
+    if halo is not None and (not halo.get("enabled") or obj.type != "MESH"):
+        halo = None
+    if halo is not None:  # one halo per surface (groom layers call this several times for the same surface)
+        from materials import felt_halo
+        if felt_halo.has_halo(obj):
+            halo = None
+    if halo is not None and lod != "off" and not fibres["enabled"]:  # presets/4: a halo-only fibre object
+        if obj.type != "MESH":
+            raise ValueError("surface fibres require a mesh object")
+        from materials import felt_halo
+        reference = float(reference_size_m or library["reference_size_m"])
+        fibre_object = felt_halo.new_curves_object(obj, obj.name + ".fibres")
+        felt_halo.add_halo_modifier(fibre_object, obj, preset_name, halo, tuple(base_color_srgb or preset["swatch_srgb"]),
+                                    reference, library["reference_size_m"], lod)
+        fibre_object["ps_material_preset"] = preset_name
+        fibre_object["ps_fibres_lod"] = lod
+        fibre_object["ps_fibres_source"] = obj.name
+        fibre_object["ps_fibres_reference_scale"] = reference / float(library["reference_size_m"])
+        return fibre_object
     if lod == "off" or not fibres["enabled"]:
         return None
     if obj.type != "MESH":
@@ -1340,6 +1485,10 @@ def add_fibres_geometry(obj, preset_name, base_color_srgb=None, reference_size_m
     fibre_object["ps_fibres_lod"] = lod
     fibre_object["ps_fibres_source"] = obj.name
     fibre_object["ps_fibres_reference_scale"] = k
+    if halo is not None:  # presets/4: the shared felt halo joins the same curves object (second material slot)
+        from materials import felt_halo
+        felt_halo.add_halo_modifier(fibre_object, obj, preset_name, halo, color, reference,
+                                    library["reference_size_m"], lod)
     return fibre_object
 
 
