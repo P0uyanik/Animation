@@ -66,6 +66,7 @@ B = {
 # travels furthest in its window, here always his right hand in the pick-up / release verbs, and failed it there
 # (onset/stop step). His reluctant answer is the head lift of boy_interested (his late partner_acts reaction).
 PICK_SETTLE = 5  # e907 s010_verbs
+HER_REACH = 10  # timing.py reference: handover reach >= 10 f (the default start gave 9 f)
 CUP_YAW = -45.0  # e907: -75 (see build())
 
 
@@ -131,7 +132,8 @@ def build():
         {"type": "emotion", "character": "girl", "name": "girl_wonder", "start": B["wonder"], "end": B["success"] + 6,
          "intensity": WONDER},
         {"type": "pass", "character": "boy", "hand": "R", "to": "girl", "toHand": "L", "at": meet,
-         "start": B["pass"], "contact": B["contact"], "release": B["release"]},
+         "start": B["pass"], "receiverStart": B["contact"] - HER_REACH, "contact": B["contact"],
+         "release": B["release"]},
         {"type": "look", "character": "boy", "start": B["pass"], "end": B["contact"] + 2, "atProp": "cup"},
         {"type": "look", "character": "boy", "start": B["contact"] + 3, "end": B["release"] + 2, "atCharacter": "girl"},
         {"type": "look", "character": "girl", "start": B["contact"] + 4, "end": B["release"] - 4, "atCharacter": "boy"},
