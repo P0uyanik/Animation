@@ -1,0 +1,6 @@
+# T-128 optional session tools. NOT used by the gate (tools/check_all.py) or CI; install only in a venv:
+#   python -m venv .venv-tools && .venv-tools/bin/pip install -r requirements-tools.txt
+# Revert: delete this file.
+pytest-xdist==3.8.0      # evaluated; the gate's Python tests are plain scripts, see tools/dev/parallel_tests.py
+OpenImageIO==3.1.19.0    # idiff / oiiotool + Python bindings (tools/dev/compare_bench.py)
+scikit-image==0.25.2     # SSIM (tools/dev/compare_bench.py)
