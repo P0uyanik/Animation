@@ -563,3 +563,7 @@ READMEs; no re-reading large files or re-running renders without need. Added to 
   renderer job; prove with a green full run plus a T-127-style broken-commit probe that still turns the gate red.
   Tag first (archive/legacy-engine-renderer-<date> via backup), one revertible commit, manual nightly Windows + backup runs.
 - Owner wants the third character's combined 0.1.0 published as a CANDIDATE (not current).
+
+## 2026-11-19 ~23:10Z: rotate the round-2 Supervisor (relayed by the original Supervisor)
+Adopt Codex T-152 recommendation 1: finish the current batch, write `SUPERVISOR_HANDOVER_R3.md`, then the round-3
+Supervisor takes over from that file.
