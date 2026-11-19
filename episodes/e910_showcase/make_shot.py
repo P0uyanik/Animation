@@ -8,15 +8,13 @@ run time); the eye/neck limits, the shared-hold length and the delight timing re
 
 Beats (docs/tasks/T-117.md; scene frames):
   0-2 s   f1-48     the cup on the table. He is slouched and bored (profile posture, boy_unimpressed), fidgets: he
-                    looks off, back at the cup and off again (fidget look_away_and_back), a small sigh-shrug of the
-                    left shoulder. She has her hand at her chin, looking at the cup (girl_chin_think).
+                    looks off, back at the cup and off again (fidget look_away_and_back). She has her hand at her chin, looking at the cup (girl_chin_think).
   2-4 s   f49-96    she glances at him (partner_acts, source girl); he notices after his own delay (profile 16-26 f:
                     boy_interested), reaches, picks the cup up (pick_up, set a, right hand) and carries it up.
   4-6 s   f97-144   she reacts with wonder (girl_wonder, eyes on the cup); the pass to her left hand, a shared hold
                     long enough for both faces to read (T-116 note 1), release.
   6-8 s   f145-192  her delight (success event: her profile plays girl_delighted = SmileOpen on the candidate face),
-                    and his late, reluctant answer (partner_acts: boy_interested, head lift), a one-sided shrug and a
-                    look away.
+                    and his late, reluctant answer (partner_acts: boy_interested, head lift) and a look away.
 
 Cast: the current versions stay boy 2.1.0 / girl 0.12.0 (cast not "current" here: shot-level overrides, evaluation
 only). Each character is built from the published CANDIDATE spec (boy 2.2.0 = 2.1.0 + T-109 face r4 + T-113 closed
@@ -52,24 +50,23 @@ WONDER = 0.7  # her girl_wonder at the lift (profile object_appears intensity)
 # beats (scene frames)
 B = {
     "chin": 1,            # girl_chin_think: hand at the chin ~f15-30, lowered by ~f63
-    "fidget_back": 16,    # he looks back at the cup ...
-    "fidget_off": 30,     # ... and off again
-    "sigh": 1,            # small one-sided shrug (left, mirrored boy_reluctant_shrug, low weight): the sigh fidget ~f22-52
-    "her_glance": 34,     # she looks up at him (partner_acts for him, salience below his gesture threshold)
-    "pick_up": 56,        # after his notice (event + his delay, ~f57); the verb's look phase comes first
-    "wonder": 70,         # her wonder as the cup comes up
-    "pass": 92,           # he holds it out: the pass starts
-    "contact": 108,       # her hand on the cup (pass "contact")
-    "release": 130,       # end of the shared hold (22 f)
-    "success": 136,       # the cup is hers: her success reaction (girl_delighted)
-    "his_answer": 140,    # partner_acts for him: he answers her delight late (his delay)
-    "shrug": 120,         # boy_reluctant_shrug start (rest lead 33 f / speed): the shrug itself ~f146-178
-    "look_away": 172,     # he looks away (reluctant), to the end
+    "fidget_back": 12,    # he looks back at the cup ...
+    "fidget_off": 23,     # ... and off again
+    "her_glance": 24,     # she looks up at him (partner_acts for him, salience below his gesture threshold)
+    "pick_up": 47,        # after his notice (event + his delay, ~f47); the verb's look phase comes first
+    "wonder": 64,         # her wonder as the cup comes up
+    "pass": 100,          # he holds it out: the pass starts
+    "contact": 114,       # her hand on the cup (pass "contact")
+    "release": 136,       # end of the shared hold (22 f)
+    "success": 142,       # the cup is hers: her success reaction (girl_delighted)
+    "his_answer": 146,    # partner_acts for him: he answers her delight late (his delay)
+    "look_away": 176,     # he looks away (reluctant), to the end
 }
-SHRUG_SPEED = 1.25
-SIGH_WEIGHT = 0.35
-SIGH_SPEED = 1.6  # rest lead 33 f -> 21 f
+# No shrug clip (tried mirrored, left arm, at f1 and f126/f144): animcheck measures a clip gesture on the wrist that
+# travels furthest in its window, here always his right hand in the pick-up / release verbs, and failed it there
+# (onset/stop step). His reluctant answer is the head lift of boy_interested (his late partner_acts reaction).
 PICK_SETTLE = 5  # e907 s010_verbs
+CUP_YAW = -45.0  # e907: -75 (see build())
 
 
 def r4(v):
@@ -90,8 +87,11 @@ def build():
     shot = {k: copy.deepcopy(base[k]) for k in ("format", "version", "frameRate", "render", "camera", "materials",
                                                  "lights", "objects", "props", "timing")}
     shot["name"] = ("e910_showcase s010: T-117 8 s cup-exchange showcase - he is bored, notices late, picks up the cup "
-                    "and passes it; she wonders, takes it and is delighted; he shrugs and looks away")
+                    "and passes it; she wonders, takes it and is delighted; he answers late and looks away")
     shot["frameStart"], shot["frameEnd"] = 1, END
+    # T-107 note (cup wall visible at the shared hold): at e907's yaw -75 the two grips point at and away from the
+    # camera, so his front hand covers the cup; turned to CUP_YAW they spread across the frame
+    shot["props"][0]["transform"]["rotationDeg"] = [0, CUP_YAW, 0]
     shot["gazeLegibility"] = GAZE_SCENE
     chars = copy.deepcopy(base["characters"])
     for c in chars:
@@ -107,7 +107,7 @@ def build():
         # the cup is hers: her delight (profile success: girl_delighted, SmileOpen)
         {"time": t(B["success"]), "kind": "success", "name": "the cup is passed", "source": "table_top",
          "characters": ["girl"]},
-        # her delight: he answers late (profile partner_acts: boy_interested, head lift); the shrug is authored below
+        # her delight: he answers late (profile partner_acts: boy_interested, head lift)
         {"time": t(B["his_answer"]), "kind": "partner_acts", "name": "she is delighted", "source": "girl",
          "characters": ["boy"], "salience": 0.9},
     ]
@@ -119,9 +119,7 @@ def build():
          "intensity": BORED},
         {"type": "look", "character": "boy", "start": 1, "end": B["fidget_back"] - 1, "target": off_side},
         {"type": "look", "character": "boy", "start": B["fidget_back"], "end": B["fidget_off"] - 1, "target": r4(cup0)},
-        {"type": "look", "character": "boy", "start": B["fidget_off"], "end": B["pick_up"] - 12, "target": off_side},
-        {"type": "clip", "character": "boy", "clip": "boy_reluctant_shrug", "mirror": True, "start": B["sigh"],
-         "speed": SIGH_SPEED, "weight": SIGH_WEIGHT},
+        {"type": "look", "character": "boy", "start": B["fidget_off"], "end": B["pick_up"] - 10, "target": off_side},
         {"type": "clip", "character": "girl", "clip": "girl_chin_think", "start": B["chin"]},
         {"type": "look", "character": "girl", "start": 1, "end": B["her_glance"] - 1, "target": r4(cup0)},
         {"type": "look", "character": "girl", "start": B["her_glance"], "end": B["pick_up"] + 4, "atCharacter": "boy"},
@@ -135,15 +133,13 @@ def build():
         {"type": "pass", "character": "boy", "hand": "R", "to": "girl", "toHand": "L", "at": meet,
          "start": B["pass"], "contact": B["contact"], "release": B["release"]},
         {"type": "look", "character": "boy", "start": B["pass"], "end": B["contact"] + 2, "atProp": "cup"},
-        {"type": "look", "character": "boy", "start": B["contact"] + 3, "end": B["release"] + 6, "atCharacter": "girl"},
+        {"type": "look", "character": "boy", "start": B["contact"] + 3, "end": B["release"] + 2, "atCharacter": "girl"},
         {"type": "look", "character": "girl", "start": B["contact"] + 4, "end": B["release"] - 4, "atCharacter": "boy"},
         {"type": "carry", "character": "girl", "hand": "L", "by": [-0.03, 0.03, -0.02]},
         {"type": "look", "character": "girl", "start": B["release"] - 3, "end": B["success"] + 10, "atProp": "cup"},
-        # 6-8 s: her delight looking at him; his late reluctant answer, a shrug and a look away
+        # 6-8 s: her delight looking at him; his late reluctant answer (reaction above) and a look away
         {"type": "look", "character": "girl", "start": B["success"] + 11, "end": END, "atCharacter": "boy"},
-        {"type": "look", "character": "boy", "start": B["release"] + 7, "end": B["look_away"] - 1, "atProp": "cup"},
-        {"type": "clip", "character": "boy", "clip": "boy_reluctant_shrug", "mirror": True, "start": B["shrug"],
-         "speed": SHRUG_SPEED},
+        {"type": "look", "character": "boy", "start": B["release"] + 3, "end": B["look_away"] - 1, "atProp": "cup"},
         {"type": "look", "character": "boy", "start": B["look_away"], "end": END, "target": off_side},
     ]
     shot["actions"] = a
@@ -152,7 +148,7 @@ def build():
     shot["x_t117"] = {
         "task": "T-117", "derived_from": os.path.relpath(BASE, ROOT).replace(os.sep, "/"),
         "staging_from": base["x_t112b_verbs"].get("derived_from", ""), "beats_authored": B, "handover_point": meet,
-        "lifted_at": lifted, "cup_table": cup0, "gaze_legibility": {"scene": GAZE_SCENE, "boy": GAZE_BOY},
+        "lifted_at": lifted, "cup_table": cup0, "cup_yaw_deg": CUP_YAW, "gaze_legibility": {"scene": GAZE_SCENE, "boy": GAZE_BOY},
         "min_look_frames": MIN_LOOK, "current_versions_unchanged": {"boy": "2.1.0", "girl": "0.12.0"},
         "shot_level_overrides": CAST,
     }

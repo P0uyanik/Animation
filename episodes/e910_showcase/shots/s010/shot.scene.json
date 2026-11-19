@@ -189,7 +189,7 @@
     ],
     "rotationDeg": [
      0,
-     -75.0,
+     -45.0,
      0
     ],
     "scale": [
@@ -201,7 +201,7 @@
   }
  ],
  "timing": "calibrated",
- "name": "e910_showcase s010: T-117 8 s cup-exchange showcase - he is bored, notices late, picks up the cup and passes it; she wonders, takes it and is delighted; he shrugs and looks away",
+ "name": "e910_showcase s010: T-117 8 s cup-exchange showcase - he is bored, notices late, picks up the cup and passes it; she wonders, takes it and is delighted; he answers late and looks away",
  "frameStart": 1,
  "frameEnd": 192,
  "gazeLegibility": {
@@ -255,7 +255,7 @@
  ],
  "events": [
   {
-   "time": 1.375,
+   "time": 0.95833,
    "kind": "partner_acts",
    "name": "she looks at him and the cup",
    "source": "girl",
@@ -265,7 +265,7 @@
    "salience": 0.9
   },
   {
-   "time": 5.625,
+   "time": 5.875,
    "kind": "success",
    "name": "the cup is passed",
    "source": "table_top",
@@ -274,7 +274,7 @@
    ]
   },
   {
-   "time": 5.79167,
+   "time": 6.04167,
    "kind": "partner_acts",
    "name": "she is delighted",
    "source": "girl",
@@ -302,14 +302,14 @@
    "character": "boy",
    "name": "boy_unimpressed",
    "start": 1,
-   "end": 56,
+   "end": 47,
    "intensity": 0.18
   },
   {
    "type": "look",
    "character": "boy",
    "start": 1,
-   "end": 15,
+   "end": 11,
    "target": [
     1.4933,
     0.6,
@@ -319,8 +319,8 @@
   {
    "type": "look",
    "character": "boy",
-   "start": 16,
-   "end": 29,
+   "start": 12,
+   "end": 22,
    "target": [
     -0.0423,
     0.4695,
@@ -330,22 +330,13 @@
   {
    "type": "look",
    "character": "boy",
-   "start": 30,
-   "end": 44,
+   "start": 23,
+   "end": 37,
    "target": [
     1.4933,
     0.6,
     1.0315
    ]
-  },
-  {
-   "type": "clip",
-   "character": "boy",
-   "clip": "boy_reluctant_shrug",
-   "mirror": true,
-   "start": 1,
-   "speed": 1.6,
-   "weight": 0.35
   },
   {
    "type": "clip",
@@ -357,7 +348,7 @@
    "type": "look",
    "character": "girl",
    "start": 1,
-   "end": 33,
+   "end": 23,
    "target": [
     -0.0423,
     0.4695,
@@ -367,8 +358,8 @@
   {
    "type": "look",
    "character": "girl",
-   "start": 34,
-   "end": 60,
+   "start": 24,
+   "end": 51,
    "atCharacter": "boy"
   },
   {
@@ -377,7 +368,7 @@
    "hand": "R",
    "prop": "cup",
    "set": "a",
-   "start": 56,
+   "start": 47,
    "settle": 5
   },
   {
@@ -393,16 +384,16 @@
   {
    "type": "look",
    "character": "girl",
-   "start": 61,
-   "end": 91,
+   "start": 52,
+   "end": 99,
    "atProp": "cup"
   },
   {
    "type": "emotion",
    "character": "girl",
    "name": "girl_wonder",
-   "start": 70,
-   "end": 142,
+   "start": 64,
+   "end": 148,
    "intensity": 0.7
   },
   {
@@ -416,29 +407,29 @@
     0.5327,
     0.0065
    ],
-   "start": 92,
-   "contact": 108,
-   "release": 130
+   "start": 100,
+   "contact": 114,
+   "release": 136
   },
   {
    "type": "look",
    "character": "boy",
-   "start": 92,
-   "end": 110,
+   "start": 100,
+   "end": 116,
    "atProp": "cup"
   },
   {
    "type": "look",
    "character": "boy",
-   "start": 111,
-   "end": 136,
+   "start": 117,
+   "end": 138,
    "atCharacter": "girl"
   },
   {
    "type": "look",
    "character": "girl",
-   "start": 112,
-   "end": 126,
+   "start": 118,
+   "end": 132,
    "atCharacter": "boy"
   },
   {
@@ -454,36 +445,28 @@
   {
    "type": "look",
    "character": "girl",
-   "start": 127,
-   "end": 146,
+   "start": 133,
+   "end": 152,
    "atProp": "cup"
   },
   {
    "type": "look",
    "character": "girl",
-   "start": 147,
+   "start": 153,
    "end": 192,
    "atCharacter": "boy"
   },
   {
    "type": "look",
    "character": "boy",
-   "start": 137,
-   "end": 171,
+   "start": 139,
+   "end": 175,
    "atProp": "cup"
-  },
-  {
-   "type": "clip",
-   "character": "boy",
-   "clip": "boy_reluctant_shrug",
-   "mirror": true,
-   "start": 120,
-   "speed": 1.25
   },
   {
    "type": "look",
    "character": "boy",
-   "start": 172,
+   "start": 176,
    "end": 192,
    "target": [
     1.4933,
@@ -525,19 +508,17 @@
   "staging_from": "episodes/e907_exchange/shots/s010_calibrated/shot.scene.json (staging, camera, set, cast, the hand-over point, the acting beats outside the verb library)",
   "beats_authored": {
    "chin": 1,
-   "fidget_back": 16,
-   "fidget_off": 30,
-   "sigh": 1,
-   "her_glance": 34,
-   "pick_up": 56,
-   "wonder": 70,
-   "pass": 92,
-   "contact": 108,
-   "release": 130,
-   "success": 136,
-   "his_answer": 140,
-   "shrug": 120,
-   "look_away": 172
+   "fidget_back": 12,
+   "fidget_off": 23,
+   "her_glance": 24,
+   "pick_up": 47,
+   "wonder": 64,
+   "pass": 100,
+   "contact": 114,
+   "release": 136,
+   "success": 142,
+   "his_answer": 146,
+   "look_away": 176
   },
   "handover_point": [
    -0.0423,
@@ -554,6 +535,7 @@
    0.4695,
    0.0065
   ],
+  "cup_yaw_deg": -45.0,
   "gaze_legibility": {
    "scene": {
     "rangeDeg": [
