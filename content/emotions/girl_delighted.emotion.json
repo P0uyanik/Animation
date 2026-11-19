@@ -1,0 +1,45 @@
+{
+ "format": "plush.emotion",
+ "version": 1,
+ "name": "girl_delighted",
+ "description": "Girl (girl_auburn_bun_glasses) delighted: the open smile acting beat (the model's open Smile preset: wide mouth, jaw slightly open, cheeks up), brows up, a light squint, chest lifted. Her rest face stays the modelled closed gentle smile (owner decision 2026-11-17): this plays only as a beat and releases back to it.",
+ "face": {
+  "smile": 1.0
+ },
+ "faceMotion": {
+  "blinkRate": 1.0,
+  "saccadeRate": 1.1,
+  "attention": 0.5,
+  "gazeBiasDeg": [
+   0.0,
+   2.0
+  ],
+  "channels": {
+   "browUp": 0.3,
+   "eyeSquint": 0.12
+  }
+ },
+ "body": {
+  "clip": "emo_happy",
+  "mask": [
+   "spine",
+   "chest",
+   "neck",
+   "head"
+  ]
+ },
+ "timing": {
+  "onset": 0.25,
+  "hold": 1.4,
+  "release": 0.8,
+  "curve": "smooth"
+ },
+ "affect": {
+  "pleasantness": 0.9,
+  "energy": 0.6
+ },
+ "reference": "docs/evaluation/animation/T-106/performance.csv paperboat girl [255, 289) 'leans on the rim with a wide open smile' (1.42 s); watertable [81, 96) the mouth settles to a soft smile (release 0.8 s); arms stay with her gesture / idle (mask without arms)",
+ "source": "script",
+ "license": "project",
+ "attribution": "Plush Studio project (T-097-girl)"
+}
