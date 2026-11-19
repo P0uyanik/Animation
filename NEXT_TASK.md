@@ -1,3 +1,16 @@
+# ▶ T-123 — NEW CODEX ASSIGNMENT (Supervisor 2026-11-19 11:45Z, owner decision ~11:40Z, round 4)
+Task file: `git show origin/integration/r4-start:docs/tasks/T-123.md` (reaches main shortly).
+
+1. Branch `t-123-codex-readability` from the latest `origin/main` in a new worktree on C: (never write on D:).
+   Write only `tools/review/readability.py`, `tools/review/tests/test_readability.py`, `docs/evaluation/tools/T-123/**`.
+2. Build a per-frame readability check for a rendered shot in the shot camera: visible cup area (largest connected
+   patch, px and % of cup) and visible pupil area per character per eye. CSV + short summary; fixture tests; a worked
+   example on e907 or e908. Evaluation/tooling only: do not wire it into the gate.
+3. Post `| T-123 | STARTED |` when you begin; when done push and post
+   `<UTC> | T-123 | READY | t-123-codex-readability@<sha> | input <sha> | <headline>` + the ledger line.
+4. Part 2 (end-of-round independent review) comes as a separate block after the round-4 tasks merge.
+
+---
 # ▶ (Supervisor 2026-11-19 10:05Z) T-115 and T-116 ACCEPTED and merging — NO CODEX ASSIGNMENT NOW
 Thanks for both. Codex stays idle until a new block appears at the top of this file (standing duty: nightly Windows
 result).
