@@ -19,6 +19,7 @@ means none. Branch is the task's branch; a task branch without a row falls back 
 | T-127 | E | t-127-claude-ci-speed | `.github/workflows/**`, `.github/scripts/**`, `tools/check_all.py`, `tools/ci/**`, `docs/process/GATE.md`, `docs/evaluation/ci/T-127/**` | — | — |
 | T-125 | E | t-125-claude-motion-checks | `tools/motion_checks/**`, `docs/evaluation/animation/T-125/**` | — | — |
 | T-129 | E | t-129-codex-score-calibration | `docs/evaluation/process/T-129/**` | — | — |
+| T-131 | D | t-131-claude-version-switch | `assets/characters/{boy_yellow_hoodie,girl_auburn_bun_glasses}/versions/index.json`, `docs/evaluation/characters/fidelity_baseline.json`, `docs/evaluation/regression/baselines/{boy_yellow_hoodie/2.2.0,girl_auburn_bun_glasses/0.13.0}/**`, `docs/evaluation/characters/T-131/**` | `assets/characters/*/versions/{2.2.0,0.13.0}/**` (stable) | `boy_yellow_hoodie`, `girl_auburn_bun_glasses` |
 | T-117 | C | t-117-claude-showcase | `episodes/e910_showcase/**`, `docs/evaluation/animation/T-117/**` | engine, content, characters (read-only) | — |
 | T-124 | E | t-124-claude-render-opt | `docs/evaluation/rendering/T-124/**`, `tools/render_bench/**`, `pipeline/charsys/render_profiles.json`, `pipeline/charsys/shot_render.py`, `pipeline/charsys/render_engine.py` | — | — |
 
