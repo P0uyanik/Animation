@@ -41,6 +41,7 @@ def parse():
     ap.add_argument("--tag", default="")
     ap.add_argument("--repeat", type=int, default=1)
     ap.add_argument("--no-save", action="store_true")
+    ap.add_argument("--png16", action="store_true", help="save 16-bit PNG (lossless masters for clips/encoding)")
     return ap.parse_args(argv)
 
 
@@ -239,6 +240,8 @@ def main():
     if var.get("render_scale"):
         scene.render.resolution_percentage = int(var["render_scale"])
     scene.render.filepath = os.path.join(os.path.abspath(a.out), "frame_")
+    if a.png16:
+        scene.render.image_settings.color_depth = "16"
     st = Stats()
     bpy.app.handlers.render_stats.append(st)
     rows = []

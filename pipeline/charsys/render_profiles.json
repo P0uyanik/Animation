@@ -1,0 +1,20 @@
+{
+ "schema": "plush-studio.render-profiles/1",
+ "note": "T-124 opt-in render profiles (shot_render.py --profile <name>). Nothing here is applied unless --profile is given; the default render is unchanged. Proposed by T-124 from measurements in docs/evaluation/rendering/T-124/; the owner approves before any profile becomes the default.",
+ "profiles": {
+  "final720": {
+   "description": "Final delivery 1280x720: 128 spp + OIDN with a looser adaptive-sampling threshold (0.05). T-124 s010_verbs frame 65: 208 s vs 433 s for the current settings (-52%), 39.4 dB vs 41.2 dB against a 512 spp reference.",
+   "resolution": [1280, 720],
+   "samples": 128,
+   "cycles": {"adaptive_threshold": 0.05},
+   "render": {"use_persistent_data": true}
+  },
+  "review": {
+   "description": "Review renders 1280x720: 16 spp + OIDN, adaptive 0.05. T-124 s010_verbs frame 65: about 67 s (-84%); noisier fibres and softer hair edges, for animation/timing review only.",
+   "resolution": [1280, 720],
+   "samples": 16,
+   "cycles": {"adaptive_threshold": 0.05},
+   "render": {"use_persistent_data": true}
+  }
+ }
+}
