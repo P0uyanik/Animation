@@ -22,7 +22,7 @@ EYES = {"face": {"eyes": {
     "iris": {"radius": 0.462, "pupil": 0.231},
     "lids": {"upper_edge_deg": 38, "lower_edge_deg": -36, "upper_curve": 1.0, "lower_curve": 0.15, "upper_roll_deg": -18,
              "upper_gap": 0.012, "lower_thickness_m": 0.0005,
-             "closed_fit": {"lash_curve": {"out_m": 0.002, "above_seam_deg": 14.0, "sag_deg": 6.0, "corner_lift_deg": 10.0,
+             "closed_fit": {"lash_curve": {"out_m": 0.002, "above_seam_deg": 14.0, "sag_deg": 5.0, "corner_lift_deg": 7.0,
                                             "span": [-0.45, 0.75],
                                             "keys": {"Laugh": -1.0, "Squint": 0.0}}}},
     "lash": {"srgb": [70, 44, 36], "span_deg": 56, "strands": {"from_deg": 24, "to_deg": 52}},

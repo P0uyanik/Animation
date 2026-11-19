@@ -18,8 +18,8 @@
      "lash_curve": {
       "out_m": 0.002,
       "above_seam_deg": 14.0,
-      "sag_deg": 6.0,
-      "corner_lift_deg": 10.0,
+      "sag_deg": 5.0,
+      "corner_lift_deg": 7.0,
       "span": [
        -0.45,
        0.75
