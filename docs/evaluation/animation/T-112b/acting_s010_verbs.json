@@ -1,0 +1,42 @@
+{
+ "format": "plush.animcheck_acting",
+ "version": 1,
+ "scene": "e907_exchange s010_verbs: T-112b the full exchange as verbs - he picks up the cup and passes it, she notices (reaction), takes it and draws it in (pick_up, pass, carry; calibrated timing x personality tempo)",
+ "characters": [
+  {
+   "character": "boy",
+   "personality": "boy_yellow_hoodie",
+   "warnings": [],
+   "quick": false,
+   "glances": [],
+   "gestures": [],
+   "hold": {
+    "longest_still_frames": 49,
+    "at": [
+     29,
+     78
+    ],
+    "longest_still_frames_24": 49.0,
+    "required": 12.0
+   }
+  },
+  {
+   "character": "girl",
+   "personality": "girl_auburn_bun_glasses",
+   "warnings": [],
+   "quick": true,
+   "glances": [],
+   "gestures": [],
+   "hold": {
+    "longest_still_frames": 41,
+    "at": [
+     1,
+     42
+    ],
+    "longest_still_frames_24": 41.0,
+    "required": 15.0
+   }
+  }
+ ],
+ "warnings": []
+}

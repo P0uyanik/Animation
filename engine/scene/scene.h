@@ -116,10 +116,18 @@ struct Scene {
   // Interaction options (T-096, opt-in): the scene key "interaction" (absent = all off, the behaviour before T-096).
   // Parsed and checked by interactionOptionsFromJson; saved as written.
   Json interaction = nullptr;
-  // Timing profile (T-104, opt-in): the scene key "timing" names content/timing/<name>.timing.json (anim/personality.h
-  // TimingProfile). Absent / null = the shared interaction timing defaults (the behaviour before T-104). It only sets
-  // the defaults of action frames a scene leaves out; frames written in an action always win. Saved as written.
+  // Timing profile (T-104; the default since T-104d): the scene key "timing" names content/timing/<name>.timing.json
+  // (anim/personality.h TimingProfile). Absent / null = kDefaultTimingProfile ("calibrated"); "none" = the shared
+  // interaction timing defaults (the behaviour before T-104). It only sets the defaults of action frames a scene leaves
+  // out; frames written in an action always win. Saved as written (an absent key stays absent).
   Json timing = nullptr;
+  static constexpr const char* kDefaultTimingProfile = "calibrated";
+  // The profile name the scene resolves to: the key's value, kDefaultTimingProfile when absent, empty for "none".
+  std::string timingProfile() const {
+    if (!timing.is_string()) return kDefaultTimingProfile;
+    const std::string name = timing.get<std::string>();
+    return name == "none" ? std::string() : name;
+  }
   // Reaction events (T-097D, opt-in): the scene key "events" (absent = no reactions, the behaviour before T-097D). Each
   // event is planned per reacting character (scene/reaction.h) and played as generated look, blended emotion and
   // gesture actions (actions.cpp; docs/PRODUCTION_PIPELINE.md "Scene events"). Checked by reactionEventsFromJson;

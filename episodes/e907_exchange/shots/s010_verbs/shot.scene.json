@@ -1,13 +1,13 @@
 {
  "format": "plush.scene",
  "version": 1,
- "name": "e907_exchange s010_verbs: T-112a verb demo - he picks up the cup, lifts it and puts it down (pick_up, carry, place verbs, calibrated timing)",
+ "name": "e907_exchange s010_verbs: T-112b the full exchange as verbs - he picks up the cup and passes it, she notices (reaction), takes it and draws it in (pick_up, pass, carry; calibrated timing x personality tempo)",
  "frameRate": [
   24,
   1
  ],
  "frameStart": 1,
- "frameEnd": 140,
+ "frameEnd": 129,
  "render": {
   "width": 640,
   "height": 360,
@@ -233,14 +233,14 @@
    ],
    "yawDeg": 25.0,
    "life": {
-    "blinkInterval": 2.6,
     "headFollow": 0.3,
     "gaze": {
      "assistPitchDeg": 10.0,
      "assistYawDeg": 15.0,
      "assistBodyYawDeg": 0.0
     }
-   }
+   },
+   "personality": "girl_auburn_bun_glasses"
   }
  ],
  "actions": [
@@ -260,8 +260,12 @@
    "type": "look",
    "character": "girl",
    "start": 1,
-   "end": 140,
-   "atProp": "cup"
+   "end": 34,
+   "target": [
+    -0.1454,
+    0.4695,
+    0.2857
+   ]
   },
   {
    "type": "pick_up",
@@ -269,27 +273,56 @@
    "hand": "R",
    "prop": "cup",
    "set": "a",
-   "start": 8
+   "start": 1,
+   "settle": 5
+  },
+  {
+   "type": "pass",
+   "character": "boy",
+   "hand": "R",
+   "to": "girl",
+   "toHand": "L",
+   "at": [
+    -0.0423,
+    0.5327,
+    0.0065
+   ],
+   "react": true
   },
   {
    "type": "carry",
-   "character": "boy",
-   "hand": "R",
+   "character": "girl",
+   "hand": "L",
    "by": [
-    0.02,
-    0.04,
-    0.0
+    -0.03,
+    0.03,
+    -0.02
    ]
   },
   {
-   "type": "place",
-   "verb": true,
+   "type": "emotion",
+   "character": "girl",
+   "name": "happy",
+   "start": 56,
+   "end": 153,
+   "intensity": 0.7
+  },
+  {
+   "type": "look",
+   "character": "girl",
+   "start": 66,
+   "end": 129,
+   "atCharacter": "boy"
+  },
+  {
+   "type": "look",
    "character": "boy",
-   "hand": "R",
-   "at": [
-    -0.025,
-    0.4695,
-    0.02
+   "start": 103,
+   "end": 129,
+   "target": [
+    1.4933,
+    0.6,
+    1.0315
    ]
   }
  ],
@@ -315,9 +348,10 @@
   }
  },
  "timing": "calibrated",
- "x_t112a_verbs": {
-  "task": "T-112a",
-  "derived_from": "episodes/e907_exchange/shots/s010/shot.scene.json (staging, camera, set, cast)",
-  "note": "opt-in verb demo: every frame of the boy's pick up / carry / place comes from the verb files (content/verbs) and the calibrated timing profile x his personality tempo; s010 and s010_calibrated are unchanged"
+ "events": [],
+ "x_t112b_verbs": {
+  "task": "T-112b",
+  "derived_from": "episodes/e907_exchange/shots/s010_calibrated/shot.scene.json (staging, camera, set, cast, the hand-over point, the acting beats outside the verb library)",
+  "note": "opt-in verb demo: his pick up, the pass and her draw-in are verbs (content/verbs, calibrated timing x personality tempo); her notice is the pass's partner_acts reaction (scene events opted in, react:true). Authored, as in s010_calibrated: her look at the table before the offer, her happy emotion (her contact - 2), her look up at him (accept + 2) and his look off at the end. settle 5 = make_shot.py's grip settle (anticipation // 2). s010 and s010_calibrated are unchanged."
  }
 }

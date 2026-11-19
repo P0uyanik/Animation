@@ -269,8 +269,8 @@ Result<Json> SceneEvaluator::planReactionActions() {
   };
   ReactionContext ctx;
   std::optional<TimingProfile> timing;
-  if (scene_.timing.is_string()) {  // T-104: the scene's timing profile gives the shared notice delay
-    const auto file = findTimingProfileFile(scene_.path, scene_.timing.get<std::string>());
+  if (const std::string name = scene_.timingProfile(); !name.empty()) {  // T-104: the timing profile's notice delay
+    const auto file = findTimingProfileFile(scene_.path, name);
     if (auto t = file.empty() ? Result<TimingProfile>(fail("not found")) : loadTimingProfile(file)) timing = std::move(*t);
   }
   if (timing) ctx.timing = &*timing;
@@ -410,13 +410,20 @@ Result<void> SceneEvaluator::compileActionsBody() {
   if (hasVerbAction(scene_.actions)) {
     VerbContext vc;
     vc.frameStart = scene_.frameStart;
-    if (scene_.timing.is_string()) {
-      const auto file = findTimingProfileFile(scene_.path, scene_.timing.get<std::string>());
-      if (file.empty()) return fail(std::format("timing profile '{}' not found in content/timing", scene_.timing.get<std::string>()));
-      auto t = loadTimingProfile(file);
-      if (!t) return std::unexpected(t.error());
-      verbTiming = std::move(*t);
-      vc.timing = &*verbTiming;
+    vc.fps = scene_.rate.fps();
+    vc.events = !scene_.events.is_null();  // T-112b: "react" adds events only when the scene opted into them
+    // The scene's timing profile, resolved as the interaction compile does (T-104d: calibrated unless the scene says
+    // "none"; a named profile must exist, the implicit default may be missing outside a content tree).
+    if (const std::string name = scene_.timingProfile(); !name.empty()) {
+      const auto file = findTimingProfileFile(scene_.path, name);
+      if (file.empty() && !scene_.timing.is_null())
+        return fail(std::format("timing profile '{}' not found in content/timing", name));
+      if (!file.empty()) {
+        auto t = loadTimingProfile(file);
+        if (!t) return std::unexpected(t.error());
+        verbTiming = std::move(*t);
+        vc.timing = &*verbTiming;
+      }
     }
     for (size_t c = 0; c < scene_.characters.size(); ++c) {
       VerbContext::Character vch{scene_.characters[c].name, personality(c)};
@@ -445,7 +452,12 @@ Result<void> SceneEvaluator::compileActionsBody() {
   const Json& authoredActions = verbs ? verbs->actions : scene_.actions;
   reactionActions_ = Json::array();
   if (!scene_.events.is_null()) {  // T-097D: opt-in reaction events, played as generated actions
+    // T-112b: the verbs' reaction events ("react": true) are planned with the scene's own, then the list is restored
+    const Json authoredEvents = scene_.events;
+    if (verbs && scene_.events.is_array())
+      for (const Json& e : verbs->events) scene_.events.push_back(e);
     auto ra = planReactionActions();
+    scene_.events = authoredEvents;
     if (!ra) return std::unexpected(ra.error());
     reactionActions_ = std::move(*ra);
   }
@@ -1565,6 +1577,11 @@ Result<void> SceneEvaluator::compileActionsBody() {
     g.palm = [&](const std::string& who, char side, double f) { return handGripPoint(ci(who), side, f); };
     g.propWorld = [&](const std::string& prop, double f) { return propWorld(pi(prop), f); };
     g.asset = [&](const std::string& prop) -> const PropAsset* { return pi(prop) < propAssets_.size() ? &propAssets_[pi(prop)] : nullptr; };
+    g.armGap = [&](const std::string& who, char side, double f) { return armClearanceAt(ci(who), side, f).gap; };
+    g.ikWeight = [&](const std::string& who, char side, double f) {
+      const int hb = chain(who, side)[0];
+      return hb < 0 ? 0.0f : scene_.animation.evaluate(who + "/ik." + characters_[ci(who)].asset.skeleton.bones[size_t(hb)].name + ".weight", f, vec3(0)).x;
+    };
     if (auto errors = checkVerbConstraints(*verbs, g); !errors.empty()) return fail(errors.front().message());
   }
   if (scene_.director.is_object()) planShots(*this, *gen, beats);

@@ -151,8 +151,9 @@ Existing sockets: `grip` (+x side, 66 mm up), `grip_b` (-x side, 34 mm up), `pla
   "deform": {"mode": "rigid"}
 }
 ```
-The two bands do not overlap (giver high, receiver low), which is what e907 already does with `grip` at 66 mm and
-`grip_b` at 34 mm: the hands never meet on the 100 mm cup. `max_tilt_deg: 20` is a check only for this cup (open
+The two bands overlap by 10 mm in height ([0.045, 0.09] and [0.01, 0.055]) but sit on opposite sides of the cup (giver
+high, receiver low; T-112b correction), which is what e907 already does with `grip` at 66 mm and `grip_b` at 34 mm:
+the hands never meet on the 100 mm cup (`hands_meet` fires only for overlapping bands on the same side). `max_tilt_deg: 20` is a check only for this cup (open
 top, felt: nothing spills); the carry already keeps world orientation, so the constraint holds by construction and
 reports if a future `hold` with rotation breaks it.
 
