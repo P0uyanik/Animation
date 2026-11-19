@@ -16,7 +16,6 @@ means none. Branch is the task's branch; a task branch without a row falls back 
 
 | Task | Lane | Branch | Write-set | Depends on | Versions bumped |
 | --- | --- | --- | --- | --- | --- |
-| T-125 | E | t-125-claude-motion-checks | `tools/motion_checks/**`, `docs/evaluation/animation/T-125/**` | — | — |
 | T-126a | B | t-126a-claude-body-face | `assets/characters/girl_white_hair_blue_dress/spec/**`, `docs/evaluation/characters/T-126/body_face/**` | — | `girl_white_hair_blue_dress` |
 | T-126b | B | t-126b-claude-hair | `pipeline/charsys/groom_r5.py`, `pipeline/charsys/tests/test_hair_r5.py`, `docs/evaluation/characters/T-126/hair/**` | — | `groom` |
 | T-126c | B | t-126c-claude-dress | `pipeline/charsys/garments_v3/**`, `pipeline/charsys/tests/test_garments_r3.py`, `pipeline/charsys/cloth_sim/**`, `docs/evaluation/characters/T-126/dress/**` | — | `garment` |
