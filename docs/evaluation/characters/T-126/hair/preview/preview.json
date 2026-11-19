@@ -1,0 +1,20 @@
+{
+ "task": "T-126b",
+ "blend": "girl_white_hair_blue_dress_master.blend",
+ "label": "T-126b hair (groom/4)",
+ "samples": 2,
+ "px": 120,
+ "crop_px": null,
+ "render_seconds": {
+  "sheet": 84.5
+ },
+ "rows": [
+  "front",
+  "threequarter",
+  "side",
+  "back",
+  "face_front",
+  "face_threequarter"
+ ],
+ "crops": []
+}

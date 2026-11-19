@@ -1,0 +1,32 @@
+{
+ "spec": "assets/characters/girl_auburn_bun_glasses/versions/0.13.0/spec.resolved.json",
+ "pinned": "groom/3",
+ "objects": 17,
+ "environment": {
+  "PYTHONHASHSEED": "0",
+  "OMP_NUM_THREADS": "1",
+  "OPENBLAS_NUM_THREADS": "1",
+  "MKL_NUM_THREADS": "1",
+  "NUMEXPR_NUM_THREADS": "1"
+ },
+ "pinned_vs_groom4_differing_objects": {
+  "hair_flowers_centres": {
+   "max_coordinate_difference_m": 0.0,
+   "faces_equal": false
+  },
+  "hair_flowers_petals": {
+   "max_coordinate_difference_m": 0.0,
+   "faces_equal": false
+  }
+ },
+ "pinned_vs_pinned_again_differing_objects": {
+  "hair_flowers_centres": {
+   "max_coordinate_difference_m": 0.0,
+   "faces_equal": false
+  },
+  "hair_flowers_petals": {
+   "max_coordinate_difference_m": 0.0,
+   "faces_equal": false
+  }
+ }
+}

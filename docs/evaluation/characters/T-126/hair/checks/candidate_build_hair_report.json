@@ -1,0 +1,255 @@
+{
+ "base_spec": "assets/characters/girl_white_hair_blue_dress/spec/candidates/T-126a/girl_white_hair_blue_dress.0.1.0.spec.json @ t-126a-claude-body-face 0e7aaad",
+ "overrides": [
+  "docs/evaluation/characters/T-126/body_face/hands_r2.override.json (T-126a)",
+  "docs/evaluation/characters/T-126/hair/candidates/girl_white_hair_blue_dress.hair.override.json"
+ ],
+ "hair": {
+  "generator": "groom/4",
+  "structures": {
+   "cap": {
+    "type": "scalp_cap",
+    "faces": 10565
+   },
+   "buns": {
+    "buns": 2,
+    "finish": "felt",
+    "type": "bun"
+   },
+   "crown": {
+    "shape": "gather",
+    "grid": [
+     220,
+     48
+    ],
+    "type": "felt_volume"
+   },
+   "fringe": {
+    "masses": 7,
+    "keepout_clamped": 0,
+    "mean_footprint_cm2": 112.6,
+    "mean_depth": 0.55,
+    "type": "masses"
+   },
+   "temples": {
+    "masses": 2,
+    "keepout_clamped": 0,
+    "mean_footprint_cm2": 95.5,
+    "mean_depth": 0.6,
+    "type": "masses"
+   },
+   "back_mass": {
+    "shape": "curtain",
+    "grid": [
+     180,
+     100
+    ],
+    "columns": 10,
+    "type": "curtain"
+   },
+   "back_under_00": {
+    "locks": 1,
+    "style": "wavy",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "back_under_01": {
+    "locks": 1,
+    "style": "wavy",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "back_under_02": {
+    "locks": 1,
+    "style": "wavy",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "back_under_03": {
+    "locks": 1,
+    "style": "wavy",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "back_under_04": {
+    "locks": 1,
+    "style": "wavy",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "back_under_05": {
+    "locks": 1,
+    "style": "wavy",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "back_under_06": {
+    "locks": 1,
+    "style": "wavy",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "back_locks_00": {
+    "locks": 1,
+    "style": "wavy",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "back_locks_01": {
+    "locks": 1,
+    "style": "wavy",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "back_locks_02": {
+    "locks": 1,
+    "style": "wavy",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "back_locks_03": {
+    "locks": 1,
+    "style": "wavy",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "back_locks_04": {
+    "locks": 1,
+    "style": "wavy",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "back_locks_05": {
+    "locks": 1,
+    "style": "wavy",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "back_locks_06": {
+    "locks": 1,
+    "style": "wavy",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "back_locks_07": {
+    "locks": 1,
+    "style": "wavy",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "outer_locks_00": {
+    "locks": 1,
+    "style": "wavy",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "outer_locks_01": {
+    "locks": 1,
+    "style": "wavy",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "outer_locks_r00": {
+    "locks": 1,
+    "style": "wavy",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "outer_locks_r01": {
+    "locks": 1,
+    "style": "wavy",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "side_locks_00": {
+    "locks": 1,
+    "style": "wavy",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "side_locks_01": {
+    "locks": 1,
+    "style": "wavy",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "side_locks_r00": {
+    "locks": 1,
+    "style": "wavy",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "side_locks_r01": {
+    "locks": 1,
+    "style": "wavy",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "bow": {
+    "size_m": 0.11523,
+    "loops": 4,
+    "type": "felt_bow"
+   }
+  },
+  "vertices": 120200,
+  "keepout": {
+   "az": 34.0,
+   "el_min": 4.0,
+   "violations": 0,
+   "by_object": {}
+  },
+  "fibres": {
+   "objects": 90,
+   "layers": [
+    "felt",
+    "halo",
+    "flyaways"
+   ],
+   "directional": 0.0
+  },
+  "dynamics": {
+   "chains": 34
+  },
+  "lowered": {
+   "staggered_locks": {
+    "back_under": 7,
+    "back_locks": 8,
+    "outer_locks": 4,
+    "side_locks": 4
+   },
+   "wave_phase_deg": {
+    "back_under_00": 190.0,
+    "back_under_01": 160.0,
+    "back_under_02": 215.0,
+    "back_under_03": 175.0,
+    "back_under_04": 200.0,
+    "back_under_05": 190.0,
+    "back_under_06": 160.0,
+    "back_locks_00": 0.0,
+    "back_locks_01": 25.0,
+    "back_locks_02": 345.0,
+    "back_locks_03": 35.0,
+    "back_locks_04": 10.0,
+    "back_locks_05": 335.0,
+    "back_locks_06": 20.0,
+    "back_locks_07": 0.0,
+    "outer_locks_00": 30.0,
+    "outer_locks_01": 350.0,
+    "outer_locks_r00": 170.0,
+    "outer_locks_r01": 210.0,
+    "side_locks_00": 60.0,
+    "side_locks_01": 20.0,
+    "side_locks_r00": 200.0,
+    "side_locks_r01": 240.0
+   },
+   "accessories": {
+    "seated_lift_m": {
+     "bow": 0.0543
+    },
+    "turned_deg": {
+     "bow": 5.83
+    }
+   }
+  }
+ }
+}
