@@ -1,0 +1,11 @@
+happy        AC2 face 0.0e+00 clip 1.7e-06 deg boy-girl 5.941 deg FAIL | AC3 worst ('upperArm.R', 6.996, 0.5543108987647931) ('upperArm.R', 7.203, 0.8439590269728783) FAIL | AC6 [] PASS
+happy/laugh  AC2 face 1.2e-08 clip 1.7e-06 deg boy-girl 1.274 deg PASS | AC3 worst ('upperArm.L', 14.891, 0.48724363532384296) ('upperArm.L', 18.608, 0.5619540727292901) FAIL | AC6 [] PASS
+sad          AC2 face 0.0e+00 clip 0.0e+00 deg boy-girl 10.881 deg FAIL | AC3 worst ('upperArm.R', 12.8, 0.4903089720910025) ('upperArm.R', 14.261, 0.483395311933386) PASS | AC6 [] PASS
+sad/cry      AC2 face 2.4e-08 clip 0.0e+00 deg boy-girl 3.282 deg FAIL | AC3 worst ('upperArm.R', 15.327, 0.5245785592466613) ('upperArm.R', 16.905, 0.5357093826242812) FAIL | AC6 [] PASS
+angry        AC2 face 2.4e-08 clip 0.0e+00 deg boy-girl 1.210 deg PASS | AC3 worst ('upperArm.R', 1.593, 1.0406454887522256) ('upperArm.R', 5.878, 0.7725629197507077) FAIL | AC6 [] PASS
+surprised    AC2 face 0.0e+00 clip 0.0e+00 deg boy-girl 1.840 deg PASS | AC3 worst ('upperArm.R', 9.645, 0.4443799936005371) ('upperArm.L', 20.388, 0.5756696253711262) FAIL | AC6 [] PASS
+confused     AC2 face 0.0e+00 clip 0.0e+00 deg boy-girl 0.000 deg PASS | AC3 worst ('head', 15.122, 0.4999999821568415) ('head', 15.122, 0.4999999821568415) PASS | AC6 [] PASS
+afraid       AC2 face 2.4e-08 clip 1.7e-06 deg boy-girl 6.238 deg FAIL | AC3 worst ('upperArm.R', 30.948, 0.41611033935079694) ('upperArm.R', 34.517, 0.472575768595537) FAIL | AC6 [] PASS
+sleepy       AC2 face 1.2e-08 clip 0.0e+00 deg boy-girl 0.000 deg PASS | AC3 worst ('head', 7.176, 0.49999967868993267) ('head', 7.176, 0.49999967868993267) PASS | AC6 [] PASS
+curious      AC2 face 0.0e+00 clip 0.0e+00 deg boy-girl 0.000 deg PASS | AC3 worst ('chest', 2.936, 0.5000002871953543) ('chest', 2.936, 0.5000002871953543) PASS | AC6 [] PASS
+SUMMARY {'AC2': False, 'AC3': False, 'AC6': True, 'AC4': False, 'AC5': False}

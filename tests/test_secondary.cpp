@@ -271,6 +271,37 @@ TEST_CASE("secondary motion: collision keeps chain points outside a sphere") {
   CHECK(minWith >= r + pr - 1e-4f);  // the collider keeps every joint outside
 }
 
+TEST_CASE("secondary motion: a collider push keeps the chain joint-continuous (T-101)") {
+  // As above, but the sphere sits beside the middle of the chain, so inner joints (bone heads) are pushed, not only
+  // the tip. Blender connects the chain bones, so the end of each bone must stay on the head of the next.
+  const Skeleton sk = chainSkeleton();
+  const double fps = 24;
+  auto drv = [&sk, fps](double frame) {
+    const double t = (frame - 1) / fps;
+    const float x = float(0.5 * std::clamp(t / 0.2, 0.0, 1.0));
+    return boneGlobals(sk, restPose(sk), glm::translate(mat4(1), vec3(x, 0, 0)));
+  };
+  const vec3 centreRest(-0.09f, 0.96f, -0.12f);
+  const float r = 0.06f, pr = 0.005f;
+  DynamicsSpec spec = chainSpec(false);
+  spec.chains[0].params.stiffness = 4;
+  spec.chains[0].params.damping = 0.5f;
+  spec.colliders.push_back({"side", DynamicsCollider::Kind::Sphere, "root", centreRest, centreRest, r});
+  auto s = SpringChainSolver::create(sk, spec);
+  REQUIRE(s.has_value());
+  float gap = 0, minD = 1;
+  for (int f = 1; f <= 48; ++f) {
+    auto g = solve(**s, drv, f, fps);
+    const vec3 c = vec3(g[0] * vec4(centreRest - sk.bones[0].head, 1));
+    for (size_t b = 3; b < 6; ++b) minD = std::min(minD, glm::distance(pivot(g, b), c));
+    for (size_t b = 2; b < 5; ++b) gap = std::max(gap, glm::distance(tipOf(g, sk, b, sk.bones[b + 1].head), pivot(g, b + 1)));
+  }
+  MESSAGE("largest joint gap: " << gap * 1000 << " mm; closest inner joint to the sphere centre: " << minD * 1000 << " mm");
+  CHECK(minD < r + pr + 1e-3f);      // the sphere is in contact with an inner joint (the push is exercised)
+  CHECK(minD >= r + pr - 1e-4f);     // and keeps it outside
+  CHECK(gap < 1e-5f);                // 0.01 mm, the limit at which shot_render reproduces the baked bones
+}
+
 TEST_CASE("secondary motion: absent or disabled = bit-identical bake") {
   const auto dir = std::filesystem::path(PLUSH_SOURCE_DIR) / "build/test_tmp/toy_tail";
   toyPackageWithTail(dir);
