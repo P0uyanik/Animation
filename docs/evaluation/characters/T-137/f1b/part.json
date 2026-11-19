@@ -1,0 +1,204 @@
+{
+ "character": "girl_white_hair_blue_dress",
+ "task": "T-137 F1b",
+ "columns": [
+  {
+   "tag": "baseline",
+   "label": "T-126 base",
+   "role": "baseline",
+   "blend": "/tmp/claude-0/-home-user-Animation/f0a43bb8-9e5b-5358-ac5a-f440e147ff8a/scratchpad/f1b/base/girl_white_hair_blue_dress_master.blend"
+  },
+  {
+   "tag": "candidate",
+   "label": "+ F1b eyes, fringe",
+   "role": "candidate",
+   "blend": "/tmp/claude-0/-home-user-Animation/f0a43bb8-9e5b-5358-ac5a-f440e147ff8a/scratchpad/f1b/c5/girl_white_hair_blue_dress_master.blend"
+  }
+ ],
+ "strict": {
+  "body": {
+   "target": [
+    0,
+    0,
+    0.54
+   ],
+   "frame_height_m": 1.22,
+   "aspect": 1.6
+  },
+  "face": {
+   "target": [
+    0,
+    0,
+    0.745
+   ],
+   "frame_height_m": 0.32,
+   "aspect": 1.0
+  },
+  "rows": [
+   [
+    "front",
+    "front",
+    "body",
+    0,
+    {
+     "file": "assets/characters/girl_white_hair_blue_dress/references/views/s02_front.jpg",
+     "label": "s02_front"
+    },
+    {
+     "file": "assets/characters/girl_white_hair_blue_dress/references/uploads/16_higgsfield_W05_dress_tights_boots_2026-11-18.webp",
+     "label": "W05"
+    }
+   ],
+   [
+    "threequarter",
+    "3/4",
+    "body",
+    -30,
+    {
+     "file": "assets/characters/girl_white_hair_blue_dress/references/views/s02_front_left.jpg",
+     "label": "s02_front_left"
+    },
+    null
+   ],
+   [
+    "face_front",
+    "face front",
+    "face",
+    0,
+    {
+     "file": "assets/characters/girl_white_hair_blue_dress/references/views/id01_face.jpg",
+     "label": "id01_face"
+    },
+    {
+     "file": "assets/characters/girl_white_hair_blue_dress/references/views/f14_e1_neutral_soft_smile.jpg",
+     "label": "14 neutral"
+    }
+   ],
+   [
+    "face_threequarter",
+    "face 3/4",
+    "face",
+    -30,
+    {
+     "file": "assets/characters/girl_white_hair_blue_dress/references/views/f14_head_3q.jpg",
+     "label": "f14_head_3q"
+    },
+    {
+     "file": "assets/characters/girl_white_hair_blue_dress/references/uploads/18_higgsfield_W02_blue_felt_bow_2026-11-18.webp",
+     "label": "W02 bow"
+    }
+   ]
+  ]
+ },
+ "eyes": {
+  "refs": [
+   {
+    "file": "assets/characters/girl_white_hair_blue_dress/references/views/id01_face.jpg",
+    "label": "01 face"
+   },
+   {
+    "file": "assets/characters/girl_white_hair_blue_dress/references/views/m04_neutral.jpg",
+    "label": "04 neutral"
+   },
+   {
+    "file": "assets/characters/girl_white_hair_blue_dress/references/views/f14_e1_neutral_soft_smile.jpg",
+    "label": "14 e1 neutral"
+   }
+  ]
+ },
+ "expr": {
+  "rows": [
+   [
+    "Neutral",
+    {
+     "file": "assets/characters/girl_white_hair_blue_dress/references/views/m04_neutral.jpg",
+     "label": "m04_neutral"
+    }
+   ],
+   [
+    "Smile",
+    {
+     "file": "assets/characters/girl_white_hair_blue_dress/references/views/m04_smile.jpg",
+     "label": "m04_smile"
+    }
+   ],
+   [
+    "Laugh",
+    {
+     "file": "assets/characters/girl_white_hair_blue_dress/references/views/m04_laugh.jpg",
+     "label": "m04_laugh"
+    }
+   ],
+   [
+    "SmileOpen",
+    {
+     "file": "assets/characters/girl_white_hair_blue_dress/references/views/f14_m3_open_smile_teeth.jpg",
+     "label": "f14_m3_open_smile_teeth"
+    }
+   ],
+   [
+    "Surprise",
+    {
+     "file": "assets/characters/girl_white_hair_blue_dress/references/views/m04_surprise.jpg",
+     "label": "m04_surprise"
+    }
+   ],
+   [
+    "Sadness",
+    {
+     "file": "assets/characters/girl_white_hair_blue_dress/references/views/m04_sadness.jpg",
+     "label": "m04_sadness"
+    }
+   ],
+   [
+    "Anger",
+    {
+     "file": "assets/characters/girl_white_hair_blue_dress/references/views/m04_anger.jpg",
+     "label": "m04_anger"
+    }
+   ],
+   [
+    "Frown",
+    {
+     "file": "assets/characters/girl_white_hair_blue_dress/references/views/m04_frown.jpg",
+     "label": "m04_frown"
+    }
+   ],
+   [
+    "Confusion",
+    {
+     "file": "assets/characters/girl_white_hair_blue_dress/references/views/m04_confusion.jpg",
+     "label": "m04_confusion"
+    }
+   ],
+   [
+    "Blink",
+    {
+     "file": "assets/characters/girl_white_hair_blue_dress/references/views/m04_blink_both.jpg",
+     "label": "m04_blink_both"
+    }
+   ],
+   [
+    "LeftEyeClosed",
+    {
+     "file": "assets/characters/girl_white_hair_blue_dress/references/views/m04_blink_l.jpg",
+     "label": "m04_blink_l"
+    }
+   ],
+   [
+    "Squint",
+    {
+     "file": "assets/characters/girl_white_hair_blue_dress/references/views/m04_squint.jpg",
+     "label": "m04_squint"
+    }
+   ],
+   [
+    "WideOpen",
+    {
+     "file": "assets/characters/girl_white_hair_blue_dress/references/views/m04_wide_open.jpg",
+     "label": "m04_wide_open"
+    }
+   ]
+  ]
+ }
+}

@@ -343,7 +343,7 @@ def curve_closed_lash(lash, T, r, cfg, a_close, seam_deg):
     median closing rotation. With w = smoothstep((seam + above + blend - e_k) / blend) (0 while the lash is still above
     the seam, 1 at and below it), each vertex
       * turns about the frame's x axis by w times the angle that puts the line on the target curve
-        seam + above - sag_deg * (1 - u^2) + corner_lift_deg * u^2 (u = rest |x| over the lash half-width): the lash
+        seam + above - sag_deg * (1 - u^2) + corner_lift_deg * u^2 (u = 0 at the middle of the rest lash line, 1 at its ends): the lash
         stops at the seam, its middle sags and its corners rise (the downward curve of a closed felt eye);
       * goes to its rest radius + out_m (w-weighted): in front of the lower lid and the skin over it.
     Lash strands keep their offsets from the line. keys maps a key name (in-betweens "Name@NN" and sided "Name.L" use
@@ -372,9 +372,10 @@ def curve_closed_lash(lash, T, r, cfg, a_close, seam_deg):
     q0 = frame_coords(kb[0].data)
     th0 = np.arctan2(q0[:, 2], -q0[:, 1])
     rho0 = np.linalg.norm(q0, axis=1)
-    core = rho0 <= np.percentile(rho0, 50.0)  # the lash line itself (strands stand further out)
+    core = rho0 <= np.percentile(rho0, 50.0) + 1e-6 * r  # the lash line itself (strands stand further out)
     line0 = np.polyval(np.polyfit(q0[core, 0], th0[core], 2), q0[:, 0])  # its rest elevation along x
-    u2 = np.clip(np.abs(q0[:, 0]) / max(float(np.abs(q0[:, 0]).max()), 1e-9), 0.0, 1.0) ** 2
+    x_lo, x_hi = float(q0[core, 0].min()), float(q0[core, 0].max())  # u: 0 at the line's middle, 1 at its ends
+    u2 = np.clip(np.abs(q0[:, 0] - 0.5 * (x_lo + x_hi)) / max(0.5 * (x_hi - x_lo), 1e-9), 0.0, 1.2) ** 2
     rep = {"out_m": out_m, "sag_deg": round(math.degrees(sag), 2), "corner_lift_deg": round(math.degrees(lift), 2),
            "seam_deg": round(math.degrees(e_s), 2), "blend_deg": round(math.degrees(blend), 2), "keys": {}}
     for k in kb[1:]:
