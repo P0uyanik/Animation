@@ -1,0 +1,50 @@
+{
+ "character_id": "girl_auburn_bun_glasses",
+ "version": "0.13.0",
+ "parent": "0.12.0",
+ "created": "2026-11-19T12:05:35+00:00",
+ "notes": "girl_auburn_bun_glasses 0.13.0 (T-122): candidate only, not current; parent 0.12.0 + T-109 face r4 + T-113 closed_fit + T-115 girl proposal. Spec assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.13.0.spec.json",
+ "spec_sha256": "fddb6a48347d45f228a687cf6dd2ffb6784ada82b6fd07f30c3bece9351d87e0",
+ "spec_version": "0.13.0",
+ "build": "charsys/1+body_generic/1",
+ "blender": "5.3.0",
+ "identity_changes": [
+  "face"
+ ],
+ "identity_change_approved_by": "owner, docs/process/OWNER_DECISIONS.md 2026-11-19 ~11:40Z round 4 (T-122: T-109 face round 4, T-113 closed-lid fit, T-115 girl face proposal; docs/tasks/T-122.md)",
+ "files": {
+  "girl_auburn_bun_glasses_master.blend": {
+   "sha256": "2105cb5fcb011f6c8fbc822c3f8402b75069a3e4d67e5afd2fdc272b6dcafb96",
+   "bytes": 33123880
+  },
+  "spec.json": {
+   "sha256": "daaa9f40fcb5ef7ced77a6eba40857150ddd877ea467b6921c6345126621fcfb",
+   "bytes": 57601
+  },
+  "components.json": {
+   "sha256": "4d222b649ecf61f8af489771302728b3ad7c96b998a77baae412d1c6661abda3",
+   "bytes": 25047
+  },
+  "animation_compat.json": {
+   "sha256": "3174cadf440cb5202b9addc78ef4f14cde14591aa0c14b205be071ebb14633df",
+   "bytes": 16664
+  },
+  "build_report.json": {
+   "sha256": "99cee505d5dec460713d8506fac9aa1ac70381ea874b5dfbd950c3b127bb643b",
+   "bytes": 37728
+  },
+  "spec.resolved.json": {
+   "sha256": "4aa391072af7e694a4e577f269cc7a99ae2e2b59f04295f8063fefbbe9d8a82e",
+   "bytes": 58103
+  }
+ },
+ "rig": {
+  "rigify_bones": 522,
+  "deform_bones": 185,
+  "unweighted_after_cleanup": 0
+ },
+ "spec_resolved": "spec.resolved.json is the build's fitted spec (body_generic writes fitted values); spec.json is the input spec it was built from (hash = spec_sha256)",
+ "not_stored": {
+  "girl_auburn_bun_glasses.glb": "not needed for reuse: shots link the master and engine packages are exported from it (run_shot.py); reproducible from the master"
+ }
+}

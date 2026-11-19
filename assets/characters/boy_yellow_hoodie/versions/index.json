@@ -31,6 +31,13 @@
    "status": "approved",
    "spec_sha256": "d70f55c6c9796b3cfdeef5844b4ff90f553c64597e6b5f6d1be176a00bf73634",
    "approval_notes": "new current version: \"Owner 2026-11-19 (~02:55Z, round 2 close-out item 1, \"I confirm all\"): boy 2.1.0 and girl 0.12.0 become current once the exchange re-render is finished and its CI is green (green: run 44449190108 at ea02ce1).\" Recorded by T-094 (tools/version_switch.py)."
+  },
+  "2.2.0": {
+   "created": "2026-11-19T11:54:01+00:00",
+   "parent": "2.1.0",
+   "notes": "boy_yellow_hoodie 2.2.0 (T-122): candidate only, not current; parent 2.1.0 + T-109 face r4 + T-113 closed_fit. Spec assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.2.0.spec.json",
+   "status": "candidate",
+   "spec_sha256": "3531de64befdb25bd7207f44baee146a255bb68fa1e1759c8fafd34f5aa7d559"
   }
  },
  "pointers": {
@@ -85,6 +92,12 @@
    "previous": "2.0.0",
    "by": "owner (docs/process/OWNER_DECISIONS.md 2026-11-19)",
    "notes": "new current version: \"Owner 2026-11-19 (~02:55Z, round 2 close-out item 1, \"I confirm all\"): boy 2.1.0 and girl 0.12.0 become current once the exchange re-render is finished and its CI is green (green: run 44449190108 at ea02ce1).\" Recorded by T-094 (tools/version_switch.py)."
+  },
+  {
+   "at": "2026-11-19T11:54:01+00:00",
+   "action": "publish",
+   "version": "2.2.0",
+   "status": "candidate"
   }
  ]
 }
