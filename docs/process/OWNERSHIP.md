@@ -19,6 +19,7 @@ means none. Branch is the task's branch; a task branch without a row falls back 
 | T-128 | E | t-128-claude-tooling-trial | `docs/evaluation/tooling/T-128/**`, `tools/dev/**`, `CMakePresets.json`, `cmake/opt_in/**`, `requirements-tools.txt` | `.github/workflows/**` (stable), `tools/check_all.py` (stable) | — |
 | T-127 | E | t-127-claude-ci-speed | `.github/workflows/**`, `.github/scripts/**`, `tools/check_all.py`, `tools/ci/**`, `docs/process/GATE.md`, `docs/evaluation/ci/T-127/**` | — | — |
 | T-125 | E | t-125-claude-motion-checks | `tools/motion_checks/**`, `docs/evaluation/animation/T-125/**` | — | — |
+| T-117 | C | t-117-claude-showcase | `episodes/e910_showcase/**`, `docs/evaluation/animation/T-117/**` | engine, content, characters (read-only) | — |
 | T-124 | E | t-124-claude-render-opt | `docs/evaluation/rendering/T-124/**`, `tools/render_bench/**`, `pipeline/charsys/render_profiles.json`, `pipeline/charsys/shot_render.py`, `pipeline/charsys/render_engine.py` | — | — |
 | T-119 | B | t-119-claude-garments-r3 | `pipeline/charsys/garments_v3/**`, `pipeline/charsys/materials/skin_presets_r3.json`, `pipeline/charsys/materials/builder.py`, `pipeline/charsys/tests/test_garments_r3.py`, `docs/evaluation/characters/T-119/**` | `pipeline/charsys/versions.py` (stable), `pipeline/charsys/build_character.py` (stable) | `garment` |
 | T-123 | E | t-123-codex-readability | `tools/review/readability.py`, `tools/review/tests/test_readability.py`, `docs/evaluation/tools/T-123/**` | — | — |
