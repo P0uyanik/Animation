@@ -497,3 +497,9 @@ test_store first; approve; rebaseline fidelity_baseline.json (boy 67.72 -> 67.25
 the gains are lid colour, lens shelf and expressions, which the score does not measure, see T-129); golden baselines;
 full gate before promotion; stop and report on any failure, nothing loosened. Hair r5, garments r3 and fingers stay
 opt-in for 2.3.0 / 0.14.0.
+
+## 2026-11-19 (~15:10Z): candidate versions 2.3.0 / 0.14.0 (relayed)
+Owner, verbatim: "approve the 2.3.0 and 0.14.0 candidates task". **T-132** (Opus 5.5): 2.3.0 / 0.14.0 = 2.2.0 / 0.13.0
++ T-118 hair r5 + T-119 garments r3 (limb skin as accepted) + T-121 fingers; candidates only (no current change, no
+fidelity_baseline or golden change); strict + expression sheets, 100% crops, fidelity report; an ingredient that
+regresses is left out and reported. Starts when T-119 and the T-131 switch are on main.
