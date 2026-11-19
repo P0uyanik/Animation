@@ -1,0 +1,776 @@
+{
+ "schema": "plush-studio.material-patch-metrics/1",
+ "task": "T-092",
+ "blender": "5.3.0",
+ "samples": 16,
+ "denoiser": "OPENIMAGEDENOISE",
+ "device": "CPU",
+ "cameras": {
+  "macro": {
+   "frame_m": 0.06,
+   "px": 360,
+   "lens_mm": 150.0,
+   "distance_m": 0.25,
+   "target": [
+    -0.0372,
+    0.0,
+    0.0372
+   ],
+   "px_per_m": 6000.0
+  },
+  "shot": {
+   "frame_m": 0.35,
+   "px": 160,
+   "lens_mm": 252.0,
+   "distance_m": 2.45,
+   "target": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "px_per_m": 457.14
+  }
+ },
+ "lights": [
+  {
+   "name": "character_neutral/1",
+   "file": "render_calibration.json",
+   "tag": "neutral"
+  },
+  {
+   "name": "character_warm_indoor/1",
+   "file": "r2_lights.json",
+   "tag": "warm"
+  }
+ ],
+ "colour_region": "shot-size tile, disc of 0.92 x form radius (lit and shaded side, as a garment median)",
+ "materials": [
+  {
+   "label": "third_hair",
+   "target_srgb": [
+    203,
+    190,
+    172
+   ],
+   "target_source": "references/color_targets.json hair (w01 (444,262) +-8px, patch sd 6.6)",
+   "before": "felt hair",
+   "after": "felt hair cream/3",
+   "lights": {
+    "neutral": {
+     "before": {
+      "median_srgb": [
+       195,
+       169,
+       140
+      ],
+      "de00_to_target": 7.65,
+      "dL_to_target": -6.85,
+      "spread_de00": 5.36,
+      "shot_texture": {
+       "fuzz_hf_rms": 7.948,
+       "sheen_p90_p50": 1.105,
+       "laplacian_var": 1035.595,
+       "saturation_median": 0.289
+      },
+      "macro_texture": {
+       "fuzz_hf_rms": 4.323,
+       "sheen_p90_p50": 1.046,
+       "laplacian_var": 114.431,
+       "saturation_median": 0.298
+      },
+      "seconds": {
+       "macro": 6.35,
+       "shot": 0.51
+      }
+     },
+     "after": {
+      "median_srgb": [
+       201,
+       187,
+       169
+      ],
+      "de00_to_target": 0.71,
+      "dL_to_target": -0.9,
+      "spread_de00": 4.51,
+      "shot_texture": {
+       "fuzz_hf_rms": 6.343,
+       "sheen_p90_p50": 1.059,
+       "laplacian_var": 818.451,
+       "saturation_median": 0.162
+      },
+      "macro_texture": {
+       "fuzz_hf_rms": 3.717,
+       "sheen_p90_p50": 1.035,
+       "laplacian_var": 91.464,
+       "saturation_median": 0.164
+      },
+      "seconds": {
+       "macro": 6.24,
+       "shot": 0.48
+      }
+     }
+    },
+    "warm": {
+     "before": {
+      "median_srgb": [
+       224,
+       162,
+       111
+      ],
+      "de00_to_target": 15.62,
+      "dL_to_target": -6.05,
+      "spread_de00": 5.29,
+      "shot_texture": {
+       "fuzz_hf_rms": 7.47,
+       "sheen_p90_p50": 1.089,
+       "laplacian_var": 945.955,
+       "saturation_median": 0.51
+      },
+      "macro_texture": {
+       "fuzz_hf_rms": 3.764,
+       "sheen_p90_p50": 1.039,
+       "laplacian_var": 88.06,
+       "saturation_median": 0.502
+      },
+      "seconds": {
+       "macro": 6.05,
+       "shot": 0.46
+      }
+     },
+     "after": {
+      "median_srgb": [
+       232,
+       180,
+       134
+      ],
+      "de00_to_target": 12.71,
+      "dL_to_target": -0.5,
+      "spread_de00": 4.51,
+      "shot_texture": {
+       "fuzz_hf_rms": 5.127,
+       "sheen_p90_p50": 1.047,
+       "laplacian_var": 521.227,
+       "saturation_median": 0.427
+      },
+      "macro_texture": {
+       "fuzz_hf_rms": 2.977,
+       "sheen_p90_p50": 1.024,
+       "laplacian_var": 57.197,
+       "saturation_median": 0.408
+      },
+      "seconds": {
+       "macro": 5.95,
+       "shot": 0.47
+      }
+     }
+    }
+   }
+  },
+  {
+   "label": "third_skin",
+   "target_srgb": [
+    220,
+    194,
+    175
+   ],
+   "target_source": "references/color_targets.json skin (w01 (444,312) +-5px, patch sd 2.5)",
+   "before": "skin-felt/3",
+   "after": "skin-flock/3",
+   "lights": {
+    "neutral": {
+     "before": {
+      "median_srgb": [
+       212,
+       179,
+       155
+      ],
+      "de00_to_target": 4.46,
+      "dL_to_target": -5.05,
+      "spread_de00": 4.59,
+      "shot_texture": {
+       "fuzz_hf_rms": 0.405,
+       "sheen_p90_p50": 1.006,
+       "laplacian_var": 3.547,
+       "saturation_median": 0.272
+      },
+      "macro_texture": {
+       "fuzz_hf_rms": 0.853,
+       "sheen_p90_p50": 1.007,
+       "laplacian_var": 7.106,
+       "saturation_median": 0.267
+      },
+      "seconds": {
+       "macro": 7.31,
+       "shot": 0.41
+      }
+     },
+     "after": {
+      "median_srgb": [
+       218,
+       194,
+       175
+      ],
+      "de00_to_target": 1.09,
+      "dL_to_target": -0.11,
+      "spread_de00": 4.59,
+      "shot_texture": {
+       "fuzz_hf_rms": 0.423,
+       "sheen_p90_p50": 1.006,
+       "laplacian_var": 3.76,
+       "saturation_median": 0.202
+      },
+      "macro_texture": {
+       "fuzz_hf_rms": 1.158,
+       "sheen_p90_p50": 1.009,
+       "laplacian_var": 11.799,
+       "saturation_median": 0.197
+      },
+      "seconds": {
+       "macro": 7.28,
+       "shot": 0.45
+      }
+     }
+    },
+    "warm": {
+     "before": {
+      "median_srgb": [
+       242,
+       172,
+       123
+      ],
+      "de00_to_target": 12.42,
+      "dL_to_target": -4.1,
+      "spread_de00": 4.02,
+      "shot_texture": {
+       "fuzz_hf_rms": 0.384,
+       "sheen_p90_p50": 1.006,
+       "laplacian_var": 3.086,
+       "saturation_median": 0.502
+      },
+      "macro_texture": {
+       "fuzz_hf_rms": 0.523,
+       "sheen_p90_p50": 1.005,
+       "laplacian_var": 3.033,
+       "saturation_median": 0.463
+      },
+      "seconds": {
+       "macro": 7.21,
+       "shot": 0.42
+      }
+     },
+     "after": {
+      "median_srgb": [
+       248,
+       188,
+       139
+      ],
+      "de00_to_target": 10.46,
+      "dL_to_target": 0.51,
+      "spread_de00": 4.44,
+      "shot_texture": {
+       "fuzz_hf_rms": 0.384,
+       "sheen_p90_p50": 1.007,
+       "laplacian_var": 2.847,
+       "saturation_median": 0.447
+      },
+      "macro_texture": {
+       "fuzz_hf_rms": 0.715,
+       "sheen_p90_p50": 1.006,
+       "laplacian_var": 4.826,
+       "saturation_median": 0.396
+      },
+      "seconds": {
+       "macro": 7.1,
+       "shot": 0.53
+      }
+     }
+    }
+   }
+  },
+  {
+   "label": "third_dress",
+   "target_srgb": [
+    154,
+    175,
+    186
+   ],
+   "target_source": "references/color_targets.json dress (w01 (444,575) +-10px, patch sd 6.4)",
+   "before": "cotton knit",
+   "after": "cable knit/3",
+   "lights": {
+    "neutral": {
+     "before": {
+      "median_srgb": [
+       149,
+       161,
+       165
+      ],
+      "de00_to_target": 5.34,
+      "dL_to_target": -4.87,
+      "spread_de00": 4.73,
+      "shot_texture": {
+       "fuzz_hf_rms": 5.176,
+       "sheen_p90_p50": 1.07,
+       "laplacian_var": 400.635,
+       "saturation_median": 0.101
+      },
+      "macro_texture": {
+       "fuzz_hf_rms": 3.928,
+       "sheen_p90_p50": 1.055,
+       "laplacian_var": 94.975,
+       "saturation_median": 0.104
+      },
+      "seconds": {
+       "macro": 3.89,
+       "shot": 0.38
+      }
+     },
+     "after": {
+      "median_srgb": [
+       152,
+       173,
+       184
+      ],
+      "de00_to_target": 0.58,
+      "dL_to_target": -0.74,
+      "spread_de00": 4.4,
+      "shot_texture": {
+       "fuzz_hf_rms": 0.808,
+       "sheen_p90_p50": 1.013,
+       "laplacian_var": 10.967,
+       "saturation_median": 0.174
+      },
+      "macro_texture": {
+       "fuzz_hf_rms": 3.048,
+       "sheen_p90_p50": 1.029,
+       "laplacian_var": 64.106,
+       "saturation_median": 0.177
+      },
+      "seconds": {
+       "macro": 3.87,
+       "shot": 0.34
+      }
+     }
+    },
+    "warm": {
+     "before": {
+      "median_srgb": [
+       173,
+       154,
+       130
+      ],
+      "de00_to_target": 20.77,
+      "dL_to_target": -5.6,
+      "spread_de00": 4.67,
+      "shot_texture": {
+       "fuzz_hf_rms": 5.05,
+       "sheen_p90_p50": 1.069,
+       "laplacian_var": 381.829,
+       "saturation_median": 0.248
+      },
+      "macro_texture": {
+       "fuzz_hf_rms": 3.901,
+       "sheen_p90_p50": 1.055,
+       "laplacian_var": 93.994,
+       "saturation_median": 0.241
+      },
+      "seconds": {
+       "macro": 4.25,
+       "shot": 0.37
+      }
+     },
+     "after": {
+      "median_srgb": [
+       177,
+       166,
+       145
+      ],
+      "de00_to_target": 17.84,
+      "dL_to_target": -1.74,
+      "spread_de00": 4.28,
+      "shot_texture": {
+       "fuzz_hf_rms": 0.81,
+       "sheen_p90_p50": 1.012,
+       "laplacian_var": 11.17,
+       "saturation_median": 0.179
+      },
+      "macro_texture": {
+       "fuzz_hf_rms": 3.07,
+       "sheen_p90_p50": 1.029,
+       "laplacian_var": 65.544,
+       "saturation_median": 0.173
+      },
+      "seconds": {
+       "macro": 3.67,
+       "shot": 0.32
+      }
+     }
+    }
+   }
+  },
+  {
+   "label": "third_tights",
+   "target_srgb": [
+    197,
+    187,
+    177
+   ],
+   "target_source": "references/color_targets.json tights (w01 (385,955) +-6px, patch sd 4.1)",
+   "before": "cotton knit",
+   "after": "cotton tights/3",
+   "lights": {
+    "neutral": {
+     "before": {
+      "median_srgb": [
+       187,
+       171,
+       157
+      ],
+      "de00_to_target": 4.87,
+      "dL_to_target": -5.36,
+      "spread_de00": 4.58,
+      "shot_texture": {
+       "fuzz_hf_rms": 5.05,
+       "sheen_p90_p50": 1.061,
+       "laplacian_var": 353.473,
+       "saturation_median": 0.162
+      },
+      "macro_texture": {
+       "fuzz_hf_rms": 4.071,
+       "sheen_p90_p50": 1.052,
+       "laplacian_var": 98.447,
+       "saturation_median": 0.16
+      },
+      "seconds": {
+       "macro": 4.44,
+       "shot": 0.35
+      }
+     },
+     "after": {
+      "median_srgb": [
+       196,
+       185,
+       175
+      ],
+      "de00_to_target": 0.46,
+      "dL_to_target": -0.56,
+      "spread_de00": 4.5,
+      "shot_texture": {
+       "fuzz_hf_rms": 0.464,
+       "sheen_p90_p50": 1.006,
+       "laplacian_var": 4.287,
+       "saturation_median": 0.105
+      },
+      "macro_texture": {
+       "fuzz_hf_rms": 2.328,
+       "sheen_p90_p50": 1.017,
+       "laplacian_var": 36.574,
+       "saturation_median": 0.102
+      },
+      "seconds": {
+       "macro": 2.6,
+       "shot": 0.3
+      }
+     }
+    },
+    "warm": {
+     "before": {
+      "median_srgb": [
+       217,
+       164,
+       124
+      ],
+      "de00_to_target": 15.1,
+      "dL_to_target": -4.95,
+      "spread_de00": 4.61,
+      "shot_texture": {
+       "fuzz_hf_rms": 4.951,
+       "sheen_p90_p50": 1.06,
+       "laplacian_var": 348.17,
+       "saturation_median": 0.433
+      },
+      "macro_texture": {
+       "fuzz_hf_rms": 3.835,
+       "sheen_p90_p50": 1.044,
+       "laplacian_var": 88.544,
+       "saturation_median": 0.426
+      },
+      "seconds": {
+       "macro": 4.2,
+       "shot": 0.33
+      }
+     },
+     "after": {
+      "median_srgb": [
+       227,
+       178,
+       139
+      ],
+      "de00_to_target": 13.72,
+      "dL_to_target": -0.33,
+      "spread_de00": 4.47,
+      "shot_texture": {
+       "fuzz_hf_rms": 0.46,
+       "sheen_p90_p50": 1.006,
+       "laplacian_var": 4.215,
+       "saturation_median": 0.393
+      },
+      "macro_texture": {
+       "fuzz_hf_rms": 2.329,
+       "sheen_p90_p50": 1.016,
+       "laplacian_var": 37.361,
+       "saturation_median": 0.388
+      },
+      "seconds": {
+       "macro": 2.73,
+       "shot": 0.28
+      }
+     }
+    }
+   }
+  },
+  {
+   "label": "third_boots",
+   "target_srgb": [
+    162,
+    124,
+    90
+   ],
+   "target_source": "references/color_targets.json boots (w01 (372,1085) +-10px, patch sd 23.9)",
+   "before": "boot fleece",
+   "after": "boot shag/3",
+   "lights": {
+    "neutral": {
+     "before": {
+      "median_srgb": [
+       156,
+       114,
+       80
+      ],
+      "de00_to_target": 3.67,
+      "dL_to_target": -3.37,
+      "spread_de00": 3.98,
+      "shot_texture": {
+       "fuzz_hf_rms": 3.506,
+       "sheen_p90_p50": 1.057,
+       "laplacian_var": 227.615,
+       "saturation_median": 0.488
+      },
+      "macro_texture": {
+       "fuzz_hf_rms": 4.463,
+       "sheen_p90_p50": 1.071,
+       "laplacian_var": 130.424,
+       "saturation_median": 0.5
+      },
+      "seconds": {
+       "macro": 8.7,
+       "shot": 0.45
+      }
+     },
+     "after": {
+      "median_srgb": [
+       162,
+       125,
+       89
+      ],
+      "de00_to_target": 0.71,
+      "dL_to_target": 0.17,
+      "spread_de00": 3.6,
+      "shot_texture": {
+       "fuzz_hf_rms": 2.661,
+       "sheen_p90_p50": 1.04,
+       "laplacian_var": 127.982,
+       "saturation_median": 0.45
+      },
+      "macro_texture": {
+       "fuzz_hf_rms": 4.339,
+       "sheen_p90_p50": 1.062,
+       "laplacian_var": 128.767,
+       "saturation_median": 0.458
+      },
+      "seconds": {
+       "macro": 10.9,
+       "shot": 0.63
+      }
+     }
+    },
+    "warm": {
+     "before": {
+      "median_srgb": [
+       182,
+       109,
+       62
+      ],
+      "de00_to_target": 8.87,
+      "dL_to_target": -1.74,
+      "spread_de00": 3.9,
+      "shot_texture": {
+       "fuzz_hf_rms": 3.396,
+       "sheen_p90_p50": 1.055,
+       "laplacian_var": 210.529,
+       "saturation_median": 0.66
+      },
+      "macro_texture": {
+       "fuzz_hf_rms": 4.479,
+       "sheen_p90_p50": 1.07,
+       "laplacian_var": 132.799,
+       "saturation_median": 0.667
+      },
+      "seconds": {
+       "macro": 8.43,
+       "shot": 0.6
+      }
+     },
+     "after": {
+      "median_srgb": [
+       188,
+       119,
+       69
+      ],
+      "de00_to_target": 7.86,
+      "dL_to_target": 1.61,
+      "spread_de00": 3.54,
+      "shot_texture": {
+       "fuzz_hf_rms": 2.765,
+       "sheen_p90_p50": 1.041,
+       "laplacian_var": 137.431,
+       "saturation_median": 0.633
+      },
+      "macro_texture": {
+       "fuzz_hf_rms": 4.355,
+       "sheen_p90_p50": 1.061,
+       "laplacian_var": 130.488,
+       "saturation_median": 0.635
+      },
+      "seconds": {
+       "macro": 11.37,
+       "shot": 0.6
+      }
+     }
+    }
+   }
+  },
+  {
+   "label": "third_bow",
+   "target_srgb": [
+    90,
+    109,
+    130
+   ],
+   "target_source": "references/color_targets.json bow (w01 (318,160) +-4px, patch sd 14.7)",
+   "before": "felt",
+   "after": "bow felt/3",
+   "lights": {
+    "neutral": {
+     "before": {
+      "median_srgb": [
+       86,
+       99,
+       115
+      ],
+      "de00_to_target": 4.14,
+      "dL_to_target": -3.77,
+      "spread_de00": 2.99,
+      "shot_texture": {
+       "fuzz_hf_rms": 0.42,
+       "sheen_p90_p50": 1.01,
+       "laplacian_var": 3.615,
+       "saturation_median": 0.254
+      },
+      "macro_texture": {
+       "fuzz_hf_rms": 7.028,
+       "sheen_p90_p50": 1.112,
+       "laplacian_var": 401.94,
+       "saturation_median": 0.252
+      },
+      "seconds": {
+       "macro": 6.06,
+       "shot": 1.06
+      }
+     },
+     "after": {
+      "median_srgb": [
+       89,
+       107,
+       128
+      ],
+      "de00_to_target": 0.9,
+      "dL_to_target": -0.72,
+      "spread_de00": 3.57,
+      "shot_texture": {
+       "fuzz_hf_rms": 0.386,
+       "sheen_p90_p50": 1.009,
+       "laplacian_var": 3.166,
+       "saturation_median": 0.31
+      },
+      "macro_texture": {
+       "fuzz_hf_rms": 4.295,
+       "sheen_p90_p50": 1.045,
+       "laplacian_var": 174.425,
+       "saturation_median": 0.309
+      },
+      "seconds": {
+       "macro": 4.42,
+       "shot": 0.79
+      }
+     }
+    },
+    "warm": {
+     "before": {
+      "median_srgb": [
+       101,
+       95,
+       90
+      ],
+      "de00_to_target": 15.22,
+      "dL_to_target": -4.52,
+      "spread_de00": 2.9,
+      "shot_texture": {
+       "fuzz_hf_rms": 0.415,
+       "sheen_p90_p50": 1.01,
+       "laplacian_var": 3.449,
+       "saturation_median": 0.109
+      },
+      "macro_texture": {
+       "fuzz_hf_rms": 7.039,
+       "sheen_p90_p50": 1.113,
+       "laplacian_var": 403.641,
+       "saturation_median": 0.108
+      },
+      "seconds": {
+       "macro": 6.09,
+       "shot": 0.97
+      }
+     },
+     "after": {
+      "median_srgb": [
+       104,
+       102,
+       100
+      ],
+      "de00_to_target": 12.36,
+      "dL_to_target": -1.87,
+      "spread_de00": 3.41,
+      "shot_texture": {
+       "fuzz_hf_rms": 0.387,
+       "sheen_p90_p50": 1.009,
+       "laplacian_var": 3.197,
+       "saturation_median": 0.037
+      },
+      "macro_texture": {
+       "fuzz_hf_rms": 4.319,
+       "sheen_p90_p50": 1.046,
+       "laplacian_var": 176.705,
+       "saturation_median": 0.033
+      },
+      "seconds": {
+       "macro": 4.35,
+       "shot": 0.75
+      }
+     }
+    }
+   }
+  }
+ ],
+ "render_seconds_total": 155.71
+}

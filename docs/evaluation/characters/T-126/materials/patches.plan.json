@@ -1,0 +1,189 @@
+{
+ "schema": "plush-studio.material-patch-plan/1",
+ "task": "T-126d",
+ "note": "Before = the closest existing preset (what she would get without presets_third.json); after = the T-126d preset. Same base colour in both; targets = references/color_targets.json (w01 identity render). Rendered with the T-092 tools unchanged. After = calibrated base colour (one linear gain from pass 1, patches_pass1.json).",
+ "form_radius_m": 0.06,
+ "elevation_deg": 6,
+ "lights": [
+  {
+   "name": "character_neutral/1",
+   "file": "render_calibration.json",
+   "tag": "neutral"
+  },
+  {
+   "name": "character_warm_indoor/1",
+   "file": "r2_lights.json",
+   "tag": "warm"
+  }
+ ],
+ "materials": [
+  {
+   "label": "third_hair",
+   "target_srgb": [
+    203,
+    190,
+    172
+   ],
+   "target_source": "references/color_targets.json hair (w01 (444,262) +-8px, patch sd 6.6)",
+   "before": {
+    "preset": "felt hair",
+    "base_color_srgb": [
+     203,
+     190,
+     172
+    ],
+    "reference_size_m": 0.29278
+   },
+   "after": {
+    "preset": "felt hair cream/3",
+    "base_color_srgb": [
+     211,
+     204,
+     188
+    ],
+    "reference_size_m": 0.29278,
+    "calibration": "pass 1 base [203, 190, 172] rendered [195, 177, 157] under character_neutral/1; one linear per-channel gain toward the target"
+   }
+  },
+  {
+   "label": "third_skin",
+   "target_srgb": [
+    220,
+    194,
+    175
+   ],
+   "target_source": "references/color_targets.json skin (w01 (444,312) +-5px, patch sd 2.5)",
+   "before": {
+    "preset": "skin-felt/3",
+    "base_color_srgb": [
+     220,
+     194,
+     175
+    ],
+    "reference_size_m": 0.29278
+   },
+   "after": {
+    "preset": "skin-flock/3",
+    "base_color_srgb": [
+     228,
+     211,
+     197
+    ],
+    "reference_size_m": 0.29278,
+    "calibration": "pass 1 base [220, 194, 175] rendered [212, 178, 155] under character_neutral/1; one linear per-channel gain toward the target"
+   }
+  },
+  {
+   "label": "third_dress",
+   "target_srgb": [
+    154,
+    175,
+    186
+   ],
+   "target_source": "references/color_targets.json dress (w01 (444,575) +-10px, patch sd 6.4)",
+   "before": {
+    "preset": "cotton knit",
+    "base_color_srgb": [
+     154,
+     175,
+     186
+    ],
+    "reference_size_m": 0.3
+   },
+   "after": {
+    "preset": "cable knit/3",
+    "base_color_srgb": [
+     158,
+     189,
+     208
+    ],
+    "reference_size_m": 0.3,
+    "calibration": "pass 1 base [154, 175, 186] rendered [150, 162, 166] under character_neutral/1; one linear per-channel gain toward the target"
+   }
+  },
+  {
+   "label": "third_tights",
+   "target_srgb": [
+    197,
+    187,
+    177
+   ],
+   "target_source": "references/color_targets.json tights (w01 (385,955) +-6px, patch sd 4.1)",
+   "before": {
+    "preset": "cotton knit",
+    "base_color_srgb": [
+     197,
+     187,
+     177
+    ],
+    "reference_size_m": 0.3
+   },
+   "after": {
+    "preset": "cotton tights/3",
+    "base_color_srgb": [
+     207,
+     204,
+     199
+    ],
+    "reference_size_m": 0.3,
+    "calibration": "pass 1 base [197, 187, 177] rendered [187, 171, 157] under character_neutral/1; one linear per-channel gain toward the target"
+   }
+  },
+  {
+   "label": "third_boots",
+   "target_srgb": [
+    162,
+    124,
+    90
+   ],
+   "target_source": "references/color_targets.json boots (w01 (372,1085) +-10px, patch sd 23.9)",
+   "before": {
+    "preset": "boot fleece",
+    "base_color_srgb": [
+     162,
+     124,
+     90
+    ],
+    "reference_size_m": 0.3
+   },
+   "after": {
+    "preset": "boot shag/3",
+    "base_color_srgb": [
+     169,
+     135,
+     100
+    ],
+    "reference_size_m": 0.3,
+    "calibration": "pass 1 base [162, 124, 90] rendered [155, 114, 81] under character_neutral/1; one linear per-channel gain toward the target"
+   }
+  },
+  {
+   "label": "third_bow",
+   "target_srgb": [
+    90,
+    109,
+    130
+   ],
+   "target_source": "references/color_targets.json bow (w01 (318,160) +-4px, patch sd 14.7)",
+   "before": {
+    "preset": "felt",
+    "base_color_srgb": [
+     90,
+     109,
+     130
+    ],
+    "reference_size_m": 0.06
+   },
+   "after": {
+    "preset": "bow felt/3",
+    "base_color_srgb": [
+     89,
+     114,
+     142
+    ],
+    "reference_size_m": 0.06,
+    "calibration": "pass 1 base [90, 109, 130] rendered [91, 104, 119] under character_neutral/1; one linear per-channel gain toward the target"
+   }
+  }
+ ]
+}

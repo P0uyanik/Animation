@@ -31,6 +31,10 @@ SKIN_WARMTH_FIELDS = ("distance_fraction", "samples", "strength")
 # T-119 skin round 3: a fourth self-contained library file of the presets/3 family (same schema and rules as
 # presets_r2.json; new ids only). Opt-in only: an id of the three older files always resolves from its own file first.
 R3_PRESETS_PATH = os.path.join(HERE, "skin_presets_r3.json")
+
+# T-126d: the third character's material file of the presets/3 family (same schema and rules, new ids only). Lookup
+# only: an id of any older library file always resolves from its own file first.
+THIRD_PRESETS_PATH = os.path.join(HERE, "presets_third.json")
 KINDS = {"noise", "yarn", "knit", "weave", "denim"}
 FIBRE_LODS = {"close", "wide", "off"}
 FIBRE_GROUP = "PS Shared Surface Fibres/1"
@@ -381,10 +385,34 @@ def is_r3_preset(name):
     return name in load_r3_library()["presets"]
 
 
+def load_third_library(path=THIRD_PRESETS_PATH):
+    """The T-126d file of the presets/3 family: the presets/3 rules, and no id of presets_r2.json or
+    skin_presets_r3.json reused."""
+    with open(path, encoding="utf-8") as handle:
+        data = json.load(handle)
+    errors = validate_r2_library(data)
+    taken = set()
+    for older, loader in ((R2_PRESETS_PATH, load_r2_library), (R3_PRESETS_PATH, load_r3_library)):
+        if os.path.exists(older):
+            taken |= set(loader()["presets"])
+    errors += [f"{name}: reuses an id of an older presets/3 file" for name in (data.get("presets") or {})
+               if name in taken]
+    if errors:
+        raise ValueError("invalid presets/3 library (third character): " + "; ".join(errors))
+    return data
+
+
+def is_third_preset(name):
+    """True for an opt-in id of presets_third.json (T-126d)."""
+    if not isinstance(name, str) or not os.path.exists(THIRD_PRESETS_PATH):
+        return False
+    return name in load_third_library()["presets"]
+
+
 def is_known_preset(name):
     """True for an id of any preset family (presets/1, the presets/2 skin family, presets/3)."""
     return isinstance(name, str) and (name in load_library()["presets"] or is_skin_preset(name) or is_r2_preset(name)
-                                      or is_r3_preset(name))
+                                      or is_r3_preset(name) or is_third_preset(name))
 
 
 def preset_family(name):
@@ -395,7 +423,7 @@ def preset_family(name):
         return "presets/1"
     if is_skin_preset(name):
         return SKIN_FAMILY
-    if is_r2_preset(name) or is_r3_preset(name):
+    if is_r2_preset(name) or is_r3_preset(name) or is_third_preset(name):
         return R2_FAMILY
     return None
 
@@ -413,6 +441,8 @@ def library_for(name, library=None):
         return load_r2_library()
     if is_r3_preset(name):
         return load_r3_library()
+    if is_third_preset(name):
+        return load_third_library()
     return library
 
 
@@ -450,7 +480,8 @@ def validate_assignments(materials_spec, library=None):
             errors.append(f"{label} must be an object")
             continue
         if (assignment.get("preset") not in library["presets"] and not is_skin_preset(assignment.get("preset")) and
-                not is_r2_preset(assignment.get("preset")) and not is_r3_preset(assignment.get("preset"))):
+                not is_r2_preset(assignment.get("preset")) and not is_r3_preset(assignment.get("preset")) and
+                not is_third_preset(assignment.get("preset"))):
             errors.append(f"{label}.preset is unknown: {assignment.get('preset')}")
         color = assignment.get("base_color_srgb")
         if (not isinstance(color, list) or len(color) != 3 or
