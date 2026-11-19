@@ -108,6 +108,8 @@ def test_tiers():
     if ids:
         changed = T.changed_characters({f"assets/characters/{ids[0]}/spec/{ids[0]}.spec.json", "docs/x.md"})
         expect(changed == [ids[0]], "changed character from its spec path")
+        switched = T.changed_characters({f"assets/characters/{ids[-1]}/versions/index.json"})
+        expect(switched == [ids[-1]], "a version switch (approved pointer in versions/index.json) changes the character")
 
 
 def test_compare():
