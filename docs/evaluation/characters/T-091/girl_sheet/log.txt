@@ -1,4 +1,4 @@
-2026-11-19T00:01:08Z preview start: recipe c3ee63eadadf {'engine': 'cycles', 'samples': 2, 'px': 120}
-2026-11-19T00:04:29Z preview pass: /tmp/claude-0/-home-user-Animation/72d16f70-3589-5288-bf84-e872017a5370/scratchpad/sh/girl/preview/preview.jpg
-2026-11-19T00:04:29Z sheet start: recipe c3ee63eadadf {'engine': 'cycles', 'samples': 16, 'px': 360}
-2026-11-19T00:20:04Z sheet written: /tmp/claude-0/-home-user-Animation/72d16f70-3589-5288-bf84-e872017a5370/scratchpad/sh/girl/sheet.jpg 1120x2048
+2026-11-19T00:41:54Z preview start: recipe 7f83550b7cc6 {'engine': 'cycles', 'samples': 2, 'px': 120}
+2026-11-19T00:45:18Z preview pass: /tmp/claude-0/-home-user-Animation/72d16f70-3589-5288-bf84-e872017a5370/scratchpad/sh/girl/preview/preview.jpg
+2026-11-19T00:45:18Z sheet start: recipe 7f83550b7cc6 {'engine': 'cycles', 'samples': 16, 'px': 360}
+2026-11-19T01:01:41Z sheet written: /tmp/claude-0/-home-user-Animation/72d16f70-3589-5288-bf84-e872017a5370/scratchpad/sh/girl/sheet.jpg 1120x2048

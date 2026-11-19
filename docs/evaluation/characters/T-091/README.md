@@ -55,21 +55,19 @@ base slightly lower (0.016–0.03 m).
 - Head-turn check (head control ±35°, Workbench, geometry only): `media/head_turn.jpg`.
 - Directional fibres on/off (Cycles 16 spp crops): `media/directional_fibres_off_on.jpg`.
 
-## Strict sheets: what changed (my reading; the owner decides)
-- **Boy** (`boy_sheet/boy_2.0.0_vs_hair_r4_strict.jpg`, Cycles 16 spp, 332 s + 322 s): fewer, larger masses with
-  channels between them; the crown petals now stand up and give the spiky top the val27/B05 outline shows (2.0.0 had
-  flat leaf clumps and horn tufts); the side masses flick out over the ears. **Deviation:** at full-body distance
-  the overall hair outline is slightly *smaller* than 2.0.0's and well below the reference's volume (the reference
-  hair is wider and taller, irregular), and the fringe ends a little higher, so more forehead shows than in
-  hero24. The next step would be volume: longer top-ring masses and more lift on the outer ring, keeping the
-  current mass count.
-- **Girl** (`girl_sheet/girl_0.11.0_vs_hair_r4_strict.jpg`, 443 s + 419 s): narrower silhouette (closer to
-  sheet30's width), the back reads as soft columns flowing into the ringlets with no horizontal band, tapered ringlet
-  tips, a gathered blue-grey scrunchie (G04). The centre parting reads in the face-front row; the two swept sections
-  frame the forehead but are smooth and blend into the side hair at sheet scale, less defined than G04.
-  Face, glasses, outfit unchanged.
-- Head turn (`media/head_turn.jpg`, head control ±35°): the hair follows the head for both characters, no gaps, no
-  face cover.
+## Strict sheets (round 5, Supervisor review of r4; mass count and architecture unchanged)
+- **Boy** (`boy_sheet/boy_2.0.0_vs_hair_r4_strict.jpg`, Cycles 16 spp, 336 s + 343 s): r5 lowered the fringe to
+  the brow line as heavy clumps (explicit masses, tips at el −2..−3, keep-out 0 violations) and filled the outline
+  (felt base 0.022–0.04 m, wider/lifted top ring, side masses moved up to the temples, fuller nape row, layer lift
+  9 mm). The outline is now wider than 2.0.0 at the temples and fuller at the back; crown petals stay upright and the
+  side tips flick out. Remaining gap: the reference is still taller and more irregular at the crown, and its fringe
+  clumps are more separated.
+- **Girl** (`girl_sheet/girl_0.11.0_vs_hair_r4_strict.jpg`, 466 s + 445 s): r5 deepened the centre part (4.5°,
+  depth 0.9) and made the four swept sections thicker (depth 0.6–0.66, 3 grooves, lifted arch), so the parting and
+  the sections read in the full-body front and 3/4 rows. **Deviation:** the face-front crop (framed at the brows)
+  still shows mostly bare forehead: the sections frame the upper corners but do not come down over the forehead
+  as in G04. Scrunchie, tapered ringlets, narrower silhouette and soft back transition kept.
+- Head turn (`media/head_turn.jpg`, head control ±35°, r5 builds): hair follows the head, no gaps, no face cover.
 
 ## Directional-fibre experiment (measured)
 Boy candidate, two Cycles crops (16 spp, 360 px, 3/4 + back), same machine, run one after the other:

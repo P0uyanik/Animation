@@ -1,4 +1,4 @@
-2026-11-18T23:45:16Z preview start: recipe 2f3286cb1c88 {'engine': 'cycles', 'samples': 2, 'px': 120}
-2026-11-18T23:48:49Z preview pass: /tmp/claude-0/-home-user-Animation/72d16f70-3589-5288-bf84-e872017a5370/scratchpad/sh/boy/preview/preview.jpg
-2026-11-18T23:48:49Z sheet start: recipe 2f3286cb1c88 {'engine': 'cycles', 'samples': 16, 'px': 360}
-2026-11-19T00:01:08Z sheet written: /tmp/claude-0/-home-user-Animation/72d16f70-3589-5288-bf84-e872017a5370/scratchpad/sh/boy/sheet.jpg 1120x2048
+2026-11-19T00:26:00Z preview start: recipe c7bcc6fa3a2c {'engine': 'cycles', 'samples': 2, 'px': 120}
+2026-11-19T00:29:13Z preview pass: /tmp/claude-0/-home-user-Animation/72d16f70-3589-5288-bf84-e872017a5370/scratchpad/sh/boy/preview/preview.jpg
+2026-11-19T00:29:13Z sheet start: recipe c7bcc6fa3a2c {'engine': 'cycles', 'samples': 16, 'px': 360}
+2026-11-19T00:41:54Z sheet written: /tmp/claude-0/-home-user-Animation/72d16f70-3589-5288-bf84-e872017a5370/scratchpad/sh/boy/sheet.jpg 1120x2048

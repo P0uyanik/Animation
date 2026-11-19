@@ -2,7 +2,7 @@
  "schema": "plush-studio.review-recipe/1",
  "character": "girl_auburn_bun_glasses",
  "task": "T-091",
- "recipe_sha256": "c3ee63eadadf430cfde84f5e38fcf8349f285eac304106f203097b2003feb152",
+ "recipe_sha256": "7f83550b7cc61b6616592e05d7bd0344eb75f6a3497829344c3412059122cec7",
  "inputs": {
   "main": "a682abb"
  },
@@ -36,7 +36,7 @@
    "overrides": [
     "assets/characters/girl_auburn_bun_glasses/spec/candidates/T-091/girl_auburn_bun_glasses.hair_r4.override.json"
    ],
-   "sha": "d4b0cfe",
+   "sha": "f892dfa",
    "comparison_pose": null,
    "source_variant": "master",
    "spec_sha256": "fa45efffb19c5f1a3fa072a053c6989a60a380f35272c62eda0f6832cfc4e279"

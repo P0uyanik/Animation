@@ -2,7 +2,7 @@
  "schema": "plush-studio.review-recipe/1",
  "character": "boy_yellow_hoodie",
  "task": "T-091",
- "recipe_sha256": "2f3286cb1c88106566ab0bbd0e29be7da05de237527275505aedcaca090c37d3",
+ "recipe_sha256": "c7bcc6fa3a2cd09dc8feff8396c211f6db430fc9b74af0f194a40b36fde6018b",
  "inputs": {
   "main": "a682abb"
  },
@@ -38,7 +38,7 @@
    "overrides": [
     "assets/characters/boy_yellow_hoodie/spec/candidates/T-091/boy_yellow_hoodie.hair_r4.override.json"
    ],
-   "sha": "d4b0cfe",
+   "sha": "f892dfa",
    "comparison_pose": null,
    "source_variant": "compare",
    "spec_sha256": "95893b3b8acc7df59f6b44343cc9f733f093e8fbc120c273c221c11e77300091"
