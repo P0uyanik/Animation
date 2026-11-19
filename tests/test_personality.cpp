@@ -404,9 +404,11 @@ TEST_CASE("personality: the reaction section (T-097B) is optional and typed") {
   CHECK(*e.durationS == doctest::Approx(1.2));
   CHECK(*e.gazeShift == doctest::Approx(0.4));
   CHECK(e.gestures == std::vector<std::string>{"nod", "clap"});
-  // Shipped profiles: their existing reaction.delay_frames is now typed; nothing else in the section is set.
+  // Shipped profiles: reaction.delay_frames is typed and well-formed (per-character values are tuned by
+  // T-097-boy/girl against T-106; the delay invariant is checked in test_reaction.cpp).
   auto boy = loadPersonality(kRoot / "content/personality/boy_yellow_hoodie.json");
   REQUIRE(boy.has_value());
-  CHECK(boy->reaction.delayFrames->lo == doctest::Approx(4));
-  CHECK(boy->reaction.delayFrames->hi == doctest::Approx(8));
+  REQUIRE(boy->reaction.delayFrames.has_value());
+  CHECK(boy->reaction.delayFrames->lo >= 0);
+  CHECK(boy->reaction.delayFrames->lo <= boy->reaction.delayFrames->hi);
 }
