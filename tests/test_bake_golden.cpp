@@ -1,6 +1,6 @@
 // T-112a golden bake hashes (docs/architecture/INTERACTION_AFFORDANCES.md 6.3): every content scene with interaction
 // actions and the test_interaction.cpp scenes compile to the same generated clip and the same engine
-// plush.shot_bake/1 output as at the input SHA recorded in tests/data/golden/interaction_hashes.json. A scene with no
+// plush.shot_bake/1 output as at the input SHA recorded in tests/golden/interaction_hashes.json. A scene with no
 // verb action must never change by the verb expander, the affordance block or anything else of T-112a.
 //
 // Hashes: SHA-256 of (a) the generated clip, tracks sorted by name, every key as frame / value / interpolation at full
@@ -33,7 +33,7 @@ namespace fs = std::filesystem;
 namespace {
 
 const fs::path kRoot = PLUSH_SOURCE_DIR;
-const fs::path kGolden = kRoot / "tests/data/golden/interaction_hashes.json";
+const fs::path kGolden = kRoot / "tests/golden/interaction_hashes.json";
 
 #if defined(_MSC_VER)
 const std::string kToolchain = "msvc-" + std::to_string(_MSC_VER / 100);
