@@ -1,3 +1,76 @@
+# ▶ T-152 — NEW CODEX ASSIGNMENT (owner order 2026-11-19 ~23:00Z; posted by the original Supervisor for the round-2 Supervisor session_01NPjxeNGwvGuevzV1aTjiEo)
+Codex does **T-152: token-efficiency analysis of the whole development workflow**. Analysis only, focused and
+token-efficient. No project code, test, workflow or asset changes.
+
+Owner goal: find where tokens are wasted across the workflow and recommend practical ways to reduce consumption
+WITHOUT lowering code quality, testing, reliability or development speed. Deliver a clear report with prioritised
+recommendations and estimated benefits.
+
+1. Branch `t-152-codex-token-efficiency` from the latest `origin/main` in a new worktree on C: (never write on D:).
+   Write ONLY `docs/audit/token_efficiency/**`.
+2. Inputs, read selectively; don't read everything in full:
+   - **Usage data:**
+     - NEW, `git fetch origin data/token-audit-2026-11-19`, then
+       `git show origin/data/token-audit-2026-11-19:docs/audit/data/agent_sessions_2026-11-19.md`: 60 sessions since
+       2026-11-18 with cost, output/input/cache-read/cache-write tokens, context size, model, duration;
+     - older: `docs/audit/data/agent_sessions_2026-11-18.md`.
+     - Totals in the new file: $1,385; 4.47 B cache-read tokens vs 8.9 M output tokens; Opus 5.5 $1,316 (51 sessions),
+       Fable 5.2 $68 (7), Sonnet 5.5 $1 (2).
+   - **Architecture:** `TECHNICAL_DECISIONS.md` (TD-42), `docs/ROADMAP.md`, `docs/audit/*PROJECT_AUDIT*.md`,
+     `docs/audit/legacy_engine_deps/` (T-151).
+   - **Roles and process:**
+     - `docs/process/IMPLEMENTER_PROMPT.md`, `SUPERVISOR_HANDOVER.md`, `WORKFLOW.md`, `TASK_LOG.md`, `OWNERSHIP.md`,
+       `OWNER_DECISIONS.md`, `ROUND2_PLAN.md`; `docs/tasks/T-1*.md` (sample a few);
+     - the gate `tools/check_all.py` and `.github/workflows/`;
+     - the relay: `RELAY_LOG.md` and `NEXT_TASK.md` on relay-channel.
+   - **Reports:**
+     - `docs/process/WORKFLOW_EVAL_R4.md` and `docs/evaluation/workflow/T-130/`;
+     - `docs/evaluation/tooling/T-128/REPORT.md`; T-127 evidence; `docs/evaluation/process/T-129/`;
+     - time-ledger lines in task READMEs.
+3. Context (not in the repo):
+   - **Roles:**
+     - owner: one person, reviews visuals and approves;
+     - original Supervisor: a long-lived Claude session that talks to the owner and relays decisions;
+     - round-2 Supervisor: a long-lived Claude session, about 570 k tokens of context by afternoon; it writes task
+       files, starts implementer sessions, reviews, merges and runs CI;
+     - implementers: fresh Claude sessions per task (Opus 5.5 by default, Fable 5.2 for hard visual tasks, Sonnet 5.5
+       for data aggregation), up to about 6 at once;
+     - Codex (you): evaluations via this relay.
+     - Messages flow owner → original Supervisor → round-2 Supervisor → implementers (session messages), and back via
+       READY/STATUS lines and session messages.
+   - **Limits:**
+     - all Claude sessions share one 5-hour usage window (hit at ~15:45–17:10Z; 4% left at ~21:15Z on 11-19) and a
+       weekly window;
+     - Codex has its own ChatGPT limits (three stops in two days).
+   - **Prices** (API list, per M tokens): Opus 5.5 $4 in / $20 out; Fable 5.2 $8 / $40; Sonnet 5.5 $2 / $10. Cache reads
+     cost $0.20 on Opus and Fable, so long contexts re-read on every turn dominate.
+   - **Known suspects:** check them, don't assume them.
+     - long-lived Supervisor contexts re-read each turn;
+     - verbose STATUS/READY/README text;
+     - check-in/polling turns while renders or CI run;
+     - double relays (owner → original Supervisor → round-2 Supervisor → implementer);
+     - large file reads and repeated reads;
+     - renders and rebuilds inside sessions;
+     - many parallel sessions;
+     - session setup;
+     - tasks too large (rework) or too small (overhead);
+     - waking idle sessions with messages.
+4. Deliverable:
+   - `docs/audit/token_efficiency/REPORT.md` (about 2–3 pages):
+     - where the tokens go (by role, session type, model, phase), with numbers from the data;
+     - the top wastes, with evidence;
+     - a PRIORITISED recommendation table with: estimated saving (% of tokens or $ per day, mark E vs M), effort,
+       risk to quality/testing/reliability/speed, and adopt now/later;
+     - what NOT to change.
+   - Plus `data.csv` with your derived figures.
+   - Recommendations must be practical: e.g. Supervisor context resets or handovers, message batching, report
+     templates, model routing, session sizing, cache-friendly habits.
+5. Post `| T-152 | STARTED |` now. When done, push and post
+   `<UTC> | T-152 | READY | t-152-codex-token-efficiency@<sha> | input <sha> | <headline>` + ledger.
+   BLOCKED with the question if stuck.
+6. Model: medium effort, token-efficient. Keep your own run lean.
+
+---
 # ▶ T-150 then T-151 — NEW CODEX ASSIGNMENTS (owner order 2026-11-19 ~20:50Z; posted by the original Supervisor for the round-2 Supervisor session_01NPjxeNGwvGuevzV1aTjiEo)
 Owner: Codex has about 40% of its allowance left, so both tasks are analysis only, short and token-efficient. Do T-150
 first. Then do T-151 only if budget remains (post BLOCKED "budget" otherwise). No project code, test, spec or asset
