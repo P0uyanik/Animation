@@ -21,6 +21,5 @@ means none. Branch is the task's branch; a task branch without a row falls back 
 | T-138 | E | t-138-claude-grasp | `engine/scene/scene.cpp`/`engine/scene/scene.h` (opt-in key lines only, overlap with T-136), `engine/anim/animation.cpp`, `engine/scene/interaction.cpp`, `engine/scene/interaction.h`, `engine/anim/hand_shape.*`, `content/hand_shapes/**`, `tests/test_grasp_contact.cpp`, `tests/CMakeLists.txt`, `docs/evaluation/animation/T-138/**` | — | — |
 | T-142 | C | t-142-claude-legacy-removal | `docs/evaluation/T-142/**`, `.gitattributes` (e909 scene.json eol=lf, Windows CRLF fix) (step 1 report only; removal write-set after owner OK) | — | — |
 | T-124 | E | t-124-claude-render-opt | `docs/evaluation/rendering/T-124/**`, `tools/render_bench/**`, `pipeline/charsys/render_profiles.json`, `pipeline/charsys/shot_render.py`, `pipeline/charsys/render_engine.py` | — | — |
-| T-153 | C | t-153-claude-fidelity-v2 | `tools/fidelity/v2/**`, `tools/fidelity/run.py`, `tools/fidelity/tests/test_metrics_v2.py`, `tools/check_all.py`, `docs/evaluation/process/T-153/**` | — | — |
 
 Supervisor-only files: docs/process/TASK_LOG.md, docs/ROADMAP.md, docs/process/OWNER_DECISIONS.md, docs/tasks/**.

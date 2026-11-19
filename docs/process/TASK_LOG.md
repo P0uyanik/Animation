@@ -153,4 +153,4 @@ Tasks from now on are numbered T-001, T-002, …, and pass through the states in
 | T-144 | [Cleanup] A3 retire unpinned generator versions, plan first (Opus) | written 2026-11-19 (owner ~20:30Z), last | t-144 | docs/tasks/T-144.md |
 | T-150 | [Evaluation] Eye-shape targets for both girls (Codex) | assigned 2026-11-19 on relay-channel (e9ab05fe) | t-150-codex | merged 2026-11-19: inner eye corners 24-33% of opening too low (both girls); targets → T-137 |
 | T-151 | [Audit] Independent A1 legacy dependency map (Codex) | assigned 2026-11-19 on relay-channel (e9ab05fe) | t-151-codex | merged 2026-11-19: SAFE/KEEP/MIXED per file; second opinion for T-142 |
-| T-153 | [Evaluation] Fidelity score v2, opt-in (Opus) | written 2026-11-19 (owner ~23:40Z, replaces S1a/S1b) | t-153-claude-fidelity-v2 | docs/tasks/T-153.md |
+| T-153 | [Evaluation] Fidelity score v2, opt-in (Opus) | written 2026-11-19 (owner ~23:40Z, replaces S1a/S1b) | t-153-claude-fidelity-v2 | merged 2026-11-19: opt-in v2 agrees 11/13 owner decisions (v1 9/13, T-122 0/2→2/2), in-sample; default stays v1 (owner) |
