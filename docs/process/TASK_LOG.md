@@ -105,8 +105,11 @@ Tasks from now on are numbered T-001, T-002, …, and pass through the states in
 | T-026c | Girl face skin renders greyer than body skin | open |
 | T-026d | Boot top shows lining ring | open |
 | T-104d | [Interaction] Calibrated timing becomes the default (round 2 close-out) | running 2026-11-19 (owner ~02:55Z) | t-104d-claude-timing-default | `docs/tasks/T-104d.md`; path A |
-| T-111 | [Interaction] Architect: object affordances + verb library (design only) | running 2026-11-19 (owner ~02:55Z) | t-111-claude-interaction-design | `docs/tasks/T-111.md`; path A |
+| T-111 | [Interaction] Architect: object affordances + verb library (design only) | merged 2026-11-19 (impl `session_01NPjxeKq8bdTzHEwxvPdWyL`, 12c20a7): design `docs/architecture/INTERACTION_AFFORDANCES.md`; T-112 split a/b; open questions decided by the Supervisor (one parent per prop, keyed follower; reach/collision warnings become errors under verbs; boy tempo delays the look phase) | t-111-claude-interaction-design | `docs/tasks/T-111.md`; path A |
 | T-101 | [Infra] The 3 old failing tests from T-077 | running 2026-11-19 (owner ~02:55Z) | t-101-claude-old-tests | `docs/tasks/T-101.md`; path A |
 | T-110 | [Visual] Felt surface: one fibre halo, skin surface | running 2026-11-19 (owner ~02:55Z) | t-110-claude-felt-surface | `docs/tasks/T-110.md`; path B |
 | T-109 | [Visual] Face round 4 (lower face, girl lens shelf, mouth) | approved; after T-094 versions are current | t-109-claude-face-r4 | `docs/tasks/T-109.md` (to write); path B |
 | T-115 | [Visual] Codex: fit search on T-109 face parameters | approved; after T-094 versions are current | t-115-codex-face-fit | `docs/tasks/T-115.md` (to write); path A |
+| T-112a | [Interaction] Affordances + verb expander + pick up/carry/place, golden bake hashes | approved; after T-104d merges (its golden hashes must capture the new default timing) | t-112a-claude-verbs | `docs/tasks/T-112a.md`; path A |
+| T-112b | [Interaction] Pass, reactions, hand shapes, two-handed sets | approved; after T-112a | t-112b-claude-verbs-pass | `docs/tasks/T-112b.md`; path A |
+| T-051 | [Interaction] Finger grasps + hand-shape table | approved; after T-112a (parallel with T-112b) | t-051-claude-finger-grasps | `docs/tasks/T-051.md`; path A |
