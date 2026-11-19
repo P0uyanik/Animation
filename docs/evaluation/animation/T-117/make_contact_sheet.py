@@ -10,23 +10,23 @@ from pathlib import Path
 
 from PIL import Image, ImageDraw
 
-# (scene frame, label): the T-117 beats, read from the bake (README section 1)
+# (scene frame, label): the T-117 beats, read from the bake (README section 1); frames off the blinks
 MOMENTS = [
-    (8, "bored, looks off; her hand at chin"),
+    (8, "bored, looks off; her hand rises to her chin"),
     (18, "fidget: he looks back at the cup"),
     (30, "fidget: he looks off again"),
     (40, "she looks at him; his heavy lids"),
-    (52, "his late notice: lids lift"),
+    (60, "his late notice: lids start to lift"),
     (66, "he reaches for the cup"),
-    (78, "grasp: fingers on the cup"),
+    (82, "grasp: the cup leaves the table"),
     (90, "he carries it up; her wonder"),
     (104, "he holds it out; she reaches"),
     (116, "shared hold: contact"),
     (128, "shared hold: both faces"),
-    (140, "release; she looks at the cup"),
+    (144, "after the release: she looks at the cup"),
     (153, "delight: SmileOpen peak"),
     (166, "she looks at him; his late answer"),
-    (180, "he looks away"),
+    (186, "he looks away"),
     (192, "end hold"),
 ]
 CELL = (320, 180)
