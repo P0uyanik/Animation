@@ -51,9 +51,9 @@
      },
      "tuck": 1.0,
      "height": [
-      0.016,
-      0.026,
-      0.03
+      0.022,
+      0.036,
+      0.04
      ],
      "inset": 0.004,
      "grooves": {
@@ -84,7 +84,7 @@
      "grooves": 1,
      "groove_depth": 0.2,
      "irregularity": 0.05,
-     "layer_lift_m": 0.006,
+     "layer_lift_m": 0.009,
      "type": "masses",
      "name": "back",
      "rows": [
@@ -107,16 +107,16 @@
         52
        ],
        "width": [
-        0.095,
-        0.105
+        0.105,
+        0.115
        ],
-       "depth": 0.55,
+       "depth": 0.6,
        "lift": [
-        0.0,
-        0.012,
-        0.018
+        0.004,
+        0.03,
+        0.036
        ],
-       "flick_m": 0.026,
+       "flick_m": 0.03,
        "jitter_deg": 5,
        "layer": 0
       }
@@ -127,7 +127,7 @@
      "grooves": 1,
      "groove_depth": 0.2,
      "irregularity": 0.05,
-     "layer_lift_m": 0.006,
+     "layer_lift_m": 0.009,
      "type": "masses",
      "name": "sides",
      "rows": [
@@ -137,29 +137,29 @@
        "root_width": 0.8,
        "count": 2,
        "az": [
-        72,
-        116
+        64,
+        112
        ],
        "el": [
-        16,
-        24
+        22,
+        30
        ],
        "flow": "down",
        "len_deg": [
-        34,
-        40
+        38,
+        44
        ],
        "width": [
-        0.085,
-        0.095
+        0.1,
+        0.11
        ],
-       "depth": 0.6,
+       "depth": 0.62,
        "lift": [
-        0.0,
-        0.02,
-        0.028
+        0.006,
+        0.04,
+        0.045
        ],
-       "flick_m": 0.04,
+       "flick_m": 0.05,
        "jitter_deg": 6,
        "layer": 0
       },
@@ -169,29 +169,29 @@
        "root_width": 0.8,
        "count": 2,
        "az": [
-        -116,
-        -72
+        -112,
+        -64
        ],
        "el": [
-        16,
-        24
+        22,
+        30
        ],
        "flow": "down",
        "len_deg": [
-        34,
-        40
+        38,
+        44
        ],
        "width": [
-        0.085,
-        0.095
+        0.1,
+        0.11
        ],
-       "depth": 0.6,
+       "depth": 0.62,
        "lift": [
-        0.0,
-        0.02,
-        0.028
+        0.006,
+        0.04,
+        0.045
        ],
-       "flick_m": 0.04,
+       "flick_m": 0.05,
        "jitter_deg": 6,
        "layer": 0
       }
@@ -202,44 +202,100 @@
      "grooves": 1,
      "groove_depth": 0.2,
      "irregularity": 0.05,
-     "layer_lift_m": 0.006,
+     "layer_lift_m": 0.009,
      "type": "masses",
      "name": "fringe",
-     "rows": [
+     "items": [
       {
        "hold": 0.32,
        "taper_power": 1.25,
        "root_width": 0.8,
-       "count": 4,
-       "az": [
-        -50,
-        50
-       ],
-       "el": [
-        60,
+       "root": [
+        14,
         64
        ],
-       "pole": {
-        "az": 180,
-        "el": 78
-       },
-       "len_deg": [
-        58,
-        64
+       "tip": [
+        13,
+        -3
        ],
-       "width": [
-        0.1,
-        0.11
-       ],
-       "depth": 0.58,
+       "width": 0.12,
+       "depth": 0.66,
        "lift": [
-        0.0,
-        0.026,
-        0.008
+        0.008,
+        0.042,
+        0.014
        ],
-       "flick_m": 0.006,
-       "curl_deg": 8,
-       "jitter_deg": 4,
+       "lift_peak": 0.4,
+       "flick_m": 0.004,
+       "layer": 1
+      },
+      {
+       "hold": 0.32,
+       "taper_power": 1.25,
+       "root_width": 0.8,
+       "root": [
+        -14,
+        64
+       ],
+       "tip": [
+        -13,
+        -3
+       ],
+       "width": 0.12,
+       "depth": 0.66,
+       "lift": [
+        0.008,
+        0.042,
+        0.014
+       ],
+       "lift_peak": 0.4,
+       "flick_m": 0.004,
+       "layer": 1
+      },
+      {
+       "hold": 0.32,
+       "taper_power": 1.25,
+       "root_width": 0.8,
+       "root": [
+        40,
+        58
+       ],
+       "tip": [
+        40,
+        -2
+       ],
+       "width": 0.115,
+       "depth": 0.66,
+       "lift": [
+        0.008,
+        0.042,
+        0.018
+       ],
+       "lift_peak": 0.4,
+       "flick_m": 0.01,
+       "layer": 1
+      },
+      {
+       "hold": 0.32,
+       "taper_power": 1.25,
+       "root_width": 0.8,
+       "root": [
+        -40,
+        58
+       ],
+       "tip": [
+        -40,
+        -2
+       ],
+       "width": 0.115,
+       "depth": 0.66,
+       "lift": [
+        0.008,
+        0.042,
+        0.018
+       ],
+       "lift_peak": 0.4,
+       "flick_m": 0.01,
        "layer": 1
       }
      ]
@@ -249,7 +305,7 @@
      "grooves": 1,
      "groove_depth": 0.2,
      "irregularity": 0.05,
-     "layer_lift_m": 0.006,
+     "layer_lift_m": 0.009,
      "type": "masses",
      "name": "fringe_centre",
      "items": [
@@ -258,20 +314,21 @@
        "taper_power": 1.25,
        "root_width": 0.8,
        "root": [
-        6,
-        68
+        4,
+        70
        ],
        "tip": [
-        -3,
-        4
+        -2,
+        -3
        ],
-       "width": 0.11,
-       "depth": 0.55,
+       "width": 0.12,
+       "depth": 0.66,
        "lift": [
-        0.0,
-        0.018,
-        0.008
+        0.01,
+        0.046,
+        0.014
        ],
+       "lift_peak": 0.4,
        "layer": 2
       }
      ]
@@ -281,7 +338,7 @@
      "grooves": 1,
      "groove_depth": 0.2,
      "irregularity": 0.05,
-     "layer_lift_m": 0.006,
+     "layer_lift_m": 0.009,
      "type": "masses",
      "name": "top",
      "rows": [
@@ -307,16 +364,16 @@
         62
        ],
        "width": [
-        0.105,
-        0.115
+        0.115,
+        0.125
        ],
-       "depth": 0.62,
+       "depth": 0.64,
        "lift": [
-        0.0,
-        0.034,
-        0.036
+        0.006,
+        0.05,
+        0.05
        ],
-       "flick_m": 0.04,
+       "flick_m": 0.05,
        "jitter_deg": 5,
        "layer": 1
       }
@@ -327,7 +384,7 @@
      "grooves": 1,
      "groove_depth": 0.2,
      "irregularity": 0.05,
-     "layer_lift_m": 0.006,
+     "layer_lift_m": 0.009,
      "type": "masses",
      "name": "crown",
      "root_sink_m": 0.016,
@@ -465,7 +522,7 @@
      "grooves": 1,
      "groove_depth": 0.2,
      "irregularity": 0.05,
-     "layer_lift_m": 0.006,
+     "layer_lift_m": 0.009,
      "type": "masses",
      "name": "whorl",
      "root_sink_m": 0.016,

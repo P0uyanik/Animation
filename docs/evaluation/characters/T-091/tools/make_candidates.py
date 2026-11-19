@@ -20,32 +20,36 @@ WHORL = {"az": 180, "el": 78}
 def boy(spec):
     h = spec["hair"]
     base = copy.deepcopy(next(s for s in h["structures"] if s["name"] == "base"))
-    base.update(height=[0.016, 0.026, 0.03], grooves={"count": 14, "depth": 0.35, "sharpness": 0.7, "wander": 0.3,
+    base.update(height=[0.022, 0.036, 0.04], grooves={"count": 14, "depth": 0.35, "sharpness": 0.7, "wander": 0.3,
                                                        "wavelength": 0.5})
-    M = {"seg": 18, "grooves": 1, "groove_depth": 0.2, "irregularity": 0.05, "layer_lift_m": 0.006}
+    M = {"seg": 18, "grooves": 1, "groove_depth": 0.2, "irregularity": 0.05, "layer_lift_m": 0.009}
     T = {"hold": 0.32, "taper_power": 1.25, "root_width": 0.8}
     sts = [
         {"type": "scalp_cap", "name": "cap", "offset": 0.004},
         base,
         # layer 0: nape tuck row and the side masses over the ears (B05 lower row, B04 side tips flicking out)
         dict(M, type="masses", name="back", rows=[
-            dict(T, count=6, az=[130, 230], el=[12, 20], flow="down", len_deg=[46, 52], width=[0.095, 0.105],
-                 depth=0.55, lift=[0.0, 0.012, 0.018], flick_m=0.026, jitter_deg=5, layer=0)]),
+            dict(T, count=6, az=[130, 230], el=[12, 20], flow="down", len_deg=[46, 52], width=[0.105, 0.115],
+                 depth=0.6, lift=[0.004, 0.03, 0.036], flick_m=0.03, jitter_deg=5, layer=0)]),
         dict(M, type="masses", name="sides", rows=[
-            dict(T, count=2, az=[72, 116], el=[16, 24], flow="down", len_deg=[34, 40], width=[0.085, 0.095],
-                 depth=0.6, lift=[0.0, 0.02, 0.028], flick_m=0.04, jitter_deg=6, layer=0),
-            dict(T, count=2, az=[-116, -72], el=[16, 24], flow="down", len_deg=[34, 40], width=[0.085, 0.095],
-                 depth=0.6, lift=[0.0, 0.02, 0.028], flick_m=0.04, jitter_deg=6, layer=0)]),
+            dict(T, count=2, az=[64, 112], el=[22, 30], flow="down", len_deg=[38, 44], width=[0.1, 0.11],
+                 depth=0.62, lift=[0.006, 0.04, 0.045], flick_m=0.05, jitter_deg=6, layer=0),
+            dict(T, count=2, az=[-112, -64], el=[22, 30], flow="down", len_deg=[38, 44], width=[0.1, 0.11],
+                 depth=0.62, lift=[0.006, 0.04, 0.045], flick_m=0.05, jitter_deg=6, layer=0)]),
         # fringe: few large masses hanging over the forehead to the brow line, pointed, with gaps (originals, B01)
-        dict(M, type="masses", name="fringe", rows=[
-            dict(T, count=4, az=[-50, 50], el=[60, 64], pole=WHORL, len_deg=[58, 64], width=[0.1, 0.11],
-                 depth=0.58, lift=[0.0, 0.026, 0.008], flick_m=0.006, curl_deg=8, jitter_deg=4, layer=1)]),
+        # r5: heavy clumps down to the brow line (hero24/val27 front; keep-out el_min -6 + 2 deg margin)
+        dict(M, type="masses", name="fringe", items=[
+            dict(T, root=[sx * 14, 64], tip=[sx * 13, -3], width=0.12, depth=0.66, lift=[0.008, 0.042, 0.014],
+                 lift_peak=0.4, flick_m=0.004, layer=1) for sx in (1, -1)] + [
+            dict(T, root=[sx * 40, 58], tip=[sx * 40, -2], width=0.115, depth=0.66, lift=[0.008, 0.042, 0.018],
+                 lift_peak=0.4, flick_m=0.01, layer=1) for sx in (1, -1)]),
         dict(M, type="masses", name="fringe_centre", items=[
-            dict(T, root=[6, 68], tip=[-3, 4], width=0.11, depth=0.55, lift=[0.0, 0.018, 0.008], layer=2)]),
+            dict(T, root=[4, 70], tip=[-2, -3], width=0.12, depth=0.66, lift=[0.01, 0.046, 0.014], lift_peak=0.4,
+                 layer=2)]),
         # long petals from the whorl down over the crown, sides and back (B05)
         dict(M, type="masses", name="top", rows=[
-            dict(T, count=9, az=[62, 298], el=[58, 64], pole=WHORL, len_deg=[52, 62], width=[0.105, 0.115],
-                 depth=0.62, lift=[0.0, 0.034, 0.036], flick_m=0.04, jitter_deg=5, layer=1)]),
+            dict(T, count=9, az=[62, 298], el=[58, 64], pole=WHORL, len_deg=[52, 62], width=[0.115, 0.125],
+                 depth=0.64, lift=[0.006, 0.05, 0.05], flick_m=0.05, jitter_deg=5, layer=1)]),
         # crown petals: a ring round the whorl that rises and flares outward, so their pointed tips stand up at the
         # top of the silhouette (B05, val27 front/back), deep channels between them
         dict(M, type="masses", name="crown", root_sink_m=0.016, items=[
@@ -65,14 +69,14 @@ def girl(spec):
     by = {s["name"]: copy.deepcopy(s) for s in h["structures"]}
     crown = by["crown"]
     # centre parting (owner 2026-11-18: G01/G02/G04); fewer, larger felt sections on the crown
-    crown.update(part={"az": 0, "width_deg": 3.0, "depth": 0.6, "length": 0.62},
+    crown.update(part={"az": 0, "width_deg": 4.5, "depth": 0.9, "length": 0.66},
                  grooves={"count": 16, "depth": 0.22, "sharpness": 0.65, "wander": 0.3, "wavelength": 0.5})
-    M = {"seg": 18, "grooves": 2, "groove_depth": 0.14, "irregularity": 0.05, "layer_lift_m": 0.006}
+    M = {"seg": 18, "grooves": 3, "groove_depth": 0.24, "irregularity": 0.05, "layer_lift_m": 0.006}
 
     def side(sx):  # two swept fringe sections per side of the parting (G04), mirrored
-        return [dict(root=[sx * 4, 80], tip=[sx * 56, 8], width=0.13, depth=0.42, lift=[0.004, 0.026, 0.012],
+        return [dict(root=[sx * 6, 80], tip=[sx * 48, 16], width=0.13, depth=0.66, lift=[0.008, 0.042, 0.016],
                      lift_peak=0.45, hold=0.55, taper_power=1.8, root_width=0.85, sweep=sx * -0.2, layer=1),
-                dict(root=[sx * 16, 64], tip=[sx * 76, -8], width=0.1, depth=0.42, lift=[0.002, 0.02, 0.012],
+                dict(root=[sx * 18, 66], tip=[sx * 72, -6], width=0.1, depth=0.6, lift=[0.004, 0.03, 0.014],
                      lift_peak=0.45, hold=0.5, taper_power=1.7, root_width=0.85, layer=0)]
     fringe = dict(M, type="masses", name="fringe", items=side(1) + side(-1))
     # soft back transition (ref_30, no G05 ridge): broad felt sections from the crown that run down over the
