@@ -51,3 +51,21 @@ pass. The Supervisor was told.
   3. The brows are too pale to carry Sadness, Anger and Confusion (the 04 brows are light brown but visible).
   4. The head reads smaller than in 02 because her volume comes from the hair; that is part b's job.
 - Not done: glb and compare builds, fidelity scoring, publish (Supervisor + T-126a step).
+
+## Face pass 2 (Supervisor review of expressions_0.1.0)
+Picked from cheap probes (spec copies A–F, Cycles 4 spp, Neutral/Smile/Blink/Laugh/Sadness/Anger); then 12 spp.
+- **Stern wedge removed:** the upper lid edge sloped down towards the nose, and the skin rose over its shell.
+  `lids.upper_roll_deg` −18 raises the inner end, giving a level, open arch as in m04_neutral; `upper_gap` 0.012
+  keeps the shell close to the eyeball; socket `ramp_deg` 12 / `reach_deg` 36 blends it out softly. Rejected
+  variants: −10° roll (still slanted), eyes 4 mm deeper (more wedge), eyes 4 mm forward with a 62° edge (the
+  build fails in the lid fit).
+- **Closed lids:** T-113 `closed_fit.gap` 0.002 plus `blink.flatten` 0.35 make the lids follow the eyeball, so the
+  domes are flatter and smaller. **Open point, generator gap:** no `face_generic/3` lid or lash option draws the dark
+  downward lash curve of a closed eye (04). The lash strip stays at the open edge and is covered, with
+  `flatten_lash` on or off. This needs a closed-lash option in the shared lid code (`face_v3/lids.py`); shared code
+  was not changed.
+- **Brows:** light brown (146, 108, 86), 1.8 mm, at 1.42 r, just under the fringe edge. Sadness, Frown, Confusion
+  and Anger now read through them and stay soft.
+- Evidence: [expressions_0.1.0_pass2.jpg](expressions_0.1.0_pass2.jpg) (12 spp) and
+  [face_front_pass2.jpg](face_front_pass2.jpg) (pass 1 | pass 2 | ref 01 | ref 04 neutral). The strict body sheet
+  was not re-rendered (only face values changed).
