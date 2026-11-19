@@ -70,6 +70,17 @@ Every other bone of both characters, the cup and all other frames are byte-ident
 - Unchanged: `engine/anim/**`, `content/hand_shapes/**`, `content/assets/**`, `engine/render/**`, published versions,
   frozen files, `episodes/e907_exchange/shots/s010_verbs/shot.scene.json`.
 
+## 4b. Commands run (after the r3-promote merge unless noted)
+| Command | Result |
+| --- | --- |
+| `cmake --build build` (Release, PLUSH_BUILD_STUDIO=OFF, renderer OFF) | builds, no warnings in the changed files |
+| `build/tests/plush_tests` | **205 / 205** cases (201 at the input + 4 new), 765998 assertions; golden unchanged |
+| `tools/check_all.py --base origin/integration/r3-promote --task T-112c --blender <bpy 5.3 wrapper>` | Frozen PASS, Write-set PASS (13 paths, all in the claim), lint PASS, C++ build / tests PASS (renderer tests skipped, renderer OFF), Python tests and links PASS, Blender tier: regression boy (fidelity 67.73), girl (65.01) and white-haired girl PASS. `deform_test` boy / girl failed only because the runner had no libEGL ("Couldn't open libEGL.so.1"). After `apt-get install libegl1`, the same two commands pass (rc 0, missing [], unmeasured {}). Guarded paths: `tests/test_verbs.cpp` needs the `Supervisor-Approved:` trailer at merge (expected). |
+| `run_shot --stages prepare,bake` / `--blend-only` on s010_verbs (this branch and, as `--bake-engine`, the input SHA's `plush-render`) | pass, no verb constraint error |
+| `build/measure_t051` + `summarise_measures.py` | section 3 |
+
+Blender: no binary on this runner, so the bpy 5.3.0 module ran through `tools/bpy_blender.py`.
+
 ## 5. Visual results
 | File | Content |
 | --- | --- |
