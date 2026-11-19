@@ -692,6 +692,8 @@ std::expected<VerbExpansion, VerbError> expandVerbs(const Json& actions, const V
       if (react && look) {  // one gaze source: the receiver's look is the reaction's; the giver's as look actions
         gen.push_back({{"type", "look"}, {"character", who}, {"atProp", prop}, {"start", S}, {"end", rel}});
         gen.push_back({{"type", "look"}, {"character", who}, {"atCharacter", to}, {"start", rel}, {"end", end + Z}});
+        // The reaction's look (the notice) is at the giver; from the reach on the receiver's eyes are on the prop.
+        gen.push_back({{"type", "look"}, {"character", to}, {"atProp", prop}, {"start", rStart}, {"end", contact + 8}});
       }
       const auto cc = constraintsOf("contact");
       if (hasConstraint(cc, "reachable")) {

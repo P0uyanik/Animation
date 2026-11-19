@@ -124,7 +124,9 @@ without a verb action is compiled exactly as before.
   - the receiver's reach starts at the reaction's notice (`planReaction`: reaction_delay x tempo, never under the
     personality's `delay_frames` low end) + 4 f, rounded up to a whole frame;
   - the handover plays no gaze of its own;
-  - the giver's gaze is generated as `look` actions (at the prop until the release, then at the receiver).
+  - the giver's gaze is generated as `look` actions (at the prop until the release, then at the receiver);
+  - the reaction's look (at the giver) is the receiver's notice, and from the reach start a generated `look` puts
+    the receiver's eyes on the prop until contact + 8.
 - **Failures are load errors,** formatted `verb '<verb>': character '<who>', prop '<prop>': <code>: <reason>`.
   - Checked while expanding:
     - `hand_full` and `hand_empty`;

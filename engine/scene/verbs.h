@@ -31,7 +31,8 @@
 //   - Reactions: "react": true on pass / place appends a partner_acts (source the giver, at the pass start, for the
 //     receiver) / success (at the settle start) event to VerbExpansion::events when the scene has events
 //     (VerbContext::events). Under a reacting pass the receiver's look comes from the reaction (the handover is
-//     emitted with look false, the giver's gaze as look actions) and the receiver's reach starts at the reaction's
+//     emitted with look false, the giver's gaze as look actions; the reaction's look at the giver is the notice, and from
+//     the reach start the receiver looks at the prop until contact + 8) and the receiver's reach starts at the reaction's
 //     notice (planReaction: reaction_delay x tempo, never under the profile's delay_frames low end) + 4 f gaze lead.
 //
 // Frames (S = start, profile = the scene's "timing", each beat scaled by the character's personality tempo):

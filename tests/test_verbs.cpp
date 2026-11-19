@@ -629,11 +629,16 @@ TEST_CASE("verbs T-112b: react appends partner_acts / success events; the notice
     // One gaze source: the handover plays no gaze of its own; the giver's gaze comes as looks.
     const Json* h = nullptr;
     int looks = 0;
+    const Json* rlook = nullptr;
     for (const Json& a : x->actions) {
       if (a["type"] == "handover") h = &a;
       if (a["type"] == "look" && a["character"] == "giver" && a["start"].get<double>() >= 49) ++looks;
-      CHECK_FALSE((a["type"] == "look" && a["character"] == "receiver"));
+      if (a["type"] == "look" && a["character"] == "receiver") rlook = &a;
     }
+    // The receiver's only generated look starts with the reach (after the reaction's notice), on the cup.
+    REQUIRE(rlook);
+    CHECK((*rlook)["atProp"] == "cup");
+    CHECK((*rlook)["start"].get<double>() == look->to);
     REQUIRE(h);
     CHECK((*h)["look"] == false);
     CHECK((*h)["receiverStart"].get<double>() == std::ceil(49 + k.delay + 4 - 1e-6));
@@ -938,4 +943,36 @@ TEST_CASE("verb library T-112b: pass.verb.json parses; phase parts tell the two 
       "phases": [{"name": "manipulate", "part": "a"}, {"name": "manipulate", "part": "a"}]})")));
   CHECK(verbFromJson(Json::parse(R"({"format": "plush.verb", "version": 1, "id": "x", "lowers_to": "handover",
       "phases": [{"name": "manipulate", "part": "a"}, {"name": "manipulate", "part": "b"}]})")));
+}
+
+TEST_CASE("verbs T-112b: a reacting pass compiles through the reaction system (scene events; one gaze source)") {
+  for (auto [g, r] : {std::pair{kBoy, kGirl}, std::pair{kGirl, kBoy}}) {
+    CAPTURE(g);
+    Scene scene = passScene(g, r);
+    scene.timing = "calibrated";
+    scene.characters[0].personality = g == kBoy ? "boy_yellow_hoodie" : "girl_auburn_bun_glasses";
+    scene.characters[1].personality = r == kBoy ? "boy_yellow_hoodie" : "girl_auburn_bun_glasses";
+    scene.events = Json::array();
+    scene.actions = Json::parse(R"([{"type": "pick_up", "character": "giver", "prop": "cup", "start": 4, "contact": 22, "settle": 4},
+        {"type": "pass", "character": "giver", "to": "receiver", "react": true}])");
+    auto ev = load(scene);
+    for (const auto& w : ev->warnings()) MESSAGE(w);
+    // The expected notice: pass start 26 (pick_up contact 22 + settle 4) + the receiver's delay.
+    const PersonalityProfile& R = r == kBoy ? boyProfile() : girlProfile();
+    const double delay = std::max(double(R.reaction.delayFrames->mid() * R.reaction.tempoScale.value_or(1.f)), double(R.reaction.delayFrames->lo));
+    const double notice = 26 + delay, reach = std::ceil(notice + 4 - 1e-6);
+    const Track* look = ev->scene().animation.generated->find("receiver/lookAt");
+    REQUIRE(look);
+    // A key at the notice (the reaction's look starts there) ...
+    bool keyed = false;
+    for (const Key& k : look->keys) keyed |= std::abs(k.frame - notice) < 1e-3;
+    CHECK(keyed);
+    // ... at the giver's face; from the reach on the cup.
+    const vec3 head = bonePos(*ev, 0, "head", notice + 3);
+    const vec3 cupMid = vec3(ev->propWorld(0, reach + 8) * vec4(0, 0.05f, 0, 1));
+    CHECK(glm::distance(look->evaluate(notice + 3), head) < glm::distance(look->evaluate(notice + 3), vec3(ev->propWorld(0, notice + 3)[3])));
+    CHECK(glm::distance(look->evaluate(reach + 8), cupMid) < 0.01f);  // the look keys a moving cup every few frames (cup radius 40 mm)
+    // The palm is on the receiver's socket at contact (the verb's constraint passed: no load error).
+    CHECK(ev->scene().props[0].parentSwitch.back().parent->name == "receiver");
+  }
 }
