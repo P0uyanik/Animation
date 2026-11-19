@@ -1,0 +1,141 @@
+{
+ "master": {
+  "frames": 48,
+  "seconds": 2.0,
+  "png16_bytes": 175775349
+ },
+ "encodes": [
+  {
+   "codec": "h264_8bit",
+   "crf": 12,
+   "bytes": 3597818,
+   "kbit_s": 14391.3,
+   "encode_s": 5.4,
+   "ssim": 0.992674,
+   "psnr_db": 46.76977,
+   "gradient_ssim": 0.99774,
+   "gradient_psnr_db": 54.282792
+  },
+  {
+   "codec": "h264_8bit",
+   "crf": 16,
+   "bytes": 2184344,
+   "kbit_s": 8737.4,
+   "encode_s": 4.7,
+   "ssim": 0.989891,
+   "psnr_db": 45.562056,
+   "gradient_ssim": 0.997966,
+   "gradient_psnr_db": 53.459581
+  },
+  {
+   "codec": "h264_8bit",
+   "crf": 20,
+   "bytes": 1156270,
+   "kbit_s": 4625.1,
+   "encode_s": 4.0,
+   "ssim": 0.985594,
+   "psnr_db": 44.022336,
+   "gradient_ssim": 0.998492,
+   "gradient_psnr_db": 52.434252
+  },
+  {
+   "codec": "h264_8bit",
+   "crf": 24,
+   "bytes": 529971,
+   "kbit_s": 2119.9,
+   "encode_s": 3.1,
+   "ssim": 0.97943,
+   "psnr_db": 42.417985,
+   "gradient_ssim": 0.998108,
+   "gradient_psnr_db": 51.082428
+  },
+  {
+   "codec": "hevc_10bit",
+   "crf": 14,
+   "bytes": 2852940,
+   "kbit_s": 11411.8,
+   "encode_s": 13.2,
+   "ssim": 0.993133,
+   "psnr_db": 46.810548,
+   "gradient_ssim": 0.99943,
+   "gradient_psnr_db": 56.316999
+  },
+  {
+   "codec": "hevc_10bit",
+   "crf": 18,
+   "bytes": 1732884,
+   "kbit_s": 6931.5,
+   "encode_s": 11.9,
+   "ssim": 0.990232,
+   "psnr_db": 45.613516,
+   "gradient_ssim": 0.999233,
+   "gradient_psnr_db": 55.039427
+  },
+  {
+   "codec": "hevc_10bit",
+   "crf": 22,
+   "bytes": 943070,
+   "kbit_s": 3772.3,
+   "encode_s": 10.7,
+   "ssim": 0.985988,
+   "psnr_db": 44.167727,
+   "gradient_ssim": 0.998945,
+   "gradient_psnr_db": 53.744695
+  },
+  {
+   "codec": "hevc_10bit",
+   "crf": 26,
+   "bytes": 458133,
+   "kbit_s": 1832.5,
+   "encode_s": 8.4,
+   "ssim": 0.980094,
+   "psnr_db": 42.62845,
+   "gradient_ssim": 0.998531,
+   "gradient_psnr_db": 52.074824
+  },
+  {
+   "codec": "av1_10bit",
+   "crf": 18,
+   "bytes": 1379799,
+   "kbit_s": 5519.2,
+   "encode_s": 7.1,
+   "ssim": 0.989611,
+   "psnr_db": 45.441449,
+   "gradient_ssim": 0.999215,
+   "gradient_psnr_db": 55.091518
+  },
+  {
+   "codec": "av1_10bit",
+   "crf": 26,
+   "bytes": 699814,
+   "kbit_s": 2799.3,
+   "encode_s": 6.1,
+   "ssim": 0.985524,
+   "psnr_db": 44.117821,
+   "gradient_ssim": 0.999007,
+   "gradient_psnr_db": 53.948268
+  },
+  {
+   "codec": "av1_10bit",
+   "crf": 34,
+   "bytes": 301247,
+   "kbit_s": 1205.0,
+   "encode_s": 5.2,
+   "ssim": 0.98057,
+   "psnr_db": 42.738598,
+   "gradient_ssim": 0.998592,
+   "gradient_psnr_db": 52.276639
+  },
+  {
+   "codec": "av1_10bit",
+   "crf": 42,
+   "bytes": 149042,
+   "kbit_s": 596.2,
+   "encode_s": 5.0,
+   "ssim": 0.975844,
+   "psnr_db": 41.598393,
+   "gradient_ssim": 0.998121,
+   "gradient_psnr_db": 50.831971
+  }
+ ]
+}

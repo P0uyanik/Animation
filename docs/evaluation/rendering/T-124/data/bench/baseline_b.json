@@ -1,0 +1,271 @@
+{
+ "variant": "baseline",
+ "tag": "baseline_b",
+ "description": "production final settings, unchanged",
+ "settings": {},
+ "toggles": {},
+ "blend": "/root/t124/base/shot.blend",
+ "load_s": 3.45,
+ "blender": "5.3.0",
+ "threads": 4,
+ "resolution": [
+  1280,
+  720
+ ],
+ "effective": {
+  "samples": 128,
+  "adaptive": true,
+  "threshold": 0.009999999776482582,
+  "max_bounces": 12,
+  "denoiser": "OPENIMAGEDENOISE",
+  "denoise_passes": "RGB_ALBEDO_NORMAL",
+  "prefilter": "ACCURATE",
+  "persistent": false
+ },
+ "frames": [
+  {
+   "frame": 65,
+   "repeat": 0,
+   "render_s": 427.97,
+   "save_s": 0.17,
+   "phases": {
+    "sync": 7.35,
+    "bvh": 2.68,
+    "kernels": 0.01,
+    "path_trace": 415.74,
+    "denoise": 0.0,
+    "other": 2.19
+   },
+   "peak_mem": "",
+   "timeline": [
+    [
+     4.61,
+     "kernels",
+     "Updating Shaders"
+    ],
+    [
+     4.62,
+     "sync",
+     "Updating Scene Attribute"
+    ],
+    [
+     4.62,
+     "kernels",
+     "Updating Camera"
+    ],
+    [
+     4.62,
+     "sync",
+     "Updating Meshes Flags"
+    ],
+    [
+     4.62,
+     "kernels",
+     "Updating Particle Systems"
+    ],
+    [
+     4.62,
+     "sync",
+     "Copying Particles to device"
+    ],
+    [
+     4.62,
+     "kernels",
+     "Updating Displacement Images"
+    ],
+    [
+     4.62,
+     "sync",
+     "Computing normals"
+    ],
+    [
+     6.67,
+     "bvh",
+     "Building BVH"
+    ],
+    [
+     6.92,
+     "sync",
+     "Building"
+    ],
+    [
+     6.92,
+     "bvh",
+     "Building BVH"
+    ],
+    [
+     9.35,
+     "sync",
+     "Computing attributes"
+    ],
+    [
+     10.02,
+     "kernels",
+     "Updating Primitive Offsets"
+    ],
+    [
+     10.02,
+     "sync",
+     "Updating Images"
+    ],
+    [
+     10.02,
+     "kernels",
+     "Updating Volume"
+    ],
+    [
+     10.02,
+     "sync",
+     "Computing tree"
+    ],
+    [
+     10.03,
+     "kernels",
+     "Updating Integrator"
+    ],
+    [
+     10.03,
+     "sync",
+     "Writing constant memory"
+    ],
+    [
+     10.03,
+     "kernels",
+     "Loading denoising kernels (may take a few minutes the first "
+    ],
+    [
+     10.03,
+     "path_trace",
+     "Sample #/#"
+    ],
+    [
+     425.77,
+     "other",
+     "Finished"
+    ]
+   ]
+  },
+  {
+   "frame": 65,
+   "repeat": 1,
+   "render_s": 428.01,
+   "save_s": 0.0,
+   "phases": {
+    "sync": 7.74,
+    "bvh": 2.61,
+    "kernels": 0.01,
+    "path_trace": 415.52,
+    "denoise": 0.0,
+    "other": 2.13
+   },
+   "peak_mem": "",
+   "timeline": [
+    [
+     4.62,
+     "kernels",
+     "Updating Shaders"
+    ],
+    [
+     4.63,
+     "sync",
+     "Updating Scene Attribute"
+    ],
+    [
+     4.63,
+     "kernels",
+     "Updating Camera"
+    ],
+    [
+     4.63,
+     "sync",
+     "Updating Meshes Flags"
+    ],
+    [
+     4.63,
+     "kernels",
+     "Updating Particle Systems"
+    ],
+    [
+     4.63,
+     "sync",
+     "Copying Particles to device"
+    ],
+    [
+     4.63,
+     "kernels",
+     "Updating Displacement Images"
+    ],
+    [
+     4.63,
+     "sync",
+     "Computing normals"
+    ],
+    [
+     7.01,
+     "bvh",
+     "Building BVH"
+    ],
+    [
+     7.27,
+     "sync",
+     "Building"
+    ],
+    [
+     7.27,
+     "bvh",
+     "Building BVH"
+    ],
+    [
+     9.62,
+     "sync",
+     "Computing attributes"
+    ],
+    [
+     10.35,
+     "kernels",
+     "Updating Primitive Offsets"
+    ],
+    [
+     10.35,
+     "sync",
+     "Updating Images"
+    ],
+    [
+     10.35,
+     "kernels",
+     "Updating Volume"
+    ],
+    [
+     10.35,
+     "sync",
+     "Computing tree"
+    ],
+    [
+     10.36,
+     "kernels",
+     "Updating Integrator"
+    ],
+    [
+     10.36,
+     "sync",
+     "Writing constant memory"
+    ],
+    [
+     10.36,
+     "kernels",
+     "Loading denoising kernels (may take a few minutes the first "
+    ],
+    [
+     10.36,
+     "path_trace",
+     "Sample #/#"
+    ],
+    [
+     425.88,
+     "other",
+     "Finished"
+    ]
+   ]
+  }
+ ]
+}

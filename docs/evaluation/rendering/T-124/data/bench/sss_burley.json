@@ -1,0 +1,151 @@
+{
+ "variant": "sss_burley",
+ "tag": "sss_burley",
+ "description": "skin/lip subsurface method Random Walk -> Christensen-Burley (render-time, shot copy only)",
+ "settings": {},
+ "toggles": {
+  "sss_method": 6
+ },
+ "blend": "/root/t124/base/shot.blend",
+ "load_s": 3.33,
+ "blender": "5.3.0",
+ "threads": 4,
+ "resolution": [
+  1280,
+  720
+ ],
+ "effective": {
+  "samples": 128,
+  "adaptive": true,
+  "threshold": 0.009999999776482582,
+  "max_bounces": 12,
+  "denoiser": "OPENIMAGEDENOISE",
+  "denoise_passes": "RGB_ALBEDO_NORMAL",
+  "prefilter": "ACCURATE",
+  "persistent": false
+ },
+ "frames": [
+  {
+   "frame": 65,
+   "repeat": 0,
+   "render_s": 386.01,
+   "save_s": 0.16,
+   "phases": {
+    "sync": 7.42,
+    "bvh": 2.53,
+    "kernels": 0.01,
+    "path_trace": 373.68,
+    "denoise": 0.0,
+    "other": 2.36
+   },
+   "peak_mem": "",
+   "timeline": [
+    [
+     4.85,
+     "kernels",
+     "Updating Shaders"
+    ],
+    [
+     4.86,
+     "sync",
+     "Updating Scene Attribute"
+    ],
+    [
+     4.86,
+     "kernels",
+     "Updating Camera"
+    ],
+    [
+     4.86,
+     "sync",
+     "Updating Meshes Flags"
+    ],
+    [
+     4.86,
+     "kernels",
+     "Updating Particle Systems"
+    ],
+    [
+     4.86,
+     "sync",
+     "Copying Particles to device"
+    ],
+    [
+     4.86,
+     "kernels",
+     "Updating Displacement Images"
+    ],
+    [
+     4.86,
+     "sync",
+     "Computing normals"
+    ],
+    [
+     7.0,
+     "bvh",
+     "Building BVH"
+    ],
+    [
+     7.24,
+     "sync",
+     "Building"
+    ],
+    [
+     7.24,
+     "bvh",
+     "Building BVH"
+    ],
+    [
+     9.53,
+     "sync",
+     "Computing attributes"
+    ],
+    [
+     9.96,
+     "kernels",
+     "Updating Primitive Offsets"
+    ],
+    [
+     9.96,
+     "sync",
+     "Updating Images"
+    ],
+    [
+     9.96,
+     "kernels",
+     "Updating Volume"
+    ],
+    [
+     9.96,
+     "sync",
+     "Computing tree"
+    ],
+    [
+     9.97,
+     "kernels",
+     "Updating Integrator"
+    ],
+    [
+     9.97,
+     "sync",
+     "Writing constant memory"
+    ],
+    [
+     9.97,
+     "kernels",
+     "Loading denoising kernels (may take a few minutes the first "
+    ],
+    [
+     9.97,
+     "path_trace",
+     "Sample #/#"
+    ],
+    [
+     383.65,
+     "other",
+     "Finished"
+    ]
+   ]
+  }
+ ]
+}

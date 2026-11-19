@@ -1,0 +1,153 @@
+{
+ "variant": "review16",
+ "tag": "review16",
+ "description": "review candidate: 16 spp, adaptive 0.05, persistent data",
+ "settings": {
+  "cycles.samples": 16,
+  "cycles.adaptive_threshold": 0.05,
+  "render.use_persistent_data": true
+ },
+ "toggles": {},
+ "blend": "/root/t124/base/shot.blend",
+ "load_s": 3.77,
+ "blender": "5.3.0",
+ "threads": 4,
+ "resolution": [
+  1280,
+  720
+ ],
+ "effective": {
+  "samples": 16,
+  "adaptive": true,
+  "threshold": 0.05000000074505806,
+  "max_bounces": 12,
+  "denoiser": "OPENIMAGEDENOISE",
+  "denoise_passes": "RGB_ALBEDO_NORMAL",
+  "prefilter": "ACCURATE",
+  "persistent": true
+ },
+ "frames": [
+  {
+   "frame": 65,
+   "repeat": 0,
+   "render_s": 66.5,
+   "save_s": 0.16,
+   "phases": {
+    "sync": 7.39,
+    "bvh": 2.69,
+    "kernels": 0.01,
+    "path_trace": 54.16,
+    "denoise": 0.0,
+    "other": 2.25
+   },
+   "peak_mem": "",
+   "timeline": [
+    [
+     4.88,
+     "kernels",
+     "Updating Shaders"
+    ],
+    [
+     4.89,
+     "sync",
+     "Updating Scene Attribute"
+    ],
+    [
+     4.89,
+     "kernels",
+     "Updating Camera"
+    ],
+    [
+     4.89,
+     "sync",
+     "Updating Meshes Flags"
+    ],
+    [
+     4.89,
+     "kernels",
+     "Updating Particle Systems"
+    ],
+    [
+     4.89,
+     "sync",
+     "Copying Particles to device"
+    ],
+    [
+     4.89,
+     "kernels",
+     "Updating Displacement Images"
+    ],
+    [
+     4.89,
+     "sync",
+     "Computing normals"
+    ],
+    [
+     6.95,
+     "bvh",
+     "Building BVH"
+    ],
+    [
+     7.21,
+     "sync",
+     "Building"
+    ],
+    [
+     7.21,
+     "bvh",
+     "Building BVH"
+    ],
+    [
+     9.64,
+     "sync",
+     "Computing attributes"
+    ],
+    [
+     10.08,
+     "kernels",
+     "Updating Primitive Offsets"
+    ],
+    [
+     10.08,
+     "sync",
+     "Updating Images"
+    ],
+    [
+     10.08,
+     "kernels",
+     "Updating Volume"
+    ],
+    [
+     10.08,
+     "sync",
+     "Computing tree"
+    ],
+    [
+     10.09,
+     "kernels",
+     "Updating Integrator"
+    ],
+    [
+     10.09,
+     "sync",
+     "Writing constant memory"
+    ],
+    [
+     10.09,
+     "kernels",
+     "Loading denoising kernels (may take a few minutes the first "
+    ],
+    [
+     10.09,
+     "path_trace",
+     "Sample #/#"
+    ],
+    [
+     64.25,
+     "other",
+     "Finished"
+    ]
+   ]
+  }
+ ]
+}

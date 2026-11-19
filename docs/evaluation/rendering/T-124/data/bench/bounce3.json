@@ -1,0 +1,154 @@
+{
+ "variant": "bounce3",
+ "tag": "bounce3",
+ "description": "max 3, diffuse 1, glossy 1, transmission 2 (transparent 8 kept)",
+ "settings": {
+  "cycles.max_bounces": 3,
+  "cycles.diffuse_bounces": 1,
+  "cycles.glossy_bounces": 1,
+  "cycles.transmission_bounces": 2
+ },
+ "toggles": {},
+ "blend": "/root/t124/base/shot.blend",
+ "load_s": 3.47,
+ "blender": "5.3.0",
+ "threads": 4,
+ "resolution": [
+  1280,
+  720
+ ],
+ "effective": {
+  "samples": 128,
+  "adaptive": true,
+  "threshold": 0.009999999776482582,
+  "max_bounces": 3,
+  "denoiser": "OPENIMAGEDENOISE",
+  "denoise_passes": "RGB_ALBEDO_NORMAL",
+  "prefilter": "ACCURATE",
+  "persistent": false
+ },
+ "frames": [
+  {
+   "frame": 65,
+   "repeat": 0,
+   "render_s": 377.5,
+   "save_s": 0.16,
+   "phases": {
+    "sync": 8.05,
+    "bvh": 2.95,
+    "kernels": 0.01,
+    "path_trace": 363.94,
+    "denoise": 0.0,
+    "other": 2.56
+   },
+   "peak_mem": "",
+   "timeline": [
+    [
+     4.97,
+     "kernels",
+     "Updating Shaders"
+    ],
+    [
+     4.98,
+     "sync",
+     "Updating Scene Attribute"
+    ],
+    [
+     4.98,
+     "kernels",
+     "Updating Camera"
+    ],
+    [
+     4.98,
+     "sync",
+     "Updating Meshes Flags"
+    ],
+    [
+     4.98,
+     "kernels",
+     "Updating Particle Systems"
+    ],
+    [
+     4.98,
+     "sync",
+     "Copying Particles to device"
+    ],
+    [
+     4.98,
+     "kernels",
+     "Updating Displacement Images"
+    ],
+    [
+     4.98,
+     "sync",
+     "Computing normals"
+    ],
+    [
+     7.17,
+     "bvh",
+     "Building BVH"
+    ],
+    [
+     7.44,
+     "sync",
+     "Building"
+    ],
+    [
+     7.44,
+     "bvh",
+     "Building BVH"
+    ],
+    [
+     10.12,
+     "sync",
+     "Computing attributes"
+    ],
+    [
+     10.99,
+     "kernels",
+     "Updating Primitive Offsets"
+    ],
+    [
+     10.99,
+     "sync",
+     "Updating Images"
+    ],
+    [
+     10.99,
+     "kernels",
+     "Updating Volume"
+    ],
+    [
+     10.99,
+     "sync",
+     "Computing tree"
+    ],
+    [
+     11.0,
+     "kernels",
+     "Updating Integrator"
+    ],
+    [
+     11.0,
+     "sync",
+     "Writing constant memory"
+    ],
+    [
+     11.0,
+     "kernels",
+     "Loading denoising kernels (may take a few minutes the first "
+    ],
+    [
+     11.0,
+     "path_trace",
+     "Sample #/#"
+    ],
+    [
+     374.94,
+     "other",
+     "Finished"
+    ]
+   ]
+  }
+ ]
+}

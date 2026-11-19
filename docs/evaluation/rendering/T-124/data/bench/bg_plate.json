@@ -1,0 +1,131 @@
+{
+ "variant": "bg_plate",
+ "tag": "bg_plate",
+ "description": "still camera: props only (background plate, once per shot)",
+ "settings": {},
+ "toggles": {
+  "background_only": 310
+ },
+ "blend": "/root/t124/base/shot.blend",
+ "load_s": 3.33,
+ "blender": "5.3.0",
+ "threads": 4,
+ "resolution": [
+  1280,
+  720
+ ],
+ "effective": {
+  "samples": 128,
+  "adaptive": true,
+  "threshold": 0.009999999776482582,
+  "max_bounces": 12,
+  "denoiser": "OPENIMAGEDENOISE",
+  "denoise_passes": "RGB_ALBEDO_NORMAL",
+  "prefilter": "ACCURATE",
+  "persistent": false
+ },
+ "frames": [
+  {
+   "frame": 65,
+   "repeat": 0,
+   "render_s": 35.92,
+   "save_s": 0.15,
+   "phases": {
+    "sync": 2.53,
+    "bvh": 0.0,
+    "kernels": 0.0,
+    "path_trace": 31.25,
+    "denoise": 0.0,
+    "other": 2.13
+   },
+   "peak_mem": "",
+   "timeline": [
+    [
+     2.53,
+     "kernels",
+     "Updating Shaders"
+    ],
+    [
+     2.53,
+     "sync",
+     "Updating Scene Attribute"
+    ],
+    [
+     2.53,
+     "kernels",
+     "Updating Camera"
+    ],
+    [
+     2.53,
+     "sync",
+     "Updating Meshes Flags"
+    ],
+    [
+     2.53,
+     "kernels",
+     "Updating Particle Systems"
+    ],
+    [
+     2.53,
+     "sync",
+     "Copying Particles to device"
+    ],
+    [
+     2.53,
+     "bvh",
+     "Building BVH"
+    ],
+    [
+     2.53,
+     "sync",
+     "Computing attributes"
+    ],
+    [
+     2.53,
+     "kernels",
+     "Updating Primitive Offsets"
+    ],
+    [
+     2.53,
+     "sync",
+     "Updating Images"
+    ],
+    [
+     2.53,
+     "kernels",
+     "Updating Volume"
+    ],
+    [
+     2.53,
+     "sync",
+     "Computing tree"
+    ],
+    [
+     2.53,
+     "kernels",
+     "Updating Integrator"
+    ],
+    [
+     2.53,
+     "sync",
+     "Writing constant memory"
+    ],
+    [
+     2.53,
+     "kernels",
+     "Loading denoising kernels (may take a few minutes the first "
+    ],
+    [
+     2.53,
+     "path_trace",
+     "Sample #/#"
+    ],
+    [
+     33.79,
+     "other",
+     "Finished"
+    ]
+   ]
+  }
+ ]
+}

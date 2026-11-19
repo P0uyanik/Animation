@@ -1,0 +1,1493 @@
+{
+ "variant": "spp64",
+ "tag": "clip_spp64",
+ "description": "64 spp + OIDN",
+ "settings": {
+  "cycles.samples": 64
+ },
+ "toggles": {},
+ "blend": "/root/t124/base/shot.blend",
+ "load_s": 3.66,
+ "blender": "5.3.0",
+ "threads": 4,
+ "resolution": [
+  1280,
+  720
+ ],
+ "effective": {
+  "samples": 64,
+  "adaptive": true,
+  "threshold": 0.009999999776482582,
+  "max_bounces": 12,
+  "denoiser": "OPENIMAGEDENOISE",
+  "denoise_passes": "RGB_ALBEDO_NORMAL",
+  "prefilter": "ACCURATE",
+  "persistent": false
+ },
+ "frames": [
+  {
+   "frame": 60,
+   "repeat": 0,
+   "render_s": 223.28,
+   "save_s": 0.26,
+   "phases": {
+    "sync": 7.05,
+    "bvh": 2.62,
+    "kernels": 0.01,
+    "path_trace": 211.37,
+    "denoise": 0.0,
+    "other": 2.22
+   },
+   "peak_mem": "",
+   "timeline": [
+    [
+     4.45,
+     "kernels",
+     "Updating Shaders"
+    ],
+    [
+     4.46,
+     "sync",
+     "Updating Scene Attribute"
+    ],
+    [
+     4.46,
+     "kernels",
+     "Updating Camera"
+    ],
+    [
+     4.46,
+     "sync",
+     "Updating Meshes Flags"
+    ],
+    [
+     4.46,
+     "kernels",
+     "Updating Particle Systems"
+    ],
+    [
+     4.46,
+     "sync",
+     "Copying Particles to device"
+    ],
+    [
+     4.46,
+     "kernels",
+     "Updating Displacement Images"
+    ],
+    [
+     4.46,
+     "sync",
+     "Computing normals"
+    ],
+    [
+     6.59,
+     "bvh",
+     "Building BVH"
+    ],
+    [
+     6.83,
+     "sync",
+     "Building"
+    ],
+    [
+     6.83,
+     "bvh",
+     "Building BVH"
+    ],
+    [
+     9.21,
+     "sync",
+     "Computing attributes"
+    ],
+    [
+     9.68,
+     "kernels",
+     "Updating Primitive Offsets"
+    ],
+    [
+     9.68,
+     "sync",
+     "Updating Images"
+    ],
+    [
+     9.68,
+     "kernels",
+     "Updating Volume"
+    ],
+    [
+     9.68,
+     "sync",
+     "Computing tree"
+    ],
+    [
+     9.69,
+     "kernels",
+     "Updating Integrator"
+    ],
+    [
+     9.69,
+     "sync",
+     "Writing constant memory"
+    ],
+    [
+     9.69,
+     "kernels",
+     "Loading denoising kernels (may take a few minutes the first "
+    ],
+    [
+     9.69,
+     "path_trace",
+     "Sample #/#"
+    ],
+    [
+     221.06,
+     "other",
+     "Finished"
+    ]
+   ]
+  },
+  {
+   "frame": 61,
+   "repeat": 0,
+   "render_s": 220.9,
+   "save_s": 0.16,
+   "phases": {
+    "sync": 6.84,
+    "bvh": 2.66,
+    "kernels": 0.01,
+    "path_trace": 209.25,
+    "denoise": 0.0,
+    "other": 2.14
+   },
+   "peak_mem": "",
+   "timeline": [
+    [
+     4.35,
+     "kernels",
+     "Updating Shaders"
+    ],
+    [
+     4.36,
+     "sync",
+     "Updating Scene Attribute"
+    ],
+    [
+     4.36,
+     "kernels",
+     "Updating Camera"
+    ],
+    [
+     4.36,
+     "sync",
+     "Updating Meshes Flags"
+    ],
+    [
+     4.36,
+     "kernels",
+     "Updating Particle Systems"
+    ],
+    [
+     4.36,
+     "sync",
+     "Copying Particles to device"
+    ],
+    [
+     4.36,
+     "kernels",
+     "Updating Displacement Images"
+    ],
+    [
+     4.36,
+     "sync",
+     "Computing normals"
+    ],
+    [
+     6.4,
+     "bvh",
+     "Building BVH"
+    ],
+    [
+     6.65,
+     "sync",
+     "Building"
+    ],
+    [
+     6.65,
+     "bvh",
+     "Building BVH"
+    ],
+    [
+     9.06,
+     "sync",
+     "Computing attributes"
+    ],
+    [
+     9.49,
+     "kernels",
+     "Updating Primitive Offsets"
+    ],
+    [
+     9.49,
+     "sync",
+     "Updating Images"
+    ],
+    [
+     9.49,
+     "kernels",
+     "Updating Volume"
+    ],
+    [
+     9.5,
+     "sync",
+     "Computing tree"
+    ],
+    [
+     9.51,
+     "kernels",
+     "Updating Integrator"
+    ],
+    [
+     9.51,
+     "sync",
+     "Writing constant memory"
+    ],
+    [
+     9.51,
+     "kernels",
+     "Loading denoising kernels (may take a few minutes the first "
+    ],
+    [
+     9.51,
+     "path_trace",
+     "Sample #/#"
+    ],
+    [
+     218.76,
+     "other",
+     "Finished"
+    ]
+   ]
+  },
+  {
+   "frame": 62,
+   "repeat": 0,
+   "render_s": 222.26,
+   "save_s": 0.16,
+   "phases": {
+    "sync": 6.81,
+    "bvh": 2.67,
+    "kernels": 0.01,
+    "path_trace": 210.56,
+    "denoise": 0.0,
+    "other": 2.21
+   },
+   "peak_mem": "",
+   "timeline": [
+    [
+     4.44,
+     "kernels",
+     "Updating Shaders"
+    ],
+    [
+     4.45,
+     "sync",
+     "Updating Scene Attribute"
+    ],
+    [
+     4.45,
+     "kernels",
+     "Updating Camera"
+    ],
+    [
+     4.45,
+     "sync",
+     "Updating Meshes Flags"
+    ],
+    [
+     4.45,
+     "kernels",
+     "Updating Particle Systems"
+    ],
+    [
+     4.45,
+     "sync",
+     "Copying Particles to device"
+    ],
+    [
+     4.45,
+     "kernels",
+     "Updating Displacement Images"
+    ],
+    [
+     4.45,
+     "sync",
+     "Computing normals"
+    ],
+    [
+     6.41,
+     "bvh",
+     "Building BVH"
+    ],
+    [
+     6.66,
+     "sync",
+     "Building"
+    ],
+    [
+     6.66,
+     "bvh",
+     "Building BVH"
+    ],
+    [
+     9.07,
+     "sync",
+     "Computing attributes"
+    ],
+    [
+     9.47,
+     "kernels",
+     "Updating Primitive Offsets"
+    ],
+    [
+     9.47,
+     "sync",
+     "Updating Images"
+    ],
+    [
+     9.47,
+     "kernels",
+     "Updating Volume"
+    ],
+    [
+     9.47,
+     "sync",
+     "Computing tree"
+    ],
+    [
+     9.49,
+     "kernels",
+     "Updating Integrator"
+    ],
+    [
+     9.49,
+     "sync",
+     "Writing constant memory"
+    ],
+    [
+     9.49,
+     "kernels",
+     "Loading denoising kernels (may take a few minutes the first "
+    ],
+    [
+     9.49,
+     "path_trace",
+     "Sample #/#"
+    ],
+    [
+     220.05,
+     "other",
+     "Finished"
+    ]
+   ]
+  },
+  {
+   "frame": 63,
+   "repeat": 0,
+   "render_s": 216.82,
+   "save_s": 0.16,
+   "phases": {
+    "sync": 6.58,
+    "bvh": 2.3,
+    "kernels": 0.01,
+    "path_trace": 205.78,
+    "denoise": 0.0,
+    "other": 2.14
+   },
+   "peak_mem": "",
+   "timeline": [
+    [
+     4.39,
+     "kernels",
+     "Updating Shaders"
+    ],
+    [
+     4.4,
+     "sync",
+     "Updating Scene Attribute"
+    ],
+    [
+     4.4,
+     "kernels",
+     "Updating Camera"
+    ],
+    [
+     4.4,
+     "sync",
+     "Updating Meshes Flags"
+    ],
+    [
+     4.4,
+     "kernels",
+     "Updating Particle Systems"
+    ],
+    [
+     4.4,
+     "sync",
+     "Copying Particles to device"
+    ],
+    [
+     4.4,
+     "kernels",
+     "Updating Displacement Images"
+    ],
+    [
+     4.4,
+     "sync",
+     "Computing normals"
+    ],
+    [
+     6.23,
+     "bvh",
+     "Building BVH"
+    ],
+    [
+     6.47,
+     "sync",
+     "Building"
+    ],
+    [
+     6.47,
+     "bvh",
+     "Building BVH"
+    ],
+    [
+     8.53,
+     "sync",
+     "Computing attributes"
+    ],
+    [
+     8.88,
+     "kernels",
+     "Updating Primitive Offsets"
+    ],
+    [
+     8.88,
+     "sync",
+     "Updating Images"
+    ],
+    [
+     8.88,
+     "kernels",
+     "Updating Volume"
+    ],
+    [
+     8.88,
+     "sync",
+     "Computing tree"
+    ],
+    [
+     8.89,
+     "kernels",
+     "Updating Integrator"
+    ],
+    [
+     8.89,
+     "sync",
+     "Writing constant memory"
+    ],
+    [
+     8.89,
+     "kernels",
+     "Loading denoising kernels (may take a few minutes the first "
+    ],
+    [
+     8.89,
+     "path_trace",
+     "Sample #/#"
+    ],
+    [
+     214.68,
+     "other",
+     "Finished"
+    ]
+   ]
+  },
+  {
+   "frame": 64,
+   "repeat": 0,
+   "render_s": 214.48,
+   "save_s": 0.17,
+   "phases": {
+    "sync": 6.94,
+    "bvh": 2.49,
+    "kernels": 0.01,
+    "path_trace": 202.98,
+    "denoise": 0.0,
+    "other": 2.07
+   },
+   "peak_mem": "",
+   "timeline": [
+    [
+     4.62,
+     "kernels",
+     "Updating Shaders"
+    ],
+    [
+     4.62,
+     "sync",
+     "Updating Scene Attribute"
+    ],
+    [
+     4.62,
+     "kernels",
+     "Updating Camera"
+    ],
+    [
+     4.62,
+     "sync",
+     "Updating Meshes Flags"
+    ],
+    [
+     4.63,
+     "kernels",
+     "Updating Particle Systems"
+    ],
+    [
+     4.63,
+     "sync",
+     "Copying Particles to device"
+    ],
+    [
+     4.63,
+     "kernels",
+     "Updating Displacement Images"
+    ],
+    [
+     4.63,
+     "sync",
+     "Computing normals"
+    ],
+    [
+     6.51,
+     "bvh",
+     "Building BVH"
+    ],
+    [
+     6.76,
+     "sync",
+     "Building"
+    ],
+    [
+     6.76,
+     "bvh",
+     "Building BVH"
+    ],
+    [
+     9.0,
+     "sync",
+     "Computing attributes"
+    ],
+    [
+     9.42,
+     "kernels",
+     "Updating Primitive Offsets"
+    ],
+    [
+     9.42,
+     "sync",
+     "Updating Images"
+    ],
+    [
+     9.42,
+     "kernels",
+     "Updating Volume"
+    ],
+    [
+     9.42,
+     "sync",
+     "Computing tree"
+    ],
+    [
+     9.44,
+     "kernels",
+     "Updating Integrator"
+    ],
+    [
+     9.44,
+     "sync",
+     "Writing constant memory"
+    ],
+    [
+     9.44,
+     "kernels",
+     "Loading denoising kernels (may take a few minutes the first "
+    ],
+    [
+     9.44,
+     "path_trace",
+     "Sample #/#"
+    ],
+    [
+     212.41,
+     "other",
+     "Finished"
+    ]
+   ]
+  },
+  {
+   "frame": 65,
+   "repeat": 0,
+   "render_s": 211.25,
+   "save_s": 0.17,
+   "phases": {
+    "sync": 6.52,
+    "bvh": 2.36,
+    "kernels": 0.01,
+    "path_trace": 200.17,
+    "denoise": 0.0,
+    "other": 2.18
+   },
+   "peak_mem": "",
+   "timeline": [
+    [
+     4.21,
+     "kernels",
+     "Updating Shaders"
+    ],
+    [
+     4.22,
+     "sync",
+     "Updating Scene Attribute"
+    ],
+    [
+     4.22,
+     "kernels",
+     "Updating Camera"
+    ],
+    [
+     4.22,
+     "sync",
+     "Updating Meshes Flags"
+    ],
+    [
+     4.22,
+     "kernels",
+     "Updating Particle Systems"
+    ],
+    [
+     4.22,
+     "sync",
+     "Copying Particles to device"
+    ],
+    [
+     4.22,
+     "kernels",
+     "Updating Displacement Images"
+    ],
+    [
+     4.22,
+     "sync",
+     "Computing normals"
+    ],
+    [
+     6.16,
+     "bvh",
+     "Building BVH"
+    ],
+    [
+     6.43,
+     "sync",
+     "Building"
+    ],
+    [
+     6.43,
+     "bvh",
+     "Building BVH"
+    ],
+    [
+     8.53,
+     "sync",
+     "Computing attributes"
+    ],
+    [
+     8.88,
+     "kernels",
+     "Updating Primitive Offsets"
+    ],
+    [
+     8.88,
+     "sync",
+     "Updating Images"
+    ],
+    [
+     8.88,
+     "kernels",
+     "Updating Volume"
+    ],
+    [
+     8.88,
+     "sync",
+     "Computing tree"
+    ],
+    [
+     8.89,
+     "kernels",
+     "Updating Integrator"
+    ],
+    [
+     8.89,
+     "sync",
+     "Writing constant memory"
+    ],
+    [
+     8.89,
+     "kernels",
+     "Loading denoising kernels (may take a few minutes the first "
+    ],
+    [
+     8.89,
+     "path_trace",
+     "Sample #/#"
+    ],
+    [
+     209.07,
+     "other",
+     "Finished"
+    ]
+   ]
+  },
+  {
+   "frame": 66,
+   "repeat": 0,
+   "render_s": 221.75,
+   "save_s": 0.17,
+   "phases": {
+    "sync": 6.55,
+    "bvh": 2.38,
+    "kernels": 0.01,
+    "path_trace": 210.71,
+    "denoise": 0.0,
+    "other": 2.1
+   },
+   "peak_mem": "",
+   "timeline": [
+    [
+     4.19,
+     "kernels",
+     "Updating Shaders"
+    ],
+    [
+     4.2,
+     "sync",
+     "Updating Scene Attribute"
+    ],
+    [
+     4.2,
+     "kernels",
+     "Updating Camera"
+    ],
+    [
+     4.2,
+     "sync",
+     "Updating Meshes Flags"
+    ],
+    [
+     4.2,
+     "kernels",
+     "Updating Particle Systems"
+    ],
+    [
+     4.2,
+     "sync",
+     "Copying Particles to device"
+    ],
+    [
+     4.2,
+     "kernels",
+     "Updating Displacement Images"
+    ],
+    [
+     4.2,
+     "sync",
+     "Computing normals"
+    ],
+    [
+     6.14,
+     "bvh",
+     "Building BVH"
+    ],
+    [
+     6.38,
+     "sync",
+     "Building"
+    ],
+    [
+     6.38,
+     "bvh",
+     "Building BVH"
+    ],
+    [
+     8.52,
+     "sync",
+     "Computing attributes"
+    ],
+    [
+     8.92,
+     "kernels",
+     "Updating Primitive Offsets"
+    ],
+    [
+     8.92,
+     "sync",
+     "Updating Images"
+    ],
+    [
+     8.92,
+     "kernels",
+     "Updating Volume"
+    ],
+    [
+     8.92,
+     "sync",
+     "Computing tree"
+    ],
+    [
+     8.93,
+     "kernels",
+     "Updating Integrator"
+    ],
+    [
+     8.93,
+     "sync",
+     "Writing constant memory"
+    ],
+    [
+     8.93,
+     "kernels",
+     "Loading denoising kernels (may take a few minutes the first "
+    ],
+    [
+     8.93,
+     "path_trace",
+     "Sample #/#"
+    ],
+    [
+     219.65,
+     "other",
+     "Finished"
+    ]
+   ]
+  },
+  {
+   "frame": 67,
+   "repeat": 0,
+   "render_s": 216.47,
+   "save_s": 0.16,
+   "phases": {
+    "sync": 6.76,
+    "bvh": 2.42,
+    "kernels": 0.01,
+    "path_trace": 205.06,
+    "denoise": 0.0,
+    "other": 2.21
+   },
+   "peak_mem": "",
+   "timeline": [
+    [
+     4.4,
+     "kernels",
+     "Updating Shaders"
+    ],
+    [
+     4.41,
+     "sync",
+     "Updating Scene Attribute"
+    ],
+    [
+     4.41,
+     "kernels",
+     "Updating Camera"
+    ],
+    [
+     4.41,
+     "sync",
+     "Updating Meshes Flags"
+    ],
+    [
+     4.41,
+     "kernels",
+     "Updating Particle Systems"
+    ],
+    [
+     4.41,
+     "sync",
+     "Copying Particles to device"
+    ],
+    [
+     4.41,
+     "kernels",
+     "Updating Displacement Images"
+    ],
+    [
+     4.41,
+     "sync",
+     "Computing normals"
+    ],
+    [
+     6.36,
+     "bvh",
+     "Building BVH"
+    ],
+    [
+     6.62,
+     "sync",
+     "Building"
+    ],
+    [
+     6.62,
+     "bvh",
+     "Building BVH"
+    ],
+    [
+     8.78,
+     "sync",
+     "Computing attributes"
+    ],
+    [
+     9.18,
+     "kernels",
+     "Updating Primitive Offsets"
+    ],
+    [
+     9.18,
+     "sync",
+     "Updating Images"
+    ],
+    [
+     9.18,
+     "kernels",
+     "Updating Volume"
+    ],
+    [
+     9.18,
+     "sync",
+     "Computing tree"
+    ],
+    [
+     9.19,
+     "kernels",
+     "Updating Integrator"
+    ],
+    [
+     9.19,
+     "sync",
+     "Writing constant memory"
+    ],
+    [
+     9.19,
+     "kernels",
+     "Loading denoising kernels (may take a few minutes the first "
+    ],
+    [
+     9.19,
+     "path_trace",
+     "Sample #/#"
+    ],
+    [
+     214.25,
+     "other",
+     "Finished"
+    ]
+   ]
+  },
+  {
+   "frame": 68,
+   "repeat": 0,
+   "render_s": 218.67,
+   "save_s": 0.16,
+   "phases": {
+    "sync": 6.77,
+    "bvh": 2.34,
+    "kernels": 0.01,
+    "path_trace": 207.32,
+    "denoise": 0.0,
+    "other": 2.23
+   },
+   "peak_mem": "",
+   "timeline": [
+    [
+     4.55,
+     "kernels",
+     "Updating Shaders"
+    ],
+    [
+     4.56,
+     "sync",
+     "Updating Scene Attribute"
+    ],
+    [
+     4.56,
+     "kernels",
+     "Updating Camera"
+    ],
+    [
+     4.56,
+     "sync",
+     "Updating Meshes Flags"
+    ],
+    [
+     4.56,
+     "kernels",
+     "Updating Particle Systems"
+    ],
+    [
+     4.56,
+     "sync",
+     "Copying Particles to device"
+    ],
+    [
+     4.56,
+     "kernels",
+     "Updating Displacement Images"
+    ],
+    [
+     4.56,
+     "sync",
+     "Computing normals"
+    ],
+    [
+     6.39,
+     "bvh",
+     "Building BVH"
+    ],
+    [
+     6.64,
+     "sync",
+     "Building"
+    ],
+    [
+     6.64,
+     "bvh",
+     "Building BVH"
+    ],
+    [
+     8.74,
+     "sync",
+     "Computing attributes"
+    ],
+    [
+     9.11,
+     "kernels",
+     "Updating Primitive Offsets"
+    ],
+    [
+     9.11,
+     "sync",
+     "Updating Images"
+    ],
+    [
+     9.11,
+     "kernels",
+     "Updating Volume"
+    ],
+    [
+     9.11,
+     "sync",
+     "Computing tree"
+    ],
+    [
+     9.12,
+     "kernels",
+     "Updating Integrator"
+    ],
+    [
+     9.12,
+     "sync",
+     "Writing constant memory"
+    ],
+    [
+     9.12,
+     "kernels",
+     "Loading denoising kernels (may take a few minutes the first "
+    ],
+    [
+     9.12,
+     "path_trace",
+     "Sample #/#"
+    ],
+    [
+     216.44,
+     "other",
+     "Finished"
+    ]
+   ]
+  },
+  {
+   "frame": 69,
+   "repeat": 0,
+   "render_s": 216.3,
+   "save_s": 0.17,
+   "phases": {
+    "sync": 6.78,
+    "bvh": 2.46,
+    "kernels": 0.01,
+    "path_trace": 204.69,
+    "denoise": 0.0,
+    "other": 2.37
+   },
+   "peak_mem": "",
+   "timeline": [
+    [
+     4.37,
+     "kernels",
+     "Updating Shaders"
+    ],
+    [
+     4.38,
+     "sync",
+     "Updating Scene Attribute"
+    ],
+    [
+     4.38,
+     "kernels",
+     "Updating Camera"
+    ],
+    [
+     4.38,
+     "sync",
+     "Updating Meshes Flags"
+    ],
+    [
+     4.38,
+     "kernels",
+     "Updating Particle Systems"
+    ],
+    [
+     4.38,
+     "sync",
+     "Copying Particles to device"
+    ],
+    [
+     4.38,
+     "kernels",
+     "Updating Displacement Images"
+    ],
+    [
+     4.38,
+     "sync",
+     "Computing normals"
+    ],
+    [
+     6.3,
+     "bvh",
+     "Building BVH"
+    ],
+    [
+     6.55,
+     "sync",
+     "Building"
+    ],
+    [
+     6.55,
+     "bvh",
+     "Building BVH"
+    ],
+    [
+     8.76,
+     "sync",
+     "Computing attributes"
+    ],
+    [
+     9.23,
+     "kernels",
+     "Updating Primitive Offsets"
+    ],
+    [
+     9.23,
+     "sync",
+     "Updating Images"
+    ],
+    [
+     9.23,
+     "kernels",
+     "Updating Volume"
+    ],
+    [
+     9.23,
+     "sync",
+     "Computing tree"
+    ],
+    [
+     9.24,
+     "kernels",
+     "Updating Integrator"
+    ],
+    [
+     9.24,
+     "sync",
+     "Writing constant memory"
+    ],
+    [
+     9.24,
+     "kernels",
+     "Loading denoising kernels (may take a few minutes the first "
+    ],
+    [
+     9.24,
+     "path_trace",
+     "Sample #/#"
+    ],
+    [
+     213.94,
+     "other",
+     "Finished"
+    ]
+   ]
+  },
+  {
+   "frame": 70,
+   "repeat": 0,
+   "render_s": 219.08,
+   "save_s": 0.17,
+   "phases": {
+    "sync": 6.94,
+    "bvh": 2.46,
+    "kernels": 0.01,
+    "path_trace": 207.44,
+    "denoise": 0.0,
+    "other": 2.22
+   },
+   "peak_mem": "",
+   "timeline": [
+    [
+     4.61,
+     "kernels",
+     "Updating Shaders"
+    ],
+    [
+     4.62,
+     "sync",
+     "Updating Scene Attribute"
+    ],
+    [
+     4.62,
+     "kernels",
+     "Updating Camera"
+    ],
+    [
+     4.62,
+     "sync",
+     "Updating Meshes Flags"
+    ],
+    [
+     4.62,
+     "kernels",
+     "Updating Particle Systems"
+    ],
+    [
+     4.62,
+     "sync",
+     "Copying Particles to device"
+    ],
+    [
+     4.62,
+     "kernels",
+     "Updating Displacement Images"
+    ],
+    [
+     4.62,
+     "sync",
+     "Computing normals"
+    ],
+    [
+     6.5,
+     "bvh",
+     "Building BVH"
+    ],
+    [
+     6.74,
+     "sync",
+     "Building"
+    ],
+    [
+     6.74,
+     "bvh",
+     "Building BVH"
+    ],
+    [
+     8.95,
+     "sync",
+     "Computing attributes"
+    ],
+    [
+     9.4,
+     "kernels",
+     "Updating Primitive Offsets"
+    ],
+    [
+     9.4,
+     "sync",
+     "Updating Images"
+    ],
+    [
+     9.4,
+     "kernels",
+     "Updating Volume"
+    ],
+    [
+     9.4,
+     "sync",
+     "Computing tree"
+    ],
+    [
+     9.41,
+     "kernels",
+     "Updating Integrator"
+    ],
+    [
+     9.41,
+     "sync",
+     "Writing constant memory"
+    ],
+    [
+     9.41,
+     "kernels",
+     "Loading denoising kernels (may take a few minutes the first "
+    ],
+    [
+     9.41,
+     "path_trace",
+     "Sample #/#"
+    ],
+    [
+     216.85,
+     "other",
+     "Finished"
+    ]
+   ]
+  },
+  {
+   "frame": 71,
+   "repeat": 0,
+   "render_s": 218.99,
+   "save_s": 0.19,
+   "phases": {
+    "sync": 6.54,
+    "bvh": 2.3,
+    "kernels": 0.01,
+    "path_trace": 208.0,
+    "denoise": 0.0,
+    "other": 2.14
+   },
+   "peak_mem": "",
+   "timeline": [
+    [
+     4.32,
+     "kernels",
+     "Updating Shaders"
+    ],
+    [
+     4.33,
+     "sync",
+     "Updating Scene Attribute"
+    ],
+    [
+     4.33,
+     "kernels",
+     "Updating Camera"
+    ],
+    [
+     4.33,
+     "sync",
+     "Updating Meshes Flags"
+    ],
+    [
+     4.33,
+     "kernels",
+     "Updating Particle Systems"
+    ],
+    [
+     4.33,
+     "sync",
+     "Copying Particles to device"
+    ],
+    [
+     4.33,
+     "kernels",
+     "Updating Displacement Images"
+    ],
+    [
+     4.33,
+     "sync",
+     "Computing normals"
+    ],
+    [
+     6.17,
+     "bvh",
+     "Building BVH"
+    ],
+    [
+     6.42,
+     "sync",
+     "Building"
+    ],
+    [
+     6.42,
+     "bvh",
+     "Building BVH"
+    ],
+    [
+     8.47,
+     "sync",
+     "Computing attributes"
+    ],
+    [
+     8.83,
+     "kernels",
+     "Updating Primitive Offsets"
+    ],
+    [
+     8.83,
+     "sync",
+     "Updating Images"
+    ],
+    [
+     8.83,
+     "kernels",
+     "Updating Volume"
+    ],
+    [
+     8.83,
+     "sync",
+     "Computing tree"
+    ],
+    [
+     8.84,
+     "kernels",
+     "Updating Integrator"
+    ],
+    [
+     8.84,
+     "sync",
+     "Writing constant memory"
+    ],
+    [
+     8.84,
+     "kernels",
+     "Loading denoising kernels (may take a few minutes the first "
+    ],
+    [
+     8.84,
+     "path_trace",
+     "Sample #/#"
+    ],
+    [
+     216.85,
+     "other",
+     "Finished"
+    ]
+   ]
+  }
+ ]
+}

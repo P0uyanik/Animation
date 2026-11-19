@@ -1,0 +1,152 @@
+{
+ "variant": "ref512",
+ "tag": "ref512",
+ "description": "reference: 512 spp, adaptive 0.005, OIDN",
+ "settings": {
+  "cycles.samples": 512,
+  "cycles.adaptive_threshold": 0.005
+ },
+ "toggles": {},
+ "blend": "/root/t124/base/shot.blend",
+ "load_s": 3.38,
+ "blender": "5.3.0",
+ "threads": 4,
+ "resolution": [
+  1280,
+  720
+ ],
+ "effective": {
+  "samples": 512,
+  "adaptive": true,
+  "threshold": 0.004999999888241291,
+  "max_bounces": 12,
+  "denoiser": "OPENIMAGEDENOISE",
+  "denoise_passes": "RGB_ALBEDO_NORMAL",
+  "prefilter": "ACCURATE",
+  "persistent": false
+ },
+ "frames": [
+  {
+   "frame": 65,
+   "repeat": 0,
+   "render_s": 1669.09,
+   "save_s": 0.18,
+   "phases": {
+    "sync": 6.73,
+    "bvh": 2.47,
+    "kernels": 0.01,
+    "path_trace": 1657.57,
+    "denoise": 0.0,
+    "other": 2.31
+   },
+   "peak_mem": "",
+   "timeline": [
+    [
+     4.29,
+     "kernels",
+     "Updating Shaders"
+    ],
+    [
+     4.3,
+     "sync",
+     "Updating Scene Attribute"
+    ],
+    [
+     4.3,
+     "kernels",
+     "Updating Camera"
+    ],
+    [
+     4.3,
+     "sync",
+     "Updating Meshes Flags"
+    ],
+    [
+     4.3,
+     "kernels",
+     "Updating Particle Systems"
+    ],
+    [
+     4.3,
+     "sync",
+     "Copying Particles to device"
+    ],
+    [
+     4.3,
+     "kernels",
+     "Updating Displacement Images"
+    ],
+    [
+     4.3,
+     "sync",
+     "Computing normals"
+    ],
+    [
+     6.29,
+     "bvh",
+     "Building BVH"
+    ],
+    [
+     6.53,
+     "sync",
+     "Building"
+    ],
+    [
+     6.53,
+     "bvh",
+     "Building BVH"
+    ],
+    [
+     8.76,
+     "sync",
+     "Computing attributes"
+    ],
+    [
+     9.2,
+     "kernels",
+     "Updating Primitive Offsets"
+    ],
+    [
+     9.2,
+     "sync",
+     "Updating Images"
+    ],
+    [
+     9.2,
+     "kernels",
+     "Updating Volume"
+    ],
+    [
+     9.2,
+     "sync",
+     "Computing tree"
+    ],
+    [
+     9.21,
+     "kernels",
+     "Updating Integrator"
+    ],
+    [
+     9.21,
+     "sync",
+     "Writing constant memory"
+    ],
+    [
+     9.21,
+     "kernels",
+     "Loading denoising kernels (may take a few minutes the first "
+    ],
+    [
+     9.21,
+     "path_trace",
+     "Sample #/#"
+    ],
+    [
+     1666.78,
+     "other",
+     "Finished"
+    ]
+   ]
+  }
+ ]
+}

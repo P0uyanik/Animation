@@ -1,0 +1,141 @@
+{
+ "variant": "no_fibres",
+ "tag": "no_fibres",
+ "description": "all fibre strands hidden",
+ "settings": {},
+ "toggles": {
+  "no_fibres": 147
+ },
+ "blend": "/root/t124/base/shot.blend",
+ "load_s": 3.49,
+ "blender": "5.3.0",
+ "threads": 4,
+ "resolution": [
+  1280,
+  720
+ ],
+ "effective": {
+  "samples": 128,
+  "adaptive": true,
+  "threshold": 0.009999999776482582,
+  "max_bounces": 12,
+  "denoiser": "OPENIMAGEDENOISE",
+  "denoise_passes": "RGB_ALBEDO_NORMAL",
+  "prefilter": "ACCURATE",
+  "persistent": false
+ },
+ "frames": [
+  {
+   "frame": 65,
+   "repeat": 0,
+   "render_s": 263.09,
+   "save_s": 0.17,
+   "phases": {
+    "sync": 2.97,
+    "bvh": 0.15,
+    "kernels": 0.01,
+    "path_trace": 257.53,
+    "denoise": 0.0,
+    "other": 2.44
+   },
+   "peak_mem": "",
+   "timeline": [
+    [
+     2.93,
+     "kernels",
+     "Updating Shaders"
+    ],
+    [
+     2.94,
+     "sync",
+     "Updating Scene Attribute"
+    ],
+    [
+     2.94,
+     "kernels",
+     "Updating Camera"
+    ],
+    [
+     2.94,
+     "sync",
+     "Updating Meshes Flags"
+    ],
+    [
+     2.94,
+     "kernels",
+     "Updating Particle Systems"
+    ],
+    [
+     2.94,
+     "sync",
+     "Copying Particles to device"
+    ],
+    [
+     2.94,
+     "bvh",
+     "Building BVH"
+    ],
+    [
+     2.96,
+     "sync",
+     "Building"
+    ],
+    [
+     2.96,
+     "bvh",
+     "Building BVH"
+    ],
+    [
+     3.09,
+     "sync",
+     "Computing attributes"
+    ],
+    [
+     3.11,
+     "kernels",
+     "Updating Primitive Offsets"
+    ],
+    [
+     3.11,
+     "sync",
+     "Updating Images"
+    ],
+    [
+     3.11,
+     "kernels",
+     "Updating Volume"
+    ],
+    [
+     3.11,
+     "sync",
+     "Computing tree"
+    ],
+    [
+     3.12,
+     "kernels",
+     "Updating Integrator"
+    ],
+    [
+     3.12,
+     "sync",
+     "Writing constant memory"
+    ],
+    [
+     3.12,
+     "kernels",
+     "Loading denoising kernels (may take a few minutes the first "
+    ],
+    [
+     3.12,
+     "path_trace",
+     "Sample #/#"
+    ],
+    [
+     260.65,
+     "other",
+     "Finished"
+    ]
+   ]
+  }
+ ]
+}
