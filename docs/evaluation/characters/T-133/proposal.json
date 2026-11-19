@@ -1,0 +1,1085 @@
+{
+  "body": {
+    "params": {
+      "eyes": {
+        "x": 0.0555
+      }
+    }
+  },
+  "clothing": {
+    "garments": [
+      {
+        "type": "tights",
+        "name": "tights",
+        "waist_z_m": 0.4,
+        "ease_m": 0.0025,
+        "thickness_m": 0.0012,
+        "fibre_uv": true,
+        "material": {
+          "preset": "cotton knit",
+          "base_color_srgb": [
+            197,
+            187,
+            177
+          ],
+          "reference_size_m": 0.1452,
+          "overrides": {
+            "fibre": {
+              "strength": 0.35,
+              "distortion": 0.25,
+              "coordinates": "uv"
+            },
+            "nap": {
+              "value_gain": 0.15,
+              "sheen_gain": 0.2,
+              "fibre_gloss": 0.2
+            },
+            "fibres": {
+              "length_mm": 0.8,
+              "density_per_cm2": 12.0,
+              "color_variation": 0.2
+            },
+            "surface_detail": {
+              "lump_strength": 0.1
+            }
+          }
+        }
+      },
+      {
+        "type": "dress",
+        "name": "dress",
+        "ease_m": 0.007,
+        "thickness_m": 0.003,
+        "sleeve_length": 0.97,
+        "sleeve_start": 0.0,
+        "armhole": "closed",
+        "sleeve_puff_m": 0.014,
+        "sleeve_puff_peak": 0.72,
+        "waist_z_m": 0.467,
+        "length_m": 0.214,
+        "flare": 0.079,
+        "gathers": {
+          "count": 12,
+          "depth_m": 0.014,
+          "waist_depth_m": 0.004
+        },
+        "collar": {
+          "type": "round",
+          "width_m": 0.036,
+          "gap_m": 0.003,
+          "slope": 0.5,
+          "tip_round": 0.85,
+          "lift_m": 0.0
+        },
+        "collar_seat": {
+          "over": [],
+          "thickness_m": 0.004
+        },
+        "bands": {
+          "cuff": true,
+          "cuff_radius_m": 0.003,
+          "hem_rib": {
+            "ridges": 90,
+            "height_m": 0.018,
+            "relief_m": 0.0016,
+            "gather": 0.6,
+            "thickness_m": 0.0025,
+            "lift_m": 0.001
+          }
+        },
+        "rib_cuff": {
+          "height_m": 0.03,
+          "ribs": 18,
+          "depth_m": 0.0026,
+          "thickness_m": 0.004,
+          "tighten": 0.08
+        },
+        "material": {
+          "preset": "cotton knit",
+          "base_color_srgb": [
+            154,
+            175,
+            186
+          ],
+          "reference_size_m": 0.2376,
+          "overrides": {
+            "fibre": {
+              "strength": 0.4,
+              "distortion": 0.25,
+              "coordinates": "uv"
+            },
+            "nap": {
+              "value_gain": 0.15,
+              "sheen_gain": 0.2,
+              "fibre_gloss": 0.2
+            },
+            "fibres": {
+              "length_mm": 0.9,
+              "density_per_cm2": 12.0,
+              "color_variation": 0.2
+            },
+            "surface_detail": {
+              "lump_strength": 0.1
+            }
+          }
+        },
+        "materials": {
+          "collar": {
+            "preset": "cotton knit",
+            "base_color_srgb": [
+              161,
+              178,
+              186
+            ],
+            "reference_size_m": 0.2376,
+            "overrides": {
+              "fibre": {
+                "strength": 0.4,
+                "distortion": 0.25,
+                "coordinates": "uv"
+              },
+              "nap": {
+                "value_gain": 0.15,
+                "sheen_gain": 0.2,
+                "fibre_gloss": 0.2
+              },
+              "fibres": {
+                "length_mm": 0.9,
+                "density_per_cm2": 12.0,
+                "color_variation": 0.2
+              },
+              "surface_detail": {
+                "lump_strength": 0.1
+              }
+            }
+          },
+          "band": {
+            "preset": "cotton knit",
+            "base_color_srgb": [
+              149,
+              162,
+              169
+            ],
+            "reference_size_m": 0.2376,
+            "overrides": {
+              "fibre": {
+                "strength": 0.4,
+                "distortion": 0.25,
+                "coordinates": "uv"
+              },
+              "nap": {
+                "value_gain": 0.15,
+                "sheen_gain": 0.2,
+                "fibre_gloss": 0.2
+              },
+              "fibres": {
+                "length_mm": 0.9,
+                "density_per_cm2": 12.0,
+                "color_variation": 0.2
+              },
+              "surface_detail": {
+                "lump_strength": 0.1
+              }
+            }
+          }
+        },
+        "edge_finish": "rounded",
+        "drape": {
+          "enabled": false,
+          "fabric": "cotton",
+          "gather": 0.2,
+          "gravity": 0.4,
+          "overrides": {
+            "bending": 6.0
+          },
+          "pin": [
+            "edges",
+            "volume"
+          ],
+          "edge_band_m": 0.004,
+          "volume_band_m": 0.003,
+          "smooth": 3,
+          "seed": 126
+        },
+        "fibre_uv": true,
+        "skirt_pattern": {
+          "panels": 12,
+          "relief_m": 0.005,
+          "cable_share": 0.4,
+          "twists": 3.5,
+          "leaf_rows": 5,
+          "leaf_slope": 0.55,
+          "top": 0.94,
+          "bottom_m": 0.02,
+          "subdivide": 2
+        },
+        "cloth_sim": {
+          "pin_top": 0.03,
+          "pin_blend": 0.05
+        }
+      },
+      {
+        "type": "boots",
+        "name": "boots",
+        "height": 0.46,
+        "ease_m": 0.02,
+        "cuff": true,
+        "bands": {
+          "cuff": true,
+          "cuff_radius_m": 0.009
+        },
+        "sole": {
+          "thickness_m": 0.007,
+          "width_m": 0.0
+        },
+        "material": {
+          "preset": "boot fleece",
+          "base_color_srgb": [
+            162,
+            124,
+            90
+          ],
+          "reference_size_m": 0.15,
+          "overrides": {
+            "surface": {
+              "sheen_weight": 0.25
+            }
+          }
+        },
+        "materials": {
+          "band": {
+            "preset": "cuff fleece/3",
+            "base_color_srgb": [
+              162,
+              124,
+              90
+            ],
+            "reference_size_m": 0.15
+          },
+          "sole": {
+            "preset": "felt",
+            "base_color_srgb": [
+              118,
+              88,
+              62
+            ],
+            "reference_size_m": 0.15
+          },
+          "stitch": {
+            "preset": "wool yarn",
+            "base_color_srgb": [
+              205,
+              178,
+              140
+            ],
+            "reference_size_m": 0.05
+          }
+        },
+        "shaft_width_m": 0.014,
+        "toe_volume_m": 0.016,
+        "edge_finish": "rounded",
+        "cuff_roll": {
+          "height_m": 0.06,
+          "thickness_m": 0.0065,
+          "inner_m": 0.014,
+          "lumps": 0.3
+        },
+        "sole_stitch": {
+          "pitch_m": 0.009,
+          "radius_m": 0.0017,
+          "length": 0.55,
+          "above_m": 0.012
+        }
+      }
+    ]
+  },
+  "hair": {
+    "structures": [
+      {
+        "type": "scalp_cap",
+        "name": "cap",
+        "offset": 0.004,
+        "face_cut": [
+          -0.06,
+          0.9
+        ],
+        "hairline": [
+          [
+            0,
+            0.905
+          ],
+          [
+            40,
+            0.88
+          ],
+          [
+            70,
+            0.8
+          ],
+          [
+            100,
+            0.74
+          ],
+          [
+            140,
+            0.71
+          ],
+          [
+            180,
+            0.7
+          ]
+        ]
+      },
+      {
+        "type": "bun",
+        "name": "buns",
+        "buns": [
+          {
+            "lift": 0.00378,
+            "radius": 0.0695,
+            "height": 0.13224,
+            "tilt": 0.5,
+            "turns": 1.3,
+            "felt_radii": [
+              1.0,
+              1.0,
+              1.0
+            ],
+            "az": 56,
+            "el": 54,
+            "wrap": "ccw"
+          },
+          {
+            "lift": 0.00378,
+            "radius": 0.0695,
+            "height": 0.13224,
+            "tilt": 0.5,
+            "turns": 1.3,
+            "felt_radii": [
+              1.0,
+              1.0,
+              1.0
+            ],
+            "az": -56,
+            "el": 54,
+            "wrap": "cw"
+          }
+        ],
+        "felt": {
+          "grooves": {
+            "count": 11,
+            "depth": 0.34,
+            "sharpness": 0.62,
+            "wander": 0.5,
+            "wavelength": 0.5
+          },
+          "lumps": {
+            "amount": 0.05,
+            "scale": 1.2
+          },
+          "resolution": [
+            72,
+            44
+          ]
+        }
+      },
+      {
+        "type": "felt_volume",
+        "name": "crown",
+        "shape": "gather",
+        "az": [
+          -180,
+          180
+        ],
+        "hairline_el": [
+          [
+            0,
+            30
+          ],
+          [
+            30,
+            28
+          ],
+          [
+            55,
+            14
+          ],
+          [
+            80,
+            0
+          ],
+          [
+            100,
+            -4
+          ],
+          [
+            130,
+            4
+          ],
+          [
+            180,
+            6
+          ]
+        ],
+        "target": {
+          "az": 0,
+          "el": 90
+        },
+        "tuck": 1.0,
+        "height": [
+          0.01322,
+          0.04156,
+          0.04345
+        ],
+        "inset": 0.004,
+        "part": {
+          "az": 0,
+          "width_deg": 3.0,
+          "depth": 0.3,
+          "length": 0.4
+        },
+        "grooves": {
+          "count": 30,
+          "depth": 0.2,
+          "sharpness": 0.6,
+          "wander": 0.45,
+          "wavelength": 0.5
+        },
+        "lumps": {
+          "amount": 0.05,
+          "scale": 1.2
+        },
+        "soft": [
+          0,
+          0,
+          0.3,
+          0.0
+        ],
+        "rim": 0.15,
+        "resolution": [
+          220,
+          48
+        ]
+      },
+      {
+        "seg": 18,
+        "grooves": 2,
+        "groove_depth": 0.14,
+        "irregularity": 0.1,
+        "type": "masses",
+        "name": "fringe",
+        "items": [
+          {
+            "root": [
+              -22.0,
+              64
+            ],
+            "tip": [
+              -46,
+              -4
+            ],
+            "width": 0.05478,
+            "depth": 0.55,
+            "lift": [
+              0.00945,
+              0.03211,
+              0.00756
+            ],
+            "hold": 0.6,
+            "taper_power": 1.8,
+            "layer": 1,
+            "curl_deg": -4
+          },
+          {
+            "root": [
+              -15.0,
+              64
+            ],
+            "tip": [
+              -32,
+              6
+            ],
+            "width": 0.06045,
+            "depth": 0.55,
+            "lift": [
+              0.00945,
+              0.03211,
+              0.00756
+            ],
+            "hold": 0.6,
+            "taper_power": 1.8,
+            "layer": 1,
+            "curl_deg": -4
+          },
+          {
+            "root": [
+              -7.5,
+              64
+            ],
+            "tip": [
+              -17,
+              7.5
+            ],
+            "width": 0.06234,
+            "depth": 0.55,
+            "lift": [
+              0.00945,
+              0.03211,
+              0.00756
+            ],
+            "hold": 0.6,
+            "taper_power": 1.8,
+            "layer": 1,
+            "curl_deg": -4
+          },
+          {
+            "root": [
+              0.0,
+              64
+            ],
+            "tip": [
+              2,
+              6.5
+            ],
+            "width": 0.05856,
+            "depth": 0.55,
+            "lift": [
+              0.00945,
+              0.03211,
+              0.00756
+            ],
+            "hold": 0.6,
+            "taper_power": 1.8,
+            "layer": 1,
+            "curl_deg": -4
+          },
+          {
+            "root": [
+              7.5,
+              64
+            ],
+            "tip": [
+              17,
+              7.5
+            ],
+            "width": 0.06234,
+            "depth": 0.55,
+            "lift": [
+              0.00945,
+              0.03211,
+              0.00756
+            ],
+            "hold": 0.6,
+            "taper_power": 1.8,
+            "layer": 1,
+            "curl_deg": 4
+          },
+          {
+            "root": [
+              15.0,
+              64
+            ],
+            "tip": [
+              32,
+              6
+            ],
+            "width": 0.06045,
+            "depth": 0.55,
+            "lift": [
+              0.00945,
+              0.03211,
+              0.00756
+            ],
+            "hold": 0.6,
+            "taper_power": 1.8,
+            "layer": 1,
+            "curl_deg": 4
+          },
+          {
+            "root": [
+              22.0,
+              64
+            ],
+            "tip": [
+              46,
+              -4
+            ],
+            "width": 0.05478,
+            "depth": 0.55,
+            "lift": [
+              0.00945,
+              0.03211,
+              0.00756
+            ],
+            "hold": 0.6,
+            "taper_power": 1.8,
+            "layer": 1,
+            "curl_deg": 4
+          }
+        ]
+      },
+      {
+        "seg": 18,
+        "grooves": 2,
+        "groove_depth": 0.14,
+        "irregularity": 0.1,
+        "type": "masses",
+        "name": "temples",
+        "items": [
+          {
+            "root": [
+              52,
+              44
+            ],
+            "tip": [
+              62,
+              -20
+            ],
+            "width": 0.05289,
+            "depth": 0.6,
+            "lift": [
+              0.00756,
+              0.02834,
+              0.01322
+            ],
+            "hold": 0.55,
+            "taper_power": 1.5,
+            "layer": 0,
+            "curl_deg": 6
+          },
+          {
+            "root": [
+              -52,
+              44
+            ],
+            "tip": [
+              -62,
+              -20
+            ],
+            "width": 0.05289,
+            "depth": 0.6,
+            "lift": [
+              0.00756,
+              0.02834,
+              0.01322
+            ],
+            "hold": 0.55,
+            "taper_power": 1.5,
+            "layer": 0,
+            "curl_deg": -6
+          }
+        ]
+      },
+      {
+        "type": "curtain",
+        "name": "back_mass",
+        "az": [
+          78,
+          282
+        ],
+        "root_el": [
+          [
+            78,
+            4
+          ],
+          [
+            120,
+            18
+          ],
+          [
+            180,
+            26
+          ]
+        ],
+        "leave_el": -8,
+        "z_end": [
+          [
+            78,
+            0.62361
+          ],
+          [
+            120,
+            0.56693
+          ],
+          [
+            180,
+            0.5386
+          ]
+        ],
+        "rest_radii": [
+          0.18891,
+          0.14924
+        ],
+        "rest_z": 0.58583,
+        "columns": 10,
+        "thick": 0.01511,
+        "column_depth": 0.25,
+        "lobe": {
+          "pitch": 0.12,
+          "depth": 0.0,
+          "twist": 0.2
+        },
+        "scallop": 0.035,
+        "resolution": [
+          180,
+          100
+        ],
+        "inset": 0.004
+      },
+      {
+        "type": "locks",
+        "name": "back_under",
+        "style": "wavy",
+        "finish": "felt",
+        "felt": {
+          "seg": 16,
+          "irregularity": 0.1,
+          "wavelength": 0.16,
+          "flatten": 0.3,
+          "flatten_twist": 0.5
+        },
+        "el_leave": -12,
+        "lift": [
+          0.01889,
+          0.02456
+        ],
+        "tip_frac": 0.45,
+        "end_scale": 0.58,
+        "flare": 0.05,
+        "count": 7,
+        "az": [
+          112,
+          248
+        ],
+        "el_root": [
+          6,
+          16
+        ],
+        "hang_radii": [
+          0.16624,
+          0.14924
+        ],
+        "rest_radii": [
+          0.18513,
+          0.14735
+        ],
+        "rest_z": 0.58583,
+        "z_end": [
+          0.4347,
+          0.46304
+        ],
+        "width": [
+          0.07367,
+          0.08123
+        ],
+        "thick": [
+          0.03967,
+          0.04345
+        ],
+        "wave": {
+          "amplitude": 0.01606,
+          "wavelength": 0.13696,
+          "depth": 0.25,
+          "tip_gain": 1.3,
+          "start_m": -0.07556
+        },
+        "stagger": {
+          "z_end": [
+            0.02834,
+            -0.01889,
+            0.04723,
+            0.0
+          ],
+          "end_scale": [
+            1.0,
+            0.85,
+            1.15
+          ],
+          "phase_deg": [
+            190,
+            160,
+            215,
+            175,
+            200
+          ]
+        }
+      },
+      {
+        "type": "locks",
+        "name": "back_locks",
+        "style": "wavy",
+        "finish": "felt",
+        "felt": {
+          "seg": 16,
+          "irregularity": 0.1,
+          "wavelength": 0.16,
+          "flatten": 0.3,
+          "flatten_twist": 0.5
+        },
+        "el_leave": -12,
+        "lift": [
+          0.03778,
+          0.04345
+        ],
+        "tip_frac": 0.45,
+        "end_scale": 0.58,
+        "flare": 0.05,
+        "count": 8,
+        "az": [
+          104,
+          256
+        ],
+        "el_root": [
+          30,
+          40
+        ],
+        "hang_radii": [
+          0.18891,
+          0.17191
+        ],
+        "rest_radii": [
+          0.20402,
+          0.16624
+        ],
+        "rest_z": 0.58583,
+        "z_end": [
+          0.41581,
+          0.44414
+        ],
+        "width": [
+          0.07556,
+          0.08312
+        ],
+        "thick": [
+          0.04156,
+          0.04723
+        ],
+        "wave": {
+          "amplitude": 0.01795,
+          "wavelength": 0.13224,
+          "depth": 0.3,
+          "tip_gain": 1.35,
+          "start_m": -0.09445
+        },
+        "stagger": {
+          "z_end": [
+            0.0,
+            0.04723,
+            -0.01889,
+            0.06612,
+            0.01889
+          ],
+          "end_scale": [
+            1.0,
+            0.8,
+            1.1
+          ],
+          "phase_deg": [
+            0,
+            25,
+            -15,
+            35,
+            10,
+            -25,
+            20
+          ]
+        }
+      },
+      {
+        "type": "locks",
+        "name": "outer_locks",
+        "style": "wavy",
+        "finish": "felt",
+        "felt": {
+          "seg": 16,
+          "irregularity": 0.1,
+          "wavelength": 0.16,
+          "flatten": 0.3,
+          "flatten_twist": 0.5
+        },
+        "el_leave": -12,
+        "lift": [
+          0.034,
+          0.03778
+        ],
+        "tip_frac": 0.45,
+        "end_scale": 0.43,
+        "flare": 0.05,
+        "count": 2,
+        "mirror": true,
+        "az": [
+          80,
+          104
+        ],
+        "el_root": [
+          22,
+          32
+        ],
+        "hang_radii": [
+          0.21347,
+          0.17568
+        ],
+        "rest_radii": [
+          0.22291,
+          0.17191
+        ],
+        "rest_z": 0.58583,
+        "z_end": [
+          0.45359,
+          0.48193
+        ],
+        "width": [
+          0.06801,
+          0.07556
+        ],
+        "thick": [
+          0.03778,
+          0.04345
+        ],
+        "wave": {
+          "amplitude": 0.01889,
+          "wavelength": 0.12751,
+          "depth": 0.3,
+          "tip_gain": 1.3,
+          "start_m": -0.07556
+        },
+        "stagger": {
+          "z_end": [
+            0.0,
+            0.03778
+          ],
+          "end_scale": [
+            1.0,
+            0.85
+          ],
+          "phase_deg": [
+            30,
+            -10
+          ],
+          "mirror_shift": 1
+        }
+      },
+      {
+        "type": "locks",
+        "name": "side_locks",
+        "style": "wavy",
+        "finish": "felt",
+        "felt": {
+          "seg": 16,
+          "irregularity": 0.1,
+          "wavelength": 0.16,
+          "flatten": 0.3,
+          "flatten_twist": 0.5
+        },
+        "el_leave": -16,
+        "lift": [
+          0.00756,
+          0.02078
+        ],
+        "tip_frac": 0.45,
+        "end_scale": 0.43,
+        "flare": 0.05,
+        "count": 2,
+        "mirror": true,
+        "az": [
+          54,
+          80
+        ],
+        "el_root": [
+          6,
+          16
+        ],
+        "hang_radii": [
+          0.18135,
+          0.15679
+        ],
+        "z_end": [
+          0.49137,
+          0.52915
+        ],
+        "width": [
+          0.05289,
+          0.05856
+        ],
+        "thick": [
+          0.03211,
+          0.03589
+        ],
+        "wave": {
+          "amplitude": 0.01417,
+          "wavelength": 0.11334,
+          "depth": 0.35,
+          "tip_gain": 1.25,
+          "start_m": -0.03778
+        },
+        "stagger": {
+          "z_end": [
+            0.02834,
+            0.0
+          ],
+          "end_scale": [
+            0.9,
+            1.0
+          ],
+          "phase_deg": [
+            60,
+            20
+          ],
+          "mirror_shift": 1
+        }
+      },
+      {
+        "type": "felt_bow",
+        "name": "bow",
+        "az": -37,
+        "el": 33,
+        "out": 0.004,
+        "seat": "hair",
+        "size": 0.11523,
+        "tilt_deg": -14,
+        "knot": 0.15,
+        "material": "hair_bow",
+        "loops": [
+          {
+            "angle_deg": 22,
+            "length": 0.56,
+            "width": 0.38,
+            "thick": 0.24
+          },
+          {
+            "angle_deg": 158,
+            "length": 0.56,
+            "width": 0.38,
+            "thick": 0.24
+          },
+          {
+            "angle_deg": 248,
+            "length": 0.5,
+            "width": 0.2,
+            "thick": 0.16
+          },
+          {
+            "angle_deg": 296,
+            "length": 0.46,
+            "width": 0.2,
+            "thick": 0.16
+          }
+        ],
+        "grooves": {
+          "count": 3,
+          "depth": 0.12,
+          "sharpness": 0.4,
+          "wander": 0.3,
+          "wavelength": 0.6
+        },
+        "turn": {
+          "toward": [
+            -20,
+            20
+          ],
+          "amount": 0.35
+        }
+      }
+    ]
+  }
+}
