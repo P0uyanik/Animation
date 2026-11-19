@@ -1,3 +1,50 @@
+# ▶ T-150 then T-151 — NEW CODEX ASSIGNMENTS (owner order 2026-11-19 ~20:50Z; posted by the original Supervisor for the round-2 Supervisor session_01NPjxeNGwvGuevzV1aTjiEo)
+Owner: Codex has about 40% of its allowance left, so both tasks are analysis only, short and token-efficient. Do T-150
+first. Then do T-151 only if budget remains (post BLOCKED "budget" otherwise). No project code, test, spec or asset
+changes. Existing images and tools only; no new renders unless one tiny check is unavoidable (then say exactly what).
+
+## T-150: eye-shape targets for both girls (feeds T-137 F1a/F1b, running now)
+1. Branch `t-150-codex-eye-targets` from `origin/main` (at 37901c40 or newer) in a new worktree on C: (never write on D:).
+   Write ONLY `docs/evaluation/characters/T-150/**`.
+2. From the references, measure per eye:
+   - opening roundness (height/width);
+   - iris diameter relative to the opening and to the eye spacing;
+   - iris position in the opening;
+   - visible white above, below and beside the iris;
+   - upper-lid arch height;
+   - inner/outer corner angles.
+   References: auburn girl ref_30 + G01/G02 (the eye seen THROUGH the glasses: report it separately where the lens
+   distorts); third girl 01_identity_front, 04, 14 (f14_* crops in views/).
+3. Compare with the CURRENT renders:
+   - girl 0.13.0: docs/evaluation/characters/T-122/ strict sheet and face crops;
+   - third girl: docs/evaluation/characters/T-126/body_face/ (pass 2) and your T-133 evidence.
+4. Output:
+   - `targets.json`: per character, the target value + tolerance for each measure, from the references;
+   - `measures.csv`: reference vs current;
+   - one evidence sheet (JPEG ≤ 2048 px);
+   - README of about 1 page: the largest gaps, in plain words, ranked.
+   These targets must stay valid for future versions.
+5. Post `| T-150 | STARTED |` now; when done push and post
+   `<UTC> | T-150 | READY | t-150-codex-eye-targets@<sha> | input <sha> | <headline>` + ledger.
+
+## T-151: independent dependency map for A1 (legacy engine removal)
+1. Branch `t-151-codex-legacy-deps` from `origin/main`. Write ONLY `docs/audit/legacy_engine_deps/**`.
+   Read-only analysis.
+2. For the A1 removal candidates, list every reference across engine/, apps/, tests/, tools/, pipeline/,
+   .github/workflows, scenes/episodes and docs. Then classify each file or symbol as SAFE TO REMOVE, KEEP (and why)
+   or MIXED (which part).
+   - Candidates: engine/render/ (path tracer, bsdf, image), the PLUSH_BUILD_RENDERER path, the legacy SDF character
+     system (engine/model/character.*, sdf.*, engine/fuzz/), apps/studio, apps/render-cli, apps/export-obj, the
+     "linux renderer" CI job and its image regressions, and scenes/tests that use only these.
+   - Explicitly identify every SDF piece that COLLISION still needs (scene "sdf" collision shapes, collision.cpp and
+     what it pulls in). Those must stay.
+3. Output: `deps.md` (about 1–2 pages) + `deps.csv`. This is a second opinion, to be compared with the A1
+   implementer's own report before anything is deleted.
+4. Post STARTED / READY lines as above (`t-151-codex-legacy-deps`).
+
+Model: as for T-129 (medium, token-efficient).
+
+---
 # ▶ T-133 — NEW CODEX ASSIGNMENT (Supervisor 2026-11-19 19:45Z): third-character fit search, then a short review
 Owner plan (OWNER_DECISIONS 2026-11-19 ~13:10Z / ~15:20Z): Codex does a fit search on the third character's first
 version, then an independent review. Token-efficient; existing tools only.
