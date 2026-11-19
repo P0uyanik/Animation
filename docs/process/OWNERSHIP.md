@@ -16,7 +16,6 @@ means none. Branch is the task's branch; a task branch without a row falls back 
 
 | Task | Lane | Branch | Write-set | Depends on | Versions bumped |
 | --- | --- | --- | --- | --- | --- |
-| T-051 | C | t-051-claude-finger-grasps | `engine/anim/animation.{h,cpp}` (hand pose only), `engine/anim/hand_shape.{h,cpp}`, `engine/CMakeLists.txt`, `content/hand_shapes/**`, `tests/test_hand_shapes.cpp`, `tests/CMakeLists.txt`, `docs/evaluation/animation/T-051/**` | `engine/scene/**` (T-112b) | — |
 | T-109 | D | t-109-claude-face-r4 | `pipeline/charsys/face_generic_v3.py`, `pipeline/charsys/face_v3/**`, `pipeline/charsys/face_library/**` (mouth shapes, additive), `pipeline/charsys/tests/test_face_v4*.py`, `assets/characters/{boy_yellow_hoodie,girl_auburn_bun_glasses}/spec/candidates/T-109/**`, `docs/evaluation/characters/T-109/**` | materials (T-110), groom, garments (read-only) | — |
 | T-107 | E | t-107-codex-bc-review | `docs/audit/round2_bc_review/**` | — | — |
 
