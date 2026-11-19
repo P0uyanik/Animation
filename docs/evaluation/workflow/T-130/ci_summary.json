@@ -1,0 +1,26 @@
+{
+ "before": {
+  "n_runs": 550,
+  "cancelled": 199,
+  "success": 193,
+  "failure": 158,
+  "reruns_attempt_gt1": 3,
+  "median_wall_all_finished": 10.4,
+  "median_wall_success": 1.4,
+  "n_success_timed": 193,
+  "first": "2026-11-18T00:09:35Z",
+  "last": "2026-11-19T15:43:46Z"
+ },
+ "after": {
+  "n_runs": 10,
+  "cancelled": 1,
+  "success": 0,
+  "failure": 2,
+  "reruns_attempt_gt1": 0,
+  "median_wall_all_finished": 15.0,
+  "median_wall_success": null,
+  "n_success_timed": 0,
+  "first": "2026-11-19T15:44:21Z",
+  "last": "2026-11-19T17:35:11Z"
+ }
+}

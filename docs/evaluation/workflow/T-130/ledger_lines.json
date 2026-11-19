@@ -1,0 +1,74 @@
+[
+ {
+  "file": "docs/audit/current_review/REVIEW.md",
+  "ref": "origin/integration/docs-r4",
+  "line": "ledger: build 0 \u00b7 render 0 \u00b7 tests 0 \u00b7 ci 0 \u00b7 wait 0 (min)",
+  "file_last_commit": "2026-11-19T11:01:01+01:00"
+ },
+ {
+  "file": "docs/audit/round2_bc_review/REVIEW.md",
+  "ref": "origin/integration/docs-r4",
+  "line": "ledger: build 0 \u00b7 render 0 \u00b7 tests 0 \u00b7 ci 0 \u00b7 wait 588 (min)",
+  "file_last_commit": "2026-11-19T09:52:26+01:00"
+ },
+ {
+  "file": "docs/evaluation/animation/T-097-girl/README.md",
+  "ref": "origin/integration/docs-r4",
+  "line": "ledger: build 6 \u00b7 render 72 \u00b7 tests 6 \u00b7 ci 0 \u00b7 wait 0 (min) (round 1)",
+  "file_last_commit": "2026-11-19T01:43:51+00:00"
+ },
+ {
+  "file": "docs/evaluation/animation/T-097-girl/README.md",
+  "ref": "origin/integration/docs-r4",
+  "line": "ledger: build 3 \u00b7 render 3 \u00b7 tests 6 \u00b7 ci 0 \u00b7 wait 0 (min) (round 2)",
+  "file_last_commit": "2026-11-19T01:43:51+00:00"
+ },
+ {
+  "file": "docs/evaluation/animation/T-106/README.md",
+  "ref": "origin/integration/docs-r4",
+  "line": "ledger: build 10 \u00b7 render 1 \u00b7 tests 1 \u00b7 ci 0 \u00b7 wait 0 (min)",
+  "file_last_commit": "2026-11-18T23:48:06+00:00"
+ },
+ {
+  "file": "docs/evaluation/characters/T-089b/README.md",
+  "ref": "origin/integration/docs-r4",
+  "line": "`ledger: build 45 \u00b7 render 95 \u00b7 tests 5 \u00b7 ci 0 \u00b7 wait 7 (min)`. Builds and renders partly overlapped (4 cores). The",
+  "file_last_commit": "2026-11-19T01:23:41+00:00"
+ },
+ {
+  "file": "docs/evaluation/characters/T-090b/README.md",
+  "ref": "origin/integration/docs-r4",
+  "line": "ledger: build 16.44 \u00b7 render 28.98 \u00b7 tests 0.14 \u00b7 ci 0 \u00b7 wait 70.53 (min)",
+  "file_last_commit": "2026-11-18T23:48:06+00:00"
+ },
+ {
+  "file": "docs/evaluation/characters/T-093b/README.md",
+  "ref": "origin/integration/docs-r4",
+  "line": "ledger: build 38 \u00b7 render 48 \u00b7 tests 12 \u00b7 ci 0 \u00b7 wait 0 (min)",
+  "file_last_commit": "2026-11-19T00:19:53+00:00"
+ },
+ {
+  "file": "docs/evaluation/characters/T-115/README.md",
+  "ref": "origin/integration/docs-r4",
+  "line": "ledger: build 40.33 \u00b7 render 7.30 \u00b7 tests 2.00 \u00b7 ci 0 \u00b7 wait 0 (min)",
+  "file_last_commit": "2026-11-19T10:49:19+01:00"
+ },
+ {
+  "file": "docs/evaluation/characters/T-119/README.md",
+  "ref": "origin/integration/docs-r4",
+  "line": "ledger: build 58 \u00b7 render 55 \u00b7 tests 27 \u00b7 ci 0 \u00b7 wait 0 (min)",
+  "file_last_commit": "2026-11-19T14:33:48+00:00"
+ },
+ {
+  "file": "docs/evaluation/process/T-129/README.md",
+  "ref": "origin/integration/docs-r4",
+  "line": "ledger: build 0 \u00b7 render 0 \u00b7 tests 0 \u00b7 ci 0 \u00b7 wait 0 (min)",
+  "file_last_commit": "2026-11-19T16:17:54+01:00"
+ },
+ {
+  "file": "docs/evaluation/tools/T-123/README.md",
+  "ref": "origin/integration/docs-r4",
+  "line": "ledger: build 12 \u00b7 render 10 \u00b7 tests 0 \u00b7 ci 0 \u00b7 wait 0 (min)",
+  "file_last_commit": "2026-11-19T15:12:12+01:00"
+ }
+]

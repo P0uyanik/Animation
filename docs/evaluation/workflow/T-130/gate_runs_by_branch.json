@@ -1,0 +1,95 @@
+{
+ "t-126b-claude-hair": {
+  "null": 1,
+  "cancelled": 1,
+  "failure": 1
+ },
+ "t-126a-claude-body-face": {
+  "null": 1,
+  "failure": 1
+ },
+ "t-117-claude-showcase": {
+  "null": 1,
+  "success": 1,
+  "failure": 1,
+  "cancelled": 1
+ },
+ "t-126c-claude-dress": {
+  "null": 1
+ },
+ "t-124-claude-render-opt": {
+  "null": 1,
+  "failure": 1
+ },
+ "t-127-claude-ci-speed": {
+  "failure": 3,
+  "cancelled": 2
+ },
+ "t-126d-claude-materials": {
+  "failure": 1,
+  "cancelled": 3
+ },
+ "t-131-claude-version-switch": {
+  "failure": 2
+ },
+ "t-129-codex-score-calibration": {
+  "failure": 1
+ },
+ "t-125-claude-motion-checks": {
+  "failure": 2
+ },
+ "t-119-claude-garments-r3": {
+  "failure": 3,
+  "cancelled": 1
+ },
+ "t-128-claude-tooling-trial": {
+  "success": 1,
+  "failure": 1
+ },
+ "t-123-codex-readability": {
+  "failure": 1
+ },
+ "t-114-claude-two-char-acting": {
+  "failure": 2
+ },
+ "t-122-claude-versions": {
+  "failure": 3
+ },
+ "t-121-claude-fingers": {
+  "failure": 3
+ },
+ "t-118-claude-hair-r5": {
+  "failure": 1,
+  "cancelled": 1
+ },
+ "t-120-claude-gaze": {
+  "failure": 1
+ },
+ "t-113-claude-expressions": {
+  "cancelled": 1
+ },
+ "t-116-codex-current-review": {
+  "success": 1
+ },
+ "t-115-codex-face-fit": {
+  "success": 1
+ },
+ "t-112c-claude-verb-hands": {
+  "failure": 1
+ },
+ "t-112b-claude-verbs-pass": {
+  "failure": 2,
+  "cancelled": 1
+ },
+ "t-110-claude-felt-surface": {
+  "failure": 3,
+  "cancelled": 1
+ },
+ "t-112a-claude-verbs": {
+  "failure": 2,
+  "cancelled": 1
+ },
+ "t-111-claude-interaction-design": {
+  "failure": 1
+ }
+}
