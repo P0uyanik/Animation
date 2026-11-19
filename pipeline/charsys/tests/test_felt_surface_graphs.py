@@ -2,7 +2,8 @@
 
     blender -b --factory-startup -P pipeline/charsys/tests/test_felt_surface_graphs.py
 
-1. default output unchanged: every presets/1, presets/2 and presets/3 id builds node for node and value for value as
+1. default output unchanged (and 1b: the build's add_missing_halos call adds nothing and changes no datablock in a
+   scene built only from presets/1..3 ids): every presets/1, presets/2 and presets/3 id builds node for node and value for value as
    on the input SHA (fresh material, preset applied over a linked colour graph, generated fibre object) - golden
    digests in pipeline/charsys/materials/felt_frozen_graphs.json, written once from the input SHA's builder with
    --write-golden; a presets/1..3 build creates no halo group, no halo material and no halo property;
@@ -104,6 +105,37 @@ def main():
         check(f"{name}: graph unchanged vs input {golden.get('input_sha')}", golden["ids"].get(name) == digest)
         mats = [m for m in bpy.data.materials if m.get(FH.HALO_MATERIAL_PROP) or m.get("ps_felt_halo_material")]
         check(f"{name}: no halo group, material or property", bpy.data.node_groups.get(HALO_GROUP) is None and not mats)
+
+    # 1b. the build's halo call (build_character.main_generic -> add_missing_halos) is a no-op without presets/4
+    bpy.ops.wm.read_factory_settings(use_empty=True)
+    for name in ids:
+        library = M.library_for(name)
+        ob = sphere("noop_" + name.replace("/", "_").replace(" ", "_"), 0.05)
+        ob.data.materials.append(M.build_material("M_" + name, name, library["presets"][name]["swatch_srgb"],
+                                                  library["reference_size_m"]))
+        M.add_fibres_geometry(ob, name, library["presets"][name]["swatch_srgb"], library["reference_size_m"])
+
+    def snapshot():
+        out = {}
+        for coll in ("objects", "materials", "node_groups", "hair_curves", "meshes", "collections"):
+            out[coll] = sorted(x.name for x in getattr(bpy.data, coll))
+        out["digests"] = {m.name: json.dumps(R2.material_digest(m), sort_keys=True) for m in bpy.data.materials}
+        out["modifiers"] = {o.name: [m.name for m in o.modifiers] for o in bpy.data.objects}
+        out["children"] = {o.name: sorted(c.name for c in o.children) for o in bpy.data.objects}
+        return out
+    before = snapshot()
+    made = FH.add_missing_halos(list(bpy.context.scene.objects))
+    check("build halo call without presets/4: adds nothing", made == [], [o.name for o in made])
+    check("build halo call without presets/4: every datablock, graph and modifier unchanged", snapshot() == before)
+    check("build halo call without presets/4: no halo group created", bpy.data.node_groups.get(HALO_GROUP) is None)
+    src = open(os.path.join(CHARSYS, "build_character.py"), encoding="utf-8").read()
+    check("build_character calls the pass once, after organise and before the master is stamped",
+          src.count("MATERIALS_HALO.add_missing_halos(") == 1 and
+          src.index("subs, unassigned = organise(C, cid, components)") < src.index("MATERIALS_HALO.add_missing_halos(") <
+          src.index('stamp(C, spec, info, "master")', src.index("def main_generic")))
+    gen = open(os.path.join(CHARSYS, "garments", "generator.py"), encoding="utf-8").read()
+    check("garment generator accepts later preset families through is_known_preset",
+          "material_builder.is_known_preset(name)" in gen)
 
     # 2. opt-in through the fibre path
     bpy.ops.wm.read_factory_settings(use_empty=True)
