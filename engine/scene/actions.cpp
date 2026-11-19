@@ -742,7 +742,7 @@ Result<void> SceneEvaluator::compileActionsBody() {
       for (double f = start + 3; f <= std::max(start + 3, end); f += 3) key(*gen, track, f, target(f), Interp::Linear);
       // Gaze weight (T-097D): only generated reaction looks key it ("back" below); a later look restores full weight.
       const std::string wtrack = track + ".weight";
-      constexpr double kGazeTurn = 8;  // frames a generated gaze takes to turn in / out
+      constexpr double kGazeTurn = 12;  // frames a generated gaze takes to turn in / out
       const bool back = a.value("back", false);
       const float w0 = hadGaze ? std::min(1.f, clip.evaluate(wtrack, start, vec3(1)).x) : 0.f;
       if (back || gen->tracks.count(wtrack)) {
