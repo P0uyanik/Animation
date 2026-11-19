@@ -299,18 +299,22 @@ TEST_CASE("reaction: reader errors for bad reaction values") {
 }
 
 TEST_CASE("reaction: shipped profiles plan within their own reaction delay; shared defaults match the references") {
-  // Shipped profiles: only their existing delay_frames is read (no new values were added to character data).
+  // Shipped profiles (T-097-0 Supervisor update, 2026-11-19): per-character tuning (T-097-boy/girl) may add reaction
+  // fields; the invariant kept is that every event kind plans a notice delay no earlier than the profile's own
+  // delay_frames lower bound (what tools/animcheck acting.py checks) and, at full salience with no tempo slow-down,
+  // within its upper bound.
   for (const char* id : {"boy_yellow_hoodie", "girl_auburn_bun_glasses", "girl_white_hair_blue_dress"}) {
     CAPTURE(id);
     auto p = loadPersonality(kRoot / "content/personality" / (std::string(id) + ".json"));
     REQUIRE(p.has_value());
     REQUIRE(p->reaction.delayFrames.has_value());
-    CHECK(p->reaction.events.empty());
-    CHECK_FALSE(p->reaction.tempoScale);
-    CHECK_FALSE(p->reaction.intensityScale);
-    const ReactionPlan r = planReaction(event(K::ObjectAppears), &*p);
-    CHECK(r.noticeDelay * 24 >= p->reaction.delayFrames->lo - 1e-6);
-    CHECK(r.noticeDelay * 24 <= p->reaction.delayFrames->hi + 1e-6);
+    for (K kind : {K::ObjectAppears, K::PartnerActs, K::Success, K::Failure}) {
+      CAPTURE(static_cast<int>(kind));
+      const ReactionPlan r = planReaction(event(kind), &*p);
+      CHECK(r.noticeDelay * 24 >= p->reaction.delayFrames->lo - 1e-6);
+      if (!p->reaction.tempoScale || *p->reaction.tempoScale <= 1.0)
+        CHECK(r.noticeDelay * 24 <= p->reaction.delayFrames->hi + 1e-6);
+    }
   }
   // T-104 reference timing: the shared notice delay lies in the measured reaction_delay range.
   auto ref = parseJsonFile(kRoot / "content/timing/reference_timing.json");

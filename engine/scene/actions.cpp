@@ -45,6 +45,7 @@
 #include <set>
 
 #include "scene/emotion.h"
+#include "scene/reaction.h"
 #include "scene/scene.h"
 
 namespace plush {
@@ -247,6 +248,91 @@ Result<void> SceneEvaluator::compileActions() {
   return r;
 }
 
+// Reaction events (T-097D, docs/PRODUCTION_PIPELINE.md "Scene events"): every event of the scene's opt-in "events"
+// list is planned per reacting character (scene/reaction.h, the character's personality profile or the shared
+// defaults) and becomes, at event time + notice delay, a look at the source (gaze habit: held for gazeShift of the
+// reaction, then back), a blended emotion (T-097A, held for the plan's duration, the personality's intensity scale and
+// gaze shift as its modulation) and the chosen gesture clip. Generated in event order, then scene character order.
+Result<Json> SceneEvaluator::planReactionActions() {
+  Json out = Json::array();
+  auto evs = reactionEventsFromJson(scene_.events);
+  if (!evs) return std::unexpected(evs.error());
+  if (evs->empty()) return out;
+  const double fps = scene_.rate.fps();
+  auto library = [&](const char* kind) -> std::filesystem::path {
+    for (auto d = std::filesystem::absolute(scene_.path).parent_path();; d = d.parent_path()) {
+      if (std::filesystem::is_directory(d / "content" / kind)) return d / "content" / kind;
+      if (d == d.parent_path()) return {};
+    }
+  };
+  ReactionContext ctx;
+  std::optional<TimingProfile> timing;
+  if (scene_.timing.is_string()) {  // T-104: the scene's timing profile gives the shared notice delay
+    const auto file = findTimingProfileFile(scene_.path, scene_.timing.get<std::string>());
+    if (auto t = file.empty() ? Result<TimingProfile>(fail("not found")) : loadTimingProfile(file)) timing = std::move(*t);
+  }
+  if (timing) ctx.timing = &*timing;
+  if (const auto dir = library("clips"); !dir.empty()) {  // gestures the scene can play (sorted: deterministic)
+    for (const auto& f : std::filesystem::directory_iterator(dir)) {
+      const std::string n = f.path().filename().string(), ext = ".clip.json";
+      if (n.size() > ext.size() && n.ends_with(ext)) ctx.availableGestures.push_back(n.substr(0, n.size() - ext.size()));
+    }
+    std::sort(ctx.availableGestures.begin(), ctx.availableGestures.end());
+  }
+  const auto emotions = library("emotions");
+  std::vector<SceneEvent> order = *evs;
+  std::stable_sort(order.begin(), order.end(), [](const SceneEvent& a, const SceneEvent& b) { return a.event.time < b.event.time; });
+  for (const SceneEvent& se : order) {
+    const ReactionEvent& ev = se.event;
+    std::vector<std::pair<std::string, const PersonalityProfile*>> cast;
+    for (size_t c = 0; c < scene_.characters.size(); ++c) {
+      const std::string& n = scene_.characters[c].name;
+      if (se.characters.empty() || std::find(se.characters.begin(), se.characters.end(), n) != se.characters.end())
+        cast.push_back({n, personality(c)});
+    }
+    const std::string label = ev.name.empty() ? reactionEventKey(ev.kind) : ev.name;
+    for (const CharacterReaction& r : planReactions(ev, cast, ctx)) {
+      const ReactionPlan& p = r.plan;
+      if (p.target.weights.empty()) continue;  // not noticed, or no emotion for this event
+      // Never before the profile's shortest notice delay (reaction.delay_frames[0], what animcheck's acting rule
+      // requires): the planner's mid delay x tempo_scale < 1 could otherwise undercut it.
+      double delay = p.noticeDelay;
+      for (size_t c = 0; c < scene_.characters.size(); ++c)
+        if (const PersonalityProfile* P = personality(c); P && scene_.characters[c].name == r.character && P->reaction.delayFrames)
+          delay = std::max(delay, double(P->reaction.delayFrames->lo) / 24.0);
+      const double start = scene_.frameStart + (ev.time + delay) * fps, length = p.duration * fps;
+      // Gaze: at the source's face (a character) or the object; a source of the character itself or "" = no look.
+      if (!ev.source.empty() && ev.source != r.character) {
+        Json look = {{"type", "look"}, {"character", r.character}, {"start", start},
+                     {"end", start + std::max(3.0, double(p.modulation.gazeShift) * length)}, {"back", true}};
+        const bool isChar = std::any_of(scene_.characters.begin(), scene_.characters.end(),
+                                        [&](const CharacterDesc& d) { return d.name == ev.source; });
+        const bool isObj = std::any_of(scene_.objects.begin(), scene_.objects.end(), [&](const ObjectDesc& o) { return o.name == ev.source; });
+        if (isChar) look["atCharacter"] = ev.source;
+        else if (isObj) look["object"] = ev.source;
+        else warnings_.push_back(std::format("event '{}': source '{}' is no character or object (no look)", label, ev.source));
+        if (isChar || isObj) out.push_back(std::move(look));
+      }
+      // Emotion: blended, released after the plan's duration (end = start + duration + the emotion's decay).
+      const std::string emo = p.target.weights.front().first;
+      const auto file = emotions.empty() ? std::filesystem::path() : emotions / (emo + ".emotion.json");
+      auto j = file.empty() || !std::filesystem::exists(file) ? Result<Json>(fail("not found")) : parseJsonFile(file);
+      auto e = j ? emotionFromJson(*j) : Result<EmotionDef>(std::unexpected(j.error()));
+      if (!e) {
+        warnings_.push_back(std::format("event '{}': character '{}': emotion '{}': {} (no emotion played)", label, r.character, emo,
+                                        e.error().message));
+      } else {
+        const double decay = e->decay >= 0 ? e->decay : e->release;
+        out.push_back({{"type", "emotion"}, {"character", r.character}, {"name", emo}, {"start", start},
+                       {"end", start + length + decay * fps}, {"intensity", p.target.weights.front().second}, {"blend", true},
+                       {"modulation", {{"intensityScale", p.modulation.intensityScale}, {"gazeShift", p.modulation.gazeShift}}}});
+      }
+      if (!p.gesture.empty()) out.push_back({{"type", "clip"}, {"character", r.character}, {"clip", p.gesture}, {"start", start}});
+    }
+  }
+  return out;
+}
+
 void SceneEvaluator::buildFaceLayers() {
   faces_.assign(characters_.size(), FaceLayer{});
   if (faceTimelines_.size() != characters_.size()) faceTimelines_.assign(characters_.size(), {});
@@ -315,11 +401,19 @@ Result<void> SceneEvaluator::compileActionsBody() {
     auto pr = animPrinciplesFromJson(scene_.animPrinciples);
     principles_ = pr ? *pr : AnimPrinciples{};
   }
-  if (!scene_.actions.is_array() || scene_.actions.empty()) return {};
+  reactionActions_ = Json::array();
+  if (!scene_.events.is_null()) {  // T-097D: opt-in reaction events, played as generated actions
+    auto ra = planReactionActions();
+    if (!ra) return std::unexpected(ra.error());
+    reactionActions_ = std::move(*ra);
+  }
+  if ((!scene_.actions.is_array() || scene_.actions.empty()) && reactionActions_.empty()) return {};
   InteractionContext interactions;
 
   std::vector<const Json*> actions;
-  for (const Json& a : scene_.actions) actions.push_back(&a);
+  if (scene_.actions.is_array())
+    for (const Json& a : scene_.actions) actions.push_back(&a);
+  for (const Json& a : reactionActions_) actions.push_back(&a);  // after the authored ones: ties keep authored first
   auto startOf = [](const Json* a) { return num(*a, "start", num(*a, "frame", 0)); };
   std::stable_sort(actions.begin(), actions.end(), [&](const Json* a, const Json* b) { return startOf(a) < startOf(b); });
 
@@ -626,17 +720,46 @@ Result<void> SceneEvaluator::compileActionsBody() {
       const std::string track = prefix + "lookAt";
       const int o = has(a, "object") ? objIndex(str(a, "object")) : -1;
       if (has(a, "object") && o < 0) return fail(std::format("look: unknown object '{}'", str(a, "object")));
+      // "atCharacter" (T-097D): another character's face (its head bone, as the director frames it).
+      const int oc = has(a, "atCharacter") ? charIndex(str(a, "atCharacter")) : -1;
+      if (has(a, "atCharacter") && oc < 0) return fail(std::format("look: unknown character '{}'", str(a, "atCharacter")));
+      const int ocHead = oc >= 0 ? characters_[size_t(oc)].asset.skeleton.find("head") : -1;
       auto target = [&](double f) {
         if (o >= 0) return objPos(o, f);
+        if (oc >= 0) {
+          if (ocHead < 0) return scene_.characters[size_t(oc)].position + vec3(0, 0.6f, 0);
+          return vec3(characterGlobals(size_t(oc), f)[size_t(ocHead)] * vec4(0, 0.11f, 0.09f, 1));
+        }
         if (num(a, "camera", 0) != 0 || (a.contains("camera") && a["camera"].is_boolean() && a["camera"].get<bool>()))
           return clip.evaluate("camera.position", f, scene_.camera.position);
         return vec(a, "target", vec3(0, 0.6f, 3));
       };
+      const bool hadGaze = clip.find(track) != nullptr;
       vec3 prev = clip.evaluate(track, start, target(start));
       dropKeysAfter(*gen, track, start);
       key(*gen, track, start, prev, Interp::Linear);
       const double end = num(a, "end", start + 3);
       for (double f = start + 3; f <= std::max(start + 3, end); f += 3) key(*gen, track, f, target(f), Interp::Linear);
+      // Gaze weight (T-097D): only generated reaction looks key it ("back" below); a later look restores full weight.
+      const std::string wtrack = track + ".weight";
+      constexpr double kGazeTurn = 8;  // frames a generated gaze takes to turn in / out
+      const bool back = a.value("back", false);
+      const float w0 = hadGaze ? std::min(1.f, clip.evaluate(wtrack, start, vec3(1)).x) : 0.f;
+      if (back || gen->tracks.count(wtrack)) {
+        if (w0 < 1.f || back) {
+          dropKeysAfter(*gen, wtrack, start);
+          key(*gen, wtrack, start, vec3(w0));  // smooth: the head turns in as an authored look's lagged gaze does
+          key(*gen, wtrack, start + kGazeTurn, vec3(1));
+        }
+      }
+      // "back" (T-097D): over kGazeTurn frames after the look's end the gaze returns to where it was before (without an
+      // earlier gaze, or one already released: the gaze is released again, its weight back to what it was).
+      if (back) {
+        const double last = start + 3 + 3 * std::floor((std::max(start + 3, end) - (start + 3)) / 3);
+        key(*gen, wtrack, std::max(last, start + kGazeTurn), vec3(1));
+        key(*gen, wtrack, std::max(last, start + kGazeTurn) + kGazeTurn, vec3(w0));
+        if (w0 > 0.f) key(*gen, track, last + kGazeTurn, prev, Interp::Linear);
+      }
       continue;
     }
 
