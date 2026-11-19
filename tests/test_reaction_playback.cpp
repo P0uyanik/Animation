@@ -149,8 +149,18 @@ TEST_CASE("reaction playback is deterministic: same actions for the same events 
   CHECK(a->reactionActions() == b->reactionActions());
   CHECK(a->reactionActions() == c->reactionActions());
   // Event order, then scene character order; per reaction: look, emotion, gesture.
-  std::vector<std::string> order;
-  for (const Json& x : a->reactionActions()) order.push_back(x.value("character", "") + ":" + x.value("type", ""));
+  // Gestures depend on the shipped profiles (tuned per character, T-097-boy/girl): checked by position, not pinned.
+  std::vector<std::string> order, all;
+  for (const Json& x : a->reactionActions()) {
+    const std::string tag = x.value("character", "") + ":" + x.value("type", "");
+    if (x.value("type", "") == "clip") {
+      REQUIRE(!all.empty());
+      CHECK(all.back() == x.value("character", "") + ":emotion");  // a gesture directly follows its own emotion
+    } else {
+      order.push_back(tag);
+    }
+    all.push_back(tag);
+  }
   CHECK(order == std::vector<std::string>{"girl:look", "girl:emotion", "boy:look", "boy:emotion", "girl:look", "girl:emotion"});
   for (double f : {20.0, 37.5, 60.0}) CHECK(bodyDiff(*a, *c, 0, f) == 0.0);
   // "characters" restricts who reacts.
