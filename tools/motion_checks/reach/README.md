@@ -10,7 +10,7 @@ python3 tools/motion_checks/reach/tests/test_reach.py
 
 Writes `reach.json` (`plush.reach_measures/1`) and `reach.md`. With `--baseline`, each move is matched to the
 baseline move of the same character and side with the nearest start (within `--match` frames, default 12) and the
-deltas are added.
+deltas are added. `--window boy.R:57-76` (repeatable) measures given spans instead of the segmented moves.
 
 **Moves.** Each wrist (`hand.L/R` pivot, world space, mm) is cut into moves: frames with speed > 1.5 mm/f, gaps
 ≤ 3 frames merged, start / end where the speed falls below 10 % of the move's peak, chord ≥ 60 mm. `kind` is
@@ -24,6 +24,7 @@ not an authored action: a slow drift merged with a reach, or a reach during a wa
 | velocity | `frames`, `peak_m_s`, `peak_at` | duration, peak speed, peak time as a share of the move |
 | | `ease_in`, `ease_out` | share of the move before the speed first reaches / after it last leaves half the peak |
 | | `peak_acc`, `peak_dec` | largest frame-to-frame rise / fall of speed (mm/f²), from and to rest at the edges |
+| | `stall`, `stall_at`, `dec2` | deepest dip between two speed humps as a share of the peak (0 = one hump) and where; largest speed fall over 2 frames after the peak (mm/f) |
 | | `onset_step`, `stop_step` | first / last frame's speed as a share of the peak (1 = starts or stops in one frame) |
 | anticipation | `onset_lead`, `peak_lead` | frames by which a joint starts / peaks before the wrist (+ = joint first), searched from 24 f before the start to the end; `busy` = already moving when that window opens (onset not measured) |
 | overlap | `peak_offset`, `settle` | joint peak after the wrist peak (frames), and frames after the wrist stops until the joint stays below 10 % of its peak (cap 36, `settle_capped`); `after_ratio` = peak after the stop / peak during |
