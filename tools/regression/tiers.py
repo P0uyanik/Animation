@@ -140,11 +140,14 @@ def changed_characters(paths, ids: list[str] | None = None) -> list[str]:
     changed = []
     for cid in ids:
         prefix = f"assets/characters/{cid}/spec/"
+        # A version switch moves the approved pointer (versions/index.json) without touching spec/: the character now
+        # builds from another spec, so it is changed too (owner review of the switch; T-094, 2026-11-19).
+        index = f"assets/characters/{cid}/versions/index.json"
         try:
             inputs = set(character_config(cid)["inputs"])
         except (ValueError, OSError, json.JSONDecodeError):
             inputs = set()
-        if any(p.startswith(prefix) or p in inputs for p in paths):
+        if any(p.startswith(prefix) or p == index or p in inputs for p in paths):
             changed.append(cid)
     return changed
 
