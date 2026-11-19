@@ -65,12 +65,13 @@ Result<ReachMechanics> reachMechanicsFromJson(const Json& j) {
     out = v;
     return {};
   };
-  for (auto r : {flag("enabled", m.enabled), flag("ease", m.ease), flag("anticipation", m.anticipation),
+  for (auto r : {flag("enabled", m.enabled), flag("ease", m.ease), flag("anticipation", m.anticipation), flag("arcs", m.arcs),
                  number("easePeak", m.easePeak, 0.3, 0.7), number("anticipationSec", m.anticipationSec, 0, 2),
                  number("counter", m.counter, 0, 1), number("leanDeg", m.leanDeg, 0, 20), number("twistDeg", m.twistDeg, 0, 20),
                  number("shoulderM", m.shoulderM, 0, 0.05), number("hipShare", m.hipShare, 0, 0.5),
                  number("successionSec", m.successionSec, 0, 0.5), number("leadPeak", m.leadPeak, 0.2, 1),
-                 number("recoverSec", m.recoverSec, 0.1, 5), number("headStabilize", m.headStabilize, 0, 1)})
+                 number("recoverSec", m.recoverSec, 0.1, 5), number("headStabilize", m.headStabilize, 0, 1), number("arc", m.arc, 0, 0.4),
+                 number("arcMinChordM", m.arcMinChordM, 0, 1)})
     if (!r) return std::unexpected(r.error());
   return m;
 }

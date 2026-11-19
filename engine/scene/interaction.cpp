@@ -672,6 +672,36 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
   // Moves the wrist key at frame f until `error()` (target - measured) is below 0.3 mm (the arm solve, life layer
   // and clip layers make the first estimate a little off).
   auto correct = [&](const Hand& h, double f, auto error) { return correctKey(gen.tracks[h.ik], f, error); };
+  // T-134 E1b arcs (opt-in "reachMechanics"): a wrist move keyed as a straight line from the key at f0 to the key at
+  // f1 (a carry, the giver's way to the hand-over point) travels a shallow arc instead, with the same timing: the
+  // mid point is moved by arc x chord across the chord, away from the shoulder (the hand swings round its arm's
+  // joints), or by less when the arm could not reach that far. Keys between f0 and f1 are replaced, the end keys
+  // stay, so doing it again for the same move (hand-over trials) gives the same keys.
+  const ReachMechanics reachMech = reachMechanicsFromJson(scene_.reachMechanics).value_or(ReachMechanics{});
+  auto arcMove = [&](const Hand& h, double f0, double f1) {
+    if (!reachMech.enabled || !reachMech.arcs || f1 < f0 + 3) return;
+    Track& T = gen.tracks[h.ik];
+    std::erase_if(T.keys, [&](const Key& k) { return k.frame > f0 + 1e-6 && k.frame < f1 - 1e-6; });
+    const vec3 p0 = T.evaluate(f0), p2 = T.evaluate(f1);
+    const float L = glm::distance(p0, p2);
+    if (L < float(reachMech.arcMinChordM)) return;
+    const vec3 c = (p2 - p0) / L, mid = 0.5f * (p0 + p2), shoulder = boneAt(h, h.root, 0.5 * (f0 + f1));
+    vec3 n = (mid - shoulder) - c * glm::dot(mid - shoulder, c);
+    if (glm::length(n) < 1e-4f) n = kUp - c * c.y;
+    if (glm::length(n) < 1e-4f) return;
+    n = glm::normalize(n);
+    float dev = 0;
+    for (float k : {1.0f, 0.5f, 0.25f})
+      if (dev == 0 && glm::distance(shoulder, mid + n * (float(reachMech.arc) * L * k)) <= 0.95f * h.armLength) dev = float(reachMech.arc) * L * k;
+    if (dev == 0) return;
+    const vec3 p1 = mid + n * (2 * dev);  // a quadratic Bezier is half its control point's offset away from the chord
+    const int steps = int(std::ceil(f1 - f0 - 1e-6));
+    for (int j = 0; j < steps; ++j) {
+      const double f = f0 + j;
+      const float x = float((f - f0) / (f1 - f0)), u = x * x * (3 - 2 * x);  // the timing of the two smooth keys
+      T.setKey({f, (1 - u) * (1 - u) * p0 + 2 * u * (1 - u) * p1 + u * u * p2, Interp::Linear});
+    }
+  };
   auto warnReach = [&](const Hand& h, vec3 wrist, double f, const std::string& what) {
     const float d = glm::distance(boneAt(h, h.root, f), wrist) - 0.98f * h.armLength;
     if (d > 0.005f)
@@ -867,7 +897,21 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
       const vec3 p0 = T.evaluate(start), p2 = pl.wrist;
       const float d1 = glm::distance(p0, approach), d2 = glm::distance(approach, p2);
       const float tA = std::clamp(d1 / std::max(d1 + d2, 1e-6f), 0.15f, 0.85f);
-      const vec3 p1 = (approach - (1 - tA) * (1 - tA) * p0 - tA * tA * p2) / (2 * tA * (1 - tA));
+      vec3 p1 = (approach - (1 - tA) * (1 - tA) * p0 - tA * tA * p2) / (2 * tA * (1 - tA));
+      // T-134 E1b: the approach point gives the direction the hand arrives from, not a point to pass: the control
+      // point lies on the line contact -> approach, twice as far out, so the bend is spread over the whole reach
+      // instead of sitting just before the contact.
+      if (rm.arcs) p1 = p2 + 2.0f * (approach - p2);
+      if (rm.arcs && glm::distance(p0, p2) >= float(rm.arcMinChordM)) {  // T-134 E1b: never (nearly) a straight chord
+        const float L = glm::distance(p0, p2);
+        const vec3 c = (p2 - p0) / L, mid = 0.5f * (p0 + p2);
+        vec3 off = (p1 - mid) - c * glm::dot(p1 - mid, c);  // the curve is half of this away from the chord
+        if (0.5f * glm::length(off) < float(rm.arc) * L) {
+          vec3 n = glm::length(off) > 1e-4f ? off : kUp - c * c.y;
+          if (glm::length(n) > 1e-4f) p1 += glm::normalize(n) * (2 * float(rm.arc) * L - glm::length(off));
+        }
+      }
+      std::erase_if(T.keys, [&](const Key& k) { return k.frame > start + 1e-6 && k.frame < contact - 1e-6; });
       constexpr int kSamples = 96;
       std::vector<vec3> P(kSamples + 1);
       std::vector<double> len(kSamples + 1, 0.0);
@@ -1201,6 +1245,7 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
     key(gen, h.orient + ".weight", end, vec3(1));
     warnReach(h, wrist + (target - origin), end, "hold");
     correct(h, end, [&] { return target - vec3(propWorld(size_t(*p), end)[3]); });
+    arcMove(h, start, end);  // T-134 E1b
     if (look) gazeOn(h, *p, start, end);
     return true;
   }
@@ -1322,6 +1367,7 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
     key(gen, h.ik, start, wrist);
     key(gen, h.ik, still, wristM);
     key(gen, h.ik, contact, wristM);
+    arcMove(h, start, still);  // T-134 E1b
     key(gen, h.ik + ".weight", contact, vec3(1));
     key(gen, h.orient, contact, rotationVector(gOrient), Interp::Linear);
     key(gen, h.orient + ".weight", contact, vec3(1));

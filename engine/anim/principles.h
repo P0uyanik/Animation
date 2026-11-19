@@ -78,9 +78,17 @@ struct ReachMechanics {
   double leadPeak = 0.6;
   double recoverSec = 0.6;
   double headStabilize = 0.7;  // share of the torso lead the neck takes back (the eyes keep their aim)
+  // E1b arcs: no wrist move is a straight chord. A carry (hold) and the giver's way to a hand-over point travel a
+  // shallow arc with their own timing: the mid point is `arc` x chord away from the chord, on the side away from the
+  // shoulder (less when the arm could not reach that far). A reach's eased curve (needs "ease") takes the approach
+  // point as the direction the hand arrives from instead of a point to pass, so its bend is spread over the whole
+  // reach, and is bent to at least `arc`. Moves shorter than arcMinChordM stay as they are.
+  bool arcs = true;
+  double arc = 0.12;
+  double arcMinChordM = 0.03;
 };
 // null | true | false | {"enabled", "ease", "easePeak", "anticipation", "anticipationSec", "counter", "leanDeg",
-// "twistDeg", "shoulderM", "hipShare", "successionSec", "leadPeak", "recoverSec", "headStabilize"}.
+// "twistDeg", "shoulderM", "hipShare", "successionSec", "leadPeak", "recoverSec", "headStabilize", "arcs", "arc", "arcMinChordM"}.
 Result<ReachMechanics> reachMechanicsFromJson(const Json& j);
 // Slow-in / slow-out travel fraction at x in [0, 1] with the peak speed at `peak` (0.5 = easeInOut).
 double reachEase(double x, double peak);

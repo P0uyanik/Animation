@@ -572,6 +572,7 @@
  },
  "reachMechanics": {
   "ease": true,
-  "anticipation": true
+  "anticipation": true,
+  "arcs": true
  }
 }

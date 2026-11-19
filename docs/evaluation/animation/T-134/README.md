@@ -92,3 +92,63 @@ Feet: largest offset against `before` 0.63 mm (both characters). `run_shot --sta
 and on the boy, girl and engine skeletons: no `reach.*` track without the key, contact within 5 mm, one speed hump
 with a slow first and last frame, the shoulder moving away and then ahead of the wrist, the lead given back, feet
 within 4 mm. Full `plush_tests`: 220 cases pass.
+
+## E1b: curved wrist arcs
+
+`"reachMechanics": {"ease": true, "anticipation": true, "arcs": true}` (E1a + arcs) · path plot:
+[e1b_wrist_paths.jpg](e1b_wrist_paths.jpg) (one dot per frame, seen so the bend shows; grey `before`, red E1a, blue
+E1b) · strip: [e1b_preview_strip.jpg](e1b_preview_strip.jpg) · numbers: [e1b_arcs.json](e1b_arcs.json),
+[e1b_measures.json](e1b_measures.json) · script: [measure_arcs.py](measure_arcs.py).
+
+What was straight: the reaches already bend (they pass an approach point), but **every carry and the giver's way to
+the hand-over point were exact straight lines** (arc 0.000). What E1b does (`arcMove` and `reachTo` in
+`engine/scene/interaction.cpp`):
+- **Carry (`hold`) and the giver's bring in a hand-over** travel a shallow arc: the mid point is 12 % of the chord
+  away from the chord, on the side away from the shoulder (the hand swings round its arm's joints), less if the arm
+  could not reach that far. Start, end and timing are unchanged, so the prop arrives where and when it did.
+- **Reach**: the approach point is the direction the hand arrives from, no longer a point the curve must pass. The
+  bend is spread over the whole reach instead of sitting just before the contact, and it is at least 12 %.
+- `place` is unchanged: it already lowers the prop from 3 cm above the target.
+
+arc = largest deviation of the wrist path from its chord / chord length.
+
+| Move | chord | before | E1a | E1b |
+|---|---|---|---|---|
+| boy carry f81-97 | 130 mm | 0.000 | 0.000 | **0.120** (15.6 mm) |
+| boy brings the cup to the hand-over f100-110 | 73 mm | 0.000 | 0.000 | **0.120** (8.8 mm) |
+| girl carry f136-156 | 47 mm | 0.000 | 0.001 | **0.120** (5.6 mm) |
+| boy reach f57-76 | 136 mm | 0.313 | 0.394 | 0.344 |
+| girl reach f104-114 | 147 mm | 0.351 | 0.391 | 0.264 |
+
+The reach curve also takes back most of E1a's limit 1 (wrist pivot, mm/frame):
+
+| | boy before | boy E1a | boy E1b | girl before | girl E1a | girl E1b |
+|---|---|---|---|---|---|---|
+| Speed humps | 2 | 1 | 1 | 2 | 1 | 1 |
+| Peak speed | 30.1 | 35.3 | 29.6 | 52.4 | 60.0 | 52.6 |
+| Largest speed change, mm/f² | 12.4 | 19.9 | 13.1 | 32.3 | 37.5 | 28.2 |
+| Last 4 frames | 12.6 12.2 9.2 3.7 | 4.5 2.7 3.0 2.6 | 3.2 1.8 1.3 0.2 | 12.2 18.0 16.0 6.9 | 26.3 16.4 7.1 3.7 | 23.0 14.3 6.3 3.6 |
+
+Boy E1b, f57-76: 7.7 7.4 6.8 6.1 6.6 11.2 17.3 23.2 27.8 29.6 26.7 18.5 9.2 8.5 5.7 3.2 1.8 1.3 0.2.
+Girl E1b, f104-114: 4.2 4.2 14.6 36.6 52.6 33.6 23.0 14.3 6.3 3.6.
+
+Carry timing: the speed per frame differs from `before` by at most 1 mm/f (the arc is a little longer than the
+chord). The cup: largest speed 12.2 mm/f before and after, largest acceleration 3.5 → 3.8 mm/f², upright throughout.
+Bake: 0 warnings. `tools/motion_checks`: popping 64 issues (before 63, E1a 66), interpenetration 4.
+
+### Honest limits of E1b
+1. **The reaches still have a bend near each end** (path plot, first and fourth panel). At the start it is the hand
+   leaving the planner's arm-lift drift; at the end the hand comes down onto the grip from the approach side. The
+   girl's 10 f reach changes direction sharply at f109-110, as it does in
+   `before`; that is where her largest speed change is.
+2. **The arcs are small in the picture**: 16 mm, 9 mm and 6 mm on carries of 130, 73 and 47 mm. They show in the
+   path plot; in the strip they are hard to see. `arc` is a scene override (0 to 0.4).
+3. The arc side is geometric (away from the shoulder), not chosen for the camera. In e910 the boy's carry bends
+   sideways, away from his body (14 mm at f89), and slightly up (2 mm).
+4. The boy's deceleration after his peak is still quick (26.7 → 18.5 → 9.2 mm/f), for the reason given under E1a.
+5. Hand-over giver's return and `place`'s return after the release are not arced (the IK weight fades there).
+
+### Tests
+Three more cases in `tests/test_reach_mechanics.cpp` (boy, girl, engine skeleton): a carry is straight without the
+key (< 0.03) and an arc with it (0.12), with the same ends and the same speed per frame; the reach's arc is above
+0.1 and its contact stays within 5 mm.

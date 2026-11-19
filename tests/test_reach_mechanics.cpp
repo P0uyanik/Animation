@@ -126,6 +126,44 @@ void easeAndAnticipation(const char* asset) {
     for (double f = kStart - 8; f <= 60; f += 2) CHECK(glm::distance(bonePos(*on, "foot.R", f), bonePos(*off, "foot.R", f)) < 0.004f);
 }
 
+// Largest deviation of the wrist path over [a, b] from its chord / chord length.
+float wristArc(const SceneEvaluator& ev, double a, double b) {
+  std::vector<vec3> path;
+  for (double f = a; f <= b; f += 1) path.push_back(bonePos(ev, "hand.R", f));
+  return arcDeviation(path);
+}
+
+// E1b: a carry (hold) after the grasp travels an arc with the timing it had, and still arrives.
+void carryArc(const char* asset) {
+  auto scene = [&](const Json& rm) {
+    Scene s = reachScene(asset, rm);
+    s.actions.push_back({{"type", "hold"}, {"character", "actor"}, {"hand", "R"}, {"start", 42}, {"end", 58}, {"by", {0.03, 0.05, -0.02}}});
+    return s;
+  };
+  auto off = load(scene(nullptr));
+  auto on = load(scene(Json{{"ease", false}, {"anticipation", false}}));
+  for (const auto& w : on->warnings()) MESSAGE(w);
+  CHECK(on->warnings().size() <= off->warnings().size());
+  const float a0 = wristArc(*off, 42, 58), a1 = wristArc(*on, 42, 58);
+  MESSAGE(std::string(asset) << ": carry arc (deviation / chord) off " << a0 << ", on " << a1);
+  CHECK(a0 < 0.03f);
+  CHECK(a1 > 0.06f);
+  CHECK(a1 < 0.2f);
+  // Same ends and the same timing: only the path between them changes.
+  CHECK(glm::distance(vec3(on->propWorld(0, 58)[3]), vec3(off->propWorld(0, 58)[3])) < 0.001f);
+  CHECK(glm::distance(bonePos(*on, "hand.R", 42), bonePos(*off, "hand.R", 42)) < 0.001f);
+  const auto v1 = wristSpeed(*on, 42, 58), v0 = wristSpeed(*off, 42, 58);
+  for (size_t i = 0; i < v1.size(); ++i) CHECK(std::abs(v1[i] - v0[i]) < 0.003f);
+  // The eased reach itself is not a straight chord either.
+  auto full = load(scene(true));
+  const float r = wristArc(*full, kStart, kContact);
+  MESSAGE(std::string(asset) << ": reach arc " << r << ", carry arc with everything on " << wristArc(*full, 42, 58));
+  CHECK(r > 0.1f);
+  const PropAsset pa = loadAsset(kRoot / "content/assets/felt_cup.asset.json").value();
+  const vec3 grip((full->propWorld(0, kContact) * assetTransformMatrix(pa.sockets.at("grip")))[3]);
+  CHECK(glm::distance(full->handGripPoint(0, 'R', kContact), grip) < 0.005f);
+}
+
 }  // namespace
 
 TEST_CASE("reach mechanics: settings parse, off by default") {
@@ -170,3 +208,6 @@ TEST_CASE("reach mechanics: ease and lead profiles") {
 TEST_CASE("reach mechanics: eased wrist and body lead (boy skeleton)") { easeAndAnticipation(kBoy); }
 TEST_CASE("reach mechanics: eased wrist and body lead (girl skeleton)") { easeAndAnticipation(kGirl); }
 TEST_CASE("reach mechanics: eased wrist and body lead (engine skeleton)") { easeAndAnticipation(kSdf); }
+TEST_CASE("reach mechanics: a carry travels an arc (boy skeleton)") { carryArc(kBoy); }
+TEST_CASE("reach mechanics: a carry travels an arc (girl skeleton)") { carryArc(kGirl); }
+TEST_CASE("reach mechanics: a carry travels an arc (engine skeleton)") { carryArc(kSdf); }
