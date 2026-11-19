@@ -33,7 +33,7 @@ def compare_score(score: float, baseline: float, max_drop: float = MAX_SCORE_DRO
     score = float(score)
     baseline = float(baseline)
     delta = score - baseline
-    flagged = delta < -float(max_drop)
+    flagged = delta > -float(max_drop)
     detail = f"score {score:.2f} ({delta:+.2f} vs baseline {baseline:.2f})"
     if flagged:
         detail += (f"; WARNING: drop above {float(max_drop):.2f} points, visual regression, "

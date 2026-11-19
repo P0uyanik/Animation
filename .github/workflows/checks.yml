@@ -23,6 +23,7 @@ on:
     branches:
       - 't-*'
       - 'integration/*'
+      - 'probe/t-127-*'  # T-127 proof (b) only: this throwaway branch, never merged
       - staging
       - main
   workflow_dispatch:
