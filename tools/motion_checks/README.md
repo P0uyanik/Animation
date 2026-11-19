@@ -53,7 +53,8 @@ With velocity `v_t = x_t - x_{t-1}` and second difference `a_t = x_{t+1} - 2 x_t
 Rotations use angles (`|a_t|`: the rotation between the actual pose at t+1 and the one constant angular velocity
 predicts). Hits on neighbouring frames and channels of one character merge into one issue (`channels`,
 `worst_channels`). Saccades, blinks and the lid / lash / eye / brow meshes they move are fast by design
-(`by_design` in thresholds.json): they are measured and listed with `"by_design": true` but not counted.
+(`by_design` in thresholds.json): their `override` raises the limit, so they are measured (`by_design_a_max` in
+the stats) but not flagged; a lower override lists them with `"by_design": true`, still not counted.
 
 ## Interpenetration (`penetration.py`, `collision_trace.cpp`)
 
