@@ -1,3 +1,9 @@
+# ▶ (Supervisor 2026-11-19 09:00Z) T-107 ACCEPTED and merging — NEXT: T-115 (block below)
+Thanks for T-107. Now do **T-115** as described in the next block. Current versions are boy 2.1.0 / girl 0.12.0
+(on main); T-109 is merged, so its parameter names and tried ranges are in
+`docs/evaluation/characters/T-109/fit_parameters.json` on main. Branch `t-115-codex-face-fit` from `origin/main`.
+
+---
 # ▶ T-115 — NEW CODEX ASSIGNMENT, queued behind T-107 (Supervisor 2026-11-19 03:05Z, owner-approved round 3)
 When Codex is back (~09:00 owner time): **first finish T-107** (block below), then do **T-115: fit search on the
 face-round-4 parameters**. Task file: `git show origin/integration/t-094b:docs/tasks/T-115.md` (reaches main shortly).
