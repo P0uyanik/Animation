@@ -54,7 +54,9 @@ TEST_CASE("emotion library: every file parses, names its clips, and its variants
     if (e->hasGesture) CHECK(std::filesystem::exists(dir.parent_path() / "clips" / (e->gesture.clip + ".clip.json")));
     const Json variants = j->value("variants", Json::object());
     for (auto& [name, patch] : variants.items()) CHECK(emotionFromJson(*j, name));
-    ++n;
+    // Character-specific emotions (content/emotions/<char>_*.emotion.json, T-097-boy/girl) are validated above
+    // but do not count toward the shared library, which stays exactly 8.
+    if (file.rfind("boy_", 0) != 0 && file.rfind("girl_", 0) != 0) ++n;
   }
   CHECK(n == 8);
 }
