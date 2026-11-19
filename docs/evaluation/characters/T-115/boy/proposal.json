@@ -1,0 +1,23 @@
+{
+  "face": {
+    "eyes": {
+      "lids": {
+        "lower_curve": 0.05,
+        "lower_edge_deg": -34,
+        "lower_roll_deg": 14,
+        "upper_curve": -0.05,
+        "upper_edge_deg": 4,
+        "upper_roll_deg": 7
+      }
+    },
+    "shape": {
+      "cheek_fullness_m": 0.006,
+      "lower_face": {
+        "cheek_pad_m": 0.016,
+        "cheek_pad_radius_m": 0.07,
+        "jaw_round_m": 0.006,
+        "jaw_x": 0.7
+      }
+    }
+  }
+}
