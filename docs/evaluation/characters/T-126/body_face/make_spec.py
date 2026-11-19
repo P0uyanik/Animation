@@ -18,7 +18,11 @@ CID = "girl_white_hair_blue_dress"
 GIRL = "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.13.0.spec.json"
 HAIR = "docs/evaluation/characters/T-070/candidates/third.hair_v3.json"
 DRESS = "docs/evaluation/characters/T-068/candidates/girl.gathered_dress.override.json"
-OUT = f"assets/characters/{CID}/spec/{CID}.0.1.0.spec.json"
+# spec/candidates/: a *.json directly in spec/ makes the character "buildable" for the regression gate, which then
+# needs a current version (tools/regression/tiers.py); she has none, and nothing becomes current in T-126.
+OUT = f"assets/characters/{CID}/spec/candidates/T-126a/{CID}.0.1.0.spec.json"
+# hands_r2 is opt-in through an override outside assets/ (pipeline/charsys/tests/test_hands_r2.py)
+HANDS_OUT = "docs/evaluation/characters/T-126/body_face/hands_r2.override.json"
 
 # --- her measurements (references/measurements.json, landmarks.json; w01 front, ear_width = 315 px) -------------
 SCALE = 0.972                      # 03 lineup: her height / girl height (sole to bun top), 1.069 / 1.10 m
@@ -78,8 +82,8 @@ def compose():
     # --- body: the girl's body_generic/2 body scaled to her height, then her own differences ----------------------
     body = spec["body"]
     p = scale_m(body["params"], SCALE)
-    p["head"]["half_width"] = round(p["head"]["half_width"] * 0.96, 5)       # face_width/ear_width 0.857 x 0.296 m
-    p["head"]["lower_half_height"] = round(p["head"]["lower_half_height"] + 0.006, 5)  # chin 0.101 m below the eyes
+    # head width kept (preview: 4 % narrower read too narrow against 01's wide cheeks); chin 3 mm lower (w01 0.101 m)
+    p["head"]["lower_half_height"] = round(p["head"]["lower_half_height"] + 0.003, 5)
     p["eyes"]["x"] = round(EYE_X, 5)
     p["arm"]["upper_len"] = round(p["arm"]["upper_len"] * 1.08, 5)            # fingertips at 0.683 H (girl ~0.66)
     p["arm"]["fore_len"] = round(p["arm"]["fore_len"] * 1.08, 5)
@@ -88,11 +92,10 @@ def compose():
     body["params"] = p
     body["height_m"] = round(body["height_m"] * SCALE, 5)
     body["height_note"] = "sole to top of skull; the buns and hair volume add the rest of the 1.069 m"
-    body["hands"] = "hands_r2/1"   # T-121 separated fingers (12 hand anatomy, 13 hands open/fist/pointing)
     body["provenance"] = ("T-126a: the auburn girl's 0.13.0 body_generic/2 body scaled by 0.972 (03 lineup), then: "
-                          "head 4 % narrower and lower face 6 mm longer (w01 face ratios), eyes wider set "
+                          "lower face 3 mm longer (w01 face ratios), eyes wider set "
                           f"(x {EYE_X:.4f} m), arms 8 % longer (fingertips 0.683 H), slimmer legs (tights, w01/03), "
-                          "hands_r2/1. measured_m is the girl's and is not hers.")
+                          "hands_r2/1 through hands_r2.override.json. measured_m is the girl's and is not hers.")
 
     # --- face: face_generic/3 round 4 + T-113 (from 0.13.0), her layout, eyes and colours -------------------------
     f = spec["face"]
@@ -103,19 +106,26 @@ def compose():
                        "carried from the auburn girl's 0.13.0.")
     f["layout"] = {"mouth_below_eye_m": round(MOUTH_BELOW, 4), "nose_below_eye_m": round(NOSE_BELOW, 4),
                    "chin_below_eye_m": round(CHIN_BELOW, 4), "note": "w01 landmarks (T-126a)"}
+    lf = f["shape"]["lower_face"]   # smooth round cheeks (01): the 0.13.0 pads made a crease across her face
+    lf.update({"cheek_pad_m": 0.011, "jaw_round_m": 0.008})
     e = f["eyes"]
     e["iris"].update({"srgb": [58, 104, 158], "inner_srgb": [104, 152, 198], "dark_srgb": [24, 42, 74],
                       "limbal_srgb": [12, 20, 38], "glow_srgb": [128, 176, 218], "shade_srgb": [28, 48, 84],
                       "pupil_srgb": [8, 10, 14], "radius": 0.52})
     e["sclera_srgb"] = [244, 241, 236]
+    # wide-set eyes on the round head: the skin covered their inner-upper part (a stern wedge, no lash line). Eyes 3 mm
+    # forward and turned 6 deg outwards so the inner corners clear the skin (probe T-126a, 01 front)
+    e["yaw_deg"] = -6.0
     e["note"] = ("T-126a: large round blue eyes (w01 iris (63,95,124) in shade, lighter at the bottom; w10 M_Eye_Glass), "
                  "iris 52 % of the eye radius (iris fills ~3/4 of the visible eye width in w01); lids from 0.13.0")
+    lids = e["lids"]   # 01/14: round, fully open eyes (the girl's T-115 flat upper lid read as a frown here)
+    lids.update({"upper_edge_deg": 58.0, "upper_curve": 0.2, "lower_edge_deg": -58.0, "lower_curve": 0.08})
     lash = e["lash"]
-    lash.update({"srgb": [46, 30, 26], "span_deg": 70})
+    lash.update({"srgb": [46, 30, 26], "span_deg": 70, "thick_m": 0.0034, "depth_m": 0.0016})
     lash["strands"].update({"count": 5, "to_deg": 66, "outward": 0.45})
     lash["strands"]["note"] = "T-126a: no glasses, so the strands reach the outer corner (01/14 outer lash flick)"
     lash["outer"].update({"count": 3})
-    f["brows"].update({"srgb": [196, 170, 146], "thick_m": 0.0019, "inner": 0.6, "outer": 0.92,
+    f["brows"].update({"srgb": [206, 180, 156], "thick_m": 0.0013, "outer_drop_m": 0.003, "inner": 0.6, "outer": 0.92,
                        "note": "T-126a: thin, pale cream-beige brows mostly under the fringe (01, 14)"})
     f["ears"].update({"below_eye_m": round(EAR_BELOW * 0.85, 4)})
     f["nose"].update({"size_m": 0.012, "height_m": 0.005,
@@ -140,6 +150,8 @@ def compose():
     cl["description"] = ["powder-blue knit dress, Peter Pan collar, rib cuffs, flared skirt with rib hem",
                          "cream knit tights (not built yet)", "tan fleece boots with a fold-over cuff"]
     cl["garments"][0]["material"]["base_color_srgb"] = [154, 175, 186]
+    cl["garments"][0]["length"] = 0.3        # hem at 0.736 H (w01): the legs show between hem and boots
+    cl["garments"][1]["height"] = 0.3        # boot top at 0.859 H
     boots = cl["garments"][1]
     boots["material"]["base_color_srgb"] = [176, 132, 92]
     boots["materials"]["band"]["base_color_srgb"] = [184, 140, 100]
@@ -186,3 +198,8 @@ if __name__ == "__main__":
         json.dump(spec, fh, indent=1)
         fh.write("\n")
     print(out)
+    hands = {"override": {"body": {"hands": "hands_r2/1"}},
+             "note": "T-126a: T-121 separated fingers (12 hand anatomy, 13 hands open/fist/pointing); opt-in"}
+    with open(os.path.join(ROOT, HANDS_OUT), "w") as fh:
+        json.dump(hands, fh, indent=1)
+        fh.write("\n")

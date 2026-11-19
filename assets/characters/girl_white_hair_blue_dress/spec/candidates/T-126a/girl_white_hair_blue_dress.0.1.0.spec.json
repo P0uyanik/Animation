@@ -43,12 +43,12 @@
   "params": {
    "head": {
     "centre_z": 0.82671,
-    "half_width": 0.1366,
+    "half_width": 0.14229,
     "half_depth": 0.13528,
     "half_height": 0.14529,
     "chin_taper": 0.12,
     "forward": -0.004,
-    "lower_half_height": 0.16035,
+    "lower_half_height": 0.15735,
     "lower_roundness": 3.8,
     "lower_depth_roundness": 2.3,
     "shape_note": "T-031b: big round plush face (#30): superellipse lower outline (full cheeks carried down to a wide jaw and a broad, short chin at the chin landmark), lighter jaw taper; face width at the mouth line ~250 mm (reference ~265 mm incl. the cheek bulge); was a tapered ellipsoid (~170 mm at the mouth)",
@@ -331,8 +331,7 @@
     "y": -0.105
    }
   },
-  "provenance": "T-126a: the auburn girl's 0.13.0 body_generic/2 body scaled by 0.972 (03 lineup), then: head 4 % narrower and lower face 6 mm longer (w01 face ratios), eyes wider set (x 0.0623 m), arms 8 % longer (fingertips 0.683 H), slimmer legs (tights, w01/03), hands_r2/1. measured_m is the girl's and is not hers.",
-  "hands": "hands_r2/1"
+  "provenance": "T-126a: the auburn girl's 0.13.0 body_generic/2 body scaled by 0.972 (03 lineup), then: lower face 3 mm longer (w01 face ratios), eyes wider set (x 0.0623 m), arms 8 % longer (fingertips 0.683 H), slimmer legs (tights, w01/03), hands_r2/1 through hands_r2.override.json. measured_m is the girl's and is not hers."
  },
  "face": {
   "generator": "face_generic/3",
@@ -351,7 +350,7 @@
     0.8,
     1.0
    ],
-   "yaw_deg": 0.0,
+   "yaw_deg": -6.0,
    "pitch_deg": 0.0,
    "iris": {
     "srgb": [
@@ -415,16 +414,16 @@
     ]
    ],
    "lids": {
-    "upper_edge_deg": 45.47680230708755,
+    "upper_edge_deg": 58.0,
     "upper_back_tilt": 1.0,
     "upper_gap": 0.03,
     "upper_thickness_m": 0.0016,
-    "lower_edge_deg": -51.488782377057,
+    "lower_edge_deg": -58.0,
     "lower_tilt": 0.3,
     "lower_gap": 0.025,
     "lower_thickness_m": 0.001,
-    "upper_curve": 0.024216047511534264,
-    "lower_curve": 0.06489066775664179,
+    "upper_curve": 0.2,
+    "lower_curve": 0.08,
     "trim": {
      "up_outer_deg": 72,
      "lo_outer_deg": 62,
@@ -453,8 +452,8 @@
      26
     ],
     "span_deg": 70,
-    "thick_m": 0.0036,
-    "depth_m": 0.0018,
+    "thick_m": 0.0034,
+    "depth_m": 0.0016,
     "flare": 0.6,
     "forward_m": 0.0004,
     "outer": {
@@ -552,15 +551,15 @@
    "height": 1.57,
    "arch_m": 0.003,
    "inner_drop_m": 0.001,
-   "outer_drop_m": 0.006,
-   "thick_m": 0.0019,
+   "outer_drop_m": 0.003,
+   "thick_m": 0.0013,
    "depth_m": 0.0009,
    "taper": 0.35,
    "offset_m": 0.0009,
    "srgb": [
-    196,
-    170,
-    146
+    206,
+    180,
+    156
    ],
    "note": "T-126a: thin, pale cream-beige brows mostly under the fringe (01, 14)",
    "shape": "soft_arch"
@@ -808,14 +807,14 @@
    "face_width_band_m": 0.04,
    "jaw_depth_roundness": 0.6,
    "lower_face": {
-    "cheek_pad_m": 0.019262720780454712,
+    "cheek_pad_m": 0.011,
     "cheek_pad_radius_m": 0.0791995704010697,
     "cheek_pad_height": 0.9,
     "cheek_pad_x": 1.3,
     "cheek_pad_below_eye_m": 0.05,
     "cheek_pad_forward": 0.0,
     "cheek_pad_top_below_eye_m": 0.03,
-    "jaw_round_m": 0.01227054793403904,
+    "jaw_round_m": 0.008,
     "jaw_x": 0.528468310871156,
     "jaw_down": 0.5,
     "jaw_band_m": 0.025
@@ -1609,7 +1608,7 @@
     "sleeve_length": 0.95,
     "sleeve_puff_m": 0.016,
     "sleeve_puff_peak": 0.6,
-    "length": 0.42,
+    "length": 0.3,
     "flare": 0.1,
     "shoulder_width": 1.0,
     "armhole": "closed",
@@ -1652,7 +1651,7 @@
    {
     "type": "boots",
     "name": "boots",
-    "height": 0.45,
+    "height": 0.3,
     "ease_m": 0.022,
     "cuff": true,
     "bands": {

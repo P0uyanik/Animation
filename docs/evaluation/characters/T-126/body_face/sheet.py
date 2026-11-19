@@ -22,7 +22,7 @@ import strict_sheet  # noqa: E402
 REF = "assets/characters/girl_white_hair_blue_dress/references"
 UP = REF + "/uploads"
 BODY = {"target": [0.0, 0.0, 0.54], "frame_height_m": 1.22, "aspect": 1.6}
-FACE = {"target": [0.0, 0.0, 0.765], "frame_height_m": 0.32, "aspect": 1.0}
+FACE = {"target": [0.0, 0.0, 0.745], "frame_height_m": 0.32, "aspect": 1.0}
 # (row, label, framing, yaw, reference view, Higgsfield / AI target)
 ROWS = [
     ("front", "front", BODY, 0.0, "s02_front", {"file": UP + "/16_higgsfield_W05_dress_tights_boots_2026-11-18.webp", "label": "W05 dress, tights, boots"}),
