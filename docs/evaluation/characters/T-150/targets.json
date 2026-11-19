@@ -1,0 +1,241 @@
+{
+  "scope": "Neutral open eyes, matched view and gaze. Ratios are projected image measurements. See README for trace protocol.",
+  "characters": {
+    "auburn": {
+      "front": {
+        "opening_h_w": {
+          "value": 0.948,
+          "tolerance": 0.073
+        },
+        "iris_d_w": {
+          "value": 0.742,
+          "tolerance": 0.045
+        },
+        "iris_d_spacing": {
+          "value": 0.369,
+          "tolerance": 0.018
+        },
+        "iris_x_from_outer_w": {
+          "value": 0.623,
+          "tolerance": 0.038
+        },
+        "iris_y_from_top_h": {
+          "value": 0.5,
+          "tolerance": 0.049
+        },
+        "white_above_w": {
+          "value": 0.056,
+          "tolerance": 0.041
+        },
+        "white_below_w": {
+          "value": 0.028,
+          "tolerance": 0.044
+        },
+        "white_inner_w": {
+          "value": 0.0,
+          "tolerance": 0.042
+        },
+        "white_outer_w": {
+          "value": 0.248,
+          "tolerance": 0.044
+        },
+        "arch_w": {
+          "value": 0.504,
+          "tolerance": 0.05
+        },
+        "inner_angle_deg": {
+          "value": 142.504,
+          "tolerance": 9.485
+        },
+        "outer_angle_deg": {
+          "value": 142.178,
+          "tolerance": 9.962
+        },
+        "inner_drop_w": {
+          "value": 0.006,
+          "tolerance": 0.087
+        },
+        "apex_from_outer_w": {
+          "value": 0.516,
+          "tolerance": 0.07
+        }
+      },
+      "oblique_near": {
+        "opening_h_w": {
+          "value": 0.987,
+          "tolerance": 0.035
+        },
+        "iris_d_w": {
+          "value": 0.68,
+          "tolerance": 0.035
+        },
+        "iris_d_spacing": {
+          "value": 0.416,
+          "tolerance": 0.015
+        },
+        "iris_x_from_outer_w": {
+          "value": 0.653,
+          "tolerance": 0.035
+        },
+        "iris_y_from_top_h": {
+          "value": 0.5,
+          "tolerance": 0.035
+        },
+        "white_above_w": {
+          "value": 0.04,
+          "tolerance": 0.035
+        },
+        "white_below_w": {
+          "value": 0.033,
+          "tolerance": 0.035
+        },
+        "white_inner_w": {
+          "value": 0.007,
+          "tolerance": 0.035
+        },
+        "white_outer_w": {
+          "value": 0.313,
+          "tolerance": 0.035
+        },
+        "arch_w": {
+          "value": 0.516,
+          "tolerance": 0.035
+        },
+        "inner_angle_deg": {
+          "value": 143.475,
+          "tolerance": 8.0
+        },
+        "outer_angle_deg": {
+          "value": 142.646,
+          "tolerance": 8.0
+        },
+        "inner_drop_w": {
+          "value": -0.007,
+          "tolerance": 0.035
+        },
+        "apex_from_outer_w": {
+          "value": 0.547,
+          "tolerance": 0.035
+        }
+      },
+      "oblique_far": {
+        "opening_h_w": {
+          "value": 1.775,
+          "tolerance": 0.035
+        },
+        "iris_d_w": {
+          "value": 0.95,
+          "tolerance": 0.035
+        },
+        "iris_d_spacing": {
+          "value": 0.31,
+          "tolerance": 0.015
+        },
+        "iris_x_from_outer_w": {
+          "value": 0.537,
+          "tolerance": 0.035
+        },
+        "iris_y_from_top_h": {
+          "value": 0.507,
+          "tolerance": 0.035
+        },
+        "white_above_w": {
+          "value": 0.1,
+          "tolerance": 0.035
+        },
+        "white_below_w": {
+          "value": 0.05,
+          "tolerance": 0.035
+        },
+        "white_inner_w": {
+          "value": 0.0,
+          "tolerance": 0.035
+        },
+        "white_outer_w": {
+          "value": 0.062,
+          "tolerance": 0.035
+        },
+        "arch_w": {
+          "value": 0.961,
+          "tolerance": 0.035
+        },
+        "inner_angle_deg": {
+          "value": 158.878,
+          "tolerance": 8.0
+        },
+        "outer_angle_deg": {
+          "value": 160.233,
+          "tolerance": 8.0
+        },
+        "inner_drop_w": {
+          "value": -0.05,
+          "tolerance": 0.035
+        },
+        "apex_from_outer_w": {
+          "value": 0.525,
+          "tolerance": 0.035
+        }
+      }
+    },
+    "white_haired": {
+      "front": {
+        "opening_h_w": {
+          "value": 0.952,
+          "tolerance": 0.075
+        },
+        "iris_d_w": {
+          "value": 0.751,
+          "tolerance": 0.049
+        },
+        "iris_d_spacing": {
+          "value": 0.356,
+          "tolerance": 0.022
+        },
+        "iris_x_from_outer_w": {
+          "value": 0.619,
+          "tolerance": 0.048
+        },
+        "iris_y_from_top_h": {
+          "value": 0.498,
+          "tolerance": 0.047
+        },
+        "white_above_w": {
+          "value": 0.038,
+          "tolerance": 0.048
+        },
+        "white_below_w": {
+          "value": 0.022,
+          "tolerance": 0.048
+        },
+        "white_inner_w": {
+          "value": 0.009,
+          "tolerance": 0.044
+        },
+        "white_outer_w": {
+          "value": 0.237,
+          "tolerance": 0.061
+        },
+        "arch_w": {
+          "value": 0.509,
+          "tolerance": 0.059
+        },
+        "inner_angle_deg": {
+          "value": 142.863,
+          "tolerance": 10.364
+        },
+        "outer_angle_deg": {
+          "value": 140.768,
+          "tolerance": 11.999
+        },
+        "inner_drop_w": {
+          "value": -0.02,
+          "tolerance": 0.055
+        },
+        "apex_from_outer_w": {
+          "value": 0.528,
+          "tolerance": 0.077
+        }
+      }
+    }
+  }
+}
