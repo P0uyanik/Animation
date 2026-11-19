@@ -1,0 +1,93 @@
+{
+ "format": "plush.animcheck_personality",
+ "version": 1,
+ "scene": "e908_boy_acting s010: T-097-boy solo acting - bored watch, late interest, reluctant shrug, hold",
+ "fps": 24.0,
+ "characters": [
+  {
+   "character": "boy",
+   "personality": "boy_yellow_hoodie",
+   "profile": "content/personality/boy_yellow_hoodie.json",
+   "profile_version": "1.0.0",
+   "limits": {
+    "blink_interval_frames": [
+     20,
+     96
+    ],
+    "blink_duration_frames": [
+     4,
+     6
+    ],
+    "reach_frames": [
+     10,
+     16
+    ],
+    "hold_frames": [
+     24,
+     72
+    ],
+    "action_speed": [
+     0.8,
+     1.0
+    ],
+    "idle_motion_max_H_per_frame": 0.004,
+    "face_offset_max": 0.3,
+    "head_pitch_deg": [
+     5,
+     20
+    ]
+   },
+   "head_width_m": 0.3401,
+   "blinks": {
+    "morph": "Blink",
+    "count": 6,
+    "frames": [
+     43,
+     52,
+     65,
+     85,
+     111,
+     138
+    ],
+    "durations": [
+     4.0,
+     6.0,
+     4.0,
+     4.0,
+     5.0,
+     4.0
+    ],
+    "double_blinks": [
+     52,
+     65
+    ],
+    "intervals": [
+     42.0,
+     26.0,
+     27.0
+    ],
+    "mean_interval": 31.67
+   },
+   "gestures": [
+    {
+     "label": "boy clip boy_reluctant_shrug @50.99992",
+     "reach_frames": 9.0,
+     "chord_mm": 4.5,
+     "checked": false,
+     "peak_H_per_frame": 0.0053,
+     "hold_frames": 10.0,
+     "kind": "clip"
+    }
+   ],
+   "idle": {
+    "frames": 37,
+    "median_head_H_per_frame": 0.00109,
+    "p95_head_H_per_frame": 0.00308,
+    "head_amplitude_H": 0.01198,
+    "profile_idle_motion_amplitude_H": 0.003
+   },
+   "failures": []
+  }
+ ],
+ "failures": []
+}

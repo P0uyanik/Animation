@@ -1,0 +1,326 @@
+{
+ "format": "plush.scene",
+ "version": 1,
+ "name": "e908_boy_acting s010: T-097-boy solo acting - bored watch, late interest, reluctant shrug, hold",
+ "frameRate": [
+  24,
+  1
+ ],
+ "frameStart": 1,
+ "frameEnd": 173,
+ "render": {
+  "width": 640,
+  "height": 360,
+  "spp": 32,
+  "maxDepth": 8,
+  "exposureEV": 0.3,
+  "denoise": true,
+  "denoiseBlend": 0.85,
+  "clamp": 12
+ },
+ "camera": {
+  "position": [
+   -0.42,
+   0.86,
+   1.75
+  ],
+  "target": [
+   0.0,
+   0.7,
+   0.12
+  ],
+  "focalMm": 40.0,
+  "fStop": 0,
+  "focusDistance": -1
+ },
+ "materials": [
+  {
+   "name": "floor_mat",
+   "type": "standard",
+   "baseColor": [
+    0.46,
+    0.44,
+    0.42
+   ],
+   "roughness": 0.85,
+   "specular": 0.3
+  },
+  {
+   "name": "wall_mat",
+   "type": "standard",
+   "baseColor": [
+    0.62,
+    0.6,
+    0.55
+   ],
+   "roughness": 0.9,
+   "specular": 0.3
+  },
+  {
+   "name": "table_mat",
+   "type": "standard",
+   "baseColor": [
+    0.42,
+    0.3,
+    0.2
+   ],
+   "roughness": 0.7,
+   "specular": 0.3
+  }
+ ],
+ "lights": [
+  {
+   "type": "rect",
+   "corner": [
+    -2.0,
+    1.0,
+    2.0
+   ],
+   "edgeU": [
+    1.2,
+    0,
+    0.6
+   ],
+   "edgeV": [
+    0,
+    1.4,
+    0
+   ],
+   "color": [
+    1.0,
+    0.95,
+    0.88
+   ],
+   "intensity": 3.0
+  },
+  {
+   "type": "sun",
+   "direction": [
+    0.3,
+    -0.6,
+    -0.7
+   ],
+   "angleDeg": 4,
+   "color": [
+    1.0,
+    0.92,
+    0.82
+   ],
+   "intensity": 1.4
+  },
+  {
+   "type": "sky",
+   "color": [
+    0.6,
+    0.62,
+    0.66
+   ],
+   "intensity": 0.4
+  }
+ ],
+ "objects": [
+  {
+   "name": "floor",
+   "kind": "box",
+   "min": [
+    -4,
+    -0.05,
+    -3
+   ],
+   "max": [
+    4,
+    0,
+    4
+   ],
+   "material": "floor_mat"
+  },
+  {
+   "name": "wall",
+   "kind": "box",
+   "min": [
+    -4,
+    0,
+    -1.4
+   ],
+   "max": [
+    4,
+    3,
+    -1.3
+   ],
+   "material": "wall_mat"
+  },
+  {
+   "name": "table_top",
+   "kind": "box",
+   "min": [
+    -0.12,
+    0.4395,
+    0.2
+   ],
+   "max": [
+    0.16,
+    0.4695,
+    0.44
+   ],
+   "material": "table_mat"
+  },
+  {
+   "name": "table_leg",
+   "kind": "box",
+   "min": [
+    0.0,
+    0.0,
+    0.3
+   ],
+   "max": [
+    0.04,
+    0.4395,
+    0.34
+   ],
+   "material": "table_mat"
+  }
+ ],
+ "props": [
+  {
+   "name": "cup",
+   "id": "prop.felt_cup",
+   "transform": {
+    "translation": [
+     0.05,
+     0.4695,
+     0.32
+    ],
+    "rotationDeg": [
+     0,
+     -30.0,
+     0
+    ],
+    "scale": [
+     1,
+     1,
+     1
+    ]
+   }
+  }
+ ],
+ "characters": [
+  {
+   "name": "boy",
+   "asset": "(set by run_shot)",
+   "position": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "yawDeg": -12.0,
+   "personality": "boy_yellow_hoodie",
+   "life": {
+    "headFollow": 0.3,
+    "gaze": {
+     "assistYawDeg": 15.0,
+     "assistBodyYawDeg": 0.0
+    }
+   }
+  }
+ ],
+ "events": [
+  {
+   "time": 1.20833,
+   "kind": "partner_acts",
+   "name": "partner points (off screen)",
+   "source": ""
+  }
+ ],
+ "actions": [
+  {
+   "type": "clip",
+   "character": "boy",
+   "clip": "idle_relaxed",
+   "base": true
+  },
+  {
+   "type": "look",
+   "character": "boy",
+   "start": 1,
+   "end": 50,
+   "target": [
+    0.05,
+    0.5195,
+    0.32
+   ]
+  },
+  {
+   "type": "expression",
+   "character": "boy",
+   "name": "blink",
+   "start": 51,
+   "end": 56,
+   "weight": 1.0,
+   "ramp": 2
+  },
+  {
+   "type": "look",
+   "character": "boy",
+   "start": 51,
+   "end": 62,
+   "target": [
+    -0.22,
+    0.5856,
+    0.366
+   ]
+  },
+  {
+   "type": "look",
+   "character": "boy",
+   "start": 63,
+   "end": 173,
+   "target": [
+    0.05,
+    0.5195,
+    0.32
+   ]
+  }
+ ],
+ "production": {
+  "cast": {
+   "boy": {
+    "character_id": "boy_yellow_hoodie",
+    "version": "current"
+   }
+  },
+  "profile": "pipeline/charsys/rig_profiles/humanoid_rigify.json",
+  "render": {
+   "resolution": [
+    640,
+    360
+   ],
+   "samples": 16,
+   "light_scale": 1.0
+  }
+ },
+ "x_t097boy_staging": {
+  "beats": {
+   "event": 30,
+   "notice": 51,
+   "delay_frames": 21,
+   "blink": [
+    51,
+    56
+   ],
+   "glance": [
+    51,
+    62
+   ],
+   "rise_end": 72,
+   "gesture": 82,
+   "gesture_end": 133,
+   "end_hold": [
+    139,
+    173
+   ],
+   "end": 173
+  },
+  "reference": "docs/evaluation/animation/T-106/performance.csv (watertable, boy rows)",
+  "reaction": "generated from events (T-097D) with profile reaction.events.partner_acts; blink and glance authored"
+ }
+}

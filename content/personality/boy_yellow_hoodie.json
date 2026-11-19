@@ -2,7 +2,7 @@
   "format": "plush.personality",
   "version": 0,
   "profile_version": "1.0.0",
-  "status": "candidate 1.0.0 (T-053, 2026-11-18): promoted from the T-053a/T-057 draft, read by the engine (anim/personality.h); path B, awaiting the owner's approval of the profile clips",
+  "status": "candidate 1.0.0 (T-053, 2026-11-18): promoted from the T-053a/T-057 draft, read by the engine (anim/personality.h); path B, awaiting the owner's approval of the profile clips; T-097-boy (2026-11-19): reaction tuning (intensity, gaze, gesture threshold, events) toward T-106, awaiting owner review",
   "character": "boy_yellow_hoodie",
   "owner_brief": "impatient, easily bored",
   "guide": "docs/characters/boy_yellow_hoodie/REFERENCE_BEHAVIOUR.md",
@@ -53,7 +53,7 @@
       ],
       "unit": "frames@24",
       "kind": "measured",
-      "source": "heavy-lid stare unchanged through PB S1 (32 f) and S3 (39 f); WT f000-f120"
+      "source": "heavy-lid stare unchanged through PB S1 (32 f) and S3 (39 f); WT f000-f120; T-106 holds 1.33 s PB [0, 32), 1.38 s WT [27, 60), 1.42 s WT [87, 121) (< 1 px net motion)"
     },
     "beat_scale": {
       "value": 1.2,
@@ -148,7 +148,7 @@
       "value": 0,
       "unit": "per_min",
       "kind": "measured",
-      "source": "never looks at another character in WT or PB"
+      "source": "never looks at another character in WT or PB; T-106 WT: eye line stays on the table while the girl points"
     },
     "glance_hold_frames": {
       "value": [
@@ -227,7 +227,7 @@
       "value": 0.9,
       "unit": "0-1",
       "kind": "measured",
-      "source": "gaze on the object in every analysed frame"
+      "source": "gaze on the object in every analysed frame; T-106 WT gaze rows hold the same rightward eye line [0, 60) and [81, 121)"
     },
     "eyes_lead_head_frames": {
       "value": [
@@ -254,7 +254,7 @@
       },
       "unit": "frames@24",
       "kind": "measured",
-      "source": "WT: starts ~f020, f060, f081 (gaps 40, 21 f); PB S1+S3: none in 71 f sampled every 3 f -> long gaps also occur"
+      "source": "WT: starts ~f020, f060, f081 (gaps 40, 21 f); PB S1+S3: none in 71 f sampled every 3 f -> long gaps also occur; T-106 WT blink minima f22, f62, f83 (spacings 40 and 21 f, mean 30.5 f; 35.7 blinks/visible min); PB 0 blinks in 101 reviewed frames (one partial dip f128) -> long gaps too"
     },
     "duration_frames": {
       "value": [
@@ -263,7 +263,7 @@
       ],
       "unit": "frames@24",
       "kind": "measured",
-      "source": "WT f081-f084 (closed f082-f083); first two +-1 f (fringe hides eye)"
+      "source": "WT f081-f084 (closed f082-f083); first two +-1 f (fringe hides eye); T-106 WT envelopes [20, 27), [60, 68), [81, 87) are 7, 8, 6 f including the partly closed frames; not changed (tests/test_personality.cpp pins the 5 f middle)"
     },
     "closed_frames": {
       "value": [
@@ -372,6 +372,12 @@
         "hand": "both",
         "description": "one knee up, arms flung out, eyes closed",
         "source": "#09 Key Animation"
+      },
+      {
+        "name": "boy_reluctant_shrug",
+        "hand": "right",
+        "description": "small, slow one-sided shrug with a flat mouth (content/clips/boy_reluctant_shrug.clip.json); reaction gesture of partner_acts / failure",
+        "source": "extrapolation in the spirit of REFERENCE_BEHAVIOUR.md section 7 (sigh: rise slower than fall); not shown"
       }
     ],
     "unit": "list",
@@ -381,12 +387,68 @@
   "reaction": {
     "delay_frames": {
       "value": [
-        4,
-        8
+        16,
+        26
       ],
       "unit": "frames@24",
-      "kind": "extrapolation",
-      "source": "not measurable (PB S6 cuts in after the stimulus); slower start than the girl fits 'bored'"
+      "kind": "measured",
+      "source": "T-106 WT (docs/evaluation/animation/T-106/performance.csv): the girl's point arrives f39 (reach [22, 39)); he keeps the same watch [27, 60) and answers with a blink + head lift at f60 = 21 f (delayed interest); +-5 f for the one-frame reading of the blink start. Was [4, 8] (extrapolation, 'not measurable' before T-106)"
+    },
+    "intensity_scale": {
+      "value": 0.6,
+      "unit": "multiplier",
+      "kind": "measured",
+      "source": "T-106: his reactions are small: PB [259, 289) 'eyes open wider and lips part' with median jawOpen 0.033 and WT [60, 81) a 5 deg head roll, while the girl's reach/point/open smile are full beats; 0.6 keeps a partner's act (0.5 x 0.6 = 0.3) under the gesture threshold and an explicit event (0.7 x 0.6 = 0.42) just above it (reluctant gestures)"
+    },
+    "gaze_shift": {
+      "value": 0.3,
+      "unit": "0-1",
+      "kind": "measured",
+      "source": "T-106 WT gaze rows [0, 60), [60, 81), [81, 121): his eye line stays on the table (screen right and down) through the girl's point and reacquires it after the head lift; attention.glance_at_others 0: sideways glances, mostly eyes"
+    },
+    "gesture_min_intensity": {
+      "value": 0.4,
+      "unit": "0-1",
+      "kind": "estimate",
+      "source": "reluctant gestures (owner brief): above the shared 0.35, so only a clear stimulus earns a gesture (see intensity_scale)"
+    },
+    "events": {
+      "value": {
+        "partner_acts": {
+          "emotion": "boy_interested",
+          "intensity": 0.7,
+          "duration_s": 5.0,
+          "gaze_shift": 0.2,
+          "gestures": [
+            "boy_reluctant_shrug"
+          ],
+          "source": "T-106 WT: the girl points [39, 61); he answers late with blink + head lift [60, 81) (0.875 s) and keeps the raised head [87, 121) until the clip ends (open-ended, >= 2.3 s from the blink); 5.0 s holds it through his late reluctant gesture (boy_reluctant_shrug, rest lead 33 f, extrapolation: no gesture shown) and a 34 f hold, in the spirit of his long stares (tempo.hold_frames up to 72 f); gaze stays on the table (0.2)"
+        },
+        "object_appears": {
+          "emotion": "boy_interested",
+          "intensity": 0.8,
+          "duration_s": 2.3,
+          "gaze_shift": 0.9,
+          "source": "T-106 PB [259, 289): the boat lights up, he leans in with eyes open wider and lips part, looking at the lit boat throughout (gaze 0.9); no hand gesture shown, so none preferred"
+        },
+        "success": {
+          "emotion": "boy_interested",
+          "intensity": 0.7,
+          "duration_s": 2.3,
+          "gaze_shift": 0.9,
+          "source": "T-106 PB reveal as above; positive_style: no smile (smile.frequency 0.1), so the shared happy is replaced by his low-key interest"
+        },
+        "failure": {
+          "intensity": 0.7,
+          "gestures": [
+            "boy_reluctant_shrug"
+          ],
+          "source": "extrapolation (not shown): shared sad, answered with the reluctant shrug"
+        }
+      },
+      "unit": "object",
+      "kind": "measured+extrapolation",
+      "source": "see each entry; emotions: content/emotions/boy_*.emotion.json, gestures: content/clips/boy_*.clip.json"
     },
     "channel_order": {
       "value": [
@@ -409,7 +471,7 @@
       "value": "stare at the object, heavy lid lifts to Blink 0.15-0.25",
       "unit": "text",
       "kind": "reference",
-      "source": "PB S6; WT f036"
+      "source": "PB S6; WT f036; T-106 PB [259, 289) eyes open wider, lips part; emotion content/emotions/boy_interested.emotion.json"
     }
   },
   "interaction": {
@@ -490,7 +552,7 @@
       ],
       "unit": "frames@24",
       "kind": "measured",
-      "source": "long unchanged stares PB S1 (32 f), S3 (39 f), WT f000-f120 (tempo.hold_frames)"
+      "source": "long unchanged stares PB S1 (32 f), S3 (39 f), WT f000-f120 (tempo.hold_frames); T-106 WT [27, 60) 33 f, [87, 121) 34 f"
     },
     "action_speed": {
       "value": [
