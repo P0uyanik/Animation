@@ -25,8 +25,8 @@ Notice → reaction → gesture → hold to an event, against the WT moment of t
 | (no gesture shown) | | f82-f133 `boy_reluctant_shrug` (extrapolation) |
 | [87, 121) 34 f hold, raised head, small closed mouth | | f145-f179 34 f end hold |
 
-The reaction is authored as explicit actions with the values the profile plans (`reaction.events.partner_acts`:
-emotion, intensity 0.7 with `intensity_scale` 0.6, gaze shift 0.2, gesture) because T-097D (scene events → reaction
+The reaction is authored as explicit actions with the values the profile plans (`reaction.delay_frames` middle 21 f,
+`reaction.events.partner_acts`: emotion, intensity 0.7 with `intensity_scale` 0.6, gaze shift 0.2, gesture) because T-097D (scene events → reaction
 playback) had not landed at the input SHA. **When T-097D lands, this shot's `events` key may also schedule the planned
 reaction on top of the explicit one**: the scene then needs its explicit reaction actions removed (or T-097D's opt-out);
 not done here (T-097D is not on this branch).
@@ -34,22 +34,21 @@ not done here (T-097D is not on this branch).
 ## Data (each value's source is in the file)
 | File | What |
 | --- | --- |
-| `content/personality/boy_yellow_hoodie.json` | `reaction.intensity_scale` 0.6, `gaze_shift` 0.3, `gesture_min_intensity` 0.4, `events` (partner_acts, object_appears, success, failure); T-106 citations added to hold, blink, gaze and attention sources; the shrug in `gestures` |
+| `content/personality/boy_yellow_hoodie.json` | `reaction.delay_frames` [16, 26], `intensity_scale` 0.6, `gaze_shift` 0.3, `gesture_min_intensity` 0.4, `events` (partner_acts, object_appears, success, failure); T-106 citations added to hold, blink, gaze and attention sources; the shrug in `gestures` |
 | `content/emotions/boy_interested.emotion.json` | delayed, low-key interest: lids lift, brows down, lips part, no smile; onset 0.875 s / hold 1.42 s (WT [60, 81) / [87, 121)); face authored for his expressed intensity 0.42 → JawOpen 0.034 (PB [259, 289) median 0.033) |
 | `content/clips/boy_head_lift.clip.json` | the emotion's posture: slight lift + ~5° CCW roll at 0.42 (WT [60, 81)) |
 | `content/clips/boy_reluctant_shrug.clip.json` | the shared `gest_shrug` at 0.45 of its swing, right arm + chest only, re-timed: slow rise (30 f), dwell, quicker fall (8 f); flat mouth, no brow raise |
 | `episodes/e908_boy_acting/make_clips.py` | writes both clips from the library clips (no Blender) |
 
-Values **not** tuned because shared tests pin them (asked the Supervisor; not changed here):
-- `reaction.delay_frames` stays [4, 8] (`tests/test_personality.cpp:410-411`). T-106 measures 21 f (WT f39 → f60); the
-  shot plays 21 f explicitly. Proposed value: [16, 26].
+`reaction.delay_frames` [4, 8] → [16, 26] (measured: WT f39 → f60 = 21 f; the Supervisor relaxed the
+`tests/test_personality.cpp` pin in 0a7297a). Values **not** tuned because shared tests pin them:
 - `blink.duration_frames` [4, 6] (test pins the 5 f middle). T-106 envelopes are 6-8 f including partly closed frames.
 - `blink.interval_frames.mean` 30 (pinned; T-106 WT spacings 40 / 21 f → 30.5 f agree).
 
 ## Checks (final bake, `run_shot --stages prepare,bake`, plush-render bake)
 | Check | Result |
 | --- | --- |
-| `tools/animcheck/acting.py` (T-097C) | 0 warnings; glance 21 f after the event (≥ 4); shrug amplitude 0.10 (18°) ≤ 0.30; longest still run 96 f ≥ 12 |
+| `tools/animcheck/acting.py` (T-097C) | 0 warnings; glance 21 f after the event (≥ 16); shrug amplitude 0.10 (18°) ≤ 0.30; longest still run 96 f ≥ 12 |
 | `tools/animcheck/personality.py` | 0 failures; 6 blinks 4-6 f, mean interval 31.7 f; idle median 0.0013 H/f ≤ 0.004 |
 | `tools/animcheck/timing.py` | 0 warnings |
 | `tools/animcheck/animcheck.py --check` | pass |

@@ -387,12 +387,12 @@
   "reaction": {
     "delay_frames": {
       "value": [
-        4,
-        8
+        16,
+        26
       ],
       "unit": "frames@24",
-      "kind": "extrapolation",
-      "source": "not changed (tests/test_personality.cpp pins [4, 8]; Supervisor asked, T-097-boy). T-106 WT measures a longer delayed-interest response: the girl's point arrives f39 (reach [22, 39)), he keeps the same watch [27, 60) and blinks + lifts his head at f60 = 21 f; e908 plays that 21 f explicitly (docs/evaluation/animation/T-106/performance.csv)"
+      "kind": "measured",
+      "source": "T-106 WT (docs/evaluation/animation/T-106/performance.csv): the girl's point arrives f39 (reach [22, 39)); he keeps the same watch [27, 60) and answers with a blink + head lift at f60 = 21 f (delayed interest); +-5 f for the one-frame reading of the blink start. Was [4, 8] (extrapolation, 'not measurable' before T-106)"
     },
     "intensity_scale": {
       "value": 0.6,

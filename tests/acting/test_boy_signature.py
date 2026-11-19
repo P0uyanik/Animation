@@ -170,7 +170,9 @@ class Shot(unittest.TestCase):
         point_arrives = int(rows("watertable", "acting_beat", 27)[0]["first_frame"]) + 12  # girl's reach [22, 39)
         self.assertEqual(point_arrives, 39)
         self.assertEqual(b["delay_frames"], 60 - point_arrives)  # his blink + head lift at WT f60
-        self.assertGreaterEqual(b["delay_frames"], val(R["delay_frames"])[0])
+        lo, hi = val(R["delay_frames"])
+        self.assertTrue(lo <= b["delay_frames"] <= hi)
+        self.assertEqual((lo + hi) / 2, b["delay_frames"])  # the planner's notice delay at salience 1
         self.assertEqual(b["end_hold"][1] - b["end_hold"][0], int(rows("watertable", "acting_beat", 87)[0]["duration_frames"]))
         ev = SCENE["events"][0]
         self.assertEqual(ev["name"], "partner_acts")
