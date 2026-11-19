@@ -432,3 +432,11 @@ Bounded scope addition to T-118 (hair r5) and T-119 (garments r3): read the girl
 make the generators able to express her features (buns, S-wave locks, bow attachment; Peter Pan collar, rib cuffs as
 reusable components), plus a `third_character_readiness.md` note each. No model, spec, version or render of her; her
 references untouched; round 4 judged on the boy and girl only. Expected extra cost 10-20% on those two tasks.
+
+## 2026-11-19 (~12:30Z): delivery format and render optimisation (relayed by the previous Supervisor session)
+1. No 1080p. Final delivery is 720p (1280x720); consider efficient formats (e.g. 720p 10-bit HEVC/AV1 instead of 8-bit
+   H.264).
+2. 24 fps stays, every frame rendered (no "on twos", no 12 fps).
+3. GPU rental (RunPod) waits until the render optimisation task (**T-124**, Opus 5.5, parallel to round 4) is finished.
+   Measurement-driven: report what each setting really costs and changes, no predetermined target; profiles stay
+   opt-in until the owner approves one as default.
