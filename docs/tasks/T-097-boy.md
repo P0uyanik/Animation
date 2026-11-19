@@ -14,7 +14,7 @@ subtle, low energy, delayed interest; sideways glances; small mouth changes; rel
 ## Acceptance criteria
 1. Tune `content/personality/boy_yellow_hoodie.json` (reaction, tempo, gaze habit, gesture preferences, limits) toward the T-106
    measurements; document each value's source.
-2. Character gesture clips and an expression override file for this character only (new files with the character
+2. Character gesture clips and character-prefixed emotion files (`content/emotions/<char>_*.emotion.json`) (new files with the character
    prefix); for the girl the open "delighted" mouth is an acting-beat expression, rest face unchanged.
 3. One solo test shot folder `episodes/e908_boy_acting/` (new) showing notice -> reaction -> gesture -> hold to an
    event; animcheck incl. the T-097C acting checks passes with no warnings for this character.
@@ -22,7 +22,7 @@ subtle, low energy, delayed interest; sideways glances; small mouth changes; rel
 5. Evidence: cheap preview first, then a short Cycles clip + strip vs the reference moments; time-ledger line.
 
 ## Write-set
-`content/personality/boy_yellow_hoodie.json`, `content/clips/boy_*.clip.json` (new), `content/expressions/boy_yellow_hoodie*.json` (new),
+`content/personality/boy_yellow_hoodie.json`, `content/clips/boy_*.clip.json` (new), `content/emotions/boy_*.emotion.json` (new),
 `episodes/e908_boy_acting/**` (new), `tests/acting/test_boy_signature.py` (new),
 `docs/evaluation/animation/T-097-boy/**`.
 
