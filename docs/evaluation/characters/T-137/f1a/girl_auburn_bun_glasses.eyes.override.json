@@ -42,7 +42,9 @@
     "reach_deg": 36,
     "carve_reach": 0.42,
     "corner_deg": 46,
-    "clearance_m": 0.0035
+    "clearance_m": 0.002,
+    "smooth_iterations": 24,
+    "cover_softness": 0.3
    }
   }
  }
