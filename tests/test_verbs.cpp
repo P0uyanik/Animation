@@ -2,8 +2,11 @@
 #include <doctest/doctest.h>
 
 #include <filesystem>
+#include <fstream>
+#include <format>
 #include <memory>
 
+#include "anim/hand_shape.h"
 #include "anim/personality.h"
 #include "scene/asset_library.h"
 #include "scene/scene.h"
@@ -675,10 +678,14 @@ TEST_CASE("verbs T-112b: non-wrap hand shapes key their open / closed poses; no 
     const char* name;
     vec3 open, closed;
     float closedIndex;
+    bool search;  // T-112c: the table's pinch closes index and thumb by contact search (T-112b's inline pinch did not)
   };
-  for (const Shape& s : {Shape{"palm", {0.08f, 0.3f, 0}, {0.15f, 0.35f, 0}, -1}, Shape{"hook", {0.2f, 0.1f, 0}, {0.7f, 0.1f, 0}, -1},
-                         Shape{"cradle", {0.1f, 0.25f, 0.2f}, {0.3f, 0.25f, 0.2f}, -1},
-                         Shape{"pinch", {0.1f, 0.2f, 0.1f}, {0.6f, 0.5f, 0.1f}, 0.35f}}) {
+  // T-112c: the values are the hand-shape table's (content/hand_shapes). palm, hook and cradle are T-112b's inline
+  // values; the table's pinch holds thumb 0.2 / index 0.1 (inline 0.5 / 0.35) and closes index + thumb by search.
+  for (const Shape& s : {Shape{"palm", {0.08f, 0.3f, 0}, {0.15f, 0.35f, 0}, -1, false},
+                         Shape{"hook", {0.2f, 0.1f, 0}, {0.7f, 0.1f, 0}, -1, false},
+                         Shape{"cradle", {0.1f, 0.25f, 0.2f}, {0.3f, 0.25f, 0.2f}, -1, false},
+                         Shape{"pinch", {0.1f, 0.2f, 0.1f}, {0.6f, 0.2f, 0.1f}, 0.1f, true}}) {
     CAPTURE(s.name);
     Scene sc = scene;
     sc.actions = Json::parse(R"([{"type": "grasp", "character": "actor", "hand": "R", "prop": "cup", "start": 5, "contact": 20},
@@ -694,7 +701,23 @@ TEST_CASE("verbs T-112b: non-wrap hand shapes key their open / closed poses; no 
     CHECK(pose->evaluate(20) == s.closed);
     CHECK(pose->evaluate(46) == s.closed);  // held closed until the place contact
     CHECK(pose->evaluate(49) == s.open);    // opened on release
-    CHECK(gen.find("actor/hand.R.grasp") == nullptr);  // no contact search
+    if (!s.search) {
+      CHECK(gen.find("actor/hand.R.grasp") == nullptr);  // no contact search
+    } else {  // pinch: a 1 cm sphere at the palm point, the three other fingers free (out of the search)
+      REQUIRE(gen.find("actor/hand.R.grasp"));
+      CHECK(gen.find("actor/hand.R.graspRadius")->evaluate(20).x == doctest::Approx(0.01f));
+      CHECK(gen.find("actor/hand.R.graspAxis")->evaluate(20) == vec3(0));
+      CHECK(gen.find("actor/hand.R.grasp.weight")->evaluate(16).x == 0);
+      CHECK(gen.find("actor/hand.R.grasp.weight")->evaluate(20).x == 1);
+      CHECK(gen.find("actor/hand.R.grasp.weight")->evaluate(55).x == 0);  // released 5 f after the place contact
+      for (int k = 0; k < 3; ++k) {
+        CAPTURE(k);
+        const Track* f = gen.find(std::format("actor/hand.R.f{}", k));
+        REQUIRE(f);
+        CHECK(f->evaluate(20) == vec3(0.6f, 0.1f, 1.0f));
+      }
+      CHECK(gen.find("actor/hand.R.f3") == nullptr);
+    }
     if (s.closedIndex >= 0) {
       REQUIRE(gen.find("actor/hand.R.index"));
       CHECK(gen.find("actor/hand.R.index")->evaluate(20).x == doctest::Approx(s.closedIndex));
@@ -704,7 +727,7 @@ TEST_CASE("verbs T-112b: non-wrap hand shapes key their open / closed poses; no 
     // The palm is still exactly on the socket.
     CHECK(glm::distance(ev->handGripPoint(0, 'R', 20), socketWorld(*ev, 0, "grip", 20)) <= 0.0005f);
   }
-  // wrap is today's grasp (the golden test covers the bakes); an unknown shape is an error.
+  // wrap is today's grasp (the golden test covers the bakes); an unknown shape (or a non-grasp table shape) is an error.
   Scene bad = scene;
   bad.actions = Json::parse(R"([{"type": "grasp", "character": "actor", "hand": "R", "prop": "cup", "start": 5, "shape": "claw"}])");
   auto r = tryLoad(bad);
@@ -820,9 +843,50 @@ TEST_CASE("verbs T-112b: two-handed tray - pick up, carry, place on boy and girl
     CHECK(glm::distance(trayFoot(*ev, 0, "place", placed), vec3(t0.x, t0.y - foot, t0.z)) <= 0.0005f);
     CHECK(glm::distance(trayFoot(*ev, 0, "place", 120), vec3(t0.x, t0.y - foot, t0.z)) <= 0.0005f);
     // Both hands let go: palm shapes open, IK released by the end of the release.
+    // T-112c (Supervisor-approved replacement of T-112b's "no .grasp track" check): with the profile the palm sites on
+    // the box faces key the per-finger face search. .graspFace is the face's inward normal (hand rest frame), every
+    // fingertip rests on the face (skin gap <= 2 mm) and none is inside the box, from each hand's contact to the place
+    // contact; wrist and palm are bit-identical to the same scene without the finger gate ("fingers": false), which
+    // still keys no contact search at all.
     const Clip& gen = *ev->scene().animation.generated;
+    Scene plain = scene;
+    for (Json& a : plain.actions) a["fingers"] = false;
+    auto evPlain = load(plain);
+    const Clip& genPlain = *evPlain->scene().animation.generated;
+    const Skeleton& sk = ev->characters()[0].asset.skeleton;
+    const float skin = fingertipRadius(sk, 'L');
     for (const char* hs : {"L", "R"}) {
-      CHECK(gen.find(std::string("actor/hand.") + hs + ".grasp") == nullptr);
+      CAPTURE(hs);
+      const std::string base = std::string("actor/hand.") + hs;
+      CHECK(genPlain.find(base + ".grasp") == nullptr);
+      CHECK(genPlain.find(base + ".graspFace") == nullptr);
+      REQUIRE(gen.find(base + ".grasp"));
+      REQUIRE(gen.find(base + ".graspFace"));
+      const bool left = hs[0] == 'L';
+      const double from = left ? c1 : c2;
+      const int hb = sk.find(base.substr(6));
+      float worstGap = 0, deepest = 1, worstNormal = 0, moved = 0;
+      for (double f = from; f <= placed; f += 1) {
+        Pose p;
+        const auto G = ev->characterGlobals(0, f, &p);
+        const auto GP = evPlain->characterGlobals(0, f);
+        moved = std::max({moved, glm::distance(vec3(G[size_t(hb)][3]), vec3(GP[size_t(hb)][3])),
+                          glm::distance(ev->handGripPoint(0, hs[0], f), evPlain->handGripPoint(0, hs[0], f))});
+        const mat4 W = G[0] * glm::inverse(boneGlobals(sk, p, mat4(1))[0]);
+        const vec3 nW = glm::normalize(mat3(ev->propWorld(0, f)) * vec3(left ? 1.0f : -1.0f, 0, 0));  // inward
+        const vec3 sW = trayFoot(*ev, 0, left ? "side_l" : "side_r", f);
+        worstNormal = std::max(worstNormal, glm::distance(glm::normalize(mat3(G[size_t(hb)]) * gen.find(base + ".graspFace")->evaluate(f)), nW));
+        for (const vec3& t : fingertips(sk, p, W, hs[0])) {
+          const float d = glm::dot(sW - t, nW);
+          worstGap = std::max(worstGap, std::abs(d - skin));
+          deepest = std::min(deepest, d);
+        }
+      }
+      CHECK(worstNormal <= 1e-3f);
+      CHECK(worstGap <= 0.002f);
+      CHECK(deepest >= 0.0f);
+      CHECK(moved == 0.0f);  // the hand bone and the palm contact do not depend on the fingers
+      CHECK(ev->scene().animation.evaluate(base + ".grasp.weight", placed + 5, vec3(1)).x == 0);
       CHECK(ev->scene().animation.evaluate(std::string("actor/ik.hand.") + hs + ".weight", x->span(2, "release")->to, vec3(1)).x ==
             doctest::Approx(0));
     }
@@ -975,5 +1039,233 @@ TEST_CASE("verbs T-112b: a reacting pass compiles through the reaction system (s
     CHECK(glm::distance(look->evaluate(reach + 8), cupMid) < 0.01f);  // the look keys a moving cup every few frames (cup radius 40 mm)
     // The palm is on the receiver's socket at contact (the verb's constraint passed: no load error).
     CHECK(ev->scene().props[0].parentSwitch.back().parent->name == "receiver");
+  }
+}
+
+// ================================================================================================== T-112c
+// Hand shapes from the T-051 table (content/hand_shapes) and box-face grasps (hand.<s>.graspFace).
+
+TEST_CASE("verbs T-112c: the table's grasp shapes against T-112b's inline values; wrap is kOpen") {
+  auto t = loadHandShapeTable(kRoot / "content/hand_shapes");
+  REQUIRE(t);
+  auto hp = [](const HandShapePose& p) { return vec3(p.curl, p.thumb, p.spread); };
+  // T-112b's inline (open, closed) poses, as they were in interaction.cpp before T-112c.
+  struct Inline {
+    const char* id;
+    vec3 open, closed;
+  };
+  for (const Inline& s : {Inline{"palm", {0.08f, 0.3f, 0}, {0.15f, 0.35f, 0}}, Inline{"hook", {0.2f, 0.1f, 0}, {0.7f, 0.1f, 0}},
+                          Inline{"cradle", {0.1f, 0.25f, 0.2f}, {0.3f, 0.25f, 0.2f}}}) {
+    CAPTURE(s.id);
+    const HandShape* sh = t->find(s.id);
+    REQUIRE(sh);
+    REQUIRE(sh->approach);
+    CHECK(hp(*sh->approach) == s.open);  // bit-identical floats
+    CHECK(hp(sh->pose) == s.closed);
+    CHECK_FALSE(sh->approach->index);
+    CHECK_FALSE(sh->pose.index);
+    for (int k = 0; k < 4; ++k) CHECK_FALSE(sh->pose.fingers[size_t(k)]);
+    CHECK_FALSE(sh->pose.thumbOpposition);
+    CHECK(sh->stagger == 0);
+    CHECK(sh->search == HandShapeSearch::None);
+  }
+  // wrap = kOpen (0.03, 0.05, 0.35) both ways and the all-finger search: the grasp keeps today's code path.
+  const HandShape* wrap = t->find("wrap");
+  REQUIRE(wrap);
+  CHECK(hp(*wrap->approach) == vec3(0.03f, 0.05f, 0.35f));
+  CHECK(hp(wrap->pose) == vec3(0.03f, 0.05f, 0.35f));
+  CHECK(wrap->search == HandShapeSearch::All);
+  // pinch: the approach is T-112b's inline open pose (index 0.1); the held pose differs (documented, T-112c README).
+  const HandShape* pinch = t->find("pinch");
+  REQUIRE(pinch);
+  CHECK(hp(*pinch->approach) == vec3(0.1f, 0.2f, 0.1f));
+  CHECK(*pinch->approach->index == 0.1f);
+  CHECK(hp(pinch->pose) == vec3(0.6f, 0.2f, 0.1f));  // inline: (0.6, 0.5, 0.1)
+  CHECK(*pinch->pose.index == 0.1f);                 // inline: 0.35
+  CHECK(pinch->search == HandShapeSearch::Pinch);
+}
+
+TEST_CASE("verbs T-112c: a grasp keys the hand shape of the table found above the scene, not built-in values") {
+  // A content tree whose palm differs from the shipped one: the grasp must key these values.
+  const fs::path tmp = fs::temp_directory_path() / "plush_t112c_table";
+  fs::remove_all(tmp);
+  fs::create_directories(tmp / "content");
+  fs::copy(kRoot / "content/hand_shapes", tmp / "content/hand_shapes");
+  fs::copy(kRoot / "content/assets", tmp / "content/assets");
+  Json palm = parseJsonFile(kRoot / "content/hand_shapes/palm.hand_shape.json").value();
+  palm["approach"] = {{"curl", 0.12}, {"thumb", 0.22}, {"spread", 0.05}};
+  palm["pose"] = {{"curl", 0.33}, {"thumb", 0.44}, {"spread", 0.1}, {"index", 0.2}};
+  {
+    std::ofstream(tmp / "content/hand_shapes/palm.hand_shape.json") << palm.dump(2);
+  }
+  Scene scene = baseScene();
+  scene.path = tmp / "shot.scene.json";
+  scene.frameEnd = 80;
+  scene.characters.push_back(character("actor", (kRoot / "tests/data/imported" / kBoy).string().c_str(), vec3(0), 0));
+  auto probe = load(scene);
+  scene.props.push_back(cupFor(*probe, 0, "cup", 180, vec3(0.04f, -0.45f, 0.85f)));
+  const vec3 p0 = scene.props[0].transform.translation;
+  scene.actions = Json::parse(R"([{"type": "grasp", "character": "actor", "hand": "R", "prop": "cup", "start": 5, "contact": 20, "shape": "palm"},
+      {"type": "place", "character": "actor", "hand": "R", "start": 30, "contact": 46, "end": 60}])");
+  scene.actions[1]["at"] = {p0.x, p0.y, p0.z};
+  auto ev = load(scene);
+  const Clip& gen = *ev->scene().animation.generated;
+  const Track* pose = gen.find("actor/hand.R");
+  REQUIRE(pose);
+  CHECK(pose->evaluate(14) == vec3(0.12f, 0.22f, 0.05f));
+  CHECK(pose->evaluate(20) == vec3(0.33f, 0.44f, 0.1f));
+  CHECK(pose->evaluate(46) == vec3(0.33f, 0.44f, 0.1f));
+  CHECK(pose->evaluate(49) == vec3(0.12f, 0.22f, 0.05f));
+  const Track* index = gen.find("actor/hand.R.index");
+  REQUIRE(index);
+  CHECK(index->evaluate(20).x == 0.2f);
+  CHECK(index->evaluate(60).x == 0.25f);  // relaxed again at the end of the release
+  // A table shape that is not a grasp shape is rejected like an unknown one.
+  Scene bad = scene;
+  bad.actions = Json::parse(R"([{"type": "grasp", "character": "actor", "hand": "R", "prop": "cup", "start": 5, "shape": "point"}])");
+  auto r = tryLoad(bad);
+  REQUIRE_FALSE(r);
+  CHECK(r.error().message.find("unknown hand shape 'point' (grasp shapes: wrap, cradle, hook, palm, pinch)") != std::string::npos);
+  fs::remove_all(tmp);
+}
+
+TEST_CASE("verbs T-112c: box-face sites key hand.<s>.graspFace - per-finger palm grasp on the felt tray, boy and girl") {
+  for (const char* asset : {kBoy, kGirl}) {
+    CAPTURE(asset);
+    Scene scene = baseScene();
+    scene.frameEnd = 120;
+    scene.timing = "calibrated";  // the finger gate (as the band): a profile, or "fingers": true
+    scene.characters.push_back(character("actor", asset, vec3(0), 0));
+    auto probe = load(scene);
+    scene.props.push_back(trayFor(*probe, 0, 0.75f, 0.55f, 0.6f));
+    const vec3 t0 = scene.props[0].transform.translation;
+    scene.actions = Json::parse(R"([
+        {"type": "pick_up", "character": "actor", "hands": ["L", "R"], "prop": "tray", "start": 8},
+        {"type": "carry", "character": "actor", "hands": ["L", "R"], "by": [0, 0.03, 0.01]},
+        {"type": "place", "verb": true, "character": "actor", "hands": ["L", "R"]}])");
+    scene.actions[2]["at"] = {t0.x, t0.y - 0.015f * 0.6f, t0.z};
+    auto ev = load(scene);
+    const Clip& gen = *ev->scene().animation.generated;
+    const Skeleton& sk = ev->characters()[0].asset.skeleton;
+    // The expansion's frames.
+    VerbContext vc;
+    vc.timing = &calibrated();
+    vc.characters = {VerbContext::Character{"actor", nullptr, {0.2f, 0.2f}}};
+    const PropAsset tray = trayAsset();
+    vc.props = {{"tray", &tray, scene.props[0].transform, std::nullopt}};
+    vc.verb = [](const std::string& id) { return loadVerb(kRoot / "content/verbs" / (id + ".verb.json")); };
+    auto x = expandVerbs(scene.actions, vc);
+    REQUIRE(x);
+    double contact[2] = {0, 0};
+    for (const Json& a : x->actions)
+      if (a["type"] == "grasp") {
+        CHECK(a["graspFace"] == true);
+        contact[a["hand"] == "L" ? 0 : 1] = a["contact"].get<double>();
+      }
+    const double placed = x->span(2, "contact")->to;
+    // Without the gate (legacy expansion, or "fingers": false) no grasp asks for the face.
+    vc.timing = nullptr;
+    auto legacy = expandVerbs(scene.actions, vc);
+    REQUIRE_MESSAGE(legacy, (legacy ? "" : legacy.error().message()));
+    for (const Json& a : legacy->actions) CHECK_FALSE(a.contains("graspFace"));
+
+    const float skin = fingertipRadius(sk, 'L');
+    for (int i = 0; i < 2; ++i) {
+      const char side = i == 0 ? 'L' : 'R';
+      const std::string socket = i == 0 ? "side_l" : "side_r";
+      const std::string base = std::string("actor/hand.") + side;
+      CAPTURE(side);
+      // The face normal, hand rest frame: the prop's inward direction (+x on side_l, -x on side_r) seen from the hand.
+      const Track* face = gen.find(base + ".graspFace");
+      REQUIRE(face);
+      REQUIRE(face->keys.size() == 1);
+      CHECK(face->keys[0].interp == Interp::Step);
+      REQUIRE(gen.find(base + ".grasp"));
+      CHECK(gen.find(base + ".graspRadius")->evaluate(contact[i]).x == doctest::Approx(0.15f * 0.6f));
+      CHECK(gen.find(base + ".grasp.weight")->evaluate(contact[i] - 4).x == 0);
+      CHECK(gen.find(base + ".grasp.weight")->evaluate(contact[i]).x == 1);
+      CHECK(gen.find(base + ".grasp.weight")->evaluate(placed + 5).x == 0);  // let go with the release
+      const int hb = sk.find(std::string("hand.") + side);
+      float worstGap = 0, deepest = 1, worstNormal = 0;
+      for (double f = contact[i]; f <= placed; f += 1) {
+        Pose p;
+        const auto G = ev->characterGlobals(0, f, &p);
+        const mat4 W = G[0] * glm::inverse(boneGlobals(sk, p, mat4(1))[0]);
+        const mat4 P = ev->propWorld(0, f);
+        const vec3 nW = glm::normalize(mat3(P) * vec3(i == 0 ? 1.0f : -1.0f, 0, 0));  // inward
+        const vec3 sW = vec3(P * assetTransformMatrix(tray.sockets.at(socket))[3]);
+        worstNormal = std::max(worstNormal, glm::distance(glm::normalize(mat3(G[size_t(hb)]) * face->evaluate(f)), nW));
+        for (const vec3& t : fingertips(sk, p, W, side)) {
+          const float d = glm::dot(sW - t, nW);  // tip centre outside the face (> 0)
+          worstGap = std::max(worstGap, std::abs(d - skin));
+          deepest = std::min(deepest, d);
+        }
+      }
+      MESSAGE(std::format("{} {}: f{:g}-f{:g} tip skin gap worst {:.2f} mm, deepest tip centre {:.2f} mm (skin {:.2f} mm), normal "
+                          "error {:.4f}",
+                          asset, side, contact[i], placed, worstGap * 1e3, deepest * 1e3, skin * 1e3, worstNormal));
+      CHECK(worstNormal <= 1e-3f);
+      CHECK(worstGap <= 0.002f);  // T-051 criterion 4: every fingertip within 2 mm of the surface
+      CHECK(deepest >= 0.0f);     // none inside the box
+    }
+  }
+}
+
+TEST_CASE("verbs T-112c: a pass gives the receiver its site's finger band (gated like the giver's), key for key otherwise") {
+  PropAsset cup = cupAsset();
+  VerbContext vc;
+  vc.characters = {{"boy", &boyProfile(), {0.27f, 0.27f}}, {"girl", &girlProfile(), {0.18f, 0.18f}}};
+  vc.props = {{"cup", &cup, AssetTransform{}, std::nullopt}};
+  vc.verb = [](const std::string& id) { return loadVerb(kRoot / "content/verbs" / (id + ".verb.json")); };
+  const Json actions = Json::parse(R"([{"type": "pick_up", "character": "boy", "prop": "cup", "set": "a", "start": 4, "contact": 20},
+      {"type": "pass", "character": "boy", "hand": "R", "to": "girl", "toHand": "L", "start": 40}])");
+  // No profile: no band on either side (the legacy expansion).
+  auto x0 = expandVerbs(actions, vc);
+  REQUIRE(x0);
+  auto handover = [](const VerbExpansion& x) -> const Json& {
+    for (const Json& a : x.actions)
+      if (a["type"] == "handover") return a;
+    FAIL("no handover");
+    return x.actions[0];
+  };
+  for (const char* k : {"toBand", "toThumb", "toGraspFace"}) CHECK_FALSE(handover(*x0).contains(k));
+  // With a profile: grip_b's band [0.01, 0.055], thumb opposed; the cup is no box (no graspFace).
+  vc.timing = &calibrated();
+  auto x1 = expandVerbs(actions, vc);
+  REQUIRE(x1);
+  const Json& h = handover(*x1);
+  REQUIRE(h.contains("toBand"));
+  CHECK(h["toBand"][0].get<double>() == doctest::Approx(0.01));
+  CHECK(h["toBand"][1].get<double>() == doctest::Approx(0.055));
+  CHECK(h["toThumb"] == "opposed");
+  CHECK_FALSE(h.contains("toGraspFace"));
+  // "fingers": false on the pass: never.
+  Json off = actions;
+  off[1]["fingers"] = false;
+  auto x2 = expandVerbs(off, vc);
+  REQUIRE(x2);
+  CHECK_FALSE(handover(*x2).contains("toBand"));
+
+  // Compiled: the receiver's hand.<s>.band is a Step key at its reach start, relative to the grasp centre
+  // (grip_b at 30 mm on the axis: (0.01 - 0.03, 0.055 - 0.03, 0)); without "toBand" there is no track.
+  for (auto [g, r] : {std::pair{kBoy, kGirl}, std::pair{kGirl, kBoy}}) {
+    CAPTURE(g);
+    Scene scene = passScene(g, r);
+    scene.actions = Json::parse(R"([{"type": "grasp", "character": "giver", "hand": "R", "prop": "cup", "start": 4, "contact": 18},
+        {"type": "handover", "character": "giver", "hand": "R", "to": "receiver", "toHand": "R", "start": 26, "receiverStart": 30,
+         "toBand": [0.01, 0.055], "toThumb": "opposed"}])");
+    auto ev = load(scene);
+    const Track* t = ev->scene().animation.generated->find("receiver/hand.R.band");
+    REQUIRE(t);
+    REQUIRE(t->keys.size() == 1);
+    CHECK(t->keys[0].frame == 30);
+    CHECK(t->keys[0].interp == Interp::Step);
+    const float c0 = cupAsset().sockets.at("grip_b").translation.y;
+    CHECK(t->keys[0].value.x == doctest::Approx(0.01f - c0).epsilon(1e-4));
+    CHECK(t->keys[0].value.y == doctest::Approx(0.055f - c0).epsilon(1e-4));
+    CHECK(t->keys[0].value.z == 0);
+    scene.actions[1].erase("toBand");
+    scene.actions[1].erase("toThumb");
+    CHECK(load(scene)->scene().animation.generated->find("receiver/hand.R.band") == nullptr);
   }
 }

@@ -89,16 +89,28 @@ without a verb action is compiled exactly as before.
   anticipation starts, so the eyes lead the hand.
 - **Grasp site.** `set` or `site` names a grasp site of the prop's `affordances` (`docs/ASSET_LIBRARY.md`). Without
   them, the first one-site set this hand may use is taken, else `socket` (default `grip`).
-- **Hand shapes (T-112b).** A site's `shape` other than `wrap` goes into the grasp as `"shape"` (and its `approach`
-  side as `"approach"`). `reachTo` then keys the shape's open pose on the approach and its closed pose at contact,
-  with no contact search, and the release opens it again. `wrap` is today's grasp, unchanged.
+- **Hand shapes (T-112b, values from the T-051 table since T-112c).** A site's `shape` other than `wrap` goes into
+  the grasp as `"shape"` (and its `approach` side as `"approach"`). `reachTo` looks the shape up in the hand-shape
+  table (`content/hand_shapes/<shape>.hand_shape.json`, found above the scene; `engine/anim/hand_shape.h`). It keys
+  the shape's `approach` pose on the way in and its `pose` at contact (`keyHandShape`: `hand.<s>`, `.index`, `.f<k>`,
+  `.thumb` and `.stagger` where the shape sets them), and the release opens it again. The shape's `search` decides
+  the contact search: `none` (palm, hook, cradle) rests the hand as posed; `pinch` closes index and thumb on a
+  sphere of `pinch_radius` just inside the socket, with the other fingers keyed free. `wrap` is today's grasp,
+  unchanged: the table's wrap is `kOpen` and the all-finger search. A name that is not a `grasp` shape of the table
+  is an error.
 
-  | shape | open (curl, thumb, spread) | closed |
-  | --- | --- | --- |
-  | `palm` | 0.08, 0.3, 0 | 0.15, 0.35, 0 |
-  | `hook` | 0.2, 0.1, 0 | 0.7, 0.1, 0 |
-  | `cradle` | 0.1, 0.25, 0.2 | 0.3, 0.25, 0.2 |
-  | `pinch` | 0.1, 0.2, 0.1, index 0.1 | 0.6, 0.5, 0.1, index 0.35 (a fixed pose; the per-finger pinch search is T-051's) |
+  | shape | approach (curl, thumb, spread) | pose | search |
+  | --- | --- | --- | --- |
+  | `palm` | 0.08, 0.3, 0 | 0.15, 0.35, 0 | none |
+  | `hook` | 0.2, 0.1, 0 | 0.7, 0.1, 0 | none |
+  | `cradle` | 0.1, 0.25, 0.2 | 0.3, 0.25, 0.2 | none |
+  | `pinch` | 0.1, 0.2, 0.1, index 0.1 | 0.6, 0.2, 0.1, index 0.1 (T-112b's inline pose: thumb 0.5, index 0.35) | index + thumb, 1 cm sphere |
+- **Box faces (T-112c).** On a box prop (a box primitive, or a box collision proxy) a site grasp also gets
+  `"graspFace": true` under the finger gate (as the band). When the socket is on a box face, `wrap`, `pinch` and
+  `palm` then key the per-finger face search of T-051: `.grasp` (mid-plane point), `.graspRadius` (half thickness),
+  `.graspFace` (inward normal, hand rest frame, Step) and `.grasp.weight` (0 → 1 over the last 4 f, back to 0 on
+  release). The fingertips rest on the face, none inside it (felt tray: within 0.02 mm, boy and girl test skeletons).
+  `hook` and `cradle` stay as posed.
 - **Finger band (T-112b).** A site's `fingers` block goes into the grasp as `"band"` + `"thumb"`. The grasp then
   keys `hand.<s>.band` = (lo, hi, thumb) as Step keys at the reach start. lo and hi are the band relative to the grasp
   centre along the grasp axis (metres); thumb is 0 opposed, 1 along, 2 tucked. T-051 reads the track; before T-051
@@ -158,7 +170,8 @@ without a verb action is compiled exactly as before.
       and the compile's own warning remains.
 
   The same reach written as primitives stays a warning.
-- **Not yet:** the surface-normal constraint, per-finger contact on the band (T-051), a two-hand `pass`, the
+- **Not yet:** the surface-normal constraint, a two-hand `pass`, the pass receiver's site shape (the handover receiver
+  grasps as `wrap`), the
   `under` cradle site as a one-hand set, and verbs for generated (reaction) actions.
 
 ## Director (automatic camera)

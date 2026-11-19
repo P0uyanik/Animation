@@ -3,6 +3,8 @@
 // orientation constraint below, which scene.cpp applies after IK.
 #include "scene/interaction.h"
 
+#include "anim/hand_shape.h"
+
 #include <algorithm>
 #include <format>
 #include <functional>
@@ -351,6 +353,7 @@ char sideOf(const Json& a, const char* k) {
 struct GraspShape {
   vec3 centre{0}, inward{0, -1, 0}, axis{0}, middle{0};
   float radius = 0.03f;
+  bool face = false;  // T-112c: a box face (the solid is the slab |dot(p - centre, inward)| <= radius)
 };
 
 GraspShape graspShape(const PropAsset& asset, vec3 s) {
@@ -405,6 +408,7 @@ GraspShape graspShape(const PropAsset& asset, vec3 s) {
       g.centre = p;
       g.centre[i] = 0;
       g.radius = half[i];
+      g.face = true;
       break;
     }
     case Kind::Sphere:
@@ -447,27 +451,30 @@ float correctKey(Track& track, double f, F error) {
 constexpr vec3 kUp(0, 1, 0);
 const vec3 kRelaxed(0.25f, 0.15f, 0), kOpen(0.03f, 0.05f, 0.35f);
 
-// T-112b hand shapes (docs/architecture/INTERACTION_AFFORDANCES.md 2.3) other than "wrap" (= kOpen and the contact
-// search above): the open pose on the approach and the closed pose at contact, as (curl, thumb, spread) plus the
-// index override (< 0: none). No contact search: palm, hook and cradle rest the hand on the prop as posed; pinch
-// closes index and thumb to a fixed pose (a per-finger pinch search belongs to the finger grasps of T-051).
-struct HandShapePoses {
-  vec3 open{0}, closed{0};
-  float openIndex = -1, closedIndex = -1;
-};
-std::optional<HandShapePoses> handShapePoses(const std::string& shape) {
-  if (shape == "pinch") return HandShapePoses{vec3(0.1f, 0.2f, 0.1f), vec3(0.6f, 0.5f, 0.1f), 0.1f, 0.35f};
-  if (shape == "palm") return HandShapePoses{vec3(0.08f, 0.3f, 0.0f), vec3(0.15f, 0.35f, 0.0f)};
-  if (shape == "hook") return HandShapePoses{vec3(0.2f, 0.1f, 0.0f), vec3(0.7f, 0.1f, 0.0f)};
-  if (shape == "cradle") return HandShapePoses{vec3(0.1f, 0.25f, 0.2f), vec3(0.3f, 0.25f, 0.2f)};
-  return std::nullopt;  // "wrap" (or unknown: rejected by the action)
+// Hand shapes other than "wrap" (T-112b keys, T-112c values): the shared hand-shape table of T-051
+// (content/hand_shapes, anim/hand_shape.h). A grasp keys the shape's approach pose on the way and its pose at contact
+// (keyHandShape: hand.<s>, .index, .f<k>, .thumb, .stagger where the shape sets them) and runs the shape's contact
+// search: "none" rests the hand on the prop as posed (palm, hook, cradle), "pinch" closes index and thumb on a sphere
+// of the shape's pinch_radius at the socket (the other fingers keyed free). "wrap" stays kOpen and the contact search
+// below (the table's wrap is the same pose, checked by tests/test_verbs.cpp), so a grasp without "shape" is unchanged.
+// The extra per-finger tracks a shape keys, set back to the relaxed hand (`rest` = hand.<s> at that frame).
+void keyShapeRest(Clip& gen, const std::string& pose, double f, const HandShape& s, vec3 rest) {
+  const bool pinch = s.search == HandShapeSearch::Pinch;
+  for (const HandShapePose* p : {&s.pose, s.approach ? &*s.approach : &s.pose}) {
+    if (p->index) key(gen, pose + ".index", f, vec3(rest.x));
+    for (int k = 0; k < 4; ++k)
+      if (p->fingers[size_t(k)] || (pinch && k != 3)) key(gen, std::format("{}.f{}", pose, k), f, vec3(rest.x, rest.z, pinch && k != 3 ? 1.0f : 0.0f));
+    if (p->thumbOpposition) key(gen, pose + ".thumb", f, vec3(0, rest.y, 0));
+  }
 }
 // How one grasp is made (T-112b): the hand shape, the side the palm comes from, the finger contact band.
 struct GraspStyle {
   std::string shape = "wrap";
+  const HandShape* hs = nullptr;  // T-112c: the table entry of a non-wrap shape
   std::optional<vec3> approach;  // prop frame
   std::optional<vec2> band;      // prop frame, along the grasp axis
   float thumb = 0;               // 0 opposed, 1 along, 2 tucked
+  bool face = false;             // T-112c "graspFace": per-finger search on the box face the socket is on
 };
 
 }  // namespace
@@ -605,6 +612,8 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
     mat3 R{1};
     vec3 wrist{0}, socket{0}, inward{0, 0, 1}, centre{0}, axis{0};
     float radius = 0.03f;
+    bool face = false;  // T-112c: the socket is on a box face
+    bool faceGrasp = false;  // T-112c: the grasp keyed the box-face search
   };
   auto plan = [&](const Hand& h, int p, const std::string& socket, double f) {
     const mat4 P = propWorld(size_t(p), f);
@@ -640,7 +649,35 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
     pl.inward = n;
     pl.centre = glm::transpose(pl.R) * (centreW - pl.wrist);
     pl.axis = glm::length(axisW) > 0 ? glm::transpose(pl.R) * axisW : vec3(0);
+    pl.face = gs.face;
     return pl;
+  };
+  // T-112c: a grasp's hand shape from the shared table (content/hand_shapes above the scene, loaded once per compile).
+  auto graspHandShape = [&](const std::string& name, const std::string& what) -> Result<const HandShape*> {
+    if (!ctx.handShapesResolved) {
+      ctx.handShapesResolved = true;
+      const auto dir = findHandShapeDir(scene_.path);
+      if (dir.empty()) {
+        ctx.handShapesError = std::format("no content/hand_shapes above '{}'", scene_.path.string());
+      } else if (auto t = loadHandShapeTable(dir); t) {
+        ctx.handShapes = std::move(*t);
+      } else {
+        ctx.handShapesError = t.error().message;
+      }
+    }
+    if (!ctx.handShapes) return fail(std::format("{}: hand shape '{}': {}", what, name, ctx.handShapesError));
+    const HandShape* s = ctx.handShapes->find(name);
+    if (!s || s->kind != "grasp") {
+      std::string list = "wrap";
+      for (const auto& [id, hs] : ctx.handShapes->shapes)
+        if (hs.kind == "grasp" && id != "wrap") list += ", " + id;
+      return fail(std::format("{}: unknown hand shape '{}' (grasp shapes: {})", what, name, list));
+    }
+    return s;
+  };
+  // The table entry of a shape already accepted by a grasp (nullptr: wrap).
+  auto tableShape = [&](const std::string& name) -> const HandShape* {
+    return name == "wrap" || !ctx.handShapes ? nullptr : ctx.handShapes->find(name);
   };
   // Reach + grasp of `socket` on prop p, arriving at `contact` (shared by reach/grasp and the hand-over receiver).
   auto reachTo = [&](const Hand& h, int p, const std::string& socket, double start, double contact, bool grasp,
@@ -682,21 +719,39 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
       const float c0 = glm::length(gs.axis) > 0 ? glm::dot(gs.centre, glm::normalize(gs.axis)) : 0.0f;
       key(gen, h.pose + ".band", start, vec3((style.band->x - c0) * k, (style.band->y - c0) * k, style.thumb), Interp::Step);
     }
-    if (const auto sh = handShapePoses(style.shape)) {  // T-112b: the shape's open and closed poses, no contact search
-      key(gen, h.pose, pre, sh->open);
-      if (contact - 4 > pre + 1e-6) key(gen, h.pose, contact - 4, sh->open);
-      key(gen, h.pose, contact, grasp ? sh->closed : sh->open);
-      if (sh->openIndex >= 0) {
-        key(gen, h.pose + ".index", start, vec3(clip.evaluate(h.pose, start, kRelaxed).x));
-        key(gen, h.pose + ".index", pre, vec3(sh->openIndex));
-        if (contact - 4 > pre + 1e-6) key(gen, h.pose + ".index", contact - 4, vec3(sh->openIndex));
-        key(gen, h.pose + ".index", contact, vec3(grasp ? sh->closedIndex : sh->openIndex));
+    // T-112c: on a box face (verb grasps with the finger gate, "graspFace": true) the fingers search the face slab:
+    // wrap, pinch and palm (the flat hand's fingers rest on the face instead of standing in it or off it).
+    const bool faceSearch = grasp && style.face && pl.face &&
+                            (!style.hs || style.hs->search != HandShapeSearch::None || style.hs->id == "palm");
+    if (style.hs) {  // T-112b / T-112c: the table shape's approach and held poses, and its contact search
+      const HandShape& sh = *style.hs;
+      keyShapeRest(gen, h.pose, start, sh, clip.evaluate(h.pose, start, kRelaxed));
+      keyHandShape(gen, h.pose, pre, sh, true);
+      if (contact - 4 > pre + 1e-6) keyHandShape(gen, h.pose, contact - 4, sh, true);
+      keyHandShape(gen, h.pose, contact, sh, !grasp);
+      if (grasp && sh.search == HandShapeSearch::Pinch && !faceSearch) {  // index + thumb on a small sphere just inside the socket
+        const float r = *sh.pinchRadius;
+        key(gen, h.pose + ".grasp", start, h.grip.palm + glm::transpose(pl.R) * pl.inward * r, Interp::Step);
+        key(gen, h.pose + ".graspRadius", start, vec3(r), Interp::Step);
+        key(gen, h.pose + ".graspAxis", start, vec3(0), Interp::Step);
+        key(gen, h.pose + ".grasp.weight", start, vec3(0));
+        key(gen, h.pose + ".grasp.weight", contact - 4, vec3(0));
+        key(gen, h.pose + ".grasp.weight", contact, vec3(1));
       }
     } else {
       key(gen, h.pose, pre, kOpen);
       key(gen, h.pose, contact, kOpen);
     }
-    if (grasp && style.shape == "wrap") {  // fingers close on the prop's size by contact search (anim: applyHandPose)
+    pl.faceGrasp = faceSearch;
+    if (faceSearch) {  // T-112c: the per-finger grasp on the box face (T-051 slab: centre, half thickness, inward normal)
+      key(gen, h.pose + ".grasp", start, pl.centre, Interp::Step);
+      key(gen, h.pose + ".graspRadius", start, vec3(pl.radius), Interp::Step);
+      key(gen, h.pose + ".graspAxis", start, vec3(0), Interp::Step);
+      key(gen, h.pose + ".graspFace", start, glm::transpose(pl.R) * pl.inward, Interp::Step);
+      key(gen, h.pose + ".grasp.weight", start, vec3(0));
+      key(gen, h.pose + ".grasp.weight", contact - 4, vec3(0));
+      key(gen, h.pose + ".grasp.weight", contact, vec3(1));
+    } else if (grasp && style.shape == "wrap") {  // fingers close on the prop's size by contact search (anim: applyHandPose)
       key(gen, h.pose + ".grasp", start, pl.centre, Interp::Step);
       key(gen, h.pose + ".graspRadius", start, vec3(pl.radius), Interp::Step);
       key(gen, h.pose + ".graspAxis", start, pl.axis, Interp::Step);
@@ -808,16 +863,17 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
     return name;
   };
   // Lets go: fingers open, the wrist backs away from the prop and the arm returns to its own animation by `end`.
-  auto release = [&](const Hand& h, const quat& orient, double from, double end, vec3 retreat, const std::string& shape = "wrap") {
+  auto release = [&](const Hand& h, const quat& orient, double from, double end, vec3 retreat, const std::string& shape = "wrap",
+                     bool faceGrasp = false) {
     const vec3 wrist = clip.evaluate(h.ik, from, vec3(0));
-    if (const auto sh = handShapePoses(shape)) {  // T-112b: the shape opens (slow-out of its closed pose)
-      key(gen, h.pose, from, sh->closed);
-      key(gen, h.pose, from + 3, sh->open);
+    if (const HandShape* sh = tableShape(shape)) {  // T-112b / T-112c: the shape opens (slow-out of its held pose)
+      keyHandShape(gen, h.pose, from, *sh, false);
+      keyHandShape(gen, h.pose, from + 3, *sh, true);
       key(gen, h.pose, end, kRelaxed);
-      if (sh->openIndex >= 0) {
-        key(gen, h.pose + ".index", from, vec3(sh->closedIndex));
-        key(gen, h.pose + ".index", from + 3, vec3(sh->openIndex));
-        key(gen, h.pose + ".index", end, vec3(kRelaxed.x));
+      keyShapeRest(gen, h.pose, end, *sh, kRelaxed);
+      if (sh->search != HandShapeSearch::None || faceGrasp) {  // a contact search (or a box-face search) lets go
+        key(gen, h.pose + ".grasp.weight", from, vec3(1));
+        key(gen, h.pose + ".grasp.weight", from + 5, vec3(0));
       }
     } else {
       key(gen, h.pose + ".grasp.weight", from, vec3(1));
@@ -884,9 +940,13 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
     // T-112b grasp style (keys written by the verb expander; absent: today's wrap grasp, unchanged)
     GraspStyle style;
     style.shape = str(a, "shape", "wrap");
-    if (style.shape != "wrap" && !handShapePoses(style.shape))
-      return fail(std::format("{}: unknown hand shape '{}' (wrap, pinch, palm, hook, cradle)", what, style.shape));
+    if (style.shape != "wrap") {
+      auto hs = graspHandShape(style.shape, what);
+      if (!hs) return std::unexpected(hs.error());
+      style.hs = *hs;
+    }
     style.approach = vecOpt(a, "approach");
+    style.face = flag(a, "graspFace", false);
     if (auto b = a.find("band"); b != a.end()) {
       if (!b->is_array() || b->size() != 2 || !(*b)[0].is_number() || !(*b)[1].is_number())
         return fail(std::format("{}: 'band' must be [lo, hi] (metres along the grasp axis)", what));
@@ -907,19 +967,19 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
     if (!pl) return std::unexpected(pl.error());
     ctx.contacts.push_back({c, h.side, contact, p, socket, false, vec3(0)});
     if (follower) {
-      ctx.hands[{c, h.side}] = {p, pl->orient, socket, style.shape, true};
+      ctx.hands[{c, h.side}] = {p, pl->orient, socket, style.shape, true, pl->faceGrasp};
       ctx.followers.push_back({c, h.side, p, socket, contact});
       return true;
     }
     if (grasp) {
       if (auto r = addSwitch(p, contact, PropParent{PropParent::Kind::Character, who, std::string("hand.") + h.side}, what); !r)
         return std::unexpected(r.error());
-      ctx.hands[{c, h.side}] = {p, pl->orient, socket, style.shape};
+      ctx.hands[{c, h.side}] = {p, pl->orient, socket, style.shape, false, pl->faceGrasp};
       if (look) gazeOn(h, p, start, contact + 8);
     } else {
       const double end = num(a, "end", contact + beat("hold", 12, c));
       key(gen, h.ik, contact + 2, clip.evaluate(h.ik, contact, vec3(0)));
-      release(h, pl->orient, contact + 2, std::max(end, contact + 10), -pl->inward * 0.05f + kUp * 0.02f, style.shape);
+      release(h, pl->orient, contact + 2, std::max(end, contact + 10), -pl->inward * 0.05f + kUp * 0.02f, style.shape, pl->faceGrasp);
       if (look) {
         gazeOn(h, p, start, contact + 6);
         gazeAt(h, forwardPoint(h, end), end + 6);
@@ -987,7 +1047,8 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
     if (auto r = addSwitch(*p, contact, onto, "place"); !r) return std::unexpected(r.error());
     ctx.contacts.push_back({c, h.side, contact, *p, socket, true, target});
     ctx.hands[{c, h.side}].prop = -1;
-    release(h, orient, contact, end, -(glm::mat3_cast(orient) * h.grip.palmNormal) * 0.05f + kUp * 0.03f, ctx.hands[{c, h.side}].shape);
+    release(h, orient, contact, end, -(glm::mat3_cast(orient) * h.grip.palmNormal) * 0.05f + kUp * 0.03f, ctx.hands[{c, h.side}].shape,
+            ctx.hands[{c, h.side}].faceGrasp);
     // T-112b: the second hand of a two-hand grasp lets go with the leading hand, its wrist where the prop frame puts it
     for (auto& fl : ctx.followers) {
       if (fl.prop != *p || fl.to < 1e29) continue;
@@ -1002,7 +1063,7 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
       key(gen, fh->orient + ".weight", contact, vec3(1));
       ctx.hands[{fl.character, fl.side}].prop = -1;
       ctx.hands[{fl.character, fl.side}].follower = false;
-      release(*fh, fhold.orient, contact, end, -(glm::mat3_cast(fhold.orient) * fh->grip.palmNormal) * 0.05f + kUp * 0.03f, fhold.shape);
+      release(*fh, fhold.orient, contact, end, -(glm::mat3_cast(fhold.orient) * fh->grip.palmNormal) * 0.05f + kUp * 0.03f, fhold.shape, fhold.faceGrasp);
     }
     if (look) {
       gazeOn(h, *p, start, contact + 6);
@@ -1027,6 +1088,17 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
     return fail(std::format("handover: '{}' already holds '{}' in hand.{}", to, scene_.props[size_t(it->second.prop)].name, r.side));
   const std::string authoredToSocket = str(a, "toSocket", "grip_b");
   if (auto rs = requireSocket(*p, authoredToSocket, "handover"); !rs) return std::unexpected(rs.error());
+  // T-112c: the receiver's finger band and box face (written by the pass verb under the finger gate; absent: today's)
+  GraspStyle rStyle;
+  if (auto b = a.find("toBand"); b != a.end()) {
+    if (!b->is_array() || b->size() != 2 || !(*b)[0].is_number() || !(*b)[1].is_number())
+      return fail("handover: 'toBand' must be [lo, hi] (metres along the grasp axis)");
+    rStyle.band = vec2((*b)[0].get<float>(), (*b)[1].get<float>());
+    const std::string th = str(a, "toThumb", "opposed");
+    if (th != "opposed" && th != "along" && th != "tucked") return fail("handover: toThumb must be opposed, along or tucked");
+    rStyle.thumb = th == "opposed" ? 0.0f : th == "along" ? 1.0f : 2.0f;
+  }
+  rStyle.face = flag(a, "toGraspFace", false);
   const double rStart = num(a, "receiverStart", start + beat("reaction_delay", 4, rc));
   const double contact = num(a, "contact", ctx.timing ? rStart + beat("reach", 18, rc) : start + 18);
   const double rel = num(a, "release", contact + beat("shared_hold", 4, c)), end = num(a, "end", rel + beat("release", 12, c));
@@ -1035,6 +1107,7 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
   // Giver: brings the prop to the meeting point a little before contact and holds it still until it lets go.
   const quat gOrient = ctx.hands[{c, h.side}].orient;
   const std::string gShape = ctx.hands[{c, h.side}].shape;
+  const bool gFace = ctx.hands[{c, h.side}].faceGrasp;
   const vec3 origin = vec3(propWorld(size_t(*p), start)[3]);
   // T-096 visibleGrip: the receiver's grip turned to keep the prop in view, away from the giver's (the prop keeps its
   // orientation from the start of the hand-over to the contact, so its sides are known now).
@@ -1062,7 +1135,7 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
     correct(h, still, [&] { return m - vec3(propWorld(size_t(*p), still)[3]); });
     for (auto& k : gen.tracks[h.ik].keys)  // still means still: contact repeats the corrected meeting key
       if (std::abs(k.frame - contact) < 1e-6) k.value = clip.evaluate(h.ik, still, wristM);
-    return reachTo(r, *p, toSocket, rStart, contact, true, what, toSocket != authoredToSocket);
+    return reachTo(r, *p, toSocket, rStart, contact, true, what, toSocket != authoredToSocket, rStyle);
   };
   // T-030: the meeting point must leave both arms (forearm and hand surface) outside their own bodies and within
   // both reaches. Candidates on a grid around the requested point (3 cm steps, then 1 cm steps around the best); the
@@ -1135,7 +1208,7 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
     return std::unexpected(rs.error());
   ctx.contacts.push_back({rc, r.side, contact, *p, toSocket, false, vec3(0)});
   ctx.shared.push_back({c, h.side, *p, ctx.hands[{c, h.side}].socket, contact, rel, end});
-  ctx.hands[{rc, r.side}] = {*p, pl->orient, toSocket};
+  ctx.hands[{rc, r.side}] = {*p, pl->orient, toSocket, "wrap", false, pl->faceGrasp};
   ctx.hands[{c, h.side}].prop = -1;
   // Giver lets go after the receiver holds it and draws the hand back towards its own shoulder.
   key(gen, h.ik, rel, clip.evaluate(h.ik, contact, wristM));
@@ -1143,7 +1216,7 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
   key(gen, h.orient, rel, rotationVector(gOrient), Interp::Linear);
   key(gen, h.orient + ".weight", rel, vec3(1));
   const vec3 back = boneAt(h, h.root, rel) - wristM;
-  release(h, gOrient, rel, end, glm::normalize(back) * 0.08f - (glm::mat3_cast(gOrient) * h.grip.palmNormal) * 0.03f, gShape);
+  release(h, gOrient, rel, end, glm::normalize(back) * 0.08f - (glm::mat3_cast(gOrient) * h.grip.palmNormal) * 0.03f, gShape, gFace);
   if (look) {
     gazeOn(h, *p, start, rel);
     gazeAt(h, headPoint(rc, end), end);
