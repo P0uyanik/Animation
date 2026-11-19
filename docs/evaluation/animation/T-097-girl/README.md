@@ -118,9 +118,8 @@ round 1 (planned delay 4.5 f instead of 4 + 2).
 Checks on the scene as it plays (authored + planned actions): acting 0 warnings (glances 4.5 f and 6 f after the
 events, gesture amplitude 0.545, still hold 44 f), personality pass, timing 0 warnings, animcheck `--check` pass,
 hand at chin 36 mm mean (37.6 max), no engine warnings; `tests/acting/test_girl_signature.py` 21 OK; gate PASS.
-`plush_tests`: one shared assertion fails, `tests/test_reaction_playback.cpp:154` (it pins the generated action
-order for the girl's real profile without a gesture; her `object_appears` now plays `girl_wonder_point`):
-reported to the Supervisor, not edited.
+`plush_tests` all pass after merging `integration/t-097-girl` 085e6a1 (the Supervisor's fix to
+`tests/test_reaction_playback.cpp`: the girl's planned gesture follows its emotion).
 
 Evidence: [preview_round2.jpg](preview_round2.jpg) (Cycles 8 samples, eight key frames) and
 [strip_round2_preview.jpg](strip_round2_preview.jpg) (the reference strip with the round-2 preview frames). The poses
@@ -134,4 +133,5 @@ and beats are the round-1 ones (1.5 f earlier, slightly less head tilt in the wo
 - Render: two runs of one bake (frames 1-77, then 78-156 after a background time limit; frame data identical),
   joined with ffmpeg (24 fps, x264 crf 22).
 
-ledger: build 6 · render 72 · tests 6 · ci 0 · wait 0 (min)
+ledger: build 6 · render 72 · tests 6 · ci 0 · wait 0 (min) (round 1)
+ledger: build 3 · render 3 · tests 6 · ci 0 · wait 0 (min) (round 2)
