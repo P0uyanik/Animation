@@ -1,0 +1,30 @@
+﻿# T-151 · A1 legacy engine dependency map
+
+Independent static audit of `37901c4` for comparison with the A1 implementer's report before deletion. The renderer can retire as a unit. Three interfaces cross its directory boundary: the production bake executable, the headless shot workflow and the model types used by imported characters and collision.
+
+## Removal boundaries
+
+| Disposition | Files | Consumers and action |
+|---|---|---|
+| SAFE TO REMOVE | `engine/render/{pathtracer,bsdf,image}.{h,cpp}`, `tests/test_render.cpp`, `apps/export-obj/` | Retire the Embree tracer, shading, denoise, image I/O, five renderer cases and evaluated-frame OBJ/MTL exporter. Blender's comparison harness still reads existing OBJ and blend files. |
+| MIXED | `apps/render-cli/`, root and engine CMake | Preserve the executable name/path, scene load, frame range, evaluator, `--bake` and `bakeShot`. Production invokes this contract in `pipeline/production/run_shot.py:335,450`. Retire image/video/compare output, renderer-only flags, link target and compile guards. |
+| MIXED | `apps/studio/` | Retire the preview and procedural editor in `main.cpp`. Account for its production shot controls. Keep `plush_shot_workflow`, `shot_workflow.{h,cpp}`, `shot_job_windows.cpp` and `test_shot_workflow.cpp` for discovery, merge-save, launch, cancellation and status. Their build currently sits under `PLUSH_BUILD_STUDIO`. |
+| MIXED | Dependency manifests, CI and test registration | Retire `PLUSH_BUILD_RENDERER`, Embree/OIDN, image-only stb and desktop-only GLFW/GLEW/OpenGL/ImGui wiring. Remove the `renderer` job **and** its `needs` edge, required job/report in `combine_check_reports.py`, shard-test expectation, `ci_status.py` job name and `check_all.py` skip report. Preserve Linux/Windows core, Blender shards and character regression. |
+| MIXED | `engine/model/character.*`, `scene.*`, `engine/fuzz/` | Extract shared asset, rig, skinned mesh, morph and posed-mesh types, skinning, expression resolution, inbetweens and walk-step logic. Retire character SDF authoring/build/rebuild, primitive morph edits, generated fuzz and yarn locks after migrating callers. Remove scene-object fuzz separately from object geometry. |
+
+## Collision and scene SDF pieces that must stay
+
+1. **Scene object format.** Keep `ObjectDesc::Kind::Sdf`, `ObjectDesc::part`, the `"kind": "sdf"` dispatch and its read/write paths in `engine/scene/scene.cpp:21,32,469,703`. Keep `primFromJson`, `partFromJson`, `primToJson`, `expandMirrors` and its single-argument `mirrorName`. The scene writer emits part metadata and expanded primitives itself. `partToJson` belongs to the character writer. Milestone 02 supplies shelf, red/yellow/blue blocks, rug and table as SDF objects.
+2. **Scene object geometry.** Keep `SdfPrim`, `SdfPart`, `PrimType`, `SurfacePattern` and `meshSdfPart`. Its dependencies include `primBounds`, `partBounds`, `Aabb`, `evalPart`, `sdfPrim`, `sdfPart`, `sdfGradient`, `sdEllipsoid`, `sdCapsule`, `sdRoundCone`, `sdRoundBox`, `sdDisc`, `signf`, `smin`, `smax`, `patternHeight`, `fbm` and `gradientNoise`. Preserve transforms, blend/subtraction, noise and relief, voxel sampling, brick culling, parallel surface-net extraction and the resulting mesh. Bake v1 records these object names under `objects_not_baked` (`shot_bake.cpp:38–50`).
+3. **Body collision.** `interaction.cpp:123,1236` passes the skeleton, weighted meshes and package block to `collisionBodyFor`. Keep `collisionBodyFromJson`, `collisionBodyToJson`, fallback `deriveCollisionBody`, `addHeadVolumes`, `headSpheres`, `headGap`, `sectionGap`, `segmentClearance` and `limbClearance`. The direct dependency on `character.h` in `collision.cpp:11` is for `SkinnedMesh`: rest positions, joint indices and weights. Preserve skeleton roles, bone hierarchy/rest transforms, the imported loader's collision block and its exporter in `pipeline/charsys/export_engine.py`. The solver fits torso sections and limb capsules. It makes zero calls to the SDF evaluator. Library prop proxies separately accept box, sphere and capsule in `asset_library.cpp:95`.
+4. **Legacy collision fixtures.** While tests exercise `kSdf`, preserve `loadCharacter`, `characterFromJson`, `resolveBones` and the rest-mesh path through `buildCharacter`: `meshSdfPart`, `computeSkinWeights` and optional `smoothSkinWeights` (`character.cpp:438–450`). This supplies vertices and weights to the same fallback as older imported packages. Migrate those cases before removing the legacy builder. Keep packaged and derived body coverage, head volumes and the motion-check trace. Its manual link example still names `plush_fuzz` and Embree.
+
+## Fixtures and evidence
+
+Retire the three renderer CTests for Milestone 01, neutral face and lineup. All four PNGs in `tests/regression/` are hashed in `tools/frozen_manifest.txt`, including the inactive iteration-3 lineup. Preserve frozen evidence independently of retiring its test. The four legacy scenes and five procedural character JSONs have different consumers. Studio opens Milestone 01, `make_face_test.py` derives the face scene from Milestone 02, and core tests load the white-haired girl and dark-haired boy directly. Preserve imported eval and episode shots.
+
+In `test_engine.cpp`, retain the mesher cases at 91 and 119, shared skinning, scene round-trip, IK and acting. Separate the character-weight, fiber, procedural morph and lock cases at 164, 239, 299 and 320. Migrate the legacy fixture arms of collision, interaction, hand-shape, body mechanics, face, emotion, verbs and bake-golden tests. Only the `/engine` interaction hashes follow the legacy cast. Imported boy/girl goldens and production shot bakes remain independent checks.
+
+`deps.csv` indexes tracked text references at the audited revision by path, matched name and source lines. Classification applies to the containing file unless the reason identifies a narrower change. File-only entries cover binaries and scene fixtures. Documentation and historical logs are reference evidence. This static inventory does not resolve paths supplied by external callers.
+
+ledger: build 0 · render 0 · tests 0 · ci 0 · wait 0 (min)
