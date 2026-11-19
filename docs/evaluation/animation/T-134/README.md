@@ -218,3 +218,54 @@ the contact stays within 5 mm, and everything is back where it is without the me
 
 All three wait for T-135's `tools/motion_checks/reach` to be re-measured with the shared tool; the numbers above are
 from the scripts in this folder.
+
+## Revision after the Supervisor's review (final state)
+
+The sections above describe each item as first checkpointed. The review asked for changes; this section is the
+state on the branch now, and **its numbers replace the ones above** where they differ. `s010_e1` still holds
+`"reachMechanics": true`; what changed are the defaults and four mechanisms.
+
+Evidence: [final_compare_f72_f76_f110_f114.jpg](final_compare_f72_f76_f110_f114.jpg) (full-size frames, `before`
+above, final below) · [final_preview_strip.jpg](final_preview_strip.jpg) · [final_wrist_paths.jpg](final_wrist_paths.jpg)
+· [final_offsets.jpg](final_offsets.jpg) · T-135's tool on the final bake: [final_reach_t135.md](final_reach_t135.md)
+(`tools/motion_checks/reach/run.py` from `t-135-claude-reach-measures`, windows boy R f57-76 and girl L f104-114,
+baseline = `s010`) · own scripts: [final_measures.json](final_measures.json), [final_arcs.json](final_arcs.json),
+[final_overlap.json](final_overlap.json).
+
+| Review point | What changed | Result on e910 |
+|---|---|---|
+| Sharp slow-down after the peak | The IK weight comes in on the same ease curve as the target and is full at 85 % of the reach, not at the approach point. No planner ramp was rounded. | T-135 `dec2` (largest speed fall over 2 f): boy 19.4 → 14.2 mm/f (E1c 17.6); girl 40.2 → 29.3. Boy after the peak: 28.8 26.5 20.0 12.3 7.2 6.4 4.9 3.3 1.3 0.2. One hump on both (stall 0.01 / 0.05). |
+| Lead too small to see | Defaults: lean 4° → 8°, turn 5° → 10°, shoulder advance 12 → 20 mm, hips' share 20 → 30 %. | Chest turns 6.8° (boy) and 10.6° (girl) against `before`; shoulder joint +34 mm / +54 mm along the reach. It reads in the full-size frames. 0 warnings. |
+| Clavicle does not rotate | New: the reaching arm's clavicle (`DEF-shoulder`, `clavicle`, `shoulder`) turns its outer end 10° towards the prop. | T-135 lead, shoulder rotation: `–` (too quiet to measure) → starts 1 f (boy) and 2 f (girl) before the wrist. |
+| Hips do not move | New: the pelvis shifts 12 mm towards the prop; legs keep their hip joints. | T-135 lead, hip shift: `–` → +4 f / +5 f before the wrist; hip rotation +4 f for the girl, still `–` for the boy. |
+| Near-stop at f52, hip twitch f50-51 | Anticipation 6 f → 10 f, counter move 25 % → 15 % of the lead; an arm not yet on its IK target rides only half way with the torso. | Boy's wrist f44-56: 11.2 10.6 10.5 10.4 8.8 8.0 6.9 7.1 9.2 8.5 8.9 8.9 9.5 mm/f; no near-stop. |
+| Arcs visible, bowing up | Default arc 12 % → 20 % of the chord; the bow is upward unless the move is itself vertical. | Carries: 26 mm (boy), 15 mm (boy's bring), 9 mm (girl). Timing unchanged. |
+| Arc the returns | The hand's way back after a release goes through the same arc. | Boy's return f137-149: arc 0.127 → 0.154. |
+| Girl's turn at f109-110 | Tried a flatter reach curve (control point 1.5 and 1.2 approach lengths out instead of 2). Not kept, see limit 2. | Unchanged in kind: her path is long and shallow, then hooks onto the grip in the last two frames, at 6 and 4 mm/f. |
+| Overlap visible, not busy | No new mechanism; it scales with the lead. | Head swing after contact about 2° (boy: 2.4 1.9 0.0 1.8 1.9 1.0 0.1 every 2nd frame). Hair up to 47 mm (boy) and 64 mm (girl) from `before`. |
+| Popping 63 → 66 | — | Now 64. The three cases named in the review (finger f43 / f152, palm f68) are gone. The difference to `before` is the same events flagged on other bones: her reach f107-113 on forearm and blouse instead of hand and finger, his hoodie at f67-69 (10.6 mm/f²), and hair chains trading places. Interpenetration 4. |
+
+Other checks on the final bake: wrist speed after both contacts 0.0; cup top speed 12.2 mm/f as before, largest
+acceleration 3.5 → 4.2 mm/f²; feet within 2.4 mm of `before` (was 0.7 mm with the smaller lead).
+
+### Limits of the final state
+1. **The girl's lead may be too much.** Her chest turns 10.6° and her shoulder comes 54 mm forward on a 147 mm
+   reach, and 2° of the turn is still there 12 f after her contact. In the frames it reads as a lean into the
+   hand-over; whether that is right for her is a direction call. The lead scales with how far along the arm the prop
+   is, and hers is at full reach.
+2. **Her deceleration is still the largest number** (47.5 → 40.4 → 18.2 mm/f): a 147 mm reach in 10 frames. The
+   flatter curves did not lower it (T-135 `dec2` 29.4 and 29.0) and brought back a one-frame dip in the boy's
+   drift before his reach (to 2.7 mm/f at f51, 4.8 at f54). That dip comes from the collision planner's arm lift
+   changing direction; `before` has one at f43. Which frame it lands on, or whether it shows, changes with small
+   changes to the reach, so its absence now is not a guarantee.
+3. **The hand moves about 10 mm/f when the boy's reach starts** (7 mm/f in `before`): the planner's arm-lift drift
+   plus the half ride with the torso. T-135 onset step 0.35.
+4. **Boy's torso settle reads 28 f in T-135's tool**: the lead is given back over 14 f and then settles; it is not
+   a wobble (chest turn after contact: 6.8 6.3 4.8 2.7 1.1 0.3 0.1).
+5. **Hair is livelier than before** (64 mm on the girl). Not judged in motion: there is no movie, only stills.
+6. The strip is small; use the full-size comparison for the lead and the path plot for the arcs.
+
+### Tests
+`tests/test_reach_mechanics.cpp` was adjusted to the new defaults (it is this task's own file; no other test,
+threshold or golden changed): the lead window, the carry arc bound, and the head's smoothness is now checked as
+step and change of step. Full `plush_tests`: see the READY report.

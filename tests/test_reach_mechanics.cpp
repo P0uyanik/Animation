@@ -109,12 +109,12 @@ void easeAndAnticipation(const char* asset) {
   const vec3 dir = glm::normalize(bonePos(*on, "hand.R", kContact) - bonePos(*on, "hand.R", kStart));
   auto lead = [&](double f) { return glm::dot(bonePos(*on, "upperArm.R", f) - bonePos(*off, "upperArm.R", f), dir); };
   float dip = 0, full = 0;
-  for (double f = kStart - 8; f <= kStart; f += 1) dip = std::min(dip, lead(f));
+  for (double f = kStart - 16; f <= kStart; f += 1) dip = std::min(dip, lead(f));
   for (double f = kStart; f <= kContact; f += 1) full = std::max(full, lead(f));
   MESSAGE(std::string(asset) << ": shoulder lead along the reach: counter " << dip * 1000 << " mm, full " << full * 1000 << " mm");
   CHECK(dip < -0.0005f);
   CHECK(full > 0.004f);
-  CHECK(glm::distance(bonePos(*on, "upperArm.R", kStart - 10), bonePos(*off, "upperArm.R", kStart - 10)) < 1e-5f);
+  CHECK(glm::distance(bonePos(*on, "upperArm.R", kStart - 18), bonePos(*off, "upperArm.R", kStart - 18)) < 1e-5f);
   const float travel = glm::distance(bonePos(*on, "hand.R", kContact), bonePos(*on, "hand.R", kStart));
   double tenth = kStart;
   while (tenth < kContact && glm::distance(bonePos(*on, "hand.R", tenth), bonePos(*on, "hand.R", kStart)) < 0.1f * travel) tenth += 1;
@@ -123,7 +123,7 @@ void easeAndAnticipation(const char* asset) {
   // The lead is given back after the contact, and the feet stay where they were.
   CHECK(glm::distance(bonePos(*on, "upperArm.R", 70), bonePos(*off, "upperArm.R", 70)) < 0.002f);
   if (on->characters()[0].asset.skeleton.find("foot.R") >= 0)
-    for (double f = kStart - 8; f <= 60; f += 2) CHECK(glm::distance(bonePos(*on, "foot.R", f), bonePos(*off, "foot.R", f)) < 0.004f);
+    for (double f = kStart - 16; f <= 60; f += 2) CHECK(glm::distance(bonePos(*on, "foot.R", f), bonePos(*off, "foot.R", f)) < 0.004f);
 }
 
 // Largest deviation of the wrist path over [a, b] from its chord / chord length.
@@ -148,7 +148,7 @@ void carryArc(const char* asset) {
   MESSAGE(std::string(asset) << ": carry arc (deviation / chord) off " << a0 << ", on " << a1);
   CHECK(a0 < 0.03f);
   CHECK(a1 > 0.06f);
-  CHECK(a1 < 0.2f);
+  CHECK(a1 < 0.3f);
   // Same ends and the same timing: only the path between them changes.
   CHECK(glm::distance(vec3(on->propWorld(0, 58)[3]), vec3(off->propWorld(0, 58)[3])) < 0.001f);
   CHECK(glm::distance(bonePos(*on, "hand.R", 42), bonePos(*off, "hand.R", 42)) < 0.001f);
@@ -203,8 +203,14 @@ void overlapAndSettle(const char* asset) {
   CHECK(headDiffAfter > 0.0003f);
   // Settled: at the end everything is where it is without the mechanics, and nothing steps on the way.
   for (const char* bone : {"head", "chest", "upperArm.R"}) CHECK(glm::distance(bonePos(*on, bone, 79), bonePos(*off, bone, 79)) < 0.0005f);
-  for (double f = kStart - 12; f < 79; f += 1)
-    CHECK(std::abs(lead(*on, "head", f + 1) - lead(*on, "head", f)) < 0.004f);
+  float step = 0, jerk = 0;
+  for (double f = kStart - 18; f < 78; f += 1) {
+    step = std::max(step, std::abs(lead(*on, "head", f + 1) - lead(*on, "head", f)));
+    jerk = std::max(jerk, std::abs(lead(*on, "head", f + 2) - 2 * lead(*on, "head", f + 1) + lead(*on, "head", f)));
+  }
+  MESSAGE(std::string(asset) << ": head along the reach: largest step " << step * 1000 << " mm/f, largest change of step " << jerk * 1000 << " mm/f^2");
+  CHECK(step < 0.012f);
+  CHECK(jerk < 0.004f);
 }
 
 }  // namespace

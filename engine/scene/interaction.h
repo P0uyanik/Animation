@@ -192,6 +192,9 @@ struct InteractionContext {
     double start = 0, contact = 0, anticipation = 0, recover = 0;  // frames
     vec3 lead{0}, shoulder{0};  // full torso lead (world rotation vector) and shoulder advance (world, metres)
     std::string shoulderTrack;
+    vec3 clavicle{0};           // clavicle turn (world rotation vector); track "" = the rig has no clavicle
+    std::string clavicleTrack;
+    vec3 hip{0};                // hip shift (world, metres)
   };
   std::vector<ReachLead> reachLeads;
   bool parentsChecked = false;  // authored prop parents are checked before the first interaction evaluates props

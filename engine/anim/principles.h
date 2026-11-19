@@ -56,35 +56,44 @@ struct ReachMechanics {
   // E1a ease: the wrist target travels one curve through the reach's three points (start, approach, contact) on a
   // slow-in / slow-out profile (zero speed and acceleration at the start and at the contact), keyed every frame,
   // instead of the three smooth keys, whose path has a corner at the approach point. easePeak: the fraction of the
-  // reach at which the wrist is fastest (< 0.5: a longer slow-out into the contact). With the mechanics on, the
+  // reach at which the wrist is fastest (< 0.5: a longer slow-out into the contact). The IK weight comes in on the
+  // same curve (weightPeak) and is full at weightFull of the reach instead of at the approach point, where it would
+  // stop rising while the target is still fast and brake the wrist. With the mechanics on, the
   // collision planner's wrist push also stops at pinned frames (a ramp no longer resumes right after a contact).
   bool ease = true;
   double easePeak = 0.45;
+  double weightPeak = 0.4, weightFull = 0.85;  // the IK weight comes in on the same curve, full at this share of the reach
   // E1a anticipation: the body leads the hand. From anticipationSec before the reach starts the torso first moves a
   // little away from the prop (counter, fraction of the lead) and then leans and turns towards it (leanDeg about the
   // horizontal axis across the reach, twistDeg about the vertical: the reaching shoulder comes forward; both scaled
   // down for props close to the shoulder), each link successionSec before the next (hips -> spine -> chest ->
   // shoulder -> wrist); the hips take hipShare of it and the shoulder joint advances shoulderM towards the prop. The
   // lead is full at leadPeak of the reach, is held to the contact and is given back over recoverSec. The wrists of
-  // IK-driven arms stay on their targets (the arm is solved again from the moved shoulder). A lead that would cost
+  // IK-driven arms stay on their targets (the arm is solved again from the moved shoulder); an arm that has an IK
+  // track but is not on it yet rides only half way with the torso, so the body leads and the hand hangs back. The
+  // reaching arm's clavicle turns towards the prop (clavicleDeg) and the pelvis shifts towards it (hipShiftM). A lead that would cost
   // the reaching arm its room against the body at the contact is reduced (quarter steps) until it does not.
   bool anticipation = true;
-  double anticipationSec = 0.25;
-  double counter = 0.25;
-  double leanDeg = 4.0, twistDeg = 5.0;
-  double shoulderM = 0.012;
-  double hipShare = 0.2;
+  double anticipationSec = 0.42;
+  double counter = 0.15;
+  double leanDeg = 8.0, twistDeg = 10.0;
+  double shoulderM = 0.02;
+  double clavicleDeg = 10.0;  // the reaching arm's clavicle turns its outer end this far towards the prop
+  double hipShiftM = 0.012;   // the pelvis shifts this far towards the prop (legs keep their hip joints)
+  double hipShare = 0.3;
   double successionSec = 0.06;
   double leadPeak = 0.6;
   double recoverSec = 0.6;
   double headStabilize = 0.7;  // share of the torso lead the neck takes back (the eyes keep their aim)
   // E1b arcs: no wrist move is a straight chord. A carry (hold) and the giver's way to a hand-over point travel a
-  // shallow arc with their own timing: the mid point is `arc` x chord away from the chord, on the side away from the
-  // shoulder (less when the arm could not reach that far). A reach's eased curve (needs "ease") takes the approach
+  // shallow arc with their own timing: the mid point is `arc` x chord away from the chord, bowing upward (a move that
+  // is itself nearly vertical bows away from the shoulder; less when the arm could not reach that far). The hand's
+  // way back after a release is arced the same way. A reach's eased curve (needs "ease") takes the approach
   // point as the direction the hand arrives from instead of a point to pass, so its bend is spread over the whole
   // reach, and is bent to at least `arc`. Moves shorter than arcMinChordM stay as they are.
   bool arcs = true;
-  double arc = 0.12;
+  double arc = 0.2;
+  double approachReach = 2.0;  // reach: the curve's control point, in approach distances out from the contact
   double arcMinChordM = 0.03;
   // E1c overlap and settle (needs "anticipation"): the torso and the shoulder follow the lead through a damped
   // response (anim/body_mechanics.h followKernel: settles within torsoSettleSec, overshoots by torsoOvershoot of a
@@ -101,7 +110,8 @@ struct ReachMechanics {
 };
 // null | true | false | {"enabled", "ease", "easePeak", "anticipation", "anticipationSec", "counter", "leanDeg",
 // "twistDeg", "shoulderM", "hipShare", "successionSec", "leadPeak", "recoverSec", "headStabilize", "arcs", "arc", "arcMinChordM",
-// "overlap", "torsoSettleSec", "torsoOvershoot", "headLagSec", "headSettleSec", "headOvershoot", "settleAmount", "settleSec"}.
+// "overlap", "torsoSettleSec", "torsoOvershoot", "headLagSec", "headSettleSec", "headOvershoot", "settleAmount", "settleSec",
+// "clavicleDeg", "hipShiftM", "weightPeak", "weightFull", "approachReach"}.
 Result<ReachMechanics> reachMechanicsFromJson(const Json& j);
 // Slow-in / slow-out travel fraction at x in [0, 1] with the peak speed at `peak` (0.5 = easeInOut).
 double reachEase(double x, double peak);

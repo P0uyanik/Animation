@@ -74,7 +74,9 @@ Result<ReachMechanics> reachMechanicsFromJson(const Json& j) {
                  number("arcMinChordM", m.arcMinChordM, 0, 1), number("torsoSettleSec", m.torsoSettleSec, 0.05, 2),
                  number("torsoOvershoot", m.torsoOvershoot, 0, 0.5), number("headLagSec", m.headLagSec, 0, 0.5),
                  number("headSettleSec", m.headSettleSec, 0.05, 2), number("headOvershoot", m.headOvershoot, 0, 0.5),
-                 number("settleAmount", m.settleAmount, 0, 0.5), number("settleSec", m.settleSec, 0.1, 2)})
+                 number("settleAmount", m.settleAmount, 0, 0.5), number("settleSec", m.settleSec, 0.1, 2),
+                 number("clavicleDeg", m.clavicleDeg, 0, 30), number("hipShiftM", m.hipShiftM, 0, 0.05),
+                 number("weightPeak", m.weightPeak, 0.3, 0.7), number("weightFull", m.weightFull, 0.4, 1), number("approachReach", m.approachReach, 1, 3)})
     if (!r) return std::unexpected(r.error());
   return m;
 }
