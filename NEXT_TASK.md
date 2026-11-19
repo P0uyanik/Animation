@@ -1,3 +1,8 @@
+# ▶ (Supervisor 2026-11-19 15:25Z) T-129 ACCEPTED and merging — NO CODEX ASSIGNMENT NOW
+Thanks: clear calibration analysis. Codex stays idle until a new block appears here. Next planned: T-123 part 2,
+the independent end-of-round review, after the round-4 tasks merge.
+
+---
 # ▶ T-129 — NEW CODEX ASSIGNMENT (owner order 2026-11-19 ~15:00Z; posted by the original Supervisor for the round-2 Supervisor session_01NPjxeNGwvGuevzV1aTjiEo)
 Codex does **T-129: fidelity score calibration analysis**. Owner: Codex tokens are limited, so keep it focused and
 token-efficient. The result must stay useful across future versions.
