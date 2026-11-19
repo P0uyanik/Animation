@@ -1,0 +1,111 @@
+{
+ "override": {
+  "generators": {
+   "face": "face_generic/3"
+  },
+  "face": {
+   "generator": "face_generic/3",
+   "eyes": {
+    "radius_m": 0.048,
+    "shader": "felt/1",
+    "iris": {
+     "radius": 0.5,
+     "pupil": 0.24
+    },
+    "felt": {
+     "roughness": 0.8,
+     "sheen": 0.4,
+     "highlight": [
+      0.2,
+      0.2,
+      0.08
+     ],
+     "highlight_softness": 0.05,
+     "highlight_strength": 1.5,
+     "lid_line": {
+      "roughness": 0.9,
+      "sheen": 0.3
+     },
+     "round_iris": true
+    },
+    "lids": {
+     "trim": {
+      "up_outer_deg": 72,
+      "lo_outer_deg": 62,
+      "cover_margin": 0.06,
+      "soft": 0.1,
+      "lo_back": 0.3
+     },
+     "upper_edge_deg": 47,
+     "lower_edge_deg": -50
+    },
+    "socket": {
+     "lower_band_deg": 1.0,
+     "wall_smooth_iterations": 25,
+     "corner_relax_iterations": 25
+    },
+    "scale": [
+     1.03,
+     0.8,
+     1.0
+    ]
+   },
+   "blink": {
+    "overlap_deg": 33
+   },
+   "shape": {
+    "outline_roundness": 0.9,
+    "outline_exponent": 2.6,
+    "face_width_m": 0.016,
+    "face_width_below_eye_m": 0.04,
+    "face_width_band_m": 0.04,
+    "cheek_fullness_m": 0.01,
+    "cheek_radius_m": 0.055,
+    "jaw_depth_roundness": 0.6
+   }
+  },
+  "metadata": {
+   "notes": "T-089b candidate (unpublished): T-089 face_generic/3 candidate on girl 0.11.0 with a rounder, fuller face and wider, rounder eyes (owner note 2026-11-18 ~22:35Z; ref_30/sheet30). Face: the face_generic/2 round-face options (outline superellipse, wider lower face, fuller and rounder cheeks, rounded jaw corners). Eyes: r 48 mm kept, the eyeball narrowed less (x scale 0.9 -> 1.03), lid edges opened slightly (43/-46 -> 47/-50 deg; 52/-54 hid the upper lid line under the skin in a 15 deg glance, 43/-46 left a 10.7 % 3/4 socket rim), upper trim 66 -> 72 deg; the new opt-in face_v3 socket corner relax (25 passes) keeps the eye-corner folds below 0.11.0 (the wider eyeball alone gave 66-92 deg), blink overlap 14 -> 33 deg closes the wider eye at 3/4. The T-090b girl-face proposal is not adopted. Never publish or approve without an owner decision; the version bump is T-094.",
+   "base_candidate": "assets/characters/girl_auburn_bun_glasses/spec/candidates/T-089/girl_face3.override.json",
+   "changes_from_T-089": {
+    "face.eyes.scale": [
+     [
+      0.9,
+      0.8,
+      1.0
+     ],
+     [
+      1.03,
+      0.8,
+      1.0
+     ]
+    ],
+    "face.eyes.lids.upper_edge_deg": [
+     43,
+     47
+    ],
+    "face.eyes.lids.lower_edge_deg": [
+     -46,
+     -50
+    ],
+    "face.eyes.lids.trim.up_outer_deg": [
+     66,
+     72
+    ],
+    "face.eyes.socket.wall_smooth_iterations": [
+     10,
+     25
+    ],
+    "face.eyes.socket.corner_relax_iterations": [
+     null,
+     25
+    ],
+    "face.blink.overlap_deg": [
+     14,
+     33
+    ],
+    "face.shape": "outline_roundness 0.9, outline_exponent 2.6, face_width_m 0.016 (below eye 0.04, band 0.04), cheek_fullness_m 0.003 -> 0.01, cheek_radius_m 0.05 -> 0.055, jaw_depth_roundness 0.6"
+   }
+  }
+ }
+}

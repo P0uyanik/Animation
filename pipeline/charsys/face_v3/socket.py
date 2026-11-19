@@ -60,6 +60,8 @@ def lid_socket_v3(head, ctx, sides, cfg):
     weights, rep = {}, {}
     smooth_sel = []
     wall_sel = []  # T-081: the socket wall (lid band and ramp outside the opening), for the opt-in wall smoothing
+    corner_sel = []  # T-089b: skin at the eye corners (opening included), for the opt-in corner relax
+    crel = math.radians(_f(cfg, "corner_relax_deg", 14.0))
     soft = _f(cfg, "cover_softness", 0.12)
 
     ramp_lo = math.radians(_f(cfg, "lower_ramp_deg", _f(cfg, "ramp_deg", 6.0)))  # steeper lower wall (less lit slope)
@@ -128,6 +130,8 @@ def lid_socket_v3(head, ctx, sides, cfg):
         keep = far & ~inside & (wsm > 0.02)
         smooth_sel.append((np.where(cand)[0][keep], wsm[keep]))
         wall_sel.append(np.where(cand)[0][~far & ~inside & (fw * np.maximum(cf, 0.0) + (1 - cf) * fw > 0.02)])
+        cw_ = _smooth((np.abs(a) - (corner - crel)) / max(crel, 1e-6)) * (1.0 - _smooth((dc - 1.6 * s["r"]) / (0.2 * s["r"]))) * fw
+        corner_sel.append((np.where(cand)[0][cw_ > 0.02], cw_[cw_ > 0.02]))
         # lid-following weights (EyeWide): the skin from just inside the edge to the crease, over the eye's width
         azw = 1.0 - _smooth((np.abs(a) - fa) / math.radians(35.0))
         azw = azw * (1.0 - _smooth((dc - R_up) / (0.35 * s["r"])))  # skin away from the eye moves less
@@ -187,6 +191,30 @@ def lid_socket_v3(head, ctx, sides, cfg):
             avg = acc / np.maximum(deg, 1)[:, None]
             p[sel] += f * (avg[sel] - p[sel])
         rep["wall_smoothed_vertices"] = int(sel.sum())
+    # T-089b (opt-in, default 0 = unchanged): relax the skin at the eye corners, the opening's own vertices included.
+    # A wider (less narrowed) eyeball makes the opening's corner meet the socket wall at a sharp fold that the wall
+    # smoothing cannot reach (it keeps the opening fixed); a few weighted passes in a narrow azimuth band at each
+    # corner (corner_relax_deg inside the corner and beyond it, fading out with distance) turn it into a slope.
+    cit = int(_f(cfg, "corner_relax_iterations", 0))
+    if cit > 0 and corner_sel:
+        wsel = np.zeros(len(p))
+        for idx_s, w_s in corner_sel:
+            wsel[idx_s] = np.maximum(wsel[idx_s], w_s)
+        sel = wsel > 0
+        me = head.data
+        ed = np.empty(len(me.edges) * 2, dtype=np.int64)
+        me.edges.foreach_get("vertices", ed)
+        ed = ed.reshape(-1, 2)
+        ed = ed[sel[ed[:, 0]] | sel[ed[:, 1]]]
+        deg = np.bincount(ed.ravel(), minlength=len(p)).astype(float)
+        f = _f(cfg, "corner_relax_factor", 0.5)
+        for _ in range(cit):
+            acc = np.zeros_like(p)
+            np.add.at(acc, ed[:, 0], p[ed[:, 1]])
+            np.add.at(acc, ed[:, 1], p[ed[:, 0]])
+            avg = acc / np.maximum(deg, 1)[:, None]
+            p[sel] += (f * wsel[sel])[:, None] * (avg[sel] - p[sel])
+        rep["corner_relaxed_vertices"] = int(sel.sum())
     write(p)
     ctx.invalidate()
     return rep, weights

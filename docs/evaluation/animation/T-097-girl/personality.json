@@ -1,0 +1,87 @@
+{
+ "format": "plush.animcheck_personality",
+ "version": 1,
+ "scene": "e908_girl_acting s010: T-097-girl solo acting - notice, wonder (hand to chin), point, delighted hold",
+ "fps": 24.0,
+ "characters": [
+  {
+   "character": "girl",
+   "personality": "girl_auburn_bun_glasses",
+   "profile": "content/personality/girl_auburn_bun_glasses.json",
+   "profile_version": "1.0.0",
+   "limits": {
+    "blink_interval_frames": [
+     25,
+     40
+    ],
+    "blink_duration_frames": [
+     3,
+     5
+    ],
+    "reach_frames": [
+     8,
+     10
+    ],
+    "hold_frames": [
+     12,
+     40
+    ],
+    "action_speed": [
+     1.0,
+     1.25
+    ],
+    "idle_motion_max_H_per_frame": 0.006,
+    "face_offset_max": 0.2,
+    "head_pitch_deg": [
+     -5,
+     10
+    ],
+    "gesture_amplitude_max": 0.6
+   },
+   "head_width_m": 0.3072,
+   "blinks": {
+    "morph": "Blink",
+    "count": 4,
+    "frames": [
+     41,
+     66,
+     95,
+     132
+    ],
+    "durations": [
+     3.0,
+     3.0,
+     3.0,
+     3.0
+    ],
+    "double_blinks": [],
+    "intervals": [
+     25.0,
+     29.0,
+     37.0
+    ],
+    "mean_interval": 30.33
+   },
+   "gestures": [
+    {
+     "label": "girl clip girl_wonder_point @19",
+     "reach_frames": 10.0,
+     "chord_mm": 246.7,
+     "checked": true,
+     "peak_H_per_frame": 0.2283,
+     "hold_frames": 29.0,
+     "kind": "clip"
+    }
+   ],
+   "idle": {
+    "frames": 5,
+    "median_head_H_per_frame": 0.00395,
+    "p95_head_H_per_frame": 0.00405,
+    "head_amplitude_H": 0.00944,
+    "profile_idle_motion_amplitude_H": 0.006
+   },
+   "failures": []
+  }
+ ],
+ "failures": []
+}

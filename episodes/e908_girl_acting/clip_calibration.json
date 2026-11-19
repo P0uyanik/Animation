@@ -1,0 +1,132 @@
+{
+ "chin_target": [
+  0.012,
+  0.672,
+  0.11
+ ],
+ "point_dir": [
+  0.0,
+  -0.46,
+  0.88
+ ],
+ "iterations": [
+  {
+   "chin_mean_mm": 31.2,
+   "chin_max_mm": 32.4,
+   "point_mean_deg": 6.7,
+   "point_max_deg": 9.1,
+   "chin_target_before": [
+    0.012,
+    0.672,
+    0.11
+   ],
+   "point_dir_before": [
+    0.0,
+    -0.46,
+    0.88
+   ]
+  },
+  {
+   "chin_mean_mm": 30.9,
+   "chin_max_mm": 32.2,
+   "point_mean_deg": 2.0,
+   "point_max_deg": 4.4,
+   "chin_target_before": [
+    0.012,
+    0.672,
+    0.11
+   ],
+   "point_dir_before": [
+    0.0,
+    -0.46,
+    0.88
+   ]
+  },
+  {
+   "chin_mean_mm": 30.9,
+   "chin_max_mm": 32.2,
+   "point_mean_deg": 2.0,
+   "point_max_deg": 4.4,
+   "chin_target_before": [
+    0.012,
+    0.672,
+    0.11
+   ],
+   "point_dir_before": [
+    0.0,
+    -0.46,
+    0.88
+   ]
+  },
+  {
+   "chin_mean_mm": 29.7,
+   "chin_max_mm": 30.8,
+   "point_mean_deg": 10.5,
+   "point_max_deg": 14.0,
+   "chin_target_before": [
+    0.012,
+    0.672,
+    0.11
+   ],
+   "point_dir_before": [
+    0.0,
+    -0.46,
+    0.88
+   ]
+  },
+  {
+   "chin_mean_mm": 28.8,
+   "chin_max_mm": 29.7,
+   "point_mean_deg": 9.3,
+   "point_max_deg": 12.1,
+   "chin_target_before": [
+    0.012,
+    0.672,
+    0.11
+   ],
+   "point_dir_before": [
+    0.0,
+    -0.46,
+    0.88
+   ]
+  },
+  {
+   "chin_mean_mm": 34.1,
+   "chin_max_mm": 36.0,
+   "point_mean_deg": 1.1,
+   "point_max_deg": 2.7,
+   "chin_target_before": [
+    0.012,
+    0.672,
+    0.11
+   ],
+   "point_dir_before": [
+    0.0,
+    -0.46,
+    0.88
+   ]
+  },
+  {
+   "chin_mean_mm": 34.1,
+   "chin_max_mm": 36.0,
+   "point_mean_deg": 1.1,
+   "point_max_deg": 2.7,
+   "chin_target_before": [
+    0.012,
+    0.672,
+    0.11
+   ],
+   "point_dir_before": [
+    0.0,
+    -0.46,
+    0.88
+   ]
+  }
+ ],
+ "cup": [
+  0.0019,
+  0.4,
+  0.4279
+ ],
+ "note": "make_girl_clips.py solver targets (left-side definition, girl rest / chest frame), closed-loop calibrated on the e908 bake by calibrate_clips.py; iterations = errors measured before each update"
+}
