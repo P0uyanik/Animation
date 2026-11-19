@@ -1,0 +1,13 @@
+{
+ "spec": "assets/characters/boy_yellow_hoodie/versions/2.2.0/spec.resolved.json",
+ "pinned": "groom/3",
+ "pinned_sha256": "e5cf3bee0a233a766fd51025caac30518b62de0ed079a1d128325b2fda370f75",
+ "groom4_sha256": "e5cf3bee0a233a766fd51025caac30518b62de0ed079a1d128325b2fda370f75",
+ "vertices": 52284,
+ "generators": [
+  "groom/3",
+  "groom/4"
+ ],
+ "identical": true,
+ "released_files_unchanged_vs_5a90975": false
+}

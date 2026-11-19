@@ -1,0 +1,13 @@
+{
+ "spec": "assets/characters/girl_auburn_bun_glasses/versions/0.13.0/spec.resolved.json",
+ "pinned": "groom/3",
+ "pinned_sha256": "4f0d6f7db302142ca80dbae6499edcb9a282f8545393f52f42668a7be7746a2a",
+ "groom4_sha256": "3f110c231c9a1596594a01e38f2926282d5cbe5e02dde6ea091341a3269f39f3",
+ "vertices": 167510,
+ "generators": [
+  "groom/3",
+  "groom/4"
+ ],
+ "identical": false,
+ "released_files_unchanged_vs_5a90975": false
+}

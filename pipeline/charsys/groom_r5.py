@@ -26,19 +26,30 @@ spec.hair (generator "groom/4"): everything of groom/3 plus
               moves the right side along the list so the two sides differ). Each lock becomes its own structure
               "<name>_<kk>" (left) / "<name>_r<kk>" (right, mirrored structures) with the dynamics settings of
               <name>.
+              "phase_deg": [..] (T-126, style "wavy" only) sets the S-wave phase of every lock by design instead
+              of by a random draw (list repeats over the locks; equal phases = neighbours wave together, a step
+              per lock = the wave runs across the row; the mirrored side adds 180 so both sides mirror). groom/4
+              then lays the wave itself on the built lock (the lock is built straight): amplitude and wavelength
+              from "wave", plus "wave.depth" (0..1: front-back share, a rounder S), "wave.ramp_m" (length over
+              which the wave fades in, default one wavelength), "wave.start_m" (where it starts, in metres below
+              the point where the lock leaves the scalp; negative = already on the head, default 0) and "wave.tip_gain" (amplitude
+              factor reached at the tip, default 1).
   accessories               one attachment rule for flowers and felt bows. Both sit on a bun (bun, around_deg,
               height_frac, out); a felt_bow can also sit on the scalp (az, el, out), and a flower item with "attach":
               {"az", "el", "out"} moves from the bun to that scalp point. "turn": {"toward": [az, el], "amount":
               0..1} (flower item or felt_bow structure) then turns the accessory about its seat from facing straight
-              out towards that head direction.
+              out towards that head direction. "seat": "hair" (T-126; flower item or felt_bow structure) seats the
+              accessory on the built hair surface instead of the scalp or bun: a ray along the seat's outward
+              direction finds the outermost hair surface there and "out" is then measured from that surface, so an
+              accessory on thick hair is not buried and needs no hand-set offset.
 Face keep-out, fibres, dynamics and binding are groom/3's."""
 import copy
 import math
 
 try:
-    from mathutils import Vector
+    from mathutils import Quaternion, Vector
 except ImportError:  # plain Python: validation and lowering only
-    Vector = None
+    Quaternion = Vector = None
 
 import groom as G1  # groom/1 as a library (read-only use)
 import groom_r4 as R4  # groom/3 as a library (read-only use)
@@ -46,6 +57,9 @@ import groom_r4 as R4  # groom/3 as a library (read-only use)
 GENERATOR_VERSIONS = ("groom/4",)
 GENERATOR = "groom/4"
 RING_KEYS = ("ring", "stagger", "channel", "swirl_deg")
+WAVE_KEY = "_wave"  # on a lowered single lock: the designed wave that apply_waves lays on it
+SEATS = ("hair",)
+ACCESSORY_TYPES = ("flowers", "felt_bow", "bow", "tie", "scrunchie")
 NOMINAL_HEAD_RADIUS_M = 0.15  # used when lower() is called without a head (validation, plain tests)
 
 
@@ -176,6 +190,14 @@ def _lower_locks(st):
                  z_end=[round(float(x) + dz, 5) for x in z] if isinstance(z, (list, tuple)) else round(float(z) + dz, 5))
         if stg.get("end_scale"):
             s["end_scale"] = round(float(st.get("end_scale", 0.85)) * _cyc(stg["end_scale"], j, 1.0), 5)
+        if stg.get("phase_deg"):  # the lock is built straight; apply_waves lays the designed wave on it
+            wv = st.get("wave") or {}
+            s["wave"] = dict(wv, amplitude=0.0)
+            s[WAVE_KEY] = {"amplitude": float(wv.get("amplitude", 0.0)), "wavelength": float(wv.get("wavelength", 0.1)),
+                           "phase_deg": round((_cyc(stg["phase_deg"], j, 0.0) + (180.0 if sx < 0 else 0.0)) % 360.0, 4),
+                           "depth": float(wv.get("depth", 0.0)), "tip_gain": float(wv.get("tip_gain", 1.0)),
+                           "ramp_m": float(wv.get("ramp_m", wv.get("wavelength", 0.1))),
+                           "start_m": float(wv.get("start_m", 0.0))}
         if s.get("curl") and s["curl"].get("direction", "alternate") == "alternate":  # as the unlowered structure
             s["curl"]["direction"] = "ccw" if (k + (sx < 0)) % 2 == 0 else "cw"
         out.append(s)
@@ -255,10 +277,19 @@ def validate(hair_spec):
                     errs.append(f"{w}.channel must be {{\"gap\": 0..0.8}}")
         elif t == "locks" and s.get("stagger") is not None:
             stg = s["stagger"]
-            if not isinstance(stg, dict) or any(k not in ("z_end", "end_scale", "mirror_shift") for k in stg) or not \
-                    all(isinstance(stg.get(k, [0]), list) and stg.get(k, [0]) for k in ("z_end", "end_scale")):
+            if not isinstance(stg, dict) or any(k not in ("z_end", "end_scale", "mirror_shift", "phase_deg")
+                                                for k in stg) or not \
+                    all(isinstance(stg.get(k, [0]), list) and stg.get(k, [0]) for k in ("z_end", "end_scale",
+                                                                                         "phase_deg")):
                 errs.append(f"{where}.stagger must be {{\"z_end\": [m, ..], \"end_scale\": [factor, ..], "
-                            f"\"mirror_shift\": int}}")
+                            f"\"phase_deg\": [deg, ..], \"mirror_shift\": int}}")
+            elif "phase_deg" in stg and not (s.get("style") == "wavy" and isinstance(s.get("wave"), dict)
+                                             and float(s["wave"].get("wavelength", 0)) > 0
+                                             and 0.0 <= float(s["wave"].get("depth", 0.0)) <= 1.0
+                                             and float(s["wave"].get("tip_gain", 1.0)) >= 0.0
+                                             and float(s["wave"].get("ramp_m", 1.0)) > 0.0):
+                errs.append(f"{where}.stagger.phase_deg needs style \"wavy\" and wave {{amplitude, wavelength > 0, "
+                            f"depth 0..1, tip_gain >= 0, ramp_m > 0}}")
             elif any(float(x) <= 0 for x in stg.get("end_scale", [])):
                 errs.append(f"{where}.stagger.end_scale factors must be positive")
             elif not all(k in s for k in ("count", "az", "z_end")):
@@ -270,6 +301,8 @@ def validate(hair_spec):
                 if tn is not None and not (isinstance(tn, dict) and isinstance(tn.get("toward"), list)
                                            and len(tn["toward"]) == 2 and 0.0 <= float(tn.get("amount", 1.0)) <= 1.0):
                     errs.append(f"{w}.turn must be {{\"toward\": [az, el], \"amount\": 0..1}}")
+                if it.get("seat") is not None and it["seat"] not in SEATS:
+                    errs.append(f"{w}.seat must be one of {list(SEATS)}")
                 at = it.get("attach") if t == "flowers" else None
                 if at is not None and not (isinstance(at, dict) and "az" in at and "el" in at):
                     errs.append(f"{w}.attach must be {{\"az\", \"el\", \"out\"}}")
@@ -278,7 +311,100 @@ def validate(hair_spec):
     return R4.validate(lower(hair_spec)[0])
 
 
+# ----------------------------------------------------------------------------------------------------- wave phase
+def apply_waves(low, head, frame, objs):
+    """Lays the designed S-wave on every lowered lock that carries one (stagger.phase_deg): the built, straight lock
+    is moved sideways (and by "depth" front-back) as a function of the hanging length below the point where it
+    leaves the scalp. Vertex counts, order and heights do not change (dynamics records and binding stay valid)."""
+    jobs = [s for s in low["structures"] if s.get(WAVE_KEY)]
+    if not jobs:
+        return {}
+    scalp = G1.Scalp(head, frame["centre"], frame["radii"], float(low.get("scalp_offset_m", 0.008)))
+    by_name = {o.name: o for o in objs}
+    done = {}
+    for s in jobs:
+        w = s[WAVE_KEY]
+        me = by_name[f"hair_{s['name']}"].data
+        n = max(1, len(me.vertices))
+        mid = sum((v.co for v in me.vertices), Vector()) / n - scalp.centre
+        az = math.atan2(mid.x, -mid.y)
+        hdir = Vector((math.sin(az), -math.cos(az), 0.0))
+        tang = Vector((0, 0, 1)).cross(hdir)
+        z0 = scalp.at(math.degrees(az), float(s.get("el_leave", -10)), float(s.get("lift", [0.004, 0.02])[1]))[0].z
+        z0 -= w["start_m"]
+        L = max(1e-6, z0 - min(v.co.z for v in me.vertices))
+        ph, k = math.radians(w["phase_deg"]), 2 * math.pi / w["wavelength"]
+        for v in me.vertices:
+            u = max(0.0, z0 - v.co.z)
+            a = w["amplitude"] * min(1.0, u / w["ramp_m"]) * (1 + (w["tip_gain"] - 1) * u / L)
+            v.co += tang * (a * math.sin(ph + k * u)) + hdir * (a * w["depth"] * math.cos(ph + k * u))
+        me.update()
+        done[s["name"]] = w["phase_deg"]
+    return done
+
+
+class _Deferred:
+    """Collects the fibre requests of a build so the fibres are grown after the wave is laid on the locks."""
+
+    def __init__(self):
+        self.calls = []
+
+    def __call__(self, ob, slot, overrides):
+        self.calls.append((ob, slot))
+        return None
+
+
+def _grow_fibres(low, calls, fibres, rep):
+    """The fibre step of groom_r4.build, on the final geometry (same layers, order and post steps)."""
+    fb = low["fibres"]
+    layers = fb.get("layers", [{}])
+    dr = fb.get("directional") or {}
+    comb = float(dr.get("strength", 0.8)) if dr.get("enabled") else 0.0
+    made = []
+    for (ob, slot), layer in zip(calls, [l for _ in range(len(calls) // max(1, len(layers))) for l in layers]):
+        fo = fibres(ob, slot, layer.get("overrides") or {})
+        if fo is not None:
+            if layer.get("shaft_radius_mm"):
+                R4.H.fixed_shaft(fo, float(layer["shaft_radius_mm"]) / 1000.0, float(layer.get("tip_ratio", 0.35)))
+            if comb and R4.COMB_ATTR in ob.data.attributes:
+                R4.comb_fibres(fo, ob, comb)
+            fo.parent = ob
+            fo.matrix_parent_inverse = ob.matrix_world.inverted()
+            fo["ps_groom_fibres"] = layer.get("name", "fibres")
+            made.append(fo.name)
+    rep["fibres"] = dict(rep.get("fibres") or {}, objects=len(made))
+
+
 # ----------------------------------------------------------------------------------------------------- accessories
+def hair_surface(sts, objs):
+    """BVH trees of the built hair without the accessories (world coordinates)."""
+    from mathutils.bvhtree import BVHTree
+    skip = set()
+    for s in sts:
+        if s.get("type") in ACCESSORY_TYPES:
+            base = f"hair_{s.get('name', s['type'])}"
+            skip |= {base, base + "_petals", base + "_centres"}
+    trees = []
+    for o in objs:
+        if o.name in skip or o.type != "MESH" or not o.data.polygons:
+            continue
+        mw = o.matrix_world
+        trees.append(BVHTree.FromPolygons([mw @ v.co for v in o.data.vertices],
+                                          [tuple(p.vertices) for p in o.data.polygons]))
+    return trees
+
+
+def surface_hit(trees, c, n, reach=0.3):
+    """The outermost point of the hair surface on the line through seat c along its outward direction n."""
+    best = None
+    start = c + n * reach
+    for t in trees:
+        hit, _, _, dist = t.ray_cast(start, -n, 2 * reach)
+        if hit is not None and (best is None or dist < best[1]):
+            best = (hit, dist)
+    return best[0] if best else None
+
+
 def _seat(ctx, st, it):
     """The attachment point of an accessory as its builder placed it: (point, outward direction). On a bun
     (bun, around_deg, height_frac, out) or, for a felt_bow without "bun", on the scalp (az, el, out)."""
@@ -294,8 +420,9 @@ def place_accessories(hair_spec, head, frame, objs):
     """The shared attachment rule of flowers and felt bows: a flower item with "attach" moves rigidly from its bun
     seat to the scalp point; "turn" then rotates the accessory about its seat. Returns what was done."""
     sts = hair_spec["structures"]
-    todo = [s for s in sts if (s.get("type") == "flowers" and any(it.get("turn") or it.get("attach") for it in
-                                                                   s["items"])) or (s.get("type") == "felt_bow" and s.get("turn"))]
+    todo = [s for s in sts if (s.get("type") == "flowers" and any(it.get("turn") or it.get("attach") or it.get("seat")
+                                                                   for it in s["items"]))
+            or (s.get("type") == "felt_bow" and (s.get("turn") or s.get("seat")))]
     if not todo:
         return {}
     scalp = G1.Scalp(head, frame["centre"], frame["radii"], float(hair_spec.get("scalp_offset_m", 0.008)))
@@ -305,13 +432,14 @@ def place_accessories(hair_spec, head, frame, objs):
             ctx["buns"] += G1.bun_frames(s, ctx)
     by_name = {o.name: o for o in objs}
     done = {}
+    surface = None  # the built hair (no accessories), made on first use
     for s in todo:
         name = s.get("name", s["type"])
         flowers = s["type"] == "flowers"
         items = s["items"] if flowers else [s]
         for j, it in enumerate(items):
             tn, at = it.get("turn"), it.get("attach") if flowers else None
-            if not (tn or at):
+            if not (tn or at or it.get("seat")):
                 continue
             c, n = _seat(ctx, s, it)
             moves = []  # (rotation about `about`, then the seat moves to `to`)
@@ -319,6 +447,16 @@ def place_accessories(hair_spec, head, frame, objs):
                 c1, n1 = scalp.at(float(at["az"]), float(at["el"]), float(at.get("out", 0.006)))
                 moves.append((n.rotation_difference(n1), c, c1))
                 c, n = c1, n1
+            if it.get("seat"):
+                if surface is None:
+                    surface = hair_surface(sts, objs)
+                out = float(it.get("out", (at or {}).get("out", 0.006 if at or not flowers else 0.0)))
+                hit = surface_hit(surface, c, n)
+                if hit is not None:
+                    c1 = hit + n * out
+                    moves.append((Quaternion(), c, c1))
+                    done.setdefault("seated_lift_m", {})[f"{name}.{j}" if flowers else name] = round((c1 - c).dot(n), 4)
+                    c = c1
             if tn:
                 target = G1.Scalp.direction(float(tn["toward"][0]), float(tn["toward"][1]))
                 q = n.rotation_difference(G1.slerp(n, target, float(tn.get("amount", 1.0))))
@@ -343,7 +481,13 @@ def build(C, head, frame, hair_spec, material, face_y, fibres=None):
     if errs:
         raise SystemExit("groom/4: " + "; ".join(errs))
     low, info = lower(hair_spec, sum(float(x) for x in frame["radii"]) / 3)
-    objs, rep = R4.build(C, head, frame, low, material, face_y, fibres)
+    waved = any(s.get(WAVE_KEY) for s in low["structures"])
+    later = _Deferred() if waved and fibres is not None else None  # fibres grow on the final (waved) geometry
+    objs, rep = R4.build(C, head, frame, low, material, face_y, later or fibres)
+    if waved:
+        info["wave_phase_deg"] = apply_waves(low, head, frame, objs)
+        if later and later.calls:
+            _grow_fibres(low, later.calls, fibres, rep)
     placed = place_accessories(hair_spec, head, frame, objs)
     if placed:
         info["accessories"] = placed
