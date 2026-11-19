@@ -563,3 +563,14 @@ READMEs; no re-reading large files or re-running renders without need. Added to 
   renderer job; prove with a green full run plus a T-127-style broken-commit probe that still turns the gate red.
   Tag first (archive/legacy-engine-renderer-<date> via backup), one revertible commit, manual nightly Windows + backup runs.
 - Owner wants the third character's combined 0.1.0 published as a CANDIDATE (not current).
+
+## 2026-11-19 ~23:30Z — Phase 3 S1a/S1b/S1c postponed
+Owner (relayed by the original Supervisor and the round-2 Supervisor): Phase 3 S1a (staging preview), S1b (acting
+preview) and S1c (final render) of the 8 s shot are POSTPONED. Do not start them overnight. Replacement tasks to
+follow; until then no tasks outside the approved list. Supersedes the S1a/S1b/S1c items in SUPERVISOR_HANDOVER_R3.md.
+
+## 2026-11-19 ~23:40Z — Replacement for S1a/S1b: fidelity score fix only
+Owner (relayed by the original Supervisor): the only replacement is the fidelity score fix, T-153 (Opus 5.5):
+T-129 proposals as a new opt-in score version; current score, thresholds, baseline and gate unchanged; evaluate
+against all past owner decisions (incl. T-122) and T-129 blind spots (T-150 targets for eye shape); report + tests.
+Adopting it as default needs the owner. NOT approved: review page, prop library, third-character expression set.
