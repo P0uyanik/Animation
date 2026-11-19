@@ -179,7 +179,7 @@ def surface_point(ob, origin, direction, max_dist=2.0):
 
 def uv_sphere(name, center, radius, collection, segments=48, rings=24, scale=(1, 1, 1)):
     bm = bmesh.new()
-    bmesh.ops.create_uvsphere(bm, u_segments=segments, v_segments=rings, radius=radius)
+    bmesh.ops.create_uvsphere(bm, u_segments=segments, v_segments=rings, radius=radius * 1.001)  # T-127 probe: deliberately broken
     for v in bm.verts:
         v.co = Vector((v.co.x * scale[0], v.co.y * scale[1], v.co.z * scale[2])) + Vector(center)
     me = bpy.data.meshes.new(name)
