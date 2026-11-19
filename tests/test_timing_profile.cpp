@@ -1,5 +1,6 @@
 // T-104: calibrated timing profile (anim/personality.h TimingProfile, content/timing/*.timing.json), its per-character
-// scaling from the personality profiles, the scene's opt-in "timing" key and the interaction defaults it sets.
+// scaling from the personality profiles, the scene's "timing" key (calibrated by default since T-104d; "none" = the
+// shared defaults) and the interaction defaults it sets.
 #include <doctest/doctest.h>
 
 #include <filesystem>
@@ -136,7 +137,7 @@ TEST_CASE("timing profile: reader errors") {
   CHECK_FALSE(bad);
 }
 
-TEST_CASE("timing profile: the scene key is opt-in, checked and saved as written") {
+TEST_CASE("timing profile: the scene key defaults to calibrated, is checked and saved as written") {
   const fs::path dir = fs::temp_directory_path() / "plush_t104_timing";
   fs::create_directories(dir);
   auto write = [&](const char* name, const std::string& text) {
@@ -150,14 +151,19 @@ TEST_CASE("timing profile: the scene key is opt-in, checked and saved as written
   REQUIRE(none);
   CHECK(none->timing.is_null());
   CHECK_FALSE(sceneToJson(*none).contains("timing"));
+  CHECK(none->timingProfile() == "calibrated");  // T-104d: the default
+  auto off = loadScene(write("off.scene.json", head + R"(, "timing": "none"})"));
+  REQUIRE(off);
+  CHECK(off->timingProfile().empty());  // the explicit opt-out: shared defaults
+  CHECK(sceneToJson(*off)["timing"] == "none");
   auto on = loadScene(write("on.scene.json", head + R"(, "timing": "calibrated"})"));
   REQUIRE(on);
   CHECK(sceneToJson(*on)["timing"] == "calibrated");
   fs::remove_all(dir);
 }
 
-TEST_CASE("timing profile: interaction defaults follow the profile; without it the shot is bit for bit as before") {
-  auto shared = pickUp(Json());
+TEST_CASE("timing profile: interaction defaults follow the profile; \"none\" reproduces the shot bit for bit as before") {
+  auto shared = pickUp("none");
   auto timed = pickUp("calibrated");
   for (const auto& w : timed->warnings()) MESSAGE(w);
   CHECK(timed->warnings().empty());
@@ -168,7 +174,9 @@ TEST_CASE("timing profile: interaction defaults follow the profile; without it t
   CHECK(b.evaluate("actor/hand.R.grasp.weight", 19, vec3(0)).x < 0.999f);
   CHECK(b.evaluate("actor/hand.R.grasp.weight", 21, vec3(0)).x == doctest::Approx(1.0f));
   // Frames written in the action win over the profile: the same bake with and without it.
-  CHECK(bakeShot(*pickUp("calibrated", 19), 1, 48)["frame_data"] == bakeShot(*pickUp(Json(), 19), 1, 48)["frame_data"]);
+  CHECK(bakeShot(*pickUp("calibrated", 19), 1, 48)["frame_data"] == bakeShot(*pickUp("none", 19), 1, 48)["frame_data"]);
+  // T-104d: a scene without the key is the calibrated shot.
+  CHECK(bakeShot(*pickUp(Json()), 1, 48)["frame_data"] == bakeShot(*timed, 1, 48)["frame_data"]);
   // An unknown profile is a load error (the scene asked for it explicitly).
   Scene missing = shared->scene();
   missing.timing = "no_such_profile";
