@@ -471,3 +471,16 @@ session builds + mold linker, (3) OpenImageIO, ffmpeg/libvmaf, scikit-image comp
 (4) pytest -n / ctest -j with 3x serial vs 3x parallel identical results. Binding: test first, adopt only on measured
 benefit, no test removed/skipped/weakened, every change opt-in with a one-commit revert, owner told before any
 default changes.
+
+## 2026-11-19 (~14:10Z): "Animation" session environment (relayed)
+New personal cloud environment "Animation" (env_01MTWJVTWBHG13yZcRS4DzCz): same network as Default; setup script
+preinstalls the apt C++ packages, the checksum-verified bpy 5.3.0 wheel, numpy, Pillow (if missing) and a `blender`
+shim (warn-only steps). All new implementer sessions use it; implementers note in the ledger whether setup was still
+needed. Revert: start sessions without environment_id (Default); the owner can edit/delete it in Settings.
+
+## 2026-11-19 (~14:20Z): workflow improvements evaluation checkpoints (relayed)
+"Include an evaluation of these improvements in our upcoming phases and plans." A lightweight evaluation (Sonnet 5.5,
+existing data only) at the end of round 4 (**T-129**, `docs/process/WORKFLOW_EVAL_R4.md`) and again at the end of
+round 5: environment setup, CI speed (T-127), tooling trial (T-128), batch promotions, model choice (Fable 5.2 vs Opus
+5.5), render optimisation (T-124, once a profile is chosen), Codex availability. Measured numbers only, with n and
+dates; adopt / keep / revert per item; the report goes to the owner.
