@@ -153,3 +153,4 @@ Tasks from now on are numbered T-001, T-002, …, and pass through the states in
 | T-144 | [Cleanup] A3 retire unpinned generator versions, plan first (Opus) | written 2026-11-19 (owner ~20:30Z), last | t-144 | docs/tasks/T-144.md |
 | T-150 | [Evaluation] Eye-shape targets for both girls (Codex) | assigned 2026-11-19 on relay-channel (e9ab05fe) | t-150-codex | merged 2026-11-19: inner eye corners 24-33% of opening too low (both girls); targets → T-137 |
 | T-151 | [Audit] Independent A1 legacy dependency map (Codex) | assigned 2026-11-19 on relay-channel (e9ab05fe) | t-151-codex | merged 2026-11-19: SAFE/KEEP/MIXED per file; second opinion for T-142 |
+| T-152 | [Audit] Token-efficiency analysis (Codex) | assigned 2026-11-19 on relay-channel (1fa8bacb) | t-152-codex-token-efficiency | merged 2026-11-19: Supervisors 49.5% of cache reads; top rec: rotate Supervisors with compact handover |
