@@ -112,10 +112,39 @@ Each eye is measured against the exact target. Looks end where the next look, au
 
 Per-frame data: [gaze_error_before.json](gaze_error_before.json), [gaze_error_after.json](gaze_error_after.json).
 
-PUPILS_PLACEHOLDER
+### Pupil readability (`tools/review/readability.py`, shot camera, 640x360 ID masks, mean visible pupil px L / R)
+
+| look | before (s010) | after (s010_e23) |
+|---|---|---|
+| boy side / table f1-37 | 31 / 20 | 9 / 13 |
+| boy → cup f100-116 | 29 / 36 | 0 / 0 |
+| boy → girl f117-138 | 33 / 41 | 1 / 0 |
+| boy → cup f139-169 | 25 / 34 | 0 / 0 |
+| boy away f176-192 | 50 / 28 | 30 / 16 |
+| girl → table f1-23 | 33 / 25 | 0 / 0 |
+| girl → boy f24-51 | 34 / 26 | 7 / 9 |
+| girl → cup f52-99 | 30 / 23 | 1 / 1 |
+| girl → boy f118-132 | 38 / 31 | 0 / 1 |
+| girl → cup f133-146 | 29 / 22 | 0 / 0 |
+| girl → boy f153-192 | 38 / 35 | 6 / 8 |
+
+How often pupils fall below 8 px:
+
+| | before | after |
+|---|---|---|
+| girl | 22 frames, blinks only | 151-160 frames |
+| boy | blinks only | most of f100-169 |
+
+**This is the main finding.** With the chain, the looks reach their targets, but the heads turn into profile and pitch down, away from this front camera. The pupils leave the frame's view. It is T-120's trade-off on the other side: exact gaze against readable pupils in this staging.
+
+Files: [readability_s010/](readability_s010/), [readability_s010_e23/](readability_s010_e23/). They were made with T-123's `render_masks.py`, run through a launcher that opens the .blend first, because `tools/bpy_blender.py` ignores it.
 
 ### Open points
 
+0. **Pupil readability: decide before using `chain` in a shot.**
+   - The default caps (neck 50/40, torso 25/25) give exact looks but no pupils in e910's camera.
+   - Lower per-shot caps (the `chain` object) trade one for the other.
+   - A camera-aware limit is not built.
 1. **Her cup looks keep 6-8°, because of vergence.**
    - Leaning in brings her eyes about 15 cm from the cup. They would then have to converge about 45°, but the ±16° range allows 32°.
    - Her eyes share the shortfall.
