@@ -137,9 +137,6 @@ _r("materials", "presets", 2, "materials.builder", declared=False,
    note="presets/1 + the presets/2 skin family (skin_presets.json, plush-studio.material-presets/2; T-066)")
 _r("materials", "presets", 3, "materials.builder", declared=False,
    note="T-092 materials round 2 (planned; opt-in new preset ids in a new library file)")
-_r("materials", "presets", 4, "materials.builder", declared=False,
-   note="T-110 felt surface: presets/3 + presets_felt.json (plush-studio.material-presets/4): /4 ids extend a "
-        "presets/1..3 id with the shared GN fibre halo (felt_halo.py, PS Felt Halo/1) and the felt skin; opt-in")
 _r("exporter", "export", 1, None, RETIRED, note="no retarget block")
 _r("exporter", "export", 2, None, RETIRED, note="retarget block")
 _r("exporter", "export", 3, None, RETIRED, note="dynamics block or DEF-parent fix (two parallel 3s)")
