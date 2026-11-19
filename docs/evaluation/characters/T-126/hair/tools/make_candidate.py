@@ -58,7 +58,7 @@ MASS = {"seg": 18, "grooves": 2, "groove_depth": 0.14, "irregularity": 0.1}
 
 def wavy(name, **kw):
     base = {"type": "locks", "name": name, "style": "wavy", "finish": "felt", "felt": FELT_LOCK,
-            "el_leave": -12, "lift": [0.008, 0.022], "tip_frac": 0.3, "end_scale": 0.46, "flare": 0.05}
+            "el_leave": -12, "lift": [0.008, 0.022], "tip_frac": 0.45, "end_scale": 0.58, "flare": 0.05}
     base.update(kw)
     return base
 
@@ -124,8 +124,8 @@ def hair():
              wave={"amplitude": 0.015, "wavelength": 0.12, "depth": 0.35, "tip_gain": 1.25, "start_m": -0.04},
              stagger={"z_end": [0.03, 0.0], "end_scale": [0.9, 1.0], "phase_deg": [60, 20], "mirror_shift": 1}),
         # 18 (canonical): dusty-blue felt bow, two rounded loops, wrapped knot, two short tails; on the character's
-        # right in front of the bun (01), seated on the built hair surface
-        {"type": "felt_bow", "name": "bow", "az": -40, "el": 46, "out": 0.004, "seat": "hair", "size": 0.15,
+        # right in front of and below the bun, on the fringe roots (01), seated on the built hair surface
+        {"type": "felt_bow", "name": "bow", "az": -37, "el": 33, "out": 0.004, "seat": "hair", "size": 0.122,
          "tilt_deg": -14, "knot": 0.15, "material": "hair_bow",
          "loops": [{"angle_deg": 22, "length": 0.56, "width": 0.38, "thick": 0.24},
                    {"angle_deg": 158, "length": 0.56, "width": 0.38, "thick": 0.24},

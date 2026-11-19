@@ -38,7 +38,7 @@ ROWS = [("front", "front", BODY, 0.0, "s02_front", None),
         ("face_front", "face front", FACE, 0.0, "id01_face", None),
         ("face_threequarter", "face 3/4", FACE, -30.0, "f14_head_3q", W02)]
 HAIR = {"target": [0.0, 0.0, 0.7], "frame_height_m": 0.66, "aspect": 1.25}
-BOW = {"target": [-0.07, -0.08, 0.87], "frame_height_m": 0.2, "aspect": 1.0}
+BOW = {"target": [-0.087, -0.115, 0.875], "frame_height_m": 0.2, "aspect": 1.0}
 # (name, framing, yaw, elevation)
 CROPS = [("hair_front", HAIR, 0.0, 5.0), ("hair_bow_side", HAIR, -40.0, 8.0), ("hair_side", HAIR, 90.0, 5.0),
          ("hair_back", HAIR, 180.0, 5.0), ("bow", BOW, -35.0, 20.0)]
@@ -67,7 +67,7 @@ def main():
     ap.add_argument("--preview", action="store_true")
     ap.add_argument("--samples", type=int, default=16)
     ap.add_argument("--px", type=int, default=360)
-    ap.add_argument("--crop-px", type=int, default=760)
+    ap.add_argument("--crop-px", type=int, default=600)
     a = ap.parse_args()
     samples, px = (2, 120) if a.preview else (a.samples, a.px)
     out = os.path.abspath(a.out)
