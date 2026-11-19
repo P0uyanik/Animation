@@ -172,7 +172,8 @@ covers phones; AV1 10-bit is smallest but older phones can't play it. Keep H.264
 ## 4. EEVEE
 
 EEVEE needs a GPU backend. In this container Blender found no Vulkan device (no GPU). With the lavapipe software
-Vulkan driver it still didn't finish frame 65 within 30 minutes. So **EEVEE could not be compared here**; a
+Vulkan driver the process ran for about 20 minutes and exited without producing frame 65 or an error
+message. So **EEVEE could not be compared here**; a
 software-emulated GPU says nothing about EEVEE on real hardware. Compare it on the owner's PC or a rented GPU.
 
 ## 5. Proposed opt-in profiles (`pipeline/charsys/render_profiles.json`)
