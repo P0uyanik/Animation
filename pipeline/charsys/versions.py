@@ -126,6 +126,7 @@ _r("groom", "groom", 3, "groom_r4")  # T-091 hair round 4/5 (clump masses, direc
 _r("garment", "body_v6", 1, "body_v6", declared=False, note="legacy v6 clothing")
 _r("garment", "garment", 1, "garments")
 _r("garment", "garment", 2, "garments_v2")  # T-093 garment outlines + accessories + reach correctives; opt-in
+_r("garment", "garment", 3, "garments_v3")  # T-119 collar seat, gathered bloomer cuffs, ankle closure; opt-in
 _r("accessories", "body_v6", 1, "body_v6", declared=False, note="legacy v6 backpack")
 _r("accessories", "accessories", 1, "accessories", declared=False)
 _r("rig", "rigify_human", 1, None, declared=False, note="Rigify human (body_v6.rig_character / body_generic.rig_generic)")

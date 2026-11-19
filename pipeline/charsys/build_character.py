@@ -244,6 +244,12 @@ def main_generic(a, spec, info, out):
     else:
         M = {"skin": G.material("M_skin", skin_rgb, roughness=0.55, subsurface=0.2, sss_radius=(1, 0.4, 0.25), sss_scale=0.01)}
     parts = BG.build_body(C, M, P, H, J, frames)
+    limb_assignment = MATERIALS.get_assignment(mats, "skin_limbs")
+    if limb_assignment:  # T-119 opt-in: the hands in their own skin assignment (absent = exactly as before)
+        M["skin_limbs"] = MATERIALS.build_from_assignment("M_skin_limbs", limb_assignment)
+        for ob, role in parts:
+            if role == "hand":
+                G.assign(ob, M["skin_limbs"])
     garment_objects = []
     garment_report = None
     if family(pins["garment"]) == "garment":

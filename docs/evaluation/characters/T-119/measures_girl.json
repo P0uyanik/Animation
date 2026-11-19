@@ -1,0 +1,88 @@
+{
+ "set": "girl",
+ "blender": "5.3.0",
+ "columns": {
+  "current": {
+   "collar_bones": [
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine.002",
+    "DEF-spine.003",
+    "DEF-spine.004",
+    "DEF-spine.005",
+    "DEF-spine.006",
+    "DEF-upper_arm.L",
+    "DEF-upper_arm.L.001",
+    "DEF-upper_arm.R",
+    "DEF-upper_arm.R.001"
+   ],
+   "poses": {
+    "rest": {
+     "stand_off_m": {
+      "p50": 0.01262,
+      "p95": 0.0243,
+      "max": 0.03385
+     },
+     "moved_from_rest_max_m": 0.0
+    },
+    "half_reach": {
+     "stand_off_m": {
+      "p50": 0.01283,
+      "p95": 0.02451,
+      "max": 0.03346
+     },
+     "moved_from_rest_max_m": 0.03351
+    },
+    "full_reach": {
+     "stand_off_m": {
+      "p50": 0.01254,
+      "p95": 0.02488,
+      "max": 0.03346
+     },
+     "moved_from_rest_max_m": 0.06447
+    }
+   },
+   "bloomers": {
+    "band_gap_m": -0.0545,
+    "shell_below_bands_m": 0.0177
+   }
+  },
+  "candidate": {
+   "collar_bones": [
+    "DEF-shoulder.L",
+    "DEF-shoulder.R",
+    "DEF-spine.003"
+   ],
+   "poses": {
+    "rest": {
+     "stand_off_m": {
+      "p50": 0.00967,
+      "p95": 0.02204,
+      "max": 0.03103
+     },
+     "moved_from_rest_max_m": 0.0
+    },
+    "half_reach": {
+     "stand_off_m": {
+      "p50": 0.00954,
+      "p95": 0.02152,
+      "max": 0.02864
+     },
+     "moved_from_rest_max_m": 0.00804
+    },
+    "full_reach": {
+     "stand_off_m": {
+      "p50": 0.00908,
+      "p95": 0.02063,
+      "max": 0.03021
+     },
+     "moved_from_rest_max_m": 0.02436
+    }
+   },
+   "bloomers": {
+    "band_gap_m": 0.001,
+    "shell_below_bands_m": 0.0
+   }
+  }
+ }
+}

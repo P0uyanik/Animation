@@ -1,0 +1,44 @@
+{
+ "set": "boy",
+ "blender": "5.3.0",
+ "columns": {
+  "current": {
+   "hand_material": "M_skin",
+   "hand_preset": "skin-felt/3",
+   "trouser_hem_z_m": 0.0799,
+   "poses": {
+    "rest": {
+     "visible_skin_cm2": 141.81,
+     "uncovered_skin_cm2": 21.42
+    },
+    "toes_up": {
+     "visible_skin_cm2": 89.25,
+     "uncovered_skin_cm2": 21.6
+    },
+    "toes_down": {
+     "visible_skin_cm2": 217.15,
+     "uncovered_skin_cm2": 33.81
+    }
+   }
+  },
+  "candidate": {
+   "hand_material": "M_skin_limbs",
+   "hand_preset": "skin-felt-limbs/3",
+   "trouser_hem_z_m": 0.0799,
+   "poses": {
+    "rest": {
+     "visible_skin_cm2": 141.81,
+     "uncovered_skin_cm2": 0.0
+    },
+    "toes_up": {
+     "visible_skin_cm2": 89.25,
+     "uncovered_skin_cm2": 0.0
+    },
+    "toes_down": {
+     "visible_skin_cm2": 217.15,
+     "uncovered_skin_cm2": 0.0
+    }
+   }
+  }
+ }
+}
