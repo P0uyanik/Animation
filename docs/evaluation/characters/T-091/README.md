@@ -55,6 +55,22 @@ base slightly lower (0.016–0.03 m).
 - Head-turn check (head control ±35°, Workbench, geometry only): `media/head_turn.jpg`.
 - Directional fibres on/off (Cycles 16 spp crops): `media/directional_fibres_off_on.jpg`.
 
+## Strict sheets: what changed (my reading; the owner decides)
+- **Boy** (`boy_sheet/boy_2.0.0_vs_hair_r4_strict.jpg`, Cycles 16 spp, 332 s + 322 s): fewer, larger masses with
+  channels between them; the crown petals now stand up and give the spiky top the val27/B05 outline shows (2.0.0 had
+  flat leaf clumps and horn tufts); the side masses flick out over the ears. **Deviation:** at full-body distance
+  the overall hair outline is slightly *smaller* than 2.0.0's and well below the reference's volume (the reference
+  hair is wider and taller, irregular), and the fringe ends a little higher, so more forehead shows than in
+  hero24. The next step would be volume: longer top-ring masses and more lift on the outer ring, keeping the
+  current mass count.
+- **Girl** (`girl_sheet/girl_0.11.0_vs_hair_r4_strict.jpg`, 443 s + 419 s): narrower silhouette (closer to
+  sheet30's width), the back reads as soft columns flowing into the ringlets with no horizontal band, tapered ringlet
+  tips, a gathered blue-grey scrunchie (G04). The centre parting reads in the face-front row; the two swept sections
+  frame the forehead but are smooth and blend into the side hair at sheet scale, less defined than G04.
+  Face, glasses, outfit unchanged.
+- Head turn (`media/head_turn.jpg`, head control ±35°): the hair follows the head for both characters, no gaps, no
+  face cover.
+
 ## Directional-fibre experiment (measured)
 Boy candidate, two Cycles crops (16 spp, 360 px, 3/4 + back), same machine, run one after the other:
 off 85 s, **on 87 s (+2 %)**; fibre points identical (6,985,266; the modifier only moves them). Build cost: one GN
