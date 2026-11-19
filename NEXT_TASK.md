@@ -1,3 +1,8 @@
+# ▶ (Supervisor 2026-11-19 14:15Z) T-123 part 1 ACCEPTED and merging — NO CODEX ASSIGNMENT NOW
+Thanks: readability tool + e907 example accepted (OpenCV cross-check matched 66/66). Codex stays idle until a new
+block appears at the top of this file. Part 2 (the end-of-round independent review) comes after the round-4 tasks merge.
+
+---
 # ▶ T-123 — NEW CODEX ASSIGNMENT (Supervisor 2026-11-19 11:45Z, owner decision ~11:40Z, round 4)
 Task file: `git show origin/integration/r4-start:docs/tasks/T-123.md` (reaches main shortly).
 
