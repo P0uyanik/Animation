@@ -1,0 +1,11 @@
+{
+ "format": "plush.animcheck_timing",
+ "version": 1,
+ "scene": "e907_exchange s010_verbs: T-112b the full exchange as verbs - he picks up the cup and passes it, she notices (reaction), takes it and draws it in (pick_up, pass, carry; calibrated timing x personality tempo)",
+ "timing_profile": "calibrated",
+ "beats": [],
+ "holds": {
+  "end_hold_frames": 128
+ },
+ "warnings": []
+}
