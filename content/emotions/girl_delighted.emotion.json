@@ -2,9 +2,9 @@
  "format": "plush.emotion",
  "version": 1,
  "name": "girl_delighted",
- "description": "Girl (girl_auburn_bun_glasses) delighted: the open smile acting beat (the model's open Smile preset: wide mouth, jaw slightly open, cheeks up), brows up, a light squint, chest lifted. Her rest face stays the modelled closed gentle smile (owner decision 2026-11-17): this plays only as a beat and releases back to it.",
+ "description": "Girl (girl_auburn_bun_glasses) delighted: the open smile acting beat (the library SmileOpen preset, T-109: the open D smile of ref_30, narrower and taller than Smile, cheeks up), brows up, a light squint, chest lifted. Her rest face stays the modelled closed gentle smile (owner decision 2026-11-17): this plays only as a beat and releases back to it.",
  "face": {
-  "smile": 1.0
+  "smileOpen": 1.0
  },
  "faceMotion": {
   "blinkRate": 1.0,
@@ -41,5 +41,8 @@
  "reference": "docs/evaluation/animation/T-106/performance.csv paperboat girl [255, 289) 'leans on the rim with a wide open smile' (1.42 s); watertable [81, 96) the mouth settles to a soft smile (release 0.8 s); arms stay with her gesture / idle (mask without arms)",
  "source": "script",
  "license": "project",
- "attribution": "Plush Studio project (T-097-girl)"
+ "attribution": "Plush Studio project (T-097-girl)",
+ "x_sources": {
+  "face": "T-113: smile -> smileOpen. PB [255, 289) f265/f288 show an open D-shaped smile (narrower and taller than the library Smile), which is the SmileOpen preset (ref_30). Needs a build listing SmileOpen in face.expressions.optional (T-109 candidate or the T-113 override); without it the face part is skipped with a warning"
+ }
 }

@@ -217,3 +217,146 @@ def fit_lower_lid(ob, T, ecfg, r, r_lo, fit):
     me.update()
     return {"gap": _f(fit, "gap", 0.02), "shift_max_m": round(float(shift.max()), 5),
             "shift_mean_m": round(float(shift.mean()), 5)}
+
+
+# ------------------------------------------------------------------------------------------------ T-113: closed lid fit
+def _smoothstep(t):
+    import numpy as np
+    t = np.clip(t, 0.0, 1.0)
+    return t * t * (3.0 - 2.0 * t)
+
+
+def fit_closed_lids(up, lash, T, ecfg, r, fit, close_key, closed_thickness_m=None):
+    """spec.face.eyes.lids.closed_fit = {"gap": g, "fade_deg": f, "fade_above_edge_deg": a, "gaze_range_deg": [yaw, pitch]
+    (optional, default the eye's), "corner_fade": [a, b] (default [0.7, 0.95]), "shell_subsurface": f (optional), "keep_thickness": bool}: the closed upper lid follows
+    the eyeball surface instead of standing off it (the pale dome of Smile, Laugh, Squint and Blink).
+
+    face_generic/2 closes the upper lid at the eye's GLOBAL gaze envelope (an oval eye: its corners' value, 1.08 r),
+    and preset keys that add a squint rotation to a closing lid (Smile, Laugh, Squint) sum two rotations linearly, so
+    their shell rides further out still. For every shape key of the upper lid shell and its lash (AU keys, their
+    in-betweens and the baked presets) each vertex is pulled in along its eye-frame radius towards
+    r (envelope(u) + g) + its own shell thickness (the per-direction gaze envelope, as lower_fit: the closed lid still
+    covers the turned eyeball), by the vertex's closure c in [0, 1] (its downward rotation in that key divided by the
+    full Blink rotation). Pulled in only, never pushed out. The closed lid shows where the open eye showed (the socket
+    skin does not move when the lid closes): at key-position elevations up to the rest upper-lid edge the pull is
+    full; it fades to none over fade_deg, ending fade_above_edge_deg above that edge, so the shell further up, under
+    the socket skin, keeps its radius (no crevice under the brow). Towards the eye corners the pull fades out
+    as well (corner_fade, in eye radii from the eye's vertical axis): at 3/4 a pulled-in corner opens the near eye's
+    outer corner. Where a key's linear sum of rotations (blink + squint) carries the
+    shell out past its rest radius, it is brought back to that radius (the bump through the brow skin). Open keys (EyeWide, brows, mouth) have c = 0 and do not change.
+    shell_subsurface (optional, 0..1): the upper lid shell gets its own copy of its skin material with the Subsurface
+    Weight scaled by f. The shell is ~1-2 mm thick while the skin's subsurface radius is ~1-2 cm, so a closed lid
+    lets the white eyeball (and its highlight) show through: the pale part of the dome. Absent = material unchanged.
+    Object data are read through matrix_world (any object matrix). Returns a report."""
+    import numpy as np
+    g = _f(fit, "gap", 0.01)
+    fade = math.radians(_f(fit, "fade_deg", 20.0))
+    over = math.radians(_f(fit, "fade_above_edge_deg", 10.0))
+    cf0, cf1 = (float(v) for v in fit.get("corner_fade", [0.7, 0.95]))
+    # the closed lid clears the eyeball's gaze sweep; closed_fit.gaze_range_deg may narrow it (a closed eye moves less)
+    Minv = _gaze_inverses(T, dict(ecfg, gaze_range_deg=fit["gaze_range_deg"]) if fit.get("gaze_range_deg") else ecfg)
+    Tm = np.array(T)
+    Ti = np.linalg.inv(Tm)
+
+    def frame_coords(ob, data):
+        n = len(ob.data.vertices)
+        co = np.empty(n * 3)
+        data.foreach_get("co", co)
+        mw = np.array(ob.matrix_world)
+        w = co.reshape(n, 3) @ mw[:3, :3].T + mw[:3, 3]
+        return w @ Ti[:3, :3].T + Ti[:3, 3]
+
+    def elev(q):  # elevation about the frame's x axis; the eye looks along -y
+        return np.arctan2(q[:, 2], -q[:, 1])
+
+    kb_up = up.data.shape_keys.key_blocks if up.data.shape_keys else None
+    if kb_up is None or close_key not in kb_up:
+        return {"skipped": f"no {close_key} key"}
+    q0_up = frame_coords(up, kb_up[0].data)
+    rho0_up = np.linalg.norm(q0_up, axis=1)
+    r_in = float(rho0_up.min())
+    shell = float(rho0_up.max()) - r_in
+    a_close = float(np.median(elev(q0_up) - elev(frame_coords(up, kb_up[close_key].data))))
+    if a_close <= 1e-6:
+        return {"skipped": "no closing rotation"}
+    # the rest edge: lowest elevation of the shell's front (the lid's free edge)
+    front = q0_up[:, 1] < -0.5 * r
+    e_edge = float(elev(q0_up[front]).min()) if front.any() else 0.0
+    ts = (float(closed_thickness_m) / shell) if (closed_thickness_m and shell > 1e-9 and not fit.get("keep_thickness", False)) else 1.0
+    rep = {"gaze_range_deg": fit.get("gaze_range_deg") or ecfg.get("gaze_range_deg", [20.0, 12.0]), "gap": g, "fade_deg": round(math.degrees(fade), 2), "fade_above_edge_deg": round(math.degrees(over), 2), "corner_fade": [cf0, cf1], "close_deg": round(math.degrees(a_close), 2),
+           "rest_edge_deg": round(math.degrees(e_edge), 2), "keys": {}}
+    if fit.get("shell_subsurface") is not None:
+        rep["shell_material"] = _shell_material(up, float(fit["shell_subsurface"]))
+    for ob in (up, lash):
+        if ob is None or ob.data.shape_keys is None:
+            continue
+        kb = ob.data.shape_keys.key_blocks
+        q0 = frame_coords(ob, kb[0].data)
+        th0 = elev(q0)
+        t = np.maximum(0.0, np.linalg.norm(q0, axis=1) - r_in)  # thickness position (lash strands: beyond the shell)
+        mw = np.array(ob.matrix_world)
+        mwi = np.linalg.inv(mw)
+        moved = 0.0
+        for k in kb[1:]:
+            q = frame_coords(ob, k.data)
+            th = elev(q)
+            c = np.clip((th0 - th) / a_close, 0.0, 1.0)
+            if c.max() < 1e-4:
+                continue
+            rho = np.linalg.norm(q, axis=1)
+            u = q / np.maximum(rho, 1e-12)[:, None]
+            target = r * (local_envelope(u, Minv) + g) + t * (ts if ob is up else 1.0)  # lash: keeps its offset
+            s = _smoothstep((e_edge + over - th) / max(fade, 1e-6))
+            # the eye corners keep the lid's radius (at 3/4 the near eye's outer corner would open): full pull up to
+            # |x| = corner_fade[0] r, none from corner_fade[1] r (x = the frame's left-right axis)
+            ax = np.abs(q[:, 0]) / r
+            s = s * (1.0 - _smoothstep((ax - cf0) / max(cf1 - cf0, 1e-6)))
+            shift = c * s * np.maximum(0.0, rho - target)
+            # a rotation keeps the radius: where a linear sum of rotations (blink + squint) carries the shell out past
+            # its rest radius (it pokes through the socket skin above the eye), it goes back to that radius
+            rho0 = np.linalg.norm(q0, axis=1)
+            shift = np.maximum(shift, (c > 0) * np.maximum(0.0, rho - rho0))
+            if shift.max() < 1e-7:
+                continue
+            q = u * (rho - shift)[:, None]
+            w = q @ Tm[:3, :3].T + Tm[:3, 3]
+            k.data.foreach_set("co", (w @ mwi[:3, :3].T + mwi[:3, 3]).ravel())
+            moved = max(moved, float(shift.max()))
+            if ob is up:
+                rep["keys"][k.name] = round(float(shift.max()), 5)
+        ob.data.update()
+        rep.setdefault("shift_max_m", {})[ob.name] = round(moved, 5)
+    return rep
+
+
+def _shell_material(ob, factor):
+    """Replaces each material slot of the lid shell that has a Principled BSDF with subsurface by a copy named
+    "<name>.lid" (shared by both lids) whose Subsurface Weight is scaled by factor (a linked weight is left linked and
+    scaled through a multiply node). Returns {slot material: copy}."""
+    import bpy
+    done = {}
+    for i, m in enumerate(ob.data.materials):
+        if m is None or not m.use_nodes or m.name.endswith(".lid"):
+            continue
+        p = next((n for n in m.node_tree.nodes if n.type == "BSDF_PRINCIPLED"), None)
+        if p is None or "Subsurface Weight" not in p.inputs:
+            continue
+        name = m.name + ".lid"
+        c = bpy.data.materials.get(name)
+        if c is None:
+            c = m.copy()
+            c.name = name
+            q = next(n for n in c.node_tree.nodes if n.type == "BSDF_PRINCIPLED")
+            sock = q.inputs["Subsurface Weight"]
+            if sock.is_linked:
+                link = sock.links[0]
+                mul = c.node_tree.nodes.new("ShaderNodeMath")
+                mul.operation = "MULTIPLY"
+                mul.inputs[1].default_value = factor
+                c.node_tree.links.new(link.from_socket, mul.inputs[0])
+                c.node_tree.links.new(mul.outputs[0], sock)
+            else:
+                sock.default_value = sock.default_value * factor
+        ob.data.materials[i] = c
+        done[m.name] = c.name
+    return done

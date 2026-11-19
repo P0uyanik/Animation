@@ -1,0 +1,43 @@
+{
+ "format": "plush.emotion",
+ "version": 1,
+ "name": "boy_unimpressed",
+ "description": "Boy (boy_yellow_hoodie) unimpressed: lowered brows, a small flat mouth, the lid a little heavier; he keeps watching. No smile.",
+ "face": {
+  "BrowDown": 1.0,
+  "blink": 0.5,
+  "MouthFrown": 0.7
+ },
+ "faceMotion": {
+  "blinkRate": 0.8,
+  "saccadeRate": 0.5,
+  "saccadeDeg": 1.0,
+  "attention": 0.6
+ },
+ "body": {
+  "clip": "emo_curious",
+  "mask": [
+   "neck",
+   "head"
+  ]
+ },
+ "timing": {
+  "onset": 0.542,
+  "hold": 0.833,
+  "release": 0.6,
+  "curve": "smooth"
+ },
+ "affect": {
+  "pleasantness": -0.15,
+  "energy": 0.1
+ },
+ "reference": "docs/evaluation/animation/T-106/performance.csv paperboat boy [112, 125) 'returns in the wide with lowered brows and a small flat mouth' (0.54 s); docs/evaluation/animation/T-106/performance.csv watertable boy [0, 20) 'leans on the rim, brows low and mouth nearly closed' (0.83 s hold)",
+ "x_sources": {
+  "face": "authored at intensity 1 for his expressed intensity 0.42 (event 0.7 x profile reaction.intensity_scale 0.6), as boy_interested; expressed: BrowDown 0.42 'lowered brows / brows low'; MouthFrown 0.29 flattens his rest pout to a 'small flat mouth'; blink 0.21 a heavier lid; the jaw stays shut (WT [20, 27) median jawOpen 0.001)",
+  "timing": "onset PB [112, 125) 13 f; hold WT [0, 20) 20 f; release extrapolation",
+  "body": "emo_curious on neck/head (a small lean in, WT 'leans on the rim'), extrapolation"
+ },
+ "source": "script",
+ "license": "project",
+ "attribution": "Plush Studio project (T-113)"
+}

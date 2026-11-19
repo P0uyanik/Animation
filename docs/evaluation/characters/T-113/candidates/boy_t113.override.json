@@ -1,0 +1,29 @@
+{
+ "override": {
+  "face": {
+   "eyes": {
+    "lids": {
+     "closed_fit": {
+      "gap": 0.01,
+      "fade_deg": 20,
+      "fade_above_edge_deg": 20,
+      "shell_subsurface": 0.0
+     }
+    }
+   },
+   "expressions": {
+    "optional": [
+     "Worried",
+     "Curious",
+     "Pout"
+    ]
+   }
+  }
+ },
+ "metadata": {
+  "task": "T-113",
+  "base": "boy_yellow_hoodie.2.1.0.spec.json",
+  "stacks_on": "the published spec, or the T-109 candidate (assets/characters/boy_yellow_hoodie/spec/candidates/T-109/)",
+  "notes": "T-113 candidate (unpublished, evaluation only): closed upper lids follow the eyeball (eyes.lids.closed_fit, face_v3/lids.py fit_closed_lids; no pale dome in Blink/Smile/Laugh/Squint); optional presets listed so the per-character emotions play: Pout (T-109) for boy_reluctant. Belongs in assets/characters/boy_yellow_hoodie/spec/candidates/T-113/ (outside the T-113 write-set). closed_fit.shell_subsurface 0: the upper lid shell (1-2 mm) gets a skin copy without subsurface; with the skin's 1.4 cm subsurface radius the closed lid otherwise shows the white eyeball through it (the pale part of the dome)."
+ }
+}

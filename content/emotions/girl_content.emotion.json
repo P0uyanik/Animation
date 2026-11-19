@@ -1,0 +1,48 @@
+{
+ "format": "plush.emotion",
+ "version": 1,
+ "name": "girl_content",
+ "description": "Girl (girl_auburn_bun_glasses) content: the settled soft smile after the action, lips just parting, eyes forward and calm.",
+ "face": {
+  "SmileClosed": 0.6,
+  "MouthSmile": 0.2,
+  "JawOpen": 0.08,
+  "EyeSquint": 0.15
+ },
+ "faceMotion": {
+  "blinkRate": 1.0,
+  "saccadeRate": 0.8,
+  "attention": 0.5,
+  "gazeBiasDeg": [
+   0.0,
+   -2.0
+  ]
+ },
+ "body": {
+  "clip": "emo_happy",
+  "mask": [
+   "spine",
+   "chest",
+   "neck",
+   "head"
+  ]
+ },
+ "timing": {
+  "onset": 0.625,
+  "hold": 1.042,
+  "release": 0.6,
+  "curve": "smooth"
+ },
+ "affect": {
+  "pleasantness": 0.7,
+  "energy": 0.3
+ },
+ "reference": "docs/evaluation/animation/T-106/performance.csv watertable girl [81, 96) 'straightens with a blink, mouth settles to a soft smile' (0.63 s), [96, 121) 'holds upright' (1.04 s, median jawOpen 0.0456, f120 settled smile)",
+ "x_sources": {
+  "face": "SmileClosed 0.6 + MouthSmile 0.2 the soft smile; JawOpen 0.08: the lips just part (median 0.046 at the hold, the highest closed-mouth value of her rows); EyeSquint 0.15 smile coupling",
+  "timing": "onset WT [81, 96) 15 f; hold WT [96, 121) 25 f; release extrapolation"
+ },
+ "source": "script",
+ "license": "project",
+ "attribution": "Plush Studio project (T-113)"
+}

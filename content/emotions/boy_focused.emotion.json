@@ -1,0 +1,48 @@
+{
+ "format": "plush.emotion",
+ "version": 1,
+ "name": "boy_focused",
+ "description": "Boy (boy_yellow_hoodie) focused on a task: eyes lowered to the work under heavy lids, brows drawn in, lips parted in concentration.",
+ "face": {
+  "blink": 0.3,
+  "BrowDown": 0.35,
+  "MouthO": 0.2,
+  "JawOpen": 0.5
+ },
+ "faceMotion": {
+  "blinkRate": 0.7,
+  "saccadeRate": 0.4,
+  "saccadeDeg": 0.8,
+  "attention": 0.9,
+  "gazeBiasDeg": [
+   0.0,
+   -10.0
+  ]
+ },
+ "body": {
+  "clip": "emo_curious",
+  "mask": [
+   "neck",
+   "head"
+  ]
+ },
+ "timing": {
+  "onset": 0.292,
+  "hold": 0.792,
+  "release": 0.6,
+  "curve": "smooth"
+ },
+ "affect": {
+  "pleasantness": 0.05,
+  "energy": 0.2
+ },
+ "reference": "docs/evaluation/animation/T-106/performance.csv paperboat boy [132, 151) 'holds the folded sheet with eyes lowered' (median jawOpen 0.2097, 0.79 s), [125, 132) lid dip (0.29 s)",
+ "x_sources": {
+  "face": "authored at intensity 1 for his expressed 0.42 (as boy_interested): JawOpen 0.5 x 0.42 = 0.21 = PB [132, 151) median jawOpen; blink 0.3 'eyes lowered' under the heavy lid; BrowDown 0.35 concentration (positive_style)",
+  "timing": "onset PB [125, 132) 7 f; hold PB [132, 151) 19 f; release extrapolation",
+  "faceMotion": "gaze 'low screen-left hold over the paper' PB [112, 151) -> pitch -10 deg"
+ },
+ "source": "script",
+ "license": "project",
+ "attribution": "Plush Studio project (T-113)"
+}

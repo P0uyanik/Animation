@@ -448,7 +448,7 @@
       "source": "T-104 tempo.hold_scale (quick hands, longer holds); T-106 WT point hold [39,61) 0.92 s and end hold [96,121) 1.04 s"
     },
     "delighted_style": {
-      "value": "acting beat: open smile (the model's Smile preset via emotion happy), brows up, slight squint; returns to the modelled closed smile",
+      "value": "acting beat: open smile (the SmileOpen preset via emotion girl_delighted, T-113), brows up, slight squint; returns to the modelled closed smile",
       "unit": "text",
       "kind": "reference",
       "source": "docs/evaluation/animation/T-106/performance.csv PB girl [255,289) 'leans on the rim with a wide open smile'; owner decision 2026-11-17 (rest = closed gentle smile, open smile = Happy)"

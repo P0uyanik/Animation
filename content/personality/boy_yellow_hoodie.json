@@ -439,11 +439,12 @@
           "source": "T-106 PB reveal as above; positive_style: no smile (smile.frequency 0.1), so the shared happy is replaced by his low-key interest"
         },
         "failure": {
+          "emotion": "boy_reluctant",
           "intensity": 0.7,
           "gestures": [
             "boy_reluctant_shrug"
           ],
-          "source": "extrapolation (not shown): shared sad, answered with the reluctant shrug"
+          "source": "extrapolation (not shown): the sulky pout (boy_reluctant, T-113: hero24 / #08 pout) instead of the shared sad, answered with the reluctant shrug"
         }
       },
       "unit": "object",
