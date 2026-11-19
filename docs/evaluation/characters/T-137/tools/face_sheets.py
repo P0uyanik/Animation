@@ -101,7 +101,7 @@ def expr(part, out, a):
             job[k] = cfg[k]
     blender("docs/evaluation/characters/T-113/expr_sheet.py", job, out)
     per = 1 + len(part["columns"])
-    nper = max(1, 5 // per + (1 if per <= 2 else 0))
+    nper = 2 if per >= 3 else 3
     nrow = -(-len(cfg["rows"]) // nper)
     sheet = Image.new("RGB", (per * T * nper, 22 + nrow * (T + HEAD)), BG)
     d = ImageDraw.Draw(sheet)
