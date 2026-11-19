@@ -114,5 +114,10 @@ name first, never rewrite it). Line format, both channels:
 Only READY, BLOCKED and STATUS lines notify the Supervisor; send STATUS only at real milestones. Every line carries
 the input SHA. Then stop; do not wait for CI.
 
+Token economy (owner 2026-11-19 ~22:20Z): keep token use as low as reasonably possible and do the essential work
+only. STATUS/READY in a few lines (what changed, evidence path, open issues); no long explanations, narration or
+repeated summaries. Reports and READMEs: short, facts and measurements, no padding. Do not re-read large files or
+re-run renders without need.
+
 Wait for your first task prompt. Do not start any work before you receive it.
 ```

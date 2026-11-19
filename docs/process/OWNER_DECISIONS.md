@@ -548,3 +548,7 @@ A2/A4/A3 unchanged.
 ## 2026-11-19 ~20:55Z: Codex does T-150 then T-151 (relayed by the original Supervisor)
 Owner order: Codex (about 40% allowance left) does T-150 (eye-shape targets for both girls, forwarded to T-137) then
 T-151 (independent dependency map for A1/T-142, compared with T-142's report before any deletion). Analysis only.
+
+## 2026-11-19 ~22:20Z: token economy for all sessions (relayed by the original Supervisor)
+Keep token use as low as reasonably possible; essential work only; STATUS/READY in a few lines; short reports and
+READMEs; no re-reading large files or re-running renders without need. Added to IMPLEMENTER_PROMPT.md.
