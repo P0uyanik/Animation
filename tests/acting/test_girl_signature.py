@@ -175,16 +175,32 @@ class Shot(unittest.TestCase):
         self.assertEqual(self.s["production"]["cast"]["girl"], {"character_id": CID, "version": "current"})
         self.assertEqual(self.s["characters"][0]["personality"], CID)
 
-    def test_delighted_is_the_only_open_smile_and_ends_before_the_shot(self):
-        emos = [a for a in self.s["actions"] if a["type"] == "emotion"]
-        happy = [a for a in emos if a["name"].split("/")[0] in ("happy", "girl_delighted")]
-        self.assertEqual(len(happy), 1)
-        self.assertGreaterEqual(happy[0]["start"], self.b["E2_success"])
-        self.assertLess(happy[0]["end"], self.s["frameEnd"])  # released: the closed rest smile returns
-        self.assertFalse([a for a in self.s["actions"] if a["type"] == "expression"])
+    def test_reactions_come_from_the_events_not_duplicated(self):
+        """T-097D plays the events: no authored emotion, expression or reaction gesture duplicates a planned one."""
+        self.assertEqual([e["kind"] for e in self.s["events"]], ["object_appears", "success"])
+        self.assertFalse([a for a in self.s["actions"] if a["type"] in ("emotion", "expression")])
+        ev = val(load(PROFILE)["reaction"]["events"])
+        planned = {g for e in ev.values() for g in e.get("gestures", [])[:1]}
+        self.assertFalse([a for a in self.s["actions"] if a["type"] == "clip" and a["clip"] in planned])
+        objects = {o["name"] for o in self.s["objects"]}
+        self.assertIn(self.s["events"][0]["source"], objects)  # a scene object: the planned look has a target
+        self.assertEqual(self.s["events"][1]["source"], "")  # the success glance is authored (to the camera)
+
+    def test_planned_reactions(self):
+        pl = self.s["x_t097_girl"]["planned_reactions"]
+        look, wonder, gesture, delight = pl
+        lo = val(load(PROFILE)["reaction"]["delay_frames"])[0]
+        self.assertGreaterEqual(look["start"] - self.b["E1_object_appears"], lo)
+        self.assertEqual((wonder["name"], gesture["clip"], delight["name"]), ("girl_wonder", "girl_wonder_point", "girl_delighted"))
+        self.assertLessEqual(wonder["end"], self.b["point"])  # the rounded mouth is released before the point (WT [39, 61))
+        self.assertLessEqual(look["end"], self.b["watch"] + 2)  # the authored watch continues the planned look
+        self.assertGreaterEqual(delight["start"] - self.b["E2_success"], lo)
+        self.assertLess(delight["end"], self.s["frameEnd"])  # released: the closed rest smile returns
 
     def test_acting_rule_on_the_scene(self):
-        rep = acting.analyse(self.s, SHOT)  # scene-only rules: the notice delay after each event
+        scene = json.loads(json.dumps(self.s))
+        scene["actions"] += scene["x_t097_girl"]["planned_reactions"]
+        rep = acting.analyse(scene, SHOT)  # scene-only rules: the notice delay after each event
         self.assertEqual(rep["warnings"], [])
         glances = rep["characters"][0]["glances"]
         self.assertEqual([g["event"] for g in glances], ["object_appears", "success"])
@@ -206,18 +222,31 @@ class Bake(unittest.TestCase):
         self.ch = animcheck.Character(next(c for c in self.bake["characters"] if c["name"] == "girl"))
         self.frames = {fd["frame"]: fd for fd in self.bake["frame_data"]}
 
+    def playing_scene(self):
+        """The shot with its planned reactions appended (x_t097_girl.planned_reactions = what T-097D plays for the
+        events, recorded by make_shot.py): the scene the animcheck tools must see (they read scene actions only)."""
+        scene = json.loads(json.dumps(self.s))
+        scene["actions"] += scene["x_t097_girl"]["planned_reactions"]
+        out = SHOT.parent / "build" / "test_signature"
+        out.mkdir(parents=True, exist_ok=True)
+        sp = out / "playing.scene.json"
+        sp.write_text(json.dumps(scene))
+        return sp
+
     def test_acting_and_personality_checks_clean(self):
         import subprocess
-        for tool in ("acting.py", "personality.py"):
-            out = subprocess.run([sys.executable, str(ROOT / "tools" / "animcheck" / tool), "--scene", str(SHOT), "--bake", str(BAKE)],
+        sp = self.playing_scene()
+        for tool in ("acting.py", "personality.py", "timing.py"):
+            out = subprocess.run([sys.executable, str(ROOT / "tools" / "animcheck" / tool), "--scene", str(sp), "--bake", str(BAKE)],
                                  capture_output=True, text=True)
             self.assertEqual(out.returncode, 0, out.stdout + out.stderr)
             self.assertNotIn("WARN", out.stdout)
             self.assertNotIn("FAIL", out.stdout)
-        out = subprocess.run([sys.executable, str(ROOT / "tools" / "animcheck" / "animcheck.py"), "--bake", str(BAKE), "--scene", str(SHOT),
+        out = subprocess.run([sys.executable, str(ROOT / "tools" / "animcheck" / "animcheck.py"), "--bake", str(BAKE), "--scene", str(sp),
                               "--thresholds", str(ROOT / "tools" / "animcheck" / "thresholds.json"), "--check"], capture_output=True, text=True)
         self.assertEqual(out.returncode, 0, out.stdout + out.stderr)
         self.assertNotIn("FAIL", out.stdout)
+        self.assertIn("girl_wonder_point", out.stdout)  # the planned gesture is measured
 
     def test_library_clips_pass_animcheck(self):
         """girl_chin_think and girl_point_down on her package (the bake's), with her profile and life: T-061 metrics."""

@@ -464,7 +464,7 @@
         "object_appears": {
           "emotion": "girl_wonder",
           "intensity": 0.7,
-          "duration_s": 1.5,
+          "duration_s": 1.2,
           "gaze_shift": 1.0,
           "gestures": [
             "girl_wonder_point",
@@ -489,7 +489,7 @@
       },
       "unit": "object",
       "kind": "measured",
-      "source": "docs/evaluation/animation/T-106/performance.csv: object_appears = WT [0, 39) wonder with the hand at the chin, then the point (girl_wonder_point; 1.5 s = rise + chin hold + leave, girl_beats.py); success = PB [255, 289) wide open smile 1.42 s (girl_delighted), gaze 0.6: she glances up to share it (e908); partner_acts = WT [22, 61) points and explains (girl_point_down, 1.1 s)"
+      "source": "docs/evaluation/animation/T-106/performance.csv: object_appears = WT [0, 39) wonder with the hand at the chin, then the point (girl_wonder_point); duration 1.2 s x tempo_scale 0.9 x hold_scale 1.25 = 1.35 s (32 f): the wonder covers the rise and the chin hold (14 + 15 f) and releases as she leaves the chin, so the mouth is closed in the point hold (WT [39, 61)); success = PB [255, 289) wide open smile 1.42 s (girl_delighted; 1.4 s x 1.125 = 1.58 s); partner_acts = WT [22, 61) points and explains (girl_point_down, 1.1 s). Played by T-097D from scene events (e908)"
     }
   },
   "interaction": {
@@ -527,7 +527,7 @@
     "speech only without audio (WT f020-f052)",
     "negative emotions only as rig tiles",
     "no glasses handling",
-    "T-097-girl: reaction.events are profile data for the reaction planner; until T-097D schedules plans, e908 plays them as explicit emotion / clip / look actions"
+    "T-097-girl: a planned look lasts at most its reaction (gaze_shift <= 1), so a sustained watch beyond the wonder is authored in the shot (e908)"
   ],
   "owner_decisions": {
     "eye_colour": {
