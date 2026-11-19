@@ -104,3 +104,9 @@ Tasks from now on are numbered T-001, T-002, …, and pass through the states in
 | T-026b | Sheen P90/P50 below target on all presets (systemic: light or metric) | open |
 | T-026c | Girl face skin renders greyer than body skin | open |
 | T-026d | Boot top shows lining ring | open |
+| T-104d | [Interaction] Calibrated timing becomes the default (round 2 close-out) | running 2026-11-19 (owner ~02:55Z) | t-104d-claude-timing-default | `docs/tasks/T-104d.md`; path A |
+| T-111 | [Interaction] Architect: object affordances + verb library (design only) | running 2026-11-19 (owner ~02:55Z) | t-111-claude-interaction-design | `docs/tasks/T-111.md`; path A |
+| T-101 | [Infra] The 3 old failing tests from T-077 | running 2026-11-19 (owner ~02:55Z) | t-101-claude-old-tests | `docs/tasks/T-101.md`; path A |
+| T-110 | [Visual] Felt surface: one fibre halo, skin surface | running 2026-11-19 (owner ~02:55Z) | t-110-claude-felt-surface | `docs/tasks/T-110.md`; path B |
+| T-109 | [Visual] Face round 4 (lower face, girl lens shelf, mouth) | approved; after T-094 versions are current | t-109-claude-face-r4 | `docs/tasks/T-109.md` (to write); path B |
+| T-115 | [Visual] Codex: fit search on T-109 face parameters | approved; after T-094 versions are current | t-115-codex-face-fit | `docs/tasks/T-115.md` (to write); path A |

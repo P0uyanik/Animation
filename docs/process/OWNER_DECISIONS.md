@@ -368,3 +368,27 @@ How the Supervisor applies it:
   current pointers on boy 2.0.0 / girl 0.11.0 until the owner has seen the result.
 - Standing rules unchanged. Interrupt the owner only for a real blocker or a scope decision beyond the plan
   (environment, third character, GPU, new dependencies). Morning: one short summary (merged, waiting, sheets, costs).
+
+## 2026-11-19 (~02:55Z): round 2 close-out and round 3 start (relayed by the previous Supervisor session)
+Owner, asked to choose explicitly: "I confirm all".
+Round 2 close-out:
+1. **T-094:** boy 2.1.0 and girl 0.12.0 become **current** (T-088 version-switch script) once the exchange re-render
+   is finished and its CI is green.
+2. **T-104:** the calibrated animation timing becomes the **default** (T-104d, the one-line default switch).
+3. **T-091:** the flagged girl forehead (bare forehead in the face-front crop) is **accepted** as is.
+
+Round 3, start now (disjoint claims, at most 6 cloud tasks):
+- **T-111** interaction architect (short-lived): design doc + task files for object affordances in the asset format
+  and a data-driven verb library mapped onto the existing planner (pick up, carry, pass, place first). Docs only.
+- **T-101:** fix or wire the 3 old failing tests from T-077; no test loosened.
+- **T-110** felt surface: one consistent Geometry Nodes fibre halo on felt surfaces (density per material preset);
+  owns the skin surface (less plastic look).
+- **T-109** face round 4 (after item 1 is current): fuller/rounder lower face, no grey shelf under the girl's lenses,
+  mouth shapes at rest and in acting; geometry/eyes/mouth only.
+- **Codex T-115:** tools/fit with a larger search budget on T-109's face parameters on the new current versions;
+  proposals only; input for T-109 (top of NEXT_TASK.md).
+Queued, no further approval needed to start when prerequisites are met: T-112 affordances + verb library and T-051
+finger grasps (after T-111); T-113 expression library expansion (after T-109); T-114 two-character acting scene (after
+T-113); T-102 repo cleanup after this wave. Still out of scope: third character, real props/paper fold (T-099),
+environment, GPU, lip sync. Usual rules: cheap preview first, Cycles strict sheets for the owner, ledger lines; the
+owner approves new character versions before they become current.
