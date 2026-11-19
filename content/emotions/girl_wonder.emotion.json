@@ -2,7 +2,7 @@
  "format": "plush.emotion",
  "version": 1,
  "name": "girl_wonder",
- "description": "Girl (girl_auburn_bun_glasses) wonder: eyes wide, brows up, a rounded open mouth, a slight lean and head tilt towards the object; with the hand-to-chin gesture as a separate clip (girl_chin_think / girl_wonder_point). Acting beat; her rest face (the modelled closed smile) returns on release.",
+ "description": "Girl (girl_auburn_bun_glasses) wonder: eyes wide, brows up, a rounded open mouth, a slight lean towards the object (spine and chest only: the head stays with her gaze, so her chin stays on her hand); with the hand-to-chin gesture as a separate clip (girl_chin_think / girl_wonder_point). Acting beat; her rest face (the modelled closed smile) returns on release.",
  "face": {
   "WideOpen": 0.8,
   "jawOpen": 0.1
@@ -16,7 +16,11 @@
   }
  },
  "body": {
-  "clip": "emo_curious"
+  "clip": "emo_curious",
+  "mask": [
+   "spine",
+   "chest"
+  ]
  },
  "timing": {
   "onset": 0.25,

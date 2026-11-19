@@ -12,31 +12,31 @@
     {
      "event": "object_appears",
      "event_frame": 13.0,
-     "look_frame": 17.0,
-     "delay_frames": 4.0,
+     "look_frame": 17.5,
+     "delay_frames": 4.5,
      "notice_delay_frames": 4.0
     },
     {
      "event": "success",
-     "event_frame": 86.0008,
-     "look_frame": 92.0,
+     "event_frame": 83.9992,
+     "look_frame": 90.0,
      "delay_frames": 6.0,
      "notice_delay_frames": 4.0
     }
    ],
    "gestures": [
     {
-     "label": "girl clip girl_wonder_point @19",
-     "amplitude": 0.541,
-     "swing_deg": 97.4,
+     "label": "girl clip girl_wonder_point @17.5",
+     "amplitude": 0.545,
+     "swing_deg": 98.2,
      "limit": 0.6
     }
    ],
    "hold": {
     "longest_still_frames": 44,
     "at": [
-     112,
-     156
+     111,
+     155
     ],
     "longest_still_frames_24": 44.0,
     "required": 15.0
