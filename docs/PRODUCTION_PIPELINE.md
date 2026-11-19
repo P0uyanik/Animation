@@ -177,7 +177,7 @@ These are the fields of `plush::ReactionEvent` (`engine/scene/acting.h`); animch
 `time` + the planned notice delay (frame `frameStart + (time + delay) x fps`):
 - **Look** at the source (a character's face or the object), held for the reaction's gaze habit (`gazeShift` x its
   duration, at least 3 frames), then back to the earlier gaze. A character without an earlier look turns in and out
-  over 8 frames (`lookAt.weight`), so nothing changes before the reaction. No look for a scene event without a source.
+  over 12 frames (`lookAt.weight`), so nothing changes before the reaction. No look for a scene event without a source.
 - **Emotion** (the planned one, at the planned intensity) as a blended emotion action (T-097A `blend`), released after
   the planned duration (it replaces the character's other blended emotions, the T-097A default); the profile's intensity scale and gaze shift are its `modulation` (the plan's timing already
   holds the tempo and hold scales). Skipped with a warning if `content/emotions` has no such emotion.
