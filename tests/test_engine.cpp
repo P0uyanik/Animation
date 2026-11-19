@@ -2,9 +2,6 @@
 
 #include <map>
 
-#include "render/bsdf.h"
-#include "render/image.h"
-#include "render/pathtracer.h"
 #include "scene/scene.h"
 
 using namespace plush;

@@ -36,7 +36,6 @@ fast tests/CMakeLists.txt
 
 # --- Studio UI (no character build, export or render path) and build configuration.
 fast apps/studio/**
-fast apps/export-obj/**
 fast CMakeLists.txt
 fast cmake/**
 fast vcpkg.json

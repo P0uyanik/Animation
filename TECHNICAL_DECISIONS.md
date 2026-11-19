@@ -305,3 +305,32 @@ Owner decision 2026-11-17 ([OWNER_DECISIONS.md](docs/process/OWNER_DECISIONS.md)
   hashes; guarded path). The generator never overwrites them, and shots can reuse a stored master (T-075, in progress).
 - **CPU render profiles** for the final Blender renders come from the T-074 study (Cycles, Eevee, denoising; final
   visual quality first).
+
+## TD-44 Engine path tracer removed; plush-render is bake-only (2026-11-19, T-142)
+Owner decision 2026-11-19 (OWNER_DECISIONS.md, "A1: full removal of genuinely unused legacy code"; D1 = B, D3).
+Supersedes the "engine renderer stays" parts of TD-42 and TD-43.
+- **Removed:**
+  - `engine/render/` (path tracer, BSDFs, image I/O, OIDN denoise), `PLUSH_BUILD_RENDERER` and the Embree/OIDN
+    dependencies (CMake, vcpkg `renderer` feature, `ci-dependencies.json`, `install_ci_dependencies.ps1 -Renderer`);
+  - `apps/export-obj/`;
+  - the image modes of `plush-render` (`--out/--outdir/--video/--spp/--compare/...`);
+  - the Studio's path-traced Render panel, "render animation to video" button and `--auto-render`/`--render-size`/`--render-spp`;
+  - the `linux renderer` CI job, with its required-job entries in the gate verdict `needs`, `combine_check_reports.py`
+    and `tools/ci_status.py`, and the `renderer_skip` report in `tools/check_all.py`;
+  - tests that covered only the renderer: `tests/test_render.cpp` (5 doctest cases), the CTests
+    `regression_milestone01`, `regression_face_neutral` and `regression_lineup_abc`, and the `renderer_tests_skipped` marker;
+  - the scenes and character used only by those tests (`test_lineup.scene.json`, `test_face.scene.json`,
+    `girl_brown_glasses.character.json`) and their generator `tools/make_face_test.py`.
+- **Kept:**
+  - `engine/model/sdf.*` (whole: scene SDF objects and the collision fallback), `engine/model/character.*`
+    and `engine/fuzz/` (shared rig types; the SDF character is a live fixture of active tests and bake goldens);
+  - `plush-render --bake` (same path, same CLI for every caller);
+  - the Studio's Production, Viewport, Timeline, Inspector and Outliner. The viewport texture colours and the PNG
+    read/write moved to `apps/studio/{preview_texture,image_io}.*`; the Studio now builds whenever `PLUSH_BUILD_STUDIO=ON`;
+  - the four frozen PNGs in `tests/regression/` (frozen manifest; evidence only, no longer tested).
+- **Unchanged:** the 218 active doctest cases (identical case list), bake outputs (byte-identical to the input build)
+  and every active threshold and golden. Evidence: `docs/evaluation/T-142/`.
+- **Restore:**
+  - tag `backup/20261119T224500Z/legacy-engine-renderer-2026-11-19` (-> `0f68267`, the last main commit with the code);
+  - `git revert <T-142 commit>` restores everything in one step;
+  - for the files only: `git checkout <tag> -- engine/render apps/export-obj tests/test_render.cpp`.

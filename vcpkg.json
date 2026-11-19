@@ -2,11 +2,12 @@
   "name": "plush-studio",
   "version-string": "0.1.0",
   "description": "Personal stylized 3D animation production application",
-  "dependencies": ["glm", "nlohmann-json", "glfw3", "glew", "stb", "doctest"],
-  "features": {
-    "renderer": {
-      "description": "Frozen engine path tracer (PLUSH_BUILD_RENDERER=ON): Embree. OIDN comes from the pinned prebuilt.",
-      "dependencies": ["embree"]
-    }
-  }
+  "dependencies": [
+    "glm",
+    "nlohmann-json",
+    "glfw3",
+    "glew",
+    "stb",
+    "doctest"
+  ]
 }

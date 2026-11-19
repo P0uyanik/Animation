@@ -11,10 +11,6 @@ endif()
 
 option(PLUSH_BUILD_STUDIO "Build the desktop studio application (needs OpenGL + GLFW)" ON)
 option(PLUSH_BUILD_TESTS "Build unit tests" ON)
-# The engine path tracer (engine/render/, frozen per TD-43) is the only user of Embree and Open Image Denoise.
-# OFF (default): engine core, animation, scene, bake (plush-render --bake) and tests build without them;
-# renderer tests are skipped and reported. ON: the renderer, its tests, the image regressions and plush-studio.
-option(PLUSH_BUILD_RENDERER "Build the frozen engine path tracer (needs Embree 4; OIDN optional)" OFF)
 
 include(cmake/Dependencies.cmake)
 
@@ -28,7 +24,6 @@ endif()
 
 add_subdirectory(engine)
 add_subdirectory(apps/render-cli)
-add_subdirectory(apps/export-obj)  # comparison/export utility; does not change the engine
 if(PLUSH_BUILD_STUDIO)
   add_subdirectory(apps/studio)
 endif()

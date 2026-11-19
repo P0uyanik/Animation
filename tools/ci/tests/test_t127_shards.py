@@ -60,11 +60,10 @@ def verdict(tmp: Path, shards: dict[int, list[str] | None], count: int, blender:
         (root / artifact).mkdir(parents=True, exist_ok=True)
         (root / artifact / "check_all.json").write_text(json.dumps({"platform": artifact, "checks": [ok], **report}))
     write("quality-linux", {"blender_units": ["a", "b", "c"] if linux_units is None else linux_units})
-    write("quality-renderer", {})
     for index, units in shards.items():
         if units is not None:
             write(f"quality-blender-{index}", {"blender_shard": {"index": index, "count": count, "units": units}})
-    needs = {job: {"result": "success"} for job in ("plan", "linux", "renderer")}
+    needs = {job: {"result": "success"} for job in ("plan", "linux")}
     needs["regression"] = {"result": "skipped"}
     needs["blender"] = {"result": blender}
     proc = subprocess.run([sys.executable, str(COMBINE), str(root), str(tmp / "out.txt"), "--needs-json",
