@@ -1,0 +1,27 @@
+{
+  "format": "plush.hand_shape",
+  "version": 1,
+  "id": "count_3",
+  "kind": "gesture",
+  "description": "Counting three: index, middle and ring up, the little finger curled under the thumb.",
+  "pose": {
+    "curl": 0.9,
+    "thumb": 0.75,
+    "spread": 0.0,
+    "thumb_opposition": 0.7,
+    "fingers": {
+      "index": {
+        "curl": 0.0,
+        "spread": 0.6
+      },
+      "middle": {
+        "curl": 0.0,
+        "spread": 0.0
+      },
+      "ring": {
+        "curl": 0.0,
+        "spread": 0.8
+      }
+    }
+  }
+}

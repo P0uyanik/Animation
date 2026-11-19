@@ -1,0 +1,19 @@
+{
+  "format": "plush.hand_shape",
+  "version": 1,
+  "id": "wrap",
+  "kind": "grasp",
+  "description": "Fingers and thumb close round a cylinder or sphere (cups, bottles, handles); the current grasp. Design 2.3.",
+  "approach": {
+    "curl": 0.03,
+    "thumb": 0.05,
+    "spread": 0.35
+  },
+  "pose": {
+    "curl": 0.03,
+    "thumb": 0.05,
+    "spread": 0.35
+  },
+  "search": "all",
+  "thumb": "opposed"
+}

@@ -1,6 +1,8 @@
 // Keyframe animation, skeletons and poses.
 #pragma once
+#include <array>
 #include <map>
+#include <optional>
 #include <memory>
 #include <string>
 #include <string_view>
@@ -148,15 +150,39 @@ struct HandPose {
   float graspRadius = 0.02f;
   vec3 graspAxis{0};     // non-zero: the object is a cylinder along this axis (hand rest frame), else a sphere
   float graspWeight = 1.0f;
+  // T-051 per-finger pose and grasp (docs/architecture/INTERACTION_AFFORDANCES.md section 5). All optional: when none
+  // is set (perFinger() false) applyHandPose is exactly the single-search pose above, bit for bit.
+  bool band = false;     // contact band along graspAxis: every finger's contact lies in [bandLo, bandHi]
+  float bandLo = 0, bandHi = 0;  // distances from graspCentre along graspAxis (metres, hand rest frame)
+  enum class Thumb { Opposed = 0, Along = 1, Tucked = 2 } thumbMode = Thumb::Opposed;
+  vec3 graspFace{0};     // non-zero (per-finger grasp only): a box face, the face's inward normal (hand rest frame);
+                         // the solid is the slab |dot(p - graspCentre, normal)| <= graspRadius
+  // Per-digit overrides, fingers 0..3 (bones f<k>a/b; 3 = index, 0 = little): (curl, spread, free), spread in the
+  // units of `spread` (fans the finger by spread * 7 deg * (k - 1.5)); free >= 0.5 keeps the finger out of the grasp
+  // search (it holds its curl, e.g. the curled fingers of a pinch). Unset = curl / index and spread above.
+  std::array<std::optional<vec3>, 4> finger{};
+  std::optional<vec2> thumbPose;  // (opposition 0..1, curl): opposition turns the thumb in front of the palm
+  // Grasp weight per digit (fingers 0..3, thumb = 4), e.g. staggered closing; unset = graspWeight.
+  std::array<std::optional<float>, 5> digitWeight{};
+  bool perFinger() const;
 };
+// Fingertip (skin) radius of a hand from its skeleton: half the mean spacing of neighbouring finger roots; 0 if the
+// hand has fewer than two fingers.
+float fingertipRadius(const Skeleton& skeleton, char side);
 // Poses one hand ('L' or 'R'). With grasp, each finger's curl is searched (bisection) so that its tip rests on the
-// sphere surface: a small object closes the hand further than a large one.
+// sphere surface: a small object closes the hand further than a large one. With perFinger() (T-051), each digit is
+// posed and searched on its own: fingertips (skin radius fingertipRadius) on the cylinder / sphere / box-face surface,
+// no finger segment inside it, contacts inside the band, the thumb opposed, along the axis or tucked.
 void applyHandPose(const Skeleton& skeleton, Pose& pose, const mat4& world, char side, const HandPose& hp);
 // Fingertip positions (world) of one hand, thumb first; empty if the skeleton has no finger bones.
 std::vector<vec3> fingertips(const Skeleton& skeleton, const Pose& pose, const mat4& world, char side);
 
 // Tracks: "<prefix>hand.L" = (curl, thumb, spread), "<prefix>hand.L.index" (x), "<prefix>hand.L.grasp" = sphere
 // centre (hand rest frame), "<prefix>hand.L.graspRadius" (x), "<prefix>hand.L.grasp.weight" (x). Same for R.
+// T-051 (all optional; absent = the pose above, unchanged): "hand.L.band" = (lo, hi, thumb 0 opposed / 1 along /
+// 2 tucked), "hand.L.graspFace" (box-face normal), "hand.L.f<k>" = (curl, spread, free) for finger k (0 little .. 3 index),
+// "hand.L.thumb" = (opposition, curl), "hand.L.stagger" (x = frames per finger; default 1 with a band, else 0):
+// fingers close index -> little and open little -> index, one stagger step apart.
 void applyConstraints(const Skeleton& skeleton, const Clip& clip, const std::string& prefix, double frame,
                       const mat4& world, Pose& pose, const GazeLimits& gaze = {}, double fps = 30.0);
 

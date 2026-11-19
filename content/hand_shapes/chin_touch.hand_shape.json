@@ -1,0 +1,14 @@
+{
+  "format": "plush.hand_shape",
+  "version": 1,
+  "id": "chin_touch",
+  "kind": "gesture",
+  "description": "Thinking: hand at the chin, fingers loosely curled, index near the lips (reference: thinking gesture, hand to the chin).",
+  "pose": {
+    "curl": 0.45,
+    "thumb": 0.3,
+    "spread": -0.2,
+    "index": 0.25,
+    "thumb_opposition": 0.3
+  }
+}

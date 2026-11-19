@@ -1,0 +1,20 @@
+{
+  "format": "plush.hand_shape",
+  "version": 1,
+  "id": "cradle",
+  "kind": "grasp",
+  "description": "Holding from below, palm up (a boat held in both hands); no contact search. Design 2.3.",
+  "approach": {
+    "curl": 0.1,
+    "thumb": 0.25,
+    "spread": 0.2
+  },
+  "pose": {
+    "curl": 0.3,
+    "thumb": 0.25,
+    "spread": 0.2
+  },
+  "search": "none",
+  "thumb": "along",
+  "palm": "up"
+}

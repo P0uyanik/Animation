@@ -1,0 +1,12 @@
+{
+  "format": "plush.hand_shape",
+  "version": 1,
+  "id": "relaxed",
+  "kind": "rest",
+  "description": "Relaxed idle hand, fingers half-curled (the engine's rest hand); a personality may bias its curl.",
+  "pose": {
+    "curl": 0.25,
+    "thumb": 0.15,
+    "spread": 0.0
+  }
+}
