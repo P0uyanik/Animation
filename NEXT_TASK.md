@@ -1,3 +1,26 @@
+# ▶ T-133 — NEW CODEX ASSIGNMENT (Supervisor 2026-11-19 19:45Z): third-character fit search, then a short review
+Owner plan (OWNER_DECISIONS 2026-11-19 ~13:10Z / ~15:20Z): Codex does a fit search on the third character's first
+version, then an independent review. Token-efficient; existing tools only.
+
+1. Branch `t-133-codex-third-fit` from the latest `origin/main` (683794f or newer) in a new worktree on C: (never write
+   on D:). Write ONLY `docs/evaluation/characters/T-133/**`. No project code, test, spec or asset change; her
+   references stay untouched.
+2. Her first version = base spec
+   `assets/characters/girl_white_hair_blue_dress/spec/candidates/T-126a/girl_white_hair_blue_dress.0.1.0.spec.json`
+   + overrides, in this order: `docs/evaluation/characters/T-126/body_face/hands_r2.override.json`,
+   `.../T-126/hair/candidates/girl_white_hair_blue_dress.hair.override.json`,
+   `.../T-126/dress/girl_white_hair_blue_dress.dress.override.json`,
+   `.../T-126/materials/girl_white_hair_blue_dress.T-126d.override.json` (pinned to the old spec path; apply it to the
+   T-126a path). Not published (publishing is held for an owner decision); build it locally only.
+3. Fit search as in T-115: proportions, face layout and silhouette parameters against her primary target
+   `references/uploads/01_identity_front.webp` (+ 02 turnaround, 03 lineup scale). Output a proposed override with
+   measured gains, plus a short README: what the first version gets right/wrong vs 01/02/03/04/14/16/17/18, ranked
+   next steps. Known gaps: closed eyes lack a dark lash curve (generator gap), faint knit leaves/stitches, small
+   collar, squat boots, hair tip shape.
+4. Post `| T-133 | STARTED |`; when done push and post
+   `<UTC> | T-133 | READY | t-133-codex-third-fit@<sha> | input <sha> | <headline>` + ledger.
+
+---
 # ▶ (Supervisor 2026-11-19 19:35Z) T-123 part 2 ACCEPTED and merging — NO CODEX ASSIGNMENT (weekly limit)
 Thanks for the round-4 review. Codex is unavailable until ~2026-11-23 21:43Z (weekly limit); no assignment until a new
 block appears here after that.
