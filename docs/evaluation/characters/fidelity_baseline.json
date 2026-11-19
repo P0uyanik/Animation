@@ -10,29 +10,29 @@
   },
   "characters": {
     "boy_yellow_hoodie": {
-      "score": 67.6344,
-      "build": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.0.0.spec.json",
+      "score": 67.7245,
+      "build": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.1.0.spec.json",
       "overrides": [],
-      "source": "docs/evaluation/characters/T-080/fidelity/fidelity.json",
+      "source": "docs/evaluation/characters/T-094/fidelity/boy_yellow_hoodie/fidelity.json",
       "rebaseline": {
-        "task": "T-080",
-        "reason": "owner decision 2026-11-18 (docs/process/OWNER_DECISIONS.md): boy 2.0.0 is the new current version",
-        "previous_version": "1.1.0",
-        "previous_score": 66.4143,
-        "previous_source": "docs/evaluation/characters/T-064/boy/fidelity.json"
+        "task": "T-094",
+        "reason": "owner decision (docs/process/OWNER_DECISIONS.md 2026-11-19): Owner 2026-11-19 (~02:55Z, round 2 close-out item 1, \"I confirm all\"): boy 2.1.0 and girl 0.12.0 become current once the exchange re-render is finished and its CI is green (green: run 44449190108 at ea02ce1).",
+        "previous_version": "2.0.0",
+        "previous_score": 67.6344,
+        "previous_source": "docs/evaluation/characters/T-080/fidelity/fidelity.json"
       }
     },
     "girl_auburn_bun_glasses": {
-      "score": 62.2949,
-      "build": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.11.0.spec.json",
+      "score": 65.0136,
+      "build": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.12.0.spec.json",
       "overrides": [],
-      "source": "docs/evaluation/characters/T-081/fidelity/fidelity.json",
+      "source": "docs/evaluation/characters/T-094/fidelity/girl_auburn_bun_glasses/fidelity.json",
       "rebaseline": {
-        "task": "T-081",
-        "reason": "owner-approved new current after strict visual comparison (docs/process/OWNER_DECISIONS.md 2026-11-18); score drop from the wider hair silhouette, accepted by the owner",
-        "previous_version": "0.10.0",
-        "previous_score": 64.4042,
-        "previous_source": "docs/evaluation/characters/T-064/girl/fidelity.json"
+        "task": "T-094",
+        "reason": "owner decision (docs/process/OWNER_DECISIONS.md 2026-11-19): Owner 2026-11-19 (~02:55Z, round 2 close-out item 1, \"I confirm all\"): boy 2.1.0 and girl 0.12.0 become current once the exchange re-render is finished and its CI is green (green: run 44449190108 at ea02ce1).",
+        "previous_version": "0.11.0",
+        "previous_score": 62.2949,
+        "previous_source": "docs/evaluation/characters/T-081/fidelity/fidelity.json"
       }
     }
   }

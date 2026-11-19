@@ -88,6 +88,24 @@ compares the whole baseline file, the store pointers and the golden root before 
 current later, after the owner's decision: `asset_store.py approve`, the baseline entry (reusing the score with
 `--fidelity-json`) and the golden baseline, by the Supervisor's approval task.
 
+### Make a published candidate current: `--approve-published` (T-094 step 2)
+After the owner's decision, on a version published earlier (for example with `--publish-only`). The claim needs
+`index.json`, `fidelity_baseline.json`, the version's golden folder and `docs/evaluation/characters/<task>/`:
+
+```
+python3 tools/version_switch.py --approve-published --character <id> --version <x.y.z> --spec <the version's spec> \
+    --task T-NNN --decision "<owner wording>" --decision-ref "docs/process/OWNER_DECISIONS.md <date>" --blender <exe> \
+    [--fidelity-json <fidelity.json>] [--dry-run]
+```
+
+Runs steps 1 and 3 to 7 (no build, no publish). Step 1 also refuses a version that is not published, is already
+approved or fails verification, a spec whose hash is not the manifest's `spec_sha256`, and a missing fidelity report
+(`docs/evaluation/characters/<task>/fidelity/<id>/fidelity.json` from `--publish-only`, or `--fidelity-json`). The
+baseline entry's `source` is that report. Step 6 also checks that the published version folder is byte-identical.
+
+The fidelity evidence (every mode) is copied with the sheets `report.md` links, stored as JPEG with the links
+rewritten.
+
 `--dry-run` validates and prints every step, command, file and the predicted trailer block without writing anything.
 A failure after step 2 stops the run and lists what was already written; a published version stays published, so
 continue by hand from the failed step (or publish a new version number). The tool only calls `asset_store.py`; the

@@ -4,7 +4,7 @@
     python3 tools/version_switch.py --character <id> --version <x.y.z> --spec <path> [--overrides <file> ...] \
         --task T-NNN --decision "<owner wording>" --decision-ref "docs/process/OWNER_DECISIONS.md <date>" \
         --blender <exe> [--notes "..."] [--identity-change-approved-by "..."] [--fidelity-json <fidelity.json>] \
-        [--work <dir>] [--dry-run] [--publish-only]
+        [--work <dir>] [--dry-run] [--publish-only | --approve-published]
 
 Steps, in this order (each one only after the previous one succeeded):
   1. validate   everything below is checked before anything is written, and every problem is reported at once:
@@ -39,6 +39,14 @@ NOT touch docs/evaluation/characters/fidelity_baseline.json and does NOT write a
 (the whole baseline file, the store pointers and the golden root are compared before and after). Making the version
 current later is a normal run without --publish-only on a new number, or by hand (asset_store approve + baseline +
 golden), after the owner's decision.
+
+--approve-published (T-094 step 2) makes an already-published candidate current: steps 3 to 7 on the version in the
+store (no build, no publish). The spec given must be the version's own (its hash is the manifest's spec_sha256); the
+score is reused from docs/evaluation/characters/<task>/fidelity/<id>/fidelity.json (written by --publish-only) or
+--fidelity-json. Refused when the version is not published, is already approved, fails verification or has no
+fidelity report. The published version folder is checked to be byte-identical afterwards.
+
+The fidelity evidence is copied with its side-by-side sheets: sheets/*.png become JPEG and report.md links them.
 
 --dry-run runs step 1 and prints every step, command and file without writing anything (exit 1 when step 1 finds a
 problem). The frozen-manifest and immutability checks are not changed: this tool only calls asset_store.py, which
@@ -197,9 +205,12 @@ class Plan:
         self.version_dir = self.store / self.version
         self.golden_dir = root / GOLDEN_ROOT / self.cid / self.version
         self.publish_only = bool(getattr(a, "publish_only", False))
-        # publish-only: one task may publish several characters, so the evidence goes into a folder per character
+        self.approve_published = bool(getattr(a, "approve_published", False))
+        # publish-only / approve-published: one task may handle several characters, so the evidence goes into a
+        # folder per character
         self.evidence_dir = (root / "docs" / "evaluation" / "characters" / self.task / "fidelity"
-                             / (self.cid if self.publish_only else ""))
+                             / (self.cid if (self.publish_only or self.approve_published) else ""))
+        self.fidelity_src: Path | None = None  # approve-published: the fidelity.json the score comes from
         self.work = Path(os.path.abspath(a.work)) if a.work else root / "build" / "version_switch" / f"{self.cid}-{self.version}"
         self.spec_rel = self.overrides_rel = None
         self.spec = None
@@ -228,7 +239,16 @@ class Plan:
             self.fail("--task must be the task id (T-NNN) whose claim covers this switch")
         # store: refuse an existing or reused version number (asset_store would refuse it after the build)
         idx = AS.load_index(str(self.store), cid)
-        if os.path.lexists(self.version_dir) or self.version in AS.used_versions(idx):
+        if self.approve_published:
+            entry = idx["versions"].get(self.version)
+            if entry is None or not (self.version_dir / "manifest.json").is_file():
+                self.fail(f"{cid} {self.version} is not published: --approve-published only makes an already "
+                          "published version current (publish it first, e.g. with --publish-only)")
+            elif idx["pointers"].get("approved") == self.version or entry.get("status") == "approved":
+                self.fail(f"{cid} {self.version} is already approved")
+            elif AS.verify_version(str(self.store), self.version)["ok"] is not True:
+                self.fail(f"{cid} {self.version} fails asset_store verification; not approved")
+        elif os.path.lexists(self.version_dir) or self.version in AS.used_versions(idx):
             self.fail(f"{cid} {self.version} is already published (or the number was used before): published "
                       "versions are immutable and numbers are never reused; choose a new version")
         self.parent = idx["pointers"].get("approved") or idx["pointers"].get("reference")
@@ -263,17 +283,38 @@ class Plan:
         except V.VersionError as exc:
             self.fail(f"generator pins do not resolve: {exc}")
         self.problems.extend(presets_problems(self.spec))
+        if self.approve_published and (self.version_dir / "manifest.json").is_file():
+            man = read_json(self.version_dir / "manifest.json")
+            if S.sha256(self.spec) != man.get("spec_sha256"):
+                self.fail(f"the spec (+ overrides) is not the one {cid} {self.version} was built from (hash differs "
+                          "from its manifest's spec_sha256); the baseline entry must name the published build inputs")
         # the gate's regression must accept the inputs (2026-11-18: version specs were refused by tiers.py)
         self.problems.extend(self.tiers_problems())
         # golden baseline and evidence: never overwritten
         if self.golden_dir.exists():
             self.fail(f"{rel(root, self.golden_dir)} already exists: a golden baseline is never overwritten")
-        if (self.evidence_dir / "fidelity.json").exists():
-            self.fail(f"{rel(root, self.evidence_dir)}/fidelity.json already exists; not overwritten")
-        if a.fidelity_json and not Path(a.fidelity_json).is_file():
-            self.fail(f"--fidelity-json {a.fidelity_json}: file not found")
+        if self.approve_published:
+            own = self.evidence_dir / "fidelity.json"
+            if a.fidelity_json:
+                src = Path(os.path.abspath(a.fidelity_json))
+                if not src.is_file():
+                    self.fail(f"--fidelity-json {a.fidelity_json}: file not found")
+                elif own.exists() and src != own:
+                    self.fail(f"{rel(root, self.evidence_dir)}/fidelity.json already exists; not overwritten")
+                else:
+                    self.fidelity_src = src
+            elif own.is_file():
+                self.fidelity_src = own
+            else:
+                self.fail(f"no fidelity report for {cid} {self.version}: expected {rel(root, own)} (from "
+                          "--publish-only) or --fidelity-json")
+        else:
+            if (self.evidence_dir / "fidelity.json").exists():
+                self.fail(f"{rel(root, self.evidence_dir)}/fidelity.json already exists; not overwritten")
+            if a.fidelity_json and not Path(a.fidelity_json).is_file():
+                self.fail(f"--fidelity-json {a.fidelity_json}: file not found")
         # identity changes need the owner's approval (asset_store publish would refuse after the build)
-        if self.parent and self.spec is not None:
+        if self.parent and self.spec is not None and not self.approve_published:  # checked when it was published
             pspec = self.store / self.parent / "spec.json"
             changed = S.identity_changes(read_json(pspec), self.spec) if pspec.is_file() else []
             if changed and not a.identity_change_approved_by:
@@ -340,6 +381,10 @@ class Plan:
 
     def predicted_writes(self) -> list[str]:
         evidence = [f"{rel(self.root, self.evidence_dir)}/{n}" for n in ("fidelity.json", "report.md")]
+        if self.approve_published:  # the version folder exists; the evidence is copied only when it lives elsewhere
+            copied = [] if self.fidelity_src is None or self.fidelity_src.parent == self.evidence_dir else evidence
+            return ([rel(self.root, self.store / "index.json"), FIDELITY_BASELINE] + copied
+                    + [f"{rel(self.root, self.golden_dir)}/{n}" for n in golden_files()])
         if self.publish_only:  # no baseline entry, no golden baseline
             return self.version_files() + [rel(self.root, self.store / "index.json")] + evidence
         return (self.version_files() + [rel(self.root, self.store / "index.json"), FIDELITY_BASELINE] + evidence
@@ -445,6 +490,42 @@ def snapshot(plan: Plan) -> dict[str, str]:
     return out
 
 
+def copy_evidence(src_dir: Path, dest_dir: Path, root: Path) -> list[str]:
+    """fidelity.json and report.md of a fidelity run, with the side-by-side sheets report.md links: sheets/*.png are
+    stored as JPEG (sheets/*.jpg, quality 85) and the links rewritten, so the committed report has no broken links
+    (2026-11-19: the copied report linked sheets that were never copied). Without Pillow the PNGs are copied as they
+    are. Returns the repository paths written."""
+    written = []
+    dest_dir.mkdir(parents=True, exist_ok=True)
+    report = src_dir / "report.md"
+    text = report.read_text(encoding="utf-8") if report.is_file() else None
+    sheets = sorted(set(re.findall(r"sheets/([\w.-]+)\.png", text or "")))
+    try:
+        from PIL import Image
+    except ImportError:
+        Image = None
+    for name in sheets:
+        src = src_dir / "sheets" / f"{name}.png"
+        if not src.is_file():
+            continue
+        (dest_dir / "sheets").mkdir(parents=True, exist_ok=True)
+        if Image is None:
+            shutil.copyfile(src, dest_dir / "sheets" / f"{name}.png")
+            written.append(rel(root, dest_dir / "sheets" / f"{name}.png"))
+        else:
+            with Image.open(src) as im:
+                im.convert("RGB").save(dest_dir / "sheets" / f"{name}.jpg", quality=85)
+            written.append(rel(root, dest_dir / "sheets" / f"{name}.jpg"))
+            text = re.sub(rf"sheets/{re.escape(name)}\.png", f"sheets/{name}.jpg", text)
+    if (src_dir / "fidelity.json").is_file():
+        shutil.copyfile(src_dir / "fidelity.json", dest_dir / "fidelity.json")
+        written.append(rel(root, dest_dir / "fidelity.json"))
+    if text is not None:
+        (dest_dir / "report.md").write_text(text, encoding="utf-8")
+        written.append(rel(root, dest_dir / "report.md"))
+    return written
+
+
 def asset_store(argv: list[str]) -> str:
     buf = io.StringIO()
     try:
@@ -461,18 +542,24 @@ def execute(plan: Plan, runner: Runner) -> int:
     plan.work.mkdir(parents=True, exist_ok=True)
     before = snapshot(plan)
     written = plan.written
-    report = {"character": cid, "version": ver, "task": plan.task, "publish_only": plan.publish_only, "steps": []}
+    report = {"character": cid, "version": ver, "task": plan.task, "publish_only": plan.publish_only,
+              "approve_published": plan.approve_published, "steps": []}
 
     def step(name, detail):
         print(f"[version_switch] {name}: {detail}", flush=True)
         report["steps"].append({"step": name, "detail": detail})
 
     # 2. build + publish
-    if runner.run(plan.build_command(), logs / "build.log", ROOT, runner.build_env()):
-        raise SwitchFailed(f"build failed; see {logs / 'build.log'}")
-    step("build", f"{plan.work / 'build'}")
-    step("publish", asset_store(plan.publish_argv()))
-    written += [rel(root, p) for p in sorted(plan.version_dir.iterdir())] + [rel(root, plan.store / "index.json")]
+    if plan.approve_published:
+        step("publish", f"skipped (--approve-published): {cid} {ver} is already published "
+                        f"({rel(root, plan.version_dir)}, verified)")
+    else:
+        if runner.run(plan.build_command(), logs / "build.log", ROOT, runner.build_env()):
+            raise SwitchFailed(f"build failed; see {logs / 'build.log'}")
+        step("build", f"{plan.work / 'build'}")
+        step("publish", asset_store(plan.publish_argv()))
+        written += [rel(root, p) for p in sorted(plan.version_dir.iterdir())]
+    written.append(rel(root, plan.store / "index.json"))
     # 3. approve
     if plan.publish_only:
         step("approve", "skipped (--publish-only): the approved pointer stays on "
@@ -480,19 +567,17 @@ def execute(plan: Plan, runner: Runner) -> int:
     else:
         step("approve", asset_store(plan.approve_argv()))
     # 4. fidelity score + baseline entry
-    if plan.a.fidelity_json:
+    if plan.fidelity_src is not None:
+        fsrc = plan.fidelity_src
+    elif plan.a.fidelity_json:
         fsrc = Path(plan.a.fidelity_json)
     else:
         if runner.run(plan.fidelity_command(), logs / "fidelity.log", ROOT):
             raise SwitchFailed(f"fidelity failed; see {logs / 'fidelity.log'}")
         fsrc = plan.work / "fidelity" / "fidelity.json"
     score = read_json(fsrc)["overall"]["score"]
-    plan.evidence_dir.mkdir(parents=True, exist_ok=True)
-    for name in ("fidelity.json", "report.md"):
-        src = fsrc.parent / name
-        if src.is_file():
-            shutil.copyfile(src, plan.evidence_dir / name)
-            written.append(rel(root, plan.evidence_dir / name))
+    if Path(os.path.abspath(fsrc)).parent != Path(os.path.abspath(plan.evidence_dir)):
+        written += copy_evidence(fsrc.parent, plan.evidence_dir, root)
     if plan.publish_only:
         prev = plan.previous.get("score")
         drop = (float(prev) - float(score)) if prev is not None else None
@@ -541,7 +626,9 @@ def finish(plan: Plan, runner: Runner, before: dict, report: dict) -> int:
         if runner.run([sys.executable, str(root / t)], logs / "checks.log", root):
             failed.append(t)
     after = snapshot(plan)
-    new = (rel(root, plan.version_dir) + "/",) + (() if plan.publish_only else (rel(root, plan.golden_dir) + "/",))
+    # approve-published: the published version folder existed before the run and must stay byte-identical
+    new = ((() if plan.approve_published else (rel(root, plan.version_dir) + "/",))
+           + (() if plan.publish_only else (rel(root, plan.golden_dir) + "/",)))
     touched = sorted(k for k in set(before) | set(after) if before.get(k) != after.get(k) and not k.startswith(new))
     if touched:
         failed.append("files outside this switch changed: " + ", ".join(touched))
@@ -561,7 +648,8 @@ def finish(plan: Plan, runner: Runner, before: dict, report: dict) -> int:
 def dry_run(plan: Plan) -> int:
     a = plan.a
     run, need_blender = plan.tests() if plan.spec is not None else ([], [])
-    lines = ["[version_switch] DRY RUN: nothing is written" + (" (--publish-only)" if plan.publish_only else ""),
+    mode = " (--publish-only)" if plan.publish_only else " (--approve-published)" if plan.approve_published else ""
+    lines = ["[version_switch] DRY RUN: nothing is written" + mode,
              f"1. validate  {'OK' if not plan.problems else 'FAILED'}"]
     lines += [f"     - {p}" for p in plan.problems]
     if plan.spec is not None and not plan.problems and plan.publish_only:
@@ -580,6 +668,26 @@ def dry_run(plan: Plan) -> int:
         writes = plan.predicted_writes()
         lines.append("7. files     (predicted; report.md only when the fidelity run writes one"
                      + ("; spec.resolved.json because the body generator fits the spec" if plan.fitted else "") + ")")
+        lines += [f"     {w}" for w in writes]
+        lines.append("   trailers  (predicted)")
+        lines += [f"     {t}" for t in trailer_block(writes, plan.root)]
+    elif plan.spec is not None and not plan.problems and plan.approve_published:
+        lines += [
+            f"2. publish   skipped (--approve-published): {rel(plan.root, plan.version_dir)}/ is published and "
+            "verified; it must stay byte-identical",
+            f"3. approve   asset_store {' '.join(json.dumps(x) if ' ' in x else x for x in plan.approve_argv())}",
+            f"4. baseline  score from {plan.fidelity_src}",
+            f"             {FIDELITY_BASELINE}: {plan.cid} -> build {plan.spec_rel}, overrides {plan.overrides_rel}, "
+            f"source {rel(plan.root, plan.evidence_dir)}/fidelity.json, rebaseline from {plan.parent} "
+            f"(score {plan.previous.get('score')})",
+            f"5. golden    {' '.join(plan.regression_command())}",
+            f"             -> {rel(plan.root, plan.golden_dir)}/",
+            "6. checks    " + ", ".join(run) + "; then: no other file changed (incl. the published version folder)",
+        ]
+        if need_blender:
+            lines.append("             need Blender (listed, not run): " + ", ".join(need_blender))
+        writes = plan.predicted_writes()
+        lines.append("7. files     (predicted)")
         lines += [f"     {w}" for w in writes]
         lines.append("   trailers  (predicted)")
         lines += [f"     {t}" for t in trailer_block(writes, plan.root)]
@@ -625,9 +733,13 @@ def parse(argv=None):
     ap.add_argument("--fidelity-json", default="", help="reuse the fidelity.json of an earlier run of this build")
     ap.add_argument("--work", default="", help="new or empty work folder (default build/version_switch/<id>-<ver>)")
     ap.add_argument("--dry-run", action="store_true")
-    ap.add_argument("--publish-only", action="store_true",
-                    help="validate, build, publish and score only: no approve, no fidelity_baseline.json change, no "
-                         "golden baseline (T-094)")
+    mode = ap.add_mutually_exclusive_group()
+    mode.add_argument("--publish-only", action="store_true",
+                      help="validate, build, publish and score only: no approve, no fidelity_baseline.json change, "
+                           "no golden baseline (T-094)")
+    mode.add_argument("--approve-published", action="store_true",
+                      help="make an already-published candidate current: approve, baseline entry (score reused), "
+                           "golden baseline, checks, trailers; no build, no publish (T-094 step 2)")
     ap.add_argument("--root", default=str(ROOT), help=argparse.SUPPRESS)  # tests: a fixture repository
     a = ap.parse_args(argv)
     a.spec = os.path.relpath(os.path.abspath(a.spec), a.root) if os.path.isabs(a.spec) else a.spec

@@ -21,12 +21,13 @@
    "created": "2026-11-19T01:50:35+00:00",
    "parent": "0.11.0",
    "notes": "girl_auburn_bun_glasses 0.12.0 (T-094): spec assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.12.0.spec.json",
-   "status": "candidate",
-   "spec_sha256": "7977c73619ae5dac7fe019978adc89c003011cb689da427d234bcaf9b98887e6"
+   "status": "approved",
+   "spec_sha256": "7977c73619ae5dac7fe019978adc89c003011cb689da427d234bcaf9b98887e6",
+   "approval_notes": "new current version: \"Owner 2026-11-19 (~02:55Z, round 2 close-out item 1, \"I confirm all\"): boy 2.1.0 and girl 0.12.0 become current once the exchange re-render is finished and its CI is green (green: run 44449190108 at ea02ce1).\" Recorded by T-094 (tools/version_switch.py)."
   }
  },
  "pointers": {
-  "approved": "0.11.0",
+  "approved": "0.12.0",
   "reference": null
  },
  "history": [
@@ -63,6 +64,14 @@
    "action": "publish",
    "version": "0.12.0",
    "status": "candidate"
+  },
+  {
+   "at": "2026-11-19T03:33:39+00:00",
+   "action": "approve",
+   "version": "0.12.0",
+   "previous": "0.11.0",
+   "by": "owner (docs/process/OWNER_DECISIONS.md 2026-11-19)",
+   "notes": "new current version: \"Owner 2026-11-19 (~02:55Z, round 2 close-out item 1, \"I confirm all\"): boy 2.1.0 and girl 0.12.0 become current once the exchange re-render is finished and its CI is green (green: run 44449190108 at ea02ce1).\" Recorded by T-094 (tools/version_switch.py)."
   }
  ]
 }
