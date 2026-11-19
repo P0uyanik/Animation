@@ -28,6 +28,8 @@ Engine test packages (`tests/data/imported`: boy 1.0.0, girl m3), body mechanics
 Per gesture (clip actions that are not base clips; `touch`; `reach` without a prop), on the wrist pivot of the
 gesture's hand (`hand.<side>`, world space, per frame) and the arm bones' rotations. The window starts 12 frames
 before the gesture and ends 24 frames after its nominal end (never into the character's previous or next gesture).
+Side (T-139): a clip gesture is measured on the arm the clip drives (its mask arm roles, swapped by the action's
+mirror); the furthest-travelling wrist is used only for clips that drive both arms or neither.
 
 - **entry / exit segment**: the first movement out of the starting pose (the lift) and the last movement back. A
   segment starts where the wrist speed exceeds 10 % of the window's peak, extended back over its slow tail (while

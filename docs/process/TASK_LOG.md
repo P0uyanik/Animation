@@ -144,7 +144,7 @@ Tasks from now on are numbered T-001, T-002, …, and pass through the states in
 | T-136 | [Engine] E2 blink scheduling + E3 gaze chain, opt-in | running 2026-11-19 (round 5) | t-136-claude-blink-gaze | `docs/tasks/T-136.md` |
 | T-137 | [Visual] F1a/F1b/F2 faces round 5 (overrides) | running 2026-11-19 (round 5, Fable 5.2) | t-137-claude-faces | `docs/tasks/T-137.md` |
 | T-138 | [Engine] E4 grasp contact accuracy | approved; after T-134 | t-138-claude-grasp | `docs/tasks/T-138.md` |
-| T-139 | [Tools] E5 animcheck gesture attribution | approved; second wave | t-139-claude-animcheck | `docs/tasks/T-139.md` |
+| T-139 | [Tools] E5 animcheck gesture attribution | merged 2026-11-19: arm-role attribution; e910 shrug side fixed; old failures still caught | t-139-claude-animcheck | `docs/tasks/T-139.md` |
 | T-140 | [Camera] C1 headroom and framing rules | approved; second wave | t-140-claude-framing | `docs/tasks/T-140.md` |
 | T-133 | [Evaluation] Third-character fit search + review (Codex) | assigned 2026-11-19 on relay-channel (007f0c7) | t-133-codex-third-fit | merged 2026-11-19: front fit 89.35→90.41 (proposal, not published); lash curve → T-137 F1b |
 | T-141 | [Experiment] A2 native hair curves (Fable) | written 2026-11-19 (owner ~20:30Z), after T-137 | t-141 | docs/tasks/T-141.md |
