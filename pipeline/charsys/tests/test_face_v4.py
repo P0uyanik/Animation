@@ -105,8 +105,8 @@ def plain_v4():
     base = json.load(open(os.path.join(V3.ROOT, "docs", "evaluation", "characters", "fidelity_baseline.json")))["characters"]
     for who, (spec, ov, _, preset) in CANDIDATES.items():
         cid = os.path.basename(os.path.dirname(os.path.dirname(spec)))
-        check(f"{who} candidate is on the current version", os.path.relpath(spec, V3.ROOT) == base[cid]["build"],
-              f"{os.path.relpath(spec, V3.ROOT)} vs {base[cid]['build']}")
+        rel = os.path.relpath(spec, V3.ROOT).replace(os.sep, "/")  # baseline stores POSIX paths (Windows gate)
+        check(f"{who} candidate is on the current version", rel == base[cid]["build"], f"{rel} vs {base[cid]['build']}")
         if not os.path.exists(ov):
             check(f"{who} candidate exists", False, ov)
             continue
