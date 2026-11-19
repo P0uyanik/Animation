@@ -121,7 +121,7 @@ Tasks from now on are numbered T-001, T-002, …, and pass through the states in
 | T-117 | [Personality/Interaction] 8 s cup-exchange showcase (e910) | pre-approved (owner ~10:10Z); starts when T-113 and T-114 are on main | t-117-claude-showcase | `docs/tasks/T-117.md`; path B |
 | T-118 | [Visual] Hair round 5 (groom/4) | running 2026-11-19 (round 4, Fable 5.2) | t-118-claude-hair-r5 | `docs/tasks/T-118.md`; path B |
 | T-119 | [Visual] Garments round 3 + limb skin tone | running 2026-11-19 (round 4, Fable 5.2) | t-119-claude-garments-r3 | `docs/tasks/T-119.md`; path B |
-| T-120 | [Interaction] Gaze legibility | running 2026-11-19 (round 4, Fable 5.2) | t-120-claude-gaze | `docs/tasks/T-120.md`; path B |
+| T-120 | [Interaction] Gaze legibility | merged 2026-11-19 (impl `session_01NPjxeKj5iCLR2ERHV1R4af`, 72274c9): opt-in "gazeLegibility" (eyes lead, head turns just enough, eyes clamped to rangeDeg incl. blinks); faces read in the e907 camera (girl pupils through lenses, boy glance under fringe); default identical; flag for T-114/T-117: scene {"rangeDeg":[16,8]}, boy {"headPitchDeg":10}; open: steep targets read as "towards", looks <11 frames end before the head arrives | t-120-claude-gaze | `docs/tasks/T-120.md`; path B |
 | T-121 | [Visual] Finger separation on the hand mesh | running 2026-11-19 (round 4) | t-121-claude-fingers | `docs/tasks/T-121.md`; path B |
 | T-122 | [Visual] Candidate versions boy 2.2.0 / girl 0.13.0 (not current) | running 2026-11-19 (round 4) | t-122-claude-versions | `docs/tasks/T-122.md`; path B |
 | T-123 | [Tools] Readability check tool, then end-of-round review (Codex) | assigned 2026-11-19 on relay-channel | t-123-codex-readability | `docs/tasks/T-123.md`; path A |
