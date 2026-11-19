@@ -409,3 +409,9 @@ assets untouched.
 T-107 reviewed boy 2.0.0 / girl 0.11.0 (input 45679f3), now outdated. The owner wants a new independent Codex review of
 the current state covering every improvement since: **T-116** (`docs/tasks/T-116.md`), evaluation only, right after
 T-115 READY.
+
+## 2026-11-19 (~10:10Z): 8-second cup-exchange showcase (relayed by the previous Supervisor session)
+Pre-approved new task **T-117** (`docs/tasks/T-117.md`): one ~8 s, 192-frame boy + girl cup exchange on the current
+versions with all merged opt-in improvements as shot-level overrides (faces, expressions, verbs + finger grasps,
+reactions, gaze), review-quality 640x360 MP4 + contact sheet + short issue list. Starts automatically when T-113 and T-114
+are on main; current versions and fidelity_baseline.json stay unchanged. Other queued work continues in parallel.

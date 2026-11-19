@@ -118,3 +118,4 @@ Tasks from now on are numbered T-001, T-002, …, and pass through the states in
 | T-114 | [Personality] Two-character acting scene | approved; after T-113 | t-114-claude-two-char-acting | `docs/tasks/T-114.md`; path B |
 | T-102 | [Infra] Repository cleanup | approved; at the end of the round-3 wave | t-102-claude-cleanup | task file to write; path A |
 | T-116 | [Visual/Interaction] Independent review of the current state (Codex) | assigned to Codex after T-115 (owner ~09:20Z) | t-116-codex-current-review | `docs/tasks/T-116.md`; path A |
+| T-117 | [Personality/Interaction] 8 s cup-exchange showcase (e910) | pre-approved (owner ~10:10Z); starts when T-113 and T-114 are on main | t-117-claude-showcase | `docs/tasks/T-117.md`; path B |
