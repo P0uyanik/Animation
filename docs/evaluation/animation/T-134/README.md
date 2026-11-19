@@ -152,3 +152,69 @@ Bake: 0 warnings. `tools/motion_checks`: popping 64 issues (before 63, E1a 66), 
 Three more cases in `tests/test_reach_mechanics.cpp` (boy, girl, engine skeleton): a carry is straight without the
 key (< 0.03) and an arc with it (0.12), with the same ends and the same speed per frame; the reach's arc is above
 0.1 and its contact stays within 5 mm.
+
+## E1c: overlap and secondary motion
+
+`"reachMechanics": true` (everything on; this is what `s010_e1` now holds) · offsets over time:
+[e1c_offsets.jpg](e1c_offsets.jpg) (chest, head and hair against `before`; left E1b, right E1c) · strip:
+[e1c_preview_strip.jpg](e1c_preview_strip.jpg) · numbers: [e1c_overlap.json](e1c_overlap.json),
+[e1c_measures.json](e1c_measures.json) · script: [measure_overlap.py](measure_overlap.py).
+
+What it does (the lead tracks in `reachTo`, the neck in `applyReachLead`):
+- **Torso and shoulder** follow the lead through the body-mechanics follow-through response (`followKernel`,
+  settles in 8 f, 12 % overshoot of a step) instead of the plain envelope.
+- **Settle at the contact**: when the hand stops, the body runs on past its lead by a quarter of it, swings back
+  and comes to rest (a damped swing, period 12 f), while the lead is given back.
+- **Head**: the neck's counter turn has its own response, 2 f later and looser (settles in 12 f, 20 % overshoot).
+  The head first goes with the torso, then catches up, and swings once after the contact.
+- **Hair**: nothing is added. The characters' spring chains (`DYN-*` bones, `anim/secondary.h`) answer the head's
+  motion; `secondary.*` is untouched.
+- The wrists stay on their IK targets, as in E1a.
+
+| Measure (against `before` unless said) | boy E1b | boy E1c | girl E1b | girl E1c |
+|---|---|---|---|---|
+| Head rotation, largest during the reach | 1.10° | 1.87° (f64) | 1.31° | 3.52° (f107) |
+| Head rotation after the contact, every 2nd frame | 0.91 0.84 0.68 0.46 0.23 0.08 0.00 | 1.13 1.01 0.11 0.77 0.90 0.50 0.07 | 1.28 1.18 0.96 0.64 0.33 0.11 0.03 | 1.38 1.48 0.23 1.09 1.30 0.72 0.11 |
+| Chest rotation at the contact | 3.04° | 3.29° | 4.28° | 4.65° |
+| Chest rotation after the contact, every 2nd frame | 3.04 2.81 2.27 1.52 0.77 0.26 0.04 | 3.29 3.22 2.52 1.46 0.60 0.15 0.02 | 4.28 3.94 3.18 2.13 1.09 0.36 0.05 | 4.65 4.57 3.57 2.08 0.85 0.21 0.04 |
+| Head pivot against E1b after the contact, largest | — | 1.7 mm (f83) | — | 2.0 mm (f121) |
+| Chest pivot against E1b after the contact, largest | — | 0.6 mm (f77) | — | 0.8 mm (f115) |
+| Hair (any `DYN-*` bone), largest offset | 15.7 mm | 21.5 mm (f65) | 23.8 mm | 35.0 mm (f109) |
+| Hair against E1b after the contact, largest | — | 12.8 mm (f84) | — | 11.8 mm (f123) |
+| Head and chest back within 0.5 mm of `before` | f86 / f85 | f84 / f84 | f125 / f123 | f122 / f123 |
+
+The head row after the contact is the settle: with E1b the head eases back in one go; with E1c it passes through
+(0.11° / 0.23° two to four frames after the contact), swings about 1° to the other side and comes to rest within
+12 f. The hair shows it most: its curve in the plot keeps swinging after the contact.
+
+Unchanged by E1c: the reach speed profile (boy peak 29.6 mm/f, largest change 13.1 mm/f²; girl 52.7 and 28.2), the
+carry arcs (0.120), wrist speed after both contacts (0.0). Bake: 0 warnings. `tools/motion_checks`: popping 63
+issues (before 63, E1b 64), interpenetration 4. Feet: 0.70 mm.
+
+### Honest limits of E1c
+1. **Head and torso overlap is at the edge of what shows**: about 1° of head swing and 1 to 2 mm at the head pivot,
+   on characters whose reach lead is itself small. In the strip I cannot point to it. The hair is the part that
+   reads (12 mm against E1b after the contact). `settleAmount`, `headOvershoot`, `headLagSec` and the lead sizes are
+   scene overrides; I did not raise the defaults without a judgement on E1a's lead size first.
+2. **Hair runs long**: the girl's hair is still more than 0.5 mm from `before` until f172 (E1b: f153), the boy's
+   differs to the end of the shot in both (his spring chains do not come back to the same state once disturbed).
+   The girl's hair has three visible swings after her contact (plot, bottom right); whether that is lively or too
+   busy is a judgement call. Stiffness and damping are the characters' own `dynamics`, not changed here.
+3. The pivot-offset measure cannot show the head lagging the chest (both rise at the same frame): the head's pivot
+   rides on the torso. The lag is in the head's rotation (largest at f64 / f107, before the chest's largest).
+4. No hand or finger overlap was added: the hand must stay on the grip.
+
+### Tests
+Three more cases (boy, girl, engine skeleton): with overlap the shoulder runs past the plain lead after the contact
+and swings back below it, the head differs from the plain lead during the reach and after the contact, nothing steps,
+the contact stays within 5 mm, and everything is back where it is without the mechanics by the end of the scene.
+
+## Status of the three items
+| Item | State | Main open point |
+|---|---|---|
+| E1a ease + anticipation | works, measured | lead is small on 18 cm arms; the hand's drift before the reach (planner) is untouched |
+| E1b arcs | works, measured | arcs of 6 to 16 mm are small in the picture; reaches still bend near each end |
+| E1c overlap + settle | works, measured | head / torso settle is about 1°; only the hair clearly reads |
+
+All three wait for T-135's `tools/motion_checks/reach` to be re-measured with the shared tool; the numbers above are
+from the scripts in this folder.

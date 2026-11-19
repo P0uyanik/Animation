@@ -65,13 +65,16 @@ Result<ReachMechanics> reachMechanicsFromJson(const Json& j) {
     out = v;
     return {};
   };
-  for (auto r : {flag("enabled", m.enabled), flag("ease", m.ease), flag("anticipation", m.anticipation), flag("arcs", m.arcs),
+  for (auto r : {flag("enabled", m.enabled), flag("ease", m.ease), flag("anticipation", m.anticipation), flag("arcs", m.arcs), flag("overlap", m.overlap),
                  number("easePeak", m.easePeak, 0.3, 0.7), number("anticipationSec", m.anticipationSec, 0, 2),
                  number("counter", m.counter, 0, 1), number("leanDeg", m.leanDeg, 0, 20), number("twistDeg", m.twistDeg, 0, 20),
                  number("shoulderM", m.shoulderM, 0, 0.05), number("hipShare", m.hipShare, 0, 0.5),
                  number("successionSec", m.successionSec, 0, 0.5), number("leadPeak", m.leadPeak, 0.2, 1),
                  number("recoverSec", m.recoverSec, 0.1, 5), number("headStabilize", m.headStabilize, 0, 1), number("arc", m.arc, 0, 0.4),
-                 number("arcMinChordM", m.arcMinChordM, 0, 1)})
+                 number("arcMinChordM", m.arcMinChordM, 0, 1), number("torsoSettleSec", m.torsoSettleSec, 0.05, 2),
+                 number("torsoOvershoot", m.torsoOvershoot, 0, 0.5), number("headLagSec", m.headLagSec, 0, 0.5),
+                 number("headSettleSec", m.headSettleSec, 0.05, 2), number("headOvershoot", m.headOvershoot, 0, 0.5),
+                 number("settleAmount", m.settleAmount, 0, 0.5), number("settleSec", m.settleSec, 0.1, 2)})
     if (!r) return std::unexpected(r.error());
   return m;
 }

@@ -86,9 +86,22 @@ struct ReachMechanics {
   bool arcs = true;
   double arc = 0.12;
   double arcMinChordM = 0.03;
+  // E1c overlap and settle (needs "anticipation"): the torso and the shoulder follow the lead through a damped
+  // response (anim/body_mechanics.h followKernel: settles within torsoSettleSec, overshoots by torsoOvershoot of a
+  // step), so they run a little past the lead and settle, and again when the lead is given back after the contact.
+  // The head's counter turn has its own response, headLagSec later and looser (headSettleSec, headOvershoot): the
+  // head first goes with the torso, then catches up and settles after it. Hair and other spring chains (the
+  // character's "dynamics", anim/secondary.h) follow the head as they do any motion.
+  bool overlap = true;
+  double torsoSettleSec = 0.33, torsoOvershoot = 0.12;
+  double headLagSec = 0.08, headSettleSec = 0.5, headOvershoot = 0.2;
+  // Settle at the contact: when the hand stops, the body runs on past its lead by settleAmount of it, swings back
+  // and comes to rest (a damped swing with the period settleSec); the head does the same through its later response.
+  double settleAmount = 0.25, settleSec = 0.5;
 };
 // null | true | false | {"enabled", "ease", "easePeak", "anticipation", "anticipationSec", "counter", "leanDeg",
-// "twistDeg", "shoulderM", "hipShare", "successionSec", "leadPeak", "recoverSec", "headStabilize", "arcs", "arc", "arcMinChordM"}.
+// "twistDeg", "shoulderM", "hipShare", "successionSec", "leadPeak", "recoverSec", "headStabilize", "arcs", "arc", "arcMinChordM",
+// "overlap", "torsoSettleSec", "torsoOvershoot", "headLagSec", "headSettleSec", "headOvershoot", "settleAmount", "settleSec"}.
 Result<ReachMechanics> reachMechanicsFromJson(const Json& j);
 // Slow-in / slow-out travel fraction at x in [0, 1] with the peak speed at `peak` (0.5 = easeInOut).
 double reachEase(double x, double peak);

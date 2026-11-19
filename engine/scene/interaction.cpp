@@ -3,6 +3,7 @@
 // orientation constraint below, which scene.cpp applies after IK.
 #include "scene/interaction.h"
 
+#include "anim/body_mechanics.h"
 #include "anim/hand_shape.h"
 #include "anim/principles.h"
 
@@ -312,7 +313,9 @@ void applyReachLead(const Skeleton& sk, const Clip& clip, const std::string& pre
   for (const Kept& k : legs) restore(k, 1);
   turn(spine, spineTurn);
   turn(chest, chestTurn);
-  turn(neck, -headStab * (hipTurn + spineTurn + chestTurn));
+  // E1c overlap: the head has its own, later response ("<prefix>reach.head"); else it takes back its share at once.
+  const Track* headTrack = clip.find(prefix + "reach.head");
+  turn(neck, headTrack && !headTrack->keys.empty() ? headTrack->evaluate(frame) : -headStab * (hipTurn + spineTurn + chestTurn));
   if (pose.offset.size() != sk.bones.size()) pose.offset.resize(sk.bones.size(), vec3(0));
   const mat4 toRoot = glm::inverse(world);
   if (!riders.empty()) {
@@ -953,25 +956,52 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
         const std::string shoulderTrack = h.prefix + "reach.shoulder." + sk.bones[size_t(h.root)].name;
         std::erase_if(ctx.reachLeads, [&](const InteractionContext::ReachLead& l) { return l.character == h.c && l.side == h.side && l.start == start; });
         const vec3 shoulderLead = glm::normalize(reachDir) * (k * float(rm.shoulderM));
+        // E1c overlap: the torso follows its lead through a damped response (it overshoots a little and settles, also
+        // after the lead is given back); the head's counter turn has a later, looser one, so the head first goes
+        // with the torso and then catches up. Without overlap both follow the plain envelope.
+        std::vector<float> torsoKernel{1.0f}, headKernel{1.0f};
+        double shift = 0;
+        if (rm.overlap) {
+          torsoKernel = followKernel(0.0f, float(rm.torsoSettleSec * fps), float(rm.torsoOvershoot));
+          for (size_t i = 0; i < torsoKernel.size(); ++i) shift += double(i) * double(torsoKernel[i]);
+          headKernel = followKernel(float(rm.headLagSec * fps), float(rm.headSettleSec * fps), float(rm.headOvershoot));
+        }
+        // Settle: when the hand stops at the contact the body runs on a little past its lead, swings back and comes
+        // to rest (a damped swing of settleAmount of the lead, period settleSec), on top of the lead being given back.
+        auto settle = [&](double t) {
+          if (!rm.overlap || t <= 0) return 0.0;
+          const double period = std::max(2.0, rm.settleSec * fps);
+          return rm.settleAmount * std::exp(-2.0 * t / period) * std::sin(6.283185307179586 * t / period);
+        };
         auto write = [&](float scale) {
           std::erase_if(ctx.reachLeads, [&](const InteractionContext::ReachLead& l) { return l.character == h.c && l.side == h.side && l.start == start; });
           if (scale > 0) ctx.reachLeads.push_back({h.c, h.side, start, contact, A, R, scale * lead, scale * shoulderLead, shoulderTrack});
           gen.tracks[h.prefix + "reach.lead"].keys.clear();
           gen.tracks[shoulderTrack].keys.clear();
+          gen.tracks.erase(h.prefix + "reach.head");
           for (const auto& l : ctx.reachLeads)
             if (l.character == h.c) gen.tracks[l.shoulderTrack].keys.clear();
           for (const auto& l : ctx.reachLeads) {
             if (l.character != h.c) continue;
             const double n = l.contact - l.start;
-            auto addKeys = [&](const std::string& track, vec3 full) {
+            // The envelope through a follow-through response (kernel[k]: weight of the envelope k frames ago),
+            // read `shift` frames ahead so the torso's own timing stays where the plain envelope has it.
+            auto addKeys = [&](const std::string& track, vec3 full, const std::vector<float>& kernel) {
               Track& T = gen.tracks[track];
               const Track before = T;
-              for (double f = l.start - l.anticipation; f <= l.contact + l.recover + 1e-6; f += 1)
-                T.setKey({f, (before.keys.empty() ? vec3(0) : before.evaluate(f)) + full * float(reachLead((f - l.start) / n, l.anticipation / n, l.recover / n, rm)),
-                          Interp::Linear});
+              const double tail = double(kernel.size()) - 1;
+              for (double f = l.start - l.anticipation - std::ceil(shift); f <= l.contact + l.recover + tail + 1e-6; f += 1) {
+                double e = 0;
+                for (size_t k = 0; k < kernel.size(); ++k) {
+                  const double at = f + shift - double(k);
+                  e += double(kernel[k]) * (reachLead((at - l.start) / n, l.anticipation / n, l.recover / n, rm) + settle(at - l.contact));
+                }
+                T.setKey({f, (before.keys.empty() ? vec3(0) : before.evaluate(f)) + full * float(e), Interp::Linear});
+              }
             };
-            addKeys(h.prefix + "reach.lead", l.lead);
-            addKeys(l.shoulderTrack, l.shoulder);
+            addKeys(h.prefix + "reach.lead", l.lead, torsoKernel);
+            addKeys(l.shoulderTrack, l.shoulder, torsoKernel);
+            if (rm.overlap) addKeys(h.prefix + "reach.head", -float(rm.headStabilize) * l.lead, headKernel);
           }
           if (gen.tracks[h.prefix + "reach.lead"].keys.empty()) gen.tracks[h.prefix + "reach.lead"].keys = {{start, vec3(0), Interp::Linear}};
         };

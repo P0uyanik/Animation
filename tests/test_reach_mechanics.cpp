@@ -164,6 +164,49 @@ void carryArc(const char* asset) {
   CHECK(glm::distance(full->handGripPoint(0, 'R', kContact), grip) < 0.005f);
 }
 
+// E1c: with overlap the torso runs past its lead and settles, the head follows later, and all of it ends.
+void overlapAndSettle(const char* asset) {
+  auto off = load(reachScene(asset, nullptr));
+  auto plain = load(reachScene(asset, Json{{"overlap", false}}));
+  auto on = load(reachScene(asset, true));
+  for (const auto& w : on->warnings()) MESSAGE(w);
+  CHECK(on->warnings().size() <= off->warnings().size());
+  const PropAsset pa = loadAsset(kRoot / "content/assets/felt_cup.asset.json").value();
+  const vec3 grip((on->propWorld(0, kContact) * assetTransformMatrix(pa.sockets.at("grip")))[3]);
+  CHECK(glm::distance(on->handGripPoint(0, 'R', kContact), grip) < 0.005f);
+  const vec3 dir = glm::normalize(bonePos(*off, "hand.R", kContact) - bonePos(*off, "hand.R", kStart));
+  auto lead = [&](const SceneEvaluator& ev, const char* bone, double f) { return glm::dot(bonePos(ev, bone, f) - bonePos(*off, bone, f), dir); };
+  // Torso: when the hand stops it runs on past the plain lead, then swings back below it.
+  float maxPlain = 0, maxOn = 0, past = 0, back = 0;
+  for (double f = kStart; f <= 78; f += 1) {
+    maxPlain = std::max(maxPlain, lead(*plain, "upperArm.R", f));
+    maxOn = std::max(maxOn, lead(*on, "upperArm.R", f));
+    if (f > kContact) {
+      past = std::max(past, lead(*on, "upperArm.R", f) - lead(*plain, "upperArm.R", f));
+      back = std::min(back, lead(*on, "upperArm.R", f) - lead(*plain, "upperArm.R", f));
+    }
+  }
+  MESSAGE(std::string(asset) << ": shoulder lead max plain " << maxPlain * 1000 << " mm, overlap " << maxOn * 1000
+                             << " mm; after the contact against the plain lead: +" << past * 1000 << " / " << back * 1000 << " mm");
+  CHECK(maxOn < 1.3f * maxPlain);
+  CHECK(past > 0.0005f);
+  CHECK(back < -0.0002f);
+  // Head: its offset against the plain lead shows the later response (it differs during the lead and after the contact).
+  float headDiff = 0, headDiffAfter = 0;
+  for (double f = kStart - 8; f <= 78; f += 1) {
+    const float d = glm::distance(bonePos(*on, "head", f), bonePos(*plain, "head", f));
+    headDiff = std::max(headDiff, d);
+    if (f > kContact) headDiffAfter = std::max(headDiffAfter, d);
+  }
+  MESSAGE(std::string(asset) << ": head against the plain lead: largest difference " << headDiff * 1000 << " mm, after the contact " << headDiffAfter * 1000 << " mm");
+  CHECK(headDiff > 0.0005f);
+  CHECK(headDiffAfter > 0.0003f);
+  // Settled: at the end everything is where it is without the mechanics, and nothing steps on the way.
+  for (const char* bone : {"head", "chest", "upperArm.R"}) CHECK(glm::distance(bonePos(*on, bone, 79), bonePos(*off, bone, 79)) < 0.0005f);
+  for (double f = kStart - 12; f < 79; f += 1)
+    CHECK(std::abs(lead(*on, "head", f + 1) - lead(*on, "head", f)) < 0.004f);
+}
+
 }  // namespace
 
 TEST_CASE("reach mechanics: settings parse, off by default") {
@@ -211,3 +254,6 @@ TEST_CASE("reach mechanics: eased wrist and body lead (engine skeleton)") { ease
 TEST_CASE("reach mechanics: a carry travels an arc (boy skeleton)") { carryArc(kBoy); }
 TEST_CASE("reach mechanics: a carry travels an arc (girl skeleton)") { carryArc(kGirl); }
 TEST_CASE("reach mechanics: a carry travels an arc (engine skeleton)") { carryArc(kSdf); }
+TEST_CASE("reach mechanics: overlap and settle (boy skeleton)") { overlapAndSettle(kBoy); }
+TEST_CASE("reach mechanics: overlap and settle (girl skeleton)") { overlapAndSettle(kGirl); }
+TEST_CASE("reach mechanics: overlap and settle (engine skeleton)") { overlapAndSettle(kSdf); }
