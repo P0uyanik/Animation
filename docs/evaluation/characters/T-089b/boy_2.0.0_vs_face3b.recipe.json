@@ -1,0 +1,123 @@
+{
+ "schema": "plush-studio.review-recipe/1",
+ "task": "T-089b",
+ "note": "Boy: current approved 2.0.0 vs the T-089b candidate (2.0.0 spec + T-089b face polish override), compare variant (arms down) as the #27 references. AI target column: the owner-accepted Higgsfield faces B01 (front) and B02 (3/4).",
+ "character": "boy_yellow_hoodie",
+ "inputs": {
+  "main": "a682abb"
+ },
+ "baseline": {
+  "version": "2.0.0",
+  "label": "2.0.0 (current)"
+ },
+ "candidate": {
+  "spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.0.0.spec.json",
+  "overrides": [
+   "assets/characters/boy_yellow_hoodie/spec/candidates/T-089b/boy_face3b.override.json"
+  ],
+  "sha": "4066a8e",
+  "label": "T-089b face polish"
+ },
+ "compare": {
+  "variant": "compare",
+  "pose": "arms_down"
+ },
+ "cameras": {
+  "lens_mm": 70,
+  "sensor_mm": 36,
+  "elevation_deg": 6,
+  "framing": {
+   "body": {
+    "target": [
+     0.0,
+     0.0,
+     0.56
+    ],
+    "frame_height_m": 1.26,
+    "aspect": 1.6
+   },
+   "face": {
+    "target": [
+     0.0,
+     0.0,
+     0.83
+    ],
+    "frame_height_m": 0.4,
+    "aspect": 1.0
+   }
+  },
+  "rows": {
+   "front": {
+    "reference_view": "val27_front"
+   },
+   "threequarter": {
+    "reference_view": "val27_threequarter_right"
+   },
+   "side": {
+    "reference_view": "val27_side_right"
+   },
+   "back": {
+    "reference_view": "val27_back"
+   },
+   "face_front": {
+    "reference": {
+     "file": "views/hero24_front.png",
+     "crop": [
+      40,
+      60,
+      560,
+      620
+     ],
+     "label": "hero24 face"
+    },
+    "yaw_deg": 0
+   },
+   "face_threequarter": {
+    "reference_view": "val27_threequarter_right",
+    "crop": [
+     10,
+     0,
+     230,
+     240
+    ]
+   }
+  }
+ },
+ "light": {
+  "calibration": "character_neutral/1"
+ },
+ "ai_target": {
+  "images": {
+   "face_front": {
+    "file": "uploads/02_higgsfield_B01_face_front_2026-11-18.webp",
+    "crop": [
+     150,
+     300,
+     1345,
+     1295
+    ],
+    "label": "B01"
+   },
+   "face_threequarter": {
+    "file": "uploads/02_higgsfield_B02_face_threequarter_2026-11-18.webp",
+    "crop": [
+     200,
+     200,
+     1300,
+     1300
+    ],
+    "label": "B02"
+   }
+  }
+ },
+ "render": {
+  "engine": "cycles",
+  "samples": 16,
+  "px": 360
+ },
+ "preview": {
+  "engine": "cycles",
+  "samples": 2,
+  "px": 120
+ }
+}

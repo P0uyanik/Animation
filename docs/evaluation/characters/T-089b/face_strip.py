@@ -5,7 +5,8 @@
 job.json: {"out": dir, "engine": "cycles"|"workbench", "samples": N, "px": W, "frame": "eyes"|"face",
            "states": ["neutral", "blink50", "blink100", "glance"], "views": {"front": 0, "threequarter": -35},
            "hide": ["hair", ...] (object-name substrings hidden; default: hair, groom, garment, clothing, hood, acc, glasses),
-           "columns": [{"tag": "...", "blend": "..."}]}
+           "columns": [{"tag": "...", "blend": "..."}], "render_only": [tags] (optional: resume; the other columns only
+           set the shared camera target)}
 Renders <out>/<tag>/<state>_<view>.png with the T-087 light rig (character_neutral/1), 70 mm lens, 6 deg elevation,
 face controls zeroed except the state's (blink = face_Blink.L/R at 0.5 / 1.0; glance = both eye bones 15 deg towards
 screen-left, as T-089's measure_eyes.py). One camera per frame/view for every column (target from the first column's
@@ -67,6 +68,8 @@ def main():
         if target is None:
             c = sum((bpy.data.objects[f"eye.{s}"].matrix_world.translation for s in ("L", "R")), Vector()) / 2
             target = Vector((0.0, c.y, c.z + dz))  # the eye midpoint (front of the face)
+        if job.get("render_only") and col["tag"] not in job["render_only"]:
+            continue  # resume: this column only sets the shared camera target (already rendered)
         cam = bpy.data.objects.new("StripCam", bpy.data.cameras.new("StripCam"))
         sc.collection.objects.link(cam)
         sc.camera = cam
