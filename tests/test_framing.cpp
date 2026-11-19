@@ -139,3 +139,5 @@ TEST_CASE("director framing defaults to one master camera (cuts false), refitted
   const float dFace = glm::distance(keys(*face, "camera.position")[0].value, keys(*face, "camera.target")[0].value);
   CHECK(dFace <= glm::distance(pos[0].value, newTarget) + 1e-5f);
 }
+
+TEST_CASE("T-142 gate probe: must fail") { CHECK(1 == 2); }
