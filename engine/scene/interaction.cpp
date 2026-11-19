@@ -689,8 +689,8 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
         key(gen, h.pose + ".index", contact, vec3(grasp ? sh->closedIndex : sh->openIndex));
       }
     } else {
-    key(gen, h.pose, pre, kOpen);
-    key(gen, h.pose, contact, kOpen);
+      key(gen, h.pose, pre, kOpen);
+      key(gen, h.pose, contact, kOpen);
     }
     if (grasp && style.shape == "wrap") {  // fingers close on the prop's size by contact search (anim: applyHandPose)
       key(gen, h.pose + ".grasp", start, pl.centre, Interp::Step);
@@ -816,11 +816,11 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
         key(gen, h.pose + ".index", end, vec3(kRelaxed.x));
       }
     } else {
-    key(gen, h.pose + ".grasp.weight", from, vec3(1));
-    key(gen, h.pose + ".grasp.weight", from + 5, vec3(0));
-    key(gen, h.pose, from, kOpen);
-    key(gen, h.pose, from + 3, kOpen);
-    key(gen, h.pose, end, kRelaxed);
+      key(gen, h.pose + ".grasp.weight", from, vec3(1));
+      key(gen, h.pose + ".grasp.weight", from + 5, vec3(0));
+      key(gen, h.pose, from, kOpen);
+      key(gen, h.pose, from + 3, kOpen);
+      key(gen, h.pose, end, kRelaxed);
     }
     key(gen, h.ik, from + 1, wrist);
     key(gen, h.ik, std::max(from + 6, end - 4), wrist + retreat);

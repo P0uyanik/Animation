@@ -623,7 +623,9 @@ TEST_CASE("verbs T-112b: react appends partner_acts / success events; the notice
     REQUIRE(look);
     MESSAGE(k.name << ": notice at " << look->from << " (delay " << look->from - 49 << " f), reach from " << look->to);
     CHECK(look->from - 49 == doctest::Approx(k.delay));
-    CHECK(look->to - look->from == 4);  // the gaze leads the hand by 4 f (gaze_leads_hand >= 2 f)
+    CHECK(look->to - look->from >= 4);  // the gaze leads the hand by 4 f, to the next whole frame (gaze_leads_hand >= 2 f)
+    CHECK(look->to - look->from < 5);
+    CHECK(look->to == std::round(look->to));
     // One gaze source: the handover plays no gaze of its own; the giver's gaze comes as looks.
     const Json* h = nullptr;
     int looks = 0;
@@ -634,10 +636,9 @@ TEST_CASE("verbs T-112b: react appends partner_acts / success events; the notice
     }
     REQUIRE(h);
     CHECK((*h)["look"] == false);
-    CHECK((*h)["receiverStart"].get<double>() == doctest::Approx(49 + k.delay + 4));
+    CHECK((*h)["receiverStart"].get<double>() == std::ceil(49 + k.delay + 4 - 1e-6));
     CHECK(looks == 2);
   }
-  // The boy notices later than the girl (tempo delays the look phase).
   // Without scene events "react" adds nothing and the pass keeps its own receiver look.
   VerbContext quiet = base(&girlProfile(), &boyProfile());
   quiet.events = false;

@@ -659,7 +659,9 @@ std::expected<VerbExpansion, VerbError> expandVerbs(const Json& actions, const V
         noticeAt = ctx.frameStart + (ev.time + delay) * ctx.fps;
         x.events.push_back({{"kind", "partner_acts"}, {"name", "pass"}, {"source", who}, {"time", ev.time}, {"characters", {to}}});
       }
-      const double rStart = num(a, "receiverStart", react ? noticeAt + kGazeLead : S + beatOf("look", "", PR, 4));
+      // The reach starts on the first whole frame at least kGazeLead after the notice (the look keeps the reaction's
+      // exact start, as planReactionActions plays it).
+      const double rStart = num(a, "receiverStart", react ? std::ceil(noticeAt + kGazeLead - 1e-6) : S + beatOf("look", "", PR, 4));
       const double reachF = beatOf("approach", "", PR, 14);
       const double contact = num(a, "contact", T || react ? rStart + reachF : S + beatOf("look", "", PR, 4) + reachF);
       const double rel = num(a, "release", contact + beatOf("manipulate", "shared", P, 4));
