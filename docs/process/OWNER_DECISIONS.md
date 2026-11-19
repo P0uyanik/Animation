@@ -522,3 +522,15 @@ session, shared files), T-138 E4 grasp accuracy (after T-134), T-139 E5 animchec
 Phase 2: T-137 faces F1a/F1b/F2 (Fable, one session, overrides; owner approves each). Phase 3 later: S1 shot
 (staging -> acting -> final, owner looks between), S2 Codex review, D1 adopt proven features as defaults (owner).
 All engine changes opt-in; no test, threshold, golden or current-version change.
+
+## 2026-11-19 ~20:30Z: architecture cleanup A1–A4 (relayed by the original Supervisor)
+Owner: "approve A2 first, then A1 and A4, then A3. Make sure these changes do not negatively affect our existing work,
+ongoing development, or project stability." Basis: read-only architecture review of main 6d7bf37 (legacy pre-TD-42
+renderer/SDF/apps ~5.5k LOC still built and run per CI; hand-written hair spline maths; all past generator versions kept).
+- A2 = T-141 (Fable): native Blender hair-curve fluff experiment, opt-in, after T-137 faces.
+- A1 = T-142 (Opus): legacy renderer/SDF/apps out of default build + per-run CI (nightly, tests kept, archive not delete).
+- A4 = T-143 (Sonnet): extend T-102 cleanup (archive lipsync, experiments, duplicate helpers byte-identical).
+- A3 = T-144 (Opus): LAST; plan which generator versions to retire, owner approves before anything is removed.
+Binding: no negative effect on existing work/stability; no test, threshold, golden or required check removed or
+weakened (nightly move needs a documented equivalent); current/candidate characters unchanged; archive not delete; a
+revert path; green full gate before each merge; no branch deletion. Phase 1+2 keep priority within the 6-session cap.

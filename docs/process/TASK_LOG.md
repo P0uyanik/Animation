@@ -147,3 +147,7 @@ Tasks from now on are numbered T-001, T-002, …, and pass through the states in
 | T-139 | [Tools] E5 animcheck gesture attribution | approved; second wave | t-139-claude-animcheck | `docs/tasks/T-139.md` |
 | T-140 | [Camera] C1 headroom and framing rules | approved; second wave | t-140-claude-framing | `docs/tasks/T-140.md` |
 | T-133 | [Evaluation] Third-character fit search + review (Codex) | assigned 2026-11-19 on relay-channel (007f0c7) | t-133-codex-third-fit | merged 2026-11-19: front fit 89.35→90.41 (proposal, not published); lash curve → T-137 F1b |
+| T-141 | [Experiment] A2 native hair curves (Fable) | written 2026-11-19 (owner ~20:30Z), after T-137 | t-141 | docs/tasks/T-141.md |
+| T-142 | [Infra] A1 legacy renderer/apps off default build (Opus) | written 2026-11-19 (owner ~20:30Z), after T-141 or free slot | t-142 | docs/tasks/T-142.md |
+| T-143 | [Cleanup] A4 T-102 extension (Sonnet) | written 2026-11-19 (owner ~20:30Z), after T-141 or free slot | t-143 | docs/tasks/T-143.md |
+| T-144 | [Cleanup] A3 retire unpinned generator versions, plan first (Opus) | written 2026-11-19 (owner ~20:30Z), last | t-144 | docs/tasks/T-144.md |
