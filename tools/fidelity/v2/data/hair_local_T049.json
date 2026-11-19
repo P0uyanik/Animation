@@ -1,0 +1,12 @@
+{
+ "schema": "plush-studio.fidelity-v2-local/1",
+ "note": "T-153: local hair crops on the archived T-049 girl contact sheet (sheet pixels [x0, y0, x1, y1]). Back view: crown below the bun band, back locks mid-back; close-up: fringe / hairline. Reference crops are at a larger scale than the render crops (texture blur sizes scale with crop height).",
+ "sheet": "docs/evaluation/characters/T-049/girl_contact_sheet.jpg",
+ "character": "girl_auburn_bun_glasses",
+ "boxes": {
+  "reference": {"crown": [602, 65, 702, 115], "back_locks": [597, 130, 707, 220], "fringe": [887, 126, 1035, 179]},
+  "A": {"crown": [637, 506, 727, 546], "back_locks": [637, 566, 737, 656], "fringe": [924, 479, 1124, 552]},
+  "B": {"crown": [637, 932, 727, 972], "back_locks": [632, 992, 742, 1082], "fringe": [924, 915, 1124, 978]},
+  "C": {"crown": [637, 1358, 727, 1398], "back_locks": [627, 1418, 742, 1508], "fringe": [924, 1331, 1124, 1394]}
+ }
+}

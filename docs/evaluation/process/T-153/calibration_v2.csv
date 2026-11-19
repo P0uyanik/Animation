@@ -1,0 +1,14 @@
+task,character,pair,cohort,preferred,v1_delta,v1_agree,v2_base_delta,v2_face_states,v2_delta,v2_agree,local_note
+consolidation,girl,0.7.1 -> 0.9.0,owner version,after,2.3656,True,2.4571,False,2.4571,True,
+T-080,boy,1.1.0 -> 2.0.0,owner version,after,1.2201,True,0.2087,False,0.2087,True,
+T-094,boy,2.0.0 -> 2.1.0,owner version,after,0.0901,True,0.6166,False,0.6166,True,
+T-122,boy,2.1.0 -> 2.2.0,review candidate,after,-0.4698,False,-0.6808,True,0.656,True,
+T-089,boy,2.0.0 -> 2.0.0 + face3,owner system,after,1.2518,True,1.3843,False,1.3843,True,
+T-049,boy,A -> C,owner design,after,0.6245,True,0.529,False,0.529,True,
+T-049,boy,B -> C,owner design,after,0.5464,True,0.5332,False,0.5332,True,
+T-081,girl,0.10.0 -> 0.11.0,owner version,after,-2.1093,False,0.473,False,0.473,True,
+T-094,girl,0.11.0 -> 0.12.0,owner version,after,2.7187,True,3.4052,False,3.4052,True,
+T-122,girl,0.12.0 -> 0.13.0,review candidate,after,-0.8833,False,-1.6661,True,1.2617,True,
+T-089,girl,0.11.0 -> 0.11.0 + face3,owner system,after,0.2586,True,0.0862,False,0.0862,True,
+T-049,girl,A -> C,owner design,after,2.3411,True,2.3863,False,2.3863,True,hair_local A 0.833 -> C 0.877
+T-049,girl,B -> C,owner design,after,-1.1086,False,-0.9897,False,-0.9897,False,hair_local B 0.856 -> C 0.877

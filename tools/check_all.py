@@ -527,6 +527,7 @@ def check_python_tests(logs: Path) -> Result:
         [sys.executable, str(ROOT / "tools/animcheck/tests/test_animcheck.py")],  # T-061 animation metrics
         [sys.executable, str(ROOT / "pipeline/charsys/tests/test_versions.py")],  # T-043 version registry (T-077)
         [sys.executable, str(ROOT / "tools/fidelity/tests/test_metrics.py")],  # fidelity metric functions (T-077)
+        [sys.executable, str(ROOT / "tools/fidelity/tests/test_metrics_v2.py")],  # T-153 opt-in score v2
         [sys.executable, str(ROOT / "tools/lipsync/test_lipsync.py")],  # T-054a lip sync (T-077)
         [sys.executable, str(ROOT / "tools/tests/test_version_switch.py")],  # T-088 version switch
         [sys.executable, str(ROOT / "pipeline/charsys/tests/test_materials_r2.py")],  # T-092 presets/3
