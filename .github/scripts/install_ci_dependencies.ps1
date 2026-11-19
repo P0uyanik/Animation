@@ -87,22 +87,40 @@ function Install-AptFromCache([string[]]$Packages) {
     }
 }
 
+# Official Ubuntu archive mirrors tried in order when the runner's configured mirror keeps failing.
+$AptFallbackMirrors = @('http://archive.ubuntu.com/ubuntu', 'http://mirrors.edge.kernel.org/ubuntu')
+
+function Use-AptMirror([string]$Mirror) {
+    Write-Warning "apt: switching the Ubuntu archive to $Mirror"
+    foreach ($file in @('/etc/apt/sources.list.d/ubuntu.sources', '/etc/apt/sources.list')) {
+        if (Test-Path -LiteralPath $file) {
+            # Only the archive URIs (not security.ubuntu.com, which is a separate host and stays as configured).
+            & sudo sed -i -E "s#https?://([a-z0-9.-]+\.)?archive\.ubuntu\.com/ubuntu/?#$Mirror/#g; s#https?://mirrors\.edge\.kernel\.org/ubuntu/?#$Mirror/#g" $file
+        }
+    }
+}
+
 function Install-AptPackages([string[]]$Packages) {
     if ($AptCache -and (Install-AptFromCache $Packages)) { return }
-    # Fallback / first fill: the mirror install as before T-127, with retries for mirror outages (503, 2026-11-19).
+    # Fallback / first fill: the mirror install as before T-127, with bounded retries and backoff for mirror outages
+    # (503s on 2026-11-19); if the runner's mirror stays down, the same Ubuntu archive from other official mirrors.
     $updated = $false
-    foreach ($wait in 0, 20, 60) {
-        if ($wait) { Write-Warning "apt-get update failed; retrying in $wait s"; Start-Sleep -Seconds $wait }
-        & sudo apt-get update -q
-        if ($LASTEXITCODE -eq 0) { $updated = $true; break }
+    foreach ($mirror in @('') + $AptFallbackMirrors) {
+        if ($mirror) { Use-AptMirror $mirror }
+        foreach ($wait in 0, 15, 45) {
+            if ($wait) { Write-Warning "apt-get update failed; retrying in $wait s"; Start-Sleep -Seconds $wait }
+            & sudo apt-get update -q -o Acquire::Retries=3
+            if ($LASTEXITCODE -eq 0) { $updated = $true; break }
+        }
+        if ($updated) { break }
     }
-    if (-not $updated) { throw 'apt-get update failed' }
+    if (-not $updated) { throw 'apt-get update failed on every mirror' }
     $archives = ''
     if ($AptCache) {
         $archives = Join-Path $AptCache 'archives'
         if (Test-Path -LiteralPath $AptCache) { & sudo rm -rf $AptCache }
         New-Item -ItemType Directory -Force -Path (Join-Path $archives 'partial') | Out-Null
-        & sudo apt-get install -y -q --no-install-recommends --download-only -o "Dir::Cache::archives=$archives" @Packages
+        & sudo apt-get install -y -q --no-install-recommends -o Acquire::Retries=3 --download-only -o "Dir::Cache::archives=$archives" @Packages
         if ($LASTEXITCODE -ne 0) { Write-Warning 'apt cache: download failed, installing without the cache'; $archives = '' }
         else {
             # Recorded before the install, so an apt clean-up hook cannot empty the list.
@@ -113,12 +131,12 @@ function Install-AptPackages([string[]]$Packages) {
         }
     }
     $installed = $false
-    foreach ($wait in 0, 20) {
+    foreach ($wait in 0, 30) {
         if ($wait) { Write-Warning "apt-get install failed; retrying in $wait s"; Start-Sleep -Seconds $wait }
         if ($archives) {
-            & sudo apt-get install -y -q --no-install-recommends -o "Dir::Cache::archives=$archives" @Packages
+            & sudo apt-get install -y -q --no-install-recommends -o Acquire::Retries=3 -o "Dir::Cache::archives=$archives" @Packages
         } else {
-            & sudo apt-get install -y -q --no-install-recommends @Packages
+            & sudo apt-get install -y -q --no-install-recommends -o Acquire::Retries=3 @Packages
         }
         if ($LASTEXITCODE -eq 0) { $installed = $true; break }
     }

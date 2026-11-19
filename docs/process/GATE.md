@@ -189,7 +189,9 @@ any workflow is red on `main`.
   `plush-render`, backup fast tier). Cache key `apt-<job>-<ImageOS>-<ImageVersion>-<hash(ci-dependencies.json)>`.
   On a hit the recorded `.deb` files are checked against `manifest.json` (sha256 each) and installed with `dpkg -i`,
   without contacting the Ubuntu mirrors; the log prints `digest sha256:<manifest hash>`. On a miss, a runner image
-  update or any cache problem the mirror install runs as before (now with retries) and refills the cache. The bpy
+  update or any cache problem the mirror install runs as before and refills the cache: `apt-get update`/`install` with
+  bounded retries and backoff (`Acquire::Retries=3`, then 15/45 s), and if the runner's mirror stays down the same
+  archive from `archive.ubuntu.com`, then `mirrors.edge.kernel.org` (security.ubuntu.com untouched). The bpy
   wheel and OIDN stay in the checksum-verified pinned-download cache.
 - **Superseded runs**: a newer push cancels the running Quality gate only on `t-*` and `integration/*`. `main`,
   `staging`, `workflow_dispatch` runs, the backup workflow, nightly Windows and every scheduled workflow are never
