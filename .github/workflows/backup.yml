@@ -78,9 +78,16 @@ jobs:
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
           python-version: '3.13'
+      - name: Runner image id (apt cache key)
+        run: echo "PLUSH_RUNNER_IMAGE=$ImageOS-$ImageVersion" >> "$GITHUB_ENV"
+      - name: Cache pinned apt packages (T-127; keyed on the runner image, mirror install as fallback)
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        with:
+          path: ${{ runner.temp }}/plush-apt-cache
+          key: apt-cpp-${{ env.PLUSH_RUNNER_IMAGE }}-${{ hashFiles('.github/ci-dependencies.json') }}
       - name: Install C++ dependencies for the fast tier
         shell: pwsh
-        run: ./.github/scripts/install_ci_dependencies.ps1 -Platform linux -Cpp
+        run: ./.github/scripts/install_ci_dependencies.ps1 -Platform linux -Cpp -AptCache "$env:RUNNER_TEMP/plush-apt-cache"
       - name: Install Python test dependencies for the fast tier
         # numpy + Pillow: third-party imports of the Python tests check_all runs (same pin as the quality gate).
         # Missing since the T-077 gate wiring, which made the restore test fail on every push to main.

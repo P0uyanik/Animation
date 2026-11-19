@@ -8,6 +8,10 @@ name: Quality gate
 #               run per promotion. No such run: the full gate runs here as before.
 #   linux       tools/check_all.py on the trial-merge result: frozen, guarded, write-set, lint, C++ build + tests,
 #               Python tests, links, Blender tier (the per-character regression runs in the jobs below)
+#   blender     full tier (T-127): the Blender tier units in parallel shard jobs (tools/ci/blender_shards.json), each
+#               with its own character builds; the verdict needs every shard and every unit. Fallback to the in-process
+#               Blender tier of the linux gate: repository variable PLUSH_CI_BLENDER_SHARDS=off or "[unsharded]" in
+#               the head commit message.
 #   regression  full tier only: one job per character in assets/characters, in parallel (tools/regression/run.py)
 #   renderer    the one PLUSH_BUILD_RENDERER=ON build (T-085): frozen engine path tracer, plush-studio, renderer
 #               doctest cases and the frozen image regressions; every other job builds with the renderer OFF
@@ -26,9 +30,11 @@ on:
 permissions:
   contents: read
 
+# T-127: a newer push supersedes the running gate only on task (t-*) and integration/* branches. main, staging and
+# manual runs get a group of their own per run, so they are never cancelled or replaced by a later run.
 concurrency:
-  group: quality-${{ github.ref }}
-  cancel-in-progress: true
+  group: quality-${{ github.ref }}-${{ (github.event_name == 'push' && (startsWith(github.ref, 'refs/heads/t-') || startsWith(github.ref, 'refs/heads/integration/'))) && 'latest' || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'push' && (startsWith(github.ref, 'refs/heads/t-') || startsWith(github.ref, 'refs/heads/integration/')) }}
 
 env:
   PYTHONUTF8: '1'
@@ -52,6 +58,8 @@ jobs:
       verified_run: ${{ steps.verified.outputs.run_id }}
       verified_branch: ${{ steps.verified.outputs.run_branch }}
       verified_detail: ${{ steps.verified.outputs.detail }}
+      blender_shards: ${{ steps.shards.outputs.matrix || '[]' }}
+      blender_shard_count: ${{ steps.shards.outputs.count || '0' }}
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
@@ -88,6 +96,25 @@ jobs:
           echo "path tier $PATH_TIER -> gate tier $tier (capped=$capped)"
           echo "tier=$tier" >> "$GITHUB_OUTPUT"
           echo "capped=$capped" >> "$GITHUB_OUTPUT"
+      - name: Blender shards (T-127; full tier only)
+        id: shards
+        env:
+          TIER: ${{ steps.tier.outputs.tier }}
+          SHARDS_VAR: ${{ vars.PLUSH_CI_BLENDER_SHARDS }}
+        run: |
+          message="$(git log -1 --format=%B HEAD)"
+          if [ "$TIER" != full ]; then
+            echo "fast tier: no Blender shards"; count=0; matrix='[]'
+          elif [ "$SHARDS_VAR" = off ] || [[ "$message" == *"[unsharded]"* ]]; then
+            echo "Blender shards off: the linux gate runs the Blender tier in-process (pre-T-127 path)"; count=0; matrix='[]'
+          else
+            plan="$(python3 tools/check_all.py --list-blender-units)"
+            count="$(python3 -c 'import json,sys; print(json.loads(sys.argv[1])["plan"]["count"])' "$plan")"
+            matrix="$(python3 -c 'import json,sys; d=json.loads(sys.argv[1]); e=set(d["engine_units"]); print(json.dumps([{"shard": int(k), "engine": bool(e & set(v))} for k, v in d["plan"]["shards"].items()]))' "$plan")"
+            echo "$plan"
+          fi
+          echo "count=$count" >> "$GITHUB_OUTPUT"
+          echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
       - name: Already verified? (staging and main pushes, GATE.md §5.1)
         id: verified
         if: github.event_name == 'push' && (github.ref_name == 'staging' || github.ref_name == 'main')
@@ -140,9 +167,16 @@ jobs:
           path: ~/.cache/ccache
           key: ccache-linux-${{ github.sha }}
           restore-keys: ccache-linux-
+      - name: Runner image id (apt cache key)
+        run: echo "PLUSH_RUNNER_IMAGE=$ImageOS-$ImageVersion" >> "$GITHUB_ENV"
+      - name: Cache pinned apt packages (T-127; keyed on the runner image)
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        with:
+          path: ${{ runner.temp }}/plush-apt-cache
+          key: apt-cpp-${{ env.PLUSH_RUNNER_IMAGE }}-${{ hashFiles('.github/ci-dependencies.json') }}
       - name: Install pinned dependencies (apt C++ libraries without Embree/OIDN, bpy)
         shell: pwsh
-        run: ./.github/scripts/install_ci_dependencies.ps1 -Platform linux -Cpp -Bpy
+        run: ./.github/scripts/install_ci_dependencies.ps1 -Platform linux -Cpp -Bpy -AptCache "$env:RUNNER_TEMP/plush-apt-cache"
       - name: Trial merge
         id: merge
         shell: bash
@@ -153,18 +187,25 @@ jobs:
           CHECK_ALL_BASE_REF: ${{ needs.plan.outputs.base }}
           CMAKE_C_COMPILER_LAUNCHER: ccache
           CMAKE_CXX_COMPILER_LAUNCHER: ccache
+          # T-127 (from T-128 §2c): per-run hit rate (stats reset), path-independent hashing, compiler by content.
+          CCACHE_BASEDIR: ${{ github.workspace }}
+          CCACHE_COMPILERCHECK: content
         run: |
+          ccache -z
           status=clean
           [ -n "${{ needs.plan.outputs.merge_target }}" ] || status=''
           extra=()
           [ "${{ needs.plan.outputs.tier }}" = full ] && extra+=(--full --regression-external "linux regression jobs")
+          # T-127: full tier with shards: the Blender units run in the "blender" shard jobs (verdict requires all).
+          shards="${{ needs.plan.outputs.blender_shard_count }}"
+          [ "${shards:-0}" -gt 0 ] && extra+=(--blender-shards-external "$shards blender shard jobs")
           # Task branch with full paths but no "[full]": the Blender tier is reported as running on the
           # integration branch gate (never silently skipped; GATE.md §5).
           [ "${{ needs.plan.outputs.capped }}" = true ] && extra+=(--blender-on-other-runner \
             "integration/* gate (task branches run the fast tier; add [full] to the commit message to run it here)")
           python tools/check_all.py --base "$CHECK_ALL_BASE_REF" --build-dir build/quality-gate \
             --artifacts-dir build/check-all/linux ${status:+--merge-status $status} "${extra[@]}" || true
-          ccache --show-stats | head -5 || true
+          ccache --show-stats -v | grep -E 'Hits|Misses|Cache size|Uncacheable' || true
       - name: Show failing logs
         if: always()
         run: python3 .github/scripts/show_failed_logs.py build/check-all || true
@@ -205,9 +246,16 @@ jobs:
           path: ~/.cache/ccache
           key: ccache-linux-renderer-${{ github.sha }}
           restore-keys: ccache-linux-renderer-
+      - name: Runner image id (apt cache key)
+        run: echo "PLUSH_RUNNER_IMAGE=$ImageOS-$ImageVersion" >> "$GITHUB_ENV"
+      - name: Cache pinned apt packages (T-127; keyed on the runner image)
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        with:
+          path: ${{ runner.temp }}/plush-apt-cache
+          key: apt-renderer-${{ env.PLUSH_RUNNER_IMAGE }}-${{ hashFiles('.github/ci-dependencies.json') }}
       - name: Install pinned dependencies (apt C++ libraries, Embree, OIDN)
         shell: pwsh
-        run: ./.github/scripts/install_ci_dependencies.ps1 -Platform linux -Cpp -Renderer
+        run: ./.github/scripts/install_ci_dependencies.ps1 -Platform linux -Cpp -Renderer -AptCache "$env:RUNNER_TEMP/plush-apt-cache"
       - name: Trial merge
         id: merge
         run: bash .github/scripts/trial_merge.sh "${{ needs.plan.outputs.merge_target }}" build/check-all/renderer
@@ -217,9 +265,13 @@ jobs:
         env:
           CMAKE_C_COMPILER_LAUNCHER: ccache
           CMAKE_CXX_COMPILER_LAUNCHER: ccache
+          # T-127 (from T-128 §2c): per-run hit rate (stats reset), path-independent hashing, compiler by content.
+          CCACHE_BASEDIR: ${{ github.workspace }}
+          CCACHE_COMPILERCHECK: content
         run: |
           logs=build/check-all/renderer/logs
           mkdir -p "$logs"
+          ccache -z
           build=fail
           tests=fail
           if { cmake -S . -B build/renderer -G Ninja -DCMAKE_BUILD_TYPE=Release -DPLUSH_BUILD_RENDERER=ON \
@@ -232,7 +284,7 @@ jobs:
           echo "build=$build" >> "$GITHUB_OUTPUT"
           echo "tests=$tests" >> "$GITHUB_OUTPUT"
           tail -n 15 "$logs/renderer-ctest.log" 2>/dev/null || tail -n 40 "$logs/renderer-build.log"
-          ccache --show-stats | head -5 || true
+          ccache --show-stats -v | grep -E 'Hits|Misses|Cache size|Uncacheable' || true
       - name: Write renderer report
         if: always()
         env:
@@ -319,10 +371,93 @@ jobs:
           if-no-files-found: error
           retention-days: 30
 
+  blender:
+    name: blender shard ${{ matrix.shard.shard }}
+    needs: plan
+    if: needs.plan.outputs.mode == 'run' && needs.plan.outputs.blender_shard_count != '0'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: ${{ fromJSON(needs.plan.outputs.blender_shards) }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+          persist-credentials: true  # repo is private: later `git fetch` steps need the job token (read-only)
+      - name: Fetch main and staging
+        run: git fetch --no-tags origin +main:refs/remotes/origin/main +staging:refs/remotes/origin/staging
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: '3.13'
+      - name: Cache pinned downloads
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        with:
+          path: ${{ runner.temp }}/plush-pinned-dependencies
+          key: pinned-linux-${{ hashFiles('.github/ci-dependencies.json') }}
+      - name: Runner image id (apt cache key)
+        run: echo "PLUSH_RUNNER_IMAGE=$ImageOS-$ImageVersion" >> "$GITHUB_ENV"
+      - name: Cache pinned apt packages (T-127; keyed on the runner image)
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        with:
+          path: ${{ runner.temp }}/plush-apt-cache
+          key: apt-cpp-${{ env.PLUSH_RUNNER_IMAGE }}-${{ hashFiles('.github/ci-dependencies.json') }}
+      - name: Cache ccache
+        if: matrix.shard.engine
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        with:
+          path: ~/.cache/ccache
+          key: ccache-linux-blender-${{ github.sha }}
+          restore-keys: |
+            ccache-linux-blender-
+            ccache-linux-
+      - name: Install pinned dependencies (same as the linux gate - apt C++ libraries without Embree/OIDN, bpy)
+        # Every shard gets exactly the linux gate's setup: the serial Blender tier always ran after this install,
+        # and some tests depend on it (deform_test needs libEGL, which the apt packages bring in).
+        shell: pwsh
+        run: ./.github/scripts/install_ci_dependencies.ps1 -Platform linux -Cpp -Bpy -AptCache "$env:RUNNER_TEMP/plush-apt-cache"
+      - name: Trial merge
+        id: merge
+        run: bash .github/scripts/trial_merge.sh "${{ needs.plan.outputs.merge_target }}" "build/check-all/blender-${{ matrix.shard.shard }}"
+      - name: Blender shard
+        if: steps.merge.outputs.clean == 'true'
+        env:
+          CHECK_ALL_BASE_REF: ${{ needs.plan.outputs.base }}
+          CMAKE_C_COMPILER_LAUNCHER: ccache
+          CMAKE_CXX_COMPILER_LAUNCHER: ccache
+          # T-127 (from T-128 §2c): per-run hit rate (stats reset), path-independent hashing, compiler by content.
+          CCACHE_BASEDIR: ${{ github.workspace }}
+          CCACHE_COMPILERCHECK: content
+        run: |
+          # Same tier flags as the linux gate's full tier, so the regression unit reports the same way.
+          ccache -z 2>/dev/null || true
+          python tools/check_all.py --base "$CHECK_ALL_BASE_REF" --build-dir build/quality-gate \
+            --artifacts-dir "build/check-all/blender-${{ matrix.shard.shard }}" \
+            --blender-shard "${{ matrix.shard.shard }}/${{ needs.plan.outputs.blender_shard_count }}" \
+            --full --regression-external "linux regression jobs" || true
+          cat "build/check-all/blender-${{ matrix.shard.shard }}/durations.txt" 2>/dev/null || true
+          if [ "${{ matrix.shard.engine }}" = true ]; then ccache --show-stats -v | grep -E 'Hits|Misses|Cache size|Uncacheable' || true; fi
+      - name: Show failing logs
+        if: always()
+        run: python3 .github/scripts/show_failed_logs.py build/check-all || true
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: quality-blender-${{ matrix.shard.shard }}
+          path: |
+            build/check-all/**/*.json
+            build/check-all/**/*.txt
+            build/check-all/**/*.log
+            build/check-all/**/*.png
+          if-no-files-found: error
+          retention-days: 30
+
   verdict:
     name: Gate verdict
     if: ${{ !cancelled() }}
-    needs: [plan, linux, renderer, regression]
+    needs: [plan, linux, renderer, regression, blender]
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
@@ -363,14 +498,18 @@ jobs:
           NEEDS: ${{ toJSON(needs) }}
           TIER: ${{ needs.plan.outputs.tier }}
           CHARACTERS: ${{ needs.plan.outputs.characters }}
+          BLENDER_SHARDS: ${{ needs.plan.outputs.blender_shard_count || '0' }}
         run: |
           # Windows: .github/workflows/windows.yml (nightly + workflow_dispatch), binding on its own result.
           python .github/scripts/combine_check_reports.py build/combined build/combined-summary.txt \
-            --needs-json "$NEEDS" --tier "$TIER" --characters "$CHARACTERS" --windows false
+            --needs-json "$NEEDS" --tier "$TIER" --characters "$CHARACTERS" --windows false \
+            --blender-shards "$BLENDER_SHARDS"
       - name: Job summary
         if: always()
         run: |
           { echo '```'; cat build/combined-summary.txt 2>/dev/null; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          # T-127: per-test durations from every report (full lists: durations.txt and "durations" in each check_all.json).
+          python3 .github/scripts/combine_check_reports.py --durations build/combined >> "$GITHUB_STEP_SUMMARY" || true
       - name: Update the one PR #2 comment
         if: always()
         continue-on-error: true

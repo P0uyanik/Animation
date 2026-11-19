@@ -1,0 +1,159 @@
+{
+  "before": "6016b1b",
+  "plan": {
+    "count": 5,
+    "shards": {
+      "1": [
+        "charsys",
+        "face",
+        "material-presets",
+        "render-engine-selector",
+        "materials-r2-graphs",
+        "fidelity-regression"
+      ],
+      "2": [
+        "determinism",
+        "export-engine"
+      ],
+      "3": [
+        "shot-eyes",
+        "emotions"
+      ],
+      "4": [
+        "hair",
+        "groom",
+        "garment",
+        "garments-v2-quick",
+        "groom-dynamics"
+      ],
+      "5": [
+        "export-determinism",
+        "boy2",
+        "deform"
+      ]
+    }
+  },
+  "tiers": {
+    "full": {
+      "before": [
+        "<PY> <ROOT>/pipeline/charsys/verify_charsys.py --blender <OUT>/blender --out <OUT>/verify-charsys  > blender-verify-charsys.log",
+        "<PY> <ROOT>/pipeline/charsys/tests/test_determinism.py --blender <OUT>/blender --out <OUT>/determinism  > blender-determinism.log",
+        "<PY> <ROOT>/pipeline/charsys/tests/test_export_engine.py --blender <OUT>/blender  > blender-export-engine.log",
+        "<OUT>/blender -b --factory-startup -P <ROOT>/pipeline/charsys/tests/face_test.py -- <OUT>/verify-charsys/build/boy_yellow_hoodie_master.blend <OUT>/face  > blender-face.log",
+        "<OUT>/blender -b --factory-startup -P <ROOT>/pipeline/charsys/tests/hair_generic_test.py -- <OUT>/hair_generic_test.json  > blender-hair-groom.log",
+        "<OUT>/blender -b --factory-startup -P <ROOT>/pipeline/charsys/tests/groom_generic_test.py -- <OUT>/groom_generic_test.json  > blender-groom.log",
+        "<PY> <ROOT>/tests/garment_generic_test.py --blender <OUT>/blender --out <OUT>/garment --evidence-dir <OUT>/renders  > blender-garment.log",
+        "<PY> <ROOT>/pipeline/charsys/tests/test_material_presets.py  > material-presets.log",
+        "<OUT>/blender -b --factory-startup -P <ROOT>/pipeline/charsys/tests/test_render_engine.py  > blender-render-engine-selector.log",
+        "<OUT>/blender -b --factory-startup -P <ROOT>/pipeline/charsys/tests/test_materials_r2_graphs.py  > blender-materials-r2-graphs.log",
+        "<PY> <ROOT>/pipeline/charsys/tests/test_garments_v2.py --blender <OUT>/blender --quick  > blender-garments-v2-quick.log",
+        "<OUT>/blender -b --factory-startup -P <ROOT>/pipeline/charsys/tests/groom_dynamics_test.py -- <OUT>/groom_dynamics_test.json  > blender-groom-dynamics.log",
+        "<PY> <ROOT>/pipeline/charsys/tests/test_export_determinism.py --blender <OUT>/blender --out <OUT>/export-determinism  > blender-export-determinism.log",
+        "<OUT>/blender -b --factory-startup -P <ROOT>/pipeline/charsys/build_character.py -- --spec <ROOT>/assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.0.0-dev.spec.json --out <OUT>/boy2 --no-glb --no-compare  > blender-boy2.log",
+        "<PY> <ROOT>/pipeline/charsys/tests/test_boy2_face.py --blender <OUT>/blender --master <OUT>/boy2/boy_yellow_hoodie_master.blend  > blender-boy2.log",
+        "<PY> <ROOT>/pipeline/charsys/tests/test_hoodie.py --blender <OUT>/blender --master <OUT>/boy2/boy_yellow_hoodie_master.blend  > blender-boy2.log",
+        "<OUT>/blender -b --factory-startup -P <ROOT>/pipeline/charsys/tests/deform_test.py -- <ROOT>/assets/characters/boy_yellow_hoodie/versions/2.1.0/boy_yellow_hoodie_master.blend <OUT>/deform-boy_yellow_hoodie  > blender-deform-boy_yellow_hoodie.log",
+        "<OUT>/blender -b --factory-startup -P <ROOT>/pipeline/charsys/tests/deform_test.py -- <ROOT>/assets/characters/girl_auburn_bun_glasses/versions/0.12.0/girl_auburn_bun_glasses_master.blend <OUT>/deform-girl_auburn_bun_glasses  > blender-deform-girl_auburn_bun_glasses.log",
+        "<PY> <ROOT>/pipeline/charsys/tests/test_shot_eyes.py --blender <OUT>/blender --cast current --bake-engine <OUT>/plush-render  > blender-shot-eyes.log",
+        "<PY> <ROOT>/pipeline/clips/test_emotions.py --blender <OUT>/blender --engine <OUT>/plush-render --out <OUT>  > blender-emotions.log"
+      ],
+      "after_unsharded_identical": true,
+      "after_shards": {
+        "1": [
+          "<PY> <ROOT>/pipeline/charsys/verify_charsys.py --blender <OUT>/blender --out <OUT>/verify-charsys  > blender-verify-charsys.log",
+          "<OUT>/blender -b --factory-startup -P <ROOT>/pipeline/charsys/tests/face_test.py -- <OUT>/verify-charsys/build/boy_yellow_hoodie_master.blend <OUT>/face  > blender-face.log",
+          "<PY> <ROOT>/pipeline/charsys/tests/test_material_presets.py  > material-presets.log",
+          "<OUT>/blender -b --factory-startup -P <ROOT>/pipeline/charsys/tests/test_render_engine.py  > blender-render-engine-selector.log",
+          "<OUT>/blender -b --factory-startup -P <ROOT>/pipeline/charsys/tests/test_materials_r2_graphs.py  > blender-materials-r2-graphs.log"
+        ],
+        "2": [
+          "<PY> <ROOT>/pipeline/charsys/tests/test_determinism.py --blender <OUT>/blender --out <OUT>/determinism  > blender-determinism.log",
+          "<PY> <ROOT>/pipeline/charsys/tests/test_export_engine.py --blender <OUT>/blender  > blender-export-engine.log"
+        ],
+        "3": [
+          "<PY> <ROOT>/pipeline/charsys/tests/test_shot_eyes.py --blender <OUT>/blender --cast current --bake-engine <OUT>/plush-render  > blender-shot-eyes.log",
+          "<PY> <ROOT>/pipeline/clips/test_emotions.py --blender <OUT>/blender --engine <OUT>/plush-render --out <OUT>  > blender-emotions.log"
+        ],
+        "4": [
+          "<OUT>/blender -b --factory-startup -P <ROOT>/pipeline/charsys/tests/hair_generic_test.py -- <OUT>/hair_generic_test.json  > blender-hair-groom.log",
+          "<OUT>/blender -b --factory-startup -P <ROOT>/pipeline/charsys/tests/groom_generic_test.py -- <OUT>/groom_generic_test.json  > blender-groom.log",
+          "<PY> <ROOT>/tests/garment_generic_test.py --blender <OUT>/blender --out <OUT>/garment --evidence-dir <OUT>/renders  > blender-garment.log",
+          "<PY> <ROOT>/pipeline/charsys/tests/test_garments_v2.py --blender <OUT>/blender --quick  > blender-garments-v2-quick.log",
+          "<OUT>/blender -b --factory-startup -P <ROOT>/pipeline/charsys/tests/groom_dynamics_test.py -- <OUT>/groom_dynamics_test.json  > blender-groom-dynamics.log"
+        ],
+        "5": [
+          "<PY> <ROOT>/pipeline/charsys/tests/test_export_determinism.py --blender <OUT>/blender --out <OUT>/export-determinism  > blender-export-determinism.log",
+          "<OUT>/blender -b --factory-startup -P <ROOT>/pipeline/charsys/build_character.py -- --spec <ROOT>/assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.0.0-dev.spec.json --out <OUT>/boy2 --no-glb --no-compare  > blender-boy2.log",
+          "<PY> <ROOT>/pipeline/charsys/tests/test_boy2_face.py --blender <OUT>/blender --master <OUT>/boy2/boy_yellow_hoodie_master.blend  > blender-boy2.log",
+          "<PY> <ROOT>/pipeline/charsys/tests/test_hoodie.py --blender <OUT>/blender --master <OUT>/boy2/boy_yellow_hoodie_master.blend  > blender-boy2.log",
+          "<OUT>/blender -b --factory-startup -P <ROOT>/pipeline/charsys/tests/deform_test.py -- <ROOT>/assets/characters/boy_yellow_hoodie/versions/2.1.0/boy_yellow_hoodie_master.blend <OUT>/deform-boy_yellow_hoodie  > blender-deform-boy_yellow_hoodie.log",
+          "<OUT>/blender -b --factory-startup -P <ROOT>/pipeline/charsys/tests/deform_test.py -- <ROOT>/assets/characters/girl_auburn_bun_glasses/versions/0.12.0/girl_auburn_bun_glasses_master.blend <OUT>/deform-girl_auburn_bun_glasses  > blender-deform-girl_auburn_bun_glasses.log"
+        ]
+      },
+      "same_multiset": true,
+      "count_before": 20,
+      "count_after": 20
+    },
+    "fast": {
+      "before": [
+        "<PY> <ROOT>/pipeline/charsys/verify_charsys.py --blender <OUT>/blender --out <OUT>/verify-charsys  > blender-verify-charsys.log",
+        "<PY> <ROOT>/pipeline/charsys/tests/test_determinism.py --blender <OUT>/blender --out <OUT>/determinism  > blender-determinism.log",
+        "<PY> <ROOT>/pipeline/charsys/tests/test_export_engine.py --blender <OUT>/blender  > blender-export-engine.log",
+        "<OUT>/blender -b --factory-startup -P <ROOT>/pipeline/charsys/tests/face_test.py -- <OUT>/verify-charsys/build/boy_yellow_hoodie_master.blend <OUT>/face  > blender-face.log",
+        "<OUT>/blender -b --factory-startup -P <ROOT>/pipeline/charsys/tests/hair_generic_test.py -- <OUT>/hair_generic_test.json  > blender-hair-groom.log",
+        "<OUT>/blender -b --factory-startup -P <ROOT>/pipeline/charsys/tests/groom_generic_test.py -- <OUT>/groom_generic_test.json  > blender-groom.log",
+        "<PY> <ROOT>/tests/garment_generic_test.py --blender <OUT>/blender --out <OUT>/garment --evidence-dir <OUT>/renders  > blender-garment.log",
+        "<PY> <ROOT>/pipeline/charsys/tests/test_material_presets.py  > material-presets.log",
+        "<OUT>/blender -b --factory-startup -P <ROOT>/pipeline/charsys/tests/test_render_engine.py  > blender-render-engine-selector.log",
+        "<OUT>/blender -b --factory-startup -P <ROOT>/pipeline/charsys/tests/test_materials_r2_graphs.py  > blender-materials-r2-graphs.log",
+        "<PY> <ROOT>/pipeline/charsys/tests/test_garments_v2.py --blender <OUT>/blender --quick  > blender-garments-v2-quick.log",
+        "<OUT>/blender -b --factory-startup -P <ROOT>/pipeline/charsys/tests/groom_dynamics_test.py -- <OUT>/groom_dynamics_test.json  > blender-groom-dynamics.log",
+        "<PY> <ROOT>/pipeline/charsys/tests/test_export_determinism.py --blender <OUT>/blender --out <OUT>/export-determinism  > blender-export-determinism.log",
+        "<OUT>/blender -b --factory-startup -P <ROOT>/pipeline/charsys/build_character.py -- --spec <ROOT>/assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.0.0-dev.spec.json --out <OUT>/boy2 --no-glb --no-compare  > blender-boy2.log",
+        "<PY> <ROOT>/pipeline/charsys/tests/test_boy2_face.py --blender <OUT>/blender --master <OUT>/boy2/boy_yellow_hoodie_master.blend  > blender-boy2.log",
+        "<PY> <ROOT>/pipeline/charsys/tests/test_hoodie.py --blender <OUT>/blender --master <OUT>/boy2/boy_yellow_hoodie_master.blend  > blender-boy2.log",
+        "<OUT>/blender -b --factory-startup -P <ROOT>/pipeline/charsys/tests/deform_test.py -- <ROOT>/assets/characters/boy_yellow_hoodie/versions/2.1.0/boy_yellow_hoodie_master.blend <OUT>/deform-boy_yellow_hoodie  > blender-deform-boy_yellow_hoodie.log",
+        "<OUT>/blender -b --factory-startup -P <ROOT>/pipeline/charsys/tests/deform_test.py -- <ROOT>/assets/characters/girl_auburn_bun_glasses/versions/0.12.0/girl_auburn_bun_glasses_master.blend <OUT>/deform-girl_auburn_bun_glasses  > blender-deform-girl_auburn_bun_glasses.log",
+        "<PY> <ROOT>/pipeline/charsys/tests/test_shot_eyes.py --blender <OUT>/blender --cast current --bake-engine <OUT>/plush-render  > blender-shot-eyes.log",
+        "<PY> <ROOT>/pipeline/clips/test_emotions.py --blender <OUT>/blender --engine <OUT>/plush-render --out <OUT>  > blender-emotions.log"
+      ],
+      "after_unsharded_identical": true,
+      "after_shards": {
+        "1": [
+          "<PY> <ROOT>/pipeline/charsys/verify_charsys.py --blender <OUT>/blender --out <OUT>/verify-charsys  > blender-verify-charsys.log",
+          "<OUT>/blender -b --factory-startup -P <ROOT>/pipeline/charsys/tests/face_test.py -- <OUT>/verify-charsys/build/boy_yellow_hoodie_master.blend <OUT>/face  > blender-face.log",
+          "<PY> <ROOT>/pipeline/charsys/tests/test_material_presets.py  > material-presets.log",
+          "<OUT>/blender -b --factory-startup -P <ROOT>/pipeline/charsys/tests/test_render_engine.py  > blender-render-engine-selector.log",
+          "<OUT>/blender -b --factory-startup -P <ROOT>/pipeline/charsys/tests/test_materials_r2_graphs.py  > blender-materials-r2-graphs.log"
+        ],
+        "2": [
+          "<PY> <ROOT>/pipeline/charsys/tests/test_determinism.py --blender <OUT>/blender --out <OUT>/determinism  > blender-determinism.log",
+          "<PY> <ROOT>/pipeline/charsys/tests/test_export_engine.py --blender <OUT>/blender  > blender-export-engine.log"
+        ],
+        "3": [
+          "<PY> <ROOT>/pipeline/charsys/tests/test_shot_eyes.py --blender <OUT>/blender --cast current --bake-engine <OUT>/plush-render  > blender-shot-eyes.log",
+          "<PY> <ROOT>/pipeline/clips/test_emotions.py --blender <OUT>/blender --engine <OUT>/plush-render --out <OUT>  > blender-emotions.log"
+        ],
+        "4": [
+          "<OUT>/blender -b --factory-startup -P <ROOT>/pipeline/charsys/tests/hair_generic_test.py -- <OUT>/hair_generic_test.json  > blender-hair-groom.log",
+          "<OUT>/blender -b --factory-startup -P <ROOT>/pipeline/charsys/tests/groom_generic_test.py -- <OUT>/groom_generic_test.json  > blender-groom.log",
+          "<PY> <ROOT>/tests/garment_generic_test.py --blender <OUT>/blender --out <OUT>/garment --evidence-dir <OUT>/renders  > blender-garment.log",
+          "<PY> <ROOT>/pipeline/charsys/tests/test_garments_v2.py --blender <OUT>/blender --quick  > blender-garments-v2-quick.log",
+          "<OUT>/blender -b --factory-startup -P <ROOT>/pipeline/charsys/tests/groom_dynamics_test.py -- <OUT>/groom_dynamics_test.json  > blender-groom-dynamics.log"
+        ],
+        "5": [
+          "<PY> <ROOT>/pipeline/charsys/tests/test_export_determinism.py --blender <OUT>/blender --out <OUT>/export-determinism  > blender-export-determinism.log",
+          "<OUT>/blender -b --factory-startup -P <ROOT>/pipeline/charsys/build_character.py -- --spec <ROOT>/assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.0.0-dev.spec.json --out <OUT>/boy2 --no-glb --no-compare  > blender-boy2.log",
+          "<PY> <ROOT>/pipeline/charsys/tests/test_boy2_face.py --blender <OUT>/blender --master <OUT>/boy2/boy_yellow_hoodie_master.blend  > blender-boy2.log",
+          "<PY> <ROOT>/pipeline/charsys/tests/test_hoodie.py --blender <OUT>/blender --master <OUT>/boy2/boy_yellow_hoodie_master.blend  > blender-boy2.log",
+          "<OUT>/blender -b --factory-startup -P <ROOT>/pipeline/charsys/tests/deform_test.py -- <ROOT>/assets/characters/boy_yellow_hoodie/versions/2.1.0/boy_yellow_hoodie_master.blend <OUT>/deform-boy_yellow_hoodie  > blender-deform-boy_yellow_hoodie.log",
+          "<OUT>/blender -b --factory-startup -P <ROOT>/pipeline/charsys/tests/deform_test.py -- <ROOT>/assets/characters/girl_auburn_bun_glasses/versions/0.12.0/girl_auburn_bun_glasses_master.blend <OUT>/deform-girl_auburn_bun_glasses  > blender-deform-girl_auburn_bun_glasses.log"
+        ]
+      },
+      "same_multiset": true,
+      "count_before": 20,
+      "count_after": 20
+    }
+  },
+  "problems": []
+}

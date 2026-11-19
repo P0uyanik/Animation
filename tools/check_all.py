@@ -373,6 +373,10 @@ def display_command(command: list[str]) -> str:
     return subprocess.list2cmdline(command) if os.name == "nt" else " ".join(command)
 
 
+# T-127: one entry per command run_logged ran (gate report "durations" + durations.txt, slowest first).
+DURATIONS: list[dict] = []
+
+
 def run_logged(command: list[str], log_path: Path, *, append: bool = False, env: dict | None = None) -> tuple[int, float]:
     log_path.parent.mkdir(parents=True, exist_ok=True)
     started = time.monotonic()
@@ -385,7 +389,10 @@ def run_logged(command: list[str], log_path: Path, *, append: bool = False, env:
         except OSError as exc:
             log.write(f"could not start command: {exc}\n")
             code = 127
-    return code, time.monotonic() - started
+    seconds = time.monotonic() - started
+    script = next((Path(part).name for part in command[1:] if part.endswith(".py")), Path(command[0]).name)
+    DURATIONS.append({"log": relative_log(log_path), "script": script, "exit": code, "seconds": round(seconds, 2)})
+    return code, seconds
 
 
 def relative_log(path: Path) -> str:
@@ -537,6 +544,7 @@ def check_python_tests(logs: Path) -> Result:
         [sys.executable, str(ROOT / "tests/acting/test_e909_beats.py")],  # T-114 e909 beats
         [sys.executable, str(ROOT / "tests/acting/test_boy_signature.py")],  # T-097-boy acting signature
         [sys.executable, str(ROOT / "pipeline/charsys/tests/test_boy2_face.py")],  # T-058 spec checks, no Blender (T-077)
+        [sys.executable, str(ROOT / "tools/ci/tests/test_t127_shards.py")],  # T-127 shard plan, verdict, inventory
     ]
     cleanup_tests = ROOT / "tools/cleanup/run_tests.py"  # T-048 branch-cleanup tests, once merged
     if cleanup_tests.is_file():
@@ -738,66 +746,32 @@ def current_published_masters() -> dict[str, Path | str]:
     return masters
 
 
-def t101_checks(executable: str, engine: Path | None, out: Path, logs: Path, subchecks: list[dict]) -> None:
-    """T-101: the three tests T-077 root-caused (docs/evaluation/process/T-077 §4), on the current approved versions.
-    deform_test on each current published master (a measurement without limits: it fails when a pose control is
-    missing or a mesh cannot be measured); test_shot_eyes and test_emotions run their shot with cast "current" (they
-    need plush-render for the bake)."""
-    for cid, master in current_published_masters().items():
-        name = f"deform_test {cid}"
-        log = logs / f"blender-deform-{cid}.log"
-        if not isinstance(master, Path):
-            log.write_text(f"{master}\n", encoding="utf-8")
-            add_subcheck(subchecks, name, False, master, log)
-            continue
-        code, _ = run_logged([executable, "-b", "--factory-startup", "-P", str(ROOT / "pipeline/charsys/tests/deform_test.py"),
-                              "--", str(master), str(out / f"deform-{cid}")], log)
-        ok = code == 0 and (out / f"deform-{cid}" / "deform_test.json").is_file()
-        add_subcheck(subchecks, name, ok, "" if ok else "deform_test failed", log)
-    if engine is None:
-        for name in ("test_shot_eyes", "test_emotions"):
-            add_subcheck(subchecks, name, False, "plush-render not found (needed for the bake)")
-        return
-    log = logs / "blender-shot-eyes.log"
-    code, _ = run_logged([sys.executable, str(ROOT / "pipeline/charsys/tests/test_shot_eyes.py"), "--blender", executable,
-                          "--cast", "current", "--bake-engine", str(engine)], log)
-    add_subcheck(subchecks, "test_shot_eyes", code == 0, "" if code == 0 else "test_shot_eyes failed", log)
-    # The emotion scenes and bakes must sit inside the repository (the engine finds content/ above a scene) and are
-    # large, so they go to build/test_tmp; only the measurements are copied next to the other artifacts.
-    tmp_root = ROOT / "build" / "test_tmp"
-    tmp_root.mkdir(parents=True, exist_ok=True)
-    emo_out = Path(tempfile.mkdtemp(prefix="check_all_emotions_", dir=tmp_root))
-    log = logs / "blender-emotions.log"
-    code, _ = run_logged([sys.executable, str(ROOT / "pipeline/clips/test_emotions.py"), "--blender", executable,
-                          "--engine", str(engine), "--out", str(emo_out)], log)
-    measurements = emo_out / "emotion_measurements.json"
-    if measurements.is_file():
-        shutil.copy2(measurements, out / "emotion_measurements.json")
-    shutil.rmtree(emo_out, ignore_errors=True)
-    add_subcheck(subchecks, "test_emotions", code == 0, "" if code == 0 else "test_emotions failed", log)
+# --- Blender tier (T-127: split into named units so CI can run them in parallel shards) -----------------------------
+# Every unit runs exactly the commands it ran before T-127, in the same order inside the unit. Units with an internal
+# dependency stay one unit (verify_charsys -> face tests on its master; the boy 2.0.0-dev build -> its two tests), so
+# no built character is shared between units (owner decision T-127: item 6 not approved). Without --blender-shard the
+# units run in this order on one runner, which is the pre-T-127 behaviour (local runs and the CI fallback path).
+BLENDER_SHARDS_FILE = ROOT / "tools" / "ci" / "blender_shards.json"
 
 
-def check_blender(blender: str, artifacts: Path, logs: Path, required: bool, changes: set[str],
-                  tier: dict | None = None, base: str = "", regression_results: str = "",
-                  regression_external: str = "", other_runner: str = "", engine: Path | None = None) -> Result:
-    tier = tier or {"tier": "fast"}
-    full = tier.get("tier") == "full"
-    if other_runner:
-        return Result("Blender tier", True, f"{tier.get('tier', 'fast')} tier; runs on the {other_runner} (not on "
-                      f"{sys.platform})", skipped=True)
-    if not required:
-        return Result("Blender tier", True, f"not required: fast tier ({len(changes)} changed path(s), none full)",
-                      skipped=True)
-    started = time.monotonic()
-    subchecks: list[dict] = []
-    requested = blender or os.environ.get("BLENDER", "") or "blender"
-    executable = shutil.which(requested) or requested
-    if not Path(executable).is_file():
-        why = "full regression required by " + short(tier.get("full_paths", []), 3) if full else "--blender given"
-        return Result("Blender tier", False, f"Blender executable not found ({why}); this tier is never skipped")
+@dataclasses.dataclass
+class BlenderContext:
+    executable: str
+    out: Path
+    logs: Path
+    artifacts: Path
+    changes: set[str]
+    tier: dict
+    base: str
+    regression_results: str
+    regression_external: str
+    engine: Path | None
+    subchecks: list[dict]
+    details: dict = dataclasses.field(default_factory=dict)
 
-    out = Path(tempfile.mkdtemp(prefix="blender-", dir=artifacts))
 
+def unit_charsys(c: BlenderContext) -> None:
+    executable, out, logs, subchecks = c.executable, c.out, c.logs, c.subchecks
     verify_out = out / "verify-charsys"
     verify_log = logs / "blender-verify-charsys.log"
     command = [
@@ -815,26 +789,11 @@ def check_blender(blender: str, artifacts: Path, logs: Path, required: bool, cha
     fingerprint_ok = bool(verify_data.get("v6_geometry", {}).get("ok"))
     add_subcheck(subchecks, "boy fingerprint", fingerprint_ok, "" if fingerprint_ok else "v6 geometry differs", verify_log)
 
-    # Build the boy twice and compare format-2 fingerprints (pipeline/charsys/fingerprint_v2.py) at 0.01 mm and 0.1 mm.
-    determinism_log = logs / "blender-determinism.log"
-    determinism_out = out / "determinism"
-    determinism_command = [
-        sys.executable, str(ROOT / "pipeline/charsys/tests/test_determinism.py"),
-        "--blender", executable, "--out", str(determinism_out),
-    ]
-    determinism_code, _ = run_logged(determinism_command, determinism_log)
-    determinism_ok = determinism_code == 0 and json_pass(determinism_out / "determinism.json")
-    add_subcheck(subchecks, "build determinism", determinism_ok, "" if determinism_ok else "two builds differ", determinism_log)
 
-    export_log = logs / "blender-export-engine.log"
-    export_command = [
-        sys.executable, str(ROOT / "pipeline/charsys/tests/test_export_engine.py"),
-        "--blender", executable,
-    ]
-    export_code, _ = run_logged(export_command, export_log)
-    add_subcheck(subchecks, "test_export_engine", export_code == 0, "" if export_code == 0 else "export tests failed", export_log)
-
-    master = verify_out / "build" / "boy_yellow_hoodie_master.blend"
+def unit_face(c: BlenderContext) -> None:
+    # Reads the master verify_charsys built in this run (as before T-127): always in the same shard as "charsys".
+    executable, out, logs, subchecks = c.executable, c.out, c.logs, c.subchecks
+    master = out / "verify-charsys" / "build" / "boy_yellow_hoodie_master.blend"
     face_log = logs / "blender-face.log"
     if master.is_file():
         face_command = [
@@ -849,61 +808,92 @@ def check_blender(blender: str, artifacts: Path, logs: Path, required: bool, cha
         face_log.write_text("verify_charsys did not produce a master\n", encoding="utf-8")
     add_subcheck(subchecks, "face tests", face_ok, "" if face_ok else "face tests failed", face_log)
 
+
+def unit_determinism(c: BlenderContext) -> None:
+    # Build the boy twice and compare format-2 fingerprints (pipeline/charsys/fingerprint_v2.py) at 0.01 mm and 0.1 mm.
+    determinism_log = c.logs / "blender-determinism.log"
+    determinism_out = c.out / "determinism"
+    determinism_command = [
+        sys.executable, str(ROOT / "pipeline/charsys/tests/test_determinism.py"),
+        "--blender", c.executable, "--out", str(determinism_out),
+    ]
+    determinism_code, _ = run_logged(determinism_command, determinism_log)
+    determinism_ok = determinism_code == 0 and json_pass(determinism_out / "determinism.json")
+    add_subcheck(c.subchecks, "build determinism", determinism_ok, "" if determinism_ok else "two builds differ",
+                 determinism_log)
+
+
+def unit_export_engine(c: BlenderContext) -> None:
+    export_log = c.logs / "blender-export-engine.log"
+    export_command = [
+        sys.executable, str(ROOT / "pipeline/charsys/tests/test_export_engine.py"),
+        "--blender", c.executable,
+    ]
+    export_code, _ = run_logged(export_command, export_log)
+    add_subcheck(c.subchecks, "test_export_engine", export_code == 0, "" if export_code == 0 else "export tests failed",
+                 export_log)
+
+
+def unit_hair(c: BlenderContext) -> None:
     hair_script = ROOT / "pipeline/charsys/tests/hair_generic_test.py"
-    hair_log = logs / "blender-hair-groom.log"
-    hair_json = out / "hair_generic_test.json"
-    hair_command = [executable, "-b", "--factory-startup", "-P", str(hair_script), "--", str(hair_json)]
+    hair_log = c.logs / "blender-hair-groom.log"
+    hair_json = c.out / "hair_generic_test.json"
+    hair_command = [c.executable, "-b", "--factory-startup", "-P", str(hair_script), "--", str(hair_json)]
     hair_code, _ = run_logged(hair_command, hair_log)
     hair_ok = hair_code == 0 and json_pass(hair_json)
-    add_subcheck(subchecks, "hair/groom test", hair_ok, "" if hair_ok else "hair/groom test failed", hair_log)
+    add_subcheck(c.subchecks, "hair/groom test", hair_ok, "" if hair_ok else "hair/groom test failed", hair_log)
 
+
+def unit_groom(c: BlenderContext) -> None:
     groom_script = ROOT / "pipeline/charsys/tests/groom_generic_test.py"
     if groom_script.is_file():
-        groom_log = logs / "blender-groom.log"
-        groom_json = out / "groom_generic_test.json"
-        groom_command = [executable, "-b", "--factory-startup", "-P", str(groom_script), "--", str(groom_json)]
+        groom_log = c.logs / "blender-groom.log"
+        groom_json = c.out / "groom_generic_test.json"
+        groom_command = [c.executable, "-b", "--factory-startup", "-P", str(groom_script), "--", str(groom_json)]
         groom_code, _ = run_logged(groom_command, groom_log)
         groom_ok = groom_code == 0 and json_pass(groom_json)
-        add_subcheck(subchecks, "groom_generic_test", groom_ok, "" if groom_ok else "groom test failed", groom_log)
+        add_subcheck(c.subchecks, "groom_generic_test", groom_ok, "" if groom_ok else "groom test failed", groom_log)
 
+
+def unit_garment(c: BlenderContext) -> None:
     garment_script = ROOT / "tests/garment_generic_test.py"
     if garment_script.is_file():
-        garment_log = logs / "blender-garment.log"
+        garment_log = c.logs / "blender-garment.log"
         garment_command = [
-            sys.executable, str(garment_script), "--blender", executable,
-            "--out", str(out / "garment"), "--evidence-dir", str(out / "renders"),
+            sys.executable, str(garment_script), "--blender", c.executable,
+            "--out", str(c.out / "garment"), "--evidence-dir", str(c.out / "renders"),
         ]
         garment_code, _ = run_logged(garment_command, garment_log)
-        add_subcheck(subchecks, "garment_generic_test", garment_code == 0, "" if garment_code == 0 else "garment test failed", garment_log)
+        add_subcheck(c.subchecks, "garment_generic_test", garment_code == 0,
+                     "" if garment_code == 0 else "garment test failed", garment_log)
 
+
+def unit_material_presets(c: BlenderContext) -> None:
     material_script = ROOT / "pipeline/charsys/tests/test_material_presets.py"
     if material_script.is_file():
-        material_log = logs / "material-presets.log"
+        material_log = c.logs / "material-presets.log"
         material_code, _ = run_logged([sys.executable, str(material_script)], material_log)
-        add_subcheck(subchecks, "material presets", material_code == 0, "" if material_code == 0 else "material preset tests failed", material_log)
+        add_subcheck(c.subchecks, "material presets", material_code == 0,
+                     "" if material_code == 0 else "material preset tests failed", material_log)
 
-    # T-077 (from T-071): self-contained Blender tests that ran nowhere before (each a few seconds, plus about a minute
-    # for the shared boy 2.0.0-dev build). Slow shot-level tests stay nightly/local (docs/evaluation/process/T-077).
-    for name, command, json_out in (
-        ("render engine selector", [executable, "-b", "--factory-startup", "-P",
-                                    str(ROOT / "pipeline/charsys/tests/test_render_engine.py")], None),
-        ("materials r2 graphs", [executable, "-b", "--factory-startup", "-P",
-                                 str(ROOT / "pipeline/charsys/tests/test_materials_r2_graphs.py")], None),  # T-092
-        ("garments v2 quick", [sys.executable, str(ROOT / "pipeline/charsys/tests/test_garments_v2.py"),
-                               "--blender", executable, "--quick"], None),  # T-093 pin + validate (full run: local)
-        ("groom dynamics", [executable, "-b", "--factory-startup", "-P",
-                            str(ROOT / "pipeline/charsys/tests/groom_dynamics_test.py"), "--",
-                            str(out / "groom_dynamics_test.json")], out / "groom_dynamics_test.json"),
-        ("export determinism", [sys.executable, str(ROOT / "pipeline/charsys/tests/test_export_determinism.py"),
-                                "--blender", executable, "--out", str(out / "export-determinism")], None),
-    ):
-        log = logs / f"blender-{name.replace(' ', '-')}.log"
-        code, _ = run_logged(command, log)
+
+def t077_unit(name: str, command_for, json_for=None):
+    """T-077 (from T-071): self-contained Blender tests that ran nowhere before (each a few seconds). Slow shot-level
+    tests stay nightly/local (docs/evaluation/process/T-077)."""
+    def run(c: BlenderContext) -> None:
+        json_out = json_for(c) if json_for else None
+        log = c.logs / f"blender-{name.replace(' ', '-')}.log"
+        code, _ = run_logged(command_for(c), log)
         ok = code == 0 and (json_out is None or json_pass(json_out))
-        add_subcheck(subchecks, name, ok, "" if ok else f"{name} failed", log)
+        add_subcheck(c.subchecks, name, ok, "" if ok else f"{name} failed", log)
+    return run
 
-    boy2_log = logs / "blender-boy2.log"
-    boy2_out = out / "boy2"
+
+def unit_boy2(c: BlenderContext) -> None:
+    # The shared boy 2.0.0-dev build (about a minute) and the two tests that read it: one unit, never shared further.
+    executable = c.executable
+    boy2_log = c.logs / "blender-boy2.log"
+    boy2_out = c.out / "boy2"
     boy2_code, _ = run_logged([
         executable, "-b", "--factory-startup", "-P", str(ROOT / "pipeline/charsys/build_character.py"), "--",
         "--spec", str(ROOT / "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.0.0-dev.spec.json"),
@@ -916,21 +906,172 @@ def check_blender(blender: str, artifacts: Path, logs: Path, required: bool, cha
                                   "--master", str(boy2_master)], boy2_log, append=True)
         else:
             code = 1
-        add_subcheck(subchecks, script[:-3], code == 0, "" if code == 0 else f"{script} failed", boy2_log)
+        add_subcheck(c.subchecks, script[:-3], code == 0, "" if code == 0 else f"{script} failed", boy2_log)
 
-    t101_checks(executable, engine, out, logs, subchecks)
 
-    regression_details: list[str] = []
-    if full:
+def unit_deform(c: BlenderContext) -> None:
+    """T-101: deform_test on each current published master (a measurement without limits: it fails when a pose
+    control is missing or a mesh cannot be measured; docs/evaluation/process/T-077 §4)."""
+    for cid, master in current_published_masters().items():
+        name = f"deform_test {cid}"
+        log = c.logs / f"blender-deform-{cid}.log"
+        if not isinstance(master, Path):
+            log.write_text(f"{master}\n", encoding="utf-8")
+            add_subcheck(c.subchecks, name, False, master, log)
+            continue
+        code, _ = run_logged([c.executable, "-b", "--factory-startup", "-P",
+                              str(ROOT / "pipeline/charsys/tests/deform_test.py"),
+                              "--", str(master), str(c.out / f"deform-{cid}")], log)
+        ok = code == 0 and (c.out / f"deform-{cid}" / "deform_test.json").is_file()
+        add_subcheck(c.subchecks, name, ok, "" if ok else "deform_test failed", log)
+
+
+def unit_shot_eyes(c: BlenderContext) -> None:
+    """T-101: test_shot_eyes runs its shot with cast "current" (needs plush-render for the bake)."""
+    if c.engine is None:
+        add_subcheck(c.subchecks, "test_shot_eyes", False, "plush-render not found (needed for the bake)")
+        return
+    log = c.logs / "blender-shot-eyes.log"
+    code, _ = run_logged([sys.executable, str(ROOT / "pipeline/charsys/tests/test_shot_eyes.py"), "--blender",
+                          c.executable, "--cast", "current", "--bake-engine", str(c.engine)], log)
+    add_subcheck(c.subchecks, "test_shot_eyes", code == 0, "" if code == 0 else "test_shot_eyes failed", log)
+
+
+def unit_emotions(c: BlenderContext) -> None:
+    """T-101: test_emotions runs its shot with cast "current" (needs plush-render for the bake)."""
+    if c.engine is None:
+        add_subcheck(c.subchecks, "test_emotions", False, "plush-render not found (needed for the bake)")
+        return
+    # The emotion scenes and bakes must sit inside the repository (the engine finds content/ above a scene) and are
+    # large, so they go to build/test_tmp; only the measurements are copied next to the other artifacts.
+    tmp_root = ROOT / "build" / "test_tmp"
+    tmp_root.mkdir(parents=True, exist_ok=True)
+    emo_out = Path(tempfile.mkdtemp(prefix="check_all_emotions_", dir=tmp_root))
+    log = c.logs / "blender-emotions.log"
+    code, _ = run_logged([sys.executable, str(ROOT / "pipeline/clips/test_emotions.py"), "--blender", c.executable,
+                          "--engine", str(c.engine), "--out", str(emo_out)], log)
+    measurements = emo_out / "emotion_measurements.json"
+    if measurements.is_file():
+        shutil.copy2(measurements, c.out / "emotion_measurements.json")
+    shutil.rmtree(emo_out, ignore_errors=True)
+    add_subcheck(c.subchecks, "test_emotions", code == 0, "" if code == 0 else "test_emotions failed", log)
+
+
+def unit_fidelity_regression(c: BlenderContext) -> None:
+    if c.tier.get("tier") == "full":
         # The full regression measures fidelity for every character, so the affected-character run is not repeated.
-        regression, regression_details = run_regression(executable, base, artifacts, logs, regression_results,
-                                                        regression_external)
-        subchecks.extend(regression)
-        fidelity_details: list[str] = []
+        regression, c.details["regression"] = run_regression(c.executable, c.base, c.artifacts, c.logs,
+                                                             c.regression_results, c.regression_external)
+        c.subchecks.extend(regression)
     else:
-        fidelity_subchecks, fidelity_details = run_fidelity_checks(executable, changes, artifacts, logs)
-        subchecks.extend(fidelity_subchecks)
+        fidelity_subchecks, c.details["fidelity"] = run_fidelity_checks(c.executable, c.changes, c.artifacts, c.logs)
+        c.subchecks.extend(fidelity_subchecks)
 
+
+# (unit id, function, needs plush-render). Order = the pre-T-127 order of check_blender (t101 split into its three
+# tests, which ran in this order). Add new Blender tests here; tools/ci/blender_shards.json assigns them to a shard
+# (an unassigned unit runs in shard 1, never nowhere).
+BLENDER_UNITS: list[tuple[str, object, bool]] = [
+    ("charsys", unit_charsys, False),
+    ("determinism", unit_determinism, False),
+    ("export-engine", unit_export_engine, False),
+    ("face", unit_face, False),
+    ("hair", unit_hair, False),
+    ("groom", unit_groom, False),
+    ("garment", unit_garment, False),
+    ("material-presets", unit_material_presets, False),
+    ("render-engine-selector", t077_unit("render engine selector", lambda c: [
+        c.executable, "-b", "--factory-startup", "-P", str(ROOT / "pipeline/charsys/tests/test_render_engine.py")]), False),
+    ("materials-r2-graphs", t077_unit("materials r2 graphs", lambda c: [  # T-092
+        c.executable, "-b", "--factory-startup", "-P",
+        str(ROOT / "pipeline/charsys/tests/test_materials_r2_graphs.py")]), False),
+    ("garments-v2-quick", t077_unit("garments v2 quick", lambda c: [  # T-093 pin + validate (full run: local)
+        sys.executable, str(ROOT / "pipeline/charsys/tests/test_garments_v2.py"), "--blender", c.executable,
+        "--quick"]), False),
+    ("groom-dynamics", t077_unit("groom dynamics", lambda c: [
+        c.executable, "-b", "--factory-startup", "-P", str(ROOT / "pipeline/charsys/tests/groom_dynamics_test.py"),
+        "--", str(c.out / "groom_dynamics_test.json")], lambda c: c.out / "groom_dynamics_test.json"), False),
+    ("export-determinism", t077_unit("export determinism", lambda c: [
+        sys.executable, str(ROOT / "pipeline/charsys/tests/test_export_determinism.py"), "--blender", c.executable,
+        "--out", str(c.out / "export-determinism")]), False),
+    ("boy2", unit_boy2, False),
+    ("deform", unit_deform, False),
+    ("shot-eyes", unit_shot_eyes, True),
+    ("emotions", unit_emotions, True),
+    ("fidelity-regression", unit_fidelity_regression, False),
+]
+BLENDER_UNIT_IDS = [unit_id for unit_id, _, _ in BLENDER_UNITS]
+BLENDER_UNIT_DEPENDS = {"face": "charsys"}  # unit -> the unit whose output it reads (same shard, same run)
+
+
+def blender_shard_plan(path: Path = BLENDER_SHARDS_FILE) -> dict:
+    """{"count": N, "shards": {"1": [unit ids], ...}} with every unit in exactly one shard. Unassigned units go to
+    shard 1; an unknown or duplicated unit id in the file is an error (stale plan), never silently dropped."""
+    data = json.loads(path.read_text(encoding="utf-8"))
+    count = int(data["count"])
+    if not 1 <= count <= 8:
+        raise ValueError(f"{path.name}: count {count} outside 1..8")
+    shards = {str(k): list(data["shards"].get(str(k), [])) for k in range(1, count + 1)}
+    extra = set(data["shards"]) - set(shards)
+    if extra:
+        raise ValueError(f"{path.name}: shards {sorted(extra)} beyond count {count}")
+    seen: list[str] = [unit for units in shards.values() for unit in units]
+    unknown = sorted(set(seen) - set(BLENDER_UNIT_IDS))
+    duplicates = sorted({unit for unit in seen if seen.count(unit) > 1})
+    if unknown or duplicates:
+        raise ValueError(f"{path.name}: unknown units {unknown}, duplicated units {duplicates}")
+    shards["1"].extend(unit for unit in BLENDER_UNIT_IDS if unit not in seen)
+    for unit, needed in BLENDER_UNIT_DEPENDS.items():
+        if not any(unit in units and needed in units for units in shards.values()):
+            raise ValueError(f"{path.name}: unit {unit} must be in the same shard as {needed}")
+    return {"count": count, "shards": shards}
+
+
+def parse_shard(value: str) -> tuple[int, int]:
+    match = re.fullmatch(r"(\d+)/(\d+)", value or "")
+    if not match or not 1 <= int(match.group(1)) <= int(match.group(2)):
+        raise ValueError(f"--blender-shard must be K/N with 1 <= K <= N, got {value!r}")
+    return int(match.group(1)), int(match.group(2))
+
+
+def check_blender(blender: str, artifacts: Path, logs: Path, required: bool, changes: set[str],
+                  tier: dict | None = None, base: str = "", regression_results: str = "",
+                  regression_external: str = "", other_runner: str = "", engine: Path | None = None,
+                  units: list[str] | None = None, shards_external: str = "") -> Result:
+    """units: run only these Blender units (one CI shard); None runs every unit in order on this runner.
+    shards_external: CI only, the units run in these separate shard jobs; the verdict requires every shard."""
+    tier = tier or {"tier": "fast"}
+    if other_runner:
+        return Result("Blender tier", True, f"{tier.get('tier', 'fast')} tier; runs on the {other_runner} (not on "
+                      f"{sys.platform})", skipped=True)
+    if not required:
+        return Result("Blender tier", True, f"not required: fast tier ({len(changes)} changed path(s), none full)",
+                      skipped=True)
+    if shards_external:
+        subchecks: list[dict] = []
+        add_subcheck(subchecks, "blender shards", True,
+                     f"{len(BLENDER_UNIT_IDS)} units run in {shards_external}; the verdict requires every shard")
+        return Result("Blender tier", True, f"{tier.get('tier', 'fast')} tier; runs in {shards_external}",
+                      subchecks=subchecks)
+    full = tier.get("tier") == "full"
+    started = time.monotonic()
+    subchecks = []
+    requested = blender or os.environ.get("BLENDER", "") or "blender"
+    executable = shutil.which(requested) or requested
+    if not Path(executable).is_file():
+        why = "full regression required by " + short(tier.get("full_paths", []), 3) if full else "--blender given"
+        return Result("Blender tier", False, f"Blender executable not found ({why}); this tier is never skipped")
+
+    out = Path(tempfile.mkdtemp(prefix="blender-", dir=artifacts))
+    context = BlenderContext(executable, out, logs, artifacts, changes, tier, base, regression_results,
+                             regression_external, engine, subchecks)
+    selected = BLENDER_UNIT_IDS if units is None else units
+    for unit_id, function, _needs_engine in BLENDER_UNITS:
+        if unit_id in selected:
+            function(context)
+
+    regression_details = context.details.get("regression", [])
+    fidelity_details = context.details.get("fidelity", [])
     failed = [item["name"] for item in subchecks if not item["ok"]]
     detail_parts = [f"{tier.get('tier', 'fast')} tier"]
     if failed:
@@ -987,7 +1128,17 @@ def main(argv: list[str] | None = None) -> int:
                         help="CI only: the character regression runs in these separate jobs (verdict requires them)")
     parser.add_argument("--blender-on-other-runner", default="",
                         help="CI only: the Blender tier runs on this other runner (reported, never silent)")
+    parser.add_argument("--blender-shard", default="",
+                        help="CI only (T-127): K/N, run only the Blender units of shard K of tools/ci/blender_shards.json")
+    parser.add_argument("--blender-shards-external", default="",
+                        help="CI only (T-127): the Blender units run in these shard jobs (verdict requires all of them)")
+    parser.add_argument("--list-blender-units", action="store_true",
+                        help="print the Blender units and the shard plan as JSON and exit")
     args = parser.parse_args(argv)
+    if args.list_blender_units:
+        print(json.dumps({"units": BLENDER_UNIT_IDS, "plan": blender_shard_plan(),
+                          "engine_units": [unit for unit, _, needs in BLENDER_UNITS if needs]}))
+        return 0
 
     artifacts = resolve_path(args.artifacts_dir, ROOT / "build/check-all")
     build_dir = resolve_path(args.build_dir, ROOT / "build/quality-gate")
@@ -1003,6 +1154,9 @@ def main(argv: list[str] | None = None) -> int:
     except ValueError as exc:
         print(f"FAIL Gate setup: {exc}")
         return 1
+
+    if args.blender_shard:
+        return blender_shard_main(args, base, changes, artifacts, build_dir, json_path, summary_path, logs)
 
     results: list[Result] = [
         check_frozen_and_assets(base, logs),
@@ -1020,7 +1174,8 @@ def main(argv: list[str] | None = None) -> int:
     blender_required = bool(args.blender) or tier["tier"] == "full"
     results.append(check_blender(args.blender, artifacts, logs, blender_required, changes, tier, base,
                                  args.regression_results, args.regression_external, args.blender_on_other_runner,
-                                 plush_render_executable(build_dir, args.config) if build_result.ok else None))
+                                 plush_render_executable(build_dir, args.config) if build_result.ok else None,
+                                 shards_external=args.blender_shards_external if blender_required else ""))
     if args.merge_status:
         tests_ok = all(result.ok for result in results)
         if args.merge_status == "clean" and tests_ok:
@@ -1042,16 +1197,81 @@ def main(argv: list[str] | None = None) -> int:
         "base": base,
         "changed_paths": sorted(changes),
         "blender_required": blender_required,
+        "blender_units": BLENDER_UNIT_IDS if blender_required and args.blender_shards_external else [],
         "tier": tier["tier"],
         "tier_full_paths": tier.get("full_paths", []),
         "tier_unknown_paths": tier.get("unknown_paths", []),
         "checks": [result.as_json() for result in results],
         "summary": lines,
     }
+    return write_report(report, json_path, lines)
+
+
+def write_report(report: dict, json_path: Path, lines: list[str]) -> int:
+    report["durations"] = sorted(DURATIONS, key=lambda item: -item["seconds"])
     json_path.parent.mkdir(parents=True, exist_ok=True)
     json_path.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
+    durations = [f"{item['seconds']:8.1f} s  {'ok  ' if item['exit'] == 0 else 'FAIL'}  {item['script']}  ({item['log']})"
+                 for item in report["durations"]]
+    (json_path.parent / "durations.txt").write_text("\n".join(durations) + "\n", encoding="utf-8")
     print("\n".join(lines))
     return 0 if report["verdict"] == "PASS" else 1
+
+
+def build_render_engine(build_dir: Path, config: str, logs: Path) -> tuple[Path | None, dict]:
+    """Shard mode: the plush-render target only (the bake engine of test_shot_eyes/test_emotions), same configure."""
+    log = logs / "blender-plush-render-build.log"
+    code, _ = run_logged(cmake_configure_command(build_dir, config), log)
+    if code == 0:
+        command = ["cmake", "--build", str(build_dir), "--parallel", "--target", "plush-render"]
+        if config:
+            command.extend(["--config", config])
+        code, _ = run_logged(command, log, append=True)
+    engine = plush_render_executable(build_dir, config) if code == 0 else None
+    item = {"name": "plush-render build", "ok": engine is not None,
+            "detail": "" if engine else "plush-render build failed (needed for the bake)", "log": relative_log(log)}
+    return engine, item
+
+
+def blender_shard_main(args, base: str, changes: set[str], artifacts: Path, build_dir: Path, json_path: Path,
+                       summary_path: Path, logs: Path) -> int:
+    """T-127: one CI shard of the Blender tier. The other checks run in the linux gate job; this report carries only
+    "Blender tier" plus the shard identity and unit list, which the verdict compares with the full unit list."""
+    try:
+        index, count = parse_shard(args.blender_shard)
+        plan = blender_shard_plan()
+        if plan["count"] != count:
+            raise ValueError(f"shard count {count} differs from tools/ci/blender_shards.json ({plan['count']})")
+        units = plan["shards"][str(index)]
+    except (OSError, ValueError, KeyError, json.JSONDecodeError) as exc:
+        index, count, units = 0, 0, []
+        result = Result("Blender tier", False, f"shard setup: {exc}")
+    else:
+        tier = select_tier(changes)
+        if args.full:
+            tier["tier"] = "full"
+        engine, engine_item = None, None
+        if any(needs for unit_id, _, needs in BLENDER_UNITS if unit_id in units):
+            engine, engine_item = build_render_engine(build_dir, args.config, logs)
+        result = check_blender(args.blender, artifacts, logs, True, changes, tier, base, args.regression_results,
+                               args.regression_external, "", engine, units=units)
+        if engine_item and not engine_item["ok"]:
+            result.subchecks.insert(0, engine_item)
+            result.ok = False
+        result.detail = f"shard {index}/{count} ({', '.join(units)}): {result.detail}"
+    lines = summary_lines([result])
+    summary_path.parent.mkdir(parents=True, exist_ok=True)
+    summary_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    report = {
+        "schema": "plush.quality-gate/1",
+        "verdict": "PASS" if result.ok else "FAIL",
+        "platform": f"linux-blender-{index}",
+        "base": base,
+        "blender_shard": {"index": index, "count": count, "units": units},
+        "checks": [result.as_json()],
+        "summary": lines,
+    }
+    return write_report(report, json_path, lines)
 
 
 if __name__ == "__main__":
