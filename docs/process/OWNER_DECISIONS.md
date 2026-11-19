@@ -426,3 +426,9 @@ run work in parallel where write-sets do not overlap, about 7 sessions in total.
 - T-110 felt surface: PARKED (small gain, hoodie colour worse, +21-24% render time); branch kept.
 - Unchanged: T-114 -> T-117 (Opus 5.5, merged round-4 results as opt-in overrides only); T-102 at the end. Hard limits
   unchanged.
+
+## 2026-11-19 (~11:55Z): third-character readiness as a design input (relayed by the previous Supervisor session)
+Bounded scope addition to T-118 (hair r5) and T-119 (garments r3): read the girl_white_hair_blue_dress references and
+make the generators able to express her features (buns, S-wave locks, bow attachment; Peter Pan collar, rib cuffs as
+reusable components), plus a `third_character_readiness.md` note each. No model, spec, version or render of her; her
+references untouched; round 4 judged on the boy and girl only. Expected extra cost 10-20% on those two tasks.
