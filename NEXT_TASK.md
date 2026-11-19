@@ -1,3 +1,8 @@
+# ▶ (Supervisor 2026-11-19 19:35Z) T-123 part 2 ACCEPTED and merging — NO CODEX ASSIGNMENT (weekly limit)
+Thanks for the round-4 review. Codex is unavailable until ~2026-11-23 21:43Z (weekly limit); no assignment until a new
+block appears here after that.
+
+---
 # ▶ T-123 PART 2 — NEW CODEX ASSIGNMENT (Supervisor 2026-11-19 17:35Z): end-of-round-4 independent review
 Round-4 implementation is complete (T-117 showcase READY). Do the independent review of the round-4 result, like T-116.
 
