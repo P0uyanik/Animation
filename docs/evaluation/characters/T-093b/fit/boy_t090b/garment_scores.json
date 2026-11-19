@@ -1,0 +1,53 @@
+{
+ "garments": [
+  "trousers",
+  "shoes"
+ ],
+ "trials": [
+  {
+   "trial": 0,
+   "parameters": {
+    "clothing.garments.1.crotch.depth": 0.24162885384246072,
+    "clothing.garments.1.length": 0.9865474905134607,
+    "clothing.garments.2.height_m": 0.06354481539654953,
+    "clothing.garments.2.length_extra_m": 0.006084805895616872,
+    "clothing.garments.2.width_extra_m": 0.0013325754783979496
+   },
+   "fit_score": 68.07394220706749,
+   "garment_score": 65.08871211463385,
+   "views": {
+    "val27_front": {
+     "trousers": {
+      "iou": 0.7159549228944246,
+      "hem_err_px": 20.0
+     },
+     "shoes": {
+      "iou": 0.631207946171099
+     },
+     "score": 67.35814345327617
+    },
+    "val27_threequarter_right": {
+     "trousers": {
+      "iou": 0.7121998078770413,
+      "hem_err_px": 11.0
+     },
+     "shoes": {
+      "iou": 0.5909620991253645
+     },
+     "score": 65.15809535012029
+    },
+    "val27_side_right": {
+     "trousers": {
+      "iou": 0.5749624320887758,
+      "hem_err_px": 4.0
+     },
+     "shoes": {
+      "iou": 0.6800355187213261
+     },
+     "score": 62.749897540505096
+    }
+   }
+  }
+ ],
+ "best": 0
+}

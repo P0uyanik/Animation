@@ -1,0 +1,224 @@
+{
+ "garments": [
+  "blouse",
+  "shorts"
+ ],
+ "trials": [
+  {
+   "trial": 0,
+   "parameters": {
+    "clothing.garments.0.sleeve_puff_m": 0.0326,
+    "clothing.garments.2.leg_split.arch_width": 0.6,
+    "clothing.garments.2.leg_split.crotch_lift": 0.2,
+    "clothing.garments.2.puff_m": 0.03
+   },
+   "fit_score": 67.44685476274417,
+   "garment_score": 50.89468294507827,
+   "views": {
+    "sheet30_front": {
+     "blouse": {
+      "iou": 0.42332735679909406
+     },
+     "shorts": {
+      "iou": 0.7133946158896914,
+      "hem_err_px": 2.0
+     },
+     "score": 56.83609863443928
+    },
+    "sheet30_front_left": {
+     "blouse": {
+      "iou": 0.23697513669658515
+     },
+     "shorts": {
+      "iou": 0.6595707555400454,
+      "hem_err_px": 7.0
+     },
+     "score": 44.827294611831526
+    },
+    "sheet30_left": {
+     "blouse": {
+      "iou": 0.3415877640203933
+     },
+     "shorts": {
+      "iou": 0.6788253477588871,
+      "hem_err_px": 5.0
+     },
+     "score": 51.020655588964026
+    }
+   }
+  },
+  {
+   "trial": 1,
+   "parameters": {
+    "clothing.garments.0.sleeve_puff_m": 0.03338002025128499,
+    "clothing.garments.2.leg_split.arch_width": 0.7287816169278908,
+    "clothing.garments.2.leg_split.crotch_lift": 0.22125865698273633,
+    "clothing.garments.2.puff_m": 0.03261621482944658
+   },
+   "fit_score": 67.45319136148548,
+   "garment_score": 51.00617622865743,
+   "views": {
+    "sheet30_front": {
+     "blouse": {
+      "iou": 0.42193378480060195
+     },
+     "shorts": {
+      "iou": 0.7174161896974652,
+      "hem_err_px": 2.0
+     },
+     "score": 56.967498724903365
+    },
+    "sheet30_front_left": {
+     "blouse": {
+      "iou": 0.23688820195775373
+     },
+     "shorts": {
+      "iou": 0.6700278164116829,
+      "hem_err_px": 6.0
+     },
+     "score": 45.34580091847183
+    },
+    "sheet30_left": {
+     "blouse": {
+      "iou": 0.34672457473760404
+     },
+     "shorts": {
+      "iou": 0.6673800061143381,
+      "hem_err_px": 5.0
+     },
+     "score": 50.70522904259711
+    }
+   }
+  },
+  {
+   "trial": 2,
+   "parameters": {
+    "clothing.garments.0.sleeve_puff_m": 0.032380752020250994,
+    "clothing.garments.2.leg_split.arch_width": 0.7310289582978209,
+    "clothing.garments.2.leg_split.crotch_lift": 0.21630103316014382,
+    "clothing.garments.2.puff_m": 0.034520054004254286
+   },
+   "fit_score": 67.46130496046565,
+   "garment_score": 51.041762796017856,
+   "views": {
+    "sheet30_front": {
+     "blouse": {
+      "iou": 0.42317855794639486
+     },
+     "shorts": {
+      "iou": 0.7227027909254121,
+      "hem_err_px": 3.0
+     },
+     "score": 57.29406744359034
+    },
+    "sheet30_front_left": {
+     "blouse": {
+      "iou": 0.23701868483534633
+     },
+     "shorts": {
+      "iou": 0.6748871135811045,
+      "hem_err_px": 6.0
+     },
+     "score": 45.595289920822545
+    },
+    "sheet30_left": {
+     "blouse": {
+      "iou": 0.33855685131195334
+     },
+     "shorts": {
+      "iou": 0.6661617691608603,
+      "hem_err_px": 5.0
+     },
+     "score": 50.23593102364068
+    }
+   }
+  },
+  {
+   "trial": 3,
+   "parameters": {
+    "clothing.garments.0.sleeve_puff_m": 0.032119481116221524,
+    "clothing.garments.2.leg_split.arch_width": 0.7080559343751961,
+    "clothing.garments.2.leg_split.crotch_lift": 0.16817452141799266,
+    "clothing.garments.2.puff_m": 0.03801915483162604
+   },
+   "fit_score": 68.01463306850285,
+   "garment_score": 51.542520565521876,
+   "views": {
+    "sheet30_front": {
+     "blouse": {
+      "iou": 0.42332389046270064
+     },
+     "shorts": {
+      "iou": 0.7215352497189658,
+      "hem_err_px": 4.0
+     },
+     "score": 57.24295700908332
+    },
+    "sheet30_front_left": {
+     "blouse": {
+      "iou": 0.23706228695382708
+     },
+     "shorts": {
+      "iou": 0.6815110032923237,
+      "hem_err_px": 5.0
+     },
+     "score": 45.928664512307535
+    },
+    "sheet30_left": {
+     "blouse": {
+      "iou": 0.34188347379992673
+     },
+     "shorts": {
+      "iou": 0.6872353297035693,
+      "hem_err_px": 4.0
+     },
+     "score": 51.455940175174796
+    }
+   }
+  },
+  {
+   "trial": 4,
+   "parameters": {
+    "clothing.garments.0.sleeve_puff_m": 0.03246421836515455,
+    "clothing.garments.2.leg_split.arch_width": 0.6875220138873206,
+    "clothing.garments.2.leg_split.crotch_lift": 0.17296267386240227,
+    "clothing.garments.2.puff_m": 0.03857532308116046
+   },
+   "fit_score": 67.46418302850635,
+   "garment_score": 50.896897811807406,
+   "views": {
+    "sheet30_front": {
+     "blouse": {
+      "iou": 0.42340726757904673
+     },
+     "shorts": {
+      "iou": 0.7209563543003851,
+      "hem_err_px": 4.0
+     },
+     "score": 57.21818109397159
+    },
+    "sheet30_front_left": {
+     "blouse": {
+      "iou": 0.23701868483534633
+     },
+     "shorts": {
+      "iou": 0.6810866931995155,
+      "hem_err_px": 5.0
+     },
+     "score": 45.90526890174309
+    },
+    "sheet30_left": {
+     "blouse": {
+      "iou": 0.3408594319009468
+     },
+     "shorts": {
+      "iou": 0.6504854368932039,
+      "hem_err_px": 7.0
+     },
+     "score": 49.56724343970754
+    }
+   }
+  }
+ ],
+ "best": 3
+}
