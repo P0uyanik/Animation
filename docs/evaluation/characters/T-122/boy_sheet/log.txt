@@ -1,0 +1,4 @@
+2026-11-19T12:15:27Z preview start: recipe 32be9701cae4 {'engine': 'cycles', 'samples': 2, 'px': 120}
+2026-11-19T12:18:38Z preview pass: /tmp/claude-0/-home-user-Animation/2d1686f8-37d2-5fb5-8807-ce9dbbbc1d53/scratchpad/sheet_boy/preview/preview.jpg
+2026-11-19T12:18:50Z sheet start: recipe 32be9701cae4 {'engine': 'cycles', 'samples': 16, 'px': 360}
+2026-11-19T12:33:05Z sheet written: /tmp/claude-0/-home-user-Animation/2d1686f8-37d2-5fb5-8807-ce9dbbbc1d53/scratchpad/sheet_boy/sheet.jpg 1120x2048
