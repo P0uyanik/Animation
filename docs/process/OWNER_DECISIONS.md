@@ -480,7 +480,13 @@ needed. Revert: start sessions without environment_id (Default); the owner can e
 
 ## 2026-11-19 (~14:20Z): workflow improvements evaluation checkpoints (relayed)
 "Include an evaluation of these improvements in our upcoming phases and plans." A lightweight evaluation (Sonnet 5.5,
-existing data only) at the end of round 4 (**T-129**, `docs/process/WORKFLOW_EVAL_R4.md`) and again at the end of
+existing data only) at the end of round 4 (**T-130**, `docs/process/WORKFLOW_EVAL_R4.md`) and again at the end of
 round 5: environment setup, CI speed (T-127), tooling trial (T-128), batch promotions, model choice (Fable 5.2 vs Opus
 5.5), render optimisation (T-124, once a profile is chosen), Codex availability. Measured numbers only, with n and
 dates; adopt / keep / revert per item; the report goes to the owner.
+
+## 2026-11-19 (~15:00Z): Codex score calibration; review timing (relayed)
+Codex does **T-129**, a fidelity score calibration analysis (option C): where the automatic fidelity score disagrees
+with the owner's visual verdicts and why, with ranked metric-change proposals (analysis only, existing data only). The
+independent character review (T-123 part 2) stays at the end of round 4. Reason: Codex tokens are limited, so
+prioritise work that stays useful across future versions. (The workflow evaluation is renumbered **T-130**.)
