@@ -3,7 +3,9 @@
 // orientation constraint below, which scene.cpp applies after IK.
 #include "scene/interaction.h"
 
+#include "anim/body_mechanics.h"
 #include "anim/hand_shape.h"
+#include "anim/principles.h"
 
 #include <algorithm>
 #include <format>
@@ -243,8 +245,122 @@ void applyHeadTilt(const Skeleton& sk, const Clip& clip, const std::string& pref
   }
 }
 
+// T-134 reach mechanics (opt-in scene key "reachMechanics"): the body lead of a reach. "<prefix>reach.lead" (world
+// rotation vector, radians: lean towards the prop + turn of the reaching shoulder) is spread over hips, spine and
+// chest, each link `succession` frames ahead of the next ("<prefix>reach.lead.params": succession frames, hip share,
+// head stabilisation), and "<prefix>reach.shoulder.<upper arm>" (world offset, metres) advances a shoulder joint.
+// Root bones that anatomically ride on the torso (the unparented arms and eyes of imported rigs) are carried with
+// the chest / head. The legs, the head (by its share) and the eyes keep their world rotation, and every IK-driven arm
+// is solved again from the moved shoulder, so its wrist stays on the IK target (by the IK weight) and the hand keeps
+// its rotation. Without the track nothing changes.
+void applyReachLead(const Skeleton& sk, const Clip& clip, const std::string& prefix, double frame, const mat4& world, Pose& pose) {
+  const Track* t = clip.find(prefix + "reach.lead");
+  if (!t || t->keys.empty()) return;
+  const vec3 par = clip.evaluate(prefix + "reach.lead.params", frame, vec3(0));
+  const double succ = par.x;
+  const float hipShare = par.y, headStab = par.z;
+  auto rotOf = [](const mat4& M) {
+    return glm::normalize(glm::quat_cast(mat3(glm::normalize(vec3(M[0])), glm::normalize(vec3(M[1])), glm::normalize(vec3(M[2])))));
+  };
+  const std::vector<mat4> G0 = boneGlobals(sk, pose, world);
+  struct Kept {
+    int bone;
+    quat rot;
+    vec3 pos;
+    float w;
+  };
+  std::vector<Kept> arms, legs, eyes;
+  const int hips = sk.find("hips"), spine = sk.find("spine"), neck = sk.find("neck"), head = sk.find("head");
+  const int chest = sk.find("chest") >= 0 ? sk.find("chest") : spine;
+  std::vector<std::pair<int, vec3>> shoulders, clavicles;
+  std::vector<std::pair<int, int>> riders;  // root bone, its carrier
+  for (size_t b = 0; b < sk.bones.size(); ++b) {
+    const std::string& n = sk.bones[b].name;
+    const bool eye = n.rfind("eye.", 0) == 0;
+    if (eye) eyes.push_back({int(b), rotOf(G0[b]), vec3(0), 1});
+    if (n.rfind("thigh", 0) == 0 && sk.bones[b].parent >= 0) legs.push_back({int(b), rotOf(G0[b]), vec3(0), 1});
+    if (n.rfind("hand", 0) == 0) {
+      const Track* ik = clip.find(prefix + "ik." + n);
+      if (ik && !ik->keys.empty())
+        arms.push_back({int(b), rotOf(G0[b]), vec3(G0[b][3]), std::clamp(clip.evaluate(prefix + "ik." + n + ".weight", frame, vec3(1)).x, 0.0f, 1.0f)});
+    }
+    if (const Track* sh = clip.find(prefix + "reach.shoulder." + n); sh && !sh->keys.empty())
+      shoulders.push_back({int(b), sh->evaluate(frame - succ)});
+    if (const Track* cl = clip.find(prefix + "reach.clavicle." + n); cl && !cl->keys.empty())
+      clavicles.push_back({int(b), cl->evaluate(frame - 0.5 * succ)});
+    if (sk.bones[b].parent < 0 && int(b) != hips) {
+      if (eye && head >= 0) riders.push_back({int(b), head});
+      else if (chest >= 0 && (n.find("upperArm") != std::string::npos || n.find("shoulder") != std::string::npos || n.find("clavicle") != std::string::npos))
+        riders.push_back({int(b), chest});
+      else if (hips >= 0 && n.find("pelvis") != std::string::npos) riders.push_back({int(b), hips});
+    }
+  }
+  // Turns a bone about its own pivot by the world rotation vector rv.
+  auto turn = [&](int bone, vec3 rv) {
+    if (bone < 0 || glm::length(rv) < 1e-7f) return;
+    const quat q = rotOf(boneGlobals(sk, pose, world)[size_t(bone)]);
+    pose.local[size_t(bone)] = glm::normalize(pose.local[size_t(bone)] * (glm::inverse(q) * fromRotationVector(rv) * q));
+  };
+  // Puts a bone back on a world rotation (by weight w).
+  auto restore = [&](const Kept& k, float w) {
+    if (w <= 0) return;
+    const quat q = rotOf(boneGlobals(sk, pose, world)[size_t(k.bone)]);
+    const quat back = glm::normalize(pose.local[size_t(k.bone)] * (glm::inverse(q) * k.rot));
+    pose.local[size_t(k.bone)] = glm::normalize(glm::slerp(pose.local[size_t(k.bone)], back, std::min(w, 1.0f)));
+  };
+  const float hs = hips >= 0 ? hipShare : 0.0f;
+  const float ss = spine >= 0 && chest != spine ? 0.45f * (1 - hs) : 0.0f;
+  const float cs = 1 - hs - ss;
+  const vec3 hipTurn = hs * t->evaluate(frame + 2 * succ), spineTurn = ss * t->evaluate(frame + succ), chestTurn = cs * t->evaluate(frame);
+  if (pose.offset.size() != sk.bones.size()) pose.offset.resize(sk.bones.size(), vec3(0));
+  const mat4 toRoot = glm::inverse(world);
+  // Hip shift ("<prefix>reach.hip", world metres, with the hips' lead): the pelvis moves towards the prop; legs that
+  // hang on the hips keep their hip joints where they were (the feet stay planted).
+  if (const Track* hipShift = clip.find(prefix + "reach.hip"); hips >= 0 && sk.bones[size_t(hips)].parent < 0 && hipShift && !hipShift->keys.empty()) {
+    const vec3 v = hipShift->evaluate(frame + 2 * succ);
+    pose.offset[size_t(hips)] += vec3(toRoot * vec4(v, 0));
+    const mat4 toHips = glm::inverse(boneGlobals(sk, pose, world)[size_t(hips)]);
+    for (const Kept& k : legs)
+      if (sk.bones[size_t(k.bone)].parent == hips) pose.offset[size_t(k.bone)] -= vec3(toHips * vec4(v, 0));
+  }
+  turn(hips, hipTurn);
+  for (const Kept& k : legs) restore(k, 1);
+  turn(spine, spineTurn);
+  turn(chest, chestTurn);
+  // E1c overlap: the head has its own, later response ("<prefix>reach.head"); else it takes back its share at once.
+  const Track* headTrack = clip.find(prefix + "reach.head");
+  turn(neck, headTrack && !headTrack->keys.empty() ? headTrack->evaluate(frame) : -headStab * (hipTurn + spineTurn + chestTurn));
+  if (!riders.empty()) {
+    const std::vector<mat4> G1 = boneGlobals(sk, pose, world);
+    const quat worldRot = rotOf(world);
+    for (const auto& [bone, carrier] : riders) {
+      const mat4 D = G1[size_t(carrier)] * glm::inverse(G0[size_t(carrier)]);
+      pose.offset[size_t(bone)] += vec3(toRoot * vec4(vec3(D * G0[size_t(bone)][3]) - vec3(G0[size_t(bone)][3]), 0));
+      pose.local[size_t(bone)] = glm::normalize(glm::inverse(worldRot) * rotOf(D) * worldRot * pose.local[size_t(bone)]);
+    }
+  }
+  if (!shoulders.empty()) {
+    const std::vector<mat4> G1 = boneGlobals(sk, pose, world);
+    for (const auto& [bone, v] : shoulders) {
+      const int parent = sk.bones[size_t(bone)].parent;
+      pose.offset[size_t(bone)] += vec3((parent >= 0 ? glm::inverse(G1[size_t(parent)]) : toRoot) * vec4(v, 0));
+    }
+  }
+  for (const auto& [bone, rv] : clavicles) turn(bone, rv);  // after the carry: the clavicle turns about its own pivot
+  for (const Kept& k : eyes) restore(k, 1);  // bones come parent first
+  for (const Kept& k : arms) {
+    // An arm that is not on its IK target yet rides only half way with the torso: the body leads and the hand
+    // hangs back, without the torso's turn swinging it about before its own reach starts.
+    const vec3 carried(boneGlobals(sk, pose, world)[size_t(k.bone)][3]);
+    const float hold = std::max(k.w, 0.5f);
+    solveTwoBoneIK(sk, pose, world, k.bone, glm::mix(carried, k.pos, hold), 1.0f);
+    restore(k, hold);
+  }
+}
+
 void applyArmPoles(const Skeleton& sk, const Clip& clip, const std::string& prefix, double frame, const mat4& world,
                    Pose& pose) {
+  applyReachLead(sk, clip, prefix, frame, world, pose);  // T-134 (no track: no-op)
   applyHeadTilt(sk, clip, prefix, frame, world, pose);  // T-096 (runs at the same point of the pose path; no track: no-op)
   for (size_t i = 0; i < sk.bones.size(); ++i) {
     const std::string name = prefix + "pole." + sk.bones[i].name, swingName = prefix + "swing." + sk.bones[i].name;
@@ -575,6 +691,38 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
   // Moves the wrist key at frame f until `error()` (target - measured) is below 0.3 mm (the arm solve, life layer
   // and clip layers make the first estimate a little off).
   auto correct = [&](const Hand& h, double f, auto error) { return correctKey(gen.tracks[h.ik], f, error); };
+  // T-134 E1b arcs (opt-in "reachMechanics"): a wrist move keyed as a straight line from the key at f0 to the key at
+  // f1 (a carry, the giver's way to the hand-over point) travels a shallow arc instead, with the same timing: the
+  // mid point is moved by arc x chord across the chord, away from the shoulder (the hand swings round its arm's
+  // joints), or by less when the arm could not reach that far. Keys between f0 and f1 are replaced, the end keys
+  // stay, so doing it again for the same move (hand-over trials) gives the same keys.
+  const ReachMechanics reachMech = reachMechanicsFromJson(scene_.reachMechanics).value_or(ReachMechanics{});
+  auto arcMove = [&](const Hand& h, double f0, double f1) {
+    if (!reachMech.enabled || !reachMech.arcs || f1 < f0 + 3) return;
+    Track& T = gen.tracks[h.ik];
+    std::erase_if(T.keys, [&](const Key& k) { return k.frame > f0 + 1e-6 && k.frame < f1 - 1e-6; });
+    const vec3 p0 = T.evaluate(f0), p2 = T.evaluate(f1);
+    const float L = glm::distance(p0, p2);
+    if (L < float(reachMech.arcMinChordM)) return;
+    const vec3 c = (p2 - p0) / L, mid = 0.5f * (p0 + p2), shoulder = boneAt(h, h.root, 0.5 * (f0 + f1));
+    // Upward bow first; a move that is itself (nearly) vertical has no "up" across it and bows away from the shoulder.
+    vec3 away = (mid - shoulder) - c * glm::dot(mid - shoulder, c);
+    if (glm::length(away) > 1e-4f) away = glm::normalize(away);
+    vec3 n = (kUp - c * c.y) + 0.35f * away;
+    if (glm::length(n) < 1e-4f) return;
+    n = glm::normalize(n);
+    float dev = 0;
+    for (float k : {1.0f, 0.5f, 0.25f})
+      if (dev == 0 && glm::distance(shoulder, mid + n * (float(reachMech.arc) * L * k)) <= 0.95f * h.armLength) dev = float(reachMech.arc) * L * k;
+    if (dev == 0) return;
+    const vec3 p1 = mid + n * (2 * dev);  // a quadratic Bezier is half its control point's offset away from the chord
+    const int steps = int(std::ceil(f1 - f0 - 1e-6));
+    for (int j = 0; j < steps; ++j) {
+      const double f = f0 + j;
+      const float x = float((f - f0) / (f1 - f0)), u = x * x * (3 - 2 * x);  // the timing of the two smooth keys
+      T.setKey({f, (1 - u) * (1 - u) * p0 + 2 * u * (1 - u) * p1 + u * u * p2, Interp::Linear});
+    }
+  };
   auto warnReach = [&](const Hand& h, vec3 wrist, double f, const std::string& what) {
     const float d = glm::distance(boneAt(h, h.root, f), wrist) - 0.98f * h.armLength;
     if (d > 0.005f)
@@ -759,7 +907,176 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
       key(gen, h.pose + ".grasp.weight", contact - 4, vec3(0));
       key(gen, h.pose + ".grasp.weight", contact, vec3(1));
     }
+    const ReachMechanics rm = reachMechanicsFromJson(scene_.reachMechanics).value_or(ReachMechanics{});
+    // T-134 E1a ease: the same path (start -> approach -> contact), keyed every frame on a slow-in / slow-out profile.
+    std::vector<vec3> planned;
+    if (rm.enabled && rm.ease) {
+      Track& T = gen.tracks[h.ik];
+      // One curve through the three points of this reach only (a reach compiled again, as the hand-over trials do,
+      // gives the same keys): a quadratic Bezier that passes the approach point at its chord fraction. The smooth
+      // keys stop at the approach point (clamped tangents), which is a corner for a wrist that does not slow there.
+      const vec3 p0 = T.evaluate(start), p2 = pl.wrist;
+      const float d1 = glm::distance(p0, approach), d2 = glm::distance(approach, p2);
+      const float tA = std::clamp(d1 / std::max(d1 + d2, 1e-6f), 0.15f, 0.85f);
+      vec3 p1 = (approach - (1 - tA) * (1 - tA) * p0 - tA * tA * p2) / (2 * tA * (1 - tA));
+      // T-134 E1b: the approach point gives the direction the hand arrives from, not a point to pass: the control
+      // point lies on the line contact -> approach, twice as far out, so the bend is spread over the whole reach
+      // instead of sitting just before the contact.
+      if (rm.arcs) p1 = p2 + float(rm.approachReach) * (approach - p2);
+      if (rm.arcs && glm::distance(p0, p2) >= float(rm.arcMinChordM)) {  // T-134 E1b: never (nearly) a straight chord
+        const float L = glm::distance(p0, p2);
+        const vec3 c = (p2 - p0) / L, mid = 0.5f * (p0 + p2);
+        vec3 off = (p1 - mid) - c * glm::dot(p1 - mid, c);  // the curve is half of this away from the chord
+        if (0.5f * glm::length(off) < float(rm.arc) * L) {
+          vec3 n = glm::length(off) > 1e-4f ? off : kUp - c * c.y;
+          if (glm::length(n) > 1e-4f) p1 += glm::normalize(n) * (2 * float(rm.arc) * L - glm::length(off));
+        }
+      }
+      std::erase_if(T.keys, [&](const Key& k) { return k.frame > start + 1e-6 && k.frame < contact - 1e-6; });
+      constexpr int kSamples = 96;
+      std::vector<vec3> P(kSamples + 1);
+      std::vector<double> len(kSamples + 1, 0.0);
+      for (int i = 0; i <= kSamples; ++i) {
+        const float u = float(i) / kSamples;
+        P[size_t(i)] = (1 - u) * (1 - u) * p0 + 2 * u * (1 - u) * p1 + u * u * p2;
+        if (i > 0) len[size_t(i)] = len[size_t(i - 1)] + double(glm::distance(P[size_t(i)], P[size_t(i - 1)]));
+      }
+      const int n = int(std::ceil(contact - start - 1e-6));
+      for (int j = 0; j <= n; ++j) {
+        const double f = std::min(start + j, contact);
+        const double want = reachEase((f - start) / (contact - start), rm.easePeak) * len.back();
+        const size_t i = std::min(size_t(std::upper_bound(len.begin(), len.end(), want) - len.begin()), size_t(kSamples));
+        const double seg = i > 0 ? len[i] - len[i - 1] : 0.0;
+        const vec3 v = j == n ? P.back() : i == 0 ? P[0] : glm::mix(P[i - 1], P[i], float(seg > 1e-12 ? (want - len[i - 1]) / seg : 1.0));
+        T.setKey({f, v, j == n ? Interp::Smooth : Interp::Linear});  // after the contact: the smooth key it was
+        planned.push_back(v);
+      }
+      // The IK weight comes in on the same curve as the target travels, reaching 1 at the contact. A weight that is
+      // already full at the approach point stops rising while the target is still fast, and the wrist brakes hard.
+      Track& W = gen.tracks[h.ik + ".weight"];
+      const float w0 = W.evaluate(start).x;
+      std::erase_if(W.keys, [&](const Key& k) { return k.frame > start + 1e-6 && k.frame < contact - 1e-6; });
+      for (int j = 1; j < n; ++j)
+        W.setKey({start + j, vec3(w0 + (1 - w0) * float(reachEase(std::min(1.0, double(j) / (rm.weightFull * (contact - start))), rm.weightPeak))),
+                  Interp::Linear});
+      W.setKey({start, vec3(w0), Interp::Linear});
+    }
+    // T-134 E1a anticipation: the body lead (applyReachLead), added to the leads other reaches of this character keyed.
+    if (rm.enabled && rm.anticipation) {
+      const Skeleton& sk = characters_[size_t(h.c)].asset.skeleton;
+      const double fps = scene_.rate.fps(), N = contact - start;
+      const double A = std::min(std::round(rm.anticipationSec * fps), std::max(0.0, start - double(scene_.frameStart)));
+      const double R = std::max(2.0, std::round(rm.recoverSec * fps));
+      const vec3 shoulder = boneAt(h, h.root, start);
+      const vec3 reachDir = pl.wrist - shoulder;
+      vec3 d(reachDir.x, 0, reachDir.z);
+      if (glm::length(d) > 1e-4f && glm::length(reachDir) > 1e-4f) {
+        d = glm::normalize(d);
+        // Near props need less of the body: the lead scales with how far along the arm the prop is.
+        const float k = std::clamp((glm::length(reachDir) / std::max(h.armLength, 1e-4f) - 0.4f) / 0.5f, 0.25f, 1.0f);
+        const int chest = sk.find("chest") >= 0 ? sk.find("chest") : sk.find("spine");
+        vec3 o = chest >= 0 ? shoulder - boneAt(h, chest, start) : vec3(0);
+        o.y = 0;
+        const float side = glm::length(o) > 1e-4f ? glm::dot(glm::cross(kUp, glm::normalize(o)), d) : 0.0f;
+        const vec3 lead = k * (glm::cross(kUp, d) * glm::radians(float(rm.leanDeg)) + kUp * glm::radians(float(rm.twistDeg)) * side);
+        // One record per reach (a reach compiled again replaces its own); the character's tracks are the sum of them.
+        const std::string shoulderTrack = h.prefix + "reach.shoulder." + sk.bones[size_t(h.root)].name;
+        // The clavicle of this arm (rig names as in content/rig_profiles/body_mechanics.json) turns its outer end
+        // towards the prop; the hips shift towards it.
+        std::string clavicleTrack;
+        vec3 clavicleLead(0);
+        for (const char* base : {"clavicle.", "shoulder.", "DEF-shoulder."})
+          if (const int cb = sk.find(std::string(base) + h.side); cb >= 0 && clavicleTrack.empty()) {
+            const vec3 arm = shoulder - boneAt(h, cb, start);
+            const vec3 axis = glm::cross(arm, reachDir);
+            if (glm::length(axis) > 1e-8f) {
+              clavicleTrack = h.prefix + "reach.clavicle." + sk.bones[size_t(cb)].name;
+              clavicleLead = glm::normalize(axis) * (k * glm::radians(float(rm.clavicleDeg)));
+            }
+          }
+        const vec3 hipLead = d * (k * float(rm.hipShiftM));
+        std::erase_if(ctx.reachLeads, [&](const InteractionContext::ReachLead& l) { return l.character == h.c && l.side == h.side && l.start == start; });
+        const vec3 shoulderLead = glm::normalize(reachDir) * (k * float(rm.shoulderM));
+        // E1c overlap: the torso follows its lead through a damped response (it overshoots a little and settles, also
+        // after the lead is given back); the head's counter turn has a later, looser one, so the head first goes
+        // with the torso and then catches up. Without overlap both follow the plain envelope.
+        std::vector<float> torsoKernel{1.0f}, headKernel{1.0f};
+        double shift = 0;
+        if (rm.overlap) {
+          torsoKernel = followKernel(0.0f, float(rm.torsoSettleSec * fps), float(rm.torsoOvershoot));
+          for (size_t i = 0; i < torsoKernel.size(); ++i) shift += double(i) * double(torsoKernel[i]);
+          headKernel = followKernel(float(rm.headLagSec * fps), float(rm.headSettleSec * fps), float(rm.headOvershoot));
+        }
+        // Settle: when the hand stops at the contact the body runs on a little past its lead, swings back and comes
+        // to rest (a damped swing of settleAmount of the lead, period settleSec), on top of the lead being given back.
+        auto settle = [&](double t) {
+          if (!rm.overlap || t <= 0) return 0.0;
+          const double period = std::max(2.0, rm.settleSec * fps);
+          return rm.settleAmount * std::exp(-2.0 * t / period) * std::sin(6.283185307179586 * t / period);
+        };
+        auto write = [&](float scale) {
+          std::erase_if(ctx.reachLeads, [&](const InteractionContext::ReachLead& l) { return l.character == h.c && l.side == h.side && l.start == start; });
+          if (scale > 0)
+            ctx.reachLeads.push_back({h.c, h.side, start, contact, A, R, scale * lead, scale * shoulderLead, shoulderTrack, scale * clavicleLead,
+                                      clavicleTrack, scale * hipLead});
+          gen.tracks[h.prefix + "reach.lead"].keys.clear();
+          gen.tracks[shoulderTrack].keys.clear();
+          gen.tracks.erase(h.prefix + "reach.head");
+          gen.tracks.erase(h.prefix + "reach.hip");
+          if (!clavicleTrack.empty()) gen.tracks.erase(clavicleTrack);
+          for (const auto& l : ctx.reachLeads)
+            if (l.character == h.c) {
+              gen.tracks[l.shoulderTrack].keys.clear();
+              if (!l.clavicleTrack.empty()) gen.tracks.erase(l.clavicleTrack);
+            }
+          for (const auto& l : ctx.reachLeads) {
+            if (l.character != h.c) continue;
+            const double n = l.contact - l.start;
+            // The envelope through a follow-through response (kernel[k]: weight of the envelope k frames ago),
+            // read `shift` frames ahead so the torso's own timing stays where the plain envelope has it.
+            auto addKeys = [&](const std::string& track, vec3 full, const std::vector<float>& kernel) {
+              Track& T = gen.tracks[track];
+              const Track before = T;
+              const double tail = double(kernel.size()) - 1;
+              for (double f = l.start - l.anticipation - std::ceil(shift); f <= l.contact + l.recover + tail + 1e-6; f += 1) {
+                double e = 0;
+                for (size_t k = 0; k < kernel.size(); ++k) {
+                  const double at = f + shift - double(k);
+                  e += double(kernel[k]) * (reachLead((at - l.start) / n, l.anticipation / n, l.recover / n, rm) + settle(at - l.contact));
+                }
+                T.setKey({f, (before.keys.empty() ? vec3(0) : before.evaluate(f)) + full * float(e), Interp::Linear});
+              }
+            };
+            addKeys(h.prefix + "reach.lead", l.lead, torsoKernel);
+            addKeys(l.shoulderTrack, l.shoulder, torsoKernel);
+            if (!l.clavicleTrack.empty()) addKeys(l.clavicleTrack, l.clavicle, torsoKernel);
+            if (glm::length(l.hip) > 0) addKeys(h.prefix + "reach.hip", l.hip, torsoKernel);
+            if (rm.overlap) addKeys(h.prefix + "reach.head", -float(rm.headStabilize) * l.lead, headKernel);
+          }
+          if (gen.tracks[h.prefix + "reach.lead"].keys.empty()) gen.tracks[h.prefix + "reach.lead"].keys = {{start, vec3(0), Interp::Linear}};
+        };
+        // The lead must not cost the arm its room: a torso that leans into its own reaching arm would have the
+        // collision planner push the wrist away around the contact. The largest share of the lead is kept that leaves
+        // the arm (after the planner's elbow swing) as clear of the body at the contact as it is without the lead,
+        // or at the planner's margin.
+        const bool canClear = size_t(h.c) < clearance_.size() && clearance_[size_t(h.c)].valid;
+        auto gapAtContact = [&] { return swungArmGap(clearance_[size_t(h.c)], characterGlobals(size_t(h.c), contact), h.side); };
+        write(0);
+        const float gap0 = canClear ? gapAtContact() : 0.0f;
+        for (float scale : {1.0f, 0.75f, 0.5f, 0.25f}) {
+          write(scale);
+          if (!canClear || gapAtContact() >= std::min(gap0, kArmBodyMargin) - 0.0002f) break;
+          write(0);
+        }
+        key(gen, h.prefix + "reach.lead.params", double(scene_.frameStart),
+            vec3(float(rm.successionSec * fps), float(rm.hipShare), float(rm.headStabilize)), Interp::Step);
+      }
+    }
     correct(h, contact, [&] { return socketWorld(p, socket, contact)[3] - vec4(handGripPoint(size_t(h.c), h.side, contact), 1); });
+    if (!planned.empty()) {  // spread the contact correction along the eased path (no step into the last frame)
+      Track& T = gen.tracks[h.ik];
+      const vec3 delta = T.evaluate(contact) - planned.back();
+    }
     return pl;
   };
   // T-096 visibleGrip (interaction option, opt-in): on a round prop (a cylinder's side: the grasp shape has an axis)
@@ -885,6 +1202,7 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
     key(gen, h.ik, from + 1, wrist);
     key(gen, h.ik, std::max(from + 6, end - 4), wrist + retreat);
     key(gen, h.ik, end, wrist + retreat);
+    arcMove(h, from + 1, std::max(from + 6, end - 4));  // T-134 E1b: the hand's way back is an arc too
     key(gen, h.ik + ".weight", from + 1, vec3(1));
     key(gen, h.ik + ".weight", end, vec3(0));
     key(gen, h.orient, end, rotationVector(orient), Interp::Linear);
@@ -1008,6 +1326,7 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
     key(gen, h.orient + ".weight", end, vec3(1));
     warnReach(h, wrist + (target - origin), end, "hold");
     correct(h, end, [&] { return target - vec3(propWorld(size_t(*p), end)[3]); });
+    arcMove(h, start, end);  // T-134 E1b
     if (look) gazeOn(h, *p, start, end);
     return true;
   }
@@ -1129,6 +1448,7 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
     key(gen, h.ik, start, wrist);
     key(gen, h.ik, still, wristM);
     key(gen, h.ik, contact, wristM);
+    arcMove(h, start, still);  // T-134 E1b
     key(gen, h.ik + ".weight", contact, vec3(1));
     key(gen, h.orient, contact, rotationVector(gOrient), Interp::Linear);
     key(gen, h.orient + ".weight", contact, vec3(1));
@@ -1482,6 +1802,7 @@ void planArmLift(const BodyClearanceModel& M, char side, int fs, int fe, const s
 //     contact inside the body is reported. The swing is then re-planned for the pushed path. The IK track becomes
 //     per-frame keys only when some push is needed.
 void SceneEvaluator::armClearancePass(Clip& gen, const InteractionContext& ctx) {
+  const bool stopAtPinned = reachMechanicsFromJson(scene_.reachMechanics).value_or(ReachMechanics{}).enabled;  // T-134
   const Clip& clip = scene_.animation;
   const int fs = scene_.frameStart, fe = scene_.frameEnd;
   if (clearance_.size() != characters_.size()) buildClearanceModels();
@@ -1607,8 +1928,11 @@ void SceneEvaluator::armClearancePass(Clip& gen, const InteractionContext& ctx) 
       auto ease = [&](const std::vector<vec3>& need) {
         std::vector<float> mag(static_cast<size_t>(n)), env(static_cast<size_t>(n));
         for (int i = 0; i < n; ++i) env[size_t(i)] = mag[size_t(i)] = glm::length(need[size_t(i)]);
-        for (int i = 1; i < n; ++i) env[size_t(i)] = std::max(env[size_t(i)], env[size_t(i - 1)] - kPushRate);
-        for (int i = n - 2; i >= 0; --i) env[size_t(i)] = std::max(env[size_t(i)], env[size_t(i + 1)] - kPushRate);
+        // T-134 (opt-in): a ramp does not carry across a pinned frame. The push is 0 there anyway; without this the
+        // ramp of a need before a contact comes back right after it and moves the hand that has just arrived.
+        auto carried = [&](int i) { return stopAtPinned && cap[size_t(i)] <= 0 ? 0.0f : env[size_t(i)]; };
+        for (int i = 1; i < n; ++i) env[size_t(i)] = std::max(env[size_t(i)], carried(i - 1) - kPushRate);
+        for (int i = n - 2; i >= 0; --i) env[size_t(i)] = std::max(env[size_t(i)], carried(i + 1) - kPushRate);
         std::vector<vec3> out(static_cast<size_t>(n), vec3(0));
         for (int i = 0; i < n; ++i) {
           vec3 dir(0);

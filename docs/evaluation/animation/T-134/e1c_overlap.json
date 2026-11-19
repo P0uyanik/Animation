@@ -1,0 +1,236 @@
+{
+ "format": "plush.t134_overlap_measures",
+ "version": 1,
+ "reaches": [
+  {
+   "character": "boy",
+   "start": 57,
+   "contact": 76,
+   "bakes": {
+    "E1b": {
+     "chest": {
+      "max_mm": 3.97,
+      "max_frame": 67,
+      "half_rise_frame": 61,
+      "settled_frame": 85
+     },
+     "head": {
+      "max_mm": 7.97,
+      "max_frame": 68,
+      "half_rise_frame": 61,
+      "settled_frame": 86
+     },
+     "hair": {
+      "max_mm": 15.69,
+      "max_frame": 67,
+      "half_rise_frame": 62,
+      "settled_frame": 189
+     },
+     "chest_turn_deg": {
+      "max_deg": 3.26,
+      "max_frame": 69,
+      "at_contact_deg": 3.04,
+      "after_contact_deg": [
+       3.04,
+       2.81,
+       2.27,
+       1.52,
+       0.77,
+       0.26,
+       0.04
+      ]
+     },
+     "head_turn_deg": {
+      "max_deg": 1.1,
+      "max_frame": 68,
+      "at_contact_deg": 0.91,
+      "after_contact_deg": [
+       0.91,
+       0.84,
+       0.68,
+       0.46,
+       0.23,
+       0.08,
+       0.0
+      ]
+     }
+    },
+    "E1c": {
+     "chest": {
+      "max_mm": 4.32,
+      "max_frame": 76,
+      "half_rise_frame": 61,
+      "settled_frame": 84
+     },
+     "head": {
+      "max_mm": 8.67,
+      "max_frame": 76,
+      "half_rise_frame": 61,
+      "settled_frame": 84
+     },
+     "hair": {
+      "max_mm": 21.5,
+      "max_frame": 65,
+      "half_rise_frame": 59,
+      "settled_frame": 189
+     },
+     "chest_turn_deg": {
+      "max_deg": 3.32,
+      "max_frame": 77,
+      "at_contact_deg": 3.29,
+      "after_contact_deg": [
+       3.29,
+       3.22,
+       2.52,
+       1.46,
+       0.6,
+       0.15,
+       0.02
+      ]
+     },
+     "head_turn_deg": {
+      "max_deg": 1.87,
+      "max_frame": 64,
+      "at_contact_deg": 1.13,
+      "after_contact_deg": [
+       1.13,
+       1.01,
+       0.11,
+       0.77,
+       0.9,
+       0.5,
+       0.07
+      ]
+     },
+     "head_vs_E1b_after_contact": {
+      "max_mm": 1.72,
+      "frame": 83
+     },
+     "chest_vs_E1b_after_contact": {
+      "max_mm": 0.58,
+      "frame": 77
+     },
+     "hair_vs_E1b_after_contact": {
+      "max_mm": 12.82,
+      "frame": 84
+     }
+    }
+   }
+  },
+  {
+   "character": "girl",
+   "start": 104,
+   "contact": 114,
+   "bakes": {
+    "E1b": {
+     "chest": {
+      "max_mm": 5.45,
+      "max_frame": 109,
+      "half_rise_frame": 105,
+      "settled_frame": 123
+     },
+     "head": {
+      "max_mm": 10.51,
+      "max_frame": 110,
+      "half_rise_frame": 105,
+      "settled_frame": 125
+     },
+     "hair": {
+      "max_mm": 23.84,
+      "max_frame": 112,
+      "half_rise_frame": 107,
+      "settled_frame": 153
+     },
+     "chest_turn_deg": {
+      "max_deg": 4.35,
+      "max_frame": 110,
+      "at_contact_deg": 4.28,
+      "after_contact_deg": [
+       4.28,
+       3.94,
+       3.18,
+       2.13,
+       1.09,
+       0.36,
+       0.05
+      ]
+     },
+     "head_turn_deg": {
+      "max_deg": 1.31,
+      "max_frame": 110,
+      "at_contact_deg": 1.28,
+      "after_contact_deg": [
+       1.28,
+       1.18,
+       0.96,
+       0.64,
+       0.33,
+       0.11,
+       0.03
+      ]
+     }
+    },
+    "E1c": {
+     "chest": {
+      "max_mm": 5.98,
+      "max_frame": 114,
+      "half_rise_frame": 105,
+      "settled_frame": 123
+     },
+     "head": {
+      "max_mm": 12.24,
+      "max_frame": 108,
+      "half_rise_frame": 105,
+      "settled_frame": 122
+     },
+     "hair": {
+      "max_mm": 35.03,
+      "max_frame": 109,
+      "half_rise_frame": 106,
+      "settled_frame": 172
+     },
+     "chest_turn_deg": {
+      "max_deg": 4.7,
+      "max_frame": 115,
+      "at_contact_deg": 4.65,
+      "after_contact_deg": [
+       4.65,
+       4.57,
+       3.57,
+       2.08,
+       0.85,
+       0.21,
+       0.04
+      ]
+     },
+     "head_turn_deg": {
+      "max_deg": 3.52,
+      "max_frame": 107,
+      "at_contact_deg": 1.38,
+      "after_contact_deg": [
+       1.38,
+       1.48,
+       0.23,
+       1.09,
+       1.3,
+       0.72,
+       0.11
+      ]
+     },
+     "head_vs_E1b_after_contact": {
+      "max_mm": 2.01,
+      "frame": 121
+     },
+     "chest_vs_E1b_after_contact": {
+      "max_mm": 0.84,
+      "frame": 115
+     },
+     "hair_vs_E1b_after_contact": {
+      "max_mm": 11.83,
+      "frame": 123
+     }
+    }
+   }
+  }
+ ]
+}

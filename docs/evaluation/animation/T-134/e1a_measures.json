@@ -1,0 +1,228 @@
+{
+ "format": "plush.t134_reach_measures",
+ "version": 1,
+ "reaches": [
+  {
+   "character": "boy",
+   "bone": "hand.R",
+   "start": 57,
+   "contact": 76,
+   "wrist_before": {
+    "chord_mm": 145.4,
+    "speed_first_mm_f": 7.1,
+    "speed_peak_mm_f": 30.14,
+    "speed_last_mm_f": 3.66,
+    "first_over_peak": 0.236,
+    "last_over_peak": 0.122,
+    "peak_at": 0.45,
+    "speed_after_contact_mm_f": 0.0,
+    "max_speed_change_mm_f2": 12.35,
+    "max_speed_change_frame": 69,
+    "arc": 0.313,
+    "speed_mm_f": [
+     7.1,
+     6.7,
+     5.9,
+     5.9,
+     10.4,
+     16.3,
+     22.6,
+     27.4,
+     30.1,
+     29.4,
+     24.8,
+     17.1,
+     5.3,
+     6.1,
+     10.5,
+     12.6,
+     12.2,
+     9.2,
+     3.7
+    ]
+   },
+   "wrist_after": {
+    "chord_mm": 137.5,
+    "speed_first_mm_f": 7.58,
+    "speed_peak_mm_f": 35.27,
+    "speed_last_mm_f": 2.55,
+    "first_over_peak": 0.215,
+    "last_over_peak": 0.072,
+    "peak_at": 0.5,
+    "speed_after_contact_mm_f": 0.0,
+    "max_speed_change_mm_f2": 19.86,
+    "max_speed_change_frame": 68,
+    "arc": 0.394,
+    "speed_mm_f": [
+     7.6,
+     7.2,
+     6.9,
+     6.5,
+     8.1,
+     14.5,
+     20.7,
+     28.1,
+     33.7,
+     35.3,
+     29.2,
+     16.5,
+     10.7,
+     10.7,
+     7.5,
+     4.5,
+     2.7,
+     3.0,
+     2.6
+    ]
+   },
+   "wrist_10pct_frame": 59,
+   "lead": {
+    "hips": {
+     "counter_mm": -0.0,
+     "at_start_mm": 0.0,
+     "at_wrist_10pct_mm": 0.0,
+     "max_mm": 0.0,
+     "max_frame": 70,
+     "first_moves_frame": 1
+    },
+    "chest": {
+     "counter_mm": -0.44,
+     "at_start_mm": 0.02,
+     "at_wrist_10pct_mm": 0.57,
+     "max_mm": 1.86,
+     "max_frame": 67,
+     "first_moves_frame": 50
+    },
+    "upperArm.R": {
+     "counter_mm": -2.03,
+     "at_start_mm": -1.2,
+     "at_wrist_10pct_mm": 0.84,
+     "max_mm": 10.15,
+     "max_frame": 67,
+     "first_moves_frame": 50
+    },
+    "head": {
+     "counter_mm": -0.87,
+     "at_start_mm": -0.16,
+     "at_wrist_10pct_mm": 0.86,
+     "max_mm": 3.89,
+     "max_frame": 67,
+     "first_moves_frame": 50
+    }
+   },
+   "after": {
+    "head": {
+     "max_offset_after_contact_mm": 7.7,
+     "settled_frame": 86
+    },
+    "chest": {
+     "max_offset_after_contact_mm": 3.81,
+     "settled_frame": 85
+    }
+   },
+   "feet_max_offset_mm": 0.626
+  },
+  {
+   "character": "girl",
+   "bone": "hand.L",
+   "start": 104,
+   "contact": 114,
+   "wrist_before": {
+    "chord_mm": 147.2,
+    "speed_first_mm_f": 3.27,
+    "speed_peak_mm_f": 52.37,
+    "speed_last_mm_f": 6.89,
+    "first_over_peak": 0.062,
+    "last_over_peak": 0.132,
+    "peak_at": 0.45,
+    "speed_after_contact_mm_f": 0.0,
+    "max_speed_change_mm_f2": 32.25,
+    "max_speed_change_frame": 109,
+    "arc": 0.351,
+    "speed_mm_f": [
+     3.3,
+     5.4,
+     22.8,
+     49.3,
+     52.4,
+     21.4,
+     12.2,
+     18.0,
+     16.0,
+     6.9
+    ]
+   },
+   "wrist_after": {
+    "chord_mm": 141.3,
+    "speed_first_mm_f": 3.9,
+    "speed_peak_mm_f": 60.02,
+    "speed_last_mm_f": 3.65,
+    "first_over_peak": 0.065,
+    "last_over_peak": 0.061,
+    "peak_at": 0.45,
+    "speed_after_contact_mm_f": 0.0,
+    "max_speed_change_mm_f2": 37.51,
+    "max_speed_change_frame": 109,
+    "arc": 0.391,
+    "speed_mm_f": [
+     3.9,
+     3.1,
+     15.9,
+     41.1,
+     60.0,
+     35.3,
+     26.3,
+     16.4,
+     7.1,
+     3.7
+    ]
+   },
+   "wrist_10pct_frame": 107,
+   "lead": {
+    "hips": {
+     "counter_mm": -0.0,
+     "at_start_mm": 0.0,
+     "at_wrist_10pct_mm": -0.0,
+     "max_mm": 0.0,
+     "max_frame": 104,
+     "first_moves_frame": 1
+    },
+    "chest": {
+     "counter_mm": -1.22,
+     "at_start_mm": 1.95,
+     "at_wrist_10pct_mm": 4.32,
+     "max_mm": 4.52,
+     "max_frame": 111,
+     "first_moves_frame": 96
+    },
+    "upperArm.L": {
+     "counter_mm": 2.32,
+     "at_start_mm": 8.64,
+     "at_wrist_10pct_mm": 21.12,
+     "max_mm": 27.04,
+     "max_frame": 111,
+     "first_moves_frame": 79
+    },
+    "head": {
+     "counter_mm": -2.22,
+     "at_start_mm": 2.69,
+     "at_wrist_10pct_mm": 7.9,
+     "max_mm": 8.86,
+     "max_frame": 112,
+     "first_moves_frame": 81
+    }
+   },
+   "after": {
+    "head": {
+     "max_offset_after_contact_mm": 9.29,
+     "settled_frame": 127
+    },
+    "chest": {
+     "max_offset_after_contact_mm": 5.04,
+     "settled_frame": 123
+    }
+   },
+   "feet_max_offset_mm": 0.628
+  }
+ ]
+}
