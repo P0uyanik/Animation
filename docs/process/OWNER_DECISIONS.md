@@ -503,3 +503,11 @@ Owner, verbatim: "approve the 2.3.0 and 0.14.0 candidates task". **T-132** (Opus
 + T-118 hair r5 + T-119 garments r3 (limb skin as accepted) + T-121 fingers; candidates only (no current change, no
 fidelity_baseline or golden change); strict + expression sheets, 100% crops, fidelity report; an ingredient that
 regresses is left out and reported. Starts when T-119 and the T-131 switch are on main.
+
+## 2026-11-19 (~15:20Z): third character starts now (relayed)
+Owner, verbatim: "Yes, please start building the third character now, as you recommended. Start with the body, face,
+hair, and materials". Replaces the "after round 4" start for T-126 a (body/face, Opus 5.5), b (hair, Fable 5.2) and
+d (materials, Opus 5.5, render cost vs the T-124 baseline); c (dress + skirt cloth prototype, Fable 5.2) starts once
+T-119 is on main; Codex fit + review after the first version. Candidate only (0.1.0), strict sheets; boy and girl
+untouched; shared-code changes sequenced by the Supervisor. Pending owner approval, not started: girls' hair lead
+(incl. auburn round 6), materials round 3, expression fidelity, cup-hold readability.
