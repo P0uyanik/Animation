@@ -452,6 +452,44 @@
       "unit": "text",
       "kind": "reference",
       "source": "docs/evaluation/animation/T-106/performance.csv PB girl [255,289) 'leans on the rim with a wide open smile'; owner decision 2026-11-17 (rest = closed gentle smile, open smile = Happy)"
+    },
+    "tempo_scale": {
+      "value": 0.9,
+      "unit": "multiplier",
+      "kind": "estimate",
+      "source": "quick and alert (owner brief; tempo.beat_scale 0.85, T-104): notice delay and duration x 0.9; the planned delay stays >= delay_frames low end (5 x 0.9 = 4.5 f)"
+    },
+    "events": {
+      "value": {
+        "object_appears": {
+          "emotion": "girl_wonder",
+          "intensity": 0.7,
+          "duration_s": 1.5,
+          "gaze_shift": 1.0,
+          "gestures": [
+            "girl_wonder_point",
+            "girl_chin_think"
+          ]
+        },
+        "partner_acts": {
+          "emotion": "curious",
+          "intensity": 0.5,
+          "duration_s": 1.1,
+          "gaze_shift": 0.9,
+          "gestures": [
+            "girl_point_down"
+          ]
+        },
+        "success": {
+          "emotion": "girl_delighted",
+          "intensity": 0.9,
+          "duration_s": 1.4,
+          "gaze_shift": 0.6
+        }
+      },
+      "unit": "object",
+      "kind": "measured",
+      "source": "docs/evaluation/animation/T-106/performance.csv: object_appears = WT [0, 39) wonder with the hand at the chin, then the point (girl_wonder_point; 1.5 s = rise + chin hold + leave, girl_beats.py); success = PB [255, 289) wide open smile 1.42 s (girl_delighted), gaze 0.6: she glances up to share it (e908); partner_acts = WT [22, 61) points and explains (girl_point_down, 1.1 s)"
     }
   },
   "interaction": {
@@ -489,7 +527,7 @@
     "speech only without audio (WT f020-f052)",
     "negative emotions only as rig tiles",
     "no glasses handling",
-    "T-097-girl: reaction.events / intensity_scale / tempo_scale are not set (tests/test_reaction.cpp keeps shipped profiles at their delay only); e908 plays the per-event emotion and gesture as explicit actions"
+    "T-097-girl: reaction.events are profile data for the reaction planner; until T-097D schedules plans, e908 plays them as explicit emotion / clip / look actions"
   ],
   "owner_decisions": {
     "eye_colour": {

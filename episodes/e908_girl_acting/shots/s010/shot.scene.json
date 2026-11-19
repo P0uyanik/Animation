@@ -20,9 +20,9 @@
  },
  "camera": {
   "position": [
-   0.5469,
-   1.0197,
-   1.3733
+   0.5654,
+   0.7967,
+   1.4148
   ],
   "target": [
    -0.02,
@@ -186,9 +186,9 @@
    "id": "prop.felt_cup",
    "transform": {
     "translation": [
-     -0.0022,
+     0.0019,
      0.4,
-     0.4171
+     0.4279
     ],
     "rotationDeg": [
      0,
@@ -258,20 +258,20 @@
    "type": "look",
    "character": "girl",
    "start": 17,
-   "end": 115,
+   "end": 91,
    "target": [
-    -0.0022,
+    0.0019,
     0.45,
-    0.4171
+    0.4279
    ]
   },
   {
    "type": "emotion",
    "character": "girl",
-   "name": "surprised",
+   "name": "girl_wonder",
    "start": 19,
    "end": 57,
-   "intensity": 0.55
+   "intensity": 0.7
   },
   {
    "type": "clip",
@@ -282,15 +282,15 @@
   {
    "type": "emotion",
    "character": "girl",
-   "name": "happy",
+   "name": "girl_delighted",
    "start": 90,
-   "end": 142,
+   "end": 136,
    "intensity": 0.9
   },
   {
    "type": "look",
    "character": "girl",
-   "start": 116,
+   "start": 92,
    "end": 156,
    "camera": true
   }
@@ -328,7 +328,7 @@
    "straight": 130.8,
    "E2_success": 86,
    "delighted": 90,
-   "look_up": 116,
+   "look_up": 92,
    "end": 156
   },
   "reference": "T-106 watertable girl acting beats (docs/evaluation/animation/T-106/performance.csv)"

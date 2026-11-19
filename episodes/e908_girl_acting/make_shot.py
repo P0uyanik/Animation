@@ -10,15 +10,15 @@ emotion / clip / look actions (T-097D, which schedules reaction plans from scene
 Beats (scene frames @24, frame 1 = t 0; also written into the shot as x_t097_girl.beats):
   E1  object_appears (the cup)      the event she notices
   notice   E1 + 4      eyes go to the cup (quick 3-frame saccade, head follows): reaction.delay_frames low end
-  reaction notice + 2  wonder: emotion surprised (EyeWide, brows up, rounded mouth) and the hand rises to the chin
+  reaction notice + 2  wonder: emotion girl_wonder (eyes wide, brows up, rounded mouth) and the hand rises to the chin
                        (girl_wonder_point starts); WT [0, 15) hand at chin, eyes wide, mouth rounded
   gesture              leaves the chin (WT [15, 22)), leans in and points down at the cup (WT [22, 39)), holds the point
                        (WT [39, 61)); the rounded mouth closes during the hold (WT f039-f061)
   E2  success (the cup "works")     during the point hold
-  delighted E2 + 4     the acting-beat open "delighted" smile (emotion happy: the model's open Smile preset; the
+  delighted E2 + 4     the acting-beat open "delighted" smile (emotion girl_delighted: the model's open Smile preset; the
                        rest face stays the modelled closed smile and returns after the beat)
-  look up              as she straightens (WT [81, 96): eyes reopen into a higher, more forward head pose) she glances
-                       to the camera, sharing the delight
+  look up  E2 + 6      a quick glance up to the camera, sharing the delight, while she still points (invented: WT keeps
+                       the eye line low until f081); she straightens into the higher, forward head pose (WT [81, 96))
   end hold             upright, arms down (WT [96, 121), 25 f); the open smile releases into the closed rest smile
 Clip timing: girl_wonder_point is authored at WT durations x 1.1 and plays at her tempo 1.1 (make_girl_clips.py)."""
 import json
@@ -39,7 +39,7 @@ CUP = [-0.06, 0.40, 0.31]  # where her right index points: replaced by clip_cali
 _cal = os.path.join(os.path.dirname(os.path.abspath(__file__)), "clip_calibration.json")
 if os.path.isfile(_cal) and "cup" in json.load(open(_cal)):
     CUP = json.load(open(_cal))["cup"]
-CAMERA_AZ, CAMERA_ELEV, CAMERA_DIST = 24.0, 16.0, 1.45  # from her left front, above (WT three-quarter): the pointing arm is in front of her
+CAMERA_AZ, CAMERA_ELEV, CAMERA_DIST = 24.0, 7.0, 1.45  # from her left front, a little above (WT three-quarter): the pointing arm is in front of her, the face stays readable when she leans in
 CAMERA_TARGET = [-0.02, 0.62, 0.10]
 FOCAL = 40.0
 BLINK_S = round(40 / 24, 4)  # T-106 watertable girl: 35.7 blinks per visible minute = one per 40 f (inside limits.blink_interval_frames)
@@ -55,7 +55,7 @@ T = dict(zip(("t1", "t2", "t3", "t4", "t5", "t6", "t7"), GB.wonder_clip_frames()
 B = {k: round(clip_t(v), 1) for k, v in T.items()}
 E2 = int(round(B["t4"] + 12))  # the event arrives during the point hold
 DELIGHT = E2 + 4
-LOOK_UP = int(round(B["t6"]))  # straightening: eyes up to the camera
+LOOK_UP = E2 + 6  # a quick glance up to the camera, sharing the delight (invented: WT keeps the eye line low until f081)
 END = int(round(B["t7"])) + 25  # WT end hold [96, 121)
 
 
@@ -94,11 +94,11 @@ def main():
             {"type": "look", "character": "girl", "start": 1, "end": NOTICE - 1, "target": [0.9, 0.72, 1.2]},
             # notice: a quick glance to the cup; the eye line stays low through the point (WT f022-f081)
             {"type": "look", "character": "girl", "start": NOTICE, "end": LOOK_UP - 1, "target": cup_top},
-            {"type": "emotion", "character": "girl", "name": "surprised", "start": REACT, "end": int(round(B["t3"])),
-             "intensity": 0.55},
+            {"type": "emotion", "character": "girl", "name": "girl_wonder", "start": REACT, "end": int(round(B["t3"])),
+             "intensity": 0.7},
             {"type": "clip", "character": "girl", "clip": "girl_wonder_point", "start": CLIP},
-            {"type": "emotion", "character": "girl", "name": "happy", "start": DELIGHT, "end": END - 14, "intensity": 0.9},
-            # straightening: eyes up to the camera (higher, more forward head pose), sharing the delight
+            {"type": "emotion", "character": "girl", "name": "girl_delighted", "start": DELIGHT, "end": END - 20, "intensity": 0.9},
+            # a quick glance up, sharing the delight; she straightens into the higher, forward head pose (WT [81, 96))
             {"type": "look", "character": "girl", "start": LOOK_UP, "end": END, "camera": True},
         ],
         "production": {"cast": {"girl": {"character_id": "girl_auburn_bun_glasses", "version": "current"}},
