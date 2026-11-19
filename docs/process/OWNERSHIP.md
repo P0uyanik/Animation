@@ -16,7 +16,6 @@ means none. Branch is the task's branch; a task branch without a row falls back 
 
 | Task | Lane | Branch | Write-set | Depends on | Versions bumped |
 | --- | --- | --- | --- | --- | --- |
-| T-126c | B | t-126c-claude-dress | `pipeline/charsys/garments_v3/**`, `pipeline/charsys/tests/test_garments_r3.py`, `pipeline/charsys/cloth_sim/**`, `docs/evaluation/characters/T-126/dress/**` | — | `garment` |
 | T-124 | E | t-124-claude-render-opt | `docs/evaluation/rendering/T-124/**`, `tools/render_bench/**`, `pipeline/charsys/render_profiles.json`, `pipeline/charsys/shot_render.py`, `pipeline/charsys/render_engine.py` | — | — |
 
 Supervisor-only files: docs/process/TASK_LOG.md, docs/ROADMAP.md, docs/process/OWNER_DECISIONS.md, docs/tasks/**.
