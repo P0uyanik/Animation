@@ -13,7 +13,7 @@ Input `integration/r4-start@5a90975` (the task prompt's input; the task file nam
 | 1 | boy: ankle notch closed through ankle flexion | **met**: no skin between hem and shoe at rest, toes up 25 deg, toes down 30 deg; the hem's ragged outline is unchanged and now shows trouser fabric | [boy sheet](boy/boy_2.1.0_vs_T-119_strict.jpg) rows 1-4, [measures](measures_boy.json) |
 | 2 | boy limb skin within 5 L* of the reference (T-116 method) | **not met: 18.5 -> 14.9 L\***. Deliberate, see "Limb skin" below: the number is set by the reference's shadowed neck, and closing it with hand tone turns the hand brown next to the cheek | [fidelity](fidelity/), [hand tone](evidence/hand_tone_val27_front.json), [pickup](evidence/pickup_hand_tone.jpg) |
 | 3 | candidate overrides here; one cheap preview each, then one strict sheet each | done | `*.T-119.override.json`, `girl/`, `boy/` |
-| 4 | plain tests; default builds identical | 54/54; default builds identical in every garment piece, hand and material name | [tests.log](tests.log) |
+| 4 | plain tests; default builds identical | 54/54; default builds identical in every garment piece, hand and material name | [tests.txt](tests.txt) |
 
 ## What was built
 - **`garment/3`** (`pipeline/charsys/garments_v3/`, opt-in, registered in `versions.py`): extends `garment/2` by import.
@@ -105,9 +105,10 @@ hands. That is outside this task's write-set and I did not attempt it.
   before any change here against the published master; that noise is not from this task.
 
 ## Tests
-`python3 pipeline/charsys/tests/test_garments_r3.py --blender <b> [masters...]` -> 54/54 ([tests.log](tests.log)).
+`python3 pipeline/charsys/tests/test_garments_r3.py --blender <b> [masters...]` -> 54/54 ([tests.txt](tests.txt)).
 Also run, unchanged and passing: `test_garments_v2.py --quick` 45/45 and `test_garments_v2_t093b.py --quick` 9/9 (their
-git check skips: no `origin/main` in this clone), `test_versions.py` 107/107,
+git check skips: no `origin/main` in this clone), the `garment/1` guard `tests/garment_generic_test.py` (exit 0, 12 min),
+`test_versions.py` 107/107,
 `test_materials_r2.py` 104/104, `test_materials_r2_graphs.py` 52/52, `test_skin_presets.py` 24/24,
 `test_material_presets.py` 54/54, `test_skin_material.py` 10/10, `tools/tests/test_version_switch.py` 96/96,
 `tools/check_doc_links.py`. Not run: the full (non-quick) `test_garments_v2.py`, `tools/check_all.py`, CI.
@@ -125,4 +126,4 @@ blender -b --factory-startup -P docs/evaluation/characters/T-119/measure.py -- <
 python3 tools/fidelity/run.py --character boy_yellow_hoodie --build <master> --blender <b> --out <dir>
 ```
 
-ledger: build 49 · render 53 · tests 9 · ci 0 · wait 0 (min)
+ledger: build 49 · render 53 · tests 21 · ci 0 · wait 0 (min)
