@@ -16,7 +16,7 @@ girl 0.11.0; `fidelity_baseline.json` and the golden baselines are unchanged.** 
 | cheap preview (Cycles 2 spp, 120 px; not for approval) | [boy_sheet/…_preview.jpg](boy_sheet/boy_2.0.0_vs_2.1.0_preview.jpg) | [girl_sheet/…_preview.jpg](girl_sheet/girl_0.11.0_vs_0.12.0_preview.jpg) |
 | recipe | [boy_2.0.0_vs_2.1.0.recipe.json](boy_2.0.0_vs_2.1.0.recipe.json) | [girl_0.11.0_vs_0.12.0.recipe.json](girl_0.11.0_vs_0.12.0.recipe.json) |
 | fidelity (`tools/fidelity`, baseline render settings 640 px / 32 spp) | **67.7245** (2.0.0: 67.6344) | **65.0136** (0.11.0: 62.2949) |
-| e907 exchange re-render | see [exchange/](exchange/) | same shot |
+| e907 exchange re-render (Cycles 10 spp; acting profiles merged, no effect without scene events) | [exchange/README.md](exchange/README.md) | same shot |
 
 The sheets' candidate column is built from the version spec at `1c3ba1e` by the recipe tool. The published versions were
 built from the same spec file (unchanged since), deterministic build environment; the manifests' `spec_sha256` are
