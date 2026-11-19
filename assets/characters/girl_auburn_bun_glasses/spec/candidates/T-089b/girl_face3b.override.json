@@ -48,7 +48,8 @@
      1.03,
      0.8,
      1.0
-    ]
+    ],
+    "lid_tracking": 0.6
    },
    "blink": {
     "overlap_deg": 33
@@ -65,7 +66,7 @@
    }
   },
   "metadata": {
-   "notes": "T-089b candidate (unpublished): T-089 face_generic/3 candidate on girl 0.11.0 with a rounder, fuller face and wider, rounder eyes (owner note 2026-11-18 ~22:35Z; ref_30/sheet30). Face: the face_generic/2 round-face options (outline superellipse, wider lower face, fuller and rounder cheeks, rounded jaw corners). Eyes: r 48 mm kept, the eyeball narrowed less (x scale 0.9 -> 1.03), lid edges opened (43/-46 -> 52/-54 deg), upper trim 66 -> 72 deg; the new opt-in face_v3 socket corner relax (25 passes) keeps the eye-corner folds below 0.11.0 (the wider eyeball alone gave 66-92 deg), blink overlap 14 -> 33 deg closes the wider eye at 3/4. The T-090b girl-face proposal is not adopted. Never publish or approve without an owner decision; the version bump is T-094.",
+   "notes": "T-089b candidate (unpublished): T-089 face_generic/3 candidate on girl 0.11.0 with a rounder, fuller face and wider, rounder eyes (owner note 2026-11-18 ~22:35Z; ref_30/sheet30). Face: the face_generic/2 round-face options (outline superellipse, wider lower face, fuller and rounder cheeks, rounded jaw corners). Eyes: r 48 mm kept, the eyeball narrowed less (x scale 0.9 -> 1.03), lid edges opened (43/-46 -> 52/-54 deg), upper trim 66 -> 72 deg; the new opt-in face_v3 socket corner relax (25 passes) keeps the eye-corner folds below 0.11.0 (the wider eyeball alone gave 66-92 deg), blink overlap 14 -> 33 deg closes the wider eye at 3/4; lid tracking 0.3 -> 0.6 (with 0.3 or 0.45 the wider eyeball showed through the upper-outer lid corner in a 15 deg glance; the rest pose is unchanged). The T-090b girl-face proposal is not adopted. Never publish or approve without an owner decision; the version bump is T-094.",
    "base_candidate": "assets/characters/girl_auburn_bun_glasses/spec/candidates/T-089/girl_face3.override.json",
    "changes_from_T-089": {
     "face.eyes.scale": [
@@ -104,7 +105,11 @@
      14,
      33
     ],
-    "face.shape": "outline_roundness 0.9, outline_exponent 2.6, face_width_m 0.016 (below eye 0.04, band 0.04), cheek_fullness_m 0.003 -> 0.01, cheek_radius_m 0.05 -> 0.055, jaw_depth_roundness 0.6"
+    "face.shape": "outline_roundness 0.9, outline_exponent 2.6, face_width_m 0.016 (below eye 0.04, band 0.04), cheek_fullness_m 0.003 -> 0.01, cheek_radius_m 0.05 -> 0.055, jaw_depth_roundness 0.6",
+    "face.eyes.lid_tracking": [
+     0.3,
+     0.6
+    ]
    }
   }
  }
