@@ -10,6 +10,12 @@
 //       its palm towards the prop, opens on the way and closes by contact search sized to the prop; at `contact` the
 //       prop's parent switches to the hand (rebased, so it does not move) and the hand holds it. grasp:false only
 //       touches the socket and lets go of the arm again at `end`.
+//       T-112b optional keys (written by the verb expander from a prop's affordances; absent = today's tracks):
+//         shape:"wrap"|"pinch"|"palm"|"hook"|"cradle" (non-wrap: open / closed hand poses of the shape instead of
+//         kOpen and the contact search, also on release), approach:[x,y,z] (prop frame: the side the palm comes
+//         from), band:[lo,hi] + thumb:"opposed"|"along"|"tucked" (Step keys "hand.<side>.band" = (lo, hi, thumb) at
+//         start; lo / hi relative to the grasp centre along the grasp axis; read by T-051), follower:true (two-hand
+//         follower: the prop must already be held by the same character's other hand, which stays its parent).
 //   hold     {character, hand="R", prop?, start, end, at:[x,y,z] | by:[dx,dy,dz], look=true}
 //       moves a held prop so its origin arrives at `at` (or moves by `by`), keeping its world orientation.
 //   place    {character, hand="R", prop?, start, contact=start+16, end=contact+14, at:[x,y,z] | onto:{prop, socket},
@@ -125,6 +131,8 @@ struct InteractionContext {
     int prop = -1;            // held prop, -1 = empty hand
     quat orient{1, 0, 0, 0};  // the hand's world orientation while holding
     std::string socket;       // the prop socket the palm holds (T-096)
+    std::string shape = "wrap";  // hand shape of the grasp (T-112b): wrap | pinch | palm | hook | cradle
+    bool follower = false;       // T-112b two-hand follower: holds the prop without being its parent
   };
   std::map<std::pair<int, char>, Hold> hands;  // (character, side)
   // Exact contacts, re-corrected after all actions are compiled (later actions can change the body at a contact).
@@ -155,6 +163,17 @@ struct InteractionContext {
     double from = 0, to = 0, end = 0;  // contact, release, end of the giver's return
   };
   std::vector<Shared> shared;
+  // T-112b two-handed grasps: the second hand of a grasp set holds the prop without being its parent; from its
+  // contact to `to` (the leading hand's place contact, or the shot end) its wrist is keyed in the prop frame at every
+  // frame and its palm contact is corrected per frame with the other contacts (finishInteractions).
+  struct Follower {
+    int character = -1;
+    char side = 'R';
+    int prop = -1;
+    std::string socket;
+    double from = 0, to = 1e30;
+  };
+  std::vector<Follower> followers;
   bool parentsChecked = false;  // authored prop parents are checked before the first interaction evaluates props
   // Timing profile (T-104, the scene's opt-in "timing" key; anim/personality.h TimingProfile), resolved at the first
   // interaction action. It changes only the defaults of frames an action leaves out (without it: the defaults listed

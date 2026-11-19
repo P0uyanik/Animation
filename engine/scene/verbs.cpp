@@ -5,6 +5,8 @@
 #include <map>
 #include <set>
 
+#include "scene/reaction.h"
+
 namespace plush {
 namespace {
 
@@ -63,9 +65,9 @@ bool hasConstraint(const std::vector<std::string>& constraints, const std::strin
 
 }  // namespace
 
-const VerbPhase* VerbDef::phase(const std::string& name) const {
+const VerbPhase* VerbDef::phase(const std::string& name, const std::string& part) const {
   for (const VerbPhase& p : phases)
-    if (p.name == name) return &p;
+    if (p.name == name && (part.empty() || p.part == part)) return &p;
   return nullptr;
 }
 
@@ -78,8 +80,8 @@ Result<VerbDef> verbFromJson(const Json& j) {
   if (v.id.empty()) return fail("plush.verb: 'id' is required");
   const std::string ctx = std::format("verb '{}'", v.id);
   v.lowersTo = str(j, "lowers_to");
-  if (v.lowersTo != "grasp" && v.lowersTo != "hold" && v.lowersTo != "place")
-    return fail(ctx + ": 'lowers_to' must be grasp, hold or place");
+  if (v.lowersTo != "grasp" && v.lowersTo != "hold" && v.lowersTo != "place" && v.lowersTo != "handover")
+    return fail(ctx + ": 'lowers_to' must be grasp, hold, place or handover");
   if (auto r = j.find("requires"); r != j.end()) {
     if (!r->is_object()) return fail(ctx + ": 'requires' must be an object");
     v.handState = str(*r, "hand_state");
@@ -96,7 +98,12 @@ Result<VerbDef> verbFromJson(const Json& j) {
     VerbPhase p;
     p.name = str(e, "name");
     if (!kPhases.count(p.name)) return fail(std::format("{}: unknown phase '{}'", ctx, p.name));
-    if (v.phase(p.name)) return fail(std::format("{}: duplicate phase '{}'", ctx, p.name));
+    p.part = str(e, "part");
+    p.who = str(e, "who");
+    if (!p.who.empty() && p.who != "giver" && p.who != "receiver" && p.who != "both")
+      return fail(std::format("{}: phase '{}': 'who' must be giver, receiver or both", ctx, p.name));
+    for (const VerbPhase& q : v.phases)
+      if (q.name == p.name && q.part == p.part) return fail(std::format("{}: duplicate phase '{}'", ctx, p.name));
     const std::string pc = std::format("{}: phase '{}'", ctx, p.name);
     p.beat = str(e, "beat");
     p.fallbackF = num(e, "fallback_f", 0);
@@ -138,7 +145,7 @@ std::filesystem::path findVerbFile(const std::filesystem::path& from, const std:
 bool isVerbAction(const Json& a) {
   if (!a.is_object()) return false;
   const std::string type = str(a, "type");
-  return type == "pick_up" || type == "carry" || (type == "place" && flag(a, "verb", false));
+  return type == "pick_up" || type == "carry" || type == "pass" || (type == "place" && flag(a, "verb", false));
 }
 
 bool hasVerbAction(const Json& actions) {
@@ -149,9 +156,9 @@ std::string VerbError::message() const {
   return std::format("verb '{}': character '{}', prop '{}': {}: {}", verb, character, prop.empty() ? "-" : prop, code, reason);
 }
 
-const VerbPhaseSpan* VerbExpansion::span(size_t action, const std::string& phase) const {
+const VerbPhaseSpan* VerbExpansion::span(size_t action, const std::string& phase, const std::string& part) const {
   for (const VerbPhaseSpan& s : phases)
-    if (s.action == action && s.phase == phase) return &s;
+    if (s.action == action && s.phase == phase && (part.empty() || s.part == part)) return &s;
   return nullptr;
 }
 
@@ -166,6 +173,8 @@ std::expected<VerbExpansion, VerbError> expandVerbs(const Json& actions, const V
   std::map<std::string, HandKey> holder;   // prop -> hand
   std::map<std::string, std::pair<std::string, std::string>> onProp;  // prop -> (parent prop, socket)
   std::map<std::string, std::optional<vec3>> origin;
+  std::map<HandKey, std::string> heldSocket;  // T-112b: the socket a hand holds its prop by ("" = unknown)
+  std::map<std::string, HandKey> followerOf;  // T-112b: prop -> the second hand of a two-hand grasp
   for (const auto& p : ctx.props) {
     origin[p.name] = std::nullopt;
     if (!p.parent) {
@@ -191,6 +200,12 @@ std::expected<VerbExpansion, VerbError> expandVerbs(const Json& actions, const V
     const std::string s = str(a, k, "R");
     return !s.empty() && (s[0] == 'L' || s[0] == 'l') ? 'L' : 'R';
   };
+  // The acting (leading) hand: the first of "hands" (two-hand verbs, T-112b), else "hand".
+  auto leadOf = [&](const Json& a) -> char {
+    if (auto it = a.find("hands"); it != a.end() && it->is_array() && !it->empty() && (*it)[0].is_string())
+      return (*it)[0].get<std::string>() == "L" ? 'L' : 'R';
+    return sideOf(a, "hand");
+  };
 
   // Primitive interaction actions change the state at their start (ordered with the verbs by start frame).
   struct Prim {
@@ -215,6 +230,11 @@ std::expected<VerbExpansion, VerbError> expandVerbs(const Json& actions, const V
     const HandKey h{who, sideOf(a, "hand")};
     if (t == "grasp" || t == "reach") {
       const std::string p = str(a, "prop");
+      heldSocket[h] = str(a, "socket", "grip");
+      if (flag(a, "follower", false)) {
+        holding[h] = p, followerOf[p] = h;
+        return;
+      }
       holding[h] = p, holder[p] = h, onProp.erase(p);
       return;
     }
@@ -223,9 +243,16 @@ std::expected<VerbExpansion, VerbError> expandVerbs(const Json& actions, const V
     const std::string p = it->second;
     holding.erase(it);
     holder.erase(p);
+    heldSocket.erase(h);
+    if (auto f = followerOf.find(p); f != followerOf.end()) {
+      holding.erase(f->second);
+      heldSocket.erase(f->second);
+      followerOf.erase(f);
+    }
     if (t == "handover") {
       const HandKey r{str(a, "to"), sideOf(a, "toHand")};
       holding[r] = p, holder[p] = r;
+      heldSocket[r] = str(a, "toSocket", "grip_b");
     } else if (auto onto = a.find("onto"); onto != a.end() && onto->is_object()) {
       onProp[p] = {str(*onto, "prop"), str(*onto, "socket", "place")};
       origin[p] = std::nullopt;
@@ -240,15 +267,25 @@ std::expected<VerbExpansion, VerbError> expandVerbs(const Json& actions, const V
 
   // Chains: a verb without a start starts where the previous verb of the same hand ended (its settle included).
   std::map<size_t, size_t> prevOnHand;  // verb action index -> previous verb action index on the same hand
+  std::map<size_t, HandKey> receiverOf;  // pass -> the receiving hand (its chain continues from the release)
   {
     std::map<HandKey, size_t> last;
     for (size_t i : verbs) {
-      const HandKey h{str(actions[i], "character"), sideOf(actions[i], "hand")};
+      const Json& a = actions[i];
+      const HandKey h{str(a, "character"), leadOf(a)};
       if (auto it = last.find(h); it != last.end()) prevOnHand[i] = it->second;
       last[h] = i;
+      if (auto hs = a.find("hands"); hs != a.end() && hs->is_array())
+        for (const Json& e : *hs)
+          if (e.is_string()) last[{str(a, "character"), e.get<std::string>() == "L" ? 'L' : 'R'}] = i;
+      if (str(a, "type") == "pass") {
+        receiverOf[i] = {str(a, "to"), sideOf(a, "toHand")};
+        last[receiverOf[i]] = i;
+      }
     }
   }
-  std::map<size_t, double> endOf;  // processed verb -> chain end
+  std::map<size_t, double> endOf;       // processed verb -> chain end
+  std::map<size_t, double> receiverEnd;  // processed pass -> where the receiver's chain continues
   std::set<size_t> done;
   size_t nextPrim = 0;
 
@@ -264,7 +301,8 @@ std::expected<VerbExpansion, VerbError> expandVerbs(const Json& actions, const V
         s = a["start"].get<double>();
       } else if (auto it = prevOnHand.find(i); it != prevOnHand.end()) {
         if (!done.count(it->second)) continue;
-        s = endOf[it->second];
+        auto rv = receiverOf.find(it->second);
+        s = rv != receiverOf.end() && rv->second == HandKey{str(a, "character"), leadOf(a)} ? receiverEnd[it->second] : endOf[it->second];
       } else {
         return std::unexpected(VerbError{str(a, "type"), str(a, "character"), str(a, "prop"), "no_start",
                                          "give 'start' (no earlier verb of this hand to follow)"});
@@ -279,14 +317,24 @@ std::expected<VerbExpansion, VerbError> expandVerbs(const Json& actions, const V
     const size_t i = pick;
     const Json& a = actions[i];
     const std::string type = str(a, "type"), who = str(a, "character");
-    const char side = sideOf(a, "hand");
-    const HandKey hand{who, side};
+    char side = leadOf(a);
+    HandKey hand{who, side};
     std::string prop = str(a, "prop");
     auto err = [&](const std::string& code, const std::string& reason) {
       return std::unexpected(VerbError{type, who, prop, code, reason});
     };
     if (a.contains("hand") && (!a["hand"].is_string() || (str(a, "hand") != "L" && str(a, "hand") != "R")))
       return err("bad_hand", "'hand' must be \"L\" or \"R\"");
+    // T-112b two hands: "hands": ["L", "R"] (or ["R", "L"]); the first leads.
+    const bool twoHand = a.contains("hands");
+    char other = side == 'L' ? 'R' : 'L';
+    if (twoHand) {
+      const Json& hs = a["hands"];
+      if (!hs.is_array() || hs.size() != 2 || !hs[0].is_string() || !hs[1].is_string() ||
+          !((hs[0] == "L" && hs[1] == "R") || (hs[0] == "R" && hs[1] == "L")))
+        return err("bad_hand", "'hands' must be [\"L\", \"R\"] or [\"R\", \"L\"]");
+      if (a.contains("hand") && str(a, "hand")[0] != side) return err("bad_hand", "'hand' must be the first of 'hands' (the leading hand)");
+    }
     const VerbContext::Character* ch = charOf(who);
     if (!ch) return err("unknown_character", std::format("no character '{}' in the scene", who));
     if (!ctx.verb) return err("no_verb", "no verb library");
@@ -297,6 +345,7 @@ std::expected<VerbExpansion, VerbError> expandVerbs(const Json& actions, const V
     const PersonalityProfile* P = ch->personality;
     const double S = pickStart;
     const bool look = flag(a, "look", true);
+    const bool react = flag(a, "react", false) && ctx.events;  // T-112b: reaction events only when the scene has events
 
     // Length of a phase: its beat with a profile, else its fallback; optional phases only with a profile or when the
     // action asks (true: the profile beat or the phase's fallback; a number: that many frames).
@@ -313,8 +362,8 @@ std::expected<VerbExpansion, VerbError> expandVerbs(const Json& actions, const V
       }
       return T && !p->beat.empty() ? T->frames(p->beat, p->fallbackF, P) : p->fallbackF;
     };
-    auto span = [&](const char* phase, double from, double to) {
-      if (def.phase(phase)) x.phases.push_back({i, type, who, prop, phase, from, to});
+    auto span = [&](const char* phase, double from, double to, char hs = 0, const char* part = "") {
+      if (def.phase(phase, part)) x.phases.push_back({i, type, who, prop, phase, from, to, hs, part});
     };
     auto constraintsOf = [&](const char* phase) {
       const VerbPhase* p = def.phase(phase);
@@ -325,12 +374,22 @@ std::expected<VerbExpansion, VerbError> expandVerbs(const Json& actions, const V
     auto held = holding.find(hand);
     if (def.handState == "empty" && held != holding.end())
       return err("hand_full", std::format("hand.{} already holds '{}'", side, held->second));
+    if (def.handState == "empty" && twoHand)
+      if (auto h2 = holding.find({who, other}); h2 != holding.end())
+        return err("hand_full", std::format("hand.{} already holds '{}'", other, h2->second));
     if (def.handState == "holding") {
       if (held == holding.end()) return err("hand_empty", std::format("hand.{} holds nothing", side));
       if (prop.empty()) prop = held->second;
       if (prop != held->second)
         return err("holds_other", std::format("hand.{} holds '{}', not '{}'", side, held->second, prop));
+      if (auto f = followerOf.find(prop); f != followerOf.end() && f->second == hand) {  // the second hand: lower to the leader
+        hand = holder[prop];
+        side = hand.second;
+        other = side == 'L' ? 'R' : 'L';
+      }
     }
+    const bool heldTwo = def.handState == "holding" && followerOf.count(prop) > 0;
+    const char follow = twoHand ? other : heldTwo ? followerOf[prop].second : 0;
     const VerbContext::Prop* pr = propOf(prop);
     if (prop.empty()) return err("unknown_prop", "give 'prop'");
     if (!pr || !pr->asset) return err("unknown_prop", std::format("no prop '{}' in the scene", prop));
@@ -342,16 +401,63 @@ std::expected<VerbExpansion, VerbError> expandVerbs(const Json& actions, const V
     if (aff && !aff->error.empty()) return err("affordances_invalid", aff->error);
     if (aff && aff->deform != "rigid")
       return err("deform_unsupported", std::format("deform mode '{}' not supported yet (rigid only, T-099)", aff->deform));
-    if (aff && aff->hands == "two")
+    if (heldTwo && def.lowersTo == "handover") return err("two_hands", std::format("'{}' is held in two hands and cannot be passed", prop));
+    if (aff && aff->hands == "two" && !twoHand && (def.lowersTo == "grasp" || def.lowersTo == "handover"))
       return err("two_hands", std::format("prop '{}' (asset '{}') needs two hands: give hands:[L,R] or a two-site set (T-112b)",
                                           prop, pr->asset->id));
+    if (twoHand && def.lowersTo == "handover") return err("two_hands", "pass takes one hand ('hands' is for pick_up, carry and place)");
+    if (twoHand && def.lowersTo != "grasp" && !heldTwo)
+      return err("two_hands", std::format("'{}' is not held in two hands", prop));
     std::vector<Json> gen;
+    // A grasp site's hand shape, approach side and finger band (T-112b) on a generated grasp.
+    const bool fingers = a.contains("fingers") && a["fingers"].is_boolean() ? a["fingers"].get<bool>() : T != nullptr;
+    auto styled = [&](Json g, const GraspSite* site) {
+      if (!site) return g;
+      if (site->shape != "wrap") g["shape"] = site->shape;
+      if (site->approach) g["approach"] = {site->approach->x, site->approach->y, site->approach->z};
+      if (fingers && site->band) {
+        g["band"] = {site->band->x, site->band->y};
+        g["thumb"] = site->thumb.empty() ? "opposed" : site->thumb;
+      }
+      return g;
+    };
+    // Both arms of a two-hand grasp stay outside the bodies over [from, to] (design 2.4; read only).
+    auto outsideBody = [&](double from, double to) {
+      for (char hs : {side, follow}) {
+        VerbCheck o{VerbCheck::Kind::OutsideBody, type, who, prop, "", hs, from, to, 0.0f};
+        x.checks.push_back(o);
+      }
+    };
 
     if (def.lowersTo == "grasp") {
-      // Grasp site: "site", "set", an explicit "socket", or the first set (then site) this hand may use.
+      // Grasp site: "site", "set", an explicit "socket", or the first set (then site) this hand may use. Two hands
+      // (T-112b): the named or the first two-site set, its sites matched to the leading and the second hand.
       const GraspSite* site = nullptr;
-      auto handOk = [&](const GraspSite& s) { return s.hand == "any" || s.hand[0] == side; };
-      if (a.contains("site") || a.contains("set")) {
+      const GraspSite* site2 = nullptr;
+      const GraspSet* set2 = nullptr;
+      auto handOk = [&](const GraspSite& s, char hs) { return s.hand == "any" || s.hand[0] == hs; };
+      if (twoHand) {
+        if (!aff) return err("unknown_set", std::format("prop '{}' (asset '{}') has no affordances: two hands need a two-site grasp set", prop,
+                                                       pr->asset->id));
+        if (a.contains("site")) return err("unknown_site", "two hands take a grasp set ('set'), not a site");
+        if (a.contains("set")) {
+          set2 = aff->set(str(a, "set"));
+          if (!set2) return err("unknown_set", std::format("asset '{}' has no grasp set '{}'", pr->asset->id, str(a, "set")));
+          if (set2->sites.size() != 2)
+            return err("unknown_set", std::format("grasp set '{}' has {} site(s); two hands need a set of two", set2->id, set2->sites.size()));
+        } else {
+          for (const GraspSet& s : aff->sets)
+            if (!set2 && s.sites.size() == 2) set2 = &s;
+          if (!set2) return err("unknown_set", std::format("asset '{}' has no two-site grasp set", pr->asset->id));
+        }
+        const GraspSite* s0 = aff->site(set2->sites[0]);
+        const GraspSite* s1 = aff->site(set2->sites[1]);
+        if (handOk(*s0, side) && handOk(*s1, other)) site = s0, site2 = s1;
+        else if (handOk(*s1, side) && handOk(*s0, other)) site = s1, site2 = s0;
+        else
+          return err("wrong_hand", std::format("grasp set '{}' (sites for hand.{} and hand.{}) does not fit hands [{}, {}]", set2->id, s0->hand,
+                                               s1->hand, side, other));
+      } else if (a.contains("site") || a.contains("set")) {
         if (!aff) return err(a.contains("site") ? "unknown_site" : "unknown_set",
                              std::format("prop '{}' (asset '{}') has no affordances", prop, pr->asset->id));
         if (a.contains("site")) {
@@ -364,18 +470,16 @@ std::expected<VerbExpansion, VerbError> expandVerbs(const Json& actions, const V
             return err("two_hands", std::format("grasp set '{}' needs two hands: give hands:[L,R] (T-112b)", set->id));
           site = aff->site(set->sites[0]);
         }
-        if (!handOk(*site))
+        if (!handOk(*site, side))
           return err("wrong_hand", std::format("grasp site '{}' is for hand.{}, hand.{} asked", site->id, site->hand, side));
       } else if (aff && !a.contains("socket")) {
         for (const GraspSet& s : aff->sets)
-          if (!site && s.sites.size() == 1 && handOk(*aff->site(s.sites[0]))) site = aff->site(s.sites[0]);
+          if (!site && s.sites.size() == 1 && handOk(*aff->site(s.sites[0]), side)) site = aff->site(s.sites[0]);
         for (const GraspSite& s : aff->sites)
-          if (!site && handOk(s)) site = &s;
+          if (!site && handOk(s, side)) site = &s;
         if (!site && !aff->sites.empty())
           return err("wrong_hand", std::format("no grasp site of asset '{}' is for hand.{}", pr->asset->id, side));
       }
-      if (site && site->shape != "wrap")
-        return err("shape_unsupported", std::format("grasp site '{}': hand shape '{}' comes with T-112b (wrap only)", site->id, site->shape));
       const std::string socket = site ? site->socket : str(a, "socket", "grip");
       if (!pr->asset->sockets.count(socket))
         return err("unknown_site", std::format("asset '{}' has no socket '{}'", pr->asset->id, socket));
@@ -389,6 +493,12 @@ std::expected<VerbExpansion, VerbError> expandVerbs(const Json& actions, const V
       if (contact < R0 + 6) return err("bad_frames", std::format("contact {} must be at least 6 frames after the reach starts ({})", contact, R0));
       const double pre = contact - std::min(6.0, 0.4 * (contact - R0));
       const double Z = length("settle");
+      // The second hand contacts d frames after the leader (not a mirror; design 2.4): reaction_delay / 3, at least 1,
+      // at most the set's simultaneous_frames.
+      const double d = set2 ? std::clamp(std::round((T ? T->frames("reaction_delay", 4, P) : 4.0) / 3.0), 1.0,
+                                         double(std::max(1, set2->simultaneousFrames)))
+                            : 0.0;
+      const double last = contact + d;
       if (T && look && L > 0) {
         gen.push_back({{"type", "look"}, {"character", who}, {"atProp", prop}, {"start", S - L}, {"end", R0}});
         span("look", S - L, S);
@@ -398,18 +508,33 @@ std::expected<VerbExpansion, VerbError> expandVerbs(const Json& actions, const V
       span("anticipate", S, R0);
       span("approach", R0, pre);
       span("contact", pre, contact);
-      span("settle", contact, contact + Z);
+      if (site2) {
+        span("approach", R0 + d, pre + d, other);
+        span("contact", pre + d, last, other);
+      }
+      span("settle", last, last + Z);
       Json g = {{"type", "grasp"}, {"character", who}, {"hand", std::string(1, side)}, {"prop", prop}, {"start", R0}, {"contact", contact}};
       if (socket != "grip") g["socket"] = socket;
       if (!look) g["look"] = false;
-      gen.push_back(std::move(g));
+      gen.push_back(styled(std::move(g), site));
+      if (site2) {
+        Json g2 = {{"type", "grasp"}, {"character", who}, {"hand", std::string(1, other)}, {"prop", prop}, {"start", R0 + d},
+                   {"contact", last},  {"socket", site2->socket},           {"follower", true}, {"look", false}};
+        gen.push_back(styled(std::move(g2), site2));
+      }
       const auto c = constraintsOf("contact");
-      if (hasConstraint(c, "reachable") || hasConstraint(constraintsOf("approach"), "reachable"))
-        x.checks.push_back({VerbCheck::Kind::Reach, type, who, prop, socket, side, contact, contact, 0.005f});
-      if (auto lim = mmLimit(c, "palm_on_socket"))
-        x.checks.push_back({VerbCheck::Kind::PalmOnSocket, type, who, prop, socket, side, contact, contact, *lim});
-      holding[hand] = prop, holder[prop] = hand, onProp.erase(prop);
-      endOf[i] = contact + Z;
+      const bool reachable = hasConstraint(c, "reachable") || hasConstraint(constraintsOf("approach"), "reachable");
+      const auto lim = mmLimit(c, "palm_on_socket");
+      if (reachable) x.checks.push_back({VerbCheck::Kind::Reach, type, who, prop, socket, side, contact, contact, 0.005f});
+      if (lim) x.checks.push_back({VerbCheck::Kind::PalmOnSocket, type, who, prop, socket, side, contact, contact, *lim});
+      if (site2) {
+        if (reachable) x.checks.push_back({VerbCheck::Kind::Reach, type, who, prop, site2->socket, other, last, last, 0.005f});
+        if (lim) x.checks.push_back({VerbCheck::Kind::PalmOnSocket, type, who, prop, site2->socket, other, last, last, *lim});
+        outsideBody(last, last + Z);
+        holding[{who, other}] = prop, followerOf[prop] = {who, other}, heldSocket[{who, other}] = site2->socket;
+      }
+      holding[hand] = prop, holder[prop] = hand, onProp.erase(prop), heldSocket[hand] = socket;
+      endOf[i] = last + Z;
     } else if (def.lowersTo == "hold") {
       const auto at = vecOpt(a, "at"), by = vecOpt(a, "by");
       if (!at && !by) return err("bad_frames", "give 'at' [x,y,z] or 'by' [dx,dy,dz]");
@@ -435,6 +560,10 @@ std::expected<VerbExpansion, VerbError> expandVerbs(const Json& actions, const V
       gen.push_back(std::move(g));
       const auto c = constraintsOf("manipulate");
       if (hasConstraint(c, "reachable")) x.checks.push_back({VerbCheck::Kind::Reach, type, who, prop, "", side, end, end, 0.005f});
+      if (heldTwo) {  // the second hand follows the prop along the path (design 4.2)
+        if (hasConstraint(c, "reachable")) x.checks.push_back({VerbCheck::Kind::Reach, type, who, prop, "", follow, end, end, 0.005f});
+        outsideBody(S, end + Z);
+      }
       if (hasConstraint(c, "upright") && aff && aff->upright) {
         VerbCheck u{VerbCheck::Kind::Upright, type, who, prop, "", side, S, end, aff->upright->maxTiltDeg};
         u.axis = aff->upright->axis;
@@ -443,6 +572,141 @@ std::expected<VerbExpansion, VerbError> expandVerbs(const Json& actions, const V
       if (at) origin[prop] = *at;
       else if (origin[prop]) origin[prop] = *origin[prop] + *by;
       endOf[i] = end + Z;
+    } else if (def.lowersTo == "handover") {  // pass (T-112b, design 4.4)
+      const std::string to = str(a, "to");
+      if (a.contains("toHand") && (!a["toHand"].is_string() || (str(a, "toHand") != "L" && str(a, "toHand") != "R")))
+        return err("bad_hand", "'toHand' must be \"L\" or \"R\"");
+      const char toSide = sideOf(a, "toHand");
+      const HandKey recv{to, toSide};
+      const VerbContext::Character* rch = charOf(to);
+      if (!rch) return err("unknown_character", std::format("no receiver '{}' in the scene", to));
+      if (recv == hand) return err("same_hand", std::format("the receiving hand is the giving hand ('{}' hand.{})", to, toSide));
+      if (auto r = holding.find(recv); r != holding.end())
+        return err("hand_full", std::format("receiver '{}' hand.{} already holds '{}'", to, toSide, r->second));
+      // The receiver's socket: "toSocket", "toSite" / "toSet", the asset's handover receive set, else grip_b.
+      const GraspSite* rsite = nullptr;
+      std::string toSocket = str(a, "toSocket");
+      auto handOk = [&](const GraspSite& s) { return s.hand == "any" || s.hand[0] == toSide; };
+      if (toSocket.empty() && (a.contains("toSite") || a.contains("toSet"))) {
+        if (!aff) return err(a.contains("toSite") ? "unknown_site" : "unknown_set",
+                             std::format("prop '{}' (asset '{}') has no affordances", prop, pr->asset->id));
+        if (a.contains("toSite")) {
+          rsite = aff->site(str(a, "toSite"));
+          if (!rsite) return err("unknown_site", std::format("asset '{}' has no grasp site '{}'", pr->asset->id, str(a, "toSite")));
+        } else {
+          const GraspSet* set = aff->set(str(a, "toSet"));
+          if (!set) return err("unknown_set", std::format("asset '{}' has no grasp set '{}'", pr->asset->id, str(a, "toSet")));
+          if (set->sites.size() != 1) return err("two_hands", std::format("grasp set '{}' needs two hands; a pass takes one", set->id));
+          rsite = aff->site(set->sites[0]);
+        }
+        if (!handOk(*rsite))
+          return err("wrong_hand", std::format("grasp site '{}' is for hand.{}, receiver hand.{} asked", rsite->id, rsite->hand, toSide));
+      } else if (toSocket.empty() && aff) {
+        for (const std::string& id : aff->handoverReceive)
+          if (const GraspSet* set = aff->set(id); !rsite && set && set->sites.size() == 1 && handOk(*aff->site(set->sites[0])))
+            rsite = aff->site(set->sites[0]);
+      }
+      if (rsite) toSocket = rsite->socket;
+      if (toSocket.empty()) toSocket = "grip_b";
+      if (!pr->asset->sockets.count(toSocket)) return err("unknown_site", std::format("asset '{}' has no socket '{}'", pr->asset->id, toSocket));
+      if (rsite && rsite->shape != "wrap")
+        return err("shape_unsupported", std::format("receiver site '{}': a pass receives with a wrap grasp (hand shape '{}')", rsite->id, rsite->shape));
+      // The hands must not meet: not the same socket, not overlapping finger bands.
+      const std::string giveSocket = heldSocket.count(hand) ? heldSocket[hand] : std::string();
+      if (giveSocket == toSocket)
+        return err("hands_meet", std::format("giver and receiver would hold '{}' by the same socket '{}'", prop, toSocket));
+      if (aff && !giveSocket.empty()) {
+        auto bySocket = [&](const std::string& sk) -> const GraspSite* {
+          for (const GraspSite& g : aff->sites)
+            if (g.socket == sk) return &g;
+          return nullptr;
+        };
+        const GraspSite* gs = bySocket(giveSocket);
+        const GraspSite* rs = rsite ? rsite : bySocket(toSocket);
+        // Same band: the bands overlap along the axis and the two sockets are on the same side of it (radial
+        // directions about the prop's up axis less than 90 deg apart). Opposite sides at the same height do not meet
+        // (the cup: grip at +x, grip_b at -x, bands overlapping by 10 mm).
+        auto radial = [&](const std::string& sk) {
+          const vec3 up = aff->upright ? glm::normalize(aff->upright->axis) : vec3(0, 1, 0);
+          const vec3 t = pr->asset->sockets.at(sk).translation;
+          return t - up * glm::dot(t, up);
+        };
+        const vec3 ra = radial(giveSocket), rb = radial(toSocket);
+        const bool sameSide = glm::length(ra) < 1e-6f || glm::length(rb) < 1e-6f || glm::dot(ra, rb) > 0;
+        if (gs && rs && gs->band && rs->band && sameSide && std::max(gs->band->x, rs->band->x) < std::min(gs->band->y, rs->band->y))
+          return err("hands_meet", std::format("finger bands of sites '{}' [{:g}, {:g}] and '{}' [{:g}, {:g}] overlap on the same side: the hands "
+                                               "would meet", gs->id, gs->band->x, gs->band->y, rs->id, rs->band->x, rs->band->y));
+      }
+      // Frames. Fallbacks are the handover defaults (design 3.3); with a profile each beat is the acting character's.
+      const PersonalityProfile* PR = rch->personality;
+      auto beatOf = [&](const char* name, const char* part, const PersonalityProfile* whoP, double fb) {
+        const VerbPhase* ph = def.phase(name, part);
+        const double f = ph ? ph->fallbackF : fb;
+        return T && ph && !ph->beat.empty() ? T->frames(ph->beat, f, whoP) : f;
+      };
+      constexpr double kGazeLead = 4;  // the receiver's eyes lead the hand (the primitive's gaze lead)
+      double noticeAt = 0;
+      if (react) {  // the receiver notices the offer through the reaction system: its notice delay starts the reach
+        ReactionEvent ev;
+        ev.kind = ReactionEvent::Kind::PartnerActs;
+        ev.name = "pass";
+        ev.source = who;
+        ev.time = std::max(0.0, (S - ctx.frameStart) / ctx.fps);
+        ReactionContext rc;
+        rc.timing = T;
+        double delay = planReaction(ev, PR, rc).noticeDelay;
+        if (PR && PR->reaction.delayFrames) delay = std::max(delay, double(PR->reaction.delayFrames->lo) / 24.0);
+        noticeAt = ctx.frameStart + (ev.time + delay) * ctx.fps;
+        x.events.push_back({{"kind", "partner_acts"}, {"name", "pass"}, {"source", who}, {"time", ev.time}, {"characters", {to}}});
+      }
+      const double rStart = num(a, "receiverStart", react ? noticeAt + kGazeLead : S + beatOf("look", "", PR, 4));
+      const double reachF = beatOf("approach", "", PR, 14);
+      const double contact = num(a, "contact", T || react ? rStart + reachF : S + beatOf("look", "", PR, 4) + reachF);
+      const double rel = num(a, "release", contact + beatOf("manipulate", "shared", P, 4));
+      const double end = num(a, "end", rel + beatOf("release", "", P, 12));
+      if (contact < S + 6 || contact < rStart + 6 || rel < contact + 1 || end < rel + 8)
+        return err("bad_frames", "needs contact >= start + 6, contact >= receiverStart + 6, release > contact, end >= release + 8");
+      if ((T || a.contains("release")) && rel - contact < 6)
+        return err("shared_too_short", std::format("shared hold {:g} f (contact {:g} to release {:g}) is shorter than 6 f", rel - contact, contact, rel));
+      const double Z = length("settle");
+      const double still = contact - std::min(4.0, 0.3 * (contact - S));
+      const double pre = contact - std::min(6.0, 0.4 * (contact - rStart));
+      auto spanOf = [&](const char* phase, const char* part, const std::string& whoS, char hs, double from, double t) {
+        if (def.phase(phase, part)) x.phases.push_back({i, type, whoS, prop, phase, from, t, hs, part});
+      };
+      spanOf("look", "", to, toSide, react ? noticeAt : rStart - kGazeLead, rStart);
+      spanOf("manipulate", "offer", who, side, S, still);
+      spanOf("approach", "", to, toSide, rStart, pre);
+      spanOf("contact", "", to, toSide, pre, contact);
+      spanOf("manipulate", "shared", who, side, contact, rel);
+      spanOf("release", "", who, side, rel, end);
+      spanOf("settle", "", who, side, end, end + Z);
+      Json g = {{"type", "handover"}, {"character", who}, {"hand", std::string(1, side)}, {"to", to}, {"toHand", std::string(1, toSide)},
+                {"prop", prop}, {"toSocket", toSocket}, {"start", S}, {"receiverStart", rStart}, {"contact", contact}, {"release", rel},
+                {"end", end}};
+      if (auto at = vecOpt(a, "at")) g["at"] = a["at"];
+      if (!look || react) g["look"] = false;
+      gen.push_back(std::move(g));
+      if (react && look) {  // one gaze source: the receiver's look is the reaction's; the giver's as look actions
+        gen.push_back({{"type", "look"}, {"character", who}, {"atProp", prop}, {"start", S}, {"end", rel}});
+        gen.push_back({{"type", "look"}, {"character", who}, {"atCharacter", to}, {"start", rel}, {"end", end + Z}});
+      }
+      const auto cc = constraintsOf("contact");
+      if (hasConstraint(cc, "reachable")) {
+        x.checks.push_back({VerbCheck::Kind::Reach, type, to, prop, toSocket, toSide, contact, contact, 0.005f});
+        x.checks.push_back({VerbCheck::Kind::Reach, type, who, prop, "", side, contact, contact, 0.005f});
+      }
+      if (auto lim = mmLimit(cc, "palm_on_socket"))
+        x.checks.push_back({VerbCheck::Kind::PalmOnSocket, type, to, prop, toSocket, toSide, contact, contact, *lim});
+      if (hasConstraint(cc, "outside_body")) {  // the meeting point keeps both arms outside the bodies (design 4.4)
+        x.checks.push_back({VerbCheck::Kind::OutsideBody, type, who, prop, "", side, still, rel, 0.0f});
+        x.checks.push_back({VerbCheck::Kind::OutsideBody, type, to, prop, "", toSide, contact, rel, 0.0f});
+      }
+      holding.erase(hand);
+      heldSocket.erase(hand);
+      holding[recv] = prop, holder[prop] = recv, heldSocket[recv] = toSocket;
+      endOf[i] = end + Z;
+      receiverEnd[i] = rel;
     } else {  // place
       const std::string socket = str(a, "socket", aff && aff->place ? aff->place->socket : "place");
       if (!pr->asset->sockets.count(socket))
@@ -499,8 +763,11 @@ std::expected<VerbExpansion, VerbError> expandVerbs(const Json& actions, const V
       if (!look) g["look"] = false;
       gen.push_back(std::move(g));
       const auto mc = constraintsOf("manipulate"), cc = constraintsOf("contact");
-      if (hasConstraint(mc, "reachable") || hasConstraint(cc, "reachable"))
+      if (hasConstraint(mc, "reachable") || hasConstraint(cc, "reachable")) {
         x.checks.push_back({VerbCheck::Kind::Reach, type, who, prop, socket, side, contact, contact, 0.005f});
+        if (heldTwo) x.checks.push_back({VerbCheck::Kind::Reach, type, who, prop, "", follow, contact, contact, 0.005f});
+      }
+      if (heldTwo) outsideBody(S, contact);
       if (auto lim = mmLimit(cc, "place_on_target")) {
         VerbCheck pc{VerbCheck::Kind::PlaceOnTarget, type, who, prop, socket, side, contact, contact, *lim};
         pc.target = at.value_or(vec3(0)), pc.ontoProp = ontoProp, pc.ontoSocket = ontoSocket;
@@ -513,6 +780,12 @@ std::expected<VerbExpansion, VerbError> expandVerbs(const Json& actions, const V
       }
       holding.erase(hand);
       holder.erase(prop);
+      heldSocket.erase(hand);
+      if (heldTwo) {
+        holding.erase(followerOf[prop]);
+        heldSocket.erase(followerOf[prop]);
+        followerOf.erase(prop);
+      }
       if (!ontoProp.empty()) {
         onProp[prop] = {ontoProp, ontoSocket};
         origin[prop] = std::nullopt;
@@ -520,6 +793,8 @@ std::expected<VerbExpansion, VerbError> expandVerbs(const Json& actions, const V
         const mat4 R = assetTransformMatrix({vec3(0), pr->transform.rotationDeg, pr->transform.scale});
         origin[prop] = *at - vec3(R * vec4(pr->asset->sockets.at(socket).translation, 0));
       }
+      if (react)  // T-112b: a success event at the settle (design 4.5); the cast reacts as the scene's events say
+        x.events.push_back({{"kind", "success"}, {"name", "place"}, {"source", who}, {"time", std::max(0.0, (end - ctx.frameStart) / ctx.fps)}});
       endOf[i] = end + Z;
     }
     out[i] = Json(gen);
@@ -566,6 +841,18 @@ std::vector<VerbError> checkVerbConstraints(const VerbExpansion& x, const VerbGe
         if (e > c.limit)
           add("contact_error", std::format("socket '{}' {:.2f} mm from the place target at contact frame {:g} (limit {:.2f} mm)",
                                            c.socket, e * 1000, c.frame, c.limit * 1000));
+        break;
+      }
+      case VerbCheck::Kind::OutsideBody: {
+        if (!g.armGap) break;  // not bound: the compile's own warning remains
+        float worst = 1e9f;
+        double at = c.frame;
+        for (double f = std::ceil(c.frame); f <= c.to + 1e-9; f += 1) {
+          if (g.ikWeight && g.ikWeight(c.character, c.side, f) < 0.99f) continue;
+          if (const float gap = g.armGap(c.character, c.side, f); gap < worst) worst = gap, at = f;
+        }
+        if (worst < c.limit)
+          add("arm_in_body", std::format("arm {} passes {:.1f} mm into the body at frame {:g}", c.side, (c.limit - worst) * 1000, at));
         break;
       }
       case VerbCheck::Kind::Upright: {
