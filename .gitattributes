@@ -1,2 +1,4 @@
 # Published character versions are hash-checked byte for byte (tools/check_assets.py): never convert line endings.
 assets/characters/*/versions/** -text
+# make_shot.py writes LF; tests/acting/test_e909_beats.py compares bytes, so a CRLF checkout (Windows autocrlf) must not convert.
+episodes/e909_two_char_acting/shots/**/*.scene.json text eol=lf
