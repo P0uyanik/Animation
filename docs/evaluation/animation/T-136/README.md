@@ -75,3 +75,62 @@ Tests: `tests/test_blink_schedule.cpp`.
 - The plan is deterministic.
 
 Not done: no render. This is a bake-level change, and frames will be checked in the next render pass.
+
+## E3: gaze chain (`gazeLegibility.chain`)
+
+```json
+"gazeLegibility": {"rangeDeg": [16, 8], "chain": true}
+```
+
+The chain is optional. Without it, T-120 is unchanged, and a test checks this bit for bit. With it on:
+
+- **Order of movement.** The eyes still lead.
+  - Beyond the eyes' comfortable range, the neck and head turn first (up to 50° yaw / 40° pitch).
+  - Then the torso, chest and spine (up to 25° / 25°), 3 frames after the head.
+  - Once a look has settled, the chain follows a moving target without that lag.
+- **Exact targets.** The eyes aim at the live target, not at the track keyed every 3 frames:
+  - `atProp`: the cup's middle;
+  - `atCharacter`: the midpoint of the partner's eyes, which gives held eye contact.
+- **Live-target cache.** The live targets are cached per frame at load. A held prop is read through its holder's pose, so it cannot be read during evaluation. The cache is built in two passes, so two characters in eye contact each see the other's corrected head.
+- **Near targets.** When the target is so close that the two eyes cannot both reach it (vergence), the head centres between them.
+
+### Per-frame angle error, e910 (`measure_gaze_error.py`, settled part of each look, mean / max in degrees)
+
+Each eye is measured against the exact target. Looks end where the next look, authored or generated, starts (`--expanded` T-117).
+
+| look | frames | before (s010) | after (s010_e23) | vergence demand before → after |
+|---|---|---|---|---|
+| boy → cup | f100-116 | 52.4 / 52.5 | 1.2 / 3.3 | 14.8 → 30.1 |
+| boy → girl | f117-138 | 37.3 / 37.6 | **0.36 / 0.78** | 9.8 → 19.0 |
+| boy → cup | f139-169 | 52.2 / 52.3 | **0.38 / 0.59** | 12.1 → 28.1 |
+| girl → boy | f24-51 | 23.9 / 25.5 | 1.9 / 13.5 | 9.8 → 11.8 |
+| girl → cup | f52-99 | 48.8 / 52.5 | 7.7 / 12.4 | 18.8 → 45.4 |
+| girl → boy | f118-132 | 32.1 / 32.4 | **0.29 / 0.29** | 9.4 → 15.9 |
+| girl → cup | f133-146 | 51.9 / 52.1 | 6.3 / 6.5 | 20.2 → 43.3 |
+| girl → boy | f153-192 | 24.3 / 26.7 | 1.1 / 5.4 | 10.0 → 14.8 |
+| boy → girl (generated) | f48-69 | 38.5 / 39.9 | 20.5 / 36.5 | 10.0 → 24.5 |
+
+Per-frame data: [gaze_error_before.json](gaze_error_before.json), [gaze_error_after.json](gaze_error_after.json).
+
+PUPILS_PLACEHOLDER
+
+### Open points
+
+1. **Her cup looks keep 6-8°, because of vergence.**
+   - Leaning in brings her eyes about 15 cm from the cup. They would then have to converge about 45°, but the ±16° range allows 32°.
+   - Her eyes share the shortfall.
+   - A smaller torso pitch for near targets would trade lean for convergence.
+2. **Generated reaction looks (T-097D) get the chain but not the exact live target.**
+   - These looks are not in the scene's actions, for example his f48-69 and f169+ looks at her.
+   - Their error falls from 38° to 20°.
+3. **Studio's in-app recompile keeps the live targets computed at load.** They are rebuilt on the next load.
+4. **The bake costs about 5x more with the chain on** (e910: 3 s → 17 s). Per-frame JSON parsing in the face, blink and gaze settings is part of that.
+5. **Not rendered beyond the ID masks.**
+
+Tests: `tests/test_gaze_chain.cpp`.
+- Parsing.
+- `chain: false` gives the same pose as T-120, bit for bit.
+- A steep look: T-120 is 37° off, the chain 0°.
+- The torso takes part, and the eyes lead.
+- A near target moves the eyes only.
+- Two-character eye contact: T-120 is 58-62° off, the chain under 2.5°.
