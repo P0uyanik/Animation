@@ -38,7 +38,6 @@ import hair as HAIR  # noqa: E402
 import spec as S  # noqa: E402
 import versions as V  # noqa: E402
 from materials import builder as MATERIALS  # noqa: E402
-from materials import felt_halo as MATERIALS_HALO  # noqa: E402
 
 import geom as G  # noqa: E402  (the same module as body_v6.G)
 COMPONENTS = {  # component -> object-name prefixes (exact names or prefixes ending with "." / "_")
@@ -361,7 +360,6 @@ def main_generic(a, spec, info, out):
     subs, unassigned = organise(C, cid, components)
     if unassigned:
         raise SystemExit(f"objects without a component: {unassigned}")
-    MATERIALS_HALO.add_missing_halos(list(C.all_objects))  # T-110 skin halo (presets/4 only; no-op otherwise)
     stamp(C, spec, info, "master")
     if fc is not None:
         C["ps_engine_expressions"] = json.dumps(fc["engine_expressions"], sort_keys=True)

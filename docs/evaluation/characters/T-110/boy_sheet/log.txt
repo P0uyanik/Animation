@@ -1,4 +1,0 @@
-2026-11-19T03:41:22Z preview start: recipe ff4cd5a6db09 {'engine': 'cycles', 'samples': 2, 'px': 120}
-2026-11-19T03:48:16Z preview pass: /tmp/claude-0/-home-user-Animation/185c208a-5178-5e0b-a956-316a4f38ae54/scratchpad/final_boy_2.1.0/preview/preview.jpg
-2026-11-19T03:48:51Z sheet start: recipe ff4cd5a6db09 {'engine': 'cycles', 'samples': 16, 'px': 360}
-2026-11-19T04:05:11Z sheet written: /tmp/claude-0/-home-user-Animation/185c208a-5178-5e0b-a956-316a4f38ae54/scratchpad/final_boy_2.1.0/sheet.jpg 1120x2048
