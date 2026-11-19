@@ -511,3 +511,14 @@ d (materials, Opus 5.5, render cost vs the T-124 baseline); c (dress + skirt clo
 T-119 is on main; Codex fit + review after the first version. Candidate only (0.1.0), strict sheets; boy and girl
 untouched; shared-code changes sequenced by the Supervisor. Pending owner approval, not started: girls' hair lead
 (incl. auburn round 6), materials round 3, expression fidelity, cup-hold readability.
+
+## 2026-11-19 (~20:00Z): round-5 plan, Phases 1 and 2 in parallel (relayed)
+Owner: "Yes, I approve this plan. ... Start Phase 1 and Phase 2 in parallel, but limit concurrent sessions and avoid
+overloading the Supervisor and wasting usage capacity." Purpose: fix every e910 issue (T-117 §3), Animlog feedback
+(timing/spacing, arcs, overlap, anticipation) and the girls' eye shapes; shared improvements first, the scene second.
+Cap: at most 6 implementer sessions at once; waves; finish nearly-done work first; Animation environment.
+Phase 1: T-134 E1 reach mechanics (Fable, one session), T-135 E1m measurements, T-136 E2 blinks + E3 gaze chain (one
+session, shared files), T-138 E4 grasp accuracy (after T-134), T-139 E5 animcheck attribution, T-140 C1 framing.
+Phase 2: T-137 faces F1a/F1b/F2 (Fable, one session, overrides; owner approves each). Phase 3 later: S1 shot
+(staging -> acting -> final, owner looks between), S2 Codex review, D1 adopt proven features as defaults (owner).
+All engine changes opt-in; no test, threshold, golden or current-version change.
