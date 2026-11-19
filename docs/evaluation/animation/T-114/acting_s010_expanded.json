@@ -1,0 +1,97 @@
+{
+ "format": "plush.animcheck_acting",
+ "version": 1,
+ "scene": "e909_two_char_acting s010: T-114 two-character acting - she notices the cup, picks it up and offers it, he answers late and reluctantly, takes it, looks at it, sets it down; both react",
+ "characters": [
+  {
+   "character": "boy",
+   "personality": "boy_yellow_hoodie",
+   "warnings": [
+    "boy: boy clip boy_reluctant_shrug @109.0 amplitude 0.48 (86 deg) > profile 0.3 (+0.1)"
+   ],
+   "quick": false,
+   "glances": [
+    {
+     "event": "she notices the cup",
+     "event_frame": 11.99992,
+     "look_frame": 58.0,
+     "delay_frames": 46.0,
+     "notice_delay_frames": 16.0
+    },
+    {
+     "event": "the cup is back on the table",
+     "event_frame": 221.00008,
+     "look_frame": 242.00008,
+     "delay_frames": 21.0,
+     "notice_delay_frames": 16.0
+    },
+    {
+     "event": "pass",
+     "event_frame": 88.0,
+     "look_frame": 109.0,
+     "delay_frames": 21.0,
+     "notice_delay_frames": 16.0
+    }
+   ],
+   "gestures": [
+    {
+     "label": "boy clip boy_reluctant_shrug @109.0",
+     "amplitude": 0.476,
+     "swing_deg": 85.7,
+     "limit": 0.3
+    }
+   ],
+   "hold": {
+    "longest_still_frames": 29,
+    "at": [
+     81,
+     110
+    ],
+    "longest_still_frames_24": 29.0,
+    "required": 12.0
+   }
+  },
+  {
+   "character": "girl",
+   "personality": "girl_auburn_bun_glasses",
+   "warnings": [],
+   "quick": true,
+   "glances": [
+    {
+     "event": "she notices the cup",
+     "event_frame": 11.99992,
+     "look_frame": 16.49991988079071,
+     "delay_frames": 4.5,
+     "notice_delay_frames": 4.0
+    },
+    {
+     "event": "the cup is back on the table",
+     "event_frame": 221.00008,
+     "look_frame": 230.0,
+     "delay_frames": 9.0,
+     "notice_delay_frames": 4.0
+    }
+   ],
+   "gestures": [
+    {
+     "label": "girl clip girl_wonder_point @16.49991988079071",
+     "amplitude": 0.547,
+     "swing_deg": 98.4,
+     "limit": 0.6
+    }
+   ],
+   "hold": {
+    "longest_still_frames": 45,
+    "at": [
+     241,
+     286
+    ],
+    "longest_still_frames_24": 45.0,
+    "required": 15.0
+   }
+  }
+ ],
+ "warnings": [
+  "boy: boy clip boy_reluctant_shrug @109.0 amplitude 0.48 (86 deg) > profile 0.3 (+0.1)"
+ ]
+}
