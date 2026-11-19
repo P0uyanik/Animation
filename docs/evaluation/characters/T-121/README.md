@@ -29,8 +29,25 @@ Input `integration/r4-start @ 5a90975`. Blender 5.3.0 (bpy module, CPU, Cycles 1
 - `hand_frames.json` and `hand_vertex_groups.json`: fixtures recorded from Blender for the plain tests.
 - `scripts/`: the preview, close-up and fixture scripts (run with `tools/bpy_blender.py` or the bpy venv).
 
-## Not done here
-- The grasp close-up is a Blender FK curl, not the engine's T-051 band grasp on the cup. The T-117 pickup-camera
-  render is also not done. Both need the engine export and shot run with this override.
-- `tools/check_all.py` lists plain tests explicitly and is outside the write-set, so `test_hands_r2.py` still has to
-  be added there at merge.
+## Engine grasp (T-051 bands) and pickup camera
+- `shots/current` and `shots/candidate` are copies of `docs/evaluation/animation/T-051/shots/s010_band` (e907 s010
+  plus the T-051 band tracks). Only the cast differs. Current uses the published boy 2.1.0 and girl 0.12.0;
+  candidate uses the same specs plus `hands_r2.override.json`. Both ran through `run_shot.py --blend-only`
+  (cast export -> engine bake -> shot.blend, the C++ engine built with the renderer off). Both bakes report a maximum
+  bone error of about 0.001 mm and 0 deg.
+- `grasp_engine_current_vs_r2.png`:
+  - Rows 1 and 2: T-051's `render_close.py` front view (the boy's right hand) and back view (the girl's left hand) at
+    f48, the shared hold, with the same cameras as T-051.
+  - Row 3: the e907 shot camera at f20, just after the boy picks the cup up. This stands in for the T-117 pickup
+    camera, which is not built yet.
+  - Row 4: a 4x crop of the boy's hand from that frame.
+  - Cycles 16 spp.
+- Result:
+  - The girl's fingers wrap the cup separately; on the current hand they read as one mitten.
+  - The boy's fingertips read at the top and bottom of the cup and in the pickup crop. Seen from the back of his hand
+    (front view), the knuckles still read as one mass, more weakly than the girl's.
+  - Wrist, palm, arms, cup, bodies, camera and lights are the same in current and candidate.
+
+## Open
+- `tools/check_all.py` lists plain tests explicitly and is outside the write-set, so `test_hands_r2.py` is to be
+  added there at merge (Supervisor).
