@@ -36,6 +36,7 @@ Scene baseScene() {
   s.rate = FrameRate{24, 1};
   s.frameStart = 1;
   s.frameEnd = 110;
+  s.timing = "none";  // the shared defaults (T-112a's legacy cases); since T-104d an absent key means "calibrated"
   return s;
 }
 
