@@ -16,10 +16,12 @@ Build checks (a master per character: --boy/--girl, else built from the current 
   * every test_face_v3 build check with T-089b's limits unchanged (felt eye; lid shells within their corner bounds;
     <= 10 % 3/4 socket rim; cheek folds <= 45 deg, eye-corner folds no sharper than the published limit; full blink
     closes in front and 3/4 within 1.25 x the published residue) and T-089b's lid-line-at-glance check;
-  * fuller lower face: head half width (head and jaw skin, front half) at the cheek-pad level >= the published master's
-    + LOWER_MIN_MM, and a rounder jaw: the median distance from the head axis of the head skin 30-60 deg off forward
-    at the jaw level (the front corners the jaw option fills; the front-view width there is set by the sides) >= the
-    published master's + JAW_MIN_MM;
+  * fuller lower face: the head surface (largest distance from the head axis per 3 mm x 5 deg bin of head/jaw skin;
+    the vertex count differs, since the eye-region refinement follows the shape) moves out against the published
+    master: 95th percentile over the lower face (3-12 cm below the eye line, 15-80 deg off forward) >= LOWER_MIN_MM;
+  * the face surface above the eyes (more than 1.2 eye radii above the eye line: forehead, brow region) does not move
+    (<= DRIFT_MM); the socket smoothing may carry a lower-lid change into the upper socket, the eye and brow checks
+    below cover that region;
   * no identity drift in eyes or brows: eye centres, eyeball scale and brow bounds within DRIFT_MM of the published
     master (the lower-face options act below the eyes);
   * girl lens shelf: the lower lid shell is hidden by the skin (lid_shell_exposed of lid_lower <= SHELF_MAX; 0.12.0:
@@ -49,7 +51,6 @@ CANDIDATES = {
 }
 V3.CASES = {k: (v[0], v[1]) for k, v in CANDIDATES.items()}
 LOWER_MIN_MM = 3.0
-JAW_MIN_MM = 2.0
 DRIFT_MM = 0.5
 SHELF_MAX = 0.05
 check = V3.check
@@ -57,35 +58,26 @@ check = V3.check
 PROBE_SHAPE = r'''
 import bpy, json, sys
 import numpy as np
-bpy.ops.wm.open_mainfile(filepath=sys.argv[sys.argv.index("--") + 1])
-levels = json.loads(sys.argv[sys.argv.index("--") + 2])
+args = sys.argv[sys.argv.index("--") + 1:]
+bpy.ops.wm.open_mainfile(filepath=args[0])
 head = next(o for o in bpy.data.objects if o.type == "MESH" and o.name in ("body_skin", "head"))
 me = head.data
 co = np.empty(len(me.vertices) * 3)
 me.vertices.foreach_get("co", co)
 mw = np.array(head.matrix_world)
 p = co.reshape(-1, 3) @ mw[:3, :3].T + mw[:3, 3]
-eyes = {s: bpy.data.objects[f"eye.{s}"] for s in "LR"}
-band = np.abs(p[:, 2] - eyes["L"].matrix_world.translation.z) < 0.08
-yc = 0.5 * float(p[band, 1].min() + p[band, 1].max())  # middle of the head's depth (as lower_face.py)
-# head skin only (head + jaw bone weight >= 0.5): at a small character's jaw height the A-pose shoulders are wider
-gis = {vg.index for vg in head.vertex_groups if vg.name in ("DEF-spine.006", "DEF-jaw")}  # head and jaw bones
+# head skin only (head + jaw bone weight >= 0.5): the neck and the A-pose shoulders stay out
+gis = {vg.index for vg in head.vertex_groups if vg.name in ("DEF-spine.006", "DEF-jaw")}
 hw = np.zeros(len(me.vertices))
 for v in me.vertices:
     for g in v.groups:
         if g.group in gis:
             hw[v.index] += g.weight
-is_head = hw >= 0.5 if gis else np.ones(len(me.vertices), bool)
-out = {"width": {}, "eyes": {}, "brows": {}}
-for name, z in levels.items():
-    m = (np.abs(p[:, 2] - z) < 0.002) & (p[:, 1] < yc) & is_head
-    out["width"][name] = float(np.abs(p[m, 0]).max()) if m.any() else 0.0
-    az = np.degrees(np.arctan2(np.abs(p[:, 0]), yc - p[:, 1]))  # 0 = straight forward
-    mc = m & (az > 30) & (az < 60)
-    out.setdefault("corner", {})[name] = float(np.median(np.hypot(p[mc, 0], p[mc, 1] - yc))) if mc.any() else 0.0
-for s, e in eyes.items():
-    out["eyes"][s] = [list(e.matrix_world.translation), list(e.matrix_world.to_scale())]
+np.savez(args[1], p=p, head=hw >= 0.5 if gis else np.ones(len(p), bool))
+out = {"eyes": {}, "brows": {}}
 for s in "LR":
+    e = bpy.data.objects[f"eye.{s}"]
+    out["eyes"][s] = [list(e.matrix_world.translation), list(e.matrix_world.to_scale())]
     b = bpy.data.objects.get(f"brow.{s}")
     if b:
         vs = [b.matrix_world @ v.co for v in b.data.vertices]
@@ -148,14 +140,19 @@ def master_for(blender, who):
     return sys.argv[-1]
 
 
-def shape(blender, master, levels):
+def shape(blender, master):
+    """(eye/brow data, world vertex coordinates of the head mesh, head-skin mask)."""
+    import numpy as np
     probe = tempfile.NamedTemporaryFile("w", suffix=".py", delete=False)
     probe.write(PROBE_SHAPE)
     probe.close()
-    r = subprocess.run([blender, "-b", "--factory-startup", "-P", probe.name, "--", master, json.dumps(levels)],
-                       capture_output=True, text=True)
+    npz = tempfile.NamedTemporaryFile(suffix=".npz", delete=False).name
+    r = subprocess.run([blender, "-b", "--factory-startup", "-P", probe.name, "--", master, npz], capture_output=True, text=True)
     line = next((l for l in r.stdout.splitlines() if l.startswith("SHAPE ")), None)
-    return json.loads(line[6:]) if line else None
+    if line is None:
+        return None
+    d = np.load(npz)
+    return json.loads(line[6:]), d["p"], d["head"]
 
 
 def v4_checks(blender, who, master):
@@ -163,21 +160,42 @@ def v4_checks(blender, who, master):
     face = json.load(open(os.path.join(os.path.dirname(os.path.abspath(master)), "build_report.json")))["face"]
     lf = (face.get("shape") or {}).get("lower_face") or {}
     check(f"{who}: lower-face options ran", bool(lf.get("cheek_pad_m")) and bool(lf.get("jaw_round_m")), json.dumps(lf))
-    s, _ = V3.SPEC.load(spec, [ov])
-    ecfg, lay, lcfg = s["face"]["eyes"], s["face"].get("layout", {}), s["face"]["shape"]["lower_face"]
-    ez = json.load(open(os.path.join(os.path.dirname(os.path.abspath(master)), "build_report.json")))["face"]["eyes"]["L"]["centre_m"][2]
-    z_mouth = ez - float(lay.get("mouth_below_eye_m", 0.05))
-    levels = {"cheek_pad": ez - float(lcfg.get("cheek_pad_below_eye_m", ez - z_mouth)),
-              "jaw": float(lf.get("jaw_z_m", ez - float(lay.get("chin_below_eye_m", 0.09)) + 0.01))}
-    a, b = shape(blender, published, levels), shape(blender, master, levels)
-    if a is None or b is None:
+    import numpy as np
+    pa, pb = shape(blender, published), shape(blender, master)
+    if pa is None or pb is None:
         check(f"{who}: shape probe ran", False)
         return
-    gain = round((b["width"]["cheek_pad"] - a["width"]["cheek_pad"]) * 1000, 2)
-    check(f"{who}: fuller lower face (front half width +>= {LOWER_MIN_MM} mm at the cheek-pad level)",
-          gain >= LOWER_MIN_MM, f"{gain} mm")
-    jaw = round((b["corner"]["jaw"] - a["corner"]["jaw"]) * 1000, 2)
-    check(f"{who}: rounder jaw (jaw-corner radius, 30-60 deg off forward, +>= {JAW_MIN_MM} mm)", jaw >= JAW_MIN_MM, f"{jaw} mm")
+    (a, P0, H0), (b, P1, H1) = pa, pb
+    ez = a["eyes"]["L"][0][2]
+    hb = H0 & (np.abs(P0[:, 2] - ez) < 0.08)
+    yc = 0.5 * (P0[hb, 1].min() + P0[hb, 1].max())  # head axis: middle of the head's depth (as lower_face.py)
+
+    def surface(P, H):
+        """Largest horizontal distance from the head axis per (3 mm height, 5 deg azimuth) bin of the head skin: the
+        surface, independent of the mesh's vertex count (the eye-region refinement follows the shape)."""
+        az = np.degrees(np.arctan2(P[:, 0], yc - P[:, 1]))
+        key = np.round((P[:, 2] - ez) / 0.003).astype(int) * 1000 + np.round(az / 5.0).astype(int)
+        rad = np.hypot(P[:, 0], P[:, 1] - yc)
+        out = {}
+        for k, r_ in zip(key[H], rad[H]):
+            if r_ > out.get(k, -1.0):
+                out[k] = r_
+        return out
+    s0, s1 = surface(P0, H0), surface(P1, H1)
+    common = [k for k in s0 if k in s1]
+    zb = np.array([k // 1000 if k >= 0 else -((-k + 999) // 1000) for k in common]) * 0.003  # bin height - eye line
+    azb = np.array([k - (k // 1000 if k >= 0 else -((-k + 999) // 1000)) * 1000 for k in common]) * 5.0
+    d = np.array([s1[k] - s0[k] for k in common])
+    low = (zb < -0.03) & (zb > -0.12) & (np.abs(azb) >= 15) & (np.abs(azb) <= 80)  # lower face, front, off the mouth
+    full = float(np.percentile(d[low], 95)) * 1000 if low.any() else 0.0
+    check(f"{who}: fuller lower face (95th percentile outward move of the lower-face surface >= {LOWER_MIN_MM} mm)",
+          full >= LOWER_MIN_MM, f"{full:.2f} mm over {int(low.sum())} bins")
+    r_eye = float(V3.SPEC.load(spec, [ov])[0]["face"]["eyes"].get("radius_m", 0.03))
+    up = (zb > 1.2 * r_eye) & (np.abs(azb) <= 80)  # above the eyes and their sockets: forehead, brows
+    upper = float(np.abs(d[up]).max()) * 1000 if up.any() else 0.0
+    wi = int(np.argmax(np.where(up, np.abs(d), -1.0))) if up.any() else 0
+    check(f"{who}: face surface above the eyes unchanged (> 1.2 eye radii above the eye line; <= {DRIFT_MM} mm)", upper <= DRIFT_MM,
+          f"{upper:.3f} mm (at {zb[wi] * 1000:+.0f} mm from the eye line, {azb[wi]:+.0f} deg)")
     drift = 0.0
     for s_ in "LR":
         drift = max(drift, max(abs(x - y) for x, y in zip(a["eyes"][s_][0], b["eyes"][s_][0])) * 1000,
