@@ -1,0 +1,42 @@
+{
+  "face.shape.lower_face.cheek_pad_m": [
+    0.0,
+    0.024
+  ],
+  "face.shape.lower_face.cheek_pad_radius_m": [
+    0.045,
+    0.09
+  ],
+  "face.shape.lower_face.jaw_round_m": [
+    0.0,
+    0.014
+  ],
+  "face.shape.lower_face.jaw_x": [
+    0.45,
+    0.8
+  ],
+  "face.shape.cheek_fullness_m": [
+    0.0,
+    0.014
+  ],
+  "face.eyes.lids.upper_edge_deg": [
+    42,
+    50
+  ],
+  "face.eyes.lids.lower_edge_deg": [
+    -54,
+    -44
+  ],
+  "face.eyes.lids.upper_curve": [
+    -0.15,
+    0.2
+  ],
+  "face.eyes.lids.lower_curve": [
+    -0.05,
+    0.15
+  ],
+  "face.eyes.lids.lower_fit.gap": [
+    0.0,
+    0.03
+  ]
+}
