@@ -146,4 +146,4 @@ Tasks from now on are numbered T-001, T-002, …, and pass through the states in
 | T-138 | [Engine] E4 grasp contact accuracy | approved; after T-134 | t-138-claude-grasp | `docs/tasks/T-138.md` |
 | T-139 | [Tools] E5 animcheck gesture attribution | approved; second wave | t-139-claude-animcheck | `docs/tasks/T-139.md` |
 | T-140 | [Camera] C1 headroom and framing rules | approved; second wave | t-140-claude-framing | `docs/tasks/T-140.md` |
-| T-133 | [Evaluation] Third-character fit search + review (Codex) | assigned 2026-11-19 on relay-channel (007f0c7) | t-133-codex-third-fit | relay NEXT_TASK.md |
+| T-133 | [Evaluation] Third-character fit search + review (Codex) | assigned 2026-11-19 on relay-channel (007f0c7) | t-133-codex-third-fit | merged 2026-11-19: front fit 89.35→90.41 (proposal, not published); lash curve → T-137 F1b |
