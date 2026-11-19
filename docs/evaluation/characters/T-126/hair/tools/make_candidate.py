@@ -3,7 +3,8 @@
     python3 docs/evaluation/characters/T-126/hair/tools/make_candidate.py
 
 Output: docs/evaluation/characters/T-126/hair/candidates/girl_white_hair_blue_dress.hair.override.json, an override
-on T-126a's base spec (girl_white_hair_blue_dress.0.1.0.spec.json): spec.generators.groom and spec.hair only. The
+on T-126a's base spec (spec/candidates/T-126a/girl_white_hair_blue_dress.0.1.0.spec.json, t-126a-claude-body-face
+@ 0e7aaad, built together with its hands_r2 override): spec.generators.groom and spec.hair only. The
 structure names that carry dynamics settings in the base (buns, fringe, temples, side_locks, back_locks, outer_locks)
 are kept, so the dict merge leaves no stale entry. Sizes below were first laid out on the T-070 draft head (FIXTURE)
 and are scaled to her head (HEAD) by `fit`.
@@ -16,7 +17,7 @@ OUT = os.path.join(HERE, "..", "candidates")
 CID = "girl_white_hair_blue_dress"
 
 FIXTURE = {"centre_z": 0.825, "radius": 0.1407}  # T-070 third.base.spec draft: head centre height, mean half-axis
-HEAD = {"centre_z": 0.82671 * 0.94284, "radius": (0.1366 + 0.13528 + 0.14529) / 3 * 0.94284}  # T-126a base spec 0.1.0
+HEAD = {"centre_z": 0.82671 * 0.94284, "radius": (0.14229 + 0.13528 + 0.14529) / 3 * 0.94284}  # T-126a base @ 0e7aaad
 K = HEAD["radius"] / FIXTURE["radius"]
 LENGTHS = ("hang_radii", "rest_radii", "width", "thick", "lift", "radius", "size", "amplitude", "wavelength",
            "start_m", "height")
