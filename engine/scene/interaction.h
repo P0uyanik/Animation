@@ -156,7 +156,7 @@ struct InteractionContext {
   };
   std::vector<Shared> shared;
   bool parentsChecked = false;  // authored prop parents are checked before the first interaction evaluates props
-  // Timing profile (T-104, the scene's opt-in "timing" key; anim/personality.h TimingProfile), resolved at the first
+  // Timing profile (T-104, the scene's "timing" key, calibrated by default since T-104d; anim/personality.h TimingProfile), resolved at the first
   // interaction action. It changes only the defaults of frames an action leaves out (without it: the defaults listed
   // at the top of this file):
   //   reach / grasp  contact = start + reach;  grasp:false end = contact + hold

@@ -267,8 +267,8 @@ Result<Json> SceneEvaluator::planReactionActions() {
   };
   ReactionContext ctx;
   std::optional<TimingProfile> timing;
-  if (scene_.timing.is_string()) {  // T-104: the scene's timing profile gives the shared notice delay
-    const auto file = findTimingProfileFile(scene_.path, scene_.timing.get<std::string>());
+  if (const std::string name = scene_.timingProfile(); !name.empty()) {  // T-104: the timing profile's notice delay
+    const auto file = findTimingProfileFile(scene_.path, name);
     if (auto t = file.empty() ? Result<TimingProfile>(fail("not found")) : loadTimingProfile(file)) timing = std::move(*t);
   }
   if (timing) ctx.timing = &*timing;

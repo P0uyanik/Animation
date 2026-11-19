@@ -72,7 +72,7 @@ struct PersonalityProfile {
   std::optional<float> actionSpeed, overshoot, carefulPlaceFrames;
   std::optional<PersonalityRange> reachFrames, anticipationFrames, settleFrames, holdFrames;
   // T-104: multipliers on the beat durations of a timing profile (TimingProfile below; > 1 = slower / longer). Read
-  // only when a scene opts into a timing profile; missing = 1.
+  // only when a scene uses a timing profile (the default, T-104d); missing = 1.
   std::optional<float> beatScale, holdScale;
   // energy
   std::optional<float> energyLevel, idleMotionAmplitudeH, gestureAmplitude;
@@ -118,8 +118,8 @@ std::vector<std::string> clampPersonalityToLimits(PersonalityProfile& p);
 
 // Timing profile (T-104): calibrated beat durations as data (content/timing/<name>.timing.json,
 // plush.timing_profile/1, content/timing/README.md), derived from the reference timing table
-// (content/timing/reference_timing.json). Opt-in per scene ("timing": "<name>"); without it every shared default stays
-// as it was. Frames at 24 fps.
+// (content/timing/reference_timing.json). Named per scene ("timing": "<name>"); a scene without the key uses "calibrated" (T-104d), and
+// "timing": "none" keeps every shared default as it was. Frames at 24 fps.
 //   beats:  reach, anticipation, settle, hold, shared_hold, place, release, return, reaction_delay (frames)
 //   travel: scale-aware carry speed in arm lengths per frame (mean over an eased move): a carry over distance d with
 //           an arm of length L takes d / (L * arm_lengths_per_frame) frames, clamped into [min_frames, max_frames];
