@@ -1,0 +1,95 @@
+{
+ "out": "/tmp/claude-0/-home-user-Animation/9d7e4cb2-e576-5714-b160-91840ff91799/scratchpad/rv-girl_0.12.0/preview/renders",
+ "engine": "cycles",
+ "samples": 2,
+ "px": 120,
+ "lens_mm": 70.0,
+ "sensor_mm": 36.0,
+ "calibration": "character_neutral/1",
+ "columns": [
+  {
+   "tag": "baseline",
+   "blend": "/home/user/Animation/assets/characters/girl_auburn_bun_glasses/versions/0.12.0/girl_auburn_bun_glasses_master.blend",
+   "comparison_pose": null
+  },
+  {
+   "tag": "candidate",
+   "blend": "/tmp/claude-0/-home-user-Animation/9d7e4cb2-e576-5714-b160-91840ff91799/scratchpad/rv-girl_0.12.0/preview/build/candidate/girl_auburn_bun_glasses_master.blend",
+   "comparison_pose": null
+  }
+ ],
+ "views": [
+  {
+   "name": "front",
+   "yaw_deg": 0.0,
+   "elevation_deg": 5.0,
+   "target": [
+    0.0,
+    0.0,
+    0.56
+   ],
+   "frame_height_m": 1.26,
+   "aspect": 1.6
+  },
+  {
+   "name": "threequarter",
+   "yaw_deg": -45.0,
+   "elevation_deg": 5.0,
+   "target": [
+    0.0,
+    0.0,
+    0.56
+   ],
+   "frame_height_m": 1.26,
+   "aspect": 1.6
+  },
+  {
+   "name": "side",
+   "yaw_deg": 90.0,
+   "elevation_deg": 5.0,
+   "target": [
+    0.0,
+    0.0,
+    0.56
+   ],
+   "frame_height_m": 1.26,
+   "aspect": 1.6
+  },
+  {
+   "name": "back",
+   "yaw_deg": 180.0,
+   "elevation_deg": 5.0,
+   "target": [
+    0.0,
+    0.0,
+    0.56
+   ],
+   "frame_height_m": 1.26,
+   "aspect": 1.6
+  },
+  {
+   "name": "face_front",
+   "yaw_deg": 0.0,
+   "elevation_deg": 5.0,
+   "target": [
+    0.0,
+    0.0,
+    0.775
+   ],
+   "frame_height_m": 0.32,
+   "aspect": 1.0
+  },
+  {
+   "name": "face_threequarter",
+   "yaw_deg": -45.0,
+   "elevation_deg": 5.0,
+   "target": [
+    0.0,
+    0.0,
+    0.775
+   ],
+   "frame_height_m": 0.32,
+   "aspect": 1.0
+  }
+ ]
+}
