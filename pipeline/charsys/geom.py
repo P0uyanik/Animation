@@ -177,7 +177,7 @@ def surface_point(ob, origin, direction, max_dist=2.0):
     return ob.matrix_world @ loc, (ob.matrix_world.to_3x3() @ nrm).normalized()
 
 
-def uv_sphere(name, center, radius, collection, segments=48, rings=24, scale=(1, 1, 1)):
+def uv_sphere(name, center, radius, collection, segments=40, rings=24, scale=(1, 1, 1)):
     bm = bmesh.new()
     bmesh.ops.create_uvsphere(bm, u_segments=segments, v_segments=rings, radius=radius)
     for v in bm.verts:
