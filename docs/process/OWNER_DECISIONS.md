@@ -398,3 +398,9 @@ Owner: "Handle every thing." The standing overnight approval continues for the r
 close-out. Codex is not available until about 09:00 owner time: cloud work does not wait for Codex (T-109 starts once
 the new versions are current, without T-115's results; its proposals are folded in later). The Codex assignment is
 posted at the top of NEXT_TASK.md so it is ready when Codex returns.
+
+## 2026-11-19 (~03:05Z): keep going (relayed by the previous Supervisor session)
+Owner: "We have to go forward. No stop." Start each next task as soon as its prerequisites are met (T-109 -> T-113 ->
+T-114; T-111 -> T-112a -> T-112b + T-051; T-102 at the end); do not idle for the owner or Codex. Hard limits unchanged:
+no version becomes current beyond the approved T-094 switch without the owner, no loosened tests or thresholds, frozen
+assets untouched.
