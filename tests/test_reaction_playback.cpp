@@ -234,3 +234,54 @@ TEST_CASE("a profile's preferred gesture plays as a clip at the reaction start (
   ev.reset();
   std::filesystem::remove_all(dir);
 }
+
+TEST_CASE("a quick profile (reaction tempo_scale < 1) never reacts before its shortest notice delay") {
+  // Fixture profile: delay_frames [2, 4] (mid 3) x tempo_scale 0.5 plans 1.5 f; playback starts at 2 f, the profile's
+  // shortest delay, which is what animcheck's acting rule (T-097C) requires.
+  const auto dir = std::filesystem::temp_directory_path() / "plush_t097d_quick";
+  std::filesystem::remove_all(dir);
+  std::filesystem::create_directories(dir / "content" / "personality");
+  for (const char* lib : {"emotions", "clips"})
+    std::filesystem::copy(kSrc / "content" / lib, dir / "content" / lib, std::filesystem::copy_options::recursive);
+  std::ofstream(dir / "content/personality/quick_fixture.json")
+      << R"({"format": "plush.personality", "version": 0, "reaction": {"delay_frames": [2, 4], "tempo_scale": 0.5}})";
+  Scene s = reactionScene(Json::parse(R"([{"time": 1.0, "kind": "object_appears", "name": "ball appears", "source": "ball",
+    "characters": ["girl"]}])"));
+  s.path = dir / "shot.scene.json";
+  for (auto& cd : s.characters) cd.asset = (kSrc / "tests/data/imported" / cd.asset).string();
+  s.characters[0].personality = "quick_fixture";
+  s.characters[1].personality = nullptr;
+  auto ev = load(s);
+  REQUIRE(ev->personality(0));
+  ReactionEvent appear{ReactionEvent::Kind::ObjectAppears, "ball appears", "ball", 1.0, 1.f};
+  CHECK(planReaction(appear, ev->personality(0)).noticeDelay * 24 == doctest::Approx(1.5));
+  auto looks = generated(*ev, "girl", "look"), emotions = generated(*ev, "girl", "emotion");
+  REQUIRE(looks.size() == 1);
+  REQUIRE(emotions.size() == 1);
+  CHECK(looks[0]["start"].get<double>() == doctest::Approx(1 + 24 + 2));
+  CHECK(emotions[0]["start"] == looks[0]["start"]);
+  // The acting rule on the scene with the generated actions: no warning.
+  Json sj = sceneToJson(ev->scene());
+  for (const Json& a : ev->reactionActions()) sj["actions"].push_back(a);
+  std::ofstream(dir / "expanded.scene.json") << sj.dump(1);
+  std::string py;
+  for (const char* cand : {"python3", "python"})
+    if (std::system(std::format("{} -c \"import sys; sys.exit(0 if sys.version_info >= (3, 10) else 1)\"", cand).c_str()) == 0) {
+      py = cand;
+      break;
+    }
+  if (!py.empty()) {
+    const auto report = dir / "acting.json";
+    REQUIRE(std::system(std::format("{} \"{}\" --scene \"{}\" --json \"{}\"", py, (kSrc / "tools/animcheck/acting.py").string(),
+                                    (dir / "expanded.scene.json").string(), report.string()).c_str()) == 0);
+    auto rep = parseJsonFile(report);
+    REQUIRE(rep.has_value());
+    CHECK((*rep)["warnings"].empty());
+    REQUIRE(!(*rep)["characters"][0]["glances"].empty());
+    CHECK((*rep)["characters"][0]["glances"][0]["delay_frames"].get<double>() == doctest::Approx(2));
+  } else {
+    MESSAGE("no python3 found: acting-rule part not run");
+  }
+  ev.reset();
+  std::filesystem::remove_all(dir);
+}

@@ -294,7 +294,13 @@ Result<Json> SceneEvaluator::planReactionActions() {
     for (const CharacterReaction& r : planReactions(ev, cast, ctx)) {
       const ReactionPlan& p = r.plan;
       if (p.target.weights.empty()) continue;  // not noticed, or no emotion for this event
-      const double start = scene_.frameStart + reactionStart(ev, p) * fps, length = p.duration * fps;
+      // Never before the profile's shortest notice delay (reaction.delay_frames[0], what animcheck's acting rule
+      // requires): the planner's mid delay x tempo_scale < 1 could otherwise undercut it.
+      double delay = p.noticeDelay;
+      for (size_t c = 0; c < scene_.characters.size(); ++c)
+        if (const PersonalityProfile* P = personality(c); P && scene_.characters[c].name == r.character && P->reaction.delayFrames)
+          delay = std::max(delay, double(P->reaction.delayFrames->lo) / 24.0);
+      const double start = scene_.frameStart + (ev.time + delay) * fps, length = p.duration * fps;
       // Gaze: at the source's face (a character) or the object; a source of the character itself or "" = no look.
       if (!ev.source.empty() && ev.source != r.character) {
         Json look = {{"type", "look"}, {"character", r.character}, {"start", start},
