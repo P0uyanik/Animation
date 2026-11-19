@@ -1,0 +1,201 @@
+{
+ "schema": "plush-studio.t124-variants/1",
+ "note": "Each variant changes one thing relative to the production final settings stored in shot.blend (1280x720, 128 spp, adaptive sampling threshold 0.01, OIDN with albedo+normal, accurate prefilter, high quality, 12 max bounces / diffuse 4 / glossy 4 / transmission 12 / transparent 8, clamp indirect 10, CPU, tile 2048, persistent data off).",
+ "variants": {
+  "baseline": {
+   "description": "production final settings, unchanged"
+  },
+  "spp16": {
+   "description": "16 spp + OIDN",
+   "set": {
+    "cycles.samples": 16
+   }
+  },
+  "spp32": {
+   "description": "32 spp + OIDN",
+   "set": {
+    "cycles.samples": 32
+   }
+  },
+  "spp64": {
+   "description": "64 spp + OIDN",
+   "set": {
+    "cycles.samples": 64
+   }
+  },
+  "ref512": {
+   "description": "reference: 512 spp, adaptive 0.005, OIDN",
+   "set": {
+    "cycles.samples": 512,
+    "cycles.adaptive_threshold": 0.005
+   }
+  },
+  "noadapt": {
+   "description": "128 spp, adaptive sampling off",
+   "set": {
+    "cycles.use_adaptive_sampling": false
+   }
+  },
+  "thr02": {
+   "description": "128 spp, adaptive threshold 0.02",
+   "set": {
+    "cycles.adaptive_threshold": 0.02
+   }
+  },
+  "thr05": {
+   "description": "128 spp, adaptive threshold 0.05",
+   "set": {
+    "cycles.adaptive_threshold": 0.05
+   }
+  },
+  "den_rgb": {
+   "description": "OIDN colour only (no albedo/normal passes)",
+   "set": {
+    "cycles.denoising_input_passes": "RGB"
+   }
+  },
+  "den_fast_prefilter": {
+   "description": "OIDN prefilter FAST",
+   "set": {
+    "cycles.denoising_prefilter": "FAST"
+   }
+  },
+  "den_balanced": {
+   "description": "OIDN quality BALANCED",
+   "set": {
+    "cycles.denoising_quality": "BALANCED"
+   }
+  },
+  "bounce6": {
+   "description": "max 6, diffuse 2, glossy 2, transmission 4 (transparent 8 kept)",
+   "set": {
+    "cycles.max_bounces": 6,
+    "cycles.diffuse_bounces": 2,
+    "cycles.glossy_bounces": 2,
+    "cycles.transmission_bounces": 4
+   }
+  },
+  "bounce3": {
+   "description": "max 3, diffuse 1, glossy 1, transmission 2 (transparent 8 kept)",
+   "set": {
+    "cycles.max_bounces": 3,
+    "cycles.diffuse_bounces": 1,
+    "cycles.glossy_bounces": 1,
+    "cycles.transmission_bounces": 2
+   }
+  },
+  "transp4": {
+   "description": "transparent bounces 8 -> 4 (fibre strands use a transparent mix)",
+   "set": {
+    "cycles.transparent_max_bounces": 4
+   }
+  },
+  "transp16": {
+   "description": "transparent bounces 8 -> 16",
+   "set": {
+    "cycles.transparent_max_bounces": 16
+   }
+  },
+  "clamp3": {
+   "description": "indirect clamp 10 -> 3",
+   "set": {
+    "cycles.sample_clamp_indirect": 3.0
+   }
+  },
+  "tile512": {
+   "description": "tile size 512",
+   "set": {
+    "cycles.tile_size": 512
+   }
+  },
+  "no_hair_fibres": {
+   "description": "hair fibre strands hidden (hair meshes kept)",
+   "toggles": [
+    "no_hair_fibres"
+   ]
+  },
+  "no_garment_fibres": {
+   "description": "garment/fuzz fibre strands hidden",
+   "toggles": [
+    "no_garment_fibres"
+   ]
+  },
+  "no_fibres": {
+   "description": "all fibre strands hidden",
+   "toggles": [
+    "no_fibres"
+   ]
+  },
+  "no_sss": {
+   "description": "skin/lip subsurface weight 0",
+   "toggles": [
+    "no_sss"
+   ]
+  },
+  "no_glasses": {
+   "description": "glasses frame and lenses hidden",
+   "toggles": [
+    "no_glasses"
+   ]
+  },
+  "no_sun": {
+   "description": "sun light off (rect only)",
+   "toggles": [
+    "no_sun"
+   ]
+  },
+  "no_rect": {
+   "description": "rect area light off (sun only)",
+   "toggles": [
+    "no_rect"
+   ]
+  },
+  "fibre50": {
+   "description": "fibre LOD: keep 50% of fibre curves",
+   "fibre_keep": 0.5
+  },
+  "fibre25": {
+   "description": "fibre LOD: keep 25% of fibre curves",
+   "fibre_keep": 0.25
+  },
+  "fg_catcher": {
+   "description": "still camera: characters over shadow-catcher props, transparent film",
+   "shadow_catcher_fg": true
+  },
+  "bg_plate": {
+   "description": "still camera: props only (background plate, once per shot)",
+   "background_only": true
+  },
+  "scale75": {
+   "description": "960x540 render (for upscale to 720p)",
+   "render_scale": 75
+  },
+  "noden": {
+   "description": "128 spp, denoising off (isolates the OIDN cost)",
+   "set": {
+    "cycles.use_denoising": false
+   }
+  },
+  "spp16_ref": {
+   "description": "16 spp + OIDN (comparison for the fibre-LOD smoke test)",
+   "set": {
+    "cycles.samples": 16
+   }
+  },
+  "persistent16": {
+   "description": "persistent data on, 16 spp (fixed per-frame cost isolated)",
+   "set": {
+    "render.use_persistent_data": true,
+    "cycles.samples": 16
+   }
+  },
+  "threads2_16": {
+   "description": "2 of 4 threads, 16 spp (scaling check)",
+   "set": {
+    "render.threads_mode": "FIXED",
+    "render.threads": 2,
+    "cycles.samples": 16
+   }
+  }
+ }
+}
