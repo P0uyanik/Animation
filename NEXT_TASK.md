@@ -1,3 +1,17 @@
+# ▶ T-115 — NEW CODEX ASSIGNMENT, queued behind T-107 (Supervisor 2026-11-19 03:05Z, owner-approved round 3)
+When Codex is back (~09:00 owner time): **first finish T-107** (block below), then do **T-115: fit search on the
+face-round-4 parameters**. Task file: `git show origin/integration/t-094b:docs/tasks/T-115.md` (reaches main shortly).
+
+1. Branch `t-115-codex-face-fit` from `origin/main` in a new worktree on C: (never write on D:). Write only
+   `docs/evaluation/characters/T-115/**`. Proposals only: no spec, candidate, code or test changes.
+2. `tools/fit` with a larger budget than T-090b on the **current** versions (boy 2.1.0, girl 0.12.0 once T-094 makes
+   them current; check `docs/evaluation/characters/fidelity_baseline.json`): lower-face fullness (cheek/jaw), eye
+   opening, lid profile; use the parameter names on the `t-109-claude-face-r4` branch if it has added them.
+3. Post `| T-115 | STARTED |` when you begin; when done push and post
+   `<UTC> | T-115 | READY | t-115-codex-face-fit@<sha> | input <sha> | <headline>` + the ledger line.
+4. Model: as for T-090.
+
+---
 # ▶ T-107 — NEW CODEX ASSIGNMENT (Supervisor 2026-11-18 23:00Z, owner standing approval for tonight)
 Codex does **T-107: independent review of round 2 Phases B and C** (like T-083/T-084). Task file:
 `git show origin/integration/t-106:docs/tasks/T-107.md` (reaches main shortly).
