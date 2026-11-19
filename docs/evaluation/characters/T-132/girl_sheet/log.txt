@@ -1,0 +1,4 @@
+2026-11-19T17:50:53Z preview start: recipe d43196c2ca13 {'engine': 'cycles', 'samples': 2, 'px': 120}
+2026-11-19T17:53:12Z preview pass: /tmp/claude-0/-home-user-Animation/c61b4d73-c2fb-5e86-8526-1233e7d75a4b/scratchpad/sheet_girl_0.13.0_vs_0.14.0/preview/preview.jpg
+2026-11-19T17:54:06Z sheet start: recipe d43196c2ca13 {'engine': 'cycles', 'samples': 16, 'px': 360}
+2026-11-19T18:09:43Z sheet written: /tmp/claude-0/-home-user-Animation/c61b4d73-c2fb-5e86-8526-1233e7d75a4b/scratchpad/sheet_girl_0.13.0_vs_0.14.0/sheet.jpg 1120x2048

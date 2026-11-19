@@ -1,0 +1,123 @@
+{
+ "out": "/tmp/claude-0/-home-user-Animation/c61b4d73-c2fb-5e86-8526-1233e7d75a4b/scratchpad/expr/boy",
+ "samples": 12,
+ "px": 300,
+ "frame": "face",
+ "frame_h": 0.4,
+ "dz": -0.015,
+ "yaw": -30.0,
+ "elev": 6.0,
+ "columns": [
+  {
+   "tag": "cur",
+   "blend": "assets/characters/boy_yellow_hoodie/versions/2.2.0/boy_yellow_hoodie_master.blend"
+  },
+  {
+   "tag": "cand",
+   "blend": "assets/characters/boy_yellow_hoodie/versions/2.3.0/boy_yellow_hoodie_master.blend"
+  }
+ ],
+ "rows": [
+  {
+   "tag": "boy_interested",
+   "controls": {
+    "face_EyeWide": 0.336,
+    "face_BrowDown": 0.21,
+    "face_MouthO": 0.105,
+    "face_JawOpen": 0.0336
+   },
+   "gaze_deg": [
+    0.0,
+    0.0
+   ],
+   "intensity": 0.42
+  },
+  {
+   "tag": "boy_sleepy",
+   "controls": {
+    "face_Blink": 0.42,
+    "face_BrowDown": 0.105,
+    "face_MouthO": 0.168,
+    "face_JawOpen": 0.0504
+   },
+   "gaze_deg": [
+    0.0,
+    -8.0
+   ],
+   "intensity": 0.42
+  },
+  {
+   "tag": "boy_unimpressed",
+   "controls": {
+    "face_BrowDown": 0.42,
+    "face_Blink": 0.21,
+    "face_MouthFrown": 0.294
+   },
+   "gaze_deg": [
+    0.0,
+    0.0
+   ],
+   "intensity": 0.42
+  },
+  {
+   "tag": "boy_reluctant",
+   "controls": {
+    "face_Pout": 0.42,
+    "face_Blink": 0.21,
+    "face_BrowSad": 0.252
+   },
+   "gaze_deg": [
+    -4.0,
+    -4.0
+   ],
+   "intensity": 0.42
+  },
+  {
+   "tag": "boy_focused",
+   "controls": {
+    "face_Blink": 0.126,
+    "face_BrowDown": 0.147,
+    "face_MouthO": 0.084,
+    "face_JawOpen": 0.21
+   },
+   "gaze_deg": [
+    0.0,
+    -10.0
+   ],
+   "intensity": 0.42
+  },
+  {
+   "tag": "boy_Blink",
+   "controls": {
+    "face_Blink": 1.0
+   },
+   "gaze_deg": [
+    0.0,
+    0.0
+   ],
+   "intensity": 1.0
+  },
+  {
+   "tag": "boy_Smile",
+   "controls": {
+    "face_Smile": 1.0
+   },
+   "gaze_deg": [
+    0.0,
+    0.0
+   ],
+   "intensity": 1.0
+  },
+  {
+   "tag": "boy_Laugh",
+   "controls": {
+    "face_Laugh": 1.0
+   },
+   "gaze_deg": [
+    0.0,
+    0.0
+   ],
+   "intensity": 1.0
+  }
+ ]
+}

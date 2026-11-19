@@ -1,0 +1,126 @@
+{
+ "out": "/tmp/claude-0/-home-user-Animation/c61b4d73-c2fb-5e86-8526-1233e7d75a4b/scratchpad/expr/girl",
+ "samples": 12,
+ "px": 300,
+ "frame": "face",
+ "frame_h": 0.38,
+ "dz": -0.02,
+ "yaw": -30.0,
+ "elev": 6.0,
+ "columns": [
+  {
+   "tag": "cur",
+   "blend": "assets/characters/girl_auburn_bun_glasses/versions/0.13.0/girl_auburn_bun_glasses_master.blend"
+  },
+  {
+   "tag": "cand",
+   "blend": "assets/characters/girl_auburn_bun_glasses/versions/0.14.0/girl_auburn_bun_glasses_master.blend"
+  }
+ ],
+ "rows": [
+  {
+   "tag": "girl_delighted",
+   "controls": {
+    "face_SmileOpen": 0.9,
+    "face_BrowUp.L": 0.3,
+    "face_BrowUp.R": 0.3,
+    "face_EyeSquint": 0.12
+   },
+   "gaze_deg": [
+    0.0,
+    2.0
+   ],
+   "intensity": 0.9
+  },
+  {
+   "tag": "girl_wonder",
+   "controls": {
+    "face_WideOpen": 0.56,
+    "face_JawOpen": 0.07,
+    "face_BrowUp.L": 0.2,
+    "face_BrowUp.R": 0.2
+   },
+   "gaze_deg": [
+    0.0,
+    0.0
+   ],
+   "intensity": 0.7
+  },
+  {
+   "tag": "girl_eager",
+   "controls": {
+    "face_EyeWide": 0.4,
+    "face_BrowUp.L": 0.36,
+    "face_BrowUp.R": 0.36,
+    "face_MouthO": 0.36,
+    "face_MouthSmile": 0.08,
+    "face_JawOpen": 0.08
+   },
+   "gaze_deg": [
+    0.0,
+    -4.0
+   ],
+   "intensity": 0.8
+  },
+  {
+   "tag": "girl_shy",
+   "controls": {
+    "face_SmileClosed": 0.4,
+    "face_Blink": 0.24,
+    "face_BrowSad": 0.12
+   },
+   "gaze_deg": [
+    0.0,
+    -10.0
+   ],
+   "intensity": 0.8
+  },
+  {
+   "tag": "girl_content",
+   "controls": {
+    "face_SmileClosed": 0.48,
+    "face_MouthSmile": 0.16,
+    "face_JawOpen": 0.064,
+    "face_EyeSquint": 0.12
+   },
+   "gaze_deg": [
+    0.0,
+    -2.0
+   ],
+   "intensity": 0.8
+  },
+  {
+   "tag": "girl_Blink",
+   "controls": {
+    "face_Blink": 1.0
+   },
+   "gaze_deg": [
+    0.0,
+    0.0
+   ],
+   "intensity": 1.0
+  },
+  {
+   "tag": "girl_Laugh",
+   "controls": {
+    "face_Laugh": 1.0
+   },
+   "gaze_deg": [
+    0.0,
+    0.0
+   ],
+   "intensity": 1.0
+  },
+  {
+   "tag": "girl_Squint",
+   "controls": {
+    "face_Squint": 1.0
+   },
+   "gaze_deg": [
+    0.0,
+    0.0
+   ],
+   "intensity": 1.0
+  }
+ ]
+}

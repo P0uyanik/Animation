@@ -1,7 +1,7 @@
 """T-132 100% crops: current against candidate, same camera, light and pose per row (T-119 pose_shots.py conventions).
 
     blender -b --factory-startup -P docs/evaluation/characters/T-132/crops.py -- <out dir> <boy|girl> \
-        <label>=<master.blend> ... [--samples 16] [--px 400]
+        <label>=<master.blend> ... [--samples 16] [--px 400] [--only shot,shot]
 
 A shot camera target is either [x, y, z] or an object name (its world bounding-box centre after posing, for hands).
 Writes <out>/<label>/<shot>.png and <out>/shots.json; compose_crops.py lays them out unscaled (100%)."""
@@ -42,7 +42,7 @@ SHOTS = {
         ("collar_full", "collar, full reach 75", FULL, SIDE_COLLAR, ("hair",)),
         ("bloomers_front", "bloomer cuffs, front", AD, ((0.0, 0.0, 0.33), 0.26, 0.0, 3.0), ()),
         ("bloomers_back", "bloomer cuffs, 3/4 back", AD, ((0.0, 0.0, 0.33), 0.26, 150.0, 3.0), ()),
-        ("hand_L", "hand.L, rest, side", AD, ("hand.L", 0.16, 90.0, 5.0), ()),
+        ("hand_L", "hand.L, master A-pose, 3/4 front", [], ("hand.L", 0.16, 40.0, 5.0), ()),
     ],
 }
 
@@ -81,13 +81,15 @@ def bbox_centre(name):
 def main():
     argv = sys.argv[sys.argv.index("--") + 1:]
     out, which = os.path.abspath(argv[0]), argv[1]
-    opt = {k: argv[argv.index(k) + 1] for k in ("--samples", "--px") if k in argv}
+    opt = {k: argv[argv.index(k) + 1] for k in ("--samples", "--px", "--only") if k in argv}
     spp, px = int(opt.get("--samples", 16)), int(opt.get("--px", 400))
+    only = set(opt["--only"].split(",")) if "--only" in opt else None
+    shots = [s for s in SHOTS[which] if only is None or s[0] in only]
     cols = [a.split("=", 1) for a in argv[2:] if "=" in a and not a.startswith("--")]
     rec = {"set": which, "samples": spp, "px": px, "light": "character_neutral/1", "lens_mm": 70.0,
            "blender": bpy.app.version_string, "columns": [], "shots": [
                {"name": n, "label": l, "pose": [list(p) for p in ps], "camera": list(c), "hidden_prefixes": list(h)}
-               for n, l, ps, c, h in SHOTS[which]]}
+               for n, l, ps, c, h in shots]}
     for label, blend in cols:
         bpy.ops.wm.open_mainfile(filepath=os.path.abspath(blend))
         sc = bpy.context.scene
@@ -106,7 +108,7 @@ def main():
         cam.data.lens, cam.data.sensor_fit, cam.data.sensor_height = 70.0, "VERTICAL", 36.0
         fov = 2 * math.atan(18.0 / 70.0)
         before = {o.name: o.hide_render for o in bpy.data.objects}
-        for name, _, steps, (target, fh, yaw, elev), hide in SHOTS[which]:
+        for name, _, steps, (target, fh, yaw, elev), hide in shots:
             pose(rig, steps)
             for o in bpy.data.objects:
                 o.hide_render = before[o.name] or any(o.name.startswith(p) for p in hide)

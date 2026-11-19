@@ -1,0 +1,174 @@
+{
+ "set": "boy",
+ "samples": 16,
+ "px": 400,
+ "light": "character_neutral/1",
+ "lens_mm": 70.0,
+ "blender": "5.3.0",
+ "columns": [
+  {
+   "label": "2.2.0",
+   "blend": "assets/characters/boy_yellow_hoodie/versions/2.2.0/boy_yellow_hoodie_master.blend"
+  },
+  {
+   "label": "2.3.0",
+   "blend": "assets/characters/boy_yellow_hoodie/versions/2.3.0/boy_yellow_hoodie_master.blend"
+  }
+ ],
+ "shots": [
+  {
+   "name": "crown_back",
+   "label": "crown / whorl, back-top",
+   "pose": [
+    [
+     "upper_arm_fk.{s}",
+     "Y",
+     35.0,
+     "LR",
+     true
+    ]
+   ],
+   "camera": [
+    [
+     0.0,
+     0.03,
+     0.93
+    ],
+    0.3,
+    180.0,
+    40.0
+   ],
+   "hidden_prefixes": []
+  },
+  {
+   "name": "crown_3q",
+   "label": "crown petals, 3/4 front",
+   "pose": [
+    [
+     "upper_arm_fk.{s}",
+     "Y",
+     35.0,
+     "LR",
+     true
+    ]
+   ],
+   "camera": [
+    [
+     0.0,
+     0.0,
+     0.95
+    ],
+    0.26,
+    -35.0,
+    20.0
+   ],
+   "hidden_prefixes": []
+  },
+  {
+   "name": "ankle_rest",
+   "label": "ankle notch, rest, side",
+   "pose": [
+    [
+     "upper_arm_fk.{s}",
+     "Y",
+     35.0,
+     "LR",
+     true
+    ]
+   ],
+   "camera": [
+    [
+     0.07,
+     -0.02,
+     0.085
+    ],
+    0.2,
+    90.0,
+    3.0
+   ],
+   "hidden_prefixes": []
+  },
+  {
+   "name": "ankle_up",
+   "label": "ankle notch, toes up 25",
+   "pose": [
+    [
+     "upper_arm_fk.{s}",
+     "Y",
+     35.0,
+     "LR",
+     true
+    ],
+    [
+     "foot_fk.{s}",
+     "X",
+     25.0,
+     "LR",
+     false
+    ]
+   ],
+   "camera": [
+    [
+     0.07,
+     -0.02,
+     0.085
+    ],
+    0.2,
+    90.0,
+    3.0
+   ],
+   "hidden_prefixes": []
+  },
+  {
+   "name": "ankle_down",
+   "label": "ankle notch, toes down 30",
+   "pose": [
+    [
+     "upper_arm_fk.{s}",
+     "Y",
+     35.0,
+     "LR",
+     true
+    ],
+    [
+     "foot_fk.{s}",
+     "X",
+     -30.0,
+     "LR",
+     false
+    ]
+   ],
+   "camera": [
+    [
+     0.07,
+     -0.02,
+     0.085
+    ],
+    0.2,
+    90.0,
+    3.0
+   ],
+   "hidden_prefixes": []
+  },
+  {
+   "name": "hand_L",
+   "label": "hand.L, rest, side",
+   "pose": [
+    [
+     "upper_arm_fk.{s}",
+     "Y",
+     35.0,
+     "LR",
+     true
+    ]
+   ],
+   "camera": [
+    "hand.L",
+    0.16,
+    90.0,
+    5.0
+   ],
+   "hidden_prefixes": []
+  }
+ ]
+}

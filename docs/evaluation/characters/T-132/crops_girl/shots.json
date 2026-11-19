@@ -1,0 +1,244 @@
+{
+ "set": "girl",
+ "samples": 16,
+ "px": 400,
+ "light": "character_neutral/1",
+ "lens_mm": 70.0,
+ "blender": "5.3.0",
+ "columns": [
+  {
+   "label": "0.13.0",
+   "blend": "assets/characters/girl_auburn_bun_glasses/versions/0.13.0/girl_auburn_bun_glasses_master.blend"
+  },
+  {
+   "label": "0.14.0",
+   "blend": "assets/characters/girl_auburn_bun_glasses/versions/0.14.0/girl_auburn_bun_glasses_master.blend"
+  }
+ ],
+ "shots": [
+  {
+   "name": "sweeps_front",
+   "label": "sweeps over the forehead, front",
+   "pose": [
+    [
+     "upper_arm_fk.{s}",
+     "Y",
+     35.0,
+     "LR",
+     true
+    ]
+   ],
+   "camera": [
+    [
+     0.0,
+     0.0,
+     0.87
+    ],
+    0.3,
+    0.0,
+    8.0
+   ],
+   "hidden_prefixes": []
+  },
+  {
+   "name": "curl_ends_back",
+   "label": "curl ends, back",
+   "pose": [
+    [
+     "upper_arm_fk.{s}",
+     "Y",
+     35.0,
+     "LR",
+     true
+    ]
+   ],
+   "camera": [
+    [
+     0.0,
+     0.0,
+     0.7
+    ],
+    0.34,
+    180.0,
+    5.0
+   ],
+   "hidden_prefixes": []
+  },
+  {
+   "name": "flower",
+   "label": "flower on the bun, 3/4 front",
+   "pose": [
+    [
+     "upper_arm_fk.{s}",
+     "Y",
+     35.0,
+     "LR",
+     true
+    ]
+   ],
+   "camera": [
+    [
+     0.0,
+     0.05,
+     1.02
+    ],
+    0.24,
+    35.0,
+    15.0
+   ],
+   "hidden_prefixes": []
+  },
+  {
+   "name": "collar_rest",
+   "label": "collar, rest, side (hair hidden)",
+   "pose": [
+    [
+     "upper_arm_fk.{s}",
+     "Y",
+     35.0,
+     "LR",
+     true
+    ]
+   ],
+   "camera": [
+    [
+     0.0,
+     -0.01,
+     0.6
+    ],
+    0.24,
+    90.0,
+    6.0
+   ],
+   "hidden_prefixes": [
+    "hair"
+   ]
+  },
+  {
+   "name": "collar_half",
+   "label": "collar, half reach 37.5",
+   "pose": [
+    [
+     "upper_arm_fk.{s}",
+     "Y",
+     35.0,
+     "LR",
+     true
+    ],
+    [
+     "upper_arm_fk.{s}",
+     "X",
+     -37.5,
+     "L",
+     false
+    ]
+   ],
+   "camera": [
+    [
+     0.0,
+     -0.01,
+     0.6
+    ],
+    0.24,
+    90.0,
+    6.0
+   ],
+   "hidden_prefixes": [
+    "hair"
+   ]
+  },
+  {
+   "name": "collar_full",
+   "label": "collar, full reach 75",
+   "pose": [
+    [
+     "upper_arm_fk.{s}",
+     "Y",
+     35.0,
+     "LR",
+     true
+    ],
+    [
+     "upper_arm_fk.{s}",
+     "X",
+     -75.0,
+     "L",
+     false
+    ]
+   ],
+   "camera": [
+    [
+     0.0,
+     -0.01,
+     0.6
+    ],
+    0.24,
+    90.0,
+    6.0
+   ],
+   "hidden_prefixes": [
+    "hair"
+   ]
+  },
+  {
+   "name": "bloomers_front",
+   "label": "bloomer cuffs, front",
+   "pose": [
+    [
+     "upper_arm_fk.{s}",
+     "Y",
+     35.0,
+     "LR",
+     true
+    ]
+   ],
+   "camera": [
+    [
+     0.0,
+     0.0,
+     0.33
+    ],
+    0.26,
+    0.0,
+    3.0
+   ],
+   "hidden_prefixes": []
+  },
+  {
+   "name": "bloomers_back",
+   "label": "bloomer cuffs, 3/4 back",
+   "pose": [
+    [
+     "upper_arm_fk.{s}",
+     "Y",
+     35.0,
+     "LR",
+     true
+    ]
+   ],
+   "camera": [
+    [
+     0.0,
+     0.0,
+     0.33
+    ],
+    0.26,
+    150.0,
+    3.0
+   ],
+   "hidden_prefixes": []
+  },
+  {
+   "name": "hand_L",
+   "label": "hand.L, master A-pose, 3/4 front",
+   "pose": [],
+   "camera": [
+    "hand.L",
+    0.16,
+    40.0,
+    5.0
+   ],
+   "hidden_prefixes": []
+  }
+ ]
+}
