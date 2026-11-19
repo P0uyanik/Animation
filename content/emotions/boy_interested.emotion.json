@@ -4,9 +4,9 @@
  "name": "boy_interested",
  "description": "Boy (boy_yellow_hoodie) only: delayed, low-key interest. The heavy lid lifts, brows stay low in concentration, the lips part a little; the head lifts slightly with a small roll. No smile.",
  "face": {
-  "EyeWide": 0.8,
-  "BrowDown": 0.5,
-  "MouthO": 0.25,
+  "EyeWide": 1.0,
+  "BrowDown": 0.3,
+  "MouthO": 0.3,
   "JawOpen": 0.08
  },
  "faceMotion": {

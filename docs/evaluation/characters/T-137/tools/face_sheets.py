@@ -74,7 +74,11 @@ def eyes(part, out, a):
     job = {"out": out, "engine": "cycles", "samples": 2 if a.preview else (a.samples or 16), "px": px, "frame": "eyes",
            "views": part["eyes"].get("views", {"front": 0, "threequarter": -35}), "hide": ["fur"],
            "columns": [{"tag": c["tag"], "blend": os.path.abspath(c["blend"])} for c in part["columns"]]}
-    blender("docs/evaluation/characters/T-109/face_probe.py", job, out)
+    # a column whose strips are already in <out> is not rendered again (the baseline does not change between passes)
+    job["columns"] = [c for c in job["columns"]
+                      if not all(os.path.exists(os.path.join(out, c["tag"], v + ".png")) for v in job["views"])]
+    if job["columns"]:
+        blender("docs/evaluation/characters/T-109/face_probe.py", job, out)
     refs = [fit(ref_image(r), px, 10 ** 6) for r in part["eyes"].get("refs", [])]
     tiles = [(f"{c['label']} | {v} | 100 % (0.19 mm/px)", Image.open(os.path.join(out, c["tag"], v + ".png")).convert("RGB"))
              for v in job["views"] for c in part["columns"]]
@@ -92,6 +96,8 @@ def eyes(part, out, a):
 
 def expr(part, out, a):
     cfg, T, HEAD = part["expr"], 220, 16
+    if a.candidate_only:  # reference | candidate (the baseline's expressions are in its own task's sheet)
+        part = dict(part, columns=[c for c in part["columns"] if c["role"] == "candidate"])
     job = {"out": out, "samples": 2 if a.preview else (a.samples or 12), "px": 300, "frame": "face", "yaw": 0.0, "elev": 5.0,
            "columns": [{"tag": c["tag"], "blend": os.path.abspath(c["blend"])} for c in part["columns"]],
            "rows": [{"tag": n, "controls": {} if n == "Neutral" else {"face_" + n: 1.0}, "gaze_deg": [0.0, 0.0]}
@@ -149,6 +155,7 @@ def main():
     ap.add_argument("--out", required=True)
     ap.add_argument("--preview", action="store_true")
     ap.add_argument("--samples", type=int, default=0)
+    ap.add_argument("--candidate-only", action="store_true", help="expr: skip the baseline column")
     a = ap.parse_args()
     out = os.path.abspath(a.out)
     os.makedirs(out, exist_ok=True)
