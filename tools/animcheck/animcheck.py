@@ -5,8 +5,10 @@
                                          [--thresholds tools/animcheck/thresholds.json --check]
 
 Gestures come from the scene's actions (the bake names its scene): clip actions (not base clips) and the IK gestures
-`touch` and `reach`. For each gesture the active hand is the side named by the action (`hand`), else the wrist that
-travels furthest in the gesture window. Measured on the wrist pivot (`hand.<side>` bone of the character package, world
+`touch` and `reach`. For each gesture the active hand is the side named by the action (`hand`); for a clip, the arm
+the clip drives (T-139: the arm sides in its `mask`, else its tracks, swapped when the action mirrors the clip), so a
+one-arm gesture is measured on that arm even while the other arm carries or reaches; only when the clip drives both
+arms or neither (or the clip file is missing) the wrist that travels furthest in the gesture window. Measured on the wrist pivot (`hand.<side>` bone of the character package, world
 space, per integer frame) and on the arm bones' global rotations:
 
 - **segments**: the *entry* (first movement out of the pose the gesture starts from: the lift) and the *exit* (the
@@ -74,17 +76,36 @@ def rot_angle_deg(m0, m1):
     return math.degrees(math.acos(max(-1.0, min(1.0, (tr - 1.0) / 2.0))))
 
 
-def load_clip_frames(scene_path: Path, action: dict) -> float | None:
-    """Clip length in clip seconds, for windows of clip actions without `end`."""
+def load_clip(scene_path: Path, action: dict) -> dict | None:
+    """The clip document of a clip action (its `file` next to the scene, else content/clips/<clip>.clip.json)."""
     if "file" in action:
         cand = [scene_path.parent / action["file"]]
     else:
         cand = [d / "content" / "clips" / f"{action.get('clip', '')}.clip.json" for d in scene_path.resolve().parents]
     for c in cand:
         if c.is_file():
-            data = json.loads(c.read_text())
-            return (data["frame_count"] - 1) / float(data["fps"])
+            return json.loads(c.read_text())
     return None
+
+
+def load_clip_frames(scene_path: Path, action: dict) -> float | None:
+    """Clip length in clip seconds, for windows of clip actions without `end`."""
+    data = load_clip(scene_path, action)
+    return None if data is None else (data["frame_count"] - 1) / float(data["fps"])
+
+
+def clip_side(clip: dict | None, mirror: bool = False) -> str | None:
+    """The one arm side ('L' / 'R') a clip drives (arm bones in its mask, else its tracks; swapped when the action
+    mirrors it), or None when it drives both arms or neither."""
+    if not clip:
+        return None
+    roles = clip.get("mask") or list(clip.get("tracks", {}))
+    sfx = (clip.get("mirror") or {}).get("suffix") or [".L", ".R"]
+    sides = {s for s, x in zip("LR", sfx) for r in roles if r in {f"{b}{x}" for b in ARM_BONES}}
+    if len(sides) != 1:
+        return None
+    side = sides.pop()
+    return {"L": "R", "R": "L"}[side] if mirror else side
 
 
 class Character:
@@ -120,19 +141,19 @@ def gestures(scene: dict, scene_path: Path) -> list[dict]:
         t = a.get("type")
         if t == "clip" and not a.get("base", False):
             start = float(a.get("start", scene.get("frameStart", 1)))
+            clip = load_clip(scene_path, a)
             if "end" in a:
                 end = float(a["end"])
             else:
-                secs = load_clip_frames(scene_path, a)
-                if secs is None:
+                if clip is None:
                     continue
-                end = start + secs * fps / float(a.get("speed", 1.0))
+                end = start + (clip["frame_count"] - 1) / float(clip["fps"]) * fps / float(a.get("speed", 1.0))
             end += float(a.get("blendOut", 6))
             label = f"{a['character']} clip {a.get('clip', Path(a.get('file', '?')).stem)} @{a.get('start')}"
             if a.get("speed", 1) != 1:
                 label += f" x{a['speed']}"
-            out.append({"label": label, "character": a["character"], "start": start, "end": end, "side": None,
-                        "kind": "clip"})
+            out.append({"label": label, "character": a["character"], "start": start, "end": end,
+                        "side": clip_side(clip, bool(a.get("mirror", False))), "kind": "clip"})
         elif t in ("touch", "reach") and "prop" not in a:
             start = float(a["start"])
             contact = float(a.get("contact", start + 14))

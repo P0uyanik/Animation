@@ -117,6 +117,84 @@ class AnimcheckTest(unittest.TestCase):
         self.assertEqual(gs[2]["from"], 12 - animcheck.LEAD_MARGIN)
 
 
+def make_two_arm_bake(tmp: Path, left_at, right_at, frames=range(1, 61)):
+    """A one-character bake with both arms: hand.L / hand.R pivots follow left_at / right_at(frame)."""
+    names = ["upperArm.L", "forearm.L", "hand.L", "upperArm.R", "forearm.R", "hand.R"]
+    pkg = tmp / "character.json"
+    pkg.write_text(json.dumps({"skeleton": [{"name": n, "head": [0, 0, 0]} for n in names]}))
+    ident = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+    data = []
+    for f in frames:
+        hand = [[1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, p[0], p[1], p[2], 1] for p in (left_at(f), right_at(f))]
+        data.append({"frame": f, "camera": {"position": [0, 0.5, 3], "target": [0, 0.5, 0], "up": [0, 1, 0]},
+                     "characters": {"who": {"skin": ident + ident + hand[0] + ident + ident + hand[1], "morphs": []}}})
+    return {"format": "plush.shot_bake", "version": 1, "fps": [24, 1], "frames": [frames[0], frames[-1]],
+            "characters": [{"name": "who", "package": str(pkg), "supported": True, "bones": names}],
+            "frame_data": data}
+
+
+class AttributionTest(unittest.TestCase):
+    """T-139: a clip gesture is measured on the arm the clip drives, not on the wrist that travels furthest."""
+
+    @staticmethod
+    def clip(tmp: Path, roles):
+        (tmp / "c.clip.json").write_text(json.dumps({"format": "plush.clip", "fps": 24.0, "frame_count": 31,
+                                                    "mask": roles, "mirror": {"suffix": [".L", ".R"], "axis": "x"},
+                                                    "tracks": {r: {"keys": []} for r in roles}}))
+
+    def run_case(self, roles, left_at, right_at, mirror=False):
+        with tempfile.TemporaryDirectory() as d:
+            self.clip(Path(d), roles)
+            scene = {"name": "s", "frameRate": [24, 1], "frameStart": 1, "actions": [
+                {"type": "clip", "character": "who", "file": "c.clip.json", "start": 15, "mirror": mirror}]}
+            bake = make_two_arm_bake(Path(d), left_at, right_at)
+            report = animcheck.analyse(bake, scene, Path(d) / "scene.json")
+            return report["gestures"][0], animcheck.check(report, THRESHOLDS)
+
+    @staticmethod
+    def eased(f):  # eased arc round the shoulder, frames 15-45: passes the thresholds (as in AnimcheckTest)
+        a = math.radians(-60 + 90 * smootherstep((f - 15) / 30))
+        return (0.4 * math.cos(a), 0.4 * math.sin(a), 0.0)
+
+    @staticmethod
+    def linear(f):  # constant speed, straight: fails ease and onset / stop step
+        t = min(1.0, max(0.0, (f - 15) / 30))
+        return (0.5 * t, 0.0, 0.0)
+
+    @staticmethod
+    def far(f):  # a long, constant-speed carry the other arm does at the same time (travels furthest)
+        t = min(1.0, max(0.0, (f - 5) / 50))
+        return (-0.2, 0.0, 1.2 * t)
+
+    def test_clip_side(self):
+        self.assertEqual(animcheck.clip_side({"mask": ["chest", "upperArm.R", "forearm.R", "hand.R"]}), "R")
+        self.assertEqual(animcheck.clip_side({"mask": ["chest", "hand.R"]}, mirror=True), "L")
+        self.assertEqual(animcheck.clip_side({"tracks": {"forearm.L": {}}}), "L")
+        self.assertIsNone(animcheck.clip_side({"mask": ["hand.L", "hand.R"]}))  # both arms: furthest wrist
+        self.assertIsNone(animcheck.clip_side({"mask": ["head", "neck"]}))
+        self.assertIsNone(animcheck.clip_side(None))
+
+    def test_gesture_measured_on_its_arm_while_the_other_carries(self):
+        # mirrored right-arm clip = left-arm gesture; the right arm travels further (the T-117 shrug case)
+        g, fails = self.run_case(["chest", "upperArm.R", "forearm.R", "hand.R"], self.eased, self.far, mirror=True)
+        self.assertEqual(g["side"], "L")
+        self.assertEqual(fails, [])
+
+    def test_bad_gesture_still_fails_on_its_arm(self):
+        g, fails = self.run_case(["upperArm.L", "forearm.L", "hand.L"], self.linear, lambda f: (0.0, 0.0, 0.0))
+        self.assertEqual(g["side"], "L")
+        self.assertTrue(any("ease" in x for x in fails) and any("onset_step" in x for x in fails), fails)
+
+    def test_bad_gesture_fails_even_when_the_other_arm_moves_more(self):
+        g, fails = self.run_case(["upperArm.L", "forearm.L", "hand.L"], self.linear, self.far)
+        self.assertEqual(g["side"], "L")
+        self.assertTrue(fails)
+
+    def test_two_arm_clip_keeps_the_furthest_wrist(self):
+        g, _ = self.run_case(["hand.L", "hand.R"], self.eased, self.far)
+        self.assertEqual(g["side"], "R")
+
+
 def make_persona_project(tmp: Path, blink_at, wrist_at, limits: dict, frames=range(1, 121)):
     """A project with content/personality/p.json (limits only), a package with a 0.2 m wide head (skin vertices above
     the head bone) and a blink morph, and a bake whose 'Blink' weight is blink_at(frame) and hand.R follows wrist_at."""
