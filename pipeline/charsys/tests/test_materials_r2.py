@@ -14,7 +14,7 @@
    than the crease, and the validator rejects a glowing, cold or over-strong warmth;
 5. the light rigs: character_warm_indoor/1 lives in this task's r2_lights.json, loads with render_calibration.load,
    has the neutral rig's directions and keeps its front-facing luminance; render_calibration.json is untouched;
-6. the T-092 candidate overrides validate through spec.load on top of the current approved specs and differ from them
+6. the T-092 candidate overrides validate through spec.load on top of their base specs and differ from them
    only in material keys (materials.assignments.* and garment material / materials.* entries); every presets/3 id
    they name resolves; no generator pin is changed.
 """
@@ -178,9 +178,14 @@ def main():
     for path in found:
         data = json.load(open(path))
         entry = baseline["characters"][data["character_id"]]
-        base = [os.path.join(ROOT, p) for p in entry.get("overrides", [])]
-        approved, _ = SPEC.load(os.path.join(ROOT, entry["build"]), base)
-        cand, _ = SPEC.load(os.path.join(ROOT, entry["build"]), base + [path])  # validates assignments and pins
+        # The candidate is built on its own "base" spec (T-092: 2.0.0 / 0.11.0); compare against that, not against
+        # whatever is approved now (T-094 made 2.1.0 / 0.12.0 current on 2026-11-19).
+        if data.get("base"):
+            build, base = os.path.join(ROOT, data["base"]), []
+        else:
+            build, base = os.path.join(ROOT, entry["build"]), [os.path.join(ROOT, p) for p in entry.get("overrides", [])]
+        approved, _ = SPEC.load(build, base)
+        cand, _ = SPEC.load(build, base + [path])  # validates assignments and pins
         name = os.path.basename(path)
         check(f"{name}: top-level keys only materials / clothing", set(data["override"]) <= {"materials", "clothing"})
         check(f"{name}: clothing carries only garments", set(data["override"].get("clothing", {})) <= {"garments"})
