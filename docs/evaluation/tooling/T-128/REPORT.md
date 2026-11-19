@@ -15,7 +15,7 @@ run count is given. They are session numbers, not CI numbers.
 | 2b mold linker | **reject** | Clean build 108 s vs 115 s (within noise). Incremental build 18.5 s vs 18.2 s. Link time is not the bottleneck. |
 | 2c CI ccache 31 % | **proposed patch** (T-127 owns CI) | The reported rate is cumulative: `ccache -z` is never run (see below). |
 | 3 OIIO / SSIM / VMAF | **do not add to the gate**. Offer OIIO and SSIM to T-124/T-125 as optional tools. | 28/28 verdicts match. Time saved: 0.15 s over 28 pairs. VMAF was not measured (see below). |
-| 4 parallel tests | **adopt as opt-in helper** | Every serial and parallel run gave identical results. Python 12.2 s → 8.3 s. C++: see §4. |
+| 4 parallel tests | **adopt as opt-in helper** | Every serial and parallel run gave identical results. Python 12.2 s → 8.3 s, C++ 201 s → 112 s (`-j4`). |
 
 ## 2. Faster C++ builds
 
@@ -110,12 +110,17 @@ seeded variants: identical, ±1, ±3 and ±12 noise, +2 brightness, a 1 px shift
 | Suite (same set every run) | serial ×3 | parallel `-j4` ×3 | results |
 |---|---|---|---|
 | Python, 23 scripts | 11.3 / 12.1 / 13.1 s | 7.8 / 8.5 / 8.7 s | 6/6 runs: identical per-script exit codes, 23/23 pass |
-| C++ doctest, 215 cases | CPP_SERIAL | CPP_PAR | CPP_RESULT |
+| C++ doctest, 215 cases (ccache+mold binary) | 202.7 / 198.4 / 202.7 s | 110.8 / 112.7 / 112.2 s | 6/6 runs: identical per-case verdicts, 215/215 PASS, 0 missing |
 
-The Python gain is capped by `tools/cleanup/run_tests.py` (6.3 s on its own).
+The Python gain is capped by `tools/cleanup/run_tests.py` (6.3 s on its own). The C++ gain is capped by the
+slowest shard: shards are split evenly by case count, not by runtime.
+
+Found during the trial and fixed in the helper: doctest's JUnit output lists each subcase as `case/subcase`. The first
+version of the helper therefore reported 3 cases as "missing". The verdicts now roll subcases up to their parent case,
+and all 6 runs were re-checked from their saved XML.
 
 ## Revert
 
-Every change is a new file, and nothing existing references any of them. `git revert <T-128 commit>` restores the
-previous state exactly. You can also delete the files one by one: `CMakePresets.json`, `cmake/opt_in/`,
+Every change is a new file, and nothing existing references any of them. `git revert` of the T-128 commits (the tooling is in the first commit;
+the later ones change only the helper and this report) restores the previous state exactly. You can also delete the files one by one: `CMakePresets.json`, `cmake/opt_in/`,
 `tools/dev/parallel_tests.py`, `tools/dev/compare_bench.py`, `requirements-tools.txt`.

@@ -46,6 +46,23 @@ def doctest_cases(binary: str) -> list[str]:
             if line.strip() and not line.startswith(("[doctest]", "=")) ]
 
 
+def case_verdicts(log_dir: Path, cases: list[str]) -> dict[str, str]:
+    """Per listed case: PASS/FAIL/SKIP. JUnit reports subcases as "case/subcase"; they roll up to the case."""
+    import xml.etree.ElementTree as ET
+    listed, rank = set(cases), {"PASS": 0, "SKIP": 1, "FAIL": 2}
+    verdicts: dict[str, str] = {}
+    for xml in log_dir.glob("*.xml"):
+        for tc in ET.parse(xml).iter("testcase"):
+            name = tc.get("name")
+            if name not in listed:
+                name = next((c for c in listed if name.startswith(c + "/")), name)
+            bad = tc.find("failure") is not None or tc.find("error") is not None
+            v = "FAIL" if bad else ("SKIP" if tc.find("skipped") is not None else "PASS")
+            if rank[v] >= rank.get(verdicts.get(name, "PASS"), 0):
+                verdicts[name] = v
+    return verdicts
+
+
 def run(name: str, command: list[str], log_dir: Path) -> tuple[str, int, float]:
     started = time.monotonic()
     stem = log_dir / name.replace("/", "_").replace(":", "_")
@@ -89,12 +106,7 @@ def main() -> int:
     for name, code, secs in sorted(results):
         print(f"{code} {name} {secs:.1f}s")
     if args.suite == "cpp":  # per-case verdicts from the junit files: the set must equal the listed cases
-        import xml.etree.ElementTree as ET
-        verdicts = {}
-        for xml in log_dir.glob("*.xml"):
-            for tc in ET.parse(xml).iter("testcase"):
-                bad = tc.find("failure") is not None or tc.find("error") is not None
-                verdicts[tc.get("name")] = "FAIL" if bad else ("SKIP" if tc.find("skipped") is not None else "PASS")
+        verdicts = case_verdicts(log_dir, cases)
         (log_dir / "cases.txt").write_text("".join(f"{v} {k}\n" for k, v in sorted(verdicts.items())))
         missing = sorted(set(cases) - set(verdicts))
         print(f"# cases run={len(verdicts)} listed={len(cases)} missing={len(missing)} "
