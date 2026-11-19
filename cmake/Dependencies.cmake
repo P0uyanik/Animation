@@ -7,34 +7,7 @@ find_package(Threads REQUIRED)
 find_package(glm CONFIG REQUIRED)           # math (MIT)
 find_package(nlohmann_json 3 CONFIG REQUIRED)
 
-# Renderer-only dependencies (PLUSH_BUILD_RENDERER): Embree and, optionally, Open Image Denoise.
-set(PLUSH_OIDN_ROOT "" CACHE PATH "Root of an Open Image Denoise 2.x install (optional, renderer only)")
-if(PLUSH_BUILD_RENDERER)
-  find_package(embree 4 REQUIRED)          # CPU ray tracing kernels (Apache-2.0)
-  # Open Image Denoise is optional: without it renders are simply not denoised.
-  if(PLUSH_OIDN_ROOT)
-    list(APPEND CMAKE_PREFIX_PATH "${PLUSH_OIDN_ROOT}")
-  endif()
-  find_package(OpenImageDenoise 2 CONFIG QUIET)
-  if(OpenImageDenoise_FOUND)
-    message(STATUS "Plush: Open Image Denoise found - denoising enabled")
-  else()
-    message(STATUS "Plush: Open Image Denoise NOT found - denoising disabled")
-  endif()
-  message(STATUS "Plush: renderer ON (PLUSH_BUILD_RENDERER)")
-else()
-  message(STATUS "Plush: renderer OFF (PLUSH_BUILD_RENDERER=OFF) - no Embree/OIDN; renderer tests are skipped")
-endif()
-
-# The desktop studio app embeds the path-traced view, so it is built only together with the renderer.
-# Its production workflow library (plush_shot_workflow) is built and tested either way.
-if(PLUSH_BUILD_STUDIO AND PLUSH_BUILD_RENDERER)
-  set(PLUSH_BUILD_STUDIO_APP ON)
-else()
-  set(PLUSH_BUILD_STUDIO_APP OFF)
-endif()
-
-# stb (image writing)
+# stb (PNG read/write for the studio's screenshots and production frame view)
 find_path(PLUSH_STB_INCLUDE stb_image_write.h PATH_SUFFIXES stb)
 if(NOT PLUSH_STB_INCLUDE)
   FetchContent_Declare(stb GIT_REPOSITORY https://github.com/nothings/stb.git GIT_TAG 5c205738c191bcb0abc65c4febfa9bd25ff35234)
@@ -52,7 +25,7 @@ if(PLUSH_BUILD_TESTS)
   endif()
 endif()
 
-if(PLUSH_BUILD_STUDIO_APP)
+if(PLUSH_BUILD_STUDIO)
   find_package(OpenGL REQUIRED)
   find_package(glfw3 3.3 CONFIG REQUIRED)
   # Dear ImGui, docking branch, pinned to a commit for reproducible builds.

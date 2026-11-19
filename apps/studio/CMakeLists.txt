@@ -5,13 +5,13 @@ if(WIN32)
 endif()
 target_include_directories(plush_shot_workflow PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(plush_shot_workflow PUBLIC plush_scene PRIVATE plush_warnings)
-if(NOT PLUSH_BUILD_STUDIO_APP)
-  return()  # the app needs the renderer (PLUSH_BUILD_RENDERER); the workflow library above is built either way
+if(NOT PLUSH_BUILD_STUDIO)
+  return()
 endif()
 find_package(GLEW REQUIRED)
-add_executable(plush-studio main.cpp)
-target_link_libraries(plush-studio PRIVATE plush_scene plush_render plush_imgui plush_shot_workflow GLEW::GLEW plush_warnings)
-# The studio launches the command-line renderer for animation jobs.
+add_executable(plush-studio main.cpp image_io.cpp preview_texture.cpp)
+target_link_libraries(plush-studio PRIVATE plush_scene plush_stb plush_imgui plush_shot_workflow GLEW::GLEW plush_warnings)
+# The studio launches plush-render --bake (engine bake) for production jobs.
 target_compile_definitions(plush-studio PRIVATE PLUSH_RENDER_CLI="$<TARGET_FILE:plush-render>")
 # The production workflow runs pipeline/production/run_shot.py of this source tree.
 target_compile_definitions(plush-studio PRIVATE PLUSH_SOURCE_DIR="${CMAKE_SOURCE_DIR}")

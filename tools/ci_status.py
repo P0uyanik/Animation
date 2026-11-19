@@ -36,7 +36,7 @@ import time
 import urllib.parse
 import urllib.request
 
-REQUIRED_JOBS = ("Plan (tier)", "linux gate", "linux renderer", "Gate verdict")
+REQUIRED_JOBS = ("Plan (tier)", "linux gate", "Gate verdict")  # "linux renderer" removed in T-142
 FAILED = {"failure", "timed_out", "startup_failure", "action_required"}
 NOT_DECISIVE = {"cancelled", "skipped", "neutral", "stale", None, ""}
 

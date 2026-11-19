@@ -23,13 +23,16 @@
 #include <sstream>
 #include <thread>
 
-#include "render/bsdf.h"
-#include "render/image.h"
+#include "image_io.h"
+#include "preview_texture.h"
 #include "scene/scene.h"
 #include "scene/shot_bake.h"
 #include "shot_workflow.h"
 
 using namespace plush;
+using plush::studio::evalTexture;
+using plush::studio::readImageRgb8;
+using plush::studio::writePng;
 namespace fs = std::filesystem;
 
 namespace {
@@ -169,36 +172,15 @@ class PreviewRenderer {
   size_t drawCount_ = 0;
 };
 
-// ------------------------------------------------------------------ background path tracing
-struct RenderJob {
-  std::thread worker;
-  std::atomic<bool> cancel{false}, running{false};
-  std::mutex mutex;
-  std::vector<uint8_t> rgb;
-  RenderOutput last;
-  int width = 0, height = 0, samples = 0, target = 0;
-  bool fresh = false;
-  std::string status = "idle";
-  GLuint tex = 0;
-  void stop() {
-    cancel = true;
-    if (worker.joinable()) worker.join();
-    cancel = false;
-  }
-};
-
 struct App {
   GLFWwindow* window = nullptr;
   fs::path scenePath;
   SceneEvaluator view;  // fast preview evaluator (no fibres, coarser meshes)
   EvalOptions viewOpt{1.4f, 0.0f, false};
-  std::unique_ptr<SceneEvaluator> full;  // full quality, built on first render
-  bool fullDirty = true;
   bool assetsEdited = false;  // characters changed in the app since loading
   std::vector<CharacterAsset> assets;  // editable copies
   std::shared_ptr<FrameSnapshot> snap;
   PreviewRenderer preview;
-  RenderJob job;
   double frame = 1;
   bool playing = false, needEval = true, recolor = true, sceneCamera = true;
   // selection
@@ -209,7 +191,6 @@ struct App {
   vec3 orbitTarget{0, 0.6f, 0};
   float yaw = -0.4f, pitch = 0.25f, dist = 2.4f;
   std::string status;
-  std::atomic<bool> animRendering{false};
   bool loaded = false;  // a scene is loaded into the evaluators
   // ---- production workflow (T-001): Studio drives pipeline/production/run_shot.py and displays its results
   bool shotMode = false;                 // the document is a shot: saved by merging into shot.path
@@ -283,63 +264,6 @@ Material* findMaterial(App& a, const std::string& name) {
   return nullptr;
 }
 
-void startRender(App& a) {
-  a.job.stop();
-  RenderSettings rs = doc(a).render;
-  Scene sceneCopy = doc(a);
-  std::vector<CharacterAsset> assets = a.assets;
-  std::vector<Material> mats;
-  for (auto& m : doc(a).materials) mats.push_back(m);
-  for (auto& c : a.assets) mats.insert(mats.end(), c.materials.begin(), c.materials.end());
-  double frame = a.frame;
-  bool rebuild = a.fullDirty || !a.full;
-  bool edited = a.assetsEdited;
-  a.fullDirty = false;
-  a.job.running = true;
-  a.job.target = rs.spp;
-  a.job.worker = std::thread([&a, rs, sceneCopy, assets, mats, frame, rebuild, edited] {
-    auto setStatus = [&](std::string s) {
-      std::lock_guard lock(a.job.mutex);
-      a.job.status = std::move(s);
-    };
-    if (rebuild) {
-      setStatus("building full-quality scene (fibres, fine meshes)...");
-      a.full = std::make_unique<SceneEvaluator>();
-      EvalOptions fullOpt;
-      fullOpt.lodWidth = rs.width;  // coverage-preserving fibre level of detail
-      if (auto r = a.full->load(sceneCopy, fullOpt); !r) {
-        setStatus("error: " + r.error().message);
-        a.job.running = false;
-        return;
-      }
-      if (edited)
-        for (size_t i = 0; i < assets.size(); ++i) (void)a.full->rebuildCharacter(i, assets[i], fullOpt);
-    }
-    a.full->mutableScene() = sceneCopy;
-    for (auto& m : mats) a.full->updateMaterial(m);
-    PathTracer tracer;
-    tracer.setScene(a.full->evaluate(frame));
-    Stopwatch sw;
-    while (!a.job.cancel && tracer.accumulatedSamples() < rs.spp) {
-      int n = std::max(1, std::min({4, tracer.accumulatedSamples() / 4 + 1, rs.spp - tracer.accumulatedSamples()}));
-      tracer.accumulate(rs, n, [&] { return a.job.cancel.load(); });
-      RenderOutput out = tracer.output();
-      bool done = out.samples >= rs.spp;
-      if (done && rs.denoise) denoise(out, rs.denoiseBlend);
-      auto rgb = toneMapToSrgb8(out.color, ToneMapSettings{rs.exposureEV});
-      std::lock_guard lock(a.job.mutex);
-      a.job.rgb = std::move(rgb);
-      a.job.width = out.color.width;
-      a.job.height = out.color.height;
-      a.job.samples = out.samples;
-      a.job.fresh = true;
-      if (done) a.job.last = std::move(out);
-      a.job.status = std::format("{} / {} samples, {:.1f}s{}", a.job.samples, rs.spp, sw.seconds(), done ? " (denoised)" : "");
-    }
-    a.job.running = false;
-  });
-}
-
 void markEdited(App& a, bool recolor = false) {
   a.needEval = true;
   a.recolor = a.recolor || recolor;
@@ -348,7 +272,6 @@ void markEdited(App& a, bool recolor = false) {
 // ---------------------------------------------------------------- editor actions (UI buttons and --script share these)
 void rebuildCharacter(App& a, size_t ci) {
   if (auto r = a.view.rebuildCharacter(ci, a.assets[ci], a.viewOpt); !r) a.status = r.error().message;
-  a.fullDirty = true;
   a.assetsEdited = true;
   markEdited(a, true);
 }
@@ -406,7 +329,6 @@ void materialEditor(App& a, Material& m) {
   }
   if (changed) {
     a.view.updateMaterial(m);
-    a.fullDirty = a.fullDirty || false;
     markEdited(a, true);
   }
 }
@@ -509,7 +431,6 @@ void characterInspector(App& a, size_t ci) {
     }
     if (ImGui::Button("Rebuild character")) {
       if (auto r = a.view.rebuildCharacter(ci, asset, a.viewOpt); !r) a.status = r.error().message;
-      a.fullDirty = true;
       a.assetsEdited = true;
       markEdited(a, true);
     }
@@ -672,74 +593,9 @@ void timeline(App& a) {
   ImGui::End();
 }
 
-void renderPanel(App& a) {
-  ImGui::Begin("Render");
-  RenderSettings& rs = doc(a).render;
-  ImGui::SetNextItemWidth(120);
-  ImGui::DragInt("Width", &rs.width, 8, 64, 7680);
-  ImGui::SameLine();
-  ImGui::SetNextItemWidth(120);
-  ImGui::DragInt("Height", &rs.height, 8, 64, 4320);
-  ImGui::SetNextItemWidth(120);
-  ImGui::DragInt("Samples", &rs.spp, 1, 1, 4096);
-  ImGui::SameLine();
-  ImGui::SetNextItemWidth(120);
-  ImGui::SliderFloat("Exposure", &rs.exposureEV, -4, 4);
-  ImGui::Checkbox("Denoise", &rs.denoise);
-  if (ImGui::Button(a.job.running ? "Restart path trace" : "Path trace this frame")) startRender(a);
-  ImGui::SameLine();
-  if (ImGui::Button("Stop")) a.job.stop();
-  ImGui::SameLine();
-  if (ImGui::Button("Save image")) {
-    std::lock_guard lock(a.job.mutex);
-    fs::path out = fs::path("renders") / std::format("{}_f{:04d}.png", doc(a).path.stem().stem().string(), int(a.frame));
-    auto r = a.job.rgb.empty() ? fail("nothing rendered yet") : writePng(out, a.job.width, a.job.height, a.job.rgb);
-    a.status = r ? "saved " + out.string() : r.error().message;
-  }
-  if (ImGui::Button(a.animRendering ? "Rendering animation..." : "Render animation to video") && !a.animRendering) {
-    // A shot renders a copy of its resolved scene (engine preview); its packages are pipeline outputs, not rewritten.
-    fs::path scenePath = a.shotMode ? a.shot.buildDir() / "studio_engine_preview.scene.json" : doc(a).path;
-    if (auto r = saveScene(doc(a), scenePath); r) {
-      if (!a.shotMode)
-        for (size_t i = 0; i < a.assets.size(); ++i)
-          (void)writeTextFile(doc(a).path.parent_path() / doc(a).characters[i].asset, characterToJson(a.assets[i]).dump(1));
-      std::string stem = a.shotMode ? a.shot.episode + "_" + a.shot.shot + "_engine" : doc(a).path.stem().stem().string();
-      std::error_code ec;
-      fs::create_directories("renders", ec);
-      std::string cmd = std::format("\"{}\" \"{}\" --frames {}-{} --outdir renders/{} --video renders/{}.mp4 > renders/{}.log 2>&1",
-                                    PLUSH_RENDER_CLI, scenePath.string(), doc(a).frameStart, doc(a).frameEnd, stem, stem, stem);
-      a.animRendering = true;
-      std::thread([&a, cmd] {
-        int rc = std::system(cmd.c_str());
-        a.status = rc == 0 ? "animation finished (see renders/)" : "animation render failed, see renders/*.log";
-        a.animRendering = false;
-      }).detach();
-    }
-  }
-  {
-    std::lock_guard lock(a.job.mutex);
-    ImGui::TextUnformatted(a.job.status.c_str());
-    if (a.job.fresh && !a.job.rgb.empty()) {
-      if (!a.job.tex) glGenTextures(1, &a.job.tex);
-      glBindTexture(GL_TEXTURE_2D, a.job.tex);
-      glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, a.job.width, a.job.height, 0, GL_RGB, GL_UNSIGNED_BYTE, a.job.rgb.data());
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-      a.job.fresh = false;
-    }
-  }
-  if (a.job.tex && a.job.width > 0) {
-    float avail = ImGui::GetContentRegionAvail().x;
-    ImGui::Image(ImTextureID(uintptr_t(a.job.tex)), ImVec2(avail, avail * float(a.job.height) / float(a.job.width)));
-  }
-  ImGui::End();
-}
-
 // ------------------------------------------------------------------ documents and the production workflow (T-001)
 // Loads a scene into the evaluators (the legacy single-scene path and a prepared shot's resolved scene).
 bool loadDocument(App& a, const fs::path& scenePath) {
-  a.job.stop();
   auto scene = loadScene(scenePath);
   if (!scene) {
     a.status = scene.error().message;
@@ -747,8 +603,6 @@ bool loadDocument(App& a, const fs::path& scenePath) {
     return false;
   }
   a.view = SceneEvaluator();
-  a.full.reset();
-  a.fullDirty = true;
   a.assetsEdited = false;
   a.assets.clear();
   if (auto r = a.view.load(*scene, a.viewOpt); !r) {
@@ -809,9 +663,7 @@ bool openShot(App& a, const fs::path& shotFile) {
   if (workflow::isPrepared(a.shot)) {
     ok = loadDocument(a, a.shot.resolvedScene());
   } else {
-    a.job.stop();
     a.view = SceneEvaluator();
-    a.full.reset();
     a.assets.clear();
     a.snap.reset();
     a.loaded = false;
@@ -1543,10 +1395,8 @@ void tickScript(App& a, ProdScript& ps) {
 int main(int argc, char** argv) {
   fs::path scenePath = "content/scenes/milestone01_classroom.scene.json";
   std::string screenshot;
-  bool scriptHairEdit = false, scriptVerify = false;
+  bool scriptHairEdit = false, scriptVerify = false, play = false;
   int screenshotAfter = 30;
-  bool autoRender = false;
-  int renderW = 0, renderH = 0, renderSpp = 0;
   fs::path shotArg;
   std::string blenderArg;
   ProdScript script;
@@ -1554,11 +1404,9 @@ int main(int argc, char** argv) {
     std::string arg = argv[i];
     if (arg == "--screenshot" && i + 1 < argc) screenshot = argv[++i];
     else if (arg == "--screenshot-after" && i + 1 < argc) screenshotAfter = std::stoi(argv[++i]);
-    else if (arg == "--auto-render") autoRender = true;
-    else if (arg == "--render-size" && i + 2 < argc) { renderW = std::stoi(argv[++i]); renderH = std::stoi(argv[++i]); }
-    else if (arg == "--render-spp" && i + 1 < argc) renderSpp = std::stoi(argv[++i]);
     else if (arg == "--script-hair-edit") scriptHairEdit = true;  // automated editor test (same actions as the buttons)
     else if (arg == "--script-verify") scriptVerify = true;
+    else if (arg == "--play") play = true;  // start timeline playback (same path as the Play button; smoke test)
     // production workflow (T-001)
     else if (arg == "--shot" && i + 1 < argc) shotArg = argv[++i];
     else if (arg == "--blender" && i + 1 < argc) blenderArg = argv[++i];
@@ -1617,8 +1465,6 @@ int main(int argc, char** argv) {
     if (!loadDocument(app, scenePath)) return 1;
     app.frame = doc(app).frameStart;
   }
-  if (renderW > 0) { doc(app).render.width = renderW; doc(app).render.height = renderH; }
-  if (renderSpp > 0) doc(app).render.spp = renderSpp;
   if (scriptHairEdit && !app.assets.empty() && !app.assets[0].lockGroups.empty()) {
     // Select the first character's first hair group, duplicate lock 0, thicken it, apply, save scene + character.
     app.kind = App::Kind::Character;
@@ -1638,7 +1484,7 @@ int main(int argc, char** argv) {
   }
   if (scriptVerify && !app.assets.empty())
     for (auto& g : app.assets[0].lockGroups) logInfo("verify: group '{}' has {} locks", g.name, g.locks.size());
-  if (autoRender) startRender(app);
+  if (play) app.playing = true;
   if (!script.mode.empty() && !app.shotMode) {
     logError("--script-{} needs --shot", script.mode);
     return 1;
@@ -1683,10 +1529,10 @@ int main(int argc, char** argv) {
     ImGui::SetNextWindowPos(ImVec2(260, 20), ImGuiCond_FirstUseEver);
     ImGui::SetNextWindowSize(ImVec2(900, 640), ImGuiCond_FirstUseEver);
     viewport(app);
-    // Layout of the new Production panel: in a plain scene it is a tab behind Render (the existing layout stays as
-    // it was); in a shot the right column holds Production, Inspector and Render as tabs, Production in front.
+    // Layout of the Production panel: the right column holds Inspector and Production as tabs (Inspector in front in a
+    // plain scene, Production in front in a shot). The path-traced Render panel was removed in T-142.
     static int layout = 0;  // 0 none, 1 scene, 2 shot
-    static int focusRender = 0, focusProduction = 0;
+    static int focusProduction = 0;
     auto dockColumn = [](const char* id, ImVec2 pos, ImVec2 size, std::initializer_list<const char*> windows) {
       ImGuiID node = ImGui::GetID(id);
       if (ImGui::DockBuilderGetNode(node)) return;
@@ -1698,21 +1544,16 @@ int main(int argc, char** argv) {
     };
     if (!app.shotMode && layout == 0) {
       layout = 1;
-      focusRender = 3;  // the docked tab is selected once the dock node exists
-      dockColumn("SceneRenderColumn", ImVec2(1160, 360), ImVec2(440, 540), {"Render", "Production"});
+      dockColumn("SceneRightColumn", ImVec2(1160, 20), ImVec2(440, 880), {"Inspector", "Production"});
     }
     if (app.shotMode && layout != 2) {
       layout = 2;
       focusProduction = 3;
-      dockColumn("ShotRightColumn", ImVec2(1160, 20), ImVec2(440, 880), {"Inspector", "Render", "Production"});
+      dockColumn("ShotRightColumn", ImVec2(1160, 20), ImVec2(440, 880), {"Inspector", "Production"});
     }
     ImGui::SetNextWindowPos(ImVec2(1160, 20), ImGuiCond_FirstUseEver);
     ImGui::SetNextWindowSize(ImVec2(440, 340), ImGuiCond_FirstUseEver);
     inspector(app);
-    ImGui::SetNextWindowPos(ImVec2(1160, 360), ImGuiCond_FirstUseEver);
-    ImGui::SetNextWindowSize(ImVec2(440, 540), ImGuiCond_FirstUseEver);
-    if (focusRender > 0 && focusRender-- == 1) ImGui::SetNextWindowFocus();
-    renderPanel(app);
     ImGui::SetNextWindowPos(ImVec2(1160, 360), ImGuiCond_FirstUseEver);
     ImGui::SetNextWindowSize(ImVec2(440, 540), ImGuiCond_FirstUseEver);
     if (focusProduction > 0 && focusProduction-- == 1) ImGui::SetNextWindowFocus();
@@ -1741,15 +1582,14 @@ int main(int argc, char** argv) {
       capture(script.pendingShot);
       script.pendingShot.clear();
     }
-    if (!screenshot.empty() && script.mode.empty() && ++frameCounter >= screenshotAfter &&
-        (!autoRender || (!app.job.running && app.job.samples > 0))) {
+    if (!screenshot.empty() && script.mode.empty() && ++frameCounter >= screenshotAfter) {
       capture(screenshot);
+      logInfo("timeline: frame {:.2f} after {} UI frames ({})", app.frame, frameCounter, app.playing ? "playing" : "paused");
       glfwSetWindowShouldClose(app.window, 1);
     }
     glfwSwapBuffers(app.window);
   }
   if (app.prodJob.running()) app.prodJob.cancel(8.0);
-  app.job.stop();
   ImGui_ImplOpenGL3_Shutdown();
   ImGui_ImplGlfw_Shutdown();
   ImGui::DestroyContext();
