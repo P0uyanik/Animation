@@ -179,7 +179,9 @@ any workflow is red on `main`.
   builds its own characters; nothing built is reused between units or shards (owner decision T-127, item 6 not
   approved). A unit that reads another unit's output in the same run (`face` reads the `charsys` master, as before)
   must sit in the same shard; the plan is rejected otherwise, and an unassigned unit runs in shard 1. The shard with
-  `shot-eyes`/`emotions` also builds the `plush-render` target (the bake engine).
+  `shot-eyes`/`emotions` also builds the `plush-render` target (the bake engine). Every shard installs exactly the
+  linux gate's dependencies (`-Cpp -Bpy`), because the serial Blender tier always ran after that install (e.g.
+  `deform_test` needs libEGL from the apt packages; found by the first sharded run, 44536062750).
   Proof that the commands are identical: `python tools/ci/blender_inventory.py` (also run by the Python tests via
   `tools/ci/tests/test_t127_shards.py`); evidence in `docs/evaluation/ci/T-127/`.
 - **Fallback (pre-T-127 path)**: repository variable `PLUSH_CI_BLENDER_SHARDS=off`, or `[unsharded]` in the head

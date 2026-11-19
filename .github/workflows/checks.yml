@@ -391,7 +391,6 @@ jobs:
       - name: Runner image id (apt cache key)
         run: echo "PLUSH_RUNNER_IMAGE=$ImageOS-$ImageVersion" >> "$GITHUB_ENV"
       - name: Cache pinned apt packages (T-127; keyed on the runner image)
-        if: matrix.shard.engine
         uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
         with:
           path: ${{ runner.temp }}/plush-apt-cache
@@ -405,14 +404,11 @@ jobs:
           restore-keys: |
             ccache-linux-blender-
             ccache-linux-
-      - name: Install pinned bpy (and the C++ libraries for the plush-render bake engine)
+      - name: Install pinned dependencies (same as the linux gate - apt C++ libraries without Embree/OIDN, bpy)
+        # Every shard gets exactly the linux gate's setup: the serial Blender tier always ran after this install,
+        # and some tests depend on it (deform_test needs libEGL, which the apt packages bring in).
         shell: pwsh
-        run: |
-          if ('${{ matrix.shard.engine }}' -eq 'true') {
-            ./.github/scripts/install_ci_dependencies.ps1 -Platform linux -Cpp -Bpy -AptCache "$env:RUNNER_TEMP/plush-apt-cache"
-          } else {
-            ./.github/scripts/install_ci_dependencies.ps1 -Platform linux -Bpy
-          }
+        run: ./.github/scripts/install_ci_dependencies.ps1 -Platform linux -Cpp -Bpy -AptCache "$env:RUNNER_TEMP/plush-apt-cache"
       - name: Trial merge
         id: merge
         run: bash .github/scripts/trial_merge.sh "${{ needs.plan.outputs.merge_target }}" "build/check-all/blender-${{ matrix.shard.shard }}"
