@@ -1,0 +1,15 @@
+{
+ "format": "plush.animcheck_timing",
+ "version": 1,
+ "scene": "e907_exchange s010_verbs: T-112a verb demo - he picks up the cup, lifts it and puts it down (pick_up, carry, place verbs, calibrated timing)",
+ "timing_profile": "calibrated",
+ "beats": [],
+ "holds": {
+  "longest_still_frames": 67,
+  "at": [
+   36,
+   103
+  ]
+ },
+ "warnings": []
+}
