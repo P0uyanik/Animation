@@ -47,6 +47,64 @@ struct AssetCollisionProxy {
   float height = 1.0f;  // capsule tip-to-tip height
 };
 
+// Object affordances (T-112a, docs/architecture/INTERACTION_AFFORDANCES.md 2.2): how a prop is held, carried and put
+// down. Optional; read only by the verb expander (scene/verbs.h), never by the primitive interaction actions.
+struct GraspSite {
+  std::string id;
+  std::string socket;          // an existing socket of the asset (palm contact point and frame)
+  std::string hand = "any";    // "L" | "R" | "any"
+  std::string shape = "wrap";  // "wrap" | "pinch" | "palm" | "hook" | "cradle"
+  std::optional<vec3> approach;  // prop-frame direction the palm comes from (unit)
+  std::optional<float> aperture;  // open hand width before contact (m)
+  bool turnable = false;
+  std::string thumb;              // fingers.thumb: "" | "opposed" | "along" | "tucked" (read by T-051 only)
+  std::optional<vec2> band;       // fingers.band: contact band along the grasp axis (m, prop frame)
+};
+struct GraspSet {
+  std::string id;
+  std::vector<std::string> sites;  // grasp site ids, one per hand
+  int simultaneousFrames = 2;      // contacts of a two-site set at most this far apart
+};
+struct PropAffordances {
+  std::string sizeClass;               // "hand" | "small" | "medium" | "large"; "" = derived when needed
+  std::string weightClass = "light";   // "light" | "medium" | "heavy"
+  std::optional<float> massKg;
+  std::string hands = "either";        // "one" | "two" | "either"
+  std::string pivotSocket;             // pivot: a socket name, or
+  std::optional<vec3> pivotPoint;      // a prop-frame point
+  struct Upright {
+    vec3 axis{0, 1, 0};  // prop frame, unit
+    float maxTiltDeg = 15;
+  };
+  std::optional<Upright> upright;
+  std::vector<GraspSite> sites;
+  std::vector<GraspSet> sets;
+  std::vector<std::string> handoverGive, handoverReceive;  // grasp set ids
+  struct Place {
+    std::string socket = "place";
+    vec3 surfaceNormal{0, 1, 0};
+    std::string settle = "rigid";  // "rigid" | "soft"
+  };
+  std::optional<Place> place;
+  struct PushPull {
+    vec3 axis{0, 0, 1};
+    std::vector<std::string> sites;
+    std::string friction = "slide";  // "slide" | "tip"
+  };
+  std::optional<PushPull> pushPull;
+  std::string deform = "rigid";  // "rigid" | "squash" | "bend" | "fold" (only rigid is supported by the verbs)
+  float squash = 0;
+  // Non-empty: the block is present but invalid. The asset still loads (nothing but a verb action reads the block);
+  // a verb action on this prop fails with this message.
+  std::string error;
+
+  const GraspSite* site(const std::string& id) const;
+  const GraspSet* set(const std::string& id) const;
+};
+// Parses and validates an "affordances" block against the asset's sockets (design 2.2 rules).
+Result<PropAffordances> affordancesFromJson(const Json& json, const std::map<std::string, AssetTransform>& sockets,
+                                            std::string_view context = "affordances");
+
 struct PropAsset {
   std::string id;
   int version = 1;
@@ -57,6 +115,7 @@ struct PropAsset {
   float scaleMetres = 1.0f;  // metres per source unit
   std::map<std::string, AssetTransform> sockets;
   std::optional<AssetCollisionProxy> collision;
+  std::optional<PropAffordances> affordances;  // T-112a (a present but invalid block: affordances->error is set)
 };
 
 Result<PropAsset> assetFromJson(const Json& json);
