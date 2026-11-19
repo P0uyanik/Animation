@@ -1,0 +1,128 @@
+{
+ "format": "plush.animcheck_timing",
+ "version": 1,
+ "scene": "e909_two_char_acting s010: T-114 two-character acting - she notices the cup, picks it up and offers it, he answers late and reluctantly, takes it, looks at it, sets it down; both react",
+ "timing_profile": null,
+ "beats": [
+  {
+   "beat": "reach",
+   "character": "girl",
+   "action": "grasp",
+   "frames": [
+    43.0,
+    57.0
+   ],
+   "length": 14.0,
+   "reference": [
+    10,
+    20
+   ]
+  },
+  {
+   "beat": "reach",
+   "character": "girl",
+   "action": "hold",
+   "frames": [
+    67.0,
+    87.0
+   ],
+   "length": 20.0,
+   "reference": [
+    10,
+    20
+   ]
+  },
+  {
+   "beat": "reach",
+   "character": "boy",
+   "action": "handover",
+   "frames": [
+    113.0,
+    132.0
+   ],
+   "length": 19.0,
+   "reference": [
+    10,
+    20
+   ]
+  },
+  {
+   "beat": "shared_hold",
+   "character": "girl",
+   "action": "handover",
+   "frames": [
+    132.0,
+    163.0
+   ],
+   "length": 31.0,
+   "reference": [
+    16,
+    30
+   ]
+  },
+  {
+   "beat": "release",
+   "character": "girl",
+   "action": "handover",
+   "frames": [
+    163.0,
+    175.0
+   ],
+   "length": 12.0,
+   "reference": [
+    12,
+    18
+   ]
+  },
+  {
+   "beat": "reach",
+   "character": "boy",
+   "action": "hold",
+   "frames": [
+    163.0,
+    179.0
+   ],
+   "length": 16.0,
+   "reference": [
+    10,
+    20
+   ]
+  },
+  {
+   "beat": "place",
+   "character": "boy",
+   "action": "place",
+   "frames": [
+    195.0,
+    221.0
+   ],
+   "length": 26.0,
+   "reference": [
+    20,
+    24
+   ]
+  },
+  {
+   "beat": "release",
+   "character": "boy",
+   "action": "place",
+   "frames": [
+    221.0,
+    238.0
+   ],
+   "length": 17.0,
+   "reference": [
+    12,
+    18
+   ]
+  }
+ ],
+ "holds": {
+  "longest_still_frames": 22,
+  "at": [
+   250,
+   272
+  ]
+ },
+ "warnings": []
+}

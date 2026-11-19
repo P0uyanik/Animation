@@ -1,0 +1,175 @@
+{
+ "format": "plush.animcheck_personality",
+ "version": 1,
+ "scene": "e909_two_char_acting s010: T-114 two-character acting - she notices the cup, picks it up and offers it, he answers late and reluctantly, takes it, looks at it, sets it down; both react",
+ "fps": 24.0,
+ "characters": [
+  {
+   "character": "boy",
+   "personality": "boy_yellow_hoodie",
+   "profile": "content/personality/boy_yellow_hoodie.json",
+   "profile_version": "1.0.0",
+   "limits": {
+    "blink_interval_frames": [
+     20,
+     96
+    ],
+    "blink_duration_frames": [
+     4,
+     6
+    ],
+    "reach_frames": [
+     10,
+     16
+    ],
+    "hold_frames": [
+     24,
+     72
+    ],
+    "action_speed": [
+     0.8,
+     1.0
+    ],
+    "idle_motion_max_H_per_frame": 0.004,
+    "face_offset_max": 0.3,
+    "head_pitch_deg": [
+     5,
+     20
+    ]
+   },
+   "head_width_m": 0.3401,
+   "blinks": {
+    "morph": "Blink",
+    "count": 5,
+    "frames": [
+     74,
+     152,
+     198,
+     245,
+     264
+    ],
+    "durations": [
+     7.0,
+     5.0,
+     5.0,
+     4.0,
+     4.0
+    ],
+    "double_blinks": [],
+    "intervals": [
+     78.0,
+     46.0,
+     47.0,
+     19.0
+    ],
+    "mean_interval": 47.5
+   },
+   "gestures": [],
+   "idle": {
+    "frames": 285,
+    "median_head_H_per_frame": 0.00119,
+    "p95_head_H_per_frame": 0.01529,
+    "head_amplitude_H": 0.05044,
+    "profile_idle_motion_amplitude_H": 0.003
+   },
+   "failures": []
+  },
+  {
+   "character": "girl",
+   "personality": "girl_auburn_bun_glasses",
+   "profile": "content/personality/girl_auburn_bun_glasses.json",
+   "profile_version": "1.0.0",
+   "limits": {
+    "blink_interval_frames": [
+     25,
+     40
+    ],
+    "blink_duration_frames": [
+     3,
+     5
+    ],
+    "reach_frames": [
+     8,
+     10
+    ],
+    "hold_frames": [
+     12,
+     40
+    ],
+    "action_speed": [
+     1.0,
+     1.25
+    ],
+    "idle_motion_max_H_per_frame": 0.006,
+    "face_offset_max": 0.2,
+    "head_pitch_deg": [
+     -5,
+     10
+    ],
+    "gesture_amplitude_max": 0.6
+   },
+   "head_width_m": 0.3105,
+   "blinks": {
+    "morph": "Blink",
+    "count": 13,
+    "frames": [
+     18,
+     34,
+     56,
+     80,
+     110,
+     134,
+     165,
+     172,
+     200,
+     206,
+     225,
+     260,
+     283
+    ],
+    "durations": [
+     4.0,
+     3.0,
+     3.0,
+     3.0,
+     4.0,
+     4.0,
+     3.0,
+     4.0,
+     4.0,
+     3.0,
+     3.0,
+     4.0,
+     4.0
+    ],
+    "double_blinks": [
+     172,
+     206
+    ],
+    "intervals": [
+     16.0,
+     22.0,
+     24.0,
+     30.0,
+     24.0,
+     31.0,
+     35.0,
+     25.0,
+     35.0,
+     23.0
+    ],
+    "mean_interval": 26.5
+   },
+   "gestures": [],
+   "idle": {
+    "frames": 285,
+    "median_head_H_per_frame": 0.00153,
+    "p95_head_H_per_frame": 0.01939,
+    "head_amplitude_H": 0.13653,
+    "profile_idle_motion_amplitude_H": 0.006
+   },
+   "failures": []
+  }
+ ],
+ "failures": []
+}

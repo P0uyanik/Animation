@@ -1,0 +1,112 @@
+{
+ "bake": "episodes/e909_two_char_acting/shots/s010_t113/build/bake.json",
+ "frames": [
+  1,
+  286
+ ],
+ "holds": {
+  "girl": {
+   "hand": "hand.L",
+   "socket": "grip_b",
+   "runs": [
+    [
+     58,
+     163
+    ]
+   ]
+  },
+  "boy": {
+   "hand": "hand.R",
+   "socket": "grip",
+   "runs": [
+    [
+     133,
+     222
+    ]
+   ]
+  }
+ },
+ "faces": {
+  "girl": {
+   "Smile": {
+    "peak": 0.85,
+    "peak_frame": 141,
+    "half_window": [
+     136,
+     286
+    ]
+   },
+   "WideOpen": {
+    "peak": 0.56,
+    "peak_frame": 23,
+    "half_window": [
+     21,
+     54
+    ]
+   },
+   "SmileOpen": {
+    "peak": 0.9,
+    "peak_frame": 232,
+    "half_window": [
+     229,
+     272
+    ]
+   }
+  },
+  "boy": {
+   "EyeWide": {
+    "peak": 0.426,
+    "peak_frame": 149,
+    "half_window": [
+     118,
+     286
+    ]
+   },
+   "BrowDown": {
+    "peak": 0.33,
+    "peak_frame": 172,
+    "half_window": [
+     12,
+     286
+    ]
+   },
+   "Pout": null
+  }
+ },
+ "eyes": {
+  "girl": {
+   "all": {
+    "yaw_deg": 15.59,
+    "pitch_deg": 9.16,
+    "yaw_frame": 166
+   },
+   "blink": {
+    "yaw_deg": 15.59,
+    "pitch_deg": 9.16,
+    "yaw_frame": 166
+   }
+  },
+  "boy": {
+   "all": {
+    "yaw_deg": 15.95,
+    "pitch_deg": 6.8,
+    "yaw_frame": 20
+   },
+   "blink": {
+    "yaw_deg": 15.02,
+    "pitch_deg": 6.62,
+    "yaw_frame": 74
+   }
+  }
+ },
+ "cup": {
+  "table": [
+   -0.0423,
+   0.4695,
+   0.0065
+  ],
+  "leaves": 69,
+  "back": 221,
+  "end_offset_mm": 0.0
+ }
+}
