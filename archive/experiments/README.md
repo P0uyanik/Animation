@@ -24,3 +24,9 @@ manifest change, which only the Supervisor makes.
 
 Not archived yet: `pipeline/charsys/experiments/hair_study/` (T-049 prototypes): unused since T-044, but the T-049 report links into it
 (see `docs/evaluation/review/T-072/README.md` §3).
+
+## charsys/hair_study (T-143)
+
+`pipeline/charsys/experiments/hair_study` moved to `archive/experiments/charsys/hair_study` with `git mv` (history kept,
+files byte-identical). Nothing in code, tests or CI used it. Scripts that compute `ROOT` from their own location are
+not rebuildable from the archive path; use the git history before T-143. Revert: `git revert` the T-143 archive commit.
