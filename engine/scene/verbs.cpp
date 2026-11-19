@@ -134,6 +134,15 @@ Result<VerbDef> loadVerb(const std::filesystem::path& file) {
   return v;
 }
 
+namespace {
+// T-112c: the prop's grasp geometry is a box (a box primitive, or a box collision proxy for a mesh): its sockets sit
+// on faces (interaction.cpp graspShape).
+bool boxProp(const PropAsset& a) {
+  if (a.mesh.kind == AssetMeshSource::Kind::Primitive) return a.mesh.primitive == AssetMeshSource::Primitive::Box;
+  return a.collision && a.collision->type == AssetCollisionProxy::Type::Box;
+}
+}  // namespace
+
 std::filesystem::path findVerbFile(const std::filesystem::path& from, const std::string& id) {
   for (auto d = std::filesystem::absolute(from).parent_path();; d = d.parent_path()) {
     const auto f = d / "content" / "verbs" / (id + ".verb.json");
@@ -419,6 +428,9 @@ std::expected<VerbExpansion, VerbError> expandVerbs(const Json& actions, const V
         g["band"] = {site->band->x, site->band->y};
         g["thumb"] = site->thumb.empty() ? "opposed" : site->thumb;
       }
+      // T-112c: a site on a box asks for the per-finger search on the face its socket is on (hand.<s>.graspFace),
+      // under the same gate as the band (interaction.h: wrap, pinch and palm search the face).
+      if (fingers && boxProp(*pr->asset)) g["graspFace"] = true;
       return g;
     };
     // Both arms of a two-hand grasp stay outside the bodies over [from, to] (design 2.4; read only).
@@ -688,6 +700,16 @@ std::expected<VerbExpansion, VerbError> expandVerbs(const Json& actions, const V
                 {"end", end}};
       if (auto at = vecOpt(a, "at")) g["at"] = a["at"];
       if (!look || react) g["look"] = false;
+      if (fingers && aff) {  // T-112c: the receiver's site band and box face, under the same gate as the giver's grasp
+        const GraspSite* rs = rsite;
+        for (const GraspSite& gs : aff->sites)
+          if (!rs && gs.socket == toSocket) rs = &gs;
+        if (rs && rs->band) {
+          g["toBand"] = {rs->band->x, rs->band->y};
+          g["toThumb"] = rs->thumb.empty() ? "opposed" : rs->thumb;
+        }
+        if (rs && boxProp(*pr->asset)) g["toGraspFace"] = true;
+      }
       gen.push_back(std::move(g));
       if (react && look) {  // one gaze source: the receiver's look is the reaction's; the giver's as look actions
         gen.push_back({{"type", "look"}, {"character", who}, {"atProp", prop}, {"start", S}, {"end", rel}});

@@ -16,6 +16,10 @@
 //         from), band:[lo,hi] + thumb:"opposed"|"along"|"tucked" (Step keys "hand.<side>.band" = (lo, hi, thumb) at
 //         start; lo / hi relative to the grasp centre along the grasp axis; read by T-051), follower:true (two-hand
 //         follower: the prop must already be held by the same character's other hand, which stays its parent).
+//       T-112c: the shape's poses come from the hand-shape table (content/hand_shapes above the scene; wrap = kOpen
+//         and today's search); graspFace:true (verb grasps under the finger gate) on a socket on a box face keys the
+//         per-finger face search (.grasp centre / .graspRadius half thickness / .graspFace inward normal, hand rest
+//         frame) for wrap, pinch and palm.
 //   hold     {character, hand="R", prop?, start, end, at:[x,y,z] | by:[dx,dy,dz], look=true}
 //       moves a held prop so its origin arrives at `at` (or moves by `by`), keeping its world orientation.
 //   place    {character, hand="R", prop?, start, contact=start+16, end=contact+14, at:[x,y,z] | onto:{prop, socket},
@@ -39,6 +43,7 @@
 #include <vector>
 
 #include "anim/animation.h"
+#include "anim/hand_shape.h"
 #include "anim/personality.h"
 #include "model/character.h"
 #include "scene/collision.h"
@@ -133,6 +138,7 @@ struct InteractionContext {
     std::string socket;       // the prop socket the palm holds (T-096)
     std::string shape = "wrap";  // hand shape of the grasp (T-112b): wrap | pinch | palm | hook | cradle
     bool follower = false;       // T-112b two-hand follower: holds the prop without being its parent
+    bool faceGrasp = false;      // T-112c: the grasp searches a box face (hand.<s>.graspFace); its release lets go of it
   };
   std::map<std::pair<int, char>, Hold> hands;  // (character, side)
   // Exact contacts, re-corrected after all actions are compiled (later actions can change the body at a contact).
@@ -186,6 +192,10 @@ struct InteractionContext {
   // each scaled by the acting character's personality (tempo.beat_scale / tempo.hold_scale) when it has one.
   std::optional<TimingProfile> timing;
   bool timingResolved = false;
+  // T-112c: the shared hand-shape table (content/hand_shapes above the scene), loaded at the first non-wrap grasp.
+  std::optional<HandShapeTable> handShapes;
+  std::string handShapesError;
+  bool handShapesResolved = false;
 };
 
 }  // namespace plush

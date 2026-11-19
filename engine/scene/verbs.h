@@ -28,6 +28,8 @@
 //   - Fingers: a site's fingers block goes into the grasp as "band" + "thumb" (hand.<s>.band keys for T-051) when
 //     the scene has a timing profile or the action sets "fingers": true ("fingers": false: never); without a profile
 //     the expansion stays the T-112a legacy one.
+//   - T-112c: under the same gate a site on a box prop also sets "graspFace": true (the per-finger search on the box
+//     face of its socket, hand.<s>.graspFace). The hand shapes' poses come from the T-051 table (interaction.h).
 //   - Reactions: "react": true on pass / place appends a partner_acts (source the giver, at the pass start, for the
 //     receiver) / success (at the settle start) event to VerbExpansion::events when the scene has events
 //     (VerbContext::events). Under a reacting pass the receiver's look comes from the reaction (the handover is
