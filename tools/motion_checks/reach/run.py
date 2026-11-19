@@ -25,7 +25,7 @@ ROLES = {"wrist": ["hand.{s}", "wrist.{s}"], "shoulder": ["DEF-shoulder.{s}", "s
          "torso": ["chest", "spine.002", "spine.001", "spine"], "hip": ["hips", "pelvis"],
          "neck": ["neck"], "head": ["head"]}
 HAIR = re.compile(r"^(hair|DYN-)", re.I)  # spring chains (hair / bun / ringlets)
-KEYS = [("path", "max_dev_mm"), ("path", "dev_ratio"), ("path", "arc_ratio"), ("velocity", "frames"),
+KEYS = [("velocity", "stall"), ("velocity", "dec2"), ("path", "max_dev_mm"), ("path", "dev_ratio"), ("path", "arc_ratio"), ("velocity", "frames"),
         ("velocity", "peak_m_s"), ("velocity", "peak_at"), ("velocity", "ease_in"), ("velocity", "ease_out"),
         ("velocity", "peak_acc"), ("velocity", "peak_dec"), ("velocity", "onset_step"), ("velocity", "stop_step")]
 LEADS = ["shoulder", "shoulder_shift", "torso", "hip", "hip_shift"]
@@ -69,7 +69,8 @@ def signals(ch, side):
     return piv, sig, used
 
 
-def measure_shot(sh, opts=None):
+def measure_shot(sh, opts=None, windows=None):
+    """windows: optional [(character, side, first frame, last frame)] measured instead of the segmented moves."""
     moves, bones_used = [], {}
     for ch in sh.characters:
         for side in ("L", "R"):
@@ -79,7 +80,9 @@ def measure_shot(sh, opts=None):
             piv, sig, used = signals(ch, side)
             bones_used[f"{ch.name}.{side}"] = {"wrist": ch.bones[w], **used}
             p = piv[:, w]
-            for t0, t1 in M.segment(p, opts):
+            fr = list(sh.frames)
+            spans = [(fr.index(a), fr.index(b)) for c, sd, a, b in (windows or []) if (c, sd) == (ch.name, side)]
+            for t0, t1 in (spans if windows is not None else M.segment(p, opts)):
                 vel = M.velocity(p, t0, t1, sh.fps)
                 tpk = t0 + 1 + int(np.argmax(M.speed(p)[t0 + 1:t1 + 1]))
                 floors = {"hip_shift": {"joint_floor": 0.5}, "shoulder_shift": {"joint_floor": 0.5}}
@@ -148,15 +151,15 @@ def markdown(rep, label):
     L = [f"# Reach measurements: {label}", "", f"bake `{rep['bake']}`, frames {rep['frames'][0]}–{rep['frames'][1]}, "
          f"{rep['fps']:g} fps, {len(rep['moves'])} wrist moves (chord ≥ {rep['options']['min_chord']:g} mm).", "",
          "| char | side | frames | kind | chord mm | dev mm (ratio) | arc | peak m/s @ | ease in/out | acc/dec mm/f² "
-         "| onset/stop step | lead sh/sh-shift/torso/hip/hip-shift | overlap pk torso/neck/head/hair | settle torso/neck/head/hair |",
-         "|" + " --- |" * 14]
+         "| stall / dec2 | onset/stop step | lead sh/sh-shift/torso/hip/hip-shift | overlap pk torso/neck/head/hair | settle torso/neck/head/hair |",
+         "|" + " --- |" * 15]
     for m in rep["moves"]:
         p, v, a, o = m["path"], m["velocity"], m["anticipation"], m["overlap"]
         L.append("| " + " | ".join([
             m["character"], m["side"], f"{m['start']}–{m['end']}", m["kind"], f"{p['chord_mm']:.0f}",
             f"{p['max_dev_mm']:.0f} ({p['dev_ratio']:.2f})", f"{p['arc_ratio']:.2f}",
             f"{v['peak_m_s']:.2f} @ {v['peak_at']:.2f}", f"{v['ease_in']:.2f}/{v['ease_out']:.2f}",
-            f"{v['peak_acc']:.1f}/{v['peak_dec']:.1f}", f"{v['onset_step']:.2f}/{v['stop_step']:.2f}",
+            f"{v['peak_acc']:.1f}/{v['peak_dec']:.1f}", f"{v['stall']:.2f} / {v['dec2']:.1f}", f"{v['onset_step']:.2f}/{v['stop_step']:.2f}",
             "/".join(_f((a.get(j) or {}).get("onset_lead")) for j in LEADS),
             "/".join(_f((o.get(j) or {}).get("peak_offset")) for j in FOLLOW),
             "/".join(_f((o.get(j) or {}).get("settle")) for j in FOLLOW)]) + " |")
@@ -181,8 +184,18 @@ def main(argv=None):
     ap.add_argument("--label", default="")
     ap.add_argument("--baseline")
     ap.add_argument("--match", type=int, default=12)
+    ap.add_argument("--window", action="append", help="char.SIDE:first-last, e.g. boy.R:57-76 (repeatable); "
+                    "measures these spans instead of the segmented moves")
     a = ap.parse_args(argv)
-    rep = measure_shot(SH.Shot(a.bake))
+    win = None
+    if a.window:
+        win = []
+        for w in a.window:
+            cs, fr = w.split(":")
+            c, sd = cs.rsplit(".", 1)
+            f0, f1 = fr.split("-")
+            win.append((c, sd, int(f0), int(f1)))
+    rep = measure_shot(SH.Shot(a.bake), windows=win)
     if a.baseline:
         with open(a.baseline) as f:
             compare(rep, json.load(f), a.match)

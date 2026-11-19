@@ -80,7 +80,17 @@ def velocity(p, t0, t1, fps):
     pk = float(s[k])
     half = np.nonzero(s >= 0.5 * pk)[0]
     acc = np.diff(np.concatenate([[0.0], s, [0.0]]))  # tangential acceleration incl. start from / stop to rest
-    return {"frames": int(t1 - t0), "peak_mm_f": pk, "peak_m_s": pk * fps / 1000.0,
+    # stall: deepest dip between two speed humps, as a share of the peak (0 = one hump)
+    stall, stall_at = 0.0, None
+    for i in range(1, n - 1):
+        if s[i] <= s[i - 1] and s[i] <= s[i + 1]:
+            d = min(s[:i].max(), s[i + 1:].max()) - s[i]
+            if d / pk > stall:
+                stall, stall_at = float(d / pk), i
+    after = s[k:]
+    dec2 = float(max((after[j] - after[j + 2] for j in range(len(after) - 2)), default=0.0))
+    return {"stall": stall, "stall_at": None if stall_at is None else float((stall_at + 0.5) / n),
+            "dec2": dec2, "frames": int(t1 - t0), "peak_mm_f": pk, "peak_m_s": pk * fps / 1000.0,
             "peak_at": float((k + 0.5) / n), "ease_in": float(half[0] / n), "ease_out": float((n - 1 - half[-1]) / n),
             "peak_acc": float(acc.max()), "peak_dec": float(-acc.min()),
             "onset_step": float(s[0] / pk), "stop_step": float(s[-1] / pk)}

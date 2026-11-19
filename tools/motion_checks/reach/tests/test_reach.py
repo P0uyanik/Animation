@@ -82,6 +82,17 @@ class Velocity(unittest.TestCase):
         self.assertLess(v["onset_step"], 0.15)
         self.assertAlmostEqual(v["peak_m_s"], v["peak_mm_f"] * 24 / 1000)
 
+    def test_stall_and_two_frame_drop(self):
+        p = reach(n=16, chord=320)
+        v = M.velocity(p, *M.segment(p)[0], fps=24)
+        self.assertLess(v["stall"], 1e-9)
+        s = np.array([0, 5, 15, 25, 30, 25, 8, 4, 10, 12, 6, 2, 0], float)  # dip to 4 between 30 and 12
+        q = np.zeros((len(s), 3))
+        q[:, 0] = np.cumsum(s)
+        w = M.velocity(q, 0, len(s) - 1, fps=24)
+        self.assertAlmostEqual(w["stall"], (12 - 4) / 30)
+        self.assertAlmostEqual(w["dec2"], 22.0)  # 30 -> 8
+
     def test_linear_starts_and_stops_abruptly(self):
         p = reach(n=16, chord=320, kind="linear")
         v = M.velocity(p, *M.segment(p)[0], fps=24)
@@ -158,6 +169,8 @@ class Report(unittest.TestCase):
         d = new["moves"][0]["baseline"]["delta"]
         self.assertEqual(d["velocity.frames"], 4)
         self.assertAlmostEqual(d["path.max_dev_mm"], 40, delta=1)
+        win = RUN.measure_shot(FakeShot(reach(n=16)), windows=[("kid", "L", 11, 27)])
+        self.assertEqual([(m["start"], m["end"]) for m in win["moves"]], [(11, 27)])
         md = RUN.markdown(json.loads(json.dumps(new)), "fake")
         self.assertIn("Against baseline", md)
 
