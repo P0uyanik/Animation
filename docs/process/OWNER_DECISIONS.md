@@ -454,3 +454,13 @@ references untouched; round 4 judged on the boy and girl only. Expected extra co
    bow is canonical. Published as a candidate with strict sheets; the owner approves before anything becomes current.
    Separate write-sets so parts run in parallel.
 Not approved yet: GPU test/serverless, first story scene; the Codex end-of-round review timing stays as planned.
+
+## 2026-11-19 (~13:35Z): CI speed task T-127 (relayed by the previous Supervisor session)
+Approved items 1-5: shard the Blender tier (all shards required for the verdict), pinned prebuilt dependency image
+with a fallback, cancel superseded runs on task/integration branches only, batch promotions, per-test durations.
+NOT approved: item 6 (no reuse of built characters between tests, not even within one run). Binding: no negative
+effect on workflow, reliability or stability; no test, threshold, golden or required check removed, skipped or
+weakened; speed without loss of quality. Proof before merge: same test inventory, red probes (Blender, C++, Python,
+regression), two consecutive green runs, before/after wall-clock and runner-minutes.
+Also (~13:15Z): the third character starts when all round-4 implementation tasks are merged; it does not wait for
+the Codex end-of-round review.
