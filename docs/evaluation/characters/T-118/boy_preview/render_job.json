@@ -1,0 +1,97 @@
+{
+ "out": "/tmp/claude-0/-home-user-Animation/9d7e4cb2-e576-5714-b160-91840ff91799/scratchpad/rv-boy_2.1.0/preview/renders",
+ "engine": "cycles",
+ "samples": 2,
+ "px": 120,
+ "lens_mm": 70.0,
+ "sensor_mm": 36.0,
+ "calibration": "character_neutral/1",
+ "columns": [
+  {
+   "tag": "baseline",
+   "blend": "/home/user/Animation/assets/characters/boy_yellow_hoodie/versions/2.1.0/boy_yellow_hoodie_master.blend",
+   "comparison_pose": {
+    "upper_arm_fk_rotation_y_deg": 33
+   }
+  },
+  {
+   "tag": "candidate",
+   "blend": "/tmp/claude-0/-home-user-Animation/9d7e4cb2-e576-5714-b160-91840ff91799/scratchpad/rv-boy_2.1.0/preview/build/candidate/boy_yellow_hoodie_compare.blend",
+   "comparison_pose": null
+  }
+ ],
+ "views": [
+  {
+   "name": "front",
+   "yaw_deg": 0.0,
+   "elevation_deg": 6.0,
+   "target": [
+    0.0,
+    0.0,
+    0.56
+   ],
+   "frame_height_m": 1.26,
+   "aspect": 1.6
+  },
+  {
+   "name": "threequarter",
+   "yaw_deg": -35.0,
+   "elevation_deg": 6.0,
+   "target": [
+    0.0,
+    0.0,
+    0.56
+   ],
+   "frame_height_m": 1.26,
+   "aspect": 1.6
+  },
+  {
+   "name": "side",
+   "yaw_deg": -90.0,
+   "elevation_deg": 6.0,
+   "target": [
+    0.0,
+    0.0,
+    0.56
+   ],
+   "frame_height_m": 1.26,
+   "aspect": 1.6
+  },
+  {
+   "name": "back",
+   "yaw_deg": 180.0,
+   "elevation_deg": 6.0,
+   "target": [
+    0.0,
+    0.0,
+    0.56
+   ],
+   "frame_height_m": 1.26,
+   "aspect": 1.6
+  },
+  {
+   "name": "face_front",
+   "yaw_deg": 0.0,
+   "elevation_deg": 6.0,
+   "target": [
+    0.0,
+    0.0,
+    0.83
+   ],
+   "frame_height_m": 0.4,
+   "aspect": 1.0
+  },
+  {
+   "name": "face_threequarter",
+   "yaw_deg": -35.0,
+   "elevation_deg": 6.0,
+   "target": [
+    0.0,
+    0.0,
+    0.83
+   ],
+   "frame_height_m": 0.4,
+   "aspect": 1.0
+  }
+ ]
+}

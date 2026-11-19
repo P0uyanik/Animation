@@ -1,0 +1,43 @@
+{
+ "note": "pickup-glance proxy (not the engine-baked e907 camera): orthographic view from yaw 25 deg, elevation = head pitch (30/40/50 deg) seen from a level camera; share of the camera-facing eye surface with no hair in front (ray casts, hair geometry without fibres)",
+ "current": [
+  {
+   "yaw": 25.0,
+   "el": 30.0,
+   "eye.L": 0.858,
+   "eye.R": 0.645
+  },
+  {
+   "yaw": 25.0,
+   "el": 40.0,
+   "eye.L": 0.684,
+   "eye.R": 0.483
+  },
+  {
+   "yaw": 25.0,
+   "el": 50.0,
+   "eye.L": 0.49,
+   "eye.R": 0.333
+  }
+ ],
+ "candidate": [
+  {
+   "yaw": 25.0,
+   "el": 30.0,
+   "eye.L": 0.976,
+   "eye.R": 0.889
+  },
+  {
+   "yaw": 25.0,
+   "el": 40.0,
+   "eye.L": 0.853,
+   "eye.R": 0.721
+  },
+  {
+   "yaw": 25.0,
+   "el": 50.0,
+   "eye.L": 0.588,
+   "eye.R": 0.525
+  }
+ ]
+}

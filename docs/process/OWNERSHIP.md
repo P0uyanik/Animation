@@ -17,11 +17,9 @@ means none. Branch is the task's branch; a task branch without a row falls back 
 | Task | Lane | Branch | Write-set | Depends on | Versions bumped |
 | --- | --- | --- | --- | --- | --- |
 | T-114 | C | t-114-claude-two-char-acting | `episodes/e909_two_char_acting/**`, `tests/acting/test_e909_beats.py`, `docs/evaluation/animation/T-114/**` | engine, content (read-only) | — |
-| T-118 | B | t-118-claude-hair-r5 | `pipeline/charsys/groom_r5.py`, `pipeline/charsys/tests/test_hair_r5.py`, `docs/evaluation/characters/T-118/**` | `pipeline/charsys/versions.py` (stable), `pipeline/charsys/build_character.py` (stable) | `groom` |
+| T-125 | E | t-125-claude-motion-checks | `tools/motion_checks/**`, `docs/evaluation/animation/T-125/**` | — | — |
+| T-124 | E | t-124-claude-render-opt | `docs/evaluation/rendering/T-124/**`, `tools/render_bench/**`, `pipeline/charsys/render_profiles.json`, `pipeline/charsys/shot_render.py`, `pipeline/charsys/render_engine.py` | — | — |
 | T-119 | B | t-119-claude-garments-r3 | `pipeline/charsys/garments_v3/**`, `pipeline/charsys/materials/skin_presets_r3.json`, `pipeline/charsys/materials/builder.py`, `pipeline/charsys/tests/test_garments_r3.py`, `docs/evaluation/characters/T-119/**` | `pipeline/charsys/versions.py` (stable), `pipeline/charsys/build_character.py` (stable) | `garment` |
-| T-120 | C | t-120-claude-gaze | `engine/scene/actions.cpp`, `engine/scene/face_layer.cpp`, `engine/scene/scene.cpp`, `engine/scene/*.h`, `tests/test_gaze_legibility.cpp`, `tests/CMakeLists.txt`, `episodes/e911_gaze_check/**`, `docs/evaluation/animation/T-120/**` | — | — |
-| T-121 | B | t-121-claude-fingers | `pipeline/charsys/hands_r2.py`, `pipeline/charsys/tests/test_hands_r2.py`, `docs/evaluation/characters/T-121/**` | `pipeline/charsys/versions.py` (stable), `pipeline/charsys/build_character.py` (stable) | `hands` |
-| T-122 | D | t-122-claude-versions | `assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.2.0.spec.json`, `assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.13.0.spec.json`, `assets/characters/boy_yellow_hoodie/versions/2.2.0/**`, `assets/characters/girl_auburn_bun_glasses/versions/0.13.0/**`, `assets/characters/{boy_yellow_hoodie,girl_auburn_bun_glasses}/versions/index.json`, `docs/evaluation/characters/T-122/**` | — | `boy_yellow_hoodie`, `girl_auburn_bun_glasses` |
 | T-123 | E | t-123-codex-readability | `tools/review/readability.py`, `tools/review/tests/test_readability.py`, `docs/evaluation/tools/T-123/**` | — | — |
 
 Supervisor-only files: docs/process/TASK_LOG.md, docs/ROADMAP.md, docs/process/OWNER_DECISIONS.md, docs/tasks/**.

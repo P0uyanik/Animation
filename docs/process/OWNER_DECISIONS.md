@@ -426,3 +426,31 @@ run work in parallel where write-sets do not overlap, about 7 sessions in total.
 - T-110 felt surface: PARKED (small gain, hoodie colour worse, +21-24% render time); branch kept.
 - Unchanged: T-114 -> T-117 (Opus 5.5, merged round-4 results as opt-in overrides only); T-102 at the end. Hard limits
   unchanged.
+
+## 2026-11-19 (~11:55Z): third-character readiness as a design input (relayed by the previous Supervisor session)
+Bounded scope addition to T-118 (hair r5) and T-119 (garments r3): read the girl_white_hair_blue_dress references and
+make the generators able to express her features (buns, S-wave locks, bow attachment; Peter Pan collar, rib cuffs as
+reusable components), plus a `third_character_readiness.md` note each. No model, spec, version or render of her; her
+references untouched; round 4 judged on the boy and girl only. Expected extra cost 10-20% on those two tasks.
+
+## 2026-11-19 (~12:30Z): delivery format and render optimisation (relayed by the previous Supervisor session)
+1. No 1080p. Final delivery is 720p (1280x720); consider efficient formats (e.g. 720p 10-bit HEVC/AV1 instead of 8-bit
+   H.264).
+2. 24 fps stays, every frame rendered (no "on twos", no 12 fps).
+3. GPU rental (RunPod) waits until the render optimisation task (**T-124**, Opus 5.5, parallel to round 4) is finished.
+   Measurement-driven: report what each setting really costs and changes, no predetermined target; profiles stay
+   opt-in until the owner approves one as default.
+
+## 2026-11-19 (~13:10Z): no GPU for now; motion checks; third character after round 4 (relayed)
+1. No GPU rental for now (no RunPod accounts, keys, pods or endpoints). Evaluations and reviews first; T-124 continues
+   on the cloud CPU.
+2. Approved now: **T-125** automatic motion checks (Opus 5.5): flicker/shimmer, popping, interpenetration over time on
+   baked/rendered frames; first cases e907 and T-114/T-117; thresholds from measurements; gate wiring only with
+   Supervisor approval, never loosening existing tests.
+3. Approved after round 4 is completed: **T-126** third character girl_white_hair_blue_dress, first version (body +
+   face/eyes Opus 5.5; long hair on groom/4 Fable 5.2 using the T-118 readiness note; dress with the T-119 collar/cuff
+   components, bodice, flared cable-knit skirt, tights, boots and a skirt cloth-sim prototype Fable 5.2;
+   colours/materials Opus 5.5; Codex fit search then independent review). Her references stay untouched; the 18_W02
+   bow is canonical. Published as a candidate with strict sheets; the owner approves before anything becomes current.
+   Separate write-sets so parts run in parallel.
+Not approved yet: GPU test/serverless, first story scene; the Codex end-of-round review timing stays as planned.

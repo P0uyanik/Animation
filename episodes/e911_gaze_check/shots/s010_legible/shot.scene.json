@@ -1,0 +1,501 @@
+{
+ "format": "plush.scene",
+ "version": 1,
+ "name": "e911_gaze_check s010_legible: T-120 eval copy of e907_exchange s010 (gazeLegibility on)",
+ "frameRate": [
+  24,
+  1
+ ],
+ "frameStart": 1,
+ "frameEnd": 66,
+ "render": {
+  "width": 640,
+  "height": 360,
+  "spp": 32,
+  "maxDepth": 8,
+  "exposureEV": 0.3,
+  "denoise": true,
+  "denoiseBlend": 0.85,
+  "clamp": 12
+ },
+ "camera": {
+  "position": [
+   0.0,
+   1.071,
+   1.464
+  ],
+  "target": [
+   0.0,
+   0.76,
+   0.003
+  ],
+  "focalMm": 32.0,
+  "fStop": 0,
+  "focusDistance": -1
+ },
+ "materials": [
+  {
+   "name": "floor_mat",
+   "type": "standard",
+   "baseColor": [
+    0.46,
+    0.44,
+    0.42
+   ],
+   "roughness": 0.85,
+   "specular": 0.3
+  },
+  {
+   "name": "wall_mat",
+   "type": "standard",
+   "baseColor": [
+    0.62,
+    0.6,
+    0.55
+   ],
+   "roughness": 0.9,
+   "specular": 0.3
+  },
+  {
+   "name": "table_mat",
+   "type": "standard",
+   "baseColor": [
+    0.42,
+    0.3,
+    0.2
+   ],
+   "roughness": 0.7,
+   "specular": 0.3
+  }
+ ],
+ "lights": [
+  {
+   "type": "rect",
+   "corner": [
+    -2.0,
+    1.0,
+    2.0
+   ],
+   "edgeU": [
+    1.2,
+    0,
+    0.6
+   ],
+   "edgeV": [
+    0,
+    1.4,
+    0
+   ],
+   "color": [
+    1.0,
+    0.95,
+    0.88
+   ],
+   "intensity": 3.0
+  },
+  {
+   "type": "sun",
+   "direction": [
+    0.3,
+    -0.6,
+    -0.7
+   ],
+   "angleDeg": 4,
+   "color": [
+    1.0,
+    0.92,
+    0.82
+   ],
+   "intensity": 1.4
+  },
+  {
+   "type": "sky",
+   "color": [
+    0.6,
+    0.62,
+    0.66
+   ],
+   "intensity": 0.4
+  }
+ ],
+ "objects": [
+  {
+   "name": "floor",
+   "kind": "box",
+   "min": [
+    -4,
+    -0.05,
+    -3
+   ],
+   "max": [
+    4,
+    0,
+    4
+   ],
+   "material": "floor_mat"
+  },
+  {
+   "name": "wall",
+   "kind": "box",
+   "min": [
+    -4,
+    0,
+    -1.4
+   ],
+   "max": [
+    4,
+    3,
+    -1.3
+   ],
+   "material": "wall_mat"
+  },
+  {
+   "name": "table_top",
+   "kind": "box",
+   "min": [
+    -0.1323,
+    0.4395,
+    -0.0635
+   ],
+   "max": [
+    0.0477,
+    0.4695,
+    0.0765
+   ],
+   "material": "table_mat"
+  },
+  {
+   "name": "table_leg",
+   "kind": "box",
+   "min": [
+    -0.0673,
+    0.0,
+    -0.0185
+   ],
+   "max": [
+    -0.0173,
+    0.4395,
+    0.0315
+   ],
+   "material": "table_mat"
+  }
+ ],
+ "props": [
+  {
+   "name": "cup",
+   "id": "prop.felt_cup",
+   "transform": {
+    "translation": [
+     -0.0423,
+     0.4695,
+     0.0065
+    ],
+    "rotationDeg": [
+     0,
+     -75.0,
+     0
+    ],
+    "scale": [
+     1,
+     1,
+     1
+    ]
+   }
+  }
+ ],
+ "characters": [
+  {
+   "name": "boy",
+   "asset": "(set by run_shot)",
+   "position": [
+    0.2933,
+    0,
+    0.0315
+   ],
+   "yawDeg": -25.0,
+   "life": {
+    "blinkInterval": 2.2,
+    "headFollow": 0.3,
+    "gaze": {
+     "assistYawDeg": 15.0,
+     "assistBodyYawDeg": 0.0
+    }
+   },
+   "gazeLegibility": {
+    "headPitchDeg": 10
+   }
+  },
+  {
+   "name": "girl",
+   "asset": "(set by run_shot)",
+   "position": [
+    -0.2933,
+    0.0,
+    -0.0315
+   ],
+   "yawDeg": 25.0,
+   "life": {
+    "blinkInterval": 2.6,
+    "headFollow": 0.3,
+    "gaze": {
+     "assistPitchDeg": 10.0,
+     "assistYawDeg": 15.0,
+     "assistBodyYawDeg": 0.0
+    }
+   }
+  }
+ ],
+ "actions": [
+  {
+   "type": "clip",
+   "character": "boy",
+   "clip": "idle_relaxed",
+   "base": true
+  },
+  {
+   "type": "clip",
+   "character": "girl",
+   "clip": "idle_relaxed",
+   "base": true
+  },
+  {
+   "type": "look",
+   "character": "girl",
+   "start": 1,
+   "end": 19,
+   "target": [
+    -0.1454,
+    0.4695,
+    0.2857
+   ]
+  },
+  {
+   "type": "grasp",
+   "character": "boy",
+   "hand": "R",
+   "prop": "cup",
+   "socket": "grip",
+   "start": 4,
+   "contact": 18
+  },
+  {
+   "type": "hold",
+   "character": "boy",
+   "hand": "R",
+   "start": 20,
+   "end": 28,
+   "by": [
+    0.0,
+    0.01,
+    0.0
+   ]
+  },
+  {
+   "type": "look",
+   "character": "girl",
+   "start": 20,
+   "end": 27,
+   "target": [
+    -0.0423,
+    0.5195,
+    0.0065
+   ]
+  },
+  {
+   "type": "handover",
+   "character": "boy",
+   "hand": "R",
+   "to": "girl",
+   "toHand": "L",
+   "toSocket": "grip_b",
+   "start": 28,
+   "receiverStart": 27,
+   "contact": 45,
+   "release": 51,
+   "end": 61,
+   "at": [
+    -0.0423,
+    0.5327,
+    0.0065
+   ]
+  },
+  {
+   "type": "look",
+   "character": "boy",
+   "start": 29,
+   "end": 43,
+   "target": [
+    -0.293,
+    0.79,
+    -0.032
+   ]
+  },
+  {
+   "type": "look",
+   "character": "boy",
+   "start": 44,
+   "end": 51,
+   "target": [
+    -0.0423,
+    0.5195,
+    0.0065
+   ]
+  },
+  {
+   "type": "hold",
+   "character": "girl",
+   "hand": "L",
+   "start": 53,
+   "end": 65,
+   "by": [
+    -0.03,
+    0.03,
+    -0.02
+   ]
+  },
+  {
+   "type": "look",
+   "character": "girl",
+   "start": 49,
+   "end": 66,
+   "target": [
+    0.293,
+    0.8,
+    0.032
+   ]
+  },
+  {
+   "type": "look",
+   "character": "boy",
+   "start": 53,
+   "end": 58,
+   "target": [
+    -0.293,
+    0.79,
+    -0.032
+   ]
+  },
+  {
+   "type": "look",
+   "character": "boy",
+   "start": 59,
+   "end": 66,
+   "target": [
+    1.4933,
+    0.6,
+    1.0315
+   ]
+  },
+  {
+   "type": "emotion",
+   "character": "girl",
+   "name": "happy",
+   "start": 43,
+   "end": 90,
+   "intensity": 0.7
+  }
+ ],
+ "production": {
+  "cast": {
+   "boy": {
+    "character_id": "boy_yellow_hoodie",
+    "version": "current"
+   },
+   "girl": {
+    "character_id": "girl_auburn_bun_glasses",
+    "version": "current"
+   }
+  },
+  "profile": "pipeline/charsys/rig_profiles/humanoid_rigify.json",
+  "render": {
+   "resolution": [
+    640,
+    360
+   ],
+   "samples": 16,
+   "light_scale": 1.0
+  }
+ },
+ "x_t095_staging": {
+  "rule": "side by side at a table, both turned TURN from the camera towards each other; natural inner hands (ARM_REACH, ARM_DROP, ARM_IN), hers at the cup's other handle; camera in front, CAMERA_ELEV above",
+  "beats": {
+   "end": 66,
+   "grasp": 4,
+   "his_contact": 18,
+   "offer": [
+    20,
+    28
+   ],
+   "her_glance": 20,
+   "her_reach": 27,
+   "his_look_up": 29,
+   "her_contact": 45,
+   "her_happy": 43,
+   "her_look_up": 49,
+   "accept": 48,
+   "his_release": 51,
+   "his_end": 61,
+   "his_look_off": 59,
+   "her_draw": [
+    53,
+    65
+   ]
+  },
+  "turn_deg": 25.0,
+  "arm_in_deg": 50.0,
+  "arm_reach": 0.93,
+  "arm_drop_rad": 0.35,
+  "boy_arm_length": 0.2667,
+  "girl_arm_length": 0.18,
+  "boy_right_shoulder_rest": [
+   -0.1105,
+   0.6206,
+   -0.0
+  ],
+  "girl_left_shoulder_rest": [
+   0.098,
+   0.6141,
+   -0.0
+  ],
+  "boy_natural_hand": [
+   -0.0319,
+   0.5355,
+   0.0451
+  ],
+  "girl_natural_hand": [
+   -0.0526,
+   0.5567,
+   -0.0322
+  ],
+  "grip_socket_world": [
+   -0.0319,
+   0.5355,
+   0.0451
+  ],
+  "handover_point": [
+   -0.0423,
+   0.5327,
+   0.0065
+  ],
+  "boy_reach_at_handover": 0.878,
+  "girl_reach_at_handover": 0.912,
+  "shoulder_spacing": 0.5866,
+  "head_bone_distance_rest": 0.5901,
+  "camera_distance": 1.494,
+  "girl_neck_pitch_deg": 10.0,
+  "neck_yaw_assist_deg": 15.0,
+  "head_follow": 0.3,
+  "body_yaw_assist_deg": 0.0,
+  "cup_yaw_deg": -75.0
+ },
+ "gazeLegibility": {
+  "rangeDeg": [
+   16,
+   8
+  ]
+ },
+ "x_t120": {
+  "source": "episodes/e907_exchange/shots/s010/shot.scene.json",
+  "gazeLegibility": true
+ }
+}

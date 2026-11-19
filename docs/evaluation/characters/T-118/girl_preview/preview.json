@@ -1,0 +1,133 @@
+{
+ "recipe_sha256": "96e84a29d9767eb5c75ad4d07c6e60950ab1b5ff1de7662e2b1dde14b119daba",
+ "status": "pass",
+ "problems": [],
+ "at": "2026-11-19T12:02:22+00:00",
+ "settings": {
+  "engine": "cycles",
+  "samples": 2,
+  "px": 120
+ },
+ "render_result": {
+  "engine": "cycles",
+  "samples": 2,
+  "px": 120,
+  "lens_mm": 70.0,
+  "sensor_mm": 36.0,
+  "calibration": "character_neutral/1",
+  "blender": "5.3.0",
+  "columns": {
+   "baseline": {
+    "blend": "assets/characters/girl_auburn_bun_glasses/versions/0.12.0/girl_auburn_bun_glasses_master.blend",
+    "comparison_pose": null,
+    "arm_angle_from_down_deg": {
+     "L": 32.0,
+     "R": 32.0
+    },
+    "seconds": 90.2
+   },
+   "candidate": {
+    "blend": "<out>/build/candidate/girl_auburn_bun_glasses_master.blend",
+    "comparison_pose": null,
+    "arm_angle_from_down_deg": {
+     "L": 32.0,
+     "R": 32.0
+    },
+    "seconds": 83.3
+   }
+  },
+  "views": {
+   "front": {
+    "yaw_deg": 0.0,
+    "elevation_deg": 5.0,
+    "target": [
+     0.0,
+     0.0,
+     0.56
+    ],
+    "distance_m": 2.45,
+    "frame_height_m": 1.26,
+    "resolution": [
+     120,
+     192
+    ]
+   },
+   "threequarter": {
+    "yaw_deg": -45.0,
+    "elevation_deg": 5.0,
+    "target": [
+     0.0,
+     0.0,
+     0.56
+    ],
+    "distance_m": 2.45,
+    "frame_height_m": 1.26,
+    "resolution": [
+     120,
+     192
+    ]
+   },
+   "side": {
+    "yaw_deg": 90.0,
+    "elevation_deg": 5.0,
+    "target": [
+     0.0,
+     0.0,
+     0.56
+    ],
+    "distance_m": 2.45,
+    "frame_height_m": 1.26,
+    "resolution": [
+     120,
+     192
+    ]
+   },
+   "back": {
+    "yaw_deg": 180.0,
+    "elevation_deg": 5.0,
+    "target": [
+     0.0,
+     0.0,
+     0.56
+    ],
+    "distance_m": 2.45,
+    "frame_height_m": 1.26,
+    "resolution": [
+     120,
+     192
+    ]
+   },
+   "face_front": {
+    "yaw_deg": 0.0,
+    "elevation_deg": 5.0,
+    "target": [
+     0.0,
+     0.0,
+     0.775
+    ],
+    "distance_m": 0.6222,
+    "frame_height_m": 0.32,
+    "resolution": [
+     120,
+     120
+    ]
+   },
+   "face_threequarter": {
+    "yaw_deg": -45.0,
+    "elevation_deg": 5.0,
+    "target": [
+     0.0,
+     0.0,
+     0.775
+    ],
+    "distance_m": 0.6222,
+    "frame_height_m": 0.32,
+    "resolution": [
+     120,
+     120
+    ]
+   }
+  },
+  "head_bounds": null
+ }
+}

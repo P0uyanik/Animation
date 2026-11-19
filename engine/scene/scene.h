@@ -68,7 +68,37 @@ struct CharacterDesc {
   // layer (blinks, idle amplitude, head lag), the face (rest offsets, expression bias, mouth while watching), clip
   // tempo and, when body mechanics is on without its own "personality", the body mechanics. Saved as written.
   Json personality;
+  // Gaze legibility (T-120, opt-in): the character key "gazeLegibility" (see GazeLegibility below). Null = the scene's
+  // "gazeLegibility"; false = off for this character. Saved as written.
+  Json gazeLegibility;
 };
+
+// Gaze legibility (T-120, opt-in; absent = off, the behaviour before T-120). Scene key "gazeLegibility" (every
+// character) and / or character key "gazeLegibility" (that character; its fields win over the scene's): true, false or
+// {"enabled", "rangeDeg": [yaw, pitch], "leadFrames", "turnFrames", "headYawDeg", "headPitchDeg"}.
+// When on, for that character:
+// - the eyes are limited to rangeDeg relative to the head (the character's spec face.eyes.gaze_range_deg, the sweep its
+//   lids are built for), softly while aiming and as a hard clamp after eye darts and gaze bias, so in every frame
+//   (blinks included) the pupil stays inside the eye opening;
+// - the eyes go to a new target at once; the head starts leadFrames later and eases over turnFrames, and turns only
+//   by what the worse-placed (near) eye lacks to reach the target inside its comfortable range, up to headYawDeg /
+//   headPitchDeg (default: the character's life.gaze assistYawDeg / assistPitchDeg). This replaces the life layer's
+//   head follow and the neck / chest assist. A hand-keyed neck is left alone.
+struct GazeLegibility {
+  bool enabled = false;
+  vec2 rangeDeg{20.0f, 12.0f};  // [yaw, pitch]; the character system's default gaze_range_deg
+  float leadFrames = 3.0f;      // frames at 24 fps the eyes move before the head starts
+  float turnFrames = 8.0f;      // frames at 24 fps the head's turn eases over
+  float headYawDeg = -1.0f;     // most the head turns for a look; negative = life.gaze.assistYawDeg
+  float headPitchDeg = -1.0f;   // negative = life.gaze.assistPitchDeg
+};
+// `j` on top of `base` (the scene's setting under a character's). Null keeps base; an object without "enabled" is on.
+Result<GazeLegibility> gazeLegibilityFromJson(const Json& j, GazeLegibility base = {});
+// The head's share of a legible look (see GazeLegibility): rotates the neck, before the eyes are aimed.
+void turnHeadForGaze(const Skeleton& skeleton, const Clip& clip, const std::string& prefix, double frame, double fps,
+                     const mat4& world, Pose& pose, const GazeLegibility& legibility);
+// Hard clamp of every "eye.*" bone's direction to +-rangeDeg [yaw, pitch] relative to the head.
+void clampEyesToGazeRange(const Skeleton& skeleton, const mat4& world, Pose& pose, vec2 rangeDeg);
 
 struct PropParent {
   enum class Kind { Character, Prop };
@@ -133,6 +163,8 @@ struct Scene {
   // gesture actions (actions.cpp; docs/PRODUCTION_PIPELINE.md "Scene events"). Checked by reactionEventsFromJson;
   // saved as written.
   Json events = nullptr;
+  // Gaze legibility (T-120, opt-in): the scene key "gazeLegibility" (absent = off). See GazeLegibility; saved as written.
+  Json gazeLegibility = nullptr;
 };
 
 // One entry of a scene's "events" list (T-097D): the event and the characters that react to it (empty = every scene
@@ -276,6 +308,7 @@ class SceneEvaluator {
   float morphControlWeight(size_t c, const std::string& morph, double frame) const;
   // Effective life parameters of character c (scene values + the character's blink timing).
   LifeParams lifeParams(size_t c) const;
+  GazeLegibility gazeLegibility(size_t c) const;  // the scene's setting with the character's on top (T-120)
   // Animated weight of morph `morph` of character c at `frame`.
   float expressionWeight(size_t c, const std::string& morph, double frame) const;
  private:

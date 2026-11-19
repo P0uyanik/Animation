@@ -1,0 +1,138 @@
+{
+ "schema": "plush-studio.review-recipe/1",
+ "task": "T-118",
+ "note": "Girl: 0.12.0 (the T-118 base version) vs the T-118 candidate (0.12.0 spec + groom/4 hair round 5 override), compare variant (arms down). AI target column: G05 (back), G04 (fringe, face front), G02 (face 3/4); reference column: ref_30 sheet views.",
+ "character": "girl_auburn_bun_glasses",
+ "inputs": {
+  "main": "5a90975"
+ },
+ "baseline": {
+  "version": "0.12.0",
+  "label": "0.12.0 (current)"
+ },
+ "candidate": {
+  "spec": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.12.0.spec.json",
+  "overrides": [
+   "docs/evaluation/characters/T-118/candidates/girl_auburn_bun_glasses.hair_r5.override.json"
+  ],
+  "sha": "8795f0c",
+  "label": "T-118 hair round 5 (groom/4)"
+ },
+ "compare": {
+  "variant": "master",
+  "pose": "apose",
+  "allow_apose": true
+ },
+ "cameras": {
+  "lens_mm": 70,
+  "sensor_mm": 36,
+  "elevation_deg": 5,
+  "framing": {
+   "body": {
+    "target": [
+     0.0,
+     0.0,
+     0.56
+    ],
+    "frame_height_m": 1.26,
+    "aspect": 1.6
+   },
+   "face": {
+    "target": [
+     0.0,
+     0.0,
+     0.775
+    ],
+    "frame_height_m": 0.32,
+    "aspect": 1.0
+   }
+  },
+  "rows": {
+   "front": {
+    "reference_view": "sheet30_front"
+   },
+   "threequarter": {
+    "reference_view": "sheet30_front_left"
+   },
+   "side": {
+    "reference_view": "sheet30_left"
+   },
+   "back": {
+    "reference_view": "sheet30_back"
+   },
+   "face_front": {
+    "reference": {
+     "file": "uploads/ref_30.webp",
+     "crop": [
+      440,
+      620,
+      712,
+      840
+     ],
+     "label": "ref_30 Neutral"
+    },
+    "yaw_deg": 0
+   },
+   "face_threequarter": {
+    "reference": {
+     "file": "uploads/ref_30.webp",
+     "crop": [
+      345,
+      90,
+      490,
+      260
+     ],
+     "label": "ref_30 front-left"
+    },
+    "yaw_deg": -45
+   }
+  }
+ },
+ "light": {
+  "calibration": "character_neutral/1"
+ },
+ "ai_target": {
+  "images": {
+   "back": {
+    "file": "uploads/higgsfield_G05_hair_back_bun_curls_2026-11-18.webp",
+    "crop": [
+     0,
+     0,
+     1493,
+     2000
+    ],
+    "label": "G05"
+   },
+   "face_front": {
+    "file": "uploads/higgsfield_G04_fringe_hairline_2026-11-18.webp",
+    "crop": [
+     0,
+     0,
+     1493,
+     2000
+    ],
+    "label": "G04"
+   },
+   "face_threequarter": {
+    "file": "uploads/higgsfield_G02_face_threequarter_2026-11-18.webp",
+    "crop": [
+     100,
+     300,
+     1393,
+     1500
+    ],
+    "label": "G02"
+   }
+  }
+ },
+ "render": {
+  "engine": "cycles",
+  "samples": 16,
+  "px": 360
+ },
+ "preview": {
+  "engine": "cycles",
+  "samples": 2,
+  "px": 120
+ }
+}
