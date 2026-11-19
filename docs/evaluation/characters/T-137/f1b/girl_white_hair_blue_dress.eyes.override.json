@@ -16,10 +16,9 @@
     "lower_thickness_m": 0.0005,
     "closed_fit": {
      "lash_curve": {
-      "out_m": 0.003,
-      "sag_deg": 6.0,
-      "corner_lift_deg": 4.0,
-      "start": 0.6
+      "out_m": 0.004,
+      "sag_deg": 7.0,
+      "corner_lift_deg": 5.0
      }
     }
    },
