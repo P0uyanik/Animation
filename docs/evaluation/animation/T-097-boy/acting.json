@@ -10,7 +10,7 @@
    "quick": false,
    "glances": [
     {
-     "event": "partner_acts",
+     "event": "partner points (off screen)",
      "event_frame": 29.999919999999996,
      "look_frame": 51.0,
      "delay_frames": 21.0,
@@ -19,9 +19,9 @@
    ],
    "gestures": [
     {
-     "label": "boy clip boy_reluctant_shrug @82",
-     "amplitude": 0.1,
-     "swing_deg": 18.1,
+     "label": "boy clip boy_reluctant_shrug @50.99992",
+     "amplitude": 0.099,
+     "swing_deg": 17.8,
      "limit": 0.3
     }
    ],

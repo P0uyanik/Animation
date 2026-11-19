@@ -70,20 +70,20 @@
    },
    "gestures": [
     {
-     "label": "boy clip boy_reluctant_shrug @82",
+     "label": "boy clip boy_reluctant_shrug @50.99992",
      "reach_frames": 9.0,
-     "chord_mm": 7.4,
+     "chord_mm": 4.5,
      "checked": false,
-     "peak_H_per_frame": 0.0081,
-     "hold_frames": 5.0,
+     "peak_H_per_frame": 0.0053,
+     "hold_frames": 10.0,
      "kind": "clip"
     }
    ],
    "idle": {
-    "frames": 68,
-    "median_head_H_per_frame": 0.00131,
-    "p95_head_H_per_frame": 0.00818,
-    "head_amplitude_H": 0.03655,
+    "frames": 37,
+    "median_head_H_per_frame": 0.00109,
+    "p95_head_H_per_frame": 0.00308,
+    "head_amplitude_H": 0.01198,
     "profile_idle_motion_amplitude_H": 0.003
    },
    "failures": []
