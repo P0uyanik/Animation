@@ -87,6 +87,18 @@ the beat stays the better staging. Both are in the strip.
 - [strip.jpg](strip.jpg): T-106 reference moments (WT cropped to the boy and the girl; PB reveal) above the final
   s010 frames and the s010_t113 frames ([make_strip.py](make_strip.py)).
 - [e909_s010.mp4](e909_s010.mp4): Cycles, 640x360, 16 samples (the shot's `production.render`), all 286 frames.
+  - Rendered in two `run_shot --stages render` passes: f1-218, then f219-286 (the first pass hit the session's 2 h
+    background limit).
+  - About 25 s per frame on 4 CPU threads, plus about 28 min of per-frame Blender setup for the full range.
+  - Encoded with ffmpeg (libx264, crf 20, yuv420p).
+- Candidate frames f232 and f275: single-frame renders at the same settings.
 - Measures: [measure_beats_s010.json](measure_beats_s010.json), [measure_beats_s010_t113.json](measure_beats_s010_t113.json),
   [personality_s010.json](personality_s010.json), [animcheck_s010.json](animcheck_s010.json),
   [acting_s010_expanded.json](acting_s010_expanded.json).
+
+## 6. Not used / open
+- **T-120 `gazeLegibility`** (Supervisor note, 2026-11-19) is not in this input's engine (`1e3ea34`), so it is not
+  used. This shot's eye limits (section 2) serve the same purpose at the scene level.
+- The acting rule's gesture amplitude counts an overlapping reach (section 3). It is a tool limitation; no content
+  change was made.
+- A SmileOpen / Pout decision for the next published versions would let s010 use `girl_delighted` (section 4).
