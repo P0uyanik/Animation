@@ -110,6 +110,6 @@ Tasks from now on are numbered T-001, T-002, …, and pass through the states in
 | T-110 | [Visual] Felt surface: one fibre halo, skin surface | running 2026-11-19 (owner ~02:55Z) | t-110-claude-felt-surface | `docs/tasks/T-110.md`; path B |
 | T-109 | [Visual] Face round 4 (lower face, girl lens shelf, mouth) | approved; after T-094 versions are current | t-109-claude-face-r4 | `docs/tasks/T-109.md` (to write); path B |
 | T-115 | [Visual] Codex: fit search on T-109 face parameters | approved; after T-094 versions are current | t-115-codex-face-fit | `docs/tasks/T-115.md` (to write); path A |
-| T-112a | [Interaction] Affordances + verb expander + pick up/carry/place, golden bake hashes | running 2026-11-19 (owner ~03:05Z "no stop"); golden hashes regenerated once T-104d merges | t-112a-claude-verbs | `docs/tasks/T-112a.md`; path A |
-| T-112b | [Interaction] Pass, reactions, hand shapes, two-handed sets | approved; after T-112a | t-112b-claude-verbs-pass | `docs/tasks/T-112b.md`; path A |
-| T-051 | [Interaction] Finger grasps + hand-shape table | approved; after T-112a (parallel with T-112b) | t-051-claude-finger-grasps | `docs/tasks/T-051.md`; path A |
+| T-112a | [Interaction] Affordances + verb expander + pick up/carry/place, golden bake hashes | merged 2026-11-19 (impl `session_01NPjxeP5V7rx1pgUgs4HwpT`, 1b4a512): affordances in plush.asset, verb expander + pick_up/carry/place, golden bake hashes (tests/golden/, linux gcc-13), legacy equivalence 0 differences; open: MSVC hash set, generated looks not in watch spans | t-112a-claude-verbs | `docs/tasks/T-112a.md`; path A |
+| T-112b | [Interaction] Pass, reactions, hand shapes, two-handed sets | running 2026-11-19 (after T-112a merged) | t-112b-claude-verbs-pass | `docs/tasks/T-112b.md`; path A |
+| T-051 | [Interaction] Finger grasps + hand-shape table | running 2026-11-19 (after T-112a merged) | t-051-claude-finger-grasps | `docs/tasks/T-051.md`; path A |
