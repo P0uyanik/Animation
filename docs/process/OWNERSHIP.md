@@ -17,6 +17,7 @@ means none. Branch is the task's branch; a task branch without a row falls back 
 | Task | Lane | Branch | Write-set | Depends on | Versions bumped |
 | --- | --- | --- | --- | --- | --- |
 | T-114 | C | t-114-claude-two-char-acting | `episodes/e909_two_char_acting/**`, `tests/acting/test_e909_beats.py`, `docs/evaluation/animation/T-114/**` | engine, content (read-only) | — |
+| T-128 | E | t-128-claude-tooling-trial | `docs/evaluation/tooling/T-128/**`, `tools/dev/**`, `CMakePresets.json`, `cmake/opt_in/**`, `requirements-tools.txt` | `.github/workflows/**` (stable), `tools/check_all.py` (stable) | — |
 | T-127 | E | t-127-claude-ci-speed | `.github/workflows/**`, `.github/scripts/**`, `tools/check_all.py`, `tools/ci/**`, `docs/process/GATE.md`, `docs/evaluation/ci/T-127/**` | — | — |
 | T-125 | E | t-125-claude-motion-checks | `tools/motion_checks/**`, `docs/evaluation/animation/T-125/**` | — | — |
 | T-124 | E | t-124-claude-render-opt | `docs/evaluation/rendering/T-124/**`, `tools/render_bench/**`, `pipeline/charsys/render_profiles.json`, `pipeline/charsys/shot_render.py`, `pipeline/charsys/render_engine.py` | — | — |

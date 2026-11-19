@@ -129,3 +129,4 @@ Tasks from now on are numbered T-001, T-002, …, and pass through the states in
 | T-125 | [Tools] Automatic motion checks: flicker, popping, interpenetration | running 2026-11-19 (owner ~13:10Z) | t-125-claude-motion-checks | `docs/tasks/T-125.md`; path A |
 | T-126 | [Character] Third character girl_white_hair_blue_dress, first version (body/face, hair, dress + skirt cloth prototype, materials; Codex fit + review) | approved; starts after round 4 is complete; task files to write | — | path B |
 | T-127 | [Infra] CI speed without loss of quality (Blender-tier shards, pinned dependency image, superseded-run cancel, batch promotions, per-test durations) | running 2026-11-19 (owner ~13:35Z) | t-127-claude-ci-speed | `docs/tasks/T-127.md`; path A |
+| T-128 | [Infra] Tooling trial: ccache/mold, image/video comparison tools, parallel tests in sessions | running 2026-11-19 (owner ~13:50Z) | t-128-claude-tooling-trial | `docs/tasks/T-128.md`; path A |

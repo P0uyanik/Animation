@@ -464,3 +464,10 @@ weakened; speed without loss of quality. Proof before merge: same test inventory
 regression), two consecutive green runs, before/after wall-clock and runner-minutes.
 Also (~13:15Z): the third character starts when all round-4 implementation tasks are merged; it does not wait for
 the Codex end-of-round review.
+
+## 2026-11-19 (~13:50Z): tooling trial T-128 (relayed by the previous Supervisor session)
+Approved as its own task (Opus 5.5), coordinated with T-127 so they never edit the same workflow files: (2) ccache for
+session builds + mold linker, (3) OpenImageIO, ffmpeg/libvmaf, scikit-image compared against the existing code,
+(4) pytest -n / ctest -j with 3x serial vs 3x parallel identical results. Binding: test first, adopt only on measured
+benefit, no test removed/skipped/weakened, every change opt-in with a one-commit revert, owner told before any
+default changes.
