@@ -1,0 +1,200 @@
+{
+ "set": "boy",
+ "engine": "cycles",
+ "samples": 2,
+ "px": 200,
+ "light": "character_neutral/1 (render_calibration)",
+ "lens_mm": 70.0,
+ "blender": "5.3.0",
+ "columns": [
+  {
+   "label": "current",
+   "blend": "boy_yellow_hoodie_master.blend"
+  },
+  {
+   "label": "candidate",
+   "blend": "boy_yellow_hoodie_master.blend"
+  }
+ ],
+ "shots": [
+  {
+   "name": "ankle_rest",
+   "label": "rest | ankle, side",
+   "pose": [
+    [
+     "upper_arm_fk.{s}",
+     "Y",
+     35.0,
+     "LR",
+     true
+    ]
+   ],
+   "camera": {
+    "target": [
+     0.07,
+     -0.02,
+     0.085
+    ],
+    "frame_height_m": 0.24,
+    "yaw_deg": 90.0,
+    "elevation_deg": 3.0
+   },
+   "hidden_prefixes": []
+  },
+  {
+   "name": "ankle_up",
+   "label": "ankle flexion, toes up 25 deg | side",
+   "pose": [
+    [
+     "upper_arm_fk.{s}",
+     "Y",
+     35.0,
+     "LR",
+     true
+    ],
+    [
+     "foot_fk.{s}",
+     "X",
+     25.0,
+     "LR",
+     false
+    ]
+   ],
+   "camera": {
+    "target": [
+     0.07,
+     -0.02,
+     0.085
+    ],
+    "frame_height_m": 0.24,
+    "yaw_deg": 90.0,
+    "elevation_deg": 3.0
+   },
+   "hidden_prefixes": []
+  },
+  {
+   "name": "ankle_down",
+   "label": "ankle flexion, toes down 30 deg | side",
+   "pose": [
+    [
+     "upper_arm_fk.{s}",
+     "Y",
+     35.0,
+     "LR",
+     true
+    ],
+    [
+     "foot_fk.{s}",
+     "X",
+     -30.0,
+     "LR",
+     false
+    ]
+   ],
+   "camera": {
+    "target": [
+     0.07,
+     -0.02,
+     0.085
+    ],
+    "frame_height_m": 0.24,
+    "yaw_deg": 90.0,
+    "elevation_deg": 3.0
+   },
+   "hidden_prefixes": []
+  },
+  {
+   "name": "ankle_front",
+   "label": "ankle flexion, toes down 30 deg | 3/4 front",
+   "pose": [
+    [
+     "upper_arm_fk.{s}",
+     "Y",
+     35.0,
+     "LR",
+     true
+    ],
+    [
+     "foot_fk.{s}",
+     "X",
+     -30.0,
+     "LR",
+     false
+    ]
+   ],
+   "camera": {
+    "target": [
+     0.0,
+     -0.02,
+     0.085
+    ],
+    "frame_height_m": 0.26,
+    "yaw_deg": 35.0,
+    "elevation_deg": 10.0
+   },
+   "hidden_prefixes": []
+  },
+  {
+   "name": "pickup",
+   "label": "pickup close-up | hand, cheek, cuff",
+   "pose": [
+    [
+     "upper_arm_fk.{s}",
+     "Y",
+     35.0,
+     "LR",
+     true
+    ],
+    [
+     "upper_arm_fk.{s}",
+     "X",
+     -60.0,
+     "L",
+     false
+    ],
+    [
+     "forearm_fk.{s}",
+     "X",
+     -70.0,
+     "L",
+     false
+    ]
+   ],
+   "camera": {
+    "target": [
+     0.09,
+     -0.12,
+     0.66
+    ],
+    "frame_height_m": 0.4,
+    "yaw_deg": 40.0,
+    "elevation_deg": 5.0
+   },
+   "hidden_prefixes": []
+  },
+  {
+   "name": "figure_front",
+   "label": "rest | figure, front",
+   "pose": [
+    [
+     "upper_arm_fk.{s}",
+     "Y",
+     35.0,
+     "LR",
+     true
+    ]
+   ],
+   "camera": {
+    "target": [
+     0.0,
+     0.0,
+     0.5
+    ],
+    "frame_height_m": 1.1,
+    "yaw_deg": 0.0,
+    "elevation_deg": 5.0
+   },
+   "hidden_prefixes": []
+  }
+ ]
+}

@@ -250,6 +250,12 @@ def main_generic(a, spec, info, out):
         if spec["body"]["hands"] not in HANDS.GENERATOR_VERSIONS:
             raise V.VersionError(f"body.hands = {spec['body']['hands']!r}: known {HANDS.GENERATOR_VERSIONS}")
         parts, hands_report = HANDS.replace_hands(C, M, parts, P, H, J, frames, G)
+    limb_assignment = MATERIALS.get_assignment(mats, "skin_limbs")
+    if limb_assignment:  # T-119 opt-in: the hands in their own skin assignment (absent = exactly as before)
+        M["skin_limbs"] = MATERIALS.build_from_assignment("M_skin_limbs", limb_assignment)
+        for ob, role in parts:
+            if role == "hand":
+                G.assign(ob, M["skin_limbs"])
     garment_objects = []
     garment_report = None
     if family(pins["garment"]) == "garment":

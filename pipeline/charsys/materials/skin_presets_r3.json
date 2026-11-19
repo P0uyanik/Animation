@@ -1,0 +1,192 @@
+{
+  "schema": "plush-studio.material-presets/3",
+  "family": "presets/3",
+  "kind": "skin",
+  "note": "T-119 skin round 3: one more self-contained library file of the presets/3 family (same schema and rules as presets_r2.json, its own defaults, new ids only; no id of presets.json, skin_presets.json or presets_r2.json is redefined). Opt-in only: a spec names an id of this file in materials.assignments.<slot>.preset; every other spec builds exactly as before. skin-felt-limbs/3 is meant for the opt-in materials.assignments.skin_limbs slot (the hands); the base colour stays spec data.",
+  "reference_size_m": 0.256,
+  "defaults": {
+    "surface": {
+      "roughness": 0.8,
+      "metallic": 0.0,
+      "specular_ior_level": 0.3,
+      "ior": 1.45,
+      "alpha": 1.0,
+      "transmission_weight": 0.0,
+      "subsurface_weight": 0.0,
+      "subsurface_scale_fraction": 0.04,
+      "sheen_weight": 0.0,
+      "sheen_roughness": 0.5,
+      "saturation_compensation": 1.0,
+      "sheen_tint": 0.0,
+      "shadow_transmission": 0.0
+    },
+    "fibre": {
+      "kind": "noise",
+      "scale_per_reference": 180.0,
+      "detail": 8.0,
+      "roughness": 0.7,
+      "distortion": 0.0,
+      "anisotropy": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "strength": 0.25,
+      "distance_fraction": 0.003
+    },
+    "micro_relief": {
+      "enabled": true,
+      "scale_per_reference": 64.0,
+      "detail": 4.0,
+      "roughness": 0.72,
+      "strength": 1.0,
+      "distance_fraction": 0.003,
+      "color_strength": 0.4,
+      "roughness_variation": 0.4
+    },
+    "nap": {
+      "enabled": false,
+      "scale_per_reference": 12.0,
+      "detail": 2.0,
+      "roughness": 0.5,
+      "distortion": 0.6,
+      "threshold": 0.52,
+      "softness": 0.08,
+      "value_gain": 0.0,
+      "value_shadow": 0.0,
+      "sheen_gain": 0.0,
+      "roughness_drop": 0.0,
+      "fibre_gloss": 0.0,
+      "anisotropy": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "bump_strength": 0.0,
+      "distance_fraction": 0.01
+    },
+    "fibres": {
+      "enabled": false,
+      "density_per_cm2": 0.0,
+      "length_mm": 4.0,
+      "curl": 0.2,
+      "lean": 0.25,
+      "lod": 0.25,
+      "color_variation": 0.0,
+      "lean_variation": 0.0,
+      "root_transparency": 0.0,
+      "tip_transparency": 0.0
+    },
+    "silhouette": {
+      "enabled": false,
+      "mode": "sheen_layer",
+      "weight": 0.4,
+      "width": 2.2,
+      "roughness": 0.8
+    }
+  },
+  "presets": {
+    "skin-felt-limbs/3": {
+      "description": "Felt skin for hands and other small, thin skin parts (T-119; skin-felt/3 with a shorter subsurface scale and half the rim sheen): thin parts no longer scatter and rim-light themselves paler and greyer than the face beside them. Use with a base colour read from the reference's hands. Non-emissive.",
+      "swatch_srgb": [
+        226,
+        178,
+        162
+      ],
+      "surface": {
+        "roughness": 0.76,
+        "specular_ior_level": 0.22,
+        "subsurface_weight": 0.5,
+        "subsurface_scale_fraction": 0.02,
+        "sheen_weight": 0.4,
+        "sheen_roughness": 0.45,
+        "sheen_tint": 0.6
+      },
+      "fibre": {
+        "kind": "noise",
+        "scale_per_reference": 220.0,
+        "detail": 6.0,
+        "roughness": 0.7,
+        "distortion": 0.6,
+        "anisotropy": [
+          1.0,
+          0.9,
+          1.0
+        ],
+        "strength": 0.12,
+        "distance_fraction": 0.0012
+      },
+      "micro_relief": {
+        "scale_per_reference": 120.0,
+        "strength": 0.5,
+        "distance_fraction": 0.0012,
+        "color_strength": 0.03,
+        "roughness_variation": 0.08
+      },
+      "silhouette": {
+        "enabled": true,
+        "weight": 0.25,
+        "width": 2.6,
+        "roughness": 0.6
+      },
+      "skin": {
+        "emission": false,
+        "subsurface_radius": [
+          1.0,
+          0.42,
+          0.26
+        ],
+        "crease": {
+          "enabled": true,
+          "distance_fraction": 0.04,
+          "samples": 16,
+          "tint_srgb": [
+            234,
+            172,
+            150
+          ],
+          "strength": 0.26
+        },
+        "flock": {
+          "enabled": true,
+          "scale_per_reference": 700.0,
+          "albedo": 0.035
+        },
+        "warmth": {
+          "enabled": true,
+          "distance_fraction": 0.16,
+          "samples": 16,
+          "tint_srgb": [
+            226,
+            162,
+            140
+          ],
+          "strength": 0.3
+        }
+      },
+      "targets": {
+        "fuzz_rms_y255": {
+          "range": [
+            0.0,
+            3.0
+          ],
+          "source": "VISUAL_TARGET.md: Skin remains below 3/255"
+        },
+        "sheen_p90_p50": {
+          "range": [
+            1.12,
+            1.32
+          ],
+          "source": "VISUAL_TARGET.md: Sheen/roughness read, skin"
+        },
+        "saturation_retention_percent": {
+          "range": [
+            75.0,
+            110.0
+          ],
+          "source": "VISUAL_TARGET.md: Material colour saturation"
+        }
+      }
+    }
+  }
+}

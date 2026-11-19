@@ -1,0 +1,140 @@
+{
+ "method": "median CIELAB of skin-coloured pixels in fixed boxes on the fidelity sheet of val27_front (reference | aligned render), fidelity run of tools/fidelity/run.py at its defaults (640 px, 32 samples, character_neutral/1)",
+ "boxes_xyxy_on_sheet": {
+  "ref hand shade side": [
+   50,
+   790,
+   110,
+   880
+  ],
+  "ref hand lit side": [
+   375,
+   790,
+   440,
+   880
+  ],
+  "ref neck": [
+   195,
+   488,
+   300,
+   520
+  ],
+  "ref cheeks": [
+   90,
+   330,
+   400,
+   440
+  ],
+  "render hand lit side": [
+   540,
+   800,
+   590,
+   890
+  ],
+  "render hand shade side": [
+   855,
+   800,
+   905,
+   890
+  ],
+  "render neck": [
+   690,
+   455,
+   790,
+   480
+  ],
+  "render cheeks": [
+   590,
+   330,
+   880,
+   440
+  ]
+ },
+ "skin_pixel_rule": "a* > 6, 6 < b* < 32, L* > 25",
+ "lab_median": {
+  "current": {
+   "ref hand shade side": [
+    57.5,
+    15.7,
+    16.7
+   ],
+   "ref hand lit side": [
+    73.2,
+    11.9,
+    14.4
+   ],
+   "ref neck": [
+    46.6,
+    24.0,
+    25.9
+   ],
+   "ref cheeks": [
+    70.4,
+    13.7,
+    14.9
+   ],
+   "render hand lit side": [
+    72.7,
+    10.3,
+    19.3
+   ],
+   "render hand shade side": [
+    65.6,
+    10.1,
+    18.3
+   ],
+   "render neck": [
+    56.8,
+    13.9,
+    19.1
+   ],
+   "render cheeks": [
+    72.8,
+    13.2,
+    19.7
+   ]
+  },
+  "candidate": {
+   "ref hand shade side": [
+    57.5,
+    15.7,
+    16.7
+   ],
+   "ref hand lit side": [
+    73.2,
+    11.9,
+    14.4
+   ],
+   "ref neck": [
+    46.6,
+    24.0,
+    25.9
+   ],
+   "ref cheeks": [
+    70.4,
+    13.7,
+    14.9
+   ],
+   "render hand lit side": [
+    69.6,
+    15.0,
+    17.8
+   ],
+   "render hand shade side": [
+    62.7,
+    14.8,
+    16.5
+   ],
+   "render neck": [
+    56.7,
+    13.9,
+    19.1
+   ],
+   "render cheeks": [
+    72.8,
+    13.2,
+    19.7
+   ]
+  }
+ }
+}
