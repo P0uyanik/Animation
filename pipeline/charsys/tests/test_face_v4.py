@@ -41,12 +41,12 @@ import test_face_v3b as V3B  # noqa: E402  (its import points V3.CASES at T-089b
 
 CHARS = V3.CHARS
 CANDIDATES = {
-    "boy": (os.path.join(CHARS, "boy_yellow_hoodie", "spec", "boy_yellow_hoodie.2.1.0.spec.json"),
+    "boy": (os.path.join(CHARS, "boy_yellow_hoodie", "spec", "boy_yellow_hoodie.2.2.0.spec.json"),
             os.path.join(CHARS, "boy_yellow_hoodie", "spec", "candidates", "T-109", "boy_face4.override.json"),
-            os.path.join(CHARS, "boy_yellow_hoodie", "versions", "2.1.0", "boy_yellow_hoodie_master.blend"), "Pout"),
-    "girl": (os.path.join(CHARS, "girl_auburn_bun_glasses", "spec", "girl_auburn_bun_glasses.0.12.0.spec.json"),
+            os.path.join(CHARS, "boy_yellow_hoodie", "versions", "2.2.0", "boy_yellow_hoodie_master.blend"), "Pout"),
+    "girl": (os.path.join(CHARS, "girl_auburn_bun_glasses", "spec", "girl_auburn_bun_glasses.0.13.0.spec.json"),
              os.path.join(CHARS, "girl_auburn_bun_glasses", "spec", "candidates", "T-109", "girl_face4.override.json"),
-             os.path.join(CHARS, "girl_auburn_bun_glasses", "versions", "0.12.0", "girl_auburn_bun_glasses_master.blend"),
+             os.path.join(CHARS, "girl_auburn_bun_glasses", "versions", "0.13.0", "girl_auburn_bun_glasses_master.blend"),
              "SmileOpen"),
 }
 V3.CASES = {k: (v[0], v[1]) for k, v in CANDIDATES.items()}
