@@ -120,13 +120,20 @@ def compose():
                  "iris 52 % of the eye radius (iris fills ~3/4 of the visible eye width in w01); lids from 0.13.0")
     lids = e["lids"]   # 01/14: round, fully open eyes (the girl's T-115 flat upper lid read as a frown here)
     lids.update({"upper_edge_deg": 58.0, "upper_curve": 0.2, "lower_edge_deg": -58.0, "lower_curve": 0.08})
+    # face pass 2 (Supervisor review of expressions_0.1.0): the upper lid sloped down to the inner corner and the skin
+    # rose over its shell (a stern wedge in every expression). upper_roll_deg -18 raises the inner end (level, open
+    # arch as in 04 neutral); the shell sits closer to the eyeball (upper_gap) and the socket blends out more softly.
+    lids.update({"upper_roll_deg": -18.0, "upper_gap": 0.012})
+    e["socket"].update({"ramp_deg": 12, "reach_deg": 36})
+    lids["closed_fit"]["gap"] = 0.002          # closed lids follow the eyeball closely (flatter, less dome)
+    f["blink"].update({"flatten": 0.35, "flatten_lash": False})
     lash = e["lash"]
-    lash.update({"srgb": [46, 30, 26], "span_deg": 70, "thick_m": 0.0034, "depth_m": 0.0016})
+    lash.update({"srgb": [34, 22, 20], "span_deg": 70, "thick_m": 0.0034, "depth_m": 0.0016})
     lash["strands"].update({"count": 5, "to_deg": 66, "outward": 0.45})
     lash["strands"]["note"] = "T-126a: no glasses, so the strands reach the outer corner (01/14 outer lash flick)"
     lash["outer"].update({"count": 3})
-    f["brows"].update({"srgb": [206, 180, 156], "thick_m": 0.0013, "outer_drop_m": 0.003, "inner": 0.6, "outer": 0.92,
-                       "note": "T-126a: thin, pale cream-beige brows mostly under the fringe (01, 14)"})
+    f["brows"].update({"srgb": [146, 108, 86], "thick_m": 0.0018, "outer_drop_m": 0.003, "height": 1.42, "inner": 0.6, "outer": 0.92,
+                       "note": "T-126a: thin soft light-brown brows just under the fringe edge (04 Sad/Anger read through them)"})
     f["ears"].update({"below_eye_m": round(EAR_BELOW * 0.85, 4)})
     f["nose"].update({"size_m": 0.012, "height_m": 0.005,
                       "note": "T-126a: small round button nose, barely tinted (01, 14 side)"})
