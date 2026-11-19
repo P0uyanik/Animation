@@ -1,0 +1,17 @@
+{
+ "format": "plush.verb",
+ "version": 1,
+ "id": "place",
+ "description": "Put a held prop down on a point or onto another prop's socket, open the hand and return the arm (design 4.3). Lowers to the place primitive; a scene action uses it with \"type\": \"place\", \"verb\": true.",
+ "requires": {"hand_state": "holding", "prop_state": "held", "affordances": "optional"},
+ "phases": [
+  {"name": "look", "beat": "reaction_delay", "fallback_f": 4, "curve": "linear", "drives": ["gaze"], "target": "place_target"},
+  {"name": "manipulate", "beat": "place", "fallback_f": 16, "curve": "slow_in", "drives": ["ik", "orient"],
+   "constraints": ["upright", "reachable"]},
+  {"name": "contact", "curve": "slow_in", "drives": ["parent:detach"], "constraints": ["place_on_target<=0.5mm"],
+   "events": ["parent:target"]},
+  {"name": "release", "beat": "release", "fallback_f": 14, "curve": "slow_out", "drives": ["hand_shape:open", "ik"]},
+  {"name": "settle", "beat": "settle", "fallback_f": 12, "curve": "slow_out", "drives": ["hold_pose"], "optional": true}
+ ],
+ "lowers_to": "place"
+}

@@ -2,6 +2,7 @@
 
 #include <chrono>
 #include <filesystem>
+#include <functional>
 #include <string>
 
 #include "scene/asset_library.h"
@@ -405,4 +406,108 @@ TEST_CASE("scene evaluator reports a missing character prop socket") {
   auto loaded = evaluator.load(scene, EvalOptions{2.5f, 1.0f, false, 0});
   REQUIRE_FALSE(loaded.has_value());
   CHECK(loaded.error().message.find("has no bone or role socket 'missing_socket'") != std::string::npos);
+}
+
+// ------------------------------------------------------------------------------------------------ T-112a affordances
+namespace {
+
+Json cupAffordances() {
+  auto j = parseJsonFile(kRoot / "content/assets/felt_cup.asset.json");
+  REQUIRE(j.has_value());
+  return (*j)["affordances"];
+}
+
+// The felt cup with its affordance block changed by `edit`: the asset still loads, the block carries the error.
+void checkAffordanceError(const std::function<void(Json&)>& edit, const std::string& text) {
+  auto j = parseJsonFile(kRoot / "content/assets/felt_cup.asset.json");
+  REQUIRE(j.has_value());
+  edit((*j)["affordances"]);
+  auto asset = assetFromJson(*j);
+  REQUIRE(asset.has_value());  // only a verb action that uses the block fails
+  REQUIRE(asset->affordances.has_value());
+  MESSAGE(asset->affordances->error);
+  CHECK(asset->affordances->error.find(text) != std::string::npos);
+}
+
+}  // namespace
+
+TEST_CASE("plush.asset/1 affordances: the felt cup's block parses (design 2.5); assets without one load as before") {
+  auto cup = loadAsset(kRoot / "content/assets/felt_cup.asset.json");
+  REQUIRE(cup.has_value());
+  REQUIRE(cup->affordances.has_value());
+  const PropAffordances& a = *cup->affordances;
+  CHECK(a.error.empty());
+  CHECK(a.sizeClass == "small");
+  CHECK(a.weightClass == "light");
+  CHECK(a.hands == "one");
+  REQUIRE(a.massKg.has_value());
+  CHECK(*a.massKg == doctest::Approx(0.05f));
+  CHECK(a.pivotSocket == "place");
+  REQUIRE(a.upright.has_value());
+  CHECK(a.upright->maxTiltDeg == doctest::Approx(20.0f));
+  REQUIRE(a.sites.size() == 2);
+  CHECK(a.site("side_a")->socket == "grip");
+  CHECK(a.site("side_b")->socket == "grip_b");
+  CHECK(a.site("side_a")->turnable);
+  CHECK(a.site("side_a")->thumb == "opposed");
+  REQUIRE(a.site("side_b")->band.has_value());
+  CHECK(a.site("side_b")->band->y == doctest::Approx(0.055f));
+  REQUIRE(a.sets.size() == 2);
+  CHECK(a.set("a")->sites == std::vector<std::string>{"side_a"});
+  CHECK(a.handoverGive == std::vector<std::string>{"a"});
+  CHECK(a.handoverReceive == std::vector<std::string>{"b"});
+  REQUIRE(a.place.has_value());
+  CHECK(a.place->settle == "soft");
+  CHECK(a.deform == "rigid");
+  CHECK(a.site("nope") == nullptr);
+
+  // Without the block: exactly as before (no affordances, everything else equal).
+  auto j = parseJsonFile(kRoot / "content/assets/felt_cup.asset.json");
+  REQUIRE(j.has_value());
+  j->erase("affordances");
+  auto plain = assetFromJson(*j);
+  REQUIRE(plain.has_value());
+  CHECK_FALSE(plain->affordances.has_value());
+  CHECK(plain->sockets.size() == cup->sockets.size());
+  CHECK(plain->mesh.radius == cup->mesh.radius);
+  CHECK(plain->collision.has_value());
+  CHECK_FALSE(assetFromJson(validAsset())->affordances.has_value());
+}
+
+TEST_CASE("plush.asset/1 affordances: validation errors stay in the block (design 2.2 rules)") {
+  checkAffordanceError([](Json& a) { a["format"] = "plush.other"; }, "'format' must be");
+  checkAffordanceError([](Json& a) { a["version"] = 2; }, "unsupported version");
+  checkAffordanceError([](Json& a) { a["grasp_sites"][0]["socket"] = "lid"; }, "socket 'lid', which the asset does not have");
+  checkAffordanceError([](Json& a) { a["grasp_sites"][1]["id"] = "side_a"; }, "duplicate grasp site id 'side_a'");
+  checkAffordanceError([](Json& a) { a["grasp_sets"][0]["sites"] = {"side_c"}; }, "unknown grasp site 'side_c'");
+  checkAffordanceError([](Json& a) { a["hands"] = "two"; }, "hands \"two\" needs a grasp set of two sites");
+  checkAffordanceError([](Json& a) { a["weight_class"] = "heavy"; }, "weight_class \"heavy\" needs hands \"two\"");
+  checkAffordanceError([](Json& a) { a["grasp_sites"][0]["shape"] = "claw"; }, "'shape' must be one of");
+  checkAffordanceError([](Json& a) { a["grasp_sites"][0]["hand"] = "left"; }, "'hand' must be one of");
+  checkAffordanceError([](Json& a) { a["handover"]["give"] = {"z"}; }, "unknown grasp set 'z'");
+  checkAffordanceError([](Json& a) { a["place"]["socket"] = "bottom"; }, "place names socket 'bottom'");
+  checkAffordanceError([](Json& a) { a["pivot"] = "centre"; }, "pivot names socket 'centre'");
+  checkAffordanceError([](Json& a) { a["upright"]["axis"] = {0, 0, 0}; }, "'axis' must not be zero");
+  checkAffordanceError([](Json& a) { a["grasp_sites"][0]["fingers"]["band"] = {0.09, 0.045}; }, "lo < hi");
+  checkAffordanceError([](Json& a) { a["grasp_sets"][0]["sites"] = Json::array(); }, "one or two grasp sites");
+  checkAffordanceError([](Json& a) { a["grasp_sets"][1]["id"] = "a"; }, "duplicate grasp set id 'a'");
+  checkAffordanceError([](Json& a) { a = Json::array(); }, "must be an object");
+  // Non-rigid deform modes load (reserved, T-099): a verb fails on them (tests/test_verbs.cpp), not the asset.
+  auto j = parseJsonFile(kRoot / "content/assets/felt_cup.asset.json");
+  REQUIRE(j.has_value());
+  (*j)["affordances"]["deform"] = {{"mode", "squash"}, {"squash", 0.2}};
+  auto squash = assetFromJson(*j);
+  REQUIRE(squash.has_value());
+  CHECK(squash->affordances->error.empty());
+  CHECK(squash->affordances->deform == "squash");
+  // A two-handed asset (design 2.6 shape) validates.
+  Json two = cupAffordances();
+  two["hands"] = "two";
+  two["weight_class"] = "heavy";
+  two["grasp_sets"].push_back({{"id", "both"}, {"sites", {"side_a", "side_b"}}, {"simultaneous_frames", 2}});
+  (*j)["affordances"] = two;
+  auto heavy = assetFromJson(*j);
+  REQUIRE(heavy.has_value());
+  CHECK(heavy->affordances->error.empty());
+  CHECK(heavy->affordances->set("both")->simultaneousFrames == 2);
 }

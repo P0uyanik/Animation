@@ -1,0 +1,424 @@
+{
+ "actions": [
+  {
+   "base": true,
+   "character": "boy",
+   "clip": "idle_relaxed",
+   "type": "clip"
+  },
+  {
+   "base": true,
+   "character": "girl",
+   "clip": "idle_relaxed",
+   "type": "clip"
+  },
+  {
+   "atProp": "cup",
+   "character": "girl",
+   "end": 140,
+   "start": 1,
+   "type": "look"
+  },
+  {
+   "atProp": "cup",
+   "character": "boy",
+   "end": 18.0,
+   "start": 1.0,
+   "type": "look"
+  },
+  {
+   "character": "boy",
+   "contact": 37.0,
+   "hand": "R",
+   "prop": "cup",
+   "start": 18.0,
+   "type": "grasp"
+  },
+  {
+   "by": [
+    0.02,
+    0.04,
+    0.0
+   ],
+   "character": "boy",
+   "end": 67.0,
+   "hand": "R",
+   "prop": "cup",
+   "start": 51.0,
+   "type": "hold"
+  },
+  {
+   "character": "boy",
+   "end": 81.0,
+   "start": 74.0,
+   "target": [
+    -0.025,
+    0.4695,
+    0.02
+   ],
+   "type": "look"
+  },
+  {
+   "at": [
+    -0.025,
+    0.4695,
+    0.02
+   ],
+   "character": "boy",
+   "contact": 107.0,
+   "end": 124.0,
+   "hand": "R",
+   "prop": "cup",
+   "start": 81.0,
+   "type": "place"
+  }
+ ],
+ "camera": {
+  "fStop": 0,
+  "focalMm": 32.0,
+  "focusDistance": -1,
+  "position": [
+   0.0,
+   1.071,
+   1.464
+  ],
+  "target": [
+   0.0,
+   0.76,
+   0.003
+  ]
+ },
+ "characters": [
+  {
+   "asset": "packages/boy_3e9366c80a115e78/character.json",
+   "life": {
+    "blinkInterval": 2.2,
+    "gaze": {
+     "assistBodyYawDeg": 0.0,
+     "assistYawDeg": 15.0
+    },
+    "headFollow": 0.3
+   },
+   "name": "boy",
+   "personality": "boy_yellow_hoodie",
+   "position": [
+    0.2933,
+    0,
+    0.0315
+   ],
+   "yawDeg": -25.0
+  },
+  {
+   "asset": "packages/girl_d2335d2ca1aa8e59/character.json",
+   "life": {
+    "blinkInterval": 2.6,
+    "gaze": {
+     "assistBodyYawDeg": 0.0,
+     "assistPitchDeg": 10.0,
+     "assistYawDeg": 15.0
+    },
+    "headFollow": 0.3
+   },
+   "name": "girl",
+   "position": [
+    -0.2933,
+    0.0,
+    -0.0315
+   ],
+   "yawDeg": 25.0
+  }
+ ],
+ "format": "plush.scene",
+ "frameEnd": 140,
+ "frameRate": [
+  24,
+  1
+ ],
+ "frameStart": 1,
+ "lights": [
+  {
+   "color": [
+    1.0,
+    0.95,
+    0.88
+   ],
+   "corner": [
+    -2.0,
+    1.0,
+    2.0
+   ],
+   "edgeU": [
+    1.2,
+    0,
+    0.6
+   ],
+   "edgeV": [
+    0,
+    1.4,
+    0
+   ],
+   "intensity": 3.0,
+   "type": "rect"
+  },
+  {
+   "angleDeg": 4,
+   "color": [
+    1.0,
+    0.92,
+    0.82
+   ],
+   "direction": [
+    0.3,
+    -0.6,
+    -0.7
+   ],
+   "intensity": 1.4,
+   "type": "sun"
+  },
+  {
+   "color": [
+    0.6,
+    0.62,
+    0.66
+   ],
+   "intensity": 0.4,
+   "type": "sky"
+  }
+ ],
+ "materials": [
+  {
+   "baseColor": [
+    0.46,
+    0.44,
+    0.42
+   ],
+   "name": "floor_mat",
+   "roughness": 0.85,
+   "specular": 0.3,
+   "type": "standard"
+  },
+  {
+   "baseColor": [
+    0.62,
+    0.6,
+    0.55
+   ],
+   "name": "wall_mat",
+   "roughness": 0.9,
+   "specular": 0.3,
+   "type": "standard"
+  },
+  {
+   "baseColor": [
+    0.42,
+    0.3,
+    0.2
+   ],
+   "name": "table_mat",
+   "roughness": 0.7,
+   "specular": 0.3,
+   "type": "standard"
+  }
+ ],
+ "name": "e907_exchange s010_verbs: T-112a verb demo - he picks up the cup, lifts it and puts it down (pick_up, carry, place verbs, calibrated timing)",
+ "objects": [
+  {
+   "kind": "box",
+   "material": "floor_mat",
+   "max": [
+    4,
+    0,
+    4
+   ],
+   "min": [
+    -4,
+    -0.05,
+    -3
+   ],
+   "name": "floor"
+  },
+  {
+   "kind": "box",
+   "material": "wall_mat",
+   "max": [
+    4,
+    3,
+    -1.3
+   ],
+   "min": [
+    -4,
+    0,
+    -1.4
+   ],
+   "name": "wall"
+  },
+  {
+   "kind": "box",
+   "material": "table_mat",
+   "max": [
+    0.0477,
+    0.4695,
+    0.0765
+   ],
+   "min": [
+    -0.1323,
+    0.4395,
+    -0.0635
+   ],
+   "name": "table_top"
+  },
+  {
+   "kind": "box",
+   "material": "table_mat",
+   "max": [
+    -0.0173,
+    0.4395,
+    0.0315
+   ],
+   "min": [
+    -0.0673,
+    0.0,
+    -0.0185
+   ],
+   "name": "table_leg"
+  }
+ ],
+ "props": [
+  {
+   "id": "prop.felt_cup",
+   "name": "cup",
+   "transform": {
+    "rotationDeg": [
+     0,
+     -75.0,
+     0
+    ],
+    "scale": [
+     1,
+     1,
+     1
+    ],
+    "translation": [
+     -0.0423,
+     0.4695,
+     0.0065
+    ]
+   }
+  }
+ ],
+ "render": {
+  "clamp": 12,
+  "denoise": true,
+  "denoiseBlend": 0.85,
+  "exposureEV": 0.3,
+  "height": 360,
+  "maxDepth": 8,
+  "spp": 32,
+  "width": 640
+ },
+ "timing": "calibrated",
+ "version": 1,
+ "x_t112a_phases": [
+  {
+   "action": 3,
+   "character": "boy",
+   "from": 1.0,
+   "phase": "look",
+   "to": 8.0,
+   "verb": "pick_up"
+  },
+  {
+   "action": 3,
+   "character": "boy",
+   "from": 8.0,
+   "phase": "anticipate",
+   "to": 18.0,
+   "verb": "pick_up"
+  },
+  {
+   "action": 3,
+   "character": "boy",
+   "from": 18.0,
+   "phase": "approach",
+   "to": 31.0,
+   "verb": "pick_up"
+  },
+  {
+   "action": 3,
+   "character": "boy",
+   "from": 31.0,
+   "phase": "contact",
+   "to": 37.0,
+   "verb": "pick_up"
+  },
+  {
+   "action": 3,
+   "character": "boy",
+   "from": 37.0,
+   "phase": "settle",
+   "to": 51.0,
+   "verb": "pick_up"
+  },
+  {
+   "action": 4,
+   "character": "boy",
+   "from": 51.0,
+   "phase": "manipulate",
+   "to": 67.0,
+   "verb": "carry"
+  },
+  {
+   "action": 4,
+   "character": "boy",
+   "from": 67.0,
+   "phase": "settle",
+   "to": 81.0,
+   "verb": "carry"
+  },
+  {
+   "action": 5,
+   "character": "boy",
+   "from": 74.0,
+   "phase": "look",
+   "to": 81.0,
+   "verb": "place"
+  },
+  {
+   "action": 5,
+   "character": "boy",
+   "from": 81.0,
+   "phase": "manipulate",
+   "to": 107.0,
+   "verb": "place"
+  },
+  {
+   "action": 5,
+   "character": "boy",
+   "from": 107.0,
+   "phase": "contact",
+   "to": 107.0,
+   "verb": "place"
+  },
+  {
+   "action": 5,
+   "character": "boy",
+   "from": 107.0,
+   "phase": "release",
+   "to": 124.0,
+   "verb": "place"
+  },
+  {
+   "action": 5,
+   "character": "boy",
+   "from": 124.0,
+   "phase": "settle",
+   "to": 138.0,
+   "verb": "place"
+  }
+ ],
+ "x_t112a_verbs": {
+  "derived_from": "episodes/e907_exchange/shots/s010/shot.scene.json (staging, camera, set, cast)",
+  "note": "opt-in verb demo: every frame of the boy's pick up / carry / place comes from the verb files (content/verbs) and the calibrated timing profile x his personality tempo; s010 and s010_calibrated are unchanged",
+  "task": "T-112a"
+ }
+}

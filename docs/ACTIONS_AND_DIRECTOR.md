@@ -20,7 +20,7 @@ jittered) and the head following the gaze with a lag. Fine control: `"life": {"b
 
 | Type | Fields | What it generates |
 | --- | --- | --- |
-| `look` | `start`, one of `object` / `target:[x,y,z]` / `camera:true`, `end` (follow a moving object until) | Eye gaze with a quick 3-frame saccade; with life on, the head follows later |
+| `look` | `start`, one of `object` / `target:[x,y,z]` / `camera:true` / `atCharacter` / `atProp` (T-112a: a prop's middle, followed as it moves), `end` (follow a moving object until) | Eye gaze with a quick 3-frame saccade; with life on, the head follows later |
 | `expression` | `name` (smile, frown, surprise, mouthClose, …), `start`, `end`, `weight`, `ramp` | Eases the expression in and back out |
 | `reach` | `hand` (L/R), `object`, `start`, `contact`, `lift`, `liftEnd`, `place`, `placeAt:[x,y,z]`, `release`, `end`, `graspRadius`, `graspAxis`, `look` | Hand opens on the way, arm IK to the object (leans the upper body if it is beyond arm's length), fingers close by contact search, object attached, lifted towards the body, put down, released, hand returns; gaze follows the object; ripples if the object floats on water |
 | `touch` | `hand`, `start`, `contact`, `end`, `target:[x,y,z]` | Points and touches the target with the index fingertip (corrected to land within ~2 mm when in reach); ripples on water |
@@ -64,6 +64,53 @@ world rotation, applied after IK), `<who>/hand.<side>` and its grasp tracks, `<w
 - *Reports:* an arm still inside at full IK weight (`'<who>' arm R passes N mm into the body at frame F`) and a hand-over
   without a clear meeting point are scene warnings. A contact the body is in the way of cannot be moved (the prop is
   where the author put it): stage props in front of the body.
+
+### Verbs (T-112a, `engine/scene/verbs.{h,cpp}`, `content/verbs/*.verb.json`)
+A verb action is expanded **before** the compile into the primitive actions above (plus generated `look` actions),
+with every frame filled from the verb's phases (design: `docs/architecture/INTERACTION_AFFORDANCES.md`). A scene
+without a verb action is compiled exactly as before.
+
+| Type | Fields | Lowers to |
+| --- | --- | --- |
+| `pick_up` | `hand`="R", `prop`, `set` / `site` (prop affordances) or `socket`, `start`?, `contact`?, `anticipate`?, `settle`?, `look`=true | `grasp` |
+| `carry` | `hand`, `prop`?, `start`?, `end`?, `at:[x,y,z]` or `by:[dx,dy,dz]`, `settle`?, `look` | `hold` |
+| `place` with `"verb": true` | `hand`, `prop`?, `start`?, `contact`?, `end`?, `at` or `onto:{prop, socket}`, `socket`?, `settle`?, `look` | `place` |
+
+- **Chaining.** A verb without `start` begins where the previous verb of the same hand ended, settle included.
+- **Phases.** The phases are look, anticipate, approach, contact, manipulate, release and settle. Each takes its beat
+  from the scene's timing profile (`"timing"`), times the character's personality tempo. Without a profile it takes
+  today's default: reach 14, hold 16, place 16, release 14, and a gaze lead of 4.
+- **Optional phases.** Anticipate and settle are emitted only with a profile, or when the action asks
+  (`true`, or a number of frames). So without a profile, `pick_up` + `carry` + `place` expand to exactly the
+  hand-written `grasp` + `hold` + `place` (tested key for key).
+- **Look.** With a profile the look is a generated `look` at the prop (or at the place target). It ends where the
+  anticipation starts, so the eyes lead the hand.
+- **Grasp site.** `set` or `site` names a grasp site of the prop's `affordances` (`docs/ASSET_LIBRARY.md`). Without
+  them, the first one-site set this hand may use is taken, else `socket` (default `grip`). T-112a supports the `wrap`
+  hand shape only. Two-hand sets and `pass` come in T-112b.
+- **Failures are load errors,** formatted `verb '<verb>': character '<who>', prop '<prop>': <code>: <reason>`.
+  - Checked while expanding:
+    - `hand_full` and `hand_empty`;
+    - `holds_other`;
+    - `prop_held` (names the holder);
+    - `unknown_site` and `unknown_set`;
+    - `wrong_hand`;
+    - `two_hands`;
+    - `deform_unsupported`;
+    - `affordances_invalid`;
+    - `target_occupied` (another prop already sits on that socket);
+    - `onto_self`;
+    - `unknown_target`;
+    - `no_start`.
+  - Checked on the compiled motion (`checkVerbConstraints`):
+    - `out_of_reach` (the wrist target is more than 5 mm past 0.98 x arm length; the error gives the shortfall);
+    - `contact_error` (palm more than 0.5 mm off its socket at contact, or the place socket more than 0.5 mm off its
+      target);
+    - `upright_exceeded` (the prop's `upright` axis tilts past `max_tilt_deg` in a carry or a lower).
+
+  The same reach written as primitives stays a warning.
+- **Not in T-112a:** `pass`, two-hand sets and the follower hand, hand shapes other than `wrap`, reaction events from
+  verbs (`react`), the outside-body and surface-normal constraints, and verbs for generated (reaction) actions.
 
 ## Director (automatic camera)
 ```json

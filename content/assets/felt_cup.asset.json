@@ -41,5 +41,21 @@
     "type": "capsule",
     "radius": 0.04,
     "height": 0.1
+  },
+  "affordances": {
+    "format": "plush.affordances", "version": 1,
+    "size_class": "small", "weight_class": "light", "mass_kg": 0.05, "hands": "one",
+    "pivot": "place",
+    "upright": {"axis": [0, 1, 0], "max_tilt_deg": 20},
+    "grasp_sites": [
+      {"id": "side_a", "socket": "grip",   "hand": "any", "shape": "wrap", "turnable": true,
+       "fingers": {"thumb": "opposed", "band": [0.045, 0.09]}},
+      {"id": "side_b", "socket": "grip_b", "hand": "any", "shape": "wrap", "turnable": true,
+       "fingers": {"thumb": "opposed", "band": [0.01, 0.055]}}
+    ],
+    "grasp_sets": [{"id": "a", "sites": ["side_a"]}, {"id": "b", "sites": ["side_b"]}],
+    "handover": {"give": ["a"], "receive": ["b"]},
+    "place": {"socket": "place", "surface_normal": [0, 1, 0], "settle": "soft"},
+    "deform": {"mode": "rigid"}
   }
 }

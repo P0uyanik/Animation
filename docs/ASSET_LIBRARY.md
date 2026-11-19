@@ -99,3 +99,54 @@ the cylinder's radius around its axis, a socket on a box face a grasp across tha
 They generate the same `parentSwitch` entries and `<prop>.parent.weight` keys described above, at the contact
 frames. `content/assets/felt_cup.asset.json` has two grips, `grip` (upper, local +x) and `grip_b` (lower, local -x),
 so two hands can hold it at once during a hand-over.
+
+## Affordances (T-112a)
+
+An optional top-level `"affordances"` object says how a prop is held, carried and put down (design:
+`docs/architecture/INTERACTION_AFFORDANCES.md` section 2). The asset format stays `plush.asset/1`. Only the verb
+expander (`engine/scene/verbs.h`: `pick_up`, `carry`, `place`) reads the block. The primitive actions (`grasp`, `hold`,
+`place`, `handover`) ignore it, so a prop with or without the block bakes the same.
+
+```json
+"affordances": {
+  "format": "plush.affordances", "version": 1,
+  "size_class": "small", "weight_class": "light", "mass_kg": 0.05, "hands": "one",
+  "pivot": "place",
+  "upright": {"axis": [0, 1, 0], "max_tilt_deg": 20},
+  "grasp_sites": [
+    {"id": "side_a", "socket": "grip", "hand": "any", "shape": "wrap", "turnable": true,
+     "fingers": {"thumb": "opposed", "band": [0.045, 0.09]}}
+  ],
+  "grasp_sets": [{"id": "a", "sites": ["side_a"]}],
+  "handover": {"give": ["a"], "receive": ["b"]},
+  "place": {"socket": "place", "surface_normal": [0, 1, 0], "settle": "soft"},
+  "deform": {"mode": "rigid"}
+}
+```
+
+| Key | Values | Meaning |
+| --- | --- | --- |
+| `size_class` | `hand`, `small`, `medium`, `large` (optional) | largest extent vs. palm length (< 1.5, < 3, < 6, >= 6) |
+| `weight_class` | `light` (default), `medium`, `heavy` | `heavy` requires `hands: "two"` |
+| `mass_kg` | > 0 (optional) | informative |
+| `hands` | `one`, `two`, `either` (default) | `two` requires a grasp set of two sites; a one-hand verb then fails |
+| `pivot` | socket name or `[x, y, z]` | rotation origin (read by later verbs) |
+| `upright` | `{axis, max_tilt_deg}` (optional) | `carry` / `place` fail if the prop's axis tilts past the bound |
+| `grasp_sites[]` | `id`, `socket` (an existing socket), `hand` (`L`/`R`/`any`), `shape` (`wrap`/`pinch`/`palm`/`hook`/`cradle`), `approach`, `aperture`, `turnable`, `fingers {thumb, band}` | where a hand holds the prop. T-112a uses `wrap` only. `fingers` is read by T-051. |
+| `grasp_sets[]` | `id`, `sites` (one or two site ids), `simultaneous_frames` | which sites are used together |
+| `handover` | `give`, `receive` (set ids) | sets for the giver and the receiver (`pass`, T-112b) |
+| `place` | `socket` (default `place`), `surface_normal`, `settle` (`rigid`/`soft`) | how the prop is put down |
+| `push_pull` | `axis`, `sites`, `friction` | reserved for later verbs |
+| `deform` | `mode` (`rigid`/`squash`/`bend`/`fold`), `squash` | only `rigid` is supported. Other modes load, but a verb on the prop fails with "deform mode not supported yet". |
+
+Validation (`affordancesFromJson`) checks the following:
+- every named socket exists;
+- site and set ids are unique;
+- every set names existing sites;
+- `hands: "two"` has a set of two sites;
+- `heavy` implies `hands: "two"`;
+- enums, axes and bands are well formed.
+
+An invalid block does **not** fail the asset. `PropAsset::affordances->error` keeps the message, and only a verb action
+on that prop fails with it. `content/assets/felt_cup.asset.json` carries the block of design 2.5 (sites `side_a` on
+`grip` and `side_b` on `grip_b`, sets `a` and `b`).
