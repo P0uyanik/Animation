@@ -31,6 +31,8 @@ frame throughout.
 
 ## 3. The rules (opt-in)
 Scene key: `"director": {"framing": true | {"headroom": 0.05, "safeMargin": 0.04, "reachCrop": "hands" | "face"}, "cuts": true | false}`.
+`cuts` defaults to false when framing is on (only the refitted master camera) and to true when framing is off (the
+cuts the director planned before T-140).
 Without `framing`, or with `framing: false`, the director plans exactly as before (`tests/test_framing.cpp`). Golden
 hashes and existing shots do not change: no production shot uses the director.
 
@@ -46,8 +48,9 @@ How it works:
     shots keep every head, every hand and every prop.
   - `"face"`: keeps only the heads and the object or props, so hands may leave the frame.
   - In both modes, close-ups keep the whole head and inserts keep only their subject.
-- **`"cuts": false`.** Only the master (wide) camera is kept; framing refits it when on. This gives a like-for-like
-  before/after for shots with a hand-placed camera.
+- **`"cuts": false`** (the default with framing): only the master (wide) camera is kept, refitted. This gives a
+  like-for-like before/after for shots with a hand-placed camera. `"cuts": true` adds the planned medium, insert and
+  close-up shots, each refitted.
 - **Limit.** The fit measures the kinematic pose, as all action planning does: `load()` builds secondary motion after
   the actions compile. The girl's spring-driven bun can therefore swing about 6 mm past the fit, about 1.3% of the
   frame height on e910. With `"face"` her top reaches 0.912 against the 0.90 line. That is still inside the frame.
@@ -66,13 +69,34 @@ unchanged.
 e907 and e909 with `framing: true, cuts: false` give the same result: +13% distance, the bun at 0.876 and 0.882, the
 left hand at -0.915, and no crops.
 
-Preview of f127, where the girl's bun is highest (480x270, Cycles 8 spp): [before](e910_before_f127.png),
-[after](e910_after_f127.png).
+![e910 before/after strip](e910_before_after_strip.png)
+
+The strip shows f1, f47 (pick-up), f114 (contact), f127 (the bun at its highest) and f176 (look away), rendered at
+480x270 with Cycles 8 spp. Top row: before; bottom row: after. In the after row the bun has clear headroom, the boy's
+left hand and the cup stay in frame, and the faces still fill the frame.
+
+**Face size after the +14% back-off.** Projected head height, hair included, as a fraction of the frame height. The
+pixel counts are at the 640x360 delivery size.
+
+| | Girl, mean (min) | Boy, mean (min) |
+|---|---|---|
+| before | 0.75 (0.74), about 271 px | 0.51 (0.48), about 183 px |
+| after | 0.66 (0.65), about 239 px | 0.44 (0.42), about 159 px |
+
+Each head shrinks by about 12% and still takes up 42-66% of the frame height. The eyes and glasses stay legible in the
+strip. `readability.py` was not run: it needs mask renders of the whole shot.
 
 ## 5. Tests and checks
 - `tests/test_framing.cpp` has three cases:
   - framing off or absent leaves the camera keys identical;
   - on a tight master, the head top goes from 2.18 (hair cut) to 0.897 (headroom line 0.90), and the reaching hand
     stays inside the safe area;
-  - `cuts: false` gives one refitted master in the same direction, and `"face"` backs off no more than `"hands"`.
-- `ctest`: see the report line. No test, threshold or golden changed.
+  - framing on, with `cuts` left at its default, gives one refitted master in the same direction, and `"face"` backs
+    off no more than `"hands"`.
+- **Framing off does nothing.**
+  - Test 1 compares the camera keys with `framing` absent and with `framing: false`, key by key, and they are
+    identical.
+  - The code path is unchanged when framing is off: no measuring, no refit, and `cuts` stays true.
+  - No production shot sets `director`.
+  - `ctest` (fast-dev; the renderer tests are skipped because the renderer is not built) passes, including the golden
+    bake hashes. No test, threshold or golden changed.
