@@ -1,0 +1,35 @@
+{
+ "override": {
+  "face": {
+   "eyes": {
+    "lids": {
+     "closed_fit": {
+      "gap": 0.01,
+      "fade_deg": 20,
+      "fade_above_edge_deg": 20,
+      "shell_subsurface": 0.0,
+      "gaze_range_deg": [
+       26,
+       26
+      ]
+     }
+    }
+   },
+   "expressions": {
+    "optional": [
+     "Worried",
+     "Curious",
+     "SmileClosed",
+     "Thinking",
+     "SmileOpen"
+    ]
+   }
+  }
+ },
+ "metadata": {
+  "task": "T-113",
+  "base": "girl_auburn_bun_glasses.0.12.0.spec.json",
+  "stacks_on": "the published spec, or the T-109 candidate (assets/characters/girl_auburn_bun_glasses/spec/candidates/T-109/)",
+  "notes": "T-113 candidate (unpublished, evaluation only): closed upper lids follow the eyeball (eyes.lids.closed_fit, face_v3/lids.py fit_closed_lids; no pale dome in Blink/Smile/Laugh/Squint); optional presets listed so the per-character emotions play: SmileOpen (T-109) for girl_delighted. Belongs in assets/characters/girl_auburn_bun_glasses/spec/candidates/T-113/ (outside the T-113 write-set). closed_fit.gaze_range_deg [26, 26]: wider than her 16/8 deg spec range because e908 drives her eyes to 25 deg down / 18-26 deg sideways during a blink (f42); with her own range (or [8, 4]) the iris then showed through the closed lid, more than on the published master (T-113 README). closed_fit.shell_subsurface 0: the upper lid shell (1-2 mm) gets a skin copy without subsurface; with the skin's 1.4 cm subsurface radius the closed lid otherwise shows the white eyeball through it (the pale part of the dome)."
+ }
+}

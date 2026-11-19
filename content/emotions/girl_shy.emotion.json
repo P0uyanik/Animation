@@ -1,0 +1,47 @@
+{
+ "format": "plush.emotion",
+ "version": 1,
+ "name": "girl_shy",
+ "description": "Girl (girl_auburn_bun_glasses) shy / absorbed: a small closed smile, lids lowered, eyes down to her hands through the glasses.",
+ "face": {
+  "SmileClosed": 0.5,
+  "blink": 0.3,
+  "BrowSad": 0.15
+ },
+ "faceMotion": {
+  "blinkRate": 0.7,
+  "saccadeRate": 0.5,
+  "saccadeDeg": 1.0,
+  "attention": 0.8,
+  "gazeBiasDeg": [
+   0.0,
+   -10.0
+  ]
+ },
+ "body": {
+  "clip": "emo_sad",
+  "mask": [
+   "neck",
+   "head"
+  ]
+ },
+ "timing": {
+  "onset": 0.542,
+  "hold": 1.333,
+  "release": 0.6,
+  "curve": "smooth"
+ },
+ "affect": {
+  "pleasantness": 0.4,
+  "energy": 0.2
+ },
+ "reference": "docs/evaluation/animation/T-106/performance.csv paperboat girl [0, 32) 'small closed smile and lowered eyes' (1.33 s, median jawOpen 0.0057), [112, 125) 'looks down through her glasses' (0.54 s), [132, 151) 'maintains the closed smile'",
+ "x_sources": {
+  "face": "SmileClosed 0.5 (her 0.12.0 optional closed-smile preset) on top of the modelled rest smile: 'small closed smile', jaw shut (0.006); blink 0.3 lowers the lids to the paper; BrowSad 0.15 a soft, bashful brow (extrapolation)",
+  "timing": "onset PB [112, 125) 13 f; hold PB [0, 32) 32 f; release extrapolation",
+  "body": "emo_sad on neck/head only: the head tips down to the work (no slump)"
+ },
+ "source": "script",
+ "license": "project",
+ "attribution": "Plush Studio project (T-113)"
+}

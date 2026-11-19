@@ -250,6 +250,11 @@ def build(C, M, head, spec, P, H, head_bone="DEF-spine.006", eye_bone="DEF-eye.{
     present = sorted({k.name for o in face_objs if o.data.shape_keys for k in o.data.shape_keys.key_blocks[1:] if "@" not in k.name} | {"JawOpen"})
     au_built = [a for a in au_names if a in present]
     presets, jaw_w = bake_presets(face_objs, lib, fs.get("expressions", {}), set(au_built))
+    if (ecfg.get("lids") or {}).get("closed_fit"):  # T-113 (opt-in): closed upper lids follow the eyeball (no dome)
+        for (sx, side), (up, lo, lash, c) in zip(SIDES, lids):
+            rep.setdefault("closed_fit", {})[side] = LIDS.fit_closed_lids(
+                up, lash, frames[side], ecfg, r, ecfg["lids"]["closed_fit"], f"Blink.{side}",
+                fs.get("blink", {}).get("closed_thickness_m"))
     rep["action_units"] = au_built
     rep["action_units_missing"] = [a for a in au_names if a not in au_built]
     rep["presets"] = presets

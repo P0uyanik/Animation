@@ -1,0 +1,49 @@
+{
+ "format": "plush.emotion",
+ "version": 1,
+ "name": "girl_eager",
+ "description": "Girl (girl_auburn_bun_glasses) eager: eyes open wide, brows up, a narrowing rounded mouth with a hint of smile as she leans in to point.",
+ "face": {
+  "EyeWide": 0.5,
+  "BrowUp.L": 0.45,
+  "BrowUp.R": 0.45,
+  "MouthO": 0.45,
+  "MouthSmile": 0.1,
+  "JawOpen": 0.1
+ },
+ "faceMotion": {
+  "blinkRate": 0.9,
+  "saccadeRate": 1.0,
+  "attention": 0.8,
+  "gazeBiasDeg": [
+   0.0,
+   -4.0
+  ]
+ },
+ "body": {
+  "clip": "emo_curious",
+  "mask": [
+   "spine",
+   "chest"
+  ]
+ },
+ "timing": {
+  "onset": 0.708,
+  "hold": 0.917,
+  "release": 0.5,
+  "curve": "smooth"
+ },
+ "affect": {
+  "pleasantness": 0.6,
+  "energy": 0.7
+ },
+ "reference": "docs/evaluation/animation/T-106/performance.csv watertable girl [22, 39) 'leans and points down, rounded mouth narrows' (0.71 s, median jawOpen 0.0137), [39, 61) 'sustains the point' (0.92 s); [0, 15) 'eyes wide and mouth rounded open'",
+ "x_sources": {
+  "face": "EyeWide 0.5 + BrowUp 0.45 (WT [0, 15) eyes wide, less than girl_wonder's WideOpen 0.8 as she looks down to point); MouthO 0.45 the small round 'o' of WT f033 ('rounded mouth narrows'); MouthSmile 0.1 her cheerful default; JawOpen 0.1 (median 0.014-0.018, a small parting)",
+  "timing": "onset WT [22, 39) 17 f; hold WT [39, 61) 22 f; release as girl_wonder",
+  "body": "emo_curious on spine/chest: the lean; arms stay with the point gesture"
+ },
+ "source": "script",
+ "license": "project",
+ "attribution": "Plush Studio project (T-113)"
+}

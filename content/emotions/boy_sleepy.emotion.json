@@ -1,0 +1,50 @@
+{
+ "format": "plush.emotion",
+ "version": 1,
+ "name": "boy_sleepy",
+ "description": "Boy (boy_yellow_hoodie) sleepy / low-lidded: the heavy rest lid drops further (iris still visible), the gaze sinks to the work, lips barely part, the head dips. No yawn (the reference never shows one).",
+ "face": {
+  "blink": 1.0,
+  "BrowDown": 0.25,
+  "MouthO": 0.4,
+  "JawOpen": 0.12
+ },
+ "faceMotion": {
+  "blinkRate": 0.5,
+  "saccadeRate": 0.3,
+  "saccadeDeg": 0.8,
+  "attention": 0.7,
+  "gazeBiasDeg": [
+   0.0,
+   -8.0
+  ],
+  "micro": 0.5
+ },
+ "body": {
+  "clip": "emo_sleepy",
+  "mask": [
+   "neck",
+   "head"
+  ]
+ },
+ "timing": {
+  "onset": 0.5,
+  "hold": 0.833,
+  "release": 0.6,
+  "curve": "smooth"
+ },
+ "affect": {
+  "pleasantness": 0.0,
+  "energy": 0.05
+ },
+ "reference": "docs/evaluation/animation/T-106/performance.csv paperboat boy [0, 12) 'dips his head over the sheet, heavy lids and slightly parted mouth' (0.50 s onset), [12, 32) 'holds the low-lidded look' (0.83 s hold), [125, 132) 'upper lids dip, irises stay visible'",
+ "x_sources": {
+  "face": "authored at intensity 1 for his expressed intensity 0.42 (event 0.7 x profile reaction.intensity_scale 0.6), as boy_interested; expressed: blink 0.42 on top of his modelled heavy lid = the PB f000/f025 heavy lids with the iris still visible (PB [125, 132) partial dip, never a full closure); MouthO 0.17 + JawOpen 0.05 'slightly parted mouth'; BrowDown 0.1",
+  "faceMotion": "PB boy: 0 blinks in 4.2 s visible (T-106 coverage) -> blinkRate 0.5; gaze 'down and screen-left over the sheet' PB [0, 32) -> pitch -8 deg",
+  "timing": "onset PB [0, 12) 12 f; hold PB [12, 32) 20 f; release extrapolation (shared 0.6 s)",
+  "body": "emo_sleepy on neck/head only: the head dips (PB [0, 12) head dy +9.95 px); shoulders stay with his idle"
+ },
+ "source": "script",
+ "license": "project",
+ "attribution": "Plush Studio project (T-113)"
+}

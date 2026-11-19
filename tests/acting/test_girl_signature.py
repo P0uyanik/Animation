@@ -116,7 +116,7 @@ class Emotions(unittest.TestCase):
             self.assertTrue((ROOT / "content" / "clips" / f"{e['body']['clip']}.clip.json").is_file())
             self.assertTrue(e.get("reference"))
         d = load(ROOT / "content" / "emotions" / "girl_delighted.emotion.json")
-        self.assertEqual(d["face"], {"smile": 1.0})  # the model's open Smile preset: the delighted acting-beat mouth
+        self.assertEqual(d["face"], {"smileOpen": 1.0})  # the open SmileOpen preset (T-113; T-109 ref_30): the delighted acting-beat mouth
         self.assertFalse(any(r.startswith(("upperArm", "forearm", "hand")) for r in d["body"]["mask"]))  # arms keep the gesture
         w = load(ROOT / "content" / "emotions" / "girl_wonder.emotion.json")
         self.assertIn("WideOpen", w["face"])  # T-106 WT [0, 15): eyes wide, mouth rounded open
@@ -297,7 +297,7 @@ class Bake(unittest.TestCase):
 
     def test_open_smile_only_in_the_delighted_beat(self):
         names = next(c for c in self.bake["characters"] if c["name"] == "girl")["morphs"]
-        i = names.index("Smile")
+        i = names.index("SmileOpen")  # T-113: girl_delighted plays SmileOpen (a cast that lists it: T-109 / T-113 candidate)
         smile = {f: fd["characters"]["girl"]["morphs"][i] for f, fd in self.frames.items()}
         self.assertLess(max(v for f, v in smile.items() if f < self.b["E2_success"]), 0.05)
         self.assertGreater(max(v for f, v in smile.items() if self.b["delighted"] <= f <= self.b["straight"]), 0.7)

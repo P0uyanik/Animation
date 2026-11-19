@@ -1,0 +1,48 @@
+{
+ "format": "plush.emotion",
+ "version": 1,
+ "name": "boy_reluctant",
+ "description": "Boy (boy_yellow_hoodie) reluctant / sulky: the closed sulky pout (library Pout: lips pushed forward, corners down), heavy lids, inner brows a little up (put-upon), eyes slide away. Pairs with his reluctant shrug.",
+ "face": {
+  "pout": 1.0,
+  "blink": 0.5,
+  "BrowSad": 0.6
+ },
+ "faceMotion": {
+  "blinkRate": 0.9,
+  "saccadeRate": 0.4,
+  "saccadeDeg": 1.0,
+  "attention": 0.3,
+  "gazeBiasDeg": [
+   -4.0,
+   -4.0
+  ]
+ },
+ "body": {
+  "clip": "emo_sad",
+  "mask": [
+   "neck",
+   "head"
+  ]
+ },
+ "timing": {
+  "onset": 0.5,
+  "hold": 1.2,
+  "release": 0.6,
+  "curve": "smooth"
+ },
+ "affect": {
+  "pleasantness": -0.35,
+  "energy": 0.15
+ },
+ "reference": "assets/characters/boy_yellow_hoodie/references: docs/references/boy_pipeline/28_boy_facial_expression_library.webp r3c3 (heavy lids, inner brows up, small sulky pout) and the closed pout of hero24 / #08 (T-109 Pout preset); T-106 PB [112, 125) 'lowered brows and a small flat mouth' for the brows and lids; reluctant gestures (content/personality/boy_yellow_hoodie.json reaction.gesture_min_intensity)",
+ "x_sources": {
+  "face": "authored at intensity 1 for his expressed intensity 0.42 (event 0.7 x profile reaction.intensity_scale 0.6), as boy_interested; Pout preset (T-109: MouthPout 1, MouthFrown 0.35, MouthO 0.15, BrowDown 0.25), the reference sulk (#28 r2c1 Angry / r3c3, hero24), expressed 0.42 on top of his modelled rest pout; blink 0.21 PB [112, 125) heavier lids; BrowSad 0.25 the put-upon inner brows of #28 r3c3 (the Pout preset's own BrowDown 0.1 stays under it)",
+  "faceMotion": "eyes slide down and away (extrapolation in the spirit of WT 'sideways glances, mostly eyes')",
+  "timing": "estimate: PB [112, 125) 0.54 s onset rounded to 0.5 s; hold 1.2 s (his long stares, tempo.hold_frames); release shared 0.6 s",
+  "body": "emo_sad on neck/head only: chin drops a little (extrapolation; not shown)"
+ },
+ "source": "script",
+ "license": "project",
+ "attribution": "Plush Studio project (T-113)"
+}
