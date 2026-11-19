@@ -1,0 +1,605 @@
+{
+ "override": {
+  "generators": {
+   "groom": "groom/3"
+  },
+  "hair": {
+   "generator": "groom/3",
+   "structures": [
+    {
+     "type": "scalp_cap",
+     "name": "cap",
+     "offset": 0.004
+    },
+    {
+     "type": "felt_volume",
+     "name": "base",
+     "shape": "gather",
+     "az": [
+      -180,
+      180
+     ],
+     "hairline_el": [
+      [
+       0,
+       22
+      ],
+      [
+       35,
+       16
+      ],
+      [
+       65,
+       2
+      ],
+      [
+       95,
+       -14
+      ],
+      [
+       130,
+       -28
+      ],
+      [
+       180,
+       -34
+      ]
+     ],
+     "target": {
+      "az": 180,
+      "el": 80
+     },
+     "tuck": 1.0,
+     "height": [
+      0.022,
+      0.036,
+      0.04
+     ],
+     "inset": 0.004,
+     "grooves": {
+      "count": 14,
+      "depth": 0.35,
+      "sharpness": 0.7,
+      "wander": 0.3,
+      "wavelength": 0.5
+     },
+     "lumps": {
+      "amount": 0.12,
+      "scale": 1.2
+     },
+     "soft": [
+      0,
+      0,
+      0.25,
+      0.0
+     ],
+     "rim": 0.2,
+     "resolution": [
+      160,
+      40
+     ]
+    },
+    {
+     "seg": 18,
+     "grooves": 1,
+     "groove_depth": 0.2,
+     "irregularity": 0.05,
+     "layer_lift_m": 0.009,
+     "type": "masses",
+     "name": "back",
+     "rows": [
+      {
+       "hold": 0.32,
+       "taper_power": 1.25,
+       "root_width": 0.8,
+       "count": 6,
+       "az": [
+        130,
+        230
+       ],
+       "el": [
+        12,
+        20
+       ],
+       "flow": "down",
+       "len_deg": [
+        46,
+        52
+       ],
+       "width": [
+        0.105,
+        0.115
+       ],
+       "depth": 0.6,
+       "lift": [
+        0.004,
+        0.03,
+        0.036
+       ],
+       "flick_m": 0.03,
+       "jitter_deg": 5,
+       "layer": 0
+      }
+     ]
+    },
+    {
+     "seg": 18,
+     "grooves": 1,
+     "groove_depth": 0.2,
+     "irregularity": 0.05,
+     "layer_lift_m": 0.009,
+     "type": "masses",
+     "name": "sides",
+     "rows": [
+      {
+       "hold": 0.32,
+       "taper_power": 1.25,
+       "root_width": 0.8,
+       "count": 2,
+       "az": [
+        64,
+        112
+       ],
+       "el": [
+        22,
+        30
+       ],
+       "flow": "down",
+       "len_deg": [
+        38,
+        44
+       ],
+       "width": [
+        0.1,
+        0.11
+       ],
+       "depth": 0.62,
+       "lift": [
+        0.006,
+        0.04,
+        0.045
+       ],
+       "flick_m": 0.05,
+       "jitter_deg": 6,
+       "layer": 0
+      },
+      {
+       "hold": 0.32,
+       "taper_power": 1.25,
+       "root_width": 0.8,
+       "count": 2,
+       "az": [
+        -112,
+        -64
+       ],
+       "el": [
+        22,
+        30
+       ],
+       "flow": "down",
+       "len_deg": [
+        38,
+        44
+       ],
+       "width": [
+        0.1,
+        0.11
+       ],
+       "depth": 0.62,
+       "lift": [
+        0.006,
+        0.04,
+        0.045
+       ],
+       "flick_m": 0.05,
+       "jitter_deg": 6,
+       "layer": 0
+      }
+     ]
+    },
+    {
+     "seg": 18,
+     "grooves": 1,
+     "groove_depth": 0.2,
+     "irregularity": 0.05,
+     "layer_lift_m": 0.009,
+     "type": "masses",
+     "name": "fringe",
+     "items": [
+      {
+       "hold": 0.32,
+       "taper_power": 1.25,
+       "root_width": 0.8,
+       "root": [
+        14,
+        64
+       ],
+       "tip": [
+        13,
+        -3
+       ],
+       "width": 0.12,
+       "depth": 0.66,
+       "lift": [
+        0.008,
+        0.042,
+        0.014
+       ],
+       "lift_peak": 0.4,
+       "flick_m": 0.004,
+       "layer": 1
+      },
+      {
+       "hold": 0.32,
+       "taper_power": 1.25,
+       "root_width": 0.8,
+       "root": [
+        -14,
+        64
+       ],
+       "tip": [
+        -13,
+        -3
+       ],
+       "width": 0.12,
+       "depth": 0.66,
+       "lift": [
+        0.008,
+        0.042,
+        0.014
+       ],
+       "lift_peak": 0.4,
+       "flick_m": 0.004,
+       "layer": 1
+      },
+      {
+       "hold": 0.32,
+       "taper_power": 1.25,
+       "root_width": 0.8,
+       "root": [
+        40,
+        58
+       ],
+       "tip": [
+        40,
+        -2
+       ],
+       "width": 0.115,
+       "depth": 0.66,
+       "lift": [
+        0.008,
+        0.042,
+        0.018
+       ],
+       "lift_peak": 0.4,
+       "flick_m": 0.01,
+       "layer": 1
+      },
+      {
+       "hold": 0.32,
+       "taper_power": 1.25,
+       "root_width": 0.8,
+       "root": [
+        -40,
+        58
+       ],
+       "tip": [
+        -40,
+        -2
+       ],
+       "width": 0.115,
+       "depth": 0.66,
+       "lift": [
+        0.008,
+        0.042,
+        0.018
+       ],
+       "lift_peak": 0.4,
+       "flick_m": 0.01,
+       "layer": 1
+      }
+     ]
+    },
+    {
+     "seg": 18,
+     "grooves": 1,
+     "groove_depth": 0.2,
+     "irregularity": 0.05,
+     "layer_lift_m": 0.009,
+     "type": "masses",
+     "name": "fringe_centre",
+     "items": [
+      {
+       "hold": 0.32,
+       "taper_power": 1.25,
+       "root_width": 0.8,
+       "root": [
+        4,
+        70
+       ],
+       "tip": [
+        -2,
+        -3
+       ],
+       "width": 0.12,
+       "depth": 0.66,
+       "lift": [
+        0.01,
+        0.046,
+        0.014
+       ],
+       "lift_peak": 0.4,
+       "layer": 2
+      }
+     ]
+    },
+    {
+     "seg": 18,
+     "grooves": 1,
+     "groove_depth": 0.2,
+     "irregularity": 0.05,
+     "layer_lift_m": 0.009,
+     "type": "masses",
+     "name": "top",
+     "rows": [
+      {
+       "hold": 0.32,
+       "taper_power": 1.25,
+       "root_width": 0.8,
+       "count": 9,
+       "az": [
+        62,
+        298
+       ],
+       "el": [
+        58,
+        64
+       ],
+       "pole": {
+        "az": 180,
+        "el": 78
+       },
+       "len_deg": [
+        52,
+        62
+       ],
+       "width": [
+        0.115,
+        0.125
+       ],
+       "depth": 0.64,
+       "lift": [
+        0.006,
+        0.05,
+        0.05
+       ],
+       "flick_m": 0.05,
+       "jitter_deg": 5,
+       "layer": 1
+      }
+     ]
+    },
+    {
+     "seg": 18,
+     "grooves": 1,
+     "groove_depth": 0.2,
+     "irregularity": 0.05,
+     "layer_lift_m": 0.009,
+     "type": "masses",
+     "name": "crown",
+     "root_sink_m": 0.016,
+     "items": [
+      {
+       "hold": 0.38,
+       "taper_power": 1.3,
+       "root_width": 0.6,
+       "root": [
+        -150,
+        76
+       ],
+       "tip": [
+        -142,
+        60
+       ],
+       "width": 0.08,
+       "depth": 0.5,
+       "lift": [
+        -0.004,
+        0.07
+       ],
+       "lift_power": 1.8,
+       "layer": 0
+      },
+      {
+       "hold": 0.38,
+       "taper_power": 1.3,
+       "root_width": 0.6,
+       "root": [
+        -90,
+        76
+       ],
+       "tip": [
+        -82,
+        60
+       ],
+       "width": 0.08,
+       "depth": 0.5,
+       "lift": [
+        -0.004,
+        0.07
+       ],
+       "lift_power": 1.8,
+       "layer": 0
+      },
+      {
+       "hold": 0.38,
+       "taper_power": 1.3,
+       "root_width": 0.6,
+       "root": [
+        -30,
+        76
+       ],
+       "tip": [
+        -22,
+        60
+       ],
+       "width": 0.08,
+       "depth": 0.5,
+       "lift": [
+        -0.004,
+        0.07
+       ],
+       "lift_power": 1.8,
+       "layer": 0
+      },
+      {
+       "hold": 0.38,
+       "taper_power": 1.3,
+       "root_width": 0.6,
+       "root": [
+        30,
+        76
+       ],
+       "tip": [
+        38,
+        60
+       ],
+       "width": 0.08,
+       "depth": 0.5,
+       "lift": [
+        -0.004,
+        0.07
+       ],
+       "lift_power": 1.8,
+       "layer": 0
+      },
+      {
+       "hold": 0.38,
+       "taper_power": 1.3,
+       "root_width": 0.6,
+       "root": [
+        90,
+        76
+       ],
+       "tip": [
+        98,
+        60
+       ],
+       "width": 0.08,
+       "depth": 0.5,
+       "lift": [
+        -0.004,
+        0.07
+       ],
+       "lift_power": 1.8,
+       "layer": 0
+      },
+      {
+       "hold": 0.38,
+       "taper_power": 1.3,
+       "root_width": 0.6,
+       "root": [
+        150,
+        76
+       ],
+       "tip": [
+        158,
+        60
+       ],
+       "width": 0.08,
+       "depth": 0.5,
+       "lift": [
+        -0.004,
+        0.07
+       ],
+       "lift_power": 1.8,
+       "layer": 0
+      }
+     ]
+    },
+    {
+     "seg": 18,
+     "grooves": 1,
+     "groove_depth": 0.2,
+     "irregularity": 0.05,
+     "layer_lift_m": 0.009,
+     "type": "masses",
+     "name": "whorl",
+     "root_sink_m": 0.016,
+     "items": [
+      {
+       "hold": 0.34,
+       "taper_power": 1.25,
+       "root_width": 0.6,
+       "root": [
+        -108,
+        86
+       ],
+       "tip": [
+        -96,
+        66
+       ],
+       "width": 0.066,
+       "depth": 0.5,
+       "lift": [
+        0.0,
+        0.085
+       ],
+       "lift_power": 1.8,
+       "layer": 0
+      },
+      {
+       "hold": 0.34,
+       "taper_power": 1.25,
+       "root_width": 0.6,
+       "root": [
+        36,
+        86
+       ],
+       "tip": [
+        48,
+        66
+       ],
+       "width": 0.066,
+       "depth": 0.5,
+       "lift": [
+        0.0,
+        0.085
+       ],
+       "lift_power": 1.8,
+       "layer": 0
+      },
+      {
+       "hold": 0.34,
+       "taper_power": 1.25,
+       "root_width": 0.6,
+       "root": [
+        180,
+        86
+       ],
+       "tip": [
+        192,
+        66
+       ],
+       "width": 0.066,
+       "depth": 0.5,
+       "lift": [
+        0.0,
+        0.085
+       ],
+       "lift_power": 1.8,
+       "layer": 0
+      }
+     ]
+    }
+   ],
+   "fibres": {
+    "directional": {
+     "enabled": true,
+     "strength": 0.9
+    }
+   }
+  }
+ },
+ "notes": "T-091 hair round 4 candidate (groom/3) on boy_yellow_hoodie.2.0.0.spec.json; unpublished, never publish or approve without an owner decision. Directional-fibre experiment flag on."
+}
