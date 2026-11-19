@@ -162,6 +162,13 @@ def main():
     check("refused: malformed flower turn", bool(G5.validate(hair(bun, fl))))
     fl["items"][0]["turn"] = {"toward": [20, 30], "amount": 0.5}
     check("accepted: flower turn", G5.validate(hair(bun, fl)) == [], G5.validate(hair(bun, fl))[:2])
+    bow = {"type": "felt_bow", "name": "bow", "az": 60, "el": 60, "loops": [{"angle_deg": 0, "length": 0.03, "width": 0.02,
+                                                                             "thick": 0.01}]}
+    check("accepted: felt_bow turn and flower attach (one attachment rule for both accessories)",
+          G5.validate(hair(bun, dict(bow, turn={"toward": [30, 20], "amount": 0.5}), dict(fl, items=[dict(
+              fl["items"][0], attach={"az": 60, "el": 55, "out": 0.01})]))) == [])
+    check("refused: malformed felt_bow turn and flower attach", bool(G5.validate(hair(bun, dict(bow, turn={"amount": 2}))))
+          and bool(G5.validate(hair(bun, dict(fl, items=[dict(fl["items"][0], attach={"az": 60})])))))
     check("refused: a ring mass rooted inside the face keep-out", bool(G5.validate(hair(
         dict(RING, rows=[dict(r, pole={"az": 0, "el": 0}, ring={"radius_deg": 2, "around": [-180, 180]})]),
         face_keepout={"az": 34, "el_min": 5}))))
