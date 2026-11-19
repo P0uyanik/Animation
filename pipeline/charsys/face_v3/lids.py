@@ -372,13 +372,14 @@ def curve_closed_lash(lash, T, r, cfg, a_close, seam_deg):
     q0 = frame_coords(kb[0].data)
     th0 = np.arctan2(q0[:, 2], -q0[:, 1])
     rho0 = np.linalg.norm(q0, axis=1)
-    line0 = np.polyval(np.polyfit(q0[:, 0], th0, 2), q0[:, 0])  # the lash line's rest elevation along x
+    core = rho0 <= np.percentile(rho0, 50.0)  # the lash line itself (strands stand further out)
+    line0 = np.polyval(np.polyfit(q0[core, 0], th0[core], 2), q0[:, 0])  # its rest elevation along x
     u2 = np.clip(np.abs(q0[:, 0]) / max(float(np.abs(q0[:, 0]).max()), 1e-9), 0.0, 1.0) ** 2
     rep = {"out_m": out_m, "sag_deg": round(math.degrees(sag), 2), "corner_lift_deg": round(math.degrees(lift), 2),
            "seam_deg": round(math.degrees(e_s), 2), "blend_deg": round(math.degrees(blend), 2), "keys": {}}
     for k in kb[1:]:
         q = frame_coords(k.data)
-        turn = float(np.median(th0 - np.arctan2(q[:, 2], -q[:, 1])))  # the key's closing rotation
+        turn = float(np.median((th0 - np.arctan2(q[:, 2], -q[:, 1]))[core]))  # the key's closing rotation
         if turn <= 1e-6 or a_close <= 1e-6:
             continue
         line = line0 - turn
