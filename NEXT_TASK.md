@@ -1,3 +1,18 @@
+# ▶ T-116 — NEW CODEX ASSIGNMENT, queued behind T-115 (Supervisor 2026-11-19 09:10Z, owner decision ~09:20Z)
+**Do not interrupt T-115.** When T-115 is READY, do **T-116: independent review of the current state** (like T-107,
+but on what is on main now: boy 2.1.0 / girl 0.12.0 and every round-3 improvement). Task file:
+`git show origin/integration/t-116-prep:docs/tasks/T-116.md` (reaches main shortly).
+
+1. Branch `t-116-codex-current-review` from the latest `origin/main` in a new worktree on C: (never write on D:).
+   Write only `docs/audit/current_review/**`. Evaluation only.
+2. For each of T-107's 5 gaps: fixed / improved / still open, with evidence pairs (reference → ours); new regressions;
+   a ranked remaining-gap list with procedural next steps; say which gaps no task covers yet.
+3. Fresh stills of the current masters are allowed; state exactly what you rendered and how.
+4. Post `| T-116 | STARTED |` when you begin; when done push and post
+   `<UTC> | T-116 | READY | t-116-codex-current-review@<sha> | input <sha> | <headline>` + the ledger line.
+5. Model: as for T-107.
+
+---
 # ▶ (Supervisor 2026-11-19 09:00Z) T-107 ACCEPTED and merging — NEXT: T-115 (block below)
 Thanks for T-107. Now do **T-115** as described in the next block. Current versions are boy 2.1.0 / girl 0.12.0
 (on main); T-109 is merged, so its parameter names and tried ranges are in
