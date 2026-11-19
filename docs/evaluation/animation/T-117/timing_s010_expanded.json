@@ -1,0 +1,100 @@
+{
+ "format": "plush.animcheck_timing",
+ "version": 1,
+ "scene": "e910_showcase s010: T-117 8 s cup-exchange showcase - he is bored, notices late, picks up the cup and passes it; she wonders, takes it and is delighted; he answers late and looks away",
+ "timing_profile": "calibrated",
+ "beats": [
+  {
+   "beat": "reach",
+   "character": "boy",
+   "action": "grasp",
+   "frames": [
+    57.0,
+    76.0
+   ],
+   "length": 19.0,
+   "reference": [
+    10,
+    20
+   ]
+  },
+  {
+   "beat": "reach",
+   "character": "boy",
+   "action": "hold",
+   "frames": [
+    81.0,
+    97.0
+   ],
+   "length": 16.0,
+   "reference": [
+    10,
+    20
+   ]
+  },
+  {
+   "beat": "reach",
+   "character": "girl",
+   "action": "handover",
+   "frames": [
+    104.0,
+    114.0
+   ],
+   "length": 10.0,
+   "reference": [
+    10,
+    20
+   ]
+  },
+  {
+   "beat": "shared_hold",
+   "character": "boy",
+   "action": "handover",
+   "frames": [
+    114.0,
+    136.0
+   ],
+   "length": 22.0,
+   "reference": [
+    16,
+    30
+   ]
+  },
+  {
+   "beat": "release",
+   "character": "boy",
+   "action": "handover",
+   "frames": [
+    136.0,
+    153.0
+   ],
+   "length": 17.0,
+   "reference": [
+    12,
+    18
+   ]
+  },
+  {
+   "beat": "reach",
+   "character": "girl",
+   "action": "hold",
+   "frames": [
+    136.0,
+    156.0
+   ],
+   "length": 20.0,
+   "reference": [
+    10,
+    20
+   ]
+  }
+ ],
+ "holds": {
+  "longest_still_frames": 12,
+  "at": [
+   114,
+   126
+  ]
+ },
+ "warnings": []
+}

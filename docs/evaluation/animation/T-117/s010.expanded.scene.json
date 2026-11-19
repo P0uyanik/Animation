@@ -1,0 +1,796 @@
+{
+ "actions": [
+  {
+   "base": true,
+   "character": "boy",
+   "clip": "idle_relaxed",
+   "type": "clip"
+  },
+  {
+   "base": true,
+   "character": "girl",
+   "clip": "idle_relaxed",
+   "type": "clip"
+  },
+  {
+   "character": "boy",
+   "end": 47,
+   "intensity": 0.18,
+   "name": "boy_unimpressed",
+   "start": 1,
+   "type": "emotion"
+  },
+  {
+   "character": "boy",
+   "end": 11,
+   "start": 1,
+   "target": [
+    1.4933,
+    0.6,
+    1.0315
+   ],
+   "type": "look"
+  },
+  {
+   "character": "boy",
+   "end": 22,
+   "start": 12,
+   "target": [
+    -0.0423,
+    0.4695,
+    0.0065
+   ],
+   "type": "look"
+  },
+  {
+   "character": "boy",
+   "end": 37,
+   "start": 23,
+   "target": [
+    1.4933,
+    0.6,
+    1.0315
+   ],
+   "type": "look"
+  },
+  {
+   "character": "girl",
+   "clip": "girl_chin_think",
+   "start": 1,
+   "type": "clip"
+  },
+  {
+   "character": "girl",
+   "end": 23,
+   "start": 1,
+   "target": [
+    -0.0423,
+    0.4695,
+    0.0065
+   ],
+   "type": "look"
+  },
+  {
+   "atCharacter": "boy",
+   "character": "girl",
+   "end": 51,
+   "start": 24,
+   "type": "look"
+  },
+  {
+   "atProp": "cup",
+   "character": "boy",
+   "end": 57.0,
+   "start": 40.0,
+   "type": "look"
+  },
+  {
+   "band": [
+    0.04500000178813934,
+    0.09000000357627869
+   ],
+   "character": "boy",
+   "contact": 76.0,
+   "hand": "R",
+   "prop": "cup",
+   "start": 57.0,
+   "thumb": "opposed",
+   "type": "grasp"
+  },
+  {
+   "at": [
+    -0.0123,
+    0.5927,
+    0.0365
+   ],
+   "character": "boy",
+   "end": 97.0,
+   "hand": "R",
+   "prop": "cup",
+   "start": 81.0,
+   "type": "hold"
+  },
+  {
+   "atProp": "cup",
+   "character": "girl",
+   "end": 99,
+   "start": 52,
+   "type": "look"
+  },
+  {
+   "character": "girl",
+   "end": 148,
+   "intensity": 0.7,
+   "name": "girl_wonder",
+   "start": 64,
+   "type": "emotion"
+  },
+  {
+   "at": [
+    -0.0423,
+    0.5327,
+    0.0065
+   ],
+   "character": "boy",
+   "contact": 114.0,
+   "end": 153.0,
+   "hand": "R",
+   "prop": "cup",
+   "receiverStart": 104.0,
+   "release": 136.0,
+   "start": 100.0,
+   "to": "girl",
+   "toBand": [
+    0.009999999776482582,
+    0.054999999701976776
+   ],
+   "toHand": "L",
+   "toSocket": "grip_b",
+   "toThumb": "opposed",
+   "type": "handover"
+  },
+  {
+   "atProp": "cup",
+   "character": "boy",
+   "end": 116,
+   "start": 100,
+   "type": "look"
+  },
+  {
+   "atCharacter": "girl",
+   "character": "boy",
+   "end": 138,
+   "start": 117,
+   "type": "look"
+  },
+  {
+   "atCharacter": "boy",
+   "character": "girl",
+   "end": 132,
+   "start": 118,
+   "type": "look"
+  },
+  {
+   "by": [
+    -0.03,
+    0.03,
+    -0.02
+   ],
+   "character": "girl",
+   "end": 156.0,
+   "hand": "L",
+   "prop": "cup",
+   "start": 136.0,
+   "type": "hold"
+  },
+  {
+   "atProp": "cup",
+   "character": "girl",
+   "end": 152,
+   "start": 133,
+   "type": "look"
+  },
+  {
+   "atCharacter": "boy",
+   "character": "girl",
+   "end": 192,
+   "start": 153,
+   "type": "look"
+  },
+  {
+   "atProp": "cup",
+   "character": "boy",
+   "end": 175,
+   "start": 139,
+   "type": "look"
+  },
+  {
+   "character": "boy",
+   "end": 192,
+   "start": 176,
+   "target": [
+    1.4933,
+    0.6,
+    1.0315
+   ],
+   "type": "look"
+  },
+  {
+   "atCharacter": "girl",
+   "back": true,
+   "character": "boy",
+   "end": 69.89992055432319,
+   "start": 47.09992050067902,
+   "type": "look"
+  },
+  {
+   "blend": true,
+   "character": "boy",
+   "end": 175.49991907016755,
+   "intensity": 0.6299999952316284,
+   "modulation": {
+    "gazeShift": 0.20000000298023224,
+    "intensityScale": 0.6000000238418579
+   },
+   "name": "boy_interested",
+   "start": 47.09992050067902,
+   "type": "emotion"
+  },
+  {
+   "back": true,
+   "character": "girl",
+   "end": 169.17999979496,
+   "object": "table_top",
+   "start": 146.4999998807907,
+   "type": "look"
+  },
+  {
+   "blend": true,
+   "character": "girl",
+   "end": 203.49999823570255,
+   "intensity": 0.8999999761581421,
+   "modulation": {
+    "gazeShift": 0.6000000238418579,
+    "intensityScale": 1.0
+   },
+   "name": "girl_delighted",
+   "start": 146.4999998807907,
+   "type": "emotion"
+  },
+  {
+   "atCharacter": "girl",
+   "back": true,
+   "character": "boy",
+   "end": 191.90008055432318,
+   "start": 169.100080500679,
+   "type": "look"
+  },
+  {
+   "blend": true,
+   "character": "boy",
+   "end": 297.50007907016754,
+   "intensity": 0.6299999952316284,
+   "modulation": {
+    "gazeShift": 0.20000000298023224,
+    "intensityScale": 0.6000000238418579
+   },
+   "name": "boy_interested",
+   "start": 169.100080500679,
+   "type": "emotion"
+  }
+ ],
+ "camera": {
+  "fStop": 0,
+  "focalMm": 32.0,
+  "focusDistance": -1,
+  "position": [
+   0.0,
+   1.071,
+   1.464
+  ],
+  "target": [
+   0.0,
+   0.76,
+   0.003
+  ]
+ },
+ "characters": [
+  {
+   "asset": "packages/boy_0b0fbcd21f964b8f/character.json",
+   "gazeLegibility": {
+    "headPitchDeg": 10
+   },
+   "life": {
+    "blinkInterval": 2.2,
+    "gaze": {
+     "assistBodyYawDeg": 0.0,
+     "assistYawDeg": 15.0
+    },
+    "headFollow": 0.3
+   },
+   "name": "boy",
+   "personality": "boy_yellow_hoodie",
+   "position": [
+    0.2933,
+    0,
+    0.0315
+   ],
+   "yawDeg": -25.0
+  },
+  {
+   "asset": "packages/girl_116dac08d6933163/character.json",
+   "life": {
+    "gaze": {
+     "assistBodyYawDeg": 0.0,
+     "assistPitchDeg": 10.0,
+     "assistYawDeg": 15.0
+    },
+    "headFollow": 0.3
+   },
+   "name": "girl",
+   "personality": "girl_auburn_bun_glasses",
+   "position": [
+    -0.2933,
+    0.0,
+    -0.0315
+   ],
+   "yawDeg": 25.0
+  }
+ ],
+ "events": [
+  {
+   "characters": [
+    "boy"
+   ],
+   "kind": "partner_acts",
+   "name": "she looks at him and the cup",
+   "salience": 0.9,
+   "source": "girl",
+   "time": 0.95833
+  },
+  {
+   "characters": [
+    "girl"
+   ],
+   "kind": "success",
+   "name": "the cup is passed",
+   "source": "table_top",
+   "time": 5.875
+  },
+  {
+   "characters": [
+    "boy"
+   ],
+   "kind": "partner_acts",
+   "name": "she is delighted",
+   "salience": 0.9,
+   "source": "girl",
+   "time": 6.04167
+  }
+ ],
+ "format": "plush.scene",
+ "frameEnd": 192,
+ "frameRate": [
+  24,
+  1
+ ],
+ "frameStart": 1,
+ "gazeLegibility": {
+  "rangeDeg": [
+   16,
+   8
+  ]
+ },
+ "lights": [
+  {
+   "color": [
+    1.0,
+    0.95,
+    0.88
+   ],
+   "corner": [
+    -2.0,
+    1.0,
+    2.0
+   ],
+   "edgeU": [
+    1.2,
+    0,
+    0.6
+   ],
+   "edgeV": [
+    0,
+    1.4,
+    0
+   ],
+   "intensity": 3.0,
+   "type": "rect"
+  },
+  {
+   "angleDeg": 4,
+   "color": [
+    1.0,
+    0.92,
+    0.82
+   ],
+   "direction": [
+    0.3,
+    -0.6,
+    -0.7
+   ],
+   "intensity": 1.4,
+   "type": "sun"
+  },
+  {
+   "color": [
+    0.6,
+    0.62,
+    0.66
+   ],
+   "intensity": 0.4,
+   "type": "sky"
+  }
+ ],
+ "materials": [
+  {
+   "baseColor": [
+    0.46,
+    0.44,
+    0.42
+   ],
+   "name": "floor_mat",
+   "roughness": 0.85,
+   "specular": 0.3,
+   "type": "standard"
+  },
+  {
+   "baseColor": [
+    0.62,
+    0.6,
+    0.55
+   ],
+   "name": "wall_mat",
+   "roughness": 0.9,
+   "specular": 0.3,
+   "type": "standard"
+  },
+  {
+   "baseColor": [
+    0.42,
+    0.3,
+    0.2
+   ],
+   "name": "table_mat",
+   "roughness": 0.7,
+   "specular": 0.3,
+   "type": "standard"
+  }
+ ],
+ "name": "e910_showcase s010: T-117 8 s cup-exchange showcase - he is bored, notices late, picks up the cup and passes it; she wonders, takes it and is delighted; he answers late and looks away",
+ "objects": [
+  {
+   "kind": "box",
+   "material": "floor_mat",
+   "max": [
+    4,
+    0,
+    4
+   ],
+   "min": [
+    -4,
+    -0.05,
+    -3
+   ],
+   "name": "floor"
+  },
+  {
+   "kind": "box",
+   "material": "wall_mat",
+   "max": [
+    4,
+    3,
+    -1.3
+   ],
+   "min": [
+    -4,
+    0,
+    -1.4
+   ],
+   "name": "wall"
+  },
+  {
+   "kind": "box",
+   "material": "table_mat",
+   "max": [
+    0.0477,
+    0.4695,
+    0.0765
+   ],
+   "min": [
+    -0.1323,
+    0.4395,
+    -0.0635
+   ],
+   "name": "table_top"
+  },
+  {
+   "kind": "box",
+   "material": "table_mat",
+   "max": [
+    -0.0173,
+    0.4395,
+    0.0315
+   ],
+   "min": [
+    -0.0673,
+    0.0,
+    -0.0185
+   ],
+   "name": "table_leg"
+  }
+ ],
+ "props": [
+  {
+   "id": "prop.felt_cup",
+   "name": "cup",
+   "transform": {
+    "rotationDeg": [
+     0,
+     -45.0,
+     0
+    ],
+    "scale": [
+     1,
+     1,
+     1
+    ],
+    "translation": [
+     -0.0423,
+     0.4695,
+     0.0065
+    ]
+   }
+  }
+ ],
+ "render": {
+  "clamp": 12,
+  "denoise": true,
+  "denoiseBlend": 0.85,
+  "exposureEV": 0.3,
+  "height": 360,
+  "maxDepth": 8,
+  "spp": 32,
+  "width": 640
+ },
+ "timing": "calibrated",
+ "version": 1,
+ "x_t114_phases": [
+  {
+   "action": 9,
+   "character": "boy",
+   "from": 40.0,
+   "part": "",
+   "phase": "look",
+   "side": "",
+   "to": 47.0,
+   "verb": "pick_up"
+  },
+  {
+   "action": 9,
+   "character": "boy",
+   "from": 47.0,
+   "part": "",
+   "phase": "anticipate",
+   "side": "",
+   "to": 57.0,
+   "verb": "pick_up"
+  },
+  {
+   "action": 9,
+   "character": "boy",
+   "from": 57.0,
+   "part": "",
+   "phase": "approach",
+   "side": "",
+   "to": 70.0,
+   "verb": "pick_up"
+  },
+  {
+   "action": 9,
+   "character": "boy",
+   "from": 70.0,
+   "part": "",
+   "phase": "contact",
+   "side": "",
+   "to": 76.0,
+   "verb": "pick_up"
+  },
+  {
+   "action": 9,
+   "character": "boy",
+   "from": 76.0,
+   "part": "",
+   "phase": "settle",
+   "side": "",
+   "to": 81.0,
+   "verb": "pick_up"
+  },
+  {
+   "action": 10,
+   "character": "boy",
+   "from": 81.0,
+   "part": "",
+   "phase": "manipulate",
+   "side": "",
+   "to": 97.0,
+   "verb": "carry"
+  },
+  {
+   "action": 10,
+   "character": "boy",
+   "from": 97.0,
+   "part": "",
+   "phase": "settle",
+   "side": "",
+   "to": 111.0,
+   "verb": "carry"
+  },
+  {
+   "action": 13,
+   "character": "girl",
+   "from": 100.0,
+   "part": "",
+   "phase": "look",
+   "side": "L",
+   "to": 104.0,
+   "verb": "pass"
+  },
+  {
+   "action": 13,
+   "character": "boy",
+   "from": 100.0,
+   "part": "offer",
+   "phase": "manipulate",
+   "side": "R",
+   "to": 110.0,
+   "verb": "pass"
+  },
+  {
+   "action": 13,
+   "character": "girl",
+   "from": 104.0,
+   "part": "",
+   "phase": "approach",
+   "side": "L",
+   "to": 110.0,
+   "verb": "pass"
+  },
+  {
+   "action": 13,
+   "character": "girl",
+   "from": 110.0,
+   "part": "",
+   "phase": "contact",
+   "side": "L",
+   "to": 114.0,
+   "verb": "pass"
+  },
+  {
+   "action": 13,
+   "character": "boy",
+   "from": 114.0,
+   "part": "shared",
+   "phase": "manipulate",
+   "side": "R",
+   "to": 136.0,
+   "verb": "pass"
+  },
+  {
+   "action": 13,
+   "character": "boy",
+   "from": 136.0,
+   "part": "",
+   "phase": "release",
+   "side": "R",
+   "to": 153.0,
+   "verb": "pass"
+  },
+  {
+   "action": 13,
+   "character": "boy",
+   "from": 153.0,
+   "part": "",
+   "phase": "settle",
+   "side": "R",
+   "to": 167.0,
+   "verb": "pass"
+  },
+  {
+   "action": 17,
+   "character": "girl",
+   "from": 136.0,
+   "part": "",
+   "phase": "manipulate",
+   "side": "",
+   "to": 156.0,
+   "verb": "carry"
+  },
+  {
+   "action": 17,
+   "character": "girl",
+   "from": 156.0,
+   "part": "",
+   "phase": "settle",
+   "side": "",
+   "to": 166.0,
+   "verb": "carry"
+  }
+ ],
+ "x_t117": {
+  "beats_authored": {
+   "chin": 1,
+   "contact": 114,
+   "fidget_back": 12,
+   "fidget_off": 23,
+   "her_glance": 24,
+   "his_answer": 146,
+   "look_away": 176,
+   "pass": 100,
+   "pick_up": 47,
+   "release": 136,
+   "success": 142,
+   "wonder": 64
+  },
+  "cup_table": [
+   -0.0423,
+   0.4695,
+   0.0065
+  ],
+  "cup_yaw_deg": -45.0,
+  "current_versions_unchanged": {
+   "boy": "2.1.0",
+   "girl": "0.12.0"
+  },
+  "derived_from": "episodes/e907_exchange/shots/s010_verbs/shot.scene.json",
+  "gaze_legibility": {
+   "boy": {
+    "headPitchDeg": 10
+   },
+   "scene": {
+    "rangeDeg": [
+     16,
+     8
+    ]
+   }
+  },
+  "handover_point": [
+   -0.0423,
+   0.5327,
+   0.0065
+  ],
+  "lifted_at": [
+   -0.0123,
+   0.5927,
+   0.0365
+  ],
+  "min_look_frames": 11,
+  "shot_level_overrides": {
+   "boy": {
+    "overrides": [
+     "docs/evaluation/characters/T-118/candidates/boy_yellow_hoodie.hair_r5.override.json",
+     "docs/evaluation/characters/T-121/hands_r2.override.json"
+    ],
+    "spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.2.0.spec.json"
+   },
+   "girl": {
+    "overrides": [
+     "docs/evaluation/characters/T-118/candidates/girl_auburn_bun_glasses.hair_r5.override.json",
+     "docs/evaluation/characters/T-121/hands_r2.override.json"
+    ],
+    "spec": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.13.0.spec.json"
+   }
+  },
+  "staging_from": "episodes/e907_exchange/shots/s010_calibrated/shot.scene.json (staging, camera, set, cast, the hand-over point, the acting beats outside the verb library)",
+  "task": "T-117"
+ }
+}

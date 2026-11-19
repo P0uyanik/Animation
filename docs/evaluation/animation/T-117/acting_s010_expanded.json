@@ -1,0 +1,79 @@
+{
+ "format": "plush.animcheck_acting",
+ "version": 1,
+ "scene": "e910_showcase s010: T-117 8 s cup-exchange showcase - he is bored, notices late, picks up the cup and passes it; she wonders, takes it and is delighted; he answers late and looks away",
+ "characters": [
+  {
+   "character": "boy",
+   "personality": "boy_yellow_hoodie",
+   "warnings": [],
+   "quick": false,
+   "glances": [
+    {
+     "event": "she looks at him and the cup",
+     "event_frame": 23.99992,
+     "look_frame": 40.0,
+     "delay_frames": 16.0,
+     "notice_delay_frames": 16.0
+    },
+    {
+     "event": "the cup is passed",
+     "event_frame": 142.0,
+     "look_frame": 169.100080500679,
+     "delay_frames": 27.1,
+     "notice_delay_frames": 16.0
+    },
+    {
+     "event": "she is delighted",
+     "event_frame": 146.00008,
+     "look_frame": 169.100080500679,
+     "delay_frames": 23.1,
+     "notice_delay_frames": 16.0
+    }
+   ],
+   "gestures": [],
+   "hold": {
+    "longest_still_frames": 18,
+    "at": [
+     109,
+     127
+    ],
+    "longest_still_frames_24": 18.0,
+    "required": 12.0
+   }
+  },
+  {
+   "character": "girl",
+   "personality": "girl_auburn_bun_glasses",
+   "warnings": [],
+   "quick": true,
+   "glances": [
+    {
+     "event": "the cup is passed",
+     "event_frame": 142.0,
+     "look_frame": 146.4999998807907,
+     "delay_frames": 4.5,
+     "notice_delay_frames": 4.0
+    }
+   ],
+   "gestures": [
+    {
+     "label": "girl clip girl_chin_think @1",
+     "amplitude": 0.556,
+     "swing_deg": 100.0,
+     "limit": 0.6
+    }
+   ],
+   "hold": {
+    "longest_still_frames": 37,
+    "at": [
+     68,
+     105
+    ],
+    "longest_still_frames_24": 37.0,
+    "required": 15.0
+   }
+  }
+ ],
+ "warnings": []
+}

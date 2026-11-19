@@ -1,0 +1,573 @@
+{
+ "format": "plush.scene",
+ "version": 1,
+ "frameRate": [
+  24,
+  1
+ ],
+ "render": {
+  "width": 640,
+  "height": 360,
+  "spp": 32,
+  "maxDepth": 8,
+  "exposureEV": 0.3,
+  "denoise": true,
+  "denoiseBlend": 0.85,
+  "clamp": 12
+ },
+ "camera": {
+  "position": [
+   0.0,
+   1.071,
+   1.464
+  ],
+  "target": [
+   0.0,
+   0.76,
+   0.003
+  ],
+  "focalMm": 32.0,
+  "fStop": 0,
+  "focusDistance": -1
+ },
+ "materials": [
+  {
+   "name": "floor_mat",
+   "type": "standard",
+   "baseColor": [
+    0.46,
+    0.44,
+    0.42
+   ],
+   "roughness": 0.85,
+   "specular": 0.3
+  },
+  {
+   "name": "wall_mat",
+   "type": "standard",
+   "baseColor": [
+    0.62,
+    0.6,
+    0.55
+   ],
+   "roughness": 0.9,
+   "specular": 0.3
+  },
+  {
+   "name": "table_mat",
+   "type": "standard",
+   "baseColor": [
+    0.42,
+    0.3,
+    0.2
+   ],
+   "roughness": 0.7,
+   "specular": 0.3
+  }
+ ],
+ "lights": [
+  {
+   "type": "rect",
+   "corner": [
+    -2.0,
+    1.0,
+    2.0
+   ],
+   "edgeU": [
+    1.2,
+    0,
+    0.6
+   ],
+   "edgeV": [
+    0,
+    1.4,
+    0
+   ],
+   "color": [
+    1.0,
+    0.95,
+    0.88
+   ],
+   "intensity": 3.0
+  },
+  {
+   "type": "sun",
+   "direction": [
+    0.3,
+    -0.6,
+    -0.7
+   ],
+   "angleDeg": 4,
+   "color": [
+    1.0,
+    0.92,
+    0.82
+   ],
+   "intensity": 1.4
+  },
+  {
+   "type": "sky",
+   "color": [
+    0.6,
+    0.62,
+    0.66
+   ],
+   "intensity": 0.4
+  }
+ ],
+ "objects": [
+  {
+   "name": "floor",
+   "kind": "box",
+   "min": [
+    -4,
+    -0.05,
+    -3
+   ],
+   "max": [
+    4,
+    0,
+    4
+   ],
+   "material": "floor_mat"
+  },
+  {
+   "name": "wall",
+   "kind": "box",
+   "min": [
+    -4,
+    0,
+    -1.4
+   ],
+   "max": [
+    4,
+    3,
+    -1.3
+   ],
+   "material": "wall_mat"
+  },
+  {
+   "name": "table_top",
+   "kind": "box",
+   "min": [
+    -0.1323,
+    0.4395,
+    -0.0635
+   ],
+   "max": [
+    0.0477,
+    0.4695,
+    0.0765
+   ],
+   "material": "table_mat"
+  },
+  {
+   "name": "table_leg",
+   "kind": "box",
+   "min": [
+    -0.0673,
+    0.0,
+    -0.0185
+   ],
+   "max": [
+    -0.0173,
+    0.4395,
+    0.0315
+   ],
+   "material": "table_mat"
+  }
+ ],
+ "props": [
+  {
+   "name": "cup",
+   "id": "prop.felt_cup",
+   "transform": {
+    "translation": [
+     -0.0423,
+     0.4695,
+     0.0065
+    ],
+    "rotationDeg": [
+     0,
+     -45.0,
+     0
+    ],
+    "scale": [
+     1,
+     1,
+     1
+    ]
+   }
+  }
+ ],
+ "timing": "calibrated",
+ "name": "e910_showcase s010: T-117 8 s cup-exchange showcase - he is bored, notices late, picks up the cup and passes it; she wonders, takes it and is delighted; he answers late and looks away",
+ "frameStart": 1,
+ "frameEnd": 192,
+ "gazeLegibility": {
+  "rangeDeg": [
+   16,
+   8
+  ]
+ },
+ "characters": [
+  {
+   "name": "boy",
+   "asset": "(set by run_shot)",
+   "position": [
+    0.2933,
+    0,
+    0.0315
+   ],
+   "yawDeg": -25.0,
+   "life": {
+    "blinkInterval": 2.2,
+    "headFollow": 0.3,
+    "gaze": {
+     "assistYawDeg": 15.0,
+     "assistBodyYawDeg": 0.0
+    }
+   },
+   "personality": "boy_yellow_hoodie",
+   "gazeLegibility": {
+    "headPitchDeg": 10
+   }
+  },
+  {
+   "name": "girl",
+   "asset": "(set by run_shot)",
+   "position": [
+    -0.2933,
+    0.0,
+    -0.0315
+   ],
+   "yawDeg": 25.0,
+   "life": {
+    "headFollow": 0.3,
+    "gaze": {
+     "assistPitchDeg": 10.0,
+     "assistYawDeg": 15.0,
+     "assistBodyYawDeg": 0.0
+    }
+   },
+   "personality": "girl_auburn_bun_glasses"
+  }
+ ],
+ "events": [
+  {
+   "time": 0.95833,
+   "kind": "partner_acts",
+   "name": "she looks at him and the cup",
+   "source": "girl",
+   "characters": [
+    "boy"
+   ],
+   "salience": 0.9
+  },
+  {
+   "time": 5.875,
+   "kind": "success",
+   "name": "the cup is passed",
+   "source": "table_top",
+   "characters": [
+    "girl"
+   ]
+  },
+  {
+   "time": 6.04167,
+   "kind": "partner_acts",
+   "name": "she is delighted",
+   "source": "girl",
+   "characters": [
+    "boy"
+   ],
+   "salience": 0.9
+  }
+ ],
+ "actions": [
+  {
+   "type": "clip",
+   "character": "boy",
+   "clip": "idle_relaxed",
+   "base": true
+  },
+  {
+   "type": "clip",
+   "character": "girl",
+   "clip": "idle_relaxed",
+   "base": true
+  },
+  {
+   "type": "emotion",
+   "character": "boy",
+   "name": "boy_unimpressed",
+   "start": 1,
+   "end": 47,
+   "intensity": 0.18
+  },
+  {
+   "type": "look",
+   "character": "boy",
+   "start": 1,
+   "end": 11,
+   "target": [
+    1.4933,
+    0.6,
+    1.0315
+   ]
+  },
+  {
+   "type": "look",
+   "character": "boy",
+   "start": 12,
+   "end": 22,
+   "target": [
+    -0.0423,
+    0.4695,
+    0.0065
+   ]
+  },
+  {
+   "type": "look",
+   "character": "boy",
+   "start": 23,
+   "end": 37,
+   "target": [
+    1.4933,
+    0.6,
+    1.0315
+   ]
+  },
+  {
+   "type": "clip",
+   "character": "girl",
+   "clip": "girl_chin_think",
+   "start": 1
+  },
+  {
+   "type": "look",
+   "character": "girl",
+   "start": 1,
+   "end": 23,
+   "target": [
+    -0.0423,
+    0.4695,
+    0.0065
+   ]
+  },
+  {
+   "type": "look",
+   "character": "girl",
+   "start": 24,
+   "end": 51,
+   "atCharacter": "boy"
+  },
+  {
+   "type": "pick_up",
+   "character": "boy",
+   "hand": "R",
+   "prop": "cup",
+   "set": "a",
+   "start": 47,
+   "settle": 5
+  },
+  {
+   "type": "carry",
+   "character": "boy",
+   "hand": "R",
+   "at": [
+    -0.0123,
+    0.5927,
+    0.0365
+   ]
+  },
+  {
+   "type": "look",
+   "character": "girl",
+   "start": 52,
+   "end": 99,
+   "atProp": "cup"
+  },
+  {
+   "type": "emotion",
+   "character": "girl",
+   "name": "girl_wonder",
+   "start": 64,
+   "end": 148,
+   "intensity": 0.7
+  },
+  {
+   "type": "pass",
+   "character": "boy",
+   "hand": "R",
+   "to": "girl",
+   "toHand": "L",
+   "at": [
+    -0.0423,
+    0.5327,
+    0.0065
+   ],
+   "start": 100,
+   "receiverStart": 104,
+   "contact": 114,
+   "release": 136
+  },
+  {
+   "type": "look",
+   "character": "boy",
+   "start": 100,
+   "end": 116,
+   "atProp": "cup"
+  },
+  {
+   "type": "look",
+   "character": "boy",
+   "start": 117,
+   "end": 138,
+   "atCharacter": "girl"
+  },
+  {
+   "type": "look",
+   "character": "girl",
+   "start": 118,
+   "end": 132,
+   "atCharacter": "boy"
+  },
+  {
+   "type": "carry",
+   "character": "girl",
+   "hand": "L",
+   "by": [
+    -0.03,
+    0.03,
+    -0.02
+   ]
+  },
+  {
+   "type": "look",
+   "character": "girl",
+   "start": 133,
+   "end": 152,
+   "atProp": "cup"
+  },
+  {
+   "type": "look",
+   "character": "girl",
+   "start": 153,
+   "end": 192,
+   "atCharacter": "boy"
+  },
+  {
+   "type": "look",
+   "character": "boy",
+   "start": 139,
+   "end": 175,
+   "atProp": "cup"
+  },
+  {
+   "type": "look",
+   "character": "boy",
+   "start": 176,
+   "end": 192,
+   "target": [
+    1.4933,
+    0.6,
+    1.0315
+   ]
+  }
+ ],
+ "production": {
+  "cast": {
+   "boy": {
+    "spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.2.0.spec.json",
+    "overrides": [
+     "docs/evaluation/characters/T-118/candidates/boy_yellow_hoodie.hair_r5.override.json",
+     "docs/evaluation/characters/T-121/hands_r2.override.json"
+    ]
+   },
+   "girl": {
+    "spec": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.13.0.spec.json",
+    "overrides": [
+     "docs/evaluation/characters/T-118/candidates/girl_auburn_bun_glasses.hair_r5.override.json",
+     "docs/evaluation/characters/T-121/hands_r2.override.json"
+    ]
+   }
+  },
+  "profile": "pipeline/charsys/rig_profiles/humanoid_rigify.json",
+  "render": {
+   "resolution": [
+    640,
+    360
+   ],
+   "samples": 16,
+   "light_scale": 1.0
+  }
+ },
+ "x_t117": {
+  "task": "T-117",
+  "derived_from": "episodes/e907_exchange/shots/s010_verbs/shot.scene.json",
+  "staging_from": "episodes/e907_exchange/shots/s010_calibrated/shot.scene.json (staging, camera, set, cast, the hand-over point, the acting beats outside the verb library)",
+  "beats_authored": {
+   "chin": 1,
+   "fidget_back": 12,
+   "fidget_off": 23,
+   "her_glance": 24,
+   "pick_up": 47,
+   "wonder": 64,
+   "pass": 100,
+   "contact": 114,
+   "release": 136,
+   "success": 142,
+   "his_answer": 146,
+   "look_away": 176
+  },
+  "handover_point": [
+   -0.0423,
+   0.5327,
+   0.0065
+  ],
+  "lifted_at": [
+   -0.0123,
+   0.5927,
+   0.0365
+  ],
+  "cup_table": [
+   -0.0423,
+   0.4695,
+   0.0065
+  ],
+  "cup_yaw_deg": -45.0,
+  "gaze_legibility": {
+   "scene": {
+    "rangeDeg": [
+     16,
+     8
+    ]
+   },
+   "boy": {
+    "headPitchDeg": 10
+   }
+  },
+  "min_look_frames": 11,
+  "current_versions_unchanged": {
+   "boy": "2.1.0",
+   "girl": "0.12.0"
+  },
+  "shot_level_overrides": {
+   "boy": {
+    "spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.2.0.spec.json",
+    "overrides": [
+     "docs/evaluation/characters/T-118/candidates/boy_yellow_hoodie.hair_r5.override.json",
+     "docs/evaluation/characters/T-121/hands_r2.override.json"
+    ]
+   },
+   "girl": {
+    "spec": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.13.0.spec.json",
+    "overrides": [
+     "docs/evaluation/characters/T-118/candidates/girl_auburn_bun_glasses.hair_r5.override.json",
+     "docs/evaluation/characters/T-121/hands_r2.override.json"
+    ]
+   }
+  }
+ }
+}
