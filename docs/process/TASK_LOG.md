@@ -149,7 +149,7 @@ Tasks from now on are numbered T-001, T-002, …, and pass through the states in
 | T-133 | [Evaluation] Third-character fit search + review (Codex) | assigned 2026-11-19 on relay-channel (007f0c7) | t-133-codex-third-fit | merged 2026-11-19: front fit 89.35→90.41 (proposal, not published); lash curve → T-137 F1b |
 | T-141 | [Experiment] A2 native hair curves (Fable) | written 2026-11-19 (owner ~20:30Z), after T-137 | t-141 | docs/tasks/T-141.md |
 | T-142 | [Infra] A1 FULL removal of unused legacy renderer/SDF chars/apps (Opus; owner ~20:45Z) | written 2026-11-19 (owner ~20:30Z), after T-141 or free slot | t-142-claude-legacy-removal | docs/tasks/T-142.md |
-| T-143 | [Cleanup] A4 T-102 extension (Sonnet) | written 2026-11-19 (owner ~20:30Z), after T-141 or free slot | t-143 | docs/tasks/T-143.md |
+| T-143 | [Cleanup] A4 T-102 extension (Sonnet) | started 2026-11-19 22:15Z in a free slot (no collision) | t-143 | docs/tasks/T-143.md |
 | T-144 | [Cleanup] A3 retire unpinned generator versions, plan first (Opus) | written 2026-11-19 (owner ~20:30Z), last | t-144 | docs/tasks/T-144.md |
 | T-150 | [Evaluation] Eye-shape targets for both girls (Codex) | assigned 2026-11-19 on relay-channel (e9ab05fe) | t-150-codex | merged 2026-11-19: inner eye corners 24-33% of opening too low (both girls); targets → T-137 |
 | T-151 | [Audit] Independent A1 legacy dependency map (Codex) | assigned 2026-11-19 on relay-channel (e9ab05fe) | t-151-codex | merged 2026-11-19: SAFE/KEEP/MIXED per file; second opinion for T-142 |
