@@ -1,0 +1,182 @@
+{
+ "garment_3": {
+  "tights": {
+   "tights": {
+    "waist_z_m": 0.4,
+    "ease_m": 0.0021,
+    "thickness_m": 0.0012,
+    "vertices": 36700,
+    "covered_body_faces": 18272
+   },
+   "fibre_uv": {
+    "uv_map": "ps_fibre",
+    "swap": false,
+    "mean_radius_m": {
+     "garment.tights.main": {
+      "body": 0.0787,
+      "leg0": 0.0395,
+      "leg1": 0.0396
+     }
+    }
+   }
+  },
+  "dress": {
+   "skirt_pattern": {
+    "piece": "garment.dress.skirt",
+    "panels": 12,
+    "relief_m": 0.00419,
+    "peak_m": 0.00419,
+    "vertices": 76800,
+    "subdivide": 2
+   },
+   "cloth_sim": {
+    "piece": "garment.dress.skirt",
+    "pinned_vertices": 3456,
+    "vertices": 76800,
+    "pin_top": 0.03,
+    "pin_blend": 0.05
+   },
+   "rib_cuff": {
+    "ribs": 18,
+    "height_m": 0.02834,
+    "pieces": {
+     "garment.dress.ribcuff.L": {
+      "vertices": 1296,
+      "radius_m": 0.0287,
+      "centre_m": [
+       0.1862,
+       0.0,
+       0.4286
+      ]
+     },
+     "garment.dress.ribcuff.R": {
+      "vertices": 1296,
+      "radius_m": 0.0287,
+      "centre_m": [
+       -0.1878,
+       0.0,
+       0.4296
+      ]
+     }
+    }
+   },
+   "fibre_uv": {
+    "uv_map": "ps_fibre",
+    "swap": false,
+    "mean_radius_m": {
+     "garment.dress.bodice": {
+      "arm0": 0.0398,
+      "arm1": 0.0398,
+      "body": 0.0774
+     },
+     "garment.dress.band.cuff.L": {
+      "arm0": 0.031
+     },
+     "garment.dress.band.cuff.R": {
+      "arm1": 0.031
+     },
+     "garment.dress.collar": {
+      "body": 0.0758
+     },
+     "garment.dress.skirt": {
+      "arm0": 0.0503,
+      "arm1": 0.0503,
+      "body": 0.1236
+     },
+     "garment.dress.band.hem_rib": {
+      "body": 0.1416
+     },
+     "garment.dress.ribcuff.L": {
+      "arm0": 0.0291
+     },
+     "garment.dress.ribcuff.R": {
+      "arm1": 0.0291
+     }
+    }
+   },
+   "collar_seat": {
+    "collar": "garment.dress.collar",
+    "over": [],
+    "columns": 73,
+    "neckline_z_m": 0.615,
+    "inner_radius_m": 0.0602,
+    "thickness_m": 0.004,
+    "droop_deg": {
+     "min": 5.7,
+     "max": 80.0
+    },
+    "hinges_raised": 0,
+    "strips_stiffened": 189,
+    "rest_clearance_over_gap_m": {
+     "p50": 0.00391,
+     "p95": 0.0091,
+     "max": 0.01317
+    }
+   }
+  },
+  "boots": {
+   "sole_stitch": {
+    "pitch_m": 0.00754,
+    "pieces": {
+     "garment.boots.stitch.L": {
+      "stitches": 42,
+      "z_m": -0.0067,
+      "outline_m": 0.3226
+     },
+     "garment.boots.stitch.R": {
+      "stitches": 42,
+      "z_m": -0.0067,
+      "outline_m": 0.3231
+     }
+    }
+   }
+  }
+ },
+ "masked_items": [
+  "dress",
+  "boots",
+  "tights"
+ ],
+ "items": [
+  {
+   "name": "dress",
+   "type": "dress",
+   "objects": [
+    "garment.dress.bodice",
+    "garment.dress.band.cuff.L",
+    "garment.dress.band.cuff.R",
+    "garment.dress.collar",
+    "garment.dress.skirt",
+    "garment.dress.band.hem_rib",
+    "garment.dress.ribcuff.L",
+    "garment.dress.ribcuff.R"
+   ],
+   "mask_body": true
+  },
+  {
+   "name": "boots",
+   "type": "boots",
+   "objects": [
+    "garment.boots.main.L",
+    "garment.boots.lining.L",
+    "garment.boots.sole.L",
+    "garment.boots.main.R",
+    "garment.boots.lining.R",
+    "garment.boots.sole.R",
+    "garment.boots.cuff.L",
+    "garment.boots.cuff.R",
+    "garment.boots.stitch.L",
+    "garment.boots.stitch.R"
+   ],
+   "mask_body": true
+  },
+  {
+   "name": "tights",
+   "type": "tights",
+   "objects": [
+    "garment.tights.main"
+   ],
+   "mask_body": true
+  }
+ ]
+}

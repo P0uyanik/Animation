@@ -1,0 +1,98 @@
+{
+ "master": "girl_white_hair_blue_dress_master.blend",
+ "motion": "kneel",
+ "frames": 54,
+ "evidence_frames": {
+  "kneel": 54
+ },
+ "seed": 126,
+ "settings": {
+  "rows": 30,
+  "columns": 120,
+  "smooth": 2,
+  "jitter_m": 0.0001,
+  "quality": 14,
+  "vertex_mass": 0.01,
+  "tension": 40.0,
+  "compression": 40.0,
+  "shear": 5.0,
+  "bending": 40.0,
+  "tension_damping": 6.0,
+  "bending_damping": 0.6,
+  "air_damping": 2.0,
+  "collision_quality": 6,
+  "distance_m": 0.004,
+  "body_thickness_m": 0.0045,
+  "friction": 12.0,
+  "self_collision": false,
+  "pin_stiffness": 1.0
+ },
+ "piece": "garment.dress.skirt",
+ "followers": [
+  "garment.dress.skirt",
+  "garment.dress.band.hem_rib"
+ ],
+ "proxy_vertices": 3600,
+ "props": [],
+ "cache": "kneel.pc2",
+ "cache_sha256": "3040add35ec36d2b4a61a8bb7d0ea44339515d2b2d07db5948bc915c90eb2d49",
+ "penetration": {
+  "kneel": {
+   "frame": 54,
+   "simulated": {
+    "vertices": 76800,
+    "hem_rise_mm": -0.6,
+    "inside_by_third_hem_mid_waist": [
+     0,
+     0,
+     0
+    ],
+    "inside_skin": 0,
+    "inside_skin_share": 0.0,
+    "max_depth_mm": 0.0,
+    "p95_depth_mm": 0.0,
+    "under_layer": 0,
+    "under_layer_share": 0.0,
+    "layer_mm": 3.6
+   },
+   "skinned": {
+    "vertices": 76800,
+    "hem_rise_mm": 0.0,
+    "inside_by_third_hem_mid_waist": [
+     0,
+     0,
+     0
+    ],
+    "inside_skin": 0,
+    "inside_skin_share": 0.0,
+    "max_depth_mm": 0.0,
+    "p95_depth_mm": 0.0,
+    "under_layer": 0,
+    "under_layer_share": 0.0,
+    "layer_mm": 3.6
+   },
+   "proxy": {
+    "vertices": 3600,
+    "hem_rise_mm": -0.6,
+    "inside_by_third_hem_mid_waist": [
+     0,
+     0,
+     0
+    ],
+    "inside_skin": 0,
+    "inside_skin_share": 0.0,
+    "max_depth_mm": 0.0,
+    "p95_depth_mm": 0.0,
+    "under_layer": 0,
+    "under_layer_share": 0.0,
+    "layer_mm": 3.6
+   }
+  }
+ },
+ "blender": "5.3.0",
+ "seconds": {
+  "setup": 3.7,
+  "simulate": 28.6,
+  "measure": 5.4
+ }
+}

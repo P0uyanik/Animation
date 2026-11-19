@@ -1,0 +1,202 @@
+{
+ "master": "girl_white_hair_blue_dress_master.blend",
+ "motion": "walk",
+ "frames": 60,
+ "evidence_frames": {
+  "walk_stride_L": 42,
+  "walk_passing": 48,
+  "walk_stride_R": 54
+ },
+ "seed": 126,
+ "settings": {
+  "rows": 30,
+  "columns": 120,
+  "smooth": 2,
+  "jitter_m": 0.0001,
+  "quality": 14,
+  "vertex_mass": 0.01,
+  "tension": 40.0,
+  "compression": 40.0,
+  "shear": 5.0,
+  "bending": 40.0,
+  "tension_damping": 6.0,
+  "bending_damping": 0.6,
+  "air_damping": 2.0,
+  "collision_quality": 6,
+  "distance_m": 0.004,
+  "body_thickness_m": 0.0045,
+  "friction": 12.0,
+  "self_collision": false,
+  "pin_stiffness": 1.0
+ },
+ "piece": "garment.dress.skirt",
+ "followers": [
+  "garment.dress.skirt",
+  "garment.dress.band.hem_rib"
+ ],
+ "proxy_vertices": 3600,
+ "props": [],
+ "cache": "walk.pc2",
+ "cache_sha256": "4fe493fd572e78a73ba7229952459d0b6f66591a0e35199362eb5d181d037f5d",
+ "penetration": {
+  "walk_stride_L": {
+   "frame": 42,
+   "simulated": {
+    "vertices": 76800,
+    "hem_rise_mm": 16.8,
+    "inside_by_third_hem_mid_waist": [
+     0,
+     0,
+     128
+    ],
+    "inside_skin": 128,
+    "inside_skin_share": 0.00167,
+    "max_depth_mm": 5.2,
+    "p95_depth_mm": 4.59,
+    "under_layer": 268,
+    "under_layer_share": 0.00349,
+    "layer_mm": 3.6
+   },
+   "skinned": {
+    "vertices": 76800,
+    "hem_rise_mm": 0.0,
+    "inside_by_third_hem_mid_waist": [
+     0,
+     0,
+     0
+    ],
+    "inside_skin": 0,
+    "inside_skin_share": 0.0,
+    "max_depth_mm": 0.0,
+    "p95_depth_mm": 0.0,
+    "under_layer": 726,
+    "under_layer_share": 0.00945,
+    "layer_mm": 3.6
+   },
+   "proxy": {
+    "vertices": 3600,
+    "hem_rise_mm": 15.6,
+    "inside_by_third_hem_mid_waist": [
+     0,
+     0,
+     3
+    ],
+    "inside_skin": 3,
+    "inside_skin_share": 0.00083,
+    "max_depth_mm": 4.07,
+    "p95_depth_mm": 3.19,
+    "under_layer": 7,
+    "under_layer_share": 0.00194,
+    "layer_mm": 3.6
+   }
+  },
+  "walk_passing": {
+   "frame": 48,
+   "simulated": {
+    "vertices": 76800,
+    "hem_rise_mm": 6.3,
+    "inside_by_third_hem_mid_waist": [
+     0,
+     0,
+     0
+    ],
+    "inside_skin": 0,
+    "inside_skin_share": 0.0,
+    "max_depth_mm": 0.0,
+    "p95_depth_mm": 0.0,
+    "under_layer": 0,
+    "under_layer_share": 0.0,
+    "layer_mm": 3.6
+   },
+   "skinned": {
+    "vertices": 76800,
+    "hem_rise_mm": 0.0,
+    "inside_by_third_hem_mid_waist": [
+     0,
+     0,
+     0
+    ],
+    "inside_skin": 0,
+    "inside_skin_share": 0.0,
+    "max_depth_mm": 0.0,
+    "p95_depth_mm": 0.0,
+    "under_layer": 0,
+    "under_layer_share": 0.0,
+    "layer_mm": 3.6
+   },
+   "proxy": {
+    "vertices": 3600,
+    "hem_rise_mm": 5.6,
+    "inside_by_third_hem_mid_waist": [
+     0,
+     0,
+     0
+    ],
+    "inside_skin": 0,
+    "inside_skin_share": 0.0,
+    "max_depth_mm": 0.0,
+    "p95_depth_mm": 0.0,
+    "under_layer": 0,
+    "under_layer_share": 0.0,
+    "layer_mm": 3.6
+   }
+  },
+  "walk_stride_R": {
+   "frame": 54,
+   "simulated": {
+    "vertices": 76800,
+    "hem_rise_mm": 10.2,
+    "inside_by_third_hem_mid_waist": [
+     0,
+     0,
+     110
+    ],
+    "inside_skin": 110,
+    "inside_skin_share": 0.00143,
+    "max_depth_mm": 4.81,
+    "p95_depth_mm": 4.64,
+    "under_layer": 254,
+    "under_layer_share": 0.00331,
+    "layer_mm": 3.6
+   },
+   "skinned": {
+    "vertices": 76800,
+    "hem_rise_mm": 0.0,
+    "inside_by_third_hem_mid_waist": [
+     0,
+     0,
+     0
+    ],
+    "inside_skin": 0,
+    "inside_skin_share": 0.0,
+    "max_depth_mm": 0.0,
+    "p95_depth_mm": 0.0,
+    "under_layer": 1065,
+    "under_layer_share": 0.01387,
+    "layer_mm": 3.6
+   },
+   "proxy": {
+    "vertices": 3600,
+    "hem_rise_mm": 10.0,
+    "inside_by_third_hem_mid_waist": [
+     0,
+     0,
+     3
+    ],
+    "inside_skin": 3,
+    "inside_skin_share": 0.00083,
+    "max_depth_mm": 3.81,
+    "p95_depth_mm": 3.24,
+    "under_layer": 7,
+    "under_layer_share": 0.00194,
+    "layer_mm": 3.6
+   }
+  }
+ },
+ "blender": "5.3.0",
+ "seconds": {
+  "setup": 4.0,
+  "simulate": 33.5,
+  "measure": 21.9
+ }
+}

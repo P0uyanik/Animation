@@ -1,0 +1,200 @@
+{
+ "samples": 16,
+ "px": 360,
+ "seed": 126,
+ "light": "character_neutral/1",
+ "tiles": [
+  {
+   "motion": "walk",
+   "shot": "walk_stride_L",
+   "frame": 42,
+   "skirt": "simulated",
+   "camera": [
+    [
+     0.0,
+     0.0,
+     0.3
+    ],
+    0.62,
+    55.0,
+    6.0
+   ]
+  },
+  {
+   "motion": "walk",
+   "shot": "walk_stride_L",
+   "frame": 42,
+   "skirt": "skinned",
+   "camera": [
+    [
+     0.0,
+     0.0,
+     0.3
+    ],
+    0.62,
+    55.0,
+    6.0
+   ]
+  },
+  {
+   "motion": "walk",
+   "shot": "walk_passing",
+   "frame": 48,
+   "skirt": "simulated",
+   "camera": [
+    [
+     0.0,
+     0.0,
+     0.3
+    ],
+    0.62,
+    55.0,
+    6.0
+   ]
+  },
+  {
+   "motion": "walk",
+   "shot": "walk_passing",
+   "frame": 48,
+   "skirt": "skinned",
+   "camera": [
+    [
+     0.0,
+     0.0,
+     0.3
+    ],
+    0.62,
+    55.0,
+    6.0
+   ]
+  },
+  {
+   "motion": "walk",
+   "shot": "walk_stride_R",
+   "frame": 54,
+   "skirt": "simulated",
+   "camera": [
+    [
+     0.0,
+     0.0,
+     0.3
+    ],
+    0.62,
+    55.0,
+    6.0
+   ]
+  },
+  {
+   "motion": "walk",
+   "shot": "walk_stride_R",
+   "frame": 54,
+   "skirt": "skinned",
+   "camera": [
+    [
+     0.0,
+     0.0,
+     0.3
+    ],
+    0.62,
+    55.0,
+    6.0
+   ]
+  },
+  {
+   "motion": "sit",
+   "shot": "sit_half",
+   "frame": 22,
+   "skirt": "simulated",
+   "camera": [
+    [
+     0.0,
+     -0.05,
+     0.3
+    ],
+    0.62,
+    60.0,
+    8.0
+   ]
+  },
+  {
+   "motion": "sit",
+   "shot": "sit_half",
+   "frame": 22,
+   "skirt": "skinned",
+   "camera": [
+    [
+     0.0,
+     -0.05,
+     0.3
+    ],
+    0.62,
+    60.0,
+    8.0
+   ]
+  },
+  {
+   "motion": "sit",
+   "shot": "sit",
+   "frame": 54,
+   "skirt": "simulated",
+   "camera": [
+    [
+     0.0,
+     -0.05,
+     0.3
+    ],
+    0.62,
+    60.0,
+    8.0
+   ]
+  },
+  {
+   "motion": "sit",
+   "shot": "sit",
+   "frame": 54,
+   "skirt": "skinned",
+   "camera": [
+    [
+     0.0,
+     -0.05,
+     0.3
+    ],
+    0.62,
+    60.0,
+    8.0
+   ]
+  },
+  {
+   "motion": "kneel",
+   "shot": "kneel",
+   "frame": 54,
+   "skirt": "simulated",
+   "camera": [
+    [
+     0.0,
+     0.05,
+     0.3
+    ],
+    0.62,
+    70.0,
+    6.0
+   ]
+  },
+  {
+   "motion": "kneel",
+   "shot": "kneel",
+   "frame": 54,
+   "skirt": "skinned",
+   "camera": [
+    [
+     0.0,
+     0.05,
+     0.3
+    ],
+    0.62,
+    70.0,
+    6.0
+   ]
+  }
+ ]
+}
