@@ -101,7 +101,7 @@ TEST_CASE("director framing is opt-in: without it (or false) the planned camera 
 
 TEST_CASE("director framing keeps the head (hair included) under the headroom line and the hands in the safe area") {
   auto base = loadFramingScene(Json::object());
-  auto framed = loadFramingScene(Json::parse(R"({"framing": {"headroom": 0.05, "safeMargin": 0.04}})"));
+  auto framed = loadFramingScene(Json::parse(R"({"framing": {"headroom": 0.05, "safeMargin": 0.04}, "cuts": true})"));
   float topBase = -9, topFramed = -9, handBase = 0, handFramed = 0;
   auto insert = [](const SceneEvaluator& ev, double f) {
     return ev.scene().animation.evaluate("camera.lens", f, vec3(0)).x > 60.0f;  // inserts keep only their subject
@@ -124,8 +124,8 @@ TEST_CASE("director framing keeps the head (hair included) under the headroom li
   CHECK(handFramed <= 0.92f + 0.01f); // safe margin 0.04 of the frame
 }
 
-TEST_CASE("director cuts false keeps one master camera, refitted by framing") {
-  auto framed = loadFramingScene(Json::parse(R"({"framing": true, "cuts": false})"));
+TEST_CASE("director framing defaults to one master camera (cuts false), refitted") {
+  auto framed = loadFramingScene(Json::parse(R"({"framing": true})"));
   const auto pos = keys(*framed, "camera.position");
   REQUIRE(pos.size() == 1);
   CHECK(pos[0].frame == 1);
@@ -135,7 +135,7 @@ TEST_CASE("director cuts false keeps one master camera, refitted by framing") {
   CHECK(glm::dot(glm::normalize(pos[0].value - newTarget), glm::normalize(master - target)) > 0.9999f);
   CHECK(glm::distance(pos[0].value, newTarget) > glm::distance(master, target));
   // "face" keeps the head but lets the hands leave: it backs off less than "hands".
-  auto face = loadFramingScene(Json::parse(R"({"framing": {"reachCrop": "face"}, "cuts": false})"));
+  auto face = loadFramingScene(Json::parse(R"({"framing": {"reachCrop": "face"}})"));
   const float dFace = glm::distance(keys(*face, "camera.position")[0].value, keys(*face, "camera.target")[0].value);
   CHECK(dFace <= glm::distance(pos[0].value, newTarget) + 1e-5f);
 }
