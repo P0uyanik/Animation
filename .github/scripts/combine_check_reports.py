@@ -7,7 +7,10 @@
 Reports are check_all.json files (tools/check_all.py, tools/regression/run.py --gate-report, trial-merge conflicts).
 Checks with the same name are merged into one line. With --needs-json the run also FAILS when a required job did not
 succeed or a required report is missing: the linux gate and the linux renderer job (T-085) always, one regression report per character on the full
-tier, the windows report when the windows job ran. Exit 1 on any FAIL (the required "Gate verdict" check).
+tier, the windows report when the windows job ran. With --blender-shards N (T-127) the job "blender" must have
+succeeded and every shard report quality-blender-1..N must be present, name its own shard, and the shards' units must
+be exactly the linux report's Blender unit list (each unit once): a missing, cancelled, skipped or partial shard is FAIL.
+Exit 1 on any FAIL (the required "Gate verdict" check).
 """
 
 from __future__ import annotations
@@ -15,6 +18,7 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
+import sys
 
 
 def label_for(path: Path, root: Path, report: dict) -> str:
@@ -25,7 +29,60 @@ def label_for(path: Path, root: Path, report: dict) -> str:
     return f"{report.get('platform') or artifact}:{artifact}"
 
 
+def blender_shard_problems(reports: list, root: Path, needs: dict, count: int) -> list[str]:
+    by_artifact = {path.relative_to(root).parts[0]: report for path, report in reports}
+    expected = (by_artifact.get("quality-linux") or {}).get("blender_units") or []
+    if count <= 0:
+        return ["linux gate delegated the Blender tier to shard jobs, but none were planned"] if expected else []
+    problems: list[str] = []
+    result = needs.get("blender", {}).get("result", "missing")
+    if result != "success":
+        problems.append(f"job blender {result}")
+    if not expected:
+        problems.append("linux report lists no Blender units for the shards")
+    ran: list[str] = []
+    for index in range(1, count + 1):
+        report = by_artifact.get(f"quality-blender-{index}")
+        if report is None:
+            problems.append(f"no report from quality-blender-{index}")
+            continue
+        shard = report.get("blender_shard") or {}
+        if shard.get("index") != index or shard.get("count") != count:
+            problems.append(f"quality-blender-{index} reports shard {shard.get('index')}/{shard.get('count')}")
+        ran.extend(shard.get("units") or [])
+    missing = sorted(set(expected) - set(ran))
+    extra = sorted(set(ran) - set(expected))
+    twice = sorted({unit for unit in ran if ran.count(unit) > 1})
+    if missing:
+        problems.append("Blender units not run: " + ", ".join(missing))
+    if extra or twice:
+        problems.append("Blender units unexpected or twice: " + ", ".join(extra + twice))
+    return problems
+
+
+def durations_markdown(root: Path, limit: int = 25) -> str:
+    """T-127 (combine_check_reports.py --durations <root>): the slowest commands of every report (check_all.json "durations") as a Markdown table."""
+    rows = []
+    for path in sorted(root.rglob("check_all.json")) if root.is_dir() else []:
+        try:
+            report = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            continue
+        job = path.relative_to(root).parts[0]
+        rows += [(float(item.get("seconds", 0)), job, item) for item in report.get("durations", [])]
+    rows.sort(key=lambda row: -row[0])
+    total = sum(row[0] for row in rows)
+    lines = [f"\n**Per-test durations** ({len(rows)} commands, {total / 60:.1f} min in total; slowest {limit}):\n",
+             "| seconds | job | command | exit |", "|---:|---|---|---:|"]
+    lines += [f"| {seconds:.1f} | {job} | {item.get('script')} ({item.get('log')}) | {item.get('exit')} |"
+              for seconds, job, item in rows[:limit]]
+    return "\n".join(lines)
+
+
 def main() -> int:
+    if len(sys.argv) == 3 and sys.argv[1] == "--durations":
+        print(durations_markdown(Path(sys.argv[2])))
+        return 0
     parser = argparse.ArgumentParser()
     parser.add_argument("root", type=Path)
     parser.add_argument("output", type=Path)
@@ -34,6 +91,8 @@ def main() -> int:
     parser.add_argument("--characters", default="[]")
     parser.add_argument("--windows", default="false",
                         help="true: the windows job ran and is required; informational: it ran, reported but not required")
+    parser.add_argument("--blender-shards", type=int, default=0,
+                        help="T-127: number of Blender shard jobs that ran instead of the in-process Blender tier")
     args = parser.parse_args()
 
     reports = []
@@ -59,6 +118,7 @@ def main() -> int:
         if args.windows == "true":
             expected.append("quality-windows")
         problems += [f"no report from {name}" for name in expected if name not in artifacts]
+        problems += blender_shard_problems(reports, args.root, needs, args.blender_shards)
         if args.tier not in {"fast", "full"}:
             problems.append(f"tier not decided ({args.tier or 'plan failed'})")
 

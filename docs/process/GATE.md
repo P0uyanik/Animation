@@ -167,6 +167,51 @@ a WARN. Exit 1 on any FAIL. The **CI status (main)** workflow (`ci-status.yml`) 
 run of the other workflows, daily at 06:41 UTC and on demand, writes the table to its job summary and is red while
 any workflow is red on `main`.
 
+### 5.4 CI speed (T-127): Blender shards, pinned apt cache, superseded runs, durations
+
+- **Blender shards** (full tier). The Blender tier of `tools/check_all.py` is a list of named units
+  (`BLENDER_UNITS`: the same commands, arguments and thresholds as before, in the same order). On the full tier the
+  plan job reads `tools/ci/blender_shards.json` (4–6 shards) and the **blender shard K** jobs run
+  `check_all.py --blender-shard K/N --full --regression-external …` in parallel; the linux gate then reports
+  `Blender tier: … runs in N blender shard jobs` and lists the units in its report. **Gate verdict** fails unless the
+  `blender` job succeeded (a cancelled, skipped or failed shard is FAIL), every report `quality-blender-1..N` is
+  present and names its shard, and the shards' units are exactly the linux report's unit list, each once. Every unit
+  builds its own characters; nothing built is reused between units or shards (owner decision T-127, item 6 not
+  approved). A unit that reads another unit's output in the same run (`face` reads the `charsys` master, as before)
+  must sit in the same shard; the plan is rejected otherwise, and an unassigned unit runs in shard 1. The shard with
+  `shot-eyes`/`emotions` also builds the `plush-render` target (the bake engine).
+  Proof that the commands are identical: `python tools/ci/blender_inventory.py` (also run by the Python tests via
+  `tools/ci/tests/test_t127_shards.py`); evidence in `docs/evaluation/ci/T-127/`.
+- **Fallback (pre-T-127 path)**: repository variable `PLUSH_CI_BLENDER_SHARDS=off`, or `[unsharded]` in the head
+  commit message: no shard jobs, the linux gate runs the whole Blender tier in-process exactly as before. Locally,
+  `tools/check_all.py` without `--blender-shard` always runs every unit in order.
+- **Pinned apt cache**: `install_ci_dependencies.ps1 -AptCache <dir>` (linux gate, renderer, the shard that builds
+  `plush-render`, backup fast tier). Cache key `apt-<job>-<ImageOS>-<ImageVersion>-<hash(ci-dependencies.json)>`.
+  On a hit the recorded `.deb` files are checked against `manifest.json` (sha256 each) and installed with `dpkg -i`,
+  without contacting the Ubuntu mirrors; the log prints `digest sha256:<manifest hash>`. On a miss, a runner image
+  update or any cache problem the mirror install runs as before (now with retries) and refills the cache. The bpy
+  wheel and OIDN stay in the checksum-verified pinned-download cache.
+- **Superseded runs**: a newer push cancels the running Quality gate only on `t-*` and `integration/*`. `main`,
+  `staging`, `workflow_dispatch` runs, the backup workflow, nightly Windows and every scheduled workflow are never
+  cancelled (each `main`/`staging`/manual run has its own concurrency group).
+- **Per-test durations**: every command `check_all.py` runs is timed (`durations` in each `check_all.json`, and
+  `durations.txt` next to it, slowest first); the Gate verdict job summary shows the slowest 25 across all jobs.
+  Parallel shard jobs finish sooner but use more runner minutes per run (each installs bpy); see the T-127 numbers.
+
+### 5.5 Batch promotions (T-127): one gate run for several finished tasks
+
+1. Collect the finished task branches that are READY (each passed its own fast-tier gate, write-sets disjoint or
+   reviewed together).
+2. Create one `integration/<batch-name>` from `origin/main` (or the previous staging tip) and merge each task branch
+   into it in the order of the ledger, resolving nothing silently (a conflict stops the batch for that task).
+3. Push `integration/<batch-name>` once all tasks are merged: this is the one full gate run of the batch (§5.1).
+   Pushing intermediate states is allowed; the newer push cancels the older integration run (§5.4).
+4. Green **Gate verdict** on the integration tip → fast-forward `staging` and `main` to **that same commit** together
+   (§5.1: "Already verified", no second full run). Red → remove the failing task from the batch (new integration
+   branch without it, or a revert on the integration branch) and run the gate again; never promote a partially green
+   batch, and never mark a task done whose change was not in the verified commit.
+5. Record the batch in the ledger: tasks, integration branch, verified commit and gate run link.
+
 ## 6. Backups (`.github/workflows/backup.yml`, plan §8.1 layers 1–2)
 
 - **Tags:** every push to `main`/`staging` and every pushed backup request `archive/backup-<UTC>-<branch>` creates
