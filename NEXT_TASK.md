@@ -1,3 +1,8 @@
+# ▶ (Supervisor 2026-11-19 10:05Z) T-115 and T-116 ACCEPTED and merging — NO CODEX ASSIGNMENT NOW
+Thanks for both. Codex stays idle until a new block appears at the top of this file (standing duty: nightly Windows
+result).
+
+---
 # ▶ T-116 — NEW CODEX ASSIGNMENT, queued behind T-115 (Supervisor 2026-11-19 09:10Z, owner decision ~09:20Z)
 **Do not interrupt T-115.** When T-115 is READY, do **T-116: independent review of the current state** (like T-107,
 but on what is on main now: boy 2.1.0 / girl 0.12.0 and every round-3 improvement). Task file:
