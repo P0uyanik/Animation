@@ -142,7 +142,7 @@ Tasks from now on are numbered T-001, T-002, …, and pass through the states in
 | T-134 | [Engine] E1 reach mechanics (anticipation/ease, arcs, overlap), opt-in | merged 2026-11-19 (opt-in reachMechanics): one speed hump, chest/clavicle/hip lead, upward carry arcs, settle; open: girl f109-110 hook, girl lead maybe too strong, pre-reach dip not robust, feet up to 2.4 mm, hair livelier | t-134-claude-reach | `docs/tasks/T-134.md` |
 | T-135 | [Tools] E1m reach measurements | merged 2026-11-19: tools/motion_checks/reach (not gated); baseline + E1abc measures | t-135-claude-reach-measures | `docs/tasks/T-135.md` |
 | T-136 | [Engine] E2 blink scheduling + E3 gaze chain, opt-in | merged 2026-11-20: opt-in blinkSchedule + gaze chain (caps C eye 4/3, neck 25/10, torso 5/3); pupils no worse, angle error 4-7° better on e910; bake 3→17 s when on; goldens unchanged | t-136-claude-blink-gaze | `docs/tasks/T-136.md` |
-| T-137 | [Visual] F1a/F1b/F2 faces round 5 (overrides) | running 2026-11-19 (round 5, Fable 5.2) | t-137-claude-faces | `docs/tasks/T-137.md` |
+| T-137 | [Visual] F1a/F1b/F2 faces round 5 (overrides) | merged 2026-11-20: F1a/F1b/F2 owner-approved ~07:00Z; published via T-155 | t-137-claude-faces | `docs/tasks/T-137.md` |
 | T-138 | [Engine] E4 grasp contact accuracy | approved; after T-134 | t-138-claude-grasp | merged 2026-11-20: opt-in graspFit, e910 boy band out 10.87→4.28 mm (rest geometric: finger roots 78 mm vs 45 mm band); default bake byte-identical |
 | T-139 | [Tools] E5 animcheck gesture attribution | merged 2026-11-19: arm-role attribution; e910 shrug side fixed; old failures still caught | t-139-claude-animcheck | `docs/tasks/T-139.md` |
 | T-140 | [Camera] C1 headroom and framing rules | merged 2026-11-19: opt-in director framing; e910 0 cropped frames, bun headroom 0.925→0.883; bun spring overshoot ~6 mm open (needs scene.cpp) | t-140-claude-framing | `docs/tasks/T-140.md` |
@@ -160,3 +160,4 @@ Tasks from now on are numbered T-001, T-002, …, and pass through the states in
 | T-156 | [Faces] Eye shape to T-150 targets, T-137 follow-up (Fable) | running 2026-11-20 (owner #5) | t-156-claude-eye-targets | docs/tasks/T-156.md |
 | T-157 | [Engine] Grasp gap options: wider band vs fewer fingers (Opus) | running 2026-11-20 (owner #6) | t-157-claude-grasp-options | docs/tasks/T-157.md |
 | T-158 | [Build] Deterministic character builds (Opus) | running 2026-11-20 (owner #9) | t-158-claude-deterministic-build | docs/tasks/T-158.md |
+| T-159 | [Characters] Ears round, all three (Fable) | written 2026-11-20 (owner ~07:00Z #3), after T-158 | t-159-claude-ears | docs/tasks/T-159.md |

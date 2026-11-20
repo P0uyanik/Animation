@@ -595,3 +595,15 @@ Adopting it as default needs the owner. NOT approved: review page, prop library,
 9. New task: make girl 0.13.0's build deterministic (ears/upper lids differ in ~half of 9 runs); root cause, regression
    tests (repeated builds identical), no intended-geometry change; check boy and third character → T-158 (Opus 5.5).
 10. Let T-141 finish; T-144 (A3) PLAN ONLY when a slot is free.
+
+## 2026-11-20 ~07:00Z — Release faces, publish versions, lashes first, ears (relayed by the original Supervisor)
+Owner: "good progress with the faces; the main issue now is the eyelashes, which still look quite different from the
+references; we also need to work on the ears; go ahead and release these changes and publish new character versions."
+1. T-137 F1a, F1b, F2 (incl. F2 face override) APPROVED → merge; publish boy 2.3.0 / girl 0.14.0 (T-132 content + T-137
+   faces) and third character 0.1.0 (T-126 a–d + T-137 F1b; T-133 proposal only if it improves) as candidates with strict
+   sheets (reference | current | new | target), eye crops, expression sheets; guard allowlist (T-154). Boy/girl become
+   CURRENT only after the owner's one-word OK on those sheets (hair/garment/finger changes not yet reviewed), via
+   version_switch + fidelity_baseline rebaseline citing this decision. Third character: 0.1.0 is her first published version.
+2. Eyelashes are the top face priority: T-156 becomes lash-first (thin dark upper liner, short separate outer-corner
+   lashes, no brown band; refs third 01/04/14, auburn ref_30/G01/G02, boy hero24/val27), then T-150 eye-shape targets.
+3. Ears: after T-158 (deterministic builds), an ears round (Fable 5.2) for all three characters → T-159.

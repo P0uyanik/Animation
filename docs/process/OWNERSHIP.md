@@ -16,7 +16,6 @@ means none. Branch is the task's branch; a task branch without a row falls back 
 
 | Task | Lane | Branch | Write-set | Depends on | Versions bumped |
 | --- | --- | --- | --- | --- | --- |
-| T-137 | E | t-137-claude-faces | (lids.py and test_face_r5.py handed to T-156, which builds on this branch) `docs/evaluation/characters/T-137/**`, `content/emotions/boy_interested.emotion.json`, `content/personality/boy_yellow_hoodie.json`, `docs/evaluation/characters/T-137/` | — | — |
 | T-141 | C | t-141-claude-hair-curves | `pipeline/charsys/groom/**` (new opt-in module only; no edits to existing groom files), `pipeline/charsys/tests/test_hair_curves*.py`, `docs/evaluation/characters/T-141/**` | — | — |
 | T-156 | E | t-156-claude-eye-targets | `pipeline/charsys/face_v3/lids.py`, `pipeline/charsys/tests/test_face_r5.py`, `docs/evaluation/characters/T-156/**` | T-137 | — |
 | T-157 | E | t-157-claude-grasp-options | `engine/scene/interaction.cpp`, `engine/scene/interaction.h`, `engine/anim/animation.cpp`, `engine/anim/animation.h`, `content/hand_shapes/**`, `tests/test_grasp_contact.cpp`, `docs/evaluation/animation/T-157/**` | — | — |
