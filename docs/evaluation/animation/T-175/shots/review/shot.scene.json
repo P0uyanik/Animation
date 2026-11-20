@@ -1,0 +1,826 @@
+{
+ "format": "plush.scene",
+ "version": 1,
+ "name": "T-175 review: CMU mocap walk / sit / stand on boy + auburn girl",
+ "frameRate": [
+  24,
+  1
+ ],
+ "frameStart": 1,
+ "frameEnd": 230,
+ "animPrinciples": false,
+ "render": {
+  "width": 960,
+  "height": 540,
+  "spp": 32,
+  "maxDepth": 8,
+  "exposureEV": 0.3,
+  "denoise": true,
+  "denoiseBlend": 0.85,
+  "clamp": 12
+ },
+ "camera": {
+  "position": [
+   0.0,
+   0.45,
+   3.4
+  ],
+  "target": [
+   0.0,
+   0.27,
+   0.0
+  ],
+  "focalMm": 32,
+  "fStop": 0,
+  "focusDistance": -1
+ },
+ "materials": [
+  {
+   "name": "floor_mat",
+   "type": "standard",
+   "baseColor": [
+    0.46,
+    0.44,
+    0.42
+   ],
+   "roughness": 0.85,
+   "specular": 0.3
+  },
+  {
+   "name": "wall_mat",
+   "type": "standard",
+   "baseColor": [
+    0.62,
+    0.6,
+    0.55
+   ],
+   "roughness": 0.9,
+   "specular": 0.3
+  },
+  {
+   "name": "seat_mat",
+   "type": "standard",
+   "baseColor": [
+    0.35,
+    0.5,
+    0.62
+   ],
+   "roughness": 0.7,
+   "specular": 0.3
+  },
+  {
+   "name": "stripe_mat",
+   "type": "standard",
+   "baseColor": [
+    0.2,
+    0.2,
+    0.22
+   ],
+   "roughness": 0.8,
+   "specular": 0.3
+  }
+ ],
+ "lights": [
+  {
+   "type": "rect",
+   "corner": [
+    -2.0,
+    1.0,
+    2.0
+   ],
+   "edgeU": [
+    1.2,
+    0,
+    0.6
+   ],
+   "edgeV": [
+    0,
+    1.4,
+    0
+   ],
+   "color": [
+    1.0,
+    0.95,
+    0.88
+   ],
+   "intensity": 3.0
+  },
+  {
+   "type": "sun",
+   "direction": [
+    0.3,
+    -0.6,
+    -0.7
+   ],
+   "angleDeg": 4,
+   "color": [
+    1.0,
+    0.92,
+    0.82
+   ],
+   "intensity": 1.4
+  },
+  {
+   "type": "sky",
+   "color": [
+    0.6,
+    0.62,
+    0.66
+   ],
+   "intensity": 0.4
+  }
+ ],
+ "objects": [
+  {
+   "name": "floor",
+   "kind": "box",
+   "min": [
+    -5,
+    -0.05,
+    -3
+   ],
+   "max": [
+    5,
+    0,
+    4
+   ],
+   "material": "floor_mat"
+  },
+  {
+   "name": "wall",
+   "kind": "box",
+   "min": [
+    -5,
+    0,
+    -1.6
+   ],
+   "max": [
+    5,
+    3,
+    -1.5
+   ],
+   "material": "wall_mat"
+  },
+  {
+   "name": "stripe00",
+   "kind": "box",
+   "min": [
+    -2.41,
+    0.0,
+    -1.2
+   ],
+   "max": [
+    -2.3900000000000006,
+    0.002,
+    1.0
+   ],
+   "material": "stripe_mat"
+  },
+  {
+   "name": "stripe01",
+   "kind": "box",
+   "min": [
+    -2.21,
+    0.0,
+    -1.2
+   ],
+   "max": [
+    -2.1900000000000004,
+    0.002,
+    1.0
+   ],
+   "material": "stripe_mat"
+  },
+  {
+   "name": "stripe02",
+   "kind": "box",
+   "min": [
+    -2.01,
+    0.0,
+    -1.2
+   ],
+   "max": [
+    -1.99,
+    0.002,
+    1.0
+   ],
+   "material": "stripe_mat"
+  },
+  {
+   "name": "stripe03",
+   "kind": "box",
+   "min": [
+    -1.81,
+    0.0,
+    -1.2
+   ],
+   "max": [
+    -1.79,
+    0.002,
+    1.0
+   ],
+   "material": "stripe_mat"
+  },
+  {
+   "name": "stripe04",
+   "kind": "box",
+   "min": [
+    -1.61,
+    0.0,
+    -1.2
+   ],
+   "max": [
+    -1.59,
+    0.002,
+    1.0
+   ],
+   "material": "stripe_mat"
+  },
+  {
+   "name": "stripe05",
+   "kind": "box",
+   "min": [
+    -1.4100000000000001,
+    0.0,
+    -1.2
+   ],
+   "max": [
+    -1.3900000000000001,
+    0.002,
+    1.0
+   ],
+   "material": "stripe_mat"
+  },
+  {
+   "name": "stripe06",
+   "kind": "box",
+   "min": [
+    -1.2100000000000002,
+    0.0,
+    -1.2
+   ],
+   "max": [
+    -1.1900000000000002,
+    0.002,
+    1.0
+   ],
+   "material": "stripe_mat"
+  },
+  {
+   "name": "stripe07",
+   "kind": "box",
+   "min": [
+    -1.01,
+    0.0,
+    -1.2
+   ],
+   "max": [
+    -0.99,
+    0.002,
+    1.0
+   ],
+   "material": "stripe_mat"
+  },
+  {
+   "name": "stripe08",
+   "kind": "box",
+   "min": [
+    -0.81,
+    0.0,
+    -1.2
+   ],
+   "max": [
+    -0.79,
+    0.002,
+    1.0
+   ],
+   "material": "stripe_mat"
+  },
+  {
+   "name": "stripe09",
+   "kind": "box",
+   "min": [
+    -0.6100000000000001,
+    0.0,
+    -1.2
+   ],
+   "max": [
+    -0.5900000000000001,
+    0.002,
+    1.0
+   ],
+   "material": "stripe_mat"
+  },
+  {
+   "name": "stripe10",
+   "kind": "box",
+   "min": [
+    -0.41000000000000003,
+    0.0,
+    -1.2
+   ],
+   "max": [
+    -0.39,
+    0.002,
+    1.0
+   ],
+   "material": "stripe_mat"
+  },
+  {
+   "name": "stripe11",
+   "kind": "box",
+   "min": [
+    -0.21000000000000002,
+    0.0,
+    -1.2
+   ],
+   "max": [
+    -0.19,
+    0.002,
+    1.0
+   ],
+   "material": "stripe_mat"
+  },
+  {
+   "name": "stripe12",
+   "kind": "box",
+   "min": [
+    -0.01,
+    0.0,
+    -1.2
+   ],
+   "max": [
+    0.01,
+    0.002,
+    1.0
+   ],
+   "material": "stripe_mat"
+  },
+  {
+   "name": "stripe13",
+   "kind": "box",
+   "min": [
+    0.19,
+    0.0,
+    -1.2
+   ],
+   "max": [
+    0.21000000000000002,
+    0.002,
+    1.0
+   ],
+   "material": "stripe_mat"
+  },
+  {
+   "name": "stripe14",
+   "kind": "box",
+   "min": [
+    0.39,
+    0.0,
+    -1.2
+   ],
+   "max": [
+    0.41000000000000003,
+    0.002,
+    1.0
+   ],
+   "material": "stripe_mat"
+  },
+  {
+   "name": "stripe15",
+   "kind": "box",
+   "min": [
+    0.5900000000000001,
+    0.0,
+    -1.2
+   ],
+   "max": [
+    0.6100000000000001,
+    0.002,
+    1.0
+   ],
+   "material": "stripe_mat"
+  },
+  {
+   "name": "stripe16",
+   "kind": "box",
+   "min": [
+    0.79,
+    0.0,
+    -1.2
+   ],
+   "max": [
+    0.81,
+    0.002,
+    1.0
+   ],
+   "material": "stripe_mat"
+  },
+  {
+   "name": "stripe17",
+   "kind": "box",
+   "min": [
+    0.99,
+    0.0,
+    -1.2
+   ],
+   "max": [
+    1.01,
+    0.002,
+    1.0
+   ],
+   "material": "stripe_mat"
+  },
+  {
+   "name": "stripe18",
+   "kind": "box",
+   "min": [
+    1.1900000000000002,
+    0.0,
+    -1.2
+   ],
+   "max": [
+    1.2100000000000002,
+    0.002,
+    1.0
+   ],
+   "material": "stripe_mat"
+  },
+  {
+   "name": "stripe19",
+   "kind": "box",
+   "min": [
+    1.3900000000000001,
+    0.0,
+    -1.2
+   ],
+   "max": [
+    1.4100000000000001,
+    0.002,
+    1.0
+   ],
+   "material": "stripe_mat"
+  },
+  {
+   "name": "stripe20",
+   "kind": "box",
+   "min": [
+    1.59,
+    0.0,
+    -1.2
+   ],
+   "max": [
+    1.61,
+    0.002,
+    1.0
+   ],
+   "material": "stripe_mat"
+  },
+  {
+   "name": "stripe21",
+   "kind": "box",
+   "min": [
+    1.79,
+    0.0,
+    -1.2
+   ],
+   "max": [
+    1.81,
+    0.002,
+    1.0
+   ],
+   "material": "stripe_mat"
+  },
+  {
+   "name": "stripe22",
+   "kind": "box",
+   "min": [
+    1.99,
+    0.0,
+    -1.2
+   ],
+   "max": [
+    2.01,
+    0.002,
+    1.0
+   ],
+   "material": "stripe_mat"
+  },
+  {
+   "name": "stripe23",
+   "kind": "box",
+   "min": [
+    2.1900000000000004,
+    0.0,
+    -1.2
+   ],
+   "max": [
+    2.21,
+    0.002,
+    1.0
+   ],
+   "material": "stripe_mat"
+  },
+  {
+   "name": "stripe24",
+   "kind": "box",
+   "min": [
+    2.3900000000000006,
+    0.0,
+    -1.2
+   ],
+   "max": [
+    2.41,
+    0.002,
+    1.0
+   ],
+   "material": "stripe_mat"
+  },
+  {
+   "name": "stool_boy",
+   "kind": "box",
+   "min": [
+    -0.5380041404958656,
+    0.0,
+    -0.17485722296604206
+   ],
+   "max": [
+    -0.3680041404958656,
+    0.1081,
+    -0.00485722296604206
+   ],
+   "material": "seat_mat"
+  },
+  {
+   "name": "stool_girl",
+   "kind": "box",
+   "min": [
+    0.4275734448152973,
+    0.0,
+    -0.14117316452448478
+   ],
+   "max": [
+    0.5975734448152973,
+    0.1011,
+    0.02882683547551524
+   ],
+   "material": "seat_mat"
+  }
+ ],
+ "characters": [
+  {
+   "name": "boy",
+   "asset": "(set by run_shot)",
+   "position": [
+    -1.25,
+    0.0,
+    0.35
+   ],
+   "yawDeg": 90,
+   "life": false,
+   "autoIdle": false
+  },
+  {
+   "name": "girl",
+   "asset": "(set by run_shot)",
+   "position": [
+    -1.05,
+    0.0,
+    -0.45
+   ],
+   "yawDeg": 90,
+   "life": false,
+   "autoIdle": false
+  }
+ ],
+ "actions": [
+  {
+   "type": "clip",
+   "character": "boy",
+   "clip": "mocap/cmu_walk",
+   "start": 1,
+   "end": 100,
+   "blendIn": 0,
+   "blendOut": 0
+  },
+  {
+   "type": "clip",
+   "character": "boy",
+   "clip": "idle_relaxed",
+   "start": 101,
+   "end": 110,
+   "blendIn": 0,
+   "blendOut": 6
+  },
+  {
+   "type": "clip",
+   "character": "boy",
+   "clip": "mocap/cmu_sit_down",
+   "start": 104,
+   "end": 172,
+   "blendIn": 6,
+   "blendOut": 0
+  },
+  {
+   "type": "clip",
+   "character": "boy",
+   "clip": "mocap/cmu_stand_up",
+   "start": 166,
+   "end": 231,
+   "blendIn": 6,
+   "blendOut": 0
+  },
+  {
+   "type": "clip",
+   "character": "girl",
+   "clip": "mocap/cmu_walk",
+   "start": 1,
+   "end": 100,
+   "blendIn": 0,
+   "blendOut": 0
+  },
+  {
+   "type": "clip",
+   "character": "girl",
+   "clip": "idle_relaxed",
+   "start": 101,
+   "end": 110,
+   "blendIn": 0,
+   "blendOut": 6
+  },
+  {
+   "type": "clip",
+   "character": "girl",
+   "clip": "mocap/cmu_sit_down",
+   "start": 104,
+   "end": 172,
+   "blendIn": 6,
+   "blendOut": 0
+  },
+  {
+   "type": "clip",
+   "character": "girl",
+   "clip": "mocap/cmu_stand_up",
+   "start": 166,
+   "end": 231,
+   "blendIn": 6,
+   "blendOut": 0
+  }
+ ],
+ "animation": {
+  "boy.position": [
+   [
+    1,
+    [
+     -1.25,
+     0.0,
+     0.35
+    ],
+    "step"
+   ],
+   [
+    101,
+    [
+     -0.45,
+     0.0,
+     0.0
+    ],
+    "step"
+   ]
+  ],
+  "boy.yaw": [
+   [
+    1,
+    [
+     90,
+     90,
+     90
+    ],
+    "step"
+   ],
+   [
+    101,
+    [
+     25.0,
+     25.0,
+     25.0
+    ],
+    "step"
+   ]
+  ],
+  "girl.position": [
+   [
+    1,
+    [
+     -1.05,
+     0.0,
+     -0.45
+    ],
+    "step"
+   ],
+   [
+    101,
+    [
+     0.45,
+     0.0,
+     0.0
+    ],
+    "step"
+   ]
+  ],
+  "girl.yaw": [
+   [
+    1,
+    [
+     90,
+     90,
+     90
+    ],
+    "step"
+   ],
+   [
+    101,
+    [
+     -25.0,
+     -25.0,
+     -25.0
+    ],
+    "step"
+   ]
+  ],
+  "camera.position": [
+   [
+    1,
+    [
+     0.0,
+     0.45,
+     3.4
+    ],
+    "step"
+   ],
+   [
+    101,
+    [
+     0.55,
+     0.5,
+     2.0
+    ],
+    "step"
+   ]
+  ],
+  "camera.target": [
+   [
+    1,
+    [
+     0.0,
+     0.27,
+     0.0
+    ],
+    "step"
+   ],
+   [
+    101,
+    [
+     0.0,
+     0.27,
+     -0.05
+    ],
+    "step"
+   ]
+  ]
+ },
+ "production": {
+  "cast": {
+   "boy": {
+    "character_id": "boy_yellow_hoodie",
+    "version": "current"
+   },
+   "girl": {
+    "character_id": "girl_auburn_bun_glasses",
+    "version": "current"
+   }
+  },
+  "profile": "pipeline/charsys/rig_profiles/humanoid_rigify.json",
+  "render": {
+   "resolution": [
+    960,
+    540
+   ],
+   "samples": 16,
+   "light_scale": 1.0
+  }
+ },
+ "x_t175": {
+  "walk_frames": [
+   1,
+   96
+  ],
+  "sit_frames": [
+   104,
+   230
+  ],
+  "stand_start": 166,
+  "foot_lock": true,
+  "sit_clip_scene_frames": 27.3
+ }
+}

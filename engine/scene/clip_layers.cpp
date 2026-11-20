@@ -4,12 +4,16 @@
 // life layer -> constraints (IK, hand pose, look) -> clip finger tracks (unless a hand track owns that hand).
 // Automatic base idle (T-027): a humanoid character with no base clip action plays the shared "idle_relaxed" clip as
 // its base layer (scene character "autoIdle": false opts out), so no character stands frozen in its default pose.
+// Locomotion style (T-175, anim/foot_lock.h): a clip action (tier 2) whose clip carries a "style" block (the mocap
+// clips in content/clips/mocap) gets the chibi filter (lean, arm swing, stride, tempo) on its samples and, with
+// "foot_lock", a two-bone leg IK pin on its foot_plant contacts. Clips without the block are untouched.
 #include <algorithm>
 #include <filesystem>
 #include <format>
 #include <functional>
 #include <map>
 
+#include "anim/foot_lock.h"
 #include "scene/emotion.h"
 #include "scene/scene.h"
 
@@ -72,10 +76,15 @@ double SceneEvaluator::ClipLayer::clipFrame(double f, double sceneFps) const {
 // one-shot clip that finishes early holds its last frame until the layer blends out. Tempo 1 = the plain clock.
 double SceneEvaluator::layerClipFrame(size_t c, const ClipLayer& L, double frame) const {
   const double f = L.clipFrame(frame, scene_.rate.fps());
-  if (L.base || L.tier == 0 || c >= persona_.size() || !persona_[c].profile) return f;
-  const PersonaSetup& ps = persona_[c];
-  double tempo = ps.tempo;
-  if (ps.speedLimit && L.speed > 0) tempo = double(ps.speedLimit->clamp(float(L.speed * tempo))) / L.speed;
+  // Locomotion style tempo (T-175): clip actions only; 1 for every clip without a "style" block.
+  const double styleTempo = !L.base && L.tier == 2 && L.clip ? locomotionTempo(L.clip->raw) : 1.0;
+  double tempo = 1.0;
+  if (!(L.base || L.tier == 0 || c >= persona_.size() || !persona_[c].profile)) {
+    const PersonaSetup& ps = persona_[c];
+    tempo = ps.tempo;
+    if (ps.speedLimit && L.speed > 0) tempo = double(ps.speedLimit->clamp(float(L.speed * tempo))) / L.speed;
+  }
+  if (styleTempo != 1.0) tempo *= styleTempo;
   if (tempo == 1.0) return f;
   const double t = f * tempo;
   if (L.clip->loop) return t;
@@ -227,7 +236,10 @@ void SceneEvaluator::applyClips(size_t c, double frame, Pose& pose, float& yawOf
     const ClipLayer& L = *layer;
     const double env = L.envelope(frame);
     if (env <= 0) continue;
-    const ClipSample s = sampleClip(*L.clip, layerClipFrame(c, L, frame), L.mirror);
+    const double clipFrame = layerClipFrame(c, L, frame);
+    ClipSample s = sampleClip(*L.clip, clipFrame, L.mirror);
+    const LocomotionStyle style = !L.base && L.tier == 2 ? locomotionStyle(L.clip->raw) : LocomotionStyle{};
+    if (style.enabled) applyLocomotionStyle(style, s.local, s.root, L.mirror);
     if (L.base) {
       // Generated action motion (walk arm swing, reach lean) is kept as a change relative to the default pose.
       std::vector<std::pair<int, quat>> deltas;
@@ -285,10 +297,122 @@ void SceneEvaluator::applyClips(size_t c, double frame, Pose& pose, float& yawOf
     }
     applyClipSample(sk, L.binding, s, pose, weightOf);
     if (L.principles) applyBreakdowns(c, L, frame, pose);
+    const vec3 rootUnder = pose.rootOffset;
+    const float wr = float((L.principles ? L.envelopeRank(frame, 0) : env) * (1 - walk));
+    // Foot-lock (T-175), part 1: the ground offset. Root motion is in leg lengths, so on a character whose leg and
+    // hip proportions differ from the source the planted ankles end a little above or below their rest height. The
+    // clip's root is shifted vertically so that every plant begins with its ankle at the rest height: the offset a
+    // plant needs (rest ankle height - ankle height where its pin is taken) is keyed at that clip frame and
+    // interpolated linearly between plants (periodic for a loop, held before the first and after the last).
+    std::vector<FootPlant> plants;
+    auto footBone = [&](const std::string& role) {
+      auto ri = L.binding.roleIndex.find(role);
+      return ri == L.binding.roleIndex.end() ? -1 : L.binding.roles[size_t(ri->second)].bone;
+    };
+    std::vector<std::pair<double, float>> groundKeys;  // (clip frame, vertical offset in metres)
+    if (style.footLock && L.clip->hasRoot()) {
+      plants = footPlants(L.clip->raw);
+      auto full = [&](const std::string& role) { return (isFingerRole(role) || !inMask(*L.clip, role, L.mirror)) ? 0.0f : 1.0f; };
+      for (const FootPlant& p : plants) {
+        const int foot = footBone(L.mirror ? mirrorRole(*L.clip, p.role) : p.role);
+        if (foot < 0) continue;
+        const double at0 = p.a <= 0 ? 0.0 : p.a + std::min(style.footEaseIn, p.b - p.a);
+        ClipSample s0 = sampleClip(*L.clip, at0, L.mirror);
+        applyLocomotionStyle(style, s0.local, s0.root, L.mirror);
+        Pose at = pose;
+        applyClipSample(sk, L.binding, s0, at, full);
+        at.rootOffset = s0.root * L.binding.legLength;
+        groundKeys.push_back({at0, sk.bones[size_t(foot)].head.y - boneGlobals(sk, at, mat4(1))[size_t(foot)][3].y});
+      }
+      std::sort(groundKeys.begin(), groundKeys.end());
+      std::vector<std::pair<double, float>> merged;  // plants that begin together share one key (their mean)
+      for (size_t i = 0; i < groundKeys.size();) {
+        size_t j = i;
+        float sum = 0;
+        for (; j < groundKeys.size() && groundKeys[j].first - groundKeys[i].first < 1e-6; ++j) sum += groundKeys[j].second;
+        merged.push_back({groundKeys[i].first, sum / float(j - i)});
+        i = j;
+      }
+      groundKeys = std::move(merged);
+    }
+    auto groundAt = [&](double cf) {
+      if (groundKeys.empty()) return vec3(0);
+      const double N = std::max(1, L.clip->frameCount);
+      const size_t n = groundKeys.size();
+      if (L.clip->loop) {
+        cf -= std::floor(cf / N) * N;
+        for (size_t i = 0; i < n; ++i) {  // segment from key i to the next one (the last wraps to the first + N)
+          const double t0 = groundKeys[i].first, t1 = i + 1 < n ? groundKeys[i + 1].first : groundKeys[0].first + N;
+          const float v1 = groundKeys[(i + 1) % n].second;
+          const double x = cf >= t0 ? cf : cf + N;
+          if (x >= t0 && x <= t1) return vec3(0, glm::mix(groundKeys[i].second, v1, float(t1 > t0 ? (x - t0) / (t1 - t0) : 0.0)), 0);
+        }
+        return vec3(0, groundKeys[0].second, 0);
+      }
+      if (cf <= groundKeys.front().first) return vec3(0, groundKeys.front().second, 0);
+      for (size_t i = 0; i + 1 < n; ++i)
+        if (cf <= groundKeys[i + 1].first) {
+          const double t0 = groundKeys[i].first, t1 = groundKeys[i + 1].first;
+          return vec3(0, glm::mix(groundKeys[i].second, groundKeys[i + 1].second, float(t1 > t0 ? (cf - t0) / (t1 - t0) : 1.0)), 0);
+        }
+      return vec3(0, groundKeys.back().second, 0);
+    };
+    const vec3 ground = groundAt(clipFrame);
     if (L.clip->hasRoot() || L.clip->hasHeading()) {
-      const float wr = float((L.principles ? L.envelopeRank(frame, 0) : env) * (1 - walk));
-      pose.rootOffset = glm::mix(pose.rootOffset, s.root * L.binding.legLength, wr);
+      pose.rootOffset = glm::mix(pose.rootOffset, s.root * L.binding.legLength + ground, wr);
       yawOffset = glm::mix(yawOffset, s.heading, wr);
+    }
+    if (style.footLock) {
+      // Part 2: while a foot_plant contact holds a foot, its ankle stays where it was when the plant began (this
+      // layer's pose at that clip frame, root motion included; character space, so the character's own scene
+      // placement is assumed to rest during a plant). Two-bone leg IK; the foot keeps its orientation.
+      if (plants.empty()) plants = footPlants(L.clip->raw);
+      struct Pin {
+        int foot;
+        vec3 target;
+        float weight;
+      };
+      std::vector<Pin> pins;
+      for (const char* side : {".L", ".R"}) {
+        const std::string role = std::string("foot") + side;
+        const int foot = footBone(role);
+        if (foot < 0) continue;
+        const PlantState ps = plantAt(plants, L.mirror ? mirrorRole(*L.clip, role) : role, clipFrame, L.clip->frameCount,
+                                      L.clip->loop, style.footRelease, style.footEaseIn, style.footLead);
+        const float w = ps.weight * weightOf(std::string("shin") + side);
+        if (!ps.active || w <= 0) continue;
+        ClipSample s0 = sampleClip(*L.clip, ps.start, L.mirror);
+        applyLocomotionStyle(style, s0.local, s0.root, L.mirror);
+        Pose at = pose;
+        applyClipSample(sk, L.binding, s0, at, weightOf);
+        at.rootOffset = L.clip->hasRoot() ? glm::mix(rootUnder, s0.root * L.binding.legLength + groundAt(ps.start), wr) : pose.rootOffset;
+        pins.push_back({foot, vec3(boneGlobals(sk, at, mat4(1))[size_t(foot)][3]), w});
+      }
+      // While a pin lets go (or eases in) its target moves between the pinned point and the clip's own ankle. A pinned
+      // ankle must also stay within the leg's reach: late in a stance the short leg of a chibi runs out before the
+      // source's does, so the pelvis drops by what the furthest foot needs.
+      if (!pins.empty()) {
+        const auto G = boneGlobals(sk, pose, mat4(1));
+        float drop = 0;
+        for (Pin& p : pins) {
+          p.target = glm::mix(vec3(G[size_t(p.foot)][3]), p.target, p.weight);
+          drop = std::max(drop, footReachDrop(sk, G, p.foot, p.target));
+        }
+        pose.rootOffset.y -= drop;
+        for (const Pin& p : pins) pinFoot(sk, pose, p.foot, p.target, 1.0f);
+      }
+      // The floor: no ankle goes under its rest height (a swinging foot while the pelvis is lowered for the other).
+      if (L.clip->hasRoot()) {
+        const auto G = boneGlobals(sk, pose, mat4(1));
+        for (const char* side : {".L", ".R"}) {
+          const int foot = footBone(std::string("foot") + side);
+          if (foot < 0) continue;
+          const vec3 p(G[size_t(foot)][3]);
+          const float floorY = sk.bones[size_t(foot)].head.y;
+          const float w = weightOf(std::string("shin") + side);
+          if (p.y < floorY - 1e-5f && w > 0) pinFoot(sk, pose, foot, vec3(p.x, glm::mix(p.y, floorY, w), p.z), 1.0f);
+        }
+      }
     }
   }
 }
