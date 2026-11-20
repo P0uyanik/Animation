@@ -80,6 +80,9 @@ Visual comparisons: write a review recipe, run its cheap preview, then one stric
   python3 pipeline/production/run_shot.py --shot <shot> --blender <blender> [--frames A-B] [--blend-only]
 
 == Working rules ==
+- Use the shared kit, not per-task scripts: `tools/run_logged.py` (full log + tail), `tools/wait_gate.py <run-id>`
+  (one background wait, GREEN/RED), `tools/review/shot_sheet.py` (shot before/after sheets) and
+  `tools/render_queue.py run -- <render>` (one render at a time).
 - One agent only: no subagents, parallel or background agents unless the task explicitly allows them.
 - Inspect only the files the task needs; reuse previous results; avoid repeated builds, tests and renders.
 - Do not sacrifice essential testing to save tokens.
@@ -107,6 +110,9 @@ Visual comparisons: write a review recipe, run its cheap preview, then one stric
     `ledger: build N · render N · tests N · ci N · wait N (min)`.
 
 == Delivering the report ==
+Before READY, run `python3 tools/ready.py --task T-NNN --input <SHA> --evidence <path> --ledger "..." --cost "$X / ctx Yk"`
+(cost from your own get_session usage). It checks push at HEAD, claims, write-set, new-test registration and doc links,
+and prints the one READY line; send that line once. Fix any NOT READY reason first.
 Report to the Supervisor with send_message to the Supervisor session id given in your task prompt. Fallback (if
 send_message is refused): append one line to RELAY_LOG.md on branch relay-channel and push it (fetch the branch by
 name first, never rewrite it). Line format, both channels:
