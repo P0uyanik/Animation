@@ -1,6 +1,6 @@
 {
  "schema": "plush-studio.owner-approved-candidates/1",
- "note": "Named owner-approved CANDIDATES exempt from the 'no spec pins groom/4' (test_hair_r5) and 'no spec sets body.hands' (test_hands_r2) guards. Only exact (character, version, feature) matches are exempt; current versions never are. Checked by test_guard_allowlist.py.",
+ "note": "Named owner-approved CANDIDATES exempt from the 'no spec pins groom/4' (test_hair_r5) and 'no spec sets body.hands' (test_hands_r2) and 'no spec opts into lash_curve' (test_face_r5) guards. Only exact (character, version, feature) matches are exempt; current versions never are. Checked by test_guard_allowlist.py. An entry for a CURRENT version is valid only with a named current_decision (owner 2026-11-20 ~08:20Z, option 1).",
  "entries": [
   {
    "character": "boy_yellow_hoodie",
@@ -8,7 +8,8 @@
    "feature": "groom/4",
    "owner_decision": "docs/process/OWNER_DECISIONS.md 2026-11-20 ~06:40Z item 3",
    "date": "2026-11-20",
-   "source": "T-132 branch t-132-claude-versions f28fe2a"
+   "source": "T-132 branch t-132-claude-versions f28fe2a",
+   "current_decision": "docs/process/OWNER_DECISIONS.md 2026-11-20 ~08:20Z item 1 (switch approved) + guard option 1 (~08:20Z+)"
   },
   {
    "character": "boy_yellow_hoodie",
@@ -16,7 +17,8 @@
    "feature": "body.hands",
    "owner_decision": "docs/process/OWNER_DECISIONS.md 2026-11-20 ~06:40Z item 3",
    "date": "2026-11-20",
-   "source": "T-132 branch t-132-claude-versions f28fe2a"
+   "source": "T-132 branch t-132-claude-versions f28fe2a",
+   "current_decision": "docs/process/OWNER_DECISIONS.md 2026-11-20 ~08:20Z item 1 (switch approved) + guard option 1 (~08:20Z+)"
   },
   {
    "character": "girl_auburn_bun_glasses",
@@ -24,7 +26,8 @@
    "feature": "groom/4",
    "owner_decision": "docs/process/OWNER_DECISIONS.md 2026-11-20 ~06:40Z item 3",
    "date": "2026-11-20",
-   "source": "T-132 branch t-132-claude-versions f28fe2a"
+   "source": "T-132 branch t-132-claude-versions f28fe2a",
+   "current_decision": "docs/process/OWNER_DECISIONS.md 2026-11-20 ~08:20Z item 1 (switch approved) + guard option 1 (~08:20Z+)"
   },
   {
    "character": "girl_auburn_bun_glasses",
@@ -32,7 +35,8 @@
    "feature": "body.hands",
    "owner_decision": "docs/process/OWNER_DECISIONS.md 2026-11-20 ~06:40Z item 3",
    "date": "2026-11-20",
-   "source": "T-132 branch t-132-claude-versions f28fe2a"
+   "source": "T-132 branch t-132-claude-versions f28fe2a",
+   "current_decision": "docs/process/OWNER_DECISIONS.md 2026-11-20 ~08:20Z item 1 (switch approved) + guard option 1 (~08:20Z+)"
   },
   {
    "character": "girl_white_hair_blue_dress",
@@ -49,6 +53,14 @@
    "owner_decision": "docs/process/OWNER_DECISIONS.md 2026-11-20 ~06:40Z item 3",
    "date": "2026-11-20",
    "source": "spec/candidates/T-126a + T-126 hair and hands_r2 overrides (T-155)"
+  },
+  {
+   "character": "girl_white_hair_blue_dress",
+   "version": "0.1.0",
+   "feature": "lash_curve",
+   "owner_decision": "docs/process/OWNER_DECISIONS.md 2026-11-20 ~07:00Z item 1 (T-137 F1b approved)",
+   "date": "2026-11-20",
+   "source": "T-137 F1b eyes override (closed_fit.lash_curve), composed by T-155"
   }
  ]
 }

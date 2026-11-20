@@ -1,0 +1,68 @@
+{
+ "characters": {
+  "boy_2.2.0": {
+   "changed_by_run": {},
+   "changed_objects": [],
+   "fingerprints": [
+    "boy_2.2.0_1/fingerprint_0.1mm.json",
+    "boy_2.2.0_2/fingerprint_0.1mm.json",
+    "boy_2.2.0_3/fingerprint_0.1mm.json",
+    "boy_2.2.0_4/fingerprint_0.1mm.json"
+   ],
+   "pass": true,
+   "runs": 4,
+   "spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.2.0.spec.json",
+   "strict_changed_by_run": {},
+   "strict_changed_objects": [],
+   "strict_fingerprints": [
+    "boy_2.2.0_1/fingerprint_0.01mm.json",
+    "boy_2.2.0_2/fingerprint_0.01mm.json",
+    "boy_2.2.0_3/fingerprint_0.01mm.json",
+    "boy_2.2.0_4/fingerprint_0.01mm.json"
+   ]
+  },
+  "girl_0.13.0": {
+   "changed_by_run": {},
+   "changed_objects": [],
+   "fingerprints": [
+    "girl_0.13.0_1/fingerprint_0.1mm.json",
+    "girl_0.13.0_2/fingerprint_0.1mm.json",
+    "girl_0.13.0_3/fingerprint_0.1mm.json",
+    "girl_0.13.0_4/fingerprint_0.1mm.json"
+   ],
+   "pass": true,
+   "runs": 4,
+   "spec": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.13.0.spec.json",
+   "strict_changed_by_run": {},
+   "strict_changed_objects": [],
+   "strict_fingerprints": [
+    "girl_0.13.0_1/fingerprint_0.01mm.json",
+    "girl_0.13.0_2/fingerprint_0.01mm.json",
+    "girl_0.13.0_3/fingerprint_0.01mm.json",
+    "girl_0.13.0_4/fingerprint_0.01mm.json"
+   ]
+  },
+  "third_0.1.0": {
+   "changed_by_run": {},
+   "changed_objects": [],
+   "fingerprints": [
+    "third_0.1.0_1/fingerprint_0.1mm.json",
+    "third_0.1.0_2/fingerprint_0.1mm.json",
+    "third_0.1.0_3/fingerprint_0.1mm.json",
+    "third_0.1.0_4/fingerprint_0.1mm.json"
+   ],
+   "pass": true,
+   "runs": 4,
+   "spec": "assets/characters/girl_white_hair_blue_dress/spec/candidates/T-126a/girl_white_hair_blue_dress.0.1.0.spec.json",
+   "strict_changed_by_run": {},
+   "strict_changed_objects": [],
+   "strict_fingerprints": [
+    "third_0.1.0_1/fingerprint_0.01mm.json",
+    "third_0.1.0_2/fingerprint_0.01mm.json",
+    "third_0.1.0_3/fingerprint_0.01mm.json",
+    "third_0.1.0_4/fingerprint_0.01mm.json"
+   ]
+  }
+ },
+ "pass": true
+}

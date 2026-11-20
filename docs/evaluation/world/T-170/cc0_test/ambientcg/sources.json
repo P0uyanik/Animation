@@ -1,0 +1,469 @@
+{
+ "downloaded": "2026-11-20",
+ "files": {
+  "acg_Carpet014/diff.jpg": {
+   "asset": "Carpet014",
+   "bytes": 1326695,
+   "license": "CC0 1.0",
+   "resolved_url": "https://acg-download.struffelproductions.com/file/ambientCG-Web/download/Carpet014_h9MzfPJU/Carpet014_1K-JPG.zip",
+   "sha256": "1c755cf63c1b21f73e722fac05bd1bfc8644650730723d0d39e6626e59b2d6e2",
+   "source": "ambientcg",
+   "url": "https://ambientcg.com/get?file=Carpet014_1K-JPG.zip",
+   "zip_bytes": 8853242,
+   "zip_member": "Carpet014_1K-JPG_Color.jpg",
+   "zip_sha256": "d54faf570621b25ba54969759f89a7406f945faa986ca96129773cb9a444964c"
+  },
+  "acg_Carpet014/nor_gl.jpg": {
+   "asset": "Carpet014",
+   "bytes": 2442602,
+   "license": "CC0 1.0",
+   "resolved_url": "https://acg-download.struffelproductions.com/file/ambientCG-Web/download/Carpet014_h9MzfPJU/Carpet014_1K-JPG.zip",
+   "sha256": "cda4e152936b8ecb5665dfbb5456996c7d0aeef1a8c905efff90618019d72926",
+   "source": "ambientcg",
+   "url": "https://ambientcg.com/get?file=Carpet014_1K-JPG.zip",
+   "zip_bytes": 8853242,
+   "zip_member": "Carpet014_1K-JPG_NormalGL.jpg",
+   "zip_sha256": "d54faf570621b25ba54969759f89a7406f945faa986ca96129773cb9a444964c"
+  },
+  "acg_Carpet014/rough.jpg": {
+   "asset": "Carpet014",
+   "bytes": 642470,
+   "license": "CC0 1.0",
+   "resolved_url": "https://acg-download.struffelproductions.com/file/ambientCG-Web/download/Carpet014_h9MzfPJU/Carpet014_1K-JPG.zip",
+   "sha256": "c15ed6a6127fa7772f8a8cd23f053216c80041325b1df90547a071ff35c1a4d6",
+   "source": "ambientcg",
+   "url": "https://ambientcg.com/get?file=Carpet014_1K-JPG.zip",
+   "zip_bytes": 8853242,
+   "zip_member": "Carpet014_1K-JPG_Roughness.jpg",
+   "zip_sha256": "d54faf570621b25ba54969759f89a7406f945faa986ca96129773cb9a444964c"
+  },
+  "acg_Carpet016/diff.jpg": {
+   "asset": "Carpet016",
+   "bytes": 1207660,
+   "license": "CC0 1.0",
+   "resolved_url": "https://acg-download.struffelproductions.com/file/ambientCG-Web/download/Carpet016_dnZavRoU/Carpet016_1K-JPG.zip",
+   "sha256": "c6fca66d1d570d27a921d7cb35b1963e83844e2b8ceec70f0193db5e99e04123",
+   "source": "ambientcg",
+   "url": "https://ambientcg.com/get?file=Carpet016_1K-JPG.zip",
+   "zip_bytes": 9371762,
+   "zip_member": "Carpet016_1K-JPG_Color.jpg",
+   "zip_sha256": "b9e67b5d42cb47cead082dedae3767ae228175c857b6b3af6fe7bd4e69237b81"
+  },
+  "acg_Carpet016/nor_gl.jpg": {
+   "asset": "Carpet016",
+   "bytes": 2179963,
+   "license": "CC0 1.0",
+   "resolved_url": "https://acg-download.struffelproductions.com/file/ambientCG-Web/download/Carpet016_dnZavRoU/Carpet016_1K-JPG.zip",
+   "sha256": "2820cad2593d1e1b58ce1fa38cb53e24be05bf935b40393c379be828a35755ea",
+   "source": "ambientcg",
+   "url": "https://ambientcg.com/get?file=Carpet016_1K-JPG.zip",
+   "zip_bytes": 9371762,
+   "zip_member": "Carpet016_1K-JPG_NormalGL.jpg",
+   "zip_sha256": "b9e67b5d42cb47cead082dedae3767ae228175c857b6b3af6fe7bd4e69237b81"
+  },
+  "acg_Carpet016/rough.jpg": {
+   "asset": "Carpet016",
+   "bytes": 686755,
+   "license": "CC0 1.0",
+   "resolved_url": "https://acg-download.struffelproductions.com/file/ambientCG-Web/download/Carpet016_dnZavRoU/Carpet016_1K-JPG.zip",
+   "sha256": "307c7984100374da53261c51dee33665049e3fc5e0e90143da1f58b040298268",
+   "source": "ambientcg",
+   "url": "https://ambientcg.com/get?file=Carpet016_1K-JPG.zip",
+   "zip_bytes": 9371762,
+   "zip_member": "Carpet016_1K-JPG_Roughness.jpg",
+   "zip_sha256": "b9e67b5d42cb47cead082dedae3767ae228175c857b6b3af6fe7bd4e69237b81"
+  },
+  "acg_Fabric030/diff.jpg": {
+   "asset": "Fabric030",
+   "bytes": 1681447,
+   "license": "CC0 1.0",
+   "resolved_url": "https://acg-download.struffelproductions.com/file/ambientCG-Web/download/Fabric030_Pu23GKtr/Fabric030_1K-JPG.zip",
+   "sha256": "6388762708722de48cdbdfb4878b9ae6d8012de5948d564006067b629f0b84ef",
+   "source": "ambientcg",
+   "url": "https://ambientcg.com/get?file=Fabric030_1K-JPG.zip",
+   "zip_bytes": 11064340,
+   "zip_member": "Fabric030_1K-JPG_Color.jpg",
+   "zip_sha256": "82d4d00ccf901cf4707c5489005945ab8574933fc60437e26c6737f0436699e0"
+  },
+  "acg_Fabric030/nor_gl.jpg": {
+   "asset": "Fabric030",
+   "bytes": 2682952,
+   "license": "CC0 1.0",
+   "resolved_url": "https://acg-download.struffelproductions.com/file/ambientCG-Web/download/Fabric030_Pu23GKtr/Fabric030_1K-JPG.zip",
+   "sha256": "c9a8f4ff15527af0b226b8a8840405f944c45a32c2e4462864d3b0136827e6e2",
+   "source": "ambientcg",
+   "url": "https://ambientcg.com/get?file=Fabric030_1K-JPG.zip",
+   "zip_bytes": 11064340,
+   "zip_member": "Fabric030_1K-JPG_NormalGL.jpg",
+   "zip_sha256": "82d4d00ccf901cf4707c5489005945ab8574933fc60437e26c6737f0436699e0"
+  },
+  "acg_Fabric030/rough.jpg": {
+   "asset": "Fabric030",
+   "bytes": 866950,
+   "license": "CC0 1.0",
+   "resolved_url": "https://acg-download.struffelproductions.com/file/ambientCG-Web/download/Fabric030_Pu23GKtr/Fabric030_1K-JPG.zip",
+   "sha256": "221bf708cb614b01ae83b856376fa79fff22dc249d8a397ab0f89dd3b7fe6da6",
+   "source": "ambientcg",
+   "url": "https://ambientcg.com/get?file=Fabric030_1K-JPG.zip",
+   "zip_bytes": 11064340,
+   "zip_member": "Fabric030_1K-JPG_Roughness.jpg",
+   "zip_sha256": "82d4d00ccf901cf4707c5489005945ab8574933fc60437e26c6737f0436699e0"
+  },
+  "acg_Fabric032/diff.jpg": {
+   "asset": "Fabric032",
+   "bytes": 1197725,
+   "license": "CC0 1.0",
+   "resolved_url": "https://acg-download.struffelproductions.com/file/ambientCG-Web/download/Fabric032_f2I8m57n/Fabric032_1K-JPG.zip",
+   "sha256": "9b8435528e63b4c7948bec000eee5067c41c5de51798a0a2c6563503306f44de",
+   "source": "ambientcg",
+   "url": "https://ambientcg.com/get?file=Fabric032_1K-JPG.zip",
+   "zip_bytes": 8884696,
+   "zip_member": "Fabric032_1K-JPG_Color.jpg",
+   "zip_sha256": "d52dff13a089a05cbf53f4790eb7059742eb76c6927f584fdaa483eb0059b6f7"
+  },
+  "acg_Fabric032/nor_gl.jpg": {
+   "asset": "Fabric032",
+   "bytes": 2524984,
+   "license": "CC0 1.0",
+   "resolved_url": "https://acg-download.struffelproductions.com/file/ambientCG-Web/download/Fabric032_f2I8m57n/Fabric032_1K-JPG.zip",
+   "sha256": "c25867f1aa79f64e62f1bab9f162713b590d1c83984b60f7c9cd14c19e6b3961",
+   "source": "ambientcg",
+   "url": "https://ambientcg.com/get?file=Fabric032_1K-JPG.zip",
+   "zip_bytes": 8884696,
+   "zip_member": "Fabric032_1K-JPG_NormalGL.jpg",
+   "zip_sha256": "d52dff13a089a05cbf53f4790eb7059742eb76c6927f584fdaa483eb0059b6f7"
+  },
+  "acg_Fabric032/rough.jpg": {
+   "asset": "Fabric032",
+   "bytes": 779512,
+   "license": "CC0 1.0",
+   "resolved_url": "https://acg-download.struffelproductions.com/file/ambientCG-Web/download/Fabric032_f2I8m57n/Fabric032_1K-JPG.zip",
+   "sha256": "3d4db8efebfd3236e42651b4690f19c686d56a11e6656b1735b30c9019444e81",
+   "source": "ambientcg",
+   "url": "https://ambientcg.com/get?file=Fabric032_1K-JPG.zip",
+   "zip_bytes": 8884696,
+   "zip_member": "Fabric032_1K-JPG_Roughness.jpg",
+   "zip_sha256": "d52dff13a089a05cbf53f4790eb7059742eb76c6927f584fdaa483eb0059b6f7"
+  },
+  "acg_Fabric036/diff.jpg": {
+   "asset": "Fabric036",
+   "bytes": 628346,
+   "license": "CC0 1.0",
+   "resolved_url": "https://acg-download.struffelproductions.com/file/ambientCG-Web/download/Fabric036_conBCXhd/Fabric036_1K-JPG.zip",
+   "sha256": "d786e4a1c229f96f781667d062817e14fdbf2ffaba81d38f4fcc04c39a0062d4",
+   "source": "ambientcg",
+   "url": "https://ambientcg.com/get?file=Fabric036_1K-JPG.zip",
+   "zip_bytes": 9644900,
+   "zip_member": "Fabric036_1K-JPG_Color.jpg",
+   "zip_sha256": "a06c291bcbf46fc0167fac74345dfe6af5e3ed3d3595644fa1067d191b5595ec"
+  },
+  "acg_Fabric036/nor_gl.jpg": {
+   "asset": "Fabric036",
+   "bytes": 2521262,
+   "license": "CC0 1.0",
+   "resolved_url": "https://acg-download.struffelproductions.com/file/ambientCG-Web/download/Fabric036_conBCXhd/Fabric036_1K-JPG.zip",
+   "sha256": "b9c2153b5f78b8d1ee0529b5d8e3174fa25accb4131e425aa18b808efede4feb",
+   "source": "ambientcg",
+   "url": "https://ambientcg.com/get?file=Fabric036_1K-JPG.zip",
+   "zip_bytes": 9644900,
+   "zip_member": "Fabric036_1K-JPG_NormalGL.jpg",
+   "zip_sha256": "a06c291bcbf46fc0167fac74345dfe6af5e3ed3d3595644fa1067d191b5595ec"
+  },
+  "acg_Fabric036/rough.jpg": {
+   "asset": "Fabric036",
+   "bytes": 710098,
+   "license": "CC0 1.0",
+   "resolved_url": "https://acg-download.struffelproductions.com/file/ambientCG-Web/download/Fabric036_conBCXhd/Fabric036_1K-JPG.zip",
+   "sha256": "9ad01f95163602e6ae63c4ced864edc9b8347936b51e3f49f89e64e868f995fd",
+   "source": "ambientcg",
+   "url": "https://ambientcg.com/get?file=Fabric036_1K-JPG.zip",
+   "zip_bytes": 9644900,
+   "zip_member": "Fabric036_1K-JPG_Roughness.jpg",
+   "zip_sha256": "a06c291bcbf46fc0167fac74345dfe6af5e3ed3d3595644fa1067d191b5595ec"
+  },
+  "acg_Fabric045/diff.jpg": {
+   "asset": "Fabric045",
+   "bytes": 1124059,
+   "license": "CC0 1.0",
+   "resolved_url": "https://acg-download.struffelproductions.com/file/ambientCG-Web/download/Fabric045_tgQDV4rv/Fabric045_1K-JPG.zip",
+   "sha256": "c262b80d58ae5ad1e87e690188f372a822ad4cdc08f59d944ea5818ac363c9d3",
+   "source": "ambientcg",
+   "url": "https://ambientcg.com/get?file=Fabric045_1K-JPG.zip",
+   "zip_bytes": 9237703,
+   "zip_member": "Fabric045_1K-JPG_Color.jpg",
+   "zip_sha256": "1e10799d505fcd239a0ae46b63e605ed8e3a243e966ea5fc795bb7cfdcbf4305"
+  },
+  "acg_Fabric045/nor_gl.jpg": {
+   "asset": "Fabric045",
+   "bytes": 2462113,
+   "license": "CC0 1.0",
+   "resolved_url": "https://acg-download.struffelproductions.com/file/ambientCG-Web/download/Fabric045_tgQDV4rv/Fabric045_1K-JPG.zip",
+   "sha256": "31649ae483d26bc8c795de1994c6ceb365212b548dd2f09f0484bb45b0b76005",
+   "source": "ambientcg",
+   "url": "https://ambientcg.com/get?file=Fabric045_1K-JPG.zip",
+   "zip_bytes": 9237703,
+   "zip_member": "Fabric045_1K-JPG_NormalGL.jpg",
+   "zip_sha256": "1e10799d505fcd239a0ae46b63e605ed8e3a243e966ea5fc795bb7cfdcbf4305"
+  },
+  "acg_Fabric045/rough.jpg": {
+   "asset": "Fabric045",
+   "bytes": 615798,
+   "license": "CC0 1.0",
+   "resolved_url": "https://acg-download.struffelproductions.com/file/ambientCG-Web/download/Fabric045_tgQDV4rv/Fabric045_1K-JPG.zip",
+   "sha256": "33f128a7adca7e9f42c9b95790ce31a5611e0ec1b831778bd4290c1fff4fddaf",
+   "source": "ambientcg",
+   "url": "https://ambientcg.com/get?file=Fabric045_1K-JPG.zip",
+   "zip_bytes": 9237703,
+   "zip_member": "Fabric045_1K-JPG_Roughness.jpg",
+   "zip_sha256": "1e10799d505fcd239a0ae46b63e605ed8e3a243e966ea5fc795bb7cfdcbf4305"
+  },
+  "hdri_lebombo/lebombo_1k.hdr": {
+   "asset": "lebombo",
+   "bytes": 1476953,
+   "license": "CC0 1.0",
+   "sha256": "a02c9615adeba91a753c3e4737c3ce7a719273df822eeaa85d24982bd43c9ecb",
+   "source": "polyhaven",
+   "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/lebombo_1k.hdr"
+  }
+ },
+ "note": "files are NOT in the repository; 1K JPG maps extracted from <id>_1K-JPG.zip; HDRI = T-170c lebombo (same SHA-256)",
+ "previewed_only": [
+  "Carpet001",
+  "Carpet003",
+  "Carpet011",
+  "Fabric001",
+  "Fabric019",
+  "Fabric031",
+  "Fabric061",
+  "Fabric067",
+  "Fabric078"
+ ],
+ "results_raw": {
+  "Carpet014": {
+   "S50": 0.052,
+   "albedo_after_hex": "#C0BBB3",
+   "display_hex": "#D9D5D0",
+   "gain_linear_rgb": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "luma_sd": 14.1,
+   "target_hex": "#A49069",
+   "texture_mean_hex": "#C0BBB3",
+   "tweak": {}
+  },
+  "Carpet016": {
+   "S50": 0.089,
+   "albedo_after_hex": "#BCB094",
+   "display_hex": "#DDD6CA",
+   "gain_linear_rgb": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "luma_sd": 9.92,
+   "target_hex": "#A49069",
+   "texture_mean_hex": "#BCB094",
+   "tweak": {}
+  },
+  "Fabric030": {
+   "S50": 0.045,
+   "albedo_after_hex": "#5E5E5E",
+   "display_hex": "#A6A29F",
+   "gain_linear_rgb": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "luma_sd": 23.04,
+   "target_hex": "#A19558",
+   "texture_mean_hex": "#5E5E5E",
+   "tweak": {}
+  },
+  "Fabric032": {
+   "S50": 0.027,
+   "albedo_after_hex": "#E5DFDE",
+   "display_hex": "#E1DDDA",
+   "gain_linear_rgb": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "luma_sd": 2.2,
+   "target_hex": "#A19558",
+   "texture_mean_hex": "#E5DFDE",
+   "tweak": {}
+  },
+  "Fabric036": {
+   "S50": 0.023,
+   "albedo_after_hex": "#BABABA",
+   "display_hex": "#D9D7D4",
+   "gain_linear_rgb": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "luma_sd": 4.27,
+   "target_hex": "#A19558",
+   "texture_mean_hex": "#BABABA",
+   "tweak": {}
+  },
+  "Fabric045": {
+   "S50": 0.023,
+   "albedo_after_hex": "#C5C4C2",
+   "display_hex": "#DFDDD9",
+   "gain_linear_rgb": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "luma_sd": 6.09,
+   "target_hex": "#A49069",
+   "texture_mean_hex": "#C5C4C2",
+   "tweak": {}
+  }
+ },
+ "results_tweak": {
+  "Carpet014": {
+   "S50": 0.242,
+   "albedo_after_hex": "#705B2C",
+   "display_hex": "#B3A289",
+   "gain_linear_rgb": [
+    0.307,
+    0.212,
+    0.056
+   ],
+   "luma_sd": 40.06,
+   "target_hex": "#A49069",
+   "texture_mean_hex": "#C0BBB3",
+   "tweak": {
+    "contrast": 0.6,
+    "normal": 2.0,
+    "rough_add": 0.2,
+    "scale": 1.2,
+    "sheen": 0.15
+   }
+  },
+  "Carpet016": {
+   "S50": 0.253,
+   "albedo_after_hex": "#665325",
+   "display_hex": "#B7A489",
+   "gain_linear_rgb": [
+    0.266,
+    0.198,
+    0.062
+   ],
+   "luma_sd": 34.78,
+   "target_hex": "#A49069",
+   "texture_mean_hex": "#BCB094",
+   "tweak": {
+    "contrast": 0.5,
+    "normal": 3.0,
+    "rough_add": 0.2,
+    "scale": 0.5,
+    "sheen": 0.15
+   }
+  },
+  "Fabric030": {
+   "S50": 0.35,
+   "albedo_after_hex": "#605A1C",
+   "display_hex": "#A19469",
+   "gain_linear_rgb": [
+    1.042,
+    0.917,
+    0.104
+   ],
+   "luma_sd": 28.34,
+   "target_hex": "#A19558",
+   "texture_mean_hex": "#5E5E5E",
+   "tweak": {
+    "contrast": 0.6,
+    "normal": 2.0,
+    "rough_add": 0.2,
+    "scale": 1.5,
+    "sheen": 0.1
+   }
+  },
+  "Fabric030_coral": {
+   "S50": 0.446,
+   "albedo_after_hex": "#8B3620",
+   "display_hex": "#C37D6C",
+   "gain_linear_rgb": [
+    2.286,
+    0.333,
+    0.128
+   ],
+   "luma_sd": 31.8,
+   "target_hex": "#C7755C",
+   "texture_mean_hex": "#5E5E5E",
+   "tweak": {
+    "contrast": 0.6,
+    "normal": 2.0,
+    "rough_add": 0.2,
+    "scale": 1.5,
+    "sheen": 0.1
+   }
+  },
+  "Fabric032": {
+   "S50": 0.331,
+   "albedo_after_hex": "#776D21",
+   "display_hex": "#AFA075",
+   "gain_linear_rgb": [
+    0.233,
+    0.207,
+    0.021
+   ],
+   "luma_sd": 23.87,
+   "target_hex": "#A19558",
+   "texture_mean_hex": "#E5DFDE",
+   "tweak": {
+    "contrast": 0.8,
+    "normal": 2.0,
+    "rough_add": 0.2,
+    "scale": 1.5,
+    "sheen": 0.1
+   }
+  },
+  "Fabric036": {
+   "S50": 0.357,
+   "albedo_after_hex": "#67601E",
+   "display_hex": "#AB9D6E",
+   "gain_linear_rgb": [
+    0.276,
+    0.239,
+    0.026
+   ],
+   "luma_sd": 24.85,
+   "target_hex": "#A19558",
+   "texture_mean_hex": "#BABABA",
+   "tweak": {
+    "contrast": 0.7,
+    "normal": 2.0,
+    "rough_add": 0.2,
+    "scale": 1.5,
+    "sheen": 0.1
+   }
+  },
+  "Fabric045": {
+   "S50": 0.218,
+   "albedo_after_hex": "#685427",
+   "display_hex": "#B9A790",
+   "gain_linear_rgb": [
+    0.251,
+    0.161,
+    0.037
+   ],
+   "luma_sd": 35.03,
+   "target_hex": "#A49069",
+   "texture_mean_hex": "#C5C4C2",
+   "tweak": {
+    "contrast": 0.7,
+    "normal": 3.0,
+    "rough_add": 0.2,
+    "scale": 2.0,
+    "sheen": 0.15
+   }
+  }
+ }
+}

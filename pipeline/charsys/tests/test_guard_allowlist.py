@@ -5,7 +5,8 @@
 The guards ("no file under assets/characters pins groom/4", "no spec sets body.hands") stay as they were; a file is
 exempt only when its (character, version) is read from its path and that exact (character, version, feature) is listed
 in owner_approved_candidates.json with an owner decision and a date. A malformed allowlist, an entry for a current
-(approved) version, or a file whose version cannot be read is never exempt. The checks below prove it."""
+(approved) version WITHOUT a named `current_decision` (owner 2026-11-20 ~08:20Z, option 1), or a file whose version
+cannot be read is never exempt. The checks below prove it."""
 import json
 import os
 import re
@@ -14,10 +15,14 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, "..", "..", ".."))
 ALLOWLIST = os.path.join(HERE, "owner_approved_candidates.json")
-FEATURES = ("groom/4", "body.hands")
+FEATURES = ("groom/4", "body.hands", "lash_curve")  # lash_curve: test_face_r5 (owner 2026-11-20 ~07:00Z)
 FIELDS = ("character", "version", "feature", "owner_decision", "date")
 VERSION = re.compile(r"^\d+\.\d+\.\d+$")
 DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+
+
+def _named(v):
+    return isinstance(v, str) and bool(v.strip())
 
 
 def current_version(character, root=ROOT):
@@ -48,8 +53,11 @@ def errors(data, root=ROOT):
             errs.append(f"entry {k}: bad date {e['date']}")
         if not os.path.isdir(os.path.join(root, "assets", "characters", e["character"])):
             errs.append(f"entry {k}: unknown character {e['character']}")
-        elif e["version"] == current_version(e["character"], root):
-            errs.append(f"entry {k}: {e['character']} {e['version']} is the current version (never exemptable)")
+        elif e["version"] == current_version(e["character"], root) and not _named(e.get("current_decision")):
+            errs.append(f"entry {k}: {e['character']} {e['version']} is the current version (exemptable only with a "
+                        "named current_decision)")
+        if "current_decision" in e and not _named(e.get("current_decision")):
+            errs.append(f"entry {k}: empty current_decision")
     return errs
 
 
@@ -79,9 +87,11 @@ def candidate_of(relpath):
 
 def exempt(relpath, feature, entries, root=ROOT):
     c = candidate_of(relpath)
-    if c is None or c[1] == current_version(c[0], root):
+    if c is None:
         return False
-    return any((e["character"], e["version"], e["feature"]) == (c[0], c[1], feature) for e in entries)
+    is_current = c[1] == current_version(c[0], root)
+    return any((e["character"], e["version"], e["feature"]) == (c[0], c[1], feature)
+               and (not is_current or _named(e.get("current_decision"))) for e in entries)
 
 
 def split(relpaths, feature, path=ALLOWLIST, root=ROOT):
@@ -152,14 +162,23 @@ def main():
         if cur is None:
             continue
         keep, ex, errs = with_doc({"entries": [dict(E, character=c, version=cur, feature=f) for f in FEATURES]})
-        check(f"{c}: the current version {cur} is never exemptable (entry refused)",
+        plain = [{k: v for k, v in dict(E, character=c, version=cur, feature=f).items() if k != "current_decision"}
+                 for f in FEATURES]
+        keep, ex, errs = with_doc({"entries": plain})
+        check(f"{c}: the current version {cur} without a current_decision is refused",
               errs and any("current version" in x for x in errs))
         cspec = f"assets/characters/{c}/spec/{c}.{cur}.spec.json"
-        forged = [dict(E, character=c, version=cur, feature=f) for f in FEATURES]
-        check(f"{c}: a current-version file is not exempt even if listed",
-              not any(exempt(cspec, f, forged) for f in FEATURES))
-        check(f"{c}: no allowlist entry names the current version",
-              not any(e["character"] == c and e["version"] == cur for e in entries))
+        check(f"{c}: a current-version file listed without current_decision is not exempt",
+              not any(exempt(cspec, f, plain) for f in FEATURES))
+        empty = [dict(p, current_decision=" ") for p in plain]
+        keep, ex, errs = with_doc({"entries": empty})
+        check(f"{c}: an empty current_decision is refused", errs and any("current_decision" in x for x in errs))
+        named = [dict(p, current_decision="docs/process/OWNER_DECISIONS.md test") for p in plain]
+        check(f"{c}: a current-version file listed WITH a named current_decision is exempt for that feature only",
+              all(exempt(cspec, f, named[i:i + 1]) for i, f in enumerate(FEATURES))
+              and not exempt(cspec, FEATURES[0], named[1:2]))
+        check(f"{c}: every allowlist entry naming the current version carries a current_decision",
+              all(_named(e.get("current_decision")) for e in entries if e["character"] == c and e["version"] == cur))
     print(f"[test_guard_allowlist] {sum(RESULTS)}/{len(RESULTS)} passed")
     return 0 if all(RESULTS) else 1
 
