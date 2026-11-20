@@ -156,6 +156,12 @@ struct HandPose {
   float bandLo = 0, bandHi = 0;  // distances from graspCentre along graspAxis (metres, hand rest frame)
   enum class Thumb { Opposed = 0, Along = 1, Tucked = 2 } thumbMode = Thumb::Opposed;
   bool bandFit = false;  // T-138 (track "hand.<s>.bandFit" x >= 0.5): contact centres (not the skin) fill the band
+  // T-157 band-fit options (opt-in, only with bandFit; track "hand.<s>.bandFitOptions" = (widen lo, off bits, widen
+  // hi); absent or 0 = T-138 exactly):
+  vec2 bandWiden{0};     // x, z: metres added below bandLo and above bandHi (the thumb uses the same band)
+  int bandOff = 0;       // y: bit k set = finger bone f<k> leaves the band (e910 rigify packages: f0 index .. f3
+                         // little): it closes towards the surface, then opens until its skin clears it by half a skin
+                         // radius, or fully open (no contact)
   vec3 graspFace{0};     // non-zero (per-finger grasp only): a box face, the face's inward normal (hand rest frame);
                          // the solid is the slab |dot(p - graspCentre, normal)| <= graspRadius
   // Per-digit overrides, fingers 0..3 (bones f<k>a/b; 3 = index, 0 = little): (curl, spread, free), spread in the
@@ -181,7 +187,7 @@ std::vector<vec3> fingertips(const Skeleton& skeleton, const Pose& pose, const m
 // Tracks: "<prefix>hand.L" = (curl, thumb, spread), "<prefix>hand.L.index" (x), "<prefix>hand.L.grasp" = sphere
 // centre (hand rest frame), "<prefix>hand.L.graspRadius" (x), "<prefix>hand.L.grasp.weight" (x). Same for R.
 // T-051 (all optional; absent = the pose above, unchanged): "hand.L.band" = (lo, hi, thumb 0 opposed / 1 along /
-// 2 tucked), "hand.L.bandFit" (x >= 0.5: T-138 band fit), "hand.L.graspFace" (box-face normal), "hand.L.f<k>" = (curl, spread, free) for finger k (0 little .. 3 index),
+// 2 tucked), "hand.L.bandFit" (x >= 0.5: T-138 band fit), "hand.L.bandFitOptions" (with bandFit, T-157: x / z = band widening at lo / hi, y = off-band finger bits), "hand.L.graspFace" (box-face normal), "hand.L.f<k>" = (curl, spread, free) for finger k (0 little .. 3 index),
 // "hand.L.thumb" = (opposition, curl), "hand.L.stagger" (x = frames per finger; default 1 with a band, else 0):
 // fingers close index -> little and open little -> index, one stagger step apart.
 void applyConstraints(const Skeleton& skeleton, const Clip& clip, const std::string& prefix, double frame,

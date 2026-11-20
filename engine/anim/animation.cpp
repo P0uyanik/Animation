@@ -545,7 +545,8 @@ void applyHandPosePerFinger(const Skeleton& sk, Pose& pose, const mat4& world, c
   };
   // Band: the tip's distance from the centre along the axis, shifted into [lo, hi] by the spread (abduction).
   const bool band = hp.band && cyl;
-  const float lo = hp.bandLo * scale, hi = hp.bandHi * scale;
+  const vec2 widen = hp.bandFit ? hp.bandWiden : vec2(0);  // T-157 (opt-in): the band grows at its ends
+  const float lo = (hp.bandLo - widen.x) * scale, hi = (hp.bandHi + widen.y) * scale;
   auto height = [&](vec3 p) { return glm::dot(p - centre, axis); };
   bool wideBracket = false;  // T-138 band fit, second pass
   auto intoBand = [&](const FingerChain& f, Digit d, auto rots, float target) {
@@ -585,7 +586,7 @@ void applyHandPosePerFinger(const Skeleton& sk, Pose& pose, const mat4& world, c
     return solved(bestS);
   };
   std::array<Digit, 4> fin = base;
-  std::array<bool, 4> searched{};
+  std::array<bool, 4> searched{}, off{};
   float edge = tipR;  // how far the contact centres stay inside the band's ends (T-051: the skin radius)
   for (int k = 0; k < 4; ++k) {
     if (!HandBones::ok(h.fingers[k]) || weightOf(k) <= 0) continue;
@@ -593,6 +594,28 @@ void applyHandPosePerFinger(const Skeleton& sk, Pose& pose, const mat4& world, c
     Digit start = base[size_t(k)];
     start.a = start.b = 0;
     fin[size_t(k)] = close(h.fingers[k], start, fingerRots);
+    if (hp.band && cyl && hp.bandFit && (hp.bandOff >> k & 1)) {
+      // T-157 off-band finger: from the touching pose, open both curls together (fraction x of the touching curls)
+      // until every finger point's skin is at least half a skin radius off the surface.
+      const Digit touch = fin[size_t(k)];
+      auto clear = [&](float x) {
+        Digit t = touch;
+        t.a *= x, t.b *= x;
+        return gapAll(points(h.fingers[k], fingerRots(t))) - 0.5f * tipR;
+      };
+      float a = 0, b = 1;
+      if (clear(1) < 0 && clear(0) >= 0) {
+        for (int it = 0; it < 16; ++it) {
+          const float m = 0.5f * (a + b);
+          (clear(m) >= 0 ? a : b) = m;
+        }
+      } else if (clear(1) >= 0) {
+        a = 1;
+      }
+      fin[size_t(k)].a = touch.a * a, fin[size_t(k)].b = touch.b * a;
+      off[size_t(k)] = true;
+      continue;
+    }
     searched[size_t(k)] = true;
   }
   // Target heights: the natural contact heights moved as a whole into [lo + edge, hi - edge]; if the fingers span more
@@ -644,7 +667,7 @@ void applyHandPosePerFinger(const Skeleton& sk, Pose& pose, const mat4& world, c
   }
   for (int k = 0; k < 4; ++k) {
     if (!HandBones::ok(h.fingers[k])) continue;
-    const float w = searched[size_t(k)] ? weightOf(k) : 0.0f;
+    const float w = searched[size_t(k)] || off[size_t(k)] ? weightOf(k) : 0.0f;
     const Digit &b0 = base[size_t(k)], &g = fin[size_t(k)];
     set(h.fingers[k], fingerRots(Digit{glm::mix(b0.a, g.a, w), glm::mix(b0.b, g.b, w), glm::mix(b0.spread, g.spread, w), 0}));
   }
@@ -903,6 +926,11 @@ void perFingerTracks(const Clip& clip, const std::string& base, double frame, Ha
     hp.thumbMode = m == 1 ? HandPose::Thumb::Along : m == 2 ? HandPose::Thumb::Tucked : HandPose::Thumb::Opposed;
   }
   if (const Track* t = keyed(base + ".bandFit"); t && band) hp.bandFit = t->evaluate(frame).x >= 0.5f;  // T-138
+  if (const Track* t = keyed(base + ".bandFitOptions"); t && hp.bandFit) {  // T-157 (opt-in): (widen lo, off bits, widen hi)
+    const vec3 v = t->evaluate(frame);
+    hp.bandWiden = glm::max(vec2(v.x, v.z), vec2(0));
+    hp.bandOff = std::clamp(int(std::lround(v.y)), 0, 15);
+  }
   if (const Track* t = keyed(base + ".graspFace")) hp.graspFace = t->evaluate(frame);
   std::array<const Track*, 4> fk{};
   for (int k = 0; k < 4; ++k) fk[size_t(k)] = keyed(std::format("{}.f{}", base, k));
