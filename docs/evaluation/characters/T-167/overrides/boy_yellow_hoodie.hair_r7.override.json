@@ -118,6 +118,38 @@
        ],
        "flick_m": 0.014,
        "jitter_deg": 8,
+       "layer": 1
+      },
+      {
+       "hold": 0.5,
+       "taper_power": 2.6,
+       "root_width": 0.8,
+       "count": 5,
+       "az": [
+        142,
+        218
+       ],
+       "el": [
+        -6,
+        2
+       ],
+       "flow": "down",
+       "len_deg": [
+        20,
+        27
+       ],
+       "width": [
+        0.08,
+        0.1
+       ],
+       "depth": 0.6,
+       "lift": [
+        0.004,
+        0.03,
+        0.036
+       ],
+       "flick_m": 0.01,
+       "jitter_deg": 6,
        "layer": 0
       }
      ],
@@ -385,10 +417,10 @@
         70
        ],
        "tip": [
-        -2,
-        -3
+        2,
+        -8
        ],
-       "width": 0.085,
+       "width": 0.06,
        "depth": 0.66,
        "lift": [
         0.01,
@@ -397,8 +429,34 @@
        ],
        "lift_peak": 0.4,
        "layer": 2
+      },
+      {
+       "hold": 0.42,
+       "taper_power": 1.5,
+       "root_width": 0.8,
+       "root": [
+        0,
+        68
+       ],
+       "tip": [
+        -3,
+        -2
+       ],
+       "width": 0.056,
+       "depth": 0.66,
+       "lift": [
+        0.01,
+        0.04,
+        0.006
+       ],
+       "lift_peak": 0.4,
+       "layer": 1
       }
      ],
+     "keepout": {
+      "az": 34,
+      "el_min": -14
+     },
      "clump": {
       "bend_m": 0.003,
       "twist_deg": 10,

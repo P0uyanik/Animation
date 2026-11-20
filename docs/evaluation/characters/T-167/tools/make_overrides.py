@@ -43,12 +43,22 @@ def boy(sts, extra):
     for it in f + s["fringe_centre"]["items"]:
         it.update(hold=0.42, taper_power=1.5)
     s["fringe"]["clump"] = nat(3, 0.005, 16)
+    # T-169 boy 1: the centre lock hangs between the eyes and splits near its end (two overlapping guides of unequal
+    # length); its own keep-out lets it pass the brow line on the midline only
+    c0 = s["fringe_centre"]["items"][0]
+    c0.update(tip=[2, -8], width=0.06)
+    s["fringe_centre"]["items"].append(dict(c0, root=[0, 68], tip=[-3, -2], width=0.056, layer=1))
+    s["fringe_centre"]["keepout"] = {"az": 34, "el_min": -14}
     s["fringe_centre"]["clump"] = nat(0, 0.003, 10)
     # sides and back: hang down around the head (no long outward flicks), blunt, uneven
     for r in s["sides"]["rows"]:
         r.update(blunt, count=3, flick_m=0.016, len_deg=[37, 47], width=[0.085, 0.115], jitter_deg=9)
     s["sides"]["clump"] = nat(1)
     s["back"]["rows"][0].update(blunt, count=7, flick_m=0.014, len_deg=[40, 52], width=[0.09, 0.115], jitter_deg=8)
+    # T-169 boy 2: a shorter lower layer closes round the nape under the long clumps
+    s["back"]["rows"][0]["layer"] = 1
+    s["back"]["rows"].append(dict(s["back"]["rows"][0], count=5, az=[142, 218], el=[-6, 2], len_deg=[20, 27],
+                                  width=[0.08, 0.1], layer=0, flick_m=0.01, jitter_deg=6))
     s["back"]["clump"] = nat(5)
     # whorl tiers: shorter, thicker clumps of clearly different lengths; narrower channels
     s["top_outer"]["rows"][0].update(blunt, len_deg=38, width=0.095, flick_m=0.016, channel={"gap": 0.14},
@@ -80,7 +90,26 @@ def girl(sts, extra):
         it.update(tip=[sx * 46, 16], sweep=sx * 0.5, width=0.14)
     for it, sx in ((outer_l, 1), (outer_r, -1)):
         it.update(root=[sx * 14, 66], tip=[sx * 74, -12], width=0.125)
+    # T-169 auburn 2: the part sits off centre; a broad sweep over her right brow, a smaller one on her left
+    inner_l.update(root=[10, 80], tip=[44, 20], width=0.118)
+    inner_r.update(root=[-2, 80], tip=[-48, 12], width=0.155)
+    outer_l["root"], outer_r["root"] = [18, 66], [-10, 66]
+    s["crown"]["part"]["az"] = 4
     s["fringe"]["keepout"] = {"az": 30, "el_min": 8, "margin_deg": 1}
+    # T-159 / T-169 auburn 3: the ear and the glasses arm show; the hair is tucked behind the ear, one slim spiral
+    # stays beside each cheek
+    s["crown"]["hairline_el"] = [[0, 40], [25, 36], [50, 20], [70, 12], [95, 10], [112, 6], [130, 10], [150, 14],
+                                 [180, 14]]
+    for k, sx in (("temple_l", 1), ("temple_r", -1)):
+        s[k].update(az=sx * 106, el=6)
+    s["curtain"]["az"] = [102, 258]
+    s["curtain"]["root_el"] = [[102, 16], [125, 24], [180, 30]]
+    s["curtain"]["z_end"] = [[102, z] if az == 92 else [az, z] for az, z in s["curtain"]["z_end"]]
+    s["ringlets_side"].update(count=1, az=[56, 68], width=[0.03, 0.032])
+    s["ringlets_side_b"]["az"] = [100, 110]
+    s["ringlets_outer"]["az"] = [108, 126]
+    s["ringlets_outer_b"]["az"] = [112, 122]
+    s["ringlets_back_b"]["count"] = 3  # T-169 auburn 1: about 9 +- 2 separate rear ends (7 + 3)
     for st in sts:
         if st["type"] != "locks":
             continue
@@ -88,6 +117,8 @@ def girl(sts, extra):
         st["thick"] = [round(x * 0.7, 4) for x in st["thick"]]
         c = st["curl"]
         c.update(radius=round(c["radius"] * 1.08, 4), pitch=round(c["pitch"] * 0.9, 4), jitter=0.12, wobble=0.1)
+        if back:
+            c["start_jitter"] = 0.12  # curls start at staggered heights
         c["tip"] = {"from": 0.75, "radius": 0.9, "pitch": 1.0, "ellipse": 1.0}
         st["felt"].update(irregularity=0.05, flatten=0.3, flatten_twist=0.6)
         st["tips"] = {"from": 0.7, "scale": 0.6, "power": 1.3, "flatten": 0.2}
@@ -101,6 +132,7 @@ def girl(sts, extra):
     b["buns"][0]["turns"] = 1.0
     for lb in b["buns"][0]["felt_lobes"]:
         lb["swirl"] = round(lb["swirl"] / 1.35 * 0.8, 3)
+    s["band"].update(radius_scale=0.95, tube=0.012, height_frac=0.1)  # T-169 auburn 4: the tie sinks into the join
     layers = copy.deepcopy(extra["base"]["hair"]["fibres"]["layers"])
     for ly in layers:  # shorter, sparser fuzz: the curl surface reads, the outline keeps a thin halo
         f = ly["overrides"]["fibres"]
@@ -150,8 +182,19 @@ def third(sts, extra):
         st["wave"]["amplitude"] = round(st["wave"]["amplitude"] * 1.15, 5)
         st["clump"] = {"bend_m": 0.006, "twist_deg": 20, "lumps": 0.06, "lump_wavelength": 0.5,
                        "seed": len(st["name"])}
-    for k in ("side_locks", "outer_locks"):
-        s[k]["count"] = 3
+    s["outer_locks"]["count"] = 3
+    # T-159 / T-169 white 1, 2: the ear shows; the full fall sits behind it, two slim locks stay beside each cheek
+    s["crown"]["hairline_el"] = [[0, 30], [30, 28], [55, 14], [72, 10], [100, 8], [116, 2], [130, 4], [180, 6]]
+    s["back_mass"]["az"] = [102, 258]
+    s["back_mass"]["root_el"] = [[102, 12], [120, 18], [180, 26]]
+    s["back_mass"]["z_end"] = [[102, z] if az == 78 else [az, z] for az, z in s["back_mass"]["z_end"]]
+    s["outer_locks"]["az"] = [102, 124]
+    s["side_locks"].update(az=[46, 64], width=[round(x * 0.75, 5) for x in s["side_locks"]["width"]],
+                           thick=[round(x * 0.8, 5) for x in s["side_locks"]["thick"]])
+    for it, sx in zip(s["temples"]["items"], (1, -1)):
+        it["tip"] = [sx * 64, 2]
+    # T-169 white 3: softer, shallower wraps on the buns
+    s["buns"]["felt"]["grooves"].update(count=8, depth=0.3)
     s["back_locks"]["count"] = 9
     # bow (owner 2026-11-20): front seat kept, refined to 01 / 02: at the front hairline on her right, just below and
     # in front of the right bun, above the temple, tilted, partly over the outer fringe; longer tails
