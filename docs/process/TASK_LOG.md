@@ -167,3 +167,5 @@ Tasks from now on are numbered T-001, T-002, …, and pass through the states in
 | T-165 | [Process] Shared task kit + tools/ready.py (Opus) | running 2026-11-20 (owner ~08:10Z #3, #5) | t-165-claude-task-kit | docs/tasks/T-165.md |
 | T-166 | [Rendering] final720 default + HEVC 10-bit delivery (Sonnet) | queued 2026-11-20 (owner ~08:20Z #3), next free slot | t-166-claude-render-defaults | docs/tasks/T-166.md |
 | T-159 | [Characters] Temple hollow (both girls) + ears round (Fable) | running 2026-11-20 (Part A temple ~08:35Z, then ears) | t-159-claude-ears | docs/tasks/T-159.md |
+| T-167 | [Characters] Hair round 7, reference fidelity first (Fable) | running 2026-11-20 (owner ~08:50Z) | t-167-claude-hair-r7 | docs/tasks/T-167.md |
+| T-168 | [Faces] Boy face contour (side/3/4) and nose (Fable) | queued 2026-11-20 (owner ~08:50Z), next free slot | t-168-claude-boy-face | docs/tasks/T-168.md |
