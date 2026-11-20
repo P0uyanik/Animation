@@ -1,7 +1,7 @@
 {
  "schema": "plush-studio.review-recipe/1",
  "task": "T-168",
- "note": "boy: 2.3.0 (current) vs T-168 candidate (2.3.0 spec + T-168 override: softer cheek pad with a long top fade, lower-face recede, small round nose nub (r3: + rounder chin profile, flatter nose)), compare variant (arms down).",
+ "note": "boy: 2.3.0 (current) vs T-168 r4 candidate (2.3.0 spec + T-168 override: softer lower face, smooth cheek pad, small nose nub), compare variant (arms down).",
  "character": "boy_yellow_hoodie",
  "inputs": {
   "main": "3c698c7"
@@ -15,8 +15,8 @@
   "overrides": [
    "docs/evaluation/characters/T-168/boy_yellow_hoodie.T-168.override.json"
   ],
-  "sha": "134a0f9",
-  "label": "T-168 r3 candidate"
+  "sha": "cd8d853",
+  "label": "T-168 r4 candidate"
  },
  "compare": {
   "variant": "compare",
