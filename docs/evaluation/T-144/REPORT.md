@@ -6,7 +6,10 @@ Nothing is removed, retired or changed: no code, test, threshold, golden, spec o
 
 Data files (this folder): `regen.json` (step 1), `deps.json` + `deps.py` (step 2), `retire_sim.json` + `sim/` (step 3).
 
-**Summary.** (1) REGEN_SUMMARY
+**Summary.** (1) 8 of 9 published versions rebuild identically (spec hash and geometry at 0.1 mm and 0.01 mm).
+Boy 1.0.0 mismatches in one object, `hair_mass` (max 2.2 µm). Cause: the stored file predates the T-075
+deterministic build environment, not a code change: the rebuild equals the hair of boy 1.1.0, which was built
+deterministically from the same hair spec (§1).
 (2) Pinned or imported by current / candidate / override builds: body_generic/2, face_generic/3, groom/3, groom/4,
 groom/5 (T-167 only), garment/2, garment/3, accessories/1, rigify_human/1, presets/3, export/4 — plus export/5 (the
 exporter default) and groom/2 (pinned by the third character's T-126a base spec), which are kept as well.
@@ -25,7 +28,28 @@ spec hash and the fingerprint_v2 geometry fingerprints at 0.1 mm and 0.01 mm, an
 untouched. The store is only read; output went to the session scratch folder. Blender 5.3.0 (same as every stored
 `build_report.json`). Both stores also pass `asset_store.py verify` (9 versions, `problems: []`).
 
-REGEN_TABLE
+| version | spec hash | 0.1 mm | 0.01 mm | stored master unchanged | build s | result |
+|---|---|---|---|---|---|---|
+| boy 1.0.0 | same | `hair_mass` differs | `hair_mass` differs | yes | 13 | **MISMATCH** (cause below) |
+| boy 1.1.0 | same | identical | identical | yes | 13 | match |
+| boy 2.0.0 | same | identical | identical | yes | 100 | match |
+| boy 2.1.0 | same | identical | identical | yes | 150 | match |
+| boy 2.2.0 (approved) | same | identical | identical | yes | 158 | match |
+| girl 0.10.0 | same | identical | identical | yes | 116 | match |
+| girl 0.11.0 | same | identical | identical | yes | 98 | match |
+| girl 0.12.0 | same | identical | identical | yes | 164 | match |
+| girl 0.13.0 (approved) | same | identical | identical | yes | 164 | match |
+
+**Boy 1.0.0 mismatch, cause.** Only `hair_mass` (hair_clumps/1, `hair.py`) differs. Its vertex and face counts, bbox,
+centroid and RMS radius are identical, and so is the vertex order. 598 of 3811 vertices moved by more than 0.1 µm,
+none by more than 10 µm, max 2.16 µm (`sim/hair_displacement.py`). That float noise crosses rounding boundaries of
+both grids. The stored 1.0.0 master was built on 2026-11-14, before T-075 introduced the deterministic build
+environment (`determinism.subprocess_env`, `-t 1`). The rebuilt 1.0.0 `hair_mass` hash equals the **stored 1.1.0**
+`hair_mass` hash on both grids (0.01 mm `2dc90b354bb3fd49`, 0.1 mm `64f351a36b1c0e3b`). Boy 1.1.0 is spec 1.0.0 plus a
+face-only override and was built by T-075 in the deterministic environment. So the current code reproduces the
+deterministic result, and the stored 1.0.0 file holds a pre-T-075 non-deterministic sample. The file stays retrievable:
+manifest sha256 OK, sha1 in `tools/frozen_manifest.txt`. Nothing was changed. Whether 1.0.0 should keep failing
+`regenerate` is an owner question (§4 item 5). `regen.json` holds every result.
 
 ## 2. Dependency list (pinned or imported; none of these may be retired)
 
@@ -137,3 +161,5 @@ gate green before merge.
 2. If (a): include boy 1.0.0 (the `reference` pointer) under the allowance for export and regenerate? Recommended yes.
 3. Keep export/5 and groom/2 out of retirement (§2). Recommended yes.
 4. Re-scan with `deps.py` at implementation time (T-167 groom/5 and any new T-155 / override pins).
+5. Boy 1.0.0 (`reference` pointer) cannot pass `regenerate` because its stored hair is a pre-T-075 sample (§1).
+   Accept this as a documented known exception (recommended: the stored file is the reference), or take no action.
