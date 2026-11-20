@@ -18,8 +18,8 @@ from PIL import Image, ImageDraw
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, "..", "..", "..", "..", ".."))
 # framing per character: target, frame height (m), aspect (w/h)
-FRAME = {"boy": {"target": [0.0, 0.0, 0.86], "frame_height_m": 0.46, "aspect": 1.0},
-         "girl": {"target": [0.0, 0.0, 0.76], "frame_height_m": 0.66, "aspect": 0.9},
+FRAME = {"boy": {"target": [0.0, 0.0, 0.91], "frame_height_m": 0.58, "aspect": 0.9},
+         "girl": {"target": [0.0, 0.0, 0.80], "frame_height_m": 0.76, "aspect": 0.9},
          "third": {"target": [0.0, 0.0, 0.70], "frame_height_m": 0.70, "aspect": 0.9}}
 VIEWS = {"front": (0.0, 5.0), "threequarter": (-35.0, 8.0), "side": (90.0, 5.0), "back": (180.0, 8.0),
          "back_high": (180.0, 40.0), "top_front": (0.0, 35.0)}

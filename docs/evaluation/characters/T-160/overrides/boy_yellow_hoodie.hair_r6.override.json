@@ -1,6 +1,10 @@
 {
  "override": {
+  "generators": {
+   "groom": "groom/5"
+  },
   "hair": {
+   "generator": "groom/5",
    "structures": [
     {
      "type": "scalp_cap",
@@ -382,7 +386,10 @@
         ]
        }
       }
-     ]
+     ],
+     "stand": {
+      "smooth": 8
+     }
     },
     {
      "seg": 18,
@@ -441,7 +448,10 @@
         ]
        }
       }
-     ]
+     ],
+     "stand": {
+      "smooth": 8
+     }
     },
     {
      "seg": 18,
@@ -496,7 +506,10 @@
         ]
        }
       }
-     ]
+     ],
+     "stand": {
+      "smooth": 8
+     }
     },
     {
      "seg": 18,
@@ -526,27 +539,27 @@
        "depth": 0.8,
        "lift": [
         -0.004,
-        0.125
+        0.1
        ],
        "lift_power": 1.3,
        "hold": 0.5,
-       "taper_power": 1.7,
+       "taper_power": 2.1,
        "root_width": 0.7,
        "layer": 3,
        "stagger": {
         "lift": [
-         0.8,
-         1.3,
-         0.65,
-         1.2,
-         0.95
+         0.7,
+         1.25,
+         0.95,
+         0.6,
+         1.05
         ],
         "len": [
          1.0,
          1.25,
+         0.9,
          0.8,
-         1.15,
-         0.9
+         1.1
         ],
         "radius_deg": [
          3,
@@ -564,7 +577,10 @@
         ]
        }
       }
-     ]
+     ],
+     "stand": {
+      "smooth": 14
+     }
     }
    ]
   }
