@@ -16,6 +16,7 @@ namespace fs = std::filesystem;
 
 namespace {
 const fs::path kRoot = PLUSH_SOURCE_DIR;
+const quat kNoRot(1, 0, 0, 0);
 quat rot(float deg, vec3 axis) { return glm::angleAxis(glm::radians(deg), glm::normalize(axis)); }
 float quatAngle(quat a, quat b) {
   glm::dquat x = glm::normalize(glm::dquat(a)), y = glm::normalize(glm::dquat(b));
@@ -150,6 +151,19 @@ TEST_CASE("foot lock: lean keeps the yaw and the leg directions, arm swing and s
   CHECK(root.x == doctest::Approx(0.4f));
   CHECK(root.y == doctest::Approx(-0.2f));
   CHECK(root.z == doctest::Approx(0.8f));
+  // head_level: with the full share the head keeps the global orientation it would have on an upright trunk
+  LocomotionStyle hl;
+  hl.enabled = true;
+  hl.headLevel = 1.0f;
+  const quat nod = rot(10, {1, 0, 0});
+  std::map<std::string, quat> h{{"hips", yaw * lean}, {"spine", rot(15, {1, 0, 0})}, {"head", nod}};
+  vec3 r1(0);
+  applyLocomotionStyle(hl, h, r1, false);
+  CHECK(quatAngle(h["hips"] * h["spine"] * h["head"], yaw * nod) < 0.01f);
+  hl.headLevel = 0.5f;
+  std::map<std::string, quat> h2{{"hips", lean}, {"head", kNoRot}};
+  applyLocomotionStyle(hl, h2, r1, false);
+  CHECK(quatAngle(h2["hips"] * h2["head"], rot(20, {1, 0, 0})) < 0.01f);  // half of the 40 degree lean is left
   // mirrored sample: the centre applies to the other side, reflected
   std::map<std::string, quat> m{{"upperArm.R", rot(70, {0, 0, 1}) * rot(30, {1, 0, 0})}};
   vec3 r0(0);

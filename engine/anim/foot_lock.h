@@ -2,10 +2,12 @@
 // Both are opt-in per clip: a clip without a "style" block plays exactly as before (scene/clip_layers.cpp).
 //
 // Clip "style" block (written by pipeline/clips/import_bvh.py, docs/evaluation/animation/T-175/README.md):
-//   {"version": 1, "lean": 0.6, "stride": 1.0, "arm_swing": 0.85, "arm_center": {role: [w, x, y, z]},
+//   {"version": 1, "lean": 0.6, "head_level": 0.5, "stride": 1.0, "arm_swing": 0.85, "arm_center": {role: [w, x, y, z]},
 //    "tempo": 1.15, "foot_lock": true, "foot_lead": 3, "foot_in": 2, "foot_release": 6}
 //   lean        share of the trunk lean kept on hips, spine, chest and neck (swing away from upright; the turn about
 //               the vertical axis is kept). The thighs are compensated, so the legs keep their own directions.
+//   head_level  share of the trunk's remaining lean that the head undoes (0 = the clip's own head; 1 = the head keeps
+//               the orientation it would have on an upright trunk), so a big head stays up while the body leans.
 //   stride      scale of the horizontal root motion (root motion is already in leg lengths, so 1 = the source's stride
 //               in the character's own leg lengths).
 //   arm_swing   scale of the arm motion around arm_center (the clip's mean arm pose).
@@ -27,7 +29,7 @@ namespace plush {
 
 struct LocomotionStyle {
   bool enabled = false;  // the clip has a "style" object
-  float lean = 1, stride = 1, armSwing = 1;
+  float lean = 1, stride = 1, armSwing = 1, headLevel = 0;
   double tempo = 1;
   bool footLock = false;
   double footRelease = 6, footEaseIn = 2, footLead = 3;

@@ -44,6 +44,7 @@ LocomotionStyle locomotionStyle(const Json& clip) {
   s.lean = float(std::clamp(num("lean", 1.0), 0.0, 2.0));
   s.stride = float(std::clamp(num("stride", 1.0), 0.0, 4.0));
   s.armSwing = float(std::clamp(num("arm_swing", 1.0), 0.0, 3.0));
+  s.headLevel = float(std::clamp(num("head_level", 0.0), 0.0, 1.0));
   s.tempo = std::clamp(num("tempo", 1.0), 0.25, 4.0);
   s.footRelease = std::clamp(num("foot_release", 6.0), 0.0, 24.0);
   s.footEaseIn = std::clamp(num("foot_in", 2.0), 0.0, 24.0);
@@ -88,6 +89,24 @@ void applyLocomotionStyle(const LocomotionStyle& st, std::map<std::string, quat>
         }
       }
       it->second = scaled;
+    }
+  }
+  if (st.headLevel > 0.0f) {
+    // The head undoes this share of the trunk's remaining lean (the swing of the neck's rotation in the clip's
+    // reference space), so a big head stays up and the face stays readable while the body leans.
+    auto head = local.find("head");
+    if (head != local.end()) {
+      quat trunk = kIdentity;
+      for (const char* role : {"hips", "spine", "chest", "neck"}) {
+        auto it = local.find(role);
+        if (it != local.end()) trunk = trunk * it->second;
+      }
+      trunk = glm::normalize(trunk);
+      quat swing, twist;
+      swingTwistY(trunk, swing, twist);
+      if (swing.w < 0) swing = -swing;
+      const quat undo = glm::slerp(kIdentity, glm::inverse(swing), st.headLevel);
+      head->second = glm::normalize(glm::inverse(trunk) * undo * trunk * head->second);
     }
   }
   if (st.armSwing != 1.0f)

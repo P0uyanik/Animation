@@ -59,12 +59,12 @@ CMU_BVH_PIVOT = {}
 CMU_BVH_TOE = {"foot.L": "LeftToeBase"}
 
 # Chibi style presets (docs/evaluation/animation/T-175/README.md). lean: share of the source trunk lean kept (hips,
-# spine, chest, neck swing; yaw is kept); stride: horizontal root scale; arm_swing: arm swing around the clip's mean
+# spine, chest, neck swing; yaw is kept); head_level: share of the remaining trunk lean the head undoes (big heads); stride: horizontal root scale; arm_swing: arm swing around the clip's mean
 # arm pose; tempo: clock multiplier (short legs step quicker); foot_lock: two-bone leg IK pin on foot_plant frames.
 STYLE_PRESETS = {
     "walk": {"lean": 0.6, "stride": 1.0, "arm_swing": 0.85, "tempo": 1.15, "foot_lock": True},
-    "sit": {"lean": 0.55, "stride": 1.0, "arm_swing": 1.0, "tempo": 1.1, "foot_lock": True, "foot_lead": 5,
-            "foot_release": 10},
+    "sit": {"lean": 0.35, "head_level": 0.5, "stride": 1.0, "arm_swing": 1.0, "tempo": 1.1, "foot_lock": True,
+            "foot_lead": 5, "foot_release": 10},
 }
 
 
@@ -620,7 +620,7 @@ def mean_quat(qs):
 
 def make_style(preset, samples):
     st = dict(STYLE_PRESETS[preset]) if isinstance(preset, str) else dict(preset)
-    st = {"version": 1, "preset": preset if isinstance(preset, str) else "custom", **st}
+    st = {"version": 1, "preset": preset if isinstance(preset, str) else st.pop("preset", "custom"), **st}
     if st.get("arm_swing", 1.0) != 1.0:
         st["arm_center"] = {r: [round(c, 7) for c in mean_quat([s[r] for s in samples])]
                             for r in ("upperArm.L", "forearm.L", "upperArm.R", "forearm.R") if r in samples[0]}
@@ -666,6 +666,8 @@ def main(argv=None):
     ap.add_argument("--frames", type=_range, help="source frame range A:B (0-based, inclusive)")
     ap.add_argument("--loop", help="'auto' or A:B in output frames (B = A + period)")
     ap.add_argument("--style", choices=sorted(STYLE_PRESETS) + ["none"], default="none")
+    ap.add_argument("--tempo", type=float, help="override the style preset's tempo")
+    ap.add_argument("--lean", type=float, help="override the style preset's lean")
     ap.add_argument("--face", choices=["auto", "first", "travel", "none"], default="auto")
     ap.add_argument("--origin-frame", type=int, help="source frame that defines heading and the x/z origin")
     ap.add_argument("--seat", type=_range, help="seated clip frames A:B: adds a seat contact (estimated height_ratio)")
@@ -681,7 +683,14 @@ def main(argv=None):
     loop = None
     if a.loop:
         loop = "auto" if a.loop == "auto" else _range(a.loop)
-    clip = convert(src, a.name, frames=a.frames, loop=loop, style=None if a.style == "none" else a.style,
+    style = None
+    if a.style != "none":
+        style = dict(STYLE_PRESETS[a.style], preset=a.style)
+        if a.tempo:
+            style["tempo"] = a.tempo
+        if a.lean is not None:
+            style["lean"] = a.lean
+    clip = convert(src, a.name, frames=a.frames, loop=loop, style=style,
                    source_id=a.source_id, description=a.description, face=a.face, origin_frame=a.origin_frame,
                    seat=a.seat)
     path = a.out if a.out.endswith(".clip.json") else os.path.join(a.out, f"{a.name}.clip.json")

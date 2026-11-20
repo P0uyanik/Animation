@@ -5838,7 +5838,8 @@
  "style": {
   "version": 1,
   "preset": "sit",
-  "lean": 0.55,
+  "lean": 0.35,
+  "head_level": 0.5,
   "stride": 1.0,
   "arm_swing": 1.0,
   "tempo": 1.1,

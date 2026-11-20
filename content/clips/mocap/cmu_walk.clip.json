@@ -3479,7 +3479,7 @@
   "lean": 0.6,
   "stride": 1.0,
   "arm_swing": 0.85,
-  "tempo": 1.15,
+  "tempo": 1.125,
   "foot_lock": true,
   "arm_center": {
    "upperArm.L": [
