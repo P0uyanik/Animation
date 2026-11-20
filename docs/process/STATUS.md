@@ -9,7 +9,7 @@ Session cap: 6 (temporary 8 ended 08:20Z). Owner liaison: session_01NPjxeKamtbdz
 | --- | --- | --- | --- | --- |
 | T-156 eyes/lashes to T-150 targets | Fable 5.2 | running | — | `t-156-claude-eye-targets` |
 | T-160 hair round 6 (boy, auburn girl, third girl; owns the fringe) | Fable 5.2 | running | — | `t-160-claude-hair-r6` |
-| T-158 deterministic builds (recorded uv_sphere topology) | Opus 5.5 | running; every published version must still regenerate | — | `t-158-claude-deterministic-build` |
+| T-158 deterministic builds (recorded uv_sphere topology) | Opus 5.5 | on `integration/t-158`, gate running | — | `t-158-claude-deterministic-build` |
 | T-159 ears | — | queued: starts after T-158 merges | — | — |
 
 Codex T-161 reference targets (lashes, ears, hair silhouette) go to T-156 and T-160 as targets.json.
