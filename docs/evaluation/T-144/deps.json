@@ -1,0 +1,5181 @@
+{
+ "current_approved": {
+  "boy_yellow_hoodie": "2.2.0",
+  "girl_auburn_bun_glasses": "0.13.0"
+ },
+ "origin_main": "d42ad7025770c7ac031aad2efcd9651dfaf8e0e9",
+ "refs": [
+  {
+   "candidate_specs_overlaid_from_t155": [
+    "assets/characters/boy_yellow_hoodie/versions/2.3.0/spec.resolved.json",
+    "assets/characters/girl_auburn_bun_glasses/versions/0.14.0/spec.resolved.json",
+    "assets/characters/girl_white_hair_blue_dress/versions/0.1.0/spec.resolved.json"
+   ],
+   "changed_charsys_files": [],
+   "merge_base_with_main": "d42ad7025770c7ac031aad2efcd9651dfaf8e0e9",
+   "new_override_files": [],
+   "ref": "origin/main",
+   "registry": [
+    {
+     "closure": [
+      "body_v6",
+      "geom"
+     ],
+     "feature": "body",
+     "module": "body_v6",
+     "pin": "body_v6/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "body_generic",
+      "geom"
+     ],
+     "feature": "body",
+     "module": "body_generic",
+     "pin": "body_generic/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "body_generic",
+      "geom"
+     ],
+     "feature": "body",
+     "module": "body_generic",
+     "pin": "body_generic/2",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "body_v6",
+      "geom"
+     ],
+     "feature": "face",
+     "module": "body_v6",
+     "pin": "body_v6/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "face",
+      "face_features",
+      "face_generic",
+      "geom",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "face",
+     "module": "face_generic",
+     "pin": "face_generic/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "face",
+      "face_features",
+      "face_generic",
+      "geom",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "face",
+     "module": "face_generic",
+     "pin": "face_generic/2",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "face",
+      "face_features",
+      "face_generic",
+      "face_generic_v3",
+      "face_v3",
+      "face_v3.felt_eye",
+      "face_v3.lids",
+      "face_v3.lower_face",
+      "face_v3.socket",
+      "geom",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "face",
+     "module": "face_generic_v3",
+     "pin": "face_generic/3",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "geom",
+      "hair",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "groom",
+     "module": "hair",
+     "pin": "hair_clumps/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "geom",
+      "hair",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "groom",
+     "module": "hair",
+     "pin": "hair_clumps/2",
+     "status": "retired"
+    },
+    {
+     "closure": [
+      "geom",
+      "groom",
+      "groom_felt",
+      "hair",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "groom",
+     "module": "groom",
+     "pin": "groom/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "geom",
+      "groom",
+      "groom_felt",
+      "groom_hybrid",
+      "hair",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "groom",
+     "module": "groom_hybrid",
+     "pin": "groom/2",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "geom",
+      "groom",
+      "groom_felt",
+      "groom_hybrid",
+      "groom_r4",
+      "hair",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "groom",
+     "module": "groom_r4",
+     "pin": "groom/3",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "geom",
+      "groom",
+      "groom_felt",
+      "groom_hybrid",
+      "groom_r4",
+      "groom_r5",
+      "hair",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "groom",
+     "module": "groom_r5",
+     "pin": "groom/4",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "body_v6",
+      "geom"
+     ],
+     "feature": "garment",
+     "module": "body_v6",
+     "pin": "body_v6/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "garments",
+      "garments.backpack",
+      "garments.drape",
+      "garments.generator",
+      "garments.hoodie",
+      "garments.shapes",
+      "garments.sneakers",
+      "geom",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "garment",
+     "module": "garments",
+     "pin": "garment/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "garments",
+      "garments.backpack",
+      "garments.drape",
+      "garments.generator",
+      "garments.hoodie",
+      "garments.shapes",
+      "garments.sneakers",
+      "garments_v2",
+      "garments_v2.core",
+      "garments_v2.correctives",
+      "garments_v2.finish",
+      "garments_v2.outlines",
+      "garments_v2.pack",
+      "garments_v2.shoes",
+      "geom",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "garment",
+     "module": "garments_v2",
+     "pin": "garment/2",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "garments",
+      "garments.backpack",
+      "garments.drape",
+      "garments.generator",
+      "garments.hoodie",
+      "garments.shapes",
+      "garments.sneakers",
+      "garments_v2",
+      "garments_v2.core",
+      "garments_v2.correctives",
+      "garments_v2.finish",
+      "garments_v2.outlines",
+      "garments_v2.pack",
+      "garments_v2.shoes",
+      "garments_v3",
+      "garments_v3.ankle",
+      "garments_v3.cloth_tag",
+      "garments_v3.collar",
+      "garments_v3.core",
+      "garments_v3.cuffs",
+      "garments_v3.fibre_uv",
+      "garments_v3.pattern",
+      "garments_v3.ribs",
+      "garments_v3.stitch",
+      "garments_v3.tights",
+      "geom",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "garment",
+     "module": "garments_v3",
+     "pin": "garment/3",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "body_v6",
+      "geom"
+     ],
+     "feature": "accessories",
+     "module": "body_v6",
+     "pin": "body_v6/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "accessories",
+      "geom",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "accessories",
+     "module": "accessories",
+     "pin": "accessories/1",
+     "status": "released"
+    },
+    {
+     "closure": [],
+     "feature": "rig",
+     "module": null,
+     "pin": "rigify_human/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "body_v6",
+      "geom"
+     ],
+     "feature": "materials",
+     "module": "body_v6",
+     "pin": "body_v6/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "geom"
+     ],
+     "feature": "materials",
+     "module": "geom",
+     "pin": "albedo/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "geom",
+      "materials.builder"
+     ],
+     "feature": "materials",
+     "module": "materials.builder",
+     "pin": "presets/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "geom",
+      "materials.builder"
+     ],
+     "feature": "materials",
+     "module": "materials.builder",
+     "pin": "presets/2",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "geom",
+      "materials.builder"
+     ],
+     "feature": "materials",
+     "module": "materials.builder",
+     "pin": "presets/3",
+     "status": "released"
+    },
+    {
+     "closure": [],
+     "feature": "exporter",
+     "module": null,
+     "pin": "export/1",
+     "status": "retired"
+    },
+    {
+     "closure": [],
+     "feature": "exporter",
+     "module": null,
+     "pin": "export/2",
+     "status": "retired"
+    },
+    {
+     "closure": [],
+     "feature": "exporter",
+     "module": null,
+     "pin": "export/3",
+     "status": "retired"
+    },
+    {
+     "closure": [
+      "export_engine",
+      "versions"
+     ],
+     "feature": "exporter",
+     "module": "export_engine",
+     "pin": "export/4",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "export_engine",
+      "versions"
+     ],
+     "feature": "exporter",
+     "module": "export_engine",
+     "pin": "export/5",
+     "status": "released"
+    }
+   ],
+   "resolved": [
+    {
+     "defaulted": [],
+     "label": "boy_yellow_hoodie current 2.2.0",
+     "overrides": [],
+     "pins": {
+      "accessories": "none",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/3",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/versions/2.2.0/spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "boy_yellow_hoodie candidate 2.3.0 spec.resolved.json",
+     "overrides": [],
+     "pins": {
+      "accessories": "none",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/3",
+      "groom": "groom/4",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/versions/2.3.0/spec.resolved.json"
+    },
+    {
+     "defaulted": [],
+     "label": "girl_auburn_bun_glasses current 0.13.0",
+     "overrides": [],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/3",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/versions/0.13.0/spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "girl_auburn_bun_glasses candidate 0.14.0 spec.resolved.json",
+     "overrides": [],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/3",
+      "groom": "groom/4",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/versions/0.14.0/spec.resolved.json"
+    },
+    {
+     "defaulted": [],
+     "label": "girl_white_hair_blue_dress candidate 0.1.0 spec.resolved.json",
+     "overrides": [],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/3",
+      "groom": "groom/4",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_white_hair_blue_dress/versions/0.1.0/spec.resolved.json"
+    }
+   ],
+   "sha": "d42ad7025770c7ac031aad2efcd9651dfaf8e0e9",
+   "spec_files": [
+    {
+     "defaulted": [],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "none",
+      "body": "body_generic/1",
+      "exporter": "export/4",
+      "face": "face_generic/1",
+      "garment": "garment/1",
+      "groom": "hair_clumps/1",
+      "materials": "presets/1",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.0.0-dev.spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "none",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/2",
+      "garment": "garment/1",
+      "groom": "groom/2",
+      "materials": "presets/2",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.0.0.spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "none",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/3",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.1.0.spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "none",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/3",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.2.0.spec.json"
+    },
+    {
+     "defaulted": [
+      "accessories",
+      "body",
+      "exporter",
+      "face",
+      "garment",
+      "groom",
+      "materials",
+      "rig"
+     ],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "body_v6/1",
+      "body": "body_v6/1",
+      "exporter": "export/4",
+      "face": "body_v6/1",
+      "garment": "body_v6/1",
+      "groom": "hair_clumps/1",
+      "materials": "body_v6/1",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/2",
+      "garment": "garment/1",
+      "groom": "groom/2",
+      "materials": "presets/2",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.11.0.spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/3",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.12.0.spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/3",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.13.0.spec.json"
+    },
+    {
+     "defaulted": [
+      "accessories",
+      "body",
+      "exporter",
+      "face",
+      "garment",
+      "groom",
+      "materials",
+      "rig"
+     ],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/1",
+      "exporter": "export/4",
+      "face": "face_generic/1",
+      "garment": "garment/1",
+      "groom": "groom/1",
+      "materials": "presets/1",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/2",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_white_hair_blue_dress/spec/candidates/T-126a/girl_white_hair_blue_dress.0.1.0.spec.json"
+    }
+   ]
+  },
+  {
+   "candidate_specs_overlaid_from_t155": [],
+   "changed_charsys_files": [],
+   "merge_base_with_main": "e8d89226fedd51ad1bc4487063f51a3a93d8fcd8",
+   "new_override_files": [],
+   "ref": "origin/t-155-claude-candidates-r2",
+   "registry": [
+    {
+     "closure": [
+      "body_v6",
+      "geom"
+     ],
+     "feature": "body",
+     "module": "body_v6",
+     "pin": "body_v6/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "body_generic",
+      "geom"
+     ],
+     "feature": "body",
+     "module": "body_generic",
+     "pin": "body_generic/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "body_generic",
+      "geom"
+     ],
+     "feature": "body",
+     "module": "body_generic",
+     "pin": "body_generic/2",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "body_v6",
+      "geom"
+     ],
+     "feature": "face",
+     "module": "body_v6",
+     "pin": "body_v6/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "face",
+      "face_features",
+      "face_generic",
+      "geom",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "face",
+     "module": "face_generic",
+     "pin": "face_generic/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "face",
+      "face_features",
+      "face_generic",
+      "geom",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "face",
+     "module": "face_generic",
+     "pin": "face_generic/2",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "face",
+      "face_features",
+      "face_generic",
+      "face_generic_v3",
+      "face_v3",
+      "face_v3.felt_eye",
+      "face_v3.lids",
+      "face_v3.lower_face",
+      "face_v3.socket",
+      "geom",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "face",
+     "module": "face_generic_v3",
+     "pin": "face_generic/3",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "geom",
+      "hair",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "groom",
+     "module": "hair",
+     "pin": "hair_clumps/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "geom",
+      "hair",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "groom",
+     "module": "hair",
+     "pin": "hair_clumps/2",
+     "status": "retired"
+    },
+    {
+     "closure": [
+      "geom",
+      "groom",
+      "groom_felt",
+      "hair",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "groom",
+     "module": "groom",
+     "pin": "groom/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "geom",
+      "groom",
+      "groom_felt",
+      "groom_hybrid",
+      "hair",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "groom",
+     "module": "groom_hybrid",
+     "pin": "groom/2",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "geom",
+      "groom",
+      "groom_felt",
+      "groom_hybrid",
+      "groom_r4",
+      "hair",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "groom",
+     "module": "groom_r4",
+     "pin": "groom/3",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "geom",
+      "groom",
+      "groom_felt",
+      "groom_hybrid",
+      "groom_r4",
+      "groom_r5",
+      "hair",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "groom",
+     "module": "groom_r5",
+     "pin": "groom/4",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "body_v6",
+      "geom"
+     ],
+     "feature": "garment",
+     "module": "body_v6",
+     "pin": "body_v6/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "garments",
+      "garments.backpack",
+      "garments.drape",
+      "garments.generator",
+      "garments.hoodie",
+      "garments.shapes",
+      "garments.sneakers",
+      "geom",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "garment",
+     "module": "garments",
+     "pin": "garment/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "garments",
+      "garments.backpack",
+      "garments.drape",
+      "garments.generator",
+      "garments.hoodie",
+      "garments.shapes",
+      "garments.sneakers",
+      "garments_v2",
+      "garments_v2.core",
+      "garments_v2.correctives",
+      "garments_v2.finish",
+      "garments_v2.outlines",
+      "garments_v2.pack",
+      "garments_v2.shoes",
+      "geom",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "garment",
+     "module": "garments_v2",
+     "pin": "garment/2",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "garments",
+      "garments.backpack",
+      "garments.drape",
+      "garments.generator",
+      "garments.hoodie",
+      "garments.shapes",
+      "garments.sneakers",
+      "garments_v2",
+      "garments_v2.core",
+      "garments_v2.correctives",
+      "garments_v2.finish",
+      "garments_v2.outlines",
+      "garments_v2.pack",
+      "garments_v2.shoes",
+      "garments_v3",
+      "garments_v3.ankle",
+      "garments_v3.cloth_tag",
+      "garments_v3.collar",
+      "garments_v3.core",
+      "garments_v3.cuffs",
+      "garments_v3.fibre_uv",
+      "garments_v3.pattern",
+      "garments_v3.ribs",
+      "garments_v3.stitch",
+      "garments_v3.tights",
+      "geom",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "garment",
+     "module": "garments_v3",
+     "pin": "garment/3",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "body_v6",
+      "geom"
+     ],
+     "feature": "accessories",
+     "module": "body_v6",
+     "pin": "body_v6/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "accessories",
+      "geom",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "accessories",
+     "module": "accessories",
+     "pin": "accessories/1",
+     "status": "released"
+    },
+    {
+     "closure": [],
+     "feature": "rig",
+     "module": null,
+     "pin": "rigify_human/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "body_v6",
+      "geom"
+     ],
+     "feature": "materials",
+     "module": "body_v6",
+     "pin": "body_v6/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "geom"
+     ],
+     "feature": "materials",
+     "module": "geom",
+     "pin": "albedo/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "geom",
+      "materials.builder"
+     ],
+     "feature": "materials",
+     "module": "materials.builder",
+     "pin": "presets/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "geom",
+      "materials.builder"
+     ],
+     "feature": "materials",
+     "module": "materials.builder",
+     "pin": "presets/2",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "geom",
+      "materials.builder"
+     ],
+     "feature": "materials",
+     "module": "materials.builder",
+     "pin": "presets/3",
+     "status": "released"
+    },
+    {
+     "closure": [],
+     "feature": "exporter",
+     "module": null,
+     "pin": "export/1",
+     "status": "retired"
+    },
+    {
+     "closure": [],
+     "feature": "exporter",
+     "module": null,
+     "pin": "export/2",
+     "status": "retired"
+    },
+    {
+     "closure": [],
+     "feature": "exporter",
+     "module": null,
+     "pin": "export/3",
+     "status": "retired"
+    },
+    {
+     "closure": [
+      "export_engine",
+      "versions"
+     ],
+     "feature": "exporter",
+     "module": "export_engine",
+     "pin": "export/4",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "export_engine",
+      "versions"
+     ],
+     "feature": "exporter",
+     "module": "export_engine",
+     "pin": "export/5",
+     "status": "released"
+    }
+   ],
+   "resolved": [
+    {
+     "defaulted": [],
+     "label": "boy_yellow_hoodie current 2.2.0",
+     "overrides": [],
+     "pins": {
+      "accessories": "none",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/3",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/versions/2.2.0/spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "boy_yellow_hoodie candidate 2.3.0 spec.resolved.json",
+     "overrides": [],
+     "pins": {
+      "accessories": "none",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/3",
+      "groom": "groom/4",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/versions/2.3.0/spec.resolved.json"
+    },
+    {
+     "defaulted": [],
+     "label": "girl_auburn_bun_glasses current 0.13.0",
+     "overrides": [],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/3",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/versions/0.13.0/spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "girl_auburn_bun_glasses candidate 0.14.0 spec.resolved.json",
+     "overrides": [],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/3",
+      "groom": "groom/4",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/versions/0.14.0/spec.resolved.json"
+    },
+    {
+     "defaulted": [],
+     "label": "girl_white_hair_blue_dress candidate 0.1.0 spec.resolved.json",
+     "overrides": [],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/3",
+      "groom": "groom/4",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_white_hair_blue_dress/versions/0.1.0/spec.resolved.json"
+    }
+   ],
+   "sha": "2774c130394b6f42c26a1fa91cfda347ec0a6674",
+   "spec_files": [
+    {
+     "defaulted": [],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "none",
+      "body": "body_generic/1",
+      "exporter": "export/4",
+      "face": "face_generic/1",
+      "garment": "garment/1",
+      "groom": "hair_clumps/1",
+      "materials": "presets/1",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.0.0-dev.spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "none",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/2",
+      "garment": "garment/1",
+      "groom": "groom/2",
+      "materials": "presets/2",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.0.0.spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "none",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/3",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.1.0.spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "none",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/3",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.2.0.spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "none",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/3",
+      "groom": "groom/4",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.3.0.spec.json"
+    },
+    {
+     "defaulted": [
+      "accessories",
+      "body",
+      "exporter",
+      "face",
+      "garment",
+      "groom",
+      "materials",
+      "rig"
+     ],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "body_v6/1",
+      "body": "body_v6/1",
+      "exporter": "export/4",
+      "face": "body_v6/1",
+      "garment": "body_v6/1",
+      "groom": "hair_clumps/1",
+      "materials": "body_v6/1",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "none",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/3",
+      "groom": "groom/4",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/spec/candidates/T-155/boy_yellow_hoodie.2.3.0.spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/3",
+      "groom": "groom/4",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/spec/candidates/T-155/girl_auburn_bun_glasses.0.14.0.spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/2",
+      "garment": "garment/1",
+      "groom": "groom/2",
+      "materials": "presets/2",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.11.0.spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/3",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.12.0.spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/3",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.13.0.spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/3",
+      "groom": "groom/4",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.14.0.spec.json"
+    },
+    {
+     "defaulted": [
+      "accessories",
+      "body",
+      "exporter",
+      "face",
+      "garment",
+      "groom",
+      "materials",
+      "rig"
+     ],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/1",
+      "exporter": "export/4",
+      "face": "face_generic/1",
+      "garment": "garment/1",
+      "groom": "groom/1",
+      "materials": "presets/1",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/2",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_white_hair_blue_dress/spec/candidates/T-126a/girl_white_hair_blue_dress.0.1.0.spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/3",
+      "groom": "groom/4",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_white_hair_blue_dress/spec/candidates/T-155/girl_white_hair_blue_dress.0.1.0.spec.json"
+    }
+   ]
+  },
+  {
+   "candidate_specs_overlaid_from_t155": [
+    "assets/characters/boy_yellow_hoodie/versions/2.3.0/spec.resolved.json",
+    "assets/characters/girl_auburn_bun_glasses/versions/0.14.0/spec.resolved.json",
+    "assets/characters/girl_white_hair_blue_dress/versions/0.1.0/spec.resolved.json"
+   ],
+   "changed_charsys_files": [
+    "pipeline/charsys/face_v3/lids.py",
+    "pipeline/charsys/face_v3/socket.py",
+    "pipeline/charsys/tests/test_face_r5.py"
+   ],
+   "merge_base_with_main": "321466a0e67e12f860882fb357f0404c0813a56b",
+   "new_override_files": [
+    "docs/evaluation/characters/T-156/auburn/girl_auburn_bun_glasses.eyes.override.json",
+    "docs/evaluation/characters/T-156/third/girl_white_hair_blue_dress.eyes.override.json"
+   ],
+   "ref": "origin/t-156-claude-eye-targets",
+   "registry": [
+    {
+     "closure": [
+      "body_v6",
+      "geom"
+     ],
+     "feature": "body",
+     "module": "body_v6",
+     "pin": "body_v6/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "body_generic",
+      "geom"
+     ],
+     "feature": "body",
+     "module": "body_generic",
+     "pin": "body_generic/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "body_generic",
+      "geom"
+     ],
+     "feature": "body",
+     "module": "body_generic",
+     "pin": "body_generic/2",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "body_v6",
+      "geom"
+     ],
+     "feature": "face",
+     "module": "body_v6",
+     "pin": "body_v6/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "face",
+      "face_features",
+      "face_generic",
+      "geom",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "face",
+     "module": "face_generic",
+     "pin": "face_generic/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "face",
+      "face_features",
+      "face_generic",
+      "geom",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "face",
+     "module": "face_generic",
+     "pin": "face_generic/2",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "face",
+      "face_features",
+      "face_generic",
+      "face_generic_v3",
+      "face_v3",
+      "face_v3.felt_eye",
+      "face_v3.lids",
+      "face_v3.lower_face",
+      "face_v3.socket",
+      "geom",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "face",
+     "module": "face_generic_v3",
+     "pin": "face_generic/3",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "geom",
+      "hair",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "groom",
+     "module": "hair",
+     "pin": "hair_clumps/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "geom",
+      "hair",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "groom",
+     "module": "hair",
+     "pin": "hair_clumps/2",
+     "status": "retired"
+    },
+    {
+     "closure": [
+      "geom",
+      "groom",
+      "groom_felt",
+      "hair",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "groom",
+     "module": "groom",
+     "pin": "groom/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "geom",
+      "groom",
+      "groom_felt",
+      "groom_hybrid",
+      "hair",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "groom",
+     "module": "groom_hybrid",
+     "pin": "groom/2",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "geom",
+      "groom",
+      "groom_felt",
+      "groom_hybrid",
+      "groom_r4",
+      "hair",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "groom",
+     "module": "groom_r4",
+     "pin": "groom/3",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "geom",
+      "groom",
+      "groom_felt",
+      "groom_hybrid",
+      "groom_r4",
+      "groom_r5",
+      "hair",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "groom",
+     "module": "groom_r5",
+     "pin": "groom/4",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "body_v6",
+      "geom"
+     ],
+     "feature": "garment",
+     "module": "body_v6",
+     "pin": "body_v6/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "garments",
+      "garments.backpack",
+      "garments.drape",
+      "garments.generator",
+      "garments.hoodie",
+      "garments.shapes",
+      "garments.sneakers",
+      "geom",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "garment",
+     "module": "garments",
+     "pin": "garment/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "garments",
+      "garments.backpack",
+      "garments.drape",
+      "garments.generator",
+      "garments.hoodie",
+      "garments.shapes",
+      "garments.sneakers",
+      "garments_v2",
+      "garments_v2.core",
+      "garments_v2.correctives",
+      "garments_v2.finish",
+      "garments_v2.outlines",
+      "garments_v2.pack",
+      "garments_v2.shoes",
+      "geom",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "garment",
+     "module": "garments_v2",
+     "pin": "garment/2",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "garments",
+      "garments.backpack",
+      "garments.drape",
+      "garments.generator",
+      "garments.hoodie",
+      "garments.shapes",
+      "garments.sneakers",
+      "garments_v2",
+      "garments_v2.core",
+      "garments_v2.correctives",
+      "garments_v2.finish",
+      "garments_v2.outlines",
+      "garments_v2.pack",
+      "garments_v2.shoes",
+      "garments_v3",
+      "garments_v3.ankle",
+      "garments_v3.cloth_tag",
+      "garments_v3.collar",
+      "garments_v3.core",
+      "garments_v3.cuffs",
+      "garments_v3.fibre_uv",
+      "garments_v3.pattern",
+      "garments_v3.ribs",
+      "garments_v3.stitch",
+      "garments_v3.tights",
+      "geom",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "garment",
+     "module": "garments_v3",
+     "pin": "garment/3",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "body_v6",
+      "geom"
+     ],
+     "feature": "accessories",
+     "module": "body_v6",
+     "pin": "body_v6/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "accessories",
+      "geom",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "accessories",
+     "module": "accessories",
+     "pin": "accessories/1",
+     "status": "released"
+    },
+    {
+     "closure": [],
+     "feature": "rig",
+     "module": null,
+     "pin": "rigify_human/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "body_v6",
+      "geom"
+     ],
+     "feature": "materials",
+     "module": "body_v6",
+     "pin": "body_v6/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "geom"
+     ],
+     "feature": "materials",
+     "module": "geom",
+     "pin": "albedo/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "geom",
+      "materials.builder"
+     ],
+     "feature": "materials",
+     "module": "materials.builder",
+     "pin": "presets/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "geom",
+      "materials.builder"
+     ],
+     "feature": "materials",
+     "module": "materials.builder",
+     "pin": "presets/2",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "geom",
+      "materials.builder"
+     ],
+     "feature": "materials",
+     "module": "materials.builder",
+     "pin": "presets/3",
+     "status": "released"
+    },
+    {
+     "closure": [],
+     "feature": "exporter",
+     "module": null,
+     "pin": "export/1",
+     "status": "retired"
+    },
+    {
+     "closure": [],
+     "feature": "exporter",
+     "module": null,
+     "pin": "export/2",
+     "status": "retired"
+    },
+    {
+     "closure": [],
+     "feature": "exporter",
+     "module": null,
+     "pin": "export/3",
+     "status": "retired"
+    },
+    {
+     "closure": [
+      "export_engine",
+      "versions"
+     ],
+     "feature": "exporter",
+     "module": "export_engine",
+     "pin": "export/4",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "export_engine",
+      "versions"
+     ],
+     "feature": "exporter",
+     "module": "export_engine",
+     "pin": "export/5",
+     "status": "released"
+    }
+   ],
+   "resolved": [
+    {
+     "defaulted": [],
+     "label": "boy_yellow_hoodie current 2.2.0",
+     "overrides": [],
+     "pins": {
+      "accessories": "none",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/3",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/versions/2.2.0/spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "boy_yellow_hoodie candidate 2.3.0 spec.resolved.json",
+     "overrides": [],
+     "pins": {
+      "accessories": "none",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/3",
+      "groom": "groom/4",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/versions/2.3.0/spec.resolved.json"
+    },
+    {
+     "defaulted": [],
+     "label": "girl_auburn_bun_glasses current 0.13.0",
+     "overrides": [],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/3",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/versions/0.13.0/spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "girl_auburn_bun_glasses current 0.13.0 + girl_auburn_bun_glasses.eyes.override.json",
+     "overrides": [
+      "docs/evaluation/characters/T-156/auburn/girl_auburn_bun_glasses.eyes.override.json"
+     ],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/3",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/versions/0.13.0/spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "girl_auburn_bun_glasses candidate 0.14.0 spec.resolved.json",
+     "overrides": [],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/3",
+      "groom": "groom/4",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/versions/0.14.0/spec.resolved.json"
+    },
+    {
+     "defaulted": [],
+     "label": "girl_auburn_bun_glasses candidate 0.14.0 spec.resolved.json + girl_auburn_bun_glasses.eyes.override.json",
+     "overrides": [
+      "docs/evaluation/characters/T-156/auburn/girl_auburn_bun_glasses.eyes.override.json"
+     ],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/3",
+      "groom": "groom/4",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/versions/0.14.0/spec.resolved.json"
+    },
+    {
+     "defaulted": [],
+     "label": "girl_white_hair_blue_dress candidate 0.1.0 spec.resolved.json",
+     "overrides": [],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/3",
+      "groom": "groom/4",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_white_hair_blue_dress/versions/0.1.0/spec.resolved.json"
+    },
+    {
+     "defaulted": [],
+     "label": "girl_white_hair_blue_dress candidate 0.1.0 spec.resolved.json + girl_white_hair_blue_dress.eyes.override.json",
+     "overrides": [
+      "docs/evaluation/characters/T-156/third/girl_white_hair_blue_dress.eyes.override.json"
+     ],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/3",
+      "groom": "groom/4",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_white_hair_blue_dress/versions/0.1.0/spec.resolved.json"
+    }
+   ],
+   "sha": "1a53bc8b860a45635c588fb4f1c8fa1a1fbb735b",
+   "spec_files": [
+    {
+     "defaulted": [],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "none",
+      "body": "body_generic/1",
+      "exporter": "export/4",
+      "face": "face_generic/1",
+      "garment": "garment/1",
+      "groom": "hair_clumps/1",
+      "materials": "presets/1",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.0.0-dev.spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "none",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/2",
+      "garment": "garment/1",
+      "groom": "groom/2",
+      "materials": "presets/2",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.0.0.spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "none",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/3",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.1.0.spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "none",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/3",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.2.0.spec.json"
+    },
+    {
+     "defaulted": [
+      "accessories",
+      "body",
+      "exporter",
+      "face",
+      "garment",
+      "groom",
+      "materials",
+      "rig"
+     ],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "body_v6/1",
+      "body": "body_v6/1",
+      "exporter": "export/4",
+      "face": "body_v6/1",
+      "garment": "body_v6/1",
+      "groom": "hair_clumps/1",
+      "materials": "body_v6/1",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/2",
+      "garment": "garment/1",
+      "groom": "groom/2",
+      "materials": "presets/2",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.11.0.spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/3",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.12.0.spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/3",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.13.0.spec.json"
+    },
+    {
+     "defaulted": [
+      "accessories",
+      "body",
+      "exporter",
+      "face",
+      "garment",
+      "groom",
+      "materials",
+      "rig"
+     ],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/1",
+      "exporter": "export/4",
+      "face": "face_generic/1",
+      "garment": "garment/1",
+      "groom": "groom/1",
+      "materials": "presets/1",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/2",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_white_hair_blue_dress/spec/candidates/T-126a/girl_white_hair_blue_dress.0.1.0.spec.json"
+    }
+   ]
+  },
+  {
+   "candidate_specs_overlaid_from_t155": [
+    "assets/characters/boy_yellow_hoodie/versions/2.3.0/spec.resolved.json",
+    "assets/characters/girl_auburn_bun_glasses/versions/0.14.0/spec.resolved.json",
+    "assets/characters/girl_white_hair_blue_dress/versions/0.1.0/spec.resolved.json"
+   ],
+   "changed_charsys_files": [
+    "pipeline/charsys/accessories.py",
+    "pipeline/charsys/face_features.py",
+    "pipeline/charsys/face_generic.py",
+    "pipeline/charsys/face_generic_v3.py",
+    "pipeline/charsys/tests/test_ears_shape.py",
+    "pipeline/charsys/tests/test_face_front_fade.py",
+    "pipeline/charsys/tests/test_glasses_rest.py"
+   ],
+   "merge_base_with_main": "2a0253212f53eb399ea92fd6bb3ac69ebfdd628c",
+   "new_override_files": [
+    "docs/evaluation/characters/T-159/overrides/boy_ears.json",
+    "docs/evaluation/characters/T-159/overrides/girl_auburn_bun_glasses.temple.override.json",
+    "docs/evaluation/characters/T-159/overrides/girl_ears.json",
+    "docs/evaluation/characters/T-159/overrides/girl_glasses.json",
+    "docs/evaluation/characters/T-159/overrides/girl_white_hair_blue_dress.temple.override.json",
+    "docs/evaluation/characters/T-159/overrides/third_ears.json"
+   ],
+   "ref": "origin/t-159-claude-ears",
+   "registry": [
+    {
+     "closure": [
+      "body_v6",
+      "geom"
+     ],
+     "feature": "body",
+     "module": "body_v6",
+     "pin": "body_v6/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "body_generic",
+      "geom"
+     ],
+     "feature": "body",
+     "module": "body_generic",
+     "pin": "body_generic/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "body_generic",
+      "geom"
+     ],
+     "feature": "body",
+     "module": "body_generic",
+     "pin": "body_generic/2",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "body_v6",
+      "geom"
+     ],
+     "feature": "face",
+     "module": "body_v6",
+     "pin": "body_v6/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "face",
+      "face_features",
+      "face_generic",
+      "geom",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "face",
+     "module": "face_generic",
+     "pin": "face_generic/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "face",
+      "face_features",
+      "face_generic",
+      "geom",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "face",
+     "module": "face_generic",
+     "pin": "face_generic/2",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "face",
+      "face_features",
+      "face_generic",
+      "face_generic_v3",
+      "face_v3",
+      "face_v3.felt_eye",
+      "face_v3.lids",
+      "face_v3.lower_face",
+      "face_v3.socket",
+      "geom",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "face",
+     "module": "face_generic_v3",
+     "pin": "face_generic/3",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "geom",
+      "hair",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "groom",
+     "module": "hair",
+     "pin": "hair_clumps/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "geom",
+      "hair",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "groom",
+     "module": "hair",
+     "pin": "hair_clumps/2",
+     "status": "retired"
+    },
+    {
+     "closure": [
+      "geom",
+      "groom",
+      "groom_felt",
+      "hair",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "groom",
+     "module": "groom",
+     "pin": "groom/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "geom",
+      "groom",
+      "groom_felt",
+      "groom_hybrid",
+      "hair",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "groom",
+     "module": "groom_hybrid",
+     "pin": "groom/2",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "geom",
+      "groom",
+      "groom_felt",
+      "groom_hybrid",
+      "groom_r4",
+      "hair",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "groom",
+     "module": "groom_r4",
+     "pin": "groom/3",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "geom",
+      "groom",
+      "groom_felt",
+      "groom_hybrid",
+      "groom_r4",
+      "groom_r5",
+      "hair",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "groom",
+     "module": "groom_r5",
+     "pin": "groom/4",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "body_v6",
+      "geom"
+     ],
+     "feature": "garment",
+     "module": "body_v6",
+     "pin": "body_v6/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "garments",
+      "garments.backpack",
+      "garments.drape",
+      "garments.generator",
+      "garments.hoodie",
+      "garments.shapes",
+      "garments.sneakers",
+      "geom",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "garment",
+     "module": "garments",
+     "pin": "garment/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "garments",
+      "garments.backpack",
+      "garments.drape",
+      "garments.generator",
+      "garments.hoodie",
+      "garments.shapes",
+      "garments.sneakers",
+      "garments_v2",
+      "garments_v2.core",
+      "garments_v2.correctives",
+      "garments_v2.finish",
+      "garments_v2.outlines",
+      "garments_v2.pack",
+      "garments_v2.shoes",
+      "geom",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "garment",
+     "module": "garments_v2",
+     "pin": "garment/2",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "garments",
+      "garments.backpack",
+      "garments.drape",
+      "garments.generator",
+      "garments.hoodie",
+      "garments.shapes",
+      "garments.sneakers",
+      "garments_v2",
+      "garments_v2.core",
+      "garments_v2.correctives",
+      "garments_v2.finish",
+      "garments_v2.outlines",
+      "garments_v2.pack",
+      "garments_v2.shoes",
+      "garments_v3",
+      "garments_v3.ankle",
+      "garments_v3.cloth_tag",
+      "garments_v3.collar",
+      "garments_v3.core",
+      "garments_v3.cuffs",
+      "garments_v3.fibre_uv",
+      "garments_v3.pattern",
+      "garments_v3.ribs",
+      "garments_v3.stitch",
+      "garments_v3.tights",
+      "geom",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "garment",
+     "module": "garments_v3",
+     "pin": "garment/3",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "body_v6",
+      "geom"
+     ],
+     "feature": "accessories",
+     "module": "body_v6",
+     "pin": "body_v6/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "accessories",
+      "geom",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "accessories",
+     "module": "accessories",
+     "pin": "accessories/1",
+     "status": "released"
+    },
+    {
+     "closure": [],
+     "feature": "rig",
+     "module": null,
+     "pin": "rigify_human/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "body_v6",
+      "geom"
+     ],
+     "feature": "materials",
+     "module": "body_v6",
+     "pin": "body_v6/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "geom"
+     ],
+     "feature": "materials",
+     "module": "geom",
+     "pin": "albedo/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "geom",
+      "materials.builder"
+     ],
+     "feature": "materials",
+     "module": "materials.builder",
+     "pin": "presets/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "geom",
+      "materials.builder"
+     ],
+     "feature": "materials",
+     "module": "materials.builder",
+     "pin": "presets/2",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "geom",
+      "materials.builder"
+     ],
+     "feature": "materials",
+     "module": "materials.builder",
+     "pin": "presets/3",
+     "status": "released"
+    },
+    {
+     "closure": [],
+     "feature": "exporter",
+     "module": null,
+     "pin": "export/1",
+     "status": "retired"
+    },
+    {
+     "closure": [],
+     "feature": "exporter",
+     "module": null,
+     "pin": "export/2",
+     "status": "retired"
+    },
+    {
+     "closure": [],
+     "feature": "exporter",
+     "module": null,
+     "pin": "export/3",
+     "status": "retired"
+    },
+    {
+     "closure": [
+      "export_engine",
+      "versions"
+     ],
+     "feature": "exporter",
+     "module": "export_engine",
+     "pin": "export/4",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "export_engine",
+      "versions"
+     ],
+     "feature": "exporter",
+     "module": "export_engine",
+     "pin": "export/5",
+     "status": "released"
+    }
+   ],
+   "resolved": [
+    {
+     "defaulted": [],
+     "label": "boy_yellow_hoodie current 2.2.0",
+     "overrides": [],
+     "pins": {
+      "accessories": "none",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/3",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/versions/2.2.0/spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "boy_yellow_hoodie current 2.2.0 + boy_ears.json",
+     "overrides": [
+      "docs/evaluation/characters/T-159/overrides/boy_ears.json"
+     ],
+     "pins": {
+      "accessories": "none",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/3",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/versions/2.2.0/spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "boy_yellow_hoodie candidate 2.3.0 spec.resolved.json",
+     "overrides": [],
+     "pins": {
+      "accessories": "none",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/3",
+      "groom": "groom/4",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/versions/2.3.0/spec.resolved.json"
+    },
+    {
+     "defaulted": [],
+     "label": "boy_yellow_hoodie candidate 2.3.0 spec.resolved.json + boy_ears.json",
+     "overrides": [
+      "docs/evaluation/characters/T-159/overrides/boy_ears.json"
+     ],
+     "pins": {
+      "accessories": "none",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/3",
+      "groom": "groom/4",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/versions/2.3.0/spec.resolved.json"
+    },
+    {
+     "defaulted": [],
+     "label": "girl_auburn_bun_glasses current 0.13.0",
+     "overrides": [],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/3",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/versions/0.13.0/spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "girl_auburn_bun_glasses current 0.13.0 + girl_auburn_bun_glasses.temple.override.json",
+     "overrides": [
+      "docs/evaluation/characters/T-159/overrides/girl_auburn_bun_glasses.temple.override.json"
+     ],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/3",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/versions/0.13.0/spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "girl_auburn_bun_glasses current 0.13.0 + girl_ears.json",
+     "overrides": [
+      "docs/evaluation/characters/T-159/overrides/girl_ears.json"
+     ],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/3",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/versions/0.13.0/spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "girl_auburn_bun_glasses current 0.13.0 + girl_glasses.json",
+     "overrides": [
+      "docs/evaluation/characters/T-159/overrides/girl_glasses.json"
+     ],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/3",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/versions/0.13.0/spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "girl_auburn_bun_glasses current 0.13.0 + all 3 new overrides of this ref",
+     "overrides": [
+      "docs/evaluation/characters/T-159/overrides/girl_auburn_bun_glasses.temple.override.json",
+      "docs/evaluation/characters/T-159/overrides/girl_ears.json",
+      "docs/evaluation/characters/T-159/overrides/girl_glasses.json"
+     ],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/3",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/versions/0.13.0/spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "girl_auburn_bun_glasses candidate 0.14.0 spec.resolved.json",
+     "overrides": [],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/3",
+      "groom": "groom/4",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/versions/0.14.0/spec.resolved.json"
+    },
+    {
+     "defaulted": [],
+     "label": "girl_auburn_bun_glasses candidate 0.14.0 spec.resolved.json + girl_auburn_bun_glasses.temple.override.json",
+     "overrides": [
+      "docs/evaluation/characters/T-159/overrides/girl_auburn_bun_glasses.temple.override.json"
+     ],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/3",
+      "groom": "groom/4",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/versions/0.14.0/spec.resolved.json"
+    },
+    {
+     "defaulted": [],
+     "label": "girl_auburn_bun_glasses candidate 0.14.0 spec.resolved.json + girl_ears.json",
+     "overrides": [
+      "docs/evaluation/characters/T-159/overrides/girl_ears.json"
+     ],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/3",
+      "groom": "groom/4",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/versions/0.14.0/spec.resolved.json"
+    },
+    {
+     "defaulted": [],
+     "label": "girl_auburn_bun_glasses candidate 0.14.0 spec.resolved.json + girl_glasses.json",
+     "overrides": [
+      "docs/evaluation/characters/T-159/overrides/girl_glasses.json"
+     ],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/3",
+      "groom": "groom/4",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/versions/0.14.0/spec.resolved.json"
+    },
+    {
+     "defaulted": [],
+     "label": "girl_auburn_bun_glasses candidate 0.14.0 spec.resolved.json + all 3 new overrides of this ref",
+     "overrides": [
+      "docs/evaluation/characters/T-159/overrides/girl_auburn_bun_glasses.temple.override.json",
+      "docs/evaluation/characters/T-159/overrides/girl_ears.json",
+      "docs/evaluation/characters/T-159/overrides/girl_glasses.json"
+     ],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/3",
+      "groom": "groom/4",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/versions/0.14.0/spec.resolved.json"
+    },
+    {
+     "defaulted": [],
+     "label": "girl_white_hair_blue_dress candidate 0.1.0 spec.resolved.json",
+     "overrides": [],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/3",
+      "groom": "groom/4",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_white_hair_blue_dress/versions/0.1.0/spec.resolved.json"
+    },
+    {
+     "defaulted": [],
+     "label": "girl_white_hair_blue_dress candidate 0.1.0 spec.resolved.json + girl_white_hair_blue_dress.temple.override.json",
+     "overrides": [
+      "docs/evaluation/characters/T-159/overrides/girl_white_hair_blue_dress.temple.override.json"
+     ],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/3",
+      "groom": "groom/4",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_white_hair_blue_dress/versions/0.1.0/spec.resolved.json"
+    },
+    {
+     "defaulted": [],
+     "label": "girl_white_hair_blue_dress candidate 0.1.0 spec.resolved.json + third_ears.json",
+     "overrides": [
+      "docs/evaluation/characters/T-159/overrides/third_ears.json"
+     ],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/3",
+      "groom": "groom/4",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_white_hair_blue_dress/versions/0.1.0/spec.resolved.json"
+    },
+    {
+     "defaulted": [],
+     "label": "girl_white_hair_blue_dress candidate 0.1.0 spec.resolved.json + all 2 new overrides of this ref",
+     "overrides": [
+      "docs/evaluation/characters/T-159/overrides/girl_white_hair_blue_dress.temple.override.json",
+      "docs/evaluation/characters/T-159/overrides/third_ears.json"
+     ],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/3",
+      "groom": "groom/4",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_white_hair_blue_dress/versions/0.1.0/spec.resolved.json"
+    }
+   ],
+   "sha": "aca5de637e7845a15c5df0788d6c1f38fb4170e2",
+   "spec_files": [
+    {
+     "defaulted": [],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "none",
+      "body": "body_generic/1",
+      "exporter": "export/4",
+      "face": "face_generic/1",
+      "garment": "garment/1",
+      "groom": "hair_clumps/1",
+      "materials": "presets/1",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.0.0-dev.spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "none",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/2",
+      "garment": "garment/1",
+      "groom": "groom/2",
+      "materials": "presets/2",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.0.0.spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "none",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/3",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.1.0.spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "none",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/3",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.2.0.spec.json"
+    },
+    {
+     "defaulted": [
+      "accessories",
+      "body",
+      "exporter",
+      "face",
+      "garment",
+      "groom",
+      "materials",
+      "rig"
+     ],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "body_v6/1",
+      "body": "body_v6/1",
+      "exporter": "export/4",
+      "face": "body_v6/1",
+      "garment": "body_v6/1",
+      "groom": "hair_clumps/1",
+      "materials": "body_v6/1",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/2",
+      "garment": "garment/1",
+      "groom": "groom/2",
+      "materials": "presets/2",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.11.0.spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/3",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.12.0.spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/3",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.13.0.spec.json"
+    },
+    {
+     "defaulted": [
+      "accessories",
+      "body",
+      "exporter",
+      "face",
+      "garment",
+      "groom",
+      "materials",
+      "rig"
+     ],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/1",
+      "exporter": "export/4",
+      "face": "face_generic/1",
+      "garment": "garment/1",
+      "groom": "groom/1",
+      "materials": "presets/1",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/2",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_white_hair_blue_dress/spec/candidates/T-126a/girl_white_hair_blue_dress.0.1.0.spec.json"
+    }
+   ]
+  },
+  {
+   "candidate_specs_overlaid_from_t155": [
+    "assets/characters/boy_yellow_hoodie/versions/2.3.0/spec.resolved.json",
+    "assets/characters/girl_auburn_bun_glasses/versions/0.14.0/spec.resolved.json",
+    "assets/characters/girl_white_hair_blue_dress/versions/0.1.0/spec.resolved.json"
+   ],
+   "changed_charsys_files": [
+    "pipeline/charsys/groom_r6.py",
+    "pipeline/charsys/tests/test_hair_r6.py",
+    "pipeline/charsys/versions.py"
+   ],
+   "merge_base_with_main": "593dbe1441a9c35032d9a767c746c455772dacf5",
+   "new_override_files": [
+    "docs/evaluation/characters/T-160/overrides/boy_yellow_hoodie.hair_r6.override.json",
+    "docs/evaluation/characters/T-160/overrides/girl_auburn_bun_glasses.hair_r6.override.json",
+    "docs/evaluation/characters/T-160/overrides/girl_white_hair_blue_dress.hair_r6.override.json",
+    "docs/evaluation/characters/T-167/overrides/boy_yellow_hoodie.hair_r7.override.json",
+    "docs/evaluation/characters/T-167/overrides/boy_yellow_hoodie.hair_r7b.override.json",
+    "docs/evaluation/characters/T-167/overrides/girl_auburn_bun_glasses.hair_r7.override.json",
+    "docs/evaluation/characters/T-167/overrides/girl_white_hair_blue_dress.hair_r7.override.json"
+   ],
+   "ref": "origin/t-167-claude-hair-r7",
+   "registry": [
+    {
+     "closure": [
+      "body_v6",
+      "geom"
+     ],
+     "feature": "body",
+     "module": "body_v6",
+     "pin": "body_v6/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "body_generic",
+      "geom"
+     ],
+     "feature": "body",
+     "module": "body_generic",
+     "pin": "body_generic/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "body_generic",
+      "geom"
+     ],
+     "feature": "body",
+     "module": "body_generic",
+     "pin": "body_generic/2",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "body_v6",
+      "geom"
+     ],
+     "feature": "face",
+     "module": "body_v6",
+     "pin": "body_v6/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "face",
+      "face_features",
+      "face_generic",
+      "geom",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "face",
+     "module": "face_generic",
+     "pin": "face_generic/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "face",
+      "face_features",
+      "face_generic",
+      "geom",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "face",
+     "module": "face_generic",
+     "pin": "face_generic/2",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "face",
+      "face_features",
+      "face_generic",
+      "face_generic_v3",
+      "face_v3",
+      "face_v3.felt_eye",
+      "face_v3.lids",
+      "face_v3.lower_face",
+      "face_v3.socket",
+      "geom",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "face",
+     "module": "face_generic_v3",
+     "pin": "face_generic/3",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "geom",
+      "hair",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "groom",
+     "module": "hair",
+     "pin": "hair_clumps/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "geom",
+      "hair",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "groom",
+     "module": "hair",
+     "pin": "hair_clumps/2",
+     "status": "retired"
+    },
+    {
+     "closure": [
+      "geom",
+      "groom",
+      "groom_felt",
+      "hair",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "groom",
+     "module": "groom",
+     "pin": "groom/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "geom",
+      "groom",
+      "groom_felt",
+      "groom_hybrid",
+      "hair",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "groom",
+     "module": "groom_hybrid",
+     "pin": "groom/2",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "geom",
+      "groom",
+      "groom_felt",
+      "groom_hybrid",
+      "groom_r4",
+      "hair",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "groom",
+     "module": "groom_r4",
+     "pin": "groom/3",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "geom",
+      "groom",
+      "groom_felt",
+      "groom_hybrid",
+      "groom_r4",
+      "groom_r5",
+      "hair",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "groom",
+     "module": "groom_r5",
+     "pin": "groom/4",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "geom",
+      "groom",
+      "groom_felt",
+      "groom_hybrid",
+      "groom_r4",
+      "groom_r5",
+      "groom_r6",
+      "hair",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "groom",
+     "module": "groom_r6",
+     "pin": "groom/5",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "body_v6",
+      "geom"
+     ],
+     "feature": "garment",
+     "module": "body_v6",
+     "pin": "body_v6/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "garments",
+      "garments.backpack",
+      "garments.drape",
+      "garments.generator",
+      "garments.hoodie",
+      "garments.shapes",
+      "garments.sneakers",
+      "geom",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "garment",
+     "module": "garments",
+     "pin": "garment/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "garments",
+      "garments.backpack",
+      "garments.drape",
+      "garments.generator",
+      "garments.hoodie",
+      "garments.shapes",
+      "garments.sneakers",
+      "garments_v2",
+      "garments_v2.core",
+      "garments_v2.correctives",
+      "garments_v2.finish",
+      "garments_v2.outlines",
+      "garments_v2.pack",
+      "garments_v2.shoes",
+      "geom",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "garment",
+     "module": "garments_v2",
+     "pin": "garment/2",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "garments",
+      "garments.backpack",
+      "garments.drape",
+      "garments.generator",
+      "garments.hoodie",
+      "garments.shapes",
+      "garments.sneakers",
+      "garments_v2",
+      "garments_v2.core",
+      "garments_v2.correctives",
+      "garments_v2.finish",
+      "garments_v2.outlines",
+      "garments_v2.pack",
+      "garments_v2.shoes",
+      "garments_v3",
+      "garments_v3.ankle",
+      "garments_v3.cloth_tag",
+      "garments_v3.collar",
+      "garments_v3.core",
+      "garments_v3.cuffs",
+      "garments_v3.fibre_uv",
+      "garments_v3.pattern",
+      "garments_v3.ribs",
+      "garments_v3.stitch",
+      "garments_v3.tights",
+      "geom",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "garment",
+     "module": "garments_v3",
+     "pin": "garment/3",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "body_v6",
+      "geom"
+     ],
+     "feature": "accessories",
+     "module": "body_v6",
+     "pin": "body_v6/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "accessories",
+      "geom",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "accessories",
+     "module": "accessories",
+     "pin": "accessories/1",
+     "status": "released"
+    },
+    {
+     "closure": [],
+     "feature": "rig",
+     "module": null,
+     "pin": "rigify_human/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "body_v6",
+      "geom"
+     ],
+     "feature": "materials",
+     "module": "body_v6",
+     "pin": "body_v6/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "geom"
+     ],
+     "feature": "materials",
+     "module": "geom",
+     "pin": "albedo/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "geom",
+      "materials.builder"
+     ],
+     "feature": "materials",
+     "module": "materials.builder",
+     "pin": "presets/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "geom",
+      "materials.builder"
+     ],
+     "feature": "materials",
+     "module": "materials.builder",
+     "pin": "presets/2",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "geom",
+      "materials.builder"
+     ],
+     "feature": "materials",
+     "module": "materials.builder",
+     "pin": "presets/3",
+     "status": "released"
+    },
+    {
+     "closure": [],
+     "feature": "exporter",
+     "module": null,
+     "pin": "export/1",
+     "status": "retired"
+    },
+    {
+     "closure": [],
+     "feature": "exporter",
+     "module": null,
+     "pin": "export/2",
+     "status": "retired"
+    },
+    {
+     "closure": [],
+     "feature": "exporter",
+     "module": null,
+     "pin": "export/3",
+     "status": "retired"
+    },
+    {
+     "closure": [
+      "export_engine",
+      "versions"
+     ],
+     "feature": "exporter",
+     "module": "export_engine",
+     "pin": "export/4",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "export_engine",
+      "versions"
+     ],
+     "feature": "exporter",
+     "module": "export_engine",
+     "pin": "export/5",
+     "status": "released"
+    }
+   ],
+   "resolved": [
+    {
+     "defaulted": [],
+     "label": "boy_yellow_hoodie current 2.2.0",
+     "overrides": [],
+     "pins": {
+      "accessories": "none",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/3",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/versions/2.2.0/spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "boy_yellow_hoodie current 2.2.0 + boy_yellow_hoodie.hair_r6.override.json",
+     "overrides": [
+      "docs/evaluation/characters/T-160/overrides/boy_yellow_hoodie.hair_r6.override.json"
+     ],
+     "pins": {
+      "accessories": "none",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/5",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/versions/2.2.0/spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "boy_yellow_hoodie current 2.2.0 + boy_yellow_hoodie.hair_r7.override.json",
+     "overrides": [
+      "docs/evaluation/characters/T-167/overrides/boy_yellow_hoodie.hair_r7.override.json"
+     ],
+     "pins": {
+      "accessories": "none",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/5",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/versions/2.2.0/spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "boy_yellow_hoodie current 2.2.0 + boy_yellow_hoodie.hair_r7b.override.json",
+     "overrides": [
+      "docs/evaluation/characters/T-167/overrides/boy_yellow_hoodie.hair_r7b.override.json"
+     ],
+     "pins": {
+      "accessories": "none",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/5",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/versions/2.2.0/spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "boy_yellow_hoodie current 2.2.0 + all 3 new overrides of this ref",
+     "overrides": [
+      "docs/evaluation/characters/T-160/overrides/boy_yellow_hoodie.hair_r6.override.json",
+      "docs/evaluation/characters/T-167/overrides/boy_yellow_hoodie.hair_r7.override.json",
+      "docs/evaluation/characters/T-167/overrides/boy_yellow_hoodie.hair_r7b.override.json"
+     ],
+     "pins": {
+      "accessories": "none",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/5",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/versions/2.2.0/spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "boy_yellow_hoodie candidate 2.3.0 spec.resolved.json",
+     "overrides": [],
+     "pins": {
+      "accessories": "none",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/3",
+      "groom": "groom/4",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/versions/2.3.0/spec.resolved.json"
+    },
+    {
+     "defaulted": [],
+     "label": "boy_yellow_hoodie candidate 2.3.0 spec.resolved.json + boy_yellow_hoodie.hair_r6.override.json",
+     "overrides": [
+      "docs/evaluation/characters/T-160/overrides/boy_yellow_hoodie.hair_r6.override.json"
+     ],
+     "pins": {
+      "accessories": "none",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/3",
+      "groom": "groom/5",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/versions/2.3.0/spec.resolved.json"
+    },
+    {
+     "defaulted": [],
+     "label": "boy_yellow_hoodie candidate 2.3.0 spec.resolved.json + boy_yellow_hoodie.hair_r7.override.json",
+     "overrides": [
+      "docs/evaluation/characters/T-167/overrides/boy_yellow_hoodie.hair_r7.override.json"
+     ],
+     "pins": {
+      "accessories": "none",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/3",
+      "groom": "groom/5",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/versions/2.3.0/spec.resolved.json"
+    },
+    {
+     "defaulted": [],
+     "label": "boy_yellow_hoodie candidate 2.3.0 spec.resolved.json + boy_yellow_hoodie.hair_r7b.override.json",
+     "overrides": [
+      "docs/evaluation/characters/T-167/overrides/boy_yellow_hoodie.hair_r7b.override.json"
+     ],
+     "pins": {
+      "accessories": "none",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/3",
+      "groom": "groom/5",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/versions/2.3.0/spec.resolved.json"
+    },
+    {
+     "defaulted": [],
+     "label": "boy_yellow_hoodie candidate 2.3.0 spec.resolved.json + all 3 new overrides of this ref",
+     "overrides": [
+      "docs/evaluation/characters/T-160/overrides/boy_yellow_hoodie.hair_r6.override.json",
+      "docs/evaluation/characters/T-167/overrides/boy_yellow_hoodie.hair_r7.override.json",
+      "docs/evaluation/characters/T-167/overrides/boy_yellow_hoodie.hair_r7b.override.json"
+     ],
+     "pins": {
+      "accessories": "none",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/3",
+      "groom": "groom/5",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/versions/2.3.0/spec.resolved.json"
+    },
+    {
+     "defaulted": [],
+     "label": "girl_auburn_bun_glasses current 0.13.0",
+     "overrides": [],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/3",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/versions/0.13.0/spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "girl_auburn_bun_glasses current 0.13.0 + girl_auburn_bun_glasses.hair_r6.override.json",
+     "overrides": [
+      "docs/evaluation/characters/T-160/overrides/girl_auburn_bun_glasses.hair_r6.override.json"
+     ],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/5",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/versions/0.13.0/spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "girl_auburn_bun_glasses current 0.13.0 + girl_auburn_bun_glasses.hair_r7.override.json",
+     "overrides": [
+      "docs/evaluation/characters/T-167/overrides/girl_auburn_bun_glasses.hair_r7.override.json"
+     ],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/5",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/versions/0.13.0/spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "girl_auburn_bun_glasses current 0.13.0 + all 2 new overrides of this ref",
+     "overrides": [
+      "docs/evaluation/characters/T-160/overrides/girl_auburn_bun_glasses.hair_r6.override.json",
+      "docs/evaluation/characters/T-167/overrides/girl_auburn_bun_glasses.hair_r7.override.json"
+     ],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/5",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/versions/0.13.0/spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "girl_auburn_bun_glasses candidate 0.14.0 spec.resolved.json",
+     "overrides": [],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/3",
+      "groom": "groom/4",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/versions/0.14.0/spec.resolved.json"
+    },
+    {
+     "defaulted": [],
+     "label": "girl_auburn_bun_glasses candidate 0.14.0 spec.resolved.json + girl_auburn_bun_glasses.hair_r6.override.json",
+     "overrides": [
+      "docs/evaluation/characters/T-160/overrides/girl_auburn_bun_glasses.hair_r6.override.json"
+     ],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/3",
+      "groom": "groom/5",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/versions/0.14.0/spec.resolved.json"
+    },
+    {
+     "defaulted": [],
+     "label": "girl_auburn_bun_glasses candidate 0.14.0 spec.resolved.json + girl_auburn_bun_glasses.hair_r7.override.json",
+     "overrides": [
+      "docs/evaluation/characters/T-167/overrides/girl_auburn_bun_glasses.hair_r7.override.json"
+     ],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/3",
+      "groom": "groom/5",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/versions/0.14.0/spec.resolved.json"
+    },
+    {
+     "defaulted": [],
+     "label": "girl_auburn_bun_glasses candidate 0.14.0 spec.resolved.json + all 2 new overrides of this ref",
+     "overrides": [
+      "docs/evaluation/characters/T-160/overrides/girl_auburn_bun_glasses.hair_r6.override.json",
+      "docs/evaluation/characters/T-167/overrides/girl_auburn_bun_glasses.hair_r7.override.json"
+     ],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/3",
+      "groom": "groom/5",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/versions/0.14.0/spec.resolved.json"
+    },
+    {
+     "defaulted": [],
+     "label": "girl_white_hair_blue_dress candidate 0.1.0 spec.resolved.json",
+     "overrides": [],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/3",
+      "groom": "groom/4",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_white_hair_blue_dress/versions/0.1.0/spec.resolved.json"
+    },
+    {
+     "defaulted": [],
+     "label": "girl_white_hair_blue_dress candidate 0.1.0 spec.resolved.json + girl_white_hair_blue_dress.hair_r6.override.json",
+     "overrides": [
+      "docs/evaluation/characters/T-160/overrides/girl_white_hair_blue_dress.hair_r6.override.json"
+     ],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/3",
+      "groom": "groom/5",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_white_hair_blue_dress/versions/0.1.0/spec.resolved.json"
+    },
+    {
+     "defaulted": [],
+     "label": "girl_white_hair_blue_dress candidate 0.1.0 spec.resolved.json + girl_white_hair_blue_dress.hair_r7.override.json",
+     "overrides": [
+      "docs/evaluation/characters/T-167/overrides/girl_white_hair_blue_dress.hair_r7.override.json"
+     ],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/3",
+      "groom": "groom/5",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_white_hair_blue_dress/versions/0.1.0/spec.resolved.json"
+    },
+    {
+     "defaulted": [],
+     "label": "girl_white_hair_blue_dress candidate 0.1.0 spec.resolved.json + all 2 new overrides of this ref",
+     "overrides": [
+      "docs/evaluation/characters/T-160/overrides/girl_white_hair_blue_dress.hair_r6.override.json",
+      "docs/evaluation/characters/T-167/overrides/girl_white_hair_blue_dress.hair_r7.override.json"
+     ],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/3",
+      "groom": "groom/5",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_white_hair_blue_dress/versions/0.1.0/spec.resolved.json"
+    }
+   ],
+   "sha": "3a43adcdbe9e9aa37230a64aa2dd1e812fcfb3cb",
+   "spec_files": [
+    {
+     "defaulted": [],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "none",
+      "body": "body_generic/1",
+      "exporter": "export/4",
+      "face": "face_generic/1",
+      "garment": "garment/1",
+      "groom": "hair_clumps/1",
+      "materials": "presets/1",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.0.0-dev.spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "none",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/2",
+      "garment": "garment/1",
+      "groom": "groom/2",
+      "materials": "presets/2",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.0.0.spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "none",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/3",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.1.0.spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "none",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/3",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.2.0.spec.json"
+    },
+    {
+     "defaulted": [
+      "accessories",
+      "body",
+      "exporter",
+      "face",
+      "garment",
+      "groom",
+      "materials",
+      "rig"
+     ],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "body_v6/1",
+      "body": "body_v6/1",
+      "exporter": "export/4",
+      "face": "body_v6/1",
+      "garment": "body_v6/1",
+      "groom": "hair_clumps/1",
+      "materials": "body_v6/1",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/2",
+      "garment": "garment/1",
+      "groom": "groom/2",
+      "materials": "presets/2",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.11.0.spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/3",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.12.0.spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/3",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.13.0.spec.json"
+    },
+    {
+     "defaulted": [
+      "accessories",
+      "body",
+      "exporter",
+      "face",
+      "garment",
+      "groom",
+      "materials",
+      "rig"
+     ],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/1",
+      "exporter": "export/4",
+      "face": "face_generic/1",
+      "garment": "garment/1",
+      "groom": "groom/1",
+      "materials": "presets/1",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/2",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_white_hair_blue_dress/spec/candidates/T-126a/girl_white_hair_blue_dress.0.1.0.spec.json"
+    }
+   ]
+  },
+  {
+   "candidate_specs_overlaid_from_t155": [],
+   "changed_charsys_files": [
+    "pipeline/charsys/face_features.py",
+    "pipeline/charsys/face_generic.py",
+    "pipeline/charsys/face_v3/lids.py",
+    "pipeline/charsys/face_v3/lower_face.py",
+    "pipeline/charsys/tests/owner_approved_candidates.json",
+    "pipeline/charsys/tests/test_ears_shape.py",
+    "pipeline/charsys/tests/test_face_front_fade.py",
+    "pipeline/charsys/tests/test_face_r5.py",
+    "pipeline/charsys/tests/test_face_t168.py",
+    "pipeline/charsys/tests/test_guard_allowlist.py",
+    "pipeline/charsys/tests/test_hair_r5.py",
+    "pipeline/charsys/tests/test_hands_r2.py"
+   ],
+   "merge_base_with_main": "2a0253212f53eb399ea92fd6bb3ac69ebfdd628c",
+   "new_override_files": [
+    "docs/evaluation/characters/T-137/f1a/girl_auburn_bun_glasses.eyes.override.json",
+    "docs/evaluation/characters/T-137/f1b/girl_white_hair_blue_dress.eyes.override.json",
+    "docs/evaluation/characters/T-137/f1b/girl_white_hair_blue_dress.fringe.override.json",
+    "docs/evaluation/characters/T-137/f2/boy_yellow_hoodie.face.override.json",
+    "docs/evaluation/characters/T-159/overrides/boy_yellow_hoodie.ears.override.json",
+    "docs/evaluation/characters/T-159/overrides/girl_auburn_bun_glasses.ears.override.json",
+    "docs/evaluation/characters/T-159/overrides/girl_auburn_bun_glasses.temple.override.json",
+    "docs/evaluation/characters/T-159/overrides/girl_white_hair_blue_dress.ears.override.json",
+    "docs/evaluation/characters/T-159/overrides/girl_white_hair_blue_dress.temple.override.json",
+    "docs/evaluation/characters/T-168/boy_yellow_hoodie.T-168.override.json"
+   ],
+   "ref": "origin/t-168-claude-boy-face",
+   "registry": [
+    {
+     "closure": [
+      "body_v6",
+      "geom"
+     ],
+     "feature": "body",
+     "module": "body_v6",
+     "pin": "body_v6/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "body_generic",
+      "geom"
+     ],
+     "feature": "body",
+     "module": "body_generic",
+     "pin": "body_generic/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "body_generic",
+      "geom"
+     ],
+     "feature": "body",
+     "module": "body_generic",
+     "pin": "body_generic/2",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "body_v6",
+      "geom"
+     ],
+     "feature": "face",
+     "module": "body_v6",
+     "pin": "body_v6/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "face",
+      "face_features",
+      "face_generic",
+      "geom",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "face",
+     "module": "face_generic",
+     "pin": "face_generic/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "face",
+      "face_features",
+      "face_generic",
+      "geom",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "face",
+     "module": "face_generic",
+     "pin": "face_generic/2",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "face",
+      "face_features",
+      "face_generic",
+      "face_generic_v3",
+      "face_v3",
+      "face_v3.felt_eye",
+      "face_v3.lids",
+      "face_v3.lower_face",
+      "face_v3.socket",
+      "geom",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "face",
+     "module": "face_generic_v3",
+     "pin": "face_generic/3",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "geom",
+      "hair",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "groom",
+     "module": "hair",
+     "pin": "hair_clumps/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "geom",
+      "hair",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "groom",
+     "module": "hair",
+     "pin": "hair_clumps/2",
+     "status": "retired"
+    },
+    {
+     "closure": [
+      "geom",
+      "groom",
+      "groom_felt",
+      "hair",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "groom",
+     "module": "groom",
+     "pin": "groom/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "geom",
+      "groom",
+      "groom_felt",
+      "groom_hybrid",
+      "hair",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "groom",
+     "module": "groom_hybrid",
+     "pin": "groom/2",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "geom",
+      "groom",
+      "groom_felt",
+      "groom_hybrid",
+      "groom_r4",
+      "hair",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "groom",
+     "module": "groom_r4",
+     "pin": "groom/3",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "geom",
+      "groom",
+      "groom_felt",
+      "groom_hybrid",
+      "groom_r4",
+      "groom_r5",
+      "hair",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "groom",
+     "module": "groom_r5",
+     "pin": "groom/4",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "body_v6",
+      "geom"
+     ],
+     "feature": "garment",
+     "module": "body_v6",
+     "pin": "body_v6/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "garments",
+      "garments.backpack",
+      "garments.drape",
+      "garments.generator",
+      "garments.hoodie",
+      "garments.shapes",
+      "garments.sneakers",
+      "geom",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "garment",
+     "module": "garments",
+     "pin": "garment/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "garments",
+      "garments.backpack",
+      "garments.drape",
+      "garments.generator",
+      "garments.hoodie",
+      "garments.shapes",
+      "garments.sneakers",
+      "garments_v2",
+      "garments_v2.core",
+      "garments_v2.correctives",
+      "garments_v2.finish",
+      "garments_v2.outlines",
+      "garments_v2.pack",
+      "garments_v2.shoes",
+      "geom",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "garment",
+     "module": "garments_v2",
+     "pin": "garment/2",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "garments",
+      "garments.backpack",
+      "garments.drape",
+      "garments.generator",
+      "garments.hoodie",
+      "garments.shapes",
+      "garments.sneakers",
+      "garments_v2",
+      "garments_v2.core",
+      "garments_v2.correctives",
+      "garments_v2.finish",
+      "garments_v2.outlines",
+      "garments_v2.pack",
+      "garments_v2.shoes",
+      "garments_v3",
+      "garments_v3.ankle",
+      "garments_v3.cloth_tag",
+      "garments_v3.collar",
+      "garments_v3.core",
+      "garments_v3.cuffs",
+      "garments_v3.fibre_uv",
+      "garments_v3.pattern",
+      "garments_v3.ribs",
+      "garments_v3.stitch",
+      "garments_v3.tights",
+      "geom",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "garment",
+     "module": "garments_v3",
+     "pin": "garment/3",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "body_v6",
+      "geom"
+     ],
+     "feature": "accessories",
+     "module": "body_v6",
+     "pin": "body_v6/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "accessories",
+      "geom",
+      "materials",
+      "materials.builder"
+     ],
+     "feature": "accessories",
+     "module": "accessories",
+     "pin": "accessories/1",
+     "status": "released"
+    },
+    {
+     "closure": [],
+     "feature": "rig",
+     "module": null,
+     "pin": "rigify_human/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "body_v6",
+      "geom"
+     ],
+     "feature": "materials",
+     "module": "body_v6",
+     "pin": "body_v6/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "geom"
+     ],
+     "feature": "materials",
+     "module": "geom",
+     "pin": "albedo/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "geom",
+      "materials.builder"
+     ],
+     "feature": "materials",
+     "module": "materials.builder",
+     "pin": "presets/1",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "geom",
+      "materials.builder"
+     ],
+     "feature": "materials",
+     "module": "materials.builder",
+     "pin": "presets/2",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "geom",
+      "materials.builder"
+     ],
+     "feature": "materials",
+     "module": "materials.builder",
+     "pin": "presets/3",
+     "status": "released"
+    },
+    {
+     "closure": [],
+     "feature": "exporter",
+     "module": null,
+     "pin": "export/1",
+     "status": "retired"
+    },
+    {
+     "closure": [],
+     "feature": "exporter",
+     "module": null,
+     "pin": "export/2",
+     "status": "retired"
+    },
+    {
+     "closure": [],
+     "feature": "exporter",
+     "module": null,
+     "pin": "export/3",
+     "status": "retired"
+    },
+    {
+     "closure": [
+      "export_engine",
+      "versions"
+     ],
+     "feature": "exporter",
+     "module": "export_engine",
+     "pin": "export/4",
+     "status": "released"
+    },
+    {
+     "closure": [
+      "export_engine",
+      "versions"
+     ],
+     "feature": "exporter",
+     "module": "export_engine",
+     "pin": "export/5",
+     "status": "released"
+    }
+   ],
+   "resolved": [
+    {
+     "defaulted": [],
+     "label": "boy_yellow_hoodie current 2.2.0",
+     "overrides": [],
+     "pins": {
+      "accessories": "none",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/3",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/versions/2.2.0/spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "boy_yellow_hoodie current 2.2.0 + boy_yellow_hoodie.face.override.json",
+     "overrides": [
+      "docs/evaluation/characters/T-137/f2/boy_yellow_hoodie.face.override.json"
+     ],
+     "pins": {
+      "accessories": "none",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/3",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/versions/2.2.0/spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "boy_yellow_hoodie current 2.2.0 + boy_yellow_hoodie.ears.override.json",
+     "overrides": [
+      "docs/evaluation/characters/T-159/overrides/boy_yellow_hoodie.ears.override.json"
+     ],
+     "pins": {
+      "accessories": "none",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/3",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/versions/2.2.0/spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "boy_yellow_hoodie current 2.2.0 + boy_yellow_hoodie.T-168.override.json",
+     "overrides": [
+      "docs/evaluation/characters/T-168/boy_yellow_hoodie.T-168.override.json"
+     ],
+     "pins": {
+      "accessories": "none",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/3",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/versions/2.2.0/spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "boy_yellow_hoodie current 2.2.0 + all 3 new overrides of this ref",
+     "overrides": [
+      "docs/evaluation/characters/T-137/f2/boy_yellow_hoodie.face.override.json",
+      "docs/evaluation/characters/T-159/overrides/boy_yellow_hoodie.ears.override.json",
+      "docs/evaluation/characters/T-168/boy_yellow_hoodie.T-168.override.json"
+     ],
+     "pins": {
+      "accessories": "none",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/3",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/versions/2.2.0/spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "boy_yellow_hoodie candidate 2.3.0 spec.resolved.json",
+     "overrides": [],
+     "pins": {
+      "accessories": "none",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/3",
+      "groom": "groom/4",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/versions/2.3.0/spec.resolved.json"
+    },
+    {
+     "defaulted": [],
+     "label": "boy_yellow_hoodie candidate 2.3.0 spec.resolved.json + boy_yellow_hoodie.face.override.json",
+     "overrides": [
+      "docs/evaluation/characters/T-137/f2/boy_yellow_hoodie.face.override.json"
+     ],
+     "pins": {
+      "accessories": "none",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/3",
+      "groom": "groom/4",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/versions/2.3.0/spec.resolved.json"
+    },
+    {
+     "defaulted": [],
+     "label": "boy_yellow_hoodie candidate 2.3.0 spec.resolved.json + boy_yellow_hoodie.ears.override.json",
+     "overrides": [
+      "docs/evaluation/characters/T-159/overrides/boy_yellow_hoodie.ears.override.json"
+     ],
+     "pins": {
+      "accessories": "none",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/3",
+      "groom": "groom/4",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/versions/2.3.0/spec.resolved.json"
+    },
+    {
+     "defaulted": [],
+     "label": "boy_yellow_hoodie candidate 2.3.0 spec.resolved.json + boy_yellow_hoodie.T-168.override.json",
+     "overrides": [
+      "docs/evaluation/characters/T-168/boy_yellow_hoodie.T-168.override.json"
+     ],
+     "pins": {
+      "accessories": "none",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/3",
+      "groom": "groom/4",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/versions/2.3.0/spec.resolved.json"
+    },
+    {
+     "defaulted": [],
+     "label": "boy_yellow_hoodie candidate 2.3.0 spec.resolved.json + all 3 new overrides of this ref",
+     "overrides": [
+      "docs/evaluation/characters/T-137/f2/boy_yellow_hoodie.face.override.json",
+      "docs/evaluation/characters/T-159/overrides/boy_yellow_hoodie.ears.override.json",
+      "docs/evaluation/characters/T-168/boy_yellow_hoodie.T-168.override.json"
+     ],
+     "pins": {
+      "accessories": "none",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/3",
+      "groom": "groom/4",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/versions/2.3.0/spec.resolved.json"
+    },
+    {
+     "defaulted": [],
+     "label": "girl_auburn_bun_glasses current 0.13.0",
+     "overrides": [],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/3",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/versions/0.13.0/spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "girl_auburn_bun_glasses current 0.13.0 + girl_auburn_bun_glasses.eyes.override.json",
+     "overrides": [
+      "docs/evaluation/characters/T-137/f1a/girl_auburn_bun_glasses.eyes.override.json"
+     ],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/3",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/versions/0.13.0/spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "girl_auburn_bun_glasses current 0.13.0 + girl_auburn_bun_glasses.ears.override.json",
+     "overrides": [
+      "docs/evaluation/characters/T-159/overrides/girl_auburn_bun_glasses.ears.override.json"
+     ],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/3",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/versions/0.13.0/spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "girl_auburn_bun_glasses current 0.13.0 + girl_auburn_bun_glasses.temple.override.json",
+     "overrides": [
+      "docs/evaluation/characters/T-159/overrides/girl_auburn_bun_glasses.temple.override.json"
+     ],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/3",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/versions/0.13.0/spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "girl_auburn_bun_glasses current 0.13.0 + all 3 new overrides of this ref",
+     "overrides": [
+      "docs/evaluation/characters/T-137/f1a/girl_auburn_bun_glasses.eyes.override.json",
+      "docs/evaluation/characters/T-159/overrides/girl_auburn_bun_glasses.ears.override.json",
+      "docs/evaluation/characters/T-159/overrides/girl_auburn_bun_glasses.temple.override.json"
+     ],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/3",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/versions/0.13.0/spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "girl_auburn_bun_glasses candidate 0.14.0 spec.resolved.json",
+     "overrides": [],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/3",
+      "groom": "groom/4",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/versions/0.14.0/spec.resolved.json"
+    },
+    {
+     "defaulted": [],
+     "label": "girl_auburn_bun_glasses candidate 0.14.0 spec.resolved.json + girl_auburn_bun_glasses.eyes.override.json",
+     "overrides": [
+      "docs/evaluation/characters/T-137/f1a/girl_auburn_bun_glasses.eyes.override.json"
+     ],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/3",
+      "groom": "groom/4",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/versions/0.14.0/spec.resolved.json"
+    },
+    {
+     "defaulted": [],
+     "label": "girl_auburn_bun_glasses candidate 0.14.0 spec.resolved.json + girl_auburn_bun_glasses.ears.override.json",
+     "overrides": [
+      "docs/evaluation/characters/T-159/overrides/girl_auburn_bun_glasses.ears.override.json"
+     ],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/3",
+      "groom": "groom/4",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/versions/0.14.0/spec.resolved.json"
+    },
+    {
+     "defaulted": [],
+     "label": "girl_auburn_bun_glasses candidate 0.14.0 spec.resolved.json + girl_auburn_bun_glasses.temple.override.json",
+     "overrides": [
+      "docs/evaluation/characters/T-159/overrides/girl_auburn_bun_glasses.temple.override.json"
+     ],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/3",
+      "groom": "groom/4",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/versions/0.14.0/spec.resolved.json"
+    },
+    {
+     "defaulted": [],
+     "label": "girl_auburn_bun_glasses candidate 0.14.0 spec.resolved.json + all 3 new overrides of this ref",
+     "overrides": [
+      "docs/evaluation/characters/T-137/f1a/girl_auburn_bun_glasses.eyes.override.json",
+      "docs/evaluation/characters/T-159/overrides/girl_auburn_bun_glasses.ears.override.json",
+      "docs/evaluation/characters/T-159/overrides/girl_auburn_bun_glasses.temple.override.json"
+     ],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/3",
+      "groom": "groom/4",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/versions/0.14.0/spec.resolved.json"
+    },
+    {
+     "defaulted": [],
+     "label": "girl_white_hair_blue_dress candidate 0.1.0 spec.resolved.json",
+     "overrides": [],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/3",
+      "groom": "groom/4",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_white_hair_blue_dress/versions/0.1.0/spec.resolved.json"
+    },
+    {
+     "defaulted": [],
+     "label": "girl_white_hair_blue_dress candidate 0.1.0 spec.resolved.json + girl_white_hair_blue_dress.eyes.override.json",
+     "overrides": [
+      "docs/evaluation/characters/T-137/f1b/girl_white_hair_blue_dress.eyes.override.json"
+     ],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/3",
+      "groom": "groom/4",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_white_hair_blue_dress/versions/0.1.0/spec.resolved.json"
+    },
+    {
+     "defaulted": [],
+     "label": "girl_white_hair_blue_dress candidate 0.1.0 spec.resolved.json + girl_white_hair_blue_dress.fringe.override.json",
+     "overrides": [
+      "docs/evaluation/characters/T-137/f1b/girl_white_hair_blue_dress.fringe.override.json"
+     ],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/3",
+      "groom": "groom/4",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_white_hair_blue_dress/versions/0.1.0/spec.resolved.json"
+    },
+    {
+     "defaulted": [],
+     "label": "girl_white_hair_blue_dress candidate 0.1.0 spec.resolved.json + girl_white_hair_blue_dress.ears.override.json",
+     "overrides": [
+      "docs/evaluation/characters/T-159/overrides/girl_white_hair_blue_dress.ears.override.json"
+     ],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/3",
+      "groom": "groom/4",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_white_hair_blue_dress/versions/0.1.0/spec.resolved.json"
+    },
+    {
+     "defaulted": [],
+     "label": "girl_white_hair_blue_dress candidate 0.1.0 spec.resolved.json + girl_white_hair_blue_dress.temple.override.json",
+     "overrides": [
+      "docs/evaluation/characters/T-159/overrides/girl_white_hair_blue_dress.temple.override.json"
+     ],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/3",
+      "groom": "groom/4",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_white_hair_blue_dress/versions/0.1.0/spec.resolved.json"
+    },
+    {
+     "defaulted": [],
+     "label": "girl_white_hair_blue_dress candidate 0.1.0 spec.resolved.json + all 4 new overrides of this ref",
+     "overrides": [
+      "docs/evaluation/characters/T-137/f1b/girl_white_hair_blue_dress.eyes.override.json",
+      "docs/evaluation/characters/T-137/f1b/girl_white_hair_blue_dress.fringe.override.json",
+      "docs/evaluation/characters/T-159/overrides/girl_white_hair_blue_dress.ears.override.json",
+      "docs/evaluation/characters/T-159/overrides/girl_white_hair_blue_dress.temple.override.json"
+     ],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/3",
+      "groom": "groom/4",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_white_hair_blue_dress/versions/0.1.0/spec.resolved.json"
+    }
+   ],
+   "sha": "49b3f565b353cfdd0e3a915cda33ac14aeec3ee1",
+   "spec_files": [
+    {
+     "defaulted": [],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "none",
+      "body": "body_generic/1",
+      "exporter": "export/4",
+      "face": "face_generic/1",
+      "garment": "garment/1",
+      "groom": "hair_clumps/1",
+      "materials": "presets/1",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.0.0-dev.spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "none",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/2",
+      "garment": "garment/1",
+      "groom": "groom/2",
+      "materials": "presets/2",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.0.0.spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "none",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/3",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.1.0.spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "none",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/3",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.2.0.spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "none",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/3",
+      "groom": "groom/4",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.3.0.spec.json"
+    },
+    {
+     "defaulted": [
+      "accessories",
+      "body",
+      "exporter",
+      "face",
+      "garment",
+      "groom",
+      "materials",
+      "rig"
+     ],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "body_v6/1",
+      "body": "body_v6/1",
+      "exporter": "export/4",
+      "face": "body_v6/1",
+      "garment": "body_v6/1",
+      "groom": "hair_clumps/1",
+      "materials": "body_v6/1",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "none",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/3",
+      "groom": "groom/4",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/boy_yellow_hoodie/spec/candidates/T-155/boy_yellow_hoodie.2.3.0.spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/3",
+      "groom": "groom/4",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/spec/candidates/T-155/girl_auburn_bun_glasses.0.14.0.spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/2",
+      "garment": "garment/1",
+      "groom": "groom/2",
+      "materials": "presets/2",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.11.0.spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/3",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.12.0.spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/3",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.13.0.spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/3",
+      "groom": "groom/4",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.14.0.spec.json"
+    },
+    {
+     "defaulted": [
+      "accessories",
+      "body",
+      "exporter",
+      "face",
+      "garment",
+      "groom",
+      "materials",
+      "rig"
+     ],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/1",
+      "exporter": "export/4",
+      "face": "face_generic/1",
+      "garment": "garment/1",
+      "groom": "groom/1",
+      "materials": "presets/1",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/2",
+      "groom": "groom/2",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_white_hair_blue_dress/spec/candidates/T-126a/girl_white_hair_blue_dress.0.1.0.spec.json"
+    },
+    {
+     "defaulted": [],
+     "label": "spec file",
+     "overrides": [],
+     "pins": {
+      "accessories": "accessories/1",
+      "body": "body_generic/2",
+      "exporter": "export/4",
+      "face": "face_generic/3",
+      "garment": "garment/3",
+      "groom": "groom/4",
+      "materials": "presets/3",
+      "rig": "rigify_human/1"
+     },
+     "spec": "assets/characters/girl_white_hair_blue_dress/spec/candidates/T-155/girl_white_hair_blue_dress.0.1.0.spec.json"
+    }
+   ]
+  }
+ ],
+ "schema": "plush-studio.t144-deps/1"
+}

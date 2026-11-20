@@ -1,0 +1,112 @@
+{
+ "schema": "plush-studio.t144-pin-matrix/1",
+ "input": "origin/integration/t-137@c2b4d13",
+ "pinned_keep": {
+  "current": {
+   "boy_yellow_hoodie 2.2.0": "spec/boy_yellow_hoodie.2.2.0.spec.json",
+   "girl_auburn_bun_glasses 0.13.0": "spec/girl_auburn_bun_glasses.0.13.0.spec.json",
+   "pins": [
+    "body_generic/2",
+    "face_generic/3",
+    "groom/3",
+    "garment/2",
+    "accessories/1|none",
+    "rigify_human/1",
+    "presets/3",
+    "export/4"
+   ]
+  },
+  "candidates_T-155": {
+   "boy_yellow_hoodie 2.3.0": "t-132-claude-versions@f28fe2a versions/2.3.0/spec.resolved.json",
+   "girl_auburn_bun_glasses 0.14.0": "f28fe2a versions/0.14.0/spec.resolved.json",
+   "girl_white_hair_blue_dress 0.1.0": "spec/candidates/T-126a + T-126 hair (groom/4) + dress (garment/3) overrides; pipeline/charsys/tests/owner_approved_candidates.json",
+   "pins": [
+    "body_generic/2",
+    "face_generic/3",
+    "groom/4",
+    "garment/3",
+    "accessories/1|none",
+    "rigify_human/1",
+    "presets/3",
+    "export/4"
+   ]
+  },
+  "T-141": {
+   "branch": "t-141-claude-hair-curves@1a70299",
+   "pins": [],
+   "note": "post-build tool on built masters (auburn 0.13/0.14, third 0.1.0); registers no version, pins nothing"
+  }
+ },
+ "retire_candidates": {
+  "body": [
+   "body_v6/1",
+   "body_generic/1"
+  ],
+  "face": [
+   "body_v6/1",
+   "face_generic/1",
+   "face_generic/2"
+  ],
+  "groom": [
+   "hair_clumps/1",
+   "groom/1",
+   "groom/2"
+  ],
+  "garment": [
+   "body_v6/1",
+   "garment/1"
+  ],
+  "accessories": [
+   "body_v6/1"
+  ],
+  "materials": [
+   "body_v6/1",
+   "albedo/1",
+   "presets/1",
+   "presets/2"
+  ],
+  "exporter": [
+   "export/5"
+  ],
+  "already_retired": [
+   "groom hair_clumps/2",
+   "exporter export/1",
+   "exporter export/2",
+   "exporter export/3"
+  ]
+ },
+ "published_pins_of_candidates": {
+  "boy 1.0.0, 1.1.0": [
+   "body_v6/1 x5",
+   "hair_clumps/1"
+  ],
+  "boy 2.0.0": [
+   "face_generic/2",
+   "groom/2",
+   "garment/1",
+   "presets/2"
+  ],
+  "girl 0.10.0": [
+   "body_generic/1",
+   "face_generic/1",
+   "groom/1",
+   "garment/1",
+   "presets/1"
+  ],
+  "girl 0.11.0": [
+   "face_generic/2",
+   "groom/2",
+   "garment/1",
+   "presets/2"
+  ]
+ },
+ "module_chain_blocks_archiving": {
+  "groom.py (groom/1)": "imported by groom_hybrid(groom/2)->groom_r4(groom/3)->groom_r5(groom/4); groom.py imports hair.py (hair_clumps/1)",
+  "face_generic.py (face/1,/2)": "imported by face_generic_v3 (face/3); face.py imported by both",
+  "garments/ (garment/1)": "imported by garments_v2 (garment/2) and garments_v3 (garment/3)",
+  "body_generic.py": "implements body_generic/1 and /2 (one module)",
+  "materials/builder.py presets/1,/2": "presets/3 extends the same builder and library",
+  "export_engine.py export/5": "same module as export/4 (code path)",
+  "body_v6.py": "frozen file (tools/frozen_manifest.txt); imported by build_character.py and pipeline/clips/build_mannequin.py"
+ }
+}
