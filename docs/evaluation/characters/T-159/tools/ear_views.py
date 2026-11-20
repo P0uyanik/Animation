@@ -1,9 +1,9 @@
 """T-159 Part B: ear close-ups of a master (front, 3/4, side; orthographic, 100 % pixels).
 
-    blender -b --factory-startup -P docs/evaluation/characters/T-159/tools/ear_views.py -- <master.blend> <out dir> [preview|full]
+    blender -b --factory-startup -P docs/evaluation/characters/T-159/tools/ear_views.py -- <master.blend> <out dir> [preview|full|nohair]
 
 preview: hair fibre objects (*.fibres*) hidden, 16 samples (cheap; the felt hair volumes still show the coverage).
-full: everything, 48 samples. Frame 0.22 m / 512 px centred on the character's left ear. Read-only."""
+full: everything, 48 samples. nohair: hair objects hidden (the ear itself where the hair covers it), 48 samples. Frame 0.22 m / 512 px centred on the character's left ear. Read-only."""
 import math
 import os
 import sys
@@ -34,7 +34,7 @@ w.node_tree.nodes["Background"].inputs[1].default_value = 0.8
 for o in bpy.data.objects:
     if o.type == "LIGHT":
         o.hide_render = True
-    elif o.name.startswith("LM_") or (mode == "preview" and ".fibres" in o.name):
+    elif o.name.startswith("LM_") or (mode == "preview" and ".fibres" in o.name) or (mode == "nohair" and o.name.startswith("hair_")):
         o.hide_render = True
 ld = bpy.data.lights.new("t159_key", "SUN")
 ld.energy = 3.0

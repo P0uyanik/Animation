@@ -72,5 +72,49 @@ hashes as above, rebuilt).
 - Not run: full strict sheets, fidelity score, test_determinism, ctest (Part A changes no default build).
 - The full-material sheets show `front_fade_m` only (rendered before the seam fix).
 
-## Part B: ears
-Not started.
+## Part B: ears, all three
+
+Specs: T-155 candidates (boy 2.3.0, girl 0.14.0, third 0.1.0), girls with the Part A override. Hair is the candidates'
+groom/4.
+
+### Findings (before)
+- Shape: a squashed sphere with one shallow dent; no rim, the bowl barely reads. References: a rounded C ear with a rim
+  and a bowl that opens towards the face.
+- Colour: ears render pale grey next to the face. Same material as the face (`M_skin_face`), same albedo; the thin ear
+  lets the subsurface light straight through (uniform-light test). Object coordinates are not the cause (first
+  guess, tested and dropped).
+- Position (outer edge of the ear / eye half-spacing, front view; landmarks.json): boy 2.67 (ref 2.54-2.63), girl 2.86
+  (ref 2.74), third 2.68 (ref 2.37). Height below the eye line matches (12 / 12 / 27 mm vs 12 / 12 / 31 mm).
+- Coverage: both girls' side hair covers the ears in every view; the references show the ear in front of the hair.
+  Hair files: forwarded to hair round 7 (T-167), not changed here.
+
+### Changes (opt-in, `face_generic.build_ears` only)
+- `face.ears.shape` {subdiv, bowl_depth, bowl_size, bowl_centre, bowl_edge, rim, back_flat}: C-shaped ear. One shape
+  for all three: bowl 0.9 deep, centre [-0.5, -0.05] (front), size [0.75, 0.62], rim 0.3, back_flat 0.6.
+- `face.ears.subsurface` 0.3: the ears use a copy of the face skin (`M_skin_face.ear`) with 30 % of its subsurface
+  weight; the ear then matches the face skin.
+- Position overrides: boy `out_m` 0.006 -> -0.002 (2.63); girl `out_m` 0.004 -> -0.006, `yaw_deg` 32 -> 28 (2.74);
+  third `out_m` 0.004 -> -0.007, `yaw_deg` 32 -> 28 (2.55: the ear stays 20 mm outside the head side as in id01; the
+  reference ratio 2.37 would need a narrower head, not an ear change). Size and height unchanged.
+- Overrides: `overrides/<id>.ears.override.json`. No spec, version or current change.
+
+### Evidence
+- `ears/<char>_ears.jpg`: reference | before | after; front, 3/4, side; 100 % pixels (ortho 0.22 m / 512 px), full
+  materials and hair.
+- `ears/girl_ears_nohair.jpg`, `ears/third_ears_nohair.jpg`: the same crops with the hair hidden (before / after),
+  because the girls' hair covers the ear.
+- Strict sheets: `boy_2.2.0_vs_t159.recipe.json`, `girl_0.13.0_vs_t159.recipe.json`, `tools/third_sheet.py`
+  (see `boy/`, `girl/`, `third/`).
+- Default unchanged: strict mesh hashes of default builds (no override) equal the base code's for all three
+  (boy 223 objects: `ears/hash_boy_default_base.json` = `hash_boy_default_t159.json`; girl 224, third 199: same hashes as
+  `temple/hash_*`, rebuilt with the final code).
+- Tool: `tools/ear_views.py`.
+
+### Tests
+- `python3 pipeline/charsys/tests/test_ears_shape.py --blender blender`: 8/8. Blender unit `ears-shape`
+  (`tools/check_all.py`, shard 1).
+
+### Open
+- Girls: the ear change is not visible until the hair is tucked behind the ear (T-167).
+- Third girl: ear / eye-spacing ratio 2.55 vs 2.37 (head width).
+- Not run: fidelity score, test_determinism, ctest, full check_all.
