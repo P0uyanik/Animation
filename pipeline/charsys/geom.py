@@ -180,12 +180,13 @@ def surface_point(ob, origin, direction, max_dist=2.0):
 _UV_SPHERE_TOPOLOGY = None
 
 
-def _recorded_uv_sphere_topology(bm, segments, rings):
-    """T-158: create_uvsphere returns its faces and edges in a run-dependent order and edge direction (its vertex
-    order and face corners are stable), which moves later SUBSURF / bisect results by float ulps. Rebuild the sphere
-    with the edge and face order of one recorded run (uv_sphere_topology.json, recorded by
-    docs/evaluation/characters/T-158/record_uv_sphere_topology.py), so every build gets that same order. A size
-    without a recording keeps the live order."""
+def _recorded_uv_sphere_topology(bm, segments, rings, radius):
+    """T-158: create_uvsphere returns its faces and edges in a run-dependent order and edge direction (face corners
+    are stable), which moves later SUBSURF / bisect results by float ulps. Rebuild the sphere (still at its creation
+    radius, before scale/centre) with the edge and face order of one recorded radius-1 run (uv_sphere_topology.json,
+    recorded by docs/evaluation/characters/T-158/record_uv_sphere_topology.py). The vertex order and positions stay
+    the live ones (the seam merge orders vertices differently at small radii); recorded vertices are matched to live
+    ones by direction. A size without a recording keeps the live order."""
     global _UV_SPHERE_TOPOLOGY
     if _UV_SPHERE_TOPOLOGY is None:
         import json
@@ -197,27 +198,42 @@ def _recorded_uv_sphere_topology(bm, segments, rings):
     if rec is None:
         print(f"[geom.uv_sphere] no recorded topology for {segments}x{rings}: live (run-dependent) order")
         return bm
+    unit = bmesh.new()  # radius 1: the vertex order the recording refers to
+    bmesh.ops.create_uvsphere(unit, u_segments=segments, v_segments=rings, radius=1.0)
+    from mathutils.kdtree import KDTree
     bm.verts.index_update()
-    live = sorted(tuple(sorted(v.index for v in f.verts)) for f in bm.faces)
-    if len(bm.verts) != rec["vertices"] or live != sorted(tuple(sorted(f)) for f in rec["faces"]):
+    tree = KDTree(len(bm.verts))
+    for v in bm.verts:
+        tree.insert(v.co / radius, v.index)
+    tree.balance()
+    remap = []  # recorded (unit) index -> live index
+    for v in unit.verts:
+        _co, idx, dist = tree.find(v.co)
+        remap.append(idx if dist < 1e-4 else -1)
+    n_unit = len(unit.verts)
+    unit.free()
+    if n_unit != rec["vertices"] or len(bm.verts) != n_unit or sorted(remap) != list(range(n_unit)):
         raise ValueError(f"uv_sphere {segments}x{rings}: create_uvsphere no longer matches the recorded topology")
     co = [v.co.copy() for v in bm.verts]
+    want = sorted(tuple(sorted(remap[i] for i in f)) for f in rec["faces"])
+    if want != sorted(tuple(sorted(v.index for v in f.verts)) for f in bm.faces):
+        raise ValueError(f"uv_sphere {segments}x{rings}: create_uvsphere no longer matches the recorded topology")
     bm.free()
     bm = bmesh.new()
     vs = [bm.verts.new(c) for c in co]
     for a, b in rec["edges"]:
-        bm.edges.new((vs[a], vs[b]))
+        bm.edges.new((vs[remap[a]], vs[remap[b]]))
     for f in rec["faces"]:
-        bm.faces.new([vs[i] for i in f])
+        bm.faces.new([vs[remap[i]] for i in f])
     return bm
 
 
 def uv_sphere(name, center, radius, collection, segments=48, rings=24, scale=(1, 1, 1)):
     bm = bmesh.new()
     bmesh.ops.create_uvsphere(bm, u_segments=segments, v_segments=rings, radius=radius)
+    bm = _recorded_uv_sphere_topology(bm, segments, rings, radius)
     for v in bm.verts:
         v.co = Vector((v.co.x * scale[0], v.co.y * scale[1], v.co.z * scale[2])) + Vector(center)
-    bm = _recorded_uv_sphere_topology(bm, segments, rings)
     me = bpy.data.meshes.new(name)
     bm.to_mesh(me)
     bm.free()
