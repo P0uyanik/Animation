@@ -190,11 +190,13 @@ Result<std::vector<SceneEvent>> reactionEventsFromJson(const Json& j);
 //   "visibleGrip": bool      grasps keep the held prop visible from the shot camera: the palm meets the prop on its
 //                            socket's far side from the camera when the prop has a mirrored socket ("<socket>_far"
 //                            is not needed: see interaction.cpp)
+//   "graspFit": bool         T-138: banded finger grasps fit the band to the hand (anim: HandPose::bandFit)
 struct InteractionOptions {
   bool headVolumes = false;
   float headClearance = 0.03f;
   bool followSharedProp = false;
   bool visibleGrip = false;
+  bool graspFit = false;  // T-138
 };
 Result<InteractionOptions> interactionOptionsFromJson(const Json& j);
 

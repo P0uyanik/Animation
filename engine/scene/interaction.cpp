@@ -866,6 +866,8 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
       const float k = glm::length(vec3(propWorld(size_t(p), contact)[0]));
       const float c0 = glm::length(gs.axis) > 0 ? glm::dot(gs.centre, glm::normalize(gs.axis)) : 0.0f;
       key(gen, h.pose + ".band", start, vec3((style.band->x - c0) * k, (style.band->y - c0) * k, style.thumb), Interp::Step);
+      if (interactionOptionsFromJson(scene_.interaction).value_or(InteractionOptions{}).graspFit)  // T-138 (opt-in)
+        key(gen, h.pose + ".bandFit", start, vec3(1), Interp::Step);
     }
     // T-112c: on a box face (verb grasps with the finger gate, "graspFace": true) the fingers search the face slab:
     // wrap, pinch and palm (the flat hand's fingers rest on the face instead of standing in it or off it).
