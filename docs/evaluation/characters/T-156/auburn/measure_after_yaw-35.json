@@ -1,5 +1,5 @@
 {
- "blend": "A17",
+ "blend": "A22",
  "camera": "strict",
  "yaw_deg": -35.0,
  "px": [
@@ -15,15 +15,15 @@
     "iris_d_w": 0.8593,
     "iris_x_from_outer_w": 0.5483,
     "iris_y_from_top_h": 0.5039,
-    "white_above_w": 0.2718,
+    "white_above_w": 0.2524,
     "white_below_w": 0.1845,
     "white_inner_w": 0.0,
     "white_outer_w": 0.1165,
-    "arch_w": 0.8984,
-    "inner_angle_deg": 150.1196,
+    "arch_w": 0.8915,
+    "inner_angle_deg": 150.027,
     "outer_angle_deg": 154.3503,
     "inner_drop_w": 0.4699,
-    "apex_from_outer_w": 0.4684,
+    "apex_from_outer_w": 0.4539,
     "iris_d_spacing": 0.3402
    },
    "trace_px": {
@@ -42,7 +42,7 @@
      336.5
     ],
     "peak": [
-     1009.5,
+     1012.5,
      197
     ],
     "iris": [
@@ -67,11 +67,11 @@
     "white_above_w": 0.1345,
     "white_below_w": 0.0965,
     "white_inner_w": 0.0,
-    "white_outer_w": 0.3041,
-    "arch_w": 0.511,
+    "white_outer_w": 0.307,
+    "arch_w": 0.5092,
     "inner_angle_deg": 147.3569,
-    "outer_angle_deg": 132.0822,
-    "inner_drop_w": -0.1623,
+    "outer_angle_deg": 132.338,
+    "inner_drop_w": -0.1579,
     "apex_from_outer_w": 0.5789,
     "iris_d_spacing": 0.4253
    },
@@ -84,7 +84,7 @@
     ],
     "corner_left": [
      242,
-     426.0
+     424.5
     ],
     "corner_right": [
      583,

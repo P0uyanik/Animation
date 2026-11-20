@@ -28,36 +28,39 @@
        "Laugh": -1.0,
        "Squint": 0.0
       }
-     }
+     },
+     "shell_subsurface": 0.0,
+     "shell_occlusion_tint": 0.5,
+     "sink_m": 0.005
     },
     "upper_yaw_deg": 8,
     "trim": {
-     "up_outer_deg": 46,
-     "lo_outer_deg": 2,
-     "lo_inner_deg": 2
+     "up_outer_deg": 44,
+     "lo_outer_deg": 0.4,
+     "lo_inner_deg": 0.4
     }
    },
    "lash": {
     "srgb": [
-     40,
-     26,
-     24
+     60,
+     37,
+     30
     ],
-    "span_deg": 36,
+    "span_deg": 41,
     "strands": {
-     "from_deg": 20,
-     "to_deg": 35,
-     "count": 5,
+     "from_deg": 22,
+     "to_deg": 39,
+     "count": 6,
      "length_m": [
-      0.0025,
-      0.0035,
-      0.0042
+      0.003,
+      0.004,
+      0.0048
      ],
-     "width_m": 0.001,
+     "width_m": 0.0013,
      "outward": 0.5
     },
-    "thick_m": 0.0013,
-    "flare": 0.8,
+    "thick_m": 0.0017,
+    "flare": 1.0,
     "lower_strands": {
      "count": 0
     }

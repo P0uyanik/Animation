@@ -1,5 +1,5 @@
 {
- "blend": "A17",
+ "blend": "A22",
  "camera": "strict",
  "yaw_deg": 0.0,
  "px": [
@@ -18,11 +18,11 @@
     "white_above_w": 0.0778,
     "white_below_w": 0.0359,
     "white_inner_w": 0.0,
-    "white_outer_w": 0.2365,
-    "arch_w": 0.5491,
+    "white_outer_w": 0.2395,
+    "arch_w": 0.5463,
     "inner_angle_deg": 148.2467,
-    "outer_angle_deg": 136.2039,
-    "inner_drop_w": 0.0195,
+    "outer_angle_deg": 136.508,
+    "inner_drop_w": 0.0254,
     "apex_from_outer_w": 0.524,
     "iris_d_spacing": 0.3807
    },
@@ -39,7 +39,7 @@
     ],
     "corner_right": [
      1174,
-     389.0
+     387.0
     ],
     "peak": [
      999.0,
@@ -67,11 +67,11 @@
     "white_above_w": 0.0778,
     "white_below_w": 0.0359,
     "white_inner_w": 0.0,
-    "white_outer_w": 0.2365,
-    "arch_w": 0.5498,
+    "white_outer_w": 0.2395,
+    "arch_w": 0.5448,
     "inner_angle_deg": 148.2633,
-    "outer_angle_deg": 136.0362,
-    "inner_drop_w": 0.015,
+    "outer_angle_deg": 136.5776,
+    "inner_drop_w": 0.0254,
     "apex_from_outer_w": 0.524,
     "iris_d_spacing": 0.3807
    },
@@ -84,7 +84,7 @@
     ],
     "corner_left": [
      105,
-     390.0
+     386.5
     ],
     "corner_right": [
      438,

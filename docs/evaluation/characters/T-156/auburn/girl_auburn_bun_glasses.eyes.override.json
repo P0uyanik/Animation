@@ -16,9 +16,9 @@
     "lower_thickness_m": 0.0005,
     "upper_yaw_deg": 8,
     "trim": {
-     "up_outer_deg": 46,
-     "lo_outer_deg": 2,
-     "lo_inner_deg": 2
+     "up_outer_deg": 44,
+     "lo_outer_deg": 0.4,
+     "lo_inner_deg": 0.4
     },
     "closed_fit": {
      "lash_curve": {
@@ -34,33 +34,35 @@
        "Laugh": -1.0,
        "Squint": 0.0
       }
-     }
+     },
+     "shell_subsurface": 0.0,
+     "shell_occlusion_tint": 0.5
     }
    },
    "lash": {
     "srgb": [
-     52,
-     32,
-     26
+     70,
+     40,
+     28
     ],
-    "span_deg": 36,
-    "thick_m": 0.0013,
+    "span_deg": 41,
+    "thick_m": 0.0019,
     "strands": {
-     "from_deg": 20,
-     "to_deg": 35,
+     "from_deg": 22,
+     "to_deg": 39,
      "length_m": [
-      0.0025,
-      0.0035,
-      0.0042
+      0.003,
+      0.004,
+      0.0048
      ],
-     "count": 5,
-     "width_m": 0.001,
+     "count": 6,
+     "width_m": 0.0013,
      "outward": 0.5
     },
     "lower_strands": {
      "count": 0
     },
-    "flare": 0.8
+    "flare": 1.0
    },
    "socket": {
     "ramp_deg": 12,
