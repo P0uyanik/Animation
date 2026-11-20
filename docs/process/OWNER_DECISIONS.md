@@ -626,3 +626,32 @@ mismatches) BEFORE removing anything. Plan: `t-144-claude-retire-versions@8a3406
 3. Temporary session cap 8 until 08:20Z, then 6.
 4. No other new tasks; lanes; merges batched per lane.
 Codex T-161 (relay f33c4868): reference targets for lashes, ears, hair silhouette → forward targets.json to T-156/T-160.
+
+## 2026-11-20 ~08:10Z — Workflow efficiency R5 (relayed by the original Supervisor)
+Report `docs/process/WORKFLOW_EFFICIENCY_R5.md` (+ `docs/process/T-162/data.csv`, branch
+`t-162-claude-workflow-efficiency@b07c29e`, a review separate from the T-162 status board) merged docs-only.
+Implement now, within lanes and cap: (1) the gate posts/edits the PR #2 comment only for integration/*, staging, main;
+no session subscribes to PR #2, waits use one background `gh run watch`; checks and coverage unchanged → T-164.
+(3) `tools/ready.py` preflight (branch pushed, claim + write-set, new tests registered, doc links) then ONE short READY
+line to the parent with the session's cost and context size; IMPLEMENTER_PROMPT updated → T-165.
+(4) Rework rule (context > ~250k and narrow feedback → fresh session with pointer brief or after compaction; one
+consolidated feedback message per round) → WORKFLOW.md, IMPLEMENTER_PROMPT.md (Supervisor, done).
+(5) Shared task kit: shot before/after sheet tool, logged-run wrapper keeping full logs, gate-wait helper,
+one-render-at-a-time queue; reuse tools/review/recipe.py; new tasks point at the kit → T-165 (with item 3).
+Item 2 (liaison rotation) NOT now: the owner picks the time. Rules: analysis-backed, no weakening of checks, revertible.
+
+## 2026-11-20 ~08:20Z — T-155 approved, T-157 stays opt-in, T-124 defaults (relayed by the original Supervisor)
+1. T-155 approved: make boy 2.3.0 and girl 0.14.0 CURRENT (version_switch, fidelity_baseline rebaseline citing this
+   decision, golden/version index; full gate green before promote). Publish the third character 0.1.0 as her first
+   version. If any check fails: stop and report; no loosening.
+2. T-157: keep the wider contact band (option a) OPT-IN; revisit after hands round 2 is done and verified. Hands round 2
+   starts once T-155 is published (queue).
+3. T-124: `final720` becomes the DEFAULT final render setting (720p, adaptive threshold 0.05, persistent data; others as
+   measured); the old 128 spp/0.01 preset stays available by name. Delivery: HEVC 10-bit default encode, H.264 8-bit as
+   compatibility fallback (settings per the T-124 README); masters stay lossless. Small task (→ T-166): defaults in
+   shot_render/run_shot and the encode step, docs/tests (assert new default + fallback), revertible, full gate green;
+   golden/image tests that depend on the old preset keep their own pinned preset; nothing weakened.
+
+## 2026-11-20 ~08:30Z — Owner liaison rotation
+New owner liaison: session_01NPjxeKamtbdzi3YwrgsWXU ("Plush Studio – Owner liaison"); owner-facing reports and
+READY/decision requests go there, not to session_01NPjxeNTmHt2DtBN8F8uLqB. Handover: [LIAISON_HANDOVER](LIAISON_HANDOVER.md).

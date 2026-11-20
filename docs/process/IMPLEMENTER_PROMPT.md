@@ -119,5 +119,9 @@ only. STATUS/READY in a few lines (what changed, evidence path, open issues); no
 repeated summaries. Reports and READMEs: short, facts and measurements, no padding. Do not re-read large files or
 re-run renders without need.
 
+Waiting and rework (owner 2026-11-20 ~08:10Z): never subscribe to PR #2; to wait on your own CI run use one
+background `gh run watch <id>`. If your context is over ~250k tokens when narrow review feedback arrives, say so in
+one line; the Supervisor may move the rework to a fresh session with a pointer brief.
+
 Wait for your first task prompt. Do not start any work before you receive it.
 ```

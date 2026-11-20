@@ -1,8 +1,8 @@
 # Status board
 
 Updated by the Supervisor in the same commit as every merge or dispatch. Sources: [TASK_LOG](TASK_LOG.md),
-[OWNERSHIP](OWNERSHIP.md), [OWNER_DECISIONS](OWNER_DECISIONS.md) (2026-11-20). As of 2026-11-20 ~07:40Z.
-Session cap: 8 until 08:20Z, then 6. ETA "—" = none given yet.
+[OWNERSHIP](OWNERSHIP.md), [OWNER_DECISIONS](OWNER_DECISIONS.md) (2026-11-20). As of 2026-11-20 ~08:20Z.
+Session cap: 6 (temporary 8 ended 08:20Z). Owner liaison: session_01NPjxeKamtbdzi3YwrgsWXU (from ~08:30Z). ETA "—" = none given yet.
 
 ## Character look
 | Task | Model | State | ETA | Branch |
@@ -18,13 +18,13 @@ Codex T-161 reference targets (lashes, ears, hair silhouette) go to T-156 and T-
 | Task | Model | State | ETA | Branch |
 | --- | --- | --- | --- | --- |
 | T-154 guard allowlist + T-137 faces (F1a/F1b/F2, owner-approved ~07:00Z) | — | on `integration/t-137`, gate running | — | `integration/t-137` |
-| T-155 candidates boy 2.3.0, girl 0.14.0, third 0.1.0 (current versions unchanged) | Opus 5.5 | published on branch, sheets rendering | — | `t-155-claude-candidates-r2` |
+| T-155 boy 2.3.0 / girl 0.14.0 → CURRENT, third 0.1.0 first version (owner ~08:20Z) | Opus 5.5 | version switch + rebaseline | — | `t-155-claude-candidates-r2` |
 
 ## Interaction
 | Task | Model | State | ETA | Branch |
 | --- | --- | --- | --- | --- |
-| T-157 grasp gap: wider band vs fewer fingers (opt-in) | Opus 5.5 | gate green; batched with T-163 on `integration/t-163` | — | `t-157-claude-grasp-options` |
-| Hands round 2 | — | queued: starts after T-157 and T-155 | — | — |
+| T-157 grasp gap: wider band (a) stays opt-in until hands round 2 | Opus 5.5 | merged (Interaction batch) | — | — |
+| Hands round 2 (then revisit T-157 option a default) | — | queued: starts once T-155 is published | — | — |
 
 ## Other
 | Task | Model | State | ETA | Branch |
@@ -34,17 +34,23 @@ Codex T-161 reference targets (lashes, ears, hair silhouette) go to T-156 and T-
 | T-153 fidelity score v2 | Opus | merged; experimental, default stays v1 | — | `t-153-claude-fidelity-v2` |
 | T-161 Codex reference targets | Codex | assigned (relay f33c4868); Codex limited until 2026-11-23 ~21:43Z | — | — |
 | T-162 this board | Sonnet 5.5 | merged; Supervisor maintains | — | — |
-| T-163 starter felt prop library (docs/evaluation/props/T-163/contact_sheet_render.png) | Sonnet 5.5 | on `integration/t-163`, gate running | — | `t-163-claude-props` |
+| T-164 gate PR #2 comment only for integration/staging/main | Sonnet 5.5 | running | — | `t-164-claude-gate-comment` |
+| T-165 shared task kit + tools/ready.py | Opus 5.5 | running | — | `t-165-claude-task-kit` |
+| T-163 starter felt prop library (docs/evaluation/props/T-163/contact_sheet_render.png) | Sonnet 5.5 | merged (Interaction batch) | — | — |
 
 ## Waiting for owner
-Sheets are paths in text (branch: path).
-1. T-155 candidate sheets (reference | current | new | target, eye crops, expressions): pending from T-155. Then the
-   owner's one-word OK makes boy 2.3.0 / girl 0.14.0 CURRENT (version_switch + fidelity rebaseline); third 0.1.0 is her
-   first published version.
-2. T-157 make option (a) the default? Needs `felt_cup` side_a band [0.04, 0.095] (changes existing shots).
-   `t-157-claude-grasp-options`: `docs/evaluation/animation/T-157/`. Choices: 1 yes, 2 keep opt-in.
-3. T-141b: not approved; owner to discuss.
+1. Guard tests vs the approved current switch (expected to block T-155): `test_hair_r5` / `test_hands_r2` forbid any
+   CURRENT spec pinning groom/4 or body.hands, and the T-154 allowlist never exempts current versions. Making boy 2.3.0
+   / girl 0.14.0 current will fail them. Choices: 1 update the guards so a version made current by a named owner
+   decision (listed with its decision ref) passes, every other case still failing (recommended); 2 retire those two
+   guards now that groom/4 and hands_r2 are adopted; 3 postpone the current switch.
+2. T-141b: not approved; owner to discuss.
+
+## Queued (start conditions)
+- T-166 final720 default + HEVC 10-bit delivery (Sonnet): next free slot.
+- T-159 ears, T-144 option (b): after T-158 merges.
+- Hands round 2: after T-155 is published.
 
 ## Decided today (for reference)
 T-137 approved (~07:00Z); T-124 keep the existing final preset (~06:40Z); T-144 option (b) (~07:35Z); fidelity v2 stays
-experimental (~06:40Z); T-138 gap not accepted → T-157 (~06:40Z).
+experimental (~06:40Z); T-138 gap not accepted → T-157 (~06:40Z); T-155 approved, boy 2.3.0 / girl 0.14.0 → CURRENT, third 0.1.0 first version (~08:20Z); T-157 option (a) stays opt-in until hands round 2 (~08:20Z); T-124 final720 + HEVC default → T-166 (~08:20Z).

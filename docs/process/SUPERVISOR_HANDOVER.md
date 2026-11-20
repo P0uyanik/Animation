@@ -40,7 +40,7 @@ The older handover below (2026-11-17, "Option A") is background only, where it d
 ## 4. Communication (you are NOT elevated; keep it that way)
 - **Cloud implementers ↔ you:** `send_message` works both ways, so give implementers **your** session id. The
   `RELAY_LOG.md` line on branch `relay-channel` (posted to PR P0uyanik/Animation#2) remains the fallback.
-- **GitHub activity:** subscribe to PR P0uyanik/Animation#2 with `subscribe_pr_activity` (the old session has
+- **GitHub activity:** SUPERSEDED 2026-11-20 ~08:10Z: do NOT subscribe to PR #2; wait on own runs with `gh run watch`. (Old text: subscribe to PR P0uyanik/Animation#2 with `subscribe_pr_activity` (the old session has
   unsubscribed). It delivers relay reports and CI results.
 - **Codex (owner's PC):** assignments go **at the top of `NEXT_TASK.md`** on `relay-channel`; the PC session reads
   that file every ~5 min and replies with `| T-NNN | STARTED/READY |` lines in `RELAY_LOG.md`. A line only in
