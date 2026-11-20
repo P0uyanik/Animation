@@ -1,0 +1,15 @@
+{
+ "schema": "plush-studio.hair-curves/1",
+ "note": "T-141 experiment, girl_white_hair_blue_dress (T-126b hair): strands along the locks plus sparse curly flyaways; felt fibre layers kept.",
+ "seed": 1,
+ "structures": [
+  {"match": "hair_bow*", "skip": true},
+  {"match": "hair_bow*", "layer": "fly", "skip": true},
+  {"match": "hair_*"},
+  {"match": "hair_*", "layer": "fly", "density_per_m2": 1200, "length_m": 0.035, "length_variation": 0.5,
+   "lift_m": 0.002, "tip_lift_m": 0.012, "interpolate": null, "clump": null,
+   "curl": {"radius": 0.0025, "frequency": 45, "factor": 1.0, "start": 0.25},
+   "frizz": {"distance": 0.004, "shape": 0.5, "factor": 1.0}, "radius_m": 0.00025}
+ ],
+ "hide_fibre_layers": false
+}
