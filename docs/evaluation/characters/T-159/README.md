@@ -41,6 +41,8 @@ cut, +2.6 mm behind it); head width at the ear (y 0) and the face front are unch
 - `temple/girl_clay.jpg`, `temple/third_clay.jpg`: skin only, grey material, grazing light, 3/4 and side, 100 % pixels
   (ortho 0.20 m / 640 px), before | after. The ledge is the ragged vertical line in front of the ear.
 - `temple/girl_full.jpg`, `temple/third_full.jpg`: same views with the masters' materials and hair, before | after.
+  Girl: the ledge shows below the glasses arm before, gone after. Third girl: the groom/4 side hair covers the temple
+  in both views, so the change is only visible in the clay sheet.
 - Default unchanged: strict mesh hashes (T-158 `mesh_hash_strict.py`, all objects, basis + shape keys) of a default
   build with and without the code change are identical: girl 224 objects, third 199 objects
   (`temple/hash_*_default_base.json` = `hash_*_default_t159.json`). The `.blend` files themselves differ byte-wise
