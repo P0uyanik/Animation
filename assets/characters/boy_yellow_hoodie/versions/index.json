@@ -39,10 +39,18 @@
    "status": "approved",
    "spec_sha256": "3531de64befdb25bd7207f44baee146a255bb68fa1e1759c8fafd34f5aa7d559",
    "approval_notes": "new current version: \"Owner 2026-11-19 (~15:05Z, \"approve 2.2.0 and 0.13.0 as current\"): boy 2.2.0 and girl 0.13.0 become current. Fidelity score drop owner-accepted (boy 2.1.0 67.72 -> 2.2.0 67.25, girl 0.12.0 65.01 -> 0.13.0 64.13): the gains are the lid colour, the lens shelf and the expressions, which the score does not measure (see T-129).\" Recorded by T-131 (tools/version_switch.py)."
+  },
+  "2.3.0": {
+   "created": "2026-11-20T23:20:26+00:00",
+   "parent": "2.2.0",
+   "notes": "boy_yellow_hoodie 2.3.0 = R3: T-155 2.3.0 candidate + T-159 ears + T-168 face r4 + T-167 hair r6; spec assets/characters/boy_yellow_hoodie/spec/candidates/R3/boy_yellow_hoodie.2.3.0.spec.json (docs/evaluation/characters/R3/stack_specs.py)",
+   "status": "approved",
+   "spec_sha256": "6381fcb6b64d2c8f7b742cc1aff3d246130cd1852e4b03f38ef2dcc5c5b287c4",
+   "approval_notes": "new current version: \"release R3 as boy 2.3.0, girl 0.14.0 and third 0.1.0 and make 2.3.0/0.14.0 CURRENT\" Recorded by T-155 (tools/version_switch.py)."
   }
  },
  "pointers": {
-  "approved": "2.2.0",
+  "approved": "2.3.0",
   "reference": "1.0.0"
  },
  "history": [
@@ -115,6 +123,20 @@
    "previous": "2.3.0",
    "by": "owner (docs/process/OWNER_DECISIONS.md 2026-11-20 ~23:10 CET option A; confirmed directly in the implementer session): back to the current main version until the final OK on the R3 sheets",
    "notes": "R3 option A: 2.3.0 is rebuilt from the R3 specs for the release; pointer back to 2.2.0 meanwhile"
+  },
+  {
+   "at": "2026-11-20T23:20:26+00:00",
+   "action": "publish",
+   "version": "2.3.0",
+   "status": "candidate"
+  },
+  {
+   "at": "2026-11-20T23:20:26+00:00",
+   "action": "approve",
+   "version": "2.3.0",
+   "previous": "2.2.0",
+   "by": "owner (docs/process/OWNER_DECISIONS.md 2026-11-20 ~23:11Z + 2026-11-21 ~00:15Z)",
+   "notes": "new current version: \"release R3 as boy 2.3.0, girl 0.14.0 and third 0.1.0 and make 2.3.0/0.14.0 CURRENT\" Recorded by T-155 (tools/version_switch.py)."
   }
  ]
 }
