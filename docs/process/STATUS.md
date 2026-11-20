@@ -23,7 +23,7 @@ Codex T-161 reference targets (lashes, ears, hair silhouette) go to T-156 and T-
 ## Interaction
 | Task | Model | State | ETA | Branch |
 | --- | --- | --- | --- | --- |
-| T-157 grasp gap: wider band vs fewer fingers (opt-in) | Opus 5.5 | on `integration/t-157`, gate running | — | `t-157-claude-grasp-options` |
+| T-157 grasp gap: wider band vs fewer fingers (opt-in) | Opus 5.5 | gate green; batched with T-163 on `integration/t-163` | — | `t-157-claude-grasp-options` |
 | Hands round 2 | — | queued: starts after T-157 and T-155 | — | — |
 
 ## Other
