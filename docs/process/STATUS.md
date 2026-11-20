@@ -8,9 +8,10 @@ Session cap: 6 (temporary 8 ended 08:20Z). Owner liaison: session_01NPjxeKamtbdz
 | Task | Model | State | ETA | Branch |
 | --- | --- | --- | --- | --- |
 | T-156 eyes/lashes to T-150 targets | Fable 5.2 | running | — | `t-156-claude-eye-targets` |
-| T-160 hair round 6 (boy, auburn girl, third girl; owns the fringe) | Fable 5.2 | running | — | `t-160-claude-hair-r6` |
-| T-158 deterministic builds (recorded uv_sphere topology) | Opus 5.5 | on `integration/t-158`, gate running | — | `t-158-claude-deterministic-build` |
-| T-159 ears | — | queued: starts after T-158 merges | — | — |
+| T-160 hair round 6 (opt-in, not adopted; docs/evaluation/characters/T-160/README.md) | Fable 5.2 | READY; merge as opt-in base after T-155 | — | `t-160-claude-hair-r6` |
+| T-158 deterministic builds (recorded uv_sphere topology) | Opus 5.5 | gate green; promoting with T-141 | — | — |
+| T-167 hair round 7, reference fidelity over felt look | Fable 5.2 | running | — | `t-167-claude-hair-r7` |
+| T-159 temple hollow (both girls, owner ~08:35Z) then ears | Fable 5.2 | running (base integration/t-158) | — | `t-159-claude-ears` |
 
 Codex T-161 reference targets (lashes, ears, hair silhouette) go to T-156 and T-160 as targets.json.
 
@@ -29,7 +30,7 @@ Codex T-161 reference targets (lashes, ears, hair silhouette) go to T-156 and T-
 ## Other
 | Task | Model | State | ETA | Branch |
 | --- | --- | --- | --- | --- |
-| T-141 native hair curves (opt-in tool; docs/evaluation/characters/T-141/README.md) | Fable 5.2 | on `integration/t-141`, gate running | — | `t-141` |
+| T-141 native hair curves (opt-in tool; docs/evaluation/characters/T-141/README.md) | Fable 5.2 | code green; promoting with T-158 | — | — |
 | T-144 retire unpinned generator versions, option (b) (owner ~07:35Z) | Opus 5.5 | queued: after T-158 merges and a slot is free | — | `t-144-claude-retire-versions` |
 | T-153 fidelity score v2 | Opus | merged; experimental, default stays v1 | — | `t-153-claude-fidelity-v2` |
 | T-161 Codex reference targets | Codex | assigned (relay f33c4868); Codex limited until 2026-11-23 ~21:43Z | — | — |
@@ -39,11 +40,13 @@ Codex T-161 reference targets (lashes, ears, hair silhouette) go to T-156 and T-
 | T-163 starter felt prop library | Sonnet 5.5 | running | — | `t-163-claude-props` |
 
 ## Waiting for owner
-1. T-141b: not approved; owner to discuss.
+1. Bow seat (third girl): 1 front (refs 01/02, kept now), 2 side (17_W04).
+2. T-141b: not approved; owner to discuss.
 
 ## Queued (start conditions)
 - T-166 final720 default + HEVC 10-bit delivery (Sonnet): next free slot.
-- T-159 ears, T-144 option (b): after T-158 merges.
+- T-144 option (b): after T-158 merges.
+- T-168 boy face contour + nose (Fable): next free slot.
 - Hands round 2: after T-155 is published.
 
 ## Decided today (for reference)
