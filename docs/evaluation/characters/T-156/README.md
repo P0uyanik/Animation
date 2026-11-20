@@ -2,23 +2,21 @@
 
 > **Owner review of 2026-11-20 (14:43Z relay), status of the five points.** Sheets below are the final renders.
 > 1. *Pale flap past the outer corner of the near eye in 3/4 (both girls):* **fixed** (`lids.trim.up_outer_deg` 44, liner span 41).
-> 2. *Creases under the auburn lower lid:* **partly.** The lower-lid shell is cut to a speck (trims 0.4 deg); a faint soft
->    crease in the socket skin itself remains (see limits).
+> 2. *Creases under the auburn lower lid:* **reduced.** The lower-lid shell is cut to a speck (trims 0.4 deg) and the
+>    skin shelf under the eye is lower and without its pleat (`socket.cover_softness` 0.3 -> 0.12); a soft ledge remains.
 > 3. *Lash colour / fullness:* **changed** to warm dark brown, a fuller liner and six outer lashes on both girls
 >    (auburn [70,40,28], 1.9 mm; third girl [60,37,30], 1.7 mm). Boy unchanged.
-> 4. *Pale pink teardrop above the closed lids:* third girl **fixed** (it was the upper lid shell coming through the
->    socket skin by up to 3.4 mm; new opt-in `closed_fit.sink_m`). Auburn: the closed lid is the dome itself (without
->    it the eyeball shows), so it stays; its tone is now close to the skin (new opt-in `closed_fit.shell_occlusion_tint`),
->    the dome edge is still visible.
-> 5. *Third girl's closed-eye shape above the eyes:* **not reached.** The dome and the diagonal fold are the carved
->    socket skin (`face_v3/socket.py`, not in T-156's ownership); no override key changes them (see limits).
+> 4. *Pale pink teardrop above the closed lids,* and 5. *the third girl's shape above the closed eyes:* **fixed, both
+>    girls** (second pass, 18:29Z relay: `face_v3/socket.py` added to the write-set). New opt-in `socket.closed_fill`:
+>    on a full blink the skin itself closes the socket opening, so the closed eye is smooth skin with the lash arc on
+>    it, as in `f14_e10_eyes_closed_calm`. No teardrop, no bowl or fold, and no lid dome or dome edge on the auburn girl.
 
 Input `t-137-claude-faces @ 321466a`; targets `docs/evaluation/characters/T-150/targets.json` (main `e2c8904`).
 Blender: bpy 5.3 behind `tools/bpy_blender.py`. Overrides only; no current version, spec or published file changed.
 Scope follows the Supervisor's notes of 06:41 / 06:50 / 07:04Z (lash first, lower-lid crease, boy; fringe untouched).
 
 **Result.** Lash: warm dark brown liner with six short separate lashes at the outer corner (both girls); the closed
-eye is a thin lash arc. Shape: every T-150 front metric is inside its band on both eyes (auburn 11/28 -> 28/28,
+eye is smooth skin with a thin lash arc (`socket.closed_fill`). Shape: every T-150 front metric is inside its band on both eyes (auburn 11/28 -> 28/28,
 third girl 9/28 -> 28/28). Blink: 0 sclera / iris pixels on both girls. **Boy: not changed, see the question below.**
 
 ## What changed
@@ -39,7 +37,10 @@ third girl 9/28 -> 28/28). Blink: 0 sclera / iris pixels on both girls. **Boy: n
 | `lids.upper_yaw_deg` (new, opt-in) | 8 | 8 | lid peak over the middle of the opening |
 | `lids.lower_curve`, `lids.trim.up_outer_deg` | 0.15 -> 0.6, 72 -> 44 | same | lower corners; no upper shell flap past the outer corner |
 | `lids.closed_fit.shell_subsurface`, `shell_occlusion_tint` (new, opt-in) | 0.0, 0.5 | 0.0, 0.5 | closed lid tone close to the skin |
-| `lids.closed_fit.sink_m` (new, opt-in) | not set | 0.005 | closed upper shell under the socket skin (teardrop) |
+| `lids.closed_fit.sink_m` (new, opt-in) | not set | 0.005 | closed upper shell under the socket skin |
+| `socket.closed_fill` (new, opt-in) | `extra_m` 0, 12 smoothing passes, blend 10 deg | `extra_m` -6 mm, 12 passes | the skin closes the opening on a full blink |
+| `lids.closed_fit.lash_curve.out_m` | 2 -> 8 mm | 2 -> 3 mm | closed lash arc in front of the closed skin |
+| `socket.cover_softness` | 0.3 -> 0.12 | 0.3 (unchanged) | lower skin shelf under the eye |
 
 The lash keys are separable: drop the `lash` block to keep the T-137 lash on the new shape.
 
@@ -52,6 +53,18 @@ Two more opt-ins in `fit_closed_lids` (same file), both absent = unchanged code 
 `closed_fit.sink_m` pushes the middle of the closed upper shell inwards (weight c^3, upper shell only), so it no
 longer comes through the socket skin; `closed_fit.shell_occlusion_tint` scales the occlusion-driven warmth / crease
 tints in the lid's copy of the skin material, which tinted the convex shell differently from the concave skin.
+
+`socket.closed_fill` (`face_v3/socket.py` + `lids.py`, opt-in). The skin did not move when a lid closed, so the
+closed eye was the carved opening (third girl: a bowl with a fold, her eyeball flattens behind it) or the lid shell
+on top of it (auburn: a dome with an edge). With the key set, `lid_socket_v3` stores, per side, the displacement that
+takes the opening's skin out to the cover it already has beyond the eye corners (`extra_m` shifts that radius; a
+few Laplacian passes), as a point attribute; `fit_closed_lids` adds it to the skin's key of every lid key that
+closes fully (Blink, the sided blink, the winks) and removes the attribute. The skin keys get an in-between
+(`<key>@75`), which the existing in-between drivers play, so the skin only closes over the last quarter of the
+control: a half blink still shows the eye under the lid. Without the key no attribute is written and nothing is read.
+Default-path proof: the previous override built before and after this change gives identical vertex and shape-key
+data for 201 of 207 meshes, the skin included; the other six (lid shells, ears) also differ between two builds of
+the same code and input (build noise, checked by building twice).
 
 ## Measurement (reproducible)
 `eye_measure.py` (headless, no render, about 6 s): one ray per pixel of the 0.24 x 0.12 m eye window (1280 x 640)
@@ -71,20 +84,20 @@ builds (0.83 / 0.79). Blink: 0 open pixels on both girls.
 ### Auburn girl, front
 | metric | target front | before left | before right | after left | after right |
 |---|---|---|---|---|---|
-| opening_h_w | 0.948 ±0.073 | **0.831** | **0.833** | 0.913 | 0.913 |
-| iris_d_w | 0.742 ±0.045 | 0.707 | 0.709 | 0.746 | 0.746 |
+| opening_h_w | 0.948 ±0.073 | **0.831** | **0.833** | 0.902 | 0.902 |
+| iris_d_w | 0.742 ±0.045 | 0.707 | 0.709 | 0.737 | 0.737 |
 | iris_d_spacing | 0.369 ±0.018 | **0.389** | **0.389** | 0.381 | 0.381 |
-| iris_x_from_outer_w | 0.623 ±0.038 | **0.585** | 0.586 | 0.621 | 0.621 |
+| iris_x_from_outer_w | 0.623 ±0.038 | **0.585** | 0.586 | 0.625 | 0.625 |
 | iris_y_from_top_h | 0.500 ±0.049 | **0.551** | **0.551** | 0.508 | 0.508 |
-| white_above_w | 0.056 ±0.041 | **0.106** | **0.106** | 0.078 | 0.078 |
-| white_below_w | 0.028 ±0.044 | 0.017 | 0.017 | 0.036 | 0.036 |
+| white_above_w | 0.056 ±0.041 | **0.106** | **0.106** | 0.080 | 0.080 |
+| white_below_w | 0.028 ±0.044 | 0.017 | 0.017 | 0.035 | 0.035 |
 | white_inner_w | 0.000 ±0.042 | **0.058** | **0.056** | 0.000 | 0.000 |
-| white_outer_w | 0.248 ±0.044 | **0.181** | **0.181** | 0.239 | 0.239 |
-| arch_w | 0.504 ±0.050 | 0.507 | 0.511 | 0.545 | 0.546 |
-| inner_angle_deg | 142.504 ±9.485 | 138.933 | 138.229 | 148.263 | 148.247 |
-| outer_angle_deg | 142.178 ±9.962 | **126.543** | **126.969** | 136.578 | 136.508 |
-| inner_drop_w | 0.006 ±0.087 | **-0.092** | **-0.090** | 0.025 | 0.025 |
-| apex_from_outer_w | 0.516 ±0.070 | 0.568 | 0.570 | 0.524 | 0.524 |
+| white_outer_w | 0.248 ±0.044 | **0.181** | **0.181** | 0.246 | 0.246 |
+| arch_w | 0.504 ±0.050 | 0.507 | 0.511 | 0.540 | 0.541 |
+| inner_angle_deg | 142.504 ±9.485 | 138.933 | 138.229 | 148.016 | 147.998 |
+| outer_angle_deg | 142.178 ±9.962 | **126.543** | **126.969** | 137.294 | 137.294 |
+| inner_drop_w | 0.006 ±0.087 | **-0.092** | **-0.090** | 0.022 | 0.024 |
+| apex_from_outer_w | 0.516 ±0.070 | 0.568 | 0.570 | 0.528 | 0.528 |
 
 In tolerance: before 11/28, after 28/28. left / right = image left / right (the viewer's); bold = out of band.
 
@@ -111,22 +124,22 @@ In tolerance: before 9/28, after 28/28. left / right = image left / right (the v
 ### Auburn girl, oblique (yaw -35, informative)
 | metric | target oblique_near | target oblique_far | before left | before right | after left | after right |
 |---|---|---|---|---|---|---|
-| opening_h_w | 0.987 ±0.035 | 1.775 ±0.035 | **0.879** | **1.256** | **0.921** | **1.408** |
-| iris_d_w | 0.680 ±0.035 | 0.950 ±0.035 | **0.623** | **0.797** | 0.647 | **0.859** |
+| opening_h_w | 0.987 ±0.035 | 1.775 ±0.035 | **0.879** | **1.256** | **0.908** | **1.401** |
+| iris_d_w | 0.680 ±0.035 | 0.950 ±0.035 | **0.623** | **0.797** | **0.634** | **0.855** |
 | iris_d_spacing | 0.416 ±0.015 | 0.310 ±0.015 | **0.434** | **0.348** | 0.425 | **0.340** |
-| iris_x_from_outer_w | 0.653 ±0.035 | 0.537 ±0.035 | 0.653 | 0.505 | 0.674 | 0.548 |
+| iris_x_from_outer_w | 0.653 ±0.035 | 0.537 ±0.035 | 0.653 | 0.505 | 0.681 | 0.550 |
 | iris_y_from_top_h | 0.500 ±0.035 | 0.507 ±0.035 | **0.542** | **0.544** | 0.512 | 0.504 |
-| white_above_w | 0.040 ±0.035 | 0.100 ±0.035 | **0.165** | **0.282** | **0.135** | **0.252** |
-| white_below_w | 0.033 ±0.035 | 0.050 ±0.035 | **0.072** | **0.150** | **0.097** | **0.184** |
+| white_above_w | 0.040 ±0.035 | 0.100 ±0.035 | **0.165** | **0.282** | **0.132** | **0.251** |
+| white_below_w | 0.033 ±0.035 | 0.050 ±0.035 | **0.072** | **0.150** | **0.095** | **0.184** |
 | white_inner_w | 0.007 ±0.035 | 0.000 ±0.035 | 0.030 | **0.084** | 0.000 | 0.000 |
-| white_outer_w | 0.313 ±0.035 | 0.062 ±0.035 | **0.165** | **0.101** | 0.307 | **0.117** |
-| arch_w | 0.516 ±0.035 | 0.961 ±0.035 | 0.529 | **0.705** | 0.509 | **0.891** |
-| inner_angle_deg | 143.475 ±8.000 | 158.878 ±8.000 | 141.714 | **150.707** | 147.357 | **150.027** |
-| outer_angle_deg | 142.646 ±8.000 | 160.233 ±8.000 | **88.904** | **150.367** | **132.338** | 154.350 |
-| inner_drop_w | -0.007 ±0.035 | -0.050 ±0.035 | **-0.200** | **0.142** | **-0.158** | **0.470** |
-| apex_from_outer_w | 0.547 ±0.035 | 0.525 ±0.035 | **0.638** | **0.480** | 0.579 | **0.454** |
+| white_outer_w | 0.313 ±0.035 | 0.062 ±0.035 | **0.165** | **0.101** | 0.312 | **0.116** |
+| arch_w | 0.516 ±0.035 | 0.961 ±0.035 | 0.529 | **0.705** | 0.502 | **0.881** |
+| inner_angle_deg | 143.475 ±8.000 | 158.878 ±8.000 | 141.714 | **150.707** | 147.180 | **149.635** |
+| outer_angle_deg | 142.646 ±8.000 | 160.233 ±8.000 | **88.904** | **150.367** | **131.918** | 154.226 |
+| inner_drop_w | -0.007 ±0.035 | -0.050 ±0.035 | **-0.200** | **0.142** | **-0.158** | **0.483** |
+| apex_from_outer_w | 0.547 ±0.035 | 0.525 ±0.035 | **0.638** | **0.480** | **0.586** | **0.452** |
 
-In tolerance: before 5/28, after 13/28. left / right = image left / right (the viewer's); bold = out of band.
+In tolerance: before 5/28, after 11/28. left / right = image left / right (the viewer's); bold = out of band.
 
 ## Evidence
 - `*/eyes_100.jpg`: 100 % eye crops, open, front and 3/4 (T-137 build, T-156, references), Cycles 8 spp.
@@ -146,17 +159,15 @@ In tolerance: before 5/28, after 13/28. left / right = image left / right (the v
   on the outer side. Needs a per-side span / thickness in `face_generic.build_eyes`.
 - **Lower-lid stub.** `face.add_blink_lid_seam` reads the lower lid's front edge within 0.25 r of the middle, so
   the shell cannot be removed completely (an empty or off-centre shell fails the build); 0.4 deg leaves a speck.
-- **Crease under the auburn lower lid (review point 2).** What is left is a shallow fold in the socket skin below
-  the opening, not the lid shell. `socket` and `closed_fit` keys tried without visible effect: clearance, follow,
-  corner fade, carve reach, smooth iterations, lower ramp. Needs the carve in `face_v3/socket.py` smoothed there.
-- **Third girl, shape above the closed eyes (review point 5).** Her eyeball flattens behind the socket skin on
-  Blink, so what shows is the carved socket skin: a dome with a diagonal fold. The reference
-  (`f14_e10_eyes_closed_calm`) is smooth skin with a thin arc. Same file, `face_v3/socket.py`: the hidden
-  carve needs a Blink-time fill or a smoother profile.
-- **Auburn closed lid.** A visible dome (tone now near the skin, edge still readable); in 3/4 a thin white gap can
-  show at the outer corner when closed (trim 44 is the compromise between that gap and the open-eye flap).
+- **Ledge under the auburn lower lid (review point 2).** Reduced, not gone: the skin has to come out over the
+  eyeball below the opening. `cover_softness` 0.12 takes the pleat out; lower values were not tried.
+- **Closed fill.** The skin closes over the last quarter of the Blink control, not as a wipe with the lid edge. The
+  auburn eyeball does not flatten, so her closed skin sits at the lid cover radius (a soft mound, lash arc 8 mm out);
+  with a lower mound a speck of eyeball showed at the outer corners (182 px at `extra_m` -1.5 mm, 7 px now).
+  New skin keys (`Blink`, `Blink.L/R`, the winks and their `@75`) are added to `body_skin`, so the candidate's
+  shape-key list differs from the published versions'. Squint / Laugh / Smile do not close fully and are unchanged.
 - **Lashes** are flat separate strands and read slightly comb-like at 100 %.
-- **Oblique (G02) targets: not reached** (13/28). Yaw is not matched to G02 (-35 deg, the eye-crop view), the lens is
+- **Oblique (G02) targets: not reached** (11/28). Yaw is not matched to G02 (-35 deg, the eye-crop view), the lens is
   not modelled, and the far eye is too wide.
 - Inherited from T-137: the lid-patch tone edge on the closed lids.
 
@@ -166,8 +177,8 @@ Not changed. His references (hero24, val27) show a thick, flat, dark upper-lid b
 him away from his references. His closed eye shows no lash line; the closed-eye lash curve lives in
 `face_v3/lids.py` and he is `face_generic/2`, so that needs a generator decision, not an override.
 
-`python3 pipeline/charsys/tests/test_face_r5.py --blender blender`: 22/22 (14 existing + 8 for the opt-ins: guards,
-no spec under `assets/` uses lid yaw, `sink_m` or `shell_occlusion_tint`, overrides touch `face.eyes` only,
+`python3 pipeline/charsys/tests/test_face_r5.py --blender blender`: 24/24 (14 existing + 10 for the opt-ins: guards,
+no spec under `assets/` uses lid yaw, `sink_m`, `shell_occlusion_tint` or `closed_fill`, overrides touch `face.eyes` only,
 unchanged without the keys, peak shift with the yaw).
 No test, threshold or golden changed. Not run: ctest, verify_charsys, face_system_test, expression sheets, pupil
 pixels (pupil radius 0.235 -> 0.23 and 0.231 -> 0.229 of the eye radius).

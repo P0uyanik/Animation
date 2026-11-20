@@ -71,11 +71,11 @@ def plain():
                 try:
                     d = json.load(open(os.path.join(base, f)))
                     if _find(d, "upper_yaw_deg") or _find(d, "lower_yaw_deg") or _find(d, "sink_m") \
-                            or _find(d, "shell_occlusion_tint"):
+                            or _find(d, "shell_occlusion_tint") or _find(d, "closed_fill"):
                         users.append(f)
                 except ValueError:
                     pass
-    check("no spec under assets/ opts into lid yaw, closed_fit.sink_m or shell_occlusion_tint", not users, str(users))
+    check("no spec under assets/ opts into lid yaw, closed_fit.sink_m, shell_occlusion_tint or socket.closed_fill", not users, str(users))
     check("closed_fit.sink_m: default 0, guarded, upper shell only",
           'sink = _f(fit, "sink_m", 0.0)' in src and 'if sink > 0.0 and ob is up:' in src)
     check("closed_fit.shell_occlusion_tint: guarded, the shell_subsurface call unchanged without it",
@@ -83,6 +83,12 @@ def plain():
           'elif fit.get("shell_subsurface") is not None:\n'
           '        rep["shell_material"] = _shell_material(up, float(fit["shell_subsurface"]))' in src and
           'def _shell_material(ob, factor, occlusion_tint=None):' in src and 'if occlusion_tint is not None:' in src)
+    sock = open(os.path.join(ROOT, "pipeline", "charsys", "face_v3", "socket.py")).read()
+    check("socket.closed_fill: opt-in (absent = no fill data, no attribute), written after the basis",
+          'fill = cfg.get("closed_fill")' in sock and 'if fill is not None:' in sock and
+          sock.index("    write(p)\n    if fill_sel:") < sock.index('me.attributes.new(f"ps_socket_fill.{side}"'))
+    check("skin closed fill: only where the socket stored its attribute; the attribute is removed",
+          'if head is None:\n        return None' in src and 'me.attributes.remove(me.attributes[name])' in src)
     for sub, name in (("auburn", "girl_auburn_bun_glasses"), ("third", "girl_white_hair_blue_dress")):
         ov = os.path.join(ROOT, "docs", "evaluation", "characters", "T-156", sub, name + ".eyes.override.json")
         if os.path.exists(ov):

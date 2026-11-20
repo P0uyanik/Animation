@@ -16,7 +16,7 @@
     "lower_thickness_m": 0.0005,
     "closed_fit": {
      "lash_curve": {
-      "out_m": 0.002,
+      "out_m": 0.003,
       "above_seam_deg": 14.0,
       "sag_deg": 5.0,
       "corner_lift_deg": 7.0,
@@ -72,7 +72,11 @@
     "corner_deg": 36,
     "clearance_m": 0.002,
     "smooth_iterations": 24,
-    "cover_softness": 0.3
+    "cover_softness": 0.3,
+    "closed_fill": {
+     "extra_m": -0.006,
+     "smooth_iterations": 12
+    }
    }
   }
  }

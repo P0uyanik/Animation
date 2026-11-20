@@ -22,7 +22,7 @@
     },
     "closed_fit": {
      "lash_curve": {
-      "out_m": 0.002,
+      "out_m": 0.008,
       "above_seam_deg": 14.0,
       "sag_deg": 5.0,
       "corner_lift_deg": 7.0,
@@ -36,7 +36,8 @@
       }
      },
      "shell_subsurface": 0.0,
-     "shell_occlusion_tint": 0.5
+     "shell_occlusion_tint": 0.5,
+     "sink_m": 0.004
     }
    },
    "lash": {
@@ -71,7 +72,12 @@
     "corner_deg": 37,
     "clearance_m": 0.002,
     "smooth_iterations": 24,
-    "cover_softness": 0.3
+    "cover_softness": 0.12,
+    "closed_fill": {
+     "extra_m": 0.0,
+     "smooth_iterations": 12,
+     "blend_deg": 10
+    }
    }
   }
  }

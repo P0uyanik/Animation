@@ -1,5 +1,5 @@
 {
- "blend": "A22",
+ "blend": "A28",
  "camera": "strict",
  "yaw_deg": 0.0,
  "px": [
@@ -11,26 +11,26 @@
   "image_right": {
    "side": "L",
    "metrics": {
-    "opening_h_w": 0.9132,
-    "iris_d_w": 0.7457,
-    "iris_x_from_outer_w": 0.621,
+    "opening_h_w": 0.9024,
+    "iris_d_w": 0.7368,
+    "iris_x_from_outer_w": 0.6255,
     "iris_y_from_top_h": 0.508,
-    "white_above_w": 0.0778,
-    "white_below_w": 0.0359,
+    "white_above_w": 0.0799,
+    "white_below_w": 0.0355,
     "white_inner_w": 0.0,
-    "white_outer_w": 0.2395,
-    "arch_w": 0.5463,
-    "inner_angle_deg": 148.2467,
-    "outer_angle_deg": 136.508,
-    "inner_drop_w": 0.0254,
-    "apex_from_outer_w": 0.524,
+    "white_outer_w": 0.2456,
+    "arch_w": 0.5406,
+    "inner_angle_deg": 147.9983,
+    "outer_angle_deg": 137.2941,
+    "inner_drop_w": 0.0237,
+    "apex_from_outer_w": 0.5281,
     "iris_d_spacing": 0.3807
    },
    "trace_px": {
     "box": [
      841,
      209,
-     1174,
+     1178,
      513
     ],
     "corner_left": [
@@ -38,11 +38,11 @@
      395.5
     ],
     "corner_right": [
-     1174,
-     387.0
+     1178,
+     387.5
     ],
     "peak": [
-     999.0,
+     999.5,
      209
     ],
     "iris": [
@@ -52,7 +52,7 @@
     ]
    },
    "mm": {
-    "W": 62.62,
+    "W": 63.38,
     "H": 57.19,
     "D": 46.7
    }
@@ -60,38 +60,38 @@
   "image_left": {
    "side": "R",
    "metrics": {
-    "opening_h_w": 0.9132,
-    "iris_d_w": 0.7457,
-    "iris_x_from_outer_w": 0.621,
+    "opening_h_w": 0.9024,
+    "iris_d_w": 0.7368,
+    "iris_x_from_outer_w": 0.6255,
     "iris_y_from_top_h": 0.5079,
-    "white_above_w": 0.0778,
-    "white_below_w": 0.0359,
+    "white_above_w": 0.0799,
+    "white_below_w": 0.0355,
     "white_inner_w": 0.0,
-    "white_outer_w": 0.2395,
-    "arch_w": 0.5448,
-    "inner_angle_deg": 148.2633,
-    "outer_angle_deg": 136.5776,
-    "inner_drop_w": 0.0254,
-    "apex_from_outer_w": 0.524,
+    "white_outer_w": 0.2456,
+    "arch_w": 0.5399,
+    "inner_angle_deg": 148.0159,
+    "outer_angle_deg": 137.2941,
+    "inner_drop_w": 0.0222,
+    "apex_from_outer_w": 0.5281,
     "iris_d_spacing": 0.3807
    },
    "trace_px": {
     "box": [
-     105,
+     101,
      209,
      438,
      513
     ],
     "corner_left": [
-     105,
-     386.5
+     101,
+     387.5
     ],
     "corner_right": [
      438,
      395.0
     ],
     "peak": [
-     280.0,
+     279.5,
      209
     ],
     "iris": [
@@ -101,7 +101,7 @@
     ]
    },
    "mm": {
-    "W": 62.62,
+    "W": 63.38,
     "H": 57.19,
     "D": 46.7
    }
