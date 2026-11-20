@@ -66,6 +66,12 @@ The boy is slightly worse than r6: all measures up, held noise 0.001 over the li
 pixels are "held"), flip share within 0.02 of r6. "No worse than base" is therefore not met for the boy.
 Outside the hair region: boy cloth flip share 0.262 (limit 0.161; r6 0.251); none for the girls.
 
+Boy, longer measure (24 frames, 16 spp; scratch runs, not in the repository), hair held noise median / max:
+r6 0.041 / 0.049 (0 issues); r7 0.053 / 0.066 (4 issues); flip share r6 0.204 / 0.208, r7 0.210 / 0.225.
+32 spp, 8 frames, r7: 0.059 / 0.063. Two trial fixes did not pass and were dropped: calmer crown tufts
+(0.052 / 0.064) and calmer top clumps with narrower gaps (0.054 / 0.061). The difference sits on the top of the
+head: r6's broad top leaves give about 300 calm held pixels (noise about 0.03), r7's top clumps about 130 at 0.05.
+
 ## Not done / limits
 - Boy flicker slightly above r6 (above); not tuned further.
 - Visual gaps listed under Evidence; one pass per character after the T-169 brief, no second visual iteration.
