@@ -801,3 +801,8 @@ branch `t-168-claude-boy-face@49b3f56` kept) may be unarchived if follow-up work
    face options, groom/5, T-156 closed_fill) ONLY for boy 2.3.0 / girl 0.14.0 / third 0.1.0, each with its owner decision
    reference, and stay strict for everything else. The test_face_v4 current pins move to 2.3.0/0.14.0 at the release.
    Next: final sheets for owner approval, then the release.
+
+## 2026-11-20 ~22:10Z (23:10 CET) — Release numbering (relayed by the owner liaison)
+Option (A): R3 is released AS boy 2.3.0 / girl 0.14.0 / third 0.1.0, rebuilt from the R3 stacked specs. This replaces the
+branch-only builds from T-155 (~08:40Z), which were never published on main. On integration/r3-faces the approved pointers go back to
+2.2.0/0.13.0 until the owner's final OK on the sheets. The guard allowances keep these version names.
