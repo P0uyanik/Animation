@@ -866,3 +866,8 @@ Supervisor goes idle and does not archive itself while implementers still report
 third 0.1.0, update test_face_v4 pins, run all checks, push." (Verified by the Supervisor in the T-155 transcript.) The third
 character 0.1.0 becomes her first CURRENT version. Her allowlist entries in `pipeline/charsys/tests/owner_approved_candidates.json`
 carry this as their current_decision.
+
+## 2026-11-21 ~00:40Z (01:40 CET) — T-176 whole-project review (relayed by the owner liaison)
+New analysis-only task → `docs/tasks/T-176.md`: architecture, workflow, agents, tokens, automation, speed, maintainability,
+with evidence from our codebase. Opus 5.5, docs-only write-set `docs/audit/T-176/**`. No changes without owner approval. It
+continues under the round-4 Supervisor.

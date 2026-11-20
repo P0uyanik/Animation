@@ -22,5 +22,6 @@ means none. Branch is the task's branch; a task branch without a row falls back 
 | T-168 | E | t-168-claude-boy-face | `pipeline/charsys/face_v3/lower_face.py`, `pipeline/charsys/face_features.py` (build_nose only), `pipeline/charsys/tests/test_face_t168.py`, `tools/check_all.py` (registration), `docs/evaluation/characters/T-168/**` | T-159 (merge order) | — |
 | T-167 | E | t-167-claude-hair-r7 | `pipeline/charsys/groom_r6.py`, `pipeline/charsys/tests/test_hair_r6.py`, `docs/evaluation/characters/T-167/**` | T-160, T-169 | — |
 | T-175 | E | t-175-claude-locomotion | `pipeline/clips/import_bvh.py`, `pipeline/clips/tests/test_import_bvh.py`, `content/clips/mocap/**`, `engine/anim/foot_lock.h`, `engine/anim/foot_lock.cpp`, `engine/scene/clip_layers.cpp`, `engine/scene/actions.cpp` (walk/sit/stand only), `tests/test_foot_lock.cpp`, `engine/CMakeLists.txt` (one plush_anim source line), `docs/evaluation/animation/T-175/**` | T-174 | — |
+| T-176 | R | t-176-claude-project-review | `docs/audit/T-176/**` | — | — |
 
 Supervisor-only files: docs/process/TASK_LOG.md, docs/ROADMAP.md, docs/process/OWNER_DECISIONS.md, docs/tasks/**.
