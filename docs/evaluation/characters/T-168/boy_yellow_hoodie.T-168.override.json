@@ -1,0 +1,198 @@
+{
+ "note": "T-168 candidate (opt-in, on the boy 2.3.0 spec): smooth side/3/4 face contour and an upturned nose. Not a version; nothing current changes. r2 (owner review 2026-11-20 ~15:30 CET): smaller, rounder nose nub; lower face recedes less. r3 (owner ~17:05 CET): chin/jaw set further back in the side profile (head outline.side below mid-face), flatter nose. r4 (owner ~18:20 CET, softer form): rounder, narrower chin outline (head outline.front), softer jaw underside (lowest head profile rows), moderate chin set-back (outline.side), outline exponent 2.0, jaw_round 3 mm half down.",
+ "override": {
+  "face": {
+   "nose": {
+    "type": "upturned",
+    "size_m": 0.01,
+    "height_m": 0.0025,
+    "bridge_m": 0.012,
+    "under_m": 0.008,
+    "tip_up_m": 0.0005,
+    "tip_power": 1.0,
+    "bridge_narrow": 0.15
+   },
+   "shape": {
+    "cheek_fullness_m": 0.004,
+    "lower_face_recede_m": 0.003,
+    "recede_from_below_eye_m": 0.03,
+    "lower_face": {
+     "cheek_pad_m": 0.01,
+     "cheek_pad_radius_m": 0.06,
+     "cheek_pad_below_eye_m": 0.045,
+     "cheek_pad_top_fade_m": 0.045,
+     "cheek_pad_top_below_eye_m": 0.012,
+     "jaw_round_m": 0.003,
+     "jaw_down": 0.5
+    },
+    "outline_exponent": 2.0
+   }
+  },
+  "body": {
+   "params": {
+    "head": {
+     "outline": {
+      "side": [
+       [
+        0.1,
+        0.067
+       ],
+       [
+        0.17,
+        0.107
+       ],
+       [
+        0.24,
+        0.08
+       ],
+       [
+        0.31,
+        0.04
+       ],
+       [
+        0.37,
+        0.0
+       ],
+       [
+        0.44,
+        -0.06
+       ],
+       [
+        0.51,
+        -0.14
+       ],
+       [
+        0.57,
+        -0.25
+       ],
+       [
+        0.6,
+        -0.38
+       ]
+      ],
+      "front": [
+       [
+        0.23,
+        0.94
+       ],
+       [
+        0.37,
+        0.83
+       ],
+       [
+        0.47,
+        0.7
+       ],
+       [
+        0.54,
+        0.52
+       ],
+       [
+        0.585,
+        0.35
+       ]
+      ]
+     },
+     "profile_levels": [
+      [
+       0.686391,
+       0.0,
+       -0.08,
+       0.03,
+       0.045,
+       0.025
+      ],
+      [
+       0.692308,
+       0.0,
+       -0.055,
+       0.08,
+       0.072,
+       0.04
+      ],
+      [
+       0.70217,
+       0.0,
+       -0.03,
+       0.115,
+       0.1,
+       0.065
+      ],
+      [
+       0.716963,
+       0.0,
+       -0.012,
+       0.137,
+       0.124,
+       0.09
+      ],
+      [
+       0.7357,
+       0.0,
+       0.0,
+       0.150888,
+       0.140039,
+       0.116371
+      ],
+      [
+       0.769231,
+       0.0,
+       0.0,
+       0.154832,
+       0.142012,
+       0.133136
+      ],
+      [
+       0.81854,
+       0.0,
+       0.009862,
+       0.157791,
+       0.136095,
+       0.145957
+      ],
+      [
+       0.86785,
+       0.0,
+       0.009862,
+       0.154832,
+       0.123274,
+       0.149901
+      ],
+      [
+       0.91716,
+       0.0,
+       0.009862,
+       0.137,
+       0.096,
+       0.137
+      ],
+      [
+       0.956607,
+       0.0,
+       0.009862,
+       0.11,
+       0.068,
+       0.112
+      ],
+      [
+       0.986193,
+       0.0,
+       0.009862,
+       0.068,
+       0.036,
+       0.072
+      ],
+      [
+       1.0,
+       0.0,
+       0.009862,
+       0.019724,
+       0.011834,
+       0.021696
+      ]
+     ]
+    }
+   }
+  }
+ }
+}

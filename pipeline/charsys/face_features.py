@@ -409,8 +409,11 @@ def curve_lid(ob, curve, upper):
 # ------------------------------------------------------------------------------------------------ nose
 def build_nose(C, M, head, ctx, nc, z_nose):
     """Nose types. bump (legacy): a soft bump sculpted into the head; small_round: a smaller, rounder, prouder bump;
-    button: a separate felt ellipsoid sitting on the surface; minimal_line: a short curved line (tube). Returns the
-    separate object (or None) and the nose tip landmark."""
+    button: a separate felt ellipsoid sitting on the surface; minimal_line: a short curved line (tube); upturned
+    (T-168): a small pointed tip sculpted into the head with a soft bridge above it and a short, steep underside
+    (size_m = half width at the tip, height_m = how far the tip stands out, bridge_m = length of the slope above the
+    tip, under_m = length of the underside, tip_up_m = how far the tip is lifted, bridge_narrow 0..1 = how much the
+    bridge narrows upwards, tip_power = falloff exponent: 1 = round dome, 2 = pointed). Returns the separate object (or None) and the nose tip landmark."""
     t = nc.get("type", "bump")
     size = _f(nc, "size_m", _f(nc, "radius_m", 0.016))
     z = z_nose + _f(nc, "offset_z_m", 0.0)
@@ -419,6 +422,22 @@ def build_nose(C, M, head, ctx, nc, z_nose):
     if t in ("bump", "small_round"):
         h = _f(nc, "height_m", 0.004 if t == "bump" else size * 0.45)
         G.brush(head, (0.0, ny + size * 0.3, z), size, (0, -h, 0), power=2.0 if t == "bump" else 1.4)
+        ctx.invalidate()
+    elif t == "upturned":
+        import numpy as np
+        h = _f(nc, "height_m", size * 0.6)
+        up_len, dn_len = _f(nc, "bridge_m", size * 2.2), _f(nc, "under_m", size * 0.7)
+        narrow = min(max(_f(nc, "bridge_narrow", 0.4), 0.0), 0.9)
+        world, write = _head_coords(head)
+        p = world.copy()
+        dz = p[:, 2] - z
+        v = np.where(dz >= 0, dz / up_len, -dz / dn_len)  # 0 at the tip, 1 at the top of the bridge / under the tip
+        hw = size * (1.0 - narrow * np.clip(dz / up_len, 0.0, 1.0))
+        q = (p[:, 0] / hw) ** 2 + v ** 2
+        f = np.clip(1.0 - q, 0.0, None) ** _f(nc, "tip_power", 1.4) * (p[:, 1] < ny + 2.5 * size)  # the face side only
+        p[:, 1] -= h * f
+        p[:, 2] += _f(nc, "tip_up_m", 0.0) * f
+        write(p)
         ctx.invalidate()
     elif t == "button":
         rad = (size * 0.62, size * 0.42, size * 0.5)
@@ -438,7 +457,7 @@ def build_nose(C, M, head, ctx, nc, z_nose):
         obj = G.tube("nose", pts, [_f(nc, "line_m", 0.0012)] * 7, [0.0006] * 7, C, up_hint=(0, -1, 0), seg=8)
         G.assign(obj, G.material("M_nose_line", tuple(nc.get("srgb", (150, 95, 85))), roughness=0.8))
     else:
-        raise ValueError(f"face.nose.type {t!r}: bump | small_round | button | minimal_line")
+        raise ValueError(f"face.nose.type {t!r}: bump | small_round | button | minimal_line | upturned")
     ny = ctx.face_y(None, 0.0, z)
     tip = Vector((0.0, ny, z))
     if obj is not None and t == "button":
