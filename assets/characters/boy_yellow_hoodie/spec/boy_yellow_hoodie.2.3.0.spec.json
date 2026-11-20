@@ -3,7 +3,7 @@
  "generators": {
   "body": "body_generic/2",
   "face": "face_generic/3",
-  "groom": "groom/4",
+  "groom": "groom/5",
   "garment": "garment/3",
   "accessories": "none",
   "rig": "rigify_human/1",
@@ -59,25 +59,25 @@
       0.692308,
       0.0,
       -0.055,
-      0.09,
       0.08,
-      0.045
+      0.072,
+      0.04
      ],
      [
       0.70217,
       0.0,
       -0.03,
-      0.124,
-      0.108,
-      0.072
+      0.115,
+      0.1,
+      0.065
      ],
      [
       0.716963,
       0.0,
       -0.012,
-      0.142,
-      0.128,
-      0.096
+      0.137,
+      0.124,
+      0.09
      ],
      [
       0.7357,
@@ -152,23 +152,23 @@
      "front": [
       [
        0.23,
-       0.93
+       0.94
       ],
       [
        0.37,
-       0.86
+       0.83
       ],
       [
        0.47,
-       0.76
+       0.7
       ],
       [
        0.54,
-       0.65
+       0.52
       ],
       [
        0.585,
-       0.3
+       0.35
       ]
      ],
      "side": [
@@ -190,23 +190,23 @@
       ],
       [
        0.37,
-       0.013
+       0.0
       ],
       [
        0.44,
-       -0.027
+       -0.06
       ],
       [
        0.51,
-       -0.08
+       -0.14
       ],
       [
        0.57,
-       -0.16
+       -0.25
       ],
       [
        0.6,
-       -0.27
+       -0.38
       ]
      ]
     }
@@ -512,21 +512,55 @@
   },
   "ears": {
    "radii_m": [
-    0.014,
-    0.028,
-    0.036
+    0.017,
+    0.04,
+    0.038
    ],
    "below_eye_m": 0.012,
    "y_m": 0.008,
    "out_m": 0.006,
-   "yaw_deg": 22,
-   "tilt_deg": -6
+   "yaw_deg": -60,
+   "tilt_deg": -6,
+   "seat_offset_m": [
+    0.014,
+    0.01,
+    -0.003
+   ],
+   "shape": {
+    "subdiv": 2,
+    "bowl_depth": 0.9,
+    "rim": 0.35,
+    "back_flat": 0.6,
+    "bowl_size": [
+     0.7,
+     0.52
+    ],
+    "bowl_centre": [
+     -0.3,
+     0.08
+    ],
+    "bowl_edge": 0.7
+   },
+   "subsurface": 0.3,
+   "tint": {
+    "srgb": [
+     255,
+     196,
+     186
+    ],
+    "strength": 0.6
+   }
   },
   "nose": {
-   "type": "small_round",
-   "size_m": 0.009,
-   "height_m": 0.0016,
-   "offset_z_m": 0.0
+   "type": "upturned",
+   "size_m": 0.01,
+   "height_m": 0.0025,
+   "offset_z_m": 0.0,
+   "bridge_m": 0.012,
+   "under_m": 0.008,
+   "tip_up_m": 0.0005,
+   "tip_power": 1.0,
+   "bridge_narrow": 0.15
   },
   "blush": {
    "srgb": [
@@ -773,31 +807,34 @@
    }
   },
   "shape": {
-   "cheek_fullness_m": 0.006,
+   "cheek_fullness_m": 0.004,
    "cheek_radius_m": 0.05,
    "cheek_below_eye_m": 0.045,
    "cheek_x": 1.05,
    "cheek_forward": 0.35,
    "note": "face v2 shape on top of the body_generic/2 head fitted to the reference outlines (cheek volume only)",
    "lower_face": {
-    "cheek_pad_m": 0.016,
-    "cheek_pad_radius_m": 0.07,
+    "cheek_pad_m": 0.01,
+    "cheek_pad_radius_m": 0.06,
     "cheek_pad_height": 0.9,
     "cheek_pad_x": 1.3,
-    "cheek_pad_below_eye_m": 0.035,
+    "cheek_pad_below_eye_m": 0.045,
     "cheek_pad_forward": 0.0,
-    "cheek_pad_top_below_eye_m": 0.015,
-    "jaw_round_m": 0.006,
+    "cheek_pad_top_below_eye_m": 0.012,
+    "jaw_round_m": 0.003,
     "jaw_x": 0.7,
-    "jaw_down": 0.0,
-    "jaw_band_m": 0.025
+    "jaw_down": 0.5,
+    "jaw_band_m": 0.025,
+    "cheek_pad_top_fade_m": 0.045
    },
    "outline_roundness": 0.6,
-   "outline_exponent": 2.4
+   "outline_exponent": 2.0,
+   "lower_face_recede_m": 0.003,
+   "recede_from_below_eye_m": 0.03
   }
  },
  "hair": {
-  "generator": "groom/4",
+  "generator": "groom/5",
   "seed": 44,
   "finish": "felt",
   "face_keepout": {
@@ -1158,7 +1195,7 @@
       },
       "len_deg": 44,
       "width": 0.085,
-      "depth": 0.72,
+      "depth": 0.82,
       "lift": [
        0.004,
        0.034,
@@ -1168,7 +1205,7 @@
       "layer": 0,
       "swirl_deg": 6,
       "channel": {
-       "gap": 0.12
+       "gap": 0.22
       },
       "stagger": {
        "len": [
@@ -1185,7 +1222,10 @@
        ]
       }
      }
-    ]
+    ],
+    "stand": {
+     "smooth": 8
+    }
    },
    {
     "seg": 18,
@@ -1213,17 +1253,17 @@
       },
       "len_deg": 44,
       "width": 0.08,
-      "depth": 0.78,
+      "depth": 0.9,
       "lift": [
        0.004,
-       0.042,
-       0.04
+       0.05,
+       0.046
       ],
       "flick_m": 0.04,
       "layer": 1,
       "swirl_deg": 10,
       "channel": {
-       "gap": 0.2
+       "gap": 0.3
       },
       "stagger": {
        "len": [
@@ -1244,7 +1284,10 @@
        ]
       }
      }
-    ]
+    ],
+    "stand": {
+     "smooth": 8
+    }
    },
    {
     "seg": 18,
@@ -1273,17 +1316,17 @@
       },
       "len_deg": 30,
       "width": 0.07,
-      "depth": 0.8,
+      "depth": 0.9,
       "lift": [
        0.0,
-       0.04,
-       0.036
+       0.05,
+       0.042
       ],
       "flick_m": 0.03,
       "layer": 2,
       "swirl_deg": 16,
       "channel": {
-       "gap": 0.15
+       "gap": 0.28
       },
       "stagger": {
        "len": [
@@ -1299,7 +1342,10 @@
        ]
       }
      }
-    ]
+    ],
+    "stand": {
+     "smooth": 8
+    }
    },
    {
     "seg": 18,
@@ -1312,66 +1358,65 @@
     "root_sink_m": 0.016,
     "rows": [
      {
-      "count": 6,
+      "count": 5,
       "pole": {
        "az": 180,
        "el": 62
       },
       "ring": {
-       "radius_deg": 22,
+       "radius_deg": 24,
        "around": [
-        -100,
-        100
+        -88,
+        88
        ]
       },
-      "len_deg": 24,
-      "width": 0.092,
-      "depth": 0.6,
+      "len_deg": 14,
+      "width": 0.095,
+      "depth": 0.8,
       "lift": [
        -0.004,
        0.1
       ],
-      "lift_power": 1.5,
-      "hold": 0.36,
-      "taper_power": 1.3,
-      "root_width": 0.6,
+      "lift_power": 1.3,
+      "hold": 0.5,
+      "taper_power": 2.1,
+      "root_width": 0.7,
       "layer": 3,
       "stagger": {
        "lift": [
-        0.75,
-        1.2,
+        0.7,
+        1.25,
+        0.95,
         0.6,
-        1.3,
-        0.9,
         1.05
        ],
        "len": [
         1.0,
-        1.3,
-        0.8,
-        1.1,
+        1.25,
         0.9,
-        1.2
+        0.8,
+        1.1
        ],
        "radius_deg": [
-        4,
-        -6,
-        8,
-        -2,
+        3,
+        -5,
         6,
-        -4
+        -2,
+        4
        ],
        "width": [
-        0.9,
+        0.95,
         1.1,
         0.85,
-        1.15,
-        1.0,
-        0.95
+        1.1,
+        1.0
        ]
       }
      }
-    ]
+    ],
+    "stand": {
+     "smooth": 14
+    }
    }
   ],
   "fibres": {
@@ -2044,6 +2089,13 @@
    "composed_by": "docs/evaluation/characters/T-155/make_specs.py"
   },
   "owner_decisions": "docs/process/OWNER_DECISIONS.md 2026-11-20 ~06:40Z item 4: publish boy 2.3.0, girl 0.14.0 and third character 0.1.0 as CANDIDATES",
-  "parent_metadata_owner_decisions": "docs/process/OWNER_DECISIONS.md 2026-11-18: T-092 approved ~19:20Z; T-093 and T-089 approved ~22:35Z; Phase D approved ~22:50Z; standing approval ~23:10Z (T-091, T-089b, T-093b merged by Supervisor review; T-094 publishes, the owner approves before current)"
+  "parent_metadata_owner_decisions": "docs/process/OWNER_DECISIONS.md 2026-11-18: T-092 approved ~19:20Z; T-093 and T-089 approved ~22:35Z; Phase D approved ~22:50Z; standing approval ~23:10Z (T-091, T-089b, T-093b merged by Supervisor review; T-094 publishes, the owner approves before current)",
+  "candidate": "R3 faces bundle (integration/r3-faces)",
+  "layers": [
+   "T-155 candidate",
+   "docs/evaluation/characters/T-159/overrides/boy_ears.json",
+   "docs/evaluation/characters/T-168/boy_yellow_hoodie.T-168.override.json",
+   "docs/evaluation/characters/T-167/overrides/boy_yellow_hoodie.hair_r6.override.json"
+  ]
  }
 }
