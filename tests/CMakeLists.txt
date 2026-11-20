@@ -16,3 +16,9 @@ if(TARGET plush_shot_workflow)
 endif()
 add_test(NAME plush_tests COMMAND plush_tests)
 
+
+# T-163 starter prop library: one verb test per prop (own doctest main, so its own binary).
+add_executable(plush_prop_tests props/test_prop_verbs.cpp)
+target_link_libraries(plush_prop_tests PRIVATE plush_scene doctest::doctest plush_warnings)
+target_compile_definitions(plush_prop_tests PRIVATE PLUSH_SOURCE_DIR="${CMAKE_SOURCE_DIR}")
+add_test(NAME plush_prop_tests COMMAND plush_prop_tests)

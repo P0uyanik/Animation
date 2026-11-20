@@ -158,13 +158,13 @@ Tasks from now on are numbered T-001, T-002, …, and pass through the states in
 | T-154 | [Tests] Owner-approved candidate allowlist for test_hair_r5 / test_hands_r2 (Opus) | running 2026-11-20 (owner ~06:40Z #3) | t-154-claude-guard-allowlist | docs/tasks/T-154.md |
 | T-155 | [Assets] Publish candidates boy 2.3.0 / girl 0.14.0 / third 0.1.0 (Opus) | running 2026-11-20 (owner #4), from integration/t-154 | t-155-claude-candidates | docs/tasks/T-155.md |
 | T-156 | [Faces] Eye shape to T-150 targets, T-137 follow-up (Fable) | running 2026-11-20 (owner #5) | t-156-claude-eye-targets | docs/tasks/T-156.md |
-| T-157 | [Engine] Grasp gap options: wider band vs fewer fingers (Opus) | running 2026-11-20 (owner #6) | t-157-claude-grasp-options | docs/tasks/T-157.md |
+| T-157 | [Engine] Grasp gap options: wider band vs fewer fingers (Opus) | merged 2026-11-20: opt-in bandFitOptions; e910 boy band out T-138 +4.10 → (a) wider band 40-95 −0.80 all in (recommended; stays opt-in, owner ~08:20Z), (b) little off +2.80, (c) +0.80 | t-157-claude-grasp-options | docs/tasks/T-157.md |
 | T-158 | [Build] Deterministic character builds (Opus) | merged 2026-11-20: recorded uv_sphere topology (9 sizes) + 2 sorts; repeated builds identical at 1e-7 m; 8/9 published regenerate as before (boy 1.0.0 hair_mass pre-existing); gate unit build-determinism-girl (shard 2, added_after_t127) | t-158-claude-deterministic-build | docs/tasks/T-158.md |
 | T-160 | [Characters] Hair round 6 on base groom, all three (Fable) | running 2026-11-20 (owner ~07:20Z) | t-160-claude-hair-r6 | docs/tasks/T-160.md |
 | T-162 | [Process] Status board docs/process/STATUS.md (Sonnet) | merged 2026-11-20: docs/process/STATUS.md; Supervisor maintains | t-162-claude-status-board | docs/tasks/T-162.md |
-| T-163 | [Content] Starter felt prop library 10–15 (Sonnet) | running 2026-11-20 (owner ~07:35Z #2) | t-163-claude-props | docs/tasks/T-163.md |
-| T-164 | [CI] Gate PR #2 comment only for integration/staging/main (Sonnet) | running 2026-11-20 (owner ~08:10Z #1) | t-164-claude-gate-comment | docs/tasks/T-164.md |
-| T-165 | [Process] Shared task kit + tools/ready.py (Opus) | running 2026-11-20 (owner ~08:10Z #3, #5) | t-165-claude-task-kit | docs/tasks/T-165.md |
+| T-163 | [Content] Starter felt prop library 10–15 (Sonnet) | merged 2026-11-20: 12 new felt props + felt_cup; verb test (boy+girl, 593 assertions) in ctest; rendered contact sheet | t-163-claude-props | docs/tasks/T-163.md |
+| T-164 | [CI] Gate PR #2 comment only for integration/staging/main (Sonnet) | merged 2026-11-20: PR #2 comment step skips task branches (run 44699631073); checks unchanged | t-164-claude-gate-comment | docs/tasks/T-164.md |
+| T-165 | [Process] Shared task kit + tools/ready.py (Opus) | merged 2026-11-20: tools/ready.py, run_logged.py, wait_gate.py, render_queue.py, review/shot_sheet.py; IMPLEMENTER_PROMPT + _TEMPLATE point at the kit | t-165-claude-task-kit | docs/tasks/T-165.md |
 | T-166 | [Rendering] final720 default + HEVC 10-bit delivery (Sonnet) | queued 2026-11-20 (owner ~08:20Z #3), next free slot | t-166-claude-render-defaults | docs/tasks/T-166.md |
 | T-159 | [Characters] Temple hollow (both girls) + ears round (Fable) | running 2026-11-20 (Part A temple ~08:35Z, then ears) | t-159-claude-ears | docs/tasks/T-159.md |
 | T-167 | [Characters] Hair round 7, reference fidelity first (Fable) | running 2026-11-20 (owner ~08:50Z) | t-167-claude-hair-r7 | docs/tasks/T-167.md |
