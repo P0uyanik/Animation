@@ -1,0 +1,37 @@
+{
+ "clip": "out/cmu_09_01_run.clip.json",
+ "frames": 30,
+ "fps": 24.0,
+ "source_leg_m": 15.2615231,
+ "target_leg_m": 0.2481291,
+ "dir_err_deg_max": 18.0626,
+ "dir_err_deg_mean": 2.68593,
+ "dir_err_deg_max_per_role": {
+  "hips": 18.063,
+  "spine": 0.0,
+  "neck": 17.194,
+  "upperArm.L": 0.0,
+  "forearm.L": 0.0,
+  "thigh.L": 0.0,
+  "shin.L": 0.0,
+  "upperArm.R": 0.0,
+  "forearm.R": 0.0,
+  "thigh.R": 0.0,
+  "shin.R": 0.0
+ },
+ "foot.L": {
+  "ankle_min_minus_rest_mm": 11.0,
+  "ankle_lift_mm": 136.2,
+  "slide_while_planted_mm_total": 37.0,
+  "slide_longest_plant_mm": 30.0,
+  "travel_mm": 1162.7
+ },
+ "foot.R": {
+  "ankle_min_minus_rest_mm": 11.2,
+  "ankle_lift_mm": 121.0,
+  "slide_while_planted_mm_total": 21.1,
+  "slide_longest_plant_mm": 10.6,
+  "travel_mm": 1318.6
+ },
+ "root_travel_mm": 1240.0
+}

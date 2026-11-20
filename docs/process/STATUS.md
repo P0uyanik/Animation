@@ -26,7 +26,8 @@ Codex T-169 hair reference study (relay 2987afa) feeds T-167. Codex T-161 refere
 | Task | Model | State | ETA | Branch |
 | --- | --- | --- | --- | --- |
 | T-157 grasp gap: wider band (a) stays opt-in until hands round 2 | Opus 5.5 | merged (main 2a02532) | — | — |
-| Hands round 2 (then revisit T-157 option a default) | — | queued: starts once T-155 is published | — | — |
+| T-171 hands round 2 (then revisit T-157 option a default) | Fable 5.2 | owner go ~22:25Z: starts automatically when R3 is released + gate green | — | `t-171-claude-hands-r2` |
+| T-172 test video with released R3 characters (5–8 s, existing shot) | Sonnet 5.5 | owner request ~22:35Z: starts when R3 is released + gate green | — | `t-172-claude-test-video` |
 
 ## Other
 | Task | Model | State | ETA | Branch |
@@ -34,6 +35,8 @@ Codex T-169 hair reference study (relay 2987afa) feeds T-167. Codex T-161 refere
 | T-141 native hair curves (opt-in tool) | Fable 5.2 | merged (main 2a02532) | — | — |
 | T-144 retire unpinned generator versions | Opus 5.5 | done: option (c), legacy documented, no removal (owner ~20:50Z) | — | — |
 | T-166 final720 default + HEVC 10-bit delivery | Sonnet 5.5 | merged (main 86288cb); ffmpeg added to CI pins | — | — |
+| T-175 locomotion layer: CMU importer + foot-lock + chibi style filter (owner go ~23:35Z) | Opus 5.5 | running; first a walk + sit/stand style review | — | `t-175-claude-locomotion` |
+| T-174 animation reuse vs build (research) | Opus 5.5 | merged: keep engine for acting/verbs/grasp; reuse CMU mocap for walk/run/sit/stand; build importer + foot lock (~3.5–4 d); owner questions open | — | — |
 | T-153 fidelity score v2 | Opus | merged; experimental, default stays v1 | — | `t-153-claude-fidelity-v2` |
 | T-161 Codex reference targets | Codex | assigned (relay f33c4868); Codex limited until 2026-11-23 ~21:43Z | — | — |
 | T-162 this board | Sonnet 5.5 | merged; Supervisor maintains | — | — |

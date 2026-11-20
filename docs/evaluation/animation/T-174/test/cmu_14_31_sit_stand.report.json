@@ -1,0 +1,37 @@
+{
+ "clip": "out/cmu_14_31_sit_stand.clip.json",
+ "frames": 419,
+ "fps": 24.0,
+ "source_leg_m": 14.8867479,
+ "target_leg_m": 0.2481291,
+ "dir_err_deg_max": 49.7926,
+ "dir_err_deg_mean": 2.71681,
+ "dir_err_deg_max_per_role": {
+  "hips": 49.793,
+  "spine": 0.0,
+  "neck": 10.565,
+  "upperArm.L": 0.0,
+  "forearm.L": 0.0,
+  "thigh.L": 0.0,
+  "shin.L": 0.0,
+  "upperArm.R": 0.0,
+  "forearm.R": 0.0,
+  "thigh.R": 0.0,
+  "shin.R": 0.0
+ },
+ "foot.L": {
+  "ankle_min_minus_rest_mm": -1.1,
+  "ankle_lift_mm": 54.8,
+  "slide_while_planted_mm_total": 172.9,
+  "slide_longest_plant_mm": 104.3,
+  "travel_mm": 333.6
+ },
+ "foot.R": {
+  "ankle_min_minus_rest_mm": -3.0,
+  "ankle_lift_mm": 45.8,
+  "slide_while_planted_mm_total": 109.7,
+  "slide_longest_plant_mm": 60.5,
+  "travel_mm": 438.6
+ },
+ "root_travel_mm": 305.6
+}

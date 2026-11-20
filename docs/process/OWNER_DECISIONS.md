@@ -791,3 +791,60 @@ branch `t-168-claude-boy-face@49b3f56` kept) may be unarchived if follow-up work
    integration/r3-faces: T-155 content + T-156 + T-159 ears/temple + T-168 r4 + hair (boy r6, girls r7). Verify every change
    shows, render final strict sheets + 100% crops for all three and send them for owner approval. Then the T-155 release (owner types OK
    in its session), test-reference updates and the full gate. Nothing else competes for slots; T-166 may finish; the world plan stays on hold.
+
+## 2026-11-20 ~22:00Z (23:00 CET) — T-156 accepted; narrow guard allowances (relayed by the owner liaison)
+1. "I accept T-156 for this release" (`t-156-claude-eye-targets@6b3ddf4`, in integration/r3-faces). Remaining limits are logged
+   for later: auburn 3/4 pale strip and white past the outer corner, soft under-lid ledge, closed mound 8 mm, skin closes in the
+   last quarter of the blink.
+2. "I approve the narrow guard-test allowances for the three specified versions", per
+   `docs/evaluation/characters/R3/RELEASE_STEP.md`: test_face_t168, test_hair_r6 and test_face_r5 allow the opt-in features (T-168
+   face options, groom/5, T-156 closed_fill) ONLY for boy 2.3.0 / girl 0.14.0 / third 0.1.0, each with its owner decision
+   reference, and stay strict for everything else. The test_face_v4 current pins move to 2.3.0/0.14.0 at the release.
+   Next: final sheets for owner approval, then the release.
+
+## 2026-11-20 ~22:10Z (23:10 CET) — Release numbering (relayed by the owner liaison)
+Option (A): R3 is released AS boy 2.3.0 / girl 0.14.0 / third 0.1.0, rebuilt from the R3 stacked specs. This replaces the
+branch-only builds from T-155 (~08:40Z), which were never published on main. On integration/r3-faces the approved pointers go back to
+2.2.0/0.13.0 until the owner's final OK on the sheets. The guard allowances keep these version names.
+
+## 2026-11-20 ~22:25Z (23:25 CET) — Hands round 2 start (relayed by the owner liaison)
+Start HANDS ROUND 2 (→ T-171) automatically right after the R3 release is published and its full gate is green. This is
+an explicit owner go; other held tasks stay held. Scope as queued: boy finger separation, pre-shaping during the reach,
+finger-by-finger close, soft contact; then revisit T-157 option (a) as the default. Base: the released 2.3.0/0.14.0/0.1.0.
+Candidate/opt-in, with strict sheets and clips for owner review.
+
+## 2026-11-20 ~22:35Z (23:35 CET) — Test video after the R3 release (relayed by the owner liaison)
+Once the R3 release is published (gate green), render a 5–8 s TEST VIDEO with the released characters (boy 2.3.0 /
+girl 0.14.0 / third 0.1.0) from what already exists: reuse an existing shot/clip setup, with no new animation or environment
+work. Use the new defaults (final720, HEVC 10-bit) plus an H.264 copy, and send the paths. It may run in parallel with T-171 → T-172.
+
+## 2026-11-20 ~22:45Z (23:45 CET) — Codex T-173 local GPU render benchmark (relayed by the owner liaison)
+Codex task T-173: a render benchmark on the owner's own GeForce PC. Measurement only: CPU vs OptiX vs CUDA at final720 and
+legacy128. Write-set `docs/evaluation/rendering/T-173/**`. Posted at the top of NEXT_TASK.md on relay-channel@722c00e9. No other
+change.
+
+## 2026-11-20 ~22:55Z (23:55 CET) — T-174 research: animation reuse vs build (relayed by the owner liaison)
+New research-only task (docs-only write-set, no implementation, no Codex). For walking, running, sitting, standing up, reactions,
+object interaction and character-to-character interaction: what exists, what we can reuse, what we keep, what needs custom
+work, how to simplify, and the pros and cons. Deliverable: a keep/reuse/build matrix, ONE recommended approach with a revised estimate,
+risks and owner questions → `docs/tasks/T-174.md`.
+
+## 2026-11-20 ~23:15Z (00:15 CET) — Answers to the T-174 questions (relayed by the owner liaison; record only)
+(a) The content goes to YouTube, so treat the project as commercial: CMU is OK with attribution; no non-commercial (NC) data.
+(b) Walk/run/sit/stand are needed eventually, not urgently. (c) Mixamo is not used unless the owner decides otherwise later.
+(d) mocap.cs.cmu.edu and accad.osu.edu are allowed in the Animation environment. (e) Style must match the reference videos
+(stylized, chibi timing per T-106 and content/timing), not realistic mocap. The owner is still deciding code vs no-code.
+The T-174 plan stays ON HOLD; nothing starts.
+
+## 2026-11-20 ~23:35Z (00:35 CET) — Start the T-174 locomotion layer (relayed by the owner liaison)
+Explicit owner go → T-175: CMU mocap importer (on the existing retarget code), foot-lock pass, and a chibi lean/stride/timing
+filter matching the reference-video style. ~3.5–4 task-days. CMU only, with attribution; no Mixamo, no NC data. Opt-in, with no change to
+existing shots' defaults. The write-set is disjoint from the release, T-171 and T-172. No character geometry/look or rig change (report first).
+File/function ownership with T-171 is assigned in `docs/tasks/T-175.md`. First delivery: walk + sit/stand on the boy and auburn
+(third if possible), with feet-planted numbers and short clips for owner style review before wider use.
+
+## 2026-11-20 ~23:11Z (00:11 CET) — R3 release approval (owner, typed directly in the T-155 session)
+"I approve releasing R3 as boy 2.3.0, girl 0.14.0 and third 0.1.0 and making 2.3.0/0.14.0 CURRENT, without reviewing the
+final sheets, on condition that all checks pass and the liaison finds no new defect on the final sheets; otherwise stop and
+report." (Verified by the Supervisor in the T-155 transcript, user message 23:11:12Z.) Release write-set: the T-155 row in
+OWNERSHIP.md. The branch-only 2.3.0/0.14.0/0.1.0 store folders (never on main) are replaced by the R3 rebuilds under the same numbers.
