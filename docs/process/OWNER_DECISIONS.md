@@ -791,3 +791,13 @@ branch `t-168-claude-boy-face@49b3f56` kept) may be unarchived if follow-up work
    integration/r3-faces: T-155 content + T-156 + T-159 ears/temple + T-168 r4 + hair (boy r6, girls r7). Verify every change
    shows, render final strict sheets + 100% crops for all three and send them for owner approval. Then the T-155 release (owner types OK
    in its session), test-reference updates and the full gate. Nothing else competes for slots; T-166 may finish; the world plan stays on hold.
+
+## 2026-11-20 ~22:00Z (23:00 CET) — T-156 accepted; narrow guard allowances (relayed by the owner liaison)
+1. "I accept T-156 for this release" (`t-156-claude-eye-targets@6b3ddf4`, in integration/r3-faces). Remaining limits are logged
+   for later: auburn 3/4 pale strip and white past the outer corner, soft under-lid ledge, closed mound 8 mm, skin closes in the
+   last quarter of the blink.
+2. "I approve the narrow guard-test allowances for the three specified versions", per
+   `docs/evaluation/characters/R3/RELEASE_STEP.md`: test_face_t168, test_hair_r6 and test_face_r5 allow the opt-in features (T-168
+   face options, groom/5, T-156 closed_fill) ONLY for boy 2.3.0 / girl 0.14.0 / third 0.1.0, each with its owner decision
+   reference, and stay strict for everything else. The test_face_v4 current pins move to 2.3.0/0.14.0 at the release.
+   Next: final sheets for owner approval, then the release.
