@@ -1,13 +1,13 @@
 Frames 1-192 (192 frames)
-Cup largest patch (px) minimum 0 at 161
-Cup largest patch (% of isolated silhouette) minimum 0 at 161
-  Below 40 (54 frames): 27, 31, 67-87, 90-93, 109-116, 121-124, 148-162
+Cup largest patch (px) minimum 644 at 76
+Cup largest patch (% of isolated silhouette) minimum 50.9091 at 76
+  Below 40 (0 frames): none
 No in-frame cup silhouette (percentage undefined): none
-boy.L visible pupil (px) minimum 0 at 23, 25-31, 51-59, 61-117, 119-125, 127-134, 139-176
-  Below 8 (138 frames): 19-23, 25-31, 51-176
-boy.R visible pupil (px) minimum 0 at 23-31, 51-182
-  Below 8 (143 frames): 23-33, 51-182
-girl.L visible pupil (px) minimum 0 at 1-24, 26-34, 54-56, 62-164, 181-183
-  Below 8 (160 frames): 1-35, 41-44, 51-52, 54-166, 168-169, 175, 181-183
-girl.R visible pupil (px) minimum 0 at 1-24, 26-33, 54-56, 62-118, 120-125, 129-130, 133-137, 140-165, 181-183
-  Below 8 (151 frames): 1-24, 26-35, 54-57, 59-165, 168-169, 174, 181-183
+boy.L visible pupil (px) minimum 0 at 25-28, 86-89, 141-143, 171-174
+  Below 8 (15 frames): 25-28, 86-89, 141-143, 171-174
+boy.R visible pupil (px) minimum 0 at 25-28, 86-89, 141-143, 171-174
+  Below 8 (15 frames): 25-28, 86-89, 141-143, 171-174
+girl.L visible pupil (px) minimum 0 at 26-28, 54-56, 86-88, 116-118, 135-137, 181-183
+  Below 8 (18 frames): 26-28, 54-56, 86-88, 116-118, 135-137, 181-183
+girl.R visible pupil (px) minimum 0 at 26-28, 54-56, 86-88, 116-118, 135-137, 181-183
+  Below 8 (18 frames): 26-28, 54-56, 86-88, 116-118, 135-137, 181-183

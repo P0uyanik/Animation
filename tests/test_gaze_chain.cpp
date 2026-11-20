@@ -26,6 +26,8 @@ GazeLegibility legible(bool chain) {
   lg.headYawDeg = 15;
   lg.headPitchDeg = 10;
   lg.chain = chain;
+  // Wide caps (reach), not the readable defaults.
+  lg.neckYawDeg = 50; lg.neckPitchDeg = 40; lg.torsoYawDeg = 25; lg.torsoPitchDeg = 25; lg.eyeShareDeg = vec2(-1);
   return lg;
 }
 Pose posed(const Skeleton& sk, const Clip& clip, double frame, const GazeLegibility& lg) {
@@ -38,7 +40,9 @@ Pose posed(const Skeleton& sk, const Clip& clip, double frame, const GazeLegibil
   else turnHeadForGaze(sk, clip, "a/", frame, 24, mat4(1), pose, lg);
   applyConstraints(sk, clip, "a/", frame, mat4(1), pose, limits, 24);
   if (lg.chain) aimEyesAt(sk, mat4(1), pose, clip.find("a/lookAt")->evaluate(frame), 1.0f);
-  clampEyesToGazeRange(sk, mat4(1), pose, lg.rangeDeg);
+  vec2 range = lg.rangeDeg;  // as SceneEvaluator::kinematicGlobals
+  if (lg.chain && lg.eyeShareDeg.x >= 0) range = glm::min(range, lg.eyeShareDeg + vec2(2.0f));
+  clampEyesToGazeRange(sk, mat4(1), pose, range);
   return pose;
 }
 float aimError(const std::vector<mat4>& g, std::initializer_list<int> eyes, vec3 target) {
@@ -146,10 +150,33 @@ TEST_CASE("gaze chain: eyes lead, then neck / head and torso take a steep look t
   for (int b : {0, 1, 2, 3}) CHECK(turnDeg(q.local[size_t(b)]) < 0.05f);
 }
 
+TEST_CASE("gaze chain: the default eye share keeps the eyes near centre, the head takes the turn") {
+  const Skeleton sk = chainSkeleton();
+  const vec3 ahead(0, 1.45f, 3), side(1.2f, 1.3f, 1.6f);  // ~35 deg to the side, a little down
+  Clip clip;
+  clip.tracks["a/lookAt"].setKey({0, ahead, Interp::Step});
+  clip.tracks["a/lookAt"].setKey({20, side, Interp::Step});
+  const GazeLegibility t120 = legible(false);
+  GazeLegibility readable;  // the chain's default caps: eyeShareDeg 4 / 3, neck 25 / 10, torso 5 / 3
+  readable.enabled = readable.chain = true;
+  readable.rangeDeg = t120.rangeDeg;
+  readable.headYawDeg = t120.headYawDeg;
+  readable.headPitchDeg = t120.headPitchDeg;
+  const Pose off = posed(sk, clip, 60, t120), on = posed(sk, clip, 60, readable);
+  const float eyesOff = turnDeg(off.local[4]), eyesOn = turnDeg(on.local[4]);
+  MESSAGE("eye turn: T-120 " << eyesOff << " deg, readable chain " << eyesOn << " deg; error "
+                             << aimError(boneGlobals(sk, off, mat4(1)), {4, 5}, side) << " -> "
+                             << aimError(boneGlobals(sk, on, mat4(1)), {4, 5}, side) << " deg");
+  CHECK(eyesOn <= 8.0f);  // within eyeShareDeg + 2 (6 / 5)
+  CHECK(eyesOn < eyesOff);
+  CHECK(turnDeg(on.local[2]) + turnDeg(on.local[3]) > turnDeg(off.local[2]) + turnDeg(off.local[3]));
+  CHECK(aimError(boneGlobals(sk, on, mat4(1)), {4, 5}, side) < aimError(boneGlobals(sk, off, mat4(1)), {4, 5}, side));
+}
+
 TEST_CASE("gaze chain: held eye contact between two characters; chain false = T-120") {
   auto t120 = pairScene(Json::parse(R"({"rangeDeg": [16, 8], "headYawDeg": 15, "headPitchDeg": 10})"));
   auto off = pairScene(Json::parse(R"({"rangeDeg": [16, 8], "headYawDeg": 15, "headPitchDeg": 10, "chain": false})"));
-  auto chain = pairScene(Json::parse(R"({"rangeDeg": [16, 8], "headYawDeg": 15, "headPitchDeg": 10, "chain": true})"));
+  auto chain = pairScene(Json::parse(R"({"rangeDeg": [16, 8], "headYawDeg": 15, "headPitchDeg": 10, "chain": {"neckYawDeg": 50, "neckPitchDeg": 40, "torsoYawDeg": 25, "torsoPitchDeg": 25, "eyeShareDeg": [90, 90]}})"));
   for (double f : {5.0, 30.0, 60.0}) {  // off is T-120 to the bit
     const auto a = t120->characterGlobals(0, f), b = off->characterGlobals(0, f);
     REQUIRE(a.size() == b.size());

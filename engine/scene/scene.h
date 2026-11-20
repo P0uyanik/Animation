@@ -112,13 +112,15 @@ struct GazeLegibility {
   // The eyes then aim at the look's exact, live target: a prop's middle ("atProp", the cup), or the midpoint of the
   // partner's eyes ("atCharacter": held eye contact), instead of the 3-frame keyed track.
   bool chain = false;
-  float neckYawDeg = 50.0f, neckPitchDeg = 40.0f;
-  float torsoYawDeg = 25.0f, torsoPitchDeg = 25.0f;
+  // Defaults: the readable setting from the e910 sweep (docs/evaluation/animation/T-136): small eye share, the head
+  // and neck take most of the turn, little torso, so pupils stay readable to the camera; wider caps reach further.
+  float neckYawDeg = 25.0f, neckPitchDeg = 10.0f;
+  float torsoYawDeg = 5.0f, torsoPitchDeg = 3.0f;
   float torsoLagFrames = 3.0f;
   // The eyes' share of a chained look ("eyeShareDeg": [yaw, pitch]): the head and torso turn so the eyes stay within
   // this of centre (readable pupils), and the eyes are held within it plus 2 degrees (darts). Negative = T-120's
   // comfortable part of rangeDeg.
-  vec2 eyeShareDeg{-1.0f, -1.0f};
+  vec2 eyeShareDeg{4.0f, 3.0f};
 };
 // `j` on top of `base` (the scene's setting under a character's). Null keeps base; an object without "enabled" is on.
 Result<GazeLegibility> gazeLegibilityFromJson(const Json& j, GazeLegibility base = {});
