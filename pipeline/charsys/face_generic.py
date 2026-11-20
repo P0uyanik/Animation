@@ -417,13 +417,71 @@ def build_ears(C, M, ctx, ec, ez):
         e.location = (x, y, z)
         e.rotation_euler = (math.radians(_f(ec, "tilt_deg", -8)), 0, math.radians(sx * _f(ec, "yaw_deg", 28)))
         bpy.context.view_layer.update()
-        bowl = Vector((x + sx * rad[0] * 0.9, y - rad[1] * 0.25, z))
-        G.brush(e, bowl, rad[2] * 0.7, (-sx * rad[0] * 0.5, rad[1] * 0.12, 0))  # inner bowl
-        G.add_mod(e, "SUBSURF", levels=1, render_levels=2)
-        G.apply_mods(e)
-        G.assign(e, M["face_skin"])
+        sh = ec.get("shape")
+        if sh:  # T-159 (opt-in): a C-shaped ear with a rim and a bowl instead of the dented ellipsoid
+            G.add_mod(e, "SUBSURF", levels=int(_f(sh, "subdiv", 2)), render_levels=int(_f(sh, "subdiv", 2)))
+            G.apply_mods(e)
+            ear_shape(e, sx, rad, sh)
+        else:
+            bowl = Vector((x + sx * rad[0] * 0.9, y - rad[1] * 0.25, z))
+            G.brush(e, bowl, rad[2] * 0.7, (-sx * rad[0] * 0.5, rad[1] * 0.12, 0))  # inner bowl
+            G.add_mod(e, "SUBSURF", levels=1, render_levels=2)
+            G.apply_mods(e)
+        G.assign(e, ear_skin(M["face_skin"], _f(ec, "subsurface", 1.0)))
         ears.append(e)
     return ears
+
+
+def ear_skin(skin, subsurface):
+    """The ears' skin material. face.ears.subsurface (T-159, opt-in; 1 = the face skin itself): a copy of the face
+    skin ("<name>.ear") with its subsurface weight scaled, because light scatters straight through the thin ear and
+    washes it out next to the thick head."""
+    if subsurface == 1.0 or not skin.use_nodes:
+        return skin
+    name = skin.name + ".ear"
+    m = bpy.data.materials.get(name)
+    if m is None:
+        m = skin.copy()
+        m.name = name
+        for n in m.node_tree.nodes:
+            if n.bl_idname == "ShaderNodeBsdfPrincipled" and "Subsurface Weight" in n.inputs:
+                n.inputs["Subsurface Weight"].default_value *= subsurface
+    return m
+
+
+def ear_shape(e, sx, rad, sh):
+    """face.ears.shape (T-159): sculpts the ear ellipsoid (mesh coordinates: x thickness, outwards for side sx; y
+    depth, -y = front; z height) into a C-shaped ear. In the ear's normalised coordinates (v = y / radius, w = z /
+    radius) the outer face gets
+      a bowl: depth bowl_depth (x the thickness radius), an ellipse of half axes bowl_size [v, w] centred at
+        bowl_centre [v, w] (a centre towards the front opens the C to the face), soft edge bowl_edge (0..1);
+      a rim: the outer face outside the bowl rises by rim (x the thickness radius), which leaves a rounded roll
+        around the back, top and bottom of the bowl;
+      back_flat (0..1): the inner half (towards the head) is flattened, so the ear sits on the head like a shell.
+    All absent = the plain subdivided ellipsoid."""
+    import numpy as np
+    me = e.data
+    n = len(me.vertices)
+    co = np.empty(n * 3)
+    me.vertices.foreach_get("co", co)
+    co = co.reshape(n, 3)
+    u = sx * co[:, 0] / rad[0]
+    v, w = co[:, 1] / rad[1], co[:, 2] / rad[2]
+    bc = sh.get("bowl_centre", [-0.15, 0.0])
+    bs = sh.get("bowl_size", [0.55, 0.6])
+    edge = max(_f(sh, "bowl_edge", 0.5), 1e-3)
+    rho = np.sqrt(((v - bc[0]) / bs[0]) ** 2 + ((w - bc[1]) / bs[1]) ** 2)
+    t = np.clip((rho - (1 - edge)) / edge, 0.0, 1.0)
+    inside = 1.0 - t * t * (3 - 2 * t)  # 1 in the bowl, 0 outside its soft edge
+    outer = np.clip(u, 0.0, 1.0)  # only the outer face
+    lim = np.clip(1.0 - (v * v + w * w), 0.0, 1.0)  # fades at the ear's own outline
+    du = -_f(sh, "bowl_depth", 0.0) * inside * outer + _f(sh, "rim", 0.0) * (1 - inside) * outer * np.sqrt(lim)
+    bf = _f(sh, "back_flat", 0.0)
+    if bf > 0:
+        du = du + np.where(u < 0, -u * bf, 0.0)
+    co[:, 0] += sx * rad[0] * du
+    me.vertices.foreach_set("co", co.ravel())
+    me.update()
 
 
 # ------------------------------------------------------------------------------------------------ expression library

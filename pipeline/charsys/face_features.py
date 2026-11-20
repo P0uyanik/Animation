@@ -571,6 +571,24 @@ def _head_coords(head):
 
 
 # ------------------------------------------------------------------------------------------------ face shape v2
+def front_weight(y, y_cut, fade):
+    """Weight of the face-front options (face_width_m, jaw_depth_roundness) at depth y: 1 in front of the cut, 0
+    behind it. fade <= 0 is the hard cut (a boolean mask); fade > 0 falls smoothly from 1 to 0 over fade metres
+    centred on the cut (0.5 at y_cut)."""
+    if fade <= 0:
+        return y < y_cut
+    return 1.0 - _smooth((y - y_cut) / fade + 0.5)
+
+
+def smooth_profile(z, v, sigma):
+    """Gaussian smoothing (sigma in the units of z) of the samples v(z); NaN samples are ignored and stay NaN."""
+    import numpy as np
+    ok = ~np.isnan(v)
+    w = np.exp(-0.5 * ((z[:, None] - z[None, :]) / sigma) ** 2) * ok[None, :]
+    out = (w @ np.where(ok, v, 0.0)) / np.maximum(w.sum(axis=1), 1e-12)
+    return np.where(ok, out, np.nan)
+
+
 def shape_face_v2(head, ctx, sc, ex, ez, r, z_chin):
     """Round, full-cheeked face options (all absent/0 = unchanged), applied to the head mesh before any feature is
     placed, in this order:
@@ -585,12 +603,20 @@ def shape_face_v2(head, ctx, sc, ex, ez, r, z_chin):
         face_generic/1 option cheek_roundness_m is added to it (v2 does not use the v1 normal brush for it).
       jaw_depth_roundness (0..1): the lower face's horizontal sections round off at the front corners (3/4 views).
       lower_face_recede_m, recede_from_below_eye_m: below that line the face curves back towards the chin (side view).
+      outline_smooth_m (T-159, default 0 = raw bins): Gaussian sigma over height for the measured outline widths that
+        outline_roundness scales against (no horizontal ripples on the side of the lower face).
+      front_fade_m (T-159, default 0 = hard cut): depth over which face_width_m and jaw_depth_roundness fade out
+        towards the back of the head, centred on their front/back cut (no ledge in front of the ear).
     Returns a report; the face context is invalidated."""
     import numpy as np
     rep = {}
     world, write = _head_coords(head)
     p = world.copy()
     front = p[:, 1] < (ctx.face_y(None, 0.0, ez) + 0.6 * abs(ctx.face_y(None, 0.0, ez)))  # front ~ 80 % of the head
+    ff = _f(sc, "front_fade_m", 0.0)
+    if ff > 0:  # T-159 (opt-in): the hard front/back cut leaves a ledge at the temple; fade it over this depth instead
+        front = front_weight(p[:, 1], ctx.face_y(None, 0.0, ez) + 0.6 * abs(ctx.face_y(None, 0.0, ez)), ff)
+        rep["front_fade_m"] = ff
     # --- lower outline (front view)
     ro = _f(sc, "outline_roundness", 0.0)
     if ro > 0:
@@ -604,6 +630,10 @@ def shape_face_v2(head, ctx, sc, ex, ez, r, z_chin):
             m = np.abs(p[:, 2] - b) < 0.002
             widths.append(np.abs(p[m, 0]).max() if m.any() else np.nan)
         widths = np.array(widths)
+        osm = _f(sc, "outline_smooth_m", 0.0)
+        if osm > 0:  # T-159 (opt-in): the raw 3 mm bins jitter with the vertex rows and ripple the scaled outline
+            widths = smooth_profile(bins, widths, osm)
+            rep["outline_smooth_m"] = osm
         W = np.nanmax(np.abs(p[np.abs(p[:, 2] - z_top) < 0.002, 0])) if (np.abs(p[:, 2] - z_top) < 0.002).any() else np.nanmax(widths)
         sel = (p[:, 2] < z_top) & (p[:, 2] > z_chin - 0.004)
         xc = np.interp(p[sel, 2], bins[~np.isnan(widths)], widths[~np.isnan(widths)])

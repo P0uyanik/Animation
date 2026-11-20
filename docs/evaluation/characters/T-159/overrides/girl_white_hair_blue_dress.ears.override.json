@@ -1,0 +1,27 @@
+{
+ "note": "T-159 Part B (opt-in candidate): C-shaped ear (rim + bowl, face.ears.shape), ear skin with 30 % of the face skin's subsurface weight (face.ears.subsurface: the thin ear no longer washes out to grey next to the head), position: outer edge about 20 mm outside the head side as in id01 (was 26 mm; the reference ratio 2.37 would need a narrower head). On top of the T-155 candidate spec.",
+ "override": {
+  "face": {
+   "ears": {
+    "out_m": -0.007,
+    "yaw_deg": 28,
+    "shape": {
+     "subdiv": 2,
+     "bowl_depth": 0.9,
+     "rim": 0.3,
+     "back_flat": 0.6,
+     "bowl_size": [
+      0.75,
+      0.62
+     ],
+     "bowl_centre": [
+      -0.5,
+      -0.05
+     ],
+     "bowl_edge": 0.7
+    },
+    "subsurface": 0.3
+   }
+  }
+ }
+}
