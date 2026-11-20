@@ -1,0 +1,233 @@
+{
+ "schema": "plush-studio.review-recipe/1",
+ "character": "boy_yellow_hoodie",
+ "task": "T-159",
+ "recipe_sha256": "710703c382106d3bcf785a2e87dcf952351bf5421ed349f08b9fddec4031d8b6",
+ "inputs": {
+  "main": "bc556ad"
+ },
+ "compare": {
+  "variant": "compare",
+  "pose": "arms_down",
+  "allow_apose": false,
+  "allow_variant_mismatch": false,
+  "reference_variant": "compare"
+ },
+ "columns": [
+  {
+   "role": "baseline",
+   "tag": "baseline",
+   "label": "2.2.0 (current)",
+   "kind": "version",
+   "version": "2.2.0",
+   "status": "approved",
+   "approved_pointer": "2.2.0",
+   "spec_sha256": "3531de64befdb25bd7207f44baee146a255bb68fa1e1759c8fafd34f5aa7d559",
+   "blend": "assets/characters/boy_yellow_hoodie/versions/2.2.0/boy_yellow_hoodie_master.blend",
+   "source_variant": "master",
+   "comparison_pose": {
+    "upper_arm_fk_rotation_y_deg": 33
+   }
+  },
+  {
+   "role": "candidate",
+   "tag": "candidate",
+   "label": "2.3.0 cand. + T-159 ears p2",
+   "kind": "blend",
+   "blend": "build/t159/boy_ears/boy_yellow_hoodie_compare.blend",
+   "comparison_pose": null,
+   "source_variant": "compare",
+   "blend_sha256": "ed8cdb52b5db97621cfbf4b73bf1148180f421dd28e7a25febe78765b434cbc7"
+  }
+ ],
+ "cameras": {
+  "lens_mm": 70.0,
+  "sensor_mm": 36.0,
+  "views": [
+   {
+    "name": "front",
+    "label": "front",
+    "framing": "body",
+    "yaw_deg": 0.0,
+    "elevation_deg": 6.0,
+    "target": [
+     0.0,
+     0.0,
+     0.56
+    ],
+    "frame_height_m": 1.26,
+    "aspect": 1.6
+   },
+   {
+    "name": "threequarter",
+    "label": "3/4",
+    "framing": "body",
+    "yaw_deg": -35.0,
+    "elevation_deg": 6.0,
+    "target": [
+     0.0,
+     0.0,
+     0.56
+    ],
+    "frame_height_m": 1.26,
+    "aspect": 1.6
+   },
+   {
+    "name": "side",
+    "label": "side",
+    "framing": "body",
+    "yaw_deg": -90.0,
+    "elevation_deg": 6.0,
+    "target": [
+     0.0,
+     0.0,
+     0.56
+    ],
+    "frame_height_m": 1.26,
+    "aspect": 1.6
+   },
+   {
+    "name": "back",
+    "label": "back",
+    "framing": "body",
+    "yaw_deg": 180.0,
+    "elevation_deg": 6.0,
+    "target": [
+     0.0,
+     0.0,
+     0.56
+    ],
+    "frame_height_m": 1.26,
+    "aspect": 1.6
+   },
+   {
+    "name": "face_front",
+    "label": "face front",
+    "framing": "face",
+    "yaw_deg": 0.0,
+    "elevation_deg": 6.0,
+    "target": [
+     0.0,
+     0.0,
+     0.83
+    ],
+    "frame_height_m": 0.4,
+    "aspect": 1.0
+   },
+   {
+    "name": "face_threequarter",
+    "label": "face 3/4",
+    "framing": "face",
+    "yaw_deg": -35.0,
+    "elevation_deg": 6.0,
+    "target": [
+     0.0,
+     0.0,
+     0.83
+    ],
+    "frame_height_m": 0.4,
+    "aspect": 1.0
+   }
+  ]
+ },
+ "references": {
+  "front": {
+   "file": "assets/characters/boy_yellow_hoodie/references/views/val27_front.png",
+   "crop": null,
+   "label": "val27_front"
+  },
+  "threequarter": {
+   "file": "assets/characters/boy_yellow_hoodie/references/views/val27_threequarter_right.png",
+   "crop": null,
+   "label": "val27_threequarter_right"
+  },
+  "side": {
+   "file": "assets/characters/boy_yellow_hoodie/references/views/val27_side_right.png",
+   "crop": null,
+   "label": "val27_side_right"
+  },
+  "back": {
+   "file": "assets/characters/boy_yellow_hoodie/references/views/val27_back.png",
+   "crop": null,
+   "label": "val27_back"
+  },
+  "face_front": {
+   "file": "assets/characters/boy_yellow_hoodie/references/views/hero24_front.png",
+   "crop": [
+    40,
+    60,
+    560,
+    620
+   ],
+   "label": "hero24 face"
+  },
+  "face_threequarter": {
+   "file": "assets/characters/boy_yellow_hoodie/references/views/val27_threequarter_right.png",
+   "crop": [
+    10,
+    0,
+    230,
+    240
+   ],
+   "label": "val27_threequarter_right"
+  }
+ },
+ "light": {
+  "calibration": "character_neutral/1"
+ },
+ "render": {
+  "engine": "cycles",
+  "samples": 16,
+  "px": 360
+ },
+ "preview": {
+  "engine": "cycles",
+  "samples": 2,
+  "px": 120
+ },
+ "ai_target": {
+  "label": "AI target",
+  "images": {
+   "back": {
+    "file": "assets/characters/boy_yellow_hoodie/references/uploads/02_higgsfield_B05_hair_back_crown_2026-11-18.webp",
+    "crop": [
+     0,
+     0,
+     1493,
+     2000
+    ],
+    "label": "B05"
+   },
+   "side": {
+    "file": "assets/characters/boy_yellow_hoodie/references/uploads/02_higgsfield_B04_hair_side_2026-11-18.webp",
+    "crop": [
+     0,
+     0,
+     1493,
+     2000
+    ],
+    "label": "B04"
+   },
+   "face_front": {
+    "file": "assets/characters/boy_yellow_hoodie/references/uploads/02_higgsfield_B01_face_front_2026-11-18.webp",
+    "crop": [
+     150,
+     300,
+     1345,
+     1295
+    ],
+    "label": "B01"
+   },
+   "face_threequarter": {
+    "file": "assets/characters/boy_yellow_hoodie/references/uploads/02_higgsfield_B02_face_threequarter_2026-11-18.webp",
+    "crop": [
+     200,
+     200,
+     1300,
+     1300
+    ],
+    "label": "B02"
+   }
+  }
+ }
+}

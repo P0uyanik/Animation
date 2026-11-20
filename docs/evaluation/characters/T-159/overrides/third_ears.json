@@ -1,0 +1,44 @@
+{
+ "note": "T-159 Part B pass 2 (opt-in candidate, third girl only, stackable: touches face.ears only): round cup ears that stand out sideways with the bowl facing front, rim + bowl + full lobe (face.ears.shape), ear skin with 30 % of the face skin's subsurface weight and a warm pink tint; seat_offset_m [out, back, up] moves the ear while the ear landmark (jaw pivot) stays where it is. On top of the T-155 candidate spec 0.1.0. Measures vs T-161: README.",
+ "override": {
+  "face": {
+   "ears": {
+    "radii_m": [
+     0.014,
+     0.03,
+     0.036
+    ],
+    "yaw_deg": -55,
+    "seat_offset_m": [
+     0.01,
+     0.01,
+     0.0
+    ],
+    "shape": {
+     "subdiv": 2,
+     "bowl_depth": 0.9,
+     "rim": 0.35,
+     "back_flat": 0.6,
+     "bowl_size": [
+      0.7,
+      0.52
+     ],
+     "bowl_centre": [
+      -0.3,
+      0.08
+     ],
+     "bowl_edge": 0.7
+    },
+    "subsurface": 0.3,
+    "tint": {
+     "srgb": [
+      255,
+      196,
+      186
+     ],
+     "strength": 0.6
+    }
+   }
+  }
+ }
+}

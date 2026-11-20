@@ -1,0 +1,139 @@
+{
+ "schema": "plush-studio.review-recipe/1",
+ "task": "T-159",
+ "note": "boy: 2.2.0 (current) vs T-155 candidate 2.3.0 spec + T-159 ears override pass 2 (overrides/boy_ears.json: larger cup ears, shape, subsurface, tint); arms down.",
+ "character": "boy_yellow_hoodie",
+ "inputs": {
+  "main": "bc556ad"
+ },
+ "baseline": {
+  "version": "2.2.0",
+  "label": "2.2.0 (current)"
+ },
+ "candidate": {
+  "blend": "build/t159/boy_ears/boy_yellow_hoodie_compare.blend",
+  "label": "2.3.0 cand. + T-159 ears p2"
+ },
+ "compare": {
+  "variant": "compare",
+  "pose": "arms_down"
+ },
+ "cameras": {
+  "lens_mm": 70,
+  "sensor_mm": 36,
+  "elevation_deg": 6,
+  "framing": {
+   "body": {
+    "target": [
+     0.0,
+     0.0,
+     0.56
+    ],
+    "frame_height_m": 1.26,
+    "aspect": 1.6
+   },
+   "face": {
+    "target": [
+     0.0,
+     0.0,
+     0.83
+    ],
+    "frame_height_m": 0.4,
+    "aspect": 1.0
+   }
+  },
+  "rows": {
+   "front": {
+    "reference_view": "val27_front"
+   },
+   "threequarter": {
+    "reference_view": "val27_threequarter_right"
+   },
+   "side": {
+    "reference_view": "val27_side_right"
+   },
+   "back": {
+    "reference_view": "val27_back"
+   },
+   "face_front": {
+    "reference": {
+     "file": "views/hero24_front.png",
+     "crop": [
+      40,
+      60,
+      560,
+      620
+     ],
+     "label": "hero24 face"
+    },
+    "yaw_deg": 0
+   },
+   "face_threequarter": {
+    "reference_view": "val27_threequarter_right",
+    "crop": [
+     10,
+     0,
+     230,
+     240
+    ]
+   }
+  }
+ },
+ "light": {
+  "calibration": "character_neutral/1"
+ },
+ "ai_target": {
+  "images": {
+   "back": {
+    "file": "uploads/02_higgsfield_B05_hair_back_crown_2026-11-18.webp",
+    "crop": [
+     0,
+     0,
+     1493,
+     2000
+    ],
+    "label": "B05"
+   },
+   "side": {
+    "file": "uploads/02_higgsfield_B04_hair_side_2026-11-18.webp",
+    "crop": [
+     0,
+     0,
+     1493,
+     2000
+    ],
+    "label": "B04"
+   },
+   "face_front": {
+    "file": "uploads/02_higgsfield_B01_face_front_2026-11-18.webp",
+    "crop": [
+     150,
+     300,
+     1345,
+     1295
+    ],
+    "label": "B01"
+   },
+   "face_threequarter": {
+    "file": "uploads/02_higgsfield_B02_face_threequarter_2026-11-18.webp",
+    "crop": [
+     200,
+     200,
+     1300,
+     1300
+    ],
+    "label": "B02"
+   }
+  }
+ },
+ "render": {
+  "engine": "cycles",
+  "samples": 16,
+  "px": 360
+ },
+ "preview": {
+  "engine": "cycles",
+  "samples": 2,
+  "px": 120
+ }
+}
