@@ -1,0 +1,234 @@
+{
+ "boy_yellow_hoodie": {
+  "out": "assets/characters/boy_yellow_hoodie/spec/candidates/R3/boy_yellow_hoodie.2.3.0.spec.json",
+  "layers": [
+   {
+    "layer": "docs/evaluation/characters/T-159/overrides/boy_ears.json",
+    "changed_leaves": 13
+   },
+   {
+    "layer": "docs/evaluation/characters/T-168/boy_yellow_hoodie.T-168.override.json",
+    "changed_leaves": 22
+   },
+   {
+    "layer": "docs/evaluation/characters/T-167/overrides/boy_yellow_hoodie.hair_r6.override.json",
+    "changed_leaves": 3
+   }
+  ],
+  "clashes": {},
+  "lists_replaced": [
+   {
+    "layer": "boy_ears.json",
+    "path": "face.ears.radii_m",
+    "old_len": 3,
+    "new_len": 3,
+    "same": false
+   },
+   {
+    "layer": "boy_ears.json",
+    "path": "face.ears.seat_offset_m",
+    "old_len": null,
+    "new_len": 3,
+    "same": false
+   },
+   {
+    "layer": "boy_ears.json",
+    "path": "face.ears.shape.bowl_size",
+    "old_len": null,
+    "new_len": 2,
+    "same": false
+   },
+   {
+    "layer": "boy_ears.json",
+    "path": "face.ears.shape.bowl_centre",
+    "old_len": null,
+    "new_len": 2,
+    "same": false
+   },
+   {
+    "layer": "boy_ears.json",
+    "path": "face.ears.tint.srgb",
+    "old_len": null,
+    "new_len": 3,
+    "same": false
+   },
+   {
+    "layer": "boy_yellow_hoodie.T-168.override.json",
+    "path": "body.params.head.outline.side",
+    "old_len": 9,
+    "new_len": 9,
+    "same": false
+   },
+   {
+    "layer": "boy_yellow_hoodie.T-168.override.json",
+    "path": "body.params.head.outline.front",
+    "old_len": 5,
+    "new_len": 5,
+    "same": false
+   },
+   {
+    "layer": "boy_yellow_hoodie.T-168.override.json",
+    "path": "body.params.head.profile_levels",
+    "old_len": 12,
+    "new_len": 12,
+    "same": false
+   },
+   {
+    "layer": "boy_yellow_hoodie.hair_r6.override.json",
+    "path": "hair.structures",
+    "old_len": 10,
+    "new_len": 10,
+    "same": false
+   }
+  ]
+ },
+ "girl_auburn_bun_glasses": {
+  "out": "assets/characters/girl_auburn_bun_glasses/spec/candidates/R3/girl_auburn_bun_glasses.0.14.0.spec.json",
+  "layers": [
+   {
+    "layer": "docs/evaluation/characters/T-159/overrides/girl_auburn_bun_glasses.temple.override.json",
+    "changed_leaves": 2
+   },
+   {
+    "layer": "docs/evaluation/characters/T-159/overrides/girl_ears.json",
+    "changed_leaves": 13
+   },
+   {
+    "layer": "docs/evaluation/characters/T-159/overrides/girl_glasses.json",
+    "changed_leaves": 1
+   },
+   {
+    "layer": "docs/evaluation/characters/T-167/overrides/girl_auburn_bun_glasses.hair_r7.override.json",
+    "changed_leaves": 8
+   }
+  ],
+  "clashes": {},
+  "lists_replaced": [
+   {
+    "layer": "girl_ears.json",
+    "path": "face.ears.radii_m",
+    "old_len": 3,
+    "new_len": 3,
+    "same": false
+   },
+   {
+    "layer": "girl_ears.json",
+    "path": "face.ears.seat_offset_m",
+    "old_len": null,
+    "new_len": 3,
+    "same": false
+   },
+   {
+    "layer": "girl_ears.json",
+    "path": "face.ears.shape.bowl_size",
+    "old_len": null,
+    "new_len": 2,
+    "same": false
+   },
+   {
+    "layer": "girl_ears.json",
+    "path": "face.ears.shape.bowl_centre",
+    "old_len": null,
+    "new_len": 2,
+    "same": false
+   },
+   {
+    "layer": "girl_ears.json",
+    "path": "face.ears.tint.srgb",
+    "old_len": null,
+    "new_len": 3,
+    "same": false
+   },
+   {
+    "layer": "girl_glasses.json",
+    "path": "accessories.items",
+    "old_len": 3,
+    "new_len": 3,
+    "same": false
+   },
+   {
+    "layer": "girl_auburn_bun_glasses.hair_r7.override.json",
+    "path": "hair.structures",
+    "old_len": 16,
+    "new_len": 16,
+    "same": false
+   },
+   {
+    "layer": "girl_auburn_bun_glasses.hair_r7.override.json",
+    "path": "hair.fibres.slots",
+    "old_len": 1,
+    "new_len": 1,
+    "same": true
+   },
+   {
+    "layer": "girl_auburn_bun_glasses.hair_r7.override.json",
+    "path": "hair.fibres.layers",
+    "old_len": 3,
+    "new_len": 3,
+    "same": false
+   }
+  ]
+ },
+ "girl_white_hair_blue_dress": {
+  "out": "assets/characters/girl_white_hair_blue_dress/spec/candidates/R3/girl_white_hair_blue_dress.0.1.0.spec.json",
+  "layers": [
+   {
+    "layer": "docs/evaluation/characters/T-159/overrides/girl_white_hair_blue_dress.temple.override.json",
+    "changed_leaves": 2
+   },
+   {
+    "layer": "docs/evaluation/characters/T-159/overrides/third_ears.json",
+    "changed_leaves": 13
+   },
+   {
+    "layer": "docs/evaluation/characters/T-167/overrides/girl_white_hair_blue_dress.hair_r7.override.json",
+    "changed_leaves": 3
+   }
+  ],
+  "clashes": {},
+  "lists_replaced": [
+   {
+    "layer": "third_ears.json",
+    "path": "face.ears.radii_m",
+    "old_len": 3,
+    "new_len": 3,
+    "same": false
+   },
+   {
+    "layer": "third_ears.json",
+    "path": "face.ears.seat_offset_m",
+    "old_len": null,
+    "new_len": 3,
+    "same": false
+   },
+   {
+    "layer": "third_ears.json",
+    "path": "face.ears.shape.bowl_size",
+    "old_len": null,
+    "new_len": 2,
+    "same": false
+   },
+   {
+    "layer": "third_ears.json",
+    "path": "face.ears.shape.bowl_centre",
+    "old_len": null,
+    "new_len": 2,
+    "same": false
+   },
+   {
+    "layer": "third_ears.json",
+    "path": "face.ears.tint.srgb",
+    "old_len": null,
+    "new_len": 3,
+    "same": false
+   },
+   {
+    "layer": "girl_white_hair_blue_dress.hair_r7.override.json",
+    "path": "hair.structures",
+    "old_len": 11,
+    "new_len": 11,
+    "same": false
+   }
+  ]
+ }
+}
