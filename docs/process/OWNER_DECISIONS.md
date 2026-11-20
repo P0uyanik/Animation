@@ -855,3 +855,8 @@ Versions as quickly as possible, push and merge the code, so we can start the ne
 condition from ~23:11Z is waived. Boy 2.3.0 / girl 0.14.0 become CURRENT, third 0.1.0 is published, the test_face_v4 pins
 are updated, and the full gate is still required (no test skipped). Then merge/promote, then auto-start T-171 + T-172. Final sheets
 are kept for the record.
+
+## 2026-11-21 ~00:25Z (01:25 CET) — Supervisor rotation after the R3 release (relayed by the owner liaison)
+Finish the R3 release (merge + full gate green + T-171/T-172 started). Then write `docs/process/SUPERVISOR_HANDOVER_R4.md`
+(pointer-based) and push it. Start no new tasks after that. The round-4 Supervisor takes over in-flight items; the round-3
+Supervisor goes idle and does not archive itself while implementers still report to it.
