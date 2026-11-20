@@ -39,12 +39,7 @@ Codex T-161 reference targets (lashes, ears, hair silhouette) go to T-156 and T-
 | T-163 starter felt prop library | Sonnet 5.5 | running | — | `t-163-claude-props` |
 
 ## Waiting for owner
-1. Guard tests vs the approved current switch (expected to block T-155): `test_hair_r5` / `test_hands_r2` forbid any
-   CURRENT spec pinning groom/4 or body.hands, and the T-154 allowlist never exempts current versions. Making boy 2.3.0
-   / girl 0.14.0 current will fail them. Choices: 1 update the guards so a version made current by a named owner
-   decision (listed with its decision ref) passes, every other case still failing (recommended); 2 retire those two
-   guards now that groom/4 and hands_r2 are adopted; 3 postpone the current switch.
-2. T-141b: not approved; owner to discuss.
+1. T-141b: not approved; owner to discuss.
 
 ## Queued (start conditions)
 - T-166 final720 default + HEVC 10-bit delivery (Sonnet): next free slot.
@@ -53,4 +48,4 @@ Codex T-161 reference targets (lashes, ears, hair silhouette) go to T-156 and T-
 
 ## Decided today (for reference)
 T-137 approved (~07:00Z); T-124 keep the existing final preset (~06:40Z); T-144 option (b) (~07:35Z); fidelity v2 stays
-experimental (~06:40Z); T-138 gap not accepted → T-157 (~06:40Z); T-155 approved, boy 2.3.0 / girl 0.14.0 → CURRENT, third 0.1.0 first version (~08:20Z); T-157 option (a) stays opt-in until hands round 2 (~08:20Z); T-124 final720 + HEVC default → T-166 (~08:20Z).
+experimental (~06:40Z); T-138 gap not accepted → T-157 (~06:40Z); T-155 approved, boy 2.3.0 / girl 0.14.0 → CURRENT, third 0.1.0 first version (~08:20Z); T-157 option (a) stays opt-in until hands round 2 (~08:20Z); T-124 final720 + HEVC default → T-166 (~08:20Z); guard option 1: current versions only with a named current_decision (~08:20Z+).

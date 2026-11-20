@@ -655,3 +655,9 @@ Item 2 (liaison rotation) NOT now: the owner picks the time. Rules: analysis-bac
 ## 2026-11-20 ~08:30Z — Owner liaison rotation
 New owner liaison: session_01NPjxeKamtbdzi3YwrgsWXU ("Plush Studio – Owner liaison"); owner-facing reports and
 READY/decision requests go there, not to session_01NPjxeNTmHt2DtBN8F8uLqB. Handover: [LIAISON_HANDOVER](LIAISON_HANDOVER.md).
+
+## 2026-11-20 ~08:20Z+ (09:20 CET) — Guard option 1; restart T-164/T-165 (relayed by the owner liaison)
+"1 yes, and restart T-165 and T-164". test_hair_r5 / test_hands_r2 accept a CURRENT version only when listed in the
+allowlist with a named owner-decision ref (`current_decision`); boy 2.3.0 and girl 0.14.0 carry this decision plus the
+~08:20Z switch approval; every other case still fails; no removal, weakening or global bypass. Implemented on
+`integration/t-137`; unblocks the T-155 switch. T-164 was already merged into the Interaction batch; T-165 restarted.
