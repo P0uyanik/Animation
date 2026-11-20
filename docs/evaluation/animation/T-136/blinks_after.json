@@ -1,0 +1,75 @@
+{
+ "bake": "episodes/e910_showcase/shots/s010/build/e23_after.bake.json",
+ "characters": {
+  "boy": {
+   "blinks": [
+    [
+     25,
+     28
+    ],
+    [
+     86,
+     89
+    ],
+    [
+     141,
+     144
+    ],
+    [
+     171,
+     174
+    ]
+   ],
+   "count": 4,
+   "in_watched_frames": {
+    "grasp f76-79": [],
+    "her smile f152-155": [],
+    "look away f171-181": [
+     [
+      171,
+      174
+     ]
+    ]
+   }
+  },
+  "girl": {
+   "blinks": [
+    [
+     26,
+     28
+    ],
+    [
+     54,
+     56
+    ],
+    [
+     86,
+     88
+    ],
+    [
+     116,
+     118
+    ],
+    [
+     135,
+     137
+    ],
+    [
+     181,
+     183
+    ]
+   ],
+   "count": 6,
+   "in_watched_frames": {
+    "grasp f76-79": [],
+    "her smile f152-155": [],
+    "look away f171-181": [
+     [
+      181,
+      183
+     ]
+    ]
+   }
+  }
+ }
+}

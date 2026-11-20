@@ -1,0 +1,160 @@
+{
+ "format": "plush.animcheck_personality",
+ "version": 1,
+ "scene": "e910_showcase s010: T-117 8 s cup-exchange showcase - he is bored, notices late, picks up the cup and passes it; she wonders, takes it and is delighted; he answers late and looks away",
+ "fps": 24.0,
+ "characters": [
+  {
+   "character": "boy",
+   "personality": "boy_yellow_hoodie",
+   "profile": "content/personality/boy_yellow_hoodie.json",
+   "profile_version": "1.0.0",
+   "limits": {
+    "blink_interval_frames": [
+     20,
+     96
+    ],
+    "blink_duration_frames": [
+     4,
+     6
+    ],
+    "reach_frames": [
+     10,
+     16
+    ],
+    "hold_frames": [
+     24,
+     72
+    ],
+    "action_speed": [
+     0.8,
+     1.0
+    ],
+    "idle_motion_max_H_per_frame": 0.004,
+    "face_offset_max": 0.3,
+    "head_pitch_deg": [
+     5,
+     20
+    ]
+   },
+   "head_width_m": 0.3442,
+   "blinks": {
+    "morph": "Blink",
+    "count": 4,
+    "frames": [
+     25,
+     86,
+     141,
+     171
+    ],
+    "durations": [
+     4.0,
+     4.0,
+     4.0,
+     4.0
+    ],
+    "double_blinks": [],
+    "intervals": [
+     61.0,
+     55.0,
+     30.0
+    ],
+    "mean_interval": 48.67
+   },
+   "gestures": [],
+   "idle": {
+    "frames": 191,
+    "median_head_H_per_frame": 0.00134,
+    "p95_head_H_per_frame": 0.01636,
+    "head_amplitude_H": 0.03117,
+    "profile_idle_motion_amplitude_H": 0.003
+   },
+   "failures": []
+  },
+  {
+   "character": "girl",
+   "personality": "girl_auburn_bun_glasses",
+   "profile": "content/personality/girl_auburn_bun_glasses.json",
+   "profile_version": "1.0.0",
+   "limits": {
+    "blink_interval_frames": [
+     25,
+     40
+    ],
+    "blink_duration_frames": [
+     3,
+     5
+    ],
+    "reach_frames": [
+     8,
+     10
+    ],
+    "hold_frames": [
+     12,
+     40
+    ],
+    "action_speed": [
+     1.0,
+     1.25
+    ],
+    "idle_motion_max_H_per_frame": 0.006,
+    "face_offset_max": 0.2,
+    "head_pitch_deg": [
+     -5,
+     10
+    ],
+    "gesture_amplitude_max": 0.6
+   },
+   "head_width_m": 0.3105,
+   "blinks": {
+    "morph": "Blink",
+    "count": 6,
+    "frames": [
+     26,
+     54,
+     86,
+     116,
+     135,
+     181
+    ],
+    "durations": [
+     3.0,
+     3.0,
+     3.0,
+     3.0,
+     3.0,
+     3.0
+    ],
+    "double_blinks": [],
+    "intervals": [
+     28.0,
+     32.0,
+     30.0,
+     19.0,
+     46.0
+    ],
+    "mean_interval": 31.0
+   },
+   "gestures": [
+    {
+     "label": "girl clip girl_chin_think @1",
+     "reach_frames": 10.0,
+     "chord_mm": 247.3,
+     "checked": true,
+     "peak_H_per_frame": 0.2265,
+     "hold_frames": 21.0,
+     "kind": "clip"
+    }
+   ],
+   "idle": {
+    "frames": 99,
+    "median_head_H_per_frame": 0.00109,
+    "p95_head_H_per_frame": 0.01405,
+    "head_amplitude_H": 0.07768,
+    "profile_idle_motion_amplitude_H": 0.006
+   },
+   "failures": []
+  }
+ ],
+ "failures": []
+}
