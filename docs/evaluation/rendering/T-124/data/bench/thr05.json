@@ -1,0 +1,151 @@
+{
+ "variant": "thr05",
+ "tag": "thr05",
+ "description": "128 spp, adaptive threshold 0.05",
+ "settings": {
+  "cycles.adaptive_threshold": 0.05
+ },
+ "toggles": {},
+ "blend": "/root/t124/base/shot.blend",
+ "load_s": 3.47,
+ "blender": "5.3.0",
+ "threads": 4,
+ "resolution": [
+  1280,
+  720
+ ],
+ "effective": {
+  "samples": 128,
+  "adaptive": true,
+  "threshold": 0.05000000074505806,
+  "max_bounces": 12,
+  "denoiser": "OPENIMAGEDENOISE",
+  "denoise_passes": "RGB_ALBEDO_NORMAL",
+  "prefilter": "ACCURATE",
+  "persistent": false
+ },
+ "frames": [
+  {
+   "frame": 65,
+   "repeat": 0,
+   "render_s": 208.45,
+   "save_s": 0.18,
+   "phases": {
+    "sync": 7.68,
+    "bvh": 3.0,
+    "kernels": 0.01,
+    "path_trace": 195.52,
+    "denoise": 0.0,
+    "other": 2.24
+   },
+   "peak_mem": "",
+   "timeline": [
+    [
+     4.63,
+     "kernels",
+     "Updating Shaders"
+    ],
+    [
+     4.63,
+     "sync",
+     "Updating Scene Attribute"
+    ],
+    [
+     4.63,
+     "kernels",
+     "Updating Camera"
+    ],
+    [
+     4.63,
+     "sync",
+     "Updating Meshes Flags"
+    ],
+    [
+     4.64,
+     "kernels",
+     "Updating Particle Systems"
+    ],
+    [
+     4.64,
+     "sync",
+     "Copying Particles to device"
+    ],
+    [
+     4.64,
+     "kernels",
+     "Updating Displacement Images"
+    ],
+    [
+     4.64,
+     "sync",
+     "Computing normals"
+    ],
+    [
+     6.76,
+     "bvh",
+     "Building BVH"
+    ],
+    [
+     7.02,
+     "sync",
+     "Building"
+    ],
+    [
+     7.02,
+     "bvh",
+     "Building BVH"
+    ],
+    [
+     9.77,
+     "sync",
+     "Computing attributes"
+    ],
+    [
+     10.68,
+     "kernels",
+     "Updating Primitive Offsets"
+    ],
+    [
+     10.68,
+     "sync",
+     "Updating Images"
+    ],
+    [
+     10.68,
+     "kernels",
+     "Updating Volume"
+    ],
+    [
+     10.68,
+     "sync",
+     "Computing tree"
+    ],
+    [
+     10.69,
+     "kernels",
+     "Updating Integrator"
+    ],
+    [
+     10.69,
+     "sync",
+     "Writing constant memory"
+    ],
+    [
+     10.69,
+     "kernels",
+     "Loading denoising kernels (may take a few minutes the first "
+    ],
+    [
+     10.69,
+     "path_trace",
+     "Sample #/#"
+    ],
+    [
+     206.21,
+     "other",
+     "Finished"
+    ]
+   ]
+  }
+ ]
+}

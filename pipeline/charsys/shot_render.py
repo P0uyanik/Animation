@@ -3,7 +3,7 @@ animation (TD-42). Read-only on every character master.
 
     blender -b --factory-startup -P pipeline/charsys/shot_render.py -- --bake bake.json --cast cast.json --out <dir>
         [--frames A-B] [--resolution W H] [--samples N] [--light-scale X]
-        [--engine cycles|eevee] [--blend-only]
+        [--engine cycles|eevee] [--blend-only] [--profile final720|review]
 
 bake.json: the engine's shot bake (plush.shot_bake/1, `plush-render shot.scene.json --bake bake.json`).
 cast.json: {"<character name in the scene>": {"master": <master .blend>, "character_id": <root collection>,
@@ -62,7 +62,20 @@ def parse():
     ap.add_argument("--light-scale", type=float, default=1.0)
     ap.add_argument("--engine", choices=("cycles", "eevee"), default="cycles")
     ap.add_argument("--blend-only", action="store_true")
-    return ap.parse_args(argv)
+    ap.add_argument("--profile", default=None,
+                    help="opt-in render profile from render_profiles.json (T-124); sets resolution/samples unless given")
+    a = ap.parse_args(argv)
+    a.profile_data = None
+    if a.profile:
+        profiles = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "render_profiles.json")))
+        if a.profile not in profiles["profiles"]:
+            ap.error(f"unknown --profile {a.profile!r} (have: {', '.join(profiles['profiles'])})")
+        a.profile_data = profiles["profiles"][a.profile]
+        if a.resolution is None and "resolution" in a.profile_data:
+            a.resolution = list(a.profile_data["resolution"])
+        if "--samples" not in argv and "samples" in a.profile_data:
+            a.samples = int(a.profile_data["samples"])
+    return a
 
 
 def mat(flat):
@@ -434,6 +447,8 @@ def main():
                                 "eye_socket_worst_frame": eyes[n][1]}
     r = scene.render
     engine_settings = render_engine.configure(scene, a.engine, a.samples)
+    if a.profile_data is not None:
+        rep["profile"] = {"name": a.profile, "applied": render_engine.apply_profile(scene, a.profile_data)}
     w, h = a.resolution or (bake["render"]["width"], bake["render"]["height"])
     r.resolution_x, r.resolution_y, r.resolution_percentage = w, h, 100
     scene.view_settings.exposure = float(bake["render"].get("exposureEV", 0.0))

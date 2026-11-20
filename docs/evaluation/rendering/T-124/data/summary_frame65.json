@@ -1,0 +1,3911 @@
+{
+ "frame": 65,
+ "reference": "ref512",
+ "baseline": "baseline_a",
+ "crops": {
+  "glasses_eyes": [
+   390,
+   350,
+   200,
+   130
+  ],
+  "girl_hair_bun": [
+   360,
+   40,
+   240,
+   180
+  ],
+  "boy_hair_edge": [
+   860,
+   110,
+   220,
+   260
+  ],
+  "boy_face": [
+   710,
+   360,
+   220,
+   120
+  ],
+  "hoodie_fibres": [
+   800,
+   560,
+   240,
+   150
+  ],
+  "background_gradient": [
+   40,
+   380,
+   240,
+   240
+  ]
+ },
+ "runs": {
+  "baseline_a": {
+   "description": "production final settings, unchanged",
+   "frames": [
+    1,
+    65,
+    129
+   ],
+   "s_per_frame": 437.2,
+   "s_per_frame_all": [
+    413.0,
+    437.18,
+    453.08
+   ],
+   "phases": {
+    "sync": 7.57,
+    "bvh": 2.78,
+    "kernels": 0.01,
+    "path_trace": 424.53,
+    "denoise": 0.0,
+    "other": 2.29
+   },
+   "save_s": 0.16,
+   "resolution": [
+    1280,
+    720
+   ],
+   "effective": {
+    "samples": 128,
+    "adaptive": true,
+    "threshold": 0.009999999776482582,
+    "max_bounces": 12,
+    "denoiser": "OPENIMAGEDENOISE",
+    "denoise_passes": "RGB_ALBEDO_NORMAL",
+    "prefilter": "ACCURATE",
+    "persistent": false
+   },
+   "toggles": {},
+   "image": "baseline_a/frame_0065.png",
+   "vs_ref512": {
+    "psnr_db": 41.17,
+    "ssim": 0.978,
+    "mae_levels": 1.037,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 38.55,
+      "ssim": 0.9727
+     },
+     "girl_hair_bun": {
+      "psnr_db": 37.32,
+      "ssim": 0.9589
+     },
+     "boy_hair_edge": {
+      "psnr_db": 39.93,
+      "ssim": 0.9648
+     },
+     "boy_face": {
+      "psnr_db": 38.86,
+      "ssim": 0.975
+     },
+     "hoodie_fibres": {
+      "psnr_db": 35.66,
+      "ssim": 0.8961
+     },
+     "background_gradient": {
+      "psnr_db": 58.16,
+      "ssim": 0.9993
+     }
+    }
+   }
+  },
+  "baseline_b": {
+   "description": "production final settings, unchanged",
+   "frames": [
+    65,
+    65
+   ],
+   "s_per_frame": 428.0,
+   "s_per_frame_all": [
+    427.97,
+    428.01
+   ],
+   "phases": {
+    "sync": 7.54,
+    "bvh": 2.65,
+    "kernels": 0.01,
+    "path_trace": 415.63,
+    "denoise": 0.0,
+    "other": 2.16
+   },
+   "save_s": 0.17,
+   "resolution": [
+    1280,
+    720
+   ],
+   "effective": {
+    "samples": 128,
+    "adaptive": true,
+    "threshold": 0.009999999776482582,
+    "max_bounces": 12,
+    "denoiser": "OPENIMAGEDENOISE",
+    "denoise_passes": "RGB_ALBEDO_NORMAL",
+    "prefilter": "ACCURATE",
+    "persistent": false
+   },
+   "toggles": {},
+   "image": "baseline_b/frame_0065.png",
+   "vs_ref512": {
+    "psnr_db": 41.17,
+    "ssim": 0.978,
+    "mae_levels": 1.037,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 38.55,
+      "ssim": 0.9727
+     },
+     "girl_hair_bun": {
+      "psnr_db": 37.32,
+      "ssim": 0.9589
+     },
+     "boy_hair_edge": {
+      "psnr_db": 39.93,
+      "ssim": 0.9648
+     },
+     "boy_face": {
+      "psnr_db": 38.86,
+      "ssim": 0.975
+     },
+     "hoodie_fibres": {
+      "psnr_db": 35.66,
+      "ssim": 0.8961
+     },
+     "background_gradient": {
+      "psnr_db": 58.16,
+      "ssim": 0.9993
+     }
+    }
+   },
+   "vs_baseline": {
+    "psnr_db": Infinity,
+    "ssim": 1.0,
+    "mae_levels": 0.0,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": Infinity,
+      "ssim": 1.0
+     },
+     "girl_hair_bun": {
+      "psnr_db": Infinity,
+      "ssim": 1.0
+     },
+     "boy_hair_edge": {
+      "psnr_db": Infinity,
+      "ssim": 1.0
+     },
+     "boy_face": {
+      "psnr_db": Infinity,
+      "ssim": 1.0
+     },
+     "hoodie_fibres": {
+      "psnr_db": Infinity,
+      "ssim": 1.0
+     },
+     "background_gradient": {
+      "psnr_db": Infinity,
+      "ssim": 1.0
+     }
+    }
+   }
+  },
+  "bg_plate": {
+   "description": "still camera: props only (background plate, once per shot)",
+   "frames": [
+    65
+   ],
+   "s_per_frame": 35.9,
+   "s_per_frame_all": [
+    35.92
+   ],
+   "phases": {
+    "sync": 2.53,
+    "bvh": 0.0,
+    "kernels": 0.0,
+    "path_trace": 31.25,
+    "denoise": 0.0,
+    "other": 2.13
+   },
+   "save_s": 0.15,
+   "resolution": [
+    1280,
+    720
+   ],
+   "effective": {
+    "samples": 128,
+    "adaptive": true,
+    "threshold": 0.009999999776482582,
+    "max_bounces": 12,
+    "denoiser": "OPENIMAGEDENOISE",
+    "denoise_passes": "RGB_ALBEDO_NORMAL",
+    "prefilter": "ACCURATE",
+    "persistent": false
+   },
+   "toggles": {
+    "background_only": 310
+   },
+   "image": "bg_plate/frame_0065.png",
+   "vs_ref512": {
+    "psnr_db": 12.19,
+    "ssim": 0.7629,
+    "mae_levels": 35.594,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 8.55,
+      "ssim": 0.4165
+     },
+     "girl_hair_bun": {
+      "psnr_db": 9.07,
+      "ssim": 0.4437
+     },
+     "boy_hair_edge": {
+      "psnr_db": 6.94,
+      "ssim": 0.4755
+     },
+     "boy_face": {
+      "psnr_db": 11.11,
+      "ssim": 0.5942
+     },
+     "hoodie_fibres": {
+      "psnr_db": 14.44,
+      "ssim": 0.6775
+     },
+     "background_gradient": {
+      "psnr_db": 39.66,
+      "ssim": 0.9918
+     }
+    }
+   },
+   "vs_baseline": {
+    "psnr_db": 12.2,
+    "ssim": 0.7639,
+    "mae_levels": 35.564,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 8.54,
+      "ssim": 0.4203
+     },
+     "girl_hair_bun": {
+      "psnr_db": 9.08,
+      "ssim": 0.4468
+     },
+     "boy_hair_edge": {
+      "psnr_db": 6.95,
+      "ssim": 0.4756
+     },
+     "boy_face": {
+      "psnr_db": 11.11,
+      "ssim": 0.5967
+     },
+     "hoodie_fibres": {
+      "psnr_db": 14.45,
+      "ssim": 0.6717
+     },
+     "background_gradient": {
+      "psnr_db": 39.75,
+      "ssim": 0.9919
+     }
+    }
+   }
+  },
+  "bounce3": {
+   "description": "max 3, diffuse 1, glossy 1, transmission 2 (transparent 8 kept)",
+   "frames": [
+    65
+   ],
+   "s_per_frame": 377.5,
+   "s_per_frame_all": [
+    377.5
+   ],
+   "phases": {
+    "sync": 8.05,
+    "bvh": 2.95,
+    "kernels": 0.01,
+    "path_trace": 363.94,
+    "denoise": 0.0,
+    "other": 2.56
+   },
+   "save_s": 0.16,
+   "resolution": [
+    1280,
+    720
+   ],
+   "effective": {
+    "samples": 128,
+    "adaptive": true,
+    "threshold": 0.009999999776482582,
+    "max_bounces": 3,
+    "denoiser": "OPENIMAGEDENOISE",
+    "denoise_passes": "RGB_ALBEDO_NORMAL",
+    "prefilter": "ACCURATE",
+    "persistent": false
+   },
+   "toggles": {},
+   "image": "bounce3/frame_0065.png",
+   "vs_ref512": {
+    "psnr_db": 29.23,
+    "ssim": 0.9614,
+    "mae_levels": 4.205,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 28.42,
+      "ssim": 0.9586
+     },
+     "girl_hair_bun": {
+      "psnr_db": 36.57,
+      "ssim": 0.9588
+     },
+     "boy_hair_edge": {
+      "psnr_db": 39.57,
+      "ssim": 0.9661
+     },
+     "boy_face": {
+      "psnr_db": 24.22,
+      "ssim": 0.9379
+     },
+     "hoodie_fibres": {
+      "psnr_db": 19.5,
+      "ssim": 0.7063
+     },
+     "background_gradient": {
+      "psnr_db": 42.03,
+      "ssim": 0.9983
+     }
+    }
+   },
+   "vs_baseline": {
+    "psnr_db": 29.43,
+    "ssim": 0.9771,
+    "mae_levels": 3.885,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 28.78,
+      "ssim": 0.9794
+     },
+     "girl_hair_bun": {
+      "psnr_db": 42.6,
+      "ssim": 0.9967
+     },
+     "boy_hair_edge": {
+      "psnr_db": 46.31,
+      "ssim": 0.9965
+     },
+     "boy_face": {
+      "psnr_db": 24.32,
+      "ssim": 0.9528
+     },
+     "hoodie_fibres": {
+      "psnr_db": 19.55,
+      "ssim": 0.7643
+     },
+     "background_gradient": {
+      "psnr_db": 41.98,
+      "ssim": 0.9983
+     }
+    }
+   }
+  },
+  "bounce6": {
+   "description": "max 6, diffuse 2, glossy 2, transmission 4 (transparent 8 kept)",
+   "frames": [
+    65
+   ],
+   "s_per_frame": 416.8,
+   "s_per_frame_all": [
+    416.79
+   ],
+   "phases": {
+    "sync": 7.94,
+    "bvh": 3.1,
+    "kernels": 0.01,
+    "path_trace": 403.38,
+    "denoise": 0.0,
+    "other": 2.36
+   },
+   "save_s": 0.17,
+   "resolution": [
+    1280,
+    720
+   ],
+   "effective": {
+    "samples": 128,
+    "adaptive": true,
+    "threshold": 0.009999999776482582,
+    "max_bounces": 6,
+    "denoiser": "OPENIMAGEDENOISE",
+    "denoise_passes": "RGB_ALBEDO_NORMAL",
+    "prefilter": "ACCURATE",
+    "persistent": false
+   },
+   "toggles": {},
+   "image": "bounce6/frame_0065.png",
+   "vs_ref512": {
+    "psnr_db": 36.46,
+    "ssim": 0.975,
+    "mae_levels": 1.722,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 36.09,
+      "ssim": 0.9721
+     },
+     "girl_hair_bun": {
+      "psnr_db": 37.33,
+      "ssim": 0.959
+     },
+     "boy_hair_edge": {
+      "psnr_db": 39.96,
+      "ssim": 0.965
+     },
+     "boy_face": {
+      "psnr_db": 30.98,
+      "ssim": 0.9686
+     },
+     "hoodie_fibres": {
+      "psnr_db": 27.75,
+      "ssim": 0.8651
+     },
+     "background_gradient": {
+      "psnr_db": 52.27,
+      "ssim": 0.9979
+     }
+    }
+   },
+   "vs_baseline": {
+    "psnr_db": 38.03,
+    "ssim": 0.9948,
+    "mae_levels": 1.134,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 39.29,
+      "ssim": 0.9969
+     },
+     "girl_hair_bun": {
+      "psnr_db": 54.55,
+      "ssim": 0.9993
+     },
+     "boy_hair_edge": {
+      "psnr_db": 54.98,
+      "ssim": 0.999
+     },
+     "boy_face": {
+      "psnr_db": 31.64,
+      "ssim": 0.9897
+     },
+     "hoodie_fibres": {
+      "psnr_db": 28.36,
+      "ssim": 0.9556
+     },
+     "background_gradient": {
+      "psnr_db": 52.37,
+      "ssim": 0.9978
+     }
+    }
+   }
+  },
+  "clamp3": {
+   "description": "indirect clamp 10 -> 3",
+   "frames": [
+    65
+   ],
+   "s_per_frame": 430.8,
+   "s_per_frame_all": [
+    430.8
+   ],
+   "phases": {
+    "sync": 7.32,
+    "bvh": 2.55,
+    "kernels": 0.01,
+    "path_trace": 418.72,
+    "denoise": 0.0,
+    "other": 2.2
+   },
+   "save_s": 0.16,
+   "resolution": [
+    1280,
+    720
+   ],
+   "effective": {
+    "samples": 128,
+    "adaptive": true,
+    "threshold": 0.009999999776482582,
+    "max_bounces": 12,
+    "denoiser": "OPENIMAGEDENOISE",
+    "denoise_passes": "RGB_ALBEDO_NORMAL",
+    "prefilter": "ACCURATE",
+    "persistent": false
+   },
+   "toggles": {},
+   "image": "clamp3/frame_0065.png",
+   "vs_ref512": {
+    "psnr_db": 41.17,
+    "ssim": 0.9781,
+    "mae_levels": 1.036,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 38.55,
+      "ssim": 0.9727
+     },
+     "girl_hair_bun": {
+      "psnr_db": 37.32,
+      "ssim": 0.9589
+     },
+     "boy_hair_edge": {
+      "psnr_db": 39.93,
+      "ssim": 0.9648
+     },
+     "boy_face": {
+      "psnr_db": 38.87,
+      "ssim": 0.9751
+     },
+     "hoodie_fibres": {
+      "psnr_db": 35.68,
+      "ssim": 0.8965
+     },
+     "background_gradient": {
+      "psnr_db": 58.16,
+      "ssim": 0.9993
+     }
+    }
+   },
+   "vs_baseline": {
+    "psnr_db": 64.48,
+    "ssim": 0.9999,
+    "mae_levels": 0.022,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 64.61,
+      "ssim": 0.9999
+     },
+     "girl_hair_bun": {
+      "psnr_db": 64.77,
+      "ssim": 0.9999
+     },
+     "boy_hair_edge": {
+      "psnr_db": 65.86,
+      "ssim": 0.9999
+     },
+     "boy_face": {
+      "psnr_db": 62.61,
+      "ssim": 0.9999
+     },
+     "hoodie_fibres": {
+      "psnr_db": 58.4,
+      "ssim": 0.9995
+     },
+     "background_gradient": {
+      "psnr_db": 66.67,
+      "ssim": 0.9999
+     }
+    }
+   }
+  },
+  "den_balanced": {
+   "description": "OIDN quality BALANCED",
+   "frames": [
+    65
+   ],
+   "s_per_frame": 430.4,
+   "s_per_frame_all": [
+    430.37
+   ],
+   "phases": {
+    "sync": 6.98,
+    "bvh": 2.55,
+    "kernels": 0.01,
+    "path_trace": 418.6,
+    "denoise": 0.0,
+    "other": 2.23
+   },
+   "save_s": 0.17,
+   "resolution": [
+    1280,
+    720
+   ],
+   "effective": {
+    "samples": 128,
+    "adaptive": true,
+    "threshold": 0.009999999776482582,
+    "max_bounces": 12,
+    "denoiser": "OPENIMAGEDENOISE",
+    "denoise_passes": "RGB_ALBEDO_NORMAL",
+    "prefilter": "ACCURATE",
+    "persistent": false
+   },
+   "toggles": {},
+   "image": "den_balanced/frame_0065.png",
+   "vs_ref512": {
+    "psnr_db": 40.85,
+    "ssim": 0.9763,
+    "mae_levels": 1.097,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 37.99,
+      "ssim": 0.9693
+     },
+     "girl_hair_bun": {
+      "psnr_db": 37.19,
+      "ssim": 0.9572
+     },
+     "boy_hair_edge": {
+      "psnr_db": 39.78,
+      "ssim": 0.9628
+     },
+     "boy_face": {
+      "psnr_db": 38.43,
+      "ssim": 0.9728
+     },
+     "hoodie_fibres": {
+      "psnr_db": 35.27,
+      "ssim": 0.8879
+     },
+     "background_gradient": {
+      "psnr_db": 56.83,
+      "ssim": 0.9989
+     }
+    }
+   },
+   "vs_baseline": {
+    "psnr_db": 49.95,
+    "ssim": 0.9969,
+    "mae_levels": 0.394,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 45.11,
+      "ssim": 0.9944
+     },
+     "girl_hair_bun": {
+      "psnr_db": 47.54,
+      "ssim": 0.9959
+     },
+     "boy_hair_edge": {
+      "psnr_db": 49.08,
+      "ssim": 0.9955
+     },
+     "boy_face": {
+      "psnr_db": 46.63,
+      "ssim": 0.9959
+     },
+     "hoodie_fibres": {
+      "psnr_db": 46.33,
+      "ssim": 0.9922
+     },
+     "background_gradient": {
+      "psnr_db": 57.78,
+      "ssim": 0.9988
+     }
+    }
+   }
+  },
+  "den_fast_prefilter": {
+   "description": "OIDN prefilter FAST",
+   "frames": [
+    65
+   ],
+   "s_per_frame": 433.1,
+   "s_per_frame_all": [
+    433.06
+   ],
+   "phases": {
+    "sync": 7.27,
+    "bvh": 2.42,
+    "kernels": 0.01,
+    "path_trace": 421.06,
+    "denoise": 0.0,
+    "other": 2.3
+   },
+   "save_s": 0.17,
+   "resolution": [
+    1280,
+    720
+   ],
+   "effective": {
+    "samples": 128,
+    "adaptive": true,
+    "threshold": 0.009999999776482582,
+    "max_bounces": 12,
+    "denoiser": "OPENIMAGEDENOISE",
+    "denoise_passes": "RGB_ALBEDO_NORMAL",
+    "prefilter": "FAST",
+    "persistent": false
+   },
+   "toggles": {},
+   "image": "den_fast_prefilter/frame_0065.png",
+   "vs_ref512": {
+    "psnr_db": 40.93,
+    "ssim": 0.9771,
+    "mae_levels": 1.08,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 38.05,
+      "ssim": 0.9698
+     },
+     "girl_hair_bun": {
+      "psnr_db": 37.17,
+      "ssim": 0.9579
+     },
+     "boy_hair_edge": {
+      "psnr_db": 39.57,
+      "ssim": 0.9626
+     },
+     "boy_face": {
+      "psnr_db": 38.61,
+      "ssim": 0.974
+     },
+     "hoodie_fibres": {
+      "psnr_db": 35.68,
+      "ssim": 0.897
+     },
+     "background_gradient": {
+      "psnr_db": 57.34,
+      "ssim": 0.9992
+     }
+    }
+   },
+   "vs_baseline": {
+    "psnr_db": 49.54,
+    "ssim": 0.9966,
+    "mae_levels": 0.396,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 44.74,
+      "ssim": 0.9937
+     },
+     "girl_hair_bun": {
+      "psnr_db": 47.9,
+      "ssim": 0.9963
+     },
+     "boy_hair_edge": {
+      "psnr_db": 49.88,
+      "ssim": 0.9965
+     },
+     "boy_face": {
+      "psnr_db": 45.96,
+      "ssim": 0.9953
+     },
+     "hoodie_fibres": {
+      "psnr_db": 45.49,
+      "ssim": 0.9907
+     },
+     "background_gradient": {
+      "psnr_db": 59.12,
+      "ssim": 0.9991
+     }
+    }
+   }
+  },
+  "den_rgb": {
+   "description": "OIDN colour only (no albedo/normal passes)",
+   "frames": [
+    65
+   ],
+   "s_per_frame": 432.8,
+   "s_per_frame_all": [
+    432.8
+   ],
+   "phases": {
+    "sync": 7.51,
+    "bvh": 2.59,
+    "kernels": 0.01,
+    "path_trace": 420.36,
+    "denoise": 0.0,
+    "other": 2.33
+   },
+   "save_s": 0.17,
+   "resolution": [
+    1280,
+    720
+   ],
+   "effective": {
+    "samples": 128,
+    "adaptive": true,
+    "threshold": 0.009999999776482582,
+    "max_bounces": 12,
+    "denoiser": "OPENIMAGEDENOISE",
+    "denoise_passes": "RGB",
+    "prefilter": "ACCURATE",
+    "persistent": false
+   },
+   "toggles": {},
+   "image": "den_rgb/frame_0065.png",
+   "vs_ref512": {
+    "psnr_db": 41.17,
+    "ssim": 0.9784,
+    "mae_levels": 1.05,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 37.81,
+      "ssim": 0.9671
+     },
+     "girl_hair_bun": {
+      "psnr_db": 37.03,
+      "ssim": 0.9551
+     },
+     "boy_hair_edge": {
+      "psnr_db": 39.92,
+      "ssim": 0.9655
+     },
+     "boy_face": {
+      "psnr_db": 38.67,
+      "ssim": 0.9746
+     },
+     "hoodie_fibres": {
+      "psnr_db": 36.33,
+      "ssim": 0.91
+     },
+     "background_gradient": {
+      "psnr_db": 57.36,
+      "ssim": 0.9992
+     }
+    }
+   },
+   "vs_baseline": {
+    "psnr_db": 47.17,
+    "ssim": 0.9945,
+    "mae_levels": 0.51,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 41.77,
+      "ssim": 0.9861
+     },
+     "girl_hair_bun": {
+      "psnr_db": 44.75,
+      "ssim": 0.9921
+     },
+     "boy_hair_edge": {
+      "psnr_db": 47.53,
+      "ssim": 0.9937
+     },
+     "boy_face": {
+      "psnr_db": 42.32,
+      "ssim": 0.9899
+     },
+     "hoodie_fibres": {
+      "psnr_db": 43.0,
+      "ssim": 0.9808
+     },
+     "background_gradient": {
+      "psnr_db": 59.54,
+      "ssim": 0.9994
+     }
+    }
+   }
+  },
+  "fg_catcher": {
+   "description": "still camera: characters over shadow-catcher props, transparent film",
+   "frames": [
+    65
+   ],
+   "s_per_frame": 540.3,
+   "s_per_frame_all": [
+    540.34
+   ],
+   "phases": {
+    "sync": 7.49,
+    "bvh": 2.57,
+    "kernels": 0.01,
+    "path_trace": 528.0,
+    "denoise": 0.0,
+    "other": 2.25
+   },
+   "save_s": 0.15,
+   "resolution": [
+    1280,
+    720
+   ],
+   "effective": {
+    "samples": 128,
+    "adaptive": true,
+    "threshold": 0.009999999776482582,
+    "max_bounces": 12,
+    "denoiser": "OPENIMAGEDENOISE",
+    "denoise_passes": "RGB_ALBEDO_NORMAL",
+    "prefilter": "ACCURATE",
+    "persistent": false
+   },
+   "toggles": {
+    "shadow_catcher_fg": 5
+   },
+   "image": "fg_catcher/comp_0065.png",
+   "vs_ref512": {
+    "psnr_db": 27.22,
+    "ssim": 0.9654,
+    "mae_levels": 4.807,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 36.51,
+      "ssim": 0.9701
+     },
+     "girl_hair_bun": {
+      "psnr_db": 33.94,
+      "ssim": 0.9541
+     },
+     "boy_hair_edge": {
+      "psnr_db": 31.61,
+      "ssim": 0.9538
+     },
+     "boy_face": {
+      "psnr_db": 37.36,
+      "ssim": 0.973
+     },
+     "hoodie_fibres": {
+      "psnr_db": 24.99,
+      "ssim": 0.8663
+     },
+     "background_gradient": {
+      "psnr_db": 44.0,
+      "ssim": 0.9968
+     }
+    }
+   },
+   "vs_baseline": {
+    "psnr_db": 27.39,
+    "ssim": 0.9866,
+    "mae_levels": 4.001,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 40.57,
+      "ssim": 0.9963
+     },
+     "girl_hair_bun": {
+      "psnr_db": 36.57,
+      "ssim": 0.9948
+     },
+     "boy_hair_edge": {
+      "psnr_db": 32.21,
+      "ssim": 0.9876
+     },
+     "boy_face": {
+      "psnr_db": 42.28,
+      "ssim": 0.9973
+     },
+     "hoodie_fibres": {
+      "psnr_db": 25.42,
+      "ssim": 0.9717
+     },
+     "background_gradient": {
+      "psnr_db": 43.92,
+      "ssim": 0.9969
+     }
+    }
+   }
+  },
+  "fibre25": {
+   "description": "fibre LOD: keep 25% of fibre curves",
+   "frames": [
+    65
+   ],
+   "s_per_frame": 347.6,
+   "s_per_frame_all": [
+    347.64
+   ],
+   "phases": {
+    "sync": 5.33,
+    "bvh": 0.69,
+    "kernels": 0.01,
+    "path_trace": 339.0,
+    "denoise": 0.0,
+    "other": 2.6
+   },
+   "save_s": 0.17,
+   "resolution": [
+    1280,
+    720
+   ],
+   "effective": {
+    "samples": 128,
+    "adaptive": true,
+    "threshold": 0.009999999776482582,
+    "max_bounces": 12,
+    "denoiser": "OPENIMAGEDENOISE",
+    "denoise_passes": "RGB_ALBEDO_NORMAL",
+    "prefilter": "ACCURATE",
+    "persistent": false
+   },
+   "toggles": {
+    "fibre_keep": 147
+   },
+   "image": "fibre25/frame_0065.png",
+   "vs_ref512": {
+    "psnr_db": 30.05,
+    "ssim": 0.9072,
+    "mae_levels": 3.254,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 27.42,
+      "ssim": 0.9193
+     },
+     "girl_hair_bun": {
+      "psnr_db": 26.81,
+      "ssim": 0.7646
+     },
+     "boy_hair_edge": {
+      "psnr_db": 25.88,
+      "ssim": 0.7949
+     },
+     "boy_face": {
+      "psnr_db": 25.82,
+      "ssim": 0.9011
+     },
+     "hoodie_fibres": {
+      "psnr_db": 27.13,
+      "ssim": 0.6852
+     },
+     "background_gradient": {
+      "psnr_db": 43.63,
+      "ssim": 0.996
+     }
+    }
+   },
+   "vs_baseline": {
+    "psnr_db": 30.1,
+    "ssim": 0.9094,
+    "mae_levels": 3.171,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 27.51,
+      "ssim": 0.929
+     },
+     "girl_hair_bun": {
+      "psnr_db": 26.85,
+      "ssim": 0.7709
+     },
+     "boy_hair_edge": {
+      "psnr_db": 25.92,
+      "ssim": 0.8013
+     },
+     "boy_face": {
+      "psnr_db": 25.82,
+      "ssim": 0.9041
+     },
+     "hoodie_fibres": {
+      "psnr_db": 27.16,
+      "ssim": 0.6764
+     },
+     "background_gradient": {
+      "psnr_db": 43.86,
+      "ssim": 0.9965
+     }
+    }
+   }
+  },
+  "fibre50": {
+   "description": "fibre LOD: keep 50% of fibre curves",
+   "frames": [
+    65
+   ],
+   "s_per_frame": 380.9,
+   "s_per_frame_all": [
+    380.87
+   ],
+   "phases": {
+    "sync": 6.03,
+    "bvh": 1.25,
+    "kernels": 0.01,
+    "path_trace": 371.21,
+    "denoise": 0.0,
+    "other": 2.37
+   },
+   "save_s": 0.17,
+   "resolution": [
+    1280,
+    720
+   ],
+   "effective": {
+    "samples": 128,
+    "adaptive": true,
+    "threshold": 0.009999999776482582,
+    "max_bounces": 12,
+    "denoiser": "OPENIMAGEDENOISE",
+    "denoise_passes": "RGB_ALBEDO_NORMAL",
+    "prefilter": "ACCURATE",
+    "persistent": false
+   },
+   "toggles": {
+    "fibre_keep": 147
+   },
+   "image": "fibre50/frame_0065.png",
+   "vs_ref512": {
+    "psnr_db": 33.32,
+    "ssim": 0.9361,
+    "mae_levels": 2.256,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 31.6,
+      "ssim": 0.9467
+     },
+     "girl_hair_bun": {
+      "psnr_db": 29.82,
+      "ssim": 0.8477
+     },
+     "boy_hair_edge": {
+      "psnr_db": 29.22,
+      "ssim": 0.859
+     },
+     "boy_face": {
+      "psnr_db": 29.34,
+      "ssim": 0.9338
+     },
+     "hoodie_fibres": {
+      "psnr_db": 29.98,
+      "ssim": 0.7678
+     },
+     "background_gradient": {
+      "psnr_db": 48.98,
+      "ssim": 0.998
+     }
+    }
+   },
+   "vs_baseline": {
+    "psnr_db": 33.48,
+    "ssim": 0.9399,
+    "mae_levels": 2.137,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 31.99,
+      "ssim": 0.9587
+     },
+     "girl_hair_bun": {
+      "psnr_db": 30.01,
+      "ssim": 0.8591
+     },
+     "boy_hair_edge": {
+      "psnr_db": 29.33,
+      "ssim": 0.8693
+     },
+     "boy_face": {
+      "psnr_db": 29.37,
+      "ssim": 0.9378
+     },
+     "hoodie_fibres": {
+      "psnr_db": 30.0,
+      "ssim": 0.7611
+     },
+     "background_gradient": {
+      "psnr_db": 49.36,
+      "ssim": 0.9983
+     }
+    }
+   }
+  },
+  "no_fibres": {
+   "description": "all fibre strands hidden",
+   "frames": [
+    65
+   ],
+   "s_per_frame": 263.1,
+   "s_per_frame_all": [
+    263.09
+   ],
+   "phases": {
+    "sync": 2.97,
+    "bvh": 0.15,
+    "kernels": 0.01,
+    "path_trace": 257.53,
+    "denoise": 0.0,
+    "other": 2.44
+   },
+   "save_s": 0.17,
+   "resolution": [
+    1280,
+    720
+   ],
+   "effective": {
+    "samples": 128,
+    "adaptive": true,
+    "threshold": 0.009999999776482582,
+    "max_bounces": 12,
+    "denoiser": "OPENIMAGEDENOISE",
+    "denoise_passes": "RGB_ALBEDO_NORMAL",
+    "prefilter": "ACCURATE",
+    "persistent": false
+   },
+   "toggles": {
+    "no_fibres": 147
+   },
+   "image": "no_fibres/frame_0065.png",
+   "vs_ref512": {
+    "psnr_db": 26.88,
+    "ssim": 0.879,
+    "mae_levels": 4.605,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 23.62,
+      "ssim": 0.8828
+     },
+     "girl_hair_bun": {
+      "psnr_db": 24.24,
+      "ssim": 0.6761
+     },
+     "boy_hair_edge": {
+      "psnr_db": 22.99,
+      "ssim": 0.7194
+     },
+     "boy_face": {
+      "psnr_db": 22.5,
+      "ssim": 0.8578
+     },
+     "hoodie_fibres": {
+      "psnr_db": 24.27,
+      "ssim": 0.6925
+     },
+     "background_gradient": {
+      "psnr_db": 41.82,
+      "ssim": 0.9948
+     }
+    }
+   },
+   "vs_baseline": {
+    "psnr_db": 26.9,
+    "ssim": 0.8805,
+    "mae_levels": 4.542,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 23.62,
+      "ssim": 0.8901
+     },
+     "girl_hair_bun": {
+      "psnr_db": 24.26,
+      "ssim": 0.6809
+     },
+     "boy_hair_edge": {
+      "psnr_db": 23.01,
+      "ssim": 0.7208
+     },
+     "boy_face": {
+      "psnr_db": 22.5,
+      "ssim": 0.862
+     },
+     "hoodie_fibres": {
+      "psnr_db": 24.33,
+      "ssim": 0.6858
+     },
+     "background_gradient": {
+      "psnr_db": 41.98,
+      "ssim": 0.9952
+     }
+    }
+   }
+  },
+  "no_garment_fibres": {
+   "description": "garment/fuzz fibre strands hidden",
+   "frames": [
+    65
+   ],
+   "s_per_frame": 339.9,
+   "s_per_frame_all": [
+    339.95
+   ],
+   "phases": {
+    "sync": 4.17,
+    "bvh": 1.02,
+    "kernels": 0.01,
+    "path_trace": 332.55,
+    "denoise": 0.0,
+    "other": 2.2
+   },
+   "save_s": 0.17,
+   "resolution": [
+    1280,
+    720
+   ],
+   "effective": {
+    "samples": 128,
+    "adaptive": true,
+    "threshold": 0.009999999776482582,
+    "max_bounces": 12,
+    "denoiser": "OPENIMAGEDENOISE",
+    "denoise_passes": "RGB_ALBEDO_NORMAL",
+    "prefilter": "ACCURATE",
+    "persistent": false
+   },
+   "toggles": {
+    "no_garment_fibres": 78
+   },
+   "image": "no_garment_fibres/frame_0065.png",
+   "vs_ref512": {
+    "psnr_db": 32.02,
+    "ssim": 0.9549,
+    "mae_levels": 1.913,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 38.58,
+      "ssim": 0.973
+     },
+     "girl_hair_bun": {
+      "psnr_db": 37.31,
+      "ssim": 0.9588
+     },
+     "boy_hair_edge": {
+      "psnr_db": 39.98,
+      "ssim": 0.965
+     },
+     "boy_face": {
+      "psnr_db": 28.52,
+      "ssim": 0.9291
+     },
+     "hoodie_fibres": {
+      "psnr_db": 24.27,
+      "ssim": 0.6926
+     },
+     "background_gradient": {
+      "psnr_db": 57.58,
+      "ssim": 0.9992
+     }
+    }
+   },
+   "vs_baseline": {
+    "psnr_db": 32.35,
+    "ssim": 0.9658,
+    "mae_levels": 1.357,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 46.36,
+      "ssim": 0.9955
+     },
+     "girl_hair_bun": {
+      "psnr_db": 55.46,
+      "ssim": 0.9994
+     },
+     "boy_hair_edge": {
+      "psnr_db": 54.29,
+      "ssim": 0.999
+     },
+     "boy_face": {
+      "psnr_db": 28.64,
+      "ssim": 0.9363
+     },
+     "hoodie_fibres": {
+      "psnr_db": 24.33,
+      "ssim": 0.6859
+     },
+     "background_gradient": {
+      "psnr_db": 61.3,
+      "ssim": 0.9996
+     }
+    }
+   }
+  },
+  "no_glasses": {
+   "description": "glasses frame and lenses hidden",
+   "frames": [
+    65
+   ],
+   "s_per_frame": 428.8,
+   "s_per_frame_all": [
+    428.78
+   ],
+   "phases": {
+    "sync": 7.9,
+    "bvh": 3.31,
+    "kernels": 0.08,
+    "path_trace": 415.3,
+    "denoise": 0.0,
+    "other": 2.2
+   },
+   "save_s": 0.89,
+   "resolution": [
+    1280,
+    720
+   ],
+   "effective": {
+    "samples": 128,
+    "adaptive": true,
+    "threshold": 0.009999999776482582,
+    "max_bounces": 12,
+    "denoiser": "OPENIMAGEDENOISE",
+    "denoise_passes": "RGB_ALBEDO_NORMAL",
+    "prefilter": "ACCURATE",
+    "persistent": false
+   },
+   "toggles": {
+    "no_glasses": 2
+   },
+   "image": "no_glasses/frame_0065.png",
+   "vs_ref512": {
+    "psnr_db": 38.47,
+    "ssim": 0.9748,
+    "mae_levels": 1.166,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 26.2,
+      "ssim": 0.864
+     },
+     "girl_hair_bun": {
+      "psnr_db": 37.32,
+      "ssim": 0.9588
+     },
+     "boy_hair_edge": {
+      "psnr_db": 39.93,
+      "ssim": 0.9648
+     },
+     "boy_face": {
+      "psnr_db": 38.87,
+      "ssim": 0.9751
+     },
+     "hoodie_fibres": {
+      "psnr_db": 35.66,
+      "ssim": 0.896
+     },
+     "background_gradient": {
+      "psnr_db": 57.59,
+      "ssim": 0.9992
+     }
+    }
+   },
+   "vs_baseline": {
+    "psnr_db": 41.64,
+    "ssim": 0.9962,
+    "mae_levels": 0.218,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 26.34,
+      "ssim": 0.8826
+     },
+     "girl_hair_bun": {
+      "psnr_db": 62.31,
+      "ssim": 0.9998
+     },
+     "boy_hair_edge": {
+      "psnr_db": 62.26,
+      "ssim": 0.9998
+     },
+     "boy_face": {
+      "psnr_db": 56.58,
+      "ssim": 0.9995
+     },
+     "hoodie_fibres": {
+      "psnr_db": 59.32,
+      "ssim": 0.9997
+     },
+     "background_gradient": {
+      "psnr_db": 61.21,
+      "ssim": 0.9995
+     }
+    }
+   }
+  },
+  "no_hair_fibres": {
+   "description": "hair fibre strands hidden (hair meshes kept)",
+   "frames": [
+    65
+   ],
+   "s_per_frame": 374.9,
+   "s_per_frame_all": [
+    374.88
+   ],
+   "phases": {
+    "sync": 6.23,
+    "bvh": 2.02,
+    "kernels": 0.01,
+    "path_trace": 364.23,
+    "denoise": 0.0,
+    "other": 2.4
+   },
+   "save_s": 0.19,
+   "resolution": [
+    1280,
+    720
+   ],
+   "effective": {
+    "samples": 128,
+    "adaptive": true,
+    "threshold": 0.009999999776482582,
+    "max_bounces": 12,
+    "denoiser": "OPENIMAGEDENOISE",
+    "denoise_passes": "RGB_ALBEDO_NORMAL",
+    "prefilter": "ACCURATE",
+    "persistent": false
+   },
+   "toggles": {
+    "no_hair_fibres": 69
+   },
+   "image": "no_hair_fibres/frame_0065.png",
+   "vs_ref512": {
+    "psnr_db": 28.27,
+    "ssim": 0.9022,
+    "mae_levels": 3.72,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 23.63,
+      "ssim": 0.8829
+     },
+     "girl_hair_bun": {
+      "psnr_db": 24.24,
+      "ssim": 0.6761
+     },
+     "boy_hair_edge": {
+      "psnr_db": 23.0,
+      "ssim": 0.7193
+     },
+     "boy_face": {
+      "psnr_db": 23.62,
+      "ssim": 0.904
+     },
+     "hoodie_fibres": {
+      "psnr_db": 35.67,
+      "ssim": 0.8964
+     },
+     "background_gradient": {
+      "psnr_db": 41.82,
+      "ssim": 0.9948
+     }
+    }
+   },
+   "vs_baseline": {
+    "psnr_db": 28.39,
+    "ssim": 0.9137,
+    "mae_levels": 3.324,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 23.65,
+      "ssim": 0.8923
+     },
+     "girl_hair_bun": {
+      "psnr_db": 24.26,
+      "ssim": 0.6809
+     },
+     "boy_hair_edge": {
+      "psnr_db": 23.01,
+      "ssim": 0.7207
+     },
+     "boy_face": {
+      "psnr_db": 23.71,
+      "ssim": 0.9244
+     },
+     "hoodie_fibres": {
+      "psnr_db": 54.27,
+      "ssim": 0.9993
+     },
+     "background_gradient": {
+      "psnr_db": 41.97,
+      "ssim": 0.9951
+     }
+    }
+   }
+  },
+  "no_rect": {
+   "description": "rect area light off (sun only)",
+   "frames": [
+    65
+   ],
+   "s_per_frame": 383.7,
+   "s_per_frame_all": [
+    383.68
+   ],
+   "phases": {
+    "sync": 8.36,
+    "bvh": 2.51,
+    "kernels": 0.01,
+    "path_trace": 370.56,
+    "denoise": 0.0,
+    "other": 2.24
+   },
+   "save_s": 0.22,
+   "resolution": [
+    1280,
+    720
+   ],
+   "effective": {
+    "samples": 128,
+    "adaptive": true,
+    "threshold": 0.009999999776482582,
+    "max_bounces": 12,
+    "denoiser": "OPENIMAGEDENOISE",
+    "denoise_passes": "RGB_ALBEDO_NORMAL",
+    "prefilter": "ACCURATE",
+    "persistent": false
+   },
+   "toggles": {
+    "no_rect": 1
+   },
+   "image": "no_rect/frame_0065.png",
+   "vs_ref512": {
+    "psnr_db": 41.71,
+    "ssim": 0.9808,
+    "mae_levels": 1.019,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 38.69,
+      "ssim": 0.9761
+     },
+     "girl_hair_bun": {
+      "psnr_db": 38.22,
+      "ssim": 0.9676
+     },
+     "boy_hair_edge": {
+      "psnr_db": 40.8,
+      "ssim": 0.9709
+     },
+     "boy_face": {
+      "psnr_db": 38.88,
+      "ssim": 0.9775
+     },
+     "hoodie_fibres": {
+      "psnr_db": 36.1,
+      "ssim": 0.9053
+     },
+     "background_gradient": {
+      "psnr_db": 57.42,
+      "ssim": 0.9992
+     }
+    }
+   },
+   "vs_baseline": {
+    "psnr_db": 46.52,
+    "ssim": 0.9936,
+    "mae_levels": 0.622,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 43.68,
+      "ssim": 0.9937
+     },
+     "girl_hair_bun": {
+      "psnr_db": 42.06,
+      "ssim": 0.9865
+     },
+     "boy_hair_edge": {
+      "psnr_db": 44.73,
+      "ssim": 0.9881
+     },
+     "boy_face": {
+      "psnr_db": 44.07,
+      "ssim": 0.9944
+     },
+     "hoodie_fibres": {
+      "psnr_db": 41.59,
+      "ssim": 0.9744
+     },
+     "background_gradient": {
+      "psnr_db": 57.68,
+      "ssim": 0.9991
+     }
+    }
+   }
+  },
+  "no_sss": {
+   "description": "skin/lip subsurface weight 0",
+   "frames": [
+    65
+   ],
+   "s_per_frame": 337.3,
+   "s_per_frame_all": [
+    337.3
+   ],
+   "phases": {
+    "sync": 7.83,
+    "bvh": 2.65,
+    "kernels": 0.01,
+    "path_trace": 324.55,
+    "denoise": 0.0,
+    "other": 2.26
+   },
+   "save_s": 0.17,
+   "resolution": [
+    1280,
+    720
+   ],
+   "effective": {
+    "samples": 128,
+    "adaptive": true,
+    "threshold": 0.009999999776482582,
+    "max_bounces": 12,
+    "denoiser": "OPENIMAGEDENOISE",
+    "denoise_passes": "RGB_ALBEDO_NORMAL",
+    "prefilter": "ACCURATE",
+    "persistent": false
+   },
+   "toggles": {
+    "no_sss": 6
+   },
+   "image": "no_sss/frame_0065.png",
+   "vs_ref512": {
+    "psnr_db": 40.61,
+    "ssim": 0.9776,
+    "mae_levels": 1.131,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 36.1,
+      "ssim": 0.9682
+     },
+     "girl_hair_bun": {
+      "psnr_db": 37.32,
+      "ssim": 0.9589
+     },
+     "boy_hair_edge": {
+      "psnr_db": 39.87,
+      "ssim": 0.9647
+     },
+     "boy_face": {
+      "psnr_db": 35.45,
+      "ssim": 0.9677
+     },
+     "hoodie_fibres": {
+      "psnr_db": 35.49,
+      "ssim": 0.8958
+     },
+     "background_gradient": {
+      "psnr_db": 57.59,
+      "ssim": 0.9992
+     }
+    }
+   },
+   "vs_baseline": {
+    "psnr_db": 47.73,
+    "ssim": 0.9983,
+    "mae_levels": 0.273,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 37.65,
+      "ssim": 0.9837
+     },
+     "girl_hair_bun": {
+      "psnr_db": 59.83,
+      "ssim": 0.9998
+     },
+     "boy_hair_edge": {
+      "psnr_db": 53.13,
+      "ssim": 0.9994
+     },
+     "boy_face": {
+      "psnr_db": 36.91,
+      "ssim": 0.9844
+     },
+     "hoodie_fibres": {
+      "psnr_db": 48.11,
+      "ssim": 0.9988
+     },
+     "background_gradient": {
+      "psnr_db": 60.95,
+      "ssim": 0.9995
+     }
+    }
+   }
+  },
+  "no_sun": {
+   "description": "sun light off (rect only)",
+   "frames": [
+    65
+   ],
+   "s_per_frame": 424.3,
+   "s_per_frame_all": [
+    424.28
+   ],
+   "phases": {
+    "sync": 7.32,
+    "bvh": 2.53,
+    "kernels": 0.01,
+    "path_trace": 412.16,
+    "denoise": 0.0,
+    "other": 2.26
+   },
+   "save_s": 0.19,
+   "resolution": [
+    1280,
+    720
+   ],
+   "effective": {
+    "samples": 128,
+    "adaptive": true,
+    "threshold": 0.009999999776482582,
+    "max_bounces": 12,
+    "denoiser": "OPENIMAGEDENOISE",
+    "denoise_passes": "RGB_ALBEDO_NORMAL",
+    "prefilter": "ACCURATE",
+    "persistent": false
+   },
+   "toggles": {
+    "no_sun": 1
+   },
+   "image": "no_sun/frame_0065.png",
+   "vs_ref512": {
+    "psnr_db": 9.77,
+    "ssim": 0.6835,
+    "mae_levels": 79.329,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 13.04,
+      "ssim": 0.6905
+     },
+     "girl_hair_bun": {
+      "psnr_db": 11.39,
+      "ssim": 0.5265
+     },
+     "boy_hair_edge": {
+      "psnr_db": 12.46,
+      "ssim": 0.531
+     },
+     "boy_face": {
+      "psnr_db": 10.24,
+      "ssim": 0.6319
+     },
+     "hoodie_fibres": {
+      "psnr_db": 8.54,
+      "ssim": 0.5006
+     },
+     "background_gradient": {
+      "psnr_db": 8.39,
+      "ssim": 0.7866
+     }
+    }
+   },
+   "vs_baseline": {
+    "psnr_db": 9.77,
+    "ssim": 0.6882,
+    "mae_levels": 79.358,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 13.05,
+      "ssim": 0.6995
+     },
+     "girl_hair_bun": {
+      "psnr_db": 11.39,
+      "ssim": 0.5379
+     },
+     "boy_hair_edge": {
+      "psnr_db": 12.46,
+      "ssim": 0.5385
+     },
+     "boy_face": {
+      "psnr_db": 10.25,
+      "ssim": 0.6393
+     },
+     "hoodie_fibres": {
+      "psnr_db": 8.53,
+      "ssim": 0.5106
+     },
+     "background_gradient": {
+      "psnr_db": 8.39,
+      "ssim": 0.7866
+     }
+    }
+   }
+  },
+  "noadapt": {
+   "description": "128 spp, adaptive sampling off",
+   "frames": [
+    65
+   ],
+   "s_per_frame": 432.0,
+   "s_per_frame_all": [
+    432.04
+   ],
+   "phases": {
+    "sync": 7.26,
+    "bvh": 2.71,
+    "kernels": 0.01,
+    "path_trace": 419.88,
+    "denoise": 0.0,
+    "other": 2.18
+   },
+   "save_s": 0.15,
+   "resolution": [
+    1280,
+    720
+   ],
+   "effective": {
+    "samples": 128,
+    "adaptive": false,
+    "threshold": 0.009999999776482582,
+    "max_bounces": 12,
+    "denoiser": "OPENIMAGEDENOISE",
+    "denoise_passes": "RGB_ALBEDO_NORMAL",
+    "prefilter": "ACCURATE",
+    "persistent": false
+   },
+   "toggles": {},
+   "image": "noadapt/frame_0065.png",
+   "vs_ref512": {
+    "psnr_db": 41.21,
+    "ssim": 0.9784,
+    "mae_levels": 1.029,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 38.56,
+      "ssim": 0.9727
+     },
+     "girl_hair_bun": {
+      "psnr_db": 37.33,
+      "ssim": 0.9591
+     },
+     "boy_hair_edge": {
+      "psnr_db": 40.13,
+      "ssim": 0.9672
+     },
+     "boy_face": {
+      "psnr_db": 38.87,
+      "ssim": 0.9751
+     },
+     "hoodie_fibres": {
+      "psnr_db": 35.66,
+      "ssim": 0.896
+     },
+     "background_gradient": {
+      "psnr_db": 58.16,
+      "ssim": 0.9993
+     }
+    }
+   },
+   "vs_baseline": {
+    "psnr_db": 57.95,
+    "ssim": 0.9993,
+    "mae_levels": 0.072,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 62.9,
+      "ssim": 0.9999
+     },
+     "girl_hair_bun": {
+      "psnr_db": 56.49,
+      "ssim": 0.9994
+     },
+     "boy_hair_edge": {
+      "psnr_db": 50.75,
+      "ssim": 0.9961
+     },
+     "boy_face": {
+      "psnr_db": 60.97,
+      "ssim": 0.9997
+     },
+     "hoodie_fibres": {
+      "psnr_db": 63.04,
+      "ssim": 0.9999
+     },
+     "background_gradient": {
+      "psnr_db": 65.31,
+      "ssim": 0.9998
+     }
+    }
+   }
+  },
+  "noden": {
+   "description": "128 spp, denoising off (isolates the OIDN cost)",
+   "frames": [
+    65
+   ],
+   "s_per_frame": 451.4,
+   "s_per_frame_all": [
+    451.38
+   ],
+   "phases": {
+    "sync": 7.68,
+    "bvh": 2.81,
+    "kernels": 0.01,
+    "path_trace": 438.31,
+    "denoise": 0.0,
+    "other": 2.56
+   },
+   "save_s": 0.17,
+   "resolution": [
+    1280,
+    720
+   ],
+   "effective": {
+    "samples": 128,
+    "adaptive": true,
+    "threshold": 0.009999999776482582,
+    "max_bounces": 12,
+    "denoiser": null,
+    "denoise_passes": "RGB_ALBEDO_NORMAL",
+    "prefilter": "ACCURATE",
+    "persistent": false
+   },
+   "toggles": {},
+   "image": "noden/frame_0065.png",
+   "vs_ref512": {
+    "psnr_db": 37.85,
+    "ssim": 0.9501,
+    "mae_levels": 1.823,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 31.69,
+      "ssim": 0.8449
+     },
+     "girl_hair_bun": {
+      "psnr_db": 35.53,
+      "ssim": 0.9401
+     },
+     "boy_hair_edge": {
+      "psnr_db": 38.23,
+      "ssim": 0.9508
+     },
+     "boy_face": {
+      "psnr_db": 33.6,
+      "ssim": 0.9008
+     },
+     "hoodie_fibres": {
+      "psnr_db": 33.74,
+      "ssim": 0.8494
+     },
+     "background_gradient": {
+      "psnr_db": 48.92,
+      "ssim": 0.9882
+     }
+    }
+   },
+   "vs_baseline": {
+    "psnr_db": 41.34,
+    "ssim": 0.9735,
+    "mae_levels": 1.23,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 33.31,
+      "ssim": 0.8787
+     },
+     "girl_hair_bun": {
+      "psnr_db": 41.52,
+      "ssim": 0.9823
+     },
+     "boy_hair_edge": {
+      "psnr_db": 44.55,
+      "ssim": 0.988
+     },
+     "boy_face": {
+      "psnr_db": 35.77,
+      "ssim": 0.9299
+     },
+     "hoodie_fibres": {
+      "psnr_db": 40.12,
+      "ssim": 0.9685
+     },
+     "background_gradient": {
+      "psnr_db": 49.23,
+      "ssim": 0.9886
+     }
+    }
+   }
+  },
+  "persistent16": {
+   "description": "persistent data on, 16 spp (fixed per-frame cost isolated)",
+   "frames": [
+    62,
+    63,
+    64,
+    65,
+    66
+   ],
+   "s_per_frame": 65.3,
+   "s_per_frame_all": [
+    68.58,
+    67.84,
+    66.26,
+    65.27,
+    65.92
+   ],
+   "phases": {
+    "sync": 6.73,
+    "bvh": 2.61,
+    "kernels": 0.02,
+    "path_trace": 53.7,
+    "denoise": 0.0,
+    "other": 2.21
+   },
+   "save_s": 0.18,
+   "resolution": [
+    1280,
+    720
+   ],
+   "effective": {
+    "samples": 16,
+    "adaptive": true,
+    "threshold": 0.009999999776482582,
+    "max_bounces": 12,
+    "denoiser": "OPENIMAGEDENOISE",
+    "denoise_passes": "RGB_ALBEDO_NORMAL",
+    "prefilter": "ACCURATE",
+    "persistent": true
+   },
+   "toggles": {},
+   "image": "persistent16/frame_0065.png",
+   "vs_ref512": {
+    "psnr_db": 37.13,
+    "ssim": 0.9484,
+    "mae_levels": 1.659,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 34.38,
+      "ssim": 0.939
+     },
+     "girl_hair_bun": {
+      "psnr_db": 32.71,
+      "ssim": 0.8774
+     },
+     "boy_hair_edge": {
+      "psnr_db": 35.37,
+      "ssim": 0.9059
+     },
+     "boy_face": {
+      "psnr_db": 35.33,
+      "ssim": 0.9513
+     },
+     "hoodie_fibres": {
+      "psnr_db": 32.29,
+      "ssim": 0.7969
+     },
+     "background_gradient": {
+      "psnr_db": 55.04,
+      "ssim": 0.9989
+     }
+    }
+   },
+   "vs_baseline": {
+    "psnr_db": 37.11,
+    "ssim": 0.9479,
+    "mae_levels": 1.661,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 34.46,
+      "ssim": 0.9413
+     },
+     "girl_hair_bun": {
+      "psnr_db": 32.54,
+      "ssim": 0.8744
+     },
+     "boy_hair_edge": {
+      "psnr_db": 35.1,
+      "ssim": 0.8994
+     },
+     "boy_face": {
+      "psnr_db": 35.37,
+      "ssim": 0.9534
+     },
+     "hoodie_fibres": {
+      "psnr_db": 32.31,
+      "ssim": 0.7911
+     },
+     "background_gradient": {
+      "psnr_db": 54.82,
+      "ssim": 0.999
+     }
+    }
+   }
+  },
+  "probe": {
+   "description": "production final settings, unchanged",
+   "frames": [
+    65
+   ],
+   "s_per_frame": 432.9,
+   "s_per_frame_all": [
+    432.85
+   ],
+   "phases": {
+    "sync": 8.77,
+    "bvh": 2.55,
+    "kernels": 0.03,
+    "path_trace": 418.31,
+    "denoise": 0.0,
+    "other": 3.19
+   },
+   "save_s": 0.16,
+   "resolution": [
+    1280,
+    720
+   ],
+   "effective": {
+    "samples": 128,
+    "adaptive": true,
+    "threshold": 0.009999999776482582,
+    "max_bounces": 12,
+    "denoiser": "OPENIMAGEDENOISE",
+    "denoise_passes": "RGB_ALBEDO_NORMAL",
+    "prefilter": "ACCURATE",
+    "persistent": false
+   },
+   "toggles": {},
+   "image": "probe/frame_0065.png",
+   "vs_ref512": {
+    "psnr_db": 41.17,
+    "ssim": 0.978,
+    "mae_levels": 1.037,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 38.55,
+      "ssim": 0.9727
+     },
+     "girl_hair_bun": {
+      "psnr_db": 37.32,
+      "ssim": 0.9589
+     },
+     "boy_hair_edge": {
+      "psnr_db": 39.93,
+      "ssim": 0.9648
+     },
+     "boy_face": {
+      "psnr_db": 38.86,
+      "ssim": 0.975
+     },
+     "hoodie_fibres": {
+      "psnr_db": 35.66,
+      "ssim": 0.8961
+     },
+     "background_gradient": {
+      "psnr_db": 58.16,
+      "ssim": 0.9993
+     }
+    }
+   },
+   "vs_baseline": {
+    "psnr_db": Infinity,
+    "ssim": 1.0,
+    "mae_levels": 0.0,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": Infinity,
+      "ssim": 1.0
+     },
+     "girl_hair_bun": {
+      "psnr_db": Infinity,
+      "ssim": 1.0
+     },
+     "boy_hair_edge": {
+      "psnr_db": Infinity,
+      "ssim": 1.0
+     },
+     "boy_face": {
+      "psnr_db": Infinity,
+      "ssim": 1.0
+     },
+     "hoodie_fibres": {
+      "psnr_db": Infinity,
+      "ssim": 1.0
+     },
+     "background_gradient": {
+      "psnr_db": Infinity,
+      "ssim": 1.0
+     }
+    }
+   }
+  },
+  "ref512": {
+   "description": "reference: 512 spp, adaptive 0.005, OIDN",
+   "frames": [
+    65
+   ],
+   "s_per_frame": 1669.1,
+   "s_per_frame_all": [
+    1669.09
+   ],
+   "phases": {
+    "sync": 6.73,
+    "bvh": 2.47,
+    "kernels": 0.01,
+    "path_trace": 1657.57,
+    "denoise": 0.0,
+    "other": 2.31
+   },
+   "save_s": 0.18,
+   "resolution": [
+    1280,
+    720
+   ],
+   "effective": {
+    "samples": 512,
+    "adaptive": true,
+    "threshold": 0.004999999888241291,
+    "max_bounces": 12,
+    "denoiser": "OPENIMAGEDENOISE",
+    "denoise_passes": "RGB_ALBEDO_NORMAL",
+    "prefilter": "ACCURATE",
+    "persistent": false
+   },
+   "toggles": {},
+   "image": "ref512/frame_0065.png",
+   "vs_baseline": {
+    "psnr_db": 41.17,
+    "ssim": 0.978,
+    "mae_levels": 1.037,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 38.55,
+      "ssim": 0.9727
+     },
+     "girl_hair_bun": {
+      "psnr_db": 37.32,
+      "ssim": 0.9589
+     },
+     "boy_hair_edge": {
+      "psnr_db": 39.93,
+      "ssim": 0.9648
+     },
+     "boy_face": {
+      "psnr_db": 38.86,
+      "ssim": 0.975
+     },
+     "hoodie_fibres": {
+      "psnr_db": 35.66,
+      "ssim": 0.8961
+     },
+     "background_gradient": {
+      "psnr_db": 58.16,
+      "ssim": 0.9993
+     }
+    }
+   }
+  },
+  "review16": {
+   "description": "review candidate: 16 spp, adaptive 0.05, persistent data",
+   "frames": [
+    65
+   ],
+   "s_per_frame": 66.5,
+   "s_per_frame_all": [
+    66.5
+   ],
+   "phases": {
+    "sync": 7.39,
+    "bvh": 2.69,
+    "kernels": 0.01,
+    "path_trace": 54.16,
+    "denoise": 0.0,
+    "other": 2.25
+   },
+   "save_s": 0.16,
+   "resolution": [
+    1280,
+    720
+   ],
+   "effective": {
+    "samples": 16,
+    "adaptive": true,
+    "threshold": 0.05000000074505806,
+    "max_bounces": 12,
+    "denoiser": "OPENIMAGEDENOISE",
+    "denoise_passes": "RGB_ALBEDO_NORMAL",
+    "prefilter": "ACCURATE",
+    "persistent": true
+   },
+   "toggles": {},
+   "image": "review16/frame_0065.png",
+   "vs_ref512": {
+    "psnr_db": 37.13,
+    "ssim": 0.9484,
+    "mae_levels": 1.659,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 34.38,
+      "ssim": 0.939
+     },
+     "girl_hair_bun": {
+      "psnr_db": 32.71,
+      "ssim": 0.8774
+     },
+     "boy_hair_edge": {
+      "psnr_db": 35.37,
+      "ssim": 0.9059
+     },
+     "boy_face": {
+      "psnr_db": 35.33,
+      "ssim": 0.9513
+     },
+     "hoodie_fibres": {
+      "psnr_db": 32.29,
+      "ssim": 0.7969
+     },
+     "background_gradient": {
+      "psnr_db": 55.04,
+      "ssim": 0.9989
+     }
+    }
+   },
+   "vs_baseline": {
+    "psnr_db": 37.11,
+    "ssim": 0.9479,
+    "mae_levels": 1.661,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 34.46,
+      "ssim": 0.9413
+     },
+     "girl_hair_bun": {
+      "psnr_db": 32.54,
+      "ssim": 0.8744
+     },
+     "boy_hair_edge": {
+      "psnr_db": 35.1,
+      "ssim": 0.8994
+     },
+     "boy_face": {
+      "psnr_db": 35.37,
+      "ssim": 0.9534
+     },
+     "hoodie_fibres": {
+      "psnr_db": 32.31,
+      "ssim": 0.7911
+     },
+     "background_gradient": {
+      "psnr_db": 54.82,
+      "ssim": 0.999
+     }
+    }
+   }
+  },
+  "scale75": {
+   "description": "960x540 render (for upscale to 720p)",
+   "frames": [
+    65
+   ],
+   "s_per_frame": 244.3,
+   "s_per_frame_all": [
+    244.31
+   ],
+   "phases": {
+    "sync": 7.05,
+    "bvh": 2.52,
+    "kernels": 0.01,
+    "path_trace": 232.51,
+    "denoise": 0.0,
+    "other": 2.22
+   },
+   "save_s": 0.14,
+   "resolution": [
+    960,
+    540
+   ],
+   "effective": {
+    "samples": 128,
+    "adaptive": true,
+    "threshold": 0.009999999776482582,
+    "max_bounces": 12,
+    "denoiser": "OPENIMAGEDENOISE",
+    "denoise_passes": "RGB_ALBEDO_NORMAL",
+    "prefilter": "ACCURATE",
+    "persistent": false
+   },
+   "toggles": {},
+   "image": "scale75/up_0065.png",
+   "vs_ref512": {
+    "psnr_db": 38.4,
+    "ssim": 0.9594,
+    "mae_levels": 1.587,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 35.24,
+      "ssim": 0.9504
+     },
+     "girl_hair_bun": {
+      "psnr_db": 34.11,
+      "ssim": 0.912
+     },
+     "boy_hair_edge": {
+      "psnr_db": 36.37,
+      "ssim": 0.9265
+     },
+     "boy_face": {
+      "psnr_db": 36.25,
+      "ssim": 0.9609
+     },
+     "hoodie_fibres": {
+      "psnr_db": 34.4,
+      "ssim": 0.8642
+     },
+     "background_gradient": {
+      "psnr_db": 50.53,
+      "ssim": 0.9943
+     }
+    }
+   },
+   "vs_baseline": {
+    "psnr_db": 38.22,
+    "ssim": 0.9575,
+    "mae_levels": 1.624,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 35.14,
+      "ssim": 0.9509
+     },
+     "girl_hair_bun": {
+      "psnr_db": 33.76,
+      "ssim": 0.9064
+     },
+     "boy_hair_edge": {
+      "psnr_db": 36.03,
+      "ssim": 0.9194
+     },
+     "boy_face": {
+      "psnr_db": 36.06,
+      "ssim": 0.96
+     },
+     "hoodie_fibres": {
+      "psnr_db": 34.07,
+      "ssim": 0.8479
+     },
+     "background_gradient": {
+      "psnr_db": 50.45,
+      "ssim": 0.9942
+     }
+    }
+   }
+  },
+  "smoke": {
+   "description": "harness smoke test: fibre LOD 25% at 16 spp",
+   "frames": [
+    65
+   ],
+   "s_per_frame": 51.2,
+   "s_per_frame_all": [
+    51.18
+   ],
+   "phases": {
+    "sync": 5.45,
+    "bvh": 0.76,
+    "kernels": 0.01,
+    "path_trace": 42.77,
+    "denoise": 0.0,
+    "other": 2.19
+   },
+   "save_s": 0.19,
+   "resolution": [
+    1280,
+    720
+   ],
+   "effective": {
+    "samples": 16,
+    "adaptive": true,
+    "threshold": 0.009999999776482582,
+    "max_bounces": 12,
+    "denoiser": "OPENIMAGEDENOISE",
+    "denoise_passes": "RGB_ALBEDO_NORMAL",
+    "prefilter": "ACCURATE",
+    "persistent": false
+   },
+   "toggles": {
+    "fibre_keep": 147
+   },
+   "image": "smoke/frame_0065.png",
+   "vs_ref512": {
+    "psnr_db": 29.97,
+    "ssim": 0.8992,
+    "mae_levels": 3.402,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 27.1,
+      "ssim": 0.9017
+     },
+     "girl_hair_bun": {
+      "psnr_db": 26.72,
+      "ssim": 0.7384
+     },
+     "boy_hair_edge": {
+      "psnr_db": 25.88,
+      "ssim": 0.7801
+     },
+     "boy_face": {
+      "psnr_db": 25.7,
+      "ssim": 0.893
+     },
+     "hoodie_fibres": {
+      "psnr_db": 27.04,
+      "ssim": 0.6674
+     },
+     "background_gradient": {
+      "psnr_db": 43.64,
+      "ssim": 0.9957
+     }
+    }
+   },
+   "vs_baseline": {
+    "psnr_db": 29.98,
+    "ssim": 0.8992,
+    "mae_levels": 3.396,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 27.07,
+      "ssim": 0.9039
+     },
+     "girl_hair_bun": {
+      "psnr_db": 26.71,
+      "ssim": 0.7379
+     },
+     "boy_hair_edge": {
+      "psnr_db": 25.87,
+      "ssim": 0.7775
+     },
+     "boy_face": {
+      "psnr_db": 25.67,
+      "ssim": 0.8946
+     },
+     "hoodie_fibres": {
+      "psnr_db": 27.06,
+      "ssim": 0.6594
+     },
+     "background_gradient": {
+      "psnr_db": 43.8,
+      "ssim": 0.9958
+     }
+    }
+   }
+  },
+  "spp16": {
+   "description": "16 spp + OIDN",
+   "frames": [
+    65
+   ],
+   "s_per_frame": 68.7,
+   "s_per_frame_all": [
+    68.7
+   ],
+   "phases": {
+    "sync": 8.1,
+    "bvh": 2.78,
+    "kernels": 0.02,
+    "path_trace": 55.46,
+    "denoise": 0.0,
+    "other": 2.35
+   },
+   "save_s": 0.25,
+   "resolution": [
+    1280,
+    720
+   ],
+   "effective": {
+    "samples": 16,
+    "adaptive": true,
+    "threshold": 0.009999999776482582,
+    "max_bounces": 12,
+    "denoiser": "OPENIMAGEDENOISE",
+    "denoise_passes": "RGB_ALBEDO_NORMAL",
+    "prefilter": "ACCURATE",
+    "persistent": false
+   },
+   "toggles": {},
+   "image": "spp16/frame_0065.png",
+   "vs_ref512": {
+    "psnr_db": 37.13,
+    "ssim": 0.9484,
+    "mae_levels": 1.659,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 34.38,
+      "ssim": 0.939
+     },
+     "girl_hair_bun": {
+      "psnr_db": 32.71,
+      "ssim": 0.8774
+     },
+     "boy_hair_edge": {
+      "psnr_db": 35.37,
+      "ssim": 0.9059
+     },
+     "boy_face": {
+      "psnr_db": 35.33,
+      "ssim": 0.9513
+     },
+     "hoodie_fibres": {
+      "psnr_db": 32.29,
+      "ssim": 0.7969
+     },
+     "background_gradient": {
+      "psnr_db": 55.04,
+      "ssim": 0.9989
+     }
+    }
+   },
+   "vs_baseline": {
+    "psnr_db": 37.11,
+    "ssim": 0.9479,
+    "mae_levels": 1.661,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 34.46,
+      "ssim": 0.9413
+     },
+     "girl_hair_bun": {
+      "psnr_db": 32.54,
+      "ssim": 0.8744
+     },
+     "boy_hair_edge": {
+      "psnr_db": 35.1,
+      "ssim": 0.8994
+     },
+     "boy_face": {
+      "psnr_db": 35.37,
+      "ssim": 0.9534
+     },
+     "hoodie_fibres": {
+      "psnr_db": 32.31,
+      "ssim": 0.7911
+     },
+     "background_gradient": {
+      "psnr_db": 54.82,
+      "ssim": 0.999
+     }
+    }
+   }
+  },
+  "spp16_seq": {
+   "description": "16 spp + OIDN",
+   "frames": [
+    62,
+    63,
+    64,
+    65,
+    66
+   ],
+   "s_per_frame": 66.7,
+   "s_per_frame_all": [
+    70.47,
+    67.33,
+    68.23,
+    66.72,
+    67.04
+   ],
+   "phases": {
+    "sync": 7.36,
+    "bvh": 2.8,
+    "kernels": 0.01,
+    "path_trace": 54.35,
+    "denoise": 0.0,
+    "other": 2.2
+   },
+   "save_s": 0.16,
+   "resolution": [
+    1280,
+    720
+   ],
+   "effective": {
+    "samples": 16,
+    "adaptive": true,
+    "threshold": 0.009999999776482582,
+    "max_bounces": 12,
+    "denoiser": "OPENIMAGEDENOISE",
+    "denoise_passes": "RGB_ALBEDO_NORMAL",
+    "prefilter": "ACCURATE",
+    "persistent": false
+   },
+   "toggles": {},
+   "image": "spp16_seq/frame_0065.png",
+   "vs_ref512": {
+    "psnr_db": 37.13,
+    "ssim": 0.9484,
+    "mae_levels": 1.659,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 34.38,
+      "ssim": 0.939
+     },
+     "girl_hair_bun": {
+      "psnr_db": 32.71,
+      "ssim": 0.8774
+     },
+     "boy_hair_edge": {
+      "psnr_db": 35.37,
+      "ssim": 0.9059
+     },
+     "boy_face": {
+      "psnr_db": 35.33,
+      "ssim": 0.9513
+     },
+     "hoodie_fibres": {
+      "psnr_db": 32.29,
+      "ssim": 0.7969
+     },
+     "background_gradient": {
+      "psnr_db": 55.04,
+      "ssim": 0.9989
+     }
+    }
+   },
+   "vs_baseline": {
+    "psnr_db": 37.11,
+    "ssim": 0.9479,
+    "mae_levels": 1.661,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 34.46,
+      "ssim": 0.9413
+     },
+     "girl_hair_bun": {
+      "psnr_db": 32.54,
+      "ssim": 0.8744
+     },
+     "boy_hair_edge": {
+      "psnr_db": 35.1,
+      "ssim": 0.8994
+     },
+     "boy_face": {
+      "psnr_db": 35.37,
+      "ssim": 0.9534
+     },
+     "hoodie_fibres": {
+      "psnr_db": 32.31,
+      "ssim": 0.7911
+     },
+     "background_gradient": {
+      "psnr_db": 54.82,
+      "ssim": 0.999
+     }
+    }
+   }
+  },
+  "spp32": {
+   "description": "32 spp + OIDN",
+   "frames": [
+    65
+   ],
+   "s_per_frame": 125.4,
+   "s_per_frame_all": [
+    125.42
+   ],
+   "phases": {
+    "sync": 9.61,
+    "bvh": 3.38,
+    "kernels": 0.01,
+    "path_trace": 109.93,
+    "denoise": 0.0,
+    "other": 2.48
+   },
+   "save_s": 0.16,
+   "resolution": [
+    1280,
+    720
+   ],
+   "effective": {
+    "samples": 32,
+    "adaptive": true,
+    "threshold": 0.009999999776482582,
+    "max_bounces": 12,
+    "denoiser": "OPENIMAGEDENOISE",
+    "denoise_passes": "RGB_ALBEDO_NORMAL",
+    "prefilter": "ACCURATE",
+    "persistent": false
+   },
+   "toggles": {},
+   "image": "spp32/frame_0065.png",
+   "vs_ref512": {
+    "psnr_db": 38.34,
+    "ssim": 0.9602,
+    "mae_levels": 1.438,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 35.84,
+      "ssim": 0.9532
+     },
+     "girl_hair_bun": {
+      "psnr_db": 34.11,
+      "ssim": 0.9138
+     },
+     "boy_hair_edge": {
+      "psnr_db": 36.68,
+      "ssim": 0.93
+     },
+     "boy_face": {
+      "psnr_db": 36.34,
+      "ssim": 0.9595
+     },
+     "hoodie_fibres": {
+      "psnr_db": 33.19,
+      "ssim": 0.8291
+     },
+     "background_gradient": {
+      "psnr_db": 56.23,
+      "ssim": 0.9991
+     }
+    }
+   },
+   "vs_baseline": {
+    "psnr_db": 38.18,
+    "ssim": 0.9583,
+    "mae_levels": 1.463,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 35.82,
+      "ssim": 0.9548
+     },
+     "girl_hair_bun": {
+      "psnr_db": 33.74,
+      "ssim": 0.9068
+     },
+     "boy_hair_edge": {
+      "psnr_db": 36.14,
+      "ssim": 0.9208
+     },
+     "boy_face": {
+      "psnr_db": 36.42,
+      "ssim": 0.9605
+     },
+     "hoodie_fibres": {
+      "psnr_db": 33.05,
+      "ssim": 0.817
+     },
+     "background_gradient": {
+      "psnr_db": 55.71,
+      "ssim": 0.9991
+     }
+    }
+   }
+  },
+  "spp64": {
+   "description": "64 spp + OIDN",
+   "frames": [
+    65
+   ],
+   "s_per_frame": 230.9,
+   "s_per_frame_all": [
+    230.89
+   ],
+   "phases": {
+    "sync": 8.39,
+    "bvh": 2.94,
+    "kernels": 0.01,
+    "path_trace": 217.08,
+    "denoise": 0.0,
+    "other": 2.48
+   },
+   "save_s": 0.18,
+   "resolution": [
+    1280,
+    720
+   ],
+   "effective": {
+    "samples": 64,
+    "adaptive": true,
+    "threshold": 0.009999999776482582,
+    "max_bounces": 12,
+    "denoiser": "OPENIMAGEDENOISE",
+    "denoise_passes": "RGB_ALBEDO_NORMAL",
+    "prefilter": "ACCURATE",
+    "persistent": false
+   },
+   "toggles": {},
+   "image": "spp64/frame_0065.png",
+   "vs_ref512": {
+    "psnr_db": 39.77,
+    "ssim": 0.9706,
+    "mae_levels": 1.22,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 37.19,
+      "ssim": 0.9638
+     },
+     "girl_hair_bun": {
+      "psnr_db": 35.7,
+      "ssim": 0.9402
+     },
+     "boy_hair_edge": {
+      "psnr_db": 38.3,
+      "ssim": 0.9509
+     },
+     "boy_face": {
+      "psnr_db": 37.67,
+      "ssim": 0.9679
+     },
+     "hoodie_fibres": {
+      "psnr_db": 34.44,
+      "ssim": 0.8674
+     },
+     "background_gradient": {
+      "psnr_db": 57.03,
+      "ssim": 0.9992
+     }
+    }
+   },
+   "vs_baseline": {
+    "psnr_db": 39.27,
+    "ssim": 0.967,
+    "mae_levels": 1.285,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 36.85,
+      "ssim": 0.9624
+     },
+     "girl_hair_bun": {
+      "psnr_db": 34.94,
+      "ssim": 0.9297
+     },
+     "boy_hair_edge": {
+      "psnr_db": 37.37,
+      "ssim": 0.94
+     },
+     "boy_face": {
+      "psnr_db": 37.45,
+      "ssim": 0.9664
+     },
+     "hoodie_fibres": {
+      "psnr_db": 33.95,
+      "ssim": 0.8481
+     },
+     "background_gradient": {
+      "psnr_db": 56.68,
+      "ssim": 0.9993
+     }
+    }
+   }
+  },
+  "sss_burley": {
+   "description": "skin/lip subsurface method Random Walk -> Christensen-Burley (render-time, shot copy only)",
+   "frames": [
+    65
+   ],
+   "s_per_frame": 386.0,
+   "s_per_frame_all": [
+    386.01
+   ],
+   "phases": {
+    "sync": 7.42,
+    "bvh": 2.53,
+    "kernels": 0.01,
+    "path_trace": 373.68,
+    "denoise": 0.0,
+    "other": 2.36
+   },
+   "save_s": 0.16,
+   "resolution": [
+    1280,
+    720
+   ],
+   "effective": {
+    "samples": 128,
+    "adaptive": true,
+    "threshold": 0.009999999776482582,
+    "max_bounces": 12,
+    "denoiser": "OPENIMAGEDENOISE",
+    "denoise_passes": "RGB_ALBEDO_NORMAL",
+    "prefilter": "ACCURATE",
+    "persistent": false
+   },
+   "toggles": {
+    "sss_method": 6
+   },
+   "image": "sss_burley/frame_0065.png",
+   "vs_ref512": {
+    "psnr_db": 40.68,
+    "ssim": 0.9777,
+    "mae_levels": 1.125,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 36.3,
+      "ssim": 0.9693
+     },
+     "girl_hair_bun": {
+      "psnr_db": 37.31,
+      "ssim": 0.9588
+     },
+     "boy_hair_edge": {
+      "psnr_db": 39.87,
+      "ssim": 0.9647
+     },
+     "boy_face": {
+      "psnr_db": 35.98,
+      "ssim": 0.9706
+     },
+     "hoodie_fibres": {
+      "psnr_db": 35.56,
+      "ssim": 0.8957
+     },
+     "background_gradient": {
+      "psnr_db": 57.6,
+      "ssim": 0.9992
+     }
+    }
+   },
+   "vs_baseline": {
+    "psnr_db": 48.61,
+    "ssim": 0.9987,
+    "mae_levels": 0.249,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 38.56,
+      "ssim": 0.9892
+     },
+     "girl_hair_bun": {
+      "psnr_db": 59.8,
+      "ssim": 0.9997
+     },
+     "boy_hair_edge": {
+      "psnr_db": 54.45,
+      "ssim": 0.9995
+     },
+     "boy_face": {
+      "psnr_db": 38.13,
+      "ssim": 0.9903
+     },
+     "hoodie_fibres": {
+      "psnr_db": 49.67,
+      "ssim": 0.999
+     },
+     "background_gradient": {
+      "psnr_db": 60.96,
+      "ssim": 0.9995
+     }
+    }
+   }
+  },
+  "thr02": {
+   "description": "128 spp, adaptive threshold 0.02",
+   "frames": [
+    65
+   ],
+   "s_per_frame": 390.2,
+   "s_per_frame_all": [
+    390.24
+   ],
+   "phases": {
+    "sync": 8.6,
+    "bvh": 2.98,
+    "kernels": 0.01,
+    "path_trace": 376.4,
+    "denoise": 0.0,
+    "other": 2.25
+   },
+   "save_s": 0.17,
+   "resolution": [
+    1280,
+    720
+   ],
+   "effective": {
+    "samples": 128,
+    "adaptive": true,
+    "threshold": 0.019999999552965164,
+    "max_bounces": 12,
+    "denoiser": "OPENIMAGEDENOISE",
+    "denoise_passes": "RGB_ALBEDO_NORMAL",
+    "prefilter": "ACCURATE",
+    "persistent": false
+   },
+   "toggles": {},
+   "image": "thr02/frame_0065.png",
+   "vs_ref512": {
+    "psnr_db": 40.75,
+    "ssim": 0.9755,
+    "mae_levels": 1.099,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 38.42,
+      "ssim": 0.9718
+     },
+     "girl_hair_bun": {
+      "psnr_db": 36.64,
+      "ssim": 0.9507
+     },
+     "boy_hair_edge": {
+      "psnr_db": 39.06,
+      "ssim": 0.9555
+     },
+     "boy_face": {
+      "psnr_db": 38.79,
+      "ssim": 0.9743
+     },
+     "hoodie_fibres": {
+      "psnr_db": 35.65,
+      "ssim": 0.8959
+     },
+     "background_gradient": {
+      "psnr_db": 57.63,
+      "ssim": 0.9992
+     }
+    }
+   },
+   "vs_baseline": {
+    "psnr_db": 49.48,
+    "ssim": 0.9962,
+    "mae_levels": 0.318,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 50.83,
+      "ssim": 0.9981
+     },
+     "girl_hair_bun": {
+      "psnr_db": 43.75,
+      "ssim": 0.9896
+     },
+     "boy_hair_edge": {
+      "psnr_db": 44.75,
+      "ssim": 0.9866
+     },
+     "boy_face": {
+      "psnr_db": 52.05,
+      "ssim": 0.9982
+     },
+     "hoodie_fibres": {
+      "psnr_db": 54.07,
+      "ssim": 0.9987
+     },
+     "background_gradient": {
+      "psnr_db": 61.06,
+      "ssim": 0.9996
+     }
+    }
+   }
+  },
+  "thr03": {
+   "description": "128 spp, adaptive threshold 0.03",
+   "frames": [
+    65
+   ],
+   "s_per_frame": 304.8,
+   "s_per_frame_all": [
+    304.76
+   ],
+   "phases": {
+    "sync": 6.91,
+    "bvh": 2.41,
+    "kernels": 0.01,
+    "path_trace": 293.27,
+    "denoise": 0.0,
+    "other": 2.16
+   },
+   "save_s": 0.16,
+   "resolution": [
+    1280,
+    720
+   ],
+   "effective": {
+    "samples": 128,
+    "adaptive": true,
+    "threshold": 0.029999999329447746,
+    "max_bounces": 12,
+    "denoiser": "OPENIMAGEDENOISE",
+    "denoise_passes": "RGB_ALBEDO_NORMAL",
+    "prefilter": "ACCURATE",
+    "persistent": false
+   },
+   "toggles": {},
+   "image": "thr03/frame_0065.png",
+   "vs_ref512": {
+    "psnr_db": 40.05,
+    "ssim": 0.9714,
+    "mae_levels": 1.196,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 37.82,
+      "ssim": 0.968
+     },
+     "girl_hair_bun": {
+      "psnr_db": 35.59,
+      "ssim": 0.9374
+     },
+     "boy_hair_edge": {
+      "psnr_db": 38.14,
+      "ssim": 0.945
+     },
+     "boy_face": {
+      "psnr_db": 38.41,
+      "ssim": 0.9719
+     },
+     "hoodie_fibres": {
+      "psnr_db": 35.44,
+      "ssim": 0.8917
+     },
+     "background_gradient": {
+      "psnr_db": 57.16,
+      "ssim": 0.9992
+     }
+    }
+   },
+   "vs_baseline": {
+    "psnr_db": 45.06,
+    "ssim": 0.9905,
+    "mae_levels": 0.625,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 44.1,
+      "ssim": 0.9915
+     },
+     "girl_hair_bun": {
+      "psnr_db": 39.2,
+      "ssim": 0.9719
+     },
+     "boy_hair_edge": {
+      "psnr_db": 41.62,
+      "ssim": 0.9738
+     },
+     "boy_face": {
+      "psnr_db": 45.83,
+      "ssim": 0.9939
+     },
+     "hoodie_fibres": {
+      "psnr_db": 44.97,
+      "ssim": 0.9883
+     },
+     "background_gradient": {
+      "psnr_db": 59.28,
+      "ssim": 0.9994
+     }
+    }
+   }
+  },
+  "thr05": {
+   "description": "128 spp, adaptive threshold 0.05",
+   "frames": [
+    65
+   ],
+   "s_per_frame": 208.4,
+   "s_per_frame_all": [
+    208.45
+   ],
+   "phases": {
+    "sync": 7.68,
+    "bvh": 3.0,
+    "kernels": 0.01,
+    "path_trace": 195.52,
+    "denoise": 0.0,
+    "other": 2.24
+   },
+   "save_s": 0.18,
+   "resolution": [
+    1280,
+    720
+   ],
+   "effective": {
+    "samples": 128,
+    "adaptive": true,
+    "threshold": 0.05000000074505806,
+    "max_bounces": 12,
+    "denoiser": "OPENIMAGEDENOISE",
+    "denoise_passes": "RGB_ALBEDO_NORMAL",
+    "prefilter": "ACCURATE",
+    "persistent": false
+   },
+   "toggles": {},
+   "image": "thr05/frame_0065.png",
+   "vs_ref512": {
+    "psnr_db": 39.36,
+    "ssim": 0.9676,
+    "mae_levels": 1.287,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 36.95,
+      "ssim": 0.9617
+     },
+     "girl_hair_bun": {
+      "psnr_db": 35.07,
+      "ssim": 0.9303
+     },
+     "boy_hair_edge": {
+      "psnr_db": 37.8,
+      "ssim": 0.9435
+     },
+     "boy_face": {
+      "psnr_db": 37.45,
+      "ssim": 0.9658
+     },
+     "hoodie_fibres": {
+      "psnr_db": 34.37,
+      "ssim": 0.8656
+     },
+     "background_gradient": {
+      "psnr_db": 56.46,
+      "ssim": 0.9991
+     }
+    }
+   },
+   "vs_baseline": {
+    "psnr_db": 42.68,
+    "ssim": 0.9848,
+    "mae_levels": 0.873,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 40.32,
+      "ssim": 0.982
+     },
+     "girl_hair_bun": {
+      "psnr_db": 37.75,
+      "ssim": 0.9626
+     },
+     "boy_hair_edge": {
+      "psnr_db": 40.78,
+      "ssim": 0.9719
+     },
+     "boy_face": {
+      "psnr_db": 41.2,
+      "ssim": 0.9855
+     },
+     "hoodie_fibres": {
+      "psnr_db": 38.3,
+      "ssim": 0.945
+     },
+     "background_gradient": {
+      "psnr_db": 58.39,
+      "ssim": 0.9994
+     }
+    }
+   }
+  },
+  "thr05_b6": {
+   "description": "combined: adaptive 0.05 + bounces max 6/diffuse 2/glossy 2/transmission 4 + persistent data",
+   "frames": [
+    65
+   ],
+   "s_per_frame": 191.0,
+   "s_per_frame_all": [
+    191.02
+   ],
+   "phases": {
+    "sync": 7.16,
+    "bvh": 2.39,
+    "kernels": 0.01,
+    "path_trace": 179.29,
+    "denoise": 0.0,
+    "other": 2.18
+   },
+   "save_s": 0.16,
+   "resolution": [
+    1280,
+    720
+   ],
+   "effective": {
+    "samples": 128,
+    "adaptive": true,
+    "threshold": 0.05000000074505806,
+    "max_bounces": 6,
+    "denoiser": "OPENIMAGEDENOISE",
+    "denoise_passes": "RGB_ALBEDO_NORMAL",
+    "prefilter": "ACCURATE",
+    "persistent": true
+   },
+   "toggles": {},
+   "image": "thr05_b6/frame_0065.png",
+   "vs_ref512": {
+    "psnr_db": 35.73,
+    "ssim": 0.965,
+    "mae_levels": 1.923,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 35.0,
+      "ssim": 0.9612
+     },
+     "girl_hair_bun": {
+      "psnr_db": 35.08,
+      "ssim": 0.9306
+     },
+     "boy_hair_edge": {
+      "psnr_db": 37.84,
+      "ssim": 0.944
+     },
+     "boy_face": {
+      "psnr_db": 30.55,
+      "ssim": 0.9601
+     },
+     "hoodie_fibres": {
+      "psnr_db": 27.54,
+      "ssim": 0.8369
+     },
+     "background_gradient": {
+      "psnr_db": 52.07,
+      "ssim": 0.9979
+     }
+    }
+   },
+   "vs_baseline": {
+    "psnr_db": 36.77,
+    "ssim": 0.9811,
+    "mae_levels": 1.645,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 36.75,
+      "ssim": 0.9804
+     },
+     "girl_hair_bun": {
+      "psnr_db": 37.72,
+      "ssim": 0.9625
+     },
+     "boy_hair_edge": {
+      "psnr_db": 40.76,
+      "ssim": 0.9719
+     },
+     "boy_face": {
+      "psnr_db": 31.04,
+      "ssim": 0.9775
+     },
+     "hoodie_fibres": {
+      "psnr_db": 28.0,
+      "ssim": 0.908
+     },
+     "background_gradient": {
+      "psnr_db": 52.21,
+      "ssim": 0.9978
+     }
+    }
+   }
+  },
+  "threads2_16": {
+   "description": "2 of 4 threads, 16 spp (scaling check)",
+   "frames": [
+    65
+   ],
+   "s_per_frame": 125.6,
+   "s_per_frame_all": [
+    125.59
+   ],
+   "phases": {
+    "sync": 8.41,
+    "bvh": 4.69,
+    "kernels": 0.01,
+    "path_trace": 110.18,
+    "denoise": 0.0,
+    "other": 2.3
+   },
+   "save_s": 0.18,
+   "resolution": [
+    1280,
+    720
+   ],
+   "effective": {
+    "samples": 16,
+    "adaptive": true,
+    "threshold": 0.009999999776482582,
+    "max_bounces": 12,
+    "denoiser": "OPENIMAGEDENOISE",
+    "denoise_passes": "RGB_ALBEDO_NORMAL",
+    "prefilter": "ACCURATE",
+    "persistent": false
+   },
+   "toggles": {},
+   "image": "threads2_16/frame_0065.png",
+   "vs_ref512": {
+    "psnr_db": 37.13,
+    "ssim": 0.9484,
+    "mae_levels": 1.659,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 34.38,
+      "ssim": 0.939
+     },
+     "girl_hair_bun": {
+      "psnr_db": 32.71,
+      "ssim": 0.8774
+     },
+     "boy_hair_edge": {
+      "psnr_db": 35.37,
+      "ssim": 0.9059
+     },
+     "boy_face": {
+      "psnr_db": 35.33,
+      "ssim": 0.9513
+     },
+     "hoodie_fibres": {
+      "psnr_db": 32.29,
+      "ssim": 0.7969
+     },
+     "background_gradient": {
+      "psnr_db": 55.04,
+      "ssim": 0.9989
+     }
+    }
+   },
+   "vs_baseline": {
+    "psnr_db": 37.11,
+    "ssim": 0.9479,
+    "mae_levels": 1.661,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 34.46,
+      "ssim": 0.9413
+     },
+     "girl_hair_bun": {
+      "psnr_db": 32.54,
+      "ssim": 0.8744
+     },
+     "boy_hair_edge": {
+      "psnr_db": 35.1,
+      "ssim": 0.8994
+     },
+     "boy_face": {
+      "psnr_db": 35.37,
+      "ssim": 0.9534
+     },
+     "hoodie_fibres": {
+      "psnr_db": 32.31,
+      "ssim": 0.7911
+     },
+     "background_gradient": {
+      "psnr_db": 54.82,
+      "ssim": 0.999
+     }
+    }
+   }
+  },
+  "tile512": {
+   "description": "tile size 512",
+   "frames": [
+    65
+   ],
+   "s_per_frame": 437.0,
+   "s_per_frame_all": [
+    436.98
+   ],
+   "phases": {
+    "sync": 6.99,
+    "bvh": 2.54,
+    "kernels": 0.01,
+    "path_trace": 424.53,
+    "denoise": 0.48,
+    "other": 2.43
+   },
+   "save_s": 0.12,
+   "resolution": [
+    1280,
+    720
+   ],
+   "effective": {
+    "samples": 128,
+    "adaptive": true,
+    "threshold": 0.009999999776482582,
+    "max_bounces": 12,
+    "denoiser": "OPENIMAGEDENOISE",
+    "denoise_passes": "RGB_ALBEDO_NORMAL",
+    "prefilter": "ACCURATE",
+    "persistent": false
+   },
+   "toggles": {},
+   "image": "tile512/frame_0065.png",
+   "vs_ref512": {
+    "psnr_db": 41.17,
+    "ssim": 0.978,
+    "mae_levels": 1.037,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 38.55,
+      "ssim": 0.9727
+     },
+     "girl_hair_bun": {
+      "psnr_db": 37.32,
+      "ssim": 0.9589
+     },
+     "boy_hair_edge": {
+      "psnr_db": 39.93,
+      "ssim": 0.9648
+     },
+     "boy_face": {
+      "psnr_db": 38.86,
+      "ssim": 0.975
+     },
+     "hoodie_fibres": {
+      "psnr_db": 35.66,
+      "ssim": 0.8961
+     },
+     "background_gradient": {
+      "psnr_db": 58.16,
+      "ssim": 0.9993
+     }
+    }
+   },
+   "vs_baseline": {
+    "psnr_db": Infinity,
+    "ssim": 1.0,
+    "mae_levels": 0.0,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": Infinity,
+      "ssim": 1.0
+     },
+     "girl_hair_bun": {
+      "psnr_db": Infinity,
+      "ssim": 1.0
+     },
+     "boy_hair_edge": {
+      "psnr_db": Infinity,
+      "ssim": 1.0
+     },
+     "boy_face": {
+      "psnr_db": Infinity,
+      "ssim": 1.0
+     },
+     "hoodie_fibres": {
+      "psnr_db": Infinity,
+      "ssim": 1.0
+     },
+     "background_gradient": {
+      "psnr_db": Infinity,
+      "ssim": 1.0
+     }
+    }
+   }
+  },
+  "transp16": {
+   "description": "transparent bounces 8 -> 16",
+   "frames": [
+    65
+   ],
+   "s_per_frame": 440.0,
+   "s_per_frame_all": [
+    440.04
+   ],
+   "phases": {
+    "sync": 7.4,
+    "bvh": 2.7,
+    "kernels": 0.01,
+    "path_trace": 427.79,
+    "denoise": 0.0,
+    "other": 2.14
+   },
+   "save_s": 0.16,
+   "resolution": [
+    1280,
+    720
+   ],
+   "effective": {
+    "samples": 128,
+    "adaptive": true,
+    "threshold": 0.009999999776482582,
+    "max_bounces": 12,
+    "denoiser": "OPENIMAGEDENOISE",
+    "denoise_passes": "RGB_ALBEDO_NORMAL",
+    "prefilter": "ACCURATE",
+    "persistent": false
+   },
+   "toggles": {},
+   "image": "transp16/frame_0065.png",
+   "vs_ref512": {
+    "psnr_db": 41.17,
+    "ssim": 0.978,
+    "mae_levels": 1.037,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 38.55,
+      "ssim": 0.9727
+     },
+     "girl_hair_bun": {
+      "psnr_db": 37.32,
+      "ssim": 0.9589
+     },
+     "boy_hair_edge": {
+      "psnr_db": 39.93,
+      "ssim": 0.9648
+     },
+     "boy_face": {
+      "psnr_db": 38.86,
+      "ssim": 0.975
+     },
+     "hoodie_fibres": {
+      "psnr_db": 35.66,
+      "ssim": 0.896
+     },
+     "background_gradient": {
+      "psnr_db": 58.16,
+      "ssim": 0.9993
+     }
+    }
+   },
+   "vs_baseline": {
+    "psnr_db": 67.6,
+    "ssim": 0.9999,
+    "mae_levels": 0.011,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 67.2,
+      "ssim": 1.0
+     },
+     "girl_hair_bun": {
+      "psnr_db": 66.54,
+      "ssim": 1.0
+     },
+     "boy_hair_edge": {
+      "psnr_db": 67.52,
+      "ssim": 0.9999
+     },
+     "boy_face": {
+      "psnr_db": 66.33,
+      "ssim": 0.9999
+     },
+     "hoodie_fibres": {
+      "psnr_db": 64.26,
+      "ssim": 0.9999
+     },
+     "background_gradient": {
+      "psnr_db": 69.05,
+      "ssim": 0.9999
+     }
+    }
+   }
+  },
+  "transp4": {
+   "description": "transparent bounces 8 -> 4 (fibre strands use a transparent mix)",
+   "frames": [
+    65
+   ],
+   "s_per_frame": 428.4,
+   "s_per_frame_all": [
+    428.4
+   ],
+   "phases": {
+    "sync": 7.69,
+    "bvh": 3.17,
+    "kernels": 0.01,
+    "path_trace": 415.2,
+    "denoise": 0.0,
+    "other": 2.32
+   },
+   "save_s": 0.16,
+   "resolution": [
+    1280,
+    720
+   ],
+   "effective": {
+    "samples": 128,
+    "adaptive": true,
+    "threshold": 0.009999999776482582,
+    "max_bounces": 12,
+    "denoiser": "OPENIMAGEDENOISE",
+    "denoise_passes": "RGB_ALBEDO_NORMAL",
+    "prefilter": "ACCURATE",
+    "persistent": false
+   },
+   "toggles": {},
+   "image": "transp4/frame_0065.png",
+   "vs_ref512": {
+    "psnr_db": 41.13,
+    "ssim": 0.978,
+    "mae_levels": 1.047,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 38.49,
+      "ssim": 0.9727
+     },
+     "girl_hair_bun": {
+      "psnr_db": 37.31,
+      "ssim": 0.9589
+     },
+     "boy_hair_edge": {
+      "psnr_db": 39.93,
+      "ssim": 0.9648
+     },
+     "boy_face": {
+      "psnr_db": 38.79,
+      "ssim": 0.975
+     },
+     "hoodie_fibres": {
+      "psnr_db": 35.61,
+      "ssim": 0.8957
+     },
+     "background_gradient": {
+      "psnr_db": 57.66,
+      "ssim": 0.9992
+     }
+    }
+   },
+   "vs_baseline": {
+    "psnr_db": 57.9,
+    "ssim": 0.9996,
+    "mae_levels": 0.087,
+    "crops": {
+     "glasses_eyes": {
+      "psnr_db": 54.86,
+      "ssim": 0.9995
+     },
+     "girl_hair_bun": {
+      "psnr_db": 60.06,
+      "ssim": 0.9998
+     },
+     "boy_hair_edge": {
+      "psnr_db": 61.47,
+      "ssim": 0.9998
+     },
+     "boy_face": {
+      "psnr_db": 53.03,
+      "ssim": 0.9995
+     },
+     "hoodie_fibres": {
+      "psnr_db": 51.74,
+      "ssim": 0.9987
+     },
+     "background_gradient": {
+      "psnr_db": 61.52,
+      "ssim": 0.9996
+     }
+    }
+   }
+  }
+ }
+}

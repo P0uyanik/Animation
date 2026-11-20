@@ -1,0 +1,156 @@
+{
+ "variant": "thr05_b6",
+ "tag": "thr05_b6",
+ "description": "combined: adaptive 0.05 + bounces max 6/diffuse 2/glossy 2/transmission 4 + persistent data",
+ "settings": {
+  "cycles.adaptive_threshold": 0.05,
+  "cycles.max_bounces": 6,
+  "cycles.diffuse_bounces": 2,
+  "cycles.glossy_bounces": 2,
+  "cycles.transmission_bounces": 4,
+  "render.use_persistent_data": true
+ },
+ "toggles": {},
+ "blend": "/root/t124/base/shot.blend",
+ "load_s": 3.23,
+ "blender": "5.3.0",
+ "threads": 4,
+ "resolution": [
+  1280,
+  720
+ ],
+ "effective": {
+  "samples": 128,
+  "adaptive": true,
+  "threshold": 0.05000000074505806,
+  "max_bounces": 6,
+  "denoiser": "OPENIMAGEDENOISE",
+  "denoise_passes": "RGB_ALBEDO_NORMAL",
+  "prefilter": "ACCURATE",
+  "persistent": true
+ },
+ "frames": [
+  {
+   "frame": 65,
+   "repeat": 0,
+   "render_s": 191.02,
+   "save_s": 0.16,
+   "phases": {
+    "sync": 7.16,
+    "bvh": 2.39,
+    "kernels": 0.01,
+    "path_trace": 179.29,
+    "denoise": 0.0,
+    "other": 2.18
+   },
+   "peak_mem": "",
+   "timeline": [
+    [
+     4.71,
+     "kernels",
+     "Updating Shaders"
+    ],
+    [
+     4.72,
+     "sync",
+     "Updating Scene Attribute"
+    ],
+    [
+     4.72,
+     "kernels",
+     "Updating Camera"
+    ],
+    [
+     4.72,
+     "sync",
+     "Updating Meshes Flags"
+    ],
+    [
+     4.72,
+     "kernels",
+     "Updating Particle Systems"
+    ],
+    [
+     4.72,
+     "sync",
+     "Copying Particles to device"
+    ],
+    [
+     4.72,
+     "kernels",
+     "Updating Displacement Images"
+    ],
+    [
+     4.72,
+     "sync",
+     "Computing normals"
+    ],
+    [
+     6.72,
+     "bvh",
+     "Building BVH"
+    ],
+    [
+     6.97,
+     "sync",
+     "Building"
+    ],
+    [
+     6.97,
+     "bvh",
+     "Building BVH"
+    ],
+    [
+     9.11,
+     "sync",
+     "Computing attributes"
+    ],
+    [
+     9.55,
+     "kernels",
+     "Updating Primitive Offsets"
+    ],
+    [
+     9.55,
+     "sync",
+     "Updating Images"
+    ],
+    [
+     9.55,
+     "kernels",
+     "Updating Volume"
+    ],
+    [
+     9.55,
+     "sync",
+     "Computing tree"
+    ],
+    [
+     9.56,
+     "kernels",
+     "Updating Integrator"
+    ],
+    [
+     9.56,
+     "sync",
+     "Writing constant memory"
+    ],
+    [
+     9.56,
+     "kernels",
+     "Loading denoising kernels (may take a few minutes the first "
+    ],
+    [
+     9.56,
+     "path_trace",
+     "Sample #/#"
+    ],
+    [
+     188.85,
+     "other",
+     "Finished"
+    ]
+   ]
+  }
+ ]
+}
