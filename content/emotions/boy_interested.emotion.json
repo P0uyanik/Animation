@@ -34,13 +34,13 @@
  },
  "reference": "docs/evaluation/animation/T-106/performance.csv paperboat boy [259, 289) 'leans in behind the girls, eyes open wider and lips part' (median jawOpen 0.033); watertable boy [60, 81) blink then head lift (0.875 s onset), [87, 121) raised head hold (1.42 s)",
  "x_sources": {
-  "face": "authored at intensity 1 for his expressed intensity 0.42 (event 0.7 x profile reaction.intensity_scale 0.6): EyeWide 0.34, BrowDown 0.21, MouthO 0.1, JawOpen 0.034 there. positive_style of content/personality/boy_yellow_hoodie.json (PB f255-f288: eyes open fully, brows down, small MouthO, no smile); T-106 PB [259, 289) 'eyes open wider and lips part' (median jawOpen 0.033); WT [87, 121) 'small closed mouth' -> MouthO stays small. EyeWide lifts the modelled heavy lid towards Blink 0.15-0.25 (engaged_style, PB S6 / WT f036)",
+  "face": "authored at intensity 1 for his expressed intensity 0.49 (event 0.7 x profile reaction.intensity_scale 0.7): EyeWide 0.49, BrowDown 0.15, MouthO 0.15, JawOpen 0.039 there (T-137 F2: clearer lid lift, brows less low, lips part a little more; was EyeWide 0.8, BrowDown 0.5, MouthO 0.25 at 0.42). positive_style of content/personality/boy_yellow_hoodie.json (PB f255-f288: eyes open fully, brows down, small MouthO, no smile); T-106 PB [259, 289) 'eyes open wider and lips part' (median jawOpen 0.033); WT [87, 121) 'small closed mouth' -> MouthO stays small. EyeWide lifts the modelled heavy lid towards Blink 0.15-0.25 (engaged_style, PB S6 / WT f036)",
   "onset": "T-106 WT [60, 81): 21 f = 0.875 s from the blink to the raised head",
   "hold": "T-106 WT [87, 121): 34 f = 1.42 s hold of the raised head",
   "release": "extrapolation: not shown (the shot ends on the hold); 0.6 s, the shared emotions' release",
   "faceMotion": "few eye moves and long fixations (profile gaze.saccade_interval_s 1.5-4 s, fixation_on_task 0.9); WT blink 2.5 s into the reaction is kept (blinkRate 0.9)",
   "affect": "estimate: mildly pleasant, low energy ('delayed interest', energy.level 0.3); below the shared curious (0.3, 0.3)",
-  "body": "content/clips/boy_head_lift.clip.json, authored at intensity 1 like the face: about 5 deg counter-clockwise roll and a slight lift at 0.42 (T-106 WT [60, 81))"
+  "body": "content/clips/boy_head_lift.clip.json, authored at intensity 1 like the face: about 6 deg counter-clockwise roll and a slight lift at 0.49 (T-106 WT [60, 81))"
  },
  "source": "script",
  "license": "project",
