@@ -639,3 +639,15 @@ consolidated feedback message per round) → WORKFLOW.md, IMPLEMENTER_PROMPT.md 
 (5) Shared task kit: shot before/after sheet tool, logged-run wrapper keeping full logs, gate-wait helper,
 one-render-at-a-time queue; reuse tools/review/recipe.py; new tasks point at the kit → T-165 (with item 3).
 Item 2 (liaison rotation) NOT now: the owner picks the time. Rules: analysis-backed, no weakening of checks, revertible.
+
+## 2026-11-20 ~08:20Z — T-155 approved, T-157 stays opt-in, T-124 defaults (relayed by the original Supervisor)
+1. T-155 approved: make boy 2.3.0 and girl 0.14.0 CURRENT (version_switch, fidelity_baseline rebaseline citing this
+   decision, golden/version index; full gate green before promote). Publish the third character 0.1.0 as her first
+   version. If any check fails: stop and report; no loosening.
+2. T-157: keep the wider contact band (option a) OPT-IN; revisit after hands round 2 is done and verified. Hands round 2
+   starts once T-155 is published (queue).
+3. T-124: `final720` becomes the DEFAULT final render setting (720p, adaptive threshold 0.05, persistent data; others as
+   measured); the old 128 spp/0.01 preset stays available by name. Delivery: HEVC 10-bit default encode, H.264 8-bit as
+   compatibility fallback (settings per the T-124 README); masters stay lossless. Small task (→ T-166): defaults in
+   shot_render/run_shot and the encode step, docs/tests (assert new default + fallback), revertible, full gate green;
+   golden/image tests that depend on the old preset keep their own pinned preset; nothing weakened.

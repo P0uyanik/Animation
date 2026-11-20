@@ -165,3 +165,4 @@ Tasks from now on are numbered T-001, T-002, …, and pass through the states in
 | T-163 | [Content] Starter felt prop library 10–15 (Sonnet) | running 2026-11-20 (owner ~07:35Z #2) | t-163-claude-props | docs/tasks/T-163.md |
 | T-164 | [CI] Gate PR #2 comment only for integration/staging/main (Sonnet) | running 2026-11-20 (owner ~08:10Z #1) | t-164-claude-gate-comment | docs/tasks/T-164.md |
 | T-165 | [Process] Shared task kit + tools/ready.py (Opus) | running 2026-11-20 (owner ~08:10Z #3, #5) | t-165-claude-task-kit | docs/tasks/T-165.md |
+| T-166 | [Rendering] final720 default + HEVC 10-bit delivery (Sonnet) | queued 2026-11-20 (owner ~08:20Z #3), next free slot | t-166-claude-render-defaults | docs/tasks/T-166.md |
