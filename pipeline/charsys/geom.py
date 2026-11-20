@@ -177,22 +177,47 @@ def surface_point(ob, origin, direction, max_dist=2.0):
     return ob.matrix_world @ loc, (ob.matrix_world.to_3x3() @ nrm).normalized()
 
 
+_UV_SPHERE_TOPOLOGY = None
+
+
+def _recorded_uv_sphere_topology(bm, segments, rings):
+    """T-158: create_uvsphere returns its faces and edges in a run-dependent order and edge direction (its vertex
+    order and face corners are stable), which moves later SUBSURF / bisect results by float ulps. Rebuild the sphere
+    with the edge and face order of one recorded run (uv_sphere_topology.json, recorded by
+    docs/evaluation/characters/T-158/record_uv_sphere_topology.py), so every build gets that same order. A size
+    without a recording keeps the live order."""
+    global _UV_SPHERE_TOPOLOGY
+    if _UV_SPHERE_TOPOLOGY is None:
+        import json
+        import os
+        path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "uv_sphere_topology.json")
+        with open(path, encoding="utf-8") as f:
+            _UV_SPHERE_TOPOLOGY = json.load(f)["sizes"]
+    rec = _UV_SPHERE_TOPOLOGY.get(f"{segments}x{rings}")
+    if rec is None:
+        print(f"[geom.uv_sphere] no recorded topology for {segments}x{rings}: live (run-dependent) order")
+        return bm
+    bm.verts.index_update()
+    live = sorted(tuple(sorted(v.index for v in f.verts)) for f in bm.faces)
+    if len(bm.verts) != rec["vertices"] or live != sorted(tuple(sorted(f)) for f in rec["faces"]):
+        raise ValueError(f"uv_sphere {segments}x{rings}: create_uvsphere no longer matches the recorded topology")
+    co = [v.co.copy() for v in bm.verts]
+    bm.free()
+    bm = bmesh.new()
+    vs = [bm.verts.new(c) for c in co]
+    for a, b in rec["edges"]:
+        bm.edges.new((vs[a], vs[b]))
+    for f in rec["faces"]:
+        bm.faces.new([vs[i] for i in f])
+    return bm
+
+
 def uv_sphere(name, center, radius, collection, segments=48, rings=24, scale=(1, 1, 1)):
     bm = bmesh.new()
     bmesh.ops.create_uvsphere(bm, u_segments=segments, v_segments=rings, radius=radius)
     for v in bm.verts:
         v.co = Vector((v.co.x * scale[0], v.co.y * scale[1], v.co.z * scale[2])) + Vector(center)
-    # T-158: create_uvsphere returns its faces and edges in a run-dependent order and edge direction (vertex and
-    # per-face loop order are stable), which moves later subsurf / bisect results by ~1 float ulp. Rebuild it with
-    # the faces in a fixed order (loops unchanged), so edges are created in a fixed order and direction.
-    bm.verts.index_update()
-    co = [v.co.copy() for v in bm.verts]
-    faces = sorted(tuple(v.index for v in f.verts) for f in bm.faces)
-    bm.free()
-    bm = bmesh.new()
-    vs = [bm.verts.new(c) for c in co]
-    for f in faces:
-        bm.faces.new([vs[i] for i in f])
+    bm = _recorded_uv_sphere_topology(bm, segments, rings)
     me = bpy.data.meshes.new(name)
     bm.to_mesh(me)
     bm.free()
