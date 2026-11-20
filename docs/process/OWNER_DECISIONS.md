@@ -848,3 +848,10 @@ File/function ownership with T-171 is assigned in `docs/tasks/T-175.md`. First d
 final sheets, on condition that all checks pass and the liaison finds no new defect on the final sheets; otherwise stop and
 report." (Verified by the Supervisor in the T-155 transcript, user message 23:11:12Z.) Release write-set: the T-155 row in
 OWNERSHIP.md. The branch-only 2.3.0/0.14.0/0.1.0 store folders (never on main) are replaced by the R3 rebuilds under the same numbers.
+
+## 2026-11-21 ~00:15Z (01:15 CET) — Sheet-check condition waived (relayed by the owner liaison)
+"I want to approve these versions, and there is no need for Claude to review them. Accept these versions as the Current
+Versions as quickly as possible, push and merge the code, so we can start the next tasks." → The liaison no-new-defect
+condition from ~23:11Z is waived. Boy 2.3.0 / girl 0.14.0 become CURRENT, third 0.1.0 is published, the test_face_v4 pins
+are updated, and the full gate is still required (no test skipped). Then merge/promote, then auto-start T-171 + T-172. Final sheets
+are kept for the record.
