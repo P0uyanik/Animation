@@ -267,6 +267,8 @@ def main():
                     "in fidelity.json); without it a missing variant is an error, never a fallback")
     ap.add_argument("--reference-index", default="", help="experiments only: another reference_index.json (e.g. a "
                     "trial camera yaw); default: the one named in fidelity_index.json")
+    ap.add_argument("--score-version", default="1", choices=["1", "2"], help="T-153: 2 also writes fidelity_v2.json "
+                    "(opt-in score v2, tools/fidelity/v2); fidelity.json, its score and the gate stay v1")
     a = ap.parse_args()
     a.beauty_from = os.path.abspath(a.beauty_from) if a.beauty_from else ""
     a.variant_requested = a.variant
@@ -334,6 +336,14 @@ def main():
         SH.mask_sheet(v, refs[v], extras[v], region_names).save(os.path.join(mdir, v + ".png"))
     SH.overview(sheets, os.path.join(sdir, "overview.png"))
     report_md(cid, doc, out)
+    if a.score_version == "2":  # T-153 opt-in; face states need archived sheets (tools/fidelity/v2/evaluate.py)
+        sys.path.insert(0, os.path.join(HERE, "v2"))
+        import metrics_v2 as V2
+        with open(os.path.join(out, "fidelity_v2.json"), "w") as f:
+            f.write(M.dumps({"schema": "plush-studio.fidelity-v2/1", "character": cid, "v1_score": overall["score"],
+                             "weights": V2.V2_WEIGHTS, "score": V2.v2_total(overall["subscores"]),
+                             "face_states": None, "note": "face-state blend applies when face-state sheets are "
+                             "measured (tools/fidelity/v2/evaluate.py); without them v2 = re-weighted v1"}))
     print(json.dumps({"score": round(overall["score"], 2), "out": out,
                       "top_differences": [d["text"] for d in overall["differences"][:8]]}, indent=1))
 

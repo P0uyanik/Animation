@@ -1,0 +1,27 @@
+{
+ "schema": "plush-studio.fidelity-v2-face-states/1",
+ "note": "T-153: measurement boxes on the archived T-122 expression sheets (Cycles 12 spp, T-087 light rig). Panels are 260 px; origin x per column, y = row_y0 + row * 260. Boxes [x0, y0, x1, y1] in panel pixels, placed by hand on a 20 px grid. Same render camera in both columns, so one render box serves current and candidate.",
+ "panel": {"size": 260, "row_y0": 74, "x0": {"reference": 200, "current": 470, "candidate": 730}},
+ "characters": {
+  "boy_yellow_hoodie": {
+   "sheet": "docs/evaluation/characters/T-122/boy_expressions_strict.jpg",
+   "before": "2.1.0", "after": "2.2.0",
+   "lid": {"row": 5, "label": "boy_Blink", "lid": [70, 118, 105, 135], "skin": [75, 82, 110, 108]},
+   "shelf": null,
+   "mouths": [
+    {"row": 3, "label": "boy_reluctant (Pout)", "render": [130, 150, 165, 175], "reference": [138, 163, 182, 185]},
+    {"row": 6, "label": "boy_Smile", "render": [130, 150, 165, 175], "reference": [148, 158, 195, 178]}
+   ]
+  },
+  "girl_auburn_bun_glasses": {
+   "sheet": "docs/evaluation/characters/T-122/girl_expressions_strict.jpg",
+   "before": "0.12.0", "after": "0.13.0",
+   "lid": {"row": 5, "label": "girl_Blink", "lid": [95, 100, 125, 130], "skin": [95, 35, 125, 58]},
+   "shelf": {"row": 4, "label": "girl_content (lowest-intensity open-eye state on the sheet)", "band": [80, 135, 135, 152], "skin": [95, 35, 125, 58]},
+   "mouths": [
+    {"row": 0, "label": "girl_delighted (SmileOpen)", "render": [124, 148, 162, 172], "reference": [110, 140, 155, 170]},
+    {"row": 6, "label": "girl_Laugh", "render": [124, 148, 162, 172], "reference": [108, 175, 148, 200]}
+   ]
+  }
+ }
+}
