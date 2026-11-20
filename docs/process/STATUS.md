@@ -1,26 +1,26 @@
 # Status board
 
 Updated by the Supervisor in the same commit as every merge or dispatch. Sources: [TASK_LOG](TASK_LOG.md),
-[OWNERSHIP](OWNERSHIP.md), [OWNER_DECISIONS](OWNER_DECISIONS.md) (2026-11-20). As of 2026-11-20 ~09:15Z. main = `2a02532`.
+[OWNERSHIP](OWNERSHIP.md), [OWNER_DECISIONS](OWNER_DECISIONS.md) (2026-11-20). As of 2026-11-20 ~13:25Z. Implementers RESUMED (owner ~10:55 CET); planned tasks still on hold. main = `2a02532`.
 Session cap: 6 (temporary 8 ended 08:20Z). Owner liaison: session_01NPjxeKamtbdzi3YwrgsWXU (from ~08:30Z). ETA "—" = none given yet.
 
 ## Character look
 | Task | Model | State | ETA | Branch |
 | --- | --- | --- | --- | --- |
-| T-156 eyes/lashes to T-150 targets | Fable 5.2 | running | — | `t-156-claude-eye-targets` |
+| T-156 eyes/lashes to T-150 targets | Fable 5.2 | running (third renders, READY) | — | `t-156-claude-eye-targets` |
 | T-160 hair round 6 (opt-in, not adopted; docs/evaluation/characters/T-160/README.md) | Fable 5.2 | READY; merge as opt-in base after T-155 | — | `t-160-claude-hair-r6` |
 | T-158 deterministic builds | Opus 5.5 | merged (main 2a02532) | — | — |
-| T-167 hair round 7, reference fidelity | Fable 5.2 | PAUSED by owner (~09:10Z); WIP dc85c98 | — | `t-167-claude-hair-r7` |
-| T-168 boy face contour + nose | Fable 5.2 | PAUSED by owner (~09:10Z) after diagnosis | — | `t-168-claude-boy-face` |
-| T-159 temple hollow (both girls, owner ~08:35Z) then ears | Fable 5.2 | running (base integration/t-158) | — | `t-159-claude-ears` |
+| T-167 hair round 7, reference fidelity | Fable 5.2 | running (bow seat, evidence; + Codex T-169) | — | `t-167-claude-hair-r7` |
+| T-168 boy face contour + nose | Fable 5.2 | running (fix: cheek-pad fade + nose) | — | `t-168-claude-boy-face` |
+| T-159 temple hollow (both girls, owner ~08:35Z) then ears | Fable 5.2 | running (cheek seam, then ears); temple fix cafa12c opt-in | — | `t-159-claude-ears` |
 
-Codex T-161 reference targets (lashes, ears, hair silhouette) go to T-156 and T-160 as targets.json.
+Codex T-169 hair reference study (relay 2987afa) feeds T-167. Codex T-161 reference targets (lashes, ears, hair silhouette) go to T-156 and T-160 as targets.json.
 
 ## Release
 | Task | Model | State | ETA | Branch |
 | --- | --- | --- | --- | --- |
 | T-154 guard allowlist + T-137 faces (F1a/F1b/F2, owner-approved ~07:00Z) | — | on `integration/t-137`, gate running | — | `integration/t-137` |
-| T-155 boy 2.3.0 / girl 0.14.0 → CURRENT, third 0.1.0 first version (owner ~08:20Z) | Opus 5.5 | version switch + rebaseline | — | `t-155-claude-candidates-r2` |
+| T-155 boy 2.3.0 / girl 0.14.0 → CURRENT, third 0.1.0 first version (owner ~08:20Z) | Opus 5.5 | running (expression sheets); branch 543bfa1, 2.3.0/0.14.0 current on branch only | — | `t-155-claude-candidates-r2` |
 
 ## Interaction
 | Task | Model | State | ETA | Branch |
@@ -41,7 +41,6 @@ Codex T-161 reference targets (lashes, ears, hair silhouette) go to T-156 and T-
 | T-163 starter felt prop library | Sonnet 5.5 | merged (main 2a02532) | — | — |
 
 ## Waiting for owner
-1. Resume T-167 / T-168 (paused ~09:10Z).
 2. "Start the planned automatic tasks" (HOLD ~09:05Z).
 3. T-141b: not approved; owner to discuss.
 

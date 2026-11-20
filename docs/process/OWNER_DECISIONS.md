@@ -702,3 +702,21 @@ Codex tasks) until the owner says "Start the planned automatic tasks" (via the l
 ## 2026-11-20 ~09:10Z (10:10 CET) — Pause T-167 and T-168 (relayed by the owner liaison)
 Pause T-167 (hair r7; WIP pushed `t-167-claude-hair-r7@dc85c98`) and T-168 (boy face; diagnosis only,
 `t-168-claude-boy-face@de0eff2`) to save tokens; no restart until the owner's explicit word via the liaison.
+
+## 2026-11-20 ~09:35–09:40Z (10:35–10:40 CET) — Pause all running tasks (owner, directly and via the liaison)
+T-159 paused (~10:35 CET; `t-159-claude-ears@20a9363`, temple fix opt-in at cafa12c, ears not started), then T-155 and
+T-156 (owner directly), then "Pause all running tasks" (~10:40 CET). Paused with all WIP pushed:
+T-155 `t-155-claude-candidates-r2@543bfa1` (boy 2.3.0 / girl 0.14.0 current on the branch only; third 0.1.0 published,
+no pointer; boy/third expression sheets not rendered), T-156 `t-156-claude-eye-targets@2f89842` (third closed + strict
+renders and READY pending), T-159, T-167 `dc85c98`, T-168 `de0eff2`. T-158 and T-165 were already merged (main
+2a02532). No dispatches, merges, promotions or Codex tasks; in-flight CI may finish but is not acted on. Nothing resumes
+until the owner's explicit word via the liaison.
+
+## 2026-11-20 ~09:50Z (10:50 CET) — Codex T-169 hair reference study (relayed by the owner liaison)
+Analysis only, write-set `docs/evaluation/characters/T-169/**`; posted on relay-channel@2987afa (NEXT_TASK.md). Feeds T-167.
+
+## 2026-11-20 ~09:55Z (10:55 CET) — "start all implementers" (relayed by the owner liaison)
+Resumed from pushed WIP: T-155 (543bfa1; switch already done on the branch with the owner's direct OK; boy/third expression
+sheets), T-156 (2f89842), T-159 (20a9363: cheek seam diagnosis, then ears), T-167 (dc85c98; fold in T-169 when READY),
+T-168 (de0eff2: proposed fix, opt-in cheek-pad fade + upturned nose, candidate only). Reviews/merges resume. Queued/planned
+tasks (T-166, T-144, hands round 2, next versions) STAY ON HOLD until "Start the planned automatic tasks".
