@@ -1,7 +1,7 @@
 {
  "schema": "plush-studio.review-recipe/1",
  "task": "T-159",
- "note": "girl: 0.13.0 (current) vs T-155 candidate 0.14.0 spec + T-159 temple and ears overrides, A-pose masters as T-155/T-160.",
+ "note": "girl: 0.13.0 (current) vs T-155 candidate 0.14.0 spec + T-159 temple, ears (pass 2) and glasses overrides, A-pose masters as T-155/T-160.",
  "character": "girl_auburn_bun_glasses",
  "inputs": {
   "main": "bc556ad"
@@ -12,7 +12,7 @@
  },
  "candidate": {
   "blend": "build/t159/girl_ears/girl_auburn_bun_glasses_master.blend",
-  "label": "0.14.0 cand. + T-159"
+  "label": "0.14.0 cand. + T-159 p2"
  },
  "compare": {
   "variant": "master",
