@@ -92,9 +92,11 @@ def trim_shell(ob, T, sx, bound_outer, bound_inner, bound_back=None, skin_materi
     if bound_back is not None:
         cuts.append((Vector((0, -bound_back, 0)), Vector((0, -1, 0))))
     for co, no in cuts:
+        bm.verts.index_update()
+        bm.edges.index_update()
         faces = [f for f in bm.faces if skin_idx is None or f.material_index == skin_idx]
-        edges = list({e for f in faces for e in f.edges})
-        verts = list({v for f in faces for v in f.verts})
+        edges = sorted({e for f in faces for e in f.edges}, key=lambda e: e.index)
+        verts = sorted({v for f in faces for v in f.verts}, key=lambda v: v.index)
         # keep the side the plane normal points to (clear_inner removes the other side)
         bmesh.ops.bisect_plane(bm, geom=verts + edges + faces, plane_co=co, plane_no=no, clear_inner=True,
                                clear_outer=False)

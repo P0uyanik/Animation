@@ -1,0 +1,77 @@
+{
+ "schema": "plush-studio.render-profiles/2",
+ "note": "T-124 profiles, made the default by T-166 (owner decision 2026-11-20): shot_render.py and run_shot.py use 'default_profile' unless --profile names another. 'legacy128' is the previous final preset (128 spp, adaptive 0.01, the shot's own resolution); pin it by name where a golden depends on it. 'encode' holds the delivery encodes (run_shot --codec): HEVC 10-bit by default, H.264 8-bit as the compatibility fallback; masters stay lossless PNG.",
+ "profiles": {
+  "final720": {
+   "description": "Final delivery 1280x720: 128 spp + OIDN with a looser adaptive-sampling threshold (0.05). T-124 s010_verbs frame 65: 208 s vs 433 s for the current settings (-52%), 39.4 dB vs 41.2 dB against a 512 spp reference.",
+   "resolution": [
+    1280,
+    720
+   ],
+   "samples": 128,
+   "cycles": {
+    "adaptive_threshold": 0.05
+   },
+   "render": {
+    "use_persistent_data": true
+   }
+  },
+  "review": {
+   "description": "Review renders 1280x720: 16 spp + OIDN, adaptive 0.05. T-124 s010_verbs frame 65: about 67 s (-84%); noisier fibres and softer hair edges, for animation/timing review only.",
+   "resolution": [
+    1280,
+    720
+   ],
+   "samples": 16,
+   "cycles": {
+    "adaptive_threshold": 0.05
+   },
+   "render": {
+    "use_persistent_data": true
+   }
+  },
+  "legacy128": {
+   "description": "Previous final preset, kept selectable by name: 128 spp + OIDN, adaptive threshold 0.01, resolution from the shot/bake. T-124 s010_verbs frame 65: 433 s at 1280x720, 41.2 dB vs a 512 spp reference.",
+   "samples": 128,
+   "cycles": {
+    "adaptive_threshold": 0.01
+   }
+  }
+ },
+ "default_profile": "final720",
+ "encode": {
+  "default": "hevc10",
+  "codecs": {
+   "hevc10": {
+    "description": "HEVC 10-bit 4:2:0 (x265 slow, CRF 18); T-124: about -20% bitrate at matched SSIM and 1.5-2 dB less banding than H.264 8-bit.",
+    "args": [
+     "-c:v",
+     "libx265",
+     "-preset",
+     "slow",
+     "-crf",
+     "18",
+     "-pix_fmt",
+     "yuv420p10le",
+     "-tag:v",
+     "hvc1",
+     "-x265-params",
+     "log-level=error"
+    ]
+   },
+   "h264": {
+    "description": "H.264 8-bit 4:2:0 compatibility fallback (x264 slow, CRF 18).",
+    "args": [
+     "-c:v",
+     "libx264",
+     "-preset",
+     "slow",
+     "-crf",
+     "18",
+     "-pix_fmt",
+     "yuv420p"
+    ]
+   }
+  }
+ }
+}

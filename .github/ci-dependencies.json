@@ -1,21 +1,4 @@
 {
-  "oidn": {
-    "version": "2.3.3",
-    "url": "https://github.com/RenderKit/oidn/releases/download/v2.3.3/oidn-2.3.3.src.tar.gz",
-    "sha256": "ccf221535b4007607fb53d3ff5afa74de25413bb8ef5d03d215f46c7cc2f96cf",
-    "prebuilt": {
-      "linux": {
-        "url": "https://github.com/RenderKit/oidn/releases/download/v2.3.3/oidn-2.3.3.x86_64.linux.tar.gz",
-        "sha256": "3c385230d9e6f63527ba72f2229594dbac5051674219d72e0044b5d0b841796f",
-        "folder": "oidn-2.3.3.x86_64.linux"
-      },
-      "windows": {
-        "url": "https://github.com/RenderKit/oidn/releases/download/v2.3.3/oidn-2.3.3.x64.windows.zip",
-        "sha256": "30e41f6fe648536ef5657b45bccd2b27c6caed6461c832bde4949b0f965be0e0",
-        "folder": "oidn-2.3.3.x64.windows"
-      }
-    }
-  },
   "bpy": {
     "version": "5.3.0",
     "linux": {
@@ -28,7 +11,7 @@
     }
   },
   "apt": {
-    "note": "Ubuntu 24.04 packages for the linux C++ tier (glfw 3.3.10); vcpkg stays the Windows path. Embree 4.3.0 only for the renderer job (renderer_packages).",
+    "note": "Ubuntu 24.04 packages for the linux C++ tier (glfw 3.3.10); vcpkg stays the Windows path. ffmpeg (6.1.1 on 24.04, with libx264 and libx265) runs the T-166 delivery-encode test.",
     "packages": [
       "ninja-build",
       "ccache",
@@ -37,10 +20,8 @@
       "libglfw3-dev",
       "libglew-dev",
       "libstb-dev",
-      "doctest-dev"
-    ],
-    "renderer_packages": [
-      "libembree-dev"
+      "doctest-dev",
+      "ffmpeg"
     ]
   }
 }

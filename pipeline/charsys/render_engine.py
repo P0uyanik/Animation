@@ -41,3 +41,16 @@ def configure(scene, engine, samples, *, cycles_device=None, cycles_denoiser=Non
     return {"engine": "eevee", "blender_engine": "BLENDER_EEVEE", "samples": samples,
             "soft_shadows": True, "shadow_rays": 4, "ambient_occlusion": True,
             "fast_gi_method": "AMBIENT_OCCLUSION_ONLY", "bloom": False}
+
+
+def apply_profile(scene, profile):
+    """T-124: applies an opt-in render profile's extra settings (``cycles`` and ``render`` blocks of
+    render_profiles.json) after configure(). Only called when a profile is requested; returns what was set."""
+    applied = {}
+    for block, target in (("cycles", scene.cycles), ("render", scene.render)):
+        for key, value in profile.get(block, {}).items():
+            if not hasattr(target, key):
+                raise ValueError(f"profile setting {block}.{key} does not exist")
+            setattr(target, key, value)
+            applied[f"{block}.{key}"] = value
+    return applied

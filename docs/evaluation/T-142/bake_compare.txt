@@ -1,0 +1,12 @@
+content/scenes/milestone01_classroom.scene.json rc 0/0 base 15d8861b68811e9e new 15d8861b68811e9e SAME
+content/scenes/milestone02_classroom.scene.json rc 0/0 base 03c96799524a39b8 new 03c96799524a39b8 SAME
+tools/animcheck/shots/clip_gestures.scene.json rc 0/0 base 18e02718158ed3aa new 18e02718158ed3aa SAME
+tools/animcheck/shots/personality.scene.json rc 0/0 base 21e2eed6e45ed871 new 21e2eed6e45ed871 SAME
+tools/animcheck/shots/wave_touch.scene.json rc 0/0 base 229382dcbfc2ad5b new 229382dcbfc2ad5b SAME
+content/scenes/eval/emotions/shot.scene.json rc 1/1 base  new  SAME
+content/scenes/eval/exchange/shot.scene.json rc 1/1 base  new  SAME
+content/scenes/eval/handover/shot.scene.json rc 1/1 base  new  SAME
+content/scenes/eval/idle/shot.scene.json rc 1/1 base  new  SAME
+content/scenes/eval/reach_touch_wave/shot.scene.json rc 1/1 base  new  SAME
+content/scenes/eval/walk/shot.scene.json rc 1/1 base  new  SAME
+content/scenes/eval/wave/shot.scene.json rc 1/1 base  new  SAME

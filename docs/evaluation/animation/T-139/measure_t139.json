@@ -1,0 +1,135 @@
+{
+ "e910_s010": {
+  "before": {
+   "gestures": [
+    {
+     "label": "girl clip girl_chin_think @1",
+     "side": "R"
+    }
+   ],
+   "failures": [],
+   "acting_warnings": []
+  },
+  "after": {
+   "gestures": [
+    {
+     "label": "girl clip girl_chin_think @1",
+     "side": "R"
+    }
+   ],
+   "failures": [],
+   "acting_warnings": []
+  }
+ },
+ "e909_s010": {
+  "before": {
+   "gestures": [],
+   "failures": [],
+   "acting_warnings": []
+  },
+  "after": {
+   "gestures": [],
+   "failures": [],
+   "acting_warnings": []
+  }
+ },
+ "e910_s010_shrugL_f1": {
+  "before": {
+   "gestures": [
+    {
+     "label": "girl clip girl_chin_think @1",
+     "side": "R"
+    },
+    {
+     "label": "boy clip boy_reluctant_shrug @1",
+     "side": "R"
+    }
+   ],
+   "failures": [],
+   "acting_warnings": [
+    "boy: boy clip boy_reluctant_shrug @1 amplitude 0.58 (105 deg) > profile 0.3 (+0.1)"
+   ]
+  },
+  "after": {
+   "gestures": [
+    {
+     "label": "girl clip girl_chin_think @1",
+     "side": "R"
+    },
+    {
+     "label": "boy clip boy_reluctant_shrug @1",
+     "side": "L"
+    }
+   ],
+   "failures": [],
+   "acting_warnings": []
+  }
+ },
+ "e910_s010_shrugL_f126": {
+  "before": {
+   "gestures": [
+    {
+     "label": "girl clip girl_chin_think @1",
+     "side": "R"
+    },
+    {
+     "label": "boy clip boy_reluctant_shrug @126",
+     "side": "R"
+    }
+   ],
+   "failures": [
+    "boy clip boy_reluctant_shrug @126 entry: onset_step 0.201 > 0.18"
+   ],
+   "acting_warnings": []
+  },
+  "after": {
+   "gestures": [
+    {
+     "label": "girl clip girl_chin_think @1",
+     "side": "R"
+    },
+    {
+     "label": "boy clip boy_reluctant_shrug @126",
+     "side": "L"
+    }
+   ],
+   "failures": [],
+   "acting_warnings": []
+  }
+ },
+ "e910_s010_shrugL_f144": {
+  "before": {
+   "gestures": [
+    {
+     "label": "girl clip girl_chin_think @1",
+     "side": "R"
+    },
+    {
+     "label": "boy clip boy_reluctant_shrug @144",
+     "side": "R"
+    }
+   ],
+   "failures": [
+    "boy clip boy_reluctant_shrug @144 entry: onset_step 0.198 > 0.18"
+   ],
+   "acting_warnings": []
+  },
+  "after": {
+   "gestures": [
+    {
+     "label": "girl clip girl_chin_think @1",
+     "side": "R"
+    },
+    {
+     "label": "boy clip boy_reluctant_shrug @144",
+     "side": "L"
+    }
+   ],
+   "failures": [
+    "boy clip boy_reluctant_shrug @144 exit: ease_out 0.793 > 0.55",
+    "boy clip boy_reluctant_shrug @144 exit: stop_step 1.0 > 0.18"
+   ],
+   "acting_warnings": []
+  }
+ }
+}

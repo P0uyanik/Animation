@@ -29,6 +29,8 @@ import tempfile
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, "..", "..", ".."))
 EV = os.path.join(ROOT, "docs", "evaluation", "characters", "T-137")
+sys.path.insert(0, HERE)
+import test_guard_allowlist as GA  # noqa: E402
 RESULTS = []
 
 
@@ -57,10 +59,12 @@ def plain():
             if f.endswith(".json") and os.sep + "spec" in base + os.sep:
                 try:
                     if _find(json.load(open(os.path.join(base, f))), "lash_curve"):
-                        users.append(f)
+                        users.append(os.path.relpath(os.path.join(base, f), ROOT))
                 except ValueError:
                     pass
-    check("no spec under assets/ opts into lash_curve", not users, str(users))
+    users, _allowed, aerr = GA.split(users, "lash_curve")  # T-154 owner-approved candidate allowlist
+    check("owner-approved candidate allowlist is valid (T-154)", not aerr, aerr[:3])
+    check("no spec under assets/ opts into lash_curve (except listed owner-approved candidates)", not users, str(users))
     check("lid yaw: opt-in branch in lid_roll, the roll-only return unchanged",
           'if abs(yaw) > 1e-9:' in src and
           'return Matrix.Rotation(math.radians(-sx * deg), 3, "Y") if abs(deg) > 1e-9 else None' in src)

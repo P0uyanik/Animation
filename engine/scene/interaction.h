@@ -128,6 +128,10 @@ void applyArmPoles(const Skeleton& skeleton, const Clip& clip, const std::string
 // back); the eye bones keep their world rotation, so the gaze stays on its target.
 void applyHeadTilt(const Skeleton& skeleton, const Clip& clip, const std::string& prefix, double frame, const mat4& world,
                    Pose& pose);
+// T-134 reach mechanics: the body lead of a reach ("<prefix>reach.lead" and its companions, keyed by the reaches when
+// the scene sets "reachMechanics"); applied by applyArmPoles before everything else. No track: nothing changes.
+void applyReachLead(const Skeleton& skeleton, const Clip& clip, const std::string& prefix, double frame, const mat4& world,
+                    Pose& pose);
 constexpr float kArmBodyMargin = kCollisionMargin;  // clearance kept between the arm and the body (metres)
 
 // Compile state shared by the interaction actions of one compileActions() pass.
@@ -180,6 +184,19 @@ struct InteractionContext {
     double from = 0, to = 1e30;
   };
   std::vector<Follower> followers;
+  // T-134 reach mechanics: the body lead of each reach (scene key "reachMechanics"); the "<who>/reach.lead" and
+  // "<who>/reach.shoulder.<upper arm>" tracks are the sum of a character's records.
+  struct ReachLead {
+    int character = -1;
+    char side = 'R';
+    double start = 0, contact = 0, anticipation = 0, recover = 0;  // frames
+    vec3 lead{0}, shoulder{0};  // full torso lead (world rotation vector) and shoulder advance (world, metres)
+    std::string shoulderTrack;
+    vec3 clavicle{0};           // clavicle turn (world rotation vector); track "" = the rig has no clavicle
+    std::string clavicleTrack;
+    vec3 hip{0};                // hip shift (world, metres)
+  };
+  std::vector<ReachLead> reachLeads;
   bool parentsChecked = false;  // authored prop parents are checked before the first interaction evaluates props
   // Timing profile (T-104, the scene's "timing" key, calibrated by default since T-104d; anim/personality.h TimingProfile), resolved at the first
   // interaction action. It changes only the defaults of frames an action leaves out (without it: the defaults listed

@@ -16,10 +16,10 @@ means none. Branch is the task's branch; a task branch without a row falls back 
 
 | Task | Lane | Branch | Write-set | Depends on | Versions bumped |
 | --- | --- | --- | --- | --- | --- |
-| T-134 | E | t-134-claude-reach | `engine/anim/body_mechanics.*`, `engine/anim/principles.*`, `engine/anim/secondary.*`, `engine/scene/interaction.cpp`, `engine/scene/interaction.h`, `engine/scene/verbs.cpp`, `engine/scene/verbs.h`, `tests/test_reach_mechanics.cpp`, `tests/CMakeLists.txt`, `episodes/e910_showcase/shots/s010_e1/**`, `docs/evaluation/animation/T-134/**`, `scene.cpp` | — | — |
-| T-135 | E | t-135-claude-reach-measures | `tools/motion_checks/reach/**`, `docs/evaluation/animation/T-135/**` | — | — |
-| T-136 | E | t-136-claude-blink-gaze | `engine/scene/scene.cpp`, `engine/scene/scene.h`, `engine/scene/face_layer.cpp`, `engine/scene/face_layer.h`, `engine/anim/personality.cpp`, `engine/anim/personality.h`, `tests/test_blink_schedule.cpp`, `tests/test_gaze_chain.cpp`, `episodes/e910_showcase/shots/s010_e23/**`, `docs/evaluation/animation/T-136/**` | — | — |
-| T-137 | E | t-137-claude-faces | `pipeline/charsys/face_v3/lids.py`, `pipeline/charsys/tests/test_face_r5.py`, `docs/evaluation/characters/T-137/**`, `content/emotions/boy_interested.emotion.json`, `content/personality/boy_yellow_hoodie.json`, `docs/evaluation/characters/T-137/` | — | — |
-| T-124 | E | t-124-claude-render-opt | `docs/evaluation/rendering/T-124/**`, `tools/render_bench/**`, `pipeline/charsys/render_profiles.json`, `pipeline/charsys/shot_render.py`, `pipeline/charsys/render_engine.py` | — | — |
+| T-155 | C | t-155-claude-candidates-r2 | `assets/characters/*/versions/**` (new candidate versions only), `spec/candidates/**`, `docs/evaluation/characters/T-155/**` (assembles integration/r3-faces; release step owner-gated) | T-154 | — |
+| T-156 | E | t-156-claude-eye-targets | `pipeline/charsys/face_v3/lids.py`, eye/lash materials and overrides, `pipeline/charsys/tests/test_face_r5.py`, `docs/evaluation/characters/T-156/**` | T-137 | — |
+| T-159 | E | t-159-claude-ears | `pipeline/charsys/face_features.py` (shape_face_v2 only), `pipeline/charsys/face_generic.py` (build_ears only), `pipeline/charsys/tests/test_face_front_fade.py`, `pipeline/charsys/tests/test_ears_shape.py`, `tools/ci/blender_shards.json` (its units), `tools/check_all.py` (registration), `docs/evaluation/characters/T-159/**` | T-158 | — |
+| T-168 | E | t-168-claude-boy-face | `pipeline/charsys/face_v3/lower_face.py`, `pipeline/charsys/face_features.py` (build_nose only), `pipeline/charsys/tests/test_face_t168.py`, `tools/check_all.py` (registration), `docs/evaluation/characters/T-168/**` | T-159 (merge order) | — |
+| T-167 | E | t-167-claude-hair-r7 | `pipeline/charsys/groom_r6.py`, `pipeline/charsys/tests/test_hair_r6.py`, `docs/evaluation/characters/T-167/**` | T-160, T-169 | — |
 
 Supervisor-only files: docs/process/TASK_LOG.md, docs/ROADMAP.md, docs/process/OWNER_DECISIONS.md, docs/tasks/**.

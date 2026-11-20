@@ -95,6 +95,15 @@ error. The composed spec has no `parts` key, so a split spec has **the same hash
 Overrides apply after composition. `spec.split()` produces the parts of an existing spec. Existing single-file specs
 load unchanged.
 
+## Legacy versions: do not pin (owner 2026-11-20 ~20:50Z, T-144 option c)
+
+These registered pins are kept, because published versions still build from them, but no new spec may pin them:
+`body_v6/1`, `body_generic/1`, `face_generic/1`, `face_generic/2`, `hair_clumps/1`, `groom/1`, `garment/1`,
+`albedo/1`, `presets/1`, `presets/2`. Nothing is retired and no check changes. `export/5` (exporter default) and
+`groom/2` (third character's base spec) are kept. Known exception: boy 1.0.0 (`reference` pointer) does not pass
+`regenerate`, because its stored hair_mass predates the T-075 deterministic environment (max 2.16 µm, same vertex order).
+The stored file stays the reference. Evidence: [T-144 report](evaluation/T-144/REPORT.md).
+
 ## How to add a version (path A: no character changes)
 
 1. Never edit a released version's behaviour. Put the new behaviour in a new module (e.g. `groom_v2.py`) or a code

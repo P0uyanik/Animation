@@ -71,7 +71,21 @@ struct CharacterDesc {
   // Gaze legibility (T-120, opt-in): the character key "gazeLegibility" (see GazeLegibility below). Null = the scene's
   // "gazeLegibility"; false = off for this character. Saved as written.
   Json gazeLegibility;
+  // Blink scheduling (T-136, opt-in): the character key "blinkSchedule" (see BlinkSchedule below). Null = the scene's;
+  // false = off for this character. Saved as written.
+  Json blinkSchedule;
 };
+
+// Blink scheduling (T-136 E2, opt-in; absent = off, the behaviour before T-136). Scene key "blinkSchedule" (every
+// character with a face layer) and / or character key "blinkSchedule" (that character; its fields win, its key beats
+// add to the scene's): true, false or
+// {"enabled", "keyBeats": [{"start", "end", "characters": [names] (absent = all), "name"}], "shortBeatFrames",
+//  "preferWindowFrames", "actionChanges": true | false | [frames]}.
+// Key beats keep the eyes open; blinks prefer gaze shifts and action changes (by default the starts of the
+// character's non-look actions, and a pass's contact and release, for giver and receiver); at most one blink per
+// short beat. The planning itself is FaceLayer::blinkPlan (scene/face_layer.h). Needs the face layer (life on).
+// Characters without one keep their life-layer blinks.
+Result<BlinkSchedule> blinkScheduleFromJson(const Json& j, const std::string& character, BlinkSchedule base = {});
 
 // Gaze legibility (T-120, opt-in; absent = off, the behaviour before T-120). Scene key "gazeLegibility" (every
 // character) and / or character key "gazeLegibility" (that character; its fields win over the scene's): true, false or
@@ -91,12 +105,37 @@ struct GazeLegibility {
   float turnFrames = 8.0f;      // frames at 24 fps the head's turn eases over
   float headYawDeg = -1.0f;     // most the head turns for a look; negative = life.gaze.assistYawDeg
   float headPitchDeg = -1.0f;   // negative = life.gaze.assistPitchDeg
+  // Gaze chain (T-136 E3, opt-in key "chain": true or {"neckYawDeg", "neckPitchDeg", "torsoYawDeg", "torsoPitchDeg",
+  // "torsoLagFrames"}; absent = off, the T-120 behaviour). The eyes still lead; beyond their comfortable range the
+  // head and neck take over (split between the neck and head bones, up to neck*Deg, at least head*Deg) and, beyond
+  // that, the torso (chest and spine, up to torso*Deg, torsoLagFrames after the head), so a look reaches its target.
+  // The eyes then aim at the look's exact, live target: a prop's middle ("atProp", the cup), or the midpoint of the
+  // partner's eyes ("atCharacter": held eye contact), instead of the 3-frame keyed track.
+  bool chain = false;
+  // Defaults: the readable setting from the e910 sweep (docs/evaluation/animation/T-136): small eye share, the head
+  // and neck take most of the turn, little torso, so pupils stay readable to the camera; wider caps reach further.
+  float neckYawDeg = 25.0f, neckPitchDeg = 10.0f;
+  float torsoYawDeg = 5.0f, torsoPitchDeg = 3.0f;
+  float torsoLagFrames = 3.0f;
+  // The eyes' share of a chained look ("eyeShareDeg": [yaw, pitch]): the head and torso turn so the eyes stay within
+  // this of centre (readable pupils), and the eyes are held within it plus 2 degrees (darts). Negative = T-120's
+  // comfortable part of rangeDeg.
+  vec2 eyeShareDeg{4.0f, 3.0f};
 };
 // `j` on top of `base` (the scene's setting under a character's). Null keeps base; an object without "enabled" is on.
 Result<GazeLegibility> gazeLegibilityFromJson(const Json& j, GazeLegibility base = {});
 // The head's share of a legible look (see GazeLegibility): rotates the neck, before the eyes are aimed.
 void turnHeadForGaze(const Skeleton& skeleton, const Clip& clip, const std::string& prefix, double frame, double fps,
                      const mat4& world, Pose& pose, const GazeLegibility& legibility);
+// The gaze chain's share of a legible look (T-136, GazeLegibility::chain): torso, then neck and head, before the eyes
+// are aimed. `liveOffset` moves the keyed lookAt target onto the exact live target (0 = the track as keyed). Once a
+// look has settled (sinceLookStart past its lead and turn), the chain follows a moving target without the lead lag
+// (pursuit), easing over turnFrames; sinceLookStart < 0 = always lagged.
+void turnChainForGaze(const Skeleton& skeleton, const Clip& clip, const std::string& prefix, double frame, double fps,
+                      const mat4& world, Pose& pose, const GazeLegibility& legibility, vec3 liveOffset,
+                      double sinceLookStart = -1);
+// Aims every "eye.*" bone exactly at `target` (blended by weight 0..1).
+void aimEyesAt(const Skeleton& skeleton, const mat4& world, Pose& pose, vec3 target, float weight);
 // Hard clamp of every "eye.*" bone's direction to +-rangeDeg [yaw, pitch] relative to the head.
 void clampEyesToGazeRange(const Skeleton& skeleton, const mat4& world, Pose& pose, vec2 rangeDeg);
 
@@ -143,6 +182,9 @@ struct Scene {
   // Animation principles (T-061, anim/principles.h): null / true = on with the shared defaults, false = off (the
   // behaviour before T-061), an object = field overrides. Saved as written.
   Json animPrinciples = nullptr;
+  // Reach mechanics (T-134, anim/principles.h, opt-in): absent / null / false = off, true = shared defaults, an
+  // object = field overrides. Parsed and checked by reachMechanicsFromJson; saved as written.
+  Json reachMechanics = nullptr;
   // Interaction options (T-096, opt-in): the scene key "interaction" (absent = all off, the behaviour before T-096).
   // Parsed and checked by interactionOptionsFromJson; saved as written.
   Json interaction = nullptr;
@@ -165,6 +207,8 @@ struct Scene {
   Json events = nullptr;
   // Gaze legibility (T-120, opt-in): the scene key "gazeLegibility" (absent = off). See GazeLegibility; saved as written.
   Json gazeLegibility = nullptr;
+  // Blink scheduling (T-136, opt-in): the scene key "blinkSchedule" (absent = off). See BlinkSchedule; saved as written.
+  Json blinkSchedule = nullptr;
 };
 
 // One entry of a scene's "events" list (T-097D): the event and the characters that react to it (empty = every scene
@@ -187,11 +231,13 @@ Result<std::vector<SceneEvent>> reactionEventsFromJson(const Json& j);
 //   "visibleGrip": bool      grasps keep the held prop visible from the shot camera: the palm meets the prop on its
 //                            socket's far side from the camera when the prop has a mirrored socket ("<socket>_far"
 //                            is not needed: see interaction.cpp)
+//   "graspFit": bool         T-138: banded finger grasps fit the band to the hand (anim: HandPose::bandFit)
 struct InteractionOptions {
   bool headVolumes = false;
   float headClearance = 0.03f;
   bool followSharedProp = false;
   bool visibleGrip = false;
+  bool graspFit = false;  // T-138
 };
 Result<InteractionOptions> interactionOptionsFromJson(const Json& j);
 
@@ -308,7 +354,18 @@ class SceneEvaluator {
   float morphControlWeight(size_t c, const std::string& morph, double frame) const;
   // Effective life parameters of character c (scene values + the character's blink timing).
   LifeParams lifeParams(size_t c) const;
-  GazeLegibility gazeLegibility(size_t c) const;  // the scene's setting with the character's on top (T-120)
+  GazeLegibility gazeLegibility(size_t c) const;
+  // The exact live target of character c's current look (T-136 E3) and the keyed track's value it replaces; false when
+  // the current look is not an "atProp" / "atCharacter" look or a generated look has taken over the track.
+  bool liveGazeTarget(size_t c, double frame, vec3& live, vec3& keyed, double* lookStart = nullptr) const;
+  // Live-target offsets (live - keyed) per frame from frameStart, w = frames since the look started + 1 (0 = none); built once at load, before the
+  // secondary motion exists (a held prop's pose is read through its holder), and read with liveGazeOffset.
+  void buildLiveGaze();
+  void buildLiveGazePass();
+  bool liveGazeOffset(size_t c, double frame, vec3& offset, double* sinceStart = nullptr) const;
+  std::vector<std::vector<vec4>> liveGaze_;
+  BlinkSchedule blinkSchedule(size_t c) const;  // the scene's setting with the character's on top (T-136)
+  FaceState faceEval(size_t c, double frame) const;  // faces_[c].evaluate with the blink schedule applied  // the scene's setting with the character's on top (T-120)
   // Animated weight of morph `morph` of character c at `frame`.
   float expressionWeight(size_t c, const std::string& morph, double frame) const;
  private:

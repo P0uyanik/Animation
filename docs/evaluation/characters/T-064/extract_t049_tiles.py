@@ -14,7 +14,7 @@ from PIL import Image
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, "..", "..", "..", ".."))
-CHARS = json.load(open(os.path.join(ROOT, "pipeline/charsys/experiments/hair_study/specs/characters.json")))
+CHARS = json.load(open(os.path.join(ROOT, "archive/experiments/charsys/hair_study/specs/characters.json")))
 TILE_W, TILE_H, GAP, LABEL_W = 210, 420, 6, 150
 
 

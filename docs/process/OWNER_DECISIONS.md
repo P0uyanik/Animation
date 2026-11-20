@@ -522,3 +522,272 @@ session, shared files), T-138 E4 grasp accuracy (after T-134), T-139 E5 animchec
 Phase 2: T-137 faces F1a/F1b/F2 (Fable, one session, overrides; owner approves each). Phase 3 later: S1 shot
 (staging -> acting -> final, owner looks between), S2 Codex review, D1 adopt proven features as defaults (owner).
 All engine changes opt-in; no test, threshold, golden or current-version change.
+
+## 2026-11-19 ~20:30Z: architecture cleanup A1–A4 (relayed by the original Supervisor)
+Owner: "approve A2 first, then A1 and A4, then A3. Make sure these changes do not negatively affect our existing work,
+ongoing development, or project stability." Basis: read-only architecture review of main 6d7bf37 (legacy pre-TD-42
+renderer/SDF/apps ~5.5k LOC still built and run per CI; hand-written hair spline maths; all past generator versions kept).
+- A2 = T-141 (Fable): native Blender hair-curve fluff experiment, opt-in, after T-137 faces.
+- A1 = T-142 (Opus): legacy renderer/SDF/apps out of default build + per-run CI (nightly, tests kept, archive not delete).
+- A4 = T-143 (Sonnet): extend T-102 cleanup (archive lipsync, experiments, duplicate helpers byte-identical).
+- A3 = T-144 (Opus): LAST; plan which generator versions to retire, owner approves before anything is removed.
+Binding: no negative effect on existing work/stability; no test, threshold, golden or required check removed or
+weakened (nightly move needs a documented equivalent); current/candidate characters unchanged; archive not delete; a
+revert path; green full gate before each merge; no branch deletion. Phase 1+2 keep priority within the 6-session cap.
+
+## 2026-11-19 ~20:45Z: A1 changed to full removal (relayed by the original Supervisor)
+Owner: "I approve changing A1 to a full removal of genuinely unused legacy code from main. I also approve removing tests
+that exclusively cover the deleted legacy functionality, provided they have no relevance to any active system. Before
+removing anything, carefully verify all dependencies, preserve the legacy code and tests through a permanent Git tag,
+and ensure all active functionality and regression tests remain intact. Do not remove any shared components still
+needed by the current engine, especially collision-related SDF functionality. Run all required checks before merging,
+and make sure the entire change can be safely reverted." T-142 updated: dependency report first (to owner), permanent
+tag `archive/legacy-engine-renderer-2026-11-19`, one revertible commit, full gate + nightly Windows + backup runs.
+A2/A4/A3 unchanged.
+
+## 2026-11-19 ~20:55Z: Codex does T-150 then T-151 (relayed by the original Supervisor)
+Owner order: Codex (about 40% allowance left) does T-150 (eye-shape targets for both girls, forwarded to T-137) then
+T-151 (independent dependency map for A1/T-142, compared with T-142's report before any deletion). Analysis only.
+
+## 2026-11-19 ~22:20Z: token economy for all sessions (relayed by the original Supervisor)
+Keep token use as low as reasonably possible; essential work only; STATUS/READY in a few lines; short reports and
+READMEs; no re-reading large files or re-running renders without need. Added to IMPLEMENTER_PROMPT.md.
+
+## 2026-11-19 ~22:45Z: A1/T-142 decisions D1–D3 (relayed by the original Supervisor)
+- D1 = option B: keep Studio Production, Viewport, Timeline; remove the obsolete Render panel; replace readImageRgb8
+  with stb_image. Remove the legacy renderer only after the remaining Studio is verified (Linux + nightly Windows
+  build, shot_workflow tests, headless smoke run that opens a scene and steps the timeline), with evidence.
+- D3 confirmed: keep all SDF, fuzz and shared character code used by active systems (sdf.* whole, character.*, fuzz/).
+- D2: main has no branch protection or rulesets; the "required check" is our own (ci_status.py REQUIRED_JOBS, gate
+  verdict needs, combine_check_reports.py, check_all renderer_skip). Update all in the SAME commit that removes the
+  renderer job; prove with a green full run plus a T-127-style broken-commit probe that still turns the gate red.
+  Tag first (archive/legacy-engine-renderer-<date> via backup), one revertible commit, manual nightly Windows + backup runs.
+- Owner wants the third character's combined 0.1.0 published as a CANDIDATE (not current).
+
+## 2026-11-19 ~23:10Z: rotate the round-2 Supervisor (relayed by the original Supervisor)
+Adopt Codex T-152 recommendation 1: finish the current batch, write `SUPERVISOR_HANDOVER_R3.md`, then the round-3
+Supervisor takes over from that file.
+## 2026-11-19 ~23:30Z — Phase 3 S1a/S1b/S1c postponed
+Owner (relayed by the original Supervisor and the round-2 Supervisor): Phase 3 S1a (staging preview), S1b (acting
+preview) and S1c (final render) of the 8 s shot are POSTPONED. Do not start them overnight. Replacement tasks to
+follow; until then no tasks outside the approved list. Supersedes the S1a/S1b/S1c items in SUPERVISOR_HANDOVER_R3.md.
+
+## 2026-11-19 ~23:40Z — Replacement for S1a/S1b: fidelity score fix only
+Owner (relayed by the original Supervisor): the only replacement is the fidelity score fix, T-153 (Opus 5.5):
+T-129 proposals as a new opt-in score version; current score, thresholds, baseline and gate unchanged; evaluate
+against all past owner decisions (incl. T-122) and T-129 blind spots (T-150 targets for eye shape); report + tests.
+Adopting it as default needs the owner. NOT approved: review page, prop library, third-character expression set.
+
+## 2026-11-20 ~06:40Z — Morning decisions (relayed by the original Supervisor)
+1. Hourly self-check/scheduling: skipped for now, fixed separately later.
+2. Resume the approved queue by dependency, in parallel where independent (cap 6).
+3. Guard tests `test_hair_r5` / `test_hands_r2`: option (a), a documented allowlist of NAMED owner-approved candidates
+   (id, decision reference, date) checked by the tests themselves; no removal, weakening or global bypass; a test proves
+   an unlisted candidate is still rejected → T-154.
+4. After 3: publish boy 2.3.0, girl 0.14.0 and third character 0.1.0 as CANDIDATES with strict sheets
+   (reference | current | candidate | target) + crops; current versions unchanged → T-155.
+5. T-137 F1a/F1b/F2 not final (eye openings too wide). Follow-up on the same face area driven by T-150 targets.json,
+   measured per eye → T-156 (Fable 5.2).
+6. T-138: 4.3 mm gap not accepted. Evaluate (a) wider band, (b) fewer contacting fingers, (c) both; gaps, penetration,
+   shot-size close-ups; recommend the most natural; opt-in → T-157 (Opus 5.5).
+7. Fidelity v2 stays EXPERIMENTAL, not default. Validation on independent unseen examples later (Codex fits; not urgent).
+8. T-124: keep the existing final preset; comparison paths to the owner before any switch to final720.
+9. New task: make girl 0.13.0's build deterministic (ears/upper lids differ in ~half of 9 runs); root cause, regression
+   tests (repeated builds identical), no intended-geometry change; check boy and third character → T-158 (Opus 5.5).
+10. Let T-141 finish; T-144 (A3) PLAN ONLY when a slot is free.
+
+## 2026-11-20 ~07:00Z — Release faces, publish versions, lashes first, ears (relayed by the original Supervisor)
+Owner: "good progress with the faces; the main issue now is the eyelashes, which still look quite different from the
+references; we also need to work on the ears; go ahead and release these changes and publish new character versions."
+1. T-137 F1a, F1b, F2 (incl. F2 face override) APPROVED → merge; publish boy 2.3.0 / girl 0.14.0 (T-132 content + T-137
+   faces) and third character 0.1.0 (T-126 a–d + T-137 F1b; T-133 proposal only if it improves) as candidates with strict
+   sheets (reference | current | new | target), eye crops, expression sheets; guard allowlist (T-154). Boy/girl become
+   CURRENT only after the owner's one-word OK on those sheets (hair/garment/finger changes not yet reviewed), via
+   version_switch + fidelity_baseline rebaseline citing this decision. Third character: 0.1.0 is her first published version.
+2. Eyelashes are the top face priority: T-156 becomes lash-first (thin dark upper liner, short separate outer-corner
+   lashes, no brown band; refs third 01/04/14, auburn ref_30/G01/G02, boy hero24/val27), then T-150 eye-shape targets.
+3. Ears: after T-158 (deterministic builds), an ears round (Fable 5.2) for all three characters → T-159.
+## 2026-11-20 ~07:20Z — Hair round 6 on the base groom system (relayed by the original Supervisor)
+New task T-160 (Fable 5.2): all three characters vs refs, base groom system first (shape/silhouette at shot size).
+Boy: crown height, staggered whorl petals with dark channels (val27 back, B04/B05), keep pickup sightline under fringe.
+Auburn girl: lower outer sweeps (less bare arc above brows), separate tapered ringlet ends (ref_30, G04/G06), bun with
+wrapped strands, flower readable from front. Third girl: softer, less rope-like locks with tapered tips, softer fringe
+edge, buns with wrapped strands, bow seat (refs 01/02/07/17_W04). Inputs: T-116 hair section, T-133 review, T-118/T-126b
+readiness notes. Opt-in overrides; strict sheets + 100% hair crops (front, 3/4, back) + turntable/motion flicker check
+(T-125); folds into next versions. NOT in scope: T-141 hair curves; T-141b NOT approved (owner to discuss); T-141 may
+merge as an opt-in tool once green. Fringe coordination: T-160 owns the fringe; T-156 (eyes/lashes) does not edit it.
+Also pending for the owner: T-144 A3 plan `t-144-claude-retire-versions@8a34069` docs/evaluation/T-144/PLAN.md, options
+(a) registry-only retire + named archival-build allowlist (recommended), (b) file comparisons (weakens checks), (c) defer.
+
+## 2026-11-20 ~07:35Z — T-144 A3: option (b) (relayed by the original Supervisor)
+Compare each published version's stored built files against fresh builds, then retire and remove only generator code
+that no current or candidate version pins. Start only after T-158 (deterministic builds) merges, when a slot is free.
+Conditions as before: frozen built results stay retrievable; regression/golden checks unchanged or replaced by
+equal-strength file comparisons; tag first; one revertible commit; full gate green. Report the comparison results (any
+mismatches) BEFORE removing anything. Plan: `t-144-claude-retire-versions@8a34069`, docs/evaluation/T-144/PLAN.md.
+
+## 2026-11-20 ~07:35Z — "yes go ahead with all four" (relayed by the original Supervisor)
+1. Status board `docs/process/STATUS.md` (Sonnet 5.5) → T-162; then the Supervisor keeps it current at every merge or
+   dispatch (same commit). Lanes: Character look (T-156, T-160, T-158 → T-159 ears); Release (T-155); Interaction
+   (T-157, then hands round 2). Each task: id, model, state, ETA; owner-waiting items with sheet links and numbered
+   choices; queued items with start conditions (T-144 option b after T-158; hands round 2 after T-157 + T-155).
+2. Starter prop library (Sonnet 5.5) → T-163: 10–15 simple felt props (cup, bowl, plate, spoon, book, ball, box with lid,
+   small toy, apple, pencil, block, basket) with affordances and grasp points per T-111/T-112, existing material
+   presets; own new files only; contact sheet + one verb test per prop.
+3. Temporary session cap 8 until 08:20Z, then 6.
+4. No other new tasks; lanes; merges batched per lane.
+Codex T-161 (relay f33c4868): reference targets for lashes, ears, hair silhouette → forward targets.json to T-156/T-160.
+
+## 2026-11-20 ~08:10Z — Workflow efficiency R5 (relayed by the original Supervisor)
+Report `docs/process/WORKFLOW_EFFICIENCY_R5.md` (+ `docs/process/T-162/data.csv`, branch
+`t-162-claude-workflow-efficiency@b07c29e`, a review separate from the T-162 status board) merged docs-only.
+Implement now, within lanes and cap: (1) the gate posts/edits the PR #2 comment only for integration/*, staging, main;
+no session subscribes to PR #2, waits use one background `gh run watch`; checks and coverage unchanged → T-164.
+(3) `tools/ready.py` preflight (branch pushed, claim + write-set, new tests registered, doc links) then ONE short READY
+line to the parent with the session's cost and context size; IMPLEMENTER_PROMPT updated → T-165.
+(4) Rework rule (context > ~250k and narrow feedback → fresh session with pointer brief or after compaction; one
+consolidated feedback message per round) → WORKFLOW.md, IMPLEMENTER_PROMPT.md (Supervisor, done).
+(5) Shared task kit: shot before/after sheet tool, logged-run wrapper keeping full logs, gate-wait helper,
+one-render-at-a-time queue; reuse tools/review/recipe.py; new tasks point at the kit → T-165 (with item 3).
+Item 2 (liaison rotation) NOT now: the owner picks the time. Rules: analysis-backed, no weakening of checks, revertible.
+
+## 2026-11-20 ~08:20Z — T-155 approved, T-157 stays opt-in, T-124 defaults (relayed by the original Supervisor)
+1. T-155 approved: make boy 2.3.0 and girl 0.14.0 CURRENT (version_switch, fidelity_baseline rebaseline citing this
+   decision, golden/version index; full gate green before promote). Publish the third character 0.1.0 as her first
+   version. If any check fails: stop and report; no loosening.
+2. T-157: keep the wider contact band (option a) OPT-IN; revisit after hands round 2 is done and verified. Hands round 2
+   starts once T-155 is published (queue).
+3. T-124: `final720` becomes the DEFAULT final render setting (720p, adaptive threshold 0.05, persistent data; others as
+   measured); the old 128 spp/0.01 preset stays available by name. Delivery: HEVC 10-bit default encode, H.264 8-bit as
+   compatibility fallback (settings per the T-124 README); masters stay lossless. Small task (→ T-166): defaults in
+   shot_render/run_shot and the encode step, docs/tests (assert new default + fallback), revertible, full gate green;
+   golden/image tests that depend on the old preset keep their own pinned preset; nothing weakened.
+
+## 2026-11-20 ~08:30Z — Owner liaison rotation
+New owner liaison: session_01NPjxeKamtbdzi3YwrgsWXU ("Plush Studio – Owner liaison"); owner-facing reports and
+READY/decision requests go there, not to session_01NPjxeNTmHt2DtBN8F8uLqB. Handover: [LIAISON_HANDOVER](LIAISON_HANDOVER.md).
+
+## 2026-11-20 ~08:20Z+ (09:20 CET) — Guard option 1; restart T-164/T-165 (relayed by the owner liaison)
+"1 yes, and restart T-165 and T-164". test_hair_r5 / test_hands_r2 accept a CURRENT version only when listed in the
+allowlist with a named owner-decision ref (`current_decision`); boy 2.3.0 and girl 0.14.0 carry this decision plus the
+~08:20Z switch approval; every other case still fails; no removal, weakening or global bypass. Implemented on
+`integration/t-137`; unblocks the T-155 switch. T-164 was already merged into the Interaction batch; T-165 restarted.
+
+## 2026-11-20 ~08:35Z (09:35 CET) — Temple hollow, both girls (relayed by the owner liaison)
+Unnatural hollow at the temple above/in front of the ear (T-160 strict 3/4 crops, both girls). Diagnose (head geometry,
+ear placement, hair-to-head connection, glasses arm), fix for both girls, smooth face–temple–ear–hair transition,
+before/after close-ups. Folded into T-159 (ears) as Part A, started now on the T-158 base; candidate/opt-in only.
+
+## 2026-11-20 ~08:50Z (09:50 CET) — Feedback on T-160 r6 and the boy's face (relayed by the owner liaison)
+1. Boy face: unnatural outward bulge in the side/3/4 face contour (vs val27_threequarter_right / val27_side_right) → T-168.
+2. Boy nose needs improvement → T-168 and future face tasks.
+3. Hair: do not force a felt look; the reference hair is more natural. Decisions follow the reference images; goal = closer
+   to refs.
+4. Girls' hair gaps confirmed (auburn: too bulky/fuzzy vs glossier defined curls, bun darker/untidy, fringe covers too much
+   forehead, curls shorter than G05; third: jagged spiky fringe vs soft wisps, side/back long hair flatter/stringier, less
+   full than 01/02).
+5. Boy hair currently better than the girls' (owner unsure); all three still noticeably different from refs.
+Actions: hair round 7, all three, reference fidelity over felt look (fewer petal/leaf shapes on the boy, irregular fringe,
+natural strand grouping) → T-167. r6 NOT adopted; stays opt-in (merging as an opt-in base is fine). Bow seat pending.
+
+## 2026-11-20 ~09:00Z (10:00 CET) — Bow seat (relayed by the owner liaison)
+Third girl's bow: position it from the reference images: front seat (refs 01/02), on her right side (viewer's left), at
+the front hairline just below/in front of the right bun, above the temple, slightly tilted, partly over the fringe.
+Refine position/size/tilt in T-167; no side seat.
+
+## 2026-11-20 ~09:05Z (10:05 CET) — HOLD on queued work (relayed by the owner liaison)
+Running tasks continue; do NOT start queued/planned tasks (T-166, T-144 option b, hands round 2, next versions, new
+Codex tasks) until the owner says "Start the planned automatic tasks" (via the liaison). Free slots stay empty.
+
+## 2026-11-20 ~09:10Z (10:10 CET) — Pause T-167 and T-168 (relayed by the owner liaison)
+Pause T-167 (hair r7; WIP pushed `t-167-claude-hair-r7@dc85c98`) and T-168 (boy face; diagnosis only,
+`t-168-claude-boy-face@de0eff2`) to save tokens; no restart until the owner's explicit word via the liaison.
+
+## 2026-11-20 ~09:35–09:40Z (10:35–10:40 CET) — Pause all running tasks (owner, directly and via the liaison)
+T-159 paused (~10:35 CET; `t-159-claude-ears@20a9363`, temple fix opt-in at cafa12c, ears not started), then T-155 and
+T-156 (owner directly), then "Pause all running tasks" (~10:40 CET). Paused with all WIP pushed:
+T-155 `t-155-claude-candidates-r2@543bfa1` (boy 2.3.0 / girl 0.14.0 current on the branch only; third 0.1.0 published,
+no pointer; boy/third expression sheets not rendered), T-156 `t-156-claude-eye-targets@2f89842` (third closed + strict
+renders and READY pending), T-159, T-167 `dc85c98`, T-168 `de0eff2`. T-158 and T-165 were already merged (main
+2a02532). No dispatches, merges, promotions or Codex tasks; in-flight CI may finish but is not acted on. Nothing resumes
+until the owner's explicit word via the liaison.
+
+## 2026-11-20 ~09:50Z (10:50 CET) — Codex T-169 hair reference study (relayed by the owner liaison)
+Analysis only, write-set `docs/evaluation/characters/T-169/**`; posted on relay-channel@2987afa (NEXT_TASK.md). Feeds T-167.
+
+## 2026-11-20 ~09:55Z (10:55 CET) — "start all implementers" (relayed by the owner liaison)
+Resumed from pushed WIP: T-155 (543bfa1; switch already done on the branch with the owner's direct OK; boy/third expression
+sheets), T-156 (2f89842), T-159 (20a9363: cheek seam diagnosis, then ears), T-167 (dc85c98; fold in T-169 when READY),
+T-168 (de0eff2: proposed fix, opt-in cheek-pad fade + upturned nose, candidate only). Reviews/merges resume. Queued/planned
+tasks (T-166, T-144, hands round 2, next versions) STAY ON HOLD until "Start the planned automatic tasks".
+
+## 2026-11-20 ~14:30Z (15:30 CET) — Not final: fix all reported issues first (relayed by the owner liaison)
+T-156: 3/4 white flap past the outer corner (both girls), creases under the auburn lower lid, lash colour/fullness per
+refs (auburn warm dark brown, fuller), pale pink teardrop above closed lids, third girl's closed-eye upper region.
+T-168: smaller, rounder nose (soft nub), lower face less receding (val27). T-159: temple + cheek seam + ears for all
+three incl. the boy. T-167 continues per T-169. Strict sheets + 100% close-ups with all fixes; approval only after that.
+
+## 2026-11-20 ~15:12–15:25Z (16:12–16:25 CET) — Ownership and T-155 hold (relayed by the owner liaison)
+Ears are T-159's for all three. Disjoint write-sets: T-159 = face_features.shape_face_v2 + face_generic.build_ears;
+T-168 = face_v3/lower_face.py + face_features.build_nose (boy contour + nose); T-156 = face_v3/lids.py + eye/lash
+materials. Merge order T-159 then T-168; one integration branch `integration/r3-faces` for the candidate builds.
+HOLD T-155 (`t-155-claude-candidates-r2@2774c13`, incl. third 0.1.0): no new version until the fixes are approved;
+current stays boy 2.2.0 / girl 0.13.0. The next versions bundle T-155 + T-156 + T-159 + T-168 + T-167 as ONE set.
+
+## 2026-11-20 ~15:25Z — Reference videos (owner via the original Supervisor)
+`docs/references/video_paperboat.mp4` and `video_watertable.mp4` (on ones, 24 fps) are the primary motion/acting
+reference for animation, interaction and acting tasks (hands round 2, the S1 rebuild), with T-106, content/timing and
+content/personality derived from them.
+
+## 2026-11-20 ~15:45Z (16:45 CET) — T-170 world style plan (planning only; exception to the hold)
+Delivered: `docs/evaluation/world/T-170/README.md` (style guide, material library, construction architecture, scene
+rules, 7-phase plan ~19–25 task-days, 8 owner questions). The owner reviews it before any development.
+
+## 2026-11-20 ~16:10–19:20Z — Ears, boy face, hair, world research (relayed by the owner liaison)
+- ~16:50Z: boy ears, then ~17:15Z "same for girls' ears" → T-159 (shape/size per refs and T-161 targets; auburn glasses
+  arm rests on the ear). ~17:20Z: boy face "has to be softer" → T-168 r4. ~17:25Z: hair r7 accepted for now; boy flicker
+  must meet the existing limit (re-measured ~17:35Z: still over, caused by the new crown tufts).
+- ~17:45Z: T-170b option 2 (Poly Haven/ambientCG hosts allowed) → T-170c CC0 test: Poly Haven wood_table,
+  oak_veneer_01, laminate_floor_02, HDRI lebombo confirmed.
+
+## 2026-11-20 ~19:20Z (20:20 CET) — Decisions (relayed by the owner liaison)
+1. T-170c option 2: acg-download.struffelproductions.com allowed → T-170d (ambientCG rug/fabric test, research only).
+   World scope guidance (binding): "we do not need every object seen in the reference videos, nor match them exactly. Any
+   table is fine; any simple, allowed, easy-to-make objects are acceptable — that is our priority. If we build a scene
+   later, its objects should make sense together and feel related. I don't want to spend this much time on building
+   props." → simplest objects, minimal prop effort; T-170d trims the plan and estimate.
+2. T-168: no further pass; r4 (`t-168-claude-boy-face@49b3f56`) goes into the bundled set; remaining issues (chin below
+   the mouth, jaw underside, faint cheek line) logged for a later phase.
+3. T-167: render r6 vs r7 comparison sheets for all three (same views/lighting, incl. 100% hair crops), owner chooses per
+   character; boy flicker decision waits for this; no look changes.
+4. T-156: continue; owner decides when finished.
+5. T-159: ears pass 2 (`t-159-claude-ears@aca5de6`) accepted for now into the bundled set; ears slightly wide vs the head
+   logged for later.
+
+## 2026-11-20 ~20:10Z (21:10 CET) — World materials (relayed by the owner liaison)
+"my goal is not to create new materials. Use whatever ready-made materials are already available and simply combine
+materials that look good together. Creating materials is time-consuming and costly; not considering that now."
+→ T-170 plan = ready-made materials only: the CC0 sets already picked, existing project presets and Blender built-ins.
+Adjustments are limited to tint, scale and mapping. No new material authoring, no tuning rounds, no procedural material work.
+The plan stays on hold. Amendment: `docs/evaluation/world/T-170/cc0_test/ambientcg/README.md` section 2.1.
+
+## 2026-11-20 ~20:20Z (21:20 CET) — Start T-166 and T-144 (b) report step (relayed by the owner liaison)
+Explicit start (not the general "Start the planned automatic tasks"): T-166 (final720 default + HEVC 10-bit delivery,
+H.264 fallback, old preset kept by name; Sonnet 5.5) and T-144 option (b) REPORT STEP ONLY. The report compares builds
+and lists the generator versions the bundled candidates depend on (T-156/T-159/T-167/T-168 overrides, boy 2.3.0 /
+girl 0.14.0 / third 0.1.0); none of those may be retired. Nothing is removed before the owner reviews the report. Write-sets
+stay disjoint from running tasks. Hands round 2, the version release and the world plan stay on hold.
+
+## 2026-11-20 ~20:30Z (21:30 CET) — Session cap (relayed by the owner liaison)
+The session cap is temporarily 7, until the bundle merges or the owner says otherwise. The T-168 session (archived ~20:06Z,
+branch `t-168-claude-boy-face@49b3f56` kept) may be unarchived if follow-up work is needed before the bundle merges; otherwise it stays archived.
+
+## 2026-11-20 ~20:50Z (21:50 CET) — T-144, T-167, release priority (relayed by the owner liaison)
+1. T-144: option (c), no change now. The old generator versions are documented as "legacy, do not pin"
+   (`docs/CHARACTER_SYSTEM_VERSIONS.md`). Boy 1.0.0's rebuild difference is a documented known exception. export/5 and groom/2 are kept.
+   The report is merged and the session archived.
+2. T-167: the boy uses hair r6 and the girls use r7. The boy's hair improvement comes later. No further hair work now.
+3. PRIORITY: make the new character versions release-ready as soon as possible. Finish T-156 (owner decides on its final sheets). Then assemble
+   integration/r3-faces: T-155 content + T-156 + T-159 ears/temple + T-168 r4 + hair (boy r6, girls r7). Verify every change
+   shows, render final strict sheets + 100% crops for all three and send them for owner approval. Then the T-155 release (owner types OK
+   in its session), test-reference updates and the full gate. Nothing else competes for slots; T-166 may finish; the world plan stays on hold.

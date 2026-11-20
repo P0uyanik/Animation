@@ -1,0 +1,141 @@
+{
+ "variant": "no_sss",
+ "tag": "no_sss",
+ "description": "skin/lip subsurface weight 0",
+ "settings": {},
+ "toggles": {
+  "no_sss": 6
+ },
+ "blend": "/root/t124/base/shot.blend",
+ "load_s": 3.17,
+ "blender": "5.3.0",
+ "threads": 4,
+ "resolution": [
+  1280,
+  720
+ ],
+ "effective": {
+  "samples": 128,
+  "adaptive": true,
+  "threshold": 0.009999999776482582,
+  "max_bounces": 12,
+  "denoiser": "OPENIMAGEDENOISE",
+  "denoise_passes": "RGB_ALBEDO_NORMAL",
+  "prefilter": "ACCURATE",
+  "persistent": false
+ },
+ "frames": [
+  {
+   "frame": 65,
+   "repeat": 0,
+   "render_s": 337.3,
+   "save_s": 0.17,
+   "phases": {
+    "sync": 7.83,
+    "bvh": 2.65,
+    "kernels": 0.01,
+    "path_trace": 324.55,
+    "denoise": 0.0,
+    "other": 2.26
+   },
+   "peak_mem": "",
+   "timeline": [
+    [
+     4.33,
+     "kernels",
+     "Updating Shaders"
+    ],
+    [
+     4.34,
+     "sync",
+     "Updating Scene Attribute"
+    ],
+    [
+     4.34,
+     "kernels",
+     "Updating Camera"
+    ],
+    [
+     4.34,
+     "sync",
+     "Updating Meshes Flags"
+    ],
+    [
+     4.34,
+     "kernels",
+     "Updating Particle Systems"
+    ],
+    [
+     4.34,
+     "sync",
+     "Copying Particles to device"
+    ],
+    [
+     4.34,
+     "kernels",
+     "Updating Displacement Images"
+    ],
+    [
+     4.34,
+     "sync",
+     "Computing normals"
+    ],
+    [
+     6.75,
+     "bvh",
+     "Building BVH"
+    ],
+    [
+     9.4,
+     "sync",
+     "Computing attributes"
+    ],
+    [
+     10.48,
+     "kernels",
+     "Updating Primitive Offsets"
+    ],
+    [
+     10.48,
+     "sync",
+     "Updating Images"
+    ],
+    [
+     10.48,
+     "kernels",
+     "Updating Volume"
+    ],
+    [
+     10.48,
+     "sync",
+     "Computing tree"
+    ],
+    [
+     10.49,
+     "kernels",
+     "Updating Integrator"
+    ],
+    [
+     10.49,
+     "sync",
+     "Writing constant memory"
+    ],
+    [
+     10.49,
+     "kernels",
+     "Loading denoising kernels (may take a few minutes the first "
+    ],
+    [
+     10.49,
+     "path_trace",
+     "Sample #/#"
+    ],
+    [
+     335.04,
+     "other",
+     "Finished"
+    ]
+   ]
+  }
+ ]
+}

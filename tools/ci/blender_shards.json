@@ -2,10 +2,40 @@
   "note": "T-127: the Blender tier units (tools/check_all.py BLENDER_UNITS) per CI shard job. Every unit in exactly one shard; an unassigned unit runs in shard 1. Units that build a character keep their own build (owner decision: no reuse between tests). Rebalance from durations.txt of the shard reports; count 4-6.",
   "count": 5,
   "shards": {
-    "1": ["charsys", "face", "material-presets", "render-engine-selector", "materials-r2-graphs", "fidelity-regression"],
-    "2": ["determinism", "export-engine"],
-    "3": ["shot-eyes", "emotions"],
-    "4": ["hair", "groom", "garment", "garments-v2-quick", "groom-dynamics"],
-    "5": ["export-determinism", "boy2", "deform"]
-  }
+    "1": [
+      "charsys",
+      "face",
+      "material-presets",
+      "render-engine-selector",
+      "materials-r2-graphs",
+      "fidelity-regression"
+    ],
+    "2": [
+      "determinism",
+      "export-engine",
+      "build-determinism-girl"
+    ],
+    "3": [
+      "shot-eyes",
+      "emotions"
+    ],
+    "4": [
+      "hair",
+      "hair-curves",
+      "groom",
+      "garment",
+      "garments-v2-quick",
+      "groom-dynamics"
+    ],
+    "5": [
+      "export-determinism",
+      "boy2",
+      "deform"
+    ]
+  },
+  "added_after_t127": [
+    "build-determinism-girl",
+    "hair-curves"
+  ],
+  "added_after_t127_note": "Blender units added after T-127. tools/ci/blender_inventory.py accepts exactly these as new: each one's commands must appear exactly once in the shards and in the unsharded path; everything else is compared with pre-T-127 as before."
 }

@@ -154,4 +154,4 @@ Notes on the numbers:
 
 ## Reproduce
 
-See [pipeline/charsys/experiments/hair_study/README.md](../../../../pipeline/charsys/experiments/hair_study/README.md).
+See [pipeline/charsys/experiments/hair_study/README.md](../../../../archive/experiments/charsys/hair_study/README.md) (archived by T-143).

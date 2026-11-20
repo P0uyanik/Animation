@@ -1,7 +1,7 @@
 """Runs one shot end to end: character sources -> engine packages -> C++ engine animation (bake) -> Blender render.
 
     python3 pipeline/production/run_shot.py --shot episodes/<ep>/shots/<shot>/shot.scene.json --blender <blender>
-        [--frames A-B] [--resolution W H] [--samples N] [--engine cycles|eevee] [--blend-only] [--video]
+        [--frames A-B] [--resolution W H] [--samples N] [--profile final720|review|legacy128] [--codec hevc10|h264] [--engine cycles|eevee] [--blend-only] [--video]
         [--stages prepare,bake,render,encode] [--run-dir <run-id or path>]
 
 The shot file is an engine scene (plush.scene) plus a "production" block, the only place a shot names its cast's
@@ -337,12 +337,22 @@ def main():
     ap.add_argument("--frames", default="")
     ap.add_argument("--resolution", type=int, nargs=2)
     ap.add_argument("--samples", type=int)
+    ap.add_argument("--profile", help="render profile (T-166: default final720; legacy128 = previous 128 spp / 0.01 preset)")
+    ap.add_argument("--codec", help="delivery encode (T-166: default hevc10; h264 = 8-bit compatibility fallback)")
     ap.add_argument("--blend-only", action="store_true")
     ap.add_argument("--video", action="store_true")
     ap.add_argument("--stages", default="", help="comma-separated subset of prepare,bake,render,encode (default: all)")
     ap.add_argument("--run-dir", default="", help="per-run output folder (a bare id: <shot dir>/build/runs/<id>)")
     ap.add_argument("--mark-cancelled", action="store_true", help="finalise a run whose process was killed (needs --run-dir)")
     a = ap.parse_args()
+    profiles = json.load(open(os.path.join(CHARSYS, "render_profiles.json")))
+    a.profile = a.profile or profiles["default_profile"]
+    a.codec = a.codec or profiles["encode"]["default"]
+    if a.profile not in profiles["profiles"]:
+        ap.error(f"unknown --profile {a.profile!r} (have: {', '.join(profiles['profiles'])})")
+    if a.codec not in profiles["encode"]["codecs"]:
+        ap.error(f"unknown --codec {a.codec!r} (have: {', '.join(profiles['encode']['codecs'])})")
+    a.profile_data, a.encode_args = profiles["profiles"][a.profile], profiles["encode"]["codecs"][a.codec]["args"]
     if not a.blender and not a.mark_cancelled:
         ap.error("the following arguments are required: --blender")
     shot_path = os.path.abspath(a.shot)
@@ -375,7 +385,9 @@ def main():
     shot = json.load(open(shot_path))
     prod = shot.get("production") or {}
     r = prod.get("render", {})
-    res = a.resolution or r.get("resolution")
+    # an explicit --resolution/--samples, then the shot's own production.render, then the render profile
+    res = a.resolution or r.get("resolution") or a.profile_data.get("resolution")
+    samples = a.samples or r.get("samples") or a.profile_data["samples"]
     if a.frames:
         x, _, y = a.frames.partition("-")
         fa, fb = int(x), int(y or x)
@@ -386,7 +398,7 @@ def main():
         "format": "plush.run_status", "version": 1, "run_id": os.path.basename(run_out) if a.run_dir else "",
         "shot": os.path.relpath(shot_path, ROOT), "run_dir": run_out, "pid": os.getpid(), "state": "running",
         "stage": stages[0] if stages else "", "stages": stages, "stages_done": [], "frames": [fa, fb],
-        "frames_done": 0, "frames_total": fb - fa + 1, "resolution": eff_res, "samples": a.samples or r.get("samples", 32),
+        "frames_done": 0, "frames_total": fb - fa + 1, "resolution": eff_res, "samples": samples, "profile": a.profile,
         "engine": a.engine,
         "light_scale": r.get("light_scale", 1.0), "exposure_ev": shot.get("render", {}).get("exposureEV", 0.0),
         "blend_only": a.blend_only, "error": "", "started": time.strftime("%Y-%m-%dT%H:%M:%S")})
@@ -458,7 +470,8 @@ def stages_run(a, shot, shot_path, out, run_out, logs, stages, encode, status, f
             raise SystemExit(f"no bake in {run_out}: run the bake stage first")
         cmd = [a.blender, "-b", "--factory-startup", "-P", os.path.join(CHARSYS, "shot_render.py"), "--", "--bake", bake,
                "--cast", os.path.join(out, "cast.json"), "--out", render_dir,
-               "--samples", str(a.samples or r.get("samples", 32)), "--light-scale", str(r.get("light_scale", 1.0))]
+               "--profile", a.profile, "--samples", str(a.samples or r.get("samples") or a.profile_data["samples"]),
+               "--light-scale", str(r.get("light_scale", 1.0))]
         cmd += (["--resolution", str(res[0]), str(res[1])] if res else []) + (["--frames", a.frames] if a.frames else [])
         # Omit the default so the pre-T-020 Cycles invocation is unchanged.
         # shot_render.py itself also defaults to Cycles.
@@ -482,7 +495,7 @@ def stages_run(a, shot, shot_path, out, run_out, logs, stages, encode, status, f
         num, den = shot.get("frameRate", [30, 1])
         start = rep["render"]["frames"][0] if "render" in rep else fa
         cmd = ["ffmpeg", "-y", "-loglevel", "error", "-framerate", f"{num}/{den}", "-start_number", str(start), "-i",
-               os.path.join(render_dir, "frame_%04d.png"), "-c:v", "libx264", "-pix_fmt", "yuv420p", "-crf", "18",
+               os.path.join(render_dir, "frame_%04d.png"), *a.encode_args,
                os.path.join(run_out, "shot.mp4")]
         rep["steps"]["video_s"] = step(cmd, os.path.join(logs, "video.log"))
         done.append("encode")

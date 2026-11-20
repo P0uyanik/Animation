@@ -14,6 +14,7 @@
 #include <memory>
 #include <optional>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "anim/animation.h"
@@ -106,6 +107,30 @@ struct FaceTimeline {
   std::vector<double> lookStarts; // frames where a new look starts (possible gaze-shift blinks)
 };
 
+// Blink scheduling (T-136 E2, opt-in; scene key "blinkSchedule", see scene.h). Off = the face layer's free blinks
+// (before T-136). On, the blinks of a shot are planned from the same personality rhythm and then:
+// - a rhythm blink near a gaze shift (a look start) or an action change moves onto it (preferWindowFrames);
+// - no blink closes the lids inside a key beat: it moves to a free gaze shift / action change nearby, else to just
+//   after the beat (a double blink that would reach into the beat loses its second blink first);
+// - a short beat (the stretch between two gaze shifts, action changes or key-beat edges, shorter than
+//   shortBeatFrames) gets at most one blink, and never a double blink.
+// Frames are scene frames; the two windows are given at 24 fps and scale with the scene rate.
+struct BlinkSchedule {
+  bool enabled = false;
+  std::vector<std::pair<double, double>> keyBeats;  // [first, last] frames with open eyes
+  std::vector<double> actionChanges;                // frames where the character's action changes
+  float shortBeatFrames = 24.0f;
+  float preferWindowFrames = 18.0f;
+};
+
+// One planned blink: its start frame, its length scale (1 = a full blink, 0.85 = the second of a double) and why.
+struct ScheduledBlink {
+  enum class Kind { Rhythm, Shift, Double };
+  double frame = 0;
+  float scale = 1.0f;
+  Kind kind = Kind::Rhythm;
+};
+
 struct FaceState {
   float blink = 0;                        // lid closure 0..1
   vec2 eyeOffsetDeg{0};                   // eye darts + gaze bias (yaw +: character's left, pitch +: up)
@@ -137,6 +162,9 @@ class FaceLayer {
   const std::map<std::string, std::vector<std::string>>& channels() const { return channels_; }
   // Blink closure only (cheaper than evaluate).
   float blink(double frame) const;
+  // Scheduled blinks (T-136): the shot's blink plan under `schedule`, and the closure at a frame from it.
+  std::vector<ScheduledBlink> blinkPlan(const BlinkSchedule& schedule) const;
+  float blink(double frame, const BlinkSchedule& schedule) const;
   // Morphs that fade out with a blink (FaceLibrary::blinkClears resolved for this character).
   const std::vector<std::string>& blinkClears() const { return blinkClears_; }
   bool clearsWithBlink(const std::string& morph) const;
@@ -147,6 +175,7 @@ class FaceLayer {
     vec2 bias;
   };
   Params params(double frame) const;
+  double blinkFrames(double startFrame, float scale) const;  // a blink's length in frames
   double clock(const std::vector<double>& table, double frame) const;       // warped seconds at a frame
   double clockInverse(const std::vector<double>& table, double tau) const;  // frame at warped seconds
   vec2 saccade(double frame) const;

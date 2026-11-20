@@ -1,0 +1,222 @@
+===============================================================================
+===============================================================================
+[doctest] listing all test case names
+[doctest] unskipped test cases passing the current filters: 218
+a profile's preferred gesture plays as a clip at the reaction start (only clips the library has)
+a quick profile (reaction tempo_scale < 1) never reacts before its shortest notice delay
+accessory chains: presets and chains attached by bone name (package block and scene)
+an event triggers a delayed, blended reaction (look, emotion, gesture) per character
+animcheck's acting rule (T-097C) sees the notice delay of the generated reaction
+arm-body clearance: a held-still hand-over close to the giver's chest keeps the elbow low (swing limit)
+arm-body clearance: a hold pulled across and into the body keeps the arm outside, smoothly
+arm-body clearance: body sections and arm surface fitted from the package, rest pose is clear
+arm-body clearance: the elbow pole turns the elbow only (wrist and hand stay)
+arm-body clearance: the hand-over meeting point keeps both arms outside their bodies
+asset socket transforms compose translation rotation and scale
+automatic blinks happen at jittered intervals and are deterministic
+automatic skin weights follow the driving primitives
+blended emotions in a scene: face and posture cross-fade without pops, also between frames
+blended emotions: face, posture, gaze and tempo read one state
+blended emotions: modulation stretches rise and scales intensity
+blended emotions: the state's energy sets the loop tempo without a phase jump
+body mechanics: arm and thigh pivots follow the torso and pelvis (pivot carry)
+body mechanics: clavicles shrug and protract with arm elevation and reach, within the rig limits
+body mechanics: follow kernel and idle weight shift are well formed
+body mechanics: hand contacts in interaction actions stay within 5 mm with the layer on
+body mechanics: off by default; false and absent give identical poses
+body mechanics: personality profiles tune the layer; missing fields stay neutral
+body mechanics: random access is deterministic
+body mechanics: rigs without clavicles, spine segments or legs skip those parts without warnings
+body mechanics: torso leans and twists into a reach with follow-through; head stabilised; hand on target
+body mechanics: weight shift moves the pelvis over the support leg, bends the free knee, feet stay planted
+brick culling in the sdf mesher matches exhaustive evaluation
+clips: fps resampling (60 fps dense vs 30 fps sparse, speed)
+clips: loop seam and root accumulation
+clips: mirroring swaps sides and reflects across x = 0
+clips: parsing (sparse, dense, unknown fields, required license)
+clips: retarget block equals the data derived from the skeleton
+clips: retargeting on two synthetic skeletons with different rest poses and proportions
+clips: scene playback on two characters, blending, base clip and layering priority
+collision body: derived for every character source, closed torso sections and limb capsules, rest pose clear
+collision body: package block round trip, precedence over the derivation, bad blocks fall back
+collision body: the elbow swing limit (T-082) is block data with a shared default and a scene override
+collision planning: a hand-keyed arm driven into the body is lifted out of it, smoothly; clear arms stay
+collision planning: the collision action is checked like any action
+collision planning: the elbow swing turns the elbow about the shoulder-wrist axis, wrist and hand stay
+collision queries: signed, 1-Lipschitz along a path, gradient points out of the body
+director framing defaults to one master camera (cuts false), refitted
+director framing is opt-in: without it (or false) the planned camera is unchanged
+director framing keeps the head (hair included) under the headroom line and the hands in the safe area
+dual quaternion and linear skinning agree for a single rigid bone
+emotion blend evidence curves (opt-in)
+emotion blender: cross-fade instead of a switch; affect follows the weights
+emotion channel: a rise from rest is the plain smoothstep ramp, and it holds the target
+emotion channel: rates stay bounded under any re-target sequence
+emotion channel: re-targeted mid-way it keeps value and velocity (no jump, no kink)
+emotion files: blend and affect sections are optional and parse
+emotion library: every file parses, names its clips, and its variants parse
+emotion: format, variants as merge patch, unknown fields kept
+expression morph targets move the surface to the edited shape
+eye aim points the bone at the target
+face library and emotion faceMotion sections parse
+facial layer: a blink closes the eyes whatever the expression (eye-opening controls fade)
+facial layer: a character's own faceMotion is a constant layer under the emotions
+facial layer: blink timing statistics and emotion-dependent rate
+facial layer: clip face curves play with the clip layer
+facial layer: emotion transitions drive brows, mouth corners and gaze
+facial layer: eye darts and gaze holds
+facial layer: missing controls are skipped; life off and face:false keep the old behaviour
+facial layer: per-control continuity on both characters and the mannequin
+facial layer: the mannequin blinks its lid bones and darts its eyes
+finger poses close the hand and a grasp adapts to the object's size
+gaze assist: the neck takes what the eyes cannot reach, eyes lead, a hand-keyed neck wins
+gaze legibility: off by default (identical poses); on, the eyes stay in the range through blinks and darts
+gaze legibility: scene key round trip and checks
+gaze legibility: the clamp brings an eye back to the range and leaves an eye inside it alone
+gaze legibility: the eyes lead, the head starts leadFrames later and eases over turnFrames
+gaze legibility: the head turns just enough for the near eye, up to its caps; a keyed neck wins
+golden: interaction scenes bake byte-identically to the recorded input SHA (T-112a)
+hand pose is independent of hand orientation and works with fewer digits
+hand-over: with followSharedProp the giver's palm stays on its socket while the receiver moves the prop (T-096)
+hand-shape table: gesture shapes pose the hand through its tracks on three skeletons (T-051)
+hand-shape table: loads every shape of content/hand_shapes with the design 2.3 values (T-051)
+hand-shape table: validation reports every problem (T-051)
+head clearance: heads leaning in over a point keep the clearance by a small neck tilt only (T-096)
+head volumes: opt-in, cover the head-carried vertices closely, never in the package block (T-096)
+head volumes: the gap between two heads is signed and follows their distance (T-096)
+imported character packages: behaviour support
+imported character packages: blink morph in the life layer and per-character expression names
+imported character packages: blink stays outside the eyeball at every closure (in-betweens)
+imported character packages: expression-driven jaw bone
+imported character packages: semantic expressions from the shared face library
+imported character packages: walk and idle through the scene
+interaction options: every option off is exactly the behaviour before T-096
+interaction options: the scene switch is checked, saved as written and off by default (T-096)
+interaction: bad action timelines are load errors
+interaction: hand grip geometry and orientation constraint are skeleton independent
+interaction: hand-over between two characters keeps the prop continuous
+interaction: reach/grasp lands the palm on the prop socket within 5 mm (boy skeleton)
+interaction: reach/grasp lands the palm on the prop socket within 5 mm (engine skeleton)
+interaction: reach/grasp lands the palm on the prop socket within 5 mm (girl skeleton)
+life layer breathes and the head follows the gaze later than the eyes
+lock groups build tapered cores and an outward halo
+look-at leaves in-range gaze unchanged
+look-at limits eye rotation relative to a downward-pitched head
+look-at soft limit is continuous across the eye range
+morph in-betweens: piecewise chain weights
+override weights give the normalized blend in any order
+per-character blink timing from the package
+per-finger grasp: box face, three skeletons - tips on the face, none inside the box (T-051)
+per-finger grasp: cup, both bands, three skeletons - tips on the surface, in the band, thumb opposed (T-051)
+per-finger grasp: fingers close index -> little and open little -> index, 1 f apart (T-051)
+per-finger grasp: without T-051 tracks the hand pose is the single search, bit for bit (T-051)
+personality modulation scales intensity, tempo and holds (applied, not chosen)
+personality: absent or false keeps the character exactly as before; scene files round-trip it
+personality: body mechanics take the character's profile unless they name their own
+personality: clip tempo for gestures, kept inside the profile's speed limits
+personality: face rest offset, expression bias and the mouth while watching
+personality: profile files are found by walking up; drafts are a fallback; ids are names only
+personality: reach timing outside the limits, bad values and unknown profiles are reported
+personality: reader errors, missing parameters and clamping into limits
+personality: the life layer receives blink rhythm and shape, idle amplitude and head lag
+personality: the reaction section (T-097B) is optional and typed
+personality: the shipped profiles parse into typed parameters within their own limits
+plain emotions are unchanged: blend:false is the old path, and the old path keeps its crossfade
+plush.asset/1 affordances: the felt cup's block parses (design 2.5); assets without one load as before
+plush.asset/1 affordances: validation errors stay in the block (design 2.2 rules)
+plush.asset/1 parses file and primitive mesh sources
+plush.asset/1 reports validation errors
+principles: IK gestures ease with the elbow trailing; contacts stay exact
+principles: a clip blended in over 4 frames at speed 1.5 leaves and arrives with slow-in / slow-out
+principles: automatic breakdowns make a near-linear blend path travel on an arc
+principles: ease curve, eased clock, blend length from amplitude, succession ranks, settings
+principles: ease-preserving retiming keeps the spacing at the extremes
+principles: off restores the plain ramps; the setting is saved as written
+principles: successive breaking in clip blends (shoulder leads, elbow and wrist follow)
+prop parent switch preserves its world transform at the switch frame
+prop parent weight blends continuously between world and attached placement
+reach action brings the hand to the object, carries it and puts it down
+reaction playback is deterministic: same actions for the same events in any list order
+reaction: acting interface defaults are neutral (T-097-0)
+reaction: character independent and deterministic
+reaction: each event kind maps to the shared default reaction without a profile
+reaction: every character of the cast reacts; the actor does not react to its own action
+reaction: per-event emotion, intensity, duration, gaze and preferred gesture
+reaction: profile defaults keep the neutral output (no reaction fields = no profile)
+reaction: profile values scale intensity and tempo
+reaction: reader errors for bad reaction values
+reaction: salience delays a faint event and weakens and shortens its reaction
+reaction: shipped profiles plan within their own reaction delay; shared defaults match the references
+reaction: the timing profile's reaction delay is the base; the profile's own delay wins
+rest pose skinning is the identity
+scene evaluator accepts a shared character role as a prop socket
+scene evaluator prop follows a moving character bone socket
+scene evaluator reports a missing character prop socket
+scene evaluator resolves a prop-on-prop socket chain in dependency order
+scene events: parsing, validation and save round trip
+scene json round trip
+scene prop instance names are unique
+scene prop parents must name an existing instance and valid socket kind
+scene prop placements round-trip through JSON
+scene rejects prop parent cycles
+scene validates sockets on prop parents
+scenes without props retain the old JSON output
+sdf mesher produces a closed sphere with the right area
+secondary motion: a collider push keeps the chain joint-continuous (T-101)
+secondary motion: absent or disabled = bit-identical bake
+secondary motion: collision keeps chain points outside a sphere
+secondary motion: deterministic and independent of evaluation order
+secondary motion: frame-rate independent (24 vs 48 fps)
+secondary motion: overshoots, then settles to the rest shape
+secondary motion: package block and scene override parsing
+shot bake carries prop matrices and otherwise matches a scene without props
+shot bake: engine animation hand-off (plush.shot_bake/1)
+surface fibers grow outwards and follow deformation
+time ticks are exact for common frame rates
+timing profile: interaction defaults follow the profile; "none" reproduces the shot bit for bit as before
+timing profile: personality tempo scales beats (boy slower, girl quicker with longer holds)
+timing profile: reader errors
+timing profile: the calibrated profile loads its beats and travel from the reference table
+timing profile: the scene key defaults to calibrated, is checked and saved as written
+touch action puts the index fingertip on the target
+tracks interpolate through keys without overshoot
+two-bone IK reaches reachable targets
+verb failures T-112b: pass - giver and receiver on the same socket or the same band
+verb failures T-112b: pass - receiver hand full, receiver is the giving hand
+verb failures T-112b: pass - receiver out of reach (checked on the compiled motion)
+verb failures T-112b: pass - shared hold shorter than 6 f, a prop held in two hands
+verb failures T-112b: two hands - no two-site set, set does not fit the hands, bad hands, second hand full
+verb failures T-112b: two hands - the second hand cannot follow the carry (checked on the compiled motion)
+verb failures: a two-hand prop with one hand
+verb failures: hand full
+verb failures: non-rigid deform, invalid affordances, empty hand
+verb failures: out of reach (checked on the compiled motion)
+verb failures: place target occupied, and onto itself
+verb failures: prop held by another character
+verb failures: unknown grasp site or set
+verb failures: upright exceeded (checked on the compiled motion)
+verb failures: wrong hand for the grasp site
+verb library T-112b: pass.verb.json parses; phase parts tell the two manipulate phases apart
+verb library: content/verbs files parse; bad files are errors
+verbs T-112b: a reacting pass compiles through the reaction system (scene events; one gaze source)
+verbs T-112b: hand.<s>.band keys from a site's fingers block (Step at the reach start), gated like the optional phases
+verbs T-112b: non-wrap hand shapes key their open / closed poses; no contact search; release opens them
+verbs T-112b: pass phases follow the handover frames; with a profile each beat is the acting character's
+verbs T-112b: pass without a profile expands to the hand-written handover, key for key
+verbs T-112b: react appends partner_acts / success events; the notice delay is reaction_delay x tempo
+verbs T-112b: two-handed tray - pick up, carry, place on boy and girl skeletons
+verbs T-112c: a grasp keys the hand shape of the table found above the scene, not built-in values
+verbs T-112c: a pass gives the receiver its site's finger band (gated like the giver's), key for key otherwise
+verbs T-112c: box-face sites key hand.<s>.graspFace - per-finger palm grasp on the felt tray, boy and girl
+verbs T-112c: the table's grasp shapes against T-112b's inline values; wrap is kOpen
+verbs: left-out frames take today's defaults (design 3.3); a chained verb starts where the last one ended
+verbs: pick_up + carry + place without a profile expand to the hand-written grasp + hold + place, key for key
+verbs: with the calibrated profile phase lengths are the beats x personality tempo (boy slower, girl quicker)
+visible grip: a grasp turns the palm's side of a round prop away from the camera (T-096)
+visible grip: a hand-over receiver's turned grip keeps away from the giver's (T-096)
+walk action moves the character and keeps the standing foot planted
+workflow: command and stage building
+workflow: job runner on a dummy process tree (progress, cancel, no orphans)
+workflow: merge-save keeps everything not explicitly edited (unknown fields at every depth)
+workflow: shot discovery reads every episodes/*/shots/*/shot.scene.json, no per-shot code
+workflow: status parsing and frame mapping (offset range, out-of-range frames)

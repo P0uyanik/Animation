@@ -32,6 +32,11 @@ A question or a discussion is never an approval.
 - Shared systems separate from character data.
 - Frozen assets untouched; nothing published or approved without the owner.
 - The visual references are the target.
+- No session subscribes to PR #2 (owner 2026-11-20 ~08:10Z): wait on your own CI run with one background
+  `gh run watch <id>` (or `tools/wait_gate.py` once the T-165 kit lands); the gate's checks are unchanged.
+- Rework rule (owner ~08:10Z): if an implementer's context is over ~250k tokens and the feedback is narrow, do the
+  rework in a fresh session with a pointer brief (task file, review points, branch@sha, README) or after compaction.
+  One consolidated feedback message per review round.
 
 ## Work areas, conflicts and integration
 1. Before dispatch, the Supervisor compares the planned file lists. Parallel tasks never share files. Central files

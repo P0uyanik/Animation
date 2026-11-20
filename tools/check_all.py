@@ -487,20 +487,6 @@ def check_animcheck(build_dir: Path, config: str, logs: Path, build_ok: bool) ->
     return Result("animcheck", code == 0, "" if code == 0 else f"see {relative_log(log)}", relative_log(log), round(seconds, 2))
 
 
-def renderer_skip(build_dir: Path) -> Result | None:
-    """T-085: report (never hide) the renderer tests a PLUSH_BUILD_RENDERER=OFF build skips."""
-    cache = build_dir / "CMakeCache.txt"
-    try:
-        text = cache.read_text(encoding="utf-8", errors="replace")
-    except OSError:
-        return None
-    match = re.search(r"^PLUSH_BUILD_RENDERER:BOOL=(\S+)$", text, re.MULTILINE)
-    if match and match.group(1).upper() in {"ON", "TRUE", "1", "YES", "Y"}:
-        return None
-    return Result("renderer tests", True, "SKIPPED (PLUSH_BUILD_RENDERER=OFF): 5 path tracer doctest cases + 3 image "
-                  "regressions; run by the linux renderer CI job", skipped=True)
-
-
 def check_cpp_tests(build_dir: Path, config: str, logs: Path, build_ok: bool) -> Result:
     """CTest (incl. the frozen image regressions), the doctest binary and animcheck (T-061), reported on one line."""
     ctest = check_ctest(build_dir, config, logs, build_ok)
@@ -509,9 +495,6 @@ def check_cpp_tests(build_dir: Path, config: str, logs: Path, build_ok: bool) ->
     subchecks = []
     for item in (ctest, doctest, anim):
         subchecks.append({"name": item.name, "ok": item.ok, "detail": item.detail, "log": item.log})
-    skip = renderer_skip(build_dir) if build_ok else None
-    if skip is not None:
-        subchecks.append({"name": skip.name, "ok": True, "skipped": True, "detail": skip.detail, "log": ""})
     failed = [f"{item.name} ({item.detail})" if item.detail else item.name for item in (ctest, doctest, anim) if not item.ok]
     return Result("C++ tests", not failed, "" if not failed else "failed: " + "; ".join(failed),
                   seconds=round(ctest.seconds + doctest.seconds + anim.seconds, 2), subchecks=subchecks)
@@ -527,17 +510,21 @@ def check_python_tests(logs: Path) -> Result:
         [sys.executable, str(ROOT / "tools/animcheck/tests/test_animcheck.py")],  # T-061 animation metrics
         [sys.executable, str(ROOT / "pipeline/charsys/tests/test_versions.py")],  # T-043 version registry (T-077)
         [sys.executable, str(ROOT / "tools/fidelity/tests/test_metrics.py")],  # fidelity metric functions (T-077)
+        [sys.executable, str(ROOT / "tools/fidelity/tests/test_metrics_v2.py")],  # T-153 opt-in score v2
         [sys.executable, str(ROOT / "tools/lipsync/test_lipsync.py")],  # T-054a lip sync (T-077)
         [sys.executable, str(ROOT / "tools/tests/test_version_switch.py")],  # T-088 version switch
         [sys.executable, str(ROOT / "pipeline/charsys/tests/test_materials_r2.py")],  # T-092 presets/3
         [sys.executable, str(ROOT / "pipeline/production/tests/test_sets.py")],  # T-098L set data
         [sys.executable, str(ROOT / "tools/fit/tests/test_fit.py")],  # T-090 fit optimiser
+        [sys.executable, str(ROOT / "tests/props/test_props.py")],  # T-163 starter prop library
         [sys.executable, str(ROOT / "pipeline/charsys/tests/test_face_v3.py")],  # T-089 face/3 (plain checks)
         [sys.executable, str(ROOT / "pipeline/charsys/tests/test_face_v3b.py")],  # T-089b face polish (plain checks)
         [sys.executable, str(ROOT / "pipeline/charsys/tests/test_face_v4.py")],  # T-109 face round 4 (plain checks)
         [sys.executable, str(ROOT / "pipeline/charsys/tests/test_hair_r4.py")],  # T-091 groom/3 (plain checks)
         [sys.executable, str(ROOT / "pipeline/charsys/tests/test_hair_r5.py")],  # T-118 groom/4 (plain checks)
         [sys.executable, str(ROOT / "pipeline/charsys/tests/test_hands_r2.py")],  # T-121 hands_r2 (plain checks)
+        [sys.executable, str(ROOT / "pipeline/charsys/tests/test_guard_allowlist.py")],  # T-154 guard allowlist
+        [sys.executable, str(ROOT / "pipeline/charsys/tests/test_render_profiles.py")],  # T-166 render/encode defaults
         [sys.executable, str(ROOT / "pipeline/charsys/tests/test_garments_r3.py")],  # T-119 garment/3 (plain checks)
         [sys.executable, str(ROOT / "pipeline/charsys/tests/test_expressions_r3.py")],  # T-113 expression sets (plain checks)
         [sys.executable, str(ROOT / "tests/acting/test_girl_signature.py")],  # T-097-girl acting signature
@@ -545,6 +532,7 @@ def check_python_tests(logs: Path) -> Result:
         [sys.executable, str(ROOT / "tests/acting/test_boy_signature.py")],  # T-097-boy acting signature
         [sys.executable, str(ROOT / "pipeline/charsys/tests/test_boy2_face.py")],  # T-058 spec checks, no Blender (T-077)
         [sys.executable, str(ROOT / "tools/ci/tests/test_t127_shards.py")],  # T-127 shard plan, verdict, inventory
+        [sys.executable, str(ROOT / "tools/tests/test_task_kit.py")],  # T-165 opt-in task kit
     ]
     cleanup_tests = ROOT / "tools/cleanup/run_tests.py"  # T-048 branch-cleanup tests, once merged
     if cleanup_tests.is_file():
@@ -823,6 +811,18 @@ def unit_determinism(c: BlenderContext) -> None:
                  determinism_log)
 
 
+def unit_build_determinism_girl(c: BlenderContext) -> None:
+    # T-158: build the current girl (0.13.0) twice; before T-158 her ears / upper lids changed between runs by ~1e-8 m
+    # (below the 0.01 mm fingerprint grid, hence --strict: 1e-7 m mesh hashes with shape keys).
+    log = c.logs / "blender-build-determinism-girl.log"
+    out = c.out / "build-determinism-girl"
+    code, _ = run_logged([sys.executable, str(ROOT / "pipeline/charsys/tests/test_determinism.py"), "--blender",
+                          c.executable, "--out", str(out), "--character", "girl_auburn_bun_glasses", "--runs", "2",
+                          "--jobs", "2", "--strict"], log)
+    ok = code == 0 and json_pass(out / "determinism.json")
+    add_subcheck(c.subchecks, "build determinism girl", ok, "" if ok else "two girl builds differ", log)
+
+
 def unit_export_engine(c: BlenderContext) -> None:
     export_log = c.logs / "blender-export-engine.log"
     export_command = [
@@ -842,6 +842,14 @@ def unit_hair(c: BlenderContext) -> None:
     hair_code, _ = run_logged(hair_command, hair_log)
     hair_ok = hair_code == 0 and json_pass(hair_json)
     add_subcheck(c.subchecks, "hair/groom test", hair_ok, "" if hair_ok else "hair/groom test failed", hair_log)
+
+
+def unit_hair_curves(c: BlenderContext) -> None:
+    # T-141 opt-in native hair curves: the test launches Blender itself (--blender), so it runs in the Blender tier.
+    log = c.logs / "blender-hair-curves.log"
+    code, _ = run_logged([sys.executable, str(ROOT / "pipeline/charsys/tests/test_hair_curves.py"), "--blender",
+                          c.executable], log)
+    add_subcheck(c.subchecks, "hair curves (T-141)", code == 0, "" if code == 0 else "hair curves test failed", log)
 
 
 def unit_groom(c: BlenderContext) -> None:
@@ -974,9 +982,11 @@ def unit_fidelity_regression(c: BlenderContext) -> None:
 BLENDER_UNITS: list[tuple[str, object, bool]] = [
     ("charsys", unit_charsys, False),
     ("determinism", unit_determinism, False),
+    ("build-determinism-girl", unit_build_determinism_girl, False),  # T-158
     ("export-engine", unit_export_engine, False),
     ("face", unit_face, False),
     ("hair", unit_hair, False),
+    ("hair-curves", unit_hair_curves, False),  # T-141
     ("groom", unit_groom, False),
     ("garment", unit_garment, False),
     ("material-presets", unit_material_presets, False),

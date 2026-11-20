@@ -1,0 +1,146 @@
+{
+ "variant": "noden",
+ "tag": "noden",
+ "description": "128 spp, denoising off (isolates the OIDN cost)",
+ "settings": {
+  "cycles.use_denoising": false
+ },
+ "toggles": {},
+ "blend": "/root/t124/base/shot.blend",
+ "load_s": 3.47,
+ "blender": "5.3.0",
+ "threads": 4,
+ "resolution": [
+  1280,
+  720
+ ],
+ "effective": {
+  "samples": 128,
+  "adaptive": true,
+  "threshold": 0.009999999776482582,
+  "max_bounces": 12,
+  "denoiser": null,
+  "denoise_passes": "RGB_ALBEDO_NORMAL",
+  "prefilter": "ACCURATE",
+  "persistent": false
+ },
+ "frames": [
+  {
+   "frame": 65,
+   "repeat": 0,
+   "render_s": 451.38,
+   "save_s": 0.17,
+   "phases": {
+    "sync": 7.68,
+    "bvh": 2.81,
+    "kernels": 0.01,
+    "path_trace": 438.31,
+    "denoise": 0.0,
+    "other": 2.56
+   },
+   "peak_mem": "",
+   "timeline": [
+    [
+     4.63,
+     "kernels",
+     "Updating Shaders"
+    ],
+    [
+     4.65,
+     "sync",
+     "Updating Scene Attribute"
+    ],
+    [
+     4.65,
+     "kernels",
+     "Updating Camera"
+    ],
+    [
+     4.65,
+     "sync",
+     "Updating Meshes Flags"
+    ],
+    [
+     4.65,
+     "kernels",
+     "Updating Particle Systems"
+    ],
+    [
+     4.65,
+     "sync",
+     "Copying Particles to device"
+    ],
+    [
+     4.65,
+     "kernels",
+     "Updating Displacement Images"
+    ],
+    [
+     4.65,
+     "sync",
+     "Computing normals"
+    ],
+    [
+     6.86,
+     "bvh",
+     "Building BVH"
+    ],
+    [
+     7.1,
+     "sync",
+     "Building"
+    ],
+    [
+     7.1,
+     "bvh",
+     "Building BVH"
+    ],
+    [
+     9.67,
+     "sync",
+     "Computing attributes"
+    ],
+    [
+     10.49,
+     "kernels",
+     "Updating Primitive Offsets"
+    ],
+    [
+     10.49,
+     "sync",
+     "Updating Images"
+    ],
+    [
+     10.49,
+     "kernels",
+     "Updating Volume"
+    ],
+    [
+     10.49,
+     "sync",
+     "Computing tree"
+    ],
+    [
+     10.5,
+     "kernels",
+     "Updating Integrator"
+    ],
+    [
+     10.5,
+     "sync",
+     "Writing constant memory"
+    ],
+    [
+     10.5,
+     "path_trace",
+     "Sample #/#"
+    ],
+    [
+     448.81,
+     "other",
+     "Finished"
+    ]
+   ]
+  }
+ ]
+}

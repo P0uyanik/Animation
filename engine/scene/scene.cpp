@@ -317,6 +317,9 @@ Result<Scene> loadScene(const std::filesystem::path& path) {
     cd.gazeLegibility = cj.value("gazeLegibility", Json());
     if (auto r = gazeLegibilityFromJson(cd.gazeLegibility); !r)
       return fail(std::format("character '{}': {}", cd.name, r.error().message));
+    cd.blinkSchedule = cj.value("blinkSchedule", Json());
+    if (auto r = blinkScheduleFromJson(cd.blinkSchedule, cd.name); !r)
+      return fail(std::format("character '{}': {}", cd.name, r.error().message));
     if (!cd.personality.is_null() && !cd.personality.is_string() && !cd.personality.is_boolean())
       return fail(std::format("character '{}': personality must be a profile id or false", cd.name));
     if (cd.personality.is_boolean() && cd.personality.get<bool>())
@@ -405,6 +408,10 @@ Result<Scene> loadScene(const std::filesystem::path& path) {
     if (auto r = animPrinciplesFromJson(*it); !r) return std::unexpected(r.error());
     s.animPrinciples = *it;
   }
+  if (auto it = j.find("reachMechanics"); it != j.end() && !it->is_null()) {  // T-134 (opt-in)
+    if (auto r = reachMechanicsFromJson(*it); !r) return fail(std::format("{}: {}", path.string(), r.error().message));
+    s.reachMechanics = *it;
+  }
   if (auto it = j.find("interaction"); it != j.end() && !it->is_null()) {  // T-096 (opt-in)
     if (auto r = interactionOptionsFromJson(*it); !r) return fail(std::format("{}: {}", path.string(), r.error().message));
     s.interaction = *it;
@@ -412,6 +419,10 @@ Result<Scene> loadScene(const std::filesystem::path& path) {
   if (auto it = j.find("gazeLegibility"); it != j.end() && !it->is_null()) {  // T-120 (opt-in)
     if (auto r = gazeLegibilityFromJson(*it); !r) return fail(std::format("{}: {}", path.string(), r.error().message));
     s.gazeLegibility = *it;
+  }
+  if (auto it = j.find("blinkSchedule"); it != j.end() && !it->is_null()) {  // T-136 (opt-in)
+    if (auto r = blinkScheduleFromJson(*it, ""); !r) return fail(std::format("{}: {}", path.string(), r.error().message));
+    s.blinkSchedule = *it;
   }
   if (auto it = j.find("timing"); it != j.end() && !it->is_null()) {  // T-104 (opt-in)
     if (!it->is_string() || it->get<std::string>().empty())
@@ -533,6 +544,7 @@ Json sceneToJson(const Scene& s) {
     if (!c.bodyMechanics.is_null()) cj["bodyMechanics"] = c.bodyMechanics;
     if (!c.personality.is_null()) cj["personality"] = c.personality;
     if (!c.gazeLegibility.is_null()) cj["gazeLegibility"] = c.gazeLegibility;
+    if (!c.blinkSchedule.is_null()) cj["blinkSchedule"] = c.blinkSchedule;
     chars.push_back(cj);
   }
   Json anim = Json::object();
@@ -553,9 +565,11 @@ Json sceneToJson(const Scene& s) {
   if (!s.actions.empty()) j["actions"] = s.actions;
   if (s.director.is_object()) j["director"] = s.director;
   if (!s.animPrinciples.is_null()) j["animPrinciples"] = s.animPrinciples;
+  if (!s.reachMechanics.is_null()) j["reachMechanics"] = s.reachMechanics;
   if (!s.interaction.is_null()) j["interaction"] = s.interaction;
   if (!s.timing.is_null()) j["timing"] = s.timing;
   if (!s.gazeLegibility.is_null()) j["gazeLegibility"] = s.gazeLegibility;
+  if (!s.blinkSchedule.is_null()) j["blinkSchedule"] = s.blinkSchedule;
   if (!s.events.is_null()) j["events"] = s.events;
   return j;
 }
@@ -565,9 +579,9 @@ Result<InteractionOptions> interactionOptionsFromJson(const Json& j) {
   if (j.is_null()) return o;
   if (!j.is_object()) return fail("interaction: expected an object");
   for (const auto& [k, v] : j.items()) {
-    if (k == "headVolumes" || k == "followSharedProp" || k == "visibleGrip") {
+    if (k == "headVolumes" || k == "followSharedProp" || k == "visibleGrip" || k == "graspFit") {
       if (!v.is_boolean()) return fail(std::format("interaction: {} must be true or false", k));
-      (k == "headVolumes" ? o.headVolumes : k == "followSharedProp" ? o.followSharedProp : o.visibleGrip) = v.get<bool>();
+      (k == "headVolumes" ? o.headVolumes : k == "followSharedProp" ? o.followSharedProp : k == "graspFit" ? o.graspFit : o.visibleGrip) = v.get<bool>();
     } else if (k == "headClearance") {
       if (!v.is_number() || !(v.get<float>() >= 0 && v.get<float>() <= 0.1f))
         return fail("interaction: headClearance must be a number of metres in [0, 0.1]");
@@ -717,6 +731,7 @@ Result<void> SceneEvaluator::load(const Scene& scene, const EvalOptions& opt) {
     std::lock_guard<std::mutex> lock(*bodyMutex_);
     for (auto& m : bodyCache_) m.clear();
   }
+  buildLiveGaze();  // T-136 E3 (only characters with the opt-in gaze chain)
   // Secondary motion after the actions are compiled (action planning sees the kinematic pose).
   dynamics_.assign(characters_.size(), nullptr);
   for (size_t c = 0; c < characters_.size(); ++c) {
@@ -858,7 +873,7 @@ std::vector<mat4> SceneEvaluator::kinematicGlobals(size_t c, double frame, Pose*
   mat4 world = objectMatrixLocal(pos, yaw, 1.0f);
   // Facial layer (T-046): blink, eye darts and control offsets of the living face.
   const bool face = faceActive(c);
-  const FaceState fs = face ? faces_[c].evaluate(frame) : FaceState{};
+  const FaceState fs = face ? faceEval(c, frame) : FaceState{};
   // Expression-driven bones (e.g. a jaw opening with the mouth): weight x rotation, from the package metadata.
   for (const auto& [morph, bones] : ci.asset.expressionBones) {
     float w = face ? morphControlWeight(c, morph, frame) : expressionWeight(c, morph, frame);
@@ -888,15 +903,29 @@ std::vector<mat4> SceneEvaluator::kinematicGlobals(size_t c, double frame, Pose*
   if (face && !morphBlink) applyLidBlink(ci.asset.skeleton, pose, fs.blink);
   // Body mechanics (T-045): shoulders, torso, weight shift and pivot carry, before IK and look-at so they work on it.
   if (bodyMechanicsActive(c)) applyBodyMechanicsAt(c, frame, pose);
-  if (legible.enabled) turnHeadForGaze(ci.asset.skeleton, clip, prefix, frame, scene_.rate.fps(), world, pose, legible);
+  // Gaze chain (T-136 E3, opt-in): the exact live target of an atProp / atCharacter look, torso + neck + head.
+  vec3 liveOffset(0);
+  double sinceLook = -1;
+  const bool live = legible.enabled && legible.chain && liveGazeOffset(c, frame, liveOffset, &sinceLook);
+  if (legible.enabled && legible.chain)
+    turnChainForGaze(ci.asset.skeleton, clip, prefix, frame, scene_.rate.fps(), world, pose, legible, liveOffset,
+                     live ? sinceLook : -1.0);
+  else if (legible.enabled)
+    turnHeadForGaze(ci.asset.skeleton, clip, prefix, frame, scene_.rate.fps(), world, pose, legible);
   applyConstraints(ci.asset.skeleton, clip, prefix, frame, world, pose, life.gaze, scene_.rate.fps());
+  if (live)
+    aimEyesAt(ci.asset.skeleton, world, pose, clip.find(prefix + "lookAt")->evaluate(frame) + liveOffset, std::clamp(clip.evaluate(prefix + "lookAt.weight", frame, vec3(1)).x, 0.0f, 1.0f));
   if (face && (fs.eyeOffsetDeg.x != 0 || fs.eyeOffsetDeg.y != 0)) {  // eye darts and gaze bias on top of the aim
     const quat dq = glm::angleAxis(glm::radians(fs.eyeOffsetDeg.x), vec3(0, 1, 0)) *
                     glm::angleAxis(glm::radians(-fs.eyeOffsetDeg.y), vec3(1, 0, 0));
     for (size_t b = 0; b < ci.asset.skeleton.bones.size(); ++b)
       if (ci.asset.skeleton.bones[b].name.rfind("eye.", 0) == 0) pose.local[b] = glm::normalize(pose.local[b] * dq);
   }
-  if (legible.enabled) clampEyesToGazeRange(ci.asset.skeleton, world, pose, legible.rangeDeg);  // darts and blinks too
+  if (legible.enabled) {  // darts and blinks too; a chained look keeps its eyes near centre (eyeShareDeg)
+    vec2 range = legible.rangeDeg;
+    if (legible.chain && legible.eyeShareDeg.x >= 0) range = glm::min(range, legible.eyeShareDeg + vec2(2.0f));
+    clampEyesToGazeRange(ci.asset.skeleton, world, pose, range);
+  }
   applyArmPoles(ci.asset.skeleton, clip, prefix, frame, world, pose);          // elbow outward (T-030)
   applyOrientConstraints(ci.asset.skeleton, clip, prefix, frame, world, pose);  // hand-prop interaction (T-022)
   if (clips) applyClipFingers(c, frame, pose);
@@ -1119,11 +1148,118 @@ Result<GazeLegibility> gazeLegibilityFromJson(const Json& j, GazeLegibility base
       if (!v.is_number() || v.get<float>() < 0) return bad("'" + key + "' must be a number, 0 or more");
       (key == "leadFrames" ? base.leadFrames : key == "turnFrames" ? base.turnFrames
        : key == "headYawDeg" ? base.headYawDeg : base.headPitchDeg) = v.get<float>();
+    } else if (key == "chain") {  // T-136 E3
+      if (v.is_boolean()) {
+        base.chain = v.get<bool>();
+        continue;
+      }
+      if (!v.is_object()) return bad("'chain' must be true, false or an object");
+      base.chain = true;
+      for (auto& [ck, cv] : v.items()) {
+        float* field = ck == "neckYawDeg" ? &base.neckYawDeg : ck == "neckPitchDeg" ? &base.neckPitchDeg
+                       : ck == "torsoYawDeg" ? &base.torsoYawDeg : ck == "torsoPitchDeg" ? &base.torsoPitchDeg
+                       : ck == "torsoLagFrames" ? &base.torsoLagFrames : nullptr;
+        if (ck == "enabled") {
+          if (!cv.is_boolean()) return bad("'chain.enabled' must be true or false");
+          base.chain = cv.get<bool>();
+          continue;
+        }
+        if (ck == "eyeShareDeg") {
+          if (!cv.is_array() || cv.size() != 2 || !cv[0].is_number() || !cv[1].is_number() || cv[0].get<float>() < 0 ||
+              cv[1].get<float>() < 0)
+            return bad("'chain.eyeShareDeg' must be [yaw, pitch], both 0 or more");
+          base.eyeShareDeg = vec2(cv[0].get<float>(), cv[1].get<float>());
+          continue;
+        }
+        if (!field) return bad("unknown chain key '" + ck + "'");
+        if (!cv.is_number() || cv.get<float>() < 0) return bad("'chain." + ck + "' must be a number, 0 or more");
+        *field = cv.get<float>();
+      }
     } else {
       return bad("unknown key '" + key + "'");
     }
   }
   return base;
+}
+
+Result<BlinkSchedule> blinkScheduleFromJson(const Json& j, const std::string& character, BlinkSchedule base) {
+  auto bad = [](const std::string& m) { return std::unexpected(Error{"blinkSchedule: " + m}); };
+  if (j.is_null()) return base;
+  if (j.is_boolean()) {
+    base.enabled = j.get<bool>();
+    return base;
+  }
+  if (!j.is_object()) return bad("must be true, false or an object");
+  base.enabled = true;
+  for (auto& [key, v] : j.items()) {
+    if (key == "enabled") {
+      if (!v.is_boolean()) return bad("'enabled' must be true or false");
+      base.enabled = v.get<bool>();
+    } else if (key == "shortBeatFrames" || key == "preferWindowFrames") {
+      if (!v.is_number() || v.get<float>() < 0) return bad("'" + key + "' must be a number, 0 or more");
+      (key == "shortBeatFrames" ? base.shortBeatFrames : base.preferWindowFrames) = v.get<float>();
+    } else if (key == "actionChanges") {
+      if (!v.is_boolean() && !v.is_array()) return bad("'actionChanges' must be true, false or a list of frames");
+      if (v.is_array())
+        for (const Json& f : v) {
+          if (!f.is_number()) return bad("'actionChanges' frames must be numbers");
+          base.actionChanges.push_back(f.get<double>());
+        }
+    } else if (key == "keyBeats") {
+      if (!v.is_array()) return bad("'keyBeats' must be a list");
+      for (const Json& b : v) {
+        if (!b.is_object() || !b.contains("start") || !b.contains("end") || !b["start"].is_number() || !b["end"].is_number() ||
+            b["end"].get<double>() < b["start"].get<double>())
+          return bad("a key beat needs numbers 'start' <= 'end'");
+        bool mine = true;
+        if (auto ch = b.find("characters"); ch != b.end()) {
+          if (!ch->is_array()) return bad("a key beat's 'characters' must be a list of names");
+          mine = character.empty();
+          for (const Json& n : *ch) {
+            if (!n.is_string()) return bad("a key beat's 'characters' must be a list of names");
+            if (n.get<std::string>() == character) mine = true;
+          }
+        }
+        for (auto& [bk, bv] : b.items())
+          if (bk != "start" && bk != "end" && bk != "characters" && bk != "name") return bad("unknown key beat key '" + bk + "'");
+        if (mine) base.keyBeats.push_back({b["start"].get<double>(), b["end"].get<double>()});
+      }
+    } else {
+      return bad("unknown key '" + key + "'");
+    }
+  }
+  return base;
+}
+
+BlinkSchedule SceneEvaluator::blinkSchedule(size_t c) const {
+  BlinkSchedule b;
+  if (c >= scene_.characters.size() || (scene_.blinkSchedule.is_null() && scene_.characters[c].blinkSchedule.is_null()))
+    return b;
+  const std::string& name = scene_.characters[c].name;
+  if (auto r = blinkScheduleFromJson(scene_.blinkSchedule, name)) b = *r;
+  if (auto r = blinkScheduleFromJson(scene_.characters[c].blinkSchedule, name, b)) b = *r;
+  if (!b.enabled) return b;
+  // Action changes: explicit frames, else (or "actionChanges": true) the character's own action starts.
+  auto autoChanges = [](const Json& j) {
+    const Json* a = j.is_object() ? (j.contains("actionChanges") ? &j["actionChanges"] : nullptr) : nullptr;
+    return !a || (a->is_boolean() && a->get<bool>());
+  };
+  if (autoChanges(scene_.blinkSchedule) && autoChanges(scene_.characters[c].blinkSchedule))
+    for (const Json& a : scene_.actions) {
+      if (!a.is_object()) continue;
+      const std::string type = a.value("type", ""), who = a.value("character", ""), to = a.value("to", "");
+      if (type == "look" || type == "emotion" || (who != name && to != name)) continue;
+      auto add = [&](const char* key) {
+        if (auto it = a.find(key); it != a.end() && it->is_number()) b.actionChanges.push_back(it->get<double>());
+      };
+      if (who == name) add("start");
+      if (type == "pass") {
+        if (to == name) add("receiverStart");
+        add("contact");
+        add("release");
+      }
+    }
+  return b;
 }
 
 GazeLegibility SceneEvaluator::gazeLegibility(size_t c) const {
@@ -1215,6 +1351,222 @@ void turnHeadForGaze(const Skeleton& sk, const Clip& clip, const std::string& pr
     pose.local[size_t(neck)] = glm::normalize(glm::inverse(parentRot) * r * parentRot * pose.local[size_t(neck)]);
   }
   if (weight < 1) pose.local[size_t(neck)] = glm::normalize(glm::slerp(neckBefore, pose.local[size_t(neck)], weight));
+}
+
+void SceneEvaluator::buildLiveGaze() {
+  // Pass 1 reads every pose with the keyed targets; pass 2 with pass 1's live targets, so two characters in eye contact
+  // see each other's corrected heads.
+  liveGaze_.clear();
+  for (int pass = 0; pass < 2; ++pass) buildLiveGazePass();
+}
+
+void SceneEvaluator::buildLiveGazePass() {
+  std::vector<std::vector<vec4>> out(characters_.size());
+  for (size_t c = 0; c < characters_.size(); ++c) {
+    const GazeLegibility g = gazeLegibility(c);
+    if (!g.enabled || !g.chain) continue;
+    for (int f = scene_.frameStart; f <= scene_.frameEnd; ++f) {
+      vec3 live(0), keyed(0);
+      // The offset applies the same to every sample of the lagged target (the live target's motion is the keyed one's).
+      double lookStart = f;
+      const bool ok = liveGazeTarget(c, f, live, keyed, &lookStart);
+      if (ok) {
+        // Relative to the track's own value at f (the keys are every 3 frames, linear between).
+        const vec3 track = scene_.animation.find(scene_.characters[c].name + "/lookAt")->evaluate(f);
+        out[c].push_back(vec4(live - track, float(f - lookStart) + 1.0f));
+      } else {
+        out[c].push_back(vec4(0));
+      }
+    }
+  }
+  liveGaze_ = std::move(out);
+}
+
+bool SceneEvaluator::liveGazeOffset(size_t c, double frame, vec3& offset, double* sinceStart) const {
+  if (c >= liveGaze_.size() || liveGaze_[c].empty()) return false;
+  const std::vector<vec4>& v = liveGaze_[c];
+  const double x = frame - scene_.frameStart;
+  if (x < 0 || x > double(v.size() - 1)) return false;
+  const size_t i = size_t(x);
+  const size_t j = std::min(i + 1, v.size() - 1);
+  if (v[i].w <= 0 || v[j].w <= 0) return false;  // a look change between the two frames: the keyed target
+  const float u = float(x - double(i));
+  offset = glm::mix(vec3(v[i]), vec3(v[j]), u);
+  if (sinceStart) *sinceStart = double(v[i].w) - 1.0 + double(u);
+  return true;
+}
+
+bool SceneEvaluator::liveGazeTarget(size_t c, double frame, vec3& live, vec3& keyed, double* lookStartOut) const {
+  if (c >= scene_.characters.size() || !scene_.actions.is_array()) return false;
+  const std::string& name = scene_.characters[c].name;
+  const Track* track = scene_.animation.find(name + "/lookAt");
+  if (!track || track->keys.empty()) return false;
+  const Json* look = nullptr;  // the latest authored look of c that has started
+  double lookStart = -1e30;
+  for (const Json& a : scene_.actions) {
+    if (!a.is_object() || a.value("type", "") != "look" || a.value("character", "") != name) continue;
+    const double st = a.contains("start") && a["start"].is_number() ? a["start"].get<double>() : double(scene_.frameStart);
+    if (st <= frame && st >= lookStart) {
+      look = &a;
+      lookStart = st;
+    }
+  }
+  if (!look || (!look->contains("atProp") && !look->contains("atCharacter"))) return false;
+  if (lookStartOut) *lookStartOut = lookStart;
+  if (look->contains("atProp")) {  // the prop's middle, as the look action keys it (actions.cpp), but every frame
+    const std::string prop = (*look)["atProp"].is_string() ? (*look)["atProp"].get<std::string>() : "";
+    bool found = false;
+    for (size_t p = 0; p < scene_.props.size() && p < propAssets_.size(); ++p) {
+      if (scene_.props[p].name != prop) continue;
+      found = true;
+      const PropAsset& pa = propAssets_[p];
+      vec3 middle(0);
+      if (pa.mesh.kind == AssetMeshSource::Kind::Primitive) {
+        if (pa.mesh.primitive == AssetMeshSource::Primitive::Cylinder) middle = vec3(0, 0.5f * pa.mesh.height * pa.scaleMetres, 0);
+      } else if (pa.collision) {
+        middle = pa.collision->transform.translation;
+      }
+      live = keyed = vec3(propWorld(p, frame) * vec4(middle, 1));
+      break;
+    }
+    if (!found) return false;
+  } else {  // eye contact: the midpoint of the partner's eyes; the track keys a point before its face
+    const std::string other = (*look)["atCharacter"].is_string() ? (*look)["atCharacter"].get<std::string>() : "";
+    size_t oc = scene_.characters.size();
+    for (size_t i = 0; i < scene_.characters.size(); ++i)
+      if (scene_.characters[i].name == other) oc = i;
+    if (oc >= characters_.size() || oc == c) return false;
+    const Skeleton& sk = characters_[oc].asset.skeleton;
+    const int head = sk.find("head");
+    const std::vector<int> eyes = eyeBones(sk);
+    if (head < 0 || eyes.empty()) return false;
+    const std::vector<mat4> g = kinematicGlobals(oc, frame, nullptr);
+    live = vec3(0);
+    for (int e : eyes) live += vec3(g[size_t(e)][3]);
+    live /= float(eyes.size());
+    keyed = vec3(g[size_t(head)] * vec4(0, 0.11f, 0.09f, 1));
+  }
+  // A generated look (reaction events) may have taken the track over: then the keyed value is somewhere else. The track
+  // was keyed while the actions compiled, so a moving prop can drift from it by some centimetres (e910: 13 cm).
+  return glm::distance(track->evaluate(frame), keyed) < 0.25f;
+}
+
+void turnChainForGaze(const Skeleton& sk, const Clip& clip, const std::string& prefix, double frame, double fps,
+                      const mat4& world, Pose& pose, const GazeLegibility& lg, vec3 liveOffset, double sinceLookStart) {
+  const Track* t = clip.find(prefix + "lookAt");
+  const int head = sk.find("head");
+  if (!t || t->keys.empty() || head < 0) return;
+  const std::vector<int> eyes = eyeBones(sk);
+  if (eyes.empty()) return;
+  const bool keyedNeck = clip.find(prefix + "neck.rot") && !clip.find(prefix + "neck.rot")->keys.empty();
+  const double scale = std::max(1.0, fps) / 24.0;
+  // The target as it was `lag` .. `lag` + turnFrames ago (bell-weighted), moved onto the live target.
+  auto lagged = [&](double lag, float& weight) {
+    constexpr int kSamples = 8;
+    vec3 target(0);
+    float total = 0;
+    weight = 0;
+    for (int i = 0; i < kSamples; ++i) {
+      const double u = (i + 0.5) / kSamples;
+      const float k = float(0.5 - 0.5 * std::cos(2.0 * 3.14159265358979 * u));
+      const double f = frame - lag * scale - lg.turnFrames * scale * u;
+      target += k * t->evaluate(f);
+      weight += k * clip.evaluate(prefix + "lookAt.weight", f, vec3(1)).x;
+      total += k;
+    }
+    weight = std::clamp(weight / total, 0.0f, 1.0f);
+    const vec3 laggedTarget = target / total + liveOffset;
+    // Pursuit: once the look has settled (all samples inside it), ease onto the current target.
+    if (sinceLookStart < 0) return laggedTarget;
+    const double settled = (lag + lg.turnFrames) * scale;
+    const float p = smoothstep01(float(std::clamp((sinceLookStart - settled) / std::max(1.0, lg.turnFrames * scale), 0.0, 1.0)));
+    if (p <= 0) return laggedTarget;
+    weight = glm::mix(weight, std::clamp(clip.evaluate(prefix + "lookAt.weight", frame, vec3(1)).x, 0.0f, 1.0f), p);
+    return glm::mix(laggedTarget, t->evaluate(frame) + liveOffset, p);
+  };
+  auto comfortable = [](float limit) { return limit - std::min(5.0f, limit * 0.25f) - 0.25f; };
+  vec2 eyeComfort(comfortable(lg.rangeDeg.x), comfortable(lg.rangeDeg.y));
+  if (lg.eyeShareDeg.x >= 0) eyeComfort = glm::min(eyeComfort, lg.eyeShareDeg);
+  const vec2 neckCap(std::max({0.0f, lg.headYawDeg, lg.neckYawDeg}), std::max({0.0f, lg.headPitchDeg, lg.neckPitchDeg}));
+  const vec2 torsoCap(std::max(0.0f, lg.torsoYawDeg), std::max(0.0f, lg.torsoPitchDeg));
+  // One stage: turn `bones` (parent first, by share) until the near eye sits at `comfort` from the target, up to cap.
+  auto stage = [&](vec3 target, float weight, vec2 comfort, vec2 cap, const std::vector<std::pair<int, float>>& bones) {
+    if (weight <= 0 || bones.empty()) return;
+    std::vector<quat> before;
+    for (const auto& b : bones) before.push_back(pose.local[size_t(b.first)]);
+    vec2 used(0);
+    for (int pass = 0; pass < 10; ++pass) {
+      std::vector<mat4> g = boneGlobals(sk, pose, world);
+      const mat3 headRot(g[size_t(head)]);
+      // Per axis, the turn h that puts every eye inside its comfortable range (a - h within +-comfort): the smallest
+      // such turn back towards the stage's rest, or, when the eyes straddle a near target wider than the range
+      // (vergence), the middle, so both eyes share the shortfall.
+      vec2 error(0);
+      vec2 lo(-1e9f), hi(1e9f);
+      for (int e : eyes) {
+        const vec3 to = target - vec3(g[size_t(e)][3]);
+        if (glm::length2(to) < 1e-10f) return;
+        const vec2 a = gazeAngles(glm::normalize(glm::transpose(headRot) * glm::normalize(to)));
+        lo = glm::max(lo, a - comfort);
+        hi = glm::min(hi, a + comfort);
+      }
+      for (int axis = 0; axis < 2; ++axis)
+        error[axis] = lo[axis] > hi[axis] ? 0.5f * (lo[axis] + hi[axis]) : std::clamp(-used[axis], lo[axis], hi[axis]);
+      const vec2 step = glm::clamp(used + error, -cap, cap) - used;
+      if (std::abs(step.x) < 1e-3f && std::abs(step.y) < 1e-3f) break;
+      used += step;
+      const vec3 up = glm::normalize(headRot * vec3(0, 1, 0)), right = glm::normalize(headRot * vec3(1, 0, 0));
+      for (const auto& [bone, share] : bones) {
+        const quat r = glm::angleAxis(glm::radians(step.x * share), up) * glm::angleAxis(glm::radians(-step.y * share), right);
+        const int parent = sk.bones[size_t(bone)].parent;
+        const quat parentRot = glm::normalize(glm::quat_cast(parent >= 0 ? mat3(g[size_t(parent)]) : mat3(world)));
+        pose.local[size_t(bone)] = glm::normalize(glm::inverse(parentRot) * r * parentRot * pose.local[size_t(bone)]);
+        g = boneGlobals(sk, pose, world);
+      }
+    }
+    if (weight < 1)
+      for (size_t i = 0; i < bones.size(); ++i)
+        pose.local[size_t(bones[i].first)] = glm::normalize(glm::slerp(before[i], pose.local[size_t(bones[i].first)], weight));
+  };
+  auto present = [&](std::initializer_list<std::pair<const char*, float>> list) {
+    std::vector<std::pair<int, float>> out;
+    float total = 0;
+    for (const auto& [n, s] : list)
+      if (const int b = sk.find(n); b >= 0) {
+        out.push_back({b, s});
+        total += s;
+      }
+    for (auto& b : out) b.second /= std::max(1e-6f, total);
+    return out;
+  };
+  // Torso first (it carries the head), on the target the head had torsoLagFrames earlier: it takes only what lies
+  // beyond the eyes' comfortable range plus the neck's full share.
+  float wTorso = 0, wNeck = 0;
+  const vec3 torsoTarget = lagged(lg.leadFrames + lg.torsoLagFrames, wTorso);
+  stage(torsoTarget, wTorso, eyeComfort + neckCap, torsoCap, present({{"spine", 0.4f}, {"chest", 0.6f}}));
+  // Then the neck and head, as T-120's head turn but with the larger cap (a hand-keyed neck is left alone).
+  if (!keyedNeck) {
+    const vec3 neckTarget = lagged(lg.leadFrames, wNeck);
+    stage(neckTarget, wNeck, eyeComfort, neckCap, present({{"neck", 0.5f}, {"head", 0.5f}}));
+  }
+}
+
+void aimEyesAt(const Skeleton& sk, const mat4& world, Pose& pose, vec3 target, float weight) {
+  if (weight <= 0) return;
+  const std::vector<mat4> g = boneGlobals(sk, pose, world);
+  for (int e : eyeBones(sk)) {
+    const vec3 forward = glm::normalize(vec3(g[size_t(e)][2]));
+    const vec3 to = target - vec3(g[size_t(e)][3]);
+    if (glm::length2(to) < 1e-10f) continue;
+    const vec3 wanted = glm::normalize(to);
+    const vec3 axis = glm::cross(forward, wanted);
+    const float s = glm::length(axis);
+    if (s < 1e-7f) continue;
+    const quat r = glm::angleAxis(std::atan2(s, glm::dot(forward, wanted)) * std::min(1.0f, weight), axis / s);
+    const int parent = sk.bones[size_t(e)].parent;
+    const quat pr = glm::normalize(glm::quat_cast(parent >= 0 ? mat3(g[size_t(parent)]) : mat3(world)));
+    pose.local[size_t(e)] = glm::normalize(glm::inverse(pr) * r * pr * pose.local[size_t(e)]);
+  }
 }
 
 void clampEyesToGazeRange(const Skeleton& sk, const mat4& world, Pose& pose, vec2 rangeDeg) {
@@ -1316,7 +1668,7 @@ float SceneEvaluator::morphControlWeight(size_t c, const std::string& morph, dou
   if (const float po = personalityFaceOffset(c, morph, frame); po != 0.0f) w = std::clamp(w + po, 0.0f, 1.0f);
   const LifeParams life = lifeParams(c);
   if (faceActive(c)) {  // the facial layer: control offsets and its own blinks
-    const FaceState fs = faces_[c].evaluate(frame);
+    const FaceState fs = faceEval(c, frame);
     if (auto it = fs.controls.find(morph); it != fs.controls.end()) w = std::clamp(w + it->second, 0.0f, 1.0f);
     const std::string blink = blinkMorph(characters_[c]);
     if (morph == blink) w = std::max(w, fs.blink);
@@ -1337,7 +1689,13 @@ bool SceneEvaluator::faceActive(size_t c) const {
 }
 
 FaceState SceneEvaluator::faceState(size_t c, double frame) const {
-  return faceActive(c) ? faces_[c].evaluate(frame) : FaceState{};
+  return faceActive(c) ? faceEval(c, frame) : FaceState{};
+}
+
+FaceState SceneEvaluator::faceEval(size_t c, double frame) const {
+  FaceState fs = faces_[c].evaluate(frame);
+  if (const BlinkSchedule bs = blinkSchedule(c); bs.enabled) fs.blink = faces_[c].blink(frame, bs);
+  return fs;
 }
 
 // Animated weight of a morph channel (track "<name>/expr.<morph>", else the character's default expression).
@@ -1372,7 +1730,7 @@ std::shared_ptr<FrameSnapshot> SceneEvaluator::evaluate(double frame) const {
     std::vector<std::string> names;
     const LifeParams life = lifeParams(c);
     const bool face = faceActive(c);
-    const FaceState fs = face ? faces_[c].evaluate(frame) : FaceState{};
+    const FaceState fs = face ? faceEval(c, frame) : FaceState{};
     const std::string blink = life.enabled ? blinkMorph(ci) : std::string();
     const float blinkW = blink.empty() ? 0.0f
                          : face        ? fs.blink

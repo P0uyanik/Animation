@@ -1,0 +1,15 @@
+{
+ "samples": 16,
+ "px": 600,
+ "views": [
+  "hair_front",
+  "hair_side",
+  "hair_back",
+  "back_macro"
+ ],
+ "seconds": {
+  "base": 539.1,
+  "add": 882.8,
+  "replace": 657.1
+ }
+}

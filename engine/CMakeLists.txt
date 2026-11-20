@@ -1,5 +1,6 @@
 # Engine modules. Dependencies point downward only:
-#   core <- geom <- anim (secondary motion reads its JSON block) <- fuzz <- model <- scene ;  render depends on core + geom only.
+#   core <- geom <- anim (secondary motion reads its JSON block) <- fuzz <- model <- scene.
+# The engine path tracer (engine/render/) was removed in T-142; tag backup/20261119T224500Z/legacy-engine-renderer-2026-11-19.
 function(plush_module name)
   cmake_parse_arguments(M "" "" "SOURCES;DEPS" ${ARGN})
   add_library(${name} STATIC ${M_SOURCES})
@@ -13,11 +14,3 @@ plush_module(plush_anim SOURCES anim/animation.cpp anim/secondary.cpp anim/body_
 plush_module(plush_fuzz SOURCES fuzz/fuzz.cpp DEPS plush_geom)
 plush_module(plush_model SOURCES model/sdf.cpp model/character.cpp model/imported_character.cpp model/clip.cpp DEPS plush_geom plush_anim plush_fuzz)
 plush_module(plush_scene SOURCES scene/asset_library.cpp scene/scene.cpp scene/actions.cpp scene/shot_bake.cpp scene/clip_layers.cpp scene/emotion.cpp scene/face_layer.cpp scene/interaction.cpp scene/collision.cpp scene/reaction.cpp scene/verbs.cpp DEPS plush_model)
-if(PLUSH_BUILD_RENDERER)
-  plush_module(plush_render SOURCES render/bsdf.cpp render/pathtracer.cpp render/image.cpp DEPS plush_geom embree plush_stb)
-
-  if(OpenImageDenoise_FOUND)
-    target_link_libraries(plush_render PRIVATE OpenImageDenoise)
-    target_compile_definitions(plush_render PRIVATE PLUSH_HAS_OIDN=1)
-  endif()
-endif()
