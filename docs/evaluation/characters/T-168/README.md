@@ -43,15 +43,25 @@ r3 (owner ~17:05 CET, option 2): `body.params.head.outline.side` below mid-face 
 (t .37/.44/.51/.57/.60: 0.013/-0.027/-0.08/-0.16/-0.27 -> -0.015/-0.09/-0.20/-0.33/-0.46 eye-spacing units; side
 profile at z 0.70: 0.117 -> about 0.100 m forward, 0.71: 0.130 -> 0.120); nose height 3.5 -> 2.5 mm.
 
-## 3. Evidence (r3)
-- Strict sheet: `boy_2.3.0_vs_T-168_strict.jpg` (recipe `boy_2.3.0_vs_T-168.recipe.json`, preview passed, Cycles 16 spp).
-- 100 % close-ups, same rig and settings, 480 px renders pasted unscaled: `boy_closeups_2.3.0_vs_T-168.jpg`
-  (rows: front, 3/4 -35, side -90; columns: val27 reference (enlarged, 210-240 px source), 2.3.0, T-168 r3).
-- Reading: side: chin and jaw rounder and shallower, lower face runs back from a small nose tip as in
-  val27_side_right; 3/4: no ledge under the eye, nose a faint nub; front: nose barely visible, layout, eyes, mouth and
-  hair unchanged. Remaining difference: the jaw underside is still flatter and the head deeper front to back than
-  val27; from the front the jaw line reads a little squarer than 2.3.0.
-- The table in section 1 was measured on the r1 shape; r2/r3 change the recede, the chin profile and the nose only.
+r4 (owner ~18:20 CET, "the face form has to be softer"), override data only:
+- `head.outline.front` (chin outline, half widths in eye-spacing units at t .23/.37/.47/.54/.585):
+  0.93/0.86/0.76/0.65/0.30 -> 0.94/0.83/0.70/0.52/0.35 (an ellipse: narrower, rounder chin; front half width at
+  z 0.70/0.71/0.72: 0.081/0.113/0.127 -> 0.073/0.100/0.117 m).
+- `head.profile_levels` rows 2-4 (jaw underside) narrower and shallower so the head closes more gradually to the chin.
+- `head.outline.side` chin set-back moderate (between 2.3.0 and r3): -0.06/-0.14/-0.25/-0.38 at t .44/.51/.57/.60.
+- face.shape: `outline_exponent` 2.4 -> 2.0 (no squared outline), `jaw_round_m` 6 -> 3 mm with `jaw_down` 0.5.
+
+## 3. Evidence (r4)
+- 100 % close-ups, ref | 2.3.0 | candidate, front / 3/4 / side: `boy_closeups_2.3.0_vs_T-168.jpg` (Cycles 16 spp,
+  480 px renders pasted unscaled; reference enlarged from a 210-240 px source).
+- Skin-only clay (Workbench, hair and clothes hidden), 2.3.0 vs candidate: `boy_clay_2.3.0_vs_T-168.jpg`.
+- Strict sheet: `boy_2.3.0_vs_T-168_strict.jpg` (recipe `boy_2.3.0_vs_T-168.recipe.json`, preview passed).
+- Reading: clay: 2.3.0 has a ledge under the eyes, a step at the jaw and a shelf in profile; the candidate is one
+  smooth rounded form from cheek to chin. Cycles: front jaw line is a round U, narrower at the chin; 3/4 has no ledge;
+  side runs from a small nose tip round into the chin. Nose barely visible from the front.
+- Remaining differences to val27: little chin shows below the mouth from the front (the chin tucks under); the head
+  is still deeper front to back and the jaw underside flatter than the reference; ears are 2.3.0 defaults (T-159).
+- The table in section 1 was measured on the r1 shape.
 
 ## 4. Tests
 - `test_face_t168.py --blender blender`: 11/11. After merging origin/t-159-claude-ears (3c306ea): test_ears_shape 8/8,

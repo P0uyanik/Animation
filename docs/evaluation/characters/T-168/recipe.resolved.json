@@ -2,7 +2,7 @@
  "schema": "plush-studio.review-recipe/1",
  "character": "boy_yellow_hoodie",
  "task": "T-168",
- "recipe_sha256": "82daa391536caddfbf33f19f957f77717e17ecf072ee8d7d7fec307d4148f72c",
+ "recipe_sha256": "8f28f5a858f3cbcde2491856604f3502971b2eaee6a9dc100c6f6283e49553f0",
  "inputs": {
   "main": "3c698c7"
  },
@@ -32,13 +32,13 @@
   {
    "role": "candidate",
    "tag": "candidate",
-   "label": "T-168 r3 candidate",
+   "label": "T-168 r4 candidate",
    "kind": "spec",
    "spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.3.0.spec.json",
    "overrides": [
     "docs/evaluation/characters/T-168/boy_yellow_hoodie.T-168.override.json"
    ],
-   "sha": "134a0f9",
+   "sha": "cd8d853",
    "comparison_pose": null,
    "source_variant": "compare",
    "spec_sha256": "5f50dc50226bf519b306f4e2c785c9c4255283ed0484f5657e589c8f85c241a3"
