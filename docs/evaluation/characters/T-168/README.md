@@ -39,15 +39,19 @@ Candidate data `boy_yellow_hoodie.T-168.override.json` (on the 2.3.0 spec), r2 a
 - nose `small_round` 9 / 1.6 mm -> `upturned` as a soft nub: 10 mm half width, 3.5 mm high, round dome
   (r1: 13 / 5.5 mm, read as a cone at 3/4).
 
-## 3. Evidence (r2)
+r3 (owner ~17:05 CET, option 2): `body.params.head.outline.side` below mid-face set further back in the override
+(t .37/.44/.51/.57/.60: 0.013/-0.027/-0.08/-0.16/-0.27 -> -0.015/-0.09/-0.20/-0.33/-0.46 eye-spacing units; side
+profile at z 0.70: 0.117 -> about 0.100 m forward, 0.71: 0.130 -> 0.120); nose height 3.5 -> 2.5 mm.
+
+## 3. Evidence (r3)
 - Strict sheet: `boy_2.3.0_vs_T-168_strict.jpg` (recipe `boy_2.3.0_vs_T-168.recipe.json`, preview passed, Cycles 16 spp).
 - 100 % close-ups, same rig and settings, 480 px renders pasted unscaled: `boy_closeups_2.3.0_vs_T-168.jpg`
-  (rows: front, 3/4 -35, side -90; columns: val27 reference (enlarged, 210-240 px source), 2.3.0, T-168 r2).
-- Reading: the ledge under the eye is gone at 3/4; the side profile has no shelf and keeps a round mouth/chin line
-  behind a small nose tip, close to val27_side_right; front: layout, eyes, mouth, hair unchanged, cheeks slightly
-  slimmer low down, nose a soft nub. Remaining difference to the refs: the boy's lower face is still deeper
-  (chin further forward) than val27 in the side view; that is head data, not changed here.
-- The table in section 1 was measured on the r1 shape (recede 8 mm); r2 only changes the recede and the nose.
+  (rows: front, 3/4 -35, side -90; columns: val27 reference (enlarged, 210-240 px source), 2.3.0, T-168 r3).
+- Reading: side: chin and jaw rounder and shallower, lower face runs back from a small nose tip as in
+  val27_side_right; 3/4: no ledge under the eye, nose a faint nub; front: nose barely visible, layout, eyes, mouth and
+  hair unchanged. Remaining difference: the jaw underside is still flatter and the head deeper front to back than
+  val27; from the front the jaw line reads a little squarer than 2.3.0.
+- The table in section 1 was measured on the r1 shape; r2/r3 change the recede, the chin profile and the nose only.
 
 ## 4. Tests
 - `test_face_t168.py --blender blender`: 11/11. After merging origin/t-159-claude-ears (3c306ea): test_ears_shape 8/8,
@@ -62,5 +66,5 @@ Candidate data `boy_yellow_hoodie.T-168.override.json` (on the 2.3.0 spec), r2 a
 
 ## 5. Not done / limits
 - Fidelity score, full ctest and CI not run. No golden, threshold or test loosened.
-- The sheet and close-ups were rendered before the T-159 merge (geometry identical after it, see above).
+- r3 sheet and close-ups are rendered after the T-159 merge; the 2.3.0 close-up column is the r2 run (same job settings).
 - Not touched: shape_face_v2, build_ears and the ears (T-159), face_v3/lids.py (T-156).
