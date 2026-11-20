@@ -822,3 +822,9 @@ work. Use the new defaults (final720, HEVC 10-bit) plus an H.264 copy, and send 
 Codex task T-173: a render benchmark on the owner's own GeForce PC. Measurement only: CPU vs OptiX vs CUDA at final720 and
 legacy128. Write-set `docs/evaluation/rendering/T-173/**`. Posted at the top of NEXT_TASK.md on relay-channel@722c00e9. No other
 change.
+
+## 2026-11-20 ~22:55Z (23:55 CET) — T-174 research: animation reuse vs build (relayed by the owner liaison)
+New research-only task (docs-only write-set, no implementation, no Codex). For walking, running, sitting, standing up, reactions,
+object interaction and character-to-character interaction: what exists, what we can reuse, what we keep, what needs custom
+work, how to simplify, and the pros and cons. Deliverable: a keep/reuse/build matrix, ONE recommended approach with a revised estimate,
+risks and owner questions → `docs/tasks/T-174.md`.
