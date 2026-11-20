@@ -1,6 +1,6 @@
 # T-156: lashes and eye shape to the T-150 targets (both girls)
 
-> **PAUSED 2026-11-20 09:37Z (owner).** Final sheets present: auburn `eyes_100.jpg`, `eyes_closed_100.jpg` (top = baseline, bottom = candidate, Blink), `strict.jpg`; third `eyes_100.jpg`. Not rendered yet: third `eyes_closed_100.jpg`, third `strict.jpg`. The committed sheets have not been reviewed by eye yet.
+> **Sheet review (final renders, 2026-11-20).** `eyes_closed_100.jpg`: top = baseline, bottom = candidate, Blink 1.0. Front: thin liner + 5 outer lashes read as intended on both girls; openings rounder than T-137. Closed: lash curve is a clean thin arc on both (third girl's baseline band kinked at the inner end; gone). Open defects, not fixed here: (1) three-quarter view, near eye, both girls: a pale flap of sclera/socket shows past the outer corner (the widened socket window, corner_deg 37/36, is not covered by the lid at that angle); (2) auburn front: faint creases remain under the lower lid; (3) the lid-patch tone edge on the closed lids pre-exists in the T-137 baselines.
 
 Input `t-137-claude-faces @ 321466a`; targets `docs/evaluation/characters/T-150/targets.json` (main `e2c8904`).
 Blender: bpy 5.3 behind `tools/bpy_blender.py`. Overrides only; no current version, spec or published file changed.
