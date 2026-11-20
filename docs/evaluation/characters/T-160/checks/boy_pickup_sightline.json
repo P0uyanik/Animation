@@ -1,0 +1,44 @@
+{
+ "note": "pickup-glance proxy (T-118 tools/hair_iter.py): share of the camera-facing eye surface with no hair in front, view 25 deg to his left, el = head pitch",
+ "t155_2.3.0": [
+  {
+   "yaw": 25.0,
+   "el": 30.0,
+   "eye.L": 0.976,
+   "eye.R": 0.889
+  },
+  {
+   "yaw": 25.0,
+   "el": 40.0,
+   "eye.L": 0.853,
+   "eye.R": 0.721
+  },
+  {
+   "yaw": 25.0,
+   "el": 50.0,
+   "eye.L": 0.588,
+   "eye.R": 0.525
+  }
+ ],
+ "hair_r6": [
+  {
+   "yaw": 25.0,
+   "el": 30.0,
+   "eye.L": 0.976,
+   "eye.R": 0.889
+  },
+  {
+   "yaw": 25.0,
+   "el": 40.0,
+   "eye.L": 0.853,
+   "eye.R": 0.721
+  },
+  {
+   "yaw": 25.0,
+   "el": 50.0,
+   "eye.L": 0.588,
+   "eye.R": 0.525
+  }
+ ],
+ "identical": true
+}

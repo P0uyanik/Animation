@@ -1,0 +1,11 @@
+{
+ "spec": "boy_yellow_hoodie.2.3.0.spec.json",
+ "builds": [
+  "groom/4",
+  "groom/5"
+ ],
+ "objects": 10,
+ "identical": true,
+ "differing": [],
+ "sha256_of_all": "1f3d4d9c258fef71bc7c2f90a1748e2690a446a80d5ed4f84c8894246a9d45e7"
+}

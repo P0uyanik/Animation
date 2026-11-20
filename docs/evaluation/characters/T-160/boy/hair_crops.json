@@ -1,0 +1,15 @@
+{
+ "render_s": 815.1,
+ "samples": 16,
+ "px": 600,
+ "views": [
+  "front",
+  "threequarter",
+  "back",
+  "back_high"
+ ],
+ "columns": [
+  "t155_2.3.0",
+  "hair_r6"
+ ]
+}
