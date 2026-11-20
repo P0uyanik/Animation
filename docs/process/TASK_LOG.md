@@ -162,4 +162,4 @@ Tasks from now on are numbered T-001, T-002, …, and pass through the states in
 | T-158 | [Build] Deterministic character builds (Opus) | running 2026-11-20 (owner #9) | t-158-claude-deterministic-build | docs/tasks/T-158.md |
 | T-160 | [Characters] Hair round 6 on base groom, all three (Fable) | running 2026-11-20 (owner ~07:20Z) | t-160-claude-hair-r6 | docs/tasks/T-160.md |
 | T-162 | [Process] Status board docs/process/STATUS.md (Sonnet) | merged 2026-11-20: docs/process/STATUS.md; Supervisor maintains | t-162-claude-status-board | docs/tasks/T-162.md |
-| T-163 | [Content] Starter felt prop library 10–15 (Sonnet) | running 2026-11-20 (owner ~07:35Z #2) | t-163-claude-props | docs/tasks/T-163.md |
+| T-163 | [Content] Starter felt prop library 10–15 (Sonnet) | merged 2026-11-20: 12 new felt props + felt_cup; verb test (boy+girl, 593 assertions) in ctest; rendered contact sheet | t-163-claude-props | docs/tasks/T-163.md |

@@ -34,7 +34,7 @@ Codex T-161 reference targets (lashes, ears, hair silhouette) go to T-156 and T-
 | T-153 fidelity score v2 | Opus | merged; experimental, default stays v1 | — | `t-153-claude-fidelity-v2` |
 | T-161 Codex reference targets | Codex | assigned (relay f33c4868); Codex limited until 2026-11-23 ~21:43Z | — | — |
 | T-162 this board | Sonnet 5.5 | merged; Supervisor maintains | — | — |
-| T-163 starter felt prop library | Sonnet 5.5 | running | — | `t-163-claude-props` |
+| T-163 starter felt prop library (docs/evaluation/props/T-163/contact_sheet_render.png) | Sonnet 5.5 | on `integration/t-163`, gate running | — | `t-163-claude-props` |
 
 ## Waiting for owner
 Sheets are paths in text (branch: path).
