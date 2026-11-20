@@ -161,3 +161,5 @@ Tasks from now on are numbered T-001, T-002, …, and pass through the states in
 | T-157 | [Engine] Grasp gap options: wider band vs fewer fingers (Opus) | running 2026-11-20 (owner #6) | t-157-claude-grasp-options | docs/tasks/T-157.md |
 | T-158 | [Build] Deterministic character builds (Opus) | running 2026-11-20 (owner #9) | t-158-claude-deterministic-build | docs/tasks/T-158.md |
 | T-160 | [Characters] Hair round 6 on base groom, all three (Fable) | running 2026-11-20 (owner ~07:20Z) | t-160-claude-hair-r6 | docs/tasks/T-160.md |
+| T-162 | [Process] Status board docs/process/STATUS.md (Sonnet) | running 2026-11-20 (owner ~07:35Z #1) | t-162-claude-status-board | docs/tasks/T-162.md |
+| T-163 | [Content] Starter felt prop library 10–15 (Sonnet) | running 2026-11-20 (owner ~07:35Z #2) | t-163-claude-props | docs/tasks/T-163.md |

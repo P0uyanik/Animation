@@ -614,3 +614,15 @@ that no current or candidate version pins. Start only after T-158 (deterministic
 Conditions as before: frozen built results stay retrievable; regression/golden checks unchanged or replaced by
 equal-strength file comparisons; tag first; one revertible commit; full gate green. Report the comparison results (any
 mismatches) BEFORE removing anything. Plan: `t-144-claude-retire-versions@8a34069`, docs/evaluation/T-144/PLAN.md.
+
+## 2026-11-20 ~07:35Z — "yes go ahead with all four" (relayed by the original Supervisor)
+1. Status board `docs/process/STATUS.md` (Sonnet 5.5) → T-162; then the Supervisor keeps it current at every merge or
+   dispatch (same commit). Lanes: Character look (T-156, T-160, T-158 → T-159 ears); Release (T-155); Interaction
+   (T-157, then hands round 2). Each task: id, model, state, ETA; owner-waiting items with sheet links and numbered
+   choices; queued items with start conditions (T-144 option b after T-158; hands round 2 after T-157 + T-155).
+2. Starter prop library (Sonnet 5.5) → T-163: 10–15 simple felt props (cup, bowl, plate, spoon, book, ball, box with lid,
+   small toy, apple, pencil, block, basket) with affordances and grasp points per T-111/T-112, existing material
+   presets; own new files only; contact sheet + one verb test per prop.
+3. Temporary session cap 8 until 08:20Z, then 6.
+4. No other new tasks; lanes; merges batched per lane.
+Codex T-161 (relay f33c4868): reference targets for lashes, ears, hair silhouette → forward targets.json to T-156/T-160.
