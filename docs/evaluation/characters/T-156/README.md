@@ -145,7 +145,7 @@ In tolerance: before 5/28, after 11/28. left / right = image left / right (the v
 - `*/eyes_100.jpg`: 100 % eye crops, open, front and 3/4 (T-137 build, T-156, references), Cycles 8 spp.
 - `*/eyes_closed_100.jpg`: 100 % crops, Blink, front (top T-137 build, bottom T-156), 8 spp.
 - `*/strict.jpg`: strict sheets, Cycles 16 spp.
-- `preview.jpg`: the cheap previews of the final builds (4 spp, hair and clothes hidden; top open, bottom Blink; front and 3/4).
+- `preview.jpg`: cheap previews of the closed-fill trials (auburn at `extra_m` -4 mm, third girl final; 4 spp, hair and clothes hidden; top open, bottom Blink; front and 3/4).
 
 ## Not reached by an override, and what it would need
 - **H/W is 0.90 / 0.90, not 0.95, and the iris D/W 0.75 / 0.76.** The reference irises are taller than wide (T-150
@@ -166,6 +166,7 @@ In tolerance: before 5/28, after 11/28. left / right = image left / right (the v
   with a lower mound a speck of eyeball showed at the outer corners (182 px at `extra_m` -1.5 mm, 7 px now).
   New skin keys (`Blink`, `Blink.L/R`, the winks and their `@75`) are added to `body_skin`, so the candidate's
   shape-key list differs from the published versions'. Squint / Laugh / Smile do not close fully and are unchanged.
+- **Auburn, 3/4, near eye.** With the lower cover a thin pale strip of lid shows above the outer end of the liner.
 - **Lashes** are flat separate strands and read slightly comb-like at 100 %.
 - **Oblique (G02) targets: not reached** (11/28). Yaw is not matched to G02 (-35 deg, the eye-crop view), the lens is
   not modelled, and the far eye is too wide.
