@@ -521,7 +521,6 @@ def check_python_tests(logs: Path) -> Result:
         [sys.executable, str(ROOT / "pipeline/charsys/tests/test_face_v4.py")],  # T-109 face round 4 (plain checks)
         [sys.executable, str(ROOT / "pipeline/charsys/tests/test_hair_r4.py")],  # T-091 groom/3 (plain checks)
         [sys.executable, str(ROOT / "pipeline/charsys/tests/test_hair_r5.py")],  # T-118 groom/4 (plain checks)
-        [sys.executable, str(ROOT / "pipeline/charsys/tests/test_hair_curves.py")],  # T-141 opt-in hair curves (plain checks)
         [sys.executable, str(ROOT / "pipeline/charsys/tests/test_hands_r2.py")],  # T-121 hands_r2 (plain checks)
         [sys.executable, str(ROOT / "pipeline/charsys/tests/test_garments_r3.py")],  # T-119 garment/3 (plain checks)
         [sys.executable, str(ROOT / "pipeline/charsys/tests/test_expressions_r3.py")],  # T-113 expression sets (plain checks)
@@ -841,6 +840,14 @@ def unit_hair(c: BlenderContext) -> None:
     add_subcheck(c.subchecks, "hair/groom test", hair_ok, "" if hair_ok else "hair/groom test failed", hair_log)
 
 
+def unit_hair_curves(c: BlenderContext) -> None:
+    # T-141 opt-in native hair curves: the test launches Blender itself (--blender), so it runs in the Blender tier.
+    log = c.logs / "blender-hair-curves.log"
+    code, _ = run_logged([sys.executable, str(ROOT / "pipeline/charsys/tests/test_hair_curves.py"), "--blender",
+                          c.executable], log)
+    add_subcheck(c.subchecks, "hair curves (T-141)", code == 0, "" if code == 0 else "hair curves test failed", log)
+
+
 def unit_groom(c: BlenderContext) -> None:
     groom_script = ROOT / "pipeline/charsys/tests/groom_generic_test.py"
     if groom_script.is_file():
@@ -975,6 +982,7 @@ BLENDER_UNITS: list[tuple[str, object, bool]] = [
     ("export-engine", unit_export_engine, False),
     ("face", unit_face, False),
     ("hair", unit_hair, False),
+    ("hair-curves", unit_hair_curves, False),  # T-141
     ("groom", unit_groom, False),
     ("garment", unit_garment, False),
     ("material-presets", unit_material_presets, False),

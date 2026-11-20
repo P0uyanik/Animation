@@ -21,6 +21,7 @@
     ],
     "4": [
       "hair",
+      "hair-curves",
       "groom",
       "garment",
       "garments-v2-quick",
@@ -33,7 +34,8 @@
     ]
   },
   "added_after_t127": [
-    "build-determinism-girl"
+    "build-determinism-girl",
+    "hair-curves"
   ],
   "added_after_t127_note": "Blender units added after T-127. tools/ci/blender_inventory.py accepts exactly these as new: each one's commands must appear exactly once in the shards and in the unsharded path; everything else is compared with pre-T-127 as before."
 }
