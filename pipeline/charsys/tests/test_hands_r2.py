@@ -22,6 +22,9 @@ sys.path.insert(0, CHARSYS)
 
 import hands_r2 as HR  # noqa: E402
 
+sys.path.insert(0, HERE)
+import test_guard_allowlist as GA  # noqa: E402
+
 RESULTS = []
 
 
@@ -107,7 +110,10 @@ def test_default_untouched():
         d = d.get("override", d) if isinstance(d, dict) else {}
         if isinstance(d, dict) and isinstance(d.get("body"), dict) and "hands" in d["body"]:
             pinned.append(os.path.relpath(p, ROOT))
-    check("no character spec or candidate in assets/ sets body.hands", not pinned, pinned)
+    pinned, allowed, aerr = GA.split(pinned, "body.hands")
+    check("owner-approved candidate allowlist is valid (T-154)", not aerr, aerr[:3])
+    check("no character spec or candidate in assets/ sets body.hands (except listed owner-approved candidates)",
+          not pinned, pinned)
     rec = json.load(open(os.path.join(EVAL, "default_build_check.json")))
     check("recorded default build fingerprint = input commit's", rec["fingerprint_identical"] is True, rec["input"])
 
