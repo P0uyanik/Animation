@@ -22,10 +22,22 @@ def _f(d, k, default):
 
 def lid_roll(lids_cfg, sx, zone):
     """3x3 rotation of one lid about its eye's forward axis (lids.upper_roll_deg / lower_roll_deg; positive raises
-    the lid's OUTER end, the eye_frame roll_deg convention), or None. A rolled lid stays on its sphere (concentric
+    the lid's OUTER end, the eye_frame roll_deg convention), or None; with the opt-in lid_yaw, the two combined. A rolled lid stays on its sphere (concentric
     with the eyeball): the lower lid rising to the outer corner gives the D-shaped opening of felt-doll eyes."""
     deg = _f(lids_cfg, "upper_roll_deg" if zone == "up" else "lower_roll_deg", 0.0)
+    yaw = _f(lids_cfg, "upper_yaw_deg" if zone == "up" else "lower_yaw_deg", 0.0)
+    if abs(yaw) > 1e-9:  # T-156 (opt-in; absent = the line below, unchanged): the lid turned about the eye's vertical axis
+        return lid_yaw(sx, yaw) @ Matrix.Rotation(math.radians(-sx * deg), 3, "Y")
     return Matrix.Rotation(math.radians(-sx * deg), 3, "Y") if abs(deg) > 1e-9 else None
+
+
+def lid_yaw(sx, deg):
+    """lids.upper_yaw_deg / lower_yaw_deg (T-156, opt-in): 3x3 rotation of one lid about its eye's vertical axis,
+    positive towards the OUTER corner (the eye_frame yaw_deg convention), applied after the roll. A lid edge is close
+    to a circle about the eye's forward axis, so a roll does not move its peak; the yaw does, by r_lid * sin(yaw). It
+    lets the lid arch sit over the middle of an opening that the nose-side skin makes narrower on the inner side,
+    while the eyeball (iris) keeps its direction. The lid stays on its sphere, concentric with the eyeball."""
+    return Matrix.Rotation(math.radians(sx * deg), 3, "Z")
 
 
 def roll_lid(objs, T, R3):
@@ -255,6 +267,10 @@ def fit_closed_lids(up, lash, T, ecfg, r, fit, close_key, closed_thickness_m=Non
     fade = math.radians(_f(fit, "fade_deg", 20.0))
     over = math.radians(_f(fit, "fade_above_edge_deg", 10.0))
     cf0, cf1 = (float(v) for v in fit.get("corner_fade", [0.7, 0.95]))
+    # T-156 (opt-in, absent = 0 = unchanged): sink_m moves the upper shell (not the lash) a further sink_m * c^3 in
+    # towards the eye centre. Where the eyeball flattens behind the socket skin on a blink (face.blink.flatten), the
+    # closed eye is the skin itself; a shell that stays proud of that skin shows as a patch of lid on it.
+    sink = _f(fit, "sink_m", 0.0)
     # the closed lid clears the eyeball's gaze sweep; closed_fit.gaze_range_deg may narrow it (a closed eye moves less)
     Minv = _gaze_inverses(T, dict(ecfg, gaze_range_deg=fit["gaze_range_deg"]) if fit.get("gaze_range_deg") else ecfg)
     Tm = np.array(T)
@@ -287,7 +303,10 @@ def fit_closed_lids(up, lash, T, ecfg, r, fit, close_key, closed_thickness_m=Non
     ts = (float(closed_thickness_m) / shell) if (closed_thickness_m and shell > 1e-9 and not fit.get("keep_thickness", False)) else 1.0
     rep = {"gaze_range_deg": fit.get("gaze_range_deg") or ecfg.get("gaze_range_deg", [20.0, 12.0]), "gap": g, "fade_deg": round(math.degrees(fade), 2), "fade_above_edge_deg": round(math.degrees(over), 2), "corner_fade": [cf0, cf1], "close_deg": round(math.degrees(a_close), 2),
            "rest_edge_deg": round(math.degrees(e_edge), 2), "keys": {}}
-    if fit.get("shell_subsurface") is not None:
+    if fit.get("shell_occlusion_tint") is not None:  # T-156 (opt-in; absent = the two lines below, unchanged)
+        rep["shell_material"] = _shell_material(up, float(fit.get("shell_subsurface", 1.0)),
+                                                float(fit["shell_occlusion_tint"]))
+    elif fit.get("shell_subsurface") is not None:
         rep["shell_material"] = _shell_material(up, float(fit["shell_subsurface"]))
     for ob in (up, lash):
         if ob is None or ob.data.shape_keys is None:
@@ -318,6 +337,8 @@ def fit_closed_lids(up, lash, T, ecfg, r, fit, close_key, closed_thickness_m=Non
             # its rest radius (it pokes through the socket skin above the eye), it goes back to that radius
             rho0 = np.linalg.norm(q0, axis=1)
             shift = np.maximum(shift, (c > 0) * np.maximum(0.0, rho - rho0))
+            if sink > 0.0 and ob is up:  # T-156 (opt-in): the closed shell goes under the socket skin
+                shift = shift + sink * c ** 3
             if shift.max() < 1e-7:
                 continue
             q = u * (rho - shift)[:, None]
@@ -328,10 +349,63 @@ def fit_closed_lids(up, lash, T, ecfg, r, fit, close_key, closed_thickness_m=Non
                 rep["keys"][k.name] = round(float(shift.max()), 5)
         ob.data.update()
         rep.setdefault("shift_max_m", {})[ob.name] = round(moved, 5)
+    fill = _skin_closed_fill(up, close_key, elev, frame_coords, a_close)  # T-156 (opt-in by socket.closed_fill)
+    if fill:
+        rep["skin_fill"] = fill
     if fit.get("lash_curve") and lash is not None:  # T-137 (opt-in): the closed eye shows a dark lash curve
         rep["lash_curve"] = curve_closed_lash(lash, T, r, fit["lash_curve"], a_close,
                                               _f(ecfg.get("lids"), "lower_edge_deg", -45.0))
     return rep
+
+
+def _skin_closed_fill(up, close_key, elev, frame_coords, a_close):
+    """T-156 (opt-in: only where face_v3.socket stored "ps_socket_fill.<side>" on a mesh, spec ...socket.closed_fill;
+    without that attribute nothing is read or written). The stored displacement closes the socket opening in the
+    skin. It is added to the skin's key of every upper-lid key that closes the eye fully (median closing rotation
+    >= 0.95 of the close key's): Blink, the sided blink and winks. The skin must not close before the lid arrives, so
+    the key gets in-betweens, which face_generic.add_inbetween_drivers plays piecewise: a key the skin did not have
+    gets an empty "<key>@75" (the fill then runs over the last quarter of the control); a key it had gets
+    "<key>@25/50/75" as that fraction of its motion (unchanged, linear) and the fill on top of the full key. The
+    attribute is removed. Returns {key: max displacement} or None."""
+    import bpy
+    import numpy as np
+    side = close_key.rsplit(".", 1)[-1]
+    name = f"ps_socket_fill.{side}"
+    head = next((o for o in bpy.data.objects if o.type == "MESH" and name in o.data.attributes), None)
+    if head is None:
+        return None
+    me = head.data
+    n = len(me.vertices)
+    disp = np.empty(n * 3)
+    me.attributes[name].data.foreach_get("vector", disp)
+    me.attributes.remove(me.attributes[name])
+    if me.shape_keys is None:
+        head.shape_key_add(name="Basis")
+    kb = me.shape_keys.key_blocks
+    base = np.empty(n * 3)
+    kb[0].data.foreach_get("co", base)
+    kb_up = up.data.shape_keys.key_blocks
+    th0 = elev(frame_coords(up, kb_up[0].data))
+    out = {}
+    for k in list(kb_up[1:]):
+        if "@" in k.name or float(np.median(th0 - elev(frame_coords(up, k.data)))) < 0.95 * a_close:
+            continue
+        if k.name not in kb:
+            for nm in (f"{k.name}@75", k.name):
+                head.shape_key_add(name=nm).value = 0.0
+        elif not any(b.name.startswith(k.name + "@") for b in kb):
+            cur = np.empty(n * 3)
+            kb[k.name].data.foreach_get("co", cur)
+            for f in (25, 50, 75):
+                nk = head.shape_key_add(name=f"{k.name}@{f}")
+                nk.value = 0.0
+                nk.data.foreach_set("co", base + (cur - base) * (f / 100.0))
+        cur = np.empty(n * 3)
+        kb[k.name].data.foreach_get("co", cur)
+        kb[k.name].data.foreach_set("co", cur + disp)
+        out[k.name] = round(float(np.abs(disp).max()), 5)
+    me.update()
+    return out
 
 
 def curve_closed_lash(lash, T, r, cfg, a_close, seam_deg):
@@ -407,10 +481,14 @@ def curve_closed_lash(lash, T, r, cfg, a_close, seam_deg):
     return rep
 
 
-def _shell_material(ob, factor):
+def _shell_material(ob, factor, occlusion_tint=None):
     """Replaces each material slot of the lid shell that has a Principled BSDF with subsurface by a copy named
     "<name>.lid" (shared by both lids) whose Subsurface Weight is scaled by factor (a linked weight is left linked and
-    scaled through a multiply node). Returns {slot material: copy}."""
+    scaled through a multiply node). occlusion_tint (T-156, closed_fit.shell_occlusion_tint, 0..1; None = untouched):
+    in the copy, every multiply-add Math node fed by an Ambient Occlusion node has its two constants scaled by it.
+    The skin's occlusion tints darken creases; the lid dome sits inside the socket and is "occluded" all over by the
+    eyeball behind it and the socket rim, so the closed lid reads as a patch of another tone than the skin around
+    it. Returns {slot material: copy}."""
     import bpy
     done = {}
     for i, m in enumerate(ob.data.materials):
@@ -435,6 +513,12 @@ def _shell_material(ob, factor):
                 c.node_tree.links.new(mul.outputs[0], sock)
             else:
                 sock.default_value = sock.default_value * factor
+            if occlusion_tint is not None:
+                for n in c.node_tree.nodes:
+                    if n.type == "MATH" and n.operation == "MULTIPLY_ADD" and n.inputs[0].is_linked \
+                            and n.inputs[0].links[0].from_node.type == "AMBIENT_OCCLUSION":
+                        for j in (1, 2):
+                            n.inputs[j].default_value = n.inputs[j].default_value * occlusion_tint
         ob.data.materials[i] = c
         done[m.name] = c.name
     return done

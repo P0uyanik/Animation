@@ -1,0 +1,83 @@
+{
+ "face": {
+  "eyes": {
+   "yaw_deg": 0.0,
+   "iris": {
+    "radius": 0.458,
+    "pupil": 0.229
+   },
+   "lids": {
+    "upper_edge_deg": 33.5,
+    "lower_edge_deg": -39,
+    "upper_curve": 1.0,
+    "lower_curve": 0.6,
+    "upper_roll_deg": 1,
+    "upper_gap": 0.012,
+    "lower_thickness_m": 0.0005,
+    "closed_fit": {
+     "lash_curve": {
+      "out_m": 0.003,
+      "above_seam_deg": 14.0,
+      "sag_deg": 5.0,
+      "corner_lift_deg": 7.0,
+      "span": [
+       -0.45,
+       0.62
+      ],
+      "keys": {
+       "Laugh": -1.0,
+       "Squint": 0.0
+      }
+     },
+     "shell_subsurface": 0.0,
+     "shell_occlusion_tint": 0.5,
+     "sink_m": 0.005
+    },
+    "upper_yaw_deg": 8,
+    "trim": {
+     "up_outer_deg": 44,
+     "lo_outer_deg": 0.4,
+     "lo_inner_deg": 0.4
+    }
+   },
+   "lash": {
+    "srgb": [
+     60,
+     37,
+     30
+    ],
+    "span_deg": 41,
+    "strands": {
+     "from_deg": 22,
+     "to_deg": 39,
+     "count": 6,
+     "length_m": [
+      0.003,
+      0.004,
+      0.0048
+     ],
+     "width_m": 0.0013,
+     "outward": 0.5
+    },
+    "thick_m": 0.0017,
+    "flare": 1.0,
+    "lower_strands": {
+     "count": 0
+    }
+   },
+   "socket": {
+    "ramp_deg": 12,
+    "reach_deg": 36,
+    "carve_reach": 0.42,
+    "corner_deg": 36,
+    "clearance_m": 0.002,
+    "smooth_iterations": 24,
+    "cover_softness": 0.3,
+    "closed_fill": {
+     "extra_m": -0.006,
+     "smooth_iterations": 12
+    }
+   }
+  }
+ }
+}
