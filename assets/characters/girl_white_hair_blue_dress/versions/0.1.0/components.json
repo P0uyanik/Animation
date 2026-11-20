@@ -1,0 +1,1637 @@
+{
+ "accessories": [],
+ "body": [
+  {
+   "name": "body_skin",
+   "type": "MESH",
+   "vertices": 87658,
+   "faces": 87494,
+   "materials": [
+    "M_skin_face"
+   ],
+   "vertex_groups": 35,
+   "shape_keys": [
+    "Basis",
+    "EyeWide",
+    "MouthSmile",
+    "CheekRaise",
+    "Squint",
+    "WideOpen",
+    "Smile",
+    "Surprise",
+    "Laugh",
+    "Worried",
+    "Curious",
+    "SmileClosed",
+    "SmileOpen"
+   ]
+  },
+  {
+   "name": "hand.L",
+   "type": "MESH",
+   "vertices": 8001,
+   "faces": 13607,
+   "materials": [
+    "M_skin"
+   ],
+   "vertex_groups": 23,
+   "shape_keys": []
+  },
+  {
+   "name": "hand.R",
+   "type": "MESH",
+   "vertices": 8001,
+   "faces": 13624,
+   "materials": [
+    "M_skin"
+   ],
+   "vertex_groups": 23,
+   "shape_keys": []
+  }
+ ],
+ "clothing": [
+  {
+   "name": "garment.boots.cuff.L",
+   "type": "MESH",
+   "vertices": 5328,
+   "faces": 5328,
+   "materials": [
+    "M_garment.boots.band.002"
+   ],
+   "vertex_groups": 34,
+   "shape_keys": []
+  },
+  {
+   "name": "garment.boots.cuff.L.fibres",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "garment.boots.cuff.R",
+   "type": "MESH",
+   "vertices": 5328,
+   "faces": 5328,
+   "materials": [
+    "M_garment.boots.band.002"
+   ],
+   "vertex_groups": 34,
+   "shape_keys": []
+  },
+  {
+   "name": "garment.boots.cuff.R.fibres",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "garment.boots.lining.L",
+   "type": "MESH",
+   "vertices": 192,
+   "faces": 192,
+   "materials": [
+    "M_garment.boots.band"
+   ],
+   "vertex_groups": 34,
+   "shape_keys": []
+  },
+  {
+   "name": "garment.boots.lining.L.fibres",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "garment.boots.lining.R",
+   "type": "MESH",
+   "vertices": 192,
+   "faces": 192,
+   "materials": [
+    "M_garment.boots.band.001"
+   ],
+   "vertex_groups": 34,
+   "shape_keys": []
+  },
+  {
+   "name": "garment.boots.lining.R.fibres",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "garment.boots.main.L",
+   "type": "MESH",
+   "vertices": 6552,
+   "faces": 6550,
+   "materials": [
+    "M_garment.boots.main"
+   ],
+   "vertex_groups": 34,
+   "shape_keys": []
+  },
+  {
+   "name": "garment.boots.main.L.fibres",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "garment.boots.main.R",
+   "type": "MESH",
+   "vertices": 6552,
+   "faces": 6550,
+   "materials": [
+    "M_garment.boots.main.001"
+   ],
+   "vertex_groups": 34,
+   "shape_keys": []
+  },
+  {
+   "name": "garment.boots.main.R.fibres",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "garment.boots.sole.L",
+   "type": "MESH",
+   "vertices": 310,
+   "faces": 336,
+   "materials": [
+    "M_garment.boots.sole"
+   ],
+   "vertex_groups": 34,
+   "shape_keys": []
+  },
+  {
+   "name": "garment.boots.sole.L.fibres",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "garment.boots.sole.R",
+   "type": "MESH",
+   "vertices": 310,
+   "faces": 336,
+   "materials": [
+    "M_garment.boots.sole.001"
+   ],
+   "vertex_groups": 34,
+   "shape_keys": []
+  },
+  {
+   "name": "garment.boots.sole.R.fibres",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "garment.boots.stitch.L",
+   "type": "MESH",
+   "vertices": 252,
+   "faces": 336,
+   "materials": [
+    "M_garment.boots.stitch"
+   ],
+   "vertex_groups": 34,
+   "shape_keys": []
+  },
+  {
+   "name": "garment.boots.stitch.L.fibres",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "garment.boots.stitch.R",
+   "type": "MESH",
+   "vertices": 252,
+   "faces": 336,
+   "materials": [
+    "M_garment.boots.stitch.001"
+   ],
+   "vertex_groups": 34,
+   "shape_keys": []
+  },
+  {
+   "name": "garment.boots.stitch.R.fibres",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "garment.collider.body_skin",
+   "type": "MESH",
+   "vertices": 87658,
+   "faces": 87494,
+   "materials": [
+    "M_skin_face"
+   ],
+   "vertex_groups": 35,
+   "shape_keys": [
+    "Basis",
+    "EyeWide",
+    "MouthSmile",
+    "CheekRaise",
+    "Squint",
+    "WideOpen",
+    "Smile",
+    "Surprise",
+    "Laugh",
+    "Worried",
+    "Curious",
+    "SmileClosed",
+    "SmileOpen"
+   ]
+  },
+  {
+   "name": "garment.dress.band.cuff.L",
+   "type": "MESH",
+   "vertices": 264,
+   "faces": 256,
+   "materials": [
+    "M_garment.dress.band"
+   ],
+   "vertex_groups": 34,
+   "shape_keys": []
+  },
+  {
+   "name": "garment.dress.band.cuff.L.fibres",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "garment.dress.band.cuff.R",
+   "type": "MESH",
+   "vertices": 264,
+   "faces": 256,
+   "materials": [
+    "M_garment.dress.band.001"
+   ],
+   "vertex_groups": 34,
+   "shape_keys": []
+  },
+  {
+   "name": "garment.dress.band.cuff.R.fibres",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "garment.dress.band.hem_rib",
+   "type": "MESH",
+   "vertices": 1152,
+   "faces": 1152,
+   "materials": [
+    "M_garment.dress.band.002"
+   ],
+   "vertex_groups": 34,
+   "shape_keys": []
+  },
+  {
+   "name": "garment.dress.band.hem_rib.fibres",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "garment.dress.bodice",
+   "type": "MESH",
+   "vertices": 25392,
+   "faces": 25396,
+   "materials": [
+    "M_garment.dress.main"
+   ],
+   "vertex_groups": 34,
+   "shape_keys": []
+  },
+  {
+   "name": "garment.dress.bodice.fibres",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "garment.dress.collar",
+   "type": "MESH",
+   "vertices": 1022,
+   "faces": 1020,
+   "materials": [
+    "M_garment.dress.collar"
+   ],
+   "vertex_groups": 4,
+   "shape_keys": []
+  },
+  {
+   "name": "garment.dress.collar.fibres",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "garment.dress.ribcuff.L",
+   "type": "MESH",
+   "vertices": 1296,
+   "faces": 1296,
+   "materials": [
+    "M_garment.dress.band.003"
+   ],
+   "vertex_groups": 34,
+   "shape_keys": []
+  },
+  {
+   "name": "garment.dress.ribcuff.L.fibres",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "garment.dress.ribcuff.R",
+   "type": "MESH",
+   "vertices": 1296,
+   "faces": 1296,
+   "materials": [
+    "M_garment.dress.band.004"
+   ],
+   "vertex_groups": 34,
+   "shape_keys": []
+  },
+  {
+   "name": "garment.dress.ribcuff.R.fibres",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "garment.dress.skirt",
+   "type": "MESH",
+   "vertices": 76800,
+   "faces": 76800,
+   "materials": [
+    "M_garment.dress.skirt"
+   ],
+   "vertex_groups": 34,
+   "shape_keys": []
+  },
+  {
+   "name": "garment.dress.skirt.fibres",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "garment.tights.main",
+   "type": "MESH",
+   "vertices": 36700,
+   "faces": 36698,
+   "materials": [
+    "M_garment.tights.main"
+   ],
+   "vertex_groups": 34,
+   "shape_keys": []
+  },
+  {
+   "name": "garment.tights.main.fibres",
+   "type": "CURVES",
+   "curves": 0
+  }
+ ],
+ "face": [
+  {
+   "name": "brow.L",
+   "type": "MESH",
+   "vertices": 132,
+   "faces": 140,
+   "materials": [
+    "M_brow_generic"
+   ],
+   "vertex_groups": 1,
+   "shape_keys": [
+    "Basis",
+    "BrowUp.L",
+    "BrowDown",
+    "BrowSad",
+    "WideOpen",
+    "Frown",
+    "Surprise",
+    "Sadness",
+    "Anger",
+    "Confusion",
+    "Worried",
+    "Curious",
+    "Thinking"
+   ]
+  },
+  {
+   "name": "brow.R",
+   "type": "MESH",
+   "vertices": 132,
+   "faces": 140,
+   "materials": [
+    "M_brow_generic"
+   ],
+   "vertex_groups": 1,
+   "shape_keys": [
+    "Basis",
+    "BrowUp.R",
+    "BrowDown",
+    "BrowSad",
+    "WideOpen",
+    "Frown",
+    "Surprise",
+    "Sadness",
+    "Anger",
+    "Confusion",
+    "Worried",
+    "Thinking"
+   ]
+  },
+  {
+   "name": "ear.L",
+   "type": "MESH",
+   "vertices": 1986,
+   "faces": 1984,
+   "materials": [
+    "M_skin_face"
+   ],
+   "vertex_groups": 1,
+   "shape_keys": []
+  },
+  {
+   "name": "ear.R",
+   "type": "MESH",
+   "vertices": 1986,
+   "faces": 1984,
+   "materials": [
+    "M_skin_face"
+   ],
+   "vertex_groups": 1,
+   "shape_keys": []
+  },
+  {
+   "name": "eye.L",
+   "type": "MESH",
+   "vertices": 1106,
+   "faces": 1152,
+   "materials": [
+    "M_eye_felt"
+   ],
+   "vertex_groups": 1,
+   "shape_keys": [
+    "Basis",
+    "Blink.L",
+    "Blink",
+    "LeftEyeClosed",
+    "Squint",
+    "Sadness",
+    "Laugh"
+   ]
+  },
+  {
+   "name": "eye.R",
+   "type": "MESH",
+   "vertices": 1106,
+   "faces": 1152,
+   "materials": [
+    "M_eye_felt"
+   ],
+   "vertex_groups": 1,
+   "shape_keys": [
+    "Basis",
+    "Blink.R",
+    "Blink",
+    "RightEyeClosed",
+    "Squint",
+    "Sadness",
+    "Laugh"
+   ]
+  },
+  {
+   "name": "lash.L",
+   "type": "MESH",
+   "vertices": 662,
+   "faces": 702,
+   "materials": [
+    "M_lash_generic"
+   ],
+   "vertex_groups": 2,
+   "shape_keys": [
+    "Basis",
+    "Blink.L@25",
+    "Blink.L@50",
+    "Blink.L@75",
+    "Blink.L",
+    "EyeWide",
+    "EyeSquint",
+    "Blink@25",
+    "Blink@50",
+    "Blink@75",
+    "Blink",
+    "LeftEyeClosed@25",
+    "LeftEyeClosed@50",
+    "LeftEyeClosed@75",
+    "LeftEyeClosed",
+    "Squint@25",
+    "Squint@50",
+    "Squint@75",
+    "Squint",
+    "WideOpen",
+    "Smile",
+    "Surprise",
+    "Sadness@25",
+    "Sadness@50",
+    "Sadness@75",
+    "Sadness",
+    "Anger",
+    "Confusion",
+    "Laugh@25",
+    "Laugh@50",
+    "Laugh@75",
+    "Laugh",
+    "Worried",
+    "Curious",
+    "SmileClosed",
+    "Thinking",
+    "SmileOpen"
+   ]
+  },
+  {
+   "name": "lash.R",
+   "type": "MESH",
+   "vertices": 662,
+   "faces": 702,
+   "materials": [
+    "M_lash_generic"
+   ],
+   "vertex_groups": 2,
+   "shape_keys": [
+    "Basis",
+    "Blink.R@25",
+    "Blink.R@50",
+    "Blink.R@75",
+    "Blink.R",
+    "EyeWide",
+    "EyeSquint",
+    "Blink@25",
+    "Blink@50",
+    "Blink@75",
+    "Blink",
+    "RightEyeClosed@25",
+    "RightEyeClosed@50",
+    "RightEyeClosed@75",
+    "RightEyeClosed",
+    "Squint@25",
+    "Squint@50",
+    "Squint@75",
+    "Squint",
+    "WideOpen",
+    "Smile",
+    "Surprise",
+    "Sadness@25",
+    "Sadness@50",
+    "Sadness@75",
+    "Sadness",
+    "Anger",
+    "Confusion",
+    "Laugh@25",
+    "Laugh@50",
+    "Laugh@75",
+    "Laugh",
+    "Worried",
+    "Curious",
+    "SmileClosed",
+    "Thinking",
+    "SmileOpen"
+   ]
+  },
+  {
+   "name": "lid_lower.L",
+   "type": "MESH",
+   "vertices": 590,
+   "faces": 560,
+   "materials": [
+    "M_skin_face",
+    "M_lash_generic"
+   ],
+   "vertex_groups": 2,
+   "shape_keys": [
+    "Basis",
+    "EyeWide",
+    "EyeSquint",
+    "MouthSmile",
+    "CheekRaise",
+    "Squint",
+    "WideOpen",
+    "Smile",
+    "Surprise",
+    "Anger",
+    "Confusion",
+    "Laugh",
+    "Worried",
+    "Curious",
+    "SmileClosed",
+    "Thinking",
+    "SmileOpen"
+   ]
+  },
+  {
+   "name": "lid_lower.R",
+   "type": "MESH",
+   "vertices": 590,
+   "faces": 560,
+   "materials": [
+    "M_skin_face",
+    "M_lash_generic"
+   ],
+   "vertex_groups": 2,
+   "shape_keys": [
+    "Basis",
+    "EyeWide",
+    "EyeSquint",
+    "MouthSmile",
+    "CheekRaise",
+    "Squint",
+    "WideOpen",
+    "Smile",
+    "Surprise",
+    "Anger",
+    "Confusion",
+    "Laugh",
+    "Worried",
+    "Curious",
+    "SmileClosed",
+    "Thinking",
+    "SmileOpen"
+   ]
+  },
+  {
+   "name": "lid_upper.L",
+   "type": "MESH",
+   "vertices": 2360,
+   "faces": 2400,
+   "materials": [
+    "M_skin_face.lid"
+   ],
+   "vertex_groups": 2,
+   "shape_keys": [
+    "Basis",
+    "Blink.L@25",
+    "Blink.L@50",
+    "Blink.L@75",
+    "Blink.L",
+    "EyeWide",
+    "EyeSquint",
+    "Blink@25",
+    "Blink@50",
+    "Blink@75",
+    "Blink",
+    "LeftEyeClosed@25",
+    "LeftEyeClosed@50",
+    "LeftEyeClosed@75",
+    "LeftEyeClosed",
+    "Squint@25",
+    "Squint@50",
+    "Squint@75",
+    "Squint",
+    "WideOpen",
+    "Smile",
+    "Surprise",
+    "Sadness@25",
+    "Sadness@50",
+    "Sadness@75",
+    "Sadness",
+    "Anger",
+    "Confusion",
+    "Laugh@25",
+    "Laugh@50",
+    "Laugh@75",
+    "Laugh",
+    "Worried",
+    "Curious",
+    "SmileClosed",
+    "Thinking",
+    "SmileOpen"
+   ]
+  },
+  {
+   "name": "lid_upper.R",
+   "type": "MESH",
+   "vertices": 2361,
+   "faces": 2401,
+   "materials": [
+    "M_skin_face.lid"
+   ],
+   "vertex_groups": 2,
+   "shape_keys": [
+    "Basis",
+    "Blink.R@25",
+    "Blink.R@50",
+    "Blink.R@75",
+    "Blink.R",
+    "EyeWide",
+    "EyeSquint",
+    "Blink@25",
+    "Blink@50",
+    "Blink@75",
+    "Blink",
+    "RightEyeClosed@25",
+    "RightEyeClosed@50",
+    "RightEyeClosed@75",
+    "RightEyeClosed",
+    "Squint@25",
+    "Squint@50",
+    "Squint@75",
+    "Squint",
+    "WideOpen",
+    "Smile",
+    "Surprise",
+    "Sadness@25",
+    "Sadness@50",
+    "Sadness@75",
+    "Sadness",
+    "Anger",
+    "Confusion",
+    "Laugh@25",
+    "Laugh@50",
+    "Laugh@75",
+    "Laugh",
+    "Worried",
+    "Curious",
+    "SmileClosed",
+    "Thinking",
+    "SmileOpen"
+   ]
+  },
+  {
+   "name": "mouth",
+   "type": "MESH",
+   "vertices": 78,
+   "faces": 48,
+   "materials": [
+    "M_mouth_line",
+    "M_lip_generic"
+   ],
+   "vertex_groups": 2,
+   "shape_keys": [
+    "Basis",
+    "MouthSmile",
+    "JawOpen",
+    "MouthFrown",
+    "MouthWide",
+    "MouthO",
+    "Squint",
+    "WideOpen",
+    "Smile",
+    "Frown",
+    "Surprise",
+    "Sadness",
+    "Anger",
+    "Confusion",
+    "Laugh",
+    "MouthOpen",
+    "Worried",
+    "Curious",
+    "SmileClosed",
+    "Thinking",
+    "SmileOpen"
+   ]
+  },
+  {
+   "name": "mouth_cavity",
+   "type": "MESH",
+   "vertices": 130,
+   "faces": 108,
+   "materials": [
+    "M_mouth_inner_shaded"
+   ],
+   "vertex_groups": 2,
+   "shape_keys": [
+    "Basis",
+    "MouthSmile",
+    "JawOpen",
+    "MouthFrown",
+    "MouthWide",
+    "MouthO",
+    "Squint",
+    "WideOpen",
+    "Smile",
+    "Frown",
+    "Surprise",
+    "Sadness",
+    "Anger",
+    "Confusion",
+    "Laugh",
+    "MouthOpen",
+    "Worried",
+    "Curious",
+    "SmileClosed",
+    "Thinking",
+    "SmileOpen"
+   ]
+  }
+ ],
+ "hair": [
+  {
+   "name": "hair_back_locks_00",
+   "type": "MESH",
+   "vertices": 1954,
+   "faces": 1968,
+   "materials": [
+    "M_hair"
+   ],
+   "vertex_groups": 7,
+   "shape_keys": []
+  },
+  {
+   "name": "hair_back_locks_00.fibres",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_back_locks_00.fibres.001",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_back_locks_00.fibres.002",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_back_locks_01",
+   "type": "MESH",
+   "vertices": 1762,
+   "faces": 1776,
+   "materials": [
+    "M_hair"
+   ],
+   "vertex_groups": 6,
+   "shape_keys": []
+  },
+  {
+   "name": "hair_back_locks_01.fibres",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_back_locks_01.fibres.001",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_back_locks_01.fibres.002",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_back_locks_02",
+   "type": "MESH",
+   "vertices": 1970,
+   "faces": 1984,
+   "materials": [
+    "M_hair"
+   ],
+   "vertex_groups": 7,
+   "shape_keys": []
+  },
+  {
+   "name": "hair_back_locks_02.fibres",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_back_locks_02.fibres.001",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_back_locks_02.fibres.002",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_back_locks_03",
+   "type": "MESH",
+   "vertices": 1602,
+   "faces": 1616,
+   "materials": [
+    "M_hair"
+   ],
+   "vertex_groups": 6,
+   "shape_keys": []
+  },
+  {
+   "name": "hair_back_locks_03.fibres",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_back_locks_03.fibres.001",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_back_locks_03.fibres.002",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_back_locks_04",
+   "type": "MESH",
+   "vertices": 1826,
+   "faces": 1840,
+   "materials": [
+    "M_hair"
+   ],
+   "vertex_groups": 7,
+   "shape_keys": []
+  },
+  {
+   "name": "hair_back_locks_04.fibres",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_back_locks_04.fibres.001",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_back_locks_04.fibres.002",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_back_locks_05",
+   "type": "MESH",
+   "vertices": 1906,
+   "faces": 1920,
+   "materials": [
+    "M_hair"
+   ],
+   "vertex_groups": 7,
+   "shape_keys": []
+  },
+  {
+   "name": "hair_back_locks_05.fibres",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_back_locks_05.fibres.001",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_back_locks_05.fibres.002",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_back_locks_06",
+   "type": "MESH",
+   "vertices": 1746,
+   "faces": 1760,
+   "materials": [
+    "M_hair"
+   ],
+   "vertex_groups": 6,
+   "shape_keys": []
+  },
+  {
+   "name": "hair_back_locks_06.fibres",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_back_locks_06.fibres.001",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_back_locks_06.fibres.002",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_back_locks_07",
+   "type": "MESH",
+   "vertices": 2034,
+   "faces": 2048,
+   "materials": [
+    "M_hair"
+   ],
+   "vertex_groups": 7,
+   "shape_keys": []
+  },
+  {
+   "name": "hair_back_locks_07.fibres",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_back_locks_07.fibres.001",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_back_locks_07.fibres.002",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_back_mass",
+   "type": "MESH",
+   "vertices": 36000,
+   "faces": 35998,
+   "materials": [
+    "M_hair"
+   ],
+   "vertex_groups": 2,
+   "shape_keys": []
+  },
+  {
+   "name": "hair_back_mass.fibres",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_back_mass.fibres.001",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_back_mass.fibres.002",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_back_under_00",
+   "type": "MESH",
+   "vertices": 1426,
+   "faces": 1440,
+   "materials": [
+    "M_hair"
+   ],
+   "vertex_groups": 6,
+   "shape_keys": []
+  },
+  {
+   "name": "hair_back_under_00.fibres",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_back_under_00.fibres.001",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_back_under_00.fibres.002",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_back_under_01",
+   "type": "MESH",
+   "vertices": 1698,
+   "faces": 1712,
+   "materials": [
+    "M_hair"
+   ],
+   "vertex_groups": 7,
+   "shape_keys": []
+  },
+  {
+   "name": "hair_back_under_01.fibres",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_back_under_01.fibres.001",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_back_under_01.fibres.002",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_back_under_02",
+   "type": "MESH",
+   "vertices": 1346,
+   "faces": 1360,
+   "materials": [
+    "M_hair"
+   ],
+   "vertex_groups": 6,
+   "shape_keys": []
+  },
+  {
+   "name": "hair_back_under_02.fibres",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_back_under_02.fibres.001",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_back_under_02.fibres.002",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_back_under_03",
+   "type": "MESH",
+   "vertices": 1506,
+   "faces": 1520,
+   "materials": [
+    "M_hair"
+   ],
+   "vertex_groups": 6,
+   "shape_keys": []
+  },
+  {
+   "name": "hair_back_under_03.fibres",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_back_under_03.fibres.001",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_back_under_03.fibres.002",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_back_under_04",
+   "type": "MESH",
+   "vertices": 1458,
+   "faces": 1472,
+   "materials": [
+    "M_hair"
+   ],
+   "vertex_groups": 6,
+   "shape_keys": []
+  },
+  {
+   "name": "hair_back_under_04.fibres",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_back_under_04.fibres.001",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_back_under_04.fibres.002",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_back_under_05",
+   "type": "MESH",
+   "vertices": 1634,
+   "faces": 1648,
+   "materials": [
+    "M_hair"
+   ],
+   "vertex_groups": 7,
+   "shape_keys": []
+  },
+  {
+   "name": "hair_back_under_05.fibres",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_back_under_05.fibres.001",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_back_under_05.fibres.002",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_back_under_06",
+   "type": "MESH",
+   "vertices": 1378,
+   "faces": 1392,
+   "materials": [
+    "M_hair"
+   ],
+   "vertex_groups": 6,
+   "shape_keys": []
+  },
+  {
+   "name": "hair_back_under_06.fibres",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_back_under_06.fibres.001",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_back_under_06.fibres.002",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_bow",
+   "type": "MESH",
+   "vertices": 3050,
+   "faces": 3200,
+   "materials": [
+    "M_hair_bow"
+   ],
+   "vertex_groups": 2,
+   "shape_keys": []
+  },
+  {
+   "name": "hair_bow.fibres",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_bow.fibres.001",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_bow.fibres.002",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_buns",
+   "type": "MESH",
+   "vertices": 6196,
+   "faces": 6336,
+   "materials": [
+    "M_hair"
+   ],
+   "vertex_groups": 8,
+   "shape_keys": []
+  },
+  {
+   "name": "hair_buns.fibres",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_buns.fibres.001",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_buns.fibres.002",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_cap",
+   "type": "MESH",
+   "vertices": 10752,
+   "faces": 10565,
+   "materials": [
+    "M_hair"
+   ],
+   "vertex_groups": 2,
+   "shape_keys": []
+  },
+  {
+   "name": "hair_cap.fibres",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_cap.fibres.001",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_cap.fibres.002",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_crown",
+   "type": "MESH",
+   "vertices": 21120,
+   "faces": 21120,
+   "materials": [
+    "M_hair"
+   ],
+   "vertex_groups": 2,
+   "shape_keys": []
+  },
+  {
+   "name": "hair_crown.fibres",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_crown.fibres.001",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_crown.fibres.002",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_fringe",
+   "type": "MESH",
+   "vertices": 5396,
+   "faces": 5508,
+   "materials": [
+    "M_hair"
+   ],
+   "vertex_groups": 16,
+   "shape_keys": []
+  },
+  {
+   "name": "hair_fringe.fibres",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_fringe.fibres.001",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_fringe.fibres.002",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_outer_locks_00",
+   "type": "MESH",
+   "vertices": 1794,
+   "faces": 1808,
+   "materials": [
+    "M_hair"
+   ],
+   "vertex_groups": 7,
+   "shape_keys": []
+  },
+  {
+   "name": "hair_outer_locks_00.fibres",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_outer_locks_00.fibres.001",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_outer_locks_00.fibres.002",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_outer_locks_01",
+   "type": "MESH",
+   "vertices": 1602,
+   "faces": 1616,
+   "materials": [
+    "M_hair"
+   ],
+   "vertex_groups": 6,
+   "shape_keys": []
+  },
+  {
+   "name": "hair_outer_locks_01.fibres",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_outer_locks_01.fibres.001",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_outer_locks_01.fibres.002",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_outer_locks_r00",
+   "type": "MESH",
+   "vertices": 1618,
+   "faces": 1632,
+   "materials": [
+    "M_hair"
+   ],
+   "vertex_groups": 6,
+   "shape_keys": []
+  },
+  {
+   "name": "hair_outer_locks_r00.fibres",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_outer_locks_r00.fibres.001",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_outer_locks_r00.fibres.002",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_outer_locks_r01",
+   "type": "MESH",
+   "vertices": 1826,
+   "faces": 1840,
+   "materials": [
+    "M_hair"
+   ],
+   "vertex_groups": 7,
+   "shape_keys": []
+  },
+  {
+   "name": "hair_outer_locks_r01.fibres",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_outer_locks_r01.fibres.001",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_outer_locks_r01.fibres.002",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_side_locks_00",
+   "type": "MESH",
+   "vertices": 1314,
+   "faces": 1328,
+   "materials": [
+    "M_hair"
+   ],
+   "vertex_groups": 6,
+   "shape_keys": []
+  },
+  {
+   "name": "hair_side_locks_00.fibres",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_side_locks_00.fibres.001",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_side_locks_00.fibres.002",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_side_locks_01",
+   "type": "MESH",
+   "vertices": 1234,
+   "faces": 1248,
+   "materials": [
+    "M_hair"
+   ],
+   "vertex_groups": 6,
+   "shape_keys": []
+  },
+  {
+   "name": "hair_side_locks_01.fibres",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_side_locks_01.fibres.001",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_side_locks_01.fibres.002",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_side_locks_r00",
+   "type": "MESH",
+   "vertices": 1282,
+   "faces": 1296,
+   "materials": [
+    "M_hair"
+   ],
+   "vertex_groups": 6,
+   "shape_keys": []
+  },
+  {
+   "name": "hair_side_locks_r00.fibres",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_side_locks_r00.fibres.001",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_side_locks_r00.fibres.002",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_side_locks_r01",
+   "type": "MESH",
+   "vertices": 1298,
+   "faces": 1312,
+   "materials": [
+    "M_hair"
+   ],
+   "vertex_groups": 6,
+   "shape_keys": []
+  },
+  {
+   "name": "hair_side_locks_r01.fibres",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_side_locks_r01.fibres.001",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_side_locks_r01.fibres.002",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_temples",
+   "type": "MESH",
+   "vertices": 1372,
+   "faces": 1404,
+   "materials": [
+    "M_hair"
+   ],
+   "vertex_groups": 8,
+   "shape_keys": []
+  },
+  {
+   "name": "hair_temples.fibres",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_temples.fibres.001",
+   "type": "CURVES",
+   "curves": 0
+  },
+  {
+   "name": "hair_temples.fibres.002",
+   "type": "CURVES",
+   "curves": 0
+  }
+ ],
+ "landmarks": [
+  {
+   "name": "LM_chin",
+   "type": "EMPTY"
+  },
+  {
+   "name": "LM_ear_L",
+   "type": "EMPTY"
+  },
+  {
+   "name": "LM_ear_R",
+   "type": "EMPTY"
+  },
+  {
+   "name": "LM_eye_L",
+   "type": "EMPTY"
+  },
+  {
+   "name": "LM_eye_R",
+   "type": "EMPTY"
+  },
+  {
+   "name": "LM_mouth",
+   "type": "EMPTY"
+  },
+  {
+   "name": "LM_nose",
+   "type": "EMPTY"
+  }
+ ],
+ "rig": [
+  {
+   "name": "rig_girl_white_hair_blue_dress",
+   "type": "ARMATURE",
+   "bones": 538,
+   "deform_bones": 201
+  }
+ ]
+}

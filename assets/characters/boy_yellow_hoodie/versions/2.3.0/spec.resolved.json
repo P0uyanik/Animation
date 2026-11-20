@@ -1,0 +1,2090 @@
+{
+ "schema": "plush-studio.character-spec/1",
+ "generators": {
+  "body": "body_generic/2",
+  "face": "face_generic/3",
+  "groom": "groom/4",
+  "garment": "garment/3",
+  "accessories": "none",
+  "rig": "rigify_human/1",
+  "materials": "presets/3",
+  "exporter": "export/4"
+ },
+ "identity": {
+  "id": "boy_yellow_hoodie",
+  "display_name": "Boy in the yellow hoodie",
+  "identity_lock": "Successor to frozen 1.0.0 and 1.1.0; current approved version (owner, docs/process/OWNER_DECISIONS.md 2026-11-18)",
+  "references": "assets/characters/boy_yellow_hoodie/references/reference_index.json"
+ },
+ "proportions": {
+  "source": "T-032 val27 annotations and the neutral reference views; body-only interpretation",
+  "height_m": 1.014,
+  "height_definition": "sole to bare skull crown; hair is intentionally excluded",
+  "reference_targets": {
+   "shoulder_width_to_reference_figure_height": 0.1842,
+   "shoulder_to_palm_to_reference_figure_height": 0.2614,
+   "visible_leg_gap_to_reference_figure_height": 0.254,
+   "bare_head_m": [
+    0.318,
+    0.32,
+    0.3
+   ],
+   "note": "T-032 head-to-height includes hair and is not used as a bare-skull target"
+  }
+ },
+ "body": {
+  "generator": "body_generic/2",
+  "height_m": 1.014,
+  "params": {
+   "head": {
+    "centre_z": 0.843195,
+    "half_width": 0.157791,
+    "half_depth": 0.149901,
+    "half_height": 0.156805,
+    "chin_taper": 0.3,
+    "forward": 0.009862,
+    "chin_z": 0.686391,
+    "chin_y": -0.1,
+    "profile_exponent": 2.1,
+    "profile_levels": [
+     [
+      0.686391,
+      0.0,
+      -0.08,
+      0.03,
+      0.045,
+      0.025
+     ],
+     [
+      0.692308,
+      0.0,
+      -0.055,
+      0.09,
+      0.08,
+      0.045
+     ],
+     [
+      0.70217,
+      0.0,
+      -0.03,
+      0.124,
+      0.108,
+      0.072
+     ],
+     [
+      0.716963,
+      0.0,
+      -0.012,
+      0.142,
+      0.128,
+      0.096
+     ],
+     [
+      0.7357,
+      0.0,
+      0.0,
+      0.150888,
+      0.140039,
+      0.116371
+     ],
+     [
+      0.769231,
+      0.0,
+      0.0,
+      0.154832,
+      0.142012,
+      0.133136
+     ],
+     [
+      0.81854,
+      0.0,
+      0.009862,
+      0.157791,
+      0.136095,
+      0.145957
+     ],
+     [
+      0.86785,
+      0.0,
+      0.009862,
+      0.154832,
+      0.123274,
+      0.149901
+     ],
+     [
+      0.91716,
+      0.0,
+      0.009862,
+      0.137,
+      0.096,
+      0.137
+     ],
+     [
+      0.956607,
+      0.0,
+      0.009862,
+      0.11,
+      0.068,
+      0.112
+     ],
+     [
+      0.986193,
+      0.0,
+      0.009862,
+      0.068,
+      0.036,
+      0.072
+     ],
+     [
+      1.0,
+      0.0,
+      0.009862,
+      0.019724,
+      0.011834,
+      0.021696
+     ]
+    ],
+    "outline": {
+     "eye_z": 0.76726,
+     "unit": 0.13412,
+     "chin_t": 0.6,
+     "front_eye_width": 1.03,
+     "front": [
+      [
+       0.23,
+       0.93
+      ],
+      [
+       0.37,
+       0.86
+      ],
+      [
+       0.47,
+       0.76
+      ],
+      [
+       0.54,
+       0.65
+      ],
+      [
+       0.585,
+       0.3
+      ]
+     ],
+     "side": [
+      [
+       0.1,
+       0.067
+      ],
+      [
+       0.17,
+       0.107
+      ],
+      [
+       0.24,
+       0.08
+      ],
+      [
+       0.31,
+       0.04
+      ],
+      [
+       0.37,
+       0.013
+      ],
+      [
+       0.44,
+       -0.027
+      ],
+      [
+       0.51,
+       -0.08
+      ],
+      [
+       0.57,
+       -0.16
+      ],
+      [
+       0.6,
+       -0.27
+      ]
+     ]
+    }
+   },
+   "neck": {
+    "base_z": 0.591716,
+    "top_z": 0.690335,
+    "radius": 0.05,
+    "top_radius": 0.056
+   },
+   "torso": {
+    "levels": [
+     [
+      0.315,
+      0.08284,
+      0.063,
+      0.063
+     ],
+     [
+      0.335,
+      0.093688,
+      0.07,
+      0.067
+     ],
+     [
+      0.414201,
+      0.091716,
+      0.074,
+      0.066
+     ],
+     [
+      0.483235,
+      0.094675,
+      0.076,
+      0.067
+     ],
+     [
+      0.552268,
+      0.098619,
+      0.074,
+      0.067
+     ],
+     [
+      0.6,
+      0.092702,
+      0.066,
+      0.062
+     ],
+     [
+      0.650888,
+      0.061144,
+      0.05,
+      0.05
+     ]
+    ]
+   },
+   "shoulder": {
+    "z": 0.612,
+    "joint_x": 0.109,
+    "clavicle_x": 0.017751
+   },
+   "arm": {
+    "angle_deg": 45.0,
+    "upper_len": 0.136,
+    "fore_len": 0.127,
+    "radii": [
+     0.034517,
+     0.029586,
+     0.024655
+    ]
+   },
+   "hand": {
+    "palm_len": 0.068,
+    "palm_half_width": 0.04,
+    "palm_half_thick": 0.024,
+    "finger_len": [
+     0.0224,
+     0.0262,
+     0.025,
+     0.0199
+    ],
+    "finger_radius": 0.0122,
+    "thumb_len": 0.0275,
+    "thumb_radius": 0.0132,
+    "finger_curl": 0.2
+   },
+   "leg": {
+    "hip_x": 0.064,
+    "hip_z": 0.335,
+    "knee_z": 0.215,
+    "ankle_z": 0.088757,
+    "radii": [
+     0.048323,
+     0.043393,
+     0.035503
+    ],
+    "ankle_x": 0.08
+   },
+   "foot": {
+    "length": 0.13,
+    "half_width": 0.044379,
+    "height": 0.069034,
+    "heel_back": 0.039448
+   },
+   "eyes": {
+    "x": 0.06706114398422092,
+    "z": 0.767258,
+    "y": -0.0783569919757354
+   },
+   "voxel": 0.004
+  },
+  "hands": "hands_r2/1"
+ },
+ "face": {
+  "generator": "face_generic/3",
+  "provenance": "T-058: from char_C (identity authority), #08 face tiles and #28 (three-quarter expression library); REFERENCE_BEHAVIOUR.md \u00a71-2. Layout from the v6 boy's measured z targets (eye 0.778, nose 0.748, mouth 0.724, chin 0.698 m). Values are my estimates, tuned against renders.",
+  "layout": {
+   "mouth_below_eye_m": 0.06,
+   "nose_below_eye_m": 0.031,
+   "chin_below_eye_m": 0.0816
+  },
+  "eyes": {
+   "radius_m": 0.052,
+   "protrusion_m": 0.0,
+   "spacing_m": 0.136,
+   "offset_z_m": 0.0,
+   "scale": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "yaw_deg": 0.0,
+   "pitch_deg": 0.0,
+   "shader": "felt/1",
+   "iris": {
+    "srgb": [
+     92,
+     60,
+     40
+    ],
+    "inner_srgb": [
+     128,
+     86,
+     54
+    ],
+    "dark_srgb": [
+     52,
+     32,
+     22
+    ],
+    "limbal_srgb": [
+     24,
+     14,
+     10
+    ],
+    "glow_srgb": [
+     140,
+     98,
+     62
+    ],
+    "shade_srgb": [
+     44,
+     28,
+     20
+    ],
+    "pupil_srgb": [
+     12,
+     8,
+     7
+    ],
+    "radius": 0.53,
+    "pupil": 0.22,
+    "limbal_width": 0.08,
+    "pupil_softness": 0.02,
+    "streaks": 0.2,
+    "vertical_gradient": 0.35
+   },
+   "sclera_srgb": [
+    238,
+    232,
+    226
+   ],
+   "sclera_edge_srgb": [
+    212,
+    198,
+    192
+   ],
+   "highlights": [
+    [
+     0.22,
+     0.12,
+     0.1
+    ],
+    [
+     -0.2,
+     -0.05,
+     0.045,
+     0.7
+    ]
+   ],
+   "catchlight_strength": 1.3,
+   "catchlight_softness": 0.3,
+   "wet_coat": {
+    "weight": 1.0,
+    "roughness": 0.05,
+    "base_roughness": 0.35
+   },
+   "lids": {
+    "upper_edge_deg": 4,
+    "upper_back_tilt": 0.15,
+    "upper_gap": 0.03,
+    "upper_thickness_m": 0.0016,
+    "lower_edge_deg": -34,
+    "lower_tilt": 0.3,
+    "lower_gap": 0.015,
+    "lower_thickness_m": 0.001,
+    "upper_curve": -0.05,
+    "lower_curve": 0.05,
+    "upper_roll_deg": 7,
+    "lower_roll_deg": 14,
+    "trim": {
+     "up_outer_deg": 64,
+     "lo_outer_deg": 62,
+     "cover_margin": 0.06,
+     "soft": 0.1,
+     "up_back": -0.1,
+     "lo_back": 0.3
+    },
+    "closed_fit": {
+     "gap": 0.01,
+     "fade_deg": 20,
+     "fade_above_edge_deg": 20,
+     "shell_subsurface": 0.0
+    }
+   },
+   "lash": {
+    "srgb": [
+     30,
+     20,
+     18
+    ],
+    "span_deg": 62,
+    "thick_m": 0.0036,
+    "depth_m": 0.0016,
+    "flare": 0.15,
+    "forward_m": 0.0004,
+    "outer": {
+     "count": 0
+    }
+   },
+   "lid_tracking": 0.3,
+   "note": "heavy upper lid at rest (char_C, #08, #28 r1c1: the lid line crosses the iris near its middle, nearly straight): upper_edge_deg 6 with little back tilt; large dark-brown iris; flat to the face",
+   "gaze_range_deg": [
+    16,
+    8
+   ],
+   "socket": {
+    "band_deg": 3,
+    "lower_band_deg": 0.5,
+    "ramp_deg": 8,
+    "reach_deg": 26,
+    "corner_deg": 60,
+    "clearance_m": 0.0006,
+    "wall_smooth_iterations": 25,
+    "corner_close_deg": 3,
+    "corner_blend_deg": 5
+   },
+   "felt": {
+    "roughness": 0.85,
+    "sheen": 0.45,
+    "highlight": [
+     0.17,
+     -0.12,
+     0.07
+    ],
+    "highlight_softness": 0.06,
+    "highlight_strength": 1.3,
+    "lid_line": {
+     "roughness": 0.95,
+     "sheen": 0.35
+    }
+   }
+  },
+  "brows": {
+   "style": "felt",
+   "inner": 0.4,
+   "outer": 0.5,
+   "height": 1.2,
+   "arch_m": 0.0005,
+   "inner_drop_m": 0.0015,
+   "outer_drop_m": 0.001,
+   "thick_m": 0.0028,
+   "depth_m": 0.0012,
+   "taper": 0.3,
+   "offset_m": 0.0008,
+   "srgb": [
+    52,
+    34,
+    28
+   ],
+   "note": "low, flat, thin dark brows close to the lid line, slight downward slope to the inner end (char_C)",
+   "shape": "flat_stroke"
+  },
+  "ears": {
+   "radii_m": [
+    0.014,
+    0.028,
+    0.036
+   ],
+   "below_eye_m": 0.012,
+   "y_m": 0.008,
+   "out_m": 0.006,
+   "yaw_deg": 22,
+   "tilt_deg": -6
+  },
+  "nose": {
+   "type": "small_round",
+   "size_m": 0.009,
+   "height_m": 0.0016,
+   "offset_z_m": 0.0
+  },
+  "blush": {
+   "srgb": [
+    226,
+    128,
+    112
+   ],
+   "below_eye_m": 0.034,
+   "out_m": 0.022,
+   "radius_m": 0.032,
+   "nose": false,
+   "intensity": 0.85,
+   "softness": 0.8,
+   "breakup": 0.2
+  },
+  "mouth": {
+   "generator": "lips_jaw/2",
+   "half_width_m": 0.0115,
+   "lip_height_m": 0.003,
+   "frown_m": 0.0012,
+   "smile_up_m": 0.004,
+   "smile_widen": 1.15,
+   "smile_intensity": 1.0,
+   "smile_asymmetry": 0.0,
+   "jaw_open_deg": 15.0,
+   "pivot_drop_m": 0.015,
+   "cavity_depth_m": 0.0,
+   "cheek_falloff_m": [
+    0.022,
+    0.045
+   ],
+   "jaw_band_start": 0.45,
+   "jaw_corner_center": 1.0,
+   "jaw_floor_fade_m": 0.02,
+   "jaw_lip_round": 0.9,
+   "jaw_upper_lift_m": 0.0015,
+   "lip_material": "lip",
+   "lip_srgb": [
+    214,
+    156,
+    146
+   ],
+   "seam_half_m": 0.0012,
+   "line_srgb": [
+    70,
+    32,
+    34
+   ],
+   "line_roughness": 0.9,
+   "lip_edge_offset_m": 0.0002,
+   "lip_bulge_m": 0.0012,
+   "interior_rows": 9,
+   "interior_follow_keys": true,
+   "inner_srgb": [
+    170,
+    64,
+    64
+   ],
+   "throat_srgb": [
+    80,
+    22,
+    26
+   ],
+   "tongue_srgb": [
+    214,
+    108,
+    112
+   ],
+   "oral": {
+    "teeth_upper": {
+     "depth": 0.26,
+     "width": 0.8,
+     "srgb": [
+      240,
+      235,
+      226
+     ],
+     "forward_m": 0.0003
+    },
+    "tongue": {
+     "t0": 0.6,
+     "width": 0.6,
+     "srgb": [
+      214,
+      108,
+      112
+     ],
+     "bulge_m": 0.0002
+    }
+   },
+   "extra_shapes": [
+    {
+     "name": "MouthFrown",
+     "frown_m": 0.0042,
+     "widen": 0.92
+    },
+    {
+     "name": "MouthWide",
+     "frown_m": -0.004,
+     "widen": 1.45,
+     "up_lift_m": 0.003,
+     "lo_drop_m": 0.009
+    },
+    {
+     "name": "MouthO",
+     "frown_m": 0.0,
+     "widen": 0.7,
+     "up_lift_m": 0.004,
+     "lo_drop_m": 0.01
+    }
+   ],
+   "rest_shape": "pout",
+   "rest_mix": {
+    "MouthFrown": 0.45,
+    "MouthPout": 1.0,
+    "MouthO": 0.1
+   },
+   "note": "small sulky pout at rest (char_C, #08 Neutral): tiny mouth, corners slightly down, lower lip forward"
+  },
+  "blink": {
+   "generator": "lid_seam/1",
+   "overlap_deg": 12,
+   "closed_offset_m": 0.0012,
+   "closed_thickness_m": 0.0012,
+   "flatten": 0.0,
+   "flatten_lash": false,
+   "timing": {
+    "close_s": 0.08,
+    "hold_s": 0.05,
+    "open_s": 0.16,
+    "mean_interval_s": 2.5,
+    "note": "WT: 3 blinks in 121 f (REFERENCE_BEHAVIOUR \u00a74)"
+   }
+  },
+  "smile_coupling": {
+   "cheek_raise_m": 0.0025,
+   "cheek_forward_m": 0.0012,
+   "cheek_radius_scale": 0.55,
+   "corner_follow": 0.8,
+   "corner_radius_scale": 0.9,
+   "eye_squint_deg": 5.0,
+   "intensity": 1.0,
+   "asymmetry": 0.0
+  },
+  "action_units": {
+   "wide_upper_deg": 40,
+   "wide_lower_deg": 6,
+   "squint_lower_deg": 14,
+   "squint_upper_deg": 6,
+   "brow_up_m": 0.007,
+   "brow_down_m": 0.009,
+   "brow_in_m": 0.003,
+   "brow_sad_m": 0.01,
+   "pout_m": 0.0025,
+   "pout_lower": 0.6,
+   "pout_narrow": 0.12,
+   "split": [
+    "BrowDown",
+    "EyeSquint",
+    "MouthSmile",
+    "MouthFrown"
+   ],
+   "split_blend_m": 0.006,
+   "note": "T-058 controls the facial layer can drive: BrowUp.L/R, BrowDown(.L/.R), BrowSad, MouthSmile(.L/.R) / MouthFrown(.L/.R) = mouth corners up/down, JawOpen + MouthO = mouth open, MouthPout, Blink.L/R, EyeSquint(.L/.R), EyeWide. wide_upper 30 deg: from the heavy rest lid to fully open round eyes (surprise, #28 r1c4)"
+  },
+  "expressions": {
+   "intensity": 1.0,
+   "scale": {},
+   "override": {
+    "Smile": {
+     "Blink.L": 0.85,
+     "Blink.R": 0.85,
+     "EyeSquint": 1.0,
+     "MouthSmile": 0.9,
+     "MouthWide": 0.0,
+     "JawOpen": 0.0,
+     "MouthPout": -0.5
+    },
+    "Sadness": {
+     "BrowSad": 0.8,
+     "MouthFrown": 0.55,
+     "Blink.L": 0.1,
+     "Blink.R": 0.1
+    },
+    "Anger": {
+     "BrowDown": 1.0,
+     "EyeSquint": 0.45,
+     "MouthFrown": 0.45,
+     "MouthPout": 0.35
+    },
+    "Surprise": {
+     "EyeWide": 1.0,
+     "BrowUp.L": 0.75,
+     "BrowUp.R": 0.75,
+     "MouthO": 0.85,
+     "JawOpen": 0.15,
+     "MouthPout": -0.6
+    }
+   },
+   "optional": [
+    "Worried",
+    "Curious",
+    "Pout"
+   ],
+   "custom": {
+    "Bored": {
+     "Blink.L": 0.32,
+     "Blink.R": 0.3,
+     "BrowDown.R": 0.3,
+     "BrowUp.L": 0.12,
+     "MouthFrown.L": 0.35,
+     "MouthPout": 0.35
+    },
+    "Skeptical": {
+     "BrowUp.L": 0.5,
+     "BrowDown.R": 0.35,
+     "Blink.R": 0.1,
+     "MouthSmile.L": 0.2,
+     "MouthFrown.R": 0.3
+    }
+   },
+   "note": "his expressions stay on top of the heavy rest lid (REFERENCE_BEHAVIOUR \u00a72): Happy = eyes closed as arcs and a small closed smile (#08 Happy, #28 r1c2); Sad = inner brows up, corners down (#28 r1c3); Angry = brows down, flat pout (#28 r2c1); Surprised = round open eyes, small o (#28 r1c4); Bored = lids lower, one brow down, mouth pulled to one side (#28 r3c3 'Colfited', subtle per the owner decision)"
+  },
+  "expression_shape_keys": [
+   "Blink.L",
+   "Blink.R",
+   "EyeWide",
+   "EyeSquint",
+   "BrowUp.L",
+   "BrowUp.R",
+   "BrowDown",
+   "BrowSad",
+   "MouthSmile",
+   "MouthFrown",
+   "MouthWide",
+   "MouthO",
+   "JawOpen",
+   "MouthPout",
+   "BrowDown.L",
+   "BrowDown.R",
+   "EyeSquint.L",
+   "EyeSquint.R",
+   "MouthSmile.L",
+   "MouthSmile.R",
+   "MouthFrown.L",
+   "MouthFrown.R",
+   "Blink",
+   "LeftEyeClosed",
+   "RightEyeClosed",
+   "Squint",
+   "WideOpen",
+   "Smile",
+   "Frown",
+   "Surprise",
+   "Sadness",
+   "Anger",
+   "Confusion",
+   "Laugh",
+   "MouthOpen",
+   "Worried",
+   "Curious",
+   "Pout",
+   "Bored",
+   "Skeptical"
+  ],
+  "expressions_reference": "#08 face tiles (Neutral, Happy, Sad, Surprised, Angry), #28 16-tile library",
+  "skin": {
+   "occlusion": {
+    "distance_m": 0.15,
+    "lift": 0.35,
+    "warm_srgb": [
+     252,
+     212,
+     192
+    ],
+    "samples": 32,
+    "bleed": 0.0,
+    "bleed_srgb": [
+     255,
+     240,
+     232
+    ],
+    "bleed_face_radius_m": 0.12,
+    "bleed_body": 0.15
+   }
+  },
+  "shape": {
+   "cheek_fullness_m": 0.006,
+   "cheek_radius_m": 0.05,
+   "cheek_below_eye_m": 0.045,
+   "cheek_x": 1.05,
+   "cheek_forward": 0.35,
+   "note": "face v2 shape on top of the body_generic/2 head fitted to the reference outlines (cheek volume only)",
+   "lower_face": {
+    "cheek_pad_m": 0.016,
+    "cheek_pad_radius_m": 0.07,
+    "cheek_pad_height": 0.9,
+    "cheek_pad_x": 1.3,
+    "cheek_pad_below_eye_m": 0.035,
+    "cheek_pad_forward": 0.0,
+    "cheek_pad_top_below_eye_m": 0.015,
+    "jaw_round_m": 0.006,
+    "jaw_x": 0.7,
+    "jaw_down": 0.0,
+    "jaw_band_m": 0.025
+   },
+   "outline_roundness": 0.6,
+   "outline_exponent": 2.4
+  }
+ },
+ "hair": {
+  "generator": "groom/4",
+  "seed": 44,
+  "finish": "felt",
+  "face_keepout": {
+   "az": 34,
+   "el_min": -6
+  },
+  "structures": [
+   {
+    "type": "scalp_cap",
+    "name": "cap",
+    "offset": 0.004
+   },
+   {
+    "type": "felt_volume",
+    "name": "base",
+    "shape": "gather",
+    "az": [
+     -180,
+     180
+    ],
+    "hairline_el": [
+     [
+      0,
+      22
+     ],
+     [
+      35,
+      16
+     ],
+     [
+      65,
+      2
+     ],
+     [
+      95,
+      -14
+     ],
+     [
+      130,
+      -28
+     ],
+     [
+      180,
+      -34
+     ]
+    ],
+    "target": {
+     "az": 180,
+     "el": 80
+    },
+    "tuck": 1.0,
+    "height": [
+     0.022,
+     0.036,
+     0.04
+    ],
+    "inset": 0.004,
+    "grooves": {
+     "count": 14,
+     "depth": 0.35,
+     "sharpness": 0.7,
+     "wander": 0.3,
+     "wavelength": 0.5
+    },
+    "lumps": {
+     "amount": 0.12,
+     "scale": 1.2
+    },
+    "soft": [
+     0,
+     0,
+     0.25,
+     0.0
+    ],
+    "rim": 0.2,
+    "resolution": [
+     160,
+     40
+    ]
+   },
+   {
+    "seg": 18,
+    "grooves": 1,
+    "groove_depth": 0.2,
+    "irregularity": 0.05,
+    "layer_lift_m": 0.009,
+    "type": "masses",
+    "name": "back",
+    "rows": [
+     {
+      "hold": 0.32,
+      "taper_power": 1.25,
+      "root_width": 0.8,
+      "count": 6,
+      "az": [
+       130,
+       230
+      ],
+      "el": [
+       12,
+       20
+      ],
+      "flow": "down",
+      "len_deg": [
+       46,
+       52
+      ],
+      "width": [
+       0.105,
+       0.115
+      ],
+      "depth": 0.6,
+      "lift": [
+       0.004,
+       0.03,
+       0.036
+      ],
+      "flick_m": 0.03,
+      "jitter_deg": 5,
+      "layer": 0
+     }
+    ]
+   },
+   {
+    "seg": 18,
+    "grooves": 1,
+    "groove_depth": 0.2,
+    "irregularity": 0.05,
+    "layer_lift_m": 0.009,
+    "type": "masses",
+    "name": "sides",
+    "rows": [
+     {
+      "hold": 0.32,
+      "taper_power": 1.25,
+      "root_width": 0.8,
+      "count": 2,
+      "az": [
+       64,
+       112
+      ],
+      "el": [
+       22,
+       30
+      ],
+      "flow": "down",
+      "len_deg": [
+       38,
+       44
+      ],
+      "width": [
+       0.1,
+       0.11
+      ],
+      "depth": 0.62,
+      "lift": [
+       0.006,
+       0.04,
+       0.045
+      ],
+      "flick_m": 0.05,
+      "jitter_deg": 6,
+      "layer": 0
+     },
+     {
+      "hold": 0.32,
+      "taper_power": 1.25,
+      "root_width": 0.8,
+      "count": 2,
+      "az": [
+       -112,
+       -64
+      ],
+      "el": [
+       22,
+       30
+      ],
+      "flow": "down",
+      "len_deg": [
+       38,
+       44
+      ],
+      "width": [
+       0.1,
+       0.11
+      ],
+      "depth": 0.62,
+      "lift": [
+       0.006,
+       0.04,
+       0.045
+      ],
+      "flick_m": 0.05,
+      "jitter_deg": 6,
+      "layer": 0
+     }
+    ]
+   },
+   {
+    "seg": 18,
+    "grooves": 1,
+    "groove_depth": 0.2,
+    "irregularity": 0.05,
+    "layer_lift_m": 0.009,
+    "type": "masses",
+    "name": "fringe",
+    "items": [
+     {
+      "hold": 0.32,
+      "taper_power": 1.25,
+      "root_width": 0.8,
+      "root": [
+       14,
+       64
+      ],
+      "tip": [
+       13,
+       5
+      ],
+      "width": 0.105,
+      "depth": 0.66,
+      "lift": [
+       0.008,
+       0.034,
+       0.004
+      ],
+      "lift_peak": 0.4,
+      "flick_m": 0.0,
+      "layer": 1
+     },
+     {
+      "hold": 0.32,
+      "taper_power": 1.25,
+      "root_width": 0.8,
+      "root": [
+       -14,
+       64
+      ],
+      "tip": [
+       -13,
+       5
+      ],
+      "width": 0.105,
+      "depth": 0.66,
+      "lift": [
+       0.008,
+       0.034,
+       0.004
+      ],
+      "lift_peak": 0.4,
+      "flick_m": 0.0,
+      "layer": 1
+     },
+     {
+      "hold": 0.32,
+      "taper_power": 1.25,
+      "root_width": 0.8,
+      "root": [
+       40,
+       58
+      ],
+      "tip": [
+       50,
+       -6
+      ],
+      "width": 0.115,
+      "depth": 0.66,
+      "lift": [
+       0.008,
+       0.04,
+       0.012
+      ],
+      "lift_peak": 0.4,
+      "flick_m": 0.01,
+      "layer": 1
+     },
+     {
+      "hold": 0.32,
+      "taper_power": 1.25,
+      "root_width": 0.8,
+      "root": [
+       -40,
+       58
+      ],
+      "tip": [
+       -50,
+       -6
+      ],
+      "width": 0.115,
+      "depth": 0.66,
+      "lift": [
+       0.008,
+       0.04,
+       0.012
+      ],
+      "lift_peak": 0.4,
+      "flick_m": 0.01,
+      "layer": 1
+     }
+    ]
+   },
+   {
+    "seg": 18,
+    "grooves": 1,
+    "groove_depth": 0.2,
+    "irregularity": 0.05,
+    "layer_lift_m": 0.009,
+    "type": "masses",
+    "name": "fringe_centre",
+    "items": [
+     {
+      "hold": 0.32,
+      "taper_power": 1.25,
+      "root_width": 0.8,
+      "root": [
+       4,
+       70
+      ],
+      "tip": [
+       -2,
+       -3
+      ],
+      "width": 0.085,
+      "depth": 0.66,
+      "lift": [
+       0.01,
+       0.04,
+       0.006
+      ],
+      "lift_peak": 0.4,
+      "layer": 2
+     }
+    ]
+   },
+   {
+    "seg": 18,
+    "grooves": 1,
+    "groove_depth": 0.2,
+    "irregularity": 0.05,
+    "layer_lift_m": 0.009,
+    "type": "masses",
+    "name": "top_outer",
+    "rows": [
+     {
+      "hold": 0.45,
+      "taper_power": 1.3,
+      "count": 9,
+      "pole": {
+       "az": 180,
+       "el": 62
+      },
+      "ring": {
+       "radius_deg": 50,
+       "around": [
+        62,
+        298
+       ]
+      },
+      "len_deg": 44,
+      "width": 0.085,
+      "depth": 0.72,
+      "lift": [
+       0.004,
+       0.034,
+       0.034
+      ],
+      "flick_m": 0.035,
+      "layer": 0,
+      "swirl_deg": 6,
+      "channel": {
+       "gap": 0.12
+      },
+      "stagger": {
+       "len": [
+        1.0,
+        0.8,
+        1.12,
+        0.9,
+        1.05
+       ],
+       "width": [
+        1.0,
+        0.9,
+        1.05
+       ]
+      }
+     }
+    ]
+   },
+   {
+    "seg": 18,
+    "grooves": 1,
+    "groove_depth": 0.2,
+    "irregularity": 0.05,
+    "layer_lift_m": 0.009,
+    "type": "masses",
+    "name": "top",
+    "rows": [
+     {
+      "hold": 0.45,
+      "taper_power": 1.3,
+      "count": 8,
+      "pole": {
+       "az": 180,
+       "el": 62
+      },
+      "ring": {
+       "radius_deg": 24,
+       "around": [
+        -180,
+        180
+       ]
+      },
+      "len_deg": 44,
+      "width": 0.08,
+      "depth": 0.78,
+      "lift": [
+       0.004,
+       0.042,
+       0.04
+      ],
+      "flick_m": 0.04,
+      "layer": 1,
+      "swirl_deg": 10,
+      "channel": {
+       "gap": 0.2
+      },
+      "stagger": {
+       "len": [
+        1.0,
+        0.78,
+        1.15,
+        0.88
+       ],
+       "lift": [
+        1.0,
+        1.2,
+        0.85
+       ],
+       "radius_deg": [
+        0,
+        5,
+        -3
+       ]
+      }
+     }
+    ]
+   },
+   {
+    "seg": 18,
+    "grooves": 1,
+    "groove_depth": 0.2,
+    "irregularity": 0.05,
+    "layer_lift_m": 0.009,
+    "type": "masses",
+    "name": "whorl",
+    "root_sink_m": 0.012,
+    "rows": [
+     {
+      "hold": 0.45,
+      "taper_power": 1.3,
+      "count": 6,
+      "pole": {
+       "az": 180,
+       "el": 62
+      },
+      "ring": {
+       "radius_deg": 10,
+       "around": [
+        -180,
+        180
+       ]
+      },
+      "len_deg": 30,
+      "width": 0.07,
+      "depth": 0.8,
+      "lift": [
+       0.0,
+       0.04,
+       0.036
+      ],
+      "flick_m": 0.03,
+      "layer": 2,
+      "swirl_deg": 16,
+      "channel": {
+       "gap": 0.15
+      },
+      "stagger": {
+       "len": [
+        1.0,
+        0.75,
+        1.2
+       ],
+       "lift": [
+        1.0,
+        1.25,
+        0.8,
+        1.1
+       ]
+      }
+     }
+    ]
+   },
+   {
+    "seg": 18,
+    "grooves": 1,
+    "groove_depth": 0.2,
+    "irregularity": 0.05,
+    "layer_lift_m": 0.009,
+    "type": "masses",
+    "name": "crown",
+    "root_sink_m": 0.016,
+    "rows": [
+     {
+      "count": 6,
+      "pole": {
+       "az": 180,
+       "el": 62
+      },
+      "ring": {
+       "radius_deg": 22,
+       "around": [
+        -100,
+        100
+       ]
+      },
+      "len_deg": 24,
+      "width": 0.092,
+      "depth": 0.6,
+      "lift": [
+       -0.004,
+       0.1
+      ],
+      "lift_power": 1.5,
+      "hold": 0.36,
+      "taper_power": 1.3,
+      "root_width": 0.6,
+      "layer": 3,
+      "stagger": {
+       "lift": [
+        0.75,
+        1.2,
+        0.6,
+        1.3,
+        0.9,
+        1.05
+       ],
+       "len": [
+        1.0,
+        1.3,
+        0.8,
+        1.1,
+        0.9,
+        1.2
+       ],
+       "radius_deg": [
+        4,
+        -6,
+        8,
+        -2,
+        6,
+        -4
+       ],
+       "width": [
+        0.9,
+        1.1,
+        0.85,
+        1.15,
+        1.0,
+        0.95
+       ]
+      }
+     }
+    ]
+   }
+  ],
+  "fibres": {
+   "slots": [
+    "hair"
+   ],
+   "layers": [
+    {
+     "name": "felt",
+     "overrides": {
+      "fibres": {
+       "density_per_cm2": 34.0,
+       "length_mm": 1.9,
+       "curl": 0.5,
+       "lean": 0.6,
+       "lean_variation": 0.8
+      },
+      "surface": {
+       "saturation_compensation": 1.0
+      }
+     }
+    },
+    {
+     "name": "halo",
+     "overrides": {
+      "fibres": {
+       "density_per_cm2": 1.6,
+       "length_mm": 4.2,
+       "curl": 0.6,
+       "lean": 0.8,
+       "lean_variation": 0.9
+      },
+      "surface": {
+       "saturation_compensation": 1.0
+      }
+     }
+    },
+    {
+     "name": "flyaways",
+     "overrides": {
+      "fibres": {
+       "density_per_cm2": 0.05,
+       "length_mm": 10.0,
+       "curl": 0.95,
+       "lean": 0.7,
+       "lean_variation": 0.9
+      },
+      "surface": {
+       "saturation_compensation": 1.0
+      }
+     }
+    }
+   ]
+  },
+  "dynamics": {
+   "enabled": true,
+   "substep_hz": 240,
+   "preroll_s": 1.0,
+   "defaults": {
+    "stiffness": 140.0,
+    "stiffness_tip": 100.0,
+    "damping": 9.0,
+    "gravity": 0.2,
+    "drag": 0.8,
+    "limit_deg": 18.0,
+    "radius": 0.012
+   },
+   "structures": {
+    "fringe": {
+     "bones": 2,
+     "bone_length": 0.03
+    },
+    "sides": {
+     "bones": 2,
+     "bone_length": 0.03
+    },
+    "fringe_centre": {
+     "bones": 2,
+     "bone_length": 0.03
+    },
+    "back": {
+     "bones": 2,
+     "bone_length": 0.03
+    },
+    "crown": {
+     "bones": 2,
+     "bone_length": 0.03,
+     "stiffness": 200.0
+    },
+    "whorl": {
+     "bones": 2,
+     "bone_length": 0.025,
+     "stiffness": 220.0
+    }
+   },
+   "colliders": [
+    {
+     "name": "head",
+     "type": "sphere",
+     "bone": "head",
+     "head_offset": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "radius": 0.15
+    }
+   ]
+  }
+ },
+ "clothing": {
+  "generator": "garment/3",
+  "provenance": "T-058: char_C, #08 turnaround and clothing breakdown: mustard-yellow fleece hoodie (hood down, kangaroo pocket, cream drawstrings, ribbed cuffs and hem, loose), charcoal-black fleece joggers (loose, bunched at the ankle), yellow suede sneakers with cream soles and toe caps. T-068 candidate: sneakers (sole, toe cap, laces, collar, tongue), backpack (bag, straps over the shoulders, front pocket, zips), hood volume and underarm fix; read from canon29 front/side/back/3-4 and val27; values are my estimates, tuned by eye.",
+  "hide_body_faces": true,
+  "mask_margin_m": 0.015,
+  "collision": {
+   "enabled": true,
+   "offset_m": 0.002,
+   "radius_m": 0.08,
+   "falloff_m": 0.02,
+   "passes": 3
+  },
+  "max_influences": 4,
+  "defaults": {
+   "thickness_m": 0.0025,
+   "ease_m": 0.012,
+   "seam_radius_m": 0.0016
+  },
+  "garments": [
+   {
+    "type": "hoodie",
+    "name": "hoodie",
+    "ease_m": 0.02,
+    "sleeve_length": 0.98,
+    "sleeve_puff_m": 0.012,
+    "sleeve_puff_peak": 0.55,
+    "hem_z_m": 0.33,
+    "bands": {
+     "hem": true,
+     "cuff": true,
+     "rib_ridges": 3,
+     "cuff_rib_ridges": 3,
+     "cuff_radius_m": 0.0045
+    },
+    "shoulder_width": 1.0,
+    "dropped_shoulder": {
+     "start": 0.0,
+     "margin_m": 0.04
+    },
+    "hood": {
+     "rim_radius_m": 0.021,
+     "rim_rise_m": 0.05,
+     "rim_lift_m": 0.038,
+     "bag_height_m": 0.08,
+     "bag_drop_m": 0.05,
+     "bag_depth_m": 0.03,
+     "v_depth_m": 0.07,
+     "rim_back_radius_m": 0.03,
+     "bag_fullness": 0.7,
+     "bag_width_m": 0.1,
+     "bag_rise_m": 0.02,
+     "bag_taper": 0.45,
+     "bag_n": 2.4,
+     "edge_drop": 0.5,
+     "edge_radius_m": 0.008
+    },
+    "pocket": {
+     "width_bottom_m": 0.1,
+     "width_top_m": 0.072,
+     "height_m": 0.115,
+     "above_hem_m": 0.02,
+     "depth_m": 0.016,
+     "rim_radius_m": 0.0045
+    },
+    "drawstrings": {
+     "spacing_m": 0.02,
+     "length_m": 0.1,
+     "radius_m": 0.0034,
+     "tip_length_m": 0.011,
+     "tip_radius_m": 0.0042
+    },
+    "material": {
+     "preset": "hoodie fleece/3",
+     "base_color_srgb": [
+      204,
+      152,
+      62
+     ],
+     "reference_size_m": 0.3
+    },
+    "materials": {
+     "drawstring": {
+      "preset": "felt",
+      "base_color_srgb": [
+       226,
+       210,
+       184
+      ],
+      "reference_size_m": 0.05
+     },
+     "tip": {
+      "preset": "felt",
+      "base_color_srgb": [
+       62,
+       52,
+       48
+      ],
+      "reference_size_m": 0.02
+     }
+    },
+    "edge_finish": "rounded",
+    "armhole": "closed"
+   },
+   {
+    "type": "trousers",
+    "name": "trousers",
+    "length": 1.0,
+    "ease_m": 0.016,
+    "puff_m": 0.006,
+    "puff_inner": 0.6,
+    "waist_z_m": 0.4,
+    "cuff": false,
+    "bands": {
+     "waist": false,
+     "cuff": false
+    },
+    "crotch": {
+     "type": "gusset",
+     "depth": 0.12
+    },
+    "material": {
+     "preset": "trouser pile/3",
+     "base_color_srgb": [
+      38,
+      34,
+      34
+     ],
+     "reference_size_m": 0.3
+    },
+    "edge_finish": "rounded",
+    "hem_break": {
+     "height_m": 0.06,
+     "flare_m": 0.004,
+     "folds": 2,
+     "fold_depth_m": 0.0025,
+     "front_drop_m": 0.008
+    },
+    "ankle_close": {
+     "up_m": 0.05,
+     "down_m": 0.035,
+     "ease_m": 0.005
+    }
+   },
+   {
+    "type": "sneakers",
+    "name": "shoes",
+    "ease_m": 0.012,
+    "thickness_m": 0.0035,
+    "length_extra_m": 0.006,
+    "width_extra_m": 0.0015,
+    "height_m": 0.06,
+    "plan_n": 2.6,
+    "dome_n": 2.6,
+    "toe_flare": 0.1,
+    "toe_drop": 0.36,
+    "sole": {
+     "thickness_m": 0.014,
+     "wrap_m": 0.007,
+     "margin_m": 0.0015
+    },
+    "toe_cap": {
+     "length": 0.27,
+     "slope": 0.5,
+     "thickness_m": 0.002
+    },
+    "laces": {
+     "count": 3,
+     "radius_m": 0.0026,
+     "span": 0.6,
+     "start": 0.08,
+     "end": 0.75
+    },
+    "collar": {
+     "radius_m": 0.0055,
+     "rise_m": 0.06,
+     "back_share": 0.15,
+     "falloff_m": 0.05
+    },
+    "opening": {
+     "length_m": 0.004,
+     "offset_m": 0.004
+    },
+    "tongue": {
+     "thickness_m": 0.003
+    },
+    "material": {
+     "preset": "felt",
+     "base_color_srgb": [
+      206,
+      156,
+      70
+     ],
+     "reference_size_m": 0.15
+    },
+    "materials": {
+     "sole": {
+      "preset": "felt",
+      "base_color_srgb": [
+       232,
+       222,
+       206
+      ],
+      "reference_size_m": 0.15
+     },
+     "laces": {
+      "preset": "cotton knit",
+      "base_color_srgb": [
+       232,
+       222,
+       206
+      ],
+      "reference_size_m": 0.05
+     },
+     "stripe": {
+      "preset": "felt",
+      "base_color_srgb": [
+       240,
+       236,
+       228
+      ],
+      "reference_size_m": 0.05
+     }
+    },
+    "stripes": {
+     "count": 2,
+     "width_m": 0.007,
+     "gap_m": 0.005,
+     "slope": 0.75,
+     "centre": -0.12,
+     "z_range": [
+      0.2,
+      0.95
+     ],
+     "side_min": 0.38
+    }
+   },
+   {
+    "type": "backpack",
+    "name": "backpack",
+    "width_m": 0.175,
+    "height_m": 0.22,
+    "depth_m": 0.068,
+    "top_drop_m": 0.07,
+    "clearance_m": 0.003,
+    "roundness": 5.5,
+    "puff": 0.15,
+    "pocket": {
+     "width": 0.64,
+     "height": 0.33,
+     "depth_m": 0.022,
+     "drop": 0.28
+    },
+    "zip": false,
+    "straps": {
+     "width_m": 0.022,
+     "thickness_m": 0.005,
+     "shoulder": 0.5,
+     "lift_m": 0.005
+    },
+    "handle": {
+     "radius_m": 0.004,
+     "width_m": 0.034
+    },
+    "material": {
+     "preset": "felt",
+     "base_color_srgb": [
+      44,
+      48,
+      74
+     ],
+     "reference_size_m": 0.2
+    },
+    "materials": {
+     "zip": {
+      "preset": "buttons/plastic",
+      "base_color_srgb": [
+       52,
+       44,
+       52
+      ],
+      "reference_size_m": 0.02
+     },
+     "flap": {
+      "preset": "felt",
+      "base_color_srgb": [
+       44,
+       48,
+       74
+      ],
+      "reference_size_m": 0.2
+     },
+     "tab": {
+      "preset": "felt",
+      "base_color_srgb": [
+       44,
+       48,
+       74
+      ],
+      "reference_size_m": 0.2
+     },
+     "pocket_flap": {
+      "preset": "felt",
+      "base_color_srgb": [
+       44,
+       48,
+       74
+      ],
+      "reference_size_m": 0.2
+     },
+     "pocket": {
+      "preset": "felt",
+      "base_color_srgb": [
+       44,
+       48,
+       74
+      ],
+      "reference_size_m": 0.2
+     },
+     "strap": {
+      "preset": "felt",
+      "base_color_srgb": [
+       44,
+       48,
+       74
+      ],
+      "reference_size_m": 0.2
+     },
+     "handle": {
+      "preset": "felt",
+      "base_color_srgb": [
+       44,
+       48,
+       74
+      ],
+      "reference_size_m": 0.2
+     },
+     "buckle": {
+      "preset": "felt",
+      "base_color_srgb": [
+       44,
+       48,
+       74
+      ],
+      "reference_size_m": 0.2
+     }
+    },
+    "flap": {
+     "drop": 0.5,
+     "corner": 0.45,
+     "wrap": 0.75,
+     "side_cover": 1.0,
+     "thickness_m": 0.006,
+     "lift_m": 0.003,
+     "dip_m": 0.004,
+     "edge_m": 0.0026
+    },
+    "tab": {
+     "width_m": 0.014,
+     "length_m": 0.03,
+     "start": 0.3,
+     "thickness_m": 0.0035,
+     "buckle_m": 0.015,
+     "buckle": "ring"
+    },
+    "pocket_flap": {
+     "drop": 0.45,
+     "corner": 0.45,
+     "wrap": 0.3,
+     "side_cover": 1.0,
+     "thickness_m": 0.0045,
+     "lift_m": 0.002,
+     "edge_m": 0.002
+    },
+    "clean_fibres": [
+     "flap_edge",
+     "pocket_flap_edge",
+     "tab",
+     "buckle"
+    ]
+   }
+  ]
+ },
+ "accessories": {
+  "generator": "none",
+  "items": [],
+  "note": "T-068/T-080: the backpack is built as a garment type (clothing.garments[backpack])"
+ },
+ "rig": {
+  "generator": "rigify_human/1",
+  "head_bone": "DEF-spine.006",
+  "chest_bone": "DEF-spine.003",
+  "max_influences": 4,
+  "comparison_pose": {
+   "upper_arm_fk_rotation_y_deg": 33
+  },
+  "weight_rules": {
+   "skin": {
+    "deny_prefixes": [
+     "DEF-f_",
+     "DEF-thumb",
+     "DEF-palm",
+     "DEF-eye"
+    ]
+   },
+   "hand": {
+    "sided": true,
+    "allow_prefixes": [
+     "DEF-forearm",
+     "DEF-hand",
+     "DEF-f_",
+     "DEF-thumb",
+     "DEF-palm"
+    ]
+   }
+  }
+ },
+ "materials": {
+  "albedo_srgb": {
+   "skin": [
+    236,
+    190,
+    166
+   ]
+  },
+  "target_colors_srgb": {
+   "hair": [
+    48,
+    39,
+    35
+   ],
+   "skin": [
+    193,
+    144,
+    122
+   ],
+   "hoodie": [
+    192,
+    145,
+    80
+   ],
+   "trousers": [
+    40,
+    33,
+    32
+   ],
+   "shoe_yellow": [
+    185,
+    138,
+    77
+   ],
+   "cream": [
+    210,
+    197,
+    188
+   ]
+  },
+  "assignments": {
+   "skin": {
+    "preset": "skin-felt/3",
+    "base_color_srgb": [
+     236,
+     190,
+     166
+    ],
+    "reference_size_m": 0.29
+   },
+   "hair": {
+    "preset": "felt hair",
+    "base_color_srgb": [
+     25,
+     22,
+     21
+    ],
+    "reference_size_m": 0.32,
+    "source": "T-070: 25/22/21 (charcoal of the 2026-11-17 turnaround; 19/16/15 rendered near-black)",
+    "overrides": {
+     "surface": {
+      "saturation_compensation": 1.4,
+      "sheen_weight": 0.15,
+      "sheen_roughness": 0.6
+     },
+     "nap": {
+      "fibre_gloss": 0.1,
+      "value_gain": 0.25,
+      "sheen_gain": 0.3
+     },
+     "fibres": {
+      "color_variation": 0.35,
+      "root_transparency": 0.2,
+      "tip_transparency": 0.6
+     }
+    }
+   },
+   "skin_limbs": {
+    "preset": "skin-felt-limbs/3",
+    "base_color_srgb": [
+     226,
+     178,
+     162
+    ],
+    "reference_size_m": 0.29
+   }
+  }
+ },
+ "fur": [],
+ "animation": {
+  "rest_pose": "A-pose",
+  "interchange": [
+   "glTF 2.0 (body meshes, deform skeleton and weights)"
+  ],
+  "not_carried_by_gltf": [],
+  "personality": {
+   "profile": "boy_yellow_hoodie",
+   "profile_version": "1.0.0",
+   "path": "content/personality/boy_yellow_hoodie.json",
+   "owner_brief": "impatient, easily bored"
+  }
+ },
+ "components": {
+  "body": [
+   "body_skin",
+   "hand."
+  ],
+  "face": [
+   "eye.",
+   "lid_",
+   "lash.",
+   "brow.",
+   "mouth",
+   "ear."
+  ],
+  "rig": [
+   "rig_"
+  ],
+  "landmarks": [
+   "LM_"
+  ],
+  "hair": [
+   "hair",
+   "hair_"
+  ],
+  "clothing": [
+   "garment."
+  ]
+ },
+ "metadata": {
+  "spec_version": "2.3.0",
+  "status": "T-155: published with tools/version_switch.py --publish-only as a CANDIDATE; NOT approved, not current (current stays 2.2.0)",
+  "parent_versions": [
+   "2.2.0"
+  ],
+  "sources": {
+   "derived_from": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.2.0.spec.json",
+   "layers": [
+    "docs/evaluation/characters/T-118/candidates/boy_yellow_hoodie.hair_r5.override.json",
+    "docs/evaluation/characters/T-119/boy_yellow_hoodie.T-119.override.json",
+    "docs/evaluation/characters/T-121/hands_r2.override.json",
+    "docs/evaluation/characters/T-137/f2/boy_yellow_hoodie.face.override.json"
+   ],
+   "composed_by": "docs/evaluation/characters/T-155/make_specs.py"
+  },
+  "owner_decisions": "docs/process/OWNER_DECISIONS.md 2026-11-20 ~06:40Z item 4: publish boy 2.3.0, girl 0.14.0 and third character 0.1.0 as CANDIDATES",
+  "parent_metadata_owner_decisions": "docs/process/OWNER_DECISIONS.md 2026-11-18: T-092 approved ~19:20Z; T-093 and T-089 approved ~22:35Z; Phase D approved ~22:50Z; standing approval ~23:10Z (T-091, T-089b, T-093b merged by Supervisor review; T-094 publishes, the owner approves before current)"
+ }
+}

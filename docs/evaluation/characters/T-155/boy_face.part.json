@@ -1,0 +1,115 @@
+{
+ "character": "boy_yellow_hoodie",
+ "task": "T-155",
+ "columns": [
+  {
+   "tag": "baseline",
+   "label": "2.2.0 current",
+   "role": "baseline",
+   "blend": "assets/characters/boy_yellow_hoodie/versions/2.2.0/boy_yellow_hoodie_master.blend"
+  },
+  {
+   "tag": "candidate",
+   "label": "2.3.0 candidate",
+   "role": "candidate",
+   "blend": "assets/characters/boy_yellow_hoodie/versions/2.3.0/boy_yellow_hoodie_master.blend"
+  }
+ ],
+ "strict": {
+  "body": {
+   "target": [
+    0,
+    0,
+    0.56
+   ],
+   "frame_height_m": 1.26,
+   "aspect": 1.6
+  },
+  "face": {
+   "target": [
+    0,
+    0,
+    0.83
+   ],
+   "frame_height_m": 0.4,
+   "aspect": 1.0
+  },
+  "rows": []
+ },
+ "eyes": {
+  "refs": [
+   {
+    "file": "assets/characters/boy_yellow_hoodie/references/views/hero24_front.png",
+    "crop": [
+     40,
+     60,
+     560,
+     620
+    ],
+    "label": "hero24 face"
+   },
+   {
+    "file": "assets/characters/boy_yellow_hoodie/references/uploads/02_higgsfield_B01_face_front_2026-11-18.webp",
+    "crop": [
+     150,
+     300,
+     1345,
+     1295
+    ],
+    "label": "B01 face"
+   }
+  ]
+ },
+ "expr": {
+  "rows": [
+   [
+    "Neutral",
+    null
+   ],
+   [
+    "Smile",
+    null
+   ],
+   [
+    "SmileOpen",
+    null
+   ],
+   [
+    "Laugh",
+    null
+   ],
+   [
+    "Surprise",
+    null
+   ],
+   [
+    "Sadness",
+    null
+   ],
+   [
+    "Anger",
+    null
+   ],
+   [
+    "Frown",
+    null
+   ],
+   [
+    "Confusion",
+    null
+   ],
+   [
+    "Blink",
+    null
+   ],
+   [
+    "Squint",
+    null
+   ],
+   [
+    "WideOpen",
+    null
+   ]
+  ]
+ }
+}

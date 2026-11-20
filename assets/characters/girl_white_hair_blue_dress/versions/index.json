@@ -1,0 +1,24 @@
+{
+ "character_id": "girl_white_hair_blue_dress",
+ "versions": {
+  "0.1.0": {
+   "created": "2026-11-20T07:01:37+00:00",
+   "parent": null,
+   "notes": "girl_white_hair_blue_dress 0.1.0 (T-155): CANDIDATE, not current; spec assets/characters/girl_white_hair_blue_dress/spec/candidates/T-155/girl_white_hair_blue_dress.0.1.0.spec.json (docs/evaluation/characters/T-155/make_specs.py). Owner decision docs/process/OWNER_DECISIONS.md 2026-11-20 ~07:00Z item 1.",
+   "status": "candidate",
+   "spec_sha256": "793c175bf364d3f695410b3811d7c0702c25d9941e68993e721005db860f17a1"
+  }
+ },
+ "pointers": {
+  "approved": null,
+  "reference": null
+ },
+ "history": [
+  {
+   "at": "2026-11-20T07:01:37+00:00",
+   "action": "publish",
+   "version": "0.1.0",
+   "status": "candidate"
+  }
+ ]
+}
