@@ -8,6 +8,9 @@ file "exists", so each command that can run is listed). The pre-T-127 check_blen
 runner; the new one runs once per shard of tools/ci/blender_shards.json. Paths are normalised (<ROOT>, <OUT>, ...).
 Exit 1 unless the two command lists are the same multiset, the shards are disjoint and their union is every unit.
 Both the full tier (CI: --full --regression-external) and the fast tier (no changed character) are compared.
+Units added after T-127 are accepted only when listed in "added_after_t127" of the shard file (T-158): each one's
+commands must appear exactly once in the shards and exactly once in the unsharded path; they are taken out of both
+(and out of the --before list when that revision already has them) and the rest is compared exactly as before.
 """
 
 from __future__ import annotations
@@ -68,30 +71,58 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--before", default="6016b1b", help="pre-T-127 revision of tools/check_all.py")
     parser.add_argument("--out", default="", help="write the inventory JSON here")
+    parser.add_argument("--shards", default="", help="shard file (default tools/ci/blender_shards.json; tests)")
     args = parser.parse_args()
     before = load(subprocess.run(["git", "show", f"{args.before}:tools/check_all.py"], cwd=ROOT, check=True,
                                  capture_output=True, text=True).stdout, "check_all_before")
     after = load((ROOT / "tools/check_all.py").read_text(encoding="utf-8"), "check_all_after")
-    plan = after.blender_shard_plan()
+    shard_file = Path(args.shards) if args.shards else after.BLENDER_SHARDS_FILE
+    plan = after.blender_shard_plan(shard_file)
+    added = list(json.loads(shard_file.read_text(encoding="utf-8")).get("added_after_t127", []))
     assigned = [unit for units in plan["shards"].values() for unit in units]
     problems = []
     if sorted(assigned) != sorted(after.BLENDER_UNIT_IDS) or len(set(assigned)) != len(assigned):
         problems.append("shards are not a partition of the units")
-    report = {"before": args.before, "plan": plan, "tiers": {}}
+    unknown = sorted(set(added) - set(after.BLENDER_UNIT_IDS))
+    if unknown or len(set(added)) != len(added):
+        problems.append(f"added_after_t127 lists unknown or duplicated units: {unknown or added}")
+        added = [unit for unit in dict.fromkeys(added) if unit in after.BLENDER_UNIT_IDS]
+    report = {"before": args.before, "plan": plan, "added_after_t127": added, "tiers": {}}
+
+    def take_once(commands: list[str], command: str, where: str, tier: str, unit: str) -> None:
+        count = commands.count(command)
+        if count != 1:
+            problems.append(f"{tier}: added unit {unit}: command found {count}x in {where}: {command}")
+        if count:
+            commands.remove(command)
+
     for tier in ("full", "fast"):
         old = record(before, tier)
         single = record(after, tier)
         shards = {k: record(after, tier, units) for k, units in plan["shards"].items()}
         new = [command for k in plan["shards"] for command in shards[k]]
+        added_commands = {}
+        for unit in added:
+            own = record(after, tier, [unit])
+            added_commands[unit] = own
+            if not own:
+                problems.append(f"{tier}: added unit {unit} runs no command")
+            for command in own:
+                take_once(new, command, "the shards", tier, unit)
+                take_once(single, command, "the unsharded path", tier, unit)
+                if command in old:  # --before already has the unit (e.g. --before HEAD in a shallow clone)
+                    take_once(old, command, f"--before {args.before}", tier, unit)
         same = collections.Counter(old) == collections.Counter(new)
         if not same:
             problems.append(f"{tier}: sharded commands differ from the pre-T-127 commands")
         if old != single:
             problems.append(f"{tier}: unsharded (fallback) commands or their order differ from the pre-T-127 path")
         report["tiers"][tier] = {"before": old, "after_unsharded_identical": old == single,
+                                 "added_after_t127": added_commands,
                                  "after_shards": shards, "same_multiset": same,
                                  "count_before": len(old), "count_after": len(new)}
-        print(f"{tier}: {len(old)} commands before, {len(new)} after in {plan['count']} shards; "
+        print(f"{tier}: {len(old)} commands before, {len(new)} after in {plan['count']} shards "
+              f"(+{sum(len(v) for v in added_commands.values())} of added units {added}); "
               f"same set and arguments: {same}; fallback identical incl. order: {old == single}")
     report["problems"] = problems
     if args.out:

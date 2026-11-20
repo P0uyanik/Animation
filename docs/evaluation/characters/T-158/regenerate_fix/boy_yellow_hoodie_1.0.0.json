@@ -1,0 +1,24 @@
+{
+ "character_id": "boy_yellow_hoodie",
+ "grids": {
+  "0.01mm": {
+   "changed_objects": [
+    "hair_mass"
+   ],
+   "identical": false,
+   "other_differences": []
+  },
+  "0.1mm": {
+   "changed_objects": [
+    "hair_mass"
+   ],
+   "identical": false,
+   "other_differences": []
+  }
+ },
+ "pass": false,
+ "spec_sha256_rebuilt": "d9cb91d43905c0a51207b685a6f0eebfe83fec2fe0c12c7c92fc11dff5a8755d",
+ "spec_sha256_stored": "d9cb91d43905c0a51207b685a6f0eebfe83fec2fe0c12c7c92fc11dff5a8755d",
+ "stored_master_unchanged": true,
+ "version": "1.0.0"
+}
