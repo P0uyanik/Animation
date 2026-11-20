@@ -16,7 +16,6 @@ means none. Branch is the task's branch; a task branch without a row falls back 
 
 | Task | Lane | Branch | Write-set | Depends on | Versions bumped |
 | --- | --- | --- | --- | --- | --- |
-| T-136 | E | t-136-claude-blink-gaze | `engine/scene/scene.cpp`, `engine/scene/scene.h`, `engine/scene/face_layer.cpp`, `engine/scene/face_layer.h`, `engine/anim/personality.cpp`, `engine/anim/personality.h`, `tests/test_blink_schedule.cpp`, `tests/test_gaze_chain.cpp`, `episodes/e910_showcase/shots/s010_e23/**`, `docs/evaluation/animation/T-136/**` | — | — |
 | T-137 | E | t-137-claude-faces | `pipeline/charsys/face_v3/lids.py`, `pipeline/charsys/tests/test_face_r5.py`, `docs/evaluation/characters/T-137/**`, `content/emotions/boy_interested.emotion.json`, `content/personality/boy_yellow_hoodie.json`, `docs/evaluation/characters/T-137/` | — | — |
 | T-141 | C | t-141-claude-hair-curves | `pipeline/charsys/groom/**` (new opt-in module only; no edits to existing groom files), `pipeline/charsys/tests/test_hair_curves*.py`, `docs/evaluation/characters/T-141/**` | — | — |
 
