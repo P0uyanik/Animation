@@ -763,3 +763,10 @@ rules, 7-phase plan ~19–25 task-days, 8 owner questions). The owner reviews it
 4. T-156: continue; owner decides when finished.
 5. T-159: ears pass 2 (`t-159-claude-ears@aca5de6`) accepted for now into the bundled set; ears slightly wide vs the head
    logged for later.
+
+## 2026-11-20 ~20:10Z (21:10 CET) — World materials (relayed by the owner liaison)
+"my goal is not to create new materials. Use whatever ready-made materials are already available and simply combine
+materials that look good together. Creating materials is time-consuming and costly; not considering that now."
+→ T-170 plan = ready-made materials only: the CC0 sets already picked, existing project presets and Blender built-ins.
+Adjustments are limited to tint, scale and mapping. No new material authoring, no tuning rounds, no procedural material work.
+The plan stays on hold. Amendment: `docs/evaluation/world/T-170/cc0_test/ambientcg/README.md` section 2.1.

@@ -96,6 +96,21 @@ of the phases was built or timed here.
 What the owner gives up: the worn paperboat table, water, wall art, a modelled window, and prop shapes closer to the
 videos (pencil stays a cylinder, book a box, tray an open box).
 
+### 2.1 Amendment: ready-made materials only (owner ~20:10Z, 21:10 CET)
+
+The owner said: "my goal is not to create new materials. Use whatever ready-made materials are already available and simply combine
+materials that look good together. Creating materials is time-consuming and costly; not considering that now."
+
+- Allowed sources: the CC0 sets already picked (`oak_veneer_01`, `laminate_floor_02`, `Carpet016`, HDRI `lebombo`),
+  the existing project presets (`pipeline/charsys/materials/presets*.json`, e.g. woven cotton, felt) and Blender
+  built-in shaders at their default settings.
+- The only allowed adjustments are tint, texture scale and mapping. There is no new material authoring, no
+  tuning or calibration round, and no procedural material work.
+- The "5 plain Principled presets" in the table above become built-in Principled BSDF settings with only a tint
+  from the pastel palette. There are no per-preset measurements and no swatch calibration. W1 is just the preset
+  file listing these combinations plus one look-check sheet.
+- The plan stays on hold, and the estimate stays at most 4.5–6 task-days.
+
 ## 3. Open points for the Supervisor
 
 1. Water is the only large item removed; confirm it is deferred, or add 0.5–1 d for still water.
