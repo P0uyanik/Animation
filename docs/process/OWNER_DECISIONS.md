@@ -817,3 +817,8 @@ Candidate/opt-in, with strict sheets and clips for owner review.
 Once the R3 release is published (gate green), render a 5–8 s TEST VIDEO with the released characters (boy 2.3.0 /
 girl 0.14.0 / third 0.1.0) from what already exists: reuse an existing shot/clip setup, with no new animation or environment
 work. Use the new defaults (final720, HEVC 10-bit) plus an H.264 copy, and send the paths. It may run in parallel with T-171 → T-172.
+
+## 2026-11-20 ~22:45Z (23:45 CET) — Codex T-173 local GPU render benchmark (relayed by the owner liaison)
+Codex task T-173: a render benchmark on the owner's own GeForce PC. Measurement only: CPU vs OptiX vs CUDA at final720 and
+legacy128. Write-set `docs/evaluation/rendering/T-173/**`. Posted at the top of NEXT_TASK.md on relay-channel@722c00e9. No other
+change.
