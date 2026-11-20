@@ -1,7 +1,7 @@
 # T-162 · Workflow efficiency, round 5 (builds on T-152)
 
 M = measured (session API, transcripts, CI API, ledgers); E = estimate with the stated basis. Prices as given
-(Opus $4/$20, Fable $8/$40, Sonnet $2/$10 per M; cache reads $0.20/M). Per-session figures: [data.csv](data.csv).
+(Opus $4/$20, Fable $8/$40, Sonnet $2/$10 per M; cache reads $0.20/M). Per-session figures: [data.csv](T-162/data.csv).
 Sampled transcripts (newest 1–4 pages each, usage de-duplicated per API call; the full T-143 sample matches its
 lifetime reads exactly): T-137, T-134 (Fable); T-136, T-138, T-131, T-117 (Opus); T-143 (Sonnet); Supervisors R2, R3.
 

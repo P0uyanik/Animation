@@ -163,3 +163,5 @@ Tasks from now on are numbered T-001, T-002, …, and pass through the states in
 | T-160 | [Characters] Hair round 6 on base groom, all three (Fable) | running 2026-11-20 (owner ~07:20Z) | t-160-claude-hair-r6 | docs/tasks/T-160.md |
 | T-162 | [Process] Status board docs/process/STATUS.md (Sonnet) | merged 2026-11-20: docs/process/STATUS.md; Supervisor maintains | t-162-claude-status-board | docs/tasks/T-162.md |
 | T-163 | [Content] Starter felt prop library 10–15 (Sonnet) | running 2026-11-20 (owner ~07:35Z #2) | t-163-claude-props | docs/tasks/T-163.md |
+| T-164 | [CI] Gate PR #2 comment only for integration/staging/main (Sonnet) | running 2026-11-20 (owner ~08:10Z #1) | t-164-claude-gate-comment | docs/tasks/T-164.md |
+| T-165 | [Process] Shared task kit + tools/ready.py (Opus) | running 2026-11-20 (owner ~08:10Z #3, #5) | t-165-claude-task-kit | docs/tasks/T-165.md |

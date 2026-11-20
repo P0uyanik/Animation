@@ -626,3 +626,16 @@ mismatches) BEFORE removing anything. Plan: `t-144-claude-retire-versions@8a3406
 3. Temporary session cap 8 until 08:20Z, then 6.
 4. No other new tasks; lanes; merges batched per lane.
 Codex T-161 (relay f33c4868): reference targets for lashes, ears, hair silhouette → forward targets.json to T-156/T-160.
+
+## 2026-11-20 ~08:10Z — Workflow efficiency R5 (relayed by the original Supervisor)
+Report `docs/process/WORKFLOW_EFFICIENCY_R5.md` (+ `docs/process/T-162/data.csv`, branch
+`t-162-claude-workflow-efficiency@b07c29e`, a review separate from the T-162 status board) merged docs-only.
+Implement now, within lanes and cap: (1) the gate posts/edits the PR #2 comment only for integration/*, staging, main;
+no session subscribes to PR #2, waits use one background `gh run watch`; checks and coverage unchanged → T-164.
+(3) `tools/ready.py` preflight (branch pushed, claim + write-set, new tests registered, doc links) then ONE short READY
+line to the parent with the session's cost and context size; IMPLEMENTER_PROMPT updated → T-165.
+(4) Rework rule (context > ~250k and narrow feedback → fresh session with pointer brief or after compaction; one
+consolidated feedback message per round) → WORKFLOW.md, IMPLEMENTER_PROMPT.md (Supervisor, done).
+(5) Shared task kit: shot before/after sheet tool, logged-run wrapper keeping full logs, gate-wait helper,
+one-render-at-a-time queue; reuse tools/review/recipe.py; new tasks point at the kit → T-165 (with item 3).
+Item 2 (liaison rotation) NOT now: the owner picks the time. Rules: analysis-backed, no weakening of checks, revertible.

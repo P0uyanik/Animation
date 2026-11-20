@@ -18,12 +18,13 @@ means none. Branch is the task's branch; a task branch without a row falls back 
 | --- | --- | --- | --- | --- | --- |
 | T-137 | E | t-137-claude-faces | (lids.py and test_face_r5.py handed to T-156, which builds on this branch) `docs/evaluation/characters/T-137/**`, `content/emotions/boy_interested.emotion.json`, `content/personality/boy_yellow_hoodie.json`, `docs/evaluation/characters/T-137/` | — | — |
 | T-141 | C | t-141-claude-hair-curves | `pipeline/charsys/groom/**` (new opt-in module only; no edits to existing groom files), `pipeline/charsys/tests/test_hair_curves*.py`, `docs/evaluation/characters/T-141/**` | — | — |
-| T-154 | C | t-154-claude-guard-allowlist | `pipeline/charsys/tests/owner_approved_candidates.json`, `pipeline/charsys/tests/test_hair_r5.py`, `pipeline/charsys/tests/test_hands_r2.py`, `pipeline/charsys/tests/test_guard_allowlist.py`, `tools/check_all.py` | — | — |
 | T-156 | E | t-156-claude-eye-targets | `pipeline/charsys/face_v3/lids.py`, `pipeline/charsys/tests/test_face_r5.py`, `docs/evaluation/characters/T-156/**` | T-137 | — |
 | T-157 | E | t-157-claude-grasp-options | `engine/scene/interaction.cpp`, `engine/scene/interaction.h`, `engine/anim/animation.cpp`, `engine/anim/animation.h`, `content/hand_shapes/**`, `tests/test_grasp_contact.cpp`, `docs/evaluation/animation/T-157/**` | — | — |
 | T-158 | C | t-158-claude-deterministic-build | `pipeline/charsys/tests/test_build_determinism.py`, `docs/evaluation/characters/T-158/**` | — | — |
 | T-155 | C | t-155-claude-candidates | `assets/characters/boy_yellow_hoodie/versions/2.3.0/**`, `assets/characters/girl_auburn_bun_glasses/versions/0.14.0/**`, `assets/characters/girl_white_hair_blue_dress/versions/0.1.0/**`, `assets/characters/*/versions/index.json` (candidate entries only), `spec/candidates/**` (new files only), `docs/evaluation/characters/T-155/**` | T-154 | — |
 | T-160 | E | t-160-claude-hair-r6 | `docs/evaluation/characters/T-160/**` | — | — |
 | T-163 | E | t-163-claude-props | `content/assets/**` (new files only), `tests/props/**`, `docs/evaluation/props/T-163/**` | — | — |
+| T-164 | C | t-164-claude-gate-comment | `.github/workflows/checks.yml` | — | — |
+| T-165 | C | t-165-claude-task-kit | `tools/ready.py`, `tools/run_logged.py`, `tools/wait_gate.py`, `tools/render_queue.py`, `tools/review/shot_sheet.py`, `tools/tests/test_task_kit.py`, `tools/check_all.py`, `docs/process/IMPLEMENTER_PROMPT.md`, `docs/tasks/_TEMPLATE.md` | — | — |
 
 Supervisor-only files: docs/process/TASK_LOG.md, docs/ROADMAP.md, docs/process/OWNER_DECISIONS.md, docs/tasks/**.
