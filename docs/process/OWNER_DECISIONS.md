@@ -577,3 +577,21 @@ Owner (relayed by the original Supervisor): the only replacement is the fidelity
 T-129 proposals as a new opt-in score version; current score, thresholds, baseline and gate unchanged; evaluate
 against all past owner decisions (incl. T-122) and T-129 blind spots (T-150 targets for eye shape); report + tests.
 Adopting it as default needs the owner. NOT approved: review page, prop library, third-character expression set.
+
+## 2026-11-20 ~06:40Z — Morning decisions (relayed by the original Supervisor)
+1. Hourly self-check/scheduling: skipped for now, fixed separately later.
+2. Resume the approved queue by dependency, in parallel where independent (cap 6).
+3. Guard tests `test_hair_r5` / `test_hands_r2`: option (a), a documented allowlist of NAMED owner-approved candidates
+   (id, decision reference, date) checked by the tests themselves; no removal, weakening or global bypass; a test proves
+   an unlisted candidate is still rejected → T-154.
+4. After 3: publish boy 2.3.0, girl 0.14.0 and third character 0.1.0 as CANDIDATES with strict sheets
+   (reference | current | candidate | target) + crops; current versions unchanged → T-155.
+5. T-137 F1a/F1b/F2 not final (eye openings too wide). Follow-up on the same face area driven by T-150 targets.json,
+   measured per eye → T-156 (Fable 5.2).
+6. T-138: 4.3 mm gap not accepted. Evaluate (a) wider band, (b) fewer contacting fingers, (c) both; gaps, penetration,
+   shot-size close-ups; recommend the most natural; opt-in → T-157 (Opus 5.5).
+7. Fidelity v2 stays EXPERIMENTAL, not default. Validation on independent unseen examples later (Codex fits; not urgent).
+8. T-124: keep the existing final preset; comparison paths to the owner before any switch to final720.
+9. New task: make girl 0.13.0's build deterministic (ears/upper lids differ in ~half of 9 runs); root cause, regression
+   tests (repeated builds identical), no intended-geometry change; check boy and third character → T-158 (Opus 5.5).
+10. Let T-141 finish; T-144 (A3) PLAN ONLY when a slot is free.
