@@ -1,0 +1,103 @@
+{
+ "_doc": "same fields as T-170c candidates.json. dim = tile size in metres: Carpet016 from the ambientCG API (170 cm); all others have no size in the API and are ESTIMATED from thread/loop size in the 1K map. src/target = colour variant of another candidate.",
+ "groups": {
+  "rug": {
+   "label": "rug (sage field)",
+   "target": "rug_sage",
+   "view": 0.2
+  },
+  "fabric": {
+   "label": "fabric / canvas storage bin (sage)",
+   "target": "bin_sage",
+   "view": 0.2
+  }
+ },
+ "candidates": {
+  "Fabric045": {
+   "group": "rug",
+   "dim": 0.3,
+   "rot": 1,
+   "tweak": {
+    "scale": 2.0,
+    "contrast": 0.7,
+    "normal": 3.0,
+    "sheen": 0.15,
+    "rough_add": 0.2
+   }
+  },
+  "Carpet016": {
+   "group": "rug",
+   "dim": 1.7,
+   "rot": 0,
+   "tweak": {
+    "scale": 0.5,
+    "contrast": 0.5,
+    "normal": 3.0,
+    "sheen": 0.15,
+    "rough_add": 0.2
+   }
+  },
+  "Carpet014": {
+   "group": "rug",
+   "dim": 0.3,
+   "rot": 0,
+   "tweak": {
+    "scale": 1.2,
+    "contrast": 0.6,
+    "normal": 2.0,
+    "sheen": 0.15,
+    "rough_add": 0.2
+   }
+  },
+  "Fabric030": {
+   "group": "fabric",
+   "dim": 0.15,
+   "rot": 0,
+   "tweak": {
+    "scale": 1.5,
+    "contrast": 0.6,
+    "normal": 2.0,
+    "sheen": 0.1,
+    "rough_add": 0.2
+   }
+  },
+  "Fabric032": {
+   "group": "fabric",
+   "dim": 0.1,
+   "rot": 0,
+   "tweak": {
+    "scale": 1.5,
+    "contrast": 0.8,
+    "normal": 2.0,
+    "sheen": 0.1,
+    "rough_add": 0.2
+   }
+  },
+  "Fabric036": {
+   "group": "fabric",
+   "dim": 0.2,
+   "rot": 0,
+   "tweak": {
+    "scale": 1.5,
+    "contrast": 0.7,
+    "normal": 2.0,
+    "sheen": 0.1,
+    "rough_add": 0.2
+   }
+  },
+  "Fabric030_coral": {
+   "group": "fabric",
+   "src": "Fabric030",
+   "target": "bin_coral",
+   "dim": 0.15,
+   "rot": 0,
+   "tweak": {
+    "scale": 1.5,
+    "contrast": 0.6,
+    "normal": 2.0,
+    "sheen": 0.1,
+    "rough_add": 0.2
+   }
+  }
+ }
+}
