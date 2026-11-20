@@ -27,6 +27,9 @@ import groom_r5 as G5  # noqa: E402
 import spec as SPEC  # noqa: E402
 import versions as V  # noqa: E402
 
+sys.path.insert(0, HERE)
+import test_guard_allowlist as GA  # noqa: E402
+
 RESULTS = []
 CHARS = {"boy": ("boy_yellow_hoodie", "boy_yellow_hoodie.2.1.0.spec.json"),
          "girl": ("girl_auburn_bun_glasses", "girl_auburn_bun_glasses.0.12.0.spec.json")}
@@ -170,7 +173,9 @@ def main():
         g = g or ((d.get("override") or {}).get("generators") or {}).get("groom") if isinstance(d, dict) else None
         if g == "groom/4":
             pinned.append(os.path.relpath(p, ROOT))
-    check("no file under assets/characters pins groom/4", not pinned, pinned[:3])
+    pinned, allowed, aerr = GA.split(pinned, "groom/4")
+    check("owner-approved candidate allowlist is valid (T-154)", not aerr, aerr[:3])
+    check("no file under assets/characters pins groom/4 (except listed owner-approved candidates)", not pinned, pinned[:3])
 
     # ring rows
     items, info = G5.ring_items(RING["rows"][0], 0.15)
