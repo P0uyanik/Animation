@@ -1,0 +1,595 @@
+{
+ "area_m2_total": 5.22034,
+ "curves_total": 159903,
+ "evaluated": {
+  "hair_back_locks_00.hair_curves": [
+   5658,
+   56580
+  ],
+  "hair_back_locks_00.hair_curves.fly": [
+   114,
+   4218
+  ],
+  "hair_back_locks_01.hair_curves": [
+   4676,
+   46760
+  ],
+  "hair_back_locks_01.hair_curves.fly": [
+   94,
+   3478
+  ],
+  "hair_back_locks_02.hair_curves": [
+   5613,
+   56130
+  ],
+  "hair_back_locks_02.hair_curves.fly": [
+   112,
+   4144
+  ],
+  "hair_back_locks_03.hair_curves": [
+   4606,
+   46060
+  ],
+  "hair_back_locks_03.hair_curves.fly": [
+   92,
+   3404
+  ],
+  "hair_back_locks_04.hair_curves": [
+   4867,
+   48670
+  ],
+  "hair_back_locks_04.hair_curves.fly": [
+   98,
+   3626
+  ],
+  "hair_back_locks_05.hair_curves": [
+   5668,
+   56680
+  ],
+  "hair_back_locks_05.hair_curves.fly": [
+   114,
+   4218
+  ],
+  "hair_back_locks_06.hair_curves": [
+   4903,
+   49030
+  ],
+  "hair_back_locks_06.hair_curves.fly": [
+   98,
+   3626
+  ],
+  "hair_back_locks_07.hair_curves": [
+   5056,
+   50560
+  ],
+  "hair_back_locks_07.hair_curves.fly": [
+   102,
+   3774
+  ],
+  "hair_back_mass.hair_curves": [
+   17590,
+   175900
+  ],
+  "hair_back_mass.hair_curves.fly": [
+   350,
+   12950
+  ],
+  "hair_back_under_00.hair_curves": [
+   3707,
+   37070
+  ],
+  "hair_back_under_00.hair_curves.fly": [
+   74,
+   2738
+  ],
+  "hair_back_under_01.hair_curves": [
+   3985,
+   39850
+  ],
+  "hair_back_under_01.hair_curves.fly": [
+   80,
+   2960
+  ],
+  "hair_back_under_02.hair_curves": [
+   3831,
+   38310
+  ],
+  "hair_back_under_02.hair_curves.fly": [
+   76,
+   2812
+  ],
+  "hair_back_under_03.hair_curves": [
+   4357,
+   43570
+  ],
+  "hair_back_under_03.hair_curves.fly": [
+   87,
+   3219
+  ],
+  "hair_back_under_04.hair_curves": [
+   3407,
+   34070
+  ],
+  "hair_back_under_04.hair_curves.fly": [
+   68,
+   2516
+  ],
+  "hair_back_under_05.hair_curves": [
+   4219,
+   42190
+  ],
+  "hair_back_under_05.hair_curves.fly": [
+   85,
+   3145
+  ],
+  "hair_back_under_06.hair_curves": [
+   3581,
+   35810
+  ],
+  "hair_back_under_06.hair_curves.fly": [
+   72,
+   2664
+  ],
+  "hair_buns.hair_curves": [
+   8789,
+   87890
+  ],
+  "hair_buns.hair_curves.fly": [
+   174,
+   6438
+  ],
+  "hair_cap.hair_curves": [
+   6607,
+   66070
+  ],
+  "hair_cap.hair_curves.fly": [
+   130,
+   4810
+  ],
+  "hair_crown.hair_curves": [
+   16501,
+   165010
+  ],
+  "hair_crown.hair_curves.fly": [
+   327,
+   12099
+  ],
+  "hair_fringe.hair_curves": [
+   10336,
+   103360
+  ],
+  "hair_fringe.hair_curves.fly": [
+   207,
+   7659
+  ],
+  "hair_outer_locks_00.hair_curves": [
+   4528,
+   45280
+  ],
+  "hair_outer_locks_00.hair_curves.fly": [
+   91,
+   3367
+  ],
+  "hair_outer_locks_01.hair_curves": [
+   3885,
+   38850
+  ],
+  "hair_outer_locks_01.hair_curves.fly": [
+   78,
+   2886
+  ],
+  "hair_outer_locks_r00.hair_curves": [
+   4152,
+   41520
+  ],
+  "hair_outer_locks_r00.hair_curves.fly": [
+   84,
+   3108
+  ],
+  "hair_outer_locks_r01.hair_curves": [
+   4257,
+   42570
+  ],
+  "hair_outer_locks_r01.hair_curves.fly": [
+   86,
+   3182
+  ],
+  "hair_side_locks_00.hair_curves": [
+   2416,
+   24160
+  ],
+  "hair_side_locks_00.hair_curves.fly": [
+   49,
+   1813
+  ],
+  "hair_side_locks_01.hair_curves": [
+   2236,
+   22360
+  ],
+  "hair_side_locks_01.hair_curves.fly": [
+   45,
+   1665
+  ],
+  "hair_side_locks_r00.hair_curves": [
+   2553,
+   25530
+  ],
+  "hair_side_locks_r00.hair_curves.fly": [
+   51,
+   1887
+  ],
+  "hair_side_locks_r01.hair_curves": [
+   2282,
+   22820
+  ],
+  "hair_side_locks_r01.hair_curves.fly": [
+   46,
+   1702
+  ],
+  "hair_temples.hair_curves": [
+   2503,
+   25030
+  ],
+  "hair_temples.hair_curves.fly": [
+   50,
+   1850
+  ]
+ },
+ "guides_total": 18796,
+ "hidden_fibre_objects": [],
+ "input": "girl_white_hair_blue_dress_master.blend",
+ "objects": {
+  "hair_back_locks_00.hair_curves": {
+   "area_m2": 0.09479,
+   "flow": "uv",
+   "guides": 569,
+   "overhang_points": 3
+  },
+  "hair_back_locks_00.hair_curves.fly": {
+   "area_m2": 0.09479,
+   "flow": "uv",
+   "guides": 114,
+   "overhang_points": 0
+  },
+  "hair_back_locks_01.hair_curves": {
+   "area_m2": 0.07815,
+   "flow": "uv",
+   "guides": 469,
+   "overhang_points": 16
+  },
+  "hair_back_locks_01.hair_curves.fly": {
+   "area_m2": 0.07815,
+   "flow": "uv",
+   "guides": 94,
+   "overhang_points": 0
+  },
+  "hair_back_locks_02.hair_curves": {
+   "area_m2": 0.09364,
+   "flow": "uv",
+   "guides": 562,
+   "overhang_points": 0
+  },
+  "hair_back_locks_02.hair_curves.fly": {
+   "area_m2": 0.09364,
+   "flow": "uv",
+   "guides": 112,
+   "overhang_points": 0
+  },
+  "hair_back_locks_03.hair_curves": {
+   "area_m2": 0.0769,
+   "flow": "uv",
+   "guides": 461,
+   "overhang_points": 0
+  },
+  "hair_back_locks_03.hair_curves.fly": {
+   "area_m2": 0.0769,
+   "flow": "uv",
+   "guides": 92,
+   "overhang_points": 0
+  },
+  "hair_back_locks_04.hair_curves": {
+   "area_m2": 0.08158,
+   "flow": "uv",
+   "guides": 489,
+   "overhang_points": 0
+  },
+  "hair_back_locks_04.hair_curves.fly": {
+   "area_m2": 0.08158,
+   "flow": "uv",
+   "guides": 98,
+   "overhang_points": 0
+  },
+  "hair_back_locks_05.hair_curves": {
+   "area_m2": 0.09477,
+   "flow": "uv",
+   "guides": 569,
+   "overhang_points": 0
+  },
+  "hair_back_locks_05.hair_curves.fly": {
+   "area_m2": 0.09477,
+   "flow": "uv",
+   "guides": 114,
+   "overhang_points": 0
+  },
+  "hair_back_locks_06.hair_curves": {
+   "area_m2": 0.082,
+   "flow": "uv",
+   "guides": 492,
+   "overhang_points": 6
+  },
+  "hair_back_locks_06.hair_curves.fly": {
+   "area_m2": 0.082,
+   "flow": "uv",
+   "guides": 98,
+   "overhang_points": 0
+  },
+  "hair_back_locks_07.hair_curves": {
+   "area_m2": 0.0849,
+   "flow": "uv",
+   "guides": 509,
+   "overhang_points": 54
+  },
+  "hair_back_locks_07.hair_curves.fly": {
+   "area_m2": 0.0849,
+   "flow": "uv",
+   "guides": 102,
+   "overhang_points": 6
+  },
+  "hair_back_mass.hair_curves": {
+   "area_m2": 0.29131,
+   "flow": "uv",
+   "guides": 1748,
+   "overhang_points": 18
+  },
+  "hair_back_mass.hair_curves.fly": {
+   "area_m2": 0.29131,
+   "flow": "uv",
+   "guides": 350,
+   "overhang_points": 0
+  },
+  "hair_back_under_00.hair_curves": {
+   "area_m2": 0.06174,
+   "flow": "uv",
+   "guides": 370,
+   "overhang_points": 0
+  },
+  "hair_back_under_00.hair_curves.fly": {
+   "area_m2": 0.06174,
+   "flow": "uv",
+   "guides": 74,
+   "overhang_points": 0
+  },
+  "hair_back_under_01.hair_curves": {
+   "area_m2": 0.06676,
+   "flow": "uv",
+   "guides": 401,
+   "overhang_points": 0
+  },
+  "hair_back_under_01.hair_curves.fly": {
+   "area_m2": 0.06676,
+   "flow": "uv",
+   "guides": 80,
+   "overhang_points": 0
+  },
+  "hair_back_under_02.hair_curves": {
+   "area_m2": 0.06348,
+   "flow": "uv",
+   "guides": 381,
+   "overhang_points": 0
+  },
+  "hair_back_under_02.hair_curves.fly": {
+   "area_m2": 0.06348,
+   "flow": "uv",
+   "guides": 76,
+   "overhang_points": 0
+  },
+  "hair_back_under_03.hair_curves": {
+   "area_m2": 0.07257,
+   "flow": "uv",
+   "guides": 435,
+   "overhang_points": 0
+  },
+  "hair_back_under_03.hair_curves.fly": {
+   "area_m2": 0.07257,
+   "flow": "uv",
+   "guides": 87,
+   "overhang_points": 0
+  },
+  "hair_back_under_04.hair_curves": {
+   "area_m2": 0.05646,
+   "flow": "uv",
+   "guides": 339,
+   "overhang_points": 0
+  },
+  "hair_back_under_04.hair_curves.fly": {
+   "area_m2": 0.05646,
+   "flow": "uv",
+   "guides": 68,
+   "overhang_points": 0
+  },
+  "hair_back_under_05.hair_curves": {
+   "area_m2": 0.07113,
+   "flow": "uv",
+   "guides": 427,
+   "overhang_points": 0
+  },
+  "hair_back_under_05.hair_curves.fly": {
+   "area_m2": 0.07113,
+   "flow": "uv",
+   "guides": 85,
+   "overhang_points": 0
+  },
+  "hair_back_under_06.hair_curves": {
+   "area_m2": 0.05988,
+   "flow": "uv",
+   "guides": 359,
+   "overhang_points": 0
+  },
+  "hair_back_under_06.hair_curves.fly": {
+   "area_m2": 0.05988,
+   "flow": "uv",
+   "guides": 72,
+   "overhang_points": 0
+  },
+  "hair_buns.hair_curves": {
+   "area_m2": 0.14502,
+   "flow": "uv",
+   "guides": 870,
+   "overhang_points": 0
+  },
+  "hair_buns.hair_curves.fly": {
+   "area_m2": 0.14502,
+   "flow": "uv",
+   "guides": 174,
+   "overhang_points": 0
+  },
+  "hair_cap.hair_curves": {
+   "area_m2": 0.10838,
+   "flow": "down",
+   "guides": 650,
+   "overhang_points": 450
+  },
+  "hair_cap.hair_curves.fly": {
+   "area_m2": 0.10838,
+   "flow": "down",
+   "guides": 130,
+   "overhang_points": 98
+  },
+  "hair_crown.hair_curves": {
+   "area_m2": 0.2725,
+   "flow": "uv",
+   "guides": 1635,
+   "overhang_points": 0
+  },
+  "hair_crown.hair_curves.fly": {
+   "area_m2": 0.2725,
+   "flow": "uv",
+   "guides": 327,
+   "overhang_points": 0
+  },
+  "hair_fringe.hair_curves": {
+   "area_m2": 0.17226,
+   "flow": "chain",
+   "guides": 1034,
+   "overhang_points": 28
+  },
+  "hair_fringe.hair_curves.fly": {
+   "area_m2": 0.17226,
+   "flow": "chain",
+   "guides": 207,
+   "overhang_points": 0
+  },
+  "hair_outer_locks_00.hair_curves": {
+   "area_m2": 0.07546,
+   "flow": "uv",
+   "guides": 453,
+   "overhang_points": 55
+  },
+  "hair_outer_locks_00.hair_curves.fly": {
+   "area_m2": 0.07546,
+   "flow": "uv",
+   "guides": 91,
+   "overhang_points": 0
+  },
+  "hair_outer_locks_01.hair_curves": {
+   "area_m2": 0.06495,
+   "flow": "uv",
+   "guides": 390,
+   "overhang_points": 31
+  },
+  "hair_outer_locks_01.hair_curves.fly": {
+   "area_m2": 0.06495,
+   "flow": "uv",
+   "guides": 78,
+   "overhang_points": 3
+  },
+  "hair_outer_locks_r00.hair_curves": {
+   "area_m2": 0.06961,
+   "flow": "uv",
+   "guides": 418,
+   "overhang_points": 41
+  },
+  "hair_outer_locks_r00.hair_curves.fly": {
+   "area_m2": 0.06961,
+   "flow": "uv",
+   "guides": 84,
+   "overhang_points": 2
+  },
+  "hair_outer_locks_r01.hair_curves": {
+   "area_m2": 0.07167,
+   "flow": "uv",
+   "guides": 430,
+   "overhang_points": 38
+  },
+  "hair_outer_locks_r01.hair_curves.fly": {
+   "area_m2": 0.07167,
+   "flow": "uv",
+   "guides": 86,
+   "overhang_points": 8
+  },
+  "hair_side_locks_00.hair_curves": {
+   "area_m2": 0.04059,
+   "flow": "uv",
+   "guides": 244,
+   "overhang_points": 20
+  },
+  "hair_side_locks_00.hair_curves.fly": {
+   "area_m2": 0.04059,
+   "flow": "uv",
+   "guides": 49,
+   "overhang_points": 0
+  },
+  "hair_side_locks_01.hair_curves": {
+   "area_m2": 0.03712,
+   "flow": "uv",
+   "guides": 223,
+   "overhang_points": 0
+  },
+  "hair_side_locks_01.hair_curves.fly": {
+   "area_m2": 0.03712,
+   "flow": "uv",
+   "guides": 45,
+   "overhang_points": 0
+  },
+  "hair_side_locks_r00.hair_curves": {
+   "area_m2": 0.04285,
+   "flow": "uv",
+   "guides": 257,
+   "overhang_points": 9
+  },
+  "hair_side_locks_r00.hair_curves.fly": {
+   "area_m2": 0.04285,
+   "flow": "uv",
+   "guides": 51,
+   "overhang_points": 8
+  },
+  "hair_side_locks_r01.hair_curves": {
+   "area_m2": 0.03819,
+   "flow": "uv",
+   "guides": 229,
+   "overhang_points": 3
+  },
+  "hair_side_locks_r01.hair_curves.fly": {
+   "area_m2": 0.03819,
+   "flow": "uv",
+   "guides": 46,
+   "overhang_points": 5
+  },
+  "hair_temples.hair_curves": {
+   "area_m2": 0.04151,
+   "flow": "chain",
+   "guides": 249,
+   "overhang_points": 0
+  },
+  "hair_temples.hair_curves.fly": {
+   "area_m2": 0.04151,
+   "flow": "chain",
+   "guides": 50,
+   "overhang_points": 0
+  }
+ },
+ "points_total": 1683648,
+ "schema": "plush-studio.hair-curves/1",
+ "seconds": 4.69,
+ "seed": 1
+}
