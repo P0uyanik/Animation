@@ -1,20 +1,15 @@
-// Implementation of anim/foot_lock.h. The header includes this file at its end and every function is inline, so the
-// locomotion layer needs no build registration; compiled on its own (as a plush_anim source) it adds nothing twice.
 #include "anim/foot_lock.h"
-
-#ifndef PLUSH_ANIM_FOOT_LOCK_IMPL
-#define PLUSH_ANIM_FOOT_LOCK_IMPL
 
 #include <algorithm>
 #include <cmath>
 
 namespace plush {
 
-namespace foot_lock_detail {
-inline const quat kIdentity(1, 0, 0, 0);
-inline bool isNumber(const Json& j) { return j.is_number(); }
-inline quat mirrorQ(const quat& q) { return quat(q.w, q.x, -q.y, -q.z); }
-inline std::string mirrorSide(const std::string& role) {
+namespace {
+const quat kIdentity(1, 0, 0, 0);
+bool isNumber(const Json& j) { return j.is_number(); }
+quat mirrorQ(const quat& q) { return quat(q.w, q.x, -q.y, -q.z); }
+std::string mirrorSide(const std::string& role) {
   if (role.size() > 2 && role[role.size() - 2] == '.') {
     std::string r = role;
     if (r.back() == 'L') r.back() = 'R';
@@ -24,18 +19,18 @@ inline std::string mirrorSide(const std::string& role) {
   return role;
 }
 // q = swing * twist, twist about +Y (the vertical of the reference space).
-inline void swingTwistY(const quat& q, quat& swing, quat& twist) {
+void swingTwistY(const quat& q, quat& swing, quat& twist) {
   const float n = std::sqrt(q.w * q.w + q.y * q.y);
   twist = n < 1e-6f ? kIdentity : quat(q.w / n, 0, q.y / n, 0);
   swing = glm::normalize(q * glm::inverse(twist));
 }
-inline double smooth01(double x) {
+double smooth01(double x) {
   x = std::clamp(x, 0.0, 1.0);
   return x * x * (3 - 2 * x);
 }
-}  // namespace foot_lock_detail
+}  // namespace
 
-inline LocomotionStyle locomotionStyle(const Json& clip) {
+LocomotionStyle locomotionStyle(const Json& clip) {
   LocomotionStyle s;
   if (!clip.is_object()) return s;
   auto it = clip.find("style");
@@ -44,7 +39,7 @@ inline LocomotionStyle locomotionStyle(const Json& clip) {
   s.enabled = true;
   auto num = [&](const char* k, double d) {
     auto v = j.find(k);
-    return v != j.end() && foot_lock_detail::isNumber(*v) ? v->get<double>() : d;
+    return v != j.end() && isNumber(*v) ? v->get<double>() : d;
   };
   s.lean = float(std::clamp(num("lean", 1.0), 0.0, 2.0));
   s.stride = float(std::clamp(num("stride", 1.0), 0.0, 4.0));
@@ -59,14 +54,14 @@ inline LocomotionStyle locomotionStyle(const Json& clip) {
   if (ac != j.end() && ac->is_object())
     for (auto e = ac->begin(); e != ac->end(); ++e) {
       const Json& v = e.value();
-      if (!v.is_array() || v.size() != 4 || !std::all_of(v.begin(), v.end(), foot_lock_detail::isNumber)) continue;
+      if (!v.is_array() || v.size() != 4 || !std::all_of(v.begin(), v.end(), isNumber)) continue;
       const quat q(v[0].get<float>(), v[1].get<float>(), v[2].get<float>(), v[3].get<float>());
       if (glm::dot(q, q) > 1e-8f) s.armCenter[e.key()] = glm::normalize(q);
     }
   return s;
 }
 
-inline double locomotionTempo(const Json& clip) {
+double locomotionTempo(const Json& clip) {
   if (!clip.is_object()) return 1.0;
   auto it = clip.find("style");
   if (it == clip.end() || !it->is_object()) return 1.0;
@@ -74,16 +69,16 @@ inline double locomotionTempo(const Json& clip) {
   return v != it->end() && v->is_number() ? std::clamp(v->get<double>(), 0.25, 4.0) : 1.0;
 }
 
-inline void applyLocomotionStyle(const LocomotionStyle& st, std::map<std::string, quat>& local, vec3& root, bool mirror) {
+void applyLocomotionStyle(const LocomotionStyle& st, std::map<std::string, quat>& local, vec3& root, bool mirror) {
   if (!st.enabled) return;
   if (st.lean != 1.0f) {
     for (const char* role : {"hips", "spine", "chest", "neck"}) {
       auto it = local.find(role);
       if (it == local.end()) continue;
       quat swing, twist;
-      foot_lock_detail::swingTwistY(it->second, swing, twist);
+      swingTwistY(it->second, swing, twist);
       if (swing.w < 0) swing = -swing;
-      const quat scaled = glm::normalize(glm::slerp(foot_lock_detail::kIdentity, swing, st.lean) * twist);
+      const quat scaled = glm::normalize(glm::slerp(kIdentity, swing, st.lean) * twist);
       if (std::string(role) == "hips") {
         // The legs hang from the hips: keep their directions (R_thigh = R_hips * L_thigh stays what it was).
         const quat fix = glm::inverse(scaled) * it->second;
@@ -97,9 +92,9 @@ inline void applyLocomotionStyle(const LocomotionStyle& st, std::map<std::string
   }
   if (st.armSwing != 1.0f)
     for (const auto& [role, center] : st.armCenter) {
-      auto it = local.find(mirror ? foot_lock_detail::mirrorSide(role) : role);
+      auto it = local.find(mirror ? mirrorSide(role) : role);
       if (it == local.end()) continue;
-      quat c = mirror ? foot_lock_detail::mirrorQ(center) : center;
+      quat c = mirror ? mirrorQ(center) : center;
       if (glm::dot(c, it->second) < 0) c = -c;
       // Extrapolates for arm_swing > 1 (glm::slerp is not clamped).
       it->second = glm::normalize(glm::slerp(c, it->second, st.armSwing));
@@ -108,7 +103,7 @@ inline void applyLocomotionStyle(const LocomotionStyle& st, std::map<std::string
   root.z *= st.stride;
 }
 
-inline std::vector<FootPlant> footPlants(const Json& clip) {
+std::vector<FootPlant> footPlants(const Json& clip) {
   std::vector<FootPlant> out;
   if (!clip.is_object()) return out;
   auto it = clip.find("contacts");
@@ -117,7 +112,7 @@ inline std::vector<FootPlant> footPlants(const Json& clip) {
     if (!c.is_object() || c.value("type", std::string()) != "foot_plant") continue;
     auto f = c.find("frames");
     auto r = c.find("role");
-    if (f == c.end() || !f->is_array() || f->size() != 2 || !foot_lock_detail::isNumber((*f)[0]) || !foot_lock_detail::isNumber((*f)[1])) continue;
+    if (f == c.end() || !f->is_array() || f->size() != 2 || !isNumber((*f)[0]) || !isNumber((*f)[1])) continue;
     if (r == c.end() || !r->is_string()) continue;
     FootPlant p{r->get<std::string>(), (*f)[0].get<double>(), (*f)[1].get<double>()};
     if (p.b >= p.a && p.a >= 0) out.push_back(std::move(p));
@@ -125,7 +120,7 @@ inline std::vector<FootPlant> footPlants(const Json& clip) {
   return out;
 }
 
-inline PlantState plantAt(const std::vector<FootPlant>& plants, const std::string& role, double cf, int frameCount, bool loop,
+PlantState plantAt(const std::vector<FootPlant>& plants, const std::string& role, double cf, int frameCount, bool loop,
                    double release, double easeIn, double lead) {
   PlantState best;
   const double N = std::max(1, frameCount);
@@ -141,21 +136,21 @@ inline PlantState plantAt(const std::vector<FootPlant>& plants, const std::strin
       const double in = a <= 0.0 ? 0.0 : std::min(easeIn, b - a), pre = a <= 0.0 ? 0.0 : std::min(lead, a);
       if (b < a || cf < a - pre || cf > b + release) continue;
       float w = 1.0f;
-      if (cf < a + in) w = float(foot_lock_detail::smooth01((cf - (a - pre)) / std::max(1e-9, in + pre)));
-      else if (cf > b) w = float(1.0 - foot_lock_detail::smooth01((cf - b) / std::max(1e-9, release)));
+      if (cf < a + in) w = float(smooth01((cf - (a - pre)) / std::max(1e-9, in + pre)));
+      else if (cf > b) w = float(1.0 - smooth01((cf - b) / std::max(1e-9, release)));
       if (w > best.weight || !best.active) best = {true, a + in, w};
     }
   }
   return best;
 }
 
-inline void pinFoot(const Skeleton& sk, Pose& pose, int foot, vec3 target, float weight) {
+void pinFoot(const Skeleton& sk, Pose& pose, int foot, vec3 target, float weight) {
   weight = std::clamp(weight, 0.0f, 1.0f);
   if (foot < 0 || weight <= 0) return;
   const int shin = sk.bones[size_t(foot)].parent;
   if (shin < 0 || sk.bones[size_t(shin)].parent < 0) return;
   auto globalRot = [&](int b) {
-    quat q = foot_lock_detail::kIdentity;
+    quat q = kIdentity;
     for (; b >= 0; b = sk.bones[size_t(b)].parent) q = pose.local[size_t(b)] * q;
     return q;
   };
@@ -166,7 +161,7 @@ inline void pinFoot(const Skeleton& sk, Pose& pose, int foot, vec3 target, float
   fl = glm::normalize(glm::slerp(fl, glm::dot(fl, keep) < 0 ? -keep : keep, weight));
 }
 
-inline float footReachDrop(const Skeleton& sk, const std::vector<mat4>& G, int foot, vec3 target, float stretch) {
+float footReachDrop(const Skeleton& sk, const std::vector<mat4>& G, int foot, vec3 target, float stretch) {
   if (foot < 0) return 0;
   const int shin = sk.bones[size_t(foot)].parent;
   const int thigh = shin < 0 ? -1 : sk.bones[size_t(shin)].parent;
@@ -182,5 +177,3 @@ inline float footReachDrop(const Skeleton& sk, const std::vector<mat4>& G, int f
 }
 
 }  // namespace plush
-
-#endif  // PLUSH_ANIM_FOOT_LOCK_IMPL

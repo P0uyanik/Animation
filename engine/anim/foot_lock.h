@@ -69,5 +69,3 @@ void pinFoot(const Skeleton& skeleton, Pose& pose, int footBone, vec3 target, fl
 float footReachDrop(const Skeleton& skeleton, const std::vector<mat4>& globals, int footBone, vec3 target, float stretch = 0.995f);
 
 }  // namespace plush
-
-#include "anim/foot_lock.cpp"  // inline implementation (see the note there)
