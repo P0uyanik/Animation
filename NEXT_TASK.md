@@ -1,3 +1,34 @@
+# ▶ T-169 — NEW CODEX ASSIGNMENT (owner ~10:50 CET 2026-11-20; posted by the owner liaison session_01NPjxeKamtbdzi3YwrgsWXU for the round-3 Supervisor session_01NPjxeL81bNYoFDm9Ypv5Ck)
+Codex does **T-169: HAIR REFERENCE STUDY**, all three characters. Analysis only, token-efficient. No project code,
+spec, test or asset changes. Builds on T-161 (silhouette numbers already in `docs/evaluation/characters/T-161/`;
+reuse them, don't re-measure).
+
+Owner direction (~09:50 CET): "do not insist too much on making it look felt-like. The reference hair does not look
+that felt-like and is more natural. The decision about hair should be based on the actual reference images. The
+main goal is to get closer to the references." Owner's impression: boy hair currently closer than the girls' (unsure);
+all three still noticeably different.
+
+1. Branch `t-169-codex-hair-study` from the latest `origin/main` in a new worktree on C: (never write on D:). Write
+   ONLY `docs/evaluation/characters/T-169/**`.
+2. From the REFERENCES (read-only; same sets as T-161), describe per character what the hair actually looks like:
+   - material read: how felt/fuzzy vs smooth/natural; surface sheen/gloss; fibre flyaways (amount, where);
+   - strand grouping: lock/clump size, count, shape (petal/leaf vs irregular tufts vs ringlets), tip shape, layering;
+   - fringe: outline (regular points vs irregular fall), wisps, length, forehead coverage, parting;
+   - volume and fullness per view (front/3/4/side/back), how hair falls on shoulders/back;
+   - colour: base, variation, highlight/shadow depth (e.g. boy's dark crown channels);
+   - buns/accessories: shape, wrap, size, placement (third girl's blue bow: front, her right side, at the hairline
+     below the right bun, slightly tilted — owner confirmed per refs 01/02).
+3. Compare with the latest renders: T-160 hair round 6 sheets on branch `t-160-claude-hair-r6`
+   (`docs/evaluation/characters/T-160/{boy,girl,third}/strict.jpg` + `hair_crops.jpg`). Note input SHAs.
+4. Output: `README.md` (~1–2 pages: per character the top 5 differences ranked by visual impact, each with a concrete
+   procedural direction, e.g. "fewer, larger irregular tufts; reduce fuzz shell; add sheen"); `hair_targets.json`
+   (per character: qualitative targets + any measurable ones with tolerance); evidence JPEGs (≤ 2048 px,
+   reference crop | render crop side by side). These feed hair round 7 (T-167, currently paused).
+5. Post `| T-169 | STARTED |`; when done push and post
+   `<UTC> | T-169 | READY | t-169-codex-hair-study@<sha> | input <sha> | <headline>` + ledger.
+6. Model: medium effort, token-efficient.
+
+---
 # ▶ T-161 — NEW CODEX ASSIGNMENT (owner ~07:40Z; posted by the original Supervisor for the round-3 Supervisor session_01NPjxeL81bNYoFDm9Ypv5Ck)
 Codex does **T-161: reference target sets for EYELASHES, EARS and HAIR SILHOUETTE**, all three characters, the same
 kind of work as T-150 (whose targets.json the face task used directly). Analysis only, token-efficient. No project
