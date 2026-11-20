@@ -828,3 +828,10 @@ New research-only task (docs-only write-set, no implementation, no Codex). For w
 object interaction and character-to-character interaction: what exists, what we can reuse, what we keep, what needs custom
 work, how to simplify, and the pros and cons. Deliverable: a keep/reuse/build matrix, ONE recommended approach with a revised estimate,
 risks and owner questions → `docs/tasks/T-174.md`.
+
+## 2026-11-20 ~23:15Z (00:15 CET) — Answers to the T-174 questions (relayed by the owner liaison; record only)
+(a) The content goes to YouTube, so treat the project as commercial: CMU is OK with attribution; no non-commercial (NC) data.
+(b) Walk/run/sit/stand are needed eventually, not urgently. (c) Mixamo is not used unless the owner decides otherwise later.
+(d) mocap.cs.cmu.edu and accad.osu.edu are allowed in the Animation environment. (e) Style must match the reference videos
+(stylized, chibi timing per T-106 and content/timing), not realistic mocap. The owner is still deciding code vs no-code.
+The T-174 plan stays ON HOLD; nothing starts.
