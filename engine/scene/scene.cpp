@@ -570,9 +570,9 @@ Result<InteractionOptions> interactionOptionsFromJson(const Json& j) {
   if (j.is_null()) return o;
   if (!j.is_object()) return fail("interaction: expected an object");
   for (const auto& [k, v] : j.items()) {
-    if (k == "headVolumes" || k == "followSharedProp" || k == "visibleGrip") {
+    if (k == "headVolumes" || k == "followSharedProp" || k == "visibleGrip" || k == "graspFit") {
       if (!v.is_boolean()) return fail(std::format("interaction: {} must be true or false", k));
-      (k == "headVolumes" ? o.headVolumes : k == "followSharedProp" ? o.followSharedProp : o.visibleGrip) = v.get<bool>();
+      (k == "headVolumes" ? o.headVolumes : k == "followSharedProp" ? o.followSharedProp : k == "graspFit" ? o.graspFit : o.visibleGrip) = v.get<bool>();
     } else if (k == "headClearance") {
       if (!v.is_number() || !(v.get<float>() >= 0 && v.get<float>() <= 0.1f))
         return fail("interaction: headClearance must be a number of metres in [0, 0.1]");
