@@ -2,7 +2,7 @@
 
 Updated by the Supervisor in the same commit as every merge or dispatch. Sources: [TASK_LOG](TASK_LOG.md),
 [OWNERSHIP](OWNERSHIP.md), [OWNER_DECISIONS](OWNER_DECISIONS.md) (2026-11-20). As of 2026-11-20 ~08:20Z.
-Session cap: 6 (temporary 8 ended 08:20Z). ETA "—" = none given yet.
+Session cap: 6 (temporary 8 ended 08:20Z). Owner liaison: session_01NPjxeKamtbdzi3YwrgsWXU (from ~08:30Z). ETA "—" = none given yet.
 
 ## Character look
 | Task | Model | State | ETA | Branch |

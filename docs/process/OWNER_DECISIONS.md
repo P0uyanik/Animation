@@ -651,3 +651,7 @@ Item 2 (liaison rotation) NOT now: the owner picks the time. Rules: analysis-bac
    compatibility fallback (settings per the T-124 README); masters stay lossless. Small task (→ T-166): defaults in
    shot_render/run_shot and the encode step, docs/tests (assert new default + fallback), revertible, full gate green;
    golden/image tests that depend on the old preset keep their own pinned preset; nothing weakened.
+
+## 2026-11-20 ~08:30Z — Owner liaison rotation
+New owner liaison: session_01NPjxeKamtbdzi3YwrgsWXU ("Plush Studio – Owner liaison"); owner-facing reports and
+READY/decision requests go there, not to session_01NPjxeNTmHt2DtBN8F8uLqB. Handover: [LIAISON_HANDOVER](LIAISON_HANDOVER.md).
