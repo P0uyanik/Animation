@@ -1,0 +1,20 @@
+{
+ "note": "T-167 final selection (owner 2026-11-20): boy hair r6 (byte copy of the T-160 override), girls hair r7; opt-in overrides on the T-155 candidate specs",
+ "overrides": {
+  "boy_yellow_hoodie": {
+   "base_spec_version": "2.3.0",
+   "hair": "r6",
+   "file": "boy_yellow_hoodie.hair_r6.override.json"
+  },
+  "girl_auburn_bun_glasses": {
+   "base_spec_version": "0.14.0",
+   "hair": "r7",
+   "file": "girl_auburn_bun_glasses.hair_r7.override.json"
+  },
+  "girl_white_hair_blue_dress": {
+   "base_spec_version": "0.1.0",
+   "hair": "r7",
+   "file": "girl_white_hair_blue_dress.hair_r7.override.json"
+  }
+ }
+}

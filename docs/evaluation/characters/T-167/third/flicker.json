@@ -1,0 +1,99 @@
+{
+ "character": "third",
+ "frames": 8,
+ "deg_per_frame": 2.0,
+ "start_yaw_deg": 150.0,
+ "samples": 16,
+ "px": [
+  400,
+  360
+ ],
+ "framing": {
+  "target": [
+   0.0,
+   0.0,
+   0.7
+  ],
+  "frame_height_m": 0.7,
+  "aspect": 0.9
+ },
+ "thresholds": {
+  "held_noise": {
+   "default": 0.03,
+   "background": 0.002,
+   "hair": 0.056,
+   "fibres": 0.045,
+   "skin": 0.027,
+   "cloth": 0.021
+  },
+  "flip_share": {
+   "default": 0.3,
+   "background": 0.01,
+   "hair": 0.405,
+   "fibres": 0.384,
+   "skin": 0.18,
+   "cloth": 0.161
+  },
+  "tile_flip_share": {
+   "default": 0.6,
+   "hair": 0.88,
+   "fibres": 0.82
+  }
+ },
+ "columns": {
+  "hair_r7": {
+   "blend": "../../../tmp/claude-0/-home-user/1fc65274-aab6-5ec0-b61a-8034f1dcb61c/scratchpad/b/third_r7/girl_white_hair_blue_dress_master.blend",
+   "issues": [],
+   "stats": {
+    "background": {
+     "frames": 6,
+     "motion_compensated": true,
+     "held_share": 0.983,
+     "denoised_noise_median": 0.0,
+     "denoised_noise_max": 0.0,
+     "denoised_flip_share_median": 0.00402,
+     "denoised_flip_share_max": 0.00413,
+     "noisy_noise_median": 0.0,
+     "noisy_noise_max": 0.0,
+     "noisy_flip_share_median": 0.00873,
+     "noisy_flip_share_max": 0.00908,
+     "tile_flip_share_max": 0.2535
+    },
+    "hair": {
+     "frames": 6,
+     "motion_compensated": true,
+     "held_share": 0.017,
+     "denoised_noise_median": 0.03102,
+     "denoised_noise_max": 0.03235,
+     "denoised_flip_share_median": 0.04973,
+     "denoised_flip_share_max": 0.05103,
+     "noisy_noise_median": 0.12274,
+     "noisy_noise_max": 0.12612,
+     "noisy_flip_share_median": 0.49046,
+     "noisy_flip_share_max": 0.49212,
+     "tile_flip_share_max": 0.3918
+    },
+    "skin": {
+     "frames": 6,
+     "motion_compensated": true,
+     "held_share": 0.005,
+     "denoised_flip_share_median": 0.1114,
+     "denoised_flip_share_max": 0.16863,
+     "noisy_flip_share_median": 0.44171,
+     "noisy_flip_share_max": 0.46828,
+     "tile_flip_share_max": 0.25
+    },
+    "cloth": {
+     "frames": 6,
+     "motion_compensated": true,
+     "held_share": 0.033,
+     "denoised_flip_share_median": 0.08539,
+     "denoised_flip_share_max": 0.09301,
+     "noisy_flip_share_median": 0.46557,
+     "noisy_flip_share_max": 0.47787,
+     "tile_flip_share_max": 0.3049
+    }
+   }
+  }
+ }
+}

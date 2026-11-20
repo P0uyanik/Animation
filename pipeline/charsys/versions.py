@@ -124,6 +124,7 @@ _r("groom", "groom", 1, "groom")
 _r("groom", "groom", 2, "groom_hybrid")  # T-044 hair v3 (hybrid felt); opt-in, no character pins it yet
 _r("groom", "groom", 3, "groom_r4")  # T-091 hair round 4/5 (clump masses, directional fibres); opt-in
 _r("groom", "groom", 4, "groom_r5")  # T-118 hair round 5 (whorl rings, staggered ends, turned flowers); opt-in
+_r("groom", "groom", 5, "groom_r6")  # T-160 hair round 6 (standing petals, soft tapered ends); opt-in
 _r("garment", "body_v6", 1, "body_v6", declared=False, note="legacy v6 clothing")
 _r("garment", "garment", 1, "garments")
 _r("garment", "garment", 2, "garments_v2")  # T-093 garment outlines + accessories + reach correctives; opt-in

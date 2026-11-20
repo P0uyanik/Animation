@@ -1,0 +1,589 @@
+{
+ "override": {
+  "generators": {
+   "groom": "groom/5"
+  },
+  "hair": {
+   "generator": "groom/5",
+   "structures": [
+    {
+     "type": "scalp_cap",
+     "name": "cap",
+     "offset": 0.004
+    },
+    {
+     "type": "felt_volume",
+     "name": "base",
+     "shape": "gather",
+     "az": [
+      -180,
+      180
+     ],
+     "hairline_el": [
+      [
+       0,
+       22
+      ],
+      [
+       35,
+       16
+      ],
+      [
+       65,
+       2
+      ],
+      [
+       95,
+       -14
+      ],
+      [
+       130,
+       -28
+      ],
+      [
+       180,
+       -34
+      ]
+     ],
+     "target": {
+      "az": 180,
+      "el": 80
+     },
+     "tuck": 1.0,
+     "height": [
+      0.022,
+      0.036,
+      0.04
+     ],
+     "inset": 0.004,
+     "grooves": {
+      "count": 14,
+      "depth": 0.35,
+      "sharpness": 0.7,
+      "wander": 0.3,
+      "wavelength": 0.5
+     },
+     "lumps": {
+      "amount": 0.12,
+      "scale": 1.2
+     },
+     "soft": [
+      0,
+      0,
+      0.25,
+      0.0
+     ],
+     "rim": 0.2,
+     "resolution": [
+      160,
+      40
+     ]
+    },
+    {
+     "seg": 18,
+     "grooves": 1,
+     "groove_depth": 0.2,
+     "irregularity": 0.05,
+     "layer_lift_m": 0.009,
+     "type": "masses",
+     "name": "back",
+     "rows": [
+      {
+       "hold": 0.32,
+       "taper_power": 1.25,
+       "root_width": 0.8,
+       "count": 6,
+       "az": [
+        130,
+        230
+       ],
+       "el": [
+        12,
+        20
+       ],
+       "flow": "down",
+       "len_deg": [
+        46,
+        52
+       ],
+       "width": [
+        0.105,
+        0.115
+       ],
+       "depth": 0.6,
+       "lift": [
+        0.004,
+        0.03,
+        0.036
+       ],
+       "flick_m": 0.03,
+       "jitter_deg": 5,
+       "layer": 0
+      }
+     ]
+    },
+    {
+     "seg": 18,
+     "grooves": 1,
+     "groove_depth": 0.2,
+     "irregularity": 0.05,
+     "layer_lift_m": 0.009,
+     "type": "masses",
+     "name": "sides",
+     "rows": [
+      {
+       "hold": 0.32,
+       "taper_power": 1.25,
+       "root_width": 0.8,
+       "count": 2,
+       "az": [
+        64,
+        112
+       ],
+       "el": [
+        22,
+        30
+       ],
+       "flow": "down",
+       "len_deg": [
+        38,
+        44
+       ],
+       "width": [
+        0.1,
+        0.11
+       ],
+       "depth": 0.62,
+       "lift": [
+        0.006,
+        0.04,
+        0.045
+       ],
+       "flick_m": 0.05,
+       "jitter_deg": 6,
+       "layer": 0
+      },
+      {
+       "hold": 0.32,
+       "taper_power": 1.25,
+       "root_width": 0.8,
+       "count": 2,
+       "az": [
+        -112,
+        -64
+       ],
+       "el": [
+        22,
+        30
+       ],
+       "flow": "down",
+       "len_deg": [
+        38,
+        44
+       ],
+       "width": [
+        0.1,
+        0.11
+       ],
+       "depth": 0.62,
+       "lift": [
+        0.006,
+        0.04,
+        0.045
+       ],
+       "flick_m": 0.05,
+       "jitter_deg": 6,
+       "layer": 0
+      }
+     ]
+    },
+    {
+     "seg": 18,
+     "grooves": 1,
+     "groove_depth": 0.2,
+     "irregularity": 0.05,
+     "layer_lift_m": 0.009,
+     "type": "masses",
+     "name": "fringe",
+     "items": [
+      {
+       "hold": 0.32,
+       "taper_power": 1.25,
+       "root_width": 0.8,
+       "root": [
+        14,
+        64
+       ],
+       "tip": [
+        13,
+        5
+       ],
+       "width": 0.105,
+       "depth": 0.66,
+       "lift": [
+        0.008,
+        0.034,
+        0.004
+       ],
+       "lift_peak": 0.4,
+       "flick_m": 0.0,
+       "layer": 1
+      },
+      {
+       "hold": 0.32,
+       "taper_power": 1.25,
+       "root_width": 0.8,
+       "root": [
+        -14,
+        64
+       ],
+       "tip": [
+        -13,
+        5
+       ],
+       "width": 0.105,
+       "depth": 0.66,
+       "lift": [
+        0.008,
+        0.034,
+        0.004
+       ],
+       "lift_peak": 0.4,
+       "flick_m": 0.0,
+       "layer": 1
+      },
+      {
+       "hold": 0.32,
+       "taper_power": 1.25,
+       "root_width": 0.8,
+       "root": [
+        40,
+        58
+       ],
+       "tip": [
+        50,
+        -6
+       ],
+       "width": 0.115,
+       "depth": 0.66,
+       "lift": [
+        0.008,
+        0.04,
+        0.012
+       ],
+       "lift_peak": 0.4,
+       "flick_m": 0.01,
+       "layer": 1
+      },
+      {
+       "hold": 0.32,
+       "taper_power": 1.25,
+       "root_width": 0.8,
+       "root": [
+        -40,
+        58
+       ],
+       "tip": [
+        -50,
+        -6
+       ],
+       "width": 0.115,
+       "depth": 0.66,
+       "lift": [
+        0.008,
+        0.04,
+        0.012
+       ],
+       "lift_peak": 0.4,
+       "flick_m": 0.01,
+       "layer": 1
+      }
+     ]
+    },
+    {
+     "seg": 18,
+     "grooves": 1,
+     "groove_depth": 0.2,
+     "irregularity": 0.05,
+     "layer_lift_m": 0.009,
+     "type": "masses",
+     "name": "fringe_centre",
+     "items": [
+      {
+       "hold": 0.32,
+       "taper_power": 1.25,
+       "root_width": 0.8,
+       "root": [
+        4,
+        70
+       ],
+       "tip": [
+        -2,
+        -3
+       ],
+       "width": 0.085,
+       "depth": 0.66,
+       "lift": [
+        0.01,
+        0.04,
+        0.006
+       ],
+       "lift_peak": 0.4,
+       "layer": 2
+      }
+     ]
+    },
+    {
+     "seg": 18,
+     "grooves": 1,
+     "groove_depth": 0.2,
+     "irregularity": 0.05,
+     "layer_lift_m": 0.009,
+     "type": "masses",
+     "name": "top_outer",
+     "rows": [
+      {
+       "hold": 0.45,
+       "taper_power": 1.3,
+       "count": 9,
+       "pole": {
+        "az": 180,
+        "el": 62
+       },
+       "ring": {
+        "radius_deg": 50,
+        "around": [
+         62,
+         298
+        ]
+       },
+       "len_deg": 44,
+       "width": 0.085,
+       "depth": 0.82,
+       "lift": [
+        0.004,
+        0.034,
+        0.034
+       ],
+       "flick_m": 0.035,
+       "layer": 0,
+       "swirl_deg": 6,
+       "channel": {
+        "gap": 0.22
+       },
+       "stagger": {
+        "len": [
+         1.0,
+         0.8,
+         1.12,
+         0.9,
+         1.05
+        ],
+        "width": [
+         1.0,
+         0.9,
+         1.05
+        ]
+       }
+      }
+     ],
+     "stand": {
+      "smooth": 8
+     }
+    },
+    {
+     "seg": 18,
+     "grooves": 1,
+     "groove_depth": 0.2,
+     "irregularity": 0.05,
+     "layer_lift_m": 0.009,
+     "type": "masses",
+     "name": "top",
+     "rows": [
+      {
+       "hold": 0.45,
+       "taper_power": 1.3,
+       "count": 8,
+       "pole": {
+        "az": 180,
+        "el": 62
+       },
+       "ring": {
+        "radius_deg": 24,
+        "around": [
+         -180,
+         180
+        ]
+       },
+       "len_deg": 44,
+       "width": 0.08,
+       "depth": 0.9,
+       "lift": [
+        0.004,
+        0.05,
+        0.046
+       ],
+       "flick_m": 0.04,
+       "layer": 1,
+       "swirl_deg": 10,
+       "channel": {
+        "gap": 0.3
+       },
+       "stagger": {
+        "len": [
+         1.0,
+         0.78,
+         1.15,
+         0.88
+        ],
+        "lift": [
+         1.0,
+         1.2,
+         0.85
+        ],
+        "radius_deg": [
+         0,
+         5,
+         -3
+        ]
+       }
+      }
+     ],
+     "stand": {
+      "smooth": 8
+     }
+    },
+    {
+     "seg": 18,
+     "grooves": 1,
+     "groove_depth": 0.2,
+     "irregularity": 0.05,
+     "layer_lift_m": 0.009,
+     "type": "masses",
+     "name": "whorl",
+     "root_sink_m": 0.012,
+     "rows": [
+      {
+       "hold": 0.45,
+       "taper_power": 1.3,
+       "count": 6,
+       "pole": {
+        "az": 180,
+        "el": 62
+       },
+       "ring": {
+        "radius_deg": 10,
+        "around": [
+         -180,
+         180
+        ]
+       },
+       "len_deg": 30,
+       "width": 0.07,
+       "depth": 0.9,
+       "lift": [
+        0.0,
+        0.05,
+        0.042
+       ],
+       "flick_m": 0.03,
+       "layer": 2,
+       "swirl_deg": 16,
+       "channel": {
+        "gap": 0.28
+       },
+       "stagger": {
+        "len": [
+         1.0,
+         0.75,
+         1.2
+        ],
+        "lift": [
+         1.0,
+         1.25,
+         0.8,
+         1.1
+        ]
+       }
+      }
+     ],
+     "stand": {
+      "smooth": 8
+     }
+    },
+    {
+     "seg": 18,
+     "grooves": 1,
+     "groove_depth": 0.2,
+     "irregularity": 0.05,
+     "layer_lift_m": 0.009,
+     "type": "masses",
+     "name": "crown",
+     "root_sink_m": 0.016,
+     "rows": [
+      {
+       "count": 5,
+       "pole": {
+        "az": 180,
+        "el": 62
+       },
+       "ring": {
+        "radius_deg": 24,
+        "around": [
+         -88,
+         88
+        ]
+       },
+       "len_deg": 14,
+       "width": 0.095,
+       "depth": 0.8,
+       "lift": [
+        -0.004,
+        0.1
+       ],
+       "lift_power": 1.3,
+       "hold": 0.5,
+       "taper_power": 2.1,
+       "root_width": 0.7,
+       "layer": 3,
+       "stagger": {
+        "lift": [
+         0.7,
+         1.25,
+         0.95,
+         0.6,
+         1.05
+        ],
+        "len": [
+         1.0,
+         1.25,
+         0.9,
+         0.8,
+         1.1
+        ],
+        "radius_deg": [
+         3,
+         -5,
+         6,
+         -2,
+         4
+        ],
+        "width": [
+         0.95,
+         1.1,
+         0.85,
+         1.1,
+         1.0
+        ]
+       }
+      }
+     ],
+     "stand": {
+      "smooth": 14
+     }
+    }
+   ]
+  }
+ },
+ "note": "T-160 hair round 6, opt-in; on boy_yellow_hoodie.2.3.0.spec.json (T-155 candidate)"
+}

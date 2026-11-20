@@ -1,0 +1,11 @@
+{
+ "spec": "girl_auburn_bun_glasses.0.14.0.spec.json",
+ "override": "girl_auburn_bun_glasses.hair_r6.override.json",
+ "objects": 34,
+ "identical": false,
+ "differing": [
+  "hair_flowers_centres",
+  "hair_flowers_petals"
+ ],
+ "sha256_of_all": "f5a3cb99e2dc12ac70b851851c87b43353dc8a4489dd5eea6ebae2ee2885f4f5"
+}

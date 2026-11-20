@@ -1,0 +1,235 @@
+{
+ "character": "boy",
+ "frames": 8,
+ "deg_per_frame": 2.0,
+ "start_yaw_deg": 150.0,
+ "samples": 16,
+ "px": [
+  400,
+  360
+ ],
+ "framing": {
+  "target": [
+   0.0,
+   0.0,
+   0.91
+  ],
+  "frame_height_m": 0.58,
+  "aspect": 0.9
+ },
+ "thresholds": {
+  "held_noise": {
+   "default": 0.03,
+   "background": 0.002,
+   "hair": 0.056,
+   "fibres": 0.045,
+   "skin": 0.027,
+   "cloth": 0.021
+  },
+  "flip_share": {
+   "default": 0.3,
+   "background": 0.01,
+   "hair": 0.405,
+   "fibres": 0.384,
+   "skin": 0.18,
+   "cloth": 0.161
+  },
+  "tile_flip_share": {
+   "default": 0.6,
+   "hair": 0.88,
+   "fibres": 0.82
+  }
+ },
+ "columns": {
+  "t155": {
+   "blend": "build/t160/t155/boy_yellow_hoodie_master.blend",
+   "issues": [
+    {
+     "check": "flicker",
+     "kind": "flip_share",
+     "region": "cloth",
+     "value": 0.27171,
+     "noisy": 0.52661,
+     "limit": 0.161,
+     "frames": [
+      2,
+      7
+     ],
+     "peak_frame": 2
+    },
+    {
+     "check": "flicker",
+     "kind": "held_noise",
+     "region": "hair",
+     "value": 0.06776,
+     "noisy": 0.11244,
+     "limit": 0.056,
+     "frames": [
+      7,
+      7
+     ],
+     "peak_frame": 7
+    },
+    {
+     "check": "flicker",
+     "kind": "held_noise",
+     "region": "hair",
+     "value": 0.06399,
+     "noisy": 0.11579,
+     "limit": 0.056,
+     "frames": [
+      4,
+      4
+     ],
+     "peak_frame": 4
+    }
+   ],
+   "stats": {
+    "background": {
+     "frames": 6,
+     "motion_compensated": true,
+     "held_share": 0.983,
+     "denoised_noise_median": 0.00028,
+     "denoised_noise_max": 0.00028,
+     "denoised_flip_share_median": 0.00204,
+     "denoised_flip_share_max": 0.00217,
+     "noisy_noise_median": 0.0,
+     "noisy_noise_max": 0.0,
+     "noisy_flip_share_median": 0.00419,
+     "noisy_flip_share_max": 0.00433,
+     "tile_flip_share_max": 0.1216
+    },
+    "hair": {
+     "frames": 6,
+     "motion_compensated": true,
+     "held_share": 0.004,
+     "denoised_noise_median": 0.05471,
+     "denoised_noise_max": 0.06776,
+     "denoised_flip_share_median": 0.21366,
+     "denoised_flip_share_max": 0.22139,
+     "noisy_noise_median": 0.10305,
+     "noisy_noise_max": 0.11579,
+     "noisy_flip_share_median": 0.46255,
+     "noisy_flip_share_max": 0.4681,
+     "tile_flip_share_max": 0.5161
+    },
+    "fibres": {
+     "frames": 6,
+     "motion_compensated": true,
+     "held_share": 0.005,
+     "denoised_flip_share_median": 0.27847,
+     "denoised_flip_share_max": 0.28949,
+     "noisy_flip_share_median": 0.60492,
+     "noisy_flip_share_max": 0.61518,
+     "tile_flip_share_max": 0.4341
+    },
+    "skin": {
+     "frames": 6,
+     "motion_compensated": true,
+     "held_share": 0.387,
+     "denoised_noise_median": 0.01245,
+     "denoised_noise_max": 0.01583,
+     "denoised_flip_share_median": 0.04487,
+     "denoised_flip_share_max": 0.05562,
+     "noisy_noise_median": 0.06287,
+     "noisy_noise_max": 0.06774,
+     "noisy_flip_share_median": 0.49275,
+     "noisy_flip_share_max": 0.5163,
+     "tile_flip_share_max": 0.1244
+    },
+    "cloth": {
+     "frames": 6,
+     "motion_compensated": true,
+     "held_share": 0.0,
+     "denoised_flip_share_median": 0.23297,
+     "denoised_flip_share_max": 0.27171,
+     "noisy_flip_share_median": 0.54236,
+     "noisy_flip_share_max": 0.58021,
+     "tile_flip_share_max": null
+    }
+   }
+  },
+  "hair_r6": {
+   "blend": "build/t160/full/boy_f/boy_yellow_hoodie_master.blend",
+   "issues": [
+    {
+     "check": "flicker",
+     "kind": "flip_share",
+     "region": "cloth",
+     "value": 0.25059,
+     "noisy": 0.55035,
+     "limit": 0.161,
+     "frames": [
+      2,
+      7
+     ],
+     "peak_frame": 6
+    }
+   ],
+   "stats": {
+    "background": {
+     "frames": 6,
+     "motion_compensated": true,
+     "held_share": 0.983,
+     "denoised_noise_median": 0.00028,
+     "denoised_noise_max": 0.00028,
+     "denoised_flip_share_median": 0.00206,
+     "denoised_flip_share_max": 0.00214,
+     "noisy_noise_median": 0.0,
+     "noisy_noise_max": 0.0,
+     "noisy_flip_share_median": 0.0041,
+     "noisy_flip_share_max": 0.00479,
+     "tile_flip_share_max": 0.1231
+    },
+    "hair": {
+     "frames": 6,
+     "motion_compensated": true,
+     "held_share": 0.006,
+     "denoised_noise_median": 0.04702,
+     "denoised_noise_max": 0.0485,
+     "denoised_flip_share_median": 0.20446,
+     "denoised_flip_share_max": 0.20591,
+     "noisy_noise_median": 0.09019,
+     "noisy_noise_max": 0.09357,
+     "noisy_flip_share_median": 0.45625,
+     "noisy_flip_share_max": 0.45921,
+     "tile_flip_share_max": 0.5145
+    },
+    "fibres": {
+     "frames": 6,
+     "motion_compensated": true,
+     "held_share": 0.005,
+     "denoised_flip_share_median": 0.27452,
+     "denoised_flip_share_max": 0.28913,
+     "noisy_flip_share_median": 0.60472,
+     "noisy_flip_share_max": 0.6113,
+     "tile_flip_share_max": 0.4419
+    },
+    "skin": {
+     "frames": 6,
+     "motion_compensated": true,
+     "held_share": 0.386,
+     "denoised_noise_median": 0.01279,
+     "denoised_noise_max": 0.0154,
+     "denoised_flip_share_median": 0.04466,
+     "denoised_flip_share_max": 0.05091,
+     "noisy_noise_median": 0.06302,
+     "noisy_noise_max": 0.06894,
+     "noisy_flip_share_median": 0.48905,
+     "noisy_flip_share_max": 0.51408,
+     "tile_flip_share_max": 0.1351
+    },
+    "cloth": {
+     "frames": 6,
+     "motion_compensated": true,
+     "held_share": 0.0,
+     "denoised_flip_share_median": 0.23583,
+     "denoised_flip_share_max": 0.25059,
+     "noisy_flip_share_median": 0.54208,
+     "noisy_flip_share_max": 0.5525,
+     "tile_flip_share_max": null
+    }
+   }
+  }
+ }
+}

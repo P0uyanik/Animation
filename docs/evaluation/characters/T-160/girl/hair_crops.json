@@ -1,0 +1,14 @@
+{
+ "render_s": 448.0,
+ "samples": 16,
+ "px": 600,
+ "views": [
+  "front",
+  "threequarter",
+  "back"
+ ],
+ "columns": [
+  "t155_0.14.0",
+  "hair_r6"
+ ]
+}

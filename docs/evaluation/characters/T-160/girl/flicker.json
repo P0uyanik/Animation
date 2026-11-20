@@ -1,0 +1,205 @@
+{
+ "character": "girl",
+ "frames": 8,
+ "deg_per_frame": 2.0,
+ "start_yaw_deg": 150.0,
+ "samples": 16,
+ "px": [
+  400,
+  360
+ ],
+ "framing": {
+  "target": [
+   0.0,
+   0.0,
+   0.8
+  ],
+  "frame_height_m": 0.76,
+  "aspect": 0.9
+ },
+ "thresholds": {
+  "held_noise": {
+   "default": 0.03,
+   "background": 0.002,
+   "hair": 0.056,
+   "fibres": 0.045,
+   "skin": 0.027,
+   "cloth": 0.021
+  },
+  "flip_share": {
+   "default": 0.3,
+   "background": 0.01,
+   "hair": 0.405,
+   "fibres": 0.384,
+   "skin": 0.18,
+   "cloth": 0.161
+  },
+  "tile_flip_share": {
+   "default": 0.6,
+   "hair": 0.88,
+   "fibres": 0.82
+  }
+ },
+ "columns": {
+  "t155": {
+   "blend": "build/t160/t155/girl_auburn_bun_glasses_master.blend",
+   "issues": [
+    {
+     "check": "flicker",
+     "kind": "held_noise",
+     "region": "hair",
+     "value": 0.06402,
+     "noisy": 0.15406,
+     "limit": 0.056,
+     "frames": [
+      2,
+      6
+     ],
+     "peak_frame": 2
+    }
+   ],
+   "stats": {
+    "background": {
+     "frames": 6,
+     "motion_compensated": true,
+     "held_share": 0.992,
+     "denoised_noise_median": 0.0,
+     "denoised_noise_max": 0.0,
+     "denoised_flip_share_median": 0.00149,
+     "denoised_flip_share_max": 0.00168,
+     "noisy_noise_median": 0.0,
+     "noisy_noise_max": 0.0,
+     "noisy_flip_share_median": 0.00302,
+     "noisy_flip_share_max": 0.00311,
+     "tile_flip_share_max": 0.0748
+    },
+    "hair": {
+     "frames": 6,
+     "motion_compensated": true,
+     "held_share": 0.004,
+     "denoised_noise_median": 0.05806,
+     "denoised_noise_max": 0.06402,
+     "denoised_flip_share_median": 0.2393,
+     "denoised_flip_share_max": 0.24816,
+     "noisy_noise_median": 0.15313,
+     "noisy_noise_max": 0.17137,
+     "noisy_flip_share_median": 0.52587,
+     "noisy_flip_share_max": 0.53079,
+     "tile_flip_share_max": 0.5
+    },
+    "cloth": {
+     "frames": 6,
+     "motion_compensated": true,
+     "held_share": 0.251,
+     "denoised_noise_median": 0.01433,
+     "denoised_noise_max": 0.01772,
+     "denoised_flip_share_median": 0.06306,
+     "denoised_flip_share_max": 0.07739,
+     "noisy_noise_median": 0.05671,
+     "noisy_noise_max": 0.0668,
+     "noisy_flip_share_median": 0.37007,
+     "noisy_flip_share_max": 0.4067,
+     "tile_flip_share_max": 0.1923
+    }
+   }
+  },
+  "hair_r6": {
+   "blend": "build/t160/full/girl_b/girl_auburn_bun_glasses_master.blend",
+   "issues": [
+    {
+     "check": "flicker",
+     "kind": "flip_share",
+     "region": "skin",
+     "value": 0.24378,
+     "noisy": 0.46269,
+     "limit": 0.18,
+     "frames": [
+      7,
+      7
+     ],
+     "peak_frame": 7
+    },
+    {
+     "check": "flicker",
+     "kind": "held_noise",
+     "region": "hair",
+     "value": 0.06904,
+     "noisy": 0.14324,
+     "limit": 0.056,
+     "frames": [
+      2,
+      2
+     ],
+     "peak_frame": 2
+    },
+    {
+     "check": "flicker",
+     "kind": "held_noise",
+     "region": "hair",
+     "value": 0.06013,
+     "noisy": 0.12549,
+     "limit": 0.056,
+     "frames": [
+      7,
+      7
+     ],
+     "peak_frame": 7
+    }
+   ],
+   "stats": {
+    "background": {
+     "frames": 6,
+     "motion_compensated": true,
+     "held_share": 0.991,
+     "denoised_noise_median": 0.0,
+     "denoised_noise_max": 0.0,
+     "denoised_flip_share_median": 0.00152,
+     "denoised_flip_share_max": 0.00175,
+     "noisy_noise_median": 0.0,
+     "noisy_noise_max": 0.0,
+     "noisy_flip_share_median": 0.003,
+     "noisy_flip_share_max": 0.00323,
+     "tile_flip_share_max": 0.0784
+    },
+    "hair": {
+     "frames": 6,
+     "motion_compensated": true,
+     "held_share": 0.005,
+     "denoised_noise_median": 0.05491,
+     "denoised_noise_max": 0.06904,
+     "denoised_flip_share_median": 0.24575,
+     "denoised_flip_share_max": 0.24997,
+     "noisy_noise_median": 0.13317,
+     "noisy_noise_max": 0.14324,
+     "noisy_flip_share_median": 0.5264,
+     "noisy_flip_share_max": 0.52864,
+     "tile_flip_share_max": 0.5077
+    },
+    "skin": {
+     "frames": 1,
+     "motion_compensated": true,
+     "held_share": 0.0,
+     "denoised_flip_share_median": 0.24378,
+     "denoised_flip_share_max": 0.24378,
+     "noisy_flip_share_median": 0.46269,
+     "noisy_flip_share_max": 0.46269,
+     "tile_flip_share_max": 0.2418
+    },
+    "cloth": {
+     "frames": 6,
+     "motion_compensated": true,
+     "held_share": 0.202,
+     "denoised_noise_median": 0.01257,
+     "denoised_noise_max": 0.01538,
+     "denoised_flip_share_median": 0.06013,
+     "denoised_flip_share_max": 0.07482,
+     "noisy_noise_median": 0.05554,
+     "noisy_noise_max": 0.06546,
+     "noisy_flip_share_median": 0.39254,
+     "noisy_flip_share_max": 0.41132,
+     "tile_flip_share_max": 0.2687
+    }
+   }
+  }
+ }
+}

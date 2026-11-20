@@ -1,0 +1,33 @@
+{
+ "samples": 16,
+ "px": 600,
+ "views": [
+  [
+   "front",
+   0.0,
+   5.0
+  ],
+  [
+   "threequarter",
+   -45.0,
+   5.0
+  ],
+  [
+   "side",
+   90.0,
+   5.0
+  ],
+  [
+   "back",
+   180.0,
+   5.0
+  ]
+ ],
+ "rows": [
+  "original reference (scaled to the tile)",
+  "AI target (scaled to the tile; none for an empty tile)",
+  "hair r6 (T-160, opt-in base): front, threequarter, side, back; Cycles 16 spp, 100 %",
+  "hair r7 (T-167): same cameras, 100 %"
+ ],
+ "render_s": 526.8
+}

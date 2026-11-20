@@ -523,6 +523,7 @@ def check_python_tests(logs: Path) -> Result:
         [sys.executable, str(ROOT / "pipeline/charsys/tests/test_face_t168.py")],  # T-168 pad fade / upturned nose (plain checks)
         [sys.executable, str(ROOT / "pipeline/charsys/tests/test_hair_r4.py")],  # T-091 groom/3 (plain checks)
         [sys.executable, str(ROOT / "pipeline/charsys/tests/test_hair_r5.py")],  # T-118 groom/4 (plain checks)
+        [sys.executable, str(ROOT / "pipeline/charsys/tests/test_hair_r6.py")],  # T-160 groom/5 (plain checks)
         [sys.executable, str(ROOT / "pipeline/charsys/tests/test_hands_r2.py")],  # T-121 hands_r2 (plain checks)
         [sys.executable, str(ROOT / "pipeline/charsys/tests/test_guard_allowlist.py")],  # T-154 guard allowlist
         [sys.executable, str(ROOT / "pipeline/charsys/tests/test_garments_r3.py")],  # T-119 garment/3 (plain checks)
