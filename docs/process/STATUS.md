@@ -32,7 +32,8 @@ Codex T-169 hair reference study (relay 2987afa) feeds T-167. Codex T-161 refere
 | Task | Model | State | ETA | Branch |
 | --- | --- | --- | --- | --- |
 | T-141 native hair curves (opt-in tool) | Fable 5.2 | merged (main 2a02532) | — | — |
-| T-144 retire unpinned generator versions, option (b) (owner ~07:35Z) | Opus 5.5 | queued: after T-158 merges and a slot is free | — | `t-144-claude-retire-versions` |
+| T-144 retire unpinned generator versions, option (b): REPORT STEP ONLY (owner ~20:20Z) | Opus 5.5 | running: comparison + dependency report, no removal | — | `t-144-claude-retire-versions` |
+| T-166 final720 default + HEVC 10-bit delivery (owner start ~20:20Z) | Sonnet 5.5 | running | — | `t-166-claude-render-defaults` |
 | T-153 fidelity score v2 | Opus | merged; experimental, default stays v1 | — | `t-153-claude-fidelity-v2` |
 | T-161 Codex reference targets | Codex | assigned (relay f33c4868); Codex limited until 2026-11-23 ~21:43Z | — | — |
 | T-162 this board | Sonnet 5.5 | merged; Supervisor maintains | — | — |
@@ -41,13 +42,13 @@ Codex T-169 hair reference study (relay 2987afa) feeds T-167. Codex T-161 refere
 | T-163 starter felt prop library | Sonnet 5.5 | merged (main 2a02532) | — | — |
 
 ## Waiting for owner
-1. T-170 world style plan review (`docs/evaluation/world/T-170/README.md`; 8 questions incl. wood style and water container).
+1. T-170 world plan: trimmed (T-170d, 4.5–6 task-days) + ready-made materials only; on hold.
 2. "Start the planned automatic tasks" (HOLD ~09:05Z).
 3. T-141b: not approved; owner to discuss.
 
 ## On hold (owner ~10:05 CET; release phrase via the liaison)
-- T-166 final720 default + HEVC 10-bit delivery.
-- T-144 option (b) (prerequisite T-158 now merged).
+- T-144 removals (after the owner reviews the report).
+- T-170 world plan (ready-made materials only, ~20:10Z).
 - Hands round 2 (after T-155 is published).
 - Next character versions; new Codex tasks.
 

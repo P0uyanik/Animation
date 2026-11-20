@@ -770,3 +770,10 @@ materials that look good together. Creating materials is time-consuming and cost
 → T-170 plan = ready-made materials only: the CC0 sets already picked, existing project presets and Blender built-ins.
 Adjustments are limited to tint, scale and mapping. No new material authoring, no tuning rounds, no procedural material work.
 The plan stays on hold. Amendment: `docs/evaluation/world/T-170/cc0_test/ambientcg/README.md` section 2.1.
+
+## 2026-11-20 ~20:20Z (21:20 CET) — Start T-166 and T-144 (b) report step (relayed by the owner liaison)
+Explicit start (not the general "Start the planned automatic tasks"): T-166 (final720 default + HEVC 10-bit delivery,
+H.264 fallback, old preset kept by name; Sonnet 5.5) and T-144 option (b) REPORT STEP ONLY. The report compares builds
+and lists the generator versions the bundled candidates depend on (T-156/T-159/T-167/T-168 overrides, boy 2.3.0 /
+girl 0.14.0 / third 0.1.0); none of those may be retired. Nothing is removed before the owner reviews the report. Write-sets
+stay disjoint from running tasks. Hands round 2, the version release and the world plan stay on hold.
