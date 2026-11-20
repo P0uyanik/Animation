@@ -99,7 +99,7 @@ def third(sts):
     for x in b["buns"]:
         x["turns"] = 1.2
     bow = s["bow"]
-    bow.update(knot=0.2)
+    bow.update(knot=0.2)  # seat kept (T-126: on the hair below her right bun); side seats read worse from the front
     for lp in bow["loops"][:2]:
         lp.update(width=0.44, thick=0.34)
 
