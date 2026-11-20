@@ -81,6 +81,16 @@ def boy(sts, extra):
     s["crown"]["clump"] = nat(2, 0.006, 14)
 
 
+def boy_crown_fix(sts):
+    """Owner 2026-11-20 (~20:55 CET): calmer crown tufts only (flicker, held noise on the top of the head); all else r7."""
+    r = by_name(sts)["crown"]["rows"][0]
+    r.update(lift=CROWN_FIX["lift"], len_deg=CROWN_FIX["len_deg"])
+    r["stagger"]["lift"] = CROWN_FIX["stagger_lift"]
+
+
+CROWN_FIX = {"lift": [-0.004, 0.03], "len_deg": 10, "stagger_lift": [1.0, 0.6, 0.85]}
+
+
 def girl(sts, extra):
     """ref_30, G04, G05, G06: open spiral ringlets (a ribbon wound round a wide coil, not a thick rope), longer at
     the back, less fuzz and more gloss; a smoother, tidier bun; sweeps that leave more forehead bare."""
@@ -210,6 +220,7 @@ EDIT = {"boy": boy, "girl": girl, "third": third}
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--only")
+    ap.add_argument("--crown-fix", action="store_true", help="boy only: also write the hair_r7b override")
     ap.add_argument("--base-dir", required=True, help="directory with the T-155 candidate specs")
     a = ap.parse_args()
     os.makedirs(OUT, exist_ok=True)
@@ -229,6 +240,12 @@ def main():
         json.dump({"override": ov, "note": f"T-167 hair round 7, opt-in; on {cid}.{BASE[key]}.spec.json (T-155 "
                                            f"candidate), from the T-160 round 6 override"}, open(p, "w"), indent=1)
         print(os.path.relpath(p))
+        if key == "boy" and a.crown_fix:
+            boy_crown_fix(sts)
+            p = os.path.join(OUT, f"{cid}.hair_r7b.override.json")
+            json.dump({"override": ov, "note": f"T-167 hair round 7 with calmer crown tufts (r7b), opt-in; on "
+                                               f"{cid}.{BASE[key]}.spec.json (T-155 candidate)"}, open(p, "w"), indent=1)
+            print(os.path.relpath(p))
 
 
 if __name__ == "__main__":
