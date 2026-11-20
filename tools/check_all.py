@@ -507,6 +507,7 @@ def check_python_tests(logs: Path) -> Result:
         [sys.executable, str(ROOT / "tools/fidelity/tests/test_ci.py")],
         [sys.executable, str(ROOT / "tools/regression/tests/test_gate_tools.py")],
         [sys.executable, str(ROOT / "pipeline/production/tests/test_run_shot_current.py")],  # T-062 cast check
+        [sys.executable, str(ROOT / "pipeline/charsys/tests/test_render_profiles.py")],  # T-166 render/encode defaults
         [sys.executable, str(ROOT / "tools/animcheck/tests/test_animcheck.py")],  # T-061 animation metrics
         [sys.executable, str(ROOT / "pipeline/charsys/tests/test_versions.py")],  # T-043 version registry (T-077)
         [sys.executable, str(ROOT / "tools/fidelity/tests/test_metrics.py")],  # fidelity metric functions (T-077)
