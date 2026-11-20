@@ -2,16 +2,16 @@
  "override": {
   "face": {
    "action_units": {
-    "wide_upper_deg": 38
+    "wide_upper_deg": 40
    },
    "mouth": {
-    "jaw_open_deg": 13.0,
+    "jaw_open_deg": 15.0,
     "line_srgb": [
-     84,
-     40,
-     40
+     70,
+     32,
+     34
     ],
-    "seam_half_m": 0.0009,
+    "seam_half_m": 0.0012,
     "extra_shapes": [
      {
       "name": "MouthFrown",
@@ -29,10 +29,12 @@
       "name": "MouthO",
       "frown_m": 0.0,
       "widen": 0.7,
-      "up_lift_m": 0.003,
-      "lo_drop_m": 0.0075
+      "up_lift_m": 0.004,
+      "lo_drop_m": 0.01
      }
-    ]
+    ],
+    "half_width_m": 0.0115,
+    "lip_height_m": 0.003
    }
   }
  }
