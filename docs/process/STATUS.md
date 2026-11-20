@@ -35,7 +35,7 @@ Codex T-161 reference targets (lashes, ears, hair silhouette) go to T-156 and T-
 | T-161 Codex reference targets | Codex | assigned (relay f33c4868); Codex limited until 2026-11-23 ~21:43Z | — | — |
 | T-162 this board | Sonnet 5.5 | merged; Supervisor maintains | — | — |
 | T-164 gate PR #2 comment only for integration/staging/main | Sonnet 5.5 | in Interaction batch `integration/t-163` | — | `t-164-claude-gate-comment` |
-| T-165 shared task kit + tools/ready.py | Opus 5.5 | running | — | `t-165-claude-task-kit` |
+| T-165 shared task kit + tools/ready.py | Opus 5.5 | in batch `integration/t-163` | — | `t-165-claude-task-kit` |
 | T-163 starter felt prop library (docs/evaluation/props/T-163/contact_sheet_render.png) | Sonnet 5.5 | merged (Interaction batch) | — | — |
 
 ## Waiting for owner

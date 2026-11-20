@@ -164,5 +164,5 @@ Tasks from now on are numbered T-001, T-002, …, and pass through the states in
 | T-162 | [Process] Status board docs/process/STATUS.md (Sonnet) | merged 2026-11-20: docs/process/STATUS.md; Supervisor maintains | t-162-claude-status-board | docs/tasks/T-162.md |
 | T-163 | [Content] Starter felt prop library 10–15 (Sonnet) | merged 2026-11-20: 12 new felt props + felt_cup; verb test (boy+girl, 593 assertions) in ctest; rendered contact sheet | t-163-claude-props | docs/tasks/T-163.md |
 | T-164 | [CI] Gate PR #2 comment only for integration/staging/main (Sonnet) | merged 2026-11-20: PR #2 comment step skips task branches (run 44699631073); checks unchanged | t-164-claude-gate-comment | docs/tasks/T-164.md |
-| T-165 | [Process] Shared task kit + tools/ready.py (Opus) | running 2026-11-20 (owner ~08:10Z #3, #5) | t-165-claude-task-kit | docs/tasks/T-165.md |
+| T-165 | [Process] Shared task kit + tools/ready.py (Opus) | merged 2026-11-20: tools/ready.py, run_logged.py, wait_gate.py, render_queue.py, review/shot_sheet.py; IMPLEMENTER_PROMPT + _TEMPLATE point at the kit | t-165-claude-task-kit | docs/tasks/T-165.md |
 | T-166 | [Rendering] final720 default + HEVC 10-bit delivery (Sonnet) | queued 2026-11-20 (owner ~08:20Z #3), next free slot | t-166-claude-render-defaults | docs/tasks/T-166.md |
