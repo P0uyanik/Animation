@@ -163,3 +163,8 @@ gate green before merge.
 4. Re-scan with `deps.py` at implementation time (T-167 groom/5 and any new T-155 / override pins).
 5. Boy 1.0.0 (`reference` pointer) cannot pass `regenerate` because its stored hair is a pre-T-075 sample (§1).
    Accept this as a documented known exception (recommended: the stored file is the reference), or take no action.
+
+## 5. Owner decision (2026-11-20 ~20:50Z)
+Option (c): no change now. The §3.1 versions are documented as "legacy, do not pin" in
+[CHARACTER_SYSTEM_VERSIONS](../../CHARACTER_SYSTEM_VERSIONS.md). Boy 1.0.0's rebuild difference is accepted as a documented
+known exception. export/5 and groom/2 are kept.

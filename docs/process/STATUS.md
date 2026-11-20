@@ -10,7 +10,7 @@ Session cap: 6 (temporary 8 ended 08:20Z). Owner liaison: session_01NPjxeKamtbdz
 | T-156 eyes/lashes to T-150 targets | Fable 5.2 | running (third renders, READY) | — | `t-156-claude-eye-targets` |
 | T-160 hair round 6 (opt-in, not adopted; docs/evaluation/characters/T-160/README.md) | Fable 5.2 | READY; merge as opt-in base after T-155 | — | `t-160-claude-hair-r6` |
 | T-158 deterministic builds | Opus 5.5 | merged (main 2a02532) | — | — |
-| T-167 hair round 7, reference fidelity | Fable 5.2 | running (bow seat, evidence; + Codex T-169) | — | `t-167-claude-hair-r7` |
+| T-167 hair round 7, reference fidelity | Fable 5.2 | finishing: boy r6, girls r7 (owner ~20:50Z) | — | `t-167-claude-hair-r7` |
 | T-168 boy face contour + nose | Fable 5.2 | running (fix: cheek-pad fade + nose) | — | `t-168-claude-boy-face` |
 | T-159 temple hollow (both girls, owner ~08:35Z) then ears | Fable 5.2 | running (cheek seam, then ears); temple fix cafa12c opt-in | — | `t-159-claude-ears` |
 
@@ -32,7 +32,7 @@ Codex T-169 hair reference study (relay 2987afa) feeds T-167. Codex T-161 refere
 | Task | Model | State | ETA | Branch |
 | --- | --- | --- | --- | --- |
 | T-141 native hair curves (opt-in tool) | Fable 5.2 | merged (main 2a02532) | — | — |
-| T-144 retire unpinned generator versions, option (b): REPORT STEP ONLY (owner ~20:20Z) | Opus 5.5 | running: comparison + dependency report, no removal | — | `t-144-claude-retire-versions` |
+| T-144 retire unpinned generator versions | Opus 5.5 | done: option (c), legacy documented, no removal (owner ~20:50Z) | — | — |
 | T-166 final720 default + HEVC 10-bit delivery (owner start ~20:20Z) | Sonnet 5.5 | running | — | `t-166-claude-render-defaults` |
 | T-153 fidelity score v2 | Opus | merged; experimental, default stays v1 | — | `t-153-claude-fidelity-v2` |
 | T-161 Codex reference targets | Codex | assigned (relay f33c4868); Codex limited until 2026-11-23 ~21:43Z | — | — |
@@ -47,7 +47,6 @@ Codex T-169 hair reference study (relay 2987afa) feeds T-167. Codex T-161 refere
 3. T-141b: not approved; owner to discuss.
 
 ## On hold (owner ~10:05 CET; release phrase via the liaison)
-- T-144 removals (after the owner reviews the report).
 - T-170 world plan (ready-made materials only, ~20:10Z).
 - Hands round 2 (after T-155 is published).
 - Next character versions; new Codex tasks.

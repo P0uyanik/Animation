@@ -22,6 +22,5 @@ means none. Branch is the task's branch; a task branch without a row falls back 
 | T-168 | E | t-168-claude-boy-face | `pipeline/charsys/face_v3/lower_face.py`, `pipeline/charsys/face_features.py` (build_nose only), `pipeline/charsys/tests/test_face_t168.py`, `tools/check_all.py` (registration), `docs/evaluation/characters/T-168/**` | T-159 (merge order) | — |
 | T-167 | E | t-167-claude-hair-r7 | `pipeline/charsys/groom_r6.py`, `pipeline/charsys/tests/test_hair_r6.py`, `docs/evaluation/characters/T-167/**` | T-160, T-169 | — |
 | T-166 | C | t-166-claude-render-defaults | `pipeline/charsys/render_profiles.json`, `pipeline/charsys/shot_render.py`, `pipeline/production/run_shot.py`, `pipeline/production/tests/test_run_shot_workflow.py`, `pipeline/charsys/tests/test_render_profiles*.py`, `docs/evaluation/rendering/T-166/**` | T-124 | — |
-| T-144 | A | t-144-claude-retire-versions | `docs/evaluation/T-144/**` (REPORT STEP ONLY; no code removal) | T-158 | — |
 
 Supervisor-only files: docs/process/TASK_LOG.md, docs/ROADMAP.md, docs/process/OWNER_DECISIONS.md, docs/tasks/**.
