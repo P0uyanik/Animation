@@ -1,0 +1,409 @@
+{
+ "blender_tier_entry_points": {
+  "retired": {
+   "published_embedded_specs": {
+    "boy_yellow_hoodie 1.0.0": {
+     "error": "body version 'body_v6/1' is retired and can no longer be built; pin a released version (path B pin bump, owner approval)",
+     "versions.record (export_engine / regenerate)": false
+    },
+    "boy_yellow_hoodie 1.1.0": {
+     "error": "body version 'body_v6/1' is retired and can no longer be built; pin a released version (path B pin bump, owner approval)",
+     "versions.record (export_engine / regenerate)": false
+    },
+    "boy_yellow_hoodie 2.0.0": {
+     "error": "face version 'face_generic/2' is retired and can no longer be built; pin a released version (path B pin bump, owner approval)",
+     "versions.record (export_engine / regenerate)": false
+    },
+    "boy_yellow_hoodie 2.1.0": {
+     "error": "",
+     "versions.record (export_engine / regenerate)": true
+    },
+    "boy_yellow_hoodie 2.2.0": {
+     "error": "",
+     "versions.record (export_engine / regenerate)": true
+    },
+    "girl_auburn_bun_glasses 0.10.0": {
+     "error": "body version 'body_generic/1' is retired and can no longer be built; pin a released version (path B pin bump, owner approval)",
+     "versions.record (export_engine / regenerate)": false
+    },
+    "girl_auburn_bun_glasses 0.11.0": {
+     "error": "face version 'face_generic/2' is retired and can no longer be built; pin a released version (path B pin bump, owner approval)",
+     "versions.record (export_engine / regenerate)": false
+    },
+    "girl_auburn_bun_glasses 0.12.0": {
+     "error": "",
+     "versions.record (export_engine / regenerate)": true
+    },
+    "girl_auburn_bun_glasses 0.13.0": {
+     "error": "",
+     "versions.record (export_engine / regenerate)": true
+    }
+   },
+   "spec_entry_points": {
+    "boy2 (2.0.0-dev build -> test_boy2_face, test_hoodie)": [
+     {
+      "error": "invalid character spec: body version 'body_generic/1' is retired and can no longer be built; pin a released version (path B pin bump, owner approval)",
+      "loads": false,
+      "spec": "boy_yellow_hoodie/spec/boy_yellow_hoodie.2.0.0-dev.spec.json"
+     }
+    ],
+    "build-determinism-girl (0.13.0)": [
+     {
+      "loads": true,
+      "spec": "girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.13.0.spec.json"
+     }
+    ],
+    "charsys (verify_charsys build) + face tests": [
+     {
+      "error": "invalid character spec: body version 'body_v6/1' is retired and can no longer be built; pin a released version (path B pin bump, owner approval)",
+      "loads": false,
+      "spec": "boy_yellow_hoodie/spec/boy_yellow_hoodie.spec.json"
+     }
+    ],
+    "determinism (test_determinism default --character boy)": [
+     {
+      "error": "invalid character spec: body version 'body_v6/1' is retired and can no longer be built; pin a released version (path B pin bump, owner approval)",
+      "loads": false,
+      "spec": "boy_yellow_hoodie/spec/boy_yellow_hoodie.spec.json"
+     }
+    ],
+    "garments-v2-quick (pin+validate boy 2.0.0, girl 0.11.0)": [
+     {
+      "error": "invalid character spec: face version 'face_generic/2' is retired and can no longer be built; pin a released version (path B pin bump, owner approval)",
+      "loads": false,
+      "spec": "boy_yellow_hoodie/spec/boy_yellow_hoodie.2.0.0.spec.json"
+     },
+     {
+      "error": "invalid character spec: face version 'face_generic/2' is retired and can no longer be built; pin a released version (path B pin bump, owner approval)",
+      "loads": false,
+      "spec": "girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.11.0.spec.json"
+     }
+    ],
+    "material-presets (SPEC.load girl unversioned)": [
+     {
+      "error": "invalid character spec: body version 'body_generic/1' is retired and can no longer be built; pin a released version (path B pin bump, owner approval)",
+      "loads": false,
+      "spec": "girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.spec.json"
+     }
+    ],
+    "test_determinism --character current: third T-126a": [
+     {
+      "error": "invalid character spec: groom version 'groom/2' is retired and can no longer be built; pin a released version (path B pin bump, owner approval)",
+      "loads": false,
+      "spec": "girl_white_hair_blue_dress/spec/candidates/T-126a/girl_white_hair_blue_dress.0.1.0.spec.json"
+     }
+    ]
+   }
+  },
+  "unchanged": {
+   "published_embedded_specs": {
+    "boy_yellow_hoodie 1.0.0": {
+     "error": "",
+     "versions.record (export_engine / regenerate)": true
+    },
+    "boy_yellow_hoodie 1.1.0": {
+     "error": "",
+     "versions.record (export_engine / regenerate)": true
+    },
+    "boy_yellow_hoodie 2.0.0": {
+     "error": "",
+     "versions.record (export_engine / regenerate)": true
+    },
+    "boy_yellow_hoodie 2.1.0": {
+     "error": "",
+     "versions.record (export_engine / regenerate)": true
+    },
+    "boy_yellow_hoodie 2.2.0": {
+     "error": "",
+     "versions.record (export_engine / regenerate)": true
+    },
+    "girl_auburn_bun_glasses 0.10.0": {
+     "error": "",
+     "versions.record (export_engine / regenerate)": true
+    },
+    "girl_auburn_bun_glasses 0.11.0": {
+     "error": "",
+     "versions.record (export_engine / regenerate)": true
+    },
+    "girl_auburn_bun_glasses 0.12.0": {
+     "error": "",
+     "versions.record (export_engine / regenerate)": true
+    },
+    "girl_auburn_bun_glasses 0.13.0": {
+     "error": "",
+     "versions.record (export_engine / regenerate)": true
+    }
+   },
+   "spec_entry_points": {
+    "boy2 (2.0.0-dev build -> test_boy2_face, test_hoodie)": [
+     {
+      "loads": true,
+      "spec": "boy_yellow_hoodie/spec/boy_yellow_hoodie.2.0.0-dev.spec.json"
+     }
+    ],
+    "build-determinism-girl (0.13.0)": [
+     {
+      "loads": true,
+      "spec": "girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.13.0.spec.json"
+     }
+    ],
+    "charsys (verify_charsys build) + face tests": [
+     {
+      "loads": true,
+      "spec": "boy_yellow_hoodie/spec/boy_yellow_hoodie.spec.json"
+     }
+    ],
+    "determinism (test_determinism default --character boy)": [
+     {
+      "loads": true,
+      "spec": "boy_yellow_hoodie/spec/boy_yellow_hoodie.spec.json"
+     }
+    ],
+    "garments-v2-quick (pin+validate boy 2.0.0, girl 0.11.0)": [
+     {
+      "loads": true,
+      "spec": "boy_yellow_hoodie/spec/boy_yellow_hoodie.2.0.0.spec.json"
+     },
+     {
+      "loads": true,
+      "spec": "girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.11.0.spec.json"
+     }
+    ],
+    "material-presets (SPEC.load girl unversioned)": [
+     {
+      "loads": true,
+      "spec": "girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.spec.json"
+     }
+    ],
+    "test_determinism --character current: third T-126a": [
+     {
+      "loads": true,
+      "spec": "girl_white_hair_blue_dress/spec/candidates/T-126a/girl_white_hair_blue_dress.0.1.0.spec.json"
+     }
+    ]
+   }
+  }
+ },
+ "input": "t-144-claude-retire-versions@84ed7d0 (origin/main d42ad70 merged)",
+ "method": "git archive of the input into two scratch trees; the 'sim' tree appends sim/retire_patch.py.txt to pipeline/charsys/versions.py (retires all 15 entries of the round-1 candidate list except export/5); nothing in the repository is changed",
+ "note_unchanged_failures": "rc!=0 in BOTH trees = the scratch tree lacks .git / renders/ or the test needs --blender; not caused by retirement",
+ "plain_tier": {
+  "pipeline/charsys/tests/test_asset_store_guard.py": {
+   "changes": true,
+   "first_error": "invalid character spec: body version 'body_generic/1' is retired and can no longer be built; pin a released version (path B pin bump, owner approval)",
+   "rc_unchanged_tree": 0,
+   "rc_with_all_candidates_retired": 1
+  },
+  "pipeline/charsys/tests/test_boy2_face.py": {
+   "changes": true,
+   "first_error": "invalid character spec: body version 'body_generic/1' is retired and can no longer be built; pin a released version (path B pin bump, owner approval)",
+   "rc_unchanged_tree": 0,
+   "rc_with_all_candidates_retired": 1
+  },
+  "pipeline/charsys/tests/test_expressions_r3.py": {
+   "changes": false,
+   "first_error": "",
+   "rc_unchanged_tree": 0,
+   "rc_with_all_candidates_retired": 0
+  },
+  "pipeline/charsys/tests/test_face_v2.py": {
+   "changes": false,
+   "first_error": "",
+   "rc_unchanged_tree": 2,
+   "rc_with_all_candidates_retired": 2
+  },
+  "pipeline/charsys/tests/test_face_v3.py": {
+   "changes": true,
+   "first_error": "invalid character spec: face version 'face_generic/2' is retired and can no longer be built; pin a released version (path B pin bump, owner approval)",
+   "rc_unchanged_tree": 0,
+   "rc_with_all_candidates_retired": 1
+  },
+  "pipeline/charsys/tests/test_face_v3b.py": {
+   "changes": true,
+   "first_error": "invalid character spec: face version 'face_generic/2' is retired and can no longer be built; pin a released version (path B pin bump, owner approval)",
+   "rc_unchanged_tree": 0,
+   "rc_with_all_candidates_retired": 1
+  },
+  "pipeline/charsys/tests/test_face_v4.py": {
+   "changes": false,
+   "first_error": "",
+   "rc_unchanged_tree": 0,
+   "rc_with_all_candidates_retired": 0
+  },
+  "pipeline/charsys/tests/test_garments_r3.py": {
+   "changes": false,
+   "first_error": "",
+   "rc_unchanged_tree": 0,
+   "rc_with_all_candidates_retired": 0
+  },
+  "pipeline/charsys/tests/test_guard_allowlist.py": {
+   "changes": false,
+   "first_error": "",
+   "rc_unchanged_tree": 0,
+   "rc_with_all_candidates_retired": 0
+  },
+  "pipeline/charsys/tests/test_hair_r4.py": {
+   "changes": false,
+   "first_error": "",
+   "rc_unchanged_tree": 0,
+   "rc_with_all_candidates_retired": 0
+  },
+  "pipeline/charsys/tests/test_hair_r5.py": {
+   "changes": false,
+   "first_error": "",
+   "rc_unchanged_tree": 0,
+   "rc_with_all_candidates_retired": 0
+  },
+  "pipeline/charsys/tests/test_hair_v3.py": {
+   "changes": false,
+   "first_error": "",
+   "rc_unchanged_tree": 0,
+   "rc_with_all_candidates_retired": 0
+  },
+  "pipeline/charsys/tests/test_hands_r2.py": {
+   "changes": false,
+   "first_error": "",
+   "rc_unchanged_tree": 0,
+   "rc_with_all_candidates_retired": 0
+  },
+  "pipeline/charsys/tests/test_material_presets.py": {
+   "changes": true,
+   "first_error": "invalid character spec: body version 'body_generic/1' is retired and can no longer be built; pin a released version (path B pin bump, owner approval)",
+   "rc_unchanged_tree": 0,
+   "rc_with_all_candidates_retired": 1
+  },
+  "pipeline/charsys/tests/test_materials_r2.py": {
+   "changes": true,
+   "first_error": "invalid character spec: face version 'face_generic/2' is retired and can no longer be built; pin a released version (path B pin bump, owner approval)",
+   "rc_unchanged_tree": 0,
+   "rc_with_all_candidates_retired": 1
+  },
+  "pipeline/charsys/tests/test_skin_presets.py": {
+   "changes": false,
+   "first_error": "",
+   "rc_unchanged_tree": 0,
+   "rc_with_all_candidates_retired": 0
+  },
+  "pipeline/charsys/tests/test_store.py": {
+   "changes": false,
+   "first_error": "",
+   "rc_unchanged_tree": 1,
+   "rc_with_all_candidates_retired": 1
+  },
+  "pipeline/charsys/tests/test_versions.py": {
+   "changes": true,
+   "first_error": "invalid character spec: body version 'body_generic/1' is retired and can no longer be built; pin a released version (path B pin bump, owner approval)",
+   "rc_unchanged_tree": 0,
+   "rc_with_all_candidates_retired": 1
+  },
+  "pipeline/clips/tests/test_clip_files.py": {
+   "changes": false,
+   "first_error": "",
+   "rc_unchanged_tree": 0,
+   "rc_with_all_candidates_retired": 0
+  },
+  "pipeline/production/tests/test_run_shot_current.py": {
+   "changes": false,
+   "first_error": "",
+   "rc_unchanged_tree": 0,
+   "rc_with_all_candidates_retired": 0
+  },
+  "pipeline/production/tests/test_sets.py": {
+   "changes": false,
+   "first_error": "",
+   "rc_unchanged_tree": 0,
+   "rc_with_all_candidates_retired": 0
+  },
+  "tests/acting/test_boy_signature.py": {
+   "changes": false,
+   "first_error": "",
+   "rc_unchanged_tree": 0,
+   "rc_with_all_candidates_retired": 0
+  },
+  "tests/acting/test_e909_beats.py": {
+   "changes": false,
+   "first_error": "",
+   "rc_unchanged_tree": 0,
+   "rc_with_all_candidates_retired": 0
+  },
+  "tests/acting/test_girl_signature.py": {
+   "changes": false,
+   "first_error": "",
+   "rc_unchanged_tree": 0,
+   "rc_with_all_candidates_retired": 0
+  },
+  "tests/props/test_props.py": {
+   "changes": false,
+   "first_error": "",
+   "rc_unchanged_tree": 0,
+   "rc_with_all_candidates_retired": 0
+  },
+  "tools/animcheck/tests/test_animcheck.py": {
+   "changes": false,
+   "first_error": "",
+   "rc_unchanged_tree": 0,
+   "rc_with_all_candidates_retired": 0
+  },
+  "tools/ci/tests/test_t127_shards.py": {
+   "changes": false,
+   "first_error": "",
+   "rc_unchanged_tree": 1,
+   "rc_with_all_candidates_retired": 1
+  },
+  "tools/fidelity/tests/test_ci.py": {
+   "changes": false,
+   "first_error": "",
+   "rc_unchanged_tree": 1,
+   "rc_with_all_candidates_retired": 1
+  },
+  "tools/fidelity/tests/test_metrics.py": {
+   "changes": false,
+   "first_error": "",
+   "rc_unchanged_tree": 0,
+   "rc_with_all_candidates_retired": 0
+  },
+  "tools/fidelity/tests/test_metrics_v2.py": {
+   "changes": false,
+   "first_error": "",
+   "rc_unchanged_tree": 0,
+   "rc_with_all_candidates_retired": 0
+  },
+  "tools/fit/tests/test_fit.py": {
+   "changes": false,
+   "first_error": "",
+   "rc_unchanged_tree": 0,
+   "rc_with_all_candidates_retired": 0
+  },
+  "tools/lipsync/test_lipsync.py": {
+   "changes": false,
+   "first_error": "",
+   "rc_unchanged_tree": 0,
+   "rc_with_all_candidates_retired": 0
+  },
+  "tools/regression/tests/test_gate_tools.py": {
+   "changes": false,
+   "first_error": "",
+   "rc_unchanged_tree": 1,
+   "rc_with_all_candidates_retired": 1
+  },
+  "tools/review/tests/test_recipe.py": {
+   "changes": false,
+   "first_error": "",
+   "rc_unchanged_tree": 1,
+   "rc_with_all_candidates_retired": 1
+  },
+  "tools/tests/test_task_kit.py": {
+   "changes": false,
+   "first_error": "",
+   "rc_unchanged_tree": 0,
+   "rc_with_all_candidates_retired": 0
+  },
+  "tools/tests/test_version_switch.py": {
+   "changes": true,
+   "first_error": "- spec does not load: invalid character spec: materials version 'presets/1' is retired and can no longer be built; pin a released version (path B pin bump, owner approval)",
+   "rc_unchanged_tree": 0,
+   "rc_with_all_candidates_retired": 1
+  }
+ },
+ "schema": "plush-studio.t144-retire-sim/1"
+}
