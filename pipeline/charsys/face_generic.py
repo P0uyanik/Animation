@@ -427,16 +427,19 @@ def build_ears(C, M, ctx, ec, ez):
             G.brush(e, bowl, rad[2] * 0.7, (-sx * rad[0] * 0.5, rad[1] * 0.12, 0))  # inner bowl
             G.add_mod(e, "SUBSURF", levels=1, render_levels=2)
             G.apply_mods(e)
-        G.assign(e, ear_skin(M["face_skin"], _f(ec, "subsurface", 1.0)))
+        G.assign(e, ear_skin(M["face_skin"], _f(ec, "subsurface", 1.0), ec.get("tint")))
         ears.append(e)
     return ears
 
 
-def ear_skin(skin, subsurface):
-    """The ears' skin material. face.ears.subsurface (T-159, opt-in; 1 = the face skin itself): a copy of the face
-    skin ("<name>.ear") with its subsurface weight scaled, because light scatters straight through the thin ear and
-    washes it out next to the thick head."""
-    if subsurface == 1.0 or not skin.use_nodes:
+def ear_skin(skin, subsurface, tint=None):
+    """The ears' skin material. Both options are opt-in (T-159); without them the ears use the face skin itself.
+      face.ears.subsurface (1 = unchanged): a copy of the face skin ("<name>.ear") with its subsurface weight scaled,
+        because light scatters straight through the thin ear and washes it out next to the thick head;
+      face.ears.tint {"srgb": [r, g, b], "strength": 0..1}: the copy's base colour is multiplied towards srgb (warm
+        pink felt ears)."""
+    strength = _f(tint, "strength", 0.0) if tint else 0.0
+    if (subsurface == 1.0 and strength <= 0) or not skin.use_nodes:
         return skin
     name = skin.name + ".ear"
     m = bpy.data.materials.get(name)
@@ -444,8 +447,22 @@ def ear_skin(skin, subsurface):
         m = skin.copy()
         m.name = name
         for n in m.node_tree.nodes:
-            if n.bl_idname == "ShaderNodeBsdfPrincipled" and "Subsurface Weight" in n.inputs:
-                n.inputs["Subsurface Weight"].default_value *= subsurface
+            if n.bl_idname != "ShaderNodeBsdfPrincipled" or n.name != "Principled BSDF":
+                continue
+            n.inputs["Subsurface Weight"].default_value *= subsurface
+            if strength > 0:
+                mix = m.node_tree.nodes.new("ShaderNodeMix")
+                mix.name = mix.label = "PS Ear Tint"
+                mix.data_type = "RGBA"
+                mix.blend_type = "MULTIPLY"
+                mix.inputs["Factor"].default_value = strength
+                mix.inputs["B"].default_value = (*G.srgb_to_linear(tuple(tint.get("srgb", (255, 200, 190)))), 1.0)
+                base = n.inputs["Base Color"]
+                if base.is_linked:
+                    m.node_tree.links.new(base.links[0].from_socket, mix.inputs["A"])
+                else:
+                    mix.inputs["A"].default_value = tuple(base.default_value)
+                m.node_tree.links.new(mix.outputs["Result"], base)
     return m
 
 

@@ -1,4 +1,4 @@
-"""T-159: face.ears.shape and face.ears.subsurface (opt-in) of face_generic.build_ears.
+"""T-159: face.ears.shape, face.ears.subsurface and face.ears.tint (opt-in) of face_generic.build_ears.
 
     python3 pipeline/charsys/tests/test_ears_shape.py --blender <exe>
 
@@ -7,6 +7,7 @@ Builds the two ears inside Blender with a stub face context (head side at x = +-
   * shape: the outer face has a bowl (its centre lies below the rim around it) and a rim (higher than the plain
     ellipsoid at the back of the ear), the C opens to the front (front rim lower than the back rim), left and right
     are mirror images;
+  * tint: the ear copy's base colour goes through a multiply mix ("PS Ear Tint"); the face skin has no such node;
   * subsurface: the ears get a copy of the face skin ("<name>.ear", one copy for both ears) with the subsurface
     weight scaled; the face skin itself is untouched; the geometry and the ear's seat are unchanged.
 Without --blender nothing can run (face_generic needs bpy): the test reports SKIP and exits 0."""
@@ -73,6 +74,15 @@ out = {}
 d = build({})
 s = build({"shape": SHAPE})
 t = build({"shape": SHAPE, "subsurface": 0.3})
+k = build({"shape": SHAPE, "tint": {"srgb": [255, 196, 186], "strength": 0.6}})
+out["tint_mat"] = k[0]["mat"]
+tm = bpy.data.materials[k[0]["mat"]]
+mix = tm.node_tree.nodes.get("PS Ear Tint")
+out["tint_linked"] = bool(mix and tm.node_tree.nodes["Principled BSDF"].inputs["Base Color"].links[0].from_node == mix)
+out["tint_factor"] = mix.inputs["Factor"].default_value if mix else None
+out["tint_face_clean"] = "PS Ear Tint" not in bpy.data.materials["skin"].node_tree.nodes
+out["tint_sss"] = k[0]["sss"]
+t = build({"shape": SHAPE, "subsurface": 0.3})
 out["default_n"] = d[0]["n"]
 out["default_mat"] = d[0]["mat"]
 out["default_loc"] = d[0]["loc"]
@@ -130,6 +140,8 @@ def main():
     check("subsurface: both ears share one scaled copy, face skin untouched",
           o["sss_mats"] == ["skin.ear", "skin.ear"] and o["shape_mat"] == "skin" and abs(o["sss"][0] - 0.15) < 1e-6 and abs(o["sss"][1] - 0.5) < 1e-6,
           f"ear {o['sss'][0]:.2f}, face {o['sss'][1]:.2f}")
+    check("tint: ear copy multiplies its base colour, face skin and subsurface untouched",
+          o["tint_mat"] == "skin.ear" and o["tint_linked"] and abs(o["tint_factor"] - 0.6) < 1e-6 and o["tint_face_clean"] and abs(o["tint_sss"] - 0.5) < 1e-6)
     check("subsurface: geometry and seat unchanged", o["sss_world_dev_m"] == 0.0 and o["sss_loc_dev_m"] == 0.0)
     print(f"{TAG} {'ALL PASS' if all(RESULTS) else 'FAIL'} {sum(RESULTS)}/{len(RESULTS)}")
     return 0 if all(RESULTS) else 1

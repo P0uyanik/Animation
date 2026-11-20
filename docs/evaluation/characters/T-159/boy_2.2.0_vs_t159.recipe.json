@@ -1,7 +1,7 @@
 {
  "schema": "plush-studio.review-recipe/1",
  "task": "T-159",
- "note": "boy: 2.2.0 (current) vs T-155 candidate 2.3.0 spec + T-159 ears override (shape, subsurface, position); arms down.",
+ "note": "boy: 2.2.0 (current) vs T-155 candidate 2.3.0 spec + T-159 ears override pass 2 (overrides/boy_ears.json: larger cup ears, shape, subsurface, tint); arms down.",
  "character": "boy_yellow_hoodie",
  "inputs": {
   "main": "bc556ad"
@@ -12,7 +12,7 @@
  },
  "candidate": {
   "blend": "build/t159/boy_ears/boy_yellow_hoodie_compare.blend",
-  "label": "2.3.0 cand. + T-159 ears"
+  "label": "2.3.0 cand. + T-159 ears p2"
  },
  "compare": {
   "variant": "compare",
