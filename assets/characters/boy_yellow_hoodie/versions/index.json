@@ -50,7 +50,7 @@
   }
  },
  "pointers": {
-  "approved": "2.3.0",
+  "approved": "2.2.0",
   "reference": "1.0.0"
  },
  "history": [
@@ -129,6 +129,14 @@
    "previous": "2.2.0",
    "by": "owner (docs/process/OWNER_DECISIONS.md 2026-11-20 ~08:20Z item 1)",
    "notes": "new current version: \"T-155 approved: make boy 2.3.0 and girl 0.14.0 CURRENT\" Recorded by T-155 (tools/version_switch.py)."
+  },
+  {
+   "at": "2026-11-20T22:55:57+00:00",
+   "action": "approve",
+   "version": "2.2.0",
+   "previous": "2.3.0",
+   "by": "owner (docs/process/OWNER_DECISIONS.md 2026-11-20 ~23:10 CET option A; confirmed directly in the implementer session): back to the current main version until the final OK on the R3 sheets",
+   "notes": "R3 option A: 2.3.0 is rebuilt from the R3 specs for the release; pointer back to 2.2.0 meanwhile"
   }
  ]
 }

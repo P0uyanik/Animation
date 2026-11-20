@@ -4,6 +4,11 @@ Branch `integration/r3-faces`. The stacked candidate specs live in `docs/evaluat
 (`stack_specs.py`; layers in each spec's `metadata.layers`). Nothing below is applied on this branch.
 
 ## 1. Reference update: `pipeline/charsys/tests/test_face_v4.py`
+
+Status 2026-11-20 ~23:00Z: the approved pointers are back on 2.2.0 / 0.13.0 (owner option A, confirmed in the
+implementer session), so test_face_v4 passes again (17/17). The pin update below applies when the release makes the
+rebuilt 2.3.0 / 0.14.0 current.
+
 15/17 since the 2.3.0 / 0.14.0 switch. The only failures are the two pins "T-109 candidate is on the current version":
 `CANDIDATES` still names `boy_yellow_hoodie.2.2.0.spec.json` / `versions/2.2.0` and
 `girl_auburn_bun_glasses.0.13.0.spec.json` / `versions/0.13.0`. Update: 2.3.0 and 0.14.0 (four paths, same edit as
