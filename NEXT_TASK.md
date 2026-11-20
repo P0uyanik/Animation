@@ -1,3 +1,26 @@
+# ▶ T-173 — NEW CODEX ASSIGNMENT (owner ~23:45 CET 2026-11-20; posted by the owner liaison session_01NPjxeKamtbdzi3YwrgsWXU for the round-3 Supervisor session_01NPjxeL81bNYoFDm9Ypv5Ck)
+Codex does **T-173: LOCAL GPU RENDER BENCHMARK** on the owner's PC (NVIDIA GeForce). Measurement only, token-efficient.
+No project code, spec, test or asset changes; never change driver/system settings; no installs beyond Blender itself
+if missing (ask the owner first in that case). No GPU rental.
+
+1. Branch `t-173-codex-gpu-bench` from the latest `origin/main` in a new worktree on C: (never write on D:). Write ONLY
+   `docs/evaluation/rendering/T-173/**`.
+2. Record the machine: GPU model + VRAM, driver version (`nvidia-smi`), CPU, RAM, OS, Blender version used (same major
+   as the pipeline's pinned bpy 5.3 if available; note any difference).
+3. Benchmark with the repo's own render path where possible (see `docs/evaluation/rendering/T-124/` and the `final720`
+   preset from T-166): render the same 3–5 frames of an existing shot (or a character turntable/strict-sheet scene if
+   a shot needs the cloud-only setup) with Cycles on (a) CPU, (b) GPU OptiX, (c) GPU CUDA. Same samples/denoiser/
+   resolution as `final720`; also one run at the old `legacy128` preset for comparison. Warm-up frame excluded.
+4. Report: seconds/frame per device, speed-up vs CPU, peak VRAM, any errors/fallbacks, and whether the GPU output
+   matches CPU visually (side-by-side crop + simple per-pixel difference stats; small noise differences expected).
+   Estimate the time for an 8 s / 24 fps shot (192 frames) per device.
+5. Output: `README.md` (≤1 page, headline numbers first), `bench.csv`, ≤ 3 evidence JPEGs (≤ 2048 px), and the exact
+   commands used so the owner can re-run it.
+6. Post `| T-173 | STARTED |`; when done push and post
+   `<UTC> | T-173 | READY | t-173-codex-gpu-bench@<sha> | input <sha> | <headline>` + ledger.
+7. Model: medium effort, token-efficient. If Codex is limited, post a STATUS line and wait.
+
+---
 # ▶ T-169 — NEW CODEX ASSIGNMENT (owner ~10:50 CET 2026-11-20; posted by the owner liaison session_01NPjxeKamtbdzi3YwrgsWXU for the round-3 Supervisor session_01NPjxeL81bNYoFDm9Ypv5Ck)
 Codex does **T-169: HAIR REFERENCE STUDY**, all three characters. Analysis only, token-efficient. No project code,
 spec, test or asset changes. Builds on T-161 (silhouette numbers already in `docs/evaluation/characters/T-161/`;
