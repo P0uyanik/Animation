@@ -29,7 +29,7 @@ Codex T-161 reference targets (lashes, ears, hair silhouette) go to T-156 and T-
 ## Other
 | Task | Model | State | ETA | Branch |
 | --- | --- | --- | --- | --- |
-| T-141 native hair curves (opt-in tool once green) | Fable 5.2 | running | — | `t-141` |
+| T-141 native hair curves (opt-in tool; docs/evaluation/characters/T-141/README.md) | Fable 5.2 | on `integration/t-141`, gate running | — | `t-141` |
 | T-144 retire unpinned generator versions, option (b) (owner ~07:35Z) | Opus 5.5 | queued: after T-158 merges and a slot is free | — | `t-144-claude-retire-versions` |
 | T-153 fidelity score v2 | Opus | merged; experimental, default stays v1 | — | `t-153-claude-fidelity-v2` |
 | T-161 Codex reference targets | Codex | assigned (relay f33c4868); Codex limited until 2026-11-23 ~21:43Z | — | — |
