@@ -182,6 +182,17 @@ def uv_sphere(name, center, radius, collection, segments=48, rings=24, scale=(1,
     bmesh.ops.create_uvsphere(bm, u_segments=segments, v_segments=rings, radius=radius)
     for v in bm.verts:
         v.co = Vector((v.co.x * scale[0], v.co.y * scale[1], v.co.z * scale[2])) + Vector(center)
+    # T-158: create_uvsphere returns its faces and edges in a run-dependent order and edge direction (vertex and
+    # per-face loop order are stable), which moves later subsurf / bisect results by ~1 float ulp. Rebuild it with
+    # the faces in a fixed order (loops unchanged), so edges are created in a fixed order and direction.
+    bm.verts.index_update()
+    co = [v.co.copy() for v in bm.verts]
+    faces = sorted(tuple(v.index for v in f.verts) for f in bm.faces)
+    bm.free()
+    bm = bmesh.new()
+    vs = [bm.verts.new(c) for c in co]
+    for f in faces:
+        bm.faces.new([vs[i] for i in f])
     me = bpy.data.meshes.new(name)
     bm.to_mesh(me)
     bm.free()
