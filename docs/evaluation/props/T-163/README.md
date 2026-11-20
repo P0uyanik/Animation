@@ -28,9 +28,11 @@ spheres/boxes, sockets `grip*`/`place`/`contact`, `plush.affordances` v1, rigid,
 - lid seat geometry; handover lists on one-hand props.
 Result: 3 test cases, 593 assertions, all passed (palm error < 0.001 mm, tilt 0°).
 
-`contact_sheet.png` is a **schematic** drawn from the asset data (front view, one scale), not a render.
+`contact_sheet_render.png`: Cycles render (Blender 5.3, 32 samples, denoised) of all 13 props with the pipeline's prop mesh builder and the `felt` preset
+(`blender -b --factory-startup -P tests/props/render_sheet.py -- raw.png 32; python3 tests/props/label_sheet.py raw.png out.png`).
+`contact_sheet_schematic.png`: front-view drawing of sockets and grasp sites from the asset data (`contact_sheet.py`), not a render.
 
 ## Not tested / limitations
-- No pass (two-character handover) or finger-contact (`fingers`) test; no Blender render of the props.
+- No pass (two-character handover) or finger-contact (`fingers`) test; the render sheet is a single cheap pass (props are untextured primitives, felt look only).
 - `toy`/`basket` are primitives only (no ears/handle geometry); `book` has no open state (verbs reject non-rigid deform).
 - Existing `felt_cup` collision capsule is not base-aligned (unchanged; visible on the sheet).
