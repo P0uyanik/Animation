@@ -1,0 +1,5 @@
+column,frame,cup_patch_px,cup_only_px,cup_patch_pct,char.L_pupil_px,char.R_pupil_px
+T-126 base,1,0,0,,160,160
+T-126 base,2,0,0,,32,32
++ F1b eyes, fringe,1,0,0,,150,150
++ F1b eyes, fringe,2,0,0,,30,30

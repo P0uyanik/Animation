@@ -328,6 +328,82 @@ def fit_closed_lids(up, lash, T, ecfg, r, fit, close_key, closed_thickness_m=Non
                 rep["keys"][k.name] = round(float(shift.max()), 5)
         ob.data.update()
         rep.setdefault("shift_max_m", {})[ob.name] = round(moved, 5)
+    if fit.get("lash_curve") and lash is not None:  # T-137 (opt-in): the closed eye shows a dark lash curve
+        rep["lash_curve"] = curve_closed_lash(lash, T, r, fit["lash_curve"], a_close,
+                                              _f(ecfg.get("lids"), "lower_edge_deg", -45.0))
+    return rep
+
+
+def curve_closed_lash(lash, T, r, cfg, a_close, seam_deg):
+    """spec.face.eyes.lids.closed_fit.lash_curve = {"out_m": o, "sag_deg": s, "corner_lift_deg": l, "blend_deg": b,
+    "seam_deg": e (default: lids.lower_edge_deg), "above_seam_deg": d, "span": [inner, outer], "keys": {key name: sag factor}} (T-137, opt-in;
+    absent = the lash keys are not touched).
+
+    A closing upper lid carries its lash line past the lid seam and on under the lower lid (lid_seam overlap), where
+    the lower lid shell and the socket skin cover it: a closed eye shows no lash. For every shape key of the lash, the
+    key's lash-line elevation e_k is its rest elevation (a quadratic fit over x: lid roll and curve) minus the key's
+    median closing rotation. With w = smoothstep((seam + above + blend - e_k) / blend) (0 while the lash is still above
+    the seam, 1 at and below it), each vertex
+      * turns about the frame's x axis by w times the angle that puts the line on the target curve
+        seam + above - sag_deg * (1 - u^2) + corner_lift_deg * u^2 (u = 0 at the middle and 1 at the ends of span, default the rest lash line; span is the
+        visible opening when the socket skin hides part of the lash line): the lash
+        stops at the seam, its middle sags and its corners rise (the downward curve of a closed felt eye);
+      * goes to its rest radius + out_m (w-weighted): in front of the lower lid and the skin over it.
+    Lash strands keep their offsets from the line. keys maps a key name (in-betweens "Name@NN" and sided "Name.L" use
+    Name's entry) to a factor on sag_deg and corner_lift_deg (0 = straight, negative = an upward arc); others use 1.
+    Open keys and the basis do not change. Returns a report."""
+    import numpy as np
+    kb = lash.data.shape_keys.key_blocks if lash.data.shape_keys else None
+    if kb is None:
+        return {"skipped": "no shape keys"}
+    out_m, sag, lift = _f(cfg, "out_m", 0.003), math.radians(_f(cfg, "sag_deg", 6.0)), math.radians(_f(cfg, "corner_lift_deg", 4.0))
+    blend = math.radians(max(_f(cfg, "blend_deg", 10.0), 0.1))
+    e_s = math.radians(_f(cfg, "seam_deg", seam_deg) + _f(cfg, "above_seam_deg", 2.0))
+    factors = cfg.get("keys") or {}
+    Tm = np.array(T)
+    Ti = np.linalg.inv(Tm)
+    mw = np.array(lash.matrix_world)
+    mwi = np.linalg.inv(mw)
+    n = len(lash.data.vertices)
+
+    def frame_coords(data):
+        co = np.empty(n * 3)
+        data.foreach_get("co", co)
+        w = co.reshape(n, 3) @ mw[:3, :3].T + mw[:3, 3]
+        return w @ Ti[:3, :3].T + Ti[:3, 3]
+
+    q0 = frame_coords(kb[0].data)
+    th0 = np.arctan2(q0[:, 2], -q0[:, 1])
+    rho0 = np.linalg.norm(q0, axis=1)
+    core = rho0 <= np.percentile(rho0, 50.0) + 1e-6 * r  # the lash line itself (strands stand further out)
+    line0 = np.polyval(np.polyfit(q0[core, 0], th0[core], 2), q0[:, 0])  # its rest elevation along x
+    x_lo, x_hi = float(q0[core, 0].min()), float(q0[core, 0].max())  # u: 0 at the curve's middle, 1 at its ends
+    if cfg.get("span"):  # the visible opening, in eye radii from the eye's axis, signed towards the outer corner
+        sx = 1.0 if lash.name.split(".")[-1][:1] == "L" else -1.0
+        x_lo, x_hi = sorted(sx * float(v) * r for v in cfg["span"])
+    u2 = np.clip(np.abs(q0[:, 0] - 0.5 * (x_lo + x_hi)) / max(0.5 * (x_hi - x_lo), 1e-9), 0.0, 1.2) ** 2
+    rep = {"out_m": out_m, "sag_deg": round(math.degrees(sag), 2), "corner_lift_deg": round(math.degrees(lift), 2),
+           "seam_deg": round(math.degrees(e_s), 2), "blend_deg": round(math.degrees(blend), 2), "keys": {}}
+    for k in kb[1:]:
+        q = frame_coords(k.data)
+        turn = float(np.median((th0 - np.arctan2(q[:, 2], -q[:, 1]))[core]))  # the key's closing rotation
+        if turn <= 1e-6 or a_close <= 1e-6:
+            continue
+        line = line0 - turn
+        w = float(_smoothstep(np.array([(e_s + blend - float(np.median(line))) / blend]))[0])
+        if w < 1e-6:
+            continue
+        base = k.name.split("@")[0]
+        f = float(factors.get(base, factors.get(base.split(".")[0], 1.0)))
+        ang = w * (line - (e_s - f * sag * (1.0 - u2) + f * lift * u2))  # + = the front moves down
+        ca, sa = np.cos(ang), np.sin(ang)
+        q = np.stack([q[:, 0], q[:, 1] * ca - q[:, 2] * sa, q[:, 1] * sa + q[:, 2] * ca], axis=1)
+        rho = np.linalg.norm(q, axis=1)
+        q = q * ((rho + w * (rho0 + out_m - rho)) / np.maximum(rho, 1e-12))[:, None]
+        wco = q @ Tm[:3, :3].T + Tm[:3, 3]
+        k.data.foreach_set("co", (wco @ mwi[:3, :3].T + mwi[:3, 3]).ravel())
+        rep["keys"][k.name] = round(w, 3)
+    lash.data.update()
     return rep
 
 

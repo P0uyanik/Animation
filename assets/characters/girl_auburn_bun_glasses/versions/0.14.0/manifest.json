@@ -1,0 +1,52 @@
+{
+ "character_id": "girl_auburn_bun_glasses",
+ "version": "0.14.0",
+ "parent": "0.13.0",
+ "created": "2026-11-20T07:01:37+00:00",
+ "notes": "girl_auburn_bun_glasses 0.14.0 (T-155): CANDIDATE, not current; spec assets/characters/girl_auburn_bun_glasses/spec/candidates/T-155/girl_auburn_bun_glasses.0.14.0.spec.json (docs/evaluation/characters/T-155/make_specs.py). Owner decision docs/process/OWNER_DECISIONS.md 2026-11-20 ~07:00Z item 1.",
+ "spec_sha256": "41505b46ecdb92b3f31285db86e2dc2b8d8c3b8a56ea470e8ae862063f237896",
+ "spec_version": "0.14.0",
+ "build": "charsys/1+body_generic/1",
+ "blender": "5.3.0",
+ "identity_changes": [
+  "face",
+  "hair",
+  "clothing"
+ ],
+ "identity_change_approved_by": "owner, docs/process/OWNER_DECISIONS.md 2026-11-19 ~15:10Z (T-132 hair/garment) and 2026-11-20 ~07:00Z item 1 (T-137 faces, publish as candidates)",
+ "files": {
+  "girl_auburn_bun_glasses_master.blend": {
+   "sha256": "dc767c65fd41fe3f820ea557a6628e856694e04b926cfa5110083317b7051159",
+   "bytes": 33905824
+  },
+  "spec.json": {
+   "sha256": "82a9f997aead52946b0d6259ce3425dda45585814ede26963ef1d7624db020eb",
+   "bytes": 54495
+  },
+  "components.json": {
+   "sha256": "8325b60434bce578f07b885b6714965316e380a1d56c59d2a1ea865bfe4286ef",
+   "bytes": 32914
+  },
+  "animation_compat.json": {
+   "sha256": "09669a1e4782e6042f917d1d1b5d3981bfb5491e28a5c996a6ed39fcf0e6ecde",
+   "bytes": 16951
+  },
+  "build_report.json": {
+   "sha256": "efbf20ffba4d89d80029fd2858344ddd8508aabd738c64caf00ff0dd7fef4ba4",
+   "bytes": 45270
+  },
+  "spec.resolved.json": {
+   "sha256": "02c9f95e9fd990e3c257518170b2f6b4a6a645e821a39456b491178a365b3f84",
+   "bytes": 54997
+  }
+ },
+ "rig": {
+  "rigify_bones": 516,
+  "deform_bones": 179,
+  "unweighted_after_cleanup": 0
+ },
+ "spec_resolved": "spec.resolved.json is the build's fitted spec (body_generic writes fitted values); spec.json is the input spec it was built from (hash = spec_sha256)",
+ "not_stored": {
+  "girl_auburn_bun_glasses.glb": "not needed for reuse: shots link the master and engine packages are exported from it (run_shot.py); reproducible from the master"
+ }
+}
