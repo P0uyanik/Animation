@@ -14,7 +14,7 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, "..", "..", ".."))
 ALLOWLIST = os.path.join(HERE, "owner_approved_candidates.json")
-FEATURES = ("groom/4", "body.hands")
+FEATURES = ("groom/4", "body.hands", "lash_curve")  # lash_curve: test_face_r5 (owner 2026-11-20 ~07:00Z)
 FIELDS = ("character", "version", "feature", "owner_decision", "date")
 VERSION = re.compile(r"^\d+\.\d+\.\d+$")
 DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
