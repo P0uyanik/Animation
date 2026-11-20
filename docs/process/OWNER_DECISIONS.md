@@ -806,3 +806,9 @@ branch `t-168-claude-boy-face@49b3f56` kept) may be unarchived if follow-up work
 Option (A): R3 is released AS boy 2.3.0 / girl 0.14.0 / third 0.1.0, rebuilt from the R3 stacked specs. This replaces the
 branch-only builds from T-155 (~08:40Z), which were never published on main. On integration/r3-faces the approved pointers go back to
 2.2.0/0.13.0 until the owner's final OK on the sheets. The guard allowances keep these version names.
+
+## 2026-11-20 ~22:25Z (23:25 CET) — Hands round 2 start (relayed by the owner liaison)
+Start HANDS ROUND 2 (→ T-171) automatically right after the R3 release is published and its full gate is green. This is
+an explicit owner go; other held tasks stay held. Scope as queued: boy finger separation, pre-shaping during the reach,
+finger-by-finger close, soft contact; then revisit T-157 option (a) as the default. Base: the released 2.3.0/0.14.0/0.1.0.
+Candidate/opt-in, with strict sheets and clips for owner review.
