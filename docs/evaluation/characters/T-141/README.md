@@ -60,6 +60,14 @@ every frame; no strand popping seen. Only 7 frames checked; no long motion.
 - Curves have no Armature modifier in Blender 5.3; following relies on the lock mesh deformation.
 - Not verified: long shots, fast head motion, hair dynamics chains under stress, memory peak (bench reports none).
 
+## Gate (`tools/check_all.py --base origin/main --task T-141`, full Blender tier)
+
+PASS: frozen assets, write-set (28 paths, all inside the claim), shared-systems lint, C++ build + tests, Blender
+tier incl. regression (boy 67.23, auburn girl 64.13, third girl PASS — unchanged characters).
+Open: `Guarded paths` wants a `Supervisor-Approved: pipeline/charsys/tests/test_hair_curves.py` trailer (Supervisor
+item). `test_ci.py` failed only because the clone was shallow (commit ab9fd4c missing); 39/39 OK after
+`git fetch --unshallow`.
+
 ## Reproduce
 
 ```
