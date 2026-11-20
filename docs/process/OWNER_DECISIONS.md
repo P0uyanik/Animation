@@ -860,3 +860,9 @@ are kept for the record.
 Finish the R3 release (merge + full gate green + T-171/T-172 started). Then write `docs/process/SUPERVISOR_HANDOVER_R4.md`
 (pointer-based) and push it. Start no new tasks after that. The round-4 Supervisor takes over in-flight items; the round-3
 Supervisor goes idle and does not archive itself while implementers still report to it.
+
+## 2026-11-20 ~23:40Z (00:40 CET) — Waiver + third CURRENT (owner, typed directly in the T-155 session)
+"I waive the liaison sheet-check condition. Release R3 now: make boy 2.3.0 / girl 0.14.0 /  third 0.1.0 CURRENT, publish
+third 0.1.0, update test_face_v4 pins, run all checks, push." (Verified by the Supervisor in the T-155 transcript.) The third
+character 0.1.0 becomes her first CURRENT version. Her allowlist entries in `pipeline/charsys/tests/owner_approved_candidates.json`
+carry this as their current_decision.
