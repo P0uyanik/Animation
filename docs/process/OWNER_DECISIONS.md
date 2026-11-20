@@ -678,3 +678,16 @@ before/after close-ups. Folded into T-159 (ears) as Part A, started now on the T
 5. Boy hair currently better than the girls' (owner unsure); all three still noticeably different from refs.
 Actions: hair round 7, all three, reference fidelity over felt look (fewer petal/leaf shapes on the boy, irregular fringe,
 natural strand grouping) → T-167. r6 NOT adopted; stays opt-in (merging as an opt-in base is fine). Bow seat pending.
+
+## 2026-11-20 ~09:00Z (10:00 CET) — Bow seat (relayed by the owner liaison)
+Third girl's bow: position it from the reference images: front seat (refs 01/02), on her right side (viewer's left), at
+the front hairline just below/in front of the right bun, above the temple, slightly tilted, partly over the fringe.
+Refine position/size/tilt in T-167; no side seat.
+
+## 2026-11-20 ~09:05Z (10:05 CET) — HOLD on queued work (relayed by the owner liaison)
+Running tasks continue; do NOT start queued/planned tasks (T-166, T-144 option b, hands round 2, next versions, new
+Codex tasks) until the owner says "Start the planned automatic tasks" (via the liaison). Free slots stay empty.
+
+## 2026-11-20 ~09:10Z (10:10 CET) — Pause T-167 and T-168 (relayed by the owner liaison)
+Pause T-167 (hair r7; WIP pushed `t-167-claude-hair-r7@dc85c98`) and T-168 (boy face; diagnosis only,
+`t-168-claude-boy-face@de0eff2`) to save tokens; no restart until the owner's explicit word via the liaison.
