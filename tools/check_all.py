@@ -807,6 +807,18 @@ def unit_determinism(c: BlenderContext) -> None:
                  determinism_log)
 
 
+def unit_build_determinism_girl(c: BlenderContext) -> None:
+    # T-158: build the current girl (0.13.0) twice; before T-158 her ears / upper lids changed between runs by ~1e-8 m
+    # (below the 0.01 mm fingerprint grid, hence --strict: 1e-7 m mesh hashes with shape keys).
+    log = c.logs / "blender-build-determinism-girl.log"
+    out = c.out / "build-determinism-girl"
+    code, _ = run_logged([sys.executable, str(ROOT / "pipeline/charsys/tests/test_determinism.py"), "--blender",
+                          c.executable, "--out", str(out), "--character", "girl_auburn_bun_glasses", "--runs", "2",
+                          "--jobs", "2", "--strict"], log)
+    ok = code == 0 and json_pass(out / "determinism.json")
+    add_subcheck(c.subchecks, "build determinism girl", ok, "" if ok else "two girl builds differ", log)
+
+
 def unit_export_engine(c: BlenderContext) -> None:
     export_log = c.logs / "blender-export-engine.log"
     export_command = [
@@ -958,6 +970,7 @@ def unit_fidelity_regression(c: BlenderContext) -> None:
 BLENDER_UNITS: list[tuple[str, object, bool]] = [
     ("charsys", unit_charsys, False),
     ("determinism", unit_determinism, False),
+    ("build-determinism-girl", unit_build_determinism_girl, False),  # T-158
     ("export-engine", unit_export_engine, False),
     ("face", unit_face, False),
     ("hair", unit_hair, False),
