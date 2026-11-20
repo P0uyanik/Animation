@@ -28,35 +28,39 @@ Workbench at yaw -35 / -60 / -90 (`diagnosis/diag.py`); silhouette extent of the
 ## 2. Change
 Generator (opt-in, defaults unchanged):
 - `pipeline/charsys/face_v3/lower_face.py`: `cheek_pad_top_fade_m` (default 0.015 = the previous constant).
-- `pipeline/charsys/face_features.py` `build_nose`: nose type `upturned` (tip with a soft bridge above and a short
+- `pipeline/charsys/face_features.py` `build_nose` only: nose type `upturned` (tip with a soft bridge above and a short
   underside; `size_m, height_m, bridge_m, under_m, tip_up_m, bridge_narrow, tip_power`).
-- `pipeline/charsys/tests/test_face_t168.py` (new; **not registered** in tools/check_all.py, outside my write-set).
+- `pipeline/charsys/tests/test_face_t168.py` (new), registered in `tools/check_all.py` (approved ~15:30 CET).
 
-Candidate data `boy_yellow_hoodie.T-168.override.json` (on the 2.3.0 spec):
+Candidate data `boy_yellow_hoodie.T-168.override.json` (on the 2.3.0 spec), r2 after the owner review ~15:30 CET:
 - cheek pad 16 -> 10 mm, radius 70 -> 60 mm, centre 35 -> 45 mm below the eye, top fade 15 -> 45 mm;
-  cheek_fullness 6 -> 4 mm; `lower_face_recede_m` 8 mm from 25 mm below the eye (existing face.shape option; the
-  head profile rows did not need to change).
-- nose `small_round` 9 / 1.6 mm -> `upturned` 13 mm half width, 5.5 mm high.
+  cheek_fullness 6 -> 4 mm; `lower_face_recede_m` 3 mm from 30 mm below the eye (r1: 8 mm from 25 mm; existing
+  face.shape option, data only; the head profile rows did not need to change).
+- nose `small_round` 9 / 1.6 mm -> `upturned` as a soft nub: 10 mm half width, 3.5 mm high, round dome
+  (r1: 13 / 5.5 mm, read as a cone at 3/4).
 
-## 3. Evidence
+## 3. Evidence (r2)
 - Strict sheet: `boy_2.3.0_vs_T-168_strict.jpg` (recipe `boy_2.3.0_vs_T-168.recipe.json`, preview passed, Cycles 16 spp).
-- Side / oblique / 3/4 close-ups, same rig and settings: `boy_closeups_2.3.0_vs_T-168.jpg`
-  (rows: 3/4 -35, oblique -60, side -90; columns: reference, 2.3.0, T-168).
-- Front: face layout, eyes, mouth, hair unchanged; cheeks slightly slimmer low down; the nose is now visible.
+- 100 % close-ups, same rig and settings, 480 px renders pasted unscaled: `boy_closeups_2.3.0_vs_T-168.jpg`
+  (rows: front, 3/4 -35, side -90; columns: val27 reference (enlarged, 210-240 px source), 2.3.0, T-168 r2).
+- Reading: the ledge under the eye is gone at 3/4; the side profile has no shelf and keeps a round mouth/chin line
+  behind a small nose tip, close to val27_side_right; front: layout, eyes, mouth, hair unchanged, cheeks slightly
+  slimmer low down, nose a soft nub. Remaining difference to the refs: the boy's lower face is still deeper
+  (chin further forward) than val27 in the side view; that is head data, not changed here.
+- The table in section 1 was measured on the r1 shape (recede 8 mm); r2 only changes the recede and the nose.
 
 ## 4. Tests
-- `python3 pipeline/charsys/tests/test_face_t168.py --blender blender`: 11/11.
-- Default unchanged: 2.3.0 rebuilt with the edited code vs a build from the unedited T-155 branch,
-  `mesh_hash_strict.py`: 222 of 223 objects identical (head/body_skin included); `lid_upper.R` differs, which is the
-  known run-to-run lid drift (T-158; the T-155 branch build does not have the deterministic-build fix), not this code
-  (the new branches are not reached without the new keys).
-- test_face_r5 9/9, test_guard_allowlist 25/25. test_face_v4 15/17: the two failures ("candidate is on the current
-  version", 2.2.0 vs 2.3.0) are already there at the merge commit 7fdc278, before any T-168 edit.
+- `test_face_t168.py --blender blender`: 11/11. After merging origin/t-159-claude-ears (3c306ea): test_ears_shape 8/8,
+  test_face_front_fade 14/14, test_face_r5 15/15, test_guard_allowlist 25/25, blender_inventory + T-127 shard tests pass.
+- Merge does not change the candidate: r2 candidate built before and after the T-159 merge, `mesh_hash_strict.py`:
+  223/223 objects identical.
+- Default unchanged: 2.3.0 rebuilt with the edited code vs a build from the unedited T-155 branch: 222 of 223 objects
+  identical (head/body_skin included); `lid_upper.R` differs = the known run-to-run lid drift of the T-155 branch
+  build (no deterministic-build fix there), not confirmed by a same-code rebuild.
+- test_face_v4 15/17: the two failures ("candidate is on the current version", 2.2.0 vs 2.3.0) are already there at
+  the T-155 merge commit 7fdc278, before any T-168 edit.
 
 ## 5. Not done / limits
 - Fidelity score, full ctest and CI not run. No golden, threshold or test loosened.
-- Nose shape is a first candidate (tip a little pointed from the front); it is spec data and easy to tune.
-- Eyes/lids (T-156) and head/ears/temple (T-159) untouched.
-- Close-ups, honest reading: the ledge under the eye is gone at -35 and -60 and the side shelf is gone; in the side
-  view the lower face now recedes a little more than val27_side_right (the reference keeps a rounder mouth/cheek
-  line just behind the nose tip) and the nose tip is sharper than the reference's soft nub. Both are override values.
+- The sheet and close-ups were rendered before the T-159 merge (geometry identical after it, see above).
+- Not touched: shape_face_v2, build_ears and the ears (T-159), face_v3/lids.py (T-156).
