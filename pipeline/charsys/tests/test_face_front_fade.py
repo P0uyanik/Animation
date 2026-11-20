@@ -8,7 +8,9 @@ Runs shape_face_v2 (face_width_m and jaw_depth_roundness only) on a dense sphere
     ledge (a step in the widening across the cut);
   * with front_fade_m the widening has no step (largest change between neighbouring depth bins is a fraction of the
     hard cut's), is unchanged in front of the fade zone and zero behind it;
-  * the report records front_fade_m only when it is set.
+  * the report records front_fade_m only when it is set;
+  * outline_smooth_m (opt-in, same function): 0 equals no key; set, the per-row outline scale no longer ripples and
+    the outline moves by less than 3 mm; smooth_profile keeps NaN samples.
 Without --blender nothing can run (face_features needs bpy): the test reports SKIP and exits 0."""
 import json
 import os
@@ -92,6 +94,34 @@ out["front_same_m"] = float(np.abs(a1[far_front] - a0[far_front]).max())
 out["back_moved_m"] = float(np.abs(a1[far_back] - b1[far_back]).max())
 out["report_default"] = "front_fade_m" in r0
 out["report_fade"] = r1.get("front_fade_m")
+# outline_smooth_m: ripple of the outline scale along a meridian (x / x_before per vertex row on the side)
+ob = {"outline_roundness": 0.9, "outline_exponent": 2.6}
+b2, a2, r2 = run(dict(ob))
+b3, a3, r3 = run(dict(ob, outline_smooth_m=0.006))
+b4, a4, r4 = run(dict(ob, outline_smooth_m=0.0))
+
+
+def ripple(b, a):
+    m = (b[:, 0] > 0.03) & (np.abs(b[:, 1]) < 0.004) & (b[:, 2] < EZ - 0.01) & (b[:, 2] > ZCHIN + 0.015)
+    z = np.round(b[m, 2], 5)
+    sc_ = a[m, 0] / b[m, 0]
+    zs = np.unique(z)
+    s = np.array([sc_[z == v].mean() for v in zs])
+    return float(np.abs(np.diff(s, 2)).max()), int(len(zs))
+
+
+out["ripple_raw"], out["rows"] = ripple(b2, a2)
+out["ripple_smooth"], _ = ripple(b3, a3)
+out["smooth0_same"] = float(np.abs(a4 - a2).max())
+out["outline_moved_m"] = float(np.abs(a3 - a2).max())
+out["report_smooth_default"] = "outline_smooth_m" in r2
+out["report_smooth"] = r3.get("outline_smooth_m")
+x = np.linspace(0, 1, 50)
+v = np.sin(6 * x) + 0.05 * np.where(np.arange(50) % 2, 1, -1)
+v[10] = np.nan
+sm = FF.smooth_profile(x, v, 0.04)
+out["profile_nan_kept"] = bool(np.isnan(sm[10]) and np.isnan(sm).sum() == 1)
+out["profile_jitter"] = [float(np.nanmax(np.abs(np.diff(v[20:], 2)))), float(np.nanmax(np.abs(np.diff(sm[20:], 2))))]
 print("PROBE " + json.dumps(out))
 '''
 
@@ -130,6 +160,13 @@ def main():
     check("face in front of the fade zone unchanged", o["front_same_m"] < 1e-6, f"{o['front_same_m']:.2e} m")
     check("nothing moves behind the fade zone", o["back_moved_m"] < 1e-6, f"{o['back_moved_m']:.2e} m")
     check("report records front_fade_m only when set", o["report_default"] is False and o["report_fade"] == 0.08)
+    check("outline_smooth_m 0 equals no key", o["smooth0_same"] == 0.0 and o["report_smooth_default"] is False)
+    check("outline_smooth_m removes the scale ripple", o["ripple_smooth"] < 0.5 * o["ripple_raw"],
+          f"max 2nd difference of the scale over {o['rows']} rows: {o['ripple_raw']:.4f} -> {o['ripple_smooth']:.4f}")
+    check("outline_smooth_m keeps the outline (small change)", 0 < o["outline_moved_m"] < 0.003, f"{o['outline_moved_m'] * 1000:.2f} mm")
+    check("report records outline_smooth_m", o["report_smooth"] == 0.006)
+    check("smooth_profile keeps NaN samples and removes jitter", o["profile_nan_kept"] and o["profile_jitter"][1] < 0.2 * o["profile_jitter"][0],
+          str([round(v, 4) for v in o["profile_jitter"]]))
     print(f"[test_face_front_fade] {'ALL PASS' if all(RESULTS) else 'FAIL'} {sum(RESULTS)}/{len(RESULTS)}")
     return 0 if all(RESULTS) else 1
 

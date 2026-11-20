@@ -8,7 +8,8 @@
       "material-presets",
       "render-engine-selector",
       "materials-r2-graphs",
-      "fidelity-regression"
+      "fidelity-regression",
+      "face-front-fade"
     ],
     "2": [
       "determinism",
@@ -35,7 +36,8 @@
   },
   "added_after_t127": [
     "build-determinism-girl",
-    "hair-curves"
+    "hair-curves",
+    "face-front-fade"
   ],
   "added_after_t127_note": "Blender units added after T-127. tools/ci/blender_inventory.py accepts exactly these as new: each one's commands must appear exactly once in the shards and in the unsharded path; everything else is compared with pre-T-127 as before."
 }

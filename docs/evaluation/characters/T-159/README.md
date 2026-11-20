@@ -32,14 +32,15 @@ removes the ledge with the socket unchanged).
 ### Fix (opt-in)
 `face.shape.front_fade_m` (new, default 0 = the hard cut): the mask falls smoothly from 1 to 0 over this depth, centred
 on the cut. Code: `pipeline/charsys/face_features.py` (`front_weight`, `shape_face_v2`). Overrides (on the T-155
-candidate specs): `overrides/<id>.temple.override.json`, `front_fade_m` 0.08. No spec, version or current change.
+candidate specs): `overrides/<id>.temple.override.json`, `front_fade_m` 0.08, `outline_smooth_m` 0.006. No spec, version or current change.
 
 Effect of 0.08: skin moves only for y in [-0.09, -0.01] within the face-width band (max about -1.9 mm in front of the
 cut, +2.6 mm behind it); head width at the ear (y 0) and the face front are unchanged.
 
 ### Evidence
 - `temple/girl_clay.jpg`, `temple/third_clay.jpg`: skin only, grey material, grazing light, 3/4 and side, 100 % pixels
-  (ortho 0.20 m / 640 px), before | after. The ledge is the ragged vertical line in front of the ear.
+  (ortho 0.20 m / 640 px), before | + front_fade_m | + front_fade_m + outline_smooth_m. The ledge is the ragged vertical line in front of the
+  ear; the seam is the horizontal ripple band below the eye line.
 - `temple/girl_full.jpg`, `temple/third_full.jpg`: same views with the masters' materials and hair, before | after.
   Girl: the ledge shows below the glasses arm before, gone after. Third girl: the groom/4 side hair covers the temple
   in both views, so the change is only visible in the clay sheet.
@@ -50,14 +51,26 @@ cut, +2.6 mm behind it); head width at the ear (y 0) and the face front are unch
 - Tool: `tools/temple_views.py`.
 
 ### Tests
-- `python3 pipeline/charsys/tests/test_face_front_fade.py --blender blender`: 9/9 (hard cut = old formula to 4e-9 m,
-  12.7 mm step on the test sphere; fade: 0.55 mm per 2 mm bin, front and back untouched). Not registered in
-  `tools/check_all.py` (outside the write-set).
+- `python3 pipeline/charsys/tests/test_face_front_fade.py --blender blender`: 14/14 (hard cut = old formula to 4e-9 m,
+  12.7 mm step on the test sphere; fade: 0.55 mm per 2 mm bin, front and back untouched; outline scale ripple
+  0.0119 -> 0.0036). Registered as Blender unit `face-front-fade` (`tools/check_all.py`, shard 1 in
+  `tools/ci/blender_shards.json`); `tools/ci/blender_inventory.py` and `tools/ci/tests/test_t127_shards.py` pass.
+
+### Cheek-height seam (horizontal ripples, eye corner to ear)
+Cause: the `outline_roundness` step of the same function scales every horizontal slice in x by target / measured
+width; the measured width comes from raw 3 mm bins (max |x| within ±2 mm), which jitter with the vertex rows, so the
+scale ripples with height. A/B (auburn girl, second differences of the lateral skin x at 4 mm steps, eye line -2.4 to
+-5.6 cm, y -0.045): candidate +0.2 / -1.2 / +0.8 / -0.2 / -0.3 / -0.7 / -0.9 / +0.4 / -0.7 mm; `outline_roundness` 0:
+all within -0.7..+0.3 without sign flips; `cheek_pad_m` 0 and cheek raise 0: unchanged. Fix (opt-in):
+`face.shape.outline_smooth_m` (default 0 = raw bins), Gaussian sigma over height for the measured widths
+(`smooth_profile`). With 0.006: -0.1 / -0.2 / -0.1 / -0.3 / -0.3 / -0.7 / -0.2 / -0.1 / -0.2 mm (no sign flips; the
+larger values further down are the jaw turn). Third girl with both keys: -0.1 / -0.4 / -0.5 / -0.3 / -0.3 / -0.2 /
++0.2 / -0.2 (y -0.030). Third column of the clay sheets. Default builds hash-identical with this change too (same
+hashes as above, rebuilt).
 
 ### Open
-- A faint horizontal seam remains at cheek height between the eye and the ear (visible in the clay views before and
-  after; not the ledge). Not diagnosed; likely another shaping stage's edge. Needs a decision before it is touched.
 - Not run: full strict sheets, fidelity score, test_determinism, ctest (Part A changes no default build).
+- The full-material sheets show `front_fade_m` only (rendered before the seam fix).
 
 ## Part B: ears
 Not started.
