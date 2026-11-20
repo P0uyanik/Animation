@@ -1,0 +1,133 @@
+character,measure,reference_source,reference_trace,reference_mark,reference,tolerance,current_source,current_trace,current_mark,current,result
+boy,open_liner_h,boy.jpg row 2 left (B01),20/84,M,0.2381,0.04,boy.jpg row 2 right (boy),13/72,M,0.1806,outside
+auburn,open_liner_h,auburn.jpg row 2 left (G01),15/174,M,0.0862,0.04,auburn.jpg row 2 right (girl),19/160,M,0.1187,within
+white_haired,open_liner_h,white_haired.jpg row 2 left (W01),12/161,M,0.0745,0.04,white_haired.jpg row 2 right (white),20/164,M,0.122,outside
+boy,open_ink_span,boy.jpg row 2 left (B01),222/202,M,1.099,0.12,boy.jpg row 2 right (boy),195/188,M,1.0372,within
+auburn,open_ink_span,auburn.jpg row 2 left (G01),194/184,M,1.0543,0.12,auburn.jpg row 2 right (girl),83/196,M,0.4235,outside
+white_haired,open_ink_span,white_haired.jpg row 2 left (W01),174/177,M,0.9831,0.12,white_haired.jpg row 2 right (white),80/186,M,0.4301,outside
+boy,open_lash_count,boy.jpg row 2 left (B01),0,M,0.0,1,boy.jpg row 2 right (boy),0,M,0.0,within
+auburn,open_lash_count,auburn.jpg row 2 left (G01),4,E,4.0,1,auburn.jpg row 2 right (girl),3,E,3.0,within
+white_haired,open_lash_count,white_haired.jpg row 2 left (W01),5,E,5.0,1,white_haired.jpg row 2 right (white),3,E,3.0,outside
+boy,open_lash_positions,boy.jpg row 2 left (B01),none,E,none,exact,boy.jpg row 2 right (boy),none,E,none,within
+auburn,open_lash_positions,auburn.jpg row 2 left (G01),outer half,E,outer half,exact,auburn.jpg row 2 right (girl),outer quarter,E,outer quarter,outside
+white_haired,open_lash_positions,white_haired.jpg row 2 left (W01),outer half,E,outer half,exact,white_haired.jpg row 2 right (white),outer quarter,E,outer quarter,outside
+boy,open_lash_length,boy.jpg row 2 left (B01),0,M,0.0,0.025,boy.jpg row 2 right (boy),0,M,0.0,within
+auburn,open_lash_length,auburn.jpg row 2 left (G01),9/184,E,0.0489,0.025,auburn.jpg row 2 right (girl),10/196,E,0.051,within
+white_haired,open_lash_length,white_haired.jpg row 2 left (W01),11/177,E,0.0621,0.025,white_haired.jpg row 2 right (white),12/186,E,0.0645,within
+boy,open_lash_curve,boy.jpg row 2 left (B01),smooth bar,E,smooth bar,exact,boy.jpg row 2 right (boy),smooth bar,E,smooth bar,within
+auburn,open_lash_curve,auburn.jpg row 2 left (G01),short tapered outward flicks,E,short tapered outward flicks,exact,auburn.jpg row 2 right (girl),fine upright spikes,E,fine upright spikes,outside
+white_haired,open_lash_curve,white_haired.jpg row 2 left (W01),short tapered outward flicks,E,short tapered outward flicks,exact,white_haired.jpg row 2 right (white),fine outward spikes,E,fine outward spikes,outside
+boy,open_lower_lashes,boy.jpg row 2 left (B01),none resolved,E,none resolved,exact,boy.jpg row 2 right (boy),none resolved,E,none resolved,within
+auburn,open_lower_lashes,auburn.jpg row 2 left (G01),none resolved,E,none resolved,exact,auburn.jpg row 2 right (girl),none resolved,E,none resolved,within
+white_haired,open_lower_lashes,white_haired.jpg row 2 left (W01),none resolved,E,none resolved,exact,white_haired.jpg row 2 right (white),none resolved,E,none resolved,within
+boy,open_colour,boy.jpg row 2 left (B01),dark brown bar,E,dark brown bar,exact,boy.jpg row 2 right (boy),near-black bar,E,near-black bar,outside
+auburn,open_colour,auburn.jpg row 2 left (G01),brown matching liner,E,brown matching liner,exact,auburn.jpg row 2 right (girl),near-black matching liner,E,near-black matching liner,outside
+white_haired,open_colour,white_haired.jpg row 2 left (W01),brown matching liner,E,brown matching liner,exact,white_haired.jpg row 2 right (white),near-black matching liner,E,near-black matching liner,outside
+boy,closed_ink_span,boy.jpg row 3 left (boyexpr),103/108,E,0.9537,0.15,boy.jpg row 3 right (boyexpr),17/145,E,0.1172,outside
+auburn,closed_ink_span,auburn.jpg row 3 left (girlexpr),110/119,E,0.9244,0.15,auburn.jpg row 3 right (girlexpr),0,E,0.0,outside
+white_haired,closed_ink_span,white_haired.jpg row 3 left (wexpr),99/102,E,0.9706,0.15,white_haired.jpg row 3 right (wexpr),18/140,E,0.1286,outside
+boy,closed_liner_h,boy.jpg row 3 left (boyexpr),8/43,E,0.186,0.07,boy.jpg row 3 right (boyexpr),0,M,0.0,outside
+auburn,closed_liner_h,auburn.jpg row 3 left (girlexpr),9/72,E,0.125,0.07,auburn.jpg row 3 right (girlexpr),0,M,0.0,outside
+white_haired,closed_liner_h,white_haired.jpg row 3 left (wexpr),7/76,E,0.0921,0.07,white_haired.jpg row 3 right (wexpr),0,M,0.0,outside
+boy,closed_lash_count,boy.jpg row 3 left (boyexpr),0,E,0.0,1,boy.jpg row 3 right (boyexpr),0,E,0.0,within
+auburn,closed_lash_count,auburn.jpg row 3 left (girlexpr),0,E,0.0,1,auburn.jpg row 3 right (girlexpr),0,E,0.0,within
+white_haired,closed_lash_count,white_haired.jpg row 3 left (wexpr),1,E,1.0,1,white_haired.jpg row 3 right (wexpr),1,E,1.0,within
+boy,closed_lash_positions,boy.jpg row 3 left (boyexpr),none resolved,E,none resolved,exact,boy.jpg row 3 right (boyexpr),none resolved,E,none resolved,within
+auburn,closed_lash_positions,auburn.jpg row 3 left (girlexpr),none resolved,E,none resolved,exact,auburn.jpg row 3 right (girlexpr),none resolved,E,none resolved,within
+white_haired,closed_lash_positions,white_haired.jpg row 3 left (wexpr),outer quarter,E,outer quarter,exact,white_haired.jpg row 3 right (wexpr),outer quarter,E,outer quarter,within
+boy,closed_lash_length,boy.jpg row 3 left (boyexpr),0,E,0.0,0.03,boy.jpg row 3 right (boyexpr),0,E,0.0,within
+auburn,closed_lash_length,auburn.jpg row 3 left (girlexpr),0,E,0.0,0.03,auburn.jpg row 3 right (girlexpr),0,E,0.0,within
+white_haired,closed_lash_length,white_haired.jpg row 3 left (wexpr),4/102,E,0.0392,0.03,white_haired.jpg row 3 right (wexpr),5/140,E,0.0357,within
+boy,closed_curve,boy.jpg row 3 left (boyexpr),continuous shallow U,E,continuous shallow U,exact,boy.jpg row 3 right (boyexpr),outer fleck,E,outer fleck,outside
+auburn,closed_curve,auburn.jpg row 3 left (girlexpr),continuous shallow U,E,continuous shallow U,exact,auburn.jpg row 3 right (girlexpr),no visible line,E,no visible line,outside
+white_haired,closed_curve,white_haired.jpg row 3 left (wexpr),continuous shallow U,E,continuous shallow U,exact,white_haired.jpg row 3 right (wexpr),outer fleck,E,outer fleck,outside
+boy,closed_lower_lashes,boy.jpg row 3 left (boyexpr),none resolved,E,none resolved,exact,boy.jpg row 3 right (boyexpr),none resolved,E,none resolved,within
+auburn,closed_lower_lashes,auburn.jpg row 3 left (girlexpr),none resolved,E,none resolved,exact,auburn.jpg row 3 right (girlexpr),none resolved,E,none resolved,within
+white_haired,closed_lower_lashes,white_haired.jpg row 3 left (wexpr),none resolved,E,none resolved,exact,white_haired.jpg row 3 right (wexpr),none resolved,E,none resolved,within
+boy,closed_colour,boy.jpg row 3 left (boyexpr),dark brown,E,dark brown,exact,boy.jpg row 3 right (boyexpr),dark fleck,E,dark fleck,outside
+auburn,closed_colour,auburn.jpg row 3 left (girlexpr),dark brown,E,dark brown,exact,auburn.jpg row 3 right (girlexpr),no visible pigment,E,no visible pigment,outside
+white_haired,closed_colour,white_haired.jpg row 3 left (wexpr),dark brown matching liner,E,dark brown matching liner,exact,white_haired.jpg row 3 right (wexpr),dark fleck,E,dark fleck,outside
+boy,ear_width,boy.jpg row 1 left (val27_front),33/168,E,0.1964,0.055,boy.jpg row 1 right (boy),12/124,E,0.0968,outside
+auburn,ear_width,auburn.jpg row 1 left (sheet30_front),24/151,E,0.1589,0.055,auburn.jpg row 1 right (girl),?,E,,unobserved
+white_haired,ear_width,white_haired.jpg row 1 left (W01),21/137,E,0.1533,0.055,white_haired.jpg row 1 right (whair),10/118,E,0.0847,outside
+boy,ear_height,boy.jpg row 1 left (val27_front),47/272,M,0.1728,0.045,boy.jpg row 1 right (boy),28/174,M,0.1609,within
+auburn,ear_height,auburn.jpg row 1 left (sheet30_front),42/191,E,0.2199,0.045,auburn.jpg row 1 right (girl),?,E,,unobserved
+white_haired,ear_height,white_haired.jpg row 1 left (W01),38/183,M,0.2077,0.045,white_haired.jpg row 1 right (whair),23/182,E,0.1264,outside
+boy,ear_top_eye,boy.jpg row 1 left (val27_front),-7/272,E,-0.0257,0.045,boy.jpg row 1 right (boy),-10/174,E,-0.0575,within
+auburn,ear_top_eye,auburn.jpg row 1 left (sheet30_front),-5/191,E,-0.0262,0.045,auburn.jpg row 1 right (girl),?,E,,unobserved
+white_haired,ear_top_eye,white_haired.jpg row 1 left (W01),-6/183,E,-0.0328,0.045,white_haired.jpg row 1 right (whair),3/182,E,0.0165,outside
+boy,ear_base_mouth,boy.jpg row 1 left (val27_front),-12/272,E,-0.0441,0.045,boy.jpg row 1 right (boy),-5/174,E,-0.0287,within
+auburn,ear_base_mouth,auburn.jpg row 1 left (sheet30_front),4/191,E,0.0209,0.045,auburn.jpg row 1 right (girl),?,E,,unobserved
+white_haired,ear_base_mouth,white_haired.jpg row 1 left (W01),4/183,E,0.0219,0.045,white_haired.jpg row 1 right (whair),4/182,E,0.022,within
+boy,ear_front_projection,boy.jpg row 1 left (val27_front),31/168,E,0.1845,0.04,boy.jpg row 1 right (boy),9/124,E,0.0726,outside
+auburn,ear_front_projection,auburn.jpg row 1 left (sheet30_front),20/151,E,0.1325,0.04,auburn.jpg row 1 right (girl),0,E,0.0,outside
+white_haired,ear_front_projection,white_haired.jpg row 1 left (W01),16/137,E,0.1168,0.04,white_haired.jpg row 1 right (whair),7/118,E,0.0593,outside
+boy,ear_turn_projection,boy.jpg row 4 left (B02),37/166,E,0.2229,0.06,boy.jpg row 4 right (boy),17/177,E,0.096,outside
+auburn,ear_turn_projection,auburn.jpg row 4 left (G02),56/219,E,0.2557,0.06,auburn.jpg row 4 right (girl),8/178,E,0.0449,outside
+white_haired,ear_turn_projection,white_haired.jpg row 4 left (f14_head_3q),32/167,E,0.1916,0.06,white_haired.jpg row 4 right (wcrop),0,E,0.0,outside
+boy,ear_outline,boy.jpg row 4 left (B02),rounded cup,E,rounded cup,exact,boy.jpg row 4 right (boy),narrow oval,E,narrow oval,outside
+auburn,ear_outline,auburn.jpg row 4 left (G02),rounded cup,E,rounded cup,exact,auburn.jpg row 4 right (girl),tiny exposed nub,E,tiny exposed nub,outside
+white_haired,ear_outline,white_haired.jpg row 4 left (f14_head_3q),rounded cup,E,rounded cup,exact,white_haired.jpg row 4 right (wcrop),occluded,E,occluded,outside
+boy,ear_fold,boy.jpg row 4 left (B02),shallow hollow,E,shallow hollow,exact,boy.jpg row 4 right (boy),no resolved hollow,E,no resolved hollow,outside
+auburn,ear_fold,auburn.jpg row 4 left (G02),curved inner rim and bowl,E,curved inner rim and bowl,exact,auburn.jpg row 4 right (girl),no resolved hollow,E,no resolved hollow,outside
+white_haired,ear_fold,white_haired.jpg row 4 left (f14_head_3q),shallow hollow,E,shallow hollow,exact,white_haired.jpg row 4 right (wcrop),occluded,E,occluded,outside
+boy,ear_cover_front,boy.jpg row 1 left (val27_front),partial,E,partial,exact,boy.jpg row 1 right (boy),partial,E,partial,within
+auburn,ear_cover_front,auburn.jpg row 1 left (sheet30_front),partial,E,partial,exact,auburn.jpg row 1 right (girl),full,E,full,outside
+white_haired,ear_cover_front,white_haired.jpg row 1 left (W01),partial,E,partial,exact,white_haired.jpg row 1 right (whair),most,E,most,outside
+boy,ear_cover_turn,boy.jpg row 4 left (B02),partial,E,partial,exact,boy.jpg row 4 right (boy),partial,E,partial,within
+auburn,ear_cover_turn,auburn.jpg row 4 left (G02),rim only,E,rim only,exact,auburn.jpg row 4 right (girl),most,E,most,outside
+white_haired,ear_cover_turn,white_haired.jpg row 4 left (f14_head_3q),partial,E,partial,exact,white_haired.jpg row 4 right (wcrop),full,E,full,outside
+boy,ear_cover_back,boy.jpg row 5 left (val27_back),most,E,most,exact,boy.jpg row 5 right (boy),most,E,most,within
+auburn,ear_cover_back,auburn.jpg row 5 left (sheet30_back),full,E,full,exact,auburn.jpg row 5 right (girl),full,E,full,within
+white_haired,ear_cover_back,white_haired.jpg row 5 left (W17),full,E,full,exact,white_haired.jpg row 5 right (wcrop),full,E,full,within
+boy,crown_above_skull,boy.jpg row 1 left (val27_front),60/272,E,0.2206,0.1,boy.jpg row 1 right (boy),26/174,E,0.1494,within
+auburn,crown_above_skull,auburn.jpg row 1 left (sheet30_front),24/191,E,0.1257,0.1,auburn.jpg row 1 right (girl),21/182,E,0.1154,within
+white_haired,crown_above_skull,white_haired.jpg row 1 left (W01),22/183,E,0.1202,0.1,white_haired.jpg row 1 right (whair),24/182,E,0.1319,within
+boy,fringe_eye,boy.jpg row 1 left (val27_front),16/272,M,0.0588,0.05,boy.jpg row 1 right (boy),39/174,M,0.2241,outside
+auburn,fringe_eye,auburn.jpg row 1 left (sheet30_front),55/191,M,0.288,0.05,auburn.jpg row 1 right (girl),63/182,M,0.3462,outside
+white_haired,fringe_eye,white_haired.jpg row 1 left (W01),34/183,M,0.1858,0.05,white_haired.jpg row 1 right (whair),42/182,M,0.2308,within
+boy,forehead_covered,boy.jpg row 1 left (val27_front),1,E,1.0,0.13,boy.jpg row 1 right (boy),.91,E,0.91,within
+auburn,forehead_covered,auburn.jpg row 1 left (sheet30_front),.80,E,0.8,0.13,auburn.jpg row 1 right (girl),.67,E,0.67,within
+white_haired,forehead_covered,white_haired.jpg row 1 left (W01),.90,E,0.9,0.13,white_haired.jpg row 1 right (whair),.78,E,0.78,within
+boy,temple_sweep,boy.jpg row 1 left (val27_front),9/272,E,0.0331,0.055,boy.jpg row 1 right (boy),39/174,E,0.2241,outside
+auburn,temple_sweep,auburn.jpg row 1 left (sheet30_front),9/191,E,0.0471,0.055,auburn.jpg row 1 right (girl),42/182,E,0.2308,outside
+white_haired,temple_sweep,white_haired.jpg row 1 left (W01),15/183,E,0.082,0.055,white_haired.jpg row 1 right (whair),21/182,E,0.1154,within
+boy,hair_cheek_width,boy.jpg row 1 left (val27_front),0,M,0.0,0.12,boy.jpg row 1 right (boy),0,M,0.0,within
+auburn,hair_cheek_width,auburn.jpg row 1 left (sheet30_front),207/151,E,1.3709,0.12,auburn.jpg row 1 right (girl),179/120,E,1.4917,outside
+white_haired,hair_cheek_width,white_haired.jpg row 1 left (W01),225/137,E,1.6423,0.12,white_haired.jpg row 1 right (whair),246/118,E,2.0847,outside
+boy,hair_shoulder_width,boy.jpg row 1 left (val27_front),0,M,0.0,0.15,boy.jpg row 1 right (boy),0,M,0.0,within
+auburn,hair_shoulder_width,auburn.jpg row 6 left (sheet30_front),206/143,E,1.4406,0.15,auburn.jpg row 6 right (girl),181/120,E,1.5083,within
+white_haired,hair_shoulder_width,white_haired.jpg row 6 left (W01),182/108,E,1.6852,0.15,white_haired.jpg row 6 right (wcrop),274/144,E,1.9028,outside
+boy,lock_count,boy.jpg row 5 left (val27_back),10,E,10.0,2,boy.jpg row 5 right (boy),7,E,7.0,outside
+auburn,lock_count,auburn.jpg row 5 left (sheet30_back),9,E,9.0,2,auburn.jpg row 5 right (girl),8,E,8.0,within
+white_haired,lock_count,white_haired.jpg row 5 left (W17),8,E,8.0,2,white_haired.jpg row 5 right (wcrop),8,E,8.0,within
+boy,lock_spacing,boy.jpg row 5 left (val27_back),23/260,E,0.0885,0.04,boy.jpg row 5 right (boy),28/221,E,0.1267,within
+auburn,lock_spacing,auburn.jpg row 5 left (sheet30_back),24/223,E,0.1076,0.04,auburn.jpg row 5 right (girl),25/202,E,0.1238,within
+white_haired,lock_spacing,white_haired.jpg row 5 left (W17),27/233,E,0.1159,0.04,white_haired.jpg row 5 right (wcrop),30/277,E,0.1083,within
+boy,lock_end,boy.jpg row 5 left (val27_back),staggered short pointed tufts,E,staggered short pointed tufts,exact,boy.jpg row 5 right (boy),broad flat pointed leaves,E,broad flat pointed leaves,outside
+auburn,lock_end,auburn.jpg row 5 left (sheet30_back),separated corkscrew ends,E,separated corkscrew ends,exact,auburn.jpg row 5 right (girl),interlocking rope curls,E,interlocking rope curls,outside
+white_haired,lock_end,white_haired.jpg row 5 left (W17),fine tapered S waves,E,fine tapered S waves,exact,white_haired.jpg row 5 right (wcrop),broad blunt S waves,E,broad blunt S waves,outside
+boy,bun_count,boy.jpg row 1 left (val27_front),0,M,0.0,0,boy.jpg row 1 right (boy),0,M,0.0,within
+auburn,bun_count,auburn.jpg row 1 left (sheet30_front),1,M,1.0,0,auburn.jpg row 1 right (girl),1,M,1.0,within
+white_haired,bun_count,white_haired.jpg row 1 left (W01),2,M,2.0,0,white_haired.jpg row 1 right (whair),2,M,2.0,within
+boy,bun_width,boy.jpg row 1 left (val27_front),0,M,0.0,0.12,boy.jpg row 1 right (boy),0,M,0.0,within
+auburn,bun_width,auburn.jpg row 1 left (sheet30_front),119/151,E,0.7881,0.12,auburn.jpg row 1 right (girl),111/120,E,0.925,outside
+white_haired,bun_width,white_haired.jpg row 1 left (W01),96/137,M,0.7007,0.12,white_haired.jpg row 1 right (whair),87/118,E,0.7373,within
+boy,bun_x,boy.jpg row 1 left (val27_front),0,M,0.0,0.07,boy.jpg row 1 right (boy),0,M,0.0,within
+auburn,bun_x,auburn.jpg row 1 left (sheet30_front),-22/151,E,-0.1457,0.07,auburn.jpg row 1 right (girl),-6/120,E,-0.05,outside
+white_haired,bun_x,white_haired.jpg row 1 left (W01),-40/137,M,-0.292,0.07,white_haired.jpg row 1 right (whair),-48/118,E,-0.4068,outside
+boy,bun_y,boy.jpg row 1 left (val27_front),0,M,0.0,0.09,boy.jpg row 1 right (boy),0,M,0.0,within
+auburn,bun_y,auburn.jpg row 1 left (sheet30_front),150/191,E,0.7853,0.09,auburn.jpg row 1 right (girl),147/182,E,0.8077,within
+white_haired,bun_y,white_haired.jpg row 1 left (W01),118/183,M,0.6448,0.09,white_haired.jpg row 1 right (whair),126/182,E,0.6923,within
+boy,accessory,boy.jpg row 1 left (val27_front),none,E,none,exact,boy.jpg row 1 right (boy),none,E,none,within
+auburn,accessory,auburn.jpg row 1 left (sheet30_front),blue tie and pink flower on right,E,blue tie and pink flower on right,exact,auburn.jpg row 1 right (girl),blue tie and pink flower on right,E,blue tie and pink flower on right,within
+white_haired,accessory,white_haired.jpg row 1 left (W01),blue bow on left,E,blue bow on left,exact,white_haired.jpg row 1 right (whair),blue bow on left,E,blue bow on left,within
+boy,accessory_x,boy.jpg row 1 left (val27_front),0,M,0.0,0.07,boy.jpg row 1 right (boy),0,M,0.0,within
+auburn,accessory_x,auburn.jpg row 1 left (sheet30_front),45/151,M,0.298,0.07,auburn.jpg row 1 right (girl),49/120,E,0.4083,outside
+white_haired,accessory_x,white_haired.jpg row 1 left (W01),-75/137,M,-0.5474,0.07,white_haired.jpg row 1 right (whair),-53/118,E,-0.4492,outside
+boy,accessory_y,boy.jpg row 1 left (val27_front),0,M,0.0,0.08,boy.jpg row 1 right (boy),0,M,0.0,within
+auburn,accessory_y,auburn.jpg row 1 left (sheet30_front),129/191,M,0.6754,0.08,auburn.jpg row 1 right (girl),121/182,E,0.6648,within
+white_haired,accessory_y,white_haired.jpg row 1 left (W01),84/183,M,0.459,0.08,white_haired.jpg row 1 right (whair),92/182,E,0.5055,within
+boy,ear_cover_profile,profile.jpg row 1 left (B03),partial,E,partial,exact,profile.jpg row 1 right (boy),partial,E,partial,within
+auburn,ear_cover_profile,profile.jpg row 2 left (sheet30_left),rim only,E,rim only,exact,profile.jpg row 2 right (girl),full,E,full,outside
+white_haired,ear_cover_profile,profile.jpg row 3 left (s02_left),partial,E,partial,exact,profile.jpg row 3 right (wcrop),full,E,full,outside

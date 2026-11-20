@@ -1,0 +1,1443 @@
+{
+  "input_sha": "d704adc006e6f988b25566e232853038d886e259",
+  "units": "Image-plane working targets. M = manual measurement or resolved count; E = visual estimate, including categorical readings and occlusion. See README for landmarks.",
+  "definitions": {
+    "open_liner_h": {
+      "kind": "ratio",
+      "protocol": "Vertical dark band at midpoint of visible pigmented stroke / maximum clear eye opening height (H)."
+    },
+    "open_ink_span": {
+      "kind": "ratio",
+      "protocol": "Horizontal span of continuous pigmented upper margin / corner-to-corner eye width (W)."
+    },
+    "open_lash_count": {
+      "kind": "count",
+      "protocol": "Resolved separate tips on one upper lid. Ignore texture fibres and the liner ends."
+    },
+    "open_lash_positions": {
+      "kind": "category",
+      "protocol": "Root positions from temple (0) to nose (1), summarized by occupied quarters. Ignore liner ends."
+    },
+    "open_lash_length": {
+      "kind": "ratio",
+      "protocol": "Typical projecting tip length from ink edge / W. Zero for a smooth line."
+    },
+    "open_lash_curve": {
+      "kind": "category",
+      "protocol": "Direction and shape of resolved upper tips in the image plane."
+    },
+    "open_lower_lashes": {
+      "kind": "category",
+      "protocol": "Separate dark lower-lid projections visible at this image scale."
+    },
+    "open_colour": {
+      "kind": "category",
+      "protocol": "Visible lash-to-liner colour relation under pictured lighting."
+    },
+    "closed_ink_span": {
+      "kind": "ratio",
+      "protocol": "Projected dark continuous stroke width / closed corner separation. Use the longest continuous dark segment."
+    },
+    "closed_liner_h": {
+      "kind": "ratio",
+      "protocol": "Central dark thickness / expected neutral open H at this face scale. Infer neutral H by transferring the same eye in the neutral row using face scale. No central pigment = 0."
+    },
+    "closed_lash_count": {
+      "kind": "count",
+      "protocol": "Separate dark projections discernible on the blink stroke, excluding the stroke ends."
+    },
+    "closed_lash_positions": {
+      "kind": "category",
+      "protocol": "Root positions of separately visible blink tips, temple to nose."
+    },
+    "closed_lash_length": {
+      "kind": "ratio",
+      "protocol": "Typical separately visible blink tip length / closed corner separation."
+    },
+    "closed_curve": {
+      "kind": "category",
+      "protocol": "Shape of the visible dark line in a relaxed blink."
+    },
+    "closed_lower_lashes": {
+      "kind": "category",
+      "protocol": "Separate lower fringe distinguishable below closed seam."
+    },
+    "closed_colour": {
+      "kind": "category",
+      "protocol": "Colour of the visible blink stroke and separate tips, if resolved."
+    },
+    "ear_width": {
+      "kind": "ratio",
+      "protocol": "Visible front near pinna width / bare face width F; trace from outer rim to root (estimate root if covered)."
+    },
+    "ear_height": {
+      "kind": "ratio",
+      "protocol": "Visible vertical pinna extent / crown-to-chin Hh, excluding buns but including hairstyle crown."
+    },
+    "ear_top_eye": {
+      "kind": "ratio",
+      "protocol": "Ear top y minus iris-centre y / Hh (positive down)."
+    },
+    "ear_base_mouth": {
+      "kind": "ratio",
+      "protocol": "Lobule bottom y minus mouth centre y / Hh."
+    },
+    "ear_front_projection": {
+      "kind": "ratio",
+      "protocol": "Horizontal distance from cheek tangent at ear root to exposed outer rim / F. Zero when fully covered."
+    },
+    "ear_turn_projection": {
+      "kind": "ratio",
+      "protocol": "Near ear extension beyond local cheek contour at ear mid-height / projected face width. Ignore the hair contour."
+    },
+    "ear_outline": {
+      "kind": "category",
+      "protocol": "Visible near pinna outline on the turn."
+    },
+    "ear_fold": {
+      "kind": "category",
+      "protocol": "Interior shading/landmark on visible near ear, excluding glasses arm."
+    },
+    "ear_cover_front": {
+      "kind": "category",
+      "protocol": "Fraction of pinna hidden by hair; broad visual classes: rim only, partial, most, full."
+    },
+    "ear_cover_turn": {
+      "kind": "category",
+      "protocol": "Near pinna hair coverage on pictured oblique; far pinna may self-occlude."
+    },
+    "ear_cover_back": {
+      "kind": "category",
+      "protocol": "Hair overlap at rear, both sides combined."
+    },
+    "crown_above_skull": {
+      "kind": "ratio",
+      "protocol": "Highest main hair tip (exclude buns) above inferred smooth skull apex / Hh. Skull apex reconstructed by eye from temporal curvature."
+    },
+    "fringe_eye": {
+      "kind": "ratio",
+      "protocol": "Iris-centre y minus centreline fringe-tip y / Hh. Positive means fringe ends above eyes."
+    },
+    "forehead_covered": {
+      "kind": "ratio",
+      "protocol": "On facial midline, length of inferred skull-apex to brow interval covered by hair / full interval (cap at 1)."
+    },
+    "temple_sweep": {
+      "kind": "ratio",
+      "protocol": "Iris-centre y minus y of hair/skin edge at outer canthus x / Hh. Positive above eye."
+    },
+    "hair_cheek_width": {
+      "kind": "ratio",
+      "protocol": "Outermost hair-to-hair distance at y midway between pupils and mouth / F. Enter 0 if no hair crosses this line."
+    },
+    "hair_shoulder_width": {
+      "kind": "ratio",
+      "protocol": "Hair-to-hair span at shoulder seam level / F. Enter 0 if hair ends above this line."
+    },
+    "lock_count": {
+      "kind": "count",
+      "protocol": "Distinct major visible terminals across rear lower silhouette (one tip per separated major clump; ignore fibres and internal ridges)."
+    },
+    "lock_spacing": {
+      "kind": "ratio",
+      "protocol": "Typical horizontal spacing between adjacent tips / rear hair silhouette width at its widest, estimated across central group."
+    },
+    "lock_end": {
+      "kind": "category",
+      "protocol": "Shape of major rear terminals and flow into them."
+    },
+    "bun_count": {
+      "kind": "count",
+      "protocol": "Count distinct tied-up bun masses (lobes of auburn single knot count together)."
+    },
+    "bun_width": {
+      "kind": "ratio",
+      "protocol": "Outer width of one bun / F (auburn whole knot, white image-left bun). Zero for absent."
+    },
+    "bun_x": {
+      "kind": "ratio",
+      "protocol": "Signed horizontal bun centre from facial midline / F, right positive. For twins use image-left. Zero if absent."
+    },
+    "bun_y": {
+      "kind": "ratio",
+      "protocol": "Vertical bun centre above iris-centre line / Hh. Zero if absent."
+    },
+    "accessory": {
+      "kind": "category",
+      "protocol": "Hair accessory identity and side in front view (image coordinates)."
+    },
+    "accessory_x": {
+      "kind": "ratio",
+      "protocol": "Pink flower or blue bow centre x minus facial midline / F. Zero if absent."
+    },
+    "accessory_y": {
+      "kind": "ratio",
+      "protocol": "Eye line minus accessory centre y / Hh. Zero if absent."
+    },
+    "ear_cover_profile": {
+      "kind": "category",
+      "protocol": "Near pinna hair coverage in lateral view."
+    }
+  },
+  "sources": {
+    "B01": "assets/characters/boy_yellow_hoodie/references/uploads/02_higgsfield_B01_face_front_2026-11-18.webp",
+    "B02": "assets/characters/boy_yellow_hoodie/references/uploads/02_higgsfield_B02_face_threequarter_2026-11-18.webp",
+    "B03": "assets/characters/boy_yellow_hoodie/references/uploads/02_higgsfield_B03_face_profile_2026-11-18.webp",
+    "G01": "assets/characters/girl_auburn_bun_glasses/references/uploads/higgsfield_G01_face_front_rest_smile_2026-11-18.webp",
+    "G02": "assets/characters/girl_auburn_bun_glasses/references/uploads/higgsfield_G02_face_threequarter_2026-11-18.webp",
+    "val27_front": "assets/characters/boy_yellow_hoodie/references/views/val27_front.png",
+    "sheet30_front": "assets/characters/girl_auburn_bun_glasses/references/views/sheet30_front.png",
+    "W01": "assets/characters/girl_white_hair_blue_dress/references/uploads/01_identity_front.webp",
+    "W17": "assets/characters/girl_white_hair_blue_dress/references/uploads/17_higgsfield_W04_hair_back_waves_buns_2026-11-18.webp",
+    "boy": "docs/evaluation/characters/T-122/boy_sheet/boy_strict.jpg",
+    "boyexpr": "docs/evaluation/characters/T-122/boy_expressions_strict.jpg",
+    "girl": "docs/evaluation/characters/T-122/girl_sheet/girl_strict.jpg",
+    "girlexpr": "docs/evaluation/characters/T-122/girl_expressions_strict.jpg",
+    "white": "docs/evaluation/characters/T-126/body_face/face_front_pass2.jpg",
+    "wexpr": "docs/evaluation/characters/T-126/body_face/expressions_0.1.0_pass2.jpg",
+    "whair": "docs/evaluation/characters/T-126/hair/sheet/strict.jpg",
+    "wcrop": "docs/evaluation/characters/T-126/hair/sheet/hair_crops.jpg",
+    "sheet30_back": "assets/characters/girl_auburn_bun_glasses/references/views/sheet30_back.png",
+    "val27_back": "assets/characters/boy_yellow_hoodie/references/views/val27_back.png",
+    "f14_head_3q": "assets/characters/girl_white_hair_blue_dress/references/views/f14_head_3q.jpg",
+    "val27_side_right": "assets/characters/boy_yellow_hoodie/references/views/val27_side_right.png",
+    "sheet30_left": "assets/characters/girl_auburn_bun_glasses/references/views/sheet30_left.png",
+    "s02_left": "assets/characters/girl_white_hair_blue_dress/references/views/s02_left.jpg"
+  },
+  "evidence": {
+    "boy": [
+      {
+        "reference": [
+          "val27_front",
+          0,
+          0,
+          240
+        ],
+        "current": [
+          "boy",
+          597,
+          56,
+          205
+        ]
+      },
+      {
+        "reference": [
+          "B01",
+          305,
+          761,
+          350
+        ],
+        "current": [
+          "boy",
+          625,
+          1700,
+          57
+        ]
+      },
+      {
+        "reference": [
+          "boyexpr",
+          290,
+          1465,
+          110
+        ],
+        "current": [
+          "boyexpr",
+          786,
+          1462,
+          112
+        ]
+      },
+      {
+        "reference": [
+          "B02",
+          0,
+          440,
+          1450
+        ],
+        "current": [
+          "boy",
+          565,
+          1804,
+          244
+        ]
+      },
+      {
+        "reference": [
+          "val27_back",
+          0,
+          0,
+          240
+        ],
+        "current": [
+          "boy",
+          594,
+          1170,
+          210
+        ]
+      },
+      {
+        "reference": [
+          "val27_side_right",
+          0,
+          0,
+          200
+        ],
+        "current": [
+          "boy",
+          600,
+          813,
+          200
+        ]
+      }
+    ],
+    "auburn": [
+      {
+        "reference": [
+          "sheet30_front",
+          13,
+          0,
+          207
+        ],
+        "current": [
+          "girl",
+          605,
+          40,
+          194
+        ]
+      },
+      {
+        "reference": [
+          "G01",
+          243,
+          632,
+          445
+        ],
+        "current": [
+          "girl",
+          596,
+          1637,
+          93
+        ]
+      },
+      {
+        "reference": [
+          "girlexpr",
+          267,
+          1445,
+          110
+        ],
+        "current": [
+          "girlexpr",
+          788,
+          1450,
+          113
+        ]
+      },
+      {
+        "reference": [
+          "G02",
+          35,
+          540,
+          1200
+        ],
+        "current": [
+          "girl",
+          579,
+          1806,
+          241
+        ]
+      },
+      {
+        "reference": [
+          "sheet30_back",
+          0,
+          65,
+          218
+        ],
+        "current": [
+          "girl",
+          600,
+          1190,
+          200
+        ]
+      },
+      {
+        "reference": [
+          "sheet30_front",
+          0,
+          32,
+          230
+        ],
+        "current": [
+          "girl",
+          600,
+          79,
+          200
+        ]
+      }
+    ],
+    "white_haired": [
+      {
+        "reference": [
+          "W01",
+          153,
+          0,
+          600
+        ],
+        "current": [
+          "whair",
+          333,
+          67,
+          170
+        ]
+      },
+      {
+        "reference": [
+          "W01",
+          328,
+          292,
+          110
+        ],
+        "current": [
+          "white",
+          326,
+          57,
+          120
+        ]
+      },
+      {
+        "reference": [
+          "wexpr",
+          25,
+          533,
+          100
+        ],
+        "current": [
+          "wexpr",
+          205,
+          504,
+          105
+        ]
+      },
+      {
+        "reference": [
+          "f14_head_3q",
+          0,
+          90,
+          373
+        ],
+        "current": [
+          "wcrop",
+          600,
+          100,
+          600
+        ]
+      },
+      {
+        "reference": [
+          "W17",
+          0,
+          268,
+          896
+        ],
+        "current": [
+          "wcrop",
+          1800,
+          150,
+          600
+        ]
+      },
+      {
+        "reference": [
+          "W01",
+          80,
+          120,
+          760
+        ],
+        "current": [
+          "wcrop",
+          0,
+          150,
+          600
+        ]
+      }
+    ]
+  },
+  "characters": {
+    "boy": {
+      "open_liner_h": {
+        "value": 0.2381,
+        "tolerance": 0.04,
+        "mark": "M",
+        "source": "boy.jpg row 2 left (B01)",
+        "trace": "20/84"
+      },
+      "open_ink_span": {
+        "value": 1.099,
+        "tolerance": 0.12,
+        "mark": "M",
+        "source": "boy.jpg row 2 left (B01)",
+        "trace": "222/202"
+      },
+      "open_lash_count": {
+        "value": 0.0,
+        "tolerance": 1,
+        "mark": "M",
+        "source": "boy.jpg row 2 left (B01)",
+        "trace": "0"
+      },
+      "open_lash_positions": {
+        "value": "none",
+        "tolerance": "exact",
+        "mark": "E",
+        "source": "boy.jpg row 2 left (B01)",
+        "trace": "none"
+      },
+      "open_lash_length": {
+        "value": 0.0,
+        "tolerance": 0.025,
+        "mark": "M",
+        "source": "boy.jpg row 2 left (B01)",
+        "trace": "0"
+      },
+      "open_lash_curve": {
+        "value": "smooth bar",
+        "tolerance": "exact",
+        "mark": "E",
+        "source": "boy.jpg row 2 left (B01)",
+        "trace": "smooth bar"
+      },
+      "open_lower_lashes": {
+        "value": "none resolved",
+        "tolerance": "exact",
+        "mark": "E",
+        "source": "boy.jpg row 2 left (B01)",
+        "trace": "none resolved"
+      },
+      "open_colour": {
+        "value": "dark brown bar",
+        "tolerance": "exact",
+        "mark": "E",
+        "source": "boy.jpg row 2 left (B01)",
+        "trace": "dark brown bar"
+      },
+      "closed_ink_span": {
+        "value": 0.9537,
+        "tolerance": 0.15,
+        "mark": "E",
+        "source": "boy.jpg row 3 left (boyexpr)",
+        "trace": "103/108"
+      },
+      "closed_liner_h": {
+        "value": 0.186,
+        "tolerance": 0.07,
+        "mark": "E",
+        "source": "boy.jpg row 3 left (boyexpr)",
+        "trace": "8/43"
+      },
+      "closed_lash_count": {
+        "value": 0.0,
+        "tolerance": 1,
+        "mark": "E",
+        "source": "boy.jpg row 3 left (boyexpr)",
+        "trace": "0"
+      },
+      "closed_lash_positions": {
+        "value": "none resolved",
+        "tolerance": "exact",
+        "mark": "E",
+        "source": "boy.jpg row 3 left (boyexpr)",
+        "trace": "none resolved"
+      },
+      "closed_lash_length": {
+        "value": 0.0,
+        "tolerance": 0.03,
+        "mark": "E",
+        "source": "boy.jpg row 3 left (boyexpr)",
+        "trace": "0"
+      },
+      "closed_curve": {
+        "value": "continuous shallow U",
+        "tolerance": "exact",
+        "mark": "E",
+        "source": "boy.jpg row 3 left (boyexpr)",
+        "trace": "continuous shallow U"
+      },
+      "closed_lower_lashes": {
+        "value": "none resolved",
+        "tolerance": "exact",
+        "mark": "E",
+        "source": "boy.jpg row 3 left (boyexpr)",
+        "trace": "none resolved"
+      },
+      "closed_colour": {
+        "value": "dark brown",
+        "tolerance": "exact",
+        "mark": "E",
+        "source": "boy.jpg row 3 left (boyexpr)",
+        "trace": "dark brown"
+      },
+      "ear_width": {
+        "value": 0.1964,
+        "tolerance": 0.055,
+        "mark": "E",
+        "source": "boy.jpg row 1 left (val27_front)",
+        "trace": "33/168"
+      },
+      "ear_height": {
+        "value": 0.1728,
+        "tolerance": 0.045,
+        "mark": "M",
+        "source": "boy.jpg row 1 left (val27_front)",
+        "trace": "47/272"
+      },
+      "ear_top_eye": {
+        "value": -0.0257,
+        "tolerance": 0.045,
+        "mark": "E",
+        "source": "boy.jpg row 1 left (val27_front)",
+        "trace": "-7/272"
+      },
+      "ear_base_mouth": {
+        "value": -0.0441,
+        "tolerance": 0.045,
+        "mark": "E",
+        "source": "boy.jpg row 1 left (val27_front)",
+        "trace": "-12/272"
+      },
+      "ear_front_projection": {
+        "value": 0.1845,
+        "tolerance": 0.04,
+        "mark": "E",
+        "source": "boy.jpg row 1 left (val27_front)",
+        "trace": "31/168"
+      },
+      "ear_turn_projection": {
+        "value": 0.2229,
+        "tolerance": 0.06,
+        "mark": "E",
+        "source": "boy.jpg row 4 left (B02)",
+        "trace": "37/166"
+      },
+      "ear_outline": {
+        "value": "rounded cup",
+        "tolerance": "exact",
+        "mark": "E",
+        "source": "boy.jpg row 4 left (B02)",
+        "trace": "rounded cup"
+      },
+      "ear_fold": {
+        "value": "shallow hollow",
+        "tolerance": "exact",
+        "mark": "E",
+        "source": "boy.jpg row 4 left (B02)",
+        "trace": "shallow hollow"
+      },
+      "ear_cover_front": {
+        "value": "partial",
+        "tolerance": "exact",
+        "mark": "E",
+        "source": "boy.jpg row 1 left (val27_front)",
+        "trace": "partial"
+      },
+      "ear_cover_turn": {
+        "value": "partial",
+        "tolerance": "exact",
+        "mark": "E",
+        "source": "boy.jpg row 4 left (B02)",
+        "trace": "partial"
+      },
+      "ear_cover_back": {
+        "value": "most",
+        "tolerance": "exact",
+        "mark": "E",
+        "source": "boy.jpg row 5 left (val27_back)",
+        "trace": "most"
+      },
+      "crown_above_skull": {
+        "value": 0.2206,
+        "tolerance": 0.1,
+        "mark": "E",
+        "source": "boy.jpg row 1 left (val27_front)",
+        "trace": "60/272"
+      },
+      "fringe_eye": {
+        "value": 0.0588,
+        "tolerance": 0.05,
+        "mark": "M",
+        "source": "boy.jpg row 1 left (val27_front)",
+        "trace": "16/272"
+      },
+      "forehead_covered": {
+        "value": 1.0,
+        "tolerance": 0.13,
+        "mark": "E",
+        "source": "boy.jpg row 1 left (val27_front)",
+        "trace": "1"
+      },
+      "temple_sweep": {
+        "value": 0.0331,
+        "tolerance": 0.055,
+        "mark": "E",
+        "source": "boy.jpg row 1 left (val27_front)",
+        "trace": "9/272"
+      },
+      "hair_cheek_width": {
+        "value": 0.0,
+        "tolerance": 0.12,
+        "mark": "M",
+        "source": "boy.jpg row 1 left (val27_front)",
+        "trace": "0"
+      },
+      "hair_shoulder_width": {
+        "value": 0.0,
+        "tolerance": 0.15,
+        "mark": "M",
+        "source": "boy.jpg row 1 left (val27_front)",
+        "trace": "0"
+      },
+      "lock_count": {
+        "value": 10.0,
+        "tolerance": 2,
+        "mark": "E",
+        "source": "boy.jpg row 5 left (val27_back)",
+        "trace": "10"
+      },
+      "lock_spacing": {
+        "value": 0.0885,
+        "tolerance": 0.04,
+        "mark": "E",
+        "source": "boy.jpg row 5 left (val27_back)",
+        "trace": "23/260"
+      },
+      "lock_end": {
+        "value": "staggered short pointed tufts",
+        "tolerance": "exact",
+        "mark": "E",
+        "source": "boy.jpg row 5 left (val27_back)",
+        "trace": "staggered short pointed tufts"
+      },
+      "bun_count": {
+        "value": 0.0,
+        "tolerance": 0,
+        "mark": "M",
+        "source": "boy.jpg row 1 left (val27_front)",
+        "trace": "0"
+      },
+      "bun_width": {
+        "value": 0.0,
+        "tolerance": 0.12,
+        "mark": "M",
+        "source": "boy.jpg row 1 left (val27_front)",
+        "trace": "0"
+      },
+      "bun_x": {
+        "value": 0.0,
+        "tolerance": 0.07,
+        "mark": "M",
+        "source": "boy.jpg row 1 left (val27_front)",
+        "trace": "0"
+      },
+      "bun_y": {
+        "value": 0.0,
+        "tolerance": 0.09,
+        "mark": "M",
+        "source": "boy.jpg row 1 left (val27_front)",
+        "trace": "0"
+      },
+      "accessory": {
+        "value": "none",
+        "tolerance": "exact",
+        "mark": "E",
+        "source": "boy.jpg row 1 left (val27_front)",
+        "trace": "none"
+      },
+      "accessory_x": {
+        "value": 0.0,
+        "tolerance": 0.07,
+        "mark": "M",
+        "source": "boy.jpg row 1 left (val27_front)",
+        "trace": "0"
+      },
+      "accessory_y": {
+        "value": 0.0,
+        "tolerance": 0.08,
+        "mark": "M",
+        "source": "boy.jpg row 1 left (val27_front)",
+        "trace": "0"
+      },
+      "ear_cover_profile": {
+        "value": "partial",
+        "tolerance": "exact",
+        "mark": "E",
+        "source": "profile.jpg row 1 left (B03)",
+        "trace": "partial"
+      }
+    },
+    "auburn": {
+      "open_liner_h": {
+        "value": 0.0862,
+        "tolerance": 0.04,
+        "mark": "M",
+        "source": "auburn.jpg row 2 left (G01)",
+        "trace": "15/174"
+      },
+      "open_ink_span": {
+        "value": 1.0543,
+        "tolerance": 0.12,
+        "mark": "M",
+        "source": "auburn.jpg row 2 left (G01)",
+        "trace": "194/184"
+      },
+      "open_lash_count": {
+        "value": 4.0,
+        "tolerance": 1,
+        "mark": "E",
+        "source": "auburn.jpg row 2 left (G01)",
+        "trace": "4"
+      },
+      "open_lash_positions": {
+        "value": "outer half",
+        "tolerance": "exact",
+        "mark": "E",
+        "source": "auburn.jpg row 2 left (G01)",
+        "trace": "outer half"
+      },
+      "open_lash_length": {
+        "value": 0.0489,
+        "tolerance": 0.025,
+        "mark": "E",
+        "source": "auburn.jpg row 2 left (G01)",
+        "trace": "9/184"
+      },
+      "open_lash_curve": {
+        "value": "short tapered outward flicks",
+        "tolerance": "exact",
+        "mark": "E",
+        "source": "auburn.jpg row 2 left (G01)",
+        "trace": "short tapered outward flicks"
+      },
+      "open_lower_lashes": {
+        "value": "none resolved",
+        "tolerance": "exact",
+        "mark": "E",
+        "source": "auburn.jpg row 2 left (G01)",
+        "trace": "none resolved"
+      },
+      "open_colour": {
+        "value": "brown matching liner",
+        "tolerance": "exact",
+        "mark": "E",
+        "source": "auburn.jpg row 2 left (G01)",
+        "trace": "brown matching liner"
+      },
+      "closed_ink_span": {
+        "value": 0.9244,
+        "tolerance": 0.15,
+        "mark": "E",
+        "source": "auburn.jpg row 3 left (girlexpr)",
+        "trace": "110/119"
+      },
+      "closed_liner_h": {
+        "value": 0.125,
+        "tolerance": 0.07,
+        "mark": "E",
+        "source": "auburn.jpg row 3 left (girlexpr)",
+        "trace": "9/72"
+      },
+      "closed_lash_count": {
+        "value": 0.0,
+        "tolerance": 1,
+        "mark": "E",
+        "source": "auburn.jpg row 3 left (girlexpr)",
+        "trace": "0"
+      },
+      "closed_lash_positions": {
+        "value": "none resolved",
+        "tolerance": "exact",
+        "mark": "E",
+        "source": "auburn.jpg row 3 left (girlexpr)",
+        "trace": "none resolved"
+      },
+      "closed_lash_length": {
+        "value": 0.0,
+        "tolerance": 0.03,
+        "mark": "E",
+        "source": "auburn.jpg row 3 left (girlexpr)",
+        "trace": "0"
+      },
+      "closed_curve": {
+        "value": "continuous shallow U",
+        "tolerance": "exact",
+        "mark": "E",
+        "source": "auburn.jpg row 3 left (girlexpr)",
+        "trace": "continuous shallow U"
+      },
+      "closed_lower_lashes": {
+        "value": "none resolved",
+        "tolerance": "exact",
+        "mark": "E",
+        "source": "auburn.jpg row 3 left (girlexpr)",
+        "trace": "none resolved"
+      },
+      "closed_colour": {
+        "value": "dark brown",
+        "tolerance": "exact",
+        "mark": "E",
+        "source": "auburn.jpg row 3 left (girlexpr)",
+        "trace": "dark brown"
+      },
+      "ear_width": {
+        "value": 0.1589,
+        "tolerance": 0.055,
+        "mark": "E",
+        "source": "auburn.jpg row 1 left (sheet30_front)",
+        "trace": "24/151"
+      },
+      "ear_height": {
+        "value": 0.2199,
+        "tolerance": 0.045,
+        "mark": "E",
+        "source": "auburn.jpg row 1 left (sheet30_front)",
+        "trace": "42/191"
+      },
+      "ear_top_eye": {
+        "value": -0.0262,
+        "tolerance": 0.045,
+        "mark": "E",
+        "source": "auburn.jpg row 1 left (sheet30_front)",
+        "trace": "-5/191"
+      },
+      "ear_base_mouth": {
+        "value": 0.0209,
+        "tolerance": 0.045,
+        "mark": "E",
+        "source": "auburn.jpg row 1 left (sheet30_front)",
+        "trace": "4/191"
+      },
+      "ear_front_projection": {
+        "value": 0.1325,
+        "tolerance": 0.04,
+        "mark": "E",
+        "source": "auburn.jpg row 1 left (sheet30_front)",
+        "trace": "20/151"
+      },
+      "ear_turn_projection": {
+        "value": 0.2557,
+        "tolerance": 0.06,
+        "mark": "E",
+        "source": "auburn.jpg row 4 left (G02)",
+        "trace": "56/219"
+      },
+      "ear_outline": {
+        "value": "rounded cup",
+        "tolerance": "exact",
+        "mark": "E",
+        "source": "auburn.jpg row 4 left (G02)",
+        "trace": "rounded cup"
+      },
+      "ear_fold": {
+        "value": "curved inner rim and bowl",
+        "tolerance": "exact",
+        "mark": "E",
+        "source": "auburn.jpg row 4 left (G02)",
+        "trace": "curved inner rim and bowl"
+      },
+      "ear_cover_front": {
+        "value": "partial",
+        "tolerance": "exact",
+        "mark": "E",
+        "source": "auburn.jpg row 1 left (sheet30_front)",
+        "trace": "partial"
+      },
+      "ear_cover_turn": {
+        "value": "rim only",
+        "tolerance": "exact",
+        "mark": "E",
+        "source": "auburn.jpg row 4 left (G02)",
+        "trace": "rim only"
+      },
+      "ear_cover_back": {
+        "value": "full",
+        "tolerance": "exact",
+        "mark": "E",
+        "source": "auburn.jpg row 5 left (sheet30_back)",
+        "trace": "full"
+      },
+      "crown_above_skull": {
+        "value": 0.1257,
+        "tolerance": 0.1,
+        "mark": "E",
+        "source": "auburn.jpg row 1 left (sheet30_front)",
+        "trace": "24/191"
+      },
+      "fringe_eye": {
+        "value": 0.288,
+        "tolerance": 0.05,
+        "mark": "M",
+        "source": "auburn.jpg row 1 left (sheet30_front)",
+        "trace": "55/191"
+      },
+      "forehead_covered": {
+        "value": 0.8,
+        "tolerance": 0.13,
+        "mark": "E",
+        "source": "auburn.jpg row 1 left (sheet30_front)",
+        "trace": ".80"
+      },
+      "temple_sweep": {
+        "value": 0.0471,
+        "tolerance": 0.055,
+        "mark": "E",
+        "source": "auburn.jpg row 1 left (sheet30_front)",
+        "trace": "9/191"
+      },
+      "hair_cheek_width": {
+        "value": 1.3709,
+        "tolerance": 0.12,
+        "mark": "E",
+        "source": "auburn.jpg row 1 left (sheet30_front)",
+        "trace": "207/151"
+      },
+      "hair_shoulder_width": {
+        "value": 1.4406,
+        "tolerance": 0.15,
+        "mark": "E",
+        "source": "auburn.jpg row 6 left (sheet30_front)",
+        "trace": "206/143"
+      },
+      "lock_count": {
+        "value": 9.0,
+        "tolerance": 2,
+        "mark": "E",
+        "source": "auburn.jpg row 5 left (sheet30_back)",
+        "trace": "9"
+      },
+      "lock_spacing": {
+        "value": 0.1076,
+        "tolerance": 0.04,
+        "mark": "E",
+        "source": "auburn.jpg row 5 left (sheet30_back)",
+        "trace": "24/223"
+      },
+      "lock_end": {
+        "value": "separated corkscrew ends",
+        "tolerance": "exact",
+        "mark": "E",
+        "source": "auburn.jpg row 5 left (sheet30_back)",
+        "trace": "separated corkscrew ends"
+      },
+      "bun_count": {
+        "value": 1.0,
+        "tolerance": 0,
+        "mark": "M",
+        "source": "auburn.jpg row 1 left (sheet30_front)",
+        "trace": "1"
+      },
+      "bun_width": {
+        "value": 0.7881,
+        "tolerance": 0.12,
+        "mark": "E",
+        "source": "auburn.jpg row 1 left (sheet30_front)",
+        "trace": "119/151"
+      },
+      "bun_x": {
+        "value": -0.1457,
+        "tolerance": 0.07,
+        "mark": "E",
+        "source": "auburn.jpg row 1 left (sheet30_front)",
+        "trace": "-22/151"
+      },
+      "bun_y": {
+        "value": 0.7853,
+        "tolerance": 0.09,
+        "mark": "E",
+        "source": "auburn.jpg row 1 left (sheet30_front)",
+        "trace": "150/191"
+      },
+      "accessory": {
+        "value": "blue tie and pink flower on right",
+        "tolerance": "exact",
+        "mark": "E",
+        "source": "auburn.jpg row 1 left (sheet30_front)",
+        "trace": "blue tie and pink flower on right"
+      },
+      "accessory_x": {
+        "value": 0.298,
+        "tolerance": 0.07,
+        "mark": "M",
+        "source": "auburn.jpg row 1 left (sheet30_front)",
+        "trace": "45/151"
+      },
+      "accessory_y": {
+        "value": 0.6754,
+        "tolerance": 0.08,
+        "mark": "M",
+        "source": "auburn.jpg row 1 left (sheet30_front)",
+        "trace": "129/191"
+      },
+      "ear_cover_profile": {
+        "value": "rim only",
+        "tolerance": "exact",
+        "mark": "E",
+        "source": "profile.jpg row 2 left (sheet30_left)",
+        "trace": "rim only"
+      }
+    },
+    "white_haired": {
+      "open_liner_h": {
+        "value": 0.0745,
+        "tolerance": 0.04,
+        "mark": "M",
+        "source": "white_haired.jpg row 2 left (W01)",
+        "trace": "12/161"
+      },
+      "open_ink_span": {
+        "value": 0.9831,
+        "tolerance": 0.12,
+        "mark": "M",
+        "source": "white_haired.jpg row 2 left (W01)",
+        "trace": "174/177"
+      },
+      "open_lash_count": {
+        "value": 5.0,
+        "tolerance": 1,
+        "mark": "E",
+        "source": "white_haired.jpg row 2 left (W01)",
+        "trace": "5"
+      },
+      "open_lash_positions": {
+        "value": "outer half",
+        "tolerance": "exact",
+        "mark": "E",
+        "source": "white_haired.jpg row 2 left (W01)",
+        "trace": "outer half"
+      },
+      "open_lash_length": {
+        "value": 0.0621,
+        "tolerance": 0.025,
+        "mark": "E",
+        "source": "white_haired.jpg row 2 left (W01)",
+        "trace": "11/177"
+      },
+      "open_lash_curve": {
+        "value": "short tapered outward flicks",
+        "tolerance": "exact",
+        "mark": "E",
+        "source": "white_haired.jpg row 2 left (W01)",
+        "trace": "short tapered outward flicks"
+      },
+      "open_lower_lashes": {
+        "value": "none resolved",
+        "tolerance": "exact",
+        "mark": "E",
+        "source": "white_haired.jpg row 2 left (W01)",
+        "trace": "none resolved"
+      },
+      "open_colour": {
+        "value": "brown matching liner",
+        "tolerance": "exact",
+        "mark": "E",
+        "source": "white_haired.jpg row 2 left (W01)",
+        "trace": "brown matching liner"
+      },
+      "closed_ink_span": {
+        "value": 0.9706,
+        "tolerance": 0.15,
+        "mark": "E",
+        "source": "white_haired.jpg row 3 left (wexpr)",
+        "trace": "99/102"
+      },
+      "closed_liner_h": {
+        "value": 0.0921,
+        "tolerance": 0.07,
+        "mark": "E",
+        "source": "white_haired.jpg row 3 left (wexpr)",
+        "trace": "7/76"
+      },
+      "closed_lash_count": {
+        "value": 1.0,
+        "tolerance": 1,
+        "mark": "E",
+        "source": "white_haired.jpg row 3 left (wexpr)",
+        "trace": "1"
+      },
+      "closed_lash_positions": {
+        "value": "outer quarter",
+        "tolerance": "exact",
+        "mark": "E",
+        "source": "white_haired.jpg row 3 left (wexpr)",
+        "trace": "outer quarter"
+      },
+      "closed_lash_length": {
+        "value": 0.0392,
+        "tolerance": 0.03,
+        "mark": "E",
+        "source": "white_haired.jpg row 3 left (wexpr)",
+        "trace": "4/102"
+      },
+      "closed_curve": {
+        "value": "continuous shallow U",
+        "tolerance": "exact",
+        "mark": "E",
+        "source": "white_haired.jpg row 3 left (wexpr)",
+        "trace": "continuous shallow U"
+      },
+      "closed_lower_lashes": {
+        "value": "none resolved",
+        "tolerance": "exact",
+        "mark": "E",
+        "source": "white_haired.jpg row 3 left (wexpr)",
+        "trace": "none resolved"
+      },
+      "closed_colour": {
+        "value": "dark brown matching liner",
+        "tolerance": "exact",
+        "mark": "E",
+        "source": "white_haired.jpg row 3 left (wexpr)",
+        "trace": "dark brown matching liner"
+      },
+      "ear_width": {
+        "value": 0.1533,
+        "tolerance": 0.055,
+        "mark": "E",
+        "source": "white_haired.jpg row 1 left (W01)",
+        "trace": "21/137"
+      },
+      "ear_height": {
+        "value": 0.2077,
+        "tolerance": 0.045,
+        "mark": "M",
+        "source": "white_haired.jpg row 1 left (W01)",
+        "trace": "38/183"
+      },
+      "ear_top_eye": {
+        "value": -0.0328,
+        "tolerance": 0.045,
+        "mark": "E",
+        "source": "white_haired.jpg row 1 left (W01)",
+        "trace": "-6/183"
+      },
+      "ear_base_mouth": {
+        "value": 0.0219,
+        "tolerance": 0.045,
+        "mark": "E",
+        "source": "white_haired.jpg row 1 left (W01)",
+        "trace": "4/183"
+      },
+      "ear_front_projection": {
+        "value": 0.1168,
+        "tolerance": 0.04,
+        "mark": "E",
+        "source": "white_haired.jpg row 1 left (W01)",
+        "trace": "16/137"
+      },
+      "ear_turn_projection": {
+        "value": 0.1916,
+        "tolerance": 0.06,
+        "mark": "E",
+        "source": "white_haired.jpg row 4 left (f14_head_3q)",
+        "trace": "32/167"
+      },
+      "ear_outline": {
+        "value": "rounded cup",
+        "tolerance": "exact",
+        "mark": "E",
+        "source": "white_haired.jpg row 4 left (f14_head_3q)",
+        "trace": "rounded cup"
+      },
+      "ear_fold": {
+        "value": "shallow hollow",
+        "tolerance": "exact",
+        "mark": "E",
+        "source": "white_haired.jpg row 4 left (f14_head_3q)",
+        "trace": "shallow hollow"
+      },
+      "ear_cover_front": {
+        "value": "partial",
+        "tolerance": "exact",
+        "mark": "E",
+        "source": "white_haired.jpg row 1 left (W01)",
+        "trace": "partial"
+      },
+      "ear_cover_turn": {
+        "value": "partial",
+        "tolerance": "exact",
+        "mark": "E",
+        "source": "white_haired.jpg row 4 left (f14_head_3q)",
+        "trace": "partial"
+      },
+      "ear_cover_back": {
+        "value": "full",
+        "tolerance": "exact",
+        "mark": "E",
+        "source": "white_haired.jpg row 5 left (W17)",
+        "trace": "full"
+      },
+      "crown_above_skull": {
+        "value": 0.1202,
+        "tolerance": 0.1,
+        "mark": "E",
+        "source": "white_haired.jpg row 1 left (W01)",
+        "trace": "22/183"
+      },
+      "fringe_eye": {
+        "value": 0.1858,
+        "tolerance": 0.05,
+        "mark": "M",
+        "source": "white_haired.jpg row 1 left (W01)",
+        "trace": "34/183"
+      },
+      "forehead_covered": {
+        "value": 0.9,
+        "tolerance": 0.13,
+        "mark": "E",
+        "source": "white_haired.jpg row 1 left (W01)",
+        "trace": ".90"
+      },
+      "temple_sweep": {
+        "value": 0.082,
+        "tolerance": 0.055,
+        "mark": "E",
+        "source": "white_haired.jpg row 1 left (W01)",
+        "trace": "15/183"
+      },
+      "hair_cheek_width": {
+        "value": 1.6423,
+        "tolerance": 0.12,
+        "mark": "E",
+        "source": "white_haired.jpg row 1 left (W01)",
+        "trace": "225/137"
+      },
+      "hair_shoulder_width": {
+        "value": 1.6852,
+        "tolerance": 0.15,
+        "mark": "E",
+        "source": "white_haired.jpg row 6 left (W01)",
+        "trace": "182/108"
+      },
+      "lock_count": {
+        "value": 8.0,
+        "tolerance": 2,
+        "mark": "E",
+        "source": "white_haired.jpg row 5 left (W17)",
+        "trace": "8"
+      },
+      "lock_spacing": {
+        "value": 0.1159,
+        "tolerance": 0.04,
+        "mark": "E",
+        "source": "white_haired.jpg row 5 left (W17)",
+        "trace": "27/233"
+      },
+      "lock_end": {
+        "value": "fine tapered S waves",
+        "tolerance": "exact",
+        "mark": "E",
+        "source": "white_haired.jpg row 5 left (W17)",
+        "trace": "fine tapered S waves"
+      },
+      "bun_count": {
+        "value": 2.0,
+        "tolerance": 0,
+        "mark": "M",
+        "source": "white_haired.jpg row 1 left (W01)",
+        "trace": "2"
+      },
+      "bun_width": {
+        "value": 0.7007,
+        "tolerance": 0.12,
+        "mark": "M",
+        "source": "white_haired.jpg row 1 left (W01)",
+        "trace": "96/137"
+      },
+      "bun_x": {
+        "value": -0.292,
+        "tolerance": 0.07,
+        "mark": "M",
+        "source": "white_haired.jpg row 1 left (W01)",
+        "trace": "-40/137"
+      },
+      "bun_y": {
+        "value": 0.6448,
+        "tolerance": 0.09,
+        "mark": "M",
+        "source": "white_haired.jpg row 1 left (W01)",
+        "trace": "118/183"
+      },
+      "accessory": {
+        "value": "blue bow on left",
+        "tolerance": "exact",
+        "mark": "E",
+        "source": "white_haired.jpg row 1 left (W01)",
+        "trace": "blue bow on left"
+      },
+      "accessory_x": {
+        "value": -0.5474,
+        "tolerance": 0.07,
+        "mark": "M",
+        "source": "white_haired.jpg row 1 left (W01)",
+        "trace": "-75/137"
+      },
+      "accessory_y": {
+        "value": 0.459,
+        "tolerance": 0.08,
+        "mark": "M",
+        "source": "white_haired.jpg row 1 left (W01)",
+        "trace": "84/183"
+      },
+      "ear_cover_profile": {
+        "value": "partial",
+        "tolerance": "exact",
+        "mark": "E",
+        "source": "profile.jpg row 3 left (s02_left)",
+        "trace": "partial"
+      }
+    }
+  },
+  "profile_evidence": {
+    "boy": {
+      "reference": [
+        "B03",
+        380,
+        450,
+        1070
+      ],
+      "current": [
+        "boy",
+        600,
+        813,
+        200
+      ]
+    },
+    "auburn": {
+      "reference": [
+        "sheet30_left",
+        0,
+        68,
+        157
+      ],
+      "current": [
+        "girl",
+        606,
+        799,
+        193
+      ]
+    },
+    "white_haired": {
+      "reference": [
+        "s02_left",
+        0,
+        32,
+        95
+      ],
+      "current": [
+        "wcrop",
+        1200,
+        90,
+        600
+      ]
+    }
+  }
+}
