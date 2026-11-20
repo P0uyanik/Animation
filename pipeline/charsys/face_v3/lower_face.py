@@ -8,7 +8,8 @@ any feature is placed), and all default to 0 (absent = unchanged):
                         (default: the mouth line), radius cheek_pad_radius_m, vertically stretched by cheek_pad_height;
                         direction between outward (radial from the head axis, horizontal) and forward
                         (cheek_pad_forward 0..1); nothing moves above cheek_pad_top_below_eye_m (default 0.03, the
-                        eye region keeps its skin)
+                        eye region keeps its skin); the pad fades in below that line over cheek_pad_top_fade_m
+                        (default 0.015; T-168: a longer fade avoids a ledge under the eye in 3/4 views)
   jaw_round_m           the jaw line fills out sideways and down between the chin and the jaw corner: a band around
                         jaw_below_eye_m (default: chin_below_eye_m - 0.01), height jaw_band_m, peak at jaw_x of the
                         face half width there; jaw_down (0..1) is the downward share of the motion
@@ -40,7 +41,7 @@ def shape_lower_face(head, ctx, cfg, ex, ez, z_mouth, z_chin):
         zc = ez - _f(cfg, "cheek_pad_below_eye_m", ez - z_mouth)
         # nothing moves above cheek_pad_top_below_eye_m (the eyes, lids and socket keep their skin)
         zt = ez - _f(cfg, "cheek_pad_top_below_eye_m", 0.03)
-        u = np.clip((zt - p[:, 2]) / 0.015, 0.0, 1.0)
+        u = np.clip((zt - p[:, 2]) / _f(cfg, "cheek_pad_top_fade_m", 0.015), 0.0, 1.0)
         top = u * u * (3 - 2 * u)
         dirv = rad_dir * (1 - fwd) + np.array([0.0, -1.0, 0.0]) * fwd
         dirv /= np.maximum(np.linalg.norm(dirv, axis=1, keepdims=True), 1e-9)

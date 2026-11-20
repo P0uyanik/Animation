@@ -1,0 +1,28 @@
+{
+ "note": "T-168 candidate (opt-in, on the boy 2.3.0 spec): smooth side/3/4 face contour and an upturned nose. Not a version; nothing current changes.",
+ "override": {
+  "face": {
+   "nose": {
+    "type": "upturned",
+    "size_m": 0.013,
+    "height_m": 0.0055,
+    "bridge_m": 0.018,
+    "under_m": 0.009,
+    "tip_up_m": 0.001,
+    "tip_power": 1.0
+   },
+   "shape": {
+    "cheek_fullness_m": 0.004,
+    "lower_face_recede_m": 0.008,
+    "recede_from_below_eye_m": 0.025,
+    "lower_face": {
+     "cheek_pad_m": 0.01,
+     "cheek_pad_radius_m": 0.06,
+     "cheek_pad_below_eye_m": 0.045,
+     "cheek_pad_top_fade_m": 0.045,
+     "cheek_pad_top_below_eye_m": 0.012
+    }
+   }
+  }
+ }
+}
