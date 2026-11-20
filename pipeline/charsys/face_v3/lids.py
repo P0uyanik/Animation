@@ -347,10 +347,63 @@ def fit_closed_lids(up, lash, T, ecfg, r, fit, close_key, closed_thickness_m=Non
                 rep["keys"][k.name] = round(float(shift.max()), 5)
         ob.data.update()
         rep.setdefault("shift_max_m", {})[ob.name] = round(moved, 5)
+    fill = _skin_closed_fill(up, close_key, elev, frame_coords, a_close)  # T-156 (opt-in by socket.closed_fill)
+    if fill:
+        rep["skin_fill"] = fill
     if fit.get("lash_curve") and lash is not None:  # T-137 (opt-in): the closed eye shows a dark lash curve
         rep["lash_curve"] = curve_closed_lash(lash, T, r, fit["lash_curve"], a_close,
                                               _f(ecfg.get("lids"), "lower_edge_deg", -45.0))
     return rep
+
+
+def _skin_closed_fill(up, close_key, elev, frame_coords, a_close):
+    """T-156 (opt-in: only where face_v3.socket stored "ps_socket_fill.<side>" on a mesh, spec ...socket.closed_fill;
+    without that attribute nothing is read or written). The stored displacement closes the socket opening in the
+    skin. It is added to the skin's key of every upper-lid key that closes the eye fully (median closing rotation
+    >= 0.95 of the close key's): Blink, the sided blink and winks. The skin must not close before the lid arrives, so
+    the key gets in-betweens, which face_generic.add_inbetween_drivers plays piecewise: a key the skin did not have
+    gets an empty "<key>@75" (the fill then runs over the last quarter of the control); a key it had gets
+    "<key>@25/50/75" as that fraction of its motion (unchanged, linear) and the fill on top of the full key. The
+    attribute is removed. Returns {key: max displacement} or None."""
+    import bpy
+    import numpy as np
+    side = close_key.rsplit(".", 1)[-1]
+    name = f"ps_socket_fill.{side}"
+    head = next((o for o in bpy.data.objects if o.type == "MESH" and name in o.data.attributes), None)
+    if head is None:
+        return None
+    me = head.data
+    n = len(me.vertices)
+    disp = np.empty(n * 3)
+    me.attributes[name].data.foreach_get("vector", disp)
+    me.attributes.remove(me.attributes[name])
+    if me.shape_keys is None:
+        head.shape_key_add(name="Basis")
+    kb = me.shape_keys.key_blocks
+    base = np.empty(n * 3)
+    kb[0].data.foreach_get("co", base)
+    kb_up = up.data.shape_keys.key_blocks
+    th0 = elev(frame_coords(up, kb_up[0].data))
+    out = {}
+    for k in list(kb_up[1:]):
+        if "@" in k.name or float(np.median(th0 - elev(frame_coords(up, k.data)))) < 0.95 * a_close:
+            continue
+        if k.name not in kb:
+            for nm in (f"{k.name}@75", k.name):
+                head.shape_key_add(name=nm).value = 0.0
+        elif not any(b.name.startswith(k.name + "@") for b in kb):
+            cur = np.empty(n * 3)
+            kb[k.name].data.foreach_get("co", cur)
+            for f in (25, 50, 75):
+                nk = head.shape_key_add(name=f"{k.name}@{f}")
+                nk.value = 0.0
+                nk.data.foreach_set("co", base + (cur - base) * (f / 100.0))
+        cur = np.empty(n * 3)
+        kb[k.name].data.foreach_get("co", cur)
+        kb[k.name].data.foreach_set("co", cur + disp)
+        out[k.name] = round(float(np.abs(disp).max()), 5)
+    me.update()
+    return out
 
 
 def curve_closed_lash(lash, T, r, cfg, a_close, seam_deg):
