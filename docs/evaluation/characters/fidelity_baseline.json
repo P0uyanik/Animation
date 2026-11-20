@@ -23,16 +23,16 @@
       }
     },
     "girl_auburn_bun_glasses": {
-      "score": 64.1303,
-      "build": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.13.0.spec.json",
+      "score": 63.4013,
+      "build": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.14.0.spec.json",
       "overrides": [],
-      "source": "docs/evaluation/characters/T-131/fidelity/girl_auburn_bun_glasses/fidelity.json",
+      "source": "docs/evaluation/characters/T-155/fidelity/girl_auburn_bun_glasses/fidelity.json",
       "rebaseline": {
-        "task": "T-131",
-        "reason": "owner decision (docs/process/OWNER_DECISIONS.md 2026-11-19): Owner 2026-11-19 (~15:05Z, \"approve 2.2.0 and 0.13.0 as current\"): boy 2.2.0 and girl 0.13.0 become current. Fidelity score drop owner-accepted (boy 2.1.0 67.72 -> 2.2.0 67.25, girl 0.12.0 65.01 -> 0.13.0 64.13): the gains are the lid colour, the lens shelf and the expressions, which the score does not measure (see T-129).",
-        "previous_version": "0.12.0",
-        "previous_score": 65.0136,
-        "previous_source": "docs/evaluation/characters/T-094/fidelity/girl_auburn_bun_glasses/fidelity.json"
+        "task": "T-155",
+        "reason": "owner decision (docs/process/OWNER_DECISIONS.md 2026-11-20 ~23:11Z + ~23:40Z): release R3 as boy 2.3.0, girl 0.14.0 and third 0.1.0 and make them CURRENT",
+        "previous_version": "0.13.0",
+        "previous_score": 64.1303,
+        "previous_source": "docs/evaluation/characters/T-131/fidelity/girl_auburn_bun_glasses/fidelity.json"
       }
     }
   }
