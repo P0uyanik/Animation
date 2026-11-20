@@ -595,3 +595,15 @@ Adopting it as default needs the owner. NOT approved: review page, prop library,
 9. New task: make girl 0.13.0's build deterministic (ears/upper lids differ in ~half of 9 runs); root cause, regression
    tests (repeated builds identical), no intended-geometry change; check boy and third character → T-158 (Opus 5.5).
 10. Let T-141 finish; T-144 (A3) PLAN ONLY when a slot is free.
+
+## 2026-11-20 ~07:20Z — Hair round 6 on the base groom system (relayed by the original Supervisor)
+New task T-160 (Fable 5.2): all three characters vs refs, base groom system first (shape/silhouette at shot size).
+Boy: crown height, staggered whorl petals with dark channels (val27 back, B04/B05), keep pickup sightline under fringe.
+Auburn girl: lower outer sweeps (less bare arc above brows), separate tapered ringlet ends (ref_30, G04/G06), bun with
+wrapped strands, flower readable from front. Third girl: softer, less rope-like locks with tapered tips, softer fringe
+edge, buns with wrapped strands, bow seat (refs 01/02/07/17_W04). Inputs: T-116 hair section, T-133 review, T-118/T-126b
+readiness notes. Opt-in overrides; strict sheets + 100% hair crops (front, 3/4, back) + turntable/motion flicker check
+(T-125); folds into next versions. NOT in scope: T-141 hair curves; T-141b NOT approved (owner to discuss); T-141 may
+merge as an opt-in tool once green. Fringe coordination: T-160 owns the fringe; T-156 (eyes/lashes) does not edit it.
+Also pending for the owner: T-144 A3 plan `t-144-claude-retire-versions@8a34069` docs/evaluation/T-144/PLAN.md, options
+(a) registry-only retire + named archival-build allowlist (recommended), (b) file comparisons (weakens checks), (c) defer.
