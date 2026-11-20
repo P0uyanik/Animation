@@ -97,6 +97,16 @@ def test_inventory() -> None:
         command += ["--before", "HEAD"]
     proc = subprocess.run(command, cwd=ROOT, capture_output=True, text=True)
     assert proc.returncode == 0, proc.stdout + proc.stderr
+    if have:  # T-158: a unit added after T-127 but not listed in added_after_t127 still fails
+        data = json.loads(check_all.BLENDER_SHARDS_FILE.read_text(encoding="utf-8"))
+        assert data.get("added_after_t127"), "expected listed added units"
+        for listed in (data["added_after_t127"][1:], ["nope"]):
+            data_unlisted = dict(data, added_after_t127=listed)
+            with tempfile.TemporaryDirectory() as tmp:
+                path = Path(tmp) / "shards.json"
+                path.write_text(json.dumps(data_unlisted), encoding="utf-8")
+                bad = subprocess.run(command + ["--shards", str(path)], cwd=ROOT, capture_output=True, text=True)
+            assert bad.returncode == 1 and "FAIL" in bad.stdout, (listed, bad.stdout + bad.stderr)
 
 
 if __name__ == "__main__":
