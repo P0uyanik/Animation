@@ -1,0 +1,93 @@
+{
+ "character": "girl",
+ "frames": 8,
+ "deg_per_frame": 2.0,
+ "start_yaw_deg": 150.0,
+ "samples": 16,
+ "px": [
+  400,
+  360
+ ],
+ "framing": {
+  "target": [
+   0.0,
+   0.0,
+   0.8
+  ],
+  "frame_height_m": 0.76,
+  "aspect": 0.9
+ },
+ "thresholds": {
+  "held_noise": {
+   "default": 0.03,
+   "background": 0.002,
+   "hair": 0.056,
+   "fibres": 0.045,
+   "skin": 0.027,
+   "cloth": 0.021
+  },
+  "flip_share": {
+   "default": 0.3,
+   "background": 0.01,
+   "hair": 0.405,
+   "fibres": 0.384,
+   "skin": 0.18,
+   "cloth": 0.161
+  },
+  "tile_flip_share": {
+   "default": 0.6,
+   "hair": 0.88,
+   "fibres": 0.82
+  }
+ },
+ "columns": {
+  "hair_r7": {
+   "blend": "../../../tmp/claude-0/-home-user/1fc65274-aab6-5ec0-b61a-8034f1dcb61c/scratchpad/b/girl_r7/girl_auburn_bun_glasses_master.blend",
+   "issues": [],
+   "stats": {
+    "background": {
+     "frames": 6,
+     "motion_compensated": true,
+     "held_share": 0.991,
+     "denoised_noise_median": 0.0,
+     "denoised_noise_max": 0.0,
+     "denoised_flip_share_median": 0.00151,
+     "denoised_flip_share_max": 0.00164,
+     "noisy_noise_median": 0.0,
+     "noisy_noise_max": 0.0,
+     "noisy_flip_share_median": 0.00282,
+     "noisy_flip_share_max": 0.00305,
+     "tile_flip_share_max": 0.0926
+    },
+    "hair": {
+     "frames": 6,
+     "motion_compensated": true,
+     "held_share": 0.065,
+     "denoised_noise_median": 0.05047,
+     "denoised_noise_max": 0.05152,
+     "denoised_flip_share_median": 0.13534,
+     "denoised_flip_share_max": 0.14347,
+     "noisy_noise_median": 0.09337,
+     "noisy_noise_max": 0.09467,
+     "noisy_flip_share_median": 0.3856,
+     "noisy_flip_share_max": 0.39259,
+     "tile_flip_share_max": 0.4173
+    },
+    "cloth": {
+     "frames": 6,
+     "motion_compensated": true,
+     "held_share": 0.264,
+     "denoised_noise_median": 0.0126,
+     "denoised_noise_max": 0.01661,
+     "denoised_flip_share_median": 0.05544,
+     "denoised_flip_share_max": 0.06851,
+     "noisy_noise_median": 0.05339,
+     "noisy_noise_max": 0.06371,
+     "noisy_flip_share_median": 0.34199,
+     "noisy_flip_share_max": 0.36565,
+     "tile_flip_share_max": 0.1717
+    }
+   }
+  }
+ }
+}
