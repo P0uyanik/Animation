@@ -6,13 +6,13 @@
    "tag": "baseline",
    "label": "T-137 F1a",
    "role": "baseline",
-   "blend": "/tmp/claude-0/-home-user/6e23d336-8842-50f4-b862-8430a93f2f65/scratchpad/a0/girl_auburn_bun_glasses_master.blend"
+   "blend": "/tmp/claude-0/-home-user/6e23d336-8842-50f4-b862-8430a93f2f65/scratchpad/n_a0/girl_auburn_bun_glasses_master.blend"
   },
   {
    "tag": "candidate",
    "label": "T-156 eyes",
    "role": "candidate",
-   "blend": "/tmp/claude-0/-home-user/6e23d336-8842-50f4-b862-8430a93f2f65/scratchpad/A28/girl_auburn_bun_glasses_master.blend"
+   "blend": "/tmp/claude-0/-home-user/6e23d336-8842-50f4-b862-8430a93f2f65/scratchpad/c_a1/girl_auburn_bun_glasses_master.blend"
   }
  ],
  "strict": {

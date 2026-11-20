@@ -6,13 +6,13 @@
    "tag": "baseline",
    "label": "T-137 F1b",
    "role": "baseline",
-   "blend": "/tmp/claude-0/-home-user/6e23d336-8842-50f4-b862-8430a93f2f65/scratchpad/w0/girl_white_hair_blue_dress_master.blend"
+   "blend": "/tmp/claude-0/-home-user/6e23d336-8842-50f4-b862-8430a93f2f65/scratchpad/n_w0/girl_white_hair_blue_dress_master.blend"
   },
   {
    "tag": "candidate",
    "label": "T-156 eyes",
    "role": "candidate",
-   "blend": "/tmp/claude-0/-home-user/6e23d336-8842-50f4-b862-8430a93f2f65/scratchpad/W23/girl_white_hair_blue_dress_master.blend"
+   "blend": "/tmp/claude-0/-home-user/6e23d336-8842-50f4-b862-8430a93f2f65/scratchpad/c_w1/girl_white_hair_blue_dress_master.blend"
   }
  ],
  "strict": {

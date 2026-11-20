@@ -11,7 +11,8 @@
 >    on a full blink the skin itself closes the socket opening, so the closed eye is smooth skin with the lash arc on
 >    it, as in `f14_e10_eyes_closed_calm`. No teardrop, no bowl or fold, and no lid dome or dome edge on the auburn girl.
 
-Input `t-137-claude-faces @ 321466a`; targets `docs/evaluation/characters/T-150/targets.json` (main `e2c8904`).
+Input `t-137-claude-faces @ 321466a`; `origin/main @ 5e0364c` (with T-158, deterministic builds) merged at `43d7e7e`;
+targets `docs/evaluation/characters/T-150/targets.json`.
 Blender: bpy 5.3 behind `tools/bpy_blender.py`. Overrides only; no current version, spec or published file changed.
 Scope follows the Supervisor's notes of 06:41 / 06:50 / 07:04Z (lash first, lower-lid crease, boy; fringe untouched).
 
@@ -62,9 +63,10 @@ few Laplacian passes), as a point attribute; `fit_closed_lids` adds it to the sk
 closes fully (Blink, the sided blink, the winks) and removes the attribute. The skin keys get an in-between
 (`<key>@75`), which the existing in-between drivers play, so the skin only closes over the last quarter of the
 control: a half blink still shows the eye under the lid. Without the key no attribute is written and nothing is read.
-Default-path proof: the previous override built before and after this change gives identical vertex and shape-key
-data for 201 of 207 meshes, the skin included; the other six (lid shells, ears) also differ between two builds of
-the same code and input (build noise, checked by building twice).
+Default-path proof on the merged base (`identity.json`; `pipeline/charsys/tests/mesh_hash_strict.py`, 1e-7 m, basis and
+every shape key, builds with `-t 1`): the T-137 F1a / F1b inputs (no T-156 key) built on `origin/main` and on this
+branch give identical hashes for every mesh (auburn 207 of 207, third girl 199 of 199). Both T-156 candidates built
+twice on this branch are identical too (207 / 199). Nothing still differs.
 
 ## Measurement (reproducible)
 `eye_measure.py` (headless, no render, about 6 s): one ray per pixel of the 0.24 x 0.12 m eye window (1280 x 640)
@@ -142,6 +144,14 @@ In tolerance: before 9/28, after 28/28. left / right = image left / right (the v
 In tolerance: before 5/28, after 11/28. left / right = image left / right (the viewer's); bold = out of band.
 
 ## Evidence
+The sheets were rendered before the merge of `origin/main` (the Supervisor's request to merge first reached this
+session after the renders had finished). They were not rendered again: the four builds behind them (two T-137
+baselines, two candidates) were rebuilt on the merged base and equal the rendered builds in every mesh except one or
+two per build (`ear.R` or `lid_upper.*`), which deviate by at most 6e-8 m, the run-to-run drift T-158 removed
+(`identity.json`); the render path (`face_probe.py`, `face_sheets.py`, `render_engine.configure`) is unchanged by the
+merge, and the measures of the merged-base candidates equal the committed `measure_after*.json` to the last digit.
+Spot check, two views rendered again from the merged-base candidates with the same job: auburn open front, 1.0 % of
+the pixels differ, by at most 3 / 255; third girl closed front, 1.6 % differ, by at most 7 / 255 (none above 8 / 255).
 - `*/eyes_100.jpg`: 100 % eye crops, open, front and 3/4 (T-137 build, T-156, references), Cycles 8 spp.
 - `*/eyes_closed_100.jpg`: 100 % crops, Blink, front (top T-137 build, bottom T-156), 8 spp.
 - `*/strict.jpg`: strict sheets, Cycles 16 spp.
@@ -178,12 +188,12 @@ Not changed. His references (hero24, val27) show a thick, flat, dark upper-lid b
 him away from his references. His closed eye shows no lash line; the closed-eye lash curve lives in
 `face_v3/lids.py` and he is `face_generic/2`, so that needs a generator decision, not an override.
 
-`python3 pipeline/charsys/tests/test_face_r5.py --blender blender`: 24/24 (14 existing + 10 for the opt-ins: guards,
+`python3 pipeline/charsys/tests/test_face_r5.py --blender blender`: 25/25 on the merged base (15 existing, incl. main's T-154 allowlist check, + 10 for the opt-ins: guards,
 no spec under `assets/` uses lid yaw, `sink_m`, `shell_occlusion_tint` or `closed_fill`, overrides touch `face.eyes` only,
 unchanged without the keys, peak shift with the yaw).
 No test, threshold or golden changed. Not run: ctest, verify_charsys, face_system_test, expression sheets, pupil
 pixels (pupil radius 0.235 -> 0.23 and 0.231 -> 0.229 of the eye radius).
 
-Rebuild: `build_character.py -- --spec <spec> --out <dir> --no-glb --no-compare --override <...>` (auburn: 0.13.0
+Rebuild: `blender -b --factory-startup -t 1 -P pipeline/charsys/build_character.py -- --spec <spec> --out <dir> --no-glb --no-compare --override <...>` (auburn: 0.13.0
 spec + this override; third: T-126a spec + T-126 hands, hair, dress, materials + T-137 fringe + this override);
 sheets: `python3 docs/evaluation/characters/T-137/tools/face_sheets.py <part.json> strict|eyes --out <dir>`.
