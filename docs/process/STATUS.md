@@ -39,7 +39,12 @@ Codex T-161 reference targets (lashes, ears, hair silhouette) go to T-156 and T-
 | T-163 starter felt prop library | Sonnet 5.5 | running | — | `t-163-claude-props` |
 
 ## Waiting for owner
-1. T-141b: not approved; owner to discuss.
+1. Guard tests vs the approved current switch (expected to block T-155): `test_hair_r5` / `test_hands_r2` forbid any
+   CURRENT spec pinning groom/4 or body.hands, and the T-154 allowlist never exempts current versions. Making boy 2.3.0
+   / girl 0.14.0 current will fail them. Choices: 1 update the guards so a version made current by a named owner
+   decision (listed with its decision ref) passes, every other case still failing (recommended); 2 retire those two
+   guards now that groom/4 and hands_r2 are adopted; 3 postpone the current switch.
+2. T-141b: not approved; owner to discuss.
 
 ## Queued (start conditions)
 - T-166 final720 default + HEVC 10-bit delivery (Sonnet): next free slot.
