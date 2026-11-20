@@ -720,3 +720,25 @@ Resumed from pushed WIP: T-155 (543bfa1; switch already done on the branch with 
 sheets), T-156 (2f89842), T-159 (20a9363: cheek seam diagnosis, then ears), T-167 (dc85c98; fold in T-169 when READY),
 T-168 (de0eff2: proposed fix, opt-in cheek-pad fade + upturned nose, candidate only). Reviews/merges resume. Queued/planned
 tasks (T-166, T-144, hands round 2, next versions) STAY ON HOLD until "Start the planned automatic tasks".
+
+## 2026-11-20 ~14:30Z (15:30 CET) — Not final: fix all reported issues first (relayed by the owner liaison)
+T-156: 3/4 white flap past the outer corner (both girls), creases under the auburn lower lid, lash colour/fullness per
+refs (auburn warm dark brown, fuller), pale pink teardrop above closed lids, third girl's closed-eye upper region.
+T-168: smaller, rounder nose (soft nub), lower face less receding (val27). T-159: temple + cheek seam + ears for all
+three incl. the boy. T-167 continues per T-169. Strict sheets + 100% close-ups with all fixes; approval only after that.
+
+## 2026-11-20 ~15:12–15:25Z (16:12–16:25 CET) — Ownership and T-155 hold (relayed by the owner liaison)
+Ears are T-159's for all three. Disjoint write-sets: T-159 = face_features.shape_face_v2 + face_generic.build_ears;
+T-168 = face_v3/lower_face.py + face_features.build_nose (boy contour + nose); T-156 = face_v3/lids.py + eye/lash
+materials. Merge order T-159 then T-168; one integration branch `integration/r3-faces` for the candidate builds.
+HOLD T-155 (`t-155-claude-candidates-r2@2774c13`, incl. third 0.1.0): no new version until the fixes are approved;
+current stays boy 2.2.0 / girl 0.13.0. The next versions bundle T-155 + T-156 + T-159 + T-168 + T-167 as ONE set.
+
+## 2026-11-20 ~15:25Z — Reference videos (owner via the original Supervisor)
+`docs/references/video_paperboat.mp4` and `video_watertable.mp4` (on ones, 24 fps) are the primary motion/acting
+reference for animation, interaction and acting tasks (hands round 2, the S1 rebuild), with T-106, content/timing and
+content/personality derived from them.
+
+## 2026-11-20 ~15:45Z (16:45 CET) — T-170 world style plan (planning only; exception to the hold)
+Delivered: `docs/evaluation/world/T-170/README.md` (style guide, material library, construction architecture, scene
+rules, 7-phase plan ~19–25 task-days, 8 owner questions). The owner reviews it before any development.

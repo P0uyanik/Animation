@@ -169,4 +169,5 @@ Tasks from now on are numbered T-001, T-002, …, and pass through the states in
 | T-159 | [Characters] Temple hollow (both girls) + ears round (Fable) | running 2026-11-20 (Part A temple ~08:35Z, then ears) | t-159-claude-ears | docs/tasks/T-159.md |
 | T-167 | [Characters] Hair round 7, reference fidelity first (Fable) | running 2026-11-20 (owner ~08:50Z) | t-167-claude-hair-r7 | docs/tasks/T-167.md |
 | T-168 | [Faces] Boy face contour (side/3/4) and nose (Fable) | queued 2026-11-20 (owner ~08:50Z), next free slot | t-168-claude-boy-face | docs/tasks/T-168.md |
-| T-169 | [Evaluation] Hair reference study (Codex) | assigned 2026-11-20 on relay-channel (2987afa) | t-169-codex | docs/evaluation/characters/T-169/ |
+| T-169 | [Evaluation] Hair reference study (Codex) | merged 2026-11-20 (Codex, 38759ccc); input for T-167 | t-169-codex | docs/evaluation/characters/T-169/ |
+| T-170 | [Planning] World style system: video analysis + architecture plan (Fable) | merged 2026-11-20: docs/evaluation/world/T-170/README.md; owner review pending | t-170-claude-world-style | docs/tasks/T-170.md |

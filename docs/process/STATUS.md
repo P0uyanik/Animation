@@ -1,7 +1,7 @@
 # Status board
 
 Updated by the Supervisor in the same commit as every merge or dispatch. Sources: [TASK_LOG](TASK_LOG.md),
-[OWNERSHIP](OWNERSHIP.md), [OWNER_DECISIONS](OWNER_DECISIONS.md) (2026-11-20). As of 2026-11-20 ~13:25Z. Implementers RESUMED (owner ~10:55 CET); planned tasks still on hold. main = `2a02532`.
+[OWNERSHIP](OWNERSHIP.md), [OWNER_DECISIONS](OWNER_DECISIONS.md) (2026-11-20). As of 2026-11-20 ~15:45Z. main = `7320a6e` + docs. Fix round in progress; next versions = one bundled set after owner approval.
 Session cap: 6 (temporary 8 ended 08:20Z). Owner liaison: session_01NPjxeKamtbdzi3YwrgsWXU (from ~08:30Z). ETA "—" = none given yet.
 
 ## Character look
@@ -20,7 +20,7 @@ Codex T-169 hair reference study (relay 2987afa) feeds T-167. Codex T-161 refere
 | Task | Model | State | ETA | Branch |
 | --- | --- | --- | --- | --- |
 | T-154 guard allowlist + T-137 faces (F1a/F1b/F2, owner-approved ~07:00Z) | — | on `integration/t-137`, gate running | — | `integration/t-137` |
-| T-155 boy 2.3.0 / girl 0.14.0 → CURRENT, third 0.1.0 first version (owner ~08:20Z) | Opus 5.5 | running (expression sheets); branch 543bfa1, 2.3.0/0.14.0 current on branch only | — | `t-155-claude-candidates-r2` |
+| T-155 boy 2.3.0 / girl 0.14.0 / third 0.1.0 | Opus 5.5 | HELD by owner (~16:25 CET): bundled into the next version set; current stays 2.2.0/0.13.0 | — | `t-155-claude-candidates-r2@2774c13` |
 
 ## Interaction
 | Task | Model | State | ETA | Branch |
@@ -41,6 +41,7 @@ Codex T-169 hair reference study (relay 2987afa) feeds T-167. Codex T-161 refere
 | T-163 starter felt prop library | Sonnet 5.5 | merged (main 2a02532) | — | — |
 
 ## Waiting for owner
+1. T-170 world style plan review (`docs/evaluation/world/T-170/README.md`; 8 questions incl. wood style and water container).
 2. "Start the planned automatic tasks" (HOLD ~09:05Z).
 3. T-141b: not approved; owner to discuss.
 
