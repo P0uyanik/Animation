@@ -7,7 +7,8 @@ without groom/5 keys is lowered to itself with no jobs, so groom/4 specs build a
 assets/characters pins groom/5; "stand" and "tips" are stripped into reshape jobs with the right object names and
 ring sizes; malformed keys are refused; the reshape keeps every vertex count, removes the twist and the centre-line
 jitter of a standing petal ("stand"), and thins / flattens / calms only the end of a lock ("tips"); the T-160
-overrides (if present) validate."""
+overrides (if present) validate. T-167 "clump": lowering, validation, zero setting is the identity, deterministic,
+differs per clump index and seed, root fixed, bend / lumps / twist within their bounds; the T-167 overrides validate."""
 import copy
 import glob
 import json
@@ -155,12 +156,65 @@ def main():
     s_round = G6.tip_scale(1.0, dict(G6.TIPS_DEFAULT, scale=0.8, round=0.5))[0]
     check("tips.round: rounded end closes the tip", s_round < 0.1, round(s_round, 4))
 
+    # ---- clump (T-167)
+    cl = dict(G6.CLUMP_DEFAULT, bend_m=0.01, twist_deg=40, lumps=0.2)
+    sp = copy.deepcopy(plain)
+    sp["structures"][1]["clump"] = {"bend_m": 0.01}
+    low, jobs = G6.lower(sp)
+    check("clump: stripped into a job with defaults filled in",
+          "clump" not in low["structures"][1] and jobs[0]["clump"] == dict(G6.CLUMP_DEFAULT, bend_m=0.01), jobs)
+
+    def cl_errs(idx, **kw):
+        s2 = copy.deepcopy(plain)
+        s2["structures"][idx]["clump"] = kw
+        return [e for e in G6.validate(s2) if "clump" in e]
+    check("clump refused: on a scalp_cap, out of range, unknown key, non-int seed", cl_errs(0, bend_m=0.01)
+          and cl_errs(1, bend_m=0.2) and cl_errs(1, twist_deg=-5) and cl_errs(1, lumps=0.9)
+          and cl_errs(1, lump_wavelength=0) and cl_errs(1, wander=1) and cl_errs(1, seed=1.5))
+    check("clump accepted: masses and locks", not cl_errs(1, **cl) and not cl_errs(2, bend_m=0.004, seed=3))
+    rings, poles = tube()
+    same, spoles = G6.reshape_island(rings, poles, clump=dict(G6.CLUMP_DEFAULT), index=3)
+    check("clump: all-zero setting leaves every vertex in place",
+          all((a - b).length < 1e-9 for ra, rb in zip(same, rings) for a, b in zip(ra, rb))
+          and all((a - b).length < 1e-9 for a, b in zip(spoles, poles)))
+    new, npoles = G6.reshape_island(rings, poles, clump=cl, index=0)
+    again, _ = G6.reshape_island(rings, poles, clump=cl, index=0)
+    other, _ = G6.reshape_island(rings, poles, clump=cl, index=1)
+    seeded, _ = G6.reshape_island(rings, poles, clump=dict(cl, seed=5), index=0)
+    check("clump: ring and vertex counts unchanged",
+          len(new) == len(rings) and all(len(a) == len(b) for a, b in zip(new, rings)))
+    check("clump: deterministic (same index -> same positions)",
+          all(a == b for ra, rb in zip(new, again) for a, b in zip(ra, rb)))
+
+    def centre(r):
+        return sum(r, Vector()) / len(r)
+    d_tip = (centre(new[-1]) - centre(other[-1])).length
+    check("clump: neighbours differ (index), and with the seed", d_tip > 1e-3
+          and (centre(new[-1]) - centre(seeded[-1])).length > 1e-4, round(d_tip, 5))
+    check("clump: root ring stays in place, root pole too",
+          all((a - b).length < 1e-9 for a, b in zip(new[0], rings[0])) and (npoles[0] - poles[0]).length < 1e-9)
+    off = [(centre(a) - centre(b)).length for a, b in zip(new, rings)]
+    bound = 0.01 * 1.5 * 2
+    check("clump: bend bounded by bend_m x 3 and grows from the root", max(off) <= bound + 1e-9 and off[2] < 0.1 * max(off),
+          (round(max(off), 5), round(off[2], 6)))
+    ratio = [ring_size(a) / ring_size(b) for a, b in zip(new, rings)]
+    check("clump: section size within 1 +- lumps, and it varies", max(ratio) <= 1.2 + 1e-6 and min(ratio) >= 0.8 - 1e-6
+          and max(ratio) - min(ratio) > 0.1, (round(min(ratio), 3), round(max(ratio), 3)))
+    tw = abs((ring_angle(new[-1]) - ring_angle(rings[-1]) + math.pi) % (2 * math.pi) - math.pi)
+    check("clump: twist at the tip within twist_deg", 0.0 < tw <= math.radians(40) + 1e-6, round(math.degrees(tw), 2))
+    vals = [G6.clump_values(k) for k in range(40)]
+    check("clump_values: in 0..1, no two clumps of 40 alike", all(0 <= x < 1 for v in vals for x in v)
+          and len({tuple(round(x, 3) for x in v) for v in vals}) == 40)
+    both, _ = G6.reshape_island(rings, poles, tips=tp, clump=cl, index=0)
+    check("clump with tips: the end still thins", ring_size(both[-1]) < 0.4 * ring_size(rings[-1]))
+
     # ---- islands
     isl = G6.islands(7, [(0, 1), (1, 2), (3, 4), (5, 6), (4, 5)])
     check("islands: connected runs in order", isl == [[0, 1, 2], [3, 4, 5, 6]], isl)
 
-    # ---- T-160 overrides
-    for p in sorted(glob.glob(os.path.join(ROOT, "docs", "evaluation", "characters", "T-160", "overrides", "*.json"))):
+    # ---- T-160 / T-167 overrides
+    for p in sorted(glob.glob(os.path.join(ROOT, "docs", "evaluation", "characters", "T-160", "overrides", "*.json"))
+                    + glob.glob(os.path.join(ROOT, "docs", "evaluation", "characters", "T-167", "overrides", "*.json"))):
         o = json.load(open(p))["override"]
         errs = G6.validate(o["hair"]) if o.get("generators", {}).get("groom") == "groom/5" else ["not groom/5"]
         low, jobs = G6.lower(o["hair"])

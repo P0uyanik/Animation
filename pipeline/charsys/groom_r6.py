@@ -23,6 +23,15 @@ spec.hair (generator "groom/5"): everything of groom/4 plus
               pulled by calm x q towards the smoothed line (takes the hook out of a waved or curled end).
               "round" > 0 instead ends the taper in a rounded tip: the scale follows a quarter ellipse over the
               last `round` share of the end (soft, blunt clump ends for a fringe edge).
+  masses / locks with "clump"  (T-167, natural strand grouping: the references show clumps that differ from their
+              neighbours, not a row of equal leaves) {"bend_m": 0..0.05 (default 0), "twist_deg": 0..180 (default
+              0), "lumps": 0..0.6 (default 0), "lump_wavelength": 0.05..2 (default 0.4, share of the length),
+              "seed": int (default 0)}: every mass or lock of the structure is bent sideways by up to bend_m
+              (nothing at the root, growing to the tip, its own direction, sign and wavelength), its section
+              turns about its line by up to twist_deg at the tip (either way), and its section swells and thins
+              along its length by +-lumps. No random numbers: the per-clump values come from a fixed
+              low-discrepancy sequence of the clump's index in the structure and "seed", so the same spec always
+              builds the same hair. Applied after "tips" and "stand".
 """
 import math
 
@@ -70,10 +79,12 @@ import groom_r5 as R5  # groom/4 as a library (read-only use)
 
 GENERATOR_VERSIONS = ("groom/5",)
 GENERATOR = "groom/5"
-R6_KEYS = ("stand", "tips")
+R6_KEYS = ("stand", "tips", "clump")
 STAND_DEFAULT = {"smooth": 12}
 TIPS_DEFAULT = {"from": 0.6, "scale": 0.4, "power": 1.5, "flatten": 0.0, "calm": 0.0, "round": 0.0}
+CLUMP_DEFAULT = {"bend_m": 0.0, "twist_deg": 0.0, "lumps": 0.0, "lump_wavelength": 0.4, "seed": 0}
 CALM_PASSES = 40
+_IRR = (0.6180339887, 0.7548776662, 0.5698402910, 0.8191725134, 0.6710436067, 0.4142135624)
 
 
 # ---------------------------------------------------------------------------------------------------------- lowering
@@ -111,6 +122,8 @@ def lower(hair_spec):
             job["stand"] = dict(STAND_DEFAULT, **s["stand"])
         if s.get("tips") is not None:
             job["tips"] = dict(TIPS_DEFAULT, **s["tips"])
+        if s.get("clump") is not None:
+            job["clump"] = dict(CLUMP_DEFAULT, **s["clump"])
         jobs.append(job)
     return dict(hair_spec, structures=out), jobs
 
@@ -148,6 +161,16 @@ def validate(hair_spec):
                       and _num(tp, "flatten", 0, 0.9, 0) and _num(tp, "calm", 0, 1, 0) and _num(tp, "round", 0, 1, 0)):
                 errs.append(f"{where}.tips must be {{\"from\": 0..0.95, \"scale\": 0..1.5, \"power\": > 0, "
                             f"\"flatten\": 0..0.9, \"calm\": 0..1, \"round\": 0..1}}")
+        if "clump" in s:
+            cl = s["clump"]
+            if t not in ("masses", "locks"):
+                errs.append(f"{where}.clump is for masses and locks only")
+            elif not (isinstance(cl, dict) and set(cl) <= set(CLUMP_DEFAULT) and _num(cl, "bend_m", 0, 0.05, 0)
+                      and _num(cl, "twist_deg", 0, 180, 0) and _num(cl, "lumps", 0, 0.6, 0)
+                      and _num(cl, "lump_wavelength", 0.05, 2, 0.4) and isinstance(cl.get("seed", 0), int)
+                      and not isinstance(cl.get("seed", 0), bool)):
+                errs.append(f"{where}.clump must be {{\"bend_m\": 0..0.05, \"twist_deg\": 0..180, \"lumps\": "
+                            f"0..0.6, \"lump_wavelength\": 0.05..2, \"seed\": int}}")
     if errs:
         return errs
     return R5.validate(lower(hair_spec)[0])
@@ -214,9 +237,27 @@ def tip_scale(u, tp):
     return s, 1.0 - float(tp["flatten"]) * q, float(tp["calm"]) * q
 
 
-def reshape_island(rings, poles, stand=None, tips=None):
+def clump_values(index, seed=0):
+    """Six numbers in 0..1 for clump `index` of a structure: a fixed low-discrepancy sequence, no random draw."""
+    k = int(index) + 1 + int(seed)
+    return tuple((k * a) % 1.0 for a in _IRR)
+
+
+def clump_shape(u, cl, vals):
+    """(sideways offset in m along the bend direction, bend direction angle, twist in rad, section scale) at
+    length fraction u of one clump."""
+    r1, r2, r3, r4, r5, r6 = vals
+    ph = 2 * math.pi * r3
+    bend = float(cl["bend_m"]) * (0.5 + r4) * (math.sin(math.pi * u * (0.6 + 0.8 * r2) + ph) - math.sin(ph)) * u ** 1.5
+    twist = math.radians(float(cl["twist_deg"])) * (2 * r5 - 1) * u
+    grow = min(1.0, u / 0.12)  # the root keeps its built section (seat on the scalp)
+    lump = 1.0 + float(cl["lumps"]) * math.sin(2 * math.pi * (u / float(cl["lump_wavelength"]) + r6)) * grow
+    return bend, 2 * math.pi * r1, twist, lump
+
+
+def reshape_island(rings, poles, stand=None, tips=None, clump=None, index=0):
     """New positions (rings, poles) of one mass or lock: rings = section rings from root to tip, poles = (root
-    pole, tip pole). See the module text for "stand" and "tips"."""
+    pole, tip pole); index = its number in the structure (for "clump"). See the module text for the keys."""
     n = len(rings)
     centres = [sum(r, Vector()) / len(r) for r in rings]
     old = _frames(rings, centres)
@@ -235,6 +276,15 @@ def reshape_island(rings, poles, stand=None, tips=None):
         frames = transport(path, old[0][1])
     elif path is not centres:
         frames = _frames(rings, path)
+    if clump:
+        vals = clump_values(index, clump.get("seed", 0))
+        path, frames, sc = list(path), list(frames), list(sc)
+        for i, a in enumerate(arc):
+            bend, th, tw, lump = clump_shape(a / L, clump, vals)
+            t1, b1, n1 = frames[i]
+            path[i] = path[i] + (b1 * math.cos(th) + n1 * (0.5 * math.sin(th))) * bend
+            frames[i] = (t1, b1 * math.cos(tw) + n1 * math.sin(tw), n1 * math.cos(tw) - b1 * math.sin(tw))
+            sc[i] = (sc[i][0] * lump, sc[i][1], sc[i][2])
     out = []
     for i, r in enumerate(rings):
         t0, b0, n0 = old[i]
@@ -280,7 +330,7 @@ def apply_jobs(jobs, objs):
     done = {}
     for job in jobs:
         seg = job["seg"]
-        count = skipped = 0
+        count = skipped = index = 0
         for name in job["objects"]:
             ob = by_name.get(name)
             if ob is None:
@@ -295,13 +345,15 @@ def apply_jobs(jobs, objs):
                     continue
                 co = [me.vertices[i].co.copy() for i in isl]
                 rings = [co[k:k + seg] for k in range(0, m - 2, seg)]
-                new_rings, new_poles = reshape_island(rings, (co[-2], co[-1]), job.get("stand"), job.get("tips"))
+                new_rings, new_poles = reshape_island(rings, (co[-2], co[-1]), job.get("stand"), job.get("tips"),
+                                                      job.get("clump"), index)
+                index += 1
                 flat = [v for r in new_rings for v in r] + list(new_poles)
                 for i, v in zip(isl, flat):
                     me.vertices[i].co = v
                 count += 1
             me.update()
-        done[job["structure"]] = dict({k: job[k] for k in ("stand", "tips") if k in job}, reshaped=count,
+        done[job["structure"]] = dict({k: job[k] for k in R6_KEYS if k in job}, reshaped=count,
                                       **({"skipped": skipped} if skipped else {}))
     return done
 
