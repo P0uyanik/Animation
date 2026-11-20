@@ -297,7 +297,10 @@ def fit_closed_lids(up, lash, T, ecfg, r, fit, close_key, closed_thickness_m=Non
     ts = (float(closed_thickness_m) / shell) if (closed_thickness_m and shell > 1e-9 and not fit.get("keep_thickness", False)) else 1.0
     rep = {"gaze_range_deg": fit.get("gaze_range_deg") or ecfg.get("gaze_range_deg", [20.0, 12.0]), "gap": g, "fade_deg": round(math.degrees(fade), 2), "fade_above_edge_deg": round(math.degrees(over), 2), "corner_fade": [cf0, cf1], "close_deg": round(math.degrees(a_close), 2),
            "rest_edge_deg": round(math.degrees(e_edge), 2), "keys": {}}
-    if fit.get("shell_subsurface") is not None:
+    if fit.get("shell_occlusion_tint") is not None:  # T-156 (opt-in; absent = the two lines below, unchanged)
+        rep["shell_material"] = _shell_material(up, float(fit.get("shell_subsurface", 1.0)),
+                                                float(fit["shell_occlusion_tint"]))
+    elif fit.get("shell_subsurface") is not None:
         rep["shell_material"] = _shell_material(up, float(fit["shell_subsurface"]))
     for ob in (up, lash):
         if ob is None or ob.data.shape_keys is None:
@@ -417,10 +420,14 @@ def curve_closed_lash(lash, T, r, cfg, a_close, seam_deg):
     return rep
 
 
-def _shell_material(ob, factor):
+def _shell_material(ob, factor, occlusion_tint=None):
     """Replaces each material slot of the lid shell that has a Principled BSDF with subsurface by a copy named
     "<name>.lid" (shared by both lids) whose Subsurface Weight is scaled by factor (a linked weight is left linked and
-    scaled through a multiply node). Returns {slot material: copy}."""
+    scaled through a multiply node). occlusion_tint (T-156, closed_fit.shell_occlusion_tint, 0..1; None = untouched):
+    in the copy, every multiply-add Math node fed by an Ambient Occlusion node has its two constants scaled by it.
+    The skin's occlusion tints darken creases; the lid dome sits inside the socket and is "occluded" all over by the
+    eyeball behind it and the socket rim, so the closed lid reads as a patch of another tone than the skin around
+    it. Returns {slot material: copy}."""
     import bpy
     done = {}
     for i, m in enumerate(ob.data.materials):
@@ -445,6 +452,12 @@ def _shell_material(ob, factor):
                 c.node_tree.links.new(mul.outputs[0], sock)
             else:
                 sock.default_value = sock.default_value * factor
+            if occlusion_tint is not None:
+                for n in c.node_tree.nodes:
+                    if n.type == "MATH" and n.operation == "MULTIPLY_ADD" and n.inputs[0].is_linked \
+                            and n.inputs[0].links[0].from_node.type == "AMBIENT_OCCLUSION":
+                        for j in (1, 2):
+                            n.inputs[j].default_value = n.inputs[j].default_value * occlusion_tint
         ob.data.materials[i] = c
         done[m.name] = c.name
     return done
