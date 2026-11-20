@@ -2,7 +2,7 @@
  "schema": "plush-studio.review-recipe/1",
  "character": "boy_yellow_hoodie",
  "task": "T-159",
- "recipe_sha256": "8f095bcd15facfc836129b26403c41f829111ece2bbb2f435631f6f8f70a0928",
+ "recipe_sha256": "710703c382106d3bcf785a2e87dcf952351bf5421ed349f08b9fddec4031d8b6",
  "inputs": {
   "main": "bc556ad"
  },
@@ -32,12 +32,12 @@
   {
    "role": "candidate",
    "tag": "candidate",
-   "label": "2.3.0 cand. + T-159 ears",
+   "label": "2.3.0 cand. + T-159 ears p2",
    "kind": "blend",
    "blend": "build/t159/boy_ears/boy_yellow_hoodie_compare.blend",
    "comparison_pose": null,
    "source_variant": "compare",
-   "blend_sha256": "a1d6bcd045aa81e926d75c55fb9757baafe0484d3ea077e68b8e2e846949af12"
+   "blend_sha256": "ed8cdb52b5db97621cfbf4b73bf1148180f421dd28e7a25febe78765b434cbc7"
   }
  ],
  "cameras": {

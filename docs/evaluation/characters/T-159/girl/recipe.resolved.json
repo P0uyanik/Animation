@@ -2,7 +2,7 @@
  "schema": "plush-studio.review-recipe/1",
  "character": "girl_auburn_bun_glasses",
  "task": "T-159",
- "recipe_sha256": "b29fd54137918b612921bf00895e52c594b3c99b3f0f33cbd4564756a8c43e38",
+ "recipe_sha256": "6747fed40dbda24e349b76a18895c0329933fde958d660a2ecd445830885e931",
  "inputs": {
   "main": "bc556ad"
  },
@@ -30,12 +30,12 @@
   {
    "role": "candidate",
    "tag": "candidate",
-   "label": "0.14.0 cand. + T-159",
+   "label": "0.14.0 cand. + T-159 p2",
    "kind": "blend",
    "blend": "build/t159/girl_ears/girl_auburn_bun_glasses_master.blend",
    "comparison_pose": null,
    "source_variant": "master",
-   "blend_sha256": "3dcf1020bf29661c5dd4676baba9f853d7060c8406de43a1d77678cb9a78e962"
+   "blend_sha256": "b026623fc36ee940ae43346672a413206051e5362f6c900dd5745f44bb5bd7fc"
   }
  ],
  "cameras": {

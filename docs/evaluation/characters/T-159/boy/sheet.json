@@ -1,12 +1,12 @@
 {
- "recipe_sha256": "8f095bcd15facfc836129b26403c41f829111ece2bbb2f435631f6f8f70a0928",
+ "recipe_sha256": "710703c382106d3bcf785a2e87dcf952351bf5421ed349f08b9fddec4031d8b6",
  "sheet": "sheet.jpg",
  "size": [
   1120,
   2048
  ],
- "at": "2026-11-20T16:02:32+00:00",
- "preview": "preview 2026-11-20T15:27:13+00:00",
+ "at": "2026-11-20T19:07:51+00:00",
+ "preview": "preview 2026-11-20T18:55:49+00:00",
  "preview_override": null,
  "render_result": {
   "engine": "cycles",
@@ -26,7 +26,7 @@
      "L": 12.0,
      "R": 12.0
     },
-    "seconds": 373.4
+    "seconds": 353.4
    },
    "candidate": {
     "blend": "build/t159/boy_ears/boy_yellow_hoodie_compare.blend",
@@ -35,7 +35,7 @@
      "L": 12.0,
      "R": 12.0
     },
-    "seconds": 377.5
+    "seconds": 368.0
    }
   },
   "views": {
