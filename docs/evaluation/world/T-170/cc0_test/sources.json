@@ -1,0 +1,869 @@
+{
+ "downloaded": "2026-11-20",
+ "files": {
+  "hdri_lebombo/lebombo_1k.hdr": {
+   "asset": "lebombo",
+   "bytes": 1476953,
+   "license": "CC0 1.0",
+   "sha256": "a02c9615adeba91a753c3e4737c3ce7a719273df822eeaa85d24982bd43c9ecb",
+   "source": "polyhaven",
+   "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/lebombo_1k.hdr"
+  },
+  "ph_beige_wall_001/diff.jpg": {
+   "asset": "beige_wall_001",
+   "bytes": 33074,
+   "license": "CC0 1.0",
+   "sha256": "72104704d0b9bd3713c5f6238971252b63eccf6e61263059c674caa8f3d0fa6d",
+   "source": "polyhaven",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/beige_wall_001/beige_wall_001_diff_1k.jpg"
+  },
+  "ph_beige_wall_001/nor_gl.jpg": {
+   "asset": "beige_wall_001",
+   "bytes": 153434,
+   "license": "CC0 1.0",
+   "sha256": "cec747be50f91da0693986080b6f59ef868d53cb2ab7d577982165ece63ed75e",
+   "source": "polyhaven",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/beige_wall_001/beige_wall_001_nor_gl_1k.jpg"
+  },
+  "ph_beige_wall_001/rough.jpg": {
+   "asset": "beige_wall_001",
+   "bytes": 151256,
+   "license": "CC0 1.0",
+   "sha256": "fc8328f47f4d2d82d5311a75bcb5c8cd8979d171a0ee097ad9e44ca9c5a00d60",
+   "source": "polyhaven",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/beige_wall_001/beige_wall_001_rough_1k.jpg"
+  },
+  "ph_brown_planks_09/diff.jpg": {
+   "asset": "brown_planks_09",
+   "bytes": 763538,
+   "license": "CC0 1.0",
+   "sha256": "6a890d75d48787518ccf32cb44e7557d1695e8a9180e813f79f7bfed075896ed",
+   "source": "polyhaven",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/brown_planks_09/brown_planks_09_diff_1k.jpg"
+  },
+  "ph_brown_planks_09/nor_gl.jpg": {
+   "asset": "brown_planks_09",
+   "bytes": 730600,
+   "license": "CC0 1.0",
+   "sha256": "a42c35ecd2104765e1e06e7370be6673c6c7b8527d9abf3f34cf3cd444ea9e16",
+   "source": "polyhaven",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/brown_planks_09/brown_planks_09_nor_gl_1k.jpg"
+  },
+  "ph_brown_planks_09/rough.jpg": {
+   "asset": "brown_planks_09",
+   "bytes": 286034,
+   "license": "CC0 1.0",
+   "sha256": "48eca07057e5a2ba9a4de92f71f660620bcaa8e142b4c57ed7bf65e6deb5270c",
+   "source": "polyhaven",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/brown_planks_09/brown_planks_09_rough_1k.jpg"
+  },
+  "ph_dirty_carpet/diff.jpg": {
+   "asset": "dirty_carpet",
+   "bytes": 978020,
+   "license": "CC0 1.0",
+   "sha256": "b0ef2b248cb7dfa1d33f1b2215fb3b83e815527d4091a2c3a423bdcd63bef60a",
+   "source": "polyhaven",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/dirty_carpet/dirty_carpet_diff_1k.jpg"
+  },
+  "ph_dirty_carpet/nor_gl.jpg": {
+   "asset": "dirty_carpet",
+   "bytes": 1089297,
+   "license": "CC0 1.0",
+   "sha256": "ba96f6f098ac64456f4cc310469200ff702596a9070d2553f990da8f7b86d29f",
+   "source": "polyhaven",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/dirty_carpet/dirty_carpet_nor_gl_1k.jpg"
+  },
+  "ph_dirty_carpet/rough.jpg": {
+   "asset": "dirty_carpet",
+   "bytes": 434062,
+   "license": "CC0 1.0",
+   "sha256": "a2e13692bd7e5af9875150130ce9904c11879e693e70753d417b93121cf65be4",
+   "source": "polyhaven",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/dirty_carpet/dirty_carpet_rough_1k.jpg"
+  },
+  "ph_knitted_fleece/diff.jpg": {
+   "asset": "knitted_fleece",
+   "bytes": 887569,
+   "license": "CC0 1.0",
+   "sha256": "57d7e416b698d02171a260da1a47109fc0f85b232f565d2a42d6d1be416c32e0",
+   "source": "polyhaven",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/knitted_fleece/knitted_fleece_diff_1k.jpg"
+  },
+  "ph_knitted_fleece/nor_gl.jpg": {
+   "asset": "knitted_fleece",
+   "bytes": 1128139,
+   "license": "CC0 1.0",
+   "sha256": "ca1f965fee9957665a78a54bfa09e2c44f4e626d38fff6238a9a214cad5bab99",
+   "source": "polyhaven",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/knitted_fleece/knitted_fleece_nor_gl_1k.jpg"
+  },
+  "ph_knitted_fleece/rough.jpg": {
+   "asset": "knitted_fleece",
+   "bytes": 959605,
+   "license": "CC0 1.0",
+   "sha256": "0f82adaf29135b0d0a799d7dfcb2f64e76a9836bbf43d5745fb66330077e2042",
+   "source": "polyhaven",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/knitted_fleece/knitted_fleece_rough_1k.jpg"
+  },
+  "ph_laminate_floor_02/diff.jpg": {
+   "asset": "laminate_floor_02",
+   "bytes": 721641,
+   "license": "CC0 1.0",
+   "sha256": "c112a8fb107d8600a2974af2f9fa9b595c491a33a59982e22706e9650990bf8f",
+   "source": "polyhaven",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/laminate_floor_02/laminate_floor_02_diff_1k.jpg"
+  },
+  "ph_laminate_floor_02/nor_gl.jpg": {
+   "asset": "laminate_floor_02",
+   "bytes": 515725,
+   "license": "CC0 1.0",
+   "sha256": "ec501e1c76269cabc1648ab0e3f38db1b062ffef7ff4ce037fdc369383afd005",
+   "source": "polyhaven",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/laminate_floor_02/laminate_floor_02_nor_gl_1k.jpg"
+  },
+  "ph_laminate_floor_02/rough.jpg": {
+   "asset": "laminate_floor_02",
+   "bytes": 560815,
+   "license": "CC0 1.0",
+   "sha256": "1d48d21a8497d83d4148e4378bf6891e052c98b58cdce1f79003bcc24a3aff8f",
+   "source": "polyhaven",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/laminate_floor_02/laminate_floor_02_rough_1k.jpg"
+  },
+  "ph_oak_veneer_01/diff.jpg": {
+   "asset": "oak_veneer_01",
+   "bytes": 641756,
+   "license": "CC0 1.0",
+   "sha256": "c14681f72f59f17bff568cae7a837641443b607b899f0c279cd64a5638f877a7",
+   "source": "polyhaven",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/oak_veneer_01/oak_veneer_01_diff_1k.jpg"
+  },
+  "ph_oak_veneer_01/nor_gl.jpg": {
+   "asset": "oak_veneer_01",
+   "bytes": 484844,
+   "license": "CC0 1.0",
+   "sha256": "1297acf7b4476d5ccd83cc8b27be96aa6110f7a9c3a40be0bd767bf81b17db01",
+   "source": "polyhaven",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/oak_veneer_01/oak_veneer_01_nor_gl_1k.jpg"
+  },
+  "ph_oak_veneer_01/rough.jpg": {
+   "asset": "oak_veneer_01",
+   "bytes": 865194,
+   "license": "CC0 1.0",
+   "sha256": "ca2af5649b628ef05f196793d68cdca874c12ceb6e9ae566976546d9dd5a2604",
+   "source": "polyhaven",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/oak_veneer_01/oak_veneer_01_rough_1k.jpg"
+  },
+  "ph_oak_veneer_05/diff.jpg": {
+   "asset": "oak_veneer_05",
+   "bytes": 523638,
+   "license": "CC0 1.0",
+   "sha256": "2c19382650f986c035b350a276c97c43687d83b0ba87c9fce4e73304b7027ffc",
+   "source": "polyhaven",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/oak_veneer_05/oak_veneer_05_diff_1k.jpg"
+  },
+  "ph_oak_veneer_05/nor_gl.jpg": {
+   "asset": "oak_veneer_05",
+   "bytes": 337001,
+   "license": "CC0 1.0",
+   "sha256": "68c43175188f1a83fa034fe3ada13425ba9e10a409aec9c5846babdbd11375d8",
+   "source": "polyhaven",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/oak_veneer_05/oak_veneer_05_nor_gl_1k.jpg"
+  },
+  "ph_oak_veneer_05/rough.jpg": {
+   "asset": "oak_veneer_05",
+   "bytes": 721064,
+   "license": "CC0 1.0",
+   "sha256": "8e3beb97c3cbbfe102c94e18bfe34d11ce25f50f28c53ccc727c02931c1aa4ee",
+   "source": "polyhaven",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/oak_veneer_05/oak_veneer_05_rough_1k.jpg"
+  },
+  "ph_oak_wood_planks/diff.jpg": {
+   "asset": "oak_wood_planks",
+   "bytes": 696814,
+   "license": "CC0 1.0",
+   "sha256": "f715ed3e4346e94f971ef8dd61221ff6cc774886c20f65381e01e1dc0bb0a634",
+   "source": "polyhaven",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/oak_wood_planks/oak_wood_planks_diff_1k.jpg"
+  },
+  "ph_oak_wood_planks/nor_gl.jpg": {
+   "asset": "oak_wood_planks",
+   "bytes": 392213,
+   "license": "CC0 1.0",
+   "sha256": "b4272cb2818f8f33f2620a2dc093c962f34920e9d485a4e132eb6d69de1ba950",
+   "source": "polyhaven",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/oak_wood_planks/oak_wood_planks_nor_gl_1k.jpg"
+  },
+  "ph_oak_wood_planks/rough.jpg": {
+   "asset": "oak_wood_planks",
+   "bytes": 845590,
+   "license": "CC0 1.0",
+   "sha256": "10ced559145df3c537bf1ccef6dc767ef6c47e134c21a9650bab261fa95ecacf",
+   "source": "polyhaven",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/oak_wood_planks/oak_wood_planks_rough_1k.jpg"
+  },
+  "ph_painted_plaster_wall/diff.jpg": {
+   "asset": "painted_plaster_wall",
+   "bytes": 686726,
+   "license": "CC0 1.0",
+   "sha256": "440310f05af089f2c93353167573403cbc3f805948203237b5d26431eeb9e19c",
+   "source": "polyhaven",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/painted_plaster_wall/painted_plaster_wall_diff_1k.jpg"
+  },
+  "ph_painted_plaster_wall/nor_gl.jpg": {
+   "asset": "painted_plaster_wall",
+   "bytes": 900461,
+   "license": "CC0 1.0",
+   "sha256": "8eb01647d126eb5341e2c325821ad48c8ca11349dbef53447c95422c5d91cc9d",
+   "source": "polyhaven",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/painted_plaster_wall/painted_plaster_wall_nor_gl_1k.jpg"
+  },
+  "ph_painted_plaster_wall/rough.jpg": {
+   "asset": "painted_plaster_wall",
+   "bytes": 354762,
+   "license": "CC0 1.0",
+   "sha256": "e0564c297b22ab1cf4ef02a82157b84ce3b92eb4fd49d9c64b7256a8b300af82",
+   "source": "polyhaven",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/painted_plaster_wall/painted_plaster_wall_rough_1k.jpg"
+  },
+  "ph_plastered_wall/diff.jpg": {
+   "asset": "plastered_wall",
+   "bytes": 617080,
+   "license": "CC0 1.0",
+   "sha256": "73312ebb6eabc8e0a55addd8a82a8924bcd1e717b9488a887cc77f14b6ea554e",
+   "source": "polyhaven",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/plastered_wall/plastered_wall_diff_1k.jpg"
+  },
+  "ph_plastered_wall/nor_gl.jpg": {
+   "asset": "plastered_wall",
+   "bytes": 1072153,
+   "license": "CC0 1.0",
+   "sha256": "504e1f7baf4b68714c64b6670e7954bebe99efe31c49f7ce5a2089e4b76023b5",
+   "source": "polyhaven",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/plastered_wall/plastered_wall_nor_gl_1k.jpg"
+  },
+  "ph_plastered_wall/rough.jpg": {
+   "asset": "plastered_wall",
+   "bytes": 387134,
+   "license": "CC0 1.0",
+   "sha256": "844aaa32fda1130262ad8a50084aec7bd5ebce272c8af5e6ba076734beedcd66",
+   "source": "polyhaven",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/plastered_wall/plastered_wall_rough_1k.jpg"
+  },
+  "ph_poly_wool_herringbone/diff.jpg": {
+   "asset": "poly_wool_herringbone",
+   "bytes": 942966,
+   "license": "CC0 1.0",
+   "sha256": "fd889a46f617efd331e522e36b8ad2548e16e1cb018c001872f17537d7666af5",
+   "source": "polyhaven",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/poly_wool_herringbone/poly_wool_herringbone_diff_1k.jpg"
+  },
+  "ph_poly_wool_herringbone/nor_gl.jpg": {
+   "asset": "poly_wool_herringbone",
+   "bytes": 1045151,
+   "license": "CC0 1.0",
+   "sha256": "314ac7c1b7c101a48106e05199bfdb24e33671e58a6ccb334249b441d8e8ac98",
+   "source": "polyhaven",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/poly_wool_herringbone/poly_wool_herringbone_nor_gl_1k.jpg"
+  },
+  "ph_poly_wool_herringbone/rough.jpg": {
+   "asset": "poly_wool_herringbone",
+   "bytes": 857426,
+   "license": "CC0 1.0",
+   "sha256": "028b4fb92c322a31b5374171f62f43af2cfd6a012748be175fd44dbf1109903c",
+   "source": "polyhaven",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/poly_wool_herringbone/poly_wool_herringbone_rough_1k.jpg"
+  },
+  "ph_white_oak_veneer/diff.jpg": {
+   "asset": "white_oak_veneer",
+   "bytes": 595257,
+   "license": "CC0 1.0",
+   "sha256": "8fdec14fd3c06de907693c9c3241037dc93327ad907296371a2f74a0becd8187",
+   "source": "polyhaven",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/white_oak_veneer/white_oak_veneer_diff_1k.jpg"
+  },
+  "ph_white_oak_veneer/nor_gl.jpg": {
+   "asset": "white_oak_veneer",
+   "bytes": 623607,
+   "license": "CC0 1.0",
+   "sha256": "9e8dd65e443d92107caa4cd30403d78946a8b8c5a6029e6446c7368865b1d1c0",
+   "source": "polyhaven",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/white_oak_veneer/white_oak_veneer_nor_gl_1k.jpg"
+  },
+  "ph_white_oak_veneer/rough.jpg": {
+   "asset": "white_oak_veneer",
+   "bytes": 520649,
+   "license": "CC0 1.0",
+   "sha256": "a8670e80f203bd031ac3c80f0f606383be51a0ee108e016fa19cad6b9bd373e7",
+   "source": "polyhaven",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/white_oak_veneer/white_oak_veneer_rough_1k.jpg"
+  },
+  "ph_wood_floor/diff.jpg": {
+   "asset": "wood_floor",
+   "bytes": 734493,
+   "license": "CC0 1.0",
+   "sha256": "2a1c07687b6dbb214c4b9213739c6d92d425f1f0fc8ab3ac157f105d78240789",
+   "source": "polyhaven",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/wood_floor/wood_floor_diff_1k.jpg"
+  },
+  "ph_wood_floor/nor_gl.jpg": {
+   "asset": "wood_floor",
+   "bytes": 423303,
+   "license": "CC0 1.0",
+   "sha256": "452247f0d0d1b7fc7f8324ff3b6ed60bcc6de1405f4284eeb8d9bce90d4939c2",
+   "source": "polyhaven",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/wood_floor/wood_floor_nor_gl_1k.jpg"
+  },
+  "ph_wood_floor/rough.jpg": {
+   "asset": "wood_floor",
+   "bytes": 527754,
+   "license": "CC0 1.0",
+   "sha256": "061f1e1293251b2d28c76e3fac1ea9452b0e8648bb8f9b3728e09db386166e5c",
+   "source": "polyhaven",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/wood_floor/wood_floor_rough_1k.jpg"
+  },
+  "ph_wood_planks/diff.jpg": {
+   "asset": "wood_planks",
+   "bytes": 609525,
+   "license": "CC0 1.0",
+   "sha256": "3b0669f683e4bf10f5a55a381cfa9669a7b8dfd921901829daa3b35acc2bbdec",
+   "source": "polyhaven",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/wood_planks/wood_planks_diff_1k.jpg"
+  },
+  "ph_wood_planks/nor_gl.jpg": {
+   "asset": "wood_planks",
+   "bytes": 652441,
+   "license": "CC0 1.0",
+   "sha256": "d02abf113e17a8abe97e1be3e9d6d88add242e8c2291e2200d37aa8c68909f25",
+   "source": "polyhaven",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/wood_planks/wood_planks_nor_gl_1k.jpg"
+  },
+  "ph_wood_planks/rough.jpg": {
+   "asset": "wood_planks",
+   "bytes": 299757,
+   "license": "CC0 1.0",
+   "sha256": "1b7f115bfa25619b0a2db554eb1ab88a6fc5ef0b74ba4890611eae04d00b9829",
+   "source": "polyhaven",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/wood_planks/wood_planks_rough_1k.jpg"
+  },
+  "ph_wood_table/diff.jpg": {
+   "asset": "wood_table",
+   "bytes": 987969,
+   "license": "CC0 1.0",
+   "sha256": "f81642ae141958feac6c5acac03e2aeb6cfe049dff301d0627e3c17f2dc5c7a5",
+   "source": "polyhaven",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/wood_table/wood_table_diff_1k.jpg"
+  },
+  "ph_wood_table/nor_gl.jpg": {
+   "asset": "wood_table",
+   "bytes": 625535,
+   "license": "CC0 1.0",
+   "sha256": "88ecc8e54c30314f4662696ddf8c05b031976e3cbc68e399daa5ebddfb4cec71",
+   "source": "polyhaven",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/wood_table/wood_table_nor_gl_1k.jpg"
+  },
+  "ph_wood_table/rough.jpg": {
+   "asset": "wood_table",
+   "bytes": 618983,
+   "license": "CC0 1.0",
+   "sha256": "5b98d4d6b22960c781050ba622cebe67d8710c7a7ba0060b24cb6752d50fde32",
+   "source": "polyhaven",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/wood_table/wood_table_rough_1k.jpg"
+  }
+ },
+ "note": "files are NOT in the repository; 1K JPG maps / 1K HDR; licence per polyhaven.com/license",
+ "results_raw": {
+  "beige_wall_001": {
+   "S50": 0.119,
+   "albedo_after_hex": "#9E8C78",
+   "display_hex": "#D2C5B9",
+   "gain_linear_rgb": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "luma_sd": 9.95,
+   "target_hex": "#E4D4C0",
+   "texture_mean_hex": "#9E8C78",
+   "tweak": {}
+  },
+  "brown_planks_09": {
+   "S50": 0.178,
+   "albedo_after_hex": "#9C886F",
+   "display_hex": "#CBB9A7",
+   "gain_linear_rgb": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "luma_sd": 18.19,
+   "target_hex": "#946C4C",
+   "texture_mean_hex": "#9C886F",
+   "tweak": {}
+  },
+  "dirty_carpet": {
+   "S50": 0.17,
+   "albedo_after_hex": "#383228",
+   "display_hex": "#877C6F",
+   "gain_linear_rgb": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "luma_sd": 39.33,
+   "target_hex": "#A49069",
+   "texture_mean_hex": "#383228",
+   "tweak": {}
+  },
+  "knitted_fleece": {
+   "S50": 0.162,
+   "albedo_after_hex": "#574D41",
+   "display_hex": "#A79A8C",
+   "gain_linear_rgb": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "luma_sd": 26.11,
+   "target_hex": "#A49069",
+   "texture_mean_hex": "#574D41",
+   "tweak": {}
+  },
+  "laminate_floor_02": {
+   "S50": 0.215,
+   "albedo_after_hex": "#9C8164",
+   "display_hex": "#CFB7A2",
+   "gain_linear_rgb": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "luma_sd": 14.54,
+   "target_hex": "#D3BC9E",
+   "texture_mean_hex": "#9C8164",
+   "tweak": {}
+  },
+  "oak_veneer_01": {
+   "S50": 0.241,
+   "albedo_after_hex": "#A27F58",
+   "display_hex": "#D5BAA1",
+   "gain_linear_rgb": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "luma_sd": 14.0,
+   "target_hex": "#C0A382",
+   "texture_mean_hex": "#A27F58",
+   "tweak": {}
+  },
+  "oak_veneer_05": {
+   "S50": 0.167,
+   "albedo_after_hex": "#A98A71",
+   "display_hex": "#D6C2B3",
+   "gain_linear_rgb": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "luma_sd": 10.6,
+   "target_hex": "#C0A382",
+   "texture_mean_hex": "#A98A71",
+   "tweak": {}
+  },
+  "oak_wood_planks": {
+   "S50": 0.273,
+   "albedo_after_hex": "#A37654",
+   "display_hex": "#D6B39B",
+   "gain_linear_rgb": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "luma_sd": 15.4,
+   "target_hex": "#D3BC9E",
+   "texture_mean_hex": "#A37654",
+   "tweak": {}
+  },
+  "painted_plaster_wall": {
+   "S50": 0.047,
+   "albedo_after_hex": "#ABA3A0",
+   "display_hex": "#D6D0CC",
+   "gain_linear_rgb": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "luma_sd": 6.21,
+   "target_hex": "#E4D4C0",
+   "texture_mean_hex": "#ABA3A0",
+   "tweak": {}
+  },
+  "plastered_wall": {
+   "S50": 0.06,
+   "albedo_after_hex": "#B0A89D",
+   "display_hex": "#D8D2CA",
+   "gain_linear_rgb": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "luma_sd": 5.68,
+   "target_hex": "#E4D4C0",
+   "texture_mean_hex": "#B0A89D",
+   "tweak": {}
+  },
+  "poly_wool_herringbone": {
+   "S50": 0.068,
+   "albedo_after_hex": "#7A7672",
+   "display_hex": "#BDB7B1",
+   "gain_linear_rgb": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "luma_sd": 15.09,
+   "target_hex": "#A49069",
+   "texture_mean_hex": "#7A7672",
+   "tweak": {}
+  },
+  "white_oak_veneer": {
+   "S50": 0.168,
+   "albedo_after_hex": "#907963",
+   "display_hex": "#CDBAAB",
+   "gain_linear_rgb": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "luma_sd": 13.35,
+   "target_hex": "#C0A382",
+   "texture_mean_hex": "#907963",
+   "tweak": {}
+  },
+  "wood_floor": {
+   "S50": 0.3,
+   "albedo_after_hex": "#806043",
+   "display_hex": "#C5A38A",
+   "gain_linear_rgb": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "luma_sd": 21.76,
+   "target_hex": "#D3BC9E",
+   "texture_mean_hex": "#806043",
+   "tweak": {}
+  },
+  "wood_planks": {
+   "S50": 0.326,
+   "albedo_after_hex": "#79593A",
+   "display_hex": "#C19D81",
+   "gain_linear_rgb": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "luma_sd": 26.68,
+   "target_hex": "#946C4C",
+   "texture_mean_hex": "#79593A",
+   "tweak": {}
+  },
+  "wood_table": {
+   "S50": 0.475,
+   "albedo_after_hex": "#66422A",
+   "display_hex": "#B17C5B",
+   "gain_linear_rgb": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "luma_sd": 37.53,
+   "target_hex": "#946C4C",
+   "texture_mean_hex": "#66422A",
+   "tweak": {}
+  }
+ },
+ "results_tweak": {
+  "beige_wall_001": {
+   "S50": 0.135,
+   "albedo_after_hex": "#BDA380",
+   "display_hex": "#DECFC0",
+   "gain_linear_rgb": [
+    1.49,
+    1.402,
+    1.152
+   ],
+   "luma_sd": 6.26,
+   "target_hex": "#E4D4C0",
+   "texture_mean_hex": "#9E8C78",
+   "tweak": {
+    "contrast": 1.0,
+    "normal": 1.0,
+    "scale": 1.0
+   }
+  },
+  "brown_planks_09": {
+   "S50": 0.416,
+   "albedo_after_hex": "#533317",
+   "display_hex": "#9A735A",
+   "gain_linear_rgb": [
+    0.261,
+    0.137,
+    0.053
+   ],
+   "luma_sd": 39.44,
+   "target_hex": "#946C4C",
+   "texture_mean_hex": "#9C886F",
+   "tweak": {
+    "contrast": 0.9,
+    "normal": 0.8,
+    "scale": 1.0
+   }
+  },
+  "dirty_carpet": {
+   "S50": 0.253,
+   "albedo_after_hex": "#473815",
+   "display_hex": "#A19079",
+   "gain_linear_rgb": [
+    1.609,
+    1.241,
+    0.351
+   ],
+   "luma_sd": 33.39,
+   "target_hex": "#A49069",
+   "texture_mean_hex": "#383228",
+   "tweak": {
+    "contrast": 0.35,
+    "normal": 1.5,
+    "rough_add": 0.3,
+    "scale": 1.5,
+    "sheen": 0.15
+   }
+  },
+  "knitted_fleece": {
+   "S50": 0.241,
+   "albedo_after_hex": "#4E3D18",
+   "display_hex": "#A7957F",
+   "gain_linear_rgb": [
+    0.798,
+    0.618,
+    0.179
+   ],
+   "luma_sd": 28.32,
+   "target_hex": "#A49069",
+   "texture_mean_hex": "#574D41",
+   "tweak": {
+    "contrast": 1.0,
+    "normal": 2.0,
+    "rough_add": 0.3,
+    "scale": 5.0,
+    "sheen": 0.15
+   }
+  },
+  "laminate_floor_02": {
+   "S50": 0.243,
+   "albedo_after_hex": "#A2875E",
+   "display_hex": "#D2BB9F",
+   "gain_linear_rgb": [
+    1.09,
+    1.114,
+    0.871
+   ],
+   "luma_sd": 13.32,
+   "target_hex": "#D3BC9E",
+   "texture_mean_hex": "#9C8164",
+   "tweak": {
+    "contrast": 0.8,
+    "normal": 0.7,
+    "scale": 1.0
+   }
+  },
+  "oak_veneer_01": {
+   "S50": 0.323,
+   "albedo_after_hex": "#816339",
+   "display_hex": "#C5A585",
+   "gain_linear_rgb": [
+    0.611,
+    0.588,
+    0.418
+   ],
+   "luma_sd": 20.81,
+   "target_hex": "#C0A382",
+   "texture_mean_hex": "#A27F58",
+   "tweak": {
+    "coat": 0.2,
+    "contrast": 0.7,
+    "normal": 0.5,
+    "scale": 0.6
+   }
+  },
+  "oak_veneer_05": {
+   "S50": 0.315,
+   "albedo_after_hex": "#84643D",
+   "display_hex": "#C6A688",
+   "gain_linear_rgb": [
+    0.585,
+    0.502,
+    0.282
+   ],
+   "luma_sd": 20.42,
+   "target_hex": "#C0A382",
+   "texture_mean_hex": "#A98A71",
+   "tweak": {
+    "coat": 0.2,
+    "contrast": 1.0,
+    "normal": 0.5,
+    "scale": 0.6
+   }
+  },
+  "oak_wood_planks": {
+   "S50": 0.234,
+   "albedo_after_hex": "#A17542",
+   "display_hex": "#D3BCA2",
+   "gain_linear_rgb": [
+    0.979,
+    0.988,
+    0.617
+   ],
+   "luma_sd": 12.84,
+   "target_hex": "#D3BC9E",
+   "texture_mean_hex": "#A37654",
+   "tweak": {
+    "contrast": 0.7,
+    "normal": 0.7,
+    "sat": 0.7,
+    "scale": 1.0
+   }
+  },
+  "painted_plaster_wall": {
+   "S50": 0.125,
+   "albedo_after_hex": "#C4AB8C",
+   "display_hex": "#E0D2C4",
+   "gain_linear_rgb": [
+    1.356,
+    1.113,
+    0.744
+   ],
+   "luma_sd": 5.09,
+   "target_hex": "#E4D4C0",
+   "texture_mean_hex": "#ABA3A0",
+   "tweak": {
+    "contrast": 0.4,
+    "normal": 0.5,
+    "scale": 1.0
+   }
+  },
+  "plastered_wall": {
+   "S50": 0.125,
+   "albedo_after_hex": "#C5AD8C",
+   "display_hex": "#E0D3C4",
+   "gain_linear_rgb": [
+    1.288,
+    1.066,
+    0.778
+   ],
+   "luma_sd": 4.9,
+   "target_hex": "#E4D4C0",
+   "texture_mean_hex": "#B0A89D",
+   "tweak": {
+    "contrast": 0.5,
+    "normal": 0.5,
+    "scale": 1.0
+   }
+  },
+  "poly_wool_herringbone": {
+   "S50": 0.265,
+   "albedo_after_hex": "#564621",
+   "display_hex": "#AB987E",
+   "gain_linear_rgb": [
+    0.484,
+    0.335,
+    0.092
+   ],
+   "luma_sd": 26.41,
+   "target_hex": "#A49069",
+   "texture_mean_hex": "#7A7672",
+   "tweak": {
+    "contrast": 1.0,
+    "normal": 2.0,
+    "rough_add": 0.3,
+    "scale": 5.0,
+    "sheen": 0.15
+   }
+  },
+  "white_oak_veneer": {
+   "S50": 0.301,
+   "albedo_after_hex": "#7C5E38",
+   "display_hex": "#C4A689",
+   "gain_linear_rgb": [
+    0.727,
+    0.588,
+    0.317
+   ],
+   "luma_sd": 20.31,
+   "target_hex": "#C0A382",
+   "texture_mean_hex": "#907963",
+   "tweak": {
+    "coat": 0.2,
+    "contrast": 0.8,
+    "normal": 0.5,
+    "scale": 1.0
+   }
+  },
+  "wood_floor": {
+   "S50": 0.244,
+   "albedo_after_hex": "#967D54",
+   "display_hex": "#CFB89D",
+   "gain_linear_rgb": [
+    1.404,
+    1.753,
+    1.597
+   ],
+   "luma_sd": 14.51,
+   "target_hex": "#D3BC9E",
+   "texture_mean_hex": "#806043",
+   "tweak": {
+    "contrast": 0.6,
+    "normal": 0.7,
+    "scale": 1.0
+   }
+  },
+  "wood_planks": {
+   "S50": 0.405,
+   "albedo_after_hex": "#4A2C10",
+   "display_hex": "#987159",
+   "gain_linear_rgb": [
+    0.359,
+    0.257,
+    0.125
+   ],
+   "luma_sd": 39.9,
+   "target_hex": "#946C4C",
+   "texture_mean_hex": "#79593A",
+   "tweak": {
+    "contrast": 0.8,
+    "normal": 0.6,
+    "scale": 1.6
+   }
+  },
+  "wood_table": {
+   "S50": 0.488,
+   "albedo_after_hex": "#4F3218",
+   "display_hex": "#946C4B",
+   "gain_linear_rgb": [
+    0.588,
+    0.581,
+    0.402
+   ],
+   "luma_sd": 41.7,
+   "target_hex": "#946C4C",
+   "texture_mean_hex": "#66422A",
+   "tweak": {
+    "contrast": 0.6,
+    "normal": 0.7,
+    "sat": 0.85,
+    "scale": 1.0
+   }
+  }
+ }
+}

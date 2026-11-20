@@ -1,0 +1,193 @@
+{
+ "_doc": "dim = real tile size in metres (Poly Haven API 'dimensions'); rot = 1 turns the grain along the slab's long axis; view = slab length in metres; target = T-170 measurements.json patch; tweak: scale (>1 = pattern larger), contrast (1 = as scanned, 0 = flat mean colour), sat, normal, rough_mul/rough_add, coat, sheen",
+ "groups": {
+  "wood_worn": {
+   "label": "wood, worn plank (paperboat table)",
+   "target": "wood_worn_table",
+   "view": 0.4
+  },
+  "wood_satin": {
+   "label": "wood, light satin oak/beech (watertable)",
+   "target": "wood_oak_apron",
+   "view": 0.4
+  },
+  "floor": {
+   "label": "floor, light wood",
+   "target": "floor_wood",
+   "view": 1.2
+  },
+  "rug": {
+   "label": "rug / fabric (sage field)",
+   "target": "rug_sage",
+   "view": 0.4
+  },
+  "plaster": {
+   "label": "wall, painted plaster",
+   "target": "wall_cream",
+   "view": 1.2
+  }
+ },
+ "candidates": {
+  "wood_planks": {
+   "group": "wood_worn",
+   "dim": 1.5,
+   "rot": 0,
+   "tweak": {
+    "scale": 1.6,
+    "contrast": 0.8,
+    "normal": 0.6
+   }
+  },
+  "wood_table": {
+   "group": "wood_worn",
+   "dim": 1.0,
+   "rot": 0,
+   "tweak": {
+    "scale": 1.0,
+    "contrast": 0.6,
+    "sat": 0.85,
+    "normal": 0.7
+   }
+  },
+  "brown_planks_09": {
+   "group": "wood_worn",
+   "dim": 1.0,
+   "rot": 0,
+   "tweak": {
+    "scale": 1.0,
+    "contrast": 0.9,
+    "normal": 0.8
+   }
+  },
+  "oak_veneer_01": {
+   "group": "wood_satin",
+   "dim": 1.83,
+   "rot": 1,
+   "tweak": {
+    "scale": 0.6,
+    "contrast": 0.7,
+    "normal": 0.5,
+    "coat": 0.2
+   }
+  },
+  "oak_veneer_05": {
+   "group": "wood_satin",
+   "dim": 1.0,
+   "rot": 0,
+   "tweak": {
+    "scale": 0.6,
+    "contrast": 1.0,
+    "normal": 0.5,
+    "coat": 0.2
+   }
+  },
+  "white_oak_veneer": {
+   "group": "wood_satin",
+   "dim": 0.5,
+   "rot": 1,
+   "tweak": {
+    "scale": 1.0,
+    "contrast": 0.8,
+    "normal": 0.5,
+    "coat": 0.2
+   }
+  },
+  "laminate_floor_02": {
+   "group": "floor",
+   "dim": 1.7,
+   "rot": 0,
+   "tweak": {
+    "scale": 1.0,
+    "contrast": 0.8,
+    "normal": 0.7
+   }
+  },
+  "wood_floor": {
+   "group": "floor",
+   "dim": 1.7,
+   "rot": 1,
+   "tweak": {
+    "scale": 1.0,
+    "contrast": 0.6,
+    "normal": 0.7
+   }
+  },
+  "oak_wood_planks": {
+   "group": "floor",
+   "dim": 1.2,
+   "rot": 0,
+   "tweak": {
+    "scale": 1.0,
+    "contrast": 0.7,
+    "sat": 0.7,
+    "normal": 0.7
+   }
+  },
+  "poly_wool_herringbone": {
+   "group": "rug",
+   "dim": 0.27,
+   "rot": 0,
+   "tweak": {
+    "scale": 5.0,
+    "contrast": 1.0,
+    "normal": 2.0,
+    "sheen": 0.15,
+    "rough_add": 0.3
+   }
+  },
+  "knitted_fleece": {
+   "group": "rug",
+   "dim": 0.27,
+   "rot": 0,
+   "tweak": {
+    "scale": 5.0,
+    "contrast": 1.0,
+    "normal": 2.0,
+    "sheen": 0.15,
+    "rough_add": 0.3
+   }
+  },
+  "dirty_carpet": {
+   "group": "rug",
+   "dim": 0.6,
+   "rot": 0,
+   "tweak": {
+    "scale": 1.5,
+    "contrast": 0.35,
+    "normal": 1.5,
+    "sheen": 0.15,
+    "rough_add": 0.3
+   }
+  },
+  "plastered_wall": {
+   "group": "plaster",
+   "dim": 2.0,
+   "rot": 0,
+   "tweak": {
+    "scale": 1.0,
+    "contrast": 0.5,
+    "normal": 0.5
+   }
+  },
+  "painted_plaster_wall": {
+   "group": "plaster",
+   "dim": 2.0,
+   "rot": 0,
+   "tweak": {
+    "scale": 1.0,
+    "contrast": 0.4,
+    "normal": 0.5
+   }
+  },
+  "beige_wall_001": {
+   "group": "plaster",
+   "dim": 3.0,
+   "rot": 0,
+   "tweak": {
+    "scale": 1.0,
+    "contrast": 1.0,
+    "normal": 1.0
+   }
+  }
+ }
+}
