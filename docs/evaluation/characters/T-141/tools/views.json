@@ -1,0 +1,8 @@
+{
+ "third_hair": [
+  {"name": "hair_front", "yaw_deg": 0.0, "elevation_deg": 5.0, "target": [0.0, 0.0, 0.7], "frame_height_m": 0.66, "aspect": 1.25},
+  {"name": "hair_side", "yaw_deg": 90.0, "elevation_deg": 5.0, "target": [0.0, 0.0, 0.7], "frame_height_m": 0.66, "aspect": 1.25},
+  {"name": "hair_back", "yaw_deg": 180.0, "elevation_deg": 5.0, "target": [0.0, 0.0, 0.7], "frame_height_m": 0.66, "aspect": 1.25},
+  {"name": "back_macro", "yaw_deg": 165.0, "elevation_deg": 5.0, "target": [0.05, 0.05, 0.72], "frame_height_m": 0.26, "aspect": 1.0}
+ ]
+}
