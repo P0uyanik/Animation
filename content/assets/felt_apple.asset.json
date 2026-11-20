@@ -1,0 +1,209 @@
+{
+  "format": "plush.asset",
+  "version": 1,
+  "id": "prop.felt_apple",
+  "licence": "CC0-1.0",
+  "attribution": "Plush Studio project; generated from a sphere primitive (centred)",
+  "mesh": {
+    "primitive": "sphere",
+    "radius": 0.035
+  },
+  "material_presets": [
+    "felt"
+  ],
+  "scale": 1.0,
+  "sockets": {
+    "grip": {
+      "translation": [
+        0.035,
+        0,
+        0
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        -90
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    "grip_b": {
+      "translation": [
+        -0.035,
+        0,
+        0
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        90
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    "place": {
+      "translation": [
+        0,
+        -0.035,
+        0
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    "contact": {
+      "translation": [
+        0,
+        0.035,
+        0
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    "stem": {
+      "translation": [
+        0,
+        0.035,
+        0
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    }
+  },
+  "collision": {
+    "type": "sphere",
+    "radius": 0.035
+  },
+  "affordances": {
+    "format": "plush.affordances",
+    "version": 1,
+    "size_class": "small",
+    "weight_class": "light",
+    "mass_kg": 0.04,
+    "hands": "one",
+    "pivot": [
+      0,
+      0,
+      0
+    ],
+    "upright": {
+      "axis": [
+        0,
+        1,
+        0
+      ],
+      "max_tilt_deg": 180
+    },
+    "grasp_sites": [
+      {
+        "id": "side_a",
+        "socket": "grip",
+        "hand": "any",
+        "shape": "wrap",
+        "turnable": true,
+        "fingers": {
+          "thumb": "opposed",
+          "band": [
+            -0.0175,
+            0.0175
+          ]
+        }
+      },
+      {
+        "id": "side_b",
+        "socket": "grip_b",
+        "hand": "any",
+        "shape": "wrap",
+        "turnable": true,
+        "fingers": {
+          "thumb": "opposed",
+          "band": [
+            -0.0175,
+            0.0175
+          ]
+        }
+      },
+      {
+        "id": "stem",
+        "socket": "stem",
+        "hand": "any",
+        "shape": "pinch",
+        "aperture": 0.01,
+        "approach": [
+          0,
+          1,
+          0
+        ]
+      }
+    ],
+    "grasp_sets": [
+      {
+        "id": "a",
+        "sites": [
+          "side_a"
+        ]
+      },
+      {
+        "id": "b",
+        "sites": [
+          "side_b"
+        ]
+      },
+      {
+        "id": "stem",
+        "sites": [
+          "stem"
+        ]
+      }
+    ],
+    "handover": {
+      "give": [
+        "a"
+      ],
+      "receive": [
+        "b"
+      ]
+    },
+    "place": {
+      "socket": "place",
+      "surface_normal": [
+        0,
+        1,
+        0
+      ],
+      "settle": "soft"
+    },
+    "deform": {
+      "mode": "rigid"
+    }
+  }
+}

@@ -516,6 +516,7 @@ def check_python_tests(logs: Path) -> Result:
         [sys.executable, str(ROOT / "pipeline/charsys/tests/test_materials_r2.py")],  # T-092 presets/3
         [sys.executable, str(ROOT / "pipeline/production/tests/test_sets.py")],  # T-098L set data
         [sys.executable, str(ROOT / "tools/fit/tests/test_fit.py")],  # T-090 fit optimiser
+        [sys.executable, str(ROOT / "tests/props/test_props.py")],  # T-163 starter prop library
         [sys.executable, str(ROOT / "pipeline/charsys/tests/test_face_v3.py")],  # T-089 face/3 (plain checks)
         [sys.executable, str(ROOT / "pipeline/charsys/tests/test_face_v3b.py")],  # T-089b face polish (plain checks)
         [sys.executable, str(ROOT / "pipeline/charsys/tests/test_face_v4.py")],  # T-109 face round 4 (plain checks)
@@ -531,6 +532,7 @@ def check_python_tests(logs: Path) -> Result:
         [sys.executable, str(ROOT / "tests/acting/test_boy_signature.py")],  # T-097-boy acting signature
         [sys.executable, str(ROOT / "pipeline/charsys/tests/test_boy2_face.py")],  # T-058 spec checks, no Blender (T-077)
         [sys.executable, str(ROOT / "tools/ci/tests/test_t127_shards.py")],  # T-127 shard plan, verdict, inventory
+        [sys.executable, str(ROOT / "tools/tests/test_task_kit.py")],  # T-165 opt-in task kit
     ]
     cleanup_tests = ROOT / "tools/cleanup/run_tests.py"  # T-048 branch-cleanup tests, once merged
     if cleanup_tests.is_file():
@@ -809,6 +811,18 @@ def unit_determinism(c: BlenderContext) -> None:
                  determinism_log)
 
 
+def unit_build_determinism_girl(c: BlenderContext) -> None:
+    # T-158: build the current girl (0.13.0) twice; before T-158 her ears / upper lids changed between runs by ~1e-8 m
+    # (below the 0.01 mm fingerprint grid, hence --strict: 1e-7 m mesh hashes with shape keys).
+    log = c.logs / "blender-build-determinism-girl.log"
+    out = c.out / "build-determinism-girl"
+    code, _ = run_logged([sys.executable, str(ROOT / "pipeline/charsys/tests/test_determinism.py"), "--blender",
+                          c.executable, "--out", str(out), "--character", "girl_auburn_bun_glasses", "--runs", "2",
+                          "--jobs", "2", "--strict"], log)
+    ok = code == 0 and json_pass(out / "determinism.json")
+    add_subcheck(c.subchecks, "build determinism girl", ok, "" if ok else "two girl builds differ", log)
+
+
 def unit_export_engine(c: BlenderContext) -> None:
     export_log = c.logs / "blender-export-engine.log"
     export_command = [
@@ -828,6 +842,14 @@ def unit_hair(c: BlenderContext) -> None:
     hair_code, _ = run_logged(hair_command, hair_log)
     hair_ok = hair_code == 0 and json_pass(hair_json)
     add_subcheck(c.subchecks, "hair/groom test", hair_ok, "" if hair_ok else "hair/groom test failed", hair_log)
+
+
+def unit_hair_curves(c: BlenderContext) -> None:
+    # T-141 opt-in native hair curves: the test launches Blender itself (--blender), so it runs in the Blender tier.
+    log = c.logs / "blender-hair-curves.log"
+    code, _ = run_logged([sys.executable, str(ROOT / "pipeline/charsys/tests/test_hair_curves.py"), "--blender",
+                          c.executable], log)
+    add_subcheck(c.subchecks, "hair curves (T-141)", code == 0, "" if code == 0 else "hair curves test failed", log)
 
 
 def unit_groom(c: BlenderContext) -> None:
@@ -960,9 +982,11 @@ def unit_fidelity_regression(c: BlenderContext) -> None:
 BLENDER_UNITS: list[tuple[str, object, bool]] = [
     ("charsys", unit_charsys, False),
     ("determinism", unit_determinism, False),
+    ("build-determinism-girl", unit_build_determinism_girl, False),  # T-158
     ("export-engine", unit_export_engine, False),
     ("face", unit_face, False),
     ("hair", unit_hair, False),
+    ("hair-curves", unit_hair_curves, False),  # T-141
     ("groom", unit_groom, False),
     ("garment", unit_garment, False),
     ("material-presets", unit_material_presets, False),

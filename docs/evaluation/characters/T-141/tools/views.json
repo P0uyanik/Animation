@@ -1,0 +1,236 @@
+{
+ "third_hair": [
+  {
+   "name": "hair_front",
+   "yaw_deg": 0.0,
+   "elevation_deg": 5.0,
+   "target": [
+    0.0,
+    0.0,
+    0.7
+   ],
+   "frame_height_m": 0.66,
+   "aspect": 1.25
+  },
+  {
+   "name": "hair_side",
+   "yaw_deg": 90.0,
+   "elevation_deg": 5.0,
+   "target": [
+    0.0,
+    0.0,
+    0.7
+   ],
+   "frame_height_m": 0.66,
+   "aspect": 1.25
+  },
+  {
+   "name": "hair_back",
+   "yaw_deg": 180.0,
+   "elevation_deg": 5.0,
+   "target": [
+    0.0,
+    0.0,
+    0.7
+   ],
+   "frame_height_m": 0.66,
+   "aspect": 1.25
+  },
+  {
+   "name": "back_macro",
+   "yaw_deg": 165.0,
+   "elevation_deg": 5.0,
+   "target": [
+    0.05,
+    0.05,
+    0.72
+   ],
+   "frame_height_m": 0.26,
+   "aspect": 1.0
+  }
+ ],
+ "auburn_hair": [
+  {
+   "name": "hair_3q",
+   "yaw_deg": -40.0,
+   "elevation_deg": 5.0,
+   "target": [
+    0.0,
+    0.0,
+    0.78
+   ],
+   "frame_height_m": 0.86,
+   "aspect": 1.25
+  },
+  {
+   "name": "hair_back",
+   "yaw_deg": 180.0,
+   "elevation_deg": 5.0,
+   "target": [
+    0.0,
+    0.0,
+    0.78
+   ],
+   "frame_height_m": 0.86,
+   "aspect": 1.25
+  },
+  {
+   "name": "ringlet_macro",
+   "yaw_deg": -55.0,
+   "elevation_deg": 5.0,
+   "target": [
+    -0.19,
+    -0.03,
+    0.6
+   ],
+   "frame_height_m": 0.26,
+   "aspect": 1.0
+  }
+ ],
+ "turntable": [
+  {
+   "name": "turn_00",
+   "yaw_deg": 150.0,
+   "elevation_deg": 5.0,
+   "target": [
+    0.0,
+    0.0,
+    0.7
+   ],
+   "frame_height_m": 0.66,
+   "aspect": 1.25
+  },
+  {
+   "name": "turn_01",
+   "yaw_deg": 155.0,
+   "elevation_deg": 5.0,
+   "target": [
+    0.0,
+    0.0,
+    0.7
+   ],
+   "frame_height_m": 0.66,
+   "aspect": 1.25
+  },
+  {
+   "name": "turn_02",
+   "yaw_deg": 160.0,
+   "elevation_deg": 5.0,
+   "target": [
+    0.0,
+    0.0,
+    0.7
+   ],
+   "frame_height_m": 0.66,
+   "aspect": 1.25
+  },
+  {
+   "name": "turn_03",
+   "yaw_deg": 165.0,
+   "elevation_deg": 5.0,
+   "target": [
+    0.0,
+    0.0,
+    0.7
+   ],
+   "frame_height_m": 0.66,
+   "aspect": 1.25
+  },
+  {
+   "name": "turn_04",
+   "yaw_deg": 170.0,
+   "elevation_deg": 5.0,
+   "target": [
+    0.0,
+    0.0,
+    0.7
+   ],
+   "frame_height_m": 0.66,
+   "aspect": 1.25
+  },
+  {
+   "name": "turn_05",
+   "yaw_deg": 175.0,
+   "elevation_deg": 5.0,
+   "target": [
+    0.0,
+    0.0,
+    0.7
+   ],
+   "frame_height_m": 0.66,
+   "aspect": 1.25
+  },
+  {
+   "name": "turn_06",
+   "yaw_deg": 180.0,
+   "elevation_deg": 5.0,
+   "target": [
+    0.0,
+    0.0,
+    0.7
+   ],
+   "frame_height_m": 0.66,
+   "aspect": 1.25
+  },
+  {
+   "name": "turn_07",
+   "yaw_deg": 185.0,
+   "elevation_deg": 5.0,
+   "target": [
+    0.0,
+    0.0,
+    0.7
+   ],
+   "frame_height_m": 0.66,
+   "aspect": 1.25
+  },
+  {
+   "name": "turn_08",
+   "yaw_deg": 190.0,
+   "elevation_deg": 5.0,
+   "target": [
+    0.0,
+    0.0,
+    0.7
+   ],
+   "frame_height_m": 0.66,
+   "aspect": 1.25
+  },
+  {
+   "name": "turn_09",
+   "yaw_deg": 195.0,
+   "elevation_deg": 5.0,
+   "target": [
+    0.0,
+    0.0,
+    0.7
+   ],
+   "frame_height_m": 0.66,
+   "aspect": 1.25
+  },
+  {
+   "name": "turn_10",
+   "yaw_deg": 200.0,
+   "elevation_deg": 5.0,
+   "target": [
+    0.0,
+    0.0,
+    0.7
+   ],
+   "frame_height_m": 0.66,
+   "aspect": 1.25
+  },
+  {
+   "name": "turn_11",
+   "yaw_deg": 205.0,
+   "elevation_deg": 5.0,
+   "target": [
+    0.0,
+    0.0,
+    0.7
+   ],
+   "frame_height_m": 0.66,
+   "aspect": 1.25
+  }
+ ]
+}

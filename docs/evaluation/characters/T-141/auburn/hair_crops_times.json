@@ -1,0 +1,14 @@
+{
+ "samples": 16,
+ "px": 600,
+ "views": [
+  "hair_3q",
+  "hair_back",
+  "ringlet_macro"
+ ],
+ "seconds": {
+  "base": 310.7,
+  "add": 421.1,
+  "replace": 371.7
+ }
+}

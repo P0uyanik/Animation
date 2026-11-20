@@ -1,0 +1,523 @@
+{
+  "inputs": {
+    "main": "381fd216",
+    "T-160": "2dccd745",
+    "T-161": "27f5637"
+  },
+  "measurement_basis": "Reference column only, copied from T-161. Tolerances are symmetric working bands for matched views. M = manual measurement or count. E = visual estimate. F = widest bare cheek width. Hh = main hair crown to chin, excluding buns. Image x increases to viewer right.",
+  "definitions": {
+    "crown_above_skull": {
+      "kind": "ratio",
+      "protocol": "Highest main hair tip (exclude buns) above inferred smooth skull apex / Hh. Skull apex reconstructed by eye from temporal curvature."
+    },
+    "fringe_eye": {
+      "kind": "ratio",
+      "protocol": "Iris-centre y minus centreline fringe-tip y / Hh. Positive means fringe ends above eyes."
+    },
+    "forehead_covered": {
+      "kind": "ratio",
+      "protocol": "On facial midline, length of inferred skull-apex to brow interval covered by hair / full interval (cap at 1)."
+    },
+    "temple_sweep": {
+      "kind": "ratio",
+      "protocol": "Iris-centre y minus y of hair/skin edge at outer canthus x / Hh. Positive above eye."
+    },
+    "hair_cheek_width": {
+      "kind": "ratio",
+      "protocol": "Outermost hair-to-hair distance at y midway between pupils and mouth / F. Enter 0 if no hair crosses this line."
+    },
+    "hair_shoulder_width": {
+      "kind": "ratio",
+      "protocol": "Hair-to-hair span at shoulder seam level / F. Enter 0 if hair ends above this line."
+    },
+    "lock_count": {
+      "kind": "count",
+      "protocol": "Distinct major visible terminals across rear lower silhouette (one tip per separated major clump; ignore fibres and internal ridges)."
+    },
+    "lock_spacing": {
+      "kind": "ratio",
+      "protocol": "Typical horizontal spacing between adjacent tips / rear hair silhouette width at its widest, estimated across central group."
+    },
+    "lock_end": {
+      "kind": "category",
+      "protocol": "Shape of major rear terminals and flow into them."
+    },
+    "bun_count": {
+      "kind": "count",
+      "protocol": "Count distinct tied-up bun masses (lobes of auburn single knot count together)."
+    },
+    "bun_width": {
+      "kind": "ratio",
+      "protocol": "Outer width of one bun / F (auburn whole knot, white image-left bun). Zero for absent."
+    },
+    "bun_x": {
+      "kind": "ratio",
+      "protocol": "Signed horizontal bun centre from facial midline / F, right positive. For twins use image-left. Zero if absent."
+    },
+    "bun_y": {
+      "kind": "ratio",
+      "protocol": "Vertical bun centre above iris-centre line / Hh. Zero if absent."
+    },
+    "accessory": {
+      "kind": "category",
+      "protocol": "Hair accessory identity and side in front view (image coordinates)."
+    },
+    "accessory_x": {
+      "kind": "ratio",
+      "protocol": "Pink flower or blue bow centre x minus facial midline / F. Zero if absent."
+    },
+    "accessory_y": {
+      "kind": "ratio",
+      "protocol": "Eye line minus accessory centre y / Hh. Zero if absent."
+    }
+  },
+  "characters": {
+    "boy": {
+      "evidence": "boy.jpg",
+      "ranked_targets": [
+        {
+          "rank": 1,
+          "feature": "Fringe depth",
+          "comparison": "R6 exposes a band of forehead above the brows. In val27 the central lock splits near its end and hangs between the eyes, with small wedges of skin on either side.",
+          "direction": "Extend two overlapping guides from the off-centre crown and give their tips unequal lengths. Aim for a centre-tip gap of 0.059 +/- 0.05 head heights above the iris line."
+        },
+        {
+          "rank": 2,
+          "feature": "Crown and nape",
+          "comparison": "R6 reads as a radial stack of long leaves. B05 has lifted, bent crown tufts over shorter overlapping tufts that close around the nape above the hood.",
+          "direction": "Offset the whorl, bend the upper guides in different directions and interrupt long rear leaves with a shorter lower layer. Resolve about 10 +/- 2 major ends across the rear hem."
+        },
+        {
+          "rank": 3,
+          "feature": "Temple silhouette",
+          "comparison": "R6 flares sideways at eye level. The reference is full high on the head in front and three-quarter views, then folds inward over the ear root in profile.",
+          "direction": "Turn the outer guides downward and tuck their tips against the upper ear. Leave the lower pinna and cheeks exposed."
+        },
+        {
+          "rank": 4,
+          "feature": "Crown colour and depth",
+          "comparison": "R6 reads nearly uniform charcoal. B05 shows warm black-brown ridges divided by deep, irregular shadow channels.",
+          "direction": "Group several fibres into each ridge, recess the roots between overlapping groups and lift the lit ridges slightly toward brown."
+        },
+        {
+          "rank": 5,
+          "feature": "Surface",
+          "comparison": "B04 shows short nap on the tufts and fine stray fibres picked out by rim light. R6 has a more even grain across each leaf.",
+          "direction": "Align short fibres with each guide, allow sparse longer strays at crowns and tips, and keep the sheen broad and subdued."
+        }
+      ],
+      "reference_targets": {
+        "crown_above_skull": {
+          "value": 0.2206,
+          "tolerance": 0.1,
+          "mark": "E",
+          "source": "boy.jpg row 1 left (val27_front)",
+          "trace": "60/272"
+        },
+        "fringe_eye": {
+          "value": 0.0588,
+          "tolerance": 0.05,
+          "mark": "M",
+          "source": "boy.jpg row 1 left (val27_front)",
+          "trace": "16/272"
+        },
+        "forehead_covered": {
+          "value": 1.0,
+          "tolerance": 0.13,
+          "mark": "E",
+          "source": "boy.jpg row 1 left (val27_front)",
+          "trace": "1"
+        },
+        "temple_sweep": {
+          "value": 0.0331,
+          "tolerance": 0.055,
+          "mark": "E",
+          "source": "boy.jpg row 1 left (val27_front)",
+          "trace": "9/272"
+        },
+        "hair_cheek_width": {
+          "value": 0.0,
+          "tolerance": 0.12,
+          "mark": "M",
+          "source": "boy.jpg row 1 left (val27_front)",
+          "trace": "0"
+        },
+        "hair_shoulder_width": {
+          "value": 0.0,
+          "tolerance": 0.15,
+          "mark": "M",
+          "source": "boy.jpg row 1 left (val27_front)",
+          "trace": "0"
+        },
+        "lock_count": {
+          "value": 10.0,
+          "tolerance": 2,
+          "mark": "E",
+          "source": "boy.jpg row 5 left (val27_back)",
+          "trace": "10"
+        },
+        "lock_spacing": {
+          "value": 0.0885,
+          "tolerance": 0.04,
+          "mark": "E",
+          "source": "boy.jpg row 5 left (val27_back)",
+          "trace": "23/260"
+        },
+        "lock_end": {
+          "value": "staggered short pointed tufts",
+          "tolerance": "exact",
+          "mark": "E",
+          "source": "boy.jpg row 5 left (val27_back)",
+          "trace": "staggered short pointed tufts"
+        },
+        "bun_count": {
+          "value": 0.0,
+          "tolerance": 0,
+          "mark": "M",
+          "source": "boy.jpg row 1 left (val27_front)",
+          "trace": "0"
+        },
+        "bun_width": {
+          "value": 0.0,
+          "tolerance": 0.12,
+          "mark": "M",
+          "source": "boy.jpg row 1 left (val27_front)",
+          "trace": "0"
+        },
+        "bun_x": {
+          "value": 0.0,
+          "tolerance": 0.07,
+          "mark": "M",
+          "source": "boy.jpg row 1 left (val27_front)",
+          "trace": "0"
+        },
+        "bun_y": {
+          "value": 0.0,
+          "tolerance": 0.09,
+          "mark": "M",
+          "source": "boy.jpg row 1 left (val27_front)",
+          "trace": "0"
+        },
+        "accessory": {
+          "value": "none",
+          "tolerance": "exact",
+          "mark": "E",
+          "source": "boy.jpg row 1 left (val27_front)",
+          "trace": "none"
+        },
+        "accessory_x": {
+          "value": 0.0,
+          "tolerance": 0.07,
+          "mark": "M",
+          "source": "boy.jpg row 1 left (val27_front)",
+          "trace": "0"
+        },
+        "accessory_y": {
+          "value": 0.0,
+          "tolerance": 0.08,
+          "mark": "M",
+          "source": "boy.jpg row 1 left (val27_front)",
+          "trace": "0"
+        }
+      }
+    },
+    "auburn": {
+      "evidence": "auburn.jpg",
+      "ranked_targets": [
+        {
+          "rank": 1,
+          "feature": "Rear ringlets",
+          "comparison": "R6 has a long, nearly solid upper curtain and a crosswise band of interlocking curls low on the back. In G05, individual spirals start higher and can be followed to separate hooked ends.",
+          "direction": "Start curls at staggered heights below the gathered crown. Vary pitch, radius and phase per guide, leaving dark gaps between roughly 9 +/- 2 rear terminals."
+        },
+        {
+          "rank": 2,
+          "feature": "Part and fringe",
+          "comparison": "Two dense R6 panels descend toward the glasses. In sheet30 the off-centre part feeds a broad curved sweep over one brow and a smaller sweep on the other.",
+          "direction": "Shift the part toward image right, comb both groups outward along the temples and peel a fine wisp from the heavier sweep. Preserve the open forehead above the rims."
+        },
+        {
+          "rank": 3,
+          "feature": "Side and shoulder volume",
+          "comparison": "R6 carries bulk beside the frames, then narrows to short visible ends in front. In three-quarter and profile the ear and glasses arm show, with loose curls falling behind them and over the backs of the shoulders.",
+          "direction": "Route the main curtain behind the ears, release a slimmer spiral beside each cheek and carry the rear guides down across the upper back."
+        },
+        {
+          "rank": 4,
+          "feature": "Bun and trim",
+          "comparison": "R6 shows a round striated ball on an exposed row of blue beads. The reference knot has unequal folded lobes, a partly buried blue tie and a pink flower tucked into its image-right base.",
+          "direction": "Fold one broad coil back on itself, offset the knot toward image left and sink the tie into the join. Nest the flower against the fold."
+        },
+        {
+          "rank": 5,
+          "feature": "Fibre and colour",
+          "comparison": "R6 reads as one grainy brown surface. G04/G06 show soft chestnut-auburn bundles with copper-lit outer turns, darker inner turns and fine loose hairs at the fringe and curl edges.",
+          "direction": "Comb fibre detail along each twist, thin the even surface fuzz and let a soft directional highlight travel along the outer bend."
+        }
+      ],
+      "reference_targets": {
+        "crown_above_skull": {
+          "value": 0.1257,
+          "tolerance": 0.1,
+          "mark": "E",
+          "source": "auburn.jpg row 1 left (sheet30_front)",
+          "trace": "24/191"
+        },
+        "fringe_eye": {
+          "value": 0.288,
+          "tolerance": 0.05,
+          "mark": "M",
+          "source": "auburn.jpg row 1 left (sheet30_front)",
+          "trace": "55/191"
+        },
+        "forehead_covered": {
+          "value": 0.8,
+          "tolerance": 0.13,
+          "mark": "E",
+          "source": "auburn.jpg row 1 left (sheet30_front)",
+          "trace": ".80"
+        },
+        "temple_sweep": {
+          "value": 0.0471,
+          "tolerance": 0.055,
+          "mark": "E",
+          "source": "auburn.jpg row 1 left (sheet30_front)",
+          "trace": "9/191"
+        },
+        "hair_cheek_width": {
+          "value": 1.3709,
+          "tolerance": 0.12,
+          "mark": "E",
+          "source": "auburn.jpg row 1 left (sheet30_front)",
+          "trace": "207/151"
+        },
+        "hair_shoulder_width": {
+          "value": 1.4406,
+          "tolerance": 0.15,
+          "mark": "E",
+          "source": "auburn.jpg row 6 left (sheet30_front)",
+          "trace": "206/143"
+        },
+        "lock_count": {
+          "value": 9.0,
+          "tolerance": 2,
+          "mark": "E",
+          "source": "auburn.jpg row 5 left (sheet30_back)",
+          "trace": "9"
+        },
+        "lock_spacing": {
+          "value": 0.1076,
+          "tolerance": 0.04,
+          "mark": "E",
+          "source": "auburn.jpg row 5 left (sheet30_back)",
+          "trace": "24/223"
+        },
+        "lock_end": {
+          "value": "separated corkscrew ends",
+          "tolerance": "exact",
+          "mark": "E",
+          "source": "auburn.jpg row 5 left (sheet30_back)",
+          "trace": "separated corkscrew ends"
+        },
+        "bun_count": {
+          "value": 1.0,
+          "tolerance": 0,
+          "mark": "M",
+          "source": "auburn.jpg row 1 left (sheet30_front)",
+          "trace": "1"
+        },
+        "bun_width": {
+          "value": 0.7881,
+          "tolerance": 0.12,
+          "mark": "E",
+          "source": "auburn.jpg row 1 left (sheet30_front)",
+          "trace": "119/151"
+        },
+        "bun_x": {
+          "value": -0.1457,
+          "tolerance": 0.07,
+          "mark": "E",
+          "source": "auburn.jpg row 1 left (sheet30_front)",
+          "trace": "-22/151"
+        },
+        "bun_y": {
+          "value": 0.7853,
+          "tolerance": 0.09,
+          "mark": "E",
+          "source": "auburn.jpg row 1 left (sheet30_front)",
+          "trace": "150/191"
+        },
+        "accessory": {
+          "value": "blue tie and pink flower on right",
+          "tolerance": "exact",
+          "mark": "E",
+          "source": "auburn.jpg row 1 left (sheet30_front)",
+          "trace": "blue tie and pink flower on right"
+        },
+        "accessory_x": {
+          "value": 0.298,
+          "tolerance": 0.07,
+          "mark": "M",
+          "source": "auburn.jpg row 1 left (sheet30_front)",
+          "trace": "45/151"
+        },
+        "accessory_y": {
+          "value": 0.6754,
+          "tolerance": 0.08,
+          "mark": "M",
+          "source": "auburn.jpg row 1 left (sheet30_front)",
+          "trace": "129/191"
+        }
+      }
+    },
+    "white_haired": {
+      "evidence": "white_haired.jpg",
+      "ranked_targets": [
+        {
+          "rank": 1,
+          "feature": "Fall over the shoulders",
+          "comparison": "R6 has prominent hanging side locks and a rear row of pointed waves bending together. W04 has overlapping S-curves of different widths and lengths, with narrow tips turning back or out.",
+          "direction": "Offset the bends vertically, vary taper and let adjacent waves overlap and separate. Draw the front side locks back toward the shoulders so the fuller fall sits behind them in profile."
+        },
+        {
+          "rank": 2,
+          "feature": "Fringe and temple",
+          "comparison": "R6 has deep, evenly spaced vertical divisions across the forehead. In 01 the shallow crown part opens into short swept wisps with uneven gaps above the eyes. The temple turns back to reveal the near ear.",
+          "direction": "Fan the bangs diagonally from the part, merge some roots and split only selected tips. Keep the centre gap near 0.186 +/- 0.05 head heights while opening the temple."
+        },
+        {
+          "rank": 3,
+          "feature": "Twin buns",
+          "comparison": "R6 has conspicuous stacked bands around two round buns. In 01 and W04, each is a soft, slightly uneven knot with fine strands following the wrap. Their bases blend into the swept crown.",
+          "direction": "Build two compact wound masses, soften the groove depth and taper the wrap into the roots. Use the image-left bun width of 0.701 +/- 0.12 face widths in front."
+        },
+        {
+          "rank": 4,
+          "feature": "Blue bow",
+          "comparison": "The R6 bow has thick, smooth lobes facing the camera. In 01/02 the folded loops sit at a slight tilt on her right, at the front hairline just below the right bun.",
+          "direction": "Anchor the knot to that hairline (viewer left), tilt the loop axis and pinch the loop folds into the knot. Keep the short tails visible against the fringe."
+        },
+        {
+          "rank": 5,
+          "feature": "Fibre and colour",
+          "comparison": "R6 spreads pale grain evenly across broad locks. W04 shows warm ivory ridges, shaded beige channels and stray fine hairs along the lit outline.",
+          "direction": "Lay fine strands along the S-curves and bun wraps. Use a soft lengthwise sheen and restrained edge flyaways so the channels remain legible."
+        }
+      ],
+      "reference_targets": {
+        "crown_above_skull": {
+          "value": 0.1202,
+          "tolerance": 0.1,
+          "mark": "E",
+          "source": "white_haired.jpg row 1 left (W01)",
+          "trace": "22/183"
+        },
+        "fringe_eye": {
+          "value": 0.1858,
+          "tolerance": 0.05,
+          "mark": "M",
+          "source": "white_haired.jpg row 1 left (W01)",
+          "trace": "34/183"
+        },
+        "forehead_covered": {
+          "value": 0.9,
+          "tolerance": 0.13,
+          "mark": "E",
+          "source": "white_haired.jpg row 1 left (W01)",
+          "trace": ".90"
+        },
+        "temple_sweep": {
+          "value": 0.082,
+          "tolerance": 0.055,
+          "mark": "E",
+          "source": "white_haired.jpg row 1 left (W01)",
+          "trace": "15/183"
+        },
+        "hair_cheek_width": {
+          "value": 1.6423,
+          "tolerance": 0.12,
+          "mark": "E",
+          "source": "white_haired.jpg row 1 left (W01)",
+          "trace": "225/137"
+        },
+        "hair_shoulder_width": {
+          "value": 1.6852,
+          "tolerance": 0.15,
+          "mark": "E",
+          "source": "white_haired.jpg row 6 left (W01)",
+          "trace": "182/108"
+        },
+        "lock_count": {
+          "value": 8.0,
+          "tolerance": 2,
+          "mark": "E",
+          "source": "white_haired.jpg row 5 left (W17)",
+          "trace": "8"
+        },
+        "lock_spacing": {
+          "value": 0.1159,
+          "tolerance": 0.04,
+          "mark": "E",
+          "source": "white_haired.jpg row 5 left (W17)",
+          "trace": "27/233"
+        },
+        "lock_end": {
+          "value": "fine tapered S waves",
+          "tolerance": "exact",
+          "mark": "E",
+          "source": "white_haired.jpg row 5 left (W17)",
+          "trace": "fine tapered S waves"
+        },
+        "bun_count": {
+          "value": 2.0,
+          "tolerance": 0,
+          "mark": "M",
+          "source": "white_haired.jpg row 1 left (W01)",
+          "trace": "2"
+        },
+        "bun_width": {
+          "value": 0.7007,
+          "tolerance": 0.12,
+          "mark": "M",
+          "source": "white_haired.jpg row 1 left (W01)",
+          "trace": "96/137"
+        },
+        "bun_x": {
+          "value": -0.292,
+          "tolerance": 0.07,
+          "mark": "M",
+          "source": "white_haired.jpg row 1 left (W01)",
+          "trace": "-40/137"
+        },
+        "bun_y": {
+          "value": 0.6448,
+          "tolerance": 0.09,
+          "mark": "M",
+          "source": "white_haired.jpg row 1 left (W01)",
+          "trace": "118/183"
+        },
+        "accessory": {
+          "value": "blue bow on left",
+          "tolerance": "exact",
+          "mark": "E",
+          "source": "white_haired.jpg row 1 left (W01)",
+          "trace": "blue bow on left"
+        },
+        "accessory_x": {
+          "value": -0.5474,
+          "tolerance": 0.07,
+          "mark": "M",
+          "source": "white_haired.jpg row 1 left (W01)",
+          "trace": "-75/137"
+        },
+        "accessory_y": {
+          "value": 0.459,
+          "tolerance": 0.08,
+          "mark": "M",
+          "source": "white_haired.jpg row 1 left (W01)",
+          "trace": "84/183"
+        }
+      }
+    }
+  }
+}

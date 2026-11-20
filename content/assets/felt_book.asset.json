@@ -1,0 +1,195 @@
+{
+  "format": "plush.asset",
+  "version": 1,
+  "id": "prop.felt_book",
+  "licence": "CC0-1.0",
+  "attribution": "Plush Studio project; generated from a box primitive (centred; closed cover)",
+  "mesh": {
+    "primitive": "box",
+    "size": [
+      0.15,
+      0.025,
+      0.21
+    ]
+  },
+  "material_presets": [
+    "felt"
+  ],
+  "scale": 1.0,
+  "sockets": {
+    "grip": {
+      "translation": [
+        -0.075,
+        0,
+        0
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    "grip_b": {
+      "translation": [
+        0.075,
+        0,
+        0
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    "place": {
+      "translation": [
+        0,
+        -0.0125,
+        0
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    "top": {
+      "translation": [
+        0,
+        0.0125,
+        0
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    "contact": {
+      "translation": [
+        0,
+        0.0125,
+        0
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    }
+  },
+  "collision": {
+    "type": "box",
+    "size": [
+      0.15,
+      0.025,
+      0.21
+    ]
+  },
+  "affordances": {
+    "format": "plush.affordances",
+    "version": 1,
+    "size_class": "medium",
+    "weight_class": "light",
+    "mass_kg": 0.3,
+    "hands": "one",
+    "pivot": [
+      0,
+      0,
+      0
+    ],
+    "upright": {
+      "axis": [
+        0,
+        1,
+        0
+      ],
+      "max_tilt_deg": 30
+    },
+    "grasp_sites": [
+      {
+        "id": "spine",
+        "socket": "grip",
+        "hand": "any",
+        "shape": "pinch",
+        "aperture": 0.025,
+        "approach": [
+          -1,
+          0,
+          0
+        ]
+      },
+      {
+        "id": "fore_edge",
+        "socket": "grip_b",
+        "hand": "any",
+        "shape": "pinch",
+        "aperture": 0.025,
+        "approach": [
+          1,
+          0,
+          0
+        ]
+      }
+    ],
+    "grasp_sets": [
+      {
+        "id": "a",
+        "sites": [
+          "spine"
+        ]
+      },
+      {
+        "id": "b",
+        "sites": [
+          "fore_edge"
+        ]
+      }
+    ],
+    "handover": {
+      "give": [
+        "a"
+      ],
+      "receive": [
+        "b"
+      ]
+    },
+    "place": {
+      "socket": "place",
+      "surface_normal": [
+        0,
+        1,
+        0
+      ],
+      "settle": "rigid"
+    },
+    "deform": {
+      "mode": "rigid"
+    }
+  }
+}

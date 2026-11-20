@@ -1,0 +1,189 @@
+{
+  "format": "plush.asset",
+  "version": 1,
+  "id": "prop.felt_toy",
+  "licence": "CC0-1.0",
+  "attribution": "Plush Studio project; a stubby standing felt doll generated from a cylinder primitive (base at the origin, axis +Y)",
+  "mesh": {
+    "primitive": "cylinder",
+    "radius": 0.03,
+    "height": 0.1
+  },
+  "material_presets": [
+    "felt"
+  ],
+  "scale": 1.0,
+  "sockets": {
+    "grip": {
+      "translation": [
+        0.03,
+        0.065,
+        0
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        -90
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    "grip_b": {
+      "translation": [
+        -0.03,
+        0.035,
+        0
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        90
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    "place": {
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    "contact": {
+      "translation": [
+        0,
+        0.1,
+        0
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    }
+  },
+  "collision": {
+    "type": "capsule",
+    "radius": 0.03,
+    "height": 0.1,
+    "transform": {
+      "translation": [
+        0,
+        0.05,
+        0
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    }
+  },
+  "affordances": {
+    "format": "plush.affordances",
+    "version": 1,
+    "size_class": "small",
+    "weight_class": "light",
+    "mass_kg": 0.06,
+    "hands": "one",
+    "pivot": "place",
+    "upright": {
+      "axis": [
+        0,
+        1,
+        0
+      ],
+      "max_tilt_deg": 180
+    },
+    "grasp_sites": [
+      {
+        "id": "torso_a",
+        "socket": "grip",
+        "hand": "any",
+        "shape": "wrap",
+        "turnable": true,
+        "fingers": {
+          "thumb": "opposed",
+          "band": [
+            0.045,
+            0.085
+          ]
+        }
+      },
+      {
+        "id": "torso_b",
+        "socket": "grip_b",
+        "hand": "any",
+        "shape": "wrap",
+        "turnable": true,
+        "fingers": {
+          "thumb": "opposed",
+          "band": [
+            0.015,
+            0.055
+          ]
+        }
+      }
+    ],
+    "grasp_sets": [
+      {
+        "id": "a",
+        "sites": [
+          "torso_a"
+        ]
+      },
+      {
+        "id": "b",
+        "sites": [
+          "torso_b"
+        ]
+      }
+    ],
+    "handover": {
+      "give": [
+        "a"
+      ],
+      "receive": [
+        "b"
+      ]
+    },
+    "place": {
+      "socket": "place",
+      "surface_normal": [
+        0,
+        1,
+        0
+      ],
+      "settle": "soft"
+    },
+    "deform": {
+      "mode": "rigid"
+    }
+  }
+}
