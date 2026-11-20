@@ -1,0 +1,66 @@
+{
+ "ok": true,
+ "command": "python3 tools/regression/run.py --blender blender (bpy 5.3) --out <tmp> --base origin/main --jobs 3",
+ "results": [
+  {
+   "character": "boy_yellow_hoodie",
+   "checks": [
+    {
+     "detail": "67.26 vs 67.25 (drop -0.00, max 2.0)",
+     "name": "fidelity",
+     "ok": true
+    },
+    {
+     "detail": "byte-equal [identical to the approved baseline]",
+     "name": "fingerprint",
+     "ok": true
+    },
+    {
+     "detail": "summary equal [identical to the approved baseline]",
+     "name": "engine export",
+     "ok": true
+    },
+    {
+     "detail": "within noise (max rmse 0.0001 <= 0.006, changed 0.0000 <= 0.008) [identical to the approved baseline]",
+     "name": "renders",
+     "ok": true
+    }
+   ]
+  },
+  {
+   "character": "girl_auburn_bun_glasses",
+   "checks": [
+    {
+     "detail": "64.16 vs 64.13 (drop -0.03, max 2.0)",
+     "name": "fidelity",
+     "ok": true
+    },
+    {
+     "detail": "byte-equal [identical to the approved baseline]",
+     "name": "fingerprint",
+     "ok": true
+    },
+    {
+     "detail": "summary equal [identical to the approved baseline]",
+     "name": "engine export",
+     "ok": true
+    },
+    {
+     "detail": "within noise (max rmse 0.0027 <= 0.006, changed 0.0033 <= 0.008) [identical to the approved baseline]",
+     "name": "renders",
+     "ok": true
+    }
+   ]
+  },
+  {
+   "character": "girl_white_hair_blue_dress",
+   "checks": [
+    {
+     "detail": "girl_white_hair_blue_dress: references only, no spec yet (not buildable; reported, not regressed)",
+     "name": "not buildable yet",
+     "ok": true
+    }
+   ]
+  }
+ ]
+}
