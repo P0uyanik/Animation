@@ -1,0 +1,5 @@
+column,frame,cup_patch_px,cup_only_px,cup_patch_pct,char.L_pupil_px,char.R_pupil_px
+0.13.0,1,0,0,,160,160
+0.13.0,2,0,0,,32,32
+0.13.0 + F1a eyes,1,0,0,,152,152
+0.13.0 + F1a eyes,2,0,0,,32,32
