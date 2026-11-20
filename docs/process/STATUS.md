@@ -10,7 +10,7 @@ Session cap: 6 (temporary 8 ended 08:20Z). Owner liaison: session_01NPjxeKamtbdz
 | T-156 eyes/lashes to T-150 targets | Fable 5.2 | running | — | `t-156-claude-eye-targets` |
 | T-160 hair round 6 (boy, auburn girl, third girl; owns the fringe) | Fable 5.2 | running | — | `t-160-claude-hair-r6` |
 | T-158 deterministic builds (recorded uv_sphere topology) | Opus 5.5 | running; every published version must still regenerate | — | `t-158-claude-deterministic-build` |
-| T-159 ears | — | queued: starts after T-158 merges | — | — |
+| T-159 temple hollow (both girls, owner ~08:35Z) then ears | Fable 5.2 | running (base integration/t-158) | — | `t-159-claude-ears` |
 
 Codex T-161 reference targets (lashes, ears, hair silhouette) go to T-156 and T-160 as targets.json.
 
@@ -43,7 +43,7 @@ Codex T-161 reference targets (lashes, ears, hair silhouette) go to T-156 and T-
 
 ## Queued (start conditions)
 - T-166 final720 default + HEVC 10-bit delivery (Sonnet): next free slot.
-- T-159 ears, T-144 option (b): after T-158 merges.
+- T-144 option (b): after T-158 merges.
 - Hands round 2: after T-155 is published.
 
 ## Decided today (for reference)

@@ -26,5 +26,6 @@ means none. Branch is the task's branch; a task branch without a row falls back 
 | T-163 | E | t-163-claude-props | `content/assets/**` (new files only), `tests/props/**`, `docs/evaluation/props/T-163/**` | — | — |
 | T-164 | C | t-164-claude-gate-comment | `.github/workflows/checks.yml` | — | — |
 | T-165 | C | t-165-claude-task-kit | `tools/ready.py`, `tools/run_logged.py`, `tools/wait_gate.py`, `tools/render_queue.py`, `tools/review/shot_sheet.py`, `tools/tests/test_task_kit.py`, `tools/check_all.py`, `docs/process/IMPLEMENTER_PROMPT.md`, `docs/tasks/_TEMPLATE.md` | — | — |
+| T-159 | E | t-159-claude-ears | `docs/evaluation/characters/T-159/**` (generator files named in the first CHECKPOINT) | T-158 | — |
 
 Supervisor-only files: docs/process/TASK_LOG.md, docs/ROADMAP.md, docs/process/OWNER_DECISIONS.md, docs/tasks/**.

@@ -661,3 +661,8 @@ READY/decision requests go there, not to session_01NPjxeNTmHt2DtBN8F8uLqB. Hando
 allowlist with a named owner-decision ref (`current_decision`); boy 2.3.0 and girl 0.14.0 carry this decision plus the
 ~08:20Z switch approval; every other case still fails; no removal, weakening or global bypass. Implemented on
 `integration/t-137`; unblocks the T-155 switch. T-164 was already merged into the Interaction batch; T-165 restarted.
+
+## 2026-11-20 ~08:35Z (09:35 CET) — Temple hollow, both girls (relayed by the owner liaison)
+Unnatural hollow at the temple above/in front of the ear (T-160 strict 3/4 crops, both girls). Diagnose (head geometry,
+ear placement, hair-to-head connection, glasses arm), fix for both girls, smooth face–temple–ear–hair transition,
+before/after close-ups. Folded into T-159 (ears) as Part A, started now on the T-158 base; candidate/opt-in only.
