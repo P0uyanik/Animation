@@ -526,6 +526,7 @@ def check_python_tests(logs: Path) -> Result:
         [sys.executable, str(ROOT / "pipeline/charsys/tests/test_hair_r6.py")],  # T-160 groom/5 (plain checks)
         [sys.executable, str(ROOT / "pipeline/charsys/tests/test_hands_r2.py")],  # T-121 hands_r2 (plain checks)
         [sys.executable, str(ROOT / "pipeline/charsys/tests/test_guard_allowlist.py")],  # T-154 guard allowlist
+        [sys.executable, str(ROOT / "pipeline/charsys/tests/test_render_profiles.py")],  # T-166 render/encode defaults
         [sys.executable, str(ROOT / "pipeline/charsys/tests/test_garments_r3.py")],  # T-119 garment/3 (plain checks)
         [sys.executable, str(ROOT / "pipeline/charsys/tests/test_expressions_r3.py")],  # T-113 expression sets (plain checks)
         [sys.executable, str(ROOT / "tests/acting/test_girl_signature.py")],  # T-097-girl acting signature
