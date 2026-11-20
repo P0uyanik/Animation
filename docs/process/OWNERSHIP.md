@@ -21,5 +21,6 @@ means none. Branch is the task's branch; a task branch without a row falls back 
 | T-156 | E | t-156-claude-eye-targets | `pipeline/charsys/face_v3/lids.py`, `pipeline/charsys/tests/test_face_r5.py`, `docs/evaluation/characters/T-156/**` | T-137 | — |
 | T-157 | E | t-157-claude-grasp-options | `engine/scene/interaction.cpp`, `engine/scene/interaction.h`, `engine/anim/animation.cpp`, `engine/anim/animation.h`, `content/hand_shapes/**`, `tests/test_grasp_contact.cpp`, `docs/evaluation/animation/T-157/**` | — | — |
 | T-158 | C | t-158-claude-deterministic-build | `pipeline/charsys/tests/test_build_determinism.py`, `docs/evaluation/characters/T-158/**` | — | — |
+| T-155 | C | t-155-claude-candidates | `assets/characters/boy_yellow_hoodie/versions/2.3.0/**`, `assets/characters/girl_auburn_bun_glasses/versions/0.14.0/**`, `assets/characters/girl_white_hair_blue_dress/versions/0.1.0/**`, `assets/characters/*/versions/index.json` (candidate entries only), `spec/candidates/**` (new files only), `docs/evaluation/characters/T-155/**` | T-154 | — |
 
 Supervisor-only files: docs/process/TASK_LOG.md, docs/ROADMAP.md, docs/process/OWNER_DECISIONS.md, docs/tasks/**.
