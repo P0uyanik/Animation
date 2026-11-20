@@ -22,10 +22,22 @@ def _f(d, k, default):
 
 def lid_roll(lids_cfg, sx, zone):
     """3x3 rotation of one lid about its eye's forward axis (lids.upper_roll_deg / lower_roll_deg; positive raises
-    the lid's OUTER end, the eye_frame roll_deg convention), or None. A rolled lid stays on its sphere (concentric
+    the lid's OUTER end, the eye_frame roll_deg convention), or None; with the opt-in lid_yaw, the two combined. A rolled lid stays on its sphere (concentric
     with the eyeball): the lower lid rising to the outer corner gives the D-shaped opening of felt-doll eyes."""
     deg = _f(lids_cfg, "upper_roll_deg" if zone == "up" else "lower_roll_deg", 0.0)
+    yaw = _f(lids_cfg, "upper_yaw_deg" if zone == "up" else "lower_yaw_deg", 0.0)
+    if abs(yaw) > 1e-9:  # T-156 (opt-in; absent = the line below, unchanged): the lid turned about the eye's vertical axis
+        return lid_yaw(sx, yaw) @ Matrix.Rotation(math.radians(-sx * deg), 3, "Y")
     return Matrix.Rotation(math.radians(-sx * deg), 3, "Y") if abs(deg) > 1e-9 else None
+
+
+def lid_yaw(sx, deg):
+    """lids.upper_yaw_deg / lower_yaw_deg (T-156, opt-in): 3x3 rotation of one lid about its eye's vertical axis,
+    positive towards the OUTER corner (the eye_frame yaw_deg convention), applied after the roll. A lid edge is close
+    to a circle about the eye's forward axis, so a roll does not move its peak; the yaw does, by r_lid * sin(yaw). It
+    lets the lid arch sit over the middle of an opening that the nose-side skin makes narrower on the inner side,
+    while the eyeball (iris) keeps its direction. The lid stays on its sphere, concentric with the eyeball."""
+    return Matrix.Rotation(math.radians(sx * deg), 3, "Z")
 
 
 def roll_lid(objs, T, R3):

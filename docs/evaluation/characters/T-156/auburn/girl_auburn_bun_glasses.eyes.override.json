@@ -1,0 +1,55 @@
+{
+ "face": {
+  "eyes": {
+   "yaw_deg": 0,
+   "iris": {
+    "radius": 0.453,
+    "pupil": 0.2265
+   },
+   "lids": {
+    "upper_edge_deg": 34,
+    "lower_edge_deg": -41,
+    "upper_curve": 1.0,
+    "lower_curve": 0.6,
+    "upper_roll_deg": 6,
+    "upper_gap": 0.012,
+    "lower_thickness_m": 0.0005,
+    "upper_yaw_deg": 8,
+    "trim": {
+     "up_outer_deg": 46
+    }
+   },
+   "lash": {
+    "srgb": [
+     96,
+     58,
+     42
+    ],
+    "span_deg": 36,
+    "thick_m": 0.0026,
+    "strands": {
+     "from_deg": 16,
+     "to_deg": 34,
+     "length_m": [
+      0.002,
+      0.0028,
+      0.0032
+     ]
+    },
+    "lower_strands": {
+     "count": 0
+    },
+    "flare": 1.2
+   },
+   "socket": {
+    "ramp_deg": 12,
+    "reach_deg": 36,
+    "carve_reach": 0.42,
+    "corner_deg": 37,
+    "clearance_m": 0.002,
+    "smooth_iterations": 24,
+    "cover_softness": 0.3
+   }
+  }
+ }
+}

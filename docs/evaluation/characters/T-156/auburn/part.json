@@ -1,0 +1,245 @@
+{
+ "character": "girl_auburn_bun_glasses",
+ "task": "T-156",
+ "columns": [
+  {
+   "tag": "baseline",
+   "label": "T-137 F1a",
+   "role": "baseline",
+   "blend": "/tmp/claude-0/-home-user/6e23d336-8842-50f4-b862-8430a93f2f65/scratchpad/a0/girl_auburn_bun_glasses_master.blend"
+  },
+  {
+   "tag": "candidate",
+   "label": "T-156 eyes",
+   "role": "candidate",
+   "blend": "/tmp/claude-0/-home-user/6e23d336-8842-50f4-b862-8430a93f2f65/scratchpad/A14/girl_auburn_bun_glasses_master.blend"
+  }
+ ],
+ "strict": {
+  "body": {
+   "target": [
+    0,
+    0,
+    0.56
+   ],
+   "frame_height_m": 1.26,
+   "aspect": 1.6
+  },
+  "face": {
+   "target": [
+    0,
+    0,
+    0.775
+   ],
+   "frame_height_m": 0.32,
+   "aspect": 1.0
+  },
+  "rows": [
+   [
+    "front",
+    "front",
+    "body",
+    0,
+    {
+     "file": "assets/characters/girl_auburn_bun_glasses/references/views/sheet30_front.png",
+     "label": "sheet30_front"
+    },
+    null
+   ],
+   [
+    "threequarter",
+    "3/4",
+    "body",
+    -45,
+    {
+     "file": "assets/characters/girl_auburn_bun_glasses/references/views/sheet30_front_left.png",
+     "label": "sheet30_front_left"
+    },
+    null
+   ],
+   [
+    "face_front",
+    "face front",
+    "face",
+    0,
+    {
+     "file": "assets/characters/girl_auburn_bun_glasses/references/uploads/ref_30.webp",
+     "crop": [
+      440,
+      620,
+      712,
+      840
+     ],
+     "label": "ref_30 Neutral"
+    },
+    {
+     "file": "assets/characters/girl_auburn_bun_glasses/references/uploads/higgsfield_G01_face_front_rest_smile_2026-11-18.webp",
+     "crop": [
+      0,
+      300,
+      1493,
+      1500
+     ],
+     "label": "G01"
+    }
+   ],
+   [
+    "face_threequarter",
+    "face 3/4",
+    "face",
+    -45,
+    {
+     "file": "assets/characters/girl_auburn_bun_glasses/references/uploads/ref_30.webp",
+     "crop": [
+      345,
+      90,
+      490,
+      260
+     ],
+     "label": "ref_30 front-left"
+    },
+    {
+     "file": "assets/characters/girl_auburn_bun_glasses/references/uploads/higgsfield_G02_face_threequarter_2026-11-18.webp",
+     "crop": [
+      100,
+      300,
+      1393,
+      1500
+     ],
+     "label": "G02"
+    }
+   ]
+  ]
+ },
+ "eyes": {
+  "refs": [
+   {
+    "file": "assets/characters/girl_auburn_bun_glasses/references/uploads/higgsfield_G01_face_front_rest_smile_2026-11-18.webp",
+    "crop": [
+     560,
+     520,
+     1493,
+     990
+    ],
+    "label": "G01 eyes"
+   },
+   {
+    "file": "assets/characters/girl_auburn_bun_glasses/references/uploads/higgsfield_G02_face_threequarter_2026-11-18.webp",
+    "crop": [
+     560,
+     500,
+     1493,
+     970
+    ],
+    "label": "G02 eyes"
+   },
+   {
+    "file": "assets/characters/girl_auburn_bun_glasses/references/uploads/ref_30.webp",
+    "crop": [
+     465,
+     655,
+     690,
+     770
+    ],
+    "label": "ref_30 Neutral eyes"
+   }
+  ]
+ },
+ "expr": {
+  "rows": [
+   [
+    "Neutral",
+    {
+     "file": "assets/characters/girl_auburn_bun_glasses/references/uploads/ref_30.webp",
+     "crop": [
+      440,
+      620,
+      712,
+      840
+     ],
+     "label": "30 Neutral"
+    }
+   ],
+   [
+    "Smile",
+    {
+     "file": "assets/characters/girl_auburn_bun_glasses/references/uploads/ref_30.webp",
+     "crop": [
+      435,
+      888,
+      581,
+      1035
+     ],
+     "label": "30 Happy"
+    }
+   ],
+   [
+    "SmileOpen",
+    null
+   ],
+   [
+    "Laugh",
+    null
+   ],
+   [
+    "Surprise",
+    {
+     "file": "assets/characters/girl_auburn_bun_glasses/references/uploads/ref_30.webp",
+     "crop": [
+      435,
+      1088,
+      581,
+      1235
+     ],
+     "label": "30 Surprised"
+    }
+   ],
+   [
+    "Sadness",
+    {
+     "file": "assets/characters/girl_auburn_bun_glasses/references/uploads/ref_30.webp",
+     "crop": [
+      600,
+      888,
+      733,
+      1035
+     ],
+     "label": "30 Sad"
+    }
+   ],
+   [
+    "Anger",
+    {
+     "file": "assets/characters/girl_auburn_bun_glasses/references/uploads/ref_30.webp",
+     "crop": [
+      600,
+      1088,
+      733,
+      1235
+     ],
+     "label": "30 Angry"
+    }
+   ],
+   [
+    "Frown",
+    null
+   ],
+   [
+    "Confusion",
+    null
+   ],
+   [
+    "Blink",
+    null
+   ],
+   [
+    "Squint",
+    null
+   ],
+   [
+    "WideOpen",
+    null
+   ]
+  ]
+ }
+}
