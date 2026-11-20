@@ -30,6 +30,8 @@ B (F1b + T-133) 0.0445. That is a tie, not a measurable improvement, so 0.1.0 = 
 - `crops_100.jpg`: 100% crops (hair, hands, collar, boots and more), made with `crops.py` and `compose_crops.py`
 - `eyes_100.jpg`: eye crops at 100% (T-137 `face_sheets.py eyes`)
 - `expressions.jpg`: expression sheet (T-137 `face_sheets.py expr`)
+  The boy has no `face_SmileOpen` shape key in either 2.2.0 or 2.3.0, so his SmileOpen cell shows neutral
+  (`missing.json` of the render). His sheet has no reference column. The girl and third sheets have no missing keys.
 - boy and girl: `sheet.json` and `recipe.resolved.json` (recipes `*_vs_*.recipe.json`)
 - `fidelity/<id>/`: fidelity reports used for the rebaseline. Boy went from 67.25 to 69.54. Girl went from 64.13
   to 63.09, within the 2.0 allowed drop. The boy was scored on a deterministic rebuild with the compare variant,
