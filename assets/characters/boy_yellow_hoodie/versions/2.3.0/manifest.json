@@ -1,0 +1,53 @@
+{
+ "character_id": "boy_yellow_hoodie",
+ "version": "2.3.0",
+ "parent": "2.2.0",
+ "created": "2026-11-20T07:01:36+00:00",
+ "notes": "boy_yellow_hoodie 2.3.0 (T-155): CANDIDATE, not current; spec assets/characters/boy_yellow_hoodie/spec/candidates/T-155/boy_yellow_hoodie.2.3.0.spec.json (docs/evaluation/characters/T-155/make_specs.py). Owner decision docs/process/OWNER_DECISIONS.md 2026-11-20 ~07:00Z item 1.",
+ "spec_sha256": "6c04e0e0f5fed48554b64ca95e7eafef99b8205c33238ce5e004672348dc8301",
+ "spec_version": "2.3.0",
+ "build": "charsys/1+body_generic/1",
+ "blender": "5.3.0",
+ "identity_changes": [
+  "face",
+  "hair",
+  "clothing",
+  "materials"
+ ],
+ "identity_change_approved_by": "owner, docs/process/OWNER_DECISIONS.md 2026-11-19 ~15:10Z (T-132 hair/garment) and 2026-11-20 ~07:00Z item 1 (T-137 faces, publish as candidates)",
+ "files": {
+  "boy_yellow_hoodie_master.blend": {
+   "sha256": "cf51b3ff11993092a61537f1407170d0eb9b3f30f879e1410242779e758b9617",
+   "bytes": 35164956
+  },
+  "spec.json": {
+   "sha256": "1d8a853104cc19e747b9af24ec2c38bb0f97ffebdcf92d5f7c92234990d163e6",
+   "bytes": 36439
+  },
+  "components.json": {
+   "sha256": "7ad7d0ce584779e29fa03051c8999d3ddbb665fc2e34c9802dbd666c2dc4a607",
+   "bytes": 31598
+  },
+  "animation_compat.json": {
+   "sha256": "a1c66f606d7edb7430e0aef660271016693e9c7f37ce3b9fbd7681452c9eb0c8",
+   "bytes": 13345
+  },
+  "build_report.json": {
+   "sha256": "33d4a5feaaae9782a090356ab88476d1e2b04be795cd74e54eecf35b4b99b45e",
+   "bytes": 44945
+  },
+  "spec.resolved.json": {
+   "sha256": "359763ddabae1cc3b6d790f013213c82fd3b0a1f2ee2ecec0c07aa8b47a262b4",
+   "bytes": 37075
+  }
+ },
+ "rig": {
+  "rigify_bones": 465,
+  "deform_bones": 128,
+  "unweighted_after_cleanup": 0
+ },
+ "spec_resolved": "spec.resolved.json is the build's fitted spec (body_generic writes fitted values); spec.json is the input spec it was built from (hash = spec_sha256)",
+ "not_stored": {
+  "boy_yellow_hoodie.glb": "not needed for reuse: shots link the master and engine packages are exported from it (run_shot.py); reproducible from the master"
+ }
+}
