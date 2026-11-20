@@ -1,0 +1,8 @@
+{
+ "spec": "girl_white_hair_blue_dress.0.1.0.spec.json",
+ "override": "girl_white_hair_blue_dress.hair_r6.override.json",
+ "objects": 30,
+ "identical": true,
+ "differing": [],
+ "sha256_of_all": "a132480f05a1e7c303cf55a4b74de3a7240375e237fe5aaae945283c3e195d7a"
+}

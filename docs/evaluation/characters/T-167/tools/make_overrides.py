@@ -85,18 +85,16 @@ def girl(sts, extra):
         if st["type"] != "locks":
             continue
         back = "back" in st["name"]
-        st["width"] = [round(x * 0.9, 4) for x in st["width"]]
-        st["thick"] = [round(x * 0.56, 4) for x in st["thick"]]
+        st["thick"] = [round(x * 0.7, 4) for x in st["thick"]]
         c = st["curl"]
-        c.update(radius=round(c["radius"] * 1.25, 4), pitch=round(c["pitch"] * 0.72, 4), jitter=0.12, wobble=0.1,
-                 ellipse=0.9)
-        c["tip"] = {"from": 0.7, "radius": 1.1, "pitch": 1.15, "ellipse": 1.0}
+        c.update(radius=round(c["radius"] * 1.08, 4), pitch=round(c["pitch"] * 0.9, 4), jitter=0.12, wobble=0.1)
+        c["tip"] = {"from": 0.75, "radius": 0.9, "pitch": 1.0, "ellipse": 1.0}
         st["felt"].update(irregularity=0.05, flatten=0.3, flatten_twist=0.6)
         st["tips"] = {"from": 0.7, "scale": 0.6, "power": 1.3, "flatten": 0.2}
         st["end_scale"] = 0.6
         if back:  # G05: the back curls reach the waist; the side curls keep their length (clear of the sleeves)
-            st["z_end"] = [round(z - 0.06, 3) for z in st["z_end"]]
-    s["curtain"]["z_end"] = [[az, round(z + 0.05, 3)] for az, z in s["curtain"]["z_end"]]  # more curl length shows
+            st["z_end"] = [round(z - 0.09, 3) for z in st["z_end"]]
+    s["curtain"]["z_end"] = [[az, round(z + 0.1, 3)] for az, z in s["curtain"]["z_end"]]  # more curl length shows
     b = s["bun"]
     b["felt"]["grooves"].update(count=12, depth=0.28, sharpness=0.5, wander=0.12)
     b["felt"]["lumps"]["amount"] = 0.03
@@ -116,7 +114,7 @@ def girl(sts, extra):
 def third(sts, extra):
     """01 / 02: a fringe of many thin, flat, soft-ended wisps with a gently uneven edge (no row of points); fuller
     side and back hair: wider, thicker locks that keep their body to the end, more of them beside the cheeks.
-    Bow seat unchanged (owner decision pending)."""
+    Bow: front seat refined (owner decision 2026-11-20)."""
     s = by_name(sts)
     f = s["fringe"]
     old = f["items"]
@@ -155,6 +153,12 @@ def third(sts, extra):
     for k in ("side_locks", "outer_locks"):
         s[k]["count"] = 3
     s["back_locks"]["count"] = 9
+    # bow (owner 2026-11-20): front seat kept, refined to 01 / 02: at the front hairline on her right, just below and
+    # in front of the right bun, above the temple, tilted, partly over the outer fringe; longer tails
+    bow = s["bow"]
+    bow.update(az=-46, el=33, out=0.022, tilt_deg=-22, size=0.118, turn={"toward": [-25, 22], "amount": 0.4})
+    for lp in bow["loops"][2:]:
+        lp["length"] = round(lp["length"] * 1.15, 3)
 
 
 EDIT = {"boy": boy, "girl": girl, "third": third}

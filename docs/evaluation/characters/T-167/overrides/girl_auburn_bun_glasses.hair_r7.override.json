@@ -407,15 +407,15 @@
      "z_end": [
       [
        92,
-       0.65
+       0.7
       ],
       [
        130,
-       0.61
+       0.66
       ],
       [
        180,
-       0.59
+       0.64
       ]
      ],
      "rest_radii": [
@@ -570,17 +570,17 @@
      ],
      "flare": 0.02,
      "width": [
-      0.0324,
-      0.036
+      0.036,
+      0.04
      ],
      "thick": [
-      0.0185,
-      0.0202
+      0.0231,
+      0.0252
      ],
      "tip_frac": 0.3,
      "curl": {
-      "radius": 0.025,
-      "pitch": 0.0648,
+      "radius": 0.0216,
+      "pitch": 0.081,
       "radius_growth": 0.25,
       "start": 0.02,
       "direction": "alternate",
@@ -589,11 +589,11 @@
       "wobble": 0.1,
       "wobble_wavelength": 0.13,
       "sway": 0.008,
-      "ellipse": 0.9,
+      "ellipse": 1.0,
       "tip": {
-       "from": 0.7,
-       "radius": 1.1,
-       "pitch": 1.15,
+       "from": 0.75,
+       "radius": 0.9,
+       "pitch": 1.0,
        "ellipse": 1.0
       }
      },
@@ -654,17 +654,17 @@
      ],
      "flare": 0.02,
      "width": [
-      0.0306,
-      0.0342
+      0.034,
+      0.038
      ],
      "thick": [
-      0.0174,
-      0.019
+      0.0217,
+      0.0238
      ],
      "tip_frac": 0.3,
      "curl": {
-      "radius": 0.02,
-      "pitch": 0.0504,
+      "radius": 0.0173,
+      "pitch": 0.063,
       "radius_growth": 0.25,
       "start": 0.05,
       "direction": "alternate",
@@ -673,11 +673,11 @@
       "wobble": 0.1,
       "wobble_wavelength": 0.13,
       "sway": 0.008,
-      "ellipse": 0.9,
+      "ellipse": 1.0,
       "tip": {
-       "from": 0.7,
-       "radius": 1.1,
-       "pitch": 1.15,
+       "from": 0.75,
+       "radius": 0.9,
+       "pitch": 1.0,
        "ellipse": 1.0
       }
      },
@@ -721,22 +721,22 @@
       0.155
      ],
      "z_end": [
-      0.34,
-      0.41
+      0.31,
+      0.38
      ],
      "flare": 0.02,
      "width": [
-      0.0342,
-      0.0378
+      0.038,
+      0.042
      ],
      "thick": [
-      0.019,
-      0.0213
+      0.0238,
+      0.0266
      ],
      "tip_frac": 0.3,
      "curl": {
-      "radius": 0.0275,
-      "pitch": 0.0684,
+      "radius": 0.0238,
+      "pitch": 0.0855,
       "radius_growth": 0.25,
       "start": 0.0,
       "direction": "alternate",
@@ -745,11 +745,11 @@
       "wobble": 0.1,
       "wobble_wavelength": 0.13,
       "sway": 0.008,
-      "ellipse": 0.9,
+      "ellipse": 1.0,
       "tip": {
-       "from": 0.7,
-       "radius": 1.1,
-       "pitch": 1.15,
+       "from": 0.75,
+       "radius": 0.9,
+       "pitch": 1.0,
        "ellipse": 1.0
       }
      },
@@ -815,22 +815,22 @@
       0.155
      ],
      "z_end": [
-      0.37,
-      0.44
+      0.34,
+      0.41
      ],
      "flare": 0.02,
      "width": [
-      0.0306,
-      0.0342
+      0.034,
+      0.038
      ],
      "thick": [
-      0.0174,
-      0.019
+      0.0217,
+      0.0238
      ],
      "tip_frac": 0.3,
      "curl": {
-      "radius": 0.0213,
-      "pitch": 0.054,
+      "radius": 0.0184,
+      "pitch": 0.0675,
       "radius_growth": 0.25,
       "start": 0.04,
       "direction": "alternate",
@@ -839,11 +839,11 @@
       "wobble": 0.1,
       "wobble_wavelength": 0.13,
       "sway": 0.008,
-      "ellipse": 0.9,
+      "ellipse": 1.0,
       "tip": {
-       "from": 0.7,
-       "radius": 1.1,
-       "pitch": 1.15,
+       "from": 0.75,
+       "radius": 0.9,
+       "pitch": 1.0,
        "ellipse": 1.0
       }
      },
@@ -913,17 +913,17 @@
      ],
      "flare": 0.02,
      "width": [
-      0.0342,
-      0.0378
+      0.038,
+      0.042
      ],
      "thick": [
-      0.019,
-      0.0207
+      0.0238,
+      0.0259
      ],
      "tip_frac": 0.3,
      "curl": {
-      "radius": 0.0263,
-      "pitch": 0.0648,
+      "radius": 0.0227,
+      "pitch": 0.081,
       "radius_growth": 0.25,
       "start": 0.02,
       "direction": "alternate",
@@ -932,11 +932,11 @@
       "wobble": 0.1,
       "wobble_wavelength": 0.13,
       "sway": 0.008,
-      "ellipse": 0.9,
+      "ellipse": 1.0,
       "tip": {
-       "from": 0.7,
-       "radius": 1.1,
-       "pitch": 1.15,
+       "from": 0.75,
+       "radius": 0.9,
+       "pitch": 1.0,
        "ellipse": 1.0
       }
      },
@@ -1002,17 +1002,17 @@
      ],
      "flare": 0.02,
      "width": [
-      0.0306,
-      0.0342
+      0.034,
+      0.038
      ],
      "thick": [
-      0.0174,
-      0.019
+      0.0217,
+      0.0238
      ],
      "tip_frac": 0.3,
      "curl": {
-      "radius": 0.0213,
-      "pitch": 0.0518,
+      "radius": 0.0184,
+      "pitch": 0.0648,
       "radius_growth": 0.25,
       "start": 0.05,
       "direction": "alternate",
@@ -1021,11 +1021,11 @@
       "wobble": 0.1,
       "wobble_wavelength": 0.13,
       "sway": 0.008,
-      "ellipse": 0.9,
+      "ellipse": 1.0,
       "tip": {
-       "from": 0.7,
-       "radius": 1.1,
-       "pitch": 1.15,
+       "from": 0.75,
+       "radius": 0.9,
+       "pitch": 1.0,
        "ellipse": 1.0
       }
      },

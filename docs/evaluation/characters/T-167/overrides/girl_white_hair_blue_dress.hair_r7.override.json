@@ -1069,12 +1069,12 @@
     {
      "type": "felt_bow",
      "name": "bow",
-     "az": -37,
+     "az": -46,
      "el": 33,
-     "out": 0.004,
+     "out": 0.022,
      "seat": "hair",
-     "size": 0.11523,
-     "tilt_deg": -14,
+     "size": 0.118,
+     "tilt_deg": -22,
      "knot": 0.2,
      "material": "hair_bow",
      "loops": [
@@ -1092,13 +1092,13 @@
       },
       {
        "angle_deg": 248,
-       "length": 0.5,
+       "length": 0.575,
        "width": 0.2,
        "thick": 0.16
       },
       {
        "angle_deg": 296,
-       "length": 0.46,
+       "length": 0.529,
        "width": 0.2,
        "thick": 0.16
       }
@@ -1112,10 +1112,10 @@
      },
      "turn": {
       "toward": [
-       -20,
-       20
+       -25,
+       22
       ],
-      "amount": 0.35
+      "amount": 0.4
      }
     }
    ]

@@ -1,0 +1,8 @@
+{
+ "spec": "boy_yellow_hoodie.2.3.0.spec.json",
+ "override": "boy_yellow_hoodie.hair_r6.override.json",
+ "objects": 10,
+ "identical": true,
+ "differing": [],
+ "sha256_of_all": "b95f7d15d89e2dfac5e2056de6eea300313b05d9fe7ae577068984717844e0ca"
+}
