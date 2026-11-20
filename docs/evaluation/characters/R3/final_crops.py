@@ -2,13 +2,14 @@
 """R3 step 6: 100 % crops, current (published) master | R3 master, same cameras: face, eyes, eyes closed, ears, hair.
 
     python3 docs/evaluation/characters/R3/final_crops.py --char <boy|girl|third> --current <master.blend>
-        --r3 <master.blend> --out <dir> [--labels "<current label>" "<R3 label>"] [--only face,eyes,closed,ears,hair]
+        --r3 <master.blend> --out <dir> [--labels "<current label>" "<R3 label>"] [--only face,eyes,closed,ears,hair,legs]
 
 Shared renderers, unchanged: T-109 face_probe.py (face 0.32 m and eyes 0.12 m frames, character_neutral/1 light,
 70 mm; eyes closed = face_Blink 1.0), T-159 ear_views.py (full: hair and fibres on, 48 spp, left ear, front / 3/4 /
 side, orthographic 0.22 m at 512 px), tools/review/blender_render.py with the T-167 hair cameras (front, 3/4, side,
-back; 600 px, 16 spp). One Blender run at a time. Tiles are pasted 1:1 (100 %), never resampled.
-Writes <out>/{face,eyes,eyes_closed,ears,hair}_100.jpg."""
+back; 600 px, 16 spp); legs (on request): tools/review/blender_render.py, feet and trouser legs (0.30 m frame,
+900 px, 32 spp; front, 3/4, side, back). One Blender run at a time. Tiles are pasted 1:1 (100 %), never resampled.
+Writes <out>/{face,eyes,eyes_closed,ears,hair,legs}_100.jpg."""
 import argparse
 import json
 import os
@@ -110,6 +111,20 @@ def main():
                 [(n, [os.path.join(d, t, n + ".png") for t, _ in cols]) for n, *_ in rows], a.labels,
                 os.path.join(out, "hair_100.jpg"))
 
+    if "legs" in only:
+        d = os.path.join(out, "legs")
+        rows = [("front", 0.0, 5.0), ("threequarter", -35.0, 8.0), ("side", 90.0, 5.0), ("back", 180.0, 8.0)]
+        job = {"out": d, "engine": "cycles", "samples": 32, "px": 900, "lens_mm": 70.0, "sensor_mm": 36.0,
+               "calibration": "character_neutral/1",
+               "columns": [{"tag": t, "blend": b, "comparison_pose": None} for t, b in cols],
+               "views": [{"name": n, "yaw_deg": yaw, "elevation_deg": el, "target": [0.0, 0.0, 0.13],
+                          "frame_height_m": 0.30, "aspect": 1.6} for n, yaw, el in rows]}
+        os.makedirs(d, exist_ok=True)
+        json.dump(job, open(os.path.join(d, "job.json"), "w"), indent=1)
+        run("tools/review/blender_render.py", [os.path.join(d, "job.json")], os.path.join(d, "render_log.txt"))
+        compose(f"{title} feet and trouser legs (A-pose, 32 spp)",
+                [(n, [os.path.join(d, t, n + ".png") for t, _ in cols]) for n, *_ in rows], a.labels,
+                os.path.join(out, "legs_100.jpg"))
 
 if __name__ == "__main__":
     main()

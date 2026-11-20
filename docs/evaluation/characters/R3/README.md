@@ -51,8 +51,14 @@ vertex counts in brackets, the number is a vertex-to-vertex distance and oversta
   ("changes lost by later layers: none").
 - Repeatable (T-158 strict hashes, every object): base and R3 built twice per character: identical, all six pairs.
   T-156's "6 lid/ear meshes varying between builds" does not reproduce on this base.
-- Side effect to know: T-168 changes the boy's body-skin vertex count, and the garment fit then moves a few shoe /
-  trouser vertices (up to 3.6 mm, p95 0).
+- Side effect to know: T-168 moves a few of the boy's shoe / trouser vertices (shoes 44 + 32 of 3584 vertices, up to
+  1.8 mm; trouser ankle R 174 of 4184, up to 3.6 mm; trousers main 183 of 29684, up to 5.0 mm; p95 0). Cause, as far
+  as measured: not a shared smoothing or vertex group on the body. The body skin under them does not move (every
+  body vertex below 0.6 m within 0.0002 mm of the previous build); T-168 changes only the head (206 vertices fewer,
+  so the body's vertex indices shift) and, through the hood, the hoodie. The moved garment vertices lie only in contact
+  zones (shoe collar / trouser ankle, trouser waist under the hoodie hem), i.e. the garment fit and drape solve
+  (`garments/drape.py`: collider built from the body in vertex order, cloth solver) reacts to the changed body mesh and
+  hoodie. Not pinned down further (which solver step). Crop: `boy/legs_100.jpg` (T-155 build before T-168 | R3).
 
 ### T-156 shape keys and the engine package
 
