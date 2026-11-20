@@ -1,0 +1,7 @@
+# ---- T-144 SIMULATION ONLY (scratch copy, never committed): retire every candidate ----
+for _f, _p in [("body", "body_v6/1"), ("face", "body_v6/1"), ("garment", "body_v6/1"), ("accessories", "body_v6/1"),
+               ("materials", "body_v6/1"), ("body", "body_generic/1"), ("face", "face_generic/1"),
+               ("face", "face_generic/2"), ("groom", "hair_clumps/1"), ("groom", "groom/1"), ("groom", "groom/2"),
+               ("garment", "garment/1"), ("materials", "albedo/1"), ("materials", "presets/1"),
+               ("materials", "presets/2")]:
+    REGISTRY.retire(_f, _p)
