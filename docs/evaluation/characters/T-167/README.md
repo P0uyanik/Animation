@@ -25,6 +25,10 @@ reference, candidate + hair r6, candidate + hair r7, AI target; A-pose masters, 
 `hair_crops.jpg` (100 %, 600 px, 16 spp; front, 3/4, side, back; rows reference, AI target, r6, r7;
 `tools/hair_crops.py`), `flicker.json`. Render: strict about 16 min each; crops 864 / 527 / 755 s.
 
+For the owner's choice per character: `<char>/r6_vs_r7.jpg` (left r6, right r7; front, 3/4, side, back at 100 %;
+same cameras and light; composed by `tools/pairs.py` from the crop renders, no new render). Full figure: the r6 and
+r7 columns of `strict.jpg`.
+
 What the crops show against the references:
 - boy: closer in mass (round mop, chunky clumps, fuller back and nape). Not matched: the reference outline still has
   small pointed tuft ends and a tall top tuft, r7 is now too rounded and lumpy; fringe shorter than the reference.
