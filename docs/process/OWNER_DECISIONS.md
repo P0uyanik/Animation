@@ -564,6 +564,9 @@ READMEs; no re-reading large files or re-running renders without need. Added to 
   Tag first (archive/legacy-engine-renderer-<date> via backup), one revertible commit, manual nightly Windows + backup runs.
 - Owner wants the third character's combined 0.1.0 published as a CANDIDATE (not current).
 
+## 2026-11-19 ~23:10Z: rotate the round-2 Supervisor (relayed by the original Supervisor)
+Adopt Codex T-152 recommendation 1: finish the current batch, write `SUPERVISOR_HANDOVER_R3.md`, then the round-3
+Supervisor takes over from that file.
 ## 2026-11-19 ~23:30Z — Phase 3 S1a/S1b/S1c postponed
 Owner (relayed by the original Supervisor and the round-2 Supervisor): Phase 3 S1a (staging preview), S1b (acting
 preview) and S1c (final render) of the 8 s shot are POSTPONED. Do not start them overnight. Replacement tasks to
