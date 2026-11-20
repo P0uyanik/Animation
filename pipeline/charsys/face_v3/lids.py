@@ -265,6 +265,10 @@ def fit_closed_lids(up, lash, T, ecfg, r, fit, close_key, closed_thickness_m=Non
     fade = math.radians(_f(fit, "fade_deg", 20.0))
     over = math.radians(_f(fit, "fade_above_edge_deg", 10.0))
     cf0, cf1 = (float(v) for v in fit.get("corner_fade", [0.7, 0.95]))
+    # T-156 (opt-in, absent = 0 = unchanged): sink_m moves the upper shell (not the lash) a further sink_m * c^3 in
+    # towards the eye centre. Where the eyeball flattens behind the socket skin on a blink (face.blink.flatten), the
+    # closed eye is the skin itself; a shell that stays proud of that skin shows as a patch of lid on it.
+    sink = _f(fit, "sink_m", 0.0)
     # the closed lid clears the eyeball's gaze sweep; closed_fit.gaze_range_deg may narrow it (a closed eye moves less)
     Minv = _gaze_inverses(T, dict(ecfg, gaze_range_deg=fit["gaze_range_deg"]) if fit.get("gaze_range_deg") else ecfg)
     Tm = np.array(T)
@@ -331,6 +335,8 @@ def fit_closed_lids(up, lash, T, ecfg, r, fit, close_key, closed_thickness_m=Non
             # its rest radius (it pokes through the socket skin above the eye), it goes back to that radius
             rho0 = np.linalg.norm(q0, axis=1)
             shift = np.maximum(shift, (c > 0) * np.maximum(0.0, rho - rho0))
+            if sink > 0.0 and ob is up:  # T-156 (opt-in): the closed shell goes under the socket skin
+                shift = shift + sink * c ** 3
             if shift.max() < 1e-7:
                 continue
             q = u * (rho - shift)[:, None]

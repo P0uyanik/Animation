@@ -70,11 +70,19 @@ def plain():
             if f.endswith(".json") and os.sep + "spec" in base + os.sep:
                 try:
                     d = json.load(open(os.path.join(base, f)))
-                    if _find(d, "upper_yaw_deg") or _find(d, "lower_yaw_deg"):
+                    if _find(d, "upper_yaw_deg") or _find(d, "lower_yaw_deg") or _find(d, "sink_m") \
+                            or _find(d, "shell_occlusion_tint"):
                         users.append(f)
                 except ValueError:
                     pass
-    check("no spec under assets/ opts into lid yaw", not users, str(users))
+    check("no spec under assets/ opts into lid yaw, closed_fit.sink_m or shell_occlusion_tint", not users, str(users))
+    check("closed_fit.sink_m: default 0, guarded, upper shell only",
+          'sink = _f(fit, "sink_m", 0.0)' in src and 'if sink > 0.0 and ob is up:' in src)
+    check("closed_fit.shell_occlusion_tint: guarded, the shell_subsurface call unchanged without it",
+          'if fit.get("shell_occlusion_tint") is not None:' in src and
+          'elif fit.get("shell_subsurface") is not None:\n'
+          '        rep["shell_material"] = _shell_material(up, float(fit["shell_subsurface"]))' in src and
+          'def _shell_material(ob, factor, occlusion_tint=None):' in src and 'if occlusion_tint is not None:' in src)
     for sub, name in (("auburn", "girl_auburn_bun_glasses"), ("third", "girl_white_hair_blue_dress")):
         ov = os.path.join(ROOT, "docs", "evaluation", "characters", "T-156", sub, name + ".eyes.override.json")
         if os.path.exists(ov):
