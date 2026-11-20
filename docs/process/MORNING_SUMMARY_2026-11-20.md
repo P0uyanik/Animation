@@ -34,3 +34,12 @@ main = staging = `974dcee`.
   session messages. Fix: add permission rules for both, or create the hourly task by hand.
 - Sending to session_01NPjxeNTmHt2DtBN8F8uLqB fails (needs a trusted device), so "MORNING SUMMARY <sha>" could not be sent.
 - Sessions archived when merged: round-2 Supervisor, T-124, T-136, T-138, T-142, T-153.
+
+## Update ~06:45Z (owner decisions ~06:40Z recorded in OWNER_DECISIONS.md, `e2c8904`)
+- Started: T-154 guard allowlist, T-156 eyes to T-150 targets (Fable), T-157 grasp options, T-158 deterministic builds.
+  T-155 candidate publish follows T-154; T-144 plan when a slot frees. Running sessions: 6/6.
+- T-137 sheets (branch `t-137-claude-faces@321466a`, `docs/evaluation/characters/T-137/`): `f1a/strict.jpg`,
+  `f1a/eyes_100.jpg`; `f1b/strict.jpg`, `f1b/eyes_100.jpg`; `f2/e910_f47-80_before_after.jpg`, `f2/mouth_shot_size.jpg`
+  (F2 has no strict sheet).
+- T-124 comparison (main, [T-124](../evaluation/rendering/T-124/README.md)): `README.md` table, `sheets/frames_proposed.jpg`,
+  `sheets/crops_proposed.jpg`, `clips/clip_full.mp4`, `clips/clip_crop.mp4`.
