@@ -6,11 +6,14 @@
 Each override is the T-160 round 6 override of the character (../../T-160/overrides, the opt-in base), edited by the
 functions below. As in T-160 an override replaces generators.groom, hair.generator and hair.structures of the T-155
 candidate spec; the girls' overrides also set hair.fibres / materials.assignments.hair values where named below.
-Output: ../overrides/."""
+Output: ../overrides/. Owner decision 2026-11-20 (~21:50 CET): the boy stays on hair round 6, the girls take round 7.
+So the boy's round 7 override goes to ../overrides/not_selected/ and ../overrides/ gets a byte copy of his T-160
+round 6 override (the pin); ../overrides/bundle.json names the three selected files."""
 import argparse
 import copy
 import json
 import os
+import shutil
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(HERE, "..", "overrides")
@@ -225,10 +228,19 @@ def main():
                                                                **extra.get("hair", {}))}
         if extra.get("materials"):
             ov["materials"] = extra["materials"]
-        p = os.path.join(OUT, f"{cid}.hair_r7.override.json")
+        out = os.path.join(OUT, "not_selected") if key == "boy" else OUT
+        os.makedirs(out, exist_ok=True)
+        p = os.path.join(out, f"{cid}.hair_r7.override.json")
         json.dump({"override": ov, "note": f"T-167 hair round 7, opt-in; on {cid}.{BASE[key]}.spec.json (T-155 "
                                            f"candidate), from the T-160 round 6 override"}, open(p, "w"), indent=1)
         print(os.path.relpath(p))
+    pin = f"{IDS['boy']}.hair_r6.override.json"
+    shutil.copyfile(os.path.join(R6, pin), os.path.join(OUT, pin))
+    json.dump({"note": "T-167 final selection (owner 2026-11-20): boy hair r6 (byte copy of the T-160 override), "
+                       "girls hair r7; opt-in overrides on the T-155 candidate specs",
+               "overrides": {IDS[k]: {"base_spec_version": BASE[k], "hair": "r6" if k == "boy" else "r7",
+                                      "file": pin if k == "boy" else f"{IDS[k]}.hair_r7.override.json"}
+                             for k in IDS}}, open(os.path.join(OUT, "bundle.json"), "w"), indent=1)
 
 
 if __name__ == "__main__":

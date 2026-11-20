@@ -4,6 +4,21 @@ Branch `t-167-claude-hair-r7` from `t-160-claude-hair-r6@2dccd74`; input main `3
 published, no current or candidate version changed. Target brief: T-169 study (`t-169-codex-hair-study@38759ccc`,
 read-only). Also folded in: bow front seat (owner decision), ear tuck for both girls (T-159 input).
 
+## Final selection (owner decision 2026-11-20, ~21:50 CET)
+Boy stays on hair r6 (his r7 does not pass the flicker yardstick, see Flicker); both girls take r7. No further hair
+work in this task. `overrides/bundle.json` names the files; `test_hair_r6.py` checks the selection.
+
+| character | hair | override file (`overrides/`) | on T-155 candidate spec |
+|---|---|---|---|
+| boy | r6 | `boy_yellow_hoodie.hair_r6.override.json` (byte copy of the T-160 override: his build is the r6 build) | 2.3.0 |
+| auburn girl | r7 | `girl_auburn_bun_glasses.hair_r7.override.json` | 0.14.0 |
+| third girl | r7 | `girl_white_hair_blue_dress.hair_r7.override.json` | 0.1.0 |
+
+Not selected, kept for the later boy round: `overrides/not_selected/boy_yellow_hoodie.hair_r7.override.json`.
+All three need `pipeline/charsys/groom_r6.py` from this branch (groom/5; the r6 file builds the same with it, see
+Checks). Main `0038252` is merged into the branch. The sections below describe all three r7 overrides as built and
+measured, including the boy's.
+
 ## Generator
 `pipeline/charsys/groom_r6.py` (groom/5): new opt-in key `clump` on `masses` / `locks`
 (`bend_m`, `twist_deg`, `lumps`, `lump_wavelength`, `seed`): each clump gets its own bend, twist and thickness
@@ -11,6 +26,7 @@ variation from a fixed sequence (no random numbers). Specs without the key build
 
 ## Overrides
 `tools/make_overrides.py --base-dir <T-155 candidate specs @0677274>` writes `overrides/<id>.hair_r7.override.json`
+(the boy's to `overrides/not_selected/`), the boy's r6 pin and `bundle.json`,
 from the T-160 r6 overrides. Build: `build_character.py --spec <T-155 candidate spec> --override <file> --out <dir>`.
 
 | character | change against r6 |
@@ -42,8 +58,8 @@ What the crops show against the references:
 ## Checks
 | check | result |
 |---|---|
-| `test_hair_r6.py` (incl. `clump`, r7 overrides) | 42 / 42 |
-| `test_hair_r5.py`, `test_versions.py`, `test_guard_allowlist.py` | 79 / 79, 121 / 121, 21 / 21 |
+| `test_hair_r6.py` (incl. `clump`, r7 overrides, final selection) | 47 / 47 |
+| `test_hair_r5.py`, `test_versions.py`, `test_guard_allowlist.py` | 79 / 79, 121 / 121, 25 / 25 |
 | r6 overrides, old against extended generator (`tools/r6_unchanged.py`, `checks/r6_unchanged_*.json`) | boy 10 objects identical; third girl 30 identical; auburn girl identical except the two flower objects, which also differ between two builds of the old module (existing build-to-build variation) |
 | boy pickup sightline (`checks/boy_pickup_sightline.json`), eye L / R at pitch 30 / 40 / 50 | r7 1.0 / 0.891, 0.89 / 0.781, 0.608 / 0.539; r6 0.976 / 0.889, 0.853 / 0.721, 0.588 / 0.525; keep-out 0 |
 | keep-out violations (build report) | boy 0 (r6 0), auburn girl 0 (0), third girl 20 (58) |

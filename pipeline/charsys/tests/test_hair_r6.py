@@ -213,13 +213,33 @@ def main():
     check("islands: connected runs in order", isl == [[0, 1, 2], [3, 4, 5, 6]], isl)
 
     # ---- T-160 / T-167 overrides
-    for p in sorted(glob.glob(os.path.join(ROOT, "docs", "evaluation", "characters", "T-160", "overrides", "*.json"))
-                    + glob.glob(os.path.join(ROOT, "docs", "evaluation", "characters", "T-167", "overrides", "*.json"))):
+    ev = os.path.join(ROOT, "docs", "evaluation", "characters")
+    for p in sorted(glob.glob(os.path.join(ev, "T-160", "overrides", "*.json"))
+                    + glob.glob(os.path.join(ev, "T-167", "overrides", "*.override.json"))
+                    + glob.glob(os.path.join(ev, "T-167", "overrides", "not_selected", "*.override.json"))):
         o = json.load(open(p))["override"]
         errs = G6.validate(o["hair"]) if o.get("generators", {}).get("groom") == "groom/5" else ["not groom/5"]
         low, jobs = G6.lower(o["hair"])
         check(f"override {os.path.basename(p)}: groom/5, validates, has reshape jobs", not errs and jobs,
               errs[:2] or len(jobs))
+
+    # ---- T-167 final selection: boy pinned to hair r6 (byte copy of the T-160 override), girls r7
+    bp = os.path.join(ev, "T-167", "overrides", "bundle.json")
+    if os.path.exists(bp):
+        sel = json.load(open(bp))["overrides"]
+        files = {c: os.path.join(ev, "T-167", "overrides", v["file"]) for c, v in sel.items()}
+        check("bundle: three characters, every file exists", len(sel) == 3 and all(map(os.path.exists, files.values())),
+              sorted(sel))
+        check("bundle: boy r6, girls r7", sorted(v["hair"] for v in sel.values()) == ["r6", "r7", "r7"]
+              and [v["hair"] for c, v in sel.items() if c.startswith("boy")] == ["r6"])
+        for c, v in sel.items():
+            if v["hair"] == "r6":
+                src = os.path.join(ev, "T-160", "overrides", v["file"])
+                check(f"bundle: {c} r6 pin is a byte copy of the T-160 override",
+                      os.path.exists(src) and open(src, "rb").read() == open(files[c], "rb").read())
+        top = [os.path.basename(p) for p in glob.glob(os.path.join(ev, "T-167", "overrides", "*.override.json"))]
+        check("bundle: overrides/ holds exactly the selected files", sorted(top) == sorted(v["file"] for v in sel.values()),
+              top)
 
     n_fail = RESULTS.count(False)
     print(f"[test_hair_r6] {len(RESULTS) - n_fail}/{len(RESULTS)} passed")
