@@ -47,6 +47,8 @@ every frame; no strand popping seen. Only 7 frames checked; no long motion.
 - add: visible strand direction along the locks, wispy tips and curly flyaways, felt body kept. Closer to the
   references' combed-wool waves than the uniform felt of the base.
 - replace: reads as silky hair, loses the wool/plush fuzz, colour shifts paler/flatter. Off-style.
+- At strict-sheet scale (360 px cells) base / add / replace are hard to tell apart; the difference is a close-up
+  and mid-shot one (see the 100% crops).
 - Not judged by the owner; no approval implied.
 
 ## Limits / open
