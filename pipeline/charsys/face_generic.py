@@ -427,20 +427,26 @@ def build_ears(C, M, ctx, ec, ez):
             G.brush(e, bowl, rad[2] * 0.7, (-sx * rad[0] * 0.5, rad[1] * 0.12, 0))  # inner bowl
             G.add_mod(e, "SUBSURF", levels=1, render_levels=2)
             G.apply_mods(e)
-        if ec.get("apply_transform"):  # T-159 (opt-in): the ear mesh in head coordinates, so object-space skin
-            # shading (blush, bleed radius around the face centre) continues from the head onto the ear
-            e["ps_landmark"] = [float(v) for v in e.location]
-            e.data.transform(e.matrix_world)
-            e.matrix_world = Matrix.Identity(4)
-            bpy.context.view_layer.update()
-        G.assign(e, M["face_skin"])
+        G.assign(e, ear_skin(M["face_skin"], _f(ec, "subsurface", 1.0)))
         ears.append(e)
     return ears
 
 
-def ear_landmark(e):
-    """The ear's landmark position: its seat (object origin), also after face.ears.apply_transform moved the origin."""
-    return Vector(e["ps_landmark"]) if "ps_landmark" in e else e.location.copy()
+def ear_skin(skin, subsurface):
+    """The ears' skin material. face.ears.subsurface (T-159, opt-in; 1 = the face skin itself): a copy of the face
+    skin ("<name>.ear") with its subsurface weight scaled, because light scatters straight through the thin ear and
+    washes it out next to the thick head."""
+    if subsurface == 1.0 or not skin.use_nodes:
+        return skin
+    name = skin.name + ".ear"
+    m = bpy.data.materials.get(name)
+    if m is None:
+        m = skin.copy()
+        m.name = name
+        for n in m.node_tree.nodes:
+            if n.bl_idname == "ShaderNodeBsdfPrincipled" and "Subsurface Weight" in n.inputs:
+                n.inputs["Subsurface Weight"].default_value *= subsurface
+    return m
 
 
 def ear_shape(e, sx, rad, sh):
@@ -764,7 +770,7 @@ def build(C, M, head, spec, P, H, head_bone="DEF-spine.006", eye_bone="DEF-eye.{
         lm[f"eye_{side}"] = frames[side] @ Vector((0, -r, 0))
     ears = build_ears(C, M, ctx, fs.get("ears", {}), ez) if fs.get("ears") else []
     for (sx, side), e in zip(SIDES, ears):
-        lm[f"ear_{side}"] = ear_landmark(e)
+        lm[f"ear_{side}"] = e.location.copy()
     if not ears:  # the jaw pivot needs ear landmarks: use the head sides at the eye line
         for sx, side in SIDES:
             lm[f"ear_{side}"] = Vector((ctx.side_x(sx, 0.0, ez - 0.01) or sx * 0.1, 0.0, ez - 0.01))
@@ -1024,7 +1030,7 @@ def build_v2(C, M, head, spec, P, H, head_bone="DEF-spine.006", eye_bone="DEF-ey
         rep["lid_socket"], socket_w = FF.lid_socket(head, ctx, sides, sock_cfg)
     ears = build_ears(C, M, ctx, fs.get("ears", {}), ez) if fs.get("ears") else []
     for (sx, side), e in zip(SIDES, ears):
-        lm[f"ear_{side}"] = ear_landmark(e)
+        lm[f"ear_{side}"] = e.location.copy()
     if not ears:
         for sx, side in SIDES:
             lm[f"ear_{side}"] = Vector((ctx.side_x(sx, 0.0, ez - 0.01) or sx * 0.1, 0.0, ez - 0.01))

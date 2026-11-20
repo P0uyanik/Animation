@@ -1,5 +1,5 @@
 {
- "note": "T-159 Part B (opt-in candidate): C-shaped ear (rim + bowl, face.ears.shape), ear mesh in head coordinates (apply_transform: skin shading continues from the head), position: outer edge / eye half-spacing 2.63 (val27 front; was 2.67). On top of the T-155 candidate spec.",
+ "note": "T-159 Part B (opt-in candidate): C-shaped ear (rim + bowl, face.ears.shape), ear skin with 30 % of the face skin's subsurface weight (face.ears.subsurface: the thin ear no longer washes out to grey next to the head), position: outer edge / eye half-spacing 2.63 (val27 front; was 2.67). On top of the T-155 candidate spec.",
  "override": {
   "face": {
    "ears": {
@@ -19,7 +19,7 @@
      ],
      "bowl_edge": 0.7
     },
-    "apply_transform": true
+    "subsurface": 0.3
    }
   }
  }

@@ -15,7 +15,7 @@ import face as FACE
 import geom as G
 from face_generic import (SIDES, FaceContext, _f, _lid_edge, _lid_geometry, _rename_key, add_inbetween_drivers,  # noqa: F401
                           add_jaw_preset_drivers, add_landmarks, add_pout, bake_presets, bind_rigid, build_brows_v2,
-                          build_ears, build_eyes, ear_landmark, eye_action_units, load_library, split_action_units)
+                          build_ears, build_eyes, eye_action_units, load_library, split_action_units)
 from face_v3 import felt_eye as FELT
 from face_v3 import lids as LIDS
 from face_v3 import lower_face as LOWER
@@ -191,7 +191,7 @@ def build(C, M, head, spec, P, H, head_bone="DEF-spine.006", eye_bone="DEF-eye.{
         rep["lid_socket"], socket_w = SOCKET.lid_socket_v3(head, ctx, sides, sock_cfg)
     ears = build_ears(C, M, ctx, fs.get("ears", {}), ez) if fs.get("ears") else []
     for (sx, side), e in zip(SIDES, ears):
-        lm[f"ear_{side}"] = ear_landmark(e)
+        lm[f"ear_{side}"] = e.location.copy()
     if not ears:
         for sx, side in SIDES:
             lm[f"ear_{side}"] = Vector((ctx.side_x(sx, 0.0, ez - 0.01) or sx * 0.1, 0.0, ez - 0.01))
