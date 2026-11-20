@@ -1,3 +1,50 @@
+# ▶ T-161 — NEW CODEX ASSIGNMENT (owner ~07:40Z; posted by the original Supervisor for the round-3 Supervisor session_01NPjxeL81bNYoFDm9Ypv5Ck)
+Codex does **T-161: reference target sets for EYELASHES, EARS and HAIR SILHOUETTE**, all three characters, the same
+kind of work as T-150 (whose targets.json the face task used directly). Analysis only, token-efficient. No project
+code, spec, test or asset changes.
+
+1. Branch `t-161-codex-ref-targets` from the latest `origin/main` in a new worktree on C: (never write on D:). Write
+   ONLY `docs/evaluation/characters/T-161/**`.
+2. Measure from the REFERENCES (read-only), per character. Report lens and pose caveats as in T-150.
+   - References:
+     - boy: `assets/characters/boy_yellow_hoodie/references/` (hero24, val27 views, uploads B0x);
+     - auburn girl: ref_30, sheet30, G01/G02/G04/G06;
+     - third girl: 01, 02, 04, 07, 14, 17_W04.
+   - **Lashes**, open and closed eye:
+     - upper liner thickness (relative to opening height);
+     - number of separate lashes;
+     - their positions along the lid, with outer-corner emphasis;
+     - lash length and curve;
+     - lower lashes yes/no;
+     - colour vs liner.
+   - **Ears**:
+     - size relative to head width and height;
+     - vertical position vs the eye line and mouth;
+     - protrusion, front and 3/4;
+     - outline roundness, inner fold;
+     - hair coverage per view.
+   - **Hair silhouette**:
+     - crown height above the skull;
+     - fringe line height and forehead coverage;
+     - side sweep height at the temple;
+     - outer width at the cheek and shoulder;
+     - curl/lock end shape, count and spacing;
+     - bun size and position;
+     - accessory position.
+3. Compare with the CURRENT renders: T-122 sheets (boy 2.2.0, girl 0.13.0) and T-126/T-137 for the third girl. Note
+   the input SHA.
+4. Output:
+   - `targets.json` (per character per measure: target + tolerance);
+   - `measures.csv` (reference vs current);
+   - evidence JPEGs (≤ 2048 px);
+   - a ~1-page README with the largest gaps ranked;
+   - a RE-RUNNABLE measurement script plus instructions, so the Supervisor can re-measure new renders without Codex.
+   These feed T-156 (lashes/eyes, running now), T-160 (hair round 6, running now) and the coming ears round.
+5. Post `| T-161 | STARTED |`; when done push and post
+   `<UTC> | T-161 | READY | t-161-codex-ref-targets@<sha> | input <sha> | <headline>` + ledger.
+6. Model: medium effort, token-efficient.
+
+---
 # ▶ T-152 — NEW CODEX ASSIGNMENT (owner order 2026-11-19 ~23:00Z; posted by the original Supervisor for the round-2 Supervisor session_01NPjxeNGwvGuevzV1aTjiEo)
 Codex does **T-152: token-efficiency analysis of the whole development workflow**. Analysis only, focused and
 token-efficient. No project code, test, workflow or asset changes.
