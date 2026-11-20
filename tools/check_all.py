@@ -987,6 +987,7 @@ BLENDER_UNITS: list[tuple[str, object, bool]] = [
     ("hair-curves", unit_hair_curves, False),  # T-141
     ("face-front-fade", t077_unit("face front fade (T-159)", lambda c: [sys.executable, str(ROOT / "pipeline/charsys/tests/test_face_front_fade.py"), "--blender", c.executable]), False),
     ("ears-shape", t077_unit("ears shape (T-159)", lambda c: [sys.executable, str(ROOT / "pipeline/charsys/tests/test_ears_shape.py"), "--blender", c.executable]), False),
+    ("glasses-rest", t077_unit("glasses rest on ear (T-159)", lambda c: [sys.executable, str(ROOT / "pipeline/charsys/tests/test_glasses_rest.py"), "--blender", c.executable]), False),
     ("groom", unit_groom, False),
     ("garment", unit_garment, False),
     ("material-presets", unit_material_presets, False),

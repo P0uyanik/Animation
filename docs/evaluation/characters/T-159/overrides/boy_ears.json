@@ -1,16 +1,19 @@
 {
- "note": "T-159 Part B pass 2 (opt-in candidate, boy only, stackable with other face overrides: touches face.ears only): larger round cup ears that stand out sideways with the bowl facing front (canon29 / val27 / hero24), rim + bowl + full lobe (face.ears.shape), ear skin with 30 % of the face skin's subsurface weight and a warm pink tint. Front view: ear 12.4 % of the head width outside the head side (2.3.0 candidate: 4.2 %). On top of the T-155 candidate spec 2.3.0.",
+ "note": "T-159 Part B pass 2 (opt-in candidate, boy only, stackable: touches face.ears only): round cup ears that stand out sideways with the bowl facing front, rim + bowl + full lobe (face.ears.shape), ear skin with 30 % of the face skin's subsurface weight and a warm pink tint; seat_offset_m [out, back, up] moves the ear while the ear landmark (jaw pivot) stays where it is. On top of the T-155 candidate spec 2.3.0. Measures vs T-161: README.",
  "override": {
   "face": {
    "ears": {
     "radii_m": [
-     0.016,
-     0.034,
-     0.04
+     0.017,
+     0.04,
+     0.038
     ],
-    "yaw_deg": -55,
-    "out_m": 0.016,
-    "y_m": 0.016,
+    "yaw_deg": -60,
+    "seat_offset_m": [
+     0.014,
+     0.01,
+     -0.003
+    ],
     "shape": {
      "subdiv": 2,
      "bowl_depth": 0.9,

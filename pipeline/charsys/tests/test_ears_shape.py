@@ -1,4 +1,4 @@
-"""T-159: face.ears.shape, face.ears.subsurface and face.ears.tint (opt-in) of face_generic.build_ears.
+"""T-159: face.ears.shape, seat_offset_m, subsurface and tint (opt-in) of face_generic.build_ears.
 
     python3 pipeline/charsys/tests/test_ears_shape.py --blender <exe>
 
@@ -7,6 +7,8 @@ Builds the two ears inside Blender with a stub face context (head side at x = +-
   * shape: the outer face has a bowl (its centre lies below the rim around it) and a rim (higher than the plain
     ellipsoid at the back of the ear), the C opens to the front (front rim lower than the back rim), left and right
     are mirror images;
+  * seat_offset_m: the ear objects move [out, back, up] (mirrored in x) while ear_landmark stays at the seat (the jaw
+    pivot and the glasses read the landmark);
   * tint: the ear copy's base colour goes through a multiply mix ("PS Ear Tint"); the face skin has no such node;
   * subsurface: the ears get a copy of the face skin ("<name>.ear", one copy for both ears) with the subsurface
     weight scaled; the face skin itself is untouched; the geometry and the ear's seat are unchanged.
@@ -58,7 +60,7 @@ def build(extra):
         co = co.reshape(n, 3)
         mw = np.array(e.matrix_world)
         res.append({"local": co, "world": co @ mw[:3, :3].T + mw[:3, 3], "loc": list(e.location),
-                    "mat": e.data.materials[0].name, "n": n,
+                    "mat": e.data.materials[0].name, "n": n, "landmark": list(FG.ear_landmark(e)),
                     "sss": e.data.materials[0].node_tree.nodes["Principled BSDF"].inputs["Subsurface Weight"].default_value,
                     "face_sss": mat.node_tree.nodes["Principled BSDF"].inputs["Subsurface Weight"].default_value})
     return res
@@ -95,6 +97,11 @@ out["rim_front"] = outer_height(L, -0.85, 0.0)
 out["plain_back"] = float(np.sqrt(max(1 - 0.55 ** 2, 0)))
 R = s[1]["local"] * np.array([-1.0, 1.0, 1.0])
 out["mirror_dev_m"] = float(np.abs(np.sort(L, axis=0) - np.sort(R, axis=0)).max())
+o_ = build({"shape": SHAPE, "seat_offset_m": [0.014, 0.010, -0.003]})
+out["seat_move"] = [o_[i]["loc"][j] - s[i]["loc"][j] for i in (0, 1) for j in (0, 1, 2)]
+out["seat_landmark_dev_m"] = max(float(np.abs(np.array(o_[i]["landmark"]) - np.array(s[i]["loc"])).max()) for i in (0, 1))
+out["seat_default_landmark_dev_m"] = float(np.abs(np.array(d[0]["landmark"]) - np.array(d[0]["loc"])).max())
+out["seat_local_dev_m"] = float(np.abs(o_[0]["local"] - s[0]["local"]).max())
 out["sss_mats"] = [t[0]["mat"], t[1]["mat"]]
 out["sss"] = [t[0]["sss"], t[0]["face_sss"]]
 out["sss_world_dev_m"] = float(np.abs(t[0]["world"] - s[0]["world"]).max())
@@ -137,6 +144,12 @@ def main():
     check("shape: rim higher than the plain ellipsoid", o["rim_back"] > o["plain_back"] + 0.05, f"{o['rim_back']:.2f} > {o['plain_back']:.2f}")
     check("shape: the C opens to the front", o["rim_front"] < o["rim_back"] - 0.2, f"front {o['rim_front']:.2f}, back {o['rim_back']:.2f}")
     check("shape: left and right are mirror images", o["mirror_dev_m"] < 1e-6, f"{o['mirror_dev_m']:.1e} m")
+    mv = o["seat_move"]
+    check("seat_offset_m: both ears move out, back and down; mesh unchanged",
+          all(abs(a - b) < 1e-6 for a, b in zip(mv, [0.014, 0.010, -0.003, -0.014, 0.010, -0.003])) and o["seat_local_dev_m"] == 0.0,
+          str([round(v, 4) for v in mv]))
+    check("seat_offset_m: the ear landmark stays at the seat (default: landmark = object origin)",
+          o["seat_landmark_dev_m"] < 1e-6 and o["seat_default_landmark_dev_m"] == 0.0)
     check("subsurface: both ears share one scaled copy, face skin untouched",
           o["sss_mats"] == ["skin.ear", "skin.ear"] and o["shape_mat"] == "skin" and abs(o["sss"][0] - 0.15) < 1e-6 and abs(o["sss"][1] - 0.5) < 1e-6,
           f"ear {o['sss'][0]:.2f}, face {o['sss'][1]:.2f}")

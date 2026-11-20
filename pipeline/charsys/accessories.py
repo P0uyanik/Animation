@@ -8,7 +8,8 @@ glasses/1:
            (each rim turned outwards to follow the face), segments
   wire_radius_m: frame wire thickness
   bridge:  lift_m (bridge above the rim centres), forward_m
-  temples: skin_offset_m (gap to the head side), drop_m (hook behind the ear), enabled
+  temples: skin_offset_m (gap to the head side), drop_m (hook behind the ear), enabled; rest_on_ear (T-159, opt-in):
+           a straight arm resting on the top of the ear (rest_clearance_m) instead of the route lifted over it
   lens:    enabled (thin clear discs; parented to the head bone, not exported to the engine, which has no
            transparent materials)
   material: srgb, roughness, metallic
@@ -37,6 +38,41 @@ def _superellipse(cx, cz, rx, rz, n, seg):
         c, s = math.cos(t), math.sin(t)
         pts.append((cx + math.copysign(abs(c) ** (2 / n), c) * rx, cz + math.copysign(abs(s) ** (2 / n), s) * rz))
     return pts
+
+
+def _temple_rest(hinge, sx, obs, ctx, tc, wire):
+    """temples.rest_on_ear: the arm runs straight from the hinge to the point where it touches the top of the ear
+    (the tangent from the hinge over the ear's section next to the head side: no ear vertex in the arm's corridor is
+    above the line), stays on that line until past_ear_m behind the contact, and the hook then drops behind the ear.
+    obs: the ear vertices of this side. Returns the path (hinge .. end of the straight part), or None when no ear
+    lies in the arm's corridor (the caller keeps the default route)."""
+    off = _f(tc, "skin_offset_m", 0.004)
+    clear = wire + _f(tc, "rest_clearance_m", 0.0003)
+    best = None
+    for q in obs:
+        if q.y - hinge.y < 0.02:
+            continue
+        xs = ctx.side_x(sx, q.y, q.z)
+        if xs is None or abs(sx * q.x - (sx * xs + off)) > 0.004:  # only the ear's section in the arm's corridor
+            continue
+        slope = (q.z + clear - hinge.z) / (q.y - hinge.y)
+        if best is None or slope > best[0]:
+            best = (slope, q.y)
+    if best is None:
+        return None
+    slope, y_c = best
+    y_end = y_c + _f(tc, "past_ear_m", 0.012)
+    path = [hinge]
+    n = 12
+    for i in range(1, n + 1):
+        t = i / n
+        yy = hinge.y + (y_end - hinge.y) * t
+        zz = hinge.z + slope * (yy - hinge.y)
+        xs = ctx.side_x(sx, yy, zz)
+        xx = (xs + sx * off) if xs is not None else hinge.x
+        xx = sx * max(sx * xx, sx * hinge.x * (1 - t) + sx * xx * t)
+        path.append(Vector((xx, yy, zz)))
+    return path
 
 
 def build_glasses(C, cfg, lm, ctx, face_parts, head_bone, obstacles=(), material_assignments=None):
@@ -145,6 +181,10 @@ def build_glasses(C, cfg, lm, ctx, face_parts, head_bone, obstacles=(), material
                     xs = ctx.side_x(sx, p.y, p.z)
                     if xs is not None and sx * p.x < sx * xs + _f(tc, "skin_offset_m", 0.004):
                         path[i] = Vector((xs + sx * _f(tc, "skin_offset_m", 0.004), p.y, p.z))
+            rest = _temple_rest(hinge, sx, obs, ctx, tc, wire) if tc.get("rest_on_ear") else None
+            if rest is not None:  # T-159 (opt-in): a straight arm that rests on the ear instead of the lifted route
+                path, total = rest, [0.0]
+                report.setdefault("temple_rest_m", {})[side] = [round(v, 4) for v in path[-2]]
             report.setdefault("temple_lift_m", {})[side] = round(max(total), 4)
             last = path[-1]
             path.append(last + Vector((0, 0.008, -_f(tc, "drop_m", 0.008))))

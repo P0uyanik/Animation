@@ -415,6 +415,11 @@ def build_ears(C, M, ctx, ec, ez):
         sxs = ctx.side_x(sx, y, z)
         x = (sxs if sxs is not None else sx * 0.14) + sx * _f(ec, "out_m", 0.004)
         e.location = (x, y, z)
+        so = ec.get("seat_offset_m")
+        if so:  # T-159 (opt-in): the ear moves [out, back, up] from its seat; the landmark (jaw pivot, glasses) stays
+            e["ps_landmark"] = [float(x), float(y), float(z)]
+            e.location = (x + sx * so[0], y + so[1], z + (so[2] if len(so) > 2 else 0.0))
+            x, y, z = e.location
         e.rotation_euler = (math.radians(_f(ec, "tilt_deg", -8)), 0, math.radians(sx * _f(ec, "yaw_deg", 28)))
         bpy.context.view_layer.update()
         sh = ec.get("shape")
@@ -430,6 +435,11 @@ def build_ears(C, M, ctx, ec, ez):
         G.assign(e, ear_skin(M["face_skin"], _f(ec, "subsurface", 1.0), ec.get("tint")))
         ears.append(e)
     return ears
+
+
+def ear_landmark(e):
+    """The ear landmark: the ear's seat, also when face.ears.seat_offset_m moved the ear itself away from it."""
+    return Vector(e["ps_landmark"]) if "ps_landmark" in e else e.location.copy()
 
 
 def ear_skin(skin, subsurface, tint=None):
@@ -787,7 +797,7 @@ def build(C, M, head, spec, P, H, head_bone="DEF-spine.006", eye_bone="DEF-eye.{
         lm[f"eye_{side}"] = frames[side] @ Vector((0, -r, 0))
     ears = build_ears(C, M, ctx, fs.get("ears", {}), ez) if fs.get("ears") else []
     for (sx, side), e in zip(SIDES, ears):
-        lm[f"ear_{side}"] = e.location.copy()
+        lm[f"ear_{side}"] = ear_landmark(e)
     if not ears:  # the jaw pivot needs ear landmarks: use the head sides at the eye line
         for sx, side in SIDES:
             lm[f"ear_{side}"] = Vector((ctx.side_x(sx, 0.0, ez - 0.01) or sx * 0.1, 0.0, ez - 0.01))
@@ -1047,7 +1057,7 @@ def build_v2(C, M, head, spec, P, H, head_bone="DEF-spine.006", eye_bone="DEF-ey
         rep["lid_socket"], socket_w = FF.lid_socket(head, ctx, sides, sock_cfg)
     ears = build_ears(C, M, ctx, fs.get("ears", {}), ez) if fs.get("ears") else []
     for (sx, side), e in zip(SIDES, ears):
-        lm[f"ear_{side}"] = e.location.copy()
+        lm[f"ear_{side}"] = ear_landmark(e)
     if not ears:
         for sx, side in SIDES:
             lm[f"ear_{side}"] = Vector((ctx.side_x(sx, 0.0, ez - 0.01) or sx * 0.1, 0.0, ez - 0.01))

@@ -1,0 +1,52 @@
+{
+ "note": "T-159 (opt-in candidate, auburn girl, stackable: replaces accessories.items, identical to the 0.14.0 candidate's list except temples.rest_on_ear): the glasses arm runs straight from the hinge and rests on the top of the ear, then hooks down behind it.",
+ "override": {
+  "accessories": {
+   "items": [
+    {
+     "type": "glasses/1",
+     "name": "glasses",
+     "rim": {
+      "radius_eye_spacing": 0.433,
+      "aspect": 1.0,
+      "shape_n": 2.0,
+      "offset_up_m": 0.006,
+      "eye_clearance_m": 0.004,
+      "skin_clearance_m": 0.003,
+      "wrap_deg": 6,
+      "segments": 64
+     },
+     "wire_radius_m": 0.0016,
+     "bridge": {
+      "lift_m": 0.003,
+      "forward_m": 0.001
+     },
+     "temples": {
+      "enabled": true,
+      "skin_offset_m": 0.004,
+      "past_ear_m": 0.012,
+      "above_ear_m": 0.022,
+      "drop_m": 0.008,
+      "rest_on_ear": true
+     },
+     "lens": {
+      "enabled": true,
+      "alpha": 0.05
+     },
+     "material": {
+      "srgb": [
+       137,
+       85,
+       69
+      ],
+      "roughness": 0.3,
+      "metallic": 0.5
+     },
+     "provenance": "rim radius / eye spacing 21/48.5 = 0.433, rim centre 2.5 px (6 mm) above the eye line (landmarks.json); frame colour #30 (color_targets.json glasses_frame)"
+    },
+    "hair flowers (planned, M4)",
+    "hair band (planned, M4)"
+   ]
+  }
+ }
+}
