@@ -1,6 +1,6 @@
 {
  "boy_yellow_hoodie": {
-  "out": "assets/characters/boy_yellow_hoodie/spec/candidates/R3/boy_yellow_hoodie.2.3.0.spec.json",
+  "out": "docs/evaluation/characters/R3/specs/boy_yellow_hoodie.2.3.0.spec.json",
   "layers": [
    {
     "layer": "docs/evaluation/characters/T-159/overrides/boy_ears.json",
@@ -83,7 +83,7 @@
   ]
  },
  "girl_auburn_bun_glasses": {
-  "out": "assets/characters/girl_auburn_bun_glasses/spec/candidates/R3/girl_auburn_bun_glasses.0.14.0.spec.json",
+  "out": "docs/evaluation/characters/R3/specs/girl_auburn_bun_glasses.0.14.0.spec.json",
   "layers": [
    {
     "layer": "docs/evaluation/characters/T-159/overrides/girl_auburn_bun_glasses.temple.override.json",
@@ -100,6 +100,10 @@
    {
     "layer": "docs/evaluation/characters/T-167/overrides/girl_auburn_bun_glasses.hair_r7.override.json",
     "changed_leaves": 8
+   },
+   {
+    "layer": "docs/evaluation/characters/T-156/auburn/girl_auburn_bun_glasses.eyes.override.json",
+    "changed_leaves": 32
    }
   ],
   "clashes": {},
@@ -166,11 +170,32 @@
     "old_len": 3,
     "new_len": 3,
     "same": false
+   },
+   {
+    "layer": "girl_auburn_bun_glasses.eyes.override.json",
+    "path": "face.eyes.lids.closed_fit.lash_curve.span",
+    "old_len": null,
+    "new_len": 2,
+    "same": false
+   },
+   {
+    "layer": "girl_auburn_bun_glasses.eyes.override.json",
+    "path": "face.eyes.lash.srgb",
+    "old_len": 3,
+    "new_len": 3,
+    "same": false
+   },
+   {
+    "layer": "girl_auburn_bun_glasses.eyes.override.json",
+    "path": "face.eyes.lash.strands.length_m",
+    "old_len": 3,
+    "new_len": 3,
+    "same": false
    }
   ]
  },
  "girl_white_hair_blue_dress": {
-  "out": "assets/characters/girl_white_hair_blue_dress/spec/candidates/R3/girl_white_hair_blue_dress.0.1.0.spec.json",
+  "out": "docs/evaluation/characters/R3/specs/girl_white_hair_blue_dress.0.1.0.spec.json",
   "layers": [
    {
     "layer": "docs/evaluation/characters/T-159/overrides/girl_white_hair_blue_dress.temple.override.json",
@@ -183,6 +208,10 @@
    {
     "layer": "docs/evaluation/characters/T-167/overrides/girl_white_hair_blue_dress.hair_r7.override.json",
     "changed_leaves": 3
+   },
+   {
+    "layer": "docs/evaluation/characters/T-156/third/girl_white_hair_blue_dress.eyes.override.json",
+    "changed_leaves": 27
    }
   ],
   "clashes": {},
@@ -227,6 +256,27 @@
     "path": "hair.structures",
     "old_len": 11,
     "new_len": 11,
+    "same": false
+   },
+   {
+    "layer": "girl_white_hair_blue_dress.eyes.override.json",
+    "path": "face.eyes.lids.closed_fit.lash_curve.span",
+    "old_len": 2,
+    "new_len": 2,
+    "same": false
+   },
+   {
+    "layer": "girl_white_hair_blue_dress.eyes.override.json",
+    "path": "face.eyes.lash.srgb",
+    "old_len": 3,
+    "new_len": 3,
+    "same": false
+   },
+   {
+    "layer": "girl_white_hair_blue_dress.eyes.override.json",
+    "path": "face.eyes.lash.strands.length_m",
+    "old_len": 3,
+    "new_len": 3,
     "same": false
    }
   ]

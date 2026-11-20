@@ -389,8 +389,8 @@
      10,
      14
     ],
-    "radius": 0.462,
-    "pupil": 0.231,
+    "radius": 0.458,
+    "pupil": 0.229,
     "limbal_width": 0.07,
     "pupil_softness": 0.015,
     "streaks": 0.3,
@@ -415,22 +415,23 @@
     ]
    ],
    "lids": {
-    "upper_edge_deg": 38,
+    "upper_edge_deg": 33.5,
     "upper_back_tilt": 1.0,
     "upper_gap": 0.012,
     "upper_thickness_m": 0.0016,
-    "lower_edge_deg": -36,
+    "lower_edge_deg": -39,
     "lower_tilt": 0.3,
     "lower_gap": 0.025,
     "lower_thickness_m": 0.0005,
     "upper_curve": 1.0,
-    "lower_curve": 0.15,
+    "lower_curve": 0.6,
     "trim": {
-     "up_outer_deg": 72,
-     "lo_outer_deg": 62,
+     "up_outer_deg": 44,
+     "lo_outer_deg": 0.4,
      "cover_margin": 0.06,
      "soft": 0.1,
-     "lo_back": 0.3
+     "lo_back": 0.3,
+     "lo_inner_deg": 0.4
     },
     "lower_fit": {
      "gap": 0.0025899679392805334
@@ -445,32 +446,35 @@
       26
      ],
      "lash_curve": {
-      "out_m": 0.002,
+      "out_m": 0.003,
       "above_seam_deg": 14.0,
       "sag_deg": 5.0,
       "corner_lift_deg": 7.0,
       "span": [
        -0.45,
-       0.75
+       0.62
       ],
       "keys": {
        "Laugh": -1.0,
        "Squint": 0.0
       }
-     }
+     },
+     "shell_occlusion_tint": 0.5,
+     "sink_m": 0.005
     },
-    "upper_roll_deg": -18
+    "upper_roll_deg": 1,
+    "upper_yaw_deg": 8
    },
    "lash": {
     "srgb": [
-     70,
-     44,
-     36
+     60,
+     37,
+     30
     ],
-    "span_deg": 56,
-    "thick_m": 0.0034,
+    "span_deg": 41,
+    "thick_m": 0.0017,
     "depth_m": 0.0016,
-    "flare": 0.6,
+    "flare": 1.0,
     "forward_m": 0.0004,
     "outer": {
      "count": 3,
@@ -484,22 +488,22 @@
      "lift": 0.9
     },
     "strands": {
-     "count": 5,
-     "from_deg": 24,
-     "to_deg": 52,
+     "count": 6,
+     "from_deg": 22,
+     "to_deg": 39,
      "length_m": [
-      0.0035,
-      0.0048,
-      0.0058
+      0.003,
+      0.004,
+      0.0048
      ],
      "curl": 0.7,
      "width_m": 0.0013,
-     "outward": 0.45,
+     "outward": 0.5,
      "forward": 0.15,
      "note": "T-126a: no glasses, so the strands reach the outer corner (01/14 outer lash flick)"
     },
     "lower_strands": {
-     "count": 3,
+     "count": 0,
      "from_deg": 45,
      "to_deg": 78,
      "length_m": [
@@ -537,14 +541,18 @@
     "lower_band_deg": 1.0,
     "ramp_deg": 12,
     "reach_deg": 36,
-    "corner_deg": 46,
+    "corner_deg": 36,
     "clearance_m": 0.002,
     "wall_smooth_iterations": 25,
     "note": "T-081: relaxes the socket wall (face_generic/2 opt-in): the sharp folds at the eye corners and below the eye rims (dark specks under skin-felt/2) go from max 92 deg to 40 deg",
     "corner_relax_iterations": 25,
     "carve_reach": 0.42,
     "smooth_iterations": 24,
-    "cover_softness": 0.3
+    "cover_softness": 0.3,
+    "closed_fill": {
+     "extra_m": -0.006,
+     "smooth_iterations": 12
+    }
    },
    "felt": {
     "roughness": 0.8,
@@ -2751,7 +2759,8 @@
    "T-155 candidate",
    "docs/evaluation/characters/T-159/overrides/girl_white_hair_blue_dress.temple.override.json",
    "docs/evaluation/characters/T-159/overrides/third_ears.json",
-   "docs/evaluation/characters/T-167/overrides/girl_white_hair_blue_dress.hair_r7.override.json"
+   "docs/evaluation/characters/T-167/overrides/girl_white_hair_blue_dress.hair_r7.override.json",
+   "docs/evaluation/characters/T-156/third/girl_white_hair_blue_dress.eyes.override.json"
   ]
  }
 }
