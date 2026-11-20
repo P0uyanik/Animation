@@ -11,7 +11,7 @@
     }
   },
   "apt": {
-    "note": "Ubuntu 24.04 packages for the linux C++ tier (glfw 3.3.10); vcpkg stays the Windows path.",
+    "note": "Ubuntu 24.04 packages for the linux C++ tier (glfw 3.3.10); vcpkg stays the Windows path. ffmpeg (6.1.1 on 24.04, with libx264 and libx265) runs the T-166 delivery-encode test.",
     "packages": [
       "ninja-build",
       "ccache",
@@ -20,7 +20,8 @@
       "libglfw3-dev",
       "libglew-dev",
       "libstb-dev",
-      "doctest-dev"
+      "doctest-dev",
+      "ffmpeg"
     ]
   }
 }
