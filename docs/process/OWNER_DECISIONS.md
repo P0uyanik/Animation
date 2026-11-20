@@ -777,3 +777,7 @@ H.264 fallback, old preset kept by name; Sonnet 5.5) and T-144 option (b) REPORT
 and lists the generator versions the bundled candidates depend on (T-156/T-159/T-167/T-168 overrides, boy 2.3.0 /
 girl 0.14.0 / third 0.1.0); none of those may be retired. Nothing is removed before the owner reviews the report. Write-sets
 stay disjoint from running tasks. Hands round 2, the version release and the world plan stay on hold.
+
+## 2026-11-20 ~20:30Z (21:30 CET) — Session cap (relayed by the owner liaison)
+The session cap is temporarily 7, until the bundle merges or the owner says otherwise. The T-168 session (archived ~20:06Z,
+branch `t-168-claude-boy-face@49b3f56` kept) may be unarchived if follow-up work is needed before the bundle merges; otherwise it stays archived.

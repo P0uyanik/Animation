@@ -1,7 +1,7 @@
 # Status board
 
 Updated by the Supervisor in the same commit as every merge or dispatch. Sources: [TASK_LOG](TASK_LOG.md),
-[OWNERSHIP](OWNERSHIP.md), [OWNER_DECISIONS](OWNER_DECISIONS.md) (2026-11-20). As of 2026-11-20 ~19:50Z. Fix round: T-159 and T-168 accepted for the bundled set; T-156 working; T-167 r6/r7 comparison; T-170d research.
+[OWNERSHIP](OWNERSHIP.md), [OWNER_DECISIONS](OWNER_DECISIONS.md) (2026-11-20). As of 2026-11-20 ~19:50Z. Fix round: T-159 and T-168 accepted for the bundled set; T-156 working; T-167 r6/r7 comparison; T-170d research. Session cap temporarily 7 (owner ~20:30Z, until the bundle merges); T-168 session archived, branch kept.
 Session cap: 6 (temporary 8 ended 08:20Z). Owner liaison: session_01NPjxeKamtbdzi3YwrgsWXU (from ~08:30Z). ETA "—" = none given yet.
 
 ## Character look
