@@ -17,7 +17,7 @@ Scope follows the Supervisor's notes of 06:41 / 06:50 / 07:04Z (lash first, lowe
 
 **Result.** Lash: warm dark brown liner with six short separate lashes at the outer corner (both girls); the closed
 eye is smooth skin with a thin lash arc (`socket.closed_fill`). Shape: every T-150 front metric is inside its band on both eyes (auburn 11/28 -> 28/28,
-third girl 9/28 -> 28/28). Blink: 0 sclera / iris pixels on both girls. **Boy: not changed, see the question below.**
+third girl 9/28 -> 28/28). Blink: 0 sclera / iris pixels (third girl), 7 px (auburn, outer corners). **Boy: not changed, see the question below.**
 
 ## What changed
 `auburn/girl_auburn_bun_glasses.eyes.override.json`, `third/girl_white_hair_blue_dress.eyes.override.json`
@@ -79,7 +79,7 @@ python3 docs/evaluation/characters/T-156/report.py <T-150 targets.json> auburn|w
 
 Before = the T-137 F1a / F1b build, after = this task. Unlike T-150's hand traces, glasses, hair and lens refraction
 are not occluders here. The T-137 READMEs' hand estimates of H/W (~0.73) were lower than this measure of the same
-builds (0.83 / 0.79). Blink: 0 open pixels on both girls.
+builds (0.83 / 0.79). Blink: 0 open pixels (third girl), 7 px (auburn).
 
 ### Auburn girl, front
 | metric | target front | before left | before right | after left | after right |
@@ -148,7 +148,7 @@ In tolerance: before 5/28, after 11/28. left / right = image left / right (the v
 - `preview.jpg`: the cheap previews of the final builds (4 spp, hair and clothes hidden; top open, bottom Blink; front and 3/4).
 
 ## Not reached by an override, and what it would need
-- **H/W is 0.91 / 0.905, not 0.95, and the iris D/W 0.75 / 0.76.** The reference irises are taller than wide (T-150
+- **H/W is 0.90 / 0.90, not 0.95, and the iris D/W 0.75 / 0.76.** The reference irises are taller than wide (T-150
   traces: D/W 0.74 with only 0.06 + 0.03 W of white at H/W 0.95, about 1.2 : 1); ours are round
   (`felt.round_iris`). A taller opening adds white above / below, a larger iris leaves the D/spacing band (now 0.381
   of max 0.387, and 0.374 of max 0.378). Needs an iris aspect in `face_v3/felt_eye.py`, or wider-set eyes.
