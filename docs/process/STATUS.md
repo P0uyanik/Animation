@@ -33,7 +33,7 @@ Codex T-169 hair reference study (relay 2987afa) feeds T-167. Codex T-161 refere
 | --- | --- | --- | --- | --- |
 | T-141 native hair curves (opt-in tool) | Fable 5.2 | merged (main 2a02532) | — | — |
 | T-144 retire unpinned generator versions | Opus 5.5 | done: option (c), legacy documented, no removal (owner ~20:50Z) | — | — |
-| T-166 final720 default + HEVC 10-bit delivery (owner start ~20:20Z) | Sonnet 5.5 | running | — | `t-166-claude-render-defaults` |
+| T-166 final720 default + HEVC 10-bit delivery | Sonnet 5.5 | merged (main 86288cb); ffmpeg added to CI pins | — | — |
 | T-153 fidelity score v2 | Opus | merged; experimental, default stays v1 | — | `t-153-claude-fidelity-v2` |
 | T-161 Codex reference targets | Codex | assigned (relay f33c4868); Codex limited until 2026-11-23 ~21:43Z | — | — |
 | T-162 this board | Sonnet 5.5 | merged; Supervisor maintains | — | — |
