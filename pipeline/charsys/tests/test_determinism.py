@@ -7,8 +7,9 @@ Use ``--character all`` for the slower boy+girl audit. The default boy check is
 the CI-sized regression test for the legacy hair_clumps path.
 
 T-158: ``--character current`` builds the current versions (boy 2.2.0, girl 0.13.0) and the third character's
-candidate spec; ``--runs N`` (default 2) builds each N times and requires every run to match run 1; ``--jobs N``
-runs builds in parallel (each build stays single-threaded, -t 1).
+candidate spec (``--character <id>`` one of them, e.g. girl_auburn_bun_glasses = 0.13.0); ``--runs N`` (default 2) builds each N times and requires every run to match run 1; ``--jobs N``
+runs builds in parallel (each build stays single-threaded, -t 1); ``--strict`` also compares 1e-7 m mesh hashes
+with shape keys (the drift T-158 fixed is below the 0.01 mm fingerprint grid).
 """
 import argparse
 import concurrent.futures
@@ -22,6 +23,7 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..")
 # Shared format-2 fingerprint tool (T-038). The frozen pipeline/blender/boy_pilot/fingerprint.py stays reserved for
 # the v6 baseline comparison in verify_charsys.
 FINGERPRINT = os.path.join(ROOT, "pipeline", "charsys", "fingerprint_v2.py")
+STRICT_HASH = os.path.join(ROOT, "pipeline", "charsys", "tests", "mesh_hash_strict.py")
 CHARS = {
     "boy": ("boy_yellow_hoodie", "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.spec.json"),
     "girl": ("girl_auburn_bun_glasses", "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.spec.json"),
@@ -45,9 +47,12 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--blender", required=True)
     ap.add_argument("--out", required=True)
-    ap.add_argument("--character", choices=["boy", "girl", "all", "current"], default="boy")
+    ap.add_argument("--character", default="boy",
+                    help="boy | girl | all | current | a CURRENT label | a character id (its CURRENT entry)")
     ap.add_argument("--runs", type=int, default=2)
     ap.add_argument("--jobs", type=int, default=1)
+    ap.add_argument("--strict", action="store_true",
+                    help="T-158: also require identical 1e-7 m mesh hashes incl. shape keys (tests/mesh_hash_strict.py)")
     a = ap.parse_args(sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else None)
     if a.runs < 2:
         raise SystemExit("--runs must be at least 2")
@@ -59,10 +64,18 @@ def main():
     sys.path.insert(0, os.path.join(ROOT, "pipeline", "charsys"))
     import determinism
     env = determinism.subprocess_env()
+    by_id = {cid: label for label, (cid, _spec) in CURRENT.items()}
     if a.character == "current":
         selected = CURRENT
+    elif a.character == "all":
+        selected = CHARS
+    elif a.character in CHARS:
+        selected = {a.character: CHARS[a.character]}
+    elif a.character in CURRENT or a.character in by_id:
+        label = by_id.get(a.character, a.character)
+        selected = {label: CURRENT[label]}
     else:
-        selected = CHARS if a.character == "all" else {a.character: CHARS[a.character]}
+        raise SystemExit(f"--character: unknown {a.character!r}")
 
     def build_and_fingerprint(label, cid, spec, run):
         build = os.path.join(out, f"{label}_{run}")
@@ -79,6 +92,12 @@ def main():
             fp = os.path.join(build, name)
             subprocess.run([a.blender, "-b", "--factory-startup", "-t", "1", "-P", FINGERPRINT, "--",
                             os.path.join(build, f"{cid}_master.blend"), fp, "--grid-m", grid],
+                           cwd=ROOT, env=env, stdout=subprocess.DEVNULL, check=True)
+            fps.append(fp)
+        if a.strict:
+            fp = os.path.join(build, "mesh_hash_strict.json")
+            subprocess.run([a.blender, "-b", "--factory-startup", "-t", "1", "-P", STRICT_HASH, "--",
+                            os.path.join(build, f"{cid}_master.blend"), fp],
                            cwd=ROOT, env=env, stdout=subprocess.DEVNULL, check=True)
             fps.append(fp)
         return fps
@@ -100,10 +119,17 @@ def main():
         strict_changed = {f"run_{i + 1}": changed_objects(strict[0], c) for i, c in enumerate(strict)
                           if i and c != strict[0]}
         same = all(c == coarse[0] for c in coarse) and all(c == strict[0] for c in strict)
+        exact_changed = {}
+        if a.strict:
+            exact = [json.load(open(r[2], encoding="utf-8")) for r in runs]
+            exact_changed = {f"run_{i + 1}": sorted(n for n in set(e) | set(exact[0]) if e.get(n) != exact[0].get(n))
+                             for i, e in enumerate(exact) if i and e != exact[0]}
+            same = same and not exact_changed
         results[label] = {"pass": same, "runs": a.runs, "spec": spec,
                           # run 2 vs run 1 lists kept as before; per-run lists (vs run 1) for N > 2
                           "changed_objects": changed.get("run_2", []), "strict_changed_objects": strict_changed.get("run_2", []),
                           "changed_by_run": changed, "strict_changed_by_run": strict_changed,
+                          **({"mesh_hash_1e-7_changed_by_run": exact_changed} if a.strict else {}),
                           "fingerprints": [os.path.relpath(r[0], out) for r in runs],
                           "strict_fingerprints": [os.path.relpath(r[1], out) for r in runs]}
 

@@ -21,7 +21,15 @@ Input e2c8904. Blender: bpy 5.3.0 module via tools/bpy_blender.py (Python 3.13).
   The call raises if the face set no longer matches. A size without a recording keeps the live order and prints a note.
 - `trim_shell` and `refine_eye_regions`: sort by element index.
 - `tests/test_determinism.py`: adds `--character current` (boy 2.2.0, girl 0.13.0, third 0.1.0 candidate),
-  `--runs N` and `--jobs N`. The default (boy, 2 runs, used by check_all) is unchanged.
+  a character id, `--runs N`, `--jobs N` and `--strict` (1e-7 m mesh hashes with shape keys,
+  `tests/mesh_hash_strict.py`). The default (boy, 2 runs) is unchanged.
+- Gate (Supervisor): Blender-tier unit `build-determinism-girl` in tools/check_all.py runs
+  `test_determinism.py --character girl_auburn_bun_glasses --runs 2 --jobs 2 --strict`. It is not listed in
+  tools/ci/blender_shards.json, so it runs in shard 1. `--strict` is needed: the drift is about 1e-8 m and
+  fingerprint_v2 (0.01 mm) does not see it. Main with the new test: FAIL, run 2 differs in ear.R and lid_upper.R,
+  fingerprints equal (`gate/girl_strict_2runs_main_e2c8904.json`). Fix: PASS (`gate/girl_strict_2runs_fix.json`).
+  Time here: 184 s without --strict when run alone, 278 s with --strict while another 2-build test ran (4 cores).
+  CI runner time not measured.
 
 ## Results
 | check | result |
