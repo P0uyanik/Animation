@@ -742,3 +742,24 @@ content/personality derived from them.
 ## 2026-11-20 ~15:45Z (16:45 CET) — T-170 world style plan (planning only; exception to the hold)
 Delivered: `docs/evaluation/world/T-170/README.md` (style guide, material library, construction architecture, scene
 rules, 7-phase plan ~19–25 task-days, 8 owner questions). The owner reviews it before any development.
+
+## 2026-11-20 ~16:10–19:20Z — Ears, boy face, hair, world research (relayed by the owner liaison)
+- ~16:50Z: boy ears, then ~17:15Z "same for girls' ears" → T-159 (shape/size per refs and T-161 targets; auburn glasses
+  arm rests on the ear). ~17:20Z: boy face "has to be softer" → T-168 r4. ~17:25Z: hair r7 accepted for now; boy flicker
+  must meet the existing limit (re-measured ~17:35Z: still over, caused by the new crown tufts).
+- ~17:45Z: T-170b option 2 (Poly Haven/ambientCG hosts allowed) → T-170c CC0 test: Poly Haven wood_table,
+  oak_veneer_01, laminate_floor_02, HDRI lebombo confirmed.
+
+## 2026-11-20 ~19:20Z (20:20 CET) — Decisions (relayed by the owner liaison)
+1. T-170c option 2: acg-download.struffelproductions.com allowed → T-170d (ambientCG rug/fabric test, research only).
+   World scope guidance (binding): "we do not need every object seen in the reference videos, nor match them exactly. Any
+   table is fine; any simple, allowed, easy-to-make objects are acceptable — that is our priority. If we build a scene
+   later, its objects should make sense together and feel related. I don't want to spend this much time on building
+   props." → simplest objects, minimal prop effort; T-170d trims the plan and estimate.
+2. T-168: no further pass; r4 (`t-168-claude-boy-face@49b3f56`) goes into the bundled set; remaining issues (chin below
+   the mouth, jaw underside, faint cheek line) logged for a later phase.
+3. T-167: render r6 vs r7 comparison sheets for all three (same views/lighting, incl. 100% hair crops), owner chooses per
+   character; boy flicker decision waits for this; no look changes.
+4. T-156: continue; owner decides when finished.
+5. T-159: ears pass 2 (`t-159-claude-ears@aca5de6`) accepted for now into the bundled set; ears slightly wide vs the head
+   logged for later.
