@@ -1,5 +1,7 @@
 # T-156: lashes and eye shape to the T-150 targets (both girls)
 
+> **PAUSED 2026-11-20 09:37Z (owner).** Final sheets present: auburn `eyes_100.jpg`, `eyes_closed_100.jpg` (top = baseline, bottom = candidate, Blink), `strict.jpg`; third `eyes_100.jpg`. Not rendered yet: third `eyes_closed_100.jpg`, third `strict.jpg`. The committed sheets have not been reviewed by eye yet.
+
 Input `t-137-claude-faces @ 321466a`; targets `docs/evaluation/characters/T-150/targets.json` (main `e2c8904`).
 Blender: bpy 5.3 behind `tools/bpy_blender.py`. Overrides only; no current version, spec or published file changed.
 Scope follows the Supervisor's notes of 06:41 / 06:50 / 07:04Z (lash first, lower-lid crease, boy; fringe untouched).
