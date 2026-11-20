@@ -395,10 +395,10 @@
       "source": "T-106 WT (docs/evaluation/animation/T-106/performance.csv): the girl's point arrives f39 (reach [22, 39)); he keeps the same watch [27, 60) and answers with a blink + head lift at f60 = 21 f (delayed interest); +-5 f for the one-frame reading of the blink start. Was [4, 8] (extrapolation, 'not measurable' before T-106)"
     },
     "intensity_scale": {
-      "value": 0.7,
+      "value": 0.6,
       "unit": "multiplier",
       "kind": "measured",
-      "source": "T-106: his reactions are small: PB [259, 289) 'eyes open wider and lips part' with median jawOpen 0.033 and WT [60, 81) a 5 deg head roll, while the girl's reach/point/open smile are full beats; 0.7 (T-137 F2, was 0.6: the noticing reaction read too weak at shot size) keeps a partner's act (0.5 x 0.7 = 0.35) under the gesture threshold and an explicit event (0.7 x 0.7 = 0.49) above it (reluctant gestures)"
+      "source": "T-106: his reactions are small: PB [259, 289) 'eyes open wider and lips part' with median jawOpen 0.033 and WT [60, 81) a 5 deg head roll, while the girl's reach/point/open smile are full beats; 0.6 keeps a partner's act (0.5 x 0.6 = 0.3) under the gesture threshold and an explicit event (0.7 x 0.6 = 0.42) just above it (reluctant gestures)"
     },
     "gaze_shift": {
       "value": 0.3,
