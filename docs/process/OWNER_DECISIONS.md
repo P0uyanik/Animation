@@ -842,3 +842,9 @@ filter matching the reference-video style. ~3.5–4 task-days. CMU only, with at
 existing shots' defaults. The write-set is disjoint from the release, T-171 and T-172. No character geometry/look or rig change (report first).
 File/function ownership with T-171 is assigned in `docs/tasks/T-175.md`. First delivery: walk + sit/stand on the boy and auburn
 (third if possible), with feet-planted numbers and short clips for owner style review before wider use.
+
+## 2026-11-20 ~23:11Z (00:11 CET) — R3 release approval (owner, typed directly in the T-155 session)
+"I approve releasing R3 as boy 2.3.0, girl 0.14.0 and third 0.1.0 and making 2.3.0/0.14.0 CURRENT, without reviewing the
+final sheets, on condition that all checks pass and the liaison finds no new defect on the final sheets; otherwise stop and
+report." (Verified by the Supervisor in the T-155 transcript, user message 23:11:12Z.) Release write-set: the T-155 row in
+OWNERSHIP.md. The branch-only 2.3.0/0.14.0/0.1.0 store folders (never on main) are replaced by the R3 rebuilds under the same numbers.
