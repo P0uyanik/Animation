@@ -103,8 +103,11 @@ groom/4.
   materials and hair.
 - `ears/girl_ears_nohair.jpg`, `ears/third_ears_nohair.jpg`: the same crops with the hair hidden (before / after),
   because the girls' hair covers the ear.
-- Strict sheets: `boy_2.2.0_vs_t159.recipe.json`, `girl_0.13.0_vs_t159.recipe.json`, `tools/third_sheet.py`
-  (see `boy/`, `girl/`, `third/`).
+- Strict sheets (reference | baseline | candidate | AI target; recipe previews passed first):
+  `boy/strict.jpg` (2.2.0 current vs 2.3.0 candidate + ears, arms down; `boy_2.2.0_vs_t159.recipe.json`),
+  `girl/strict.jpg` (0.13.0 current vs 0.14.0 candidate + temple + ears, A-pose; `girl_0.13.0_vs_t159.recipe.json`),
+  `third/strict.jpg` (0.1.0 candidate vs + temple + ears, A-pose; `tools/third_sheet.py`, no current version).
+  At sheet scale the girls differ from their candidates only at the temple; their ears are under the hair.
 - Default unchanged: strict mesh hashes of default builds (no override) equal the base code's for all three
   (boy 223 objects: `ears/hash_boy_default_base.json` = `hash_boy_default_t159.json`; girl 224, third 199: same hashes as
   `temple/hash_*`, rebuilt with the final code).
