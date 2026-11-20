@@ -32,14 +32,6 @@
    "status": "approved",
    "spec_sha256": "fddb6a48347d45f228a687cf6dd2ffb6784ada82b6fd07f30c3bece9351d87e0",
    "approval_notes": "new current version: \"Owner 2026-11-19 (~15:05Z, \"approve 2.2.0 and 0.13.0 as current\"): boy 2.2.0 and girl 0.13.0 become current. Fidelity score drop owner-accepted (boy 2.1.0 67.72 -> 2.2.0 67.25, girl 0.12.0 65.01 -> 0.13.0 64.13): the gains are the lid colour, the lens shelf and the expressions, which the score does not measure (see T-129).\" Recorded by T-131 (tools/version_switch.py)."
-  },
-  "0.14.0": {
-   "created": "2026-11-20T07:01:37+00:00",
-   "parent": "0.13.0",
-   "notes": "girl_auburn_bun_glasses 0.14.0 (T-155): CANDIDATE, not current; spec assets/characters/girl_auburn_bun_glasses/spec/candidates/T-155/girl_auburn_bun_glasses.0.14.0.spec.json (docs/evaluation/characters/T-155/make_specs.py). Owner decision docs/process/OWNER_DECISIONS.md 2026-11-20 ~07:00Z item 1.",
-   "status": "approved",
-   "spec_sha256": "41505b46ecdb92b3f31285db86e2dc2b8d8c3b8a56ea470e8ae862063f237896",
-   "approval_notes": "new current version: \"T-155 approved: make boy 2.3.0 and girl 0.14.0 CURRENT\" Recorded by T-155 (tools/version_switch.py)."
   }
  },
  "pointers": {
@@ -102,20 +94,6 @@
    "previous": "0.12.0",
    "by": "owner (docs/process/OWNER_DECISIONS.md 2026-11-19)",
    "notes": "new current version: \"Owner 2026-11-19 (~15:05Z, \"approve 2.2.0 and 0.13.0 as current\"): boy 2.2.0 and girl 0.13.0 become current. Fidelity score drop owner-accepted (boy 2.1.0 67.72 -> 2.2.0 67.25, girl 0.12.0 65.01 -> 0.13.0 64.13): the gains are the lid colour, the lens shelf and the expressions, which the score does not measure (see T-129).\" Recorded by T-131 (tools/version_switch.py)."
-  },
-  {
-   "at": "2026-11-20T07:01:37+00:00",
-   "action": "publish",
-   "version": "0.14.0",
-   "status": "candidate"
-  },
-  {
-   "at": "2026-11-20T08:31:42+00:00",
-   "action": "approve",
-   "version": "0.14.0",
-   "previous": "0.13.0",
-   "by": "owner (docs/process/OWNER_DECISIONS.md 2026-11-20 ~08:20Z item 1)",
-   "notes": "new current version: \"T-155 approved: make boy 2.3.0 and girl 0.14.0 CURRENT\" Recorded by T-155 (tools/version_switch.py)."
   },
   {
    "at": "2026-11-20T22:55:58+00:00",
