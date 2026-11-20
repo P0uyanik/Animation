@@ -36,7 +36,10 @@ Codex T-161 reference targets (lashes, ears, hair silhouette) go to T-156 and T-
 | T-163 starter felt prop library | Sonnet 5.5 | running | — | `t-163-claude-props` |
 
 ## Waiting for owner
-No sheets are ready yet (no sheet links to give). When they are, each item below gets its link here.
-1. T-155 candidate sheets (reference | current | candidate | target + crops): approve or reject per candidate.
-2. T-141b: not approved; owner to discuss.
-3. T-124: comparison paths go to the owner before any switch to final720.
+Sheets are paths in text (branch: path).
+1. T-137 faces round 5 (not final, eye openings too wide; T-156 follows up): `t-137-claude-faces`: `docs/evaluation/characters/T-137/f1a`, `.../f1b`, `.../f2`. Choices: 1 accept, 2 reject, 3 wait for T-156.
+2. T-124 render preset: `docs/evaluation/rendering/T-124/README.md`. Choices: 1 keep the existing final preset, 2 switch to final720.
+3. T-157 grasp gap options: `t-157-claude-grasp-options`: `docs/evaluation/animation/T-157/`. Choices: 1 wider band, 2 fewer fingers, 3 both.
+4. T-144 plan (decided: option b, starts after T-158): `t-144-claude-retire-versions`: `docs/evaluation/T-144/PLAN.md`. Choices: a registry-only retire, b file comparisons, c defer.
+5. T-155 candidate sheets (reference | current | candidate | target + crops): none yet; approve or reject per candidate.
+6. T-141b: not approved; owner to discuss.
