@@ -700,3 +700,12 @@ no pointer; boy/third expression sheets not rendered), T-156 `t-156-claude-eye-t
 renders and READY pending), T-159, T-167 `dc85c98`, T-168 `de0eff2`. T-158 and T-165 were already merged (main
 2a02532). No dispatches, merges, promotions or Codex tasks; in-flight CI may finish but is not acted on. Nothing resumes
 until the owner's explicit word via the liaison.
+
+## 2026-11-20 ~09:50Z (10:50 CET) — Codex T-169 hair reference study (relayed by the owner liaison)
+Analysis only, write-set `docs/evaluation/characters/T-169/**`; posted on relay-channel@2987afa (NEXT_TASK.md). Feeds T-167.
+
+## 2026-11-20 ~09:55Z (10:55 CET) — "start all implementers" (relayed by the owner liaison)
+Resumed from pushed WIP: T-155 (543bfa1; switch already done on the branch with the owner's direct OK; boy/third expression
+sheets), T-156 (2f89842), T-159 (20a9363: cheek seam diagnosis, then ears), T-167 (dc85c98; fold in T-169 when READY),
+T-168 (de0eff2: proposed fix, opt-in cheek-pad fade + upturned nose, candidate only). Reviews/merges resume. Queued/planned
+tasks (T-166, T-144, hands round 2, next versions) STAY ON HOLD until "Start the planned automatic tasks".
