@@ -22,7 +22,6 @@ means none. Branch is the task's branch; a task branch without a row falls back 
 | T-158 | C | t-158-claude-deterministic-build | `pipeline/charsys/tests/test_build_determinism.py`, `docs/evaluation/characters/T-158/**` | — | — |
 | T-155 | C | t-155-claude-candidates-r2 | `assets/characters/boy_yellow_hoodie/versions/2.3.0/**`, `assets/characters/girl_auburn_bun_glasses/versions/0.14.0/**`, `assets/characters/girl_white_hair_blue_dress/versions/0.1.0/**`, `assets/characters/*/versions/index.json` (candidate entries only), `spec/candidates/**` (new files only), `docs/evaluation/characters/T-155/**`, `docs/evaluation/characters/fidelity_baseline.json` (rebaseline citing owner ~08:20Z), `docs/evaluation/regression/baselines/*/2.3.0/**`, `docs/evaluation/regression/baselines/*/0.14.0/**`, `docs/evaluation/regression/baselines/*/0.1.0/**`, `assets/characters/*/spec/*.spec.json` (new version specs only), `docs/evaluation/fidelity/**` | T-154 | — |
 | T-160 | E | t-160-claude-hair-r6 | `docs/evaluation/characters/T-160/**` | — | — |
-| T-164 | C | t-164-claude-gate-comment | `.github/workflows/checks.yml` | — | — |
 | T-165 | C | t-165-claude-task-kit | `tools/ready.py`, `tools/run_logged.py`, `tools/wait_gate.py`, `tools/render_queue.py`, `tools/review/shot_sheet.py`, `tools/tests/test_task_kit.py`, `tools/check_all.py`, `docs/process/IMPLEMENTER_PROMPT.md`, `docs/tasks/_TEMPLATE.md` | — | — |
 
 Supervisor-only files: docs/process/TASK_LOG.md, docs/ROADMAP.md, docs/process/OWNER_DECISIONS.md, docs/tasks/**.
