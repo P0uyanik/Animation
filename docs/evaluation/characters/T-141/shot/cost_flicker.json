@@ -1,0 +1,256 @@
+{
+ "shot": "e907_exchange/s010_verbs frame 65, 1280x720, CPU 4 threads; girl master swapped through cast.json (auburn 0.13.0 vs hair-curves variants)",
+ "t124_baseline_s": {
+  "final": 433,
+  "review16": 66
+ },
+ "render": {
+  "review_base": {
+   "samples": 16,
+   "render_s": 73.58,
+   "phases": {
+    "sync": 7.44,
+    "bvh": 2.65,
+    "kernels": 0.01,
+    "path_trace": 61.18,
+    "denoise": 0.0,
+    "other": 2.29
+   }
+  },
+  "review_add": {
+   "samples": 16,
+   "render_s": 84.23,
+   "phases": {
+    "sync": 12.4,
+    "bvh": 3.9,
+    "kernels": 0.01,
+    "path_trace": 63.4,
+    "denoise": 0.0,
+    "other": 4.51
+   }
+  },
+  "review_replace": {
+   "samples": 16,
+   "render_s": 80.75,
+   "phases": {
+    "sync": 11.24,
+    "bvh": 3.11,
+    "kernels": 0.01,
+    "path_trace": 62.17,
+    "denoise": 0.0,
+    "other": 4.23
+   }
+  },
+  "final_base": {
+   "samples": 128,
+   "render_s": 461.64,
+   "phases": {
+    "sync": 7.74,
+    "bvh": 2.56,
+    "kernels": 0.01,
+    "path_trace": 448.92,
+    "denoise": 0.0,
+    "other": 2.41
+   }
+  },
+  "final_add": {
+   "samples": 128,
+   "render_s": 523.47,
+   "phases": {
+    "sync": 12.1,
+    "bvh": 4.99,
+    "kernels": 0.01,
+    "path_trace": 501.8,
+    "denoise": 0.0,
+    "other": 4.58
+   }
+  },
+  "final_replace": {
+   "samples": 128,
+   "render_s": 472.18,
+   "phases": {
+    "sync": 10.8,
+    "bvh": 3.05,
+    "kernels": 0.01,
+    "path_trace": 453.85,
+    "denoise": 0.0,
+    "other": 4.47
+   }
+  }
+ },
+ "assembly_min": {
+  "base": 11,
+  "add": 56,
+  "replace": 56,
+  "note": "add and replace assembled two at a time; base alone"
+ },
+ "eval_s_per_pose_change": {
+  "third_base": 0.9,
+  "third_add": 1.83,
+  "third_replace": 1.54,
+  "auburn_base": 1.15,
+  "auburn_add": 3.5,
+  "auburn_replace": 3.13
+ },
+ "flicker": {
+  "base": {
+   "frames": "60-66, 16 spp, OIDN",
+   "counts": {
+    "flicker": 1,
+    "popping": 23,
+    "interpenetration": 2,
+    "by_design": 0
+   },
+   "hair": {
+    "frames": 5,
+    "motion_compensated": true,
+    "held_share": 0.062,
+    "denoised_noise_median": 0.03822,
+    "denoised_noise_max": 0.04033,
+    "denoised_flip_share_median": 0.36134,
+    "denoised_flip_share_max": 0.37403,
+    "noisy_noise_median": 0.06435,
+    "noisy_noise_max": 0.07327,
+    "noisy_flip_share_median": 0.5217,
+    "noisy_flip_share_max": 0.53682,
+    "tile_flip_share_max": 0.8955
+   },
+   "fibres": {
+    "frames": 5,
+    "motion_compensated": true,
+    "held_share": 0.112,
+    "denoised_noise_median": 0.05692,
+    "denoised_noise_max": 0.05903,
+    "denoised_flip_share_median": 0.34722,
+    "denoised_flip_share_max": 0.3754,
+    "noisy_noise_median": 0.21172,
+    "noisy_noise_max": 0.21205,
+    "noisy_flip_share_median": 0.58076,
+    "noisy_flip_share_max": 0.59025,
+    "tile_flip_share_max": 0.7383
+   },
+   "issues": [
+    {
+     "check": "flicker",
+     "kind": "held_noise",
+     "region": "fibres",
+     "value": 0.05903,
+     "noisy": 0.20791,
+     "limit": 0.045,
+     "frames": [
+      61,
+      65
+     ],
+     "peak_frame": 64,
+     "strip": "strips/flicker_01_held_noise_f64.jpg"
+    }
+   ]
+  },
+  "add": {
+   "frames": "60-66, 16 spp, OIDN",
+   "counts": {
+    "flicker": 1,
+    "popping": 23,
+    "interpenetration": 2,
+    "by_design": 0
+   },
+   "hair": {
+    "frames": 5,
+    "motion_compensated": true,
+    "held_share": 0.057,
+    "denoised_noise_median": 0.03696,
+    "denoised_noise_max": 0.03966,
+    "denoised_flip_share_median": 0.34885,
+    "denoised_flip_share_max": 0.35666,
+    "noisy_noise_median": 0.06328,
+    "noisy_noise_max": 0.07297,
+    "noisy_flip_share_median": 0.54011,
+    "noisy_flip_share_max": 0.55739,
+    "tile_flip_share_max": 0.8312
+   },
+   "fibres": {
+    "frames": 5,
+    "motion_compensated": true,
+    "held_share": 0.112,
+    "denoised_noise_median": 0.05717,
+    "denoised_noise_max": 0.05898,
+    "denoised_flip_share_median": 0.34822,
+    "denoised_flip_share_max": 0.37653,
+    "noisy_noise_median": 0.2105,
+    "noisy_noise_max": 0.21186,
+    "noisy_flip_share_median": 0.58073,
+    "noisy_flip_share_max": 0.58975,
+    "tile_flip_share_max": 0.7593
+   },
+   "issues": [
+    {
+     "check": "flicker",
+     "kind": "held_noise",
+     "region": "fibres",
+     "value": 0.05898,
+     "noisy": 0.20825,
+     "limit": 0.045,
+     "frames": [
+      61,
+      65
+     ],
+     "peak_frame": 64,
+     "strip": "strips/flicker_01_held_noise_f64.jpg"
+    }
+   ]
+  },
+  "replace": {
+   "frames": "60-66, 16 spp, OIDN",
+   "counts": {
+    "flicker": 1,
+    "popping": 23,
+    "interpenetration": 2,
+    "by_design": 0
+   },
+   "hair": {
+    "frames": 5,
+    "motion_compensated": true,
+    "held_share": 0.061,
+    "denoised_noise_median": 0.03795,
+    "denoised_noise_max": 0.04081,
+    "denoised_flip_share_median": 0.30521,
+    "denoised_flip_share_max": 0.31373,
+    "noisy_noise_median": 0.06466,
+    "noisy_noise_max": 0.08159,
+    "noisy_flip_share_median": 0.52862,
+    "noisy_flip_share_max": 0.54818,
+    "tile_flip_share_max": 0.6846
+   },
+   "fibres": {
+    "frames": 5,
+    "motion_compensated": true,
+    "held_share": 0.112,
+    "denoised_noise_median": 0.05721,
+    "denoised_noise_max": 0.05888,
+    "denoised_flip_share_median": 0.34752,
+    "denoised_flip_share_max": 0.37625,
+    "noisy_noise_median": 0.21106,
+    "noisy_noise_max": 0.2114,
+    "noisy_flip_share_median": 0.5809,
+    "noisy_flip_share_max": 0.58965,
+    "tile_flip_share_max": 0.7477
+   },
+   "issues": [
+    {
+     "check": "flicker",
+     "kind": "held_noise",
+     "region": "fibres",
+     "value": 0.05888,
+     "noisy": 0.21106,
+     "limit": 0.045,
+     "frames": [
+      61,
+      65
+     ],
+     "peak_frame": 61,
+     "strip": "strips/flicker_01_held_noise_f61.jpg"
+    }
+   ]
+  }
+ }
+}

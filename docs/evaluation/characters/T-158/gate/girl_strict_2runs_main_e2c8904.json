@@ -1,0 +1,28 @@
+{
+ "characters": {
+  "girl_0.13.0": {
+   "changed_by_run": {},
+   "changed_objects": [],
+   "fingerprints": [
+    "girl_0.13.0_1/fingerprint_0.1mm.json",
+    "girl_0.13.0_2/fingerprint_0.1mm.json"
+   ],
+   "mesh_hash_1e-7_changed_by_run": {
+    "run_2": [
+     "ear.R",
+     "lid_upper.R"
+    ]
+   },
+   "pass": false,
+   "runs": 2,
+   "spec": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.13.0.spec.json",
+   "strict_changed_by_run": {},
+   "strict_changed_objects": [],
+   "strict_fingerprints": [
+    "girl_0.13.0_1/fingerprint_0.01mm.json",
+    "girl_0.13.0_2/fingerprint_0.01mm.json"
+   ]
+  }
+ },
+ "pass": false
+}

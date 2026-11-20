@@ -607,3 +607,98 @@ references; we also need to work on the ears; go ahead and release these changes
 2. Eyelashes are the top face priority: T-156 becomes lash-first (thin dark upper liner, short separate outer-corner
    lashes, no brown band; refs third 01/04/14, auburn ref_30/G01/G02, boy hero24/val27), then T-150 eye-shape targets.
 3. Ears: after T-158 (deterministic builds), an ears round (Fable 5.2) for all three characters → T-159.
+## 2026-11-20 ~07:20Z — Hair round 6 on the base groom system (relayed by the original Supervisor)
+New task T-160 (Fable 5.2): all three characters vs refs, base groom system first (shape/silhouette at shot size).
+Boy: crown height, staggered whorl petals with dark channels (val27 back, B04/B05), keep pickup sightline under fringe.
+Auburn girl: lower outer sweeps (less bare arc above brows), separate tapered ringlet ends (ref_30, G04/G06), bun with
+wrapped strands, flower readable from front. Third girl: softer, less rope-like locks with tapered tips, softer fringe
+edge, buns with wrapped strands, bow seat (refs 01/02/07/17_W04). Inputs: T-116 hair section, T-133 review, T-118/T-126b
+readiness notes. Opt-in overrides; strict sheets + 100% hair crops (front, 3/4, back) + turntable/motion flicker check
+(T-125); folds into next versions. NOT in scope: T-141 hair curves; T-141b NOT approved (owner to discuss); T-141 may
+merge as an opt-in tool once green. Fringe coordination: T-160 owns the fringe; T-156 (eyes/lashes) does not edit it.
+Also pending for the owner: T-144 A3 plan `t-144-claude-retire-versions@8a34069` docs/evaluation/T-144/PLAN.md, options
+(a) registry-only retire + named archival-build allowlist (recommended), (b) file comparisons (weakens checks), (c) defer.
+
+## 2026-11-20 ~07:35Z — T-144 A3: option (b) (relayed by the original Supervisor)
+Compare each published version's stored built files against fresh builds, then retire and remove only generator code
+that no current or candidate version pins. Start only after T-158 (deterministic builds) merges, when a slot is free.
+Conditions as before: frozen built results stay retrievable; regression/golden checks unchanged or replaced by
+equal-strength file comparisons; tag first; one revertible commit; full gate green. Report the comparison results (any
+mismatches) BEFORE removing anything. Plan: `t-144-claude-retire-versions@8a34069`, docs/evaluation/T-144/PLAN.md.
+
+## 2026-11-20 ~07:35Z — "yes go ahead with all four" (relayed by the original Supervisor)
+1. Status board `docs/process/STATUS.md` (Sonnet 5.5) → T-162; then the Supervisor keeps it current at every merge or
+   dispatch (same commit). Lanes: Character look (T-156, T-160, T-158 → T-159 ears); Release (T-155); Interaction
+   (T-157, then hands round 2). Each task: id, model, state, ETA; owner-waiting items with sheet links and numbered
+   choices; queued items with start conditions (T-144 option b after T-158; hands round 2 after T-157 + T-155).
+2. Starter prop library (Sonnet 5.5) → T-163: 10–15 simple felt props (cup, bowl, plate, spoon, book, ball, box with lid,
+   small toy, apple, pencil, block, basket) with affordances and grasp points per T-111/T-112, existing material
+   presets; own new files only; contact sheet + one verb test per prop.
+3. Temporary session cap 8 until 08:20Z, then 6.
+4. No other new tasks; lanes; merges batched per lane.
+Codex T-161 (relay f33c4868): reference targets for lashes, ears, hair silhouette → forward targets.json to T-156/T-160.
+
+## 2026-11-20 ~08:10Z — Workflow efficiency R5 (relayed by the original Supervisor)
+Report `docs/process/WORKFLOW_EFFICIENCY_R5.md` (+ `docs/process/T-162/data.csv`, branch
+`t-162-claude-workflow-efficiency@b07c29e`, a review separate from the T-162 status board) merged docs-only.
+Implement now, within lanes and cap: (1) the gate posts/edits the PR #2 comment only for integration/*, staging, main;
+no session subscribes to PR #2, waits use one background `gh run watch`; checks and coverage unchanged → T-164.
+(3) `tools/ready.py` preflight (branch pushed, claim + write-set, new tests registered, doc links) then ONE short READY
+line to the parent with the session's cost and context size; IMPLEMENTER_PROMPT updated → T-165.
+(4) Rework rule (context > ~250k and narrow feedback → fresh session with pointer brief or after compaction; one
+consolidated feedback message per round) → WORKFLOW.md, IMPLEMENTER_PROMPT.md (Supervisor, done).
+(5) Shared task kit: shot before/after sheet tool, logged-run wrapper keeping full logs, gate-wait helper,
+one-render-at-a-time queue; reuse tools/review/recipe.py; new tasks point at the kit → T-165 (with item 3).
+Item 2 (liaison rotation) NOT now: the owner picks the time. Rules: analysis-backed, no weakening of checks, revertible.
+
+## 2026-11-20 ~08:20Z — T-155 approved, T-157 stays opt-in, T-124 defaults (relayed by the original Supervisor)
+1. T-155 approved: make boy 2.3.0 and girl 0.14.0 CURRENT (version_switch, fidelity_baseline rebaseline citing this
+   decision, golden/version index; full gate green before promote). Publish the third character 0.1.0 as her first
+   version. If any check fails: stop and report; no loosening.
+2. T-157: keep the wider contact band (option a) OPT-IN; revisit after hands round 2 is done and verified. Hands round 2
+   starts once T-155 is published (queue).
+3. T-124: `final720` becomes the DEFAULT final render setting (720p, adaptive threshold 0.05, persistent data; others as
+   measured); the old 128 spp/0.01 preset stays available by name. Delivery: HEVC 10-bit default encode, H.264 8-bit as
+   compatibility fallback (settings per the T-124 README); masters stay lossless. Small task (→ T-166): defaults in
+   shot_render/run_shot and the encode step, docs/tests (assert new default + fallback), revertible, full gate green;
+   golden/image tests that depend on the old preset keep their own pinned preset; nothing weakened.
+
+## 2026-11-20 ~08:30Z — Owner liaison rotation
+New owner liaison: session_01NPjxeKamtbdzi3YwrgsWXU ("Plush Studio – Owner liaison"); owner-facing reports and
+READY/decision requests go there, not to session_01NPjxeNTmHt2DtBN8F8uLqB. Handover: [LIAISON_HANDOVER](LIAISON_HANDOVER.md).
+
+## 2026-11-20 ~08:20Z+ (09:20 CET) — Guard option 1; restart T-164/T-165 (relayed by the owner liaison)
+"1 yes, and restart T-165 and T-164". test_hair_r5 / test_hands_r2 accept a CURRENT version only when listed in the
+allowlist with a named owner-decision ref (`current_decision`); boy 2.3.0 and girl 0.14.0 carry this decision plus the
+~08:20Z switch approval; every other case still fails; no removal, weakening or global bypass. Implemented on
+`integration/t-137`; unblocks the T-155 switch. T-164 was already merged into the Interaction batch; T-165 restarted.
+
+## 2026-11-20 ~08:35Z (09:35 CET) — Temple hollow, both girls (relayed by the owner liaison)
+Unnatural hollow at the temple above/in front of the ear (T-160 strict 3/4 crops, both girls). Diagnose (head geometry,
+ear placement, hair-to-head connection, glasses arm), fix for both girls, smooth face–temple–ear–hair transition,
+before/after close-ups. Folded into T-159 (ears) as Part A, started now on the T-158 base; candidate/opt-in only.
+
+## 2026-11-20 ~08:50Z (09:50 CET) — Feedback on T-160 r6 and the boy's face (relayed by the owner liaison)
+1. Boy face: unnatural outward bulge in the side/3/4 face contour (vs val27_threequarter_right / val27_side_right) → T-168.
+2. Boy nose needs improvement → T-168 and future face tasks.
+3. Hair: do not force a felt look; the reference hair is more natural. Decisions follow the reference images; goal = closer
+   to refs.
+4. Girls' hair gaps confirmed (auburn: too bulky/fuzzy vs glossier defined curls, bun darker/untidy, fringe covers too much
+   forehead, curls shorter than G05; third: jagged spiky fringe vs soft wisps, side/back long hair flatter/stringier, less
+   full than 01/02).
+5. Boy hair currently better than the girls' (owner unsure); all three still noticeably different from refs.
+Actions: hair round 7, all three, reference fidelity over felt look (fewer petal/leaf shapes on the boy, irregular fringe,
+natural strand grouping) → T-167. r6 NOT adopted; stays opt-in (merging as an opt-in base is fine). Bow seat pending.
+
+## 2026-11-20 ~09:00Z (10:00 CET) — Bow seat (relayed by the owner liaison)
+Third girl's bow: position it from the reference images: front seat (refs 01/02), on her right side (viewer's left), at
+the front hairline just below/in front of the right bun, above the temple, slightly tilted, partly over the fringe.
+Refine position/size/tilt in T-167; no side seat.
+
+## 2026-11-20 ~09:05Z (10:05 CET) — HOLD on queued work (relayed by the owner liaison)
+Running tasks continue; do NOT start queued/planned tasks (T-166, T-144 option b, hands round 2, next versions, new
+Codex tasks) until the owner says "Start the planned automatic tasks" (via the liaison). Free slots stay empty.
+
+## 2026-11-20 ~09:10Z (10:10 CET) — Pause T-167 and T-168 (relayed by the owner liaison)
+Pause T-167 (hair r7; WIP pushed `t-167-claude-hair-r7@dc85c98`) and T-168 (boy face; diagnosis only,
+`t-168-claude-boy-face@de0eff2`) to save tokens; no restart until the owner's explicit word via the liaison.

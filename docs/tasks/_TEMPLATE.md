@@ -12,12 +12,16 @@ Implementer: <agent> · lane <L> · path <A technical | B visual> · branch `t-N
    strict sheet as the single visual deliverable.
 3. No test loosened, no frozen or published file changed.
 
+## Kit (T-165; use these, do not write per-task scripts)
+`tools/review/shot_sheet.py` (shot before/after grid + crops) · `tools/render_queue.py run -- <render>` ·
+`tools/run_logged.py -- <cmd>` · `tools/wait_gate.py <run-id>` · `tools/ready.py` before READY.
+
 ## Write-set
 Every file a solution may touch, as back-ticked repository-relative globs (the gate's write-set check fails on any
 other file). Name read-only dependencies separately. Guarded paths in the write-set need a `Supervisor-Approved:`
 trailer at merge.
 
 ## Reporting
-send_message to the Supervisor session (relay line as fallback):
+Run `tools/ready.py`, then send its line once to the Supervisor session (relay line as fallback):
 `<UTC> | T-NNN | READY|BLOCKED|STATUS | <branch@sha> | input <SHA> | <one line>`.
 READY ends with one line `ledger: build N · render N · tests N · ci N · wait N (min)`.

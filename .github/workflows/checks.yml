@@ -413,7 +413,7 @@ jobs:
           # T-127: per-test durations from every report (full lists: durations.txt and "durations" in each check_all.json).
           python3 .github/scripts/combine_check_reports.py --durations build/combined >> "$GITHUB_STEP_SUMMARY" || true
       - name: Update the one PR #2 comment
-        if: always()
+        if: always() && (startsWith(github.ref, 'refs/heads/integration/') || github.ref == 'refs/heads/staging' || github.ref == 'refs/heads/main')
         continue-on-error: true
         uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
         env:

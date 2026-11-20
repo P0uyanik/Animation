@@ -1086,7 +1086,7 @@ def refine_eye_regions(head, frames, r, reach=1.8, cuts=2):
                 break
         if ok:
             sel.add(f)
-    edges = list({e for f in sel for e in f.edges})
+    edges = sorted({e for f in sel for e in f.edges}, key=lambda e: e.index)
     if edges:
         bmesh.ops.subdivide_edges(bm, edges=edges, cuts=cuts, use_grid_fill=True, smooth=1.0)
     bm.to_mesh(me)

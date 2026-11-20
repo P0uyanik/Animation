@@ -16,10 +16,9 @@ means none. Branch is the task's branch; a task branch without a row falls back 
 
 | Task | Lane | Branch | Write-set | Depends on | Versions bumped |
 | --- | --- | --- | --- | --- | --- |
-| T-141 | C | t-141-claude-hair-curves | `pipeline/charsys/groom/**` (new opt-in module only; no edits to existing groom files), `pipeline/charsys/tests/test_hair_curves*.py`, `docs/evaluation/characters/T-141/**` | — | — |
 | T-156 | E | t-156-claude-eye-targets | `pipeline/charsys/face_v3/lids.py`, `pipeline/charsys/tests/test_face_r5.py`, `docs/evaluation/characters/T-156/**` | T-137 | — |
-| T-157 | E | t-157-claude-grasp-options | `engine/scene/interaction.cpp`, `engine/scene/interaction.h`, `engine/anim/animation.cpp`, `engine/anim/animation.h`, `content/hand_shapes/**`, `tests/test_grasp_contact.cpp`, `docs/evaluation/animation/T-157/**` | — | — |
-| T-158 | C | t-158-claude-deterministic-build | `pipeline/charsys/tests/test_build_determinism.py`, `docs/evaluation/characters/T-158/**` | — | — |
-| T-155 | C | t-155-claude-candidates | `assets/characters/boy_yellow_hoodie/versions/2.3.0/**`, `assets/characters/girl_auburn_bun_glasses/versions/0.14.0/**`, `assets/characters/girl_white_hair_blue_dress/versions/0.1.0/**`, `assets/characters/*/versions/index.json` (candidate entries only), `spec/candidates/**` (new files only), `docs/evaluation/characters/T-155/**` | T-154 | — |
+| T-155 | C | t-155-claude-candidates-r2 | `assets/characters/boy_yellow_hoodie/versions/2.3.0/**`, `assets/characters/girl_auburn_bun_glasses/versions/0.14.0/**`, `assets/characters/girl_white_hair_blue_dress/versions/0.1.0/**`, `assets/characters/*/versions/index.json` (candidate entries only), `spec/candidates/**` (new files only), `docs/evaluation/characters/T-155/**`, `docs/evaluation/characters/fidelity_baseline.json` (rebaseline citing owner ~08:20Z), `docs/evaluation/regression/baselines/*/2.3.0/**`, `docs/evaluation/regression/baselines/*/0.14.0/**`, `docs/evaluation/regression/baselines/*/0.1.0/**`, `assets/characters/*/spec/*.spec.json` (new version specs only), `docs/evaluation/fidelity/**` | T-154 | — |
+| T-159 | E | t-159-claude-ears | `docs/evaluation/characters/T-159/**` (generator files named in the first CHECKPOINT) | T-158 | — |
+| T-167 | E | t-167-claude-hair-r7 | `pipeline/charsys/groom_r6.py`, `pipeline/charsys/groom_r7.py`, `pipeline/charsys/tests/test_hair_r6.py`, `pipeline/charsys/tests/test_hair_r7.py`, `docs/evaluation/characters/T-167/**` | T-160 | — |
 
 Supervisor-only files: docs/process/TASK_LOG.md, docs/ROADMAP.md, docs/process/OWNER_DECISIONS.md, docs/tasks/**.

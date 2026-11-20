@@ -1,4 +1,4 @@
-// T-138 (E4): band fit for per-finger grasps (opt-in scene "interaction": {"graspFit": true} -> track
+// T-138 (E4) / T-157: band fit for per-finger grasps (opt-in scene "interaction": {"graspFit": true} -> track
 // "hand.<s>.bandFit"; anim/animation.cpp band step). Measured on the boy and girl test packages and the engine (SDF)
 // skeleton, on felt_cup's `grip` socket with its own band and with a band too narrow for the hands.
 #include <doctest/doctest.h>
@@ -71,10 +71,16 @@ void keyBand(Scene& s, vec2 band, bool fit) {
   if (fit) s.animation.tracks["actor/hand.R.bandFit"].setKey(Key{5, vec3(1), Interp::Step});
 }
 
+void keyFit(Scene& s, vec2 band, vec2 options) {  // T-157: band fit with its options (widen at both ends, off-band bits)
+  keyBand(s, band, true);
+  s.animation.tracks["actor/hand.R.bandFitOptions"].setKey(Key{5, vec3(options.x, options.y, options.x), Interp::Step});
+}
+
 struct Measure {
   float gap = 0, deepest = 1, bandOut = -1, minTipApart = 1;  // m; bandOut < 0 = inside by that much
   vec3 wrist{0};
   std::vector<vec3> tips;
+  std::vector<float> clear, heights;  // T-157 per digit (thumb first): tip skin to surface, tip height (m)
 };
 Measure measure(const SceneEvaluator& ev, double f, vec2 band) {
   const Skeleton& sk = ev.characters()[0].asset.skeleton;
@@ -98,6 +104,8 @@ Measure measure(const SceneEvaluator& ev, double f, vec2 band) {
     const float h = glm::dot(tip - base, axis);
     m.bandOut = std::max({m.bandOut, band.x - h, h - band.y});
     m.tips.push_back(tip);
+    m.clear.push_back(std::min(radial(tip), radial(kn)) - R - r);
+    m.heights.push_back(h);
     if (d[0] == 'f') fingers.push_back(tip);
   }
   for (size_t i = 1; i < fingers.size(); ++i) m.minTipApart = std::min(m.minTipApart, glm::distance(fingers[i - 1], fingers[i]));
@@ -171,4 +179,49 @@ TEST_CASE("grasp band fit: scene option interaction.graspFit keys hand.<s>.bandF
   CHECK(hasFit(*load(s)));
   s.actions[0].erase("band");
   CHECK_FALSE(hasFit(*load(s)));  // no band, nothing to fit
+}
+
+TEST_CASE("grasp band options: a wider band and off-band fingers, opt-in track hand.<s>.bandFitOptions (T-157)") {
+  const vec2 narrow{0.058f, 0.077f};  // 19 mm, as the T-138 case
+  const float widen = 0.008f;         // T-157 option (a): 8 mm more at each end
+  for (const char* asset : {kBoy, kGirl, kSdf}) {
+    CAPTURE(asset);
+    Scene fit = graspScene(asset), zero = fit, wide = fit, off = fit, both = fit;
+    keyBand(fit, narrow, true);
+    keyFit(zero, narrow, vec2(0, 0));
+    keyFit(wide, narrow, vec2(widen, 0));
+    keyFit(off, narrow, vec2(0, 1));  // bit 0: finger bone f0 leaves the band
+    keyFit(both, narrow, vec2(widen, 1));
+    auto a = load(fit), z = load(zero), w = load(wide), o = load(off), b = load(both);
+    const vec2 wider = narrow + vec2(-widen, widen);
+    const Measure ma = measure(*a, 30, narrow), mz = measure(*z, 30, narrow), mw = measure(*w, 30, wider),
+                  mo = measure(*o, 30, narrow), mb = measure(*b, 30, wider);
+    const float r = fingertipRadius(a->characters()[0].asset.skeleton, 'R');
+    // Options at 0: T-138 exactly.
+    CHECK(mz.tips == ma.tips);
+    // (a) every digit in the wider band, on the surface, nothing inside the cup, the wrist untouched.
+    MESSAGE(std::format("{}: band out (T-138) {:.2f} mm, wider band {:.2f} mm; f0 off: clearance {:.2f} mm (skin r {:.2f})",
+                        asset, ma.bandOut * 1e3, mw.bandOut * 1e3, mo.clear[1] * 1e3, r * 1e3));
+    CHECK(mw.bandOut <= std::max(0.0f, ma.bandOut - 0.001f));
+    CHECK(mw.gap <= 0.002f);
+    CHECK(mw.deepest >= 0.0f);
+    CHECK(glm::distance(mw.wrist, ma.wrist) <= 1e-5f);
+    // (b) finger f0 (digit 1 after the thumb) clears the cup by half a skin radius (or opens fully); the others rest on
+    // it, and the contacting digits are no further outside the band than with T-138.
+    for (const Measure* m : {&mo, &mb}) {
+      REQUIRE(m->clear.size() == 5);
+      CHECK(m->clear[1] >= (asset == kSdf ? 0.0005f : 0.45f * r));  // the small SDF finger is fully open at ~1.8 mm
+      CHECK(m->clear[1] <= 0.55f * r + 0.0005f);
+      for (size_t i : {0u, 2u, 3u, 4u}) CHECK(std::abs(m->clear[i]) <= 0.002f);
+      CHECK(m->deepest >= 0.0f);
+      CHECK(glm::distance(m->wrist, ma.wrist) <= 1e-5f);
+    }
+    auto contactOut = [&](const Measure& m, vec2 bd) {
+      float out = -1;
+      for (size_t i : {0u, 2u, 3u, 4u}) out = std::max({out, bd.x - m.heights[i], m.heights[i] - bd.y});
+      return out;
+    };
+    CHECK(contactOut(mo, narrow) <= std::max(0.0f, ma.bandOut) + 1e-4f);
+    CHECK(contactOut(mb, wider) <= 0.0005f);
+  }
 }

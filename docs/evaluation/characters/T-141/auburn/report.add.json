@@ -1,0 +1,295 @@
+{
+ "area_m2_total": 6.39584,
+ "curves_total": 195845,
+ "evaluated": {
+  "hair_back_sections.hair_curves": [
+   22484,
+   224840
+  ],
+  "hair_back_sections.hair_curves.fly": [
+   450,
+   16650
+  ],
+  "hair_bun.hair_curves": [
+   20582,
+   205820
+  ],
+  "hair_bun.hair_curves.fly": [
+   411,
+   15207
+  ],
+  "hair_cap.hair_curves": [
+   9599,
+   95990
+  ],
+  "hair_cap.hair_curves.fly": [
+   190,
+   7030
+  ],
+  "hair_crown.hair_curves": [
+   16904,
+   169040
+  ],
+  "hair_crown.hair_curves.fly": [
+   336,
+   12432
+  ],
+  "hair_curtain.hair_curves": [
+   18626,
+   186260
+  ],
+  "hair_curtain.hair_curves.fly": [
+   369,
+   13653
+  ],
+  "hair_fringe.hair_curves": [
+   16581,
+   165810
+  ],
+  "hair_fringe.hair_curves.fly": [
+   333,
+   12321
+  ],
+  "hair_ringlets_back.hair_curves": [
+   26325,
+   974025
+  ],
+  "hair_ringlets_back.hair_curves.fly": [
+   527,
+   19499
+  ],
+  "hair_ringlets_back_b.hair_curves": [
+   16474,
+   609538
+  ],
+  "hair_ringlets_back_b.hair_curves.fly": [
+   330,
+   12210
+  ],
+  "hair_ringlets_outer.hair_curves": [
+   16335,
+   604395
+  ],
+  "hair_ringlets_outer.hair_curves.fly": [
+   327,
+   12099
+  ],
+  "hair_ringlets_outer_b.hair_curves": [
+   6399,
+   236763
+  ],
+  "hair_ringlets_outer_b.hair_curves.fly": [
+   128,
+   4736
+  ],
+  "hair_ringlets_side.hair_curves": [
+   12595,
+   466015
+  ],
+  "hair_ringlets_side.hair_curves.fly": [
+   253,
+   9361
+  ],
+  "hair_ringlets_side_b.hair_curves": [
+   3707,
+   137159
+  ],
+  "hair_ringlets_side_b.hair_curves.fly": [
+   74,
+   2738
+  ],
+  "hair_temple_l.hair_curves": [
+   2707,
+   27070
+  ],
+  "hair_temple_l.hair_curves.fly": [
+   54,
+   1998
+  ],
+  "hair_temple_r.hair_curves": [
+   2691,
+   26910
+  ],
+  "hair_temple_r.hair_curves.fly": [
+   54,
+   1998
+  ]
+ },
+ "guides_total": 23025,
+ "hidden_fibre_objects": [],
+ "input": "girl_auburn_bun_glasses_master.blend",
+ "objects": {
+  "hair_back_sections.hair_curves": {
+   "area_m2": 0.37528,
+   "flow": "down",
+   "guides": 2252,
+   "overhang_points": 160
+  },
+  "hair_back_sections.hair_curves.fly": {
+   "area_m2": 0.37528,
+   "flow": "down",
+   "guides": 450,
+   "overhang_points": 2
+  },
+  "hair_bun.hair_curves": {
+   "area_m2": 0.34288,
+   "flow": "uv",
+   "guides": 2057,
+   "overhang_points": 0
+  },
+  "hair_bun.hair_curves.fly": {
+   "area_m2": 0.34288,
+   "flow": "uv",
+   "guides": 411,
+   "overhang_points": 0
+  },
+  "hair_cap.hair_curves": {
+   "area_m2": 0.1583,
+   "flow": "down",
+   "guides": 950,
+   "overhang_points": 654
+  },
+  "hair_cap.hair_curves.fly": {
+   "area_m2": 0.1583,
+   "flow": "down",
+   "guides": 190,
+   "overhang_points": 118
+  },
+  "hair_crown.hair_curves": {
+   "area_m2": 0.28011,
+   "flow": "uv",
+   "guides": 1681,
+   "overhang_points": 0
+  },
+  "hair_crown.hair_curves.fly": {
+   "area_m2": 0.28011,
+   "flow": "uv",
+   "guides": 336,
+   "overhang_points": 0
+  },
+  "hair_curtain.hair_curves": {
+   "area_m2": 0.3077,
+   "flow": "uv",
+   "guides": 1846,
+   "overhang_points": 18
+  },
+  "hair_curtain.hair_curves.fly": {
+   "area_m2": 0.3077,
+   "flow": "uv",
+   "guides": 369,
+   "overhang_points": 0
+  },
+  "hair_fringe.hair_curves": {
+   "area_m2": 0.27788,
+   "flow": "down",
+   "guides": 1667,
+   "overhang_points": 30
+  },
+  "hair_fringe.hair_curves.fly": {
+   "area_m2": 0.27788,
+   "flow": "down",
+   "guides": 333,
+   "overhang_points": 5
+  },
+  "hair_ringlets_back.hair_curves": {
+   "area_m2": 0.43911,
+   "flow": "uv",
+   "guides": 2635,
+   "overhang_points": 50
+  },
+  "hair_ringlets_back.hair_curves.fly": {
+   "area_m2": 0.43911,
+   "flow": "uv",
+   "guides": 527,
+   "overhang_points": 8
+  },
+  "hair_ringlets_back_b.hair_curves": {
+   "area_m2": 0.27508,
+   "flow": "uv",
+   "guides": 1651,
+   "overhang_points": 0
+  },
+  "hair_ringlets_back_b.hair_curves.fly": {
+   "area_m2": 0.27508,
+   "flow": "uv",
+   "guides": 330,
+   "overhang_points": 0
+  },
+  "hair_ringlets_outer.hair_curves": {
+   "area_m2": 0.27242,
+   "flow": "uv",
+   "guides": 1635,
+   "overhang_points": 0
+  },
+  "hair_ringlets_outer.hair_curves.fly": {
+   "area_m2": 0.27242,
+   "flow": "uv",
+   "guides": 327,
+   "overhang_points": 0
+  },
+  "hair_ringlets_outer_b.hair_curves": {
+   "area_m2": 0.10673,
+   "flow": "uv",
+   "guides": 640,
+   "overhang_points": 2
+  },
+  "hair_ringlets_outer_b.hair_curves.fly": {
+   "area_m2": 0.10673,
+   "flow": "uv",
+   "guides": 128,
+   "overhang_points": 7
+  },
+  "hair_ringlets_side.hair_curves": {
+   "area_m2": 0.21074,
+   "flow": "uv",
+   "guides": 1264,
+   "overhang_points": 10
+  },
+  "hair_ringlets_side.hair_curves.fly": {
+   "area_m2": 0.21074,
+   "flow": "uv",
+   "guides": 253,
+   "overhang_points": 6
+  },
+  "hair_ringlets_side_b.hair_curves": {
+   "area_m2": 0.06183,
+   "flow": "uv",
+   "guides": 371,
+   "overhang_points": 0
+  },
+  "hair_ringlets_side_b.hair_curves.fly": {
+   "area_m2": 0.06183,
+   "flow": "uv",
+   "guides": 74,
+   "overhang_points": 0
+  },
+  "hair_temple_l.hair_curves": {
+   "area_m2": 0.04493,
+   "flow": "uv",
+   "guides": 270,
+   "overhang_points": 0
+  },
+  "hair_temple_l.hair_curves.fly": {
+   "area_m2": 0.04493,
+   "flow": "uv",
+   "guides": 54,
+   "overhang_points": 0
+  },
+  "hair_temple_r.hair_curves": {
+   "area_m2": 0.04493,
+   "flow": "uv",
+   "guides": 270,
+   "overhang_points": 0
+  },
+  "hair_temple_r.hair_curves.fly": {
+   "area_m2": 0.04493,
+   "flow": "uv",
+   "guides": 54,
+   "overhang_points": 0
+  }
+ },
+ "points_total": 4271567,
+ "schema": "plush-studio.hair-curves/1",
+ "seconds": 5.61,
+ "seed": 1
+}

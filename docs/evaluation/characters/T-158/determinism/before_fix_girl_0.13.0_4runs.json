@@ -1,0 +1,21 @@
+{
+ "commit": "e2c8904 (unfixed)",
+ "spec": "girl_auburn_bun_glasses.0.13.0",
+ "differ_from_run1": [
+  [
+   "ear.L",
+   "ear.R",
+   "lid_upper.R"
+  ],
+  [
+   "ear.L",
+   "ear.R",
+   "lid_upper.L"
+  ],
+  [
+   "ear.L",
+   "ear.R",
+   "lid_upper.R"
+  ]
+ ]
+}
