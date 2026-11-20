@@ -171,3 +171,4 @@ Tasks from now on are numbered T-001, T-002, …, and pass through the states in
 | T-168 | [Faces] Boy face contour (side/3/4) and nose (Fable) | queued 2026-11-20 (owner ~08:50Z), next free slot | t-168-claude-boy-face | docs/tasks/T-168.md |
 | T-169 | [Evaluation] Hair reference study (Codex) | merged 2026-11-20 (Codex, 38759ccc); input for T-167 | t-169-codex | docs/evaluation/characters/T-169/ |
 | T-170 | [Planning] World style system: video analysis + architecture plan (Fable) | merged 2026-11-20: docs/evaluation/world/T-170/README.md; owner review pending | t-170-claude-world-style | docs/tasks/T-170.md |
+| T-170b | [Research] World style reuse alternatives (Opus) | merged 2026-11-20: built-ins + ~6 CC0 image sets, 11–14 task-days (desk slice 6–8) vs 19–25; CC0 not swatch-tested (hosts blocked) | t-170b-claude-world-alternatives | docs/evaluation/world/T-170/alternatives/README.md |
