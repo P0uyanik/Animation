@@ -607,3 +607,10 @@ readiness notes. Opt-in overrides; strict sheets + 100% hair crops (front, 3/4, 
 merge as an opt-in tool once green. Fringe coordination: T-160 owns the fringe; T-156 (eyes/lashes) does not edit it.
 Also pending for the owner: T-144 A3 plan `t-144-claude-retire-versions@8a34069` docs/evaluation/T-144/PLAN.md, options
 (a) registry-only retire + named archival-build allowlist (recommended), (b) file comparisons (weakens checks), (c) defer.
+
+## 2026-11-20 ~07:35Z — T-144 A3: option (b) (relayed by the original Supervisor)
+Compare each published version's stored built files against fresh builds, then retire and remove only generator code
+that no current or candidate version pins. Start only after T-158 (deterministic builds) merges, when a slot is free.
+Conditions as before: frozen built results stay retrievable; regression/golden checks unchanged or replaced by
+equal-strength file comparisons; tag first; one revertible commit; full gate green. Report the comparison results (any
+mismatches) BEFORE removing anything. Plan: `t-144-claude-retire-versions@8a34069`, docs/evaluation/T-144/PLAN.md.
