@@ -3,12 +3,12 @@
   "eyes": {
    "yaw_deg": 0.0,
    "iris": {
-    "radius": 0.452,
-    "pupil": 0.226
+    "radius": 0.458,
+    "pupil": 0.229
    },
    "lids": {
     "upper_edge_deg": 33.5,
-    "lower_edge_deg": -38.5,
+    "lower_edge_deg": -39,
     "upper_curve": 1.0,
     "lower_curve": 0.6,
     "upper_roll_deg": 1,
@@ -22,7 +22,7 @@
       "corner_lift_deg": 7.0,
       "span": [
        -0.45,
-       0.75
+       0.62
       ],
       "keys": {
        "Laugh": -1.0,
@@ -32,22 +32,35 @@
     },
     "upper_yaw_deg": 8,
     "trim": {
-     "up_outer_deg": 46
+     "up_outer_deg": 46,
+     "lo_outer_deg": 2,
+     "lo_inner_deg": 2
     }
    },
    "lash": {
     "srgb": [
-     70,
-     44,
-     36
+     40,
+     26,
+     24
     ],
     "span_deg": 36,
     "strands": {
-     "from_deg": 16,
-     "to_deg": 34
+     "from_deg": 20,
+     "to_deg": 35,
+     "count": 5,
+     "length_m": [
+      0.0025,
+      0.0035,
+      0.0042
+     ],
+     "width_m": 0.001,
+     "outward": 0.5
     },
-    "thick_m": 0.0026,
-    "flare": 1.2
+    "thick_m": 0.0013,
+    "flare": 0.8,
+    "lower_strands": {
+     "count": 0
+    }
    },
    "socket": {
     "ramp_deg": 12,
