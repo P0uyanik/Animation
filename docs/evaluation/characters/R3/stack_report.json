@@ -1,6 +1,6 @@
 {
  "boy_yellow_hoodie": {
-  "out": "docs/evaluation/characters/R3/specs/boy_yellow_hoodie.2.3.0.spec.json",
+  "out": "assets/characters/boy_yellow_hoodie/spec/candidates/R3/boy_yellow_hoodie.2.3.0.spec.json",
   "layers": [
    {
     "layer": "docs/evaluation/characters/T-159/overrides/boy_ears.json",
@@ -83,7 +83,7 @@
   ]
  },
  "girl_auburn_bun_glasses": {
-  "out": "docs/evaluation/characters/R3/specs/girl_auburn_bun_glasses.0.14.0.spec.json",
+  "out": "assets/characters/girl_auburn_bun_glasses/spec/candidates/R3/girl_auburn_bun_glasses.0.14.0.spec.json",
   "layers": [
    {
     "layer": "docs/evaluation/characters/T-159/overrides/girl_auburn_bun_glasses.temple.override.json",
@@ -195,7 +195,7 @@
   ]
  },
  "girl_white_hair_blue_dress": {
-  "out": "docs/evaluation/characters/R3/specs/girl_white_hair_blue_dress.0.1.0.spec.json",
+  "out": "assets/characters/girl_white_hair_blue_dress/spec/candidates/R3/girl_white_hair_blue_dress.0.1.0.spec.json",
   "layers": [
    {
     "layer": "docs/evaluation/characters/T-159/overrides/girl_white_hair_blue_dress.temple.override.json",

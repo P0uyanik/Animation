@@ -29,9 +29,9 @@ for cid in "${chars[@]}"; do
   step "$cid" 0_base "$base"
   acc=(); i=1
   for l in "${L[@]}"; do acc+=("${l#*:}"); step "$cid" "${i}_${l%%:*}" "$base" "${acc[@]}"; i=$((i+1)); done
-  step "$cid" "${i}_R3_final" "$E/R3/specs/$cid.$v.spec.json"
+  step "$cid" "${i}_R3_final" "$A/$cid/spec/candidates/R3/$cid.$v.spec.json"
   # repeatability (T-158 strict hashes): default path and R3 build a second time
   step "$cid" "repeat_base" "$base"
-  step "$cid" "repeat_R3_final" "$E/R3/specs/$cid.$v.spec.json"
+  step "$cid" "repeat_R3_final" "$A/$cid/spec/candidates/R3/$cid.$v.spec.json"
 done
 echo CHAINDONE

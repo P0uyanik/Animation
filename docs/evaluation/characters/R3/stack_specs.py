@@ -5,8 +5,8 @@ Order per character: T-159 temple (girls) -> T-159 ears -> T-159 glasses (auburn
 recursive, lists replaced whole). The script reports every key path written by more than one layer, and every list
 that a layer replaces, so a later layer cannot silently drop an earlier one.
 Usage (repo root): python3 docs/evaluation/characters/R3/stack_specs.py [--check]
-Writes docs/evaluation/characters/R3/specs/<id>.<ver>.spec.json (not under assets/: the opt-in guards forbid the new
-options in asset specs until the release step) and docs/evaluation/characters/R3/stack_report.json.
+Writes assets/characters/<id>/spec/candidates/R3/<id>.<ver>.spec.json (the guards allow the new options only for the listed
+owner-approved candidate versions: owner_approved_candidates.json, owner 2026-11-20 ~22:00Z item 2)
 """
 import copy, json, sys
 from pathlib import Path
@@ -71,7 +71,7 @@ for cid, (ver, layers) in JOBS.items():
     spec.setdefault("metadata", {})
     spec["metadata"] = {**spec["metadata"], "candidate": "R3 faces bundle (integration/r3-faces)",
                         "layers": ["T-155 candidate"] + layers}
-    out = Path(f"{E}/R3/specs/{cid}.{ver}.spec.json")  # outside assets/: the opt-in guards stay as they are
+    out = Path(f"{A}/{cid}/spec/candidates/R3/{cid}.{ver}.spec.json")  # guard allowances: owner ~22:00Z item 2
     if "--check" not in sys.argv:
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(json.dumps(spec, indent=1, sort_keys=False) + "\n")

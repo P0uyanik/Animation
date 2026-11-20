@@ -1,4 +1,5 @@
-"""Owner-approved candidate allowlist for the guard checks in test_hair_r5 / test_hands_r2 (T-154). No Blender.
+"""Owner-approved candidate allowlist for the guard checks in test_hair_r5 / test_hands_r2 (T-154), test_face_r5
+(lash_curve; T-156 closed_fill), test_face_t168 and test_hair_r6 (R3, owner 2026-11-20 ~22:00Z). No Blender.
 
     python3 pipeline/charsys/tests/test_guard_allowlist.py
 
@@ -15,7 +16,10 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, "..", "..", ".."))
 ALLOWLIST = os.path.join(HERE, "owner_approved_candidates.json")
-FEATURES = ("groom/4", "body.hands", "lash_curve")  # lash_curve: test_face_r5 (owner 2026-11-20 ~07:00Z)
+FEATURES = ("groom/4", "body.hands", "lash_curve",  # lash_curve: test_face_r5 (owner 2026-11-20 ~07:00Z)
+            # R3 release allowances (owner 2026-11-20 ~22:00Z item 2): T-168 face options (test_face_t168), groom/5
+            # (test_hair_r6), T-156 lid options incl. socket.closed_fill (test_face_r5), named versions only
+            "t168_face", "groom/5", "closed_fill")
 FIELDS = ("character", "version", "feature", "owner_decision", "date")
 VERSION = re.compile(r"^\d+\.\d+\.\d+$")
 DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
@@ -179,6 +183,19 @@ def main():
               and not exempt(cspec, FEATURES[0], named[1:2]))
         check(f"{c}: every allowlist entry naming the current version carries a current_decision",
               all(_named(e.get("current_decision")) for e in entries if e["character"] == c and e["version"] == cur))
+    # every feature, the R3 ones included: only the exact listed (character, version, feature) is exempt
+    for f in FEATURES:
+        listed = [e for e in entries if e["feature"] == f]
+        check(f"{f}: an unlisted version of a character is not exempt",
+              not any(exempt(f"assets/characters/{e['character']}/spec/{e['character']}.98.7.6.spec.json", f, entries)
+                      or exempt(f"assets/characters/{e['character']}/versions/98.7.6/spec.json", f, entries)
+                      for e in listed))
+        check(f"{f}: an unlisted character is not exempt",
+              not exempt(f"assets/characters/nobody/spec/nobody.0.1.0.spec.json", f, entries))
+        check(f"{f}: a listed (character, version) is not exempt for a feature it is not listed for",
+              all(not exempt(f"assets/characters/{e['character']}/spec/{e['character']}.{e['version']}.spec.json", g,
+                             [x for x in entries if x["feature"] != g])
+                  for e in listed for g in FEATURES if g != f))
     print(f"[test_guard_allowlist] {sum(RESULTS)}/{len(RESULTS)} passed")
     return 0 if all(RESULTS) else 1
 

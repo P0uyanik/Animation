@@ -4,7 +4,8 @@
 
 Plain checks (no Blender):
   * both options are opt-in: the pad fade defaults to the previous constant (0.015) and no spec under assets/ sets
-    cheek_pad_top_fade_m or the nose type "upturned" (default builds do not reach the new code);
+    cheek_pad_top_fade_m or the nose type "upturned" (default builds do not reach the new code), except the
+    owner-approved candidates listed in owner_approved_candidates.json (feature t168_face; R3, owner ~22:00Z);
   * no character names in the two edited functions' modules' new code paths (face_v3/lower_face.py).
 Unit checks (--blender) on a synthetic head (a sphere):
   * upturned nose: the tip stands out by height_m, nothing moves outside the footprint (beside the tip, above the
@@ -20,6 +21,8 @@ import tempfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, "..", "..", ".."))
+sys.path.insert(0, HERE)
+import test_guard_allowlist as GA  # noqa: E402
 RESULTS = []
 
 
@@ -54,7 +57,12 @@ def plain():
                 continue
             if _walk(d, lambda k, v: k == "cheek_pad_top_fade_m" or (k == "nose" and isinstance(v, dict) and v.get("type") == "upturned")):
                 users.append(os.path.relpath(os.path.join(base, f), ROOT))
-    check("no spec under assets/ uses the new options", not users, str(users))
+    users, _allowed, aerr = GA.split(users, "t168_face")  # R3 owner allowance (2026-11-20 ~22:00Z item 2)
+    check("owner-approved candidate allowlist is valid", not aerr, aerr[:3])
+    check("no spec under assets/ uses the new options (except listed owner-approved candidates)", not users, str(users))
+    neg = ["assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.98.7.6.spec.json",
+           "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.14.0.spec.json"]
+    check("negative: a non-listed spec using the options still fails the guard", GA.split(neg, "t168_face")[0] == neg)
 
 
 UNIT = r'''

@@ -76,10 +76,16 @@ def plain():
                     d = json.load(open(os.path.join(base, f)))
                     if _find(d, "upper_yaw_deg") or _find(d, "lower_yaw_deg") or _find(d, "sink_m") \
                             or _find(d, "shell_occlusion_tint") or _find(d, "closed_fill"):
-                        users.append(f)
+                        users.append(os.path.relpath(os.path.join(base, f), ROOT))
                 except ValueError:
                     pass
-    check("no spec under assets/ opts into lid yaw, closed_fit.sink_m, shell_occlusion_tint or socket.closed_fill", not users, str(users))
+    users, _allowed, aerr = GA.split(users, "closed_fill")  # R3 owner allowance (2026-11-20 ~22:00Z item 2)
+    check("owner-approved candidate allowlist is valid (R3)", not aerr, aerr[:3])
+    check("no spec under assets/ opts into lid yaw, closed_fit.sink_m, shell_occlusion_tint or socket.closed_fill "
+          "(except listed owner-approved candidates)", not users, str(users))
+    neg = ["assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.98.7.6.spec.json",
+           "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.3.0.spec.json"]
+    check("negative: a non-listed spec using the T-156 lid options still fails the guard", GA.split(neg, "closed_fill")[0] == neg)
     check("closed_fit.sink_m: default 0, guarded, upper shell only",
           'sink = _f(fit, "sink_m", 0.0)' in src and 'if sink > 0.0 and ob is up:' in src)
     check("closed_fit.shell_occlusion_tint: guarded, the shell_subsurface call unchanged without it",
