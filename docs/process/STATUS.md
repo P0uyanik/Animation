@@ -27,6 +27,7 @@ Codex T-169 hair reference study (relay 2987afa) feeds T-167. Codex T-161 refere
 | --- | --- | --- | --- | --- |
 | T-157 grasp gap: wider band (a) stays opt-in until hands round 2 | Opus 5.5 | merged (main 2a02532) | — | — |
 | T-171 hands round 2 (then revisit T-157 option a default) | Fable 5.2 | owner go ~22:25Z: starts automatically when R3 is released + gate green | — | `t-171-claude-hands-r2` |
+| T-172 test video with released R3 characters (5–8 s, existing shot) | Sonnet 5.5 | owner request ~22:35Z: starts when R3 is released + gate green | — | `t-172-claude-test-video` |
 
 ## Other
 | Task | Model | State | ETA | Branch |

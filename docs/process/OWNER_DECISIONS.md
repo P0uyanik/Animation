@@ -812,3 +812,8 @@ Start HANDS ROUND 2 (→ T-171) automatically right after the R3 release is publ
 an explicit owner go; other held tasks stay held. Scope as queued: boy finger separation, pre-shaping during the reach,
 finger-by-finger close, soft contact; then revisit T-157 option (a) as the default. Base: the released 2.3.0/0.14.0/0.1.0.
 Candidate/opt-in, with strict sheets and clips for owner review.
+
+## 2026-11-20 ~22:35Z (23:35 CET) — Test video after the R3 release (relayed by the owner liaison)
+Once the R3 release is published (gate green), render a 5–8 s TEST VIDEO with the released characters (boy 2.3.0 /
+girl 0.14.0 / third 0.1.0) from what already exists: reuse an existing shot/clip setup, with no new animation or environment
+work. Use the new defaults (final720, HEVC 10-bit) plus an H.264 copy, and send the paths. It may run in parallel with T-171 → T-172.
