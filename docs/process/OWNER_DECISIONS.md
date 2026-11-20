@@ -835,3 +835,10 @@ risks and owner questions → `docs/tasks/T-174.md`.
 (d) mocap.cs.cmu.edu and accad.osu.edu are allowed in the Animation environment. (e) Style must match the reference videos
 (stylized, chibi timing per T-106 and content/timing), not realistic mocap. The owner is still deciding code vs no-code.
 The T-174 plan stays ON HOLD; nothing starts.
+
+## 2026-11-20 ~23:35Z (00:35 CET) — Start the T-174 locomotion layer (relayed by the owner liaison)
+Explicit owner go → T-175: CMU mocap importer (on the existing retarget code), foot-lock pass, and a chibi lean/stride/timing
+filter matching the reference-video style. ~3.5–4 task-days. CMU only, with attribution; no Mixamo, no NC data. Opt-in, with no change to
+existing shots' defaults. The write-set is disjoint from the release, T-171 and T-172. No character geometry/look or rig change (report first).
+File/function ownership with T-171 is assigned in `docs/tasks/T-175.md`. First delivery: walk + sit/stand on the boy and auburn
+(third if possible), with feet-planted numbers and short clips for owner style review before wider use.
