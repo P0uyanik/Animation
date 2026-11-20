@@ -39,6 +39,13 @@
    "status": "approved",
    "spec_sha256": "3531de64befdb25bd7207f44baee146a255bb68fa1e1759c8fafd34f5aa7d559",
    "approval_notes": "new current version: \"Owner 2026-11-19 (~15:05Z, \"approve 2.2.0 and 0.13.0 as current\"): boy 2.2.0 and girl 0.13.0 become current. Fidelity score drop owner-accepted (boy 2.1.0 67.72 -> 2.2.0 67.25, girl 0.12.0 65.01 -> 0.13.0 64.13): the gains are the lid colour, the lens shelf and the expressions, which the score does not measure (see T-129).\" Recorded by T-131 (tools/version_switch.py)."
+  },
+  "2.3.0": {
+   "created": "2026-11-20T06:52:31+00:00",
+   "parent": "2.2.0",
+   "notes": "boy_yellow_hoodie 2.3.0 (T-155): CANDIDATE, not current; spec assets/characters/boy_yellow_hoodie/spec/candidates/T-155/boy_yellow_hoodie.2.3.0.spec.json (composed by docs/evaluation/characters/T-155/make_specs.py). Owner decision docs/process/OWNER_DECISIONS.md 2026-11-20 ~06:40Z item 4.",
+   "status": "candidate",
+   "spec_sha256": "ae6f02d14c15fa002bc7bdefe6c5e0e28ff832d3f50dd260e0b0c718fd5c9307"
   }
  },
  "pointers": {
@@ -107,6 +114,12 @@
    "previous": "2.1.0",
    "by": "owner (docs/process/OWNER_DECISIONS.md 2026-11-19)",
    "notes": "new current version: \"Owner 2026-11-19 (~15:05Z, \"approve 2.2.0 and 0.13.0 as current\"): boy 2.2.0 and girl 0.13.0 become current. Fidelity score drop owner-accepted (boy 2.1.0 67.72 -> 2.2.0 67.25, girl 0.12.0 65.01 -> 0.13.0 64.13): the gains are the lid colour, the lens shelf and the expressions, which the score does not measure (see T-129).\" Recorded by T-131 (tools/version_switch.py)."
+  },
+  {
+   "at": "2026-11-20T06:52:31+00:00",
+   "action": "publish",
+   "version": "2.3.0",
+   "status": "candidate"
   }
  ]
 }

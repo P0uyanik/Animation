@@ -1,0 +1,2842 @@
+{
+ "schema": "plush-studio.character-spec/1",
+ "identity": {
+  "id": "girl_auburn_bun_glasses",
+  "display_name": "Girl with auburn bun and round glasses",
+  "identity_lock": "Changing identity (proportions, face, hair style, outfit colours) requires explicit owner approval",
+  "approved_decisions": {
+   "modelling_pose": "A-pose",
+   "hair": "long spiral curls to about mid-back; high bun; pink felt flowers; blue-grey band",
+   "neutral_expression": "closed gentle smile: lips closed, soft upturned corners, no teeth or tongue at rest (owner decision 2026-11-17, ref_34 Neutral); open smile with upper teeth and tongue = Happy",
+   "scale": "bun top level with boy_yellow_hoodie's hair top; body slightly shorter"
+  },
+  "references": "assets/characters/girl_auburn_bun_glasses/references/reference_index.json"
+ },
+ "proportions": {
+  "height_m": 1.1,
+  "height_note": "sole to bun top (validated on #31)",
+  "measured": "references/measurements.json",
+  "fractions_from_top": {
+   "bun_head_junction": 0.118,
+   "eye_line": 0.294,
+   "mouth": 0.344,
+   "chin": 0.382
+  },
+  "face_ratios": {
+   "eye_spacing/ear_width": 0.365,
+   "mouth_below_eyes/ear_width": 0.173,
+   "chin_below_eyes/ear_width": 0.301,
+   "glasses_rim_radius/ear_width": 0.156
+  },
+  "TODO_M2": "joint positions (spec.rig.joints) and body part dimensions from the masks"
+ },
+ "body": {
+  "generator": "body_generic/2",
+  "height_m": 0.97,
+  "height_note": "sole to top of skull (crown); the bun adds 0.13 m (total 1.10 m, #31)",
+  "params": {
+   "head": {
+    "centre_z": 0.85052,
+    "half_width": 0.14639,
+    "half_depth": 0.13918,
+    "half_height": 0.14948,
+    "chin_taper": 0.12,
+    "forward": -0.00412,
+    "lower_half_height": 0.1588,
+    "lower_roundness": 3.8,
+    "lower_depth_roundness": 2.3,
+    "shape_note": "T-031b: big round plush face (#30): superellipse lower outline (full cheeks carried down to a wide jaw and a broad, short chin at the chin landmark), lighter jaw taper; face width at the mouth line ~250 mm (reference ~265 mm incl. the cheek bulge); was a tapered ellipsoid (~170 mm at the mouth)",
+    "outline": {
+     "eye_z": 0.79175,
+     "unit": 0.11958,
+     "chin_t": 0.825,
+     "front_eye_width": 1.16,
+     "front": [
+      [
+       0.1,
+       1.14
+      ],
+      [
+       0.31,
+       1.07
+      ],
+      [
+       0.52,
+       0.9
+      ],
+      [
+       0.62,
+       0.7
+      ],
+      [
+       0.72,
+       0.46
+      ],
+      [
+       0.8,
+       0.25
+      ],
+      [
+       0.825,
+       0.1
+      ]
+     ],
+     "side": [
+      [
+       0.32,
+       0.08
+      ],
+      [
+       0.5,
+       0.02
+      ],
+      [
+       0.66,
+       0.02
+      ],
+      [
+       0.76,
+       -0.04
+      ],
+      [
+       0.82,
+       -0.16
+      ]
+     ]
+    }
+   },
+   "neck": {
+    "base_z": 0.63309,
+    "top_z": 0.71134,
+    "radius": 0.054,
+    "top_radius": 0.061,
+    "note": "T-081: the head sits on the collar as in sheet30/ref_30 (almost no visible neck): neck base and shoulder line raised by 0.03 x height (29 mm; base_z 0.60309 -> 0.63309), head, face and hair unchanged; wider neck (was 0.04639 / 0.055)"
+   },
+   "torso": {
+    "levels": [
+     [
+      0.2732,
+      0.08763,
+      0.06186,
+      0.06392
+     ],
+     [
+      0.30928,
+      0.10103,
+      0.06804,
+      0.06804
+     ],
+     [
+      0.37113,
+      0.09485,
+      0.06598,
+      0.06392
+     ],
+     [
+      0.4433,
+      0.09278,
+      0.06804,
+      0.06186
+     ],
+     [
+      0.54077,
+      0.09897,
+      0.0701,
+      0.06392
+     ],
+     [
+      0.62278,
+      0.09485,
+      0.06392,
+      0.05979
+     ],
+     [
+      0.65887,
+      0.06392,
+      0.05155,
+      0.05155
+     ]
+    ]
+   },
+   "shoulder": {
+    "z": 0.63309,
+    "joint_x": 0.10103,
+    "clavicle_x": 0.02062
+   },
+   "arm": {
+    "angle_deg": 58,
+    "upper_len": 0.09794,
+    "fore_len": 0.08763,
+    "radii": [
+     0.03093,
+     0.02577,
+     0.02165
+    ]
+   },
+   "hand": {
+    "palm_len": 0.04124,
+    "palm_half_width": 0.02474,
+    "palm_half_thick": 0.01237,
+    "finger_len": [
+     0.02062,
+     0.02371,
+     0.02268,
+     0.01856
+    ],
+    "finger_radius": 0.00804,
+    "thumb_len": 0.02268,
+    "thumb_radius": 0.00876,
+    "finger_curl": 0.2
+   },
+   "leg": {
+    "hip_x": 0.05361,
+    "hip_z": 0.30928,
+    "knee_z": 0.21134,
+    "ankle_z": 0.06804,
+    "radii": [
+     0.04536,
+     0.04227,
+     0.03608
+    ]
+   },
+   "foot": {
+    "length": 0.1134,
+    "half_width": 0.03711,
+    "height": 0.05361,
+    "heel_back": 0.03093
+   },
+   "eyes": {
+    "x": 0.05979,
+    "z": 0.80103,
+    "y": -0.10825
+   },
+   "voxel": 0.004
+  },
+  "measured_m": {
+   "head": {
+    "centre_z": 0.825,
+    "half_width": 0.142,
+    "half_depth": 0.135,
+    "half_height": 0.145,
+    "chin_taper": 0.3,
+    "forward": -0.004
+   },
+   "neck": {
+    "base_z": 0.585,
+    "top_z": 0.69,
+    "radius": 0.045
+   },
+   "torso": {
+    "levels": [
+     [
+      0.265,
+      0.085,
+      0.06,
+      0.062
+     ],
+     [
+      0.3,
+      0.098,
+      0.066,
+      0.066
+     ],
+     [
+      0.36,
+      0.092,
+      0.064,
+      0.062
+     ],
+     [
+      0.43,
+      0.09,
+      0.066,
+      0.06
+     ],
+     [
+      0.51,
+      0.096,
+      0.068,
+      0.062
+     ],
+     [
+      0.575,
+      0.092,
+      0.062,
+      0.058
+     ],
+     [
+      0.61,
+      0.062,
+      0.05,
+      0.05
+     ]
+    ]
+   },
+   "shoulder": {
+    "z": 0.585,
+    "joint_x": 0.098,
+    "clavicle_x": 0.02
+   },
+   "arm": {
+    "angle_deg": 58,
+    "upper_len": 0.095,
+    "fore_len": 0.085,
+    "radii": [
+     0.03,
+     0.025,
+     0.021
+    ]
+   },
+   "hand": {
+    "palm_len": 0.04,
+    "palm_half_width": 0.024,
+    "palm_half_thick": 0.012,
+    "finger_len": [
+     0.02,
+     0.023,
+     0.022,
+     0.018
+    ],
+    "finger_radius": 0.0078,
+    "thumb_len": 0.022,
+    "thumb_radius": 0.0085,
+    "finger_curl": 0.2
+   },
+   "leg": {
+    "hip_x": 0.052,
+    "hip_z": 0.3,
+    "knee_z": 0.205,
+    "ankle_z": 0.066,
+    "radii": [
+     0.044,
+     0.041,
+     0.035
+    ]
+   },
+   "foot": {
+    "length": 0.11,
+    "half_width": 0.036,
+    "height": 0.052,
+    "heel_back": 0.03
+   },
+   "eyes": {
+    "x": 0.058,
+    "z": 0.777,
+    "y": -0.105
+   }
+  },
+  "provenance": "#30 front silhouette and landmarks (1 px = 2.41 mm): legs, knees, hands, arm angle, face/head, crotch, armpits measured; torso and shoulders estimated inside the blouse/vest silhouette (hidden), foot inside the boots; iteration 2 after measuring the build: legs 66 -> target 75 mm, hand tips 0.331 -> target 0.374 m",
+  "hands": "hands_r2/1"
+ },
+ "face": {
+  "generator": "face_generic/3",
+  "provenance": "Layout from references/landmarks.json (sheet30_front; 1 px = 2.41 mm): mouth 23 px, nose 14 px, chin 40 px below the eye line; eye opening about 24 px wide; brows about 31 px above the eye line, from -9 to +11 px around the eye centre. Eye style, highlights, lashes and expressions from #30 face tiles and #34 (eye controls, blendshape matrix). Values in metres; my estimates where noted.",
+  "layout": {
+   "mouth_below_eye_m": 0.055,
+   "nose_below_eye_m": 0.034,
+   "chin_below_eye_m": 0.0957,
+   "note": "T-031b: positions below the (9 mm lower) eye line; the lower face extends 9 mm (fidelity: mouth, nose, chin 2-4 px high)"
+  },
+  "eyes": {
+   "radius_m": 0.048,
+   "protrusion_m": 0.004,
+   "scale": [
+    1.03,
+    0.8,
+    1.0
+   ],
+   "yaw_deg": 0.0,
+   "pitch_deg": 0.0,
+   "iris": {
+    "srgb": [
+     128,
+     74,
+     38
+    ],
+    "inner_srgb": [
+     176,
+     112,
+     58
+    ],
+    "dark_srgb": [
+     78,
+     42,
+     22
+    ],
+    "limbal_srgb": [
+     34,
+     18,
+     12
+    ],
+    "glow_srgb": [
+     196,
+     132,
+     72
+    ],
+    "shade_srgb": [
+     70,
+     40,
+     24
+    ],
+    "pupil_srgb": [
+     10,
+     7,
+     6
+    ],
+    "radius": 0.5,
+    "pupil": 0.24,
+    "limbal_width": 0.07,
+    "pupil_softness": 0.015,
+    "streaks": 0.3,
+    "vertical_gradient": 0.45
+   },
+   "sclera_srgb": [
+    240,
+    236,
+    230
+   ],
+   "highlights": [
+    [
+     0.2,
+     0.22,
+     0.12
+    ],
+    [
+     -0.19,
+     -0.17,
+     0.05,
+     0.8
+    ]
+   ],
+   "lids": {
+    "upper_edge_deg": 45.47680230708755,
+    "upper_back_tilt": 1.0,
+    "upper_gap": 0.03,
+    "upper_thickness_m": 0.0016,
+    "lower_edge_deg": -51.488782377057,
+    "lower_tilt": 0.3,
+    "lower_gap": 0.025,
+    "lower_thickness_m": 0.001,
+    "upper_curve": 0.024216047511534264,
+    "lower_curve": 0.06489066775664179,
+    "trim": {
+     "up_outer_deg": 72,
+     "lo_outer_deg": 62,
+     "cover_margin": 0.06,
+     "soft": 0.1,
+     "lo_back": 0.3
+    },
+    "lower_fit": {
+     "gap": 0.0025899679392805334
+    },
+    "closed_fit": {
+     "gap": 0.01,
+     "fade_deg": 20,
+     "fade_above_edge_deg": 20,
+     "shell_subsurface": 0.0,
+     "gaze_range_deg": [
+      26,
+      26
+     ]
+    }
+   },
+   "lash": {
+    "srgb": [
+     40,
+     24,
+     20
+    ],
+    "span_deg": 62,
+    "thick_m": 0.0036,
+    "depth_m": 0.0018,
+    "flare": 0.6,
+    "forward_m": 0.0004,
+    "outer": {
+     "count": 0,
+     "length_m": [
+      0.0065,
+      0.0075,
+      0.006
+     ],
+     "width_m": 0.0012,
+     "spacing": 0.11,
+     "lift": 0.9
+    },
+    "strands": {
+     "count": 5,
+     "from_deg": 25,
+     "to_deg": 58,
+     "length_m": [
+      0.0035,
+      0.0048,
+      0.0058
+     ],
+     "curl": 0.7,
+     "width_m": 0.0013,
+     "outward": 0.3,
+     "forward": 0.15,
+     "note": "span 62 / strands to 58 deg, outward 0.3: with the 42 mm eye the lash line and strand tips stay inside the glasses rim (72 deg / 80 deg crossed the frame at the outer corner in face_system_test)"
+    },
+    "lower_strands": {
+     "count": 3,
+     "from_deg": 45,
+     "to_deg": 78,
+     "length_m": [
+      0.0022,
+      0.003
+     ],
+     "curl": 0.2,
+     "width_m": 0.0008,
+     "outward": 0.6,
+     "forward": 0.15
+    }
+   },
+   "note": "T-031b: openings rounder and larger through the lids (upper edge 43, lower -53 deg), eyes 9 mm lower; radius stays 42 mm: at 44-46 mm the upper lid shell crosses the glasses rim's inner edge (face_system_test 12-24 overlaps per eye). T-031 v2: layered glossy iris (amber centre, brown body, dark limbal ring, lighter lower half), large catchlight upper screen-right plus a small lower one, wet clear coat; r 42 mm standing 13.2 mm out (opening half-width about 30 mm, about 60% of the glasses rim as in #30/#34); lashes as a thick upper line with five curled strands to the outer corner and three short lower strands. large fully open round eyes (#30, #34); two highlights on the same screen side for both eyes (upper right, small lower left); spherical eyeball (gaze rotates it inside concentric lid shells: no intersections), r 36 mm standing 14 mm out of the face (opening half-width 28.5 mm); lids follow 30% of the gaze (eyelid tracking, #34). Tried and rejected (M3): an ellipsoid eyeball (cuts the lids under gaze) and a 48 mm eye 9.5 mm out (large lid hood, off-centre iris on the curved face)",
+   "lid_tracking": 0.3,
+   "shader": "felt/1",
+   "sclera_edge_srgb": [
+    214,
+    200,
+    194
+   ],
+   "catchlight_strength": 1.5,
+   "catchlight_softness": 0.3,
+   "wet_coat": {
+    "weight": 1.0,
+    "roughness": 0.03,
+    "base_roughness": 0.35
+   },
+   "offset_z_m": -0.009,
+   "gaze_range_deg": [
+    16,
+    8
+   ],
+   "socket": {
+    "band_deg": 6,
+    "lower_band_deg": 1.0,
+    "ramp_deg": 7,
+    "reach_deg": 26,
+    "corner_deg": 50,
+    "clearance_m": 0.002,
+    "wall_smooth_iterations": 25,
+    "note": "T-081: relaxes the socket wall (face_generic/2 opt-in): the sharp folds at the eye corners and below the eye rims (dark specks under skin-felt/2) go from max 92 deg to 40 deg",
+    "corner_relax_iterations": 25
+   },
+   "felt": {
+    "roughness": 0.8,
+    "sheen": 0.4,
+    "highlight": [
+     0.2,
+     0.2,
+     0.08
+    ],
+    "highlight_softness": 0.05,
+    "highlight_strength": 1.5,
+    "lid_line": {
+     "roughness": 0.9,
+     "sheen": 0.3
+    },
+    "round_iris": true
+   }
+  },
+  "brows": {
+   "style": "felt",
+   "inner": 0.55,
+   "outer": 0.95,
+   "height": 1.57,
+   "arch_m": 0.003,
+   "inner_drop_m": 0.001,
+   "outer_drop_m": 0.006,
+   "thick_m": 0.0028,
+   "depth_m": 0.0009,
+   "taper": 0.35,
+   "offset_m": 0.0009,
+   "srgb": [
+    128,
+    84,
+    62
+   ],
+   "note": "T-031: thick dark-brown felt brows (#30, #34) placed in the skin band between the glasses rim top (z 0.832) and the fringe edge (z 0.846 at the eye centre, 0.832 at the outer end; measured on the 0.7.1 build): at 2.25 r they were under the fringe; T-031b: eyes 9 mm lower (fidelity: eyes 5.6 px above the reference), height 1.57 r keeps the brows at the same place",
+   "shape": "soft_arch"
+  },
+  "ears": {
+   "radii_m": [
+    0.013,
+    0.025,
+    0.034
+   ],
+   "below_eye_m": 0.012,
+   "y_m": 0.004,
+   "out_m": 0.004,
+   "yaw_deg": 32,
+   "tilt_deg": -8
+  },
+  "nose": {
+   "type": "small_round",
+   "size_m": 0.015,
+   "height_m": 0.0062,
+   "offset_z_m": 0.0,
+   "note": "T-031: small round pink nose (#34): a prouder round bump, tinted by the blush nose spot"
+  },
+  "blush": {
+   "srgb": [
+    238,
+    122,
+    118
+   ],
+   "below_eye_m": 0.044,
+   "out_m": 0.036,
+   "radius_m": 0.045,
+   "nose": true,
+   "intensity": 1.0,
+   "softness": 0.85,
+   "breakup": 0.2,
+   "nose_intensity": 0.7,
+   "nose_radius_m": 0.014,
+   "note": "T-031b: rosy round felt blush on the outer cheeks, partly outside the glasses rims (#30 neutral: centre ~48 mm out and ~34 mm below the eye centre)"
+  },
+  "mouth": {
+   "generator": "lips_jaw/2",
+   "half_width_m": 0.0205,
+   "lip_height_m": 0.0034,
+   "frown_m": -0.0025,
+   "smile_up_m": 0.0055,
+   "smile_widen": 1.1,
+   "smile_intensity": 1.0,
+   "smile_asymmetry": 0.0,
+   "jaw_open_deg": 10.0,
+   "pivot_drop_m": 0.015,
+   "cavity_depth_m": 0.0,
+   "cheek_falloff_m": [
+    0.028,
+    0.055
+   ],
+   "jaw_band_start": 0.45,
+   "jaw_corner_center": 1.0,
+   "jaw_floor_fade_m": 0.02,
+   "jaw_lip_round": 0.9,
+   "jaw_upper_lift_m": 0.002,
+   "lip_material": "lip",
+   "lip_srgb": [
+    222,
+    142,
+    140
+   ],
+   "seam_half_m": 0.0008,
+   "line_srgb": [
+    120,
+    56,
+    56
+   ],
+   "line_roughness": 0.9,
+   "lip_edge_offset_m": 0.0002,
+   "lip_bulge_m": 0.001,
+   "interior_rows": 9,
+   "interior_follow_keys": true,
+   "inner_srgb": [
+    178,
+    62,
+    64
+   ],
+   "throat_srgb": [
+    92,
+    24,
+    28
+   ],
+   "tongue_srgb": [
+    222,
+    112,
+    118
+   ],
+   "oral": {
+    "teeth_upper": {
+     "depth": 0.26,
+     "width": 0.86,
+     "srgb": [
+      240,
+      235,
+      226
+     ],
+     "forward_m": 0.0003
+    },
+    "tongue": {
+     "t0": 0.58,
+     "width": 0.62,
+     "srgb": [
+      222,
+      112,
+      118
+     ],
+     "bulge_m": 0.0002
+    }
+   },
+   "extra_shapes": [
+    {
+     "name": "MouthFrown",
+     "frown_m": 0.0045,
+     "widen": 0.95
+    },
+    {
+     "name": "MouthWide",
+     "frown_m": -0.0055,
+     "widen": 1.55,
+     "up_lift_m": 0.004,
+     "lo_drop_m": 0.014
+    },
+    {
+     "name": "MouthO",
+     "frown_m": 0.0,
+     "widen": 0.62,
+     "up_lift_m": 0.0028,
+     "lo_drop_m": 0.0045
+    }
+   ],
+   "note": "T-081 (0.11.0): neutral = closed gentle smile with lifted cheeks (owner decisions 2026-11-17/18, ref_34 Neutral): face_generic/2 rest_shape soft_smile (MouthSmile 0.35 + CheekRaise 0.8 baked, lips closed, no teeth or tongue at rest); open smile with teeth and tongue only from MouthWide/JawOpen (Smile, Laugh, Surprise, MouthOpen, talking). Lips a little wider, fuller and pinker than the T-065 candidate (ref_34 mouth tiles, T-059).",
+   "rest_shape": "soft_smile",
+   "rest_mix": {
+    "MouthWide": 0.0,
+    "MouthSmile": 0.5,
+    "CheekRaise": 0.9
+   },
+   "fullness": {
+    "upper": 1.45,
+    "lower": 1.8,
+    "forward_m": 0.0014,
+    "lower_forward": 1.3
+   }
+  },
+  "blink": {
+   "generator": "lid_seam/1",
+   "overlap_deg": 33,
+   "closed_offset_m": 0.0012,
+   "closed_thickness_m": 0.0012,
+   "flatten": 0.0,
+   "flatten_lash": false,
+   "timing": {
+    "close_s": 0.08,
+    "hold_s": 0.04,
+    "open_s": 0.14,
+    "mean_interval_s": 3.2,
+    "note": "character data for the engine life layer; the engine currently uses one global timing (see M3 report)"
+   },
+   "note": "flatten 0: a flattened closed lid exposes the eye when gaze and blink combine (measured 20-35% at 20 deg); closed_offset 1.2 mm covers the 0.6 mm linear-blend shrink of the 30% lid tracking at 20 deg"
+  },
+  "smile_coupling": {
+   "cheek_raise_m": 0.003,
+   "cheek_forward_m": 0.0015,
+   "cheek_radius_scale": 0.55,
+   "corner_follow": 0.8,
+   "corner_radius_scale": 0.9,
+   "eye_squint_deg": 6.0,
+   "intensity": 1.0,
+   "asymmetry": 0.0
+  },
+  "action_units": {
+   "wide_upper_deg": 10,
+   "wide_lower_deg": 6,
+   "squint_lower_deg": 14,
+   "squint_upper_deg": 6,
+   "brow_up_m": 0.006,
+   "brow_down_m": 0.005,
+   "brow_in_m": 0.003,
+   "brow_sad_m": 0.005
+  },
+  "expressions": {
+   "intensity": 1.0,
+   "scale": {},
+   "override": {
+    "Smile": {
+     "CheekRaise": 1.0
+    },
+    "Laugh": {
+     "CheekRaise": 1.0
+    },
+    "Squint": {
+     "CheekRaise": 0.6
+    }
+   },
+   "optional": [
+    "Worried",
+    "Curious",
+    "SmileClosed",
+    "Thinking",
+    "SmileOpen"
+   ],
+   "note": "presets from the shared library (14 from reference #34); Worried and Curious are optional extras (not in any reference)"
+  },
+  "expression_shape_keys": [],
+  "expressions_reference": "#34 blendshape matrix: Neutral, Blink, Left/Right Eye Closed, Squint, Wide-Open, Smile, Frown, Surprise, Sadness, Anger, Confusion, Laugh, Mouth Open",
+  "skin": {
+   "occlusion": {
+    "distance_m": 0.15,
+    "lift": 1.1,
+    "warm_srgb": [
+     248,
+     210,
+     190
+    ],
+    "samples": 32,
+    "bleed": 0.0,
+    "bleed_srgb": [
+     255,
+     240,
+     232
+    ],
+    "bleed_face_radius_m": 0.12,
+    "bleed_body": 0.15
+   },
+   "note": "T-031: the grey face came from occlusion (protruding eyes, glasses, fringe) on a neutral felt base under the key-left calibration; felt scatters light into creases, so occluded areas shift warm and light instead of grey. Body and face share this material (body_skin), so the tones match. T-031b: + felt light bleed (bleed 0.5, near-neutral bleed tint so the limbs keep their hue) and 32 AO samples (8 left mottled dark patches after denoising); with the shared calibration's front fill. Face-weighted bleed (radius 0.12 m around the nose, 15% on the body): one shared bleed made the limbs 5 L* too bright while the face stayed 4.5 L* dark."
+  },
+  "shape": {
+   "cheek_roundness_m": 0.007,
+   "cheek_radius_m": 0.055,
+   "cheek_below_eye_m": 0.05,
+   "cheek_x": 1.1,
+   "note": "face v2 shape on top of the body_generic/2 head fitted to the reference outlines (cheek volume only)",
+   "cheek_fullness_m": 0.013371455472376524,
+   "cheek_forward": 0.4,
+   "outline_roundness": 0.9,
+   "outline_exponent": 2.6,
+   "face_width_m": 0.016,
+   "face_width_below_eye_m": 0.04,
+   "face_width_band_m": 0.04,
+   "jaw_depth_roundness": 0.6,
+   "lower_face": {
+    "cheek_pad_m": 0.019262720780454712,
+    "cheek_pad_radius_m": 0.0791995704010697,
+    "cheek_pad_height": 0.9,
+    "cheek_pad_x": 1.3,
+    "cheek_pad_below_eye_m": 0.05,
+    "cheek_pad_forward": 0.0,
+    "cheek_pad_top_below_eye_m": 0.03,
+    "jaw_round_m": 0.01227054793403904,
+    "jaw_x": 0.528468310871156,
+    "jaw_down": 0.5,
+    "jaw_band_m": 0.025
+   }
+  },
+  "cheeks": {
+   "raise_m": 0.004,
+   "forward_m": 0.003,
+   "radius_m": 0.04,
+   "below_eye_m": 0.047,
+   "x": 1.1
+  }
+ },
+ "hair": {
+  "generator": "groom/4",
+  "seed": 30,
+  "finish": "felt",
+  "face_keepout": {
+   "az": 34,
+   "el_min": 5
+  },
+  "structures": [
+   {
+    "type": "scalp_cap",
+    "name": "cap",
+    "offset": 0.004,
+    "face_cut": [
+     -0.06,
+     0.9
+    ],
+    "hairline": [
+     [
+      0,
+      0.905
+     ],
+     [
+      40,
+      0.88
+     ],
+     [
+      70,
+      0.8
+     ],
+     [
+      100,
+      0.74
+     ],
+     [
+      140,
+      0.71
+     ],
+     [
+      180,
+      0.7
+     ]
+    ]
+   },
+   {
+    "type": "bun",
+    "name": "bun",
+    "buns": [
+     {
+      "az": 180,
+      "el": 82,
+      "lift": 0.0,
+      "radius": 0.118,
+      "height": 0.17,
+      "tilt": 0.4,
+      "wrap": "ccw",
+      "turns": 0.9,
+      "ropes": 5,
+      "rope_thick": 0.046,
+      "felt_radii": [
+       0.62,
+       0.62,
+       0.9
+      ],
+      "felt_lobes": [
+       {
+        "offset": [
+         0.0,
+         0.5,
+         0.1
+        ],
+        "radii": [
+         0.62,
+         0.56,
+         0.9
+        ],
+        "swirl": 1.1
+       },
+       {
+        "offset": [
+         0.0,
+         -0.5,
+         0.06
+        ],
+        "radii": [
+         0.62,
+         0.56,
+         0.88
+        ],
+        "swirl": -1.0
+       },
+       {
+        "offset": [
+         0.45,
+         0.05,
+         0.2
+        ],
+        "radii": [
+         0.56,
+         0.6,
+         0.86
+        ],
+        "swirl": 0.9
+       },
+       {
+        "offset": [
+         -0.35,
+         0.0,
+         0.55
+        ],
+        "radii": [
+         0.56,
+         0.58,
+         0.8
+        ],
+        "swirl": -0.8
+       }
+      ]
+     }
+    ],
+    "felt": {
+     "grooves": {
+      "count": 14,
+      "depth": 0.45,
+      "sharpness": 0.75,
+      "wander": 0.45,
+      "wavelength": 0.6
+     },
+     "lumps": {
+      "amount": 0.06,
+      "scale": 1.1
+     },
+     "resolution": [
+      80,
+      44
+     ]
+    }
+   },
+   {
+    "type": "felt_volume",
+    "name": "crown",
+    "shape": "gather",
+    "az": [
+     -180,
+     180
+    ],
+    "hairline_el": [
+     [
+      0,
+      40
+     ],
+     [
+      25,
+      36
+     ],
+     [
+      50,
+      20
+     ],
+     [
+      72,
+      2
+     ],
+     [
+      95,
+      0
+     ],
+     [
+      125,
+      10
+     ],
+     [
+      150,
+      14
+     ],
+     [
+      180,
+      14
+     ]
+    ],
+    "target": {
+     "bun": 0
+    },
+    "tuck": 0.97,
+    "height": [
+     0.022,
+     0.05,
+     0.03
+    ],
+    "inset": 0.004,
+    "part": {
+     "az": 0,
+     "width_deg": 4.5,
+     "depth": 0.9,
+     "length": 0.66
+    },
+    "grooves": {
+     "count": 16,
+     "depth": 0.22,
+     "sharpness": 0.65,
+     "wander": 0.3,
+     "wavelength": 0.5
+    },
+    "lumps": {
+     "amount": 0.05,
+     "scale": 1.0
+    },
+    "soft": [
+     0,
+     0,
+     0.3,
+     0.0
+    ],
+    "rim": 0.12,
+    "resolution": [
+     220,
+     48
+    ]
+   },
+   {
+    "seg": 18,
+    "grooves": 3,
+    "groove_depth": 0.24,
+    "irregularity": 0.05,
+    "layer_lift_m": 0.006,
+    "type": "masses",
+    "name": "fringe",
+    "items": [
+     {
+      "root": [
+       6,
+       80
+      ],
+      "tip": [
+       40,
+       8
+      ],
+      "width": 0.15,
+      "depth": 0.66,
+      "lift": [
+       0.008,
+       0.042,
+       0.016
+      ],
+      "lift_peak": 0.45,
+      "hold": 0.55,
+      "taper_power": 1.8,
+      "root_width": 0.85,
+      "sweep": 0.3,
+      "layer": 1
+     },
+     {
+      "root": [
+       16,
+       64
+      ],
+      "tip": [
+       70,
+       -14
+      ],
+      "width": 0.125,
+      "depth": 0.6,
+      "lift": [
+       0.004,
+       0.03,
+       0.014
+      ],
+      "lift_peak": 0.45,
+      "hold": 0.5,
+      "taper_power": 1.7,
+      "root_width": 0.85,
+      "layer": 0,
+      "sweep": -0.12
+     },
+     {
+      "root": [
+       -6,
+       80
+      ],
+      "tip": [
+       -40,
+       8
+      ],
+      "width": 0.15,
+      "depth": 0.66,
+      "lift": [
+       0.008,
+       0.042,
+       0.016
+      ],
+      "lift_peak": 0.45,
+      "hold": 0.55,
+      "taper_power": 1.8,
+      "root_width": 0.85,
+      "sweep": -0.3,
+      "layer": 1
+     },
+     {
+      "root": [
+       -16,
+       64
+      ],
+      "tip": [
+       -70,
+       -14
+      ],
+      "width": 0.125,
+      "depth": 0.6,
+      "lift": [
+       0.004,
+       0.03,
+       0.014
+      ],
+      "lift_peak": 0.45,
+      "hold": 0.5,
+      "taper_power": 1.7,
+      "root_width": 0.85,
+      "layer": 0,
+      "sweep": 0.12
+     }
+    ]
+   },
+   {
+    "type": "felt_volume",
+    "name": "temple_l",
+    "shape": "mass",
+    "az": 84,
+    "el": 0,
+    "lift": -0.004,
+    "radii": [
+     0.05,
+     0.048,
+     0.08
+    ],
+    "axis": "up",
+    "swirl": 0.08,
+    "grooves": {
+     "count": 10,
+     "depth": 0.45,
+     "sharpness": 0.6,
+     "wander": 0.35,
+     "wavelength": 0.5
+    },
+    "lumps": {
+     "amount": 0.05
+    },
+    "resolution": [
+     56,
+     32
+    ]
+   },
+   {
+    "type": "felt_volume",
+    "name": "temple_r",
+    "shape": "mass",
+    "az": -84,
+    "el": 0,
+    "lift": -0.004,
+    "radii": [
+     0.05,
+     0.048,
+     0.08
+    ],
+    "axis": "up",
+    "swirl": 0.08,
+    "grooves": {
+     "count": 10,
+     "depth": 0.45,
+     "sharpness": 0.6,
+     "wander": 0.35,
+     "wavelength": 0.5
+    },
+    "lumps": {
+     "amount": 0.05
+    },
+    "resolution": [
+     56,
+     32
+    ]
+   },
+   {
+    "type": "curtain",
+    "name": "curtain",
+    "az": [
+     92,
+     268
+    ],
+    "root_el": [
+     [
+      92,
+      14
+     ],
+     [
+      125,
+      24
+     ],
+     [
+      180,
+      30
+     ]
+    ],
+    "leave_el": -14,
+    "z_end": [
+     [
+      92,
+      0.6
+     ],
+     [
+      130,
+      0.56
+     ],
+     [
+      180,
+      0.54
+     ]
+    ],
+    "rest_radii": [
+     0.15,
+     0.13
+    ],
+    "rest_z": 0.62,
+    "columns": 13,
+    "thick": 0.018,
+    "column_depth": 0.15,
+    "lobe": {
+     "pitch": 0.05,
+     "depth": 0.0,
+     "twist": 0.7
+    },
+    "scallop": 0.04,
+    "resolution": [
+     180,
+     100
+    ],
+    "inset": 0.004
+   },
+   {
+    "seg": 18,
+    "grooves": 3,
+    "groove_depth": 0.24,
+    "irregularity": 0.05,
+    "layer_lift_m": 0.006,
+    "type": "masses",
+    "name": "back_sections",
+    "rows": [
+     {
+      "count": 6,
+      "az": [
+       132,
+       228
+      ],
+      "el": [
+       38,
+       50
+      ],
+      "flow": "down",
+      "len_deg": [
+       58,
+       80
+      ],
+      "width": [
+       0.11,
+       0.12
+      ],
+      "depth": 0.38,
+      "lift": [
+       0.0,
+       0.01,
+       0.008
+      ],
+      "lift_peak": 0.45,
+      "hold": 0.55,
+      "taper_power": 1.6,
+      "jitter_deg": 4,
+      "layer": 1
+     },
+     {
+      "count": 2,
+      "az": [
+       98,
+       124
+      ],
+      "el": [
+       30,
+       38
+      ],
+      "flow": "down",
+      "len_deg": [
+       42,
+       58
+      ],
+      "width": [
+       0.09,
+       0.1
+      ],
+      "depth": 0.38,
+      "lift": [
+       0.0,
+       0.009,
+       0.008
+      ],
+      "lift_peak": 0.45,
+      "hold": 0.55,
+      "taper_power": 1.6,
+      "jitter_deg": 4,
+      "layer": 0
+     },
+     {
+      "count": 2,
+      "az": [
+       -124,
+       -98
+      ],
+      "el": [
+       30,
+       38
+      ],
+      "flow": "down",
+      "len_deg": [
+       42,
+       58
+      ],
+      "width": [
+       0.09,
+       0.1
+      ],
+      "depth": 0.38,
+      "lift": [
+       0.0,
+       0.009,
+       0.008
+      ],
+      "lift_peak": 0.45,
+      "hold": 0.55,
+      "taper_power": 1.6,
+      "jitter_deg": 4,
+      "layer": 0
+     }
+    ]
+   },
+   {
+    "type": "locks",
+    "name": "ringlets_side",
+    "style": "curly",
+    "count": 2,
+    "az": [
+     66,
+     96
+    ],
+    "el_root": [
+     6,
+     18
+    ],
+    "el_leave": -14,
+    "lift": [
+     0.008,
+     0.024
+    ],
+    "hang_radii": [
+     0.17,
+     0.155
+    ],
+    "z_end": [
+     0.49,
+     0.57
+    ],
+    "flare": 0.02,
+    "width": [
+     0.036,
+     0.04
+    ],
+    "thick": [
+     0.033,
+     0.036
+    ],
+    "tip_frac": 0.3,
+    "curl": {
+     "radius": 0.02,
+     "pitch": 0.09,
+     "radius_growth": 0.25,
+     "start": 0.02,
+     "direction": "alternate",
+     "jitter": 0.22,
+     "start_jitter": 0.06,
+     "wobble": 0.2,
+     "wobble_wavelength": 0.13,
+     "sway": 0.008,
+     "ellipse": 1.0,
+     "tip": {
+      "from": 0.7,
+      "radius": 0.8,
+      "pitch": 0.75,
+      "ellipse": 1.0
+     }
+    },
+    "felt": {
+     "seg": 16,
+     "irregularity": 0.12,
+     "wavelength": 0.15,
+     "flatten": 0.12,
+     "flatten_twist": 1.2
+    },
+    "finish": "felt",
+    "mirror": true,
+    "end_scale": 0.36,
+    "stagger": {
+     "z_end": [
+      0.03,
+      -0.02
+     ],
+     "end_scale": [
+      1.0,
+      0.8,
+      1.1
+     ],
+     "mirror_shift": 1
+    }
+   },
+   {
+    "type": "locks",
+    "name": "ringlets_side_b",
+    "style": "curly",
+    "count": 1,
+    "az": [
+     74,
+     90
+    ],
+    "el_root": [
+     8,
+     16
+    ],
+    "el_leave": -14,
+    "lift": [
+     0.008,
+     0.024
+    ],
+    "hang_radii": [
+     0.17,
+     0.155
+    ],
+    "z_end": [
+     0.53,
+     0.6
+    ],
+    "flare": 0.02,
+    "width": [
+     0.034,
+     0.038
+    ],
+    "thick": [
+     0.031,
+     0.034
+    ],
+    "tip_frac": 0.3,
+    "curl": {
+     "radius": 0.016,
+     "pitch": 0.07,
+     "radius_growth": 0.25,
+     "start": 0.05,
+     "direction": "alternate",
+     "jitter": 0.22,
+     "start_jitter": 0.06,
+     "wobble": 0.2,
+     "wobble_wavelength": 0.13,
+     "sway": 0.008,
+     "ellipse": 1.0,
+     "tip": {
+      "from": 0.7,
+      "radius": 0.8,
+      "pitch": 0.75,
+      "ellipse": 1.0
+     }
+    },
+    "felt": {
+     "seg": 16,
+     "irregularity": 0.12,
+     "wavelength": 0.15,
+     "flatten": 0.12,
+     "flatten_twist": 1.2
+    },
+    "finish": "felt",
+    "mirror": true,
+    "end_scale": 0.36
+   },
+   {
+    "type": "locks",
+    "name": "ringlets_back",
+    "style": "curly",
+    "count": 7,
+    "az": [
+     124,
+     236
+    ],
+    "el_root": [
+     -14,
+     -4
+    ],
+    "el_leave": -30,
+    "lift": [
+     0.008,
+     0.024
+    ],
+    "hang_radii": [
+     0.17,
+     0.155
+    ],
+    "z_end": [
+     0.4,
+     0.47
+    ],
+    "flare": 0.02,
+    "width": [
+     0.038,
+     0.042
+    ],
+    "thick": [
+     0.034,
+     0.038
+    ],
+    "tip_frac": 0.3,
+    "curl": {
+     "radius": 0.022,
+     "pitch": 0.095,
+     "radius_growth": 0.25,
+     "start": 0.0,
+     "direction": "alternate",
+     "jitter": 0.22,
+     "start_jitter": 0.06,
+     "wobble": 0.2,
+     "wobble_wavelength": 0.13,
+     "sway": 0.008,
+     "ellipse": 1.0,
+     "tip": {
+      "from": 0.7,
+      "radius": 0.8,
+      "pitch": 0.75,
+      "ellipse": 1.0
+     }
+    },
+    "felt": {
+     "seg": 16,
+     "irregularity": 0.12,
+     "wavelength": 0.15,
+     "flatten": 0.12,
+     "flatten_twist": 1.2
+    },
+    "finish": "felt",
+    "hang_jitter": 0.1,
+    "rest_radii": [
+     0.17,
+     0.15
+    ],
+    "rest_z": 0.62,
+    "end_scale": 0.36,
+    "stagger": {
+     "z_end": [
+      0.0,
+      0.05,
+      -0.03,
+      0.07,
+      0.02,
+      -0.02,
+      0.06
+     ],
+     "end_scale": [
+      1.0,
+      0.8,
+      1.1
+     ],
+     "mirror_shift": 0
+    }
+   },
+   {
+    "type": "locks",
+    "name": "ringlets_back_b",
+    "style": "curly",
+    "count": 6,
+    "az": [
+     130,
+     230
+    ],
+    "el_root": [
+     -10,
+     0
+    ],
+    "el_leave": -26,
+    "lift": [
+     0.008,
+     0.024
+    ],
+    "hang_radii": [
+     0.17,
+     0.155
+    ],
+    "z_end": [
+     0.43,
+     0.5
+    ],
+    "flare": 0.02,
+    "width": [
+     0.034,
+     0.038
+    ],
+    "thick": [
+     0.031,
+     0.034
+    ],
+    "tip_frac": 0.3,
+    "curl": {
+     "radius": 0.017,
+     "pitch": 0.075,
+     "radius_growth": 0.25,
+     "start": 0.04,
+     "direction": "alternate",
+     "jitter": 0.22,
+     "start_jitter": 0.06,
+     "wobble": 0.2,
+     "wobble_wavelength": 0.13,
+     "sway": 0.008,
+     "ellipse": 1.0,
+     "tip": {
+      "from": 0.7,
+      "radius": 0.8,
+      "pitch": 0.75,
+      "ellipse": 1.0
+     }
+    },
+    "felt": {
+     "seg": 16,
+     "irregularity": 0.12,
+     "wavelength": 0.15,
+     "flatten": 0.12,
+     "flatten_twist": 1.2
+    },
+    "finish": "felt",
+    "hang_jitter": 0.12,
+    "rest_radii": [
+     0.17,
+     0.15
+    ],
+    "rest_z": 0.62,
+    "end_scale": 0.36,
+    "stagger": {
+     "z_end": [
+      0.04,
+      -0.02,
+      0.06,
+      0.0,
+      0.05,
+      -0.03
+     ],
+     "end_scale": [
+      1.0,
+      0.8,
+      1.1
+     ],
+     "mirror_shift": 0
+    }
+   },
+   {
+    "type": "locks",
+    "name": "ringlets_outer",
+    "style": "curly",
+    "count": 2,
+    "az": [
+     100,
+     122
+    ],
+    "el_root": [
+     -2,
+     10
+    ],
+    "el_leave": -22,
+    "lift": [
+     0.008,
+     0.024
+    ],
+    "hang_radii": [
+     0.17,
+     0.155
+    ],
+    "z_end": [
+     0.42,
+     0.5
+    ],
+    "flare": 0.02,
+    "width": [
+     0.038,
+     0.042
+    ],
+    "thick": [
+     0.034,
+     0.037
+    ],
+    "tip_frac": 0.3,
+    "curl": {
+     "radius": 0.021,
+     "pitch": 0.09,
+     "radius_growth": 0.25,
+     "start": 0.02,
+     "direction": "alternate",
+     "jitter": 0.22,
+     "start_jitter": 0.06,
+     "wobble": 0.2,
+     "wobble_wavelength": 0.13,
+     "sway": 0.008,
+     "ellipse": 1.0,
+     "tip": {
+      "from": 0.7,
+      "radius": 0.8,
+      "pitch": 0.75,
+      "ellipse": 1.0
+     }
+    },
+    "felt": {
+     "seg": 16,
+     "irregularity": 0.12,
+     "wavelength": 0.15,
+     "flatten": 0.12,
+     "flatten_twist": 1.2
+    },
+    "finish": "felt",
+    "mirror": true,
+    "rest_radii": [
+     0.18,
+     0.155
+    ],
+    "rest_z": 0.62,
+    "end_scale": 0.36,
+    "stagger": {
+     "z_end": [
+      0.0,
+      0.06
+     ],
+     "end_scale": [
+      1.0,
+      0.8,
+      1.1
+     ],
+     "mirror_shift": 1
+    }
+   },
+   {
+    "type": "locks",
+    "name": "ringlets_outer_b",
+    "style": "curly",
+    "count": 1,
+    "az": [
+     106,
+     118
+    ],
+    "el_root": [
+     0,
+     8
+    ],
+    "el_leave": -22,
+    "lift": [
+     0.008,
+     0.024
+    ],
+    "hang_radii": [
+     0.17,
+     0.155
+    ],
+    "z_end": [
+     0.46,
+     0.52
+    ],
+    "flare": 0.02,
+    "width": [
+     0.034,
+     0.038
+    ],
+    "thick": [
+     0.031,
+     0.034
+    ],
+    "tip_frac": 0.3,
+    "curl": {
+     "radius": 0.017,
+     "pitch": 0.072,
+     "radius_growth": 0.25,
+     "start": 0.05,
+     "direction": "alternate",
+     "jitter": 0.22,
+     "start_jitter": 0.06,
+     "wobble": 0.2,
+     "wobble_wavelength": 0.13,
+     "sway": 0.008,
+     "ellipse": 1.0,
+     "tip": {
+      "from": 0.7,
+      "radius": 0.8,
+      "pitch": 0.75,
+      "ellipse": 1.0
+     }
+    },
+    "felt": {
+     "seg": 16,
+     "irregularity": 0.12,
+     "wavelength": 0.15,
+     "flatten": 0.12,
+     "flatten_twist": 1.2
+    },
+    "finish": "felt",
+    "mirror": true,
+    "rest_radii": [
+     0.18,
+     0.155
+    ],
+    "rest_z": 0.62,
+    "end_scale": 0.36
+   },
+   {
+    "type": "scrunchie",
+    "name": "band",
+    "bun": 0,
+    "height_frac": 0.16,
+    "radius_scale": 1.02,
+    "tube": 0.016,
+    "gathers": 11,
+    "gather_depth": 0.42,
+    "width_scale": 1.45,
+    "ruffle": 0.14,
+    "material": "hair_band"
+   },
+   {
+    "type": "flowers",
+    "name": "flowers",
+    "bun": 0,
+    "petals": 5,
+    "material": "hair_flower",
+    "centre_material": "hair_flower_centre",
+    "items": [
+     {
+      "around_deg": 38,
+      "height_frac": 0.2,
+      "size": 0.056,
+      "out": 0.034,
+      "turn": {
+       "toward": [
+        22,
+        28
+       ],
+       "amount": 0.6
+      }
+     }
+    ]
+   }
+  ],
+  "binding": {
+   "blend_z": [
+    0.6,
+    0.72
+   ]
+  },
+  "fibres": {
+   "slots": [
+    "hair"
+   ],
+   "layers": [
+    {
+     "name": "felt",
+     "overrides": {
+      "fibres": {
+       "density_per_cm2": 28.0,
+       "length_mm": 2.2,
+       "curl": 0.45,
+       "lean": 0.6,
+       "lean_variation": 0.8
+      },
+      "surface": {
+       "saturation_compensation": 1.0
+      }
+     }
+    },
+    {
+     "name": "halo",
+     "overrides": {
+      "fibres": {
+       "density_per_cm2": 1.8,
+       "length_mm": 4.8,
+       "curl": 0.6,
+       "lean": 0.8,
+       "lean_variation": 0.9
+      },
+      "surface": {
+       "saturation_compensation": 1.0
+      }
+     }
+    },
+    {
+     "name": "flyaways",
+     "overrides": {
+      "fibres": {
+       "density_per_cm2": 0.05,
+       "length_mm": 9.0,
+       "curl": 0.95,
+       "lean": 0.7,
+       "lean_variation": 0.9
+      },
+      "surface": {
+       "saturation_compensation": 1.0
+      }
+     }
+    }
+   ]
+  },
+  "dynamics": {
+   "enabled": true,
+   "substep_hz": 240,
+   "preroll_s": 1.0,
+   "defaults": {
+    "stiffness": 90.0,
+    "stiffness_tip": 60.0,
+    "damping": 7.0,
+    "gravity": 0.5,
+    "drag": 0.8,
+    "limit_deg": 30.0,
+    "radius": 0.014
+   },
+   "structures": {
+    "ringlets_side": {
+     "bones": [
+      3,
+      4
+     ],
+     "bone_length": 0.06
+    },
+    "ringlets_side_b": {
+     "bones": [
+      3,
+      4
+     ],
+     "bone_length": 0.06
+    },
+    "ringlets_back": {
+     "bones": [
+      3,
+      5
+     ],
+     "bone_length": 0.07
+    },
+    "ringlets_back_b": {
+     "bones": [
+      3,
+      5
+     ],
+     "bone_length": 0.07
+    },
+    "ringlets_outer": {
+     "bones": [
+      3,
+      5
+     ],
+     "bone_length": 0.07
+    },
+    "ringlets_outer_b": {
+     "bones": [
+      3,
+      5
+     ],
+     "bone_length": 0.07
+    },
+    "bun": {
+     "bones": 3,
+     "stiffness": 140.0,
+     "stiffness_tip": 120.0,
+     "damping": 9.0,
+     "gravity": 0.3,
+     "limit_deg": 12.0,
+     "radius": 0.0
+    }
+   },
+   "colliders": [
+    {
+     "name": "head",
+     "type": "sphere",
+     "bone": "head",
+     "head_offset": [
+      0.0,
+      0.0,
+      -0.004
+     ],
+     "radius": 0.128
+    },
+    {
+     "name": "torso",
+     "type": "capsule",
+     "bone": "chest",
+     "a": [
+      0.0,
+      0.004,
+      0.4
+     ],
+     "b": [
+      0.0,
+      0.004,
+      0.56
+     ],
+     "radius": 0.082
+    },
+    {
+     "name": "shoulder_l",
+     "type": "sphere",
+     "bone": "chest",
+     "head_offset": [
+      0.1,
+      0.0,
+      -0.24
+     ],
+     "radius": 0.045
+    },
+    {
+     "name": "shoulder_r",
+     "type": "sphere",
+     "bone": "chest",
+     "head_offset": [
+      -0.1,
+      0.0,
+      -0.24
+     ],
+     "radius": 0.045
+    }
+   ]
+  },
+  "components": {
+   "fringe": "side-swept, slightly off-centre part, to the brows",
+   "bun": "single high bun of interlocking wavy bundles",
+   "curls": "long spiral curls down sides and back to about mid-back",
+   "accessories": [
+    "one pink felt flower with a yellow centre",
+    "blue-grey scrunchie at the bun base"
+   ],
+   "finish": "felted wool (T-033): smooth felted crown and fringe, felted bun, felted ringlets with fibre fuzz"
+  },
+  "provenance": "T-079 hair v3 round 3 (groom/2) girl candidate data (branch t-079-claude-hair-v3-r3@7d3c424, docs/evaluation/characters/T-079/candidates/girl.hair_v3.json; copied to docs/evaluation/characters/T-081/inputs/girl.hair_v3_r3.json); round 2 = T-070"
+ },
+ "clothing": {
+  "generator": "garment/3",
+  "provenance": "T-024: outfit from references #41 (garment construction sheet, exploded view) and the sheet30 views; heights read on sheet30_front at 2.35 mm/px (sole to bun top 1.10 m). Colours: #41 flat-garment medians (references/color_targets.json *_garment) checked against sheet30 medians. Values are my estimates where not measured. 0.7.1 (T-025): gusset, edge/waistband buttons, shoulder_width, rolled edge, pocket bouquets and boot shaft/toe volume read from #41 (front and exploded views); values are my estimates. T-034: build-time cloth rest shape (drape) for the blouse, vest and bloomers, rounded solidified edges on every item and a slimmer boot cuff, tuned by eye against sheet30 front/left; values are my estimates. T-068 candidate: vest details from #41 (exploded view, seams & details tiles): flat patch pockets with rounded bottoms and a dark rolled top edge; counted cross-stitch decals (dark bow motifs on the upper fronts, pale zig-zag 'mountains' over the hem and on the pockets) instead of raised flowers. Pattern grids and sizes are my estimates.",
+  "description": [
+   "cream collared blouse, puffy long sleeves, cuffs, 4-5 buttons",
+   "open dusty-rose boucle vest, dark embroidered motifs, patch pockets, wooden buttons",
+   "sage felted bloomer shorts, gathered cuffs, 3 waist buttons",
+   "brown fleece boots, darker soles"
+  ],
+  "hide_body_faces": true,
+  "mask_margin_m": 0.015,
+  "collision": {
+   "enabled": true,
+   "offset_m": 0.002,
+   "radius_m": 0.08,
+   "falloff_m": 0.02,
+   "passes": 3
+  },
+  "max_influences": 4,
+  "defaults": {
+   "thickness_m": 0.002,
+   "ease_m": 0.008,
+   "seam_radius_m": 0.0012
+  },
+  "garments": [
+   {
+    "type": "top",
+    "name": "blouse",
+    "sleeve_length": 1.0,
+    "sleeve_puff_m": 0.0321,
+    "sleeve_puff_peak": 0.58,
+    "hem_z_m": 0.34,
+    "collar": {
+     "type": "round",
+     "width_m": 0.048,
+     "gap_m": 0.012,
+     "slope": 0.5,
+     "tip_round": 0.55,
+     "lift_m": 0.0
+    },
+    "buttons": {
+     "count": 4,
+     "radius_m": 0.0042
+    },
+    "bands": {
+     "cuff": true,
+     "cuff_radius_m": 0.0042
+    },
+    "material": {
+     "preset": "brushed cotton/3",
+     "base_color_srgb": [
+      214,
+      210,
+      210
+     ],
+     "reference_size_m": 0.3
+    },
+    "materials": {
+     "buttons": {
+      "preset": "buttons/plastic",
+      "base_color_srgb": [
+       226,
+       220,
+       210
+      ],
+      "reference_size_m": 0.02
+     }
+    },
+    "edge_finish": "rounded",
+    "drape": {
+     "enabled": true,
+     "fabric": "cotton",
+     "gather": 0.3,
+     "gravity": 0.4,
+     "overrides": {
+      "bending": 4.0
+     },
+     "pin": [
+      "edges",
+      "volume"
+     ],
+     "edge_band_m": 0.004,
+     "volume_band_m": 0.003,
+     "smooth": 3,
+     "seed": 34
+    },
+    "clean_fibres": [
+     "collar"
+    ],
+    "collar_clear": {
+     "over": [
+      "vest"
+     ],
+     "gap_m": 0.008,
+     "smooth": 20,
+     "max_lift_m": 0.02
+    },
+    "armhole": "closed",
+    "sleeve_start": 0.0,
+    "collar_seat": {
+     "over": [
+      "vest"
+     ],
+     "gap_m": 0.0015,
+     "over_gap_m": 0.004,
+     "max_droop_deg": 80,
+     "bend_deg": 30,
+     "smooth": 4,
+     "step_deg": 6
+    }
+   },
+   {
+    "type": "vest",
+    "name": "vest",
+    "ease_m": 0.03,
+    "hem_z_m": 0.34,
+    "open_front_m": 0.024,
+    "pockets": {
+     "shape": "patch",
+     "width_m": 0.025,
+     "height_m": 0.026,
+     "depth_m": 0.004,
+     "above_hem_m": 0.04,
+     "corner": 0.55,
+     "top_roll_m": 0.0042,
+     "inset_m": 0.012
+    },
+    "bands": {
+     "edge_roll_m": 0.005
+    },
+    "embroidery": {
+     "size_m": 0.045,
+     "relief_m": 0.0025,
+     "petals": 5,
+     "leaves": 2,
+     "motifs": [
+      {
+       "u": 0.55,
+       "v": 0.74,
+       "style": "cross_stitch",
+       "pattern": [
+        "x.......x",
+        "xx.....xx",
+        "xxx...xxx",
+        ".xxxoxxx.",
+        "..xooox..",
+        ".xxxoxxx.",
+        "xxx...xxx",
+        "xx.....xx",
+        "x.......x"
+       ],
+       "stitch_m": 0.0062
+      },
+      {
+       "u": -0.55,
+       "v": 0.74,
+       "style": "cross_stitch",
+       "pattern": [
+        "x.......x",
+        "xx.....xx",
+        "xxx...xxx",
+        ".xxxoxxx.",
+        "..xooox..",
+        ".xxxoxxx.",
+        "xxx...xxx",
+        "xx.....xx",
+        "x.......x"
+       ],
+       "stitch_m": 0.0062
+      },
+      {
+       "u": 0.6,
+       "v": 0.08,
+       "style": "cross_stitch",
+       "pattern": [
+        "......o.......o......",
+        ".....ooo.....ooo.....",
+        "....oo.oo...oo.oo....",
+        "...oo...oo.oo...oo...",
+        "..oo.....ooo.....oo..",
+        ".oo.......o.......oo."
+       ],
+       "stitch_m": 0.0042
+      },
+      {
+       "u": -0.6,
+       "v": 0.08,
+       "style": "cross_stitch",
+       "pattern": [
+        "......o.......o......",
+        ".....ooo.....ooo.....",
+        "....oo.oo...oo.oo....",
+        "...oo...oo.oo...oo...",
+        "..oo.....ooo.....oo..",
+        ".oo.......o.......oo."
+       ],
+       "stitch_m": 0.0042
+      },
+      {
+       "u": 0.0,
+       "v": 0.45,
+       "target": "pocket.L",
+       "style": "cross_stitch",
+       "pattern": [
+        "....oo.oo...oo.oo....",
+        "...oo...oo.oo...oo...",
+        "..oo.....ooo.....oo..",
+        ".oo.......o.......oo."
+       ],
+       "stitch_m": 0.003
+      },
+      {
+       "u": 0.0,
+       "v": 0.45,
+       "target": "pocket.R",
+       "style": "cross_stitch",
+       "pattern": [
+        "....oo.oo...oo.oo....",
+        "...oo...oo.oo...oo...",
+        "..oo.....ooo.....oo..",
+        ".oo.......o.......oo."
+       ],
+       "stitch_m": 0.003
+      }
+     ],
+     "material": {
+      "preset": "felt",
+      "base_color_srgb": [
+       58,
+       32,
+       38
+      ],
+      "reference_size_m": 0.05
+     },
+     "accent_material": {
+      "preset": "wool yarn",
+      "base_color_srgb": [
+       196,
+       186,
+       176
+      ],
+      "reference_size_m": 0.05
+     }
+    },
+    "material": {
+     "preset": "vest felt/3",
+     "base_color_srgb": [
+      118,
+      82,
+      80
+     ],
+     "reference_size_m": 0.3
+    },
+    "shoulder_width": 0.9,
+    "buttons": {
+     "count": 4,
+     "placement": "edge",
+     "side": "left",
+     "radius_m": 0.0055,
+     "v0": 0.62
+    },
+    "materials": {
+     "buttons": {
+      "preset": "buttons/plastic",
+      "base_color_srgb": [
+       150,
+       92,
+       62
+      ],
+      "reference_size_m": 0.02
+     },
+     "pocket_edge": {
+      "preset": "felt",
+      "base_color_srgb": [
+       58,
+       32,
+       38
+      ],
+      "reference_size_m": 0.05
+     }
+    },
+    "edge_finish": "rounded",
+    "drape": {
+     "enabled": true,
+     "fabric": "felt",
+     "pin": [
+      "top"
+     ],
+     "top_band_m": 0.06,
+     "gravity": 0.6,
+     "overrides": {
+      "bending": 15.0
+     },
+     "seed": 34
+    },
+    "correctives": {
+     "arm_weights": {
+      "cap": 0.2
+     },
+     "reach": {
+      "deg": -75.0,
+      "strength": 0.0,
+      "over": [
+       "blouse"
+      ],
+      "over_gap_m": 0.003
+     }
+    },
+    "clean_fibres": [
+     "edge",
+     "pocket_edge"
+    ]
+   },
+   {
+    "type": "shorts",
+    "name": "shorts",
+    "length": 0.24,
+    "ease_m": 0.013,
+    "puff_m": 0.038,
+    "puff_inner": 0.35,
+    "cuff": true,
+    "bands": {
+     "waist": true,
+     "cuff": true,
+     "cuff_radius_m": 0.0045
+    },
+    "material": {
+     "preset": "brushed cotton/3",
+     "base_color_srgb": [
+      110,
+      114,
+      103
+     ],
+     "reference_size_m": 0.3
+    },
+    "waist_z_m": 0.41,
+    "crotch": {
+     "type": "gusset",
+     "depth": 0.25
+    },
+    "buttons": {
+     "count": 3,
+     "placement": "waistband",
+     "radius_m": 0.0045,
+     "spread": 0.35
+    },
+    "materials": {
+     "buttons": {
+      "preset": "buttons/plastic",
+      "base_color_srgb": [
+       150,
+       92,
+       62
+      ],
+      "reference_size_m": 0.02
+     }
+    },
+    "edge_finish": "rounded",
+    "drape": {
+     "enabled": true,
+     "fabric": "felt",
+     "gather": 0.35,
+     "gravity": 0.5,
+     "overrides": {
+      "bending": 2.0
+     },
+     "pin": [
+      "edges",
+      "volume"
+     ],
+     "edge_band_m": 0.004,
+     "volume_band_m": 0.003,
+     "smooth": 2,
+     "seed": 34
+    },
+    "leg_split": {
+     "amount": 0.8,
+     "start": 0.12,
+     "crotch_lift": 0.0,
+     "arch_width": 0.7,
+     "arch_power": 1.0
+    },
+    "hem_break": {
+     "height_m": 0.045,
+     "flare_m": 0.0,
+     "folds": 0,
+     "fold_depth_m": 0.0,
+     "front_drop_m": 0.0,
+     "pleats": 18,
+     "pleat_depth_m": 0.0035
+    },
+    "cuff_gather": {
+     "height_m": 0.09,
+     "ease_m": 0.002,
+     "pleats": 10,
+     "pleat_depth_m": 0.004,
+     "centre_m": 0.03
+    }
+   },
+   {
+    "type": "boots",
+    "name": "boots",
+    "height": 0.45,
+    "ease_m": 0.022,
+    "cuff": true,
+    "bands": {
+     "cuff": true,
+     "cuff_radius_m": 0.009
+    },
+    "sole": {
+     "thickness_m": 0.008,
+     "width_m": 0.004
+    },
+    "material": {
+     "preset": "boot fleece",
+     "base_color_srgb": [
+      132,
+      88,
+      68
+     ],
+     "reference_size_m": 0.15,
+     "overrides": {
+      "surface": {
+       "sheen_weight": 0.25
+      }
+     }
+    },
+    "materials": {
+     "band": {
+      "preset": "cuff fleece/3",
+      "base_color_srgb": [
+       240,
+       222,
+       196
+      ],
+      "reference_size_m": 0.15
+     },
+     "sole": {
+      "preset": "felt",
+      "base_color_srgb": [
+       78,
+       52,
+       42
+      ],
+      "reference_size_m": 0.15
+     }
+    },
+    "shaft_width_m": 0.012,
+    "toe_volume_m": 0.014,
+    "edge_finish": "rounded",
+    "cuff_roll": {
+     "height_m": 0.032,
+     "thickness_m": 0.009,
+     "inner_m": 0.014,
+     "lumps": 0.2
+    }
+   }
+  ]
+ },
+ "accessories": {
+  "generator": "accessories/1",
+  "items": [
+   {
+    "type": "glasses/1",
+    "name": "glasses",
+    "rim": {
+     "radius_eye_spacing": 0.433,
+     "aspect": 1.0,
+     "shape_n": 2.0,
+     "offset_up_m": 0.006,
+     "eye_clearance_m": 0.004,
+     "skin_clearance_m": 0.003,
+     "wrap_deg": 6,
+     "segments": 64
+    },
+    "wire_radius_m": 0.0016,
+    "bridge": {
+     "lift_m": 0.003,
+     "forward_m": 0.001
+    },
+    "temples": {
+     "enabled": true,
+     "skin_offset_m": 0.004,
+     "past_ear_m": 0.012,
+     "above_ear_m": 0.022,
+     "drop_m": 0.008
+    },
+    "lens": {
+     "enabled": true,
+     "alpha": 0.05
+    },
+    "material": {
+     "srgb": [
+      137,
+      85,
+      69
+     ],
+     "roughness": 0.3,
+     "metallic": 0.5
+    },
+    "provenance": "rim radius / eye spacing 21/48.5 = 0.433, rim centre 2.5 px (6 mm) above the eye line (landmarks.json); frame colour #30 (color_targets.json glasses_frame)"
+   },
+   "hair flowers (planned, M4)",
+   "hair band (planned, M4)"
+  ]
+ },
+ "rig": {
+  "generator": "rigify_human/1",
+  "head_bone": "DEF-spine.006",
+  "chest_bone": "DEF-spine.003",
+  "max_influences": 4,
+  "optional_roles": [
+   "toe.L",
+   "toe.R"
+  ],
+  "weight_rules": {
+   "skin": {
+    "deny_prefixes": [
+     "DEF-f_",
+     "DEF-thumb",
+     "DEF-palm",
+     "DEF-eye"
+    ]
+   },
+   "hand": {
+    "sided": true,
+    "allow_prefixes": [
+     "DEF-forearm",
+     "DEF-hand",
+     "DEF-f_",
+     "DEF-thumb",
+     "DEF-palm"
+    ]
+   }
+  },
+  "weight_smooth": {
+   "skin": {
+    "factor": 0.5,
+    "repeat": 6
+   }
+  }
+ },
+ "materials": {
+  "target_colors_srgb": {
+   "skin": [
+    202,
+    176,
+    169
+   ],
+   "hair": [
+    86,
+    54,
+    44
+   ],
+   "vest": [
+    116,
+    80,
+    80
+   ],
+   "shorts": [
+    106,
+    109,
+    101
+   ],
+   "boots": [
+    92,
+    56,
+    41
+   ],
+   "shirt": [
+    203,
+    193,
+    190
+   ],
+   "vest_garment": [
+    110,
+    76,
+    74
+   ],
+   "shorts_garment": [
+    99,
+    107,
+    100
+   ],
+   "boots_garment": [
+    111,
+    77,
+    63
+   ],
+   "flower": [
+    160,
+    115,
+    124
+   ],
+   "band": [
+    115,
+    130,
+    135
+   ],
+   "glasses_frame": [
+    137,
+    85,
+    69
+   ],
+   "flower_centre": [
+    214,
+    176,
+    104
+   ]
+  },
+  "target_source": "references/color_targets.json",
+  "albedo_srgb": {
+   "skin": [
+    238,
+    202,
+    184
+   ]
+  },
+  "assignments": {
+   "skin": {
+    "preset": "skin-felt/3",
+    "base_color_srgb": [
+     238,
+     202,
+     184
+    ],
+    "reference_size_m": 0.29278
+   },
+   "glasses": {
+    "preset": "buttons/plastic",
+    "base_color_srgb": [
+     137,
+     85,
+     69
+    ],
+    "reference_size_m": 0.11958
+   },
+   "glasses_lens": {
+    "preset": "glasses/acrylic",
+    "base_color_srgb": [
+     238,
+     244,
+     246
+    ],
+    "reference_size_m": 0.11958
+   },
+   "hair": {
+    "preset": "felt hair",
+    "base_color_srgb": [
+     100,
+     64,
+     47
+    ],
+    "reference_size_m": 0.29278,
+    "source": "reference hair medium warm brown (color_targets hair 86,54,44 read too red under the felt sheen/saturation compensation; T-049)",
+    "overrides": {
+     "surface": {
+      "saturation_compensation": 1.0,
+      "sheen_weight": 0.15,
+      "sheen_roughness": 0.6
+     },
+     "nap": {
+      "fibre_gloss": 0.1,
+      "value_gain": 0.25,
+      "sheen_gain": 0.3
+     },
+     "fibres": {
+      "color_variation": 0.35,
+      "root_transparency": 0.2,
+      "tip_transparency": 0.6
+     }
+    }
+   },
+   "hair_band": {
+    "preset": "felt",
+    "base_color_srgb": [
+     115,
+     130,
+     135
+    ],
+    "reference_size_m": 0.12
+   },
+   "hair_flower": {
+    "preset": "felt",
+    "base_color_srgb": [
+     198,
+     130,
+     138
+    ],
+    "reference_size_m": 0.06,
+    "source": "T-016 round 2: sheet30_front flower median (195, 134, 132), pushed slightly pinker"
+   },
+   "hair_flower_centre": {
+    "preset": "felt",
+    "base_color_srgb": [
+     214,
+     176,
+     104
+    ],
+    "reference_size_m": 0.06
+   }
+  }
+ },
+ "fur": [],
+ "animation": {
+  "rest_pose": "A-pose",
+  "controls": "Rigify (FK/IK arms and legs, fingers, eye targets)",
+  "interchange": [
+   "glTF 2.0",
+   "Plush Studio engine package (humanoid_rigify)"
+  ],
+  "not_carried_by_gltf": [
+   "fur curves"
+  ],
+  "personality": {
+   "profile": "girl_auburn_bun_glasses",
+   "profile_version": "1.0.0",
+   "path": "content/personality/girl_auburn_bun_glasses.json",
+   "note": "T-053 personality profile referenced by this version (scenes opt in with \"personality\": \"girl_auburn_bun_glasses\")"
+  }
+ },
+ "components": {
+  "body": [
+   "body_skin",
+   "hand."
+  ],
+  "face": [
+   "eye.",
+   "lid_",
+   "lash.",
+   "brow.",
+   "mouth",
+   "ear."
+  ],
+  "accessories": [
+   "glasses"
+  ],
+  "rig": [
+   "rig_"
+  ],
+  "landmarks": [
+   "LM_"
+  ],
+  "hair": [
+   "hair_"
+  ],
+  "clothing": [
+   "garment."
+  ]
+ },
+ "generators": {
+  "body": "body_generic/2",
+  "face": "face_generic/3",
+  "groom": "groom/4",
+  "garment": "garment/3",
+  "accessories": "accessories/1",
+  "rig": "rigify_human/1",
+  "materials": "presets/3",
+  "exporter": "export/4"
+ },
+ "metadata": {
+  "spec_version": "0.14.0",
+  "status": "T-155: published with tools/version_switch.py --publish-only as a CANDIDATE; NOT approved, not current (current stays 0.13.0)",
+  "parent_versions": [
+   "0.13.0"
+  ],
+  "sources": {
+   "derived_from": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.13.0.spec.json",
+   "layers": [
+    "docs/evaluation/characters/T-118/candidates/girl_auburn_bun_glasses.hair_r5.override.json",
+    "docs/evaluation/characters/T-119/girl_auburn_bun_glasses.T-119.override.json",
+    "docs/evaluation/characters/T-121/hands_r2.override.json"
+   ],
+   "composed_by": "docs/evaluation/characters/T-155/make_specs.py"
+  },
+  "owner_decisions": "docs/process/OWNER_DECISIONS.md 2026-11-20 ~06:40Z item 4: publish boy 2.3.0, girl 0.14.0 and third character 0.1.0 as CANDIDATES",
+  "parent_metadata_owner_decisions": "docs/process/OWNER_DECISIONS.md 2026-11-18: T-092 approved ~19:20Z; T-093 and T-089 approved ~22:35Z; Phase D approved ~22:50Z; standing approval ~23:10Z (T-091, T-089b, T-093b merged by Supervisor review; T-094 publishes, the owner approves before current)"
+ }
+}

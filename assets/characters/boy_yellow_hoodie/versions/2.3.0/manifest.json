@@ -1,0 +1,52 @@
+{
+ "character_id": "boy_yellow_hoodie",
+ "version": "2.3.0",
+ "parent": "2.2.0",
+ "created": "2026-11-20T06:52:31+00:00",
+ "notes": "boy_yellow_hoodie 2.3.0 (T-155): CANDIDATE, not current; spec assets/characters/boy_yellow_hoodie/spec/candidates/T-155/boy_yellow_hoodie.2.3.0.spec.json (composed by docs/evaluation/characters/T-155/make_specs.py). Owner decision docs/process/OWNER_DECISIONS.md 2026-11-20 ~06:40Z item 4.",
+ "spec_sha256": "ae6f02d14c15fa002bc7bdefe6c5e0e28ff832d3f50dd260e0b0c718fd5c9307",
+ "spec_version": "2.3.0",
+ "build": "charsys/1+body_generic/1",
+ "blender": "5.3.0",
+ "identity_changes": [
+  "hair",
+  "clothing",
+  "materials"
+ ],
+ "identity_change_approved_by": "owner, docs/process/OWNER_DECISIONS.md 2026-11-19 ~15:10Z (T-132 hair and garment sections) and 2026-11-20 ~06:40Z item 4",
+ "files": {
+  "boy_yellow_hoodie_master.blend": {
+   "sha256": "9ec2da2c4d2447d86fe4214d22b4f914baaec1bad25b5785fb0e0121bce03616",
+   "bytes": 35156614
+  },
+  "spec.json": {
+   "sha256": "c981cd03d99dfc657950fdcee3ed595d3579414d5b589b8454b914977258fb81",
+   "bytes": 36364
+  },
+  "components.json": {
+   "sha256": "7ad7d0ce584779e29fa03051c8999d3ddbb665fc2e34c9802dbd666c2dc4a607",
+   "bytes": 31598
+  },
+  "animation_compat.json": {
+   "sha256": "a1c66f606d7edb7430e0aef660271016693e9c7f37ce3b9fbd7681452c9eb0c8",
+   "bytes": 13345
+  },
+  "build_report.json": {
+   "sha256": "0c0b4d5153b4e27fb801b6b4b634f5e4c0f4de238ad8f31781a82284f3905eeb",
+   "bytes": 44945
+  },
+  "spec.resolved.json": {
+   "sha256": "2cefa40be1a67888d00ec03674335d53620865ba0f3b8776d7e8d9146d791b8c",
+   "bytes": 37000
+  }
+ },
+ "rig": {
+  "rigify_bones": 465,
+  "deform_bones": 128,
+  "unweighted_after_cleanup": 0
+ },
+ "spec_resolved": "spec.resolved.json is the build's fitted spec (body_generic writes fitted values); spec.json is the input spec it was built from (hash = spec_sha256)",
+ "not_stored": {
+  "boy_yellow_hoodie.glb": "not needed for reuse: shots link the master and engine packages are exported from it (run_shot.py); reproducible from the master"
+ }
+}

@@ -1,0 +1,48 @@
+{
+ "character_id": "girl_white_hair_blue_dress",
+ "version": "0.1.0",
+ "parent": null,
+ "created": "2026-11-20T06:52:31+00:00",
+ "notes": "girl_white_hair_blue_dress 0.1.0 (T-155): CANDIDATE, not current; spec assets/characters/girl_white_hair_blue_dress/spec/candidates/T-155/girl_white_hair_blue_dress.0.1.0.spec.json (composed by docs/evaluation/characters/T-155/make_specs.py). Owner decision docs/process/OWNER_DECISIONS.md 2026-11-20 ~06:40Z item 4.",
+ "spec_sha256": "ee959130f34591473bf1a7b0c1f68fdecef4966369b996b201e3615f5842746c",
+ "spec_version": "0.1.0",
+ "build": "charsys/1+body_generic/1",
+ "blender": "5.3.0",
+ "identity_changes": [],
+ "identity_change_approved_by": null,
+ "files": {
+  "girl_white_hair_blue_dress_master.blend": {
+   "sha256": "a3d4ad892915b5047bba1f21eec687b93d94ccdeb5876fee3d6fa9ced776bb02",
+   "bytes": 28924007
+  },
+  "spec.json": {
+   "sha256": "d3b542458d7e3ace85a38b13cd37b4dab61be848c6b71034acdb465a7cd699e3",
+   "bytes": 43337
+  },
+  "components.json": {
+   "sha256": "3176da84a27934e2346c0d6eea1b6d8d826688158c4bb634571ef3e140bf0f3a",
+   "bytes": 27123
+  },
+  "animation_compat.json": {
+   "sha256": "ea3047dbf28860108106332aa42110c7b0baa542f738b2b44d453a7307e58d55",
+   "bytes": 16971
+  },
+  "build_report.json": {
+   "sha256": "492356cf68790227a3e1dcd7dffd2d65aa150f4c3070e69271a54a548d33e7fd",
+   "bytes": 36784
+  },
+  "spec.resolved.json": {
+   "sha256": "ae0fafc801af67ee4b80579b9f75fbb0c54b03125f62d263e3925e12340bfec7",
+   "bytes": 43841
+  }
+ },
+ "rig": {
+  "rigify_bones": 538,
+  "deform_bones": 201,
+  "unweighted_after_cleanup": 0
+ },
+ "spec_resolved": "spec.resolved.json is the build's fitted spec (body_generic writes fitted values); spec.json is the input spec it was built from (hash = spec_sha256)",
+ "not_stored": {
+  "girl_white_hair_blue_dress.glb": "not needed for reuse: shots link the master and engine packages are exported from it (run_shot.py); reproducible from the master"
+ }
+}
