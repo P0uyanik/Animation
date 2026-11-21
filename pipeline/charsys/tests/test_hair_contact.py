@@ -7,8 +7,8 @@ same object, groom/5 validation and lowering unchanged); the keys are validated 
 refused) and taken out of what the groom/4 path sees; the ear keep-out moves every point out of the volume by the
 margin, leaves far points alone, spreads the move over the neighbours and is deterministic; the capsule fit recovers
 a known capsule (blob and limb), honours percentile and pad, and refuses too few vertices; the round 2 keys (skin
-colliders, figure, radii, rest, blend_z) validate and are refused when malformed; chain radii and their
-cap by the rest clearance; the per-structure blend weight; skin spheres on a ball (with the mathutils
+colliders, figure, radii, rest) validate and are refused when malformed; chain radii and their
+cap by the rest clearance; skin spheres on a ball (with the mathutils
 module, otherwise skipped); the T-183 candidate override validates on the girl's current spec and changes nothing
 but hair keys."""
 import copy
@@ -199,17 +199,16 @@ def main():
     def round2():
         return {"segments": True, "anchored_gravity": True, "radii": {"percentile": 100, "floor_m": 0.006},
                 "rest": {"friction": 40, "max_swing": 12}, "figure": {"exclude": ["WGT-*", "eye*"]},
-                "blend_z": {"curtain": [0.68, 0.78]},
                 "colliders": [{"name": "skin_head", "fit": "skin", "groups": ["DEF-spine.006"], "exclude_objects": ["ear.*"],
                                "reach_m": 0.1},
                               {"name": "skin_torso", "fit": "skin", "exclude_groups": ["DEF-spine.006", "DEF-hand.*"]},
                               {"name": "skin_all", "fit": "skin"}]}
 
-    check("round 2: skin colliders, figure, radii, rest and blend_z validate",
+    check("round 2: skin colliders, figure, radii and rest validate",
           CT.validate(hair(None, {"contact": round2()})) == [], CT.validate(hair(None, {"contact": round2()})))
     check("round 2: rest may be true", CT.validate(hair(None, {"contact": dict(round2(), rest=True)})) == [])
     check("round 2: store passes the keys on (the names of what bind will do)",
-          set(CT.store(hair(None, {"contact": round2()}), [{}])) >= {"colliders", "radii", "rest", "blend_z"})
+          set(CT.store(hair(None, {"contact": round2()}), [{}])) >= {"colliders", "radii", "rest"})
 
     def bad(name, change):
         ct = round2()
@@ -225,13 +224,6 @@ def main():
     bad("rest as a number", lambda ct: ct.update(rest=1.5))
     bad("rest friction negative", lambda ct: ct.update(rest={"friction": -1}))
     bad("figure without a list", lambda ct: ct.update(figure={"exclude": "WGT-*"}))
-    bad("blend_z as a list", lambda ct: ct.update(blend_z=[0.68, 0.78]))
-    bad("blend_z upside down", lambda ct: ct.update(blend_z={"curtain": [0.78, 0.68]}))
-    bad("blend_z empty", lambda ct: ct.update(blend_z={}))
-    check("blend weight: chest below lo, head above hi, linear between",
-          [CT.blend_weight(z, 0.68, 0.78) for z in (0.5, 0.68, 0.73, 0.78, 0.9)] == [0.0, 0.0, 0.5, 1.0, 1.0]
-          or [round(CT.blend_weight(z, 0.68, 0.78), 9) for z in (0.5, 0.68, 0.73, 0.78, 0.9)] == [0.0, 0.0, 0.5, 1.0, 1.0])
-
     # chain radii: a tube of points 20 mm round a straight chain, a bulge of 35 mm at joint 2
     tube = []
     for k in range(60):

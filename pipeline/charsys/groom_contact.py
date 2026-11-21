@@ -39,9 +39,6 @@ spec.hair.dynamics.contact   {"colliders": [...], "segments": bool (default true
        the same way (a thick first segment: the lock cannot swing into the ear it starts beside).
     "rest": true | {"friction": >= 0 (40), "max_swing": >= 0 (12)}: resting contact (docs/SECONDARY_MOTION.md);
        the chains take every collider ("solid" of a collider is then without effect).
-    "blend_z": {structure pattern: [lo, hi]}: binding.blend_z for the static vertices of the matching hair objects
-       alone (below lo the chest bone, linear to the head bone at hi); the chains and every other object keep the
-       spec's binding.blend_z.
 """
 import fnmatch
 import json
@@ -58,7 +55,7 @@ SKIN_RANGE = {"spacing_m": (0.004, 0.1), "radius_m": (0.005, 0.2), "pad_m": (0.0
 FIGURE_EXCLUDE = ["garment.collider.*", "WGT-*", "eye*", "brow*", "lash*", "lid*", "mouth*", "glasses*"]
 RADII_DEFAULT = {"percentile": 100.0, "floor_m": 0.006}
 REST_DEFAULT = {"friction": 40.0, "max_swing": 12.0}
-CONTACT_KEYS = {"colliders", "segments", "anchored_gravity", "structures", "figure", "radii", "rest", "blend_z"}
+CONTACT_KEYS = {"colliders", "segments", "anchored_gravity", "structures", "figure", "radii", "rest"}
 KEEPOUT_KEYS = {"objects", "margin_m", "smooth", "structures"}
 
 
@@ -184,12 +181,6 @@ def _validate_round2(ct):
             isinstance(rs, dict) and set(rs) <= {"friction", "max_swing"} and _num(rs, "friction", 0, 1000, 40)
             and _num(rs, "max_swing", 0, 1000, 12)):
         errs.append("hair.dynamics.contact.rest must be true, false or {\"friction\": 0..1000, \"max_swing\": 0..1000}")
-    bz = ct.get("blend_z")
-    if bz is not None and not (isinstance(bz, dict) and bz and all(
-            isinstance(k, str) and k and isinstance(v, list) and len(v) == 2
-            and all(isinstance(x, (int, float)) and not isinstance(x, bool) for x in v) and v[0] < v[1]
-            for k, v in bz.items())):
-        errs.append("hair.dynamics.contact.blend_z must be {structure pattern: [lo, hi]} with lo < hi")
     return errs
 
 
@@ -336,7 +327,7 @@ def store(hair_spec, objs):
     for ob in objs:
         ob[CONTACT_PROP] = data
     return {"colliders": [c["name"] for c in ct.get("colliders", [])],
-            **({k: ct[k] for k in ("radii", "rest", "blend_z") if k in ct})}
+            **({k: ct[k] for k in ("radii", "rest") if k in ct})}
 
 
 def fit_capsule(points, fit, axis=None, percentile=None, pad=0.0):
@@ -646,38 +637,6 @@ def capped_radii(radii, joints, root_colliders):
     return out
 
 
-def blend_weight(z, lo, hi):
-    """Head-bone weight of a static vertex at height z for blend_z [lo, hi] (as groom.bind); the chest takes the rest."""
-    return min(1.0, max(0.0, (z - lo) / (hi - lo)))
-
-
-def _rebind_static(objs, head_bone, chest_bone, table):
-    """contact.blend_z: the head / chest weights of the static vertices of the matching objects, by their own range."""
-    rep = {}
-    for ob in objs:
-        name = ob.name[5:] if ob.name.startswith("hair_") else ob.name
-        rng = next((table[k] for k in sorted(table) if _match(name, [k])), None)
-        if rng is None or head_bone == chest_bone:
-            continue
-        gh = ob.vertex_groups.get(head_bone) or ob.vertex_groups.new(name=head_bone)
-        gc = ob.vertex_groups.get(chest_bone) or ob.vertex_groups.new(name=chest_bone)
-        own, n = {gh.index, gc.index}, 0
-        for v in ob.data.vertices:
-            if any(g.group not in own and g.weight > 1e-6 for g in v.groups):
-                continue  # carried by a chain
-            w = blend_weight((ob.matrix_world @ v.co).z, float(rng[0]), float(rng[1]))
-            for vg, x in ((gh, w), (gc, 1.0 - w)):
-                if x > 0:
-                    vg.add([v.index], x, "REPLACE")
-                else:
-                    vg.remove([v.index])
-            n += 1
-        rep[ob.name] = {"range": [float(rng[0]), float(rng[1])], "vertices": n}
-    if not rep:
-        raise SystemExit("hair.dynamics.contact.blend_z: no hair object matches a pattern")
-    return rep
-
-
 def bind_contact(rig, objs, head_bone, chest_bone):
     """Bind step: fits the contact colliders and writes them, with the chains' "contact" blocks, into the rig's
     "ps_dynamics" (the engine exporter passes chain keys through). No-op without a stored contact spec or chains."""
@@ -690,8 +649,6 @@ def bind_contact(rig, objs, head_bone, chest_bone):
     out = {}
     dyn = json.loads(rig["ps_dynamics"])
     before = [c["name"] for c in dyn["colliders"]]
-    if ct.get("blend_z"):
-        out["blend_z"] = _rebind_static(objs, head_bone, chest_bone, ct["blend_z"])
     resolve = {"head": head_bone, "chest": chest_bone}
     mw = rig.matrix_world
     skip = set(objs)

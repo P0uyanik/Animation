@@ -32,12 +32,6 @@
       "friction": 40,
       "max_swing": 12
      },
-     "blend_z": {
-      "curtain": [
-       0.66,
-       0.78
-      ]
-     },
      "colliders": [
       {
        "name": "skin_head",
