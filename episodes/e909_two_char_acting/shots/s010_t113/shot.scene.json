@@ -311,35 +311,7 @@
    "hand": "L",
    "prop": "cup",
    "set": "b",
-   "start": 36,
-   "fingerClose": {
-    "rest": {
-     "curl": 0.25,
-     "thumb": 0.12,
-     "spread": 0.6,
-     "fingers": {
-      "index": {
-       "curl": 0.14,
-       "spread": 0.9
-      },
-      "middle": {
-       "curl": 0.22,
-       "spread": 0.6
-      },
-      "ring": {
-       "curl": 0.29,
-       "spread": 0.6
-      },
-      "little": {
-       "curl": 0.35,
-       "spread": 0.9
-      }
-     }
-    },
-    "wrap": true,
-    "grip": "natural",
-    "clear": 0.006
-   }
+   "start": 36
   },
   {
    "type": "carry",
@@ -536,38 +508,5 @@
   "head_follow": 0.3,
   "shared_hold": 30,
   "candidate": true
- },
- "x_t185": {
-  "task": "T-185",
-  "fingerClose": {
-   "rest": {
-    "curl": 0.25,
-    "thumb": 0.12,
-    "spread": 0.6,
-    "fingers": {
-     "index": {
-      "curl": 0.14,
-      "spread": 0.9
-     },
-     "middle": {
-      "curl": 0.22,
-      "spread": 0.6
-     },
-     "ring": {
-      "curl": 0.29,
-      "spread": 0.6
-     },
-     "little": {
-      "curl": 0.35,
-      "spread": 0.9
-     }
-    }
-   },
-   "wrap": true,
-   "grip": "natural",
-   "clear": 0.006
-  },
-  "on": "girl pick_up (set b) only",
-  "measured_by": "docs/evaluation/interaction/T-185/README.md"
  }
 }

@@ -9,9 +9,15 @@ Branch `t-185-claude-adopt-r3-grasp` from `integration/r5-batch1` `554e403` (now
   in the cup on the way in (default 7.8 / 4.2 / 5.0 mm palm / thumb / fingers), palm 0.0 mm held (default 9.6), thumb
   turned 36 deg from rest (default 138), thumb up. The e910 s010 bake is identical to T-171's own `r3` scene but for
   the scene path recorded in it.
-- **e909 (s010, s010_t113): r3 is on for the girl's left-hand pick-up only.** Her hand: palm 14.0 -> 0.0 mm in the cup
-  held (s010), thumb turned 174 -> 31 deg, all fingers land. Putting the keys on the pass as well would have helped the
-  boy's hold but made his release after the place worse (his hand through the cup 23 mm instead of 16): left as released.
+- **New defect found here (not in T-171's numbers, which measure the hand only): with r3 the cup moves before the
+  lift.** e910 s010: between contact f76 and the lift f82 the cup sinks 13.9 mm into the table top and slides 14 mm
+  (s010_e23 13.4 mm; s010_e1, with T-134 reachMechanics, does not). The cause is `grip: "natural"` (dropping one key
+  at a time: without it, as in T-171 `r3site`, the cup stays on the table until the lift). Engine path, out of scope here.
+- **e909 (s010, s010_t113): measured, NOT adopted** (files as on `main`). Her hand would be better (palm 14.0 -> 0.0 mm
+  in the cup held, thumb turned 174 -> 31 deg), but her cup slides up to 15.6 mm along the table in 2-frame steps
+  between contact f58 and the lift f68, and the existing test `tests/acting/test_e909_beats.py::
+  test_cup_leaves_and_comes_back_to_the_table` fails on that bake (cup leaves f58, the test pins f69). With the keys on
+  the pass as well the boy's release after the place is also worse (his hand 23 mm through the cup instead of 16).
 - **Known limits, logged by the owner, not fixed here:** with r3 the wrist bends up to 93 deg in the carry and the
   hand-over (e910; default 57); no finger press depth (the fingers reach less far round the cup than the default,
   whose palm sank into it); in e910's camera the thumb-up hand is mostly hidden behind the sleeve.
@@ -22,10 +28,7 @@ Branch `t-185-claude-adopt-r3-grasp` from `integration/r5-batch1` `554e403` (now
 | `episodes/e910_showcase/make_shot.py` | `R3` (T-171 `make_variants.py` `SEP` + `R3`, key for key) on the shot's verbs (`pick_up`, `pass`); `--derived` adds it to `s010_e1` / `s010_e23` (their own keys stay); writes the cup copy below; `x_t185` note in the shot |
 | `episodes/e910_showcase/content/assets/felt_cup.asset.json` | **a copy of `content/assets/felt_cup.asset.json` with only two values changed**: socket `grip` y 0.066 -> 0.05 and `side_a` band [0.045, 0.09] -> [0.0, 0.1] (T-171's proposed cup site, which r3 was measured on). A text copy, so `diff content/assets/felt_cup.asset.json episodes/e910_showcase/content/assets/felt_cup.asset.json` shows exactly those two lines: a later promotion to `content/assets` is that one diff. The engine (`scene.cpp` `loadSceneAsset`) and `shot_render.py` take the nearest `content/assets` above the scene, so every e910 shot uses it |
 | `episodes/e910_showcase/shots/s010*/shot.scene.json` | regenerated (`make_shot.py --derived`): `fingerClose` on pick_up and pass, `x_t185` |
-| `episodes/e909_two_char_acting/make_shot.py` | the same `R3` on the girl's `pick_up` only; `x_t185` note |
-| `episodes/e909_two_char_acting/shots/s010{,_t113}/shot.scene.json` | regenerated (`make_shot.py`, `--candidate`) |
-
-Not touched: e907 (s010_verbs is e910's run-time base; e910 adds its keys itself), e905, e911, e909 `s010_t183` (T-183).
+Not changed: e909 (measured, not adopted: see below), e907 (s010_verbs is e910's run-time base; e910 adds its keys itself), e905, e911, e909 `s010_t183` (T-183).
 
 ## e910 numbers (`measure_t171`, boy R; `measures/table_e910.md`)
 Every vertex of the hand bone and below against the cup as a capped solid; T-171 R3.3 columns (`summarize.py` = T-171's
@@ -47,9 +50,21 @@ Every vertex of the hand bone and below against the cup as a capped solid; T-171
   cup on the way in, f67-72, up to 6.5 mm at f70 (default here: 17.7 mm at f73). Better than before on every column;
   not tuned (r3 is used exactly as measured).
 
-## e909: measured before adopting (girl L, set b = site side_b; boy R receives and places)
+## The cup before the lift (bake, cup origin = its base on the table top y 0.4695)
+| shot | lowest below the table top, mm | slide on the table before the lift, mm |
+| --- | --- | --- |
+| e910 s010 default / r3 | 0.0 / **13.9** (f77-82) | 0.5 / 14.3 |
+| e910 s010_e23 r3 | **13.4** (f77-83) | |
+| e910 s010_e1 r3 (reachMechanics) | 0.0 | |
+| e909 s010 default / r3 on her pick-up | 0.0 / 0.6 | 0.3 / **15.6** (f58-68, in 2-frame steps) |
+
+One key at a time on e910 s010 (`make_variants.py` scenes, f70-90): T-171 `r2site` and `r3site` and r3 without `grip`:
+the cup stays down until f82; r3 without `clear`, without `wrap` or without `rest`: it still sinks (to 12.9 / 7.2 /
+13.9 mm). So `grip: "natural"` moves the cup with the hand between contact and lift.
+
+## e909: measured, not adopted (girl L, set b = site side_b; boy R receives and places)
 Variants (`e909_variants.py`, each with its own cup folder under `build/t185/`): `base` (as released), `r3pick` (R3 on
-her pick_up only: **adopted**), `r3keys` (R3 on pick_up, pass and place), `r3np` (pick_up and pass), `r3site` / `r3sitenp`
+her pick_up only: the candidate, not adopted), `r3keys` (R3 on pick_up, pass and place), `r3np` (pick_up and pass), `r3site` / `r3sitenp`
 (+ T-171's side_a site, his side), `r3siteb` (+ side_b centred as well, her side: not T-171's, measured for reference).
 Contact = the frame her index lands in `base`: f58 (s010), f57 (s010_t113); held = contact + 8.
 
@@ -87,14 +102,16 @@ The boy's right hand (receives at f132, places at f221), deepest in the cup, pal
 | r3sitenp | 0.0 / 0.8 / 0.2 | 25.9 / 2.5 / 22.4 |
 
 So with the key on the pass his hold is fixed (as e910's) but his hand goes deeper through the cup as it opens after the
-place, over more frames; the place key itself is not the cause (`r3np`). That is worse in one measure, so the pass stays
-as released and only her pick-up takes r3. Recommendation (not done here): the release after a place needs the same
+place, over more frames; the place key itself is not the cause (`r3np`). With r3 on her pick-up only (`r3pick`) the boy
+is unchanged, but her cup slides on the table (table above) and the e909 beat test fails: not adopted. Recommendation (not done here): the release after a place needs the same
 "clear" treatment as the way in before r3 goes on e909's pass.
 
 In s010_t113 her fingers end 1.0 mm off the cup (they do not land, index joints 5 / 6 / 5 deg) where the default lands
 them; in s010 (current cast) they land (23 / 6 / 5 deg). Everything else in her rows is better or equal.
 
-Both e909 shots after `run_shot --stages prepare` bake identically to `r3pick` (but for the recorded scene path).
+With r3 on her pick-up written into `make_shot.py`, both e909 shots baked identically to `r3pick` (but for the recorded
+scene path); the beat test (`PLUSH_E909_BAKE=<bake> python3 -m pytest tests/acting/test_e909_beats.py`): 12 pass on the
+default bake, 1 fails on the r3 bake (cup leaves f58, pinned f69). Reverted.
 
 ## Review clip and sheet
 CLIP_SHEET
@@ -105,7 +122,7 @@ CLIP_SHEET
 
 ## How to reproduce
 ```
-python3 episodes/e910_showcase/make_shot.py --derived ; python3 episodes/e909_two_char_acting/make_shot.py [--candidate]
+python3 episodes/e910_showcase/make_shot.py --derived
 python3 pipeline/production/run_shot.py --shot episodes/e910_showcase/shots/s010/shot.scene.json --blender blender --stages prepare
 B=episodes/e910_showcase/shots/s010/build
 python3 docs/evaluation/interaction/T-185/before_scene.py $B/shot.resolved.scene.json e910     # build/t185/e910/before.scene.json
