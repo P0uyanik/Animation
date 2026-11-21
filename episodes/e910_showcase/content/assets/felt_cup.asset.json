@@ -1,0 +1,61 @@
+{
+  "format": "plush.asset",
+  "version": 1,
+  "id": "prop.felt_cup",
+  "licence": "CC0-1.0",
+  "attribution": "Plush Studio project; generated from a cylinder primitive (stands on its base at the origin, axis +Y)",
+  "mesh": {
+    "primitive": "cylinder",
+    "radius": 0.04,
+    "height": 0.1,
+    "open_top": true,
+    "wall": 0.004
+  },
+  "material_presets": [
+    "felt"
+  ],
+  "scale": 1.0,
+  "sockets": {
+    "grip": {
+      "translation": [0.04, 0.05, 0.0],
+      "rotationDeg": [0.0, 0.0, -90.0],
+      "scale": [1.0, 1.0, 1.0]
+    },
+    "grip_b": {
+      "translation": [-0.04, 0.034, 0.0],
+      "rotationDeg": [0.0, 0.0, 90.0],
+      "scale": [1.0, 1.0, 1.0]
+    },
+    "place": {
+      "translation": [0.0, 0.0, 0.0],
+      "rotationDeg": [0.0, 0.0, 0.0],
+      "scale": [1.0, 1.0, 1.0]
+    },
+    "contact": {
+      "translation": [0.0, 0.1, 0.0],
+      "rotationDeg": [0.0, 0.0, 0.0],
+      "scale": [1.0, 1.0, 1.0]
+    }
+  },
+  "collision": {
+    "type": "capsule",
+    "radius": 0.04,
+    "height": 0.1
+  },
+  "affordances": {
+    "format": "plush.affordances", "version": 1,
+    "size_class": "small", "weight_class": "light", "mass_kg": 0.05, "hands": "one",
+    "pivot": "place",
+    "upright": {"axis": [0, 1, 0], "max_tilt_deg": 20},
+    "grasp_sites": [
+      {"id": "side_a", "socket": "grip",   "hand": "any", "shape": "wrap", "turnable": true,
+       "fingers": {"thumb": "opposed", "band": [0.0, 0.1]}},
+      {"id": "side_b", "socket": "grip_b", "hand": "any", "shape": "wrap", "turnable": true,
+       "fingers": {"thumb": "opposed", "band": [0.01, 0.055]}}
+    ],
+    "grasp_sets": [{"id": "a", "sites": ["side_a"]}, {"id": "b", "sites": ["side_b"]}],
+    "handover": {"give": ["a"], "receive": ["b"]},
+    "place": {"socket": "place", "surface_normal": [0, 1, 0], "settle": "soft"},
+    "deform": {"mode": "rigid"}
+  }
+}

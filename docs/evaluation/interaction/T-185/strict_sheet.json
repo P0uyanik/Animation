@@ -1,0 +1,24 @@
+{
+ "title": "T-185 e910 s010 pick-up, strict cam: before | r3",
+ "columns": [
+  {
+   "label": "before (main)",
+   "dir": "../../../../build/t185/e910/blend_before/views"
+  },
+  {
+   "label": "r3; cup dips f77-82",
+   "dir": "../../../../build/t185/e910/blend_after/views"
+  }
+ ],
+ "frames": [
+  64,
+  70,
+  74,
+  76,
+  80,
+  84
+ ],
+ "pattern": "v_hi_f{frame:04d}.png",
+ "out": "e910_strict_pickup.jpg",
+ "max_px": 1024
+}
