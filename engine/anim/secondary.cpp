@@ -613,8 +613,25 @@ void SpringChainSolver::step(State& s, double dtd, const std::vector<mat4>& g) c
                 c2 = closestOnSegment(c1, sh.a, sh.b);
               } else {
                 closestSegments(p[k - 1], p[k], sh.a, sh.b, sp, c1, c2);
+                if (!ch.radii.empty()) {
+                  // contact.radii: a tapered capsule touches the collider nearer to its thick end than its axis
+                  // does: by h m / sqrt(1 - m^2) along the axis (h = distance of the axis, m = radius change per length)
+                  const float m = (ch.radii[k] - ch.radii[k - 1]) / ch.length[k - 1];
+                  if (m != 0.0f && std::abs(m) < 0.95f) {
+                    sp = std::clamp(sp + glm::distance(c1, c2) * m / (ch.length[k - 1] * std::sqrt(1.0f - m * m)), 0.0f, 1.0f);
+                    c1 = glm::mix(p[k - 1], p[k], sp);
+                    c2 = closestOnSegment(c1, sh.a, sh.b);
+                  }
+                }
               }
-              if (sp < segMin) continue;
+              if (sp < segMin) {
+                // a contact next to the first joint is that joint's own test; a tapered segment whose thick end is
+                // there is tested at its middle instead (the joint's test does not cover the taper)
+                if (ch.restContact || ch.radii.empty() || ch.radii[k - 1] <= ch.radii[k]) continue;
+                sp = 0.5f;
+                c1 = 0.5f * (p[k - 1] + p[k]);
+                c2 = closestOnSegment(c1, sh.a, sh.b);
+              }
               // contact.radii: a tapered capsule, its radius at the contact
               const float want = sh.r + (ch.radii.empty() ? ch.p.radius : glm::mix(ch.radii[k - 1], ch.radii[k], sp));
               float minD = want;
