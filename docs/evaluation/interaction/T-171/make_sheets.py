@@ -3,7 +3,7 @@
 box of the 1280x720 shot-camera frame for every column, enlarged 3x with nearest-neighbour (what the shot shows).
 
 python3 make_sheets.py <build dir> <out dir> --cols base:"current default" r2s:"T-171 opt-in" ... \
-    --frames 60,68,72,75,77,79,82,100 [--ref docs/references/video_paperboat.mp4]
+    --frames 64,68,72,74,76,78,80,82 --crop x y w h --rest-crop x y w h [--ref docs/references/video_paperboat.mp4]
 """
 import argparse
 import os
@@ -65,6 +65,7 @@ def main():
     ap.add_argument("--cols", nargs="+", required=True, help="variant:label (variant dir = <build>/t171_<variant>)")
     ap.add_argument("--frames", required=True)
     ap.add_argument("--crop", type=int, nargs=4, default=None, help="shot-size crop box x y w h in the 1280x720 frame")
+    ap.add_argument("--rest-crop", type=int, nargs=4, default=None, help="the same for the resting hand (f44)")
     ap.add_argument("--ref", default=None)
     ap.add_argument("--tile-w", type=int, default=400)
     a = ap.parse_args()
@@ -76,27 +77,29 @@ def main():
         d = os.path.join(a.build, "t171_site", "t171_r2site") if variant == "r2site" else os.path.join(a.build, f"t171_{variant}")
         return Image.open(os.path.join(d, "views", f"{tag}_{name}_f{f:04d}.png")).convert("RGB")
 
-    for name in ("close", "side"):
+    def tiles(view_name, frames_, w):
         rows = []
-        for f in frames:
+        for f in frames_:
             row = []
             for v, text in cols:
-                im = view(v, "close", name, f)
-                s = a.tile_w / im.width
-                row.append(label(im.resize((a.tile_w, round(im.height * s)), Image.LANCZOS), f"f{f}  {text}"))
+                im = view(v, "v", view_name, f)
+                row.append(label(im.resize((w, round(im.height * w / im.width)), Image.LANCZOS), f"f{f}  {text}"))
             rows.append(row)
-        grid(rows, os.path.join(a.out, f"strict_{name}.jpg"), f"T-171 hands round 2 - e910 s010 boy R, camera '{name}', one frame per row, tiles scaled only")
+        return rows
+
+    head = "T-171 hands round 2 - e910 s010 boy R - one frame per row, same camera, tiles scaled only - "
+    grid(tiles("left", frames, a.tile_w), os.path.join(a.out, "strict_reach_close.jpg"), head + "camera 'left' (fingers on the cup)")
+    grid(tiles("close", [70, 76, 78, 81], a.tile_w) + tiles("rest", [44], a.tile_w), os.path.join(a.out, "strict_back_rest.jpg"),
+         head + "camera 'close' (back of the hand), last row: the hand at rest f44")
     if a.crop:
-        x, y, w, h = a.crop
         rows = []
-        for f in frames:
+        for f, (x, y, w, h) in ((44, a.rest_crop), (70, a.crop), (76, a.crop), (81, a.crop)):
             row = []
             for v, text in cols:
-                im = view(v, "shot", "shot", f).crop((x, y, x + w, y + h)).resize((w * 3, h * 3), Image.NEAREST)
+                im = view(v, "v", "shot", f).crop((x, y, x + w, y + h)).resize((w * 3, h * 3), Image.NEAREST)
                 row.append(label(im, f"f{f}  {text}"))
             rows.append(row)
-        grid(rows, os.path.join(a.out, "shot_size.jpg"),
-             f"T-171 shot size: {w}x{h} px of the 1280x720 shot camera, 3x nearest (same box in every tile)")
+        grid(rows, os.path.join(a.out, "shot_size.jpg"), "T-171 shot size: a pixel box of the 1280x720 shot camera, 3x nearest (same box across a row)")
     if a.ref:
         # Reference-matched reach: the boy's hand comes in over the paper (video_paperboat.mp4, 1.95 s on, every frame).
         refs = ref_frames(a.ref, 1.95, 10, 1, (500, 180, 354, 266))
