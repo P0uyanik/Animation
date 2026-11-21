@@ -1,0 +1,235 @@
+{
+ "bake": "../../../tmp/claude-0/-home-user-animation/9502ea01-58ad-577d-bb73-eaeb9cf0cf96/scratchpad/bake.json",
+ "scene": "docs/evaluation/animation/T-175/shots/review/shot.scene.json",
+ "rows": [
+  {
+   "character": "boy",
+   "clip": "cmu_walk",
+   "foot": "foot.L",
+   "plants": 4,
+   "planted_frames": 24,
+   "slide_mm": 1.05,
+   "vertical_mm": 1.3,
+   "height_mm": [
+    0.02,
+    1.92
+   ],
+   "sole_mm": [
+    0.03,
+    0.03
+   ],
+   "sole_low_mm": -0.09
+  },
+  {
+   "character": "boy",
+   "clip": "cmu_walk",
+   "foot": "foot.R",
+   "plants": 4,
+   "planted_frames": 24,
+   "slide_mm": 1.42,
+   "vertical_mm": 0.84,
+   "height_mm": [
+    0.0,
+    1.27
+   ],
+   "sole_mm": [
+    0.03,
+    0.03
+   ],
+   "sole_low_mm": -0.04
+  },
+  {
+   "character": "boy",
+   "clip": "cmu_sit_down",
+   "foot": "foot.L",
+   "plants": 1,
+   "planted_frames": 55,
+   "slide_mm": 0.0,
+   "vertical_mm": 0.0,
+   "height_mm": [
+    -0.0,
+    0.0
+   ],
+   "sole_mm": [
+    0.03,
+    0.03
+   ],
+   "sole_low_mm": 0.03
+  },
+  {
+   "character": "boy",
+   "clip": "cmu_sit_down",
+   "foot": "foot.R",
+   "plants": 1,
+   "planted_frames": 55,
+   "slide_mm": 0.0,
+   "vertical_mm": 0.0,
+   "height_mm": [
+    -0.0,
+    0.0
+   ],
+   "sole_mm": [
+    0.03,
+    0.03
+   ],
+   "sole_low_mm": 0.03
+  },
+  {
+   "character": "boy",
+   "clip": "cmu_stand_up",
+   "foot": "foot.L",
+   "plants": 1,
+   "planted_frames": 25,
+   "slide_mm": 0.0,
+   "vertical_mm": 0.0,
+   "height_mm": [
+    -0.0,
+    0.0
+   ],
+   "sole_mm": [
+    0.03,
+    0.03
+   ],
+   "sole_low_mm": 0.03
+  },
+  {
+   "character": "boy",
+   "clip": "cmu_stand_up",
+   "foot": "foot.R",
+   "plants": 1,
+   "planted_frames": 25,
+   "slide_mm": 0.0,
+   "vertical_mm": 0.0,
+   "height_mm": [
+    -0.0,
+    0.0
+   ],
+   "sole_mm": [
+    0.03,
+    0.03
+   ],
+   "sole_low_mm": 0.03
+  },
+  {
+   "character": "girl",
+   "clip": "cmu_walk",
+   "foot": "foot.L",
+   "plants": 4,
+   "planted_frames": 24,
+   "slide_mm": 0.9,
+   "vertical_mm": 0.91,
+   "height_mm": [
+    0.0,
+    1.01
+   ],
+   "sole_mm": [
+    -0.01,
+    0.35
+   ],
+   "sole_low_mm": -0.01
+  },
+  {
+   "character": "girl",
+   "clip": "cmu_walk",
+   "foot": "foot.R",
+   "plants": 4,
+   "planted_frames": 24,
+   "slide_mm": 1.31,
+   "vertical_mm": 0.6,
+   "height_mm": [
+    -0.0,
+    0.65
+   ],
+   "sole_mm": [
+    -0.01,
+    0.25
+   ],
+   "sole_low_mm": -0.01
+  },
+  {
+   "character": "girl",
+   "clip": "cmu_sit_down",
+   "foot": "foot.L",
+   "plants": 1,
+   "planted_frames": 55,
+   "slide_mm": 0.0,
+   "vertical_mm": 0.0,
+   "height_mm": [
+    -0.0,
+    0.0
+   ],
+   "sole_mm": [
+    -0.01,
+    -0.01
+   ],
+   "sole_low_mm": -0.01
+  },
+  {
+   "character": "girl",
+   "clip": "cmu_sit_down",
+   "foot": "foot.R",
+   "plants": 1,
+   "planted_frames": 55,
+   "slide_mm": 0.0,
+   "vertical_mm": 0.0,
+   "height_mm": [
+    -0.0,
+    0.0
+   ],
+   "sole_mm": [
+    -0.01,
+    -0.01
+   ],
+   "sole_low_mm": -0.01
+  },
+  {
+   "character": "girl",
+   "clip": "cmu_stand_up",
+   "foot": "foot.L",
+   "plants": 1,
+   "planted_frames": 25,
+   "slide_mm": 0.0,
+   "vertical_mm": 0.0,
+   "height_mm": [
+    -0.0,
+    0.0
+   ],
+   "sole_mm": [
+    -0.01,
+    -0.01
+   ],
+   "sole_low_mm": -0.01
+  },
+  {
+   "character": "girl",
+   "clip": "cmu_stand_up",
+   "foot": "foot.R",
+   "plants": 1,
+   "planted_frames": 25,
+   "slide_mm": 0.0,
+   "vertical_mm": 0.0,
+   "height_mm": [
+    -0.0,
+    0.0
+   ],
+   "sole_mm": [
+    -0.01,
+    -0.01
+   ],
+   "sole_low_mm": -0.01
+  }
+ ],
+ "worst": {
+  "slide_mm": 1.42,
+  "vertical_mm": 1.3,
+  "height_mm": [
+   0.0,
+   1.92
+  ],
+  "sole_mm": [
+   -0.01,
+   0.35
+  ],
+  "sole_low_mm": -0.09
+ }
+}
