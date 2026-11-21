@@ -139,7 +139,25 @@ scene path); the beat test (`PLUSH_E909_BAKE=<bake> python3 -m pytest tests/acti
 default bake, 1 fails on the r3 bake (cup leaves f58, pinned f69). Reverted.
 
 ## Review clip and sheet
-CLIP_SHEET
+Cycles 12 spp, from `bake_blend.sh` (T-171) scenes of the before / after bakes, f58-86 (`render_views.sh`).
+| file | what |
+| --- | --- |
+| `clips/e910_pickup_f62-84_24fps.mp4`, `..._8fps.mp4` | before (released) \| after (r3), the **shot camera's own position** (0, 1.071, 1.464) aimed at the cup with lens 128 instead of 32: the shot's view of the hand enlarged 4x (a quarter-width box of the frame). Real time and 3x slow |
+| `e910_strict_pickup.jpg` (418x1024, `strict_sheet.json`, `tools/review/shot_sheet.py`) | T-171's strict camera above the boy's right side, f64 / 70 / 74 / 76 / 80 / 84, before \| after, tiles only scaled |
+
+What they show (my reading):
+- **After, shot camera:** the hand comes up beside the cup and takes it thumb up; from the shot camera almost all of it is
+  behind the sleeve (the thumb and a finger edge show at the cup's right side), as the owner logged. Before: the palm
+  pressed into the cup, thumb down, fingers across the front.
+- **Known defect, visible:** at f77-82 the cup drops into the table top (13.9 mm at f81) and shifts towards the hand,
+  then rises with the lift (clip, and the f80 row of the sheet: the cup's base is below the table edge). Section "For
+  T-186".
+- **Strict camera:** before, the hand wraps the front of the cup with the palm in it; after, the hand is behind the cup
+  with the thumb on top and the fingers round the back (only the thumb and the fingertips show from here).
+
+Known limits the owner already logged, not fixed here: wrist bend up to 93 deg in the carry / hand-over with r3 (table
+above; default 57); no finger press depth (the fingers reach about 40 deg round the cup, less than the default whose
+palm sinks in); the hand mostly hidden behind the sleeve in e910's camera.
 
 ## Tests
 - `plush_tests` (fast-dev): all pass, including the golden bake hashes (`tests/golden/interaction_hashes.json`
