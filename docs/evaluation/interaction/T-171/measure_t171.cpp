@@ -23,6 +23,8 @@
 //   turn_deg       total rotation of each digit's first bone from rest (thumb first): a thumb turned round shows here
 //   wrist_deg      the hand's rotation against the forearm from rest: [bend, twist about the forearm]
 //   thumb_up       dot(thumb side of the hand, world up): 1 = thumb up, -1 = thumb down
+// --pair <character> <L|R> <character> <L|R> <from> <to>: instead, per frame the smallest distance between the
+//   vertices of two hands (mm; "hands_apart_mm"), e.g. giver and receiver in a hand-over.
 #include <algorithm>
 #include <cstdio>
 #include <format>
@@ -47,12 +49,23 @@ int main(int argc, char** argv) {
     int from, to;
   };
   std::vector<H> hands;
+  struct Pair {
+    std::string a;
+    char sa;
+    std::string b;
+    char sb;
+    int from, to;
+  };
+  std::vector<Pair> pairs;
   std::string propName = "cup", assetPath = "content/assets/felt_cup.asset.json";
   for (int i = 2; i < argc; ++i) {
     const std::string a = argv[i];
     if (a == "--hand" && i + 4 < argc) {
       hands.push_back({argv[i + 1], argv[i + 2][0], std::stoi(argv[i + 3]), std::stoi(argv[i + 4])});
       i += 4;
+    } else if (a == "--pair" && i + 6 < argc) {
+      pairs.push_back({argv[i + 1], argv[i + 2][0], argv[i + 3], argv[i + 4][0], std::stoi(argv[i + 5]), std::stoi(argv[i + 6])});
+      i += 6;
     } else if (a == "--prop" && i + 2 < argc) {
       propName = argv[i + 1], assetPath = argv[i + 2];
       i += 2;
@@ -71,6 +84,42 @@ int main(int argc, char** argv) {
   std::cout << "{\"scene\": \"" << argv[1] << "\", \"prop_radius_mm\": " << R * 1e3 << ", \"prop_height_mm\": " << Hh * 1e3
             << ", \"frames\": [\n";
   bool first = true;
+  for (const Pair& pr : pairs) {
+    auto handVertices = [&](const std::string& who, char side, int f) {
+      size_t c = 0;
+      for (; c < ev.scene().characters.size(); ++c)
+        if (ev.scene().characters[c].name == who) break;
+      std::vector<vec3> out;
+      if (c == ev.characters().size()) return out;
+      const Skeleton& sk = ev.characters()[c].asset.skeleton;
+      const int hb = sk.find(std::string("hand.") + side);
+      std::vector<char> under(sk.bones.size(), 0);
+      if (hb >= 0) under[size_t(hb)] = 1;
+      for (size_t b = 0; b < sk.bones.size(); ++b)
+        if (sk.bones[b].parent >= 0 && under[size_t(sk.bones[b].parent)]) under[b] = 1;
+      const auto g = ev.characterGlobals(c, f);
+      for (const SkinnedMesh& m : ev.characters()[c].rig.meshes)
+        for (size_t i = 0; i < m.rest.positions.size(); ++i) {
+          int top = 0;
+          for (int j = 1; j < 4; ++j)
+            if (m.weights[i][j] > m.weights[i][top]) top = j;
+          if (!under[size_t(m.joints[i][top])]) continue;
+          vec3 q(0);
+          for (int j = 0; j < 4; ++j)
+            if (m.weights[i][j] > 0) q += m.weights[i][j] * vec3(g[size_t(m.joints[i][j])] * vec4(m.rest.positions[i] - sk.bones[size_t(m.joints[i][j])].head, 1));
+          out.push_back(q);
+        }
+      return out;
+    };
+    for (int f = pr.from; f <= pr.to; ++f) {
+      const auto A = handVertices(pr.a, pr.sa, f), B = handVertices(pr.b, pr.sb, f);
+      float d = 1e9f;
+      for (size_t i = 0; i < A.size(); i += 2)
+        for (size_t j = 0; j < B.size(); j += 2) d = std::min(d, glm::distance(A[i], B[j]));
+      std::cout << (first ? "" : ",\n") << std::format("  {{\"pair\": \"{}.{}-{}.{}\", \"frame\": {}, \"hands_apart_mm\": {:.2f}}}", pr.a, pr.sa, pr.b, pr.sb, f, d * 1e3);
+      first = false;
+    }
+  }
   for (const H& h : hands) {
     size_t c = 0;
     for (; c < ev.scene().characters.size(); ++c)
