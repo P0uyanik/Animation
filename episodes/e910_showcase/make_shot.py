@@ -22,7 +22,14 @@ fit; girl 0.13.0 = 0.12.0 + T-109 face r4 + T-113 closed fit + SmileOpen + T-115
 (groom/4) and the T-121 hands_r2 overrides. Verbs with T-051 / T-112c finger grasps (on with a timing profile).
 
 Gaze (T-120): scene "gazeLegibility" {"rangeDeg": [16, 8]} (both specs' face.eyes.gaze_range_deg), the boy
-{"headPitchDeg": 10}; every authored look lasts >= MIN_LOOK frames (lead 3 + turn 8, T-120 open point 2)."""
+{"headPitchDeg": 10}; every authored look lasts >= MIN_LOOK frames (lead 3 + turn 8, T-120 open point 2).
+
+Cup grasp (T-185, owner pick 2026-11-21 of T-171 round 3 "fixed, thumb up", variant r3): the pick-up and the pass carry
+the opt-in "fingerClose" R3 below, exactly as T-171 measured it (docs/evaluation/interaction/T-171/make_variants.py), on
+T-171's proposed cup site: this episode's own copy of the felt cup, episodes/e910_showcase/content/assets (socket grip
+at 50 mm, side_a band 0-100 mm; written here from content/assets/felt_cup.asset.json, which is unchanged). The engine
+and shot_render.py take the nearest content/assets above the scene, so every e910 shot uses the copy. The same keys go
+into the derived shots s010_e1 (T-134) and s010_e23 (T-136): `--derived` patches them in place."""
 import copy
 import json
 import os
@@ -69,9 +76,62 @@ PICK_SETTLE = 5  # e907 s010_verbs
 HER_REACH = 10  # timing.py reference: handover reach >= 10 f (the default start gave 9 f)
 CUP_YAW = -45.0  # e907: -75 (see build())
 
+# T-185: T-171 round 3 variant r3 (make_variants.py SEP + R3), key for key. rest = the separated rest hand; wrap = the
+# joint-by-joint finger wrap with the measured skin and the seated palm; grip natural = thumb up (the grasp point turns
+# about the cup's axis, the elbow is keyed); clear = the way in keeps 6 mm off the cup.
+R3_REST = {"curl": 0.25, "thumb": 0.12, "spread": 0.6,
+           "fingers": {"index": {"curl": 0.14, "spread": 0.9}, "middle": {"curl": 0.22, "spread": 0.6},
+                       "ring": {"curl": 0.29, "spread": 0.6}, "little": {"curl": 0.35, "spread": 0.9}}}
+R3 = {"rest": R3_REST, "wrap": True, "grip": "natural", "clear": 0.006}
+R3_VERBS = ("pick_up", "pass", "place")  # make_variants.py: every verb of the shot gets the key
+CUP_SRC = os.path.join(ROOT, "content", "assets", "felt_cup.asset.json")
+CUP_OUT = os.path.join(ROOT, "episodes", "e910_showcase", "content", "assets", "felt_cup.asset.json")
+CUP_SITE = {"grip_y": 0.05, "side_a_band": [0.0, 0.1]}  # T-171 proposed site (make_variants.py site_variant)
+DERIVED = [os.path.join(ROOT, "episodes", "e910_showcase", "shots", n, "shot.scene.json") for n in ("s010_e1", "s010_e23")]
+X_T185 = {"task": "T-185", "fingerClose": R3, "cup_site": CUP_SITE,
+          "cup_asset": "episodes/e910_showcase/content/assets/felt_cup.asset.json",
+          "measured_by": "docs/evaluation/interaction/T-171/README.md Round 3 (variant r3)"}
+
 
 def r4(v):
     return [round(x, 4) for x in v]
+
+
+def apply_r3(shot):
+    """T-185: the r3 cup grasp on every verb of the shot (in place)."""
+    for x in shot["actions"]:
+        if x.get("type") in R3_VERBS:
+            x["fingerClose"] = copy.deepcopy(R3)
+    shot["x_t185"] = copy.deepcopy(X_T185)
+    return shot
+
+
+def write_cup():
+    """This episode's copy of the felt cup with T-171's proposed grasp site. A text copy of the source with the two
+    values replaced (so a diff of the two files shows only them), checked against the parsed JSON."""
+    text = open(CUP_SRC, encoding="utf-8").read()
+    for a, b in (('"translation": [0.04, 0.066, 0.0]', f'"translation": [0.04, {CUP_SITE["grip_y"]}, 0.0]'),
+                 ('"band": [0.045, 0.09]', '"band": [{}, {}]'.format(*CUP_SITE["side_a_band"]))):
+        if text.count(a) != 1:
+            raise SystemExit(f"{CUP_SRC}: expected '{a}' once (the source cup changed: re-check T-171's site)")
+        text = text.replace(a, b)
+    want = json.load(open(CUP_SRC, encoding="utf-8"))
+    want["sockets"]["grip"]["translation"][1] = CUP_SITE["grip_y"]
+    next(g for g in want["affordances"]["grasp_sites"] if g["id"] == "side_a")["fingers"]["band"] = CUP_SITE["side_a_band"]
+    if json.loads(text) != want:
+        raise SystemExit("cup copy: text replacement does not give the intended asset")
+    os.makedirs(os.path.dirname(CUP_OUT), exist_ok=True)
+    with open(CUP_OUT, "w", encoding="utf-8", newline="\n") as f:
+        f.write(text)
+    return CUP_OUT
+
+
+def write(path, shot):
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, "w", encoding="utf-8", newline="\n") as f:
+        json.dump(shot, f, indent=1)
+        f.write("\n")
+    print(os.path.relpath(path, ROOT))
 
 
 def build():
@@ -147,6 +207,7 @@ def build():
     shot["actions"] = a
     shot["production"] = copy.deepcopy(base["production"])
     shot["production"]["cast"] = copy.deepcopy(CAST)
+    apply_r3(shot)
     shot["x_t117"] = {
         "task": "T-117", "derived_from": os.path.relpath(BASE, ROOT).replace(os.sep, "/"),
         "staging_from": base["x_t112b_verbs"].get("derived_from", ""), "beats_authored": B, "handover_point": meet,
@@ -162,12 +223,12 @@ def build():
 
 
 def main():
-    shot = build()
-    os.makedirs(os.path.dirname(OUT), exist_ok=True)
-    with open(OUT, "w", encoding="utf-8", newline="\n") as f:
-        json.dump(shot, f, indent=1)
-        f.write("\n")
-    print(os.path.relpath(OUT, ROOT))
+    import sys
+    print(os.path.relpath(write_cup(), ROOT))
+    write(OUT, build())
+    if "--derived" in sys.argv:  # s010_e1 / s010_e23: their own keys stay, the r3 grasp is added
+        for p in DERIVED:
+            write(p, apply_r3(json.load(open(p, encoding="utf-8"))))
 
 
 main()

@@ -370,7 +370,35 @@
    "prop": "cup",
    "set": "a",
    "start": 47,
-   "settle": 5
+   "settle": 5,
+   "fingerClose": {
+    "rest": {
+     "curl": 0.25,
+     "thumb": 0.12,
+     "spread": 0.6,
+     "fingers": {
+      "index": {
+       "curl": 0.14,
+       "spread": 0.9
+      },
+      "middle": {
+       "curl": 0.22,
+       "spread": 0.6
+      },
+      "ring": {
+       "curl": 0.29,
+       "spread": 0.6
+      },
+      "little": {
+       "curl": 0.35,
+       "spread": 0.9
+      }
+     }
+    },
+    "wrap": true,
+    "grip": "natural",
+    "clear": 0.006
+   }
   },
   {
    "type": "carry",
@@ -411,7 +439,35 @@
    "start": 100,
    "receiverStart": 104,
    "contact": 114,
-   "release": 136
+   "release": 136,
+   "fingerClose": {
+    "rest": {
+     "curl": 0.25,
+     "thumb": 0.12,
+     "spread": 0.6,
+     "fingers": {
+      "index": {
+       "curl": 0.14,
+       "spread": 0.9
+      },
+      "middle": {
+       "curl": 0.22,
+       "spread": 0.6
+      },
+      "ring": {
+       "curl": 0.29,
+       "spread": 0.6
+      },
+      "little": {
+       "curl": 0.35,
+       "spread": 0.9
+      }
+     }
+    },
+    "wrap": true,
+    "grip": "natural",
+    "clear": 0.006
+   }
   },
   {
    "type": "look",
@@ -596,5 +652,45 @@
  "x_t136": {
   "task": "T-136",
   "derived_from": "episodes/e910_showcase/shots/s010/shot.scene.json (T-117), unchanged but for the opt-in keys blinkSchedule (E2) and gazeLegibility.chain (E3)"
+ },
+ "x_t185": {
+  "task": "T-185",
+  "fingerClose": {
+   "rest": {
+    "curl": 0.25,
+    "thumb": 0.12,
+    "spread": 0.6,
+    "fingers": {
+     "index": {
+      "curl": 0.14,
+      "spread": 0.9
+     },
+     "middle": {
+      "curl": 0.22,
+      "spread": 0.6
+     },
+     "ring": {
+      "curl": 0.29,
+      "spread": 0.6
+     },
+     "little": {
+      "curl": 0.35,
+      "spread": 0.9
+     }
+    }
+   },
+   "wrap": true,
+   "grip": "natural",
+   "clear": 0.006
+  },
+  "cup_site": {
+   "grip_y": 0.05,
+   "side_a_band": [
+    0.0,
+    0.1
+   ]
+  },
+  "cup_asset": "episodes/e910_showcase/content/assets/felt_cup.asset.json",
+  "measured_by": "docs/evaluation/interaction/T-171/README.md Round 3 (variant r3)"
  }
 }
