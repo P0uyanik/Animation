@@ -104,3 +104,10 @@ old file in a docstring; it is outside the write-set and was left unchanged.
 - After stage 2, every touched test passes: hair_r4 36, hair_r5 77, hair_r6 46, v3_r2 18, v3_r3 23, hands_r2 48,
   face_r5 14, face_v3 5, face_v3b 8, face_t168 3, test_versions 131, test_asset_store_guard 33,
   test_release_rule 130, test_version_switch 96.
+- Branch gate, fast tier, run 44896882290 @18a5757: every check PASS except Guarded paths, which lacks the
+  Supervisor-Approved trailers the Supervisor adds at merge. Merge status shows FAIL only because Guarded paths failed
+  (`check_all.py`: merge status is ok only when every check is ok). The full tier is the `[full]` run after this
+  commit.
+- Local full `check_all.py` was stopped by the 30-min session limit during the Blender units, so it gave no verdict.
+  Locally, `tools/review/tests/test_recipe.py` fails because this clone is shallow (commit ab9fd4c is missing). CI
+  passes it, and T-178 does not touch it.
