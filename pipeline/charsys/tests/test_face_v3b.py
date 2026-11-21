@@ -4,7 +4,7 @@
         [--unit]   also run test_face_v3's Blender unit checks
 
 Plain checks (no Blender): every test_face_v3 plain check, with the T-089b candidates in place of the T-089 ones
-(published specs still pin face_generic/2, candidates pin face_generic/3, no character names in the shared v3 code),
+(published specs still pin face_generic/2 via the release rule (T-178), candidates pin face_generic/3, no character names in the shared v3 code),
 plus: the new socket option corner_relax_iterations defaults to 0 (opt-in; face_generic/3 builds without it are
 unchanged) and only the girl candidate sets it.
 Build checks (a master per character: --boy/--girl, else built from the published spec + T-089b candidate):

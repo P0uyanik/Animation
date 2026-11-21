@@ -5,7 +5,8 @@
 Covers: the T-079 candidate specs (docs/evaluation/characters/T-079/candidates) validate and pin groom/2; the round-3
 targets are present in the data (boy: whorl pole at the top of the head, no arched/hooked crown tufts; girl: varied
 ringlet sets and a swept fringe, four-lobe bun kept; third: blunt-tipped soft fringe); the round-1/2 candidates still
-validate; no published character spec pins groom/2 (approved versions unchanged)."""
+validate; no published character spec pins groom/2
+(approved versions unchanged) (checked by the release rule, pipeline/charsys/release_rule.py, T-178)."""
 import json
 import os
 import sys
@@ -44,11 +45,7 @@ def main():
         errs = GH.validate(c["overrides"]["hair"])
         check(f"T-079 {key}: candidate validates", not errs, errs[:3])
         check(f"T-079 {key}: candidate pins groom/2", c["overrides"]["generators"]["groom"] == "groom/2")
-        if not c["character_spec"].startswith("docs/"):
-            spec = json.load(open(os.path.join(ROOT, c["character_spec"])))
-            check(f"T-079 {key}: published spec does not pin groom/2",
-                  (spec.get("generators") or {}).get("groom") != "groom/2"
-                  and (spec.get("hair") or {}).get("generator") != "groom/2")
+        # "published spec does not pin groom/2" -> pipeline/charsys/release_rule.py (T-178)
         for task in ("T-044", "T-070"):
             old = load(task, key)
             if old is not None:

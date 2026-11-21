@@ -4,7 +4,8 @@
 
 Plain checks (no Blender):
   * face_generic_v3.py declares exactly face_generic/3; face_generic.py still declares only /1 and /2;
-  * the published boy 2.0.0 and girl 0.11.0 specs still pin face_generic/2 (no published spec changed);
+  * the published boy 2.0.0 and girl 0.11.0 specs still pin face_generic/2 (no published spec changed;
+    checked by the release rule, pipeline/charsys/release_rule.py, T-178);
   * each T-089 candidate override loads on its published spec and pins face_generic/3 (generators and face);
   * the shared v3 code names no character (no character id, no "boy"/"girl").
 Unit checks (in Blender, no build):
@@ -73,8 +74,7 @@ def plain():
     check("face_generic_v3 declares face_generic/3", declared(os.path.join(CHARSYS, "face_generic_v3.py")) == ("face_generic/3",))
     check("face_generic declares only /1 and /2", declared(os.path.join(CHARSYS, "face_generic.py")) == ("face_generic/1", "face_generic/2"))
     for who, (spec, ov) in CASES.items():
-        s, info = SPEC.load(spec)
-        check(f"published {who} spec still pins face_generic/2", info["versions"]["generators"]["face"] == "face_generic/2")
+        # "published spec still pins face_generic/2" -> pipeline/charsys/release_rule.py (T-178)
         if not os.path.exists(ov):
             check(f"{who} candidate exists", False, ov)
             continue

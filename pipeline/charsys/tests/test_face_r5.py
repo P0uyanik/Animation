@@ -3,8 +3,8 @@
     python3 pipeline/charsys/tests/test_face_r5.py [--blender <exe or tools/bpy_blender.py>]
 
 Plain checks (no Blender):
-  * the lash curve is opt-in: fit_closed_lids calls curve_closed_lash only under closed_fit["lash_curve"], and no spec
-    under assets/ sets it (default builds do not reach the new code; the mesh-hash evidence is in
+  * the lash curve is opt-in: fit_closed_lids calls curve_closed_lash only under closed_fit["lash_curve"], and only
+    versions listed in the release manifest set it (release rule, T-178; default builds do not reach the new code; the mesh-hash evidence is in
     docs/evaluation/characters/T-137/checks/);
   * no character names in face_v3/lids.py;
   * the T-137 overrides only touch their sections (F1a: face.eyes; F1b: face.eyes and hair fringe/keepout) and pin no
@@ -14,7 +14,7 @@ keys): the basis and the open key do not move, a key above the seam does not mov
 curve (middle below the ends by sag + lift, at the seam + above), at rest radius + out_m, and a negative key factor
 turns the curve over.
 
-T-156 (opt-in lid yaw, lids.upper_yaw_deg / lower_yaw_deg): plain: guarded in lid_roll, no spec under assets/ sets it,
+T-156 (opt-in lid yaw, lids.upper_yaw_deg / lower_yaw_deg): plain: guarded in lid_roll, release rule (T-178) for its use,
 the T-156 eye overrides touch face.eyes only; unit: without the key lid_roll returns what it returned before (None, or
 the roll matrix, bit for bit); with it a lid edge arc keeps its radius and its peak moves r sin(yaw) towards the outer
 corner on both sides."""
@@ -30,7 +30,6 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, "..", "..", ".."))
 EV = os.path.join(ROOT, "docs", "evaluation", "characters", "T-137")
 sys.path.insert(0, HERE)
-import test_guard_allowlist as GA  # noqa: E402
 RESULTS = []
 
 
@@ -53,39 +52,12 @@ def plain():
     check("lash curve: one call site, guarded by closed_fit['lash_curve']",
           len(calls) == 2 and 'if fit.get("lash_curve") and lash is not None' in src, str(calls))
     check("no character names in face_v3/lids.py", not re.search(r"boy_|girl_|auburn|hoodie|white_hair", src))
-    users = []
-    for base, _, files in os.walk(os.path.join(ROOT, "assets", "characters")):
-        for f in files:
-            if f.endswith(".json") and os.sep + "spec" in base + os.sep:
-                try:
-                    if _find(json.load(open(os.path.join(base, f))), "lash_curve"):
-                        users.append(os.path.relpath(os.path.join(base, f), ROOT))
-                except ValueError:
-                    pass
-    users, _allowed, aerr = GA.split(users, "lash_curve")  # T-154 owner-approved candidate allowlist
-    check("owner-approved candidate allowlist is valid (T-154)", not aerr, aerr[:3])
-    check("no spec under assets/ opts into lash_curve (except listed owner-approved candidates)", not users, str(users))
+    # "no spec opts into lash_curve unless listed" -> pipeline/charsys/release_rule.py (T-178)
     check("lid yaw: opt-in branch in lid_roll, the roll-only return unchanged",
           'if abs(yaw) > 1e-9:' in src and
           'return Matrix.Rotation(math.radians(-sx * deg), 3, "Y") if abs(deg) > 1e-9 else None' in src)
-    users = []
-    for base, _, files in os.walk(os.path.join(ROOT, "assets", "characters")):
-        for f in files:
-            if f.endswith(".json") and os.sep + "spec" in base + os.sep:
-                try:
-                    d = json.load(open(os.path.join(base, f)))
-                    if _find(d, "upper_yaw_deg") or _find(d, "lower_yaw_deg") or _find(d, "sink_m") \
-                            or _find(d, "shell_occlusion_tint") or _find(d, "closed_fill"):
-                        users.append(os.path.relpath(os.path.join(base, f), ROOT))
-                except ValueError:
-                    pass
-    users, _allowed, aerr = GA.split(users, "closed_fill")  # R3 owner allowance (2026-11-20 ~22:00Z item 2)
-    check("owner-approved candidate allowlist is valid (R3)", not aerr, aerr[:3])
-    check("no spec under assets/ opts into lid yaw, closed_fit.sink_m, shell_occlusion_tint or socket.closed_fill "
-          "(except listed owner-approved candidates)", not users, str(users))
-    neg = ["assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.98.7.6.spec.json",
-           "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.3.0.spec.json"]
-    check("negative: a non-listed spec using the T-156 lid options still fails the guard", GA.split(neg, "closed_fill")[0] == neg)
+    # "no spec uses lid yaw / sink_m / shell_occlusion_tint / closed_fill unless listed" (and its negative)
+    # -> pipeline/charsys/release_rule.py (T-178)
     check("closed_fit.sink_m: default 0, guarded, upper shell only",
           'sink = _f(fit, "sink_m", 0.0)' in src and 'if sink > 0.0 and ob is up:' in src)
     check("closed_fit.shell_occlusion_tint: guarded, the shell_subsurface call unchanged without it",

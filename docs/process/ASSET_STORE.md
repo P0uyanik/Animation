@@ -111,3 +111,15 @@ A failure after step 2 stops the run and lists what was already written; a publi
 continue by hand from the failed step (or publish a new version number). The tool only calls `asset_store.py`; the
 guard, `tools/check_assets.py` and the frozen manifest are unchanged. Tests: `tools/tests/test_version_switch.py`
 (fixture repository in a temporary folder, fake Blender tools).
+
+## Release rule for opt-in features (T-178, owner 2026-11-21 ~04:10Z)
+
+- A file under `assets/` that uses an opt-in feature (`pipeline/charsys/release_rule.py` `FEATURES`: groom/2..5,
+  face_generic/3, body.hands, lash_curve, closed_fill, t168_face) passes only when its version, read from its path, is
+  listed in `pipeline/charsys/release_manifest.json` for that feature with an owner `decision_ref` (a decision file
+  that mentions the version). Base specs and unversioned files are never exempt; a malformed manifest exempts nothing.
+- `tools/version_switch.py` writes the entry (features its files use, `--decision-ref`, `--decision`, task, date) in
+  the same run that publishes or makes the version current; the claim must cover the manifest. Both files are guarded.
+- A new opt-in feature registers one detector in `FEATURES`; it adds **no** per-feature "no spec uses X" guard test.
+- Checked by `pipeline/charsys/tests/test_release_rule.py` (gate and version_switch step 6). Unchanged: byte-immutable
+  versions, `tools/frozen_manifest.txt`, `test_asset_store_guard.py`, goldens, the decision ref for CURRENT.

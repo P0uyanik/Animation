@@ -29,6 +29,10 @@ Steps, in this order (each one only after the previous one succeeded):
                 plus every other plain-Python test that names the character (tests that need Blender are listed,
                 not run). Then: nothing outside the expected files changed (other characters, other versions,
                 other baseline entries and goldens are hashed before and after).
+  6b. release  (T-178) the version's entry in pipeline/charsys/release_manifest.json (the release rule,
+                pipeline/charsys/release_rule.py): the opt-in features its files use, with --decision-ref, --decision,
+                the task and the date; written in every mode that publishes or approves, only when the version uses an
+                opt-in feature (then it is a predicted write, so the claim must cover the manifest).
   7. trailers   prints the exact "Supervisor-Approved: <path>" block for every guarded path (tools/guarded_paths.txt)
                 this run wrote; the Supervisor adds it to the approval commit.
 
@@ -77,6 +81,7 @@ import versions as V  # noqa: E402
 from materials import builder as MATERIALS  # noqa: E402
 import integrate  # noqa: E402
 import tiers  # noqa: E402
+import release_rule  # noqa: E402
 
 FIDELITY_BASELINE = "docs/evaluation/characters/fidelity_baseline.json"
 GOLDEN_ROOT = "docs/evaluation/regression/baselines"
@@ -92,6 +97,7 @@ AFFECTED_TESTS = [
     "pipeline/charsys/tests/test_versions.py",
     "pipeline/charsys/tests/test_skin_presets.py",
     "pipeline/charsys/tests/test_asset_store_guard.py",
+    "pipeline/charsys/tests/test_release_rule.py",  # T-178 release manifest
     "tools/regression/tests/test_gate_tools.py",
 ]
 TEST_DIRS = ("pipeline", "tools", "tests")
@@ -379,7 +385,20 @@ class Plan:
         names = [n.format(cid=self.cid) for n in VERSION_FILES] + (["spec.resolved.json"] if self.fitted else [])
         return [f"{rel(self.root, self.version_dir)}/{n}" for n in names]
 
+    def input_features(self) -> list[str]:
+        """Opt-in features the build inputs use (release_rule detectors on the spec and override files)."""
+        out = set()
+        for r in [self.spec_rel] + list(self.overrides_rel or []):
+            if r and (self.root / r).is_file():
+                out.update(release_rule.features_of(r, (self.root / r).read_text(encoding="utf-8", errors="replace")))
+        if self.approve_published:
+            out.update(release_rule.used_by_version(str(self.root)).get((self.cid, self.version), set()))
+        return sorted(out)
+
     def predicted_writes(self) -> list[str]:
+        return self._predicted_writes() + ([release_rule.MANIFEST] if self.input_features() else [])
+
+    def _predicted_writes(self) -> list[str]:
         evidence = [f"{rel(self.root, self.evidence_dir)}/{n}" for n in ("fidelity.json", "report.md")]
         if self.approve_published:  # the version folder exists; the evidence is copied only when it lives elsewhere
             copied = [] if self.fidelity_src is None or self.fidelity_src.parent == self.evidence_dir else evidence
@@ -610,9 +629,29 @@ def execute(plan: Plan, runner: Runner) -> int:
     return finish(plan, runner, before, report)
 
 
+def release_entry(plan: Plan, step) -> None:
+    """Step 6b (T-178): the version's release-manifest entry, written before the checks run."""
+    import datetime
+    e = release_rule.release_entry(plan.cid, plan.version, plan.a.decision_ref,
+                                   datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d"), plan.task,
+                                   plan.a.decision, root=str(plan.root))
+    if e is None:
+        step("release", f"{plan.cid} {plan.version} uses no opt-in feature: no {release_rule.MANIFEST} entry")
+        return
+    release_rule.write_entry(e, root=str(plan.root))
+    plan.written.append(release_rule.MANIFEST)
+    step("release", f"{release_rule.MANIFEST}: {plan.cid} {plan.version} -> {', '.join(e['features'])} "
+                    f"({plan.a.decision_ref})")
+
+
 def finish(plan: Plan, runner: Runner, before: dict, report: dict) -> int:
-    """Steps 6 and 7: cast check, affected tests, nothing else touched; trailers."""
+    """Steps 6 and 7: release-manifest entry, cast check, affected tests, nothing else touched; trailers."""
     root, logs, written = plan.root, plan.work / "logs", plan.written
+
+    def step0(name, detail):
+        print(f"[version_switch] {name}: {detail}", flush=True)
+        report["steps"].append({"step": name, "detail": detail})
+    release_entry(plan, step0)
 
     def step(name, detail):
         print(f"[version_switch] {name}: {detail}", flush=True)

@@ -7,9 +7,9 @@ three-segment split (bones .01-.03 per finger and thumb); on the recorded hand f
 specs (both sides) no two digits intersect at rest or at the full grasp, every neighbouring pair keeps a readable gap
 at the knuckles and the remesh voxel is small enough to keep it open; the built r2 hands carry the same vertex groups
 and weighted bones as the current hands (recorded from Blender builds); default builds are untouched (the hook only
-runs on body.hands, no published or candidate spec sets it, and the recorded default-build fingerprint matches the
+runs on body.hands, no published or candidate spec
+sets it unless listed in the release manifest (release rule, T-178), and the recorded default-build fingerprint matches the
 input commit)."""
-import glob
 import json
 import os
 import sys
@@ -23,7 +23,6 @@ sys.path.insert(0, CHARSYS)
 import hands_r2 as HR  # noqa: E402
 
 sys.path.insert(0, HERE)
-import test_guard_allowlist as GA  # noqa: E402
 
 RESULTS = []
 
@@ -101,19 +100,7 @@ def _tip_gap(lay, a, b):
 def test_default_untouched():
     src = open(os.path.join(CHARSYS, "build_character.py")).read()
     check("build hook only on body.hands", src.count("import hands_r2") == 1 and 'if spec["body"].get("hands"):' in src)
-    pinned = []
-    for p in glob.glob(os.path.join(ROOT, "assets", "characters", "**", "*.json"), recursive=True):
-        try:
-            d = json.load(open(p))
-        except (ValueError, UnicodeDecodeError):
-            continue
-        d = d.get("override", d) if isinstance(d, dict) else {}
-        if isinstance(d, dict) and isinstance(d.get("body"), dict) and "hands" in d["body"]:
-            pinned.append(os.path.relpath(p, ROOT))
-    pinned, allowed, aerr = GA.split(pinned, "body.hands")
-    check("owner-approved candidate allowlist is valid (T-154)", not aerr, aerr[:3])
-    check("no character spec or candidate in assets/ sets body.hands (except listed owner-approved candidates)",
-          not pinned, pinned)
+    # "no spec sets body.hands unless listed" -> pipeline/charsys/release_rule.py (T-178)
     rec = json.load(open(os.path.join(EVAL, "default_build_check.json")))
     check("recorded default build fingerprint = input commit's", rec["fingerprint_identical"] is True, rec["input"])
 
