@@ -40,3 +40,21 @@ Ear keep-out moved 229-331 vertices per mesh by at most 12.7 mm; 0 hair vertices
 | Bun | 35.5 / 15.3 mm | 17.8 / 6.8 mm |
 
 The measure counts vertices behind the nearest face; a thin rope bounds the depth at its radius (~12 mm).
+
+## Clip and sheet (for the owner)
+
+Same shot as T-172 (`e909 s010`, frames 60-228, 640x360, 16 spp, profile `final720`, 24 fps). Before = the T-172 clip
+(released boy 2.3.0 + girl 0.14.0, `docs/evaluation/video/T-172/`); after = the same command on `s010_t183`
+(`--run-dir t183_after`; girl 0.14.0 spec + the candidate override, boy unchanged). The boy's half of the picture is
+the same in both clips (PSNR 44-47 dB, codec noise only), so only the girl's hair differs. The after clip's bake equals
+frames 60-228 of the measured candidate bake.
+
+| File | What |
+|---|---|
+| `T-183_s010_f060-228_before_after.mp4` | before / after side by side, 1280x360, H.264, frame number burnt in |
+| `T-183_s010_f060-228_girl_zoom_half_speed.mp4` | the girl only, 2x zoom, half speed, before / after |
+| `T-183_s010_f060-228_after_hevc10.mp4` | the after clip as rendered (HEVC 10-bit) |
+| `T-183_strict_sheet.jpg` | strict sheet: girl's head, before / after, frames 26, 63, 103, 115 |
+| `sheet/before/`, `sheet/after/` | the sheet's tiles at full size (768 px crops of a 2560 px frame, 24 spp); spec `sheet/strict_sheet.json` |
+
+The strict sheet and its tiles are still rendering; they come with the next commit.
