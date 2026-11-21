@@ -1,0 +1,122 @@
+{
+  "sheet": "/home/user/Animation/docs/evaluation/animation/T-175/sheet_boy.jpg",
+  "size": [
+    852,
+    2044
+  ],
+  "max_px": 2048,
+  "frames": [
+    1,
+    7,
+    13,
+    19,
+    116,
+    150,
+    182,
+    198
+  ],
+  "columns": [
+    "full frame",
+    "boy (crop follows the character)"
+  ],
+  "crops": [],
+  "inputs": [
+    {
+      "frame": 1,
+      "column": "full frame",
+      "path": "/home/user/Animation/docs/evaluation/animation/T-175/shots/review/build/sheet/full/frame_0001.png",
+      "sha256": "1a821890962ca0ad0410a8aecf41da0944905ff84039bdf89afedfb2cc89b457"
+    },
+    {
+      "frame": 1,
+      "column": "boy (crop follows the character)",
+      "path": "/home/user/Animation/docs/evaluation/animation/T-175/shots/review/build/sheet/boy/frame_0001.png",
+      "sha256": "ef2b6739248cdfaf562311084baee154de69a35f156388130835c2c740a74093"
+    },
+    {
+      "frame": 7,
+      "column": "full frame",
+      "path": "/home/user/Animation/docs/evaluation/animation/T-175/shots/review/build/sheet/full/frame_0007.png",
+      "sha256": "56632d12b1cb8be29beaaaa58ba5a6e4034c630abdadb3dbec3149170b898a14"
+    },
+    {
+      "frame": 7,
+      "column": "boy (crop follows the character)",
+      "path": "/home/user/Animation/docs/evaluation/animation/T-175/shots/review/build/sheet/boy/frame_0007.png",
+      "sha256": "2fc82e3f7d9f966f38115dd0ae112b304bf21d21e08c7f6d431f365d645107d1"
+    },
+    {
+      "frame": 13,
+      "column": "full frame",
+      "path": "/home/user/Animation/docs/evaluation/animation/T-175/shots/review/build/sheet/full/frame_0013.png",
+      "sha256": "17b2b52d03c95b6d3301351d8b77176e2bcc634f3fe6409da3f1addcd21d026e"
+    },
+    {
+      "frame": 13,
+      "column": "boy (crop follows the character)",
+      "path": "/home/user/Animation/docs/evaluation/animation/T-175/shots/review/build/sheet/boy/frame_0013.png",
+      "sha256": "0a262506914f8fb8be270078be701eb4512f1b034a8c9f03798783ac59b5c6e5"
+    },
+    {
+      "frame": 19,
+      "column": "full frame",
+      "path": "/home/user/Animation/docs/evaluation/animation/T-175/shots/review/build/sheet/full/frame_0019.png",
+      "sha256": "8fb9951a19256539e556c3e1db2f3afdf4c3692626d012f3f946b14ef28d80c0"
+    },
+    {
+      "frame": 19,
+      "column": "boy (crop follows the character)",
+      "path": "/home/user/Animation/docs/evaluation/animation/T-175/shots/review/build/sheet/boy/frame_0019.png",
+      "sha256": "380cd8e8178f390f63c0db27967d08bd11f32b362e5f9d45c42cd12ff24f2fb3"
+    },
+    {
+      "frame": 116,
+      "column": "full frame",
+      "path": "/home/user/Animation/docs/evaluation/animation/T-175/shots/review/build/sheet/full/frame_0116.png",
+      "sha256": "48feb03726812667bec54564eb4e4a1cbf0cce5d17833b36ca18b1b577e15cc4"
+    },
+    {
+      "frame": 116,
+      "column": "boy (crop follows the character)",
+      "path": "/home/user/Animation/docs/evaluation/animation/T-175/shots/review/build/sheet/boy/frame_0116.png",
+      "sha256": "b2082aca4839c930ae5ffa75cc15f2d8e15ec690cf2915cc72ef46c5bdde389a"
+    },
+    {
+      "frame": 150,
+      "column": "full frame",
+      "path": "/home/user/Animation/docs/evaluation/animation/T-175/shots/review/build/sheet/full/frame_0150.png",
+      "sha256": "788496876504313550ad67ea37b91caedd7a52153a7d57b218d2cd838763a990"
+    },
+    {
+      "frame": 150,
+      "column": "boy (crop follows the character)",
+      "path": "/home/user/Animation/docs/evaluation/animation/T-175/shots/review/build/sheet/boy/frame_0150.png",
+      "sha256": "9d009d5d419f9feb0870c072b54afb5da3af259ef77ac7f8d4ab3a793417b4d6"
+    },
+    {
+      "frame": 182,
+      "column": "full frame",
+      "path": "/home/user/Animation/docs/evaluation/animation/T-175/shots/review/build/sheet/full/frame_0182.png",
+      "sha256": "fb829f478fce60b718e233c8dcd8c758ad0fcd8acfc97816df5cddeeda68bb78"
+    },
+    {
+      "frame": 182,
+      "column": "boy (crop follows the character)",
+      "path": "/home/user/Animation/docs/evaluation/animation/T-175/shots/review/build/sheet/boy/frame_0182.png",
+      "sha256": "90f3b0481b50133a322ae2695d878bebc114a54d87fda906ffe6ae286c5dc130"
+    },
+    {
+      "frame": 198,
+      "column": "full frame",
+      "path": "/home/user/Animation/docs/evaluation/animation/T-175/shots/review/build/sheet/full/frame_0198.png",
+      "sha256": "a5b020fcb31e015c6422a064b62fb3ed36c77f8f5f288d0fc4c031dba77be82d"
+    },
+    {
+      "frame": 198,
+      "column": "boy (crop follows the character)",
+      "path": "/home/user/Animation/docs/evaluation/animation/T-175/shots/review/build/sheet/boy/frame_0198.png",
+      "sha256": "42f00c19324fd2271add20930215e32af6059721afb6d1670f94015eb0ef6325"
+    }
+  ],
+  "missing": []
+}

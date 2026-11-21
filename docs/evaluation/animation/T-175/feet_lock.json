@@ -1,5 +1,5 @@
 {
- "bake": "docs/evaluation/animation/T-175/shots/review/build/runs/lock5/bake.json",
+ "bake": "docs/evaluation/animation/T-175/shots/review/build/runs/final_bake/bake.json",
  "scene": "docs/evaluation/animation/T-175/shots/review/shot.scene.json",
  "rows": [
   {

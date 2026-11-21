@@ -1,13 +1,13 @@
 # T-175 · Locomotion layer from CMU mocap (first delivery for owner style review)
 
 Brief: [`docs/tasks/T-175.md`](../../../tasks/T-175.md). Basis: [T-174 section 5](../T-174/README.md). Branch
-`t-175-claude-locomotion`. **Status: in progress. The review clips and sheets listed below are still rendering.**
+`t-175-claude-locomotion`. **Status: CHECKPOINT. Stopped for the owner's style review before any wider use.**
 
 ## What to look at
 | File | What |
 | --- | --- |
 | [`clips/walk.mp4`](clips/walk.mp4) | walk loop on the boy and the auburn girl, 3 s (three cycles), fixed side-on camera, floor stripes every 20 cm as a slide reference |
-| [`clips/sit_stand.mp4`](clips/sit_stand.mp4) | sit down on a low stool, hold, stand up with a small step, 5.3 s |
+| [`clips/sit_stand.mp4`](clips/sit_stand.mp4) | sit down on a low stool, hold, stand up with a small step, 4.7 s (frames 104–215) |
 | [`sheet_boy.jpg`](sheet_boy.jpg), [`sheet_girl.jpg`](sheet_girl.jpg) | one sheet per character: full frame and a crop that follows the character (walk cycle, sit, stand) |
 | [`feet_lock.json`](feet_lock.json), [`feet_nolock.json`](feet_nolock.json) | feet-planted numbers with and without the foot-lock |
 
@@ -15,6 +15,17 @@ Renders are the review profile (Cycles, 640×360, 16 samples, H.264): they are f
 quality. Characters: boy 2.2.0 and auburn girl 0.13.0, the current versions on `origin/main`. **The third girl is not
 included**: her released package (0.1.0) is not on `origin/main` yet (only spec candidates are), and the release branch
 is outside this task.
+
+## Defects visible in the clips (not fixed in this delivery)
+- **The boy's hands render black during the stand-up** (from about frame 170; sheet rows f182 and f198). The clips
+  drive the hand (wrist) role from CMU's wrist data, which is noisy; the likely cause is an extreme wrist twist. Not
+  investigated further. Proposed fix for the next round: leave the hand roles out of the mocap clips' mask (or limit
+  the wrist), then re-render.
+- **The stand-up turns the characters about 90° and ends looking down**: the CMU subject steps away to the side
+  while rising. This is in the source take (owner question 3).
+- **Heads tilt down a little in the walk** (the subject looks at the floor ahead). `head_level` is 0 for the walk; it
+  can be raised.
+- The stools are small and mostly hidden behind the legs.
 
 ## Questions for the owner (style review)
 1. **Walk:** is this the right amount of "real" for the plush characters, or should it be bouncier and more
