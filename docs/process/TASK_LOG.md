@@ -187,3 +187,5 @@ Tasks from now on are numbered T-001, T-002, …, and pass through the states in
 | T-176/P2 | [Process] Visual-round budget rule (Supervisor) | applied 2026-11-21 (owner ~04:10Z): WORKFLOW, IMPLEMENTER_PROMPT, task template | — | docs/process/WORKFLOW.md |
 | T-172 | [Video] Test video R3 characters (Sonnet) | READY 2026-11-21 03:20Z: e909 s010 f60-228, 640x360 (shot pin); owner: accept or re-render 720p | t-172-claude-test-video | docs/evaluation/video/T-172/ |
 | T-171 | [Interaction] Hands round 2 (Fable) | CHECKPOINT 2026-11-21 03:53Z: opt-in fingerClose; held-grasp separation not met; 4 owner decisions | t-171-claude-hands-r2 | docs/evaluation/interaction/T-171/ |
+| T-177 | [Process] Docs-only fast path (Sonnet) | merged 2026-11-21 (main c16ef79, integration gate 44895113851 green): docs/process + docs/tasks pushes run a short job | t-177-claude-docs-fast-path | docs/evaluation/process/T-177/ |
+| T-179 | [Docs] Generator pin map (Sonnet) | merged 2026-11-21: docs/process/GENERATOR_PINS.md; groom round names differ by one between TASK_LOG and the owner's wording (noted for the owner) | t-179-claude-pin-map | docs/process/GENERATOR_PINS.md |

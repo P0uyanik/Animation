@@ -886,3 +886,14 @@ Dispatch as soon as possible, token-efficient pointer briefs, fully tested befor
   asset-store guard, goldens and the owner decision ref for CURRENT stay; the manifest is guarded; negative tests (unlisted
   version using an opt-in fails); coverage mapping old guard → new check in the README, reported to the liaison before merge.
 - Other T-176 proposals (1, 4, 6–14): not decided.
+
+## 2026-11-21 ~10:45Z (11:45 CET) — T-178 test-change approval typed by the owner (to the liaison)
+Verbatim: "I approve changing and removing the per-feature guard tests for T-178, on condition that no essential protection
+or coverage is weakened, as recorded in OWNER_DECISIONS 2026-11-21 ~04:10Z." The liaison asked the owner to type it in the
+T-178 session too (implementer permission layers refuse relayed approvals).
+
+## 2026-11-21 ~10:55Z (11:55 CET) — T-176 proposal 12 (light) approved; proposal 13 benchmarks only (relayed by the liaison)
+- **P12 light, documentation only** → `docs/tasks/T-179.md`: one mapping table generator pin → module file → round name, and
+  a short rule that opt-ins become defaults only at the next real look round via the existing pin registry. No new files
+  beyond the doc, no renames, no changes to generators, code or approved character versions.
+- **P13:** the liaison runs clone benchmarks itself (read-only); no repository structure, history or asset changes.
