@@ -92,6 +92,32 @@ def test_claims():
     expect(header in ownership and all(c.task.startswith("T-") and c.write_set for c in real), "OWNERSHIP.md parses")
 
 
+def test_claims_check_all():
+    row = "| T-{n} | A | `t-{n}-x` | {ws} | — | — |"
+    head = "| Task | Lane | Branch | Write-set | Depends on | Versions bumped |\n| --- | --- | --- | --- | --- | --- |\n"
+
+    def table(*rows):
+        return head + "\n".join(row.format(n=900 + i, ws=ws) for i, ws in enumerate(rows)) + "\n"
+
+    def run(text):
+        return I.check_table(I.parse_ownership(text))
+
+    overlaps, problems, _ = run(table("`a/**`, `b/x.py`", "`c/*.py`; `d/`"))
+    expect(not overlaps and not problems, "disjoint table passes")
+    overlaps, problems, _ = run(table("`a/**`", "`b/x.py`", "`a/y/z.py`"))
+    expect(len(overlaps) == 1 and "T-900 ~ T-902" in overlaps[0] and not problems, "overlapping rows fail")
+    overlaps, problems, _ = run(table("`a/x.py` (walk/sit/stand only), `b/**`"))
+    expect(not overlaps and len(problems) == 1 and "T-900" in problems[0] and "walk/sit/stand only" in problems[0],
+           "qualifier text fails")
+    # Live table: only the overlap part is asserted. Rows that still carry "(... only)"-style qualifiers fail
+    # --check-all until the Supervisor cleans them at merge; they are reported, not asserted.
+    live = I.load_claims()
+    overlaps, problems, _ = I.check_table(live)
+    expect(not overlaps, "live OWNERSHIP.md: no write-set overlap between rows")
+    if problems:
+        print("note: live rows with qualifier text:", "; ".join(p.split(" write-set")[0].split()[-1] for p in problems))
+
+
 def test_tiers():
     rules = [("full", "pipeline/**"), ("fast", "docs/**"), ("fast", "tools/**")]
     expect(T.classify({"docs/a.md"}, rules)["tier"] == "fast", "docs only = fast")
@@ -300,7 +326,7 @@ def test_version_spec_build():
 
 
 def main() -> int:
-    for test in (test_glob_overlap, test_claims, test_tiers, test_docs_only, test_docs_equivalent, test_version_spec_build, test_compare,
+    for test in (test_glob_overlap, test_claims, test_claims_check_all, test_tiers, test_docs_only, test_docs_equivalent, test_version_spec_build, test_compare,
                  test_backup_scripts):
         test()
     print(f"{'FAIL' if FAILURES else 'PASS'} gate tools: {len(FAILURES)} failure(s)")
