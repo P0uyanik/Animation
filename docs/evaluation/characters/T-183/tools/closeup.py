@@ -1,13 +1,15 @@
 """Close-up cameras for a shot bake (T-183 round 2): writes a copy of a plush.shot_bake/1 whose camera is one of the
 fixed close-up views of the girl in e909 s010, for pipeline/charsys/shot_render.py (same lights, same animation).
 
-    python3 closeup.py <bake.json> <out_bake.json> <view> [--frames=A-B]
+    python3 closeup.py <bake.json> <out_bake.json> <view> [--frames=A-B] [--step=N]
 
 Views (world space, fixed for the whole shot so that only the figure moves; the girl sits at x = -0.28, faces +Z):
   side      her right side, level with the head                       back      straight from behind
   shoulder  over her right shoulder, from behind and above            arm       front three-quarter on her right (the
   side_l    front three-quarter on her left (the boy's side)                    hand that goes to the temple, f24-27)
---frames keeps only those frames in the copy (a smaller file; shot_render.py takes --frames as well)."""
+--frames keeps only those frames in the copy (a smaller file; shot_render.py takes --frames as well).
+--step=N keeps every Nth of them and numbers them 1..n in the copy (shot_render.py has no frame step); the shot's
+frame numbers are kept in the copy's "closeup_frames"."""
 import json
 import sys
 
@@ -30,6 +32,13 @@ def main():
         lo, hi = (int(x) for x in fr.split("-"))
         b["frame_data"] = [fd for fd in b["frame_data"] if lo <= fd["frame"] <= hi]
         b["frames"] = [lo, hi]
+    step = int(next((a.split("=", 1)[1] for a in sys.argv[1:] if a.startswith("--step=")), 1))
+    if step > 1:
+        b["frame_data"] = b["frame_data"][::step]
+        b["closeup_frames"] = [fd["frame"] for fd in b["frame_data"]]
+        for i, fd in enumerate(b["frame_data"]):
+            fd["frame"] = i + 1
+        b["frames"] = [1, len(b["frame_data"])]
     for fd in b["frame_data"]:
         fd["camera"].update(position=pos, target=target, focalMm=focal, fStop=0.0)
     b["scene"] = f"{b.get('scene', '')} [close-up: {view}]"
