@@ -1,0 +1,1191 @@
+{
+ "checked": "2026-11-21",
+ "model_stats": {
+  "SchoolChair_01": {
+   "dims_m": [
+    0.566,
+    0.675,
+    1.006
+   ],
+   "images": {
+    "SchoolChair_01_diff": [
+     1024,
+     1024
+    ],
+    "SchoolChair_01_metallic-SchoolChair_01_roughness": [
+     1024,
+     1024
+    ],
+    "SchoolChair_01_nor_gl": [
+     1024,
+     1024
+    ]
+   },
+   "import_s": 0.05,
+   "materials": 1,
+   "objects": 1,
+   "palette": "sage",
+   "render_s_flat": 2.2,
+   "render_s_raw": 2.2,
+   "render_s_tint": 2.1,
+   "tris": 5072
+  },
+  "SchoolDesk_01": {
+   "dims_m": [
+    0.712,
+    0.546,
+    0.883
+   ],
+   "images": {
+    "SchoolDesk_01_diff": [
+     1024,
+     1024
+    ],
+    "SchoolDesk_01_metallic-SchoolDesk_01_roughness": [
+     1024,
+     1024
+    ],
+    "SchoolDesk_01_nor_gl": [
+     1024,
+     1024
+    ]
+   },
+   "import_s": 0.01,
+   "materials": 1,
+   "objects": 1,
+   "palette": "oak",
+   "render_s_flat": 2.2,
+   "render_s_raw": 2.2,
+   "render_s_tint": 2.1,
+   "tris": 4162
+  },
+  "Shelf_01": {
+   "dims_m": [
+    1.003,
+    0.257,
+    2.08
+   ],
+   "images": {
+    "Shelf_01_diff.png": [
+     1024,
+     1024
+    ],
+    "Shelf_01_metallic.png-Shelf_01_roughness": [
+     1024,
+     1024
+    ],
+    "Shelf_01_nor_gl.png": [
+     1024,
+     1024
+    ]
+   },
+   "import_s": 0.01,
+   "materials": 1,
+   "objects": 1,
+   "palette": "oak",
+   "render_s_flat": 2.3,
+   "render_s_raw": 2.3,
+   "render_s_tint": 2.4,
+   "tris": 182
+  },
+  "ceramic_vase_01": {
+   "dims_m": [
+    0.204,
+    0.204,
+    0.4
+   ],
+   "images": {
+    "ceramic_vase_01_diff": [
+     1024,
+     1024
+    ],
+    "ceramic_vase_01_metal-ceramic_vase_01_rough": [
+     1024,
+     1024
+    ],
+    "ceramic_vase_01_nor_gl": [
+     1024,
+     1024
+    ]
+   },
+   "import_s": 0.02,
+   "materials": 1,
+   "objects": 1,
+   "palette": "cream",
+   "render_s_flat": 2.1,
+   "render_s_raw": 2.1,
+   "render_s_tint": 2.1,
+   "tris": 10296
+  },
+  "folding_wooden_stool": {
+   "dims_m": [
+    0.528,
+    0.547,
+    0.442
+   ],
+   "images": {
+    "folding_wooden_stool_diff": [
+     1024,
+     1024
+    ],
+    "folding_wooden_stool_metal-folding_wooden_stool_rough": [
+     1024,
+     1024
+    ],
+    "folding_wooden_stool_nor_gl": [
+     1024,
+     1024
+    ]
+   },
+   "import_s": 0.02,
+   "materials": 1,
+   "objects": 1,
+   "palette": "coral",
+   "render_s_flat": 2.3,
+   "render_s_raw": 2.2,
+   "render_s_tint": 2.1,
+   "tris": 6324
+  },
+  "painted_wooden_cabinet_02": {
+   "dims_m": [
+    0.997,
+    0.729,
+    2.569
+   ],
+   "images": {
+    "painted_wooden_cabinet_02_diff": [
+     1024,
+     1024
+    ],
+    "painted_wooden_cabinet_02_metal-painted_wooden_cabinet_02_rough": [
+     1024,
+     1024
+    ],
+    "painted_wooden_cabinet_02_nor_gl": [
+     1024,
+     1024
+    ]
+   },
+   "import_s": 0.01,
+   "materials": 1,
+   "objects": 3,
+   "palette": "sage",
+   "render_s_flat": 2.2,
+   "render_s_raw": 2.3,
+   "render_s_tint": 2.2,
+   "tris": 966
+  },
+  "painted_wooden_chair_01": {
+   "dims_m": [
+    0.432,
+    0.54,
+    0.956
+   ],
+   "images": {
+    "painted_wooden_chair_01_diff.png": [
+     1024,
+     1024
+    ],
+    "painted_wooden_chair_01_metal-painted_wooden_chair_01_rough.png": [
+     1024,
+     1024
+    ],
+    "painted_wooden_chair_01_nor_gl": [
+     1024,
+     1024
+    ]
+   },
+   "import_s": 0.01,
+   "materials": 1,
+   "objects": 1,
+   "palette": "coral",
+   "render_s_flat": 2.1,
+   "render_s_raw": 2.1,
+   "render_s_tint": 2.0,
+   "tris": 724
+  },
+  "painted_wooden_shelves": {
+   "dims_m": [
+    0.511,
+    0.367,
+    1.125
+   ],
+   "images": {
+    "painted_wooden_shelves_diff": [
+     1024,
+     1024
+    ],
+    "painted_wooden_shelves_nor_gl": [
+     1024,
+     1024
+    ],
+    "painted_wooden_shelves_rough": [
+     1024,
+     1024
+    ]
+   },
+   "import_s": 0.01,
+   "materials": 1,
+   "objects": 1,
+   "palette": "cream",
+   "render_s_flat": 2.3,
+   "render_s_raw": 2.2,
+   "render_s_tint": 2.2,
+   "tris": 524
+  },
+  "painted_wooden_stool": {
+   "dims_m": [
+    0.385,
+    0.406,
+    0.579
+   ],
+   "images": {
+    "painted_wooden_stool_diff.png": [
+     1024,
+     1024
+    ],
+    "painted_wooden_stool_nor_gl.png": [
+     1024,
+     1024
+    ],
+    "painted_wooden_stool_rough.png": [
+     1024,
+     1024
+    ]
+   },
+   "import_s": 0.01,
+   "materials": 1,
+   "objects": 1,
+   "palette": "blue",
+   "render_s_flat": 2.3,
+   "render_s_raw": 2.3,
+   "render_s_tint": 2.2,
+   "tris": 676
+  },
+  "painted_wooden_table": {
+   "dims_m": [
+    2.406,
+    1.137,
+    0.959
+   ],
+   "images": {
+    "painted_wooden_table_diff": [
+     1024,
+     1024
+    ],
+    "painted_wooden_table_nor_gl": [
+     1024,
+     1024
+    ],
+    "painted_wooden_table_rough": [
+     1024,
+     1024
+    ]
+   },
+   "import_s": 0.01,
+   "materials": 1,
+   "objects": 1,
+   "palette": "oak",
+   "render_s_flat": 2.2,
+   "render_s_raw": 2.2,
+   "render_s_tint": 2.1,
+   "tris": 600
+  },
+  "plastic_crate_02": {
+   "dims_m": [
+    0.506,
+    0.406,
+    0.254
+   ],
+   "images": {
+    "plastic_crate_02_diff-plastic_crate_02_opacity": [
+     1024,
+     1024
+    ],
+    "plastic_crate_02_nor_gl": [
+     1024,
+     1024
+    ],
+    "plastic_crate_02_rough": [
+     1024,
+     1024
+    ]
+   },
+   "import_s": 0.02,
+   "materials": 1,
+   "objects": 1,
+   "palette": "blue",
+   "render_s_flat": 2.5,
+   "render_s_raw": 2.6,
+   "render_s_tint": 2.5,
+   "tris": 5840
+  },
+  "potted_plant_01": {
+   "dims_m": [
+    0.587,
+    0.634,
+    1.35
+   ],
+   "images": {
+    "potted_plant_01_leaves_diff.png": [
+     1024,
+     1024
+    ],
+    "potted_plant_01_leaves_nor_gl.png": [
+     1024,
+     1024
+    ],
+    "potted_plant_01_leaves_rough.png": [
+     1024,
+     1024
+    ],
+    "potted_plant_01_pot_diff": [
+     1024,
+     1024
+    ],
+    "potted_plant_01_pot_nor_gl": [
+     1024,
+     1024
+    ],
+    "potted_plant_01_pot_rough": [
+     1024,
+     1024
+    ]
+   },
+   "import_s": 0.4,
+   "materials": 2,
+   "objects": 4,
+   "palette": "sage",
+   "render_s_flat": 2.3,
+   "render_s_raw": 2.3,
+   "render_s_tint": 2.3,
+   "tris": 176226
+  },
+  "rubber_duck_toy": {
+   "dims_m": [
+    0.214,
+    0.3,
+    0.286
+   ],
+   "images": {
+    "rubber_duck_toy_diff": [
+     1024,
+     1024
+    ],
+    "rubber_duck_toy_metal-rubber_duck_toy_rough": [
+     1024,
+     1024
+    ],
+    "rubber_duck_toy_nor_gl": [
+     1024,
+     1024
+    ]
+   },
+   "import_s": 0.01,
+   "materials": 1,
+   "objects": 1,
+   "palette": "oak",
+   "render_s_flat": 2.2,
+   "render_s_raw": 2.3,
+   "render_s_tint": 2.1,
+   "tris": 4288
+  },
+  "stationery_supplies": {
+   "dims_m": [
+    0.302,
+    0.084,
+    0.164
+   ],
+   "images": {
+    "stationery_supplies_diff": [
+     1024,
+     1024
+    ],
+    "stationery_supplies_metal-stationery_supplies_rough": [
+     1024,
+     1024
+    ],
+    "stationery_supplies_nor_gl": [
+     1024,
+     1024
+    ]
+   },
+   "import_s": 0.02,
+   "materials": 1,
+   "objects": 9,
+   "palette": "blue",
+   "render_s_flat": 2.1,
+   "render_s_raw": 2.0,
+   "render_s_tint": 2.3,
+   "tris": 4412
+  },
+  "wicker_basket_01": {
+   "dims_m": [
+    0.383,
+    0.295,
+    0.117
+   ],
+   "images": {
+    "wicker_basket_01_diff": [
+     1024,
+     1024
+    ],
+    "wicker_basket_01_nor_gl": [
+     1024,
+     1024
+    ],
+    "wicker_basket_01_rough": [
+     1024,
+     1024
+    ]
+   },
+   "import_s": 0.04,
+   "materials": 1,
+   "objects": 1,
+   "palette": "coral",
+   "render_s_flat": 2.6,
+   "render_s_raw": 2.5,
+   "render_s_tint": 2.5,
+   "tris": 22276
+  },
+  "wooden_bowl_02": {
+   "dims_m": [
+    0.131,
+    0.125,
+    0.073
+   ],
+   "images": {
+    "wooden_bowl_02_diff": [
+     1024,
+     1024
+    ],
+    "wooden_bowl_02_nor_gl": [
+     1024,
+     1024
+    ],
+    "wooden_bowl_02_rough": [
+     1024,
+     1024
+    ]
+   },
+   "import_s": 0.02,
+   "materials": 1,
+   "objects": 1,
+   "palette": "oak",
+   "render_s_flat": 2.5,
+   "render_s_raw": 2.3,
+   "render_s_tint": 2.3,
+   "tris": 4666
+  }
+ },
+ "models": {
+  "SchoolChair_01": {
+   "SchoolChair_01.bin": {
+    "bytes": 134912,
+    "license": "CC0 1.0",
+    "sha256": "7d64d556ba88d3962778085b9a190f1adb0d84e667bca8ef032c0ae34b31a9fe",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/4k/SchoolChair_01/SchoolChair_01.bin"
+   },
+   "SchoolChair_01_1k.gltf": {
+    "bytes": 2695,
+    "license": "CC0 1.0",
+    "sha256": "1db6aca4bf379c2d568b2068492dcfcda15d764c0c3d98a970055af25b46281e",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/SchoolChair_01/SchoolChair_01_1k.gltf"
+   },
+   "textures/SchoolChair_01_arm_1k.jpg": {
+    "bytes": 104994,
+    "license": "CC0 1.0",
+    "sha256": "ff773eb01c9d59130dc3cc0274951ac626d73fa1b2f7eee519af4ca80835568b",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/SchoolChair_01/SchoolChair_01_arm_1k.jpg"
+   },
+   "textures/SchoolChair_01_diff_1k.jpg": {
+    "bytes": 52590,
+    "license": "CC0 1.0",
+    "sha256": "f10ae4dbddfb056ef716770ebd96e0eff0aa6f0b5ad0f263ff51c5cade6e1d8f",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/SchoolChair_01/SchoolChair_01_diff_1k.jpg"
+   },
+   "textures/SchoolChair_01_nor_gl_1k.jpg": {
+    "bytes": 189532,
+    "license": "CC0 1.0",
+    "sha256": "4ee930562ad26e8c98af75e8aa6577d01cb56f6d22628f4e95c385e5364f0623",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/SchoolChair_01/SchoolChair_01_nor_gl_1k.jpg"
+   }
+  },
+  "SchoolDesk_01": {
+   "SchoolDesk_01.bin": {
+    "bytes": 127564,
+    "license": "CC0 1.0",
+    "sha256": "80d0ece097fde9b1efe15a9babfb6bb1573d228bab6e02e3806cb5eca39c2c0c",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/4k/SchoolDesk_01/SchoolDesk_01.bin"
+   },
+   "SchoolDesk_01_1k.gltf": {
+    "bytes": 2686,
+    "license": "CC0 1.0",
+    "sha256": "9d840b58a9e66ce9dc3d8d5396fb97cf954b12dc27adaf41b8cc78ae1a6404eb",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/SchoolDesk_01/SchoolDesk_01_1k.gltf"
+   },
+   "textures/SchoolDesk_01_arm_1k.jpg": {
+    "bytes": 134042,
+    "license": "CC0 1.0",
+    "sha256": "ee1e2ea17ca21471b8a4822400ddc6bd3a4d441822a7eb429bef8cb1ab6dd43d",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/SchoolDesk_01/SchoolDesk_01_arm_1k.jpg"
+   },
+   "textures/SchoolDesk_01_diff_1k.jpg": {
+    "bytes": 71566,
+    "license": "CC0 1.0",
+    "sha256": "4fed6d98265c6be27b9e6c9b010a5bba55a9aca4edfcc3fae9a12309ca6a5b94",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/SchoolDesk_01/SchoolDesk_01_diff_1k.jpg"
+   },
+   "textures/SchoolDesk_01_nor_gl_1k.jpg": {
+    "bytes": 85765,
+    "license": "CC0 1.0",
+    "sha256": "64de8791fec46894945136190504127d194c1fc8d999e15c639dc94d053581be",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/SchoolDesk_01/SchoolDesk_01_nor_gl_1k.jpg"
+   }
+  },
+  "Shelf_01": {
+   "Shelf_01.bin": {
+    "bytes": 12676,
+    "license": "CC0 1.0",
+    "sha256": "21ee76dda6320ba423e76d192cfd38885e334ae394c03978d092f96b508f175b",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/4k/Shelf_01/Shelf_01.bin"
+   },
+   "Shelf_01_1k.gltf": {
+    "bytes": 2617,
+    "license": "CC0 1.0",
+    "sha256": "715bce6ff1886eccdd43d558f5cf9242a24396e0eb9e8ae391905186bb339e52",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/Shelf_01/Shelf_01_1k.gltf"
+   },
+   "textures/Shelf_01_arm_1k.jpg": {
+    "bytes": 205542,
+    "license": "CC0 1.0",
+    "sha256": "d5d180b15c48ed6ab7b27a663de8f399f813ed0c32ff2706520d677a1e387cdc",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/Shelf_01/Shelf_01_arm_1k.jpg"
+   },
+   "textures/Shelf_01_diff_1k.jpg": {
+    "bytes": 153220,
+    "license": "CC0 1.0",
+    "sha256": "875bb8110dec4f409d9127cba95f7c0ead02bdfeef6dd47232df939e4de35a5c",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/Shelf_01/Shelf_01_diff_1k.jpg"
+   },
+   "textures/Shelf_01_nor_gl_1k.jpg": {
+    "bytes": 231393,
+    "license": "CC0 1.0",
+    "sha256": "c817d7966974be2da13e4b0a57918e8e142edc50eb41d438229c3bad70df0f91",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/Shelf_01/Shelf_01_nor_gl_1k.jpg"
+   }
+  },
+  "ceramic_vase_01": {
+   "ceramic_vase_01.bin": {
+    "bytes": 272656,
+    "license": "CC0 1.0",
+    "sha256": "56ffadcafff3f56538d04b0b43c06c9704baeec2ac3ec286ef01c313c82906f0",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/ceramic_vase_01/ceramic_vase_01.bin"
+   },
+   "ceramic_vase_01_1k.gltf": {
+    "bytes": 2706,
+    "license": "CC0 1.0",
+    "sha256": "4e2c69eb5bbccf86e9fbf92af438464669d804c1f0eae041ee28651a5b57d91e",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/ceramic_vase_01/ceramic_vase_01_1k.gltf"
+   },
+   "textures/ceramic_vase_01_arm_1k.jpg": {
+    "bytes": 74240,
+    "license": "CC0 1.0",
+    "sha256": "121469880a7900513717685e9035dfc1b04613f85c778ab4e9dba98c1675d660",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/ceramic_vase_01/ceramic_vase_01_arm_1k.jpg"
+   },
+   "textures/ceramic_vase_01_diff_1k.jpg": {
+    "bytes": 32351,
+    "license": "CC0 1.0",
+    "sha256": "5f7d22178b74a59fe92aa0ccc958b897e2fb80df514eb28b97000097c0e71beb",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/ceramic_vase_01/ceramic_vase_01_diff_1k.jpg"
+   },
+   "textures/ceramic_vase_01_nor_gl_1k.jpg": {
+    "bytes": 36504,
+    "license": "CC0 1.0",
+    "sha256": "c35b59d15e0f08db44b0bc8a5870bc65ae781819e5abf0447996d0faf05b7722",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/ceramic_vase_01/ceramic_vase_01_nor_gl_1k.jpg"
+   }
+  },
+  "folding_wooden_stool": {
+   "folding_wooden_stool.bin": {
+    "bytes": 193016,
+    "license": "CC0 1.0",
+    "sha256": "84fcfeea3355ff011b9e821691fca04110705cfddba8b8617db868b4c33864fa",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/4k/folding_wooden_stool/folding_wooden_stool.bin"
+   },
+   "folding_wooden_stool_1k.gltf": {
+    "bytes": 2842,
+    "license": "CC0 1.0",
+    "sha256": "c8ae926ce28737ca8b8f2ef928094fe114d7c71ca32e1040bace53337290a819",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/folding_wooden_stool/folding_wooden_stool_1k.gltf"
+   },
+   "textures/folding_wooden_stool_arm_1k.jpg": {
+    "bytes": 683576,
+    "license": "CC0 1.0",
+    "sha256": "1133c852e5ba6b1b05fe643926847d8a9b710e8ba869d825076c3d94cafa700b",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/folding_wooden_stool/folding_wooden_stool_arm_1k.jpg"
+   },
+   "textures/folding_wooden_stool_diff_1k.jpg": {
+    "bytes": 661939,
+    "license": "CC0 1.0",
+    "sha256": "e5927deb2ce44e6204cfd39a05960f4811cf752bacb2b687d96e04af12a4d3ad",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/folding_wooden_stool/folding_wooden_stool_diff_1k.jpg"
+   },
+   "textures/folding_wooden_stool_nor_gl_1k.jpg": {
+    "bytes": 726559,
+    "license": "CC0 1.0",
+    "sha256": "f1c2220760d244a846cf2f0281597f18052b2d96ebb84b5eef473a72c7fd4586",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/folding_wooden_stool/folding_wooden_stool_nor_gl_1k.jpg"
+   }
+  },
+  "painted_wooden_cabinet_02": {
+   "painted_wooden_cabinet_02.bin": {
+    "bytes": 39332,
+    "license": "CC0 1.0",
+    "sha256": "7acab853993b90cafc9c7550a7035397dfeb4bbda7f0dba8759d40a971c755ca",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/4k/painted_wooden_cabinet_02/painted_wooden_cabinet_02.bin"
+   },
+   "painted_wooden_cabinet_02_1k.gltf": {
+    "bytes": 6085,
+    "license": "CC0 1.0",
+    "sha256": "a4b697adf7a24a081b8452f5a7d482765e2139cf2a6687a4cbb2a7b8bea24325",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/painted_wooden_cabinet_02/painted_wooden_cabinet_02_1k.gltf"
+   },
+   "textures/painted_wooden_cabinet_02_arm_1k.jpg": {
+    "bytes": 463616,
+    "license": "CC0 1.0",
+    "sha256": "0cf309449d4b0c1ecb0a3adbc17837b6f77f36cb45c1f0ceb6013b07fac44214",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/painted_wooden_cabinet_02/painted_wooden_cabinet_02_arm_1k.jpg"
+   },
+   "textures/painted_wooden_cabinet_02_diff_1k.jpg": {
+    "bytes": 560790,
+    "license": "CC0 1.0",
+    "sha256": "ddb2cace49bb05b8e03e6c205223a69f95e5eef84ec66e97e5d0e49d2a1af09e",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/painted_wooden_cabinet_02/painted_wooden_cabinet_02_diff_1k.jpg"
+   },
+   "textures/painted_wooden_cabinet_02_nor_gl_1k.jpg": {
+    "bytes": 526407,
+    "license": "CC0 1.0",
+    "sha256": "46e8df6be06eca30a05d0e90f12e8799e6e11c73ab7c910cc3541b0833ee0103",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/painted_wooden_cabinet_02/painted_wooden_cabinet_02_nor_gl_1k.jpg"
+   }
+  },
+  "painted_wooden_chair_01": {
+   "painted_wooden_chair_01.bin": {
+    "bytes": 37112,
+    "license": "CC0 1.0",
+    "sha256": "eaf952048db1e770c45898049b8abe28deb83d3dbbaad81d5e7e43e22a322295",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/painted_wooden_chair_01/painted_wooden_chair_01.bin"
+   },
+   "painted_wooden_chair_01_1k.gltf": {
+    "bytes": 2785,
+    "license": "CC0 1.0",
+    "sha256": "34f55ebe1851b89c045dc62d4461c848de3b93c0668e752a2b5f6cbed2d91a5e",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/painted_wooden_chair_01/painted_wooden_chair_01_1k.gltf"
+   },
+   "textures/painted_wooden_chair_01_arm_1k.jpg": {
+    "bytes": 144503,
+    "license": "CC0 1.0",
+    "sha256": "9d2de0ea0d630e8e5af05424b1f41b1ae4a80465d27a78eb471cd7f8556db84e",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/painted_wooden_chair_01/painted_wooden_chair_01_arm_1k.jpg"
+   },
+   "textures/painted_wooden_chair_01_diff_1k.jpg": {
+    "bytes": 168040,
+    "license": "CC0 1.0",
+    "sha256": "de67d1f8a0318616a7ee769cbe5c513301c2b25056542d011bb4359498f9e25d",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/painted_wooden_chair_01/painted_wooden_chair_01_diff_1k.jpg"
+   },
+   "textures/painted_wooden_chair_01_nor_gl_1k.jpg": {
+    "bytes": 140110,
+    "license": "CC0 1.0",
+    "sha256": "27301c3ac6a7daf9e0ba418ec85feaa44cc898e61d048211bca57133f22e1807",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/painted_wooden_chair_01/painted_wooden_chair_01_nor_gl_1k.jpg"
+   }
+  },
+  "painted_wooden_shelves": {
+   "painted_wooden_shelves.bin": {
+    "bytes": 20680,
+    "license": "CC0 1.0",
+    "sha256": "894c032cda1c5668014c87b15ddcc42bccaede15e369e59f628d5219d38edf5f",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/4k/painted_wooden_shelves/painted_wooden_shelves.bin"
+   },
+   "painted_wooden_shelves_1k.gltf": {
+    "bytes": 2858,
+    "license": "CC0 1.0",
+    "sha256": "f4d9ffc04ad1e9ce3155522ac962c336bf1fa74b4a27b8a5fd4c8bdb81c2e8f6",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/painted_wooden_shelves/painted_wooden_shelves_1k.gltf"
+   },
+   "textures/painted_wooden_shelves_arm_1k.jpg": {
+    "bytes": 734506,
+    "license": "CC0 1.0",
+    "sha256": "256c99e04dc99961ad08e085b01adc03641e861f66d4b325b1acb0f822d1e9a9",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/painted_wooden_shelves/painted_wooden_shelves_arm_1k.jpg"
+   },
+   "textures/painted_wooden_shelves_diff_1k.jpg": {
+    "bytes": 509573,
+    "license": "CC0 1.0",
+    "sha256": "430aef90494d0aa16c354bb4d39fc1a768dd822a0da7e6b746f1891a0cb7cf3a",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/painted_wooden_shelves/painted_wooden_shelves_diff_1k.jpg"
+   },
+   "textures/painted_wooden_shelves_nor_gl_1k.jpg": {
+    "bytes": 843073,
+    "license": "CC0 1.0",
+    "sha256": "9dcd7e3783da2a2cd44cd4f7a78ac976d2866e02d8dd0799d180d0ab746ae239",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/painted_wooden_shelves/painted_wooden_shelves_nor_gl_1k.jpg"
+   }
+  },
+  "painted_wooden_stool": {
+   "painted_wooden_stool.bin": {
+    "bytes": 23384,
+    "license": "CC0 1.0",
+    "sha256": "d336c1eb8832e4441f69bb5618e2289703a7ca71d3884a9087d658051eee0b66",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/4k/painted_wooden_stool/painted_wooden_stool.bin"
+   },
+   "painted_wooden_stool_1k.gltf": {
+    "bytes": 2848,
+    "license": "CC0 1.0",
+    "sha256": "f9a9a4a7c38b3421c30dac35d91c41c8864452d6dbb398911494b8324d312ef9",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/painted_wooden_stool/painted_wooden_stool_1k.gltf"
+   },
+   "textures/painted_wooden_stool_arm_1k.jpg": {
+    "bytes": 751171,
+    "license": "CC0 1.0",
+    "sha256": "2088f99a25050d6666348388d279b65993fdd50ad8c14d3419a64f1caea6472d",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/painted_wooden_stool/painted_wooden_stool_arm_1k.jpg"
+   },
+   "textures/painted_wooden_stool_diff_1k.jpg": {
+    "bytes": 607519,
+    "license": "CC0 1.0",
+    "sha256": "db0322de5e3c588465d0894515a7c1bdacde9e2a469a9ac154206bfe96746d3f",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/painted_wooden_stool/painted_wooden_stool_diff_1k.jpg"
+   },
+   "textures/painted_wooden_stool_nor_gl_1k.jpg": {
+    "bytes": 489911,
+    "license": "CC0 1.0",
+    "sha256": "39fed6e0a14b464bf5b9555d4ac02df0f85b0bfc89d383e4b8e00c343598384e",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/painted_wooden_stool/painted_wooden_stool_nor_gl_1k.jpg"
+   }
+  },
+  "painted_wooden_table": {
+   "painted_wooden_table.bin": {
+    "bytes": 25552,
+    "license": "CC0 1.0",
+    "sha256": "aac5e2e7411a319b8fdf6915cdb452a3b490179c354c75785a22f560e8413059",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/4k/painted_wooden_table/painted_wooden_table.bin"
+   },
+   "painted_wooden_table_1k.gltf": {
+    "bytes": 2830,
+    "license": "CC0 1.0",
+    "sha256": "7e1ba86ae2c570e3464c42556e4e6cc09186a99127b86eaf54e7dbecb2fbafc3",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/painted_wooden_table/painted_wooden_table_1k.gltf"
+   },
+   "textures/painted_wooden_table_arm_1k.jpg": {
+    "bytes": 649934,
+    "license": "CC0 1.0",
+    "sha256": "670863aece034184ac1643ebe3de1254c3565a10b01ce3f9e8ba3a67980b4bb3",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/painted_wooden_table/painted_wooden_table_arm_1k.jpg"
+   },
+   "textures/painted_wooden_table_diff_1k.jpg": {
+    "bytes": 497417,
+    "license": "CC0 1.0",
+    "sha256": "826738d2efab2c5786e498c39dd58edd6479e08c0503619727a2b9b6b2e796dc",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/painted_wooden_table/painted_wooden_table_diff_1k.jpg"
+   },
+   "textures/painted_wooden_table_nor_gl_1k.jpg": {
+    "bytes": 603760,
+    "license": "CC0 1.0",
+    "sha256": "0fe881c3f0c2ef0e4e67fa05280355f9b852adc6447af71a61cc3b15fff66338",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/painted_wooden_table/painted_wooden_table_nor_gl_1k.jpg"
+   }
+  },
+  "plastic_crate_02": {
+   "plastic_crate_02.bin": {
+    "bytes": 186848,
+    "license": "CC0 1.0",
+    "sha256": "f51696aa04643b5c1948da88be8ce1d4e92596ae4908b0132cd690f8fb8e0b63",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/4k/plastic_crate_02/plastic_crate_02.bin"
+   },
+   "plastic_crate_02_1k.gltf": {
+    "bytes": 2947,
+    "license": "CC0 1.0",
+    "sha256": "531f7ba7d4b501759b04fb704db1948bcaab34d8342e71e3f5877d9f0340dba7",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/plastic_crate_02/plastic_crate_02_1k.gltf"
+   },
+   "textures/plastic_crate_02_arm_1k.jpg": {
+    "bytes": 597561,
+    "license": "CC0 1.0",
+    "sha256": "f0c667358c7afd46be37b40c30435b63ae3dba8432b45c507f3298fc6f163418",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/plastic_crate_02/plastic_crate_02_arm_1k.jpg"
+   },
+   "textures/plastic_crate_02_diff_1k.jpg": {
+    "bytes": 492862,
+    "license": "CC0 1.0",
+    "sha256": "f153478d5f44f39ab27a967850caac27b35ee8f04185d0d4eaf7ad501742fb15",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/plastic_crate_02/plastic_crate_02_diff_1k.jpg"
+   },
+   "textures/plastic_crate_02_nor_gl_1k.jpg": {
+    "bytes": 558561,
+    "license": "CC0 1.0",
+    "sha256": "492b4cb03b043fb30a21b5de1cdf91dfbcd9bb7d080957af69a333d622050f30",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/plastic_crate_02/plastic_crate_02_nor_gl_1k.jpg"
+   }
+  },
+  "potted_plant_01": {
+   "potted_plant_01.bin": {
+    "bytes": 5345188,
+    "license": "CC0 1.0",
+    "sha256": "a8dd1f7ce75f50dc25bbedc20809da02ee4193815c155b883a329925fa5548f7",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/potted_plant_01/potted_plant_01.bin"
+   },
+   "potted_plant_01_1k.gltf": {
+    "bytes": 7969,
+    "license": "CC0 1.0",
+    "sha256": "23b30294407684b02f14800d6685bd8938da5d2111e17753ac8dd3c37d8c88a0",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/potted_plant_01/potted_plant_01_1k.gltf"
+   },
+   "textures/potted_plant_01_leaves_diff_1k.jpg": {
+    "bytes": 124730,
+    "license": "CC0 1.0",
+    "sha256": "b73891a0a606e139d0fcdd9e6fe503cd1210be3fc9c55fbd033941288231ccaa",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/potted_plant_01/potted_plant_01_leaves_diff_1k.jpg"
+   },
+   "textures/potted_plant_01_leaves_nor_gl_1k.jpg": {
+    "bytes": 177105,
+    "license": "CC0 1.0",
+    "sha256": "2faa756e0ee2b8341c752b283b93599157bf56f4083a9f61b825cdfa0c7138ff",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/potted_plant_01/potted_plant_01_leaves_nor_gl_1k.jpg"
+   },
+   "textures/potted_plant_01_leaves_rough_1k.jpg": {
+    "bytes": 91706,
+    "license": "CC0 1.0",
+    "sha256": "765e3bd1bfdad39dd0d1cd755eafd1f9f1d46cbbb6013988cbfd1197de27a1f9",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/potted_plant_01/potted_plant_01_leaves_rough_1k.jpg"
+   },
+   "textures/potted_plant_01_pot_diff_1k.jpg": {
+    "bytes": 204900,
+    "license": "CC0 1.0",
+    "sha256": "51c9d80e8abe585bd3dbcebe7cba1d3ed1a22b137c7cb66baf0e462c08dca312",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/potted_plant_01/potted_plant_01_pot_diff_1k.jpg"
+   },
+   "textures/potted_plant_01_pot_nor_gl_1k.jpg": {
+    "bytes": 200349,
+    "license": "CC0 1.0",
+    "sha256": "ec02e51751e0822d229d48bea1373b06e2675c3725ff04fd1f87ac516719e620",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/potted_plant_01/potted_plant_01_pot_nor_gl_1k.jpg"
+   },
+   "textures/potted_plant_01_pot_rough_1k.jpg": {
+    "bytes": 173192,
+    "license": "CC0 1.0",
+    "sha256": "1256199fe3a88a0534bcd4c8bf141cfa9a28b68fce3f286193d0713796fd8561",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/potted_plant_01/potted_plant_01_pot_rough_1k.jpg"
+   }
+  },
+  "rubber_duck_toy": {
+   "rubber_duck_toy.bin": {
+    "bytes": 105376,
+    "license": "CC0 1.0",
+    "sha256": "381e1373b99a4ff23d5ee02cb66bfb5e7d897eaa280581f19b652c38ffd83314",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/4k/rubber_duck_toy/rubber_duck_toy.bin"
+   },
+   "rubber_duck_toy_1k.gltf": {
+    "bytes": 3180,
+    "license": "CC0 1.0",
+    "sha256": "dcf036297843dad2775841fc41208fae8c776066848d3f6e26efa42eb98d5016",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/rubber_duck_toy/rubber_duck_toy_1k.gltf"
+   },
+   "textures/rubber_duck_toy_arm_1k.jpg": {
+    "bytes": 346707,
+    "license": "CC0 1.0",
+    "sha256": "07df1a805350811e8522dafce6133b98ce2f191326e7256315a15dfaaa4193a0",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/rubber_duck_toy/rubber_duck_toy_arm_1k.jpg"
+   },
+   "textures/rubber_duck_toy_diff_1k.jpg": {
+    "bytes": 231027,
+    "license": "CC0 1.0",
+    "sha256": "c968d6185c3ec57a430818e6af85c2ba2880c7ee19ccb1a0171730926175cfd6",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/rubber_duck_toy/rubber_duck_toy_diff_1k.jpg"
+   },
+   "textures/rubber_duck_toy_nor_gl_1k.jpg": {
+    "bytes": 48768,
+    "license": "CC0 1.0",
+    "sha256": "fc00541d9708328f383498914a5ed9935231a87f15ec002d5675af3f2347b544",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/rubber_duck_toy/rubber_duck_toy_nor_gl_1k.jpg"
+   }
+  },
+  "stationery_supplies": {
+   "stationery_supplies.bin": {
+    "bytes": 128940,
+    "license": "CC0 1.0",
+    "sha256": "475d839c3569551710607cfc71416aa50a3715cd02d56da8c86271982feacb6e",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/4k/stationery_supplies/stationery_supplies.bin"
+   },
+   "stationery_supplies_1k.gltf": {
+    "bytes": 15220,
+    "license": "CC0 1.0",
+    "sha256": "9f5ef7799af1193e5d794cc02eb6add2d2eb7e80bc1974930fae76b3cd7ce9a9",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/stationery_supplies/stationery_supplies_1k.gltf"
+   },
+   "textures/stationery_supplies_arm_1k.jpg": {
+    "bytes": 720443,
+    "license": "CC0 1.0",
+    "sha256": "b7b00e07f043d9928aa4b6dc6a3feede9c870e6e810ae75b54692171cfba6052",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/stationery_supplies/stationery_supplies_arm_1k.jpg"
+   },
+   "textures/stationery_supplies_diff_1k.jpg": {
+    "bytes": 646389,
+    "license": "CC0 1.0",
+    "sha256": "a70e92052b2da3457a6059aec0fa83bc01bf0d376be814661cee0b49e4abb9ad",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/stationery_supplies/stationery_supplies_diff_1k.jpg"
+   },
+   "textures/stationery_supplies_nor_gl_1k.jpg": {
+    "bytes": 475821,
+    "license": "CC0 1.0",
+    "sha256": "23c332f95ca9cafc24f51a1ad54ca81548d3ab60559401e793fdec00cbe7952c",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/stationery_supplies/stationery_supplies_nor_gl_1k.jpg"
+   }
+  },
+  "wicker_basket_01": {
+   "textures/wicker_basket_01_arm_1k.jpg": {
+    "bytes": 874111,
+    "license": "CC0 1.0",
+    "sha256": "5150638cbcd8f1bc07b76af3b60b31a4c5e7d38ce66ac8906b9c3192f3283b9a",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/wicker_basket_01/wicker_basket_01_arm_1k.jpg"
+   },
+   "textures/wicker_basket_01_diff_1k.jpg": {
+    "bytes": 679110,
+    "license": "CC0 1.0",
+    "sha256": "15156c7855d5642f6bb594edfad5bcdcfe11f87f3e109956cb9e8fdb15fef921",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/wicker_basket_01/wicker_basket_01_diff_1k.jpg"
+   },
+   "textures/wicker_basket_01_nor_gl_1k.jpg": {
+    "bytes": 549218,
+    "license": "CC0 1.0",
+    "sha256": "d06024a37ef330d05bf128b8488f72769af05e72d266ffbc810d7f09ea2b32f9",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/wicker_basket_01/wicker_basket_01_nor_gl_1k.jpg"
+   },
+   "wicker_basket_01.bin": {
+    "bytes": 624920,
+    "license": "CC0 1.0",
+    "sha256": "8e96025ffcdc64a7e75d1aa980f2491b1219912a4554272cd1e192a966c399f8",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/wicker_basket_01/wicker_basket_01.bin"
+   },
+   "wicker_basket_01_1k.gltf": {
+    "bytes": 2792,
+    "license": "CC0 1.0",
+    "sha256": "9ad86c33f00f46a18c9bc8bfc28c0036090ee819f7270d0028ec408512c04094",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/wicker_basket_01/wicker_basket_01_1k.gltf"
+   }
+  },
+  "wooden_bowl_02": {
+   "textures/wooden_bowl_02_arm_1k.jpg": {
+    "bytes": 770851,
+    "license": "CC0 1.0",
+    "sha256": "0715dde81d3a8acbdf67031702c80e994e0b418a9973237f2964f1d0be9f4645",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/wooden_bowl_02/wooden_bowl_02_arm_1k.jpg"
+   },
+   "textures/wooden_bowl_02_diff_1k.jpg": {
+    "bytes": 805338,
+    "license": "CC0 1.0",
+    "sha256": "a3bb80f6ea747491fe91628badc0b98d320fc6d427682564095aba6033a523dc",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/wooden_bowl_02/wooden_bowl_02_diff_1k.jpg"
+   },
+   "textures/wooden_bowl_02_nor_gl_1k.jpg": {
+    "bytes": 816221,
+    "license": "CC0 1.0",
+    "sha256": "1951d9aae111412f4bd262c18e232b0b11962f33145e46acb936e314a442ec7d",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/wooden_bowl_02/wooden_bowl_02_nor_gl_1k.jpg"
+   },
+   "wooden_bowl_02.bin": {
+    "bytes": 116156,
+    "license": "CC0 1.0",
+    "sha256": "6e3e1fb30969e9a52db3519b01ace016628a361c2cd9e2817c5e50c1ffb8a1dd",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/wooden_bowl_02/wooden_bowl_02.bin"
+   },
+   "wooden_bowl_02_1k.gltf": {
+    "bytes": 2800,
+    "license": "CC0 1.0",
+    "sha256": "18ba4fb40b1880d9b776f6d98eefdaa9e01e41fbe362ba1dc40a831422e38336",
+    "source": "polyhaven",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/wooden_bowl_02/wooden_bowl_02_1k.gltf"
+   }
+  }
+ },
+ "note": "downloads kept OUT of git (scratch); CC0 1.0 per polyhaven.com/license and ambientcg.com front page/asset pages",
+ "textures": {
+  "acg_Carpet016/diff.jpg": {
+   "asset": "Carpet016",
+   "bytes": 1207660,
+   "license": "CC0 1.0",
+   "resolved_url": "https://acg-download.struffelproductions.com/file/ambientCG-Web/download/Carpet016_dnZavRoU/Carpet016_1K-JPG.zip",
+   "sha256": "c6fca66d1d570d27a921d7cb35b1963e83844e2b8ceec70f0193db5e99e04123",
+   "source": "ambientcg",
+   "url": "https://ambientcg.com/get?file=Carpet016_1K-JPG.zip",
+   "zip_bytes": 9371762,
+   "zip_member": "Carpet016_1K-JPG_Color.jpg",
+   "zip_sha256": "b9e67b5d42cb47cead082dedae3767ae228175c857b6b3af6fe7bd4e69237b81"
+  },
+  "acg_Carpet016/nor_gl.jpg": {
+   "asset": "Carpet016",
+   "bytes": 2179963,
+   "license": "CC0 1.0",
+   "resolved_url": "https://acg-download.struffelproductions.com/file/ambientCG-Web/download/Carpet016_dnZavRoU/Carpet016_1K-JPG.zip",
+   "sha256": "2820cad2593d1e1b58ce1fa38cb53e24be05bf935b40393c379be828a35755ea",
+   "source": "ambientcg",
+   "url": "https://ambientcg.com/get?file=Carpet016_1K-JPG.zip",
+   "zip_bytes": 9371762,
+   "zip_member": "Carpet016_1K-JPG_NormalGL.jpg",
+   "zip_sha256": "b9e67b5d42cb47cead082dedae3767ae228175c857b6b3af6fe7bd4e69237b81"
+  },
+  "acg_Carpet016/rough.jpg": {
+   "asset": "Carpet016",
+   "bytes": 686755,
+   "license": "CC0 1.0",
+   "resolved_url": "https://acg-download.struffelproductions.com/file/ambientCG-Web/download/Carpet016_dnZavRoU/Carpet016_1K-JPG.zip",
+   "sha256": "307c7984100374da53261c51dee33665049e3fc5e0e90143da1f58b040298268",
+   "source": "ambientcg",
+   "url": "https://ambientcg.com/get?file=Carpet016_1K-JPG.zip",
+   "zip_bytes": 9371762,
+   "zip_member": "Carpet016_1K-JPG_Roughness.jpg",
+   "zip_sha256": "b9e67b5d42cb47cead082dedae3767ae228175c857b6b3af6fe7bd4e69237b81"
+  },
+  "hdri_lebombo/lebombo_1k.hdr": {
+   "asset": "lebombo",
+   "bytes": 1476953,
+   "license": "CC0 1.0",
+   "sha256": "a02c9615adeba91a753c3e4737c3ce7a719273df822eeaa85d24982bd43c9ecb",
+   "source": "polyhaven",
+   "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/lebombo_1k.hdr"
+  },
+  "ph_laminate_floor_02/diff.jpg": {
+   "asset": "laminate_floor_02",
+   "bytes": 721641,
+   "license": "CC0 1.0",
+   "sha256": "c112a8fb107d8600a2974af2f9fa9b595c491a33a59982e22706e9650990bf8f",
+   "source": "polyhaven",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/laminate_floor_02/laminate_floor_02_diff_1k.jpg"
+  },
+  "ph_laminate_floor_02/nor_gl.jpg": {
+   "asset": "laminate_floor_02",
+   "bytes": 515725,
+   "license": "CC0 1.0",
+   "sha256": "ec501e1c76269cabc1648ab0e3f38db1b062ffef7ff4ce037fdc369383afd005",
+   "source": "polyhaven",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/laminate_floor_02/laminate_floor_02_nor_gl_1k.jpg"
+  },
+  "ph_laminate_floor_02/rough.jpg": {
+   "asset": "laminate_floor_02",
+   "bytes": 560815,
+   "license": "CC0 1.0",
+   "sha256": "1d48d21a8497d83d4148e4378bf6891e052c98b58cdce1f79003bcc24a3aff8f",
+   "source": "polyhaven",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/laminate_floor_02/laminate_floor_02_rough_1k.jpg"
+  },
+  "ph_oak_veneer_01/diff.jpg": {
+   "asset": "oak_veneer_01",
+   "bytes": 641756,
+   "license": "CC0 1.0",
+   "sha256": "c14681f72f59f17bff568cae7a837641443b607b899f0c279cd64a5638f877a7",
+   "source": "polyhaven",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/oak_veneer_01/oak_veneer_01_diff_1k.jpg"
+  },
+  "ph_oak_veneer_01/nor_gl.jpg": {
+   "asset": "oak_veneer_01",
+   "bytes": 484844,
+   "license": "CC0 1.0",
+   "sha256": "1297acf7b4476d5ccd83cc8b27be96aa6110f7a9c3a40be0bd767bf81b17db01",
+   "source": "polyhaven",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/oak_veneer_01/oak_veneer_01_nor_gl_1k.jpg"
+  },
+  "ph_oak_veneer_01/rough.jpg": {
+   "asset": "oak_veneer_01",
+   "bytes": 865194,
+   "license": "CC0 1.0",
+   "sha256": "ca2af5649b628ef05f196793d68cdca874c12ceb6e9ae566976546d9dd5a2604",
+   "source": "polyhaven",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/oak_veneer_01/oak_veneer_01_rough_1k.jpg"
+  }
+ }
+}
