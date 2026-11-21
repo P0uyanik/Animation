@@ -1,7 +1,110 @@
-# T-171: hands round 2 — finger separation, pre-shape, finger-by-finger close, soft contact
+# T-171: hands round 2 and 3: finger separation, pre-shape, finger-by-finger close, soft contact, grip
 
-Input `origin/main` `0cd13b7` (boy 2.3.0 / girl 0.14.0 / third 0.1.0 CURRENT). Branch `t-171-claude-hands-r2`.
-Status: **CHECKPOINT** — candidate for owner review. Nothing is on by default.
+Branch `t-171-claude-hands-r2`. Round 3 input `origin/main` `7135087` (boy 2.3.0 / girl 0.14.0 CURRENT).
+Status: **CHECKPOINT (round 3)**: candidates for owner review. Nothing is on by default. Round file: `ROUND.md`.
+
+## Round 3 (owner review 2026-11-21): owner summary
+- **What was wrong, measured on the boy's own mesh** (not on the solver's finger model, as round 2 did):
+  the palm sat 9.6 mm inside the cup; the thumb was turned 138 deg from rest (178 deg on the proposed site) with its
+  second joint bent 75 deg backwards: this is the "bends the wrong way"; only two of the three finger joints ever moved
+  (the last, longest segment stayed straight: the "too open"); the hand was thumb down with the forearm twisted
+  124 deg against it; on the way in 5-13 mm of the hand passed through the cup.
+- **What is fixed, as three new opt-in keys inside `fingerClose`** (section R3.1): the palm no longer enters the cup
+  (0.0 mm), nothing enters it on the way in (0.0 mm), the thumb stays in its natural range (36 deg from rest, laid
+  back 23 deg, never turned round), every finger bends in all three joints and rests on the cup with its pad.
+- **Thumb up is possible, but it hides the hand in this shot.** With the right hand thumb up at the boy's side his
+  forearm comes between the shot camera and the hand. So there are two fixed variants in the clip: **authored grasp
+  point (hand visible, thumb down)** and **thumb up (hand mostly hidden)**. Your choice, or a staging change.
+- **Not fixed:** the fingers do not reach further round the cup than before (they reach less far: the cup no longer
+  sinks into the palm); the carry after the pick-up with the thumb-up variant (wrist bends up to 93 deg, section R3.5).
+- **Decisions for you:** section R3.6.
+
+### R3.1 The new keys (all inside `"fingerClose": {...}`, each off unless given)
+| key | effect |
+| --- | --- |
+| `"wrap": true` | fingers: all joints flex together into an arch until the finger touches (the rig's own third finger segment included), then the joints beyond the touching segment go on; skin thickness measured on the character's mesh (boy: finger 10.8 mm, thumb 11.8 mm; the skeleton guess was 13.0). Thumb: searched inside its range only (opposition, abduction -20..30 deg, flexion; laid back at most 33 deg where the cup needs the room). Palm: the cup rests where the palm ends and the fingers begin, as far off the hand as the palm's measured surface needs for this cup radius (tracks `hand.<s>.wrap`, `hand.<s>.seat`) |
+| `"grip": "natural"` | upright round props: the grasp point turns about the prop's axis by the smallest angle at which the hand takes it thumb up with the fingers within 30 deg of the forearm for some allowed elbow, and that elbow is keyed (track `<who>/elbow.<hand bone>`). The asset is not changed (a turned socket in the scene's copy, as `visibleGrip` does) |
+| `"clear": metres` | the way in: the hand rises with its palm towards the prop and its fingers hanging, then swings the fingers level in the palm's own plane; where digits or palm still come closer than `clear`, the wrist moves out. The contact is unchanged |
+
+`fingerClose: true` is still exactly round 2 (same held grasp). The solver changes are one new branch
+(`HandPose::wrap`); without the track the hand pose is the old code path.
+
+Files: `engine/anim/animation.h/.cpp` (wrap search, track), `engine/scene/interaction.cpp` (keys, mesh measures, seat,
+natural grip, elbow track, clear), `engine/scene/verbs.cpp` (the palm check follows a turned grasp point),
+`tests/test_grasp_contact.cpp` (2 new cases). `hand_shape.*`, `collision.cpp`, `actions.cpp`, `clip_layers.cpp`, content,
+CMake files and assets: not changed.
+
+### R3.2 Variants (e910 s010, boy R picks up the cup, contact f76)
+| variant | what |
+| --- | --- |
+| `base` | the current default |
+| `r2site` | round 2: `fingerClose` + rest hand on the proposed cup site (the column the owner preferred) |
+| `r3site` | `r2site` + `wrap` + `clear 0.006`: authored grasp point, so the planner still turns the hand **thumb down** |
+| `r3` | `r3site` + `grip natural`: **thumb up** |
+
+The proposed cup site is a copy under the build folder (socket `grip` at 50 mm, band 0-100 mm); `content/assets` is unchanged.
+
+### R3.3 Numbers (`measure_t171`, `measures/r3_*.json`, table from `summarize_r3.py`)
+Every vertex the hand bone or a bone below it carries, against the cup as a capped solid (stricter than the open cup).
+
+| variant | thumb side at hold | deepest in the cup on the way in f50-75, mm (palm / thumb / fingers) | deepest in the cup held f84, mm (palm / thumb / fingers) | thumb turned from rest, deg | least joint bend, deg (negative = backwards) | index joints held, deg | fingers off the cup held, mm (largest) | lands at frame (thumb, index..little) | largest joint step in the close, deg/frame | wrist bend / twist at hold f84, deg | wrist bend in the carry f100-135, deg (largest) |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| base | down | 7.8 / 4.2 / 5.0 | 9.6 / 0.0 / 0.4 | 138 | -18 | 24, 30, 0 | -0.2 | 74, 76, 77, 78, 79 | 14 | 10 / -124 | 57 |
+| r2site | down | 7.9 / 0.0 / 12.6 | 9.6 / 0.0 / 0.3 | 178 | -75 | 24, 31, 0 | -0.1 | -, 76, 77, 79, 80 | 28 | 8 / -127 | 53 |
+| r3site | down | 0.0 / 0.0 / 0.0 | 0.0 / 0.8 / 0.2 | 36 | -23 | 14, 8, 6 | -0.1 | 76, 76, 76, 78, 80 | 4 | 20 / -120 | 58 |
+| r3 | up | 0.0 / 0.0 / 0.0 | 0.0 / 0.8 / 0.2 | 36 | -23 | 14, 8, 6 | -0.1 | 76, 76, 76, 78, 80 | 4 | 45 / -74 | 93 |
+
+- **In the cup:** default palm 9.6 mm held and up to 7.8 / 4.2 / 5.0 mm (palm / thumb / fingers) on the way in.
+  r3site and r3: 0.0 on the way in; held palm 0.0, thumb 0.8, fingers 0.2 mm (the search tolerance).
+- **Wrong way:** thumb 138 -> 36 deg from rest. The -23 deg left is the thumb laid back into the palm's plane (the cup is
+  wider than the hand is long); no finger joint is negative.
+- **Closed:** index joints 24 / 30 / 0 deg -> 14 / 8 / 6 deg. Smaller angles, but all three joints, and the pads lie on
+  the cup instead of a straight last segment pointing past it.
+- **Wrist:** the default's hand is in line with the forearm (10 deg) but twisted 124 deg; r3 (thumb up) halves the twist
+  (74 deg) and bends 45 deg. 30 deg was the target; the body is in the way of the elbow that would give it.
+- **Hand-over later in the shot** (hands apart, boy R - girl L, `--pair`): default 62 mm, r3site 70 mm, r3 18 mm at the
+  nearest (25 mm at the contact f114). No hand meets the other. No load warning in any variant.
+
+### R3.4 Sheets and clips
+PICTURES
+
+### R3.5 Limits
+- **Carry with `r3`:** the elbow is planned for the contact pose. In the carry and the hand-over (f100-135) the wrist
+  bends up to 93 deg (default 57) and the elbow rises above the shoulder. A per-frame elbow plan for carry / pass is
+  the next step; the carry lives in `actions.cpp` (T-175's file).
+- **Reach of the fingers:** the boy's fingers are 35 mm long from the knuckle, the palm is 23 mm thick, the cup is
+  80 mm wide and as tall as the hand. Without the palm sinking in, the fingers cover about 40 deg of the cup.
+- **Staging:** the hanging hand starts under the table edge, the cup is 18 cm from the shoulder of a 27 cm arm, 5 cm
+  from the table edge, beside a wide body. Every grip here is cramped; this is not something the hand planner can undo.
+- `grip natural` was measured in e910 only. In the unit-test scene it gives thumb up with a wrist bend of 84 deg:
+  where no allowed elbow gives a straight wrist it still turns the hand up.
+- Girl: the old test package keeps 2.7 mm of the thumb in the cup with `wrap` (3.2 mm without). Girl 0.14.0 was not
+  rendered; the hand-over receiver uses the same keys.
+- The mesh is unchanged (released boy 2.3.0).
+
+### R3.6 Decisions and recommendations
+1. **Which fixed variant:** `r3site` (hand visible, thumb down, all contact fixes) or `r3` (thumb up, hand mostly
+   hidden, carry not solved). Recommendation: `r3site` now; thumb up together with a staging change (cup in front of
+   the boy, further from him), then `r3` needs no forward elbow.
+2. **`wrap` and `clear` as part of `fingerClose`'s defaults** once you have seen the clip: recommended for `wrap` (it
+   removes the palm in the cup and the turned thumb on every wrap grasp); `clear` after a second shot.
+3. **Cup site** (socket 50 mm, band 0-100 mm): still recommended; still a content change for you to approve.
+4. **T-157 (a):** unchanged from round 2: not recommended as the default.
+5. Follow-ups: per-frame elbow for carry / pass; a "press" depth so the plush palm gives and the fingers reach
+   further; `planArmLift` popping in sit / stand (reported by T-175, not looked at here).
+
+### R3.7 Tests and default path
+- Default path: e910 s010 bake (192 frames) from a clean `origin/main` `30999cf` build and from this branch: sha256
+  `b72f987116cec18d...` on both (main `7135087` changes no engine file).
+- `plush_tests`: 245 cases pass (2 new). New: bad values are load errors; `wrap` keys the tracks, the palm's grip point is
+  on the socket, no hand vertex deeper than the limit (boy 19.4 -> 0.0 mm, girl 3.2 -> 2.7 mm), thumb turned 135 -> 34
+  and 153 -> 32 deg, no finger joint backwards; `grip natural` turns a thumb-down grasp thumb up and keys the elbow,
+  `"site"` leaves every key as it was; `clear` adds the waypoint, is never deeper in the cup on the way in and keeps
+  the contact.
+- No golden, threshold or existing test was changed.
+
+---
+# Round 2 (2026-11-20/21, superseded where round 3 says so)
 
 ## Owner summary
 - **What you can switch on:** one key on a grasp, `"fingerClose"`. The hand then opens and takes the cup's shape on the
