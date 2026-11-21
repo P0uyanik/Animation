@@ -1,9 +1,9 @@
 """T-187: joins the rendered frames of the three e912 scenes into one preview clip and a contact sheet.
 
-    python3 episodes/e912_paper_boat/assemble.py <run-id> [--out docs/evaluation/video/T-187]
+    python3 episodes/e912_paper_boat/assemble.py <run-id | -> [--out docs/evaluation/video/T-187]
 
 Reads shots/s0N0/shot.scene.json ("x_t187": shot list and render range) and the frames of
-shots/s0N0/build/runs/<run-id>/render/frame_NNNN.png, in the order s010, s020, s030. Writes
+shots/s0N0/build/runs/<run-id>/render/frame_NNNN.png ("-": shots/s0N0/build/render, run_shot without --run-dir), in the order s010, s020, s030. Writes
   <out>/T-187_paper_boat_h264.mp4   H.264 (crf 20, yuv420p, 24 fps): all rendered frames back to back
   <out>/contact_sheet.jpg           one tile every 12 frames (0.5 s) plus the first frame of every shot, labelled
                                     with the shot, the scene and its frame
@@ -34,7 +34,7 @@ def main():
         sc = json.load(open(os.path.join(HERE, "shots", s, "shot.scene.json")))
         x = sc["x_t187"]
         fa, fb = x["render_frames"]
-        rdir = os.path.join(HERE, "shots", s, "build", "runs", a.run, "render")
+        rdir = os.path.join(HERE, "shots", s, "build", *(["runs", a.run] if a.run != "-" else []), "render")
         for f in range(fa, fb + 1):
             shot = next(str(sh["shot"]) for sh in x["shots"] if sh["frames"][0] <= f <= sh["frames"][1])
             p = os.path.join(rdir, f"frame_{f:04d}.png")
