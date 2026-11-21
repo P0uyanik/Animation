@@ -63,6 +63,11 @@ def _t168(d, _t):  # test_face_t168
                  or (k == "nose" and isinstance(v, dict) and v.get("type") == "upturned"))
 
 
+def _garment_field(d, field):  # T-184: a clothing item that switches a garment/3 item field on
+    return _walk(d, lambda k, v: k == "garments" and isinstance(v, list)
+                 and any(isinstance(g, dict) and g.get(field) not in (None, False) for g in v))
+
+
 # Scopes (repository-relative paths of .json files), as the old guards scanned them:
 #   characters  every file under assets/characters/ (test_hair_r5, test_hair_r6, test_hands_r2)
 #   spec_dirs   files under assets/characters/ whose folder path contains "/spec" (test_face_r5), plus the stored
@@ -84,6 +89,7 @@ FEATURES = {
                     "detect": lambda d, t: _has_key(d, "upper_yaw_deg", "lower_yaw_deg", "sink_m",
                                                     "shell_occlusion_tint", "closed_fill")},
     "t168_face": {"scope": "assets", "detect": _t168, "old": "test_face_t168"},
+    "seated": {"scope": "characters", "detect": lambda d, t: _garment_field(d, "seated"), "old": "T-184 (new)"},
 }
 
 

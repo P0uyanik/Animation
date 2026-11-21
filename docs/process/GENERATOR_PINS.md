@@ -65,6 +65,7 @@ Spec keys that change output only when set. Absent = the pinned module builds ex
 | `cheek_pad_top_fade_m` | face_v3/lower_face.py | T-168 |
 | `face.nose.type = "upturned"` | face_features.py | T-168 |
 | `leg_split` (crotch arch) | garments_v2/ (core.py, outlines.py) | T-093b |
+| `seated` on a `shorts` / `trousers` item (weights and collision weights for a deep hip bend) | garments_v3/seated.py via garments_v3/core.py | T-184 |
 
 Flags above were taken from module docstrings and task commits; the list is not an exhaustive scan of every key.
 

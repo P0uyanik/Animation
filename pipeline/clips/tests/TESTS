@@ -6,3 +6,4 @@
 # Adding a line for a NEW test needs no approval; changing or removing a line does.
 
 run test_clip_files.py --selftest
+run test_import_bvh.py                       # T-175 mocap importer
