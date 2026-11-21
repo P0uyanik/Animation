@@ -63,3 +63,20 @@ The guard cases run against scratch git repositories with the real `tools/guarde
 - `tools/tests/test_task_kit.py:57-58` asserted its own path appears in `check_all.py`; changed (2 lines, Supervisor
   approved, needs trailer) to check `tools/tests/TESTS`.
 - C++ tests stay in `tests/CMakeLists.txt`. Adding one edits that existing file, which needs a trailer.
+
+## Local runs (acceptance 4)
+
+- **Full gate, `check_all.py --full --blender` (bpy 5.3 wrapper at /usr/local/bin/blender), 70.7 min:**
+  - PASS: frozen assets, lint, C++ build, C++ tests, and the Blender tier, including the all-character regression
+    (boy fidelity 69.66, girl 63.40, white-hair PASS).
+  - Write-set: FAIL, because the 3 extra manifests were outside the claim then. Fixed by the claim on main and the
+    merge.
+  - Python tests: FAIL only on `test_ci.py`, because the container's shallow clone lacked commit ab9fd4c. Passes
+    after `git fetch --unshallow`.
+- **After merging main:**
+  - Write-set PASS (27 paths).
+  - Python tests and links PASS (34 `run` entries).
+  - Guarded paths lists exactly `tools/check_all.py`, `tools/guarded_paths.txt`, `tools/regression/tests/TESTS`
+    (under `tools/regression/`) and `tools/tests/test_task_kit.py`. These are the trailers for merge. The 17 other
+    new manifests and `test_test_registry.py` pass without a trailer.
+- **Order independence:** the 33 pre-T-182 commands pass in the b87fbfd order as well as in sorted order.
