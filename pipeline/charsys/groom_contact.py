@@ -39,16 +39,9 @@ spec.hair.dynamics.contact   {"colliders": [...], "segments": bool (default true
        the same way (a thick first segment: the lock cannot swing into the ear it starts beside).
     "rest": true | {"friction": >= 0 (40), "max_swing": >= 0 (12)}: resting contact (docs/SECONDARY_MOTION.md);
        the chains take every collider ("solid" of a collider is then without effect).
-    "sheets": [{"structure": pattern, "top_z": world z where the sheet leaves the head, "chains": 2..64 (13),
-       "bones": 1..8 (4), "blend": 0.1..1 (0.5, in bones: how far below top_z the chains take over),
-       "stiffness" (120), "stiffness_tip" (90), "damping" (18), "gravity" (0.5), "drag" (0.8), "limit_deg" (30)}]:
-       a static hanging sheet (a curtain) gets chains: `chains` of them, spread evenly over the sheet's angle about
-       the head bone's vertical axis, each down the middle of its sector from top_z to the sector's lower edge. A
-       vertex below top_z follows the two chains next to it (by angle) and, along them, the bones as a lock does.
-       The chains are named <structure>.<kk> (group = the structure), take binding.blend_z anchors like locks and
-       the same contact block; with "radii" each joint's radius encloses its sector of the sheet. The chains are
-       independent: where colliders push neighbours apart the sheet shears (T-183: the girl's back curtain, edges up
-       to 3.8 x their rest length), so use it only where that cannot be seen.
+    "blend_z": {structure pattern: [lo, hi]}: binding.blend_z for the static vertices of the matching hair objects
+       alone (below lo the chest bone, linear to the head bone at hi); the chains and every other object keep the
+       spec's binding.blend_z.
 """
 import fnmatch
 import json
@@ -65,12 +58,7 @@ SKIN_RANGE = {"spacing_m": (0.004, 0.1), "radius_m": (0.005, 0.2), "pad_m": (0.0
 FIGURE_EXCLUDE = ["garment.collider.*", "WGT-*", "eye*", "brow*", "lash*", "lid*", "mouth*", "glasses*"]
 RADII_DEFAULT = {"percentile": 100.0, "floor_m": 0.006}
 REST_DEFAULT = {"friction": 40.0, "max_swing": 12.0}
-SHEET_DEFAULT = {"chains": 13, "bones": 4, "blend": 0.5, "stiffness": 120.0, "stiffness_tip": 90.0, "damping": 18.0,
-                 "gravity": 0.5, "drag": 0.8, "limit_deg": 30.0}
-SHEET_RANGE = {"chains": (2, 64), "bones": (1, 8), "blend": (0.1, 1.0), "stiffness": (0, 5000), "stiffness_tip": (0, 5000),
-               "damping": (0, 500), "gravity": (0, 5), "drag": (0, 50), "limit_deg": (0, 180), "top_z": (-10, 10)}
-DYN_BONE_PREFIX = "DYN-"  # as groom.DYN_BONE_PREFIX (chain bones)
-CONTACT_KEYS = {"colliders", "segments", "anchored_gravity", "structures", "figure", "radii", "rest", "sheets"}
+CONTACT_KEYS = {"colliders", "segments", "anchored_gravity", "structures", "figure", "radii", "rest", "blend_z"}
 KEEPOUT_KEYS = {"objects", "margin_m", "smooth", "structures"}
 
 
@@ -196,27 +184,12 @@ def _validate_round2(ct):
             isinstance(rs, dict) and set(rs) <= {"friction", "max_swing"} and _num(rs, "friction", 0, 1000, 40)
             and _num(rs, "max_swing", 0, 1000, 12)):
         errs.append("hair.dynamics.contact.rest must be true, false or {\"friction\": 0..1000, \"max_swing\": 0..1000}")
-    sh = ct.get("sheets")
-    if sh is not None:
-        if not isinstance(sh, list) or not sh:
-            errs.append("hair.dynamics.contact.sheets must be a non-empty list")
-        else:
-            for i, e in enumerate(sh):
-                where = f"hair.dynamics.contact.sheets[{i}]"
-                if not isinstance(e, dict) or set(e) - (set(SHEET_RANGE) | {"structure"}):
-                    errs.append(f"{where}: keys are {sorted(set(SHEET_RANGE) | {'structure'})}")
-                    continue
-                if not isinstance(e.get("structure"), str) or not e.get("structure"):
-                    errs.append(f"{where}: needs a structure (name pattern)")
-                if "top_z" not in e:
-                    errs.append(f"{where}: needs top_z")
-                for k, (lo, hi) in SHEET_RANGE.items():
-                    if not _num(e, k, lo, hi, SHEET_DEFAULT.get(k, 0.0)):
-                        errs.append(f"{where}: {k} must be in {lo}..{hi}")
-                for k in ("chains", "bones"):
-                    v = e.get(k, 1)
-                    if isinstance(v, (int, float)) and not isinstance(v, bool) and float(v) != int(v):
-                        errs.append(f"{where}: {k} must be a whole number")
+    bz = ct.get("blend_z")
+    if bz is not None and not (isinstance(bz, dict) and bz and all(
+            isinstance(k, str) and k and isinstance(v, list) and len(v) == 2
+            and all(isinstance(x, (int, float)) and not isinstance(x, bool) for x in v) and v[0] < v[1]
+            for k, v in bz.items())):
+        errs.append("hair.dynamics.contact.blend_z must be {structure pattern: [lo, hi]} with lo < hi")
     return errs
 
 
@@ -363,7 +336,7 @@ def store(hair_spec, objs):
     for ob in objs:
         ob[CONTACT_PROP] = data
     return {"colliders": [c["name"] for c in ct.get("colliders", [])],
-            **({k: ct[k] for k in ("radii", "rest", "sheets") if k in ct})}
+            **({k: ct[k] for k in ("radii", "rest", "blend_z") if k in ct})}
 
 
 def fit_capsule(points, fit, axis=None, percentile=None, pad=0.0):
@@ -673,163 +646,39 @@ def capped_radii(radii, joints, root_colliders):
     return out
 
 
-def _bone_weights(u, n):
-    """As groom._chain_weights: weights of the n chain bones at chain coordinate u (linear between bone centres)."""
-    b = min(max(u - 0.5, 0.0), n - 1.0)
-    lo = int(math.floor(b))
-    f = b - lo
-    w = {lo: 1.0 - f}
-    if f > 0 and lo + 1 < n:
-        w[lo + 1] = f
-    return w
+def blend_weight(z, lo, hi):
+    """Head-bone weight of a static vertex at height z for blend_z [lo, hi] (as groom.bind); the chest takes the rest."""
+    return min(1.0, max(0.0, (z - lo) / (hi - lo)))
 
 
-def sheet_layout(points, axis_xy, top_z, chains, bones):
-    """Chains for a hanging sheet (pure): {"mid": angle of the sheet's middle, "a0", "step": the chains' angles are
-    a0 + k step (relative to mid), "bottom": [z of each chain's lower end], "joints": [[(x, y, z)] * (bones + 1)]}.
-
-    points: (N, 3) vertices of the sheet. Angles are taken about the vertical axis through axis_xy, relative to the
-    middle direction of the vertices below top_z (so a sheet may lie anywhere round the head, but not all round).
-    Chain k runs down the middle of its sector (an equal share of the angle): joint j lies at top_z + (bottom -
-    top_z) j / bones, at the mean place of the sector's vertices of that height (both faces of a shell: mid-sheet);
-    bottom is the 2nd percentile of the sector's heights."""
-    import numpy as np
-    P = np.asarray(points, dtype=np.float64)
-    P = P[P[:, 2] < top_z]
-    if len(P) < 4 * chains:
-        raise ValueError("too few vertices below top_z")
-    d = P[:, :2] - np.asarray(axis_xy, dtype=np.float64)
-    mid = math.atan2(float(d[:, 1].mean()), float(d[:, 0].mean()))
-    ang = (np.arctan2(d[:, 1], d[:, 0]) - mid + math.pi) % (2 * math.pi) - math.pi
-    lo, hi = float(ang.min()), float(ang.max())
-    step = (hi - lo) / chains
-    a0 = lo + 0.5 * step
-    bottom, joints = [], []
-    for k in range(chains):
-        sel = P[np.abs(ang - (a0 + k * step)) <= 0.5 * step + 1e-9]
-        if len(sel) < 4:
-            raise ValueError(f"no vertices in sector {k}")
-        zb = float(np.percentile(sel[:, 2], 2))
-        seg = (top_z - zb) / bones
-        if seg < 1e-4:
-            raise ValueError(f"sector {k} does not reach below top_z")
-        J = []
-        for j in range(bones + 1):
-            z = top_z - seg * j
-            near = np.abs(sel[:, 2] - z)
-            band = sel[near <= max(0.5 * seg, float(np.sort(near)[3]))]
-            J.append((float(band[:, 0].mean()), float(band[:, 1].mean()), z))
-        bottom.append(zb)
-        joints.append(J)
-    return {"mid": mid, "a0": a0, "step": step, "bottom": bottom, "joints": joints}
-
-
-def sheet_weights(p, layout, axis_xy, top_z, blend=0.5):
-    """Chain weights of a sheet vertex p (pure): ({(chain, bone): weight}, chain coordinate u). Empty at or above
-    top_z. Below it the vertex follows the two chains next to its angle (linear between them, the edge chain alone
-    beyond it) and along them the bones by its height (u = 0 at top_z, `bones` at the chains' lower end, which is
-    interpolated between the two); over the first `blend` bones the weights rise from 0 (the static binding keeps
-    the rest: no step at top_z)."""
-    K = len(layout["joints"])
-    n = len(layout["joints"][0]) - 1
-    if p[2] >= top_z:
-        return {}, 0.0
-    a = (math.atan2(p[1] - axis_xy[1], p[0] - axis_xy[0]) - layout["mid"] + math.pi) % (2 * math.pi) - math.pi
-    t = min(K - 1.0, max(0.0, (a - layout["a0"]) / layout["step"]))
-    k0 = min(K - 2, int(math.floor(t))) if K > 1 else 0
-    f = t - k0 if K > 1 else 0.0
-    zb = layout["bottom"][k0] * (1 - f) + (layout["bottom"][k0 + 1] * f if f > 0 else 0.0)
-    u = min(float(n), n * (top_z - p[2]) / max(1e-6, top_z - zb))
-    rise = min(1.0, u / blend)
-    out = {}
-    for k, wk in ((k0, 1.0 - f), (k0 + 1, f)):
-        if wk > 1e-6:
-            for i, wi in _bone_weights(u, n).items():
-                out[(k, i)] = wk * wi * rise
-    return out, u
-
-
-def _bind_sheets(rig, objs, sheets, head_bone, chest_bone, blend_z):
-    """Adds the sheet chains: bones (deform, parented to the head bone), vertex weights, chain records."""
-    import bpy
-    from mathutils import Vector
-    mw = rig.matrix_world
-    inv = mw.inverted()
-    axis = tuple((mw @ rig.data.bones[head_bone].head_local))[:2]
-    jobs = []
-    for sh in sheets:
-        cfg = dict(SHEET_DEFAULT, **sh)
-        for ob in objs:
-            name = ob.name[5:] if ob.name.startswith("hair_") else ob.name
-            if not _match(name, [sh["structure"]]):
-                continue
-            pts = [tuple(ob.matrix_world @ v.co) for v in ob.data.vertices]
-            try:
-                lay = sheet_layout(pts, axis, float(cfg["top_z"]), int(cfg["chains"]), int(cfg["bones"]))
-            except ValueError as e:
-                raise SystemExit(f"hair.dynamics.contact.sheets: {ob.name}: {e}")
-            jobs.append((ob, name, cfg, pts, lay))
-    if not jobs:
-        raise SystemExit("hair.dynamics.contact.sheets: no hair object matches a sheet's structure")
-    bpy.ops.object.select_all(action="DESELECT")
-    rig.hide_set(False)
-    rig.select_set(True)
-    bpy.context.view_layer.objects.active = rig
-    bpy.ops.object.mode_set(mode="EDIT")
-    eb = rig.data.edit_bones
-    bone_names = {}
-    for ob, name, cfg, pts, lay in jobs:
-        for k, J in enumerate(lay["joints"]):
-            prev, names = eb[head_bone], []
-            for j in range(len(J) - 1):
-                b = eb.new(f"{DYN_BONE_PREFIX}{name}.{k:02d}.{j}")
-                b.head, b.tail = inv @ Vector(J[j]), inv @ Vector(J[j + 1])
-                b.parent = prev
-                b.use_connect = j > 0
-                b.use_deform = True
-                prev = b
-                names.append(b.name)
-            bone_names[(name, k)] = names
-    bpy.ops.object.mode_set(mode="OBJECT")
-    out, rep = [], {}
-    for ob, name, cfg, pts, lay in jobs:
-        groups = {}
-        moved = 0
-        for v, p in zip(ob.data.vertices, pts):
-            w, _ = sheet_weights(p, lay, axis, float(cfg["top_z"]), float(cfg["blend"]))
-            if not w:
-                continue
-            keep = 1.0 - sum(w.values())
-            for g in list(v.groups):
-                vg = ob.vertex_groups[g.group]
-                if keep <= 1e-6:
-                    vg.remove([v.index])
-                else:
-                    vg.add([v.index], g.weight * keep, "REPLACE")
-            for (k, i), x in w.items():
-                if x > 1e-6:
-                    gname = bone_names[(name, k)][i]
-                    vg = groups.get(gname) or ob.vertex_groups.new(name=gname)
-                    groups[gname] = vg
+def _rebind_static(objs, head_bone, chest_bone, table):
+    """contact.blend_z: the head / chest weights of the static vertices of the matching objects, by their own range."""
+    rep = {}
+    for ob in objs:
+        name = ob.name[5:] if ob.name.startswith("hair_") else ob.name
+        rng = next((table[k] for k in sorted(table) if _match(name, [k])), None)
+        if rng is None or head_bone == chest_bone:
+            continue
+        gh = ob.vertex_groups.get(head_bone) or ob.vertex_groups.new(name=head_bone)
+        gc = ob.vertex_groups.get(chest_bone) or ob.vertex_groups.new(name=chest_bone)
+        own, n = {gh.index, gc.index}, 0
+        for v in ob.data.vertices:
+            if any(g.group not in own and g.weight > 1e-6 for g in v.groups):
+                continue  # carried by a chain
+            w = blend_weight((ob.matrix_world @ v.co).z, float(rng[0]), float(rng[1]))
+            for vg, x in ((gh, w), (gc, 1.0 - w)):
+                if x > 0:
                     vg.add([v.index], x, "REPLACE")
-            moved += 1
-        for k, J in enumerate(lay["joints"]):
-            ch = {"name": f"{name}.{k:02d}", "group": name, "bones": bone_names[(name, k)], "tip": list(J[-1]),
-                  **{key: float(cfg[key]) for key in ("stiffness", "stiffness_tip", "damping", "gravity", "drag", "limit_deg")},
-                  "radius": 0.0}
-            if blend_z and chest_bone != head_bone:
-                lo, hi = float(blend_z[0]), float(blend_z[1])
-                w = [round(1.0 - min(1.0, max(0.0, (j[2] - lo) / (hi - lo))), 4) for j in J]
-                if any(w[1:]):
-                    ch["anchor"] = {"bone": chest_bone, "weights": [0.0] + w[1:]}
-            out.append(ch)
-        rep[ob.name] = {"chains": len(lay["joints"]), "bones": int(cfg["bones"]), "vertices": moved,
-                        "sector_deg": round(math.degrees(lay["step"]), 1),
-                        "bottom_z": [round(min(lay["bottom"]), 3), round(max(lay["bottom"]), 3)]}
-    return out, rep
+                else:
+                    vg.remove([v.index])
+            n += 1
+        rep[ob.name] = {"range": [float(rng[0]), float(rng[1])], "vertices": n}
+    if not rep:
+        raise SystemExit("hair.dynamics.contact.blend_z: no hair object matches a pattern")
+    return rep
 
 
-def bind_contact(rig, objs, head_bone, chest_bone, binding=None):
+def bind_contact(rig, objs, head_bone, chest_bone):
     """Bind step: fits the contact colliders and writes them, with the chains' "contact" blocks, into the rig's
     "ps_dynamics" (the engine exporter passes chain keys through). No-op without a stored contact spec or chains."""
     import bpy
@@ -841,9 +690,8 @@ def bind_contact(rig, objs, head_bone, chest_bone, binding=None):
     out = {}
     dyn = json.loads(rig["ps_dynamics"])
     before = [c["name"] for c in dyn["colliders"]]
-    if ct.get("sheets"):
-        more, out["sheets"] = _bind_sheets(rig, objs, ct["sheets"], head_bone, chest_bone, (binding or {}).get("blend_z"))
-        dyn["chains"] += more
+    if ct.get("blend_z"):
+        out["blend_z"] = _rebind_static(objs, head_bone, chest_bone, ct["blend_z"])
     resolve = {"head": head_bone, "chest": chest_bone}
     mw = rig.matrix_world
     skip = set(objs)

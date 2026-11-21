@@ -7,9 +7,8 @@ same object, groom/5 validation and lowering unchanged); the keys are validated 
 refused) and taken out of what the groom/4 path sees; the ear keep-out moves every point out of the volume by the
 margin, leaves far points alone, spreads the move over the neighbours and is deterministic; the capsule fit recovers
 a known capsule (blob and limb), honours percentile and pad, and refuses too few vertices; the round 2 keys (skin
-colliders, figure, radii, rest, sheets) validate and are refused when malformed; chain radii and their
-cap by the rest clearance; the sheet chains (layout over the angle, weights that sum to one, rise from the static
-binding and use at most four bones); skin spheres on a ball (with the mathutils
+colliders, figure, radii, rest, blend_z) validate and are refused when malformed; chain radii and their
+cap by the rest clearance; the per-structure blend weight; skin spheres on a ball (with the mathutils
 module, otherwise skipped); the T-183 candidate override validates on the girl's current spec and changes nothing
 but hair keys."""
 import copy
@@ -200,17 +199,17 @@ def main():
     def round2():
         return {"segments": True, "anchored_gravity": True, "radii": {"percentile": 100, "floor_m": 0.006},
                 "rest": {"friction": 40, "max_swing": 12}, "figure": {"exclude": ["WGT-*", "eye*"]},
-                "sheets": [{"structure": "curtain", "top_z": 0.78, "chains": 13, "bones": 4}],
+                "blend_z": {"curtain": [0.68, 0.78]},
                 "colliders": [{"name": "skin_head", "fit": "skin", "groups": ["DEF-spine.006"], "exclude_objects": ["ear.*"],
                                "reach_m": 0.1},
                               {"name": "skin_torso", "fit": "skin", "exclude_groups": ["DEF-spine.006", "DEF-hand.*"]},
                               {"name": "skin_all", "fit": "skin"}]}
 
-    check("round 2: skin colliders, figure, radii, rest and sheets validate",
+    check("round 2: skin colliders, figure, radii, rest and blend_z validate",
           CT.validate(hair(None, {"contact": round2()})) == [], CT.validate(hair(None, {"contact": round2()})))
     check("round 2: rest may be true", CT.validate(hair(None, {"contact": dict(round2(), rest=True)})) == [])
     check("round 2: store passes the keys on (the names of what bind will do)",
-          set(CT.store(hair(None, {"contact": round2()}), [{}])) >= {"colliders", "radii", "rest", "sheets"})
+          set(CT.store(hair(None, {"contact": round2()}), [{}])) >= {"colliders", "radii", "rest", "blend_z"})
 
     def bad(name, change):
         ct = round2()
@@ -226,10 +225,12 @@ def main():
     bad("rest as a number", lambda ct: ct.update(rest=1.5))
     bad("rest friction negative", lambda ct: ct.update(rest={"friction": -1}))
     bad("figure without a list", lambda ct: ct.update(figure={"exclude": "WGT-*"}))
-    bad("sheet without top_z", lambda ct: ct["sheets"][0].pop("top_z"))
-    bad("sheet with half a chain", lambda ct: ct["sheets"][0].update(chains=6.5))
-    bad("sheet without a structure", lambda ct: ct["sheets"][0].pop("structure"))
-    bad("sheets empty", lambda ct: ct.update(sheets=[]))
+    bad("blend_z as a list", lambda ct: ct.update(blend_z=[0.68, 0.78]))
+    bad("blend_z upside down", lambda ct: ct.update(blend_z={"curtain": [0.78, 0.68]}))
+    bad("blend_z empty", lambda ct: ct.update(blend_z={}))
+    check("blend weight: chest below lo, head above hi, linear between",
+          [CT.blend_weight(z, 0.68, 0.78) for z in (0.5, 0.68, 0.73, 0.78, 0.9)] == [0.0, 0.0, 0.5, 1.0, 1.0]
+          or [round(CT.blend_weight(z, 0.68, 0.78), 9) for z in (0.5, 0.68, 0.73, 0.78, 0.9)] == [0.0, 0.0, 0.5, 1.0, 1.0])
 
     # chain radii: a tube of points 20 mm round a straight chain, a bulge of 35 mm at joint 2
     tube = []
@@ -253,58 +254,6 @@ def main():
           CT.capped_radii([0.02, 0.02], [(0, 0, 0.1), (0, 0, 0.05)], ball) == [0.01, 0.0])
     check("capped radii: without colliders on the root bone the fitted radii stay and the root is 0",
           CT.capped_radii(rad, line, []) == [0.0] + [round(r, 5) for r in rad[1:]])
-
-    # sheet chains: half a tube round the vertical axis, 160 degrees, two faces, a scalloped lower edge
-    sheet, top = [], 0.78
-    for ia in range(161):
-        a = math.radians(-80 + ia)
-        zb = 0.64 + 0.02 * (1 + math.cos(a * 6))
-        for iz in range(41):
-            z = 0.86 - (0.86 - zb) * iz / 40
-            for rr in (0.135, 0.155):
-                sheet.append((rr * math.sin(a), rr * math.cos(a), z))
-    lay = CT.sheet_layout(sheet, (0.0, 0.0), top, 8, 4)
-    Jr = [math.hypot(j[0], j[1]) for J in lay["joints"] for j in J]
-    check("sheet layout: 8 chains of 5 joints, evenly over the 160 degrees, from top_z down the middle of the sheet",
-          len(lay["joints"]) == 8 and all(len(J) == 5 for J in lay["joints"]) and abs(math.degrees(lay["step"]) - 20) < 0.01
-          and all(abs(J[0][2] - top) < 1e-9 for J in lay["joints"]) and all(abs(r - 0.145) < 0.004 for r in Jr),
-          (round(math.degrees(lay["step"]), 2), round(min(Jr), 4), round(max(Jr), 4)))
-    check("sheet layout: each chain ends at its sector's lower edge (the scallops)",
-          all(0.64 <= b <= 0.685 for b in lay["bottom"]) and max(lay["bottom"]) - min(lay["bottom"]) > 0.005
-          and all(abs(J[-1][2] - b) < 1e-9 for J, b in zip(lay["joints"], lay["bottom"])), [round(b, 3) for b in lay["bottom"]])
-    check("sheet layout: deterministic", CT.sheet_layout(sheet, (0.0, 0.0), top, 8, 4) == lay)
-    try:
-        CT.sheet_layout(sheet, (0.0, 0.0), 0.5, 8, 4)
-        check("sheet layout refuses: nothing below top_z", False)
-    except ValueError:
-        check("sheet layout refuses: nothing below top_z", True)
-    sums, most, above, rising = [], 0, 0, True
-    for p in sheet:
-        w, u = CT.sheet_weights(p, lay, (0.0, 0.0), top, 0.5)
-        if p[2] >= top:
-            above += len(w)
-            continue
-        most = max(most, len(w))
-        if u >= 0.5:
-            sums.append(sum(w.values()))
-        else:
-            rising = rising and abs(sum(w.values()) - u / 0.5) < 1e-9 and all(k[1] == 0 for k in w)
-    check("sheet weights: none at or above top_z; below the blend zone they sum to 1; at most 4 bones per vertex",
-          above == 0 and sums and all(abs(x - 1) < 1e-9 for x in sums) and most <= 4, (above, most))
-    check("sheet weights: over the first half bone they rise from 0 on the first bones only (no step at top_z)", rising)
-    a_on = lay["mid"] + lay["a0"] + 3 * lay["step"]
-    z_on = top - 0.5 * (top - lay["bottom"][3])
-    w_on, _ = CT.sheet_weights((0.145 * math.cos(a_on), 0.145 * math.sin(a_on), z_on), lay, (0.0, 0.0), top)
-    check("sheet weights: a vertex at a chain's angle follows that chain only, the two bones that meet at its height",
-          set(w_on) == {(3, 1), (3, 2)} and abs(w_on[(3, 1)] - 0.5) < 1e-6, w_on)
-    a_mid = lay["mid"] + lay["a0"] + 3.5 * lay["step"]
-    w_between, _ = CT.sheet_weights((0.145 * math.cos(a_mid), 0.145 * math.sin(a_mid), 0.70), lay, (0.0, 0.0), top)
-    share = {k: sum(v for (c, _), v in w_between.items() if c == k) for k in (3, 4)}
-    check("sheet weights: halfway between two chains each carries half", abs(share[3] - 0.5) < 1e-6 and abs(share[4] - 0.5) < 1e-6,
-          share)
-    a_edge = lay["mid"] + lay["a0"] - 0.4 * lay["step"]
-    w_edge, _ = CT.sheet_weights((0.145 * math.cos(a_edge), 0.145 * math.sin(a_edge), 0.70), lay, (0.0, 0.0), top)
-    check("sheet weights: beyond the first chain the edge follows it alone", {c for c, _ in w_edge} == {0}, w_edge)
 
     # skin spheres on a ball (needs mathutils: the bpy module)
     try:

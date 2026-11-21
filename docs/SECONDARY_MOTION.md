@@ -129,11 +129,6 @@ Groom side (`spec.hair`, groom/5 module, `pipeline/charsys/groom_contact.py`), b
     not collide with the head at rest). The root joint takes the next joint's radius, capped the same way: with a
     root radius of 0 the first segment was a thin cone and the short side locks turned 5-7 mm into the ears.
   - `"rest": true | {"friction", "max_swing"}`: the chains get resting contact against every collider.
-  - `"sheets": [{"structure", "top_z", "chains", "bones", "blend", chain parameters}]`: chains for a static hanging
-    sheet, spread over its angle about the head bone's axis; a vertex follows the two chains next to it. The chains
-    are independent: where colliders push neighbours apart the sheet shears (T-183 measured mesh edges up to 3.8 x
-    their rest length on the girl's back curtain against 1.8 x without chains), so the T-183 candidate does not use
-    the key.
 - `hair.ear_keepout`: `{"objects": ["ear.*"], "margin_m", "smooth", "structures"}`. Hair surface vertices inside a
   keep-out mesh are moved out along the head's front/back axis (the shorter way) before the fibres are grown, and the
   move is relaxed over the neighbours. Vertex counts and order do not change.
