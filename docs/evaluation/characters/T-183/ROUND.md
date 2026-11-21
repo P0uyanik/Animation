@@ -4,7 +4,7 @@ Branch `t-183-claude-hair-contact`. Round 1 input `7135087`; round 2 input `2664
 
 ## Round 2 (in progress): hair against the whole body and the garments
 
-Session 3 state: see "Session 3" below first (measure corrected, port done, curtain chains tried and not used).
+Session 4 state: see "Session 4" below first (final candidate measured; `sheets` and the curtain blend are gone).
 
 Owner verdict on round 1 (2026-11-21 ~19:20 CET): not accepted, "the hair still intersects with the body and other
 areas; it goes inside the body". Round 2 goal: no hair inside head, neck, shoulders, back, arms, hands or garments
@@ -125,9 +125,10 @@ as is; show it in the arm-raised close-up. Possible trade if asked: thinner chai
 **Read this section first; it replaces the numbers and the next steps above.**
 
 - Groom port (`pipeline/charsys/groom_contact.py` `bind_contact`, called by `groom_r6.bind` with the binding): keys
-  `"fit": "skin"` colliders, `figure`, `radii`, `rest`, `sheets` (module docstring, `docs/SECONDARY_MOTION.md`).
+  `"fit": "skin"` colliders, `figure`, `radii`, `rest` (module docstring, `docs/SECONDARY_MOTION.md`; `sheets` was
+  removed in session 4).
   The candidate override uses five skin sets (head 150 spheres, ears 102, torso 298, arms 157, hands 97 = prototype
-  `p7`), `radii` (percentile 100, floor 6 mm), `rest` (friction 40, max_swing 12). `test_hair_contact.py` 86 checks
+  `p7`), `radii` (percentile 100, floor 6 mm), `rest` (friction 40, max_swing 12). `test_hair_contact.py` 73 checks (86 with the sheet checks, removed in session 4)
   (the skin sphere checks need the bpy module).
 - Root radius (new, measured): the root joint takes the next joint's radius, capped by its own rest clearance to the
   head-bone colliders (was 0). With 0 the first segment was a thin cone; the two short `side_b` locks start beside
@@ -138,7 +139,7 @@ as is; show it in the arm-raised close-up. Possible trade if asked: thinner chai
   curtain is hidden under the ringlets in both views. Numerically it shears (`tools/sheet_stretch.py`): mesh edges up
   to 3.82 x rest length (released, static: 1.84 x), neighbouring chain tips 0.3-3.7 x their rest spacing; and the
   curtain's count hardly moved (9.6 mm / 130 frames against 11.1 mm / 165 frames). Reported to the Supervisor
-  (condition 2). **The candidate does not use `sheets`**; the key stays opt-in and is documented as shearing.
+  (condition 2). **The candidate does not use `sheets`**; the key and its code were removed in session 4.
 - Tried and removed: binding the scalp cap to the skin under it (weights of the nearest skin vertex): 130 instead of
   131 vertices, so the code is gone. `head_bound` (cap to the head only) likewise.
 - `tools/measure_body.py` corrected (three rules, `--legacy` gives the old measure; released and candidate are always
@@ -180,18 +181,43 @@ What is left in the candidate, by cause:
    Not tried: a per-structure `blend_z` for the curtain (lower edge follows the chest earlier; risk: the head then
    turns into the band), 5 min per build.
 
-### Next steps (in this order)
+### Session 4 (2026-11-21/22): Supervisor decisions, final candidate
 
-1. Decide with the Supervisor whether items 1 and 2 above are accepted (interim report sent 2026-11-21, session 3);
-   if the curtain has to go to 0, try the per-structure blend.
-2. `tools/tip_noise.py <bake> <static bake>` on the final candidate (the root radius changed the first segment;
-   condition (1) was closed at the round-1 level: check that it still holds). A static bake = the scene with
-   `"dynamics": false` on the girl (`tools/proto_contact.py` shows how).
-3. Close-up clips released against candidate (`tools/closeup.py` views `side`, `back`, `shoulder`, `arm`; the lifted
-   right side lock at f26-28 must be in the arm clip and named), strict sheet (tiles at most 1024 px), README (state
-   the 3-8 mm rest gap above cloth, the lifted lock, the two accepted leftovers and the corrected measure).
-4. Merge `origin/main` once more, `tools/ready.py`, CHECKPOINT with the table above (released and candidate, per
-   surface, all frames) and the `--legacy` numbers beside it.
+Supervisor decisions on session 3's questions: (a) the three measure corrections are accepted, `--legacy` stays and
+both rule sets are reported; (b) the per-structure curtain blend is tried once; item 1 (nape cap against the neck
+skin fold, body skinning) is accepted and logged as a follow-up outside T-183; (c) the unused `sheets` key and code
+are removed.
+
+- `sheets` removed (`groom_contact.py`, its tests, `docs/SECONDARY_MOTION.md`); `bind_contact` takes no binding again.
+- Curtain blend, ONE build and ONE full measure (run `s4bzb`, contact key `blend_z {"curtain": [0.66, 0.78]}`, the
+  curtain's 36,000 static vertices re-weighted; the spec's binding is [0.60, 0.72]): curtain against the neck base
+  6.7 mm / 167 frames / 188 vertices (final candidate: 11.1 mm / 165 / 404), but the curtain then lags the head
+  beside the left ear: `hair_curtain > ear.L` 10.2 mm, 210 frames, 305 vertices (final candidate: 0), and the
+  longest curtain edge 1.99 x rest (1.84 x). The ear is visible, so the blend is **dropped**: key, code, tests and
+  the override entry are gone (commit `curtain blend_z tried once and dropped`). Item 2 stays as the hidden inner
+  face of the curtain.
+- Final candidate = the override as at `42d0aee` (five skin sets, `radii`, `rest`), rebuilt with the code without
+  `sheets`: run `s4f` (prepare) / `s4fb` (bake). Corrected rules: the same numbers as `s3f` on every surface (table
+  above: 268 of 286 frames, 13.1 mm, 436 vertices; skin only). `--legacy`: released 286 of 286 frames, 65.9 mm,
+  8,529 vertices; candidate 286 of 286, 49.8 mm, 452 vertices (session 3 wrote 48.5 mm for the same single curtain
+  tip in the air below the skin border; this session measured 49.8). Released re-measured as `rel4b`: as `rel3`.
+- Tip noise on the final candidate (`tools/tip_noise.py`, static bake = `build/shot.resolved.scene.json` with
+  `"dynamics": false` on the girl, written beside it so the package paths resolve): calm frames worst single
+  reversal 7.3 mm (f51, the forearm passing), 17 chain-frames over 0.5 mm; worst double reversal of a lock 3.3 mm;
+  30 chain-frames double over 0.5 mm with the bun's 9. Level of `p7` and of round 1 (table in "Session 2"):
+  condition (1) holds with the new root radius.
+- `origin/main` (55b5f51) merged; `release_rule.py`, `test_release_rule.py`, `GENERATOR_PINS.md` keep both the
+  T-184 and the T-183 entries. Main changed no code since the last merge.
+- Close-up clips and the strict sheet: `README.md` ("Clips and sheet"). `tools/closeup.py --step=N` keeps every Nth
+  frame and renumbers (the renderer has no frame step). A close-up frame costs 20-30 s at 640x360, 8 samples.
+
+### Next steps
+
+1. Supervisor / owner verdict on the CHECKPOINT (README table, clips, sheet).
+2. Follow-up outside T-183 (logged by the Supervisor): the neck skin folds over the hairline when the head tilts
+   (body skinning; item 1 above).
+3. If the lifted right side lock (f26-28, `ringlets_side_r00` on the sleeve, at the cheek) is not wanted: thinner
+   chain radii against the arm colliders (not tried).
 
 ## Round 1 (not accepted): hand / ear / follow
 
