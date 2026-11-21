@@ -63,6 +63,13 @@ def _t168(d, _t):  # test_face_t168
                  or (k == "nose" and isinstance(v, dict) and v.get("type") == "upturned"))
 
 
+def _hair_contact(d, _t):  # T-183: hair.ear_keepout, hair.dynamics.contact, a dynamics chain's "contact" block
+    def chain_contact(v):
+        return isinstance(v.get("chains"), list) and any(isinstance(c, dict) and "contact" in c for c in v["chains"])
+    return _walk(d, lambda k, v: k == "ear_keepout"
+                 or (k == "dynamics" and isinstance(v, dict) and ("contact" in v or chain_contact(v))))
+
+
 # Scopes (repository-relative paths of .json files), as the old guards scanned them:
 #   characters  every file under assets/characters/ (test_hair_r5, test_hair_r6, test_hands_r2)
 #   spec_dirs   files under assets/characters/ whose folder path contains "/spec" (test_face_r5), plus the stored
@@ -84,6 +91,7 @@ FEATURES = {
                     "detect": lambda d, t: _has_key(d, "upper_yaw_deg", "lower_yaw_deg", "sink_m",
                                                     "shell_occlusion_tint", "closed_fill")},
     "t168_face": {"scope": "assets", "detect": _t168, "old": "test_face_t168"},
+    "hair_contact": {"scope": "characters", "detect": _hair_contact, "old": "none (T-183, new opt-in)"},
 }
 
 

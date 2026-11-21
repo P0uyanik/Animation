@@ -65,6 +65,8 @@ Spec keys that change output only when set. Absent = the pinned module builds ex
 | `cheek_pad_top_fade_m` | face_v3/lower_face.py | T-168 |
 | `face.nose.type = "upturned"` | face_features.py | T-168 |
 | `leg_split` (crotch arch) | garments_v2/ (core.py, outlines.py) | T-093b |
+| `hair.ear_keepout` (hair surface moved out of the ear meshes) | groom_contact.py via groom_r6.py (groom/5) | T-183 |
+| `hair.dynamics.contact` (body colliders for hair chains; engine chain key `contact`) | groom_contact.py via groom_r6.py (groom/5); engine/anim/secondary.cpp | T-183 |
 
 Flags above were taken from module docstrings and task commits; the list is not an exhaustive scan of every key.
 

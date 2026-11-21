@@ -37,12 +37,63 @@ Json v3(vec3 v) { return Json::array({v.x, v.y, v.z}); }
 constexpr int kColliderPasses = 16;
 constexpr float kColliderTolerance = 2e-5f;
 constexpr float kArcPi = 3.14159265358979f;
+// contact.segments (T-183): contacts closer to the segment's first joint than this share of its length are left to
+// that joint's own test (the lever of joint k on such a point is too short to push it out).
+constexpr float kSegmentMinParam = 0.35f;
+// contact.solid: a joint or segment counts as carried past a collider within one step (and leaves on its previous
+// side) only when it was outside at the previous step (within this slack) and is now deeper than half the distance.
+constexpr float kFlipSlack = 1e-3f;
 
 vec3 closestOnSegment(vec3 p, vec3 a, vec3 b) {
   const vec3 ab = b - a;
   const float l2 = glm::dot(ab, ab);
   if (l2 < 1e-12f) return a;
   return a + ab * std::clamp(glm::dot(p - a, ab) / l2, 0.0f, 1.0f);
+}
+
+// Closest points of segments [p1, q1] and [p2, q2]: c1 on the first (at parameter s in [0, 1]), c2 on the second.
+void closestSegments(vec3 p1, vec3 q1, vec3 p2, vec3 q2, float& s, vec3& c1, vec3& c2) {
+  const vec3 d1 = q1 - p1, d2 = q2 - p2, r = p1 - p2;
+  const float a = glm::dot(d1, d1), e = glm::dot(d2, d2), f = glm::dot(d2, r);
+  float t = 0;
+  s = 0;
+  if (a > 1e-12f && e > 1e-12f) {
+    const float c = glm::dot(d1, r), b = glm::dot(d1, d2), den = a * e - b * b;
+    s = den > 1e-12f ? std::clamp((b * f - c * e) / den, 0.0f, 1.0f) : 0.0f;
+    t = (b * s + f) / e;
+    if (t < 0) {
+      t = 0;
+      s = std::clamp(-c / a, 0.0f, 1.0f);
+    } else if (t > 1) {
+      t = 1;
+      s = std::clamp((b - c) / a, 0.0f, 1.0f);
+    }
+  } else if (a > 1e-12f) {
+    s = std::clamp(-glm::dot(d1, r) / a, 0.0f, 1.0f);
+  } else if (e > 1e-12f) {
+    t = std::clamp(f / e, 0.0f, 1.0f);
+  }
+  c1 = p1 + d1 * s;
+  c2 = p2 + d2 * t;
+}
+
+Result<void> readContact(const Json& c, SpringChain& ch, const std::string& where) {
+  auto it = c.find("contact");
+  if (it == c.end() || it->is_null()) return {};
+  if (!it->is_object()) return fail(where + ": contact must be an object");
+  for (auto& [key, _] : it->items())
+    if (key != "solid" && key != "segments" && key != "anchored_gravity") return fail(where + ": contact has unknown key " + key);
+  ch.contact.set = true;
+  if (auto so = it->find("solid"); so != it->end()) {
+    if (!so->is_array()) return fail(where + ": contact.solid must be a list of collider names");
+    for (const Json& n : *so) {
+      if (!n.is_string()) return fail(where + ": contact.solid must be a list of collider names");
+      ch.contact.solid.push_back(n.get<std::string>());
+    }
+  }
+  ch.contact.segments = readBool(*it, "segments", false);
+  ch.contact.anchoredGravity = readBool(*it, "anchored_gravity", false);
+  return {};
 }
 
 // Shortest-arc rotation taking unit vector a to unit vector b. The angle is atan2(|a x b|, a . b), exact to float
@@ -159,6 +210,7 @@ Result<void> resolveAccessoryChains(DynamicsSpec& spec, const Skeleton& sk) {
       if (ch.anchorBone.empty() || ch.anchorWeights.size() != ch.bones.size() + 1)
         return fail("dynamics attach " + ch.name + ": anchor needs a bone and one weight per joint");
     }
+    if (auto r = readContact(e, ch, "dynamics attach " + ch.name); !r) return r;
     spec.chains.push_back(std::move(ch));
   }
   return {};
@@ -224,6 +276,7 @@ Result<DynamicsSpec> dynamicsFromJson(const Json& j) {
     }
     if (ch.name.empty() || ch.bones.empty()) return fail("dynamics: a chain needs a name and at least one bone");
     if (auto r = checkParams(ch.params, "chain " + ch.name); !r) return std::unexpected(r.error());
+    if (auto r = readContact(c, ch, "dynamics: chain " + ch.name); !r) return std::unexpected(r.error());
     s.chains.push_back(std::move(ch));
   }
   return s;
@@ -243,6 +296,8 @@ Json dynamicsToJson(const DynamicsSpec& s) {
     cj.update({{"name", c.name}, {"group", c.group}, {"bones", c.bones}, {"tip", v3(c.tip)}, {"colliders", c.colliders}});
     if (!c.preset.empty()) cj["preset"] = c.preset;
     if (!c.anchorBone.empty()) cj["anchor"] = {{"bone", c.anchorBone}, {"weights", c.anchorWeights}};
+    if (c.contact.set)
+      cj["contact"] = {{"solid", c.contact.solid}, {"segments", c.contact.segments}, {"anchored_gravity", c.contact.anchoredGravity}};
     chains.push_back(cj);
   }
   j["colliders"] = cols;
@@ -339,6 +394,20 @@ Result<std::shared_ptr<SpringChainSolver>> SpringChainSolver::create(const Skele
         ch.colliders.push_back(it->second);
       }
     }
+    if (sc.contact.set) {  // T-183 contact: solid colliders join the chain's colliders
+      ch.segments = sc.contact.segments;
+      ch.anchoredGravity = sc.contact.anchoredGravity;
+      for (const auto& n : sc.contact.solid) {
+        auto it = colliderIndex.find(n);
+        if (it == colliderIndex.end()) return fail("dynamics: chain " + sc.name + ": contact.solid names unknown collider " + n);
+        if (std::find(ch.colliders.begin(), ch.colliders.end(), it->second) == ch.colliders.end()) ch.colliders.push_back(it->second);
+      }
+      if (!sc.contact.solid.empty()) {
+        ch.solid.assign(ch.colliders.size(), 0);
+        for (const auto& n : sc.contact.solid)
+          ch.solid[size_t(std::find(ch.colliders.begin(), ch.colliders.end(), colliderIndex[n]) - ch.colliders.begin())] = 1;
+      }
+    }
     s->offset_.push_back(s->joints_);
     s->joints_ += ch.rest.size();
     s->chains_.push_back(std::move(ch));
@@ -392,15 +461,23 @@ void SpringChainSolver::step(State& s, double dtd, const std::vector<mat4>& g) c
     const mat3 R = mat3(g[size_t(ch.bones[0])]);
     const vec3 gEff = ch.p.gravity * 9.81f * (down - R * down);
     std::vector<vec3> p(n);
+    // contact chains (T-183): a collider push is inelastic. A pushed joint keeps at most the speed it had before the
+    // push or the speed of its kinematic target, so the push moves it out without throwing it off the collider.
+    const bool contact = ch.segments || !ch.solid.empty();
+    std::vector<float> speedCap(contact ? n : 0, 0.0f);
+    std::vector<char> touched(contact ? n : 0, 0);
     p[0] = xk[o];
     for (size_t k = 1; k < n; ++k) {
       const size_t i = o + k;
       const float t = n > 2 ? float(k - 1) / float(n - 2) : 0.0f;
       const float stiff = ch.p.stiffnessTip >= 0 ? ch.p.stiffness + (ch.p.stiffnessTip - ch.p.stiffness) * t : ch.p.stiffness;
       const vec3 vk = (xk[i] - s.xk[i]) / dt;
-      const vec3 a = stiff * (xk[i] - s.x[i]) + ch.p.damping * (vk - s.v[i]) - ch.p.drag * s.v[i] + gEff;
+      // contact.anchored_gravity: a joint whose target the anchor bone carries already hangs where that bone puts it
+      const vec3 gk = ch.anchoredGravity && ch.anchor >= 0 ? gEff * (1.0f - ch.anchorW[k]) : gEff;
+      const vec3 a = stiff * (xk[i] - s.x[i]) + ch.p.damping * (vk - s.v[i]) - ch.p.drag * s.v[i] + gk;
       const vec3 v = s.v[i] + a * dt;
       p[k] = s.x[i] + v * dt;
+      if (contact) speedCap[k] = std::max(glm::length(v), glm::length(vk));
     }
     const float cosLimit = std::cos(glm::radians(ch.p.limitDeg));
     for (int iter = 0; iter < 2; ++iter) {
@@ -425,21 +502,67 @@ void SpringChainSolver::step(State& s, double dtd, const std::vector<mat4>& g) c
         // length is always restored last. A joint that touches no collider takes the same path as before.
         for (int pass = 0; pass < kColliderPasses; ++pass) {
           bool pushed = false;
-          for (int ci : ch.colliders) {
-            const Shape& sh = shapes[size_t(ci)];
+          for (size_t cn = 0; cn < ch.colliders.size(); ++cn) {
+            const Shape& sh = shapes[size_t(ch.colliders[cn])];
+            const bool solid = !ch.solid.empty() && ch.solid[cn];  // contact.solid: no kinematic-target exemption
             const float want = sh.r + ch.p.radius;
             const vec3 qk = closestOnSegment(xk[o + k], sh.a, sh.b);
-            const float minD = std::min(want, glm::distance(xk[o + k], qk));
+            const float minD = solid ? want : std::min(want, glm::distance(xk[o + k], qk));
             const vec3 q = closestOnSegment(p[k], sh.a, sh.b);
             const vec3 off = p[k] - q;
             const float dist = glm::length(off);
             // after the first pass, a joint within the tolerance of the surface counts as outside
             if (dist >= minD - (pass > 0 ? kColliderTolerance : 0.0f)) continue;
-            const vec3 nrm = dist > 1e-7f ? off / dist : glm::normalize(xk[o + k] - qk + vec3(0, 1e-6f, 0));
+            vec3 nrm = dist > 1e-7f ? off / dist : glm::normalize(xk[o + k] - qk + vec3(0, 1e-6f, 0));
+            if (solid) {
+              // a solid collider that moved past the joint within one step must not flip it to its far side: the
+              // joint leaves on the side it was on at the previous step
+              const vec3 prev = s.x[o + k] - closestOnSegment(s.x[o + k], sh.a, sh.b);
+              const float lp = glm::length(prev);
+              if (lp >= minD - kFlipSlack && dist < 0.5f * minD && glm::dot(prev, nrm) < 0) nrm = prev / lp;
+            }
             p[k] = q + nrm * minD;
             pushed = true;
           }
+          if (ch.segments) {
+            // contact.segments: the segment p[k-1]..p[k] is a capsule of the chain radius. Its closest point to the
+            // collider is moved out by swinging joint k about p[k-1] (the joint moves 1/s of what the point at
+            // parameter s needs; a contact next to p[k-1] is that joint's own test). The exemption for a rest shape
+            // that touches a collider uses the kinematic segment, as the joint test uses the kinematic joint.
+            for (size_t cn = 0; cn < ch.colliders.size(); ++cn) {
+              const Shape& sh = shapes[size_t(ch.colliders[cn])];
+              const bool solid = !ch.solid.empty() && ch.solid[cn];
+              const float want = sh.r + ch.p.radius;
+              float sp = 0, sk = 0;
+              vec3 c1, c2, k1, k2;
+              closestSegments(p[k - 1], p[k], sh.a, sh.b, sp, c1, c2);
+              if (sp < kSegmentMinParam) continue;
+              float minD = want;
+              if (!solid) {
+                closestSegments(xk[o + k - 1], xk[o + k], sh.a, sh.b, sk, k1, k2);
+                minD = std::min(want, glm::distance(k1, k2));
+              }
+              const vec3 off = c1 - c2;
+              const float dist = glm::length(off);
+              if (dist >= minD - (pass > 0 ? kColliderTolerance : 0.0f)) continue;
+              vec3 nrm = dist > 1e-7f ? off / dist : glm::normalize(xk[o + k] - c2 + vec3(0, 1e-6f, 0));
+              float depth = minD - dist;
+              if (solid) {  // as for joints: the segment leaves on the side it was on at the previous step
+                float st = 0;
+                vec3 a1, a2;
+                closestSegments(s.x[o + k - 1], s.x[o + k], sh.a, sh.b, st, a1, a2);
+                const float lp = glm::length(a1 - a2);
+                if (lp >= minD - kFlipSlack && dist < 0.5f * minD && glm::dot(a1 - a2, nrm) < 0) {
+                  nrm = (a1 - a2) / lp;
+                  depth = minD + dist;
+                }
+              }
+              p[k] += nrm * (depth / sp);
+              pushed = true;
+            }
+          }
           if (!pushed) break;
+          if (contact) touched[k] = 1;
           const vec3 ds = p[k] - p[k - 1];
           const float ls = glm::length(ds);
           p[k] = p[k - 1] + (ls > 1e-9f ? ds / ls : dir) * ch.length[k - 1];
@@ -449,6 +572,10 @@ void SpringChainSolver::step(State& s, double dtd, const std::vector<mat4>& g) c
     for (size_t k = 0; k < n; ++k) {
       const size_t i = o + k;
       s.v[i] = (p[k] - s.x[i]) / dt;
+      if (contact && touched[k]) {
+        const float sp = glm::length(s.v[i]);
+        if (sp > speedCap[k] && sp > 1e-9f) s.v[i] *= speedCap[k] / sp;
+      }
       s.x[i] = p[k];
     }
   }

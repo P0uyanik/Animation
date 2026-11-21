@@ -13,6 +13,12 @@
 // Deterministic and frame-rate independent: the state advances on a fixed time grid (substepHz, seconds since the
 // scene's first frame; a preroll before it settles the start pose), and the kinematic driver is sampled at the grid
 // times. Any frame is the same value whatever order frames are asked in (cached checkpoints on the same grid).
+//
+// Contact (T-183, opt-in per chain, "contact" block): colliders named "solid" push to their full radius (moving body
+// parts such as hands, forearms and ears: no exemption for a kinematic target that lies inside them), the segments
+// between joints collide as capsules (not only the joints), and gravity is scaled by (1 - anchor weight) per joint
+// (a joint whose target an anchor bone carries already hangs where that bone puts it). A chain without the block
+// takes exactly the path it took before.
 #pragma once
 #include <functional>
 #include <map>
@@ -36,6 +42,14 @@ struct SpringParams {
   float radius = 0.01f;         // joint radius for collisions (m)
 };
 
+// Opt-in contact behaviour of one chain (T-183; chain key "contact"). Default: off, the solver path is unchanged.
+struct ChainContact {
+  bool set = false;                // the chain carries a "contact" block (written back by dynamicsToJson)
+  std::vector<std::string> solid;  // collider names pushed to their full radius; joined to the chain's colliders
+  bool segments = false;           // segments (capsules of the chain radius) collide, not only the joints
+  bool anchoredGravity = false;    // gravity scaled by (1 - anchor weight) per joint
+};
+
 struct SpringChain {
   std::string name;
   std::string group;               // e.g. the groom structure it came from (overrides may address a group)
@@ -49,6 +63,7 @@ struct SpringChain {
   // chest more than the head, like its static skin binding).
   std::string anchorBone;
   std::vector<float> anchorWeights;
+  ChainContact contact;
 };
 
 struct DynamicsCollider {
@@ -117,6 +132,8 @@ class SpringChainSolver {
     SpringParams p;
     int anchor = -1;
     std::vector<float> anchorW;
+    std::vector<char> solid;  // per entry of `colliders`: full-radius push (contact.solid); empty = none
+    bool segments = false, anchoredGravity = false;
   };
   struct Collider {
     DynamicsCollider::Kind kind;

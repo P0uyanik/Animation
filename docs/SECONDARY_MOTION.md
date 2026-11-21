@@ -10,7 +10,7 @@ character package has no `dynamics` block, so existing packages, scenes and bake
 | Hook (after clips, life, constraints, clip fingers) | `SceneEvaluator::characterGlobals` → `kinematicGlobals` + `SpringChainSolver::apply` (`engine/scene/scene.cpp`) |
 | Package block | `export_engine.py` (`export_dynamics`, EXPORTER_VERSION 3), read by `engine/model/imported_character.cpp` |
 | Hair chain bones | `pipeline/charsys/groom.py` (`spec.hair.dynamics`) |
-| Tests | `tests/test_secondary.cpp`, `pipeline/charsys/tests/groom_dynamics_test.py` |
+| Tests | `tests/test_secondary.cpp`, `pipeline/charsys/tests/groom_dynamics_test.py`, `pipeline/charsys/tests/test_hair_contact.py` (contact, T-183) |
 
 ## Model
 
@@ -72,6 +72,46 @@ kinematic direction to the simulated segment, so twist is kept, and non-chain ch
 | `colliders` | names of the colliders this chain uses (empty = all) | all |
 
 Each chain bone must be the child of the previous one. A bone may belong to one chain only.
+
+## Contact (T-183, opt-in per chain)
+
+A chain may carry a `"contact"` block. Without it the chain takes exactly the path described above (bit-identical;
+`tests/test_secondary.cpp` checks it), so existing packages, scenes and bakes do not change.
+
+```json
+{"name": "side.00", "bones": ["..."], "tip": [x, y, z],
+ "contact": {"solid": ["hand_l", "hand_r"], "segments": true, "anchored_gravity": true}}
+```
+
+| Key | Meaning | Default |
+|---|---|---|
+| `solid` | collider names that push to their full radius: the exemption "never farther out than the kinematic target" is off for them. For moving parts (hands, forearms) that enter the place where the hair rests. They are added to the chain's colliders. | none |
+| `segments` | the segments between joints collide as capsules of the chain `radius`, not only the joints. The segment's closest point is moved out by swinging its end joint. | false |
+| `anchored_gravity` | gravity is scaled by `1 - anchor weight` per joint: a joint whose target the anchor bone carries already hangs where that bone puts it, so the head's tilt does not pull it off. | false |
+
+- A push by any collider of a contact chain is inelastic: the pushed joint keeps at most the speed it had before the
+  push or the speed of its kinematic target, so a hand moves a lock aside without throwing it.
+- A solid collider that passes a joint or segment within one step does not flip it to the far side: it leaves on the
+  side it was on at the previous step.
+- A collider that the hair rests on (head, shoulders, upper arms, ears) should stay a plain collider: a solid collider
+  in resting contact showed ±3-4 mm frame-to-frame noise at the lock tip (T-183, ears as solid).
+- Colliders may ride on any deform bone (this was already so in the package; groom/1 limited its own to head and
+  chest).
+
+Groom side (`spec.hair`, groom/5 module, `pipeline/charsys/groom_contact.py`), both keys opt-in:
+
+- `hair.dynamics.contact`: `{"colliders": [...], "segments", "anchored_gravity", "structures"}`. Each collider is
+  fitted at bind time from the meshes bound to the rig: `"fit": "blob"` (capsule along the principal axis of the
+  vertices; hands, ears) or `"limb"` (capsule along the bone axis `bones`, radius = `percentile` of the distance to
+  it). Vertices come from the vertex `groups` that carry at least half the weight, or from named `objects`.
+  `"solid": true` puts the collider in the chains' `contact.solid`. Lock chains get the block; bun chains keep their
+  previous colliders.
+- `hair.ear_keepout`: `{"objects": ["ear.*"], "margin_m", "smooth", "structures"}`. Hair surface vertices inside a
+  keep-out mesh are moved out along the head's front/back axis (the shorter way) before the fibres are grown, and the
+  move is relaxed over the neighbours. Vertex counts and order do not change.
+
+The release rule (`pipeline/charsys/release_rule.py`, feature `hair_contact`) keeps both keys out of published
+specs unless the release manifest lists the version.
 
 ## Scene override (character → `"dynamics"`)
 

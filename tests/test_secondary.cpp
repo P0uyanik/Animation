@@ -335,3 +335,179 @@ TEST_CASE("secondary motion: absent or disabled = bit-identical bake") {
   CHECK(saved["characters"][0]["dynamics"] == Json(false));
   CHECK_FALSE(sceneToJson(plain->scene())["characters"][0].contains("dynamics"));
 }
+
+// ------------------------------------------------------------------------------------------- contact (T-183, opt-in)
+namespace {
+
+// chainSkeleton() plus an "arm" bone whose yaw swings a collider (rest centre 0.3 m in front of the arm pivot) to
+// the point `target` on the hanging chain: yaw 0 = far away, yaw -90 degrees = centred on `target`.
+Skeleton armSkeleton(vec3 target) {
+  Skeleton s = chainSkeleton();
+  s.bones.push_back({"arm", 0, target + vec3(0.3f, 0, 0)});
+  return s;
+}
+
+vec3 armCentreRest(vec3 target) { return target + vec3(0.3f, 0, 0.3f); }
+
+// The arm swings in over 0.5 s and stays.
+SpringChainSolver::Driver armDriver(const Skeleton& sk, double fps) {
+  return [&sk, fps](double frame) {
+    Pose p = restPose(sk);
+    const double t = std::clamp((frame - 1) / fps / 0.5, 0.0, 1.0);
+    p.local[6] = glm::angleAxis(glm::radians(float(-90.0 * t)), vec3(0, 1, 0));
+    return boneGlobals(sk, p, mat4(1));
+  };
+}
+
+DynamicsSpec armSpec(vec3 target, float radius) {
+  DynamicsSpec d = chainSpec(false);
+  d.chains[0].params.damping = 12;  // calm: the test reads the settled pose
+  d.colliders.push_back({"arm", DynamicsCollider::Kind::Sphere, "arm", armCentreRest(target), armCentreRest(target), radius});
+  return d;
+}
+
+float pointSegment(vec3 p, vec3 a, vec3 b) {
+  const vec3 ab = b - a;
+  return glm::distance(p, a + ab * std::clamp(glm::dot(p - a, ab) / glm::dot(ab, ab), 0.0f, 1.0f));
+}
+}  // namespace
+
+TEST_CASE("secondary contact: block parsing, round trip and errors") {
+  Json j = {{"colliders", {{{"name", "hand"}, {"bone", "arm"}, {"type", "sphere"}, {"centre", {0.3, 0.9, 0.18}}, {"radius", 0.03}}}},
+            {"chains", {{{"name", "lock"}, {"bones", {"c0", "c1", "c2", "c3"}}, {"tip", {0, 0.8, -0.12}},
+                         {"contact", {{"solid", {"hand"}}, {"segments", true}, {"anchored_gravity", true}}}},
+                        {{"name", "plain"}, {"bones", {"x"}}, {"tip", {0, 0, 0}}}}}};
+  auto d = dynamicsFromJson(j);
+  REQUIRE(d.has_value());
+  CHECK(d->chains[0].contact.set);
+  CHECK(d->chains[0].contact.solid == std::vector<std::string>{"hand"});
+  CHECK(d->chains[0].contact.segments);
+  CHECK(d->chains[0].contact.anchoredGravity);
+  CHECK_FALSE(d->chains[1].contact.set);
+  const Json back = dynamicsToJson(*d);
+  CHECK(back["chains"][0]["contact"] == j["chains"][0]["contact"]);
+  CHECK_FALSE(back["chains"][1].contains("contact"));  // a chain without the block is written as before
+  Json bad = j;
+  bad["chains"][0]["contact"]["bounce"] = 1;
+  CHECK_FALSE(dynamicsFromJson(bad).has_value());
+  bad = j;
+  bad["chains"][0]["contact"]["solid"] = "hand";
+  CHECK_FALSE(dynamicsFromJson(bad).has_value());
+  // a solid name must be a collider of the block
+  DynamicsSpec spec = armSpec(vec3(0, 0.9f, -0.12f), 0.03f);
+  spec.chains[0].contact.set = true;
+  spec.chains[0].contact.solid = {"nobody"};
+  CHECK_FALSE(SpringChainSolver::create(armSkeleton(vec3(0, 0.9f, -0.12f)), spec).has_value());
+}
+
+TEST_CASE("secondary contact: an empty block changes nothing (bit-identical)") {
+  const Skeleton sk = chainSkeleton();
+  const double fps = 24;
+  const auto drv = driverAt(sk, fps, 1, headYaw);
+  DynamicsSpec plain = chainSpec(true), marked = chainSpec(true);
+  marked.chains[0].contact.set = true;  // the block is there, every switch off
+  auto a = SpringChainSolver::create(sk, plain), b = SpringChainSolver::create(sk, marked);
+  REQUIRE(a.has_value());
+  REQUIRE(b.has_value());
+  bool same = true;
+  for (int f = 1; f <= 40; ++f) same = same && solve(**a, drv, f, fps) == solve(**b, drv, f, fps);
+  CHECK(same);
+}
+
+TEST_CASE("secondary contact: a solid collider pushes hair out of a moving part, a plain collider does not") {
+  // The arm's sphere ends centred on joint c2: the joint's kinematic target lies inside it.
+  const vec3 target(0, 0.90f, -0.12f);
+  const Skeleton sk = armSkeleton(target);
+  const double fps = 24;
+  const auto drv = armDriver(sk, fps);
+  const float r = 0.03f, pr = 0.005f;
+  float minD[2] = {1, 1}, gap = 0, far = 0;
+  for (int solid = 0; solid < 2; ++solid) {
+    DynamicsSpec spec = armSpec(target, r);
+    if (solid) {
+      spec.chains[0].contact.set = true;
+      spec.chains[0].contact.solid = {"arm"};
+    }
+    auto s = SpringChainSolver::create(sk, spec);
+    REQUIRE(s.has_value());
+    for (int f = 1; f <= 60; ++f) {
+      auto g = solve(**s, drv, f, fps);
+      const vec3 c = vec3(g[6] * vec4(armCentreRest(target) - sk.bones[6].head, 1));
+      for (size_t b = 3; b < 6; ++b) minD[solid] = std::min(minD[solid], glm::distance(pivot(g, b), c));
+      const vec3 tip = tipOf(g, sk, 5, vec3(0, 0.80f, -0.12f));
+      minD[solid] = std::min(minD[solid], glm::distance(tip, c));
+      if (solid) {
+        for (size_t b = 2; b < 5; ++b) gap = std::max(gap, glm::distance(tipOf(g, sk, b, sk.bones[b + 1].head), pivot(g, b + 1)));
+        if (f > 30) far = std::max(far, glm::distance(pivot(g, 4), c));  // the arm has stopped: c2 rests on it
+      }
+    }
+  }
+  MESSAGE("closest joint to the sphere centre: plain " << minD[0] * 1000 << " mm, solid " << minD[1] * 1000
+          << " mm (radius + joint radius " << (r + pr) * 1000 << " mm); joint gap " << gap * 1000
+          << " mm; c2 from the centre once the arm rests " << far * 1000 << " mm");
+  CHECK(minD[0] < 0.005f);            // plain: the kinematic target is inside, so the hair is not pushed
+  CHECK(minD[1] >= r + pr - 1e-4f);   // solid: every joint stays outside
+  CHECK(gap < 1e-5f);                 // and the chain stays joint-continuous
+  CHECK(far < r + pr + 0.004f);       // inelastic: the pushed joint lies on the collider, it is not thrown off
+}
+
+TEST_CASE("secondary contact: segments collide between the joints") {
+  // A small sphere ends centred on the middle of segment c1-c2 (joints 25 mm away on both sides): the joint test
+  // alone does not see it.
+  const vec3 target(0, 0.925f, -0.12f);
+  const Skeleton sk = armSkeleton(target);
+  const double fps = 24;
+  const auto drv = armDriver(sk, fps);
+  const float r = 0.012f, pr = 0.005f;
+  float minSeg[2] = {1, 1};
+  for (int seg = 0; seg < 2; ++seg) {
+    DynamicsSpec spec = armSpec(target, r);
+    spec.chains[0].contact.set = true;
+    spec.chains[0].contact.solid = {"arm"};
+    spec.chains[0].contact.segments = seg != 0;
+    auto s = SpringChainSolver::create(sk, spec);
+    REQUIRE(s.has_value());
+    for (int f = 1; f <= 60; ++f) {
+      auto g = solve(**s, drv, f, fps);
+      const vec3 c = vec3(g[6] * vec4(armCentreRest(target) - sk.bones[6].head, 1));
+      for (size_t b = 2; b < 5; ++b) minSeg[seg] = std::min(minSeg[seg], pointSegment(c, pivot(g, b), pivot(g, b + 1)));
+    }
+  }
+  MESSAGE("closest segment to the sphere centre: joints only " << minSeg[0] * 1000 << " mm, with segments "
+          << minSeg[1] * 1000 << " mm (radius + chain radius " << (r + pr) * 1000 << " mm)");
+  CHECK(minSeg[0] < 0.005f);                 // joints only: the sphere passes through the segment
+  CHECK(minSeg[1] >= r + pr - 5e-4f);        // segments: it is kept outside (0.5 mm tolerance of the lever push)
+}
+
+TEST_CASE("secondary contact: anchored gravity follows the anchor bone") {
+  // The chain's joints are anchored to the root bone; the head tilts 30 degrees and stays. Gravity relative to the
+  // head's tilt pulls the anchored joints off the place the anchor gives them unless anchored_gravity is set.
+  const Skeleton sk = chainSkeleton();
+  const double fps = 24;
+  auto drv = [&sk, fps](double frame) {
+    Pose p = restPose(sk);
+    const double t = std::clamp((frame - 1) / fps / 0.4, 0.0, 1.0);
+    p.local[1] = glm::angleAxis(glm::radians(float(30.0 * t)), vec3(1, 0, 0));
+    return boneGlobals(sk, p, mat4(1));
+  };
+  float off[2] = {0, 0};
+  for (int on = 0; on < 2; ++on) {
+    DynamicsSpec spec = chainSpec(false);
+    spec.chains[0].params.damping = 12;
+    spec.chains[0].anchorBone = "root";
+    spec.chains[0].anchorWeights = {0, 1, 1, 1, 1};
+    spec.chains[0].contact.set = true;
+    spec.chains[0].contact.anchoredGravity = on != 0;
+    auto dyn = SpringChainSolver::create(sk, spec), still = SpringChainSolver::create(sk, spec, false);
+    REQUIRE(dyn.has_value());
+    REQUIRE(still.has_value());
+    std::vector<mat4> g;
+    for (int f = 1; f <= 96; ++f) g = solve(**dyn, drv, f, fps);  // settled: 3.6 s after the tilt
+    auto gs = drv(96);
+    (*still)->apply(96, 1, fps, drv, gs);
+    off[on] = glm::distance(tipOf(g, sk, 5, vec3(0, 0.80f, -0.12f)), tipOf(gs, sk, 5, vec3(0, 0.80f, -0.12f)));
+  }
+  MESSAGE("settled tip off its anchored place: " << off[0] * 1000 << " mm without, " << off[1] * 1000 << " mm with anchored_gravity");
+  CHECK(off[0] > 0.02f);
+  CHECK(off[1] < 0.001f);
+}
