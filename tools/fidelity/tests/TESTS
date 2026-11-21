@@ -1,0 +1,12 @@
+# Test registry (T-182; docs/process/GATE.md "Test registry"). One line per test file in this directory or below:
+#   run <file> [args]      tools/check_all.py runs `python <file> [args]` (Python tests step)
+#   blender <file> <unit>  covered by that Blender unit of tools/check_all.py
+#   via <file> <runner>    run by another runner (repository path)
+#   local <file> <reason>  not run by the gate; the reason says why
+# Adding a line for a NEW test needs no approval; changing or removing a line does.
+
+run test_ci.py
+run test_metrics.py                          # fidelity metric functions (T-077)
+run test_metrics_v2.py                       # T-153 opt-in score v2
+via test_regression_flag.py tools/fidelity/tests/test_ci.py
+via test_run.py tools/fidelity/tests/test_ci.py

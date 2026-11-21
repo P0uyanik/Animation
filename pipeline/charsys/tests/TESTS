@@ -1,0 +1,56 @@
+# Test registry (T-182; docs/process/GATE.md "Test registry"). One line per test file in this directory or below:
+#   run <file> [args]      tools/check_all.py runs `python <file> [args]` (Python tests step)
+#   blender <file> <unit>  covered by that Blender unit of tools/check_all.py
+#   via <file> <runner>    run by another runner (repository path)
+#   local <file> <reason>  not run by the gate; the reason says why
+# Adding a line for a NEW test needs no approval; changing or removing a line does.
+
+run test_boy2_face.py                        # T-058 spec checks, no Blender (T-077)
+run test_expressions_r3.py                   # T-113 expression sets (plain checks)
+run test_face_t168.py                        # T-168 pad fade / upturned nose (plain checks)
+run test_face_v3.py                          # T-089 face/3 (plain checks)
+run test_face_v3b.py                         # T-089b face polish (plain checks)
+run test_face_v4.py                          # T-109 face round 4 (plain checks)
+run test_garments_r3.py                      # T-119 garment/3 (plain checks)
+run test_hair_r4.py                          # T-091 groom/3 (plain checks)
+run test_hair_r5.py                          # T-118 groom/4 (plain checks)
+run test_hair_r6.py                          # T-160 groom/5 (plain checks)
+run test_hands_r2.py                         # T-121 hands_r2 (plain checks)
+run test_materials_r2.py                     # T-092 presets/3
+run test_release_rule.py                     # T-178 release rule
+run test_render_profiles.py                  # T-166 render/encode defaults
+run test_versions.py                         # T-043 version registry (T-077)
+blender deform_test.py deform
+blender face_test.py face
+blender groom_dynamics_test.py groom-dynamics
+blender groom_generic_test.py groom
+blender hair_generic_test.py hair
+blender reuse_test.py charsys
+blender test_determinism.py determinism
+blender test_ears_shape.py ears-shape
+blender test_export_determinism.py export-determinism
+blender test_export_engine.py export-engine
+blender test_face_front_fade.py face-front-fade
+blender test_garments_v2.py garments-v2-quick
+blender test_glasses_rest.py glasses-rest
+blender test_hair_curves.py hair-curves
+blender test_hoodie.py boy2
+blender test_material_presets.py material-presets
+blender test_materials_r2_graphs.py materials-r2-graphs
+blender test_render_engine.py render-engine-selector
+blender test_shot_eyes.py shot-eyes
+blender test_store.py charsys
+via face_system_test.py pipeline/charsys/tests/face_test.py
+via test_asset_store_guard.py tools/version_switch.py
+via test_skin_presets.py tools/version_switch.py
+local test_face_r5.py 'needs Blender; local run (not in the gate before T-182)'
+local test_face_v2.py 'needs Blender; local run (not in the gate before T-182)'
+local test_face_v2_socket_wall.py 'needs Blender; local run (not in the gate before T-182)'
+local test_garment_details.py 'needs Blender; local run (not in the gate before T-182)'
+local test_garments_v2_t093b.py 'needs Blender; local run (not in the gate before T-182)'
+local test_hair_r4_build.py 'needs Blender; local run (not in the gate before T-182)'
+local test_hair_v3.py 'plain Python, not in the gate before T-182 (candidate for run)'
+local test_hair_v3_r2.py 'plain Python, not in the gate before T-182 (candidate for run)'
+local test_hair_v3_r3.py 'plain Python, not in the gate before T-182 (candidate for run)'
+local test_hair_v3_r3_weights.py 'needs Blender; local run (not in the gate before T-182)'
+local test_skin_material.py 'needs Blender; local run (not in the gate before T-182)'
