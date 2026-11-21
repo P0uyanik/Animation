@@ -31,4 +31,6 @@ hair and her hair into her hand; hair goes into her ear; hair moves independentl
 
 ## Sheets and clip
 
-See `README.md` (paths under this folder). Read sheets as crops of at most 1024 px.
+- Clip: `T-183_s010_f060-228_before_after.mp4` (side by side), `T-183_s010_f060-228_girl_zoom_half_speed.mp4`.
+- Strict sheet: `T-183_strict_sheet.jpg` (frames 26, 63, 103, 115); tiles in `sheet/before/`, `sheet/after/`.
+- Read sheets as crops of at most 1024 px (the tiles are 768 px). Notes per frame: `README.md`.

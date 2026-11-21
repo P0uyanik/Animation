@@ -57,4 +57,13 @@ frames 60-228 of the measured candidate bake.
 | `T-183_strict_sheet.jpg` | strict sheet: girl's head, before / after, frames 26, 63, 103, 115 |
 | `sheet/before/`, `sheet/after/` | the sheet's tiles at full size (768 px crops of a 2560 px frame, 24 spp); spec `sheet/strict_sheet.json` |
 
-The strict sheet and its tiles are still rendering; they come with the next commit.
+What the sheet shows (read from the 768 px tiles, 3/4 view from the girl's right):
+
+- f26, f63 (ear, hand): before, two ringlets cross in front of the ear; after, the ear is clear and the ringlets sit
+  behind it. The hand is clear of the hair in both views at these frames (the measured 6.7 mm overlap at f63 is on the
+  far side of the lock).
+- f103, f115 (follow, ear): before, the side ringlets swing forward across the ear and hang away from the head while
+  she leans; after, they stay behind the ear and close to the head and shoulder.
+- Still visible after: the front lock rests on the puffy sleeve and curls onto it (open defect 3 in `ROUND.md`); the
+  ringlets behind the ear lie stacked close together at f63. The far (left) side of the head is not in this view; it
+  is covered by the measurement only.
