@@ -231,4 +231,5 @@ def main():
             write(p, apply_r3(json.load(open(p, encoding="utf-8"))))
 
 
-main()
+if __name__ == "__main__":
+    main()
