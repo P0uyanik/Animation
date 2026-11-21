@@ -897,3 +897,19 @@ T-178 session too (implementer permission layers refuse relayed approvals).
   a short rule that opt-ins become defaults only at the next real look round via the existing pin registry. No new files
   beyond the doc, no renames, no changes to generators, code or approved character versions.
 - **P13:** the liaison runs clone benchmarks itself (read-only); no repository structure, history or asset changes.
+
+## 2026-11-21 ~11:10Z (12:10 CET) — T-176 proposal 13: light clone test, then clone profiles (relayed by the liaison)
+(1) Run the full suite (`tools/check_all.py` + the gate's Blender units) in a sparse partial clone (depth 1, sparse without
+`docs/evaluation/` and `assets/characters/`, fetch on demand) → `docs/tasks/T-180.md`. Liaison benchmark: depth-50 clone 80 s /
+~1.85 GB; sparse 4.4 s / ~150 MB; +32 s assets/characters; +14 s docs/evaluation. (2) If all pass: LIGHT and FULL clone profiles
+for new sessions via create_session parameters and a one-line dispatch rule; a test task can add paths. No repository history,
+structure or asset changes. (3) Then priority on animation production; no further workflow optimisation unless needed.
+
+## 2026-11-21 ~11:20Z (12:20 CET) — T-176 proposals 5, 7, 9 (relayed by the liaison)
+- **P5:** complete T-178 preserving all protections, coverage and owner-approval requirements (owner's typed approval in the
+  T-178 session still needed).
+- **P7:** automatic test registration from per-directory manifests; adding a new test needs no `Supervisor-Approved` trailer;
+  changing, renaming or deleting an existing test still needs approval, proven by negative tests; code review and the full CI
+  stay. Owner approves the guard-policy change explicitly. Sequenced after T-178 merges (shared test/guard files) → T-182.
+- **P9:** one active owner per file, glob-level only, no function-level splits, temporary and transferable (released at
+  merge/abandon, handover via the ledger) → `docs/tasks/T-181.md` + rule text in `OWNERSHIP.md`.

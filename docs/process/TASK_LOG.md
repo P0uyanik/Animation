@@ -189,3 +189,5 @@ Tasks from now on are numbered T-001, T-002, …, and pass through the states in
 | T-171 | [Interaction] Hands round 2 (Fable) | CHECKPOINT 2026-11-21 03:53Z: opt-in fingerClose; held-grasp separation not met; 4 owner decisions | t-171-claude-hands-r2 | docs/evaluation/interaction/T-171/ |
 | T-177 | [Process] Docs-only fast path (Sonnet) | merged 2026-11-21 (main c16ef79, integration gate 44895113851 green): docs/process + docs/tasks pushes run a short job | t-177-claude-docs-fast-path | docs/evaluation/process/T-177/ |
 | T-179 | [Docs] Generator pin map (Sonnet) | merged 2026-11-21: docs/process/GENERATOR_PINS.md; groom names per TASK_LOG (liaison confirmed) | t-179-claude-pin-map | docs/process/GENERATOR_PINS.md |
+| T-180 | [Process] Full suite in a light clone; clone profiles (Sonnet) | started 2026-11-21 (owner ~11:10Z, T-176 P13) | t-180-claude-clone-profiles | docs/process/CLONE_PROFILES.md |
+| T-181 | [Process] One owner per file: claims --check-all (Sonnet) | merged 2026-11-21 (owner ~11:20Z, T-176 P9); qualifier text removed from the T-171/T-175/T-178 rows | t-181-claude-claims-check | docs/evaluation/process/T-181/ |
