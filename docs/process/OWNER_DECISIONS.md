@@ -933,3 +933,5 @@ hard depends-on (read) overlaps were conflicts → T-181b makes them warnings. R
 - **Hair/body contact (new T-183):** girl's hand and hair interpenetrate; hair goes into her ear; hair should follow the
   body and react to body/environment. Not in T-171/T-175 write-sets.
 - **T-172:** no 720p re-render; current quality is fine for testing → close and archive.
+- T-182: the owner typed the P7 policy sentence in the T-182 session at 2026-11-21T12:17:51Z (desktop app; text without the
+  "I approve T-182:" prefix, otherwise verbatim); verified by the Supervisor with list_events before merge.

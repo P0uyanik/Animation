@@ -39,6 +39,12 @@ CODE_SUFFIXES = {".c", ".cc", ".cpp", ".cxx", ".h", ".hh", ".hpp", ".hxx", ".py"
 TEXT_SUFFIXES = {".csv", ".json", ".md", ".py", ".txt", ".yaml", ".yml"}
 SHARED_PREFIXES = ("engine/", "apps/", "pipeline/charsys/", "pipeline/clips/")
 CHARACTER_DATA_PREFIXES = ("pipeline/charsys/character_data/", "pipeline/charsys/data/")
+# T-182 test registry: per-directory manifests named TESTS (docs/process/GATE.md, "Test registry").
+TEST_MANIFEST_NAME = "TESTS"
+TEST_KINDS = ("run", "blender", "via", "local")
+# The guarded patterns that exist only because a path is a test. A NEW file whose every matching guarded pattern
+# is one of these may be added without a Supervisor-Approved trailer (owner decision 2026-11-21, T-176 P7).
+TEST_GUARD_PATTERNS = ("tests/", "**/tests/", "**/test_*.py", "**/*_test.py", "pipeline/clips/test_emotions.py")
 
 
 @dataclasses.dataclass
@@ -92,14 +98,14 @@ def changed_paths(base: str) -> set[str]:
         common = git("merge-base", base, "HEAD", check=False)
         if common.returncode == 0 and common.stdout.strip():
             compare = common.stdout.strip()
-    diff = git("diff", "--name-only", "-z", compare, "--").stdout
+    diff = git("diff", "--name-only", "--no-renames", "-z", compare, "--").stdout  # a rename lists both paths
     untracked = git("ls-files", "--others", "--exclude-standard", "-z").stdout
     return nul_paths(diff) | nul_paths(untracked)
 
 
 def dirty_paths() -> set[str]:
-    diff = git("diff", "--name-only", "-z", "HEAD", "--").stdout
-    cached = git("diff", "--cached", "--name-only", "-z", "HEAD", "--").stdout
+    diff = git("diff", "--name-only", "--no-renames", "-z", "HEAD", "--").stdout
+    cached = git("diff", "--cached", "--name-only", "--no-renames", "-z", "HEAD", "--").stdout
     untracked = git("ls-files", "--others", "--exclude-standard", "-z").stdout
     return nul_paths(diff) | nul_paths(cached) | nul_paths(untracked)
 
@@ -217,6 +223,49 @@ def approval_trailers(base: str) -> set[str]:
     return approved
 
 
+def compare_ref(base: str) -> str:
+    """The commit changes are measured against (the merge base, or ``base`` itself during a trial merge)."""
+    if git_ref_exists("MERGE_HEAD"):
+        return base
+    common = git("merge-base", base, "HEAD", check=False)
+    return common.stdout.strip() if common.returncode == 0 and common.stdout.strip() else base
+
+
+def change_statuses(compare: str) -> dict[str, str]:
+    """path -> A/M/D/T against ``compare`` (working tree; untracked files count as added). Renames are never
+    detected: a rename is a deletion plus an addition, and the deletion of an existing test needs approval."""
+    out = git("diff", "--name-status", "--no-renames", "-z", compare, "--").stdout.split("\0")
+    statuses = {out[i + 1].replace("\\", "/"): out[i][:1] for i in range(0, len(out) - 1, 2) if out[i]}
+    for path in nul_paths(git("ls-files", "--others", "--exclude-standard", "-z").stdout):
+        statuses.setdefault(path, "A")
+    return statuses
+
+
+def manifest_append_only(old: str, new: str, added: set[str], manifest: str) -> bool:
+    """A TESTS edit is free only if it keeps every existing line unchanged, in place, and only appends entries
+    for test files this change adds (comments and blank lines may be appended too)."""
+    old_lines, new_lines = old.splitlines(), new.splitlines()
+    if new_lines[:len(old_lines)] != old_lines:
+        return False
+    entries, problems = parse_manifest_text(manifest, "\n".join(new_lines[len(old_lines):]))
+    return not problems and all(e.path in added for e in entries)
+
+
+def free_test_change(path: str, status: str, patterns: list[str], statuses: dict[str, str],
+                     read_old, read_new) -> bool:
+    """True if this guarded change needs no trailer under the T-182 rule: a NEW test file or manifest, or an
+    append-only manifest edit, and every guarded pattern it matches exists only because it is a test."""
+    matched = [p for p in patterns if matches(path, p)]
+    if not matched or any(p not in TEST_GUARD_PATTERNS for p in matched):
+        return False
+    if status == "A":
+        return is_addable_test(path)
+    if status == "M" and path.rsplit("/", 1)[-1] == TEST_MANIFEST_NAME:
+        added = {p for p, st in statuses.items() if st == "A"}
+        return manifest_append_only(read_old(path), read_new(path), added, path)
+    return False
+
+
 def check_guarded(base: str, changes: set[str]) -> Result:
     started = time.monotonic()
     try:
@@ -225,15 +274,26 @@ def check_guarded(base: str, changes: set[str]) -> Result:
         approved = approval_trailers(base)
         merge_in_progress = git_ref_exists("MERGE_HEAD")
         dirty = dirty_paths() if not merge_in_progress else set()
+        compare = compare_ref(base)
+        statuses = change_statuses(compare) if guarded else {}
+
+        def read_old(path: str) -> str:
+            return git("show", f"{compare}:{path}").stdout
+
+        def read_new(path: str) -> str:
+            return (ROOT / path).read_text(encoding="utf-8")
+
         def has_approval(path: str) -> bool:
-            return path in approved
+            return path in approved or free_test_change(path, statuses.get(path, "M"), patterns, statuses,
+                                                        read_old, read_new)
 
         missing = [path for path in guarded if not has_approval(path) or path in dirty]
-        detail = ""
+        free = [path for path in guarded if path not in approved and path not in missing]
+        detail = f"{len(free)} new test path(s) need no approval (T-182)" if free else ""
         if missing:
             detail = "REQUIRES SUPERVISOR APPROVAL: " + short(missing)
         return Result("Guarded paths", not missing, detail, seconds=round(time.monotonic() - started, 2))
-    except (OSError, ValueError) as exc:
+    except (OSError, ValueError, subprocess.SubprocessError) as exc:
         return Result("Guarded paths", False, str(exc), seconds=round(time.monotonic() - started, 2))
 
 
@@ -267,7 +327,7 @@ def check_write_set(task: str, base: str) -> Result:
             common = compare
         else:
             common = git("merge-base", compare, "HEAD", check=False).stdout.strip() or compare
-        paths = nul_paths(git("diff", "--name-only", "-z", common, "--").stdout)
+        paths = nul_paths(git("diff", "--name-only", "--no-renames", "-z", common, "--").stdout)
         paths |= nul_paths(git("ls-files", "--others", "--exclude-standard", "-z").stdout)
         outside = integrate.write_set_violations(paths, claim)
         detail = f"{claim.task}: {len(paths)} changed path(s) vs {compare}, all inside the claim"
@@ -300,6 +360,116 @@ def is_test_source(path: str) -> bool:
     """Tests may name specific characters (regression checks of concrete assets); shared code may not."""
     name = Path(path).name
     return "/tests/" in f"/{path}" or name.startswith("test_") or name.endswith("_test.py")
+
+
+# ---- T-182 test registry ------------------------------------------------------------------------------------------
+
+@dataclasses.dataclass(frozen=True)
+class TestEntry:
+    manifest: str      # repository path of the TESTS file
+    line: int
+    kind: str          # run | blender | via | local
+    path: str          # repository path of the test file
+    rest: tuple        # run: extra arguments; blender: (unit id,); via: (runner path,); local: reason words
+
+
+def is_registry_test(path: str) -> bool:
+    """A file the registry must account for: test_*.py or *_test.py outside docs/ (evaluation evidence)."""
+    name = path.rsplit("/", 1)[-1]
+    return (path.endswith(".py") and (name.startswith("test_") or name.endswith("_test.py"))
+            and not path.startswith("docs/"))
+
+
+def is_addable_test(path: str) -> bool:
+    """A new file that may be added without a trailer: a test source or a new manifest (never a helper or data
+    file, which could shadow an import or change what an existing test reads)."""
+    name = path.rsplit("/", 1)[-1]
+    if name == TEST_MANIFEST_NAME:
+        return True
+    if path.endswith(".py"):
+        return name.startswith("test_") or name.endswith("_test.py")
+    return path.startswith("tests/") and path.endswith(".cpp") and name.startswith("test_")
+
+
+def repo_files(root: Path) -> set[str]:
+    out = subprocess.run(["git", "ls-files", "--cached", "--others", "--exclude-standard", "-z"], cwd=root,
+                         text=True, encoding="utf-8", errors="replace", stdout=subprocess.PIPE,
+                         stderr=subprocess.PIPE, check=True).stdout
+    return {p for p in nul_paths(out) if (root / p).is_file()}
+
+
+def parse_manifest_text(manifest: str, text: str) -> tuple[list[TestEntry], list[str]]:
+    """Parse one TESTS file. Paths are relative to the manifest's directory (subdirectories allowed, no '..')."""
+    import shlex
+    base = manifest.rsplit("/", 1)[0] if "/" in manifest else ""
+    entries, problems = [], []
+    for number, raw in enumerate(text.splitlines(), 1):
+        line = raw.strip()
+        if not line or line.startswith("#"):
+            continue
+        where = f"{manifest}:{number}"
+        try:
+            words = shlex.split(line, comments=True)
+        except ValueError as exc:
+            problems.append(f"{where}: {exc}")
+            continue
+        if len(words) < 2 or words[0] not in TEST_KINDS:
+            problems.append(f"{where}: expected '<{'|'.join(TEST_KINDS)}> <file> ...'")
+            continue
+        kind, rel, rest = words[0], words[1].replace("\\", "/"), tuple(words[2:])
+        parts = rel.split("/")
+        if rel.startswith("/") or ".." in parts or "." in parts or "" in parts:
+            problems.append(f"{where}: path must stay inside the manifest's directory: {rel}")
+            continue
+        if kind in ("blender", "via") and len(rest) != 1:
+            problems.append(f"{where}: {kind} needs exactly one {'unit id' if kind == 'blender' else 'runner path'}")
+            continue
+        if kind == "local" and not rest:
+            problems.append(f"{where}: local needs a reason (why the gate does not run it)")
+            continue
+        entries.append(TestEntry(manifest, number, kind, f"{base}/{rel}" if base else rel, rest))
+    return entries, problems
+
+
+def test_registry(root: Path | None = None, unit_ids: list[str] | None = None) -> tuple[list[TestEntry], list[str]]:
+    """All manifest entries and every registry problem (empty list = the registry is complete and consistent)."""
+    root = root or ROOT
+    files = repo_files(root)
+    entries, problems = [], []
+    for manifest in sorted(p for p in files if p.rsplit("/", 1)[-1] == TEST_MANIFEST_NAME):
+        found, bad = parse_manifest_text(manifest, (root / manifest).read_text(encoding="utf-8"))
+        entries += found
+        problems += bad
+    units = set(BLENDER_UNIT_IDS if unit_ids is None else unit_ids)
+    seen: dict[str, str] = {}
+    for e in entries:
+        where = f"{e.manifest}:{e.line}"
+        if e.path in seen:
+            problems.append(f"{where}: {e.path} already registered at {seen[e.path]}")
+        seen.setdefault(e.path, where)
+        if e.path not in files:
+            problems.append(f"{where}: no such file: {e.path}")
+        if e.kind == "blender" and e.rest[0] not in units:
+            problems.append(f"{where}: unknown Blender unit: {e.rest[0]}")
+        if e.kind == "via":
+            runner = e.rest[0]  # a repository path
+            if runner not in files:
+                problems.append(f"{where}: runner not found: {e.rest[0]}")
+    tests = sorted(p for p in files if is_registry_test(p))
+    unregistered = [p for p in tests if p not in seen]
+    if unregistered:
+        problems.append(f"test(s) in no {TEST_MANIFEST_NAME} manifest: " + short(unregistered))
+    names = collections.Counter(p.rsplit("/", 1)[-1] for p in tests)
+    clashes = sorted(n for n, count in names.items() if count > 1)
+    if clashes:
+        problems.append("test module names must be unique (imports): " + short(clashes))
+    return entries, problems
+
+
+def registry_run_commands(entries: list[TestEntry]) -> list[list[str]]:
+    """The Python tests step: every `run` entry, sorted by path (results must not depend on order)."""
+    return [[sys.executable, str(ROOT / e.path), *e.rest] for e in sorted(entries, key=lambda e: e.path)
+            if e.kind == "run"]
 
 
 def shared_source_paths() -> list[str]:
@@ -501,44 +671,15 @@ def check_cpp_tests(build_dir: Path, config: str, logs: Path, build_ok: bool) ->
 
 
 def check_python_tests(logs: Path) -> Result:
+    """Run every `run` entry of the TESTS manifests (T-182); an incomplete registry fails this check."""
     log = logs / "python-tests.log"
-    tests = [
-        [sys.executable, str(ROOT / "pipeline/clips/tests/test_clip_files.py"), "--selftest"],
-        [sys.executable, str(ROOT / "tools/fidelity/tests/test_ci.py")],
-        [sys.executable, str(ROOT / "tools/regression/tests/test_gate_tools.py")],
-        [sys.executable, str(ROOT / "pipeline/production/tests/test_run_shot_current.py")],  # T-062 cast check
-        [sys.executable, str(ROOT / "tools/animcheck/tests/test_animcheck.py")],  # T-061 animation metrics
-        [sys.executable, str(ROOT / "pipeline/charsys/tests/test_versions.py")],  # T-043 version registry (T-077)
-        [sys.executable, str(ROOT / "tools/fidelity/tests/test_metrics.py")],  # fidelity metric functions (T-077)
-        [sys.executable, str(ROOT / "tools/fidelity/tests/test_metrics_v2.py")],  # T-153 opt-in score v2
-        [sys.executable, str(ROOT / "tools/lipsync/test_lipsync.py")],  # T-054a lip sync (T-077)
-        [sys.executable, str(ROOT / "tools/tests/test_version_switch.py")],  # T-088 version switch
-        [sys.executable, str(ROOT / "pipeline/charsys/tests/test_materials_r2.py")],  # T-092 presets/3
-        [sys.executable, str(ROOT / "pipeline/production/tests/test_sets.py")],  # T-098L set data
-        [sys.executable, str(ROOT / "tools/fit/tests/test_fit.py")],  # T-090 fit optimiser
-        [sys.executable, str(ROOT / "tests/props/test_props.py")],  # T-163 starter prop library
-        [sys.executable, str(ROOT / "pipeline/charsys/tests/test_face_v3.py")],  # T-089 face/3 (plain checks)
-        [sys.executable, str(ROOT / "pipeline/charsys/tests/test_face_v3b.py")],  # T-089b face polish (plain checks)
-        [sys.executable, str(ROOT / "pipeline/charsys/tests/test_face_v4.py")],  # T-109 face round 4 (plain checks)
-        [sys.executable, str(ROOT / "pipeline/charsys/tests/test_face_t168.py")],  # T-168 pad fade / upturned nose (plain checks)
-        [sys.executable, str(ROOT / "pipeline/charsys/tests/test_hair_r4.py")],  # T-091 groom/3 (plain checks)
-        [sys.executable, str(ROOT / "pipeline/charsys/tests/test_hair_r5.py")],  # T-118 groom/4 (plain checks)
-        [sys.executable, str(ROOT / "pipeline/charsys/tests/test_hair_r6.py")],  # T-160 groom/5 (plain checks)
-        [sys.executable, str(ROOT / "pipeline/charsys/tests/test_hands_r2.py")],  # T-121 hands_r2 (plain checks)
-        [sys.executable, str(ROOT / "pipeline/charsys/tests/test_release_rule.py")],  # T-178 release rule
-        [sys.executable, str(ROOT / "pipeline/charsys/tests/test_render_profiles.py")],  # T-166 render/encode defaults
-        [sys.executable, str(ROOT / "pipeline/charsys/tests/test_garments_r3.py")],  # T-119 garment/3 (plain checks)
-        [sys.executable, str(ROOT / "pipeline/charsys/tests/test_expressions_r3.py")],  # T-113 expression sets (plain checks)
-        [sys.executable, str(ROOT / "tests/acting/test_girl_signature.py")],  # T-097-girl acting signature
-        [sys.executable, str(ROOT / "tests/acting/test_e909_beats.py")],  # T-114 e909 beats
-        [sys.executable, str(ROOT / "tests/acting/test_boy_signature.py")],  # T-097-boy acting signature
-        [sys.executable, str(ROOT / "pipeline/charsys/tests/test_boy2_face.py")],  # T-058 spec checks, no Blender (T-077)
-        [sys.executable, str(ROOT / "tools/ci/tests/test_t127_shards.py")],  # T-127 shard plan, verdict, inventory
-        [sys.executable, str(ROOT / "tools/tests/test_task_kit.py")],  # T-165 opt-in task kit
-    ]
-    cleanup_tests = ROOT / "tools/cleanup/run_tests.py"  # T-048 branch-cleanup tests, once merged
-    if cleanup_tests.is_file():
-        tests.append([sys.executable, str(cleanup_tests)])
+    entries, problems = test_registry()
+    if problems:
+        log.write_text("\n".join(problems) + "\n", encoding="utf-8")
+        return Result("Python tests", False, f"test registry: {problems[0]}"
+                      + (f" (+{len(problems) - 1} more; see {relative_log(log)})" if len(problems) > 1 else ""),
+                      relative_log(log))
+    tests = registry_run_commands(entries)
     failed: list[str] = []
     started = time.monotonic()
     for index, command in enumerate(tests):

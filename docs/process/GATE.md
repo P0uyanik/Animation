@@ -14,12 +14,12 @@ At most ten summary lines; details in `build/check-all/check_all.json` and `buil
 | Line | What it checks |
 | --- | --- |
 | Frozen assets | `tools/frozen_manifest.txt` blob IDs and frozen scopes |
-| Guarded paths | changes to `tools/guarded_paths.txt` entries need a `Supervisor-Approved: <path>` trailer |
+| Guarded paths | changes to `tools/guarded_paths.txt` entries need a `Supervisor-Approved: <path>` trailer, except a new test file (§1.2) |
 | Write-set | a task branch (`t-NNN-…`) changes only files inside its claim in [OWNERSHIP.md](OWNERSHIP.md) (diff vs the merge base with `origin/staging`); other branches: not applicable |
 | Shared-systems lint | no new character names in shared code |
 | C++ build | CMake + Ninja (OIDN 2.3.3 prebuilt via `PLUSH_OIDN_ROOT`) |
 | C++ tests | CTest (incl. the frozen image regressions) and `plush_tests` |
-| Python tests and links | Python unit tests (incl. `tools/regression/tests/test_gate_tools.py`, `tools/cleanup/run_tests.py` once present, and the cast check, §1.1) and Markdown links |
+| Python tests and links | the test registry (§1.2), every `run` entry of the `TESTS` manifests (incl. the cast check, §1.1) and Markdown links |
 | Blender tier | fast tier: reported as "not required: fast tier"; full tier: verify_charsys, determinism, export, face, hair/groom, garment, material presets **and the all-character regression** (§3) |
 | Merge status | CI trial merge |
 
@@ -47,6 +47,30 @@ when that version is published, otherwise a build from spec + overrides) and rec
 The Blender tier is never skipped silently: on the fast tier it says so; on the full tier a missing Blender is a
 FAIL; on Windows CI it states that it runs on the linux job; on a task branch without `[full]` it states that it
 runs on the `integration/*` gate (§5).
+
+### 1.2 Test registry: per-directory `TESTS` manifests (T-182, owner 2026-11-21)
+
+Tests are listed next to them, not in `tools/check_all.py`. A `TESTS` file lists the tests in its directory or
+below (paths relative to it, no `..`), one per line, `#` comments allowed:
+
+| Kind | Line | Meaning |
+| --- | --- | --- |
+| run | `run <file> [args]` | the Python tests step runs `python <file> [args]` (sorted by path; results must not depend on order) |
+| blender | `blender <file> <unit>` | covered by that Blender unit (`BLENDER_UNITS` in `check_all.py`, kept in code for the shard plan) |
+| via | `via <file> <runner>` | run by another runner (repository path), e.g. `tools/cleanup/run_tests.py` |
+| local | `local <file> <reason>` | not run by the gate; the reason says why (usually: needs Blender) |
+
+- **No silent skips:** every `test_*.py` / `*_test.py` outside `docs/` must be in exactly one manifest; a missing,
+  duplicated or dangling entry, an unknown Blender unit or runner, or two tests with the same module name fails
+  "Python tests". C++ tests stay registered in `tests/CMakeLists.txt`.
+- **Trailer rule:** a NEW test source (`test_*.py`, `*_test.py`, `tests/**/test_*.cpp`) or a new `TESTS` file, and an
+  append-only `TESTS` edit whose new entries name files the same change adds, need no `Supervisor-Approved`
+  trailer, as long as the only guarded patterns they match are the test patterns (`TEST_GUARD_PATTERNS`). Anything
+  else still needs it: modifying, renaming (= delete + add; renames are never detected) or deleting an existing
+  test; removing, changing or reordering a manifest line; helper or data files in test directories (they could
+  shadow an import or change what an existing test reads); tests under other guarded paths (`tools/regression/`,
+  `engine/render/`, ...). Code review and the full CI gate are unchanged. Negative tests:
+  `tools/tests/test_test_registry.py`; evidence: `docs/evaluation/process/T-182/`.
 
 ## 2. Tiers (`tools/regression_paths.txt`, guarded)
 
