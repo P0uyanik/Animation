@@ -10,3 +10,5 @@ Also: one step in the docs-only fast-path job (`.github/workflows/checks.yml`); 
 Live OWNERSHIP.md at input b9c0d4e: 0 overlaps; qualifier text in T-175 ("(walk/sit/stand only)",
 "(one plush_anim source line)"), T-171 ("(final list in its first STATUS)"), T-178 ("(test registration only)").
 `--check-all` exits 1 on the live file until the Supervisor cleans these rows.
+
+T-181b: a depends-on (read) overlap with another task's write-set is a WARN naming that task and both globs, not a conflict (`--check`, `--check-all`); write-set overlaps and shared version bumps still fail.

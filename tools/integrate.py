@@ -291,7 +291,7 @@ def check_claims(candidate: Claim, others: list[Claim]) -> tuple[list[str], list
         for dep in candidate.depends_on:
             for theirs in other.write_set:
                 if globs_overlap(dep, theirs):
-                    conflicts.append(f"depends on {dep}, which {other.task} is changing ({theirs})")
+                    warnings.append(f"reads {dep}; {other.task} writes {theirs}")
         for dep in candidate.stable_depends:
             for theirs in other.write_set:
                 if globs_overlap(dep, theirs):
@@ -299,7 +299,7 @@ def check_claims(candidate: Claim, others: list[Claim]) -> tuple[list[str], list
         for theirs_dep in other.depends_on:
             for mine in candidate.write_set:
                 if globs_overlap(theirs_dep, mine):
-                    conflicts.append(f"{other.task} depends on {theirs_dep}, which this task would change ({mine})")
+                    warnings.append(f"{other.task} reads {theirs_dep}; this task writes {mine}")
         shared_versions = sorted(set(candidate.versions) & set(other.versions))
         conflicts.extend(f"version {v} is also bumped by {other.task}" for v in shared_versions)
     return conflicts, warnings
@@ -311,7 +311,7 @@ def write_cell_extra_text(cell: str) -> str:
 
 
 def check_table(claims: list[Claim]) -> tuple[list[str], list[str], list[str]]:
-    """Whole-table check: (write-set overlaps, qualifier text problems, stable-depends warnings)."""
+    """Whole-table check: (write-set overlaps, qualifier text problems, read-vs-write warnings)."""
     overlaps, problems, warnings = [], [], []
     for i, a in enumerate(claims):
         for b in claims[i + 1:]:
@@ -321,12 +321,12 @@ def check_table(claims: list[Claim]) -> tuple[list[str], list[str], list[str]]:
                         overlaps.append(f"write-set overlap {a.task} ~ {b.task}: {mine} ~ {theirs}")
         for other in claims:
             if other is not a:
-                warnings.extend(w for w in check_claims(a, [a, other])[1])
+                warnings.extend(f"{a.task}: {w}" for w in check_claims(a, [a, other])[1])
     for claim in claims:
         extra = write_cell_extra_text(claim.write_cell)
         if extra:
             problems.append(f"qualifier text in {claim.task} write-set (only back-ticked globs allowed): {extra}")
-    return overlaps, problems, warnings
+    return overlaps, problems, list(dict.fromkeys(warnings))
 
 
 def write_set_violations(paths, claim: Claim) -> list[str]:
