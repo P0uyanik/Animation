@@ -257,6 +257,8 @@ jobs:
         run: python3 tools/check_doc_links.py
       - name: OWNERSHIP parses
         run: python3 tools/integrate.py claims --list
+      - name: OWNERSHIP whole-table check
+        run: python3 tools/integrate.py claims --check-all
       - name: Gate tools tests
         run: python3 tools/regression/tests/test_gate_tools.py
 
