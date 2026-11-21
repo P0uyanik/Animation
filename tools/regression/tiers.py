@@ -61,6 +61,18 @@ def classify(paths, rules: list[tuple[str, str]] | None = None) -> dict:
             "paths": {path: {"tier": tier, "rule": rule} for path, (tier, rule) in per_path.items()}}
 
 
+# T-177: docs-only fast path for ledger pushes (docs/process/GATE.md §5.6). Decided from the changed-path list alone.
+DOCS_ONLY_PREFIXES = ("docs/process/", "docs/tasks/")
+
+
+def docs_only(paths) -> bool:
+    """True when the change is non-empty and EVERY path is under docs/process/ or docs/tasks/ (folder prefix with the
+    trailing slash: docs/processX/, docs/tasks.md and docs/evaluation/ do not count). A rename or delete lists both
+    sides (git_changed uses --no-renames), so each side must qualify. An empty change is never docs-only."""
+    paths = [p for p in paths if p]
+    return bool(paths) and all(p.startswith(DOCS_ONLY_PREFIXES) and ".." not in p.split("/") for p in paths)
+
+
 def portable_bytes(path: Path) -> bytes:
     data = path.read_bytes()
     return data.replace(b"\r\n", b"\n") if path.suffix.casefold() in TEXT_SUFFIXES else data
@@ -129,7 +141,7 @@ def character_config(cid: str, root: Path = ROOT) -> dict:
 def git_changed(base: str) -> set[str]:
     common = subprocess.run(["git", "merge-base", base, "HEAD"], cwd=ROOT, text=True, capture_output=True)
     ref = common.stdout.strip() if common.returncode == 0 and common.stdout.strip() else base
-    out = subprocess.run(["git", "diff", "--name-only", "-z", ref, "--"], cwd=ROOT, text=True,
+    out = subprocess.run(["git", "diff", "--name-only", "--no-renames", "-z", ref, "--"], cwd=ROOT, text=True,
                          capture_output=True, check=True).stdout
     return {p for p in out.split("\0") if p}
 
@@ -162,10 +174,12 @@ def main(argv=None) -> int:
     result.pop("paths")
     result["characters"] = character_ids()
     result["changed_characters"] = changed_characters(paths)
+    result["docs_only"] = docs_only(paths)
     print(json.dumps(result, indent=1))
     if a.github_output:
         with open(a.github_output, "a", encoding="utf-8") as out:
             out.write(f"tier={result['tier']}\n")
+            out.write(f"docs_only={'true' if result['docs_only'] else 'false'}\n")
             out.write(f"characters={json.dumps(result['characters'])}\n")
             out.write(f"changed_characters={','.join(result['changed_characters'])}\n")
     return 0
