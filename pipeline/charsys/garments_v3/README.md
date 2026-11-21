@@ -20,6 +20,7 @@ Pin it with `"generators": {"garment": "garment/3"}` **and** `"clothing": {"gene
 | any item | `fibre_uv` (T-126) | writes the `ps_fibre` UV map on every piece (metres: U round the limb or body, V along it), so a material with `fibre.coordinates: "uv"` runs its knit along the sleeve and down the body | `fibre_uv.py` |
 | `boots`, `shoes` | `sole_stitch` (T-126) | a row of raised yarn stitches round the upper just above the sole (pieces `garment.<item>.stitch.L/R`, part `stitch`) | `stitch.py` |
 | `dress`, `skirt` | `cloth_sim` (T-126) | marks the skirt piece for the opt-in baked simulation of `pipeline/charsys/cloth_sim` (property `ps_cloth_sim`, pin attribute `ps_cloth_pin`); the build simulates nothing | `cloth_tag.py` |
+| `shorts`, `trousers` | `seated` (T-184) | the item stays over the legs in a deep hip bend (sitting, a walk's forward swing), applied at bind time: `leg_weights` gives every shell vertex the weights of the skin under it in the hip zone (a leg tube that shaping moved over the thigh is carried by the thigh, not by the pelvis; hems and shins keep their weights; blended back to the old weights at the centre plane), `collision` gives the `garment/1` post-skinning collision full weight where bare leg skin comes close in the configured hip bends. No geometry, modifier, shape key or driver is added | `seated.py` |
 
 Field details and defaults are in each module's docstring.
 
@@ -35,6 +36,11 @@ Notes
   `garment/1` seam ring.
 - The opt-in limb skin of T-119 is not part of this package: `materials.assignments.skin_limbs` (hands) is read by
   `build_character.py`, its preset comes from `pipeline/charsys/materials/skin_presets_r3.json`.
+- `seated` (T-184): the weights are exported with the engine package; the collision is a Blender modifier and is
+  not, so engine previews still show a bare thigh through a front panel. The collision weights are rebuilt by the
+  `garment/1` rule whenever the worn items are switched (`set_active_items`); `seated.bind` must then run again.
+  A leg tube whose root lies inside the trunk at a deep bend (short bloomers on a round trunk) is wrapped round the
+  thigh by the collision, it is not re-draped: the thigh still leaves the garment through its front panel.
 - T-126 fields: `skirt_pattern` runs after the item's build-time drape, so the relief is not smoothed away; it moves
   both walls of the piece outward only. `fibre_uv` gives knit *columns* along a piece; the `knit` material kind draws
   its rows from the third coordinate, which a UV map does not have, so stitch rows need shader work

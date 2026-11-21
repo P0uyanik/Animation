@@ -1,0 +1,122 @@
+{
+  "sheet": "/home/user/Animation/docs/evaluation/animation/T-175/sheet_girl.jpg",
+  "size": [
+    852,
+    2044
+  ],
+  "max_px": 2048,
+  "frames": [
+    1,
+    7,
+    13,
+    19,
+    116,
+    150,
+    182,
+    198
+  ],
+  "columns": [
+    "full frame",
+    "girl (crop follows the character)"
+  ],
+  "crops": [],
+  "inputs": [
+    {
+      "frame": 1,
+      "column": "full frame",
+      "path": "/home/user/Animation/docs/evaluation/animation/T-175/shots/review/build/sheet/full/frame_0001.png",
+      "sha256": "1a821890962ca0ad0410a8aecf41da0944905ff84039bdf89afedfb2cc89b457"
+    },
+    {
+      "frame": 1,
+      "column": "girl (crop follows the character)",
+      "path": "/home/user/Animation/docs/evaluation/animation/T-175/shots/review/build/sheet/girl/frame_0001.png",
+      "sha256": "31f47fe823cab2b966257546c885c3a3b0143de6c9eb0a73e91b10dc0fdd1295"
+    },
+    {
+      "frame": 7,
+      "column": "full frame",
+      "path": "/home/user/Animation/docs/evaluation/animation/T-175/shots/review/build/sheet/full/frame_0007.png",
+      "sha256": "56632d12b1cb8be29beaaaa58ba5a6e4034c630abdadb3dbec3149170b898a14"
+    },
+    {
+      "frame": 7,
+      "column": "girl (crop follows the character)",
+      "path": "/home/user/Animation/docs/evaluation/animation/T-175/shots/review/build/sheet/girl/frame_0007.png",
+      "sha256": "6b63b9d9bdf7e27062e0d444198636281a080c5c420f898f40947430582a83c6"
+    },
+    {
+      "frame": 13,
+      "column": "full frame",
+      "path": "/home/user/Animation/docs/evaluation/animation/T-175/shots/review/build/sheet/full/frame_0013.png",
+      "sha256": "17b2b52d03c95b6d3301351d8b77176e2bcc634f3fe6409da3f1addcd21d026e"
+    },
+    {
+      "frame": 13,
+      "column": "girl (crop follows the character)",
+      "path": "/home/user/Animation/docs/evaluation/animation/T-175/shots/review/build/sheet/girl/frame_0013.png",
+      "sha256": "5546c41ebdb494ef24a7c05e5ab80a31bc6a4f667ef8e63c3019ee1f11d86d49"
+    },
+    {
+      "frame": 19,
+      "column": "full frame",
+      "path": "/home/user/Animation/docs/evaluation/animation/T-175/shots/review/build/sheet/full/frame_0019.png",
+      "sha256": "8fb9951a19256539e556c3e1db2f3afdf4c3692626d012f3f946b14ef28d80c0"
+    },
+    {
+      "frame": 19,
+      "column": "girl (crop follows the character)",
+      "path": "/home/user/Animation/docs/evaluation/animation/T-175/shots/review/build/sheet/girl/frame_0019.png",
+      "sha256": "dee27790c1fc68b1f13c3d7f8e1645a8d4b2ae5c5768c7c6b2a8e1eac9b552e3"
+    },
+    {
+      "frame": 116,
+      "column": "full frame",
+      "path": "/home/user/Animation/docs/evaluation/animation/T-175/shots/review/build/sheet/full/frame_0116.png",
+      "sha256": "48feb03726812667bec54564eb4e4a1cbf0cce5d17833b36ca18b1b577e15cc4"
+    },
+    {
+      "frame": 116,
+      "column": "girl (crop follows the character)",
+      "path": "/home/user/Animation/docs/evaluation/animation/T-175/shots/review/build/sheet/girl/frame_0116.png",
+      "sha256": "895458146c3e47f3c7a3f53dfe0b5b6cd1a9eea744849f58f8cd0547af128d99"
+    },
+    {
+      "frame": 150,
+      "column": "full frame",
+      "path": "/home/user/Animation/docs/evaluation/animation/T-175/shots/review/build/sheet/full/frame_0150.png",
+      "sha256": "788496876504313550ad67ea37b91caedd7a52153a7d57b218d2cd838763a990"
+    },
+    {
+      "frame": 150,
+      "column": "girl (crop follows the character)",
+      "path": "/home/user/Animation/docs/evaluation/animation/T-175/shots/review/build/sheet/girl/frame_0150.png",
+      "sha256": "e5aed346de72cf0ef9054a0a0464caa3375fce752039e8e937eda9af070d3326"
+    },
+    {
+      "frame": 182,
+      "column": "full frame",
+      "path": "/home/user/Animation/docs/evaluation/animation/T-175/shots/review/build/sheet/full/frame_0182.png",
+      "sha256": "fb829f478fce60b718e233c8dcd8c758ad0fcd8acfc97816df5cddeeda68bb78"
+    },
+    {
+      "frame": 182,
+      "column": "girl (crop follows the character)",
+      "path": "/home/user/Animation/docs/evaluation/animation/T-175/shots/review/build/sheet/girl/frame_0182.png",
+      "sha256": "c15111ffc398e5ac767a74f2b39ddbb823e0ba782f5821bf4d42ad86b590f463"
+    },
+    {
+      "frame": 198,
+      "column": "full frame",
+      "path": "/home/user/Animation/docs/evaluation/animation/T-175/shots/review/build/sheet/full/frame_0198.png",
+      "sha256": "a5b020fcb31e015c6422a064b62fb3ed36c77f8f5f288d0fc4c031dba77be82d"
+    },
+    {
+      "frame": 198,
+      "column": "girl (crop follows the character)",
+      "path": "/home/user/Animation/docs/evaluation/animation/T-175/shots/review/build/sheet/girl/frame_0198.png",
+      "sha256": "894ec01d97e92084c663bb8dfd3ba5a9575e3ff381f3f0e8ec413184eed2a5d9"
+    }
+  ],
+  "missing": []
+}

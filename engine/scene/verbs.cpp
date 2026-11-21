@@ -421,6 +421,7 @@ std::expected<VerbExpansion, VerbError> expandVerbs(const Json& actions, const V
     // A grasp site's hand shape, approach side and finger band (T-112b) on a generated grasp.
     const bool fingers = a.contains("fingers") && a["fingers"].is_boolean() ? a["fingers"].get<bool>() : T != nullptr;
     auto styled = [&](Json g, const GraspSite* site) {
+      if (a.contains("fingerClose")) g["fingerClose"] = a["fingerClose"];  // T-171 (opt-in), read by scene/interaction.cpp
       if (!site) return g;
       if (site->shape != "wrap") g["shape"] = site->shape;
       if (site->approach) g["approach"] = {site->approach->x, site->approach->y, site->approach->z};
@@ -538,7 +539,11 @@ std::expected<VerbExpansion, VerbError> expandVerbs(const Json& actions, const V
       const bool reachable = hasConstraint(c, "reachable") || hasConstraint(constraintsOf("approach"), "reachable");
       const auto lim = mmLimit(c, "palm_on_socket");
       if (reachable) x.checks.push_back({VerbCheck::Kind::Reach, type, who, prop, socket, side, contact, contact, 0.005f});
-      if (lim) x.checks.push_back({VerbCheck::Kind::PalmOnSocket, type, who, prop, socket, side, contact, contact, *lim});
+      // T-171 (opt-in): a natural grip may turn the grasp point about the prop's axis; the palm is checked on that point.
+      const bool naturalGrip = a.contains("fingerClose") && a["fingerClose"].is_object() && a["fingerClose"].value("grip", Json()) == "natural";
+      if (lim)
+        x.checks.push_back({VerbCheck::Kind::PalmOnSocket, type, who, prop, naturalGrip && !site2 ? std::format("{}@{}.{}", socket, who, side) : socket,
+                            side, contact, contact, *lim});
       if (site2) {
         if (reachable) x.checks.push_back({VerbCheck::Kind::Reach, type, who, prop, site2->socket, other, last, last, 0.005f});
         if (lim) x.checks.push_back({VerbCheck::Kind::PalmOnSocket, type, who, prop, site2->socket, other, last, last, *lim});
@@ -699,6 +704,7 @@ std::expected<VerbExpansion, VerbError> expandVerbs(const Json& actions, const V
                 {"prop", prop}, {"toSocket", toSocket}, {"start", S}, {"receiverStart", rStart}, {"contact", contact}, {"release", rel},
                 {"end", end}};
       if (auto at = vecOpt(a, "at")) g["at"] = a["at"];
+      if (a.contains("fingerClose")) g["fingerClose"] = a["fingerClose"];  // T-171 (opt-in)
       if (!look || react) g["look"] = false;
       if (fingers && aff) {  // T-112c: the receiver's site band and box face, under the same gate as the giver's grasp
         const GraspSite* rs = rsite;
@@ -786,6 +792,7 @@ std::expected<VerbExpansion, VerbError> expandVerbs(const Json& actions, const V
       if (socket != "place") g["socket"] = socket;
       if (!ontoProp.empty()) g["onto"] = {{"prop", ontoProp}, {"socket", ontoSocket}};
       else g["at"] = a["at"];
+      if (a.contains("fingerClose")) g["fingerClose"] = a["fingerClose"];  // T-171 (opt-in)
       if (!look) g["look"] = false;
       gen.push_back(std::move(g));
       const auto mc = constraintsOf("manipulate"), cc = constraintsOf("contact");
@@ -836,8 +843,12 @@ std::vector<VerbError> checkVerbConstraints(const VerbExpansion& x, const VerbGe
   std::vector<VerbError> errors;
   auto socketWorld = [&](const std::string& prop, const std::string& socket, double f) -> std::optional<vec3> {
     const PropAsset* asset = g.asset ? g.asset(prop) : nullptr;
-    if (!asset || !asset->sockets.count(socket)) return std::nullopt;
-    return vec3((g.propWorld(prop, f) * assetTransformMatrix(asset->sockets.at(socket)))[3]);
+    if (!asset) return std::nullopt;
+    // "<socket>@<character>.<hand>": the grasp point as the planner turned it for that hand (T-171 "grip": "natural"),
+    // the authored socket when it did not turn it.
+    const std::string name = asset->sockets.count(socket) ? socket : socket.substr(0, socket.find('@'));
+    if (!asset->sockets.count(name)) return std::nullopt;
+    return vec3((g.propWorld(prop, f) * assetTransformMatrix(asset->sockets.at(name)))[3]);
   };
   for (const VerbCheck& c : x.checks) {
     auto add = [&](const char* code, const std::string& reason) { errors.push_back({c.verb, c.character, c.prop, code, reason}); };

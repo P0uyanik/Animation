@@ -51,6 +51,10 @@ doc-link checking needs most of `docs/evaluation`. Narrowing further is left to 
 
 ## 3. The two profiles (`create_session` parameters)
 
+**Dispatch rule (owner 2026-11-21 ~19:20 CET, P13: yes).** The Supervisor dispatches with **LIGHT** only for code/docs/
+process tasks that never run the full suite or a Blender unit (their checks are `--fast`-tier); every other task gets
+**FULL** (or the default full checkout). When unsure, use FULL. The dispatch message names the profile.
+
 **LIGHT** (code, docs, process, C++ app/engine work without character regression):
 
 ```

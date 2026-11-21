@@ -48,6 +48,8 @@ SAMPLES = {
     "t168_face": [{"face": {"lower_face": {"cheek_pad_top_fade_m": 0.01}}}, {"face": {"nose": {"type": "upturned"}}}],
     "hair_contact": [{"hair": {"ear_keepout": {}}}, {"override": {"hair": {"dynamics": {"contact": {}}}}},
                      {"dynamics": {"chains": [{"name": "lock", "contact": {"segments": True}}]}}],
+    "seated": [{"clothing": {"garments": [{"type": "shorts", "seated": True}]}},
+               {"override": {"clothing": {"garments": [{"type": "trousers", "seated": {"collision": False}}]}}}],
 }
 PLAIN = {"generators": {"groom": "groom/1", "face": "face_generic/2"}, "body": {}, "face": {"nose": {"type": "button"}}}
 

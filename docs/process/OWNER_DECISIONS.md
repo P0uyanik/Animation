@@ -935,3 +935,18 @@ hard depends-on (read) overlaps were conflicts → T-181b makes them warnings. R
 - **T-172:** no 720p re-render; current quality is fine for testing → close and archive.
 - T-182: the owner typed the P7 policy sentence in the T-182 session at 2026-11-21T12:17:51Z (desktop app; text without the
   "I approve T-182:" prefix, otherwise verbatim); verified by the Supervisor with list_events before merge.
+
+## 2026-11-21 ~19:20 CET (via the liaison; recorded by the R5 Supervisor)
+- **T-171 r3 hands:** owner picks the third column, **thumb up (`r3`)**, as the most natural (not `r3site`). Integrate and
+  use it: merge, and make it the variant shots use for the cup pick-up (per-shot keys; no engine default change → no golden
+  change). Logged for later: carry / hand-over wrist bend up to 93°, no finger "press" depth yet, planArmLift popping, the
+  thumb-up hand is mostly hidden behind the sleeve in e910's camera.
+- **T-183 hair contact: NOT accepted.** "The hair still intersects with the body and other areas; it goes inside the body;
+  this has not been fixed at all." Do not merge. New round in a fresh session: full hair vs body / garment / arm collision
+  (not only hand and ear), with clear before/after close-ups showing zero penetration. Ear look undecided (default keep-out).
+- **T-175 r2 walk / sit / stand: accepted**, usable → merge (opt-in for shots).
+- **Global floor offset fix: no**, no work for now (T-175 per-shot compensation stays).
+- **T-184 seated garments: accepted** → merge as opt-in, usable; do not wait for T-183. Seated thigh-through-panel logged
+  for later.
+- **P13:** yes, adopt the narrow LIGHT clone rule (code/docs tasks that never run the full suite) → CLONE_PROFILES.md §3.
+

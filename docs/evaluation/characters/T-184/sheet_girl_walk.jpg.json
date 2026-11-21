@@ -1,0 +1,44 @@
+{
+  "sheet": "/home/user/Animation/docs/evaluation/characters/T-184/sheet_girl_walk.jpg",
+  "size": [
+    966,
+    1024
+  ],
+  "max_px": 1024,
+  "frames": [
+    3,
+    4
+  ],
+  "columns": [
+    "before: boy 2.3.0 / girl 0.14.0 (published)",
+    "after: same specs + T-184 override (seated)"
+  ],
+  "crops": [],
+  "inputs": [
+    {
+      "frame": 3,
+      "column": "before: boy 2.3.0 / girl 0.14.0 (published)",
+      "path": "/home/user/Animation/docs/evaluation/characters/T-184/out/before/frame_0003.png",
+      "sha256": "1f01f870942859cdd4e0d11b1a3ce8f56300dc15be862fddbd52a2d85a0260e1"
+    },
+    {
+      "frame": 3,
+      "column": "after: same specs + T-184 override (seated)",
+      "path": "/home/user/Animation/docs/evaluation/characters/T-184/out/after/frame_0003.png",
+      "sha256": "0cdfcf49d79e26569331844ea39d29d366ddce4d2f9d26590739135d87ebac0c"
+    },
+    {
+      "frame": 4,
+      "column": "before: boy 2.3.0 / girl 0.14.0 (published)",
+      "path": "/home/user/Animation/docs/evaluation/characters/T-184/out/before/frame_0004.png",
+      "sha256": "39191d4ab6b6d320f506ac92074b62f35e8b024dce52a4558f28ad4e98580099"
+    },
+    {
+      "frame": 4,
+      "column": "after: same specs + T-184 override (seated)",
+      "path": "/home/user/Animation/docs/evaluation/characters/T-184/out/after/frame_0004.png",
+      "sha256": "1cfd34138ccc808e711bec139fa2da7eac6c759672942a68b8d5c1d22a762c7d"
+    }
+  ],
+  "missing": []
+}

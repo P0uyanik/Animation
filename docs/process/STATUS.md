@@ -1,8 +1,12 @@
 # Status board
 
 Updated by the Supervisor in the same commit as every merge or dispatch. Sources: [TASK_LOG](TASK_LOG.md),
-[OWNERSHIP](OWNERSHIP.md), [OWNER_DECISIONS](OWNER_DECISIONS.md) (2026-11-21). As of 2026-11-21 ~10:45Z (R4 Supervisor session_01NPjxeNjJghYQMGjDycpnsC). R3 released (main ea4e440). T-171 CHECKPOINT and T-172 READY wait for the owner; T-175 style review pending; T-177/T-178/T-179/T-181 merged (main b87fbfd); T-180, T-181b, T-182 running; P2 rule applied. Session cap temporarily 7.
-Session cap: 6 (temporary 8 ended 08:20Z). Owner liaison: session_01NPjxeKamtbdzi3YwrgsWXU (from ~08:30Z). ETA "—" = none given yet.
+[OWNERSHIP](OWNERSHIP.md), [OWNER_DECISIONS](OWNER_DECISIONS.md) (2026-11-21). As of 2026-11-21 ~20:20Z (R5 Supervisor
+session_01NPjxeLwrBZTHQcvtcEtsUk). Owner decisions ~19:20 CET applied: T-175 r2, T-184, T-171 r3 merged (main 554e403,
+gate 44943332085 green). Running: T-183 r2 hair vs body/garment/arm (session_01NPjxeMdpkMe4aHjXTxbksg, design approved),
+T-185 adopt r3 thumb-up grasp in shots (session_01NPjxeK8rfLdXbfZnTGmDMW). Floor-offset global fix: no. P13 LIGHT rule
+adopted. Rows below older than this line are history (R4); TASK_LOG is authoritative.
+Session cap 7. Owner liaison: session_01NPjxeKamtbdzi3YwrgsWXU.
 
 ## Character look
 | Task | Model | State | ETA | Branch |

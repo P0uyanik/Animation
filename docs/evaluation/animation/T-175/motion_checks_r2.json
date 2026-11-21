@@ -1,0 +1,1689 @@
+{
+ "bake": "engine bake of shots/review (frames 1-230)",
+ "tool": "tools/motion_checks/run.py (thresholds unchanged)",
+ "counts": {
+  "flicker": 0,
+  "popping": 85,
+  "interpenetration": 22,
+  "by_design": 0
+ },
+ "note": "issues at frames 99-103 are the camera cut between the two parts",
+ "issues": [
+  {
+   "check": "popping",
+   "kind": "mesh",
+   "owner": "girl",
+   "channel": "hand.L",
+   "frames": [
+    100,
+    101
+   ],
+   "peak_frame": 100,
+   "value": 7825.421,
+   "peak_speed": 7824.106,
+   "jerk": 1.0,
+   "unit": "mm/f^2",
+   "part": "cut"
+  },
+  {
+   "check": "popping",
+   "kind": "joint",
+   "owner": "girl",
+   "channel": "DEF-f_index.03.L",
+   "frames": [
+    100,
+    101
+   ],
+   "peak_frame": 100,
+   "value": 7816.811,
+   "peak_speed": 7815.643,
+   "jerk": 1.0,
+   "unit": "mm/f^2",
+   "part": "cut"
+  },
+  {
+   "check": "popping",
+   "kind": "mesh",
+   "owner": "boy",
+   "channel": "hand.L",
+   "frames": [
+    100,
+    101
+   ],
+   "peak_frame": 100,
+   "value": 6921.069,
+   "peak_speed": 6917.006,
+   "jerk": 1.0,
+   "unit": "mm/f^2",
+   "part": "cut"
+  },
+  {
+   "check": "popping",
+   "kind": "joint",
+   "owner": "boy",
+   "channel": "DEF-f_index.03.L",
+   "frames": [
+    100,
+    101
+   ],
+   "peak_frame": 100,
+   "value": 6916.534,
+   "peak_speed": 6912.769,
+   "jerk": 1.0,
+   "unit": "mm/f^2",
+   "part": "cut"
+  },
+  {
+   "check": "popping",
+   "kind": "rotation",
+   "owner": "girl",
+   "channel": "DYN-ringlets_side_b.00.0",
+   "frames": [
+    100,
+    107
+   ],
+   "peak_frame": 101,
+   "value": 104.372,
+   "peak_speed": 58.485,
+   "jerk": 1.77,
+   "unit": "deg/f^2",
+   "part": "cut"
+  },
+  {
+   "check": "popping",
+   "kind": "rotation",
+   "owner": "boy",
+   "channel": "DYN-crown.03.0",
+   "frames": [
+    89,
+    129
+   ],
+   "peak_frame": 101,
+   "value": 63.385,
+   "peak_speed": 34.058,
+   "jerk": 1.83,
+   "unit": "deg/f^2",
+   "part": "cut"
+  },
+  {
+   "check": "popping",
+   "kind": "rotation",
+   "owner": "girl",
+   "channel": "DYN-ringlets_side_b.01.1",
+   "frames": [
+    110,
+    118
+   ],
+   "peak_frame": 113,
+   "value": 30.469,
+   "peak_speed": 21.429,
+   "jerk": 1.39,
+   "unit": "deg/f^2",
+   "part": "sit_stand"
+  },
+  {
+   "check": "popping",
+   "kind": "rotation",
+   "owner": "boy",
+   "channel": "DYN-crown.00.1",
+   "frames": [
+    203,
+    208
+   ],
+   "peak_frame": 204,
+   "value": 29.988,
+   "peak_speed": 21.185,
+   "jerk": 1.38,
+   "unit": "deg/f^2",
+   "part": "sit_stand"
+  },
+  {
+   "check": "popping",
+   "kind": "mesh",
+   "owner": "girl",
+   "channel": "hair_bun",
+   "frames": [
+    204,
+    206
+   ],
+   "peak_frame": 205,
+   "value": 43.909,
+   "peak_speed": 46.669,
+   "jerk": 0.93,
+   "unit": "mm/f^2",
+   "part": "sit_stand"
+  },
+  {
+   "check": "popping",
+   "kind": "rotation",
+   "owner": "girl",
+   "channel": "DYN-ringlets_side_b.00.1",
+   "frames": [
+    178,
+    181
+   ],
+   "peak_frame": 179,
+   "value": 25.306,
+   "peak_speed": 16.373,
+   "jerk": 1.5,
+   "unit": "deg/f^2",
+   "part": "sit_stand"
+  },
+  {
+   "check": "popping",
+   "kind": "mesh",
+   "owner": "girl",
+   "channel": "hair_bun",
+   "frames": [
+    105,
+    119
+   ],
+   "peak_frame": 106,
+   "value": 54.926,
+   "peak_speed": 78.853,
+   "jerk": 0.69,
+   "unit": "mm/f^2",
+   "part": "sit_stand"
+  },
+  {
+   "check": "popping",
+   "kind": "rotation",
+   "owner": "boy",
+   "channel": "DYN-crown.00.1",
+   "frames": [
+    65,
+    74
+   ],
+   "peak_frame": 69,
+   "value": 28.583,
+   "peak_speed": 21.339,
+   "jerk": 1.31,
+   "unit": "deg/f^2",
+   "part": "walk"
+  },
+  {
+   "check": "popping",
+   "kind": "rotation",
+   "owner": "boy",
+   "channel": "DYN-crown.00.1",
+   "frames": [
+    41,
+    50
+   ],
+   "peak_frame": 45,
+   "value": 28.574,
+   "peak_speed": 21.339,
+   "jerk": 1.31,
+   "unit": "deg/f^2",
+   "part": "walk"
+  },
+  {
+   "check": "popping",
+   "kind": "rotation",
+   "owner": "boy",
+   "channel": "DYN-crown.00.1",
+   "frames": [
+    19,
+    26
+   ],
+   "peak_frame": 21,
+   "value": 28.704,
+   "peak_speed": 22.014,
+   "jerk": 1.27,
+   "unit": "deg/f^2",
+   "part": "walk"
+  },
+  {
+   "check": "popping",
+   "kind": "rotation",
+   "owner": "boy",
+   "channel": "DYN-whorl.01.1",
+   "frames": [
+    170,
+    192
+   ],
+   "peak_frame": 170,
+   "value": 22.732,
+   "peak_speed": 14.394,
+   "jerk": 1.53,
+   "unit": "deg/f^2",
+   "part": "sit_stand"
+  },
+  {
+   "check": "popping",
+   "kind": "rotation",
+   "owner": "girl",
+   "channel": "DYN-bun.0.2",
+   "frames": [
+    204,
+    206
+   ],
+   "peak_frame": 205,
+   "value": 21.046,
+   "peak_speed": 12.737,
+   "jerk": 1.59,
+   "unit": "deg/f^2",
+   "part": "sit_stand"
+  },
+  {
+   "check": "popping",
+   "kind": "mesh",
+   "owner": "boy",
+   "channel": "hair_whorl",
+   "frames": [
+    105,
+    114
+   ],
+   "peak_frame": 111,
+   "value": 48.706,
+   "peak_speed": 71.081,
+   "jerk": 0.68,
+   "unit": "mm/f^2",
+   "part": "sit_stand"
+  },
+  {
+   "check": "popping",
+   "kind": "rotation",
+   "owner": "girl",
+   "channel": "DYN-bun.0.2",
+   "frames": [
+    127,
+    129
+   ],
+   "peak_frame": 128,
+   "value": 15.405,
+   "peak_speed": 8.126,
+   "jerk": 1.79,
+   "unit": "deg/f^2",
+   "part": "sit_stand"
+  },
+  {
+   "check": "popping",
+   "kind": "rotation",
+   "owner": "boy",
+   "channel": "DYN-crown.03.1",
+   "frames": [
+    2,
+    9
+   ],
+   "peak_frame": 3,
+   "value": 21.645,
+   "peak_speed": 17.179,
+   "jerk": 1.22,
+   "unit": "deg/f^2",
+   "part": "walk"
+  },
+  {
+   "check": "popping",
+   "kind": "mesh",
+   "owner": "boy",
+   "channel": "hand.L",
+   "frames": [
+    185,
+    194
+   ],
+   "peak_frame": 192,
+   "value": 22.989,
+   "peak_speed": 20.602,
+   "jerk": 1.09,
+   "unit": "mm/f^2",
+   "part": "sit_stand"
+  },
+  {
+   "check": "popping",
+   "kind": "joint",
+   "owner": "boy",
+   "channel": "DEF-f_middle.03.L",
+   "frames": [
+    105,
+    114
+   ],
+   "peak_frame": 108,
+   "value": 34.113,
+   "peak_speed": 46.281,
+   "jerk": 0.73,
+   "unit": "mm/f^2",
+   "part": "sit_stand"
+  },
+  {
+   "check": "popping",
+   "kind": "mesh",
+   "owner": "boy",
+   "channel": "hair_whorl",
+   "frames": [
+    202,
+    207
+   ],
+   "peak_frame": 205,
+   "value": 37.144,
+   "peak_speed": 57.606,
+   "jerk": 0.64,
+   "unit": "mm/f^2",
+   "part": "sit_stand"
+  },
+  {
+   "check": "popping",
+   "kind": "joint",
+   "owner": "girl",
+   "channel": "DYN-bun.0.2",
+   "frames": [
+    105,
+    118
+   ],
+   "peak_frame": 111,
+   "value": 39.755,
+   "peak_speed": 66.577,
+   "jerk": 0.59,
+   "unit": "mm/f^2",
+   "part": "sit_stand"
+  },
+  {
+   "check": "popping",
+   "kind": "joint",
+   "owner": "boy",
+   "channel": "DEF-f_ring.03.L",
+   "frames": [
+    185,
+    194
+   ],
+   "peak_frame": 192,
+   "value": 21.064,
+   "peak_speed": 18.7,
+   "jerk": 1.1,
+   "unit": "mm/f^2",
+   "part": "sit_stand"
+  },
+  {
+   "check": "popping",
+   "kind": "rotation",
+   "owner": "boy",
+   "channel": "DYN-crown.02.1",
+   "frames": [
+    196,
+    198
+   ],
+   "peak_frame": 198,
+   "value": 14.758,
+   "peak_speed": 8.996,
+   "jerk": 1.55,
+   "unit": "deg/f^2",
+   "part": "sit_stand"
+  },
+  {
+   "check": "popping",
+   "kind": "rotation",
+   "owner": "girl",
+   "channel": "DYN-bun.0.1",
+   "frames": [
+    170,
+    171
+   ],
+   "peak_frame": 170,
+   "value": 14.654,
+   "peak_speed": 9.286,
+   "jerk": 1.5,
+   "unit": "deg/f^2",
+   "part": "sit_stand"
+  },
+  {
+   "check": "popping",
+   "kind": "joint",
+   "owner": "girl",
+   "channel": "DYN-bun.0.2",
+   "frames": [
+    205,
+    205
+   ],
+   "peak_frame": 205,
+   "value": 34.011,
+   "peak_speed": 53.801,
+   "jerk": 0.63,
+   "unit": "mm/f^2",
+   "part": "sit_stand"
+  },
+  {
+   "check": "popping",
+   "kind": "rotation",
+   "owner": "girl",
+   "channel": "DYN-bun.0.1",
+   "frames": [
+    3,
+    3
+   ],
+   "peak_frame": 3,
+   "value": 13.49,
+   "peak_speed": 9.485,
+   "jerk": 1.35,
+   "unit": "deg/f^2",
+   "part": "walk"
+  },
+  {
+   "check": "popping",
+   "kind": "mesh",
+   "owner": "girl",
+   "channel": "hair_ringlets_outer_00",
+   "frames": [
+    178,
+    182
+   ],
+   "peak_frame": 180,
+   "value": 19.012,
+   "peak_speed": 22.392,
+   "jerk": 0.83,
+   "unit": "mm/f^2",
+   "part": "sit_stand"
+  },
+  {
+   "check": "popping",
+   "kind": "joint",
+   "owner": "girl",
+   "channel": "DYN-ringlets_outer_00.00.1",
+   "frames": [
+    179,
+    181
+   ],
+   "peak_frame": 180,
+   "value": 18.889,
+   "peak_speed": 22.547,
+   "jerk": 0.82,
+   "unit": "mm/f^2",
+   "part": "sit_stand"
+  },
+  {
+   "check": "popping",
+   "kind": "rotation",
+   "owner": "boy",
+   "channel": "DYN-whorl.01.1",
+   "frames": [
+    14,
+    14
+   ],
+   "peak_frame": 14,
+   "value": 10.163,
+   "peak_speed": 6.251,
+   "jerk": 1.51,
+   "unit": "deg/f^2",
+   "part": "walk"
+  },
+  {
+   "check": "popping",
+   "kind": "mesh",
+   "owner": "girl",
+   "channel": "hair_bun",
+   "frames": [
+    169,
+    171
+   ],
+   "peak_frame": 171,
+   "value": 25.713,
+   "peak_speed": 44.255,
+   "jerk": 0.57,
+   "unit": "mm/f^2",
+   "part": "sit_stand"
+  },
+  {
+   "check": "popping",
+   "kind": "mesh",
+   "owner": "girl",
+   "channel": "hair_flowers_petals",
+   "frames": [
+    128,
+    129
+   ],
+   "peak_frame": 128,
+   "value": 23.754,
+   "peak_speed": 38.753,
+   "jerk": 0.61,
+   "unit": "mm/f^2",
+   "part": "sit_stand"
+  },
+  {
+   "check": "popping",
+   "kind": "mesh",
+   "owner": "boy",
+   "channel": "hair_whorl",
+   "frames": [
+    179,
+    181
+   ],
+   "peak_frame": 180,
+   "value": 23.415,
+   "peak_speed": 40.437,
+   "jerk": 0.57,
+   "unit": "mm/f^2",
+   "part": "sit_stand"
+  },
+  {
+   "check": "popping",
+   "kind": "mesh",
+   "owner": "boy",
+   "channel": "hair_crown",
+   "frames": [
+    117,
+    120
+   ],
+   "peak_frame": 120,
+   "value": 23.797,
+   "peak_speed": 45.269,
+   "jerk": 0.52,
+   "unit": "mm/f^2",
+   "part": "sit_stand"
+  },
+  {
+   "check": "popping",
+   "kind": "rotation",
+   "owner": "boy",
+   "channel": "DYN-whorl.01.1",
+   "frames": [
+    38,
+    38
+   ],
+   "peak_frame": 38,
+   "value": 10.252,
+   "peak_speed": 8.424,
+   "jerk": 1.15,
+   "unit": "deg/f^2",
+   "part": "walk"
+  },
+  {
+   "check": "popping",
+   "kind": "rotation",
+   "owner": "boy",
+   "channel": "DYN-whorl.01.1",
+   "frames": [
+    86,
+    86
+   ],
+   "peak_frame": 86,
+   "value": 10.24,
+   "peak_speed": 8.398,
+   "jerk": 1.15,
+   "unit": "deg/f^2",
+   "part": "walk"
+  },
+  {
+   "check": "popping",
+   "kind": "rotation",
+   "owner": "boy",
+   "channel": "DYN-whorl.01.1",
+   "frames": [
+    62,
+    62
+   ],
+   "peak_frame": 62,
+   "value": 10.238,
+   "peak_speed": 8.391,
+   "jerk": 1.15,
+   "unit": "deg/f^2",
+   "part": "walk"
+  },
+  {
+   "check": "popping",
+   "kind": "mesh",
+   "owner": "girl",
+   "channel": "hair_bun",
+   "frames": [
+    197,
+    197
+   ],
+   "peak_frame": 197,
+   "value": 23.237,
+   "peak_speed": 46.017,
+   "jerk": 0.5,
+   "unit": "mm/f^2",
+   "part": "sit_stand"
+  },
+  {
+   "check": "popping",
+   "kind": "rotation",
+   "owner": "girl",
+   "channel": "DYN-bun.0.2",
+   "frames": [
+    197,
+    197
+   ],
+   "peak_frame": 197,
+   "value": 8.843,
+   "peak_speed": 6.518,
+   "jerk": 1.26,
+   "unit": "deg/f^2",
+   "part": "sit_stand"
+  },
+  {
+   "check": "popping",
+   "kind": "mesh",
+   "owner": "boy",
+   "channel": "hair_whorl",
+   "frames": [
+    197,
+    199
+   ],
+   "peak_frame": 197,
+   "value": 23.151,
+   "peak_speed": 49.056,
+   "jerk": 0.47,
+   "unit": "mm/f^2",
+   "part": "sit_stand"
+  },
+  {
+   "check": "popping",
+   "kind": "mesh",
+   "owner": "boy",
+   "channel": "hair_whorl",
+   "frames": [
+    170,
+    171
+   ],
+   "peak_frame": 171,
+   "value": 20.484,
+   "peak_speed": 39.256,
+   "jerk": 0.52,
+   "unit": "mm/f^2",
+   "part": "sit_stand"
+  },
+  {
+   "check": "popping",
+   "kind": "joint",
+   "owner": "boy",
+   "channel": "DYN-crown.03.1",
+   "frames": [
+    170,
+    170
+   ],
+   "peak_frame": 170,
+   "value": 19.631,
+   "peak_speed": 36.695,
+   "jerk": 0.53,
+   "unit": "mm/f^2",
+   "part": "sit_stand"
+  },
+  {
+   "check": "popping",
+   "kind": "joint",
+   "owner": "girl",
+   "channel": "DYN-bun.0.1",
+   "frames": [
+    170,
+    170
+   ],
+   "peak_frame": 170,
+   "value": 19.201,
+   "peak_speed": 35.181,
+   "jerk": 0.54,
+   "unit": "mm/f^2",
+   "part": "sit_stand"
+  },
+  {
+   "check": "popping",
+   "kind": "joint",
+   "owner": "boy",
+   "channel": "DYN-whorl.04.1",
+   "frames": [
+    117,
+    119
+   ],
+   "peak_frame": 118,
+   "value": 19.078,
+   "peak_speed": 34.754,
+   "jerk": 0.54,
+   "unit": "mm/f^2",
+   "part": "sit_stand"
+  },
+  {
+   "check": "popping",
+   "kind": "joint",
+   "owner": "girl",
+   "channel": "DYN-bun.0.2",
+   "frames": [
+    197,
+    197
+   ],
+   "peak_frame": 197,
+   "value": 21.56,
+   "peak_speed": 46.287,
+   "jerk": 0.46,
+   "unit": "mm/f^2",
+   "part": "sit_stand"
+  },
+  {
+   "check": "popping",
+   "kind": "joint",
+   "owner": "boy",
+   "channel": "DYN-fringe_centre.00.1",
+   "frames": [
+    205,
+    206
+   ],
+   "peak_frame": 206,
+   "value": 17.826,
+   "peak_speed": 33.797,
+   "jerk": 0.52,
+   "unit": "mm/f^2",
+   "part": "sit_stand"
+  },
+  {
+   "check": "popping",
+   "kind": "mesh",
+   "owner": "boy",
+   "channel": "hair_crown",
+   "frames": [
+    20,
+    26
+   ],
+   "peak_frame": 21,
+   "value": 12.918,
+   "peak_speed": 18.257,
+   "jerk": 0.69,
+   "unit": "mm/f^2",
+   "part": "walk"
+  },
+  {
+   "check": "popping",
+   "kind": "mesh",
+   "owner": "boy",
+   "channel": "hair_crown",
+   "frames": [
+    92,
+    97
+   ],
+   "peak_frame": 93,
+   "value": 12.864,
+   "peak_speed": 18.312,
+   "jerk": 0.68,
+   "unit": "mm/f^2",
+   "part": "walk"
+  },
+  {
+   "check": "popping",
+   "kind": "mesh",
+   "owner": "boy",
+   "channel": "hair_crown",
+   "frames": [
+    68,
+    74
+   ],
+   "peak_frame": 69,
+   "value": 12.863,
+   "peak_speed": 18.311,
+   "jerk": 0.68,
+   "unit": "mm/f^2",
+   "part": "walk"
+  },
+  {
+   "check": "popping",
+   "kind": "mesh",
+   "owner": "boy",
+   "channel": "hair_crown",
+   "frames": [
+    44,
+    50
+   ],
+   "peak_frame": 45,
+   "value": 12.86,
+   "peak_speed": 18.31,
+   "jerk": 0.68,
+   "unit": "mm/f^2",
+   "part": "walk"
+  },
+  {
+   "check": "popping",
+   "kind": "joint",
+   "owner": "boy",
+   "channel": "DYN-sides.00.1",
+   "frames": [
+    179,
+    181
+   ],
+   "peak_frame": 179,
+   "value": 15.928,
+   "peak_speed": 29.643,
+   "jerk": 0.53,
+   "unit": "mm/f^2",
+   "part": "sit_stand"
+  },
+  {
+   "check": "popping",
+   "kind": "mesh",
+   "owner": "boy",
+   "channel": "hand.L",
+   "frames": [
+    164,
+    165
+   ],
+   "peak_frame": 164,
+   "value": 8.741,
+   "peak_speed": 9.269,
+   "jerk": 0.89,
+   "unit": "mm/f^2",
+   "part": "sit_stand"
+  },
+  {
+   "check": "popping",
+   "kind": "joint",
+   "owner": "boy",
+   "channel": "DEF-f_pinky.03.L",
+   "frames": [
+    197,
+    199
+   ],
+   "peak_frame": 199,
+   "value": 16.449,
+   "peak_speed": 34.789,
+   "jerk": 0.47,
+   "unit": "mm/f^2",
+   "part": "sit_stand"
+  },
+  {
+   "check": "popping",
+   "kind": "mesh",
+   "owner": "girl",
+   "channel": "hair_fringe",
+   "frames": [
+    188,
+    189
+   ],
+   "peak_frame": 188,
+   "value": 9.044,
+   "peak_speed": 10.354,
+   "jerk": 0.83,
+   "unit": "mm/f^2",
+   "part": "sit_stand"
+  },
+  {
+   "check": "popping",
+   "kind": "joint",
+   "owner": "boy",
+   "channel": "DEF-f_index.03.L",
+   "frames": [
+    164,
+    165
+   ],
+   "peak_frame": 164,
+   "value": 8.394,
+   "peak_speed": 8.91,
+   "jerk": 0.89,
+   "unit": "mm/f^2",
+   "part": "sit_stand"
+  },
+  {
+   "check": "popping",
+   "kind": "mesh",
+   "owner": "boy",
+   "channel": "hand.L",
+   "frames": [
+    220,
+    220
+   ],
+   "peak_frame": 220,
+   "value": 8.839,
+   "peak_speed": 10.291,
+   "jerk": 0.82,
+   "unit": "mm/f^2",
+   "part": "sit_stand"
+  },
+  {
+   "check": "popping",
+   "kind": "joint",
+   "owner": "boy",
+   "channel": "DYN-crown.00.1",
+   "frames": [
+    21,
+    21
+   ],
+   "peak_frame": 21,
+   "value": 11.522,
+   "peak_speed": 17.986,
+   "jerk": 0.62,
+   "unit": "mm/f^2",
+   "part": "walk"
+  },
+  {
+   "check": "popping",
+   "kind": "mesh",
+   "owner": "girl",
+   "channel": "hair_flowers_petals",
+   "frames": [
+    3,
+    3
+   ],
+   "peak_frame": 3,
+   "value": 12.308,
+   "peak_speed": 20.773,
+   "jerk": 0.58,
+   "unit": "mm/f^2",
+   "part": "walk"
+  },
+  {
+   "check": "popping",
+   "kind": "joint",
+   "owner": "boy",
+   "channel": "DYN-crown.00.1",
+   "frames": [
+    93,
+    93
+   ],
+   "peak_frame": 93,
+   "value": 11.467,
+   "peak_speed": 17.953,
+   "jerk": 0.62,
+   "unit": "mm/f^2",
+   "part": "walk"
+  },
+  {
+   "check": "popping",
+   "kind": "joint",
+   "owner": "boy",
+   "channel": "DYN-crown.00.1",
+   "frames": [
+    69,
+    69
+   ],
+   "peak_frame": 69,
+   "value": 11.466,
+   "peak_speed": 17.953,
+   "jerk": 0.62,
+   "unit": "mm/f^2",
+   "part": "walk"
+  },
+  {
+   "check": "popping",
+   "kind": "joint",
+   "owner": "boy",
+   "channel": "DYN-crown.00.1",
+   "frames": [
+    45,
+    45
+   ],
+   "peak_frame": 45,
+   "value": 11.463,
+   "peak_speed": 17.951,
+   "jerk": 0.62,
+   "unit": "mm/f^2",
+   "part": "walk"
+  },
+  {
+   "check": "popping",
+   "kind": "joint",
+   "owner": "boy",
+   "channel": "DEF-f_index.03.L",
+   "frames": [
+    220,
+    220
+   ],
+   "peak_frame": 220,
+   "value": 8.46,
+   "peak_speed": 9.859,
+   "jerk": 0.82,
+   "unit": "mm/f^2",
+   "part": "sit_stand"
+  },
+  {
+   "check": "popping",
+   "kind": "mesh",
+   "owner": "boy",
+   "channel": "hand.L",
+   "frames": [
+    133,
+    133
+   ],
+   "peak_frame": 133,
+   "value": 8.769,
+   "peak_speed": 11.158,
+   "jerk": 0.75,
+   "unit": "mm/f^2",
+   "part": "sit_stand"
+  },
+  {
+   "check": "popping",
+   "kind": "mesh",
+   "owner": "boy",
+   "channel": "hair_fringe_centre",
+   "frames": [
+    2,
+    3
+   ],
+   "peak_frame": 2,
+   "value": 12.014,
+   "peak_speed": 22.212,
+   "jerk": 0.53,
+   "unit": "mm/f^2",
+   "part": "walk"
+  },
+  {
+   "check": "popping",
+   "kind": "joint",
+   "owner": "boy",
+   "channel": "DEF-f_index.03.L",
+   "frames": [
+    133,
+    133
+   ],
+   "peak_frame": 133,
+   "value": 8.42,
+   "peak_speed": 10.862,
+   "jerk": 0.74,
+   "unit": "mm/f^2",
+   "part": "sit_stand"
+  },
+  {
+   "check": "popping",
+   "kind": "joint",
+   "owner": "boy",
+   "channel": "DYN-fringe_centre.00.1",
+   "frames": [
+    2,
+    2
+   ],
+   "peak_frame": 2,
+   "value": 11.76,
+   "peak_speed": 22.443,
+   "jerk": 0.51,
+   "unit": "mm/f^2",
+   "part": "walk"
+  },
+  {
+   "check": "popping",
+   "kind": "mesh",
+   "owner": "girl",
+   "channel": "garment.blouse.main",
+   "frames": [
+    192,
+    193
+   ],
+   "peak_frame": 193,
+   "value": 11.309,
+   "peak_speed": 21.651,
+   "jerk": 0.51,
+   "unit": "mm/f^2",
+   "part": "sit_stand"
+  },
+  {
+   "check": "popping",
+   "kind": "mesh",
+   "owner": "girl",
+   "channel": "hair_fringe",
+   "frames": [
+    20,
+    22
+   ],
+   "peak_frame": 20,
+   "value": 10.667,
+   "peak_speed": 19.527,
+   "jerk": 0.53,
+   "unit": "mm/f^2",
+   "part": "walk"
+  },
+  {
+   "check": "popping",
+   "kind": "mesh",
+   "owner": "girl",
+   "channel": "hair_fringe",
+   "frames": [
+    44,
+    46
+   ],
+   "peak_frame": 44,
+   "value": 10.667,
+   "peak_speed": 19.527,
+   "jerk": 0.53,
+   "unit": "mm/f^2",
+   "part": "walk"
+  },
+  {
+   "check": "popping",
+   "kind": "mesh",
+   "owner": "girl",
+   "channel": "hair_fringe",
+   "frames": [
+    68,
+    70
+   ],
+   "peak_frame": 68,
+   "value": 10.667,
+   "peak_speed": 19.527,
+   "jerk": 0.53,
+   "unit": "mm/f^2",
+   "part": "walk"
+  },
+  {
+   "check": "popping",
+   "kind": "mesh",
+   "owner": "girl",
+   "channel": "hair_fringe",
+   "frames": [
+    92,
+    94
+   ],
+   "peak_frame": 92,
+   "value": 10.667,
+   "peak_speed": 19.527,
+   "jerk": 0.53,
+   "unit": "mm/f^2",
+   "part": "walk"
+  },
+  {
+   "check": "popping",
+   "kind": "mesh",
+   "owner": "girl",
+   "channel": "hair_fringe",
+   "frames": [
+    25,
+    25
+   ],
+   "peak_frame": 25,
+   "value": 10.501,
+   "peak_speed": 19.229,
+   "jerk": 0.53,
+   "unit": "mm/f^2",
+   "part": "walk"
+  },
+  {
+   "check": "popping",
+   "kind": "mesh",
+   "owner": "girl",
+   "channel": "hair_fringe",
+   "frames": [
+    49,
+    49
+   ],
+   "peak_frame": 49,
+   "value": 10.501,
+   "peak_speed": 19.23,
+   "jerk": 0.53,
+   "unit": "mm/f^2",
+   "part": "walk"
+  },
+  {
+   "check": "popping",
+   "kind": "mesh",
+   "owner": "girl",
+   "channel": "hair_fringe",
+   "frames": [
+    73,
+    73
+   ],
+   "peak_frame": 73,
+   "value": 10.501,
+   "peak_speed": 19.23,
+   "jerk": 0.53,
+   "unit": "mm/f^2",
+   "part": "walk"
+  },
+  {
+   "check": "popping",
+   "kind": "mesh",
+   "owner": "girl",
+   "channel": "hair_fringe",
+   "frames": [
+    97,
+    97
+   ],
+   "peak_frame": 97,
+   "value": 10.501,
+   "peak_speed": 19.23,
+   "jerk": 0.53,
+   "unit": "mm/f^2",
+   "part": "walk"
+  },
+  {
+   "check": "popping",
+   "kind": "mesh",
+   "owner": "boy",
+   "channel": "garment.trousers.main",
+   "frames": [
+    14,
+    14
+   ],
+   "peak_frame": 14,
+   "value": 9.767,
+   "peak_speed": 19.374,
+   "jerk": 0.49,
+   "unit": "mm/f^2",
+   "part": "walk"
+  },
+  {
+   "check": "popping",
+   "kind": "mesh",
+   "owner": "boy",
+   "channel": "garment.trousers.main",
+   "frames": [
+    38,
+    38
+   ],
+   "peak_frame": 38,
+   "value": 9.767,
+   "peak_speed": 19.374,
+   "jerk": 0.49,
+   "unit": "mm/f^2",
+   "part": "walk"
+  },
+  {
+   "check": "popping",
+   "kind": "mesh",
+   "owner": "boy",
+   "channel": "garment.trousers.main",
+   "frames": [
+    62,
+    62
+   ],
+   "peak_frame": 62,
+   "value": 9.767,
+   "peak_speed": 19.374,
+   "jerk": 0.49,
+   "unit": "mm/f^2",
+   "part": "walk"
+  },
+  {
+   "check": "popping",
+   "kind": "mesh",
+   "owner": "boy",
+   "channel": "garment.trousers.main",
+   "frames": [
+    86,
+    86
+   ],
+   "peak_frame": 86,
+   "value": 9.767,
+   "peak_speed": 19.374,
+   "jerk": 0.49,
+   "unit": "mm/f^2",
+   "part": "walk"
+  },
+  {
+   "check": "popping",
+   "kind": "joint",
+   "owner": "girl",
+   "channel": "DEF-f_index.03.R",
+   "frames": [
+    192,
+    192
+   ],
+   "peak_frame": 192,
+   "value": 8.171,
+   "peak_speed": 13.533,
+   "jerk": 0.58,
+   "unit": "mm/f^2",
+   "part": "sit_stand"
+  },
+  {
+   "check": "popping",
+   "kind": "joint",
+   "owner": "girl",
+   "channel": "DYN-bun.0.1",
+   "frames": [
+    3,
+    3
+   ],
+   "peak_frame": 3,
+   "value": 10.136,
+   "peak_speed": 21.415,
+   "jerk": 0.46,
+   "unit": "mm/f^2",
+   "part": "walk"
+  },
+  {
+   "check": "popping",
+   "kind": "mesh",
+   "owner": "boy",
+   "channel": "garment.hoodie.band.cuff.L",
+   "frames": [
+    123,
+    123
+   ],
+   "peak_frame": 123,
+   "value": 9.935,
+   "peak_speed": 21.357,
+   "jerk": 0.45,
+   "unit": "mm/f^2",
+   "part": "sit_stand"
+  },
+  {
+   "check": "popping",
+   "kind": "joint",
+   "owner": "boy",
+   "channel": "DEF-f_middle.03.L",
+   "frames": [
+    202,
+    202
+   ],
+   "peak_frame": 202,
+   "value": 9.276,
+   "peak_speed": 20.097,
+   "jerk": 0.45,
+   "unit": "mm/f^2",
+   "part": "sit_stand"
+  },
+  {
+   "check": "popping",
+   "kind": "mesh",
+   "owner": "boy",
+   "channel": "hair_top_outer",
+   "frames": [
+    129,
+    129
+   ],
+   "peak_frame": 129,
+   "value": 8.068,
+   "peak_speed": 16.237,
+   "jerk": 0.48,
+   "unit": "mm/f^2",
+   "part": "sit_stand"
+  },
+  {
+   "check": "interpenetration",
+   "kind": "garment",
+   "owner": "boy",
+   "channel": "garment.trousers.main",
+   "frames": [
+    1,
+    9
+   ],
+   "peak_frame": 1,
+   "value_mm": -19.73,
+   "limit_mm": -5.0,
+   "part": "walk"
+  },
+  {
+   "check": "interpenetration",
+   "kind": "garment",
+   "owner": "boy",
+   "channel": "garment.trousers.main",
+   "frames": [
+    12,
+    20
+   ],
+   "peak_frame": 16,
+   "value_mm": -15.89,
+   "limit_mm": -5.0,
+   "part": "walk"
+  },
+  {
+   "check": "interpenetration",
+   "kind": "garment",
+   "owner": "boy",
+   "channel": "garment.trousers.main",
+   "frames": [
+    22,
+    33
+   ],
+   "peak_frame": 28,
+   "value_mm": -17.83,
+   "limit_mm": -5.0,
+   "part": "walk"
+  },
+  {
+   "check": "interpenetration",
+   "kind": "garment",
+   "owner": "boy",
+   "channel": "garment.trousers.main",
+   "frames": [
+    36,
+    44
+   ],
+   "peak_frame": 40,
+   "value_mm": -15.89,
+   "limit_mm": -5.0,
+   "part": "walk"
+  },
+  {
+   "check": "interpenetration",
+   "kind": "garment",
+   "owner": "boy",
+   "channel": "garment.trousers.main",
+   "frames": [
+    46,
+    57
+   ],
+   "peak_frame": 52,
+   "value_mm": -17.83,
+   "limit_mm": -5.0,
+   "part": "walk"
+  },
+  {
+   "check": "interpenetration",
+   "kind": "garment",
+   "owner": "boy",
+   "channel": "garment.trousers.main",
+   "frames": [
+    60,
+    68
+   ],
+   "peak_frame": 64,
+   "value_mm": -15.89,
+   "limit_mm": -5.0,
+   "part": "walk"
+  },
+  {
+   "check": "interpenetration",
+   "kind": "garment",
+   "owner": "boy",
+   "channel": "garment.trousers.main",
+   "frames": [
+    70,
+    81
+   ],
+   "peak_frame": 76,
+   "value_mm": -17.83,
+   "limit_mm": -5.0,
+   "part": "walk"
+  },
+  {
+   "check": "interpenetration",
+   "kind": "garment",
+   "owner": "boy",
+   "channel": "garment.trousers.main",
+   "frames": [
+    84,
+    92
+   ],
+   "peak_frame": 88,
+   "value_mm": -15.89,
+   "limit_mm": -5.0,
+   "part": "walk"
+  },
+  {
+   "check": "interpenetration",
+   "kind": "garment",
+   "owner": "boy",
+   "channel": "garment.trousers.main",
+   "frames": [
+    94,
+    100
+   ],
+   "peak_frame": 100,
+   "value_mm": -17.83,
+   "limit_mm": -5.0,
+   "part": "cut"
+  },
+  {
+   "check": "interpenetration",
+   "kind": "garment",
+   "owner": "boy",
+   "channel": "garment.trousers.main",
+   "frames": [
+    115,
+    120
+   ],
+   "peak_frame": 118,
+   "value_mm": -11.75,
+   "limit_mm": -5.0,
+   "part": "sit_stand"
+  },
+  {
+   "check": "interpenetration",
+   "kind": "garment",
+   "owner": "boy",
+   "channel": "garment.trousers.main",
+   "frames": [
+    177,
+    182
+   ],
+   "peak_frame": 179,
+   "value_mm": -11.76,
+   "limit_mm": -5.0,
+   "part": "sit_stand"
+  },
+  {
+   "check": "interpenetration",
+   "kind": "garment",
+   "owner": "girl",
+   "channel": "garment.shorts.gusset",
+   "frames": [
+    11,
+    13
+   ],
+   "peak_frame": 12,
+   "value_mm": -5.58,
+   "limit_mm": -5.0,
+   "part": "walk"
+  },
+  {
+   "check": "interpenetration",
+   "kind": "garment",
+   "owner": "girl",
+   "channel": "garment.shorts.gusset",
+   "frames": [
+    23,
+    24
+   ],
+   "peak_frame": 24,
+   "value_mm": -5.24,
+   "limit_mm": -5.0,
+   "part": "walk"
+  },
+  {
+   "check": "interpenetration",
+   "kind": "garment",
+   "owner": "girl",
+   "channel": "garment.shorts.gusset",
+   "frames": [
+    35,
+    37
+   ],
+   "peak_frame": 36,
+   "value_mm": -5.58,
+   "limit_mm": -5.0,
+   "part": "walk"
+  },
+  {
+   "check": "interpenetration",
+   "kind": "garment",
+   "owner": "girl",
+   "channel": "garment.shorts.gusset",
+   "frames": [
+    47,
+    48
+   ],
+   "peak_frame": 48,
+   "value_mm": -5.24,
+   "limit_mm": -5.0,
+   "part": "walk"
+  },
+  {
+   "check": "interpenetration",
+   "kind": "garment",
+   "owner": "girl",
+   "channel": "garment.shorts.gusset",
+   "frames": [
+    59,
+    61
+   ],
+   "peak_frame": 60,
+   "value_mm": -5.58,
+   "limit_mm": -5.0,
+   "part": "walk"
+  },
+  {
+   "check": "interpenetration",
+   "kind": "garment",
+   "owner": "girl",
+   "channel": "garment.shorts.gusset",
+   "frames": [
+    71,
+    72
+   ],
+   "peak_frame": 72,
+   "value_mm": -5.24,
+   "limit_mm": -5.0,
+   "part": "walk"
+  },
+  {
+   "check": "interpenetration",
+   "kind": "garment",
+   "owner": "girl",
+   "channel": "garment.shorts.gusset",
+   "frames": [
+    83,
+    85
+   ],
+   "peak_frame": 84,
+   "value_mm": -5.58,
+   "limit_mm": -5.0,
+   "part": "walk"
+  },
+  {
+   "check": "interpenetration",
+   "kind": "garment",
+   "owner": "girl",
+   "channel": "garment.shorts.gusset",
+   "frames": [
+    95,
+    96
+   ],
+   "peak_frame": 96,
+   "value_mm": -5.24,
+   "limit_mm": -5.0,
+   "part": "walk"
+  },
+  {
+   "check": "interpenetration",
+   "kind": "garment",
+   "owner": "girl",
+   "channel": "garment.shorts.gusset",
+   "frames": [
+    110,
+    189
+   ],
+   "peak_frame": 177,
+   "value_mm": -15.48,
+   "limit_mm": -5.0,
+   "part": "sit_stand"
+  },
+  {
+   "check": "interpenetration",
+   "kind": "garment",
+   "owner": "girl",
+   "channel": "garment.shorts.main",
+   "frames": [
+    1,
+    100
+   ],
+   "peak_frame": 24,
+   "value_mm": -28.3,
+   "limit_mm": -5.0,
+   "part": "walk"
+  },
+  {
+   "check": "interpenetration",
+   "kind": "garment",
+   "owner": "girl",
+   "channel": "garment.shorts.main",
+   "frames": [
+    107,
+    202
+   ],
+   "peak_frame": 132,
+   "value_mm": -57.92,
+   "limit_mm": -5.0,
+   "part": "sit_stand"
+  }
+ ],
+ "by_part": {
+  "cut/interpenetration": 1,
+  "cut/popping": 6,
+  "sit_stand/interpenetration": 4,
+  "sit_stand/popping": 46,
+  "walk/interpenetration": 17,
+  "walk/popping": 33
+ }
+}

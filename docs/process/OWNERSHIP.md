@@ -26,9 +26,7 @@ split.
 
 | Task | Lane | Branch | Write-set | Depends on | Versions bumped |
 | --- | --- | --- | --- | --- | --- |
-| T-175 | E | t-175-claude-locomotion | `pipeline/clips/import_bvh.py`, `pipeline/clips/tests/test_import_bvh.py`, `content/clips/mocap/**`, `engine/anim/foot_lock.h`, `engine/anim/foot_lock.cpp`, `engine/scene/clip_layers.cpp`, `engine/scene/actions.cpp`, `tests/test_foot_lock.cpp`, `engine/CMakeLists.txt`, `docs/evaluation/animation/T-175/**` | T-174 | — |
-| T-171 | E | t-171-claude-hands-r2 | `engine/anim/hand_shape.h`, `engine/anim/hand_shape.cpp`, `engine/anim/animation.h`, `engine/anim/animation.cpp`, `engine/scene/interaction.cpp`, `engine/scene/verbs.cpp`, `engine/scene/collision.cpp`, `tests/test_grasp_contact.cpp`, `tests/test_hand_shape*.cpp`, `docs/evaluation/interaction/T-171/**` | T-157 | — |
 | T-183 | B | t-183-claude-hair-contact | `engine/anim/secondary.h`, `engine/anim/secondary.cpp`, `tests/test_secondary.cpp`, `pipeline/charsys/groom_contact.py`, `pipeline/charsys/groom_r6.py`, `pipeline/charsys/tests/test_hair_contact.py`, `pipeline/charsys/release_rule.py`, `pipeline/charsys/tests/test_release_rule.py`, `docs/process/GENERATOR_PINS.md`, `episodes/e909_two_char_acting/shots/s010_t183/**`, `docs/SECONDARY_MOTION.md`, `docs/evaluation/characters/T-183/**` | — | — |
-| T-184 | B | t-184-claude-seated-garments | `pipeline/charsys/garments_v3/seated.py`, `pipeline/charsys/garments_v3/core.py`, `pipeline/charsys/garments_v3/README.md`, `pipeline/charsys/tests/test_garments_seated.py`, `assets/characters/boy_yellow_hoodie/spec/candidates/T-184/**`, `assets/characters/girl_auburn_bun_glasses/spec/candidates/T-184/**`, `docs/evaluation/characters/T-184/**` | — | — |
+| T-185 | E | t-185-claude-adopt-r3-grasp | `episodes/e910_showcase/**`, `episodes/e909_two_char_acting/make_shot.py`, `episodes/e909_two_char_acting/shots/s010/**`, `episodes/e909_two_char_acting/shots/s010_t113/**`, `episodes/e909_two_char_acting/content/assets/**`, `docs/evaluation/interaction/T-185/**` | — | — |
 
 Supervisor-only files: docs/process/TASK_LOG.md, docs/ROADMAP.md, docs/process/OWNER_DECISIONS.md, docs/tasks/**.
