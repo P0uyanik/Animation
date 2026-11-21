@@ -539,7 +539,11 @@ std::expected<VerbExpansion, VerbError> expandVerbs(const Json& actions, const V
       const bool reachable = hasConstraint(c, "reachable") || hasConstraint(constraintsOf("approach"), "reachable");
       const auto lim = mmLimit(c, "palm_on_socket");
       if (reachable) x.checks.push_back({VerbCheck::Kind::Reach, type, who, prop, socket, side, contact, contact, 0.005f});
-      if (lim) x.checks.push_back({VerbCheck::Kind::PalmOnSocket, type, who, prop, socket, side, contact, contact, *lim});
+      // T-171 (opt-in): a natural grip may turn the grasp point about the prop's axis; the palm is checked on that point.
+      const bool naturalGrip = a.contains("fingerClose") && a["fingerClose"].is_object() && a["fingerClose"].value("grip", Json()) == "natural";
+      if (lim)
+        x.checks.push_back({VerbCheck::Kind::PalmOnSocket, type, who, prop, naturalGrip && !site2 ? std::format("{}@{}.{}", socket, who, side) : socket,
+                            side, contact, contact, *lim});
       if (site2) {
         if (reachable) x.checks.push_back({VerbCheck::Kind::Reach, type, who, prop, site2->socket, other, last, last, 0.005f});
         if (lim) x.checks.push_back({VerbCheck::Kind::PalmOnSocket, type, who, prop, site2->socket, other, last, last, *lim});
@@ -839,8 +843,12 @@ std::vector<VerbError> checkVerbConstraints(const VerbExpansion& x, const VerbGe
   std::vector<VerbError> errors;
   auto socketWorld = [&](const std::string& prop, const std::string& socket, double f) -> std::optional<vec3> {
     const PropAsset* asset = g.asset ? g.asset(prop) : nullptr;
-    if (!asset || !asset->sockets.count(socket)) return std::nullopt;
-    return vec3((g.propWorld(prop, f) * assetTransformMatrix(asset->sockets.at(socket)))[3]);
+    if (!asset) return std::nullopt;
+    // "<socket>@<character>.<hand>": the grasp point as the planner turned it for that hand (T-171 "grip": "natural"),
+    // the authored socket when it did not turn it.
+    const std::string name = asset->sockets.count(socket) ? socket : socket.substr(0, socket.find('@'));
+    if (!asset->sockets.count(name)) return std::nullopt;
+    return vec3((g.propWorld(prop, f) * assetTransformMatrix(asset->sockets.at(name)))[3]);
   };
   for (const VerbCheck& c : x.checks) {
     auto add = [&](const char* code, const std::string& reason) { errors.push_back({c.verb, c.character, c.prop, code, reason}); };

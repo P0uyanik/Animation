@@ -14,6 +14,15 @@
 //   tip_h_mm     fingertip height along the prop axis (root_h_mm: the same for the digit roots)
 // and per frame: neighbouring fingertip distances (index-middle, middle-ring, ring-little), the same for the
 // knuckles, the wrist position and the wrist-to-prop-axis distance.
+// Round 3 (model-free, on the character's own mesh):
+//   mesh_in_mm     deepest vertex of the hand (every vertex carried by the hand bone or a bone below it) inside the
+//                  solid, per part: [palm, thumb, fingers]; 0 = none inside (positive numbers are depths)
+//   mesh_gap_mm    nearest vertex of each digit to the solid (thumb, index .. little): 0 = touching, negative = inside
+//   flex_deg       signed bend of every digit joint about the hand's curl axis (thumb: the thumb axis), positive =
+//                  towards the palm, per digit [a, b, distal bone if the rig has one]; negative = bent backwards
+//   turn_deg       total rotation of each digit's first bone from rest (thumb first): a thumb turned round shows here
+//   wrist_deg      the hand's rotation against the forearm from rest: [bend, twist about the forearm]
+//   thumb_up       dot(thumb side of the hand, world up): 1 = thumb up, -1 = thumb down
 #include <algorithm>
 #include <cstdio>
 #include <format>
@@ -80,6 +89,37 @@ int main(int argc, char** argv) {
     std::sort(order.begin(), order.end(), [&](int a, int b) { return rootDist(a) < rootDist(b); });
     std::vector<std::pair<std::string, std::string>> digits{{"thumbA", "thumbB"}};
     for (int f : order) digits.push_back({std::format("f{}a", f), std::format("f{}b", f)});
+    // Round 3: the hand's vertices by part (0 palm, 1 thumb, 2 + k finger k in anatomical order), dominant bone.
+    const int handB = sk.find("hand" + s), foreB = handB >= 0 ? sk.bones[size_t(handB)].parent : -1;
+    std::vector<int> partOf(sk.bones.size(), -1);
+    if (handB >= 0) partOf[size_t(handB)] = 0;
+    int thumbRoot = th;
+    while (thumbRoot >= 0 && sk.bones[size_t(thumbRoot)].parent != handB) thumbRoot = sk.bones[size_t(thumbRoot)].parent;
+    for (size_t b = 0; b < sk.bones.size(); ++b) {
+      const int par = sk.bones[b].parent;
+      if (par < 0 || partOf[size_t(par)] < 0) continue;
+      partOf[b] = partOf[size_t(par)];
+      if (int(b) == thumbRoot) partOf[b] = 1;
+      for (size_t i = 0; i < order.size(); ++i)
+        if (int(b) == sk.find(std::format("f{}a{}", order[i], s))) partOf[b] = 2 + int(i);
+    }
+    struct HV {
+      int mesh;
+      uint32_t v;
+      int part;
+    };
+    std::vector<HV> handVerts;
+    const auto& meshes = ev.characters()[c].rig.meshes;
+    for (size_t m = 0; m < meshes.size(); ++m)
+      for (size_t i = 0; i < meshes[m].rest.positions.size(); ++i) {
+        int top = 0;
+        for (int j = 1; j < 4; ++j)
+          if (meshes[m].weights[i][j] > meshes[m].weights[i][top]) top = j;
+        if (const int part = partOf[size_t(meshes[m].joints[i][top])]; part >= 0) handVerts.push_back({int(m), uint32_t(i), part});
+      }
+    const HandGrip grip = handGrip(sk, handB, h.side);
+    const vec3 curlAxis = glm::normalize(glm::cross(grip.fingerDir, grip.palmNormal));
+    const vec3 thumbAxis = glm::normalize(0.35f * (h.side == 'L' ? -grip.palmNormal : grip.palmNormal) + curlAxis);
     for (int f = h.from; f <= h.to; ++f) {
       const auto g = ev.characterGlobals(c, f);
       const mat4 P = ev.propWorld(p, f), Pi = glm::inverse(P);
@@ -120,14 +160,62 @@ int main(int argc, char** argv) {
         apart += std::format("{}{:.1f}", i > 1 ? ", " : "", glm::distance(ftips[i - 1], ftips[i]) * 1e3);
         kapart += std::format("{}{:.1f}", i > 1 ? ", " : "", glm::distance(fkn[i - 1], fkn[i]) * 1e3);
       }
+      // Round 3 measures.
+      auto local = [&](int child, int parent) {  // rotation of `child` against `parent` from rest
+        const mat3 m = glm::transpose(mat3(g[size_t(parent)])) * mat3(g[size_t(child)]);
+        return glm::normalize(glm::quat_cast(mat3(glm::normalize(m[0]), glm::normalize(m[1]), glm::normalize(m[2]))));
+      };
+      auto about = [&](quat q, vec3 axis) {  // signed angle of q's twist about `axis`, degrees
+        if (q.w < 0) q = -q;
+        const float sn = glm::dot(vec3(q.x, q.y, q.z), axis);
+        return glm::degrees(2.0f * std::atan2(sn, q.w));
+      };
+      std::string flex, turn, meshGap;
+      std::vector<float> digitGap(5, 1.0f);
+      float in[3] = {0, 0, 0};
+      for (const HV& hv : handVerts) {
+        const SkinnedMesh& m = meshes[size_t(hv.mesh)];
+        vec3 q(0);
+        for (int j = 0; j < 4; ++j)
+          if (const float w = m.weights[hv.v][j]; w > 0)
+            q += w * vec3(g[size_t(m.joints[hv.v][j])] * vec4(m.rest.positions[hv.v] - sk.bones[size_t(m.joints[hv.v][j])].head, 1));
+        const float d = sdf(q);
+        const int grp = hv.part == 0 ? 0 : hv.part == 1 ? 1 : 2;
+        in[grp] = std::max(in[grp], -d);
+        if (hv.part >= 1) digitGap[size_t(hv.part - 1)] = std::min(digitGap[size_t(hv.part - 1)], d);
+      }
+      for (size_t i = 0; i < digits.size(); ++i) {
+        const int ia = sk.find(digits[i].first + s), ib = sk.find(digits[i].second + s);
+        if (ia < 0 || ib < 0) continue;
+        const vec3 ax = i == 0 ? thumbAxis : curlAxis;
+        int ic = -1, nc = 0;
+        for (size_t b = 0; b < sk.bones.size(); ++b)
+          if (sk.bones[b].parent == ib) ic = int(b), ++nc;
+        std::string one = std::format("{:.1f}, {:.1f}", about(local(ia, sk.bones[size_t(ia)].parent), ax), about(local(ib, ia), ax));
+        if (nc == 1 && i > 0) one += std::format(", {:.1f}", about(local(ic, ib), ax));
+        flex += std::format("{}[{}]", i ? ", " : "", one);
+        turn += std::format("{}{:.1f}", i ? ", " : "", glm::degrees(glm::angle(local(ia, sk.bones[size_t(ia)].parent))));
+        meshGap += std::format("{}{:.2f}", i ? ", " : "", digitGap[i] * 1e3);
+      }
+      float bend = 0, twist = 0;
+      if (handB >= 0 && foreB >= 0) {
+        const quat q = local(handB, foreB);
+        const vec3 fa = glm::normalize(sk.bones[size_t(handB)].head - sk.bones[size_t(foreB)].head);
+        twist = about(q, fa);
+        bend = glm::degrees(glm::angle(glm::normalize(q * glm::inverse(glm::angleAxis(glm::radians(twist), fa)))));
+      }
+      const vec3 thumbSide = glm::normalize(mat3(g[size_t(handB)]) * ((h.side == 'R' ? 1.0f : -1.0f) * glm::cross(grip.fingerDir, grip.palmNormal)));
+      const std::string r3 = std::format("\"mesh_in_mm\": [{:.2f}, {:.2f}, {:.2f}], \"mesh_gap_mm\": [{}], \"flex_deg\": [{}], \"turn_deg\": [{}], "
+                                         "\"wrist_deg\": [{:.1f}, {:.1f}], \"thumb_up\": {:.2f}, ",
+                                         in[0] * 1e3, in[1] * 1e3, in[2] * 1e3, meshGap, flex, turn, bend, twist, thumbSide.y);
       const vec3 wrist = vec3(g[size_t(sk.find("hand" + s))][3]);
       const vec3 wl = vec3(Pi * vec4(wrist, 1));
       std::cout << (first ? "" : ",\n")
                 << std::format("  {{\"hand\": \"{}.{}\", \"frame\": {}, \"skin_radius_mm\": {:.2f}, \"tip_h_mm\": [{}], "
                                "\"tip_gap_mm\": [{}], \"clear_mm\": [{}], \"root_mm\": [{}], \"root_h_mm\": [{}], \"curl_deg\": [{}], "
-                               "\"tips_apart_mm\": [{}], \"knuckles_apart_mm\": [{}], \"wrist\": [{:.7f}, {:.7f}, {:.7f}], "
+                               "\"tips_apart_mm\": [{}], \"knuckles_apart_mm\": [{}], {}\"wrist\": [{:.7f}, {:.7f}, {:.7f}], "
                                "\"wrist_axis_mm\": {:.2f}}}",
-                               h.who, h.side, f, r * 1e3, hs, gaps, clears, roots, rhs, curls, apart, kapart, wrist.x, wrist.y,
+                               h.who, h.side, f, r * 1e3, hs, gaps, clears, roots, rhs, curls, apart, kapart, r3, wrist.x, wrist.y,
                                wrist.z, std::sqrt(wl.x * wl.x + wl.z * wl.z) * k * ps * 1e3);
       first = false;
     }

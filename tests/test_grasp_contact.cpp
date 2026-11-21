@@ -361,3 +361,144 @@ TEST_CASE("fingerClose (T-171): widen keys the band fit and the T-157 wider band
   REQUIRE(t);
   CHECK(vec2(t->evaluate(34)) == *rest->pose.fingers[0]);
 }
+
+// T-171 round 3 (owner review 2026-11-21): the opt-in fingerClose keys "wrap", "grip" and "clear". Measured on the
+// character's own mesh: every vertex the hand bone (or a bone below it) carries, against the cup as a capped solid.
+namespace {
+struct HandOnCup {
+  float deepest = 0;       // deepest hand vertex inside the solid (m, >= 0)
+  float thumbTurn = 0;     // total rotation of thumbA from rest (deg)
+  float minFlex = 1e9f;    // smallest signed bend of a finger joint about the hand's curl axis (deg; < 0 = backwards)
+  float thumbUp = 0;       // dot(thumb side of the hand, world up)
+  float wristBend = 0;     // angle between the forearm and the fingers (deg)
+};
+HandOnCup handOnCup(const SceneEvaluator& ev, double f) {
+  const auto& ci = ev.characters()[0];
+  const Skeleton& sk = ci.asset.skeleton;
+  const auto g = ev.characterGlobals(0, f);
+  const int hand = sk.find("hand.R");
+  std::vector<char> under(sk.bones.size(), 0);
+  under[size_t(hand)] = 1;
+  for (size_t b = 0; b < sk.bones.size(); ++b)
+    if (sk.bones[b].parent >= 0 && under[size_t(sk.bones[b].parent)]) under[b] = 1;
+  const mat4 Pi = glm::inverse(ev.propWorld(0, f));
+  const float R = cup().mesh.radius, H = cup().mesh.height;
+  HandOnCup out;
+  for (const SkinnedMesh& m : ci.rig.meshes)
+    for (size_t i = 0; i < m.rest.positions.size(); ++i) {
+      int top = 0;
+      for (int j = 1; j < 4; ++j)
+        if (m.weights[i][j] > m.weights[i][top]) top = j;
+      if (!under[size_t(m.joints[i][top])]) continue;
+      vec3 q(0);
+      for (int j = 0; j < 4; ++j)
+        if (m.weights[i][j] > 0)
+          q += m.weights[i][j] * vec3(g[size_t(m.joints[i][j])] * vec4(m.rest.positions[i] - sk.bones[size_t(m.joints[i][j])].head, 1));
+      const vec3 l = vec3(Pi * vec4(q, 1));
+      const float dr = std::sqrt(l.x * l.x + l.z * l.z) - R, dy = std::abs(l.y - 0.5f * H) - 0.5f * H;
+      out.deepest = std::max(out.deepest, -std::max(dr, dy));
+    }
+  auto local = [&](int child, int parent) {
+    const mat3 m = glm::transpose(mat3(g[size_t(parent)])) * mat3(g[size_t(child)]);
+    quat q = glm::normalize(glm::quat_cast(mat3(glm::normalize(m[0]), glm::normalize(m[1]), glm::normalize(m[2]))));
+    return q.w < 0 ? -q : q;
+  };
+  const HandGrip grip = handGrip(sk, hand, 'R');
+  const vec3 curl = glm::normalize(glm::cross(grip.fingerDir, grip.palmNormal));
+  for (int k = 0; k < 4; ++k) {
+    const int a = sk.find(std::format("f{}a.R", k)), b = sk.find(std::format("f{}b.R", k));
+    if (a < 0 || b < 0) continue;
+    for (auto [child, parent] : {std::pair{a, hand}, std::pair{b, a}}) {
+      const quat q = local(child, parent);
+      out.minFlex = std::min(out.minFlex, glm::degrees(2.0f * std::atan2(glm::dot(vec3(q.x, q.y, q.z), curl), q.w)));
+    }
+  }
+  if (const int t = sk.find("thumbA.R"); t >= 0) out.thumbTurn = glm::degrees(glm::angle(local(t, sk.bones[size_t(t)].parent)));
+  out.thumbUp = glm::normalize(mat3(g[size_t(hand)]) * glm::cross(grip.fingerDir, grip.palmNormal)).y;
+  const vec3 fore = glm::normalize(vec3(g[size_t(hand)][3]) - vec3(g[size_t(sk.bones[size_t(hand)].parent)][3]));
+  out.wristBend = glm::degrees(std::acos(std::clamp(glm::dot(fore, glm::normalize(mat3(g[size_t(hand)]) * grip.fingerDir)), -1.0f, 1.0f)));
+  return out;
+}
+}  // namespace
+
+TEST_CASE("fingerClose wrap (T-171 r3): seated palm, no vertex of the hand in the cup, thumb not turned round, joints only flex") {
+  for (const char* bad : {R"({"wrap": 1})", R"({"grip": "up"})", R"({"grip": true})", R"({"clear": 1})", R"({"clear": "yes"})"}) {
+    CAPTURE(bad);
+    Scene b = graspScene(kBoy);
+    b.actions[0]["fingerClose"] = Json::parse(bad);
+    SceneEvaluator ev;
+    CHECK_FALSE(ev.load(b, EvalOptions{2.5f, 1.0f, false, 0}));
+  }
+  for (const char* asset : {kBoy, kGirl}) {
+    CAPTURE(asset);
+    Scene s = graspScene(asset);
+    s.actions[0]["band"] = {0.0, 0.1};
+    Scene soft = s, wrap = s;
+    soft.actions[0]["fingerClose"] = true;
+    wrap.actions[0]["fingerClose"] = {{"wrap", true}};
+    auto a = load(soft), b = load(wrap);
+    CHECK_FALSE(generated(*a).find("actor/hand.R.wrap"));  // not implied by fingerClose: true
+    CHECK_FALSE(generated(*a).find("actor/hand.R.seat"));
+    const Track* w = generated(*b).find("actor/hand.R.wrap");
+    const Track* seat = generated(*b).find("actor/hand.R.seat");
+    REQUIRE(w);
+    REQUIRE(seat);
+    const float r = fingertipRadius(b->characters()[0].asset.skeleton, 'R');
+    CHECK(w->evaluate(20).x == 1.0f);
+    CHECK(w->evaluate(20).y > 0.4f * r);  // the measured finger and thumb thickness: of the order of the skeleton's guess
+    CHECK(w->evaluate(20).y < 1.6f * r);
+    CHECK(w->evaluate(20).z > 0.4f * r);
+    CHECK(seat->evaluate(20).x > 0);
+    // The palm's grip point (the seat) is on the socket at the contact.
+    const vec3 socket = vec3((b->propWorld(0, 20) * assetTransformMatrix(cup().sockets.at("grip")))[3]);
+    CHECK(glm::distance(b->handGripPoint(0, 'R', 20), socket) <= 0.0005f);
+    const HandOnCup ha = handOnCup(*a, 32), hb = handOnCup(*b, 32);
+    MESSAGE(std::format("{}: deepest hand vertex in the cup {:.2f} -> {:.2f} mm, thumb turned {:.0f} -> {:.0f} deg, least joint bend "
+                        "{:.1f} -> {:.1f} deg", asset, ha.deepest * 1e3, hb.deepest * 1e3, ha.thumbTurn, hb.thumbTurn, ha.minFlex, hb.minFlex));
+    CHECK(hb.deepest <= 0.003f);  // boy 0.0 mm; the girl's test hand keeps 2.7 mm at the thumb (3.2 without wrap)
+    CHECK(hb.deepest <= ha.deepest + 1e-4f);
+    CHECK(hb.thumbTurn <= 80.0f);
+    CHECK(hb.minFlex >= -15.5f);
+  }
+}
+
+TEST_CASE("fingerClose grip natural / clear (T-171 r3): thumb up with a keyed elbow; the way in stays out of the cup") {
+  // The cup turned so that the authored grasp point makes the planner turn the right hand thumb down.
+  Scene s = graspScene(kBoy);
+  s.actions[0]["band"] = {0.0, 0.1};
+  s.actions[0]["fingerClose"] = {{"wrap", true}};
+  if (handOnCup(*load(s), 20).thumbUp > 0) {
+    const vec3 socketWas = s.props[0].transform.translation + vec3(assetTransformMatrix({vec3(0), s.props[0].transform.rotationDeg, vec3(1)}) *
+                                                                   vec4(cup().sockets.at("grip").translation, 0));
+    s.props[0].transform.rotationDeg = {0, 0, 0};
+    s.props[0].transform.translation = socketWas - cup().sockets.at("grip").translation;
+  }
+  auto site = load(s);
+  REQUIRE(handOnCup(*site, 20).thumbUp < -0.9f);
+  Scene n = s;
+  n.actions[0]["fingerClose"] = {{"wrap", true}, {"grip", "natural"}};
+  auto nat = load(n);
+  const HandOnCup hs = handOnCup(*site, 32), hn = handOnCup(*nat, 32);
+  MESSAGE(std::format("thumb side up {:.2f} -> {:.2f}; wrist bend {:.0f} -> {:.0f} deg; deepest vertex {:.2f} -> {:.2f} mm", hs.thumbUp, hn.thumbUp,
+                      hs.wristBend, hn.wristBend, hs.deepest * 1e3, hn.deepest * 1e3));
+  CHECK(hn.thumbUp > 0.9f);
+  CHECK(hn.deepest <= 0.0015f);
+  CHECK_FALSE(generated(*site).find("actor/elbow.hand.R"));
+  REQUIRE(generated(*nat).find("actor/elbow.hand.R"));
+  CHECK(glm::length(generated(*nat).find("actor/elbow.hand.R")->evaluate(20)) == doctest::Approx(1.0f).epsilon(0.01));
+  CHECK(glm::length(generated(*nat).find("actor/elbow.hand.R")->evaluate(5)) == doctest::Approx(0.0f));
+  // "site" is the default: the same keys as without the key.
+  Scene sv = s;
+  sv.actions[0]["fingerClose"] = {{"wrap", true}, {"grip", "site"}};
+  CHECK(sameKeys(generated(*site), generated(*load(sv))));
+  // clear: the hand rises with hanging fingers (an orientation waypoint) and is never deeper in the cup on the way in.
+  Scene c = n;
+  c.actions[0]["fingerClose"] = {{"wrap", true}, {"grip", "natural"}, {"clear", 0.006}};
+  auto clr = load(c);
+  CHECK(generated(*clr).find("actor/orient.hand.R")->keys.size() > generated(*nat).find("actor/orient.hand.R")->keys.size());
+  float worstN = 0, worstC = 0;
+  for (double f = 5; f <= 19; ++f) worstN = std::max(worstN, handOnCup(*nat, f).deepest), worstC = std::max(worstC, handOnCup(*clr, f).deepest);
+  MESSAGE(std::format("deepest hand vertex in the cup on the way in: {:.2f} -> {:.2f} mm", worstN * 1e3, worstC * 1e3));
+  CHECK(worstC <= worstN + 1e-4f);
+  CHECK(glm::distance(bonePos(*clr, "hand.R", 20), bonePos(*nat, "hand.R", 20)) <= 0.0005f);  // the contact is the same
+}

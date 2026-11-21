@@ -33,10 +33,16 @@ def variant(base, name):
     return s
 
 
-def site_variant(src, base, root):
-    """r2site: r2s on a copy of the prop library whose felt_cup site side_a is the PROPOSED one (hand centred on the
+# Round 3 (owner review 2026-11-21): the fixed opt-in on the proposed cup site. wrap = joint-by-joint finger wrap with
+# the measured skin and the seated palm; grip natural = thumb up (the grasp point turns about the cup's axis).
+R3 = dict(SEP, wrap=True, grip="natural", clear=0.006)
+SITE_VARIANTS = {"r2site": dict(SEP), "r3": R3, "r3wrap": dict(SEP, wrap=True), "r3grip": dict(SEP, grip="natural")}
+
+
+def site_variant(src, base, root, name="r2site"):
+    """A variant on a copy of the prop library whose felt_cup site side_a is the PROPOSED one (hand centred on the
     cup: socket grip at 50 mm instead of 66, band 0-100 mm instead of 45-90). The copy lives under the build folder;
-    content/assets is not changed."""
+    content/assets is not changed. r2site = r2s there; r3 = the round 3 fixes on top (r3wrap / r3grip: one of them)."""
     import shutil
     d = os.path.join(os.path.dirname(src), "t171_site")
     for sub in ("assets", "hand_shapes"):
@@ -52,11 +58,11 @@ def site_variant(src, base, root):
     s = variant(base, "r2")
     for act in s["actions"]:
         if "fingerClose" in act:
-            act["fingerClose"] = dict(SEP)
+            act["fingerClose"] = dict(SITE_VARIANTS[name])
     for c in s["characters"]:  # package paths are relative to the scene file
         if not os.path.isabs(c["asset"]):
             c["asset"] = os.path.abspath(os.path.join(os.path.dirname(src), c["asset"]))
-    out = os.path.join(d, "t171_r2site.scene.json")
+    out = os.path.join(d, f"t171_{name}.scene.json")
     json.dump(s, open(out, "w"), indent=1)
     return out
 
@@ -65,8 +71,10 @@ if __name__ == "__main__":
     src = sys.argv[1]
     base = json.load(open(src))
     root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", ".."))
-    print(site_variant(src, base, root))
-    for name in sys.argv[2:] or VARIANTS:
+    for name in sys.argv[2:] or list(VARIANTS) + list(SITE_VARIANTS):
+        if name in SITE_VARIANTS:
+            print(site_variant(src, base, root, name))
+            continue
         out = os.path.join(os.path.dirname(src), f"t171_{name}.scene.json")
         json.dump(variant(base, name), open(out, "w"), indent=1)
         print(out)
