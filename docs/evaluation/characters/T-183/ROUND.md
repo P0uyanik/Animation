@@ -208,8 +208,17 @@ are removed.
   condition (1) holds with the new root radius.
 - `origin/main` (55b5f51) merged; `release_rule.py`, `test_release_rule.py`, `GENERATOR_PINS.md` keep both the
   T-184 and the T-183 entries. Main changed no code since the last merge.
-- Close-up clips and the strict sheet: `README.md` ("Clips and sheet"). `tools/closeup.py --step=N` keeps every Nth
-  frame and renumbers (the renderer has no frame step). A close-up frame costs 20-30 s at 640x360, 8 samples.
+- Close-up clips (`clips/T-183_r2_<view>_f<A>-<B>.mp4`: arm 10-58, side 50-98, back 60-108, shoulder 100-148; every
+  second frame, released | candidate, once at real and once at half speed) and the strict sheet
+  (`T-183_r2_strict_sheet.jpg`, 840x1024, tiles `sheet_r2/`): `README.md` ("Clips and sheet"). `tools/closeup.py
+  --step=N` keeps every Nth frame and renumbers (the renderer has no frame step). A close-up frame costs 40 s at
+  640x360, 8 samples (two renders side by side on 4 cores: 200 frames in 65 min).
+- **Seen in the close-ups (new, reported in the CHECKPOINT):** upright (f10-18, f148) the candidate looks like the
+  released hair lying on the cloth. While she leans to the cup (about f24-132) the back ringlets cannot pass through
+  the back, shoulder and sleeve any more: they pile up on the bent back, fan out and stand off the body (bigger
+  silhouette behind the head, ringlets across each other, one kinked ringlet with a fibre tuft at f116-132 from
+  above). The measure is 0 on cloth, hands and ears, but the look is wider and less tidy than released. The lifted
+  right side lock (f26-28) is captioned in the arm clip.
 
 ### Next steps
 
@@ -218,6 +227,10 @@ are removed.
    (body skinning; item 1 above).
 3. If the lifted right side lock (f26-28, `ringlets_side_r00` on the sleeve, at the cheek) is not wanted: thinner
    chain radii against the arm colliders (not tried).
+4. If the fanned hair in the lean is not wanted: levers not tried are thinner chain radii (percentile below 100),
+   smaller torso spheres (radius 45 mm, pad 2.5 mm), and less resting friction (40) so that locks slide off the
+   back instead of staying where they were pushed. Each is one build (5 min) + bake + measure (2.5 min) + a few
+   close-up frames (`tools/preview.sh`).
 
 ## Round 1 (not accepted): hand / ear / follow
 

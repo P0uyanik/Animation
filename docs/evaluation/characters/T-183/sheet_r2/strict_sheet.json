@@ -1,0 +1,22 @@
+{
+ "title": "T-183 round 2, e909 s010, girl close-ups: f28 arm raised, f76 back, f78 right side, f116 over the shoulder",
+ "columns": [
+  {
+   "label": "before: released 0.14.0",
+   "dir": "before"
+  },
+  {
+   "label": "after: T-183 candidate",
+   "dir": "after"
+  }
+ ],
+ "frames": [
+  28,
+  76,
+  78,
+  116
+ ],
+ "pattern": "tile_f{frame:04d}.jpg",
+ "out": "../T-183_r2_strict_sheet.jpg",
+ "max_px": 1024
+}
