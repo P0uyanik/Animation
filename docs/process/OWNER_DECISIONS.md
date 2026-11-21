@@ -915,3 +915,9 @@ structure or asset changes. (3) Then priority on animation production; no furthe
   merge/abandon, handover via the ledger) → `docs/tasks/T-181.md` + rule text in `OWNERSHIP.md`.
 - T-178: the owner's approval sentence was also typed in the T-178 session itself at 10:45:54Z (desktop app) and again at
   11:50:19Z; verified by the Supervisor with list_events before the stage-2 merge.
+
+## 2026-11-21 ~12:00Z (13:00 CET) — owner guidance for T-181 / ownership (relayed by the liaison)
+The ownership rule must not slow parallel work: claims as narrow as possible; new files need no claim beyond the task
+folder; shared append-only registries handled by the Supervisor or merge-friendly formats, not locks; read access never
+blocked; claims released at merge/abandon; overlaps reported with the conflicting task, never silently blocking. Gap found:
+hard depends-on (read) overlaps were conflicts → T-181b makes them warnings. Rule text in `OWNERSHIP.md` updated.

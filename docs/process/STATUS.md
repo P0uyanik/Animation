@@ -1,7 +1,7 @@
 # Status board
 
 Updated by the Supervisor in the same commit as every merge or dispatch. Sources: [TASK_LOG](TASK_LOG.md),
-[OWNERSHIP](OWNERSHIP.md), [OWNER_DECISIONS](OWNER_DECISIONS.md) (2026-11-21). As of 2026-11-21 ~10:45Z (R4 Supervisor session_01NPjxeNjJghYQMGjDycpnsC). R3 released (main ea4e440). T-171 CHECKPOINT and T-172 READY wait for the owner; T-175 style review pending; T-177 and T-179 merged, T-178 running; P2 rule applied. Session cap temporarily 7.
+[OWNERSHIP](OWNERSHIP.md), [OWNER_DECISIONS](OWNER_DECISIONS.md) (2026-11-21). As of 2026-11-21 ~10:45Z (R4 Supervisor session_01NPjxeNjJghYQMGjDycpnsC). R3 released (main ea4e440). T-171 CHECKPOINT and T-172 READY wait for the owner; T-175 style review pending; T-177/T-178/T-179/T-181 merged (main b87fbfd); T-180, T-181b, T-182 running; P2 rule applied. Session cap temporarily 7.
 Session cap: 6 (temporary 8 ended 08:20Z). Owner liaison: session_01NPjxeKamtbdzi3YwrgsWXU (from ~08:30Z). ETA "—" = none given yet.
 
 ## Character look
@@ -41,7 +41,8 @@ Codex T-169 hair reference study (relay 2987afa) feeds T-167. Codex T-161 refere
 | T-179 generator pin map (T-176 P12 light) | Sonnet 5.5 | merged (docs/process/GENERATOR_PINS.md) |
 | T-180 full suite in a light clone + clone profiles (T-176 P13) | Sonnet 5.5 | running |
 | T-181 one owner per file: claims --check-all (T-176 P9) | Sonnet 5.5 | merged |
-| T-182 automatic test registration (T-176 P7) | — | next, after this merge |
+| T-181b read overlaps → warnings (owner guidance) | Sonnet 5.5 | running |
+| T-182 automatic test registration (T-176 P7) | Opus 5.5 | running; owner's typed approval needed in its session |
 | T-178 one release-manifest rule (T-176 P5) | Opus 5.5 | merged | — | — |
 | T-174 animation reuse vs build (research) | Opus 5.5 | merged: keep engine for acting/verbs/grasp; reuse CMU mocap for walk/run/sit/stand; build importer + foot lock (~3.5–4 d); owner questions open | — | — |
 | T-153 fidelity score v2 | Opus | merged; experimental, default stays v1 | — | `t-153-claude-fidelity-v2` |
