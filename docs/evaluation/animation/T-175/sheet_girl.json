@@ -1,0 +1,9 @@
+{
+ "title": "T-175 CMU mocap on girl: walk cycle (f1-19), sit (f116, f150), stand (f182, f198) - review profile",
+ "columns": [{"label": "full frame", "dir": "shots/review/build/sheet/full"},
+             {"label": "girl (crop follows the character)", "dir": "shots/review/build/sheet/girl"}],
+ "frames": [1, 7, 13, 19, 116, 150, 182, 198],
+ "pattern": "frame_{frame:04d}.png",
+ "out": "sheet_girl.jpg",
+ "max_px": 2048
+}

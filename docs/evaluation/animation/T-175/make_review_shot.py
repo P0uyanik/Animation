@@ -88,7 +88,7 @@ def main():
         h = seat_ratio * LEG[who]
         objects.append({"name": f"stool_{who}", "kind": "box", "min": [cx - 0.085, 0.0, cz - 0.085], "max": [cx + 0.085, round(h, 4), cz + 0.085],
                         "material": "seat_mat"})
-    cam_walk = ([0.0, 0.45, 3.4], [0.0, 0.27, 0.0])
+    cam_walk = ([-0.55, 0.45, 3.0], [-0.55, 0.27, 0.0])  # centred on the three cycles the review clip shows
     cam_sit = ([0.75, 0.55, STAGE2 + 2.7], [0.0, 0.3, STAGE2 - 0.05])
     anim["camera.position"] = [[1, cam_walk[0], "step"], [SIT[0] - 3, cam_sit[0], "step"]]
     anim["camera.target"] = [[1, cam_walk[1], "step"], [SIT[0] - 3, cam_sit[1], "step"]]
