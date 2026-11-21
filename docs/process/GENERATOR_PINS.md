@@ -42,7 +42,7 @@ Pin numbers do not equal round numbers: read the round column, not the number.
 | exporter | export/4 | export_engine.py | — | all versions (B 1.0.0*, 1.1.0* default) |
 | exporter | export/5 | export_engine.py | byte-reproducible export (T-056) | none |
 
-Naming note for the owner: the owner's example was "groom/4 = groom_r5 = hair round 6", and T-176 REPORT A2 says the owner's "round 7" lives in groom_r6.py; TASK_LOG says groom/4 = hair round 5 (T-118) and groom/5 = hair round 6 (T-160). The owner's naming differs by one round for groom; the owner can settle it.
+Naming: TASK_LOG is authoritative (liaison confirmed 2026-11-21): groom/4 = groom_r5.py = hair round 5 (T-118); groom/5 = groom_r6.py = hair round 6 (T-160), and round 7 (T-167) uses groom/5 with overrides.
 
 Not in the registry: `body.hands = "hands_r2/1"` is a spec field checked in `build_character.py`
 (module `hands_r2.py`, T-121); see below.
