@@ -11,7 +11,7 @@
 //   clear_mm     minimum skin clearance over the digit's moving points (segment middles, knuckle, tip)
 //   root_mm      skin clearance of the digit's root pivot (fixed in the palm: a wrist-placement measure, not a finger one)
 //   curl_deg     rotation of the two segments from rest (a, b)
-//   tip_h_mm     fingertip height along the prop axis
+//   tip_h_mm     fingertip height along the prop axis (root_h_mm: the same for the digit roots)
 // and per frame: neighbouring fingertip distances (index-middle, middle-ring, ring-little), the same for the
 // knuckles, the wrist position and the wrist-to-prop-axis distance.
 #include <algorithm>
@@ -91,7 +91,7 @@ int main(int argc, char** argv) {
         const float out = glm::length(vec2(std::max(dr, 0.0f), std::max(dy, 0.0f))), in = std::min(std::max(dr, dy), 0.0f);
         return (out + in) * k * ps;
       };
-      std::string hs, gaps, clears, roots, curls;
+      std::string hs, gaps, clears, roots, curls, rhs;
       std::vector<vec3> ftips, fkn;
       for (const auto& [a, b] : digits) {
         const int ia = sk.find(a + s), ib = sk.find(b + s);
@@ -111,6 +111,7 @@ int main(int argc, char** argv) {
         gaps += std::format("{}{:.2f}", sep, (sdf(tip) - r) * 1e3);
         clears += std::format("{}{:.2f}", sep, cl * 1e3);
         roots += std::format("{}{:.2f}", sep, (sdf(ha) - r) * 1e3);
+        rhs += std::format("{}{:.1f}", sep, vec3(Pi * vec4(ha, 1)).y * k * 1e3);
         curls += std::format("{}[{:.2f}, {:.2f}]", sep, ih >= 0 ? rot(ia, ih) : 0.0f, rot(ib, ia));
         if (a[0] == 'f') ftips.push_back(tip), fkn.push_back(kn);
       }
@@ -123,10 +124,10 @@ int main(int argc, char** argv) {
       const vec3 wl = vec3(Pi * vec4(wrist, 1));
       std::cout << (first ? "" : ",\n")
                 << std::format("  {{\"hand\": \"{}.{}\", \"frame\": {}, \"skin_radius_mm\": {:.2f}, \"tip_h_mm\": [{}], "
-                               "\"tip_gap_mm\": [{}], \"clear_mm\": [{}], \"root_mm\": [{}], \"curl_deg\": [{}], "
+                               "\"tip_gap_mm\": [{}], \"clear_mm\": [{}], \"root_mm\": [{}], \"root_h_mm\": [{}], \"curl_deg\": [{}], "
                                "\"tips_apart_mm\": [{}], \"knuckles_apart_mm\": [{}], \"wrist\": [{:.7f}, {:.7f}, {:.7f}], "
                                "\"wrist_axis_mm\": {:.2f}}}",
-                               h.who, h.side, f, r * 1e3, hs, gaps, clears, roots, curls, apart, kapart, wrist.x, wrist.y,
+                               h.who, h.side, f, r * 1e3, hs, gaps, clears, roots, rhs, curls, apart, kapart, wrist.x, wrist.y,
                                wrist.z, std::sqrt(wl.x * wl.x + wl.z * wl.z) * k * ps * 1e3);
       first = false;
     }
