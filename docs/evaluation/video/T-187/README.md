@@ -55,6 +55,11 @@ seat), personalities on.
   boat offset measured at the end of s020's hand-over (`BOAT_IN_HAND`). No hold IK there: a `carry` target is a world
   point, and kept through the stand-up the arm-body clearance pushed the hand 15-20 cm across his body (tried; also a
   pick-up during the sit-down drifts because its lift is planned from the standing body).
+- **The walk-off travels (supervisor check 1).** Yes, L -> R: the travel is the `cmu_walk` clip's own root motion
+  (`root.cycle_offset`, as in T-175's review shot); the characters' scene position and yaw are constant during the
+  walk (stepped once at the 5a -> 5b cut), which is what the foot-lock's character-space pin needs. Hips over
+  f93-166 (s030 bake): boy x -0.45 -> 0.84 m (0.42 m/s), auburn -0.97 -> 0.36 (0.44 m/s), white -1.50 -> -0.36
+  (0.37 m/s), depth unchanged. No `walk` action and no camera move.
 - **Grasp:** every verb carries T-185's r3 `fingerClose` key for key (`episodes/e910_showcase/make_shot.py` `R3`).
   main was merged with T-186 (grip natural keeps the prop still from contact to lift) before the final bakes.
 
