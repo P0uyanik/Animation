@@ -86,7 +86,7 @@ The `test_guard_allowlist` import is gone from every file.
 | test_hair_r4.py | groom/3 base/override | 37 → 36 |
 | test_hair_r5.py | allowlist valid, groom/4 | 79 → 77 |
 | test_hair_r6.py | allowlist valid, groom/5, negative | 49 → 46 |
-| test_hair_v3_r2.py / r3.py | base spec !groom/2 | 19 → 18 / 24 → 23 |
+| test_hair_v3_r2.py / r3.py | base spec !groom/2 (boy, girl) | 20 → 18 / 25 → 23 |
 | test_hands_r2.py | allowlist valid, body.hands (+ unused `glob`) | 50 → 48 |
 | test_face_r5.py (plain) | allowlist valid ×2, lash_curve, closed_fill group, negative | 19 → 14 |
 | test_face_v3.py / v3b.py (plain) | published spec pins face_generic/2 (×2) | 7 → 5 / 10 → 8 |
