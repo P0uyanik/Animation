@@ -921,3 +921,15 @@ The ownership rule must not slow parallel work: claims as narrow as possible; ne
 folder; shared append-only registries handled by the Supervisor or merge-friendly formats, not locks; read access never
 blocked; claims released at merge/abandon; overlaps reported with the conflicting task, never silently blocking. Gap found:
 hard depends-on (read) overlaps were conflicts → T-181b makes them warnings. Rule text in `OWNERSHIP.md` updated.
+
+## 2026-11-21 ~12:30Z (13:30 CET) — owner feedback on T-175, T-171, T-172; hair contact (relayed by the liaison)
+- **T-175 locomotion:** walk not bouncier (keep up-down); softer, gentler footsteps; fix feet sinking while walking. Sit
+  upright 90° with hands at the sides. Stand-up without the ~90° turn and extra step; fix the boy's legs intersecting.
+  Fix black hands (drop hands from the mocap mask) and garment under skin when seated. → fresh session (P2, old one 465k).
+- **T-171 hands:** "opt-in + proposed cup site" is the most natural → adopt, close the fingers more around the cup; fix
+  fingers bending outward, unclear finger positions, hands not moving properly with the body; include the thumb-down grip
+  (e910) and the ~7 mm little-finger graze. T-157(a) stays opt-in. fingerClose and the cup site become defaults only after
+  the owner sees the fixed clip. → fresh session (old one 334k).
+- **Hair/body contact (new T-183):** girl's hand and hair interpenetrate; hair goes into her ear; hair should follow the
+  body and react to body/environment. Not in T-171/T-175 write-sets.
+- **T-172:** no 720p re-render; current quality is fine for testing → close and archive.

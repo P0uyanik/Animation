@@ -26,8 +26,9 @@ Codex T-169 hair reference study (relay 2987afa) feeds T-167. Codex T-161 refere
 | Task | Model | State | ETA | Branch |
 | --- | --- | --- | --- | --- |
 | T-157 grasp gap: wider band (a) stays opt-in until hands round 2 | Opus 5.5 | merged (main 2a02532) | — | — |
-| T-171 hands round 2 (then revisit T-157 option a default) | Fable 5.2 | CHECKPOINT d1d150f: opt-in fingerClose; 4 owner decisions | — | `t-171-claude-hands-r2` |
-| T-172 test video with released R3 characters (5–8 s, existing shot) | Sonnet 5.5 | READY 9eaa8a2 (640x360); owner: accept or 720p | — | `t-172-claude-test-video` |
+| T-171 hands round 3 (owner feedback ~12:30Z) | Fable 5.2 | running (fresh session) | — | `t-171-claude-hands-r2` |
+| T-172 test video with released R3 characters (5–8 s, existing shot) | Sonnet 5.5 | closed: accepted at 640x360 |
+| T-183 hair/body contact + follow | Fable 5.2 | running (design first) | — | `t-172-claude-test-video` |
 
 ## Other
 | Task | Model | State | ETA | Branch |
@@ -35,13 +36,13 @@ Codex T-169 hair reference study (relay 2987afa) feeds T-167. Codex T-161 refere
 | T-141 native hair curves (opt-in tool) | Fable 5.2 | merged (main 2a02532) | — | — |
 | T-144 retire unpinned generator versions | Opus 5.5 | done: option (c), legacy documented, no removal (owner ~20:50Z) | — | — |
 | T-166 final720 default + HEVC 10-bit delivery | Sonnet 5.5 | merged (main 86288cb); ffmpeg added to CI pins | — | — |
-| T-175 locomotion layer: CMU importer + foot-lock + chibi style filter (owner go ~23:35Z) | Opus 5.5 | running; first a walk + sit/stand style review | — | `t-175-claude-locomotion` |
+| T-175 locomotion layer: CMU importer + foot-lock + chibi style filter (owner go ~23:35Z) | Opus 5.5 | round 2 running (owner feedback ~12:30Z, fresh session) | — | `t-175-claude-locomotion` |
 | T-176 whole-project review (analysis) | Opus 5.5 | merged; P2/P3/P5 approved ~04:10Z, rest undecided |
 | T-177 docs-only fast path (T-176 P3) | Sonnet 5.5 | merged (main c16ef79) |
 | T-179 generator pin map (T-176 P12 light) | Sonnet 5.5 | merged (docs/process/GENERATOR_PINS.md) |
 | T-180 full suite in a light clone + clone profiles (T-176 P13) | Sonnet 5.5 | running |
 | T-181 one owner per file: claims --check-all (T-176 P9) | Sonnet 5.5 | merged |
-| T-181b read overlaps → warnings (owner guidance) | Sonnet 5.5 | running |
+| T-181b read overlaps → warnings (owner guidance) | Sonnet 5.5 | merged |
 | T-182 automatic test registration (T-176 P7) | Opus 5.5 | running; owner's typed approval needed in its session |
 | T-178 one release-manifest rule (T-176 P5) | Opus 5.5 | merged | — | — |
 | T-174 animation reuse vs build (research) | Opus 5.5 | merged: keep engine for acting/verbs/grasp; reuse CMU mocap for walk/run/sit/stand; build importer + foot lock (~3.5–4 d); owner questions open | — | — |

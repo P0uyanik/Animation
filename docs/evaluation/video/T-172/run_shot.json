@@ -1,0 +1,133 @@
+{
+ "shot": "episodes/e909_two_char_acting/shots/s010/shot.scene.json",
+ "steps": {
+  "engine_bake_s": 19.5,
+  "blender_s": 5315.0,
+  "video_s": 8.5
+ },
+ "cast": {
+  "boy": {
+   "character_id": "boy_yellow_hoodie",
+   "status": "current 2.3.0 (published 2.3.0)",
+   "master_sha256": "f8eaf332262ea5c09875ae3fb67fa1e07c6af89a2c0134d941739f7c51e36ebe",
+   "package": "episodes/e909_two_char_acting/shots/s010/build/packages/boy_3e04c84ed8656b55",
+   "version": "2.3.0",
+   "resolved": {
+    "from": "current",
+    "character_id": "boy_yellow_hoodie",
+    "version": "2.3.0",
+    "spec": "assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.2.3.0.spec.json",
+    "overrides": [],
+    "baseline": "docs/evaluation/characters/fidelity_baseline.json",
+    "version_dir": "assets/characters/boy_yellow_hoodie/versions/2.3.0"
+   }
+  },
+  "girl": {
+   "character_id": "girl_auburn_bun_glasses",
+   "status": "current 0.14.0 (published 0.14.0)",
+   "master_sha256": "96b3635736eb8787c189eebf4fcf8f4415b8cbc3e40f8e7a3e263ba15c98d76a",
+   "package": "episodes/e909_two_char_acting/shots/s010/build/packages/girl_0ab5d4c9ca8bac38",
+   "version": "0.14.0",
+   "resolved": {
+    "from": "current",
+    "character_id": "girl_auburn_bun_glasses",
+    "version": "0.14.0",
+    "spec": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.14.0.spec.json",
+    "overrides": [],
+    "baseline": "docs/evaluation/characters/fidelity_baseline.json",
+    "version_dir": "assets/characters/girl_auburn_bun_glasses/versions/0.14.0"
+   }
+  }
+ },
+ "prepare": {
+  "all_cached": true,
+  "cast": {
+   "boy": {
+    "master_state": "published (read only)",
+    "package_state": "cached"
+   },
+   "girl": {
+    "master_state": "published (read only)",
+    "package_state": "cached"
+   }
+  }
+ },
+ "render": {
+  "bake": "/home/user/Animation/episodes/e909_two_char_acting/shots/s010/build/runs/t172b/bake.json",
+  "frames": [
+   60,
+   228
+  ],
+  "characters": {
+   "boy": {
+    "master": "/home/user/Animation/assets/characters/boy_yellow_hoodie/versions/2.3.0/boy_yellow_hoodie_master.blend",
+    "baked_bones": 125,
+    "facial_controls": 40,
+    "unmapped_morphs": [],
+    "bones_left_to_drivers": [
+     "DEF-jaw"
+    ],
+    "max_bone_error_mm": 0.001,
+    "max_bone_error_deg": 0.0,
+    "eye_objects": [
+     "eye.L",
+     "eye.R"
+    ],
+    "eye_socket_max_mm": 0.0024,
+    "eye_socket_worst_frame": 60
+   },
+   "girl": {
+    "master": "/home/user/Animation/assets/characters/girl_auburn_bun_glasses/versions/0.14.0/girl_auburn_bun_glasses_master.blend",
+    "baked_bones": 166,
+    "facial_controls": 32,
+    "unmapped_morphs": [
+     "corrective.reach.L",
+     "corrective.reach.R"
+    ],
+    "bones_left_to_drivers": [
+     "DEF-jaw"
+    ],
+    "max_bone_error_mm": 0.001,
+    "max_bone_error_deg": 0.0,
+    "eye_objects": [
+     "eye.L.001",
+     "eye.R.001"
+    ],
+    "eye_socket_max_mm": 0.0026,
+    "eye_socket_worst_frame": 141
+   }
+  },
+  "not_rendered": [],
+  "world": {
+   "lights": 2,
+   "objects": 4
+  },
+  "props": {
+   "props": {
+    "cup": {
+     "asset": "prop.felt_cup",
+     "primitive": "cylinder",
+     "material_preset": "felt",
+     "preset_found": true
+    }
+   },
+   "unknown_material_presets": []
+  },
+  "profile": {
+   "name": "final720",
+   "applied": {
+    "cycles.adaptive_threshold": 0.05,
+    "render.use_persistent_data": true
+   }
+  },
+  "setup_s": 882.6,
+  "render_s": 4430.8,
+  "render_s_per_frame": 26.22,
+  "resolution": [
+   640,
+   360
+  ],
+  "samples": 16,
+  "engine": "cycles"
+ }
+}
