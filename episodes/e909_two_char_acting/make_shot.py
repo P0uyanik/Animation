@@ -27,7 +27,13 @@ cast (evaluation only) and lets her react to the success event with girl_delight
 Gaze (T-113 open point 3, the e908 look drove the eyes past gaze_range during blinks): both characters' eye limits are
 set just inside their specs' gaze_range_deg (EYE_YAW, EYE_PITCH); the neck assist takes part of the excess (kept small as in
 e907 so the heads stay apart and the faces read) and a far look stops short at the range. The eyes stay inside the
-range the lids were fitted for (measured by measure_beats.py, pinned by the test)."""
+range the lids were fitted for (measured by measure_beats.py, pinned by the test).
+
+Cup grasp (T-188, owner pick 2026-11-21 of T-171 round 3 "fixed, thumb up", variant r3, as T-185 put it on e910): her
+pick-up carries the opt-in "fingerClose" R3 below (the same keys as episodes/e910_showcase/make_shot.py R3; T-186's
+"r3pick"). Only her pick-up: on the pass and the place the boy's hand goes 22.9 mm through the cup as it opens after the
+place (T-185). The cup stays the released content/assets one: T-171's proposed site moves side_a (the boy's side, set
+a); her set b is not changed by it (T-185: r3site = r3pick on her rows)."""
 import argparse
 import copy
 import json
@@ -73,6 +79,14 @@ B = {
 }
 OFFER_AT_DELTA = [0.035, 0.035, 0.03]  # from the hand-over point towards him, up and to the camera: the offered cup
 INSPECT_BY = [0.0, 0.1, 0.04]  # his hold: the cup up and a little towards the camera, under his look
+# T-188: T-171 round 3 r3 = episodes/e910_showcase/make_shot.py R3, key for key. rest = the separated rest hand; wrap =
+# the joint-by-joint finger wrap; grip natural = thumb up; clear = the way in keeps 6 mm off the cup.
+R3_REST = {"curl": 0.25, "thumb": 0.12, "spread": 0.6,
+           "fingers": {"index": {"curl": 0.14, "spread": 0.9}, "middle": {"curl": 0.22, "spread": 0.6},
+                       "ring": {"curl": 0.29, "spread": 0.6}, "little": {"curl": 0.35, "spread": 0.9}}}
+R3 = {"rest": R3_REST, "wrap": True, "grip": "natural", "clear": 0.006}
+X_T188 = {"task": "T-188", "fingerClose": R3, "on": "girl pick_up only",
+          "measured_by": "docs/evaluation/interaction/T-188/README.md"}
 
 
 def r4(v):
@@ -116,7 +130,8 @@ def build(candidate):
         {"type": "emotion", "character": "boy", "name": "boy_unimpressed", "start": 1, "end": B["pass"] + 20,
          "intensity": BORED},
         # she: notice (event) -> pick up -> offer -> pass
-        {"type": "pick_up", "character": "girl", "hand": "L", "prop": "cup", "set": "b", "start": B["pick_up"]},
+        {"type": "pick_up", "character": "girl", "hand": "L", "prop": "cup", "set": "b", "start": B["pick_up"],
+         "fingerClose": copy.deepcopy(R3)},
         {"type": "carry", "character": "girl", "hand": "L", "at": offered},
         {"type": "look", "character": "girl", "start": B["his_glance"], "end": B["pass"] - 1, "atCharacter": "boy"},
         # he glances at the offer and away again (reluctant)
@@ -155,6 +170,7 @@ def build(candidate):
         "neck_yaw_deg": NECK_YAW, "girl_neck_pitch_deg": GIRL_NECK_PITCH, "boy_neck_pitch_deg": BOY_NECK_PITCH,
         "head_follow": HEAD_FOLLOW, "shared_hold": SHARED, "candidate": candidate,
     }
+    shot["x_t188"] = copy.deepcopy(X_T188)
     return name, shot
 
 
