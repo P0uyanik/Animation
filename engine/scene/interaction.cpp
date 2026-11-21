@@ -366,8 +366,9 @@ void applyArmPoles(const Skeleton& sk, const Clip& clip, const std::string& pref
     const std::string name = prefix + "pole." + sk.bones[i].name, swingName = prefix + "swing." + sk.bones[i].name;
     const Track* t = clip.find(name);
     const Track* sw = clip.find(swingName);
-    const bool hasPole = t && !t->keys.empty(), hasSwing = sw && !sw->keys.empty();
-    if (!hasPole && !hasSwing) continue;
+    const Track* el = clip.find(prefix + "elbow." + sk.bones[i].name);  // T-171 (opt-in "grip": "natural")
+    const bool hasPole = t && !t->keys.empty(), hasSwing = sw && !sw->keys.empty(), hasElbow = el && !el->keys.empty();
+    if (!hasPole && !hasSwing && !hasElbow) continue;
     const int mid = sk.bones[i].parent, root = mid >= 0 ? sk.bones[size_t(mid)].parent : -1;
     if (root < 0) continue;
     // Swings the upper arm by `angle` about the shoulder -> wrist axis; only the elbow moves: the hand keeps its world
@@ -389,6 +390,21 @@ void applyArmPoles(const Skeleton& sk, const Clip& clip, const std::string& pref
       const quat midAfter = glm::normalize(glm::quat_cast(mat3(boneGlobals(sk, pose, world)[size_t(mid)])));
       pose.local[i] = glm::normalize(glm::inverse(midAfter) * handBefore);
     };
+    // T-171: the elbow a natural grip asks for, "<prefix>elbow.<hand bone>" = the world direction the elbow points
+    // in from the shoulder -> wrist line, times a weight 0..1 (its length). Before the planned swing, which is
+    // measured on top of it.
+    if (hasElbow)
+      swing([&](vec3 a, vec3 b, vec3 u) {
+        const vec3 pole = el->evaluate(frame);
+        const float lpole = glm::length(pole);
+        vec3 e = (b - a) - u * glm::dot(b - a, u), p = pole - u * glm::dot(pole, u);
+        const float le = glm::length(e), lp = glm::length(p);
+        if (lpole < 1e-4f || le < 1e-5f || lp < 1e-6f) return 0.0f;
+        e /= le;
+        p /= lp;
+        const float strength = std::clamp((lp / lpole) / 0.3f, 0.0f, 1.0f);  // a direction along the arm has no plane
+        return std::atan2(glm::dot(glm::cross(e, p), u), glm::dot(e, p)) * std::min(lpole, 1.0f) * strength;
+      });
     if (hasPole) {
       const float w = std::clamp(clip.evaluate(name + ".weight", frame, vec3(1)).x, 0.0f, 1.0f);
       if (w > 0)
@@ -539,6 +555,38 @@ GraspShape graspShape(const PropAsset& asset, vec3 s) {
   return g;
 }
 
+// T-171 (opt-in "clear"): signed distance (metres, prop frame) from a point to the prop as a solid: the primitive it is
+// made of, else its collision proxy (cylinders capped, a cup's opening closed; negative inside).
+float propSolidDistance(const PropAsset& asset, vec3 s) {
+  enum class Kind { Box, Sphere, Cylinder } kind = Kind::Sphere;
+  vec3 size(0.06f);
+  float radius = 0.03f, y0 = 0, y1 = 0;
+  mat4 frame(1);
+  const float k = asset.scaleMetres > 0 ? asset.scaleMetres : 1.0f;
+  if (asset.mesh.kind == AssetMeshSource::Kind::Primitive) {
+    using P = AssetMeshSource::Primitive;
+    kind = asset.mesh.primitive == P::Box ? Kind::Box : asset.mesh.primitive == P::Sphere ? Kind::Sphere : Kind::Cylinder;
+    size = asset.mesh.size * k, radius = asset.mesh.radius * k, y1 = asset.mesh.height * k;
+  } else if (asset.collision) {
+    using T = AssetCollisionProxy::Type;
+    const auto& c = *asset.collision;
+    kind = c.type == T::Box ? Kind::Box : c.type == T::Sphere ? Kind::Sphere : Kind::Cylinder;
+    size = c.size, radius = c.radius, y0 = -0.5f * c.height, y1 = 0.5f * c.height;
+    frame = assetTransformMatrix(c.transform);
+  }
+  const vec3 p = vec3(glm::inverse(frame) * vec4(s, 1));
+  if (kind == Kind::Sphere) return glm::length(p) - radius;
+  vec2 q;
+  if (kind == Kind::Cylinder) {
+    q = vec2(std::sqrt(p.x * p.x + p.z * p.z) - radius, std::abs(p.y - 0.5f * (y0 + y1)) - 0.5f * (y1 - y0));
+  } else {
+    const vec3 b = glm::abs(p) - 0.5f * size;
+    q = vec2(std::max(b.x, b.z), b.y);
+    if (b.x > 0 && b.z > 0) q.x = std::sqrt(b.x * b.x + b.z * b.z);
+  }
+  return glm::length(glm::max(q, vec2(0))) + std::min(std::max(q.x, q.y), 0.0f);
+}
+
 // Moves a wrist key at frame f until `error()` (target - measured) is below 0.3 mm: the arm solve, the life layer and
 // clip layers make the first estimate a little off. Keeps the best key and stops when a step no longer helps (a
 // target out of reach), so the key never runs away. Returns the remaining error.
@@ -583,8 +631,200 @@ void keyShapeRest(Clip& gen, const std::string& pose, double f, const HandShape&
     if (p->thumbOpposition) key(gen, pose + ".thumb", f, vec3(0, rest.y, 0));
   }
 }
+// T-171 hands round 2 (opt-in, action key "fingerClose": true | {...} on reach / grasp / place / handover and on the
+// verbs that lower to them; absent = every key as before, byte for byte). Only keys change, the solver does not:
+//   "preshape": 0..1      grasp weight held on the way in (default 0.5): the opening hand already takes the object's
+//                         shape, each finger part of the way from the open pose to its contact pose (0 = none)
+//   "stagger": frames     between fingers landing, index first, little last; opening in reverse (default 2; track
+//                         hand.<s>.stagger of T-051)
+//   "close": frames       the final close, ending at contact for the index (default 6, at most half the reach)
+//   "settle": [share, frames]  soft contact: the last `share` of the close takes `frames` (default [0.12, 3]), so
+//                         each finger lands slowly instead of stopping dead; the weight never passes 1 (no press-in)
+//   "widen": [lo, hi]     metres: a banded grasp keys the T-138 band fit and the T-157 (a) wider band
+//   "rest": {pose}        a hand-shape pose (anim/hand_shape.h: curl, thumb, spread, fingers ...) for the hand before
+//                         the reach and after the release instead of the relaxed hand (wrap grasps: its per-finger
+//                         curls and spreads too)
+//   Round 3 (owner review 2026-11-21; each its own key, none implied by the others):
+//   "wrap": true          the grasp keys the wrap search (anim: HandPose::wrap, track hand.<s>.wrap) with the finger and
+//                         thumb thickness measured on the character's mesh, and seats the prop where the palm ends and
+//                         the fingers begin, as far off the hand as the palm's measured surface needs (track
+//                         hand.<s>.seat): the fingers arch onto the prop with all three joints, the thumb opposes them
+//                         inside its anatomical range, the palm does not sink in
+//   "grip": "natural"     on an upright round prop the hand takes the prop thumb up with a straight wrist: the grasp
+//                         point turns about the prop's axis by the smallest angle at which some elbow position (never
+//                         above the shoulder-wrist line, clear of the body) leaves the fingers within 30 deg of the
+//                         forearm, and that elbow is keyed ("<who>/elbow.<hand bone>": the direction it points in, eased
+//                         in early in the reach, back to the arm solve's own elbow after the release). The planner otherwise turns the hand thumb down
+//                         when the authored point faces the wrong way for this hand. "site" (default): as before
+//   "clear": metres       the way in keeps the hand at least this far from the prop (default 0 = the path as it was):
+//                         a hand taking an upright prop rises with its fingers hanging and swings them level in the
+//                         palm's own plane; where the digits or the palm still come closer, the wrist moves out, level, away
+//                         from the prop, eased in time and gone by the contact
+struct FingerClose {
+  float preshape = 0.5f, stagger = 2.0f, settleShare = 0.12f;
+  double closeFrames = 6, settleFrames = 3;
+  bool wrap = false, natural = false;
+  float clear = 0;
+  std::optional<vec2> widen;
+  std::optional<HandShape> restShape;
+  const HandShape* rest() const { return restShape ? &*restShape : nullptr; }
+};
+Result<std::optional<FingerClose>> fingerCloseFromJson(const Json& a, const std::string& what) {
+  auto it = a.find("fingerClose");
+  if (it == a.end() || it->is_null() || (it->is_boolean() && !it->get<bool>())) return std::optional<FingerClose>{};
+  FingerClose fc;
+  if (it->is_boolean()) return std::optional<FingerClose>{fc};
+  if (!it->is_object()) return fail(std::format("{}: 'fingerClose' must be true, false or an object", what));
+  auto bad = [&](const std::string& why) { return fail(std::format("{}: fingerClose.{}", what, why)); };
+  for (const auto& [k, v] : it->items()) {
+    auto in = [&](double lo, double hi) { return v.is_number() && v.get<double>() >= lo && v.get<double>() <= hi; };
+    auto pair = [&](double lo0, double hi0, double lo1, double hi1) {
+      return v.is_array() && v.size() == 2 && v[0].is_number() && v[1].is_number() && v[0].get<double>() >= lo0 &&
+             v[0].get<double>() <= hi0 && v[1].get<double>() >= lo1 && v[1].get<double>() <= hi1;
+    };
+    if (k == "preshape") {
+      if (!in(0, 1)) return bad("preshape must be in [0, 1]");
+      fc.preshape = v.get<float>();
+    } else if (k == "stagger") {
+      if (!in(0, 6)) return bad("stagger must be in [0, 6] frames");
+      fc.stagger = v.get<float>();
+    } else if (k == "close") {
+      if (!in(2, 24)) return bad("close must be in [2, 24] frames");
+      fc.closeFrames = v.get<double>();
+    } else if (k == "settle") {
+      if (!pair(0, 0.5, 1, 12)) return bad("settle must be [share in 0..0.5, frames in 1..12]");
+      fc.settleShare = v[0].get<float>(), fc.settleFrames = v[1].get<double>();
+    } else if (k == "widen") {
+      if (!pair(0, 0.1, 0, 0.1)) return bad("widen must be [lo, hi], metres in [0, 0.1]");
+      fc.widen = vec2(v[0].get<float>(), v[1].get<float>());
+    } else if (k == "wrap") {
+      if (!v.is_boolean()) return bad("wrap must be true or false");
+      fc.wrap = v.get<bool>();
+    } else if (k == "grip") {
+      if (!v.is_string() || (v.get<std::string>() != "natural" && v.get<std::string>() != "site")) return bad("grip must be \"natural\" or \"site\"");
+      fc.natural = v.get<std::string>() == "natural";
+    } else if (k == "clear") {
+      if (!in(0, 0.05)) return bad("clear must be in [0, 0.05] metres");
+      fc.clear = v.get<float>();
+    } else if (k == "rest") {
+      auto r = handShapeFromJson(Json{{"format", "plush.hand_shape"}, {"version", 1}, {"id", "rest"}, {"kind", "rest"}, {"pose", v}});
+      if (!r) return bad("rest: " + r.error().message);
+      fc.restShape = std::move(*r);
+    } else {
+      return bad(std::format("{}: unknown key", k));
+    }
+  }
+  return std::optional<FingerClose>{fc};
+}
+// The per-finger tracks of a rest shape (T-171 "rest"), keyed to `v` = (curl, thumb, spread) instead (the open hand).
+void keyRestFingers(Clip& gen, const std::string& pose, double f, const HandShape& rest, vec3 v) {
+  for (int k = 0; k < 4; ++k)
+    if (rest.pose.fingers[size_t(k)] || (k == 3 && rest.pose.index)) key(gen, std::format("{}.f{}", pose, k), f, vec3(v.x, v.z, 0));
+  if (rest.pose.thumbOpposition) key(gen, pose + ".thumb", f, vec3(0, v.y, 0));
+}
+// The rest shape itself: hand.<s> and its per-finger tracks (the index override as an f3 key, so no .index track).
+void keyRest(Clip& gen, const std::string& pose, double f, const HandShape& rest) {
+  const HandShapePose& p = rest.pose;
+  key(gen, pose, f, vec3(p.curl, p.thumb, p.spread));
+  for (int k = 0; k < 4; ++k) {
+    if (p.fingers[size_t(k)]) key(gen, std::format("{}.f{}", pose, k), f, vec3(*p.fingers[size_t(k)], 0.0f));
+    else if (k == 3 && p.index) key(gen, std::format("{}.f{}", pose, k), f, vec3(*p.index, p.spread, 0));
+  }
+  if (p.thumbOpposition) key(gen, pose + ".thumb", f, vec3(*p.thumbOpposition, p.thumb, 0));
+}
+// T-171 (opt-in "wrap"): what the hand really measures, from the rest mesh. profile: the palm's surface, the highest
+// vertex along the palm normal per 2 mm station along the finger direction (every vertex the hand bone carries
+// rigidly: the palm, the knuckles, the ball of the thumb; not the digits the hand pose moves); finger / thumb: the
+// thickness of a digit's last segment (80th percentile of its vertices' distance from the segment's axis; fingers
+// averaged). 0 / empty = not measurable (no such vertices).
+struct HandSkin {
+  std::vector<vec2> profile;  // (station along the finger direction, height along the palm normal), metres
+  float finger = 0, thumb = 0;
+  // How far a round prop of `radius` stands off the hand bone's axis when it rests on the palm with its nearest line
+  // at `station`: the lowest position at which no palm vertex is inside it (radius <= 0: a flat face). 0 = unknown.
+  float seat(float radius, float station) const {
+    float q = 0;
+    for (const vec2& v : profile) {
+      if (radius <= 0) {
+        q = std::max(q, v.y);
+        continue;
+      }
+      const float dx = v.x - station;
+      if (std::abs(dx) < radius) q = std::max(q, v.y + std::sqrt(radius * radius - dx * dx) - radius);
+    }
+    return q;
+  }
+};
+HandSkin handSkin(const Skeleton& sk, const std::vector<SkinnedMesh>& meshes, int handBone, char side, const HandGrip& grip) {
+  HandSkin out;
+  if (handBone < 0) return out;
+  const std::string s = std::string(".") + side;
+  const size_t n = sk.bones.size();
+  enum : char { Other = 0, Palm = 1, Digit = 2 };
+  std::vector<char> kind(n, Other);
+  std::vector<int> digitOf(n, -1);  // last segment of finger k (0..3) or the thumb (4)
+  kind[size_t(handBone)] = Palm;
+  const int thumbA = sk.find("thumbA" + s), thumbB = sk.find("thumbB" + s);
+  for (size_t b = 0; b < n; ++b) {  // parents precede children
+    const int p = sk.bones[b].parent;
+    if (p < 0 || kind[size_t(p)] == Other) continue;
+    const std::string& nm = sk.bones[b].name;
+    const bool fingerRoot = nm.size() == 5 && nm[0] == 'f' && nm[2] == 'a' && nm.ends_with(s);
+    kind[b] = kind[size_t(p)] == Digit || fingerRoot || int(b) == thumbA ? Digit : Palm;
+  }
+  std::array<int, 5> last{-1, -1, -1, -1, thumbB};
+  for (int k = 0; k < 4; ++k) {
+    const int b = sk.find(std::format("f{}b{}", k, s));
+    if (b < 0) continue;
+    int c = -1, cn = 0;
+    for (size_t i = 0; i < n; ++i)
+      if (sk.bones[i].parent == b) c = int(i), ++cn;
+    last[size_t(k)] = cn == 1 ? c : b;
+  }
+  for (int k = 0; k < 5; ++k)
+    if (last[size_t(k)] >= 0) digitOf[size_t(last[size_t(k)])] = k;
+  std::array<std::vector<float>, 5> radial;
+  std::map<int, float> palm;  // 2 mm station -> highest vertex
+  const vec3 head = sk.bones[size_t(handBone)].head;
+  for (const SkinnedMesh& m : meshes)
+    for (size_t i = 0; i < m.rest.positions.size(); ++i) {
+      int top = 0;
+      for (int j = 1; j < 4; ++j)
+        if (m.weights[i][j] > m.weights[i][top]) top = j;
+      const int b = m.joints[i][top];
+      if (b < 0 || size_t(b) >= n) continue;
+      const vec3 q = m.rest.positions[i];
+      if (kind[size_t(b)] == Palm) {
+        const float t = glm::dot(q - head, grip.fingerDir), hgt = glm::dot(q - head, grip.palmNormal);
+        if (hgt <= 0) continue;
+        const int bin = int(std::floor(t / 0.002f));
+        if (auto it = palm.find(bin); it == palm.end() || it->second < hgt) palm[bin] = hgt;
+      } else if (const int k = digitOf[size_t(b)]; k >= 0) {
+        const vec3 h0 = sk.bones[size_t(b)].head, u = h0 - sk.bones[size_t(sk.bones[size_t(b)].parent)].head;
+        if (glm::length(u) < 1e-6f) continue;
+        const vec3 d = q - h0, un = glm::normalize(u);
+        radial[size_t(k)].push_back(glm::length(d - un * glm::dot(d, un)));
+      }
+    }
+  auto quantile = [](std::vector<float>& v, float x) {
+    if (v.size() < 8) return 0.0f;
+    const size_t i = std::min(v.size() - 1, size_t(x * float(v.size())));
+    std::nth_element(v.begin(), v.begin() + std::ptrdiff_t(i), v.end());
+    return v[i];
+  };
+  for (const auto& [bin, hgt] : palm) out.profile.push_back(vec2((float(bin) + 0.5f) * 0.002f, hgt));
+  float sum = 0;
+  int cnt = 0;
+  for (int k = 0; k < 4; ++k)
+    if (const float r = quantile(radial[size_t(k)], 0.8f); r > 0) sum += r, ++cnt;
+  out.finger = cnt > 0 ? sum / float(cnt) : 0.0f;
+  out.thumb = quantile(radial[4], 0.8f);
+  return out;
+}
 // How one grasp is made (T-112b): the hand shape, the side the palm comes from, the finger contact band.
 struct GraspStyle {
+  std::optional<FingerClose> soft;  // T-171 (opt-in)
+  bool naturalElbow = false;        // T-171 "grip": "natural": key the elbow that keeps the wrist straight
   std::string shape = "wrap";
   const HandShape* hs = nullptr;  // T-112c: the table entry of a non-wrap shape
   std::optional<vec3> approach;  // prop frame
@@ -598,7 +838,12 @@ struct GraspStyle {
 vec3 SceneEvaluator::handGripPoint(size_t c, char side, double frame) const {
   const int hb = characterSocketBone(c, std::string("hand.") + side);
   if (hb < 0) return vec3(0);
-  const HandGrip g = handGrip(characters_[c].asset.skeleton, hb, side);
+  HandGrip g = handGrip(characters_[c].asset.skeleton, hb, side);
+  // T-171 (opt-in "wrap"): a seated grasp keyed where the prop rests on the hand ("hand.<s>.seat" = (stand-off, station
+  // along the fingers), from its first key on).
+  if (const Track* t = scene_.animation.find(std::format("{}/hand.{}.seat", scene_.characters[c].name, side));
+      t && !t->keys.empty() && frame >= t->keys.front().frame - 1e-6 && t->evaluate(frame).x > 0)
+    g.palm = g.fingerDir * t->evaluate(frame).y + g.palmNormal * t->evaluate(frame).x;
   return vec3(characterGlobals(c, frame)[size_t(hb)] * vec4(g.palm, 1));
 }
 
@@ -823,20 +1068,98 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
     }
     return s;
   };
+  // The grasp weight of a reach: 0 until four frames before contact, 1 at contact. T-171 (opt-in): the weight rises
+  // to the pre-shape on the way in, closes fast and lands slowly; the fingers land one stagger step apart.
+  auto keyClose = [&](const Hand& h, double start, double contact, const GraspStyle& style) {
+    const std::string w = h.pose + ".grasp.weight";
+    key(gen, w, start, vec3(0));
+    if (!style.soft) {
+      key(gen, w, contact - 4, vec3(0));
+      key(gen, w, contact, vec3(1));
+      return;
+    }
+    const FingerClose& fc = *style.soft;
+    const double T = contact - start, c0 = contact - std::min(fc.closeFrames, 0.5 * T);
+    const double cs = contact - std::min(fc.settleFrames, 0.5 * (contact - c0));
+    if (fc.preshape > 0) key(gen, w, start + 0.3 * T, vec3(0));
+    key(gen, w, c0, vec3(fc.preshape));
+    key(gen, w, cs, vec3(std::max(fc.preshape, 1.0f - fc.settleShare)));
+    key(gen, w, contact, vec3(1));
+    key(gen, h.pose + ".stagger", start, vec3(fc.stagger), Interp::Step);
+  };
   // The table entry of a shape already accepted by a grasp (nullptr: wrap).
   auto tableShape = [&](const std::string& name) -> const HandShape* {
     return name == "wrap" || !ctx.handShapes ? nullptr : ctx.handShapes->find(name);
   };
+  // T-171 (opt-in, fingerClose "grip": "natural"). The elbow of a two-bone arm lies on a circle about the shoulder ->
+  // wrist line; wristBend is the smallest angle between the forearm and the hand's fingers over the elbows that are
+  // allowed: not above that line by more than kElbowRise, forearm and hand clear of the body (the planner's limb
+  // capsules, at least the margin). Returns the angle (radians; 4 = none allowed) and the elbow's direction from the
+  // line (unit, world).
+  constexpr float kElbowRise = 0.35f;  // sine: about 20 deg
+  auto wristBend = [&](const Hand& hh, double f, vec3 W, const mat3& R, vec3* elbowDir) {
+    const Skeleton& sk = characters_[size_t(hh.c)].asset.skeleton;
+    const BodyClearanceModel* M = size_t(hh.c) < clearance_.size() && clearance_[size_t(hh.c)].valid ? &clearance_[size_t(hh.c)] : nullptr;
+    std::vector<mat4> G = characterGlobals(size_t(hh.c), f);
+    const vec3 S(G[size_t(hh.root)][3]);
+    const float a = glm::distance(sk.bones[size_t(hh.root)].head, sk.bones[size_t(hh.mid)].head);
+    const float b = glm::distance(sk.bones[size_t(hh.mid)].head, sk.bones[size_t(hh.bone)].head);
+    const float d = std::clamp(glm::distance(S, W), 1e-4f, a + b - 1e-5f);
+    const vec3 u = glm::normalize(W - S);
+    const float x = (a * a - b * b + d * d) / (2 * d), r = std::sqrt(std::max(0.0f, a * a - x * x));
+    vec3 e1 = -kUp - u * glm::dot(-kUp, u);  // down, off the line
+    e1 = glm::length(e1) > 1e-4f ? glm::normalize(e1) : glm::normalize(glm::cross(u, vec3(0, 0, 1)));
+    const vec3 e2 = glm::cross(u, e1), fingers = R * hh.grip.fingerDir;
+    const vec3 restDir = glm::normalize(sk.bones[size_t(hh.bone)].head - sk.bones[size_t(hh.mid)].head);
+    float best = 4.0f;
+    for (int i = 0; i < 72; ++i) {
+      const float th = glm::radians(5.0f * float(i));
+      const vec3 dir = std::cos(th) * e1 + std::sin(th) * e2;
+      if (dir.y > kElbowRise) continue;
+      const vec3 E = S + u * x + dir * r, fd = W - E;
+      if (glm::length(fd) < 1e-6f) continue;
+      const float bend = std::acos(std::clamp(glm::dot(glm::normalize(fd), fingers), -1.0f, 1.0f));
+      if (bend >= best) continue;
+      if (M) {
+        G[size_t(hh.mid)] = glm::translate(mat4(1), E) * glm::mat4_cast(glm::rotation(restDir, glm::normalize(fd)));
+        G[size_t(hh.bone)] = glm::translate(mat4(1), W) * mat4(R);
+        if (limbClearance(M->collision, G, hh.side).gap < kArmBodyMargin) continue;
+      }
+      best = bend;
+      if (elbowDir) *elbowDir = dir;
+    }
+    return best;
+  };
   // Reach + grasp of `socket` on prop p, arriving at `contact` (shared by reach/grasp and the hand-over receiver).
-  auto reachTo = [&](const Hand& h, int p, const std::string& socket, double start, double contact, bool grasp,
+  auto reachTo = [&](const Hand& hand, int p, const std::string& socket, double start, double contact, bool grasp,
                      const std::string& what, bool turnedGrip = false, const GraspStyle& style = {}) -> Result<Plan> {
     if (contact < start + 6) return fail(std::format("{}: contact must be at least 6 frames after start", what));
+    // T-171 (opt-in "wrap"): the prop rests where the palm ends and the fingers begin (its nearest line over the finger
+    // roots), as far off the hand as the palm's measured surface needs for a prop of this radius; not on the middle of
+    // the palm at a stand-off guessed from the palm's length. The fingers start on the prop and the thumb opposes them.
+    Hand seated = hand;
+    HandSkin skin;
+    vec2 seat(0);  // (stand-off, station)
+    const bool wrap = grasp && style.soft && style.soft->wrap && style.shape == "wrap";
+    if (wrap) {
+      skin = handSkin(characters_[size_t(hand.c)].asset.skeleton, characters_[size_t(hand.c)].rig.meshes, hand.bone, hand.side, hand.grip);
+      const Plan rough = plan(hand, p, socket, contact);
+      const float scale = glm::length(vec3(characterGlobals(size_t(hand.c), contact)[size_t(hand.bone)][0]));
+      seat = vec2(skin.seat(rough.face ? 0.0f : rough.radius / std::max(scale, 1e-6f), hand.grip.palmLength), hand.grip.palmLength);
+      if (seat.x > 0) seated.grip.palm = hand.grip.fingerDir * seat.y + hand.grip.palmNormal * seat.x;
+    }
+    const Hand& h = seated;
+    if (style.soft && style.soft->clear > 0)  // T-171 "clear": a reach compiled again starts from its three keys
+      if (auto it = gen.tracks.find(h.ik); it != gen.tracks.end())
+        std::erase_if(it->second.keys, [&](const Key& k) { return k.frame > start + 1e-6 && k.frame < contact - 1e-6; });
     Plan pl = plan(h, p, socket, contact);
     const vec3 natural = boneAt(h, h.bone, start);
     vec3 back = -pl.inward * 0.05f;
     if (style.approach && glm::length(*style.approach) > 1e-6f)  // T-112b: the palm comes from the site's side
       back = glm::normalize(mat3(propWorld(size_t(p), contact)) * *style.approach) * 0.05f;
-    if (turnedGrip) {  // T-096 visibleGrip: never back off towards the body (the forearm would enter it)
+    // T-171: a natural grip comes in palm first (its elbow is planned for that side of the body), so it backs off
+    // along the palm's normal like an authored grip.
+    if (turnedGrip && !style.naturalElbow) {  // T-096 visibleGrip: never back off towards the body (the forearm would enter it)
       vec3 toBody = boneAt(h, h.root, contact) - pl.socket;
       toBody.y = 0;
       if (glm::length(toBody) > 1e-6f) {
@@ -845,7 +1168,7 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
         back = glm::length(back) > 1e-6f ? glm::normalize(back) * 0.05f : vec3(0);
       }
     }
-    const vec3 approach = pl.wrist + back + kUp * (turnedGrip && glm::length(back) < 0.025f ? 0.05f : 0.02f);
+    const vec3 approach = pl.wrist + back + kUp * (turnedGrip && !style.naturalElbow && glm::length(back) < 0.025f ? 0.05f : 0.02f);
     const double pre = contact - std::min(6.0, 0.4 * (contact - start));
     warnReach(h, pl.wrist, contact, what);
     key(gen, h.ik, start, clip.evaluate(h.ik + ".weight", start, vec3(0)).x > 0 ? clip.evaluate(h.ik, start, natural) : natural);
@@ -859,7 +1182,29 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
     key(gen, h.orient + ".weight", start, vec3(clip.evaluate(h.orient + ".weight", start, vec3(0)).x));
     key(gen, h.orient + ".weight", pre + 1, vec3(1));
     key(gen, h.orient + ".weight", contact, vec3(1));
-    key(gen, h.pose, start, clip.evaluate(h.pose, start, kRelaxed));
+    // T-171 "clear": a hand that holds an upright prop (thumb up or down) rises with its palm already towards the prop
+    // and its fingers hanging (the final rotation turned a quarter about the palm's normal), then swings its fingers level in the palm's own plane on
+    // the way to the approach point. The shortest turn from a hanging hand points the fingers at the prop on the way.
+    if (const vec3 thumb = pl.R * ((h.side == 'R' ? 1.0f : -1.0f) * glm::cross(h.grip.fingerDir, h.grip.palmNormal));
+        grasp && style.soft && style.soft->clear > 0 && std::abs(thumb.y) > 0.7f) {
+      const quat qa = glm::normalize(pl.orient * glm::angleAxis(1.5707963f, h.grip.palmNormal));
+      const quat qb = glm::normalize(pl.orient * glm::angleAxis(-1.5707963f, h.grip.palmNormal));
+      const quat hang = (qa * h.grip.fingerDir).y < (qb * h.grip.fingerDir).y ? qa : qb;  // the quarter turn that hangs the fingers
+      const double fm = std::round(start + 0.55 * (pre - start)), fe = std::round(pre + 1);
+      dropKeysAfter(gen, h.orient, start);
+      key(gen, h.orient, start, rotationVector(hang), Interp::Linear);
+      key(gen, h.orient, fm, rotationVector(hang), Interp::Linear);
+      for (double f = fm + 1; f < fe; f += 1)
+        key(gen, h.orient, f, rotationVector(glm::slerp(hang, pl.orient, float((f - fm) / (fe - fm)))), Interp::Linear);
+      key(gen, h.orient, fe, rotationVector(pl.orient), Interp::Linear);
+      key(gen, h.orient, contact, rotationVector(pl.orient), Interp::Linear);
+      dropKeysAfter(gen, h.orient + ".weight", start);
+      key(gen, h.orient + ".weight", fm, vec3(1));
+      key(gen, h.orient + ".weight", contact, vec3(1));
+    }
+    const HandShape* rest = style.soft ? style.soft->rest() : nullptr;  // T-171 (opt-in)
+    if (rest) keyRest(gen, h.pose, start, *rest);
+    else key(gen, h.pose, start, clip.evaluate(h.pose, start, kRelaxed));
     if (style.band) {  // T-112b: the finger contact band of the grasp site (track contract with T-051, design 5)
       const PropAsset& A = propAssets_[size_t(p)];
       const GraspShape gs = graspShape(A, A.sockets.at(socket).translation);
@@ -868,6 +1213,10 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
       key(gen, h.pose + ".band", start, vec3((style.band->x - c0) * k, (style.band->y - c0) * k, style.thumb), Interp::Step);
       if (interactionOptionsFromJson(scene_.interaction).value_or(InteractionOptions{}).graspFit)  // T-138 (opt-in)
         key(gen, h.pose + ".bandFit", start, vec3(1), Interp::Step);
+      if (style.soft && style.soft->widen) {  // T-171 (opt-in): T-138 fit + T-157 (a) wider band
+        key(gen, h.pose + ".bandFit", start, vec3(1), Interp::Step);
+        key(gen, h.pose + ".bandFitOptions", start, vec3(style.soft->widen->x, 0, style.soft->widen->y), Interp::Step);
+      }
     }
     // T-112c: on a box face (verb grasps with the finger gate, "graspFace": true) the fingers search the face slab:
     // wrap, pinch and palm (the flat hand's fingers rest on the face instead of standing in it or off it).
@@ -884,13 +1233,15 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
         key(gen, h.pose + ".grasp", start, h.grip.palm + glm::transpose(pl.R) * pl.inward * r, Interp::Step);
         key(gen, h.pose + ".graspRadius", start, vec3(r), Interp::Step);
         key(gen, h.pose + ".graspAxis", start, vec3(0), Interp::Step);
-        key(gen, h.pose + ".grasp.weight", start, vec3(0));
-        key(gen, h.pose + ".grasp.weight", contact - 4, vec3(0));
-        key(gen, h.pose + ".grasp.weight", contact, vec3(1));
+        keyClose(h, start, contact, style);
       }
     } else {
-      key(gen, h.pose, pre, kOpen);
+      // T-171 (opt-in): the stagger reads each finger's pose late (the little finger three steps), so the open hand is
+      // keyed that much earlier: the last finger opens when the hand opened before, the others lead it.
+      const double open = style.soft ? std::max(start + 0.15 * (contact - start), pre - 3.0 * double(style.soft->stagger)) : pre;
+      key(gen, h.pose, open, kOpen);
       key(gen, h.pose, contact, kOpen);
+      if (rest) keyRestFingers(gen, h.pose, open, *rest, kOpen), keyRestFingers(gen, h.pose, contact, *rest, kOpen);
     }
     pl.faceGrasp = faceSearch;
     if (faceSearch) {  // T-112c: the per-finger grasp on the box face (T-051 slab: centre, half thickness, inward normal)
@@ -898,16 +1249,16 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
       key(gen, h.pose + ".graspRadius", start, vec3(pl.radius), Interp::Step);
       key(gen, h.pose + ".graspAxis", start, vec3(0), Interp::Step);
       key(gen, h.pose + ".graspFace", start, glm::transpose(pl.R) * pl.inward, Interp::Step);
-      key(gen, h.pose + ".grasp.weight", start, vec3(0));
-      key(gen, h.pose + ".grasp.weight", contact - 4, vec3(0));
-      key(gen, h.pose + ".grasp.weight", contact, vec3(1));
+      keyClose(h, start, contact, style);
     } else if (grasp && style.shape == "wrap") {  // fingers close on the prop's size by contact search (anim: applyHandPose)
       key(gen, h.pose + ".grasp", start, pl.centre, Interp::Step);
       key(gen, h.pose + ".graspRadius", start, vec3(pl.radius), Interp::Step);
       key(gen, h.pose + ".graspAxis", start, pl.axis, Interp::Step);
-      key(gen, h.pose + ".grasp.weight", start, vec3(0));
-      key(gen, h.pose + ".grasp.weight", contact - 4, vec3(0));
-      key(gen, h.pose + ".grasp.weight", contact, vec3(1));
+      if (wrap) {  // T-171 (opt-in): the joint-by-joint wrap with the measured skin; the seat the wrist was planned with
+        key(gen, h.pose + ".wrap", start, vec3(1, skin.finger, skin.thumb), Interp::Step);
+        if (seat.x > 0) key(gen, h.pose + ".seat", start, vec3(seat, 0), Interp::Step);
+      }
+      keyClose(h, start, contact, style);
     }
     const ReachMechanics rm = reachMechanicsFromJson(scene_.reachMechanics).value_or(ReachMechanics{});
     // T-134 E1a ease: the same path (start -> approach -> contact), keyed every frame on a slow-in / slow-out profile.
@@ -1074,6 +1425,99 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
             vec3(float(rm.successionSec * fps), float(rm.hipShare), float(rm.headStabilize)), Interp::Step);
       }
     }
+    if (style.naturalElbow) {  // T-171 (opt-in): the elbow that keeps the wrist straight at the contact
+      vec3 want(0);
+      if (wristBend(h, contact, pl.wrist, pl.R, &want) < 3.5f) {
+        // It comes round early, while the arm is still long (the circle the elbow moves on is small): the forearm then
+        // rises on its own side of the body instead of crossing the flank late.
+        const std::string track = h.prefix + "elbow." + characters_[size_t(h.c)].asset.skeleton.bones[size_t(h.bone)].name;
+        key(gen, track, start, clip.evaluate(track, start, vec3(0)));
+        dropKeysAfter(gen, track, start);
+        key(gen, track, start + 0.35 * (contact - start), want);
+        key(gen, track, contact, want);
+      }
+    }
+    // T-171 (opt-in "clear"): the way in keeps the hand off the prop. Per frame the digits (joints and tips, with the
+    // measured skin) and the palm are checked against the prop as a solid; where they come closer than `clear` the
+    // wrist target moves out, level, away from the prop's axis (centre), by what is missing. The pushes are eased in
+    // time (cosine-weighted maximum over +-4 frames) and fade to nothing over the last 3 frames, so the contact
+    // stays exact. The wrist track becomes per-frame keys over the reach only when some push is needed.
+    if (grasp && style.soft && style.soft->clear > 0) {
+      const Skeleton& sk = characters_[size_t(h.c)].asset.skeleton;
+      const HandSkin hs = wrap ? skin : handSkin(sk, characters_[size_t(h.c)].rig.meshes, h.bone, h.side, h.grip);
+      const float tipR = fingertipRadius(sk, h.side);
+      struct Sample {
+        int bone;
+        vec3 local;  // from the bone's rest head
+        float r;
+      };
+      std::vector<Sample> samples;
+      const std::string sd = std::string(".") + h.side;
+      auto digit = [&](int a, int b, float r) {
+        if (a < 0 || b < 0) return;
+        const vec3 ha = sk.bones[size_t(a)].head, hb = sk.bones[size_t(b)].head;
+        samples.push_back({a, vec3(0), r});
+        samples.push_back({b, vec3(0), r});
+        int c = -1, cn = 0;
+        for (size_t i = 0; i < sk.bones.size(); ++i)
+          if (sk.bones[i].parent == b) c = int(i), ++cn;
+        if (cn == 1) samples.push_back({c, vec3(0), r}), samples.push_back({c, sk.bones[size_t(c)].head - hb, r});
+        else samples.push_back({b, hb - ha, r});
+      };
+      for (int k = 0; k < 4; ++k) digit(sk.find(std::format("f{}a{}", k, sd)), sk.find(std::format("f{}b{}", k, sd)), hs.finger > 0 ? hs.finger : tipR);
+      digit(sk.find("thumbA" + sd), sk.find("thumbB" + sd), hs.thumb > 0 ? hs.thumb : tipR);
+      for (float t : {0.35f, 0.65f, 0.9f}) {  // the palm: spheres under its surface
+        float top = 0.22f * h.grip.palmLength;
+        for (const vec2& v : hs.profile)
+          if (std::abs(v.x - t * h.grip.palmLength) < 0.004f) top = std::max(top, v.y);
+        samples.push_back({h.bone, h.grip.fingerDir * (t * h.grip.palmLength), top});
+      }
+      const PropAsset& A = propAssets_[size_t(p)];
+      const GraspShape gs0 = graspShape(A, A.sockets.at(socket).translation);
+      const int f0 = int(std::ceil(start + 1e-6)), f1 = int(std::floor(contact - 1e-6));
+      const int n = f1 - f0 + 1;
+      Track& T = gen.tracks[h.ik];
+      for (int pass = 0; pass < 2 && n > 0; ++pass) {
+        std::vector<vec3> raw(size_t(n), vec3(0));
+        bool any = false;
+        for (int i = 0; i < n; ++i) {
+          const double f = double(f0 + i);
+          const std::vector<mat4> G = characterGlobals(size_t(h.c), f);
+          const mat4 P = propWorld(size_t(p), f), Pi = glm::inverse(P);
+          const float ps = glm::length(vec3(P[0]));
+          float gap = 1e9f;
+          for (const Sample& sm : samples)
+            gap = std::min(gap, propSolidDistance(A, vec3(Pi * G[size_t(sm.bone)] * vec4(sm.local, 1))) * ps - sm.r * glm::length(vec3(G[size_t(sm.bone)][0])));
+          if (gap >= style.soft->clear) continue;
+          const vec3 centre = vec3(P * vec4(gs0.centre, 1));
+          vec3 out = vec3(G[size_t(h.bone)][3]) - centre;
+          if (glm::length(gs0.axis) > 0) {
+            const vec3 ax = glm::normalize(mat3(P) * gs0.axis);
+            out -= ax * glm::dot(out, ax);
+          }
+          if (glm::length(out) < 1e-5f) continue;
+          raw[size_t(i)] = glm::normalize(out) * (style.soft->clear - gap);
+          any = true;
+        }
+        if (!any) break;
+        std::vector<vec3> at(size_t(n), vec3(0));
+        for (int i = 0; i < n; ++i) at[size_t(i)] = T.evaluate(double(f0 + i));
+        for (int i = 0; i < n; ++i) {
+          float size = 0, wsum = 0;
+          vec3 dir(0);
+          for (int j = std::max(0, i - 4); j <= std::min(n - 1, i + 4); ++j) {
+            const float w = 0.5f * (1.0f + std::cos(3.14159265f * float(j - i) / 5.0f)), l = glm::length(raw[size_t(j)]);
+            size = std::max(size, w * l);
+            dir += w * raw[size_t(j)], wsum += w * l;
+          }
+          if (size <= 0 || glm::length(dir) < 1e-9f) continue;
+          const float fade = std::clamp(float(contact - double(f0 + i)) / 3.0f, 0.0f, 1.0f);
+          at[size_t(i)] += glm::normalize(dir) * (size * fade);
+        }
+        std::erase_if(T.keys, [&](const Key& k) { return k.frame > start + 1e-6 && k.frame < contact - 1e-6; });
+        for (int i = 0; i < n; ++i) T.setKey({double(f0 + i), at[size_t(i)], Interp::Linear});
+      }
+    }
     correct(h, contact, [&] { return socketWorld(p, socket, contact)[3] - vec4(handGripPoint(size_t(h.c), h.side, contact), 1); });
     if (!planned.empty()) {  // spread the contact correction along the eased path (no step into the last frame)
       Track& T = gen.tracks[h.ik];
@@ -1181,10 +1625,69 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
     A.sockets[name] = t;
     return name;
   };
+  // The grasp point of an upright round prop, turned about the prop's axis by the smallest angle (kNaturalStep steps,
+  // never to the far side of the prop from the shoulder: kNaturalFace) at which this hand takes it thumb up with a
+  // wrist bend of at most kNaturalWrist; when no turn gets there, the turn with the smallest bend. The authored point
+  // is kept when it already does, when the prop is not round or its axis is not near the vertical. Added to this
+  // scene's copy of the prop asset as "<socket>@<character>.<hand>", as a visibleGrip turn is (the asset file is
+  // unchanged).
+  auto naturalSocket = [&](const Hand& hh, int p, const std::string& socket, double f) -> std::string {
+    constexpr float kNaturalWrist = 30.0f, kNaturalStep = 5.0f, kNaturalFace = 100.0f;  // degrees
+    PropAsset& A = propAssets_[size_t(p)];
+    const AssetTransform st = A.sockets.at(socket);
+    const GraspShape gs = graspShape(A, st.translation);
+    if (glm::length(gs.axis) < 1e-6f) return socket;
+    const vec3 ax = glm::normalize(gs.axis);
+    const mat4 P = propWorld(size_t(p), f);
+    const vec3 up = glm::normalize(mat3(P) * ax);
+    if (std::abs(up.y) < 0.7f) return socket;
+    const vec3 c0 = vec3(P * vec4(gs.centre, 1));
+    vec3 toChar = boneAt(hh, hh.root, f) - c0;
+    toChar.y = 0;
+    if (glm::length(toChar) < 1e-4f) return socket;
+    toChar = glm::normalize(toChar);
+    auto turned = [&](float deg) { return gs.centre + glm::angleAxis(glm::radians(deg), ax) * (st.translation - gs.centre); };
+    auto bendAt = [&](float deg) {  // the wrist bend of the grip at this turn; 4 = not a grip this hand can take
+      vec3 o = vec3(P * vec4(turned(deg), 1)) - c0;
+      o.y = 0;
+      if (glm::length(o) < 1e-6f || glm::dot(glm::normalize(o), toChar) < std::cos(glm::radians(kNaturalFace))) return 4.0f;
+      AssetTransform probe = st;
+      probe.translation = turned(deg);
+      const std::string tmp = socket + "@probe";
+      A.sockets[tmp] = probe;
+      const Plan pl = plan(hh, p, tmp, f);
+      A.sockets.erase(tmp);
+      const vec3 thumb = pl.R * ((hh.side == 'R' ? 1.0f : -1.0f) * glm::cross(hh.grip.fingerDir, hh.grip.palmNormal));
+      if (thumb.y < 0.7f) return 4.0f;  // the planner would turn the hand thumb down here
+      return wristBend(hh, f, pl.wrist, pl.R, nullptr);
+    };
+    float best = 0, bestBend = bendAt(0);
+    const float limit = glm::radians(kNaturalWrist);
+    for (float t = kNaturalStep; t <= 180.0f + 1e-3f && bestBend > limit; t += kNaturalStep)
+      for (float deg : {t, -t}) {
+        const float bend = bendAt(deg);
+        if (bend < bestBend - 1e-4f) best = deg, bestBend = bend;
+        if (bestBend <= limit) break;
+      }
+    if (best == 0) return socket;
+    AssetTransform t = st;
+    t.translation = turned(best);
+    const std::string name = std::format("{}@{}.{}", socket, hh.who, hh.side);
+    A.sockets[name] = t;
+    return name;
+  };
   // Lets go: fingers open, the wrist backs away from the prop and the arm returns to its own animation by `end`.
   auto release = [&](const Hand& h, const quat& orient, double from, double end, vec3 retreat, const std::string& shape = "wrap",
-                     bool faceGrasp = false) {
+                     bool faceGrasp = false, const HandShape* rest = nullptr) {
     const vec3 wrist = clip.evaluate(h.ik, from, vec3(0));
+    {  // T-171 (opt-in): a natural grip's elbow goes back to the arm solve's own by `end`
+      const std::string track = h.prefix + "elbow." + characters_[size_t(h.c)].asset.skeleton.bones[size_t(h.bone)].name;
+      if (const Track* t = clip.find(track); t && !t->keys.empty()) {
+        const vec3 now = t->evaluate(from);
+        key(gen, track, from, now);
+        key(gen, track, end, vec3(0));
+      }
+    }
     if (const HandShape* sh = tableShape(shape)) {  // T-112b / T-112c: the shape opens (slow-out of its held pose)
       keyHandShape(gen, h.pose, from, *sh, false);
       keyHandShape(gen, h.pose, from + 3, *sh, true);
@@ -1199,7 +1702,12 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
       key(gen, h.pose + ".grasp.weight", from + 5, vec3(0));
       key(gen, h.pose, from, kOpen);
       key(gen, h.pose, from + 3, kOpen);
-      key(gen, h.pose, end, kRelaxed);
+      if (rest) {  // T-171 (opt-in): back to the rest shape
+        keyRestFingers(gen, h.pose, from, *rest, kOpen), keyRestFingers(gen, h.pose, from + 3, *rest, kOpen);
+        keyRest(gen, h.pose, end, *rest);
+      } else {
+        key(gen, h.pose, end, kRelaxed);
+      }
     }
     key(gen, h.ik, from + 1, wrist);
     key(gen, h.ik, std::max(from + 6, end - 4), wrist + retreat);
@@ -1267,6 +1775,8 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
     }
     style.approach = vecOpt(a, "approach");
     style.face = flag(a, "graspFace", false);
+    if (auto fc = fingerCloseFromJson(a, what); !fc) return std::unexpected(fc.error());  // T-171 (opt-in)
+    else style.soft = *fc;
     if (auto b = a.find("band"); b != a.end()) {
       if (!b->is_array() || b->size() != 2 || !(*b)[0].is_number() || !(*b)[1].is_number())
         return fail(std::format("{}: 'band' must be [lo, hi] (metres along the grasp axis)", what));
@@ -1281,8 +1791,11 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
       if (!grasp || o == ctx.hands.end() || o->second.prop != p || o->second.follower)
         return fail(std::format("{}: a follower grasp needs '{}' to hold '{}' in the other hand first", what, who, scene_.props[size_t(p)].name));
     }
+    const bool naturalGrip = grasp && !follower && style.shape == "wrap" && style.soft && style.soft->natural;  // T-171 (opt-in)
+    style.naturalElbow = naturalGrip;
     const std::string socket =
-        grasp && visibleGrip && !follower && style.shape == "wrap" ? visibleSocket(h, p, authoredSocket, contact, "") : authoredSocket;
+        naturalGrip ? naturalSocket(h, p, authoredSocket, contact)
+        : grasp && visibleGrip && !follower && style.shape == "wrap" ? visibleSocket(h, p, authoredSocket, contact, "") : authoredSocket;
     auto pl = reachTo(h, p, socket, start, contact, grasp, what, socket != authoredSocket, style);
     if (!pl) return std::unexpected(pl.error());
     ctx.contacts.push_back({c, h.side, contact, p, socket, false, vec3(0)});
@@ -1299,7 +1812,8 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
     } else {
       const double end = num(a, "end", contact + beat("hold", 12, c));
       key(gen, h.ik, contact + 2, clip.evaluate(h.ik, contact, vec3(0)));
-      release(h, pl->orient, contact + 2, std::max(end, contact + 10), -pl->inward * 0.05f + kUp * 0.02f, style.shape, pl->faceGrasp);
+      release(h, pl->orient, contact + 2, std::max(end, contact + 10), -pl->inward * 0.05f + kUp * 0.02f, style.shape, pl->faceGrasp,
+              style.soft ? style.soft->rest() : nullptr);
       if (look) {
         gazeOn(h, p, start, contact + 6);
         gazeAt(h, forwardPoint(h, end), end + 6);
@@ -1340,6 +1854,9 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
     if (auto r = requireSocket(*p, socket, "place"); !r) return std::unexpected(r.error());
     const double contact = num(a, "contact", start + beat("place", 16, c)), end = num(a, "end", contact + beat("release", 14, c));
     if (contact < start + 6 || end < contact + 8) return fail("place: needs contact >= start + 6 and end >= contact + 8");
+    const auto placeSoft = fingerCloseFromJson(a, "place");  // T-171 (opt-in): the rest shape the hand returns to
+    if (!placeSoft) return std::unexpected(placeSoft.error());
+    const HandShape* placeRest = *placeSoft ? (*placeSoft)->rest() : nullptr;
     std::optional<PropParent> onto;
     vec3 target(0);
     if (auto it = a.find("onto"); it != a.end() && it->is_object()) {
@@ -1369,7 +1886,7 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
     ctx.contacts.push_back({c, h.side, contact, *p, socket, true, target});
     ctx.hands[{c, h.side}].prop = -1;
     release(h, orient, contact, end, -(glm::mat3_cast(orient) * h.grip.palmNormal) * 0.05f + kUp * 0.03f, ctx.hands[{c, h.side}].shape,
-            ctx.hands[{c, h.side}].faceGrasp);
+            ctx.hands[{c, h.side}].faceGrasp, placeRest);
     // T-112b: the second hand of a two-hand grasp lets go with the leading hand, its wrist where the prop frame puts it
     for (auto& fl : ctx.followers) {
       if (fl.prop != *p || fl.to < 1e29) continue;
@@ -1384,7 +1901,7 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
       key(gen, fh->orient + ".weight", contact, vec3(1));
       ctx.hands[{fl.character, fl.side}].prop = -1;
       ctx.hands[{fl.character, fl.side}].follower = false;
-      release(*fh, fhold.orient, contact, end, -(glm::mat3_cast(fhold.orient) * fh->grip.palmNormal) * 0.05f + kUp * 0.03f, fhold.shape, fhold.faceGrasp);
+      release(*fh, fhold.orient, contact, end, -(glm::mat3_cast(fhold.orient) * fh->grip.palmNormal) * 0.05f + kUp * 0.03f, fhold.shape, fhold.faceGrasp, placeRest);
     }
     if (look) {
       gazeOn(h, *p, start, contact + 6);
@@ -1420,6 +1937,8 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
     rStyle.thumb = th == "opposed" ? 0.0f : th == "along" ? 1.0f : 2.0f;
   }
   rStyle.face = flag(a, "toGraspFace", false);
+  if (auto fc = fingerCloseFromJson(a, "handover"); !fc) return std::unexpected(fc.error());  // T-171 (opt-in): the receiver's close
+  else rStyle.soft = *fc;
   const double rStart = num(a, "receiverStart", start + beat("reaction_delay", 4, rc));
   const double contact = num(a, "contact", ctx.timing ? rStart + beat("reach", 18, rc) : start + 18);
   const double rel = num(a, "release", contact + beat("shared_hold", 4, c)), end = num(a, "end", rel + beat("release", 12, c));
@@ -1538,7 +2057,7 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
   key(gen, h.orient, rel, rotationVector(gOrient), Interp::Linear);
   key(gen, h.orient + ".weight", rel, vec3(1));
   const vec3 back = boneAt(h, h.root, rel) - wristM;
-  release(h, gOrient, rel, end, glm::normalize(back) * 0.08f - (glm::mat3_cast(gOrient) * h.grip.palmNormal) * 0.03f, gShape, gFace);
+  release(h, gOrient, rel, end, glm::normalize(back) * 0.08f - (glm::mat3_cast(gOrient) * h.grip.palmNormal) * 0.03f, gShape, gFace, rStyle.soft ? rStyle.soft->rest() : nullptr);
   if (look) {
     gazeOn(h, *p, start, rel);
     gazeAt(h, headPoint(rc, end), end);

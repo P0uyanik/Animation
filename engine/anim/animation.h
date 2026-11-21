@@ -171,6 +171,14 @@ struct HandPose {
   std::optional<vec2> thumbPose;  // (opposition 0..1, curl): opposition turns the thumb in front of the palm
   // Grasp weight per digit (fingers 0..3, thumb = 4), e.g. staggered closing; unset = graspWeight.
   std::array<std::optional<float>, 5> digitWeight{};
+  // T-171 round 3 wrap (opt-in, track "hand.<s>.wrap" = (on, finger skin radius, thumb skin radius); absent = the
+  // searches above, bit for bit). A grasp then closes each finger joint by joint onto the surface (the first segment
+  // until it rests on the object, then the second, then the rig's own third segment when f<k>b has exactly one child
+  // bone), so the whole finger lies round the object instead of touching with its tip; the thumb is searched inside
+  // its anatomical range only (opposition, abduction, curl; never bent backwards or turned round). The skin radii
+  // (metres, hand rest scale; 0 = fingertipRadius) are the caller's measure of the real finger thickness.
+  bool wrap = false;
+  float wrapSkin = 0, wrapThumbSkin = 0;
   bool perFinger() const;
 };
 // Fingertip (skin) radius of a hand from its skeleton: half the mean spacing of neighbouring finger roots; 0 if the
@@ -189,7 +197,8 @@ std::vector<vec3> fingertips(const Skeleton& skeleton, const Pose& pose, const m
 // T-051 (all optional; absent = the pose above, unchanged): "hand.L.band" = (lo, hi, thumb 0 opposed / 1 along /
 // 2 tucked), "hand.L.bandFit" (x >= 0.5: T-138 band fit), "hand.L.bandFitOptions" (with bandFit, T-157: x / z = band widening at lo / hi, y = off-band finger bits), "hand.L.graspFace" (box-face normal), "hand.L.f<k>" = (curl, spread, free) for finger k (0 little .. 3 index),
 // "hand.L.thumb" = (opposition, curl), "hand.L.stagger" (x = frames per finger; default 1 with a band, else 0):
-// fingers close index -> little and open little -> index, one stagger step apart.
+// fingers close index -> little and open little -> index, one stagger step apart. T-171: "hand.L.wrap" = (on, finger
+// skin radius, thumb skin radius): the joint-by-joint wrap of HandPose::wrap.
 void applyConstraints(const Skeleton& skeleton, const Clip& clip, const std::string& prefix, double frame,
                       const mat4& world, Pose& pose, const GazeLimits& gaze = {}, double fps = 30.0);
 
