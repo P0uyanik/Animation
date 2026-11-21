@@ -15,6 +15,9 @@
           mode=failed    run_id=<id> ...                  the newest finished run for this commit failed;
           mode=run                                        no finished run for this commit: run the full gate here.
         With --wait-minutes, queued/in-progress runs for the commit are waited for (polled once a minute).
+        With --docs-only-vs REF, a commit with no run of its own is also verified by the run of a green commit of REF
+        (searched on the given branches and main) when the diff between them touches only docs/process/** and
+        docs/tasks/** (T-177); the output names that run.
         With --require-full-for, the run must contain a successful "regression <character>" job for each character.
 
 Authentication: GITHUB_TOKEN or GH_TOKEN (Actions: the job token with `actions: read`); without a token the
@@ -193,6 +196,31 @@ def find_verification(api: Api, workflow: str, sha: str, branches: list[str], ch
     return "run", None, "; ".join(notes) or f"no gate run for {sha[:7]} on {', '.join(branches)}"
 
 
+def docs_only_diff(older: str, sha: str) -> bool:
+    """True when `git diff older..sha` touches only docs/process/** and docs/tasks/** (tiers.docs_only; renames and
+    deletes count both sides). Lazy import: ci-status.yml checks out this file alone."""
+    sys.path.insert(0, str(Path(__file__).resolve().parent / "regression"))
+    import tiers
+    out = subprocess.run(["git", "diff", "--name-only", "--no-renames", "-z", older, sha, "--"],
+                         capture_output=True, text=True)
+    return out.returncode == 0 and tiers.docs_only(p for p in out.stdout.split("\0") if p)
+
+
+def find_docs_equivalent(api: Api, workflow: str, sha: str, ref: str, branches: list[str], characters: list[str],
+                         self_id: str, limit: int = 50) -> tuple[str, dict | None, str]:
+    """T-177 (GATE.md §5.6): `sha` differs from a commit of `ref` (newest first, at most `limit`) that has a green
+    full gate run only in docs/process/** and docs/tasks/**: that commit's run verifies it. Same checks as
+    find_verification (required jobs, every regression job when `characters` is given) on `branches`."""
+    commits = subprocess.run(["git", "rev-list", "-n", str(limit), ref], capture_output=True, text=True)
+    for older in commits.stdout.split():
+        if older == sha or not docs_only_diff(older, sha):
+            continue
+        mode, run, detail = find_verification(api, workflow, older, branches, characters, self_id)
+        if mode == "verified":
+            return "verified", run, f"{detail}; {sha[:7]} differs from green commit {older[:7]} only in docs/process, docs/tasks"
+    return "run", None, f"no green commit of {ref} within {limit} differs from {sha[:7]} only in docs/process, docs/tasks"
+
+
 def cmd_verified(args) -> int:
     api = Api(repo_name(args.repo))
     branches = [b.strip() for b in args.branches.split(",") if b.strip()]
@@ -209,6 +237,9 @@ def cmd_verified(args) -> int:
             break
         print(f"waiting: {detail}", flush=True)
         time.sleep(args.poll_seconds)
+    if mode == "run" and args.docs_only_vs:
+        mode, run, detail = find_docs_equivalent(api, args.workflow, args.sha, args.docs_only_vs,
+                                                 sorted({*branches, "main"}), characters, self_id)
     out = {"mode": mode, "run_id": str((run or {}).get("id", "")), "run_branch": (run or {}).get("head_branch", ""),
            "run_url": (run or {}).get("html_url", ""), "detail": detail}
     print(json.dumps(out))
@@ -232,6 +263,9 @@ def main(argv: list[str] | None = None) -> int:
     verified = sub.add_parser("verified", help="is there a successful gate run for this commit?")
     verified.add_argument("--sha", required=True)
     verified.add_argument("--branches", required=True, help="comma-separated branch globs, e.g. 'integration/*,staging'")
+    verified.add_argument("--docs-only-vs", default="", metavar="REF",
+                          help="also accept a commit whose diff against a green commit of REF (e.g. origin/main) "
+                               "touches only docs/process/** and docs/tasks/** (T-177)")
     verified.add_argument("--workflow", default="checks.yml")
     verified.add_argument("--require-full-for", default="", help="JSON list of characters whose regression job must pass")
     verified.add_argument("--wait-minutes", type=float, default=0)

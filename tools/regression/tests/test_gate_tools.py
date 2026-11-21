@@ -7,13 +7,16 @@
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
+import subprocess
 import sys
 import tempfile
 
 ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "tools"))
 sys.path.insert(0, str(ROOT / "tools" / "regression"))
+import ci_status as CS  # noqa: E402
 import integrate as I  # noqa: E402
 import run as R  # noqa: E402
 import tiers as T  # noqa: E402
@@ -110,6 +113,80 @@ def test_tiers():
         expect(changed == [ids[0]], "changed character from its spec path")
         switched = T.changed_characters({f"assets/characters/{ids[-1]}/versions/index.json"})
         expect(switched == [ids[-1]], "a version switch (approved pointer in versions/index.json) changes the character")
+
+
+def test_docs_only():
+    """T-177: the docs-only fast path is decided from the changed paths alone."""
+    d = T.docs_only
+    expect(d({"docs/process/TASK_LOG.md", "docs/tasks/T-177.md", "docs/process/T-162/x.md"}), "docs-only: both folders = fast")
+    expect(d(["docs/tasks/T-1.md"]), "docs-only: one task file")
+    expect(not d({"docs/process/TASK_LOG.md", "engine/a.cpp"}), "docs + other path = full")
+    expect(not d({"docs/process/TASK_LOG.md", "docs/ROADMAP.md"}), "docs/process + docs/ROADMAP.md = full")
+    for lookalike in ("docs/processX/a.md", "docs/tasks.md", "docs/evaluation/process/T-177/README.md",
+                      "docs/process", "docs/tasksX/a.md", "xdocs/process/a.md", "docs/process/../../tools/a.py",
+                      "tools/regression_paths.txt", ".github/workflows/checks.yml"):
+        expect(not d({lookalike}), f"lookalike/other path {lookalike} = full")
+        expect(not d({"docs/process/a.md", lookalike}), f"docs + {lookalike} = full")
+    expect(not d(set()) and not d([]) and not d({""}), "empty diff = full")
+    # rename/delete: both sides count (git lists them with --no-renames)
+    expect(not d({"docs/process/a.md", "tools/a.md"}), "rename docs -> tools: old/new side outside = full")
+    expect(not d({"engine/a.md", "docs/tasks/a.md"}), "rename tools -> docs: other side = full")
+    expect(not d({"docs/tasks/a.md", "docs/old/a.md"}), "delete outside the folders = full")
+    expect(d({"docs/process/a.md", "docs/tasks/a.md"}), "rename between the two folders = fast")
+    # the existing tier of the path (fast in tools/regression_paths.txt) is unchanged by the classifier
+    expect(T.classify({"docs/evaluation/x.md"}, T.load_rules())["tier"] == "fast", "tier rules untouched")
+
+
+def _git(cwd, *args):
+    subprocess.run(["git", "-c", "user.name=t", "-c", "user.email=t@t", *args], cwd=cwd, check=True,
+                   capture_output=True)
+
+
+def test_docs_equivalent():
+    """T-177: promotion accepts a commit whose diff vs a green main commit is docs-only; cites that run."""
+    class Api:
+        def __init__(self, green):
+            self.green = green
+
+        def get(self, endpoint, **params):
+            sha = params.get("head_sha")
+            if endpoint.endswith("/runs"):
+                if sha != self.green:
+                    return {"workflow_runs": []}
+                return {"workflow_runs": [{"id": 7, "head_branch": "main", "event": "push", "status": "completed",
+                                           "conclusion": "success"}]}
+            return {"jobs": [{"name": n, "conclusion": "success"} for n in CS.REQUIRED_JOBS]}
+
+    old = os.getcwd()
+    with tempfile.TemporaryDirectory() as tmp:
+        try:
+            os.chdir(tmp)
+            _git(tmp, "init", "-q", "-b", "main")
+            for rel in ("tools/a.py", "docs/process/L.md", "docs/tasks/T.md"):
+                Path(rel).parent.mkdir(parents=True, exist_ok=True)
+                Path(rel).write_text("1", encoding="utf-8")
+            _git(tmp, "add", "-A"); _git(tmp, "commit", "-qm", "base")
+            base = subprocess.run(["git", "rev-parse", "HEAD"], text=True, capture_output=True).stdout.strip()
+            Path("docs/process/L.md").write_text("2", encoding="utf-8")
+            _git(tmp, "commit", "-qam", "ledger")
+            docs = subprocess.run(["git", "rev-parse", "HEAD"], text=True, capture_output=True).stdout.strip()
+            Path("tools/a.py").write_text("2", encoding="utf-8")
+            _git(tmp, "commit", "-qam", "code")
+            code = subprocess.run(["git", "rev-parse", "HEAD"], text=True, capture_output=True).stdout.strip()
+            Path("docs/tasks/T.md").write_text("2", encoding="utf-8")
+            _git(tmp, "commit", "-qam", "ledger 2")
+            tip = subprocess.run(["git", "rev-parse", "HEAD"], text=True, capture_output=True).stdout.strip()
+            find = lambda green, sha: CS.find_docs_equivalent(Api(green), "checks.yml", sha, "main", ["main"], [], "")
+            mode, run, detail = find(docs, tip)  # docs -> tip crosses the code commit
+            expect(mode == "run" and run is None, "docs-equivalent: a code change in between is not accepted")
+            mode, run, detail = find(code, tip)  # code -> tip is docs only
+            expect(mode == "verified" and run["id"] == 7 and code[:7] in detail, "docs-equivalent: docs-only diff vs green commit cites its run")
+            mode, run, detail = find(base, tip)
+            expect(mode == "run", "docs-equivalent: green commit behind a code commit is not accepted")
+            mode, run, detail = find("0" * 40, tip)
+            expect(mode == "run", "docs-equivalent: no green commit = run the full gate")
+        finally:
+            os.chdir(old)
 
 
 def test_compare():
@@ -223,7 +300,7 @@ def test_version_spec_build():
 
 
 def main() -> int:
-    for test in (test_glob_overlap, test_claims, test_tiers, test_version_spec_build, test_compare,
+    for test in (test_glob_overlap, test_claims, test_tiers, test_docs_only, test_docs_equivalent, test_version_spec_build, test_compare,
                  test_backup_scripts):
         test()
     print(f"{'FAIL' if FAILURES else 'PASS'} gate tools: {len(FAILURES)} failure(s)")
