@@ -1,0 +1,70 @@
+"""T-171: e910 s010 variants from run_shot's resolved scene (written next to it, so package paths resolve).
+python3 docs/evaluation/interaction/T-171/make_variants.py <shot.resolved.scene.json> [name ...]
+Each variant adds the opt-in action key "fingerClose" to the verbs of the shot (pick_up, pass, place) and, where it
+names one, authored rest-hand tracks for hands that never grasp."""
+import json, os, sys
+
+SEP = {"rest": "relaxed_sep"}
+VARIANTS = {
+    "base": None,                                             # current default (released behaviour)
+    "t157a": {"_plain": True, "widen": [0.005, 0.005]},       # T-157 (a) alone: old timing, band 40-95 mm
+    "r2": {},                                                 # pre-shape + stagger 2 + soft landing, site band as is
+    "r2a": {"widen": [0.005, 0.005]},                         # + T-157 (a)
+    "r2s": dict(SEP, widen=[0.005, 0.005]),                   # r2a + the separated rest hand
+}
+
+
+def variant(base, name):
+    opt = VARIANTS[name]
+    s = json.loads(json.dumps(base))
+    if opt is None:
+        return s
+    opt = dict(opt)
+    if opt.pop("_plain", False):  # the T-157 route: graspFit + authored options track, nothing of T-171
+        s["interaction"] = dict(s.get("interaction") or {}, graspFit=True)
+        w = opt["widen"]
+        s.setdefault("animation", {})["boy/hand.R.bandFitOptions"] = [[1, [w[0], 0, w[1]], "step"]]
+        return s
+    for a in s["actions"]:
+        if a.get("type") in ("pick_up", "pass", "place"):
+            a["fingerClose"] = opt if opt else True
+    return s
+
+
+def site_variant(src, base, root):
+    """r2site: r2s on a copy of the prop library whose felt_cup site side_a is the PROPOSED one (hand centred on the
+    cup: socket grip at 50 mm instead of 66, band 0-100 mm instead of 45-90). The copy lives under the build folder;
+    content/assets is not changed."""
+    import shutil
+    d = os.path.join(os.path.dirname(src), "t171_site")
+    for sub in ("assets", "hand_shapes"):
+        shutil.rmtree(os.path.join(d, "content", sub), ignore_errors=True)
+        shutil.copytree(os.path.join(root, "content", sub), os.path.join(d, "content", sub))
+    cup = os.path.join(d, "content", "assets", "felt_cup.asset.json")
+    a = json.load(open(cup))
+    a["sockets"]["grip"]["translation"][1] = 0.05
+    for g in a["affordances"]["grasp_sites"]:
+        if g["id"] == "side_a":
+            g["fingers"]["band"] = [0.0, 0.1]
+    json.dump(a, open(cup, "w"), indent=1)
+    s = variant(base, "r2")
+    for act in s["actions"]:
+        if "fingerClose" in act:
+            act["fingerClose"] = dict(SEP)
+    for c in s["characters"]:  # package paths are relative to the scene file
+        if not os.path.isabs(c["asset"]):
+            c["asset"] = os.path.abspath(os.path.join(os.path.dirname(src), c["asset"]))
+    out = os.path.join(d, "t171_r2site.scene.json")
+    json.dump(s, open(out, "w"), indent=1)
+    return out
+
+
+if __name__ == "__main__":
+    src = sys.argv[1]
+    base = json.load(open(src))
+    root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", ".."))
+    print(site_variant(src, base, root))
+    for name in sys.argv[2:] or VARIANTS:
+        out = os.path.join(os.path.dirname(src), f"t171_{name}.scene.json")
+        json.dump(variant(base, name), open(out, "w"), indent=1)
+        print(out)

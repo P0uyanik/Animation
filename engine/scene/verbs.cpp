@@ -421,6 +421,7 @@ std::expected<VerbExpansion, VerbError> expandVerbs(const Json& actions, const V
     // A grasp site's hand shape, approach side and finger band (T-112b) on a generated grasp.
     const bool fingers = a.contains("fingers") && a["fingers"].is_boolean() ? a["fingers"].get<bool>() : T != nullptr;
     auto styled = [&](Json g, const GraspSite* site) {
+      if (a.contains("fingerClose")) g["fingerClose"] = a["fingerClose"];  // T-171 (opt-in), read by scene/interaction.cpp
       if (!site) return g;
       if (site->shape != "wrap") g["shape"] = site->shape;
       if (site->approach) g["approach"] = {site->approach->x, site->approach->y, site->approach->z};
@@ -699,6 +700,7 @@ std::expected<VerbExpansion, VerbError> expandVerbs(const Json& actions, const V
                 {"prop", prop}, {"toSocket", toSocket}, {"start", S}, {"receiverStart", rStart}, {"contact", contact}, {"release", rel},
                 {"end", end}};
       if (auto at = vecOpt(a, "at")) g["at"] = a["at"];
+      if (a.contains("fingerClose")) g["fingerClose"] = a["fingerClose"];  // T-171 (opt-in)
       if (!look || react) g["look"] = false;
       if (fingers && aff) {  // T-112c: the receiver's site band and box face, under the same gate as the giver's grasp
         const GraspSite* rs = rsite;
@@ -786,6 +788,7 @@ std::expected<VerbExpansion, VerbError> expandVerbs(const Json& actions, const V
       if (socket != "place") g["socket"] = socket;
       if (!ontoProp.empty()) g["onto"] = {{"prop", ontoProp}, {"socket", ontoSocket}};
       else g["at"] = a["at"];
+      if (a.contains("fingerClose")) g["fingerClose"] = a["fingerClose"];  // T-171 (opt-in)
       if (!look) g["look"] = false;
       gen.push_back(std::move(g));
       const auto mc = constraintsOf("manipulate"), cc = constraintsOf("contact");
