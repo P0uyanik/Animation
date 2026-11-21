@@ -398,4 +398,4 @@ def build(C, head, frame, hair_spec, material, face_y, fibres=None):
 def bind(rig, objs, head_bone, chest_bone, binding):
     """As groom.bind; then the T-183 contact colliders when the build stored a contact spec (no-op otherwise)."""
     G1.bind(rig, objs, head_bone, chest_bone, binding)
-    CT.bind_contact(rig, objs, head_bone, chest_bone)
+    CT.bind_contact(rig, objs, head_bone, chest_bone, binding)

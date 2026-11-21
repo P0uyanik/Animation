@@ -6,8 +6,12 @@ Covers: no published version uses the keys, and a hair spec without them takes t
 same object, groom/5 validation and lowering unchanged); the keys are validated (good forms pass, malformed ones are
 refused) and taken out of what the groom/4 path sees; the ear keep-out moves every point out of the volume by the
 margin, leaves far points alone, spreads the move over the neighbours and is deterministic; the capsule fit recovers
-a known capsule (blob and limb), honours percentile and pad, and refuses too few vertices; the T-183 candidate
-override validates on the girl's current spec and changes nothing but hair keys."""
+a known capsule (blob and limb), honours percentile and pad, and refuses too few vertices; the round 2 keys (skin
+colliders, figure, radii, rest, sheets) validate and are refused when malformed; chain radii and their
+cap by the rest clearance; the sheet chains (layout over the angle, weights that sum to one, rise from the static
+binding and use at most four bones); skin spheres on a ball (with the mathutils
+module, otherwise skipped); the T-183 candidate override validates on the girl's current spec and changes nothing
+but hair keys."""
 import copy
 import glob
 import json
@@ -191,6 +195,148 @@ def main():
             check(f"fit refuses: {label}", False)
         except ValueError:
             check(f"fit refuses: {label}", True)
+
+    # -------------------------------------------------------------------------------------------- round 2 keys
+    def round2():
+        return {"segments": True, "anchored_gravity": True, "radii": {"percentile": 100, "floor_m": 0.006},
+                "rest": {"friction": 40, "max_swing": 12}, "figure": {"exclude": ["WGT-*", "eye*"]},
+                "sheets": [{"structure": "curtain", "top_z": 0.78, "chains": 13, "bones": 4}],
+                "colliders": [{"name": "skin_head", "fit": "skin", "groups": ["DEF-spine.006"], "exclude_objects": ["ear.*"],
+                               "reach_m": 0.1},
+                              {"name": "skin_torso", "fit": "skin", "exclude_groups": ["DEF-spine.006", "DEF-hand.*"]},
+                              {"name": "skin_all", "fit": "skin"}]}
+
+    check("round 2: skin colliders, figure, radii, rest and sheets validate",
+          CT.validate(hair(None, {"contact": round2()})) == [], CT.validate(hair(None, {"contact": round2()})))
+    check("round 2: rest may be true", CT.validate(hair(None, {"contact": dict(round2(), rest=True)})) == [])
+    check("round 2: store passes the keys on (the names of what bind will do)",
+          set(CT.store(hair(None, {"contact": round2()}), [{}])) >= {"colliders", "radii", "rest", "sheets"})
+
+    def bad(name, change):
+        ct = round2()
+        change(ct)
+        check(f"refused: round 2, {name}", bool(CT.validate(hair(None, {"contact": ct}))))
+
+    bad("a skin collider with a bone", lambda ct: ct["colliders"][0].update(bone="head"))
+    bad("skin spacing out of range", lambda ct: ct["colliders"][0].update(spacing_m=0.5))
+    bad("skin groups not a list", lambda ct: ct["colliders"][0].update(groups="DEF-spine.006"))
+    bad("two colliders of one name", lambda ct: ct["colliders"][1].update(name="skin_head"))
+    bad("radii unknown key", lambda ct: ct.update(radii={"pct": 95}))
+    bad("radii percentile 0", lambda ct: ct.update(radii={"percentile": 0}))
+    bad("rest as a number", lambda ct: ct.update(rest=1.5))
+    bad("rest friction negative", lambda ct: ct.update(rest={"friction": -1}))
+    bad("figure without a list", lambda ct: ct.update(figure={"exclude": "WGT-*"}))
+    bad("sheet without top_z", lambda ct: ct["sheets"][0].pop("top_z"))
+    bad("sheet with half a chain", lambda ct: ct["sheets"][0].update(chains=6.5))
+    bad("sheet without a structure", lambda ct: ct["sheets"][0].pop("structure"))
+    bad("sheets empty", lambda ct: ct.update(sheets=[]))
+
+    # chain radii: a tube of points 20 mm round a straight chain, a bulge of 35 mm at joint 2
+    tube = []
+    for k in range(60):
+        z = -0.18 * k / 59
+        rr = 0.035 if abs(z + 0.12) < 0.02 else 0.02
+        tube += [(rr * math.cos(a), rr * math.sin(a), z) for a in (0.0, 1.3, 2.6, 3.9, 5.2)]
+    line = [(0, 0, -0.06 * j) for j in range(4)]
+    rad = CT.chain_radii(tube, line, percentile=100, floor=0.006)
+    check("chain radii: one radius per joint from the vertices next to it (tube 20 mm, bulge 35 mm at joint 2)",
+          len(rad) == 4 and abs(rad[0] - 0.02) < 1e-4 and abs(rad[1] - 0.02) < 1e-4 and abs(rad[2] - 0.035) < 1e-4, rad)
+    check("chain radii: the floor is the least radius", CT.chain_radii(tube, line, percentile=1, floor=0.03)[0] == 0.03)
+    ball = [{"centre": [0, 0, 0.05], "radius": 0.04}]
+    capped = CT.capped_radii(rad, line, ball)
+    check("capped radii: 0 at the root, at most the rest clearance to the root bone's colliders, the far ones as fitted",
+          capped[0] == 0.0 and abs(capped[1] - min(rad[1], 0.11 - 0.04)) < 1e-6 and capped[3] == rad[3], capped)
+    check("capped radii: a joint inside a collider gets 0, not a negative radius",
+          CT.capped_radii([0.02, 0.02], [(0, 0, 0.1), (0, 0, 0.05)], ball) == [0.0, 0.0])
+    check("capped radii: without colliders on the root bone the fitted radii stay (root 0)",
+          CT.capped_radii(rad, line, []) == [0.0] + [round(r, 5) for r in rad[1:]])
+
+    # sheet chains: half a tube round the vertical axis, 160 degrees, two faces, a scalloped lower edge
+    sheet, top = [], 0.78
+    for ia in range(161):
+        a = math.radians(-80 + ia)
+        zb = 0.64 + 0.02 * (1 + math.cos(a * 6))
+        for iz in range(41):
+            z = 0.86 - (0.86 - zb) * iz / 40
+            for rr in (0.135, 0.155):
+                sheet.append((rr * math.sin(a), rr * math.cos(a), z))
+    lay = CT.sheet_layout(sheet, (0.0, 0.0), top, 8, 4)
+    Jr = [math.hypot(j[0], j[1]) for J in lay["joints"] for j in J]
+    check("sheet layout: 8 chains of 5 joints, evenly over the 160 degrees, from top_z down the middle of the sheet",
+          len(lay["joints"]) == 8 and all(len(J) == 5 for J in lay["joints"]) and abs(math.degrees(lay["step"]) - 20) < 0.01
+          and all(abs(J[0][2] - top) < 1e-9 for J in lay["joints"]) and all(abs(r - 0.145) < 0.004 for r in Jr),
+          (round(math.degrees(lay["step"]), 2), round(min(Jr), 4), round(max(Jr), 4)))
+    check("sheet layout: each chain ends at its sector's lower edge (the scallops)",
+          all(0.64 <= b <= 0.685 for b in lay["bottom"]) and max(lay["bottom"]) - min(lay["bottom"]) > 0.005
+          and all(abs(J[-1][2] - b) < 1e-9 for J, b in zip(lay["joints"], lay["bottom"])), [round(b, 3) for b in lay["bottom"]])
+    check("sheet layout: deterministic", CT.sheet_layout(sheet, (0.0, 0.0), top, 8, 4) == lay)
+    try:
+        CT.sheet_layout(sheet, (0.0, 0.0), 0.5, 8, 4)
+        check("sheet layout refuses: nothing below top_z", False)
+    except ValueError:
+        check("sheet layout refuses: nothing below top_z", True)
+    sums, most, above, rising = [], 0, 0, True
+    for p in sheet:
+        w, u = CT.sheet_weights(p, lay, (0.0, 0.0), top, 0.5)
+        if p[2] >= top:
+            above += len(w)
+            continue
+        most = max(most, len(w))
+        if u >= 0.5:
+            sums.append(sum(w.values()))
+        else:
+            rising = rising and abs(sum(w.values()) - u / 0.5) < 1e-9 and all(k[1] == 0 for k in w)
+    check("sheet weights: none at or above top_z; below the blend zone they sum to 1; at most 4 bones per vertex",
+          above == 0 and sums and all(abs(x - 1) < 1e-9 for x in sums) and most <= 4, (above, most))
+    check("sheet weights: over the first half bone they rise from 0 on the first bones only (no step at top_z)", rising)
+    a_on = lay["mid"] + lay["a0"] + 3 * lay["step"]
+    z_on = top - 0.5 * (top - lay["bottom"][3])
+    w_on, _ = CT.sheet_weights((0.145 * math.cos(a_on), 0.145 * math.sin(a_on), z_on), lay, (0.0, 0.0), top)
+    check("sheet weights: a vertex at a chain's angle follows that chain only, the two bones that meet at its height",
+          set(w_on) == {(3, 1), (3, 2)} and abs(w_on[(3, 1)] - 0.5) < 1e-6, w_on)
+    a_mid = lay["mid"] + lay["a0"] + 3.5 * lay["step"]
+    w_between, _ = CT.sheet_weights((0.145 * math.cos(a_mid), 0.145 * math.sin(a_mid), 0.70), lay, (0.0, 0.0), top)
+    share = {k: sum(v for (c, _), v in w_between.items() if c == k) for k in (3, 4)}
+    check("sheet weights: halfway between two chains each carries half", abs(share[3] - 0.5) < 1e-6 and abs(share[4] - 0.5) < 1e-6,
+          share)
+    a_edge = lay["mid"] + lay["a0"] - 0.4 * lay["step"]
+    w_edge, _ = CT.sheet_weights((0.145 * math.cos(a_edge), 0.145 * math.sin(a_edge), 0.70), lay, (0.0, 0.0), top)
+    check("sheet weights: beyond the first chain the edge follows it alone", {c for c, _ in w_edge} == {0}, w_edge)
+
+    # skin spheres on a ball (needs mathutils: the bpy module)
+    try:
+        import bpy  # noqa: F401 (makes mathutils importable)
+        from mathutils.bvhtree import BVHTree
+    except ImportError:
+        BVHTree = None
+        print("[test_hair_contact] note: no mathutils module, the skin sphere checks are skipped")
+    if BVHTree is not None:
+        import numpy as np
+        nu_, nv_ = 48, 24
+        P = [(0.0, 0.0, 0.1)] + [(0.1 * math.sin(math.pi * j / nv_) * math.cos(2 * math.pi * i / nu_),
+                                  0.1 * math.sin(math.pi * j / nv_) * math.sin(2 * math.pi * i / nu_),
+                                  0.1 * math.cos(math.pi * j / nv_)) for j in range(1, nv_) for i in range(nu_)] + [(0.0, 0.0, -0.1)]
+        at = lambda j, i: 1 + (j - 1) * nu_ + i % nu_  # noqa: E731
+        F = [(0, at(1, i), at(1, i + 1)) for i in range(nu_)] + [(len(P) - 1, at(nv_ - 1, i + 1), at(nv_ - 1, i)) for i in range(nu_)]
+        F += [(at(j, i), at(j + 1, i), at(j + 1, i + 1), at(j, i + 1)) for j in range(1, nv_ - 1) for i in range(nu_)]
+        tree = BVHTree.FromPolygons(P, F)
+        Pn = np.array(P)
+        N = Pn / 0.1
+        sph = CT.skin_spheres(tree, Pn, N, [(0.0, 0.0, 0.2)], spacing=0.03, radius=0.045, pad=0.0025, reach=9.0)
+        cr = [math.dist(c, (0, 0, 0)) for _, c, _ in sph]
+        cover = CT.capsule_distance(Pn, [(c, c, r) for _, c, r in sph])
+        check("skin spheres on a ball of 100 mm: each touches the surface from inside (radius 45 mm + pad), spaced 30 mm",
+              len(sph) > 20 and all(abs(x - 0.055) < 1e-6 for x in cr) and all(abs(r - 0.0475) < 1e-9 for _, _, r in sph), len(sph))
+        check("skin spheres: the ball's surface lies inside their union or in a groove between them (under 3 mm deep)",
+              float(cover.max()) <= 0.003 and float(np.median(cover)) < 0.0, round(float(cover.max()) * 1000, 2))
+        flipped = CT.skin_spheres(tree, Pn, -N, [(0.0, 0.0, 0.2)], spacing=0.03, radius=0.045, pad=0.0025, reach=9.0)
+        check("skin spheres: stored normals that point inwards give the same spheres (the open side decides)",
+              [(i, [round(x, 9) for x in c], r) for i, c, r in flipped] == [(i, [round(x, 9) for x in c], r) for i, c, r in sph])
+        part = CT.skin_spheres(tree, Pn, N, [(0.0, 0.0, 0.2)], spacing=0.03, radius=0.045, pad=0.0025, reach=0.12)
+        check("skin spheres: reach limits them to the surface near the chains",
+              0 < len(part) < len(sph) and all(P[i][2] > 0 for i, _, _ in part), len(part))
+        thin = CT.skin_spheres(tree, Pn, N, [(0.0, 0.0, 0.2)], spacing=0.03, radius=0.2, pad=0.0, reach=9.0)
+        check("skin spheres: never thicker than 0.45 of the figure there", all(abs(r - 0.09) < 1e-4 for _, _, r in thin))
 
     # ----------------------------------------------------------------------------------------- the T-183 candidate
     ov_path = os.path.join(ROOT, OVERRIDE)

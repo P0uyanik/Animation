@@ -24,6 +24,30 @@ spec.hair.dynamics.contact   {"colliders": [...], "segments": bool (default true
     the rig, where the listed groups carry at least half the weight ("groups"), or from the named objects ("objects").
     "solid": the collider pushes to its full radius (moving parts, e.g. hands); otherwise a chain may stay as close
     as its kinematic target is (parts the hair rests on). Chains outside "structures" keep their previous colliders.
+
+  Round 2 keys of the same block (all optional; without them the block builds as in round 1):
+    collider {"name", "fit": "skin", "groups" | "objects" | "exclude_groups" | "exclude_objects": [patterns] (any
+       combination; none = the whole figure), "spacing_m" (0.024), "radius_m" (0.045), "pad_m" (0.0025), "reach_m"
+       (0.12: only surface this near to a contact chain), "min_radius_m" (0.008)}: spheres that follow the figure's
+       surface from inside (skin_spheres), named <name>.<i>; each rides on the deform bone that carries its vertex
+       most (no "bone"). A vertex belongs to the collider by its strongest deform group.
+    "figure": {"exclude": [object-name patterns]}: meshes bound to the rig that are not part of the solid figure
+       (default FIGURE_EXCLUDE: collision proxies, widgets, face features, glasses). Hair objects never are.
+    "radii": {"percentile": 1..100 (100), "floor_m": 0..0.05 (0.006)}: each contact chain gets one collision radius
+       per joint from the vertices it carries (chain_radii), 0 at the root, and never more than the joint's rest
+       clearance to the colliders on the chain's own root bone (the head).
+    "rest": true | {"friction": >= 0 (40), "max_swing": >= 0 (12)}: resting contact (docs/SECONDARY_MOTION.md);
+       the chains take every collider ("solid" of a collider is then without effect).
+    "sheets": [{"structure": pattern, "top_z": world z where the sheet leaves the head, "chains": 2..64 (13),
+       "bones": 1..8 (4), "blend": 0.1..1 (0.5, in bones: how far below top_z the chains take over),
+       "stiffness" (120), "stiffness_tip" (90), "damping" (18), "gravity" (0.5), "drag" (0.8), "limit_deg" (30)}]:
+       a static hanging sheet (a curtain) gets chains: `chains` of them, spread evenly over the sheet's angle about
+       the head bone's vertical axis, each down the middle of its sector from top_z to the sector's lower edge. A
+       vertex below top_z follows the two chains next to it (by angle) and, along them, the bones as a lock does.
+       The chains are named <structure>.<kk> (group = the structure), take binding.blend_z anchors like locks and
+       the same contact block; with "radii" each joint's radius encloses its sector of the sheet. The chains are
+       independent: where colliders push neighbours apart the sheet shears (T-183: the girl's back curtain, edges up
+       to 3.8 x their rest length), so use it only where that cannot be seen.
 """
 import fnmatch
 import json
@@ -32,7 +56,20 @@ import math
 CONTACT_PROP = "ps_contact"  # the contact spec, carried on the hair objects from build to bind
 KEEPOUT_DEFAULT = {"objects": ["ear.*"], "margin_m": 0.003, "smooth": 6}
 COLLIDER_KEYS = {"name", "bone", "fit", "groups", "objects", "bones", "percentile", "pad_m", "solid"}
-CONTACT_KEYS = {"colliders", "segments", "anchored_gravity", "structures"}
+SKIN_KEYS = {"name", "fit", "groups", "objects", "exclude_groups", "exclude_objects", "spacing_m", "radius_m", "pad_m",
+             "reach_m", "min_radius_m"}
+SKIN_DEFAULT = {"spacing_m": 0.024, "radius_m": 0.045, "pad_m": 0.0025, "reach_m": 0.12, "min_radius_m": 0.008}
+SKIN_RANGE = {"spacing_m": (0.004, 0.1), "radius_m": (0.005, 0.2), "pad_m": (0.0, 0.02), "reach_m": (0.01, 10.0),
+              "min_radius_m": (0.001, 0.05)}
+FIGURE_EXCLUDE = ["garment.collider.*", "WGT-*", "eye*", "brow*", "lash*", "lid*", "mouth*", "glasses*"]
+RADII_DEFAULT = {"percentile": 100.0, "floor_m": 0.006}
+REST_DEFAULT = {"friction": 40.0, "max_swing": 12.0}
+SHEET_DEFAULT = {"chains": 13, "bones": 4, "blend": 0.5, "stiffness": 120.0, "stiffness_tip": 90.0, "damping": 18.0,
+                 "gravity": 0.5, "drag": 0.8, "limit_deg": 30.0}
+SHEET_RANGE = {"chains": (2, 64), "bones": (1, 8), "blend": (0.1, 1.0), "stiffness": (0, 5000), "stiffness_tip": (0, 5000),
+               "damping": (0, 500), "gravity": (0, 5), "drag": (0, 50), "limit_deg": (0, 180), "top_z": (-10, 10)}
+DYN_BONE_PREFIX = "DYN-"  # as groom.DYN_BONE_PREFIX (chain bones)
+CONTACT_KEYS = {"colliders", "segments", "anchored_gravity", "structures", "figure", "radii", "rest", "sheets"}
 KEEPOUT_KEYS = {"objects", "margin_m", "smooth", "structures"}
 
 
@@ -85,7 +122,8 @@ def validate(hair_spec):
     ct = contact_spec(hair_spec)
     if ct is not None:
         if not isinstance(ct, dict) or set(ct) - CONTACT_KEYS:
-            return errs + ["hair.dynamics.contact must be {\"colliders\", \"segments\", \"anchored_gravity\", \"structures\"}"]
+            return errs + [f"hair.dynamics.contact: keys are {sorted(CONTACT_KEYS)}"]
+        errs += _validate_round2(ct)
         for k in ("segments", "anchored_gravity"):
             if not isinstance(ct.get(k, True), bool):
                 errs.append(f"hair.dynamics.contact.{k} must be true or false")
@@ -98,6 +136,9 @@ def validate(hair_spec):
         seen = set()
         for i, c in enumerate(cols):
             where = f"hair.dynamics.contact.colliders[{i}]"
+            if isinstance(c, dict) and c.get("fit") == "skin":
+                errs += _validate_skin(c, where, seen, existing)
+                continue
             if not isinstance(c, dict) or set(c) - COLLIDER_KEYS:
                 errs.append(f"{where}: keys are {sorted(COLLIDER_KEYS)}")
                 continue
@@ -109,7 +150,7 @@ def validate(hair_spec):
                 errs.append(f"{where}: needs a bone")
             fit = c.get("fit")
             if fit not in ("blob", "limb"):
-                errs.append(f"{where}: fit must be \"blob\" or \"limb\"")
+                errs.append(f"{where}: fit must be \"blob\", \"limb\" or \"skin\"")
             if ("groups" in c) == ("objects" in c) or not _patterns(c.get("groups", c.get("objects"))):
                 errs.append(f"{where}: give either groups or objects (a non-empty list of name patterns)")
             if fit == "limb" and not _patterns(c.get("bones")):
@@ -120,6 +161,61 @@ def validate(hair_spec):
                 errs.append(f"{where}: percentile must be in 1..100 and pad_m in -0.02..0.05")
             if not isinstance(c.get("solid", False), bool):
                 errs.append(f"{where}: solid must be true or false")
+    return errs
+
+
+def _validate_skin(c, where, seen, existing):
+    errs = []
+    if set(c) - SKIN_KEYS:
+        return [f"{where}: keys of a skin collider are {sorted(SKIN_KEYS)}"]
+    name = c.get("name")
+    if not isinstance(name, str) or not name or name in seen or name in existing:
+        errs.append(f"{where}: needs a name that no other collider uses")
+    seen.add(name)
+    for k in ("groups", "objects", "exclude_groups", "exclude_objects"):
+        if k in c and not _patterns(c[k]):
+            errs.append(f"{where}: {k} must be a non-empty list of name patterns")
+    for k, (lo, hi) in SKIN_RANGE.items():
+        if not _num(c, k, lo, hi, SKIN_DEFAULT[k]):
+            errs.append(f"{where}: {k} must be in {lo}..{hi}")
+    return errs
+
+
+def _validate_round2(ct):
+    errs = []
+    fg = ct.get("figure")
+    if fg is not None and not (isinstance(fg, dict) and set(fg) <= {"exclude"} and ("exclude" not in fg or _patterns(fg["exclude"]))):
+        errs.append("hair.dynamics.contact.figure must be {\"exclude\": [object-name patterns]}")
+    ra = ct.get("radii")
+    if ra is not None and not (isinstance(ra, dict) and set(ra) <= {"percentile", "floor_m"}
+                               and _num(ra, "percentile", 1, 100, 100) and _num(ra, "floor_m", 0, 0.05, 0.006)):
+        errs.append("hair.dynamics.contact.radii must be {\"percentile\": 1..100, \"floor_m\": 0..0.05}")
+    rs = ct.get("rest")
+    if rs is not None and not isinstance(rs, bool) and not (
+            isinstance(rs, dict) and set(rs) <= {"friction", "max_swing"} and _num(rs, "friction", 0, 1000, 40)
+            and _num(rs, "max_swing", 0, 1000, 12)):
+        errs.append("hair.dynamics.contact.rest must be true, false or {\"friction\": 0..1000, \"max_swing\": 0..1000}")
+    sh = ct.get("sheets")
+    if sh is not None:
+        if not isinstance(sh, list) or not sh:
+            errs.append("hair.dynamics.contact.sheets must be a non-empty list")
+        else:
+            for i, e in enumerate(sh):
+                where = f"hair.dynamics.contact.sheets[{i}]"
+                if not isinstance(e, dict) or set(e) - (set(SHEET_RANGE) | {"structure"}):
+                    errs.append(f"{where}: keys are {sorted(set(SHEET_RANGE) | {'structure'})}")
+                    continue
+                if not isinstance(e.get("structure"), str) or not e.get("structure"):
+                    errs.append(f"{where}: needs a structure (name pattern)")
+                if "top_z" not in e:
+                    errs.append(f"{where}: needs top_z")
+                for k, (lo, hi) in SHEET_RANGE.items():
+                    if not _num(e, k, lo, hi, SHEET_DEFAULT.get(k, 0.0)):
+                        errs.append(f"{where}: {k} must be in {lo}..{hi}")
+                for k in ("chains", "bones"):
+                    v = e.get(k, 1)
+                    if isinstance(v, (int, float)) and not isinstance(v, bool) and float(v) != int(v):
+                        errs.append(f"{where}: {k} must be a whole number")
     return errs
 
 
@@ -265,7 +361,8 @@ def store(hair_spec, objs):
     data = json.dumps({"contact": ct, "bun_groups": buns}, sort_keys=True)
     for ob in objs:
         ob[CONTACT_PROP] = data
-    return {"colliders": [c["name"] for c in ct.get("colliders", [])]}
+    return {"colliders": [c["name"] for c in ct.get("colliders", [])],
+            **({k: ct[k] for k in ("radii", "rest", "sheets") if k in ct})}
 
 
 def fit_capsule(points, fit, axis=None, percentile=None, pad=0.0):
@@ -517,7 +614,216 @@ def _carried(rig, skip, patterns):
     return out
 
 
-def bind_contact(rig, objs, head_bone, chest_bone):
+def _figure(rig, skip, exclude):
+    """The solid figure in the rest pose: every evaluated mesh bound to the rig that is not hair (`skip`) and not
+    excluded by name. Returns world positions, outward normals as stored, polygons, and per vertex the object name
+    and the name of the deform bone that carries it most ("" when none)."""
+    import bpy
+    import numpy as np
+    deps = bpy.context.evaluated_depsgraph_get()
+    deform = {b.name for b in rig.data.bones if b.use_deform}
+    P, N, polys, obn, bone = [], [], [], [], []
+    base = 0
+    for ob in sorted(rig.children, key=lambda o: o.name):
+        if ob.type != "MESH" or ob in skip or _match(ob.name, exclude):
+            continue
+        ev = ob.evaluated_get(deps)
+        me = ev.to_mesh()
+        mw = ev.matrix_world
+        rot = mw.to_3x3().inverted().transposed()
+        gname = [g.name if g.name in deform else "" for g in ob.vertex_groups]
+        for v in me.vertices:
+            P.append(tuple(mw @ v.co))
+            N.append(tuple(rot @ v.normal))
+            best, bw = "", 0.0
+            for g in v.groups:
+                if g.group < len(gname) and gname[g.group] and g.weight > bw:
+                    best, bw = gname[g.group], g.weight
+            bone.append(best)
+        obn += [ob.name] * len(me.vertices)
+        polys += [tuple(base + i for i in pl.vertices) for pl in me.polygons]
+        base += len(me.vertices)
+        ev.to_mesh_clear()
+    return np.array(P, dtype=np.float64).reshape(-1, 3), np.array(N, dtype=np.float64).reshape(-1, 3), polys, obn, bone
+
+
+def _collider_distance(p, c):
+    """Distance of point p from the surface of a stored collider (sphere or capsule; negative inside)."""
+    a = c.get("a", c.get("centre"))
+    b = c.get("b", c.get("centre"))
+    ab = [b[i] - a[i] for i in range(3)]
+    l2 = sum(x * x for x in ab)
+    t = min(1.0, max(0.0, sum((p[i] - a[i]) * ab[i] for i in range(3)) / l2)) if l2 > 1e-12 else 0.0
+    return math.dist(p, [a[i] + t * ab[i] for i in range(3)]) - float(c["radius"])
+
+
+def capped_radii(radii, joints, root_colliders):
+    """Chain radii that do not collide in the rest pose with the colliders of the chain's own root bone (pure): 0 at
+    the root, otherwise at most the joint's clearance to those colliders (never negative)."""
+    out = [0.0]
+    for r, j in zip(radii[1:], joints[1:]):
+        clear = min((_collider_distance(j, c) for c in root_colliders), default=r)
+        out.append(round(max(0.0, min(r, clear)), 5))
+    return out
+
+
+def _bone_weights(u, n):
+    """As groom._chain_weights: weights of the n chain bones at chain coordinate u (linear between bone centres)."""
+    b = min(max(u - 0.5, 0.0), n - 1.0)
+    lo = int(math.floor(b))
+    f = b - lo
+    w = {lo: 1.0 - f}
+    if f > 0 and lo + 1 < n:
+        w[lo + 1] = f
+    return w
+
+
+def sheet_layout(points, axis_xy, top_z, chains, bones):
+    """Chains for a hanging sheet (pure): {"mid": angle of the sheet's middle, "a0", "step": the chains' angles are
+    a0 + k step (relative to mid), "bottom": [z of each chain's lower end], "joints": [[(x, y, z)] * (bones + 1)]}.
+
+    points: (N, 3) vertices of the sheet. Angles are taken about the vertical axis through axis_xy, relative to the
+    middle direction of the vertices below top_z (so a sheet may lie anywhere round the head, but not all round).
+    Chain k runs down the middle of its sector (an equal share of the angle): joint j lies at top_z + (bottom -
+    top_z) j / bones, at the mean place of the sector's vertices of that height (both faces of a shell: mid-sheet);
+    bottom is the 2nd percentile of the sector's heights."""
+    import numpy as np
+    P = np.asarray(points, dtype=np.float64)
+    P = P[P[:, 2] < top_z]
+    if len(P) < 4 * chains:
+        raise ValueError("too few vertices below top_z")
+    d = P[:, :2] - np.asarray(axis_xy, dtype=np.float64)
+    mid = math.atan2(float(d[:, 1].mean()), float(d[:, 0].mean()))
+    ang = (np.arctan2(d[:, 1], d[:, 0]) - mid + math.pi) % (2 * math.pi) - math.pi
+    lo, hi = float(ang.min()), float(ang.max())
+    step = (hi - lo) / chains
+    a0 = lo + 0.5 * step
+    bottom, joints = [], []
+    for k in range(chains):
+        sel = P[np.abs(ang - (a0 + k * step)) <= 0.5 * step + 1e-9]
+        if len(sel) < 4:
+            raise ValueError(f"no vertices in sector {k}")
+        zb = float(np.percentile(sel[:, 2], 2))
+        seg = (top_z - zb) / bones
+        if seg < 1e-4:
+            raise ValueError(f"sector {k} does not reach below top_z")
+        J = []
+        for j in range(bones + 1):
+            z = top_z - seg * j
+            near = np.abs(sel[:, 2] - z)
+            band = sel[near <= max(0.5 * seg, float(np.sort(near)[3]))]
+            J.append((float(band[:, 0].mean()), float(band[:, 1].mean()), z))
+        bottom.append(zb)
+        joints.append(J)
+    return {"mid": mid, "a0": a0, "step": step, "bottom": bottom, "joints": joints}
+
+
+def sheet_weights(p, layout, axis_xy, top_z, blend=0.5):
+    """Chain weights of a sheet vertex p (pure): ({(chain, bone): weight}, chain coordinate u). Empty at or above
+    top_z. Below it the vertex follows the two chains next to its angle (linear between them, the edge chain alone
+    beyond it) and along them the bones by its height (u = 0 at top_z, `bones` at the chains' lower end, which is
+    interpolated between the two); over the first `blend` bones the weights rise from 0 (the static binding keeps
+    the rest: no step at top_z)."""
+    K = len(layout["joints"])
+    n = len(layout["joints"][0]) - 1
+    if p[2] >= top_z:
+        return {}, 0.0
+    a = (math.atan2(p[1] - axis_xy[1], p[0] - axis_xy[0]) - layout["mid"] + math.pi) % (2 * math.pi) - math.pi
+    t = min(K - 1.0, max(0.0, (a - layout["a0"]) / layout["step"]))
+    k0 = min(K - 2, int(math.floor(t))) if K > 1 else 0
+    f = t - k0 if K > 1 else 0.0
+    zb = layout["bottom"][k0] * (1 - f) + (layout["bottom"][k0 + 1] * f if f > 0 else 0.0)
+    u = min(float(n), n * (top_z - p[2]) / max(1e-6, top_z - zb))
+    rise = min(1.0, u / blend)
+    out = {}
+    for k, wk in ((k0, 1.0 - f), (k0 + 1, f)):
+        if wk > 1e-6:
+            for i, wi in _bone_weights(u, n).items():
+                out[(k, i)] = wk * wi * rise
+    return out, u
+
+
+def _bind_sheets(rig, objs, sheets, head_bone, chest_bone, blend_z):
+    """Adds the sheet chains: bones (deform, parented to the head bone), vertex weights, chain records."""
+    import bpy
+    from mathutils import Vector
+    mw = rig.matrix_world
+    inv = mw.inverted()
+    axis = tuple((mw @ rig.data.bones[head_bone].head_local))[:2]
+    jobs = []
+    for sh in sheets:
+        cfg = dict(SHEET_DEFAULT, **sh)
+        for ob in objs:
+            name = ob.name[5:] if ob.name.startswith("hair_") else ob.name
+            if not _match(name, [sh["structure"]]):
+                continue
+            pts = [tuple(ob.matrix_world @ v.co) for v in ob.data.vertices]
+            try:
+                lay = sheet_layout(pts, axis, float(cfg["top_z"]), int(cfg["chains"]), int(cfg["bones"]))
+            except ValueError as e:
+                raise SystemExit(f"hair.dynamics.contact.sheets: {ob.name}: {e}")
+            jobs.append((ob, name, cfg, pts, lay))
+    if not jobs:
+        raise SystemExit("hair.dynamics.contact.sheets: no hair object matches a sheet's structure")
+    bpy.ops.object.select_all(action="DESELECT")
+    rig.hide_set(False)
+    rig.select_set(True)
+    bpy.context.view_layer.objects.active = rig
+    bpy.ops.object.mode_set(mode="EDIT")
+    eb = rig.data.edit_bones
+    bone_names = {}
+    for ob, name, cfg, pts, lay in jobs:
+        for k, J in enumerate(lay["joints"]):
+            prev, names = eb[head_bone], []
+            for j in range(len(J) - 1):
+                b = eb.new(f"{DYN_BONE_PREFIX}{name}.{k:02d}.{j}")
+                b.head, b.tail = inv @ Vector(J[j]), inv @ Vector(J[j + 1])
+                b.parent = prev
+                b.use_connect = j > 0
+                b.use_deform = True
+                prev = b
+                names.append(b.name)
+            bone_names[(name, k)] = names
+    bpy.ops.object.mode_set(mode="OBJECT")
+    out, rep = [], {}
+    for ob, name, cfg, pts, lay in jobs:
+        groups = {}
+        moved = 0
+        for v, p in zip(ob.data.vertices, pts):
+            w, _ = sheet_weights(p, lay, axis, float(cfg["top_z"]), float(cfg["blend"]))
+            if not w:
+                continue
+            keep = 1.0 - sum(w.values())
+            for g in list(v.groups):
+                vg = ob.vertex_groups[g.group]
+                if keep <= 1e-6:
+                    vg.remove([v.index])
+                else:
+                    vg.add([v.index], g.weight * keep, "REPLACE")
+            for (k, i), x in w.items():
+                if x > 1e-6:
+                    gname = bone_names[(name, k)][i]
+                    vg = groups.get(gname) or ob.vertex_groups.new(name=gname)
+                    groups[gname] = vg
+                    vg.add([v.index], x, "REPLACE")
+            moved += 1
+        for k, J in enumerate(lay["joints"]):
+            ch = {"name": f"{name}.{k:02d}", "group": name, "bones": bone_names[(name, k)], "tip": list(J[-1]),
+                  **{key: float(cfg[key]) for key in ("stiffness", "stiffness_tip", "damping", "gravity", "drag", "limit_deg")},
+                  "radius": 0.0}
+            if blend_z and chest_bone != head_bone:
+                lo, hi = float(blend_z[0]), float(blend_z[1])
+                w = [round(1.0 - min(1.0, max(0.0, (j[2] - lo) / (hi - lo))), 4) for j in J]
+                if any(w[1:]):
+                    ch["anchor"] = {"bone": chest_bone, "weights": [0.0] + w[1:]}
+            out.append(ch)
+        rep[ob.name] = {"chains": len(lay["joints"]), "bones": int(cfg["bones"]), "vertices": moved,
+                        "sector_deg": round(math.degrees(lay["step"]), 1),
+                        "bottom_z": [round(min(lay["bottom"]), 3), round(max(lay["bottom"]), 3)]}
+    return out, rep
+
+
+def bind_contact(rig, objs, head_bone, chest_bone, binding=None):
     """Bind step: fits the contact colliders and writes them, with the chains' "contact" blocks, into the rig's
     "ps_dynamics" (the engine exporter passes chain keys through). No-op without a stored contact spec or chains."""
     import bpy
@@ -526,13 +832,61 @@ def bind_contact(rig, objs, head_bone, chest_bone):
         return None
     stored = json.loads(raw)
     ct, buns = stored["contact"], set(stored["bun_groups"])
+    out = {}
     dyn = json.loads(rig["ps_dynamics"])
     before = [c["name"] for c in dyn["colliders"]]
+    if ct.get("sheets"):
+        more, out["sheets"] = _bind_sheets(rig, objs, ct["sheets"], head_bone, chest_bone, (binding or {}).get("blend_z"))
+        dyn["chains"] += more
     resolve = {"head": head_bone, "chest": chest_bone}
     mw = rig.matrix_world
     skip = set(objs)
     rep, solid = {}, []
+
+    def on(ch):
+        return ch.get("group") not in buns and ("structures" not in ct or _match(ch.get("group", ""), ct["structures"]))
+
+    def joints(ch):
+        return [tuple(mw @ rig.data.bones[b].head_local) for b in ch["bones"]] + [tuple(ch["tip"])]
+
+    figure = None
     for c in ct.get("colliders", []):
+        if c["fit"] == "skin":
+            import numpy as np
+            from mathutils.bvhtree import BVHTree
+            if figure is None:
+                figure = _figure(rig, skip, (ct.get("figure") or {}).get("exclude", FIGURE_EXCLUDE))
+                tree = BVHTree.FromPolygons(figure[0].tolist(), figure[2])
+                near = []
+                for ch in dyn["chains"]:
+                    if on(ch):
+                        J = joints(ch)
+                        for a, b in zip(J[:-1], J[1:]):
+                            near += [a, tuple((a[i] + b[i]) / 2 for i in range(3)), b]
+            FP, FN, _, obn, vbone = figure
+            sel = [i for i in range(len(FP)) if vbone[i]
+                   and ("groups" not in c or _match(vbone[i], c["groups"]))
+                   and ("objects" not in c or _match(obn[i], c["objects"]))
+                   and not ("exclude_groups" in c and _match(vbone[i], c["exclude_groups"]))
+                   and not ("exclude_objects" in c and _match(obn[i], c["exclude_objects"]))]
+            kw = {k[:-2]: float(c.get(k, d)) for k, d in SKIN_DEFAULT.items()}
+            sph = skin_spheres(tree, FP[sel], FN[sel], near, **kw) if sel and near else []
+            if not sph:
+                raise SystemExit(f"hair.dynamics.contact: collider {c['name']}: no surface for a sphere ({len(sel)} vertices)")
+            for k, (i, centre, r) in enumerate(sph):
+                dyn["colliders"].append({"name": f"{c['name']}.{k}", "type": "sphere", "bone": vbone[sel[i]],
+                                         "radius": round(r, 5), "centre": [round(x, 6) for x in centre]})
+            d = capsule_distance(FP[sel], [(s[1], s[1], s[2]) for s in sph])
+            if kw["reach"] < 1.0:  # the cover counts where the chains can come (well inside the reach)
+                Q = np.asarray(near)[::3]
+                d = d[np.min(np.linalg.norm(FP[sel][:, None, :] - Q[None, :, :], axis=2), axis=1) < 0.8 * kw["reach"]]
+            rr = [s[2] for s in sph]
+            rep[c["name"]] = {"fit": "skin", "spheres": len(sph), "vertices": len(sel),
+                              "radius_mm": [round(min(rr) * 1000, 1), round(float(np.median(rr)) * 1000, 1)],
+                              "bones": len({vbone[sel[s[0]]] for s in sph}),
+                              "outside_max_mm": round(float(d.max()) * 1000, 1) if len(d) else 0.0,
+                              "outside_p99_mm": round(float(np.percentile(d, 99)) * 1000, 1) if len(d) else 0.0}
+            continue
         bone = resolve.get(c["bone"], c["bone"])
         if bone not in rig.data.bones:
             raise SystemExit(f"hair.dynamics.contact: collider {c['name']}: no bone {bone} in the rig")
@@ -557,14 +911,38 @@ def bind_contact(rig, objs, head_bone, chest_bone):
             solid.append(c["name"])
         rep[c["name"]] = {"bone": bone, "radius_m": round(r, 5), "length_m": round(math.dist(a, b), 5),
                           "vertices": len(pts), "solid": bool(c.get("solid", False))}
-    chains = 0
+    rest = ct.get("rest", False)
+    rest_kw = dict(REST_DEFAULT, **(rest if isinstance(rest, dict) else {})) if rest else None
+    radii_kw = dict(RADII_DEFAULT, **ct["radii"]) if ct.get("radii") is not None else None
+    chains, radii_rep = 0, {}
     for ch in dyn["chains"]:
-        on = ch.get("group") not in buns and ("structures" not in ct or _match(ch.get("group", ""), ct["structures"]))
-        if on:
-            ch["contact"] = {"solid": solid, "segments": bool(ct.get("segments", True)),
-                             "anchored_gravity": bool(ct.get("anchored_gravity", True))}
+        if on(ch):
+            block = {"solid": [] if rest_kw else solid, "segments": bool(ct.get("segments", True)),
+                     "anchored_gravity": bool(ct.get("anchored_gravity", True))}
+            if radii_kw:
+                J = joints(ch)
+                pts = []
+                for ob in objs:
+                    idx = {g.index for g in ob.vertex_groups if g.name in ch["bones"]}
+                    if idx:
+                        m = ob.matrix_world
+                        pts += [tuple(m @ v.co) for v in ob.data.vertices
+                                if sum(g.weight for g in v.groups if g.group in idx) >= 0.5]
+                fitted = chain_radii(pts, J, percentile=float(radii_kw["percentile"]), floor=float(radii_kw["floor_m"])) \
+                    if len(pts) >= 4 else [float(ch.get("radius", 0.0))] * len(J)
+                root = rig.data.bones[ch["bones"][0]].parent
+                block["radii"] = capped_radii(fitted, J, [c for c in dyn["colliders"] if root and c["bone"] == root.name])
+                radii_rep[ch["name"]] = [round(max(block["radii"]) * 1000, 1), round(max(fitted) * 1000, 1)]
+            if rest_kw:
+                block.update(rest=True, friction=float(rest_kw["friction"]), max_swing=float(rest_kw["max_swing"]))
+                ch.pop("colliders", None)  # every collider
+            ch["contact"] = block
             chains += 1
         elif not ch.get("colliders"):
             ch["colliders"] = before  # as before: none of the contact colliders
     rig["ps_dynamics"] = json.dumps(dyn)
-    return {"colliders": rep, "chains": chains}
+    out.update(colliders=rep, chains=chains)
+    if radii_rep:
+        out["radii_mm"] = {"largest used / fitted": radii_rep}
+    print("groom contact: " + json.dumps(out, sort_keys=True))
+    return out

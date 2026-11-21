@@ -88,6 +88,10 @@ A chain may carry a `"contact"` block. Without it the chain takes exactly the pa
 | `solid` | collider names that push to their full radius: the exemption "never farther out than the kinematic target" is off for them. For moving parts (hands, forearms) that enter the place where the hair rests. They are added to the chain's colliders. | none |
 | `segments` | the segments between joints collide as capsules of the chain `radius`, not only the joints. The segment's closest point is moved out by swinging its end joint. | false |
 | `anchored_gravity` | gravity is scaled by `1 - anchor weight` per joint: a joint whose target the anchor bone carries already hangs where that bone puts it, so the head's tilt does not pull it off. | false |
+| `radii` | one collision radius per joint (bones + 1 values, metres) instead of the chain `radius`; a segment is a tapered capsule between its two joints' radii. | chain `radius` |
+| `rest` | resting contact: every collider acts at its full radius (no exemption for the kinematic target, `solid` is not needed). A pushed joint takes the collider's velocity along the contact normal and loses its sliding speed by `friction`; the middle of each segment is tested with a fixed lever; colliders far from the chain are skipped per step. | false |
+| `friction` | with `rest`: sliding speed lost in contact, 1/s. | 40 |
+| `max_swing` | with `rest`: a segment turns at most this much faster (rad/s) than its kinematic direction, so a lock squeezed between two colliders moves steadily instead of snapping. 0 = no bound. | 12 |
 
 - A push by any collider of a contact chain is inelastic: the pushed joint keeps at most the speed it had before the
   push or the speed of its kinematic target, so a hand moves a lock aside without throwing it.
@@ -97,6 +101,12 @@ A chain may carry a `"contact"` block. Without it the chain takes exactly the pa
   in resting contact showed ±3-4 mm frame-to-frame noise at the lock tip (T-183, ears as solid).
 - Colliders may ride on any deform bone (this was already so in the package; groom/1 limited its own to head and
   chest).
+- With `rest` the angular limit (`limit_deg`) yields to contact: a joint that a collider pushed in this or the last
+  step is not clamped back; once free, its limit shrinks from the angle it had to `limit_deg` at 12 1/s. Without this
+  a collider that holds a tip beyond the limit and the clamp alternate, and the tip slides round the limit cone
+  (25 mm per frame measured on a forearm, T-183).
+- With `radii` and without `rest`, a tapered segment is tested where its surface is nearest to the collider (at its
+  middle when its thick end is the first joint).
 
 Groom side (`spec.hair`, groom/5 module, `pipeline/charsys/groom_contact.py`), both keys opt-in:
 
@@ -106,6 +116,23 @@ Groom side (`spec.hair`, groom/5 module, `pipeline/charsys/groom_contact.py`), b
   it). Vertices come from the vertex `groups` that carry at least half the weight, or from named `objects`.
   `"solid": true` puts the collider in the chains' `contact.solid`. Lock chains get the block; bun chains keep their
   previous colliders.
+- Round 2 keys of `hair.dynamics.contact` (all optional, bind time):
+  - collider `"fit": "skin"` with any of `groups`, `objects`, `exclude_groups`, `exclude_objects` (none = the whole
+    figure) and `spacing_m`, `radius_m`, `pad_m`, `reach_m`, `min_radius_m`: sphere colliders named `<name>.<i>` that
+    follow the figure's surface from inside, each on the deform bone that carries its vertex most. The figure is every
+    evaluated mesh bound to the rig except the hair and `"figure": {"exclude": [...]}` (default: collision proxies,
+    widgets, face features, glasses); cloth counts as surface, and the outward side is found by what is open, not by
+    the stored normal. The girl of T-183 takes five sets (head, ears, torso with the garments, arms, hands): about
+    820 spheres.
+  - `"radii": {"percentile", "floor_m"}`: one collision radius per joint from the vertices the chain carries, 0 at
+    the root, capped by the joint's rest clearance to the colliders on the chain's root bone (so a lock that starts
+    on the head does not collide with the head at rest).
+  - `"rest": true | {"friction", "max_swing"}`: the chains get resting contact against every collider.
+  - `"sheets": [{"structure", "top_z", "chains", "bones", "blend", chain parameters}]`: chains for a static hanging
+    sheet, spread over its angle about the head bone's axis; a vertex follows the two chains next to it. The chains
+    are independent: where colliders push neighbours apart the sheet shears (T-183 measured mesh edges up to 3.8 x
+    their rest length on the girl's back curtain against 1.8 x without chains), so the T-183 candidate does not use
+    the key.
 - `hair.ear_keepout`: `{"objects": ["ear.*"], "margin_m", "smooth", "structures"}`. Hair surface vertices inside a
   keep-out mesh are moved out along the head's front/back axis (the shorter way) before the fibres are grown, and the
   move is relaxed over the neighbours. Vertex counts and order do not change.
