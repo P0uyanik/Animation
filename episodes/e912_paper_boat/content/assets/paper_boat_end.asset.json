@@ -1,0 +1,38 @@
+{
+ "format": "plush.asset",
+ "version": 1,
+ "id": "prop.e912_paper_boat_end",
+ "licence": "CC0-1.0",
+ "attribution": "Plush Studio project, T-187 (episode-local test prop); a flared end of the boat: a box primitive tilted outward at each end of the hull",
+ "mesh": {
+  "primitive": "box",
+  "size": [
+   0.034,
+   0.03,
+   0.04116
+  ]
+ },
+ "material_presets": [
+  "paper_white"
+ ],
+ "scale": 1.0,
+ "sockets": {
+  "place": {
+   "translation": [
+    0,
+    0,
+    0
+   ],
+   "rotationDeg": [
+    0,
+    0,
+    0
+   ],
+   "scale": [
+    1.0,
+    1.0,
+    1.0
+   ]
+  }
+ }
+}
