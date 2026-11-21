@@ -6,6 +6,8 @@ Status: **CHECKPOINT** — candidate for owner review. Nothing is on by default.
 ## Owner summary
 - **What you can switch on:** one key on a grasp, `"fingerClose"`. The hand then opens and takes the cup's shape on the
   way in, the fingers land one after the other (index first, little last) and each one slows down before it touches.
+- **Motion is better, the held hand is not:** see the sheets (section 4). On today's cup site the opt-in hand still
+  looks fused, and the rest hand hardly changes.
 - **What it does not fix by itself:** the fingers still overlap on the cup with today's cup grasp site, with or without
   the T-157 wider band. The boy's hand is as tall as the cup (four fingers need 104 mm, the cup is 100 mm, the site's
   band is 45 mm). They stop overlapping only when the hand is centred on the cup (column "proposed site" in the sheets).
@@ -50,7 +52,14 @@ Files: `engine/scene/interaction.cpp` (keys), `engine/scene/verbs.cpp` (3 pass-t
 The cup is taken as a capped solid cylinder (stricter than the real open cup). Skin radius 13 mm (half the finger-root
 spacing). Digits: thumb, then index..little by anatomy.
 
-MEASURE_TABLE
+| variant | lands at frame (thumb, index..little) | largest curl step, deg/frame (thumb / fingers) | held fingertips apart, mm (i-m, m-r, r-l) | held tip gap, mm | min skin clearance in the close f69-100, mm | approach graze f58-68, mm | tip heights held, mm |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| base | 74, 76, 77, 78, 79 | 47 / 14 | 28.0, 8.5, 28.1 | 0.00 | -5.01 | -6.98 | 44, 34, 62, 71, 98 |
+| t157a | 74, 76, 77, 78, 79 | 65 / 21 | 19.9, 17.7, 19.6 | 0.00 | -5.01 | -6.98 | 41, 41, 59, 76, 94 |
+| r2 | 76, 76, 77, 79, 80 | 20 / 5 | 28.0, 8.5, 28.1 | 0.00 | -0.57 | -7.32 | 44, 34, 62, 71, 98 |
+| r2a | 76, 76, 77, 79, 80 | 23 / 9 | 19.9, 17.7, 19.6 | 0.00 | -0.00 | -7.32 | 41, 41, 59, 76, 94 |
+| r2s | 76, 76, 77, 79, 80 | 23 / 9 | 19.9, 17.7, 19.6 | 0.00 | -0.00 | -8.30 | 41, 41, 59, 76, 94 |
+| r2site | 76, 76, 77, 79, 81 | 26 / 4 | 24.9, 24.8, 25.0 | 0.00 | -0.00 | -13.79 | 13, 13, 38, 62, 87 |
 
 Reading it:
 - **Finger by finger:** the fingers land over 4-5 frames (before: 3), the thumb with the index instead of 2 frames ahead.
@@ -65,7 +74,31 @@ Reading it:
   proposed site makes it 13.8 mm. This is the reach path, not the fingers.
 
 ## 4. Sheets and clips
-SHEETS
+Cycles 12 spp, 480x360 (shot camera 1280x720), frames f62-f84 of the pick-up. Columns: current default | opt-in on
+today's site (`r2s`) | opt-in on the proposed site (`r2site`). `r2` and `r2a` were measured, not rendered.
+
+| file | what |
+| --- | --- |
+| `strict_reach_close.jpg` | camera 'left' (the fingers on the cup wall), f64-f82, one frame per row |
+| `strict_back_rest.jpg` | camera 'close' (back of the hand) f70 / 76 / 78 / 81, last row the hand at rest f44 |
+| `shot_size.jpg` | the same frames as the shot camera shows them: a 160x120 px box, enlarged 3x |
+| `reference_reach.jpg` | 10 consecutive frames of the reach in `video_paperboat.mp4` |
+| `clips/pickup_f62-84_24fps.mp4`, `..._8fps.mp4` | the three columns side by side, camera 'left', real time and 3x slow |
+
+What the pictures show (my reading; the owner decides):
+- **Proposed site (right column): the four fingers lie side by side on the cup, clearly told apart**, from f76 on. This
+  is the only column without the fused look. Its lowest finger ends level with the table top (tip centre 13 mm above
+  the cup base, skin radius 13 mm).
+- **Opt-in on today's site (middle): the held hand is not better than the default, and arguably worse.** The fingers
+  still cross, and the lowest finger is bent downwards out of line (f76-f82). That is the T-157 (a) band at work on a
+  hand this wide.
+- **Motion:** the clip shows the difference the numbers describe: in the default the fingers snap shut between f74 and
+  f78; with the opt-in they are already part-closed at f72-f74 and land one after the other until f80.
+- **Rest (last row of `strict_back_rest.jpg`): the difference is small.** The rest pose changes the curl of each finger
+  by a few degrees; at shot size it is hardly visible. Finger separation at rest is **not** achieved by pose alone.
+- **Reference timing:** in the reference the hand is open and shaped for all of the roughly 8 visible frames before it
+  touches the paper. With the opt-in the hand is open 10 frames before contact (f66) and at the pre-shape 6 frames
+  before (f70); the default is open 6-7 frames before and unshaped until 3 frames before.
 
 ## 5. Tests and default path
 - Default path: e910 s010 bake (192 frames) from a clean `origin/main` build and from this branch: sha256
