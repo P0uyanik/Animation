@@ -40,7 +40,7 @@ Codex T-169 hair reference study (relay 2987afa) feeds T-167. Codex T-161 refere
 | T-176 whole-project review (analysis) | Opus 5.5 | merged; P2/P3/P5 approved ~04:10Z, rest undecided |
 | T-177 docs-only fast path (T-176 P3) | Sonnet 5.5 | merged (main c16ef79) |
 | T-179 generator pin map (T-176 P12 light) | Sonnet 5.5 | merged (docs/process/GENERATOR_PINS.md) |
-| T-180 full suite in a light clone + clone profiles (T-176 P13) | Sonnet 5.5 | running |
+| T-180 full suite in a light clone + clone profiles (T-176 P13) | Sonnet 5.5 | merged: full suite needs the full checkout |
 | T-181 one owner per file: claims --check-all (T-176 P9) | Sonnet 5.5 | merged |
 | T-181b read overlaps → warnings (owner guidance) | Sonnet 5.5 | merged |
 | T-182 automatic test registration (T-176 P7) | Opus 5.5 | merged |
