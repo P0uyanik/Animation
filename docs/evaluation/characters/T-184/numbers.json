@@ -1,0 +1,416 @@
+{
+ "task": "T-184",
+ "input": "origin/main@7135087",
+ "bake": "t-175-claude-locomotion@c384f1d review shot (frames 1-230), boy 2.3.0 / girl 0.14.0",
+ "blender": "bpy 5.3.0 (tools/bpy_blender.py wrapper)",
+ "engine_check": {
+  "tool": "tools/motion_checks/run.py (kind garment, limit -5 mm, package LBS, sampled every 4th vertex)",
+  "before": {
+   "boy garment.trousers.main walk (f1-100)": {
+    "worst_mm": -19.73,
+    "max_sampled_vertices": 14,
+    "frames_flagged": 88
+   },
+   "boy garment.trousers.main sit / stand (f101-230)": {
+    "worst_mm": -11.76,
+    "max_sampled_vertices": 3,
+    "frames_flagged": 12
+   },
+   "girl garment.shorts.gusset walk (f1-100)": {
+    "worst_mm": -5.58,
+    "max_sampled_vertices": 3,
+    "frames_flagged": 20
+   },
+   "girl garment.shorts.gusset sit / stand (f101-230)": {
+    "worst_mm": -15.48,
+    "max_sampled_vertices": 7,
+    "frames_flagged": 80
+   },
+   "girl garment.shorts.main walk (f1-100)": {
+    "worst_mm": -28.3,
+    "max_sampled_vertices": 11,
+    "frames_flagged": 100
+   },
+   "girl garment.shorts.main sit / stand (f101-230)": {
+    "worst_mm": -57.92,
+    "max_sampled_vertices": 25,
+    "frames_flagged": 96
+   }
+  },
+  "after": {
+   "boy garment.trousers.main walk (f1-100)": {
+    "worst_mm": -19.73,
+    "max_sampled_vertices": 14,
+    "frames_flagged": 88
+   },
+   "boy garment.trousers.main sit / stand (f101-230)": {
+    "worst_mm": -11.76,
+    "max_sampled_vertices": 3,
+    "frames_flagged": 12
+   },
+   "girl garment.shorts.gusset walk (f1-100)": {
+    "worst_mm": -5.58,
+    "max_sampled_vertices": 3,
+    "frames_flagged": 20
+   },
+   "girl garment.shorts.gusset sit / stand (f101-230)": {
+    "worst_mm": -15.48,
+    "max_sampled_vertices": 7,
+    "frames_flagged": 80
+   },
+   "girl garment.shorts.main walk (f1-100)": {
+    "worst_mm": -13.84,
+    "max_sampled_vertices": 2,
+    "frames_flagged": 88
+   },
+   "girl garment.shorts.main sit / stand (f101-230)": {
+    "worst_mm": -26.92,
+    "max_sampled_vertices": 16,
+    "frames_flagged": 89
+   }
+  }
+ },
+ "blender_shot": {
+  "tool": "tools/seated_probe.py on shot.blend built from bake_excerpt.json (all vertices, as rendered: armature + collision; under = deeper than 1 mm)",
+  "before": {
+   "boy_yellow_hoodie garment.trousers.ankle.L walk (T-175 f24)": {
+    "vertices": 4184,
+    "under_visible_skin": 0,
+    "worst_under_visible_skin_mm": 0.0,
+    "under_hidden_skin": 0,
+    "worst_under_hidden_skin_mm": 0.0
+   },
+   "boy_yellow_hoodie garment.trousers.ankle.R walk (T-175 f24)": {
+    "vertices": 4184,
+    "under_visible_skin": 0,
+    "worst_under_visible_skin_mm": 0.0,
+    "under_hidden_skin": 0,
+    "worst_under_hidden_skin_mm": 0.0
+   },
+   "boy_yellow_hoodie garment.trousers.gusset walk (T-175 f24)": {
+    "vertices": 646,
+    "under_visible_skin": 0,
+    "worst_under_visible_skin_mm": 0.0,
+    "under_hidden_skin": 2,
+    "worst_under_hidden_skin_mm": -1.7
+   },
+   "boy_yellow_hoodie garment.trousers.main walk (T-175 f24)": {
+    "vertices": 29684,
+    "under_visible_skin": 0,
+    "worst_under_visible_skin_mm": 0.0,
+    "under_hidden_skin": 24,
+    "worst_under_hidden_skin_mm": -10.5
+   },
+   "girl_auburn_bun_glasses garment.shorts.band.cuff.L walk (T-175 f24)": {
+    "vertices": 264,
+    "under_visible_skin": 0,
+    "worst_under_visible_skin_mm": 0.0,
+    "under_hidden_skin": 0,
+    "worst_under_hidden_skin_mm": 0.0
+   },
+   "girl_auburn_bun_glasses garment.shorts.band.cuff.R walk (T-175 f24)": {
+    "vertices": 264,
+    "under_visible_skin": 0,
+    "worst_under_visible_skin_mm": 0.0,
+    "under_hidden_skin": 0,
+    "worst_under_hidden_skin_mm": 0.0
+   },
+   "girl_auburn_bun_glasses garment.shorts.band.waist walk (T-175 f24)": {
+    "vertices": 392,
+    "under_visible_skin": 0,
+    "worst_under_visible_skin_mm": 0.0,
+    "under_hidden_skin": 0,
+    "worst_under_hidden_skin_mm": 0.0
+   },
+   "girl_auburn_bun_glasses garment.shorts.button.1 walk (T-175 f24)": {
+    "vertices": 114,
+    "under_visible_skin": 0,
+    "worst_under_visible_skin_mm": 0.0,
+    "under_hidden_skin": 0,
+    "worst_under_hidden_skin_mm": 0.0
+   },
+   "girl_auburn_bun_glasses garment.shorts.button.2 walk (T-175 f24)": {
+    "vertices": 114,
+    "under_visible_skin": 0,
+    "worst_under_visible_skin_mm": 0.0,
+    "under_hidden_skin": 0,
+    "worst_under_hidden_skin_mm": 0.0
+   },
+   "girl_auburn_bun_glasses garment.shorts.button.3 walk (T-175 f24)": {
+    "vertices": 114,
+    "under_visible_skin": 0,
+    "worst_under_visible_skin_mm": 0.0,
+    "under_hidden_skin": 0,
+    "worst_under_hidden_skin_mm": 0.0
+   },
+   "girl_auburn_bun_glasses garment.shorts.gusset walk (T-175 f24)": {
+    "vertices": 646,
+    "under_visible_skin": 0,
+    "worst_under_visible_skin_mm": 0.0,
+    "under_hidden_skin": 1,
+    "worst_under_hidden_skin_mm": -1.2
+   },
+   "girl_auburn_bun_glasses garment.shorts.main walk (T-175 f24)": {
+    "vertices": 17488,
+    "under_visible_skin": 0,
+    "worst_under_visible_skin_mm": 0.0,
+    "under_hidden_skin": 3,
+    "worst_under_hidden_skin_mm": -6.1
+   },
+   "boy_yellow_hoodie garment.trousers.ankle.L seated (T-175 f150)": {
+    "vertices": 4184,
+    "under_visible_skin": 0,
+    "worst_under_visible_skin_mm": 0.0,
+    "under_hidden_skin": 0,
+    "worst_under_hidden_skin_mm": 0.0
+   },
+   "boy_yellow_hoodie garment.trousers.ankle.R seated (T-175 f150)": {
+    "vertices": 4184,
+    "under_visible_skin": 0,
+    "worst_under_visible_skin_mm": 0.0,
+    "under_hidden_skin": 0,
+    "worst_under_hidden_skin_mm": 0.0
+   },
+   "boy_yellow_hoodie garment.trousers.gusset seated (T-175 f150)": {
+    "vertices": 646,
+    "under_visible_skin": 0,
+    "worst_under_visible_skin_mm": 0.0,
+    "under_hidden_skin": 24,
+    "worst_under_hidden_skin_mm": -9.1
+   },
+   "boy_yellow_hoodie garment.trousers.main seated (T-175 f150)": {
+    "vertices": 29684,
+    "under_visible_skin": 0,
+    "worst_under_visible_skin_mm": 0.0,
+    "under_hidden_skin": 594,
+    "worst_under_hidden_skin_mm": -22.4
+   },
+   "girl_auburn_bun_glasses garment.shorts.band.cuff.L seated (T-175 f150)": {
+    "vertices": 264,
+    "under_visible_skin": 0,
+    "worst_under_visible_skin_mm": 0.0,
+    "under_hidden_skin": 0,
+    "worst_under_hidden_skin_mm": 0.0
+   },
+   "girl_auburn_bun_glasses garment.shorts.band.cuff.R seated (T-175 f150)": {
+    "vertices": 264,
+    "under_visible_skin": 0,
+    "worst_under_visible_skin_mm": 0.0,
+    "under_hidden_skin": 0,
+    "worst_under_hidden_skin_mm": 0.0
+   },
+   "girl_auburn_bun_glasses garment.shorts.band.waist seated (T-175 f150)": {
+    "vertices": 392,
+    "under_visible_skin": 0,
+    "worst_under_visible_skin_mm": 0.0,
+    "under_hidden_skin": 0,
+    "worst_under_hidden_skin_mm": 0.0
+   },
+   "girl_auburn_bun_glasses garment.shorts.button.1 seated (T-175 f150)": {
+    "vertices": 114,
+    "under_visible_skin": 0,
+    "worst_under_visible_skin_mm": 0.0,
+    "under_hidden_skin": 0,
+    "worst_under_hidden_skin_mm": 0.0
+   },
+   "girl_auburn_bun_glasses garment.shorts.button.2 seated (T-175 f150)": {
+    "vertices": 114,
+    "under_visible_skin": 0,
+    "worst_under_visible_skin_mm": 0.0,
+    "under_hidden_skin": 0,
+    "worst_under_hidden_skin_mm": 0.0
+   },
+   "girl_auburn_bun_glasses garment.shorts.button.3 seated (T-175 f150)": {
+    "vertices": 114,
+    "under_visible_skin": 0,
+    "worst_under_visible_skin_mm": 0.0,
+    "under_hidden_skin": 0,
+    "worst_under_hidden_skin_mm": 0.0
+   },
+   "girl_auburn_bun_glasses garment.shorts.gusset seated (T-175 f150)": {
+    "vertices": 646,
+    "under_visible_skin": 0,
+    "worst_under_visible_skin_mm": 0.0,
+    "under_hidden_skin": 3,
+    "worst_under_hidden_skin_mm": -2.0
+   },
+   "girl_auburn_bun_glasses garment.shorts.main seated (T-175 f150)": {
+    "vertices": 17488,
+    "under_visible_skin": 149,
+    "worst_under_visible_skin_mm": -6.8,
+    "under_hidden_skin": 0,
+    "worst_under_hidden_skin_mm": 0.0
+   }
+  },
+  "after": {
+   "boy_yellow_hoodie garment.trousers.ankle.L walk (T-175 f24)": {
+    "vertices": 4184,
+    "under_visible_skin": 0,
+    "worst_under_visible_skin_mm": 0.0,
+    "under_hidden_skin": 0,
+    "worst_under_hidden_skin_mm": 0.0
+   },
+   "boy_yellow_hoodie garment.trousers.ankle.R walk (T-175 f24)": {
+    "vertices": 4184,
+    "under_visible_skin": 0,
+    "worst_under_visible_skin_mm": 0.0,
+    "under_hidden_skin": 0,
+    "worst_under_hidden_skin_mm": 0.0
+   },
+   "boy_yellow_hoodie garment.trousers.gusset walk (T-175 f24)": {
+    "vertices": 646,
+    "under_visible_skin": 0,
+    "worst_under_visible_skin_mm": 0.0,
+    "under_hidden_skin": 2,
+    "worst_under_hidden_skin_mm": -1.7
+   },
+   "boy_yellow_hoodie garment.trousers.main walk (T-175 f24)": {
+    "vertices": 29684,
+    "under_visible_skin": 0,
+    "worst_under_visible_skin_mm": 0.0,
+    "under_hidden_skin": 15,
+    "worst_under_hidden_skin_mm": -10.5
+   },
+   "girl_auburn_bun_glasses garment.shorts.band.cuff.L walk (T-175 f24)": {
+    "vertices": 264,
+    "under_visible_skin": 0,
+    "worst_under_visible_skin_mm": 0.0,
+    "under_hidden_skin": 0,
+    "worst_under_hidden_skin_mm": 0.0
+   },
+   "girl_auburn_bun_glasses garment.shorts.band.cuff.R walk (T-175 f24)": {
+    "vertices": 264,
+    "under_visible_skin": 0,
+    "worst_under_visible_skin_mm": 0.0,
+    "under_hidden_skin": 0,
+    "worst_under_hidden_skin_mm": 0.0
+   },
+   "girl_auburn_bun_glasses garment.shorts.band.waist walk (T-175 f24)": {
+    "vertices": 392,
+    "under_visible_skin": 0,
+    "worst_under_visible_skin_mm": 0.0,
+    "under_hidden_skin": 0,
+    "worst_under_hidden_skin_mm": 0.0
+   },
+   "girl_auburn_bun_glasses garment.shorts.button.1 walk (T-175 f24)": {
+    "vertices": 114,
+    "under_visible_skin": 0,
+    "worst_under_visible_skin_mm": 0.0,
+    "under_hidden_skin": 0,
+    "worst_under_hidden_skin_mm": 0.0
+   },
+   "girl_auburn_bun_glasses garment.shorts.button.2 walk (T-175 f24)": {
+    "vertices": 114,
+    "under_visible_skin": 0,
+    "worst_under_visible_skin_mm": 0.0,
+    "under_hidden_skin": 0,
+    "worst_under_hidden_skin_mm": 0.0
+   },
+   "girl_auburn_bun_glasses garment.shorts.button.3 walk (T-175 f24)": {
+    "vertices": 114,
+    "under_visible_skin": 0,
+    "worst_under_visible_skin_mm": 0.0,
+    "under_hidden_skin": 0,
+    "worst_under_hidden_skin_mm": 0.0
+   },
+   "girl_auburn_bun_glasses garment.shorts.gusset walk (T-175 f24)": {
+    "vertices": 646,
+    "under_visible_skin": 0,
+    "worst_under_visible_skin_mm": 0.0,
+    "under_hidden_skin": 1,
+    "worst_under_hidden_skin_mm": -1.2
+   },
+   "girl_auburn_bun_glasses garment.shorts.main walk (T-175 f24)": {
+    "vertices": 17488,
+    "under_visible_skin": 5,
+    "worst_under_visible_skin_mm": -1.9,
+    "under_hidden_skin": 4,
+    "worst_under_hidden_skin_mm": -3.2
+   },
+   "boy_yellow_hoodie garment.trousers.ankle.L seated (T-175 f150)": {
+    "vertices": 4184,
+    "under_visible_skin": 0,
+    "worst_under_visible_skin_mm": 0.0,
+    "under_hidden_skin": 0,
+    "worst_under_hidden_skin_mm": 0.0
+   },
+   "boy_yellow_hoodie garment.trousers.ankle.R seated (T-175 f150)": {
+    "vertices": 4184,
+    "under_visible_skin": 0,
+    "worst_under_visible_skin_mm": 0.0,
+    "under_hidden_skin": 0,
+    "worst_under_hidden_skin_mm": 0.0
+   },
+   "boy_yellow_hoodie garment.trousers.gusset seated (T-175 f150)": {
+    "vertices": 646,
+    "under_visible_skin": 0,
+    "worst_under_visible_skin_mm": 0.0,
+    "under_hidden_skin": 24,
+    "worst_under_hidden_skin_mm": -9.1
+   },
+   "boy_yellow_hoodie garment.trousers.main seated (T-175 f150)": {
+    "vertices": 29684,
+    "under_visible_skin": 0,
+    "worst_under_visible_skin_mm": 0.0,
+    "under_hidden_skin": 612,
+    "worst_under_hidden_skin_mm": -22.4
+   },
+   "girl_auburn_bun_glasses garment.shorts.band.cuff.L seated (T-175 f150)": {
+    "vertices": 264,
+    "under_visible_skin": 0,
+    "worst_under_visible_skin_mm": 0.0,
+    "under_hidden_skin": 0,
+    "worst_under_hidden_skin_mm": 0.0
+   },
+   "girl_auburn_bun_glasses garment.shorts.band.cuff.R seated (T-175 f150)": {
+    "vertices": 264,
+    "under_visible_skin": 0,
+    "worst_under_visible_skin_mm": 0.0,
+    "under_hidden_skin": 0,
+    "worst_under_hidden_skin_mm": 0.0
+   },
+   "girl_auburn_bun_glasses garment.shorts.band.waist seated (T-175 f150)": {
+    "vertices": 392,
+    "under_visible_skin": 0,
+    "worst_under_visible_skin_mm": 0.0,
+    "under_hidden_skin": 0,
+    "worst_under_hidden_skin_mm": 0.0
+   },
+   "girl_auburn_bun_glasses garment.shorts.button.1 seated (T-175 f150)": {
+    "vertices": 114,
+    "under_visible_skin": 0,
+    "worst_under_visible_skin_mm": 0.0,
+    "under_hidden_skin": 0,
+    "worst_under_hidden_skin_mm": 0.0
+   },
+   "girl_auburn_bun_glasses garment.shorts.button.2 seated (T-175 f150)": {
+    "vertices": 114,
+    "under_visible_skin": 0,
+    "worst_under_visible_skin_mm": 0.0,
+    "under_hidden_skin": 0,
+    "worst_under_hidden_skin_mm": 0.0
+   },
+   "girl_auburn_bun_glasses garment.shorts.button.3 seated (T-175 f150)": {
+    "vertices": 114,
+    "under_visible_skin": 0,
+    "worst_under_visible_skin_mm": 0.0,
+    "under_hidden_skin": 0,
+    "worst_under_hidden_skin_mm": 0.0
+   },
+   "girl_auburn_bun_glasses garment.shorts.gusset seated (T-175 f150)": {
+    "vertices": 646,
+    "under_visible_skin": 0,
+    "worst_under_visible_skin_mm": 0.0,
+    "under_hidden_skin": 3,
+    "worst_under_hidden_skin_mm": -2.0
+   },
+   "girl_auburn_bun_glasses garment.shorts.main seated (T-175 f150)": {
+    "vertices": 17488,
+    "under_visible_skin": 0,
+    "worst_under_visible_skin_mm": 0.0,
+    "under_hidden_skin": 9,
+    "worst_under_hidden_skin_mm": -19.2
+   }
+  }
+ }
+}

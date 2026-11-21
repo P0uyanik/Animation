@@ -1,0 +1,20 @@
+{
+ "title": "T-184 boy seated (T-175 f150): rows front, lap",
+ "columns": [
+  {
+   "label": "before: boy 2.3.0 / girl 0.14.0 (published)",
+   "dir": "out/before"
+  },
+  {
+   "label": "after: same specs + T-184 override (seated)",
+   "dir": "out/after"
+  }
+ ],
+ "frames": [
+  5,
+  6
+ ],
+ "pattern": "frame_{frame:04d}.png",
+ "out": "sheet_boy_seated.jpg",
+ "max_px": 1024
+}

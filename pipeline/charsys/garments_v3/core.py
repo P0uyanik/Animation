@@ -9,19 +9,21 @@ Order per call of ``build``:
      ``tights`` (built here, not by ``garment/2``), ``skirt_pattern`` and ``cloth_sim`` (skirt piece), ``sole_stitch``
      (footwear) and ``fibre_uv`` (every piece of the item, after its new pieces exist).
 ``bind_to_body`` binds with ``garment/2`` (weights, collision, its correctives), then carries each seated collar by
-the chest and adds its reach keys. Character-agnostic: every size comes from the spec, the rig or the body."""
+the chest and adds its reach keys, then applies ``seated`` (T-184, shorts / trousers: weights and collision weights
+for a deep hip bend) to the items that ask for it. Character-agnostic: every size comes from the spec, the rig or the
+body."""
 import copy
 import json
 
 from garments import generator as GEN
 from garments_v2 import core as V2
 
-from . import ankle, cloth_tag, collar, cuffs, fibre_uv, pattern, ribs, stitch, tights
+from . import ankle, cloth_tag, collar, cuffs, fibre_uv, pattern, ribs, seated, stitch, tights
 
 GENERATOR = "garment/3"
 PREVIOUS = V2.GENERATOR
 # item type -> the garment/3 fields it accepts
-ITEM_FIELDS = {"shorts": ("cuff_gather", "fibre_uv"), "trousers": ("ankle_close", "fibre_uv"),
+ITEM_FIELDS = {"shorts": ("cuff_gather", "fibre_uv", "seated"), "trousers": ("ankle_close", "fibre_uv", "seated"),
                "top": ("collar_seat", "rib_cuff", "fibre_uv"), "shirt": ("collar_seat", "rib_cuff", "fibre_uv"),
                "dress": ("collar_seat", "rib_cuff", "fibre_uv", "skirt_pattern", "cloth_sim"),
                "hoodie": ("rib_cuff", "fibre_uv"), "skirt": ("fibre_uv", "skirt_pattern", "cloth_sim"),
@@ -30,6 +32,7 @@ ITEM_FIELDS = {"shorts": ("cuff_gather", "fibre_uv"), "trousers": ("ankle_close"
 NEW_TYPES = ("tights",)  # item types garment/3 builds itself (T-126); they are not part of the garment/2 view
 V3_FIELDS = sorted({f for fs in ITEM_FIELDS.values() for f in fs})
 SEAT_PROP = "ps_garment3_collar_seat"
+SEATED_PROP = "ps_garment3_seated"  # set on the body only when an item has the field
 
 
 def validate(clothing):
@@ -53,6 +56,8 @@ def validate(clothing):
                 raise ValueError(f"garment {name}.cuff_gather needs the cuff bands (cuff / bands.cuff)")
         if "ankle_close" in raw:
             ankle.validate(raw["ankle_close"], name)
+        if raw.get("seated") not in (None, False):
+            seated.validate(raw["seated"], name)
         if "rib_cuff" in raw:
             ribs.validate(raw["rib_cuff"], name)
             bands = raw.get("bands")
@@ -154,6 +159,13 @@ def build(C, body, clothing, P, H, J, G):
     for ob in ordered:
         ob["ps_garment_generator"] = GENERATOR
     body[SEAT_PROP] = json.dumps(seats, sort_keys=True)
+    seated_items = {}
+    for raw in clothing["garments"]:
+        cfg = GEN._merge(clothing.get("defaults"), raw)
+        if cfg.get("seated") not in (None, False):
+            seated_items[cfg["name"]] = cfg["seated"]
+    if seated_items:
+        body[SEATED_PROP] = json.dumps(seated_items, sort_keys=True)
     report["generator"] = GENERATOR
     report["reuses"] = PREVIOUS
     report["objects"] = len(ordered)
@@ -169,4 +181,8 @@ def bind_to_body(rig, body, garments, neighbours=1, max_influences=4, worn=None)
     if seats:
         out["collar_seat"] = {name: collar.bind(rig, garments, name, cfg, max_influences)
                               for name, cfg in sorted(seats.items())}
+    seated_items = json.loads(body.get(SEATED_PROP, "{}") or "{}")
+    if seated_items:
+        out["seated"] = {name: seated.bind(rig, body, garments, name, cfg, max_influences, worn)
+                         for name, cfg in sorted(seated_items.items())}
     return out

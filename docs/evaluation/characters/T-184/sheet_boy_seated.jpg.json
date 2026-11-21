@@ -1,0 +1,44 @@
+{
+  "sheet": "/home/user/Animation/docs/evaluation/characters/T-184/sheet_boy_seated.jpg",
+  "size": [
+    966,
+    1024
+  ],
+  "max_px": 1024,
+  "frames": [
+    5,
+    6
+  ],
+  "columns": [
+    "before: boy 2.3.0 / girl 0.14.0 (published)",
+    "after: same specs + T-184 override (seated)"
+  ],
+  "crops": [],
+  "inputs": [
+    {
+      "frame": 5,
+      "column": "before: boy 2.3.0 / girl 0.14.0 (published)",
+      "path": "/home/user/Animation/docs/evaluation/characters/T-184/out/before/frame_0005.png",
+      "sha256": "e996df8f294c377da0200177c714970d57f70157a40c909d5ecf849713e0c627"
+    },
+    {
+      "frame": 5,
+      "column": "after: same specs + T-184 override (seated)",
+      "path": "/home/user/Animation/docs/evaluation/characters/T-184/out/after/frame_0005.png",
+      "sha256": "e8e305fb3b8a40fc69d24caf8d81735d26c3532ac03a674d42ca29aa0640c060"
+    },
+    {
+      "frame": 6,
+      "column": "before: boy 2.3.0 / girl 0.14.0 (published)",
+      "path": "/home/user/Animation/docs/evaluation/characters/T-184/out/before/frame_0006.png",
+      "sha256": "5b4280687b9cd6218ec82bb8812e89b9089d80d634d2c688de5e611279242de9"
+    },
+    {
+      "frame": 6,
+      "column": "after: same specs + T-184 override (seated)",
+      "path": "/home/user/Animation/docs/evaluation/characters/T-184/out/after/frame_0006.png",
+      "sha256": "39ad4feb2bd53fe9631406dadb9c9c6eed5cf1d44510808ae54c7351210987ac"
+    }
+  ],
+  "missing": []
+}
