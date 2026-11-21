@@ -3,9 +3,8 @@
     python3 pipeline/charsys/tests/test_face_t168.py [--blender <exe or tools/bpy_blender.py>]
 
 Plain checks (no Blender):
-  * both options are opt-in: the pad fade defaults to the previous constant (0.015) and no spec under assets/ sets
-    cheek_pad_top_fade_m or the nose type "upturned" (default builds do not reach the new code), except the
-    owner-approved candidates listed in owner_approved_candidates.json (feature t168_face; R3, owner ~22:00Z);
+  * both options are opt-in: the pad fade defaults to the previous constant (0.015) and which files may set
+    cheek_pad_top_fade_m or the nose type "upturned" is the release rule's (pipeline/charsys/release_rule.py, T-178);
   * no character names in the two edited functions' modules' new code paths (face_v3/lower_face.py).
 Unit checks (--blender) on a synthetic head (a sphere):
   * upturned nose: the tip stands out by height_m, nothing moves outside the footprint (beside the tip, above the
@@ -22,7 +21,6 @@ import tempfile
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, "..", "..", ".."))
 sys.path.insert(0, HERE)
-import test_guard_allowlist as GA  # noqa: E402
 RESULTS = []
 
 
@@ -46,23 +44,7 @@ def plain():
     check("no character names in face_v3/lower_face.py", not re.search(r"boy_|girl_|auburn|hoodie|white_hair", lf))
     ff = open(os.path.join(ROOT, "pipeline", "charsys", "face_features.py")).read()
     check("upturned nose is one branch of build_nose", ff.count('t == "upturned"') == 1)
-    users = []
-    for base, _, files in os.walk(os.path.join(ROOT, "assets")):
-        for f in files:
-            if not f.endswith(".json") or "references" in base:
-                continue
-            try:
-                d = json.load(open(os.path.join(base, f)))
-            except (ValueError, UnicodeDecodeError):
-                continue
-            if _walk(d, lambda k, v: k == "cheek_pad_top_fade_m" or (k == "nose" and isinstance(v, dict) and v.get("type") == "upturned")):
-                users.append(os.path.relpath(os.path.join(base, f), ROOT))
-    users, _allowed, aerr = GA.split(users, "t168_face")  # R3 owner allowance (2026-11-20 ~22:00Z item 2)
-    check("owner-approved candidate allowlist is valid", not aerr, aerr[:3])
-    check("no spec under assets/ uses the new options (except listed owner-approved candidates)", not users, str(users))
-    neg = ["assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.98.7.6.spec.json",
-           "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.14.0.spec.json"]
-    check("negative: a non-listed spec using the options still fails the guard", GA.split(neg, "t168_face")[0] == neg)
+    # "no spec uses the options unless listed" (and its negative) -> pipeline/charsys/release_rule.py (T-178)
 
 
 UNIT = r'''

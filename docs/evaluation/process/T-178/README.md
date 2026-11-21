@@ -1,8 +1,9 @@
 # T-178: one release rule in place of per-feature guards (T-176 proposal 5)
 
-Status: **partial**. Rule, manifest, version_switch step, new tests and this coverage table are done. Removing the
-old "no spec uses X" checks waits for the owner's approval typed in the implementer session (brief, step 3). No
-existing test has been changed yet.
+Status: **complete**, pending the branch gate. The owner typed the approval in the implementer session on
+2026-11-21: "I approve changing and removing the per-feature guard tests for T-178, on condition that no essential
+protection or coverage is weakened". Stage 1 (`2f7c55b`) added the rule. Stage 2 removed the old "nobody uses X"
+checks.
 
 ## What
 - `pipeline/charsys/release_rule.py`: the rule. `FEATURES` = detector + scope for each opt-in feature, copied from the
@@ -74,11 +75,32 @@ loop, "det" = `test_detectors_and_scopes`.
 
 Kept as they are: byte-immutability (`test_asset_store_guard.py`, `tools/check_assets.py`),
 `tools/frozen_manifest.txt`, goldens, version_switch's decision ref check, and every build, weight and geometry
-assertion in the files above. After approval, only the "nobody uses X" checks and the allowlist plumbing come out;
-`test_guard_allowlist.py` and `owner_approved_candidates.json` are deleted.
+assertion in the files above.
 
-## Tests (this stage)
+## Stage 2: removed (owner-approved)
+Each removed check was replaced by a one-line comment pointing to `release_rule.py`, and the docstrings were updated.
+The `test_guard_allowlist` import is gone from every file.
+
+| file | checks removed | count before → after |
+|---|---|---|
+| test_hair_r4.py | groom/3 base/override | 37 → 36 |
+| test_hair_r5.py | allowlist valid, groom/4 | 79 → 77 |
+| test_hair_r6.py | allowlist valid, groom/5, negative | 49 → 46 |
+| test_hair_v3_r2.py / r3.py | base spec !groom/2 | 19 → 18 / 24 → 23 |
+| test_hands_r2.py | allowlist valid, body.hands (+ unused `glob`) | 50 → 48 |
+| test_face_r5.py (plain) | allowlist valid ×2, lash_curve, closed_fill group, negative | 19 → 14 |
+| test_face_v3.py / v3b.py (plain) | published spec pins face_generic/2 (×2) | 7 → 5 / 10 → 8 |
+| test_face_t168.py (plain) | allowlist valid, options, negative | 6 → 3 |
+| test_guard_allowlist.py + owner_approved_candidates.json | deleted (48 checks); unregistered from check_all | — |
+
+TRR's migration check now reads the old allowlist from the input commit (`git show b531ab5:…`). All 14 triples are
+listed. It prints SKIP in a clone without that commit. `docs/evaluation/characters/R3/stack_specs.py` still names the
+old file in a docstring; it is outside the write-set and was left unchanged.
+
+## Tests
 - `python3 pipeline/charsys/tests/test_release_rule.py` → 130/130 PASS
 - `python3 pipeline/charsys/release_rule.py` → OK, 0 violations, 0 manifest problems
 - `python3 tools/tests/test_version_switch.py` (unchanged) → 96/96 PASS
-- Not run yet: full `tools/check_all.py` and the branch gate. They run after the old-test edits.
+- After stage 2, every touched test passes: hair_r4 36, hair_r5 77, hair_r6 46, v3_r2 18, v3_r3 23, hands_r2 48,
+  face_r5 14, face_v3 5, face_v3b 8, face_t168 3, test_versions 131, test_asset_store_guard 33,
+  test_release_rule 130, test_version_switch 96.

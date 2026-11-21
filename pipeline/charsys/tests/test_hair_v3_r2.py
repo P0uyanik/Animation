@@ -4,7 +4,8 @@
 
 Covers: the T-070 candidate specs (docs/evaluation/characters/T-070/candidates) validate and pin groom/2; the new
 opt-in data is validated (clump lift [root, peak, tip] + lift_peak; fibre layer shaft_radius_mm / tip_ratio); specs
-without the new keys (the T-044 candidates) still validate unchanged; no published character spec pins groom/2."""
+without the new keys (the T-044 candidates) still validate unchanged; no published character spec pins groom/2
+(checked by the release rule, pipeline/charsys/release_rule.py, T-178)."""
 import copy
 import json
 import os
@@ -41,11 +42,7 @@ def main():
         errs = GH.validate(hs)
         check(f"T-070 {key}: candidate validates", not errs, errs[:3])
         check(f"T-070 {key}: candidate pins groom/2", c["overrides"]["generators"]["groom"] == "groom/2")
-        spec = json.load(open(os.path.join(ROOT, c["character_spec"])))
-        if not c["character_spec"].startswith("docs/"):
-            check(f"T-070 {key}: published spec does not pin groom/2",
-                  (spec.get("generators") or {}).get("groom") != "groom/2"
-                  and (spec.get("hair") or {}).get("generator") != "groom/2")
+        # "published spec does not pin groom/2" -> pipeline/charsys/release_rule.py (T-178)
         old = load("T-044", key)
         if old is not None:
             check(f"T-044 {key}: round-1 candidate still validates (new keys are opt-in)",

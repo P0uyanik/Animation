@@ -24,7 +24,8 @@ sys.path.insert(0, os.path.join(ROOT, "tools"))
 import release_rule as R  # noqa: E402
 
 RESULTS = []
-OLD_ALLOWLIST = os.path.join(HERE, "owner_approved_candidates.json")  # T-154, replaced by the manifest
+OLD_ALLOWLIST = "pipeline/charsys/tests/owner_approved_candidates.json"  # T-154, replaced by the manifest
+OLD_COMMIT = "b531ab5"  # T-178 input commit, the last one with the old allowlist
 
 
 def check(name, ok, detail=None):
@@ -108,8 +109,12 @@ def test_repository():
         cur = (json.load(open(idx)).get("pointers") or {}).get("approved")
         if (cid, cur) in used:
             check(f"current {cid} {cur} is listed with its features", listed.get((cid, cur)) == used[(cid, cur)])
-    if os.path.isfile(OLD_ALLOWLIST):  # until the T-154 allowlist is removed: the manifest covers all its entries
-        old = json.load(open(OLD_ALLOWLIST))["entries"]
+    # the T-154 allowlist this manifest replaced (removed by T-178): read from the input commit when history is there
+    got = subprocess.run(["git", "show", f"{OLD_COMMIT}:{OLD_ALLOWLIST}"], cwd=ROOT, capture_output=True, text=True)
+    if got.returncode != 0:
+        print(f"[test_release_rule] SKIP old allowlist migration check ({OLD_COMMIT} not in this clone)")
+    else:
+        old = json.loads(got.stdout)["entries"]
         miss = [(e["character"], e["version"], e["feature"]) for e in old
                 if e["feature"] not in listed.get((e["character"], e["version"]), set())]
         check(f"every owner_approved_candidates.json entry ({len(old)}) is listed in the manifest", not miss, miss)
