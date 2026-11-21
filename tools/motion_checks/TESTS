@@ -1,0 +1,9 @@
+# Test registry (T-182; docs/process/GATE.md "Test registry"). One line per test file in this directory or below:
+#   run <file> [args]      tools/check_all.py runs `python <file> [args]` (Python tests step)
+#   blender <file> <unit>  covered by that Blender unit of tools/check_all.py
+#   via <file> <runner>    run by another runner (repository path)
+#   local <file> <reason>  not run by the gate; the reason says why
+# Adding a line for a NEW test needs no approval; changing or removing a line does.
+
+local reach/tests/test_reach.py 'plain Python, not in the gate before T-182 (candidate for run)'
+local tests/test_motion_checks.py 'plain Python, not in the gate before T-182 (candidate for run)'

@@ -54,8 +54,8 @@ def test_registration():
              "pipeline/x/foo_test.py", "pipeline/x/helper.py", "docs/test_notes.md"]
     check(ready.unregistered_tests(added, reg) == ["tests/test_c.cpp", "pipeline/x/test_new.py",
                                                     "pipeline/x/foo_test.py"], "unregistered tests")
-    text = (ROOT / "tools/check_all.py").read_text(encoding="utf-8")
-    check("tools/tests/test_task_kit.py" in text, "test_task_kit.py registered in tools/check_all.py")
+    text = (ROOT / "tools/tests/TESTS").read_text(encoding="utf-8")
+    check("run test_task_kit.py" in text, "test_task_kit.py registered in tools/tests/TESTS")
 
 
 def test_ready_git(tmp: Path):
