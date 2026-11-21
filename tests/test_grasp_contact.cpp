@@ -502,3 +502,47 @@ TEST_CASE("fingerClose grip natural / clear (T-171 r3): thumb up with a keyed el
   CHECK(worstC <= worstN + 1e-4f);
   CHECK(glm::distance(bonePos(*clr, "hand.R", 20), bonePos(*nat, "hand.R", 20)) <= 0.0005f);  // the contact is the same
 }
+
+TEST_CASE("fingerClose grip natural (T-186): the prop stays where it is from the contact until the lift starts") {
+  // The r3 grasp (wrap, grip natural, clear) of a cup close in front of the body, then a lift 8 frames after the
+  // contact. The cup is the hand's from the contact on, so a hand that moves before the lift moves the cup with it:
+  // here the arm-body pass pushed the wrist out of the body on the way in, and that push's ramp crossed the contact
+  // and came back while the hand held the cup on the table (7 mm before T-186).
+  Scene s = graspScene(kBoy);
+  s.frameEnd = 60;
+  auto probe = load(s);
+  const vec3 shoulder = bonePos(*probe, "upperArm.R", 1), elbow = bonePos(*probe, "forearm.R", 1);
+  const float arm = glm::distance(shoulder, elbow) + glm::distance(elbow, bonePos(*probe, "hand.R", 1));
+  const mat4 rot = assetTransformMatrix({vec3(0), vec3(0, 180, 0), vec3(1)});
+  s.props[0].transform.translation = shoulder + vec3(0, -0.45f, 0.45f) * arm - vec3(rot * vec4(cup().sockets.at("grip").translation, 0));
+  s.actions = Json::parse(R"([{"type": "grasp", "character": "actor", "hand": "R", "prop": "cup", "socket": "grip", "start": 5, "contact": 20,
+      "band": [0.0, 0.1], "fingerClose": {"wrap": true, "grip": "natural", "clear": 0.006}},
+    {"type": "hold", "character": "actor", "hand": "R", "by": [0, 0.12, 0], "start": 28, "end": 46}])");
+  auto ev = load(s);
+  REQUIRE(generated(*ev).find("actor/collision.push.hand.R"));  // the pass pushes this arm on the way in
+  const mat4 P0 = ev->propWorld(0, 1);
+  float moved = 0, turned = 0, armIn = 0;
+  for (double f = 20; f <= 28; f += 0.5) {
+    const mat4 P = ev->propWorld(0, f);
+    moved = std::max(moved, glm::distance(vec3(P[3]), vec3(P0[3])));
+    for (int k = 0; k < 3; ++k) turned = std::max(turned, glm::distance(vec3(P[k]), vec3(P0[k])));
+    armIn = std::max(armIn, -ev->armClearanceAt(0, 'R', f).gap);
+  }
+  MESSAGE(std::format("cup from the contact f20 to the lift f28: moved {:.4f} mm, axes {:.6f}; arm into the body {:.2f} mm", moved * 1e3, turned,
+                      armIn * 1e3));
+  CHECK(moved <= 1e-5f);
+  CHECK(turned <= 1e-5f);
+  CHECK(armIn <= 0.0f);  // the arm stays out of the body while the hand holds still
+  CHECK(glm::distance(vec3(ev->propWorld(0, 46)[3]), vec3(P0[3]) + vec3(0, 0.12f, 0)) <= 0.003f);  // and the lift still lifts
+  // The span: from the contact to the lift's first frame.
+  const Track* still = generated(*ev).find("actor/collision.still.hand.R");
+  REQUIRE(still);
+  CHECK(still->evaluate(19).x == 0.0f);
+  CHECK(still->evaluate(20).x == 1.0f);
+  CHECK(still->evaluate(28).x == 1.0f);
+  CHECK(still->evaluate(29).x == 0.0f);
+  // Without "grip": "natural" no span is written (the default path is unchanged).
+  Scene d = s;
+  d.actions[0]["fingerClose"] = {{"wrap", true}, {"clear", 0.006}};
+  CHECK_FALSE(generated(*load(d)).find("actor/collision.still.hand.R"));
+}
