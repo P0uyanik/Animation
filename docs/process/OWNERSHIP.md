@@ -30,7 +30,6 @@ split.
 | T-171 | E | t-171-claude-hands-r2 | `engine/anim/hand_shape.h`, `engine/anim/hand_shape.cpp`, `engine/scene/interaction.cpp`, `engine/scene/verbs.cpp`, `engine/scene/collision.cpp`, `tests/test_grasp_contact.cpp`, `tests/test_hand_shape*.cpp`, `docs/evaluation/interaction/T-171/**` | T-157 | — |
 | T-172 | C | t-172-claude-test-video | `docs/evaluation/video/T-172/**` | — | — |
 | T-180 | G | t-180-claude-clone-profiles | `docs/process/CLONE_PROFILES.md` | — | — |
-| T-181b | G | t-181b-claude-read-not-blocking | `tools/integrate.py`, `tools/regression/tests/test_gate_tools.py`, `docs/evaluation/process/T-181/**` | — | — |
 | T-182 | G | t-182-claude-test-registry | `tools/check_all.py`, `tools/guarded_paths.txt`, `tools/ready.py`, `tools/tests/test_test_registry.py`, `pipeline/charsys/tests/TESTS`, `pipeline/clips/TESTS`, `pipeline/clips/tests/TESTS`, `pipeline/production/tests/TESTS`, `tests/TESTS`, `tests/acting/TESTS`, `tests/props/TESTS`, `tools/animcheck/tests/TESTS`, `tools/ci/tests/TESTS`, `tools/cleanup/TESTS`, `tools/fidelity/tests/TESTS`, `tools/fit/tests/TESTS`, `tools/lipsync/TESTS`, `tools/regression/tests/TESTS`, `tools/tests/TESTS`, `docs/process/GATE.md`, `docs/evaluation/process/T-182/**` | — | — |
 
 Supervisor-only files: docs/process/TASK_LOG.md, docs/ROADMAP.md, docs/process/OWNER_DECISIONS.md, docs/tasks/**.
