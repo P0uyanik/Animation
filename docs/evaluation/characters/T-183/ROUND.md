@@ -66,28 +66,82 @@ clearance to the head-bone colliders; `rest`, `segments`, `anchored_gravity`, fr
 Surface left outside the spheres: head 2.6 mm, ears 1.3 mm, torso 8.9 mm (p99 0.1), arms 18.2 mm (p99 7.8: cuffs
 and sleeve openings, no measured penetration there), hands 3.9 mm.
 
-Tip noise (`tip_noise.py`, zigzag = a tip that reverses direction frame to frame, mm): round 1 max 67, 109
-chain-frames over 1 mm; `p6` max 25, 165 chain-frames (the bun's 19 mm at f57-62 is the head's own jerk, same in
-round 1). In calm frames (181 of 284): round 1 worst 4.8 mm, 21 chain-frames over 0.5 mm; `p6` worst 18 mm, 25.
-The first prototype had 259 mm / 753: caused by spheres placed outside the body (inside-out trims) and by the
-closest-point segment lever; both fixed. Condition (1) is not closed yet: see next steps 1-2.
+### Session 2 (2026-11-21, to `52dd7e5` and the commit after it): condition (1) and the unit tests
+
+- `origin/main` (159e059) merged; `release_rule.py`, `test_release_rule.py` SAMPLES, `GENERATOR_PINS.md` keep both the
+  T-184 `seated` entries and the T-183 ones. Merge `origin/main` once more before READY.
+- `tests/test_secondary.cpp`: 7 new cases, 18 secondary cases pass (`./build/tests/plush_tests -tc="secondary*"`):
+  parsing, round trip and errors of `radii`, `rest`, `friction`, `max_swing`; per-joint radii and tapered segments;
+  resting contact (outside, tip step 0.002 mm per frame once settled); a moving collider carries the chain (no
+  reversal); `max_swing` bounds the turn per frame; a collider holds a joint beyond the angular limit.
+- Engine fixes (rest chains only unless noted): the angular limit yields to contact (a joint that a collider pushed in
+  this or the last step is not clamped; once free its limit shrinks from the angle it had at `kLimitReturn` = 12 1/s;
+  `State::hit`); non-rest path with `radii`: a tapered segment is tested where its surface is nearest, and at its
+  middle when its thick end is the first joint.
+- Cause of the calm-frame noise (traced per step with temporary prints, `ringlets_back_b_00` f50-51): the forearm
+  pushed the tip past the 30 degree limit; clamp and push alternated and the tip slid round the limit cone to its far
+  side in 2 frames (25 mm per frame).
+
+Tip noise, same bakes, `tools/tip_noise.py <bake> <static bake>` (mm; "double" = two reversals in a row = jitter; a
+single reversal is also a tip pushed out and coming back):
+
+| Bake | Calm frames: worst single reversal | Chain-frames over 0.5 mm (calm) | Worst double reversal, locks | Chain-frames double over 0.5 mm (with the bun's 9) |
+|---|---|---|---|---|
+| Round 1 candidate | 4.8 | 21 | 4.3 | 30 |
+| Prototype `p6` (before the fix) | 18.2 | 25 | 4.0 | 32 |
+| Prototype `p7` (after the fix) | 7.3 | 17 | 4.6 | 28 |
+
+`p7`'s 7.3 mm (f51) is one out-and-back of a tip that the passing forearm pushes (traced: smooth). Noise is at the
+round-1 level, not below it. Friction 0 / 8 / 40 gives the same picture (not the lever). `p7` measure (every 3rd
+frame): as `p6` (curtain 48.4 mm / 402 vertices, cap 12.4 mm, vest edges 1-4 vertices 36-46 mm, ears 5-7 mm).
+
+Seen in preview frames (`tools/preview.sh`, view `arm`, f22-75; reported to the Supervisor 21:06Z, no answer yet):
+f24-28 her right arm reaches forward for the cup, the puffy sleeve rises under `ringlets_side_r00`. Released and
+round 1: the lock sinks into the sleeve. `p7`: it stays out, is lifted with the sleeve (tip up to 26 cm off its
+hanging place), touches the cheek near the glasses at about f26-28, then lies draped on the forearm (f32-75). Kept
+as is; show it in the arm-raised close-up. Possible trade if asked: thinner chain radii against the arm colliders.
+
+### Facts for the groom port (candidate master inspected in Blender)
+
+- Every figure mesh is a child of the rig with an Armature modifier and vertex groups (deform bone names). Use the
+  evaluated meshes (`ob.evaluated_get(deps).to_mesh()`, groups survive): `body_skin` has a Mask modifier (skin under
+  the garments is hidden), garments have three Shrinkwrap modifiers. Leave out of the figure: hair objects,
+  `garment.collider.*` (`ps_collision_proxy`), `WGT-*`, and the face parts `eye* brow* lash* lid* mouth* glasses*`
+  (`glasses_lens` is bone-parented, no groups). Ears: `ear.L`, `ear.R`, one group each.
+- `build_character.py:331` calls `GROOM.bind(rig, groom, head_bone, chest_bone, binding)` after the garments exist.
+  Hair objects carry `ps_contact` (the stored contact spec); chain objects carry `ps_dyn`; the rig's `ps_dynamics`
+  holds chains (`bones`, `tip`, Blender world coordinates) and colliders.
+- The prototype (`tools/proto_contact.py`) is the reference for the port: its five sphere sets (head without ears,
+  ears, torso = everything but head, arms, hands, legs; arms; hands), `skin_spheres` arguments, sphere bone = the
+  vertex's dominant group, chain radii = `chain_radii(vertices with >= 0.5 chain weight, joints, percentile 100,
+  floor 6 mm)`, root radius 0, each radius capped by the joint's rest clearance to the colliders on the head bone;
+  lock chains: `contact = {solid: [], segments, anchored_gravity, radii, rest, friction 40, max_swing 12}`, no
+  `colliders` key (= all); bun chains keep `head, torso, shoulder_l, shoulder_r`.
 
 ### Next steps (in this order)
 
-1. Engine unit tests in `tests/test_secondary.cpp` for `radii`, `rest` (a chain resting on a collider whose kinematic
-   target is inside it stays outside and still, tip step under 0.1 mm per frame once settled; a collider that moves
-   under it carries it), `max_swing`, parsing and round trip; the calm-frame noise of `p6` (side_00 f75, back_b_00
-   f50: hands or forearm near) to be traced with `trace_chain.py` and closed.
-2. Port the prototype into `groom_contact.bind_contact` (Blender data: evaluated meshes bound to the rig, vertex
-   groups for the dominant bone): spec keys under `hair.dynamics.contact`: collider `"fit": "skin"` with `groups`
-   and/or `objects`, `spacing_m`, `radius_m`, `pad_m`, `reach_m`, `min_radius_m`; `"radii": {"percentile", "floor_m"}`;
-   `"rest": {"friction", "max_swing"}`; validation, `test_hair_contact.py`, `docs/SECONDARY_MOTION.md`. Update the
-   candidate override; build, bake, measure all 286 frames.
-3. Static hair (B3): skirt chains for curtain, back sections (and the cap's lower edge) from where the hair leaves the
-   scalp; one cheap preview frame first. Temples against the ear: extend the ear keep-out margin or bind check.
-4. Lock root vertices (static part of back_05, back_b_02: 1-3 vertices, 43-47 mm at f19) follow the curtain fix.
-5. Close-up clips (side, back, over-shoulder, arm-raised) and strict sheet, README (state the 3-8 mm rest gap),
-   `tools/ready.py`, merge `origin/main`.
+1. Port into `groom_contact.py` (`bind_contact`, validation, `test_hair_contact.py`, `docs/SECONDARY_MOTION.md`:
+   also document `radii`, `rest`, `friction`, `max_swing` and the limit rule there): collider `"fit": "skin"` with
+   `groups` and/or `objects`, `exclude_groups`, `spacing_m`, `radius_m`, `pad_m`, `reach_m`, `min_radius_m` (no
+   `bone`); `"radii": {"percentile", "floor_m"}`; `"rest": true | {"friction", "max_swing"}`; `"figure":
+   {"exclude": [...]}`. Update the candidate override; build (`run_shot.py --stages prepare`), bake, measure all 286
+   frames; compare with `p7`.
+2. Static hair that hugs the head but carries chest weight through `binding.blend_z` (cap lower edge 12 mm, temples
+   2-6 mm against skin and ears: they shear when the head tilts): a contact key that binds named structures to the
+   head only (e.g. `"head_bound": ["cap", "temple_*", "crown", "fringe"]`), then measure.
+3. Curtain chains (B3; `hair_curtain` 36,000 vertices, `hair_back_sections` 7,184; the largest measured item). In
+   `bind_contact`, after `G1.bind`: K chains spread over the azimuth of the vertices below where the hair leaves the
+   scalp (the head centre must be stored with the contact spec at build: `frame["centre"]` in `groom_r6.build`), each
+   along the sheet's centre line of its sector, bones `DYN-<structure>.<k>.<n>` parented to the head bone; a vertex
+   is weighted to the two neighbouring chains by azimuth and along the chain by `groom._chain_weights`, blended in
+   from the static weights over the first bone; chains get `anchor` weights from `blend_z` like locks, radii from
+   the sheet thickness, the same `contact` block. ONE cheap preview frame (`tools/preview.sh`, views `back` and
+   `shoulder`, a frame with the head tilted, e.g. f28 and f241) before any long render; if the curtain shears
+   between chains, report at once (condition 2).
+4. Lock root vertices (static part of back_05, back_b_02: 1-3 vertices, 43-47 mm) and the vest-edge single vertices.
+5. Close-up clips (side, back, over-shoulder, arm-raised: `tools/closeup.py` views `side`, `back`, `shoulder`,
+   `arm`), strict sheet, README (state the 3-8 mm rest gap and the lifted lock), CHECKPOINT with `measure_body.py`
+   for released (`s010/build/runs/<id>/bake.json`) and candidate, per surface, all frames; `tools/ready.py`.
 
 ## Round 1 (not accepted): hand / ear / follow
 
@@ -118,5 +172,18 @@ her ear; hair moves independently of the body.
 
 Engine: `cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release && cmake --build build -j4` (8 min). Blender: the bpy
 module; `tools/bpy_blender.py` is not executable, so pass `--blender` a small wrapper script outside the repository
-(`exec python3 tools/bpy_blender.py "$@"`). Candidate master build 2 min, bake 14 s (about 60 s with the sphere
-colliders), run ids are never reused (`--run-dir <new id>`).
+(`exec python3 /home/user/Animation/tools/bpy_blender.py "$@"`). Run ids are never reused (`--run-dir <new id>`).
+
+- Prepare (builds both packages and the girl's master, 3.5 min per shot):
+  `python3 pipeline/production/run_shot.py --shot episodes/e909_two_char_acting/shots/s010_t183/shot.scene.json
+  --blender <wrapper> --stages prepare --run-dir <id>` (the same for `shots/s010/` = released). `--shot` is the
+  scene file, not the folder.
+- Bake (14 s; about 60 s with the sphere colliders): the same with `--stages bake --bake-engine
+  build/apps/render-cli/plush-render`; the bake is `build/runs/<id>/bake.json`.
+- Prototype: `python3 docs/evaluation/characters/T-183/tools/proto_contact.py <name> radius_pct=100 [step=3]
+  [nomeasure=1] [friction=..]` (1.5 min with `step=3`); output in `s010_t183/build/exp/<name>/`.
+- Trace: `tools/trace_chain.py <exp dir> <chain> A-B`, `tools/near_colliders.py <exp dir> <chain> <joint> A-B`.
+- Preview frame (47 s at 640x360, 8 samples): `tools/preview.sh <wrapper> <out dir> <name> <bake> <cast.json> <view>
+  8 <frames...>`; a prototype bake renders with the candidate's master (`s010_t183/build/cast.json`) as long as the
+  bones are the same (not for new curtain bones: those need the groom build).
+- Do not print object lists of a master (`WGT-*` widgets: hundreds of lines); filter by name.
