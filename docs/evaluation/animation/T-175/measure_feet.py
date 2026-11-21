@@ -7,7 +7,11 @@ clip's contact frames, from foot_in frames into the plant to its end, mapped thr
 blend-in and blend-out frames are left out, a hand-over between two clips is not a plant):
   slide_mm      worst horizontal distance of the ankle pivot from where it was when the plant began;
   vertical_mm   worst vertical distance from there;
-  height_mm     planted ankle height relative to the character's rest ankle height (min .. max): floating (+) / sinking (-).
+  height_mm     planted ankle height relative to the character's rest ankle height above the ground it stands on
+                (its scene position; min .. max): floating (+) / sinking (-);
+  sole_mm       lowest point of the shoe (the vertices the foot bone and its children carry) above the floor (world
+                y = 0) on the planted frames (min .. max), and sole_low_mm over all the action's frames, planted or
+                not (negative = under the floor).
 Uses the bake reader of tools/motion_checks (numpy)."""
 import argparse
 import json
@@ -27,6 +31,24 @@ def clip_of(action, scene_path):
     if "file" in action:
         return json.load(open(os.path.join(os.path.dirname(scene_path), "build", action["file"])))
     return json.load(open(os.path.join(ROOT, "content", "clips", action["clip"] + ".clip.json")))
+
+
+def sole_height(ch, role):
+    """(F,) world height of the lowest shoe vertex of a foot: the vertices whose largest skin weight is on the foot
+    bone or one of its children."""
+    names = [b["name"] for b in ch.doc["skeleton"]]
+    carried = {names.index(role)}
+    for i, b in enumerate(ch.doc["skeleton"]):  # parents precede children
+        if b.get("parent") in names and names.index(b["parent"]) in carried:
+            carried.add(i)
+    low = None
+    for mi in range(len(ch.doc["meshes"])):
+        P, N, J, W = ch.rest(mi)
+        sel = np.nonzero(np.isin(J[np.arange(len(J)), W.argmax(1)], list(carried)))[0]
+        if len(sel):
+            y = ch.skin(mi, sel, with_morphs=False)[0][..., 1].min(1)
+            low = y if low is None else np.minimum(low, y)
+    return low
 
 
 def main():
@@ -59,17 +81,21 @@ def main():
         if later:
             end = min(later)
         blend_in, blend_out = act.get("blendIn", 6), act.get("blendOut", 6)
+        ground = next(c for c in scene["characters"] if c["name"] == ch.name).get("position", [0, 0, 0])[1]
         for role in ("foot.L", "foot.R"):
             if role not in ch.bones:
                 continue
             b = ch.bones.index(role)
-            rest_y = ch.head[b][1]
-            res = {"slide_mm": 0.0, "vertical_mm": 0.0, "lo": 1e9, "hi": -1e9, "frames": 0, "plants": 0}
+            rest_y = ch.head[b][1] + ground
+            sole = sole_height(ch, role)
+            res = {"slide_mm": 0.0, "vertical_mm": 0.0, "lo": 1e9, "hi": -1e9, "frames": 0, "plants": 0, "slo": 1e9, "shi": -1e9,
+                   "low": 1e9}
             cur, p0 = None, None
             for i, f in enumerate(frames):
                 if f < start + blend_in or f > min(end - (0 if later else blend_out), frames[-1]):
                     cur = None
                     continue
+                res["low"] = min(res["low"], float(sole[i]) * 1000)
                 cf = (f - start) * tempo * clip["fps"] / fps
                 if not loop:
                     cf = min(cf, N - 1)
@@ -94,19 +120,25 @@ def main():
                 res["vertical_mm"] = max(res["vertical_mm"], abs(float(d[1])) * 1000)
                 res["lo"] = min(res["lo"], float(piv[i, b][1] - rest_y) * 1000)
                 res["hi"] = max(res["hi"], float(piv[i, b][1] - rest_y) * 1000)
+                res["slo"] = min(res["slo"], float(sole[i]) * 1000)
+                res["shi"] = max(res["shi"], float(sole[i]) * 1000)
                 res["frames"] += 1
             if res["frames"]:
                 rows.append({"character": ch.name, "clip": clip["name"], "foot": role, "plants": res["plants"],
                              "planted_frames": res["frames"], "slide_mm": round(res["slide_mm"], 2),
                              "vertical_mm": round(res["vertical_mm"], 2),
-                             "height_mm": [round(res["lo"], 2), round(res["hi"], 2)]})
+                             "height_mm": [round(res["lo"], 2), round(res["hi"], 2)],
+                             "sole_mm": [round(res["slo"], 2), round(res["shi"], 2)], "sole_low_mm": round(res["low"], 2)})
     out = {"bake": os.path.relpath(a.bake, ROOT), "scene": os.path.relpath(a.scene, ROOT), "rows": rows,
            "worst": {"slide_mm": max(r["slide_mm"] for r in rows), "vertical_mm": max(r["vertical_mm"] for r in rows),
-                     "height_mm": [min(r["height_mm"][0] for r in rows), max(r["height_mm"][1] for r in rows)]}}
+                     "height_mm": [min(r["height_mm"][0] for r in rows), max(r["height_mm"][1] for r in rows)],
+                     "sole_mm": [min(r["sole_mm"][0] for r in rows), max(r["sole_mm"][1] for r in rows)],
+                     "sole_low_mm": min(r["sole_low_mm"] for r in rows)}}
     json.dump(out, open(a.out, "w"), indent=1)
     for r in rows:
         print(f"{r['character']:5s} {r['clip']:14s} {r['foot']} plants {r['plants']} frames {r['planted_frames']:3d} "
-              f"slide {r['slide_mm']:6.2f} mm  vertical {r['vertical_mm']:6.2f} mm  height {r['height_mm'][0]:+.2f} .. {r['height_mm'][1]:+.2f} mm")
+              f"slide {r['slide_mm']:6.2f} mm  vertical {r['vertical_mm']:6.2f} mm  height {r['height_mm'][0]:+.2f} .. {r['height_mm'][1]:+.2f} mm"
+              f"  sole {r['sole_mm'][0]:+.2f} .. {r['sole_mm'][1]:+.2f} mm  lowest {r['sole_low_mm']:+.2f} mm")
     print("worst", json.dumps(out["worst"]))
 
 

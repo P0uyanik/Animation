@@ -16,8 +16,11 @@ Details and quoted terms: `docs/references/MOCAP_LICENSES.md`.
 | Clip | CMU subject / trial | CMU description | Source frames (120 fps) | Clip |
 | --- | --- | --- | --- | --- |
 | `cmu_walk` | 35 / 01 (`35.asf`, `35_01.amc`) | walk | cycle found automatically (see `x_mocap.loop_frames`) | 24 fps loop |
-| `cmu_sit_down` | 14 / 32 (`14.asf`, `14_32.amc`) | sit on stepstool, stand up | 195–345 | 24 fps one-shot |
-| `cmu_stand_up` | 14 / 32 (`14.asf`, `14_32.amc`) | sit on stepstool, stand up | 660–900 (origin frame 195) | 24 fps one-shot, starts where `cmu_sit_down` ends |
+| `cmu_sit_down` | 14 / 32 (`14.asf`, `14_32.amc`) | sit on stepstool, stand up | 195–345 (origin: between the feet at frame 345, the hips' turn removed) | 24 fps one-shot |
+| `cmu_stand_up` | 14 / 32 (`14.asf`, `14_32.amc`) | sit on stepstool, stand up | 195–345 played backwards | 24 fps one-shot, starts where `cmu_sit_down` ends |
+
+The clips carry no hand (wrist) roles: the source's wrist data is noisy. `cmu_walk`'s arm rotations are low-passed
+(binomial, 2 frames). Each clip's `x_mocap` block records these options.
 
 The source files themselves are not stored in the repository. To rebuild a clip, download the two files and run the
 importer with the options recorded in the clip's `x_mocap` block and `docs/evaluation/animation/T-175/README.md`.

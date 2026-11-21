@@ -165,7 +165,7 @@ def test_round_trip():
         p = os.path.join(d, "rt.bvh")
         write_bvh(p, mirrored(ADULT), ref, samples, clip["fps"])
         src = IB.load_bvh(p)
-        out = IB.convert(src, "rt", face="none", fps_out=clip["fps"])
+        out = IB.convert(src, "rt", face="none", fps_out=clip["fps"], hands=True)
     check(out["frame_count"] == clip["frame_count"], f"round trip frame count {out['frame_count']}")
     worst = 0.0
     for r in body:
@@ -177,7 +177,7 @@ def test_round_trip():
     with tempfile.TemporaryDirectory() as d:
         p = os.path.join(d, "rt.bvh")
         write_bvh(p, mirrored(ADULT), ref, samples, clip["fps"])
-        out24 = IB.convert(IB.load_bvh(p), "rt24", face="none")
+        out24 = IB.convert(IB.load_bvh(p), "rt24", face="none", hands=True)
     check(out24["fps"] == 24.0 and out24["frame_count"] == int((clip["frame_count"] - 1) / clip["fps"] * 24) + 1,
           f"24 fps resample: {out24['fps']} {out24['frame_count']}")
     k24 = 10  # t = 10/24 s = source frame 25 (60 fps)
@@ -349,6 +349,67 @@ def test_contacts_ground_loop():
     print(f"contacts/ground/loop: period {clip['frame_count']} f, cycle {cyc}, plants {plants}")
 
 
+# ------------------------------------------------------------------ 3b. round 2 options
+def test_options():
+    """Hands left out by default, --no-turn, --origin-feet, --reverse, --smooth-arms, foot_home plants and the sit
+    preset's seat pose (owner style review, round 2)."""
+    with tempfile.TemporaryDirectory() as d:
+        pa, pm = os.path.join(d, "t.asf"), os.path.join(d, "t.amc")
+        open(pa, "w").write(asf_text())
+        open(pm, "w").write(amc_text(240))
+        src = IB.load_asf_amc(pa, pm)
+    plain = IB.convert(src, "p", face="first", hands=True)
+    clip = IB.convert(src, "o", face="first")
+    check("hand.L" in plain["mask"] and "hand.L" in plain["tracks"], "hands=True keeps the wrist roles")
+    check(not any(r.startswith("hand.") for r in clip["mask"]) and not any(r.startswith("hand.") for r in clip["tracks"]),
+          f"default mask has hand roles: {clip['mask']}")
+    for r in clip["tracks"]:  # leaving the hands out changes nothing else
+        check(clip["tracks"][r] == plain["tracks"][r], f"{r} differs without the hand roles")
+    # no_turn: the hips keep one facing (no twist about +Y), every other role is unchanged
+    nt = IB.convert(src, "n", face="first", no_turn=True)
+    turn0 = max(abs(math.degrees(2 * math.atan2(q[2], q[0]))) for q in clip["tracks"]["hips"]["samples"])
+    turn1 = max(abs(math.degrees(2 * math.atan2(q[2], q[0]))) for q in nt["tracks"]["hips"]["samples"])
+    check(turn1 < 1e-4, f"no_turn leaves a hips turn of {turn1:.5f} deg (source {turn0:.2f})")
+    check(nt["tracks"]["spine"] == clip["tracks"]["spine"] and nt["tracks"]["thigh.L"] == clip["tracks"]["thigh.L"],
+          "no_turn changed another role")
+    # reverse: the same samples backwards (rotations and root)
+    rv = IB.convert(src, "r", face="first", reverse=True)
+    n = clip["frame_count"]
+    check(all(rv["tracks"][r]["samples"][k] == clip["tracks"][r]["samples"][n - 1 - k] for r in clip["tracks"] for k in (0, 7, n - 1)),
+          "reverse: rotations")
+    check(rv["root"]["translation"]["samples"][0] == clip["root"]["translation"]["samples"][-1], "reverse: root")
+    check(rv["x_mocap"]["reversed"] and not clip["x_mocap"]["reversed"], "reverse recorded")
+    # origin_feet: the x/z origin is between the ankles of the first frame (the hips are offset by where they stand)
+    of = IB.convert(src, "f", face="first", origin_feet=True)
+    r0, f0 = clip["root"]["translation"]["samples"][0], of["root"]["translation"]["samples"][0]
+    check(abs(r0[0]) < 1e-6 and abs(r0[2]) < 1e-6 and of["x_mocap"]["origin"] == "feet", f"origin {r0} {of['x_mocap']['origin']}")
+    d0 = [f0[i] - r0[i] for i in range(3)]
+    dk = [of["root"]["translation"]["samples"][9][i] - clip["root"]["translation"]["samples"][9][i] for i in range(3)]
+    check(abs(d0[1]) < 1e-6 and max(abs(a - b) for a, b in zip(d0, dk)) < 1e-6, f"origin_feet is one horizontal shift: {d0} {dk}")
+    # smooth_arms: only the arm roles change, and they turn less from frame to frame
+    sm = IB.convert(src, "s", face="first", smooth_arms=2)
+    check(all(sm["tracks"][r] == clip["tracks"][r] for r in clip["tracks"] if "rm." not in r), "smooth_arms changed a non-arm role")
+
+    def travel(c, r):
+        t = c["tracks"][r]["samples"]
+        return sum(RT.qangle_deg(t[k], t[k + 1]) for k in range(len(t) - 1))
+    check(travel(sm, "upperArm.L") <= travel(clip, "upperArm.L") + 1e-6, "smooth_arms adds arm motion")
+    # the sit preset: both feet planted for the whole clip (foot_home), seat pose and seat lean written
+    st = IB.convert(src, "h", face="first", style=dict(IB.STYLE_PRESETS["sit"], preset="sit"), seat=(n - 3, n - 1))
+    plants = sorted((c["role"], c["frames"]) for c in st["contacts"] if c["type"] == "foot_plant")
+    check(plants == [("foot.L", [0, n - 1]), ("foot.R", [0, n - 1])], f"foot_home plants {plants}")
+    sty = st["style"]
+    check(sty.get("foot_home") is True and sty.get("seat_lean") == 0.0 and sty.get("sole_floor") is True, f"sit style {sty}")
+    pose = sty.get("seat_pose", {})
+    check({"upperArm.L", "upperArm.R", "forearm.L", "forearm.R"} <= set(pose), f"seat pose roles {sorted(pose)}")
+    for side, sign in ((".L", 1.0), (".R", -1.0)):  # the arms hang down at the sides: mostly -Y, a little outward
+        dirn = RT.qrot(pose["upperArm" + side], [sign, 0.0, 0.0])
+        check(dirn[1] < -0.8 and sign * dirn[0] > 0.2 and abs(dirn[2]) < 1e-6, f"seat arm{side} direction {dirn}")
+    wk = IB.STYLE_PRESETS["walk"]
+    check(wk.get("soft_step", 0) > 0 and wk.get("sole_floor") is True and wk.get("foot_flat") == 1.0, f"walk preset {wk}")
+    print(f"options: hands out by default, no_turn {turn0:.1f} -> {turn1:.5f} deg, reverse, origin_feet, smooth_arms, foot_home")
+
+
 # ------------------------------------------------------------------ 4. the library
 def test_library():
     d = os.path.join(ROOT, "content", "clips", "mocap")
@@ -364,6 +425,7 @@ def test_library():
         check(data.get("license") == IB.CMU_LICENSE and "mocap.cs.cmu.edu" in data.get("attribution", ""), f"{f}: licence")
         check(data.get("source") == "mocap", f"{f}: source")
         check(data["name"] in att, f"{f}: not in ATTRIBUTION.md")
+        check(not any(r.startswith("hand.") for r in data["mask"]), f"{f}: wrist roles in the mask")
         for c in data.get("contacts", []):
             a, b = c["frames"]
             lim = 2 * data["frame_count"] if data.get("loop") else data["frame_count"]
@@ -375,6 +437,7 @@ if __name__ == "__main__":
     test_round_trip()
     test_limb_directions()
     test_contacts_ground_loop()
+    test_options()
     test_library()
     if FAILS:
         print(f"{len(FAILS)} failure(s)")

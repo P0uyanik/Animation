@@ -1,5 +1,5 @@
 {
- "bake": "docs/evaluation/animation/T-175/shots/review_nolock/build/runs/nolock5/bake.json",
+ "bake": "docs/evaluation/animation/T-175/shots/review_nolock/build/runs/r2/bake.json",
  "scene": "docs/evaluation/animation/T-175/shots/review_nolock/shot.scene.json",
  "rows": [
   {
@@ -13,7 +13,12 @@
    "height_mm": [
     10.66,
     11.81
-   ]
+   ],
+   "sole_mm": [
+    -9.0,
+    -5.85
+   ],
+   "sole_low_mm": -19.58
   },
   {
    "character": "boy",
@@ -26,59 +31,84 @@
    "height_mm": [
     17.45,
     18.29
-   ]
+   ],
+   "sole_mm": [
+    -4.32,
+    0.94
+   ],
+   "sole_low_mm": -16.44
   },
   {
    "character": "boy",
    "clip": "cmu_sit_down",
    "foot": "foot.L",
    "plants": 1,
-   "planted_frames": 19,
-   "slide_mm": 12.23,
-   "vertical_mm": 4.67,
+   "planted_frames": 55,
+   "slide_mm": 21.51,
+   "vertical_mm": 3.64,
    "height_mm": [
-    9.63,
-    14.3
-   ]
+    10.56,
+    16.12
+   ],
+   "sole_mm": [
+    -15.01,
+    0.31
+   ],
+   "sole_low_mm": -15.01
   },
   {
    "character": "boy",
    "clip": "cmu_sit_down",
    "foot": "foot.R",
    "plants": 1,
-   "planted_frames": 57,
-   "slide_mm": 23.59,
-   "vertical_mm": 8.84,
+   "planted_frames": 55,
+   "slide_mm": 19.85,
+   "vertical_mm": 9.47,
    "height_mm": [
-    6.16,
-    15.01
-   ]
+    5.63,
+    15.1
+   ],
+   "sole_mm": [
+    -15.9,
+    -4.7
+   ],
+   "sole_low_mm": -15.9
   },
   {
    "character": "boy",
    "clip": "cmu_stand_up",
    "foot": "foot.L",
    "plants": 1,
-   "planted_frames": 34,
-   "slide_mm": 35.41,
-   "vertical_mm": 6.26,
+   "planted_frames": 25,
+   "slide_mm": 85.79,
+   "vertical_mm": 2.93,
    "height_mm": [
-    11.33,
-    17.6
-   ]
+    10.13,
+    14.73
+   ],
+   "sole_mm": [
+    -5.89,
+    0.36
+   ],
+   "sole_low_mm": -5.89
   },
   {
    "character": "boy",
    "clip": "cmu_stand_up",
    "foot": "foot.R",
-   "plants": 2,
-   "planted_frames": 39,
-   "slide_mm": 18.0,
-   "vertical_mm": 6.2,
+   "plants": 1,
+   "planted_frames": 25,
+   "slide_mm": 47.13,
+   "vertical_mm": 34.9,
    "height_mm": [
-    9.22,
-    15.66
-   ]
+    7.01,
+    42.43
+   ],
+   "sole_mm": [
+    -14.19,
+    36.78
+   ],
+   "sole_low_mm": -14.19
   },
   {
    "character": "girl",
@@ -91,7 +121,12 @@
    "height_mm": [
     9.97,
     13.46
-   ]
+   ],
+   "sole_mm": [
+    -8.22,
+    -7.93
+   ],
+   "sole_low_mm": -17.95
   },
   {
    "character": "girl",
@@ -104,67 +139,97 @@
    "height_mm": [
     16.17,
     18.54
-   ]
+   ],
+   "sole_mm": [
+    -4.17,
+    -2.95
+   ],
+   "sole_low_mm": -14.65
   },
   {
    "character": "girl",
    "clip": "cmu_sit_down",
    "foot": "foot.L",
    "plants": 1,
-   "planted_frames": 19,
-   "slide_mm": 22.0,
-   "vertical_mm": 17.6,
+   "planted_frames": 55,
+   "slide_mm": 25.35,
+   "vertical_mm": 13.74,
    "height_mm": [
-    -6.38,
-    11.22
-   ]
+    -5.7,
+    8.04
+   ],
+   "sole_mm": [
+    -31.73,
+    -6.94
+   ],
+   "sole_low_mm": -31.73
   },
   {
    "character": "girl",
    "clip": "cmu_sit_down",
    "foot": "foot.R",
    "plants": 1,
-   "planted_frames": 57,
-   "slide_mm": 27.29,
-   "vertical_mm": 23.45,
+   "planted_frames": 55,
+   "slide_mm": 23.08,
+   "vertical_mm": 21.53,
    "height_mm": [
-    -11.75,
-    11.7
-   ]
+    -12.18,
+    9.34
+   ],
+   "sole_mm": [
+    -31.82,
+    -7.49
+   ],
+   "sole_low_mm": -31.82
   },
   {
    "character": "girl",
    "clip": "cmu_stand_up",
    "foot": "foot.L",
    "plants": 1,
-   "planted_frames": 34,
-   "slide_mm": 20.56,
-   "vertical_mm": 27.74,
+   "planted_frames": 25,
+   "slide_mm": 89.09,
+   "vertical_mm": 16.69,
    "height_mm": [
-    -9.24,
-    18.5
-   ]
+    -4.07,
+    12.62
+   ],
+   "sole_mm": [
+    -19.64,
+    -4.21
+   ],
+   "sole_low_mm": -19.64
   },
   {
    "character": "girl",
    "clip": "cmu_stand_up",
    "foot": "foot.R",
-   "plants": 2,
-   "planted_frames": 39,
-   "slide_mm": 13.88,
-   "vertical_mm": 24.37,
+   "plants": 1,
+   "planted_frames": 25,
+   "slide_mm": 47.69,
+   "vertical_mm": 49.07,
    "height_mm": [
-    -10.44,
-    13.93
-   ]
+    -9.76,
+    39.31
+   ],
+   "sole_mm": [
+    -29.66,
+    35.4
+   ],
+   "sole_low_mm": -29.66
   }
  ],
  "worst": {
-  "slide_mm": 35.41,
-  "vertical_mm": 27.74,
+  "slide_mm": 89.09,
+  "vertical_mm": 49.07,
   "height_mm": [
-   -11.75,
-   18.54
-  ]
+   -12.18,
+   42.43
+  ],
+  "sole_mm": [
+   -31.82,
+   36.78
+  ],
+  "sole_low_mm": -31.82
  }
 }

@@ -58,14 +58,34 @@ CMU_BVH_ROLES = {"hips": ("Hips", True), "spine": ("Spine", False), "chest": ("S
 CMU_BVH_PIVOT = {}
 CMU_BVH_TOE = {"foot.L": "LeftToeBase"}
 
-# Chibi style presets (docs/evaluation/animation/T-175/README.md). lean: share of the source trunk lean kept (hips,
-# spine, chest, neck swing; yaw is kept); head_level: share of the remaining trunk lean the head undoes (big heads); stride: horizontal root scale; arm_swing: arm swing around the clip's mean
-# arm pose; tempo: clock multiplier (short legs step quicker); foot_lock: two-bone leg IK pin on foot_plant frames.
+# Chibi style presets (docs/evaluation/animation/T-175/README.md; keys: engine/anim/foot_lock.h). lean: share of the
+# source trunk lean kept (hips, spine, chest, neck swing; yaw is kept); head_level: share of the remaining trunk lean the
+# head undoes (big heads); stride: horizontal root scale; arm_swing: arm swing around the clip's mean arm pose; tempo:
+# clock multiplier (short legs step quicker); foot_lock: two-bone leg IK pin on foot_plant frames; soft_step: the foot's
+# path is low-passed around the landing (clip frames) so it lands softly; foot_pitch / foot_flat: less foot pitch, flat planted soles; sole_floor: the shoe
+# never goes under the ground; foot_home: the feet stay on the character's rest foot positions (a clip on the spot);
+# seat_lean / seat_pose / seat_blend: the trunk lean and the pose of some roles while the seat contact holds.
+def _rz(deg):
+    return [round(math.cos(math.radians(deg) / 2), 7), 0.0, 0.0, round(math.sin(math.radians(deg) / 2), 7)]
+
+
+def _ry(deg):
+    return [round(math.cos(math.radians(deg) / 2), 7), 0.0, round(math.sin(math.radians(deg) / 2), 7), 0.0]
+
+
+# Seated: arms hanging at the sides of the body (reference T-pose arm turned down, a slightly bent elbow), head and
+# neck level. Reference-space local rotations; the right side is the mirror image (w, x, -y, -z).
+SEAT_POSE = {"upperArm.L": _rz(-60.0), "upperArm.R": _rz(60.0), "forearm.L": _ry(-12.0), "forearm.R": _ry(12.0),
+             "neck": [1.0, 0.0, 0.0, 0.0], "head": [1.0, 0.0, 0.0, 0.0]}
 STYLE_PRESETS = {
-    "walk": {"lean": 0.6, "stride": 1.0, "arm_swing": 0.85, "tempo": 1.15, "foot_lock": True},
-    "sit": {"lean": 0.35, "head_level": 0.5, "stride": 1.0, "arm_swing": 1.0, "tempo": 1.1, "foot_lock": True,
-            "foot_lead": 5, "foot_release": 10},
+    "walk": {"lean": 0.6, "stride": 1.0, "arm_swing": 0.85, "arm_out": 25, "tempo": 1.15, "foot_lock": True, "foot_lead": 0, "foot_in": 2,
+             "foot_release": 8, "soft_step": 3.5, "soft_knee": 0.94, "foot_pitch": 0.6, "foot_flat": 1.0, "sole_floor": True},
+    "sit": {"lean": 0.2, "seat_lean": 0.0, "seat_blend": 14, "seat_pose": SEAT_POSE, "head_level": 0.5, "stride": 1.0,
+            "arm_swing": 1.0, "arm_out": 0, "tempo": 1.1, "foot_lock": True, "foot_home": True, "soft_knee": 0.94, "foot_flat": 1.0, "sole_floor": True},
 }
+# Roles left out of a clip unless asked for (--hands): the CMU wrist data is noisy (extreme twists), so the hands keep
+# the pose of the layers under the clip.
+HAND_ROLES = ("hand.L", "hand.R")
 
 
 # ------------------------------------------------------------------ 3x3 matrices (row lists)
@@ -390,14 +410,26 @@ def detect_plants(ankles, fps, leg, h_tol=0.02, v_tol=0.35, min_frames=3):
     return runs
 
 
+def swing_twist_y(q):
+    """q = swing . twist with the twist about +Y (the same split as the engine's lean filter)."""
+    n = math.hypot(q[0], q[2])
+    twist = [1.0, 0.0, 0.0, 0.0] if n < 1e-9 else [q[0] / n, 0.0, q[2] / n, 0.0]
+    return RT.qnorm(RT.qmul(q, RT.qconj(twist))), twist
+
+
 def convert(src, name, frames=None, loop=None, style=None, source_id="", description="", profile_path=PROFILE,
-            fps_out=TARGET_FPS, face="auto", origin_frame=None, seat=None):
+            fps_out=TARGET_FPS, face="auto", origin_frame=None, seat=None, hands=False, no_turn=False, origin_feet=False,
+            reverse=False, smooth_arms=0):
+    """hands: keep the hand (wrist) roles. no_turn: the hips keep one facing (their turn about the vertical is removed
+    frame by frame). origin_feet: the x/z origin is the midpoint of the ankles (at origin_frame, else the first frame)
+    instead of the hips. reverse: the clip plays backwards (a stand-up from a sit-down)."""
     prof = json.load(open(profile_path))
     ref = RT.reference_pose(prof["reference_pose"])
     roles = full_roles(src.roles)
     pivots = full_side(src.pivots)
     toes = full_side(src.toes)
     roles = {r: v for r, v in roles.items() if v[0] in src.rest}
+    drop = () if hands else HAND_ROLES
 
     def pivot(pose, r):
         return pose[pivots.get(r, roles[r][0])][0]
@@ -497,6 +529,8 @@ def convert(src, name, frames=None, loop=None, style=None, source_id="", descrip
         fwd = RT.qrot(Go["hips"], [0.0, 0.0, 1.0])
         yaw = math.atan2(fwd[0], fwd[2])
         origin = Po["hips"]
+        if origin_feet and "foot.L" in Po and "foot.R" in Po:
+            origin = [(a + b) / 2 for a, b in zip(Po["foot.L"], Po["foot.R"])]
     Ry = RT.qnorm([math.cos(-yaw / 2), 0.0, math.sin(-yaw / 2), 0.0])
 
     def ry(v):
@@ -515,7 +549,11 @@ def convert(src, name, frames=None, loop=None, style=None, source_id="", descrip
             Gp = Gy[p] if p else [1.0, 0.0, 0.0, 0.0]
             Ap = A[p] if p else [1.0, 0.0, 0.0, 0.0]
             q = RT.qnorm(RT.qmul(RT.qmul(RT.qmul(Ap, RT.qconj(Gp)), Gy[r]), RT.qconj(A[r])))
+            if no_turn and not p:
+                q = swing_twist_y(q)[0]
             L[r] = [-c for c in q] if q[0] < 0 else q
+        for r in drop:
+            L.pop(r, None)
         samples.append(L)
         hips_pos.append(ry(P["hips"]))
         for f in ankles:
@@ -529,6 +567,8 @@ def convert(src, name, frames=None, loop=None, style=None, source_id="", descrip
     rest_ank = min(heads0[f][1] for f in feet)
     rest_h = heads0["hips"][1] - rest_ank
     x0, z0 = hips_pos[0][0], hips_pos[0][2]
+    if origin_feet and origin is None and all(ankles[f] for f in ankles):
+        x0, z0 = [(ankles["foot.L"][0][i] + ankles["foot.R"][0][i]) / 2 for i in (0, 2)]
     if origin is not None:
         x0, z0 = ry(origin)[0], ry(origin)[2]
     roots = [[(h[0] - x0) / leg, (h[1] - ground - rest_h) / leg, (h[2] - z0) / leg] for h in hips_pos]
@@ -552,11 +592,39 @@ def convert(src, name, frames=None, loop=None, style=None, source_id="", descrip
         for f in feet:
             ankles[f] = ankles[f][:n + 1]
 
+    if smooth_arms > 0:
+        # binomial low-pass (radius smooth_arms frames) of the arm rotations: the arm swing of a mocap walk turns
+        # round within a frame at each footfall; periodic for a loop, the ends are held otherwise
+        k = int(smooth_arms)
+        wts = [math.comb(2 * k, j) for j in range(2 * k + 1)]
+        for r in ("upperArm.L", "forearm.L", "upperArm.R", "forearm.R"):
+            if r not in samples[0]:
+                continue
+            src_q = [smp[r] for smp in samples]
+            m = len(src_q)
+            for i in range(m):
+                acc = [0.0, 0.0, 0.0, 0.0]
+                for j, w in enumerate(wts):
+                    q = src_q[(i + j - k) % m] if loop_range else src_q[max(0, min(m - 1, i + j - k))]
+                    sg = -w if sum(a * b for a, b in zip(q, src_q[i])) < 0 else w
+                    acc = [a + sg * b for a, b in zip(acc, q)]
+                q = RT.qnorm(acc)
+                samples[i][r] = [-c for c in q] if q[0] < 0 else q
+    if reverse:
+        samples.reverse()
+        roots.reverse()
+        hips_pos.reverse()
+        for f in feet:
+            ankles[f].reverse()
+    home = bool(style) and not isinstance(style, str) and style.get("foot_home") or (
+        isinstance(style, str) and STYLE_PRESETS[style].get("foot_home"))
     contacts, plant_heights = [], []  # heights: mean planted ankle height above the ground, leg lengths
     for f in ("foot.L", "foot.R"):
         if f not in ankles or not ankles[f]:
             continue
         runs = [[a, min(b, n - 1)] for a, b in detect_plants(ankles[f], fps_out, leg) if a <= n - 1]
+        if home:  # the feet stay on the character's rest foot positions: planted for the whole clip
+            runs = [[0, n - 1]]
         if loop_range and len(runs) > 1 and runs[-1][1] == n - 1 and runs[0][0] == 0:
             # a plant across the loop seam: one contact whose end runs past the last frame (frames wrap)
             runs = runs[1:-1] + [[runs[-1][0], runs[0][1] + n]]
@@ -581,7 +649,8 @@ def convert(src, name, frames=None, loop=None, style=None, source_id="", descrip
     clip["x_mocap"] = {"importer": "pipeline/clips/import_bvh.py", "source_id": source_id, "source_fps": src.fps,
                        "source_frames": [f0, f1], "loop_frames": list(loop_range) if loop_range else None,
                        "source_leg": round(leg, 5), "heading_deg": round(math.degrees(yaw), 3),
-                       "folded": sorted(child),
+                       "folded": sorted(child), "hands": bool(hands), "no_turn": bool(no_turn),
+                       "origin": "feet" if origin_feet else "hips", "reversed": bool(reverse), "smooth_arms": int(smooth_arms),
                        # a spread above ~0.03 means the take is not on level ground (reject it for a loop)
                        "plant_height_spread": round(max(plant_heights) - min(plant_heights), 4) if plant_heights else 0.0}
     if style:
@@ -671,6 +740,11 @@ def main(argv=None):
     ap.add_argument("--face", choices=["auto", "first", "travel", "none"], default="auto")
     ap.add_argument("--origin-frame", type=int, help="source frame that defines heading and the x/z origin")
     ap.add_argument("--seat", type=_range, help="seated clip frames A:B: adds a seat contact (estimated height_ratio)")
+    ap.add_argument("--hands", action="store_true", help="keep the hand (wrist) roles (left out by default: noisy)")
+    ap.add_argument("--no-turn", action="store_true", help="remove the hips' turn about the vertical (one facing)")
+    ap.add_argument("--origin-feet", action="store_true", help="x/z origin between the ankles instead of at the hips")
+    ap.add_argument("--smooth-arms", type=int, default=0, help="binomial low-pass radius (frames) on the arm rotations")
+    ap.add_argument("--reverse", action="store_true", help="play the range backwards (--seat frames are of the result)")
     ap.add_argument("--source-id", default="")
     ap.add_argument("--description", default="")
     a = ap.parse_args(argv)
@@ -692,7 +766,8 @@ def main(argv=None):
             style["lean"] = a.lean
     clip = convert(src, a.name, frames=a.frames, loop=loop, style=style,
                    source_id=a.source_id, description=a.description, face=a.face, origin_frame=a.origin_frame,
-                   seat=a.seat)
+                   seat=a.seat, hands=a.hands, no_turn=a.no_turn, origin_feet=a.origin_feet, reverse=a.reverse,
+                   smooth_arms=a.smooth_arms)
     path = a.out if a.out.endswith(".clip.json") else os.path.join(a.out, f"{a.name}.clip.json")
     save(clip, path)
     print(json.dumps({"clip": os.path.relpath(path, ROOT), "frames": clip["frame_count"], "loop": clip["loop"],

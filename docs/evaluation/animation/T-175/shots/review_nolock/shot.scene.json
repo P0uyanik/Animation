@@ -579,14 +579,14 @@
    "name": "stool_boy",
    "kind": "box",
    "min": [
-    -0.5380041404958656,
+    -0.6229,
     0.0,
-    6.8251427770339586
+    6.771
    ],
    "max": [
-    -0.3680041404958656,
-    0.1081,
-    6.9951427770339585
+    -0.3824,
+    0.1973,
+    6.9703
    ],
    "material": "seat_mat"
   },
@@ -594,14 +594,14 @@
    "name": "stool_girl",
    "kind": "box",
    "min": [
-    0.4275734448152973,
+    0.3863,
     0.0,
-    6.858826835475515
+    6.7512
    ],
    "max": [
-    0.5975734448152973,
-    0.1011,
-    7.028826835475515
+    0.6517,
+    0.1591,
+    6.9819
    ],
    "material": "seat_mat"
   }
@@ -612,7 +612,7 @@
    "asset": "(set by run_shot)",
    "position": [
     -1.55,
-    0.0,
+    0.0271,
     0.35
    ],
    "yawDeg": 90,
@@ -624,7 +624,7 @@
    "asset": "(set by run_shot)",
    "position": [
     -0.75,
-    0.0,
+    0.0295,
     -0.45
    ],
    "yawDeg": 90,
@@ -647,9 +647,9 @@
    "character": "boy",
    "clip": "idle_relaxed",
    "start": 101,
-   "end": 110,
+   "end": 112,
    "blendIn": 0,
-   "blendOut": 6
+   "blendOut": 8
   },
   {
    "type": "clip",
@@ -657,7 +657,7 @@
    "file": "../cmu_sit_down_nolock.clip.json",
    "start": 104,
    "end": 172,
-   "blendIn": 6,
+   "blendIn": 8,
    "blendOut": 0
   },
   {
@@ -667,6 +667,15 @@
    "start": 166,
    "end": 231,
    "blendIn": 6,
+   "blendOut": 0
+  },
+  {
+   "type": "clip",
+   "character": "boy",
+   "clip": "idle_relaxed",
+   "start": 196,
+   "end": 231,
+   "blendIn": 10,
    "blendOut": 0
   },
   {
@@ -683,9 +692,9 @@
    "character": "girl",
    "clip": "idle_relaxed",
    "start": 101,
-   "end": 110,
+   "end": 112,
    "blendIn": 0,
-   "blendOut": 6
+   "blendOut": 8
   },
   {
    "type": "clip",
@@ -693,7 +702,7 @@
    "file": "../cmu_sit_down_nolock.clip.json",
    "start": 104,
    "end": 172,
-   "blendIn": 6,
+   "blendIn": 8,
    "blendOut": 0
   },
   {
@@ -704,6 +713,15 @@
    "end": 231,
    "blendIn": 6,
    "blendOut": 0
+  },
+  {
+   "type": "clip",
+   "character": "girl",
+   "clip": "idle_relaxed",
+   "start": 196,
+   "end": 231,
+   "blendIn": 10,
+   "blendOut": 0
   }
  ],
  "animation": {
@@ -712,7 +730,7 @@
     1,
     [
      -1.55,
-     0.0,
+     0.0271,
      0.35
     ],
     "step"
@@ -721,7 +739,7 @@
     101,
     [
      -0.45,
-     0.0,
+     0.0271,
      7.0
     ],
     "step"
@@ -752,7 +770,7 @@
     1,
     [
      -0.75,
-     0.0,
+     0.0295,
      -0.45
     ],
     "step"
@@ -761,7 +779,7 @@
     101,
     [
      0.45,
-     0.0,
+     0.0295,
      7.0
     ],
     "step"

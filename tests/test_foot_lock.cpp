@@ -1,7 +1,9 @@
 // Locomotion layer (T-175, anim/foot_lock.h + scene/clip_layers.cpp): the clip "style" block (lean with thigh
 // compensation, arm swing, stride, tempo), foot_plant lookup (loop seam, release), the two-bone foot pin, and scene
 // playback of the CMU mocap clips on two characters: planted feet slide <= 3 mm with the foot-lock (and visibly more
-// without it), no popping, and a clip without a style block is left alone.
+// without it), no popping, and a clip without a style block is left alone. Round 2 (owner style review): soft steps,
+// flat planted soles on the ground (sole_floor), feet at home with no turn and no step (sit down / stand up), the
+// seated pose (upright, arms at the sides), no hand roles in the mocap clips.
 #include <doctest/doctest.h>
 
 #include <cmath>
@@ -264,8 +266,229 @@ TEST_CASE("foot lock: CMU clips on two characters, planted feet slide <= 3 mm, n
       // No popping from the lock: the ankle's worst second difference stays within the motion_checks visibility
       // floor (8 mm / frame^2) of the clip's own (a mocap footfall already stops within a frame or two).
       CHECK(with.pop <= without.pop + 0.008f);
-      CHECK(with.pops <= without.pops + 2);
+      CHECK(with.pops == 0);  // soft steps: no ankle frame pops by the motion_checks rule
+      if (std::string(name) == "cmu_walk") CHECK(with.pop <= 0.5f * without.pop);  // the footfall is spread out
     }
+  }
+}
+
+namespace {
+// Lowest point of the shoe of `role` at a frame (the rest vertices the foot bone and its children carry, moved rigidly
+// with the foot bone) and the same at rest, character space.
+struct ShoeLow {
+  float posed = 1e9f, rest = 1e9f;
+};
+ShoeLow shoeLow(const SceneEvaluator& ev, const char* role, double frame) {
+  const auto& ci = ev.characters()[0];
+  const Skeleton& sk = ci.asset.skeleton;
+  const int foot = sk.find(role);
+  std::vector<char> carried(sk.bones.size(), 0);
+  carried[size_t(foot)] = 1;
+  for (size_t i = 0; i < sk.bones.size(); ++i)
+    if (sk.bones[i].parent >= 0 && carried[size_t(sk.bones[i].parent)]) carried[i] = 1;
+  const mat4 G = ev.characterGlobals(0, frame)[size_t(foot)];
+  const vec3 head = sk.bones[size_t(foot)].head;
+  ShoeLow out;
+  for (const SkinnedMesh& m : ci.rig.meshes)
+    for (size_t v = 0; v < m.rest.positions.size(); ++v) {
+      int k = 0;
+      for (int j = 1; j < 4; ++j)
+        if (m.weights[v][j] > m.weights[v][k]) k = j;
+      if (!carried[size_t(m.joints[v][k])]) continue;
+      out.rest = std::min(out.rest, m.rest.positions[v].y);
+      out.posed = std::min(out.posed, (G * vec4(m.rest.positions[v] - head, 1)).y);
+    }
+  return out;
+}
+}  // namespace
+
+TEST_CASE("foot lock: round 2 style keys, seat weight, swing lookup, tilt, soft knee") {
+  Json clip{{"style", {{"soft_step", 3.5}, {"soft_knee", 0.94}, {"foot_pitch", 0.6}, {"foot_flat", 1.0}, {"sole_floor", true},
+                       {"foot_home", true}, {"arm_out", 25}, {"seat_lean", 0.0}, {"seat_blend", 10},
+                       {"seat_pose", {{"upperArm.L", {0.8660254, 0, 0, -0.5}}}}}},
+            {"contacts", Json::array({{{"type", "seat"}, {"frames", {20, 30}}}, {{"type", "foot_plant"}, {"role", "foot.L"}, {"frames", {4, 13}}},
+                                      {{"type", "foot_plant"}, {"role", "foot.L"}, {"frames", {31, 40}}}})}};
+  const LocomotionStyle s = locomotionStyle(clip);
+  CHECK(s.softStep == doctest::Approx(3.5));
+  CHECK(s.softKnee == doctest::Approx(0.94));
+  CHECK(s.footPitch == doctest::Approx(0.6));
+  CHECK(s.footFlat == doctest::Approx(1.0));
+  CHECK(s.soleFloor);
+  CHECK(s.footHome);
+  CHECK(s.armOut == doctest::Approx(25));
+  CHECK(s.seatLean == doctest::Approx(0.0));
+  CHECK(s.seatPose.size() == 1);
+  const LocomotionStyle none = locomotionStyle(Json{{"style", Json::object()}});
+  CHECK(none.softStep == 0);
+  CHECK(none.footPitch == 1);
+  CHECK(none.footFlat == 0);
+  CHECK_FALSE(none.soleFloor);
+  CHECK_FALSE(none.footHome);
+  CHECK(none.seatLean < 0);
+  // seat weight: 1 inside, eased over the blend before and after, a one-shot holds its last frame
+  CHECK(seatWeight(clip, 25, 41, false, 10) == 1.0f);
+  CHECK(seatWeight(clip, 5, 41, false, 10) == 0.0f);
+  CHECK(seatWeight(clip, 15, 41, false, 10) == doctest::Approx(0.5f));
+  CHECK(seatWeight(clip, 35, 41, false, 10) == doctest::Approx(0.5f));
+  CHECK(seatWeight(clip, 500, 41, false, 10) == 0.0f);
+  CHECK(seatWeight(Json::object(), 5, 41, false, 10) == 0.0f);
+  // seated: the lean goes to seat_lean and the seat pose replaces the clip's arm; arm_out turns the arm outward
+  LocomotionStyle st = s;
+  st.lean = 0.5f;
+  st.armOut = 0;
+  std::map<std::string, quat> local{{"hips", rot(40, {1, 0, 0})}, {"upperArm.L", rot(-80, {0, 0, 1})}, {"upperArm.R", rot(80, {0, 0, 1})}};
+  vec3 root(0);
+  applyLocomotionStyle(st, local, root, false, 1.0f);
+  CHECK(quatAngle(local["hips"], kNoRot) < 0.01f);
+  CHECK(quatAngle(local["upperArm.L"], rot(-60, {0, 0, 1})) < 0.01f);
+  CHECK(quatAngle(local["upperArm.R"], rot(80, {0, 0, 1})) < 0.01f);
+  std::map<std::string, quat> half{{"hips", rot(40, {1, 0, 0})}, {"upperArm.L", rot(-80, {0, 0, 1})}};
+  applyLocomotionStyle(st, half, root, false, 0.5f);
+  CHECK(quatAngle(half["hips"], rot(10, {1, 0, 0})) < 0.01f);  // lean 0.5 -> 0.25 half way to the seat
+  CHECK(quatAngle(half["upperArm.L"], rot(-70, {0, 0, 1})) < 0.01f);
+  std::map<std::string, quat> mir{{"upperArm.R", rot(80, {0, 0, 1})}};
+  applyLocomotionStyle(st, mir, root, true, 1.0f);  // mirrored sample: the pose applies to the other side, reflected
+  CHECK(quatAngle(mir["upperArm.R"], rot(60, {0, 0, 1})) < 0.01f);
+  LocomotionStyle out;
+  out.enabled = true;
+  out.armOut = 20;
+  std::map<std::string, quat> arms{{"upperArm.L", rot(-80, {0, 0, 1})}, {"upperArm.R", rot(80, {0, 0, 1})}};
+  applyLocomotionStyle(out, arms, root, false);
+  CHECK(quatAngle(arms["upperArm.L"], rot(-60, {0, 0, 1})) < 0.01f);
+  CHECK(quatAngle(arms["upperArm.R"], rot(60, {0, 0, 1})) < 0.01f);
+  // swing between two plants (pin frames: first frame + foot_in)
+  const auto plants = footPlants(clip);
+  CHECK_FALSE(swingAt(plants, "foot.L", 8, 41, false, 2).active);  // planted
+  SwingState sw = swingAt(plants, "foot.L", 20, 41, false, 2);
+  CHECK(sw.active);
+  CHECK(sw.from == 13.0);
+  CHECK(sw.to == 33.0);
+  sw = swingAt(plants, "foot.L", 2, 41, false, 2);  // before the first plant of a one-shot
+  CHECK(sw.active);
+  CHECK(sw.from == 0.0);
+  CHECK(sw.to == 6.0);
+  CHECK_FALSE(swingAt(plants, "foot.L", 40.5, 41, false, 2).active);  // after the last plant: no later one
+  CHECK_FALSE(swingAt(plants, "foot.R", 20, 41, false, 2).active);
+  sw = swingAt(plants, "foot.L", 41 + 1.0, 41, true, 2);  // a loop: from the last plant of the cycle before
+  CHECK(sw.active);
+  CHECK(sw.from == 40.0);
+  CHECK(sw.to == 41 + 6.0);
+  // tilt: pitch and roll scale, the turn about the vertical stays
+  const quat turn = rot(30, {0, 1, 0}), pitch = rot(40, {1, 0, 0});
+  CHECK(quatAngle(scaleTilt(pitch * turn, 0.5f), rot(20, {1, 0, 0}) * turn) < 0.01f);
+  CHECK(quatAngle(scaleTilt(pitch * turn, 0.0f), turn) < 0.01f);
+  CHECK(quatAngle(scaleTilt(pitch * turn, 1.0f), pitch * turn) < 1e-4f);
+  // soft knee: the pelvis starts to give before the leg is straight, and the leg never reaches the hard limit
+  const Skeleton sk = legSkeleton();
+  const Pose pose = restPose(sk);
+  const auto G = boneGlobals(sk, pose, mat4(1));
+  const float length = glm::length(sk.bones[2].head - sk.bones[1].head) + glm::length(sk.bones[3].head - sk.bones[2].head);
+  const vec3 hip = sk.bones[1].head;
+  auto reachAfter = [&](float dist, float soft) {
+    const vec3 target = hip - vec3(0, dist, 0);
+    return (dist - footReachDrop(sk, G, 3, target, 0.995f, soft)) / length;
+  };
+  CHECK(reachAfter(0.90f * length, 0.94f) == doctest::Approx(0.90f));  // below the onset: untouched
+  CHECK(reachAfter(0.90f * length, 0.0f) == doctest::Approx(0.90f));
+  CHECK(reachAfter(0.99f * length, 0.0f) == doctest::Approx(0.99f));  // hard limit: only beyond 0.995
+  CHECK(reachAfter(1.05f * length, 0.0f) == doctest::Approx(0.995f));
+  CHECK(reachAfter(0.99f * length, 0.94f) < 0.975f);
+  CHECK(reachAfter(0.99f * length, 0.94f) > 0.94f);
+  CHECK(reachAfter(1.5f * length, 0.94f) < 0.995f);
+  CHECK(reachAfter(0.96f * length, 0.94f) < reachAfter(0.99f * length, 0.94f));  // monotonic
+  // pinFootTo: reaches the target with the given foot rotation
+  Pose p2 = restPose(sk);
+  p2.local[1] = rot(-20, {1, 0, 0});
+  p2.local[2] = rot(25, {1, 0, 0});
+  const vec3 target(0.05f, 0.06f, 0.05f);
+  pinFootTo(sk, p2, 3, target, rot(15, {0, 1, 0}));
+  CHECK(glm::length(vec3(boneGlobals(sk, p2, mat4(1))[3][3]) - target) < 1e-4f);
+  CHECK(quatAngle(p2.local[0] * p2.local[1] * p2.local[2] * p2.local[3], rot(15, {0, 1, 0})) < 0.02f);
+}
+
+TEST_CASE("foot lock: the walk keeps its shoes on the ground and lays planted soles flat") {
+  const fs::path file = kRoot / "content/clips/mocap/cmu_walk.clip.json";
+  Json raw = parseJsonFile(file).value();
+  REQUIRE(raw["style"].value("sole_floor", false));
+  Json off = raw;
+  off["style"]["sole_floor"] = false;
+  off["style"]["foot_flat"] = 0.0;
+  off["style"]["foot_pitch"] = 1.0;
+  off["style"]["soft_step"] = 0.0;
+  const fs::path offFile = tempClip("cmu_walk_r1.clip.json", off);
+  const ClipData clip = loadClip(file).value();
+  const auto plants = footPlants(clip.raw);
+  const double tempo = raw["style"].value("tempo", 1.0);
+  for (const char* pkg : {"boy_yellow_hoodie_1.0.0", "girl_auburn_bun_glasses_m3"}) {
+    auto act = [](const fs::path& f) {
+      return Json::array({{{"type", "clip"}, {"character", "who"}, {"file", f.string()}, {"start", 1}, {"blendIn", 0}, {"blendOut", 0}, {"end", 80}}});
+    };
+    auto ev = sceneWith(pkg, act(file), 80), ev1 = sceneWith(pkg, act(offFile), 80);
+    float deepest = 0, deepest1 = 0, tilt = 0;
+    for (const char* role : {"foot.L", "foot.R"}) {
+      const int foot = ev->characters()[0].asset.skeleton.find(role);
+      for (int f = 1; f <= 72; ++f) {
+        const ShoeLow a = shoeLow(*ev, role, f), b = shoeLow(*ev1, role, f);
+        deepest = std::max(deepest, a.rest - a.posed);
+        deepest1 = std::max(deepest1, b.rest - b.posed);
+        const PlantState ps = plantAt(plants, role, (f - 1) * tempo, clip.frameCount, true, 0.0, 2.0, 0.0);
+        if (ps.active && ps.weight >= 1.0f) {
+          const vec3 up = mat3(ev->characterGlobals(0, f)[size_t(foot)]) * vec3(0, 1, 0);
+          tilt = std::max(tilt, glm::degrees(std::acos(std::min(1.0f, up.y))));
+        }
+      }
+    }
+    MESSAGE(std::string(pkg) << ": deepest shoe point under its rest level " << deepest * 1000 << " mm (round 1 settings " << deepest1 * 1000
+                 << " mm), planted sole tilt " << tilt << " deg");
+    CHECK(deepest <= 0.0005f);   // sole_floor: no shoe point under the ground
+    CHECK(deepest1 >= 0.010f);   // without it the pitched shoe sinks (the round 1 defect)
+    CHECK(tilt <= 2.0f);         // foot_flat: a planted sole lies flat (the soft step rounds the ends of a plant)
+  }
+}
+
+TEST_CASE("foot lock: sit down and stand up stay on the spot (feet at home, no turn, no step), seated upright") {
+  const fs::path sit = kRoot / "content/clips/mocap/cmu_sit_down.clip.json", stand = kRoot / "content/clips/mocap/cmu_stand_up.clip.json";
+  const Json rawSit = parseJsonFile(sit).value(), rawStand = parseJsonFile(stand).value();
+  // the stand-up is the sit-down played backwards: it starts on the sit-down's last pose
+  REQUIRE(rawSit["frame_count"] == rawStand["frame_count"]);
+  const int n = rawSit["frame_count"].get<int>();
+  for (const char* role : {"hips", "thigh.L", "shin.R", "upperArm.L"})
+    CHECK(rawSit["tracks"][role]["samples"][size_t(n - 1)] == rawStand["tracks"][role]["samples"][0]);
+  for (const Json* raw : {&rawSit, &rawStand}) {
+    const auto& mask = (*raw)["mask"];
+    CHECK(std::find(mask.begin(), mask.end(), "hand.L") == mask.end());  // no wrist roles (noisy in the source)
+    CHECK(std::find(mask.begin(), mask.end(), "hand.R") == mask.end());
+    CHECK_FALSE((*raw)["tracks"].contains("hand.L"));
+  }
+  for (const char* pkg : {"boy_yellow_hoodie_1.0.0", "girl_auburn_bun_glasses_m3"}) {
+    Json acts = Json::array({{{"type", "clip"}, {"character", "who"}, {"file", sit.string()}, {"start", 1}, {"blendIn", 0}, {"blendOut", 0}, {"end", 66}},
+                             {{"type", "clip"}, {"character", "who"}, {"file", stand.string()}, {"start", 60}, {"blendIn", 6}, {"blendOut", 0}, {"end", 121}}});
+    auto ev = sceneWith(pkg, acts, 120);
+    const Skeleton& sk = ev->characters()[0].asset.skeleton;
+    const int hips = sk.find("hips"), chest = sk.find("chest"), kneeL = sk.find("shin.L"), kneeR = sk.find("shin.R");
+    float slide = 0, turn = 0, seatedLean = 0, seatedDrop = 0, kneeGap = 1e9f;
+    for (int f = 1; f <= 110; ++f) {
+      const auto G = ev->characterGlobals(0, f);
+      for (const char* role : {"foot.L", "foot.R"}) {
+        const int foot = sk.find(role);
+        slide = std::max(slide, glm::length(vec3(G[size_t(foot)][3]) - sk.bones[size_t(foot)].head));
+      }
+      const vec3 fwd = mat3(G[size_t(hips)]) * vec3(0, 0, 1);
+      turn = std::max(turn, std::abs(glm::degrees(std::atan2(fwd.x, fwd.z))));
+      kneeGap = std::min(kneeGap, G[size_t(kneeL)][3].x - G[size_t(kneeR)][3].x);
+      if (f >= 40 && f <= 58) {  // seated
+        const vec3 up = mat3(G[size_t(chest)]) * vec3(0, 1, 0);
+        seatedLean = std::max(seatedLean, glm::degrees(std::acos(std::min(1.0f, up.y))));
+        seatedDrop = std::max(seatedDrop, sk.bones[size_t(hips)].head.y - G[size_t(hips)][3].y);
+      }
+    }
+    MESSAGE(std::string(pkg) << ": feet off their rest positions " << slide * 1000 << " mm, hips turn " << turn << " deg, seated trunk lean "
+                 << seatedLean << " deg, hips lowered " << seatedDrop * 1000 << " mm, least knee gap " << kneeGap * 1000 << " mm");
+    CHECK(slide <= 0.0005f);    // foot_home: both feet stay on their rest positions for the whole sit / stand
+    CHECK(turn <= 1.0f);        // no turn (the source subject turns about 33 degrees while sitting down)
+    CHECK(seatedLean <= 1.0f);  // seat_lean 0: upright while seated
+    CHECK(seatedDrop >= 0.3f * legLength(sk));
+    CHECK(kneeGap > 0.5f * (sk.bones[size_t(kneeL)].head.x - sk.bones[size_t(kneeR)].head.x));  // the legs do not cross
   }
 }
 
