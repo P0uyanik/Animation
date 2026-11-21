@@ -155,6 +155,7 @@ class SpringChainSolver {
   struct State {
     std::vector<vec3> x, v, xk;  // per joint (all chains concatenated): position, velocity, kinematic position
     std::vector<vec3> ca, cb;    // collider ends at the end of the last step (only kept for contact.rest chains)
+    std::vector<char> hit;       // per joint: a collider pushed it in the last step (only kept for contact.rest chains)
   };
   void targets(const std::vector<mat4>& g, std::vector<vec3>& xk) const;
   void step(State& s, double dt, const std::vector<mat4>& g) const;

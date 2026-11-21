@@ -768,3 +768,63 @@ TEST_CASE("secondary contact: max_swing bounds how fast a pushed segment turns")
   CHECK(end[0] >= r + pr - 1e-4f);              // both end outside
   CHECK(end[1] >= r + pr - 1e-4f);
 }
+
+TEST_CASE("secondary contact: rest lets a collider hold a joint beyond the angular limit, quietly, and it returns steadily") {
+  // The chain may bend 30 degrees per segment (c2 can leave its place by 26 mm), but the sphere that ends centred on
+  // c2 needs it 35 mm away. Limit and collider cannot both be met: the collider wins and the chain lies still (a
+  // clamp to the limit every step would make the joint creep round the limit cone). When the arm swings away the
+  // joint comes back within the limit steadily, not in one step.
+  const vec3 target(0, 0.90f, -0.12f);
+  const Skeleton sk = armSkeleton(target);
+  const double fps = 24;
+  auto drv = [&sk, fps](double frame) {  // in over 0.5 s, held until 2 s, out over 0.5 s
+    Pose p = restPose(sk);
+    const double sec = (frame - 1) / fps;
+    const double t = sec < 2.0 ? std::clamp(sec / 0.5, 0.0, 1.0) : std::clamp(1.0 - (sec - 2.0) / 0.5, 0.0, 1.0);
+    p.local[6] = glm::angleAxis(glm::radians(float(-90.0 * t)), vec3(0, 1, 0));
+    return boneGlobals(sk, p, mat4(1));
+  };
+  const float r = 0.03f, pr = 0.005f, limit = glm::radians(30.0f);
+  DynamicsSpec spec = armSpec(target, r);
+  spec.chains[0].params.limitDeg = 30;
+  spec.chains[0].contact.set = true;
+  spec.chains[0].contact.segments = true;
+  spec.chains[0].contact.rest = true;
+  auto s = SpringChainSolver::create(sk, spec);
+  REQUIRE(s.has_value());
+  float held = 0, inside = 0, still = 0, jump = 0, zig = 0, end = 0;
+  vec3 t1(0), t2(0);
+  for (int f = 1; f <= 120; ++f) {
+    auto g = solve(**s, drv, f, fps);
+    const vec3 c = vec3(g[6] * vec4(armCentreRest(target) - sk.bones[6].head, 1));
+    vec3 x[5];
+    for (size_t k = 0; k < 4; ++k) x[k] = pivot(g, 2 + k);
+    x[4] = tipOf(g, sk, 5, kTipRest);
+    float bend = 0;  // the largest angle of a segment against its kinematic direction (straight down from c1 on)
+    for (size_t k = 2; k < 5; ++k) {
+      const vec3 d = glm::normalize(x[k] - x[k - 1]);
+      bend = std::max(bend, std::atan2(glm::length(glm::cross(d, vec3(0, -1, 0))), glm::dot(d, vec3(0, -1, 0))));
+    }
+    if (f > 30 && f <= 48) {  // the arm rests (frames 13 to 49)
+      held = std::max(held, bend);
+      for (size_t k = 1; k < 5; ++k) inside = std::max(inside, r + pr - glm::distance(x[k], c));
+      if (f > 40) still = std::max(still, glm::distance(x[4], t1));
+    }
+    if (f > 49) {  // the arm leaves
+      jump = std::max(jump, glm::distance(x[4], t1));
+      if (f > 51) zig = std::max(zig, zigzag(t2, t1, x[4]));
+    }
+    if (f == 120) end = bend;
+    t2 = t1;
+    t1 = x[4];
+  }
+  MESSAGE("held: largest segment angle " << glm::degrees(held) << " deg (limit 30), deepest joint " << inside * 1000 << " mm, tip step "
+          << still * 1000 << " mm per frame; released: largest tip step " << jump * 1000 << " mm per frame, largest reversal "
+          << zig * 1000 << " mm, angle at the end " << glm::degrees(end) << " deg");
+  CHECK(held > limit + glm::radians(5.0f));  // the collider holds it beyond the limit
+  CHECK(inside < 1e-4f);
+  CHECK(still < 1e-4f);
+  CHECK(jump < 0.008f);   // the way back: under 8 mm per frame at the tip, and no zigzag
+  CHECK(zig < 5e-4f);
+  CHECK(end <= limit + 1e-3f);
+}

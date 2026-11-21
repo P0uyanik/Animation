@@ -43,6 +43,9 @@ constexpr float kSegmentMinParam = 0.35f;
 // contact.solid: a joint or segment counts as carried past a collider within one step (and leaves on its previous
 // side) only when it was outside at the previous step (within this slack) and is now deeper than half the distance.
 constexpr float kFlipSlack = 1e-3f;
+// contact.rest: a joint that a collider held beyond the chain's angular limit returns to the limit at this rate (1/s)
+// once it is free (the excess angle decays; 12 1/s = a twelfth of a second to lose 63 % of it).
+constexpr float kLimitReturn = 12.0f;
 
 vec3 closestOnSegment(vec3 p, vec3 a, vec3 b) {
   const vec3 ab = b - a;
@@ -478,6 +481,7 @@ void SpringChainSolver::step(State& s, double dtd, const std::vector<mat4>& g) c
   const float dt = float(dtd);
   std::vector<vec3> xk;
   targets(g, xk);
+  if (keepShapes_ && s.hit.size() != joints_) s.hit.assign(joints_, 0);
   // Collider shapes at the end of the step.
   struct Shape {
     vec3 a, b;
@@ -559,9 +563,31 @@ void SpringChainSolver::step(State& s, double dtd, const std::vector<mat4>& g) c
         vec3 dir = len > 1e-9f ? d / len : dk;
         // angular limit around the kinematic direction
         if (ch.p.limitDeg < 180.0f && glm::dot(dir, dk) < cosLimit) {
-          const vec3 axis = glm::cross(dk, dir);
-          if (glm::length(axis) > 1e-7f) dir = glm::angleAxis(glm::radians(ch.p.limitDeg), glm::normalize(axis)) * dk;
-          else dir = dk;
+          float limit = glm::radians(ch.p.limitDeg);
+          bool clamp = true;
+          if (ch.restContact) {
+            // contact.rest: the limit yields to contact. A collider may hold a joint beyond the limit (the push
+            // comes after the clamp); clamping it back every step makes clamp and push alternate, and the joint
+            // slides round the limit cone to its far side within a frame or two. So a joint that a collider pushed
+            // (this step or the last) is not clamped, and once it is free its limit shrinks from the angle it had to
+            // the chain's limit at kLimitReturn, so it comes back steadily instead of jumping.
+            if (hits[k].on || (o + k < s.hit.size() && s.hit[o + k])) {
+              clamp = false;
+            } else {
+              const vec3 was = s.x[o + k] - s.x[o + k - 1], kWas = s.xk[o + k] - s.xk[o + k - 1];
+              if (glm::length(was) > 1e-9f && glm::length(kWas) > 1e-9f) {
+                const vec3 a = glm::normalize(was), b = glm::normalize(kWas);
+                const float before = std::atan2(glm::length(glm::cross(a, b)), glm::dot(a, b));
+                if (before > limit) limit += (before - limit) * std::exp(-kLimitReturn * dt);
+              }
+              clamp = glm::dot(dir, dk) < std::cos(limit);
+            }
+          }
+          if (clamp) {
+            const vec3 axis = glm::cross(dk, dir);
+            if (glm::length(axis) > 1e-7f) dir = glm::angleAxis(limit, glm::normalize(axis)) * dk;
+            else dir = dk;
+          }
         }
         p[k] = p[k - 1] + dir * ch.length[k - 1];
         // colliders: never closer than the radius, nor than the kinematic joint itself is (so a rest shape that
@@ -697,6 +723,7 @@ void SpringChainSolver::step(State& s, double dtd, const std::vector<mat4>& g) c
       if (ch.restContact) {
         // resting contact: along the contact normal the joint moves with the collider (inelastic), and its sliding
         // speed on the collider decays by the friction
+        if (i < s.hit.size()) s.hit[i] = hits[k].on ? 1 : 0;
         if (hits[k].on) {
           const vec3 rel = s.v[i] - hits[k].vc;
           const vec3 slide = rel - hits[k].n * glm::dot(rel, hits[k].n);
