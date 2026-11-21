@@ -950,3 +950,9 @@ hard depends-on (read) overlaps were conflicts → T-181b makes them warnings. R
   for later.
 - **P13:** yes, adopt the narrow LIGHT clone rule (code/docs tasks that never run the full suite) → CLONE_PROFILES.md §3.
 
+## 2026-11-21 ~22:45 CET (via the liaison)
+- **New T-187 "Paper-boat test scene"** (low-quality test, not for publication): released boy 2.3.0, auburn girl 0.14.0,
+  white-haired girl 0.1.0; existing systems only; plain classroom staging; story: seated, the girl with glasses makes a
+  paper boat (no finger-folding animation), surprise, she gives it to the boy, all stand and walk; 12–20 s, 4–5 shots,
+  640x360 H.264 + contact sheet; known defects listed in the README. Estimate given: ~1–1.5 work days.
+
