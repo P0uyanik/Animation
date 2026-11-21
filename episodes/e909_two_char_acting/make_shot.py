@@ -27,7 +27,13 @@ cast (evaluation only) and lets her react to the success event with girl_delight
 Gaze (T-113 open point 3, the e908 look drove the eyes past gaze_range during blinks): both characters' eye limits are
 set just inside their specs' gaze_range_deg (EYE_YAW, EYE_PITCH); the neck assist takes part of the excess (kept small as in
 e907 so the heads stay apart and the faces read) and a far look stops short at the range. The eyes stay inside the
-range the lids were fitted for (measured by measure_beats.py, pinned by the test)."""
+range the lids were fitted for (measured by measure_beats.py, pinned by the test).
+
+Cup grasp (T-185, owner pick 2026-11-21 of T-171 round 3 "fixed, thumb up", r3): her pick-up carries the opt-in
+"fingerClose" R3 (the same keys as episodes/e910_showcase/make_shot.py R3). Only her pick-up: with the key on the pass as
+well, his hold improves but his hand passes deeper through the cup when he lets go after the place (measured,
+docs/evaluation/interaction/T-185/README.md), so the pass, his receive and the place stay as released. The cup is the
+released one (T-171's proposed site moves side_a, his side; her set b is side_b)."""
 import argparse
 import copy
 import json
@@ -47,6 +53,11 @@ NECK_YAW = 15.0  # life.gaze.assistYawDeg as e907: more turns the heads into eac
 GIRL_NECK_PITCH = 20.0  # life.gaze.assistPitchDeg (e907 10); 35 hid her face at the notice
 BOY_NECK_PITCH = 15.0  # looking down at the cup in his hand: more pitch hides his face under his hair
 HEAD_FOLLOW = 0.3  # life.headFollow as e907 (0.5 leaned the heads together)
+# T-185: T-171 round 3 variant r3 keys (rest hand, wrap, grip natural, clear 0.006), as in e910's make_shot.py
+R3 = {"rest": {"curl": 0.25, "thumb": 0.12, "spread": 0.6,
+               "fingers": {"index": {"curl": 0.14, "spread": 0.9}, "middle": {"curl": 0.22, "spread": 0.6},
+                           "ring": {"curl": 0.29, "spread": 0.6}, "little": {"curl": 0.35, "spread": 0.9}}},
+      "wrap": True, "grip": "natural", "clear": 0.006}
 SHARED = 30  # frames of the shared hold (pass release - contact): long enough for his glance up at her (T-116)
 END = 286  # 11.9 s
 DELIGHT = 0.85  # her `happy` (Smile) at his acceptance, held to the end
@@ -116,7 +127,8 @@ def build(candidate):
         {"type": "emotion", "character": "boy", "name": "boy_unimpressed", "start": 1, "end": B["pass"] + 20,
          "intensity": BORED},
         # she: notice (event) -> pick up -> offer -> pass
-        {"type": "pick_up", "character": "girl", "hand": "L", "prop": "cup", "set": "b", "start": B["pick_up"]},
+        {"type": "pick_up", "character": "girl", "hand": "L", "prop": "cup", "set": "b", "start": B["pick_up"],
+         "fingerClose": copy.deepcopy(R3)},
         {"type": "carry", "character": "girl", "hand": "L", "at": offered},
         {"type": "look", "character": "girl", "start": B["his_glance"], "end": B["pass"] - 1, "atCharacter": "boy"},
         # he glances at the offer and away again (reluctant)
@@ -155,6 +167,8 @@ def build(candidate):
         "neck_yaw_deg": NECK_YAW, "girl_neck_pitch_deg": GIRL_NECK_PITCH, "boy_neck_pitch_deg": BOY_NECK_PITCH,
         "head_follow": HEAD_FOLLOW, "shared_hold": SHARED, "candidate": candidate,
     }
+    shot["x_t185"] = {"task": "T-185", "fingerClose": R3, "on": "girl pick_up (set b) only",
+                      "measured_by": "docs/evaluation/interaction/T-185/README.md"}
     return name, shot
 
 

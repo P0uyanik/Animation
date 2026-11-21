@@ -5,6 +5,9 @@ shot_render.py take the nearest content/assets above the scene), so the cup can 
   base     the shot as it is (fingerClose removed if present; released cup)
   r3keys   fingerClose = T-171 R3 (rest, wrap, grip natural, clear 0.006) on pick_up / pass / place; released cup
   r3site   r3keys + T-171's proposed cup site (side_a: socket grip y 0.05, band 0-0.1): the boy's receiving side
+  r3np     r3keys without the key on place (the boy's place keeps its released opening)
+  r3sitenp r3site without the key on place
+  r3pick   r3keys on pick_up only (the girl's grasp; the pass and the boy's receive / place as released)
   r3siteb  r3site + the same centring for side_b (socket grip_b y 0.05, band 0-0.1): the girl's side (new, unmeasured
            by T-171: the mirror of its proposal)"""
 import importlib.util, json, os, shutil, sys
@@ -15,7 +18,8 @@ e910 = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(e910)  # R3 only (main() runs under __main__ only)
 R3 = e910.R3
 VERBS = ("pick_up", "pass", "place")
-SITES = {"base": {}, "r3keys": {}, "r3site": {"grip": ("side_a", 0.05)},
+SITES = {"base": {}, "r3keys": {}, "r3site": {"grip": ("side_a", 0.05)}, "r3np": {}, "r3pick": {},
+         "r3sitenp": {"grip": ("side_a", 0.05)},
          "r3siteb": {"grip": ("side_a", 0.05), "grip_b": ("side_b", 0.05)}}
 
 
@@ -23,7 +27,8 @@ def make(src, tag, name):
     s = json.load(open(src))
     for a in s["actions"]:
         a.pop("fingerClose", None)
-        if name != "base" and a.get("type") in VERBS:
+        if name != "base" and a.get("type") in VERBS and not (name.endswith("np") and a["type"] == "place") \
+                and not (name == "r3pick" and a["type"] != "pick_up"):
             a["fingerClose"] = json.loads(json.dumps(R3))
     s.pop("x_t185", None)
     for c in s["characters"]:

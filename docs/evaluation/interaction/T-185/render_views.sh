@@ -5,6 +5,8 @@
 #           the shot's view of the hand, enlarged 4x (a quarter-width box of the 1280x720 frame). Clip frames A..B.
 #   shot  = the shot camera itself, 960x540 (shot size), f84.
 #   hi    = T-171's strict camera above the boy's right side (r3_strict_pickup.jpg), sheet frames.
+#   HI_CAM / HI_FRAMES / SHOT_FRAME override the strict camera, its frames and the shot-size frame (e909: the girl's
+#   left side, the strict camera mirrored about the cup).
 # Usage: render_views.sh <dir with render/shot.blend> <clip from> <clip to> [samples]
 D=$1; A=$2; B=$3; SPP=${4:-12}
 BLEND=$(find "$D" -name "*.blend" | head -1)
@@ -20,5 +22,5 @@ print(','.join(f for f in '$FR'.split(',') if not os.path.exists('$D/views/v_${N
 }
 CLIP=$(python3 -c "print(','.join(str(f) for f in range($A, $B + 1)))")
 view shotz "$CLIP" "480 270" "0.0 1.071 1.464 -0.04 0.53 0.01 128"
-view hi 64,70,74,76,80,84 "400 300" "0.16 0.90 0.30 -0.01 0.53 0.0 85"
-view shot 84 "960 540" "0.0 1.071 1.464 0.0 0.76 0.003 32"
+view hi "${HI_FRAMES:-64,70,74,76,80,84}" "400 300" "${HI_CAM:-0.16 0.90 0.30 -0.01 0.53 0.0 85}"
+view shot "${SHOT_FRAME:-84}" "960 540" "0.0 1.071 1.464 0.0 0.76 0.003 32"
