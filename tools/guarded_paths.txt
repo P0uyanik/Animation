@@ -33,6 +33,9 @@ tools/regression_paths.txt
 tools/regression/
 docs/evaluation/regression/baselines/
 tools/shared_character_allowlist.txt
+# One release rule for opt-in features (T-178, owner 2026-11-21 ~04:10Z): the manifest and the rule.
+pipeline/charsys/release_manifest*
+pipeline/charsys/release_rule*.py
 docs/evaluation/characters/fidelity_baseline.json
 .github/ci-dependencies.json
 .github/scripts/

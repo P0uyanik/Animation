@@ -1,0 +1,44 @@
+{
+ "boy_base": {
+  "F_m": 0.3197,
+  "Hh_m": 0.4314,
+  "ear_front_projection": 0.0423,
+  "ear_width": 0.0567,
+  "ear_height": 0.1656,
+  "ear_top_eye": -0.055,
+  "ear_base_mouth": -0.0285,
+  "ear_turn_projection": {
+   "30": 0.0871,
+   "45": 0.1021
+  },
+  "ear_outer_x_over_eye_x": 2.531
+ },
+ "girl_s06": {
+  "F_m": 0.2837,
+  "Hh_m": 0.3669,
+  "ear_front_projection": 0.0514,
+  "ear_width": 0.0622,
+  "ear_height": 0.1835,
+  "ear_top_eye": -0.059,
+  "ear_base_mouth": -0.0255,
+  "ear_turn_projection": {
+   "30": 0.0798,
+   "45": 0.0956
+  },
+  "ear_outer_x_over_eye_x": 2.68
+ },
+ "third_s06": {
+  "F_m": 0.268,
+  "Hh_m": 0.3371,
+  "ear_front_projection": 0.0571,
+  "ear_width": 0.0649,
+  "ear_height": 0.1996,
+  "ear_top_eye": -0.0191,
+  "ear_base_mouth": 0.0269,
+  "ear_turn_projection": {
+   "30": 0.083,
+   "45": 0.1001
+  },
+  "ear_outer_x_over_eye_x": 2.501
+ }
+}

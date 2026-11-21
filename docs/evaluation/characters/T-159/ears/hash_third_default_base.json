@@ -1,0 +1,997 @@
+{
+ "WGT-rig_VIS_thigh_ik_pole.L": {
+  "keys": 0,
+  "sha256": "9491642b1d2f02bf",
+  "vertices": 2
+ },
+ "WGT-rig_VIS_thigh_ik_pole.R": {
+  "keys": 0,
+  "sha256": "9491642b1d2f02bf",
+  "vertices": 2
+ },
+ "WGT-rig_VIS_upper_arm_ik_pole.L": {
+  "keys": 0,
+  "sha256": "9491642b1d2f02bf",
+  "vertices": 2
+ },
+ "WGT-rig_VIS_upper_arm_ik_pole.R": {
+  "keys": 0,
+  "sha256": "9491642b1d2f02bf",
+  "vertices": 2
+ },
+ "WGT-rig_chest": {
+  "keys": 0,
+  "sha256": "725a065392bed1cd",
+  "vertices": 32
+ },
+ "WGT-rig_eye.L": {
+  "keys": 0,
+  "sha256": "241f6a87e88ed3b2",
+  "vertices": 32
+ },
+ "WGT-rig_eye.R": {
+  "keys": 0,
+  "sha256": "241f6a87e88ed3b2",
+  "vertices": 32
+ },
+ "WGT-rig_f_index.01.L": {
+  "keys": 0,
+  "sha256": "8df9db1586191173",
+  "vertices": 32
+ },
+ "WGT-rig_f_index.01.L.001": {
+  "keys": 0,
+  "sha256": "06115fb5ec80d391",
+  "vertices": 32
+ },
+ "WGT-rig_f_index.01.R": {
+  "keys": 0,
+  "sha256": "8df9db1586191173",
+  "vertices": 32
+ },
+ "WGT-rig_f_index.01.R.001": {
+  "keys": 0,
+  "sha256": "06115fb5ec80d391",
+  "vertices": 32
+ },
+ "WGT-rig_f_index.01_master.L": {
+  "keys": 0,
+  "sha256": "be6f5b7a1f8431e7",
+  "vertices": 6
+ },
+ "WGT-rig_f_index.01_master.R": {
+  "keys": 0,
+  "sha256": "be6f5b7a1f8431e7",
+  "vertices": 6
+ },
+ "WGT-rig_f_index.02.L": {
+  "keys": 0,
+  "sha256": "8df9db1586191173",
+  "vertices": 32
+ },
+ "WGT-rig_f_index.02.R": {
+  "keys": 0,
+  "sha256": "8df9db1586191173",
+  "vertices": 32
+ },
+ "WGT-rig_f_index.03.L": {
+  "keys": 0,
+  "sha256": "8df9db1586191173",
+  "vertices": 32
+ },
+ "WGT-rig_f_index.03.R": {
+  "keys": 0,
+  "sha256": "8df9db1586191173",
+  "vertices": 32
+ },
+ "WGT-rig_f_middle.01.L": {
+  "keys": 0,
+  "sha256": "8df9db1586191173",
+  "vertices": 32
+ },
+ "WGT-rig_f_middle.01.L.001": {
+  "keys": 0,
+  "sha256": "06115fb5ec80d391",
+  "vertices": 32
+ },
+ "WGT-rig_f_middle.01.R": {
+  "keys": 0,
+  "sha256": "8df9db1586191173",
+  "vertices": 32
+ },
+ "WGT-rig_f_middle.01.R.001": {
+  "keys": 0,
+  "sha256": "06115fb5ec80d391",
+  "vertices": 32
+ },
+ "WGT-rig_f_middle.01_master.L": {
+  "keys": 0,
+  "sha256": "be6f5b7a1f8431e7",
+  "vertices": 6
+ },
+ "WGT-rig_f_middle.01_master.R": {
+  "keys": 0,
+  "sha256": "be6f5b7a1f8431e7",
+  "vertices": 6
+ },
+ "WGT-rig_f_middle.02.L": {
+  "keys": 0,
+  "sha256": "8df9db1586191173",
+  "vertices": 32
+ },
+ "WGT-rig_f_middle.02.R": {
+  "keys": 0,
+  "sha256": "8df9db1586191173",
+  "vertices": 32
+ },
+ "WGT-rig_f_middle.03.L": {
+  "keys": 0,
+  "sha256": "8df9db1586191173",
+  "vertices": 32
+ },
+ "WGT-rig_f_middle.03.R": {
+  "keys": 0,
+  "sha256": "8df9db1586191173",
+  "vertices": 32
+ },
+ "WGT-rig_f_pinky.01.L": {
+  "keys": 0,
+  "sha256": "8df9db1586191173",
+  "vertices": 32
+ },
+ "WGT-rig_f_pinky.01.L.001": {
+  "keys": 0,
+  "sha256": "06115fb5ec80d391",
+  "vertices": 32
+ },
+ "WGT-rig_f_pinky.01.R": {
+  "keys": 0,
+  "sha256": "8df9db1586191173",
+  "vertices": 32
+ },
+ "WGT-rig_f_pinky.01.R.001": {
+  "keys": 0,
+  "sha256": "06115fb5ec80d391",
+  "vertices": 32
+ },
+ "WGT-rig_f_pinky.01_master.L": {
+  "keys": 0,
+  "sha256": "be6f5b7a1f8431e7",
+  "vertices": 6
+ },
+ "WGT-rig_f_pinky.01_master.R": {
+  "keys": 0,
+  "sha256": "be6f5b7a1f8431e7",
+  "vertices": 6
+ },
+ "WGT-rig_f_pinky.02.L": {
+  "keys": 0,
+  "sha256": "8df9db1586191173",
+  "vertices": 32
+ },
+ "WGT-rig_f_pinky.02.R": {
+  "keys": 0,
+  "sha256": "8df9db1586191173",
+  "vertices": 32
+ },
+ "WGT-rig_f_pinky.03.L": {
+  "keys": 0,
+  "sha256": "8df9db1586191173",
+  "vertices": 32
+ },
+ "WGT-rig_f_pinky.03.R": {
+  "keys": 0,
+  "sha256": "8df9db1586191173",
+  "vertices": 32
+ },
+ "WGT-rig_f_ring.01.L": {
+  "keys": 0,
+  "sha256": "8df9db1586191173",
+  "vertices": 32
+ },
+ "WGT-rig_f_ring.01.L.001": {
+  "keys": 0,
+  "sha256": "06115fb5ec80d391",
+  "vertices": 32
+ },
+ "WGT-rig_f_ring.01.R": {
+  "keys": 0,
+  "sha256": "8df9db1586191173",
+  "vertices": 32
+ },
+ "WGT-rig_f_ring.01.R.001": {
+  "keys": 0,
+  "sha256": "06115fb5ec80d391",
+  "vertices": 32
+ },
+ "WGT-rig_f_ring.01_master.L": {
+  "keys": 0,
+  "sha256": "be6f5b7a1f8431e7",
+  "vertices": 6
+ },
+ "WGT-rig_f_ring.01_master.R": {
+  "keys": 0,
+  "sha256": "be6f5b7a1f8431e7",
+  "vertices": 6
+ },
+ "WGT-rig_f_ring.02.L": {
+  "keys": 0,
+  "sha256": "8df9db1586191173",
+  "vertices": 32
+ },
+ "WGT-rig_f_ring.02.R": {
+  "keys": 0,
+  "sha256": "8df9db1586191173",
+  "vertices": 32
+ },
+ "WGT-rig_f_ring.03.L": {
+  "keys": 0,
+  "sha256": "8df9db1586191173",
+  "vertices": 32
+ },
+ "WGT-rig_f_ring.03.R": {
+  "keys": 0,
+  "sha256": "8df9db1586191173",
+  "vertices": 32
+ },
+ "WGT-rig_foot_fk.L": {
+  "keys": 0,
+  "sha256": "58e40d3c116fab5f",
+  "vertices": 32
+ },
+ "WGT-rig_foot_fk.R": {
+  "keys": 0,
+  "sha256": "58e40d3c116fab5f",
+  "vertices": 32
+ },
+ "WGT-rig_foot_heel_ik.L": {
+  "keys": 0,
+  "sha256": "0b51d19b2dc87de4",
+  "vertices": 52
+ },
+ "WGT-rig_foot_heel_ik.R": {
+  "keys": 0,
+  "sha256": "0b51d19b2dc87de4",
+  "vertices": 52
+ },
+ "WGT-rig_foot_ik.L": {
+  "keys": 0,
+  "sha256": "91ee9c9ca14533cd",
+  "vertices": 8
+ },
+ "WGT-rig_foot_ik.R": {
+  "keys": 0,
+  "sha256": "91ee9c9ca14533cd",
+  "vertices": 8
+ },
+ "WGT-rig_foot_spin_ik.L": {
+  "keys": 0,
+  "sha256": "e25903a38ffb238f",
+  "vertices": 52
+ },
+ "WGT-rig_foot_spin_ik.R": {
+  "keys": 0,
+  "sha256": "e25903a38ffb238f",
+  "vertices": 52
+ },
+ "WGT-rig_foot_tweak.L": {
+  "keys": 0,
+  "sha256": "4d94e2e5aea54c2f",
+  "vertices": 48
+ },
+ "WGT-rig_foot_tweak.R": {
+  "keys": 0,
+  "sha256": "4d94e2e5aea54c2f",
+  "vertices": 48
+ },
+ "WGT-rig_forearm_fk.L": {
+  "keys": 0,
+  "sha256": "c9fa7ea618024206",
+  "vertices": 34
+ },
+ "WGT-rig_forearm_fk.R": {
+  "keys": 0,
+  "sha256": "c9fa7ea618024206",
+  "vertices": 34
+ },
+ "WGT-rig_forearm_tweak.L": {
+  "keys": 0,
+  "sha256": "4d94e2e5aea54c2f",
+  "vertices": 48
+ },
+ "WGT-rig_forearm_tweak.L.001": {
+  "keys": 0,
+  "sha256": "4d94e2e5aea54c2f",
+  "vertices": 48
+ },
+ "WGT-rig_forearm_tweak.R": {
+  "keys": 0,
+  "sha256": "4d94e2e5aea54c2f",
+  "vertices": 48
+ },
+ "WGT-rig_forearm_tweak.R.001": {
+  "keys": 0,
+  "sha256": "4d94e2e5aea54c2f",
+  "vertices": 48
+ },
+ "WGT-rig_hand_fk.L": {
+  "keys": 0,
+  "sha256": "58e40d3c116fab5f",
+  "vertices": 32
+ },
+ "WGT-rig_hand_fk.R": {
+  "keys": 0,
+  "sha256": "58e40d3c116fab5f",
+  "vertices": 32
+ },
+ "WGT-rig_hand_ik.L": {
+  "keys": 0,
+  "sha256": "7917b73dbfb74b21",
+  "vertices": 8
+ },
+ "WGT-rig_hand_ik.R": {
+  "keys": 0,
+  "sha256": "7917b73dbfb74b21",
+  "vertices": 8
+ },
+ "WGT-rig_hand_tweak.L": {
+  "keys": 0,
+  "sha256": "4d94e2e5aea54c2f",
+  "vertices": 48
+ },
+ "WGT-rig_hand_tweak.R": {
+  "keys": 0,
+  "sha256": "4d94e2e5aea54c2f",
+  "vertices": 48
+ },
+ "WGT-rig_head": {
+  "keys": 0,
+  "sha256": "71828231be19e83b",
+  "vertices": 32
+ },
+ "WGT-rig_hips": {
+  "keys": 0,
+  "sha256": "725a065392bed1cd",
+  "vertices": 32
+ },
+ "WGT-rig_neck": {
+  "keys": 0,
+  "sha256": "49f98a08fa4caad3",
+  "vertices": 32
+ },
+ "WGT-rig_palm.L": {
+  "keys": 0,
+  "sha256": "b08e55b631a24b63",
+  "vertices": 16
+ },
+ "WGT-rig_palm.R": {
+  "keys": 0,
+  "sha256": "b08e55b631a24b63",
+  "vertices": 16
+ },
+ "WGT-rig_root": {
+  "keys": 0,
+  "sha256": "7797f5cd70f4a2c2",
+  "vertices": 48
+ },
+ "WGT-rig_shin_fk.L": {
+  "keys": 0,
+  "sha256": "c9fa7ea618024206",
+  "vertices": 34
+ },
+ "WGT-rig_shin_fk.R": {
+  "keys": 0,
+  "sha256": "c9fa7ea618024206",
+  "vertices": 34
+ },
+ "WGT-rig_shin_tweak.L": {
+  "keys": 0,
+  "sha256": "4d94e2e5aea54c2f",
+  "vertices": 48
+ },
+ "WGT-rig_shin_tweak.L.001": {
+  "keys": 0,
+  "sha256": "4d94e2e5aea54c2f",
+  "vertices": 48
+ },
+ "WGT-rig_shin_tweak.R": {
+  "keys": 0,
+  "sha256": "4d94e2e5aea54c2f",
+  "vertices": 48
+ },
+ "WGT-rig_shin_tweak.R.001": {
+  "keys": 0,
+  "sha256": "4d94e2e5aea54c2f",
+  "vertices": 48
+ },
+ "WGT-rig_shoulder.L": {
+  "keys": 0,
+  "sha256": "8dc8331723523cff",
+  "vertices": 34
+ },
+ "WGT-rig_shoulder.R": {
+  "keys": 0,
+  "sha256": "8dc8331723523cff",
+  "vertices": 34
+ },
+ "WGT-rig_spine_fk": {
+  "keys": 0,
+  "sha256": "58db9fe1b8989ba6",
+  "vertices": 32
+ },
+ "WGT-rig_spine_fk.001": {
+  "keys": 0,
+  "sha256": "58db9fe1b8989ba6",
+  "vertices": 32
+ },
+ "WGT-rig_spine_fk.002": {
+  "keys": 0,
+  "sha256": "49f98a08fa4caad3",
+  "vertices": 32
+ },
+ "WGT-rig_spine_fk.003": {
+  "keys": 0,
+  "sha256": "49f98a08fa4caad3",
+  "vertices": 32
+ },
+ "WGT-rig_thigh_fk.L": {
+  "keys": 0,
+  "sha256": "c9fa7ea618024206",
+  "vertices": 34
+ },
+ "WGT-rig_thigh_fk.R": {
+  "keys": 0,
+  "sha256": "c9fa7ea618024206",
+  "vertices": 34
+ },
+ "WGT-rig_thigh_ik.L": {
+  "keys": 0,
+  "sha256": "55fc926878a837f3",
+  "vertices": 14
+ },
+ "WGT-rig_thigh_ik.R": {
+  "keys": 0,
+  "sha256": "55fc926878a837f3",
+  "vertices": 14
+ },
+ "WGT-rig_thigh_ik_target.L": {
+  "keys": 0,
+  "sha256": "4d94e2e5aea54c2f",
+  "vertices": 48
+ },
+ "WGT-rig_thigh_ik_target.R": {
+  "keys": 0,
+  "sha256": "4d94e2e5aea54c2f",
+  "vertices": 48
+ },
+ "WGT-rig_thigh_parent.L": {
+  "keys": 0,
+  "sha256": "f457643c15f7d427",
+  "vertices": 48
+ },
+ "WGT-rig_thigh_parent.R": {
+  "keys": 0,
+  "sha256": "f457643c15f7d427",
+  "vertices": 48
+ },
+ "WGT-rig_thigh_tweak.L": {
+  "keys": 0,
+  "sha256": "4d94e2e5aea54c2f",
+  "vertices": 48
+ },
+ "WGT-rig_thigh_tweak.L.001": {
+  "keys": 0,
+  "sha256": "4d94e2e5aea54c2f",
+  "vertices": 48
+ },
+ "WGT-rig_thigh_tweak.R": {
+  "keys": 0,
+  "sha256": "4d94e2e5aea54c2f",
+  "vertices": 48
+ },
+ "WGT-rig_thigh_tweak.R.001": {
+  "keys": 0,
+  "sha256": "4d94e2e5aea54c2f",
+  "vertices": 48
+ },
+ "WGT-rig_thumb.01.L": {
+  "keys": 0,
+  "sha256": "8df9db1586191173",
+  "vertices": 32
+ },
+ "WGT-rig_thumb.01.L.001": {
+  "keys": 0,
+  "sha256": "06115fb5ec80d391",
+  "vertices": 32
+ },
+ "WGT-rig_thumb.01.R": {
+  "keys": 0,
+  "sha256": "8df9db1586191173",
+  "vertices": 32
+ },
+ "WGT-rig_thumb.01.R.001": {
+  "keys": 0,
+  "sha256": "06115fb5ec80d391",
+  "vertices": 32
+ },
+ "WGT-rig_thumb.01_master.L": {
+  "keys": 0,
+  "sha256": "be6f5b7a1f8431e7",
+  "vertices": 6
+ },
+ "WGT-rig_thumb.01_master.R": {
+  "keys": 0,
+  "sha256": "be6f5b7a1f8431e7",
+  "vertices": 6
+ },
+ "WGT-rig_thumb.02.L": {
+  "keys": 0,
+  "sha256": "8df9db1586191173",
+  "vertices": 32
+ },
+ "WGT-rig_thumb.02.R": {
+  "keys": 0,
+  "sha256": "8df9db1586191173",
+  "vertices": 32
+ },
+ "WGT-rig_thumb.03.L": {
+  "keys": 0,
+  "sha256": "8df9db1586191173",
+  "vertices": 32
+ },
+ "WGT-rig_thumb.03.R": {
+  "keys": 0,
+  "sha256": "8df9db1586191173",
+  "vertices": 32
+ },
+ "WGT-rig_toe_fk.L": {
+  "keys": 0,
+  "sha256": "e83bf411ab14dad1",
+  "vertices": 32
+ },
+ "WGT-rig_toe_fk.R": {
+  "keys": 0,
+  "sha256": "e83bf411ab14dad1",
+  "vertices": 32
+ },
+ "WGT-rig_toe_ik.L": {
+  "keys": 0,
+  "sha256": "e83bf411ab14dad1",
+  "vertices": 32
+ },
+ "WGT-rig_toe_ik.R": {
+  "keys": 0,
+  "sha256": "e83bf411ab14dad1",
+  "vertices": 32
+ },
+ "WGT-rig_torso": {
+  "keys": 0,
+  "sha256": "69342feed8a6383e",
+  "vertices": 8
+ },
+ "WGT-rig_tweak_spine": {
+  "keys": 0,
+  "sha256": "4d94e2e5aea54c2f",
+  "vertices": 48
+ },
+ "WGT-rig_tweak_spine.001": {
+  "keys": 0,
+  "sha256": "4d94e2e5aea54c2f",
+  "vertices": 48
+ },
+ "WGT-rig_tweak_spine.002": {
+  "keys": 0,
+  "sha256": "4d94e2e5aea54c2f",
+  "vertices": 48
+ },
+ "WGT-rig_tweak_spine.003": {
+  "keys": 0,
+  "sha256": "4d94e2e5aea54c2f",
+  "vertices": 48
+ },
+ "WGT-rig_tweak_spine.004": {
+  "keys": 0,
+  "sha256": "4d94e2e5aea54c2f",
+  "vertices": 48
+ },
+ "WGT-rig_tweak_spine.005": {
+  "keys": 0,
+  "sha256": "4d94e2e5aea54c2f",
+  "vertices": 48
+ },
+ "WGT-rig_upper_arm_fk.L": {
+  "keys": 0,
+  "sha256": "c9fa7ea618024206",
+  "vertices": 34
+ },
+ "WGT-rig_upper_arm_fk.R": {
+  "keys": 0,
+  "sha256": "c9fa7ea618024206",
+  "vertices": 34
+ },
+ "WGT-rig_upper_arm_ik.L": {
+  "keys": 0,
+  "sha256": "55fc926878a837f3",
+  "vertices": 14
+ },
+ "WGT-rig_upper_arm_ik.R": {
+  "keys": 0,
+  "sha256": "55fc926878a837f3",
+  "vertices": 14
+ },
+ "WGT-rig_upper_arm_ik_target.L": {
+  "keys": 0,
+  "sha256": "4d94e2e5aea54c2f",
+  "vertices": 48
+ },
+ "WGT-rig_upper_arm_ik_target.R": {
+  "keys": 0,
+  "sha256": "4d94e2e5aea54c2f",
+  "vertices": 48
+ },
+ "WGT-rig_upper_arm_parent.L": {
+  "keys": 0,
+  "sha256": "f457643c15f7d427",
+  "vertices": 48
+ },
+ "WGT-rig_upper_arm_parent.R": {
+  "keys": 0,
+  "sha256": "f457643c15f7d427",
+  "vertices": 48
+ },
+ "WGT-rig_upper_arm_tweak.L": {
+  "keys": 0,
+  "sha256": "4d94e2e5aea54c2f",
+  "vertices": 48
+ },
+ "WGT-rig_upper_arm_tweak.L.001": {
+  "keys": 0,
+  "sha256": "4d94e2e5aea54c2f",
+  "vertices": 48
+ },
+ "WGT-rig_upper_arm_tweak.R": {
+  "keys": 0,
+  "sha256": "4d94e2e5aea54c2f",
+  "vertices": 48
+ },
+ "WGT-rig_upper_arm_tweak.R.001": {
+  "keys": 0,
+  "sha256": "4d94e2e5aea54c2f",
+  "vertices": 48
+ },
+ "body_skin": {
+  "keys": 13,
+  "sha256": "a794f28be02930fc",
+  "vertices": 87658
+ },
+ "brow.L": {
+  "keys": 13,
+  "sha256": "d88eb0cac35539d9",
+  "vertices": 132
+ },
+ "brow.R": {
+  "keys": 12,
+  "sha256": "8f33161ef0c501a8",
+  "vertices": 132
+ },
+ "ear.L": {
+  "keys": 0,
+  "sha256": "06a6111e59888519",
+  "vertices": 1986
+ },
+ "ear.R": {
+  "keys": 0,
+  "sha256": "272360de8b36f3e2",
+  "vertices": 1986
+ },
+ "eye.L": {
+  "keys": 7,
+  "sha256": "7cb5d900a024ae7b",
+  "vertices": 1106
+ },
+ "eye.R": {
+  "keys": 7,
+  "sha256": "7de1ec596eed1ac9",
+  "vertices": 1106
+ },
+ "garment.boots.cuff.L": {
+  "keys": 0,
+  "sha256": "6bb63881a6ef39ad",
+  "vertices": 5328
+ },
+ "garment.boots.cuff.R": {
+  "keys": 0,
+  "sha256": "c24d05ed7b70bf06",
+  "vertices": 5328
+ },
+ "garment.boots.lining.L": {
+  "keys": 0,
+  "sha256": "87300e729b5fe998",
+  "vertices": 192
+ },
+ "garment.boots.lining.R": {
+  "keys": 0,
+  "sha256": "49b4281573233ef6",
+  "vertices": 192
+ },
+ "garment.boots.main.L": {
+  "keys": 0,
+  "sha256": "4156162ac6443e3c",
+  "vertices": 6552
+ },
+ "garment.boots.main.R": {
+  "keys": 0,
+  "sha256": "cc13974f31c6af4b",
+  "vertices": 6552
+ },
+ "garment.boots.sole.L": {
+  "keys": 0,
+  "sha256": "7693552943f39849",
+  "vertices": 310
+ },
+ "garment.boots.sole.R": {
+  "keys": 0,
+  "sha256": "b2a93df641f0bf30",
+  "vertices": 310
+ },
+ "garment.boots.stitch.L": {
+  "keys": 0,
+  "sha256": "deb4e57c29064592",
+  "vertices": 252
+ },
+ "garment.boots.stitch.R": {
+  "keys": 0,
+  "sha256": "9f9306a8c016188f",
+  "vertices": 252
+ },
+ "garment.collider.body_skin": {
+  "keys": 13,
+  "sha256": "a794f28be02930fc",
+  "vertices": 87658
+ },
+ "garment.dress.band.cuff.L": {
+  "keys": 0,
+  "sha256": "50b266a34f1bd4c3",
+  "vertices": 264
+ },
+ "garment.dress.band.cuff.R": {
+  "keys": 0,
+  "sha256": "085451712554ebe2",
+  "vertices": 264
+ },
+ "garment.dress.band.hem_rib": {
+  "keys": 0,
+  "sha256": "3b37ff2a8ef36de7",
+  "vertices": 1152
+ },
+ "garment.dress.bodice": {
+  "keys": 0,
+  "sha256": "c5ea33bee7417ffe",
+  "vertices": 25392
+ },
+ "garment.dress.collar": {
+  "keys": 0,
+  "sha256": "7756bc2bd7ddccbe",
+  "vertices": 1022
+ },
+ "garment.dress.ribcuff.L": {
+  "keys": 0,
+  "sha256": "d035bccc981cceed",
+  "vertices": 1296
+ },
+ "garment.dress.ribcuff.R": {
+  "keys": 0,
+  "sha256": "4d4b497d12273cde",
+  "vertices": 1296
+ },
+ "garment.dress.skirt": {
+  "keys": 0,
+  "sha256": "91c9238876419cf2",
+  "vertices": 76800
+ },
+ "garment.tights.main": {
+  "keys": 0,
+  "sha256": "878aad48394a86c6",
+  "vertices": 36700
+ },
+ "hair_back_locks_00": {
+  "keys": 0,
+  "sha256": "96f13ff3860ea892",
+  "vertices": 1954
+ },
+ "hair_back_locks_01": {
+  "keys": 0,
+  "sha256": "2c6fc373031c1db0",
+  "vertices": 1762
+ },
+ "hair_back_locks_02": {
+  "keys": 0,
+  "sha256": "b1cfad1769554640",
+  "vertices": 1970
+ },
+ "hair_back_locks_03": {
+  "keys": 0,
+  "sha256": "35f5823b63965c98",
+  "vertices": 1602
+ },
+ "hair_back_locks_04": {
+  "keys": 0,
+  "sha256": "a7fdcb125ec444e3",
+  "vertices": 1826
+ },
+ "hair_back_locks_05": {
+  "keys": 0,
+  "sha256": "678b39a0b974cb1d",
+  "vertices": 1906
+ },
+ "hair_back_locks_06": {
+  "keys": 0,
+  "sha256": "f5537ad73d073926",
+  "vertices": 1746
+ },
+ "hair_back_locks_07": {
+  "keys": 0,
+  "sha256": "890d8f078d78db58",
+  "vertices": 2034
+ },
+ "hair_back_mass": {
+  "keys": 0,
+  "sha256": "fa5b4d428224aff6",
+  "vertices": 36000
+ },
+ "hair_back_under_00": {
+  "keys": 0,
+  "sha256": "1ee4038c8f4d246a",
+  "vertices": 1426
+ },
+ "hair_back_under_01": {
+  "keys": 0,
+  "sha256": "e1288b204be04d05",
+  "vertices": 1698
+ },
+ "hair_back_under_02": {
+  "keys": 0,
+  "sha256": "bae3264d01154c6e",
+  "vertices": 1346
+ },
+ "hair_back_under_03": {
+  "keys": 0,
+  "sha256": "15350d2de0d0fb16",
+  "vertices": 1506
+ },
+ "hair_back_under_04": {
+  "keys": 0,
+  "sha256": "9641bcc9fd6861a7",
+  "vertices": 1458
+ },
+ "hair_back_under_05": {
+  "keys": 0,
+  "sha256": "4ef8012035f240ac",
+  "vertices": 1634
+ },
+ "hair_back_under_06": {
+  "keys": 0,
+  "sha256": "d1426795c59fd8cd",
+  "vertices": 1378
+ },
+ "hair_bow": {
+  "keys": 0,
+  "sha256": "654f84625edbeca2",
+  "vertices": 3050
+ },
+ "hair_buns": {
+  "keys": 0,
+  "sha256": "9c7d22714f0ea4b6",
+  "vertices": 6196
+ },
+ "hair_cap": {
+  "keys": 0,
+  "sha256": "6d4caac15ec79ef3",
+  "vertices": 10752
+ },
+ "hair_crown": {
+  "keys": 0,
+  "sha256": "c311ebbe4657b37c",
+  "vertices": 21120
+ },
+ "hair_fringe": {
+  "keys": 0,
+  "sha256": "0ff9db68abbd2b17",
+  "vertices": 5396
+ },
+ "hair_outer_locks_00": {
+  "keys": 0,
+  "sha256": "095b5d9027e0c16d",
+  "vertices": 1794
+ },
+ "hair_outer_locks_01": {
+  "keys": 0,
+  "sha256": "c6b400b2a34af4d5",
+  "vertices": 1602
+ },
+ "hair_outer_locks_r00": {
+  "keys": 0,
+  "sha256": "30711f23b6415f84",
+  "vertices": 1618
+ },
+ "hair_outer_locks_r01": {
+  "keys": 0,
+  "sha256": "8ed1737f1064f451",
+  "vertices": 1826
+ },
+ "hair_side_locks_00": {
+  "keys": 0,
+  "sha256": "d57f220169899ed2",
+  "vertices": 1314
+ },
+ "hair_side_locks_01": {
+  "keys": 0,
+  "sha256": "e158487fe551ffee",
+  "vertices": 1234
+ },
+ "hair_side_locks_r00": {
+  "keys": 0,
+  "sha256": "64c37af09bb06238",
+  "vertices": 1282
+ },
+ "hair_side_locks_r01": {
+  "keys": 0,
+  "sha256": "945584da27f3789d",
+  "vertices": 1298
+ },
+ "hair_temples": {
+  "keys": 0,
+  "sha256": "4e078b38fe8f80a7",
+  "vertices": 1372
+ },
+ "hand.L": {
+  "keys": 0,
+  "sha256": "9420f413e823177d",
+  "vertices": 8001
+ },
+ "hand.R": {
+  "keys": 0,
+  "sha256": "cde82011cd9c78e2",
+  "vertices": 8001
+ },
+ "lash.L": {
+  "keys": 37,
+  "sha256": "4de2b32a12a7ee29",
+  "vertices": 662
+ },
+ "lash.R": {
+  "keys": 37,
+  "sha256": "ef469a4feddf82f2",
+  "vertices": 662
+ },
+ "lid_lower.L": {
+  "keys": 17,
+  "sha256": "b7aa80d2a011d054",
+  "vertices": 590
+ },
+ "lid_lower.R": {
+  "keys": 17,
+  "sha256": "15ef888e7de5838f",
+  "vertices": 590
+ },
+ "lid_upper.L": {
+  "keys": 37,
+  "sha256": "5370ac36d9a5d86b",
+  "vertices": 2360
+ },
+ "lid_upper.R": {
+  "keys": 37,
+  "sha256": "009b08f3d5911387",
+  "vertices": 2361
+ },
+ "mouth": {
+  "keys": 21,
+  "sha256": "b6f82fb1f4a6a6f8",
+  "vertices": 78
+ },
+ "mouth_cavity": {
+  "keys": 21,
+  "sha256": "cf6a97909eb692f7",
+  "vertices": 130
+ }
+}

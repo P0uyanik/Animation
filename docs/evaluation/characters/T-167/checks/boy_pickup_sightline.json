@@ -1,0 +1,50 @@
+{
+ "tool": "docs/evaluation/characters/T-118/tools/hair_iter.py (hair only, rest pose)",
+ "override": "boy_yellow_hoodie.hair_r7.override.json",
+ "pickup": [
+  {
+   "yaw": 25.0,
+   "el": 30.0,
+   "eye.L": 1.0,
+   "eye.R": 0.891
+  },
+  {
+   "yaw": 25.0,
+   "el": 40.0,
+   "eye.L": 0.89,
+   "eye.R": 0.781
+  },
+  {
+   "yaw": 25.0,
+   "el": 50.0,
+   "eye.L": 0.608,
+   "eye.R": 0.539
+  }
+ ],
+ "r6_pickup": [
+  {
+   "yaw": 25.0,
+   "el": 30.0,
+   "eye.L": 0.976,
+   "eye.R": 0.889
+  },
+  {
+   "yaw": 25.0,
+   "el": 40.0,
+   "eye.L": 0.853,
+   "eye.R": 0.721
+  },
+  {
+   "yaw": 25.0,
+   "el": 50.0,
+   "eye.L": 0.588,
+   "eye.R": 0.525
+  }
+ ],
+ "keepout": {
+  "az": 34.0,
+  "el_min": -6.0,
+  "violations": 0,
+  "by_object": {}
+ }
+}

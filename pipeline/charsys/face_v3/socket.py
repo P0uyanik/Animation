@@ -62,6 +62,8 @@ def lid_socket_v3(head, ctx, sides, cfg):
     wall_sel = []  # T-081: the socket wall (lid band and ramp outside the opening), for the opt-in wall smoothing
     corner_sel = []  # T-089b: skin at the eye corners (opening included), for the opt-in corner relax
     crel = math.radians(_f(cfg, "corner_relax_deg", 14.0))
+    fill = cfg.get("closed_fill")  # T-156 (opt-in, absent = unchanged): see the end of this function
+    fill_sel = []
     soft = _f(cfg, "cover_softness", 0.12)
 
     ramp_lo = math.radians(_f(cfg, "lower_ramp_deg", _f(cfg, "ramp_deg", 6.0)))  # steeper lower wall (less lit slope)
@@ -143,6 +145,13 @@ def lid_socket_v3(head, ctx, sides, cfg):
         idx = np.where(cand)[0]
         wu[idx], wl[idx] = wu_ * zu, wl_ * (1 - zu)
         weights[s["side"]] = {"up": wu, "lo": wl, "T": s["T"]}
+        if fill is not None:  # T-156 (opt-in): what the closed-eye skin needs, measured after the smoothing below
+            R_c = np.maximum(s["r_up_out"], s["r_lo_out"]) + clear + _f(fill, "extra_m", 0.0)
+            cov = 0.5 * (dc + R_c + np.sqrt((dc - R_c) ** 2 + kk * kk))
+            cov = cov + (dc - cov) * _smooth((dc - R_c - 0.5 * radial) / radial)
+            m = np.where(inside, 0.0, np.where(zu > 0.5, du - band_up, dl - band_lo))
+            wreg = (1.0 - _smooth(m / math.radians(_f(fill, "blend_deg", 6.0)))) * _smooth((-uc[:, 1] - 0.05) / 0.12)
+            fill_sel.append((s["side"], Ti, T, idx, cov, wreg))
         p = q @ T[:3, :3].T + T[:3, 3]
         rep[s["side"]] = {"vertices": int(cand.sum()), "opening": int(inside.sum()),
                           "moved_max_m": round(float(np.abs(newd - dc).max()) if len(dc) else 0.0, 4)}
@@ -218,5 +227,39 @@ def lid_socket_v3(head, ctx, sides, cfg):
             p[sel] += (f * wsel[sel])[:, None] * (avg[sel] - p[sel])
         rep["corner_relaxed_vertices"] = int(sel.sum())
     write(p)
+    if fill_sel:
+        # T-156 (opt-in, socket.closed_fill = {"extra_m": 0, "blend_deg": 6, "smooth_iterations": 6}): the skin does
+        # not move when the lid closes, so where the eyeball flattens on a blink (or the closed shell is thin) the
+        # closed eye is the carved opening: a bowl with the lid band's wall around it. Stored here, per side, is the
+        # displacement that closes the opening: the skin goes out to the same cover over the shells that it has
+        # beyond the eye corners (so the closed eye is one smooth surface with the skin around it), as the point
+        # attribute "ps_socket_fill.<side>" of the head mesh. Nothing uses it here; face_v3.lids.fit_closed_lids
+        # turns it into the skin's share of the closing keys and removes the attribute.
+        me = head.data
+        mw = np.array(head.matrix_world)
+        ed = np.empty(len(me.edges) * 2, dtype=np.int64)
+        me.edges.foreach_get("vertices", ed)
+        ed = ed.reshape(-1, 2)
+        fit_n = int(_f(fill, "smooth_iterations", 6))
+        for side, Ti, T, idx, cov, wreg in fill_sel:
+            q = p[idx] @ Ti[:3, :3].T + Ti[:3, 3]
+            d = np.linalg.norm(q, axis=1)
+            grow = np.maximum(0.0, cov - d) * wreg
+            pf = p.copy()
+            pf[idx] = (q * (1.0 + grow / np.maximum(d, 1e-9))[:, None]) @ T[:3, :3].T + T[:3, 3]
+            wv = np.zeros(len(p))
+            wv[idx] = wreg
+            sel = wv > 0.02
+            e2 = ed[sel[ed[:, 0]] | sel[ed[:, 1]]]
+            deg = np.bincount(e2.ravel(), minlength=len(p)).astype(float)
+            for _ in range(fit_n):
+                acc = np.zeros_like(pf)
+                np.add.at(acc, e2[:, 0], pf[e2[:, 1]])
+                np.add.at(acc, e2[:, 1], pf[e2[:, 0]])
+                avg = acc / np.maximum(deg, 1)[:, None]
+                pf[sel] += (0.5 * wv[sel])[:, None] * (avg[sel] - pf[sel])
+            at = me.attributes.new(f"ps_socket_fill.{side}", "FLOAT_VECTOR", "POINT")
+            at.data.foreach_set("vector", ((pf - p) @ np.linalg.inv(mw)[:3, :3].T).ravel())
+            rep.setdefault("closed_fill", {})[side] = {"vertices": int(sel.sum()), "max_m": round(float(np.linalg.norm(pf - p, axis=1).max()), 5)}
     ctx.invalidate()
     return rep, weights

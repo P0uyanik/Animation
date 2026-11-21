@@ -1,0 +1,114 @@
+{
+ "schema": "plush-studio.release-manifest/1",
+ "note": "Release manifest (T-178, owner 2026-11-21 ~04:10Z): each published version that may use opt-in features (pipeline/charsys/release_rule.py FEATURES), with the owner decision that published / made it current. Written by tools/version_switch.py in the switch run; guarded (tools/guarded_paths.txt).",
+ "releases": [
+  {
+   "character": "boy_yellow_hoodie",
+   "version": "2.0.0",
+   "features": [
+    "groom/2"
+   ],
+   "decision_ref": "docs/process/OWNER_DECISIONS.md 2026-11-18",
+   "date": "2026-11-18",
+   "task": "T-178 (migrated: store approval + owner_approved_candidates.json)"
+  },
+  {
+   "character": "boy_yellow_hoodie",
+   "version": "2.1.0",
+   "features": [
+    "face_generic/3",
+    "groom/3"
+   ],
+   "decision_ref": "docs/process/OWNER_DECISIONS.md 2026-11-19",
+   "date": "2026-11-19",
+   "task": "T-178 (migrated: store approval + owner_approved_candidates.json)"
+  },
+  {
+   "character": "boy_yellow_hoodie",
+   "version": "2.2.0",
+   "features": [
+    "face_generic/3",
+    "groom/3"
+   ],
+   "decision_ref": "docs/process/OWNER_DECISIONS.md 2026-11-19",
+   "date": "2026-11-19",
+   "task": "T-178 (migrated: store approval + owner_approved_candidates.json)"
+  },
+  {
+   "character": "boy_yellow_hoodie",
+   "version": "2.3.0",
+   "features": [
+    "body.hands",
+    "face_generic/3",
+    "groom/4",
+    "groom/5",
+    "t168_face"
+   ],
+   "decision_ref": "docs/process/OWNER_DECISIONS.md 2026-11-20 ~23:11Z + 2026-11-21 ~00:15Z",
+   "date": "2026-11-20",
+   "task": "T-178 (migrated: store approval + owner_approved_candidates.json)"
+  },
+  {
+   "character": "girl_auburn_bun_glasses",
+   "version": "0.11.0",
+   "features": [
+    "groom/2"
+   ],
+   "decision_ref": "docs/process/OWNER_DECISIONS.md 2026-11-18",
+   "date": "2026-11-18",
+   "task": "T-178 (migrated: store approval + owner_approved_candidates.json)"
+  },
+  {
+   "character": "girl_auburn_bun_glasses",
+   "version": "0.12.0",
+   "features": [
+    "face_generic/3",
+    "groom/3"
+   ],
+   "decision_ref": "docs/process/OWNER_DECISIONS.md 2026-11-19",
+   "date": "2026-11-19",
+   "task": "T-178 (migrated: store approval + owner_approved_candidates.json)"
+  },
+  {
+   "character": "girl_auburn_bun_glasses",
+   "version": "0.13.0",
+   "features": [
+    "face_generic/3",
+    "groom/3"
+   ],
+   "decision_ref": "docs/process/OWNER_DECISIONS.md 2026-11-19",
+   "date": "2026-11-19",
+   "task": "T-178 (migrated: store approval + owner_approved_candidates.json)"
+  },
+  {
+   "character": "girl_auburn_bun_glasses",
+   "version": "0.14.0",
+   "features": [
+    "body.hands",
+    "closed_fill",
+    "face_generic/3",
+    "groom/4",
+    "groom/5",
+    "lash_curve"
+   ],
+   "decision_ref": "docs/process/OWNER_DECISIONS.md 2026-11-20 ~23:11Z + ~23:40Z",
+   "date": "2026-11-20",
+   "task": "T-178 (migrated: store approval + owner_approved_candidates.json)"
+  },
+  {
+   "character": "girl_white_hair_blue_dress",
+   "version": "0.1.0",
+   "features": [
+    "body.hands",
+    "closed_fill",
+    "face_generic/3",
+    "groom/4",
+    "groom/5",
+    "lash_curve"
+   ],
+   "decision_ref": "docs/process/OWNER_DECISIONS.md 2026-11-20 ~23:11Z + ~23:40Z",
+   "date": "2026-11-20",
+   "task": "T-178 (migrated: store approval + owner_approved_candidates.json)"
+  }
+ ]
+}

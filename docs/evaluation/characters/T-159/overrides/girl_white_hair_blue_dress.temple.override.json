@@ -1,0 +1,4 @@
+{
+ "note": "T-159 Part A (opt-in candidate): front_fade_m fades the face_width_m / jaw_depth_roundness front cut over 8 cm (no ledge at the temple in front of the ear); outline_smooth_m smooths the measured outline widths (sigma 6 mm; no horizontal ripples on the side of the lower face). On top of the T-155 candidate spec.",
+ "override": {"face": {"shape": {"front_fade_m": 0.08, "outline_smooth_m": 0.006}}}
+}

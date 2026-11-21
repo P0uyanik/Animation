@@ -1,0 +1,1129 @@
+{
+ "override": {
+  "generators": {
+   "groom": "groom/5"
+  },
+  "hair": {
+   "generator": "groom/5",
+   "structures": [
+    {
+     "type": "scalp_cap",
+     "name": "cap",
+     "offset": 0.004,
+     "face_cut": [
+      -0.06,
+      0.9
+     ],
+     "hairline": [
+      [
+       0,
+       0.905
+      ],
+      [
+       40,
+       0.88
+      ],
+      [
+       70,
+       0.8
+      ],
+      [
+       100,
+       0.74
+      ],
+      [
+       140,
+       0.71
+      ],
+      [
+       180,
+       0.7
+      ]
+     ]
+    },
+    {
+     "type": "bun",
+     "name": "buns",
+     "buns": [
+      {
+       "lift": 0.00378,
+       "radius": 0.07745,
+       "height": 0.13224,
+       "tilt": 0.5,
+       "turns": 1.2,
+       "felt_radii": [
+        1.0,
+        1.0,
+        1.0
+       ],
+       "az": 56,
+       "el": 54,
+       "wrap": "ccw"
+      },
+      {
+       "lift": 0.00378,
+       "radius": 0.07745,
+       "height": 0.13224,
+       "tilt": 0.5,
+       "turns": 1.2,
+       "felt_radii": [
+        1.0,
+        1.0,
+        1.0
+       ],
+       "az": -56,
+       "el": 54,
+       "wrap": "cw"
+      }
+     ],
+     "felt": {
+      "grooves": {
+       "count": 8,
+       "depth": 0.3,
+       "sharpness": 0.4,
+       "wander": 0.3,
+       "wavelength": 0.5
+      },
+      "lumps": {
+       "amount": 0.05,
+       "scale": 1.2
+      },
+      "resolution": [
+       72,
+       44
+      ]
+     }
+    },
+    {
+     "type": "felt_volume",
+     "name": "crown",
+     "shape": "gather",
+     "az": [
+      -180,
+      180
+     ],
+     "hairline_el": [
+      [
+       0,
+       30
+      ],
+      [
+       30,
+       28
+      ],
+      [
+       55,
+       14
+      ],
+      [
+       72,
+       10
+      ],
+      [
+       100,
+       8
+      ],
+      [
+       116,
+       2
+      ],
+      [
+       130,
+       4
+      ],
+      [
+       180,
+       6
+      ]
+     ],
+     "target": {
+      "az": 0,
+      "el": 90
+     },
+     "tuck": 1.0,
+     "height": [
+      0.01322,
+      0.04156,
+      0.04345
+     ],
+     "inset": 0.004,
+     "part": {
+      "az": 0,
+      "width_deg": 3.0,
+      "depth": 0.3,
+      "length": 0.4
+     },
+     "grooves": {
+      "count": 30,
+      "depth": 0.2,
+      "sharpness": 0.6,
+      "wander": 0.45,
+      "wavelength": 0.5
+     },
+     "lumps": {
+      "amount": 0.05,
+      "scale": 1.2
+     },
+     "soft": [
+      0,
+      0,
+      0.3,
+      0.0
+     ],
+     "rim": 0.15,
+     "resolution": [
+      220,
+      48
+     ]
+    },
+    {
+     "seg": 18,
+     "grooves": 2,
+     "groove_depth": 0.08,
+     "irregularity": 0.1,
+     "type": "masses",
+     "name": "fringe",
+     "items": [
+      {
+       "root": [
+        -22.0,
+        64
+       ],
+       "tip": [
+        -46.0,
+        -4.23
+       ],
+       "width": 0.04,
+       "depth": 0.42,
+       "lift": [
+        0.00945,
+        0.03211,
+        0.00756
+       ],
+       "hold": 0.62,
+       "taper_power": 2.6,
+       "layer": 0,
+       "curl_deg": -3
+      },
+      {
+       "root": [
+        -19.667,
+        64
+       ],
+       "tip": [
+        -41.333,
+        -5.63
+       ],
+       "width": 0.032,
+       "depth": 0.42,
+       "lift": [
+        0.00945,
+        0.03211,
+        0.00756
+       ],
+       "hold": 0.62,
+       "taper_power": 2.6,
+       "layer": 1,
+       "curl_deg": -3
+      },
+      {
+       "root": [
+        -17.322,
+        64
+       ],
+       "tip": [
+        -36.644,
+        -4.567
+       ],
+       "width": 0.046,
+       "depth": 0.42,
+       "lift": [
+        0.00945,
+        0.03211,
+        0.00756
+       ],
+       "hold": 0.62,
+       "taper_power": 2.6,
+       "layer": 2,
+       "curl_deg": -3
+      },
+      {
+       "root": [
+        -14.933,
+        64
+       ],
+       "tip": [
+        -31.867,
+        -5.768
+       ],
+       "width": 0.036,
+       "depth": 0.42,
+       "lift": [
+        0.00945,
+        0.03211,
+        0.00756
+       ],
+       "hold": 0.62,
+       "taper_power": 2.6,
+       "layer": 0,
+       "curl_deg": -3
+      },
+      {
+       "root": [
+        -12.5,
+        64
+       ],
+       "tip": [
+        -27.0,
+        -3.255
+       ],
+       "width": 0.042,
+       "depth": 0.42,
+       "lift": [
+        0.00945,
+        0.03211,
+        0.00756
+       ],
+       "hold": 0.62,
+       "taper_power": 2.6,
+       "layer": 1,
+       "curl_deg": -3
+      },
+      {
+       "root": [
+        -10.0,
+        64
+       ],
+       "tip": [
+        -22.0,
+        -3.855
+       ],
+       "width": 0.04,
+       "depth": 0.42,
+       "lift": [
+        0.00945,
+        0.03211,
+        0.00756
+       ],
+       "hold": 0.62,
+       "taper_power": 2.6,
+       "layer": 2,
+       "curl_deg": -3
+      },
+      {
+       "root": [
+        -7.5,
+        64
+       ],
+       "tip": [
+        -16.467,
+        -2.968
+       ],
+       "width": 0.032,
+       "depth": 0.42,
+       "lift": [
+        0.00945,
+        0.03211,
+        0.00756
+       ],
+       "hold": 0.62,
+       "taper_power": 2.6,
+       "layer": 0,
+       "curl_deg": -3
+      },
+      {
+       "root": [
+        -5.0,
+        64
+       ],
+       "tip": [
+        -10.578,
+        -1.768
+       ],
+       "width": 0.046,
+       "depth": 0.42,
+       "lift": [
+        0.00945,
+        0.03211,
+        0.00756
+       ],
+       "hold": 0.62,
+       "taper_power": 2.6,
+       "layer": 1,
+       "curl_deg": -3
+      },
+      {
+       "root": [
+        -2.5,
+        64
+       ],
+       "tip": [
+        -4.333,
+        -3.442
+       ],
+       "width": 0.036,
+       "depth": 0.42,
+       "lift": [
+        0.00945,
+        0.03211,
+        0.00756
+       ],
+       "hold": 0.62,
+       "taper_power": 2.6,
+       "layer": 2,
+       "curl_deg": -3
+      },
+      {
+       "root": [
+        0.0,
+        64
+       ],
+       "tip": [
+        2.0,
+        -2.143
+       ],
+       "width": 0.042,
+       "depth": 0.42,
+       "lift": [
+        0.00945,
+        0.03211,
+        0.00756
+       ],
+       "hold": 0.62,
+       "taper_power": 2.6,
+       "layer": 0,
+       "curl_deg": 3
+      },
+      {
+       "root": [
+        2.5,
+        64
+       ],
+       "tip": [
+        7.0,
+        -3.342
+       ],
+       "width": 0.04,
+       "depth": 0.42,
+       "lift": [
+        0.00945,
+        0.03211,
+        0.00756
+       ],
+       "hold": 0.62,
+       "taper_power": 2.6,
+       "layer": 1,
+       "curl_deg": 3
+      },
+      {
+       "root": [
+        5.0,
+        64
+       ],
+       "tip": [
+        12.0,
+        -2.318
+       ],
+       "width": 0.032,
+       "depth": 0.42,
+       "lift": [
+        0.00945,
+        0.03211,
+        0.00756
+       ],
+       "hold": 0.62,
+       "taper_power": 2.6,
+       "layer": 2,
+       "curl_deg": 3
+      },
+      {
+       "root": [
+        7.5,
+        64
+       ],
+       "tip": [
+        17.0,
+        -2.918
+       ],
+       "width": 0.046,
+       "depth": 0.42,
+       "lift": [
+        0.00945,
+        0.03211,
+        0.00756
+       ],
+       "hold": 0.62,
+       "taper_power": 2.6,
+       "layer": 0,
+       "curl_deg": 3
+      },
+      {
+       "root": [
+        10.0,
+        64
+       ],
+       "tip": [
+        22.0,
+        -4.155
+       ],
+       "width": 0.036,
+       "depth": 0.42,
+       "lift": [
+        0.00945,
+        0.03211,
+        0.00756
+       ],
+       "hold": 0.62,
+       "taper_power": 2.6,
+       "layer": 1,
+       "curl_deg": 3
+      },
+      {
+       "root": [
+        12.5,
+        64
+       ],
+       "tip": [
+        27.0,
+        -2.955
+       ],
+       "width": 0.042,
+       "depth": 0.42,
+       "lift": [
+        0.00945,
+        0.03211,
+        0.00756
+       ],
+       "hold": 0.62,
+       "taper_power": 2.6,
+       "layer": 2,
+       "curl_deg": 3
+      },
+      {
+       "root": [
+        14.933,
+        64
+       ],
+       "tip": [
+        31.867,
+        -5.117
+       ],
+       "width": 0.04,
+       "depth": 0.42,
+       "lift": [
+        0.00945,
+        0.03211,
+        0.00756
+       ],
+       "hold": 0.62,
+       "taper_power": 2.6,
+       "layer": 0,
+       "curl_deg": 3
+      },
+      {
+       "root": [
+        17.322,
+        64
+       ],
+       "tip": [
+        36.644,
+        -4.317
+       ],
+       "width": 0.032,
+       "depth": 0.42,
+       "lift": [
+        0.00945,
+        0.03211,
+        0.00756
+       ],
+       "hold": 0.62,
+       "taper_power": 2.6,
+       "layer": 1,
+       "curl_deg": 3
+      },
+      {
+       "root": [
+        19.667,
+        64
+       ],
+       "tip": [
+        41.333,
+        -6.363
+       ],
+       "width": 0.046,
+       "depth": 0.42,
+       "lift": [
+        0.00945,
+        0.03211,
+        0.00756
+       ],
+       "hold": 0.62,
+       "taper_power": 2.6,
+       "layer": 2,
+       "curl_deg": 3
+      },
+      {
+       "root": [
+        22.0,
+        64
+       ],
+       "tip": [
+        46.0,
+        -4.863
+       ],
+       "width": 0.036,
+       "depth": 0.42,
+       "lift": [
+        0.00945,
+        0.03211,
+        0.00756
+       ],
+       "hold": 0.62,
+       "taper_power": 2.6,
+       "layer": 0,
+       "curl_deg": 3
+      }
+     ],
+     "tips": {
+      "from": 0.55,
+      "scale": 0.85,
+      "power": 1.0,
+      "flatten": 0.6
+     },
+     "clump": {
+      "bend_m": 0.003,
+      "twist_deg": 8,
+      "lumps": 0.05,
+      "lump_wavelength": 0.8,
+      "seed": 1
+     }
+    },
+    {
+     "seg": 18,
+     "grooves": 2,
+     "groove_depth": 0.14,
+     "irregularity": 0.1,
+     "type": "masses",
+     "name": "temples",
+     "items": [
+      {
+       "root": [
+        52,
+        44
+       ],
+       "tip": [
+        64,
+        2
+       ],
+       "width": 0.05289,
+       "depth": 0.6,
+       "lift": [
+        0.00756,
+        0.02834,
+        0.01322
+       ],
+       "hold": 0.55,
+       "taper_power": 1.5,
+       "layer": 0,
+       "curl_deg": 6
+      },
+      {
+       "root": [
+        -52,
+        44
+       ],
+       "tip": [
+        -64,
+        2
+       ],
+       "width": 0.05289,
+       "depth": 0.6,
+       "lift": [
+        0.00756,
+        0.02834,
+        0.01322
+       ],
+       "hold": 0.55,
+       "taper_power": 1.5,
+       "layer": 0,
+       "curl_deg": -6
+      }
+     ],
+     "tips": {
+      "from": 0.6,
+      "scale": 0.7,
+      "power": 1.2,
+      "flatten": 0.4
+     }
+    },
+    {
+     "type": "curtain",
+     "name": "back_mass",
+     "az": [
+      102,
+      258
+     ],
+     "root_el": [
+      [
+       102,
+       12
+      ],
+      [
+       120,
+       18
+      ],
+      [
+       180,
+       26
+      ]
+     ],
+     "leave_el": -8,
+     "z_end": [
+      [
+       102,
+       0.62361
+      ],
+      [
+       120,
+       0.56693
+      ],
+      [
+       180,
+       0.5386
+      ]
+     ],
+     "rest_radii": [
+      0.18891,
+      0.14924
+     ],
+     "rest_z": 0.58583,
+     "columns": 10,
+     "thick": 0.01511,
+     "column_depth": 0.25,
+     "lobe": {
+      "pitch": 0.12,
+      "depth": 0.0,
+      "twist": 0.2
+     },
+     "scallop": 0.035,
+     "resolution": [
+      180,
+      100
+     ],
+     "inset": 0.004
+    },
+    {
+     "type": "locks",
+     "name": "back_under",
+     "style": "wavy",
+     "finish": "felt",
+     "felt": {
+      "seg": 16,
+      "irregularity": 0.1,
+      "wavelength": 0.16,
+      "flatten": 0.25,
+      "flatten_twist": 0.5
+     },
+     "el_leave": -12,
+     "lift": [
+      0.01889,
+      0.02456
+     ],
+     "tip_frac": 0.45,
+     "end_scale": 0.78,
+     "flare": 0.05,
+     "count": 7,
+     "az": [
+      112,
+      248
+     ],
+     "el_root": [
+      6,
+      16
+     ],
+     "hang_radii": [
+      0.17621,
+      0.15819
+     ],
+     "rest_radii": [
+      0.18513,
+      0.14735
+     ],
+     "rest_z": 0.58583,
+     "z_end": [
+      0.4347,
+      0.46304
+     ],
+     "width": [
+      0.08988,
+      0.0991
+     ],
+     "thick": [
+      0.04641,
+      0.05084
+     ],
+     "wave": {
+      "amplitude": 0.01847,
+      "wavelength": 0.13696,
+      "depth": 0.25,
+      "tip_gain": 1.0,
+      "start_m": -0.07556
+     },
+     "stagger": {
+      "z_end": [
+       0.02834,
+       -0.01889,
+       0.04723,
+       0.0
+      ],
+      "end_scale": [
+       1.0,
+       0.85,
+       1.15
+      ],
+      "phase_deg": [
+       190,
+       160,
+       215,
+       175,
+       200
+      ]
+     },
+     "tips": {
+      "from": 0.72,
+      "scale": 0.6,
+      "power": 1.3,
+      "flatten": 0.3,
+      "calm": 0.3
+     },
+     "clump": {
+      "bend_m": 0.006,
+      "twist_deg": 20,
+      "lumps": 0.06,
+      "lump_wavelength": 0.5,
+      "seed": 10
+     }
+    },
+    {
+     "type": "locks",
+     "name": "back_locks",
+     "style": "wavy",
+     "finish": "felt",
+     "felt": {
+      "seg": 16,
+      "irregularity": 0.1,
+      "wavelength": 0.16,
+      "flatten": 0.25,
+      "flatten_twist": 0.5
+     },
+     "el_leave": -12,
+     "lift": [
+      0.03778,
+      0.04345
+     ],
+     "tip_frac": 0.45,
+     "end_scale": 0.78,
+     "flare": 0.05,
+     "count": 9,
+     "az": [
+      104,
+      256
+     ],
+     "el_root": [
+      30,
+      40
+     ],
+     "hang_radii": [
+      0.20024,
+      0.18222
+     ],
+     "rest_radii": [
+      0.20402,
+      0.16624
+     ],
+     "rest_z": 0.58583,
+     "z_end": [
+      0.41581,
+      0.44414
+     ],
+     "width": [
+      0.09218,
+      0.10141
+     ],
+     "thick": [
+      0.04862,
+      0.05526
+     ],
+     "wave": {
+      "amplitude": 0.02064,
+      "wavelength": 0.13224,
+      "depth": 0.3,
+      "tip_gain": 1.0,
+      "start_m": -0.09445
+     },
+     "stagger": {
+      "z_end": [
+       0.0,
+       0.04723,
+       -0.01889,
+       0.06612,
+       0.01889
+      ],
+      "end_scale": [
+       1.0,
+       0.8,
+       1.1
+      ],
+      "phase_deg": [
+       0,
+       25,
+       -15,
+       35,
+       10,
+       -25,
+       20
+      ]
+     },
+     "tips": {
+      "from": 0.72,
+      "scale": 0.6,
+      "power": 1.3,
+      "flatten": 0.3,
+      "calm": 0.3
+     },
+     "clump": {
+      "bend_m": 0.006,
+      "twist_deg": 20,
+      "lumps": 0.06,
+      "lump_wavelength": 0.5,
+      "seed": 10
+     }
+    },
+    {
+     "type": "locks",
+     "name": "outer_locks",
+     "style": "wavy",
+     "finish": "felt",
+     "felt": {
+      "seg": 16,
+      "irregularity": 0.1,
+      "wavelength": 0.16,
+      "flatten": 0.25,
+      "flatten_twist": 0.5
+     },
+     "el_leave": -12,
+     "lift": [
+      0.034,
+      0.03778
+     ],
+     "tip_frac": 0.45,
+     "end_scale": 0.78,
+     "flare": 0.05,
+     "count": 3,
+     "mirror": true,
+     "az": [
+      102,
+      124
+     ],
+     "el_root": [
+      22,
+      32
+     ],
+     "hang_radii": [
+      0.22628,
+      0.18622
+     ],
+     "rest_radii": [
+      0.22291,
+      0.17191
+     ],
+     "rest_z": 0.58583,
+     "z_end": [
+      0.45359,
+      0.48193
+     ],
+     "width": [
+      0.08297,
+      0.09218
+     ],
+     "thick": [
+      0.0442,
+      0.05084
+     ],
+     "wave": {
+      "amplitude": 0.02172,
+      "wavelength": 0.12751,
+      "depth": 0.3,
+      "tip_gain": 1.0,
+      "start_m": -0.07556
+     },
+     "stagger": {
+      "z_end": [
+       0.0,
+       0.03778
+      ],
+      "end_scale": [
+       1.0,
+       0.85
+      ],
+      "phase_deg": [
+       30,
+       -10
+      ],
+      "mirror_shift": 1
+     },
+     "tips": {
+      "from": 0.72,
+      "scale": 0.6,
+      "power": 1.3,
+      "flatten": 0.3,
+      "calm": 0.3
+     },
+     "clump": {
+      "bend_m": 0.006,
+      "twist_deg": 20,
+      "lumps": 0.06,
+      "lump_wavelength": 0.5,
+      "seed": 11
+     }
+    },
+    {
+     "type": "locks",
+     "name": "side_locks",
+     "style": "wavy",
+     "finish": "felt",
+     "felt": {
+      "seg": 16,
+      "irregularity": 0.1,
+      "wavelength": 0.16,
+      "flatten": 0.25,
+      "flatten_twist": 0.5
+     },
+     "el_leave": -16,
+     "lift": [
+      0.00756,
+      0.02078
+     ],
+     "tip_frac": 0.45,
+     "end_scale": 0.78,
+     "flare": 0.05,
+     "count": 2,
+     "mirror": true,
+     "az": [
+      46,
+      64
+     ],
+     "el_root": [
+      6,
+      16
+     ],
+     "hang_radii": [
+      0.19223,
+      0.1662
+     ],
+     "z_end": [
+      0.49137,
+      0.52915
+     ],
+     "width": [
+      0.0484,
+      0.05358
+     ],
+     "thick": [
+      0.03006,
+      0.03359
+     ],
+     "wave": {
+      "amplitude": 0.0163,
+      "wavelength": 0.11334,
+      "depth": 0.35,
+      "tip_gain": 1.0,
+      "start_m": -0.03778
+     },
+     "stagger": {
+      "z_end": [
+       0.02834,
+       0.0
+      ],
+      "end_scale": [
+       0.9,
+       1.0
+      ],
+      "phase_deg": [
+       60,
+       20
+      ],
+      "mirror_shift": 1
+     },
+     "tips": {
+      "from": 0.72,
+      "scale": 0.6,
+      "power": 1.3,
+      "flatten": 0.3,
+      "calm": 0.3
+     },
+     "clump": {
+      "bend_m": 0.006,
+      "twist_deg": 20,
+      "lumps": 0.06,
+      "lump_wavelength": 0.5,
+      "seed": 10
+     }
+    },
+    {
+     "type": "felt_bow",
+     "name": "bow",
+     "az": -46,
+     "el": 33,
+     "out": 0.022,
+     "seat": "hair",
+     "size": 0.118,
+     "tilt_deg": -22,
+     "knot": 0.2,
+     "material": "hair_bow",
+     "loops": [
+      {
+       "angle_deg": 22,
+       "length": 0.56,
+       "width": 0.44,
+       "thick": 0.34
+      },
+      {
+       "angle_deg": 158,
+       "length": 0.56,
+       "width": 0.44,
+       "thick": 0.34
+      },
+      {
+       "angle_deg": 248,
+       "length": 0.575,
+       "width": 0.2,
+       "thick": 0.16
+      },
+      {
+       "angle_deg": 296,
+       "length": 0.529,
+       "width": 0.2,
+       "thick": 0.16
+      }
+     ],
+     "grooves": {
+      "count": 3,
+      "depth": 0.12,
+      "sharpness": 0.4,
+      "wander": 0.3,
+      "wavelength": 0.6
+     },
+     "turn": {
+      "toward": [
+       -25,
+       22
+      ],
+      "amount": 0.4
+     }
+    }
+   ]
+  }
+ },
+ "note": "T-167 hair round 7, opt-in; on girl_white_hair_blue_dress.0.1.0.spec.json (T-155 candidate), from the T-160 round 6 override"
+}

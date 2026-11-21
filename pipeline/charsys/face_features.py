@@ -409,8 +409,11 @@ def curve_lid(ob, curve, upper):
 # ------------------------------------------------------------------------------------------------ nose
 def build_nose(C, M, head, ctx, nc, z_nose):
     """Nose types. bump (legacy): a soft bump sculpted into the head; small_round: a smaller, rounder, prouder bump;
-    button: a separate felt ellipsoid sitting on the surface; minimal_line: a short curved line (tube). Returns the
-    separate object (or None) and the nose tip landmark."""
+    button: a separate felt ellipsoid sitting on the surface; minimal_line: a short curved line (tube); upturned
+    (T-168): a small pointed tip sculpted into the head with a soft bridge above it and a short, steep underside
+    (size_m = half width at the tip, height_m = how far the tip stands out, bridge_m = length of the slope above the
+    tip, under_m = length of the underside, tip_up_m = how far the tip is lifted, bridge_narrow 0..1 = how much the
+    bridge narrows upwards, tip_power = falloff exponent: 1 = round dome, 2 = pointed). Returns the separate object (or None) and the nose tip landmark."""
     t = nc.get("type", "bump")
     size = _f(nc, "size_m", _f(nc, "radius_m", 0.016))
     z = z_nose + _f(nc, "offset_z_m", 0.0)
@@ -419,6 +422,22 @@ def build_nose(C, M, head, ctx, nc, z_nose):
     if t in ("bump", "small_round"):
         h = _f(nc, "height_m", 0.004 if t == "bump" else size * 0.45)
         G.brush(head, (0.0, ny + size * 0.3, z), size, (0, -h, 0), power=2.0 if t == "bump" else 1.4)
+        ctx.invalidate()
+    elif t == "upturned":
+        import numpy as np
+        h = _f(nc, "height_m", size * 0.6)
+        up_len, dn_len = _f(nc, "bridge_m", size * 2.2), _f(nc, "under_m", size * 0.7)
+        narrow = min(max(_f(nc, "bridge_narrow", 0.4), 0.0), 0.9)
+        world, write = _head_coords(head)
+        p = world.copy()
+        dz = p[:, 2] - z
+        v = np.where(dz >= 0, dz / up_len, -dz / dn_len)  # 0 at the tip, 1 at the top of the bridge / under the tip
+        hw = size * (1.0 - narrow * np.clip(dz / up_len, 0.0, 1.0))
+        q = (p[:, 0] / hw) ** 2 + v ** 2
+        f = np.clip(1.0 - q, 0.0, None) ** _f(nc, "tip_power", 1.4) * (p[:, 1] < ny + 2.5 * size)  # the face side only
+        p[:, 1] -= h * f
+        p[:, 2] += _f(nc, "tip_up_m", 0.0) * f
+        write(p)
         ctx.invalidate()
     elif t == "button":
         rad = (size * 0.62, size * 0.42, size * 0.5)
@@ -438,7 +457,7 @@ def build_nose(C, M, head, ctx, nc, z_nose):
         obj = G.tube("nose", pts, [_f(nc, "line_m", 0.0012)] * 7, [0.0006] * 7, C, up_hint=(0, -1, 0), seg=8)
         G.assign(obj, G.material("M_nose_line", tuple(nc.get("srgb", (150, 95, 85))), roughness=0.8))
     else:
-        raise ValueError(f"face.nose.type {t!r}: bump | small_round | button | minimal_line")
+        raise ValueError(f"face.nose.type {t!r}: bump | small_round | button | minimal_line | upturned")
     ny = ctx.face_y(None, 0.0, z)
     tip = Vector((0.0, ny, z))
     if obj is not None and t == "button":
@@ -552,6 +571,24 @@ def _head_coords(head):
 
 
 # ------------------------------------------------------------------------------------------------ face shape v2
+def front_weight(y, y_cut, fade):
+    """Weight of the face-front options (face_width_m, jaw_depth_roundness) at depth y: 1 in front of the cut, 0
+    behind it. fade <= 0 is the hard cut (a boolean mask); fade > 0 falls smoothly from 1 to 0 over fade metres
+    centred on the cut (0.5 at y_cut)."""
+    if fade <= 0:
+        return y < y_cut
+    return 1.0 - _smooth((y - y_cut) / fade + 0.5)
+
+
+def smooth_profile(z, v, sigma):
+    """Gaussian smoothing (sigma in the units of z) of the samples v(z); NaN samples are ignored and stay NaN."""
+    import numpy as np
+    ok = ~np.isnan(v)
+    w = np.exp(-0.5 * ((z[:, None] - z[None, :]) / sigma) ** 2) * ok[None, :]
+    out = (w @ np.where(ok, v, 0.0)) / np.maximum(w.sum(axis=1), 1e-12)
+    return np.where(ok, out, np.nan)
+
+
 def shape_face_v2(head, ctx, sc, ex, ez, r, z_chin):
     """Round, full-cheeked face options (all absent/0 = unchanged), applied to the head mesh before any feature is
     placed, in this order:
@@ -566,12 +603,20 @@ def shape_face_v2(head, ctx, sc, ex, ez, r, z_chin):
         face_generic/1 option cheek_roundness_m is added to it (v2 does not use the v1 normal brush for it).
       jaw_depth_roundness (0..1): the lower face's horizontal sections round off at the front corners (3/4 views).
       lower_face_recede_m, recede_from_below_eye_m: below that line the face curves back towards the chin (side view).
+      outline_smooth_m (T-159, default 0 = raw bins): Gaussian sigma over height for the measured outline widths that
+        outline_roundness scales against (no horizontal ripples on the side of the lower face).
+      front_fade_m (T-159, default 0 = hard cut): depth over which face_width_m and jaw_depth_roundness fade out
+        towards the back of the head, centred on their front/back cut (no ledge in front of the ear).
     Returns a report; the face context is invalidated."""
     import numpy as np
     rep = {}
     world, write = _head_coords(head)
     p = world.copy()
     front = p[:, 1] < (ctx.face_y(None, 0.0, ez) + 0.6 * abs(ctx.face_y(None, 0.0, ez)))  # front ~ 80 % of the head
+    ff = _f(sc, "front_fade_m", 0.0)
+    if ff > 0:  # T-159 (opt-in): the hard front/back cut leaves a ledge at the temple; fade it over this depth instead
+        front = front_weight(p[:, 1], ctx.face_y(None, 0.0, ez) + 0.6 * abs(ctx.face_y(None, 0.0, ez)), ff)
+        rep["front_fade_m"] = ff
     # --- lower outline (front view)
     ro = _f(sc, "outline_roundness", 0.0)
     if ro > 0:
@@ -585,6 +630,10 @@ def shape_face_v2(head, ctx, sc, ex, ez, r, z_chin):
             m = np.abs(p[:, 2] - b) < 0.002
             widths.append(np.abs(p[m, 0]).max() if m.any() else np.nan)
         widths = np.array(widths)
+        osm = _f(sc, "outline_smooth_m", 0.0)
+        if osm > 0:  # T-159 (opt-in): the raw 3 mm bins jitter with the vertex rows and ripple the scaled outline
+            widths = smooth_profile(bins, widths, osm)
+            rep["outline_smooth_m"] = osm
         W = np.nanmax(np.abs(p[np.abs(p[:, 2] - z_top) < 0.002, 0])) if (np.abs(p[:, 2] - z_top) < 0.002).any() else np.nanmax(widths)
         sel = (p[:, 2] < z_top) & (p[:, 2] > z_chin - 0.004)
         xc = np.interp(p[sel, 2], bins[~np.isnan(widths)], widths[~np.isnan(widths)])

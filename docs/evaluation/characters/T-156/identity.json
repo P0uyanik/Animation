@@ -1,0 +1,65 @@
+{
+ "tool": "pipeline/charsys/tests/mesh_hash_strict.py (1e-7 m, basis + every shape key, vertex-order independent); builds with -t 1",
+ "code": {
+  "main": "origin/main 5e0364c",
+  "branch": "t-156-claude-eye-targets 43d7e7e (main merged)"
+ },
+ "default_path (T-137 F1a / F1b inputs, no T-156 key), main vs branch": {
+  "girl_auburn_bun_glasses": {
+   "meshes": 207,
+   "differ": [],
+   "sha_main": "6921e9f4086f7d4f",
+   "sha_branch": "6921e9f4086f7d4f"
+  },
+  "girl_white_hair_blue_dress": {
+   "meshes": 199,
+   "differ": [],
+   "sha_main": "711df6f4b8e22ccc",
+   "sha_branch": "711df6f4b8e22ccc"
+  }
+ },
+ "candidate (T-156 overrides), branch run 1 vs run 2": {
+  "girl_auburn_bun_glasses": {
+   "meshes": 207,
+   "differ": [],
+   "sha": "17cb7fe684a09428"
+  },
+  "girl_white_hair_blue_dress": {
+   "meshes": 199,
+   "differ": [],
+   "sha": "1d782912f2a08aa8"
+  }
+ },
+ "builds the sheets were rendered from (before the merge) vs merged base": {
+  "auburn candidate": {
+   "meshes": 207,
+   "differ": [
+    "ear.R"
+   ],
+   "max_dev_m": 7.5e-09
+  },
+  "third candidate": {
+   "meshes": 199,
+   "differ": [
+    "lid_upper.L"
+   ],
+   "max_dev_m": 7.5e-09
+  },
+  "auburn T-137 baseline": {
+   "meshes": 207,
+   "differ": [
+    "lid_upper.L",
+    "lid_upper.R"
+   ],
+   "max_dev_m": 6e-08
+  },
+  "third T-137 baseline": {
+   "meshes": 199,
+   "differ": [
+    "lid_upper.L",
+    "lid_upper.R"
+   ],
+   "max_dev_m": 6e-08
+  }
+ }
+}

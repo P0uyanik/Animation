@@ -520,10 +520,12 @@ def check_python_tests(logs: Path) -> Result:
         [sys.executable, str(ROOT / "pipeline/charsys/tests/test_face_v3.py")],  # T-089 face/3 (plain checks)
         [sys.executable, str(ROOT / "pipeline/charsys/tests/test_face_v3b.py")],  # T-089b face polish (plain checks)
         [sys.executable, str(ROOT / "pipeline/charsys/tests/test_face_v4.py")],  # T-109 face round 4 (plain checks)
+        [sys.executable, str(ROOT / "pipeline/charsys/tests/test_face_t168.py")],  # T-168 pad fade / upturned nose (plain checks)
         [sys.executable, str(ROOT / "pipeline/charsys/tests/test_hair_r4.py")],  # T-091 groom/3 (plain checks)
         [sys.executable, str(ROOT / "pipeline/charsys/tests/test_hair_r5.py")],  # T-118 groom/4 (plain checks)
+        [sys.executable, str(ROOT / "pipeline/charsys/tests/test_hair_r6.py")],  # T-160 groom/5 (plain checks)
         [sys.executable, str(ROOT / "pipeline/charsys/tests/test_hands_r2.py")],  # T-121 hands_r2 (plain checks)
-        [sys.executable, str(ROOT / "pipeline/charsys/tests/test_guard_allowlist.py")],  # T-154 guard allowlist
+        [sys.executable, str(ROOT / "pipeline/charsys/tests/test_release_rule.py")],  # T-178 release rule
         [sys.executable, str(ROOT / "pipeline/charsys/tests/test_render_profiles.py")],  # T-166 render/encode defaults
         [sys.executable, str(ROOT / "pipeline/charsys/tests/test_garments_r3.py")],  # T-119 garment/3 (plain checks)
         [sys.executable, str(ROOT / "pipeline/charsys/tests/test_expressions_r3.py")],  # T-113 expression sets (plain checks)
@@ -987,6 +989,9 @@ BLENDER_UNITS: list[tuple[str, object, bool]] = [
     ("face", unit_face, False),
     ("hair", unit_hair, False),
     ("hair-curves", unit_hair_curves, False),  # T-141
+    ("face-front-fade", t077_unit("face front fade (T-159)", lambda c: [sys.executable, str(ROOT / "pipeline/charsys/tests/test_face_front_fade.py"), "--blender", c.executable]), False),
+    ("ears-shape", t077_unit("ears shape (T-159)", lambda c: [sys.executable, str(ROOT / "pipeline/charsys/tests/test_ears_shape.py"), "--blender", c.executable]), False),
+    ("glasses-rest", t077_unit("glasses rest on ear (T-159)", lambda c: [sys.executable, str(ROOT / "pipeline/charsys/tests/test_glasses_rest.py"), "--blender", c.executable]), False),
     ("groom", unit_groom, False),
     ("garment", unit_garment, False),
     ("material-presets", unit_material_presets, False),

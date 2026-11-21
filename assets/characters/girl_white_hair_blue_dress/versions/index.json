@@ -1,0 +1,33 @@
+{
+ "character_id": "girl_white_hair_blue_dress",
+ "versions": {
+  "0.1.0": {
+   "created": "2026-11-20T23:49:06+00:00",
+   "parent": null,
+   "notes": "girl_white_hair_blue_dress 0.1.0 = R3: T-155 0.1.0 candidate + T-159 temple, ears + T-167 hair r7 + T-156 eyes/lids; spec assets/characters/girl_white_hair_blue_dress/spec/candidates/R3/girl_white_hair_blue_dress.0.1.0.spec.json (docs/evaluation/characters/R3/stack_specs.py). Owner docs/process/OWNER_DECISIONS.md 2026-11-20 ~23:11Z + ~23:40Z.",
+   "status": "approved",
+   "spec_sha256": "5530064ae3ecc5e6eb3a009df3b87fe55951659fa174edc295ff12031a727942",
+   "approval_notes": "new current version: R3 release, third character 0.1.0 CURRENT"
+  }
+ },
+ "pointers": {
+  "approved": "0.1.0",
+  "reference": null
+ },
+ "history": [
+  {
+   "at": "2026-11-20T23:49:06+00:00",
+   "action": "publish",
+   "version": "0.1.0",
+   "status": "candidate"
+  },
+  {
+   "at": "2026-11-20T23:49:06+00:00",
+   "action": "approve",
+   "version": "0.1.0",
+   "previous": null,
+   "by": "owner (docs/process/OWNER_DECISIONS.md 2026-11-20 ~23:11Z + ~23:40Z, typed directly in the T-155 session)",
+   "notes": "new current version: R3 release, third character 0.1.0 CURRENT"
+  }
+ ]
+}

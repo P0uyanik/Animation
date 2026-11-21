@@ -415,15 +415,100 @@ def build_ears(C, M, ctx, ec, ez):
         sxs = ctx.side_x(sx, y, z)
         x = (sxs if sxs is not None else sx * 0.14) + sx * _f(ec, "out_m", 0.004)
         e.location = (x, y, z)
+        so = ec.get("seat_offset_m")
+        if so:  # T-159 (opt-in): the ear moves [out, back, up] from its seat; the landmark (jaw pivot, glasses) stays
+            e["ps_landmark"] = [float(x), float(y), float(z)]
+            e.location = (x + sx * so[0], y + so[1], z + (so[2] if len(so) > 2 else 0.0))
+            x, y, z = e.location
         e.rotation_euler = (math.radians(_f(ec, "tilt_deg", -8)), 0, math.radians(sx * _f(ec, "yaw_deg", 28)))
         bpy.context.view_layer.update()
-        bowl = Vector((x + sx * rad[0] * 0.9, y - rad[1] * 0.25, z))
-        G.brush(e, bowl, rad[2] * 0.7, (-sx * rad[0] * 0.5, rad[1] * 0.12, 0))  # inner bowl
-        G.add_mod(e, "SUBSURF", levels=1, render_levels=2)
-        G.apply_mods(e)
-        G.assign(e, M["face_skin"])
+        sh = ec.get("shape")
+        if sh:  # T-159 (opt-in): a C-shaped ear with a rim and a bowl instead of the dented ellipsoid
+            G.add_mod(e, "SUBSURF", levels=int(_f(sh, "subdiv", 2)), render_levels=int(_f(sh, "subdiv", 2)))
+            G.apply_mods(e)
+            ear_shape(e, sx, rad, sh)
+        else:
+            bowl = Vector((x + sx * rad[0] * 0.9, y - rad[1] * 0.25, z))
+            G.brush(e, bowl, rad[2] * 0.7, (-sx * rad[0] * 0.5, rad[1] * 0.12, 0))  # inner bowl
+            G.add_mod(e, "SUBSURF", levels=1, render_levels=2)
+            G.apply_mods(e)
+        G.assign(e, ear_skin(M["face_skin"], _f(ec, "subsurface", 1.0), ec.get("tint")))
         ears.append(e)
     return ears
+
+
+def ear_landmark(e):
+    """The ear landmark: the ear's seat, also when face.ears.seat_offset_m moved the ear itself away from it."""
+    return Vector(e["ps_landmark"]) if "ps_landmark" in e else e.location.copy()
+
+
+def ear_skin(skin, subsurface, tint=None):
+    """The ears' skin material. Both options are opt-in (T-159); without them the ears use the face skin itself.
+      face.ears.subsurface (1 = unchanged): a copy of the face skin ("<name>.ear") with its subsurface weight scaled,
+        because light scatters straight through the thin ear and washes it out next to the thick head;
+      face.ears.tint {"srgb": [r, g, b], "strength": 0..1}: the copy's base colour is multiplied towards srgb (warm
+        pink felt ears)."""
+    strength = _f(tint, "strength", 0.0) if tint else 0.0
+    if (subsurface == 1.0 and strength <= 0) or not skin.use_nodes:
+        return skin
+    name = skin.name + ".ear"
+    m = bpy.data.materials.get(name)
+    if m is None:
+        m = skin.copy()
+        m.name = name
+        for n in m.node_tree.nodes:
+            if n.bl_idname != "ShaderNodeBsdfPrincipled" or n.name != "Principled BSDF":
+                continue
+            n.inputs["Subsurface Weight"].default_value *= subsurface
+            if strength > 0:
+                mix = m.node_tree.nodes.new("ShaderNodeMix")
+                mix.name = mix.label = "PS Ear Tint"
+                mix.data_type = "RGBA"
+                mix.blend_type = "MULTIPLY"
+                mix.inputs["Factor"].default_value = strength
+                mix.inputs["B"].default_value = (*G.srgb_to_linear(tuple(tint.get("srgb", (255, 200, 190)))), 1.0)
+                base = n.inputs["Base Color"]
+                if base.is_linked:
+                    m.node_tree.links.new(base.links[0].from_socket, mix.inputs["A"])
+                else:
+                    mix.inputs["A"].default_value = tuple(base.default_value)
+                m.node_tree.links.new(mix.outputs["Result"], base)
+    return m
+
+
+def ear_shape(e, sx, rad, sh):
+    """face.ears.shape (T-159): sculpts the ear ellipsoid (mesh coordinates: x thickness, outwards for side sx; y
+    depth, -y = front; z height) into a C-shaped ear. In the ear's normalised coordinates (v = y / radius, w = z /
+    radius) the outer face gets
+      a bowl: depth bowl_depth (x the thickness radius), an ellipse of half axes bowl_size [v, w] centred at
+        bowl_centre [v, w] (a centre towards the front opens the C to the face), soft edge bowl_edge (0..1);
+      a rim: the outer face outside the bowl rises by rim (x the thickness radius), which leaves a rounded roll
+        around the back, top and bottom of the bowl;
+      back_flat (0..1): the inner half (towards the head) is flattened, so the ear sits on the head like a shell.
+    All absent = the plain subdivided ellipsoid."""
+    import numpy as np
+    me = e.data
+    n = len(me.vertices)
+    co = np.empty(n * 3)
+    me.vertices.foreach_get("co", co)
+    co = co.reshape(n, 3)
+    u = sx * co[:, 0] / rad[0]
+    v, w = co[:, 1] / rad[1], co[:, 2] / rad[2]
+    bc = sh.get("bowl_centre", [-0.15, 0.0])
+    bs = sh.get("bowl_size", [0.55, 0.6])
+    edge = max(_f(sh, "bowl_edge", 0.5), 1e-3)
+    rho = np.sqrt(((v - bc[0]) / bs[0]) ** 2 + ((w - bc[1]) / bs[1]) ** 2)
+    t = np.clip((rho - (1 - edge)) / edge, 0.0, 1.0)
+    inside = 1.0 - t * t * (3 - 2 * t)  # 1 in the bowl, 0 outside its soft edge
+    outer = np.clip(u, 0.0, 1.0)  # only the outer face
+    lim = np.clip(1.0 - (v * v + w * w), 0.0, 1.0)  # fades at the ear's own outline
+    du = -_f(sh, "bowl_depth", 0.0) * inside * outer + _f(sh, "rim", 0.0) * (1 - inside) * outer * np.sqrt(lim)
+    bf = _f(sh, "back_flat", 0.0)
+    if bf > 0:
+        du = du + np.where(u < 0, -u * bf, 0.0)
+    co[:, 0] += sx * rad[0] * du
+    me.vertices.foreach_set("co", co.ravel())
+    me.update()
 
 
 # ------------------------------------------------------------------------------------------------ expression library
@@ -712,7 +797,7 @@ def build(C, M, head, spec, P, H, head_bone="DEF-spine.006", eye_bone="DEF-eye.{
         lm[f"eye_{side}"] = frames[side] @ Vector((0, -r, 0))
     ears = build_ears(C, M, ctx, fs.get("ears", {}), ez) if fs.get("ears") else []
     for (sx, side), e in zip(SIDES, ears):
-        lm[f"ear_{side}"] = e.location.copy()
+        lm[f"ear_{side}"] = ear_landmark(e)
     if not ears:  # the jaw pivot needs ear landmarks: use the head sides at the eye line
         for sx, side in SIDES:
             lm[f"ear_{side}"] = Vector((ctx.side_x(sx, 0.0, ez - 0.01) or sx * 0.1, 0.0, ez - 0.01))
@@ -972,7 +1057,7 @@ def build_v2(C, M, head, spec, P, H, head_bone="DEF-spine.006", eye_bone="DEF-ey
         rep["lid_socket"], socket_w = FF.lid_socket(head, ctx, sides, sock_cfg)
     ears = build_ears(C, M, ctx, fs.get("ears", {}), ez) if fs.get("ears") else []
     for (sx, side), e in zip(SIDES, ears):
-        lm[f"ear_{side}"] = e.location.copy()
+        lm[f"ear_{side}"] = ear_landmark(e)
     if not ears:
         for sx, side in SIDES:
             lm[f"ear_{side}"] = Vector((ctx.side_x(sx, 0.0, ez - 0.01) or sx * 0.1, 0.0, ez - 0.01))

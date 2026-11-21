@@ -1,0 +1,11 @@
+{
+ "spec": "girl_white_hair_blue_dress.0.1.0.spec.json",
+ "builds": [
+  "groom/4",
+  "groom/5"
+ ],
+ "objects": 30,
+ "identical": true,
+ "differing": [],
+ "sha256_of_all": "44328904258146337fc991423a1457bccee165e97d83b47018e7707e0ca2b96a"
+}

@@ -37,6 +37,11 @@ A question or a discussion is never an approval.
 - Rework rule (owner ~08:10Z): if an implementer's context is over ~250k tokens and the feedback is narrow, do the
   rework in a fresh session with a pointer brief (task file, review points, branch@sha, README) or after compaction.
   One consolidated feedback message per review round.
+- Visual-round budget (owner 2026-11-21 ~04:10Z, T-176 P2): before sending visual feedback the Supervisor checks the
+  session's context (`get_session`); over ~250k the round goes to a fresh session with a pointer brief. Each visual task
+  keeps a short round file `docs/evaluation/<area>/T-NNN/ROUND.md` (targets, current overrides, open defects, sheet
+  paths) so a fresh start is cheap. Sheets are read as crops of at most 1024 px. Default effort `high`; `max` effort or
+  fast mode only at the owner's request. Keep the same session while its renders or scratch builds are running.
 
 ## Work areas, conflicts and integration
 1. Before dispatch, the Supervisor compares the planned file lists. Parallel tasks never share files. Central files

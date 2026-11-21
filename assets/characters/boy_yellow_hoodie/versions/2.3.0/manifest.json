@@ -1,0 +1,53 @@
+{
+ "character_id": "boy_yellow_hoodie",
+ "version": "2.3.0",
+ "parent": "2.2.0",
+ "created": "2026-11-20T23:20:26+00:00",
+ "notes": "boy_yellow_hoodie 2.3.0 = R3: T-155 2.3.0 candidate + T-159 ears + T-168 face r4 + T-167 hair r6; spec assets/characters/boy_yellow_hoodie/spec/candidates/R3/boy_yellow_hoodie.2.3.0.spec.json (docs/evaluation/characters/R3/stack_specs.py)",
+ "spec_sha256": "6381fcb6b64d2c8f7b742cc1aff3d246130cd1852e4b03f38ef2dcc5c5b287c4",
+ "spec_version": "2.3.0",
+ "build": "charsys/1+body_generic/1",
+ "blender": "5.3.0",
+ "identity_changes": [
+  "face",
+  "hair",
+  "clothing",
+  "materials"
+ ],
+ "identity_change_approved_by": "owner, release approval typed directly in the T-155 session (OWNER_DECISIONS 2026-11-20 ~23:11Z, waiver 2026-11-21 ~00:15Z)",
+ "files": {
+  "boy_yellow_hoodie_master.blend": {
+   "sha256": "f8eaf332262ea5c09875ae3fb67fa1e07c6af89a2c0134d941739f7c51e36ebe",
+   "bytes": 35367528
+  },
+  "spec.json": {
+   "sha256": "64c48e99b34aaa60b6b81983937e7a0ddb0aa5714d2a57cb9618d83a7342a40b",
+   "bytes": 37460
+  },
+  "components.json": {
+   "sha256": "0adc5bf85aca85e08da80efd9f3e0dd8f5eadaef3ea1b1af33c4b1d241a47e8b",
+   "bytes": 31606
+  },
+  "animation_compat.json": {
+   "sha256": "fb92bf5a853a6a959e339144ef1d7205cb790ff2c264a0d4a4020953794f0368",
+   "bytes": 13265
+  },
+  "build_report.json": {
+   "sha256": "115060cdafb40c4a3fa31b9843450c013a05b21acc2330cc4b9060a1656ab824",
+   "bytes": 45304
+  },
+  "spec.resolved.json": {
+   "sha256": "df4861af0b0264069393e02e4bc1e9655709e39b91f8fc821488e3a441cbdf47",
+   "bytes": 38097
+  }
+ },
+ "rig": {
+  "rigify_bones": 463,
+  "deform_bones": 126,
+  "unweighted_after_cleanup": 0
+ },
+ "spec_resolved": "spec.resolved.json is the build's fitted spec (body_generic writes fitted values); spec.json is the input spec it was built from (hash = spec_sha256)",
+ "not_stored": {
+  "boy_yellow_hoodie.glb": "not needed for reuse: shots link the master and engine packages are exported from it (run_shot.py); reproducible from the master"
+ }
+}

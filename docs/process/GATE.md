@@ -218,6 +218,26 @@ any workflow is red on `main`.
    batch, and never mark a task done whose change was not in the verified commit.
 5. Record the batch in the ledger: tasks, integration branch, verified commit and gate run link.
 
+### 5.6 Docs-only fast path (T-177)
+
+Ledger pushes (`docs/process/**`, `docs/tasks/**`) made 29 of 31 `main` gate runs in 8.5 h (T-176 W1). Rule, decided
+from the **changed-path list alone** (`tools/regression/tiers.py`, `docs_only()`; no content heuristics, no commit
+markers):
+
+- On a **push** to `staging` or `main`, if every path changed in `<previous tip>..HEAD` starts with `docs/process/` or
+  `docs/tasks/` (folder prefix: `docs/processX/`, `docs/tasks.md`, `docs/evaluation/**` do not count), the plan job
+  sets mode `docs`. Only the **docs-only fast path** job runs (about 1 min): `tools/check_doc_links.py`,
+  `tools/integrate.py claims --list` (OWNERSHIP parses), `tools/regression/tests/test_gate_tools.py`. linux, regression
+  and Blender shards are skipped; **Gate verdict** passes with `PASS Docs-only fast path: …`.
+- Any other path, a mix, an empty diff, an unknown or new `before` SHA, or `workflow_dispatch` → the full gate exactly
+  as in §5. Renames and deletes count both sides (`git diff --no-renames`). Task, integration and PR runs and the
+  Windows gate are unchanged; no check is removed from the full gate.
+- Promotion (§5.1): `tools/ci_status.py verified --docs-only-vs origin/main` also accepts a commit with no run of its
+  own when its diff against a **green** commit of `origin/main` (newest 50, a full gate run with every required job and
+  regression job; a docs-only fast run does not count as green) touches only those two folders. The verdict cites
+  that commit's run. No such commit → the full gate runs.
+- Tests: `test_docs_only` and `test_docs_equivalent` in `tools/regression/tests/test_gate_tools.py`.
+
 ## 6. Backups (`.github/workflows/backup.yml`, plan §8.1 layers 1–2)
 
 - **Tags:** every push to `main`/`staging` and every pushed backup request `archive/backup-<UTC>-<branch>` creates

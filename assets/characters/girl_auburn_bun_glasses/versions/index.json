@@ -32,10 +32,18 @@
    "status": "approved",
    "spec_sha256": "fddb6a48347d45f228a687cf6dd2ffb6784ada82b6fd07f30c3bece9351d87e0",
    "approval_notes": "new current version: \"Owner 2026-11-19 (~15:05Z, \"approve 2.2.0 and 0.13.0 as current\"): boy 2.2.0 and girl 0.13.0 become current. Fidelity score drop owner-accepted (boy 2.1.0 67.72 -> 2.2.0 67.25, girl 0.12.0 65.01 -> 0.13.0 64.13): the gains are the lid colour, the lens shelf and the expressions, which the score does not measure (see T-129).\" Recorded by T-131 (tools/version_switch.py)."
+  },
+  "0.14.0": {
+   "created": "2026-11-20T23:35:36+00:00",
+   "parent": "0.13.0",
+   "notes": "girl_auburn_bun_glasses 0.14.0 = R3: T-155 0.14.0 candidate + T-159 temple, ears, glasses + T-167 hair r7 + T-156 eyes/lids; spec assets/characters/girl_auburn_bun_glasses/spec/candidates/R3/girl_auburn_bun_glasses.0.14.0.spec.json (docs/evaluation/characters/R3/stack_specs.py)",
+   "status": "approved",
+   "spec_sha256": "182611e8361b80c5bfc981e81f713288754d30e08adbb39e27d4f5c2807a62a9",
+   "approval_notes": "new current version: \"release R3 as boy 2.3.0, girl 0.14.0 and third 0.1.0 and make them CURRENT\" Recorded by T-155 (tools/version_switch.py)."
   }
  },
  "pointers": {
-  "approved": "0.13.0",
+  "approved": "0.14.0",
   "reference": null
  },
  "history": [
@@ -94,6 +102,28 @@
    "previous": "0.12.0",
    "by": "owner (docs/process/OWNER_DECISIONS.md 2026-11-19)",
    "notes": "new current version: \"Owner 2026-11-19 (~15:05Z, \"approve 2.2.0 and 0.13.0 as current\"): boy 2.2.0 and girl 0.13.0 become current. Fidelity score drop owner-accepted (boy 2.1.0 67.72 -> 2.2.0 67.25, girl 0.12.0 65.01 -> 0.13.0 64.13): the gains are the lid colour, the lens shelf and the expressions, which the score does not measure (see T-129).\" Recorded by T-131 (tools/version_switch.py)."
+  },
+  {
+   "at": "2026-11-20T22:55:58+00:00",
+   "action": "approve",
+   "version": "0.13.0",
+   "previous": "0.14.0",
+   "by": "owner (docs/process/OWNER_DECISIONS.md 2026-11-20 ~23:10 CET option A; confirmed directly in the implementer session): back to the current main version until the final OK on the R3 sheets",
+   "notes": "R3 option A: 0.14.0 is rebuilt from the R3 specs for the release; pointer back to 0.13.0 meanwhile"
+  },
+  {
+   "at": "2026-11-20T23:35:36+00:00",
+   "action": "publish",
+   "version": "0.14.0",
+   "status": "candidate"
+  },
+  {
+   "at": "2026-11-20T23:43:01+00:00",
+   "action": "approve",
+   "version": "0.14.0",
+   "previous": "0.13.0",
+   "by": "owner (docs/process/OWNER_DECISIONS.md 2026-11-20 ~23:11Z + ~23:40Z)",
+   "notes": "new current version: \"release R3 as boy 2.3.0, girl 0.14.0 and third 0.1.0 and make them CURRENT\" Recorded by T-155 (tools/version_switch.py)."
   }
  ]
 }

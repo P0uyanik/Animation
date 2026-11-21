@@ -1,0 +1,139 @@
+{
+ "schema": "plush-studio.review-recipe/1",
+ "task": "R3",
+ "note": "girl: 0.13.0 (current on main) vs R3 (released as 0.14.0 per owner ~23:10 CET option A): T-155 0.14.0 candidate + T-159 temple, ears, glasses + T-167 hair r7 + T-156 eyes/lids, built from the stacked spec. A-pose master, as the T-155 girl sheet.",
+ "character": "girl_auburn_bun_glasses",
+ "inputs": {
+  "main": "5e0364c",
+  "integration/r3-faces": "7deb6cddcaca"
+ },
+ "baseline": {
+  "version": "0.13.0",
+  "label": "0.13.0 (current)",
+  "allow_not_current": true,
+  "note": "current on main; this branch's pointers still name the T-155 build until the owner's OK to move them back (option A)"
+ },
+ "candidate": {
+  "spec": "assets/characters/girl_auburn_bun_glasses/spec/candidates/R3/girl_auburn_bun_glasses.0.14.0.spec.json",
+  "overrides": [],
+  "sha": "7deb6cddcaca",
+  "label": "R3 (0.14.0)"
+ },
+ "compare": {
+  "variant": "master",
+  "pose": "apose",
+  "allow_apose": true
+ },
+ "cameras": {
+  "lens_mm": 70,
+  "sensor_mm": 36,
+  "elevation_deg": 5,
+  "framing": {
+   "body": {
+    "target": [
+     0.0,
+     0.0,
+     0.56
+    ],
+    "frame_height_m": 1.26,
+    "aspect": 1.6
+   },
+   "face": {
+    "target": [
+     0.0,
+     0.0,
+     0.775
+    ],
+    "frame_height_m": 0.32,
+    "aspect": 1.0
+   }
+  },
+  "rows": {
+   "front": {
+    "reference_view": "sheet30_front"
+   },
+   "threequarter": {
+    "reference_view": "sheet30_front_left"
+   },
+   "side": {
+    "reference_view": "sheet30_left"
+   },
+   "back": {
+    "reference_view": "sheet30_back"
+   },
+   "face_front": {
+    "reference": {
+     "file": "uploads/ref_30.webp",
+     "crop": [
+      440,
+      620,
+      712,
+      840
+     ],
+     "label": "ref_30 Neutral"
+    },
+    "yaw_deg": 0
+   },
+   "face_threequarter": {
+    "reference": {
+     "file": "uploads/ref_30.webp",
+     "crop": [
+      345,
+      90,
+      490,
+      260
+     ],
+     "label": "ref_30 front-left"
+    },
+    "yaw_deg": -45
+   }
+  }
+ },
+ "light": {
+  "calibration": "character_neutral/1"
+ },
+ "ai_target": {
+  "images": {
+   "back": {
+    "file": "uploads/higgsfield_G05_hair_back_bun_curls_2026-11-18.webp",
+    "crop": [
+     0,
+     0,
+     1493,
+     2000
+    ],
+    "label": "G05"
+   },
+   "face_front": {
+    "file": "uploads/higgsfield_G04_fringe_hairline_2026-11-18.webp",
+    "crop": [
+     0,
+     0,
+     1493,
+     2000
+    ],
+    "label": "G04"
+   },
+   "face_threequarter": {
+    "file": "uploads/higgsfield_G02_face_threequarter_2026-11-18.webp",
+    "crop": [
+     100,
+     300,
+     1393,
+     1500
+    ],
+    "label": "G02"
+   }
+  }
+ },
+ "render": {
+  "engine": "cycles",
+  "samples": 16,
+  "px": 360
+ },
+ "preview": {
+  "engine": "cycles",
+  "samples": 2,
+  "px": 120
+ }
+}

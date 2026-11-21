@@ -3,8 +3,8 @@
     python3 pipeline/charsys/tests/test_face_r5.py [--blender <exe or tools/bpy_blender.py>]
 
 Plain checks (no Blender):
-  * the lash curve is opt-in: fit_closed_lids calls curve_closed_lash only under closed_fit["lash_curve"], and no spec
-    under assets/ sets it (default builds do not reach the new code; the mesh-hash evidence is in
+  * the lash curve is opt-in: fit_closed_lids calls curve_closed_lash only under closed_fit["lash_curve"], and only
+    versions listed in the release manifest set it (release rule, T-178; default builds do not reach the new code; the mesh-hash evidence is in
     docs/evaluation/characters/T-137/checks/);
   * no character names in face_v3/lids.py;
   * the T-137 overrides only touch their sections (F1a: face.eyes; F1b: face.eyes and hair fringe/keepout) and pin no
@@ -12,8 +12,14 @@ Plain checks (no Blender):
 Unit check (--blender): curve_closed_lash on a synthetic lash (a tube on a sphere with Blink / in-between / EyeWide
 keys): the basis and the open key do not move, a key above the seam does not move, the closed key ends on the target
 curve (middle below the ends by sag + lift, at the seam + above), at rest radius + out_m, and a negative key factor
-turns the curve over."""
+turns the curve over.
+
+T-156 (opt-in lid yaw, lids.upper_yaw_deg / lower_yaw_deg): plain: guarded in lid_roll, release rule (T-178) for its use,
+the T-156 eye overrides touch face.eyes only; unit: without the key lid_roll returns what it returned before (None, or
+the roll matrix, bit for bit); with it a lid edge arc keeps its radius and its peak moves r sin(yaw) towards the outer
+corner on both sides."""
 import json
+import math
 import os
 import re
 import subprocess
@@ -24,7 +30,6 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, "..", "..", ".."))
 EV = os.path.join(ROOT, "docs", "evaluation", "characters", "T-137")
 sys.path.insert(0, HERE)
-import test_guard_allowlist as GA  # noqa: E402
 RESULTS = []
 
 
@@ -47,18 +52,31 @@ def plain():
     check("lash curve: one call site, guarded by closed_fit['lash_curve']",
           len(calls) == 2 and 'if fit.get("lash_curve") and lash is not None' in src, str(calls))
     check("no character names in face_v3/lids.py", not re.search(r"boy_|girl_|auburn|hoodie|white_hair", src))
-    users = []
-    for base, _, files in os.walk(os.path.join(ROOT, "assets", "characters")):
-        for f in files:
-            if f.endswith(".json") and os.sep + "spec" in base + os.sep:
-                try:
-                    if _find(json.load(open(os.path.join(base, f))), "lash_curve"):
-                        users.append(os.path.relpath(os.path.join(base, f), ROOT))
-                except ValueError:
-                    pass
-    users, _allowed, aerr = GA.split(users, "lash_curve")  # T-154 owner-approved candidate allowlist
-    check("owner-approved candidate allowlist is valid (T-154)", not aerr, aerr[:3])
-    check("no spec under assets/ opts into lash_curve (except listed owner-approved candidates)", not users, str(users))
+    # "no spec opts into lash_curve unless listed" -> pipeline/charsys/release_rule.py (T-178)
+    check("lid yaw: opt-in branch in lid_roll, the roll-only return unchanged",
+          'if abs(yaw) > 1e-9:' in src and
+          'return Matrix.Rotation(math.radians(-sx * deg), 3, "Y") if abs(deg) > 1e-9 else None' in src)
+    # "no spec uses lid yaw / sink_m / shell_occlusion_tint / closed_fill unless listed" (and its negative)
+    # -> pipeline/charsys/release_rule.py (T-178)
+    check("closed_fit.sink_m: default 0, guarded, upper shell only",
+          'sink = _f(fit, "sink_m", 0.0)' in src and 'if sink > 0.0 and ob is up:' in src)
+    check("closed_fit.shell_occlusion_tint: guarded, the shell_subsurface call unchanged without it",
+          'if fit.get("shell_occlusion_tint") is not None:' in src and
+          'elif fit.get("shell_subsurface") is not None:\n'
+          '        rep["shell_material"] = _shell_material(up, float(fit["shell_subsurface"]))' in src and
+          'def _shell_material(ob, factor, occlusion_tint=None):' in src and 'if occlusion_tint is not None:' in src)
+    sock = open(os.path.join(ROOT, "pipeline", "charsys", "face_v3", "socket.py")).read()
+    check("socket.closed_fill: opt-in (absent = no fill data, no attribute), written after the basis",
+          'fill = cfg.get("closed_fill")' in sock and 'if fill is not None:' in sock and
+          sock.index("    write(p)\n    if fill_sel:") < sock.index('me.attributes.new(f"ps_socket_fill.{side}"'))
+    check("skin closed fill: only where the socket stored its attribute; the attribute is removed",
+          'if head is None:\n        return None' in src and 'me.attributes.remove(me.attributes[name])' in src)
+    for sub, name in (("auburn", "girl_auburn_bun_glasses"), ("third", "girl_white_hair_blue_dress")):
+        ov = os.path.join(ROOT, "docs", "evaluation", "characters", "T-156", sub, name + ".eyes.override.json")
+        if os.path.exists(ov):
+            d = json.load(open(ov))
+            check(f"T-156 {sub} override: face.eyes only, no version pin",
+                  set(d) == {"face"} and set(d["face"]) == {"eyes"} and not _find(d, "spec_version"), str(list(d)))
     f1a = os.path.join(EV, "f1a", "girl_auburn_bun_glasses.eyes.override.json")
     if os.path.exists(f1a):
         d = json.load(open(f1a))
@@ -122,6 +140,21 @@ out = {"rep": rep,
        "blink_mid": float(elev(after["Blink.L"])[mid]), "blink_end": float(elev(after["Blink.L"])[end]),
        "laugh_mid": float(elev(after["Laugh"])[mid]), "laugh_end": float(elev(after["Laugh"])[end]),
        "radius": float(np.linalg.norm(after["Blink.L"][row], axis=1).mean())}
+# T-156: lid yaw. A lid edge arc (a circle of 30 deg about the forward axis, upper half) before / after lid_roll's matrix
+arc = [np.array((math.sin(math.radians(30)) * math.cos(t), -math.cos(math.radians(30)), math.sin(math.radians(30)) * math.sin(t))) * r
+       for t in np.linspace(0.2, math.pi - 0.2, 181)]
+yaw = {"none": LIDS.lid_roll({}, 1, "up") is None,
+       "roll_only": [list(map(list, LIDS.lid_roll({"upper_roll_deg": -18.0, "lower_roll_deg": 5.0}, sx, z))) ==
+                     list(map(list, Matrix.Rotation(math.radians(-sx * d), 3, "Y")))
+                     for sx in (1, -1) for z, d in (("up", -18.0), ("lo", 5.0))],
+       "lower_untouched": LIDS.lid_roll({"upper_yaw_deg": 8.0}, 1, "lo") is None, "peak_x": {}, "radius_err": 0.0}
+for sx in (1, -1):
+    for name, cfg in (("roll", {"upper_roll_deg": 14.0}), ("yaw", {"upper_roll_deg": 14.0, "upper_yaw_deg": 8.0})):
+        R = np.array(LIDS.lid_roll(cfg, sx, "up"))
+        q = np.array(arc) @ R.T
+        yaw["peak_x"][f"{name}{sx}"] = float(q[np.argmax(q[:, 2]), 0])
+        yaw["radius_err"] = max(yaw["radius_err"], float(np.abs(np.linalg.norm(q, axis=1) - r).max()))
+out["yaw"] = yaw
 json.dump(out, open(sys.argv[sys.argv.index("--") + 2], "w"))
 '''
 
@@ -146,6 +179,13 @@ def unit(blender):
     check("unit: key factor -1 turns the curve over (middle above the ends)",
           d["laugh_mid"] > d["laugh_end"] + 10.0, f"{d['laugh_mid']:.2f} / {d['laugh_end']:.2f}")
     check("unit: closed lash at rest radius + out_m", abs(d["radius"] - 0.052) < 2e-4, f"{d['radius']:.5f}")
+    y = d["yaw"]
+    check("unit: lid_roll without the yaw key is unchanged (None / the roll matrix)",
+          y["none"] and all(y["roll_only"]) and y["lower_untouched"], str(y))
+    shift = 0.05 * math.sin(math.radians(8.0))
+    check("unit: a roll alone does not move the arc's peak; the yaw moves it r sin(yaw) outwards, radius kept",
+          all(abs(y["peak_x"][f"roll{sx}"]) < 1e-3 and abs(y["peak_x"][f"yaw{sx}"] - y["peak_x"][f"roll{sx}"] - sx * shift) < 1e-3
+              for sx in (1, -1)) and y["radius_err"] < 1e-6, str(y))
 
 
 def main():

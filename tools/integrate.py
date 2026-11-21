@@ -2,6 +2,7 @@
 """Supervisor integration tool (delivery plan rev. 2, sections 3, 5 and 8.1).
 
     python tools/integrate.py claims --check T-NNN        # may T-NNN start? overlap = exit 1
+    python tools/integrate.py claims --check-all          # whole table: overlap or non-glob text in a write-set = exit 1
     python tools/integrate.py claims --list               # the parsed claims table
     python tools/integrate.py writeset --task T-NNN [--base origin/staging]   # diff inside the claim? (gate check)
     python tools/integrate.py stage t-NNN-<agent>-<slug> [--dry-run] [--blender B]
@@ -179,6 +180,7 @@ class Claim:
     lane: str = ""
     branch: str = ""
     write_set: list[str] = dataclasses.field(default_factory=list)
+    write_cell: str = ""
     depends_on: list[str] = dataclasses.field(default_factory=list)
     stable_depends: list[str] = dataclasses.field(default_factory=list)
     versions: list[str] = dataclasses.field(default_factory=list)
@@ -223,7 +225,8 @@ def parse_ownership(text: str, source: str = "docs/process/OWNERSHIP.md") -> lis
         branch = _ticked(row.get("branch", ""))
         claims.append(Claim(
             task=task, lane=row.get("lane", ""), branch=branch[0] if branch else row.get("branch", "").strip(),
-            write_set=_ticked(row.get("write-set", "")), depends_on=hard, stable_depends=stable,
+            write_set=_ticked(row.get("write-set", "")), write_cell=row.get("write-set", ""),
+            depends_on=hard, stable_depends=stable,
             versions=_versions(row.get("versions bumped", "")), source=source,
         ))
     return claims
@@ -302,6 +305,30 @@ def check_claims(candidate: Claim, others: list[Claim]) -> tuple[list[str], list
     return conflicts, warnings
 
 
+def write_cell_extra_text(cell: str) -> str:
+    """Text of a write-set cell left after removing back-ticked globs and separators (commas, semicolons, spaces)."""
+    return re.sub(r"[\s,;]+", " ", re.sub(r"`[^`]*`", " ", cell)).strip()
+
+
+def check_table(claims: list[Claim]) -> tuple[list[str], list[str], list[str]]:
+    """Whole-table check: (write-set overlaps, qualifier text problems, stable-depends warnings)."""
+    overlaps, problems, warnings = [], [], []
+    for i, a in enumerate(claims):
+        for b in claims[i + 1:]:
+            for mine in a.write_set:
+                for theirs in b.write_set:
+                    if globs_overlap(mine, theirs):
+                        overlaps.append(f"write-set overlap {a.task} ~ {b.task}: {mine} ~ {theirs}")
+        for other in claims:
+            if other is not a:
+                warnings.extend(w for w in check_claims(a, [a, other])[1])
+    for claim in claims:
+        extra = write_cell_extra_text(claim.write_cell)
+        if extra:
+            problems.append(f"qualifier text in {claim.task} write-set (only back-ticked globs allowed): {extra}")
+    return overlaps, problems, warnings
+
+
 def write_set_violations(paths, claim: Claim) -> list[str]:
     return sorted(path for path in paths if not any(path_matches(path, pattern) for pattern in claim.write_set))
 
@@ -334,6 +361,17 @@ def cmd_claims(args) -> int:
             print(f"{claim.task} [{claim.lane}] {claim.branch}: write={claim.write_set} depends={claim.depends_on} "
                   f"stable={claim.stable_depends} versions={claim.versions}")
         return 0
+    if args.check_all:
+        overlaps, problems, warnings = check_table(claims)
+        for line in warnings:
+            print(f"WARN {line}")
+        for line in overlaps:
+            print(f"CONFLICT {line}")
+        for line in problems:
+            print(f"BAD-ROW {line}")
+        print(f"{'FAIL' if overlaps or problems else 'PASS'} claims --check-all: {len(claims)} row(s), "
+              f"{len(overlaps)} overlap(s), {len(problems)} qualifier problem(s), {len(warnings)} warning(s)")
+        return 1 if overlaps or problems else 0
     candidate = find_claim(args.check, claims)
     if candidate is None:
         print(f"FAIL claims: no claim or task file for {args.check}")
@@ -454,6 +492,7 @@ def main(argv: list[str] | None = None) -> int:
     group = claims.add_mutually_exclusive_group(required=True)
     group.add_argument("--check", metavar="T-NNN")
     group.add_argument("--list", action="store_true")
+    group.add_argument("--check-all", action="store_true", help="whole table: overlaps and qualifier text")
     claims.set_defaults(func=cmd_claims)
     writeset = sub.add_parser("writeset", help="is the branch diff inside the task's claim?")
     writeset.add_argument("--task", required=True)

@@ -1,0 +1,54 @@
+{
+ "character_id": "girl_auburn_bun_glasses",
+ "version": "0.14.0",
+ "parent": "0.13.0",
+ "created": "2026-11-20T23:35:36+00:00",
+ "notes": "girl_auburn_bun_glasses 0.14.0 = R3: T-155 0.14.0 candidate + T-159 temple, ears, glasses + T-167 hair r7 + T-156 eyes/lids; spec assets/characters/girl_auburn_bun_glasses/spec/candidates/R3/girl_auburn_bun_glasses.0.14.0.spec.json (docs/evaluation/characters/R3/stack_specs.py)",
+ "spec_sha256": "182611e8361b80c5bfc981e81f713288754d30e08adbb39e27d4f5c2807a62a9",
+ "spec_version": "0.14.0",
+ "build": "charsys/1+body_generic/1",
+ "blender": "5.3.0",
+ "identity_changes": [
+  "face",
+  "hair",
+  "clothing",
+  "accessories",
+  "materials"
+ ],
+ "identity_change_approved_by": "owner, release approval typed directly in the T-155 session (OWNER_DECISIONS 2026-11-20 ~23:11Z, waiver 2026-11-21 ~00:15Z)",
+ "files": {
+  "girl_auburn_bun_glasses_master.blend": {
+   "sha256": "96b3635736eb8787c189eebf4fcf8f4415b8cbc3e40f8e7a3e263ba15c98d76a",
+   "bytes": 42939660
+  },
+  "spec.json": {
+   "sha256": "ac7cda0c15225cf7d7452e1ed4ae9e25ccdbb6f371c5c4b62aa4906b24f6fc98",
+   "bytes": 56709
+  },
+  "components.json": {
+   "sha256": "77a9535ee5eea4fa436c9ad442d12ede69acadb03b6f1fa9b5a1c6c0f540779b",
+   "bytes": 31125
+  },
+  "animation_compat.json": {
+   "sha256": "385d5aab1f4a5d2b829c35c151dc1ccb23e3ba2bf3dda821ab7608e24485e518",
+   "bytes": 16688
+  },
+  "build_report.json": {
+   "sha256": "8e41b4797d4eb3a4a2f6625f605bd80cd9eb149c70ba777a4ca212d661a183ab",
+   "bytes": 46973
+  },
+  "spec.resolved.json": {
+   "sha256": "85a3339d5b159b5664d6ed1d7234306bc72bc39fc071a03c2f6bc3b9e9a169a9",
+   "bytes": 57211
+  }
+ },
+ "rig": {
+  "rigify_bones": 504,
+  "deform_bones": 167,
+  "unweighted_after_cleanup": 0
+ },
+ "spec_resolved": "spec.resolved.json is the build's fitted spec (body_generic writes fitted values); spec.json is the input spec it was built from (hash = spec_sha256)",
+ "not_stored": {
+  "girl_auburn_bun_glasses.glb": "not needed for reuse: shots link the master and engine packages are exported from it (run_shot.py); reproducible from the master"
+ }
+}
