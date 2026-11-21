@@ -657,8 +657,8 @@ void keyShapeRest(Clip& gen, const std::string& pose, double f, const HandShape&
 //                         in early in the reach, back to the arm solve's own elbow after the release). The planner otherwise turns the hand thumb down
 //                         when the authored point faces the wrong way for this hand. "site" (default): as before
 //   "clear": metres       the way in keeps the hand at least this far from the prop (default 0 = the path as it was):
-//                         a thumb-up hand rises with its fingers hanging and swings them level in the palm's own
-//                         plane; where the digits or the palm still come closer, the wrist moves out, level, away
+//                         a hand taking an upright prop rises with its fingers hanging and swings them level in the
+//                         palm's own plane; where the digits or the palm still come closer, the wrist moves out, level, away
 //                         from the prop, eased in time and gone by the contact
 struct FingerClose {
   float preshape = 0.5f, stagger = 2.0f, settleShare = 0.12f;
@@ -1182,12 +1182,14 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
     key(gen, h.orient + ".weight", start, vec3(clip.evaluate(h.orient + ".weight", start, vec3(0)).x));
     key(gen, h.orient + ".weight", pre + 1, vec3(1));
     key(gen, h.orient + ".weight", contact, vec3(1));
-    // T-171 "clear": a thumb-up hand rises with its palm already towards the prop and its fingers hanging (the final
-    // rotation turned a quarter about the palm's normal), then swings its fingers level in the palm's own plane on
+    // T-171 "clear": a hand that holds an upright prop (thumb up or down) rises with its palm already towards the prop
+    // and its fingers hanging (the final rotation turned a quarter about the palm's normal), then swings its fingers level in the palm's own plane on
     // the way to the approach point. The shortest turn from a hanging hand points the fingers at the prop on the way.
     if (const vec3 thumb = pl.R * ((h.side == 'R' ? 1.0f : -1.0f) * glm::cross(h.grip.fingerDir, h.grip.palmNormal));
-        grasp && style.soft && style.soft->clear > 0 && thumb.y > 0.7f) {
-      const quat hang = glm::normalize(pl.orient * glm::angleAxis((h.side == 'R' ? 1.0f : -1.0f) * 1.5707963f, h.grip.palmNormal));
+        grasp && style.soft && style.soft->clear > 0 && std::abs(thumb.y) > 0.7f) {
+      const quat qa = glm::normalize(pl.orient * glm::angleAxis(1.5707963f, h.grip.palmNormal));
+      const quat qb = glm::normalize(pl.orient * glm::angleAxis(-1.5707963f, h.grip.palmNormal));
+      const quat hang = (qa * h.grip.fingerDir).y < (qb * h.grip.fingerDir).y ? qa : qb;  // the quarter turn that hangs the fingers
       const double fm = std::round(start + 0.55 * (pre - start)), fe = std::round(pre + 1);
       dropKeysAfter(gen, h.orient, start);
       key(gen, h.orient, start, rotationVector(hang), Interp::Linear);

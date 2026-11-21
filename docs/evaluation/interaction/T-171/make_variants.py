@@ -36,13 +36,14 @@ def variant(base, name):
 # Round 3 (owner review 2026-11-21): the fixed opt-in on the proposed cup site. wrap = joint-by-joint finger wrap with
 # the measured skin and the seated palm; grip natural = thumb up (the grasp point turns about the cup's axis).
 R3 = dict(SEP, wrap=True, grip="natural", clear=0.006)
-SITE_VARIANTS = {"r2site": dict(SEP), "r3": R3, "r3wrap": dict(SEP, wrap=True), "r3grip": dict(SEP, grip="natural")}
+# r3site: the same without the turn (the authored grasp point: the planner turns the right hand thumb down there).
+SITE_VARIANTS = {"r2site": dict(SEP), "r3": R3, "r3site": dict(SEP, wrap=True, clear=0.006)}
 
 
 def site_variant(src, base, root, name="r2site"):
     """A variant on a copy of the prop library whose felt_cup site side_a is the PROPOSED one (hand centred on the
     cup: socket grip at 50 mm instead of 66, band 0-100 mm instead of 45-90). The copy lives under the build folder;
-    content/assets is not changed. r2site = r2s there; r3 = the round 3 fixes on top (r3wrap / r3grip: one of them)."""
+    content/assets is not changed. r2site = r2s there; r3 / r3site = the round 3 fixes on top."""
     import shutil
     d = os.path.join(os.path.dirname(src), "t171_site")
     for sub in ("assets", "hand_shapes"):
