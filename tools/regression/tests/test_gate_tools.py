@@ -74,7 +74,8 @@ def test_claims():
     expect(by["T-900"].stable_depends == ["pipeline/b.py"] and not by["T-900"].depends_on, "stable dependency")
     conflicts, warnings = I.check_claims(by["T-900"], claims)
     expect(any("T-902" in c and "face_generic" in c for c in conflicts), "same version bump = conflict")
-    expect(any("T-903 depends on tools/a.py" in c for c in conflicts), "other task depends on my file = conflict")
+    expect(any("T-903 reads tools/a.py" in w and "tools/a.py" in w for w in warnings)
+           and not any("T-903" in c for c in conflicts), "other task reads my file = warning naming the task")
     expect(any("T-901" in w for w in warnings) and not any("T-901" in c for c in conflicts), "stable dep = warning")
     conflicts, _ = I.check_claims(by["T-901"], claims)
     expect(any("T-902" in c and "engine/" in c for c in conflicts), "glob-aware write-set overlap")
@@ -116,6 +117,30 @@ def test_claims_check_all():
     expect(not overlaps, "live OWNERSHIP.md: no write-set overlap between rows")
     if problems:
         print("note: live rows with qualifier text:", "; ".join(p.split(" write-set")[0].split()[-1] for p in problems))
+
+
+def test_claims_read_not_blocking():
+    head = "| Task | Lane | Branch | Write-set | Depends on | Versions bumped |\n| --- | --- | --- | --- | --- | --- |\n"
+    table = head + "\n".join([
+        "| T-910 | A | `t-910-a` | `a/**` | `b/lib.py` | — |",
+        "| T-911 | A | `t-911-b` | `b/**` | — | `v1` |",
+        "| T-912 | A | `t-912-c` | `a/x.py` | — | — |",
+        "| T-913 | A | `t-913-d` | `c/**` | — | `v1` |"]) + "\n"
+    claims = I.parse_ownership(table)
+    by = {c.task: c for c in claims}
+    conflicts, warnings = I.check_claims(by["T-910"], [by["T-910"], by["T-911"]])
+    expect(not conflicts and len(warnings) == 1 and "T-911" in warnings[0] and "b/lib.py" in warnings[0]
+           and "b/**" in warnings[0], "candidate reads what another writes: warning only, names task and globs")
+    conflicts, warnings = I.check_claims(by["T-911"], [by["T-910"], by["T-911"]])
+    expect(not conflicts and len(warnings) == 1 and "T-910" in warnings[0] and "b/lib.py" in warnings[0],
+           "another task reads what the candidate writes: warning only")
+    conflicts, _ = I.check_claims(by["T-910"], [by["T-910"], by["T-912"]])
+    expect(len(conflicts) == 1 and "T-912" in conflicts[0], "write vs write still a conflict")
+    conflicts, _ = I.check_claims(by["T-911"], [by["T-911"], by["T-913"]])
+    expect(len(conflicts) == 1 and "v1" in conflicts[0] and "T-913" in conflicts[0], "version clash still a conflict")
+    overlaps, _, warnings = I.check_table(claims)
+    expect(any("T-910" in w and "T-911" in w and "b/lib.py" in w for w in warnings), "--check-all shows read warnings")
+    expect(len(overlaps) == 1 and "T-910 ~ T-912" in overlaps[0], "--check-all still reports write overlaps")
 
 
 def test_tiers():
@@ -326,7 +351,7 @@ def test_version_spec_build():
 
 
 def main() -> int:
-    for test in (test_glob_overlap, test_claims, test_claims_check_all, test_tiers, test_docs_only, test_docs_equivalent, test_version_spec_build, test_compare,
+    for test in (test_glob_overlap, test_claims, test_claims_check_all, test_claims_read_not_blocking, test_tiers, test_docs_only, test_docs_equivalent, test_version_spec_build, test_compare,
                  test_backup_scripts):
         test()
     print(f"{'FAIL' if FAILURES else 'PASS'} gate tools: {len(FAILURES)} failure(s)")
