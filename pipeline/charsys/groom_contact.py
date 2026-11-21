@@ -34,8 +34,9 @@ spec.hair.dynamics.contact   {"colliders": [...], "segments": bool (default true
     "figure": {"exclude": [object-name patterns]}: meshes bound to the rig that are not part of the solid figure
        (default FIGURE_EXCLUDE: collision proxies, widgets, face features, glasses). Hair objects never are.
     "radii": {"percentile": 1..100 (100), "floor_m": 0..0.05 (0.006)}: each contact chain gets one collision radius
-       per joint from the vertices it carries (chain_radii), 0 at the root, and never more than the joint's rest
-       clearance to the colliders on the chain's own root bone (the head).
+       per joint from the vertices it carries (chain_radii), never more than the joint's rest clearance to the
+       colliders on the chain's own root bone (the head); the root joint takes the next joint's radius, capped
+       the same way (a thick first segment: the lock cannot swing into the ear it starts beside).
     "rest": true | {"friction": >= 0 (40), "max_swing": >= 0 (12)}: resting contact (docs/SECONDARY_MOTION.md);
        the chains take every collider ("solid" of a collider is then without effect).
     "sheets": [{"structure": pattern, "top_z": world z where the sheet leaves the head, "chains": 2..64 (13),
@@ -658,10 +659,15 @@ def _collider_distance(p, c):
 
 
 def capped_radii(radii, joints, root_colliders):
-    """Chain radii that do not collide in the rest pose with the colliders of the chain's own root bone (pure): 0 at
-    the root, otherwise at most the joint's clearance to those colliders (never negative)."""
-    out = [0.0]
-    for r, j in zip(radii[1:], joints[1:]):
+    """Chain radii that do not collide in the rest pose with the colliders of the chain's own root bone (pure): each
+    at most the joint's clearance to those colliders (never negative). The root joint does not move; its radius only
+    shapes the first segment: it takes the next joint's fitted radius (the lock is that thick where it starts),
+    capped the same way, so the first segment cannot swing into the head or an ear it starts beside. Without
+    colliders on the root bone the root stays 0."""
+    out = []
+    for k, (r, j) in enumerate(zip(radii, joints)):
+        if k == 0:
+            r = radii[1] if root_colliders and len(radii) > 1 else 0.0
         clear = min((_collider_distance(j, c) for c in root_colliders), default=r)
         out.append(round(max(0.0, min(r, clear)), 5))
     return out

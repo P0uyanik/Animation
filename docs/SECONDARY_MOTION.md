@@ -124,9 +124,10 @@ Groom side (`spec.hair`, groom/5 module, `pipeline/charsys/groom_contact.py`), b
     widgets, face features, glasses); cloth counts as surface, and the outward side is found by what is open, not by
     the stored normal. The girl of T-183 takes five sets (head, ears, torso with the garments, arms, hands): about
     820 spheres.
-  - `"radii": {"percentile", "floor_m"}`: one collision radius per joint from the vertices the chain carries, 0 at
-    the root, capped by the joint's rest clearance to the colliders on the chain's root bone (so a lock that starts
-    on the head does not collide with the head at rest).
+  - `"radii": {"percentile", "floor_m"}`: one collision radius per joint from the vertices the chain carries, capped
+    by the joint's rest clearance to the colliders on the chain's root bone (so a lock that starts on the head does
+    not collide with the head at rest). The root joint takes the next joint's radius, capped the same way: with a
+    root radius of 0 the first segment was a thin cone and the short side locks turned 5-7 mm into the ears.
   - `"rest": true | {"friction", "max_swing"}`: the chains get resting contact against every collider.
   - `"sheets": [{"structure", "top_z", "chains", "bones", "blend", chain parameters}]`: chains for a static hanging
     sheet, spread over its angle about the head bone's axis; a vertex follows the two chains next to it. The chains

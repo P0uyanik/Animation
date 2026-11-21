@@ -244,11 +244,14 @@ def main():
     check("chain radii: the floor is the least radius", CT.chain_radii(tube, line, percentile=1, floor=0.03)[0] == 0.03)
     ball = [{"centre": [0, 0, 0.05], "radius": 0.04}]
     capped = CT.capped_radii(rad, line, ball)
-    check("capped radii: 0 at the root, at most the rest clearance to the root bone's colliders, the far ones as fitted",
-          capped[0] == 0.0 and abs(capped[1] - min(rad[1], 0.11 - 0.04)) < 1e-6 and capped[3] == rad[3], capped)
+    check("capped radii: at most the rest clearance to the root bone's colliders, the far ones as fitted",
+          abs(capped[1] - min(rad[1], 0.11 - 0.04)) < 1e-6 and capped[3] == rad[3], capped)
+    check("capped radii: the root takes the next joint's radius, capped by its own clearance (a thick first segment)",
+          abs(capped[0] - min(rad[1], 0.05 - 0.04)) < 1e-6
+          and CT.capped_radii(rad, line, [{"centre": [0, 0, 0.5], "radius": 0.04}])[0] == round(rad[1], 5), capped)
     check("capped radii: a joint inside a collider gets 0, not a negative radius",
-          CT.capped_radii([0.02, 0.02], [(0, 0, 0.1), (0, 0, 0.05)], ball) == [0.0, 0.0])
-    check("capped radii: without colliders on the root bone the fitted radii stay (root 0)",
+          CT.capped_radii([0.02, 0.02], [(0, 0, 0.1), (0, 0, 0.05)], ball) == [0.01, 0.0])
+    check("capped radii: without colliders on the root bone the fitted radii stay and the root is 0",
           CT.capped_radii(rad, line, []) == [0.0] + [round(r, 5) for r in rad[1:]])
 
     # sheet chains: half a tube round the vertical axis, 160 degrees, two faces, a scalloped lower edge
