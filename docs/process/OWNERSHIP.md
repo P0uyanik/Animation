@@ -27,6 +27,5 @@ split.
 | Task | Lane | Branch | Write-set | Depends on | Versions bumped |
 | --- | --- | --- | --- | --- | --- |
 | T-183 | B | t-183-claude-hair-contact | `engine/anim/secondary.h`, `engine/anim/secondary.cpp`, `tests/test_secondary.cpp`, `pipeline/charsys/groom_contact.py`, `pipeline/charsys/groom_r6.py`, `pipeline/charsys/tests/test_hair_contact.py`, `pipeline/charsys/release_rule.py`, `pipeline/charsys/tests/test_release_rule.py`, `docs/process/GENERATOR_PINS.md`, `episodes/e909_two_char_acting/shots/s010_t183/**`, `docs/SECONDARY_MOTION.md`, `docs/evaluation/characters/T-183/**` | — | — |
-| T-186 | E | t-186-claude-natural-grip-cup | `engine/scene/interaction.cpp`, `engine/scene/verbs.cpp`, `engine/anim/animation.h`, `engine/anim/animation.cpp`, `tests/test_grasp_contact.cpp`, `docs/evaluation/interaction/T-186/**` | — | — |
 
 Supervisor-only files: docs/process/TASK_LOG.md, docs/ROADMAP.md, docs/process/OWNER_DECISIONS.md, docs/tasks/**.
