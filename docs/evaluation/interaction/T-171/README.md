@@ -66,7 +66,28 @@ Every vertex the hand bone or a bone below it carries, against the cup as a capp
   nearest (25 mm at the contact f114). No hand meets the other. No load warning in any variant.
 
 ### R3.4 Sheets and clips
-PICTURES
+Cycles 12 spp. Columns: current default | fixed, authored grasp point (`r3site`, thumb down) | fixed, thumb up (`r3`).
+
+| file | what |
+| --- | --- |
+| `r3_strict_pickup.jpg` | one camera above the boy's right side, 400x300 per tile, f64 / 68 / 70 / 72 / 74 / 76 / 80 / 84 |
+| `r3_back_shot.jpg` | from behind the cup f70 / 76 / 84 (the thumb-up hand's fingers), then the shot camera at shot size: a 160x120 px box of the 960x540 frame, enlarged, f76 / 84 |
+| `clips/r3_pickup_f62-84_24fps.mp4`, `..._8fps.mp4` | the three columns side by side, the strict sheet's camera, real time and 3x slow |
+| `preview_t171` (tool) | the cheap preview used while working: engine pose, digits coloured, 9 s per run; not evidence for the look |
+
+What the pictures show (my reading; the owner decides):
+- **Fixed, authored point (middle):** four fingers side by side, each one bent, pads on the cup; the palm stands off the
+  cup instead of disappearing into it. At shot size the fingers are told apart (default: they cross). The hand covers
+  **less** of the cup than the default: the fingertips end about a third of the way across its front.
+- **Fixed, thumb up (right):** from behind (`r3_back_shot.jpg`, top rows) this is the most natural hand of the three:
+  fingers round the back of the cup, thumb on top. From the strict camera and from the shot camera almost all of it is
+  behind the sleeve: thumb and index show beside the cup, nothing else.
+- **Way in (clip):** in both fixed columns the hand comes up with its fingers down and swings them level beside the cup;
+  the default swings its fingers through the cup's lower edge at f65-66.
+- **Default (left):** the palm is in the cup (the hand looks pressed into it), fingers overlap, hand thumb down.
+- Not rendered: the carry and the hand-over (numbers only, R3.3 / R3.5); the girl.
+
+Render cost here: 4.5 min per Blender scene (29 frames), 45 s per 480x360 frame, 81 frames in all.
 
 ### R3.5 Limits
 - **Carry with `r3`:** the elbow is planned for the contact pose. In the carry and the hand-over (f100-135) the wrist

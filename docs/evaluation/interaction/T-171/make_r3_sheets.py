@@ -9,9 +9,37 @@ import os
 import subprocess
 import tempfile
 
-from PIL import Image
+from PIL import Image, ImageDraw
 
-from make_sheets import grid, label
+BG, BAR, TXT = (92, 92, 96), (20, 20, 20), (240, 240, 240)
+HEAD = 18
+
+
+def label(im, text):
+    c = Image.new("RGB", (im.width, im.height + HEAD), BG)
+    c.paste(im, (0, HEAD))
+    d = ImageDraw.Draw(c)
+    d.rectangle((0, 0, im.width, HEAD - 1), fill=BAR)
+    d.text((4, 3), text, fill=TXT)
+    return c
+
+
+def grid(rows, path, title):
+    w = max(sum(t.width for t in r) for r in rows)
+    h = sum(max(t.height for t in r) for r in rows)
+    sheet = Image.new("RGB", (w, h + 24), BG)
+    d = ImageDraw.Draw(sheet)
+    d.rectangle((0, 0, w, 23), fill=BAR)
+    d.text((6, 6), title, fill=TXT)
+    y = 24
+    for r in rows:
+        x = 0
+        for t in r:
+            sheet.paste(t, (x, y))
+            x += t.width
+        y += max(t.height for t in r)
+    sheet.save(path, quality=90)
+    print(path, sheet.size)
 
 COLS = [("base", "current default"), ("r3site", "fixed, authored grasp point (thumb down)"), ("r3", "fixed, thumb up")]
 STRICT = [64, 68, 70, 72, 74, 76, 80, 84]
