@@ -955,4 +955,8 @@ hard depends-on (read) overlaps were conflicts → T-181b makes them warnings. R
   white-haired girl 0.1.0; existing systems only; plain classroom staging; story: seated, the girl with glasses makes a
   paper boat (no finger-folding animation), surprise, she gives it to the boy, all stand and walk; 12–20 s, 4–5 shots,
   640x360 H.264 + contact sheet; known defects listed in the README. Estimate given: ~1–1.5 work days.
+- **~23:10 CET: new T-189 "World & environment reuse survey"** (research only, no Codex, docs-only write-set): reuse
+  existing CC0/permissive assets, generators, GN kits, datasets, AI-3D for classroom/kindergarten first; build on
+  T-170/b/c/d; YouTube commercial use (no NC), headless bpy, deterministic, no paid lock-in without asking; blocked hosts
+  listed for owner approval, not worked around.
 
