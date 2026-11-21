@@ -41,8 +41,8 @@ Codex T-169 hair reference study (relay 2987afa) feeds T-167. Codex T-161 refere
 | T-179 generator pin map (T-176 P12 light) | Sonnet 5.5 | merged (docs/process/GENERATOR_PINS.md) |
 | T-180 full suite in a light clone + clone profiles (T-176 P13) | Sonnet 5.5 | running |
 | T-181 one owner per file: claims --check-all (T-176 P9) | Sonnet 5.5 | merged |
-| T-182 automatic test registration (T-176 P7) | — | queued after T-178 merges |
-| T-178 one release-manifest rule (T-176 P5) | Opus 5.5 | stage 1 at 2f7c55b (new rule, 130/130); old guards wait for owner's typed approval in its session | — | — |
+| T-182 automatic test registration (T-176 P7) | — | next, after this merge |
+| T-178 one release-manifest rule (T-176 P5) | Opus 5.5 | merged | — | — |
 | T-174 animation reuse vs build (research) | Opus 5.5 | merged: keep engine for acting/verbs/grasp; reuse CMU mocap for walk/run/sit/stand; build importer + foot lock (~3.5–4 d); owner questions open | — | — |
 | T-153 fidelity score v2 | Opus | merged; experimental, default stays v1 | — | `t-153-claude-fidelity-v2` |
 | T-161 Codex reference targets | Codex | assigned (relay f33c4868); Codex limited until 2026-11-23 ~21:43Z | — | — |

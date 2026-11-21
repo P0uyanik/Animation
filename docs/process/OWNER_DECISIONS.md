@@ -913,3 +913,5 @@ structure or asset changes. (3) Then priority on animation production; no furthe
   stay. Owner approves the guard-policy change explicitly. Sequenced after T-178 merges (shared test/guard files) → T-182.
 - **P9:** one active owner per file, glob-level only, no function-level splits, temporary and transferable (released at
   merge/abandon, handover via the ledger) → `docs/tasks/T-181.md` + rule text in `OWNERSHIP.md`.
+- T-178: the owner's approval sentence was also typed in the T-178 session itself at 10:45:54Z (desktop app) and again at
+  11:50:19Z; verified by the Supervisor with list_events before the stage-2 merge.

@@ -26,6 +26,5 @@ round inside one file runs in sequence or as one task.
 | T-171 | E | t-171-claude-hands-r2 | `engine/anim/hand_shape.h`, `engine/anim/hand_shape.cpp`, `engine/scene/interaction.cpp`, `engine/scene/verbs.cpp`, `engine/scene/collision.cpp`, `tests/test_grasp_contact.cpp`, `tests/test_hand_shape*.cpp`, `docs/evaluation/interaction/T-171/**` | T-157 | — |
 | T-172 | C | t-172-claude-test-video | `docs/evaluation/video/T-172/**` | — | — |
 | T-180 | G | t-180-claude-clone-profiles | `docs/process/CLONE_PROFILES.md` | — | — |
-| T-178 | G | t-178-claude-release-rule | `tools/version_switch.py`, `tools/tests/test_version_switch.py`, `pipeline/charsys/tests/**`, `pipeline/charsys/release_manifest*`, `pipeline/charsys/release_rule*.py`, `tools/guarded_paths.txt`, `tools/shared_character_allowlist.txt`, `tools/check_all.py`, `docs/process/ASSET_STORE.md`, `docs/evaluation/process/T-178/**` | `pipeline/charsys/versions.py` (stable) | — |
 
 Supervisor-only files: docs/process/TASK_LOG.md, docs/ROADMAP.md, docs/process/OWNER_DECISIONS.md, docs/tasks/**.
