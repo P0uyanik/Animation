@@ -29,6 +29,5 @@ split.
 | T-183 | B | t-183-claude-hair-contact | `engine/anim/secondary.h`, `engine/anim/secondary.cpp`, `tests/test_secondary.cpp`, `pipeline/charsys/groom_contact.py`, `pipeline/charsys/groom_r6.py`, `pipeline/charsys/tests/test_hair_contact.py`, `pipeline/charsys/release_rule.py`, `pipeline/charsys/tests/test_release_rule.py`, `docs/process/GENERATOR_PINS.md`, `episodes/e909_two_char_acting/shots/s010_t183/**`, `docs/SECONDARY_MOTION.md`, `docs/evaluation/characters/T-183/**` | — | — |
 | T-187 | V | t-187-claude-paper-boat | `episodes/e912_paper_boat/**`, `docs/evaluation/video/T-187/**` | — | — |
 | T-188 | E | t-188-claude-e909-r3-grasp | `episodes/e909_two_char_acting/make_shot.py`, `episodes/e909_two_char_acting/shots/s010/**`, `episodes/e909_two_char_acting/shots/s010_t113/**`, `episodes/e909_two_char_acting/content/assets/**`, `docs/evaluation/interaction/T-188/**` | — | — |
-| T-189 | R | t-189-claude-world-reuse-survey | `docs/evaluation/world/T-189/**` | — | — |
 
 Supervisor-only files: docs/process/TASK_LOG.md, docs/ROADMAP.md, docs/process/OWNER_DECISIONS.md, docs/tasks/**.
