@@ -1,0 +1,17 @@
+preset,device,status,frame,warmup,seconds,matched_view,run_peak_MiB,matched_mean_s,vs_final720_cpu,estimate_192_min,rgb8_mae,rgb8_rmse,rgb8_max
+final720,CPU,rendered,1,True,88.515,False,,76.522,1.0,244.87,,,
+final720,CPU,rendered,2,False,82.2,True,,76.522,1.0,244.87,,,
+final720,CPU,rendered,3,False,70.844,True,,76.522,1.0,244.87,,,
+final720,CPU,rendered,4,False,42.751,False,,76.522,1.0,244.87,,,
+final720,OPTIX,rendered,1,True,184.458,False,1635,167.126,0.458,534.8,,,
+final720,OPTIX,rendered,2,False,174.005,True,1635,167.126,0.458,534.8,0.105,0.5164,30
+final720,OPTIX,rendered,3,False,160.247,True,1635,167.126,0.458,534.8,0.1018,0.5018,24
+final720,OPTIX,rendered,4,False,116.183,False,1635,167.126,0.458,534.8,0.0887,0.449,24
+final720,CUDA,rendered,1,True,1485.955,False,1407,1399.262,0.055,4477.64,,,
+final720,CUDA,rendered,2,False,1500.035,True,1407,1399.262,0.055,4477.64,0.0691,0.389,26
+final720,CUDA,rendered,3,False,1298.489,True,1407,1399.262,0.055,4477.64,0.0672,0.3723,27
+final720,CUDA,incomplete,4,,,False,1407,,,,,,
+legacy128,CPU,rendered,1,True,311.193,False,,256.31,0.299,820.19,,,
+legacy128,CPU,rendered,2,False,359.311,True,,256.31,0.299,820.19,,,
+legacy128,CPU,rendered,3,False,153.309,True,,256.31,0.299,820.19,,,
+legacy128,CPU,rendered,4,False,97.262,False,,256.31,0.299,820.19,,,
