@@ -3,9 +3,8 @@
     python3 pipeline/charsys/tests/test_hair_r6.py
 
 Covers: groom_r6 declares groom/5 and the registry maps groom/5 to it (groom/4 stays on groom_r5); a hair spec
-without groom/5 keys is lowered to itself with no jobs, so groom/4 specs build as before; no file under
-assets/characters pins groom/5 (except the owner-approved candidates listed in
-owner_approved_candidates.json, feature groom/5; R3, owner ~22:00Z); "stand" and "tips" are stripped into reshape jobs with the right object names and
+without groom/5 keys is lowered to itself with no jobs, so groom/4 specs build as before; which files may pin
+groom/5 is the release rule's (pipeline/charsys/release_rule.py, T-178); "stand" and "tips" are stripped into reshape jobs with the right object names and
 ring sizes; malformed keys are refused; the reshape keeps every vertex count, removes the twist and the centre-line
 jitter of a standing petal ("stand"), and thins / flattens / calms only the end of a lock ("tips"); the T-160
 overrides (if present) validate. T-167 "clump": lowering, validation, zero setting is the identity, deterministic,
@@ -27,7 +26,6 @@ import groom_r6 as G6  # noqa: E402
 import versions as V  # noqa: E402
 
 sys.path.insert(0, HERE)
-import test_guard_allowlist as GA  # noqa: E402
 
 Vector = G6.Vector
 
@@ -66,21 +64,7 @@ def main():
     check("groom_r6 declares groom/5", G6.GENERATOR == "groom/5" and "groom/5" in G6.GENERATOR_VERSIONS)
     check("registry: groom/5 -> groom_r6, groom/4 -> groom_r5",
           V.load("groom", "groom/5") is G6 and V.load("groom", "groom/4") is G5)
-    pins = []
-    for p in glob.glob(os.path.join(ROOT, "assets", "characters", "**", "*.json"), recursive=True):
-        try:
-            txt = open(p).read()
-        except OSError:
-            continue
-        if '"groom/5"' in txt:
-            pins.append(os.path.relpath(p, ROOT))
-    pins, _allowed, aerr = GA.split(pins, "groom/5")  # R3 owner allowance (2026-11-20 ~22:00Z item 2)
-    check("owner-approved candidate allowlist is valid", not aerr, aerr[:3])
-    check("no file under assets/characters pins groom/5 (opt-in overrides only; except listed owner-approved candidates)",
-          not pins, pins[:3] or None)
-    neg = ["assets/characters/boy_yellow_hoodie/spec/boy_yellow_hoodie.98.7.6.spec.json",
-           "assets/characters/boy_yellow_hoodie/versions/2.2.0/spec.json"]
-    check("negative: a non-listed file pinning groom/5 still fails the guard", GA.split(neg, "groom/5")[0] == neg)
+    # "no file pins groom/5 unless listed" (and its negative) -> pipeline/charsys/release_rule.py (T-178)
 
     # ---- lowering
     plain = {"generator": "groom/5", "structures": [

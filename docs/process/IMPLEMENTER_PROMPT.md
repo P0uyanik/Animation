@@ -64,6 +64,9 @@ as closely as possible in appearance, expressions, movement and animation qualit
 improvements must support the reference designs, never change or contradict them: take poses, expressions, timing
 and behaviour from the references first, and invent only what they do not show, in the same spirit.
 Visual comparisons: write a review recipe, run its cheap preview, then one strict sheet (docs/process/REVIEW_RECIPE.md).
+Visual-round budget (owner 2026-11-21, T-176 P2): keep `docs/evaluation/<area>/T-NNN/ROUND.md` current each round
+(targets, current overrides, open defects, sheet paths) so a fresh session can take over. Read sheets as crops of at most
+1024 px, never full contact sheets. Work at effort `high`; `max` effort or fast mode only when the owner asks.
 
 == Environment ==
 - Repository: https://github.com/P0uyanik/Animation. Branch from origin/main; your task prompt names the input SHA.

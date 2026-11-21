@@ -16,6 +16,10 @@ Implementer: <agent> · lane <L> · path <A technical | B visual> · branch `t-N
 `tools/review/shot_sheet.py` (shot before/after grid + crops) · `tools/render_queue.py run -- <render>` ·
 `tools/run_logged.py -- <cmd>` · `tools/wait_gate.py <run-id>` · `tools/ready.py` before READY.
 
+## Round file (visual tasks, T-176 P2)
+Keep `docs/evaluation/<area>/T-NNN/ROUND.md` up to date each round: targets, current overrides, open defects, sheet
+paths. A fresh session must be able to continue from it plus this brief. Read sheets as crops of at most 1024 px.
+
 ## Write-set
 Every file a solution may touch, as back-ticked repository-relative globs (the gate's write-set check fails on any
 other file). Name read-only dependencies separately. Guarded paths in the write-set need a `Supervisor-Approved:`

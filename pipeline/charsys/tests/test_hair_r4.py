@@ -6,7 +6,8 @@ Covers: groom_r4 declares groom/3 and the registry maps groom/3 to it; the T-091
 groom/3 on the current approved specs; the round-4 targets are in the data (boy: fewer, larger masses than round 3,
 rising crown petals; girl: centre parting with two swept sections per side, back sections, narrower and tapered
 ringlets, a gathered scrunchie); malformed masses/scrunchie/directional specs are refused; masses rooted inside the
-face keep-out are refused; no published character spec pins groom/3; groom/1 and groom/2 specs still validate."""
+face keep-out are refused; no base spec pins groom/3
+(release rule, T-178); groom/1 and groom/2 specs still validate."""
 import json
 import os
 import sys
@@ -148,20 +149,7 @@ def main():
     check("valid minimal masses spec accepted", not errs_with(
         {"type": "masses", "name": "m", "items": [{"root": [90, 30], "tip": [90, 0], "width": 0.08}]}))
 
-    # the base spec and every override never pin groom/3 (versioned specs may: the owner made boy 2.1.0 / girl 0.12.0,
-    # which pin it, current on 2026-11-19 through T-094; candidates are opt-in)
-    pinned = []
-    for c in CHARS.values():
-        d = os.path.join(ROOT, "assets", "characters", c[0], "spec")
-        for f in os.listdir(d):
-            if not f.endswith(".json"):
-                continue
-            versioned = f.endswith(".spec.json") and f != c[0] + ".spec.json"
-            if versioned:
-                continue  # a version spec: candidates are opt-in, approved ones were approved by the owner
-            if "groom/3" in open(os.path.join(d, f)).read():
-                pinned.append(f)
-    check("no base spec or override outside candidates/ pins groom/3", not pinned, pinned)
+    # "no base spec or override pins groom/3" -> pipeline/charsys/release_rule.py (T-178)
 
     ok = all(RESULTS)
     print(f"[test_hair_r4] {'ALL PASS' if ok else 'FAILED'} ({sum(RESULTS)}/{len(RESULTS)})")

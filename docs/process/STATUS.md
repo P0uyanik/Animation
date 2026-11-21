@@ -1,7 +1,7 @@
 # Status board
 
 Updated by the Supervisor in the same commit as every merge or dispatch. Sources: [TASK_LOG](TASK_LOG.md),
-[OWNERSHIP](OWNERSHIP.md), [OWNER_DECISIONS](OWNER_DECISIONS.md) (2026-11-20). As of 2026-11-21 ~01:45Z. R3 released (boy 2.3.0 / girl 0.14.0 / third 0.1.0 CURRENT, main ea4e440). Running: T-171, T-172, T-175 (style review pending). Session cap temporarily 7.
+[OWNERSHIP](OWNERSHIP.md), [OWNER_DECISIONS](OWNER_DECISIONS.md) (2026-11-21). As of 2026-11-21 ~10:45Z (R4 Supervisor session_01NPjxeNjJghYQMGjDycpnsC). R3 released (main ea4e440). T-171 CHECKPOINT and T-172 READY wait for the owner; T-175 style review pending; T-177/T-178/T-179/T-181 merged (main b87fbfd); T-180, T-181b, T-182 running; P2 rule applied. Session cap temporarily 7.
 Session cap: 6 (temporary 8 ended 08:20Z). Owner liaison: session_01NPjxeKamtbdzi3YwrgsWXU (from ~08:30Z). ETA "—" = none given yet.
 
 ## Character look
@@ -26,8 +26,8 @@ Codex T-169 hair reference study (relay 2987afa) feeds T-167. Codex T-161 refere
 | Task | Model | State | ETA | Branch |
 | --- | --- | --- | --- | --- |
 | T-157 grasp gap: wider band (a) stays opt-in until hands round 2 | Opus 5.5 | merged (main 2a02532) | — | — |
-| T-171 hands round 2 (then revisit T-157 option a default) | Fable 5.2 | running (started after R3) | — | `t-171-claude-hands-r2` |
-| T-172 test video with released R3 characters (5–8 s, existing shot) | Sonnet 5.5 | running (started after R3) | — | `t-172-claude-test-video` |
+| T-171 hands round 2 (then revisit T-157 option a default) | Fable 5.2 | CHECKPOINT d1d150f: opt-in fingerClose; 4 owner decisions | — | `t-171-claude-hands-r2` |
+| T-172 test video with released R3 characters (5–8 s, existing shot) | Sonnet 5.5 | READY 9eaa8a2 (640x360); owner: accept or 720p | — | `t-172-claude-test-video` |
 
 ## Other
 | Task | Model | State | ETA | Branch |
@@ -36,7 +36,14 @@ Codex T-169 hair reference study (relay 2987afa) feeds T-167. Codex T-161 refere
 | T-144 retire unpinned generator versions | Opus 5.5 | done: option (c), legacy documented, no removal (owner ~20:50Z) | — | — |
 | T-166 final720 default + HEVC 10-bit delivery | Sonnet 5.5 | merged (main 86288cb); ffmpeg added to CI pins | — | — |
 | T-175 locomotion layer: CMU importer + foot-lock + chibi style filter (owner go ~23:35Z) | Opus 5.5 | running; first a walk + sit/stand style review | — | `t-175-claude-locomotion` |
-| T-176 whole-project review (analysis) | Opus 5.5 | merged: 14 proposals waiting for the owner | — | — |
+| T-176 whole-project review (analysis) | Opus 5.5 | merged; P2/P3/P5 approved ~04:10Z, rest undecided |
+| T-177 docs-only fast path (T-176 P3) | Sonnet 5.5 | merged (main c16ef79) |
+| T-179 generator pin map (T-176 P12 light) | Sonnet 5.5 | merged (docs/process/GENERATOR_PINS.md) |
+| T-180 full suite in a light clone + clone profiles (T-176 P13) | Sonnet 5.5 | running |
+| T-181 one owner per file: claims --check-all (T-176 P9) | Sonnet 5.5 | merged |
+| T-181b read overlaps → warnings (owner guidance) | Sonnet 5.5 | running |
+| T-182 automatic test registration (T-176 P7) | Opus 5.5 | running; owner's typed approval needed in its session |
+| T-178 one release-manifest rule (T-176 P5) | Opus 5.5 | merged | — | — |
 | T-174 animation reuse vs build (research) | Opus 5.5 | merged: keep engine for acting/verbs/grasp; reuse CMU mocap for walk/run/sit/stand; build importer + foot lock (~3.5–4 d); owner questions open | — | — |
 | T-153 fidelity score v2 | Opus | merged; experimental, default stays v1 | — | `t-153-claude-fidelity-v2` |
 | T-161 Codex reference targets | Codex | assigned (relay f33c4868); Codex limited until 2026-11-23 ~21:43Z | — | — |

@@ -871,3 +871,53 @@ carry this as their current_decision.
 New analysis-only task → `docs/tasks/T-176.md`: architecture, workflow, agents, tokens, automation, speed, maintainability,
 with evidence from our codebase. Opus 5.5, docs-only write-set `docs/audit/T-176/**`. No changes without owner approval. It
 continues under the round-4 Supervisor.
+
+## 2026-11-21 ~04:10Z (05:10 CET) — T-176 proposals 2, 3 and 5 approved (relayed by the owner liaison)
+Dispatch as soon as possible, token-efficient pointer briefs, fully tested before merge; write-sets disjoint from T-171/T-175.
+- **P2 visual-round budget:** process rule, applied by the Supervisor (`WORKFLOW.md`, `IMPLEMENTER_PROMPT.md`, task template):
+  fresh session for a visual round over ~250k context; a short round file per visual task; sheets read as ≤1024 px crops;
+  default effort high, max/fast only on owner request.
+- **P3 docs-only fast path** → `docs/tasks/T-177.md` (Sonnet): pushes to main/staging touching only `docs/process/**` and
+  `docs/tasks/**` run a ~1-min job; promotion accepts an integration commit differing from main only there; decided from
+  the changed-path list alone, any other path → full gate; classifier tests incl. mixed pushes.
+- **P5 one release rule** → `docs/tasks/T-178.md` (Opus): one release-manifest rule written by `version_switch.py` replaces
+  the per-feature "no spec uses X" guards. The owner explicitly approves the required test/safeguard changes ON CONDITION
+  that no essential protection or coverage is weakened: byte-immutability of published assets, frozen manifest,
+  asset-store guard, goldens and the owner decision ref for CURRENT stay; the manifest is guarded; negative tests (unlisted
+  version using an opt-in fails); coverage mapping old guard → new check in the README, reported to the liaison before merge.
+- Other T-176 proposals (1, 4, 6–14): not decided.
+
+## 2026-11-21 ~10:45Z (11:45 CET) — T-178 test-change approval typed by the owner (to the liaison)
+Verbatim: "I approve changing and removing the per-feature guard tests for T-178, on condition that no essential protection
+or coverage is weakened, as recorded in OWNER_DECISIONS 2026-11-21 ~04:10Z." The liaison asked the owner to type it in the
+T-178 session too (implementer permission layers refuse relayed approvals).
+
+## 2026-11-21 ~10:55Z (11:55 CET) — T-176 proposal 12 (light) approved; proposal 13 benchmarks only (relayed by the liaison)
+- **P12 light, documentation only** → `docs/tasks/T-179.md`: one mapping table generator pin → module file → round name, and
+  a short rule that opt-ins become defaults only at the next real look round via the existing pin registry. No new files
+  beyond the doc, no renames, no changes to generators, code or approved character versions.
+- **P13:** the liaison runs clone benchmarks itself (read-only); no repository structure, history or asset changes.
+
+## 2026-11-21 ~11:10Z (12:10 CET) — T-176 proposal 13: light clone test, then clone profiles (relayed by the liaison)
+(1) Run the full suite (`tools/check_all.py` + the gate's Blender units) in a sparse partial clone (depth 1, sparse without
+`docs/evaluation/` and `assets/characters/`, fetch on demand) → `docs/tasks/T-180.md`. Liaison benchmark: depth-50 clone 80 s /
+~1.85 GB; sparse 4.4 s / ~150 MB; +32 s assets/characters; +14 s docs/evaluation. (2) If all pass: LIGHT and FULL clone profiles
+for new sessions via create_session parameters and a one-line dispatch rule; a test task can add paths. No repository history,
+structure or asset changes. (3) Then priority on animation production; no further workflow optimisation unless needed.
+
+## 2026-11-21 ~11:20Z (12:20 CET) — T-176 proposals 5, 7, 9 (relayed by the liaison)
+- **P5:** complete T-178 preserving all protections, coverage and owner-approval requirements (owner's typed approval in the
+  T-178 session still needed).
+- **P7:** automatic test registration from per-directory manifests; adding a new test needs no `Supervisor-Approved` trailer;
+  changing, renaming or deleting an existing test still needs approval, proven by negative tests; code review and the full CI
+  stay. Owner approves the guard-policy change explicitly. Sequenced after T-178 merges (shared test/guard files) → T-182.
+- **P9:** one active owner per file, glob-level only, no function-level splits, temporary and transferable (released at
+  merge/abandon, handover via the ledger) → `docs/tasks/T-181.md` + rule text in `OWNERSHIP.md`.
+- T-178: the owner's approval sentence was also typed in the T-178 session itself at 10:45:54Z (desktop app) and again at
+  11:50:19Z; verified by the Supervisor with list_events before the stage-2 merge.
+
+## 2026-11-21 ~12:00Z (13:00 CET) — owner guidance for T-181 / ownership (relayed by the liaison)
+The ownership rule must not slow parallel work: claims as narrow as possible; new files need no claim beyond the task
+folder; shared append-only registries handled by the Supervisor or merge-friendly formats, not locks; read access never
+blocked; claims released at merge/abandon; overlaps reported with the conflicting task, never silently blocking. Gap found:
+hard depends-on (read) overlaps were conflicts → T-181b makes them warnings. Rule text in `OWNERSHIP.md` updated.

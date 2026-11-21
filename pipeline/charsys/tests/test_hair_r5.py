@@ -3,7 +3,8 @@
     python3 pipeline/charsys/tests/test_hair_r5.py
 
 Covers: groom_r5 declares groom/4 and the registry maps groom/4 to it (groom/3 stays on groom_r4); a hair spec
-without groom/4 features is lowered to itself, so the current specs build as before; no character spec pins groom/4;
+without groom/4 features is lowered to itself, so the current specs build as before; which specs may pin groom/4 is the
+release rule's (T-178);
 ring rows are lowered to explicit groom/3 masses without random numbers (bearings, stagger, channel gap); staggered
 locks become single-lock structures with different end heights and keep their dynamics settings and curl
 directions; malformed ring/stagger/turn specs are refused; the T-118 candidates validate and hold the round-5
@@ -28,7 +29,6 @@ import spec as SPEC  # noqa: E402
 import versions as V  # noqa: E402
 
 sys.path.insert(0, HERE)
-import test_guard_allowlist as GA  # noqa: E402
 
 RESULTS = []
 CHARS = {"boy": ("boy_yellow_hoodie", "boy_yellow_hoodie.2.1.0.spec.json"),
@@ -163,19 +163,7 @@ def main():
         check(f"{key}: current hair is lowered to itself (groom/4 build = groom/3 build)", low is sp["hair"] and not info)
         check(f"{key}: current hair validates as groom/4 with the groom/3 result",
               G5.validate(sp["hair"]) == G4.validate(sp["hair"]) == [])
-    pinned = []
-    for p in glob.glob(os.path.join(ROOT, "assets", "characters", "**", "*.json"), recursive=True):
-        try:
-            d = json.load(open(p))
-        except ValueError:
-            continue
-        g = (d.get("generators") or {}).get("groom") if isinstance(d, dict) else None
-        g = g or ((d.get("override") or {}).get("generators") or {}).get("groom") if isinstance(d, dict) else None
-        if g == "groom/4":
-            pinned.append(os.path.relpath(p, ROOT))
-    pinned, allowed, aerr = GA.split(pinned, "groom/4")
-    check("owner-approved candidate allowlist is valid (T-154)", not aerr, aerr[:3])
-    check("no file under assets/characters pins groom/4 (except listed owner-approved candidates)", not pinned, pinned[:3])
+    # "no file pins groom/4 unless listed" -> pipeline/charsys/release_rule.py (T-178)
 
     # ring rows
     items, info = G5.ring_items(RING["rows"][0], 0.15)
