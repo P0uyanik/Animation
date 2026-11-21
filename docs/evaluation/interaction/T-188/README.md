@@ -60,7 +60,22 @@ The cup's pose from f200 to the end is identical before and after (both shots).
   (`tests/golden/interaction_hashes.json` unchanged; no engine change here).
 
 ## Clip and sheet
-CLIPS_SECTION
+s010, Cycles 12 spp, from `bake_blend.sh` (T-171) scenes of the before / after bakes, f44-72.
+| file | what |
+| --- | --- |
+| `clips/e909_pickup_f50-70_24fps.mp4`, `..._8fps.mp4` | before \| after, the **shot camera's own position** (0, 1.071, 1.464; e909's camera) aimed at the cup with lens 128 instead of 32 (T-185 `render_views.sh` `shotz`): the shot's view of the hand enlarged 4x. Real time and 3x slow |
+| `e909_strict_pickup.jpg` (418x1024, `strict_sheet.json`, `tools/review/shot_sheet.py`) | a strict camera behind the table on her side (0.02, 0.66, -0.32) -> (-0.07, 0.53, 0), lens 65: f46 / 52 / 56 / 58 / 62 / 66, before \| after, tiles only scaled |
+
+The strict camera of T-185 mirrored to her side (`HI_CAM`) sits in her braid and shows nothing, and from the front the
+cup hides her hand (she takes the far handle, set b), hence the camera behind the table (`render_close.py --view back`).
+
+What they show (my reading):
+- **Shot camera:** her hand closes on the far side of the cup in both; before and after are almost the same picture
+  (the hand is behind the cup, the braid over her forearm); after, only the cuff edge and the thumb show at the cup's
+  left side. The cup stays still on the table until the lift in both. Nothing is worse here.
+- **Strict camera:** before, the fingers come in stacked and pressed across the cup with the palm in it; after, the
+  hand comes in upright beside the cup, the fingers lie side by side along the cup wall and the thumb sits up near the
+  rim (f58-66). No hand part through the cup.
 
 ## How to reproduce
 ```

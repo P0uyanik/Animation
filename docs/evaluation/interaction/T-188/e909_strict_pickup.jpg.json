@@ -1,0 +1,96 @@
+{
+  "sheet": "/home/user/Animation/docs/evaluation/interaction/T-188/e909_strict_pickup.jpg",
+  "size": [
+    418,
+    1024
+  ],
+  "max_px": 1024,
+  "frames": [
+    46,
+    52,
+    56,
+    58,
+    62,
+    66
+  ],
+  "columns": [
+    "before (main)",
+    "after (r3 on her pick-up)"
+  ],
+  "crops": [],
+  "inputs": [
+    {
+      "frame": 46,
+      "column": "before (main)",
+      "path": "/home/user/Animation/docs/evaluation/interaction/T-188/../../../../build/t188/blend_before/views/v_back_f0046.png",
+      "sha256": "a0e59964dbeb527a39efaf7307a82412a5331cae1f1ac881faad20ce1db57848"
+    },
+    {
+      "frame": 46,
+      "column": "after (r3 on her pick-up)",
+      "path": "/home/user/Animation/docs/evaluation/interaction/T-188/../../../../build/t188/blend_after/views/v_back_f0046.png",
+      "sha256": "7bf69366126b3fbcfaacd9e0a3982bc67149a4d95b5da3221b8d9da912c34a17"
+    },
+    {
+      "frame": 52,
+      "column": "before (main)",
+      "path": "/home/user/Animation/docs/evaluation/interaction/T-188/../../../../build/t188/blend_before/views/v_back_f0052.png",
+      "sha256": "8cc9c597198d24f44f76d759a9ba67eafa55b530b0be6e170b6d0a952841ae11"
+    },
+    {
+      "frame": 52,
+      "column": "after (r3 on her pick-up)",
+      "path": "/home/user/Animation/docs/evaluation/interaction/T-188/../../../../build/t188/blend_after/views/v_back_f0052.png",
+      "sha256": "0686b9c4d19e5692b800208f4c9d25340e5dbe4ebe5c0e4ce2639abbc4748226"
+    },
+    {
+      "frame": 56,
+      "column": "before (main)",
+      "path": "/home/user/Animation/docs/evaluation/interaction/T-188/../../../../build/t188/blend_before/views/v_back_f0056.png",
+      "sha256": "1b7fe234ff30754848e14792fa4949ae2bfd87051c958123d308ff5f6fabda98"
+    },
+    {
+      "frame": 56,
+      "column": "after (r3 on her pick-up)",
+      "path": "/home/user/Animation/docs/evaluation/interaction/T-188/../../../../build/t188/blend_after/views/v_back_f0056.png",
+      "sha256": "153dac07627301505ced1ee70b5413669749914cc6ea00f3325cbf3d971bb5b5"
+    },
+    {
+      "frame": 58,
+      "column": "before (main)",
+      "path": "/home/user/Animation/docs/evaluation/interaction/T-188/../../../../build/t188/blend_before/views/v_back_f0058.png",
+      "sha256": "3f1609c48e3429ac4be2d293178caed9854fc935c2ae2fb2593a9107d9d47ad3"
+    },
+    {
+      "frame": 58,
+      "column": "after (r3 on her pick-up)",
+      "path": "/home/user/Animation/docs/evaluation/interaction/T-188/../../../../build/t188/blend_after/views/v_back_f0058.png",
+      "sha256": "fd54cba4001019a78d25da1671c9aeec126b757561feacd56d27c7ce32c34b01"
+    },
+    {
+      "frame": 62,
+      "column": "before (main)",
+      "path": "/home/user/Animation/docs/evaluation/interaction/T-188/../../../../build/t188/blend_before/views/v_back_f0062.png",
+      "sha256": "3342f69e3efc4ef4cd672f475a82d20c7503a91b8cd4264ca356893ee93669bc"
+    },
+    {
+      "frame": 62,
+      "column": "after (r3 on her pick-up)",
+      "path": "/home/user/Animation/docs/evaluation/interaction/T-188/../../../../build/t188/blend_after/views/v_back_f0062.png",
+      "sha256": "5b9e5e8f750eecd7c89c5739bb3e758296ba9eb0e73297ec09cdf63cdbf0e739"
+    },
+    {
+      "frame": 66,
+      "column": "before (main)",
+      "path": "/home/user/Animation/docs/evaluation/interaction/T-188/../../../../build/t188/blend_before/views/v_back_f0066.png",
+      "sha256": "249a3cb0734b87b3e210e769043292528175466bd6b72e543ac4d964eb77d6cd"
+    },
+    {
+      "frame": 66,
+      "column": "after (r3 on her pick-up)",
+      "path": "/home/user/Animation/docs/evaluation/interaction/T-188/../../../../build/t188/blend_after/views/v_back_f0066.png",
+      "sha256": "5e78ad481bdd69745391c56b594a7b5a52f9a08029ef94452afd7aef7ca48d69"
+    }
+  ],
+  "missing": []
+}
