@@ -7,6 +7,7 @@
 #include <format>
 #include <memory>
 
+#include "anim/hand_shape.h"
 #include "scene/asset_library.h"
 #include "scene/interaction.h"
 #include "scene/scene.h"
@@ -224,4 +225,139 @@ TEST_CASE("grasp band options: a wider band and off-band fingers, opt-in track h
     CHECK(contactOut(mo, narrow) <= std::max(0.0f, ma.bandOut) + 1e-4f);
     CHECK(contactOut(mb, wider) <= 0.0005f);
   }
+}
+
+// T-171 hands round 2: the opt-in action key "fingerClose" (scene/interaction.cpp). Only keys change.
+namespace {
+const Clip& generated(const SceneEvaluator& ev) {
+  REQUIRE(ev.scene().animation.generated);
+  return *ev.scene().animation.generated;
+}
+bool sameKeys(const Clip& a, const Clip& b) {
+  if (a.tracks.size() != b.tracks.size()) return false;
+  for (const auto& [name, t] : a.tracks) {
+    const Track* o = b.find(name);
+    if (!o || o->keys.size() != t.keys.size()) return false;
+    for (size_t i = 0; i < t.keys.size(); ++i)
+      if (t.keys[i].frame != o->keys[i].frame || t.keys[i].value != o->keys[i].value || t.keys[i].interp != o->keys[i].interp) return false;
+  }
+  return true;
+}
+}  // namespace
+
+TEST_CASE("fingerClose (T-171): absent or false leaves every generated key as it was; bad values are load errors") {
+  Scene s = graspScene(kBoy);
+  s.actions[0]["band"] = {0.045, 0.09};
+  auto plain = load(s);
+  CHECK_FALSE(generated(*plain).find("actor/hand.R.stagger"));
+  Scene off = s;
+  off.actions[0]["fingerClose"] = false;
+  CHECK(sameKeys(generated(*plain), generated(*load(off))));
+  for (const char* bad : {R"(1)", R"({"preshape": 2})", R"({"stagger": -1})", R"({"settle": [0.9, 3]})", R"({"widen": [0.5, 0]})",
+                          R"({"close": 1})", R"({"speed": 1})", R"({"rest": "relaxed"})", R"({"rest": {"curl": 2}})", R"({"rest": {"wrist": 1}})"}) {
+    CAPTURE(bad);
+    Scene b = s;
+    b.actions[0]["fingerClose"] = Json::parse(bad);
+    SceneEvaluator ev;
+    CHECK_FALSE(ev.load(b, EvalOptions{2.5f, 1.0f, false, 0}));
+  }
+}
+
+TEST_CASE("fingerClose (T-171): pre-shape, fingers land one by one and slowly, same held grasp, nothing enters the cup") {
+  const vec2 band{0.045f, 0.09f};
+  for (const char* asset : {kBoy, kGirl}) {
+    CAPTURE(asset);
+    Scene s = graspScene(asset);
+    s.actions[0]["band"] = {band.x, band.y};
+    Scene soft = s;
+    soft.actions[0]["fingerClose"] = true;
+    auto a = load(s), b = load(soft);
+    // Keys: the weight rises to the pre-shape before the close, never passes 1 and never falls on the way in.
+    const Track* w = generated(*b).find("actor/hand.R.grasp.weight");
+    REQUIRE(w);
+    CHECK(w->evaluate(14).x == doctest::Approx(0.5));  // close begins 6 frames before contact (f20) at the pre-shape
+    CHECK(w->evaluate(17).x == doctest::Approx(0.88));  // the last 12 % takes the last 3 frames
+    float prev = 0;
+    for (double f = 5; f <= 20; f += 0.25) {
+      const float x = w->evaluate(f).x;
+      CHECK(x >= prev - 1e-6f);
+      CHECK(x <= 1.0f);
+      prev = x;
+    }
+    REQUIRE(generated(*b).find("actor/hand.R.stagger"));
+    CHECK(generated(*b).find("actor/hand.R.stagger")->evaluate(20).x == doctest::Approx(2.0));
+    // The held grasp is the same one (fingertips to 0.01 mm), the wrist does not move at all.
+    const Measure ha = measure(*a, 32, band), hb = measure(*b, 32, band);
+    REQUIRE(ha.tips.size() == hb.tips.size());
+    for (size_t i = 0; i < ha.tips.size(); ++i) CHECK(glm::distance(ha.tips[i], hb.tips[i]) <= 1e-5f);
+    for (double f = 5; f <= 32; ++f) CHECK(glm::distance(bonePos(*a, "hand.R", f), bonePos(*b, "hand.R", f)) <= 1e-6f);
+    // Per frame: no digit deeper in the cup than the default path puts it (0.1 mm), and the largest fingertip step
+    // (relative to the wrist, over the close f16-f32) is under half: the close is spread over more frames.
+    const float r = fingertipRadius(a->characters()[0].asset.skeleton, 'R');
+    std::array<double, 5> landA{}, landB{};
+    float stepA = 0, stepB = 0;
+    Measure pa, pb;
+    for (double f = 5; f <= 32; ++f) {
+      const Measure ma = measure(*a, f, band), mb = measure(*b, f, band);
+      REQUIRE(mb.clear.size() == 5);
+      for (size_t i = 0; i < 5; ++i) {
+        CHECK(mb.clear[i] >= std::min(ma.clear[i], 0.0f) - 1e-4f);
+        if (landA[i] == 0 && ma.clear[i] <= 0.0005f) landA[i] = f;
+        if (landB[i] == 0 && mb.clear[i] <= 0.0005f) landB[i] = f;
+      }
+      if (f >= 17)  // the hand's orientation is set from f16.4 on: the fingertips move in the hand only
+        for (size_t i = 0; i < 5; ++i) {
+          stepA = std::max(stepA, glm::distance(ma.tips[i] - ma.wrist, pa.tips[i] - pa.wrist));
+          stepB = std::max(stepB, glm::distance(mb.tips[i] - mb.wrist, pb.tips[i] - pb.wrist));
+        }
+      pa = ma, pb = mb;
+    }
+    MESSAGE(std::format("{}: largest fingertip step per frame {:.2f} -> {:.2f} mm (skin r {:.2f}); landing frames index..little "
+                        "{:g} {:g} {:g} {:g} -> {:g} {:g} {:g} {:g}",
+                        asset, stepA * 1e3, stepB * 1e3, r * 1e3, landA[4], landA[3], landA[2], landA[1], landB[4], landB[3], landB[2], landB[1]));
+    CHECK(stepB < 0.5f * stepA);
+    // Digits: thumb, f0 little .. f3 index. The index lands first, then one finger after the other.
+    for (size_t i = 1; i < 5; ++i) CHECK(landB[i] > 0);
+    CHECK(landB[4] <= landB[3]);
+    CHECK(landB[3] <= landB[2]);
+    CHECK(landB[2] <= landB[1]);
+    CHECK(landB[1] - landB[4] >= 4);
+    CHECK(landB[1] <= 20 + 3 * 2 + 1);
+  }
+}
+
+TEST_CASE("fingerClose (T-171): widen keys the band fit and the T-157 wider band; rest keys the rest shape and returns to it") {
+  Scene s = graspScene(kBoy);
+  s.actions[0]["band"] = {0.045, 0.09};
+  const Json restPose = Json::parse(R"({"curl": 0.25, "thumb": 0.12, "spread": 0.6, "fingers": {"index": {"curl": 0.14, "spread": 0.9}, "middle": {"curl": 0.22, "spread": 0.6}, "ring": {"curl": 0.29, "spread": 0.6}, "little": {"curl": 0.35, "spread": 0.9}}})");
+  s.actions[0]["fingerClose"] = {{"widen", {0.005, 0.004}}, {"rest", restPose}};
+  auto ev = load(s);
+  const Clip& g = generated(*ev);
+  REQUIRE(g.find("actor/hand.R.bandFit"));
+  REQUIRE(g.find("actor/hand.R.bandFitOptions"));
+  const vec3 o = g.find("actor/hand.R.bandFitOptions")->evaluate(20);
+  CHECK(o.x == doctest::Approx(0.005));
+  CHECK(o.y == 0.0f);
+  CHECK(o.z == doctest::Approx(0.004));
+  const auto rest = handShapeFromJson(Json{{"format", "plush.hand_shape"}, {"version", 1}, {"id", "rest"}, {"kind", "rest"}, {"pose", restPose}});
+  REQUIRE(rest);
+  for (int k = 0; k < 4; ++k) {
+    const Track* t = g.find(std::format("actor/hand.R.f{}", k));
+    REQUIRE(t);
+    REQUIRE(rest->pose.fingers[size_t(k)]);
+    CHECK(vec2(t->evaluate(5)) == *rest->pose.fingers[size_t(k)]);  // the rest shape before the reach
+    CHECK(t->evaluate(20).x == doctest::Approx(0.03));              // the open hand at contact (the search closes it)
+  }
+  // Neighbouring fingers of the rest shape differ in curl (the cascade that tells them apart).
+  for (int k = 1; k < 4; ++k) CHECK(rest->pose.fingers[size_t(k - 1)]->x - rest->pose.fingers[size_t(k)]->x >= 0.05f);
+  // A reach without a grasp lets go again: the hand ends on the rest shape.
+  Scene r = graspScene(kBoy);
+  r.actions[0]["type"] = "reach";
+  r.actions[0]["grasp"] = false;
+  r.actions[0]["end"] = 34;
+  r.actions[0]["fingerClose"] = {{"rest", restPose}};
+  auto er = load(r);
+  const Track* t = generated(*er).find("actor/hand.R.f0");
+  REQUIRE(t);
+  CHECK(vec2(t->evaluate(34)) == *rest->pose.fingers[0]);
 }

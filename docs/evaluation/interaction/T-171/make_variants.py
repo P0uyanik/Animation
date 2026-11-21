@@ -4,7 +4,9 @@ Each variant adds the opt-in action key "fingerClose" to the verbs of the shot (
 names one, authored rest-hand tracks for hands that never grasp."""
 import json, os, sys
 
-SEP = {"rest": "relaxed_sep"}
+# The separated rest hand: a curl cascade index -> little and a light fan, so neighbouring fingers do not line up.
+SEP = {"rest": {"curl": 0.25, "thumb": 0.12, "spread": 0.6, 
+                "fingers": {"index": {"curl": 0.14, "spread": 0.9}, "middle": {"curl": 0.22, "spread": 0.6}, "ring": {"curl": 0.29, "spread": 0.6}, "little": {"curl": 0.35, "spread": 0.9}}}}
 VARIANTS = {
     "base": None,                                             # current default (released behaviour)
     "t157a": {"_plain": True, "widen": [0.005, 0.005]},       # T-157 (a) alone: old timing, band 40-95 mm

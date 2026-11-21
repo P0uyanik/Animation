@@ -593,14 +593,15 @@ void keyShapeRest(Clip& gen, const std::string& pose, double f, const HandShape&
 //   "settle": [share, frames]  soft contact: the last `share` of the close takes `frames` (default [0.12, 3]), so
 //                         each finger lands slowly instead of stopping dead; the weight never passes 1 (no press-in)
 //   "widen": [lo, hi]     metres: a banded grasp keys the T-138 band fit and the T-157 (a) wider band
-//   "rest": "<shape id>"  a kind "rest" hand shape (content/hand_shapes) for the hand before the reach and after the
-//                         release instead of the relaxed hand (wrap grasps: its per-finger curls and spreads too)
+//   "rest": {pose}        a hand-shape pose (anim/hand_shape.h: curl, thumb, spread, fingers ...) for the hand before
+//                         the reach and after the release instead of the relaxed hand (wrap grasps: its per-finger
+//                         curls and spreads too)
 struct FingerClose {
   float preshape = 0.5f, stagger = 2.0f, settleShare = 0.12f;
   double closeFrames = 6, settleFrames = 3;
   std::optional<vec2> widen;
-  std::string restName;
-  const HandShape* rest = nullptr;
+  std::optional<HandShape> restShape;
+  const HandShape* rest() const { return restShape ? &*restShape : nullptr; }
 };
 Result<std::optional<FingerClose>> fingerCloseFromJson(const Json& a, const std::string& what) {
   auto it = a.find("fingerClose");
@@ -631,8 +632,9 @@ Result<std::optional<FingerClose>> fingerCloseFromJson(const Json& a, const std:
       if (!pair(0, 0.1, 0, 0.1)) return bad("widen must be [lo, hi], metres in [0, 0.1]");
       fc.widen = vec2(v[0].get<float>(), v[1].get<float>());
     } else if (k == "rest") {
-      if (!v.is_string() || v.get<std::string>().empty()) return bad("rest must be a hand shape id");
-      fc.restName = v.get<std::string>();
+      auto r = handShapeFromJson(Json{{"format", "plush.hand_shape"}, {"version", 1}, {"id", "rest"}, {"kind", "rest"}, {"pose", v}});
+      if (!r) return bad("rest: " + r.error().message);
+      fc.restShape = std::move(*r);
     } else {
       return bad(std::format("{}: unknown key", k));
     }
@@ -896,16 +898,6 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
     }
     return s;
   };
-  // T-171 (opt-in): an action's "fingerClose", its rest shape looked up in the table.
-  auto fingerCloseOf = [&](const Json& act, const std::string& what) -> Result<std::optional<FingerClose>> {
-    auto fc = fingerCloseFromJson(act, what);
-    if (!fc || !*fc || (*fc)->restName.empty()) return fc;
-    if (auto any = graspHandShape("wrap", what); !any && !ctx.handShapes) return std::unexpected(any.error());
-    const HandShape* r = ctx.handShapes->find((*fc)->restName);
-    if (!r || r->kind != "rest") return fail(std::format("{}: fingerClose.rest: no rest hand shape '{}'", what, (*fc)->restName));
-    (*fc)->rest = r;
-    return fc;
-  };
   // The grasp weight of a reach: 0 until four frames before contact, 1 at contact. T-171 (opt-in): the weight rises
   // to the pre-shape on the way in, closes fast and lands slowly; the fingers land one stagger step apart.
   auto keyClose = [&](const Hand& h, double start, double contact, const GraspStyle& style) {
@@ -961,7 +953,7 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
     key(gen, h.orient + ".weight", start, vec3(clip.evaluate(h.orient + ".weight", start, vec3(0)).x));
     key(gen, h.orient + ".weight", pre + 1, vec3(1));
     key(gen, h.orient + ".weight", contact, vec3(1));
-    const HandShape* rest = style.soft ? style.soft->rest : nullptr;  // T-171 (opt-in)
+    const HandShape* rest = style.soft ? style.soft->rest() : nullptr;  // T-171 (opt-in)
     if (rest) keyRest(gen, h.pose, start, *rest);
     else key(gen, h.pose, start, clip.evaluate(h.pose, start, kRelaxed));
     if (style.band) {  // T-112b: the finger contact band of the grasp site (track contract with T-051, design 5)
@@ -1378,7 +1370,7 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
     }
     style.approach = vecOpt(a, "approach");
     style.face = flag(a, "graspFace", false);
-    if (auto fc = fingerCloseOf(a, what); !fc) return std::unexpected(fc.error());  // T-171 (opt-in)
+    if (auto fc = fingerCloseFromJson(a, what); !fc) return std::unexpected(fc.error());  // T-171 (opt-in)
     else style.soft = *fc;
     if (auto b = a.find("band"); b != a.end()) {
       if (!b->is_array() || b->size() != 2 || !(*b)[0].is_number() || !(*b)[1].is_number())
@@ -1413,7 +1405,7 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
       const double end = num(a, "end", contact + beat("hold", 12, c));
       key(gen, h.ik, contact + 2, clip.evaluate(h.ik, contact, vec3(0)));
       release(h, pl->orient, contact + 2, std::max(end, contact + 10), -pl->inward * 0.05f + kUp * 0.02f, style.shape, pl->faceGrasp,
-              style.soft ? style.soft->rest : nullptr);
+              style.soft ? style.soft->rest() : nullptr);
       if (look) {
         gazeOn(h, p, start, contact + 6);
         gazeAt(h, forwardPoint(h, end), end + 6);
@@ -1454,9 +1446,9 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
     if (auto r = requireSocket(*p, socket, "place"); !r) return std::unexpected(r.error());
     const double contact = num(a, "contact", start + beat("place", 16, c)), end = num(a, "end", contact + beat("release", 14, c));
     if (contact < start + 6 || end < contact + 8) return fail("place: needs contact >= start + 6 and end >= contact + 8");
-    const auto placeSoft = fingerCloseOf(a, "place");  // T-171 (opt-in): the rest shape the hand returns to
+    const auto placeSoft = fingerCloseFromJson(a, "place");  // T-171 (opt-in): the rest shape the hand returns to
     if (!placeSoft) return std::unexpected(placeSoft.error());
-    const HandShape* placeRest = *placeSoft ? (*placeSoft)->rest : nullptr;
+    const HandShape* placeRest = *placeSoft ? (*placeSoft)->rest() : nullptr;
     std::optional<PropParent> onto;
     vec3 target(0);
     if (auto it = a.find("onto"); it != a.end() && it->is_object()) {
@@ -1537,7 +1529,7 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
     rStyle.thumb = th == "opposed" ? 0.0f : th == "along" ? 1.0f : 2.0f;
   }
   rStyle.face = flag(a, "toGraspFace", false);
-  if (auto fc = fingerCloseOf(a, "handover"); !fc) return std::unexpected(fc.error());  // T-171 (opt-in): the receiver's close
+  if (auto fc = fingerCloseFromJson(a, "handover"); !fc) return std::unexpected(fc.error());  // T-171 (opt-in): the receiver's close
   else rStyle.soft = *fc;
   const double rStart = num(a, "receiverStart", start + beat("reaction_delay", 4, rc));
   const double contact = num(a, "contact", ctx.timing ? rStart + beat("reach", 18, rc) : start + 18);
@@ -1657,7 +1649,7 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
   key(gen, h.orient, rel, rotationVector(gOrient), Interp::Linear);
   key(gen, h.orient + ".weight", rel, vec3(1));
   const vec3 back = boneAt(h, h.root, rel) - wristM;
-  release(h, gOrient, rel, end, glm::normalize(back) * 0.08f - (glm::mat3_cast(gOrient) * h.grip.palmNormal) * 0.03f, gShape, gFace, rStyle.soft ? rStyle.soft->rest : nullptr);
+  release(h, gOrient, rel, end, glm::normalize(back) * 0.08f - (glm::mat3_cast(gOrient) * h.grip.palmNormal) * 0.03f, gShape, gFace, rStyle.soft ? rStyle.soft->rest() : nullptr);
   if (look) {
     gazeOn(h, *p, start, rel);
     gazeAt(h, headPoint(rc, end), end);
