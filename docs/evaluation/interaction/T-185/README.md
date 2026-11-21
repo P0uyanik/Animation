@@ -62,6 +62,31 @@ One key at a time on e910 s010 (`make_variants.py` scenes, f70-90): T-171 `r2sit
 the cup stays down until f82; r3 without `clear`, without `wrap` or without `rest`: it still sinks (to 12.9 / 7.2 /
 13.9 mm). So `grip: "natural"` moves the cup with the hand between contact and lift.
 
+## For T-186: repro of the cup moving before the lift (`grip: "natural"`)
+Known defect of r3 as used here; kept in e910 by the owner's decision, to be fixed in the engine (T-186).
+1. Shot `episodes/e910_showcase/shots/s010/shot.scene.json` (this branch). `python3 pipeline/production/run_shot.py
+   --shot <it> --blender blender --stages prepare`, then `build/fast-dev/apps/render-cli/plush-render
+   episodes/e910_showcase/shots/s010/build/shot.resolved.scene.json --bake /tmp/b.json --frames 70-90`.
+2. Keys: boy `pick_up` (hand R, prop cup, set a, start 47, settle 5) with `"fingerClose": {"rest": {...}, "wrap": true,
+   "grip": "natural", "clear": 0.006}` (`make_shot.py` `R3`); the cup is `episodes/e910_showcase/content/assets/
+   felt_cup.asset.json` (socket grip y 0.05, side_a band 0-0.1), yaw -45, on the table top y 0.4695.
+3. Measure: the cup's baked world translation, `frame_data[f].props.cup[12:15]`, against frame 1. Expected: unchanged
+   until the lift starts (f82: +1.4 mm up). Got: f77 -2.8 mm, f78 -5.6, f79 -8.3, f80 -11.1, f81 -13.9 mm in y (into the
+   table) with the same in x (-14.3 mm slide), back to the lift path by f84-86. Contact (index lands) is f76.
+4. Drop one key at a time (T-171 `make_variants.py` on `build/t185/e910/before.scene.json`, scenes under
+   `build/t185/e910/t171_site/`): r3 without `grip` = T-171 `r3site`: no movement (y 0.0 until f82, as `r2site` and the
+   default); without `clear`: lowest -12.9 mm; without `wrap`: -7.2 mm (f79); without `rest`: -13.9 mm. Only `grip:
+   "natural"` makes it; `wrap` scales it.
+5. Same shot with T-136 keys (`s010_e23`): -13.4 mm (f82). With T-134 `reachMechanics` (`s010_e1`): no movement.
+6. e909 (girl L, `pick_up` set b, start 36, same `fingerClose` on the pick_up only, released cup, yaw -75): the cup
+   slides along the table from contact f58 to the lift f68, in 2-frame steps (x +2.5, 3.3, 6.2, 6.2, 9.2, 9.2, 11.9, 11.9,
+   14.1, 14.1, 15.4 mm; y within -0.6 mm). The existing test that catches it, with that bake:
+   `PLUSH_E909_BAKE=<bake> python3 -m pytest tests/acting/test_e909_beats.py` ->
+   `Bake::test_cup_leaves_and_comes_back_to_the_table` fails, (leaves, back) = (58, 221), pinned (69, 221). Scene:
+   `python3 docs/evaluation/interaction/T-185/e909_variants.py episodes/e909_two_char_acting/shots/s010/build/
+   shot.resolved.scene.json e909_s010 r3pick` -> `build/t185/e909_s010/r3pick/scene.json`.
+7. Once fixed: r3 can go on e909's pick-up (girl numbers in the e909 section), and the e910 clip should be re-rendered.
+
 ## e909: measured, not adopted (girl L, set b = site side_b; boy R receives and places)
 Variants (`e909_variants.py`, each with its own cup folder under `build/t185/`): `base` (as released), `r3pick` (R3 on
 her pick_up only: the candidate, not adopted), `r3keys` (R3 on pick_up, pass and place), `r3np` (pick_up and pass), `r3site` / `r3sitenp`
