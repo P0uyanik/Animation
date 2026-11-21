@@ -305,6 +305,200 @@ def fit_capsule(points, fit, axis=None, percentile=None, pad=0.0):
     return (c + ax * lo).tolist(), (c + ax * hi).tolist(), r
 
 
+def fit_cover(points, axis=None, strips=0, sections=1, percentile=98.0, pad=0.0, spacing=0.5, end_inset=1.0):
+    """Capsules that enclose a surface region (T-183 round 2; pure function): [(a, b, radius)].
+
+    The region is treated as a rounded slab: capsules run along its long axis e1 (`axis` (a, b), e.g. the bone, or the
+    principal axis), side by side across its width e2, and each has the local half-thickness along e3 as its radius
+    (the `percentile` of the points' distance from the capsule's mid-plane, plus `pad`). `strips` capsules across the
+    width (0 = as many as keep the groove between neighbours shallow: centres at most `spacing` radii apart);
+    `sections` pieces along e1, each with its own radius, so a region that tapers or bulges is followed. The two outer
+    ends lie `end_inset` radii inside the region's extent (1 = the round cap ends where the region ends)."""
+    import numpy as np
+    P = np.asarray(points, dtype=np.float64)
+    if len(P) < 8:
+        raise ValueError("too few vertices")
+    c = P.mean(axis=0)
+    Q = P - c
+    if axis is not None:
+        e1 = np.asarray(axis[1], dtype=np.float64) - np.asarray(axis[0], dtype=np.float64)
+        if np.linalg.norm(e1) < 1e-6:
+            raise ValueError("zero-length axis")
+        e1 = e1 / np.linalg.norm(e1)
+        flat = Q - np.outer(Q @ e1, e1)
+        _, _, vt = np.linalg.svd(flat, full_matrices=False)
+        e2 = vt[0]
+    else:
+        _, _, vt = np.linalg.svd(Q, full_matrices=False)
+        e1, e2 = vt[0], vt[1]
+    for e in (e1, e2):  # fixed signs: the same capsules on every build
+        if e[int(np.argmax(np.abs(e)))] < 0:
+            e *= -1.0
+    e3 = np.cross(e1, e2)
+    u, v, w = Q @ e1, Q @ e2, Q @ e3
+    out = []
+    ulo, uhi = float(u.min()), float(u.max())
+    edges = np.linspace(ulo, uhi, int(sections) + 1)
+    for si in range(int(sections)):
+        a_u, b_u = float(edges[si]), float(edges[si + 1])
+        grow = 0.15 * (b_u - a_u) if sections > 1 else 0.0  # neighbours overlap
+        sel = (u >= a_u - grow) & (u <= b_u + grow)
+        if sel.sum() < 8:
+            continue
+        vs, ws = v[sel], w[sel]
+        w0 = 0.5 * (float(np.percentile(ws, 1)) + float(np.percentile(ws, 99)))
+        half = float(np.percentile(np.abs(ws - w0), percentile))
+        vlo, vhi = float(np.percentile(vs, 100 - percentile)), float(np.percentile(vs, percentile))
+        width = 0.5 * (vhi - vlo)
+        n = int(strips) if strips else max(1, int(math.ceil(max(0.0, width - half) * 2.0 / max(1e-6, spacing * half))) + 1)
+        r_edge = min(half, width)
+        centres = [0.5 * (vlo + vhi)] if n == 1 else list(np.linspace(vlo + r_edge, vhi - r_edge, n))
+        for vc in centres:
+            if n == 1:
+                r = float(np.percentile(np.hypot(vs - vc, ws - w0), percentile))
+            else:  # the local thickness of this strip, and never less than what reaches the region's edge
+                band = np.abs(vs - vc) <= max(spacing * half, (vhi - vlo) / (2.0 * n))
+                loc = ws[band] if band.sum() >= 8 else ws
+                r = max(float(np.percentile(np.abs(loc - w0), percentile)), min(vc - vlo, vhi - vc, half))
+            r = max(1e-4, r + pad)
+            lo = a_u + (r * end_inset if si == 0 else 0.0)
+            hi = b_u - (r * end_inset if si == sections - 1 else 0.0)
+            if hi < lo:
+                lo = hi = 0.5 * (a_u + b_u) if sections > 1 else 0.5 * (ulo + uhi)
+            base = c + e2 * vc + e3 * w0
+            out.append(((base + e1 * lo).tolist(), (base + e1 * hi).tolist(), r))
+    if not out:
+        raise ValueError("no capsule fitted")
+    return out
+
+
+def capsule_distance(points, capsules):
+    """(N,) signed distance of points to the union of capsules [(a, b, radius)] (negative = inside)."""
+    import numpy as np
+    P = np.asarray(points, dtype=np.float64)
+    best = np.full(len(P), 1e9)
+    for a, b, r in capsules:
+        a, b = np.asarray(a, dtype=np.float64), np.asarray(b, dtype=np.float64)
+        ab = b - a
+        l2 = float(ab @ ab)
+        t = np.clip(((P - a) @ ab) / l2, 0.0, 1.0) if l2 > 1e-12 else np.zeros(len(P))
+        best = np.minimum(best, np.linalg.norm(P - (a + t[:, None] * ab), axis=1) - r)
+    return best
+
+
+def cover_report(points, capsules):
+    """How well capsules enclose a region's points: the share outside, the largest and 99th percentile protrusion, and
+    how far the region's points lie under the capsule surface (median, 95 %): the gap hair resting on it will show."""
+    import numpy as np
+    d = capsule_distance(points, capsules)
+    out = d[d > 0]
+    return {"capsules": len(capsules), "vertices": int(len(d)), "outside": int(len(out)),
+            "protrusion_max_m": round(float(d.max()), 5), "protrusion_p99_m": round(float(np.percentile(d, 99)), 5),
+            "gap_p50_m": round(float(np.percentile(-d, 50)), 5), "gap_p95_m": round(float(np.percentile(-d, 95)), 5)}
+
+
+def chain_radii(points, joints, percentile=95.0, pad=0.0, floor=0.0):
+    """The collision radius of each joint of a chain from the vertices it carries (pure function): the `percentile` of
+    the distance of the vertices next to that joint (within half a segment along the chain) from the chain line."""
+    import numpy as np
+    P = np.asarray(points, dtype=np.float64)
+    J = np.asarray(joints, dtype=np.float64)
+    n = len(J) - 1
+    best = np.full(len(P), 1e9)
+    coord = np.zeros(len(P))
+    for k in range(n):
+        a, ab = J[k], J[k + 1] - J[k]
+        t = np.clip(((P - a) @ ab) / max(1e-12, float(ab @ ab)), 0.0, 1.0)
+        d = np.linalg.norm(P - (a + t[:, None] * ab), axis=1)
+        closer = d < best
+        best[closer], coord[closer] = d[closer], k + t[closer]
+    out = []
+    for k in range(n + 1):
+        sel = np.abs(coord - k) <= 0.5
+        r = float(np.percentile(best[sel], percentile)) if sel.sum() >= 4 else 0.0
+        out.append(round(max(floor, r + pad), 5))
+    return out
+
+
+def skin_spheres(tree, points, normals, near, spacing=0.024, radius=0.045, pad=0.0025, reach=0.12, min_radius=0.008):
+    """Spheres that follow a surface from inside (T-183 round 2): [(vertex index, centre, radius)].
+
+    tree: a mathutils BVHTree of the whole figure (every surface the hair must stay out of); points, normals: (N, 3)
+    surface vertices and their outward normals; near: (M, 3) points of the hair chains (rest pose). A vertex takes
+    part when it lies within `reach` of the chains and on the outside of the figure (its normal side is open: the
+    inner faces of a cloth shell are not). Samples are picked `spacing` apart (farthest point first, from the vertex
+    nearest to the chains), and each carries a sphere that touches the surface there from inside: centre `r` below the
+    vertex along its normal (turned to the side that is open, whatever the stored normal says), r = `radius`, or less where the figure is thinner (0.45 of its thickness there; thinner
+    than `min_radius`: no sphere), plus `pad`. The union of the spheres encloses the sampled surface up to the groove
+    between neighbours (about (0.58 spacing)^2 / 2r, covered by `pad`), fills creases narrower than the spheres, and
+    each sphere can ride on the bone that carries its vertex, so the colliders follow the skinned surface."""
+    import numpy as np
+    from mathutils import Vector
+    P = np.asarray(points, dtype=np.float64)
+    Nn = np.asarray(normals, dtype=np.float64)
+    Q = np.asarray(near, dtype=np.float64)
+    d2 = np.full(len(P), np.inf)
+    for q in Q:
+        d2 = np.minimum(d2, ((P - q) ** 2).sum(axis=1))
+    cand = np.nonzero(d2 <= reach * reach)[0]
+    dirs = [Vector(d).normalized() for d in
+            [(x, y, z) for x in (-1, 0, 1) for y in (-1, 0, 1) for z in (-1, 0, 1) if (x, y, z) != (0, 0, 0)]]
+
+    def open_side(p, n):
+        """0 = nothing lies on side n of p (the ray along n meets nothing), 1 = that side is open in at least two
+        other directions (a crease), 2 = enclosed."""
+        q = p + n * 0.0015
+        if tree.ray_cast(q, n, 0.6)[0] is None:
+            return 0
+        free = sum(1 for d in dirs if d.dot(n) > 0.2 and tree.ray_cast(q, d, 0.6)[0] is None)
+        return 1 if free >= 2 else 2
+
+    keep, rad, out_n = [], [], {}
+    for i in cand:
+        n = Vector(Nn[i])
+        if n.length < 1e-9:
+            continue
+        n.normalize()
+        p = Vector(P[i])
+        # the outward side by what can be seen from it, not by the stored normal (trims may be modelled inside out)
+        front, back = open_side(p, n), open_side(p, -n)
+        if front == back or min(front, back) == 2:
+            continue  # a sheet with nothing behind it, or a vertex enclosed on both sides
+        if back < front:
+            n = -n
+        t, last = 0.0015, 0.0  # thickness: the last surface met going in
+        while True:
+            hit = tree.ray_cast(p - n * t, -n, 0.6 - t)
+            if hit[0] is None:
+                break
+            t += hit[3] + 2e-5
+            last = t
+        r = min(radius, 0.45 * last)
+        if r < min_radius:
+            continue
+        keep.append(i)
+        rad.append(r)
+        out_n[int(i)] = np.array(n)
+    if not keep:
+        return []
+    keep, rad = np.array(keep), np.array(rad)
+    K = P[keep]
+    first = int(np.argmin(d2[keep]))
+    chosen = [first]
+    dist = np.linalg.norm(K - K[first], axis=1)
+    while True:
+        j = int(np.argmax(dist))
+        if dist[j] < spacing:
+            break
+        chosen.append(j)
+        dist = np.minimum(dist, np.linalg.norm(K - K[j], axis=1))
+    out = []
+    for j in chosen:
+        i = int(keep[j])
+        out.append((i, (P[i] - out_n[i] * rad[j]).tolist(), float(rad[j] + pad)))
+    return out
+
+
 def _carried(rig, skip, patterns):
     """World positions of the vertices of the meshes bound to the rig (not `skip`) that the vertex groups matching
     `patterns` carry with at least half of the weight."""

@@ -6,7 +6,7 @@ it has to move, in the best direction, until nothing of the figure lies beyond i
 that direction). This is the same for closed meshes, cloth shells with a thickness, open or inverted trims, and for
 the space between cloth and skin (a vertex that went through the cloth is as deep as the cloth's outer face is far).
 Directions: towards / away from the nearest surface point first (exact when that ray leaves the figure), then 26
-fixed directions. A vertex counts when it is deeper than --limit-mm (default 1).
+fixed directions, of which the second shortest way out counts (a hollow garment has stray openings). A vertex counts when it is deeper than --limit-mm (default 1).
 
 Roots: a hair vertex that is inside the figure in the rest pose (the scalp side of the cap, the embedded end of a lock,
 the inner half of a felt volume) counts only by what it is deeper than at rest; the rest depths are listed apart.
@@ -82,12 +82,18 @@ def depth_of(tree, p):
             d = -off / dist
             if tree.ray_cast(loc + d * EPS, d, CAP)[0] is None:
                 return dist, idx
-    best = CAP
+    # the second shortest way out of the fixed directions: one stray opening (a hollow garment is not sealed
+    # everywhere, e.g. straight down through a leg opening) does not make a vertex inside the figure an outside one
+    best, second = CAP, CAP
     for d in DIRS:
-        best = min(best, exit_along(tree, p, d, best))
-        if best <= 0.0:
+        e = exit_along(tree, p, d, second)
+        if e < best:
+            best, second = e, best
+        elif e < second:
+            second = e
+        if second <= 0.0:
             return 0.0, idx
-    return best, idx
+    return second, idx
 
 
 class Figure:

@@ -82,7 +82,8 @@ Result<void> readContact(const Json& c, SpringChain& ch, const std::string& wher
   if (it == c.end() || it->is_null()) return {};
   if (!it->is_object()) return fail(where + ": contact must be an object");
   for (auto& [key, _] : it->items())
-    if (key != "solid" && key != "segments" && key != "anchored_gravity") return fail(where + ": contact has unknown key " + key);
+    if (key != "solid" && key != "segments" && key != "anchored_gravity" && key != "radii" && key != "rest" && key != "friction" && key != "max_swing")
+      return fail(where + ": contact has unknown key " + key);
   ch.contact.set = true;
   if (auto so = it->find("solid"); so != it->end()) {
     if (!so->is_array()) return fail(where + ": contact.solid must be a list of collider names");
@@ -93,6 +94,22 @@ Result<void> readContact(const Json& c, SpringChain& ch, const std::string& wher
   }
   ch.contact.segments = readBool(*it, "segments", false);
   ch.contact.anchoredGravity = readBool(*it, "anchored_gravity", false);
+  if (auto ra = it->find("radii"); ra != it->end()) {
+    if (!ra->is_array() || ra->empty()) return fail(where + ": contact.radii must be a list of numbers, one per joint");
+    for (const Json& r : *ra) {
+      if (!r.is_number() || r.get<float>() < 0) return fail(where + ": contact.radii must be a list of numbers >= 0");
+      ch.contact.radii.push_back(r.get<float>());
+    }
+  }
+  ch.contact.rest = readBool(*it, "rest", false);
+  if (auto fr = it->find("friction"); fr != it->end()) {
+    if (!fr->is_number() || fr->get<float>() < 0) return fail(where + ": contact.friction must be a number >= 0");
+    ch.contact.friction = fr->get<float>();
+  }
+  if (auto ms = it->find("max_swing"); ms != it->end()) {
+    if (!ms->is_number() || ms->get<float>() < 0) return fail(where + ": contact.max_swing must be a number >= 0");
+    ch.contact.maxSwing = ms->get<float>();
+  }
   return {};
 }
 
@@ -296,8 +313,15 @@ Json dynamicsToJson(const DynamicsSpec& s) {
     cj.update({{"name", c.name}, {"group", c.group}, {"bones", c.bones}, {"tip", v3(c.tip)}, {"colliders", c.colliders}});
     if (!c.preset.empty()) cj["preset"] = c.preset;
     if (!c.anchorBone.empty()) cj["anchor"] = {{"bone", c.anchorBone}, {"weights", c.anchorWeights}};
-    if (c.contact.set)
+    if (c.contact.set) {
       cj["contact"] = {{"solid", c.contact.solid}, {"segments", c.contact.segments}, {"anchored_gravity", c.contact.anchoredGravity}};
+      if (!c.contact.radii.empty()) cj["contact"]["radii"] = c.contact.radii;
+      if (c.contact.rest) {
+        cj["contact"]["rest"] = true;
+        cj["contact"]["friction"] = c.contact.friction;
+        cj["contact"]["max_swing"] = c.contact.maxSwing;
+      }
+    }
     chains.push_back(cj);
   }
   j["colliders"] = cols;
@@ -407,6 +431,17 @@ Result<std::shared_ptr<SpringChainSolver>> SpringChainSolver::create(const Skele
         for (const auto& n : sc.contact.solid)
           ch.solid[size_t(std::find(ch.colliders.begin(), ch.colliders.end(), colliderIndex[n]) - ch.colliders.begin())] = 1;
       }
+      if (!sc.contact.radii.empty()) {
+        if (sc.contact.radii.size() != ch.rest.size()) return fail("dynamics: chain " + sc.name + ": contact.radii needs one radius per joint");
+        ch.radii = sc.contact.radii;
+      }
+      if (sc.contact.rest) {  // resting contact: every collider of the chain is solid
+        ch.restContact = true;
+        ch.friction = sc.contact.friction;
+        ch.maxSwing = sc.contact.maxSwing;
+        ch.solid.assign(ch.colliders.size(), 1);
+        s->keepShapes_ = true;
+      }
     }
     s->offset_.push_back(s->joints_);
     s->joints_ += ch.rest.size();
@@ -453,6 +488,20 @@ void SpringChainSolver::step(State& s, double dtd, const std::vector<mat4>& g) c
     const mat4 S = g[size_t(c.bone)] * glm::translate(mat4(1), -c.head);
     shapes.push_back({vec3(S * vec4(c.a, 1)), vec3(S * vec4(c.b, 1)), c.radius});
   }
+  // contact.rest: the velocity of collider ci at point q of its axis, from where the collider was at the last step
+  const bool moving = keepShapes_ && s.ca.size() == shapes.size() && dt > 0;
+  const auto colliderVelocity = [&](size_t ci, vec3 q) {
+    if (!moving) return vec3(0);
+    const Shape& sh = shapes[ci];
+    const vec3 ab = sh.b - sh.a;
+    const float l2 = glm::dot(ab, ab);
+    const float t = l2 > 1e-12f ? std::clamp(glm::dot(q - sh.a, ab) / l2, 0.0f, 1.0f) : 0.0f;
+    return (glm::mix(sh.a, sh.b, t) - glm::mix(s.ca[ci], s.cb[ci], t)) / dt;
+  };
+  struct Hit {
+    vec3 n{0}, vc{0};
+    bool on = false;
+  };
   const vec3 down(0, -1, 0);
   for (size_t c = 0; c < chains_.size(); ++c) {
     const Chain& ch = chains_[c];
@@ -466,6 +515,8 @@ void SpringChainSolver::step(State& s, double dtd, const std::vector<mat4>& g) c
     const bool contact = ch.segments || !ch.solid.empty();
     std::vector<float> speedCap(contact ? n : 0, 0.0f);
     std::vector<char> touched(contact ? n : 0, 0);
+    std::vector<Hit> hits(ch.restContact ? n : 0);
+    const float segMin = kSegmentMinParam;
     p[0] = xk[o];
     for (size_t k = 1; k < n; ++k) {
       const size_t i = o + k;
@@ -478,6 +529,25 @@ void SpringChainSolver::step(State& s, double dtd, const std::vector<mat4>& g) c
       const vec3 v = s.v[i] + a * dt;
       p[k] = s.x[i] + v * dt;
       if (contact) speedCap[k] = std::max(glm::length(v), glm::length(vk));
+    }
+    // The chain's colliders for this step. contact.rest chains may carry hundreds of small colliders that follow a
+    // surface: only those near the chain are tested (a sphere around the chain, 5 cm of room for pushes).
+    std::vector<size_t> active;
+    active.reserve(ch.colliders.size());
+    if (ch.restContact) {
+      vec3 mid(0);
+      for (size_t k = 0; k < n; ++k) mid += p[k];
+      mid /= float(n);
+      float bound = 0;
+      for (size_t k = 0; k < n; ++k)
+        bound = std::max(bound, std::max(glm::distance(p[k], mid), glm::distance(xk[o + k], mid)) + (ch.radii.empty() ? ch.p.radius : ch.radii[k]));
+      bound += 0.05f;
+      for (size_t cn = 0; cn < ch.colliders.size(); ++cn) {
+        const Shape& sh = shapes[size_t(ch.colliders[cn])];
+        if (glm::distance(mid, closestOnSegment(mid, sh.a, sh.b)) - sh.r <= bound) active.push_back(cn);
+      }
+    } else {
+      for (size_t cn = 0; cn < ch.colliders.size(); ++cn) active.push_back(cn);
     }
     const float cosLimit = std::cos(glm::radians(ch.p.limitDeg));
     for (int iter = 0; iter < 2; ++iter) {
@@ -502,10 +572,10 @@ void SpringChainSolver::step(State& s, double dtd, const std::vector<mat4>& g) c
         // length is always restored last. A joint that touches no collider takes the same path as before.
         for (int pass = 0; pass < kColliderPasses; ++pass) {
           bool pushed = false;
-          for (size_t cn = 0; cn < ch.colliders.size(); ++cn) {
+          for (const size_t cn : active) {
             const Shape& sh = shapes[size_t(ch.colliders[cn])];
             const bool solid = !ch.solid.empty() && ch.solid[cn];  // contact.solid: no kinematic-target exemption
-            const float want = sh.r + ch.p.radius;
+            const float want = sh.r + (ch.radii.empty() ? ch.p.radius : ch.radii[k]);
             const vec3 qk = closestOnSegment(xk[o + k], sh.a, sh.b);
             const float minD = solid ? want : std::min(want, glm::distance(xk[o + k], qk));
             const vec3 q = closestOnSegment(p[k], sh.a, sh.b);
@@ -523,20 +593,30 @@ void SpringChainSolver::step(State& s, double dtd, const std::vector<mat4>& g) c
             }
             p[k] = q + nrm * minD;
             pushed = true;
+            if (ch.restContact) hits[k] = {nrm, colliderVelocity(size_t(ch.colliders[cn]), q), true};
           }
           if (ch.segments) {
             // contact.segments: the segment p[k-1]..p[k] is a capsule of the chain radius. Its closest point to the
             // collider is moved out by swinging joint k about p[k-1] (the joint moves 1/s of what the point at
             // parameter s needs; a contact next to p[k-1] is that joint's own test). The exemption for a rest shape
             // that touches a collider uses the kinematic segment, as the joint test uses the kinematic joint.
-            for (size_t cn = 0; cn < ch.colliders.size(); ++cn) {
+            for (const size_t cn : active) {
               const Shape& sh = shapes[size_t(ch.colliders[cn])];
               const bool solid = !ch.solid.empty() && ch.solid[cn];
-              const float want = sh.r + ch.p.radius;
               float sp = 0, sk = 0;
               vec3 c1, c2, k1, k2;
-              closestSegments(p[k - 1], p[k], sh.a, sh.b, sp, c1, c2);
-              if (sp < kSegmentMinParam) continue;
+              if (ch.restContact) {
+                // contact.rest: the segment's middle is tested (a fixed lever of 2 on joint k). The joints at both
+                // ends are tested themselves, so what is left between them is the sag of a chord, 1-2 mm.
+                sp = 0.5f;
+                c1 = 0.5f * (p[k - 1] + p[k]);
+                c2 = closestOnSegment(c1, sh.a, sh.b);
+              } else {
+                closestSegments(p[k - 1], p[k], sh.a, sh.b, sp, c1, c2);
+              }
+              if (sp < segMin) continue;
+              // contact.radii: a tapered capsule, its radius at the contact
+              const float want = sh.r + (ch.radii.empty() ? ch.p.radius : glm::mix(ch.radii[k - 1], ch.radii[k], sp));
               float minD = want;
               if (!solid) {
                 closestSegments(xk[o + k - 1], xk[o + k], sh.a, sh.b, sk, k1, k2);
@@ -550,7 +630,12 @@ void SpringChainSolver::step(State& s, double dtd, const std::vector<mat4>& g) c
               if (solid) {  // as for joints: the segment leaves on the side it was on at the previous step
                 float st = 0;
                 vec3 a1, a2;
-                closestSegments(s.x[o + k - 1], s.x[o + k], sh.a, sh.b, st, a1, a2);
+                if (ch.restContact) {
+                  a1 = 0.5f * (s.x[o + k - 1] + s.x[o + k]);
+                  a2 = closestOnSegment(a1, sh.a, sh.b);
+                } else {
+                  closestSegments(s.x[o + k - 1], s.x[o + k], sh.a, sh.b, st, a1, a2);
+                }
                 const float lp = glm::length(a1 - a2);
                 if (lp >= minD - kFlipSlack && dist < 0.5f * minD && glm::dot(a1 - a2, nrm) < 0) {
                   nrm = (a1 - a2) / lp;
@@ -559,6 +644,7 @@ void SpringChainSolver::step(State& s, double dtd, const std::vector<mat4>& g) c
               }
               p[k] += nrm * (depth / sp);
               pushed = true;
+              if (ch.restContact) hits[k] = {nrm, colliderVelocity(size_t(ch.colliders[cn]), c2), true};
             }
           }
           if (!pushed) break;
@@ -569,10 +655,37 @@ void SpringChainSolver::step(State& s, double dtd, const std::vector<mat4>& g) c
         }
       }
     }
+    if (ch.restContact && ch.maxSwing > 0) {
+      // contact.rest: a segment turns at most max_swing (rad/s) faster than its kinematic direction does. A lock that
+      // is squeezed between two colliders (a hand pressing it on the head) has no place outside both; without the
+      // cap the projection jumps between far-apart places from step to step. With it the lock moves steadily.
+      const float maxAngle = ch.maxSwing * dt;
+      for (size_t k = 1; k < n; ++k) {
+        const size_t i = o + k;
+        const vec3 was = s.x[i] - s.x[i - 1], kWas = s.xk[i] - s.xk[i - 1], kNow = xk[i] - xk[i - 1], now = p[k] - p[k - 1];
+        if (glm::length(was) < 1e-9f || glm::length(kWas) < 1e-9f || glm::length(kNow) < 1e-9f || glm::length(now) < 1e-9f) continue;
+        const vec3 carried = glm::normalize(arc(glm::normalize(kWas), glm::normalize(kNow)) * glm::normalize(was));
+        vec3 dir = glm::normalize(now);
+        const float ang = std::atan2(glm::length(glm::cross(carried, dir)), glm::dot(carried, dir));
+        if (ang > maxAngle) {
+          const vec3 axis = glm::cross(carried, dir);
+          dir = glm::length(axis) > 1e-9f ? glm::angleAxis(maxAngle, glm::normalize(axis)) * carried : carried;
+        }
+        p[k] = p[k - 1] + dir * ch.length[k - 1];
+      }
+    }
     for (size_t k = 0; k < n; ++k) {
       const size_t i = o + k;
       s.v[i] = (p[k] - s.x[i]) / dt;
-      if (contact && touched[k]) {
+      if (ch.restContact) {
+        // resting contact: along the contact normal the joint moves with the collider (inelastic), and its sliding
+        // speed on the collider decays by the friction
+        if (hits[k].on) {
+          const vec3 rel = s.v[i] - hits[k].vc;
+          const vec3 slide = rel - hits[k].n * glm::dot(rel, hits[k].n);
+          s.v[i] = hits[k].vc + slide * std::exp(-ch.friction * dt);
+        }
+      } else if (contact && touched[k]) {
         const float sp = glm::length(s.v[i]);
         if (sp > speedCap[k] && sp > 1e-9f) s.v[i] *= speedCap[k] / sp;
       }
@@ -580,6 +693,14 @@ void SpringChainSolver::step(State& s, double dtd, const std::vector<mat4>& g) c
     }
   }
   s.xk = std::move(xk);
+  if (keepShapes_) {
+    s.ca.resize(shapes.size());
+    s.cb.resize(shapes.size());
+    for (size_t k = 0; k < shapes.size(); ++k) {
+      s.ca[k] = shapes[k].a;
+      s.cb[k] = shapes[k].b;
+    }
+  }
 }
 
 void SpringChainSolver::write(const State& s, std::vector<mat4>& globals) const {
