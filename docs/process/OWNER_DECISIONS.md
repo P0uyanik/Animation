@@ -871,3 +871,18 @@ carry this as their current_decision.
 New analysis-only task → `docs/tasks/T-176.md`: architecture, workflow, agents, tokens, automation, speed, maintainability,
 with evidence from our codebase. Opus 5.5, docs-only write-set `docs/audit/T-176/**`. No changes without owner approval. It
 continues under the round-4 Supervisor.
+
+## 2026-11-21 ~04:10Z (05:10 CET) — T-176 proposals 2, 3 and 5 approved (relayed by the owner liaison)
+Dispatch as soon as possible, token-efficient pointer briefs, fully tested before merge; write-sets disjoint from T-171/T-175.
+- **P2 visual-round budget:** process rule, applied by the Supervisor (`WORKFLOW.md`, `IMPLEMENTER_PROMPT.md`, task template):
+  fresh session for a visual round over ~250k context; a short round file per visual task; sheets read as ≤1024 px crops;
+  default effort high, max/fast only on owner request.
+- **P3 docs-only fast path** → `docs/tasks/T-177.md` (Sonnet): pushes to main/staging touching only `docs/process/**` and
+  `docs/tasks/**` run a ~1-min job; promotion accepts an integration commit differing from main only there; decided from
+  the changed-path list alone, any other path → full gate; classifier tests incl. mixed pushes.
+- **P5 one release rule** → `docs/tasks/T-178.md` (Opus): one release-manifest rule written by `version_switch.py` replaces
+  the per-feature "no spec uses X" guards. The owner explicitly approves the required test/safeguard changes ON CONDITION
+  that no essential protection or coverage is weakened: byte-immutability of published assets, frozen manifest,
+  asset-store guard, goldens and the owner decision ref for CURRENT stay; the manifest is guarded; negative tests (unlisted
+  version using an opt-in fails); coverage mapping old guard → new check in the README, reported to the liaison before merge.
+- Other T-176 proposals (1, 4, 6–14): not decided.
