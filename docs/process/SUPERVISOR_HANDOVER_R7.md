@@ -55,3 +55,4 @@ Next free ID: T-212.
   (2) tests/test_verbs.cpp added to T-210's write-set for the one-line pinch key pin (evaluate(16) → (15), T-210 ramp note).
 - T-210 merged (main a96602c, gate 45065368782 green).
 - T-212 = Codex review of the T-211 face plan (owner via liaison, relay 8b8c0301; after T-208). Face decisions wait for it. **Next free ID: T-213.**
+- T-194 session 2 hit its context limit (s020 candidate: calm >1 mm 210 → 123/288, but NEW boy-hair-in-own-hood-rim 29 fr / 28 mm + 55 pops >5 mm, max +43.8 mm). Fresh session 3: session_01NPjxeKukQYWPUQwjh8FSGB (Opus, full checkout depth 1) from 5054eaf; acceptance = no new penetration class, no pop >5 mm vs off. Old session_01NPjxePALLCviMLH4YKW2mL told to push and stop.
