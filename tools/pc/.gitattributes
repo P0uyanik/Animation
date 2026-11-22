@@ -1,0 +1,2 @@
+# T-205: cmd.exe needs CRLF line endings (labels and goto misbehave with LF).
+*.cmd text eol=crlf
