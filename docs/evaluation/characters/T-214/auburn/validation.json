@@ -4,14 +4,14 @@
   "px": 1024,
   "holdout": "three_quarter",
   "timings": {
-    "render_s": 11.53,
-    "measure_s": 1.19,
+    "render_s": 11.54,
+    "measure_s": 1.5,
     "blender": {
-      "load_s": 1.930236824999838,
+      "load_s": 1.904211060000307,
       "views": {
-        "ref-front": 3.0695544959999097,
-        "ref-three_quarter": 2.862851272999933,
-        "ref-side": 2.9536984300000313
+        "ref-front": 3.1444777259998773,
+        "ref-three_quarter": 2.8840376879998075,
+        "ref-side": 2.9329367530003765
       }
     }
   },
@@ -23,9 +23,9 @@
       "expression": {},
       "points": {
         "iris": [
-          147.62,
+          147.27,
           254.46,
-          175.37
+          175.39
         ],
         "eye": [
           135.94,
@@ -788,12 +788,12 @@
           "measure": "eye_spacing",
           "unit": "F",
           "group": "face",
-          "current": 0.45847,
+          "current": 0.45945,
           "mark": "M",
           "reference": 0.4845,
           "tolerance": 0.03,
-          "gap": -0.02603,
-          "z": -0.868,
+          "gap": -0.02505,
+          "z": -0.835,
           "result": "within"
         },
         {
@@ -824,12 +824,12 @@
           "measure": "eye_x",
           "unit": "F",
           "group": "face",
-          "current": -0.22925,
+          "current": -0.23023,
           "mark": "M",
           "reference": -0.24416,
           "tolerance": 0.025,
-          "gap": 0.01491,
-          "z": 0.596,
+          "gap": 0.01393,
+          "z": 0.557,
           "result": "within"
         },
         {
@@ -920,37 +920,37 @@
           "measure": "iris_d_spacing",
           "unit": "iris spacing",
           "group": "face",
-          "current": 0.36037,
+          "current": 0.36439,
           "mark": "M",
           "reference": 0.369,
           "tolerance": 0.018,
-          "gap": -0.00863,
-          "z": -0.48,
+          "gap": -0.00461,
+          "z": -0.256,
           "result": "within"
         },
         {
           "measure": "iris_d_w",
           "unit": "eye W",
           "group": "face",
-          "current": 0.68978,
+          "current": 0.69898,
           "mark": "M",
           "reference": 0.742,
           "tolerance": 0.045,
-          "gap": -0.05222,
-          "z": -1.16,
-          "result": "outside"
+          "gap": -0.04302,
+          "z": -0.956,
+          "result": "within"
         },
         {
           "measure": "iris_size",
           "unit": "H",
           "group": "face",
-          "current": 0.11665,
+          "current": 0.11821,
           "mark": "M",
           "reference": 0.13226,
           "tolerance": 0.015,
-          "gap": -0.01561,
-          "z": -1.041,
-          "result": "outside"
+          "gap": -0.01405,
+          "z": -0.937,
+          "result": "within"
         },
         {
           "measure": "jaw_width",
@@ -1070,9 +1070,9 @@
       "expression": {},
       "points": {
         "iris": [
-          218.93,
+          218.75,
           255.13,
-          237.95
+          238.28
         ],
         "eye": [
           204.3,
@@ -1618,7 +1618,7 @@
           ]
         ],
         "brow": [
-          228.32,
+          228.71,
           207.42
         ],
         "mouth": [
@@ -1642,11 +1642,11 @@
         "ear_turn": [
           [
             101.56,
-            264.65
+            262.5
           ],
           [
-            139.57,
-            264.65
+            138.08,
+            262.5
           ]
         ],
         "cap": [
@@ -1810,12 +1810,12 @@
           "measure": "ear_turn_projection",
           "unit": "F",
           "group": "face",
-          "current": 0.24326,
+          "current": 0.23373,
           "mark": "E",
           "reference": 0.2557,
           "tolerance": 0.06,
-          "gap": -0.01244,
-          "z": -0.207,
+          "gap": -0.02197,
+          "z": -0.366,
           "result": "within"
         },
         {
@@ -1846,12 +1846,12 @@
           "measure": "eye_spacing",
           "unit": "F",
           "group": "face",
-          "current": 0.3201,
+          "current": 0.31962,
           "mark": "E",
           "reference": 0.45799,
           "tolerance": 0.03,
-          "gap": -0.13789,
-          "z": -4.596,
+          "gap": -0.13837,
+          "z": -4.612,
           "result": "outside"
         },
         {
@@ -1882,12 +1882,12 @@
           "measure": "eye_x",
           "unit": "F",
           "group": "face",
-          "current": 0.092,
+          "current": 0.09248,
           "mark": "E",
           "reference": -0.08016,
           "tolerance": 0.025,
-          "gap": 0.17216,
-          "z": 6.886,
+          "gap": 0.17264,
+          "z": 6.906,
           "result": "outside"
         },
         {
@@ -1978,36 +1978,36 @@
           "measure": "iris_d_spacing",
           "unit": "iris spacing",
           "group": "face",
-          "current": 0.38028,
+          "current": 0.39106,
           "mark": "M",
           "reference": 0.416,
           "tolerance": 0.015,
-          "gap": -0.03572,
-          "z": -2.381,
+          "gap": -0.02494,
+          "z": -1.663,
           "result": "outside"
         },
         {
           "measure": "iris_d_w",
           "unit": "eye W",
           "group": "face",
-          "current": 0.55974,
+          "current": 0.57475,
           "mark": "M",
           "reference": 0.68,
           "tolerance": 0.035,
-          "gap": -0.12026,
-          "z": -3.436,
+          "gap": -0.10525,
+          "z": -3.007,
           "result": "outside"
         },
         {
           "measure": "iris_size",
           "unit": "H",
           "group": "face",
-          "current": 0.08008,
+          "current": 0.08223,
           "mark": "M",
           "reference": 0.12085,
           "tolerance": 0.015,
-          "gap": -0.04077,
-          "z": -2.718,
+          "gap": -0.03862,
+          "z": -2.575,
           "result": "outside"
         },
         {
@@ -2128,9 +2128,9 @@
       "expression": {},
       "points": {
         "iris": [
-          123.88,
+          123.83,
           248.49,
-          126.42
+          126.56
         ],
         "eye": [
           122.66,
@@ -2205,7 +2205,7 @@
           ],
           [
             118.36,
-            278.03
+            277.73
           ]
         ],
         "profile_span": [
@@ -2222,7 +2222,8 @@
       },
       "estimated": [
         "brow",
-        "crown"
+        "crown",
+        "iris"
       ],
       "rows": [
         {
@@ -2325,8 +2326,8 @@
           "measure": "iris_d_w",
           "unit": "eye W",
           "group": "face",
-          "current": 0.30976,
-          "mark": "M",
+          "current": 0.33293,
+          "mark": "E",
           "reference": null,
           "tolerance": null,
           "gap": null,
@@ -2337,7 +2338,7 @@
           "measure": "iris_size",
           "unit": "H",
           "group": "face",
-          "current": 0.01131,
+          "current": 0.01215,
           "mark": "E",
           "reference": null,
           "tolerance": null,
@@ -2535,12 +2536,12 @@
         "group": "face",
         "hand": 0.43988,
         "hand_mark": "E",
-        "measurer": 0.45847,
+        "measurer": 0.45945,
         "measurer_mark": "M",
-        "diff": 0.01859,
+        "diff": 0.01957,
         "tolerance": 0.03,
         "agree": true,
-        "with_hand_h": 0.45847,
+        "with_hand_h": 0.45945,
         "agree_with_hand_h": true
       },
       {
@@ -2577,12 +2578,12 @@
         "group": "face",
         "hand": -0.22285,
         "hand_mark": "E",
-        "measurer": -0.22925,
+        "measurer": -0.23023,
         "measurer_mark": "M",
-        "diff": -0.0064,
+        "diff": -0.00738,
         "tolerance": 0.025,
         "agree": true,
-        "with_hand_h": -0.22925,
+        "with_hand_h": -0.23023,
         "agree_with_hand_h": true
       },
       {
@@ -2675,12 +2676,12 @@
         "group": "face",
         "hand": 0.36135,
         "hand_mark": "M",
-        "measurer": 0.36037,
+        "measurer": 0.36439,
         "measurer_mark": "M",
-        "diff": -0.00098,
+        "diff": 0.00304,
         "tolerance": 0.018,
         "agree": true,
-        "with_hand_h": 0.36037,
+        "with_hand_h": 0.36439,
         "agree_with_hand_h": true
       },
       {
@@ -2689,12 +2690,12 @@
         "group": "face",
         "hand": 0.68352,
         "hand_mark": "M",
-        "measurer": 0.68978,
+        "measurer": 0.69898,
         "measurer_mark": "M",
-        "diff": 0.00626,
+        "diff": 0.01546,
         "tolerance": 0.045,
         "agree": true,
-        "with_hand_h": 0.68978,
+        "with_hand_h": 0.69898,
         "agree_with_hand_h": true
       },
       {
@@ -2703,12 +2704,12 @@
         "group": "face",
         "hand": 0.11791,
         "hand_mark": "E",
-        "measurer": 0.11665,
+        "measurer": 0.11821,
         "measurer_mark": "M",
-        "diff": -0.00126,
+        "diff": 0.0003,
         "tolerance": 0.015,
         "agree": true,
-        "with_hand_h": 0.11809,
+        "with_hand_h": 0.11966,
         "agree_with_hand_h": true
       },
       {
@@ -2899,12 +2900,12 @@
         "group": "face",
         "hand": 0.2381,
         "hand_mark": "E",
-        "measurer": 0.24326,
+        "measurer": 0.23373,
         "measurer_mark": "E",
-        "diff": 0.00516,
+        "diff": -0.00437,
         "tolerance": 0.06,
         "agree": true,
-        "with_hand_h": 0.24326,
+        "with_hand_h": 0.23373,
         "agree_with_hand_h": true
       },
       {
@@ -2927,12 +2928,12 @@
         "group": "face",
         "hand": 0.33346,
         "hand_mark": "E",
-        "measurer": 0.3201,
+        "measurer": 0.31962,
         "measurer_mark": "E",
-        "diff": -0.01336,
+        "diff": -0.01384,
         "tolerance": 0.03,
         "agree": true,
-        "with_hand_h": 0.3201,
+        "with_hand_h": 0.31962,
         "agree_with_hand_h": true
       },
       {
@@ -2969,12 +2970,12 @@
         "group": "face",
         "hand": 0.06956,
         "hand_mark": "E",
-        "measurer": 0.092,
+        "measurer": 0.09248,
         "measurer_mark": "E",
-        "diff": 0.02244,
+        "diff": 0.02292,
         "tolerance": 0.025,
         "agree": true,
-        "with_hand_h": 0.092,
+        "with_hand_h": 0.09248,
         "agree_with_hand_h": true
       },
       {
@@ -3025,12 +3026,12 @@
         "group": "face",
         "hand": 0.36511,
         "hand_mark": "M",
-        "measurer": 0.38028,
+        "measurer": 0.39106,
         "measurer_mark": "M",
-        "diff": 0.01517,
+        "diff": 0.02595,
         "tolerance": 0.015,
         "agree": false,
-        "with_hand_h": 0.38028,
+        "with_hand_h": 0.39106,
         "agree_with_hand_h": false
       },
       {
@@ -3039,12 +3040,12 @@
         "group": "face",
         "hand": 0.63639,
         "hand_mark": "M",
-        "measurer": 0.55974,
+        "measurer": 0.57475,
         "measurer_mark": "M",
-        "diff": -0.07665,
+        "diff": -0.06164,
         "tolerance": 0.035,
         "agree": false,
-        "with_hand_h": 0.55974,
+        "with_hand_h": 0.57475,
         "agree_with_hand_h": false
       },
       {
@@ -3053,12 +3054,12 @@
         "group": "face",
         "hand": 0.086,
         "hand_mark": "E",
-        "measurer": 0.08008,
+        "measurer": 0.08223,
         "measurer_mark": "M",
-        "diff": -0.00592,
+        "diff": -0.00377,
         "tolerance": 0.015,
         "agree": true,
-        "with_hand_h": 0.08645,
+        "with_hand_h": 0.08877,
         "agree_with_hand_h": true
       },
       {

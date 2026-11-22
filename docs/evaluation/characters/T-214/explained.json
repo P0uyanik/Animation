@@ -1,5 +1,5 @@
 {
-  "note": "T-214 validation: every measure where the measurer and T-204's hand trace of the same T-202 render differ by more than the T-204 tolerance, with the reason. test_measurer.py fails on any disagreement not listed here. Categories: H = hand crown/chin estimate (agrees once the hand crown and chin are used); TRACE = hand trace differs from the render (checked on the pixels); SHADE = Cycles shading moves an edge the masks cannot see; RIM = hand stopped at the glasses rim; HIDDEN = feature hidden under hair or lens, hand estimate (E).",
+  "note": "T-214 validation: every measure where the measurer and T-204's hand trace of the same T-202 render differ by more than the T-204 tolerance, with the reason. test_measurer.py fails on any disagreement not listed here. Categories: H = hand crown/chin estimate (agrees once the hand crown and chin are used); TRACE = hand trace differs from the render (checked on the pixels); SHADE = Cycles shading moves an edge the masks cannot see; RIM = hand stopped at the glasses rim; HIDDEN = feature hidden under hair or lens, hand estimate (E). START = contour start row: T-204 only says 'from above iris level'; the measurer starts between the opening top and the iris centre, not above the ear tops, and F is the widest span below that. PREC = the tolerance is below one 400-grid trace unit on this feature.",
   "auburn": {
     "front/chin_width": "TRACE: hand E 0.406 F; the T-202 tile's skin row at 93 % (y 307) spans 160-242 units = 0.47 F, measurer 0.498.",
     "front/eye_height": "SHADE: the lid overhang and felt lid line shade the top 3 units of the eyeball; the hand opening starts below that shadow (238.9 vs 235.9). Geometric opening +0.019 H.",
@@ -7,12 +7,42 @@
     "three_quarter/brow_gap": "H + RIM: agrees with the hand H; the remainder is the opening top (rim/shade).",
     "three_quarter/chin_width": "HIDDEN: the near cheek and jaw are crossed by a long lock (T-204 note); hand contour E converges inside the skin edge.",
     "three_quarter/head_roundness": "H: hand crown at the bun/hair junction (91) vs the main-hair top behind the bun (73); agrees with the hand H.",
-    "three_quarter/iris_d_spacing": "RIM: 0.0152 vs tolerance 0.015; the hand near-iris centre sits 1 unit higher.",
+    "three_quarter/iris_d_spacing": "PREC: 0.391 vs 0.365 (tol 0.015 = 0.75 units of iris diameter here); the visible iris spans 19.5 units vs the hand 18.9 and its centre sits 1.4 units lower.",
     "three_quarter/iris_d_w": "RIM: the hand opening stops at the glasses rim (211.6); the eyeball continues 7 units past it (204.3), so the width is larger and iris/width smaller.",
     "three_quarter/jaw_width": "H: 0.068 vs 0.065; agrees with the hand H.",
     "side/cheek_advance": "HIDDEN: eye-level skin is behind lens and rim; hand estimated x 122, measurer skin silhouette 129.7.",
     "side/eye_to_chin": "H: hand crown 99 and chin under the lock estimated; agrees with the hand H.",
     "side/eye_y": "H: as eye_to_chin.",
     "side/profile_depth": "H: span 174 vs 180 units over a shorter hand H; agrees with the hand H."
+  },
+  "white_haired": {
+    "front/chin_width": "TRACE: hand E 0.378 F; the measurer's skin edge over the neck at 93 % gives 0.511 (0.492 with the hand H); hand contour E under hair.",
+    "front/eye_spacing": "HIDDEN/F: the cheeks are under hair locks (T-204 marks left/right E). At ear level the skin outline runs to x 106/294 against the ears, the hand contour to 118/283: F 188 vs 165 units, so every /F measure differs by about 14 %.",
+    "front/eye_x": "HIDDEN/F: as eye_spacing.",
+    "front/hair_cheek_width": "HIDDEN/F: hair span agrees (41-366 vs 40-360 units); the ratio differs through F.",
+    "front/hair_width": "HIDDEN/F: cap agrees (27-377 vs 29-372 units); the ratio differs through F.",
+    "front/head_roundness": "HIDDEN/F: as eye_spacing.",
+    "front/iris_d_w": "SHADE: iris agrees (137.1-170.3 vs 136.6-169.7); the geometric opening is wider than the shaded one by 2 units.",
+    "front/mouth_width": "HIDDEN/F: mouth box agrees (185.2-214.8 vs 184.6-215.7 units); the ratio differs through F.",
+    "front/nose_height": "TRACE: hand E box 275-290 includes the shaded underside; the relief box is 273-283. Agrees with the hand H.",
+    "front/opening_h_w": "SHADE: opening 237.5-278.5 vs hand 241.0-275.4: shade under the upper lid and on the lower lid.",
+    "three_quarter/eye_height": "SHADE: as front opening.",
+    "three_quarter/iris_d_w": "SHADE: geometric opening narrower in the hand trace.",
+    "three_quarter/nose_width": "TRACE: hand E 236.6-251.5; relief box 230.5-251.2 includes the bump's far flank. Nose boxes are soft (T-204 E).",
+    "three_quarter/nose_y": "H: agrees with the hand H.",
+    "three_quarter/opening_h_w": "SHADE: as front opening.",
+    "side/exposed_cheek": "HIDDEN: the window between locks runs 214-264 units vs hand 203-263; a thin lock edge at 203-214 is hair in the masks."
+  },
+  "boy": {
+    "front/chin_width": "TRACE: hand E 0.192 F; the skin edge over the hood collar is 0.393 F at 93 %.",
+    "front/crown_above_skull": "TRACE: hand skull E at y 68 under the spikes; the hairless head (face pass) tops out at y 128.",
+    "front/eye_spacing": "START: 0.528 vs 0.495 through F; iris centres agree within 2 units.",
+    "front/hair_width": "START: cap agrees (16.8-383.6 vs 18-383 units); F 205 vs 220 units because the hand contour starts 17 units higher where the temple is wider.",
+    "front/head_roundness": "START: as hair_width.",
+    "front/jaw_width": "START: as hair_width (agrees in units: the hand jaw contour E).",
+    "three_quarter/cheek_width": "HIDDEN: near cheek under the fringe lock; hand contour E.",
+    "three_quarter/iris_d_spacing": "HIDDEN: drooping lid; the visible iris disc spans 195.3-224.2 vs hand E 196.8-222.4.",
+    "three_quarter/iris_d_w": "HIDDEN: as iris_d_spacing.",
+    "three_quarter/jaw_width": "HIDDEN: as cheek_width."
   }
 }

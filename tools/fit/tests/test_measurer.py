@@ -1,8 +1,8 @@
 """T-214 face measurer tests.
 
-Pure tests (NumPy, Pillow) check the mask geometry on synthetic arrays. The validation test renders the auburn
-0.14.0 master with bpy (about 15 s on 4 cores; needs tools/bpy_blender.py's bpy module or BLENDER=<exe>, the
-released master and T-204's targets) and requires every disagreement with T-204's hand traces to be explained in
+Pure tests (NumPy, Pillow) check the mask geometry on synthetic arrays. The validation tests render the three
+released masters with bpy (about 60 s on 4 cores; needs tools/bpy_blender.py's bpy module or BLENDER=<exe>, the
+masters and T-204's targets) and requires every disagreement with T-204's hand traces to be explained in
 docs/evaluation/characters/T-214/explained.json."""
 import importlib.util
 import json
@@ -92,20 +92,36 @@ class Geometry(unittest.TestCase):
         self.assertIn("exposed_cheek", groups)
 
 
-@unittest.skipUnless(has_bpy() and AUBURN.is_file(), "needs bpy (or BLENDER) and the auburn 0.14.0 master")
+MASTERS = {"auburn": AUBURN,
+           "white_haired": ROOT / "assets/characters/girl_white_hair_blue_dress/versions/0.1.0/"
+                                  "girl_white_hair_blue_dress_master.blend",
+           "boy": ROOT / "assets/characters/boy_yellow_hoodie/versions/2.3.0/boy_yellow_hoodie_master.blend"}
+MIN_AGREE = {"auburn": 51, "white_haired": 46, "boy": 59}
+
+
+@unittest.skipUnless(has_bpy() and all(p.is_file() for p in MASTERS.values()), "needs bpy (or BLENDER) and the masters")
 class Validation(unittest.TestCase):
-    def test_auburn_agrees_with_t204_traces(self):
+    def check(self, character):
         with tempfile.TemporaryDirectory() as d:
-            args = type("A", (), dict(character="auburn", out=str(Path(d) / "v"), blend=None, spec=None, px=1024))
+            args = type("A", (), dict(character=character, out=str(Path(d) / "v"), blend=None, spec=None, px=1024))
             report = M.cmd_measure(args, validate=True)
         s = report["validation"]["summary"]
-        explained = json.loads((ROOT / "docs/evaluation/characters/T-214/explained.json").read_text())["auburn"]
+        explained = json.loads((ROOT / "docs/evaluation/characters/T-214/explained.json").read_text())[character]
         self.assertEqual(s["missing"], [])
         self.assertEqual(sorted(set(s["disagree"]) - set(explained)), [])
-        self.assertGreaterEqual(s["agree"], 51)
-        rows = {(r["view"], r["measure"]): r for r in report["validation"]["rows"]}
+        self.assertGreaterEqual(s["agree"], MIN_AGREE[character])
+        return {(r["view"], r["measure"]): r for r in report["validation"]["rows"]}
+
+    def test_auburn_agrees_with_t204_traces(self):
+        rows = self.check("auburn")
         for key in ("eye_y", "eye_to_chin", "mouth_width", "mouth_y", "head_roundness", "cheek_width", "iris_size"):
             self.assertTrue(rows[("front", key)]["agree"], key)
+
+    def test_white_haired_agrees_with_t204_traces(self):
+        self.check("white_haired")
+
+    def test_boy_agrees_with_t204_traces(self):
+        self.check("boy")
 
 
 if __name__ == "__main__":

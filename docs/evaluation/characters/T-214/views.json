@@ -1,31 +1,107 @@
 {
   "note": "T-214 measurer cameras = T-202 face_views.py (70 mm, 36 mm vertical sensor, square). Reference views carry the T-204 yaw and the matched expression (owner default D4: smiling references are scored against a matched smile). holdout = reference view kept for checking only, never fitted. View weights are equal (D2).",
-  "yaws": [0, 45, 90, 135, 180, -135, -90, -45],
+  "yaws": [
+    0,
+    45,
+    90,
+    135,
+    180,
+    -135,
+    -90,
+    -45
+  ],
   "characters": {
     "auburn": {
-      "id": "girl_auburn_bun_glasses", "version": "0.14.0", "target": [0, 0, 0.84], "frame_h": 0.66, "elev": 5,
+      "id": "girl_auburn_bun_glasses",
+      "version": "0.14.0",
+      "target": [
+        0,
+        0,
+        0.84
+      ],
+      "frame_h": 0.66,
+      "elev": 5,
       "views": {
-        "front": {"yaw": 0, "expression": {"face_SmileOpen": 1.0}, "reference": "girl_front_sheet30_front.png (open smile)"},
-        "three_quarter": {"yaw": -45, "expression": {}, "reference": "girl_34_sheet30_front_left.png"},
-        "side": {"yaw": 90, "expression": {}, "reference": "girl_side_sheet30_left.png"}
+        "front": {
+          "yaw": 0,
+          "expression": {
+            "face_SmileOpen": 1.0
+          },
+          "reference": "girl_front_sheet30_front.png (open smile)"
+        },
+        "three_quarter": {
+          "yaw": -45,
+          "expression": {},
+          "reference": "girl_34_sheet30_front_left.png"
+        },
+        "side": {
+          "yaw": 90,
+          "expression": {},
+          "reference": "girl_side_sheet30_left.png"
+        }
       },
       "holdout": "three_quarter"
     },
     "white_haired": {
-      "id": "girl_white_hair_blue_dress", "version": "0.1.0", "target": [0, 0, 0.79], "frame_h": 0.56, "elev": 5,
+      "id": "girl_white_hair_blue_dress",
+      "version": "0.1.0",
+      "target": [
+        0,
+        0,
+        0.79
+      ],
+      "frame_h": 0.56,
+      "elev": 5,
       "views": {
-        "front": {"yaw": 0, "expression": {"face_Smile": 1.0}, "reference": "third_front_id01_full.png (smile)"},
-        "three_quarter": {"yaw": -30, "expression": {}, "reference": "third_34_f14_head_3q.png"},
-        "side": {"yaw": -90, "expression": {}, "reference": "third_side_f14_head_side.png"}
+        "front": {
+          "yaw": 0,
+          "expression": {
+            "face_Smile": 1.0
+          },
+          "reference": "third_front_id01_full.png (smile)"
+        },
+        "three_quarter": {
+          "yaw": -30,
+          "expression": {},
+          "reference": "third_34_f14_head_3q.png"
+        },
+        "side": {
+          "yaw": -90,
+          "expression": {},
+          "reference": "third_side_f14_head_side.png"
+        }
       },
-      "holdout": "three_quarter"
+      "holdout": "three_quarter",
+      "flags": [
+        "bun_twin"
+      ]
     },
     "boy": {
-      "id": "boy_yellow_hoodie", "version": "2.3.0", "target": [0, 0, 0.91], "frame_h": 0.58, "elev": 6,
+      "id": "boy_yellow_hoodie",
+      "version": "2.3.0",
+      "target": [
+        0,
+        0,
+        0.91
+      ],
+      "frame_h": 0.58,
+      "elev": 6,
       "views": {
-        "front": {"yaw": 0, "expression": {}, "reference": "boy_front_val27_front.png"},
-        "three_quarter": {"yaw": -35, "expression": {}, "reference": "boy_34_val27_threequarter_right.png"},
-        "side": {"yaw": -90, "expression": {}, "reference": "boy_side_val27_side_right.png"}
+        "front": {
+          "yaw": 0,
+          "expression": {},
+          "reference": "boy_front_val27_front.png"
+        },
+        "three_quarter": {
+          "yaw": -35,
+          "expression": {},
+          "reference": "boy_34_val27_threequarter_right.png"
+        },
+        "side": {
+          "yaw": -90,
+          "expression": {},
+          "reference": "boy_side_val27_side_right.png"
+        }
       },
       "holdout": "three_quarter"
     }

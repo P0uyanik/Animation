@@ -1,0 +1,3169 @@
+{
+  "character": "boy",
+  "blend": "/home/user/Animation/assets/characters/boy_yellow_hoodie/versions/2.3.0/boy_yellow_hoodie_master.blend",
+  "px": 1024,
+  "holdout": "three_quarter",
+  "timings": {
+    "render_s": 14.88,
+    "measure_s": 1.59,
+    "blender": {
+      "load_s": 2.339580036999905,
+      "views": {
+        "ref-front": 4.1354216189997715,
+        "ref-three_quarter": 3.7927373409997927,
+        "ref-side": 3.879656217000047
+      }
+    }
+  },
+  "views": [
+    {
+      "name": "ref-front",
+      "yaw": 0,
+      "view": "front",
+      "expression": {},
+      "points": {
+        "iris": [
+          127.73,
+          310.22,
+          160.16
+        ],
+        "eye": [
+          114.84,
+          304.69,
+          160.16,
+          331.25
+        ],
+        "far": [
+          251.96,
+          310.22
+        ],
+        "chin": [
+          200.0,
+          362.11
+        ],
+        "crown": [
+          134.45,
+          21.09
+        ],
+        "crest": [
+          134.45,
+          21.09
+        ],
+        "left": [
+          [
+            97.66,
+            308.0
+          ],
+          [
+            98.05,
+            309.0
+          ],
+          [
+            98.44,
+            310.0
+          ],
+          [
+            99.22,
+            311.0
+          ],
+          [
+            99.61,
+            312.0
+          ],
+          [
+            100.0,
+            313.0
+          ],
+          [
+            100.78,
+            314.0
+          ],
+          [
+            100.78,
+            315.0
+          ],
+          [
+            101.17,
+            316.0
+          ],
+          [
+            101.95,
+            317.0
+          ],
+          [
+            103.12,
+            318.0
+          ],
+          [
+            103.52,
+            319.0
+          ],
+          [
+            104.69,
+            320.0
+          ],
+          [
+            105.08,
+            321.0
+          ],
+          [
+            106.25,
+            322.0
+          ],
+          [
+            107.03,
+            323.0
+          ],
+          [
+            108.2,
+            324.0
+          ],
+          [
+            108.59,
+            325.0
+          ],
+          [
+            109.38,
+            326.0
+          ],
+          [
+            110.16,
+            327.0
+          ],
+          [
+            110.94,
+            328.0
+          ],
+          [
+            112.11,
+            329.0
+          ],
+          [
+            112.89,
+            330.0
+          ],
+          [
+            114.06,
+            331.0
+          ],
+          [
+            114.84,
+            332.0
+          ],
+          [
+            115.62,
+            333.0
+          ],
+          [
+            116.8,
+            334.0
+          ],
+          [
+            117.58,
+            335.0
+          ],
+          [
+            118.36,
+            336.0
+          ],
+          [
+            119.14,
+            337.0
+          ],
+          [
+            119.92,
+            338.0
+          ],
+          [
+            120.7,
+            339.0
+          ],
+          [
+            121.48,
+            340.0
+          ],
+          [
+            122.27,
+            341.0
+          ],
+          [
+            123.44,
+            342.0
+          ],
+          [
+            125.0,
+            343.0
+          ],
+          [
+            125.78,
+            344.0
+          ],
+          [
+            127.34,
+            345.0
+          ],
+          [
+            128.52,
+            346.0
+          ],
+          [
+            130.08,
+            347.0
+          ],
+          [
+            131.25,
+            348.0
+          ],
+          [
+            132.81,
+            349.0
+          ],
+          [
+            134.77,
+            350.0
+          ],
+          [
+            136.33,
+            351.0
+          ],
+          [
+            138.67,
+            352.0
+          ],
+          [
+            140.23,
+            353.0
+          ],
+          [
+            143.36,
+            354.0
+          ],
+          [
+            145.31,
+            355.0
+          ],
+          [
+            148.83,
+            356.0
+          ],
+          [
+            151.56,
+            357.0
+          ],
+          [
+            156.64,
+            358.0
+          ],
+          [
+            163.28,
+            359.0
+          ],
+          [
+            165.62,
+            360.0
+          ],
+          [
+            169.53,
+            361.0
+          ],
+          [
+            170.7,
+            362.0
+          ],
+          [
+            200.0,
+            362.11
+          ]
+        ],
+        "right": [
+          [
+            302.34,
+            308.0
+          ],
+          [
+            301.95,
+            309.0
+          ],
+          [
+            301.56,
+            310.0
+          ],
+          [
+            300.78,
+            311.0
+          ],
+          [
+            300.39,
+            312.0
+          ],
+          [
+            299.61,
+            313.0
+          ],
+          [
+            299.22,
+            314.0
+          ],
+          [
+            298.83,
+            315.0
+          ],
+          [
+            298.83,
+            316.0
+          ],
+          [
+            298.05,
+            317.0
+          ],
+          [
+            296.88,
+            318.0
+          ],
+          [
+            296.48,
+            319.0
+          ],
+          [
+            295.31,
+            320.0
+          ],
+          [
+            294.92,
+            321.0
+          ],
+          [
+            293.75,
+            322.0
+          ],
+          [
+            292.97,
+            323.0
+          ],
+          [
+            291.8,
+            324.0
+          ],
+          [
+            291.02,
+            325.0
+          ],
+          [
+            290.62,
+            326.0
+          ],
+          [
+            289.84,
+            327.0
+          ],
+          [
+            289.06,
+            328.0
+          ],
+          [
+            287.89,
+            329.0
+          ],
+          [
+            287.11,
+            330.0
+          ],
+          [
+            285.94,
+            331.0
+          ],
+          [
+            285.16,
+            332.0
+          ],
+          [
+            284.38,
+            333.0
+          ],
+          [
+            283.2,
+            334.0
+          ],
+          [
+            282.42,
+            335.0
+          ],
+          [
+            281.64,
+            336.0
+          ],
+          [
+            280.86,
+            337.0
+          ],
+          [
+            280.08,
+            338.0
+          ],
+          [
+            279.3,
+            339.0
+          ],
+          [
+            278.12,
+            340.0
+          ],
+          [
+            277.73,
+            341.0
+          ],
+          [
+            276.56,
+            342.0
+          ],
+          [
+            275.0,
+            343.0
+          ],
+          [
+            274.22,
+            344.0
+          ],
+          [
+            272.66,
+            345.0
+          ],
+          [
+            271.48,
+            346.0
+          ],
+          [
+            269.92,
+            347.0
+          ],
+          [
+            268.75,
+            348.0
+          ],
+          [
+            266.8,
+            349.0
+          ],
+          [
+            265.23,
+            350.0
+          ],
+          [
+            263.67,
+            351.0
+          ],
+          [
+            261.33,
+            352.0
+          ],
+          [
+            259.77,
+            353.0
+          ],
+          [
+            256.64,
+            354.0
+          ],
+          [
+            254.69,
+            355.0
+          ],
+          [
+            250.78,
+            356.0
+          ],
+          [
+            248.44,
+            357.0
+          ],
+          [
+            243.36,
+            358.0
+          ],
+          [
+            236.72,
+            359.0
+          ],
+          [
+            234.38,
+            360.0
+          ],
+          [
+            230.47,
+            361.0
+          ],
+          [
+            229.3,
+            362.0
+          ],
+          [
+            200.0,
+            362.11
+          ]
+        ],
+        "brow": [
+          143.95,
+          263.67
+        ],
+        "mouth": [
+          192.58,
+          353.91,
+          207.42,
+          357.42
+        ],
+        "nose": [
+          193.36,
+          330.08,
+          206.64,
+          342.19
+        ],
+        "ear": [
+          62.11,
+          271.48,
+          100.78,
+          321.88
+        ],
+        "cap": [
+          [
+            16.8,
+            280.86
+          ],
+          [
+            383.59,
+            273.44
+          ]
+        ],
+        "no_cheek_hair": true,
+        "no_bun": true,
+        "skull": [
+          200.59,
+          127.73
+        ],
+        "midbrow": [
+          200.59,
+          262.33
+        ],
+        "fringe": [
+          200.59,
+          257.42
+        ]
+      },
+      "estimated": [
+        "far",
+        "iris",
+        "skull"
+      ],
+      "rows": [
+        {
+          "measure": "brow_gap",
+          "unit": "H",
+          "group": "face",
+          "current": 0.12029,
+          "mark": "M",
+          "reference": 0.12379,
+          "tolerance": 0.022,
+          "gap": -0.0035,
+          "z": -0.159,
+          "result": "within"
+        },
+        {
+          "measure": "bun_width",
+          "unit": "F",
+          "group": "hair",
+          "current": 0.0,
+          "mark": "M",
+          "reference": 0.0,
+          "tolerance": 0.12,
+          "gap": 0.0,
+          "z": 0.0,
+          "result": "within"
+        },
+        {
+          "measure": "cheek_width",
+          "unit": "F",
+          "group": "face",
+          "current": 0.79648,
+          "mark": "E",
+          "reference": 0.91902,
+          "tolerance": 0.055,
+          "gap": -0.12254,
+          "z": -2.228,
+          "result": "outside"
+        },
+        {
+          "measure": "chin_height",
+          "unit": "H",
+          "group": "face",
+          "current": 0.0189,
+          "mark": "M",
+          "reference": 0.10542,
+          "tolerance": 0.025,
+          "gap": -0.08652,
+          "z": -3.461,
+          "result": "outside"
+        },
+        {
+          "measure": "chin_width",
+          "unit": "F",
+          "group": "face",
+          "current": 0.39269,
+          "mark": "E",
+          "reference": 0.37978,
+          "tolerance": 0.075,
+          "gap": 0.01291,
+          "z": 0.172,
+          "result": "within"
+        },
+        {
+          "measure": "crown_above_skull",
+          "unit": "H",
+          "group": "hair",
+          "current": 0.31271,
+          "mark": "E",
+          "reference": 0.2206,
+          "tolerance": 0.1,
+          "gap": 0.09211,
+          "z": 0.921,
+          "result": "within"
+        },
+        {
+          "measure": "ear_base_mouth",
+          "unit": "H",
+          "group": "face",
+          "current": -0.09907,
+          "mark": "M",
+          "reference": -0.0441,
+          "tolerance": 0.045,
+          "gap": -0.05497,
+          "z": -1.222,
+          "result": "outside"
+        },
+        {
+          "measure": "ear_height",
+          "unit": "H",
+          "group": "face",
+          "current": 0.14779,
+          "mark": "M",
+          "reference": 0.1728,
+          "tolerance": 0.045,
+          "gap": -0.02501,
+          "z": -0.556,
+          "result": "within"
+        },
+        {
+          "measure": "ear_top_eye",
+          "unit": "H",
+          "group": "face",
+          "current": -0.1136,
+          "mark": "E",
+          "reference": -0.0257,
+          "tolerance": 0.045,
+          "gap": -0.0879,
+          "z": -1.953,
+          "result": "outside"
+        },
+        {
+          "measure": "ear_width",
+          "unit": "F",
+          "group": "face",
+          "current": 0.18893,
+          "mark": "M",
+          "reference": 0.1964,
+          "tolerance": 0.055,
+          "gap": -0.00747,
+          "z": -0.136,
+          "result": "within"
+        },
+        {
+          "measure": "eye_height",
+          "unit": "H",
+          "group": "face",
+          "current": 0.07788,
+          "mark": "M",
+          "reference": 0.05245,
+          "tolerance": 0.01686,
+          "gap": 0.02543,
+          "z": 1.509,
+          "result": "outside"
+        },
+        {
+          "measure": "eye_spacing",
+          "unit": "F",
+          "group": "face",
+          "current": 0.52773,
+          "mark": "E",
+          "reference": 0.49657,
+          "tolerance": 0.03,
+          "gap": 0.03116,
+          "z": 1.039,
+          "result": "outside"
+        },
+        {
+          "measure": "eye_to_chin",
+          "unit": "H",
+          "group": "face",
+          "current": 0.15216,
+          "mark": "E",
+          "reference": 0.23553,
+          "tolerance": 0.0305,
+          "gap": -0.08337,
+          "z": -2.733,
+          "result": "outside"
+        },
+        {
+          "measure": "eye_width",
+          "unit": "H",
+          "group": "face",
+          "current": 0.1329,
+          "mark": "M",
+          "reference": 0.16578,
+          "tolerance": 0.018,
+          "gap": -0.03288,
+          "z": -1.827,
+          "result": "outside"
+        },
+        {
+          "measure": "eye_x",
+          "unit": "F",
+          "group": "face",
+          "current": -0.27387,
+          "mark": "E",
+          "reference": -0.25773,
+          "tolerance": 0.025,
+          "gap": -0.01614,
+          "z": -0.645,
+          "result": "within"
+        },
+        {
+          "measure": "eye_y",
+          "unit": "H",
+          "group": "face",
+          "current": 0.84784,
+          "mark": "E",
+          "reference": 0.76447,
+          "tolerance": 0.0305,
+          "gap": 0.08337,
+          "z": 2.733,
+          "result": "outside"
+        },
+        {
+          "measure": "forehead_covered",
+          "unit": "skull-to-brow",
+          "group": "hair",
+          "current": 0.96352,
+          "mark": "E",
+          "reference": 1.0,
+          "tolerance": 0.13,
+          "gap": -0.03648,
+          "z": -0.281,
+          "result": "within"
+        },
+        {
+          "measure": "fringe_eye",
+          "unit": "H",
+          "group": "hair",
+          "current": 0.15483,
+          "mark": "E",
+          "reference": 0.0588,
+          "tolerance": 0.05,
+          "gap": 0.09603,
+          "z": 1.921,
+          "result": "outside"
+        },
+        {
+          "measure": "hair_cheek_width",
+          "unit": "F",
+          "group": "hair",
+          "current": 0.0,
+          "mark": "M",
+          "reference": 0.0,
+          "tolerance": 0.12,
+          "gap": 0.0,
+          "z": 0.0,
+          "result": "within"
+        },
+        {
+          "measure": "hair_height",
+          "unit": "H",
+          "group": "hair",
+          "current": 1.0,
+          "mark": "M",
+          "reference": 1.0,
+          "tolerance": 0.06,
+          "gap": 0.0,
+          "z": 0.0,
+          "result": "within"
+        },
+        {
+          "measure": "hair_width",
+          "unit": "F",
+          "group": "hair",
+          "current": 1.79202,
+          "mark": "M",
+          "reference": 1.6275,
+          "tolerance": 0.08,
+          "gap": 0.16452,
+          "z": 2.056,
+          "result": "outside"
+        },
+        {
+          "measure": "head_roundness",
+          "unit": "H",
+          "group": "face",
+          "current": 0.6002,
+          "mark": "M",
+          "reference": 0.61062,
+          "tolerance": 0.045,
+          "gap": -0.01042,
+          "z": -0.232,
+          "result": "within"
+        },
+        {
+          "measure": "iris_d_spacing",
+          "unit": "iris spacing",
+          "group": "face",
+          "current": 0.30024,
+          "mark": "E",
+          "reference": 0.33912,
+          "tolerance": 0.035,
+          "gap": -0.03888,
+          "z": -1.111,
+          "result": "outside"
+        },
+        {
+          "measure": "iris_d_w",
+          "unit": "eye W",
+          "group": "face",
+          "current": 0.71558,
+          "mark": "E",
+          "reference": 0.62027,
+          "tolerance": 0.05,
+          "gap": 0.09531,
+          "z": 1.906,
+          "result": "outside"
+        },
+        {
+          "measure": "iris_size",
+          "unit": "H",
+          "group": "face",
+          "current": 0.0951,
+          "mark": "E",
+          "reference": 0.10283,
+          "tolerance": 0.015,
+          "gap": -0.00773,
+          "z": -0.516,
+          "result": "within"
+        },
+        {
+          "measure": "jaw_width",
+          "unit": "F",
+          "group": "face",
+          "current": 0.6054,
+          "mark": "E",
+          "reference": 0.67291,
+          "tolerance": 0.065,
+          "gap": -0.06751,
+          "z": -1.039,
+          "result": "outside"
+        },
+        {
+          "measure": "mouth_height",
+          "unit": "H",
+          "group": "face",
+          "current": 0.01029,
+          "mark": "M",
+          "reference": 0.01258,
+          "tolerance": 0.015,
+          "gap": -0.00229,
+          "z": -0.152,
+          "result": "within"
+        },
+        {
+          "measure": "mouth_width",
+          "unit": "F",
+          "group": "face",
+          "current": 0.0725,
+          "mark": "M",
+          "reference": 0.07558,
+          "tolerance": 0.025,
+          "gap": -0.00308,
+          "z": -0.123,
+          "result": "within"
+        },
+        {
+          "measure": "mouth_x",
+          "unit": "F",
+          "group": "face",
+          "current": 0.0,
+          "mark": "M",
+          "reference": 0.00173,
+          "tolerance": 0.025,
+          "gap": -0.00173,
+          "z": -0.069,
+          "result": "within"
+        },
+        {
+          "measure": "mouth_y",
+          "unit": "H",
+          "group": "face",
+          "current": 0.9811,
+          "mark": "M",
+          "reference": 0.89458,
+          "tolerance": 0.025,
+          "gap": 0.08652,
+          "z": 3.461,
+          "result": "outside"
+        },
+        {
+          "measure": "nose_height",
+          "unit": "H",
+          "group": "face",
+          "current": 0.03551,
+          "mark": "M",
+          "reference": 0.05037,
+          "tolerance": 0.018,
+          "gap": -0.01486,
+          "z": -0.825,
+          "result": "within"
+        },
+        {
+          "measure": "nose_width",
+          "unit": "F",
+          "group": "face",
+          "current": 0.06488,
+          "mark": "M",
+          "reference": 0.08244,
+          "tolerance": 0.025,
+          "gap": -0.01756,
+          "z": -0.702,
+          "result": "within"
+        },
+        {
+          "measure": "nose_y",
+          "unit": "H",
+          "group": "face",
+          "current": 0.92383,
+          "mark": "M",
+          "reference": 0.83792,
+          "tolerance": 0.025,
+          "gap": 0.08591,
+          "z": 3.436,
+          "result": "outside"
+        },
+        {
+          "measure": "opening_h_w",
+          "unit": "eye W",
+          "group": "face",
+          "current": 0.58605,
+          "mark": "M",
+          "reference": 0.31641,
+          "tolerance": 0.06,
+          "gap": 0.26964,
+          "z": 4.494,
+          "result": "outside"
+        }
+      ],
+      "error": null
+    },
+    {
+      "name": "ref-three_quarter",
+      "yaw": -35,
+      "view": "three_quarter",
+      "expression": {},
+      "points": {
+        "iris": [
+          195.31,
+          313.39,
+          224.22
+        ],
+        "eye": [
+          173.05,
+          312.89,
+          224.22,
+          335.55
+        ],
+        "far": [
+          291.47,
+          299.36
+        ],
+        "chin": [
+          211.52,
+          363.67
+        ],
+        "crown": [
+          148.24,
+          16.02
+        ],
+        "crest": [
+          148.24,
+          16.02
+        ],
+        "left": [
+          [
+            108.59,
+            314.0
+          ],
+          [
+            109.77,
+            315.0
+          ],
+          [
+            110.55,
+            316.0
+          ],
+          [
+            111.72,
+            317.0
+          ],
+          [
+            112.5,
+            318.0
+          ],
+          [
+            112.89,
+            319.0
+          ],
+          [
+            113.28,
+            320.0
+          ],
+          [
+            113.67,
+            321.0
+          ],
+          [
+            114.06,
+            322.0
+          ],
+          [
+            114.06,
+            323.0
+          ],
+          [
+            114.06,
+            324.0
+          ],
+          [
+            114.45,
+            325.0
+          ],
+          [
+            114.45,
+            326.0
+          ],
+          [
+            114.06,
+            327.0
+          ],
+          [
+            115.23,
+            328.0
+          ],
+          [
+            116.41,
+            329.0
+          ],
+          [
+            117.58,
+            330.0
+          ],
+          [
+            119.53,
+            331.0
+          ],
+          [
+            120.7,
+            332.0
+          ],
+          [
+            122.27,
+            333.0
+          ],
+          [
+            124.22,
+            334.0
+          ],
+          [
+            125.39,
+            335.0
+          ],
+          [
+            126.95,
+            336.0
+          ],
+          [
+            128.52,
+            337.0
+          ],
+          [
+            130.86,
+            338.0
+          ],
+          [
+            132.42,
+            339.0
+          ],
+          [
+            134.77,
+            340.0
+          ],
+          [
+            136.72,
+            341.0
+          ],
+          [
+            137.89,
+            342.0
+          ],
+          [
+            140.23,
+            343.0
+          ],
+          [
+            142.19,
+            344.0
+          ],
+          [
+            144.53,
+            345.0
+          ],
+          [
+            146.09,
+            346.0
+          ],
+          [
+            148.83,
+            347.0
+          ],
+          [
+            150.78,
+            348.0
+          ],
+          [
+            153.91,
+            349.0
+          ],
+          [
+            157.03,
+            350.0
+          ],
+          [
+            158.98,
+            351.0
+          ],
+          [
+            162.11,
+            352.0
+          ],
+          [
+            164.45,
+            353.0
+          ],
+          [
+            168.36,
+            354.0
+          ],
+          [
+            171.09,
+            355.0
+          ],
+          [
+            174.61,
+            356.0
+          ],
+          [
+            177.34,
+            357.0
+          ],
+          [
+            181.25,
+            358.0
+          ],
+          [
+            185.55,
+            359.0
+          ],
+          [
+            189.06,
+            360.0
+          ],
+          [
+            195.7,
+            361.0
+          ],
+          [
+            210.16,
+            362.0
+          ],
+          [
+            208.59,
+            363.0
+          ],
+          [
+            211.52,
+            363.67
+          ]
+        ],
+        "right": [
+          [
+            304.69,
+            314.0
+          ],
+          [
+            304.3,
+            315.0
+          ],
+          [
+            304.3,
+            316.0
+          ],
+          [
+            303.91,
+            317.0
+          ],
+          [
+            303.52,
+            318.0
+          ],
+          [
+            303.12,
+            319.0
+          ],
+          [
+            303.12,
+            320.0
+          ],
+          [
+            302.73,
+            321.0
+          ],
+          [
+            302.73,
+            322.0
+          ],
+          [
+            302.34,
+            323.0
+          ],
+          [
+            302.34,
+            324.0
+          ],
+          [
+            301.95,
+            325.0
+          ],
+          [
+            301.95,
+            326.0
+          ],
+          [
+            301.56,
+            327.0
+          ],
+          [
+            301.17,
+            328.0
+          ],
+          [
+            300.78,
+            329.0
+          ],
+          [
+            300.39,
+            330.0
+          ],
+          [
+            300.0,
+            331.0
+          ],
+          [
+            299.22,
+            332.0
+          ],
+          [
+            298.44,
+            333.0
+          ],
+          [
+            297.27,
+            334.0
+          ],
+          [
+            296.48,
+            335.0
+          ],
+          [
+            294.92,
+            336.0
+          ],
+          [
+            294.14,
+            337.0
+          ],
+          [
+            292.58,
+            338.0
+          ],
+          [
+            291.41,
+            339.0
+          ],
+          [
+            289.84,
+            340.0
+          ],
+          [
+            288.67,
+            341.0
+          ],
+          [
+            286.72,
+            342.0
+          ],
+          [
+            284.38,
+            343.0
+          ],
+          [
+            282.81,
+            344.0
+          ],
+          [
+            280.08,
+            345.0
+          ],
+          [
+            278.12,
+            346.0
+          ],
+          [
+            275.0,
+            347.0
+          ],
+          [
+            273.05,
+            348.0
+          ],
+          [
+            269.53,
+            349.0
+          ],
+          [
+            266.02,
+            350.0
+          ],
+          [
+            263.67,
+            351.0
+          ],
+          [
+            260.55,
+            352.0
+          ],
+          [
+            257.42,
+            353.0
+          ],
+          [
+            253.12,
+            354.0
+          ],
+          [
+            250.0,
+            355.0
+          ],
+          [
+            245.7,
+            356.0
+          ],
+          [
+            242.19,
+            357.0
+          ],
+          [
+            235.94,
+            358.0
+          ],
+          [
+            230.47,
+            359.0
+          ],
+          [
+            226.17,
+            360.0
+          ],
+          [
+            219.92,
+            361.0
+          ],
+          [
+            218.36,
+            362.0
+          ],
+          [
+            215.23,
+            363.0
+          ],
+          [
+            211.52,
+            363.67
+          ]
+        ],
+        "brow": [
+          209.96,
+          266.8
+        ],
+        "mouth": [
+          246.48,
+          348.44,
+          258.98,
+          353.52
+        ],
+        "nose": [
+          257.03,
+          324.61,
+          266.8,
+          337.89
+        ],
+        "ear": [
+          58.98,
+          286.72,
+          114.45,
+          341.02
+        ],
+        "ear_turn": [
+          [
+            58.98,
+            313.67
+          ],
+          [
+            108.59,
+            313.67
+          ]
+        ],
+        "cap": [
+          [
+            13.67,
+            179.3
+          ],
+          [
+            348.44,
+            253.12
+          ]
+        ],
+        "no_cheek_hair": true,
+        "no_bun": true,
+        "skull": [
+          263.09,
+          157.03
+        ],
+        "midbrow": [
+          263.09,
+          262.09
+        ],
+        "fringe": [
+          263.09,
+          253.12
+        ]
+      },
+      "estimated": [
+        "far",
+        "iris",
+        "skull"
+      ],
+      "rows": [
+        {
+          "measure": "brow_gap",
+          "unit": "H",
+          "group": "face",
+          "current": 0.13258,
+          "mark": "M",
+          "reference": 0.12065,
+          "tolerance": 0.022,
+          "gap": 0.01193,
+          "z": 0.542,
+          "result": "within"
+        },
+        {
+          "measure": "bun_width",
+          "unit": "F",
+          "group": "hair",
+          "current": 0.0,
+          "mark": "M",
+          "reference": null,
+          "tolerance": null,
+          "gap": null,
+          "z": null,
+          "result": ""
+        },
+        {
+          "measure": "cheek_width",
+          "unit": "F",
+          "group": "face",
+          "current": 0.8173,
+          "mark": "E",
+          "reference": 0.94387,
+          "tolerance": 0.055,
+          "gap": -0.12657,
+          "z": -2.301,
+          "result": "outside"
+        },
+        {
+          "measure": "chin_height",
+          "unit": "H",
+          "group": "face",
+          "current": 0.0365,
+          "mark": "M",
+          "reference": 0.11052,
+          "tolerance": 0.025,
+          "gap": -0.07402,
+          "z": -2.961,
+          "result": "outside"
+        },
+        {
+          "measure": "chin_width",
+          "unit": "F",
+          "group": "face",
+          "current": 0.17935,
+          "mark": "E",
+          "reference": 0.3477,
+          "tolerance": 0.075,
+          "gap": -0.16835,
+          "z": -2.245,
+          "result": "outside"
+        },
+        {
+          "measure": "crown_above_skull",
+          "unit": "H",
+          "group": "hair",
+          "current": 0.40561,
+          "mark": "E",
+          "reference": null,
+          "tolerance": null,
+          "gap": null,
+          "z": null,
+          "result": ""
+        },
+        {
+          "measure": "ear_base_mouth",
+          "unit": "H",
+          "group": "face",
+          "current": -0.02865,
+          "mark": "M",
+          "reference": null,
+          "tolerance": null,
+          "gap": null,
+          "z": null,
+          "result": ""
+        },
+        {
+          "measure": "ear_height",
+          "unit": "H",
+          "group": "face",
+          "current": 0.15619,
+          "mark": "M",
+          "reference": null,
+          "tolerance": null,
+          "gap": null,
+          "z": null,
+          "result": ""
+        },
+        {
+          "measure": "ear_top_eye",
+          "unit": "H",
+          "group": "face",
+          "current": -0.05654,
+          "mark": "E",
+          "reference": null,
+          "tolerance": null,
+          "gap": null,
+          "z": null,
+          "result": ""
+        },
+        {
+          "measure": "ear_turn_projection",
+          "unit": "F",
+          "group": "face",
+          "current": 0.25298,
+          "mark": "M",
+          "reference": 0.2229,
+          "tolerance": 0.06,
+          "gap": 0.03008,
+          "z": 0.501,
+          "result": "within"
+        },
+        {
+          "measure": "ear_width",
+          "unit": "F",
+          "group": "face",
+          "current": 0.28287,
+          "mark": "M",
+          "reference": null,
+          "tolerance": null,
+          "gap": null,
+          "z": null,
+          "result": ""
+        },
+        {
+          "measure": "eye_height",
+          "unit": "H",
+          "group": "face",
+          "current": 0.06518,
+          "mark": "M",
+          "reference": 0.05429,
+          "tolerance": 0.0175,
+          "gap": 0.01089,
+          "z": 0.622,
+          "result": "within"
+        },
+        {
+          "measure": "eye_spacing",
+          "unit": "F",
+          "group": "face",
+          "current": 0.42275,
+          "mark": "E",
+          "reference": 0.44965,
+          "tolerance": 0.03,
+          "gap": -0.0269,
+          "z": -0.897,
+          "result": "within"
+        },
+        {
+          "measure": "eye_to_chin",
+          "unit": "H",
+          "group": "face",
+          "current": 0.14463,
+          "mark": "E",
+          "reference": 0.23521,
+          "tolerance": 0.02954,
+          "gap": -0.09058,
+          "z": -3.066,
+          "result": "outside"
+        },
+        {
+          "measure": "eye_width",
+          "unit": "H",
+          "group": "face",
+          "current": 0.14719,
+          "mark": "M",
+          "reference": 0.17899,
+          "tolerance": 0.018,
+          "gap": -0.0318,
+          "z": -1.767,
+          "result": "outside"
+        },
+        {
+          "measure": "eye_x",
+          "unit": "F",
+          "group": "face",
+          "current": 0.01594,
+          "mark": "E",
+          "reference": -0.06474,
+          "tolerance": 0.025,
+          "gap": 0.08068,
+          "z": 3.227,
+          "result": "outside"
+        },
+        {
+          "measure": "eye_y",
+          "unit": "H",
+          "group": "face",
+          "current": 0.85537,
+          "mark": "E",
+          "reference": 0.76479,
+          "tolerance": 0.02954,
+          "gap": 0.09058,
+          "z": 3.066,
+          "result": "outside"
+        },
+        {
+          "measure": "forehead_covered",
+          "unit": "skull-to-brow",
+          "group": "hair",
+          "current": 0.91462,
+          "mark": "E",
+          "reference": null,
+          "tolerance": null,
+          "gap": null,
+          "z": null,
+          "result": ""
+        },
+        {
+          "measure": "fringe_eye",
+          "unit": "H",
+          "group": "hair",
+          "current": 0.15319,
+          "mark": "E",
+          "reference": null,
+          "tolerance": null,
+          "gap": null,
+          "z": null,
+          "result": ""
+        },
+        {
+          "measure": "hair_cheek_width",
+          "unit": "F",
+          "group": "hair",
+          "current": 0.0,
+          "mark": "M",
+          "reference": null,
+          "tolerance": null,
+          "gap": null,
+          "z": null,
+          "result": ""
+        },
+        {
+          "measure": "hair_height",
+          "unit": "H",
+          "group": "hair",
+          "current": 1.0,
+          "mark": "M",
+          "reference": 1.0,
+          "tolerance": 0.06,
+          "gap": 0.0,
+          "z": 0.0,
+          "result": "within"
+        },
+        {
+          "measure": "hair_width",
+          "unit": "F",
+          "group": "hair",
+          "current": 1.70714,
+          "mark": "M",
+          "reference": 1.62372,
+          "tolerance": 0.08,
+          "gap": 0.08342,
+          "z": 1.043,
+          "result": "outside"
+        },
+        {
+          "measure": "head_roundness",
+          "unit": "H",
+          "group": "face",
+          "current": 0.56407,
+          "mark": "M",
+          "reference": 0.55905,
+          "tolerance": 0.045,
+          "gap": 0.00502,
+          "z": 0.112,
+          "result": "within"
+        },
+        {
+          "measure": "iris_d_spacing",
+          "unit": "iris spacing",
+          "group": "face",
+          "current": 0.34873,
+          "mark": "E",
+          "reference": 0.39994,
+          "tolerance": 0.035,
+          "gap": -0.05121,
+          "z": -1.463,
+          "result": "outside"
+        },
+        {
+          "measure": "iris_d_w",
+          "unit": "eye W",
+          "group": "face",
+          "current": 0.56498,
+          "mark": "E",
+          "reference": 0.56169,
+          "tolerance": 0.05,
+          "gap": 0.00329,
+          "z": 0.066,
+          "result": "within"
+        },
+        {
+          "measure": "iris_size",
+          "unit": "H",
+          "group": "face",
+          "current": 0.08316,
+          "mark": "E",
+          "reference": 0.10054,
+          "tolerance": 0.015,
+          "gap": -0.01738,
+          "z": -1.159,
+          "result": "outside"
+        },
+        {
+          "measure": "jaw_width",
+          "unit": "F",
+          "group": "face",
+          "current": 0.44839,
+          "mark": "E",
+          "reference": 0.64654,
+          "tolerance": 0.065,
+          "gap": -0.19815,
+          "z": -3.048,
+          "result": "outside"
+        },
+        {
+          "measure": "mouth_height",
+          "unit": "H",
+          "group": "face",
+          "current": 0.01461,
+          "mark": "M",
+          "reference": 0.01205,
+          "tolerance": 0.015,
+          "gap": 0.00256,
+          "z": 0.171,
+          "result": "within"
+        },
+        {
+          "measure": "mouth_width",
+          "unit": "F",
+          "group": "face",
+          "current": 0.06374,
+          "mark": "M",
+          "reference": 0.08273,
+          "tolerance": 0.025,
+          "gap": -0.01899,
+          "z": -0.759,
+          "result": "within"
+        },
+        {
+          "measure": "mouth_x",
+          "unit": "F",
+          "group": "face",
+          "current": 0.23503,
+          "mark": "M",
+          "reference": 0.20682,
+          "tolerance": 0.025,
+          "gap": 0.02821,
+          "z": 1.129,
+          "result": "outside"
+        },
+        {
+          "measure": "mouth_y",
+          "unit": "H",
+          "group": "face",
+          "current": 0.9635,
+          "mark": "M",
+          "reference": 0.88948,
+          "tolerance": 0.025,
+          "gap": 0.07402,
+          "z": 2.961,
+          "result": "outside"
+        },
+        {
+          "measure": "nose_height",
+          "unit": "H",
+          "group": "face",
+          "current": 0.0382,
+          "mark": "M",
+          "reference": 0.04223,
+          "tolerance": 0.018,
+          "gap": -0.00403,
+          "z": -0.224,
+          "result": "within"
+        },
+        {
+          "measure": "nose_width",
+          "unit": "F",
+          "group": "face",
+          "current": 0.04982,
+          "mark": "M",
+          "reference": 0.09354,
+          "tolerance": 0.025,
+          "gap": -0.04372,
+          "z": -1.749,
+          "result": "outside"
+        },
+        {
+          "measure": "nose_y",
+          "unit": "H",
+          "group": "face",
+          "current": 0.90675,
+          "mark": "M",
+          "reference": 0.83618,
+          "tolerance": 0.025,
+          "gap": 0.07057,
+          "z": 2.823,
+          "result": "outside"
+        },
+        {
+          "measure": "opening_h_w",
+          "unit": "eye W",
+          "group": "face",
+          "current": 0.44284,
+          "mark": "M",
+          "reference": 0.30329,
+          "tolerance": 0.06,
+          "gap": 0.13955,
+          "z": 2.326,
+          "result": "outside"
+        }
+      ],
+      "error": null
+    },
+    {
+      "name": "ref-side",
+      "yaw": -90,
+      "view": "side",
+      "expression": {},
+      "points": {
+        "iris": [
+          287.89,
+          300.25,
+          292.58
+        ],
+        "eye": [
+          278.12,
+          302.34,
+          295.31,
+          321.48
+        ],
+        "eye_y": 311.91,
+        "chin": [
+          236.91,
+          353.52
+        ],
+        "crown": [
+          204.73,
+          12.89
+        ],
+        "crest": [
+          204.73,
+          12.89
+        ],
+        "brow": [
+          287.3,
+          254.69
+        ],
+        "cap": [
+          [
+            17.19,
+            254.69
+          ],
+          [
+            319.92,
+            173.44
+          ]
+        ],
+        "hair_at_cheek": [
+          [
+            58.59,
+            320.31
+          ],
+          [
+            235.55,
+            320.31
+          ]
+        ],
+        "no_bun": true,
+        "facing": 1,
+        "profile": [
+          [
+            297.66,
+            311.91
+          ],
+          [
+            295.31,
+            332.71
+          ],
+          [
+            276.95,
+            347.27
+          ]
+        ],
+        "exposed": [
+          [
+            205.86,
+            332.42
+          ],
+          [
+            295.31,
+            332.42
+          ]
+        ],
+        "profile_span": [
+          [
+            57.03,
+            311.91
+          ],
+          [
+            297.66,
+            311.91
+          ]
+        ],
+        "nose_tip": null
+      },
+      "estimated": [
+        "brow",
+        "crown",
+        "iris"
+      ],
+      "rows": [
+        {
+          "measure": "brow_gap",
+          "unit": "H",
+          "group": "face",
+          "current": 0.13989,
+          "mark": "E",
+          "reference": null,
+          "tolerance": null,
+          "gap": null,
+          "z": null,
+          "result": ""
+        },
+        {
+          "measure": "bun_width",
+          "unit": "F",
+          "group": "hair",
+          "current": 0.0,
+          "mark": "M",
+          "reference": null,
+          "tolerance": null,
+          "gap": null,
+          "z": null,
+          "result": ""
+        },
+        {
+          "measure": "cheek_advance",
+          "unit": "H",
+          "group": "face",
+          "current": -0.0069,
+          "mark": "E",
+          "reference": 0.0117,
+          "tolerance": 0.03004,
+          "gap": -0.0186,
+          "z": -0.619,
+          "result": "within"
+        },
+        {
+          "measure": "cheek_bulge",
+          "unit": "H",
+          "group": "face",
+          "current": 0.02887,
+          "mark": "E",
+          "reference": 0.02886,
+          "tolerance": 0.02067,
+          "gap": 1e-05,
+          "z": 0.0,
+          "result": "within"
+        },
+        {
+          "measure": "exposed_cheek",
+          "unit": "H",
+          "group": "hair",
+          "current": 0.2626,
+          "mark": "E",
+          "reference": 0.25146,
+          "tolerance": 0.035,
+          "gap": 0.01114,
+          "z": 0.318,
+          "result": "within"
+        },
+        {
+          "measure": "eye_height",
+          "unit": "H",
+          "group": "face",
+          "current": 0.05619,
+          "mark": "E",
+          "reference": 0.05556,
+          "tolerance": 0.02,
+          "gap": 0.00063,
+          "z": 0.032,
+          "result": "within"
+        },
+        {
+          "measure": "eye_to_chin",
+          "unit": "H",
+          "group": "face",
+          "current": 0.12216,
+          "mark": "E",
+          "reference": 0.23684,
+          "tolerance": 0.02892,
+          "gap": -0.11468,
+          "z": -3.966,
+          "result": "outside"
+        },
+        {
+          "measure": "eye_width",
+          "unit": "H",
+          "group": "face",
+          "current": 0.05047,
+          "mark": "E",
+          "reference": 0.0848,
+          "tolerance": 0.02,
+          "gap": -0.03433,
+          "z": -1.717,
+          "result": "outside"
+        },
+        {
+          "measure": "eye_y",
+          "unit": "H",
+          "group": "face",
+          "current": 0.87784,
+          "mark": "E",
+          "reference": 0.76316,
+          "tolerance": 0.02892,
+          "gap": 0.11468,
+          "z": 3.966,
+          "result": "outside"
+        },
+        {
+          "measure": "hair_height",
+          "unit": "H",
+          "group": "hair",
+          "current": 1.0,
+          "mark": "E",
+          "reference": null,
+          "tolerance": null,
+          "gap": null,
+          "z": null,
+          "result": ""
+        },
+        {
+          "measure": "iris_d_w",
+          "unit": "eye W",
+          "group": "face",
+          "current": 0.27283,
+          "mark": "E",
+          "reference": null,
+          "tolerance": null,
+          "gap": null,
+          "z": null,
+          "result": ""
+        },
+        {
+          "measure": "iris_size",
+          "unit": "H",
+          "group": "face",
+          "current": 0.01377,
+          "mark": "E",
+          "reference": null,
+          "tolerance": null,
+          "gap": null,
+          "z": null,
+          "result": ""
+        },
+        {
+          "measure": "opening_h_w",
+          "unit": "eye W",
+          "group": "face",
+          "current": 1.11344,
+          "mark": "M",
+          "reference": 0.65517,
+          "tolerance": 0.15,
+          "gap": 0.45827,
+          "z": 3.055,
+          "result": "outside"
+        },
+        {
+          "measure": "profile_depth",
+          "unit": "H",
+          "group": "hair",
+          "current": 0.70643,
+          "mark": "E",
+          "reference": 0.72515,
+          "tolerance": 0.045,
+          "gap": -0.01872,
+          "z": -0.416,
+          "result": "within"
+        },
+        {
+          "measure": "profile_nose",
+          "unit": "H",
+          "group": "face",
+          "current": null,
+          "mark": "",
+          "reference": 0.02924,
+          "tolerance": 0.015,
+          "gap": null,
+          "z": null,
+          "result": "unscored"
+        }
+      ],
+      "error": null
+    }
+  ],
+  "validation": {
+    "rows": [
+      {
+        "view": "front",
+        "measure": "brow_gap",
+        "group": "face",
+        "hand": 0.1156,
+        "hand_mark": "M",
+        "measurer": 0.12029,
+        "measurer_mark": "M",
+        "diff": 0.00469,
+        "tolerance": 0.022,
+        "agree": true,
+        "with_hand_h": 0.121,
+        "agree_with_hand_h": true
+      },
+      {
+        "view": "front",
+        "measure": "bun_width",
+        "group": "hair",
+        "hand": 0.0,
+        "hand_mark": "M",
+        "measurer": 0.0,
+        "measurer_mark": "M",
+        "diff": 0.0,
+        "tolerance": 0.12,
+        "agree": true,
+        "with_hand_h": 0.0,
+        "agree_with_hand_h": true
+      },
+      {
+        "view": "front",
+        "measure": "cheek_width",
+        "group": "face",
+        "hand": 0.75288,
+        "hand_mark": "E",
+        "measurer": 0.79648,
+        "measurer_mark": "E",
+        "diff": 0.0436,
+        "tolerance": 0.055,
+        "agree": true,
+        "with_hand_h": 0.79689,
+        "agree_with_hand_h": true
+      },
+      {
+        "view": "front",
+        "measure": "chin_height",
+        "group": "face",
+        "hand": 0.01826,
+        "hand_mark": "E",
+        "measurer": 0.0189,
+        "measurer_mark": "M",
+        "diff": 0.00064,
+        "tolerance": 0.025,
+        "agree": true,
+        "with_hand_h": 0.01869,
+        "agree_with_hand_h": true
+      },
+      {
+        "view": "front",
+        "measure": "chin_width",
+        "group": "face",
+        "hand": 0.192,
+        "hand_mark": "E",
+        "measurer": 0.39269,
+        "measurer_mark": "E",
+        "diff": 0.20069,
+        "tolerance": 0.075,
+        "agree": false,
+        "with_hand_h": 0.39933,
+        "agree_with_hand_h": false
+      },
+      {
+        "view": "front",
+        "measure": "crown_above_skull",
+        "group": "hair",
+        "hand": 0.13274,
+        "hand_mark": "E",
+        "measurer": 0.31271,
+        "measurer_mark": "E",
+        "diff": 0.17997,
+        "tolerance": 0.1,
+        "agree": false,
+        "with_hand_h": 0.30894,
+        "agree_with_hand_h": false
+      },
+      {
+        "view": "front",
+        "measure": "ear_base_mouth",
+        "group": "face",
+        "hand": -0.09973,
+        "hand_mark": "E",
+        "measurer": -0.09907,
+        "measurer_mark": "M",
+        "diff": 0.00066,
+        "tolerance": 0.045,
+        "agree": true,
+        "with_hand_h": -0.09966,
+        "agree_with_hand_h": true
+      },
+      {
+        "view": "front",
+        "measure": "ear_height",
+        "group": "face",
+        "hand": 0.14749,
+        "hand_mark": "E",
+        "measurer": 0.14779,
+        "measurer_mark": "M",
+        "diff": 0.0003,
+        "tolerance": 0.045,
+        "agree": true,
+        "with_hand_h": 0.14867,
+        "agree_with_hand_h": true
+      },
+      {
+        "view": "front",
+        "measure": "ear_top_eye",
+        "group": "face",
+        "hand": -0.12965,
+        "hand_mark": "E",
+        "measurer": -0.1136,
+        "measurer_mark": "E",
+        "diff": 0.01605,
+        "tolerance": 0.045,
+        "agree": true,
+        "with_hand_h": -0.11428,
+        "agree_with_hand_h": true
+      },
+      {
+        "view": "front",
+        "measure": "ear_width",
+        "group": "face",
+        "hand": 0.17706,
+        "hand_mark": "E",
+        "measurer": 0.18893,
+        "measurer_mark": "M",
+        "diff": 0.01187,
+        "tolerance": 0.055,
+        "agree": true,
+        "with_hand_h": 0.18893,
+        "agree_with_hand_h": true
+      },
+      {
+        "view": "front",
+        "measure": "eye_height",
+        "group": "face",
+        "hand": 0.08174,
+        "hand_mark": "M",
+        "measurer": 0.07788,
+        "measurer_mark": "M",
+        "diff": -0.00386,
+        "tolerance": 0.01686,
+        "agree": true,
+        "with_hand_h": 0.07835,
+        "agree_with_hand_h": true
+      },
+      {
+        "view": "front",
+        "measure": "eye_spacing",
+        "group": "face",
+        "hand": 0.49537,
+        "hand_mark": "E",
+        "measurer": 0.52773,
+        "measurer_mark": "E",
+        "diff": 0.03236,
+        "tolerance": 0.03,
+        "agree": false,
+        "with_hand_h": 0.52773,
+        "agree_with_hand_h": false
+      },
+      {
+        "view": "front",
+        "measure": "eye_to_chin",
+        "group": "face",
+        "hand": 0.13584,
+        "hand_mark": "E",
+        "measurer": 0.15216,
+        "measurer_mark": "E",
+        "diff": 0.01632,
+        "tolerance": 0.0305,
+        "agree": true,
+        "with_hand_h": 0.15274,
+        "agree_with_hand_h": true
+      },
+      {
+        "view": "front",
+        "measure": "eye_width",
+        "group": "face",
+        "hand": 0.14549,
+        "hand_mark": "M",
+        "measurer": 0.1329,
+        "measurer_mark": "M",
+        "diff": -0.01259,
+        "tolerance": 0.018,
+        "agree": true,
+        "with_hand_h": 0.13369,
+        "agree_with_hand_h": true
+      },
+      {
+        "view": "front",
+        "measure": "eye_x",
+        "group": "face",
+        "hand": -0.25305,
+        "hand_mark": "E",
+        "measurer": -0.27387,
+        "measurer_mark": "E",
+        "diff": -0.02082,
+        "tolerance": 0.025,
+        "agree": true,
+        "with_hand_h": -0.27387,
+        "agree_with_hand_h": true
+      },
+      {
+        "view": "front",
+        "measure": "eye_y",
+        "group": "face",
+        "hand": 0.86416,
+        "hand_mark": "E",
+        "measurer": 0.84784,
+        "measurer_mark": "E",
+        "diff": -0.01632,
+        "tolerance": 0.0305,
+        "agree": true,
+        "with_hand_h": 0.84726,
+        "agree_with_hand_h": true
+      },
+      {
+        "view": "front",
+        "measure": "forehead_covered",
+        "group": "hair",
+        "hand": 0.97436,
+        "hand_mark": "E",
+        "measurer": 0.96352,
+        "measurer_mark": "E",
+        "diff": -0.01084,
+        "tolerance": 0.13,
+        "agree": true,
+        "with_hand_h": 0.96352,
+        "agree_with_hand_h": true
+      },
+      {
+        "view": "front",
+        "measure": "fringe_eye",
+        "group": "hair",
+        "hand": 0.17094,
+        "hand_mark": "E",
+        "measurer": 0.15483,
+        "measurer_mark": "E",
+        "diff": -0.01611,
+        "tolerance": 0.05,
+        "agree": true,
+        "with_hand_h": 0.15575,
+        "agree_with_hand_h": true
+      },
+      {
+        "view": "front",
+        "measure": "hair_cheek_width",
+        "group": "hair",
+        "hand": 0.0,
+        "hand_mark": "M",
+        "measurer": 0.0,
+        "measurer_mark": "M",
+        "diff": 0.0,
+        "tolerance": 0.12,
+        "agree": true,
+        "with_hand_h": 0.0,
+        "agree_with_hand_h": true
+      },
+      {
+        "view": "front",
+        "measure": "hair_height",
+        "group": "hair",
+        "hand": 1.0,
+        "hand_mark": "M",
+        "measurer": 1.0,
+        "measurer_mark": "M",
+        "diff": 0.0,
+        "tolerance": 0.06,
+        "agree": true,
+        "with_hand_h": 1.00563,
+        "agree_with_hand_h": true
+      },
+      {
+        "view": "front",
+        "measure": "hair_width",
+        "group": "hair",
+        "hand": 1.65706,
+        "hand_mark": "M",
+        "measurer": 1.79202,
+        "measurer_mark": "M",
+        "diff": 0.13496,
+        "tolerance": 0.08,
+        "agree": false,
+        "with_hand_h": 1.79202,
+        "agree_with_hand_h": false
+      },
+      {
+        "view": "front",
+        "measure": "head_roundness",
+        "group": "face",
+        "hand": 0.64976,
+        "hand_mark": "M",
+        "measurer": 0.6002,
+        "measurer_mark": "M",
+        "diff": -0.04956,
+        "tolerance": 0.045,
+        "agree": false,
+        "with_hand_h": 0.60378,
+        "agree_with_hand_h": false
+      },
+      {
+        "view": "front",
+        "measure": "iris_d_spacing",
+        "group": "face",
+        "hand": 0.30344,
+        "hand_mark": "E",
+        "measurer": 0.30024,
+        "measurer_mark": "E",
+        "diff": -0.0032,
+        "tolerance": 0.035,
+        "agree": true,
+        "with_hand_h": 0.30024,
+        "agree_with_hand_h": true
+      },
+      {
+        "view": "front",
+        "measure": "iris_d_w",
+        "group": "face",
+        "hand": 0.67133,
+        "hand_mark": "E",
+        "measurer": 0.71558,
+        "measurer_mark": "E",
+        "diff": 0.04425,
+        "tolerance": 0.05,
+        "agree": true,
+        "with_hand_h": 0.71558,
+        "agree_with_hand_h": true
+      },
+      {
+        "view": "front",
+        "measure": "iris_size",
+        "group": "face",
+        "hand": 0.09767,
+        "hand_mark": "E",
+        "measurer": 0.0951,
+        "measurer_mark": "E",
+        "diff": -0.00257,
+        "tolerance": 0.015,
+        "agree": true,
+        "with_hand_h": 0.09566,
+        "agree_with_hand_h": true
+      },
+      {
+        "view": "front",
+        "measure": "jaw_width",
+        "group": "face",
+        "hand": 0.52874,
+        "hand_mark": "E",
+        "measurer": 0.6054,
+        "measurer_mark": "E",
+        "diff": 0.07666,
+        "tolerance": 0.065,
+        "agree": false,
+        "with_hand_h": 0.60742,
+        "agree_with_hand_h": false
+      },
+      {
+        "view": "front",
+        "measure": "mouth_height",
+        "group": "face",
+        "hand": 0.00796,
+        "hand_mark": "E",
+        "measurer": 0.01029,
+        "measurer_mark": "M",
+        "diff": 0.00233,
+        "tolerance": 0.015,
+        "agree": true,
+        "with_hand_h": 0.01035,
+        "agree_with_hand_h": true
+      },
+      {
+        "view": "front",
+        "measure": "mouth_width",
+        "group": "face",
+        "hand": 0.06442,
+        "hand_mark": "E",
+        "measurer": 0.0725,
+        "measurer_mark": "M",
+        "diff": 0.00808,
+        "tolerance": 0.025,
+        "agree": true,
+        "with_hand_h": 0.0725,
+        "agree_with_hand_h": true
+      },
+      {
+        "view": "front",
+        "measure": "mouth_x",
+        "group": "face",
+        "hand": -0.00154,
+        "hand_mark": "E",
+        "measurer": 0.0,
+        "measurer_mark": "M",
+        "diff": 0.00154,
+        "tolerance": 0.025,
+        "agree": true,
+        "with_hand_h": 0.0,
+        "agree_with_hand_h": true
+      },
+      {
+        "view": "front",
+        "measure": "mouth_y",
+        "group": "face",
+        "hand": 0.98174,
+        "hand_mark": "E",
+        "measurer": 0.9811,
+        "measurer_mark": "M",
+        "diff": -0.00064,
+        "tolerance": 0.025,
+        "agree": true,
+        "with_hand_h": 0.98131,
+        "agree_with_hand_h": true
+      },
+      {
+        "view": "front",
+        "measure": "nose_height",
+        "group": "face",
+        "hand": 0.03985,
+        "hand_mark": "E",
+        "measurer": 0.03551,
+        "measurer_mark": "M",
+        "diff": -0.00434,
+        "tolerance": 0.018,
+        "agree": true,
+        "with_hand_h": 0.03572,
+        "agree_with_hand_h": true
+      },
+      {
+        "view": "front",
+        "measure": "nose_width",
+        "group": "face",
+        "hand": 0.06442,
+        "hand_mark": "E",
+        "measurer": 0.06488,
+        "measurer_mark": "M",
+        "diff": 0.00046,
+        "tolerance": 0.025,
+        "agree": true,
+        "with_hand_h": 0.06488,
+        "agree_with_hand_h": true
+      },
+      {
+        "view": "front",
+        "measure": "nose_y",
+        "group": "face",
+        "hand": 0.92394,
+        "hand_mark": "E",
+        "measurer": 0.92383,
+        "measurer_mark": "M",
+        "diff": -0.00011,
+        "tolerance": 0.025,
+        "agree": true,
+        "with_hand_h": 0.9237,
+        "agree_with_hand_h": true
+      },
+      {
+        "view": "front",
+        "measure": "opening_h_w",
+        "group": "face",
+        "hand": 0.56184,
+        "hand_mark": "M",
+        "measurer": 0.58605,
+        "measurer_mark": "M",
+        "diff": 0.02421,
+        "tolerance": 0.06,
+        "agree": true,
+        "with_hand_h": 0.58605,
+        "agree_with_hand_h": true
+      },
+      {
+        "view": "three_quarter",
+        "measure": "brow_gap",
+        "group": "face",
+        "hand": 0.12965,
+        "hand_mark": "M",
+        "measurer": 0.13258,
+        "measurer_mark": "M",
+        "diff": 0.00293,
+        "tolerance": 0.022,
+        "agree": true,
+        "with_hand_h": 0.13398,
+        "agree_with_hand_h": true
+      },
+      {
+        "view": "three_quarter",
+        "measure": "cheek_width",
+        "group": "face",
+        "hand": 0.69792,
+        "hand_mark": "E",
+        "measurer": 0.8173,
+        "measurer_mark": "E",
+        "diff": 0.11938,
+        "tolerance": 0.055,
+        "agree": false,
+        "with_hand_h": 0.83075,
+        "agree_with_hand_h": false
+      },
+      {
+        "view": "three_quarter",
+        "measure": "chin_height",
+        "group": "face",
+        "hand": 0.02978,
+        "hand_mark": "E",
+        "measurer": 0.0365,
+        "measurer_mark": "M",
+        "diff": 0.00672,
+        "tolerance": 0.025,
+        "agree": true,
+        "with_hand_h": 0.03203,
+        "agree_with_hand_h": true
+      },
+      {
+        "view": "three_quarter",
+        "measure": "chin_width",
+        "group": "face",
+        "hand": 0.20349,
+        "hand_mark": "E",
+        "measurer": 0.17935,
+        "measurer_mark": "E",
+        "diff": -0.02414,
+        "tolerance": 0.075,
+        "agree": true,
+        "with_hand_h": 0.24913,
+        "agree_with_hand_h": true
+      },
+      {
+        "view": "three_quarter",
+        "measure": "ear_turn_projection",
+        "group": "face",
+        "hand": 0.2368,
+        "hand_mark": "E",
+        "measurer": 0.25298,
+        "measurer_mark": "M",
+        "diff": 0.01618,
+        "tolerance": 0.06,
+        "agree": true,
+        "with_hand_h": 0.25298,
+        "agree_with_hand_h": true
+      },
+      {
+        "view": "three_quarter",
+        "measure": "eye_height",
+        "group": "face",
+        "hand": 0.0648,
+        "hand_mark": "M",
+        "measurer": 0.06518,
+        "measurer_mark": "M",
+        "diff": 0.00038,
+        "tolerance": 0.0175,
+        "agree": true,
+        "with_hand_h": 0.06587,
+        "agree_with_hand_h": true
+      },
+      {
+        "view": "three_quarter",
+        "measure": "eye_spacing",
+        "group": "face",
+        "hand": 0.42756,
+        "hand_mark": "E",
+        "measurer": 0.42275,
+        "measurer_mark": "E",
+        "diff": -0.00481,
+        "tolerance": 0.03,
+        "agree": true,
+        "with_hand_h": 0.42275,
+        "agree_with_hand_h": true
+      },
+      {
+        "view": "three_quarter",
+        "measure": "eye_to_chin",
+        "group": "face",
+        "hand": 0.12012,
+        "hand_mark": "E",
+        "measurer": 0.14463,
+        "measurer_mark": "E",
+        "diff": 0.02451,
+        "tolerance": 0.02954,
+        "agree": true,
+        "with_hand_h": 0.14131,
+        "agree_with_hand_h": true
+      },
+      {
+        "view": "three_quarter",
+        "measure": "eye_width",
+        "group": "face",
+        "hand": 0.15517,
+        "hand_mark": "M",
+        "measurer": 0.14719,
+        "measurer_mark": "M",
+        "diff": -0.00798,
+        "tolerance": 0.018,
+        "agree": true,
+        "with_hand_h": 0.14875,
+        "agree_with_hand_h": true
+      },
+      {
+        "view": "three_quarter",
+        "measure": "eye_x",
+        "group": "face",
+        "hand": 0.01334,
+        "hand_mark": "E",
+        "measurer": 0.01594,
+        "measurer_mark": "E",
+        "diff": 0.0026,
+        "tolerance": 0.025,
+        "agree": true,
+        "with_hand_h": 0.01594,
+        "agree_with_hand_h": true
+      },
+      {
+        "view": "three_quarter",
+        "measure": "eye_y",
+        "group": "face",
+        "hand": 0.87988,
+        "hand_mark": "E",
+        "measurer": 0.85537,
+        "measurer_mark": "E",
+        "diff": -0.02451,
+        "tolerance": 0.02954,
+        "agree": true,
+        "with_hand_h": 0.85869,
+        "agree_with_hand_h": true
+      },
+      {
+        "view": "three_quarter",
+        "measure": "hair_height",
+        "group": "hair",
+        "hand": 1.0,
+        "hand_mark": "M",
+        "measurer": 1.0,
+        "measurer_mark": "M",
+        "diff": 0.0,
+        "tolerance": 0.06,
+        "agree": true,
+        "with_hand_h": 1.00576,
+        "agree_with_hand_h": true
+      },
+      {
+        "view": "three_quarter",
+        "measure": "hair_width",
+        "group": "hair",
+        "hand": 1.64776,
+        "hand_mark": "E",
+        "measurer": 1.70714,
+        "measurer_mark": "M",
+        "diff": 0.05938,
+        "tolerance": 0.08,
+        "agree": true,
+        "with_hand_h": 1.70714,
+        "agree_with_hand_h": true
+      },
+      {
+        "view": "three_quarter",
+        "measure": "head_roundness",
+        "group": "face",
+        "hand": 0.58924,
+        "hand_mark": "E",
+        "measurer": 0.56407,
+        "measurer_mark": "M",
+        "diff": -0.02517,
+        "tolerance": 0.045,
+        "agree": true,
+        "with_hand_h": 0.57006,
+        "agree_with_hand_h": true
+      },
+      {
+        "view": "three_quarter",
+        "measure": "iris_d_spacing",
+        "group": "face",
+        "hand": 0.29619,
+        "hand_mark": "E",
+        "measurer": 0.34873,
+        "measurer_mark": "E",
+        "diff": 0.05254,
+        "tolerance": 0.035,
+        "agree": false,
+        "with_hand_h": 0.34873,
+        "agree_with_hand_h": false
+      },
+      {
+        "view": "three_quarter",
+        "measure": "iris_d_w",
+        "group": "face",
+        "hand": 0.48089,
+        "hand_mark": "E",
+        "measurer": 0.56498,
+        "measurer_mark": "E",
+        "diff": 0.08409,
+        "tolerance": 0.05,
+        "agree": false,
+        "with_hand_h": 0.56498,
+        "agree_with_hand_h": false
+      },
+      {
+        "view": "three_quarter",
+        "measure": "iris_size",
+        "group": "face",
+        "hand": 0.07462,
+        "hand_mark": "E",
+        "measurer": 0.08316,
+        "measurer_mark": "E",
+        "diff": 0.00854,
+        "tolerance": 0.015,
+        "agree": true,
+        "with_hand_h": 0.08404,
+        "agree_with_hand_h": true
+      },
+      {
+        "view": "three_quarter",
+        "measure": "jaw_width",
+        "group": "face",
+        "hand": 0.3707,
+        "hand_mark": "E",
+        "measurer": 0.44839,
+        "measurer_mark": "E",
+        "diff": 0.07769,
+        "tolerance": 0.065,
+        "agree": false,
+        "with_hand_h": 0.49423,
+        "agree_with_hand_h": false
+      },
+      {
+        "view": "three_quarter",
+        "measure": "mouth_height",
+        "group": "face",
+        "hand": 0.01177,
+        "hand_mark": "E",
+        "measurer": 0.01461,
+        "measurer_mark": "M",
+        "diff": 0.00284,
+        "tolerance": 0.015,
+        "agree": true,
+        "with_hand_h": 0.01477,
+        "agree_with_hand_h": true
+      },
+      {
+        "view": "three_quarter",
+        "measure": "mouth_width",
+        "group": "face",
+        "hand": 0.05999,
+        "hand_mark": "E",
+        "measurer": 0.06374,
+        "measurer_mark": "M",
+        "diff": 0.00375,
+        "tolerance": 0.025,
+        "agree": true,
+        "with_hand_h": 0.06374,
+        "agree_with_hand_h": true
+      },
+      {
+        "view": "three_quarter",
+        "measure": "mouth_x",
+        "group": "face",
+        "hand": 0.22669,
+        "hand_mark": "E",
+        "measurer": 0.23503,
+        "measurer_mark": "M",
+        "diff": 0.00834,
+        "tolerance": 0.025,
+        "agree": true,
+        "with_hand_h": 0.23503,
+        "agree_with_hand_h": true
+      },
+      {
+        "view": "three_quarter",
+        "measure": "mouth_y",
+        "group": "face",
+        "hand": 0.97022,
+        "hand_mark": "E",
+        "measurer": 0.9635,
+        "measurer_mark": "M",
+        "diff": -0.00672,
+        "tolerance": 0.025,
+        "agree": true,
+        "with_hand_h": 0.96797,
+        "agree_with_hand_h": true
+      },
+      {
+        "view": "three_quarter",
+        "measure": "nose_height",
+        "group": "face",
+        "hand": 0.03733,
+        "hand_mark": "E",
+        "measurer": 0.0382,
+        "measurer_mark": "M",
+        "diff": 0.00087,
+        "tolerance": 0.018,
+        "agree": true,
+        "with_hand_h": 0.0386,
+        "agree_with_hand_h": true
+      },
+      {
+        "view": "three_quarter",
+        "measure": "nose_width",
+        "group": "face",
+        "hand": 0.06334,
+        "hand_mark": "E",
+        "measurer": 0.04982,
+        "measurer_mark": "M",
+        "diff": -0.01352,
+        "tolerance": 0.025,
+        "agree": true,
+        "with_hand_h": 0.04982,
+        "agree_with_hand_h": true
+      },
+      {
+        "view": "three_quarter",
+        "measure": "nose_y",
+        "group": "face",
+        "hand": 0.9064,
+        "hand_mark": "E",
+        "measurer": 0.90675,
+        "measurer_mark": "M",
+        "diff": 0.00035,
+        "tolerance": 0.025,
+        "agree": true,
+        "with_hand_h": 0.91061,
+        "agree_with_hand_h": true
+      },
+      {
+        "view": "three_quarter",
+        "measure": "opening_h_w",
+        "group": "face",
+        "hand": 0.41757,
+        "hand_mark": "M",
+        "measurer": 0.44284,
+        "measurer_mark": "M",
+        "diff": 0.02527,
+        "tolerance": 0.06,
+        "agree": true,
+        "with_hand_h": 0.44284,
+        "agree_with_hand_h": true
+      },
+      {
+        "view": "side",
+        "measure": "cheek_advance",
+        "group": "face",
+        "hand": -0.0118,
+        "hand_mark": "E",
+        "measurer": -0.0069,
+        "measurer_mark": "E",
+        "diff": 0.0049,
+        "tolerance": 0.03004,
+        "agree": true,
+        "with_hand_h": -0.00693,
+        "agree_with_hand_h": true
+      },
+      {
+        "view": "side",
+        "measure": "cheek_bulge",
+        "group": "face",
+        "hand": 0.02306,
+        "hand_mark": "E",
+        "measurer": 0.02887,
+        "measurer_mark": "E",
+        "diff": 0.00581,
+        "tolerance": 0.02067,
+        "agree": true,
+        "with_hand_h": 0.029,
+        "agree_with_hand_h": true
+      },
+      {
+        "view": "side",
+        "measure": "exposed_cheek",
+        "group": "hair",
+        "hand": 0.27729,
+        "hand_mark": "M",
+        "measurer": 0.2626,
+        "measurer_mark": "E",
+        "diff": -0.01469,
+        "tolerance": 0.035,
+        "agree": true,
+        "with_hand_h": 0.26386,
+        "agree_with_hand_h": true
+      },
+      {
+        "view": "side",
+        "measure": "eye_height",
+        "group": "face",
+        "hand": 0.0531,
+        "hand_mark": "E",
+        "measurer": 0.05619,
+        "measurer_mark": "E",
+        "diff": 0.00309,
+        "tolerance": 0.02,
+        "agree": true,
+        "with_hand_h": 0.05646,
+        "agree_with_hand_h": true
+      },
+      {
+        "view": "side",
+        "measure": "eye_to_chin",
+        "group": "face",
+        "hand": 0.11504,
+        "hand_mark": "M",
+        "measurer": 0.12216,
+        "measurer_mark": "E",
+        "diff": 0.00712,
+        "tolerance": 0.02892,
+        "agree": true,
+        "with_hand_h": 0.12121,
+        "agree_with_hand_h": true
+      },
+      {
+        "view": "side",
+        "measure": "eye_width",
+        "group": "face",
+        "hand": 0.04425,
+        "hand_mark": "E",
+        "measurer": 0.05047,
+        "measurer_mark": "E",
+        "diff": 0.00622,
+        "tolerance": 0.02,
+        "agree": true,
+        "with_hand_h": 0.05071,
+        "agree_with_hand_h": true
+      },
+      {
+        "view": "side",
+        "measure": "eye_y",
+        "group": "face",
+        "hand": 0.88496,
+        "hand_mark": "M",
+        "measurer": 0.87784,
+        "measurer_mark": "E",
+        "diff": -0.00712,
+        "tolerance": 0.02892,
+        "agree": true,
+        "with_hand_h": 0.87879,
+        "agree_with_hand_h": true
+      },
+      {
+        "view": "side",
+        "measure": "opening_h_w",
+        "group": "face",
+        "hand": 1.2,
+        "hand_mark": "E",
+        "measurer": 1.11344,
+        "measurer_mark": "M",
+        "diff": -0.08656,
+        "tolerance": 0.15,
+        "agree": true,
+        "with_hand_h": 1.11344,
+        "agree_with_hand_h": true
+      },
+      {
+        "view": "side",
+        "measure": "profile_depth",
+        "group": "hair",
+        "hand": 0.71091,
+        "hand_mark": "E",
+        "measurer": 0.70643,
+        "measurer_mark": "E",
+        "diff": -0.00448,
+        "tolerance": 0.045,
+        "agree": true,
+        "with_hand_h": 0.70982,
+        "agree_with_hand_h": true
+      }
+    ],
+    "summary": {
+      "compared": 69,
+      "agree": 59,
+      "agree_with_hand_h": 59,
+      "missing": [],
+      "disagree": [
+        "front/chin_width",
+        "front/crown_above_skull",
+        "front/eye_spacing",
+        "front/hair_width",
+        "front/head_roundness",
+        "front/jaw_width",
+        "three_quarter/cheek_width",
+        "three_quarter/iris_d_spacing",
+        "three_quarter/iris_d_w",
+        "three_quarter/jaw_width"
+      ]
+    }
+  }
+}

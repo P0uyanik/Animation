@@ -221,7 +221,7 @@ def measure_views(job_path):
     tree.links.new(join.outputs[0], group_out.inputs[0])
     timings = {"load_s": time.perf_counter() - t0, "views": {}}
     rho = job.get("iris_radius", {})
-    result = {"px": px, "classes": list(CLASSES), "views": []}
+    result = {"px": px, "classes": list(CLASSES), "classes_present": sorted(set(classes.values())), "views": []}
     for view in job["views"]:
         tv = time.perf_counter()
         for k in face_keys:

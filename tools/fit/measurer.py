@@ -188,10 +188,18 @@ def trace(rec, arrays, px, chin3d=None):
             vis_full = ((full == C[near]) & comp).sum() / max(1, comp.sum())
             if vis_full < 0.8:
                 est.add("eye")
-        iris = [ring[:, 0].min(), ring[:, 1].mean(), ring[:, 0].max()]
-        pts["iris"] = [round(iris[0] * s, 2), round(iris[1] * s, 2), round(iris[2] * s, 2)]
-        if eyes[near]["vis_full"] < 0.3:
+        # iris extremes of the iris disc the lids leave visible (face pass: hair and rims do not count);
+        # the centre height is the ring's (inferred where a lid covers it)
+        disc = Image.new("L", (px, px), 0)
+        ImageDraw.Draw(disc).polygon([tuple(p) for p in ring], fill=1)
+        disc = np.asarray(disc).astype(bool)
+        seen = disc & (face == C[near])
+        if seen.sum() < 0.95 * disc.sum():
             est.add("iris")
+        cols = np.nonzero(seen.any(0))[0]
+        iris = ([cols.min(), ring[:, 1].mean(), cols.max() + 1] if len(cols) >= 2 else
+                [ring[:, 0].min(), ring[:, 1].mean(), ring[:, 0].max()])
+        pts["iris"] = [round(iris[0] * s, 2), round(iris[1] * s, 2), round(iris[2] * s, 2)]
         if eye_box:
             pts["eye"] = [round(x * s, 2) for x in eye_box]
         if side_view:  # profile eye level: the opening's centre (the iris is seen edge-on)
@@ -260,6 +268,10 @@ def trace(rec, arrays, px, chin3d=None):
         if chin and region.any() and not side_view:
             # start between the opening top and the iris centre: above iris level, below the temple bulge on turns
             top = ((eye_box[1] + iris[1]) / 2 if eye_box else (iris[1] if near else lm["eye_L"][1]))
+            # and not above the ear tops: higher up the outline is the skull side, not the cheek
+            ear_rows = np.nonzero((face == C["ear"]).any(1))[0]
+            if len(ear_rows) and ear_rows.min() < chin[1]:
+                top = max(top, ear_rows.min())
             left, right = [], []
             for y in np.arange(math.ceil(top * s), chin[1] * s, 1.0 if px >= 800 else 2.0):
                 r = int(y / s)
@@ -319,8 +331,9 @@ def trace(rec, arrays, px, chin3d=None):
                     if comp.sum() < 0.8 * whole.sum():
                         est.add("ear")
                 if 10 <= abs(yaw) < 60 and "left" in pts:
+                    b = bbox(whole)  # projection check: the whole near ear, under hair too
                     ym = (b[1] + b[3]) / 2
-                    us = np.nonzero(comp[int(ym)])[0]
+                    us = np.nonzero(whole[int(ym)])[0]
                     cont = pts["left"] if lm[key][0] < nose[0] else pts["right"]
                     ys = np.array([p[1] for p in cont])
                     cx = float(np.interp(ym * s, ys, [p[0] for p in cont]))
@@ -343,10 +356,23 @@ def trace(rec, arrays, px, chin3d=None):
         pts["no_cheek_hair"] = True
     bm = open3(full == C["bun"])
     if bm.any():
+        # twin buns: the image-left bun (T-204 cap_crest_bun)
+        parts = []
+        rest = bm.copy()
+        while rest.any() and len(parts) < 6:
+            v, u = np.nonzero(rest)
+            comp = flood(rest, (u[0], v[0]))
+            rest &= ~comp
+            if comp.sum() >= 0.1 * bm.sum():
+                parts.append(comp)
+        if len(parts) > 1 and "bun_twin" in rec.get("flags", ()):
+            bm = min(parts, key=lambda c: np.nonzero(c)[1].mean())
         v, u = np.nonzero(bm)
         i, j = np.argmin(u), np.argmax(u)
         pts["bun_span"] = [P(u[i], v[i]), P(u[j] + 1, v[j])]
         pts["no_bun"] = False
+    elif "bun" not in rec.get("classes_present", ["bun"]):  # no bun in the build: visibly absent
+        pts["no_bun"] = True
     if not side_view and not back_view:
         mid_u = int(nose[0])
         skin_col = np.nonzero(region[:, mid_u])[0]
@@ -356,7 +382,7 @@ def trace(rec, arrays, px, chin3d=None):
         brows = np.nonzero(face == C["brow"])
         if len(brows[0]):
             pts["midbrow"] = P(mid_u + .5, brows[0].mean() + .5)
-            col = full[:int(brows[0].mean()), mid_u]
+            col = full[:int(eye_box[1] if eye_box else eye_v), mid_u]  # the fringe may hang below the brows
             hv = np.nonzero(np.isin(col, HAIR))[0]
             if len(hv):
                 pts["fringe"] = P(mid_u + .5, hv.max() + 1)
@@ -420,12 +446,14 @@ def profile(face, full, pts, chin, eye_v, nose, rec, cam, s, px, est):
     out["profile"] = prof
     if prof[1]:
         y = int(eye_v + 0.5 * (chin[1] - eye_v))
-        u0 = int(prof[1][0] / s) if facing < 0 else int(prof[1][0] / s) - 1
-        u = u0
-        step = 1 if facing < 0 else -1
-        while 0 <= u < px and full[y, u] == C["skin"]:
-            u += step
-        out["exposed"] = [P2(u if facing < 0 else u + 1, y, s), prof[1]]
+        # the most anterior uninterrupted visible skin run on the 50 % line (a lock may cover the anterior edge);
+        # runs under 1 % of the frame are slivers between strands
+        row = np.r_[False, full[y] == C["skin"], False]
+        edges = np.flatnonzero(np.diff(row.astype(np.int8)))
+        runs = [r for r in zip(edges[::2], edges[1::2]) if r[1] - r[0] >= 0.01 * px]
+        if runs:
+            a, b = min(runs, key=lambda r: r[0]) if facing < 0 else max(runs, key=lambda r: r[1])
+            out["exposed"] = [P2(b, y, s), P2(a, y, s)] if facing < 0 else [P2(a, y, s), P2(b, y, s)]
     row = int(eye_v)
     sil = np.nonzero((full[row] != 0) & (full[row] != C["glasses"]))[0]
     if len(sil):
@@ -496,7 +524,7 @@ def iris_radius(spec_path):
     return {"eye_L": rho, "eye_R": rho}
 
 
-def measure_all(rendered, out, character, db, m204, view_names, nose_size=0.016):
+def measure_all(rendered, out, character, db, m204, view_names, nose_size=0.016, flags=()):
     """Trace and evaluate every rendered view (front first: its chin anchors the profile and back views)."""
     px = rendered["px"]
     recs = sorted(rendered["views"], key=lambda r: (abs(r["yaw"]), bool(r["expression"])))  # neutral front first
@@ -505,6 +533,8 @@ def measure_all(rendered, out, character, db, m204, view_names, nose_size=0.016)
         with np.load(out / rec["arrays"]) as z:
             arrays = {k: z[k] for k in z.files}
         rec["nose_size_m"] = nose_size
+        rec["flags"] = list(flags)
+        rec["classes_present"] = rendered.get("classes_present", ["bun"])
         pts, est, extra = trace(rec, arrays, px, chin3d)
         if rec["yaw"] == 0 and "chin3d" in extra:
             chin3d = extra["chin3d"]
@@ -601,7 +631,7 @@ def cmd_measure(args, validate=False):
     t1 = time.perf_counter()
     nose = read(spec)["face"].get("nose", {})
     results = measure_all(rendered, out, args.character, db, m204, names,
-                          float(nose.get("size_m", nose.get("radius_m", 0.016))))
+                          float(nose.get("size_m", nose.get("radius_m", 0.016))), ch.get("flags", ()))
     t2 = time.perf_counter()
     report = dict(character=args.character, blend=str(blend), px=args.px, holdout=ch.get("holdout"),
                   timings=dict(render_s=round(t1 - t0, 2), measure_s=round(t2 - t1, 2),
@@ -663,9 +693,9 @@ def validation(results, character, db, m204):
 
 def evidence(results, character, db, m204, path):
     """T-202 render tile per view with T-204's hand trace (cyan) and the measurer's points (yellow)."""
-    base = ROOT / "build/in/docs/evaluation/characters/T-202"
-    if not base.is_dir():
-        base = T204.parent / "T-202"
+    base = T204.parent / "T-202"
+    if not (base / "sheets").is_dir():
+        base = ROOT / "build/in/docs/evaluation/characters/T-202"
     if not (base / "sheets").is_dir():
         return False
     tiles = []
