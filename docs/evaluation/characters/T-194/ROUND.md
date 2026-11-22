@@ -112,3 +112,60 @@ Numbers are the T-183 round 3 measures (`t-183-claude-hair-contact@c775d69`, ROU
 4. Face parts as colliders: keep T-183's SKIP list (eyes, brows, lashes, lids, mouth, glasses) so the measures
    agree, or add the glasses frame?
 5. Effort: 3-4 task-days as in T-193 (stage A 1.5 d, stage B 1 d, measure + sheet 1 d).
+
+## Step 1 answer (Supervisor R6, 2026-11-22 ~13:06Z): APPROVED
+
+(1) `pipeline/production/run_shot.py` added to the T-194 row: forward `production.render.hair_pushout`. (2) Nape cap /
+curtain over the neck fold: push out. (3) Hair against hair: out of scope (note it). (4) Keep T-183's SKIP list;
+report hair against glasses as its own line. (5) 3-4 task-days. List the body-snap frames separately (s010 fold
+cycle, s020 f109 / f133-136, s030 f93; excluded +-1 from the zero criterion). Candidate engine pin: T-183 `e31f1e03`
+for now (this session used `c775d69`; re-bake with the final pin). Before READY: cost per frame, sheet <= 1024 px,
+`test_hair_pushout.py` (registration in `TESTS` is the Supervisor's).
+
+## CHECKPOINT (session 1, WIP; continue in a fresh session)
+
+### Done (committed)
+
+- `pipeline/charsys/hair_pushout.py`: `load_spec`, stage A `push_chain` (segment rays, slide with clearance,
+  fallbacks; enclosure test with the T-183 26-direction rule, so a joint that slipped in through an opening is moved
+  out through its shortest wall), `rest_allowance` (only head-dominant SKIN triangles, not ears, not cloth),
+  `static_anchor` (outward from the nearest rest surface; `static_in_head` never moved; `static_in_cloth` only when
+  enclosed), `PushOut` (colliders incl. the unmasked `garment.collider.body_skin` proxy, cup caps, rest pass, anchor
+  proxies with the `ps_exit` flag, per-frame stage A re-key, `install` of the stage B GN clamp: anchor ray + an exit
+  test (two rays meeting back faces) against the CLOSED colliders only).
+- `shot_render.py --hair-pushout [on|file|{json}]` (absent = old path); the push-out runs after the eye check and
+  reuses its evaluation; pushed bones are left out of the reconstruction check; report `hair_pushout` in
+  `shot_render.json`. `run_shot.py` forwards `production.render.hair_pushout`.
+- `pipeline/charsys/tests/test_hair_pushout.py`: 28 checks, all pass (`python3 tools/bpy_blender.py -b
+  --factory-startup -P pipeline/charsys/tests/test_hair_pushout.py -- out.json`). Not yet in `TESTS` (Supervisor).
+  Missing case: the exit test (needs a closed `garment.collider.body_skin`-named solid in the scene).
+- `tools/measure_eval.py`: the evaluated hair of a `shot.blend` against all colliders + glasses line, T-183 rules,
+  per frame per surface, frame-to-frame jump, SHA-256. About 33 s per frame for three characters (use `--jobs`).
+- Shot copies: `shots/e912/{s010,s020,s030}`, `shots/e909/s010` (+ `shots/e912/content/assets`). Released s020 baked
+  (`shots/e912/s020/build/runs/rel1`, ignored). Candidate s020 baked in a T-183 worktree at `c775d69`
+  (`/home/user/t183wt`, gone with the container).
+
+### Measured so far (released e912 s020, frames 100-112 only, every 2nd frame; not a result yet)
+
+- Cost: stage A 1.6 s per frame (3 characters; BVH of 1.4 M collider triangles ~1.2 s), rest pass 15-24 s once.
+  Stage B evaluation cost not yet measured separately.
+- Fixed in this window: ringlets in the blouse through the neck opening (outer_b 27.7 mm -> 0), the constant 3 mm
+  static sets (white `back_mass` / crown, boy `hair_base`) -> 0.
+- Left (f100-108): auburn `hair_curtain > blouse.main` 3-4 mm (5-8 v; anchor carried into the blouse by the head
+  turn), boy `hair_top_outer > auburn skin` 1.9 mm (25 v, f108: heads overlap), glasses line `hair_cap > glasses`
+  1.2 mm (4 v, every frame; glasses are not colliders).
+- **Regression to investigate first:** with the last commit (exit test on closed colliders) f110-f112 show large
+  residues and jumps (auburn jump 229-318 mm; `ringlets_back_b_00 > skin` 34.7 mm, `> blouse` 33.6 mm;
+  `side_00 > boat_sail` 2.9 mm). f109 is a listed body-snap frame (head turn), but these are bigger than before the
+  exit test. Compare a run with the exit test switched off (stages / a spec key) on f100-112 before anything else.
+
+### Next (in this order)
+
+1. Find the f110-112 regression (exit test vs stage A in the head-turn snap); keep the exit test only if it does not
+   add residue or jumps; add its unit case.
+2. Full s020 released: blends `--blend-only` with and without push-out (`/tmp/.../blends.sh` pattern: shot_render
+   twice), `measure_eval.py --jobs=2 --step=2`; snap frames listed apart.
+3. Re-bake the candidate with the final T-183 pin; e912 s010 / s030, e909 s010, released and candidate.
+4. Cost per frame (stage A, stage B, total vs off), determinism (two runs, a single frame vs in a range), "no flag
+   = identical" (object list and a frame hash against main's shot_render).
+5. Sheet <= 1024 px crops (s020 boy's shoulder, s010 f101, e909 f75 cup, s020 nape), README, `tools/ready.py`, READY.

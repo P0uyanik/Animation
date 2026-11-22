@@ -4,7 +4,8 @@
 
 SYNTHETIC scenes only (no character data). Checks:
   1. push_chain (stage A geometry): a chain through a closed box, an open quad and an inside-out quad ends with no
-     segment crossing anything and every segment length kept (1e-6 m); a chain 75 mm deep in a box comes out on the
+     segment crossing anything and every segment length kept (1e-6 m); a chain that goes down through the opening
+     of a hollow box (no face crossed) ends with no joint enclosed; a chain 75 mm deep in a box comes out on the
      side it came from; a chain that crosses nothing is returned bit for bit; applying it twice = once; the same
      result on a second run; a root embedded at rest (rest allowance) is not pushed.
   2. Scene (a rig with a head bone, a torso that moves, a fold plate, a four-bone DYN chain with a lock tube around
@@ -86,6 +87,15 @@ for name, t in cases.items():
 deep = tree_of(*box((-0.3, -0.3, 0.0), (0.3, 0.3, 0.815)))
 P, info = HP.push_chain(deep, J, [0.0] * 4, CL)
 check("A.deep.same_side", crossings(deep, P) == 0 and P[:, 2].min() > 0.815, min_z=float(P[:, 2].min()))
+# opening: a hollow box (no top face, like a blouse over a masked torso); the lock goes down through the opening
+hv, hf = box((-0.1, -0.1, 0.40), (0.1, 0.1, 0.86))
+hollow = tree_of(hv, hf[:1] + hf[2:])  # face 1 is the top
+P, info = HP.push_chain(hollow, J, [0.0] * 4, CL)
+inside_before = sum(HP.enclosed(hollow, j) for j in J[1:])
+inside_after = sum(HP.enclosed(hollow, p) for p in P[1:])
+check("A.opening.enclosed_pushed", inside_before > 0 and inside_after == 0 and info["enclosed"] > 0
+      and np.abs(lengths(P) - lengths(J)).max() < 1e-6, before=int(inside_before), after=int(inside_after),
+      enclosed=info["enclosed"], left=info["enclosed_left"])
 # nothing crossed: bit for bit
 far = tree_of(*box((1.0, 1.0, 0.0), (1.2, 1.2, 0.2)))
 P, info = HP.push_chain(far, J, [0.0] * 4, CL)
@@ -160,8 +170,10 @@ for r in range(16):
         a0, a1 = r * 8 + s, r * 8 + (s + 1) % 8
         F.append((a0, a1, a1 + 8, a0 + 8))
 lock = skinned("hair_lock", rings, F, wts)
-# cap: a static patch on the back of the head (x = -0.06 .. -0.10), weighted to the head
-cv = [(-0.06 - 0.01 * i, -0.04 + 0.02 * j, 1.04 + 0.02 * k) for i in range(5) for j in range(5) for k in range(4)]
+# head: a closed box weighted to the head bone (x -0.06 .. 0.06); cap: a static patch on its back (x -0.065 .. -0.105)
+hv, hf = box((-0.06, -0.08, 0.99), (0.06, 0.08, 1.18))
+headm = skinned("body_head", hv, hf, {"head": (range(8), [1.0] * 8)})
+cv = [(-0.065 - 0.01 * i, -0.04 + 0.02 * j, 1.04 + 0.02 * k) for i in range(5) for j in range(5) for k in range(4)]
 cap = skinned("hair_cap", cv, [], {"head": (range(len(cv)), [1.0] * len(cv))})
 # cup prop: open-top cylinder with a solidify wall
 bpy.ops.mesh.primitive_cylinder_add(radius=0.04, depth=0.1, location=(0.5, 0, 0.05))
@@ -176,7 +188,7 @@ bm.free()
 cup.modifiers.new("wall", "SOLIDIFY").thickness = 0.004
 
 coll = bpy.data.collections.new("ch")
-for o in (rig, torso, fold, lock, cap):
+for o in (rig, torso, fold, lock, cap, headm):
     coll.objects.link(o)
 pbs = {pb.name: pb for pb in rig.pose.bones}
 for pb in pbs.values():
@@ -200,7 +212,7 @@ po = HP.PushOut(sc, HP.load_spec("on"), states, {"cup": cup}, [])
 check("B.cup_cap", len(po.caps) == 1 and po.caps[0].hide_render and po.caps[0] in po.colliders,
       caps=[c.name for c in po.caps])
 # frame 1: torso up into the lock, fold onto the cap; frame 2: everything at rest
-for f, (tz, fx) in ((1, (1.30, 0.075)), (2, (0.0, 0.0))):
+for f, (tz, fx) in ((1, (1.30, 0.07)), (2, (0.0, 0.0))):
     for pb in pbs.values():
         pb.location, pb.rotation_quaternion, pb.scale = (0, 0, 0), (1, 0, 0, 0), (1, 1, 1)
     pbs["torso"].location = (0, tz, 0)  # bone local Y = world Z for a bone pointing up
@@ -250,7 +262,7 @@ C1 = eval_points(cap, 1)
 cap_rest = np.array([tuple(v) for v in cv])
 check("B.lock_out_of_torso", inside_box(before[1], TLO, THI) > 0 and inside_box(L1, TLO, THI, -0.0005) == 0,
       before=inside_box(before[1], TLO, THI), after=inside_box(L1, TLO, THI, -0.0005))
-behind = lambda P: int(((P[:, 0] > -0.0755) & (P[:, 0] < 0.0) & (np.abs(P[:, 1]) < 0.1) & (P[:, 2] > 1.02) & (P[:, 2] < 1.12)).sum())  # noqa: E731
+behind = lambda P: int(((P[:, 0] > -0.0805) & (P[:, 0] < -0.06) & (np.abs(P[:, 1]) < 0.1) & (P[:, 2] > 1.02) & (P[:, 2] < 1.12)).sum())  # noqa: E731
 check("B.cap_out_of_fold", behind(cap_rest) > 0 and behind(C1) == 0, before=behind(cap_rest), after=behind(C1))
 C2 = eval_points(cap, 2)
 L2 = eval_points(lock, 2)

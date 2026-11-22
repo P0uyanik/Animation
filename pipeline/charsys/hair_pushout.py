@@ -10,8 +10,11 @@ A. Chain joints (Python, called per frame by shot_render after every bone is key
    are caught (a nearest-point + normal test pushes those to the wrong side). On a hit the joint keeps its segment
    length and slides over the hit plane with `core_radius_m + margin_m` clearance, then the segment is tested again
    (MAX_TRIES); the fallback is straight away from the surface, and only if that is blocked too the segment is
-   shortened to the last free point (reported). The leading segments of a chain that already cross the character's
-   own figure at rest (the root sits in the scalp) are tested only beyond that rest crossing. Changed bones are
+   shortened to the last free point (reported). A joint that is enclosed (fewer than two of 26 fixed directions get
+   out of the colliders: it slipped in through an opening without crossing a face) is moved out along its shortest
+   way through a wall, keeping the segment length. The leading segments of a chain that already cross the character's
+   own head at rest (the root sits in the scalp; only head-dominant skin triangles count, not the ears (keep-out) and
+   not cloth, so hair modelled into an ear or cloth at rest is pushed out) are tested only beyond that rest crossing. Changed bones are
    re-keyed; a chain whose segments cross nothing is left exactly as baked.
 
 B. Every hair vertex (a Geometry Nodes modifier on each hair object, evaluated by Blender, no Python at render
@@ -19,13 +22,20 @@ B. Every hair vertex (a Geometry Nodes modifier on each hair object, evaluated b
    outside at rest, deformed by the same armature: a chain vertex's anchor is its nearest point on its chain's centre
    line (weighted 1.0 to that chain bone, so it lies exactly on the deformed chain, which stage A keeps free); a
    static vertex's (no chain weight: cap, curtain, temples, masses) is `static_reach_m` outwards from the head
-   centre, with the vertex's own weights. An anchor whose ray to its vertex crosses the own figure at rest is moved
-   past the last such crossing (roots embedded in the scalp stay as modelled). The modifier casts a ray from the
+   centre, with the vertex's own weights. An anchor whose ray to its vertex crosses the own head at rest (head-dominant
+   triangles) is moved past the last such crossing (roots embedded in the scalp stay as modelled). The modifier casts a ray from the
    anchor to the vertex against all colliders and puts a vertex whose ray is blocked at `vertex_margin_m` before the
-   hit. Vertices whose ray is free are not touched.
+   hit. A second ray from that point towards the anchor catches a vertex whose anchor got inside something at this
+   frame (a neighbour's head deeper in the hair than the reach): against the CLOSED colliders only (unmasked skins,
+   props, boxes; open shells give false answers), when it and the opposite ray both first meet a BACK face, the
+   vertex is inside that solid and leaves through the face towards its anchor. Vertices
+   embedded in the head at rest (roots, the scalp side of the cap; flag `ps_exit` = 0 on the proxy) are never moved.
+   Vertices whose rays find nothing are not touched.
 
 Colliders: every mesh child of a rendered character's rig with an Armature modifier except hair (`hair_*`),
-`garment.collider.*`, `WGT-*` and the face parts in SKIP (the T-183 measures' list, glasses included); the props of
+`WGT-*`, the cloth-simulation proxies `garment.collider.*` other than the unmasked skin `garment.collider.body_skin`
+(the rendered `body_skin` is masked away under the garments, so the torso would be hollow and a lock that slips in
+at a neck opening would cross no face), and the face parts in SKIP (the T-183 measures' list, glasses included); the props of
 the shot (an open-top vessel gets a closing cap disc so hair cannot drop in through its opening) and the bake's box
 objects. Hair is not a collider (hair against hair is out of scope, T-194)."""
 import fnmatch
@@ -41,6 +51,7 @@ MAX_TRIES = 3
 EPS = 1e-5
 CHAIN_MIN_WEIGHT = 0.05  # a vertex with less than this summed DYN weight is static
 PREFIX = "ps_pushout"
+EXIT_REACH = 0.1  # m: how far the second ray looks for the face a vertex is inside
 
 
 def load_spec(arg):
@@ -66,15 +77,18 @@ def is_hair(o):
 
 
 def is_figure(o, rig):
-    if o.type != "MESH" or is_hair(o) or o.name.startswith(("garment.collider", "WGT-")):
+    if o.type != "MESH" or is_hair(o) or o.name.startswith("WGT-"):
         return False
+    if o.name.startswith("garment.collider"):  # only the unmasked skin (the masked body_skin is hollow under cloth)
+        return o.name.startswith("garment.collider.body_skin")
     if any(fnmatch.fnmatchcase(o.name, p) for p in SKIP):
         return False
     return any(m.type == "ARMATURE" and m.object == rig for m in o.modifiers)
 
 
-def world_triangles(objs, deps):
-    """(V (n, 3) float64, T (m, 3) int) of the evaluated objects in world space, in the given order."""
+def world_triangles(objs, deps, head_bone=None):
+    """(V (n, 3) float64, T (m, 3) int) of the evaluated objects in world space, in the given order. With head_bone:
+    only the triangles whose three vertices are head-dominant (weight >= 0.5 to that bone: scalp, face)."""
     Vs, Ts, off = [], [], 0
     for o in objs:
         e = o.evaluated_get(deps)
@@ -91,8 +105,20 @@ def world_triangles(objs, deps):
             co = co.reshape(-1, 3) @ M[:3, :3].T + M[:3, 3]
             tri = np.empty(m * 3, dtype=np.int64)
             me.loop_triangles.foreach_get("vertices", tri)
+            tri = tri.reshape(-1, 3)
+            if head_bone is not None:
+                gi = e.vertex_groups.get(head_bone)
+                keep = np.zeros(n, dtype=bool)
+                if gi is not None:
+                    for v in me.vertices:
+                        for g in v.groups:
+                            if g.group == gi.index and g.weight >= 0.5:
+                                keep[v.index] = True
+                tri = tri[keep[tri].all(axis=1)]
+                if len(tri) == 0:
+                    continue
             Vs.append(co)
-            Ts.append(tri.reshape(-1, 3) + off)
+            Ts.append(tri + off)
             off += n
         finally:
             e.to_mesh_clear()
@@ -144,14 +170,69 @@ def _perp(n):
     return _unit(np.cross(n, a))
 
 
-def push_chain(tree, J, allow, clearance):
+DIRS = [np.array(d, dtype=np.float64) / np.linalg.norm(d) for d in
+        [(x, y, z) for x in (-1, 0, 1) for y in (-1, 0, 1) for z in (-1, 0, 1) if (x, y, z) != (0, 0, 0)]]
+CAP = 0.6  # m: a ray that meets nothing within this distance has left the figure
+
+
+def enclosed(tree, p):
+    """True when fewer than two of the 26 fixed directions leave the figure from p (the T-183 measure's rule: a
+    point that got in through an opening, e.g. a lock down the neck opening of a blouse over a masked skin, is inside
+    although no segment crossed a face)."""
+    from mathutils import Vector
+    if tree is None:
+        return False
+    free = 0
+    for d in DIRS:
+        if tree.ray_cast(Vector(p + d * EPS), Vector(d), CAP)[0] is None:
+            free += 1
+            if free >= 2:
+                return False
+    return True
+
+
+def shortest_wall_exit(tree, p):
+    """(direction, distance) of the shortest of the 26 fixed directions out of the figure through a wall (directions
+    that meet nothing are openings, not ways out)."""
+    best = (None, CAP)
+    for d in DIRS:
+        e = last_crossing(tree, p, d, CAP)
+        if 0 < e < best[1]:
+            best = (d, e)
+    return best
+
+
+def _place(tree, o, d, L, a, clearance, h, info):
+    """Segment from o (outside) of length L whose ray along d is blocked (hit h): slide over the hit plane with
+    `clearance`, then straight away from the surface; the last free point if both are blocked."""
+    for _ in range(MAX_TRIES):
+        t, hp, n = h
+        s_o = float((o - hp).dot(n))
+        tang = d - d.dot(n) * n
+        tang = _unit(tang) if _unit(tang) is not None else _perp(n)
+        c = min(1.0, max(-1.0, (clearance - s_o) / L))
+        u = c * n + math.sqrt(max(0.0, 1.0 - c * c)) * tang
+        h2 = ray_hit(tree, o + u * a, u, L - a) if a < L else None
+        if h2 is None:
+            return o + u * L
+        d, h = u, h2
+    n = h[2]
+    h2 = ray_hit(tree, o + n * a, n, L - a) if a < L else None
+    if h2 is None:
+        return o + n * L
+    info["shortened"] += 1
+    return o + n * max(a, h2[0] + a - clearance)
+
+
+def push_chain(tree, J, allow, clearance, rest_enclosed=None):
     """Stage A on one chain. J: (n+1, 3) baked joints (world), allow: per segment, the rest crossing distance from
-    its start that is not tested (0 for a free segment). Returns (P, info): pushed joints (P[k] is J[k] bit for bit
-    where nothing upstream changed and segment k crosses nothing) and {"moved": first changed joint or None,
-    "hits": n, "shortened": n, "max_move_m": x}."""
+    its start that is not tested (0 for a free segment); rest_enclosed: per joint, True where the joint is already
+    enclosed at rest (not pushed for it). Returns (P, info): pushed joints (P[k] is J[k] bit for bit where nothing
+    upstream changed, segment k crosses nothing and joint k is not enclosed) and {"moved": first changed joint or
+    None, "hits": n, "enclosed": n, "enclosed_left": n, "shortened": n, "max_move_m": x}."""
     J = np.asarray(J, dtype=np.float64)
     P = J.copy()
-    info = {"moved": None, "hits": 0, "shortened": 0, "max_move_m": 0.0}
+    info = {"moved": None, "hits": 0, "enclosed": 0, "enclosed_left": 0, "shortened": 0, "max_move_m": 0.0}
     for k in range(1, len(J)):
         o = P[k - 1]
         L = float(np.linalg.norm(J[k] - J[k - 1]))
@@ -163,34 +244,31 @@ def push_chain(tree, J, allow, clearance):
             d = _unit(J[k] - J[k - 1])
         a = float(allow[k - 1]) if k - 1 < len(allow) else 0.0
         h = ray_hit(tree, o + d * a, d, L - a) if a < L else None
+        changed = info["moved"] is not None
         if h is None:
-            if info["moved"] is not None:  # upstream changed: follow the leader towards the baked joint
-                P[k] = o + d * L
-            continue
-        info["hits"] += 1
-        q = None
-        for _ in range(MAX_TRIES):
-            t, hp, n = h
-            s_o = float((o - hp).dot(n))
-            tang = d - d.dot(n) * n
-            tang = _unit(tang) if _unit(tang) is not None else _perp(n)
-            c = min(1.0, max(-1.0, (clearance - s_o) / L))
-            u = c * n + math.sqrt(max(0.0, 1.0 - c * c)) * tang
-            h2 = ray_hit(tree, o + u * a, u, L - a) if a < L else None
-            if h2 is None:
-                q = o + u * L
-                break
-            d, h = u, h2
-        if q is None:  # straight away from the last surface
-            n = h[2]
-            h2 = ray_hit(tree, o + n * a, n, L - a) if a < L else None
-            if h2 is None:
-                q = o + n * L
-            else:  # blocked both ways: the last free point (shorter segment)
-                q = o + n * max(a, h2[0] + a - clearance)
-                info["shortened"] += 1
+            q = o + d * L if changed else J[k]  # upstream changed: follow the leader towards the baked joint
+        else:
+            info["hits"] += 1
+            q = _place(tree, o, d, L, a, clearance, h, info)
+            changed = True
+        if (rest_enclosed is None or not rest_enclosed[k]) and enclosed(tree, q):
+            info["enclosed"] += 1
+            for _ in range(MAX_TRIES):
+                ed, e = shortest_wall_exit(tree, q)
+                if ed is None:
+                    break
+                u = _unit(q + ed * (e + clearance) - o)
+                if u is None:
+                    break
+                h = ray_hit(tree, o + u * a, u, L - a) if a < L else None
+                q = o + u * L if h is None else _place(tree, o, u, L, a, clearance, h, info)
+                changed = True
+                if not enclosed(tree, q):
+                    break
+            else:
+                info["enclosed_left"] += 1
         P[k] = q
-        if info["moved"] is None:
+        if changed and info["moved"] is None:
             info["moved"] = k
     if info["moved"] is not None:
         info["max_move_m"] = float(np.linalg.norm(P - J, axis=1).max())
@@ -210,6 +288,36 @@ def rest_allowance(tree, J):
         e = last_crossing(tree, J[k - 1], d, L)
         allow.append(min(L, e + 0.001) if e > 0 else 0.0)
     return allow
+
+
+def static_anchor(tree, htree, v, centre, reach):
+    """Rest anchor of a static hair vertex v (no chain weight) and its kind:
+    "static_outside": v is in front of its nearest rest surface: reach outwards from that surface (shortened before
+        the next surface on the way);
+    "static_in_cloth": v is behind a surface that is not the head and enclosed (hair modelled into cloth or the neck
+        at rest): the anchor is outside that surface, so the clamp takes v out of it;
+    "static_in_head": v is embedded in the head (scalp side of the cap, roots): anchor = v, never moved;
+    "static_free": nothing within reach: radially out from the head centre."""
+    from mathutils import Vector
+    hit = tree.find_nearest(Vector(v), 0.1) if tree is not None else (None,) * 4
+    if hit[0] is None:
+        r = _unit(v - centre) if centre is not None else None
+        if r is None:
+            return v, "static_free"
+        h = ray_hit(tree, v + r * EPS, r, reach)
+        return v + r * (reach if h is None else max(0.0, h[0] - 0.001)), "static_free"
+    co, n, dist = np.array(hit[0]), np.array(hit[1]), hit[3]
+    if (v - co).dot(n) >= 0 or not enclosed(tree, v):  # in front of it, or behind an open / inside-out face only
+        u = _unit(v - co) if dist > 1e-6 else n
+        h = ray_hit(tree, v + u * EPS, u, reach)
+        return v + u * (reach if h is None else max(0.0, h[0] - 0.001)), "static_outside"
+    if htree is not None:
+        hh = htree.find_nearest(Vector(v), dist + 1e-4)
+        if hh[0] is not None and (v - np.array(hh[0])).dot(np.array(hh[1])) < 0:
+            return v, "static_in_head"
+    u = n
+    h = ray_hit(tree, co + u * 0.0005, u, reach)
+    return co + u * (reach if h is None else max(0.0005, h[0] - 0.001)), "static_in_cloth"
 
 
 def nearest_on_polyline(P, J):
@@ -259,6 +367,12 @@ class PushOut:
         self.caps = self._caps(props)
         self.colliders = [o for n in sorted(self.figures) for o in self.figures[n]]
         self.colliders += [props[n] for n in sorted(props)] + self.caps + list(boxes)
+        # closed solids only (the unmasked skins, props with their caps, boxes): the inside test of stage B's second
+        # ray must not see open shells (masked skin borders, inside-out trims), where a ray through a hole meets a
+        # back face from outside
+        self.closed = [o for n in sorted(self.figures) for o in self.figures[n]
+                       if o.name.startswith("garment.collider.body_skin")]
+        self.closed += [props[n] for n in sorted(props)] + self.caps + list(boxes)
         self.report["colliders"] = {n: [o.name for o in f] for n, f in self.figures.items()}
         self.report["colliders"]["props"] = sorted(props) + [o.name for o in self.caps] + [o.name for o in boxes]
         self.chains = {}
@@ -306,11 +420,16 @@ class PushOut:
             st = self.states[n]
             rig = st["rig"]
             tree = bvh_of(*world_triangles(self.figures[n], deps))
-            self.rest_trees[n] = tree
+            # rest crossings are allowed only through the head (roots in the scalp, temples behind the ears): hair
+            # modelled into cloth at rest is pushed out like any other
+            skin = [o for o in self.figures[n] if not o.name.startswith(("ear.", "garment."))]  # ears: keep-out
+            htree = bvh_of(*world_triangles(skin, deps, st.get("head_bone"))) if st.get("head_bone") else None
+            self.rest_trees[n] = (tree, htree)
             dyn = rig.get("ps_dynamics")
             dyn = json.loads(dyn) if isinstance(dyn, str) else (dyn.to_dict() if hasattr(dyn, "to_dict") else dyn)
             W = np.array(rig.matrix_world)
             chains = []
+            htree = self.rest_trees[n][1]
             for ch in (dyn or {}).get("chains", []):
                 bones = [b for b in ch["bones"] if b in rig.pose.bones]
                 if len(bones) != len(ch["bones"]) or not bones:
@@ -318,7 +437,8 @@ class PushOut:
                 db = rig.data.bones
                 J = [db[bones[0]].head_local] + [db[b].tail_local for b in bones]
                 J = np.array([W[:3, :3] @ np.array(j) + W[:3, 3] for j in J])
-                chains.append({"name": ch["name"], "bones": bones, "rest": J, "allow": rest_allowance(tree, J)})
+                chains.append({"name": ch["name"], "bones": bones, "rest": J, "allow": rest_allowance(htree, J),
+                               "rest_enclosed": [bool(enclosed(htree, j)) for j in J]})
             self.chains[n] = chains
             self.report["characters"][n] = {"chains": len(chains), "allowed_root_segments":
                                             sum(1 for c in chains for a in c["allow"] if a > 0)}
@@ -335,7 +455,7 @@ class PushOut:
         bpy = self.bpy
         st = self.states[n]
         rig = st["rig"]
-        tree = self.rest_trees[n]
+        tree, htree = self.rest_trees[n]
         chain_of = {}
         for ci, c in enumerate(self.chains[n]):
             for k, b in enumerate(c["bones"]):
@@ -345,8 +465,7 @@ class PushOut:
         hb = rig.data.bones.get(head) if head else None
         centre = (W[:3, :3] @ ((np.array(hb.head_local) + np.array(hb.tail_local)) / 2) + W[:3, 3]) if hb else None
         reach = float(self.spec["static_reach_m"])
-        rep = {"objects": 0, "vertices": 0, "chain_anchors": 0, "static_anchors": 0, "anchors_moved_past_rest": 0,
-               "static_without_anchor": 0}
+        rep = {"objects": 0, "vertices": 0, "chain_anchors": 0, "static_anchors": 0, "anchors_moved_past_rest": 0}
         st["proxies"] = []
         for o in sorted((o for o in st["ov"].all_objects if o.type == "MESH" and is_hair(o)), key=lambda o: o.name):
             if not any(m.type == "ARMATURE" and m.object == rig for m in o.modifiers):
@@ -376,17 +495,17 @@ class PushOut:
                 A[idx], seg = nearest_on_polyline(P[idx], c["rest"])
                 rigid[idx] = seg
             stat = np.nonzero(~is_chain)[0]
-            if centre is not None and len(stat):
-                for i in stat:
-                    r = _unit(P[i] - centre)
-                    if r is None:
-                        continue
-                    h = ray_hit(tree, P[i] + r * EPS, r, reach)
-                    hh = reach if h is None else max(0.0, h[0] - 0.001)
-                    if hh <= 0.001:
-                        rep["static_without_anchor"] += 1
-                        continue
-                    A[i] = P[i] + r * hh
+            embedded = np.zeros(nv, dtype=bool)  # in the head at rest: never moved (roots, scalp side of the cap)
+            for i in stat:
+                A[i], kind = static_anchor(tree, htree, P[i], centre, reach)
+                rep[kind] = rep.get(kind, 0) + 1
+                embedded[i] = kind == "static_in_head"
+            if htree is not None:
+                from mathutils import Vector
+                for i in np.nonzero(~embedded)[0]:
+                    hh = htree.find_nearest(Vector(P[i]), 0.05)
+                    if hh[0] is not None and (P[i] - np.array(hh[0])).dot(np.array(hh[1])) < 0:
+                        embedded[i] = True
             # an anchor whose ray to its vertex crosses the own figure at rest: past the last crossing
             for i in range(nv):
                 d = P[i] - A[i]
@@ -394,17 +513,21 @@ class PushOut:
                 if L < 1e-6:
                     continue
                 d = d / L
-                e = last_crossing(tree, A[i], d, L)
+                e = last_crossing(htree, A[i], d, L) if htree is not None else 0.0
                 if e > 0:
                     A[i] = A[i] + d * min(L, e + 0.0005)
                     rigid[i] = -1
+                    embedded[i] = True
                     rep["anchors_moved_past_rest"] += 1
             pm = me.copy()
             pm.name = f"{PREFIX}.anchor.{o.name}"
             Ai = np.linalg.inv(Mo)
             loc = A @ Ai[:3, :3].T + Ai[:3, 3]
             pm.vertices.foreach_set("co", loc.ravel())
+            ex = pm.attributes.get("ps_exit") or pm.attributes.new("ps_exit", "FLOAT", "POINT")
+            ex.data.foreach_set("value", (~embedded).astype(np.float32))
             pm.update()
+            rep["embedded_at_rest"] = rep.get("embedded_at_rest", 0) + int(embedded.sum())
             px = bpy.data.objects.new(f"{PREFIX}.anchor.{o.name}", pm)
             self.scene.collection.objects.link(px)
             px.parent = o.parent
@@ -453,14 +576,15 @@ class PushOut:
             rig = self.states[n]["rig"]
             W = np.array(rig.matrix_world)
             Wi = np.linalg.inv(W)
-            out = {"chains_pushed": 0, "joints_moved": 0, "hits": 0, "shortened": 0, "max_move_mm": 0.0}
+            out = {"chains_pushed": 0, "joints_moved": 0, "hits": 0, "enclosed": 0, "enclosed_left": 0, "shortened": 0,
+                   "max_move_mm": 0.0}
             for c in self.chains[n]:
                 pbs = [rig.pose.bones[b] for b in c["bones"]]
                 J = [pbs[0].head] + [pb.tail for pb in pbs]
                 J = np.array([W[:3, :3] @ np.array(j) + W[:3, 3] for j in J])
-                P, info = push_chain(tree, J, c["allow"], clearance)
-                out["hits"] += info["hits"]
-                out["shortened"] += info["shortened"]
+                P, info = push_chain(tree, J, c["allow"], clearance, c["rest_enclosed"])
+                for key in ("hits", "enclosed", "enclosed_left", "shortened"):
+                    out[key] += info[key]
                 if info["moved"] is None:
                     continue
                 out["chains_pushed"] += 1
@@ -498,22 +622,28 @@ class PushOut:
         col = bpy.data.collections.new(f"{PREFIX}.colliders")
         for o in self.colliders:
             col.objects.link(o)
-        cs = bpy.data.objects.new(f"{PREFIX}.collider_set", bpy.data.meshes.new(f"{PREFIX}.collider_set"))
-        self.scene.collection.objects.link(cs)
-        cs.hide_render = True
-        mg = cs.modifiers.new("collect", "NODES")
-        mg.node_group = _collector_group(col)
+        ccol = bpy.data.collections.new(f"{PREFIX}.closed")
+        for o in self.closed:
+            ccol.objects.link(o)
+        sets = []
+        for name, c in (("collider_set", col), ("closed_set", ccol)):
+            cs = bpy.data.objects.new(f"{PREFIX}.{name}", bpy.data.meshes.new(f"{PREFIX}.{name}"))
+            self.scene.collection.objects.link(cs)
+            cs.hide_render = True
+            mg = cs.modifiers.new("collect", "NODES")
+            mg.node_group = _collector_group(c)
+            sets.append(cs)
         group = _clamp_group(float(self.spec["vertex_margin_m"]))
         for n in self.names:
             for o, px in self.states[n].get("proxies", []):
                 m = o.modifiers.new(f"{PREFIX}", "NODES")
-                m.node_group = _bind_group(group, px, cs, o.name)
+                m.node_group = _bind_group(group, px, sets[0], sets[1], o.name)
         self.report["vertex_stage_installed"] = True
 
 
 def _collector_group(col):
     import bpy
-    ng = bpy.data.node_groups.new(f"{PREFIX}.collect", "GeometryNodeTree")
+    ng = bpy.data.node_groups.new(f"{PREFIX}.collect.{col.name}", "GeometryNodeTree")
     ng.interface.new_socket("Geometry", in_out="INPUT", socket_type="NodeSocketGeometry")
     ng.interface.new_socket("Geometry", in_out="OUTPUT", socket_type="NodeSocketGeometry")
     N, L = ng.nodes, ng.links
@@ -535,6 +665,7 @@ def _clamp_group(margin):
     I.new_socket("Geometry", in_out="INPUT", socket_type="NodeSocketGeometry")
     I.new_socket("Anchors", in_out="INPUT", socket_type="NodeSocketGeometry")
     I.new_socket("Colliders", in_out="INPUT", socket_type="NodeSocketGeometry")
+    I.new_socket("Closed", in_out="INPUT", socket_type="NodeSocketGeometry")
     I.new_socket("Self", in_out="INPUT", socket_type="NodeSocketMatrix")
     I.new_socket("Anchor Space", in_out="INPUT", socket_type="NodeSocketMatrix")
     I.new_socket("Geometry", in_out="OUTPUT", socket_type="NodeSocketGeometry")
@@ -586,17 +717,107 @@ def _clamp_group(margin):
     inv = N.new("FunctionNodeInvertMatrix")
     L.new(gi.outputs["Self"], inv.inputs[0])
     tl = N.new("FunctionNodeTransformPoint")  # back to object space
-    L.new(ad.outputs[0], tl.inputs["Vector"])
     L.new(inv.outputs[0], tl.inputs["Transform"])
+    # second ray: from the (clamped) vertex towards its anchor; a first hit on a BACK face means the vertex is inside
+    # that solid (its anchor got inside something at this frame): it leaves through that face, `margin` beyond
+    sw1 = N.new("GeometryNodeSwitch")
+    sw1.input_type = "VECTOR"
+    L.new(rc.outputs["Is Hit"], sw1.inputs["Switch"])
+    L.new(tw.outputs[0], sw1.inputs["False"])
+    L.new(ad.outputs[0], sw1.inputs["True"])
+    out = N.new("ShaderNodeVectorMath")
+    out.operation = "SCALE"
+    L.new(nd.outputs[0], out.inputs[0])
+    out.inputs["Scale"].default_value = -1.0
+    st = N.new("ShaderNodeVectorMath")
+    st.operation = "MULTIPLY_ADD"
+    L.new(out.outputs[0], st.inputs[0])
+    st.inputs[1].default_value = (1e-4, 1e-4, 1e-4)
+    L.new(sw1.outputs[0], st.inputs[2])
+    rc2 = N.new("GeometryNodeRaycast")
+    L.new(gi.outputs["Closed"], rc2.inputs["Target Geometry"])
+    L.new(st.outputs[0], rc2.inputs["Source Position"])
+    L.new(out.outputs[0], rc2.inputs["Ray Direction"])
+    rc2.inputs["Ray Length"].default_value = EXIT_REACH
+    dot = N.new("ShaderNodeVectorMath")
+    dot.operation = "DOT_PRODUCT"
+    L.new(rc2.outputs["Hit Normal"], dot.inputs[0])
+    L.new(out.outputs[0], dot.inputs[1])
+    back = N.new("FunctionNodeCompare")
+    back.data_type, back.operation = "FLOAT", "GREATER_THAN"
+    L.new(dot.outputs["Value"], back.inputs[0])
+    back.inputs[1].default_value = 0.0
+    # ... and the opposite way too (two rays meeting back faces: inside a closed solid)
+    st3 = N.new("ShaderNodeVectorMath")
+    st3.operation = "MULTIPLY_ADD"
+    L.new(nd.outputs[0], st3.inputs[0])
+    st3.inputs[1].default_value = (1e-4, 1e-4, 1e-4)
+    L.new(sw1.outputs[0], st3.inputs[2])
+    rc3 = N.new("GeometryNodeRaycast")
+    L.new(gi.outputs["Closed"], rc3.inputs["Target Geometry"])
+    L.new(st3.outputs[0], rc3.inputs["Source Position"])
+    L.new(nd.outputs[0], rc3.inputs["Ray Direction"])
+    rc3.inputs["Ray Length"].default_value = CAP
+    dot3 = N.new("ShaderNodeVectorMath")
+    dot3.operation = "DOT_PRODUCT"
+    L.new(rc3.outputs["Hit Normal"], dot3.inputs[0])
+    L.new(nd.outputs[0], dot3.inputs[1])
+    back3 = N.new("FunctionNodeCompare")
+    back3.data_type, back3.operation = "FLOAT", "GREATER_THAN"
+    L.new(dot3.outputs["Value"], back3.inputs[0])
+    back3.inputs[1].default_value = 0.0
+    b3 = N.new("FunctionNodeBooleanMath")
+    b3.operation = "AND"
+    L.new(rc3.outputs["Is Hit"], b3.inputs[0])
+    L.new(back3.outputs[0], b3.inputs[1])
+    na = N.new("GeometryNodeInputNamedAttribute")
+    na.data_type = "FLOAT"
+    na.inputs["Name"].default_value = "ps_exit"
+    se = N.new("GeometryNodeSampleIndex")
+    se.data_type, se.domain = "FLOAT", "POINT"
+    L.new(gi.outputs["Anchors"], se.inputs["Geometry"])
+    L.new(na.outputs["Attribute"], se.inputs["Value"])
+    L.new(idx.outputs[0], se.inputs["Index"])
+    ok = N.new("FunctionNodeCompare")
+    ok.data_type, ok.operation = "FLOAT", "GREATER_THAN"
+    L.new(se.outputs[0], ok.inputs[0])
+    ok.inputs[1].default_value = 0.5
+    a1 = N.new("FunctionNodeBooleanMath")
+    a1.operation = "AND"
+    L.new(rc2.outputs["Is Hit"], a1.inputs[0])
+    L.new(back.outputs[0], a1.inputs[1])
+    a1b = N.new("FunctionNodeBooleanMath")
+    a1b.operation = "AND"
+    L.new(a1.outputs[0], a1b.inputs[0])
+    L.new(b3.outputs[0], a1b.inputs[1])
+    a2 = N.new("FunctionNodeBooleanMath")
+    a2.operation = "AND"
+    L.new(a1b.outputs[0], a2.inputs[0])
+    L.new(ok.outputs[0], a2.inputs[1])
+    ex = N.new("ShaderNodeVectorMath")
+    ex.operation = "MULTIPLY_ADD"
+    L.new(out.outputs[0], ex.inputs[0])
+    ex.inputs[1].default_value = (margin, margin, margin)
+    L.new(rc2.outputs["Hit Position"], ex.inputs[2])
+    sw2 = N.new("GeometryNodeSwitch")
+    sw2.input_type = "VECTOR"
+    L.new(a2.outputs[0], sw2.inputs["Switch"])
+    L.new(sw1.outputs[0], sw2.inputs["False"])
+    L.new(ex.outputs[0], sw2.inputs["True"])
+    L.new(sw2.outputs[0], tl.inputs["Vector"])
+    any_ = N.new("FunctionNodeBooleanMath")
+    any_.operation = "OR"
+    L.new(rc.outputs["Is Hit"], any_.inputs[0])
+    L.new(a2.outputs[0], any_.inputs[1])
     sp = N.new("GeometryNodeSetPosition")
     L.new(gi.outputs["Geometry"], sp.inputs["Geometry"])
-    L.new(rc.outputs["Is Hit"], sp.inputs["Selection"])
+    L.new(any_.outputs[0], sp.inputs["Selection"])
     L.new(tl.outputs[0], sp.inputs["Position"])
     L.new(sp.outputs[0], go.inputs[0])
     return ng
 
 
-def _bind_group(clamp, proxy, collider_set, name):
+def _bind_group(clamp, proxy, collider_set, closed_set, name):
     """Per hair object: wires its proxy, the collider set and the object transforms into the shared clamp."""
     import bpy
     ng = bpy.data.node_groups.new(f"{PREFIX}.{name}", "GeometryNodeTree")
@@ -619,6 +840,10 @@ def _bind_group(clamp, proxy, collider_set, name):
     L.new(gi.outputs[0], g.inputs["Geometry"])
     L.new(op.outputs["Geometry"], g.inputs["Anchors"])
     L.new(oc.outputs["Geometry"], g.inputs["Colliders"])
+    ocl = N.new("GeometryNodeObjectInfo")
+    ocl.transform_space = "ORIGINAL"
+    ocl.inputs["Object"].default_value = closed_set
+    L.new(ocl.outputs["Geometry"], g.inputs["Closed"])
     L.new(oself.outputs["Transform"], g.inputs["Self"])
     L.new(op.outputs["Transform"], g.inputs["Anchor Space"])
     L.new(g.outputs[0], go.inputs[0])

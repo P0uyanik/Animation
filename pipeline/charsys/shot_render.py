@@ -436,20 +436,23 @@ def main():
             scene.frame_set(f)
             for n, (target, late) in done.items():
                 fix_late(states[n], target, late, f)
-        rekeyed = set()
-        if pushout is not None:
-            tp = time.time()
-            scene.frame_set(f)
-            rekeyed = pushout.frame(f, _key_bone)
-            pushout_s["chains_s"] += time.time() - tp
+        evaluated = False
         if any(st["eyes"] for st in states.values()):  # eye-socket alignment on every frame, as Blender evaluates it
             scene.frame_set(f)
+            evaluated = True
             deps = bpy.context.evaluated_depsgraph_get()
             for n, st in states.items():
                 if st["eyes"]:
                     d = measure_eyes(st, deps)
                     if d >= eyes[n][0]:
                         eyes[n] = [d, f]
+        rekeyed = set()
+        if pushout is not None:  # after the eye check: it reuses that evaluation (eyes do not depend on hair bones)
+            tp = time.time()
+            if not evaluated:
+                scene.frame_set(f)
+            rekeyed = pushout.frame(f, _key_bone)
+            pushout_s["chains_s"] += time.time() - tp
         for n, st in states.items():
             target = done[n][0]
             if f in (fa, (fa + fb) // 2, fb):  # check the reconstruction: evaluated bone poses == baked poses
