@@ -39,8 +39,10 @@ CODE_SUFFIXES = {".c", ".cc", ".cpp", ".cxx", ".h", ".hh", ".hpp", ".hxx", ".py"
 TEXT_SUFFIXES = {".csv", ".json", ".md", ".py", ".txt", ".yaml", ".yml"}
 SHARED_PREFIXES = ("engine/", "apps/", "pipeline/charsys/", "pipeline/clips/")
 CHARACTER_DATA_PREFIXES = ("pipeline/charsys/character_data/", "pipeline/charsys/data/")
-# T-182 test registry: per-directory manifests named TESTS (docs/process/GATE.md, "Test registry").
-TEST_MANIFEST_NAME = "TESTS"
+# T-182 test registry: per-directory manifests named TESTS.manifest (docs/process/GATE.md, "Test registry").
+# Not plain "TESTS": on a case-insensitive checkout (Windows, macOS) a file TESTS collides with a sibling tests/ folder.
+TEST_MANIFEST_NAME = "TESTS.manifest"
+LEGACY_MANIFEST_NAME = "TESTS"  # the T-182 name; any file with it is a registry FAIL (T-203), never accepted
 TEST_KINDS = ("run", "blender", "via", "local")
 # The guarded patterns that exist only because a path is a test. A NEW file whose every matching guarded pattern
 # is one of these may be added without a Supervisor-Approved trailer (owner decision 2026-11-21, T-176 P7).
@@ -242,7 +244,7 @@ def change_statuses(compare: str) -> dict[str, str]:
 
 
 def manifest_append_only(old: str, new: str, added: set[str], manifest: str) -> bool:
-    """A TESTS edit is free only if it keeps every existing line unchanged, in place, and only appends entries
+    """A TESTS.manifest edit is free only if it keeps every existing line unchanged, in place, and only appends entries
     for test files this change adds (comments and blank lines may be appended too)."""
     old_lines, new_lines = old.splitlines(), new.splitlines()
     if new_lines[:len(old_lines)] != old_lines:
@@ -366,7 +368,7 @@ def is_test_source(path: str) -> bool:
 
 @dataclasses.dataclass(frozen=True)
 class TestEntry:
-    manifest: str      # repository path of the TESTS file
+    manifest: str      # repository path of the TESTS.manifest file
     line: int
     kind: str          # run | blender | via | local
     path: str          # repository path of the test file
@@ -399,7 +401,7 @@ def repo_files(root: Path) -> set[str]:
 
 
 def parse_manifest_text(manifest: str, text: str) -> tuple[list[TestEntry], list[str]]:
-    """Parse one TESTS file. Paths are relative to the manifest's directory (subdirectories allowed, no '..')."""
+    """Parse one TESTS.manifest file. Paths are relative to the manifest's directory (subdirectories allowed, no '..')."""
     import shlex
     base = manifest.rsplit("/", 1)[0] if "/" in manifest else ""
     entries, problems = [], []
@@ -431,11 +433,29 @@ def parse_manifest_text(manifest: str, text: str) -> tuple[list[TestEntry], list
     return entries, problems
 
 
+def case_collisions(paths) -> list[str]:
+    """Pairs of paths that differ only by letter case (they cannot both exist on a case-insensitive checkout).
+    A path also collides with a directory of another spelling that holds files (``TESTS`` vs ``tests/x``)."""
+    names: dict[str, set[str]] = collections.defaultdict(set)
+    for path in paths:
+        parts = path.split("/")
+        for i in range(1, len(parts) + 1):
+            names["/".join(parts[:i]).casefold()].add("/".join(parts[:i]))
+    return [" <-> ".join(sorted(spellings)) for _, spellings in sorted(names.items()) if len(spellings) > 1]
+
+
 def test_registry(root: Path | None = None, unit_ids: list[str] | None = None) -> tuple[list[TestEntry], list[str]]:
     """All manifest entries and every registry problem (empty list = the registry is complete and consistent)."""
     root = root or ROOT
     files = repo_files(root)
     entries, problems = [], []
+    for legacy in sorted(p for p in files if p.rsplit("/", 1)[-1] == LEGACY_MANIFEST_NAME):
+        problems.append(f"{legacy}: a plain '{LEGACY_MANIFEST_NAME}' file is not a manifest (it collides with a "
+                        f"tests/ folder on case-insensitive checkouts): rename it to {legacy}.manifest "
+                        f"(use {TEST_MANIFEST_NAME})")
+    collisions = case_collisions(files)
+    if collisions:
+        problems.append("paths differing only by letter case (break case-insensitive checkouts): " + short(collisions))
     for manifest in sorted(p for p in files if p.rsplit("/", 1)[-1] == TEST_MANIFEST_NAME):
         found, bad = parse_manifest_text(manifest, (root / manifest).read_text(encoding="utf-8"))
         entries += found
@@ -458,7 +478,7 @@ def test_registry(root: Path | None = None, unit_ids: list[str] | None = None) -
     tests = sorted(p for p in files if is_registry_test(p))
     unregistered = [p for p in tests if p not in seen]
     if unregistered:
-        problems.append(f"test(s) in no {TEST_MANIFEST_NAME} manifest: " + short(unregistered))
+        problems.append(f"test(s) in no {TEST_MANIFEST_NAME} file: " + short(unregistered))
     names = collections.Counter(p.rsplit("/", 1)[-1] for p in tests)
     clashes = sorted(n for n, count in names.items() if count > 1)
     if clashes:
@@ -671,7 +691,7 @@ def check_cpp_tests(build_dir: Path, config: str, logs: Path, build_ok: bool) ->
 
 
 def check_python_tests(logs: Path) -> Result:
-    """Run every `run` entry of the TESTS manifests (T-182); an incomplete registry fails this check."""
+    """Run every `run` entry of the TESTS.manifest files (T-182); an incomplete registry fails this check."""
     log = logs / "python-tests.log"
     entries, problems = test_registry()
     if problems:
