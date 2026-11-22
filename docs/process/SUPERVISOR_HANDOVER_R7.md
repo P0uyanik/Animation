@@ -39,3 +39,10 @@ weights stay equal, face/hair ship separately — both already owner-decided). F
 T-190, T-191, T-192, T-193, T-195, T-196, T-198, T-202, T-203, T-205, T-206, T-209, T-183 (round 3 merged 961371b), Codex
 T-197/T-200. T-207 + T-199 in the final gate (sessions told to stop). Follow-ups: see R6 handover "Follow-ups logged".
 Next free ID: T-212.
+
+## R7 log (Supervisor session_01NPjxeKJV7E1M9rnLTkzJoo, from ~19:35Z)
+- Promoted integration/t-199 (0f3787e, gate 45060162046 green; carries T-207 3a32740) and r6-handover-ledger (0a1422a).
+- T-194 at e13b64e: test_hair_pushout.py registered `local` (needs bpy). At merge the Supervisor adds it to a Blender
+  check_all unit (as T-207/unit_hair_curves) so the gate runs it.
+- T-201 dispatched (Opus). shot_render.py / run_shot.py stay with T-194: T-201 passes `--engine eevee` explicitly there;
+  making shot_render/run_shot honour the profile "engine" key is a 2-line follow-up after T-194 merges.
