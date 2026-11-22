@@ -6,6 +6,7 @@
 #include <format>
 #include <map>
 #include <tuple>
+#include <iterator>
 #include <unordered_map>
 
 #include "model/character.h"
@@ -424,4 +425,181 @@ CollisionBody collisionBodyFor(const Json& block, const Skeleton& sk, const std:
   return deriveCollisionBody(sk, meshes);
 }
 
+}  // namespace plush
+
+// ---- T-191 body parts (see collision.h) ----
+namespace plush {
+namespace {
+const char* const kBodyRoles[] = {"hips",      "spine",     "chest",  "neck",   "head",   "upperArm.L", "upperArm.R",
+                                  "forearm.L", "forearm.R", "hand.L", "hand.R", "thigh.L", "thigh.R",   "shin.L",
+                                  "shin.R",    "foot.L",    "foot.R"};
+// Eigenvectors of a symmetric 3x3 matrix (Jacobi), columns sorted by decreasing eigenvalue.
+void symEigen(glm::dmat3 A, glm::dvec3& w, glm::dmat3& V) {
+  V = glm::dmat3(1.0);
+  for (int sweep = 0; sweep < 32; ++sweep) {
+    double off = std::abs(A[0][1]) + std::abs(A[0][2]) + std::abs(A[1][2]);
+    if (off < 1e-14) break;
+    for (int p = 0; p < 2; ++p)
+      for (int q = p + 1; q < 3; ++q) {
+        if (std::abs(A[p][q]) < 1e-18) continue;
+        const double th = 0.5 * (A[q][q] - A[p][p]) / A[p][q];
+        const double t = (th >= 0 ? 1.0 : -1.0) / (std::abs(th) + std::sqrt(th * th + 1));
+        const double c = 1 / std::sqrt(t * t + 1), s = t * c;
+        glm::dmat3 J(1.0);
+        J[p][p] = c, J[q][q] = c, J[q][p] = s, J[p][q] = -s;  // column-major: J[col][row]
+        A = glm::transpose(J) * A * J;
+        V = V * J;
+      }
+  }
+  int idx[3] = {0, 1, 2};
+  std::sort(idx, idx + 3, [&](int i, int j) { return A[i][i] > A[j][j]; });
+  glm::dmat3 S;
+  for (int k = 0; k < 3; ++k) w[k] = A[idx[k]][idx[k]], S[k] = V[idx[k]];
+  V = S;
+}
+}  // namespace
+
+BodyParts deriveBodyParts(const Skeleton& sk, const std::vector<SkinnedMesh>& meshes) {
+  BodyParts out;
+  constexpr int nRoles = int(std::size(kBodyRoles));
+  int roleBone[nRoles];
+  std::unordered_map<int, int> roleOfBone;
+  for (int r = 0; r < nRoles; ++r) {
+    roleBone[r] = sk.find(kBodyRoles[r]);
+    if (roleBone[r] >= 0) roleOfBone[roleBone[r]] = r;
+  }
+  std::vector<int> role(sk.bones.size(), -1);
+  for (size_t b = 0; b < sk.bones.size(); ++b)
+    for (int k = int(b); k >= 0; k = sk.bones[size_t(k)].parent)
+      if (auto it = roleOfBone.find(k); it != roleOfBone.end()) {
+        role[b] = it->second;
+        break;
+      }
+  std::vector<std::vector<vec3>> pts(static_cast<size_t>(nRoles));
+  for (const SkinnedMesh& m : meshes)
+    for (size_t v = 0; v < m.rest.positions.size() && v < m.joints.size() && v < m.weights.size(); ++v) {
+      float w[nRoles] = {};
+      for (int k = 0; k < 4; ++k) {
+        const int j = m.joints[v][k];
+        if (j < 0 || size_t(j) >= sk.bones.size() || m.weights[v][k] <= 0 || role[size_t(j)] < 0) continue;
+        w[role[size_t(j)]] += m.weights[v][k];
+      }
+      const int best = int(std::max_element(w, w + nRoles) - w);
+      if (w[best] >= 0.5f) pts[size_t(best)].push_back(m.rest.positions[v]);
+    }
+  for (int r = 0; r < nRoles; ++r) {
+    const auto& P = pts[size_t(r)];
+    if (P.size() < 20 || roleBone[r] < 0) continue;
+    glm::dvec3 c(0);
+    for (const vec3& p : P) c += glm::dvec3(p);
+    c /= double(P.size());
+    glm::dmat3 C(0.0);
+    for (const vec3& p : P) {
+      const glm::dvec3 d = glm::dvec3(p) - c;
+      C += glm::outerProduct(d, d);
+    }
+    glm::dvec3 w;
+    glm::dmat3 V;
+    symEigen(C / double(P.size()), w, V);
+    const vec3 ax = glm::normalize(vec3(V[0])), e1 = glm::normalize(vec3(V[1])), e2 = glm::normalize(vec3(V[2]));
+    std::vector<float> t, d1, d2;
+    for (const vec3& p : P) {
+      const vec3 d = p - vec3(c);
+      t.push_back(glm::dot(d, ax));
+      d1.push_back(std::abs(glm::dot(d, e1)));
+      d2.push_back(std::abs(glm::dot(d, e2)));
+    }
+    float q1 = percentile(d1, kBodyPartRadiusQuantile, 0.05f), q2 = percentile(d2, kBodyPartRadiusQuantile, 0.05f);
+    vec3 wide = e1;
+    if (q2 > q1) std::swap(q1, q2), wide = e2;
+    const bool flat = q1 > kBodyPartFlat * q2;
+    const float rad = flat ? q2 : q1;
+    float t0 = percentile(t, 0.01f, 0), t1 = percentile(t, 0.99f, 0);
+    t0 += rad, t1 -= rad;
+    if (t0 > t1) t0 = t1 = 0.5f * (t0 + t1);
+    const vec3 head = sk.bones[size_t(roleBone[r])].head;
+    const vec3 a = vec3(c) + ax * t0 - head, b = vec3(c) + ax * t1 - head;
+    for (float s : flat ? std::vector<float>{-1.0f, 1.0f} : std::vector<float>{0.0f})
+      out.capsules.push_back({kBodyRoles[r], roleBone[r], a + wide * (s * (q1 - q2)), b + wide * (s * (q1 - q2)), rad});
+  }
+  out.valid = !out.capsules.empty();
+  return out;
+}
+
+void bodyPartSegment(const BodyPartCapsule& c, const std::vector<mat4>& G, vec3& a, vec3& b) {
+  const mat4& M = G[size_t(c.bone)];
+  a = vec3(M * vec4(c.a, 1));
+  b = vec3(M * vec4(c.b, 1));
+}
+
+float segmentSegment(vec3 p1, vec3 q1, vec3 p2, vec3 q2, vec3& c1, vec3& c2) {
+  // Ericson, Real-Time Collision Detection 5.1.9.
+  const vec3 d1 = q1 - p1, d2 = q2 - p2, r = p1 - p2;
+  const float a = glm::dot(d1, d1), e = glm::dot(d2, d2), f = glm::dot(d2, r);
+  float s = 0, t = 0;
+  if (a <= 1e-12f && e <= 1e-12f) {
+  } else if (a <= 1e-12f) {
+    t = std::clamp(f / e, 0.0f, 1.0f);
+  } else {
+    const float c = glm::dot(d1, r);
+    if (e <= 1e-12f) {
+      s = std::clamp(-c / a, 0.0f, 1.0f);
+    } else {
+      const float b = glm::dot(d1, d2), den = a * e - b * b;
+      s = den > 1e-12f ? std::clamp((b * f - c * e) / den, 0.0f, 1.0f) : 0.0f;
+      t = (b * s + f) / e;
+      if (t < 0) t = 0, s = std::clamp(-c / a, 0.0f, 1.0f);
+      else if (t > 1) t = 1, s = std::clamp((b - c) / a, 0.0f, 1.0f);
+    }
+  }
+  c1 = p1 + d1 * s;
+  c2 = p2 + d2 * t;
+  return glm::distance(c1, c2);
+}
+
+BodyGap bodyGap(const BodyParts& A, const std::vector<mat4>& Ga, const BodyParts& B, const std::vector<mat4>& Gb,
+                bool (*skip)(const std::string&, const std::string&)) {
+  BodyGap out;
+  std::vector<std::pair<vec3, vec3>> sb;
+  for (const auto& c : B.capsules) {
+    vec3 p0, p1;
+    bodyPartSegment(c, Gb, p0, p1);
+    sb.emplace_back(p0, p1);
+  }
+  for (const auto& ca : A.capsules) {
+    vec3 a0, a1;
+    bodyPartSegment(ca, Ga, a0, a1);
+    for (size_t j = 0; j < B.capsules.size(); ++j) {
+      const auto& cb = B.capsules[j];
+      if (skip && skip(ca.part, cb.part)) continue;
+      vec3 pa, pb;
+      const float d = segmentSegment(a0, a1, sb[j].first, sb[j].second, pa, pb);
+      const float g = d - ca.r - cb.r;
+      if (g >= out.gap) continue;
+      vec3 dir = d > 1e-6f ? (pa - pb) / d : vec3(0);
+      if (d <= 1e-6f) {  // axes cross: away horizontally, bone to bone
+        dir = vec3(Ga[size_t(ca.bone)][3]) - vec3(Gb[size_t(cb.bone)][3]);
+        dir.y = 0;
+        dir = glm::length(dir) > 1e-6f ? glm::normalize(dir) : vec3(1, 0, 0);
+      }
+      out.gap = g, out.partA = ca.part, out.partB = cb.part, out.dir = dir;
+      out.pointA = pa - dir * ca.r, out.pointB = pb + dir * cb.r;
+    }
+  }
+  return out;
+}
+
+float pointBodyGap(const BodyParts& body, const std::vector<mat4>& G, vec3 p, std::string* part) {
+  float best = 1e9f;
+  for (const auto& c : body.capsules) {
+    vec3 a, b, ca, cb;
+    bodyPartSegment(c, G, a, b);
+    const float g = segmentSegment(a, b, p, p, ca, cb) - c.r;
+    if (g < best) {
+      best = g;
+      if (part) *part = c.part;
+    }
+  }
+  return best;
+}
 }  // namespace plush
