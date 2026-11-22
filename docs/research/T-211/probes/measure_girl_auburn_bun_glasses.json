@@ -1,0 +1,238 @@
+{
+ "blink_closure_raycast": {
+  "visible_eyeball_points": {
+   "0.0": {
+    "-90": {
+     "L": "0/514",
+     "R": "43/510"
+    },
+    "-45": {
+     "L": "65/512",
+     "R": "94/519"
+    },
+    "0": {
+     "L": "86/506",
+     "R": "86/506"
+    },
+    "45": {
+     "L": "94/519",
+     "R": "65/512"
+    },
+    "90": {
+     "L": "53/510",
+     "R": "0/514"
+    }
+   },
+   "1.0": {
+    "-90": {
+     "L": "0/514",
+     "R": "0/510"
+    },
+    "-45": {
+     "L": "0/512",
+     "R": "8/519"
+    },
+    "0": {
+     "L": "3/506",
+     "R": "3/506"
+    },
+    "45": {
+     "L": "8/519",
+     "R": "0/512"
+    },
+    "90": {
+     "L": "5/510",
+     "R": "0/514"
+    }
+   }
+  },
+  "s": 2.98
+ },
+ "closed_lid_to_eyeball_mm": {
+  "min": 0.01,
+  "median": 1.38
+ },
+ "landmarks_projected": {
+  "0": {
+   "chin": [
+    0.5,
+    0.223,
+    "visible"
+   ],
+   "ear_L": [
+    0.799,
+    0.558,
+    "visible"
+   ],
+   "ear_R": [
+    0.201,
+    0.558,
+    "visible"
+   ],
+   "eye_L": [
+    0.638,
+    0.617,
+    "visible"
+   ],
+   "eye_R": [
+    0.362,
+    0.617,
+    "visible"
+   ],
+   "mouth": [
+    0.5,
+    0.386,
+    "occluded"
+   ],
+   "nose": [
+    0.5,
+    0.473,
+    "visible"
+   ]
+  },
+  "45": {
+   "chin": [
+    0.557,
+    0.221,
+    "visible"
+   ],
+   "ear_L": [
+    0.938,
+    0.566,
+    "visible"
+   ],
+   "ear_R": [
+    0.465,
+    0.555,
+    "occluded"
+   ],
+   "eye_L": [
+    0.584,
+    0.621,
+    "visible"
+   ],
+   "eye_R": [
+    0.39,
+    0.612,
+    "visible"
+   ],
+   "mouth": [
+    0.517,
+    0.385,
+    "occluded"
+   ],
+   "nose": [
+    0.487,
+    0.473,
+    "visible"
+   ]
+  },
+  "90": {
+   "chin": [
+    0.582,
+    0.214,
+    "occluded"
+   ],
+   "ear_L": [
+    0.819,
+    0.576,
+    "visible"
+   ],
+   "ear_R": [
+    0.74,
+    0.557,
+    "occluded"
+   ],
+   "eye_L": [
+    0.475,
+    0.623,
+    "visible"
+   ],
+   "eye_R": [
+    0.477,
+    0.609,
+    "occluded"
+   ],
+   "mouth": [
+    0.524,
+    0.385,
+    "occluded"
+   ],
+   "nose": [
+    0.482,
+    0.473,
+    "occluded"
+   ]
+  },
+  "180": {
+   "chin": [
+    0.5,
+    0.203,
+    "occluded"
+   ],
+   "ear_L": [
+    0.123,
+    0.574,
+    "occluded"
+   ],
+   "ear_R": [
+    0.877,
+    0.574,
+    "occluded"
+   ],
+   "eye_L": [
+    0.364,
+    0.614,
+    "occluded"
+   ],
+   "eye_R": [
+    0.636,
+    0.614,
+    "occluded"
+   ],
+   "mouth": [
+    0.5,
+    0.383,
+    "occluded"
+   ],
+   "nose": [
+    0.5,
+    0.473,
+    "occluded"
+   ]
+  }
+ },
+ "mask_passes_256px": {
+  "workbench_object_colour": {
+   "s": 3.43,
+   "readback_shape": [
+    256,
+    256,
+    4
+   ],
+   "nonzero_px": 60400
+  },
+  "cycles_1spp_index_crypto": {
+   "s": 12.95,
+   "readback_shape": [
+    256,
+    256,
+    4
+   ],
+   "nonzero_px": 5588
+  },
+  "compositor_idmask_eye.L": {
+   "note": "see compositor.txt (probe D): 'IndexOB' is named 'Object Index' in 5.3"
+  },
+  "eevee_1spp": {
+   "s": 102.96,
+   "readback_shape": [
+    256,
+    256,
+    4
+   ],
+   "nonzero_px": 5532,
+   "note": "first run (same script, before the glasses fix); Vulkan unavailable, software path"
+  }
+ }
+}

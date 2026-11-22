@@ -1,0 +1,3 @@
+girl_auburn_bun_glasses {"driver_kinds": {"SUM": 40, "SCRIPTED_simple": 190, "AVERAGE": 155}, "python_expressions": [], "vertex_group_split": {"left_share_of_motion": 0.501, "right_side_max_mm": 0.0, "exact_vs_weight_max_err_mm": 3e-05}}
+boy_yellow_hoodie {"driver_kinds": {"SUM": 40, "SCRIPTED_simple": 206, "AVERAGE": 171}, "python_expressions": [], "vertex_group_split": {"left_share_of_motion": 0.501, "right_side_max_mm": 0.0, "exact_vs_weight_max_err_mm": 3e-05}}
+girl_white_hair_blue_dress {"driver_kinds": {"SUM": 40, "SCRIPTED_simple": 176, "AVERAGE": 167}, "python_expressions": [], "vertex_group_split": {"left_share_of_motion": 0.5, "right_side_max_mm": 0.0, "exact_vs_weight_max_err_mm": 3e-05}}
