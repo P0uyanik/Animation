@@ -1,0 +1,268 @@
+{
+ "format": "plush.body_contact_report",
+ "version": 1,
+ "limit_mm": 5.0,
+ "pairs": [
+  {
+   "trace": "s010",
+   "pair": "white-auburn",
+   "capsule_mm": 2.0,
+   "capsule_frame": 91,
+   "capsule_parts": "hand.L/hand.R",
+   "capsule_frames_over": 0,
+   "mesh_mm": 7.6,
+   "mesh_frame": 91,
+   "mesh_parts": "white.forearm.L in hand.R",
+   "mesh_frames_over": 0,
+   "head_gap_min_mm": 33.2,
+   "frames": 144
+  },
+  {
+   "trace": "s010",
+   "pair": "white-boy",
+   "capsule_mm": 365.4,
+   "capsule_frame": 151,
+   "capsule_parts": "hand.L/hand.R",
+   "capsule_frames_over": 0,
+   "mesh_mm": null,
+   "mesh_frame": 41,
+   "mesh_parts": ". in ",
+   "mesh_frames_over": 0,
+   "head_gap_min_mm": 443.2,
+   "frames": 144
+  },
+  {
+   "trace": "s010",
+   "pair": "auburn-boy",
+   "capsule_mm": 10.0,
+   "capsule_frame": 151,
+   "capsule_parts": "thigh.L/hand.R",
+   "capsule_frames_over": 0,
+   "mesh_mm": -9.5,
+   "mesh_frame": 144,
+   "mesh_parts": "boy.upperArm.R in forearm.L",
+   "mesh_frames_over": 14,
+   "head_gap_min_mm": 26.1,
+   "frames": 144
+  },
+  {
+   "trace": "s020",
+   "pair": "white-auburn",
+   "capsule_mm": -65.3,
+   "capsule_frame": 133,
+   "capsule_parts": "head/head",
+   "capsule_frames_over": 1,
+   "mesh_mm": -63.7,
+   "mesh_frame": 133,
+   "mesh_parts": "white.head in head",
+   "mesh_frames_over": 1,
+   "head_gap_min_mm": -16.9,
+   "frames": 168
+  },
+  {
+   "trace": "s020",
+   "pair": "white-boy",
+   "capsule_mm": 267.4,
+   "capsule_frame": 132,
+   "capsule_parts": "hand.L/hand.R",
+   "capsule_frames_over": 0,
+   "mesh_mm": null,
+   "mesh_frame": 41,
+   "mesh_parts": ". in ",
+   "mesh_frames_over": 0,
+   "head_gap_min_mm": 416.9,
+   "frames": 168
+  },
+  {
+   "trace": "s020",
+   "pair": "auburn-boy",
+   "capsule_mm": -101.7,
+   "capsule_frame": 132,
+   "capsule_parts": "head/forearm.R",
+   "capsule_frames_over": 30,
+   "mesh_mm": -101.5,
+   "mesh_frame": 132,
+   "mesh_parts": "boy.forearm.R in head",
+   "mesh_frames_over": 118,
+   "head_gap_min_mm": -18.4,
+   "frames": 168
+  },
+  {
+   "trace": "s030",
+   "pair": "white-auburn",
+   "capsule_mm": 1.4,
+   "capsule_frame": 62,
+   "capsule_parts": "hand.L/head",
+   "capsule_frames_over": 0,
+   "mesh_mm": -1.5,
+   "mesh_frame": 73,
+   "mesh_parts": "white.forearm.L in head",
+   "mesh_frames_over": 0,
+   "head_gap_min_mm": 90.8,
+   "frames": 122
+  },
+  {
+   "trace": "s030",
+   "pair": "white-boy",
+   "capsule_mm": 203.6,
+   "capsule_frame": 88,
+   "capsule_parts": "hand.L/hand.R",
+   "capsule_frames_over": 0,
+   "mesh_mm": null,
+   "mesh_frame": 45,
+   "mesh_parts": ". in ",
+   "mesh_frames_over": 0,
+   "head_gap_min_mm": 396.6,
+   "frames": 122
+  },
+  {
+   "trace": "s030",
+   "pair": "auburn-boy",
+   "capsule_mm": -95.0,
+   "capsule_frame": 62,
+   "capsule_parts": "head/hand.R",
+   "capsule_frames_over": 35,
+   "mesh_mm": -111.2,
+   "mesh_frame": 84,
+   "mesh_parts": "boy.head in head",
+   "mesh_frames_over": 48,
+   "head_gap_min_mm": -20.4,
+   "frames": 122
+  },
+  {
+   "trace": "e907",
+   "pair": "boy-girl",
+   "capsule_mm": 10.0,
+   "capsule_frame": 60,
+   "capsule_parts": "forearm.R/hand.L",
+   "capsule_frames_over": 0,
+   "mesh_mm": 4.2,
+   "mesh_frame": 60,
+   "mesh_parts": "girl.chest in hand.R",
+   "mesh_frames_over": 0,
+   "head_gap_min_mm": 27.6,
+   "frames": 129
+  },
+  {
+   "trace": "e909",
+   "pair": "boy-girl",
+   "capsule_mm": 19.0,
+   "capsule_frame": 150,
+   "capsule_parts": "forearm.R/hand.L",
+   "capsule_frames_over": 0,
+   "mesh_mm": 11.5,
+   "mesh_frame": 136,
+   "mesh_parts": "girl.chest in hand.R",
+   "mesh_frames_over": 0,
+   "head_gap_min_mm": 13.6,
+   "frames": 286
+  },
+  {
+   "trace": "e910",
+   "pair": "boy-girl",
+   "capsule_mm": -11.7,
+   "capsule_frame": 142,
+   "capsule_parts": "hand.R/hand.L",
+   "capsule_frames_over": 3,
+   "mesh_mm": -10.3,
+   "mesh_frame": 143,
+   "mesh_parts": "girl.hand.L in hand.R",
+   "mesh_frames_over": 2,
+   "head_gap_min_mm": 103.1,
+   "frames": 192
+  }
+ ],
+ "cases": [
+  {
+   "trace": "s020",
+   "pair": "auburn-boy",
+   "parts": "head/forearm.R",
+   "frames": [
+    115,
+    138
+   ],
+   "frame": 132,
+   "capsule_mm": -101.7,
+   "mesh_mm": -101.5,
+   "hand_hand": false
+  },
+  {
+   "trace": "s030",
+   "pair": "auburn-boy",
+   "parts": "head/hand.R",
+   "frames": [
+    57,
+    91
+   ],
+   "frame": 62,
+   "capsule_mm": -95.0,
+   "mesh_mm": -78.4,
+   "hand_hand": false
+  },
+  {
+   "trace": "s020",
+   "pair": "white-auburn",
+   "parts": "head/head",
+   "frames": [
+    133,
+    133
+   ],
+   "frame": 133,
+   "capsule_mm": -65.3,
+   "mesh_mm": -63.7,
+   "hand_hand": false
+  },
+  {
+   "trace": "s020",
+   "pair": "auburn-boy",
+   "parts": "head/head",
+   "frames": [
+    79,
+    80
+   ],
+   "frame": 80,
+   "capsule_mm": -20.0,
+   "mesh_mm": -56.7,
+   "hand_hand": false
+  },
+  {
+   "trace": "e910",
+   "pair": "boy-girl",
+   "parts": "hand.R/hand.L",
+   "frames": [
+    141,
+    143
+   ],
+   "frame": 142,
+   "capsule_mm": -11.7,
+   "mesh_mm": -9.2,
+   "hand_hand": true
+  },
+  {
+   "trace": "s020",
+   "pair": "auburn-boy",
+   "parts": "forearm.L/forearm.R",
+   "frames": [
+    147,
+    149
+   ],
+   "frame": 147,
+   "capsule_mm": -7.0,
+   "mesh_mm": -15.7,
+   "hand_hand": false
+  },
+  {
+   "trace": "s020",
+   "pair": "auburn-boy",
+   "parts": "head/head",
+   "frames": [
+    70,
+    70
+   ],
+   "frame": 70,
+   "capsule_mm": -5.8,
+   "mesh_mm": -34.0,
+   "hand_hand": false
+  }
+ ]
+}
