@@ -1,0 +1,101 @@
+{
+ "version": "5.3.0",
+ "autoexec": true,
+ "ops": {
+  "object.modifier_apply_as_shapekey": true,
+  "object.shape_key_add": true,
+  "object.shape_key_mirror": true,
+  "object.shape_key_transfer": true,
+  "object.join_shapes": true,
+  "object.surfacedeform_bind": true,
+  "object.meshdeform_bind": true,
+  "object.correctivesmooth_bind": true,
+  "object.geometry_nodes_input_attribute_toggle": true,
+  "object.geometry_node_bake_single": true,
+  "geometry.execute_node_group": false,
+  "grease_pencil.trace_image": true,
+  "gpencil.trace_image": false,
+  "image.import_as_mesh_planes": true,
+  "import_image.to_plane": false,
+  "poselib.create_pose_asset": true,
+  "poselib.apply_pose_asset": true,
+  "poselib.blend_pose_asset": true,
+  "object.make_override_library": true,
+  "clip.solve_camera": true,
+  "clip.track_markers": true,
+  "import_fspy.import_project": false,
+  "pose.rigify_generate": false,
+  "object.data_transfer": true,
+  "object.vertex_group_normalize_all": true,
+  "paint.weight_from_bones": true,
+  "object.shape_key_lock": true,
+  "object.shape_key_make_basis": true,
+  "object.blend_from_shape": false,
+  "mesh.blend_from_shape": true
+ },
+ "addons": {
+  "rigify": {
+   "enable": true
+  },
+  "pose_library": {
+   "enable": true
+  },
+  "io_import_images_as_planes": {
+   "enable": false
+  }
+ },
+ "ops_after_rigify": {
+  "pose.rigify_generate": true
+ },
+ "rigify_face_rigs": [
+  "face.basic_tongue",
+  "face.skin_eye",
+  "face.skin_jaw",
+  "faces.super_face",
+  "skin.anchor",
+  "skin.basic_chain",
+  "skin.glue",
+  "skin.stretchy_chain",
+  "skin.transform.basic"
+ ],
+ "ops_after_reset": {
+  "poselib.create_pose_asset": true,
+  "grease_pencil.trace_image": true
+ },
+ "drivers_autoexec_off": {
+  "a*b": {
+   "simple": true,
+   "valid": true,
+   "value": 0.3
+  },
+  "min(a, b)": {
+   "simple": true,
+   "valid": true,
+   "value": 0.5
+  },
+  "clamp((a - 0.2) / 0.6) * b": {
+   "simple": true,
+   "valid": true,
+   "value": 0.3333
+  },
+  "smoothstep(0.0, 1.0, a) * b": {
+   "simple": true,
+   "valid": true,
+   "value": 0.324
+  },
+  "pow(a, 2.0)*b": {
+   "simple": true,
+   "valid": true,
+   "value": 0.18
+  }
+ },
+ "use_scripts_auto_execute": false,
+ "engines": [
+  "BLENDER_EEVEE"
+ ],
+ "cryptomatte_props": [
+  "use_pass_cryptomatte_object",
+  "use_pass_cryptomatte_material",
+  "use_pass_object_index"
+ ]
+}
