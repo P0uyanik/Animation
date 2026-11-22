@@ -1,0 +1,325 @@
+{
+ "projection_guide": {
+  "blender": "5.3.0",
+  "mode": "guide",
+  "points": 128,
+  "frames": 120,
+  "margin_m": 0.003,
+  "projection_seconds": 0.51,
+  "sha256": "e6d2289e3dbba4d985bbecc8e218c11c8f02ff80378a47f8769cf15faafbe38f",
+  "before": {
+   "torso": {
+    "frames": 116,
+    "worst_mm": 14.35
+   },
+   "table": {
+    "frames": 0,
+    "worst_mm": 0.0
+   }
+  },
+  "after": {
+   "torso": {
+    "frames": 8,
+    "worst_mm": 3.19
+   },
+   "table": {
+    "frames": 0,
+    "worst_mm": 0.0
+   }
+  },
+  "stretch_max": 1.0,
+  "tip_shift_mm_max": 17.6
+ },
+ "projection_ringlet": {
+  "blender": "5.3.0",
+  "mode": "ringlet",
+  "points": 384,
+  "frames": 120,
+  "margin_m": 0.003,
+  "projection_seconds": 1.89,
+  "sha256": "0e7c5e7ee340963149b34d3d371babbed40bcb6fe09998499a96eac6febeb8f3",
+  "before": {
+   "torso": {
+    "frames": 120,
+    "worst_mm": 66.64
+   },
+   "table": {
+    "frames": 0,
+    "worst_mm": 0.0
+   }
+  },
+  "after": {
+   "torso": {
+    "frames": 0,
+    "worst_mm": 0.0
+   },
+   "table": {
+    "frames": 0,
+    "worst_mm": 0.0
+   }
+  },
+  "stretch_max": 1.0,
+  "tip_shift_mm_max": 29.5
+ },
+ "projection_guide_len045": {
+  "blender": "5.3.0",
+  "mode": "guide",
+  "points": 128,
+  "frames": 120,
+  "margin_m": 0.003,
+  "projection_seconds": 0.65,
+  "sha256": "9eaaa4d70cf2ba956a4cf6aad65b1e286195ffc67cac83ef5e28f091ba7bb9e0",
+  "before": {
+   "torso": {
+    "frames": 120,
+    "worst_mm": 53.22
+   },
+   "table": {
+    "frames": 0,
+    "worst_mm": 0.0
+   }
+  },
+  "after": {
+   "torso": {
+    "frames": 0,
+    "worst_mm": 0.0
+   },
+   "table": {
+    "frames": 0,
+    "worst_mm": 0.0
+   }
+  },
+  "stretch_max": 1.0,
+  "tip_shift_mm_max": 59.4
+ },
+ "projection_ringlet_len045": {
+  "blender": "5.3.0",
+  "mode": "ringlet",
+  "points": 384,
+  "frames": 120,
+  "margin_m": 0.003,
+  "projection_seconds": 1.89,
+  "sha256": "d53e790969d90884a3797cb1a9728b7278912d1c0fee8f1136e53788480b0836",
+  "before": {
+   "torso": {
+    "frames": 120,
+    "worst_mm": 68.17
+   },
+   "table": {
+    "frames": 0,
+    "worst_mm": 0.0
+   }
+  },
+  "after": {
+   "torso": {
+    "frames": 5,
+    "worst_mm": 2.96
+   },
+   "table": {
+    "frames": 0,
+    "worst_mm": 0.0
+   }
+  },
+  "stretch_max": 1.0,
+  "tip_shift_mm_max": 84.1
+ },
+ "gn_guide_sub10_cs15": {
+  "blender": "5.3.0",
+  "mode": "guide",
+  "locks": 8,
+  "points": 128,
+  "frames": 120,
+  "substeps": 10,
+  "constraint_steps": 15,
+  "edge_contacts": false,
+  "margin_m": 0.004,
+  "seconds_incl_measure": 14.62,
+  "sha256": "59fb7d90d4f2e239dc7b1a50070ff0864e33c9aee27651850e0b6c1f673a9d99",
+  "torso": {
+   "frames": 29,
+   "worst_mm": 3.63,
+   "most_points": 12
+  },
+  "table": {
+   "frames": 0,
+   "worst_mm": 0.0,
+   "most_points": 0
+  },
+  "head": {
+   "frames": 0,
+   "worst_mm": 0.18,
+   "most_points": 0
+  },
+  "stretch_max": 1.312
+ },
+ "gn_guide_sub30_cs30": {
+  "blender": "5.3.0",
+  "mode": "guide",
+  "locks": 8,
+  "points": 128,
+  "frames": 120,
+  "substeps": 30,
+  "constraint_steps": 30,
+  "edge_contacts": false,
+  "margin_m": 0.004,
+  "seconds_incl_measure": 25.03,
+  "sha256": "b04f2b3f0edfe1c221f91757cfb214356443820e4320068ad81c7e28c904fa2c",
+  "torso": {
+   "frames": 33,
+   "worst_mm": 6.41,
+   "most_points": 12
+  },
+  "table": {
+   "frames": 0,
+   "worst_mm": 0.0,
+   "most_points": 0
+  },
+  "head": {
+   "frames": 0,
+   "worst_mm": 0.23,
+   "most_points": 0
+  },
+  "stretch_max": 2.398
+ },
+ "gn_guide_sub30_cs30_repeat": {
+  "blender": "5.3.0",
+  "mode": "guide",
+  "locks": 8,
+  "points": 128,
+  "frames": 120,
+  "substeps": 30,
+  "constraint_steps": 30,
+  "edge_contacts": false,
+  "margin_m": 0.004,
+  "seconds_incl_measure": 24.81,
+  "sha256": "b04f2b3f0edfe1c221f91757cfb214356443820e4320068ad81c7e28c904fa2c",
+  "torso": {
+   "frames": 33,
+   "worst_mm": 6.41,
+   "most_points": 12
+  },
+  "table": {
+   "frames": 0,
+   "worst_mm": 0.0,
+   "most_points": 0
+  },
+  "head": {
+   "frames": 0,
+   "worst_mm": 0.23,
+   "most_points": 0
+  },
+  "stretch_max": 2.398
+ },
+ "gn_guide_sub30_cs30_len045": {
+  "blender": "5.3.0",
+  "mode": "guide",
+  "locks": 8,
+  "points": 128,
+  "frames": 120,
+  "substeps": 30,
+  "constraint_steps": 30,
+  "edge_contacts": false,
+  "margin_m": 0.004,
+  "seconds_incl_measure": 24.99,
+  "sha256": "eb9987cd7599650d4322f1fd82dcef4d82e16ead6bc28f022fd80434a5be71ba",
+  "torso": {
+   "frames": 24,
+   "worst_mm": 3.63,
+   "most_points": 13
+  },
+  "table": {
+   "frames": 0,
+   "worst_mm": 0.0,
+   "most_points": 0
+  },
+  "head": {
+   "frames": 0,
+   "worst_mm": 0.18,
+   "most_points": 0
+  },
+  "stretch_max": 1.189
+ },
+ "gn_ringlet_sub30_cs30": {
+  "blender": "5.3.0",
+  "mode": "ringlet",
+  "locks": 8,
+  "points": 384,
+  "frames": 120,
+  "substeps": 30,
+  "constraint_steps": 30,
+  "edge_contacts": false,
+  "margin_m": 0.004,
+  "seconds_incl_measure": 27.88,
+  "sha256": "c9bd70e662f02cbc3e2a17bb27a532ea924734cd3a621c67f860164c17d07aca",
+  "torso": {
+   "frames": 61,
+   "worst_mm": 18.54,
+   "most_points": 19
+  },
+  "table": {
+   "frames": 0,
+   "worst_mm": 0.0,
+   "most_points": 0
+  },
+  "head": {
+   "frames": 0,
+   "worst_mm": 0.38,
+   "most_points": 0
+  },
+  "stretch_max": 1.759
+ },
+ "cloth_ribbon_q10": {
+  "blender": "5.3.0",
+  "mode": "cloth-ribbon",
+  "locks": 8,
+  "points": 256,
+  "frames": 120,
+  "quality": 10,
+  "collision_thickness_m": 0.006,
+  "seconds_incl_measure": 12.05,
+  "sha256": "9914f1848958a63e89f6137873f7b9428cb27543a2a4245c8739630dec028ba4",
+  "torso": {
+   "frames": 1,
+   "worst_mm": 3.46,
+   "most_points": 24
+  },
+  "table": {
+   "frames": 0,
+   "worst_mm": 0.0,
+   "most_points": 0
+  },
+  "head": {
+   "frames": 120,
+   "worst_mm": 80.79,
+   "most_points": 60
+  },
+  "stretch_max": 1.001
+ },
+ "cloth_ribbon_q10_repeat": {
+  "blender": "5.3.0",
+  "mode": "cloth-ribbon",
+  "locks": 8,
+  "points": 256,
+  "frames": 120,
+  "quality": 10,
+  "collision_thickness_m": 0.006,
+  "seconds_incl_measure": 12.19,
+  "sha256": "9914f1848958a63e89f6137873f7b9428cb27543a2a4245c8739630dec028ba4",
+  "torso": {
+   "frames": 1,
+   "worst_mm": 3.46,
+   "most_points": 24
+  },
+  "table": {
+   "frames": 0,
+   "worst_mm": 0.0,
+   "most_points": 0
+  },
+  "head": {
+   "frames": 120,
+   "worst_mm": 80.79,
+   "most_points": 60
+  },
+  "stretch_max": 1.001
+ }
+}
