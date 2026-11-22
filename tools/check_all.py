@@ -1182,6 +1182,8 @@ BLENDER_UNITS: list[tuple[str, object, bool]] = [
     ("fidelity-regression", unit_fidelity_regression, False),
     ("face-parity", t077_unit("face export parity (T-213)", lambda c: [  # auburn master, ~1 min, temp dir only
         sys.executable, str(ROOT / "pipeline/charsys/tests/test_face_parity.py"), "--blender", c.executable]), False),
+    ("face-measurer", t077_unit("face measurer (T-214)", lambda c: [  # 3 released masters, ~60 s, temp dirs only
+        sys.executable, str(ROOT / "tools/fit/tests/test_measurer.py")]), False),
 ]
 BLENDER_UNIT_IDS = [unit_id for unit_id, _, _ in BLENDER_UNITS]
 BLENDER_UNIT_DEPENDS = {"face": "charsys"}  # unit -> the unit whose output it reads (same shard, same run)
