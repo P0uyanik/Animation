@@ -85,8 +85,9 @@ finger bounds, clip clamp): the poses before T-190, bit for bit. Absent = on.
 
 ## 6. Tests and goldens that move (nothing edited; needs Supervisor / owner approval)
 
-Full suite on this branch: 259 cases, **251 pass, 8 fail** (56 assertions); with `tests/test_hand_limits.cpp`
-registered locally its 4 cases pass (25,987 assertions). Input `44f9fb3`: all pass.
+Full suite on this branch with main merged (`87da7fb`) and `tests/test_hand_limits.cpp` registered locally: 285
+cases, **277 pass, 8 fail** (56 assertions); the 4 new cases pass (25,987 assertions); `plush_prop_tests` passes.
+Input `44f9fb3`: all pass.
 
 **Golden bake hashes** (`tests/golden/interaction_hashes.json`): 6 of 20 scenes change, the six content scenes. In all
 six only the thumbs of clip-driven free hands move (`golden_delta.cpp`, limits on vs the switch off, `measures/golden_delta.md`):
