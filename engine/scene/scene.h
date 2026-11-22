@@ -1,6 +1,7 @@
 // Scenes (shots): objects, characters, lights, camera and animation, stored
 // as JSON. The evaluator turns a scene + frame number into a FrameSnapshot.
 #pragma once
+#include <deque>
 #include <filesystem>
 #include <map>
 #include <memory>
@@ -421,6 +422,26 @@ class SceneEvaluator {
   // Clips, life, constraints: the pose before secondary motion.
   std::vector<mat4> kinematicGlobals(size_t c, double frame, Pose* poseOut) const;
   std::vector<std::shared_ptr<SpringChainSolver>> dynamics_;  // per character; null = no secondary motion
+  // Scene colliders of the spring chains (T-183 round 3, opt-in: a character's dynamics override names a collider
+  // with "character" or "prop"; docs/SECONDARY_MOTION.md). Per character, what each of its solver's externals()
+  // rides on: a bone of another character (its rest head) or a prop. Empty for every character = nothing below runs.
+  struct DynamicsExternal {
+    int character = -1, bone = -1, prop = -1;
+    vec3 head{0};
+  };
+  std::vector<std::vector<DynamicsExternal>> dynamicsExternals_;
+  // The frames of character c's external colliders at a frame, from kinematic poses only (never a solver: the
+  // hair of one character must not wait for the hair of another, and a prop in the character's own hand would
+  // re-enter its solver).
+  std::vector<mat4> dynamicsExternalFrames(size_t c, double frame) const;
+  // propWorlds; kinematic = the carriers' poses before secondary motion.
+  std::vector<mat4> propWorldsWith(double frame, bool kinematic) const;
+  // kinematicGlobals of the last frames asked (only used with external colliders: two characters that collide with
+  // each other step through the same times, so each pose is evaluated once). Dropped by resetDynamics.
+  std::shared_ptr<const std::vector<mat4>> kinematicGlobalsMemo(size_t c, double frame) const;
+  std::shared_ptr<std::mutex> kinMemoMutex_ = std::make_shared<std::mutex>();
+  mutable std::map<std::pair<size_t, double>, std::shared_ptr<const std::vector<mat4>>> kinMemo_;
+  mutable std::deque<std::pair<size_t, double>> kinMemoOrder_;
   // Body mechanics (T-045): per character tuning, rig binding and follow-through kernels (scene frames); raw drivers
   // are cached per integer frame (not while actions compile: the generated tracks are still changing).
   struct BodyMechanicsSetup {

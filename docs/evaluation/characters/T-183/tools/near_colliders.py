@@ -1,5 +1,6 @@
 """Which colliders a chain joint touches, per frame (T-183 round 2: tracing tip noise).
 usage: near_colliders.py <exp dir with bake.json> <chain name> <joint index | -1 = tip> <A-B frames> [slack mm]
+                          [--character=girl]
 Prints, per frame, the joint position (mm) and every collider of the package whose surface is nearer to the joint
 than the joint's contact radius plus the slack (default 3 mm): name, bone, gap = distance - (collider radius + joint
 radius) in mm (negative = the joint is inside the contact distance)."""
@@ -11,10 +12,12 @@ import numpy as np
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..", "..", "..", "tools", "motion_checks"))
 import shot as S  # noqa: E402
 
+who = next((a.split("=", 1)[1] for a in sys.argv[1:] if a.startswith("--character=")), "girl")
+sys.argv = [a for a in sys.argv if not a.startswith("--character=")]
 out, chain, joint, (fa, fb) = sys.argv[1], sys.argv[2], int(sys.argv[3]), (int(x) for x in sys.argv[4].split("-"))
 slack = float(sys.argv[5]) / 1000 if len(sys.argv) > 5 else 0.003
 sh = S.Shot(out + "/bake.json")
-c = next(c for c in sh.characters if c.name == "girl")
+c = next(c for c in sh.characters if c.name == who)
 idx = {b: i for i, b in enumerate(c.bones)}
 head = {b["name"]: np.array(b["head"]) for b in c.doc["skeleton"]}
 dyn = c.doc["dynamics"]

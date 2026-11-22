@@ -4184,5 +4184,445 @@
     }
    }
   }
+ },
+ "body_r9_e909_s010_t183_girl": {
+  "bake": "episodes/e909_two_char_acting/shots/s010_t183/build/runs/r9b/bake.json",
+  "character": "girl",
+  "limit_mm": 1.0,
+  "summary": {
+   "frames_measured": 286,
+   "frames_deeper_than_limit": 268,
+   "max_depth_mm": 13.1,
+   "max_vertices": 436,
+   "pairs": {
+    "hair_cap>body_skin": {
+     "max_mm": 13.1,
+     "frames": 268,
+     "worst_frame": 66,
+     "max_vertices": 126
+    },
+    "hair_curtain>body_skin": {
+     "max_mm": 11.1,
+     "frames": 165,
+     "worst_frame": 142,
+     "max_vertices": 404
+    }
+   }
+  }
+ },
+ "body_r9_e912_s010_t183_auburn": {
+  "bake": "episodes/e912_paper_boat/shots/s010_t183/build/runs/r9b/bake.json",
+  "character": "auburn",
+  "limit_mm": 1.0,
+  "summary": {
+   "frames_measured": 184,
+   "frames_deeper_than_limit": 184,
+   "max_depth_mm": 9.8,
+   "max_vertices": 254,
+   "pairs": {
+    "hair_cap>body_skin": {
+     "max_mm": 6.2,
+     "frames": 184,
+     "worst_frame": 115,
+     "max_vertices": 38
+    },
+    "hair_curtain>body_skin": {
+     "max_mm": 9.8,
+     "frames": 184,
+     "worst_frame": 174,
+     "max_vertices": 208
+    },
+    "hair_ringlets_outer_00>body_skin": {
+     "max_mm": 8.8,
+     "frames": 176,
+     "worst_frame": 176,
+     "max_vertices": 8
+    },
+    "hair_ringlets_side_b>ear.L": {
+     "max_mm": 2.0,
+     "frames": 71,
+     "worst_frame": 27,
+     "max_vertices": 3
+    }
+   }
+  }
+ },
+ "body_r9_e912_s010_t183_white": {
+  "bake": "episodes/e912_paper_boat/shots/s010_t183/build/runs/r9b/bake.json",
+  "character": "white",
+  "limit_mm": 1.0,
+  "summary": {
+   "frames_measured": 184,
+   "frames_deeper_than_limit": 184,
+   "max_depth_mm": 10.3,
+   "max_vertices": 207,
+   "pairs": {
+    "hair_back_mass>ear.L": {
+     "max_mm": 10.3,
+     "frames": 184,
+     "worst_frame": 1,
+     "max_vertices": 202
+    },
+    "hair_back_under_00>ear.L": {
+     "max_mm": 5.4,
+     "frames": 177,
+     "worst_frame": 31,
+     "max_vertices": 6
+    },
+    "hair_back_under_06>ear.R": {
+     "max_mm": 10.1,
+     "frames": 178,
+     "worst_frame": 12,
+     "max_vertices": 9
+    }
+   }
+  }
+ },
+ "body_r9_e912_s020_t183_auburn": {
+  "bake": "episodes/e912_paper_boat/shots/s020_t183/build/runs/r9b/bake.json",
+  "character": "auburn",
+  "limit_mm": 1.0,
+  "summary": {
+   "frames_measured": 208,
+   "frames_deeper_than_limit": 208,
+   "max_depth_mm": 25.5,
+   "max_vertices": 948,
+   "pairs": {
+    "hair_cap>body_skin": {
+     "max_mm": 25.5,
+     "frames": 206,
+     "worst_frame": 115,
+     "max_vertices": 364
+    },
+    "hair_curtain>body_skin": {
+     "max_mm": 20.9,
+     "frames": 202,
+     "worst_frame": 81,
+     "max_vertices": 905
+    },
+    "hair_curtain>garment.blouse.collar": {
+     "max_mm": 1.6,
+     "frames": 149,
+     "worst_frame": 111,
+     "max_vertices": 22
+    },
+    "hair_ringlets_side_b>ear.L": {
+     "max_mm": 1.9,
+     "frames": 54,
+     "worst_frame": 30,
+     "max_vertices": 2
+    },
+    "hair_temple_l>body_skin": {
+     "max_mm": 7.9,
+     "frames": 8,
+     "worst_frame": 23,
+     "max_vertices": 8
+    },
+    "hair_ringlets_outer_00>body_skin": {
+     "max_mm": 12.4,
+     "frames": 52,
+     "worst_frame": 109,
+     "max_vertices": 24
+    },
+    "hair_back_sections>body_skin": {
+     "max_mm": 5.7,
+     "frames": 30,
+     "worst_frame": 163,
+     "max_vertices": 23
+    },
+    "hair_ringlets_side_b>body_skin": {
+     "max_mm": 6.4,
+     "frames": 3,
+     "worst_frame": 111,
+     "max_vertices": 25
+    },
+    "hair_ringlets_side_b>ear.R": {
+     "max_mm": 1.6,
+     "frames": 1,
+     "worst_frame": 133,
+     "max_vertices": 1
+    },
+    "hair_temple_r>body_skin": {
+     "max_mm": 5.8,
+     "frames": 1,
+     "worst_frame": 134,
+     "max_vertices": 7
+    },
+    "hair_cap>garment.blouse.collar": {
+     "max_mm": 12.2,
+     "frames": 1,
+     "worst_frame": 135,
+     "max_vertices": 15
+    },
+    "hair_curtain>garment.blouse.main": {
+     "max_mm": 18.0,
+     "frames": 1,
+     "worst_frame": 135,
+     "max_vertices": 177
+    },
+    "hair_curtain>garment.vest.edge.2": {
+     "max_mm": 1.8,
+     "frames": 1,
+     "worst_frame": 135,
+     "max_vertices": 2
+    },
+    "hair_curtain>garment.vest.main": {
+     "max_mm": 3.3,
+     "frames": 1,
+     "worst_frame": 135,
+     "max_vertices": 12
+    }
+   }
+  }
+ },
+ "body_r9_e912_s020_t183_white": {
+  "bake": "episodes/e912_paper_boat/shots/s020_t183/build/runs/r9b/bake.json",
+  "character": "white",
+  "limit_mm": 1.0,
+  "summary": {
+   "frames_measured": 208,
+   "frames_deeper_than_limit": 208,
+   "max_depth_mm": 10.2,
+   "max_vertices": 381,
+   "pairs": {
+    "hair_back_mass>ear.L": {
+     "max_mm": 10.2,
+     "frames": 208,
+     "worst_frame": 39,
+     "max_vertices": 267
+    },
+    "hair_back_under_00>ear.L": {
+     "max_mm": 5.3,
+     "frames": 192,
+     "worst_frame": 26,
+     "max_vertices": 6
+    },
+    "hair_back_under_06>ear.R": {
+     "max_mm": 9.8,
+     "frames": 167,
+     "worst_frame": 21,
+     "max_vertices": 11
+    },
+    "hair_cap>body_skin": {
+     "max_mm": 5.2,
+     "frames": 28,
+     "worst_frame": 26,
+     "max_vertices": 124
+    }
+   }
+  }
+ },
+ "body_r9_e912_s030_t183_auburn": {
+  "bake": "episodes/e912_paper_boat/shots/s030_t183/build/runs/r9b/bake.json",
+  "character": "auburn",
+  "limit_mm": 1.0,
+  "summary": {
+   "frames_measured": 166,
+   "frames_deeper_than_limit": 147,
+   "max_depth_mm": 22.0,
+   "max_vertices": 523,
+   "pairs": {
+    "hair_cap>body_skin": {
+     "max_mm": 22.0,
+     "frames": 146,
+     "worst_frame": 45,
+     "max_vertices": 403
+    },
+    "hair_back_sections>body_skin": {
+     "max_mm": 4.1,
+     "frames": 21,
+     "worst_frame": 57,
+     "max_vertices": 7
+    },
+    "hair_curtain>body_skin": {
+     "max_mm": 7.5,
+     "frames": 27,
+     "worst_frame": 92,
+     "max_vertices": 219
+    },
+    "hair_curtain>garment.blouse.collar": {
+     "max_mm": 1.8,
+     "frames": 55,
+     "worst_frame": 63,
+     "max_vertices": 13
+    },
+    "hair_curtain>garment.vest.edge.2": {
+     "max_mm": 2.3,
+     "frames": 10,
+     "worst_frame": 66,
+     "max_vertices": 5
+    },
+    "hair_curtain>garment.vest.main": {
+     "max_mm": 3.5,
+     "frames": 6,
+     "worst_frame": 66,
+     "max_vertices": 7
+    },
+    "hair_ringlets_outer_00>body_skin": {
+     "max_mm": 2.3,
+     "frames": 6,
+     "worst_frame": 85,
+     "max_vertices": 3
+    },
+    "hair_ringlets_back_01>ear.L": {
+     "max_mm": 9.2,
+     "frames": 1,
+     "worst_frame": 93,
+     "max_vertices": 54
+    },
+    "hair_ringlets_outer_b>body_skin": {
+     "max_mm": 4.6,
+     "frames": 1,
+     "worst_frame": 93,
+     "max_vertices": 3
+    },
+    "hair_ringlets_outer_b>ear.R": {
+     "max_mm": 10.0,
+     "frames": 1,
+     "worst_frame": 93,
+     "max_vertices": 48
+    },
+    "hair_ringlets_side_b>ear.R": {
+     "max_mm": 10.3,
+     "frames": 1,
+     "worst_frame": 93,
+     "max_vertices": 41
+    }
+   }
+  }
+ },
+ "body_r9_e912_s030_t183_white": {
+  "bake": "episodes/e912_paper_boat/shots/s030_t183/build/runs/r9b/bake.json",
+  "character": "white",
+  "limit_mm": 1.0,
+  "summary": {
+   "frames_measured": 166,
+   "frames_deeper_than_limit": 166,
+   "max_depth_mm": 11.3,
+   "max_vertices": 446,
+   "pairs": {
+    "hair_back_mass>ear.L": {
+     "max_mm": 11.3,
+     "frames": 166,
+     "worst_frame": 60,
+     "max_vertices": 271
+    },
+    "hair_back_under_00>ear.L": {
+     "max_mm": 7.9,
+     "frames": 135,
+     "worst_frame": 98,
+     "max_vertices": 6
+    },
+    "hair_cap>body_skin": {
+     "max_mm": 8.8,
+     "frames": 80,
+     "worst_frame": 67,
+     "max_vertices": 222
+    },
+    "hair_back_under_06>ear.R": {
+     "max_mm": 9.7,
+     "frames": 89,
+     "worst_frame": 136,
+     "max_vertices": 14
+    }
+   }
+  }
+ },
+ "props_r9_e909_s010_t183_girl": {
+  "bake": "episodes/e909_two_char_acting/shots/s010_t183/build/runs/r9b/bake.json",
+  "character": "girl",
+  "limit_mm": 1.0,
+  "summary": {
+   "frames_measured": 286,
+   "frames_deeper_than_limit": 0,
+   "max_depth_mm": 0.0,
+   "max_vertices": 0,
+   "surfaces": {}
+  }
+ },
+ "props_r9_e912_s010_t183_auburn": {
+  "bake": "episodes/e912_paper_boat/shots/s010_t183/build/runs/r9b/bake.json",
+  "character": "auburn",
+  "limit_mm": 1.0,
+  "summary": {
+   "frames_measured": 184,
+   "frames_deeper_than_limit": 0,
+   "max_depth_mm": 0.0,
+   "max_vertices": 0,
+   "surfaces": {}
+  }
+ },
+ "props_r9_e912_s010_t183_white": {
+  "bake": "episodes/e912_paper_boat/shots/s010_t183/build/runs/r9b/bake.json",
+  "character": "white",
+  "limit_mm": 1.0,
+  "summary": {
+   "frames_measured": 184,
+   "frames_deeper_than_limit": 0,
+   "max_depth_mm": 0.0,
+   "max_vertices": 0,
+   "surfaces": {}
+  }
+ },
+ "props_r9_e912_s020_t183_auburn": {
+  "bake": "episodes/e912_paper_boat/shots/s020_t183/build/runs/r9b/bake.json",
+  "character": "auburn",
+  "limit_mm": 1.0,
+  "summary": {
+   "frames_measured": 208,
+   "frames_deeper_than_limit": 43,
+   "max_depth_mm": 49.9,
+   "max_vertices": 1104,
+   "surfaces": {
+    "boy:body_skin": {
+     "max_mm": 49.9,
+     "worst_frame": 79,
+     "frames": 42,
+     "max_vertices": 1104
+    },
+    "white:body_skin": {
+     "max_mm": 23.9,
+     "worst_frame": 133,
+     "frames": 1,
+     "max_vertices": 112
+    }
+   }
+  }
+ },
+ "props_r9_e912_s020_t183_white": {
+  "bake": "episodes/e912_paper_boat/shots/s020_t183/build/runs/r9b/bake.json",
+  "character": "white",
+  "limit_mm": 1.0,
+  "summary": {
+   "frames_measured": 208,
+   "frames_deeper_than_limit": 0,
+   "max_depth_mm": 0.0,
+   "max_vertices": 0,
+   "surfaces": {}
+  }
+ },
+ "props_r9_e912_s030_t183_auburn": {
+  "bake": "episodes/e912_paper_boat/shots/s030_t183/build/runs/r9b/bake.json",
+  "character": "auburn",
+  "limit_mm": 1.0,
+  "summary": {
+   "frames_measured": 166,
+   "frames_deeper_than_limit": 0,
+   "max_depth_mm": 0.0,
+   "max_vertices": 0,
+   "surfaces": {}
+  }
+ },
+ "props_r9_e912_s030_t183_white": {
+  "bake": "episodes/e912_paper_boat/shots/s030_t183/build/runs/r9b/bake.json",
+  "character": "white",
+  "limit_mm": 1.0,
+  "summary": {
+   "frames_measured": 166,
+   "frames_deeper_than_limit": 0,
+   "max_depth_mm": 0.0,
+   "max_vertices": 0,
+   "surfaces": {}
+  }
  }
 }
