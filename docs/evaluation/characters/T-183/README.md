@@ -5,10 +5,10 @@ body". Round 2 goal: no hair inside head, neck, shoulders, back, arms, hands or 
 (286 frames); round 3: the real shots e912 s010 / s020 / s030 and e909 s010, both girls, props and the
 neighbour. Everything is opt-in: the released packages, bakes and goldens are unchanged. Round file: `ROUND.md`.
 
-## Round 3 result (final runs r8, session 9, 2026-11-22)
+## Round 3 result (final runs r9 on main merged at c6842d5a, session 9, 2026-11-22)
 
-Four real shots on the merged main, every frame, both girls (`T-183_r8_tables.json`; summaries in
-`T-183_r3_measures.json`, keys `*_r8_*`). Limit 1 mm. **Calm** = every frame that is not a source-body snap frame
+Four real shots on the merged main (incl. T-190 hand limits), every frame, both girls (`T-183_r9_tables.json`;
+summaries in `T-183_r3_measures.json`, keys `*_r9_*`). Limit 1 mm. **Calm** = every frame that is not a source-body snap frame
 +-1 (`tools/snaps.py`: a body bone of the measured character, or of the character whose surface it is, turns > 45
 degrees or travels > 100 mm within one frame). **Snap** = the snap frames +-1, reported apart and excluded from the
 criterion (Supervisor rule). `fringe`, `crown`, `flowers` > `boy:body_skin` in e912 s020 are the rigid parts inside
@@ -51,7 +51,7 @@ meshes), list in `ROUND.md` "Session 9".
 | e912_s020_auburn | hair_ringlets_side_00>boy:body_skin | 8.3 / 3 / 34 | 8.3 / 2 | 8.3 / 3 |
 | e912_s020_auburn | hair_temple_l>body_skin | 7.9 / 8 / 8 | - | 7.9 / 8 |
 | e912_s020_auburn | hair_back_sections>body_skin | 5.7 / 29 / 23 | 5.7 / 1 | 5.7 / 29 |
-| e912_s020_auburn | hair_ringlets_outer_00>body_skin | 3.8 / 44 / 4 | 12.4 / 7 | 2.9 / 48 |
+| e912_s020_auburn | hair_ringlets_outer_00>body_skin | 3.8 / 44 / 4 | 12.4 / 8 | 2.9 / 48 |
 | e912_s020_auburn | hair_ringlets_side_b>ear.L | 1.9 / 50 / 2 | 1.9 / 4 | 6.0 / 103 |
 | e912_s020_auburn | hair_curtain>garment.blouse.collar | 1.6 / 144 / 19 | 1.6 / 5 | 1.6 / 144 |
 | e912_s020_auburn | hair_flowers_petals>white:body_skin | 0 | 4.9 / 1 | 0.0 / 0 |
@@ -85,10 +85,10 @@ meshes), list in `ROUND.md` "Session 9".
 | e909_s010_girl | hair_cap>body_skin | 13.1 / 268 / 126 | - | 13.1 / 268 |
 | e909_s010_girl | hair_curtain>body_skin | 11.1 / 165 / 404 | - | 11.1 / 165 |
 
-Bake time (plush-render alone, median of 3, quiet 4-core machine; released shot -> T-183 candidate copy with every
-round-3 collider): e912 s010 6.4 -> 24.0 s (3.8x), s020 28.9 -> 49.5 s (1.7x), s030 3.0 -> 17.1 s (5.7x), e909 s010
-13.9 -> 25.4 s (1.8x); **all four 52.1 -> 116.0 s = 2.2x**. clear_targets itself costs nothing measurable (r7 -> r8
-bakes within 1 s).
+Bake time (plush-render alone, median of 3, quiet 4-core machine, merged main; released shot -> T-183 candidate copy
+with every round-3 collider): e912 s010 6.4 -> 24.8 s (3.9x), s020 29.8 -> 51.2 s (1.7x), s030 3.2 -> 17.3 s (5.5x),
+e909 s010 12.2 -> 23.1 s (1.9x); **all four 51.5 -> 116.3 s = 2.3x**. clear_targets itself costs nothing measurable
+(bakes before / after the key within 1 s).
 
 Sheet `T-183_r3_sheet.jpg` (642x1024; spec and full frames `sheet_r3/`, built by `tools/sheet_r3.py`): released
 shot | candidate copy, same camera, crops of 1280x720 renders. e912 s030 f5 (the side lock over the turned-away upper

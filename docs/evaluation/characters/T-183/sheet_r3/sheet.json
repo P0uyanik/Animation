@@ -1,5 +1,5 @@
 {
- "title": "T-183 round 3, final runs r8: released bake | T-183 candidate (same camera, 1280x720, 16 samples, review profile; crops)",
+ "title": "T-183 round 3, final runs r9 (merged main): released bake | T-183 candidate (same camera, 1280x720, 16 samples, review profile; crops)",
  "out": "../T-183_r3_sheet.jpg",
  "max_px": 1024,
  "columns": [
@@ -7,7 +7,7 @@
    "label": "before: released shot"
   },
   {
-   "label": "after: T-183 candidate copy (r8b)"
+   "label": "after: T-183 candidate copy (r9b)"
   }
  ],
  "rows": [
