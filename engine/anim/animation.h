@@ -6,6 +6,7 @@
 #include <memory>
 #include <string>
 #include <string_view>
+#include <utility>
 #include <vector>
 
 #include "core/math.h"
@@ -212,6 +213,12 @@ void applyHandLimits(const Skeleton& skeleton, Pose& pose, char side, const Hand
 // The ranges applyHandPose clamps a hand posed by `pose` into: HandLimits{}, with thumbBack = thumbBackFace for a flat
 // hand on a box face (grasp, graspFace set, not wrap; a wrap keeps T-171 round 3's 33 deg).
 HandLimits handLimitsFor(const HandPose& pose);
+// The thumb's joint coordinates, as HandLimits names them (degrees): local rotations of thumbA (abduction about the
+// palm normal, positive towards the fingers, * opposition about the finger direction * flexion about the thumb axis,
+// negative = laid back) and thumbB (end flexion about the thumb axis). Every rotation applyHandLimits keeps has
+// these coordinates; identity rotations if the hand has no thumb.
+std::pair<quat, quat> thumbJointRotations(const Skeleton& skeleton, char side, float oppositionDeg, float abductionDeg,
+                                          float flexDeg, float endFlexDeg);
 // Fingertip (skin) radius of a hand from its skeleton: half the mean spacing of neighbouring finger roots; 0 if the
 // hand has fewer than two fingers.
 float fingertipRadius(const Skeleton& skeleton, char side);

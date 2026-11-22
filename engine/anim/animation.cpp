@@ -1190,6 +1190,14 @@ void applyHandLimits(const Skeleton& sk, Pose& pose, char side, const HandLimits
   if (h.valid()) limitHand(sk, pose, side, h, limits);
 }
 
+std::pair<quat, quat> thumbJointRotations(const Skeleton& sk, char side, float opp, float abd, float flex, float endFlex) {
+  const HandBones h = findHand(sk, side);
+  if (!h.valid() || !HandBones::ok(h.thumb)) return {quat(1, 0, 0, 0), quat(1, 0, 0, 0)};
+  const HandAxes ax = handAxes(sk, side);
+  const ThumbAxes ta = thumbAxes(sk, h, ax);
+  return {glm::angleAxis(glm::radians(abd), ta.abd) * glm::angleAxis(glm::radians(opp), ta.opp) * thumbRot(ax, flex), thumbRot(ax, endFlex)};
+}
+
 HandLimits handLimitsFor(const HandPose& hp) {
   HandLimits lim;
   if (hp.grasp && !hp.wrap && glm::length(hp.graspFace) > 1e-6f) lim.thumbBack = lim.thumbBackFace;  // flat hand on a box face
