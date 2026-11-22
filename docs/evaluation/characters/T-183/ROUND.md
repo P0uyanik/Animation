@@ -531,4 +531,7 @@ module; `tools/bpy_blender.py` is not executable, so pass `--blender` a small wr
   per bake on 4 cores. The build cache does not see a change of generator code (`groom_contact.py`): the same
   override gives "cached"; delete `build/masters/<id>` and `build/packages/<id>` named in `build/cast.json` (girl) to
   rebuild. A scratch script must not be named like a standard module (`inspect.py` breaks the bpy import).
+- The branch holds a merge of main (`d366edf4`): a plain `git pull --rebase` replays main through it and stops in a
+  conflict (`git rebase --abort` restores the branch). Use `git pull --rebase=merges`, or fetch and check that origin
+  is not ahead before pushing.
 - Do not print object lists of a master (`WGT-*` widgets: hundreds of lines); filter by name.
