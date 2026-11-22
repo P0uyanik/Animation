@@ -27,25 +27,26 @@ continue in a fresh Opus session after their next checkpoint.**
 - Follow-ups added: eye convergence limits (gaze, after T-190); box-face wrap key drop (interaction.cpp:1256, after T-191).
 - Gate wait script: scratchpad wait_gate.sh <branch> <sha> (curl actions/runs, poll 60 s).
 
-## Running (R6, as of ~17:30Z; main = staging after this push)
+## Running (R6, as of ~18:55Z; main = staging = 8c69815+)
 | Task | Session (model) | Branch | State / next |
 |---|---|---|---|
-| T-183 r3 hair engine colliders | session_01NPjxeNkwAEozJp2WgBvgGi (Opus) | t-183-claude-hair-contact | A cup + B fixed (clear_targets); D final runs, then E README/READY. Merge: register new tests, trailers as for c775d69; give T-194 the final pin. |
-| T-194 hair push-out | session_01NPjxePALLCviMLH4YKW2mL (Opus) | t-194-claude-hair-pushout | stages A+B built, f110-112 fixed, measuring real shots against T-183 pin e7547ab4. Register test_hair_pushout.py. Q1/Q4/L1 wait for it (shot_render.py). |
-| T-198 motion continuity | session_01NPjxeKFhB6MjQW9AoXXVst (Opus) | t-198-claude-motion-continuity | design approved (source fixes in actions.cpp ikRamps, assistGazeWithNeck convergence, receiver orient ramp; detector + speed-limit test; no limiter). Goldens: numbers to me first; owner if visible/outside scope. Register tests/test_motion_continuity.cpp. |
-| T-199 compositor look | session_01NPjxeLdrDJrSXXNtaCUK5V (Sonnet) | t-199-claude-compositor-look | code + tests done (b4d8705); final720 side-by-side renders (soft + strong) → owner approves before use. Then T-201 preview_eevee. |
-| T-203 TESTS → TESTS.manifest | session_01NPjxeNmio6xu7vC4pXDwgt (Sonnet) | t-203-claude-tests-manifest-rename | Windows case collision; same test set before/after; + case-collision check. Trailers for all manifests + check_all/ready. Re-check other branches' new TESTS lines at their merges. |
-| T-205 bake package + PC render | session_01NPjxeLneYX48vFFGroyvGf (Opus) | t-205-claude-bake-package | cloud/CI zip, no engine exe; tools/pc one command. |
-| T-206 face + wool research | session_01NPjxePp9vJdYxLR6AyFiB9 (Opus) | t-206-claude-face-hair-research | docs only; uses Codex T-204 targets. |
+| T-183 r3 hair engine colliders | session_01NPjxeNkwAEozJp2WgBvgGi (Opus) | t-183-claude-hair-contact @ c6842d5a+ | B fixed (clear_targets), C leftovers listed for T-194 (ROUND.md Session 9), r9 final runs on merged main. READY must break down the 2.2x bake slowdown per opt-in feature. Merge: register new tests in pipeline/charsys/tests/TESTS.manifest, trailers as for c775d69, then give T-194 the final pin; apply T-207's groom_r6 hook patch after. |
+| T-194 hair push-out | session_01NPjxePALLCviMLH4YKW2mL (Opus, ~200k) | t-194-claude-hair-pushout @ 394b47f | measure queue 10-14 h IN THAT CONTAINER (do not replace the session; outputs are local). Candidate pair s020 first → 3-line STATUS. Lock-volume + back-face rules OFF. Register test_hair_pushout.py. Q1/Q4/L1 wait for it (shot_render.py). |
+| T-198 motion continuity r2 | session_01NPjxeNqDsz21bSwmqjn6zA (Opus) | t-198-claude-motion-continuity | content goldens bit-identical; s020 0 snaps; approved: re-record test_interaction/visibleGrip/boy; speed-limit test as ratchet baseline; follow-up T-209 = grasp/release finger-curl timing. Register tests/test_motion_continuity.cpp in tests/CMakeLists.txt. |
+| T-199 compositor look | session_01NPjxeLdrDJrSXXNtaCUK5V (Sonnet) | t-199-claude-compositor-look @ b4d8705+ | final720 side-by-side (soft + strong) → owner approves before use. Then T-201 preview_eevee (engine key convention from T-205). |
+| T-207 hair look (velvet/flock) | session_01NPjxeMc65LUidkdd4NUwfb (Opus) | t-207-claude-hair-flock @ 0184fd2+ | V1/V2/V3/D sheets rendering → owner picks. groom_r6 hook = patch in its folder (apply after T-183). test_hair_flock.py to register. H2 volume = later task after T-183/T-194. |
 
-Closed in R6: T-190, T-191, T-192, T-193, T-195, T-196, T-202; Codex T-197, T-200 merged. Codex T-204 running on the owner PC (relay).
-Owner standing rules added in R6: no Fable (Opus default, Sonnet mechanical); hands sub-mm/sub-degree side effects in scope = Supervisor decides + records.
+Codex (owner PC, relay): T-204 face targets; T-208 e912 EEVEE checks from bake packages (runs 45052327444 s010, 45053708309 s020, 45053710885 s030). T-209 = face-approach research (owner ~20:05 CET); T-210 reserved = grasp/release curls; next free ID T-211.
+Closed in R6: T-190, T-191, T-192, T-193, T-195, T-196, T-197 (Codex), T-200 (Codex), T-202, T-203, T-205, T-206 (sessions archived by the liaison).
+Owner standing rules added in R6: no Fable; hands sub-mm/sub-degree side effects in scope = Supervisor decides + records; engine works closely with Blender in all areas.
+Merge tips: TESTS files are now TESTS.manifest (plain TESTS fails the gate); stack integration branches on the previous one to promote several with one green gate; docs/process-only pushes take the fast path; gate wait = scratchpad wait_gate.sh, workflow runs = wait_run.sh.
 
 ## Waiting for the owner (via the liaison)
-1. T-199 compositor look approval (after the side-by-side).
-2. World plan start (liaison relays). 3. Voices on hold. 4. Faces: after T-206 + Codex T-204.
+1. T-199 compositor look approval (after its side-by-side). 2. T-207 hair look pick (after its sheets).
+3. World plan start (liaison relays). 4. Voices on hold. 5. Faces: fit after Codex T-204 (owner answers ~19:10 CET recorded).
 
 ## Follow-ups logged (not dispatched)
+R6: interaction.cpp box-face fingerClose.wrap drop; clip retarget (wave/point back-flex, authored thumb curl); 30° knuckle spread vs T-138 band fit; e909 boy tile camera; paper_white material preset missing; eye convergence limits (low); T-210 grasp/release curls; H2 hair volume per character (after T-183/T-194); L2 correctives after next release.
 Nape cap vs neck-skin fold (body skinning, T-183 item 1); seated thigh through the shorts front panel (T-184 limit 1);
 T-171: carry/hand-over wrist bend up to 93°, finger "press" depth, planArmLift popping; e909 r3: boy release 22.9 mm
 through the cup if keys go on the pass; boy ankle hem vs foot skin; girl button/embroidery normals vary build to build;

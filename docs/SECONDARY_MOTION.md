@@ -92,6 +92,8 @@ A chain may carry a `"contact"` block. Without it the chain takes exactly the pa
 | `rest` | resting contact: every collider acts at its full radius (no exemption for the kinematic target, `solid` is not needed). A pushed joint takes the collider's velocity along the contact normal and loses its sliding speed by `friction`; the middle of each segment is tested with a fixed lever; colliders far from the chain are skipped per step. | false |
 | `friction` | with `rest`: sliding speed lost in contact, 1/s. | 40 |
 | `max_swing` | with `rest`: a segment turns at most this much faster (rad/s) than its kinematic direction, so a lock squeezed between two colliders moves steadily instead of snapping. 0 = no bound. | 12 |
+| `carry` | with `rest` and `max_swing` (T-183 round 3): the `max_swing` bound yields to a collider that moves: a pushed joint may also turn as fast as that collider moves relative to the joint's kinematic target. A forearm that sweeps a lock across the chest within a frame then takes the lock along instead of leaving it inside the arm or the chest for that frame; a still collider adds nothing, so a squeezed lock stays steady. | false |
+| `clear_targets` | with `rest` (T-183 round 3): a joint's spring target is first taken out of the chain's colliders (pushed to the full radius, as a joint), the preroll starts the chain at those targets, and the `max_swing` bound does not hold a joint deeper in the chain's colliders than the uncapped direction has it (by more than 1 mm; a lock squeezed between two colliders is about as deep either way, and the bound holds as before). For an anchored target that lies inside the body: e912 s030 f1-10, the head turned 54 degrees against the chest anchor put a side lock's target inside the upper arm; started there, each step's way out was turned back by the bound and the lock stayed 30 mm inside the arm (7.7 mm through the blouse). Off = bit-identical. | false |
 | `locks` | lock against lock (T-183 round 3): a joint keeps off the joints of the other chains that carry the key by `locks` x (the two joints' radii), never by more than the two kinematic joints are apart (locks that lie together stay together). Joints only, not segments. The chains are solved in their fixed order, half the overlap is taken back per step: deterministic. A number in [0, 1]. | 0 (off) |
 
 - A push by any collider of a contact chain is inelastic: the pushed joint keeps at most the speed it had before the
@@ -129,7 +131,7 @@ Groom side (`spec.hair`, groom/5 module, `pipeline/charsys/groom_contact.py`), b
     by the joint's rest clearance to the colliders on the chain's root bone (so a lock that starts on the head does
     not collide with the head at rest). The root joint takes the next joint's radius, capped the same way: with a
     root radius of 0 the first segment was a thin cone and the short side locks turned 5-7 mm into the ears.
-  - `"rest": true | {"friction", "max_swing"}`: the chains get resting contact against every collider.
+  - `"rest": true | {"friction", "max_swing", "carry", "clear_targets"}`: the chains get resting contact against every collider.
 - `hair.ear_keepout`: `{"objects": ["ear.*"], "margin_m", "smooth", "structures"}`. Hair surface vertices inside a
   keep-out mesh are moved out along the head's front/back axis (the shorter way) before the fibres are grown, and the
   move is relaxed over the neighbours. Vertex counts and order do not change.
@@ -158,9 +160,37 @@ capsule on a bone of the character) or a box of the scene in world space:
 - A new collider joins every chain, also chains that name their colliders. A name the package uses already is an error.
 - A chain is kept out by the full radius only when it has `contact.rest` (or names the collider in `contact.solid`).
   A chain without a contact block is never pushed farther than its kinematic joint is, so a table holds nothing.
-- The box does not move. Segments are tested at the point nearest to the box (at their middle with `contact.rest`).
+- A world box does not move. Segments are tested at the point nearest to the box (at their middle with `contact.rest`).
 - Without the key the solver takes the previous path (a box out of reach is bit-identical too: `test_secondary.cpp`).
 - `docs/evaluation/characters/T-183/tools/derive_shot.py` writes the boxes of a shot's `objects` into a shot copy.
+
+Colliders that move with something outside the character (same list, same rules; opt-in per shot):
+
+```json
+"dynamics": {"colliders": [
+  {"name": "nb.boy.0", "type": "sphere", "character": "boy", "bone": "DEF-upper_arm.L", "centre": [0.21, 0.74, 0.01], "radius": 0.04},
+  {"name": "prop.boat", "type": "box", "prop": "boat", "min": [-0.05, -0.013, -0.021], "max": [0.05, 0.013, 0.021], "radius": 0.003},
+  {"name": "prop.cup", "type": "cylinder", "prop": "cup", "a": [0, 0, 0], "b": [0, 0.1, 0], "radius": 0.04, "round": 0.003}]}
+```
+
+- `"character"`: the scene name of ANOTHER character; `bone` is one of its bones and the shape (sphere or capsule) is
+  in that character's rest space, like a package collider is in the character's own. The hair of one character then
+  keeps off the body of its neighbour.
+- `"prop"`: the name of a scene prop; the shape (box, sphere, capsule or cylinder, no `bone`) is in the prop's own
+  frame, so it goes where the prop goes, also in a hand (the box is oriented). A scale in the prop's transform scales
+  the shape.
+- `"type": "cylinder"` (on a prop only): a solid cylinder, `a` and `b` the centres of its two end faces, `radius` its
+  radius, `round` the rounding of its two rims (default 0.003 m, at most the radius and half the height). The faces
+  and the side stay where `a`, `b` and `radius` put them. A cup is such a cylinder (its hollow counts as solid: no
+  hair hangs into it). Segments are tested like a box's. A scene without one runs as before.
+- The scene gives the solver the frames of these carriers at every step (`SpringChainSolver::External`): the other
+  characters' poses before their own secondary motion and the props on those poses, so no solver waits for another
+  and a prop in the character's own hand does not re-enter its solver. An unknown character, bone or prop is a load
+  error. The carriers' poses are evaluated at the step rate (240 Hz), each once (a memo shared by the characters).
+- Without such a collider nothing of this runs: the scene calls the solver exactly as before (the golden bake hashes
+  of `tests/test_bake_golden.cpp` are unchanged, and `test_secondary.cpp` checks the solver bit for bit).
+- `derive_shot.py --props --neighbours-from=<bake>` writes them into a shot copy: the scene's box and cylinder
+  props, and spheres fitted on the neighbours' package meshes where the hair comes near them (`tools/neighbours.py`).
 
 ## Groom (`spec.hair.dynamics`, groom/1)
 

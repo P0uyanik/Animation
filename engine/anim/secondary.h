@@ -56,6 +56,8 @@ struct ChainContact {
   bool rest = false;               // resting contact: all colliders at full radius, inelastic, with friction
   float friction = 40.0f;          // 1/s: decay of the sliding speed of a joint in contact (rest only)
   float maxSwing = 12.0f;          // rad/s: how much faster than its kinematic direction a segment may turn (rest only; 0 = no cap)
+  bool carry = false;              // rest + max_swing: the cap yields to the speed of the collider that pushes the joint
+  bool clearTargets = false;       // rest: a joint's spring target is taken out of the chain's colliders first
   float locks = 0.0f;              // > 0: joints keep off the joints of the other chains with the key by locks x (sum of the two radii)
 };
 
@@ -76,12 +78,18 @@ struct SpringChain {
 };
 
 struct DynamicsCollider {
-  enum class Kind { Sphere, Capsule, Box };
+  enum class Kind { Sphere, Capsule, Box, Cylinder };
   std::string name;
   Kind kind = Kind::Sphere;
   std::string bone;  // the collider rides on this bone; empty for a box (world space)
   vec3 a{0}, b{0};   // rest-space centre (sphere) or segment ends (capsule); min and max corner (box, world space)
   float radius = 0.05f;  // box: the rounding of its edges (at most its smallest half extent)
+  // Scene colliders that move with something outside the character (T-183 round 3; scene override only):
+  std::string character;  // `bone` is a bone of this other scene character; a, b in that character's rest space
+  std::string prop;       // the collider rides on this scene prop; a, b (any kind) in the prop's own frame
+  // Cylinder (on a prop only): a, b = the centres of its two end faces, radius = its radius, round = the rounding of
+  // its rims (at most the radius and half the height)
+  float round = 0.003f;
 };
 
 struct DynamicsSpec {
@@ -115,7 +123,9 @@ Json dynamicsToJson(const DynamicsSpec& spec);
 // "presets": {...}, "attach": [...], "colliders": [...]}. More specific keys win: "*" first, then the group, then
 // the chain name. "colliders" (T-183 round 3) adds colliders in the package format, or boxes of the scene:
 // {"name", "type": "box", "space": "world", "min": [x, y, z], "max": [x, y, z], "radius"? (edge rounding, 0.01)};
-// a new collider joins every chain. A chain is pushed to a collider's full radius only with contact.rest or when
+// or shapes that ride on another character's bone ({..., "character": "<scene name>", "bone": "<its bone>"}) or on a
+// scene prop ({..., "prop": "<name>"}; a box then needs no "space"); the scene passes their frames per step
+// (SpringChainSolver::External; without it they are not there). A new collider joins every chain. A chain is pushed to a collider's full radius only with contact.rest or when
 // contact.solid names it; otherwise never farther than its kinematic joint is (a table then holds nothing).
 // "attach" adds accessory chains (resolveAccessoryChains) and switches the layer on unless "enabled" is false.
 Result<void> applyDynamicsOverride(DynamicsSpec& spec, const Json& over);
@@ -125,13 +135,24 @@ class SpringChainSolver {
  public:
   // Kinematic bone globals (boneGlobals: column 3 = pivot) of the character at a (fractional) scene frame.
   using Driver = std::function<std::vector<mat4>(double frame)>;
+  // Scene colliders (T-183 round 3): what a collider outside the character rides on, and the callback that gives the
+  // frame of each at a (fractional) scene frame, one per externals() entry in that order: rest space of the other
+  // character's bone (its skinning frame: bone global x translate(-rest head)) or the prop's own frame -> world.
+  // It must not evaluate this solver (the scene passes kinematic frames).
+  struct ExternalRef {
+    std::string character, bone, prop;
+  };
+  using External = std::function<std::vector<mat4>(double frame)>;
+  const std::vector<ExternalRef>& externals() const { return externals_; }
   // simulate = false: no secondary motion; chains with an anchor are only posed at their (anchored) kinematic
   // targets, segment lengths kept (the static equivalent of the chain). Chains without an anchor stay kinematic.
   static Result<std::shared_ptr<SpringChainSolver>> create(const Skeleton& skeleton, const DynamicsSpec& spec,
                                                            bool simulate = true);
   // Replaces the chain bones' globals (and those of their non-chain descendants) for `frame`. `globals` are the
   // kinematic globals at `frame`. Frames before frameStart are left kinematic.
-  void apply(double frame, double frameStart, double fps, const Driver& kinematic, std::vector<mat4>& globals) const;
+  // `external`: the frames of externals(); empty = the colliders that ride on them are left out.
+  void apply(double frame, double frameStart, double fps, const Driver& kinematic, std::vector<mat4>& globals,
+             const External& external = {}) const;
   // Drops cached states (call when anything that drives the character changes).
   void reset() const;
   size_t chainCount() const { return chains_.size(); }
@@ -151,25 +172,32 @@ class SpringChainSolver {
     bool restContact = false;  // contact.rest
     float friction = 0, maxSwing = 0;
     float locks = 0;  // contact.locks
+    bool carry = false;  // contact.carry
+    bool clearTargets = false;  // contact.clear_targets
   };
   struct Collider {
     DynamicsCollider::Kind kind;
     int bone;  // -1: world space (box; a, b = the core's min and max corner, radius = its rounding)
     vec3 a, b, head;
     float radius;
+    int ext = -1;  // >= 0: rides on externals_[ext] (a, b in that frame; a box: its min and max corner, not shrunk)
+    float round = 0;  // cylinder: the rounding of its rims
   };
   struct State {
     std::vector<vec3> x, v, xk;  // per joint (all chains concatenated): position, velocity, kinematic position
     std::vector<vec3> ca, cb;    // collider ends at the end of the last step (only kept for contact.rest chains)
     std::vector<char> hit;       // per joint: a collider pushed it in the last step (only kept for contact.rest chains)
+    std::vector<mat4> ext;       // the external frames of the last step (only with external colliders)
+    bool fresh = false;          // the first step from the preroll's start (contact.clear_targets starts outside)
   };
   void targets(const std::vector<mat4>& g, std::vector<vec3>& xk) const;
-  void step(State& s, double dt, const std::vector<mat4>& g) const;
+  void step(State& s, double dt, const std::vector<mat4>& g, const std::vector<mat4>& ext) const;
   void write(const State& s, std::vector<mat4>& globals) const;
 
   Skeleton skeleton_;
   std::vector<Chain> chains_;
   std::vector<Collider> colliders_;
+  std::vector<ExternalRef> externals_;
   std::vector<size_t> offset_;  // first joint of each chain in State
   size_t joints_ = 0;
   bool simulate_ = true;

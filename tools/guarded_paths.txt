@@ -15,7 +15,7 @@ pipeline/charsys/shot_render.py
 pipeline/clips/measure_clips.py
 
 # Every existing and future test source. T-182 (owner 2026-11-21): a NEW test file (test_*.py, *_test.py,
-# tests/**/test_*.cpp) or TESTS manifest, or an append-only manifest edit for new tests, needs no trailer when
+# tests/**/test_*.cpp) or TESTS.manifest file, or an append-only manifest edit for new tests, needs no trailer when
 # these five are the only patterns it matches (check_all.TEST_GUARD_PATTERNS). Modifying, renaming or deleting
 # an existing test, or removing/changing a manifest line, still does.
 tests/
