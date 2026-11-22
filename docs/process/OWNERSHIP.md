@@ -27,9 +27,9 @@ split.
 | Task | Lane | Branch | Write-set | Depends on | Versions bumped |
 | --- | --- | --- | --- | --- | --- |
 | T-183 | B | t-183-claude-hair-contact | `engine/anim/secondary.h`, `engine/anim/secondary.cpp`, `tests/test_secondary.cpp`, `pipeline/charsys/groom_contact.py`, `pipeline/charsys/groom_r6.py`, `pipeline/charsys/tests/test_hair_contact.py`, `pipeline/charsys/release_rule.py`, `pipeline/charsys/tests/test_release_rule.py`, `docs/process/GENERATOR_PINS.md`, `episodes/e909_two_char_acting/shots/s010_t183/**`, `docs/SECONDARY_MOTION.md`, `docs/evaluation/characters/T-183/**`, `engine/scene/scene.cpp`, `engine/scene/scene.h`, `episodes/e912_paper_boat/shots/s010_t183/**`, `episodes/e912_paper_boat/shots/s020_t183/**`, `episodes/e912_paper_boat/shots/s030_t183/**` | — | — |
-| T-190 | E | t-190-claude-finger-limits | `engine/anim/hand_shape.h`, `engine/anim/hand_shape.cpp`, `engine/anim/animation.h`, `engine/anim/animation.cpp`, `tests/test_hand_shapes.cpp`, `engine/scene/clip_layers.cpp`, `tests/test_hand_limits.cpp`, `docs/evaluation/interaction/T-190/**` | — | — |
+| T-190 | E | t-190-claude-finger-limits | `engine/anim/hand_shape.h`, `engine/anim/hand_shape.cpp`, `engine/anim/animation.h`, `engine/anim/animation.cpp`, `tests/test_hand_shapes.cpp`, `engine/scene/clip_layers.cpp`, `tests/test_hand_limits.cpp`, `tests/test_grasp_contact.cpp`, `tests/test_verbs.cpp`, `tests/golden/interaction_hashes.json`, `docs/evaluation/interaction/T-190/**` | — | — |
 | T-194 | B | t-194-claude-hair-pushout | `pipeline/charsys/shot_render.py`, `pipeline/production/run_shot.py`, `pipeline/charsys/hair_pushout.py`, `pipeline/charsys/tests/test_hair_pushout.py`, `docs/evaluation/characters/T-194/**` | T-183 | — |
 | T-195 | S | t-195-claude-vocal-sounds | `pipeline/audio/**`, `content/sounds/**`, `docs/AUDIO.md`, `docs/evaluation/audio/T-195/**` | — | — |
-| T-196 | R | t-196-claude-blender-hybrid-review | `docs/audit/T-196/**` | — | — |
+| T-199 | R | t-199-claude-compositor-look | `pipeline/charsys/render_engine.py`, `pipeline/charsys/render_profiles.json`, `pipeline/charsys/tests/test_render_profiles.py`, `docs/evaluation/rendering/T-199/**` | — | — |
 
 Supervisor-only files: docs/process/TASK_LOG.md, docs/ROADMAP.md, docs/process/OWNER_DECISIONS.md, docs/tasks/**.
