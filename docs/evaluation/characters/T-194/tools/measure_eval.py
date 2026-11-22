@@ -82,6 +82,8 @@ def exit_depth(tree, p, loc, nrm, dist):
             d = -off / dist
             if tree.ray_cast(loc + d * EPS, d, CAP)[0] is None:
                 return dist if enclosed(tree, p) else 0.0
+    if not enclosed(tree, p):  # the loop below returns 0 exactly when two directions are free (same first rays)
+        return 0.0
     best, second = CAP, CAP
     for d in DIRS:
         e = exit_along(tree, p, d, second)
