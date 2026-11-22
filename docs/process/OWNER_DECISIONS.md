@@ -1008,3 +1008,9 @@ hard depends-on (read) overlaps were conflicts → T-181b makes them warnings. R
   tools/resources, right development approach?, use Blender more instead of building ourselves (per area), hybrid
   across more parts; per-area map current vs Blender/hybrid (quality, effort saved, risks incl. determinism, headless,
   goldens, TD-43, migration); ranked recommendations + verdict. Builds on T-174/T-176/T-189/T-193. No changes.
+
+## 2026-11-22 ~14:40 CET (via the liaison)
+- T-195 final voices: on hold (the placeholder demo stays as is).
+- T-190: the hand improvements are to be merged, further improvement later; default ON/OFF and the 33°/45° box-face
+  lay-back are not decided yet (the liaison explains) → no merge until both answers are relayed.
+- Motion-continuity guard and the T-196 follow-ups: not approved yet; no action until relayed.
