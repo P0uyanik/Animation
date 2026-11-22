@@ -2,9 +2,94 @@
 
 Branch `t-183-claude-hair-contact`. Round 1 input `7135087`; round 2 input `2664f7e`.
 
-## Round 2 (in progress): hair against the whole body and the garments
+## Round 3 (in progress): scene props, real shots, the fan-out
 
-Session 5 state: see "Session 5" below first (three levers against the fan-out tried, none kept; the candidate is
+Owner verdict on round 2 (2026-11-22 ~04:20 CET, on the T-187 paper-boat test `episodes/e912_paper_boat`): not final,
+the girl's hair goes through the table and still into her own body. Round 3 goal: zero penetration in real shots
+(e912 s010 / s020 / s030, e909 s010), per frame per surface (body, garments, props), real shots must use the
+candidate, and the fan-out of the back ringlets in the lean visibly better. Design approved by the Supervisor
+2026-11-22 ~11:48Z: write-set + `episodes/e912_paper_boat/shots/s0{1,2,3}0_t183/**`; the white-haired girl is in
+scope; `engine/scene/scene.cpp` only on request with numbers (requested, see "Open" 1; no answer yet at the time of
+writing); lock-against-lock opt-in and deterministic. Other tasks own `engine/anim/hand_shape.*`, `animation.*`
+(T-190), `engine/scene/collision.*` (T-191), `engine/scene/face_layer.*` (T-192): not touched.
+
+### Session 6 (2026-11-22): state at `415a594` and the commit after it
+
+Checked: T-187 rendered the released hair (e912 casts `auburn: version current` = 0.14.0, no override).
+`origin/integration/t-187` (main `2869eae` + the T-187 merge, `44f9fb3`) is merged into the branch (`43022be`) and
+pushed, because the container's stop hook asks for a push; `origin/main` had not moved to it yet. **Before READY:
+check that `origin/main` contains `44f9fb3`; if main landed differently, merge main again.** T-184 and T-183 entries
+are both in `release_rule.py` / `test_release_rule.py`; `GENERATOR_PINS.md` has the T-184 row.
+
+Built (all opt-in, absent keys = the previous path; 270 engine tests pass):
+
+- `engine/anim/secondary.{h,cpp}`: collider type `box` (world space, `min` / `max`, `radius` = edge rounding) and
+  the scene override key `dynamics.colliders` (docs/SECONDARY_MOTION.md "Scene colliders"). The solver's shape
+  queries go through `nearestOn` / `nearestSeg`; a sphere or capsule takes the same calls as before.
+- Chain key `contact.locks` (number in [0, 1], 0 = off): lock against lock, joints only, fixed chain order, half the
+  overlap per step. Unit-tested; **not yet tried on the hair** (no groom key yet: try it with `tweak_package.py`).
+- `tools/derive_shot.py <shot.scene.json> ...`: writes `<shot>_t183/shot.scene.json` = the source shot + the
+  candidates in `production.cast` + the scene's box objects as `scene.<name>` colliders of those characters.
+  `--check` compares. e909 `s010_t183` is re-derived from the new s010 (T-188); e912 `s010_t183`, `s020_t183`,
+  `s030_t183` are new.
+- `candidates/girl_white_hair_blue_dress.hair_contact.override.json` (on her 0.1.0 `versions/0.1.0/spec.json`): the
+  auburn girl's keys and values, `buns` instead of `bun`. Builds (47 chains).
+- `tools/measure_props.py <bake> --character=<name> [--others]`: hair against scene boxes (exact), props (primitive
+  shapes at the baked transforms) and the other characters' figures. `tools/tweak_package.py`: any chain key on a
+  built shot without a rebuild. `tools/r3_run.sh`: prepare + bake + both measures for one shot.
+
+Measured (limit 1 mm; `props` every frame, own body every 2nd frame for the candidate, every 4th for released;
+"rel" = shots `sNNN`, runs `rel6` / `rel6b`; "cand" = shots `sNNN_t183`, runs `r3b` / `r3bb`):
+
+| Shot, hair of | Surface | Released | Candidate |
+|---|---|---|---|
+| e912 s010 auburn | table_top | 12.5 mm, 164 fr, 616 v | 0 |
+| | the boy (hoodie / skin / hand.R) | 68.1 / 59.6 / 34.4 mm, 166 / 33 / 29 fr | 53.9 / 53.1 / 0 mm, 36 / 3 / 0 fr, all in f1-36 (walk-in, before the rendered range f41+) |
+| | own blouse | 86.2 mm, every frame, to 22,376 v | 20.4 mm in f101, 9.1 mm in f161 (`ringlets_side_r00`), 8.9 mm in f79 (`ringlets_side_00`): one frame each |
+| | own skin (curtain inner face, nape cap; round 2 items) | - | curtain 9.8 mm, cap 6.2 mm, `ringlets_outer_00` 8.8 mm (7 v), every frame |
+| | ear.L (`ringlets_side_b`) | - | 3.0 mm, 59 of 92 fr, 1-4 v |
+| e912 s010 white | table_top | 12.5 mm, 162 fr, 465 v | 0 |
+| | auburn (blouse / hand.R / cuff) | 48.9 / 7.1 / 7.2 mm, 23 / 1 / 6 fr | 40.7 / 11.6 / 8.9 mm, 19 / 2 / 6 fr, all in f11-33 |
+| | own bodice / skin | 42.8 mm / 22.1 mm | 0 |
+| | own ears (static `back_mass`, `back_under_06`, `_00`) | (10.1 mm in s020) | 10.3 / 9.9 / 5.4 mm, every frame: the ear keep-out does not reach `back_mass` (not looked at yet) |
+| e912 s020 auburn | table_top | 12.5 mm, 57 fr | 0 |
+| | the boy (hoodie / strap / skin / hand.R) | 74.1 / 70.0 / 62.0 / 31.2 mm, 123 / 8 / 65 / 33 fr | 71.7 / 75.2 / 49.9 / 52.0 mm, 118 / 8 / 50 / 4 fr |
+| | boat, boat_end_a (in her hand) | 13.0 / 14.8 mm, 55 / 41 fr | 12.8 / 15.0 mm, 37 / 48 fr |
+| | white-haired girl's skin | 23.9 mm, 1 fr | 23.9 mm, 1 fr |
+| e912 s020 white, s030 both, e909 s010 | | released: table_top 12.5 mm (white s020 162 fr, s030 9 fr); auburn s030 boy 47.8 mm, boat 14.8 mm | **queued when this was written** (`r3_run.status` in the session's scratch folder; rerun with `r3_run.sh`) |
+
+Read: the table is solved for both girls by the static boxes. What is left needs shapes that move: the neighbour
+(the boy beside her, 0.40 m seats) and the boat in her own hand.
+
+### Open (in this order)
+
+1. **Neighbour and carried prop.** Asked the Supervisor for `engine/scene/scene.cpp` + `scene.h` (message of
+   ~12:00Z with the table above). Plan if granted: a collider may name `"character": "<scene name>"` (bone of that
+   character) or `"prop": "<name>"` (box in prop space); the solver asks a callback for those transforms per step;
+   scene.cpp resolves the names at solver creation and passes the other characters' `kinematicGlobals` and the
+   props' worlds; `propWorlds` needs a kinematic variant (it calls `characterGlobals` of the carrier, which would
+   re-enter the solver; the boat is in the hair owner's hand). The neighbour's shapes are fitted at derive time from
+   its package meshes (the fit of `groom_contact.py`'s skin sets) and written into the `_t183` copy by
+   `derive_shot.py`. If not granted: report the neighbour / boat rows as open.
+2. **One-frame pops of the side locks into the blouse** (e912 s010 f79, f101, f161; her hands go to the sheet every
+   15 frames): a side lock between forearm, torso and table. Not analysed. Start with `tools/trace_chain.py` /
+   `near_colliders.py` on `ringlets_side_r00` f99-103 of `s010_t183/build/runs/r3bb`.
+3. **Fan-out levers** (session 5's untried three), each: build or tweak + bake + `fan_out.py` + `measure_body.py` +
+   preview f60 / f100 / f124 on e909 `s010_t183`: (b) thinner joint 1 of the back ringlets:
+   `tweak_package.py episodes/e909_two_char_acting/shots/s010_t183 j1 girl 'ringlets_back*:contact.radii[1]=0.012'`;
+   (c) `'ringlets_*:contact.locks=0.5'` the same way; (a) shorter top segments needs the groom (`groom_r6.py`
+   dynamics `bone_length` per structure / a first-segment key) and a rebuild. Keep one only with cloth / hands /
+   ears / props at 0 and the fan-out numbers and picture better; a kept `locks` needs the key in
+   `groom_contact.py` (CONTACT_KEYS, the chain block) and its test.
+4. White-haired girl: static `back_mass` in ear.L (ear keep-out), see the table.
+5. Deliverables: before / after close-ups incl. the table contact (e912 s010, f101-184 medium shot) and the lean
+   (e909), strict sheet <= 1024 px, per-surface numbers in the README (add the round 3 section), a committed
+   `T-183_r3_measures.json` (the summaries of the measure JSONs; they are in the scratch folder only),
+   `tools/ready.py` (the "tests" stop for `test_hair_contact.py` is expected), CHECKPOINT to the Supervisor.
+
+## Round 2 (not accepted by the owner, see round 3): hair against the whole body and the garments
+
+Round 2's last state: see "Session 5" below (three levers against the fan-out tried, none kept; the candidate is
 the one of `65e3b9c`). Before it: "Session 4" (final candidate measured; `sheets` and the curtain blend are gone).
 
 Owner verdict on round 1 (2026-11-21 ~19:20 CET): not accepted, "the hair still intersects with the body and other
