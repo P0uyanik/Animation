@@ -27,7 +27,6 @@ split.
 | Task | Lane | Branch | Write-set | Depends on | Versions bumped |
 | --- | --- | --- | --- | --- | --- |
 | T-194 | B | t-194-claude-hair-pushout | `pipeline/charsys/shot_render.py`, `pipeline/production/run_shot.py`, `pipeline/charsys/hair_pushout.py`, `pipeline/charsys/tests/test_hair_pushout.py`, `docs/evaluation/characters/T-194/**` | T-183 | — |
-| T-213 | C | t-213-claude-face-parity | `pipeline/charsys/face_parity.py`, `pipeline/charsys/tests/test_face_parity.py`, `docs/evaluation/characters/T-213/**` | `pipeline/charsys/export_engine.py` (stable), `assets/characters/**` (stable) | — |
-| T-214 | C | t-214-claude-face-measurer | `tools/fit/measurer.py`, `tools/fit/render.py`, `tools/fit/tests/test_measurer.py`, `docs/evaluation/characters/T-214/**` | `docs/evaluation/characters/T-204/**` (stable), `tools/fit/score.py` (stable), `assets/characters/**` (stable) | — |
+| T-215 | C | t-215-claude-auburn-fit | `tools/fit/run.py`, `tools/fit/core.py`, `tools/fit/score.py`, `tools/fit/tests/test_fit.py`, `docs/evaluation/characters/T-215/**` | `tools/fit/measurer.py` (stable), `tools/fit/render.py` (stable), `docs/evaluation/characters/T-204/**` (stable), `assets/characters/**` (stable) | — |
 
 Supervisor-only files: docs/process/TASK_LOG.md, docs/ROADMAP.md, docs/process/OWNER_DECISIONS.md, docs/tasks/**.

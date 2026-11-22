@@ -60,3 +60,10 @@ Next free ID: T-212.
 - Owner ~22:40 CET: face plan approved (T-212 changes, auburn pilot first). T-213 = P5a (session_01NPjxeL6rtvmt8Twg8PMsTn) export parity + knob-free master + Blender pin (no T-204 dependency). P1 measurer (T-214) waits for Codex T-204 merge.
 - T-204 (Codex face targets) merged on the fast path (staged build/in links repointed). T-214 = P1 measurer dispatched (session_01NPjxePVt4kQPXdw6q73GU6) (auburn first); P2 fit follows T-214.
 - T-201 merged (main 33b440a, gate 45073104037). Follow-up after T-194: shot_render.parse + run_shot default --engine None, then a.engine = a.engine or profile_data.get("engine", "cycles").
+- T-213 merged (027f528c) + T-214 merged (7fbf3c6f, stacked). Blender units added by the Supervisor: face-parity
+  (shard 5), face-measurer (shard 2). Shared-systems lint: shared code may not name a character (T-213 first gate red).
+- Supervisor decision (T-213 finding): in-between chain gap (engine expandInbetweens vs Blender AVERAGE drivers;
+  white-haired eye half-blink 6.7 mm, partial-weight sweep up to 12 mm on all three) is fixed in the NEW face versions
+  (generator writes chain-matched drivers or stop keys, P4), and `face_parity --strict` is part of their acceptance.
+  No engine change (would alter released look). Owner sees it via the version sheets.
+- T-215 = P2 auburn fit dispatched (existing spec controls only; P3 knobs = later task on the stuck list).
