@@ -1079,7 +1079,9 @@ Result<void> SceneEvaluator::compileActionsBody() {
       // side to the one on the other: e912 s020, the target went through her head and her head turned 95 deg in a
       // frame) turns round the head instead: two keys on the arc at the shift's thirds, in front of the looker. A shift
       // whose path keeps clear (closest point beyond 0.6 x the nearer end's distance) is keyed as before.
-      if (const int lookerHead = asset.skeleton.find("head"); lookerHead >= 0 && start > scene_.frameStart + 1e-9 && hadGaze) {
+      std::vector<std::pair<double, vec3>> arc;
+      const int lookerHead = asset.skeleton.find("head");
+      if (lookerHead >= 0 && start > scene_.frameStart + 1e-9 && hadGaze) {
         const vec3 h = vec3(characterGlobals(size_t(c), start)[size_t(lookerHead)][3]);
         const vec3 p1 = target(start + 3), a0 = prev - h, a1 = p1 - h;
         const float d0 = glm::length(a0), d1 = glm::length(a1);
@@ -1101,7 +1103,7 @@ Result<void> SceneEvaluator::compileActionsBody() {
           for (int k = 1; k <= 2; ++k) {
             const float t = float(k) / 3.0f;
             const vec3 dir = t < 0.5f ? slerpDir(e0, mid, 2 * t) : slerpDir(mid, e1, 2 * t - 1);
-            key(*gen, track, start + k, h + dir * glm::mix(d0, d1, t), Interp::Linear);
+            arc.push_back({start + k, h + dir * glm::mix(d0, d1, t)});
           }
         }
       }
@@ -1125,6 +1127,30 @@ Result<void> SceneEvaluator::compileActionsBody() {
         key(*gen, wtrack, std::max(last, start + kGazeTurn), vec3(1));
         key(*gen, wtrack, std::max(last, start + kGazeTurn) + kGazeTurn, vec3(w0));
         if (w0 > 0.f) key(*gen, track, last + kGazeTurn, prev, Interp::Linear);
+      }
+      // T-198: the arc only where the straight shift is over the per-frame limit (MotionLimits): measured on the head
+      // and its chain to the root over the shift and the head's lag (the life head follow reads ~2 x 0.2 s back).
+      // "<who>/continuity.lookArc" marks the frames for the lagged look direction (animation.cpp laggedLookTarget).
+      if (!arc.empty()) {
+        std::vector<int> chain;
+        for (int b = lookerHead; b >= 0; b = asset.skeleton.bones[size_t(b)].parent) chain.push_back(b);
+        const double f1 = std::min(double(scene_.frameEnd), start + 16);
+        const float peak = measured([&] {
+          float m = 0;
+          auto prevG = kinematicGlobals(size_t(c), std::floor(start), nullptr);
+          for (double f = std::floor(start) + 1; f <= f1; f += 1) {
+            auto g = kinematicGlobals(size_t(c), f, nullptr);
+            m = std::max(m, motionStepPeak(asset.skeleton, prevG, g, chain, scene_.rate.fps()));
+            prevG = std::move(g);
+          }
+          return m;
+        });
+        if (peak > 1.0f) {
+          for (const auto& [f, p] : arc) key(*gen, track, f, p, Interp::Linear);
+          std::erase_if(gen->tracks[prefix + "continuity.lookArc"].keys, [&](const Key& k) { return k.frame >= start - 1e-9 && k.frame <= start + 16 + 1e-9; });
+          key(*gen, prefix + "continuity.lookArc", start, vec3(1), Interp::Step);
+          key(*gen, prefix + "continuity.lookArc", start + 16, vec3(0), Interp::Step);
+        }
       }
       continue;
     }

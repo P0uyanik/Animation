@@ -299,8 +299,9 @@ namespace {
 // side to the one on the other): their mean point then falls near the head itself and its direction swings wildly
 // (e912 s020: the head turned 95 deg in a frame). The mean direction from the head, at the mean distance, takes over
 // as the mean point closes in: from |mean - head| / mean distance 0.75 (a ~83 deg spread, the mean point bit for bit
-// above it) to 0.5. `head` = the head bone's position in the pose being built.
-vec3 laggedLookTarget(const vec3* samples, int n, vec3 head) {
+// above it) to 0.5. `head` = the head bone's position in the pose being built. Only while the look compile planned an
+// arc round the head for a shift that was over the per-frame limit (`arc`: the "<who>/continuity.lookArc" track).
+vec3 laggedLookTarget(const vec3* samples, int n, vec3 head, bool arc) {
   vec3 mean(0), dir(0);
   float dist = 0;
   for (int i = 0; i < n; ++i) {
@@ -314,7 +315,7 @@ vec3 laggedLookTarget(const vec3* samples, int n, vec3 head) {
   dist /= float(n);
   if (dist < 1e-6f) return mean;
   const float r = glm::length(mean - head) / dist;
-  if (r >= 0.75f || glm::length(dir) < 1e-6f) return mean;
+  if (!arc || r >= 0.75f || glm::length(dir) < 1e-6f) return mean;
   const float t = float(std::clamp((0.75 - double(r)) / 0.25, 0.0, 1.0));
   const float k = t * t * (3 - 2 * t);
   return glm::mix(mean, head + glm::normalize(dir) * dist, k);
@@ -336,7 +337,8 @@ void applyLife(const Skeleton& sk, const Clip& clip, const std::string& prefix, 
     float lag = life.headLagSec * float(fps);
     vec3 samples[6];
     for (int i = 0; i < 6; ++i) samples[i] = lt->evaluate(frame - lag * (0.5 + 0.3 * i));
-    const vec3 target = laggedLookTarget(samples, 6, vec3(boneGlobals(sk, pose, world)[size_t(head)][3]));
+    const vec3 target = laggedLookTarget(samples, 6, vec3(boneGlobals(sk, pose, world)[size_t(head)][3]),
+                                         clip.evaluate(prefix + "continuity.lookArc", frame, vec3(0)).x > 0.5f);
     float wgt = clip.evaluate(prefix + "lookAt.weight", frame, vec3(1)).x * life.headFollow;
     if (neck >= 0) aimBone(sk, pose, world, neck, target, 0.35f * wgt, 35.0f);
     aimBone(sk, pose, world, head, target, 0.6f * wgt, 45.0f);
@@ -1545,7 +1547,8 @@ void applyConstraints(const Skeleton& sk, const Clip& clip, const std::string& p
     if (const double lag = gaze.assistLagSec * std::max(1.0, fps); lag > 0) {
       vec3 samples[6];
       for (int i = 0; i < 6; ++i) samples[i] = t->evaluate(frame - lag * (0.5 + 0.3 * i));
-      lagged = head >= 0 ? laggedLookTarget(samples, 6, vec3(boneGlobals(sk, pose, world)[size_t(head)][3]))
+      lagged = head >= 0 ? laggedLookTarget(samples, 6, vec3(boneGlobals(sk, pose, world)[size_t(head)][3]),
+                                             clip.evaluate(prefix + "continuity.lookArc", frame, vec3(0)).x > 0.5f)
                          : (samples[0] + samples[1] + samples[2] + samples[3] + samples[4] + samples[5]) / 6.0f;
     }
     assistGazeWithNeck(sk, clip, prefix, world, pose, head, lagged, w, gaze);

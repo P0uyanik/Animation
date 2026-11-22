@@ -3194,8 +3194,136 @@ Result<void> SceneEvaluator::finishInteractions(Clip& gen, InteractionContext& c
                                           scene_.characters[a].name, scene_.characters[b].name, worst * 1000, at, need * 1000, kHeadTiltMax));
       }
   }
+  // T-198 orient hemisphere. applyOrientConstraints blends the hand from its clip (IK) rotation to the planned one with
+  // a shortest-path slerp while the weight ramps (0 < w < 1). When the two are nearly opposite (> kFlipDeg) the shortest
+  // path can change side between two frames of the ramp (the hand turns over in one frame), or a short ramp turns the
+  // hand faster than the per-frame limit (MotionLimits). Only for such a ramp (as the pose plays back, last of all),
+  // the blend is planned here instead: per frame, the blend with the
+  // hemisphere of its first frame kept (both rotations sign-continuous), keyed as the hand's world orientation with
+  // weight 1. If the hand still turns faster than the limit the blend starts earlier (a ramp
+  // in) or ends later (a ramp out), 2 frames at a time up to kMaxExtra, over frames whose weight was 0, eased. The two
+  // tracks become per-frame linear keys over their span, so every frame outside the planned ones keeps its value bit for
+  // bit. Every other ramp is unchanged.
+  {
+    constexpr float kFlipDeg = 150.0f;
+    constexpr int kMaxExtra = 12;
+    const float limitDeg = MotionLimits{}.degPerSec / float(std::max(1.0, scene_.rate.fps()));
+    auto turnDeg = [](quat x, quat y) { return glm::degrees(2.0f * std::acos(std::min(1.0f, std::abs(glm::dot(x, y))))); };
+    for (size_t c = 0; c < characters_.size(); ++c) {
+      const Skeleton& sk = characters_[c].asset.skeleton;
+      const std::string prefix = scene_.characters[c].name + "/";
+      for (size_t bone = 0; bone < sk.bones.size(); ++bone) {
+        const int parent = sk.bones[bone].parent;
+        const std::string name = prefix + "orient." + sk.bones[bone].name, wname = name + ".weight";
+        auto ot = gen.tracks.find(name), wt = gen.tracks.find(wname);
+        if (parent < 0 || ot == gen.tracks.end() || wt == gen.tracks.end() || ot->second.keys.empty() || wt->second.keys.empty()) continue;
+        if (scene_.animation.tracks.count(name) || scene_.animation.tracks.count(wname)) continue;  // authored keys win
+        const Track orient = ot->second, weight = wt->second;
+        auto w = [&](int f) { return std::clamp(weight.evaluate(f).x, 0.0f, 1.0f); };
+        std::vector<std::pair<int, int>> runs;  // maximal runs of frames with 0 < w < 1
+        for (int f = scene_.frameStart; f <= scene_.frameEnd; ++f)
+          if (const float x = w(f); x > 0 && x < 1) {
+            if (!runs.empty() && runs.back().second == f - 1) runs.back().second = f;
+            else runs.push_back({f, f});
+          }
+        std::vector<std::pair<int, quat>> plan;  // frame, planned world orientation
+        for (auto [f0, f1] : runs) {
+          const bool in = w(f0 - 1) <= w(f1 + 1);
+          // Frames the blend may take: the run, the frames of weight 0 before (in) / after (out) it up to kMaxExtra.
+          int lo = f0, hi = f1;
+          if (in)
+            while (lo > scene_.frameStart && f0 - lo < kMaxExtra && w(lo - 1) <= 0) --lo;
+          else
+            while (hi < scene_.frameEnd && hi - f1 < kMaxExtra && w(hi + 1) <= 0) ++hi;
+          const int s0 = std::max(scene_.frameStart, lo - 1), s1 = std::min(scene_.frameEnd, hi + 1);
+          std::vector<quat> a, b, pr;  // per frame s0 .. s1: clip hand (local), planned (local), parent rotation
+          wt->second.keys = {Key{double(f0), vec3(0), Interp::Step}};  // the clip (IK) hand: orient weight 0
+          for (int f = s0; f <= s1; ++f) {
+            Pose p;
+            const std::vector<mat4> G = characterGlobals(c, f, &p);
+            const mat4& pg = G[size_t(parent)];
+            const quat r = glm::normalize(glm::quat_cast(mat3(glm::normalize(vec3(pg[0])), glm::normalize(vec3(pg[1])), glm::normalize(vec3(pg[2])))));
+            quat qa = glm::normalize(p.local[bone]), qb = glm::normalize(glm::inverse(r) * fromRotationVector(orient.evaluate(f)));
+            if (!a.empty() && glm::dot(qa, a.back()) < 0) qa = -qa;
+            if (!b.empty() && glm::dot(qb, b.back()) < 0) qb = -qb;
+            a.push_back(qa), b.push_back(qb), pr.push_back(r);
+          }
+          wt->second = weight;
+          auto at = [&](int f) { return size_t(f - s0); };
+          bool flips = false;
+          float widest = 0;
+          for (int f = f0; f <= f1; ++f) {
+            widest = std::max(widest, turnDeg(a[at(f)], b[at(f)]));
+            flips = flips || (glm::dot(a[at(f)], b[at(f)]) < 0) != (glm::dot(a[at(f0)], b[at(f0)]) < 0);
+          }
+          if (widest <= kFlipDeg) continue;
+          // The blend over frames p0 .. p1 (weight: the authored ramp, or eased over the longer span), and its fastest
+          // per-frame turn of the hand in the world, from the frame before to the frame after.
+          auto blend = [&](int p0, int p1, bool authored) {
+            std::vector<std::pair<int, quat>> out;
+            const float side = glm::dot(a[at(p0)], b[at(p0)]) < 0 ? -1.0f : 1.0f;
+            for (int f = p0; f <= p1; ++f) {
+              float x = w(f);
+              if (!authored) {
+                const float u = float(f - (p0 - 1)) / float((p1 + 1) - (p0 - 1));
+                x = u * u * (3 - 2 * u);
+                if (!in) x = 1 - x;
+              }
+              out.push_back({f, glm::normalize(pr[at(f)] * glm::normalize(glm::mix(a[at(f)], b[at(f)] * side, x)))});
+            }
+            return out;
+          };
+          auto fastest = [&](const std::vector<std::pair<int, quat>>& bl) {
+            const int p0 = bl.front().first, p1 = bl.back().first;
+            auto worldAt = [&](int f) {  // outside the blend: weight 0 before an in / after an out ramp, else 1
+              const bool zero = in ? f < p0 : f > p1;
+              return zero ? glm::normalize(pr[at(f)] * a[at(f)]) : glm::normalize(fromRotationVector(orient.evaluate(f)));
+            };
+            float m = 0;
+            quat prev = p0 - 1 >= s0 ? worldAt(p0 - 1) : bl.front().second;
+            for (const auto& [f, q] : bl) m = std::max(m, turnDeg(prev, q)), prev = q;
+            if (p1 + 1 <= s1) m = std::max(m, turnDeg(prev, worldAt(p1 + 1)));
+            return m;
+          };
+          std::vector<std::pair<int, quat>> best = blend(f0, f1, true);
+          float bestDeg = fastest(best);
+          if (!flips) {  // the hemisphere holds: as authored unless the hand turns faster than the limit
+            std::vector<std::pair<int, quat>> asIs;
+            for (int f = f0; f <= f1; ++f)
+              asIs.push_back({f, glm::normalize(pr[at(f)] * glm::normalize(glm::slerp(a[at(f)], b[at(f)], w(f))))});
+            if (fastest(asIs) <= limitDeg) continue;
+          }
+          for (int k = 2; bestDeg > limitDeg && k <= kMaxExtra; k += 2) {
+            const int p0 = in ? std::max(lo, f0 - k) : f0, p1 = in ? f1 : std::min(hi, f1 + k);
+            if ((in && p0 > f0 - k + 1) || (!in && p1 < f1 + k - 1)) break;  // no frames of weight 0 left
+            auto bl = blend(p0, p1, false);
+            if (const float d = fastest(bl); d < bestDeg) best = std::move(bl), bestDeg = d;
+          }
+          plan.insert(plan.end(), best.begin(), best.end());
+        }
+        if (plan.empty()) continue;
+        auto perFrame = [](const Track& t) {  // per-frame linear keys over the track's span (integer frames unchanged)
+          std::vector<Key> k;
+          for (int f = int(std::floor(t.keys.front().frame)); f <= int(std::ceil(t.keys.back().frame)); ++f) k.push_back({double(f), t.evaluate(f), Interp::Linear});
+          return k;
+        };
+        ot->second.keys = perFrame(orient);
+        wt->second.keys = perFrame(weight);
+        for (const auto& [f, q] : plan)  // the neighbours keep their values (the blend may reach past the old keys)
+          for (const int g : {f - 1, f + 1}) {
+            ot->second.setKey({double(g), orient.evaluate(g), Interp::Linear});
+            wt->second.setKey({double(g), weight.evaluate(g), Interp::Linear});
+          }
+        for (const auto& [f, q] : plan) {
+          ot->second.setKey({double(f), rotationVector(q), Interp::Linear});
+          wt->second.setKey({double(f), vec3(1), Interp::Linear});
+        }
+      }
+    }
+  }
   return {};
 }
+
 
 std::map<int, std::string> continuityExemptions(const Scene& scene, const std::string& character) {
   std::map<int, std::string> out;
