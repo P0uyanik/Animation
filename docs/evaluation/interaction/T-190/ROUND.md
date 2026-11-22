@@ -31,3 +31,17 @@ assertions listed there), then the Supervisor registers `tests/test_hand_limits.
 Build `cmake --preset fast-dev && cmake --build build/fast-dev -j4` (10 min); prepare per shot with
 `pipeline/production/run_shot.py --stages prepare` (1 min each); the before bakes need a binary built at `44f9fb3`
 (or the new binary with `hand.<s>.limits` 0 keyed on every hand).
+
+## Next round (Supervisor 13:24Z 22 Nov; for a fresh session, nothing of it started)
+Owner is deciding; Supervisor recommends default ON + 45 deg lay-back for box-face grasps only (wrap keeps 33). Do not
+re-record goldens or rewrite test criteria in place yet. Prepare two separate commits:
+- (a) the 45 deg box-face limit, measured. Where: `applyHandPosePerFinger` passes `lim.thumbBack / 55.0f` to
+  `rangeThumb`; for `face` grasps pass 45 / 55 instead, and let the final clamp accept it (e.g. `HandLimits::thumbBackFace`
+  = 45 used when the hand's grasp is a box face, or `thumbBack` 45 with the wrap keeping its own `kThumbBack` 0.6).
+  Already measured with a global 45: `test_hand_shapes.cpp:221`, `test_verbs.cpp:886`, `:1208` pass (40: 2.5 mm,
+  33: 4.6 mm). Re-run those three and the T-187 s020 scan (boy R thumb, section 4 of the README).
+- (b) a draft rewrite of the failing thumb criteria (README section 6 table: `test_hand_shapes.cpp:168/170/171/221`,
+  `test_grasp_contact.cpp:134/139/140/157/207/216/226`, `test_verbs.cpp:886/1208`) to in-range criteria: thumb opposes
+  the fingers as far as its range allows, contact within N mm where reachable in range, no penetration. Separate
+  commit the Supervisor can drop. Editing these tests needs the Supervisor's go-ahead for the write-set.
+- Optional: a better camera for the e909 boy tile (thumb hidden in `sheet/before_after_boy_clip.jpg` row 2).
