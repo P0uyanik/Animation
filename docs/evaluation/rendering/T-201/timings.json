@@ -1,0 +1,85 @@
+{
+ "machine": "cloud container, 4 vCPU, no GPU (EEVEE on Mesa software OpenGL via EGL), Blender 5.3.0",
+ "shot": "e912_paper_boat s020",
+ "note": "one frame per Blender run; render_s/setup_s from shot_render.json, wall_s = whole Blender process",
+ "s020_f080": {
+  "preview_eevee": {
+   "engine": "eevee",
+   "resolution": [
+    960,
+    540
+   ],
+   "samples": 16,
+   "setup_s": 30.6,
+   "render_s": 936.0,
+   "wall_s": 968.1
+  },
+  "review": {
+   "engine": "cycles",
+   "resolution": [
+    1280,
+    720
+   ],
+   "samples": 16,
+   "setup_s": 31.8,
+   "render_s": 128.0,
+   "wall_s": 161.2
+  },
+  "final720": {
+   "engine": "cycles",
+   "resolution": [
+    1280,
+    720
+   ],
+   "samples": 128,
+   "setup_s": 33.9,
+   "render_s": 443.2,
+   "wall_s": 478.4
+  }
+ },
+ "s020_f160": {
+  "preview_eevee": {
+   "engine": "eevee",
+   "resolution": [
+    960,
+    540
+   ],
+   "samples": 16,
+   "setup_s": 32.8,
+   "render_s": 626.6,
+   "wall_s": 660.8
+  },
+  "review": {
+   "engine": "cycles",
+   "resolution": [
+    1280,
+    720
+   ],
+   "samples": 16,
+   "setup_s": 32.7,
+   "render_s": 204.2,
+   "wall_s": 238.2
+  },
+  "final720": {
+   "engine": "cycles",
+   "resolution": [
+    1280,
+    720
+   ],
+   "samples": 128,
+   "setup_s": 33.3,
+   "render_s": 748.9,
+   "wall_s": 783.5
+  }
+ },
+ "s020_f080-082_preview_eevee_one_run": {
+  "setup_s": 71.9,
+  "render_s": 2761.3,
+  "render_s_per_frame": 920.43,
+  "frame_saved_at": [
+   "15:02.5",
+   "30:42.4",
+   "47:09.4"
+  ]
+ }
+}
