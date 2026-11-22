@@ -1,0 +1,70 @@
+{
+  "sheet": "/home/user/Animation/docs/evaluation/interaction/T-190/sheet/before_after_T187_girl.jpg",
+  "size": [
+    628,
+    1024
+  ],
+  "max_px": 1024,
+  "frames": [
+    "T187_s020_f070_girl_L",
+    "T187_s020_f074_girl_L",
+    "T187_s020_f075_girl_L",
+    "T187_s020_f100_girl_L"
+  ],
+  "columns": [
+    "before",
+    "after"
+  ],
+  "crops": [],
+  "inputs": [
+    {
+      "frame": "T187_s020_f070_girl_L",
+      "column": "before",
+      "path": "/home/user/Animation/docs/evaluation/interaction/T-190/sheet/before/T187_s020_f070_girl_L.jpg",
+      "sha256": "61dc064c058afab8b7f5570f54205888704b1768985054661731ac7124af693f"
+    },
+    {
+      "frame": "T187_s020_f070_girl_L",
+      "column": "after",
+      "path": "/home/user/Animation/docs/evaluation/interaction/T-190/sheet/after/T187_s020_f070_girl_L.jpg",
+      "sha256": "bd4e59bdf30b0bcf4551be4c8cc49e574e15457d6b92057e2aa5a3656aff68fd"
+    },
+    {
+      "frame": "T187_s020_f074_girl_L",
+      "column": "before",
+      "path": "/home/user/Animation/docs/evaluation/interaction/T-190/sheet/before/T187_s020_f074_girl_L.jpg",
+      "sha256": "5a76bd91d91f4142447c64aa00d1f9886d9f4c9ef647dee8921acb0933851494"
+    },
+    {
+      "frame": "T187_s020_f074_girl_L",
+      "column": "after",
+      "path": "/home/user/Animation/docs/evaluation/interaction/T-190/sheet/after/T187_s020_f074_girl_L.jpg",
+      "sha256": "1fcabff4fa39adcae4a1fe7584e0118f0fc0e52b753128c4369a4de3a2a46744"
+    },
+    {
+      "frame": "T187_s020_f075_girl_L",
+      "column": "before",
+      "path": "/home/user/Animation/docs/evaluation/interaction/T-190/sheet/before/T187_s020_f075_girl_L.jpg",
+      "sha256": "e0db7e56ae27a09e1064f56b138925b18df130bbbfae6a2f6912e99173ce8ea9"
+    },
+    {
+      "frame": "T187_s020_f075_girl_L",
+      "column": "after",
+      "path": "/home/user/Animation/docs/evaluation/interaction/T-190/sheet/after/T187_s020_f075_girl_L.jpg",
+      "sha256": "a4132b5d312c5c05feddf8f0beaa3673b761d159d71db83aa5cf90dc11d941ab"
+    },
+    {
+      "frame": "T187_s020_f100_girl_L",
+      "column": "before",
+      "path": "/home/user/Animation/docs/evaluation/interaction/T-190/sheet/before/T187_s020_f100_girl_L.jpg",
+      "sha256": "463697068dc0f65e049218aaf0a447549142fd4871ce097bc8bf7955aab83c78"
+    },
+    {
+      "frame": "T187_s020_f100_girl_L",
+      "column": "after",
+      "path": "/home/user/Animation/docs/evaluation/interaction/T-190/sheet/after/T187_s020_f100_girl_L.jpg",
+      "sha256": "28dadb06bf8fd3209e95ae6ea904ab6da142d844c63dc214134619b56dd1da35"
+    }
+  ],
+  "missing": []
+}

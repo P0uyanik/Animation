@@ -6,6 +6,7 @@
 #include <memory>
 #include <string>
 #include <string_view>
+#include <utility>
 #include <vector>
 
 #include "core/math.h"
@@ -179,8 +180,45 @@ struct HandPose {
   // (metres, hand rest scale; 0 = fingertipRadius) are the caller's measure of the real finger thickness.
   bool wrap = false;
   float wrapSkin = 0, wrapThumbSkin = 0;
+  // T-190 joint limits (default on; track "hand.<s>.limits" x < 0.5 = off: the poses before T-190, bit for bit). On:
+  // every digit joint is kept inside HandLimits (applyHandLimits, the last step of applyHandPose), the per-finger
+  // grasp solves its thumb inside that range (the wrap branch's thumb search) and its fingers never extend or
+  // over-flex past it.
+  bool limits = true;
   bool perFinger() const;
 };
+// T-190 joint ranges of a hand, degrees. Fingers (bones f<k>a, f<k>b and the rig's own third segment when f<k>b has
+// exactly one child), measured in the hand frame: flex about the curl axis (positive towards the palm), spread about
+// the palm normal, roll about the finger. Thumb base (thumbA: saddle joint and knuckle in one bone) in the thumb's own
+// controls: opposition about the finger direction, abduction about the palm normal (positive towards the fingers),
+// flex about the thumb axis; backwards (negative flex) at most `thumbBack`: the thumb laid back beside the palm, as
+// far as T-171 round 3's wrap lays it on a wide object; `thumbBackFace` for a flat hand on a box face (a per-finger,
+// non-wrap grasp with graspFace: the thumb lies on the face beside the palm; owner 2026-11-22). Thumb end joint
+// (thumbB): a hinge about the thumb axis.
+struct HandLimits {
+  float knuckleBack = 15, knuckleFlex = 90;  // f<k>a: hyperextension, flexion
+  float knuckleSpread = 30;                  // f<k>a: either way
+  float middleFlex = 110, endFlex = 90;      // f<k>b, third segment: hinges, never backwards
+  float play = 8;                            // off-axis rotation a hinge tolerates (knuckle: roll)
+  float thumbOpposition = 60;                // 0 .. this
+  float thumbAbductionIn = 20, thumbAbductionOut = 30;  // away from / towards the fingers
+  float thumbFlex = 66, thumbBack = 33, thumbBackFace = 45;
+  float thumbEndFlex = 60;                   // 0 .. this
+};
+// Clamps every digit joint of one hand ('L' or 'R') into `limits`. A joint inside its range is left untouched (bit
+// for bit); one outside is rebuilt from its clamped angles (an angle beyond a limit goes to the nearer limit).
+// Skeletons without a valid hand are unchanged. Every path that poses a hand ends here: applyHandPose (keyed shapes,
+// grasp searches, wrap) and the clip layers' finger pass (scene/clip_layers.cpp).
+void applyHandLimits(const Skeleton& skeleton, Pose& pose, char side, const HandLimits& limits = {});
+// The ranges applyHandPose clamps a hand posed by `pose` into: HandLimits{}, with thumbBack = thumbBackFace for a flat
+// hand on a box face (grasp, graspFace set, not wrap; a wrap keeps T-171 round 3's 33 deg).
+HandLimits handLimitsFor(const HandPose& pose);
+// The thumb's joint coordinates, as HandLimits names them (degrees): local rotations of thumbA (abduction about the
+// palm normal, positive towards the fingers, * opposition about the finger direction * flexion about the thumb axis,
+// negative = laid back) and thumbB (end flexion about the thumb axis). Every rotation applyHandLimits keeps has
+// these coordinates; identity rotations if the hand has no thumb.
+std::pair<quat, quat> thumbJointRotations(const Skeleton& skeleton, char side, float oppositionDeg, float abductionDeg,
+                                          float flexDeg, float endFlexDeg);
 // Fingertip (skin) radius of a hand from its skeleton: half the mean spacing of neighbouring finger roots; 0 if the
 // hand has fewer than two fingers.
 float fingertipRadius(const Skeleton& skeleton, char side);
@@ -198,7 +236,8 @@ std::vector<vec3> fingertips(const Skeleton& skeleton, const Pose& pose, const m
 // 2 tucked), "hand.L.bandFit" (x >= 0.5: T-138 band fit), "hand.L.bandFitOptions" (with bandFit, T-157: x / z = band widening at lo / hi, y = off-band finger bits), "hand.L.graspFace" (box-face normal), "hand.L.f<k>" = (curl, spread, free) for finger k (0 little .. 3 index),
 // "hand.L.thumb" = (opposition, curl), "hand.L.stagger" (x = frames per finger; default 1 with a band, else 0):
 // fingers close index -> little and open little -> index, one stagger step apart. T-171: "hand.L.wrap" = (on, finger
-// skin radius, thumb skin radius): the joint-by-joint wrap of HandPose::wrap.
+// skin radius, thumb skin radius): the joint-by-joint wrap of HandPose::wrap. T-190: "hand.L.limits" (x < 0.5 = joint
+// limits off for that hand, also for its clip-driven fingers; absent = on).
 void applyConstraints(const Skeleton& skeleton, const Clip& clip, const std::string& prefix, double frame,
                       const mat4& world, Pose& pose, const GazeLimits& gaze = {}, double fps = 30.0);
 

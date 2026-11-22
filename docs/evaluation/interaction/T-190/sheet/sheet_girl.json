@@ -1,0 +1,22 @@
+{
+ "columns": [
+  {
+   "label": "before",
+   "dir": "before"
+  },
+  {
+   "label": "after",
+   "dir": "after"
+  }
+ ],
+ "pattern": "{frame}.jpg",
+ "max_px": 1024,
+ "title": "T-190 girl's left thumb in T-187 s020 (pick-up, carry): before | after. Seen from below, table left out",
+ "frames": [
+  "T187_s020_f070_girl_L",
+  "T187_s020_f074_girl_L",
+  "T187_s020_f075_girl_L",
+  "T187_s020_f100_girl_L"
+ ],
+ "out": "before_after_T187_girl.jpg"
+}

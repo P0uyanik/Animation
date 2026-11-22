@@ -1,0 +1,57 @@
+{
+  "sheet": "/home/user/Animation/docs/evaluation/interaction/T-190/sheet/before_after_boy_clip.jpg",
+  "size": [
+    812,
+    994
+  ],
+  "max_px": 1024,
+  "frames": [
+    "T187_s020_f180_boy_R",
+    "e909_s010_f150_boy_R",
+    "T187_s030_f092_white_L"
+  ],
+  "columns": [
+    "before",
+    "after"
+  ],
+  "crops": [],
+  "inputs": [
+    {
+      "frame": "T187_s020_f180_boy_R",
+      "column": "before",
+      "path": "/home/user/Animation/docs/evaluation/interaction/T-190/sheet/before/T187_s020_f180_boy_R.jpg",
+      "sha256": "189fb46ab81b22bf0ecd20d1ab05b3e39f6d345b6253a69e46eeb76a5b5c2020"
+    },
+    {
+      "frame": "T187_s020_f180_boy_R",
+      "column": "after",
+      "path": "/home/user/Animation/docs/evaluation/interaction/T-190/sheet/after/T187_s020_f180_boy_R.jpg",
+      "sha256": "6e03530a1c9cee67d3d9cf3f116e0338f0b5acb4f069e20314ba31b0db361417"
+    },
+    {
+      "frame": "e909_s010_f150_boy_R",
+      "column": "before",
+      "path": "/home/user/Animation/docs/evaluation/interaction/T-190/sheet/before/e909_s010_f150_boy_R.jpg",
+      "sha256": "70a5b9ff78508bed7770c01e835120aff658daab5bc1d0a50008c5bcf83dc567"
+    },
+    {
+      "frame": "e909_s010_f150_boy_R",
+      "column": "after",
+      "path": "/home/user/Animation/docs/evaluation/interaction/T-190/sheet/after/e909_s010_f150_boy_R.jpg",
+      "sha256": "0efa7bd3d45d32d99f1356402a6a44e60efa5469e281c6c636280220bfc720ac"
+    },
+    {
+      "frame": "T187_s030_f092_white_L",
+      "column": "before",
+      "path": "/home/user/Animation/docs/evaluation/interaction/T-190/sheet/before/T187_s030_f092_white_L.jpg",
+      "sha256": "d8c2e1f00f323435111fe47fbda32c3bedaa9d77e2062f8ad32d6bcbe01bd4ff"
+    },
+    {
+      "frame": "T187_s030_f092_white_L",
+      "column": "after",
+      "path": "/home/user/Animation/docs/evaluation/interaction/T-190/sheet/after/T187_s030_f092_white_L.jpg",
+      "sha256": "4a66dc6eb13b586466d748940c8df61ab34be8d32a4caadb6e05f9c1b8d259b0"
+    }
+  ],
+  "missing": []
+}

@@ -7,27 +7,27 @@
   "linux-x86_64-gcc-13": {
    "scenes": {
     "content/scenes/eval/exchange/shot.scene.json": {
-     "bake": "98747664b3944c16e7a57cff678ca13f32f9925715653d984f425afb9892bc91",
+     "bake": "dd16256e4349ee339248a9f8a57edd05dde3d313946f68a16b87be43c75c4b5e",
      "clip": "9fb50e1ed38e1760526bbb9ca93632568eebe9e0d88fa256682befa37d799e52"
     },
     "content/scenes/eval/handover/shot.scene.json": {
-     "bake": "00b3c98077bf44699972a8890bc673d26d2e34844a737ae6ea2db1e888c84c1b",
+     "bake": "d42849de59ebf8ceb57cbc391a12295f49fd3720e48a51eb7fd93a3649d7c73e",
      "clip": "0bf29917a0f5989c1faa417fefb5de535b232c8bb03f6d0d6753b5533e840269"
     },
     "episodes/e901_clip_test/shots/s010/shot.scene.json": {
-     "bake": "f254fb2aaa8dfc620d211de7bd317e0fd6138d2a6236a5338be2753e0f3ae0ad",
+     "bake": "e0278bce5ce966be8abc82ad5f6a9034fbe5c3f5bd5a239550506b4b0411cdc1",
      "clip": "be1117b281e4e2b808da584bd5829d2698345abce016565c5fbe014d1849d202"
     },
     "episodes/e905_props_test/shots/s010/shot.scene.json": {
-     "bake": "2944af2bd01be2ca2788fd5c854aac1a073e0af17d3f8daf962cf0424a3e38a3",
+     "bake": "ea7dbd1b6bcd2f0615fcd464999d2a324b7e5315d14d9f3283ef0d4224870881",
      "clip": "ca227fb6ffa28d14bc73322d256ab6855c3e54a6d8fb1ecb92251168ed078ab7"
     },
     "episodes/e907_exchange/shots/s010/shot.scene.json": {
-     "bake": "dcd8f48f0f62a6a45eb1d34435d1848cb374e1c0fb2c5fe04a3725619abf1c8b",
+     "bake": "3dafffef5efe74a6dae63865fdfa185d87b6bca28aa72cbc3234d34a0ab96a61",
      "clip": "9fb50e1ed38e1760526bbb9ca93632568eebe9e0d88fa256682befa37d799e52"
     },
     "episodes/e907_exchange/shots/s010_calibrated/shot.scene.json": {
-     "bake": "7e05e0b0b19368beb6cd706c5b51cd21a9ff66580a1bb3f6acf91b3a6f0352f3",
+     "bake": "1fb6b21cdd4f9eca1e89a1beb2b218bab10402ef6d383bf02d127cc3046356bd",
      "clip": "c5355919b5dd31de3722fa3cd14a933a2b33fc50d22eb8a90db4af8e155a7042"
     },
     "test_interaction/handover/boy_to_girl": {
