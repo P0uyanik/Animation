@@ -1256,3 +1256,84 @@ TEST_CASE("secondary contact: carry lets a fast collider take a capped chain alo
   CHECK(end[0] >= r + pr - 1e-4f);
   CHECK(end[1] >= r + pr - 1e-4f);
 }
+
+// ---- T-183 round 3: the scene wires colliders on another character's bone (scene.cpp) ----
+
+TEST_CASE("secondary contact: a scene collider on the neighbour's bone keeps the tail out; unknown names are load errors") {
+  // Two toy characters: "who" has the tail chain with resting contact, "other" stands so that a sphere on its spine
+  // sits where who's tail tip hangs. The sphere is given in other's rest space; the scene carries it to the world.
+  const auto dir = std::filesystem::temp_directory_path() / "plush_secondary_neighbour";
+  std::filesystem::remove_all(dir);
+  toyPackageWithTail(dir);
+  {
+    auto j = parseJsonFile(dir / "character.json");
+    REQUIRE(j.has_value());
+    (*j)["dynamics"]["chains"][0]["contact"] = {{"rest", true}, {"segments", true}};
+    std::ofstream(dir / "character.json") << j->dump(1);
+  }
+  const float radius = 0.05f;
+  const vec3 centreRest(0, 0.25f, 0.0f), otherAt(0, 0, -0.20f);
+  const auto build = [&](const Json& dynamics, vec3 otherPos, std::string* error = nullptr) -> std::unique_ptr<SceneEvaluator> {
+    Scene s;
+    s.path = std::filesystem::path(PLUSH_SOURCE_DIR) / "tests/data/imported/scene.json";
+    s.rate = FrameRate{24, 1};
+    s.frameStart = 1;
+    s.frameEnd = 49;
+    CharacterDesc who, other;
+    who.name = "who";
+    who.asset = dir.string() + "/character.json";
+    who.dynamics = dynamics;
+    other.name = "other";
+    other.asset = who.asset;
+    other.position = otherPos;
+    s.characters = {who, other};
+    const double keys[][2] = {{0.0, 0}, {0.3, 50}, {0.6, -30}, {0.9, 0}};
+    for (auto& k : keys) s.animation.tracks["who/hips.rot"].setKey({1 + k[0] * 24, vec3(0, float(k[1]), 0)});
+    auto ev = std::make_unique<SceneEvaluator>();
+    auto r = ev->load(s, EvalOptions{2.5f, 1.0f, false, 0});
+    if (!r) {
+      if (error) *error = r.error().message;
+      return nullptr;
+    }
+    return ev;
+  };
+  const auto collider = [&](const std::string& character, const std::string& bone) {
+    return Json{{"colliders", Json::array({Json{{"name", "nb.other.0"}, {"type", "sphere"}, {"character", character}, {"bone", bone},
+                                                {"centre", {centreRest.x, centreRest.y, centreRest.z}}, {"radius", radius}}})}};
+  };
+  auto plain = build(Json(), otherAt), with = build(collider("other", "spine"), otherAt), far = build(collider("other", "spine"), vec3(5, 0, 0));
+  REQUIRE(plain);
+  REQUIRE(with);
+  REQUIRE(far);
+  const Skeleton& sk = with->characters()[0].asset.skeleton;
+  const int t2 = sk.find("tail_2");
+  REQUIRE(t2 >= 0);
+  const vec3 tipRest(0, 0.27f, -0.18f), centre = otherAt + centreRest;  // the toy stands at its rest place: world = rest + position
+  float nearPlain = 1, nearWith = 1;
+  bool same = true;
+  for (int f = 1; f <= 49; ++f) {
+    const auto gp = plain->characterGlobals(0, f), gw = with->characterGlobals(0, f), gf = far->characterGlobals(0, f);
+    const auto tip = [&](const std::vector<mat4>& g) { return vec3(g[size_t(t2)] * vec4(tipRest - sk.bones[size_t(t2)].head, 1)); };
+    nearPlain = std::min(nearPlain, glm::distance(tip(gp), centre));
+    nearWith = std::min(nearWith, glm::distance(tip(gw), centre));
+    for (size_t k = 0; k < gp.size(); ++k) same = same && gp[k] == gf[k];
+    // the neighbour itself is not moved by being a collider
+    const auto op = plain->characterGlobals(1, f), ow = with->characterGlobals(1, f);
+    for (size_t k = 0; k < op.size(); ++k) same = same && op[k] == ow[k];
+  }
+  MESSAGE("tail tip to the centre of the neighbour's sphere (radius 50 mm + chain 10 mm): " << nearPlain * 1000 << " mm without the collider, "
+          << nearWith * 1000 << " mm with it");
+  CHECK(nearPlain < radius);                   // without it the tail hangs inside the neighbour
+  CHECK(nearWith > radius + 0.01f - 1e-3f);    // kept out by the sphere's and the chain's radius
+  CHECK(same);                                 // out of reach (5 m away): the same result as without, bit for bit
+  // load errors: an unknown character, the character itself, an unknown bone of the neighbour, an unknown prop
+  std::string err;
+  CHECK_FALSE(build(collider("nobody", "spine"), otherAt, &err));
+  CHECK(err.find("nobody") != std::string::npos);
+  CHECK_FALSE(build(collider("who", "spine"), otherAt, &err));
+  CHECK_FALSE(build(collider("other", "no_such_bone"), otherAt, &err));
+  CHECK(err.find("no_such_bone") != std::string::npos);
+  const Json onProp{{"colliders", Json::array({Json{{"name", "prop.cup"}, {"type", "box"}, {"prop", "cup"}, {"min", {-0.01, -0.01, -0.01}}, {"max", {0.01, 0.01, 0.01}}}})}};
+  CHECK_FALSE(build(onProp, otherAt, &err));
+  CHECK(err.find("cup") != std::string::npos);
+}
