@@ -46,3 +46,4 @@ Next free ID: T-212.
   check_all unit (as T-207/unit_hair_curves) so the gate runs it.
 - T-201 dispatched (Opus, session_01NPjxeMa91JgXQWgeGw6Uvi). shot_render.py / run_shot.py stay with T-194: T-201 passes `--engine eevee` explicitly there;
   making shot_render/run_shot honour the profile "engine" key is a 2-line follow-up after T-194 merges.
+- T-211 merged (docs only, fast path); decision 7 (built-in Warp/Hook/Lattice as face_generic/4 knobs) relayed with T-209 D.
