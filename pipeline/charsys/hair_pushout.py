@@ -32,7 +32,9 @@ B. Every hair vertex (a Geometry Nodes modifier on each hair object, evaluated b
    vertex is inside that solid and leaves through the face towards its anchor. Vertices
    embedded in the head at rest (roots, the scalp side of the cap; flag `ps_exit` = 0 on the proxy) are never moved.
    A static vertex (flag `ps_static`) whose anchor ray first meets a BACK face has its anchor inside that collider at
-   this frame (spec `static_inside` "keep", the default): it is left as baked, not snapped next to its anchor.
+   this frame (spec `static_inside` "keep", the default): it is left as baked, not snapped next to its anchor; so is a
+   static vertex that is not behind a surface (its own ray towards the anchor first meets a front face or nothing:
+   the anchor ray only went through a thin part such as the hood rim tube).
    Vertices whose rays find nothing are not touched.
 
 Colliders: every mesh child of a rendered character's rig with an Armature modifier except hair (`hair_*`),
@@ -53,7 +55,7 @@ DEFAULTS = {"margin_m": 0.002, "core_radius_m": 0.012, "vertex_margin_m": 0.0015
             "lock_volume": False, "static_inside": "keep"}
 # exit_test / lock_volume: off by default, both make visible frame-to-frame pops (README, e912 s020 f105-111)
 # static_inside "keep": a static vertex whose anchor is inside a collider at this frame (its anchor ray first meets a
-# BACK face) is left as baked; "clamp" = the old rule (snapped next to its anchor: the boy's cap into his hood rim and
+# BACK face), or that is not behind a surface itself (its ray to the anchor first meets a FRONT face), is left as baked; "clamp" = the old rule (snapped next to its anchor: the boy's cap into his hood rim and
 # ~30 mm pops, e912 s020, session 3)
 MAX_TRIES = 3
 EPS = 1e-5
@@ -872,10 +874,47 @@ def _clamp_group(margin, exit_test=True, static_keep=True):
         sin.operation = "AND"
         L.new(back0.outputs[0], sin.inputs[0])
         L.new(ist.outputs[0], sin.inputs[1])
+        # ... and a static vertex that is not behind a surface (its own ray towards the anchor first meets a FRONT
+        # face, or nothing): it is outside, the anchor ray only went through a thin part (hood rim tube, s020 f53
+        # auburn curtain): left as baked
+        neg = N.new("ShaderNodeVectorMath")
+        neg.operation = "SCALE"
+        L.new(nd.outputs[0], neg.inputs[0])
+        neg.inputs["Scale"].default_value = -1.0
+        st5 = N.new("ShaderNodeVectorMath")
+        st5.operation = "MULTIPLY_ADD"
+        L.new(neg.outputs[0], st5.inputs[0])
+        st5.inputs[1].default_value = (1e-4, 1e-4, 1e-4)
+        L.new(tw.outputs[0], st5.inputs[2])
+        rc5 = N.new("GeometryNodeRaycast")
+        L.new(gi.outputs["Colliders"], rc5.inputs["Target Geometry"])
+        L.new(st5.outputs[0], rc5.inputs["Source Position"])
+        L.new(neg.outputs[0], rc5.inputs["Ray Direction"])
+        L.new(ln.outputs["Value"], rc5.inputs["Ray Length"])
+        dot5 = N.new("ShaderNodeVectorMath")
+        dot5.operation = "DOT_PRODUCT"
+        L.new(rc5.outputs["Hit Normal"], dot5.inputs[0])
+        L.new(neg.outputs[0], dot5.inputs[1])
+        back5 = N.new("FunctionNodeCompare")
+        back5.data_type, back5.operation = "FLOAT", "GREATER_THAN"
+        L.new(dot5.outputs["Value"], back5.inputs[0])
+        back5.inputs[1].default_value = 0.0
+        behind = N.new("FunctionNodeBooleanMath")
+        behind.operation = "AND"
+        L.new(rc5.outputs["Is Hit"], behind.inputs[0])
+        L.new(back5.outputs[0], behind.inputs[1])
+        outside = N.new("FunctionNodeBooleanMath")
+        outside.operation = "NIMPLY"  # static and not behind
+        L.new(ist.outputs[0], outside.inputs[0])
+        L.new(behind.outputs[0], outside.inputs[1])
+        sin2 = N.new("FunctionNodeBooleanMath")
+        sin2.operation = "OR"
+        L.new(sin.outputs[0], sin2.inputs[0])
+        L.new(outside.outputs[0], sin2.inputs[1])
         sq2 = N.new("FunctionNodeBooleanMath")
         sq2.operation = "OR"
         L.new(sq.outputs[0], sq2.inputs[0])
-        L.new(sin.outputs[0], sq2.inputs[1])
+        L.new(sin2.outputs[0], sq2.inputs[1])
         sq = sq2
     clamp = N.new("FunctionNodeBooleanMath")
     clamp.operation = "NIMPLY"  # hit and not squeezed
