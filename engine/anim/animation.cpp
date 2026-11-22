@@ -515,7 +515,7 @@ ThumbControls thumbBaseControls(const HandPose& hp) {  // the keyed thumb: its o
 template <class Surf, class Height>
 std::pair<quat, quat> rangeThumb(const Skeleton& sk, const HandBones& h, const HandAxes& ax, const HandPose& hp, const mat4& handGlobal,
                                  vec3 centre, float scale, const Surf& surf, const Height& height, bool band, float lo, float hi,
-                                 float edge, float skinT, float sideSign, vec3 split, float backMax, bool strictBack) {
+                                 float edge, float skinT, float sideSign, vec3 split, float backMax, bool strictBack, bool firm = false) {
   const ThumbAxes ta = thumbAxes(sk, h, ax);
   using Thumb = ThumbControls;
   auto thumbRots = [&](const Thumb& t) { return thumbControlRots(ax, ta, t); };
@@ -569,6 +569,9 @@ std::pair<quat, quat> rangeThumb(const Skeleton& sk, const HandBones& h, const H
       const Chain ch = thumbChain(t);
       const float tipGap = surf(ch.p[2]) - skinT;
       float cost = 4.0f * std::max(0.0f, tipGap) + 8.0f * std::max(0.0f, -open);  // off the surface; inside it when laid back
+      // T-190 per-finger cylinder / sphere (`firm`): no more than 2 mm of skin in where the range allows (a flat hand on a
+      // box face lies on it instead, 45 deg back).
+      if (firm) cost += 100.0f * std::max(0.0f, -open - 0.002f * scale);
       if (band) cost += 4.0f * std::max({0.0f, lo + 0.5f * edge - height(ch.p[2]), height(ch.p[2]) - (hi - 0.5f * edge)});
       if (hp.thumbMode == HandPose::Thumb::Opposed) cost += 0.15f * sideSign * glm::dot(ch.p[2] - centre, split);
       cost += 0.002f * scale * (std::abs(t.abd) / 30.0f + t.opp) + 0.01f * scale * std::max(0.0f, -t.a);
@@ -1084,7 +1087,7 @@ void applyHandPosePerFinger(const Skeleton& sk, Pose& pose, const mat4& world, c
       if (HandBones::ok(h.fingers[k])) fs += glm::dot(points(h.fingers[k], fingerRots(fin[size_t(k)])).tip - centre, sp);
     const auto b0 = thumbRots(thumbBase);
     const auto g1 = rangeThumb(sk, h, ax, hp, handGlobal, centre, scale, surf, height, band, lo, hi, edge, tipR, fs >= 0 ? 1.0f : -1.0f, sp,
-                               (face ? lim.thumbBackFace : lim.thumbBack) / 55.0f, true);
+                               (face ? lim.thumbBackFace : lim.thumbBack) / 55.0f, true, !face);
     setChain(pose, h.thumb, glm::slerp(b0.first, g1.first, wt), glm::slerp(b0.second, g1.second, wt));
     return;
   }

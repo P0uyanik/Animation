@@ -3,7 +3,6 @@
 // packages and the engine (SDF) skeleton.
 #include <doctest/doctest.h>
 
-#include <array>
 #include <filesystem>
 #include <format>
 #include <fstream>
@@ -14,8 +13,11 @@
 #include "scene/asset_library.h"
 #include "scene/interaction.h"
 #include "scene/scene.h"
+#include "thumb_fit.h"
 
 using namespace plush;
+using plush::test::ThumbFit;
+using plush::test::thumbFit;
 namespace fs = std::filesystem;
 
 namespace {
@@ -93,69 +95,13 @@ vec3 bandTrack(const std::string& socket, vec2 bandProp, int thumb) {
   return vec3(bandProp.x - y, bandProp.y - y, float(thumb));
 }
 
-// T-190: is the thumb as good as its joint range allows? `bad(root, knuckle, tip)` gives a pose's violations of the
-// criteria (each >= 0, 0 = met; world positions of the thumb chain). Every thumb pose on a grid of the thumb's joint
-// coordinates is tried (anim/animation.h thumbJointRotations: opposition, abduction and end flexion every 5 deg,
-// flexion every 3 deg from the laid-back limit `backDeg` to full flexion; the rest of the hand and arm as evaluated
-// at frame f). Returns whether some pose in range meets the first `Old` criteria (the ones the test had before; each
-// within `tol`), and
-// the dominance margin of the evaluated thumb: the most any pose that is no worse on every criterion is better on one
-// (0 = nothing in range beats it).
-struct ThumbFit {
-  bool reachable = false;
-  float margin = 0;
-};
-template <size_t N, size_t Old, class Bad>
-ThumbFit thumbFit(const SceneEvaluator& ev, size_t c, char side, double f, float backDeg, const Bad& bad,
-                  const std::array<float, Old>& tol = {}) {
-  const Skeleton& sk = ev.characters()[c].asset.skeleton;
-  const std::string s = std::string(".") + side;
-  const int ia = sk.find("thumbA" + s), ib = sk.find("thumbB" + s);
-  REQUIRE(ia >= 0);
-  REQUIRE(ib >= 0);
-  Pose pose;
-  const auto g = ev.characterGlobals(c, f, &pose);
-  const Bone &A = sk.bones[size_t(ia)], &B = sk.bones[size_t(ib)];
-  REQUIRE(A.parent >= 0);
-  REQUIRE(B.parent == ia);
-  const mat4 P = g[size_t(A.parent)];
-  auto offset = [&](int i) { return size_t(i) < pose.offset.size() ? pose.offset[size_t(i)] : vec3(0); };
-  const mat4 toA = P * glm::translate(mat4(1), A.head - sk.bones[size_t(A.parent)].head + offset(ia));
-  const mat4 toB = glm::translate(mat4(1), B.head - A.head + offset(ib));
-  const vec4 tipB(B.head - A.head, 1);
-  const vec3 root(toA[3]);
-  const mat4 own = toA * glm::mat4_cast(pose.local[size_t(ia)]) * toB * glm::mat4_cast(pose.local[size_t(ib)]);
-  REQUIRE(glm::distance(vec3(own * tipB), vec3(g[size_t(ib)] * tipB)) <= 1e-5f);  // the chain below is the evaluator's
-  const std::array<float, N> mine = bad(root, vec3(own[3]), vec3(own * tipB));
-  const HandLimits lim;
-  ThumbFit fit;
-  for (float opp = 0; opp <= lim.thumbOpposition + 1e-3f; opp += 5)
-    for (float abd = -lim.thumbAbductionIn; abd <= lim.thumbAbductionOut + 1e-3f; abd += 5)
-      for (float flex = -backDeg; flex <= lim.thumbFlex + 1e-3f; flex += 3)
-        for (float end = 0; end <= lim.thumbEndFlex + 1e-3f; end += 5) {
-          const auto r = thumbJointRotations(sk, side, opp, abd, flex, end);
-          const mat4 gb = toA * glm::mat4_cast(r.first) * toB * glm::mat4_cast(r.second);
-          const std::array<float, N> v = bad(root, vec3(gb[3]), vec3(gb * tipB));
-          bool met = true, noWorse = true;
-          float better = 0;
-          for (size_t i = 0; i < N; ++i) {
-            met &= i >= Old || v[i] <= tol[std::min(i, Old - 1)];
-            noWorse &= v[i] <= mine[i];
-            better = std::max(better, mine[i] - v[i]);
-          }
-          fit.reachable |= met;
-          if (noWorse) fit.margin = std::max(fit.margin, better);
-        }
-  return fit;
-}
-
 struct CupMeasure {
   float worstGap = 0;       // max |tip skin - surface| (m)
   float deepest = 1;        // min (tip or knuckle centre radial distance - radius): < 0 = inside the proxy
   float bandOut = 0;        // max distance of a fingertip centre outside the band (m)
   float thumbSide = 0;      // thumb tip on the split plane, signed: < 0 = opposite half from the fingertips
   float fingerGap = 0, fingerBandOut = 0;  // worstGap, bandOut of the four fingers alone
-  bool thumbReachable = true;  // T-190: some thumb pose inside the joint range meets the T-051 criteria
+  bool thumbReachable = true;  // T-190: some thumb pose inside the joint range meets the T-051 criteria (skin <= 2 mm in)
   float thumbMargin = 0;       // T-190: how far the best in-range thumb that is no worse anywhere beats this one (m)
   vec3 wrist{0}, palm{0};
 };
@@ -194,7 +140,7 @@ CupMeasure measureCup(const SceneEvaluator& ev, char side, double f, vec2 bandPr
   // T-190: the T-051 criteria for the thumb as violations (tip skin within 2 mm of the surface, tip and knuckle
   // centres out of the cup, tip in the band, tip on the far half from the fingers), and no skin of the thumb chain
   // more than 2 mm into the cup; thumbFit: whether a thumb in range meets them all, and how far one beats this one.
-  const ThumbFit fit = thumbFit<5, 4>(ev, 0, side, f, HandLimits{}.thumbBack, [&](vec3 root, vec3 knuckle, vec3 tip) {
+  const ThumbFit fit = thumbFit<5>(ev, 0, side, f, HandLimits{}.thumbBack, [&](vec3 root, vec3 knuckle, vec3 tip) {
     float skin = 0;
     for (int k = 0; k <= 8; ++k) {
       const float t = float(k) / 8.0f;
@@ -205,8 +151,8 @@ CupMeasure measureCup(const SceneEvaluator& ev, char side, double f, vec2 bandPr
                                 std::max({0.0f, R - radial(tip), R - radial(knuckle)}),
                                 withBand ? std::max({0.0f, bandProp.x - h, h - bandProp.y}) : 0.0f,
                                 std::max(0.0f, glm::dot(tip - base, split) * sideSign + 1e-6f), std::max(0.0f, skin - 0.002f)};
-  });
-  m.thumbReachable = fit.reachable;
+  }, {{0, 0, 0, 0, 0}});  // the T-051 criteria together, by a thumb whose skin is nowhere more than 2 mm in
+  m.thumbReachable = fit.reachable[0];
   m.thumbMargin = fit.margin;
   m.wrist = vec3(hg[3]);
   m.palm = ev.handGripPoint(0, side, f);
