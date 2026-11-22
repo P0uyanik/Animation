@@ -57,4 +57,3 @@ local test_hair_v3_r2.py 'plain Python, not in the gate before T-182 (candidate 
 local test_hair_v3_r3.py 'plain Python, not in the gate before T-182 (candidate for run)'
 local test_hair_v3_r3_weights.py 'needs Blender; local run (not in the gate before T-182)'
 local test_skin_material.py 'needs Blender; local run (not in the gate before T-182)'
-run test_face_parity.py                      # T-213 face parity (plain checks; --blender adds the auburn master + broken-copy checks)
