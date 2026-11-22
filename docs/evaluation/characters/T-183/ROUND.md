@@ -65,7 +65,18 @@ Measured (limit 1 mm; `props` every frame, own body every 2nd frame for the cand
 | | auburn (hand.R / blouse / cuff) | blouse 8.8 mm, 9 fr | 26.7 / 22.0 / 20.6 mm, 2 / 9 / 2 fr (f34) |
 | | own bodice / skin | 32.1 / 17.0 mm | bodice 0; cap > skin 5.2 mm, 14 fr |
 | | own ears (static) | 11.5 / 10.1 mm | 10.2 / 9.4 / 5.2 mm, every frame |
-| e912 s030 both, e909 s010 | | released: table_top 12.5 mm (white s030 9 fr); auburn s030 boy 47.8 mm, boat 14.8 mm | see `T-183_r3_measures.json` (keys `*_r3b_e912_s030_t183_*`, `*_r3b_e909_s010_t183_girl`); not in this table yet if the keys are missing: rerun with `r3_run.sh` |
+| e912 s030 auburn | the boy (skin / hoodie / hand.R) | 47.8 / 42.8 / 33.7 mm, 15 / 46 / 17 fr | 47.6 / 34.8 / 20.7 mm, 24 / 32 / 11 fr |
+| | boat_end_a, boat (in her hand) | 14.8 / 12.9 mm, 11 / 9 fr | 13.4 / 9.0 mm, 10 / 6 fr |
+| | own blouse / vest | 72.3 mm, most frames | f93 only: `ringlets_back_00` 22.0, `outer_b` 19.1, `side_r00` 14.5 mm, vest 8.4 mm (the stand-up) |
+| | own skin (cap) | - | 22.0 mm, 73 of 83 fr, to 389 v |
+| e912 s030 white | table_top | 12.5 mm, 9 fr | 0 |
+| | auburn's blouse | - | 18.7 mm, 8 fr (f31) |
+| | own bodice | 47.0 mm, 33 of 42 fr | f93 only: `outer_locks_00` 23.0, `back_locks_00` 13.8 mm |
+| | own ears (static) / cap > skin | - | 11.2 / 9.2 / 7.3 mm every frame; 8.8 mm, 39 fr |
+| e909 s010 girl | own body (every 2nd frame) | round 2: 286 of 286 fr, 65.9 mm | skin only: cap 12.4 mm (134 of 143 fr), curtain 11.0 mm (82 fr); cloth, hands, ears 0 (as round 2) |
+| | **cup (prop, never measured before)** | not measured (no released run in session 6) | 23.9 mm, 157 of 286 fr, to 186 v (worst f75) |
+| | the boy's hand.R | not measured | 11.8 mm, 18 fr (f139) |
+| | table_top, table_leg | not measured | 0 |
 
 All summaries: `T-183_r3_measures.json` (`tools/r3_summary.py <log dir> <out>`; `rel` = released, `r3b` = candidate).
 
