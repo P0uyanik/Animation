@@ -63,6 +63,21 @@ struct CollisionSphere {
   vec3 centre{0};
   float r = 0.05f;
 };
+// T-191 body parts (fitted below, deriveBodyParts).
+struct BodyPartCapsule {
+  std::string part;  // role name ("chest", "thigh.L", ...)
+  int bone = -1;
+  vec3 a{0}, b{0};  // relative to the bone's rest head
+  float r = 0.05f;
+};
+struct BodyParts {
+  std::vector<BodyPartCapsule> capsules;
+  bool valid = false;  // at least one capsule
+};
+// T-191 body clearance (opt-in per character: the collision action's "bodyClearance"): the gap kept to other
+// characters' body parts and the largest upper-body lean used to keep it.
+constexpr float kBodyClearance = 0.01f;       // metres
+constexpr float kDefaultBodyLeanMaxDeg = 12.0f;
 struct CollisionBody {
   std::vector<CollisionSection> sections;
   std::vector<CollisionLimb> limbs;
@@ -71,6 +86,11 @@ struct CollisionBody {
   std::vector<CollisionSphere> heads;
   float margin = kCollisionMargin;
   float maxElbowSwing = glm::radians(kDefaultMaxElbowSwingDeg);  // radians (T-082)
+  // T-191 (opt-in): body-part capsules (derived from the meshes when bodyClearance is on; never in the package block).
+  BodyParts parts;
+  bool bodyClearance = false;
+  float bodyClearanceGap = kBodyClearance;                     // metres
+  float bodyLeanMax = glm::radians(kDefaultBodyLeanMaxDeg);  // radians
   bool valid = false;
   std::string source;  // "package" (the package's collision block) or "derived" (fitted here from the rest meshes)
 };
@@ -110,6 +130,39 @@ struct HeadGap {
   vec3 pointA{0}, pointB{0}, dir{0};
 };
 HeadGap headGap(const CollisionBody& a, const std::vector<mat4>& Ga, const CollisionBody& b, const std::vector<mat4>& Gb);
+
+// T-191 body parts: the whole character as capsules, for character-character contact (bodies passing through each
+// other: seated neighbours, a hand-over, standing up, walking off). One part per body role (hips, spine, chest, neck,
+// head, upperArm / forearm / hand / thigh / shin / foot .L/.R); a rest vertex belongs to the part of its heaviest
+// role (helper, finger, toe and hair bones count for their nearest role ancestor) and only with >= 50 % of its weight
+// there. Each part is fitted to its own rest vertices, garments and hair included: the axis is their principal
+// direction through their centroid, the cross-section their kBodyPartRadiusQuantile distances along the two other
+// principal directions; a flat part (wide over deep by more than kBodyPartFlat, a torso, a hand, a foot) is two
+// parallel capsules of the smaller radius side by side, so the width and the depth are both close (a stadium over an
+// ellipse), at least kBodyPartMinRadius. The ends cover the vertices from the 1st to the 99th percentile along the axis. A part with fewer than
+// 20 vertices has no capsule. Carried rigidly by the role bone (relative to its rest head, character axes). Never
+// read from or written to the package (export/6 is unchanged).
+constexpr float kBodyPartRadiusQuantile = 0.9f;
+constexpr float kBodyPartFlat = 1.25f;
+constexpr float kBodyPartMinRadius = 0.004f;  // metres (a paper-thin part still has a little volume)
+BodyParts deriveBodyParts(const Skeleton& skeleton, const std::vector<SkinnedMesh>& meshes);
+// World segment of a part capsule for bone globals G.
+void bodyPartSegment(const BodyPartCapsule& c, const std::vector<mat4>& G, vec3& a, vec3& b);
+// Closest points of two segments (exact): returns the distance, ca on [a0, a1], cb on [b0, b1].
+float segmentSegment(vec3 a0, vec3 a1, vec3 b0, vec3 b1, vec3& ca, vec3& cb);
+// Signed gap between two characters' body parts (metres; negative = the capsules overlap that deep, the
+// penetration depth along the closest-point line): the smallest over all capsule pairs, the parts, the closest points
+// (world, on the capsule surfaces) and the unit direction from b's point towards a's (moving a along it opens the
+// gap). `skip(partA, partB)` excludes pairs (e.g. hand-hand in a hand-over). 1e9 when either has no capsules.
+struct BodyGap {
+  float gap = 1e9f;
+  std::string partA, partB;
+  vec3 pointA{0}, pointB{0}, dir{0};
+};
+BodyGap bodyGap(const BodyParts& a, const std::vector<mat4>& Ga, const BodyParts& b, const std::vector<mat4>& Gb,
+                bool (*skip)(const std::string&, const std::string&) = nullptr);
+// Signed gap of a world point to a character's body parts (negative = inside that deep) and the part.
+float pointBodyGap(const BodyParts& body, const std::vector<mat4>& G, vec3 p, std::string* part = nullptr);
 
 // Signed gap of a world point to one section whose bone has global Gb, and the unit world direction that increases
 // it. Elliptical sections are measured in scaled coordinates that make them round (radius min(r1, r2)); the map only

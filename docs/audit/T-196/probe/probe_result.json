@@ -1,0 +1,35 @@
+{
+ "blender": "5.3.0",
+ "vse_api": "strips",
+ "mixdown_sha_two_runs": [
+  "a9d02ed90eb13ceb",
+  "a9d02ed90eb13ceb"
+ ],
+ "compositing_node_group_attr": true,
+ "CORRECTIVE_SMOOTH": true,
+ "SHRINKWRAP": true,
+ "SURFACE_DEFORM": true,
+ "CLOTH": true,
+ "NODES": true,
+ "MESH_CACHE": true,
+ "grease_pencil_v3": true,
+ "ffmpeg_codecs": [
+  "NONE",
+  "AV1",
+  "H264",
+  "H265",
+  "WEBM",
+  "DNXHD",
+  "DV",
+  "FFV1",
+  "FLASH",
+  "HUFFYUV",
+  "MPEG1",
+  "MPEG2",
+  "MPEG4",
+  "PNG",
+  "PRORES",
+  "QTRLE",
+  "THEORA"
+ ]
+}

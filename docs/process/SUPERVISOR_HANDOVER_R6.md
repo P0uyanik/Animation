@@ -14,19 +14,33 @@ OWNERSHIP rows must sit inside the table (above the "Supervisor-only files" foot
 Pre-existing reds (informational): "CI status (main)" summary job; Windows gate (b9c0d4e, 11-21); Branch cleanup (since 11-17).
 Owner decisions ~04:20 CET 22 Nov: T-187 accepted, NO revised video until the system fixes below land.
 
-## Running (all report to the Supervisor; each started design/diagnosis-first)
+## R6 log (Supervisor session_01NPjxePvWAMsLopzSs1fMXB, from ~12:05Z)
+- Merged: T-193 (main 5010873, gate 45020921791), T-192 (main 7658003, gate 45021042377; ledger T-190 + clip_layers.cpp,
+  tests/test_hand_limits.cpp rode along). T-183 row + scene.h (1632da5).
+- T-183 r3 continues in a FRESH session session_01NPjxeNn6rj76f28MV4nHnx (FULL profile, Fable high); the old one pushes
+  its last measures then stops. T-190 design approved: default thumb change behind one switch, golden list + sheets
+  → owner OK before any re-bless; palm-plane lay-back; no interaction.cpp (box-face wrap drop at :1256 = follow-up).
+- Liaison asked: T-193 4 questions; T-192 "is s010 f42 (eye convergence) the moment?"; T-189 §7 still open.
+- Follow-ups added: eye convergence limits (gaze, after T-190); box-face wrap key drop (interaction.cpp:1256, after T-191).
+- Gate wait script: scratchpad wait_gate.sh <branch> <sha> (curl actions/runs, poll 60 s).
+
+## Running (R6, as of ~13:35Z; main = staging = ec56331)
 | Task | Session | Branch | State / next |
 |---|---|---|---|
-| T-183 r3 hair vs props/table/neighbours + own body in real shots + fan-out (Fable) | session_01NPjxeMEWYzeUqnyUKscxwC | t-183-claude-hair-contact (0769144+) | design approved: box colliders in secondary.*, derive_shot.py writes e912 *_t183 + e909 s010_t183 copies with prop colliders, neighbour bones via scene.cpp (opt-in), white-haired girl in scope, fan-out levers. Measured released e912 s010: hair through table 12.5 mm (both girls), auburn ringlets in the boy 68 mm. Merge needs: TESTS line `run test_hair_contact.py` (pipeline/charsys/tests/TESTS) + trailers release_rule.py, tests/test_secondary.cpp, test_hair_contact.py, test_release_rule.py. |
-| T-190 finger/thumb joint limits system-wide (Fable) | session_01NPjxeLH3KPsH5iYaR3radj | t-190-claude-finger-limits | diagnosing; STATUS with cause + design + golden impact due; golden/test changes need Supervisor (and owner if defaults move). |
-| T-191 character–character collision (Opus) | session_01NPjxeMSi1jfB5YthUet6ZP | t-191-claude-char-collision (80f7d92+) | design approved: opt-in "interaction" bodyClearance lean pass, off by default; worst measured e912 heads through heads ~100 mm. Not scene.cpp (T-183): parse elsewhere or hand-over lines for merge. Register tests/test_body_clearance.cpp in tests/CMakeLists.txt at merge. Asks before editing episodes (use *_t191 copies). |
-| T-192 boy blink sync (Sonnet) | session_01NPjxePT9NbJYodeGknNd7N | t-192-claude-blink-sync (6c00605+) | no desync in engine/bake/package/Blender; far eye hidden by fringe in the two-shot. Adding a guard test + both-eyes close-up → READY. Owner asked (via liaison) for the clip timestamp. |
-| T-193 hair systems research (Opus, docs only) | session_01NPjxeNdWgW926FfZs5A1Gc | t-193-claude-hair-research | researching → README with recommendation; blocked hosts to the liaison. |
+| T-183 r3b hair engine colliders (Fable) | session_01NPjxeNn6rj76f28MV4nHnx | t-183-claude-hair-contact | candidate c775d69 merged; building neighbour/prop colliders (golden-identical off, ~1.05x) + contact.carry. Body-snap frames (±1) and rigid-part-in-boy listed apart, not in its criterion. Merge needs TESTS/trailers like c775d69. |
+| T-194 hybrid hair push-out (Fable) | session_01NPjxeL5HtXkGWdiap3R8or | t-194-claude-hair-pushout | design approved (stage A ray re-key of DYN chains, stage B GN clamp; opt-in --hair-pushout; nape pushed out; hair-vs-hair out). run_shot.py granted. Register test_hair_pushout.py in pipeline/charsys/tests/TESTS at merge. |
+| T-190 finger limits (Fable) | stopped at ~300k (session_01NPjxeLH3KPsH5iYaR3radj) | t-190-claude-finger-limits@250ad00 | READY; owner: default ON/OFF + 33 vs 45 box-face lay-back (my rec: ON + 45 box only). Next round = FRESH session from ROUND.md; add tests/test_grasp_contact.cpp + tests/test_verbs.cpp to its row; register tests/test_hand_limits.cpp; 6 goldens re-record only after owner OK. |
+| T-195 sound (Opus) | session_01NPjxePtiFXPhYUXTLBiWzx (idle) | merged | owner: record child gasps/laughs? (or freesound key). |
+
+Closed in R6: T-191, T-192, T-193, T-196 (sessions told to stop).
 
 ## Waiting for the owner (via the liaison)
-1. T-192: timestamp of the out-of-sync blink in T-187_paper_boat_h264.mp4.
-2. T-189 questions (README §7): hosts kenney.nl / quaternius.com / itch.io (+CDN) or opengameart.org; CC0 geometry +
-   material override as "ready-made"; plain git vs LFS; credits line; water ripple; AI-3D; Infinigen side-car run.
+1. T-190 default on/off + lay-back (above).
+2. Motion-continuity task (body snaps in T-187: s010 hand jumps, s020 head 95-115 deg/frame, s030 cut at f93, keyed touch
+   shape 28-36 deg/frame) — proposed for after T-190 (same animation.* file).
+3. T-195 voices: owner recordings or freesound key.
+4. T-196 Q1-Q4 (contact audit standard line; compositor side-by-side; L2 timing; Kenney manual download).
+5. World plan start (all questions answered; liaison relays).
 
 ## Follow-ups logged (not dispatched)
 Nape cap vs neck-skin fold (body skinning, T-183 item 1); seated thigh through the shorts front panel (T-184 limit 1);

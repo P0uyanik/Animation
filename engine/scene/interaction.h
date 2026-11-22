@@ -128,6 +128,16 @@ void applyArmPoles(const Skeleton& skeleton, const Clip& clip, const std::string
 // back); the eye bones keep their world rotation, so the gaze stays on its target.
 void applyHeadTilt(const Skeleton& skeleton, const Clip& clip, const std::string& prefix, double frame, const mat4& world,
                    Pose& pose);
+// T-191 body clearance lean: "<prefix>bodyLean" (world rotation vector, radians; planned for characters whose collision
+// action sets "bodyClearance") turns the upper body about the spine and chest joints, after the reach lead and before
+// the head tilt; IK-held wrists stay on their targets, clip arms ride with the torso, the eyes keep their gaze. No
+// track: nothing changes.
+void applyBodyLean(const Skeleton& skeleton, const Clip& clip, const std::string& prefix, double frame, const mat4& world,
+                   Pose& pose);
+// T-191 arm yield: "<prefix>armYield.<hand bone>" (world rotation vector, radians; planned with the lean for an arm that
+// is not on an IK target) turns that arm's upper arm about the shoulder, right after applyBodyLean. No track: no-op.
+void applyArmYield(const Skeleton& skeleton, const Clip& clip, const std::string& prefix, double frame, const mat4& world,
+                   Pose& pose);
 // T-134 reach mechanics: the body lead of a reach ("<prefix>reach.lead" and its companions, keyed by the reaches when
 // the scene sets "reachMechanics"); applied by applyArmPoles before everything else. No track: nothing changes.
 void applyReachLead(const Skeleton& skeleton, const Clip& clip, const std::string& prefix, double frame, const mat4& world,

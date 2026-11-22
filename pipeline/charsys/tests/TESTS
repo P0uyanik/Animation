@@ -16,6 +16,7 @@ run test_garments_seated.py                  # T-184 seated field (plain checks;
 run test_hair_r4.py                          # T-091 groom/3 (plain checks)
 run test_hair_r5.py                          # T-118 groom/4 (plain checks)
 run test_hair_r6.py                          # T-160 groom/5 (plain checks)
+run test_hair_contact.py                     # T-183 hair contact (plain checks, no Blender)
 run test_hands_r2.py                         # T-121 hands_r2 (plain checks)
 run test_materials_r2.py                     # T-092 presets/3
 run test_release_rule.py                     # T-178 release rule

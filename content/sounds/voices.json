@@ -1,0 +1,12 @@
+{
+ "format": "plush.voices",
+ "version": 1,
+ "description": "T-195: per-character voice for vocal cues. Keys are personality / asset ids (the scene character's `personality`); a scene character without an entry gets `default`. pitchCents shifts every sound of that character (resample, so formants move with it; keep it within about +-400 cents). spreadCents: each cue gets a deterministic extra shift in -spread..+spread from its hash, so repeats are not identical. levelDb trims the voice. pan (-1 left .. +1 right) overrides the seat pan (scene x position x seatPanScale, clamped) when given.",
+ "seatPanScale": 1.0,
+ "default": {"pitchCents": 0, "spreadCents": 30, "levelDb": 0.0},
+ "characters": {
+  "boy_yellow_hoodie": {"pitchCents": -320, "spreadCents": 30, "levelDb": 0.0},
+  "girl_auburn_bun_glasses": {"pitchCents": 60, "spreadCents": 30, "levelDb": 0.0},
+  "girl_white_hair_blue_dress": {"pitchCents": 180, "spreadCents": 30, "levelDb": -1.0}
+ }
+}

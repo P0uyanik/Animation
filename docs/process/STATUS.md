@@ -1,9 +1,10 @@
 # Status board
 
 Updated by the Supervisor in the same commit as every merge or dispatch. Sources: [TASK_LOG](TASK_LOG.md),
-[OWNERSHIP](OWNERSHIP.md), [OWNER_DECISIONS](OWNER_DECISIONS.md). As of 2026-11-22 ~12:10Z (R5 → R6 handover:
-SUPERVISOR_HANDOVER_R6.md). Merged in R5: T-175 r2, T-184, T-171 r3, T-185, T-186, T-188, T-189, T-187 (main da41d26).
-Running: T-183 r3, T-190, T-191, T-192, T-193. Rows below this line are R4 history; TASK_LOG is authoritative.
+[OWNERSHIP](OWNERSHIP.md), [OWNER_DECISIONS](OWNER_DECISIONS.md). As of 2026-11-22 ~13:35Z (R6 Supervisor
+session_01NPjxePvWAMsLopzSs1fMXB; SUPERVISOR_HANDOVER_R6.md). Merged in R6: T-193, T-192, T-191, T-183 candidate, T-196,
+T-195 (main ec56331). Running: T-183 r3b, T-194. T-190 READY, waits for owner. Rows below this line are R4 history;
+TASK_LOG is authoritative.
 Session cap 7. Owner liaison: session_01NPjxeKamtbdzi3YwrgsWXU.
 
 ## Character look
