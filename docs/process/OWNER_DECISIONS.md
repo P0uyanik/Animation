@@ -1047,3 +1047,8 @@ hard depends-on (read) overlaps were conflicts → T-181b makes them warnings. R
 - **New Codex task T-200** (relay channel): diagnose the WinError 4551 bake block on the owner's PC (no security-setting
   changes) and finish T-197's motion checks (walk, hand-over, flicker) if a safe route works. Supervisor IDs from T-201.
 - T-190 finger detail (accept the 0.3–0.5° clip hyperextension correction or exempt clip fingers): still open.
+- **~17:25 CET:** T-190 finger detail → (a) accept (clip hyperextension corrected by the finger limit, 0.04–0.07 mm);
+  merge T-190 once all tests pass. **Standing guidance:** hands/fingers must not consume more discussion tokens — for
+  sub-mm / sub-degree side effects within an approved scope the Supervisor decides (anatomically correct option, no
+  weakening), records it, and does not escalate. Escalate only real look changes or test/golden changes outside an
+  approved scope.
