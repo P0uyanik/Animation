@@ -20,13 +20,14 @@ Pre-existing reds (not from R5, informational): "CI status (main)" summary job; 
 | Task | Session | Branch | State / next |
 |---|---|---|---|
 | T-183 r2 hair contact | session_01NPjxeNrrMUwgc6Bw3no1YG (5th session, ~190k) | t-183-claude-hair-contact@a41bedf | CHECKPOINT sent to owner ~00:40Z: cloth/hands/ears 0 frames; hidden skin residue; fan-out of back ringlets in the lean (owner to judge). Idle. On accept: session merges origin/main, re-derives s010_t183 from the new e909 s010 (T-188), re-bakes + re-measures, ready.py → merge with TESTS line `run test_hair_contact.py` in pipeline/charsys/tests/TESTS + trailers for release_rule.py, tests/test_secondary.cpp, test_hair_contact.py, test_release_rule.py (review diffs). On another round: fresh session from ROUND.md "Session 5" (levers: shorter top segments, thinner joint 1, lock-vs-lock contact). |
-| T-187 paper-boat test scene | session_01NPjxeNHwhEhofQVtkeCoW4 | t-187-claude-paper-boat@9179e77 | full preview render, ETA ~02:15Z → CHECKPOINT (clip + contact sheet) → relay to owner; walk-off travels by cmu_walk root motion (checked). Write-set episodes/e912_paper_boat/**, docs/evaluation/video/T-187/**. |
+| T-187 paper-boat test scene | session_01NPjxeNHwhEhofQVtkeCoW4 (318k: stopped) | t-187-claude-paper-boat@2b948af | READY/CHECKPOINT ~03:00Z, relayed to owner (clip docs/evaluation/video/T-187/T-187_paper_boat_h264.mp4, 12 known defects in README). On accept: merge (write-set only, no guarded paths), release claim, archive session. On fix round: fresh session from ROUND.md. |
 
 ## Waiting for the owner (via the liaison)
-1. T-183 r2: accept as opt-in with fan-out as known issue, or another round on the fan-out.
-2. T-189 questions (README §7): hosts kenney.nl / quaternius.com / itch.io (+CDN) or opengameart.org; CC0 geometry +
+1. T-187: accept as is or fix round (which defects).
+2. T-183 r2: accept as opt-in with fan-out as known issue, or another round on the fan-out.
+3. T-189 questions (README §7): hosts kenney.nl / quaternius.com / itch.io (+CDN) or opengameart.org; CC0 geometry +
    material override as "ready-made"; plain git vs LFS; credits line; water ripple; AI-3D; Infinigen side-car run.
-3. e910 r3 interim question is moot (T-186 fixed the cup dip).
+4. e910 r3 interim question is moot (T-186 fixed the cup dip).
 
 ## Follow-ups logged (not dispatched)
 Nape cap vs neck-skin fold (body skinning, T-183 item 1); seated thigh through the shorts front panel (T-184 limit 1);
