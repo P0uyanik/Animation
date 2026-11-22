@@ -31,5 +31,6 @@ split.
 | T-194 | B | t-194-claude-hair-pushout | `pipeline/charsys/shot_render.py`, `pipeline/production/run_shot.py`, `pipeline/charsys/hair_pushout.py`, `pipeline/charsys/tests/test_hair_pushout.py`, `docs/evaluation/characters/T-194/**` | T-183 | — |
 | T-195 | S | t-195-claude-vocal-sounds | `pipeline/audio/**`, `content/sounds/**`, `docs/AUDIO.md`, `docs/evaluation/audio/T-195/**` | — | — |
 | T-199 | R | t-199-claude-compositor-look | `pipeline/charsys/render_engine.py`, `pipeline/charsys/render_profiles.json`, `pipeline/charsys/tests/test_render_profiles.py`, `docs/evaluation/rendering/T-199/**` | — | — |
+| T-202 | R | t-202-claude-face-sheets | `docs/evaluation/characters/T-202/**` | — | — |
 
 Supervisor-only files: docs/process/TASK_LOG.md, docs/ROADMAP.md, docs/process/OWNER_DECISIONS.md, docs/tasks/**.
