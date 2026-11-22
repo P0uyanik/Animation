@@ -45,3 +45,11 @@ re-record goldens or rewrite test criteria in place yet. Prepare two separate co
   the fingers as far as its range allows, contact within N mm where reachable in range, no penetration. Separate
   commit the Supervisor can drop. Editing these tests needs the Supervisor's go-ahead for the write-set.
 - Optional: a better camera for the e909 boy tile (thumb hidden in `sheet/before_after_boy_clip.jpg` row 2).
+
+## Open items (Supervisor 13:24Z: the variants request above is cancelled; nothing starts until the owner answers)
+1. Default on or off (README section 7.1).
+2. Thumb lay-back 33 or 45 deg for box-face grasps (wrap keeps 33).
+3. Rewrite of the failing thumb criteria and re-record of the 6 golden hashes (README section 6), only after the owner's OK.
+4. A better close-up camera for the e909 boy tile.
+5. Follow-up outside this task: clip thumb retarget (`pipeline/clips/retarget.py`, `engine/model/clip.h`); `interaction.cpp:1256`
+   drops `fingerClose.wrap` on box faces.
