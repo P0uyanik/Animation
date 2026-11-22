@@ -1,6 +1,6 @@
 # T-213 · Face export parity, knob-free master check and Blender build pin (face plan P5a)
 
-The acceptance tooling that T-212 (`docs/research/T-212/README.md`, branch `t-212-codex-face-plan-review`) (row "Expression and engine mismatch") asks for.
+The acceptance tooling that [T-212](../../../research/T-212/README.md) (row "Expression and engine mismatch") asks for.
 It comes before any face is fitted. Tool: [`pipeline/charsys/face_parity.py`](../../../../pipeline/charsys/face_parity.py).
 Test: [`pipeline/charsys/tests/test_face_parity.py`](../../../../pipeline/charsys/tests/test_face_parity.py). Full report:
 [`parity_current_masters.json`](parity_current_masters.json). No asset, exporter, engine or version pointer was changed.
