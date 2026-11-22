@@ -1,0 +1,2 @@
+# T-195 vocal sounds (T-182 test registry; docs/process/GATE.md "Test registry")
+run test_audio.py                            # T-195 cues, library, synth, mix, mux
