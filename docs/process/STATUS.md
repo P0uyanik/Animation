@@ -2,7 +2,7 @@
 
 Updated by the Supervisor in the same commit as every merge or dispatch. Sources: [TASK_LOG](TASK_LOG.md),
 [OWNERSHIP](OWNERSHIP.md), [OWNER_DECISIONS](OWNER_DECISIONS.md). As of 2026-11-22 ~19:50Z (R7 Supervisor
-session_01NPjxeKJV7E1M9rnLTkzJoo; SUPERVISOR_HANDOVER_R7.md). Merged: T-207 + T-199 (main 0f3787e). Merged: T-211 (docs), T-210 (a96602c). Running: T-194, T-201, T-213.
+session_01NPjxeKJV7E1M9rnLTkzJoo; SUPERVISOR_HANDOVER_R7.md). Merged: T-207 + T-199 (main 0f3787e). Merged: T-211 (docs), T-210 (a96602c). Running: T-194, T-201, T-213, T-214. Merged: T-204 (Codex docs).
 Queued: Q1/Q4/L1 (after T-194). Merged: T-208, T-212 (Codex docs). Codex: T-204. Waiting for owner: hair look pick, compositor look
 pick, world plan start. Face plan approved (auburn pilot first).
 Rows below this line are R4 history; TASK_LOG is authoritative.
