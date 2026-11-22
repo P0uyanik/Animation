@@ -249,3 +249,41 @@ max +43.8 mm (boy, f83). Cost: setup 55 s, stage A 4.0 s / frame (3 workers busy
    released `rel2`); blends ~60 min, measures ~32 min per item, at most 2 measures at a time (3 = out of memory).
 4. Then summarise.py per item (fix: its "apart" frame counter is never incremented), cost, determinism, identity vs
    main, sheet, README, READY.
+
+## Session 3 (WIP)
+
+Main merged (`ac462b9`; shallow clone: `git fetch --depth=300 origin main` first). T-183 final pin **`c7b3cee2`**:
+worktree `/home/user/t183c2` (Release engine build), bakes `cand2` for `episodes/e912_paper_boat/shots/s020_t183`
+and `s030_t183` (`run_shot.py --stages prepare,bake --run-dir cand2`, ~3 min each). The boy's cand2 numbers equal
+cand1 (`e7547ab4`) at f41-53.
+
+### The hood-rim regression and the pops: cause and fix (all static anchors)
+
+Probes (`p4`/`p5` in the scratch folder: anchor, raw vertex, first hit of anchor->vertex and vertex->anchor per
+collider) on s020 cand2:
+
+- Boy `hair_cap.002` f45: anchor 0.9 mm inside the `hood.rim` tube, vertex 15 mm outside; first hit = back face ->
+  clamp snapped the vertex into the rim (27.7 mm). Fix 1 `static_inside: keep`: a static vertex whose anchor ray
+  first meets a BACK face is left as baked.
+- Boy cap f53 and auburn `hair_curtain` f53: anchor and vertex both outside, the ray only crosses a thin part (rim
+  tube). Fix 2: a static vertex is clamped only when behind a surface (its own ray to the anchor first meets a back
+  face).
+- Boy cap f49, auburn curtain f68 (own neck skin, inside 6/6), auburn fringe f69 (boy's body): the anchor is within
+  ~0.5 mm of a surface and flips sides frame to frame; each flip moves the vertex by its whole reach (~30 mm = the
+  girl pops). Fix 3 `static_fade_m [0.002, 0.01]`: the static clamp is faded in with the hit's distance from the
+  anchor (continuous).
+- Window f39-85 (every 2nd frame, frames x characters > 1 mm, boy own head skin and glasses apart): off 56, on before
+  the fixes 37 with the rim, after fix 3 **25, no new surface**; pops left: white `hair_back_under_00` v574 f50
+  (+18 mm, chain vertex, anchor ray through the ear edge, vertex outside it) and the boy f75-83 (+8..44 mm).
+- Boy f75-83: chain vertex of `hair_fringe.002` really inside the auburn head (heads overlap up to 73 mm, T-191); the
+  clamp is right per frame and lets go when her head leaves. Asked the Supervisor (fade against other characters'
+  skin beyond ~5 mm = staging, reported apart, or keep).
+- `keep_outside: all` (fix 2 for chain vertices too, for the ear case) is an option; session 2 rejected a similar
+  rule for the blouse residue, so it is measured on full s020 next to the default.
+- Unit test: 34 checks (new: anchor inside a moving box kept; thin slab between vertex and anchor kept); the first
+  fails with `static_inside: clamp` (60 vertices into the box).
+
+### Running (lost with the container if not finished)
+
+`/tmp/claude-0/s/full/run3.sh`: s020 cand2 full (1-208, step 2) off / on / on + keep_outside all; then
+`summarise.py` (T183_ROOT=/home/user/t183c2), STATUS, s030 pair, cost, determinism, identity, sheet, READY.
