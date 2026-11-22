@@ -36,6 +36,7 @@ blender test_face_front_fade.py face-front-fade
 blender test_garments_v2.py garments-v2-quick
 blender test_glasses_rest.py glasses-rest
 blender test_hair_curves.py hair-curves
+blender test_hair_flock.py hair-curves
 blender test_hoodie.py boy2
 blender test_material_presets.py material-presets
 blender test_materials_r2_graphs.py materials-r2-graphs

@@ -1,10 +1,10 @@
 # Status board
 
 Updated by the Supervisor in the same commit as every merge or dispatch. Sources: [TASK_LOG](TASK_LOG.md),
-[OWNERSHIP](OWNERSHIP.md), [OWNER_DECISIONS](OWNER_DECISIONS.md). As of 2026-11-22 ~17:30Z (R6 Supervisor
-session_01NPjxePvWAMsLopzSs1fMXB; SUPERVISOR_HANDOVER_R6.md). Merged in R6: T-193, T-192, T-191, T-183 candidate, T-196,
-T-195, T-197 (Codex), T-200 (Codex), T-190, T-202. Running: T-183, T-194, T-198, T-199, T-203, T-205, T-206 (cap).
-Queued: T-201 preview_eevee (after T-199); Q1/Q4/L1 (after T-194); L2 (after next character release). Codex: T-204.
+[OWNERSHIP](OWNERSHIP.md), [OWNER_DECISIONS](OWNER_DECISIONS.md). As of 2026-11-22 ~19:50Z (R7 Supervisor
+session_01NPjxeKJV7E1M9rnLTkzJoo; SUPERVISOR_HANDOVER_R7.md). Merged: T-207 + T-199 (main 0f3787e). Merged: T-211 (docs). Running: T-194, T-201,
+T-210. Queued: Q1/Q4/L1 (after T-194). Codex: T-204, T-208. Waiting for owner: hair look pick, compositor look
+pick, T-209 face decisions, world plan start.
 Rows below this line are R4 history; TASK_LOG is authoritative.
 Session cap 7. Owner liaison: session_01NPjxeKamtbdzi3YwrgsWXU.
 

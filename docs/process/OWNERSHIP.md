@@ -27,7 +27,7 @@ split.
 | Task | Lane | Branch | Write-set | Depends on | Versions bumped |
 | --- | --- | --- | --- | --- | --- |
 | T-194 | B | t-194-claude-hair-pushout | `pipeline/charsys/shot_render.py`, `pipeline/production/run_shot.py`, `pipeline/charsys/hair_pushout.py`, `pipeline/charsys/tests/test_hair_pushout.py`, `docs/evaluation/characters/T-194/**` | T-183 | — |
-| T-199 | R | t-199-claude-compositor-look | `pipeline/charsys/render_engine.py`, `pipeline/charsys/render_profiles.json`, `pipeline/charsys/tests/test_render_profiles.py`, `docs/evaluation/rendering/T-199/**` | — | — |
-| T-207 | B | t-207-claude-hair-flock | `pipeline/charsys/groom/hair_curves.py`, `pipeline/charsys/groom/flock.py`, `pipeline/charsys/groom_felt.py`, `pipeline/charsys/tests/test_hair_curves.py`, `pipeline/charsys/tests/test_hair_flock.py`, `docs/evaluation/characters/T-207/**` | T-183 (groom_r6.py hook after its merge) | — |
+| T-210 | E | t-210-claude-grasp-curls | `engine/anim/animation.h`, `engine/anim/animation.cpp`, `engine/scene/actions.cpp`, `engine/scene/interaction.h`, `engine/scene/interaction.cpp`, `tests/test_motion_continuity.cpp`, `tests/golden/continuity_baseline.json`, `tests/golden/interaction_hashes.json`, `docs/evaluation/interaction/T-210/**`, `tests/test_verbs.cpp` | T-198 | — |
+| T-201 | R | t-201-claude-preview-eevee | `pipeline/charsys/render_profiles.json`, `pipeline/charsys/render_engine.py`, `pipeline/charsys/tests/test_render_profiles.py`, `tools/pc/render_package.py`, `docs/evaluation/rendering/T-201/**` | `pipeline/charsys/shot_render.py` (stable), `pipeline/production/run_shot.py` (stable) | — |
 
 Supervisor-only files: docs/process/TASK_LOG.md, docs/ROADMAP.md, docs/process/OWNER_DECISIONS.md, docs/tasks/**.

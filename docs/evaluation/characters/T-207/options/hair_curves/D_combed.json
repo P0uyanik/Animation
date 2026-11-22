@@ -1,0 +1,67 @@
+{
+ "schema": "plush-studio.hair-curves/1",
+ "note": "T-207 comparison D = T-206 probe D (combed strands along the locks), plus hair_bow skipped (third character)",
+ "seed": 1,
+ "structures": [
+  {
+   "match": "hair_bow*",
+   "skip": true
+  },
+  {
+   "match": "hair_bow*",
+   "layer": "fly",
+   "skip": true
+  },
+  {
+   "match": "hair_band",
+   "skip": true
+  },
+  {
+   "match": "hair_band",
+   "layer": "fly",
+   "skip": true
+  },
+  {
+   "match": "hair_flowers*",
+   "skip": true
+  },
+  {
+   "match": "hair_flowers*",
+   "layer": "fly",
+   "skip": true
+  },
+  {
+   "match": "hair_ringlets*",
+   "clump": {
+    "factor": 0.7,
+    "shape": 0.4,
+    "tip_spread": 0.003
+   },
+   "curl": {
+    "radius": 0.0012,
+    "frequency": 60,
+    "factor": 0.6,
+    "start": 0.3
+   },
+   "tip_lift_m": 0.004
+  },
+  {
+   "match": "hair_*",
+   "lift_m": 0.0005,
+   "tip_lift_m": 0.0015,
+   "length_m": 0.04,
+   "radius_m": 0.0002,
+   "clump": {
+    "factor": 0.7,
+    "shape": 0.5,
+    "tip_spread": 0.0015
+   }
+  },
+  {
+   "match": "hair_*",
+   "layer": "fly",
+   "skip": true
+  }
+ ],
+ "hide_fibre_layers": false
+}

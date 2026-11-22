@@ -1,0 +1,7 @@
+{"schema": "plush-studio.hair-flock/1", "look": "V2 velvet shader", "seed": 1,
+ "note": "T-207 V2: shader-only velvet (softer breakup, strong light sheen, fresnel rim, finer micro-normal) with very sparse short felt fuzz",
+ "match": ["hair_*"], "exclude": ["hair_band*", "hair_flowers*", "hair_bow*"],
+ "velvet": {"albedo_variation": [0.8, 1.2], "roughness": [0.55, 0.9], "sheen": [0.8, 1.0], "sheen_roughness": 0.35,
+            "sheen_lighten": 0.5, "rim_weight": 1.3, "rim_power": 1.6, "fibre_bump": 0.25, "micro_bump": 0.6,
+            "micro_scale": 90},
+ "fibres": {"felt": {"length": 0.6, "density": 0.25}, "halo": "hide", "flyaways": "hide"}}
