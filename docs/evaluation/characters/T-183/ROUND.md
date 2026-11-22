@@ -9,16 +9,19 @@ the girl's hair goes through the table and still into her own body. Round 3 goal
 (e912 s010 / s020 / s030, e909 s010), per frame per surface (body, garments, props), real shots must use the
 candidate, and the fan-out of the back ringlets in the lean visibly better. Design approved by the Supervisor
 2026-11-22 ~11:48Z: write-set + `episodes/e912_paper_boat/shots/s0{1,2,3}0_t183/**`; the white-haired girl is in
-scope; `engine/scene/scene.cpp` only on request with numbers (requested, see "Open" 1; no answer yet at the time of
-writing); lock-against-lock opt-in and deterministic. Other tasks own `engine/anim/hand_shape.*`, `animation.*`
+scope; lock-against-lock opt-in and deterministic. **`engine/scene/scene.cpp` and `engine/scene/scene.h` are granted**
+(R5 ~11:53Z, R6 ~12:07Z; OWNERSHIP row on main `1632da5`): hair against the neighbour character IS part of zero
+penetration; neighbour + carried-prop colliders through a callback, opt-in, bit-identical when absent (prove it with
+an existing-golden check), report the bake slowdown factor in READY, main merged before READY.
+**Supervisor from round 6 on: `session_01NPjxePvWAMsLopzSs1fMXB`** (the R5 session confirmed the rotation). Other tasks own `engine/anim/hand_shape.*`, `animation.*`
 (T-190), `engine/scene/collision.*` (T-191), `engine/scene/face_layer.*` (T-192): not touched.
 
 ### Session 6 (2026-11-22): state at `415a594` and the commit after it
 
 Checked: T-187 rendered the released hair (e912 casts `auburn: version current` = 0.14.0, no override).
 `origin/integration/t-187` (main `2869eae` + the T-187 merge, `44f9fb3`) is merged into the branch (`43022be`) and
-pushed, because the container's stop hook asks for a push; `origin/main` had not moved to it yet. **Before READY:
-check that `origin/main` contains `44f9fb3`; if main landed differently, merge main again.** T-184 and T-183 entries
+pushed; main then landed as `44f9fb3` and `origin/main` `5010873` is merged too (ledger, T-193 docs). Merge main once
+more before READY. T-184 and T-183 entries
 are both in `release_rule.py` / `test_release_rule.py`; `GENERATOR_PINS.md` has the T-184 row.
 
 Built (all opt-in, absent keys = the previous path; 270 engine tests pass):
@@ -56,24 +59,36 @@ Measured (limit 1 mm; `props` every frame, own body every 2nd frame for the cand
 | | the boy (hoodie / strap / skin / hand.R) | 74.1 / 70.0 / 62.0 / 31.2 mm, 123 / 8 / 65 / 33 fr | 71.7 / 75.2 / 49.9 / 52.0 mm, 118 / 8 / 50 / 4 fr |
 | | boat, boat_end_a (in her hand) | 13.0 / 14.8 mm, 55 / 41 fr | 12.8 / 15.0 mm, 37 / 48 fr |
 | | white-haired girl's skin | 23.9 mm, 1 fr | 23.9 mm, 1 fr |
-| e912 s020 white, s030 both, e909 s010 | | released: table_top 12.5 mm (white s020 162 fr, s030 9 fr); auburn s030 boy 47.8 mm, boat 14.8 mm | **queued when this was written** (`r3_run.status` in the session's scratch folder; rerun with `r3_run.sh`) |
+| | own skin (cap / curtain / `ringlets_outer_00`) | - | 25.5 / 20.9 / 26.6 mm, 103 / 101 / 18 of 104 fr, to 362 / 756 / 55 v: the head tilts further than in e909 (round 2 item 1, the neck skin; bigger here) |
+| | own blouse | 88.4 mm, every frame | curtain 18.0 mm f135, collar 12.2 mm f135, `ringlets_back_00` 10.9 mm f133: one measured frame each |
+| e912 s020 white | table_top | 12.5 mm, 162 fr | 0 |
+| | auburn (hand.R / blouse / cuff) | blouse 8.8 mm, 9 fr | 26.7 / 22.0 / 20.6 mm, 2 / 9 / 2 fr (f34) |
+| | own bodice / skin | 32.1 / 17.0 mm | bodice 0; cap > skin 5.2 mm, 14 fr |
+| | own ears (static) | 11.5 / 10.1 mm | 10.2 / 9.4 / 5.2 mm, every frame |
+| e912 s030 both, e909 s010 | | released: table_top 12.5 mm (white s030 9 fr); auburn s030 boy 47.8 mm, boat 14.8 mm | see `T-183_r3_measures.json` (keys `*_r3b_e912_s030_t183_*`, `*_r3b_e909_s010_t183_girl`); not in this table yet if the keys are missing: rerun with `r3_run.sh` |
+
+All summaries: `T-183_r3_measures.json` (`tools/r3_summary.py <log dir> <out>`; `rel` = released, `r3b` = candidate).
 
 Read: the table is solved for both girls by the static boxes. What is left needs shapes that move: the neighbour
 (the boy beside her, 0.40 m seats) and the boat in her own hand.
 
 ### Open (in this order)
 
-1. **Neighbour and carried prop.** Asked the Supervisor for `engine/scene/scene.cpp` + `scene.h` (message of
-   ~12:00Z with the table above). Plan if granted: a collider may name `"character": "<scene name>"` (bone of that
+1. **Neighbour and carried prop** (`engine/scene/scene.cpp` + `scene.h` granted; nothing written yet). Plan: a collider may name `"character": "<scene name>"` (bone of that
    character) or `"prop": "<name>"` (box in prop space); the solver asks a callback for those transforms per step;
    scene.cpp resolves the names at solver creation and passes the other characters' `kinematicGlobals` and the
    props' worlds; `propWorlds` needs a kinematic variant (it calls `characterGlobals` of the carrier, which would
    re-enter the solver; the boat is in the hair owner's hand). The neighbour's shapes are fitted at derive time from
    its package meshes (the fit of `groom_contact.py`'s skin sets) and written into the `_t183` copy by
-   `derive_shot.py`. If not granted: report the neighbour / boat rows as open.
+   `derive_shot.py`. Each girl needs the other girl and the boy; the boy has no candidate (his package stays).
+   Solver code to extend: `Shape` / `nearestOn` / `nearestSeg` in secondary.cpp (a prop box needs an oriented box:
+   transform the point into the prop's frame); scene.cpp: the dynamics block of `compile` (~line 736) and
+   `characterGlobals` (~845); `propWorlds` (~974) calls `characterGlobals` at four places.
 2. **One-frame pops of the side locks into the blouse** (e912 s010 f79, f101, f161; her hands go to the sheet every
-   15 frames): a side lock between forearm, torso and table. Not analysed. Start with `tools/trace_chain.py` /
-   `near_colliders.py` on `ringlets_side_r00` f99-103 of `s010_t183/build/runs/r3bb`.
+   15 frames). Traced in the bake: joint 3 of `ringlets_side_r00` travels 66 mm from f100 to f101 and 52 mm on to
+   f102 (115 mm net, no way back), so the lock is swept across the chest and is inside the blouse at the frame in
+   between; f79 and f161 the same with 44 / 50 mm. Reading (not confirmed with `near_colliders.py`): her forearm
+   pushes the lock into the torso spheres and the last push wins. Not fixed.
 3. **Fan-out levers** (session 5's untried three), each: build or tweak + bake + `fan_out.py` + `measure_body.py` +
    preview f60 / f100 / f124 on e909 `s010_t183`: (b) thinner joint 1 of the back ringlets:
    `tweak_package.py episodes/e909_two_char_acting/shots/s010_t183 j1 girl 'ringlets_back*:contact.radii[1]=0.012'`;
