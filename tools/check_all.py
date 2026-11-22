@@ -1013,6 +1013,11 @@ def unit_hair_curves(c: BlenderContext) -> None:
     code, _ = run_logged([sys.executable, str(ROOT / "pipeline/charsys/tests/test_hair_curves.py"), "--blender",
                           c.executable], log)
     add_subcheck(c.subchecks, "hair curves (T-141)", code == 0, "" if code == 0 else "hair curves test failed", log)
+    # T-207 opt-in velvet / flock finish builds on hair_curves; same tier, its own log and subcheck.
+    flog = c.logs / "blender-hair-flock.log"
+    fcode, _ = run_logged([sys.executable, str(ROOT / "pipeline/charsys/tests/test_hair_flock.py"), "--blender",
+                           c.executable], flog)
+    add_subcheck(c.subchecks, "hair flock (T-207)", fcode == 0, "" if fcode == 0 else "hair flock test failed", flog)
 
 
 def unit_groom(c: BlenderContext) -> None:
