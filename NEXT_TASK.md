@@ -1,3 +1,29 @@
+# ▶ T-200 — NEW CODEX ASSIGNMENT (owner ~17:15 CET 2026-11-22; posted by the owner liaison session_01NPjxeKamtbdzi3YwrgsWXU for the round-6 Supervisor session_01NPjxePvWAMsLopzSs1fMXB)
+Codex does **T-200: make local EEVEE previews of real shots work on the owner's PC, and finish the T-197 checks.**
+**Model: gpt-6.2-astra, effort medium.** Diagnosis + measurement only; no project code/spec/test/asset changes;
+**never change Windows security, Smart App Control, Defender, driver or system settings** — report and let the owner decide.
+
+Background: T-197 could not bake e912 locally ("WinError 4551" — usually Windows Smart App Control / application
+control blocking an unsigned executable or DLL). The owner approved an EEVEE preview profile (speed matters); it is
+only useful if real shots can be baked/rendered on this PC.
+
+1. Branch `t-200-codex-local-preview` from the latest `origin/main` in a new worktree on C: (never write on D:).
+   Write ONLY `docs/evaluation/rendering/T-200/**`.
+2. Diagnose WinError 4551: which exact file/step is blocked (engine exe, a .pyd/.dll, ffmpeg, a script), what Windows
+   component blocks it (Event Viewer: CodeIntegrity / Smart App Control logs), and the SAFEST options for the owner
+   (e.g. build/sign locally, use a pre-built signed binary, run that step in WSL, or bake in the cloud and only render
+   locally). Do not apply any option that changes security settings; if a purely in-repo/user-level path works
+   (e.g. running the bake step in WSL or using already-baked files from the repo/CI), you may use it.
+3. If you get a baked e912 (any safe route): render with EEVEE (T-197 settings) the frames T-197 could not measure —
+   walk-off (s030 5b), hand-over two-shot (s020), plus a 48-frame strip for flicker — vs Cycles CPU on 2–3 frames.
+   Report s/frame, peak VRAM, flicker/temporal noise visible or not, and anything EEVEE gets wrong in motion.
+4. Output: `README.md` (≤1 page: cause, owner options ranked by safety, measurements), `bench.csv`, ≤4 evidence
+   JPEGs (≤2048 px), exact commands.
+5. Post `| T-200 | STARTED |`; when done push and post
+   `<UTC> | T-200 | READY | t-200-codex-local-preview@<sha> | input <sha> | <headline>` + ledger.
+6. Don't delete or modify tracked files outside your write-set (T-197 note: TESTS manifests were deleted locally once).
+
+---
 # ▶ T-197 — NEW CODEX ASSIGNMENT (owner ~15:10 CET 2026-11-22; posted by the owner liaison session_01NPjxeKamtbdzi3YwrgsWXU for the round-6 Supervisor session_01NPjxePvWAMsLopzSs1fMXB)
 Codex does **T-197: EEVEE vs Cycles preview-render evaluation** (T-196 quick win Q3, owner-approved) on the owner's PC.
 Measurement only, token-efficient. No project code, spec, test or asset changes; no driver/system changes.
