@@ -31,6 +31,8 @@ B. Every hair vertex (a Geometry Nodes modifier on each hair object, evaluated b
    props, boxes; open shells give false answers), when it and the opposite ray both first meet a BACK face, the
    vertex is inside that solid and leaves through the face towards its anchor. Vertices
    embedded in the head at rest (roots, the scalp side of the cap; flag `ps_exit` = 0 on the proxy) are never moved.
+   A static vertex (flag `ps_static`) whose anchor ray first meets a BACK face has its anchor inside that collider at
+   this frame (spec `static_inside` "keep", the default): it is left as baked, not snapped next to its anchor.
    Vertices whose rays find nothing are not touched.
 
 Colliders: every mesh child of a rendered character's rig with an Armature modifier except hair (`hair_*`),
@@ -48,8 +50,11 @@ import numpy as np
 SKIP = ["eye*", "brow*", "lash*", "lid*", "mouth*", "glasses*"]
 DEFAULTS = {"margin_m": 0.002, "core_radius_m": 0.012, "vertex_margin_m": 0.0015, "static_reach_m": 0.03,
             "characters": "all", "stages": ["chains", "vertices"], "enclosure": True, "exit_test": False,
-            "lock_volume": False}
+            "lock_volume": False, "static_inside": "keep"}
 # exit_test / lock_volume: off by default, both make visible frame-to-frame pops (README, e912 s020 f105-111)
+# static_inside "keep": a static vertex whose anchor is inside a collider at this frame (its anchor ray first meets a
+# BACK face) is left as baked; "clamp" = the old rule (snapped next to its anchor: the boy's cap into his hood rim and
+# ~30 mm pops, e912 s020, session 3)
 MAX_TRIES = 3
 EPS = 1e-5
 CHAIN_MIN_WEIGHT = 0.05  # a vertex with less than this summed DYN weight is static
@@ -71,6 +76,8 @@ def load_spec(arg):
     spec.update(user)
     if not set(spec["stages"]) <= {"chains", "vertices"}:
         raise ValueError(f"hair push-out: stages must be chains / vertices, got {spec['stages']}")
+    if spec["static_inside"] not in ("keep", "clamp"):
+        raise ValueError(f"hair push-out: static_inside must be keep / clamp, got {spec['static_inside']}")
     return spec
 
 
@@ -606,6 +613,8 @@ class PushOut:
             pm.vertices.foreach_set("co", loc.ravel())
             ex = pm.attributes.get("ps_exit") or pm.attributes.new("ps_exit", "FLOAT", "POINT")
             ex.data.foreach_set("value", (~embedded).astype(np.float32))
+            sa = pm.attributes.get("ps_static") or pm.attributes.new("ps_static", "FLOAT", "POINT")
+            sa.data.foreach_set("value", (rigid < 0).astype(np.float32))  # anchor follows the vertex's own weights
             pm.update()
             rep["embedded_at_rest"] = rep.get("embedded_at_rest", 0) + int(embedded.sum())
             px = bpy.data.objects.new(f"{PREFIX}.anchor.{o.name}", pm)
@@ -715,7 +724,8 @@ class PushOut:
             mg = cs.modifiers.new("collect", "NODES")
             mg.node_group = _collector_group(c)
             sets.append(cs)
-        group = _clamp_group(float(self.spec["vertex_margin_m"]), bool(self.spec["exit_test"]))
+        group = _clamp_group(float(self.spec["vertex_margin_m"]), bool(self.spec["exit_test"]),
+                             self.spec["static_inside"] == "keep")
         for n in self.names:
             oc = bpy.data.collections.new(f"{PREFIX}.others.{n}")
             for m_ in sorted(self.figures):
@@ -749,7 +759,7 @@ def _collector_group(col):
     return ng
 
 
-def _clamp_group(margin, exit_test=True):
+def _clamp_group(margin, exit_test=True, static_keep=True):
     """Shared clamp: inputs Geometry, Anchors (geometry, world), Colliders (geometry, world), Self (matrix)."""
     import bpy
     ng = bpy.data.node_groups.new(f"{PREFIX}.clamp", "GeometryNodeTree")
@@ -833,6 +843,40 @@ def _clamp_group(margin, exit_test=True):
     sq.operation = "AND"
     L.new(rc4.outputs["Is Hit"], sq.inputs[0])
     L.new(back4.outputs[0], sq.inputs[1])
+    if static_keep:
+        # a static vertex (anchor on the vertex's own weights, not on a chain centre line that stage A keeps free)
+        # whose anchor ray first meets a BACK face: the anchor is inside that collider at this frame (the boy's cap
+        # anchors inside his hood rim when the head turns); clamping would snap the vertex next to its anchor, into
+        # the collider: left as baked
+        dot0 = N.new("ShaderNodeVectorMath")
+        dot0.operation = "DOT_PRODUCT"
+        L.new(rc.outputs["Hit Normal"], dot0.inputs[0])
+        L.new(nd.outputs[0], dot0.inputs[1])
+        back0 = N.new("FunctionNodeCompare")
+        back0.data_type, back0.operation = "FLOAT", "GREATER_THAN"
+        L.new(dot0.outputs["Value"], back0.inputs[0])
+        back0.inputs[1].default_value = 0.0
+        nst = N.new("GeometryNodeInputNamedAttribute")
+        nst.data_type = "FLOAT"
+        nst.inputs["Name"].default_value = "ps_static"
+        sst = N.new("GeometryNodeSampleIndex")
+        sst.data_type, sst.domain = "FLOAT", "POINT"
+        L.new(gi.outputs["Anchors"], sst.inputs["Geometry"])
+        L.new(nst.outputs["Attribute"], sst.inputs["Value"])
+        L.new(idx.outputs[0], sst.inputs["Index"])
+        ist = N.new("FunctionNodeCompare")
+        ist.data_type, ist.operation = "FLOAT", "GREATER_THAN"
+        L.new(sst.outputs[0], ist.inputs[0])
+        ist.inputs[1].default_value = 0.5
+        sin = N.new("FunctionNodeBooleanMath")
+        sin.operation = "AND"
+        L.new(back0.outputs[0], sin.inputs[0])
+        L.new(ist.outputs[0], sin.inputs[1])
+        sq2 = N.new("FunctionNodeBooleanMath")
+        sq2.operation = "OR"
+        L.new(sq.outputs[0], sq2.inputs[0])
+        L.new(sin.outputs[0], sq2.inputs[1])
+        sq = sq2
     clamp = N.new("FunctionNodeBooleanMath")
     clamp.operation = "NIMPLY"  # hit and not squeezed
     L.new(rc.outputs["Is Hit"], clamp.inputs[0])

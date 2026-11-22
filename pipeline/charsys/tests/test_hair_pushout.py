@@ -150,6 +150,8 @@ tb = eb.new("torso")
 tb.head, tb.tail = (0, 0, 0.0), (0, 0, 0.1)
 fb = eb.new("fold")
 fb.head, fb.tail = (0, 0, 0.0), (0, 0, 0.1)
+rb = eb.new("rim")
+rb.head, rb.tail = (0, 0, 0.0), (0, 0, 0.1)
 prev = hb
 names = []
 for k in range(4):
@@ -184,6 +186,10 @@ torso = skinned("body_torso", tv, tf, {"torso": (range(8), [1.0] * 8)})
 # fold: an open plate behind the cap at rest (x = -0.15); the "fold" bone moves it to x = -0.075 in frame 1
 fv = [(-0.15, -0.1, 1.02), (-0.15, 0.1, 1.02), (-0.15, 0.1, 1.12), (-0.15, -0.1, 1.12)]
 fold = skinned("body_fold", fv, [(0, 3, 2, 1)], {"fold": (range(4), [1.0] * 4)})  # normal -x: outwards, like skin
+# rim: a closed box far below at rest; the "rim" bone lifts it in frame 3 over the cap's static anchors (x -0.095 ..
+# -0.135) but not over the cap (x >= -0.105): the anchors are inside it, the cap is outside (the boy's hood rim)
+rv, rf = box((-0.14, -0.06, -0.60), (-0.108, 0.06, -0.52))
+rimm = skinned("body_rim", rv, rf, {"rim": (range(8), [1.0] * 8)})
 # lock tube: rings of 8 vertices, radius 20 mm, along the chain; weights on the bone of the ring's segment
 rings, F, wts = [], [], {n: ([], []) for n in names}
 for r in range(17):
@@ -217,12 +223,12 @@ bm.free()
 cup.modifiers.new("wall", "SOLIDIFY").thickness = 0.004
 
 coll = bpy.data.collections.new("ch")
-for o in (rig, torso, fold, lock, cap, headm):
+for o in (rig, torso, fold, lock, cap, headm, rimm):
     coll.objects.link(o)
 pbs = {pb.name: pb for pb in rig.pose.bones}
 for pb in pbs.values():
     pb.rotation_mode = "QUATERNION"
-states = {"ch": {"rig": rig, "bones": [(i, pbs[n]) for i, n in enumerate(["head", "torso", "fold"] + names)],
+states = {"ch": {"rig": rig, "bones": [(i, pbs[n]) for i, n in enumerate(["head", "torso", "fold", "rim"] + names)],
                  "ov": coll, "head_bone": "head"}}
 
 
@@ -240,18 +246,19 @@ def key_bone(pb, P, Pp, frame):  # as shot_render._key_bone
 po = HP.PushOut(sc, HP.load_spec("on"), states, {"cup": cup}, [])
 check("B.cup_cap", len(po.caps) == 1 and po.caps[0].hide_render and po.caps[0] in po.colliders,
       caps=[c.name for c in po.caps])
-# frame 1: torso up into the lock, fold onto the cap; frame 2: everything at rest
-for f, (tz, fx) in ((1, (1.30, 0.07)), (2, (0.0, 0.0))):
+# frame 1: torso up into the lock, fold onto the cap; frame 2: everything at rest; frame 3: the rim over the anchors
+for f, (tz, fx, rz) in ((1, (1.30, 0.07, 0.0)), (2, (0.0, 0.0, 0.0)), (3, (0.0, 0.0, 1.63))):
     for pb in pbs.values():
         pb.location, pb.rotation_quaternion, pb.scale = (0, 0, 0), (1, 0, 0, 0), (1, 1, 1)
     pbs["torso"].location = (0, tz, 0)  # bone local Y = world Z for a bone pointing up
     pbs["fold"].location = (fx, 0, 0)  # bone local X = world X
+    pbs["rim"].location = (0, rz, 0)
     for pb in pbs.values():
         for path in ("location", "rotation_quaternion", "scale"):
             pb.keyframe_insert(path, frame=f)
 baked = {}
 before = {}
-for f in (1, 2):
+for f in (1, 2, 3):
     sc.frame_set(f)
     dg = bpy.context.evaluated_depsgraph_get()
     e = lock.evaluated_get(dg)
@@ -262,7 +269,7 @@ for f in (1, 2):
     if f == 1:
         check("A.scene.rekeyed_in_contact", len(rk) > 0 and po.report["frames"][1]["ch"]["chains_pushed"] == 1,
               report=po.report["frames"][1]["ch"])
-    else:
+    elif f == 2:
         sc.frame_set(2)
         after = {n: tuple(pbs[n].rotation_quaternion) for n in names}
         check("A.scene.free_frame_untouched", len(rk) == 0 and after == baked[2])
@@ -297,6 +304,12 @@ C2 = eval_points(cap, 2)
 L2 = eval_points(lock, 2)
 check("B.outside_untouched", np.allclose(C2, cap_rest, atol=1e-6) and np.allclose(L2, before[2], atol=1e-6),
       cap_max=float(np.abs(C2 - cap_rest).max()), lock_max=float(np.abs(L2 - before[2]).max()))
+C3 = eval_points(cap, 3)
+in_rim = lambda P: inside_box(P, (-0.14, -0.06, 1.03), (-0.108, 0.06, 1.11))  # noqa: E731
+anchors_in = sum(1 for v in cap_rest if -0.14 < v[0] - 0.03 < -0.108 and abs(v[1]) < 0.06 and 1.03 < v[2] < 1.11)
+check("B.static_anchor_inside_kept", anchors_in > 0 and in_rim(cap_rest) == 0 and in_rim(C3) == 0
+      and np.allclose(C3, cap_rest, atol=1e-6), anchors_in=anchors_in, in_rim=in_rim(C3),
+      cap_max=float(np.abs(C3 - cap_rest).max()))
 h1 = hashlib.sha256(np.round(eval_points(lock, 1), 7).tobytes() + np.round(eval_points(cap, 1), 7).tobytes()).hexdigest()
 eval_points(lock, 2)
 h2 = hashlib.sha256(np.round(eval_points(lock, 1), 7).tobytes() + np.round(eval_points(cap, 1), 7).tobytes()).hexdigest()
@@ -310,6 +323,11 @@ try:
     check("spec.unknown_refused", False)
 except ValueError:
     check("spec.unknown_refused", True)
+try:
+    HP.load_spec('{"static_inside": "x"}')
+    check("spec.static_inside_refused", False)
+except ValueError:
+    check("spec.static_inside_refused", True)
 
 R["ok"] = ok
 json.dump(R, open(out, "w"), indent=1)
