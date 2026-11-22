@@ -14,6 +14,16 @@ OWNERSHIP rows must sit inside the table (above the "Supervisor-only files" foot
 Pre-existing reds (informational): "CI status (main)" summary job; Windows gate (b9c0d4e, 11-21); Branch cleanup (since 11-17).
 Owner decisions ~04:20 CET 22 Nov: T-187 accepted, NO revised video until the system fixes below land.
 
+## R6 log (Supervisor session_01NPjxePvWAMsLopzSs1fMXB, from ~12:05Z)
+- Merged: T-193 (main 5010873, gate 45020921791), T-192 (main 7658003, gate 45021042377; ledger T-190 + clip_layers.cpp,
+  tests/test_hand_limits.cpp rode along). T-183 row + scene.h (1632da5).
+- T-183 r3 continues in a FRESH session session_01NPjxeNn6rj76f28MV4nHnx (FULL profile, Fable high); the old one pushes
+  its last measures then stops. T-190 design approved: default thumb change behind one switch, golden list + sheets
+  → owner OK before any re-bless; palm-plane lay-back; no interaction.cpp (box-face wrap drop at :1256 = follow-up).
+- Liaison asked: T-193 4 questions; T-192 "is s010 f42 (eye convergence) the moment?"; T-189 §7 still open.
+- Follow-ups added: eye convergence limits (gaze, after T-190); box-face wrap key drop (interaction.cpp:1256, after T-191).
+- Gate wait script: scratchpad wait_gate.sh <branch> <sha> (curl actions/runs, poll 60 s).
+
 ## Running (all report to the Supervisor; each started design/diagnosis-first)
 | Task | Session | Branch | State / next |
 |---|---|---|---|
