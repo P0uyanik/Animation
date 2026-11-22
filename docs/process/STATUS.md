@@ -1,10 +1,10 @@
 # Status board
 
 Updated by the Supervisor in the same commit as every merge or dispatch. Sources: [TASK_LOG](TASK_LOG.md),
-[OWNERSHIP](OWNERSHIP.md), [OWNER_DECISIONS](OWNER_DECISIONS.md). As of 2026-11-22 ~00:45Z (R5 Supervisor
-session_01NPjxeLwrBZTHQcvtcEtsUk; handover: SUPERVISOR_HANDOVER_R6.md). Merged in R5: T-175 r2, T-184, T-171 r3, T-185,
-T-186, T-188, T-189 (main e09542f). Running: T-183 r2 (CHECKPOINT with owner), T-187 paper-boat scene (rendering).
-Rows below this line are R4 history; TASK_LOG is authoritative. Session cap 7. Owner liaison: session_01NPjxeKamtbdzi3YwrgsWXU.
+[OWNERSHIP](OWNERSHIP.md), [OWNER_DECISIONS](OWNER_DECISIONS.md). As of 2026-11-22 ~12:10Z (R5 → R6 handover:
+SUPERVISOR_HANDOVER_R6.md). Merged in R5: T-175 r2, T-184, T-171 r3, T-185, T-186, T-188, T-189, T-187 (main da41d26).
+Running: T-183 r3, T-190, T-191, T-192, T-193. Rows below this line are R4 history; TASK_LOG is authoritative.
+Session cap 7. Owner liaison: session_01NPjxeKamtbdzi3YwrgsWXU.
 
 ## Character look
 | Task | Model | State | ETA | Branch |
