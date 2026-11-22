@@ -960,3 +960,17 @@ hard depends-on (read) overlaps were conflicts → T-181b makes them warnings. R
   T-170/b/c/d; YouTube commercial use (no NC), headless bpy, deterministic, no paid lock-in without asking; blocked hosts
   listed for owner approval, not worked around.
 
+## 2026-11-22 ~04:20 CET (via the liaison)
+- **T-187 paper-boat: accepted** as low-quality test → merge as is. No revised video now: fix the underlying animation
+  systems first, improve the video afterwards.
+- System fixes (found in T-187), fresh sessions, disjoint write-sets, P2:
+  1. Finger/thumb joints bend the wrong way despite T-171 r3 → find why; enforce finger/thumb joint limits everywhere at
+     system level, not per shot → T-190.
+  2. Hair goes through the table and still into her own body in T-187 → extend T-183 (r2 candidate) to environment/prop
+     colliders and make shots use it; handle the fan-out in the same work; zero penetration in real shots → T-183 r3.
+     r2 not accepted as final.
+  3. Character–character intersections → inter-character collision check + resolution with a per-frame measure → T-191.
+  4. Boy's two eyes blink out of sync → bug fix → T-192.
+- New research-only task: existing/open-source/paid hair systems vs continuing T-183 (fit to plush ringlet look,
+  collision with body/garments/props, headless bpy 5.3, licence, effort) → T-193. Blocked hosts listed for the owner.
+
