@@ -1008,3 +1008,62 @@ hard depends-on (read) overlaps were conflicts → T-181b makes them warnings. R
   tools/resources, right development approach?, use Blender more instead of building ourselves (per area), hybrid
   across more parts; per-area map current vs Blender/hybrid (quality, effort saved, risks incl. determinism, headless,
   goldens, TD-43, migration); ranked recommendations + verdict. Builds on T-174/T-176/T-189/T-193. No changes.
+
+## 2026-11-22 ~14:40 CET (via the liaison)
+- T-195 final voices: on hold (the placeholder demo stays as is).
+- T-190: the hand improvements are to be merged, further improvement later; default ON/OFF and the 33°/45° box-face
+  lay-back are not decided yet (the liaison explains) → no merge until both answers are relayed.
+- Motion-continuity guard and the T-196 follow-ups: not approved yet; no action until relayed.
+
+## 2026-11-22 ~15:10 CET (via the liaison; final)
+1. **T-190 approved:** default ON (finger/thumb limits for all existing and future animation); 45° lay-back for flat-hand
+   box-face grips only, wrap grips keep 33°. Update ONLY the 6 identified interaction goldens (thumb corrections only)
+   and rewrite ONLY the 8 identified test criteria that demanded physically impossible thumbs. No unrelated goldens,
+   character features or behaviours may change; no test weakened, removed or bypassed; rewritten tests keep or improve
+   guarantees. Merge once these hold and all tests pass.
+2. **Motion Continuity Guard approved, after T-190:** detect and correct unnatural frame-to-frame jumps in hand targets,
+   head rotation and gaze; keep intentional fast moves and camera cuts; do not change intended acting; per-frame
+   speed-limit test.
+3. **T-196 follow-ups:** approved Q1 (per-shot real-geometry collision audit), Q2 (compositor look preset; before/after
+   for owner approval before applying), Q4 (lighting setups in Blender set files), L1 (garment–body collision +
+   cloth-sim evaluation for loose pieces), L2 (corrective shape keys at strong bends, AFTER the next character release).
+   Q3 (EEVEE preview evaluation) is assigned to Codex as T-197 on the owner's PC — not dispatched by the Supervisor.
+   L3 not approved. Sensible order, dependencies respected, one owner per file.
+4. **Voices:** on hold (no final voice selection/implementation).
+- General: prefer Blender built-ins + our engine + suitable open source; no unnecessary rebuilds; keep approved designs
+  and behaviours; never compromise tests or quality; fix system-level problems, not per-scene patches.
+- Task IDs: T-197 is Codex's; Supervisor IDs continue at T-198.
+
+## 2026-11-22 ~15:20 CET (via the liaison) — standing rule
+- **No Fable model for any task from now on** (token cost). New dispatches: Opus 5.5 by default, Sonnet 5.5 for
+  mechanical / aggregation work. Running Fable sessions (T-183 colliders, T-194 push-out) reach their next checkpoint,
+  then further rounds continue in a fresh Opus session (branch + round file; no work lost). T-190 round 2, started on
+  Fable at ~13:48Z, was restarted on Opus at once (session_01NPjxeMs1WeEkn4EHp9scQE).
+
+## 2026-11-22 ~17:15 CET (via the liaison)
+- **EEVEE preview profile approved** ("speed is important for testing/reviewing previews"): opt-in `preview_eevee`
+  render profile for blocking/acting reviews, added after T-199 merges (T-201); Cycles stays for look review and finals.
+  Check whether EEVEE renders headless in a GPU-less cloud session; if not, the profile is for the owner's PC (T-200).
+- **New Codex task T-200** (relay channel): diagnose the WinError 4551 bake block on the owner's PC (no security-setting
+  changes) and finish T-197's motion checks (walk, hand-over, flicker) if a safe route works. Supervisor IDs from T-201.
+- T-190 finger detail (accept the 0.3–0.5° clip hyperextension correction or exempt clip fingers): still open.
+- **~17:25 CET:** T-190 finger detail → (a) accept (clip hyperextension corrected by the finger limit, 0.04–0.07 mm);
+  merge T-190 once all tests pass. **Standing guidance:** hands/fingers must not consume more discussion tokens — for
+  sub-mm / sub-degree side effects within an approved scope the Supervisor decides (anatomically correct option, no
+  weakening), records it, and does not escalate. Escalate only real look changes or test/golden changes outside an
+  approved scope.
+
+## 2026-11-22 ~18:20 CET (via the liaison)
+1. **Windows block (T-200): build/bake in the cloud, render on the PC** (or another route that does not touch the owner's
+   security settings). Small task T-205: a reproducible "bake package" for a shot (bake.json + manifests + what Blender
+   needs, no engine exe) produced in cloud/CI and fetchable on the PC (branch or CI artifact), plus a one-command PC
+   render script for the opt-in preview_eevee profile (after T-199 / T-201). Codex uses it later for e912 EEVEE checks.
+2. **Codex T-204** (relay): face reference targets for all three characters (targets.json + measures + re-runnable
+   script). Supervisor IDs from T-205.
+3. **New research T-206 (Opus, docs only, docs/evaluation/characters/T-206/**):** (a) faces — open-source tools /
+   libraries / Blender capabilities to match the reference images more accurately and faster (landmark-driven fitting
+   of shape keys / face params, differentiable rendering with licences, Blender add-ons incl. paid only for comparison,
+   sculpt/shape-key workflows, reference camera matching, auto-compare metrics) and what fits our procedural faces;
+   (b) wool hair — wool/felt-yarn texture with less volume (hair curves + GN hair node groups, Principled Hair BSDF /
+   fibre shaders, yarn/wool/felt shading, open-source generators). Quality fit, determinism/headless bpy 5.3, licence,
+   effort; small feasibility renders welcome; recommendation + plan. Face work itself waits for T-206 + T-204 + owner.

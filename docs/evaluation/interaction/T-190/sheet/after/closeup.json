@@ -1,0 +1,11 @@
+{
+ "bake": "/tmp/claude-0/-home-user-Animation/8e13aec5-5bac-540c-b899-347eda7d7700/scratchpad/after/bake_s030.json",
+ "scan": "/tmp/claude-0/-home-user-Animation/8e13aec5-5bac-540c-b899-347eda7d7700/scratchpad/before_e912_s030.jsonl",
+ "tiles": "T187_s030_f092_white_L=white:L:92:radial",
+ "hide": "",
+ "samples": 16,
+ "res": [
+  400,
+  300
+ ]
+}

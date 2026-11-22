@@ -13,8 +13,11 @@
 #include "scene/asset_library.h"
 #include "scene/interaction.h"
 #include "scene/scene.h"
+#include "thumb_fit.h"
 
 using namespace plush;
+using plush::test::ThumbFit;
+using plush::test::thumbFit;
 namespace fs = std::filesystem;
 
 namespace {
@@ -97,6 +100,9 @@ struct CupMeasure {
   float deepest = 1;        // min (tip or knuckle centre radial distance - radius): < 0 = inside the proxy
   float bandOut = 0;        // max distance of a fingertip centre outside the band (m)
   float thumbSide = 0;      // thumb tip on the split plane, signed: < 0 = opposite half from the fingertips
+  float fingerGap = 0, fingerBandOut = 0;  // worstGap, bandOut of the four fingers alone
+  bool thumbReachable = true;  // T-190: some thumb pose inside the joint range meets the T-051 criteria (skin <= 2 mm in)
+  float thumbMargin = 0;       // T-190: how far the best in-range thumb that is no worse anywhere beats this one (m)
   vec3 wrist{0}, palm{0};
 };
 
@@ -114,10 +120,12 @@ CupMeasure measureCup(const SceneEvaluator& ev, char side, double f, vec2 bandPr
   };
   for (size_t i = 0; i < d.tips.size(); ++i) {
     m.worstGap = std::max(m.worstGap, std::abs(radial(d.tips[i]) - R - r));
+    if (i > 0) m.fingerGap = std::max(m.fingerGap, std::abs(radial(d.tips[i]) - R - r));
     m.deepest = std::min({m.deepest, radial(d.tips[i]) - R, radial(d.knuckles[i]) - R});
     if (withBand) {  // the thumb (opposed) too
       const float h = glm::dot(d.tips[i] - base, axis);
       m.bandOut = std::max({m.bandOut, bandProp.x - h, h - bandProp.y});
+      if (i > 0) m.fingerBandOut = std::max({m.fingerBandOut, bandProp.x - h, h - bandProp.y});
     }
   }
   const int hb = sk.find(std::string("hand.") + side);
@@ -127,7 +135,25 @@ CupMeasure measureCup(const SceneEvaluator& ev, char side, double f, vec2 bandPr
   const vec3 split = glm::normalize(glm::cross(axis, palmN));
   float fingers = 0;
   for (size_t i = 1; i < d.tips.size(); ++i) fingers += glm::dot(d.tips[i] - base, split);
-  m.thumbSide = glm::dot(d.tips[0] - base, split) * (fingers >= 0 ? 1.0f : -1.0f);
+  const float sideSign = fingers >= 0 ? 1.0f : -1.0f;
+  m.thumbSide = glm::dot(d.tips[0] - base, split) * sideSign;
+  // T-190: the T-051 criteria for the thumb as violations (tip skin within 2 mm of the surface, tip and knuckle
+  // centres out of the cup, tip in the band, tip on the far half from the fingers), and no skin of the thumb chain
+  // more than 2 mm into the cup; thumbFit: whether a thumb in range meets them all, and how far one beats this one.
+  const ThumbFit fit = thumbFit<5>(ev, 0, side, f, HandLimits{}.thumbBack, [&](vec3 root, vec3 knuckle, vec3 tip) {
+    float skin = 0;
+    for (int k = 0; k <= 8; ++k) {
+      const float t = float(k) / 8.0f;
+      skin = std::max({skin, R + r - radial(glm::mix(root, knuckle, t)), R + r - radial(glm::mix(knuckle, tip, t))});
+    }
+    const float h = glm::dot(tip - base, axis);
+    return std::array<float, 5>{std::max(0.0f, std::abs(radial(tip) - R - r) - 0.002f),
+                                std::max({0.0f, R - radial(tip), R - radial(knuckle)}),
+                                withBand ? std::max({0.0f, bandProp.x - h, h - bandProp.y}) : 0.0f,
+                                std::max(0.0f, glm::dot(tip - base, split) * sideSign + 1e-6f), std::max(0.0f, skin - 0.002f)};
+  }, {{0, 0, 0, 0, 0}});  // the T-051 criteria together, by a thumb whose skin is nowhere more than 2 mm in
+  m.thumbReachable = fit.reachable[0];
+  m.thumbMargin = fit.margin;
   m.wrist = vec3(hg[3]);
   m.palm = ev.handGripPoint(0, side, f);
   return m;
@@ -160,15 +186,23 @@ TEST_CASE("per-finger grasp: cup, both bands, three skeletons - tips on the surf
       auto ev = load(banded);
       for (double f : {24.0, 30.0}) {
         const CupMeasure a = measureCup(*plain, 'R', f, site.band, false), b = measureCup(*ev, 'R', f, site.band, true);
+        MESSAGE(std::format("{} {} f{}: thumb criteria reachable in range {}, beaten by {:.2f} mm", asset, site.socket, f, b.thumbReachable, b.thumbMargin * 1e3));
         MESSAGE(std::format("{} {} f{}: tip gap {:.2f} mm (single search {:.2f}), deepest {:.2f} mm, band out {:.2f} mm, "
                             "thumb side {:.1f} mm (single search {:.1f}), wrist moved {:.4f} mm, palm moved {:.4f} mm",
                             asset, site.socket, f, b.worstGap * 1e3, a.worstGap * 1e3, b.deepest * 1e3, b.bandOut * 1e3,
                             b.thumbSide * 1e3, a.thumbSide * 1e3, glm::distance(a.wrist, b.wrist) * 1e3,
                             glm::distance(a.palm, b.palm) * 1e3));
-        CHECK(b.worstGap <= 0.002f);
+        CHECK(b.fingerGap <= 0.002f);  // every finger tip on the cup
         CHECK(b.deepest >= 0.0f);
-        CHECK(b.bandOut <= 0.0f);
-        CHECK(b.thumbSide < 0.0f);
+        CHECK(b.fingerBandOut <= 0.0f);  // every finger tip in the band
+        if (b.thumbReachable) {  // T-190: a thumb inside its joint range can meet the T-051 criteria: this one does
+          CHECK(b.worstGap <= 0.002f);
+          CHECK(b.bandOut <= 0.0f);
+          CHECK(b.thumbSide < 0.0f);
+        }
+        // T-190: and no thumb in range is at least as good on every criterion (contact, out of the cup, band, far side,
+        // no skin 2 mm into the cup) and more than the 2 mm contact tolerance better on one: opposed as far as it goes.
+        CHECK(b.thumbMargin <= 0.002f);
         CHECK(glm::distance(a.wrist, b.wrist) <= 1e-5f);
         CHECK(glm::distance(a.palm, b.palm) <= 1e-5f);
       }

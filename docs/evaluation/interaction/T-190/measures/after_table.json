@@ -1,0 +1,353 @@
+[
+ {
+  "shot": "e912_s010",
+  "hand": "auburn L",
+  "joint": "f2a",
+  "what": "pop > 25 deg / frame",
+  "worst_deg": 28.1,
+  "frames": [
+   [
+    79,
+    80
+   ],
+   [
+    116,
+    117
+   ],
+   [
+    146,
+    147
+   ]
+  ],
+  "n_frames": 6,
+  "driver": "hand pose (keyed shape, no grasp)"
+ },
+ {
+  "shot": "e912_s010",
+  "hand": "auburn L",
+  "joint": "f2b",
+  "what": "pop > 25 deg / frame",
+  "worst_deg": 35.6,
+  "frames": [
+   [
+    79,
+    80
+   ],
+   [
+    116,
+    117
+   ],
+   [
+    146,
+    147
+   ]
+  ],
+  "n_frames": 6,
+  "driver": "hand pose (keyed shape, no grasp)"
+ },
+ {
+  "shot": "e912_s010",
+  "hand": "auburn L",
+  "joint": "f1a",
+  "what": "pop > 25 deg / frame",
+  "worst_deg": 28.1,
+  "frames": [
+   [
+    79,
+    80
+   ],
+   [
+    116,
+    117
+   ],
+   [
+    146,
+    147
+   ]
+  ],
+  "n_frames": 6,
+  "driver": "hand pose (keyed shape, no grasp)"
+ },
+ {
+  "shot": "e912_s010",
+  "hand": "auburn L",
+  "joint": "f1b",
+  "what": "pop > 25 deg / frame",
+  "worst_deg": 35.6,
+  "frames": [
+   [
+    79,
+    80
+   ],
+   [
+    116,
+    117
+   ],
+   [
+    146,
+    147
+   ]
+  ],
+  "n_frames": 6,
+  "driver": "hand pose (keyed shape, no grasp)"
+ },
+ {
+  "shot": "e912_s010",
+  "hand": "auburn L",
+  "joint": "f0a",
+  "what": "pop > 25 deg / frame",
+  "worst_deg": 28.0,
+  "frames": [
+   [
+    79,
+    80
+   ],
+   [
+    116,
+    117
+   ],
+   [
+    146,
+    147
+   ]
+  ],
+  "n_frames": 6,
+  "driver": "hand pose (keyed shape, no grasp)"
+ },
+ {
+  "shot": "e912_s010",
+  "hand": "auburn L",
+  "joint": "f0b",
+  "what": "pop > 25 deg / frame",
+  "worst_deg": 35.4,
+  "frames": [
+   [
+    79,
+    80
+   ],
+   [
+    116,
+    117
+   ],
+   [
+    146,
+    147
+   ]
+  ],
+  "n_frames": 6,
+  "driver": "hand pose (keyed shape, no grasp)"
+ },
+ {
+  "shot": "e912_s010",
+  "hand": "auburn R",
+  "joint": "f2a",
+  "what": "pop > 25 deg / frame",
+  "worst_deg": 28.1,
+  "frames": [
+   [
+    101,
+    102
+   ],
+   [
+    131,
+    132
+   ],
+   [
+    161,
+    162
+   ]
+  ],
+  "n_frames": 6,
+  "driver": "hand pose (keyed shape, no grasp)"
+ },
+ {
+  "shot": "e912_s010",
+  "hand": "auburn R",
+  "joint": "f2b",
+  "what": "pop > 25 deg / frame",
+  "worst_deg": 35.6,
+  "frames": [
+   [
+    101,
+    102
+   ],
+   [
+    131,
+    132
+   ],
+   [
+    161,
+    162
+   ]
+  ],
+  "n_frames": 6,
+  "driver": "hand pose (keyed shape, no grasp)"
+ },
+ {
+  "shot": "e912_s010",
+  "hand": "auburn R",
+  "joint": "f1a",
+  "what": "pop > 25 deg / frame",
+  "worst_deg": 28.1,
+  "frames": [
+   [
+    101,
+    102
+   ],
+   [
+    131,
+    132
+   ],
+   [
+    161,
+    162
+   ]
+  ],
+  "n_frames": 6,
+  "driver": "hand pose (keyed shape, no grasp)"
+ },
+ {
+  "shot": "e912_s010",
+  "hand": "auburn R",
+  "joint": "f1b",
+  "what": "pop > 25 deg / frame",
+  "worst_deg": 35.6,
+  "frames": [
+   [
+    101,
+    102
+   ],
+   [
+    131,
+    132
+   ],
+   [
+    161,
+    162
+   ]
+  ],
+  "n_frames": 6,
+  "driver": "hand pose (keyed shape, no grasp)"
+ },
+ {
+  "shot": "e912_s010",
+  "hand": "auburn R",
+  "joint": "f0a",
+  "what": "pop > 25 deg / frame",
+  "worst_deg": 28.0,
+  "frames": [
+   [
+    101,
+    102
+   ],
+   [
+    131,
+    132
+   ],
+   [
+    161,
+    162
+   ]
+  ],
+  "n_frames": 6,
+  "driver": "hand pose (keyed shape, no grasp)"
+ },
+ {
+  "shot": "e912_s010",
+  "hand": "auburn R",
+  "joint": "f0b",
+  "what": "pop > 25 deg / frame",
+  "worst_deg": 35.4,
+  "frames": [
+   [
+    101,
+    102
+   ],
+   [
+    131,
+    132
+   ],
+   [
+    161,
+    162
+   ]
+  ],
+  "n_frames": 6,
+  "driver": "hand pose (keyed shape, no grasp)"
+ },
+ {
+  "shot": "e912_s020",
+  "hand": "boy R",
+  "joint": "thumbA",
+  "what": "bent backwards",
+  "worst_deg": -27.1,
+  "frames": [
+   [
+    142,
+    208
+   ]
+  ],
+  "n_frames": 67,
+  "driver": "grasp, per-finger box-face search (T-112c; wrap not keyed)"
+ },
+ {
+  "shot": "e909_s010",
+  "hand": "boy R",
+  "joint": "thumbA",
+  "what": "bent backwards",
+  "worst_deg": -25.0,
+  "frames": [
+   [
+    131,
+    225
+   ]
+  ],
+  "n_frames": 95,
+  "driver": "grasp, per-finger band search (T-051; wrap not keyed)"
+ },
+ {
+  "shot": "e910_s010",
+  "hand": "boy R",
+  "joint": "thumbA",
+  "what": "bent backwards",
+  "worst_deg": -25.0,
+  "frames": [
+   [
+    72,
+    140
+   ]
+  ],
+  "n_frames": 69,
+  "driver": "grasp, wrap search (T-171 r3)"
+ },
+ {
+  "shot": "e910_s010",
+  "hand": "boy R",
+  "joint": "thumbA",
+  "what": "bent backwards",
+  "worst_deg": -25.0,
+  "frames": [
+   [
+    141,
+    143
+   ]
+  ],
+  "n_frames": 3,
+  "driver": "grasp track, weight 0, wrap search (T-171 r3)"
+ },
+ {
+  "shot": "e910_s010",
+  "hand": "girl L",
+  "joint": "thumbA",
+  "what": "bent backwards",
+  "worst_deg": -25.0,
+  "frames": [
+   [
+    110,
+    192
+   ]
+  ],
+  "n_frames": 83,
+  "driver": "grasp, wrap search (T-171 r3)"
+ }
+]

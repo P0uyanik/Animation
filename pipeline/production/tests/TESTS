@@ -7,5 +7,6 @@
 
 run test_run_shot_current.py                 # T-062 cast check
 run test_sets.py                             # T-098L set data
+run test_bake_package.py                     # T-205 bake package (no Blender)
 local test_clip_pipeline.py 'needs Blender; local run (not in the gate before T-182)'
 local test_run_shot_workflow.py 'needs Blender; local run (not in the gate before T-182)'

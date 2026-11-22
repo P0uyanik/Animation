@@ -1,0 +1,6 @@
+shot,check,renderer,frames_rendered,seconds_per_frame,peak_vram_mib,status
+s020,hand-over two-shot,EEVEE,0,,,missing bake
+s030,walk-off 5b,EEVEE,0,,,missing bake
+s030,48-frame flicker strip,EEVEE,0,,,missing bake
+s020,matched still,Cycles CPU,0,,,missing bake
+s030,matched still,Cycles CPU,0,,,missing bake
