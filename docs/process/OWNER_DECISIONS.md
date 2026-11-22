@@ -1081,3 +1081,7 @@ hard depends-on (read) overlaps were conflicts → T-181b makes them warnings. R
 6. **Standing guidance:** our engine works closely with Blender across ALL areas, making full use of Blender's
    capabilities and suitable open-source tools/libraries wherever possible.
 - Start hair step H1 now (opt-in, Opus; contact checks after T-183/T-194 merge) → T-207. Face fit after Codex T-204.
+- **Supervisor decision (T-198, within the approved Motion Continuity scope, ~19:45 CET):** re-record
+  test_interaction/visibleGrip/boy (the fix removes a 147° one-frame hand flip; frames 11-14, hand.R + its finger/DEF
+  bones only; all 6 content goldens unchanged). Speed-limit test as a ratchet over a recorded baseline (e901 f223 walk
+  start + listed grasp/release finger-curl rows); fixing those curls → follow-up T-209.
