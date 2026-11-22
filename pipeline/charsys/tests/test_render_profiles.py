@@ -1,5 +1,6 @@
 """T-166 tests: final720 is the default render profile and HEVC 10-bit the default delivery encode; the previous
-128 spp / 0.01 preset (legacy128) and the H.264 8-bit fallback still resolve. Fast: no Blender.
+128 spp / 0.01 preset (legacy128) and the H.264 8-bit fallback still resolve. T-199: opt-in compositor look. T-201:
+opt-in preview_eevee profile (existing profiles unchanged; with bpy a tiny EEVEE render runs). Fast without Blender.
 
     python3 pipeline/charsys/tests/test_render_profiles.py
 """
@@ -134,6 +135,61 @@ try:
 except ValueError:
     check("unknown compositor key refused", True)
 
+# --- T-201 preview_eevee (opt-in): existing profiles byte-identical, EEVEE only when the profile is asked for
+import subprocess as _sp  # noqa: E402
+old = json.loads(_sp.run(["git", "show", "0f3787e:pipeline/charsys/render_profiles.json"], cwd=ROOT,
+                         capture_output=True, text=True).stdout or "null")
+if old is None:
+    print("SKIP byte-identical check: commit 0f3787e not in this checkout")
+else:
+    check("T-201: every pre-T-201 profile, default_profile and encode table unchanged",
+          all(prof[k] == v for k, v in old["profiles"].items()) and P["default_profile"] == old["default_profile"]
+          and P["encode"] == old["encode"] and set(prof) - set(old["profiles"]) == {"preview_eevee"})
+check("T-201: no Cycles profile names an engine or an eevee block",
+      all("engine" not in v and "eevee" not in v for k, v in prof.items() if k != "preview_eevee"))
+pe = prof["preview_eevee"]
+check("T-201: preview_eevee = eevee engine, <= 1280x720, few samples, no cycles/compositor block, not the default",
+      pe["engine"] == "eevee" and pe["resolution"][0] <= 1280 and pe["samples"] <= 32 and "cycles" not in pe
+      and "compositor" not in pe and P["default_profile"] != "preview_eevee" and "OPT-IN" in pe["description"])
+a = shot_render_parse(base + ["--profile", "preview_eevee"])
+check("T-201: shot_render --profile preview_eevee takes its resolution/samples",
+      a.resolution == pe["resolution"] and a.samples == pe["samples"])
+
+
+class EeveeScene:
+    def __init__(self, engine):
+        self.render = type("R", (), {"engine": engine, "use_persistent_data": False})()
+        self.eevee = type("E", (), {k: None for k in pe["eevee"]})()
+        self.cycles = None  # an EEVEE profile must not touch Cycles settings
+
+
+es = EeveeScene("BLENDER_EEVEE")
+res = render_engine.apply_profile(es, pe)
+check("T-201: apply_profile sets the eevee block on scene.eevee and records the engine",
+      res["engine"] == "eevee" and all(getattr(es.eevee, k) == v and res[f"eevee.{k}"] == v for k, v in pe["eevee"].items())
+      and es.render.use_persistent_data is True, str(res))
+try:
+    render_engine.apply_profile(EeveeScene("CYCLES"), pe)
+    check("T-201: preview_eevee on a Cycles scene refused (pass --engine eevee)", False)
+except ValueError as e:
+    check("T-201: preview_eevee on a Cycles scene refused (pass --engine eevee)", "--engine eevee" in str(e))
+try:
+    render_engine.apply_profile(EeveeScene("BLENDER_EEVEE"), {"engine": "eevee", "eevee": {"bogus": 1}})
+    check("T-201: unknown eevee setting refused", False)
+except ValueError:
+    check("T-201: unknown eevee setting refused", True)
+
+sys.path.insert(0, os.path.join(ROOT, "tools", "pc"))
+import render_package  # noqa: E402
+man = {"render_entry": "code/pipeline/charsys/shot_render.py", "bake": "bake.json", "cast": "cast.json",
+       "production_render": {}}
+for prof_name, engine_arg, want in (("preview_eevee", None, "eevee"), ("review", None, "cycles"),
+                                    ("final720", None, "cycles"), ("review", "eevee", "eevee")):
+    ns = argparse.Namespace(profile=prof_name, resolution=None, samples=None, engine=engine_arg, frames="")
+    cmd, eff = render_package.render_command("pkg", man, P, ns, "blender", "out")
+    check(f"T-201: render_package {prof_name} (--engine {engine_arg}) -> {want}",
+          eff["engine"] == want and (("--engine" in cmd) == (want == "eevee")), " ".join(cmd))
+
 try:
     import bpy  # noqa: E402
 except ImportError:
@@ -186,6 +242,27 @@ if bpy is not None:
           comp["look"] == "plush_soft" and comp["params"]["glow"] == cfg["glow"] and comp["blender"] == bpy.app.version_string
           and comp["node_chain"][0].endswith("CompositorNodeRLayers") and comp["node_chain"][-1].endswith("NodeGroupOutput")
           and any("CompositorNodeGlare" in n for n in comp["node_chain"]), str(comp))
+    if os.environ.get("PLUSH_TEST_EEVEE") == "1":  # T-201: ~30-60 s on a GPU-less box (Mesa software OpenGL)
+        bpy.ops.wm.read_factory_settings(use_empty=True)
+        sc = bpy.context.scene
+        bpy.ops.mesh.primitive_uv_sphere_add()
+        bpy.ops.object.light_add(type="SUN", location=(2, -2, 3))
+        cam = bpy.data.objects.new("c", bpy.data.cameras.new("c"))
+        sc.collection.objects.link(cam)
+        cam.location, cam.rotation_euler, sc.camera = (0, -5, 0), (1.5708, 0, 0), cam
+        render_engine.configure(sc, "eevee", pe["samples"])
+        ea = render_engine.apply_profile(sc, pe)
+        sc.render.resolution_x, sc.render.resolution_y, sc.render.resolution_percentage = 96, 54, 100
+        with tempfile.TemporaryDirectory() as t:
+            sc.render.filepath = os.path.join(t, "e.png")
+            bpy.ops.render.render(write_still=True)
+            im = bpy.data.images.load(sc.render.filepath)
+            px = im.pixels[:]
+            bpy.data.images.remove(im)
+        check("T-201: preview_eevee renders headless with EEVEE (non-blank image)",
+              ea["engine"] == "eevee" and max(px) - min(px) > 0.1)
+    else:
+        print("SKIP T-201 EEVEE render: set PLUSH_TEST_EEVEE=1 (needs an OpenGL/EGL context; software Mesa is enough)")
     fake = types.ModuleType("bpy")
     fake.app = types.SimpleNamespace(version=(6, 0, 0), version_string="6.0.0")
     real = sys.modules["bpy"]
