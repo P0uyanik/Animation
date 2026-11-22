@@ -1,3 +1,33 @@
+# ▶ T-208 — NEW CODEX ASSIGNMENT (owner ~19:20 CET 2026-11-22; posted by the owner liaison session_01NPjxeKamtbdzi3YwrgsWXU for the round-6 Supervisor session_01NPjxePvWAMsLopzSs1fMXB)
+Codex does **T-208: real-shot EEVEE vs Cycles test on the owner's PC from cloud bake packages** — FULLY AUTOMATIC,
+no manual steps for the owner. **Model: gpt-6.2-astra, effort medium.** Measurement only; no project code/spec/test/
+asset changes; never change Windows security/system settings; don't modify/delete tracked files outside the write-set.
+
+1. Branch `t-208-codex-eevee-shots` from the latest `origin/main` in a new worktree on C: (never write on D:).
+   Write ONLY `docs/evaluation/rendering/T-208/**`. Package zips/renders stay OUTSIDE the repo (e.g. C:/AnimationWT/t208-data).
+2. Get the bake packages (GitHub Actions artifact "bake-package", private repo → needs auth):
+   - e912 s010: run 45052327444 (exists). e912 s020 and s030: the Supervisor triggers "Bake package" runs before you
+     start — find the newest successful run per shot via the API (workflow "Bake package", check its inputs/artifact
+     name) or the run IDs in RELAY_LOG/NEXT_TASK notes if added.
+   - Download automatically: `gh run download <run> -n bake-package` if gh is installed and logged in; otherwise use the
+     token from the existing git credential helper (`git credential fill` for github.com) with the GitHub REST API
+     (GET /repos/P0uyanik/Animation/actions/runs/<run>/artifacts → archive_download_url). NEVER print, log or commit the
+     token. If no auth path works, post a STATUS line saying exactly what is missing and stop.
+   - If s020/s030 packages are missing, you may trigger the "Bake package" workflow yourself via the same API
+     (workflow_dispatch) and wait for it (poll ≤ every 2 min, max 45 min).
+3. Render with `tools/pc/render_package.cmd <zip>` (Blender only; see docs/evaluation/rendering/T-205/README.md):
+   EEVEE = `preview_eevee` profile if merged, else the T-197 EEVEE settings; Cycles = current review profile (CPU).
+   Frames: s010 2 frames; s020 hand-over 3 frames + a 48-frame EEVEE strip (flicker); s030 walk-off 3 frames +
+   48-frame EEVEE strip. Cycles only on the single frames (it's slow on this PC).
+4. Report: s/frame and peak VRAM per renderer, flicker/temporal noise in the EEVEE strips (visible or not, simple
+   frame-difference stats), and what EEVEE gets wrong in MOTION (hair, fleece, hands, contact shadows, DOF).
+   Verdict: is preview_eevee good enough for animation/acting review previews of real shots?
+5. Output: `README.md` (≤1 page, verdict + numbers first), `bench.csv`, ≤4 evidence JPEGs (Cycles | EEVEE crops,
+   ≤2048 px), the 48-frame strips as short MP4s (H.264, ≤10 MB each, under T-208/), exact commands.
+6. Post `| T-208 | STARTED |`; when done push and post
+   `<UTC> | T-208 | READY | t-208-codex-eevee-shots@<sha> | input <sha> | <headline>` + ledger.
+
+---
 # ▶ T-204 — NEW CODEX ASSIGNMENT (owner ~18:20 CET 2026-11-22; posted by the owner liaison session_01NPjxeKamtbdzi3YwrgsWXU for the round-6 Supervisor session_01NPjxePvWAMsLopzSs1fMXB)
 Codex does **T-204: FACE reference targets for all three characters** (like T-150 eyes / T-161), measured from the
 references vs the CURRENT released faces. Analysis only, token-efficient; no project code/spec/test/asset changes.
