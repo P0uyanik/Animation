@@ -114,15 +114,74 @@ Built and committed (`b792ed1`, the commit after it):
   **Not chains:** boy skin 49.9 mm / 43 fr is `hair_fringe` / `hair_crown` / `hair_flowers` (rigid with her head):
   her head overlaps the boy in the source animation. Bake 52-54 s without, 56 s with the 520 colliders.
 
+**Later in session 7** (commits up to the one that adds this paragraph; main `99f1da6d` is merged, the engine was
+NOT rebuilt after the merge: build first, run the golden check and all tests again):
+
+- Supervisor decisions (R6, 13:05-13:12Z): body snaps are not fixed here; the table gets a column "frames where the
+  source body snaps" and ONLY those frames (+-1) are outside the zero-penetration criterion; rigid hair parts inside
+  the boy (her head overlaps his: T-191 staging, parked) are listed apart; `contact.carry` approved; the golden proof
+  goes into READY; do not change e912 shot files (the `_t183` copies are fine); T-194 builds a render-time push-out
+  (`shot_render.py`, `hair_pushout.py`: not ours; ordering questions go through the Supervisor). **New targets:** e909
+  `s010_t183` hair inside the CUP 23.9 mm / 157 fr and in the boy's hand.R 11.8 mm / 18 fr; e912 s030 f93.
+- Candidates rebuilt with `rest.carry` (e912 packages `auburn_ec423c7c2fcfbcf1`, `white_7ded3d4107990fd4`); all four
+  shot copies derived with `--props` and neighbours (`tools/r4_run.sh`, runs `r5a` without / `r5b` with neighbours),
+  every frame measured. Numbers per pair, all frames and calm frames: **`T-183_r5_tables.json`** (`tools/r5_table.py`,
+  snap frames from `tools/snaps.py`: > 45 deg or > 100 mm in one frame; none in e909). Read of the calm frames:
+  - e912 s010 auburn: table 0, blouse 0, boy 0 except `ringlets_back_00` > hoodie 2.2 mm, 2 vertices, f12-16
+    (walk-in, before the rendered f41+); own skin as before (curtain 9.8, cap 6.2, `ringlets_outer_00` 8.8 mm / 8 v,
+    `ringlets_side_b` > ear.L 3.0 mm / 4 v). White: only the static ears.
+  - e912 s020 auburn: boy hoodie / strap / hand, boat, table, own blouse and vest all 0 in calm frames (all their
+    events are on f109-111 and f133-136). Left: rigid `hair_fringe` / `crown` / `flowers` in the boy's HEAD skin
+    (49.9 mm, f1-160: the heads overlap) and with them `ringlets_side_00` > boy skin 8.3 mm f78-80; own skin: cap
+    25.5, curtain 20.9, `ringlets_outer_00` 2.9 mm / 48 fr, `ringlets_side_b` > ear.L 6.0 mm / 103 fr, curtain >
+    collar 1.6 mm, `back_sections` 5.7 mm. White: 0 against everything but her own ears and cap (5.2 mm).
+  - e912 s030 auburn: f93 is the cut (all three characters move 1.1-1.6 m in one frame); calm frames:
+    **`ringlets_side_00` > blouse 7.7 mm in f1-10 (80 v): not looked at yet** (the start pose: probably squeezed
+    between arm and chest during the preroll), curtain > vest 3.5 mm f64-73, collar 1.8 mm. White: f93 only + ears.
+  - e909 girl (props measure done, body measure was still running): boy's hand.R 0; **cup 23.9 mm / 143 fr: the cup
+    is a cylinder primitive and `neighbours.prop_boxes` writes boxes only**.
+  - Bake seconds without / with the neighbour spheres (same run, 4 cores shared with other jobs, so only a first
+    reading): s020 59.1 / 56.1, s010 23.6 / 29.6, s030 20.6 / 21.1. Take the factor again on a quiet machine,
+    three bakes each, also against the binary before the change.
+- Fan-out levers (open item 3), e909, `tools/tweak_package.py` + `tools/fan_out.py`, f24-132 every 4th
+  (`T-183_r5_tables.json` `fan_out_e909_s010`): out back / side cm2, crossings, fold mean / max: released 851 / 891,
+  16.2, 56 / 80; candidate 1008 / 1101, 27.6, 128 / 171; joint 1 of the back ringlets 12 mm: 981 / 1093, 27.8,
+  108 / 171 (own body: cap and curtain only, collar 1.0 mm in one frame); joints 0 and 1: 973 / 1093, 26.3,
+  104 / 171; `locks` 0.5: 1024 / 1108, 23.8, 128 / 171; `locks` 1.0: 1139 / 1220, 24.8, 121 / 171; joint 1 + locks
+  0.25: 981 / 1094, 26.7, 108 / 171. **None is clearly better; nothing kept, `locks` stays off.** (Locks push the
+  locks apart, so the outline grows; a thinner joint 1 changes the outline by 3 %.)
+
 Environment additions: a second shot of the same cast needs no package build when `build/masters` and
 `build/packages` are copied from a prepared shot of that cast (cache hit, prepare 0 s). `near_colliders.py` takes
 `--character=`. The golden check: `build/tests/plush_tests -tc="golden*"` (24 s).
 
 ### Open (in this order)
 
-**State of this list after session 7: 1 and 2 are done as described above; 3-5 remain** (3: `tweak_package.py` on
-e909 `s010_t183`; 5 includes the final table with `r5` runs of `tools/r4_run.sh`, STEP=1).
+**State of this list after session 7: items 1-3 below are done (see session 7). What is left, in this order:**
 
+- A. **Cylinder prop collider** for the cup of e909 (23.9 mm / 143 fr). Plan: collider type `"cylinder"` (`a`, `b`
+  = axis ends, `radius`, `"round"` = edge rounding 0.003) as a third core shape in secondary.cpp: `Shape` gets a
+  cylinder core (axis a'..b' shrunk by the rounding, core radius R - rounding), `nearestOn` clamps along the axis
+  and radially, `nearestSeg` takes the ternary search of the box branch (the core is convex); on a prop like the
+  box (frame from the scene). `neighbours.prop_boxes` -> also cylinders (asset `mesh.primitive == "cylinder"`:
+  standing on its base, axis y, `radius`, `height`, times the asset scale; as `measure_props.prop_shape` reads it).
+  Unit test beside "a prop box at the identity frame"; docs "Scene colliders".
+- B. e912 s030 `ringlets_side_00` > blouse 7.7 mm f1-10: trace with `near_colliders.py --character=auburn`.
+- C. Optional, small: neighbour sphere `PAD` 0.0025 -> 0.004 in `neighbours.py` for the 2.2 mm / 2 vertices of
+  s010 f12-16; own-body leftovers `ringlets_outer_00` > skin and `ringlets_side_b` > ear.L (few vertices, every
+  shot; from round 2, not looked at in round 3).
+- D. Build the merged engine, golden + all tests, then **the final runs on the merged engine** (`STEP=1 sh
+  tools/r4_run.sh <wrapper> <logs> r6 <source shot dir> <characters>` for e912 s010 / s020 / s030 (auburn white)
+  and e909 s010 (girl); 12-15 min per shot), `r5_table.py` per shot and character, released bakes for the "before"
+  column (`shots/sNNN`, prepare + bake, no build), the slowdown factor on a quiet machine.
+- E. Deliverables (old item 5): table with the snap-frame column in README (round 3 section) and here,
+  `T-183_r3_measures.json` (`r3_summary.py`) + the tables JSON, before / after close-ups (e912 s010 table contact,
+  e912 s020 beside the boy, e909 lean) and the strict sheet <= 1024 px (`tools/review/strict_sheet.py`, spec like
+  `sheet_r2/strict_sheet.json`), `derive_shot.py --check` on the four copies, `tools/ready.py`, READY with: golden
+  unchanged, bit-identity SHA, slowdown factor, guarded paths (release_rule.py, tests/test_secondary.cpp,
+  test_hair_contact.py, test_release_rule.py; nothing else guarded touched so far).
+
+The original list, for reference:
 
 1. **Neighbour and carried prop** (`engine/scene/scene.cpp` + `scene.h` granted; nothing written yet). Plan: a collider may name `"character": "<scene name>"` (bone of that
    character) or `"prop": "<name>"` (box in prop space); the solver asks a callback for those transforms per step;

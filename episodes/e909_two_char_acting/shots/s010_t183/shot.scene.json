@@ -252,70 +252,124 @@
    "personality": "girl_auburn_bun_glasses",
    "dynamics": {
     "colliders": [
-     {
-      "name": "scene.floor",
-      "type": "box",
-      "space": "world",
-      "min": [
-       -4,
-       -0.05,
-       -3
-      ],
-      "max": [
-       4,
-       0,
-       4
-      ],
-      "radius": 0.01
-     },
-     {
-      "name": "scene.wall",
-      "type": "box",
-      "space": "world",
-      "min": [
-       -4,
-       0,
-       -1.4
-      ],
-      "max": [
-       4,
-       3,
-       -1.3
-      ],
-      "radius": 0.01
-     },
-     {
-      "name": "scene.table_top",
-      "type": "box",
-      "space": "world",
-      "min": [
-       -0.1323,
-       0.4395,
-       -0.0635
-      ],
-      "max": [
-       0.0477,
-       0.4695,
-       0.0765
-      ],
-      "radius": 0.01
-     },
-     {
-      "name": "scene.table_leg",
-      "type": "box",
-      "space": "world",
-      "min": [
-       -0.0673,
-       0.0,
-       -0.0185
-      ],
-      "max": [
-       -0.0173,
-       0.4395,
-       0.0315
-      ],
-      "radius": 0.01
-     }
+     {"name": "scene.floor", "type": "box", "space": "world", "min": [-4, -0.05, -3], "max": [4, 0, 4], "radius": 0.01},
+     {"name": "scene.wall", "type": "box", "space": "world", "min": [-4, 0, -1.4], "max": [4, 3, -1.3], "radius": 0.01},
+     {"name": "scene.table_top", "type": "box", "space": "world", "min": [-0.1323, 0.4395, -0.0635], "max": [0.0477, 0.4695, 0.0765], "radius": 0.01},
+     {"name": "scene.table_leg", "type": "box", "space": "world", "min": [-0.0673, 0.0, -0.0185], "max": [-0.0173, 0.4395, 0.0315], "radius": 0.01},
+     {"name": "nb.boy.0", "type": "sphere", "character": "boy", "bone": "DEF-palm.02.R", "centre": [-0.3117, 0.4191, 0.0082], "radius": 0.0225},
+     {"name": "nb.boy.1", "type": "sphere", "character": "boy", "bone": "DEF-f_pinky.03.R", "centre": [-0.3517, 0.3725, -0.0348], "radius": 0.0225},
+     {"name": "nb.boy.2", "type": "sphere", "character": "boy", "bone": "DEF-f_index.03.R", "centre": [-0.3523, 0.3708, 0.0362], "radius": 0.0225},
+     {"name": "nb.boy.3", "type": "sphere", "character": "boy", "bone": "hand.R", "centre": [-0.336, 0.3967, -0.0], "radius": 0.0225},
+     {"name": "nb.boy.4", "type": "sphere", "character": "boy", "bone": "thumbB.R", "centre": [-0.318, 0.3881, 0.0447], "radius": 0.0225},
+     {"name": "nb.boy.5", "type": "sphere", "character": "boy", "bone": "DEF-palm.04.R", "centre": [-0.3206, 0.4118, -0.0199], "radius": 0.0225},
+     {"name": "nb.boy.6", "type": "sphere", "character": "boy", "bone": "DEF-f_ring.03.R", "centre": [-0.3606, 0.3657, -0.0231], "radius": 0.0225},
+     {"name": "nb.boy.7", "type": "sphere", "character": "boy", "bone": "DEF-palm.01.R", "centre": [-0.3241, 0.4045, 0.0206], "radius": 0.0225},
+     {"name": "nb.boy.8", "type": "sphere", "character": "boy", "bone": "hand.R", "centre": [-0.3291, 0.3979, -0.0033], "radius": 0.0225},
+     {"name": "nb.boy.9", "type": "sphere", "character": "boy", "bone": "DEF-palm.03.R", "centre": [-0.318, 0.4172, -0.0043], "radius": 0.0225},
+     {"name": "nb.boy.10", "type": "sphere", "character": "boy", "bone": "DEF-palm.04.R", "centre": [-0.3352, 0.3838, -0.0387], "radius": 0.0225},
+     {"name": "nb.boy.11", "type": "sphere", "character": "boy", "bone": "DEF-palm.02.R", "centre": [-0.3382, 0.3964, 0.0116], "radius": 0.0225},
+     {"name": "nb.boy.12", "type": "sphere", "character": "boy", "bone": "DEF-palm.03.R", "centre": [-0.3118, 0.4212, -0.0104], "radius": 0.0225},
+     {"name": "nb.boy.13", "type": "sphere", "character": "boy", "bone": "thumbA.R", "centre": [-0.3096, 0.4014, 0.044], "radius": 0.0126},
+     {"name": "nb.boy.14", "type": "sphere", "character": "boy", "bone": "DEF-palm.01.R", "centre": [-0.3419, 0.3836, 0.0306], "radius": 0.0225},
+     {"name": "nb.boy.15", "type": "sphere", "character": "boy", "bone": "DEF-palm.04.R", "centre": [-0.3312, 0.4019, -0.0182], "radius": 0.0225},
+     {"name": "nb.boy.16", "type": "sphere", "character": "boy", "bone": "DEF-f_middle.03.R", "centre": [-0.3616, 0.3638, 0.0142], "radius": 0.0124},
+     {"name": "nb.boy.17", "type": "sphere", "character": "boy", "bone": "DEF-palm.03.R", "centre": [-0.327, 0.4057, -0.0157], "radius": 0.0225},
+     {"name": "nb.boy.18", "type": "sphere", "character": "boy", "bone": "DEF-palm.02.R", "centre": [-0.3256, 0.4099, 0.0103], "radius": 0.0225},
+     {"name": "nb.boy.19", "type": "sphere", "character": "boy", "bone": "DEF-palm.03.R", "centre": [-0.3191, 0.409, -0.0131], "radius": 0.0225},
+     {"name": "nb.boy.20", "type": "sphere", "character": "boy", "bone": "DEF-palm.02.R", "centre": [-0.3277, 0.4009, 0.0126], "radius": 0.0225},
+     {"name": "nb.boy.21", "type": "sphere", "character": "boy", "bone": "thumbB.R", "centre": [-0.3126, 0.3953, 0.0483], "radius": 0.0124},
+     {"name": "nb.boy.22", "type": "sphere", "character": "boy", "bone": "hand.R", "centre": [-0.34, 0.3938, -0.0012], "radius": 0.0225},
+     {"name": "nb.boy.23", "type": "sphere", "character": "boy", "bone": "DEF-f_pinky.03.R", "centre": [-0.3529, 0.3742, -0.0388], "radius": 0.0115},
+     {"name": "nb.boy.24", "type": "sphere", "character": "boy", "bone": "DEF-palm.03.R", "centre": [-0.3134, 0.4154, -0.0165], "radius": 0.0225},
+     {"name": "nb.boy.25", "type": "sphere", "character": "boy", "bone": "DEF-palm.02.R", "centre": [-0.3323, 0.3975, 0.0149], "radius": 0.0225},
+     {"name": "nb.boy.26", "type": "sphere", "character": "boy", "bone": "thumbB.R", "centre": [-0.3154, 0.3833, 0.05], "radius": 0.0131},
+     {"name": "nb.boy.27", "type": "sphere", "character": "boy", "bone": "hand.R", "centre": [-0.318, 0.4074, 0.0035], "radius": 0.0225},
+     {"name": "nb.boy.28", "type": "sphere", "character": "boy", "bone": "DEF-f_index.03.R", "centre": [-0.3537, 0.3713, 0.041], "radius": 0.0114},
+     {"name": "nb.boy.29", "type": "sphere", "character": "boy", "bone": "DEF-palm.03.R", "centre": [-0.3354, 0.3903, -0.01], "radius": 0.0225},
+     {"name": "nb.boy.30", "type": "sphere", "character": "boy", "bone": "hand.R", "centre": [-0.3365, 0.3841, 0.0096], "radius": 0.0225},
+     {"name": "nb.boy.31", "type": "sphere", "character": "boy", "bone": "DEF-f_ring.03.R", "centre": [-0.3601, 0.366, -0.0138], "radius": 0.0123},
+     {"name": "nb.boy.32", "type": "sphere", "character": "boy", "bone": "DEF-f_middle.03.R", "centre": [-0.3589, 0.3633, 0.0135], "radius": 0.0126},
+     {"name": "nb.boy.33", "type": "sphere", "character": "boy", "bone": "DEF-palm.04.R", "centre": [-0.3449, 0.3854, -0.0398], "radius": 0.012},
+     {"name": "nb.boy.34", "type": "sphere", "character": "boy", "bone": "hand.R", "centre": [-0.329, 0.4078, -0.0033], "radius": 0.0225},
+     {"name": "nb.boy.35", "type": "sphere", "character": "boy", "bone": "DEF-palm.04.R", "centre": [-0.3249, 0.403, -0.0205], "radius": 0.0225},
+     {"name": "nb.boy.36", "type": "sphere", "character": "boy", "bone": "DEF-f_index.03.R", "centre": [-0.3556, 0.3718, 0.0401], "radius": 0.0115},
+     {"name": "nb.boy.37", "type": "sphere", "character": "boy", "bone": "DEF-palm.03.R", "centre": [-0.3372, 0.3964, -0.0116], "radius": 0.0225},
+     {"name": "nb.boy.38", "type": "sphere", "character": "boy", "bone": "DEF-f_pinky.03.R", "centre": [-0.3539, 0.3746, -0.0405], "radius": 0.0114},
+     {"name": "nb.boy.39", "type": "sphere", "character": "boy", "bone": "DEF-palm.01.R", "centre": [-0.3396, 0.3913, 0.0331], "radius": 0.0107},
+     {"name": "nb.boy.40", "type": "sphere", "character": "boy", "bone": "hand.R", "centre": [-0.3121, 0.4161, -0.0026], "radius": 0.0225},
+     {"name": "nb.boy.41", "type": "sphere", "character": "boy", "bone": "DEF-f_ring.03.R", "centre": [-0.3592, 0.3625, -0.0138], "radius": 0.0123},
+     {"name": "nb.boy.42", "type": "sphere", "character": "boy", "bone": "thumbA.R", "centre": [-0.3163, 0.4005, 0.0388], "radius": 0.0225},
+     {"name": "nb.boy.43", "type": "sphere", "character": "boy", "bone": "DEF-palm.03.R", "centre": [-0.3148, 0.418, -0.016], "radius": 0.0225},
+     {"name": "nb.boy.44", "type": "sphere", "character": "boy", "bone": "thumbB.R", "centre": [-0.3088, 0.3852, 0.0462], "radius": 0.0225},
+     {"name": "nb.boy.45", "type": "sphere", "character": "boy", "bone": "DEF-f_middle.03.R", "centre": [-0.3562, 0.37, 0.0174], "radius": 0.0225},
+     {"name": "nb.boy.46", "type": "sphere", "character": "boy", "bone": "DEF-palm.02.R", "centre": [-0.3174, 0.4115, 0.0135], "radius": 0.0225},
+     {"name": "nb.boy.47", "type": "sphere", "character": "boy", "bone": "DEF-palm.02.R", "centre": [-0.3344, 0.3955, 0.0056], "radius": 0.0225},
+     {"name": "nb.boy.48", "type": "sphere", "character": "boy", "bone": "DEF-f_pinky.03.R", "centre": [-0.3545, 0.3717, -0.0416], "radius": 0.0119},
+     {"name": "nb.boy.49", "type": "sphere", "character": "boy", "bone": "thumbB.R", "centre": [-0.3132, 0.3845, 0.0511], "radius": 0.0134},
+     {"name": "nb.boy.50", "type": "sphere", "character": "boy", "bone": "DEF-palm.03.R", "centre": [-0.3335, 0.3984, -0.0112], "radius": 0.0225},
+     {"name": "nb.boy.51", "type": "sphere", "character": "boy", "bone": "DEF-palm.04.R", "centre": [-0.3196, 0.4087, -0.0205], "radius": 0.0225},
+     {"name": "nb.boy.52", "type": "sphere", "character": "boy", "bone": "DEF-f_index.03.R", "centre": [-0.3582, 0.3652, 0.0413], "radius": 0.0126},
+     {"name": "nb.boy.53", "type": "sphere", "character": "boy", "bone": "DEF-palm.01.R", "centre": [-0.3368, 0.3831, 0.042], "radius": 0.0221},
+     {"name": "nb.boy.54", "type": "sphere", "character": "boy", "bone": "DEF-palm.04.R", "centre": [-0.3242, 0.4084, -0.0199], "radius": 0.0225},
+     {"name": "nb.boy.55", "type": "sphere", "character": "boy", "bone": "DEF-f_index.03.R", "centre": [-0.3538, 0.3694, 0.0314], "radius": 0.0225},
+     {"name": "nb.boy.56", "type": "sphere", "character": "boy", "bone": "DEF-f_ring.03.R", "centre": [-0.3522, 0.3683, -0.0127], "radius": 0.0225},
+     {"name": "nb.boy.57", "type": "sphere", "character": "boy", "bone": "DEF-f_pinky.03.R", "centre": [-0.3566, 0.3684, -0.0414], "radius": 0.0137},
+     {"name": "nb.boy.58", "type": "sphere", "character": "boy", "bone": "DEF-f_middle.03.R", "centre": [-0.3591, 0.366, 0.0131], "radius": 0.012},
+     {"name": "nb.boy.59", "type": "sphere", "character": "boy", "bone": "DEF-palm.02.R", "centre": [-0.3356, 0.3896, 0.0097], "radius": 0.0225},
+     {"name": "nb.boy.60", "type": "sphere", "character": "boy", "bone": "DEF-palm.01.R", "centre": [-0.3226, 0.4114, 0.0236], "radius": 0.0225},
+     {"name": "nb.boy.61", "type": "sphere", "character": "boy", "bone": "DEF-palm.03.R", "centre": [-0.3197, 0.4139, -0.013], "radius": 0.0225},
+     {"name": "nb.boy.62", "type": "sphere", "character": "boy", "bone": "DEF-palm.01.R", "centre": [-0.3447, 0.3853, 0.0397], "radius": 0.0118},
+     {"name": "nb.boy.63", "type": "sphere", "character": "boy", "bone": "DEF-palm.03.R", "centre": [-0.3163, 0.4158, -0.0164], "radius": 0.0225},
+     {"name": "nb.boy.64", "type": "sphere", "character": "boy", "bone": "DEF-palm.03.R", "centre": [-0.3276, 0.4009, -0.0125], "radius": 0.0225},
+     {"name": "nb.boy.65", "type": "sphere", "character": "boy", "bone": "DEF-f_ring.03.R", "centre": [-0.3552, 0.3695, -0.0131], "radius": 0.0113},
+     {"name": "nb.boy.66", "type": "sphere", "character": "boy", "bone": "DEF-palm.02.R", "centre": [-0.3233, 0.408, 0.0181], "radius": 0.0225},
+     {"name": "nb.boy.67", "type": "sphere", "character": "boy", "bone": "thumbB.R", "centre": [-0.3129, 0.3912, 0.0509], "radius": 0.0225},
+     {"name": "nb.boy.68", "type": "sphere", "character": "boy", "bone": "DEF-palm.02.R", "centre": [-0.3334, 0.4, 0.0167], "radius": 0.0225},
+     {"name": "nb.boy.69", "type": "sphere", "character": "boy", "bone": "DEF-palm.04.R", "centre": [-0.3445, 0.3856, -0.0382], "radius": 0.0118},
+     {"name": "nb.boy.70", "type": "sphere", "character": "boy", "bone": "DEF-palm.02.R", "centre": [-0.3329, 0.4018, 0.0067], "radius": 0.0225},
+     {"name": "nb.boy.71", "type": "sphere", "character": "boy", "bone": "DEF-f_ring.03.R", "centre": [-0.3565, 0.3696, -0.0124], "radius": 0.0115},
+     {"name": "nb.boy.72", "type": "sphere", "character": "boy", "bone": "DEF-f_pinky.03.R", "centre": [-0.3579, 0.3691, -0.0407], "radius": 0.0126},
+     {"name": "nb.boy.73", "type": "sphere", "character": "boy", "bone": "DEF-palm.04.R", "centre": [-0.347, 0.382, -0.0343], "radius": 0.0225},
+     {"name": "nb.boy.74", "type": "sphere", "character": "boy", "bone": "DEF-palm.03.R", "centre": [-0.3296, 0.3996, -0.0178], "radius": 0.0225},
+     {"name": "nb.boy.75", "type": "sphere", "character": "boy", "bone": "hand.R", "centre": [-0.3213, 0.415, 0.0036], "radius": 0.0225},
+     {"name": "nb.boy.76", "type": "sphere", "character": "boy", "bone": "DEF-palm.01.R", "centre": [-0.3017, 0.4035, 0.0385], "radius": 0.0225},
+     {"name": "nb.boy.77", "type": "sphere", "character": "boy", "bone": "DEF-palm.01.R", "centre": [-0.3442, 0.3865, 0.039], "radius": 0.0157},
+     {"name": "nb.boy.78", "type": "sphere", "character": "boy", "bone": "thumbB.R", "centre": [-0.319, 0.3876, 0.0427], "radius": 0.0225},
+     {"name": "nb.boy.79", "type": "sphere", "character": "boy", "bone": "DEF-f_index.03.R", "centre": [-0.3574, 0.3657, 0.0412], "radius": 0.0128},
+     {"name": "nb.boy.80", "type": "sphere", "character": "boy", "bone": "hand.R", "centre": [-0.3372, 0.3912, -0.0031], "radius": 0.0225},
+     {"name": "nb.boy.81", "type": "sphere", "character": "boy", "bone": "DEF-palm.02.R", "centre": [-0.3363, 0.3939, 0.0067], "radius": 0.0225},
+     {"name": "nb.boy.82", "type": "sphere", "character": "boy", "bone": "DEF-f_middle.03.R", "centre": [-0.3601, 0.3685, 0.0048], "radius": 0.0222},
+     {"name": "nb.boy.83", "type": "sphere", "character": "boy", "bone": "DEF-f_middle.03.R", "centre": [-0.3591, 0.3676, 0.006], "radius": 0.0225},
+     {"name": "nb.boy.84", "type": "sphere", "character": "boy", "bone": "hand.R", "centre": [-0.3243, 0.4014, 0.004], "radius": 0.0225},
+     {"name": "nb.boy.85", "type": "sphere", "character": "boy", "bone": "thumbB.R", "centre": [-0.3149, 0.3866, 0.0495], "radius": 0.0134},
+     {"name": "nb.boy.86", "type": "sphere", "character": "boy", "bone": "DEF-palm.04.R", "centre": [-0.3271, 0.4068, -0.0206], "radius": 0.0225},
+     {"name": "nb.boy.87", "type": "sphere", "character": "boy", "bone": "DEF-palm.03.R", "centre": [-0.3353, 0.3951, -0.0052], "radius": 0.0225},
+     {"name": "nb.boy.88", "type": "sphere", "character": "boy", "bone": "DEF-palm.02.R", "centre": [-0.3231, 0.4067, 0.0166], "radius": 0.0225},
+     {"name": "nb.boy.89", "type": "sphere", "character": "boy", "bone": "DEF-palm.04.R", "centre": [-0.3414, 0.3885, -0.0312], "radius": 0.0098},
+     {"name": "nb.boy.90", "type": "sphere", "character": "boy", "bone": "DEF-forearm.R.001", "centre": [-0.2748, 0.436, -0.0014], "radius": 0.0475},
+     {"name": "nb.boy.91", "type": "sphere", "character": "boy", "bone": "forearm.R", "centre": [-0.2216, 0.5165, -0.0231], "radius": 0.0475},
+     {"name": "nb.boy.92", "type": "sphere", "character": "boy", "bone": "f0b.R", "centre": [-0.3547, 0.3754, -0.0304], "radius": 0.023},
+     {"name": "nb.boy.93", "type": "sphere", "character": "boy", "bone": "f3b.R", "centre": [-0.3537, 0.3728, 0.042], "radius": 0.0115},
+     {"name": "nb.boy.94", "type": "sphere", "character": "boy", "bone": "forearm.R", "centre": [-0.2614, 0.4965, -0.0042], "radius": 0.0475},
+     {"name": "nb.boy.95", "type": "sphere", "character": "boy", "bone": "DEF-forearm.R.001", "centre": [-0.265, 0.4631, -0.0141], "radius": 0.0475},
+     {"name": "nb.boy.96", "type": "sphere", "character": "boy", "bone": "DEF-forearm.R.001", "centre": [-0.2882, 0.4574, -0.0154], "radius": 0.0475},
+     {"name": "nb.boy.97", "type": "sphere", "character": "boy", "bone": "forearm.R", "centre": [-0.255, 0.4901, -0.0168], "radius": 0.0475},
+     {"name": "nb.boy.98", "type": "sphere", "character": "boy", "bone": "f1b.R", "centre": [-0.3479, 0.3845, -0.0229], "radius": 0.0251},
+     {"name": "nb.boy.99", "type": "sphere", "character": "boy", "bone": "DEF-forearm.R.001", "centre": [-0.2838, 0.4632, 0.0011], "radius": 0.0475},
+     {"name": "nb.boy.100", "type": "sphere", "character": "boy", "bone": "forearm.R", "centre": [-0.2354, 0.4885, -0.0207], "radius": 0.0475},
+     {"name": "nb.boy.101", "type": "sphere", "character": "boy", "bone": "DEF-forearm.R.001", "centre": [-0.2532, 0.4511, -0.0462], "radius": 0.0475},
+     {"name": "nb.boy.102", "type": "sphere", "character": "boy", "bone": "forearm.R", "centre": [-0.2361, 0.5176, -0.0171], "radius": 0.0475},
+     {"name": "nb.boy.103", "type": "sphere", "character": "boy", "bone": "DEF-forearm.R.001", "centre": [-0.2749, 0.4727, -0.0081], "radius": 0.0475},
+     {"name": "nb.boy.104", "type": "sphere", "character": "boy", "bone": "DEF-forearm.R.001", "centre": [-0.2828, 0.4432, 0.0102], "radius": 0.0385},
+     {"name": "nb.boy.105", "type": "sphere", "character": "boy", "bone": "DEF-forearm.R.001", "centre": [-0.2952, 0.4904, -0.016], "radius": 0.0475},
+     {"name": "nb.boy.106", "type": "sphere", "character": "boy", "bone": "DEF-forearm.R.001", "centre": [-0.2709, 0.469, -0.0131], "radius": 0.0475},
+     {"name": "nb.boy.107", "type": "sphere", "character": "boy", "bone": "f2a.R", "centre": [-0.3188, 0.4007, -0.0062], "radius": 0.0475},
+     {"name": "nb.boy.108", "type": "sphere", "character": "boy", "bone": "forearm.R", "centre": [-0.2382, 0.4985, -0.0215], "radius": 0.0475},
+     {"name": "nb.boy.109", "type": "sphere", "character": "boy", "bone": "f0a.R", "centre": [-0.3099, 0.4097, -0.0146], "radius": 0.0475},
+     {"name": "nb.boy.110", "type": "sphere", "character": "boy", "bone": "DEF-forearm.R.001", "centre": [-0.2527, 0.4806, -0.0185], "radius": 0.0475},
+     {"name": "nb.boy.111", "type": "sphere", "character": "boy", "bone": "forearm.R", "centre": [-0.2561, 0.4985, -0.0117], "radius": 0.0475},
+     {"name": "nb.boy.112", "type": "sphere", "character": "boy", "bone": "DEF-forearm.R.001", "centre": [-0.2855, 0.4485, -0.0081], "radius": 0.0475},
+     {"name": "nb.boy.113", "type": "sphere", "character": "boy", "bone": "forearm.R", "centre": [-0.2228, 0.504, -0.0231], "radius": 0.0475}
     ]
    }
   }
@@ -639,7 +693,21 @@
  },
  "x_t183": {
   "source": "episodes/e909_two_char_acting/shots/s010/shot.scene.json",
-  "change": "production.cast of girl; characters[].dynamics.colliders of the same = the scene's box objects (floor, wall, table_top, table_leg)",
-  "tool": "docs/evaluation/characters/T-183/tools/derive_shot.py"
+  "change": "production.cast of girl; characters[].dynamics.colliders of the same = the scene's box objects (floor, wall, table_top, table_leg); opt-in scene colliders: neighbours (girl: 114 spheres)",
+  "tool": "docs/evaluation/characters/T-183/tools/derive_shot.py",
+  "options": {
+   "props": false,
+   "skip_props": []
+  },
+  "neighbours": {
+   "reach_m": 0.1,
+   "bake": "episodes/e909_two_char_acting/shots/s010_t183/build/runs/r5a/bake.json",
+   "spheres": {
+    "girl": {
+     "boy": 114
+    }
+   },
+   "fit": "tools/neighbours.py (groom_contact.skin_spheres on the neighbours' package meshes)"
+  }
  }
 }
