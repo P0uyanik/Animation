@@ -53,3 +53,4 @@ Next free ID: T-212.
   close/open windows (max 56.7° / 11.6 mm; e901 girl 74.2° / 13.6 mm), finger snaps 31.7°/f → 0; this is T-210's
   approved purpose (T-198 follow-up), table docs/evaluation/interaction/T-210/golden_delta.md. Owner gets one line at merge.
   (2) tests/test_verbs.cpp added to T-210's write-set for the one-line pinch key pin (evaluate(16) → (15), T-210 ramp note).
+- T-210 merged (main a96602c, gate 45065368782 green).
