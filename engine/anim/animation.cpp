@@ -1084,7 +1084,7 @@ void applyHandPosePerFinger(const Skeleton& sk, Pose& pose, const mat4& world, c
       if (HandBones::ok(h.fingers[k])) fs += glm::dot(points(h.fingers[k], fingerRots(fin[size_t(k)])).tip - centre, sp);
     const auto b0 = thumbRots(thumbBase);
     const auto g1 = rangeThumb(sk, h, ax, hp, handGlobal, centre, scale, surf, height, band, lo, hi, edge, tipR, fs >= 0 ? 1.0f : -1.0f, sp,
-                               lim.thumbBack / 55.0f, true);
+                               (face ? lim.thumbBackFace : lim.thumbBack) / 55.0f, true);
     setChain(pose, h.thumb, glm::slerp(b0.first, g1.first, wt), glm::slerp(b0.second, g1.second, wt));
     return;
   }
@@ -1190,10 +1190,16 @@ void applyHandLimits(const Skeleton& sk, Pose& pose, char side, const HandLimits
   if (h.valid()) limitHand(sk, pose, side, h, limits);
 }
 
+HandLimits handLimitsFor(const HandPose& hp) {
+  HandLimits lim;
+  if (hp.grasp && !hp.wrap && glm::length(hp.graspFace) > 1e-6f) lim.thumbBack = lim.thumbBackFace;  // flat hand on a box face
+  return lim;
+}
+
 static void poseHand(const Skeleton& sk, Pose& pose, const mat4& world, char side, const HandPose& hp);
 void applyHandPose(const Skeleton& sk, Pose& pose, const mat4& world, char side, const HandPose& hp) {
   poseHand(sk, pose, world, side, hp);
-  if (hp.limits) applyHandLimits(sk, pose, side);  // T-190: whatever posed the hand, every joint ends inside its range
+  if (hp.limits) applyHandLimits(sk, pose, side, handLimitsFor(hp));  // T-190: whatever posed the hand, every joint ends inside its range
 }
 
 static void poseHand(const Skeleton& sk, Pose& pose, const mat4& world, char side, const HandPose& hp) {

@@ -211,7 +211,7 @@ TEST_CASE("hand limits (T-190): a per-finger grasp keeps its thumb in range and 
           Pose p = restPose(sk);
           applyHandPose(sk, p, world, side, hp);
           Pose again = p;
-          applyHandLimits(sk, again, side);
+          applyHandLimits(sk, again, side, handLimitsFor(hp));  // box face: the thumb lies back at most 45 deg
           for (int i : d.all) CHECK(same(p.local[size_t(i)], again.local[size_t(i)]));  // solved inside the range
           if (f > 0) worst = std::max(worst, digitStep(d, prev, p));
           turned = std::max(turned, deg(p.local[size_t(d.thumbA)]));

@@ -191,7 +191,9 @@ struct HandPose {
 // the palm normal, roll about the finger. Thumb base (thumbA: saddle joint and knuckle in one bone) in the thumb's own
 // controls: opposition about the finger direction, abduction about the palm normal (positive towards the fingers),
 // flex about the thumb axis; backwards (negative flex) at most `thumbBack`: the thumb laid back beside the palm, as
-// far as T-171 round 3's wrap lays it on a wide object. Thumb end joint (thumbB): a hinge about the thumb axis.
+// far as T-171 round 3's wrap lays it on a wide object; `thumbBackFace` for a flat hand on a box face (a per-finger,
+// non-wrap grasp with graspFace: the thumb lies on the face beside the palm; owner 2026-11-22). Thumb end joint
+// (thumbB): a hinge about the thumb axis.
 struct HandLimits {
   float knuckleBack = 15, knuckleFlex = 90;  // f<k>a: hyperextension, flexion
   float knuckleSpread = 30;                  // f<k>a: either way
@@ -199,7 +201,7 @@ struct HandLimits {
   float play = 8;                            // off-axis rotation a hinge tolerates (knuckle: roll)
   float thumbOpposition = 60;                // 0 .. this
   float thumbAbductionIn = 20, thumbAbductionOut = 30;  // away from / towards the fingers
-  float thumbFlex = 66, thumbBack = 33;
+  float thumbFlex = 66, thumbBack = 33, thumbBackFace = 45;
   float thumbEndFlex = 60;                   // 0 .. this
 };
 // Clamps every digit joint of one hand ('L' or 'R') into `limits`. A joint inside its range is left untouched (bit
@@ -207,6 +209,9 @@ struct HandLimits {
 // Skeletons without a valid hand are unchanged. Every path that poses a hand ends here: applyHandPose (keyed shapes,
 // grasp searches, wrap) and the clip layers' finger pass (scene/clip_layers.cpp).
 void applyHandLimits(const Skeleton& skeleton, Pose& pose, char side, const HandLimits& limits = {});
+// The ranges applyHandPose clamps a hand posed by `pose` into: HandLimits{}, with thumbBack = thumbBackFace for a flat
+// hand on a box face (grasp, graspFace set, not wrap; a wrap keeps T-171 round 3's 33 deg).
+HandLimits handLimitsFor(const HandPose& pose);
 // Fingertip (skin) radius of a hand from its skeleton: half the mean spacing of neighbouring finger roots; 0 if the
 // hand has fewer than two fingers.
 float fingertipRadius(const Skeleton& skeleton, char side);
