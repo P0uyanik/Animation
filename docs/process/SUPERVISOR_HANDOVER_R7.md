@@ -44,5 +44,5 @@ Next free ID: T-212.
 - Promoted integration/t-199 (0f3787e, gate 45060162046 green; carries T-207 3a32740) and r6-handover-ledger (0a1422a).
 - T-194 at e13b64e: test_hair_pushout.py registered `local` (needs bpy). At merge the Supervisor adds it to a Blender
   check_all unit (as T-207/unit_hair_curves) so the gate runs it.
-- T-201 dispatched (Opus). shot_render.py / run_shot.py stay with T-194: T-201 passes `--engine eevee` explicitly there;
+- T-201 dispatched (Opus, session_01NPjxeMa91JgXQWgeGw6Uvi). shot_render.py / run_shot.py stay with T-194: T-201 passes `--engine eevee` explicitly there;
   making shot_render/run_shot honour the profile "engine" key is a 2-line follow-up after T-194 merges.
