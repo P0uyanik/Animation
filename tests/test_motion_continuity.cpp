@@ -1,10 +1,14 @@
 // T-198 motion continuity (docs/evaluation/interaction/T-198/README.md): the per-frame speed limit (anim/animation.h
 // MotionLimits, motionJumps), intent exemptions by data (scene/interaction.h continuityExemptions), and the source fixes
-// that keep generated motion under the limit (touch ramps and finger curl, a look that swings across the looker's head).
+// that keep generated motion under the limit (touch ramps and finger curl, a look that swings across the looker's head,
+// the hand-orientation blend), and a ratchet over the shipped content scenes.
 #include <doctest/doctest.h>
 
 #include <filesystem>
+#include <fstream>
+#include <map>
 #include <memory>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -184,4 +188,42 @@ TEST_CASE("continuity: a grasp whose hand turns nearly opposite in a short ramp 
   for (const ContinuityRow& r : continuityReport(*ev)) CHECK_MESSAGE(r.bone != "hand.R", "f" << r.jump.frame << " " << r.jump.deg << " deg");
   // The blend is keyed per frame (weight 1) only over that ramp.
   CHECK(ev->scene().animation.evaluate("actor/orient.hand.R.weight", 11, vec3(0)).x == doctest::Approx(1));
+}
+
+TEST_CASE("continuity: shipped content scenes stay under the per-frame limit (ratchet on the recorded rows)") {
+  // Every unexempt row of continuityReport on the shipped content scenes (cast = the imported test packages, as
+  // test_bake_golden.cpp contentScene) must be a recorded row of the baseline (scene, character, frame, bone) whose
+  // turn / travel does not grow. Recorded rows: grasp / release finger curls (follow-up T-209) and one walk start.
+  std::ifstream in(kRoot / "docs/evaluation/interaction/T-198/continuity_baseline.json");
+  REQUIRE(in.good());
+  const Json base = Json::parse(in);
+  std::map<std::string, std::pair<float, float>> recorded;
+  for (const Json& r : base["rows"])
+    recorded[r["scene"].get<std::string>() + " " + r["character"].get<std::string>() + " f" + std::to_string(r["frame"].get<int>()) + " " +
+             r["bone"].get<std::string>()] = {r["deg"].get<float>(), r["mm"].get<float>()};
+  std::set<std::string> seen;
+  for (const char* rel : {"content/scenes/eval/exchange/shot.scene.json", "content/scenes/eval/handover/shot.scene.json",
+                          "episodes/e901_clip_test/shots/s010/shot.scene.json", "episodes/e905_props_test/shots/s010/shot.scene.json",
+                          "episodes/e907_exchange/shots/s010/shot.scene.json", "episodes/e907_exchange/shots/s010_calibrated/shot.scene.json"}) {
+    auto s = loadScene(kRoot / rel);
+    REQUIRE(s);
+    Scene scene = *s;
+    for (CharacterDesc& c : scene.characters) {
+      if (c.name == "boy") c.asset = (kRoot / "tests/data/imported" / kBoy).string();
+      if (c.name == "girl") c.asset = (kRoot / "tests/data/imported/girl_auburn_bun_glasses_m3/character.json").string();
+    }
+    auto ev = load(scene);
+    for (const ContinuityRow& r : continuityReport(*ev)) {
+      if (!r.exempt.empty()) continue;
+      const std::string key = std::string(rel) + " " + r.character + " f" + std::to_string(r.jump.frame) + " " + r.bone;
+      seen.insert(key);
+      const auto it = recorded.find(key);
+      CHECK_MESSAGE(it != recorded.end(), "new snap: " << key << " " << r.jump.deg << " deg / " << r.jump.mm << " mm");
+      if (it == recorded.end()) continue;
+      CHECK_MESSAGE(r.jump.deg <= it->second.first + 0.01f, "grew: " << key << " " << r.jump.deg << " deg (recorded " << it->second.first << ")");
+      CHECK_MESSAGE(r.jump.mm <= it->second.second + 0.01f, "grew: " << key << " " << r.jump.mm << " mm (recorded " << it->second.second << ")");
+    }
+  }
+  for (const auto& [key, v] : recorded)
+    if (!seen.count(key)) MESSAGE("recorded row no longer over the limit (remove it from the baseline): " << key);
 }

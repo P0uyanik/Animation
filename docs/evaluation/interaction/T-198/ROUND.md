@@ -51,12 +51,14 @@ Supervisor BEFORE re-recording. Hand-only sub-mm / sub-degree side effects: deci
   have grasp / release finger curls 25-32 deg / f (limit 25) and e901 boy f223 hand.R 81 mm at 30 fps (1.01 x):
   (a) fix the curls (golden change) or (b) recorded baseline rows. Recommended (b).
 
+- Supervisor (~18:45Z): (1) re-record visibleGrip/boy: done (`PLUSH_GOLDEN_WRITE=1 plush_tests -tc="golden*"`, only
+  that entry changed); per-frame table in golden_delta.md. (2) option (b) as a ratchet: done
+  (continuity_baseline.json, 125 rows with causes; test case "shipped content scenes ... ratchet"; checked that a
+  grown value and a new row fail). Option (a) = follow-up T-209 (rows in README).
+
 ## Next (in order)
 
-1. On the Supervisor's answers: re-record visibleGrip/boy if approved (`PLUSH_GOLDEN_RECORD`-style per
-   test_bake_golden.cpp header), add the shipped-scene test case per (a) / (b).
-2. Full suite, tools/ready.py, READY (guarded paths: engine/anim/animation.cpp, engine/scene/actions.cpp,
-   engine/scene/interaction.cpp, tools/motion_checks/TESTS line added, golden if re-recorded).
+1. Full suite, tools/ready.py, READY.
 
 ## Environment notes
 
