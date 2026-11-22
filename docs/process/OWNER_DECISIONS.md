@@ -1039,3 +1039,11 @@ hard depends-on (read) overlaps were conflicts → T-181b makes them warnings. R
   mechanical / aggregation work. Running Fable sessions (T-183 colliders, T-194 push-out) reach their next checkpoint,
   then further rounds continue in a fresh Opus session (branch + round file; no work lost). T-190 round 2, started on
   Fable at ~13:48Z, was restarted on Opus at once (session_01NPjxeMs1WeEkn4EHp9scQE).
+
+## 2026-11-22 ~17:15 CET (via the liaison)
+- **EEVEE preview profile approved** ("speed is important for testing/reviewing previews"): opt-in `preview_eevee`
+  render profile for blocking/acting reviews, added after T-199 merges (T-201); Cycles stays for look review and finals.
+  Check whether EEVEE renders headless in a GPU-less cloud session; if not, the profile is for the owner's PC (T-200).
+- **New Codex task T-200** (relay channel): diagnose the WinError 4551 bake block on the owner's PC (no security-setting
+  changes) and finish T-197's motion checks (walk, hand-over, flicker) if a safe route works. Supervisor IDs from T-201.
+- T-190 finger detail (accept the 0.3–0.5° clip hyperextension correction or exempt clip fingers): still open.
