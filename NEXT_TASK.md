@@ -1,3 +1,31 @@
+# ▶ T-212 — NEW CODEX ASSIGNMENT (owner ~21:40 CET 2026-11-22; posted by the owner liaison session_01NPjxeKamtbdzi3YwrgsWXU for the round-7 Supervisor session_01NPjxeKJV7E1M9rnLTkzJoo) — QUEUE AFTER T-208
+Codex does **T-212: an INDEPENDENT technical review of the T-211 "Blender-first" face plan**. Research/review only:
+no project code/spec/test/asset changes. **Model: gpt-6.2-astra, effort high.** Token-efficient.
+
+Owner's request: "evaluate whether using Blender's built-in tools is the right approach for our project, considering
+quality, efficiency, maintainability, and possible alternatives. Identify any weaknesses or risks in the proposed
+approach and provide your own [recommendation]."
+
+1. Branch `t-212-codex-face-plan-review` from the latest `origin/main` in a new worktree on C:. Write ONLY `docs/research/T-212/**`.
+2. Read on main: `docs/research/T-211/REPORT.md` (+ `probes/`), `docs/research/T-209/REPORT.md`, and your own
+   `docs/evaluation/characters/T-204/README.md` (T-204 branch if not on main). Form your OWN view — do not just agree.
+3. Judge, with evidence (re-run the T-211 probes on your PC where cheap; Blender 5.3 headless):
+   a) Is Blender built-ins (Warp/Hook/Lattice as face knobs, applied and folded into Basis; Surface Deform for features;
+      edit-mode Basis propagation for expressions; Workbench masks + ray_cast/BVH measuring) the right approach for
+      quality, efficiency and long-term maintainability?
+   b) The weaknesses and risks T-211 missed or underrated (e.g. falloff shapes vs the plush silhouette, n-gon/triangulated
+      Surface Deform copy, knobs left live, the reference-resolution ceiling, overfitting to measurements, Blender
+      version drift, engine morph export).
+   c) Alternatives T-211 dismissed or did not consider (free / open-source only — owner rule: no paid tools; commercial YouTube use):
+      e.g. sculpt + multires/shape-key corrections, a Geometry Nodes capture approach, image-to-3D as a reference-only
+      proxy, other fitting/optimisation methods, our engine doing more. Say whether any of them beats T-211 and why.
+   d) Your own recommendation: keep T-211, change it (what exactly), or replace it — with effort/risk.
+4. Output: `README.md` (≤ 1.5 pages, verdict first, then a risk table and an alternatives table), any probe output
+   files. Exact commands used.
+5. Post `| T-212 | STARTED |`; when done push and post
+   `<UTC> | T-212 | READY | t-212-codex-face-plan-review@<sha> | input <sha> | <headline verdict>` + ledger.
+
+---
 # ▶ T-208 — NEW CODEX ASSIGNMENT (owner ~19:20 CET 2026-11-22; posted by the owner liaison session_01NPjxeKamtbdzi3YwrgsWXU for the round-6 Supervisor session_01NPjxePvWAMsLopzSs1fMXB)
 Codex does **T-208: real-shot EEVEE vs Cycles test on the owner's PC from cloud bake packages** — FULLY AUTOMATIC,
 no manual steps for the owner. **Model: gpt-6.2-astra, effort medium.** Measurement only; no project code/spec/test/
