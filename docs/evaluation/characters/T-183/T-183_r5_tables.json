@@ -1624,6 +1624,68 @@
      }
     }
    }
+  },
+  "e909_s010_girl": {
+   "bake": "episodes/e909_two_char_acting/shots/s010_t183/build/runs/r5b/bake.json",
+   "character": "girl",
+   "snap_frames": {},
+   "pad": 1,
+   "pairs": {
+    "hair_ringlets_side_00>prop:cup": {
+     "all": {
+      "max_mm": 23.9,
+      "frames": 143,
+      "max_vertices": 186,
+      "first": 17,
+      "last": 239,
+      "list": null
+     },
+     "calm": {
+      "max_mm": 23.9,
+      "frames": 143,
+      "max_vertices": 186,
+      "first": 17,
+      "last": 239,
+      "list": null
+     }
+    },
+    "hair_cap>body_skin": {
+     "all": {
+      "max_mm": 13.1,
+      "frames": 268,
+      "max_vertices": 126,
+      "first": 18,
+      "last": 286,
+      "list": null
+     },
+     "calm": {
+      "max_mm": 13.1,
+      "frames": 268,
+      "max_vertices": 126,
+      "first": 18,
+      "last": 286,
+      "list": null
+     }
+    },
+    "hair_curtain>body_skin": {
+     "all": {
+      "max_mm": 11.1,
+      "frames": 165,
+      "max_vertices": 404,
+      "first": 19,
+      "last": 241,
+      "list": null
+     },
+     "calm": {
+      "max_mm": 11.1,
+      "frames": 165,
+      "max_vertices": 404,
+      "first": 19,
+      "last": 241,
+      "list": null
+     }
+    }
+   }
   }
  },
  "fan_out_e909_s010": {
@@ -1774,6 +1836,7 @@
  "bake_seconds": [
   "r5 e912_s020_t183 done: bake without neighbours 59.084337849 s, with 56.092127501 s",
   "r5 e912_s010_t183 done: bake without neighbours 23.566549832 s, with 29.585205251 s",
-  "r5 e912_s030_t183 done: bake without neighbours 20.574831719 s, with 21.087904862 s"
+  "r5 e912_s030_t183 done: bake without neighbours 20.574831719 s, with 21.087904862 s",
+  "r5 e909_s010_t183 done: bake without neighbours 29.060085499 s, with 30.065197014 s"
  ]
 }

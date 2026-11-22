@@ -138,7 +138,8 @@ NOT rebuilt after the merge: build first, run the golden check and all tests aga
   - e912 s030 auburn: f93 is the cut (all three characters move 1.1-1.6 m in one frame); calm frames:
     **`ringlets_side_00` > blouse 7.7 mm in f1-10 (80 v): not looked at yet** (the start pose: probably squeezed
     between arm and chest during the preroll), curtain > vest 3.5 mm f64-73, collar 1.8 mm. White: f93 only + ears.
-  - e909 girl (props measure done, body measure was still running): boy's hand.R 0; **cup 23.9 mm / 143 fr: the cup
+  - e909 girl (all 286 frames, no snap frames; bake 29.1 s without / 30.1 s with the neighbours): own body cap 13.1
+    mm / 268 fr and curtain 11.1 mm / 165 fr only (as round 2), garments 0, boy's hand.R 0; **cup 23.9 mm / 143 fr: the cup
     is a cylinder primitive and `neighbours.prop_boxes` writes boxes only**.
   - Bake seconds without / with the neighbour spheres (same run, 4 cores shared with other jobs, so only a first
     reading): s020 59.1 / 56.1, s010 23.6 / 29.6, s030 20.6 / 21.1. Take the factor again on a quiet machine,
