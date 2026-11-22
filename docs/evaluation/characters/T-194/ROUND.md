@@ -214,3 +214,38 @@ outputs in the scratch folder `full/`, lost with the container). Tests: `test_ha
 3. Determinism: two on-blends of s020 f100-112 and a single-frame f110 blend, `hash_eval.py` hashes equal; "no flag
    = identical": main's shot_render (worktree of origin/main) vs ours without flag, same bake, `hash_eval.py`.
 4. Sheet <= 1024 px crops (s020 boy's shoulder, s010 f101, e909 cup, s020 nape), README, `tools/ready.py`, READY.
+
+## CHECKPOINT (session 2, end: context limit; continue in a fresh session)
+
+Supervisor is now R7 `session_01NPjxeKJV7E1M9rnLTkzJoo` (R6 confirmed; SUPERVISOR_HANDOVER_R7.md). R7: `local`
+registration in TESTS.manifest is fine (R7 adds it to the Blender unit at merge); READY must say the test takes ~1 min
+and needs no assets (synthetic scenes). Final numbers: candidate s020 + s030 on T-183 final pin **`c7b3cee2`**
+(differs from `e7547ab4` by T-190 hand limits, contact.clear_targets on in the candidate overrides, neighbour PAD
+2.5 -> 4 mm); s010 / e909 on `e7547ab4` only if time allows; README must name the pin per table.
+
+### First full result: e912 s020, candidate `e7547ab4`, every 2nd frame (`results/e912_s020c*`)
+
+Snap frames (T-183 snaps.py, same bake): 45 46 109 111 133 134 136 137 138 (+-1 excluded). f110-112 are inside.
+
+| | frames > 1 mm (calm, 144 fr x 2 chars counted per frame) | max calm |
+|---|---|---|
+| off | 210 / 288 | 77.6 mm (auburn fringe in the boy's body skin, f79) |
+| on  | 123 / 288 | 77.6 mm (same: squeezed, anchor inside the boy) |
+
+Calm, by kind (frames with > 1 mm / max): off own girls 192 / 33.8, auburn in boy 20 / 77.6, boy in auburn 18 / 73.0;
+on own girls 93 / 20.6, **boy own 29 / 28.1 (NEW: boy hair in `garment.hoodie.hood.rim`, created by the push-out)**,
+auburn in boy 24 / 77.6, boy in auburn 1 / 21.9, prop 1 / 1.7. White girl: 0 frames. Apart: boy rigid hair in own
+head skin 52.3 mm (T-191), glasses 1.3 mm. Pops: 55 frame x character entries where on adds > 5 mm to the jump,
+max +43.8 mm (boy, f83). Cost: setup 55 s, stage A 4.0 s / frame (3 workers busy), measure 1921 s for 104 frames.
+
+### Next (fresh session; the queue in the old container is lost with it)
+
+1. Boy vs own hood rim (new, 29 frames, 28 mm) and the boy pops (f83 +44 mm): most likely static anchors (30 mm out
+   from the head centre) that lie inside the hood at a frame -> clamp puts hair next to the anchor in the hood. Try:
+   static anchor = the own rest surface point + reach along its normal but tested against the posed hood (or clamp
+   only against other parts than the one the anchor is in), then the squeeze rule for own garments too.
+2. Auburn in the boy (77.6 mm, squeezed: the bodies overlap, T-191 staging) -> listed apart like the boy-head case.
+3. Re-run: `tools/queue.sh` (edit paths: T-183 worktrees at e7547ab4 and c7b3cee2, `cand1` / `cand2` bakes,
+   released `rel2`); blends ~60 min, measures ~32 min per item, at most 2 measures at a time (3 = out of memory).
+4. Then summarise.py per item (fix: its "apart" frame counter is never incremented), cost, determinism, identity vs
+   main, sheet, README, READY.

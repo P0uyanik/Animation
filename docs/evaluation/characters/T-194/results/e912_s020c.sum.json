@@ -1,0 +1,85 @@
+{
+ "name": "e912_s020_cand_e7547ab4",
+ "snap_frames": [
+  45,
+  46,
+  109,
+  111,
+  133,
+  134,
+  136,
+  137,
+  138
+ ],
+ "off": {
+  "all": {
+   "frames": 312,
+   "over": 228,
+   "max_mm": 77.55,
+   "worst": "f79 girl_a hair_fringe.001 > boy_yellow_hoodie:body_skin.002"
+  },
+  "calm": {
+   "frames": 288,
+   "over": 210,
+   "max_mm": 77.55,
+   "worst": "f79 girl_a hair_fringe.001 > boy_yellow_hoodie:body_skin.002"
+  },
+  "snap": {
+   "frames": 24,
+   "over": 18,
+   "max_mm": 52.9,
+   "worst": "f139 girl_a hair_fringe.001 > boy_yellow_hoodie:body_skin.002"
+  }
+ },
+ "on": {
+  "all": {
+   "frames": 312,
+   "over": 133,
+   "max_mm": 77.55,
+   "worst": "f79 girl_a hair_fringe.001 > boy_yellow_hoodie:body_skin.002"
+  },
+  "calm": {
+   "frames": 288,
+   "over": 123,
+   "max_mm": 77.55,
+   "worst": "f79 girl_a hair_fringe.001 > boy_yellow_hoodie:body_skin.002"
+  },
+  "snap": {
+   "frames": 24,
+   "over": 10,
+   "max_mm": 52.9,
+   "worst": "f139 girl_a hair_fringe.001 > boy_yellow_hoodie:body_skin.002"
+  }
+ },
+ "apart_off": {
+  "boy_head": {
+   "frames": 0,
+   "max_mm": 52.29
+  },
+  "glasses": {
+   "frames": 0,
+   "max_mm": 1.3
+  }
+ },
+ "apart_on": {
+  "boy_head": {
+   "frames": 0,
+   "max_mm": 52.29
+  },
+  "glasses": {
+   "frames": 0,
+   "max_mm": 1.3
+  }
+ },
+ "pops": {
+  "frames_over_5mm": 55,
+  "max_added_mm": 43.79,
+  "where": "f83 boy_ye"
+ },
+ "cost": {
+  "setup_s": 55.37,
+  "stage_a_s_per_frame": 4.0
+ },
+ "sha256_on": "28d7bff6885ea889147bf19bd96373cf2f5da10dc1c4f1678de7bb7a3148c074",
+ "step": 2
+}
