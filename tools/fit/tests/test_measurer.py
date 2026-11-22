@@ -96,14 +96,15 @@ MASTERS = {"auburn": AUBURN,
            "white_haired": ROOT / "assets/characters/girl_white_hair_blue_dress/versions/0.1.0/"
                                   "girl_white_hair_blue_dress_master.blend",
            "boy": ROOT / "assets/characters/boy_yellow_hoodie/versions/2.3.0/boy_yellow_hoodie_master.blend"}
-MIN_AGREE = {"auburn": 51, "white_haired": 46, "boy": 59}
+MIN_AGREE = {"auburn": 53, "white_haired": 48, "boy": 59}
 
 
 @unittest.skipUnless(has_bpy() and all(p.is_file() for p in MASTERS.values()), "needs bpy (or BLENDER) and the masters")
 class Validation(unittest.TestCase):
     def check(self, character):
         with tempfile.TemporaryDirectory() as d:
-            args = type("A", (), dict(character=character, out=str(Path(d) / "v"), blend=None, spec=None, px=1024))
+            args = type("A", (), dict(character=character, out=str(Path(d) / "v"), blend=None, spec=None, px=1024,
+                                      geometric=False))
             report = M.cmd_measure(args, validate=True)
         s = report["validation"]["summary"]
         explained = json.loads((ROOT / "docs/evaluation/characters/T-214/explained.json").read_text())[character]

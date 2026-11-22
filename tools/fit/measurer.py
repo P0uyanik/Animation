@@ -250,15 +250,23 @@ def trace(rec, arrays, px, chin3d=None):
         est.add("chin")
     if chin:
         pts["chin"] = P(*chin)
-    # Crown: highest main-hair point (bun and accessories excluded), behind the bun where it hides it.
+    # Crown (scoring): the highest VISIBLE main-hair point, at the bun junction where a bun sits on the hair -
+    # the 2nd percentile of the per-column top of the visible main hair, so stray strands do not count.
+    # Report: the geometric main-hair top from the hair-only pass, behind the bun where it hides it.
     hm = open3(hairm == C["hair"])
     hr = np.nonzero(hm.sum(1) >= 2)[0]
     if len(hr):
         v0 = hr.min()
-        u0 = np.nonzero(hm[v0])[0].mean() + .5
-        pts["crown"] = P(u0, v0)
-        if full[v0, int(u0)] != C["hair"]:
-            est.add("crown")
+        extra["crown_geometric"] = P(np.nonzero(hm[v0])[0].mean() + .5, v0)
+    hv = open3(full == C["hair"])
+    tops = np.array([(np.argmax(hv[:, u]), u) for u in np.nonzero(hv.any(0))[0]])
+    if len(tops):
+        v1 = np.percentile(tops[:, 0], 2)
+        near_top = tops[tops[:, 0] <= v1]
+        pts["crown"] = P(near_top[:, 1].mean() + .5, v1)
+    elif "crown_geometric" in extra:
+        pts["crown"] = extra["crown_geometric"]
+        est.add("crown")
     hair_all = open3(np.isin(full, HAIR))
     hrows = np.nonzero(hair_all.any(1))[0]
     pts["crest"] = None if not len(hrows) or hrows.min() == 0 else P(np.nonzero(hair_all[hrows.min()])[0].mean() + .5,
@@ -389,6 +397,13 @@ def trace(rec, arrays, px, chin3d=None):
     elif side_view:
         prof = profile(face, full, pts, chin, eye_v, nose, rec, cam, s, px, est)
         pts.update(prof)
+    # Visible opening (scoring): the lid overhang and lid line shade the top of the eyeball in Cycles; the opening
+    # top moves down by the character's calibrated shadow band (views.json lid_shadow_h, in H). Report: geometric.
+    if pts.get("eye") and pts.get("crown") and pts.get("chin"):
+        extra["eye_geometric"] = list(pts["eye"])
+        band = float(rec.get("lid_shadow_h", 0.0)) * (pts["chin"][1] - pts["crown"][1])
+        e = pts["eye"]
+        pts["eye"] = [e[0], round(min(e[1] + band, e[3] - 1), 2), e[2], e[3]]
     return pts, sorted(est), extra
 
 
@@ -524,7 +539,7 @@ def iris_radius(spec_path):
     return {"eye_L": rho, "eye_R": rho}
 
 
-def measure_all(rendered, out, character, db, m204, view_names, nose_size=0.016, flags=()):
+def measure_all(rendered, out, character, db, m204, view_names, nose_size=0.016, flags=(), lid_shadow_h=0.0):
     """Trace and evaluate every rendered view (front first: its chin anchors the profile and back views)."""
     px = rendered["px"]
     recs = sorted(rendered["views"], key=lambda r: (abs(r["yaw"]), bool(r["expression"])))  # neutral front first
@@ -534,6 +549,7 @@ def measure_all(rendered, out, character, db, m204, view_names, nose_size=0.016,
             arrays = {k: z[k] for k in z.files}
         rec["nose_size_m"] = nose_size
         rec["flags"] = list(flags)
+        rec["lid_shadow_h"] = lid_shadow_h
         rec["classes_present"] = rendered.get("classes_present", ["bun"])
         pts, est, extra = trace(rec, arrays, px, chin3d)
         if rec["yaw"] == 0 and "chin3d" in extra:
@@ -542,10 +558,22 @@ def measure_all(rendered, out, character, db, m204, view_names, nose_size=0.016,
         try:
             rows = evaluate(pts, est, view, character, db, m204)
             error = None
+            geo = dict(pts)
+            for k in ("crown", "eye"):
+                if f"{k}_geometric" in extra:
+                    geo[k] = extra[f"{k}_geometric"]
+            try:
+                gv = m204.values(geo)
+            except ValueError:
+                gv = {}
+            for row in rows:
+                g = gv.get(row["measure"])
+                row["geometric"] = None if g is None else round(g, 5)
         except ValueError as exc:
             rows, error = [], str(exc)
         results.append(dict(name=rec["name"], yaw=rec["yaw"], view=view, expression=rec["expression"],
-                            points=pts, estimated=est, rows=rows, error=error))
+                            points=pts, geometric={k: v for k, v in extra.items() if k.endswith("_geometric")},
+                            estimated=est, rows=rows, error=error))
         overlay_view(arrays, pts, out / f"{rec['name']}-overlay.png", px)
     return results
 
@@ -631,7 +659,8 @@ def cmd_measure(args, validate=False):
     t1 = time.perf_counter()
     nose = read(spec)["face"].get("nose", {})
     results = measure_all(rendered, out, args.character, db, m204, names,
-                          float(nose.get("size_m", nose.get("radius_m", 0.016))), ch.get("flags", ()))
+                          float(nose.get("size_m", nose.get("radius_m", 0.016))), ch.get("flags", ()),
+                          0.0 if args.geometric else float(ch.get("lid_shadow_h", 0.0)))
     t2 = time.perf_counter()
     report = dict(character=args.character, blend=str(blend), px=args.px, holdout=ch.get("holdout"),
                   timings=dict(render_s=round(t1 - t0, 2), measure_s=round(t2 - t1, 2),
@@ -680,6 +709,7 @@ def validation(results, character, db, m204):
             diff = None if m is None else round(m - cur, 5)
             rows.append(dict(view=view, measure=key, group="hair" if key in HAIR_MEASURES else "face",
                              hand=cur, hand_mark=mark, measurer=m, measurer_mark=mine.get(key, {}).get("mark", ""),
+                             geometric=mine.get(key, {}).get("geometric"),
                              diff=diff, tolerance=tol,
                              agree=None if diff is None else abs(diff) <= tol,
                              with_hand_h=None if key not in alt else round(alt[key], 5),
@@ -740,6 +770,7 @@ def main():
         q.add_argument("--blend", type=Path, help="default: the configured release master")
         q.add_argument("--spec", type=Path, help="resolved spec for the iris radius; default beside the blend")
         q.add_argument("--px", type=int, default=1024 if name == "validate" else 512)
+        q.add_argument("--geometric", action="store_true", help="no lid-shadow band (calibration runs)")
     args = p.parse_args()
     cmd_measure(args, validate=args.cmd == "validate")
 
