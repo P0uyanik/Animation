@@ -3,6 +3,8 @@
 Owner request ~22:45 CET 21 Nov: three children sit in a classroom; the girl with glasses (auburn) makes a paper boat,
 everyone is surprised, she gives the boat to the boy, then they stand up together and walk off. Branch
 `t-187-claude-paper-boat`. Episode `episodes/e912_paper_boat/`. **Status: CHECKPOINT** (first full preview).
+Render: 434 frames, Cycles 4 spp, 640x360, ~30 s per frame wall clock on 4 cores including the Blender setup
+(s030: 122 frames in 60 min), about 3.6 h for the whole clip; bakes 1-3 min per scene.
 
 ## What to look at
 | File | What |
@@ -81,6 +83,14 @@ seat), personalities on.
    glasses and brows.
 7. **Feet** sit up to 3.9 mm under the floor in the walk (T-175: soft step), 0 mm seated.
 8. Motion-check tallies above are over the rendered frames only; the pre-roll and the scene cuts are not counted.
+9. **The boat is hard to see in shot 5:** it is small (10 cm) and his right hand hangs at his side, so in 5a it sits
+   behind the table edge and in 5b it is mostly hidden by his body (visible again in his hand at the end, f150-166).
+10. **Shot 5b reads partly as "walking away":** the side-on camera sits a little behind their line, so they cross the
+    frame left to right but also recede; the white-hair girl enters from the left edge a second after the cut.
+11. **Surprise in shot 3 is mild:** the `surprised` faces are there (eyes up, mouth open) but at this size and
+    distance they read mostly as "looking"; no body take (the sit clip owns the body).
+12. **Heads overlap in 5a:** as they rise the auburn girl's bun crosses in front of the boy's head for ~10 frames
+    (seats close together, f45-60).
 
 ## Commands
 ```
