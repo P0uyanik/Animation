@@ -1085,3 +1085,13 @@ hard depends-on (read) overlaps were conflicts → T-181b makes them warnings. R
   test_interaction/visibleGrip/boy (the fix removes a 147° one-frame hand flip; frames 11-14, hand.R + its finger/DEF
   bones only; all 6 content goldens unchanged). Speed-limit test as a ratchet over a recorded baseline (e901 f223 walk
   start + listed grasp/release finger-curl rows); fixing those curls → follow-up T-209.
+
+## 2026-11-22 ~20:05 CET (via the liaison)
+- **New research T-209 (Opus, docs/research/T-209/**, no implementation, no CURRENT change):** the most reliable approach
+  for highly accurate, consistent, animation-ready stylized faces for the 3 velvety/flocked characters in Blender,
+  covering the owner's 10 points (parametric generator; matching the refs; independent geometry controls; eye system +
+  blinking; identity-preserving shape keys; face rig; Python/GN automation; identity preservation over animation;
+  automated front/3-4 validation with landmarks + similarity metrics; production integration with free tools only, GPU
+  needs, pipeline fit). Build on T-202, T-204, T-206, T-196, T-207; all angles matter. REPORT.md: comparison per point,
+  one recommendation with phases + token/session cost, risks, owner decisions. The T-198 finger-curl follow-up moves
+  from T-209 to T-210.

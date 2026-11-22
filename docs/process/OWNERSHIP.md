@@ -29,5 +29,6 @@ split.
 | T-194 | B | t-194-claude-hair-pushout | `pipeline/charsys/shot_render.py`, `pipeline/production/run_shot.py`, `pipeline/charsys/hair_pushout.py`, `pipeline/charsys/tests/test_hair_pushout.py`, `docs/evaluation/characters/T-194/**` | T-183 | — |
 | T-199 | R | t-199-claude-compositor-look | `pipeline/charsys/render_engine.py`, `pipeline/charsys/render_profiles.json`, `pipeline/charsys/tests/test_render_profiles.py`, `docs/evaluation/rendering/T-199/**` | — | — |
 | T-207 | B | t-207-claude-hair-flock | `pipeline/charsys/groom/hair_curves.py`, `pipeline/charsys/groom/flock.py`, `pipeline/charsys/groom_felt.py`, `pipeline/charsys/tests/test_hair_curves.py`, `pipeline/charsys/tests/test_hair_flock.py`, `docs/evaluation/characters/T-207/**` | T-183 (groom_r6.py hook after its merge) | — |
+| T-209 | R | t-209-claude-face-approach-research | `docs/research/T-209/**` | — | — |
 
 Supervisor-only files: docs/process/TASK_LOG.md, docs/ROADMAP.md, docs/process/OWNER_DECISIONS.md, docs/tasks/**.

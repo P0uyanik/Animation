@@ -36,7 +36,7 @@ continue in a fresh Opus session after their next checkpoint.**
 | T-199 compositor look | session_01NPjxeLdrDJrSXXNtaCUK5V (Sonnet) | t-199-claude-compositor-look @ b4d8705+ | final720 side-by-side (soft + strong) → owner approves before use. Then T-201 preview_eevee (engine key convention from T-205). |
 | T-207 hair look (velvet/flock) | session_01NPjxeMc65LUidkdd4NUwfb (Opus) | t-207-claude-hair-flock @ 0184fd2+ | V1/V2/V3/D sheets rendering → owner picks. groom_r6 hook = patch in its folder (apply after T-183). test_hair_flock.py to register. H2 volume = later task after T-183/T-194. |
 
-Codex (owner PC, relay): T-204 face targets; T-208 e912 EEVEE checks from bake packages (runs 45052327444 s010, 45053708309 s020, 45053710885 s030). Next Supervisor ID: T-209 (reserved: grasp/release curls), then T-210.
+Codex (owner PC, relay): T-204 face targets; T-208 e912 EEVEE checks from bake packages (runs 45052327444 s010, 45053708309 s020, 45053710885 s030). T-209 = face-approach research (owner ~20:05 CET); T-210 reserved = grasp/release curls; next free ID T-211.
 Closed in R6: T-190, T-191, T-192, T-193, T-195, T-196, T-197 (Codex), T-200 (Codex), T-202, T-203, T-205, T-206 (sessions archived by the liaison).
 Owner standing rules added in R6: no Fable; hands sub-mm/sub-degree side effects in scope = Supervisor decides + records; engine works closely with Blender in all areas.
 Merge tips: TESTS files are now TESTS.manifest (plain TESTS fails the gate); stack integration branches on the previous one to promote several with one green gate; docs/process-only pushes take the fast path; gate wait = scratchpad wait_gate.sh, workflow runs = wait_run.sh.
@@ -46,7 +46,7 @@ Merge tips: TESTS files are now TESTS.manifest (plain TESTS fails the gate); sta
 3. World plan start (liaison relays). 4. Voices on hold. 5. Faces: fit after Codex T-204 (owner answers ~19:10 CET recorded).
 
 ## Follow-ups logged (not dispatched)
-R6: interaction.cpp box-face fingerClose.wrap drop; clip retarget (wave/point back-flex, authored thumb curl); 30° knuckle spread vs T-138 band fit; e909 boy tile camera; paper_white material preset missing; eye convergence limits (low); T-209 grasp/release curls; H2 hair volume per character (after T-183/T-194); L2 correctives after next release.
+R6: interaction.cpp box-face fingerClose.wrap drop; clip retarget (wave/point back-flex, authored thumb curl); 30° knuckle spread vs T-138 band fit; e909 boy tile camera; paper_white material preset missing; eye convergence limits (low); T-210 grasp/release curls; H2 hair volume per character (after T-183/T-194); L2 correctives after next release.
 Nape cap vs neck-skin fold (body skinning, T-183 item 1); seated thigh through the shorts front panel (T-184 limit 1);
 T-171: carry/hand-over wrist bend up to 93°, finger "press" depth, planArmLift popping; e909 r3: boy release 22.9 mm
 through the cup if keys go on the pass; boy ankle hem vs foot skin; girl button/embroidery normals vary build to build;
