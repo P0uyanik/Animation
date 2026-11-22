@@ -1,0 +1,4280 @@
+{
+  "input": {
+    "main": "0cb0053a5377c14811843aa044b436417fd6e827",
+    "T202": "25b2bed2",
+    "T161": "27f5637",
+    "T150": "docs/evaluation/characters/T-150/targets.json",
+    "T161_targets": "build/in/docs/evaluation/characters/T-161/targets.json",
+    "source_layout": "Reference filenames in T-202/crops. Current source in T-202/sheets, zero-based row, crop [1000,128+1064*row,2000,1128+1064*row].",
+    "asset_views": "assets/characters/{boy_yellow_hoodie,girl_auburn_bun_glasses,girl_white_hair_blue_dress}/references/views/; exact source files, crop boxes and mirror flags in T-202/compose.py."
+  },
+  "coordinates": "Top-left origin; x right, y down; points in 400 units per square tile. F = max right cheek x - min left cheek x over traced face outline, H = chin y - main hair crown y (exclude bun).",
+  "gap": "current minus fixed reference target; tolerance is symmetric. M = measured; E = inferred or estimated; null = unavailable.",
+  "metrics": {
+    "head_roundness": {
+      "unit": "H",
+      "depends": [
+        "crown",
+        "chin",
+        "left",
+        "right"
+      ],
+      "protocol": "F/H. Projected aspect of the head; exclude ears, bun and peripheral locks from F."
+    },
+    "cheek_width": {
+      "unit": "F",
+      "depends": [
+        "left",
+        "right",
+        "iris",
+        "chin"
+      ],
+      "protocol": "Skin contour width midway down from near iris centre to chin / F."
+    },
+    "jaw_width": {
+      "unit": "F",
+      "depends": [
+        "left",
+        "right",
+        "iris",
+        "chin"
+      ],
+      "protocol": "Skin contour width at 80% of near iris-to-chin fall / F."
+    },
+    "chin_width": {
+      "unit": "F",
+      "depends": [
+        "left",
+        "right",
+        "iris",
+        "chin"
+      ],
+      "protocol": "Skin contour width at 93% of near iris-to-chin fall / F."
+    },
+    "chin_height": {
+      "unit": "H",
+      "depends": [
+        "crown",
+        "chin",
+        "mouth"
+      ],
+      "protocol": "Vertical mouth-box centre to chin / H."
+    },
+    "eye_width": {
+      "unit": "H",
+      "depends": [
+        "crown",
+        "chin",
+        "eye"
+      ],
+      "protocol": "Horizontal visible opening width inside lash / H, image-left or near eye."
+    },
+    "eye_height": {
+      "unit": "H",
+      "depends": [
+        "crown",
+        "chin",
+        "eye"
+      ],
+      "protocol": "Vertical visible opening height inside lash / H, image-left or near eye."
+    },
+    "eye_y": {
+      "unit": "H",
+      "depends": [
+        "crown",
+        "chin",
+        "iris"
+      ],
+      "protocol": "Near iris-centre depth below the main crown / H."
+    },
+    "eye_to_chin": {
+      "unit": "H",
+      "depends": [
+        "crown",
+        "chin",
+        "iris",
+        "eye_y"
+      ],
+      "protocol": "Vertical near iris-centre to chin / H. Usable in profile."
+    },
+    "eye_x": {
+      "unit": "F",
+      "depends": [
+        "left",
+        "right",
+        "iris"
+      ],
+      "protocol": "Signed near iris-centre x from cheek-span midpoint / F, image right positive."
+    },
+    "eye_spacing": {
+      "unit": "F",
+      "depends": [
+        "left",
+        "right",
+        "far",
+        "iris"
+      ],
+      "protocol": "Image-plane distance between iris centres / F. Foreshortened on turns."
+    },
+    "iris_size": {
+      "unit": "H",
+      "depends": [
+        "crown",
+        "chin",
+        "iris"
+      ],
+      "protocol": "Horizontal visible iris diameter / H. Estimate exposed arc when lid clips it."
+    },
+    "opening_h_w": {
+      "unit": "eye W",
+      "depends": [
+        "eye"
+      ],
+      "protocol": "Height / width of the visible opening inside lash."
+    },
+    "iris_d_w": {
+      "unit": "eye W",
+      "depends": [
+        "iris",
+        "eye"
+      ],
+      "protocol": "Horizontal iris diameter / visible opening width."
+    },
+    "iris_d_spacing": {
+      "unit": "iris spacing",
+      "depends": [
+        "iris",
+        "far"
+      ],
+      "protocol": "Horizontal iris diameter / distance between iris centres."
+    },
+    "brow_gap": {
+      "unit": "H",
+      "depends": [
+        "crown",
+        "chin",
+        "brow",
+        "brow_lid",
+        "eye"
+      ],
+      "protocol": "Lower edge of brow at pupil x to opening top / H; if using opposite brow, set brow_lid."
+    },
+    "nose_width": {
+      "unit": "F",
+      "depends": [
+        "left",
+        "right",
+        "nose"
+      ],
+      "protocol": "Width of the visible nose mound (tip and wings, excluding cast shadow) / F."
+    },
+    "nose_height": {
+      "unit": "H",
+      "depends": [
+        "crown",
+        "chin",
+        "nose"
+      ],
+      "protocol": "Visible nose mound height / H. Soft shading makes boundaries estimates."
+    },
+    "nose_y": {
+      "unit": "H",
+      "depends": [
+        "crown",
+        "chin",
+        "nose"
+      ],
+      "protocol": "Nose mound box centre below main crown / H."
+    },
+    "mouth_width": {
+      "unit": "F",
+      "depends": [
+        "left",
+        "right",
+        "mouth"
+      ],
+      "protocol": "Lip or closed-seam corner separation / F."
+    },
+    "mouth_height": {
+      "unit": "H",
+      "depends": [
+        "crown",
+        "chin",
+        "mouth"
+      ],
+      "protocol": "Bounding height of visible lip/seam, including aperture if open / H."
+    },
+    "mouth_y": {
+      "unit": "H",
+      "depends": [
+        "crown",
+        "chin",
+        "mouth"
+      ],
+      "protocol": "Mouth box centre below main crown / H."
+    },
+    "mouth_x": {
+      "unit": "F",
+      "depends": [
+        "left",
+        "right",
+        "mouth"
+      ],
+      "protocol": "Mouth box centre x from cheek-span midpoint / F, image right positive."
+    },
+    "hair_width": {
+      "unit": "F",
+      "depends": [
+        "left",
+        "right",
+        "cap"
+      ],
+      "protocol": "Projected outer hair span above iris line (incl bun, excl accessories) / F."
+    },
+    "hair_height": {
+      "unit": "H",
+      "depends": [
+        "crown",
+        "chin",
+        "crest"
+      ],
+      "protocol": "Chin to highest hair including buns / H. Null for clipped bun."
+    },
+    "cheek_bulge": {
+      "unit": "H",
+      "depends": [
+        "crown",
+        "chin",
+        "profile",
+        "facing"
+      ],
+      "protocol": "Signed forward distance of mid-slice skin from chord joining eye-level and 85%-slice anterior skin points / H. Both lower slices use eye to chin as vertical interval."
+    },
+    "cheek_advance": {
+      "unit": "H",
+      "depends": [
+        "crown",
+        "chin",
+        "profile",
+        "facing"
+      ],
+      "protocol": "Mid-slice anterior skin x minus eye-level anterior skin x, signed forward / H."
+    },
+    "exposed_cheek": {
+      "unit": "H",
+      "depends": [
+        "crown",
+        "chin",
+        "exposed",
+        "eye_y"
+      ],
+      "protocol": "Uninterrupted visible skin from the front contour to the first ear or lock at the mid-slice / H. If contour is hidden, measure the exposed skin window between locks (visibility only)."
+    },
+    "ear_width": {
+      "unit": "F",
+      "depends": [
+        "left",
+        "right",
+        "ear"
+      ],
+      "protocol": "Visible front near pinna width / bare face width F; trace from outer rim to root (estimate root if covered)."
+    },
+    "ear_height": {
+      "unit": "H",
+      "depends": [
+        "ear",
+        "chin",
+        "crown"
+      ],
+      "protocol": "Visible vertical pinna extent / crown-to-chin Hh, excluding buns but including hairstyle crown."
+    },
+    "ear_top_eye": {
+      "unit": "H",
+      "depends": [
+        "ear",
+        "chin",
+        "crown",
+        "iris",
+        "far"
+      ],
+      "protocol": "Ear top y minus iris-centre y / Hh (positive down)."
+    },
+    "ear_base_mouth": {
+      "unit": "H",
+      "depends": [
+        "ear",
+        "chin",
+        "crown",
+        "mouth"
+      ],
+      "protocol": "Lobule bottom y minus mouth centre y / Hh."
+    },
+    "ear_turn_projection": {
+      "unit": "F",
+      "depends": [
+        "left",
+        "right",
+        "ear_turn"
+      ],
+      "protocol": "Near ear extension beyond local cheek contour at ear mid-height / projected face width. Ignore the hair contour."
+    },
+    "crown_above_skull": {
+      "unit": "H",
+      "depends": [
+        "skull",
+        "chin",
+        "crown"
+      ],
+      "protocol": "Highest main hair tip (exclude buns) above inferred smooth skull apex / Hh. Skull apex reconstructed by eye from temporal curvature."
+    },
+    "forehead_covered": {
+      "unit": "skull-to-brow",
+      "depends": [
+        "skull",
+        "fringe",
+        "midbrow"
+      ],
+      "protocol": "On facial midline, length of inferred skull-apex to brow interval covered by hair / full interval (cap at 1)."
+    },
+    "fringe_eye": {
+      "unit": "H",
+      "depends": [
+        "chin",
+        "crown",
+        "iris",
+        "far",
+        "fringe"
+      ],
+      "protocol": "Iris-centre y minus centreline fringe-tip y / Hh. Positive means fringe ends above eyes."
+    },
+    "hair_cheek_width": {
+      "unit": "F",
+      "depends": [
+        "left",
+        "right",
+        "hair_at_cheek",
+        "no_cheek_hair"
+      ],
+      "protocol": "Outermost hair-to-hair distance at y midway between pupils and mouth / F. Enter 0 if no hair crosses this line."
+    },
+    "bun_width": {
+      "unit": "F",
+      "depends": [
+        "left",
+        "right",
+        "bun_span",
+        "no_bun"
+      ],
+      "protocol": "Outer width of one bun / F (auburn whole knot, white image-left bun). Zero for absent."
+    },
+    "cheek_L": {
+      "unit": "CIELAB L*",
+      "depends": [
+        "cheek"
+      ],
+      "protocol": "D65 sRGB appearance, L* from median RGB in a 3.5/400 tile-radius disk at cheek."
+    },
+    "cheek_a": {
+      "unit": "CIELAB a*",
+      "depends": [
+        "cheek"
+      ],
+      "protocol": "D65 sRGB appearance, a* from median RGB in a 3.5/400 tile-radius disk at cheek."
+    },
+    "cheek_b": {
+      "unit": "CIELAB b*",
+      "depends": [
+        "cheek"
+      ],
+      "protocol": "D65 sRGB appearance, b* from median RGB in a 3.5/400 tile-radius disk at cheek."
+    },
+    "forehead_L": {
+      "unit": "CIELAB L*",
+      "depends": [
+        "forehead"
+      ],
+      "protocol": "D65 sRGB appearance, L* from median RGB in a 3.5/400 tile-radius disk at forehead."
+    },
+    "forehead_a": {
+      "unit": "CIELAB a*",
+      "depends": [
+        "forehead"
+      ],
+      "protocol": "D65 sRGB appearance, a* from median RGB in a 3.5/400 tile-radius disk at forehead."
+    },
+    "forehead_b": {
+      "unit": "CIELAB b*",
+      "depends": [
+        "forehead"
+      ],
+      "protocol": "D65 sRGB appearance, b* from median RGB in a 3.5/400 tile-radius disk at forehead."
+    },
+    "bow_L": {
+      "unit": "CIELAB L*",
+      "depends": [
+        "bow"
+      ],
+      "protocol": "D65 sRGB appearance, L* from median RGB in a 3.5/400 tile-radius disk at bow."
+    },
+    "bow_a": {
+      "unit": "CIELAB a*",
+      "depends": [
+        "bow"
+      ],
+      "protocol": "D65 sRGB appearance, a* from median RGB in a 3.5/400 tile-radius disk at bow."
+    },
+    "bow_b": {
+      "unit": "CIELAB b*",
+      "depends": [
+        "bow"
+      ],
+      "protocol": "D65 sRGB appearance, b* from median RGB in a 3.5/400 tile-radius disk at bow."
+    },
+    "blush_da": {
+      "unit": "CIELAB a*",
+      "depends": [
+        "cheek",
+        "base"
+      ],
+      "protocol": "Blushed cheek a* minus adjacent unblushed cheek a* under the same light."
+    },
+    "profile_depth": {
+      "unit": "H",
+      "depends": [
+        "profile_span",
+        "crown",
+        "chin"
+      ],
+      "protocol": "Horizontal span of the visible head silhouette at eye height, including hair and excluding glasses, divided by H. This includes any occluding forward lock."
+    },
+    "profile_nose": {
+      "unit": "H",
+      "depends": [
+        "nose_tip",
+        "profile",
+        "crown",
+        "chin",
+        "facing"
+      ],
+      "protocol": "Forward distance from eye-level skin contour to the resolved nose tip divided by H. Null when the boundary merges or is hidden."
+    }
+  },
+  "characters": {
+    "boy": {
+      "release": "2.3.0",
+      "yaw": [
+        0,
+        -35,
+        -90
+      ],
+      "views": {
+        "front": {
+          "reference": {
+            "source": "boy_front_val27_front.png",
+            "row": 0,
+            "points": {
+              "crown": [
+                218,
+                11
+              ],
+              "chin": [
+                196,
+                333
+              ],
+              "cap": [
+                [
+                  35,
+                  215
+                ],
+                [
+                  355,
+                  149
+                ]
+              ],
+              "crest": [
+                218,
+                11
+              ],
+              "cheek": [
+                133,
+                284
+              ],
+              "base": [
+                167,
+                284
+              ],
+              "forehead": [
+                239,
+                198
+              ],
+              "left": [
+                [
+                  97.43,
+                  235.54
+                ],
+                [
+                  98.11,
+                  270.0
+                ],
+                [
+                  102.84,
+                  293.65
+                ],
+                [
+                  113.65,
+                  309.19
+                ],
+                [
+                  132.57,
+                  320.68
+                ],
+                [
+                  165.0,
+                  330.14
+                ],
+                [
+                  195.41,
+                  333.51
+                ]
+              ],
+              "right": [
+                [
+                  294.05,
+                  235.54
+                ],
+                [
+                  291.35,
+                  274.73
+                ],
+                [
+                  284.59,
+                  295.0
+                ],
+                [
+                  273.78,
+                  309.86
+                ],
+                [
+                  254.19,
+                  321.35
+                ],
+                [
+                  222.43,
+                  330.14
+                ],
+                [
+                  195.41,
+                  333.51
+                ]
+              ],
+              "eye": [
+                112.97,
+                251.08,
+                166.35,
+                267.97
+              ],
+              "iris": [
+                128.51,
+                257.16,
+                161.62
+              ],
+              "far": [
+                242.7,
+                257.16
+              ],
+              "brow": [
+                144.73,
+                211.22
+              ],
+              "nose": [
+                185.95,
+                272.7,
+                202.16,
+                288.92
+              ],
+              "mouth": [
+                188.65,
+                297.03,
+                203.51,
+                301.08
+              ]
+            },
+            "estimated": [
+              "nose",
+              "mouth",
+              "brow",
+              "iris"
+            ],
+            "note": "val27, soft seam and shaded nose."
+          },
+          "current": {
+            "source": "boy_faces.jpg",
+            "row": 0,
+            "points": {
+              "crown": [
+                134,
+                23
+              ],
+              "chin": [
+                200,
+                362
+              ],
+              "cap": [
+                [
+                  18,
+                  282
+                ],
+                [
+                  383,
+                  275
+                ]
+              ],
+              "crest": [
+                134,
+                23
+              ],
+              "skull": [
+                200,
+                68
+              ],
+              "fringe": [
+                195,
+                258
+              ],
+              "midbrow": [
+                200,
+                263
+              ],
+              "ear": [
+                61,
+                272,
+                100,
+                322
+              ],
+              "cheek": [
+                130,
+                336
+              ],
+              "base": [
+                166,
+                336
+              ],
+              "forehead": [
+                247,
+                248
+              ],
+              "left": [
+                [
+                  90.0,
+                  290.95
+                ],
+                [
+                  92.03,
+                  301.76
+                ],
+                [
+                  98.11,
+                  316.62
+                ],
+                [
+                  109.59,
+                  332.84
+                ],
+                [
+                  121.76,
+                  343.65
+                ],
+                [
+                  139.32,
+                  352.43
+                ],
+                [
+                  164.32,
+                  357.16
+                ],
+                [
+                  200.14,
+                  361.22
+                ]
+              ],
+              "right": [
+                [
+                  310.27,
+                  290.95
+                ],
+                [
+                  307.57,
+                  301.76
+                ],
+                [
+                  301.49,
+                  316.62
+                ],
+                [
+                  290.0,
+                  332.84
+                ],
+                [
+                  276.49,
+                  343.65
+                ],
+                [
+                  259.59,
+                  352.43
+                ],
+                [
+                  234.59,
+                  357.16
+                ],
+                [
+                  200.14,
+                  361.22
+                ]
+              ],
+              "eye": [
+                112.3,
+                302.43,
+                161.62,
+                330.14
+              ],
+              "iris": [
+                127.84,
+                315.95,
+                160.95
+              ],
+              "far": [
+                253.51,
+                315.95
+              ],
+              "brow": [
+                146.08,
+                263.24
+              ],
+              "nose": [
+                192.7,
+                329.46,
+                206.89,
+                342.97
+              ],
+              "mouth": [
+                192.7,
+                354.46,
+                206.89,
+                357.16
+              ],
+              "hair_at_cheek": null,
+              "no_cheek_hair": true,
+              "bun_span": null,
+              "no_bun": true
+            },
+            "estimated": [
+              "nose",
+              "mouth",
+              "skull",
+              "ear",
+              "iris"
+            ],
+            "note": ""
+          }
+        },
+        "three_quarter": {
+          "reference": {
+            "source": "boy_34_val27_threequarter_right.png",
+            "row": 3,
+            "points": {
+              "crown": [
+                231,
+                11
+              ],
+              "chin": [
+                229,
+                347
+              ],
+              "cap": [
+                [
+                  47,
+                  158
+                ],
+                [
+                  352,
+                  233
+                ]
+              ],
+              "crest": [
+                231,
+                11
+              ],
+              "left": [
+                [
+                  137.3,
+                  251.76
+                ],
+                [
+                  137.3,
+                  275.41
+                ],
+                [
+                  135.27,
+                  300.41
+                ],
+                [
+                  137.3,
+                  309.86
+                ],
+                [
+                  148.11,
+                  320.68
+                ],
+                [
+                  169.73,
+                  331.49
+                ],
+                [
+                  200.81,
+                  341.62
+                ],
+                [
+                  231.89,
+                  346.35
+                ]
+              ],
+              "right": [
+                [
+                  323.11,
+                  251.76
+                ],
+                [
+                  321.08,
+                  275.41
+                ],
+                [
+                  319.05,
+                  298.38
+                ],
+                [
+                  310.95,
+                  313.24
+                ],
+                [
+                  301.49,
+                  324.05
+                ],
+                [
+                  281.89,
+                  336.89
+                ],
+                [
+                  255.54,
+                  344.32
+                ],
+                [
+                  231.89,
+                  346.35
+                ]
+              ],
+              "eye": [
+                177.16,
+                260.54,
+                237.3,
+                278.78
+              ],
+              "iris": [
+                200.14,
+                267.97,
+                233.92
+              ],
+              "far": [
+                301.49,
+                267.3
+              ],
+              "brow": [
+                219.73,
+                220.0
+              ],
+              "nose": [
+                258.92,
+                284.86,
+                276.49,
+                299.05
+              ],
+              "mouth": [
+                260.27,
+                307.84,
+                275.81,
+                311.89
+              ]
+            },
+            "estimated": [
+              "left",
+              "nose",
+              "mouth",
+              "iris"
+            ],
+            "note": ""
+          },
+          "current": {
+            "source": "boy_faces.jpg",
+            "row": 3,
+            "points": {
+              "crown": [
+                145,
+                18
+              ],
+              "chin": [
+                208,
+                362
+              ],
+              "cap": [
+                [
+                  15,
+                  182
+                ],
+                [
+                  349,
+                  257
+                ]
+              ],
+              "crest": [
+                145,
+                18
+              ],
+              "ear_turn": [
+                [
+                  60,
+                  314
+                ],
+                [
+                  108,
+                  314
+                ]
+              ],
+              "left": [
+                [
+                  106.22,
+                  277.43
+                ],
+                [
+                  105.54,
+                  299.73
+                ],
+                [
+                  105.54,
+                  316.62
+                ],
+                [
+                  114.32,
+                  328.11
+                ],
+                [
+                  132.57,
+                  338.24
+                ],
+                [
+                  161.62,
+                  351.08
+                ],
+                [
+                  190.68,
+                  359.86
+                ],
+                [
+                  208.24,
+                  361.22
+                ]
+              ],
+              "right": [
+                [
+                  308.24,
+                  277.43
+                ],
+                [
+                  308.24,
+                  297.7
+                ],
+                [
+                  302.84,
+                  317.3
+                ],
+                [
+                  300.81,
+                  328.78
+                ],
+                [
+                  285.95,
+                  339.59
+                ],
+                [
+                  257.57,
+                  349.73
+                ],
+                [
+                  229.19,
+                  359.19
+                ],
+                [
+                  208.24,
+                  361.22
+                ]
+              ],
+              "eye": [
+                173.11,
+                311.22,
+                226.49,
+                333.51
+              ],
+              "iris": [
+                196.76,
+                320.68,
+                222.43
+              ],
+              "far": [
+                294.73,
+                304.46
+              ],
+              "brow": [
+                207.57,
+                266.62
+              ],
+              "nose": [
+                254.19,
+                323.38,
+                267.03,
+                336.22
+              ],
+              "mouth": [
+                246.76,
+                349.73,
+                258.92,
+                353.78
+              ]
+            },
+            "estimated": [
+              "left",
+              "nose",
+              "mouth",
+              "iris"
+            ],
+            "note": ""
+          }
+        },
+        "side": {
+          "reference": {
+            "source": "boy_side_val27_side_right.png",
+            "row": 5,
+            "points": {
+              "crown": [
+                231,
+                11
+              ],
+              "chin": [
+                272,
+                353
+              ],
+              "eye_y": 272,
+              "profile": [
+                [
+                  331,
+                  272
+                ],
+                [
+                  335,
+                  312.5
+                ],
+                [
+                  321,
+                  341
+                ]
+              ],
+              "exposed": [
+                [
+                  249,
+                  312.5
+                ],
+                [
+                  335,
+                  312.5
+                ]
+              ],
+              "facing": 1,
+              "profile_span": [
+                [
+                  83,
+                  272
+                ],
+                [
+                  331,
+                  272
+                ]
+              ],
+              "eye": [
+                294,
+                264,
+                323,
+                283
+              ],
+              "nose_tip": [
+                341,
+                289
+              ]
+            },
+            "estimated": [
+              "profile",
+              "profile_span",
+              "eye",
+              "nose_tip"
+            ],
+            "note": "Near ear/lock to bare cheek at the mid slice."
+          },
+          "current": {
+            "source": "boy_faces.jpg",
+            "row": 5,
+            "points": {
+              "crown": [
+                204,
+                14
+              ],
+              "chin": [
+                240,
+                353
+              ],
+              "eye_y": 314,
+              "profile": [
+                [
+                  300,
+                  314
+                ],
+                [
+                  296,
+                  333.5
+                ],
+                [
+                  280,
+                  347
+                ]
+              ],
+              "exposed": [
+                [
+                  202,
+                  333.5
+                ],
+                [
+                  296,
+                  333.5
+                ]
+              ],
+              "facing": 1,
+              "profile_span": [
+                [
+                  58,
+                  314
+                ],
+                [
+                  299,
+                  314
+                ]
+              ],
+              "eye": [
+                279,
+                304,
+                294,
+                322
+              ],
+              "nose_tip": null
+            },
+            "estimated": [
+              "profile",
+              "profile_span",
+              "eye",
+              "nose_tip"
+            ],
+            "note": "Eye set in a shallow recess. A separate nose tip cannot be resolved."
+          }
+        }
+      },
+      "checks": [
+        {
+          "view": "front",
+          "source": "boy_front_canon29_front.png",
+          "points": {
+            "crown": [
+              216,
+              11
+            ],
+            "chin": [
+              195,
+              324
+            ],
+            "eye_y": 252,
+            "eye_h": 17
+          }
+        },
+        {
+          "view": "front",
+          "source": "boy_front_hero24_front.png",
+          "points": {
+            "crown": [
+              225,
+              10
+            ],
+            "chin": [
+              211,
+              360
+            ],
+            "eye_y": 277,
+            "eye_h": 19
+          }
+        },
+        {
+          "view": "three_quarter",
+          "source": "boy_34_canon29_threequarter_left.png",
+          "points": {
+            "crown": [
+              204,
+              13
+            ],
+            "chin": [
+              233,
+              330
+            ],
+            "eye_y": 254,
+            "eye_h": 18
+          }
+        },
+        {
+          "view": "side",
+          "source": "boy_side_canon29_side_left.png",
+          "points": {
+            "crown": [
+              245,
+              14
+            ],
+            "chin": [
+              240,
+              336
+            ],
+            "eye_y": 261,
+            "profile": [
+              [
+                303,
+                261
+              ],
+              [
+                310,
+                298.5
+              ],
+              [
+                296,
+                324.75
+              ]
+            ],
+            "facing": 1
+          }
+        }
+      ],
+      "targets": {
+        "front": {
+          "head_roundness": {
+            "value": 0.61062,
+            "tolerance": 0.045,
+            "mark": "M",
+            "source": "T-202/crops/boy_front_val27_front.png"
+          },
+          "cheek_width": {
+            "value": 0.91902,
+            "tolerance": 0.055,
+            "mark": "E",
+            "source": "T-202/crops/boy_front_val27_front.png"
+          },
+          "jaw_width": {
+            "value": 0.67291,
+            "tolerance": 0.065,
+            "mark": "E",
+            "source": "T-202/crops/boy_front_val27_front.png"
+          },
+          "chin_width": {
+            "value": 0.37978,
+            "tolerance": 0.075,
+            "mark": "E",
+            "source": "T-202/crops/boy_front_val27_front.png"
+          },
+          "chin_height": {
+            "value": 0.10542,
+            "tolerance": 0.025,
+            "mark": "E",
+            "source": "T-202/crops/boy_front_val27_front.png"
+          },
+          "eye_width": {
+            "value": 0.16578,
+            "tolerance": 0.018,
+            "mark": "M",
+            "source": "T-202/crops/boy_front_val27_front.png"
+          },
+          "eye_height": {
+            "value": 0.05245,
+            "tolerance": 0.01686,
+            "mark": "M",
+            "source": "T-202/crops/boy_front_val27_front.png"
+          },
+          "eye_y": {
+            "value": 0.76447,
+            "tolerance": 0.0305,
+            "mark": "E",
+            "source": "T-202/crops/boy_front_val27_front.png"
+          },
+          "eye_to_chin": {
+            "value": 0.23553,
+            "tolerance": 0.0305,
+            "mark": "E",
+            "source": "T-202/crops/boy_front_val27_front.png"
+          },
+          "eye_x": {
+            "value": -0.25773,
+            "tolerance": 0.025,
+            "mark": "E",
+            "source": "T-202/crops/boy_front_val27_front.png"
+          },
+          "eye_spacing": {
+            "value": 0.49657,
+            "tolerance": 0.03,
+            "mark": "E",
+            "source": "T-202/crops/boy_front_val27_front.png"
+          },
+          "iris_size": {
+            "value": 0.10283,
+            "tolerance": 0.015,
+            "mark": "E",
+            "source": "T-202/crops/boy_front_val27_front.png"
+          },
+          "opening_h_w": {
+            "value": 0.31641,
+            "tolerance": 0.06,
+            "mark": "M",
+            "source": "T-202/crops/boy_front_val27_front.png"
+          },
+          "iris_d_w": {
+            "value": 0.62027,
+            "tolerance": 0.05,
+            "mark": "E",
+            "source": "T-202/crops/boy_front_val27_front.png"
+          },
+          "iris_d_spacing": {
+            "value": 0.33912,
+            "tolerance": 0.035,
+            "mark": "E",
+            "source": "T-202/crops/boy_front_val27_front.png"
+          },
+          "brow_gap": {
+            "value": 0.12379,
+            "tolerance": 0.022,
+            "mark": "E",
+            "source": "T-202/crops/boy_front_val27_front.png"
+          },
+          "nose_width": {
+            "value": 0.08244,
+            "tolerance": 0.025,
+            "mark": "E",
+            "source": "T-202/crops/boy_front_val27_front.png"
+          },
+          "nose_height": {
+            "value": 0.05037,
+            "tolerance": 0.018,
+            "mark": "E",
+            "source": "T-202/crops/boy_front_val27_front.png"
+          },
+          "nose_y": {
+            "value": 0.83792,
+            "tolerance": 0.025,
+            "mark": "E",
+            "source": "T-202/crops/boy_front_val27_front.png"
+          },
+          "mouth_width": {
+            "value": 0.07558,
+            "tolerance": 0.025,
+            "mark": "E",
+            "source": "T-202/crops/boy_front_val27_front.png"
+          },
+          "mouth_height": {
+            "value": 0.01258,
+            "tolerance": 0.015,
+            "mark": "E",
+            "source": "T-202/crops/boy_front_val27_front.png"
+          },
+          "mouth_y": {
+            "value": 0.89458,
+            "tolerance": 0.025,
+            "mark": "E",
+            "source": "T-202/crops/boy_front_val27_front.png"
+          },
+          "mouth_x": {
+            "value": 0.00173,
+            "tolerance": 0.025,
+            "mark": "E",
+            "source": "T-202/crops/boy_front_val27_front.png"
+          },
+          "hair_width": {
+            "value": 1.6275,
+            "tolerance": 0.08,
+            "mark": "M",
+            "source": "T-202/crops/boy_front_val27_front.png"
+          },
+          "hair_height": {
+            "value": 1.0,
+            "tolerance": 0.06,
+            "mark": "M",
+            "source": "T-202/crops/boy_front_val27_front.png"
+          },
+          "ear_width": {
+            "value": 0.1964,
+            "tolerance": 0.055,
+            "mark": "E",
+            "source": "T-161/targets.json#boy/ear_width (boy.jpg row 1 left (val27_front))"
+          },
+          "ear_height": {
+            "value": 0.1728,
+            "tolerance": 0.045,
+            "mark": "M",
+            "source": "T-161/targets.json#boy/ear_height (boy.jpg row 1 left (val27_front))"
+          },
+          "ear_top_eye": {
+            "value": -0.0257,
+            "tolerance": 0.045,
+            "mark": "E",
+            "source": "T-161/targets.json#boy/ear_top_eye (boy.jpg row 1 left (val27_front))"
+          },
+          "ear_base_mouth": {
+            "value": -0.0441,
+            "tolerance": 0.045,
+            "mark": "E",
+            "source": "T-161/targets.json#boy/ear_base_mouth (boy.jpg row 1 left (val27_front))"
+          },
+          "crown_above_skull": {
+            "value": 0.2206,
+            "tolerance": 0.1,
+            "mark": "E",
+            "source": "T-161/targets.json#boy/crown_above_skull (boy.jpg row 1 left (val27_front))"
+          },
+          "forehead_covered": {
+            "value": 1.0,
+            "tolerance": 0.13,
+            "mark": "E",
+            "source": "T-161/targets.json#boy/forehead_covered (boy.jpg row 1 left (val27_front))"
+          },
+          "fringe_eye": {
+            "value": 0.0588,
+            "tolerance": 0.05,
+            "mark": "M",
+            "source": "T-161/targets.json#boy/fringe_eye (boy.jpg row 1 left (val27_front))"
+          },
+          "hair_cheek_width": {
+            "value": 0.0,
+            "tolerance": 0.12,
+            "mark": "M",
+            "source": "T-161/targets.json#boy/hair_cheek_width (boy.jpg row 1 left (val27_front))"
+          },
+          "bun_width": {
+            "value": 0.0,
+            "tolerance": 0.12,
+            "mark": "M",
+            "source": "T-161/targets.json#boy/bun_width (boy.jpg row 1 left (val27_front))"
+          },
+          "cheek_L": {
+            "value": 62.15514,
+            "tolerance": 5,
+            "mark": "M",
+            "source": "T-202/crops/boy_front_val27_front.png"
+          },
+          "cheek_a": {
+            "value": 20.35989,
+            "tolerance": 4,
+            "mark": "M",
+            "source": "T-202/crops/boy_front_val27_front.png"
+          },
+          "cheek_b": {
+            "value": 20.50667,
+            "tolerance": 4,
+            "mark": "M",
+            "source": "T-202/crops/boy_front_val27_front.png"
+          },
+          "forehead_L": {
+            "value": 70.10379,
+            "tolerance": 5,
+            "mark": "M",
+            "source": "T-202/crops/boy_front_val27_front.png"
+          },
+          "forehead_a": {
+            "value": 13.54973,
+            "tolerance": 4,
+            "mark": "M",
+            "source": "T-202/crops/boy_front_val27_front.png"
+          },
+          "forehead_b": {
+            "value": 14.38057,
+            "tolerance": 4,
+            "mark": "M",
+            "source": "T-202/crops/boy_front_val27_front.png"
+          },
+          "blush_da": {
+            "value": 9.6927,
+            "tolerance": 3,
+            "mark": "M",
+            "source": "T-202/crops/boy_front_val27_front.png"
+          }
+        },
+        "three_quarter": {
+          "head_roundness": {
+            "value": 0.55905,
+            "tolerance": 0.045,
+            "mark": "E",
+            "source": "T-202/crops/boy_34_val27_threequarter_right.png"
+          },
+          "cheek_width": {
+            "value": 0.94387,
+            "tolerance": 0.055,
+            "mark": "E",
+            "source": "T-202/crops/boy_34_val27_threequarter_right.png"
+          },
+          "jaw_width": {
+            "value": 0.64654,
+            "tolerance": 0.065,
+            "mark": "E",
+            "source": "T-202/crops/boy_34_val27_threequarter_right.png"
+          },
+          "chin_width": {
+            "value": 0.3477,
+            "tolerance": 0.075,
+            "mark": "E",
+            "source": "T-202/crops/boy_34_val27_threequarter_right.png"
+          },
+          "chin_height": {
+            "value": 0.11052,
+            "tolerance": 0.025,
+            "mark": "E",
+            "source": "T-202/crops/boy_34_val27_threequarter_right.png"
+          },
+          "eye_width": {
+            "value": 0.17899,
+            "tolerance": 0.018,
+            "mark": "M",
+            "source": "T-202/crops/boy_34_val27_threequarter_right.png"
+          },
+          "eye_height": {
+            "value": 0.05429,
+            "tolerance": 0.0175,
+            "mark": "M",
+            "source": "T-202/crops/boy_34_val27_threequarter_right.png"
+          },
+          "eye_y": {
+            "value": 0.76479,
+            "tolerance": 0.02954,
+            "mark": "E",
+            "source": "T-202/crops/boy_34_val27_threequarter_right.png"
+          },
+          "eye_to_chin": {
+            "value": 0.23521,
+            "tolerance": 0.02954,
+            "mark": "E",
+            "source": "T-202/crops/boy_34_val27_threequarter_right.png"
+          },
+          "eye_x": {
+            "value": -0.06474,
+            "tolerance": 0.025,
+            "mark": "E",
+            "source": "T-202/crops/boy_34_val27_threequarter_right.png"
+          },
+          "eye_spacing": {
+            "value": 0.44965,
+            "tolerance": 0.03,
+            "mark": "E",
+            "source": "T-202/crops/boy_34_val27_threequarter_right.png"
+          },
+          "iris_size": {
+            "value": 0.10054,
+            "tolerance": 0.015,
+            "mark": "E",
+            "source": "T-202/crops/boy_34_val27_threequarter_right.png"
+          },
+          "opening_h_w": {
+            "value": 0.30329,
+            "tolerance": 0.06,
+            "mark": "M",
+            "source": "T-202/crops/boy_34_val27_threequarter_right.png"
+          },
+          "iris_d_w": {
+            "value": 0.56169,
+            "tolerance": 0.05,
+            "mark": "E",
+            "source": "T-202/crops/boy_34_val27_threequarter_right.png"
+          },
+          "iris_d_spacing": {
+            "value": 0.39994,
+            "tolerance": 0.035,
+            "mark": "E",
+            "source": "T-202/crops/boy_34_val27_threequarter_right.png"
+          },
+          "brow_gap": {
+            "value": 0.12065,
+            "tolerance": 0.022,
+            "mark": "M",
+            "source": "T-202/crops/boy_34_val27_threequarter_right.png"
+          },
+          "nose_width": {
+            "value": 0.09354,
+            "tolerance": 0.025,
+            "mark": "E",
+            "source": "T-202/crops/boy_34_val27_threequarter_right.png"
+          },
+          "nose_height": {
+            "value": 0.04223,
+            "tolerance": 0.018,
+            "mark": "E",
+            "source": "T-202/crops/boy_34_val27_threequarter_right.png"
+          },
+          "nose_y": {
+            "value": 0.83618,
+            "tolerance": 0.025,
+            "mark": "E",
+            "source": "T-202/crops/boy_34_val27_threequarter_right.png"
+          },
+          "mouth_width": {
+            "value": 0.08273,
+            "tolerance": 0.025,
+            "mark": "E",
+            "source": "T-202/crops/boy_34_val27_threequarter_right.png"
+          },
+          "mouth_height": {
+            "value": 0.01205,
+            "tolerance": 0.015,
+            "mark": "E",
+            "source": "T-202/crops/boy_34_val27_threequarter_right.png"
+          },
+          "mouth_y": {
+            "value": 0.88948,
+            "tolerance": 0.025,
+            "mark": "E",
+            "source": "T-202/crops/boy_34_val27_threequarter_right.png"
+          },
+          "mouth_x": {
+            "value": 0.20682,
+            "tolerance": 0.025,
+            "mark": "E",
+            "source": "T-202/crops/boy_34_val27_threequarter_right.png"
+          },
+          "hair_width": {
+            "value": 1.62372,
+            "tolerance": 0.08,
+            "mark": "E",
+            "source": "T-202/crops/boy_34_val27_threequarter_right.png"
+          },
+          "hair_height": {
+            "value": 1.0,
+            "tolerance": 0.06,
+            "mark": "M",
+            "source": "T-202/crops/boy_34_val27_threequarter_right.png"
+          },
+          "ear_turn_projection": {
+            "value": 0.2229,
+            "tolerance": 0.06,
+            "mark": "E",
+            "source": "T-161/targets.json#boy/ear_turn_projection (boy.jpg row 4 left (B02))"
+          }
+        },
+        "side": {
+          "eye_y": {
+            "value": 0.76316,
+            "tolerance": 0.02892,
+            "mark": "M",
+            "source": "T-202/crops/boy_side_val27_side_right.png"
+          },
+          "eye_to_chin": {
+            "value": 0.23684,
+            "tolerance": 0.02892,
+            "mark": "M",
+            "source": "T-202/crops/boy_side_val27_side_right.png"
+          },
+          "cheek_bulge": {
+            "value": 0.02886,
+            "tolerance": 0.02067,
+            "mark": "E",
+            "source": "T-202/crops/boy_side_val27_side_right.png"
+          },
+          "cheek_advance": {
+            "value": 0.0117,
+            "tolerance": 0.03004,
+            "mark": "E",
+            "source": "T-202/crops/boy_side_val27_side_right.png"
+          },
+          "exposed_cheek": {
+            "value": 0.25146,
+            "tolerance": 0.035,
+            "mark": "M",
+            "source": "T-202/crops/boy_side_val27_side_right.png"
+          },
+          "eye_width": {
+            "tolerance": 0.02,
+            "source": "T-202/crops/boy_side_val27_side_right.png",
+            "value": 0.0848,
+            "mark": "E"
+          },
+          "eye_height": {
+            "tolerance": 0.02,
+            "source": "T-202/crops/boy_side_val27_side_right.png",
+            "value": 0.05556,
+            "mark": "E"
+          },
+          "opening_h_w": {
+            "tolerance": 0.15,
+            "source": "T-202/crops/boy_side_val27_side_right.png",
+            "value": 0.65517,
+            "mark": "E"
+          },
+          "profile_depth": {
+            "tolerance": 0.045,
+            "source": "T-202/crops/boy_side_val27_side_right.png",
+            "value": 0.72515,
+            "mark": "E"
+          },
+          "profile_nose": {
+            "tolerance": 0.015,
+            "source": "T-202/crops/boy_side_val27_side_right.png",
+            "value": 0.02924,
+            "mark": "E"
+          }
+        }
+      }
+    },
+    "auburn": {
+      "release": "0.14.0",
+      "yaw": [
+        0,
+        -45,
+        90
+      ],
+      "views": {
+        "front": {
+          "reference": {
+            "source": "girl_front_sheet30_front.png",
+            "row": 0,
+            "points": {
+              "crown": [
+                200,
+                77
+              ],
+              "chin": [
+                202,
+                312
+              ],
+              "cap": [
+                [
+                  85,
+                  214
+                ],
+                [
+                  321,
+                  220
+                ]
+              ],
+              "crest": [
+                195,
+                11
+              ],
+              "cheek": [
+                144,
+                279
+              ],
+              "base": [
+                169,
+                279
+              ],
+              "forehead": [
+                215,
+                174
+              ],
+              "left": [
+                [
+                  116.35,
+                  225.41
+                ],
+                [
+                  118.38,
+                  256.49
+                ],
+                [
+                  121.76,
+                  273.38
+                ],
+                [
+                  128.51,
+                  286.89
+                ],
+                [
+                  141.35,
+                  297.03
+                ],
+                [
+                  162.3,
+                  305.81
+                ],
+                [
+                  183.24,
+                  310.54
+                ],
+                [
+                  202.84,
+                  311.89
+                ]
+              ],
+              "right": [
+                [
+                  290.68,
+                  225.41
+                ],
+                [
+                  288.65,
+                  256.49
+                ],
+                [
+                  284.59,
+                  274.73
+                ],
+                [
+                  277.84,
+                  286.89
+                ],
+                [
+                  265.68,
+                  297.03
+                ],
+                [
+                  243.38,
+                  305.81
+                ],
+                [
+                  223.11,
+                  310.54
+                ],
+                [
+                  202.84,
+                  311.89
+                ]
+              ],
+              "eye": [
+                134.59,
+                222.03,
+                176.49,
+                258.51
+              ],
+              "iris": [
+                145.41,
+                238.92,
+                176.49
+              ],
+              "far": [
+                245.41,
+                238.24
+              ],
+              "nose": [
+                195.41,
+                261.89,
+                209.59,
+                272.7
+              ],
+              "mouth": [
+                187.3,
+                272.03,
+                220.41,
+                286.89
+              ],
+              "brow": [
+                245,
+                194
+              ],
+              "brow_lid": [
+                245,
+                219
+              ]
+            },
+            "estimated": [
+              "crown",
+              "left",
+              "right",
+              "nose",
+              "mouth"
+            ],
+            "note": "Image-left brow under sweep. Open smile."
+          },
+          "current": {
+            "source": "girl_faces.jpg",
+            "row": 0,
+            "points": {
+              "crown": [
+                204,
+                76
+              ],
+              "chin": [
+                200,
+                311
+              ],
+              "cap": [
+                [
+                  81,
+                  172
+                ],
+                [
+                  320,
+                  171
+                ]
+              ],
+              "crest": null,
+              "skull": [
+                200,
+                104
+              ],
+              "fringe": [
+                200,
+                164
+              ],
+              "midbrow": [
+                200,
+                205
+              ],
+              "ear": [
+                107,
+                245,
+                121,
+                274
+              ],
+              "cheek": [
+                146,
+                291
+              ],
+              "base": [
+                168,
+                291
+              ],
+              "forehead": [
+                192,
+                185
+              ],
+              "left": [
+                [
+                  112.97,
+                  234.86
+                ],
+                [
+                  114.32,
+                  257.84
+                ],
+                [
+                  120.41,
+                  274.73
+                ],
+                [
+                  129.19,
+                  287.57
+                ],
+                [
+                  140.68,
+                  297.03
+                ],
+                [
+                  158.24,
+                  305.81
+                ],
+                [
+                  181.22,
+                  309.86
+                ],
+                [
+                  200.14,
+                  310.54
+                ]
+              ],
+              "right": [
+                [
+                  287.3,
+                  234.86
+                ],
+                [
+                  285.27,
+                  257.84
+                ],
+                [
+                  280.54,
+                  274.73
+                ],
+                [
+                  271.08,
+                  287.57
+                ],
+                [
+                  260.27,
+                  297.03
+                ],
+                [
+                  242.7,
+                  305.81
+                ],
+                [
+                  219.05,
+                  309.86
+                ],
+                [
+                  200.14,
+                  310.54
+                ]
+              ],
+              "eye": [
+                138.65,
+                238.92,
+                179.19,
+                270.0
+              ],
+              "iris": [
+                147.43,
+                253.78,
+                175.14
+              ],
+              "far": [
+                237.97,
+                253.78
+              ],
+              "brow": [
+                155.54,
+                207.84
+              ],
+              "nose": [
+                191.35,
+                272.7,
+                208.24,
+                283.51
+              ],
+              "mouth": [
+                185.95,
+                286.22,
+                213.65,
+                291.62
+              ],
+              "hair_at_cheek": [
+                [
+                  92,
+                  270
+                ],
+                [
+                  309,
+                  270
+                ]
+              ],
+              "bun_span": [
+                [
+                  122,
+                  53
+                ],
+                [
+                  273,
+                  58
+                ]
+              ],
+              "no_bun": false
+            },
+            "estimated": [
+              "crown",
+              "left",
+              "right",
+              "skull",
+              "ear",
+              "nose"
+            ],
+            "note": "Bun clipped at tile top. Use the cap width below the bun; full bun height unavailable."
+          }
+        },
+        "three_quarter": {
+          "reference": {
+            "source": "girl_34_sheet30_front_left.png",
+            "row": 1,
+            "points": {
+              "crown": [
+                186,
+                89
+              ],
+              "chin": [
+                213,
+                335
+              ],
+              "cap": [
+                [
+                  60,
+                  213
+                ],
+                [
+                  325,
+                  225
+                ]
+              ],
+              "crest": [
+                147,
+                12
+              ],
+              "left": [
+                [
+                  125.14,
+                  248.38
+                ],
+                [
+                  124.46,
+                  275.41
+                ],
+                [
+                  129.19,
+                  301.08
+                ],
+                [
+                  144.73,
+                  314.59
+                ],
+                [
+                  168.38,
+                  325.41
+                ],
+                [
+                  196.08,
+                  332.16
+                ],
+                [
+                  223.11,
+                  334.86
+                ]
+              ],
+              "right": [
+                [
+                  298.78,
+                  248.38
+                ],
+                [
+                  301.49,
+                  273.38
+                ],
+                [
+                  298.78,
+                  293.65
+                ],
+                [
+                  293.38,
+                  305.14
+                ],
+                [
+                  281.89,
+                  317.3
+                ],
+                [
+                  261.62,
+                  327.43
+                ],
+                [
+                  240.68,
+                  333.51
+                ],
+                [
+                  223.11,
+                  334.86
+                ]
+              ],
+              "eye": [
+                170.41,
+                241.62,
+                214.32,
+                278.11
+              ],
+              "iris": [
+                183.92,
+                258.51,
+                213.65
+              ],
+              "far": [
+                279.86,
+                257.84
+              ],
+              "nose": [
+                236.62,
+                282.16,
+                252.84,
+                297.03
+              ],
+              "mouth": [
+                229.19,
+                297.03,
+                258.92,
+                304.46
+              ],
+              "brow": [
+                281,
+                203
+              ],
+              "brow_lid": [
+                279,
+                237
+              ]
+            },
+            "estimated": [
+              "left",
+              "right",
+              "nose",
+              "mouth"
+            ],
+            "note": ""
+          },
+          "current": {
+            "source": "girl_faces.jpg",
+            "row": 1,
+            "points": {
+              "crown": [
+                199,
+                91
+              ],
+              "chin": [
+                219,
+                311
+              ],
+              "cap": [
+                [
+                  85,
+                  184
+                ],
+                [
+                  316,
+                  164
+                ]
+              ],
+              "crest": null,
+              "ear_turn": [
+                [
+                  102,
+                  263
+                ],
+                [
+                  139,
+                  263
+                ]
+              ],
+              "left": [
+                [
+                  138.65,
+                  249.73
+                ],
+                [
+                  138.65,
+                  274.73
+                ],
+                [
+                  145.41,
+                  287.57
+                ],
+                [
+                  162.3,
+                  295.68
+                ],
+                [
+                  181.89,
+                  303.78
+                ],
+                [
+                  202.16,
+                  308.51
+                ],
+                [
+                  217.03,
+                  311.22
+                ]
+              ],
+              "right": [
+                [
+                  291.35,
+                  239.59
+                ],
+                [
+                  294.05,
+                  265.27
+                ],
+                [
+                  288.65,
+                  279.46
+                ],
+                [
+                  279.19,
+                  290.95
+                ],
+                [
+                  265.68,
+                  299.73
+                ],
+                [
+                  242.7,
+                  307.16
+                ],
+                [
+                  224.46,
+                  310.54
+                ],
+                [
+                  217.03,
+                  311.22
+                ]
+              ],
+              "eye": [
+                211.62,
+                240.95,
+                241.35,
+                273.38
+              ],
+              "iris": [
+                217.7,
+                256.49,
+                236.62
+              ],
+              "far": [
+                277.84,
+                245.68
+              ],
+              "brow": [
+                228.51,
+                206.49
+              ],
+              "nose": [
+                244.05,
+                267.97,
+                257.57,
+                279.46
+              ],
+              "mouth": [
+                240.68,
+                281.49,
+                258.92,
+                287.57
+              ]
+            },
+            "estimated": [
+              "crown",
+              "left",
+              "right",
+              "nose",
+              "mouth"
+            ],
+            "note": "Near cheek/temple crossed by a long lock. Bun clipped."
+          }
+        },
+        "side": {
+          "reference": {
+            "source": "girl_side_sheet30_left.png",
+            "row": 2,
+            "points": {
+              "crown": [
+                161,
+                90
+              ],
+              "chin": [
+                123,
+                337
+              ],
+              "eye_y": 262,
+              "profile": [
+                [
+                  76,
+                  262
+                ],
+                [
+                  74,
+                  299.5
+                ],
+                [
+                  89,
+                  326
+                ]
+              ],
+              "exposed": [
+                [
+                  154,
+                  299.5
+                ],
+                [
+                  74,
+                  299.5
+                ]
+              ],
+              "facing": -1,
+              "profile_span": [
+                [
+                  73,
+                  262
+                ],
+                [
+                  331,
+                  262
+                ]
+              ],
+              "eye": [
+                92,
+                239,
+                112,
+                277
+              ],
+              "nose_tip": null
+            },
+            "estimated": [
+              "profile",
+              "crown",
+              "profile",
+              "profile_span",
+              "eye",
+              "nose_tip"
+            ],
+            "note": "Exclude both glasses rims. Eye-level skin behind lens estimated."
+          },
+          "current": {
+            "source": "girl_faces.jpg",
+            "row": 2,
+            "points": {
+              "crown": [
+                194,
+                99
+              ],
+              "chin": [
+                165,
+                307
+              ],
+              "eye_y": 254,
+              "profile": [
+                [
+                  122,
+                  254
+                ],
+                [
+                  117,
+                  280.5
+                ],
+                [
+                  133,
+                  299
+                ]
+              ],
+              "exposed": [
+                [
+                  141,
+                  280.5
+                ],
+                [
+                  117,
+                  280.5
+                ]
+              ],
+              "facing": -1,
+              "profile_span": [
+                [
+                  119,
+                  254
+                ],
+                [
+                  299,
+                  254
+                ]
+              ],
+              "eye": null,
+              "nose_tip": null
+            },
+            "estimated": [
+              "profile",
+              "chin",
+              "crown",
+              "profile",
+              "profile_span",
+              "eye",
+              "nose_tip"
+            ],
+            "note": "Short forelock divides visible cheek. Chin endpoint partly occluded. Lens/arm overlap obscures the opening boundary."
+          }
+        }
+      },
+      "checks": [],
+      "targets": {
+        "front": {
+          "head_roundness": {
+            "value": 0.74183,
+            "tolerance": 0.045,
+            "mark": "E",
+            "source": "T-202/crops/girl_front_sheet30_front.png"
+          },
+          "cheek_width": {
+            "value": 0.92575,
+            "tolerance": 0.055,
+            "mark": "E",
+            "source": "T-202/crops/girl_front_sheet30_front.png"
+          },
+          "jaw_width": {
+            "value": 0.70318,
+            "tolerance": 0.065,
+            "mark": "E",
+            "source": "T-202/crops/girl_front_sheet30_front.png"
+          },
+          "chin_width": {
+            "value": 0.4114,
+            "tolerance": 0.075,
+            "mark": "E",
+            "source": "T-202/crops/girl_front_sheet30_front.png"
+          },
+          "chin_height": {
+            "value": 0.13847,
+            "tolerance": 0.025,
+            "mark": "E",
+            "source": "T-202/crops/girl_front_sheet30_front.png"
+          },
+          "eye_width": {
+            "value": 0.1783,
+            "tolerance": 0.018,
+            "mark": "E",
+            "source": "T-202/crops/girl_front_sheet30_front.png"
+          },
+          "eye_height": {
+            "value": 0.15523,
+            "tolerance": 0.015,
+            "mark": "E",
+            "source": "T-202/crops/girl_front_sheet30_front.png"
+          },
+          "eye_y": {
+            "value": 0.68902,
+            "tolerance": 0.025,
+            "mark": "E",
+            "source": "T-202/crops/girl_front_sheet30_front.png"
+          },
+          "eye_to_chin": {
+            "value": 0.31098,
+            "tolerance": 0.025,
+            "mark": "E",
+            "source": "T-202/crops/girl_front_sheet30_front.png"
+          },
+          "eye_x": {
+            "value": -0.24416,
+            "tolerance": 0.025,
+            "mark": "E",
+            "source": "T-202/crops/girl_front_sheet30_front.png"
+          },
+          "eye_spacing": {
+            "value": 0.4845,
+            "tolerance": 0.03,
+            "mark": "E",
+            "source": "T-202/crops/girl_front_sheet30_front.png"
+          },
+          "iris_size": {
+            "value": 0.13226,
+            "tolerance": 0.015,
+            "mark": "E",
+            "source": "T-202/crops/girl_front_sheet30_front.png"
+          },
+          "opening_h_w": {
+            "value": 0.948,
+            "tolerance": 0.073,
+            "mark": "E",
+            "source": "T-150/targets.json#auburn/front/opening_h_w"
+          },
+          "iris_d_w": {
+            "value": 0.742,
+            "tolerance": 0.045,
+            "mark": "E",
+            "source": "T-150/targets.json#auburn/front/iris_d_w"
+          },
+          "iris_d_spacing": {
+            "value": 0.369,
+            "tolerance": 0.018,
+            "mark": "E",
+            "source": "T-150/targets.json#auburn/front/iris_d_spacing"
+          },
+          "brow_gap": {
+            "value": 0.10638,
+            "tolerance": 0.022,
+            "mark": "E",
+            "source": "T-202/crops/girl_front_sheet30_front.png"
+          },
+          "nose_width": {
+            "value": 0.08134,
+            "tolerance": 0.025,
+            "mark": "E",
+            "source": "T-202/crops/girl_front_sheet30_front.png"
+          },
+          "nose_height": {
+            "value": 0.046,
+            "tolerance": 0.018,
+            "mark": "E",
+            "source": "T-202/crops/girl_front_sheet30_front.png"
+          },
+          "nose_y": {
+            "value": 0.80977,
+            "tolerance": 0.025,
+            "mark": "E",
+            "source": "T-202/crops/girl_front_sheet30_front.png"
+          },
+          "mouth_width": {
+            "value": 0.18993,
+            "tolerance": 0.025,
+            "mark": "E",
+            "source": "T-202/crops/girl_front_sheet30_front.png"
+          },
+          "mouth_height": {
+            "value": 0.06323,
+            "tolerance": 0.015,
+            "mark": "E",
+            "source": "T-202/crops/girl_front_sheet30_front.png"
+          },
+          "mouth_y": {
+            "value": 0.86153,
+            "tolerance": 0.025,
+            "mark": "E",
+            "source": "T-202/crops/girl_front_sheet30_front.png"
+          },
+          "mouth_x": {
+            "value": 0.00195,
+            "tolerance": 0.025,
+            "mark": "E",
+            "source": "T-202/crops/girl_front_sheet30_front.png"
+          },
+          "hair_width": {
+            "value": 1.35375,
+            "tolerance": 0.08,
+            "mark": "E",
+            "source": "T-202/crops/girl_front_sheet30_front.png"
+          },
+          "hair_height": {
+            "value": 1.28085,
+            "tolerance": 0.06,
+            "mark": "E",
+            "source": "T-202/crops/girl_front_sheet30_front.png"
+          },
+          "ear_width": {
+            "value": 0.1589,
+            "tolerance": 0.055,
+            "mark": "E",
+            "source": "T-161/targets.json#auburn/ear_width (auburn.jpg row 1 left (sheet30_front))"
+          },
+          "ear_height": {
+            "value": 0.2199,
+            "tolerance": 0.045,
+            "mark": "E",
+            "source": "T-161/targets.json#auburn/ear_height (auburn.jpg row 1 left (sheet30_front))"
+          },
+          "ear_top_eye": {
+            "value": -0.0262,
+            "tolerance": 0.045,
+            "mark": "E",
+            "source": "T-161/targets.json#auburn/ear_top_eye (auburn.jpg row 1 left (sheet30_front))"
+          },
+          "ear_base_mouth": {
+            "value": 0.0209,
+            "tolerance": 0.045,
+            "mark": "E",
+            "source": "T-161/targets.json#auburn/ear_base_mouth (auburn.jpg row 1 left (sheet30_front))"
+          },
+          "crown_above_skull": {
+            "value": 0.1257,
+            "tolerance": 0.1,
+            "mark": "E",
+            "source": "T-161/targets.json#auburn/crown_above_skull (auburn.jpg row 1 left (sheet30_front))"
+          },
+          "forehead_covered": {
+            "value": 0.8,
+            "tolerance": 0.13,
+            "mark": "E",
+            "source": "T-161/targets.json#auburn/forehead_covered (auburn.jpg row 1 left (sheet30_front))"
+          },
+          "fringe_eye": {
+            "value": 0.288,
+            "tolerance": 0.05,
+            "mark": "M",
+            "source": "T-161/targets.json#auburn/fringe_eye (auburn.jpg row 1 left (sheet30_front))"
+          },
+          "hair_cheek_width": {
+            "value": 1.3709,
+            "tolerance": 0.12,
+            "mark": "E",
+            "source": "T-161/targets.json#auburn/hair_cheek_width (auburn.jpg row 1 left (sheet30_front))"
+          },
+          "bun_width": {
+            "value": 0.7881,
+            "tolerance": 0.12,
+            "mark": "E",
+            "source": "T-161/targets.json#auburn/bun_width (auburn.jpg row 1 left (sheet30_front))"
+          },
+          "cheek_L": {
+            "value": 51.33482,
+            "tolerance": 5,
+            "mark": "M",
+            "source": "T-202/crops/girl_front_sheet30_front.png"
+          },
+          "cheek_a": {
+            "value": 22.51437,
+            "tolerance": 4,
+            "mark": "M",
+            "source": "T-202/crops/girl_front_sheet30_front.png"
+          },
+          "cheek_b": {
+            "value": 16.6758,
+            "tolerance": 4,
+            "mark": "M",
+            "source": "T-202/crops/girl_front_sheet30_front.png"
+          },
+          "forehead_L": {
+            "value": 79.75442,
+            "tolerance": 5,
+            "mark": "M",
+            "source": "T-202/crops/girl_front_sheet30_front.png"
+          },
+          "forehead_a": {
+            "value": 7.93431,
+            "tolerance": 4,
+            "mark": "M",
+            "source": "T-202/crops/girl_front_sheet30_front.png"
+          },
+          "forehead_b": {
+            "value": 11.34947,
+            "tolerance": 4,
+            "mark": "M",
+            "source": "T-202/crops/girl_front_sheet30_front.png"
+          },
+          "blush_da": {
+            "value": 8.93891,
+            "tolerance": 3,
+            "mark": "M",
+            "source": "T-202/crops/girl_front_sheet30_front.png"
+          }
+        },
+        "three_quarter": {
+          "head_roundness": {
+            "value": 0.71963,
+            "tolerance": 0.045,
+            "mark": "E",
+            "source": "T-202/crops/girl_34_sheet30_front_left.png"
+          },
+          "cheek_width": {
+            "value": 0.95423,
+            "tolerance": 0.055,
+            "mark": "E",
+            "source": "T-202/crops/girl_34_sheet30_front_left.png"
+          },
+          "jaw_width": {
+            "value": 0.68452,
+            "tolerance": 0.065,
+            "mark": "E",
+            "source": "T-202/crops/girl_34_sheet30_front_left.png"
+          },
+          "chin_width": {
+            "value": 0.3854,
+            "tolerance": 0.075,
+            "mark": "E",
+            "source": "T-202/crops/girl_34_sheet30_front_left.png"
+          },
+          "chin_height": {
+            "value": 0.13925,
+            "tolerance": 0.025,
+            "mark": "E",
+            "source": "T-202/crops/girl_34_sheet30_front_left.png"
+          },
+          "eye_width": {
+            "value": 0.1785,
+            "tolerance": 0.018,
+            "mark": "M",
+            "source": "T-202/crops/girl_34_sheet30_front_left.png"
+          },
+          "eye_height": {
+            "value": 0.14833,
+            "tolerance": 0.015,
+            "mark": "M",
+            "source": "T-202/crops/girl_34_sheet30_front_left.png"
+          },
+          "eye_y": {
+            "value": 0.68907,
+            "tolerance": 0.025,
+            "mark": "M",
+            "source": "T-202/crops/girl_34_sheet30_front_left.png"
+          },
+          "eye_to_chin": {
+            "value": 0.31093,
+            "tolerance": 0.025,
+            "mark": "M",
+            "source": "T-202/crops/girl_34_sheet30_front_left.png"
+          },
+          "eye_x": {
+            "value": -0.08016,
+            "tolerance": 0.025,
+            "mark": "E",
+            "source": "T-202/crops/girl_34_sheet30_front_left.png"
+          },
+          "eye_spacing": {
+            "value": 0.45799,
+            "tolerance": 0.03,
+            "mark": "E",
+            "source": "T-202/crops/girl_34_sheet30_front_left.png"
+          },
+          "iris_size": {
+            "value": 0.12085,
+            "tolerance": 0.015,
+            "mark": "M",
+            "source": "T-202/crops/girl_34_sheet30_front_left.png"
+          },
+          "opening_h_w": {
+            "value": 0.987,
+            "tolerance": 0.035,
+            "mark": "E",
+            "source": "T-150/targets.json#auburn/oblique_near/opening_h_w"
+          },
+          "iris_d_w": {
+            "value": 0.68,
+            "tolerance": 0.035,
+            "mark": "E",
+            "source": "T-150/targets.json#auburn/oblique_near/iris_d_w"
+          },
+          "iris_d_spacing": {
+            "value": 0.416,
+            "tolerance": 0.015,
+            "mark": "E",
+            "source": "T-150/targets.json#auburn/oblique_near/iris_d_spacing"
+          },
+          "brow_gap": {
+            "value": 0.13821,
+            "tolerance": 0.022,
+            "mark": "M",
+            "source": "T-202/crops/girl_34_sheet30_front_left.png"
+          },
+          "nose_width": {
+            "value": 0.09162,
+            "tolerance": 0.025,
+            "mark": "E",
+            "source": "T-202/crops/girl_34_sheet30_front_left.png"
+          },
+          "nose_height": {
+            "value": 0.06045,
+            "tolerance": 0.018,
+            "mark": "E",
+            "source": "T-202/crops/girl_34_sheet30_front_left.png"
+          },
+          "nose_y": {
+            "value": 0.81543,
+            "tolerance": 0.025,
+            "mark": "E",
+            "source": "T-202/crops/girl_34_sheet30_front_left.png"
+          },
+          "mouth_width": {
+            "value": 0.16794,
+            "tolerance": 0.025,
+            "mark": "E",
+            "source": "T-202/crops/girl_34_sheet30_front_left.png"
+          },
+          "mouth_height": {
+            "value": 0.0302,
+            "tolerance": 0.015,
+            "mark": "E",
+            "source": "T-202/crops/girl_34_sheet30_front_left.png"
+          },
+          "mouth_y": {
+            "value": 0.86075,
+            "tolerance": 0.025,
+            "mark": "E",
+            "source": "T-202/crops/girl_34_sheet30_front_left.png"
+          },
+          "mouth_x": {
+            "value": 0.17556,
+            "tolerance": 0.025,
+            "mark": "E",
+            "source": "T-202/crops/girl_34_sheet30_front_left.png"
+          },
+          "hair_width": {
+            "value": 1.49692,
+            "tolerance": 0.08,
+            "mark": "E",
+            "source": "T-202/crops/girl_34_sheet30_front_left.png"
+          },
+          "hair_height": {
+            "value": 1.31301,
+            "tolerance": 0.06,
+            "mark": "M",
+            "source": "T-202/crops/girl_34_sheet30_front_left.png"
+          },
+          "ear_turn_projection": {
+            "value": 0.2557,
+            "tolerance": 0.06,
+            "mark": "E",
+            "source": "T-161/targets.json#auburn/ear_turn_projection (auburn.jpg row 4 left (G02))"
+          }
+        },
+        "side": {
+          "eye_y": {
+            "value": 0.69636,
+            "tolerance": 0.025,
+            "mark": "E",
+            "source": "T-202/crops/girl_side_sheet30_left.png"
+          },
+          "eye_to_chin": {
+            "value": 0.30364,
+            "tolerance": 0.025,
+            "mark": "E",
+            "source": "T-202/crops/girl_side_sheet30_left.png"
+          },
+          "cheek_bulge": {
+            "value": 0.03894,
+            "tolerance": 0.015,
+            "mark": "E",
+            "source": "T-202/crops/girl_side_sheet30_left.png"
+          },
+          "cheek_advance": {
+            "value": 0.0081,
+            "tolerance": 0.02,
+            "mark": "E",
+            "source": "T-202/crops/girl_side_sheet30_left.png"
+          },
+          "exposed_cheek": {
+            "value": 0.32389,
+            "tolerance": 0.035,
+            "mark": "E",
+            "source": "T-202/crops/girl_side_sheet30_left.png"
+          },
+          "eye_width": {
+            "tolerance": 0.02,
+            "source": "T-202/crops/girl_side_sheet30_left.png",
+            "value": 0.08097,
+            "mark": "E"
+          },
+          "eye_height": {
+            "tolerance": 0.02,
+            "source": "T-202/crops/girl_side_sheet30_left.png",
+            "value": 0.15385,
+            "mark": "E"
+          },
+          "opening_h_w": {
+            "tolerance": 0.15,
+            "source": "T-202/crops/girl_side_sheet30_left.png",
+            "value": 1.9,
+            "mark": "E"
+          },
+          "profile_depth": {
+            "tolerance": 0.045,
+            "source": "T-202/crops/girl_side_sheet30_left.png",
+            "value": 1.04453,
+            "mark": "E"
+          }
+        }
+      }
+    },
+    "white_haired": {
+      "release": "0.1.0",
+      "yaw": [
+        0,
+        -30,
+        -90
+      ],
+      "views": {
+        "front": {
+          "reference": {
+            "source": "third_front_id01_full.png",
+            "row": 0,
+            "points": {
+              "crown": [
+                213,
+                71
+              ],
+              "chin": [
+                203,
+                345
+              ],
+              "cap": [
+                [
+                  31,
+                  257
+                ],
+                [
+                  361,
+                  247
+                ]
+              ],
+              "crest": [
+                146,
+                13
+              ],
+              "cheek": [
+                134,
+                301
+              ],
+              "base": [
+                168,
+                301
+              ],
+              "forehead": [
+                205,
+                231
+              ],
+              "bow": [
+                113,
+                101
+              ],
+              "left": [
+                [
+                  104.19,
+                  243.65
+                ],
+                [
+                  104.19,
+                  276.08
+                ],
+                [
+                  106.89,
+                  293.65
+                ],
+                [
+                  114.32,
+                  307.84
+                ],
+                [
+                  128.51,
+                  322.7
+                ],
+                [
+                  148.11,
+                  334.19
+                ],
+                [
+                  179.19,
+                  342.97
+                ],
+                [
+                  203.51,
+                  345.68
+                ]
+              ],
+              "right": [
+                [
+                  301.49,
+                  243.65
+                ],
+                [
+                  302.84,
+                  276.08
+                ],
+                [
+                  300.81,
+                  293.65
+                ],
+                [
+                  294.05,
+                  307.84
+                ],
+                [
+                  279.86,
+                  322.7
+                ],
+                [
+                  258.92,
+                  334.19
+                ],
+                [
+                  229.19,
+                  342.97
+                ],
+                [
+                  203.51,
+                  345.68
+                ]
+              ],
+              "eye": [
+                121.76,
+                236.89,
+                171.08,
+                282.84
+              ],
+              "iris": [
+                134.59,
+                260.54,
+                171.08
+              ],
+              "far": [
+                255.54,
+                260.54
+              ],
+              "brow": [
+                156.89,
+                201.76
+              ],
+              "nose": [
+                188.65,
+                284.86,
+                205.54,
+                298.38
+              ],
+              "mouth": [
+                188.65,
+                299.05,
+                217.03,
+                309.86
+              ]
+            },
+            "estimated": [
+              "crown",
+              "nose",
+              "brow",
+              "mouth"
+            ],
+            "note": ""
+          },
+          "current": {
+            "source": "third_faces.jpg",
+            "row": 0,
+            "points": {
+              "crown": [
+                205,
+                76
+              ],
+              "chin": [
+                200,
+                322
+              ],
+              "cap": [
+                [
+                  29,
+                  245
+                ],
+                [
+                  372,
+                  247
+                ]
+              ],
+              "crest": [
+                136,
+                19
+              ],
+              "skull": [
+                200,
+                104
+              ],
+              "fringe": [
+                200,
+                225
+              ],
+              "midbrow": [
+                200,
+                228
+              ],
+              "ear": [
+                100,
+                260,
+                113,
+                288
+              ],
+              "cheek": [
+                140,
+                280
+              ],
+              "base": [
+                168,
+                280
+              ],
+              "forehead": [
+                202,
+                239
+              ],
+              "bow": [
+                125,
+                123
+              ],
+              "left": [
+                [
+                  117.7,
+                  242.97
+                ],
+                [
+                  117.7,
+                  269.32
+                ],
+                [
+                  122.43,
+                  284.19
+                ],
+                [
+                  131.89,
+                  297.7
+                ],
+                [
+                  148.11,
+                  309.86
+                ],
+                [
+                  171.76,
+                  318.65
+                ],
+                [
+                  200.14,
+                  322.03
+                ]
+              ],
+              "right": [
+                [
+                  282.57,
+                  242.97
+                ],
+                [
+                  281.89,
+                  269.32
+                ],
+                [
+                  277.84,
+                  284.19
+                ],
+                [
+                  269.05,
+                  297.7
+                ],
+                [
+                  252.16,
+                  309.86
+                ],
+                [
+                  228.51,
+                  318.65
+                ],
+                [
+                  200.14,
+                  322.03
+                ]
+              ],
+              "eye": [
+                122.43,
+                240.95,
+                172.43,
+                275.41
+              ],
+              "iris": [
+                136.62,
+                259.19,
+                169.73
+              ],
+              "far": [
+                246.08,
+                259.19
+              ],
+              "nose": [
+                190.68,
+                275.41,
+                206.89,
+                289.59
+              ],
+              "mouth": [
+                184.59,
+                293.65,
+                215.68,
+                299.73
+              ],
+              "hair_at_cheek": [
+                [
+                  40,
+                  278
+                ],
+                [
+                  360,
+                  278
+                ]
+              ],
+              "bun_span": [
+                [
+                  72,
+                  71
+                ],
+                [
+                  193,
+                  74
+                ]
+              ],
+              "no_bun": false
+            },
+            "estimated": [
+              "crown",
+              "left",
+              "right",
+              "skull",
+              "ear",
+              "nose",
+              "midbrow"
+            ],
+            "note": "Central brow inferred under fringe. Near brow hidden. Bow swatch avoids seam."
+          }
+        },
+        "three_quarter": {
+          "reference": {
+            "source": "third_34_f14_head_3q.png",
+            "row": 3,
+            "points": {
+              "crown": [
+                219,
+                90
+              ],
+              "chin": [
+                266,
+                367
+              ],
+              "cap": [
+                [
+                  67,
+                  227
+                ],
+                [
+                  373,
+                  237
+                ]
+              ],
+              "crest": [
+                132,
+                27
+              ],
+              "left": [
+                [
+                  163.65,
+                  265.27
+                ],
+                [
+                  162.3,
+                  290.27
+                ],
+                [
+                  164.32,
+                  315.95
+                ],
+                [
+                  170.41,
+                  336.22
+                ],
+                [
+                  184.59,
+                  345.68
+                ],
+                [
+                  204.19,
+                  355.81
+                ],
+                [
+                  237.97,
+                  364.59
+                ],
+                [
+                  258.24,
+                  367.3
+                ]
+              ],
+              "right": [
+                [
+                  346.08,
+                  265.27
+                ],
+                [
+                  349.46,
+                  288.92
+                ],
+                [
+                  346.76,
+                  312.57
+                ],
+                [
+                  341.35,
+                  330.81
+                ],
+                [
+                  331.89,
+                  343.65
+                ],
+                [
+                  314.32,
+                  355.14
+                ],
+                [
+                  286.62,
+                  364.59
+                ],
+                [
+                  258.24,
+                  367.3
+                ]
+              ],
+              "eye": [
+                201.49,
+                257.84,
+                255.54,
+                301.76
+              ],
+              "iris": [
+                220.41,
+                280.81,
+                254.86
+              ],
+              "far": [
+                326.49,
+                279.46
+              ],
+              "brow": [
+                244.05,
+                221.35
+              ],
+              "nose": [
+                281.22,
+                301.08,
+                300.14,
+                318.65
+              ],
+              "mouth": [
+                281.22,
+                324.05,
+                302.16,
+                328.11
+              ]
+            },
+            "estimated": [
+              "crown",
+              "left",
+              "right",
+              "nose",
+              "mouth",
+              "brow"
+            ],
+            "note": ""
+          },
+          "current": {
+            "source": "third_faces.jpg",
+            "row": 3,
+            "points": {
+              "crown": [
+                222,
+                76
+              ],
+              "chin": [
+                209,
+                322
+              ],
+              "cap": [
+                [
+                  25,
+                  246
+                ],
+                [
+                  342,
+                  237
+                ]
+              ],
+              "crest": [
+                165,
+                15
+              ],
+              "ear_turn": [
+                [
+                  84,
+                  275
+                ],
+                [
+                  113,
+                  275
+                ]
+              ],
+              "left": [
+                [
+                  112,
+                  245
+                ],
+                [
+                  112,
+                  267
+                ],
+                [
+                  119,
+                  290
+                ],
+                [
+                  143,
+                  308
+                ],
+                [
+                  165,
+                  317
+                ],
+                [
+                  202.16,
+                  322.03
+                ]
+              ],
+              "right": [
+                [
+                  300.81,
+                  240.95
+                ],
+                [
+                  299.46,
+                  265.95
+                ],
+                [
+                  295.41,
+                  283.51
+                ],
+                [
+                  283.92,
+                  295.68
+                ],
+                [
+                  268.38,
+                  307.84
+                ],
+                [
+                  238.65,
+                  316.62
+                ],
+                [
+                  215.0,
+                  321.35
+                ],
+                [
+                  202.16,
+                  322.03
+                ]
+              ],
+              "eye": [
+                174.46,
+                242.97,
+                222.43,
+                278.11
+              ],
+              "iris": [
+                189.32,
+                259.19,
+                216.35
+              ],
+              "far": [
+                279.19,
+                251.76
+              ],
+              "nose": [
+                236.62,
+                272.7,
+                251.49,
+                287.57
+              ],
+              "mouth": [
+                226.49,
+                290.95,
+                251.49,
+                297.7
+              ]
+            },
+            "estimated": [
+              "crown",
+              "left",
+              "right",
+              "nose"
+            ],
+            "note": "Lock covers lateral cheek. Trace reconstructs the hidden face edge."
+          }
+        },
+        "side": {
+          "reference": {
+            "source": "third_side_f14_head_side.png",
+            "row": 5,
+            "points": {
+              "crown": [
+                226,
+                94
+              ],
+              "chin": [
+                277,
+                364
+              ],
+              "eye_y": 277,
+              "profile": [
+                [
+                  330,
+                  277
+                ],
+                [
+                  334,
+                  320.5
+                ],
+                [
+                  317,
+                  351
+                ]
+              ],
+              "exposed": [
+                [
+                  248,
+                  320.5
+                ],
+                [
+                  334,
+                  320.5
+                ]
+              ],
+              "facing": 1,
+              "profile_span": [
+                [
+                  61,
+                  277
+                ],
+                [
+                  330,
+                  277
+                ]
+              ],
+              "eye": [
+                281,
+                257,
+                308,
+                300
+              ],
+              "nose_tip": [
+                341,
+                297
+              ]
+            },
+            "estimated": [
+              "crown",
+              "profile",
+              "profile_span",
+              "eye",
+              "nose_tip"
+            ],
+            "note": "Cheek edge visible from nose to chin."
+          },
+          "current": {
+            "source": "third_faces.jpg",
+            "row": 5,
+            "points": {
+              "crown": [
+                191,
+                76
+              ],
+              "chin": [
+                216,
+                322
+              ],
+              "eye_y": 259,
+              "profile": [
+                null,
+                null,
+                null
+              ],
+              "exposed": [
+                [
+                  203,
+                  290.5
+                ],
+                [
+                  263,
+                  290.5
+                ]
+              ],
+              "facing": 1,
+              "profile_span": [
+                [
+                  44,
+                  259
+                ],
+                [
+                  308,
+                  259
+                ]
+              ],
+              "eye": null,
+              "nose_tip": null
+            },
+            "estimated": [
+              "crown",
+              "chin",
+              "eye_y",
+              "exposed",
+              "profile",
+              "profile_span",
+              "eye",
+              "nose_tip"
+            ],
+            "note": "Two locks hide the facial silhouette. Measure the exposed skin window only."
+          }
+        }
+      },
+      "checks": [
+        {
+          "view": "front",
+          "source": "third_front_f14_head_front.png",
+          "points": {
+            "crown": [
+              237,
+              89
+            ],
+            "chin": [
+              221,
+              366
+            ],
+            "eye_y": 276,
+            "eye_h": 46
+          }
+        },
+        {
+          "view": "front",
+          "source": "third_front_s02_front.png",
+          "points": {
+            "crown": [
+              217,
+              55
+            ],
+            "chin": [
+              195,
+              265
+            ],
+            "eye_y": 198,
+            "eye_h": 33
+          }
+        },
+        {
+          "view": "three_quarter",
+          "source": "third_34_s02_front_left.png",
+          "points": {
+            "crown": [
+              200,
+              58
+            ],
+            "chin": [
+              209,
+              281
+            ],
+            "eye_y": 208,
+            "eye_h": 36
+          }
+        },
+        {
+          "view": "side",
+          "source": "third_side_s02_left.png",
+          "points": {
+            "crown": [
+              210,
+              63
+            ],
+            "chin": [
+              264,
+              300
+            ],
+            "eye_y": 222,
+            "profile": [
+              [
+                316,
+                222
+              ],
+              [
+                320,
+                261
+              ],
+              [
+                312,
+                288.3
+              ]
+            ],
+            "facing": 1
+          }
+        }
+      ],
+      "targets": {
+        "front": {
+          "head_roundness": {
+            "value": 0.725,
+            "tolerance": 0.045,
+            "mark": "E",
+            "source": "T-202/crops/third_front_id01_full.png"
+          },
+          "cheek_width": {
+            "value": 0.93028,
+            "tolerance": 0.055,
+            "mark": "M",
+            "source": "T-202/crops/third_front_id01_full.png"
+          },
+          "jaw_width": {
+            "value": 0.66584,
+            "tolerance": 0.065,
+            "mark": "M",
+            "source": "T-202/crops/third_front_id01_full.png"
+          },
+          "chin_width": {
+            "value": 0.38705,
+            "tolerance": 0.075,
+            "mark": "M",
+            "source": "T-202/crops/third_front_id01_full.png"
+          },
+          "chin_height": {
+            "value": 0.14797,
+            "tolerance": 0.025,
+            "mark": "E",
+            "source": "T-202/crops/third_front_id01_full.png"
+          },
+          "eye_width": {
+            "value": 0.18,
+            "tolerance": 0.018,
+            "mark": "E",
+            "source": "T-202/crops/third_front_id01_full.png"
+          },
+          "eye_height": {
+            "value": 0.1677,
+            "tolerance": 0.02556,
+            "mark": "E",
+            "source": "T-202/crops/third_front_id01_full.png"
+          },
+          "eye_y": {
+            "value": 0.69175,
+            "tolerance": 0.04166,
+            "mark": "E",
+            "source": "T-202/crops/third_front_id01_full.png"
+          },
+          "eye_to_chin": {
+            "value": 0.30825,
+            "tolerance": 0.04166,
+            "mark": "E",
+            "source": "T-202/crops/third_front_id01_full.png"
+          },
+          "eye_x": {
+            "value": -0.25512,
+            "tolerance": 0.025,
+            "mark": "M",
+            "source": "T-202/crops/third_front_id01_full.png"
+          },
+          "eye_spacing": {
+            "value": 0.51701,
+            "tolerance": 0.03,
+            "mark": "M",
+            "source": "T-202/crops/third_front_id01_full.png"
+          },
+          "iris_size": {
+            "value": 0.13318,
+            "tolerance": 0.015,
+            "mark": "E",
+            "source": "T-202/crops/third_front_id01_full.png"
+          },
+          "opening_h_w": {
+            "value": 0.952,
+            "tolerance": 0.075,
+            "mark": "E",
+            "source": "T-150/targets.json#white_haired/front/opening_h_w"
+          },
+          "iris_d_w": {
+            "value": 0.751,
+            "tolerance": 0.049,
+            "mark": "E",
+            "source": "T-150/targets.json#white_haired/front/iris_d_w"
+          },
+          "iris_d_spacing": {
+            "value": 0.356,
+            "tolerance": 0.022,
+            "mark": "E",
+            "source": "T-150/targets.json#white_haired/front/iris_d_spacing"
+          },
+          "brow_gap": {
+            "value": 0.12821,
+            "tolerance": 0.022,
+            "mark": "E",
+            "source": "T-202/crops/third_front_id01_full.png"
+          },
+          "nose_width": {
+            "value": 0.08502,
+            "tolerance": 0.025,
+            "mark": "E",
+            "source": "T-202/crops/third_front_id01_full.png"
+          },
+          "nose_height": {
+            "value": 0.04934,
+            "tolerance": 0.018,
+            "mark": "E",
+            "source": "T-202/crops/third_front_id01_full.png"
+          },
+          "nose_y": {
+            "value": 0.80518,
+            "tolerance": 0.025,
+            "mark": "E",
+            "source": "T-202/crops/third_front_id01_full.png"
+          },
+          "mouth_width": {
+            "value": 0.14286,
+            "tolerance": 0.025,
+            "mark": "E",
+            "source": "T-202/crops/third_front_id01_full.png"
+          },
+          "mouth_height": {
+            "value": 0.03945,
+            "tolerance": 0.015,
+            "mark": "E",
+            "source": "T-202/crops/third_front_id01_full.png"
+          },
+          "mouth_y": {
+            "value": 0.85203,
+            "tolerance": 0.025,
+            "mark": "E",
+            "source": "T-202/crops/third_front_id01_full.png"
+          },
+          "mouth_x": {
+            "value": -0.0034,
+            "tolerance": 0.025,
+            "mark": "E",
+            "source": "T-202/crops/third_front_id01_full.png"
+          },
+          "hair_width": {
+            "value": 1.66121,
+            "tolerance": 0.08,
+            "mark": "M",
+            "source": "T-202/crops/third_front_id01_full.png"
+          },
+          "hair_height": {
+            "value": 1.21168,
+            "tolerance": 0.06,
+            "mark": "E",
+            "source": "T-202/crops/third_front_id01_full.png"
+          },
+          "ear_width": {
+            "value": 0.1533,
+            "tolerance": 0.055,
+            "mark": "E",
+            "source": "T-161/targets.json#white_haired/ear_width (white_haired.jpg row 1 left (W01))"
+          },
+          "ear_height": {
+            "value": 0.2077,
+            "tolerance": 0.045,
+            "mark": "M",
+            "source": "T-161/targets.json#white_haired/ear_height (white_haired.jpg row 1 left (W01))"
+          },
+          "ear_top_eye": {
+            "value": -0.0328,
+            "tolerance": 0.045,
+            "mark": "E",
+            "source": "T-161/targets.json#white_haired/ear_top_eye (white_haired.jpg row 1 left (W01))"
+          },
+          "ear_base_mouth": {
+            "value": 0.0219,
+            "tolerance": 0.045,
+            "mark": "E",
+            "source": "T-161/targets.json#white_haired/ear_base_mouth (white_haired.jpg row 1 left (W01))"
+          },
+          "crown_above_skull": {
+            "value": 0.1202,
+            "tolerance": 0.1,
+            "mark": "E",
+            "source": "T-161/targets.json#white_haired/crown_above_skull (white_haired.jpg row 1 left (W01))"
+          },
+          "forehead_covered": {
+            "value": 0.9,
+            "tolerance": 0.13,
+            "mark": "E",
+            "source": "T-161/targets.json#white_haired/forehead_covered (white_haired.jpg row 1 left (W01))"
+          },
+          "fringe_eye": {
+            "value": 0.1858,
+            "tolerance": 0.05,
+            "mark": "M",
+            "source": "T-161/targets.json#white_haired/fringe_eye (white_haired.jpg row 1 left (W01))"
+          },
+          "hair_cheek_width": {
+            "value": 1.6423,
+            "tolerance": 0.12,
+            "mark": "E",
+            "source": "T-161/targets.json#white_haired/hair_cheek_width (white_haired.jpg row 1 left (W01))"
+          },
+          "bun_width": {
+            "value": 0.7007,
+            "tolerance": 0.12,
+            "mark": "M",
+            "source": "T-161/targets.json#white_haired/bun_width (white_haired.jpg row 1 left (W01))"
+          },
+          "cheek_L": {
+            "value": 62.32918,
+            "tolerance": 5,
+            "mark": "M",
+            "source": "T-202/crops/third_front_id01_full.png"
+          },
+          "cheek_a": {
+            "value": 21.10284,
+            "tolerance": 4,
+            "mark": "M",
+            "source": "T-202/crops/third_front_id01_full.png"
+          },
+          "cheek_b": {
+            "value": 19.07626,
+            "tolerance": 4,
+            "mark": "M",
+            "source": "T-202/crops/third_front_id01_full.png"
+          },
+          "forehead_L": {
+            "value": 80.7322,
+            "tolerance": 5,
+            "mark": "M",
+            "source": "T-202/crops/third_front_id01_full.png"
+          },
+          "forehead_a": {
+            "value": 5.67,
+            "tolerance": 4,
+            "mark": "M",
+            "source": "T-202/crops/third_front_id01_full.png"
+          },
+          "forehead_b": {
+            "value": 13.27009,
+            "tolerance": 4,
+            "mark": "M",
+            "source": "T-202/crops/third_front_id01_full.png"
+          },
+          "bow_L": {
+            "value": 51.51913,
+            "tolerance": 5,
+            "mark": "M",
+            "source": "T-202/crops/third_front_id01_full.png"
+          },
+          "bow_a": {
+            "value": -2.04794,
+            "tolerance": 4,
+            "mark": "M",
+            "source": "T-202/crops/third_front_id01_full.png"
+          },
+          "bow_b": {
+            "value": -15.53707,
+            "tolerance": 4,
+            "mark": "M",
+            "source": "T-202/crops/third_front_id01_full.png"
+          },
+          "blush_da": {
+            "value": 12.6159,
+            "tolerance": 3,
+            "mark": "M",
+            "source": "T-202/crops/third_front_id01_full.png"
+          }
+        },
+        "three_quarter": {
+          "head_roundness": {
+            "value": 0.67567,
+            "tolerance": 0.045,
+            "mark": "E",
+            "source": "T-202/crops/third_34_f14_head_3q.png"
+          },
+          "cheek_width": {
+            "value": 0.94405,
+            "tolerance": 0.055,
+            "mark": "E",
+            "source": "T-202/crops/third_34_f14_head_3q.png"
+          },
+          "jaw_width": {
+            "value": 0.69489,
+            "tolerance": 0.065,
+            "mark": "E",
+            "source": "T-202/crops/third_34_f14_head_3q.png"
+          },
+          "chin_width": {
+            "value": 0.39117,
+            "tolerance": 0.075,
+            "mark": "E",
+            "source": "T-202/crops/third_34_f14_head_3q.png"
+          },
+          "chin_height": {
+            "value": 0.14773,
+            "tolerance": 0.025,
+            "mark": "E",
+            "source": "T-202/crops/third_34_f14_head_3q.png"
+          },
+          "eye_width": {
+            "value": 0.19513,
+            "tolerance": 0.018,
+            "mark": "E",
+            "source": "T-202/crops/third_34_f14_head_3q.png"
+          },
+          "eye_height": {
+            "value": 0.15856,
+            "tolerance": 0.01788,
+            "mark": "E",
+            "source": "T-202/crops/third_34_f14_head_3q.png"
+          },
+          "eye_y": {
+            "value": 0.68884,
+            "tolerance": 0.0412,
+            "mark": "E",
+            "source": "T-202/crops/third_34_f14_head_3q.png"
+          },
+          "eye_to_chin": {
+            "value": 0.31116,
+            "tolerance": 0.0412,
+            "mark": "E",
+            "source": "T-202/crops/third_34_f14_head_3q.png"
+          },
+          "eye_x": {
+            "value": -0.09748,
+            "tolerance": 0.025,
+            "mark": "E",
+            "source": "T-202/crops/third_34_f14_head_3q.png"
+          },
+          "eye_spacing": {
+            "value": 0.47481,
+            "tolerance": 0.03,
+            "mark": "E",
+            "source": "T-202/crops/third_34_f14_head_3q.png"
+          },
+          "iris_size": {
+            "value": 0.12437,
+            "tolerance": 0.015,
+            "mark": "E",
+            "source": "T-202/crops/third_34_f14_head_3q.png"
+          },
+          "opening_h_w": {
+            "value": 0.81258,
+            "tolerance": 0.06,
+            "mark": "M",
+            "source": "T-202/crops/third_34_f14_head_3q.png"
+          },
+          "iris_d_w": {
+            "value": 0.63737,
+            "tolerance": 0.05,
+            "mark": "M",
+            "source": "T-202/crops/third_34_f14_head_3q.png"
+          },
+          "iris_d_spacing": {
+            "value": 0.38767,
+            "tolerance": 0.035,
+            "mark": "M",
+            "source": "T-202/crops/third_34_f14_head_3q.png"
+          },
+          "brow_gap": {
+            "value": 0.13173,
+            "tolerance": 0.022,
+            "mark": "E",
+            "source": "T-202/crops/third_34_f14_head_3q.png"
+          },
+          "nose_width": {
+            "value": 0.10109,
+            "tolerance": 0.025,
+            "mark": "E",
+            "source": "T-202/crops/third_34_f14_head_3q.png"
+          },
+          "nose_height": {
+            "value": 0.06343,
+            "tolerance": 0.018,
+            "mark": "E",
+            "source": "T-202/crops/third_34_f14_head_3q.png"
+          },
+          "nose_y": {
+            "value": 0.79374,
+            "tolerance": 0.025,
+            "mark": "E",
+            "source": "T-202/crops/third_34_f14_head_3q.png"
+          },
+          "mouth_width": {
+            "value": 0.11188,
+            "tolerance": 0.025,
+            "mark": "E",
+            "source": "T-202/crops/third_34_f14_head_3q.png"
+          },
+          "mouth_height": {
+            "value": 0.01466,
+            "tolerance": 0.015,
+            "mark": "E",
+            "source": "T-202/crops/third_34_f14_head_3q.png"
+          },
+          "mouth_y": {
+            "value": 0.85227,
+            "tolerance": 0.025,
+            "mark": "E",
+            "source": "T-202/crops/third_34_f14_head_3q.png"
+          },
+          "mouth_x": {
+            "value": 0.19133,
+            "tolerance": 0.025,
+            "mark": "E",
+            "source": "T-202/crops/third_34_f14_head_3q.png"
+          },
+          "hair_width": {
+            "value": 1.63496,
+            "tolerance": 0.08,
+            "mark": "E",
+            "source": "T-202/crops/third_34_f14_head_3q.png"
+          },
+          "hair_height": {
+            "value": 1.22744,
+            "tolerance": 0.06,
+            "mark": "E",
+            "source": "T-202/crops/third_34_f14_head_3q.png"
+          },
+          "ear_turn_projection": {
+            "value": 0.1916,
+            "tolerance": 0.06,
+            "mark": "E",
+            "source": "T-161/targets.json#white_haired/ear_turn_projection (white_haired.jpg row 4 left (f14_head_3q))"
+          }
+        },
+        "side": {
+          "eye_y": {
+            "value": 0.67778,
+            "tolerance": 0.03189,
+            "mark": "E",
+            "source": "T-202/crops/third_side_f14_head_side.png"
+          },
+          "eye_to_chin": {
+            "value": 0.32222,
+            "tolerance": 0.03189,
+            "mark": "E",
+            "source": "T-202/crops/third_side_f14_head_side.png"
+          },
+          "cheek_bulge": {
+            "value": 0.04312,
+            "tolerance": 0.03131,
+            "mark": "E",
+            "source": "T-202/crops/third_side_f14_head_side.png"
+          },
+          "cheek_advance": {
+            "value": 0.01481,
+            "tolerance": 0.02206,
+            "mark": "E",
+            "source": "T-202/crops/third_side_f14_head_side.png"
+          },
+          "exposed_cheek": {
+            "value": 0.31852,
+            "tolerance": 0.035,
+            "mark": "E",
+            "source": "T-202/crops/third_side_f14_head_side.png"
+          },
+          "eye_width": {
+            "tolerance": 0.02,
+            "source": "T-202/crops/third_side_f14_head_side.png",
+            "value": 0.1,
+            "mark": "E"
+          },
+          "eye_height": {
+            "tolerance": 0.02,
+            "source": "T-202/crops/third_side_f14_head_side.png",
+            "value": 0.15926,
+            "mark": "E"
+          },
+          "opening_h_w": {
+            "tolerance": 0.15,
+            "source": "T-202/crops/third_side_f14_head_side.png",
+            "value": 1.59259,
+            "mark": "E"
+          },
+          "profile_depth": {
+            "tolerance": 0.045,
+            "source": "T-202/crops/third_side_f14_head_side.png",
+            "value": 0.9963,
+            "mark": "E"
+          },
+          "profile_nose": {
+            "tolerance": 0.015,
+            "source": "T-202/crops/third_side_f14_head_side.png",
+            "value": 0.04074,
+            "mark": "E"
+          }
+        }
+      }
+    }
+  },
+  "trace_guide": {
+    "square": "Coordinates use the original square crop scaled evenly to 400 by 400. All single-point landmarks are [x,y]. The scorer reads points, not example_points.",
+    "crown_chin_crest": "crown is the highest point on the main hairstyle excluding buns. chin is the lowest edge of chin skin before neck. crest includes buns; null if cut off.",
+    "left_right": "Follow each anatomical cheek boundary from above iris level down to the same chin, with strictly increasing y. Estimate covered segments only when defensible and list left or right in estimated.",
+    "eye_iris_far": "eye is [left,top,right,bottom] of clear near opening (image-left in front). iris is [left,centre_y,right] across its diameter. far is the other iris centre. On a profile eye_y records the visible or estimated eye level.",
+    "brow_lid": "brow is the lower brow edge above the selected pupil. brow_lid gives the matching opening-top point when using the other brow. Specular highlights and eyelid seams do not count.",
+    "nose_mouth_ear": "Axis-aligned boxes [left,top,right,bottom] bound each feature, ear including visible rim to root. Mark soft or inferred edges E.",
+    "cap_crest_bun": "cap is the pair of outermost hair points above eye level; exclude bows/flowers. bun_span is the widest extent of the bun (image-left on twins). Set no_bun true only for a visibly absent bun.",
+    "fringe": "fringe is the central hair/skin edge. skull is the estimated hairless apex; midbrow sets the brow level on the midline. hair_at_cheek is the outer hair span midway between pupils and mouth; set no_cheek_hair true for visible absence.",
+    "ear_turn": "At near-ear mid-height, click the outer rim and the local cheek edge. This is a projection check.",
+    "profile": "facing is +1 for face pointing right and -1 for left. profile gives three anterior skin points at eye level, 50% and 85% of the eye-to-chin fall. Exclude nose tip and glasses. exposed bounds the uninterrupted anterior skin window on the 50% line. profile_span bounds the head/hair silhouette at eye height; nose_tip is a separately resolved anterior nose tip.",
+    "colour": "cheek = malar blush below the image-left eye away from the rim, base = nearby skin toward the nose at the same height, forehead = exposed skin between fringe and brow, bow = middle of the image-right lobe. Use null for a hidden or contaminated sample.",
+    "uncertainty": "Put the names of inferred or obscured landmarks in estimated. A reported value is E if any dependency is estimated. Null gives an unscored row. For a partly obscured side contour put null at any unavailable position in profile."
+  }
+}
