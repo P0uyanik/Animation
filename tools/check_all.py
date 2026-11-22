@@ -1180,6 +1180,8 @@ BLENDER_UNITS: list[tuple[str, object, bool]] = [
     ("shot-eyes", unit_shot_eyes, True),
     ("emotions", unit_emotions, True),
     ("fidelity-regression", unit_fidelity_regression, False),
+    ("face-parity", t077_unit("face export parity (T-213)", lambda c: [  # auburn master, ~1 min, temp dir only
+        sys.executable, str(ROOT / "pipeline/charsys/tests/test_face_parity.py"), "--blender", c.executable]), False),
 ]
 BLENDER_UNIT_IDS = [unit_id for unit_id, _, _ in BLENDER_UNITS]
 BLENDER_UNIT_DEPENDS = {"face": "charsys"}  # unit -> the unit whose output it reads (same shard, same run)
