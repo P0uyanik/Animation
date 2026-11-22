@@ -734,6 +734,12 @@ Result<void> SceneEvaluator::load(const Scene& scene, const EvalOptions& opt) {
   buildLiveGaze();  // T-136 E3 (only characters with the opt-in gaze chain)
   // Secondary motion after the actions are compiled (action planning sees the kinematic pose).
   dynamics_.assign(characters_.size(), nullptr);
+  dynamicsExternals_.assign(characters_.size(), {});
+  {
+    std::lock_guard<std::mutex> lock(*kinMemoMutex_);
+    kinMemo_.clear();
+    kinMemoOrder_.clear();
+  }
   for (size_t c = 0; c < characters_.size(); ++c) {
     DynamicsSpec spec = characters_[c].asset.dynamics;
     // Accessory chains (T-061): the package's attach entries first (so a scene override may address them), then the
@@ -750,6 +756,29 @@ Result<void> SceneEvaluator::load(const Scene& scene, const EvalOptions& opt) {
     auto solver = SpringChainSolver::create(characters_[c].asset.skeleton, spec, spec.enabled);
     if (!solver) return fail(std::format("character '{}': {}", scene_.characters[c].name, solver.error().message));
     dynamics_[c] = std::move(*solver);
+    // Scene colliders (T-183 round 3): what the solver's external colliders ride on.
+    for (const auto& ref : dynamics_[c]->externals()) {
+      DynamicsExternal e;
+      if (!ref.prop.empty()) {
+        for (size_t p = 0; p < scene_.props.size(); ++p)
+          if (scene_.props[p].name == ref.prop) e.prop = int(p);
+        if (e.prop < 0)
+          return fail(std::format("character '{}': dynamics collider on prop '{}': no such prop", scene_.characters[c].name, ref.prop));
+      } else {
+        for (size_t o = 0; o < scene_.characters.size(); ++o)
+          if (o != c && scene_.characters[o].name == ref.character) e.character = int(o);
+        if (e.character < 0)
+          return fail(std::format("character '{}': dynamics collider on character '{}': no other character of that name",
+                                  scene_.characters[c].name, ref.character));
+        const Skeleton& sk = characters_[size_t(e.character)].asset.skeleton;
+        e.bone = sk.find(ref.bone);
+        if (e.bone < 0)
+          return fail(std::format("character '{}': dynamics collider on character '{}': it has no bone '{}'",
+                                  scene_.characters[c].name, ref.character, ref.bone));
+        e.head = sk.bones[size_t(e.bone)].head;
+      }
+      dynamicsExternals_[c].push_back(e);
+    }
   }
 
   std::map<std::string, size_t> charactersByName, propsByName;
@@ -844,14 +873,60 @@ void SceneEvaluator::updateMaterial(const Material& m) {
 
 std::vector<mat4> SceneEvaluator::characterGlobals(size_t c, double frame, Pose* poseOut) const {
   std::vector<mat4> g = kinematicGlobals(c, frame, poseOut);
-  if (c < dynamics_.size() && dynamics_[c])
-    dynamics_[c]->apply(frame, scene_.frameStart, scene_.rate.fps(), [&](double f) { return kinematicGlobals(c, f, nullptr); }, g);
+  if (c < dynamics_.size() && dynamics_[c]) {
+    if (c < dynamicsExternals_.size() && !dynamicsExternals_[c].empty())  // scene colliders (T-183 round 3, opt-in)
+      dynamics_[c]->apply(frame, scene_.frameStart, scene_.rate.fps(), [&](double f) { return *kinematicGlobalsMemo(c, f); }, g,
+                          [&](double f) { return dynamicsExternalFrames(c, f); });
+    else
+      dynamics_[c]->apply(frame, scene_.frameStart, scene_.rate.fps(), [&](double f) { return kinematicGlobals(c, f, nullptr); }, g);
+  }
   return g;
+}
+
+std::shared_ptr<const std::vector<mat4>> SceneEvaluator::kinematicGlobalsMemo(size_t c, double frame) const {
+  const std::pair<size_t, double> key{c, frame};
+  {
+    std::lock_guard<std::mutex> lock(*kinMemoMutex_);
+    if (auto it = kinMemo_.find(key); it != kinMemo_.end()) return it->second;
+  }
+  auto g = std::make_shared<const std::vector<mat4>>(kinematicGlobals(c, frame, nullptr));  // not under the lock
+  std::lock_guard<std::mutex> lock(*kinMemoMutex_);
+  if (kinMemo_.emplace(key, g).second) {
+    kinMemoOrder_.push_back(key);
+    if (kinMemoOrder_.size() > 512) {
+      kinMemo_.erase(kinMemoOrder_.front());
+      kinMemoOrder_.pop_front();
+    }
+  }
+  return g;
+}
+
+std::vector<mat4> SceneEvaluator::dynamicsExternalFrames(size_t c, double frame) const {
+  const auto& refs = dynamicsExternals_[c];
+  std::vector<mat4> out, props;
+  out.reserve(refs.size());
+  std::map<int, std::shared_ptr<const std::vector<mat4>>> kin;
+  for (const DynamicsExternal& e : refs) {
+    if (e.prop >= 0) {
+      if (props.empty()) props = propWorldsWith(frame, true);
+      out.push_back(props[size_t(e.prop)]);
+      continue;
+    }
+    auto& g = kin[e.character];
+    if (!g) g = kinematicGlobalsMemo(size_t(e.character), frame);
+    out.push_back((*g)[size_t(e.bone)] * glm::translate(mat4(1), -e.head));
+  }
+  return out;
 }
 
 void SceneEvaluator::resetDynamics() const {
   for (const auto& d : dynamics_)
     if (d) d->reset();
+  {
+    std::lock_guard<std::mutex> lock(*kinMemoMutex_);
+    kinMemo_.clear();
+    kinMemoOrder_.clear();
+  }
   std::lock_guard<std::mutex> lock(*bodyMutex_);
   for (auto& m : bodyCache_) m.clear();
 }
@@ -971,7 +1046,13 @@ int SceneEvaluator::characterSocketBone(size_t character, const std::string& soc
   return -1;
 }
 
-std::vector<mat4> SceneEvaluator::propWorlds(double frame) const {
+std::vector<mat4> SceneEvaluator::propWorlds(double frame) const { return propWorldsWith(frame, false); }
+
+std::vector<mat4> SceneEvaluator::propWorldsWith(double frame, bool kinematic) const {
+  // kinematic (T-183 round 3, the spring chains' prop colliders): the carrier's bone before secondary motion
+  const auto socketGlobal = [&](size_t character, double at, int bone) {
+    return kinematic ? (*kinematicGlobalsMemo(character, at))[size_t(bone)] : characterGlobals(character, at)[size_t(bone)];
+  };
   struct PropState {
     std::optional<PropParent> parent;
     mat4 worldPlacement{1};
@@ -1031,7 +1112,7 @@ std::vector<mat4> SceneEvaluator::propWorlds(double frame) const {
         if (configured.parent->kind == PropParent::Kind::Character) {
           const size_t character = charactersByName.at(configured.parent->name);
           const int bone = characterSocketBone(character, configured.parent->socket);
-          socketWorld = characterGlobals(character, at)[size_t(bone)];
+          socketWorld = socketGlobal(character, at, bone);
         } else {
           const size_t parentProp = propsByName.at(configured.parent->name);
           resolve(parentProp);
@@ -1078,7 +1159,7 @@ std::vector<mat4> SceneEvaluator::propWorlds(double frame) const {
       if (parent.kind == PropParent::Kind::Character) {
         const size_t character = charactersByName.at(parent.name);
         const int bone = characterSocketBone(character, parent.socket);
-        socketWorld = characterGlobals(character, switchFrame)[size_t(bone)];
+        socketWorld = socketGlobal(character, switchFrame, bone);
       } else {
         const size_t parentProp = propsByName.at(parent.name);
         auto overridden = continuousWorld.find(parentProp);

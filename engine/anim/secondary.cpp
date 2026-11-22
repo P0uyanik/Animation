@@ -82,19 +82,33 @@ void closestSegments(vec3 p1, vec3 q1, vec3 p2, vec3 q2, float& s, vec3& c1, vec
 
 // A collider at the end of a step. Sphere / capsule: the segment a..b with radius r. Box (T-183 round 3, world
 // space): the core lo..hi with radius r (the box shrunk by its edge rounding and grown again); a = b = its centre.
+// A box on a prop is oriented: lo..hi in the frame (org, rot); points are taken into that frame and back.
 struct Shape {
   vec3 a, b;
   float r;
   bool box = false;
   vec3 lo{0}, hi{0};
+  bool off = false;       // an external collider without its frame (no callback): not there
+  bool oriented = false;  // box in the frame (org, rot) instead of world axes
+  vec3 org{0};
+  mat3 rot{1};
 };
-inline vec3 nearestOn(const Shape& sh, vec3 p) { return sh.box ? glm::clamp(p, sh.lo, sh.hi) : closestOnSegment(p, sh.a, sh.b); }
+inline vec3 nearestOn(const Shape& sh, vec3 p) {
+  if (!sh.box) return closestOnSegment(p, sh.a, sh.b);
+  if (!sh.oriented) return glm::clamp(p, sh.lo, sh.hi);
+  return sh.org + sh.rot * glm::clamp(glm::transpose(sh.rot) * (p - sh.org), sh.lo, sh.hi);
+}
 // Closest points of the segment [p1, q1] (c1, at parameter s) and the shape's core (c2). Box: the distance to a
 // convex core is a convex function of s, so a ternary search over s finds it (40 fixed steps: deterministic).
 inline void nearestSeg(vec3 p1, vec3 q1, const Shape& sh, float& s, vec3& c1, vec3& c2) {
   if (!sh.box) {
     closestSegments(p1, q1, sh.a, sh.b, s, c1, c2);
     return;
+  }
+  if (sh.oriented) {  // the same search in the box's own frame
+    const mat3 inv = glm::transpose(sh.rot);
+    p1 = inv * (p1 - sh.org);
+    q1 = inv * (q1 - sh.org);
   }
   float s0 = 0, s1 = 1;
   const auto d2 = [&](float t) {
@@ -109,6 +123,10 @@ inline void nearestSeg(vec3 p1, vec3 q1, const Shape& sh, float& s, vec3& c1, ve
   s = 0.5f * (s0 + s1);
   c1 = glm::mix(p1, q1, s);
   c2 = glm::clamp(c1, sh.lo, sh.hi);
+  if (sh.oriented) {
+    c1 = sh.org + sh.rot * c1;
+    c2 = sh.org + sh.rot * c2;
+  }
 }
 
 // One "colliders" entry of a package block or of a scene override.
@@ -117,6 +135,11 @@ Result<DynamicsCollider> readCollider(const Json& c, const std::string& context)
   if (!c.is_object()) return fail(context + ": a collider must be an object");
   d.name = c.value("name", "");
   d.bone = c.value("bone", "");
+  // T-183 round 3 (scene override only): the bone belongs to another scene character, or the shape rides on a prop
+  d.character = c.value("character", "");
+  d.prop = c.value("prop", "");
+  if (!d.character.empty() && !d.prop.empty()) return fail(context + ": collider '" + d.name + "' names a character and a prop");
+  if (!d.prop.empty() && !d.bone.empty()) return fail(context + ": collider '" + d.name + "' on a prop takes no bone");
   const std::string type = c.value("type", "sphere");
   if (type == "sphere") {
     d.kind = DynamicsCollider::Kind::Sphere;
@@ -131,14 +154,15 @@ Result<DynamicsCollider> readCollider(const Json& c, const std::string& context)
     d.a = readVec3(c, "min", vec3(0));
     d.b = readVec3(c, "max", vec3(0));
     d.radius = 0.01f;
-    if (d.name.empty() || c.value("space", "") != "world" || !d.bone.empty())
-      return fail(context + ": a box collider needs a name and \"space\": \"world\" (no bone)");
+    if (!d.character.empty()) return fail(context + ": box collider '" + d.name + "' cannot ride on a character's bone");
+    if (d.name.empty() || c.value("space", d.prop.empty() ? "" : "prop") != (d.prop.empty() ? "world" : "prop") || !d.bone.empty())
+      return fail(context + ": a box collider needs a name and \"space\": \"world\" (no bone), or a \"prop\"");
     if (!(d.b.x > d.a.x && d.b.y > d.a.y && d.b.z > d.a.z)) return fail(context + ": box collider '" + d.name + "' needs min < max");
   } else {
     return fail(context + ": collider '" + d.name + "' has unknown type " + type);
   }
   d.radius = readFloat(c, "radius", d.radius);
-  if (d.name.empty() || (d.bone.empty() && d.kind != DynamicsCollider::Kind::Box) || !(d.radius > 0))
+  if (d.name.empty() || (d.bone.empty() && d.prop.empty() && d.kind != DynamicsCollider::Kind::Box) || !(d.radius > 0))
     return fail(context + ": a collider needs name, bone and radius > 0");
   return d;
 }
@@ -363,6 +387,12 @@ Json dynamicsToJson(const DynamicsSpec& s) {
     if (c.kind == DynamicsCollider::Kind::Sphere) cj.update({{"type", "sphere"}, {"centre", v3(c.a)}});
     else if (c.kind == DynamicsCollider::Kind::Capsule) cj.update({{"type", "capsule"}, {"a", v3(c.a)}, {"b", v3(c.b)}});
     else cj = Json{{"name", c.name}, {"type", "box"}, {"space", "world"}, {"min", v3(c.a)}, {"max", v3(c.b)}, {"radius", c.radius}};
+    if (!c.character.empty()) cj["character"] = c.character;
+    if (!c.prop.empty()) {
+      cj["prop"] = c.prop;
+      cj.erase("bone");
+      if (c.kind == DynamicsCollider::Kind::Box) cj["space"] = "prop";
+    }
     cols.push_back(cj);
   }
   for (const auto& c : s.chains) {
@@ -450,6 +480,16 @@ Result<std::shared_ptr<SpringChainSolver>> SpringChainSolver::create(const Skele
   s->preroll_ = spec.prerollSec;
   std::map<std::string, int> colliderIndex;
   for (const auto& c : spec.colliders) {
+    if (!c.character.empty() || !c.prop.empty()) {
+      // T-183 round 3: rides on another character's bone or on a prop; the scene resolves the names and gives the
+      // frames per step. Entries with the same carrier share one frame.
+      size_t e = 0;
+      while (e < s->externals_.size() && !(s->externals_[e].character == c.character && s->externals_[e].bone == c.bone && s->externals_[e].prop == c.prop)) ++e;
+      if (e == s->externals_.size()) s->externals_.push_back({c.character, c.bone, c.prop});
+      colliderIndex[c.name] = int(s->colliders_.size());
+      s->colliders_.push_back({c.kind, -1, c.a, c.b, vec3(0), c.radius, int(e)});
+      continue;
+    }
     if (c.kind == DynamicsCollider::Kind::Box) {  // world space: no bone; the core is the box less its edge rounding
       const vec3 half = 0.5f * (c.b - c.a);
       const float round = std::min(c.radius, std::min(half.x, std::min(half.y, half.z)));
@@ -554,7 +594,7 @@ void SpringChainSolver::targets(const std::vector<mat4>& g, std::vector<vec3>& x
   }
 }
 
-void SpringChainSolver::step(State& s, double dtd, const std::vector<mat4>& g) const {
+void SpringChainSolver::step(State& s, double dtd, const std::vector<mat4>& g, const std::vector<mat4>& ext) const {
   const float dt = float(dtd);
   std::vector<vec3> xk;
   targets(g, xk);
@@ -562,6 +602,32 @@ void SpringChainSolver::step(State& s, double dtd, const std::vector<mat4>& g) c
   // Collider shapes at the end of the step.
   std::vector<Shape> shapes;
   for (const Collider& c : colliders_) {
+    if (c.ext >= 0) {
+      // external (T-183 round 3): in the frame the scene gave for this step. A prop may carry a scale: the frame is
+      // split into its axes and their lengths; a box is scaled per axis, a sphere / capsule radius by the largest.
+      if (size_t(c.ext) >= ext.size()) {
+        shapes.push_back({vec3(0), vec3(0), 0.0f, false, vec3(0), vec3(0), true});
+        continue;
+      }
+      const mat4& E = ext[size_t(c.ext)];
+      if (c.kind != DynamicsCollider::Kind::Box) {
+        const float sc = std::max(glm::length(vec3(E[0])), std::max(glm::length(vec3(E[1])), glm::length(vec3(E[2]))));
+        shapes.push_back({vec3(E * vec4(c.a, 1)), vec3(E * vec4(c.b, 1)), c.radius * sc});
+        continue;
+      }
+      const vec3 len(glm::length(vec3(E[0])), glm::length(vec3(E[1])), glm::length(vec3(E[2])));
+      Shape sh{vec3(0), vec3(0), 0.0f, true};
+      sh.oriented = true;
+      sh.org = vec3(E[3]);
+      sh.rot = mat3(vec3(E[0]) / std::max(len.x, 1e-9f), vec3(E[1]) / std::max(len.y, 1e-9f), vec3(E[2]) / std::max(len.z, 1e-9f));
+      const vec3 lo = c.a * len, hi = c.b * len, half = 0.5f * (hi - lo);
+      sh.r = std::min(c.radius, std::min(half.x, std::min(half.y, half.z)));
+      sh.lo = lo + vec3(sh.r);
+      sh.hi = hi - vec3(sh.r);
+      sh.a = sh.b = sh.org + sh.rot * (0.5f * (lo + hi));
+      shapes.push_back(sh);
+      continue;
+    }
     if (c.kind == DynamicsCollider::Kind::Box) {
       const vec3 centre = 0.5f * (c.a + c.b);
       shapes.push_back({centre, centre, c.radius, true, c.a, c.b});
@@ -626,10 +692,11 @@ void SpringChainSolver::step(State& s, double dtd, const std::vector<mat4>& g) c
       bound += 0.05f;
       for (size_t cn = 0; cn < ch.colliders.size(); ++cn) {
         const Shape& sh = shapes[size_t(ch.colliders[cn])];
-        if (glm::distance(mid, nearestOn(sh, mid)) - sh.r <= bound) active.push_back(cn);
+        if (!sh.off && glm::distance(mid, nearestOn(sh, mid)) - sh.r <= bound) active.push_back(cn);
       }
     } else {
-      for (size_t cn = 0; cn < ch.colliders.size(); ++cn) active.push_back(cn);
+      for (size_t cn = 0; cn < ch.colliders.size(); ++cn)
+        if (!shapes[size_t(ch.colliders[cn])].off) active.push_back(cn);
     }
     const float cosLimit = std::cos(glm::radians(ch.p.limitDeg));
     for (int iter = 0; iter < 2; ++iter) {
@@ -837,6 +904,7 @@ void SpringChainSolver::step(State& s, double dtd, const std::vector<mat4>& g) c
     }
   }
   s.xk = std::move(xk);
+  if (!externals_.empty()) s.ext = ext;
   if (keepShapes_) {
     s.ca.resize(shapes.size());
     s.cb.resize(shapes.size());
@@ -875,7 +943,7 @@ void SpringChainSolver::write(const State& s, std::vector<mat4>& globals) const 
 }
 
 void SpringChainSolver::apply(double frame, double frameStart, double fps, const Driver& kinematic,
-                              std::vector<mat4>& globals) const {
+                              std::vector<mat4>& globals, const External& external) const {
   if (chains_.empty()) return;
   if (!simulate_) {  // static: anchored targets, lengths kept; unanchored chains untouched
     State s;
@@ -903,6 +971,9 @@ void SpringChainSolver::apply(double frame, double frameStart, double fps, const
   const long long K = (long long)std::floor(T * hz_ + 1e-6);
   const double h = 1.0 / hz_;
   const auto frameAt = [&](long long k) { return frameStart + double(k) * h * fps; };
+  // External collider frames at a scene frame (none without external colliders or without the callback).
+  const bool ext = !externals_.empty() && external;
+  const auto extAt = [&](double f) { return ext ? external(f) : std::vector<mat4>(); };
   // Resume from the latest valid checkpoint at or before K.
   State s;
   long long k0 = -1;
@@ -912,7 +983,7 @@ void SpringChainSolver::apply(double frame, double frameStart, double fps, const
     --it;
     std::vector<vec3> xk;
     targets(kinematic(frameAt(it->first)), xk);
-    if (xk == it->second.xk) {
+    if (xk == it->second.xk && (!ext || extAt(frameAt(it->first)) == it->second.ext)) {
       s = it->second;
       k0 = it->first;
       break;
@@ -926,16 +997,17 @@ void SpringChainSolver::apply(double frame, double frameStart, double fps, const
     s.x = s.xk;
     s.v.assign(joints_, vec3(0));
     const long long pre = (long long)std::llround(preroll_ * hz_);
-    for (long long k = 0; k < pre; ++k) step(s, h, g0);
+    const std::vector<mat4> e0 = extAt(frameStart);
+    for (long long k = 0; k < pre; ++k) step(s, h, g0, e0);
     k0 = 0;
     checkpoints_[0] = s;
   }
   for (long long k = k0 + 1; k <= K; ++k) {
-    step(s, h, kinematic(frameAt(k)));
+    step(s, h, kinematic(frameAt(k)), extAt(frameAt(k)));
     if (k % 16 == 0 || k == K) checkpoints_[k] = s;
   }
   const double rem = T - double(K) * h;
-  if (rem > 1e-9) step(s, rem, globals);  // partial step to the frame itself (not cached)
+  if (rem > 1e-9) step(s, rem, globals, extAt(frame));  // partial step to the frame itself (not cached)
   write(s, globals);
 }
 

@@ -1007,3 +1007,179 @@ TEST_CASE("secondary contact: locks keeps two chains off each other; absent = th
   }
   CHECK(same);
 }
+
+// ---- T-183 round 3: colliders on another character's bone or on a prop (the scene gives their frames) ----
+
+TEST_CASE("secondary contact: external colliders parse, round-trip, and without the callback they are not there") {
+  const Skeleton sk = chainSkeleton();
+  const double fps = 24;
+  const auto drv = driverAt(sk, fps, 1, headYaw);
+  DynamicsSpec plain = chainSpec(true);
+  plain.chains[0].contact.set = true;
+  plain.chains[0].contact.segments = true;
+  plain.chains[0].contact.rest = true;
+  DynamicsSpec ext = plain;
+  const Json onBone = {{"name", "nb.arm.0"}, {"type", "sphere"}, {"character", "boy"}, {"bone", "upper_arm.L"}, {"centre", {0.0, 0.9, -0.12}}, {"radius", 0.04}};
+  const Json onBone2 = {{"name", "nb.arm.1"}, {"type", "capsule"}, {"character", "boy"}, {"bone", "upper_arm.L"}, {"a", {0.0, 0.9, -0.12}}, {"b", {0.0, 0.8, -0.12}}, {"radius", 0.04}};
+  const Json onProp = {{"name", "prop.boat"}, {"type", "box"}, {"prop", "boat"}, {"min", {-0.05, -0.013, -0.021}}, {"max", {0.05, 0.013, 0.021}}, {"radius", 0.003}};
+  REQUIRE(applyDynamicsOverride(ext, Json{{"colliders", Json::array({onBone, onBone2, onProp})}}).has_value());
+  REQUIRE(ext.colliders.size() == 4);
+  CHECK(ext.colliders[1].character == "boy");
+  CHECK(ext.colliders[1].bone == "upper_arm.L");  // a bone of the other character: not looked up in this skeleton
+  CHECK(ext.colliders[3].prop == "boat");
+  CHECK(ext.colliders[3].kind == DynamicsCollider::Kind::Box);
+  const Json out = dynamicsToJson(ext);
+  CHECK(out["colliders"][1]["character"] == "boy");
+  CHECK(out["colliders"][3]["prop"] == "boat");
+  CHECK_FALSE(out["colliders"][0].contains("character"));  // a package collider is written as before
+  CHECK_FALSE(out["colliders"][0].contains("prop"));
+  auto back = dynamicsFromJson(out);
+  REQUIRE(back.has_value());
+  CHECK(back->colliders[2].character == "boy");
+  CHECK(back->colliders[3].prop == "boat");
+  CHECK(back->colliders[3].a == ext.colliders[3].a);
+  auto a = SpringChainSolver::create(sk, plain), b = SpringChainSolver::create(sk, ext);
+  REQUIRE(a.has_value());
+  REQUIRE(b.has_value());
+  CHECK((*a)->externals().empty());
+  REQUIRE((*b)->externals().size() == 2);  // the two shapes on the same bone share one frame
+  CHECK((*b)->externals()[0].character == "boy");
+  CHECK((*b)->externals()[0].bone == "upper_arm.L");
+  CHECK((*b)->externals()[1].prop == "boat");
+  // no callback: the external colliders are left out, the result is the one without them, bit for bit
+  bool same = true;
+  for (int f = 1; f <= 60; ++f) {
+    const auto ga = solve(**a, drv, f, fps), gb = solve(**b, drv, f, fps);
+    for (size_t k = 0; k < ga.size(); ++k) same = same && ga[k] == gb[k];
+  }
+  CHECK(same);
+  // errors: a character and a prop, a bone with a prop, a box on a character's bone, a prop box in world space
+  DynamicsSpec fresh = chainSpec(true);
+  Json bad = onBone;
+  bad["prop"] = "boat";
+  CHECK_FALSE(applyDynamicsOverride(fresh, Json{{"colliders", Json::array({bad})}}).has_value());
+  bad = onProp;
+  bad["bone"] = "hand.R";
+  CHECK_FALSE(applyDynamicsOverride(fresh, Json{{"colliders", Json::array({bad})}}).has_value());
+  bad = onProp;
+  bad.erase("prop");
+  bad["character"] = "boy";
+  bad["bone"] = "hand.R";
+  CHECK_FALSE(applyDynamicsOverride(fresh, Json{{"colliders", Json::array({bad})}}).has_value());
+  bad = onProp;
+  bad["space"] = "world";
+  CHECK_FALSE(applyDynamicsOverride(fresh, Json{{"colliders", Json::array({bad})}}).has_value());
+  CHECK(fresh.colliders.size() == 1);
+}
+
+TEST_CASE("secondary contact: a prop box at the identity frame is the world box; turned and moved, the chain lies on it") {
+  const Skeleton sk = chainSkeleton();
+  const double fps = 24;
+  const auto drv = sinkDriver(sk, fps);
+  const std::vector<float> radii = {0.0f, 0.008f, 0.012f, 0.012f, 0.010f};
+  DynamicsSpec base = chainSpec(false);
+  base.chains[0].params.damping = 12;
+  base.chains[0].contact.set = true;
+  base.chains[0].contact.segments = true;
+  base.chains[0].contact.radii = radii;
+  base.chains[0].contact.rest = true;
+  DynamicsSpec world = base, prop = base, turned = base;
+  world.colliders.push_back({"table_top", DynamicsCollider::Kind::Box, "", kTableMin, kTableMax, 0.01f});
+  DynamicsCollider onProp{"table_top", DynamicsCollider::Kind::Box, "", kTableMin, kTableMax, 0.01f};
+  onProp.prop = "table";
+  prop.colliders.push_back(onProp);
+  // the same table in a frame at its centre, turned a quarter about y: x and z extents change places
+  const vec3 centre = 0.5f * (kTableMin + kTableMax), half = 0.5f * (kTableMax - kTableMin);
+  onProp.a = vec3(-half.z, -half.y, -half.x);
+  onProp.b = vec3(half.z, half.y, half.x);
+  turned.colliders.push_back(onProp);
+  auto w = SpringChainSolver::create(sk, world), p = SpringChainSolver::create(sk, prop), t = SpringChainSolver::create(sk, turned);
+  REQUIRE(w.has_value());
+  REQUIRE(p.has_value());
+  REQUIRE(t.has_value());
+  const SpringChainSolver::External identity = [](double) { return std::vector<mat4>(1, mat4(1)); };
+  // the turned table also rises 2 cm between frames 60 and 84 (the prop is carried): the chain goes with it
+  const auto lift = [&](double frame) { return float(0.02 * std::clamp((frame - 60) / 24.0, 0.0, 1.0)); };
+  const SpringChainSolver::External quarter = [&](double frame) {
+    const mat4 m = glm::translate(mat4(1), centre + vec3(0, lift(frame), 0)) * glm::rotate(mat4(1), 1.57079633f, vec3(0, 1, 0));
+    return std::vector<mat4>(1, m);
+  };
+  bool same = true;
+  float inside = 0, step = 0, gap = 1;
+  vec3 last(0);
+  for (int f = 1; f <= 140; ++f) {
+    auto gw = drv(f), gp = drv(f), gt = drv(f);
+    (*w)->apply(f, 1, fps, drv, gw);
+    (*p)->apply(f, 1, fps, drv, gp, identity);
+    (*t)->apply(f, 1, fps, drv, gt, quarter);
+    for (size_t k = 0; k < gw.size(); ++k) same = same && gw[k] == gp[k];
+    vec3 x[5];
+    for (size_t k = 0; k < 4; ++k) x[k] = pivot(gt, 2 + k);
+    x[4] = tipOf(gt, sk, 5, kTipRest);
+    const float top = kTableMax.y + lift(f);
+    float in = 0, clear = 1;
+    for (size_t k = 1; k < 5; ++k) {
+      const float dj = x[k].y - top - radii[k];
+      const float dm = k < 4 ? 0.5f * (x[k].y + x[k + 1].y) - top - 0.5f * (radii[k] + radii[k + 1]) : 1.0f;
+      in = std::max(in, -std::min(dj, dm));
+      clear = std::min(clear, std::min(dj, dm));
+    }
+    if (f > 14) inside = std::max(inside, in);
+    if (f > 110) step = std::max(step, glm::distance(x[4], last));
+    if (f == 140) gap = clear;
+    last = x[4];
+  }
+  MESSAGE("turned and lifted prop box: joint or segment middle inside it " << inside * 1000 << " mm from frame 15 on; tip step per frame after frame 110 "
+          << step * 1000 << " mm; nearest joint or middle above the top at the end " << gap * 1000 << " mm");
+  CHECK(same);            // identity frame = the world box, bit for bit
+  CHECK(inside < 1e-3f);  // on the top, also while it rises (8 mm per frame of lift would show here)
+  CHECK(step < 1e-4f);
+  CHECK(gap < 5e-4f);
+}
+
+TEST_CASE("secondary contact: a sphere on another character's bone keeps a resting chain out while it moves through") {
+  // The chain hangs at z = -0.12 behind the head. A sphere of 4 cm on a neighbour's bone crosses the place of joints
+  // 2-4 from the side (x from -0.2 to 0.2 in a second) and leaves again: no joint is inside it at any frame.
+  const Skeleton sk = chainSkeleton();
+  const double fps = 24;
+  const auto drv = driverAt(sk, fps, 1, [](double) { return 0.0f; });
+  const std::vector<float> radii = {0.0f, 0.008f, 0.012f, 0.012f, 0.010f};
+  DynamicsSpec spec = chainSpec(false);
+  spec.chains[0].params.damping = 12;
+  spec.chains[0].contact.set = true;
+  spec.chains[0].contact.segments = true;
+  spec.chains[0].contact.radii = radii;
+  spec.chains[0].contact.rest = true;
+  DynamicsSpec plain = spec;
+  // the collider's rest place is far from where it is in the scene: only the frame decides
+  DynamicsCollider arm{"nb.arm", DynamicsCollider::Kind::Sphere, "upper_arm.L", vec3(5, 5, 5), vec3(5, 5, 5), 0.04f};
+  arm.character = "boy";
+  spec.colliders.push_back(arm);
+  auto s = SpringChainSolver::create(sk, spec), p = SpringChainSolver::create(sk, plain);
+  REQUIRE(s.has_value());
+  REQUIRE(p.has_value());
+  const auto centreAt = [&](double frame) {
+    const double u = std::clamp((frame - 12) / fps, 0.0, 1.0);
+    return vec3(float(-0.2 + 0.4 * u), 0.87f, -0.12f);
+  };
+  const SpringChainSolver::External ext = [&](double frame) {
+    return std::vector<mat4>(1, glm::translate(mat4(1), centreAt(frame) - vec3(5, 5, 5)));
+  };
+  float inside = 0, plainInside = 0, endOff = 0;
+  for (int f = 1; f <= 96; ++f) {
+    auto g = drv(f), h = drv(f);
+    (*s)->apply(f, 1, fps, drv, g, ext);
+    (*p)->apply(f, 1, fps, drv, h);
+    for (size_t k = 1; k < 5; ++k) {
+      const vec3 x = k < 4 ? pivot(g, 2 + k) : tipOf(g, sk, 5, kTipRest), y = k < 4 ? pivot(h, 2 + k) : tipOf(h, sk, 5, kTipRest);
+      inside = std::max(inside, 0.04f + radii[k] - glm::distance(x, centreAt(f)));
+      plainInside = std::max(plainInside, 0.04f + radii[k] - glm::distance(y, centreAt(f)));
+      if (f == 96) endOff = std::max(endOff, glm::distance(x, y));
+    }
+  }
+  MESSAGE("joint inside the neighbour's sphere (with its radius): " << inside * 1000 << " mm with the collider, " << plainInside * 1000
+          << " mm without; joints off their rest place 1.5 s after it left: " << endOff * 1000 << " mm");
+  CHECK(plainInside > 0.03f);  // without it the sphere passes through the chain
+  CHECK(inside < 1e-3f);
+  CHECK(endOff < 2e-3f);       // and the chain hangs back where it was
+}
