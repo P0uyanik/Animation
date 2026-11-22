@@ -707,7 +707,7 @@ TEST_CASE("verbs T-112b: non-wrap hand shapes key their open / closed poses; no 
       REQUIRE(gen.find("actor/hand.R.grasp"));
       CHECK(gen.find("actor/hand.R.graspRadius")->evaluate(20).x == doctest::Approx(0.01f));
       CHECK(gen.find("actor/hand.R.graspAxis")->evaluate(20) == vec3(0));
-      CHECK(gen.find("actor/hand.R.grasp.weight")->evaluate(16).x == 0);
+      CHECK(gen.find("actor/hand.R.grasp.weight")->evaluate(15).x == 0);  // T-210 measured ramp: the pinch closed over the finger limit in contact - 4 .. contact, so its 0 key moved from 16 to 15
       CHECK(gen.find("actor/hand.R.grasp.weight")->evaluate(20).x == 1);
       CHECK(gen.find("actor/hand.R.grasp.weight")->evaluate(55).x == 0);  // released 5 f after the place contact
       for (int k = 0; k < 3; ++k) {

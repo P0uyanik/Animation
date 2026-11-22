@@ -190,10 +190,40 @@ TEST_CASE("continuity: a grasp whose hand turns nearly opposite in a short ramp 
   CHECK(ev->scene().animation.evaluate("actor/orient.hand.R.weight", 11, vec3(0)).x == doctest::Approx(1));
 }
 
+TEST_CASE("continuity: a grasp whose fingers close too fast in the grasp weight ramp closes over a longer ramp (T-210)") {
+  // The visibleGrip scene above without its hold: the grasp weight closed in contact - 4 .. contact (the boy's fingers
+  // turned 31.7 deg in one frame, limit 25). The closing ramp starts earlier until the fingers are under the limit.
+  // (Opening ramps: the release keys, covered by the shipped-scene ratchet below.)
+  Scene s = baseScene(40);
+  auto probe = load(s);
+  const vec3 shoulder = bonePos(*probe, "upperArm.R", 1), elbow = bonePos(*probe, "forearm.R", 1);
+  const float arm = glm::distance(shoulder, elbow) + glm::distance(elbow, bonePos(*probe, "hand.R", 1));
+  const mat4 rot = assetTransformMatrix({vec3(0), vec3(0, 180, 0), vec3(1)});
+  const PropAsset cupAsset = loadAsset(kRoot / "content/assets/felt_cup.asset.json").value();
+  PropDesc cup;
+  cup.name = "cup";
+  cup.id = "prop.felt_cup";
+  cup.transform.translation = shoulder + vec3(0.04f, -0.45f, 0.85f) * arm - vec3(rot * vec4(cupAsset.sockets.at("grip").translation, 0));
+  cup.transform.rotationDeg = {0, 180, 0};
+  s.props.push_back(cup);
+  s.camera.position = cup.transform.translation + vec3(-1.5f, 0.3f, 0.2f);
+  s.camera.target = cup.transform.translation;
+  s.actions = Json::parse(R"([{"type": "grasp", "character": "actor", "hand": "R", "prop": "cup", "start": 5, "contact": 20}])");
+  auto ev = load(s);
+  for (const ContinuityRow& r : continuityReport(*ev))
+    CHECK_MESSAGE(motionBoneClass(r.bone) != MotionBoneClass::Finger, "f" << r.jump.frame << " " << r.bone << " " << r.jump.deg << " deg");
+  const Track* w = ev->scene().animation.find("actor/hand.R.grasp.weight");
+  REQUIRE(w);
+  CHECK(w->evaluate(5).x == doctest::Approx(0));
+  CHECK(w->evaluate(16).x > 0.01f);  // keyed 0 at contact - 4 before T-210
+  CHECK(w->evaluate(20).x == doctest::Approx(1));
+}
+
 TEST_CASE("continuity: shipped content scenes stay under the per-frame limit (ratchet on the recorded rows)") {
   // Every unexempt row of continuityReport on the shipped content scenes (cast = the imported test packages, as
   // test_bake_golden.cpp contentScene) must be a recorded row of the baseline (scene, character, frame, bone) whose
-  // turn / travel does not grow. Recorded rows: grasp / release finger curls (follow-up T-210) and one walk start.
+  // turn / travel does not grow. Recorded row: one walk start (a body yaw ramp); T-210 removed the grasp / release
+  // finger curl rows.
   std::ifstream in(kRoot / "tests/golden/continuity_baseline.json");
   REQUIRE(in.good());
   const Json base = Json::parse(in);

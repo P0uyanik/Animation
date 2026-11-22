@@ -1,0 +1,173 @@
+{
+ "skin_drivers": [
+  "AVERAGE",
+  "SCRIPTED"
+ ],
+ "mesh": {
+  "vertices": 87690,
+  "keys": 22,
+  "head_vertices": 53958
+ },
+ "warp": {
+  "max_mm": 4.0,
+  "setup_s": 0.016,
+  "eval_ms_median": 10.7,
+  "deterministic": true,
+  "outside_radius_max_mm": 0.0,
+  "far_neck_body_max_mm": 0.0
+ },
+ "hook": {
+  "max_mm": 4.0,
+  "setup_s": 0.024,
+  "eval_ms_median": 14.7,
+  "deterministic": true,
+  "outside_radius_max_mm": 0.0,
+  "far_neck_body_max_mm": 0.0
+ },
+ "lattice_3x3x3": {
+  "max_mm": 2.21,
+  "setup_s": 0.024,
+  "eval_ms_median": 16.5,
+  "deterministic": true,
+  "outside_region_max_mm": 0.0,
+  "far_neck_body_max_mm": 0.0
+ },
+ "geometry_nodes_set_position": {
+  "max_mm": 4.0,
+  "setup_s": 0.02,
+  "eval_ms_median": 14.7,
+  "deterministic": true,
+  "outside_radius_max_mm": 0.0,
+  "far_neck_body_max_mm": 0.0
+ },
+ "keys_through_stack": {
+  "bake_all_keys_s": 0.42,
+  "per_key": {
+   "EyeWide": {
+    "far_max_mm": 0.0,
+    "delta_change_max_mm": 0.434
+   },
+   "MouthSmile": {
+    "far_max_mm": 0.02,
+    "delta_change_max_mm": 0.149
+   },
+   "CheekRaise": {
+    "far_max_mm": 0.002,
+    "delta_change_max_mm": 0.249
+   },
+   "Squint": {
+    "far_max_mm": 0.011,
+    "delta_change_max_mm": 0.193
+   },
+   "WideOpen": {
+    "far_max_mm": 0.0,
+    "delta_change_max_mm": 0.434
+   },
+   "Smile": {
+    "far_max_mm": 0.01,
+    "delta_change_max_mm": 0.285
+   },
+   "Surprise": {
+    "far_max_mm": 0.0,
+    "delta_change_max_mm": 0.434
+   },
+   "Laugh": {
+    "far_max_mm": 0.014,
+    "delta_change_max_mm": 0.3
+   },
+   "Worried": {
+    "far_max_mm": 0.0,
+    "delta_change_max_mm": 0.095
+   },
+   "Curious": {
+    "far_max_mm": 0.0,
+    "delta_change_max_mm": 0.095
+   },
+   "SmileClosed": {
+    "far_max_mm": 0.02,
+    "delta_change_max_mm": 0.149
+   },
+   "SmileOpen": {
+    "far_max_mm": 0.011,
+    "delta_change_max_mm": 0.193
+   },
+   "Blink.L@75": {
+    "far_max_mm": 0.0,
+    "delta_change_max_mm": 0.0
+   },
+   "Blink.L": {
+    "far_max_mm": 0.0,
+    "delta_change_max_mm": 1.591
+   },
+   "Blink@75": {
+    "far_max_mm": 0.0,
+    "delta_change_max_mm": 0.0
+   },
+   "Blink": {
+    "far_max_mm": 0.0,
+    "delta_change_max_mm": 1.591
+   },
+   "LeftEyeClosed@75": {
+    "far_max_mm": 0.0,
+    "delta_change_max_mm": 0.0
+   },
+   "LeftEyeClosed": {
+    "far_max_mm": 0.0,
+    "delta_change_max_mm": 1.591
+   },
+   "Blink.R@75": {
+    "far_max_mm": 0.0,
+    "delta_change_max_mm": 0.0
+   },
+   "Blink.R": {
+    "far_max_mm": 0.0,
+    "delta_change_max_mm": 0.029
+   },
+   "RightEyeClosed@75": {
+    "far_max_mm": 0.0,
+    "delta_change_max_mm": 0.0
+   },
+   "RightEyeClosed": {
+    "far_max_mm": 0.0,
+    "delta_change_max_mm": 0.029
+   }
+  }
+ },
+ "modifier_apply_as_shapekey": {
+  "knob_gn": {
+   "error": "Error: Only deforming modifiers can be applied to shapes"
+  },
+  "knob_cheek": {
+   "result": [
+    "FINISHED"
+   ],
+   "s": 0.01,
+   "new_key": "knob_cheek",
+   "vertex_count_same": true
+  }
+ },
+ "editmode_basis_propagation": {
+  "moved_vertices": 2571,
+  "basis_move_mm": 4.0,
+  "key_followed_max_err_mm": 0.0
+ },
+ "surface_deform": {
+  "skin": {
+   "is_bound": false,
+   "bind_s": 0.02,
+   "brow_vertices": 132,
+   "skin_move_under_brow_mean_mm": 0.88,
+   "brow_move_mean_mm": 0.0,
+   "follow_err_max_mm": 2.926
+  },
+  "triangulated_copy": {
+   "is_bound": true,
+   "bind_s": 0.02,
+   "brow_vertices": 132,
+   "skin_move_under_brow_mean_mm": 0.88,
+   "brow_move_mean_mm": 0.894,
+   "follow_err_max_mm": 0.109
+  }
+ },
+ "skin_concave_or_ngon_faces": 242
+}

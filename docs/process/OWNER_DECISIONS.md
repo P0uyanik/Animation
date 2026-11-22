@@ -1095,3 +1095,15 @@ hard depends-on (read) overlaps were conflicts → T-181b makes them warnings. R
   needs, pipeline fit). Build on T-202, T-204, T-206, T-196, T-207; all angles matter. REPORT.md: comparison per point,
   one recommendation with phases + token/session cost, risks, owner decisions. The T-198 finger-curl follow-up moves
   from T-209 to T-210.
+
+## 2026-11-22 ~20:35 CET (via the liaison)
+- **New research T-211 (Opus, docs/research/T-211/**, no implementation):** the 10 T-209 face points from Blender's
+  perspective — built-in Blender 5.3 features (+ bundled/free extensions) per point, checked headless where possible;
+  built-in way vs our own code, duplicates to replace, real gaps, effort/risk; revised "Blender-first fit-and-lock"
+  vs T-209 with savings. (Requested as T-210; T-210 was already the T-198 finger-curl follow-up, dispatched ~19:31Z.)
+
+## 2026-11-22 ~21:40 CET (via the liaison)
+- **New Codex task T-212 (relay, research only, docs/research/T-212/**, branch t-212-codex-face-plan-review):**
+  independent review of the T-211 Blender-first face plan (quality, efficiency, maintainability, alternatives, risks,
+  Codex's own recommendation); queued after T-208. The face decisions (T-209 D 1–5 + T-211 decision 7) stay open until
+  the owner has seen Codex's view. Supervisor IDs from T-213.

@@ -7,56 +7,56 @@
   "linux-x86_64-gcc-13": {
    "scenes": {
     "content/scenes/eval/exchange/shot.scene.json": {
-     "bake": "dd16256e4349ee339248a9f8a57edd05dde3d313946f68a16b87be43c75c4b5e",
-     "clip": "9fb50e1ed38e1760526bbb9ca93632568eebe9e0d88fa256682befa37d799e52"
+     "bake": "4d609d5abcedde99cb8f1b085a9acb9fc57486fce3a50fe5ea886788e8046708",
+     "clip": "475537ce0d227b1b0cae240cab3d6903db877f9d530b41f1beb274d445918d45"
     },
     "content/scenes/eval/handover/shot.scene.json": {
-     "bake": "d42849de59ebf8ceb57cbc391a12295f49fd3720e48a51eb7fd93a3649d7c73e",
-     "clip": "0bf29917a0f5989c1faa417fefb5de535b232c8bb03f6d0d6753b5533e840269"
+     "bake": "eef904e2da4f220d59d4b204083196ec35928ac917fc0ad9c29ebaf8515bf7ba",
+     "clip": "b8d07ab8832b7a19b2037de8c1297d93a86c00233479a42e11a325b8af6acc88"
     },
     "episodes/e901_clip_test/shots/s010/shot.scene.json": {
-     "bake": "e0278bce5ce966be8abc82ad5f6a9034fbe5c3f5bd5a239550506b4b0411cdc1",
-     "clip": "be1117b281e4e2b808da584bd5829d2698345abce016565c5fbe014d1849d202"
+     "bake": "f89476294b4786d47f1ab05a8efdb70a4c2469081f18c3b557c2d290162a0037",
+     "clip": "559b03439a25b10b846371fd748f793447f4e9738ac33472bb304f68637cce72"
     },
     "episodes/e905_props_test/shots/s010/shot.scene.json": {
-     "bake": "ea7dbd1b6bcd2f0615fcd464999d2a324b7e5315d14d9f3283ef0d4224870881",
-     "clip": "ca227fb6ffa28d14bc73322d256ab6855c3e54a6d8fb1ecb92251168ed078ab7"
+     "bake": "5c2f20b37f3864f65a7e8da933c25fd6a946bc13b69c0d2eef7239dab6f5342d",
+     "clip": "f62652afba811ea5afc9f86e7d436e50d75ca5b56ffc4479d8b449123824eb50"
     },
     "episodes/e907_exchange/shots/s010/shot.scene.json": {
-     "bake": "3dafffef5efe74a6dae63865fdfa185d87b6bca28aa72cbc3234d34a0ab96a61",
-     "clip": "9fb50e1ed38e1760526bbb9ca93632568eebe9e0d88fa256682befa37d799e52"
+     "bake": "04caa849a693ccb2f0e3b0af19ba917374cc50d97945b436e9b06c182d9a7258",
+     "clip": "475537ce0d227b1b0cae240cab3d6903db877f9d530b41f1beb274d445918d45"
     },
     "episodes/e907_exchange/shots/s010_calibrated/shot.scene.json": {
-     "bake": "1fb6b21cdd4f9eca1e89a1beb2b218bab10402ef6d383bf02d127cc3046356bd",
-     "clip": "c5355919b5dd31de3722fa3cd14a933a2b33fc50d22eb8a90db4af8e155a7042"
+     "bake": "d2ec8f3c336a5fc28ec1c1bb991fda27657bf70596190ad49ca92195dc5db706",
+     "clip": "a3114739c382a01c00099d2af78e6840215dad03353a706a6e9a0dfdfd948f68"
     },
     "test_interaction/handover/boy_to_girl": {
-     "bake": "12e53aa2e7cc82216a86802e889548ac7841616200f9570ee796a22e13ae5f74",
-     "clip": "fd1f335ea78dd87d79c4e43a3aa9deb223118be9d8cb2d6a8f01c28194243d4c"
+     "bake": "bfbed4a02ca8ab103a1e4760173101da7cceae2b5f941e9df3a38661234bf844",
+     "clip": "c8dd532193692b673f26566a59c0c6ec02298c309eb2acc2af6bf0df5047a870"
     },
     "test_interaction/handover/girl_to_boy": {
-     "bake": "dcfe8a175e394218d54830809013f8d3556bd1498180ed6d16cfec018d1b0953",
-     "clip": "668bff83bc2e1f550e0f1eb11ad58756f3a9cedd33721d49cd0046c148983103"
+     "bake": "68c5d30aa3de864d4f66578a0d6a5dee8b3294a2ae4f97e09218798db3f19962",
+     "clip": "2e81e41346df382f3fbb80d10067769c62c37ca94b1422460bc7a097efb918ff"
     },
     "test_interaction/holdIntoBody/boy": {
-     "bake": "6bb146be5b93257249c27559eaa06e9abebfe38f7a22a9104f00de6b51b6f975",
-     "clip": "f0f78f0a5225f9407084090570ffb5684b2762c569e2f72a8be9456d52dd05bd"
+     "bake": "cc83abad9b5eade906a0d5b0fbfe12f9fee74d84a53166f78f06584f88f074ea",
+     "clip": "755964f9aeb5307f0f633ce962fd1dff244ed80a70eabf44f247c19f52a39dbe"
     },
     "test_interaction/holdIntoBody/girl": {
      "bake": "6ffd334bb969e91feb69daf2a4c61e82f9ec06b2b1b4115a914b33eba2f966f1",
      "clip": "2af9e8cf2fb9be5dd0b7272b29047b4c52f5b7ee369660927d1450626705ce51"
     },
     "test_interaction/meetingPoint/boy_to_girl": {
-     "bake": "af6869c71266197c296116a290d9bb73e96e9178f61b6065b52c7fec7e07f58d",
-     "clip": "114c874fcf9dd2e2d9c37c23ea2a1a8fd2840608013bddbeb2548dfc5aa1c641"
+     "bake": "e8452febbd71d40d65abaebd8a142ff11fa70cec0ec2f4162397d9affbc667fa",
+     "clip": "62cee95ec0f7c3b090e75c2668574caf30d84a8ea6d77b1c72c797d38d9d769b"
     },
     "test_interaction/meetingPoint/girl_to_boy": {
-     "bake": "1379b74e09b6ba85c86fc642de30e844640e95e86ed1fdf8be37ae80f60bfa55",
-     "clip": "3b5d804ff380772aaef90113a2fa1191f0e1ed9adb5a400fcf005a26d1a07d71"
+     "bake": "95f7939f031d3a77a1a9322e4c5f359389c8cfba3e4e105d84d8ba6b36dcd8a7",
+     "clip": "e5fc757455914fcc23ccb3fd7d35cc849a1e012c8e4b2fd52997f138f546a974"
     },
     "test_interaction/pickUpAndPlace/boy": {
-     "bake": "10727cecf6d2262ac11f0a3781ffffeab5fe3cad72d05f1c354d7e2f966871e5",
-     "clip": "7d94e416e5ed879f013f56c53f203700bd47118b5946d5a0baa6a47c5a448b11"
+     "bake": "cdf30d87d13b40e6ffcedb3233acfc422678c26d0802c56f05ddd3bb8ddc4f0d",
+     "clip": "3d4ff56a7d15f573e41f7ecd87ee68164fc2b69390bbee6312fb631312dbf01b"
     },
     "test_interaction/pickUpAndPlace/engine": {
      "bake": "4598dd691741cc0e3e847753391959293af6b1e18c8d0cd0a799c29f00748740",
@@ -67,16 +67,16 @@
      "clip": "2beee0dfc692f2d27867dea9731bb5284049ecf518f29ed37a008dba84fdfb08"
     },
     "test_interaction/sharedFollow/off": {
-     "bake": "3be137748ce92cf2ece42e255d6c2c95ab351132e247cbfd8632d62a8890e29c",
-     "clip": "362d4112dd88773c31f19f663a3c0cb2e947e24403bccbeeb3e8f3e3709f45d3"
+     "bake": "68858eac7468ee14b2b98dda4f55d195d493d13edc6667a6223a6de807ddf36d",
+     "clip": "b17c8d569e5ef940618670faa4faa60685dc9e6cb9d40ea176b6a0e1ee73a809"
     },
     "test_interaction/sharedFollow/on": {
-     "bake": "4de829add29bb219e953f636d9f63d23c868ab820f98514ea479b59d84aaa6b7",
-     "clip": "5938960cc5a3606984286c3f32149a04b822d76f60b2e195966a8985181f737b"
+     "bake": "86bc92823f44006376917aefe496118bbf066db54214cce7750e5e22f318f976",
+     "clip": "fd07bff28ea0a03b7d3008794b58fa92ae2050afaa5f518af25cdadfffb72d68"
     },
     "test_interaction/visibleGrip/boy": {
-     "bake": "cdeb4db6fc932120618eec5792de2f4d220455cac15dce1629a4aebf417a0c5a",
-     "clip": "d6b2bc032fcf627a70790068264711f850d2eed9e2d00f15a205477bf719e042"
+     "bake": "da56f00229f6b609bf7ea852186c9f0710e43367d46ecaf879e840d6c661ff19",
+     "clip": "3e191b547504538d296b57d06c4fa0a6f814ec147ce8f62d8a327713b4d3aac9"
     },
     "test_interaction/visibleGrip/engine": {
      "bake": "c0ac3d8cfb5e109c6ae3967e91f3c7d25966e14f60388d2cf6d3564a6ee8d4e7",

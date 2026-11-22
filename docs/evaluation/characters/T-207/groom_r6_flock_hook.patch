@@ -1,0 +1,37 @@
+--- a/pipeline/charsys/groom_r6.py	2026-11-22 18:17:57.079447871 +0000
++++ b/pipeline/charsys/groom_r6.py	2026-11-22 18:17:57.101486748 +0000
+@@ -367,8 +367,33 @@
+ 
+ 
+ # -------------------------------------------------------------------------------------------------------------- build
++def _flock():
++    """groom/flock.py (T-207, opt-in velvet/flock finish), loaded by path: groom/ is a namespace directory."""
++    import importlib.util
++    import os
++    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "groom", "flock.py")
++    spec = importlib.util.spec_from_file_location("ps_hair_flock", path)
++    mod = importlib.util.module_from_spec(spec)
++    spec.loader.exec_module(mod)
++    return mod
++
++
+ def build(C, head, frame, hair_spec, material, face_y, fibres=None):
+-    """As groom_r5.build (same arguments and return value), for groom/5 specs."""
++    """As groom_r5.build (same arguments and return value), for groom/5 specs. T-207: a "flock" key (options of
++    groom/flock.py, "plush-studio.hair-flock/1") adds the velvet/flock finish after the build; without the key this
++    is exactly the previous build (the key is checked first and nothing else runs)."""
++    if not (isinstance(hair_spec, dict) and "flock" in hair_spec):
++        return _build(C, head, frame, hair_spec, material, face_y, fibres)
++    FL = _flock()
++    errs = FL.validate(hair_spec["flock"])
++    if errs:
++        raise SystemExit("groom/5 flock: " + "; ".join(errs))
++    objs, rep = _build(C, head, frame, FL.strip_spec(hair_spec), material, face_y, fibres)
++    rep["flock"] = FL.apply_spec(hair_spec, objs)
++    return objs, rep
++
++
++def _build(C, head, frame, hair_spec, material, face_y, fibres=None):
+     errs = validate(hair_spec)
+     if errs:
+         raise SystemExit("groom/5: " + "; ".join(errs))
