@@ -1,0 +1,693 @@
+{
+ "hair": {
+  "base": {
+   "variant": "base",
+   "hair_strands_eval": 295925,
+   "hair_curves_sha": "e3b0c44298fc1c14",
+   "renders": {
+    "0": 76.5,
+    "-45": 65.4
+   }
+  },
+  "combed": {
+   "variant": "combed",
+   "fibre_changes": 78,
+   "hair_strands_eval": 377435,
+   "hair_curves_sha": "267db1524511efae",
+   "renders": {
+    "0": 71.7,
+    "-45": 61.0
+   }
+  },
+  "lowvol": {
+   "variant": "lowvol",
+   "fibre_changes": 78,
+   "hair_strands_eval": 206440,
+   "hair_curves_sha": "e3b0c44298fc1c14",
+   "renders": {
+    "0": 64.1,
+    "-45": 67.6
+   }
+  },
+  "yarn": {
+   "variant": "yarn",
+   "fibre_changes": 78,
+   "yarn": "wave bump 600/UV-unit across the rope, noise wobble",
+   "hair_strands_eval": 206440,
+   "hair_curves_sha": "e3b0c44298fc1c14",
+   "renders": {
+    "0": 55.7,
+    "-45": 43.2
+   }
+  },
+  "yarn150": {
+   "variant": "yarn",
+   "fibre_changes": 78,
+   "yarn": {
+    "freq_per_uv": "150",
+    "strength": "1.0"
+   },
+   "hair_strands_eval": 206440,
+   "hair_curves_sha": "e3b0c44298fc1c14",
+   "renders": {
+    "0": 55.3,
+    "-45": 44.8
+   }
+  },
+  "combed_run2_64px": {
+   "variant": "combed",
+   "fibre_changes": 78,
+   "hair_strands_eval": 377435,
+   "hair_curves_sha": "267db1524511efae",
+   "renders": {
+    "0": 9.0,
+    "-45": 9.1
+   }
+  }
+ },
+ "face_fit": {
+  "full_master": {
+   "load_s": 3.0,
+   "basis_build_s": 0.04,
+   "eval_s": 2.113,
+   "fit_s": 34.84,
+   "evals": 17,
+   "target_ratios(chin,mouth,nose per eye spacing)": [
+    0.825,
+    0.474,
+    0.289
+   ],
+   "start": [
+    0.752,
+    0.461,
+    0.298
+   ],
+   "fitted": [
+    0.825,
+    0.474,
+    0.316
+   ],
+   "weights": {
+    "lower_face_length": 2.578,
+    "mouth_drop": -1.195
+   },
+   "landmark_vertices": {
+    "eye_L": 38817,
+    "eye_R": 41173,
+    "mouth": 53330,
+    "chin": 7992,
+    "nose": 53207
+   },
+   "workbench_start_s": 15.5,
+   "workbench_fitted_s": 14.7
+  },
+  "head_only": {
+   "load_s": 3.1,
+   "basis_build_s": 0.04,
+   "eval_s": 0.044,
+   "fit_s": 0.68,
+   "evals": 17,
+   "target_ratios(chin,mouth,nose per eye spacing)": [
+    0.825,
+    0.474,
+    0.289
+   ],
+   "start": [
+    0.752,
+    0.461,
+    0.298
+   ],
+   "fitted": [
+    0.825,
+    0.474,
+    0.316
+   ],
+   "weights": {
+    "lower_face_length": 2.578,
+    "mouth_drop": -1.195
+   },
+   "landmark_vertices": {
+    "eye_L": 38817,
+    "eye_R": 41173,
+    "mouth": 53330,
+    "chin": 7992,
+    "nose": 53207
+   },
+   "workbench_start_s": 1.0,
+   "workbench_fitted_s": 0.6
+  }
+ },
+ "mediapipe_face_landmarker": {
+  "reference crop boy_34_canon29_threequarter_left": {
+   "256": {
+    "detector_scores": [
+     0.84
+    ],
+    "landmarks": 478
+   },
+   "512": {
+    "detector_scores": [
+     0.85
+    ],
+    "landmarks": 478
+   }
+  },
+  "reference crop boy_34_val27_threequarter_right": {
+   "256": {
+    "detector_scores": [
+     0.74,
+     0.29,
+     0.23,
+     0.2
+    ],
+    "landmarks": 478
+   },
+   "512": {
+    "detector_scores": [
+     0.73,
+     0.33,
+     0.26
+    ],
+    "landmarks": 478
+   }
+  },
+  "reference crop boy_front_canon29_front": {
+   "256": {
+    "detector_scores": [
+     0.81,
+     0.36
+    ],
+    "landmarks": 478
+   },
+   "512": {
+    "detector_scores": [
+     0.82,
+     0.35
+    ],
+    "landmarks": 478
+   }
+  },
+  "reference crop boy_front_hero24_front": {
+   "256": {
+    "detector_scores": [
+     0.76,
+     0.31,
+     0.22
+    ],
+    "landmarks": 478
+   },
+   "512": {
+    "detector_scores": [
+     0.78,
+     0.34,
+     0.21
+    ],
+    "landmarks": 478
+   }
+  },
+  "reference crop boy_front_val27_front": {
+   "256": {
+    "detector_scores": [
+     0.82,
+     0.24
+    ],
+    "landmarks": 478
+   },
+   "512": {
+    "detector_scores": [
+     0.82,
+     0.24
+    ],
+    "landmarks": 478
+   }
+  },
+  "reference crop boy_side_canon29_side_left": {
+   "256": {
+    "detector_scores": [
+     0.52,
+     0.34,
+     0.29
+    ],
+    "landmarks": 0
+   },
+   "512": {
+    "detector_scores": [
+     0.53,
+     0.34,
+     0.33
+    ],
+    "landmarks": 0
+   }
+  },
+  "reference crop boy_side_val27_side_right": {
+   "256": {
+    "detector_scores": [
+     0.58,
+     0.51,
+     0.22
+    ],
+    "landmarks": 478
+   },
+   "512": {
+    "detector_scores": [
+     0.59,
+     0.5,
+     0.25
+    ],
+    "landmarks": 0
+   }
+  },
+  "reference crop girl_34_sheet30_front_left": {
+   "256": {
+    "detector_scores": [
+     0.85,
+     0.63,
+     0.23
+    ],
+    "landmarks": 478
+   },
+   "512": {
+    "detector_scores": [
+     0.83,
+     0.65,
+     0.32
+    ],
+    "landmarks": 478
+   }
+  },
+  "reference crop girl_front_sheet30_front": {
+   "256": {
+    "detector_scores": [
+     0.81,
+     0.64,
+     0.43
+    ],
+    "landmarks": 478
+   },
+   "512": {
+    "detector_scores": [
+     0.82,
+     0.64,
+     0.44
+    ],
+    "landmarks": 478
+   }
+  },
+  "reference crop girl_side_sheet30_left": {
+   "256": {
+    "detector_scores": [
+     0.84,
+     0.51
+    ],
+    "landmarks": 0
+   },
+   "512": {
+    "detector_scores": [
+     0.85,
+     0.48,
+     0.23
+    ],
+    "landmarks": 0
+   }
+  },
+  "reference crop third_34_f14_head_3q": {
+   "256": {
+    "detector_scores": [
+     0.76,
+     0.46
+    ],
+    "landmarks": 478
+   },
+   "512": {
+    "detector_scores": [
+     0.76,
+     0.49
+    ],
+    "landmarks": 478
+   }
+  },
+  "reference crop third_34_s02_front_left": {
+   "256": {
+    "detector_scores": [
+     0.74
+    ],
+    "landmarks": 478
+   },
+   "512": {
+    "detector_scores": [
+     0.76
+    ],
+    "landmarks": 478
+   }
+  },
+  "reference crop third_front_f14_head_front": {
+   "256": {
+    "detector_scores": [
+     0.81,
+     0.36
+    ],
+    "landmarks": 478
+   },
+   "512": {
+    "detector_scores": [
+     0.8,
+     0.26,
+     0.23
+    ],
+    "landmarks": 478
+   }
+  },
+  "reference crop third_front_id01_full": {
+   "256": {
+    "detector_scores": [
+     0.77,
+     0.25
+    ],
+    "landmarks": 478
+   },
+   "512": {
+    "detector_scores": [
+     0.78,
+     0.27
+    ],
+    "landmarks": 478
+   }
+  },
+  "reference crop third_front_s02_front": {
+   "256": {
+    "detector_scores": [
+     0.71
+    ],
+    "landmarks": 478
+   },
+   "512": {
+    "detector_scores": [
+     0.71
+    ],
+    "landmarks": 478
+   }
+  },
+  "reference crop third_side_f14_head_side": {
+   "256": {
+    "detector_scores": [
+     0.68,
+     0.27,
+     0.27
+    ],
+    "landmarks": 0
+   },
+   "512": {
+    "detector_scores": [
+     0.68,
+     0.33,
+     0.25
+    ],
+    "landmarks": 0
+   }
+  },
+  "reference crop third_side_s02_left": {
+   "256": {
+    "detector_scores": [
+     0.67,
+     0.26
+    ],
+    "landmarks": 0
+   },
+   "512": {
+    "detector_scores": [
+     0.65,
+     0.26
+    ],
+    "landmarks": 0
+   }
+  },
+  "boy render 3/4 (2nd row)": {
+   "256": {
+    "detector_scores": [
+     0.67,
+     0.42
+    ],
+    "landmarks": 0
+   },
+   "512": {
+    "detector_scores": [
+     0.69,
+     0.3,
+     0.23
+    ],
+    "landmarks": 0
+   }
+  },
+  "boy render side": {
+   "256": {
+    "detector_scores": [
+     0.58,
+     0.24
+    ],
+    "landmarks": 0
+   },
+   "512": {
+    "detector_scores": [
+     0.66,
+     0.23
+    ],
+    "landmarks": 0
+   }
+  },
+  "boy render side (2nd row)": {
+   "256": {
+    "detector_scores": [
+     0.6,
+     0.25,
+     0.22
+    ],
+    "landmarks": 0
+   },
+   "512": {
+    "detector_scores": [
+     0.63,
+     0.23
+    ],
+    "landmarks": 0
+   }
+  },
+  "boy render front (row val27)": {
+   "256": {
+    "detector_scores": [
+     0.65
+    ],
+    "landmarks": 0
+   },
+   "512": {
+    "detector_scores": [
+     0.63,
+     0.26,
+     0.22
+    ],
+    "landmarks": 478
+   }
+  },
+  "boy render front (row hero24)": {
+   "256": {
+    "detector_scores": [
+     0.65
+    ],
+    "landmarks": 0
+   },
+   "512": {
+    "detector_scores": [
+     0.62,
+     0.26,
+     0.22
+    ],
+    "landmarks": 478
+   }
+  },
+  "boy render front (row canon29)": {
+   "256": {
+    "detector_scores": [
+     0.65
+    ],
+    "landmarks": 0
+   },
+   "512": {
+    "detector_scores": [
+     0.63,
+     0.26,
+     0.22
+    ],
+    "landmarks": 478
+   }
+  },
+  "boy render 3/4": {
+   "256": {
+    "detector_scores": [
+     0.66,
+     0.42
+    ],
+    "landmarks": 478
+   },
+   "512": {
+    "detector_scores": [
+     0.69,
+     0.29
+    ],
+    "landmarks": 0
+   }
+  },
+  "girl render front": {
+   "256": {
+    "detector_scores": [
+     0.83,
+     0.32
+    ],
+    "landmarks": 478
+   },
+   "512": {
+    "detector_scores": [
+     0.82,
+     0.34
+    ],
+    "landmarks": 478
+   }
+  },
+  "girl render 3/4": {
+   "256": {
+    "detector_scores": [
+     0.57,
+     0.27
+    ],
+    "landmarks": 0
+   },
+   "512": {
+    "detector_scores": [
+     0.61,
+     0.21,
+     0.2
+    ],
+    "landmarks": 0
+   }
+  },
+  "girl render side": {
+   "256": {
+    "detector_scores": [
+     0.81,
+     0.4,
+     0.22
+    ],
+    "landmarks": 0
+   },
+   "512": {
+    "detector_scores": [
+     0.76,
+     0.36
+    ],
+    "landmarks": 0
+   }
+  },
+  "third render 3/4 (2nd row)": {
+   "256": {
+    "detector_scores": [
+     0.8
+    ],
+    "landmarks": 478
+   },
+   "512": {
+    "detector_scores": [
+     0.82
+    ],
+    "landmarks": 478
+   }
+  },
+  "third render side": {
+   "256": {
+    "detector_scores": [
+     0.56,
+     0.23
+    ],
+    "landmarks": 0
+   },
+   "512": {
+    "detector_scores": [
+     0.5,
+     0.22
+    ],
+    "landmarks": 0
+   }
+  },
+  "third render side (2nd row)": {
+   "256": {
+    "detector_scores": [
+     0.59,
+     0.24
+    ],
+    "landmarks": 0
+   },
+   "512": {
+    "detector_scores": [
+     0.49,
+     0.22
+    ],
+    "landmarks": 0
+   }
+  },
+  "third render front": {
+   "256": {
+    "detector_scores": [
+     0.8
+    ],
+    "landmarks": 478
+   },
+   "512": {
+    "detector_scores": [
+     0.82
+    ],
+    "landmarks": 478
+   }
+  },
+  "third render front (2nd row)": {
+   "256": {
+    "detector_scores": [
+     0.8,
+     0.2
+    ],
+    "landmarks": 478
+   },
+   "512": {
+    "detector_scores": [
+     0.82
+    ],
+    "landmarks": 478
+   }
+  },
+  "third render front (3rd row)": {
+   "256": {
+    "detector_scores": [
+     0.8
+    ],
+    "landmarks": 478
+   },
+   "512": {
+    "detector_scores": [
+     0.82
+    ],
+    "landmarks": 478
+   }
+  },
+  "third render 3/4": {
+   "256": {
+    "detector_scores": [
+     0.8
+    ],
+    "landmarks": 478
+   },
+   "512": {
+    "detector_scores": [
+     0.81
+    ],
+    "landmarks": 478
+   }
+  }
+ },
+ "note": "T-206 probes, 2026-11-22, bpy 5.3.0 (tools/bpy_blender.py), 4 vCPU, no GPU. Renders ran one at a time; the face probes ran while a hair render was running (timings of the full-master face probe include that contention)."
+}
