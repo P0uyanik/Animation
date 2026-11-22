@@ -1,0 +1,108 @@
+{
+ "note": "T-183 candidate (not a version, not published): hair contact on girl 0.14.0. Opt-in keys of groom/5 (pipeline/charsys/groom_contact.py): ear keep-out of the built hair; round 2: sphere colliders that follow the whole figure (head, ears, torso with the garments, arms, hands), one collision radius per chain joint from the lock's own vertices, resting contact, follow tuning as data (locks damping 7 -> 14; bun stiffness 140/120 -> 400/320, damping 9 -> 34, limit 12 -> 6 degrees). Bones are the Rigify deform bones of the shared humanoid profile.",
+ "override": {
+  "hair": {
+   "ear_keepout": {
+    "objects": [
+     "ear.*"
+    ],
+    "margin_m": 0.003,
+    "smooth": 6
+   },
+   "dynamics": {
+    "defaults": {
+     "damping": 14.0
+    },
+    "structures": {
+     "bun": {
+      "stiffness": 400.0,
+      "stiffness_tip": 320.0,
+      "damping": 34.0,
+      "limit_deg": 6.0
+     }
+    },
+    "contact": {
+     "segments": true,
+     "anchored_gravity": true,
+     "radii": {
+      "percentile": 100,
+      "floor_m": 0.006
+     },
+     "rest": {
+      "friction": 40,
+      "max_swing": 12
+     },
+     "colliders": [
+      {
+       "name": "skin_head",
+       "fit": "skin",
+       "groups": [
+        "DEF-spine.006",
+        "DEF-jaw"
+       ],
+       "exclude_objects": [
+        "ear.*"
+       ],
+       "reach_m": 0.1
+      },
+      {
+       "name": "skin_ears",
+       "fit": "skin",
+       "objects": [
+        "ear.*"
+       ],
+       "spacing_m": 0.01,
+       "radius_m": 0.02,
+       "reach_m": 9.0,
+       "min_radius_m": 0.003
+      },
+      {
+       "name": "skin_torso",
+       "fit": "skin",
+       "exclude_groups": [
+        "DEF-spine.006",
+        "DEF-jaw",
+        "DEF-eye.*",
+        "DEF-upper_arm.*",
+        "DEF-forearm.*",
+        "DEF-hand.*",
+        "DEF-f_*",
+        "DEF-palm.*",
+        "DEF-thumb.*",
+        "DEF-thigh.*",
+        "DEF-shin.*",
+        "DEF-foot.*",
+        "DEF-toe.*"
+       ],
+       "reach_m": 0.12
+      },
+      {
+       "name": "skin_arms",
+       "fit": "skin",
+       "groups": [
+        "DEF-upper_arm.*",
+        "DEF-forearm.*"
+       ],
+       "spacing_m": 0.022,
+       "reach_m": 9.0
+      },
+      {
+       "name": "skin_hands",
+       "fit": "skin",
+       "groups": [
+        "DEF-hand.*",
+        "DEF-f_*",
+        "DEF-palm.*",
+        "DEF-thumb.*"
+       ],
+       "spacing_m": 0.012,
+       "radius_m": 0.02,
+       "reach_m": 9.0,
+       "min_radius_m": 0.004
+      }
+     ]
+    }
+   }
+  }
+ }
+}

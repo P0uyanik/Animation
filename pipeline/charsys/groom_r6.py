@@ -32,6 +32,10 @@ spec.hair (generator "groom/5"): everything of groom/4 plus
               along its length by +-lumps. No random numbers: the per-clump values come from a fixed
               low-discrepancy sequence of the clump's index in the structure and "seed", so the same spec always
               builds the same hair. Applied after "tips" and "stand".
+
+Opt-in keys of T-183 (hair contact; groom_contact.py, absent = nothing changes): hair.ear_keepout (the built hair
+surface is moved out of the ear meshes before the fibres are grown) and hair.dynamics.contact (body colliders for the
+hair chains, fitted at bind time).
 """
 import math
 
@@ -74,6 +78,7 @@ except ImportError:  # plain Python (tests, validation): the few vector operatio
             return s.cross(Vector((1, 0, 0)) if abs(s[0]) < 0.9 else Vector((0, 1, 0)))
 
 import groom as G1  # groom/1 as a library (read-only use)
+import groom_contact as CT  # T-183 opt-in keys: ear keep-out, contact colliders (inactive without the keys)
 import groom_felt as GF  # felt lock defaults (read-only use)
 import groom_r5 as R5  # groom/4 as a library (read-only use)
 
@@ -137,7 +142,10 @@ def _num(d, k, lo, hi, default):
 
 
 def validate(hair_spec):
-    """Errors in a groom/5 hair spec: the groom/5 keys, then the groom/4 rules on the lowered spec."""
+    """Errors in a groom/5 hair spec: the groom/5 keys, then the groom/4 rules on the lowered spec. The T-183 contact
+    keys (groom_contact.py) are checked first and taken out of what the groom/4 path sees."""
+    if CT.has_keys(hair_spec):
+        return CT.validate(hair_spec) or validate(CT.strip(hair_spec))
     sts = hair_spec.get("structures")
     if not isinstance(sts, list) or not sts:
         return ["hair.structures must be a non-empty list"]
@@ -364,20 +372,30 @@ def build(C, head, frame, hair_spec, material, face_y, fibres=None):
     errs = validate(hair_spec)
     if errs:
         raise SystemExit("groom/5: " + "; ".join(errs))
-    low, jobs = lower(hair_spec)
-    if not jobs:
+    contact = hair_spec if CT.has_keys(hair_spec) else None  # T-183 opt-in keys (groom_contact.py)
+    low, jobs = lower(CT.strip(hair_spec))
+    keepout = contact is not None and "ear_keepout" in contact
+    if not jobs and not keepout:
         objs, rep = R5.build(C, head, frame, low, material, face_y, fibres)
         rep["generator"] = GENERATOR
+        if contact is not None:
+            rep["contact"] = CT.store(contact, objs)
         return objs, rep
     later = R5._Deferred() if fibres is not None else None  # fibres grow on the final (reshaped) geometry
     objs, rep = R5.build(C, head, frame, low, material, face_y, later)
-    rep["reshaped"] = apply_jobs(jobs, objs)
+    if jobs:
+        rep["reshaped"] = apply_jobs(jobs, objs)
+    if keepout:
+        rep["ear_keepout"] = CT.apply_ear_keepout(contact, objs)
     if later and later.calls:
         R5._grow_fibres(low, later.calls, fibres, rep)
     rep["generator"] = GENERATOR
+    if contact is not None and CT.contact_spec(contact) is not None:
+        rep["contact"] = CT.store(contact, objs)
     return objs, rep
 
 
 def bind(rig, objs, head_bone, chest_bone, binding):
-    """As groom.bind."""
+    """As groom.bind; then the T-183 contact colliders when the build stored a contact spec (no-op otherwise)."""
     G1.bind(rig, objs, head_bone, chest_bone, binding)
+    CT.bind_contact(rig, objs, head_bone, chest_bone)
