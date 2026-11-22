@@ -1,3 +1,30 @@
+# ▶ T-197 — NEW CODEX ASSIGNMENT (owner ~15:10 CET 2026-11-22; posted by the owner liaison session_01NPjxeKamtbdzi3YwrgsWXU for the round-6 Supervisor session_01NPjxePvWAMsLopzSs1fMXB)
+Codex does **T-197: EEVEE vs Cycles preview-render evaluation** (T-196 quick win Q3, owner-approved) on the owner's PC.
+Measurement only, token-efficient. No project code, spec, test or asset changes; no driver/system changes.
+**Model: gpt-6.2-astra, effort high** (visual quality judgement + timing).
+
+Why on the PC: EEVEE needs a real GPU; the cloud sessions have none. Note T-173: the PC GPU is a GeForce MX350
+(2 GB) and was slower than the CPU for Cycles — check whether EEVEE on it is still much faster than Cycles CPU.
+
+1. Branch `t-197-codex-eevee-eval` from the latest `origin/main` in a new worktree on C: (never write on D:). Write ONLY
+   `docs/evaluation/rendering/T-197/**`.
+2. Scenes (existing, read-only): T-187 paper-boat scene e912 (3–4 frames from different shots: wide seated, close
+   hands/face, hand-over two-shot, walk) and one character strict-sheet view (boy 2.3.0 or girl 0.14.0 front + 3/4).
+3. Render each frame with (a) Cycles CPU at the current preview/review profile, (b) EEVEE (Blender 5.3, GPU) with a
+   sensible preview profile (soft shadows, AO/ray tracing as available, no exotic add-ons). Same camera, resolution,
+   lights, materials. Warm-up frame excluded. If EEVEE fails or runs out of 2 GB VRAM, record it and try a lighter
+   setting once.
+4. Compare: seconds/frame, peak VRAM, and visual differences that matter for review — felt/fleece fuzz, hair, eyes
+   and glasses, skin softness, shadows/contact, depth of field. Side-by-side crops (Cycles | EEVEE) and simple
+   per-pixel difference stats. Verdict: is EEVEE good enough for (i) animation/acting review previews, (ii) look
+   review, (iii) never for final? Recommended EEVEE preview settings if usable.
+5. Output: `README.md` (≤1 page, verdict + numbers first), `bench.csv`, ≤4 evidence JPEGs (≤2048 px), the exact
+   render script/settings so it can be re-run.
+6. Post `| T-197 | STARTED |`; when done push and post
+   `<UTC> | T-197 | READY | t-197-codex-eevee-eval@<sha> | input <sha> | <headline>` + ledger.
+7. If Codex is limited, post a STATUS line and wait.
+
+---
 # ▶ T-173 — NEW CODEX ASSIGNMENT (owner ~23:45 CET 2026-11-20; posted by the owner liaison session_01NPjxeKamtbdzi3YwrgsWXU for the round-3 Supervisor session_01NPjxeL81bNYoFDm9Ypv5Ck)
 Codex does **T-173: LOCAL GPU RENDER BENCHMARK** on the owner's PC (NVIDIA GeForce). Measurement only, token-efficient.
 No project code, spec, test or asset changes; never change driver/system settings; no installs beyond Blender itself
