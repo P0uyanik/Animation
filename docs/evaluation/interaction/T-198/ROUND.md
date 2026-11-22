@@ -54,7 +54,7 @@ Supervisor BEFORE re-recording. Hand-only sub-mm / sub-degree side effects: deci
 - Supervisor (~18:45Z): (1) re-record visibleGrip/boy: done (`PLUSH_GOLDEN_WRITE=1 plush_tests -tc="golden*"`, only
   that entry changed); per-frame table in golden_delta.md. (2) option (b) as a ratchet: done
   (continuity_baseline.json, 125 rows with causes; test case "shipped content scenes ... ratchet"; checked that a
-  grown value and a new row fail). Option (a) = follow-up T-209 (rows in README).
+  grown value and a new row fail). Option (a) = follow-up T-210 (rows in README).
 
 ## Next (in order)
 

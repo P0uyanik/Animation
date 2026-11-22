@@ -50,7 +50,7 @@ f101 in s010 is also a camera cut (the R touch started on it); the ramp fix remo
   a 147 deg one-frame hand flip at f11; after it the peak is 25 deg / f. Re-recorded (Supervisor approval);
   per-frame table in [golden_delta.md](golden_delta.md).
 
-## Recorded rows (ratchet) and follow-up T-209
+## Recorded rows (ratchet) and follow-up T-210
 
 The shipped content scenes (test packages as cast) still have 125 unexempt rows, recorded with their causes in
 [continuity_baseline.json](continuity_baseline.json). The test fails if a row is added or a value grows:
@@ -63,7 +63,7 @@ The shipped content scenes (test packages as cast) still have 125 unexempt rows,
 | e901 s010 (30 fps, finger limit 20 deg / f) | girl R f243-244; f276-278 | 6; 3 / 6 / 3 | 31.7; 22.8 / 26.7 / 21.6 deg | reach closes before contact 245; opens after release 274 |
 | e901 s010 | boy hand.R f223 | 1 | 81 mm (1.01 x at 30 fps) | walk start 220: the arm swing starts |
 
-T-209 (after this merge): grasp / reach close and handover / reach release curl timing (as the touch curl fix), which
+T-210 (after this merge): grasp / reach close and handover / reach release curl timing (as the touch curl fix), which
 removes the finger rows (golden change, numbers first). The e901 walk-start row is one frame at 1.01 x.
 
 ## Tests

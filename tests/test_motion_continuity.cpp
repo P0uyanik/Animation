@@ -193,7 +193,7 @@ TEST_CASE("continuity: a grasp whose hand turns nearly opposite in a short ramp 
 TEST_CASE("continuity: shipped content scenes stay under the per-frame limit (ratchet on the recorded rows)") {
   // Every unexempt row of continuityReport on the shipped content scenes (cast = the imported test packages, as
   // test_bake_golden.cpp contentScene) must be a recorded row of the baseline (scene, character, frame, bone) whose
-  // turn / travel does not grow. Recorded rows: grasp / release finger curls (follow-up T-209) and one walk start.
+  // turn / travel does not grow. Recorded rows: grasp / release finger curls (follow-up T-210) and one walk start.
   std::ifstream in(kRoot / "docs/evaluation/interaction/T-198/continuity_baseline.json");
   REQUIRE(in.good());
   const Json base = Json::parse(in);
