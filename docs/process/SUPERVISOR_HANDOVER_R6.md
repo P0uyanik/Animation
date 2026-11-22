@@ -4,30 +4,29 @@ Round-5 Supervisor: session_01NPjxeLwrBZTHQcvtcEtsUk. Owner liaison: session_01N
 via the liaison or typed by the owner in a session). Standing rules: SUPERVISOR_HANDOVER_R5.md + R4 (unchanged), plus
 OWNER_DECISIONS 2026-11-21 ~19:20 / ~22:45 / ~23:10 CET. P13: LIGHT clone only per CLONE_PROFILES.md §3.
 
-## State
-main = staging = e09542f + ledger commits (green). Merged in R5: T-175 r2, T-184, T-171 r3 (batch 554e403), T-185, T-186,
-T-188 (thumb-up r3 grasp now in e910 boy + e909 girl, cup still contact→lift), T-189 (world reuse survey).
-Merge recipe unchanged. Gate wait: background Bash polling
-`https://api.github.com/repos/P0uyanik/Animation/actions/runs?branch=<b>` (no auth needed), then ff promote
-`git push origin <sha>:refs/heads/staging <sha>:refs/heads/main`. Local `git reset --hard` is refused by the auto-mode
-classifier here: use `git checkout -q -B <branch> origin/main` instead. Guarded paths: `check_all.guarded_patterns()` is a
-list; use `any(check_all.matches(f, p) for p in pats)`. OWNERSHIP rows must sit inside the table (above the
-"Supervisor-only files" footer) — `claims --list` shows what is parsed.
-Pre-existing reds (not from R5, informational): "CI status (main)" summary job; Windows gate failed at b9c0d4e (11-21
-11:43Z); Branch cleanup failing since 11-17.
+## State (updated 2026-11-22 ~12:10Z)
+main = staging = da41d26 (T-187 merged at 44f9fb3, gate 45018717142 green; ledger on top). Merged in R5: T-175 r2, T-184,
+T-171 r3, T-185, T-186, T-188, T-189, T-187. Merge recipe unchanged. Gate wait: background Bash polling
+`https://api.github.com/repos/P0uyanik/Animation/actions/runs?branch=<b>` (no auth), then ff promote
+`git push origin <sha>:refs/heads/staging <sha>:refs/heads/main`. `git reset --hard` is refused by the auto-mode classifier:
+use `git checkout -q -B <branch> origin/main`. Guarded paths: `check_all.guarded_patterns()` is a list → `any(check_all.matches(f, p) for p in pats)`.
+OWNERSHIP rows must sit inside the table (above the "Supervisor-only files" footer); `claims --list` shows what is parsed.
+Pre-existing reds (informational): "CI status (main)" summary job; Windows gate (b9c0d4e, 11-21); Branch cleanup (since 11-17).
+Owner decisions ~04:20 CET 22 Nov: T-187 accepted, NO revised video until the system fixes below land.
 
-## Running
+## Running (all report to the Supervisor; each started design/diagnosis-first)
 | Task | Session | Branch | State / next |
 |---|---|---|---|
-| T-183 r2 hair contact | session_01NPjxeNrrMUwgc6Bw3no1YG (5th session, ~190k) | t-183-claude-hair-contact@a41bedf | CHECKPOINT sent to owner ~00:40Z: cloth/hands/ears 0 frames; hidden skin residue; fan-out of back ringlets in the lean (owner to judge). Idle. On accept: session merges origin/main, re-derives s010_t183 from the new e909 s010 (T-188), re-bakes + re-measures, ready.py → merge with TESTS line `run test_hair_contact.py` in pipeline/charsys/tests/TESTS + trailers for release_rule.py, tests/test_secondary.cpp, test_hair_contact.py, test_release_rule.py (review diffs). On another round: fresh session from ROUND.md "Session 5" (levers: shorter top segments, thinner joint 1, lock-vs-lock contact). |
-| T-187 paper-boat test scene | session_01NPjxeNHwhEhofQVtkeCoW4 (318k: stopped) | t-187-claude-paper-boat@2b948af | READY/CHECKPOINT ~03:00Z, relayed to owner (clip docs/evaluation/video/T-187/T-187_paper_boat_h264.mp4, 12 known defects in README). On accept: merge (write-set only, no guarded paths), release claim, archive session. On fix round: fresh session from ROUND.md. |
+| T-183 r3 hair vs props/table/neighbours + own body in real shots + fan-out (Fable) | session_01NPjxeMEWYzeUqnyUKscxwC | t-183-claude-hair-contact (0769144+) | design approved: box colliders in secondary.*, derive_shot.py writes e912 *_t183 + e909 s010_t183 copies with prop colliders, neighbour bones via scene.cpp (opt-in), white-haired girl in scope, fan-out levers. Measured released e912 s010: hair through table 12.5 mm (both girls), auburn ringlets in the boy 68 mm. Merge needs: TESTS line `run test_hair_contact.py` (pipeline/charsys/tests/TESTS) + trailers release_rule.py, tests/test_secondary.cpp, test_hair_contact.py, test_release_rule.py. |
+| T-190 finger/thumb joint limits system-wide (Fable) | session_01NPjxeLH3KPsH5iYaR3radj | t-190-claude-finger-limits | diagnosing; STATUS with cause + design + golden impact due; golden/test changes need Supervisor (and owner if defaults move). |
+| T-191 character–character collision (Opus) | session_01NPjxeMSi1jfB5YthUet6ZP | t-191-claude-char-collision (80f7d92+) | design approved: opt-in "interaction" bodyClearance lean pass, off by default; worst measured e912 heads through heads ~100 mm. Not scene.cpp (T-183): parse elsewhere or hand-over lines for merge. Register tests/test_body_clearance.cpp in tests/CMakeLists.txt at merge. Asks before editing episodes (use *_t191 copies). |
+| T-192 boy blink sync (Sonnet) | session_01NPjxePT9NbJYodeGknNd7N | t-192-claude-blink-sync (6c00605+) | no desync in engine/bake/package/Blender; far eye hidden by fringe in the two-shot. Adding a guard test + both-eyes close-up → READY. Owner asked (via liaison) for the clip timestamp. |
+| T-193 hair systems research (Opus, docs only) | session_01NPjxeNdWgW926FfZs5A1Gc | t-193-claude-hair-research | researching → README with recommendation; blocked hosts to the liaison. |
 
 ## Waiting for the owner (via the liaison)
-1. T-187: accept as is or fix round (which defects).
-2. T-183 r2: accept as opt-in with fan-out as known issue, or another round on the fan-out.
-3. T-189 questions (README §7): hosts kenney.nl / quaternius.com / itch.io (+CDN) or opengameart.org; CC0 geometry +
+1. T-192: timestamp of the out-of-sync blink in T-187_paper_boat_h264.mp4.
+2. T-189 questions (README §7): hosts kenney.nl / quaternius.com / itch.io (+CDN) or opengameart.org; CC0 geometry +
    material override as "ready-made"; plain git vs LFS; credits line; water ripple; AI-3D; Infinigen side-car run.
-4. e910 r3 interim question is moot (T-186 fixed the cup dip).
 
 ## Follow-ups logged (not dispatched)
 Nape cap vs neck-skin fold (body skinning, T-183 item 1); seated thigh through the shorts front panel (T-184 limit 1);
