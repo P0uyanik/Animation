@@ -113,7 +113,7 @@ Exit codes: 0 pass, 1 a check failed, 2 export refused, 3 build pin.
 ```
 blender -b --factory-startup -P pipeline/charsys/face_parity.py -- --character girl_auburn_bun_glasses --out <report.json>
 blender -b --factory-startup -P pipeline/charsys/face_parity.py -- --blend <candidate master.blend> [--strict] [--no-sweep]
-blender -b --factory-startup -P pipeline/charsys/face_parity.py -- --all --out <report.json>   # auburn first
+blender -b --factory-startup -P pipeline/charsys/face_parity.py -- --all --first girl_auburn_bun_glasses --out <report.json>
 # from a Blender script: import face_parity as FP; rep = FP.run_master(path); rep["pass"], rep["sweep_pass"]
 ```
 
@@ -128,7 +128,7 @@ blender -b --factory-startup -P pipeline/charsys/face_parity.py -- --all --out <
 ## Replay
 
 ```
-blender -b --factory-startup -P pipeline/charsys/face_parity.py -- --all --out docs/evaluation/characters/T-213/parity_current_masters.json
+blender -b --factory-startup -P pipeline/charsys/face_parity.py -- --all --first girl_auburn_bun_glasses --out docs/evaluation/characters/T-213/parity_current_masters.json
 python3 pipeline/charsys/tests/test_face_parity.py                     # plain checks, about 0.1 s, no bpy / numpy
 python3 pipeline/charsys/tests/test_face_parity.py --blender <blender>  # + auburn master and a broken temp copy, about 1 min
 ```
