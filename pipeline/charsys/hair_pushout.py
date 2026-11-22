@@ -55,13 +55,15 @@ SKIP = ["eye*", "brow*", "lash*", "lid*", "mouth*", "glasses*"]
 DEFAULTS = {"margin_m": 0.002, "core_radius_m": 0.012, "vertex_margin_m": 0.0015, "static_reach_m": 0.03,
             "characters": "all", "stages": ["chains", "vertices"], "enclosure": True, "exit_test": False,
             "lock_volume": False, "static_inside": "keep",
-            "static_fade_m": [0.002, 0.01]}
+            "static_fade_m": [0.002, 0.01], "keep_outside": "static"}
 # exit_test / lock_volume: off by default, both make visible frame-to-frame pops (README, e912 s020 f105-111)
 # static_inside "keep": a static vertex whose anchor is inside a collider at this frame (its anchor ray first meets a
 # BACK face), or that is not behind a surface itself (its ray to the anchor first meets a FRONT face), is left as baked; "clamp" = the old rule (snapped next to its anchor: the boy's cap into his hood rim and
 # ~30 mm pops, e912 s020, session 3). static_fade_m [a, b]: a static vertex's clamp is faded in with the distance of
 # the anchor ray's hit from the anchor (none at <= a, full at >= b), so an anchor that a surface reaches (own neck
-# skin, a neighbour's body, the hood rim) does not flip the vertex by its whole reach from one frame to the next
+# skin, a neighbour's body, the hood rim) does not flip the vertex by its whole reach from one frame to the next.
+# keep_outside "static" | "all": which vertices are left as baked when not behind a surface (their ray to the anchor
+# first meets a FRONT face); "all" adds chain vertices (white hair_back_under_00 through the ear edge, s020 f50)
 MAX_TRIES = 3
 EPS = 1e-5
 CHAIN_MIN_WEIGHT = 0.05  # a vertex with less than this summed DYN weight is static
@@ -85,6 +87,8 @@ def load_spec(arg):
         raise ValueError(f"hair push-out: stages must be chains / vertices, got {spec['stages']}")
     if spec["static_inside"] not in ("keep", "clamp"):
         raise ValueError(f"hair push-out: static_inside must be keep / clamp, got {spec['static_inside']}")
+    if spec["keep_outside"] not in ("static", "all"):
+        raise ValueError(f"hair push-out: keep_outside must be static / all, got {spec['keep_outside']}")
     if len(spec["static_fade_m"]) != 2:
         raise ValueError(f"hair push-out: static_fade_m must be [a, b], got {spec['static_fade_m']}")
     return spec
@@ -734,7 +738,8 @@ class PushOut:
             mg.node_group = _collector_group(c)
             sets.append(cs)
         group = _clamp_group(float(self.spec["vertex_margin_m"]), bool(self.spec["exit_test"]),
-                             self.spec["static_inside"] == "keep", [float(x) for x in self.spec["static_fade_m"]])
+                             self.spec["static_inside"] == "keep", [float(x) for x in self.spec["static_fade_m"]],
+                             self.spec["keep_outside"] == "all")
         for n in self.names:
             oc = bpy.data.collections.new(f"{PREFIX}.others.{n}")
             for m_ in sorted(self.figures):
@@ -768,7 +773,7 @@ def _collector_group(col):
     return ng
 
 
-def _clamp_group(margin, exit_test=True, static_keep=True, static_fade=None):
+def _clamp_group(margin, exit_test=True, static_keep=True, static_fade=None, outside_all=False):
     """Shared clamp: inputs Geometry, Anchors (geometry, world), Colliders (geometry, world), Self (matrix)."""
     import bpy
     ng = bpy.data.node_groups.new(f"{PREFIX}.clamp", "GeometryNodeTree")
@@ -912,9 +917,12 @@ def _clamp_group(margin, exit_test=True, static_keep=True, static_fade=None):
         L.new(rc5.outputs["Is Hit"], behind.inputs[0])
         L.new(back5.outputs[0], behind.inputs[1])
         outside = N.new("FunctionNodeBooleanMath")
-        outside.operation = "NIMPLY"  # static and not behind
-        L.new(ist.outputs[0], outside.inputs[0])
-        L.new(behind.outputs[0], outside.inputs[1])
+        outside.operation = "NOT" if outside_all else "NIMPLY"  # (static and) not behind
+        if outside_all:
+            L.new(behind.outputs[0], outside.inputs[0])
+        else:
+            L.new(ist.outputs[0], outside.inputs[0])
+            L.new(behind.outputs[0], outside.inputs[1])
         sin2 = N.new("FunctionNodeBooleanMath")
         sin2.operation = "OR"
         L.new(sin.outputs[0], sin2.inputs[0])
