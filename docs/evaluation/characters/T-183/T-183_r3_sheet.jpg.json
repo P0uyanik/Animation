@@ -1,0 +1,66 @@
+{
+ "sheet": "../T-183_r3_sheet.jpg",
+ "size": [
+  642,
+  1024
+ ],
+ "max_px": 1024,
+ "columns": [
+  "before: released shot",
+  "after: T-183 candidate copy (r8b)"
+ ],
+ "rows": [
+  {
+   "label": "e912 s030 f5: head turned against the chest; side lock over the upper arm (was 7.7 mm through the blouse)",
+   "crop": [
+    440,
+    0,
+    840,
+    440
+   ],
+   "images": [
+    "frames/s030_before_f0005.jpg",
+    "frames/s030_after_f0005.jpg"
+   ]
+  },
+  {
+   "label": "e912 s010 f120: ringlets on the table top (released: through it)",
+   "crop": [
+    300,
+    0,
+    1000,
+    560
+   ],
+   "images": [
+    "frames/s010_before_f0120.jpg",
+    "frames/s010_after_f0120.jpg"
+   ]
+  },
+  {
+   "label": "e912 s020 f100: beside the boy and the other girl",
+   "crop": [
+    440,
+    0,
+    880,
+    460
+   ],
+   "images": [
+    "frames/s020_before_f0100.jpg",
+    "frames/s020_after_f0100.jpg"
+   ]
+  },
+  {
+   "label": "e909 s010 f76: the lean; side lock beside the cup (released: into it)",
+   "crop": [
+    240,
+    40,
+    720,
+    700
+   ],
+   "images": [
+    "frames/e909_before_f0076.jpg",
+    "frames/e909_after_f0076.jpg"
+   ]
+  }
+ ]
+}

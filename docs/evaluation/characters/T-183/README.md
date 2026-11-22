@@ -2,9 +2,101 @@
 
 Owner 2026-11-21: round 1 not accepted, "the hair still intersects with the body and other areas; it goes inside the
 body". Round 2 goal: no hair inside head, neck, shoulders, back, arms, hands or garments through `e909 s010`
-(286 frames). Everything is opt-in: the released packages, bakes and goldens are unchanged. Round file: `ROUND.md`.
+(286 frames); round 3: the real shots e912 s010 / s020 / s030 and e909 s010, both girls, props and the
+neighbour. Everything is opt-in: the released packages, bakes and goldens are unchanged. Round file: `ROUND.md`.
 
-## Result in plain numbers (girl, e909 s010, all 286 frames, 160,986 hair vertices)
+## Round 3 result (final runs r8, session 9, 2026-11-22)
+
+Four real shots on the merged main, every frame, both girls (`T-183_r8_tables.json`; summaries in
+`T-183_r3_measures.json`, keys `*_r8_*`). Limit 1 mm. **Calm** = every frame that is not a source-body snap frame
++-1 (`tools/snaps.py`: a body bone of the measured character, or of the character whose surface it is, turns > 45
+degrees or travels > 100 mm within one frame). **Snap** = the snap frames +-1, reported apart and excluded from the
+criterion (Supervisor rule). `fringe`, `crown`, `flowers` > `boy:body_skin` in e912 s020 are the rigid parts inside
+the boy's head skin (T-191 staging, parked), listed apart.
+
+Fixed in round 3 (all opt-in; released packages, bakes and goldens unchanged):
+
+- **Props and the table**: world boxes, box props (the sheet), cylinder props (e909 cup: 23.9 mm / 143 frames -> 0).
+- **The neighbour**: spheres on the other characters' bones (scene.cpp callback); e912 s010 hoodie 2.2 mm -> 0
+  (fit padding 2.5 -> 4 mm).
+- **contact.carry**: the e912 s010 one-frame pops of the side locks into the blouse.
+- **contact.clear_targets** (session 9): e912 s030 f1-10, the head turned 54 degrees against the chest anchor put
+  the side lock's target inside the upper arm and the max_swing bound held the lock there: blouse 7.7 mm / 10 frames
+  -> 0. The spring targets are taken out of the colliders, the preroll starts there, and the bound yields when the
+  uncapped direction is at least 1 mm less deep (docs/SECONDARY_MOTION.md).
+- Gone since r5 besides: e912 s020 table top 11.8 mm, boy's body / hoodie / ear and the other girl (snap frames),
+  e912 s030 blouse 18.9 mm and both girls' snap-frame pairs (one frame each).
+
+**Not met: <= 1 mm on every calm frame.** What is left (below) is rigid groom parts (cap, curtain, back sections,
+temples, the white girl's back mass) inside the own skin while the head / neck pose moves the skin under them, a
+few vertices of the chain locks beside the ear and the cheek that the sphere fits of the skin do not cover, and the
+T-191 parts. Chain dynamics cannot move the rigid parts; these go to T-194 (render-time push-out on the real
+meshes), list in `ROUND.md` "Session 9".
+
+| shot, character | hair part > surface | calm frames: worst mm / frames / vertices | snap frames +-1 only: worst mm / frames | r5 calm (before this session) |
+|---|---|---|---|---|
+| e912_s010_auburn | hair_curtain>body_skin | 9.8 / 148 / 208 | 9.8 / 36 | 9.8 / 148 |
+| e912_s010_auburn | hair_ringlets_outer_00>body_skin | 8.8 / 140 / 8 | 8.8 / 36 | 8.8 / 148 |
+| e912_s010_auburn | hair_cap>body_skin | 5.9 / 148 / 37 | 6.2 / 36 | 5.9 / 148 |
+| e912_s010_auburn | hair_ringlets_side_b>ear.L | 2.0 / 60 / 3 | 2.0 / 11 | 3.0 / 105 |
+| e912_s010_white | hair_back_mass>ear.L | 10.3 / 184 / 202 | - | 10.3 / 184 |
+| e912_s010_white | hair_back_under_06>ear.R | 10.1 / 178 / 9 | - | 10.2 / 178 |
+| e912_s010_white | hair_back_under_00>ear.L | 5.4 / 177 / 6 | - | 5.4 / 184 |
+| e912_s020_auburn | hair_fringe>boy:body_skin | 49.9 / 39 / 443 | 49.9 / 3 | 49.9 / 39 |
+| e912_s020_auburn | hair_flowers_petals>boy:body_skin | 45.5 / 3 / 154 | - | 45.5 / 3 |
+| e912_s020_auburn | hair_crown>boy:body_skin | 29.8 / 4 / 444 | - | 29.8 / 4 |
+| e912_s020_auburn | hair_cap>body_skin | 25.5 / 193 / 364 | 25.5 / 13 | 25.5 / 193 |
+| e912_s020_auburn | hair_curtain>body_skin | 20.9 / 189 / 905 | 20.9 / 13 | 20.9 / 189 |
+| e912_s020_auburn | hair_flowers_centres>boy:body_skin | 11.7 / 1 / 31 | - | 11.7 / 1 |
+| e912_s020_auburn | hair_ringlets_side_00>boy:body_skin | 8.3 / 3 / 34 | 8.3 / 2 | 8.3 / 3 |
+| e912_s020_auburn | hair_temple_l>body_skin | 7.9 / 8 / 8 | - | 7.9 / 8 |
+| e912_s020_auburn | hair_back_sections>body_skin | 5.7 / 29 / 23 | 5.7 / 1 | 5.7 / 29 |
+| e912_s020_auburn | hair_ringlets_outer_00>body_skin | 3.8 / 44 / 4 | 12.4 / 7 | 2.9 / 48 |
+| e912_s020_auburn | hair_ringlets_side_b>ear.L | 1.9 / 50 / 2 | 1.9 / 4 | 6.0 / 103 |
+| e912_s020_auburn | hair_curtain>garment.blouse.collar | 1.6 / 144 / 19 | 1.6 / 5 | 1.6 / 144 |
+| e912_s020_auburn | hair_flowers_petals>white:body_skin | 0 | 4.9 / 1 | 0.0 / 0 |
+| e912_s020_auburn | hair_fringe>white:body_skin | 0 | 23.9 / 1 | 0.0 / 0 |
+| e912_s020_auburn | hair_ringlets_side_b>body_skin | 0 | 6.4 / 3 | 2.9 / 3 |
+| e912_s020_auburn | hair_ringlets_side_b>ear.R | 0 | 1.6 / 1 | 0.0 / 0 |
+| e912_s020_auburn | hair_temple_r>body_skin | 0 | 5.8 / 1 | 0.0 / 0 |
+| e912_s020_auburn | hair_cap>garment.blouse.collar | 0 | 12.2 / 1 | 0.0 / 0 |
+| e912_s020_auburn | hair_curtain>garment.blouse.main | 0 | 18.0 / 1 | 0.0 / 0 |
+| e912_s020_auburn | hair_curtain>garment.vest.edge.2 | 0 | 1.8 / 1 | 0.0 / 0 |
+| e912_s020_auburn | hair_curtain>garment.vest.main | 0 | 3.3 / 1 | 0.0 / 0 |
+| e912_s020_white | hair_back_mass>ear.L | 10.2 / 208 / 267 | - | 10.2 / 208 |
+| e912_s020_white | hair_back_under_06>ear.R | 9.8 / 167 / 11 | - | 9.4 / 169 |
+| e912_s020_white | hair_back_under_00>ear.L | 5.3 / 192 / 6 | - | 5.3 / 208 |
+| e912_s020_white | hair_cap>body_skin | 5.2 / 28 / 124 | - | 5.2 / 28 |
+| e912_s030_auburn | hair_cap>body_skin | 22.0 / 145 / 389 | 22.0 / 1 | 22.0 / 145 |
+| e912_s030_auburn | hair_curtain>body_skin | 6.9 / 26 / 219 | 7.5 / 1 | 6.9 / 26 |
+| e912_s030_auburn | hair_back_sections>body_skin | 4.1 / 21 / 7 | - | 4.1 / 21 |
+| e912_s030_auburn | hair_curtain>garment.vest.main | 3.5 / 6 / 7 | - | 3.5 / 6 |
+| e912_s030_auburn | hair_curtain>garment.vest.edge.2 | 2.3 / 10 / 5 | - | 2.3 / 10 |
+| e912_s030_auburn | hair_ringlets_outer_00>body_skin | 2.3 / 6 / 3 | - | 2.6 / 8 |
+| e912_s030_auburn | hair_curtain>garment.blouse.collar | 1.8 / 54 / 13 | 1.8 / 1 | 1.8 / 54 |
+| e912_s030_auburn | hair_ringlets_back_01>ear.L | 0 | 9.2 / 1 | 0.0 / 0 |
+| e912_s030_auburn | hair_ringlets_outer_b>body_skin | 0 | 4.6 / 1 | 0.0 / 0 |
+| e912_s030_auburn | hair_ringlets_outer_b>ear.R | 0 | 10.0 / 1 | 0.0 / 0 |
+| e912_s030_auburn | hair_ringlets_side_b>ear.R | 0 | 10.3 / 1 | 0.0 / 0 |
+| e912_s030_white | hair_back_mass>ear.L | 11.3 / 163 / 271 | 11.3 / 3 | 11.3 / 163 |
+| e912_s030_white | hair_back_under_06>ear.R | 9.7 / 87 / 12 | 9.7 / 2 | 9.7 / 88 |
+| e912_s030_white | hair_cap>body_skin | 8.8 / 79 / 222 | 8.8 / 1 | 8.8 / 79 |
+| e912_s030_white | hair_back_under_00>ear.L | 7.9 / 135 / 6 | - | 7.9 / 147 |
+| e909_s010_girl | hair_cap>body_skin | 13.1 / 268 / 126 | - | 13.1 / 268 |
+| e909_s010_girl | hair_curtain>body_skin | 11.1 / 165 / 404 | - | 11.1 / 165 |
+
+Bake time (plush-render alone, median of 3, quiet 4-core machine; released shot -> T-183 candidate copy with every
+round-3 collider): e912 s010 6.4 -> 24.0 s (3.8x), s020 28.9 -> 49.5 s (1.7x), s030 3.0 -> 17.1 s (5.7x), e909 s010
+13.9 -> 25.4 s (1.8x); **all four 52.1 -> 116.0 s = 2.2x**. clear_targets itself costs nothing measurable (r7 -> r8
+bakes within 1 s).
+
+Sheet `T-183_r3_sheet.jpg` (642x1024; spec and full frames `sheet_r3/`, built by `tools/sheet_r3.py`): released
+shot | candidate copy, same camera, crops of 1280x720 renders. e912 s030 f5 (the side lock over the turned-away upper
+arm), e912 s010 f120 (released: the ringlets go through the table top; candidate: they lie on it), e912 s020 f100
+(beside the boy), e909 s010 f76 (released: the side lock in the cup; candidate: beside it; the wider back ringlets of
+the lean are the fan-out of round 2, unchanged).
+
+## Round 2: result in plain numbers (girl, e909 s010, all 286 frames, 160,986 hair vertices)
 
 How many frames have hair deeper than 1 mm inside a surface, how deep at worst, and how many hair vertices at once.
 Released = girl 0.14.0 as published. Candidate = the same girl with `candidates/girl_auburn_bun_glasses.hair_contact.override.json`.

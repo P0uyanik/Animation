@@ -2,7 +2,7 @@
 
 Branch `t-183-claude-hair-contact`. Round 1 input `7135087`; round 2 input `2664f7e`.
 
-## Round 3 (in progress): scene props, real shots, the fan-out
+## Round 3 (READY after session 9): scene props, real shots, the fan-out
 
 Owner verdict on round 2 (2026-11-22 ~04:20 CET, on the T-187 paper-boat test `episodes/e912_paper_boat`): not final,
 the girl's hair goes through the table and still into her own body. Round 3 goal: zero penetration in real shots
@@ -195,6 +195,46 @@ State per item (A done, B traced and not fixed, C-E not started):
   rebuild on the merged generator; compare the final numbers with `T-183_r5_tables.json` before trusting either.
   e912 prepare of `s010_t183` builds all three packages; copy `build/masters` and `build/packages` to the other two
   copies (prepare then 0 s).
+
+### Session 9 (2026-11-22, continuation session): B fixed, C, D final runs r8, E
+
+- **B fixed: `contact.clear_targets`** (rest chains, opt-in; generator `rest.clear_targets`; on in both candidate
+  overrides). Traced with a debug print of the solver stages (not committed): the chest-anchored target of the tip
+  of `ringlets_side_00.00` is itself 27.6 mm inside the arm's contact distance; the preroll starts at the raw
+  targets; the projection does find a place outside (step 1: tip -1.7 mm), then the max_swing cap turns the lock back
+  towards its direction inside; projection and cap then hold it 29.7 mm in. The key: spring targets pushed out of the
+  chain's colliders (the target speed keeps the raw target), the preroll starts at those targets (`State::fresh`),
+  and the cap yields when the uncapped direction is at least 1 mm (`kCapYieldDepth`) less deep in the chain's
+  colliders than the capped one. Each part alone changes nothing in s030. A first cap rule ("yield only where the
+  uncapped direction is outside every collider") left e912 s020 f25 / f27 `ringlets_side_00 > body_skin` 4.4 mm (the
+  lock then lay against the head, 13 mm inside the head spheres): replaced by the depth rule (s020 pair gone, s030
+  fixed, s010 / e909 tables identical, e909 `tip_noise.py` double reversals > 0.5 mm 24 -> 24, worst 28.1 -> 15.6 mm).
+  Unit test "clear_targets keeps a capped resting chain out of a collider; absent = bit-identical" (an arriving
+  sphere 34.4 mm / 6 frames -> 0; sphere on the targets without preroll 28.8 mm / 5 frames -> 0).
+- **C**: neighbour `PAD` 2.5 -> 4 mm (e912 s010 hoodie 2.2 mm / 4 frames -> 0). Nothing else is cheap: the rest is
+  for T-194 (list below).
+- **D**: engine built on the merged main; `plush_tests` 288 / 288 (golden included), `plush_prop_tests` 3 / 3,
+  `test_hair_contact.py` 77 / 77, `test_release_rule.py` 150 / 150. Final runs: `r4_run.sh` tag `r7` (packages
+  `auburn_372f8ee40d972691`, `white_41ba15fbed9429e8`, `boy_3e04c84ed8656b55`; ids differ from session 8's notes,
+  numbers checked against r5), then the depth rule: bakes `runs/r8b` of the four copies (SHA equal to the measured
+  `exp/v_less` bakes: s010 ee360444, s020 1c8b61a6, s030 b628d254, e909 d4a066b8), measured every frame
+  (`T-183_r8_tables.json`). Released shots baked with the new engine and with the engine before this session: equal
+  bit for bit (e912 s010 b0fb03d2, s020 e1a05622, s030 1fff72d1, e909 s010 d9641c57). Slowdown (plush-render alone,
+  median of 3, quiet machine): 52.1 s -> 116.0 s for the four shots, 2.2x (per shot 3.8x / 1.7x / 5.7x / 1.8x).
+- **For T-194 (render-time push-out on the real meshes), calm frames, final runs r8** (worst mm / frames / vertices):
+  rigid parts in the own skin: auburn `hair_cap > body_skin` s010 5.9 / 148 / 37, s020 25.5 / 193 / 364, s030
+  22.0 / 145 / 389, e909 13.1 / 268 / 126; `hair_curtain > body_skin` s010 9.8 / 148 / 208, s020 20.9 / 189 / 905,
+  s030 6.9 / 26 / 219, e909 11.1 / 165 / 404; `hair_curtain > garment.blouse.collar` s020 1.6 / 144, s030 1.8 / 54;
+  `hair_curtain > garment.vest.main / edge.2` s030 3.5 / 6, 2.3 / 10; `hair_back_sections > body_skin` s020 5.7 / 29,
+  s030 4.1 / 21; `hair_temple_l > body_skin` s020 7.9 / 8; white `hair_cap > body_skin` s020 5.2 / 28, s030 8.8 / 79;
+  white `hair_back_mass > ear.L` s010 10.3 / 184 / 202, s020 10.2 / 208 / 267, s030 11.3 / 163 / 271 (static, item 4
+  of round 2). Chain locks, a few vertices outside the sphere fits of the skin: auburn `ringlets_outer_00 >
+  body_skin` s010 8.8 / 140 / 8, s020 3.8 / 44 / 4, s030 2.3 / 6 / 3; `ringlets_side_b > ear.L` s010 2.0 / 60 / 3,
+  s020 1.9 / 50 / 2; white `back_under_00 > ear.L` 5.4 / 177 / 6, 5.3 / 192 / 6, 7.9 / 135 / 6 and `back_under_06 >
+  ear.R` 10.1 / 178 / 9, 9.8 / 167 / 11, 9.7 / 87 / 12. Neighbour: `ringlets_side_00 > boy:body_skin` s020 f78-80
+  8.3 / 3 / 34. T-191 (parked): `fringe` / `crown` / `flowers_*` > `boy:body_skin` s020. Snap frames +-1: in the tables.
+- **E**: README "Round 3 result", tables / measures JSON, close-ups and sheet `T-183_r3_sheet.jpg`
+  (`tools/sheet_r3.py`, spec `sheet_r3/sheet.json`), READY.
 
 ### Open (in this order)
 
