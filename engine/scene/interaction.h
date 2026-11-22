@@ -225,4 +225,22 @@ struct InteractionContext {
   bool handShapesResolved = false;
 };
 
+// T-198 motion continuity: frames where a jump is intended, by data only (nothing is inferred from the motion):
+//   "cut"  a camera track ("camera.*") or the character's own "<who>.position" / "<who>.yaw" changes value through a
+//          discontinuity (a step key) at that frame: the shot cuts or the character is restaged;
+//   "fast" an action with "fast": true covers the frame (start .. end + 1; its character, or every character when it
+//          names none): an authored fast move.
+// Frame -> reason ("cut" wins over "fast").
+struct Scene;
+class SceneEvaluator;
+std::map<int, std::string> continuityExemptions(const Scene& scene, const std::string& character);
+struct ContinuityRow {
+  std::string character, bone;
+  MotionJump jump;
+  std::string exempt;  // "" = a snap (over the limit, not intended by data), else the reason
+};
+// Every body / finger step over the MotionLimits in the evaluated scene (frameStart .. frameEnd, characterGlobals),
+// classified by continuityExemptions. Eye and chain bones are not measured.
+std::vector<ContinuityRow> continuityReport(const SceneEvaluator& ev, const MotionLimits& limits = {});
+
 }  // namespace plush

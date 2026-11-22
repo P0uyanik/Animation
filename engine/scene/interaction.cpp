@@ -3197,4 +3197,52 @@ Result<void> SceneEvaluator::finishInteractions(Clip& gen, InteractionContext& c
   return {};
 }
 
+std::map<int, std::string> continuityExemptions(const Scene& scene, const std::string& character) {
+  std::map<int, std::string> out;
+  const Clip& clip = scene.animation;
+  auto steps = [&](const Track& t) {
+    for (size_t k = 1; k < t.keys.size(); ++k) {
+      const double f = t.keys[k].frame;
+      const vec3 at = t.evaluate(f), before = t.evaluate(f - 0.01), earlier = t.evaluate(f - 0.02);
+      if (glm::length(at - before) > 1e-5f + 50.0f * glm::length(before - earlier)) out[int(std::ceil(f - 1e-9))] = "cut";
+    }
+  };
+  std::vector<std::string> names;
+  for (const Clip* c : {&clip, clip.generated.get()})
+    if (c)
+      for (const auto& [name, t] : c->tracks)
+        if (name.rfind("camera.", 0) == 0 || name == character + ".position" || name == character + ".yaw") names.push_back(name);
+  std::sort(names.begin(), names.end());
+  names.erase(std::unique(names.begin(), names.end()), names.end());
+  for (const auto& n : names)
+    if (const Track* t = clip.find(n)) steps(*t);
+  if (scene.actions.is_array())
+    for (const auto& a : scene.actions) {
+      if (!a.is_object() || !a.contains("fast") || !a["fast"].is_boolean() || !a["fast"].get<bool>()) continue;
+      if (a.contains("character") && a["character"].is_string() && a["character"].get<std::string>() != character) continue;
+      if (!a.contains("start") || !a["start"].is_number()) continue;
+      const int s = int(std::floor(a["start"].get<double>()));
+      const int e = a.contains("end") && a["end"].is_number() ? int(std::ceil(a["end"].get<double>())) : s;
+      for (int f = s; f <= e + 1; ++f) out.emplace(f, "fast");  // emplace: a cut stays a cut
+    }
+  return out;
+}
+
+std::vector<ContinuityRow> continuityReport(const SceneEvaluator& ev, const MotionLimits& limits) {
+  std::vector<ContinuityRow> rows;
+  const Scene& sc = ev.scene();
+  const double fps = sc.rate.fps();
+  for (size_t c = 0; c < sc.characters.size() && c < ev.characters().size(); ++c) {
+    const Skeleton& sk = ev.characters()[c].asset.skeleton;
+    std::vector<std::vector<mat4>> g;
+    for (int f = sc.frameStart; f <= sc.frameEnd; ++f) g.push_back(ev.characterGlobals(c, f));
+    const auto ex = continuityExemptions(sc, sc.characters[c].name);
+    for (const MotionJump& j : motionJumps(sk, g, sc.frameStart, fps, limits)) {
+      const auto it = ex.find(j.frame);
+      rows.push_back({sc.characters[c].name, sk.bones[size_t(j.bone)].name, j, it == ex.end() ? "" : it->second});
+    }
+  }
+  return rows;
+}
+
 }  // namespace plush

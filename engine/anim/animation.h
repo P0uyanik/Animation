@@ -241,4 +241,35 @@ std::vector<vec3> fingertips(const Skeleton& skeleton, const Pose& pose, const m
 void applyConstraints(const Skeleton& skeleton, const Clip& clip, const std::string& prefix, double frame,
                       const mat4& world, Pose& pose, const GazeLimits& gaze = {}, double fps = 30.0);
 
+// T-198 motion continuity: per-frame speed limits of the body (docs/evaluation/interaction/T-198/README.md). In world
+// degrees / millimetres per second: 1080 deg/s and 2.4 m/s are 45 deg and 100 mm in one frame at 24 fps (T-183
+// snaps.py; a quick e909 hand-to-temple gesture reaches 41 deg / 68 mm). Fingers are measured relative to their parent
+// bone (a hand turn is not a finger move): 600 deg/s = 25 deg per frame at 24 fps. Eye bones are not limited (saccades),
+// nor DEF / jaw / chain bones (they follow the bones above).
+struct MotionLimits {
+  float degPerSec = 1080.0f;
+  float mmPerSec = 2400.0f;
+  float fingerDegPerSec = 600.0f;
+};
+enum class MotionBoneClass { None, Body, Finger };
+// Body: hips, spine, chest, neck, head, thigh, shin, foot, upperArm, forearm, hand (any ".L" / ".R" side); Finger:
+// f<k>a..c and thumbA..C; everything else None.
+MotionBoneClass motionBoneClass(const std::string& bone);
+// One bone's step from frame globals a to b: x = turn ratio, y = travel ratio to the limits (1 = at the limit);
+// fingers: turn relative to the parent bone, no travel limit. None-class bones: (0, 0).
+vec2 motionStepRatio(const Skeleton& skeleton, const std::vector<mat4>& a, const std::vector<mat4>& b, int bone,
+                     double fps, const MotionLimits& limits = {});
+// Largest of motionStepRatio over the given bones (all limited bones when empty).
+float motionStepPeak(const Skeleton& skeleton, const std::vector<mat4>& a, const std::vector<mat4>& b,
+                     const std::vector<int>& bones, double fps, const MotionLimits& limits = {});
+struct MotionJump {
+  int frame = 0;  // the jump is from frame - 1 to frame
+  int bone = -1;
+  float deg = 0, mm = 0;  // world turn (fingers: relative to the parent) and pivot travel within the frame
+  float ratio = 0;        // largest of turn / limit and travel / limit (> 1)
+};
+// Every bone step over the limit in a sequence of per-frame globals (globals[i] = frame firstFrame + i), frame order.
+std::vector<MotionJump> motionJumps(const Skeleton& skeleton, const std::vector<std::vector<mat4>>& globals, int firstFrame,
+                                    double fps, const MotionLimits& limits = {});
+
 }  // namespace plush

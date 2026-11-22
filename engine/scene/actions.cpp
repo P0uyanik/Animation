@@ -894,6 +894,10 @@ Result<void> SceneEvaluator::compileActionsBody() {
     // In: the shoulder leads and the elbow trails by `lag` (weight track shifted). Out: the elbow opens first and the
     // shoulder follows (the ".lag" key turns negative), so the hand swings back round the shoulder instead of
     // dropping straight down; both end at the authored frames.
+    // T-198: an out ramp the authored frames leave inverted (the hold reaches past `zero`, e.g. a touch whose end comes
+    // before contact + 10: the weight jumped 0 -> 1 in one frame after the end) starts 2 frames before `zero` (at the
+    // earliest at `full`); the speed check below lengthens it as the arm needs.
+    if (outStart > zero - 1) outStart = std::max(full, zero - 2);
     double inEnd = full - lag, outBegin = outStart + lag;
     if (inEnd <= inStart + 1) inEnd = full;  // no room for the lag
     if (outBegin >= zero - 1) outBegin = outStart;
@@ -923,6 +927,51 @@ Result<void> SceneEvaluator::compileActionsBody() {
       }
     }
     (void)needOut;  // the ramp out keeps its authored frames: the next action may own the arm right after `zero`
+    // T-198 per-frame speed limit (MotionLimits): measured on the arm (upper arm, forearm, hand turn and the hand's
+    // travel) frame by frame over each ramp. A ramp whose arm passes the limit is lengthened until it does not (at most
+    // 8 tries): in, the elbow lag gives way first, then the ramp starts earlier (never before the hand's previous IK
+    // keys or the scene start); out, the lag gives way, then the ramp starts earlier (never before `full`). Both still
+    // reach full weight / zero at the authored frames. Ramps under the limit keep their keys bit for bit.
+    {
+      const auto& sk = characters_[c].asset.skeleton;
+      const std::vector<int> arm = {upper, fore, handB};
+      auto over = [&](double f0, double f1) {  // the arm's largest step ratio over the frames f0 .. f1
+        return measured([&] {
+          float m = 0;
+          auto prev = kinematicGlobals(c, std::floor(f0), nullptr);
+          for (double f = std::floor(f0) + 1; f <= std::ceil(f1); f += 1) {
+            auto g = kinematicGlobals(c, f, nullptr);
+            m = std::max(m, motionStepPeak(sk, prev, g, arm, fps));
+            prev = std::move(g);
+          }
+          return m;
+        });
+      };
+      auto rekey = [&](double lo, double hi, double f0, double f1, float v0, float v1) {
+        w.keys.erase(std::remove_if(w.keys.begin(), w.keys.end(), [&](const Key& k) { return k.frame >= lo - 1e-9 && k.frame <= hi + 1e-9; }), w.keys.end());
+        easedKeys(ik + ".weight", f0, f1, v0, v1);
+      };
+      const double earliestIn = std::max(prevKey + 1, double(scene_.frameStart));
+      for (int it = 0; it < 8; ++it) {
+        const float r = over(inStart - 1, inEnd + 1);
+        if (r <= 1.0f) break;
+        const double len = inEnd - inStart, want = std::max(len + 1, len * double(r) * 1.1);
+        const double e1 = std::min(full, inStart + want), s1 = std::max(earliestIn, std::min(inStart, e1 - want));
+        if (e1 - s1 <= len + 1e-6) break;  // no room left
+        rekey(s1, inEnd, s1, e1, 0, 1);
+        inStart = s1, inEnd = e1;
+      }
+      for (int it = 0; it < 8; ++it) {
+        const float r = over(outBegin - 1, outEnd + 1);
+        if (r <= 1.0f) break;
+        const double len = outEnd - outBegin, want = std::max(len + 1, len * double(r) * 1.1);
+        const double b1 = std::max(std::max(full, inEnd), outEnd - want);
+        if (outEnd - b1 <= len + 1e-6) break;
+        rekey(b1, outEnd, b1, outEnd, 1, 0);
+        outBegin = b1;
+        outStart = std::min(outStart, b1);
+      }
+    }
     if (lag > 0) {
       key(*gen, ik + ".lag", inStart, vec3(float(lag)), Interp::Step);
       key(*gen, ik + ".lag", outStart, vec3(float(outBegin > outStart ? -lag : 0.0)), Interp::Step);
@@ -1026,6 +1075,36 @@ Result<void> SceneEvaluator::compileActionsBody() {
       dropKeysAfter(*gen, track, start);
       key(*gen, track, start, prev, Interp::Linear);
       const double end = num(a, "end", start + 3);
+      // T-198: a gaze shift whose straight path would pass close to the looker's own head (from the neighbour on one
+      // side to the one on the other: e912 s020, the target went through her head and her head turned 95 deg in a
+      // frame) turns round the head instead: two keys on the arc at the shift's thirds, in front of the looker. A shift
+      // whose path keeps clear (closest point beyond 0.6 x the nearer end's distance) is keyed as before.
+      if (const int lookerHead = asset.skeleton.find("head"); lookerHead >= 0 && start > scene_.frameStart + 1e-9 && hadGaze) {
+        const vec3 h = vec3(characterGlobals(size_t(c), start)[size_t(lookerHead)][3]);
+        const vec3 p1 = target(start + 3), a0 = prev - h, a1 = p1 - h;
+        const float d0 = glm::length(a0), d1 = glm::length(a1);
+        const vec3 seg = p1 - prev;
+        const float u = glm::dot(seg, seg) > 1e-12f ? std::clamp(glm::dot(h - prev, seg) / glm::dot(seg, seg), 0.0f, 1.0f) : 0.0f;
+        if (d0 > 1e-3f && d1 > 1e-3f && glm::distance(prev + seg * u, h) < 0.6f * std::min(d0, d1)) {
+          const vec3 e0 = a0 / d0, e1 = a1 / d1;
+          const float yawW = clip.evaluate(who + ".yaw", start, vec3(cd.yawDeg)).x;
+          vec3 front = vec3(objectMatrix(vec3(0), yawW, 1.0f) * vec4(0, 0, 1, 0));
+          front.y = 0;
+          front = glm::normalize(front + vec3(1e-6f));
+          vec3 mid = e0 + e1;
+          mid = glm::length(mid) > 0.3f && glm::dot(mid, front) > 0 ? glm::normalize(mid) : front;
+          auto slerpDir = [](vec3 x, vec3 y, float t) {
+            const float an = std::acos(std::clamp(glm::dot(x, y), -1.0f, 1.0f));
+            if (an < 1e-4f) return x;
+            return glm::normalize((std::sin((1 - t) * an) * x + std::sin(t * an) * y) / std::sin(an));
+          };
+          for (int k = 1; k <= 2; ++k) {
+            const float t = float(k) / 3.0f;
+            const vec3 dir = t < 0.5f ? slerpDir(e0, mid, 2 * t) : slerpDir(mid, e1, 2 * t - 1);
+            key(*gen, track, start + k, h + dir * glm::mix(d0, d1, t), Interp::Linear);
+          }
+        }
+      }
       for (double f = start + 3; f <= std::max(start + 3, end); f += 3) key(*gen, track, f, target(f), Interp::Linear);
       // Gaze weight (T-097D): only generated reaction looks key it ("back" below); a later look restores full weight.
       const std::string wtrack = track + ".weight";
@@ -1203,6 +1282,43 @@ Result<void> SceneEvaluator::compileActionsBody() {
       key(*gen, H + ".index", contact - 8, vec3(0), Interp::Linear);
       key(*gen, H + ".index", end - 6, vec3(0), Interp::Linear);
       key(*gen, H + ".index", end, vec3(0.25f), Interp::Linear);
+      // T-198: the hand closes to the pointing shape by contact - 8; when that leaves too few frames after `start`
+      // (e912 s010: 2 frames, the fingers turned 28-36 deg in one frame) the shape is reached later, as late as the
+      // per-frame finger limit needs (at most contact - 4, where the fingertip touch is held exact). Measured on the
+      // hand's fingers relative to their parents; a hand under the limit keeps its keys.
+      if (double closeAt = contact - 8; closeAt > start) {
+        std::vector<int> fingers;
+        for (size_t b = 0; b < asset.skeleton.bones.size(); ++b) {
+          const std::string& n = asset.skeleton.bones[b].name;
+          if (motionBoneClass(n) == MotionBoneClass::Finger && n.size() > 2 && n[n.size() - 1] == side && n[n.size() - 2] == '.')
+            fingers.push_back(int(b));
+        }
+        auto over = [&](double f0, double f1) {
+          return measured([&] {
+            float m = 0;
+            auto prev = kinematicGlobals(size_t(c), std::floor(f0), nullptr);
+            for (double f = std::floor(f0) + 1; f <= std::ceil(f1); f += 1) {
+              auto g = kinematicGlobals(size_t(c), f, nullptr);
+              m = std::max(m, motionStepPeak(asset.skeleton, prev, g, fingers, scene_.rate.fps()));
+              prev = std::move(g);
+            }
+            return m;
+          });
+        };
+        for (int it = 0; it < 6 && !fingers.empty(); ++it) {
+          const float r = over(start, closeAt + 1);
+          if (r <= 1.0f) break;
+          const double len = closeAt - start, next = std::min(contact - 4, start + std::max(len + 1, len * double(r) * 1.1));
+          if (next <= closeAt + 1e-6) break;
+          for (const std::string& t : {H, H + ".index"}) {
+            Track& tr = gen->tracks[t];
+            std::erase_if(tr.keys, [&](const Key& k) { return std::abs(k.frame - closeAt) < 1e-9; });
+          }
+          key(*gen, H, next, vec3(1, 1, 0), Interp::Linear);
+          key(*gen, H + ".index", next, vec3(0), Interp::Linear);
+          closeAt = next;
+        }
+      }
       // Correct the wrist targets so the posed index fingertip lands exactly on the target (hand orientation comes
       // from the solved arm, so the first estimate is off by a few centimetres).
       float tipErr = 0;

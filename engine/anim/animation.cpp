@@ -293,6 +293,34 @@ float legLength(const Skeleton& sk) {
   return 0.0f;
 }
 
+namespace {
+// T-198: the look target a moment ago, from samples of the lookAt track: their mean point, as before, unless the
+// samples lie on opposite sides of the looker's head (a look that swings across it, e.g. from the neighbour on one
+// side to the one on the other): their mean point then falls near the head itself and its direction swings wildly
+// (e912 s020: the head turned 95 deg in a frame). The mean direction from the head, at the mean distance, takes over
+// as the mean point closes in: from |mean - head| / mean distance 0.75 (a ~83 deg spread, the mean point bit for bit
+// above it) to 0.5. `head` = the head bone's position in the pose being built.
+vec3 laggedLookTarget(const vec3* samples, int n, vec3 head) {
+  vec3 mean(0), dir(0);
+  float dist = 0;
+  for (int i = 0; i < n; ++i) {
+    mean += samples[i];
+    const vec3 d = samples[i] - head;
+    const float l = glm::length(d);
+    dist += l;
+    if (l > 1e-6f) dir += d / l;
+  }
+  mean /= float(n);
+  dist /= float(n);
+  if (dist < 1e-6f) return mean;
+  const float r = glm::length(mean - head) / dist;
+  if (r >= 0.75f || glm::length(dir) < 1e-6f) return mean;
+  const float t = float(std::clamp((0.75 - double(r)) / 0.25, 0.0, 1.0));
+  const float k = t * t * (3 - 2 * t);
+  return glm::mix(mean, head + glm::normalize(dir) * dist, k);
+}
+}  // namespace
+
 void applyLife(const Skeleton& sk, const Clip& clip, const std::string& prefix, double frame, double fps,
                const mat4& world, const LifeParams& life, Pose& pose) {
   if (!life.enabled || pose.local.size() != sk.bones.size()) return;
@@ -306,9 +334,9 @@ void applyLife(const Skeleton& sk, const Clip& clip, const std::string& prefix, 
   // Head following the gaze, with lag: aim at the look target averaged over the last ~2 lag periods.
   if (const Track* lt = clip.find(prefix + "lookAt"); lt && !lt->keys.empty() && head >= 0 && life.headFollow > 0) {
     float lag = life.headLagSec * float(fps);
-    vec3 target(0);
-    for (int i = 0; i < 6; ++i) target += lt->evaluate(frame - lag * (0.5 + 0.3 * i));
-    target /= 6.0f;
+    vec3 samples[6];
+    for (int i = 0; i < 6; ++i) samples[i] = lt->evaluate(frame - lag * (0.5 + 0.3 * i));
+    const vec3 target = laggedLookTarget(samples, 6, vec3(boneGlobals(sk, pose, world)[size_t(head)][3]));
     float wgt = clip.evaluate(prefix + "lookAt.weight", frame, vec3(1)).x * life.headFollow;
     if (neck >= 0) aimBone(sk, pose, world, neck, target, 0.35f * wgt, 35.0f);
     aimBone(sk, pose, world, head, target, 0.6f * wgt, 45.0f);
@@ -1311,6 +1339,28 @@ void assistGazeWithNeck(const Skeleton& sk, const Clip& clip, const std::string&
     const quat parentRot = glm::normalize(glm::quat_cast(parent >= 0 ? mat3(g[size_t(parent)]) : mat3(world)));
     pose.local[size_t(bone)] = glm::normalize(glm::inverse(parentRot) * r * parentRot * pose.local[size_t(bone)]);
   };
+  // T-198: the passes below assume a turn moves the residual by about its angle. With a near target off to the side
+  // and the head bowed, the eyes swing round the neck pivot: a turn changes the residual by up to ~3x, even the other
+  // way, and the passes oscillate (e912 s020: the residual flipped side pass after pass, and which phase the last
+  // pass landed on flipped the head 95 deg between frames). When the excess grows from one pass to the next, the
+  // passes' result is replaced by the smallest neck turn that leaves the least excess, searched over the whole assist
+  // range (continuous from frame to frame). Passes whose excess only falls are left as they are (bit for bit).
+  const Pose pose0 = pose;
+  float prevEx = -1;
+  bool rising = false;
+  auto excessAt = [&]() {
+    const std::vector<mat4> g = boneGlobals(sk, pose, world);
+    vec3 pivot(0);
+    for (int e : eyes) pivot += vec3(g[size_t(e)][3]);
+    pivot /= float(eyes.size());
+    const vec3 toTarget = target - pivot;
+    if (glm::length2(toTarget) < 1e-10f) return 0.0f;
+    const vec3 d = glm::normalize(glm::transpose(mat3(g[size_t(head)])) * glm::normalize(toTarget));
+    const float yaw = glm::degrees(std::atan2(d.x, d.z)), pitch = glm::degrees(std::atan2(d.y, glm::length(vec2(d.x, d.z))));
+    return (std::max(0.0f, std::abs(yaw) - onset(yaw >= 0 ? limits.maxLeftDeg : limits.maxRightDeg)) +
+            std::max(0.0f, std::abs(pitch) - onset(pitch >= 0 ? limits.maxUpDeg : limits.maxDownDeg))) * w;
+  };
+  constexpr float kRiseDeg = 0.5f;
   for (int pass = 0; pass < 4; ++pass) {
     const std::vector<mat4> g = boneGlobals(sk, pose, world);
     vec3 pivot(0);
@@ -1326,6 +1376,12 @@ void assistGazeWithNeck(const Skeleton& sk, const Clip& clip, const std::string&
     const float pitchOn = onset(pitch >= 0 ? limits.maxUpDeg : limits.maxDownDeg);
     const float exYaw = std::copysign(std::max(0.0f, std::abs(yaw) - yawOn), yaw) * w;
     float exPitch = std::copysign(std::max(0.0f, std::abs(pitch) - pitchOn), pitch) * w;
+    if (const float ex = std::abs(exYaw) + std::abs(exPitch); prevEx >= 0 && ex > prevEx + kRiseDeg) {
+      rising = true;
+      break;
+    } else {
+      prevEx = ex;
+    }
     float neckYaw = std::clamp(usedYaw + exYaw, -limits.assistYawDeg, limits.assistYawDeg) - usedYaw;
     exPitch = std::clamp(usedPitch + exPitch, -limits.assistPitchDeg, limits.assistPitchDeg) - usedPitch;
     float bodyYaw = 0;
@@ -1345,6 +1401,31 @@ void assistGazeWithNeck(const Skeleton& sk, const Clip& clip, const std::string&
     const vec3 up = glm::normalize(hr * vec3(0, 1, 0)), right = glm::normalize(hr * vec3(1, 0, 0));
     rotateBone(gn, neck, glm::angleAxis(glm::radians(neckYaw), up) * glm::angleAxis(glm::radians(-exPitch), right));
   }
+  if (!rising && (prevEx < 0 || excessAt() <= prevEx + kRiseDeg)) return;
+  // T-198 search: neck yaw / pitch about the head's axes of the unassisted pose (the chest stays), cost = excess left +
+  // 0.02 x turn (among turns that reach the target the smallest wins); a 5 deg grid, then 1 and 0.25 deg around the best.
+  const std::vector<mat4> g0 = boneGlobals(sk, pose0, world);
+  const mat3 hr0(g0[size_t(head)]);
+  const vec3 up0 = glm::normalize(hr0 * vec3(0, 1, 0)), right0 = glm::normalize(hr0 * vec3(1, 0, 0));
+  const float Ly = std::max(0.0f, limits.assistYawDeg), Lp = std::max(0.0f, limits.assistPitchDeg);
+  auto turnTo = [&](float y, float p) {
+    pose = pose0;
+    rotateBone(g0, neck, glm::angleAxis(glm::radians(y), up0) * glm::angleAxis(glm::radians(-p), right0));
+  };
+  auto cost = [&](float y, float p) {
+    turnTo(y, p);
+    return excessAt() + 0.02f * (std::abs(y) + std::abs(p));
+  };
+  float by = 0, bp = 0, best = cost(0, 0);
+  for (float step : {5.0f, 1.0f, 0.25f}) {
+    const float cy = by, cp = bp, span = step == 5.0f ? std::max(Ly, Lp) : step * 5.0f;
+    for (float y = -span; y <= span + 1e-3f; y += step)
+      for (float p = -span; p <= span + 1e-3f; p += step) {
+        const float ty = std::clamp(cy + (step == 5.0f ? y - cy : y), -Ly, Ly), tp = std::clamp(cp + (step == 5.0f ? p - cp : p), -Lp, Lp);
+        if (const float c = cost(ty, tp); c < best - 1e-6f) best = c, by = ty, bp = tp;
+      }
+  }
+  turnTo(by, bp);
 }
 }  // namespace
 
@@ -1462,15 +1543,85 @@ void applyConstraints(const Skeleton& sk, const Clip& clip, const std::string& p
     // The assist aims at the target as it was a moment ago (averaged like the life layer's head follow): eyes lead.
     vec3 lagged = target;
     if (const double lag = gaze.assistLagSec * std::max(1.0, fps); lag > 0) {
-      lagged = vec3(0);
-      for (int i = 0; i < 6; ++i) lagged += t->evaluate(frame - lag * (0.5 + 0.3 * i));
-      lagged /= 6.0f;
+      vec3 samples[6];
+      for (int i = 0; i < 6; ++i) samples[i] = t->evaluate(frame - lag * (0.5 + 0.3 * i));
+      lagged = head >= 0 ? laggedLookTarget(samples, 6, vec3(boneGlobals(sk, pose, world)[size_t(head)][3]))
+                         : (samples[0] + samples[1] + samples[2] + samples[3] + samples[4] + samples[5]) / 6.0f;
     }
     assistGazeWithNeck(sk, clip, prefix, world, pose, head, lagged, w, gaze);
     const std::vector<mat4> globals = boneGlobals(sk, pose, world);
     for (size_t i = 0; i < sk.bones.size(); ++i)
       if (sk.bones[i].name.rfind("eye.", 0) == 0) aimEye(sk, pose, globals, world, int(i), head, target, w, gaze);
   }
+}
+
+
+MotionBoneClass motionBoneClass(const std::string& bone) {
+  const std::string base = bone.substr(0, bone.find('.'));
+  static const char* body[] = {"hips", "spine", "chest", "neck", "head", "thigh", "shin", "foot", "upperArm", "forearm", "hand"};
+  for (const char* b : body)
+    if (base == b) return MotionBoneClass::Body;
+  if (base.size() == 3 && base[0] == 'f' && base[1] >= '0' && base[1] <= '9' && base[2] >= 'a' && base[2] <= 'c')
+    return MotionBoneClass::Finger;
+  if (base.size() == 6 && base.rfind("thumb", 0) == 0 && base[5] >= 'A' && base[5] <= 'C') return MotionBoneClass::Finger;
+  return MotionBoneClass::None;
+}
+
+namespace {
+float turnDeg(const mat3& a, const mat3& b) {
+  const quat qa = glm::normalize(glm::quat_cast(a)), qb = glm::normalize(glm::quat_cast(b));
+  return glm::degrees(2.0f * std::acos(std::min(1.0f, std::abs(glm::dot(qa, qb)))));
+}
+mat3 unitAxes(const mat4& m) { return mat3(glm::normalize(vec3(m[0])), glm::normalize(vec3(m[1])), glm::normalize(vec3(m[2]))); }
+// (turn deg, travel mm) of one bone between two frames; fingers relative to the parent, without travel.
+vec2 motionStep(const Skeleton& sk, const std::vector<mat4>& a, const std::vector<mat4>& b, int bone, MotionBoneClass k) {
+  const size_t i = size_t(bone);
+  if (k == MotionBoneClass::Finger) {
+    const int p = sk.bones[i].parent;
+    if (p < 0) return vec2(0);
+    const mat3 la = glm::transpose(unitAxes(a[size_t(p)])) * unitAxes(a[i]), lb = glm::transpose(unitAxes(b[size_t(p)])) * unitAxes(b[i]);
+    return vec2(turnDeg(la, lb), 0);
+  }
+  return vec2(turnDeg(unitAxes(a[i]), unitAxes(b[i])), 1000.0f * glm::distance(vec3(a[i][3]), vec3(b[i][3])));
+}
+}  // namespace
+
+vec2 motionStepRatio(const Skeleton& sk, const std::vector<mat4>& a, const std::vector<mat4>& b, int bone, double fps,
+                     const MotionLimits& limits) {
+  if (bone < 0 || size_t(bone) >= sk.bones.size() || size_t(bone) >= a.size() || size_t(bone) >= b.size()) return vec2(0);
+  const MotionBoneClass k = motionBoneClass(sk.bones[size_t(bone)].name);
+  if (k == MotionBoneClass::None) return vec2(0);
+  const vec2 s = motionStep(sk, a, b, bone, k);
+  const float f = float(std::max(1.0, fps));
+  if (k == MotionBoneClass::Finger) return vec2(s.x / (limits.fingerDegPerSec / f), 0);
+  return vec2(s.x / (limits.degPerSec / f), s.y / (limits.mmPerSec / f));
+}
+
+float motionStepPeak(const Skeleton& sk, const std::vector<mat4>& a, const std::vector<mat4>& b, const std::vector<int>& bones,
+                     double fps, const MotionLimits& limits) {
+  float m = 0;
+  auto one = [&](int i) {
+    const vec2 r = motionStepRatio(sk, a, b, i, fps, limits);
+    m = std::max({m, r.x, r.y});
+  };
+  if (bones.empty())
+    for (size_t i = 0; i < sk.bones.size(); ++i) one(int(i));
+  else
+    for (int i : bones) one(i);
+  return m;
+}
+
+std::vector<MotionJump> motionJumps(const Skeleton& sk, const std::vector<std::vector<mat4>>& globals, int firstFrame, double fps,
+                                    const MotionLimits& limits) {
+  std::vector<MotionJump> out;
+  for (size_t f = 1; f < globals.size(); ++f)
+    for (size_t i = 0; i < sk.bones.size(); ++i) {
+      const vec2 r = motionStepRatio(sk, globals[f - 1], globals[f], int(i), fps, limits);
+      if (std::max(r.x, r.y) <= 1.0f) continue;
+      const vec2 s = motionStep(sk, globals[f - 1], globals[f], int(i), motionBoneClass(sk.bones[i].name));
+      out.push_back({firstFrame + int(f), int(i), s.x, s.y, std::max(r.x, r.y)});
+    }
+  return out;
 }
 
 }  // namespace plush
