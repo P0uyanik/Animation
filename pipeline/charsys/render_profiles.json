@@ -34,26 +34,26 @@
     "glow": {
      "type": "Fog Glow",
      "quality": "High",
-     "threshold": 0.8,
-     "smoothness": 0.5,
-     "strength": 0.25,
-     "size": 0.5
+     "threshold": 0.5,
+     "smoothness": 0.6,
+     "strength": 0.6,
+     "size": 0.6
     },
     "grade": {
-     "saturation": 1.04,
+     "saturation": 1.08,
      "lift": [
       1.0,
       1.0,
       1.0
      ],
      "gain": [
-      1.02,
+      1.03,
       1.0,
-      0.97
+      0.96
      ]
     },
     "vignette": {
-     "strength": 0.06,
+     "strength": 0.12,
      "size": [
       0.95,
       0.95
