@@ -169,3 +169,48 @@ for now (this session used `c775d69`; re-bake with the final pin). Before READY:
 4. Cost per frame (stage A, stage B, total vs off), determinism (two runs, a single frame vs in a range), "no flag
    = identical" (object list and a frame hash against main's shot_render).
 5. Sheet <= 1024 px crops (s020 boy's shoulder, s010 f101, e909 f75 cup, s020 nape), README, `tools/ready.py`, READY.
+
+## CHECKPOINT (session 2, round 2, WIP)
+
+Branch head: see `git log`; main merged twice (last: `927131b`, T-190 hand limits + T-205). Released bakes redone on
+merged main (`build/runs/rel2`); candidate bakes with the T-183 pin **`e7547ab4`** (read-only worktree, run id
+`cand1`; T-183 will give a final pin with its READY).
+
+### f110-112 regression: found and fixed
+
+- The 200-400 mm frame-to-frame jumps at s020 f109-112 are **in the released bake** (push-out off: 330 / 197 / 406 /
+  259 mm, auburn). Not a push-out effect.
+- Real bug: stage A shortened a segment when slide and normal were both blocked, but the re-key only rotates bones, so
+  the keyed tail came out at full length back inside (f112 `ringlets_side_r00` joint 3). Now lengths are always kept;
+  last resort = the free direction nearest to the baked one among 128 fixed (`_fan`), "blocked" if none. After the fix
+  stage A at f111-112: 0 crossing segments, 0 enclosed joints.
+- Stage B exit test made a 109 mm one-vertex spike (f107, out through the far side of the neck) -> reach 30 mm, and
+  then **off by default** (spec `exit_test`): it still made 30 mm pops (boy at f108).
+- New squeeze rule (stage B): a vertex whose anchor is inside ANOTHER character (first hit of the anchor ray on the
+  other characters' unmasked skins is a back face) is not clamped. Boy 30 mm pops at s020 f108-110 gone (bake: 0
+  flagged there; the clamp had moved his hair next to its anchor inside her head).
+- Tried and rejected: a "vertex behind a back face" rule (solidified garments' inner layer faces the body -> blouse
+  residue 31 mm); the lock-volume test (spec `lock_volume`, stage A, rest lock radius per segment): f111-112 residue
+  564 -> 174 / 693 -> 76 vertices, but 10 mm frame-to-frame flicker of white `outer_locks_02` -> **off by default**.
+- Open push-out pops (to report with the jump statistic): white `hair_back_under_00` beside the ear ~26 mm at s020
+  f104->105 and f108->109 (anchor ray grazes the ear on alternate frames); auburn `hair_curtain` static vertices ~30 mm
+  at f103-106 (bake 6-17 mm).
+- Open residue s020 (rel2, defaults): f111-112 auburn ringlets in the pocket under vest / blouse collar (564 / 693 v,
+  up to 35 mm; before 13971 / 17494) = snap aftermath, outside the +-1 window of f109.
+
+### Tools (T-194/tools)
+
+`measure_eval.py` (exact `enclosed()` prefilter, rows and hash identical), `hash_eval.py` (object list, pose and
+geometry hashes per frame, `--time` stage B cost), `jump.py` (largest per-object vertex jump f -> f+1),
+`blend.sh` (shot_render --blend-only, off / on), `queue.sh` (all 16 blends then 16 measures, step 2, 3 at a time;
+outputs in the scratch folder `full/`, lost with the container). Tests: `test_hair_pushout.py` 31/31.
+
+### Next
+
+1. Read `full/*.m.json`: per shot x bake, off vs on: frames over 1 mm excluding snap frames +-1 (s010 fold cycle, s020
+   f109 / f133-136, s030 f93), max per surface, glasses line, boy-head rigid hair apart; jump statistic (per frame
+   max jump, on minus off; frames where on adds > 5 mm).
+2. Cost: `shot_render.json` hair_pushout timing (setup, chains_s / frames) + `hash_eval.py --time` (stage B).
+3. Determinism: two on-blends of s020 f100-112 and a single-frame f110 blend, `hash_eval.py` hashes equal; "no flag
+   = identical": main's shot_render (worktree of origin/main) vs ours without flag, same bake, `hash_eval.py`.
+4. Sheet <= 1024 px crops (s020 boy's shoulder, s010 f101, e909 cup, s020 nape), README, `tools/ready.py`, READY.
