@@ -56,6 +56,7 @@ struct ChainContact {
   bool rest = false;               // resting contact: all colliders at full radius, inelastic, with friction
   float friction = 40.0f;          // 1/s: decay of the sliding speed of a joint in contact (rest only)
   float maxSwing = 12.0f;          // rad/s: how much faster than its kinematic direction a segment may turn (rest only; 0 = no cap)
+  float locks = 0.0f;              // > 0: joints keep off the joints of the other chains with the key by locks x (sum of the two radii)
 };
 
 struct SpringChain {
@@ -75,12 +76,12 @@ struct SpringChain {
 };
 
 struct DynamicsCollider {
-  enum class Kind { Sphere, Capsule };
+  enum class Kind { Sphere, Capsule, Box };
   std::string name;
   Kind kind = Kind::Sphere;
-  std::string bone;  // the collider rides on this bone
-  vec3 a{0}, b{0};   // rest-space centre (sphere) or segment ends (capsule)
-  float radius = 0.05f;
+  std::string bone;  // the collider rides on this bone; empty for a box (world space)
+  vec3 a{0}, b{0};   // rest-space centre (sphere) or segment ends (capsule); min and max corner (box, world space)
+  float radius = 0.05f;  // box: the rounding of its edges (at most its smallest half extent)
 };
 
 struct DynamicsSpec {
@@ -111,7 +112,11 @@ Result<DynamicsSpec> dynamicsFromJson(const Json& j);
 Json dynamicsToJson(const DynamicsSpec& spec);
 // Scene override (scene character "dynamics"): false | true | {"enabled", "substep_hz", "preroll_s",
 // "chains": {"<chain name>" | "<group>" | "*": {stiffness, stiffness_tip, damping, gravity, drag, limit_deg, radius}},
-// "presets": {...}, "attach": [...]}. More specific keys win: "*" first, then the group, then the chain name.
+// "presets": {...}, "attach": [...], "colliders": [...]}. More specific keys win: "*" first, then the group, then
+// the chain name. "colliders" (T-183 round 3) adds colliders in the package format, or boxes of the scene:
+// {"name", "type": "box", "space": "world", "min": [x, y, z], "max": [x, y, z], "radius"? (edge rounding, 0.01)};
+// a new collider joins every chain. A chain is pushed to a collider's full radius only with contact.rest or when
+// contact.solid names it; otherwise never farther than its kinematic joint is (a table then holds nothing).
 // "attach" adds accessory chains (resolveAccessoryChains) and switches the layer on unless "enabled" is false.
 Result<void> applyDynamicsOverride(DynamicsSpec& spec, const Json& over);
 
@@ -145,10 +150,11 @@ class SpringChainSolver {
     std::vector<float> radii;  // per joint (contact.radii); empty = p.radius
     bool restContact = false;  // contact.rest
     float friction = 0, maxSwing = 0;
+    float locks = 0;  // contact.locks
   };
   struct Collider {
     DynamicsCollider::Kind kind;
-    int bone;
+    int bone;  // -1: world space (box; a, b = the core's min and max corner, radius = its rounding)
     vec3 a, b, head;
     float radius;
   };

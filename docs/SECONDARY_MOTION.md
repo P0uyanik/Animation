@@ -92,6 +92,7 @@ A chain may carry a `"contact"` block. Without it the chain takes exactly the pa
 | `rest` | resting contact: every collider acts at its full radius (no exemption for the kinematic target, `solid` is not needed). A pushed joint takes the collider's velocity along the contact normal and loses its sliding speed by `friction`; the middle of each segment is tested with a fixed lever; colliders far from the chain are skipped per step. | false |
 | `friction` | with `rest`: sliding speed lost in contact, 1/s. | 40 |
 | `max_swing` | with `rest`: a segment turns at most this much faster (rad/s) than its kinematic direction, so a lock squeezed between two colliders moves steadily instead of snapping. 0 = no bound. | 12 |
+| `locks` | lock against lock (T-183 round 3): a joint keeps off the joints of the other chains that carry the key by `locks` x (the two joints' radii), never by more than the two kinematic joints are apart (locks that lie together stay together). Joints only, not segments. The chains are solved in their fixed order, half the overlap is taken back per step: deterministic. A number in [0, 1]. | 0 (off) |
 
 - A push by any collider of a contact chain is inelastic: the pushed joint keeps at most the speed it had before the
   push or the speed of its kinematic target, so a hand moves a lock aside without throwing it.
@@ -141,6 +142,25 @@ specs unless the release manifest lists the version.
 `false`, `{"enabled": false}`, or an object that overrides parameters:
 `{"substep_hz": .., "preroll_s": .., "chains": {"*" | "<group>" | "<chain>": {params}}}`. The more specific key
 wins. An override cannot switch on dynamics for a package without chains. It is saved with the scene as written.
+
+### Scene colliders (T-183 round 3, opt-in)
+
+`"colliders": [...]` in the override adds colliders to the package's. An entry is a package collider (sphere or
+capsule on a bone of the character) or a box of the scene in world space:
+
+```json
+"dynamics": {"colliders": [{"name": "table_top", "type": "box", "space": "world",
+                            "min": [-0.66, 0.425, 0.055], "max": [0.66, 0.45, 0.325], "radius": 0.01}]}
+```
+
+- `radius` is the rounding of the box's edges (default 0.01 m, at most the smallest half extent). The faces stay where
+  `min` / `max` put them.
+- A new collider joins every chain, also chains that name their colliders. A name the package uses already is an error.
+- A chain is kept out by the full radius only when it has `contact.rest` (or names the collider in `contact.solid`).
+  A chain without a contact block is never pushed farther than its kinematic joint is, so a table holds nothing.
+- The box does not move. Segments are tested at the point nearest to the box (at their middle with `contact.rest`).
+- Without the key the solver takes the previous path (a box out of reach is bit-identical too: `test_secondary.cpp`).
+- `docs/evaluation/characters/T-183/tools/derive_shot.py` writes the boxes of a shot's `objects` into a shot copy.
 
 ## Groom (`spec.hair.dynamics`, groom/1)
 

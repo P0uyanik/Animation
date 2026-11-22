@@ -828,3 +828,182 @@ TEST_CASE("secondary contact: rest lets a collider hold a joint beyond the angul
   CHECK(zig < 5e-4f);
   CHECK(end <= limit + 1e-3f);
 }
+
+// ---- T-183 round 3: boxes of the scene (a table top) as world-space colliders ----
+
+namespace {
+// The whole figure sinks by 0.15 m over 0.5 s and stays: the chain's lower joints then have their kinematic targets
+// in and under a table top at y 0.72..0.745.
+SpringChainSolver::Driver sinkDriver(const Skeleton& sk, double fps) {
+  return [&sk, fps](double frame) {
+    const double t = std::clamp((frame - 1) / fps / 0.5, 0.0, 1.0);
+    return boneGlobals(sk, restPose(sk), glm::translate(mat4(1), vec3(0, float(-0.15 * t), 0)));
+  };
+}
+const vec3 kTableMin(-0.3f, 0.72f, -0.4f), kTableMax(0.3f, 0.745f, 0.2f);
+}  // namespace
+
+TEST_CASE("secondary contact: a world box parses, round-trips, joins the chains through the scene override") {
+  DynamicsSpec spec = chainSpec(true);
+  spec.chains[0].colliders = {"skull"};
+  const Json box = {{"name", "table_top"}, {"type", "box"}, {"space", "world"}, {"min", {-0.3, 0.72, -0.4}}, {"max", {0.3, 0.745, 0.2}}};
+  REQUIRE(applyDynamicsOverride(spec, Json{{"colliders", Json::array({box})}}).has_value());
+  REQUIRE(spec.colliders.size() == 2);
+  CHECK(spec.colliders[1].kind == DynamicsCollider::Kind::Box);
+  CHECK(spec.colliders[1].bone.empty());
+  CHECK(spec.colliders[1].radius == doctest::Approx(0.01f));
+  CHECK(spec.chains[0].colliders == std::vector<std::string>{"skull", "table_top"});  // a chain that names its colliders gets it too
+  auto back = dynamicsFromJson(dynamicsToJson(spec));
+  REQUIRE(back.has_value());
+  REQUIRE(back->colliders.size() == 2);
+  CHECK(back->colliders[1].kind == DynamicsCollider::Kind::Box);
+  CHECK(back->colliders[1].a == spec.colliders[1].a);
+  CHECK(back->colliders[1].b == spec.colliders[1].b);
+  CHECK(SpringChainSolver::create(chainSkeleton(), *back).has_value());
+  // errors: the same name twice, no "space": "world", a bone, min >= max
+  CHECK_FALSE(applyDynamicsOverride(spec, Json{{"colliders", Json::array({box})}}).has_value());
+  DynamicsSpec fresh = chainSpec(true);
+  Json bad = box;
+  bad.erase("space");
+  CHECK_FALSE(applyDynamicsOverride(fresh, Json{{"colliders", Json::array({bad})}}).has_value());
+  bad = box;
+  bad["bone"] = "head";
+  CHECK_FALSE(applyDynamicsOverride(fresh, Json{{"colliders", Json::array({bad})}}).has_value());
+  bad = box;
+  bad["max"] = {0.3, 0.72, 0.2};
+  CHECK_FALSE(applyDynamicsOverride(fresh, Json{{"colliders", Json::array({bad})}}).has_value());
+  CHECK(fresh.colliders.size() == 1);
+}
+
+TEST_CASE("secondary contact: a box out of reach changes nothing (bit-identical)") {
+  const Skeleton sk = chainSkeleton();
+  const double fps = 24;
+  const auto drv = driverAt(sk, fps, 1, headYaw);
+  DynamicsSpec plain = chainSpec(true);
+  plain.chains[0].contact.set = true;
+  plain.chains[0].contact.segments = true;
+  plain.chains[0].contact.rest = true;
+  DynamicsSpec boxed = plain;
+  boxed.colliders.push_back({"floor", DynamicsCollider::Kind::Box, "", vec3(-2, -0.05f, -2), vec3(2, 0, 2), 0.01f});
+  auto a = SpringChainSolver::create(sk, plain), b = SpringChainSolver::create(sk, boxed);
+  REQUIRE(a.has_value());
+  REQUIRE(b.has_value());
+  bool same = true;
+  for (int f = 1; f <= 60; ++f) {
+    const auto ga = solve(**a, drv, f, fps), gb = solve(**b, drv, f, fps);
+    for (size_t k = 0; k < ga.size(); ++k) same = same && ga[k] == gb[k];
+  }
+  CHECK(same);
+}
+
+TEST_CASE("secondary contact: a resting chain lies on a table top instead of passing through it") {
+  const Skeleton sk = chainSkeleton();
+  const double fps = 24;
+  const auto drv = sinkDriver(sk, fps);
+  const std::vector<float> radii = {0.0f, 0.008f, 0.012f, 0.012f, 0.010f};
+  const DynamicsCollider table{"table_top", DynamicsCollider::Kind::Box, "", kTableMin, kTableMax, 0.01f};
+  DynamicsSpec rest = chainSpec(false);
+  rest.chains[0].params.damping = 12;
+  rest.colliders.push_back(table);
+  DynamicsSpec plain = rest;  // no contact block: never pushed farther than the kinematic joint is
+  rest.chains[0].contact.set = true;
+  rest.chains[0].contact.segments = true;
+  rest.chains[0].contact.radii = radii;
+  rest.chains[0].contact.rest = true;
+  auto s = SpringChainSolver::create(sk, rest), p = SpringChainSolver::create(sk, plain);
+  REQUIRE(s.has_value());
+  REQUIRE(p.has_value());
+  const auto joints = [&](const std::vector<mat4>& g, vec3 x[5]) {
+    for (size_t k = 0; k < 4; ++k) x[k] = pivot(g, 2 + k);
+    x[4] = tipOf(g, sk, 5, kTipRest);
+  };
+  float inside = 0, arrival = 0, step = 0, gap = 1, plainTip = 1;
+  vec3 last(0);
+  for (int f = 1; f <= 120; ++f) {
+    vec3 x[5], y[5];
+    joints(solve(**s, drv, f, fps), x);
+    joints(solve(**p, drv, f, fps), y);
+    float in = 0, clear = 1;
+    for (size_t k = 1; k < 5; ++k) {  // the chain stays over the table (x, z inside its outline): height above the top
+      const float dj = x[k].y - kTableMax.y - radii[k];
+      const float dm = k < 4 ? 0.5f * (x[k].y + x[k + 1].y) - kTableMax.y - 0.5f * (radii[k] + radii[k + 1]) : 1.0f;
+      in = std::max(in, -std::min(dj, dm));
+      clear = std::min(clear, std::min(dj, dm));
+      CHECK(x[k].z > kTableMin.z);
+      CHECK(x[k].z < kTableMax.z);
+    }
+    if (f <= 14) arrival = std::max(arrival, in);  // the figure sinks at 0.3 m/s and stops at frame 13
+    if (f > 14) inside = std::max(inside, in);
+    if (f > 60) step = std::max(step, glm::distance(x[4], last));
+    if (f == 120) {
+      gap = clear;
+      plainTip = y[4].y;
+    }
+    last = x[4];
+  }
+  MESSAGE("joint or segment middle inside the table top (with its radius): " << arrival * 1000 << " mm while the figure sinks (max_swing), "
+          << inside * 1000 << " mm from frame 15 on; largest tip step per frame after frame 60 "
+          << step * 1000 << " mm; nearest joint or middle above the top at the end " << gap * 1000 << " mm; plain chain's tip at the end y "
+          << plainTip << " (table top " << kTableMax.y << ")");
+  CHECK(arrival < 0.012f);          // under its own radius while the figure sinks: the chain line stays above the top
+  CHECK(inside < 5e-4f);            // on the top once the figure rests
+  CHECK(step < 1e-4f);              // still
+  CHECK(gap < 5e-4f);               // it lies on the top
+  CHECK(plainTip < kTableMin.y);    // without the contact block the box holds nothing (the previous behaviour)
+}
+
+// ---- T-183 round 3: lock against lock (contact.locks) ----
+
+TEST_CASE("secondary contact: locks keeps two chains off each other; absent = the previous path") {
+  // Two chains 2 cm apart behind the head, a soft one and a stiff one. The head turns quickly and comes back: the
+  // stiff chain follows at once, the soft one lags, so without the key the stiff chain runs into the soft one.
+  Skeleton sk = chainSkeleton();
+  const vec3 dx(0.02f, 0, 0);
+  for (int k = 0; k < 4; ++k) sk.bones.push_back({"d" + std::to_string(k), k == 0 ? 1 : 5 + k, sk.bones[size_t(2 + k)].head + dx});
+  const double fps = 24;
+  const auto drv = driverAt(sk, fps, 1, headYaw);
+  DynamicsSpec spec = chainSpec(false);
+  spec.chains[0].params.stiffness = 25;
+  SpringChain b = spec.chains[0];
+  b.name = "lock_b";
+  b.bones = {"d0", "d1", "d2", "d3"};
+  b.tip = kTipRest + dx;
+  b.params.stiffness = 400;
+  b.params.damping = 30;
+  spec.chains.push_back(b);
+  for (auto& ch : spec.chains) {
+    ch.contact.set = true;
+    ch.contact.radii = {0.0f, 0.02f, 0.02f, 0.02f, 0.02f};
+  }
+  DynamicsSpec keyed = spec;
+  for (auto& ch : keyed.chains) ch.contact.locks = 1.0f;
+  auto round = dynamicsFromJson(dynamicsToJson(keyed));
+  REQUIRE(round.has_value());
+  CHECK(round->chains[1].contact.locks == doctest::Approx(1.0f));
+  CHECK_FALSE(dynamicsToJson(spec)["chains"][0]["contact"].contains("locks"));
+  auto plain = SpringChainSolver::create(sk, spec), locks = SpringChainSolver::create(sk, keyed);
+  REQUIRE(plain.has_value());
+  REQUIRE(locks.has_value());
+  float nearPlain = 1, nearLocks = 1;
+  for (int f = 1; f <= 72; ++f) {
+    const auto gp = solve(**plain, drv, f, fps), gl = solve(**locks, drv, f, fps);
+    for (size_t k = 1; k < 4; ++k) {
+      nearPlain = std::min(nearPlain, glm::distance(pivot(gp, 2 + k), pivot(gp, 6 + k)));
+      nearLocks = std::min(nearLocks, glm::distance(pivot(gl, 2 + k), pivot(gl, 6 + k)));
+    }
+  }
+  MESSAGE("nearest pair of matching joints (rest 20 mm): " << nearPlain * 1000 << " mm without the key, " << nearLocks * 1000 << " mm with locks 1");
+  CHECK(nearPlain < 0.012f);   // the stiff chain runs into the soft one (under half their rest distance)
+  CHECK(nearLocks > 0.016f);   // kept apart (half the overlap is taken back per step, so not exactly 20 mm)
+  // one chain with the key and none to meet: the same result as without it
+  DynamicsSpec one = spec;
+  one.chains[0].contact.locks = 1.0f;
+  auto single = SpringChainSolver::create(sk, one);
+  REQUIRE(single.has_value());
+  bool same = true;
+  for (int f = 1; f <= 48; ++f) {
+    const auto ga = solve(**plain, drv, f, fps), gb = solve(**single, drv, f, fps);
+    for (size_t k = 0; k < ga.size(); ++k) same = same && ga[k] == gb[k];
+  }
+  CHECK(same);
+}
