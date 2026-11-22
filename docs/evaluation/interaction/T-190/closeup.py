@@ -3,12 +3,12 @@
 
     python3 docs/evaluation/interaction/T-190/closeup.py --bake <bake.json> --cast <build>/cast.json \
         --scan <measure_t190 output .jsonl[.gz]> --tiles <label>=<who>:<L|R>:<frame>:<view>,... --out <dir> \
-        [--hide <object name prefix>,...] [--samples 16] [--res 400 300] [--blender <exe>]
+        [--hide <object name prefix>,...] [--distance 0.22] [--samples 16] [--res 400 300] [--blender <exe>]
 
 Writes a copy of the bake holding only the tiles' frames (renumbered 1..n; poses, props and lights unchanged) with
 the camera of each replaced by a close-up of that hand, renders it with pipeline/charsys/shot_render.py (one Blender
 run) and saves <out>/<label>.png. The camera looks at the hand (wrist + 35 mm along the fingers, from the scan) from
-0.22 m, 80 mm lens; views (hand axes from the scan: n palm normal, r thumb side, d fingers, y world up):
+0.22 m (--distance), 80 mm lens; views (hand axes from the scan: n palm normal, r thumb side, d fingers, y world up):
     radial  0.2 n + r + 0.2 y + 0.2 d      (the thumb side)
     tip     0.1 n + 0.5 r + 0.3 y + d      (from the fingertips)
     palm    n + 0.4 r + 0.2 y + 0.2 d
@@ -55,6 +55,7 @@ def main():
     ap.add_argument("--tiles", required=True)
     ap.add_argument("--out", required=True)
     ap.add_argument("--hide", default="")
+    ap.add_argument("--distance", type=float, default=0.22)
     ap.add_argument("--samples", type=int, default=16)
     ap.add_argument("--res", type=int, nargs=2, default=[400, 300])
     ap.add_argument("--blender", default="/usr/local/bin/blender")
@@ -75,7 +76,7 @@ def main():
         label, spec = tile.split("=")
         who, side, frame, view = spec.split(":")
         fd = dict(by[int(frame)])
-        pos, target = camera(rows[(who, side, int(frame))], view)
+        pos, target = camera(rows[(who, side, int(frame))], view, a.distance)
         fd["camera"] = dict(fd["camera"], position=pos, target=target, focalMm=80.0, fStop=0.0, focusDistance=-1.0)
         fd["frame"] = k
         sub.append(fd)
@@ -93,7 +94,7 @@ def main():
         subprocess.run(cmd, check=True, stdout=log, stderr=subprocess.STDOUT)
     for k, label in enumerate(labels, 1):
         shutil.copyfile(os.path.join(work, "render", f"frame_{k:04d}.png"), os.path.join(a.out, f"{label}.png"))
-    json.dump({"bake": a.bake, "scan": a.scan, "tiles": a.tiles, "hide": a.hide, "samples": a.samples, "res": a.res},
+    json.dump({"bake": a.bake, "scan": a.scan, "tiles": a.tiles, "hide": a.hide, "distance": a.distance, "samples": a.samples, "res": a.res},
               open(os.path.join(a.out, "closeup.json"), "w"), indent=1)
     print(f"{len(labels)} tiles -> {a.out}")
 

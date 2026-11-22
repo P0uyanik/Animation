@@ -1,0 +1,21 @@
+{
+ "columns": [
+  {
+   "label": "before",
+   "dir": "before"
+  },
+  {
+   "label": "after",
+   "dir": "after"
+  }
+ ],
+ "pattern": "{frame}.jpg",
+ "max_px": 1024,
+ "title": "T-190 boy's right thumb, T-187 s020 f180 and e909 s010 f150 (receives); idle clip thumb, T-187 s030 f92: before | after",
+ "frames": [
+  "T187_s020_f180_boy_R",
+  "e909_s010_f150_boy_R",
+  "T187_s030_f092_white_L"
+ ],
+ "out": "before_after_boy_clip.jpg"
+}

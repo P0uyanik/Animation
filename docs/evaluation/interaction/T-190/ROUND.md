@@ -22,12 +22,10 @@ Supervisor since 12:05Z 22 Nov: round-6 session `session_01NPjxePvWAMsLopzSs1fMX
 `engine/anim/animation.h`, `engine/anim/animation.cpp`, `engine/scene/clip_layers.cpp`, `tests/test_hand_limits.cpp`,
 `docs/evaluation/interaction/T-190/**` (`engine/anim/hand_shape.*`, `tests/test_hand_shapes.cpp` unused so far).
 
-## Next
-1. Implement `HandLimits` / `applyHandLimits` (final clamp, identity inside the range), `HandPose::limits`, the shared
-   in-range thumb search (the wrap branch's, used by every per-finger grasp), finger search bounds; call in
-   `applyHandPose` and after `applyClipFingers`.
-2. `tests/test_hand_limits.cpp`; full ctest; list of goldens / assertions that move (do not edit them).
-3. After-scans (same five scenes), after close-ups, `tools/review/shot_sheet.py` sheet <= 1024 px, README, READY.
+## State at READY
+Implemented and measured (README sections 3-6). Nothing in tests/golden or existing tests was edited. Open: the
+decisions in README section 7 (default on / off, lay-back 33 or 45, re-record 6 golden hashes and rewrite the thumb
+assertions listed there), then the Supervisor registers `tests/test_hand_limits.cpp` in `tests/CMakeLists.txt`.
 
 ## Local state that is not in the repository (regenerate if the session is new)
 Build `cmake --preset fast-dev && cmake --build build/fast-dev -j4` (10 min); prepare per shot with
