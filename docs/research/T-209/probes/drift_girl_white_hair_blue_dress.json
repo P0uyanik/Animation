@@ -1,0 +1,231 @@
+{
+ "blend": "assets/characters/girl_white_hair_blue_dress/versions/0.1.0/girl_white_hair_blue_dress_master.blend",
+ "skin_vertices": 87690,
+ "head_vertices": 53958,
+ "identity_vertices": 29911,
+ "far_vertices": 18931,
+ "eye_radius_m": 0.048,
+ "head_width_eye_mm": 263.3,
+ "keys": {
+  "EyeWide": {
+   "mouth_max": 4.86,
+   "eye_max": 9.3,
+   "far_max": 0.0,
+   "nose_max": 0.0,
+   "ident_max": 0.0,
+   "ident_p95": 0.0,
+   "width_eye": 0.0,
+   "width_cheek": 0.0
+  },
+  "MouthSmile": {
+   "mouth_max": 2.18,
+   "eye_max": 3.63,
+   "far_max": 0.02,
+   "nose_max": 0.1,
+   "ident_max": 2.9,
+   "ident_p95": 1.363,
+   "width_eye": 0.0,
+   "width_cheek": 0.0
+  },
+  "CheekRaise": {
+   "mouth_max": 2.01,
+   "eye_max": 2.01,
+   "far_max": 0.002,
+   "nose_max": 0.52,
+   "ident_max": 0.2,
+   "ident_p95": 0.05,
+   "width_eye": 0.0,
+   "width_cheek": 0.0
+  },
+  "Squint": {
+   "mouth_max": 1.66,
+   "eye_max": 2.4,
+   "far_max": 0.011,
+   "nose_max": 0.32,
+   "ident_max": 1.74,
+   "ident_p95": 0.794,
+   "width_eye": 0.0,
+   "width_cheek": 0.0
+  },
+  "WideOpen": {
+   "mouth_max": 4.86,
+   "eye_max": 9.3,
+   "far_max": 0.0,
+   "nose_max": 0.0,
+   "ident_max": 0.0,
+   "ident_p95": 0.0,
+   "width_eye": 0.0,
+   "width_cheek": 0.0
+  },
+  "Smile": {
+   "mouth_max": 1.93,
+   "eye_max": 2.63,
+   "far_max": 0.01,
+   "nose_max": 0.52,
+   "ident_max": 1.74,
+   "ident_p95": 0.779,
+   "width_eye": 0.0,
+   "width_cheek": 0.0
+  },
+  "Surprise": {
+   "mouth_max": 4.86,
+   "eye_max": 9.3,
+   "far_max": 0.0,
+   "nose_max": 0.0,
+   "ident_max": 0.0,
+   "ident_p95": 0.0,
+   "width_eye": 0.0,
+   "width_cheek": 0.0
+  },
+  "Laugh": {
+   "mouth_max": 2.35,
+   "eye_max": 3.3,
+   "far_max": 0.014,
+   "nose_max": 0.52,
+   "ident_max": 2.32,
+   "ident_p95": 1.05,
+   "width_eye": 0.0,
+   "width_cheek": 0.0
+  },
+  "Worried": {
+   "mouth_max": 1.46,
+   "eye_max": 2.79,
+   "far_max": 0.0,
+   "nose_max": 0.0,
+   "ident_max": 0.0,
+   "ident_p95": 0.0,
+   "width_eye": 0.0,
+   "width_cheek": 0.0
+  },
+  "Curious": {
+   "mouth_max": 1.46,
+   "eye_max": 2.79,
+   "far_max": 0.0,
+   "nose_max": 0.0,
+   "ident_max": 0.0,
+   "ident_p95": 0.0,
+   "width_eye": 0.0,
+   "width_cheek": 0.0
+  },
+  "SmileClosed": {
+   "mouth_max": 2.18,
+   "eye_max": 3.63,
+   "far_max": 0.02,
+   "nose_max": 0.1,
+   "ident_max": 2.9,
+   "ident_p95": 1.363,
+   "width_eye": 0.0,
+   "width_cheek": 0.0
+  },
+  "SmileOpen": {
+   "mouth_max": 1.66,
+   "eye_max": 2.4,
+   "far_max": 0.011,
+   "nose_max": 0.32,
+   "ident_max": 1.74,
+   "ident_p95": 0.794,
+   "width_eye": 0.0,
+   "width_cheek": 0.0
+  },
+  "Blink.L@75": {
+   "mouth_max": 0.0,
+   "eye_max": 0.0,
+   "far_max": 0.0,
+   "nose_max": 0.0,
+   "ident_max": 0.0,
+   "ident_p95": 0.0,
+   "width_eye": 0.0,
+   "width_cheek": 0.0
+  },
+  "Blink.L": {
+   "mouth_max": 6.08,
+   "eye_max": 21.4,
+   "far_max": 0.0,
+   "nose_max": 0.01,
+   "ident_max": 0.15,
+   "ident_p95": 0.0,
+   "width_eye": 0.0,
+   "width_cheek": 0.0
+  },
+  "Blink@75": {
+   "mouth_max": 0.0,
+   "eye_max": 0.0,
+   "far_max": 0.0,
+   "nose_max": 0.0,
+   "ident_max": 0.0,
+   "ident_p95": 0.0,
+   "width_eye": 0.0,
+   "width_cheek": 0.0
+  },
+  "Blink": {
+   "mouth_max": 6.12,
+   "eye_max": 21.4,
+   "far_max": 0.0,
+   "nose_max": 0.01,
+   "ident_max": 0.18,
+   "ident_p95": 0.0,
+   "width_eye": 0.0,
+   "width_cheek": 0.0
+  },
+  "LeftEyeClosed@75": {
+   "mouth_max": 0.0,
+   "eye_max": 0.0,
+   "far_max": 0.0,
+   "nose_max": 0.0,
+   "ident_max": 0.0,
+   "ident_p95": 0.0,
+   "width_eye": 0.0,
+   "width_cheek": 0.0
+  },
+  "LeftEyeClosed": {
+   "mouth_max": 6.08,
+   "eye_max": 21.4,
+   "far_max": 0.0,
+   "nose_max": 0.01,
+   "ident_max": 0.15,
+   "ident_p95": 0.0,
+   "width_eye": 0.0,
+   "width_cheek": 0.0
+  },
+  "Blink.R@75": {
+   "mouth_max": 0.0,
+   "eye_max": 0.0,
+   "far_max": 0.0,
+   "nose_max": 0.0,
+   "ident_max": 0.0,
+   "ident_p95": 0.0,
+   "width_eye": 0.0,
+   "width_cheek": 0.0
+  },
+  "Blink.R": {
+   "mouth_max": 6.12,
+   "eye_max": 21.39,
+   "far_max": 0.0,
+   "nose_max": 0.01,
+   "ident_max": 0.15,
+   "ident_p95": 0.0,
+   "width_eye": 0.0,
+   "width_cheek": 0.0
+  },
+  "RightEyeClosed@75": {
+   "mouth_max": 0.0,
+   "eye_max": 0.0,
+   "far_max": 0.0,
+   "nose_max": 0.0,
+   "ident_max": 0.0,
+   "ident_p95": 0.0,
+   "width_eye": 0.0,
+   "width_cheek": 0.0
+  },
+  "RightEyeClosed": {
+   "mouth_max": 6.12,
+   "eye_max": 21.39,
+   "far_max": 0.0,
+   "nose_max": 0.01,
+   "ident_max": 0.15,
+   "ident_p95": 0.0,
+   "width_eye": 0.0,
+   "width_cheek": 0.0
+  }
+ }
+}
