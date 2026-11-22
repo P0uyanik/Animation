@@ -114,6 +114,44 @@ thumb that could turn anywhere):
 | `test_grasp_contact.cpp:139` (x4), `:226` (x3) | band fit pulls the contacts into a narrow band | by >= 1 mm | the thumb is the outermost contact and no longer moves |
 | `test_hand_shapes.cpp:221` (x2), `test_verbs.cpp:886` (x2), `:1208` (x2): flat palm on a box face / tray | every tip within 2 mm of the face | <= 2 mm | thumb skin 4.6 mm into the face |
 
+## 6b. Round 2 (owner ~15:10 / ~17:25 CET, 22 Nov): 45 deg box face, criteria rewritten, goldens re-recorded
+
+**45 deg box face.** `HandLimits::thumbBackFace` = 45, `handLimitsFor(HandPose)` (grasp, graspFace, not wrap): the
+per-finger box-face thumb search and the final clamp use it; wrap grasps keep 33 (T-171 r3 path untouched).
+`test_hand_shapes.cpp:221` (box face), `test_verbs.cpp:886` and `:1208` (tray) now pass **unchanged**.
+
+**Goldens.** Exactly the 6 named hashes change (JSON diff: no other key), identical at 33 and 45 and after the solver
+change below. `measures/golden_delta.md` now separates thumb and finger joints: thumb only in 5 scenes; in e901 s010
+also 0.525 / 0.3 deg of middle-hinge back-flex from the `wave` / `point` clips (tips 0.04-0.07 mm, owner-accepted).
+
+**Criteria (tests/thumb_fit.h, ThumbFit).** An exhaustive search over the thumb's joint range (`thumbJointRotations`
+grid, ~60k poses: opposition, abduction, end flexion every 5 deg, flexion every 3 deg) decides, independently of the
+solver: (1) whether a thumb in range, centres out of the object and skin nowhere more than 2 mm in, can meet the old
+criteria; where it can, **the old assertion is required exactly**; (2) always, the dominance margin: no in-range pose is
+no worse on every criterion (the old ones, opposition, no skin over 2 mm in) and more than 2 mm (the T-051 contact
+tolerance) better on one. Fingers keep their old thresholds, now measured without the thumb.
+
+| assertion (input line) | old | new | why at least as strong |
+| --- | --- | --- | --- |
+| `test_hand_shapes.cpp:168` cup | `worstGap <= 2 mm` (all tips) | fingers `<= 2 mm`; thumb `<= 2 mm` where reachable; margin `<= 2 mm` | fingers identical; thumb identical wherever physically possible; elsewhere (all 12 cases, none reachable) optimal within 2 mm instead of an assertion no thumb in range can pass |
+| `test_hand_shapes.cpp:170` cup | `bandOut <= 0` (all tips) | fingers `<= 0`; thumb `<= 0` where reachable; margin | as above |
+| `test_hand_shapes.cpp:171` cup | `thumbSide < 0` | `< 0` where reachable; margin (opposition is a criterion: opposed as far as the range allows) | as above |
+| `test_grasp_contact.cpp:134` T-138 narrow, kSdf | `ma.bandOut <= 0` | fingers `<= 0`; thumb `<= 0` where reachable (on the surface, in the band); margin | as above |
+| `test_grasp_contact.cpp:139` T-138 narrow | `mb.bandOut <= ma.bandOut - 1 mm` | fingers pulled `>= 1 mm` in **or** every finger still outside spread to its 30 deg limit; fingers never further out (new); thumb in band where reachable; margin | the fit's earlier 1 mm came from finger spreads of 30-60 deg (measured: at 60 the boy's fingers go 5.59 -> 4.12 mm, at 30 they stay 6.35); now every finger that can still move must; "never worse" is added |
+| `test_grasp_contact.cpp:140` T-138 narrow | `mb.gap <= 2 mm` | fingers `<= 2 mm`; thumb `<= 2 mm` where reachable | as for :168 |
+| `test_grasp_contact.cpp:157` T-138 fits | `ma.bandOut <= 0` | fingers `<= 0`; thumb `<= 0` where reachable; margin | as for :170 |
+| `test_grasp_contact.cpp:207` T-157 wider | `mw.gap <= 2 mm` | fingers `<= 2 mm`; thumb `<= 2 mm` where reachable; margin | as for :168 |
+| `test_grasp_contact.cpp:216` T-157 off-band | `abs(clear) <= 2 mm`, digits 0, 2-4 | digits 2-4 unchanged; thumb where reachable (clear); margin | as for :168 |
+| `test_grasp_contact.cpp:226` T-157 wider | `contactOut <= 0.5 mm`, digits 0, 2-4 | digits 2-4 unchanged; thumb where reachable (on the surface, band + 0.5 mm) | as for :170 |
+
+Measured margins: cup 0.00-1.88 mm; grasp_contact 0.00-1.88 mm. Reachable and therefore asserted exactly: the boy's
+thumb on the surface and clear (T-138, T-157). Nowhere does a thumb in range reach the far half of the cup or the band
+while touching it with no more than 2 mm of skin in, which is why the old thumb criteria failed.
+
+**Solver change (T-190's own thumb, owner standing guidance).** The per-finger cylinder / sphere thumb (non-wrap,
+non-face) now avoids more than 2 mm of skin in where its range allows (`rangeThumb` `firm`). Before it, the kSdf knuckle
+sat 3.1 mm in the cup although a clear pose was in range. No golden moves; wrap and box face are unchanged.
+
 ## 7. Decisions for the Supervisor / owner
 
 1. **Default on?** With the default on, the 6 golden hashes and the assertions above have to be re-recorded / rewritten
