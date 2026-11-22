@@ -165,7 +165,7 @@ for now (this session used `c775d69`; re-bake with the final pin). Before READY:
    add residue or jumps; add its unit case.
 2. Full s020 released: blends `--blend-only` with and without push-out (`/tmp/.../blends.sh` pattern: shot_render
    twice), `measure_eval.py --jobs=2 --step=2`; snap frames listed apart.
-3. Re-bake the candidate with the final T-183 pin; e912 s010 / s030, e909 s010, released and candidate.
+3. Re-bake the candidate with the T-183 pin **`e7547ab4`** (Supervisor 15:59Z; adds a cylinder prop collider, e909 cup -> 0 in the engine); e912 s010 / s030, e909 s010, released and candidate.
 4. Cost per frame (stage A, stage B, total vs off), determinism (two runs, a single frame vs in a range), "no flag
    = identical" (object list and a frame hash against main's shot_render).
 5. Sheet <= 1024 px crops (s020 boy's shoulder, s010 f101, e909 f75 cup, s020 nape), README, `tools/ready.py`, READY.
