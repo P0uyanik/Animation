@@ -221,3 +221,4 @@ Tasks from now on are numbered T-001, T-002, …, and pass through the states in
 | T-197 | [Rendering] EEVEE preview evaluation (Codex, owner PC) | merged 2026-11-22 (integration/t-197 66fc352): EEVEE 13.4x faster for blocking/acting previews; Cycles for look + finals | t-197-codex-eevee-eval | docs/evaluation/rendering/T-197/ |
 | T-200 | [Rendering] WinError 4551 bake block on the owner's PC + T-197 motion checks (Codex) | assigned 2026-11-22 (owner ~17:15 CET, relay) | — | — |
 | T-201 | [Rendering] opt-in preview_eevee render profile (owner ~17:15 CET) | queued: after T-199 merges (render_profiles.json) | — | — |
+| T-202 | [Characters] Face close-up sheets of the released versions vs references, no character change (Sonnet) | started 2026-11-22 (owner ~17:45 CET, priority) | t-202-claude-face-sheets | docs/evaluation/characters/T-202/ |
