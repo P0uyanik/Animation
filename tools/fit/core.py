@@ -110,15 +110,18 @@ def search(start, bounds, seed, budget, evaluate):
 
 # ---------------------------------------------------------------------------------------------- T-215 (phase P2)
 # Band-fit helpers for T-204 measures: z = gap / tolerance, so |z| <= 1 is inside the tolerance band.
-UNSCORED_LOSS = 4.0  # a measure that was scored at the start and turns unscored costs as much as |z| = 3
+HINGE_CAP = 4.0      # |z| beyond 1 + HINGE_CAP adds nothing more: one far outlier cannot outweigh the band count
+UNSCORED_LOSS = 0.5 + 0.5 * HINGE_CAP  # a measure that was scored at the start and turns unscored: worst outside
 
 
 def band_loss(z):
-    """Zero pressure inside the band apart from a weak pull to its centre; quadratic outside it."""
+    """Count-oriented band loss (pass rule D3 counts measures within tolerance): 0.5 for being outside the band, plus
+    0.5 per tolerance beyond it (capped), plus a weak pull to the band centre so ties inside the band still move."""
     if z is None:
         return UNSCORED_LOSS
     a = abs(z)
-    return max(0.0, a - 1.0) ** 2 + 0.02 * a * a
+    h = max(0.0, a - 1.0)
+    return (0.5 if h > 0 else 0.0) + 0.5 * min(h, HINGE_CAP) + 0.02 * min(a, 1.0) ** 2
 
 
 def view_cost(zs_by_view, keys_by_view):

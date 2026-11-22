@@ -171,10 +171,12 @@ class T204FitTests(unittest.TestCase):
         from core import UNSCORED_LOSS, band_loss, view_cost
         self.assertEqual(band_loss(0), 0)
         self.assertAlmostEqual(band_loss(1), 0.02)
-        self.assertAlmostEqual(band_loss(-3), 4 + 0.18)
+        self.assertAlmostEqual(band_loss(-3), 0.5 + 1.0 + 0.02)
+        self.assertAlmostEqual(band_loss(1.01) - band_loss(0.99), 0.5, delta=0.01)  # crossing the band edge costs
+        self.assertEqual(band_loss(50), band_loss(-6))  # capped: one far outlier cannot dominate
         self.assertEqual(band_loss(None), UNSCORED_LOSS)
         cost, per = view_cost({"a": {"x": 3, "y": 0}, "b": {"x": 0}}, {"a": ["x", "y"], "b": ["x"]})
-        self.assertAlmostEqual(per["a"], (4.18 + 0) / 2)
+        self.assertAlmostEqual(per["a"], 1.52 / 2)
         self.assertAlmostEqual(cost, per["a"] / 2)  # one measure in b weighs as much as two in a
         cost2, _ = view_cost({"a": {"x": 3}, "b": {}}, {"a": ["x", "y"], "b": ["x"]})
         self.assertGreater(cost2, cost)  # measures that turn unscored are penalised, not dropped
