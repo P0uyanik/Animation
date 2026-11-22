@@ -1,0 +1,40 @@
+{
+ "machine": "cloud container, 4 vCPU, no GPU (EEVEE on Mesa software OpenGL via EGL), Blender 5.3.0",
+ "shot": "e912_paper_boat s020",
+ "note": "one frame per Blender run; render_s/setup_s from shot_render.json, wall_s = whole Blender process",
+ "s020_f080": {
+  "preview_eevee": {
+   "engine": "eevee",
+   "resolution": [
+    960,
+    540
+   ],
+   "samples": 16,
+   "setup_s": 30.6,
+   "render_s": 936.0,
+   "wall_s": 968.1
+  },
+  "review": {
+   "engine": "cycles",
+   "resolution": [
+    1280,
+    720
+   ],
+   "samples": 16,
+   "setup_s": 31.8,
+   "render_s": 128.0,
+   "wall_s": 161.2
+  },
+  "final720": {
+   "engine": "cycles",
+   "resolution": [
+    1280,
+    720
+   ],
+   "samples": 128,
+   "setup_s": 33.9,
+   "render_s": 443.2,
+   "wall_s": 478.4
+  }
+ }
+}
