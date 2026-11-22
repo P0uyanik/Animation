@@ -53,7 +53,7 @@ f101 in s010 is also a camera cut (the R touch started on it); the ramp fix remo
 ## Recorded rows (ratchet) and follow-up T-209
 
 The shipped content scenes (test packages as cast) still have 125 unexempt rows, recorded with their causes in
-[continuity_baseline.json](continuity_baseline.json). The test fails if a row is added or a value grows:
+[continuity_baseline.json](../../../../tests/golden/continuity_baseline.json). The test fails if a row is added or a value grows:
 
 | scene | frames (character, hand) | bones | peak | cause |
 |---|---|---|---|---|

@@ -1,7 +1,7 @@
 add_executable(plush_tests test_main.cpp test_engine.cpp test_imported_character.cpp test_clips.cpp test_emotions.cpp
                            test_asset_library.cpp test_secondary.cpp test_interaction.cpp test_face_layer.cpp
                            test_body_mechanics.cpp test_anim_principles.cpp
-                           test_personality.cpp test_collision.cpp test_body_clearance.cpp test_hand_limits.cpp test_timing_profile.cpp test_reaction.cpp
+                           test_personality.cpp test_collision.cpp test_body_clearance.cpp test_hand_limits.cpp test_motion_continuity.cpp test_timing_profile.cpp test_reaction.cpp
                            test_emotion_blend.cpp test_reaction_playback.cpp test_bake_golden.cpp test_verbs.cpp
                            test_hand_shapes.cpp test_gaze_legibility.cpp test_framing.cpp
                            test_reach_mechanics.cpp test_grasp_contact.cpp test_foot_lock.cpp

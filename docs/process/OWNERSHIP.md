@@ -26,10 +26,8 @@ split.
 
 | Task | Lane | Branch | Write-set | Depends on | Versions bumped |
 | --- | --- | --- | --- | --- | --- |
-| T-183 | B | t-183-claude-hair-contact | `engine/anim/secondary.h`, `engine/anim/secondary.cpp`, `tests/test_secondary.cpp`, `pipeline/charsys/groom_contact.py`, `pipeline/charsys/groom_r6.py`, `pipeline/charsys/tests/test_hair_contact.py`, `pipeline/charsys/release_rule.py`, `pipeline/charsys/tests/test_release_rule.py`, `docs/process/GENERATOR_PINS.md`, `episodes/e909_two_char_acting/shots/s010_t183/**`, `docs/SECONDARY_MOTION.md`, `docs/evaluation/characters/T-183/**`, `engine/scene/scene.cpp`, `engine/scene/scene.h`, `episodes/e912_paper_boat/shots/s010_t183/**`, `episodes/e912_paper_boat/shots/s020_t183/**`, `episodes/e912_paper_boat/shots/s030_t183/**` | — | — |
 | T-194 | B | t-194-claude-hair-pushout | `pipeline/charsys/shot_render.py`, `pipeline/production/run_shot.py`, `pipeline/charsys/hair_pushout.py`, `pipeline/charsys/tests/test_hair_pushout.py`, `docs/evaluation/characters/T-194/**` | T-183 | — |
 | T-199 | R | t-199-claude-compositor-look | `pipeline/charsys/render_engine.py`, `pipeline/charsys/render_profiles.json`, `pipeline/charsys/tests/test_render_profiles.py`, `docs/evaluation/rendering/T-199/**` | — | — |
-| T-198 | E | t-198-claude-motion-continuity | `engine/anim/animation.h`, `engine/anim/animation.cpp`, `engine/scene/interaction.h`, `engine/scene/interaction.cpp`, `engine/scene/actions.cpp`, `tests/test_motion_continuity.cpp`, `tools/motion_checks/continuity.py`, `docs/evaluation/interaction/T-198/**` | T-190 | — |
 | T-207 | B | t-207-claude-hair-flock | `pipeline/charsys/groom/hair_curves.py`, `pipeline/charsys/groom/flock.py`, `pipeline/charsys/groom_felt.py`, `pipeline/charsys/tests/test_hair_curves.py`, `pipeline/charsys/tests/test_hair_flock.py`, `docs/evaluation/characters/T-207/**` | T-183 (groom_r6.py hook after its merge) | — |
 
 Supervisor-only files: docs/process/TASK_LOG.md, docs/ROADMAP.md, docs/process/OWNER_DECISIONS.md, docs/tasks/**.
