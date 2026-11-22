@@ -1,4 +1,99 @@
 {
+ "boy": {
+  "looks": {
+   "D": {
+    "added_strands_sha_render": "41fc51b720eb6ddf",
+    "build_evaluated": {
+     "curves": 0,
+     "points": 0,
+     "sha": "e3b0c44298fc1c14"
+    },
+    "build_seconds": 0.0,
+    "build_strand_sha": "e3b0c44298fc1c14",
+    "build_strands": 0,
+    "hair_strands_rendered": 418854,
+    "seconds_per_frame": {
+     "+000": 66.9,
+     "+180": 33.4,
+     "-035": 64.6,
+     "-090": 45.7
+    },
+    "velvet_missing": []
+   },
+   "V1": {
+    "added_strands_sha_render": "55b94b272253909a",
+    "build_evaluated": {
+     "curves": 500215,
+     "points": 2501075,
+     "sha": "55b94b272253909a"
+    },
+    "build_seconds": 2.24,
+    "build_strand_sha": "6bb8192e9f92b17d",
+    "build_strands": 500215,
+    "hair_strands_rendered": 500215,
+    "seconds_per_frame": {
+     "+000": 61.6,
+     "+180": 30.1,
+     "-035": 57.6,
+     "-090": 41.4
+    },
+    "velvet_missing": []
+   },
+   "V2": {
+    "added_strands_sha_render": "e3b0c44298fc1c14",
+    "build_evaluated": {
+     "curves": 0,
+     "points": 0,
+     "sha": "e3b0c44298fc1c14"
+    },
+    "build_seconds": 0.01,
+    "build_strand_sha": "e3b0c44298fc1c14",
+    "build_strands": 0,
+    "hair_strands_rendered": 103748,
+    "seconds_per_frame": {
+     "+000": 55.0,
+     "+180": 26.2,
+     "-035": 52.3,
+     "-090": 37.8
+    },
+    "velvet_missing": []
+   },
+   "V3": {
+    "added_strands_sha_render": "15112d8df4e63295",
+    "build_evaluated": {
+     "curves": 548574,
+     "points": 2791229,
+     "sha": "15112d8df4e63295"
+    },
+    "build_seconds": 3.07,
+    "build_strand_sha": "e72aa49a1c5eab90",
+    "build_strands": 548574,
+    "hair_strands_rendered": 548574,
+    "seconds_per_frame": {
+     "+000": 62.9,
+     "+180": 32.3,
+     "-035": 63.0,
+     "-090": 46.0
+    },
+    "velvet_missing": []
+   },
+   "current": {
+    "added_strands_sha_render": "e3b0c44298fc1c14",
+    "build_evaluated": null,
+    "build_seconds": null,
+    "build_strand_sha": null,
+    "build_strands": null,
+    "hair_strands_rendered": 435232,
+    "seconds_per_frame": {
+     "+000": 65.2,
+     "+180": 32.0,
+     "-035": 62.6,
+     "-090": 45.1
+    },
+    "velvet_missing": []
+   }
+  }
+ },
  "girl": {
   "looks": {
    "D": {
@@ -92,6 +187,209 @@
     },
     "velvet_missing": []
    }
+  }
+ },
+ "note": "seconds_per_frame: 768 px, 16 spp + OIDN, Cycles CPU, 4 threads, renders run one at a time. build_strand_sha = flock strands in the rest shape; build_evaluated.sha = evaluated *.flock* points. two_run_hash: a second, separate build of the same look on the same master.",
+ "third": {
+  "looks": {
+   "D": {
+    "added_strands_sha_render": "913252fe35bb8dbf",
+    "build_evaluated": {
+     "curves": 0,
+     "points": 0,
+     "sha": "e3b0c44298fc1c14"
+    },
+    "build_seconds": 0.0,
+    "build_strand_sha": "e3b0c44298fc1c14",
+    "build_strands": 0,
+    "hair_strands_rendered": 1251437,
+    "seconds_per_frame": {
+     "+000": 84.4,
+     "+180": 37.6,
+     "-030": 79.0,
+     "-090": 56.6
+    },
+    "velvet_missing": []
+   },
+   "V1": {
+    "added_strands_sha_render": "ba001fce2e356d5c",
+    "build_evaluated": {
+     "curves": 784983,
+     "points": 3924915,
+     "sha": "ba001fce2e356d5c"
+    },
+    "build_seconds": 3.61,
+    "build_strand_sha": "9c2220a05f159aed",
+    "build_strands": 784983,
+    "hair_strands_rendered": 1037370,
+    "seconds_per_frame": {
+     "+000": 61.4,
+     "+180": 24.1,
+     "-030": 58.1,
+     "-090": 39.4
+    },
+    "velvet_missing": []
+   },
+   "V2": {
+    "added_strands_sha_render": "e3b0c44298fc1c14",
+    "build_evaluated": {
+     "curves": 0,
+     "points": 0,
+     "sha": "e3b0c44298fc1c14"
+    },
+    "build_seconds": 0.01,
+    "build_strand_sha": "e3b0c44298fc1c14",
+    "build_strands": 0,
+    "hair_strands_rendered": 511308,
+    "seconds_per_frame": {
+     "+000": 54.3,
+     "+180": 17.1,
+     "-030": 49.7,
+     "-090": 33.5
+    },
+    "velvet_missing": []
+   },
+   "V3": {
+    "added_strands_sha_render": "448da1aced80085f",
+    "build_evaluated": {
+     "curves": 857169,
+     "points": 4358031,
+     "sha": "448da1aced80085f"
+    },
+    "build_seconds": 4.66,
+    "build_strand_sha": "00b2008b8a714a7b",
+    "build_strands": 857169,
+    "hair_strands_rendered": 1109556,
+    "seconds_per_frame": {
+     "+000": 66.6,
+     "+180": 24.5,
+     "-030": 62.6,
+     "-090": 43.7
+    },
+    "velvet_missing": []
+   },
+   "current": {
+    "added_strands_sha_render": "e3b0c44298fc1c14",
+    "build_evaluated": null,
+    "build_seconds": null,
+    "build_strand_sha": null,
+    "build_strands": null,
+    "hair_strands_rendered": 1391669,
+    "seconds_per_frame": {
+     "+000": 72.6,
+     "+180": 28.1,
+     "-030": 67.1,
+     "-090": 49.0
+    },
+    "velvet_missing": []
+   }
+  }
+ },
+ "two_run_hash": {
+  "boy/D_combed": {
+   "run1": [
+    11451,
+    114409,
+    1144090
+   ],
+   "run2": [
+    11451,
+    114409,
+    1144090
+   ],
+   "same_counts": true
+  },
+  "boy/V1": {
+   "run1": [
+    "6bb8192e9f92b17d",
+    "55b94b272253909a"
+   ],
+   "run2": [
+    "6bb8192e9f92b17d",
+    "55b94b272253909a"
+   ],
+   "same": true
+  },
+  "boy/V3": {
+   "run1": [
+    "e72aa49a1c5eab90",
+    "15112d8df4e63295"
+   ],
+   "run2": [
+    "e72aa49a1c5eab90",
+    "15112d8df4e63295"
+   ],
+   "same": true
+  },
+  "girl/D_combed": {
+   "run1": [
+    17123,
+    170995,
+    3481825
+   ],
+   "run2": [
+    17123,
+    170995,
+    3481825
+   ],
+   "same_counts": true
+  },
+  "girl/V1": {
+   "run1": [
+    "31012aff71e739ab",
+    "325f303f8e5d4aa3"
+   ],
+   "run2": [
+    "31012aff71e739ab",
+    "325f303f8e5d4aa3"
+   ],
+   "same": true
+  },
+  "girl/V3": {
+   "run1": [
+    "dc7b70828b1b7d92",
+    "bda865075b4c585f"
+   ],
+   "run2": [
+    "dc7b70828b1b7d92",
+    "bda865075b4c585f"
+   ],
+   "same": true
+  },
+  "third/D_combed": {
+   "run1": [
+    20256,
+    202886,
+    2028860
+   ],
+   "run2": [
+    20256,
+    202886,
+    2028860
+   ],
+   "same_counts": true
+  },
+  "third/V1": {
+   "run1": [
+    "9c2220a05f159aed",
+    "ba001fce2e356d5c"
+   ],
+   "run2": [
+    "9c2220a05f159aed",
+    "ba001fce2e356d5c"
+   ],
+   "same": true
+  },
+  "third/V3": {
+   "run1": [
+    "00b2008b8a714a7b",
+    "448da1aced80085f"
+   ],
+   "run2": [
+    "00b2008b8a714a7b",
+    "448da1aced80085f"
+   ],
+   "same": true
   }
  }
 }
