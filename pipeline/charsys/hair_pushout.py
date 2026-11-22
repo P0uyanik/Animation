@@ -9,8 +9,9 @@ A. Chain joints (Python, called per frame by shot_render after every bone is key
    (already outside) to joint k: any face it crosses counts, so open garment shells, inside-out trims and deep cases
    are caught (a nearest-point + normal test pushes those to the wrong side). On a hit the joint keeps its segment
    length and slides over the hit plane with `core_radius_m + margin_m` clearance, then the segment is tested again
-   (MAX_TRIES); the fallback is straight away from the surface, and only if that is blocked too the segment is
-   shortened to the last free point (reported). A joint that is enclosed (fewer than two of 26 fixed directions get
+   (MAX_TRIES); the fallback is straight away from the surface, then the free direction nearest to the baked one among 128 fixed
+   ones; segment lengths are always kept (the re-key only rotates bones), a joint with no free direction is
+   reported as "blocked". A joint that is enclosed (fewer than two of 26 fixed directions get
    out of the colliders: it slipped in through an opening without crossing a face) is moved out along its shortest
    way through a wall, keeping the segment length. The leading segments of a chain that already cross the character's
    own head at rest (the root sits in the scalp; only head-dominant skin triangles count, not the ears (keep-out) and
@@ -46,12 +47,14 @@ import numpy as np
 
 SKIP = ["eye*", "brow*", "lash*", "lid*", "mouth*", "glasses*"]
 DEFAULTS = {"margin_m": 0.002, "core_radius_m": 0.012, "vertex_margin_m": 0.0015, "static_reach_m": 0.03,
-            "characters": "all", "stages": ["chains", "vertices"]}
+            "characters": "all", "stages": ["chains", "vertices"], "enclosure": True, "exit_test": True,
+            "lock_volume": True}
 MAX_TRIES = 3
 EPS = 1e-5
 CHAIN_MIN_WEIGHT = 0.05  # a vertex with less than this summed DYN weight is static
 PREFIX = "ps_pushout"
-EXIT_REACH = 0.1  # m: how far the second ray looks for the face a vertex is inside
+EXIT_REACH = 0.03  # m: how far the second ray looks for the face a vertex is inside (a farther exit is a
+# visible one-vertex spike: s020 f107, 109 mm through the neck with 0.1)
 
 
 def load_spec(arg):
@@ -173,6 +176,9 @@ def _perp(n):
 DIRS = [np.array(d, dtype=np.float64) / np.linalg.norm(d) for d in
         [(x, y, z) for x in (-1, 0, 1) for y in (-1, 0, 1) for z in (-1, 0, 1) if (x, y, z) != (0, 0, 0)]]
 CAP = 0.6  # m: a ray that meets nothing within this distance has left the figure
+_GA = math.pi * (3.0 - math.sqrt(5.0))
+FAN = [np.array((math.cos(_GA * i) * math.sqrt(1 - (1 - 2 * (i + 0.5) / 128) ** 2), 1 - 2 * (i + 0.5) / 128,
+                 math.sin(_GA * i) * math.sqrt(1 - (1 - 2 * (i + 0.5) / 128) ** 2))) for i in range(128)]  # Fibonacci
 
 
 def enclosed(tree, p):
@@ -204,7 +210,8 @@ def shortest_wall_exit(tree, p):
 
 def _place(tree, o, d, L, a, clearance, h, info):
     """Segment from o (outside) of length L whose ray along d is blocked (hit h): slide over the hit plane with
-    `clearance`, then straight away from the surface; the last free point if both are blocked."""
+    `clearance`, then straight away from the surface, then the nearest free direction of FAN (_fan)."""
+    d0 = d
     for _ in range(MAX_TRIES):
         t, hp, n = h
         s_o = float((o - hp).dot(n))
@@ -220,19 +227,57 @@ def _place(tree, o, d, L, a, clearance, h, info):
     h2 = ray_hit(tree, o + n * a, n, L - a) if a < L else None
     if h2 is None:
         return o + n * L
-    info["shortened"] += 1
-    return o + n * max(a, h2[0] + a - clearance)
+    return _fan(tree, o, d0, L, a, info)
 
 
-def push_chain(tree, J, allow, clearance, rest_enclosed=None):
+def _fan(tree, o, d0, L, a, info):
+    """Last resort: the free full-length direction (segment crosses nothing, end not enclosed) nearest to the baked
+    direction d0, among FAN. The segment length is always kept: the re-key only rotates bones, so a shortened
+    segment would come out at full length along the same direction, back inside. None free: the direction whose
+    first hit is farthest (reported as "blocked")."""
+    order = sorted(range(len(FAN)), key=lambda i: (-round(float(FAN[i].dot(d0)), 9), i))
+    best, best_t = None, -1.0
+    for i in order:
+        u = FAN[i]
+        hh = ray_hit(tree, o + u * a, u, L - a) if a < L else None
+        if hh is None:
+            if not enclosed(tree, o + u * L):
+                return o + u * L
+            continue
+        if hh[0] > best_t:
+            best, best_t = u, hh[0]
+    info["blocked"] += 1
+    return o + (best if best is not None else d0) * L
+
+
+def volume_enclosed(tree, o, q, r):
+    """The first enclosed sample of the lock around segment o-q (radius r: 4 points around its middle and its end),
+    or None. The centre line can be outside while the lock's flesh sits in a pocket under an open shell (a vest over a
+    blouse) that no ray from the centre line crosses."""
+    t = _unit(q - o)
+    if t is None or r <= 0:
+        return None
+    e1 = _perp(t)
+    e2 = np.cross(t, e1)
+    for frac in (0.5, 1.0):
+        c = o + (q - o) * frac
+        for e in (e1, -e1, e2, -e2):
+            if enclosed(tree, c + e * r):
+                return c + e * r
+    return None
+
+
+def push_chain(tree, J, allow, clearance, rest_enclosed=None, enclosure=True, radius=None, rest_volume=None):
     """Stage A on one chain. J: (n+1, 3) baked joints (world), allow: per segment, the rest crossing distance from
     its start that is not tested (0 for a free segment); rest_enclosed: per joint, True where the joint is already
-    enclosed at rest (not pushed for it). Returns (P, info): pushed joints (P[k] is J[k] bit for bit where nothing
+    enclosed at rest (not pushed for it); radius: per segment, the lock radius at rest (volume_enclosed; rest_volume:
+    per joint, True where the lock is already enclosed there at rest). Returns (P, info): pushed joints (P[k] is J[k] bit for bit where nothing
     upstream changed, segment k crosses nothing and joint k is not enclosed) and {"moved": first changed joint or
-    None, "hits": n, "enclosed": n, "enclosed_left": n, "shortened": n, "max_move_m": x}."""
+    None, "hits": n, "enclosed": n, "enclosed_left": n, "blocked": n, "max_move_m": x}."""
     J = np.asarray(J, dtype=np.float64)
     P = J.copy()
-    info = {"moved": None, "hits": 0, "enclosed": 0, "enclosed_left": 0, "shortened": 0, "max_move_m": 0.0}
+    info = {"moved": None, "hits": 0, "enclosed": 0, "enclosed_left": 0, "blocked": 0, "volume": 0, "volume_left": 0,
+            "max_move_m": 0.0}
     for k in range(1, len(J)):
         o = P[k - 1]
         L = float(np.linalg.norm(J[k] - J[k - 1]))
@@ -251,7 +296,7 @@ def push_chain(tree, J, allow, clearance, rest_enclosed=None):
             info["hits"] += 1
             q = _place(tree, o, d, L, a, clearance, h, info)
             changed = True
-        if (rest_enclosed is None or not rest_enclosed[k]) and enclosed(tree, q):
+        if enclosure and (rest_enclosed is None or not rest_enclosed[k]) and enclosed(tree, q):
             info["enclosed"] += 1
             for _ in range(MAX_TRIES):
                 ed, e = shortest_wall_exit(tree, q)
@@ -267,6 +312,24 @@ def push_chain(tree, J, allow, clearance, rest_enclosed=None):
                     break
             else:
                 info["enclosed_left"] += 1
+        r = float(radius[k - 1]) if radius is not None and k - 1 < len(radius) else 0.0
+        if r > 0 and not (rest_volume is not None and rest_volume[k]):
+            smp = volume_enclosed(tree, o, q, r)
+            if smp is not None:
+                info["volume"] += 1
+                for _ in range(MAX_TRIES):
+                    ed, e = shortest_wall_exit(tree, smp)
+                    u = _unit(q + ed * (e + clearance) - o) if ed is not None else None
+                    if u is None:
+                        break
+                    h = ray_hit(tree, o + u * a, u, L - a) if a < L else None
+                    q = o + u * L if h is None else _place(tree, o, u, L, a, clearance, h, info)
+                    changed = True
+                    smp = volume_enclosed(tree, o, q, r)
+                    if smp is None:
+                        break
+                if smp is not None:
+                    info["volume_left"] += 1
         P[k] = q
         if changed and info["moved"] is None:
             info["moved"] = k
@@ -445,6 +508,18 @@ class PushOut:
         if "vertices" in self.spec["stages"]:
             for n in self.names:
                 self._anchors(n)
+                tree = self.rest_trees[n][0]
+                for c in self.chains[n]:  # lock radius per segment (90th percentile of its vertices' distance to the
+                    acc = c.pop("_dist", {})  # centre line) and where the lock is already enclosed at rest
+                    c["radius"] = [float(np.percentile(np.concatenate(acc[k]), 90)) if k in acc else 0.0
+                                   for k in range(len(c["bones"]))]
+                    c["rest_volume"] = [False] + [volume_enclosed(tree, c["rest"][k - 1], c["rest"][k],
+                                                                  c["radius"][k - 1]) is not None
+                                                  for k in range(1, len(c["rest"]))]
+                self.report["characters"][n]["lock_radius_mm"] = round(1e3 * float(np.median(
+                    [r for c in self.chains[n] for r in c["radius"] if r > 0] or [0.0])), 1)
+                self.report["characters"][n]["lock_enclosed_at_rest"] = sum(
+                    sum(c["rest_volume"]) for c in self.chains[n])
         for n in self.names:
             for _i, pb in self.states[n]["bones"]:
                 pb.location, pb.rotation_quaternion, pb.scale = saved[(n, pb.name)]
@@ -494,6 +569,10 @@ class PushOut:
                 c = self.chains[n][ci]
                 A[idx], seg = nearest_on_polyline(P[idx], c["rest"])
                 rigid[idx] = seg
+                dd = np.linalg.norm(P[idx] - A[idx], axis=1)
+                acc = c.setdefault("_dist", {})
+                for k in np.unique(seg):
+                    acc.setdefault(int(k), []).append(dd[seg == k])
             stat = np.nonzero(~is_chain)[0]
             embedded = np.zeros(nv, dtype=bool)  # in the head at rest: never moved (roots, scalp side of the cap)
             for i in stat:
@@ -576,14 +655,16 @@ class PushOut:
             rig = self.states[n]["rig"]
             W = np.array(rig.matrix_world)
             Wi = np.linalg.inv(W)
-            out = {"chains_pushed": 0, "joints_moved": 0, "hits": 0, "enclosed": 0, "enclosed_left": 0, "shortened": 0,
-                   "max_move_mm": 0.0}
+            out = {"chains_pushed": 0, "joints_moved": 0, "hits": 0, "enclosed": 0, "enclosed_left": 0, "blocked": 0,
+                   "volume": 0, "volume_left": 0, "max_move_mm": 0.0}
             for c in self.chains[n]:
                 pbs = [rig.pose.bones[b] for b in c["bones"]]
                 J = [pbs[0].head] + [pb.tail for pb in pbs]
                 J = np.array([W[:3, :3] @ np.array(j) + W[:3, 3] for j in J])
-                P, info = push_chain(tree, J, c["allow"], clearance, c["rest_enclosed"])
-                for key in ("hits", "enclosed", "enclosed_left", "shortened"):
+                vol = bool(self.spec["lock_volume"])
+                P, info = push_chain(tree, J, c["allow"], clearance, c["rest_enclosed"], bool(self.spec["enclosure"]),
+                                     c.get("radius") if vol else None, c.get("rest_volume"))
+                for key in ("hits", "enclosed", "enclosed_left", "blocked", "volume", "volume_left"):
                     out[key] += info[key]
                 if info["moved"] is None:
                     continue
@@ -633,7 +714,7 @@ class PushOut:
             mg = cs.modifiers.new("collect", "NODES")
             mg.node_group = _collector_group(c)
             sets.append(cs)
-        group = _clamp_group(float(self.spec["vertex_margin_m"]))
+        group = _clamp_group(float(self.spec["vertex_margin_m"]), bool(self.spec["exit_test"]))
         for n in self.names:
             for o, px in self.states[n].get("proxies", []):
                 m = o.modifiers.new(f"{PREFIX}", "NODES")
@@ -657,7 +738,7 @@ def _collector_group(col):
     return ng
 
 
-def _clamp_group(margin):
+def _clamp_group(margin, exit_test=True):
     """Shared clamp: inputs Geometry, Anchors (geometry, world), Colliders (geometry, world), Self (matrix)."""
     import bpy
     ng = bpy.data.node_groups.new(f"{PREFIX}.clamp", "GeometryNodeTree")
@@ -804,11 +885,14 @@ def _clamp_group(margin):
     L.new(a2.outputs[0], sw2.inputs["Switch"])
     L.new(sw1.outputs[0], sw2.inputs["False"])
     L.new(ex.outputs[0], sw2.inputs["True"])
-    L.new(sw2.outputs[0], tl.inputs["Vector"])
     any_ = N.new("FunctionNodeBooleanMath")
     any_.operation = "OR"
     L.new(rc.outputs["Is Hit"], any_.inputs[0])
-    L.new(a2.outputs[0], any_.inputs[1])
+    if exit_test:
+        L.new(sw2.outputs[0], tl.inputs["Vector"])
+        L.new(a2.outputs[0], any_.inputs[1])
+    else:  # spec "exit_test": false: the anchor ray only
+        L.new(sw1.outputs[0], tl.inputs["Vector"])
     sp = N.new("GeometryNodeSetPosition")
     L.new(gi.outputs["Geometry"], sp.inputs["Geometry"])
     L.new(any_.outputs[0], sp.inputs["Selection"])

@@ -7,7 +7,9 @@ SYNTHETIC scenes only (no character data). Checks:
      segment crossing anything and every segment length kept (1e-6 m); a chain that goes down through the opening
      of a hollow box (no face crossed) ends with no joint enclosed; a chain 75 mm deep in a box comes out on the
      side it came from; a chain that crosses nothing is returned bit for bit; applying it twice = once; the same
-     result on a second run; a root embedded at rest (rest allowance) is not pushed.
+     result on a second run; a root embedded at rest (rest allowance) is not pushed; a root in a narrow tunnel whose
+     slide and normal are blocked leaves at full length along a free FAN direction (never a shortened segment); a lock whose
+     flesh (rest radius) reaches into a hollow box is moved until no lock sample is enclosed, unless it is so at rest.
   2. Scene (a rig with a head bone, a torso that moves, a fold plate, a four-bone DYN chain with a lock tube around
      it, a static cap, an open-top cup prop): stage A re-keys the chain bones in the frame where the lock is in the
      torso and leaves the keys of a free frame exactly as baked; stage B: no hair vertex inside the torso box or
@@ -79,7 +81,7 @@ for name, t in cases.items():
     P2, info2 = HP.push_chain(t, P, [0.0] * 4, CL)
     P3, _ = HP.push_chain(t, J, [0.0] * 4, CL)
     check(f"A.{name}.no_crossing", crossings(t, J) > 0 and crossings(t, P) == 0, before=crossings(t, J), after=crossings(t, P))
-    check(f"A.{name}.lengths", np.abs(lengths(P) - lengths(J)).max() < 1e-6 and info["shortened"] == 0,
+    check(f"A.{name}.lengths", np.abs(lengths(P) - lengths(J)).max() < 1e-6 and info["blocked"] == 0,
           max_err=float(np.abs(lengths(P) - lengths(J)).max()))
     check(f"A.{name}.idempotent", info2["moved"] is None and np.array_equal(P2, P))
     check(f"A.{name}.deterministic", np.array_equal(P3, P))
@@ -105,6 +107,33 @@ head = tree_of(*box((-0.05, -0.05, 0.95), (0.05, 0.05, 1.05)))
 allow = HP.rest_allowance(head, J)
 P, info = HP.push_chain(head, J, allow, CL)
 check("A.rest_allowance", allow[0] > 0.04 and allow[1] == 0.0 and info["moved"] is None, allow=allow)
+
+# no free slide and no free normal (a root in a narrow tunnel, the lock pointing through its floor): the segment keeps
+# its length (the re-key only rotates bones) and leaves along the nearest free direction (FAN); _fan alone too
+tun = tree_of([(-0.3, -0.015, 0.90), (0.3, -0.015, 0.90), (0.3, 0.015, 0.90), (-0.3, 0.015, 0.90),
+               (-0.3, -0.015, 0.94), (0.3, -0.015, 0.94), (0.3, 0.015, 0.94), (-0.3, 0.015, 0.94)],
+              [(0, 1, 2, 3), (4, 5, 6, 7), (0, 1, 5, 4), (3, 2, 6, 7)])
+JT = J - np.array([0.0, 0.0, 0.08])
+P, info = HP.push_chain(tun, JT, [0.0] * 4, CL)
+check("A.tunnel.full_length_free", crossings(tun, P) == 0 and np.abs(lengths(P) - lengths(JT)).max() < 1e-6
+      and info["blocked"] == 0, before=crossings(tun, JT), max_err=float(np.abs(lengths(P) - lengths(JT)).max()))
+fi = {"blocked": 0}
+q = HP._fan(tun, JT[0], np.array([0.0, 0.0, -1.0]), 0.08, 0.0, fi)
+check("A.fan.free_full_length", abs(float(np.linalg.norm(q - JT[0])) - 0.08) < 1e-9 and fi["blocked"] == 0
+      and crossings(tun, np.array([JT[0], q])) == 0, end=q.round(4).tolist())
+
+# lock volume: the centre line runs 15 mm outside the wall of a hollow box (no top), the lock (radius 30 mm) reaches
+# into it; with the radius the chain moves until no lock sample is enclosed, without it nothing moves
+JV = J + np.array([0.115, 0.0, -0.25])
+before = sum(HP.volume_enclosed(hollow, JV[k - 1], JV[k], 0.03) is not None for k in range(1, len(JV)))
+P0, i0 = HP.push_chain(hollow, JV, [0.0] * 4, CL)
+P, info = HP.push_chain(hollow, JV, [0.0] * 4, CL, radius=[0.03] * 4)
+after = sum(HP.volume_enclosed(hollow, P[k - 1], P[k], 0.03) is not None for k in range(1, len(P)))
+check("A.lock_volume.pushed", before > 0 and after == 0 and i0["moved"] is None and info["volume"] > 0
+      and info["volume_left"] == 0 and crossings(hollow, P) == 0 and np.abs(lengths(P) - lengths(JV)).max() < 1e-6,
+      before=int(before), after=int(after), volume=info["volume"])
+P2, _ = HP.push_chain(hollow, JV, [0.0] * 4, CL, radius=[0.03] * 4, rest_volume=[True] * 5)
+check("A.lock_volume.rest_enclosed_kept", np.array_equal(P2, JV))
 
 # 2. scene --------------------------------------------------------------------------------------------------------
 bpy.ops.wm.read_factory_settings(use_empty=True)
