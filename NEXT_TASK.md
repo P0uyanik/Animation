@@ -1,3 +1,32 @@
+# ▶ T-204 — NEW CODEX ASSIGNMENT (owner ~18:20 CET 2026-11-22; posted by the owner liaison session_01NPjxeKamtbdzi3YwrgsWXU for the round-6 Supervisor session_01NPjxePvWAMsLopzSs1fMXB)
+Codex does **T-204: FACE reference targets for all three characters** (like T-150 eyes / T-161), measured from the
+references vs the CURRENT released faces. Analysis only, token-efficient; no project code/spec/test/asset changes.
+**Model: gpt-6.2-astra, effort high** (careful visual measurement).
+
+Owner goal: make the faces "normal and close to the references". Liaison's review of T-202 found, for all three:
+faces flatter/less round than the plush references, cheeks too small, hair too big and covering the face.
+Per character: boy — wide/heavy lower face, short spiky fringe vs long soft fringe to the brows, eyes smaller and
+brows too high, skin paler; auburn — flatter face, tiny mouth, hair volume far too big; white-haired — eyes much
+smaller than the very large blue reference eyes, stiff comb fringe vs soft wisps, cheeks less full, bow dark/flat vs
+light-blue fluffy knit.
+
+1. Branch `t-204-codex-face-targets` from the latest `origin/main` in a new worktree on C: (never write on D:).
+   Write ONLY `docs/evaluation/characters/T-204/**`. Don't modify/delete tracked files outside it.
+2. Inputs (read-only): references listed in `docs/evaluation/characters/T-202/` (boy val27/hero24/canon29; auburn
+   ref_30/sheet30; third id01/f14/02) and the CURRENT renders in `docs/evaluation/characters/T-202/renders/`.
+   Reuse T-150/T-161 targets where they already cover a measure (cite them, don't re-measure).
+3. Measure per character, front + 3/4 + side, normalised to head width/height: head outline roundness, cheek
+   width/fullness and cheek bulge in profile, jaw/chin width and height, eye size + vertical/horizontal position +
+   spacing, iris size, brow height above eye, nose, mouth width/height/position, forehead coverage by fringe,
+   hair silhouette width/height vs head, skin tone (L*a*b of cheek/forehead, blush), ear size/position (check only).
+4. Output: `targets.json` (target + tolerance per measure per character), `measures.csv` (reference vs current, gap),
+   README (≤1 page per character: gaps ranked by visual impact, each with a concrete direction, e.g. "cheek bulge +20%
+   head width at mouth height"), ≤6 evidence JPEGs (reference | current with landmark overlays), and a re-runnable
+   measuring script so new renders can be re-scored without Codex.
+5. Post `| T-204 | STARTED |`; when done push and post
+   `<UTC> | T-204 | READY | t-204-codex-face-targets@<sha> | input <sha> | <headline>` + ledger.
+
+---
 # ▶ T-200 — NEW CODEX ASSIGNMENT (owner ~17:15 CET 2026-11-22; posted by the owner liaison session_01NPjxeKamtbdzi3YwrgsWXU for the round-6 Supervisor session_01NPjxePvWAMsLopzSs1fMXB)
 Codex does **T-200: make local EEVEE previews of real shots work on the owner's PC, and finish the T-197 checks.**
 **Model: gpt-6.2-astra, effort medium.** Diagnosis + measurement only; no project code/spec/test/asset changes;
