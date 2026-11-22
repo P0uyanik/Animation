@@ -21,7 +21,8 @@ Released = girl 0.14.0 as published. Candidate = the same girl with `candidates/
 | All surfaces together | 286, 65.9 mm, 8,496 | 268, 13.1 mm, 436 |
 
 Tool: `tools/measure_body.py` (every hair vertex against every body and garment surface, every frame), table by
-`tools/measure_table.py`. Runs: released `rel4b`, candidate `s4fb`.
+`tools/measure_table.py`. Runs: released `rel4b`, candidate `s4fb`; the candidate was rebuilt from scratch in a fresh
+container in session 5 (run `s5f`): the same numbers on every surface.
 
 ## What is left, and whether it can be seen from outside
 
@@ -54,6 +55,7 @@ the candidate.
   body: the silhouette behind her head is clearly bigger (arm view f24-58, side view f54-96), ringlets lie across
   each other (back view f62-106), and in the over-shoulder view one ringlet is kinked with a tuft of fibres
   sticking up (f116-132). When she straightens the hair settles again (over-shoulder view f148).
+  Three changes against this were tried in session 5 and none helped (next section).
 - **The right side lock is lifted by the sleeve (frames 26-28).** When her right arm reaches forward, the puffy
   sleeve rises under the lock in front of her right ear (`ringlets_side_r00`). Released: the lock sinks into the
   sleeve. Candidate: the lock stays out, is carried up by the sleeve (tip up to 26 cm from where it hangs), curls
@@ -61,6 +63,61 @@ the candidate.
   captioned in the arm-raised clip. If it is not wanted, the possible trade is thinner locks against the arm
   (not tried).
 - The ears stay clear (0 frames; released: 195 frames).
+
+## The wide hair in the lean: three changes tried, none kept (session 5)
+
+The candidate is unchanged. Each of the three changes session 4 named was built, baked and measured once over all
+286 frames, with preview frames at f60, f100 and f124 from behind and from her right side. None makes the hair
+visibly narrower or tidier, and each one puts hair back into a visible surface.
+
+The values in the task ("friction 40", "spheres 45 mm, pad 2.5 mm") are what the candidate already has, so the
+trials went below them.
+
+| Run | Hair beyond the body's outline, from behind / from the side (cm2, mean of f24-132) | Lock pairs crossing (mean / most) | Sharpest fold of a lock (mean / worst) | Cloth, hands, ears (frames over 1 mm) |
+|---|---|---|---|---|
+| Released | 843 / 891 | 16 / 23 | 56 / 80 degrees | see the table at the top |
+| Candidate (kept) | 999 / 1,088 | 27 / 32 | 115 / 164 degrees | 0 |
+| Friction 40 -> 10 | 1,000 / 1,087 | 26 / 29 | 115 / 160 degrees | ears: 32 frames, 1.9 mm, 2 vertices |
+| Torso spheres 45 -> 30 mm (pad 2 mm, 18 mm apart, 529 instead of 298) | 975 / 1,079 | 28 / 35 | 99 / 164 degrees | vest: 2 frames, 2.7 mm, 1 vertex |
+| Lock radii percentile 100 -> 85 (largest 41 instead of 53 mm) | 967 / 1,063 | 28 / 34 | 132 / 174 degrees | blouse 95 frames, 3.3 mm; vest 24, 3.8 mm; hands 1, 5.7 mm; cuffs 1, 1.5 mm |
+
+Skin is the same in all four (268 frames, 13.1 mm, 436 vertices: the two hidden places).
+
+- Tool: `tools/fan_out.py` (new): the hair's silhouette seen straight from behind and from her right side, the part
+  of it that lies beyond the body's outline, how many pairs of lock centre lines cross seen from behind, and the
+  sharpest fold between two neighbouring segments of a lock (more than at rest). Every 4th frame of f24-132; all
+  rows in `T-183_r2_fan_out.json`.
+- The numbers say what the frames show: the candidate has 18 % (from behind) and 22 % (from the side) more hair
+  beyond the body's outline than released; the best trial takes back 3 of those 18 and 2 of those 22 points. The
+  whole silhouette is not bigger (2,339 against 2,358 cm2 from behind): the hair that released hides inside the
+  body now lies beside and behind it.
+- Frames: `T-183_r2_fanout_levers_back.jpg` and `T-183_r2_fanout_levers_side.jpg` (960x980; one row per run:
+  released, candidate, the three trials; columns f60, f100, f124). The lock that stands out to the side at the
+  upper right of the hair (f100, f124 from behind) is there in the candidate and in all three trials.
+- No combination was built: no single change reduced the fan-out, and each alone already breaks a zero.
+
+Why these three do not reach it (measured on the candidate bake):
+
+- The locks collide as thick tubes. A ringlet is a wide spiral; its collision radius is the farthest fibre from
+  the chain's centre line, up to 53 mm per joint (median 36 mm). For the three ringlets below: released, the
+  centre lines run 3-34 mm from skin and cloth and the curls pass through; candidate, 41-79 mm (f24, f96). The
+  whole lock sits 2-6 cm farther out. Thinner radii (percentile 85: median 28 mm, largest 41 mm) move the locks
+  in by a few mm, and the outermost curls then dip 1.5-5.7 mm into blouse, vest and a hand.
+- The kinked ringlet is a squeeze at the first joint. Three ringlets at her right back (`ringlets_back_05`,
+  `_06`, `_b_02`) fold by more than 80 degrees at their first joint (worst 125, 112 and 88 degrees; released
+  never over 49) in f22-56, f75-146 and again in f199-241. When her head tips back and to her right in the lean,
+  the place where that joint hangs is 8-22 mm from the neck and shoulder. A joint with a collision radius of
+  23-44 mm does not fit between head and shoulder; it is pushed out sideways and up (`ringlets_back_05`: 14-15 cm
+  from where the released joint hangs, 5 cm above its own root), and the rest of the lock hangs from there. The
+  first segment is one stiff piece of 6-9 cm. With smaller torso spheres or thinner radii `ringlets_back_05`
+  still folds by 101-114 degrees at f24 and f96.
+- Friction decides how fast a pushed lock slides back, not where it has room: with friction 10 the picture is the
+  same, and `ringlets_side_b` slides 1.9 mm into the left ear.
+
+What would address it (not tried; outside the bounded trials): more and shorter segments at the top of the back
+ringlets so that a lock can bend around the shoulder instead of folding at one joint; a lock that may be squeezed
+thinner near its root where it lies under other hair; and the locks do not collide with each other, which is why
+they cross.
 
 ## Clips and sheet
 
@@ -74,6 +131,10 @@ Close-ups of the girl, released on the left, candidate on the right, shot frame 
 | `clips/T-183_r2_back_f060-108.mp4` | straight from behind | 60-108 | the ringlets across the back; candidate wider, shifted to her right, ringlets crossing |
 | `clips/T-183_r2_shoulder_f100-148.mp4` | over her right shoulder, from behind and above | 100-148 | the back from above; the kinked ringlet (f116-132); settling at f148 |
 | `T-183_r2_strict_sheet.jpg` | strict sheet, 840x1024 px: one row per view, released / candidate | 28 (arm), 76 (back), 78 (side), 116 (shoulder) | tiles at full size in `sheet_r2/before/`, `sheet_r2/after/` (640x360) |
+
+The clips and the sheet show the candidate that is kept (session 5 changed nothing in it). They were not rendered
+again: the four sheet frames, rendered from the session 5 rebuild, match the committed candidate tiles at 42-44 dB
+(JPEG noise; against the released tiles 20-21 dB).
 
 Each clip plays its frames once at real speed and once at half speed. Not rendered: frames 149-286 in close-up
 and her left side (the boy's side); those are covered by the measure only.
@@ -161,4 +222,5 @@ Blender is the bpy 5.3.0 module (`tools/bpy_blender.py` behind a small wrapper s
 --bake-engine build/apps/render-cli/plush-render --run-dir <new id>`; `python3 tools/measure_body.py
 <build/runs/<id>/bake.json> --out=<measure.json> [--legacy]`; close-ups: `tools/closeup.py <bake> <copy> <view>
 --frames=A-B --step=2`, then `pipeline/charsys/shot_render.py --bake <copy> --cast <build/cast.json> --out <dir>
---resolution 640 360 --samples 8`. More in `ROUND.md` ("Environment notes").
+--resolution 640 360 --samples 8`; fan-out: `python3 tools/fan_out.py released=<bake.json> candidate=<bake.json>`.
+More in `ROUND.md` ("Environment notes").

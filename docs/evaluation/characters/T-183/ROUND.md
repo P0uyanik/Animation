@@ -4,7 +4,8 @@ Branch `t-183-claude-hair-contact`. Round 1 input `7135087`; round 2 input `2664
 
 ## Round 2 (in progress): hair against the whole body and the garments
 
-Session 4 state: see "Session 4" below first (final candidate measured; `sheets` and the curtain blend are gone).
+Session 5 state: see "Session 5" below first (three levers against the fan-out tried, none kept; the candidate is
+the one of `65e3b9c`). Before it: "Session 4" (final candidate measured; `sheets` and the curtain blend are gone).
 
 Owner verdict on round 1 (2026-11-21 ~19:20 CET): not accepted, "the hair still intersects with the body and other
 areas; it goes inside the body". Round 2 goal: no hair inside head, neck, shoulders, back, arms, hands or garments
@@ -220,6 +221,43 @@ are removed.
   above). The measure is 0 on cloth, hands and ears, but the look is wider and less tidy than released. The lifted
   right side lock (f26-28) is captioned in the arm clip.
 
+### Session 5 (2026-11-21/22): the fan-out in the lean, three levers, none kept
+
+Bounded job from the Supervisor: try the three levers of next step 4 once each (build + bake + full measure +
+preview frames f60, f100, f124, back and side), accept only with cloth / hands / ears at 0 and the fan-out visibly
+reduced. The values named in the job (friction 40, spheres 45 mm, pad 2.5 mm) are the candidate's own, so the trials
+went below them. Fresh container: engine built, candidate rebuilt as `s5f` / `s5fb`: 268 of 286 frames, 13.1 mm,
+436 vertices, skin only (as `s4fb`). Released baked as `rel5b` (its prepare takes no build: published packages).
+
+- New tool `tools/fan_out.py <label>=<bake> ...` (8 s per bake after loading): hair silhouette from behind and from
+  the side (parallel projection, 3 mm cells), the part beyond the body's outline, crossing pairs of lock centre
+  lines (back view), sharpest fold between neighbouring chain segments over rest. Every 4th frame of f24-132.
+- Trials (override = the candidate with one key changed; trial scene = `s010_t183` scene with that override; runs
+  `<name>p` / `<name>b` in `s010_t183/build/runs/`):
+
+  | Run | Change | out back / side cm2 (mean) | crossings | fold deg (mean / max) | Measure beside skin |
+  |---|---|---|---|---|---|
+  | `rel5b` | released | 843 / 891 | 16.2 | 56 / 80 | (released) |
+  | `s5fb` | candidate | 999 / 1,088 | 26.9 | 115 / 164 | 0 |
+  | `fr10b` | `rest.friction` 40 -> 10 | 1,000 / 1,087 | 25.5 | 115 / 160 | `ringlets_side_b > ear.L` 32 frames, 1.9 mm, 2 vertices |
+  | `ts30b` | `skin_torso` `radius_m` 0.030, `pad_m` 0.002, `spacing_m` 0.018 (529 spheres) | 975 / 1,079 | 28.2 | 99 / 164 | vest 2 frames, 2.7 mm, 1 vertex |
+  | `pc85b` | `radii.percentile` 85 (median 28, max 41 mm; candidate 36, 53) | 967 / 1,063 | 27.7 | 132 / 174 | blouse 95 / 3.3 mm / 10; vest 24 / 3.8 / 3; hands 1 / 5.7 / 9; cuffs 1 / 1.5 / 1 |
+
+  Skin identical in all (268 / 13.1 / 436). Preview sheets: `T-183_r2_fanout_levers_back.jpg`, `_side.jpg`; rows:
+  `T-183_r2_fan_out.json`. Read at full size, candidate against `pc85b` (the largest numeric change): the same
+  picture, the lock that stands out at the upper right of the hair is in both. **None accepted, no combination
+  built; the candidate is unchanged.**
+- Cause, measured on `s5fb`: (a) chain radii are the farthest fibre from the chain line (up to 53 mm, median 36);
+  released the joints of `ringlets_back_05/06/b_02` run 3-34 mm from skin and cloth, candidate 41-79 mm.
+  (b) The kink: joint 1 of `ringlets_back_05`, `_06`, `_b_02` folds by more than 80 degrees over rest (max 125, 112,
+  88; released at most 49) in f22-56, f75-146, f199-241. The released joint 1 is 8-22 mm from `body_skin` there
+  (head tipped onto the neck and right shoulder); with radius 23-44 mm it has no place, goes sideways and up
+  (`back_05` f96: (-449, 839, 8) mm against (-383, 708, -20) released, root at y 786) and the lock hangs from there.
+  Rest clearance of joint 1 of these three to the whole figure is 41-52 mm, so capping the radius by rest clearance to all
+  colliders (instead of the head's only) changes nothing: the squeeze exists only in the pose.
+- Clips and sheet not rendered again (candidate unchanged): the four sheet frames rendered from `s5fb` match the
+  committed `sheet_r2/after` tiles at 41.7-43.8 dB (JPEG noise; against `before` 19.9-21.0 dB).
+
 ### Next steps
 
 1. Supervisor / owner verdict on the CHECKPOINT (README table, clips, sheet).
@@ -227,10 +265,11 @@ are removed.
    (body skinning; item 1 above).
 3. If the lifted right side lock (f26-28, `ringlets_side_r00` on the sleeve, at the cheek) is not wanted: thinner
    chain radii against the arm colliders (not tried).
-4. If the fanned hair in the lean is not wanted: levers not tried are thinner chain radii (percentile below 100),
-   smaller torso spheres (radius 45 mm, pad 2.5 mm), and less resting friction (40) so that locks slide off the
-   back instead of staying where they were pushed. Each is one build (5 min) + bake + measure (2.5 min) + a few
-   close-up frames (`tools/preview.sh`).
+4. The fanned hair in the lean: friction, torso sphere size and radii percentile are tried (session 5) and do not
+   help. Not tried: shorter segments at the top of the back ringlets (two joints in the first 7-9 cm, so the lock
+   bends around the shoulder instead of folding at joint 1); a smaller radius for joint 1 only where the lock lies
+   under other hair (the nape; it would count against the skin and the collar there); lock-against-lock contact
+   (the chains do not see each other, hence the crossings: 27 pairs against 16 released).
 
 ## Round 1 (not accepted): hand / ear / follow
 
@@ -275,6 +314,8 @@ module; `tools/bpy_blender.py` is not executable, so pass `--blender` a small wr
 - Preview frame (47 s at 640x360, 8 samples): `tools/preview.sh <wrapper> <out dir> <name> <bake> <cast.json> <view>
   8 <frames...>`; a prototype bake renders with the candidate's master (`s010_t183/build/cast.json`) as long as the
   bones are the same (not for new curtain bones: those need the groom build).
+- Session 5: trial overrides were scratch copies of the candidate override with one key changed, used through a
+  scene copy `s010_t183/trial_<name>.scene.json` (not committed) so that the shot's build cache is shared.
 - Session 3 runs: released `s010/build/runs/rel3`, candidate `s010_t183/build/runs/s3f` (build logs with the
   bind report: `runs/<id>/logs/build_girl.log`, line `groom contact:`). Try chain keys without a rebuild:
   `tools/tweak_chains.py <name> '<chain pattern>:<key>=<number>'` (bake in `build/exp/<name>/`). Full measure: 2.5 min
