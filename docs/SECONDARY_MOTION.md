@@ -168,22 +168,28 @@ Colliders that move with something outside the character (same list, same rules;
 ```json
 "dynamics": {"colliders": [
   {"name": "nb.boy.0", "type": "sphere", "character": "boy", "bone": "DEF-upper_arm.L", "centre": [0.21, 0.74, 0.01], "radius": 0.04},
-  {"name": "prop.boat", "type": "box", "prop": "boat", "min": [-0.05, -0.013, -0.021], "max": [0.05, 0.013, 0.021], "radius": 0.003}]}
+  {"name": "prop.boat", "type": "box", "prop": "boat", "min": [-0.05, -0.013, -0.021], "max": [0.05, 0.013, 0.021], "radius": 0.003},
+  {"name": "prop.cup", "type": "cylinder", "prop": "cup", "a": [0, 0, 0], "b": [0, 0.1, 0], "radius": 0.04, "round": 0.003}]}
 ```
 
 - `"character"`: the scene name of ANOTHER character; `bone` is one of its bones and the shape (sphere or capsule) is
   in that character's rest space, like a package collider is in the character's own. The hair of one character then
   keeps off the body of its neighbour.
-- `"prop"`: the name of a scene prop; the shape (box, sphere or capsule, no `bone`) is in the prop's own frame, so it
-  goes where the prop goes, also in a hand (the box is oriented). A scale in the prop's transform scales the shape.
+- `"prop"`: the name of a scene prop; the shape (box, sphere, capsule or cylinder, no `bone`) is in the prop's own
+  frame, so it goes where the prop goes, also in a hand (the box is oriented). A scale in the prop's transform scales
+  the shape.
+- `"type": "cylinder"` (on a prop only): a solid cylinder, `a` and `b` the centres of its two end faces, `radius` its
+  radius, `round` the rounding of its two rims (default 0.003 m, at most the radius and half the height). The faces
+  and the side stay where `a`, `b` and `radius` put them. A cup is such a cylinder (its hollow counts as solid: no
+  hair hangs into it). Segments are tested like a box's. A scene without one runs as before.
 - The scene gives the solver the frames of these carriers at every step (`SpringChainSolver::External`): the other
   characters' poses before their own secondary motion and the props on those poses, so no solver waits for another
   and a prop in the character's own hand does not re-enter its solver. An unknown character, bone or prop is a load
   error. The carriers' poses are evaluated at the step rate (240 Hz), each once (a memo shared by the characters).
 - Without such a collider nothing of this runs: the scene calls the solver exactly as before (the golden bake hashes
   of `tests/test_bake_golden.cpp` are unchanged, and `test_secondary.cpp` checks the solver bit for bit).
-- `derive_shot.py --props --neighbours-from=<bake>` writes them into a shot copy: the scene's box props, and
-  spheres fitted on the neighbours' package meshes where the hair comes near them (`tools/neighbours.py`).
+- `derive_shot.py --props --neighbours-from=<bake>` writes them into a shot copy: the scene's box and cylinder
+  props, and spheres fitted on the neighbours' package meshes where the hair comes near them (`tools/neighbours.py`).
 
 ## Groom (`spec.hair.dynamics`, groom/1)
 

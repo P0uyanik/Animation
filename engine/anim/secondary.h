@@ -77,7 +77,7 @@ struct SpringChain {
 };
 
 struct DynamicsCollider {
-  enum class Kind { Sphere, Capsule, Box };
+  enum class Kind { Sphere, Capsule, Box, Cylinder };
   std::string name;
   Kind kind = Kind::Sphere;
   std::string bone;  // the collider rides on this bone; empty for a box (world space)
@@ -86,6 +86,9 @@ struct DynamicsCollider {
   // Scene colliders that move with something outside the character (T-183 round 3; scene override only):
   std::string character;  // `bone` is a bone of this other scene character; a, b in that character's rest space
   std::string prop;       // the collider rides on this scene prop; a, b (any kind) in the prop's own frame
+  // Cylinder (on a prop only): a, b = the centres of its two end faces, radius = its radius, round = the rounding of
+  // its rims (at most the radius and half the height)
+  float round = 0.003f;
 };
 
 struct DynamicsSpec {
@@ -176,6 +179,7 @@ class SpringChainSolver {
     vec3 a, b, head;
     float radius;
     int ext = -1;  // >= 0: rides on externals_[ext] (a, b in that frame; a box: its min and max corner, not shrunk)
+    float round = 0;  // cylinder: the rounding of its rims
   };
   struct State {
     std::vector<vec3> x, v, xk;  // per joint (all chains concatenated): position, velocity, kinematic position

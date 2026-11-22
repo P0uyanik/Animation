@@ -8,8 +8,11 @@ neighbour_spheres(bake, owner, ...)   spheres that follow the surface of the OTH
         {"name": "nb.<neighbour>.<i>", "type": "sphere", "character": "<neighbour>", "bone": "<bone>",
          "centre": [x, y, z] (the neighbour's rest space), "radius": r}
     Thin parts (REGIONS: hands and fingers by bone name; data, not code) get smaller, closer spheres.
-prop_boxes(scene, scene_path)   the scene's box props as boxes in the prop's own frame:
+prop_boxes(scene, scene_path)   the scene's box props as boxes in the prop's own frame, its cylinder props (a cup:
+    standing on its base, axis y; an open cup counts as solid) as cylinders:
         {"name": "prop.<name>", "type": "box", "prop": "<name>", "min": [...], "max": [...], "radius": edge rounding}
+        {"name": "prop.<name>", "type": "cylinder", "prop": "<name>", "a": [0, 0, 0], "b": [0, height, 0],
+         "radius": r, "round": rim rounding}
 Format and engine side: docs/SECONDARY_MOTION.md, "Scene colliders". Needs the bpy module (mathutils) for the spheres.
 
     python3 neighbours.py <bake.json> <owner> [--reach-m=0.1]     prints the counts per neighbour and bone
@@ -135,13 +138,21 @@ def prop_assets(scene_path):
 
 def prop_boxes(scene, scene_path, skip=(), radius=0.003):
     """The scene's props whose asset is a box primitive, as box colliders in the prop's own frame (centred, scaled
-    by the asset's scale as the engine draws it). The edge rounding is `radius`, at most the smallest half extent."""
+    by the asset's scale as the engine draws it). The edge rounding is `radius`, at most the smallest half extent.
+    A cylinder primitive (standing on its base, axis y, as measure_props.prop_shape reads it) becomes a cylinder
+    collider with the same rounding at its rims."""
     assets = prop_assets(scene_path)
     out = []
     for p in scene.get("props", []):
         a = assets.get(p.get("id"))
         m = (a or {}).get("mesh", {})
-        if m.get("primitive") != "box" or any(fnmatch.fnmatchcase(p["name"], s) for s in skip):
+        if m.get("primitive") not in ("box", "cylinder") or any(fnmatch.fnmatchcase(p["name"], s) for s in skip):
+            continue
+        if m["primitive"] == "cylinder":
+            sc = float(a.get("scale", 1.0))
+            r, h = round(sc * float(m["radius"]), 5), round(sc * float(m["height"]), 5)
+            out.append({"name": f"prop.{p['name']}", "type": "cylinder", "prop": p["name"], "a": [0.0, 0.0, 0.0], "b": [0.0, h, 0.0],
+                        "radius": r, "round": round(min(radius, r, 0.5 * h), 5)})
             continue
         h = [round(0.5 * float(a.get("scale", 1.0)) * float(x), 5) for x in m["size"]]
         out.append({"name": f"prop.{p['name']}", "type": "box", "prop": p["name"], "min": [-x for x in h], "max": h,

@@ -83,6 +83,8 @@ void closestSegments(vec3 p1, vec3 q1, vec3 p2, vec3 q2, float& s, vec3& c1, vec
 // A collider at the end of a step. Sphere / capsule: the segment a..b with radius r. Box (T-183 round 3, world
 // space): the core lo..hi with radius r (the box shrunk by its edge rounding and grown again); a = b = its centre.
 // A box on a prop is oriented: lo..hi in the frame (org, rot); points are taken into that frame and back.
+// Cylinder (on a prop): the core is the solid cylinder about the axis a..b with radius rc (the cylinder shrunk by the
+// rounding of its rims, r, at both ends and at its side).
 struct Shape {
   vec3 a, b;
   float r;
@@ -92,8 +94,20 @@ struct Shape {
   bool oriented = false;  // box in the frame (org, rot) instead of world axes
   vec3 org{0};
   mat3 rot{1};
+  bool cyl = false;
+  float rc = 0;
 };
 inline vec3 nearestOn(const Shape& sh, vec3 p) {
+  if (sh.cyl) {
+    const vec3 ab = sh.b - sh.a, d = p - sh.a;
+    const float l = glm::length(ab);
+    const vec3 u = l > 1e-9f ? ab / l : vec3(0, 1, 0);
+    const float h = glm::dot(d, u);
+    vec3 side = d - h * u;
+    const float ls = glm::length(side);
+    if (ls > sh.rc) side *= sh.rc / ls;
+    return sh.a + u * std::clamp(h, 0.0f, l) + side;
+  }
   if (!sh.box) return closestOnSegment(p, sh.a, sh.b);
   if (!sh.oriented) return glm::clamp(p, sh.lo, sh.hi);
   return sh.org + sh.rot * glm::clamp(glm::transpose(sh.rot) * (p - sh.org), sh.lo, sh.hi);
@@ -101,6 +115,22 @@ inline vec3 nearestOn(const Shape& sh, vec3 p) {
 // Closest points of the segment [p1, q1] (c1, at parameter s) and the shape's core (c2). Box: the distance to a
 // convex core is a convex function of s, so a ternary search over s finds it (40 fixed steps: deterministic).
 inline void nearestSeg(vec3 p1, vec3 q1, const Shape& sh, float& s, vec3& c1, vec3& c2) {
+  if (sh.cyl) {  // a convex core, as the box: the same search
+    float s0 = 0, s1 = 1;
+    const auto d2 = [&](float t) {
+      const vec3 x = glm::mix(p1, q1, t);
+      return glm::distance2(x, nearestOn(sh, x));
+    };
+    for (int i = 0; i < 40; ++i) {
+      const float m0 = s0 + (s1 - s0) / 3.0f, m1 = s1 - (s1 - s0) / 3.0f;
+      if (d2(m0) <= d2(m1)) s1 = m1;
+      else s0 = m0;
+    }
+    s = 0.5f * (s0 + s1);
+    c1 = glm::mix(p1, q1, s);
+    c2 = nearestOn(sh, c1);
+    return;
+  }
   if (!sh.box) {
     closestSegments(p1, q1, sh.a, sh.b, s, c1, c2);
     return;
@@ -158,6 +188,14 @@ Result<DynamicsCollider> readCollider(const Json& c, const std::string& context)
     if (d.name.empty() || c.value("space", d.prop.empty() ? "" : "prop") != (d.prop.empty() ? "world" : "prop") || !d.bone.empty())
       return fail(context + ": a box collider needs a name and \"space\": \"world\" (no bone), or a \"prop\"");
     if (!(d.b.x > d.a.x && d.b.y > d.a.y && d.b.z > d.a.z)) return fail(context + ": box collider '" + d.name + "' needs min < max");
+  } else if (type == "cylinder") {
+    // T-183 round 3: a solid cylinder that rides on a prop (a cup); a, b = the centres of its end faces
+    d.kind = DynamicsCollider::Kind::Cylinder;
+    d.a = readVec3(c, "a", vec3(0));
+    d.b = readVec3(c, "b", vec3(0));
+    d.round = readFloat(c, "round", d.round);
+    if (d.prop.empty()) return fail(context + ": cylinder collider '" + d.name + "' needs a \"prop\"");
+    if (!(glm::distance(d.a, d.b) > 0) || !(d.round >= 0)) return fail(context + ": cylinder collider '" + d.name + "' needs a != b and round >= 0");
   } else {
     return fail(context + ": collider '" + d.name + "' has unknown type " + type);
   }
@@ -387,6 +425,7 @@ Json dynamicsToJson(const DynamicsSpec& s) {
     Json cj{{"name", c.name}, {"bone", c.bone}, {"radius", c.radius}};
     if (c.kind == DynamicsCollider::Kind::Sphere) cj.update({{"type", "sphere"}, {"centre", v3(c.a)}});
     else if (c.kind == DynamicsCollider::Kind::Capsule) cj.update({{"type", "capsule"}, {"a", v3(c.a)}, {"b", v3(c.b)}});
+    else if (c.kind == DynamicsCollider::Kind::Cylinder) cj.update({{"type", "cylinder"}, {"a", v3(c.a)}, {"b", v3(c.b)}, {"round", c.round}});
     else cj = Json{{"name", c.name}, {"type", "box"}, {"space", "world"}, {"min", v3(c.a)}, {"max", v3(c.b)}, {"radius", c.radius}};
     if (!c.character.empty()) cj["character"] = c.character;
     if (!c.prop.empty()) {
@@ -489,9 +528,10 @@ Result<std::shared_ptr<SpringChainSolver>> SpringChainSolver::create(const Skele
       while (e < s->externals_.size() && !(s->externals_[e].character == c.character && s->externals_[e].bone == c.bone && s->externals_[e].prop == c.prop)) ++e;
       if (e == s->externals_.size()) s->externals_.push_back({c.character, c.bone, c.prop});
       colliderIndex[c.name] = int(s->colliders_.size());
-      s->colliders_.push_back({c.kind, -1, c.a, c.b, vec3(0), c.radius, int(e)});
+      s->colliders_.push_back({c.kind, -1, c.a, c.b, vec3(0), c.radius, int(e), c.round});
       continue;
     }
+    if (c.kind == DynamicsCollider::Kind::Cylinder) return fail("dynamics: cylinder collider " + c.name + " needs a prop");
     if (c.kind == DynamicsCollider::Kind::Box) {  // world space: no bone; the core is the box less its edge rounding
       const vec3 half = 0.5f * (c.b - c.a);
       const float round = std::min(c.radius, std::min(half.x, std::min(half.y, half.z)));
@@ -613,6 +653,20 @@ void SpringChainSolver::step(State& s, double dtd, const std::vector<mat4>& g, c
         continue;
       }
       const mat4& E = ext[size_t(c.ext)];
+      if (c.kind == DynamicsCollider::Kind::Cylinder) {
+        // the axis goes with the frame; radius and rim rounding by the frame's largest scale, as a capsule's radius
+        const float sc = std::max(glm::length(vec3(E[0])), std::max(glm::length(vec3(E[1])), glm::length(vec3(E[2]))));
+        const vec3 a = vec3(E * vec4(c.a, 1)), b = vec3(E * vec4(c.b, 1));
+        const float len = glm::length(b - a), R = c.radius * sc;
+        const vec3 u = len > 1e-9f ? (b - a) / len : vec3(0, 1, 0);
+        Shape sh{a, b, std::min(c.round * sc, std::min(R, 0.5f * len))};
+        sh.a = a + u * sh.r;
+        sh.b = b - u * sh.r;
+        sh.cyl = true;
+        sh.rc = R - sh.r;
+        shapes.push_back(sh);
+        continue;
+      }
       if (c.kind != DynamicsCollider::Kind::Box) {
         const float sc = std::max(glm::length(vec3(E[0])), std::max(glm::length(vec3(E[1])), glm::length(vec3(E[2]))));
         shapes.push_back({vec3(E * vec4(c.a, 1)), vec3(E * vec4(c.b, 1)), c.radius * sc});

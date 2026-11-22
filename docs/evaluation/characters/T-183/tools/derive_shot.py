@@ -12,7 +12,8 @@ Writes <.../shots/<shot><suffix>/shot.scene.json> = the source shot with
      the floor instead of passing through them. Objects matching --skip-objects get no collider;
   3. "x_t183": {"source", "change"} and the shot's name with the suffix.
 Opt-in per shot (off without the options; tools/neighbours.py, docs/SECONDARY_MOTION.md "Scene colliders"):
-  4. --props: the scene's box props as colliders that ride on the prop ("prop.<name>": a boat in a hand);
+  4. --props: the scene's box and cylinder props as colliders that ride on the prop ("prop.<name>": a boat in a
+     hand, a cup);
   5. --neighbours-from=<bake.json>: spheres on the other characters' bones ("nb.<character>.<i>"), fitted on their
      package meshes where the hair of the candidate comes within --reach-m of them in that bake. The bake is one of
      this copy WITHOUT neighbour colliders (derive, prepare, bake, then derive again with the option). Without the

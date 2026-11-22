@@ -156,9 +156,49 @@ Environment additions: a second shot of the same cast needs no package build whe
 `build/packages` are copied from a prepared shot of that cast (cache hit, prepare 0 s). `near_colliders.py` takes
 `--character=`. The golden check: `build/tests/plush_tests -tc="golden*"` (24 s).
 
+### Session 8 (2026-11-22, continuation session, stopped at a checkpoint on the Supervisor's request)
+
+State per item (A done, B traced and not fixed, C-E not started):
+
+- **A. Cylinder prop collider: DONE.** Collider type `"cylinder"` (prop only; `a`, `b` = centres of the end faces,
+  `radius`, `round` = rim rounding, default 0.003) as a third core shape in `secondary.cpp` (`Shape.cyl` / `rc`,
+  `nearestOn`, `nearestSeg` by the box's ternary search), `DynamicsCollider::Kind::Cylinder` + `round` in
+  `secondary.h`, unit test "a cylinder on a prop (a cup) ..." in `tests/test_secondary.cpp` (parse / round trip /
+  errors, standing and lying cup 0.01-0.02 mm inside, out of reach = bit-identical), `neighbours.prop_boxes` writes
+  cylinders for cylinder assets, docs "Scene colliders". **e909 `s010_t183`, run `r6u`, all 286 frames: cup 23.9 mm /
+  143 fr -> 0; no object, prop or the boy over 1 mm; own body cap 13.1 mm / 268 fr and curtain 11.1 mm / 165 fr as
+  before.** Bake 30.1 s without / 31.1 s with the neighbours. The committed e909 copy now carries `prop.cup`.
+- **Engine on the merged main: built; `plush_tests` 287 / 287 passed (golden included), `plush_prop_tests` passed**,
+  both with the cylinder change in. Trap met: editing `secondary.h` while a build runs leaves objects compiled
+  against the old header (the bake aborted with `std::length_error` in the `DynamicsSpec` copy): `touch
+  engine/anim/secondary.h` and build again.
+- **B. e912 s030 `ringlets_side_00` > blouse 7.7 mm f1-10: traced, NOT fixed.** Reproduced on the merged engine
+  (run `b1` of the committed copy: 7.5-7.7 mm f1-4, 5.1-6.1 mm f5-10, 65-80 vertices, gone from f11). Cause: in
+  f1-10 her head is turned 54 degrees to her left against the chest (chest yaw 0, head 53.5). The chain
+  `ringlets_side_00.00` (radii 36 mm at joints 2-4) hangs from the head, so its root goes behind the left shoulder
+  (z -77), while `anchored_gravity` (anchor chest, weights 0 / 0 / 0.43 / 0.97 / 1) puts the targets of joints 3-4 in
+  front of the arm (z +79 / +82). The lock is laid over the top of the upper arm (joint 3 at 185 / 654 / -21 mm, tip
+  181 / 618 / 31) and the tip is pulled through the arm towards its target: tip 29.7 mm inside the contact distance
+  of 44 arm spheres (upperArm.L / DEF-upper_arm.L.001 / forearm.L), the middle of segment 3-4 22.9 mm inside 35; no
+  other collider holds it there, so it is the spring towards the anchored target against the projection, a steady
+  state of the preroll (a bake with `preroll_s` 0 reaches the same place by f3). It leaves when the body moves
+  (f11+). This is inside the T-183 system (anchored target + contact). Not tried yet: (1) why the projection does not
+  win in the static pose (pass count against 44 spheres + the segment-middle test with lever 2 + the length
+  constraint); (2) limiting the anchor pull for a joint that a collider holds (the spring target taken to the
+  nearest point outside the collider); (3) otherwise list it for T-194. Tools: the scratch dump of session 8 is not
+  committed; `near_colliders.py <run dir> ringlets_side_00.00 <joint> 1-12 3 --character=auburn` gives the same.
+- **C.** Not started. **D.** Engine + tests done (above); the FINAL measure runs `r6` of the four shots, the released
+  "before" bakes and the slowdown factor are not done (e909 `r6u` is a valid final run for e909 unless B / C change
+  the packages). **E.** Not started.
+- Environment: package ids after the merge of main are `auburn_ef9dd0b340ba8d3a`, `white_c4e0a846770cd63f`,
+  `boy_3e04c84ed8656b55` (session 7 had `auburn_ec423c7c2fcfbcf1`, `white_7ded3d4107990fd4`): the candidates
+  rebuild on the merged generator; compare the final numbers with `T-183_r5_tables.json` before trusting either.
+  e912 prepare of `s010_t183` builds all three packages; copy `build/masters` and `build/packages` to the other two
+  copies (prepare then 0 s).
+
 ### Open (in this order)
 
-**State of this list after session 7: items 1-3 below are done (see session 7). What is left, in this order:**
+**State of this list after session 8: A is done, B is traced (see session 8); what is left is B's fix or hand-over, C, D (final runs), E.**
 
 - A. **Cylinder prop collider** for the cup of e909 (23.9 mm / 143 fr). Plan: collider type `"cylinder"` (`a`, `b`
   = axis ends, `radius`, `"round"` = edge rounding 0.003) as a third core shape in secondary.cpp: `Shape` gets a
