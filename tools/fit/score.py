@@ -129,3 +129,52 @@ def score_table(path, start, best):
             for key, point in first["landmarks"].items():
                 rows.writerow((name, key + " error (head heights)", point["error_head"],
                                last["landmarks"][key]["error_head"]))
+
+
+# ---------------------------------------------------------------------------------------------- T-215 (phase P2)
+def t204_measure(blend, spec, character, out, yaws=(0,), px=512):
+    """T-214 measurer on a built blend with a short view list: every reference view (matched expression) plus the
+    given neutral yaws. Yaw 0 must stay in the list: the neutral front anchors the profile chin, as in the default
+    measure run. The character is an argument (a key of the T-214 views.json), never named here."""
+    import measurer as M
+    cfg = M.read(M.CONFIG)
+    ch = cfg["characters"][character]
+    db = M.read(M.T204 / "targets.json")
+    views, names = M.views_for(cfg, character, list(yaws), neutral=False)
+    rendered = M.render(blend, views, px, M.iris_radius(spec), out)
+    nose = M.read(spec)["face"].get("nose", {})
+    results = M.measure_all(rendered, out, character, db, M.t204(), names,
+                            float(nose.get("size_m", nose.get("radius_m", 0.016))), ch.get("flags", ()),
+                            float(ch.get("lid_shadow_h", 0.0)))
+    return {"character": character, "holdout": ch.get("holdout"), "px": px, "timings": rendered["timings"],
+            "summary": M.summary(results, ch.get("holdout")), "views": results}
+
+
+def t204_rows(report):
+    """Reference-view rows that carry a T-204 target: {(view, measure): row}."""
+    return {(r["view"], x["measure"]): x for r in report["views"] if r["view"]
+            for x in r["rows"] if x.get("reference") is not None}
+
+
+def t204_z(report, group=None):
+    """{view: {measure: z or None}} over the scorable reference rows (colour rows have no current value)."""
+    out = {}
+    for (view, key), row in t204_rows(report).items():
+        if row["result"] in ("within", "outside", "unscored") and (group is None or row["group"] == group):
+            out.setdefault(view, {})[key] = row["z"]
+    return out
+
+
+def t204_table(path, start, best, holdout):
+    """Per-measure start vs best: one row per reference view and measure, the held-out view flagged."""
+    a, b = t204_rows(start), t204_rows(best)
+    with path.open("w", encoding="utf-8", newline="") as stream:
+        rows = csv.writer(stream, lineterminator="\n")
+        rows.writerow(("view", "held_out", "group", "measure", "reference", "tolerance", "start", "start_z",
+                       "start_result", "best", "best_z", "best_result"))
+        for key in sorted(a):
+            if a[key]["result"] not in ("within", "outside", "unscored"):
+                continue
+            s, e = a[key], b.get(key, {})
+            rows.writerow((key[0], key[0] == holdout, s["group"], key[1], s["reference"], s["tolerance"],
+                           s["current"], s["z"], s["result"], e.get("current"), e.get("z"), e.get("result")))
