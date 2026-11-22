@@ -1,0 +1,207 @@
+{
+ "format": "plush.asset",
+ "version": 1,
+ "id": "prop.e912_paper_boat",
+ "licence": "CC0-1.0",
+ "attribution": "Plush Studio project, T-187 (episode-local test prop); the folded boat's hull from a box primitive (centred, length along local x); the sail and the two flared ends are the child props e912_paper_boat_sail / e912_paper_boat_end on the sockets sail, end_a, end_b",
+ "mesh": {
+  "primitive": "box",
+  "size": [
+   0.1,
+   0.026,
+   0.042
+  ]
+ },
+ "material_presets": [
+  "paper_white"
+ ],
+ "scale": 1.0,
+ "sockets": {
+  "grip": {
+   "translation": [
+    0.05,
+    0,
+    0
+   ],
+   "rotationDeg": [
+    0,
+    0,
+    0
+   ],
+   "scale": [
+    1.0,
+    1.0,
+    1.0
+   ]
+  },
+  "grip_b": {
+   "translation": [
+    -0.05,
+    0,
+    0
+   ],
+   "rotationDeg": [
+    0,
+    0,
+    0
+   ],
+   "scale": [
+    1.0,
+    1.0,
+    1.0
+   ]
+  },
+  "place": {
+   "translation": [
+    0,
+    -0.013,
+    0
+   ],
+   "rotationDeg": [
+    0,
+    0,
+    0
+   ],
+   "scale": [
+    1.0,
+    1.0,
+    1.0
+   ]
+  },
+  "contact": {
+   "translation": [
+    0,
+    0.013,
+    0
+   ],
+   "rotationDeg": [
+    0,
+    0,
+    0
+   ],
+   "scale": [
+    1.0,
+    1.0,
+    1.0
+   ]
+  },
+  "sail": {
+   "translation": [
+    0,
+    0.013,
+    0
+   ],
+   "rotationDeg": [
+    0,
+    0,
+    0
+   ],
+   "scale": [
+    1.0,
+    1.0,
+    1.0
+   ]
+  },
+  "end_a": {
+   "translation": [
+    0.05,
+    0.013,
+    0
+   ],
+   "rotationDeg": [
+    0,
+    0,
+    0
+   ],
+   "scale": [
+    1.0,
+    1.0,
+    1.0
+   ]
+  },
+  "end_b": {
+   "translation": [
+    -0.05,
+    0.013,
+    0
+   ],
+   "rotationDeg": [
+    0,
+    0,
+    0
+   ],
+   "scale": [
+    1.0,
+    1.0,
+    1.0
+   ]
+  }
+ },
+ "collision": {
+  "type": "box",
+  "size": [
+   0.1,
+   0.026,
+   0.042
+  ]
+ },
+ "affordances": {
+  "format": "plush.affordances",
+  "version": 1,
+  "size_class": "small",
+  "weight_class": "light",
+  "mass_kg": 0.01,
+  "hands": "one",
+  "pivot": "place",
+  "grasp_sites": [
+   {
+    "id": "side_a",
+    "socket": "grip",
+    "hand": "any",
+    "shape": "wrap",
+    "turnable": true
+   },
+   {
+    "id": "side_b",
+    "socket": "grip_b",
+    "hand": "any",
+    "shape": "wrap",
+    "turnable": true
+   }
+  ],
+  "grasp_sets": [
+   {
+    "id": "a",
+    "sites": [
+     "side_a"
+    ]
+   },
+   {
+    "id": "b",
+    "sites": [
+     "side_b"
+    ]
+   }
+  ],
+  "handover": {
+   "give": [
+    "b"
+   ],
+   "receive": [
+    "a"
+   ]
+  },
+  "place": {
+   "socket": "place",
+   "surface_normal": [
+    0,
+    1,
+    0
+   ],
+   "settle": "soft"
+  },
+  "deform": {
+   "mode": "rigid"
+  }
+ }
+}

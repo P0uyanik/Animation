@@ -1,0 +1,914 @@
+{
+ "format": "plush.scene",
+ "version": 1,
+ "name": "e912 s030: shot 5 - they stand up together and walk off",
+ "frameRate": [
+  24,
+  1
+ ],
+ "frameStart": 1,
+ "frameEnd": 166,
+ "timing": "calibrated",
+ "render": {
+  "width": 640,
+  "height": 360,
+  "spp": 16,
+  "maxDepth": 8,
+  "exposureEV": 0.3,
+  "denoise": true,
+  "denoiseBlend": 0.85,
+  "clamp": 12
+ },
+ "camera": {
+  "position": [
+   0.0,
+   0.92,
+   1.75
+  ],
+  "target": [
+   0.0,
+   0.47,
+   0.0
+  ],
+  "focalMm": 32,
+  "fStop": 0,
+  "focusDistance": -1
+ },
+ "materials": [
+  {
+   "name": "floor_mat",
+   "type": "standard",
+   "baseColor": [
+    0.5,
+    0.44,
+    0.36
+   ],
+   "roughness": 0.85,
+   "specular": 0.3
+  },
+  {
+   "name": "wall_mat",
+   "type": "standard",
+   "baseColor": [
+    0.72,
+    0.68,
+    0.58
+   ],
+   "roughness": 0.9,
+   "specular": 0.3
+  },
+  {
+   "name": "board_mat",
+   "type": "standard",
+   "baseColor": [
+    0.12,
+    0.22,
+    0.17
+   ],
+   "roughness": 0.8,
+   "specular": 0.3
+  },
+  {
+   "name": "frame_mat",
+   "type": "standard",
+   "baseColor": [
+    0.45,
+    0.32,
+    0.2
+   ],
+   "roughness": 0.7,
+   "specular": 0.3
+  },
+  {
+   "name": "seat_mat",
+   "type": "standard",
+   "baseColor": [
+    0.35,
+    0.5,
+    0.62
+   ],
+   "roughness": 0.7,
+   "specular": 0.3
+  },
+  {
+   "name": "table_mat",
+   "type": "standard",
+   "baseColor": [
+    0.62,
+    0.46,
+    0.3
+   ],
+   "roughness": 0.7,
+   "specular": 0.3
+  }
+ ],
+ "lights": [
+  {
+   "type": "rect",
+   "corner": [
+    -1.6,
+    1.4,
+    1.8
+   ],
+   "edgeU": [
+    1.4,
+    0,
+    0.4
+   ],
+   "edgeV": [
+    0,
+    0.9,
+    0.3
+   ],
+   "color": [
+    1.0,
+    0.95,
+    0.88
+   ],
+   "intensity": 3.0
+  },
+  {
+   "type": "sun",
+   "direction": [
+    0.3,
+    -0.6,
+    -0.7
+   ],
+   "angleDeg": 4,
+   "color": [
+    1.0,
+    0.92,
+    0.82
+   ],
+   "intensity": 1.4
+  },
+  {
+   "type": "sky",
+   "color": [
+    0.6,
+    0.62,
+    0.66
+   ],
+   "intensity": 0.45
+  }
+ ],
+ "objects": [
+  {
+   "name": "floor",
+   "kind": "box",
+   "min": [
+    -6,
+    -0.05,
+    -4
+   ],
+   "max": [
+    6,
+    0,
+    6
+   ],
+   "material": "floor_mat"
+  },
+  {
+   "name": "wall",
+   "kind": "box",
+   "min": [
+    -6,
+    0,
+    -1.3
+   ],
+   "max": [
+    6,
+    3,
+    -1.2
+   ],
+   "material": "wall_mat"
+  },
+  {
+   "name": "board",
+   "kind": "box",
+   "min": [
+    -0.9,
+    0.55,
+    -1.2
+   ],
+   "max": [
+    0.9,
+    1.15,
+    -1.18
+   ],
+   "material": "board_mat"
+  },
+  {
+   "name": "board_frame",
+   "kind": "box",
+   "min": [
+    -0.94,
+    0.51,
+    -1.21
+   ],
+   "max": [
+    0.94,
+    1.19,
+    -1.195
+   ],
+   "material": "frame_mat"
+  },
+  {
+   "name": "stool_white",
+   "kind": "box",
+   "min": [
+    -0.5412,
+    0.0,
+    -0.179
+   ],
+   "max": [
+    -0.3701,
+    0.1629,
+    -0.0143
+   ],
+   "material": "seat_mat"
+  },
+  {
+   "name": "stool_auburn",
+   "kind": "box",
+   "min": [
+    -0.0862,
+    0.0,
+    -0.2256
+   ],
+   "max": [
+    0.0981,
+    0.1591,
+    -0.0345
+   ],
+   "material": "seat_mat"
+  },
+  {
+   "name": "stool_boy",
+   "kind": "box",
+   "min": [
+    0.3295,
+    0.0,
+    -0.2175
+   ],
+   "max": [
+    0.5493,
+    0.1973,
+    0.0159
+   ],
+   "material": "seat_mat"
+  },
+  {
+   "name": "table_top",
+   "kind": "box",
+   "min": [
+    -0.66,
+    0.425,
+    0.165
+   ],
+   "max": [
+    0.66,
+    0.45,
+    0.435
+   ],
+   "material": "table_mat"
+  },
+  {
+   "name": "table_leg0",
+   "kind": "box",
+   "min": [
+    -0.645,
+    0.0,
+    0.18
+   ],
+   "max": [
+    -0.615,
+    0.425,
+    0.21
+   ],
+   "material": "table_mat"
+  },
+  {
+   "name": "table_leg1",
+   "kind": "box",
+   "min": [
+    0.615,
+    0.0,
+    0.18
+   ],
+   "max": [
+    0.645,
+    0.425,
+    0.21
+   ],
+   "material": "table_mat"
+  },
+  {
+   "name": "table_leg2",
+   "kind": "box",
+   "min": [
+    -0.645,
+    0.0,
+    0.39
+   ],
+   "max": [
+    -0.615,
+    0.425,
+    0.42
+   ],
+   "material": "table_mat"
+  },
+  {
+   "name": "table_leg3",
+   "kind": "box",
+   "min": [
+    0.615,
+    0.0,
+    0.39
+   ],
+   "max": [
+    0.645,
+    0.425,
+    0.42
+   ],
+   "material": "table_mat"
+  }
+ ],
+ "characters": [
+  {
+   "name": "white",
+   "asset": "(set by run_shot)",
+   "position": [
+    -0.43,
+    0.0238,
+    0.0
+   ],
+   "yawDeg": 18.0,
+   "life": {
+    "sway": 0,
+    "headFollow": 0.35
+   },
+   "autoIdle": false,
+   "personality": "girl_white_hair_blue_dress"
+  },
+  {
+   "name": "auburn",
+   "asset": "(set by run_shot)",
+   "position": [
+    0.0,
+    0.0295,
+    0.0
+   ],
+   "yawDeg": 0.0,
+   "life": {
+    "sway": 0,
+    "headFollow": 0.35
+   },
+   "autoIdle": false,
+   "personality": "girl_auburn_bun_glasses"
+  },
+  {
+   "name": "boy",
+   "asset": "(set by run_shot)",
+   "position": [
+    0.4,
+    0.0271,
+    0.0
+   ],
+   "yawDeg": -18.0,
+   "life": {
+    "sway": 0,
+    "headFollow": 0.35
+   },
+   "autoIdle": false,
+   "personality": "boy_yellow_hoodie"
+  }
+ ],
+ "props": [
+  {
+   "name": "boat",
+   "id": "prop.e912_paper_boat",
+   "transform": {
+    "translation": [
+     0.0154,
+     -0.0757,
+     0.0
+    ],
+    "rotationDeg": [
+     -91.63,
+     0.0,
+     135.0
+    ],
+    "scale": [
+     1,
+     1,
+     1
+    ]
+   },
+   "parent": {
+    "kind": "character",
+    "name": "boy",
+    "socket": "hand.R"
+   }
+  },
+  {
+   "name": "boat_sail",
+   "id": "prop.e912_paper_boat_sail",
+   "transform": {
+    "translation": [
+     0,
+     0.01,
+     0
+    ],
+    "rotationDeg": [
+     0,
+     0,
+     45
+    ],
+    "scale": [
+     1,
+     1,
+     1
+    ]
+   },
+   "parent": {
+    "kind": "prop",
+    "name": "boat",
+    "socket": "sail"
+   }
+  },
+  {
+   "name": "boat_end_a",
+   "id": "prop.e912_paper_boat_end",
+   "transform": {
+    "translation": [
+     0.004,
+     0.004,
+     0
+    ],
+    "rotationDeg": [
+     0,
+     0,
+     -38
+    ],
+    "scale": [
+     1,
+     1,
+     1
+    ]
+   },
+   "parent": {
+    "kind": "prop",
+    "name": "boat",
+    "socket": "end_a"
+   }
+  },
+  {
+   "name": "boat_end_b",
+   "id": "prop.e912_paper_boat_end",
+   "transform": {
+    "translation": [
+     -0.004,
+     0.004,
+     0
+    ],
+    "rotationDeg": [
+     0,
+     0,
+     38
+    ],
+    "scale": [
+     1,
+     1,
+     1
+    ]
+   },
+   "parent": {
+    "kind": "prop",
+    "name": "boat",
+    "socket": "end_b"
+   }
+  }
+ ],
+ "actions": [
+  {
+   "type": "clip",
+   "character": "white",
+   "clip": "idle_relaxed",
+   "start": 1,
+   "end": 14,
+   "blendIn": 0,
+   "blendOut": 8
+  },
+  {
+   "type": "clip",
+   "character": "white",
+   "clip": "mocap/cmu_sit_down",
+   "start": 6,
+   "end": 56,
+   "blendIn": 8,
+   "blendOut": 0
+  },
+  {
+   "type": "clip",
+   "character": "white",
+   "clip": "mocap/cmu_stand_up",
+   "start": 50,
+   "end": 93,
+   "blendIn": 6,
+   "blendOut": 0
+  },
+  {
+   "type": "clip",
+   "character": "white",
+   "clip": "idle_relaxed",
+   "start": 80,
+   "end": 93,
+   "blendIn": 10,
+   "blendOut": 0
+  },
+  {
+   "type": "clip",
+   "character": "white",
+   "clip": "mocap/cmu_walk",
+   "start": 93,
+   "end": 167,
+   "blendIn": 0,
+   "blendOut": 0
+  },
+  {
+   "type": "clip",
+   "character": "auburn",
+   "clip": "idle_relaxed",
+   "start": 1,
+   "end": 14,
+   "blendIn": 0,
+   "blendOut": 8
+  },
+  {
+   "type": "clip",
+   "character": "auburn",
+   "clip": "mocap/cmu_sit_down",
+   "start": 6,
+   "end": 56,
+   "blendIn": 8,
+   "blendOut": 0
+  },
+  {
+   "type": "clip",
+   "character": "auburn",
+   "clip": "mocap/cmu_stand_up",
+   "start": 50,
+   "end": 93,
+   "blendIn": 6,
+   "blendOut": 0
+  },
+  {
+   "type": "clip",
+   "character": "auburn",
+   "clip": "idle_relaxed",
+   "start": 80,
+   "end": 93,
+   "blendIn": 10,
+   "blendOut": 0
+  },
+  {
+   "type": "clip",
+   "character": "auburn",
+   "clip": "mocap/cmu_walk",
+   "start": 93,
+   "end": 167,
+   "blendIn": 0,
+   "blendOut": 0
+  },
+  {
+   "type": "clip",
+   "character": "boy",
+   "clip": "idle_relaxed",
+   "start": 1,
+   "end": 14,
+   "blendIn": 0,
+   "blendOut": 8
+  },
+  {
+   "type": "clip",
+   "character": "boy",
+   "clip": "mocap/cmu_sit_down",
+   "start": 6,
+   "end": 56,
+   "blendIn": 8,
+   "blendOut": 0
+  },
+  {
+   "type": "clip",
+   "character": "boy",
+   "clip": "mocap/cmu_stand_up",
+   "start": 50,
+   "end": 93,
+   "blendIn": 6,
+   "blendOut": 0
+  },
+  {
+   "type": "clip",
+   "character": "boy",
+   "clip": "idle_relaxed",
+   "start": 80,
+   "end": 93,
+   "blendIn": 10,
+   "blendOut": 0
+  },
+  {
+   "type": "clip",
+   "character": "boy",
+   "clip": "mocap/cmu_walk",
+   "start": 93,
+   "end": 167,
+   "blendIn": 0,
+   "blendOut": 0
+  },
+  {
+   "type": "look",
+   "character": "boy",
+   "start": 30,
+   "end": 50,
+   "atProp": "boat"
+  },
+  {
+   "type": "look",
+   "character": "boy",
+   "start": 51,
+   "end": 92,
+   "atCharacter": "auburn"
+  },
+  {
+   "type": "look",
+   "character": "auburn",
+   "start": 20,
+   "end": 92,
+   "atCharacter": "boy"
+  },
+  {
+   "type": "look",
+   "character": "white",
+   "start": 20,
+   "end": 92,
+   "atCharacter": "auburn"
+  },
+  {
+   "type": "emotion",
+   "character": "boy",
+   "name": "happy",
+   "start": 20,
+   "end": 166,
+   "intensity": 0.6
+  },
+  {
+   "type": "emotion",
+   "character": "auburn",
+   "name": "girl_content",
+   "start": 20,
+   "end": 166,
+   "intensity": 0.7
+  },
+  {
+   "type": "emotion",
+   "character": "white",
+   "name": "girl_content",
+   "start": 30,
+   "end": 166,
+   "intensity": 0.6
+  }
+ ],
+ "animation": {
+  "white.position": [
+   [
+    1,
+    [
+     -0.43,
+     0.0238,
+     0.0
+    ],
+    "step"
+   ],
+   [
+    93,
+    [
+     -1.5,
+     0.0238,
+     1.2
+    ],
+    "step"
+   ]
+  ],
+  "white.yaw": [
+   [
+    1,
+    [
+     18.0,
+     18.0,
+     18.0
+    ],
+    "step"
+   ],
+   [
+    93,
+    [
+     90,
+     90,
+     90
+    ],
+    "step"
+   ]
+  ],
+  "auburn.position": [
+   [
+    1,
+    [
+     0.0,
+     0.0295,
+     0.0
+    ],
+    "step"
+   ],
+   [
+    93,
+    [
+     -0.97,
+     0.0295,
+     0.95
+    ],
+    "step"
+   ]
+  ],
+  "auburn.yaw": [
+   [
+    1,
+    [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "step"
+   ],
+   [
+    93,
+    [
+     90,
+     90,
+     90
+    ],
+    "step"
+   ]
+  ],
+  "boy.position": [
+   [
+    1,
+    [
+     0.4,
+     0.0271,
+     0.0
+    ],
+    "step"
+   ],
+   [
+    93,
+    [
+     -0.45,
+     0.0271,
+     0.7
+    ],
+    "step"
+   ]
+  ],
+  "boy.yaw": [
+   [
+    1,
+    [
+     -18.0,
+     -18.0,
+     -18.0
+    ],
+    "step"
+   ],
+   [
+    93,
+    [
+     90,
+     90,
+     90
+    ],
+    "step"
+   ]
+  ],
+  "camera.position": [
+   [
+    1,
+    [
+     0.0,
+     0.92,
+     1.75
+    ],
+    "step"
+   ],
+   [
+    93,
+    [
+     0.2,
+     0.62,
+     3.3
+    ],
+    "step"
+   ]
+  ],
+  "camera.target": [
+   [
+    1,
+    [
+     0.0,
+     0.47,
+     0.0
+    ],
+    "step"
+   ],
+   [
+    93,
+    [
+     0.2,
+     0.38,
+     0.9
+    ],
+    "step"
+   ]
+  ],
+  "camera.lens": [
+   [
+    1,
+    [
+     32,
+     0,
+     -1
+    ],
+    "step"
+   ],
+   [
+    93,
+    [
+     32,
+     0,
+     -1
+    ],
+    "step"
+   ]
+  ]
+ },
+ "events": [],
+ "production": {
+  "cast": {
+   "white": {
+    "version_dir": "assets/characters/girl_white_hair_blue_dress/versions/0.1.0"
+   },
+   "auburn": {
+    "character_id": "girl_auburn_bun_glasses",
+    "version": "current"
+   },
+   "boy": {
+    "character_id": "boy_yellow_hoodie",
+    "version": "current"
+   }
+  },
+  "profile": "pipeline/charsys/rig_profiles/humanoid_rigify.json",
+  "render": {
+   "resolution": [
+    640,
+    360
+   ],
+   "samples": 16,
+   "light_scale": 1.0
+  }
+ },
+ "x_t187": {
+  "shots": [
+   {
+    "shot": "5a",
+    "frames": [
+     45,
+     92
+    ],
+    "camera": "wide"
+   },
+   {
+    "shot": "5b",
+    "frames": [
+     93,
+     166
+    ],
+    "camera": "side-on, they walk off to the right"
+   }
+  ],
+  "render_frames": [
+   45,
+   166
+  ],
+  "table_moved_back_m": 0.11
+ }
+}

@@ -1719,6 +1719,20 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
     key(gen, h.orient + ".weight", from + 1, vec3(1));
     key(gen, h.orient + ".weight", end, vec3(0));
   };
+  // T-186 (only after a fingerClose "grip": "natural" grasp): "<who>/collision.still.<hand>" is 1 from the contact to
+  // the start of the hand's next move (lift, place or hand-over), 0 after it. The prop still stands where it was when
+  // the hand took it, so the clearance pass does not move the wrist in that span (as in a frozen span), no push ramp
+  // crosses it (as T-134 reachMechanics does at its pinned frames; a ramp that crossed it moved the hand, and the prop
+  // with it, into the table) and the elbow swing keeps the forearm out there (writeArmPole). Nothing evaluates the
+  // track itself; written only by natural grips.
+  auto stillTrack = [&](const Hand& hh) {
+    return hh.prefix + "collision.still." + characters_[size_t(hh.c)].asset.skeleton.bones[size_t(hh.bone)].name;
+  };
+  auto endStill = [&](const Hand& hh, double from) {
+    auto it = gen.tracks.find(stillTrack(hh));
+    if (it == gen.tracks.end() || it->second.keys.empty() || it->second.keys.back().value.x < 0.5f || it->second.keys.back().frame > from) return;
+    key(gen, it->first, from + 0.5, vec3(0), Interp::Step);  // the move's first frame keeps the contact's wrist: still in the span
+  };
   auto held = [&](const Hand& h, const std::string& what) -> Result<int> {
     auto it = ctx.hands.find({h.c, h.side});
     const int p = it == ctx.hands.end() ? -1 : it->second.prop;
@@ -1808,6 +1822,10 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
       if (auto r = addSwitch(p, contact, PropParent{PropParent::Kind::Character, who, std::string("hand.") + h.side}, what); !r)
         return std::unexpected(r.error());
       ctx.hands[{c, h.side}] = {p, pl->orient, socket, style.shape, false, pl->faceGrasp};
+      if (naturalGrip) {  // T-186: held still from the contact until the hand's next move (0 before: tracks hold their ends)
+        key(gen, stillTrack(h), contact - 0.5, vec3(0), Interp::Step);
+        key(gen, stillTrack(h), contact, vec3(1), Interp::Step);
+      }
       if (look) gazeOn(h, p, start, contact + 8);
     } else {
       const double end = num(a, "end", contact + beat("hold", 12, c));
@@ -1825,6 +1843,7 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
   if (type == "hold") {
     auto p = held(h, "hold");
     if (!p) return std::unexpected(p.error());
+    endStill(h, start);  // T-186
     const vec3 origin = vec3(propWorld(size_t(*p), start)[3]);
     const auto at = vecOpt(a, "at"), by = vecOpt(a, "by");
     const vec3 target = at ? *at : origin + (by ? *by : vec3(0));
@@ -1850,6 +1869,7 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
   if (type == "place") {
     auto p = held(h, "place");
     if (!p) return std::unexpected(p.error());
+    endStill(h, start);  // T-186
     const std::string socket = str(a, "socket", "place");
     if (auto r = requireSocket(*p, socket, "place"); !r) return std::unexpected(r.error());
     const double contact = num(a, "contact", start + beat("place", 16, c)), end = num(a, "end", contact + beat("release", 14, c));
@@ -1920,6 +1940,7 @@ Result<bool> SceneEvaluator::compileInteraction(const Json& a, Clip& gen, Intera
   if (rc == c && r.side == h.side) return fail("handover: the receiving hand is the giving hand");
   auto p = held(h, "handover");
   if (!p) return std::unexpected(p.error());
+  endStill(h, start);  // T-186
   for (const auto& fl : ctx.followers)
     if (fl.prop == *p && fl.to > 1e29) return fail("handover: a prop held in two hands cannot be handed over (T-112b)");
   if (auto it = ctx.hands.find({rc, r.side}); it != ctx.hands.end() && it->second.prop >= 0)
@@ -2219,6 +2240,40 @@ void SceneEvaluator::writeArmPole(Clip& gen, size_t c, char side) {
     for (int i = n - 2; i >= 0; --i) e[size_t(i)] = std::max(e[size_t(i)], e[size_t(i + 1)] - kSwingRate);
     for (int i = 0; i < n; ++i) out[size_t(i)] += sgn * e[size_t(i)];
   }
+  // T-186: through a natural grip's held-still span (collision.still: the hand and the prop do not move, the wrist
+  // push leaves it alone) the envelope alone may turn the forearm into the body (its decay from a large swing on the
+  // way in, while the body moves towards the held arm). There the swing goes on from the previous frame by at most
+  // kSwingRate: the angle in that step nearest the envelope's that keeps the forearm at the margin, else the one with
+  // the largest gap. After the span it joins the envelope again at most kSwingRate per frame.
+  if (const Track* st = gen.find(who + "/collision.still." + bone); st && !st->keys.empty()) {
+    std::vector<char> still(static_cast<size_t>(n), 0);
+    for (int i = 0; i < n; ++i) still[size_t(i)] = st->evaluate(double(fs + i)).x > 0.5f;
+    for (int i = 1; i < n; ++i) {
+      if (!still[size_t(i)] || !still[size_t(i - 1)]) continue;
+      std::vector<mat4> G = characterGlobals(c, double(fs + i));  // without this arm's swing (erased above)
+      const mat4 fore0 = G[size_t(A.fore)];
+      const float from = out[size_t(i - 1)], target = out[size_t(i)], want = kArmBodyMargin + 0.0005f;
+      if (std::abs(target - from) <= kSwingRate + 1e-6f && forearmGap(M.collision, G, fore0, A.upper, A.fore, A.hand, side, target) >= want)
+        continue;  // the envelope's own swing is within the step and keeps the margin
+      float best = from, bestGap = -1e9f, bestOff = 1e9f;
+      bool clear = false;
+      for (int k = -8; k <= 8; ++k) {
+        const float a = from + kSwingRate * float(k) / 8.0f, g = forearmGap(M.collision, G, fore0, A.upper, A.fore, A.hand, side, a);
+        const bool ok = g >= want;
+        if ((ok && (!clear || std::abs(a - target) < bestOff)) || (!ok && !clear && g > bestGap))
+          best = a, bestGap = g, bestOff = std::abs(a - target), clear = ok;
+      }
+      out[size_t(i)] = best;
+    }
+    for (int i = 1; i < n; ++i)
+      if (!still[size_t(i)] && still[size_t(i - 1)])
+        for (int k = i; k < n && !still[size_t(k)]; ++k) {
+          const float from = out[size_t(i - 1)], lim = kSwingRate * float(k - i + 1);
+          const float lo = from - lim, hi = from + lim;
+          if (out[size_t(k)] >= lo && out[size_t(k)] <= hi) break;
+          out[size_t(k)] = std::clamp(out[size_t(k)], lo, hi);
+        }
+  }
   std::vector<Key> keys;
   for (int i = 0; i < n; ++i) keys.push_back({double(fs + i), vec3(out[size_t(i)], 0, 0), Interp::Linear});
   gen.tracks[swingTrack].keys = std::move(keys);
@@ -2446,12 +2501,31 @@ void SceneEvaluator::armClearancePass(Clip& gen, const InteractionContext& ctx) 
           cap[size_t(i)] = std::min(cap[size_t(i)], kPushRate * float(d));
         }
       }
+      // T-186: a natural grip's hand holds still from its contact to its next move (collision.still, compileInteraction):
+      // no push there, no ramp is carried across it, and the push grows from 0 away from the span: before it (the way
+      // in) as towards any contact; after it eased in over kStillEase frames (then kPushRate per frame), as the lift
+      // that ends the span starts slowly: a full-rate push would drag the prop along the table in the lift's first
+      // frames.
+      std::vector<char> still(static_cast<size_t>(n), 0);
+      if (const Track* st = gen.find(who + "/collision.still." + sk.bones[size_t(A.hand)].name); st && !st->keys.empty()) {
+        constexpr float kStillEase = 6.0f;  // frames
+        for (int i = 0; i < n; ++i) still[size_t(i)] = st->evaluate(double(fs - 1 + i)).x > 0.5f;
+        for (int i = 0, last = -1000000; i < n; ++i) {  // frames since the last still frame
+          if (still[size_t(i)]) last = i;
+          const float d = float(i - last);
+          cap[size_t(i)] = std::min(cap[size_t(i)], kPushRate * (d < kStillEase ? d * d / (2 * kStillEase) : d - kStillEase / 2));
+        }
+        for (int i = n - 1, next = 1000000; i >= 0; --i) {
+          if (still[size_t(i)]) next = i;
+          cap[size_t(i)] = std::min(cap[size_t(i)], kPushRate * float(next - i));
+        }
+      }
       auto ease = [&](const std::vector<vec3>& need) {
         std::vector<float> mag(static_cast<size_t>(n)), env(static_cast<size_t>(n));
         for (int i = 0; i < n; ++i) env[size_t(i)] = mag[size_t(i)] = glm::length(need[size_t(i)]);
         // T-134 (opt-in): a ramp does not carry across a pinned frame. The push is 0 there anyway; without this the
         // ramp of a need before a contact comes back right after it and moves the hand that has just arrived.
-        auto carried = [&](int i) { return stopAtPinned && cap[size_t(i)] <= 0 ? 0.0f : env[size_t(i)]; };
+        auto carried = [&](int i) { return (stopAtPinned || still[size_t(i)]) && cap[size_t(i)] <= 0 ? 0.0f : env[size_t(i)]; };
         for (int i = 1; i < n; ++i) env[size_t(i)] = std::max(env[size_t(i)], carried(i - 1) - kPushRate);
         for (int i = n - 2; i >= 0; --i) env[size_t(i)] = std::max(env[size_t(i)], carried(i + 1) - kPushRate);
         std::vector<vec3> out(static_cast<size_t>(n), vec3(0));

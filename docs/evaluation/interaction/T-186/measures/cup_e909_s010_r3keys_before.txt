@@ -1,0 +1,51 @@
+f 52 dx    0.00 dy    0.00 dz    0.00 mm  rot   0.00 deg
+f 53 dx    0.00 dy    0.00 dz    0.00 mm  rot   0.00 deg
+f 54 dx    0.00 dy    0.00 dz    0.00 mm  rot   0.00 deg
+f 55 dx    0.00 dy    0.00 dz    0.00 mm  rot   0.00 deg
+f 56 dx    0.00 dy    0.00 dz    0.00 mm  rot   0.00 deg
+f 57 dx   -0.00 dy    0.00 dz    0.00 mm  rot   0.00 deg
+f 58 dx    2.47 dy   -0.07 dz   -0.47 mm  rot   0.00 deg
+f 59 dx    3.31 dy   -0.10 dz   -0.56 mm  rot   0.00 deg
+f 60 dx    6.21 dy   -0.20 dz   -1.00 mm  rot   0.00 deg
+f 61 dx    6.21 dy   -0.21 dz   -0.99 mm  rot   0.00 deg
+f 62 dx    9.21 dy   -0.33 dz   -1.43 mm  rot   0.00 deg
+f 63 dx    9.21 dy   -0.34 dz   -1.42 mm  rot   0.00 deg
+f 64 dx   11.86 dy   -0.46 dz   -1.80 mm  rot   0.00 deg
+f 65 dx   11.86 dy   -0.47 dz   -1.79 mm  rot   0.00 deg
+f 66 dx   14.14 dy   -0.58 dz   -2.12 mm  rot   0.00 deg
+f 67 dx   14.14 dy   -0.59 dz   -2.10 mm  rot   0.00 deg
+f 68 dx   15.42 dy    0.07 dz   -2.03 mm  rot   0.00 deg
+f 69 dx   16.15 dy    2.10 dz   -1.40 mm  rot   0.00 deg
+f 70 dx   17.30 dy    5.32 dz   -0.42 mm  rot   0.00 deg
+f 71 dx   18.81 dy    9.56 dz    0.88 mm  rot   0.00 deg
+f 72 dx   16.85 dy   14.86 dz    3.01 mm  rot   0.00 deg
+f 73 dx   18.94 dy   20.73 dz    4.80 mm  rot   0.00 deg
+f 74 dx   18.39 dy   27.30 dz    7.19 mm  rot   0.00 deg
+f 75 dx   16.90 dy   34.37 dz    9.88 mm  rot   0.00 deg
+f 76 dx   15.51 dy   41.73 dz   12.66 mm  rot   0.00 deg
+f215 dx   -0.00 dy   36.57 dz    0.26 mm  rot   0.00 deg
+f216 dx   -0.00 dy   30.00 dz    0.00 mm  rot   0.00 deg
+f217 dx   -0.00 dy   22.86 dz    0.00 mm  rot   0.00 deg
+f218 dx    0.00 dy   14.92 dz    0.00 mm  rot   0.00 deg
+f219 dx   -0.00 dy    7.55 dz    0.00 mm  rot   0.00 deg
+f220 dx   -0.00 dy    2.12 dz    0.00 mm  rot   0.00 deg
+f221 dx   -0.00 dy    0.00 dz    0.00 mm  rot   0.00 deg
+f222 dx   -0.00 dy    0.00 dz    0.00 mm  rot   0.00 deg
+f223 dx   -0.00 dy    0.00 dz    0.00 mm  rot   0.00 deg
+f224 dx   -0.00 dy    0.00 dz    0.00 mm  rot   0.00 deg
+f225 dx   -0.00 dy    0.00 dz    0.00 mm  rot   0.00 deg
+f226 dx   -0.00 dy    0.00 dz    0.00 mm  rot   0.00 deg
+f227 dx   -0.00 dy    0.00 dz    0.00 mm  rot   0.00 deg
+f228 dx   -0.00 dy    0.00 dz    0.00 mm  rot   0.00 deg
+f229 dx   -0.00 dy    0.00 dz    0.00 mm  rot   0.00 deg
+f230 dx   -0.00 dy    0.00 dz    0.00 mm  rot   0.00 deg
+f231 dx   -0.00 dy    0.00 dz    0.00 mm  rot   0.00 deg
+f232 dx   -0.00 dy    0.00 dz    0.00 mm  rot   0.00 deg
+f233 dx   -0.00 dy    0.00 dz    0.00 mm  rot   0.00 deg
+f234 dx   -0.00 dy    0.00 dz    0.00 mm  rot   0.00 deg
+f235 dx   -0.00 dy    0.00 dz    0.00 mm  rot   0.00 deg
+f236 dx   -0.00 dy    0.00 dz    0.00 mm  rot   0.00 deg
+f237 dx   -0.00 dy    0.00 dz    0.00 mm  rot   0.00 deg
+f238 dx   -0.00 dy    0.00 dz    0.00 mm  rot   0.00 deg
+f239 dx   -0.00 dy    0.00 dz    0.00 mm  rot   0.00 deg
+f240 dx   -0.00 dy    0.00 dz    0.00 mm  rot   0.00 deg
