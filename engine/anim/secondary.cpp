@@ -36,6 +36,8 @@ Json v3(vec3 v) { return Json::array({v.x, v.y, v.z}); }
 // after the first pass (well under the collision test's 0.1 mm).
 constexpr int kColliderPasses = 16;
 constexpr float kColliderTolerance = 2e-5f;
+// contact.clear_targets: how much less deep the uncapped direction must be for the max_swing cap to yield (1 mm)
+constexpr float kCapYieldDepth = 1e-3f;
 constexpr float kArcPi = 3.14159265358979f;
 // contact.segments (T-183): contacts closer to the segment's first joint than this share of its length are left to
 // that joint's own test (the lever of joint k on such a point is too short to push it out).
@@ -989,9 +991,11 @@ void SpringChainSolver::step(State& s, double dtd, const std::vector<mat4>& g, c
           const vec3 uncapped = dir;
           dir = glm::length(axis) > 1e-9f ? glm::angleAxis(cap, glm::normalize(axis)) * carried : carried;
           if (ch.clearTargets) {
-            // contact.clear_targets: the cap does not hold a joint inside a collider when the uncapped direction has
-            // it outside every collider of the chain (a lock squeezed between two colliders has no such place, and
-            // the cap holds as before)
+            // contact.clear_targets: the cap does not hold a joint deeper in the chain's colliders than the uncapped
+            // direction has it (by more than kCapYieldDepth): a bound that turns a way out back inside keeps the lock
+            // there. A lock squeezed between two colliders is about as deep either way, and the cap holds as before.
+            // (Only where the uncapped direction is outside every collider was not enough: e912 s020 f25-27 a side
+            // lock then lay 13 mm inside the head spheres, 4.4 mm through the skin.)
             const float rk = ch.radii.empty() ? ch.p.radius : ch.radii[k];
             const auto depth = [&](const vec3& x) {
               float d = 0;
@@ -1001,7 +1005,7 @@ void SpringChainSolver::step(State& s, double dtd, const std::vector<mat4>& g, c
               }
               return d;
             };
-            if (depth(p[k - 1] + uncapped * ch.length[k - 1]) <= kColliderTolerance && depth(p[k - 1] + dir * ch.length[k - 1]) > kColliderTolerance) dir = uncapped;
+            if (depth(p[k - 1] + uncapped * ch.length[k - 1]) + kCapYieldDepth < depth(p[k - 1] + dir * ch.length[k - 1])) dir = uncapped;
           }
         }
         p[k] = p[k - 1] + dir * ch.length[k - 1];
