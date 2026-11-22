@@ -1,0 +1,11 @@
+view,engine,warmup,seconds,frame_peak_MiB,run_peak_MiB,vram_samples,pair_rgb8_mae,pair_rgb8_rmse,pair_rgb8_max
+sheet-face_threequarter,cycles,True,124.961,0,0,241,,,
+sheet-face_threequarter,eevee,True,55.686,1645,1645,110,4.273,8.441,146
+sheet-front,cycles,False,31.112,0,0,61,,,
+sheet-front,eevee,False,4.577,1486,1645,9,1.278,5.5,129
+prop-boat,cycles,False,18.865,0,0,37,,,
+prop-boat,eevee,False,2.33,977,1645,4,7.051,10.26,100
+sheet-threequarter,cycles,False,28.549,0,0,55,,,
+sheet-threequarter,eevee,False,5.915,1571,1645,12,1.205,5.061,133
+sheet-face_front,cycles,False,165.388,0,0,322,,,
+sheet-face_front,eevee,False,5.357,1571,1645,10,5.516,9.725,184
