@@ -59,3 +59,4 @@ Next free ID: T-212.
 - T-208 + T-212 (Codex, docs only) merged on the fast path; T-212's link to the unmerged T-204 report unlinked. T-208 confirms preview_eevee is worth it on the owner's PC (MX350: EEVEE ~26 s/frame vs Cycles ~164). Face decisions (T-209 D 1–5, T-211 #7, T-212 changes) relayed to the owner.
 - Owner ~22:40 CET: face plan approved (T-212 changes, auburn pilot first). T-213 = P5a (session_01NPjxeL6rtvmt8Twg8PMsTn) export parity + knob-free master + Blender pin (no T-204 dependency). P1 measurer (T-214) waits for Codex T-204 merge.
 - T-204 (Codex face targets) merged on the fast path (staged build/in links repointed). T-214 = P1 measurer dispatched (session_01NPjxePVt4kQPXdw6q73GU6) (auburn first); P2 fit follows T-214.
+- T-201 merged (main 33b440a, gate 45073104037). Follow-up after T-194: shot_render.parse + run_shot default --engine None, then a.engine = a.engine or profile_data.get("engine", "cycles").
