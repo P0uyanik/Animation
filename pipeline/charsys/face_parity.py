@@ -192,11 +192,13 @@ def master_path(character, version=None):
     return os.path.join(d, version, f"{character}_master.blend"), version
 
 
-def current_characters():
+def current_characters(first=None):
+    """Character ids with a version store, sorted; `first` (e.g. the face-plan pilot) moves to the front."""
     base = os.path.join(ROOT, "assets", "characters")
     ids = sorted(c for c in os.listdir(base) if os.path.isfile(os.path.join(base, c, "versions", "index.json")))
-    # auburn first (T-213 dispatch: the face-plan pilot)
-    return sorted(ids, key=lambda c: (c != "girl_auburn_bun_glasses", c))
+    if first is not None and first not in ids:
+        raise ValueError(f"--first {first!r}: no such character (have {ids})")
+    return sorted(ids, key=lambda c: (c != first, c))
 
 
 # =====================================================================================================================
@@ -620,7 +622,8 @@ def main(argv=None):
     g = ap.add_mutually_exclusive_group(required=True)
     g.add_argument("--character")
     g.add_argument("--blend")
-    g.add_argument("--all", action="store_true", help="every character's current (approved) master, auburn first")
+    g.add_argument("--all", action="store_true", help="every character's current (approved) master")
+    ap.add_argument("--first", help="with --all: check this character first (the face-plan pilot)")
     ap.add_argument("--version")
     ap.add_argument("--package", help="compare this existing package instead of exporting the master")
     ap.add_argument("--out", help="JSON report (with --all: one file holding a list)")
@@ -635,7 +638,7 @@ def main(argv=None):
         print("=" * 100 + f"\n[face_parity] FAIL (Blender build pin): {exc}\n" + "=" * 100, file=sys.stderr)
         return 3
     if a.all:
-        targets = [master_path(c) for c in current_characters()]
+        targets = [master_path(c) for c in current_characters(a.first)]
     elif a.character:
         targets = [master_path(a.character, a.version)]
     else:

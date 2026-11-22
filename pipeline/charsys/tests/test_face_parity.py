@@ -1,6 +1,6 @@
 """T-213: face export parity, knob-free master check and Blender build pin (pipeline/charsys/face_parity.py).
 
-    python3 pipeline/charsys/tests/test_face_parity.py [--blender <exe>]
+    python3 pipeline/charsys/tests/test_face_parity.py [--blender <exe> [--character <id> --version <v>]]
 
 Checks (each line PASS/FAIL; exit code 1 on any FAIL):
   plain    (no Blender, no numpy) the module imports without bpy; the in-between expansion matches the engine's rule
@@ -32,6 +32,7 @@ RESULTS = []
 # sha256 (first 16 hex) of the expandInbetweens function text in engine/model/character.cpp that
 # face_parity.expand_inbetweens mirrors. If the engine changes it, re-check the mirror and update this value.
 ENGINE_EXPAND_SHA16 = "f6c695056392a075"
+# Blender part: the master to check, --character / --version (default: the face-plan pilot, auburn 0.14.0)
 AUBURN = ("girl_auburn_bun_glasses", "0.14.0")
 
 
@@ -104,8 +105,15 @@ def plain():
                                {"name": "D", "relative_key": "Basis", "vertex_group": "", "mute": True}], "Basis")
     check("key rules: non-Basis relative, vertex group, muted flagged; a clean key not", len(kp) == 3 and
           sorted(x.split("'")[1] for x in kp) == ["B", "C", "D"], kp)
-    check("current characters list starts with auburn", FP.current_characters()[:1] == ["girl_auburn_bun_glasses"]
-          if os.path.isdir(os.path.join(ROOT, "assets", "characters")) else True)
+    if os.path.isdir(os.path.join(ROOT, "assets", "characters")):
+        ids = FP.current_characters()
+        check("current characters are sorted; --first moves one to the front", ids == sorted(ids) and
+              FP.current_characters(ids[-1])[:1] == ids[-1:] and sorted(FP.current_characters(ids[-1])) == ids, ids)
+        try:
+            FP.current_characters("no_such_character")
+            check("--first with an unknown id is refused", False)
+        except ValueError:
+            check("--first with an unknown id is refused", True)
 
 
 BREAK = r'''
@@ -131,10 +139,10 @@ bpy.ops.wm.save_as_mainfile(filepath=dst, compress=False)
 
 
 def blender(exe):
-    cid, ver = AUBURN
+    cid, ver = arg("--character", AUBURN[0]), arg("--version", AUBURN[1])
     master = os.path.join(ROOT, "assets", "characters", cid, "versions", ver, f"{cid}_master.blend")
     if not os.path.isfile(master):
-        check("auburn master present", False, master)
+        check("master present", False, master)
         return
     fp = os.path.join(CHARSYS, "face_parity.py")
     with tempfile.TemporaryDirectory(prefix="t213_") as t:
@@ -142,10 +150,10 @@ def blender(exe):
         r = subprocess.run([exe, "-b", "--factory-startup", "-P", fp, "--", "--blend", master, "--no-sweep",
                             "--out", out], capture_output=True, text=True)
         rep = json.load(open(out)) if os.path.isfile(out) else {}
-        check("auburn 0.14.0 passes (exit 0)", r.returncode == 0 and rep.get("pass"), r.returncode)
+        check(f"{cid} {ver} passes (exit 0)", r.returncode == 0 and rep.get("pass"), r.returncode)
         if rep:
             core = {e["name"]: e for e in rep["parity"]["expressions"]}
-            check("knob-free on auburn", rep["knob_free"]["pass"], rep["knob_free"]["problems"])
+            check("knob-free on the master", rep["knob_free"]["pass"], rep["knob_free"]["problems"])
             check("neutral / half_blink / smile_blink present and within the bound",
                   all(core.get(n, {}).get("pass") for n in ("neutral", "half_blink", "smile_blink")),
                   {n: (round(core[n]["max_mm"], 6), round(core[n]["bound_mm"], 6)) for n in core})
