@@ -1,0 +1,217 @@
+view,yaw,target_view,measure,unit,group,current,mark,reference,tolerance,gap,z,result
+y+000,0,,brow_gap,H,face,0.125,E,,,,,
+y+000,0,,bun_width,F,hair,0.66117,E,,,,,
+y+000,0,,cheek_width,F,face,0.83242,E,,,,,
+y+000,0,,chin_height,H,face,0.10002,E,,,,,
+y+000,0,,chin_width,F,face,0.49997,E,,,,,
+y+000,0,,crown_above_skull,H,hair,0.15,E,,,,,
+y+000,0,,ear_base_mouth,H,face,-0.04062,E,,,,,
+y+000,0,,ear_height,H,face,0.09064,E,,,,,
+y+000,0,,ear_top_eye,H,face,0.02156,E,,,,,
+y+000,0,,ear_width,F,face,0.05374,E,,,,,
+y+000,0,,eye_height,H,face,0.16248,E,,,,,
+y+000,0,,eye_spacing,F,face,0.49146,E,,,,,
+y+000,0,,eye_to_chin,H,face,0.25284,E,,,,,
+y+000,0,,eye_width,H,face,0.18748,E,,,,,
+y+000,0,,eye_x,F,face,-0.24587,E,,,,,
+y+000,0,,eye_y,H,face,0.74716,E,,,,,
+y+000,0,,forehead_covered,skull-to-brow,hair,1.0,E,,,,,
+y+000,0,,fringe_eye,H,hair,0.16904,E,,,,,
+y+000,0,,hair_cheek_width,F,hair,1.72321,E,,,,,
+y+000,0,,hair_height,H,hair,1.22188,E,,,,,
+y+000,0,,hair_width,F,hair,1.85126,E,,,,,
+y+000,0,,head_roundness,H,face,0.75624,E,,,,,
+y+000,0,,iris_d_spacing,iris spacing,face,0.36151,M,,,,,
+y+000,0,,iris_d_w,eye W,face,0.71666,M,,,,,
+y+000,0,,iris_size,H,face,0.13436,E,,,,,
+y+000,0,,jaw_width,F,face,0.66549,E,,,,,
+y+000,0,,mouth_height,H,face,0.03124,E,,,,,
+y+000,0,,mouth_width,F,face,0.15699,E,,,,,
+y+000,0,,mouth_x,F,face,0.0,E,,,,,
+y+000,0,,mouth_y,H,face,0.89998,E,,,,,
+y+000,0,,nose_height,H,face,0.03748,E,,,,,
+y+000,0,,nose_width,F,face,0.09087,E,,,,,
+y+000,0,,nose_y,H,face,0.82498,E,,,,,
+y+000,0,,opening_h_w,eye W,face,0.86665,M,,,,,
+ref-front,0,front,brow_gap,H,face,0.12733,E,0.12821,0.022,-0.00088,-0.04,within
+ref-front,0,front,bun_width,F,hair,0.66117,E,0.7007,0.12,-0.03953,-0.329,within
+ref-front,0,front,cheek_width,F,face,0.82618,E,0.93028,0.055,-0.1041,-1.893,outside
+ref-front,0,front,chin_height,H,face,0.08543,E,0.14797,0.025,-0.06254,-2.502,outside
+ref-front,0,front,chin_width,F,face,0.45019,E,0.38705,0.075,0.06314,0.842,within
+ref-front,0,front,crown_above_skull,H,hair,0.14907,E,0.1202,0.1,0.02887,0.289,within
+ref-front,0,front,ear_base_mouth,H,face,-0.06054,E,0.0219,0.045,-0.08244,-1.832,outside
+ref-front,0,front,ear_height,H,face,0.09008,E,0.2077,0.045,-0.11762,-2.614,outside
+ref-front,0,front,ear_top_eye,H,face,0.02143,E,-0.0328,0.045,0.05423,1.205,outside
+ref-front,0,front,ear_width,F,face,0.05374,E,0.1533,0.055,-0.09956,-1.81,outside
+ref-front,0,front,eye_height,H,face,0.16461,E,0.1677,0.02556,-0.00309,-0.121,within
+ref-front,0,front,eye_spacing,F,face,0.49146,E,0.51701,0.03,-0.02555,-0.852,within
+ref-front,0,front,eye_to_chin,H,face,0.25747,E,0.30825,0.04166,-0.05078,-1.219,outside
+ref-front,0,front,eye_width,H,face,0.18632,E,0.18,0.018,0.00632,0.351,within
+ref-front,0,front,eye_x,F,face,-0.24587,E,-0.25512,0.025,0.00925,0.37,within
+ref-front,0,front,eye_y,H,face,0.74253,E,0.69175,0.04166,0.05078,1.219,outside
+ref-front,0,front,forehead_covered,skull-to-brow,hair,1.0,E,0.9,0.13,0.1,0.769,within
+ref-front,0,front,fringe_eye,H,hair,0.16799,E,0.1858,0.05,-0.01781,-0.356,within
+ref-front,0,front,hair_cheek_width,F,hair,1.71491,E,1.6423,0.12,0.07261,0.605,within
+ref-front,0,front,hair_height,H,hair,1.2205,E,1.21168,0.06,0.00882,0.147,within
+ref-front,0,front,hair_width,F,hair,1.85126,E,1.66121,0.08,0.19005,2.376,outside
+ref-front,0,front,head_roundness,H,face,0.75155,E,0.725,0.045,0.02655,0.59,within
+ref-front,0,front,iris_d_spacing,iris spacing,face,0.36151,M,0.356,0.022,0.00551,0.251,within
+ref-front,0,front,iris_d_w,eye W,face,0.71666,M,0.751,0.049,-0.03434,-0.701,within
+ref-front,0,front,iris_size,H,face,0.13353,E,0.13318,0.015,0.00035,0.023,within
+ref-front,0,front,jaw_width,F,face,0.64701,E,0.66584,0.065,-0.01883,-0.29,within
+ref-front,0,front,mouth_height,H,face,0.09628,E,0.03945,0.015,0.05683,3.789,outside
+ref-front,0,front,mouth_width,F,face,0.23971,E,0.14286,0.025,0.09685,3.874,outside
+ref-front,0,front,mouth_x,F,face,0.0,E,-0.0034,0.025,0.0034,0.136,within
+ref-front,0,front,mouth_y,H,face,0.91457,E,0.85203,0.025,0.06254,2.502,outside
+ref-front,0,front,nose_height,H,face,0.04035,E,0.04934,0.018,-0.00899,-0.5,within
+ref-front,0,front,nose_width,F,face,0.09087,E,0.08502,0.025,0.00585,0.234,within
+ref-front,0,front,nose_y,H,face,0.82141,E,0.80518,0.025,0.01623,0.649,within
+ref-front,0,front,opening_h_w,eye W,face,0.88351,M,0.952,0.075,-0.06849,-0.913,within
+ref-three_quarter,-30,three_quarter,brow_gap,H,face,0.12654,E,0.13173,0.022,-0.00519,-0.236,within
+ref-three_quarter,-30,three_quarter,bun_width,F,hair,1.27987,E,,,,,
+ref-three_quarter,-30,three_quarter,cheek_width,F,face,0.89157,E,0.94405,0.055,-0.05248,-0.954,within
+ref-three_quarter,-30,three_quarter,chin_height,H,face,0.12346,E,0.14773,0.025,-0.02427,-0.971,within
+ref-three_quarter,-30,three_quarter,chin_width,F,face,0.38167,E,0.39117,0.075,-0.0095,-0.127,within
+ref-three_quarter,-30,three_quarter,crown_above_skull,H,hair,0.19133,E,,,,,
+ref-three_quarter,-30,three_quarter,ear_base_mouth,H,face,-0.07716,E,,,,,
+ref-three_quarter,-30,three_quarter,ear_height,H,face,0.00308,E,,,,,
+ref-three_quarter,-30,three_quarter,ear_top_eye,H,face,0.06839,E,,,,,
+ref-three_quarter,-30,three_quarter,ear_turn_projection,F,face,0.192,E,0.1916,0.06,0.0004,0.007,within
+ref-three_quarter,-30,three_quarter,ear_width,F,face,0.00411,E,,,,,
+ref-three_quarter,-30,three_quarter,eye_height,H,face,0.16668,E,0.15856,0.01788,0.00812,0.454,within
+ref-three_quarter,-30,three_quarter,eye_spacing,F,face,0.40772,E,0.47481,0.03,-0.06709,-2.236,outside
+ref-three_quarter,-30,three_quarter,eye_to_chin,H,face,0.25762,E,0.31116,0.0412,-0.05354,-1.299,outside
+ref-three_quarter,-30,three_quarter,eye_width,H,face,0.17901,E,0.19513,0.018,-0.01612,-0.896,within
+ref-three_quarter,-30,three_quarter,eye_x,F,face,-0.02262,E,-0.09748,0.025,0.07486,2.994,outside
+ref-three_quarter,-30,three_quarter,eye_y,H,face,0.74238,E,0.68884,0.0412,0.05354,1.299,outside
+ref-three_quarter,-30,three_quarter,forehead_covered,skull-to-brow,hair,1.0,E,,,,,
+ref-three_quarter,-30,three_quarter,fringe_eye,H,hair,0.14151,E,,,,,
+ref-three_quarter,-30,three_quarter,hair_cheek_width,F,hair,1.75311,E,,,,,
+ref-three_quarter,-30,three_quarter,hair_height,H,hair,1.23151,E,1.22744,0.06,0.00407,0.068,within
+ref-three_quarter,-30,three_quarter,hair_width,F,hair,1.73256,E,1.63496,0.08,0.0976,1.22,outside
+ref-three_quarter,-30,three_quarter,head_roundness,H,face,0.75,E,0.67567,0.045,0.07433,1.652,outside
+ref-three_quarter,-30,three_quarter,iris_d_spacing,iris spacing,face,0.38358,M,0.38767,0.035,-0.00409,-0.117,within
+ref-three_quarter,-30,three_quarter,iris_d_w,eye W,face,0.65526,M,0.63737,0.05,0.01789,0.358,within
+ref-three_quarter,-30,three_quarter,iris_size,H,face,0.1173,E,0.12437,0.015,-0.00707,-0.472,within
+ref-three_quarter,-30,three_quarter,jaw_width,F,face,0.60364,E,0.69489,0.065,-0.09125,-1.404,outside
+ref-three_quarter,-30,three_quarter,mouth_height,H,face,0.03706,E,0.01466,0.015,0.0224,1.493,outside
+ref-three_quarter,-30,three_quarter,mouth_width,F,face,0.13169,E,0.11188,0.025,0.01981,0.792,within
+ref-three_quarter,-30,three_quarter,mouth_x,F,face,0.16667,E,0.19133,0.025,-0.02466,-0.987,within
+ref-three_quarter,-30,three_quarter,mouth_y,H,face,0.87654,E,0.85227,0.025,0.02427,0.971,within
+ref-three_quarter,-30,three_quarter,nose_height,H,face,0.05555,E,0.06343,0.018,-0.00788,-0.438,within
+ref-three_quarter,-30,three_quarter,nose_width,F,face,0.11109,E,0.10109,0.025,0.01,0.4,within
+ref-three_quarter,-30,three_quarter,nose_y,H,face,0.80555,E,0.79374,0.025,0.01181,0.472,within
+ref-three_quarter,-30,three_quarter,opening_h_w,eye W,face,0.93114,M,0.81258,0.06,0.11856,1.976,outside
+y+045,45,,brow_gap,H,face,0.12577,E,,,,,
+y+045,45,,bun_width,F,hair,1.19477,E,,,,,
+y+045,45,,cheek_width,F,face,0.8718,E,,,,,
+y+045,45,,chin_height,H,face,0.13649,E,,,,,
+y+045,45,,chin_width,F,face,0.41581,E,,,,,
+y+045,45,,crown_above_skull,H,hair,0.2423,E,,,,,
+y+045,45,,ear_base_mouth,H,face,0.05061,E,,,,,
+y+045,45,,ear_height,H,face,0.21474,E,,,,,
+y+045,45,,ear_top_eye,H,face,-0.01912,E,,,,,
+y+045,45,,ear_turn_projection,F,face,0.21793,E,,,,,
+y+045,45,,ear_width,F,face,0.2381,E,,,,,
+y+045,45,,eye_height,H,face,0.1626,E,,,,,
+y+045,45,,eye_spacing,F,face,0.33141,E,,,,,
+y+045,45,,eye_to_chin,H,face,0.26182,E,,,,,
+y+045,45,,eye_width,H,face,0.15337,E,,,,,
+y+045,45,,eye_x,F,face,-0.10173,E,,,,,
+y+045,45,,eye_y,H,face,0.73818,E,,,,,
+y+045,45,,forehead_covered,skull-to-brow,hair,1.0,E,,,,,
+y+045,45,,fringe_eye,H,hair,0.14489,E,,,,,
+y+045,45,,hair_cheek_width,F,hair,1.8095,E,,,,,
+y+045,45,,hair_height,H,hair,1.23622,E,,,,,
+y+045,45,,hair_width,F,hair,1.80085,E,,,,,
+y+045,45,,head_roundness,H,face,0.70861,E,,,,,
+y+045,45,,iris_d_spacing,iris spacing,face,0.39174,M,,,,,
+y+045,45,,iris_d_w,eye W,face,0.59985,E,,,,,
+y+045,45,,iris_size,H,face,0.092,E,,,,,
+y+045,45,,jaw_width,F,face,0.58154,E,,,,,
+y+045,45,,mouth_height,H,face,0.03989,E,,,,,
+y+045,45,,mouth_width,F,face,0.10822,E,,,,,
+y+045,45,,mouth_x,F,face,-0.24242,E,,,,,
+y+045,45,,mouth_y,H,face,0.86351,E,,,,,
+y+045,45,,nose_height,H,face,0.08587,E,,,,,
+y+045,45,,nose_width,F,face,0.13853,E,,,,,
+y+045,45,,nose_y,H,face,0.78222,E,,,,,
+y+045,45,,opening_h_w,eye W,face,1.06016,E,,,,,
+y-045,-45,,brow_gap,H,face,0.12538,E,,,,,
+y-045,-45,,bun_width,F,hair,1.21211,E,,,,,
+y-045,-45,,cheek_width,F,face,0.87181,E,,,,,
+y-045,-45,,chin_height,H,face,0.13606,E,,,,,
+y-045,-45,,chin_width,F,face,0.41582,E,,,,,
+y-045,-45,,crown_above_skull,H,hair,0.24774,E,,,,,
+y-045,-45,,ear_base_mouth,H,face,0.05046,E,,,,,
+y-045,-45,,ear_height,H,face,0.21408,E,,,,,
+y-045,-45,,ear_top_eye,H,face,-0.01906,E,,,,,
+y-045,-45,,ear_turn_projection,F,face,0.21793,E,,,,,
+y-045,-45,,ear_width,F,face,0.22081,E,,,,,
+y-045,-45,,eye_height,H,face,0.16209,E,,,,,
+y-045,-45,,eye_spacing,F,face,0.33145,E,,,,,
+y-045,-45,,eye_to_chin,H,face,0.26105,E,,,,,
+y-045,-45,,eye_width,H,face,0.15289,E,,,,,
+y-045,-45,,eye_x,F,face,0.10173,E,,,,,
+y-045,-45,,eye_y,H,face,0.73895,E,,,,,
+y-045,-45,,forehead_covered,skull-to-brow,hair,1.0,E,,,,,
+y-045,-45,,fringe_eye,H,hair,0.10162,E,,,,,
+y-045,-45,,hair_cheek_width,F,hair,1.75326,E,,,,,
+y-045,-45,,hair_height,H,hair,1.22934,E,,,,,
+y-045,-45,,hair_width,F,hair,1.75326,E,,,,,
+y-045,-45,,head_roundness,H,face,0.70642,E,,,,,
+y-045,-45,,iris_d_spacing,iris spacing,face,0.3917,M,,,,,
+y-045,-45,,iris_d_w,eye W,face,0.59985,M,,,,,
+y-045,-45,,iris_size,H,face,0.09171,E,,,,,
+y-045,-45,,jaw_width,F,face,0.57892,E,,,,,
+y-045,-45,,mouth_height,H,face,0.03977,E,,,,,
+y-045,-45,,mouth_width,F,face,0.10822,E,,,,,
+y-045,-45,,mouth_x,F,face,0.24242,E,,,,,
+y-045,-45,,mouth_y,H,face,0.86394,E,,,,,
+y-045,-45,,nose_height,H,face,0.08561,E,,,,,
+y-045,-45,,nose_width,F,face,0.13853,E,,,,,
+y-045,-45,,nose_y,H,face,0.78289,E,,,,,
+y-045,-45,,opening_h_w,eye W,face,1.06016,M,,,,,
+ref-side,-90,side,brow_gap,H,face,0.16455,E,,,,,
+ref-side,-90,side,cheek_advance,H,face,0.04191,E,0.01481,0.02206,0.0271,1.229,outside
+ref-side,-90,side,cheek_bulge,H,face,0.04762,E,0.04312,0.03131,0.0045,0.144,within
+ref-side,-90,side,exposed_cheek,H,hair,0.1968,E,0.31852,0.035,-0.12172,-3.478,outside
+ref-side,-90,side,eye_height,H,face,0.12259,E,0.15926,0.02,-0.03667,-1.833,outside
+ref-side,-90,side,eye_to_chin,H,face,0.23227,E,0.32222,0.03189,-0.08995,-2.821,outside
+ref-side,-90,side,eye_width,H,face,0.03229,E,0.1,0.02,-0.06771,-3.385,outside
+ref-side,-90,side,eye_y,H,face,0.76773,E,0.67778,0.03189,0.08995,2.821,outside
+ref-side,-90,side,hair_height,H,hair,1.23875,E,,,,,
+ref-side,-90,side,iris_d_w,eye W,face,0.5,E,,,,,
+ref-side,-90,side,iris_size,H,face,0.01615,E,,,,,
+ref-side,-90,side,opening_h_w,eye W,face,3.79668,E,1.59259,0.15,2.20409,14.694,outside
+ref-side,-90,side,profile_depth,H,hair,1.12259,E,0.9963,0.045,0.12629,2.807,outside
+ref-side,-90,side,profile_nose,H,face,,,0.04074,0.015,,,unscored
+y+090,90,,brow_gap,H,face,0.16455,E,,,,,
+y+090,90,,cheek_advance,H,face,0.04191,E,,,,,
+y+090,90,,cheek_bulge,H,face,0.04762,E,,,,,
+y+090,90,,exposed_cheek,H,hair,0.17743,E,,,,,
+y+090,90,,eye_height,H,face,0.12259,E,,,,,
+y+090,90,,eye_to_chin,H,face,0.23227,E,,,,,
+y+090,90,,eye_width,H,face,0.03229,E,,,,,
+y+090,90,,eye_y,H,face,0.76773,E,,,,,
+y+090,90,,hair_height,H,hair,1.23553,E,,,,,
+y+090,90,,iris_d_w,eye W,face,0.5,E,,,,,
+y+090,90,,iris_size,H,face,0.01615,E,,,,,
+y+090,90,,opening_h_w,eye W,face,3.79668,E,,,,,
+y+090,90,,profile_depth,H,hair,1.10649,E,,,,,
+y-090,-90,,brow_gap,H,face,0.16455,E,,,,,
+y-090,-90,,cheek_advance,H,face,0.04191,E,,,,,
+y-090,-90,,cheek_bulge,H,face,0.04762,E,,,,,
+y-090,-90,,exposed_cheek,H,hair,0.1968,E,,,,,
+y-090,-90,,eye_height,H,face,0.12259,E,,,,,
+y-090,-90,,eye_to_chin,H,face,0.23227,E,,,,,
+y-090,-90,,eye_width,H,face,0.03229,E,,,,,
+y-090,-90,,eye_y,H,face,0.76773,E,,,,,
+y-090,-90,,hair_height,H,hair,1.23875,E,,,,,
+y-090,-90,,iris_d_w,eye W,face,0.5,E,,,,,
+y-090,-90,,iris_size,H,face,0.01615,E,,,,,
+y-090,-90,,opening_h_w,eye W,face,3.79668,E,,,,,
+y-090,-90,,profile_depth,H,hair,1.12259,E,,,,,
+y+135,135,,hair_height,H,hair,1.22321,E,,,,,
+y-135,-135,,hair_height,H,hair,1.22321,E,,,,,
+y+180,180,,hair_height,H,hair,1.18759,E,,,,,
