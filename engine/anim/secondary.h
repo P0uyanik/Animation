@@ -13,6 +13,16 @@
 // Deterministic and frame-rate independent: the state advances on a fixed time grid (substepHz, seconds since the
 // scene's first frame; a preroll before it settles the start pose), and the kinematic driver is sampled at the grid
 // times. Any frame is the same value whatever order frames are asked in (cached checkpoints on the same grid).
+//
+// Contact (T-183, opt-in per chain, "contact" block): colliders named "solid" push to their full radius (moving body
+// parts such as hands, forearms and ears: no exemption for a kinematic target that lies inside them), the segments
+// between joints collide as capsules (not only the joints), and gravity is scaled by (1 - anchor weight) per joint
+// (a joint whose target an anchor bone carries already hangs where that bone puts it). A chain without the block
+// takes exactly the path it took before.
+// Round 2 keys of the same block: "radii" (one collision radius per joint: the real thickness of what the chain
+// carries, e.g. a coiled lock; segments are tapered capsules) and "rest" (resting contact: every collider of the chain
+// pushes to its full radius, a pushed joint takes the collider's own velocity along the contact normal and loses
+// tangential speed by "friction", so hair that lies on a moving shoulder or sleeve stays on it quietly).
 #pragma once
 #include <functional>
 #include <map>
@@ -36,6 +46,19 @@ struct SpringParams {
   float radius = 0.01f;         // joint radius for collisions (m)
 };
 
+// Opt-in contact behaviour of one chain (T-183; chain key "contact"). Default: off, the solver path is unchanged.
+struct ChainContact {
+  bool set = false;                // the chain carries a "contact" block (written back by dynamicsToJson)
+  std::vector<std::string> solid;  // collider names pushed to their full radius; joined to the chain's colliders
+  bool segments = false;           // segments (capsules of the chain radius) collide, not only the joints
+  bool anchoredGravity = false;    // gravity scaled by (1 - anchor weight) per joint
+  std::vector<float> radii;        // collision radius per joint (root first, bones + 1 values); empty = params.radius
+  bool rest = false;               // resting contact: all colliders at full radius, inelastic, with friction
+  float friction = 40.0f;          // 1/s: decay of the sliding speed of a joint in contact (rest only)
+  float maxSwing = 12.0f;          // rad/s: how much faster than its kinematic direction a segment may turn (rest only; 0 = no cap)
+  float locks = 0.0f;              // > 0: joints keep off the joints of the other chains with the key by locks x (sum of the two radii)
+};
+
 struct SpringChain {
   std::string name;
   std::string group;               // e.g. the groom structure it came from (overrides may address a group)
@@ -49,15 +72,16 @@ struct SpringChain {
   // chest more than the head, like its static skin binding).
   std::string anchorBone;
   std::vector<float> anchorWeights;
+  ChainContact contact;
 };
 
 struct DynamicsCollider {
-  enum class Kind { Sphere, Capsule };
+  enum class Kind { Sphere, Capsule, Box };
   std::string name;
   Kind kind = Kind::Sphere;
-  std::string bone;  // the collider rides on this bone
-  vec3 a{0}, b{0};   // rest-space centre (sphere) or segment ends (capsule)
-  float radius = 0.05f;
+  std::string bone;  // the collider rides on this bone; empty for a box (world space)
+  vec3 a{0}, b{0};   // rest-space centre (sphere) or segment ends (capsule); min and max corner (box, world space)
+  float radius = 0.05f;  // box: the rounding of its edges (at most its smallest half extent)
 };
 
 struct DynamicsSpec {
@@ -88,7 +112,11 @@ Result<DynamicsSpec> dynamicsFromJson(const Json& j);
 Json dynamicsToJson(const DynamicsSpec& spec);
 // Scene override (scene character "dynamics"): false | true | {"enabled", "substep_hz", "preroll_s",
 // "chains": {"<chain name>" | "<group>" | "*": {stiffness, stiffness_tip, damping, gravity, drag, limit_deg, radius}},
-// "presets": {...}, "attach": [...]}. More specific keys win: "*" first, then the group, then the chain name.
+// "presets": {...}, "attach": [...], "colliders": [...]}. More specific keys win: "*" first, then the group, then
+// the chain name. "colliders" (T-183 round 3) adds colliders in the package format, or boxes of the scene:
+// {"name", "type": "box", "space": "world", "min": [x, y, z], "max": [x, y, z], "radius"? (edge rounding, 0.01)};
+// a new collider joins every chain. A chain is pushed to a collider's full radius only with contact.rest or when
+// contact.solid names it; otherwise never farther than its kinematic joint is (a table then holds nothing).
 // "attach" adds accessory chains (resolveAccessoryChains) and switches the layer on unless "enabled" is false.
 Result<void> applyDynamicsOverride(DynamicsSpec& spec, const Json& over);
 
@@ -117,15 +145,23 @@ class SpringChainSolver {
     SpringParams p;
     int anchor = -1;
     std::vector<float> anchorW;
+    std::vector<char> solid;  // per entry of `colliders`: full-radius push (contact.solid); empty = none
+    bool segments = false, anchoredGravity = false;
+    std::vector<float> radii;  // per joint (contact.radii); empty = p.radius
+    bool restContact = false;  // contact.rest
+    float friction = 0, maxSwing = 0;
+    float locks = 0;  // contact.locks
   };
   struct Collider {
     DynamicsCollider::Kind kind;
-    int bone;
+    int bone;  // -1: world space (box; a, b = the core's min and max corner, radius = its rounding)
     vec3 a, b, head;
     float radius;
   };
   struct State {
     std::vector<vec3> x, v, xk;  // per joint (all chains concatenated): position, velocity, kinematic position
+    std::vector<vec3> ca, cb;    // collider ends at the end of the last step (only kept for contact.rest chains)
+    std::vector<char> hit;       // per joint: a collider pushed it in the last step (only kept for contact.rest chains)
   };
   void targets(const std::vector<mat4>& g, std::vector<vec3>& xk) const;
   void step(State& s, double dt, const std::vector<mat4>& g) const;
@@ -137,6 +173,7 @@ class SpringChainSolver {
   std::vector<size_t> offset_;  // first joint of each chain in State
   size_t joints_ = 0;
   bool simulate_ = true;
+  bool keepShapes_ = false;  // a contact.rest chain needs the colliders' previous positions (State::ca, cb)
   double hz_ = 240, preroll_ = 1;
   // Cache: states on the step grid; key = step index since the first frame. Invalidated when the parameters
   // (frameStart, fps) change or when the driver no longer reproduces a checkpoint's kinematic joints.

@@ -63,6 +63,13 @@ def _t168(d, _t):  # test_face_t168
                  or (k == "nose" and isinstance(v, dict) and v.get("type") == "upturned"))
 
 
+def _hair_contact(d, _t):  # T-183: hair.ear_keepout, hair.dynamics.contact, a dynamics chain's "contact" block
+    def chain_contact(v):
+        return isinstance(v.get("chains"), list) and any(isinstance(c, dict) and "contact" in c for c in v["chains"])
+    return _walk(d, lambda k, v: k == "ear_keepout"
+                 or (k == "dynamics" and isinstance(v, dict) and ("contact" in v or chain_contact(v))))
+
+
 def _garment_field(d, field):  # T-184: a clothing item that switches a garment/3 item field on
     return _walk(d, lambda k, v: k == "garments" and isinstance(v, list)
                  and any(isinstance(g, dict) and g.get(field) not in (None, False) for g in v))
@@ -89,6 +96,7 @@ FEATURES = {
                     "detect": lambda d, t: _has_key(d, "upper_yaw_deg", "lower_yaw_deg", "sink_m",
                                                     "shell_occlusion_tint", "closed_fill")},
     "t168_face": {"scope": "assets", "detect": _t168, "old": "test_face_t168"},
+    "hair_contact": {"scope": "characters", "detect": _hair_contact, "old": "none (T-183, new opt-in)"},
     "seated": {"scope": "characters", "detect": lambda d, t: _garment_field(d, "seated"), "old": "T-184 (new)"},
 }
 

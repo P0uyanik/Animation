@@ -1,0 +1,70 @@
+{
+  "sheet": "/home/user/Animation/docs/evaluation/characters/T-183/sheet/../T-183_strict_sheet.jpg",
+  "size": [
+    990,
+    2048
+  ],
+  "max_px": 2048,
+  "frames": [
+    26,
+    63,
+    103,
+    115
+  ],
+  "columns": [
+    "before: released girl 0.14.0 (main)",
+    "after: T-183 candidate (hair contact override)"
+  ],
+  "crops": [],
+  "inputs": [
+    {
+      "frame": 26,
+      "column": "before: released girl 0.14.0 (main)",
+      "path": "/home/user/Animation/docs/evaluation/characters/T-183/sheet/before/head_f0026.jpg",
+      "sha256": "6c559c8fb63c1e3365efa0cd22c878d45375a521ebad776db0ea389a773efd99"
+    },
+    {
+      "frame": 26,
+      "column": "after: T-183 candidate (hair contact override)",
+      "path": "/home/user/Animation/docs/evaluation/characters/T-183/sheet/after/head_f0026.jpg",
+      "sha256": "c3d609ffe33cc8a9eda97169175cb51406d4c0a052dee0626d9065489e4c0324"
+    },
+    {
+      "frame": 63,
+      "column": "before: released girl 0.14.0 (main)",
+      "path": "/home/user/Animation/docs/evaluation/characters/T-183/sheet/before/head_f0063.jpg",
+      "sha256": "76f85d0c3e00a6cdbdaead4eb26dc08c83294a3f6b34558c2ea39f2c52190cd0"
+    },
+    {
+      "frame": 63,
+      "column": "after: T-183 candidate (hair contact override)",
+      "path": "/home/user/Animation/docs/evaluation/characters/T-183/sheet/after/head_f0063.jpg",
+      "sha256": "e7c43d50d4eb6023ccc698fbf84258ef9845172a7be47b8d3b8ed69eb5f596cd"
+    },
+    {
+      "frame": 103,
+      "column": "before: released girl 0.14.0 (main)",
+      "path": "/home/user/Animation/docs/evaluation/characters/T-183/sheet/before/head_f0103.jpg",
+      "sha256": "7c438fc5d55702deab27a820362e54249d2f9a9986918ebcbb9fc831651c1d1d"
+    },
+    {
+      "frame": 103,
+      "column": "after: T-183 candidate (hair contact override)",
+      "path": "/home/user/Animation/docs/evaluation/characters/T-183/sheet/after/head_f0103.jpg",
+      "sha256": "b9165bce8725e3be8150cdef6f8afa3f2e4ab0cadf1a1644db2a9032b4751af0"
+    },
+    {
+      "frame": 115,
+      "column": "before: released girl 0.14.0 (main)",
+      "path": "/home/user/Animation/docs/evaluation/characters/T-183/sheet/before/head_f0115.jpg",
+      "sha256": "bb8cd5735d9c6d821e4ead6401d179e272b502c1c1f825b6634bed287539e41e"
+    },
+    {
+      "frame": 115,
+      "column": "after: T-183 candidate (hair contact override)",
+      "path": "/home/user/Animation/docs/evaluation/characters/T-183/sheet/after/head_f0115.jpg",
+      "sha256": "83f97641d72862d88b0d33380c15c197c19f69d47d36fa3941074b09f41459fa"
+    }
+  ],
+  "missing": []
+}

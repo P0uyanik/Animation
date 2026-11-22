@@ -46,6 +46,8 @@ SAMPLES = {
                     {"face": {"closed_fit": {"sink_m": 0.001}}}, {"face": {"closed_fit": {"shell_occlusion_tint": 1}}},
                     {"face": {"socket": {"closed_fill": {}}}}],
     "t168_face": [{"face": {"lower_face": {"cheek_pad_top_fade_m": 0.01}}}, {"face": {"nose": {"type": "upturned"}}}],
+    "hair_contact": [{"hair": {"ear_keepout": {}}}, {"override": {"hair": {"dynamics": {"contact": {}}}}},
+                     {"dynamics": {"chains": [{"name": "lock", "contact": {"segments": True}}]}}],
     "seated": [{"clothing": {"garments": [{"type": "shorts", "seated": True}]}},
                {"override": {"clothing": {"garments": [{"type": "trousers", "seated": {"collision": False}}]}}}],
 }

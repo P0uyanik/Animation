@@ -7,6 +7,7 @@
 #include <filesystem>
 #include <fstream>
 #include <memory>
+#include <set>
 
 #include "scene/collision.h"
 #include "scene/interaction.h"
@@ -417,4 +418,109 @@ TEST_CASE("interaction options: every option off is exactly the behaviour before
       for (size_t b = 0; b < A.size(); ++b) CHECK(A[b] == B[b]);
     }
   }
+}
+
+// ---------------------------------------------------------------------------------------------------------- T-191
+// Body-part capsules (character-character contact): exact segment distance, a fit that covers every body role and
+// most of each part's own rest vertices, and a signed gap whose sign, depth and direction follow the geometry.
+TEST_CASE("body parts: segment distance is exact (T-191)") {
+  vec3 ca, cb;
+  CHECK(segmentSegment(vec3(0, 0, 0), vec3(1, 0, 0), vec3(0.5f, 1, -1), vec3(0.5f, 1, 1), ca, cb) == doctest::Approx(1.0f));
+  CHECK(ca.x == doctest::Approx(0.5f));
+  CHECK(cb.z == doctest::Approx(0.0f).epsilon(1e-5));
+  // parallel, overlapping
+  CHECK(segmentSegment(vec3(0, 0, 0), vec3(1, 0, 0), vec3(0.5f, 0.2f, 0), vec3(2, 0.2f, 0), ca, cb) == doctest::Approx(0.2f));
+  // end to end, beyond the segments
+  CHECK(segmentSegment(vec3(0, 0, 0), vec3(1, 0, 0), vec3(1.3f, 0, 0), vec3(2, 0, 0), ca, cb) == doctest::Approx(0.3f));
+  // points (degenerate segments)
+  CHECK(segmentSegment(vec3(0, 0, 0), vec3(0, 0, 0), vec3(0, 0.4f, 0), vec3(0, 0.4f, 0), ca, cb) == doctest::Approx(0.4f));
+  // point against segment, clamped to its end
+  CHECK(segmentSegment(vec3(3, 1, 0), vec3(3, 1, 0), vec3(0, 0, 0), vec3(2, 0, 0), ca, cb) == doctest::Approx(std::sqrt(2.0f)));
+}
+
+TEST_CASE("body parts: every role gets a capsule fitted to its own rest vertices (T-191)") {
+  for (const char* asset : {kBoy, kGirl, kSdf}) {
+    const std::string name = asset;
+    CAPTURE(name);
+    auto ev = load(baseScene(asset, 2));
+    const auto& ci = ev->characters()[0];
+    const BodyParts P = deriveBodyParts(ci.asset.skeleton, ci.rig.meshes);
+    REQUIRE(P.valid);
+    std::set<std::string> roles;
+    for (const auto& c : P.capsules) {
+      roles.insert(c.part);
+      CHECK(c.bone == ci.asset.skeleton.find(c.part));
+      CHECK(c.r >= kBodyPartMinRadius);
+      CHECK(c.r < 0.25f);
+    }
+    for (const char* r : {"hips", "chest", "neck", "head", "hand.L", "hand.R", "thigh.L", "thigh.R", "shin.L", "shin.R", "foot.L", "foot.R"})
+      CHECK(roles.count(r) == 1);
+    // Arm roles where the rig weights the arms to them (the 1.0.0 test boy weights his sleeves to an unparented
+    // DEF-shoulder helper, which is no body role: those vertices belong to no part)
+    if (name == kGirl || name == kSdf)
+      for (const char* r : {"upperArm.L", "upperArm.R", "forearm.L", "forearm.R"}) CHECK(roles.count(r) == 1);
+    // Rest pose: the capsules stay within the character's extent (a fitted axis may tilt a capsule's end a little past
+    // a flat sole or a crown: at most 2 cm).
+    const std::vector<mat4> G = restGlobals(ci.asset.skeleton);
+    float top = -1e9f, bottom = 1e9f, capTop = -1e9f, capBottom = 1e9f;
+    for (const auto& m : ci.rig.meshes)
+      for (const vec3& p : m.rest.positions) top = std::max(top, p.y), bottom = std::min(bottom, p.y);
+    for (const auto& c : P.capsules) {
+      vec3 a, b;
+      bodyPartSegment(c, G, a, b);
+      capTop = std::max(capTop, std::max(a.y, b.y) + c.r);
+      capBottom = std::min(capBottom, std::min(a.y, b.y) - c.r);
+    }
+    MESSAGE("top " << (capTop - top) * 1000 << " mm, bottom " << (bottom - capBottom) * 1000 << " mm past the mesh");
+    CHECK(capTop <= top + 0.02f);
+    CHECK(capBottom >= bottom - 0.02f);
+    // and covers most of the character (90th-percentile radii, garments and hair flaps outside): rest vertices inside
+    // or within 1 cm of the capsules
+    size_t inside = 0, total = 0;
+    for (const auto& m : ci.rig.meshes)
+      for (size_t v = 0; v < m.rest.positions.size(); v += 7, ++total)
+        inside += pointBodyGap(P, G, m.rest.positions[v]) < 0.01f;
+    std::string all;
+    for (const auto& r : roles) all += r + " ";
+    MESSAGE(name << ": " << P.capsules.size() << " capsules (" << all << "), " << 100.0 * double(inside) / double(total) << " % of rest vertices within 1 cm");
+    CHECK(double(inside) > 0.6 * double(total));
+  }
+}
+
+TEST_CASE("body parts: the gap between two characters is signed, a depth, and points from b to a (T-191)") {
+  auto ev = load(baseScene(kBoy, 2));
+  const auto& ci = ev->characters()[0];
+  const BodyParts P = deriveBodyParts(ci.asset.skeleton, ci.rig.meshes);
+  const std::vector<mat4> G = restGlobals(ci.asset.skeleton);
+  auto shifted = [&](float dx) {
+    std::vector<mat4> H = G;
+    for (mat4& M : H) M = glm::translate(mat4(1), vec3(dx, 0, 0)) * M;
+    return H;
+  };
+  float width = 0;  // the widest body extent along x (both sides)
+  for (const auto& c : P.capsules) {
+    vec3 a, b;
+    bodyPartSegment(c, G, a, b);
+    width = std::max({width, std::abs(a.x) + c.r, std::abs(b.x) + c.r});
+  }
+  CHECK(bodyGap(P, G, BodyParts{}, G).gap > 1e8f);  // no capsules: nothing to keep apart
+  const BodyGap far = bodyGap(P, shifted(2 * width + 0.1f), P, G);
+  CHECK(far.gap >= 0.1f - 1e-4f);  // never closer than the widest extents allow
+  CHECK(far.gap < 0.15f);
+  CHECK(far.dir.x > 0.99f);  // a is to the right of b: moving a along +x opens the gap
+  float last = 1e9f;
+  for (float dx = 2 * width + 0.1f; dx >= 2 * width - 0.02f; dx -= 0.01f) {  // closing in: the gap falls with the distance
+    const BodyGap g = bodyGap(P, shifted(dx), P, G);
+    CHECK(g.gap < last);
+    CHECK(g.gap >= dx - 2 * width - 1e-4f);  // the widest parts meet first: the gap is at most that deep
+    CHECK(g.gap < dx - 2 * width + 0.05f);
+    last = g.gap;
+  }
+  // skip: excluding the meeting pair leaves a larger gap
+  const BodyGap g = bodyGap(P, shifted(2 * width - 0.05f), P, G);
+  REQUIRE(g.gap < 0);
+  static std::string skipA, skipB;
+  skipA = g.partA, skipB = g.partB;
+  const BodyGap s = bodyGap(P, shifted(2 * width - 0.05f), P, G, [](const std::string& x, const std::string& y) { return x == skipA && y == skipB; });
+  CHECK(s.gap > g.gap);
 }
