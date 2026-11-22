@@ -974,3 +974,26 @@ hard depends-on (read) overlaps were conflicts → T-181b makes them warnings. R
 - New research-only task: existing/open-source/paid hair systems vs continuing T-183 (fit to plush ringlet look,
   collision with body/garments/props, headless bpy 5.3, licence, effort) → T-193. Blocked hosts listed for the owner.
 
+
+## 2026-11-22 ~13:45 CET (via the liaison)
+- **Hair contact:** merge the T-183 candidate now, opt-in as built. Main requirement: hair must not penetrate anything
+  (body, clothing, props, environment). T-183 r3 continues (neighbour + prop colliders).
+- **Hands:** finger/thumb joint bending must be completely fixed (T-190: thumbs included, all characters, all grasps and
+  poses). Before/after + golden list for owner OK as planned.
+- **Blink:** probably video quality → no further blink work. Eye-convergence limits not dispatched (optional, low
+  priority follow-up).
+- **Guidance:** use Blender and our own engine as much as possible (Blender built-ins / our engine over external tools).
+- **T-193 hybrid hair: approved.** First a short analysis of which of our animation problems it solves (and which not),
+  then implement; priority zero penetration into body/garments/props/environment. Coordinate with T-183 r3 (one owner
+  per file). No paid tools. Do NOT change the test scene (e912) now: fix the underlying systems first. Hair resting on
+  props without sliding is fine for now (T-193 Q2).
+- **Sound: start now.** Emotional vocal sounds (surprise gasp/"oh!", happy "wow", small laugh, ...) attached to acting
+  cues; licence-safe for YouTube (CC0 or own/permissive), no paid services; build the system + a small sound library;
+  demo by muxing audio onto a COPY of the existing T-187 video (no re-render, no scene change). Separate task,
+  disjoint write-set.
+- **T-189 world:** Q2 yes (CC0 geometry + our materials = ready-made). Q3 (liaison): plain git, small .glb per set +
+  SOURCES.json with hashes, no LFS. Q4 (liaison): voluntary credits line in video descriptions + keep SOURCES.json.
+  Q5: no water for now. Q6: no paid AI-3D. Q1 (Kenney/Quaternius/itch hosts) and Q7 (Infinigen): on hold (owner being
+  briefed). World plan stays on hold.
+- T-191 staging asks (enable body clearance in e912; wider seats / lower hand-over point): parked by "do not change e912
+  now".
