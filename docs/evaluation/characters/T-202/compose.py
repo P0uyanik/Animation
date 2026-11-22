@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """T-202: lays out one sheet per character, one row per (view, reference): "reference | current".
 
-    python3 docs/evaluation/characters/T-202/compose.py        (from the repository root, after render_all.sh)
+    python3 docs/evaluation/characters/T-202/compose.py        [boy girl third]   (from the repository root, after render_all.sh)
 
 Reference tiles are square head crops of the reference view files (box = x0,y0,x1,y1 in that file, padded to a square
 with the crop's border colour, then scaled to the tile). A reference whose face points the other way than the render is
@@ -22,13 +22,13 @@ TILE, BAR = 1000, 64
 # (view label, yaw of the render, reference file, ref name, crop box, mirror)
 SHEETS = {
     "boy": ("boy_yellow_hoodie", "2.3.0", "boy_2.3.0", [
-        ("front", 0, B + "val27_front.png", "val27_front", (0, 0, 240, 240), False),
-        ("front", 0, B + "hero24_front.png", "hero24_front", (0, 0, 590, 590), False),
-        ("front", 0, B + "canon29_front.png", "canon29_front", (0, 0, 230, 230), False),
-        ("3/4", -35, B + "val27_threequarter_right.png", "val27_threequarter_right", (0, 0, 230, 230), False),
-        ("3/4", -35, B + "canon29_threequarter_left.png", "canon29_threequarter_left", (0, 0, 220, 220), True),
-        ("side", -90, B + "val27_side_right.png", "val27_side_right", (0, 0, 210, 210), False),
-        ("side", -90, B + "canon29_side_left.png", "canon29_side_left", (0, 0, 205, 205), True),
+        ("front", 0, B + "val27_front.png", "val27_front", (0, 0, 240, 270), False),
+        ("front", 0, B + "hero24_front.png", "hero24_front", (0, 0, 590, 740), False),
+        ("front", 0, B + "canon29_front.png", "canon29_front", (0, 0, 230, 260), False),
+        ("3/4", -35, B + "val27_threequarter_right.png", "val27_threequarter_right", (0, 0, 230, 260), False),
+        ("3/4", -35, B + "canon29_threequarter_left.png", "canon29_threequarter_left", (0, 0, 220, 255), True),
+        ("side", -90, B + "val27_side_right.png", "val27_side_right", (0, 0, 210, 255), False),
+        ("side", -90, B + "canon29_side_left.png", "canon29_side_left", (0, 0, 205, 250), True),
     ]),
     "girl": ("girl_auburn_bun_glasses", "0.14.0", "girl_0.14.0", [
         ("front", 0, G + "sheet30_front.png", "ref_30 / sheet30_front", (0, 0, 231, 231), False),
@@ -69,7 +69,10 @@ def ref_tile(path, box, mirror):
 
 
 def main():
+    import sys
     for key, (cid, ver, prefix, rows) in SHEETS.items():
+        if len(sys.argv) > 1 and key not in sys.argv[1:]:
+            continue
         sheet = Image.new("RGB", (2 * TILE, BAR + len(rows) * (TILE + BAR)), (24, 24, 24))
         d = ImageDraw.Draw(sheet)
         d.text((16, 14), "T-202  %s %s  |  neutral face, Cycles 16 spp + OIDN, 70 mm, character_neutral/1 light  |  "
