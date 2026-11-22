@@ -37,7 +37,9 @@ contact - 4.
 ## Goldens
 
 15 of 20 `interaction_hashes.json` goldens change (fingers of the grasping hand only): [golden_delta.md](golden_delta.md).
-NOT re-recorded until the Supervisor's OK.
+Re-recorded after the R7 Supervisor's approval (main 694d4fa): `PLUSH_GOLDEN_WRITE=1 plush_tests -tc="golden*"`, checked
+that exactly those 15 entries changed. `tests/test_verbs.cpp:710` (T-112b pinch: the 0 key of its grasp weight, over the
+limit, moved from contact - 4 = 16 to 15; 0 rows after) pins the new key (write-set granted in the same decision).
 
 ## Evidence tools (not part of the gate)
 

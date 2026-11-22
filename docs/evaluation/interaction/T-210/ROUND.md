@@ -1,9 +1,9 @@
 # T-210 round state
 
-Supervisor: `session_01NPjxePvWAMsLopzSs1fMXB` (STATUS / READY / questions only there). Branch `t-210-claude-grasp-curls`
+Supervisor: R7 `session_01NPjxeKJV7E1M9rnLTkzJoo` (was R6 `session_01NPjxePvWAMsLopzSs1fMXB`; STATUS / READY / questions only there). Branch `t-210-claude-grasp-curls`
 from main `d0528dc`. Write-set: engine/anim/animation.h/.cpp, engine/scene/actions.cpp, engine/scene/interaction.h/.cpp,
 tests/test_motion_continuity.cpp, tests/golden/continuity_baseline.json, tests/golden/interaction_hashes.json (only after
-the Supervisor's OK), docs/evaluation/interaction/T-210/**.
+the Supervisor's OK), docs/evaluation/interaction/T-210/**, tests/test_verbs.cpp (R7).
 
 ## Session 1 (2026-11-22)
 
@@ -16,7 +16,12 @@ the Supervisor's OK), docs/evaluation/interaction/T-210/**.
   the write-set) pins grasp.weight(16) == 0; that pinch was over the limit, its key moved 16 -> 15 (0 rows after).
   Asked the Supervisor: re-record OK? who changes that line (proposed evaluate(16) -> evaluate(15))?
 
+- R7 Supervisor (session_01NPjxeKJV7E1M9rnLTkzJoo, rotation checked in SUPERVISOR_HANDOVER_R7.md; decisions on main
+  694d4fa): (1) re-record approved -> done, exactly the 15 entries changed; (2) tests/test_verbs.cpp in the write-set ->
+  :710 pins evaluate(15) with the T-210 note. Merged main (no engine / test changes there).
+
 ## Next
 
-1. On the Supervisor's answers: test_verbs.cpp:710 as decided; `PLUSH_GOLDEN_WRITE=1 build/fast-dev/tests/plush_tests -tc="golden*"`, check only those 15
-   entries changed, full suite, tools/ready.py, READY.
+- Full suite after the re-record: plush_tests 299 / 299, plush_prop_tests 3 / 3.
+
+1. tools/ready.py, READY to the R7 Supervisor.
