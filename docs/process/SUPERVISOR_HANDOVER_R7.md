@@ -66,4 +66,4 @@ Next free ID: T-212.
   white-haired eye half-blink 6.7 mm, partial-weight sweep up to 12 mm on all three) is fixed in the NEW face versions
   (generator writes chain-matched drivers or stop keys, P4), and `face_parity --strict` is part of their acceptance.
   No engine change (would alter released look). Owner sees it via the version sheets.
-- T-215 = P2 auburn fit dispatched (existing spec controls only; P3 knobs = later task on the stuck list).
+- T-215 = P2 auburn fit dispatched (session_01NPjxeKiXU6nDxvHyfXn6k4; existing spec controls only; P3 knobs = later task on the stuck list).
