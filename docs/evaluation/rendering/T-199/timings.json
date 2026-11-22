@@ -6,13 +6,13 @@
    "wall_s": null
   },
   "look": {
-   "render_s": 520.6,
-   "setup_s": 40.9,
+   "render_s": 485.5,
+   "setup_s": 37.2,
    "wall_s": null
   },
   "strong": {
-   "render_s": 500.9,
-   "setup_s": 39.1,
+   "render_s": 482.2,
+   "setup_s": 37.8,
    "wall_s": null
   }
  },
@@ -23,13 +23,13 @@
    "wall_s": null
   },
   "look": {
-   "render_s": 845.8,
-   "setup_s": 37.1,
+   "render_s": 846.7,
+   "setup_s": 38.5,
    "wall_s": null
   },
   "strong": {
-   "render_s": 843.0,
-   "setup_s": 37.3,
+   "render_s": 836.9,
+   "setup_s": 37.8,
    "wall_s": null
   }
  },
@@ -40,13 +40,13 @@
    "wall_s": null
   },
   "look": {
-   "render_s": 814.5,
-   "setup_s": 36.6,
+   "render_s": 813.4,
+   "setup_s": 38.0,
    "wall_s": null
   },
   "strong": {
-   "render_s": 826.7,
-   "setup_s": 37.3,
+   "render_s": 810.1,
+   "setup_s": 40.9,
    "wall_s": null
   }
  }
