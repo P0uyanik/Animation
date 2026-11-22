@@ -83,7 +83,46 @@ All summaries: `T-183_r3_measures.json` (`tools/r3_summary.py <log dir> <out>`; 
 Read: the table is solved for both girls by the static boxes. What is left needs shapes that move: the neighbour
 (the boy beside her, 0.40 m seats) and the boat in her own hand.
 
+### Session 7 (2026-11-22, continuation session): neighbour / prop colliders, the pops, `contact.carry`
+
+Built and committed (`b792ed1`, the commit after it):
+
+- **Scene colliders that move** (open item 1): collider keys `"character"` (+ `bone` of that other character) and
+  `"prop"` (oriented box / sphere / capsule in the prop's frame) in the scene override; the solver takes their frames
+  per step from a callback (`SpringChainSolver::External`), `scene.cpp` resolves the carriers at load and passes
+  kinematic poses (a memo shared by the characters) and a kinematic `propWorlds`. A scene without such a collider
+  calls the solver as before: `tests/test_bake_golden.cpp` unchanged and passing, e912 `s020_t183` without the new
+  colliders bakes to the same SHA-256 with the binary before and after (`80e99129...`). Docs: SECONDARY_MOTION.md
+  "Scene colliders". Tools: `tools/neighbours.py` (the `skin_spheres` fit on the neighbours' package meshes, where the
+  hair comes within 0.1 m of them in a bake; prop boxes from the assets), `derive_shot.py --props
+  --neighbours-from=<bake>` (recorded in `x_t183.options` / `.neighbours`; `--check` keeps the fitted spheres),
+  `tools/r4_run.sh` (derive without neighbours, bake, derive with them, bake, both measures).
+- **The one-frame pops are body snaps of the source animation** (open item 2), measured on the kinematic bones in
+  the bakes (`snaps` numbers: bone turn in degrees / pivot travel in mm within ONE frame):
+  e912 s010 auburn: hands 109-281 mm, forearms 31-147 deg at f79, 98, 101, 116, 120, 131, 135, 146, 150, 161, 165,
+  180 (the fold cycle); s020 auburn: head 95 deg at f109 (36 / 52 at f110-111), 41 / 115 / 41 / 52 deg at f133-136,
+  chest 35 deg at f133; s030: every character moves 1.1-1.6 m at f93 (a cut inside the shot). The traced pops (s010
+  f79 / f101 / f161, s020 f133-135) are exactly these frames. Not in the T-183 write-set (T-187 shots, gaze chain,
+  clips): logged for the animation side, reported to the Supervisor.
+- **`contact.carry`** (chain key, opt-in, with `rest` + `max_swing`; `groom_contact.py` `rest.carry`; both candidate
+  overrides now carry it): the `max_swing` bound yields to the speed of the collider that pushes the joint, so a
+  forearm that crosses the chest within a frame takes the lock along. e912 s010 auburn f76-182 every frame: blouse
+  30.7 mm / 5 fr and 8.9 mm / 2 fr -> nothing over 1 mm against garments. Off = bit-identical.
+- First numbers with the scene colliders, before `carry` (e912 `s020_t183`, run `r4nb`, every frame, auburn):
+  boy hoodie 71.7 mm / 118 fr -> 40.2 mm in f110 only; strap 75.2 -> 0; hand.R 52.0 -> 0; boat 12.8 mm / 37 fr and
+  boat_end_a 15.0 mm / 48 fr -> boat 6.0 mm in f110 only; white-haired girl against auburn -> 0 (all surfaces).
+  **Not chains:** boy skin 49.9 mm / 43 fr is `hair_fringe` / `hair_crown` / `hair_flowers` (rigid with her head):
+  her head overlaps the boy in the source animation. Bake 52-54 s without, 56 s with the 520 colliders.
+
+Environment additions: a second shot of the same cast needs no package build when `build/masters` and
+`build/packages` are copied from a prepared shot of that cast (cache hit, prepare 0 s). `near_colliders.py` takes
+`--character=`. The golden check: `build/tests/plush_tests -tc="golden*"` (24 s).
+
 ### Open (in this order)
+
+**State of this list after session 7: 1 and 2 are done as described above; 3-5 remain** (3: `tweak_package.py` on
+e909 `s010_t183`; 5 includes the final table with `r5` runs of `tools/r4_run.sh`, STEP=1).
+
 
 1. **Neighbour and carried prop** (`engine/scene/scene.cpp` + `scene.h` granted; nothing written yet). Plan: a collider may name `"character": "<scene name>"` (bone of that
    character) or `"prop": "<name>"` (box in prop space); the solver asks a callback for those transforms per step;
