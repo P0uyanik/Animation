@@ -1052,3 +1052,18 @@ hard depends-on (read) overlaps were conflicts → T-181b makes them warnings. R
   sub-mm / sub-degree side effects within an approved scope the Supervisor decides (anatomically correct option, no
   weakening), records it, and does not escalate. Escalate only real look changes or test/golden changes outside an
   approved scope.
+
+## 2026-11-22 ~18:20 CET (via the liaison)
+1. **Windows block (T-200): build/bake in the cloud, render on the PC** (or another route that does not touch the owner's
+   security settings). Small task T-205: a reproducible "bake package" for a shot (bake.json + manifests + what Blender
+   needs, no engine exe) produced in cloud/CI and fetchable on the PC (branch or CI artifact), plus a one-command PC
+   render script for the opt-in preview_eevee profile (after T-199 / T-201). Codex uses it later for e912 EEVEE checks.
+2. **Codex T-204** (relay): face reference targets for all three characters (targets.json + measures + re-runnable
+   script). Supervisor IDs from T-205.
+3. **New research T-206 (Opus, docs only, docs/evaluation/characters/T-206/**):** (a) faces — open-source tools /
+   libraries / Blender capabilities to match the reference images more accurately and faster (landmark-driven fitting
+   of shape keys / face params, differentiable rendering with licences, Blender add-ons incl. paid only for comparison,
+   sculpt/shape-key workflows, reference camera matching, auto-compare metrics) and what fits our procedural faces;
+   (b) wool hair — wool/felt-yarn texture with less volume (hair curves + GN hair node groups, Principled Hair BSDF /
+   fibre shaders, yarn/wool/felt shading, open-source generators). Quality fit, determinism/headless bpy 5.3, licence,
+   effort; small feasibility renders welcome; recommendation + plan. Face work itself waits for T-206 + T-204 + owner.

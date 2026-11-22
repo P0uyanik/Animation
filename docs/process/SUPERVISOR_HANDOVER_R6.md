@@ -27,23 +27,23 @@ continue in a fresh Opus session after their next checkpoint.**
 - Follow-ups added: eye convergence limits (gaze, after T-190); box-face wrap key drop (interaction.cpp:1256, after T-191).
 - Gate wait script: scratchpad wait_gate.sh <branch> <sha> (curl actions/runs, poll 60 s).
 
-## Running (R6, as of ~13:35Z; main = staging = ec56331)
-| Task | Session | Branch | State / next |
+## Running (R6, as of ~17:30Z; main = staging after this push)
+| Task | Session (model) | Branch | State / next |
 |---|---|---|---|
-| T-183 r3b hair engine colliders (Fable) | session_01NPjxeNn6rj76f28MV4nHnx | t-183-claude-hair-contact | candidate c775d69 merged; building neighbour/prop colliders (golden-identical off, ~1.05x) + contact.carry. Body-snap frames (±1) and rigid-part-in-boy listed apart, not in its criterion. Merge needs TESTS/trailers like c775d69. |
-| T-194 hybrid hair push-out (Fable) | session_01NPjxeL5HtXkGWdiap3R8or | t-194-claude-hair-pushout | design approved (stage A ray re-key of DYN chains, stage B GN clamp; opt-in --hair-pushout; nape pushed out; hair-vs-hair out). run_shot.py granted. Register test_hair_pushout.py in pipeline/charsys/tests/TESTS at merge. |
-| T-190 finger limits (Fable) | stopped at ~300k (session_01NPjxeLH3KPsH5iYaR3radj) | t-190-claude-finger-limits@250ad00 | READY; owner: default ON/OFF + 33 vs 45 box-face lay-back (my rec: ON + 45 box only). Next round = FRESH session from ROUND.md; add tests/test_grasp_contact.cpp + tests/test_verbs.cpp to its row; register tests/test_hand_limits.cpp; 6 goldens re-record only after owner OK. |
-| T-195 sound (Opus) | session_01NPjxePtiFXPhYUXTLBiWzx (idle) | merged | owner: record child gasps/laughs? (or freesound key). |
+| T-183 r3 hair engine colliders | session_01NPjxeNkwAEozJp2WgBvgGi (Opus) | t-183-claude-hair-contact | A cup + B fixed (clear_targets); D final runs, then E README/READY. Merge: register new tests, trailers as for c775d69; give T-194 the final pin. |
+| T-194 hair push-out | session_01NPjxePALLCviMLH4YKW2mL (Opus) | t-194-claude-hair-pushout | stages A+B built, f110-112 fixed, measuring real shots against T-183 pin e7547ab4. Register test_hair_pushout.py. Q1/Q4/L1 wait for it (shot_render.py). |
+| T-198 motion continuity | session_01NPjxeKFhB6MjQW9AoXXVst (Opus) | t-198-claude-motion-continuity | design approved (source fixes in actions.cpp ikRamps, assistGazeWithNeck convergence, receiver orient ramp; detector + speed-limit test; no limiter). Goldens: numbers to me first; owner if visible/outside scope. Register tests/test_motion_continuity.cpp. |
+| T-199 compositor look | session_01NPjxeLdrDJrSXXNtaCUK5V (Sonnet) | t-199-claude-compositor-look | code + tests done (b4d8705); final720 side-by-side renders (soft + strong) → owner approves before use. Then T-201 preview_eevee. |
+| T-203 TESTS → TESTS.manifest | session_01NPjxeNmio6xu7vC4pXDwgt (Sonnet) | t-203-claude-tests-manifest-rename | Windows case collision; same test set before/after; + case-collision check. Trailers for all manifests + check_all/ready. Re-check other branches' new TESTS lines at their merges. |
+| T-205 bake package + PC render | session_01NPjxeLneYX48vFFGroyvGf (Opus) | t-205-claude-bake-package | cloud/CI zip, no engine exe; tools/pc one command. |
+| T-206 face + wool research | session_01NPjxePp9vJdYxLR6AyFiB9 (Opus) | t-206-claude-face-hair-research | docs only; uses Codex T-204 targets. |
 
-Closed in R6: T-191, T-192, T-193, T-196 (sessions told to stop).
+Closed in R6: T-190, T-191, T-192, T-193, T-195, T-196, T-202; Codex T-197, T-200 merged. Codex T-204 running on the owner PC (relay).
+Owner standing rules added in R6: no Fable (Opus default, Sonnet mechanical); hands sub-mm/sub-degree side effects in scope = Supervisor decides + records.
 
 ## Waiting for the owner (via the liaison)
-1. T-190 default on/off + lay-back (above).
-2. Motion-continuity task (body snaps in T-187: s010 hand jumps, s020 head 95-115 deg/frame, s030 cut at f93, keyed touch
-   shape 28-36 deg/frame) — proposed for after T-190 (same animation.* file).
-3. T-195 voices: owner recordings or freesound key.
-4. T-196 Q1-Q4 (contact audit standard line; compositor side-by-side; L2 timing; Kenney manual download).
-5. World plan start (all questions answered; liaison relays).
+1. T-199 compositor look approval (after the side-by-side).
+2. World plan start (liaison relays). 3. Voices on hold. 4. Faces: after T-206 + Codex T-204.
 
 ## Follow-ups logged (not dispatched)
 Nape cap vs neck-skin fold (body skinning, T-183 item 1); seated thigh through the shorts front panel (T-184 limit 1);
