@@ -13,7 +13,9 @@ sources (no character-specific code anywhere in the path):
                                                      {"character_id": "<id>", "version": "current"}       (T-062: the
                                                       character's current approved version, see current_source())},
                  "profile": "pipeline/charsys/rig_profiles/humanoid_rigify.json",
-                 "render": {"resolution": [w, h], "samples": n, "light_scale": x}}
+                 "render": {"resolution": [w, h], "samples": n, "light_scale": x,
+                            "hair_pushout": true | "<spec.json>" | {...}}}   (T-194, optional: shot_render.py
+                                                                             --hair-pushout; absent = off)
 
 Each character's "asset" in the scene is ignored and replaced by the package built here. Outputs go to
 <shot dir>/build/ (masters for unpublished casts, packages, bake.json, frames, shot.blend, shot.mp4, run_shot.json).
@@ -477,6 +479,9 @@ def stages_run(a, shot, shot_path, out, run_out, logs, stages, encode, status, f
         # shot_render.py itself also defaults to Cycles.
         cmd += ["--engine", "eevee"] if a.engine == "eevee" else []
         cmd += ["--blend-only"] if a.blend_only else []
+        hp = r.get("hair_pushout")  # T-194 opt-in; absent or false = the previous invocation
+        if hp:
+            cmd += ["--hair-pushout", "on" if hp is True else (json.dumps(hp) if isinstance(hp, dict) else resolve(ROOT, hp))]
         progress = {"n": -1}
 
         def poll():
