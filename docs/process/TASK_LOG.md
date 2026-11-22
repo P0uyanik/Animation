@@ -222,3 +222,5 @@ Tasks from now on are numbered T-001, T-002, …, and pass through the states in
 | T-200 | [Rendering] WinError 4551 bake block on the owner's PC + T-197 motion checks (Codex) | assigned 2026-11-22 (owner ~17:15 CET, relay) | — | — |
 | T-201 | [Rendering] opt-in preview_eevee render profile (owner ~17:15 CET) | queued: after T-199 merges (render_profiles.json) | — | — |
 | T-202 | [Characters] Face close-up sheets of the released versions vs references, no character change (Sonnet) | started 2026-11-22 (owner ~17:45 CET, priority) | t-202-claude-face-sheets | docs/evaluation/characters/T-202/ |
+| T-200 | [Rendering] WinError 4551 diagnosis (Codex, docs) | READY 2026-11-22: Smart App Control blocks the unsigned local plush-render.exe; option: bake in cloud/CI, render EEVEE locally (owner to choose) | t-200-codex-local-preview | docs/evaluation/rendering/T-200/ |
+| T-203 | [Gate] Rename the T-182 TESTS manifests (case collision with tests/ on Windows: pipeline/clips, tools/cleanup, tools/motion_checks) (Sonnet) | started 2026-11-22 (Codex T-200 finding) | t-203-claude-tests-manifest-rename | docs/evaluation/process/T-203/ |
