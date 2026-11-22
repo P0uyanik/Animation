@@ -183,7 +183,7 @@ tv, tf = box((-0.1, -0.1, -0.60), (0.1, 0.1, -0.50))
 torso = skinned("body_torso", tv, tf, {"torso": (range(8), [1.0] * 8)})
 # fold: an open plate behind the cap at rest (x = -0.15); the "fold" bone moves it to x = -0.075 in frame 1
 fv = [(-0.15, -0.1, 1.02), (-0.15, 0.1, 1.02), (-0.15, 0.1, 1.12), (-0.15, -0.1, 1.12)]
-fold = skinned("body_fold", fv, [(0, 1, 2, 3)], {"fold": (range(4), [1.0] * 4)})
+fold = skinned("body_fold", fv, [(0, 3, 2, 1)], {"fold": (range(4), [1.0] * 4)})  # normal -x: outwards, like skin
 # lock tube: rings of 8 vertices, radius 20 mm, along the chain; weights on the bone of the ring's segment
 rings, F, wts = [], [], {n: ([], []) for n in names}
 for r in range(17):

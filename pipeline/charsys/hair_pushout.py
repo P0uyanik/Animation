@@ -47,8 +47,9 @@ import numpy as np
 
 SKIP = ["eye*", "brow*", "lash*", "lid*", "mouth*", "glasses*"]
 DEFAULTS = {"margin_m": 0.002, "core_radius_m": 0.012, "vertex_margin_m": 0.0015, "static_reach_m": 0.03,
-            "characters": "all", "stages": ["chains", "vertices"], "enclosure": True, "exit_test": True,
-            "lock_volume": True}
+            "characters": "all", "stages": ["chains", "vertices"], "enclosure": True, "exit_test": False,
+            "lock_volume": False}
+# exit_test / lock_volume: off by default, both make visible frame-to-frame pops (README, e912 s020 f105-111)
 MAX_TRIES = 3
 EPS = 1e-5
 CHAIN_MIN_WEIGHT = 0.05  # a vertex with less than this summed DYN weight is static
@@ -716,9 +717,19 @@ class PushOut:
             sets.append(cs)
         group = _clamp_group(float(self.spec["vertex_margin_m"]), bool(self.spec["exit_test"]))
         for n in self.names:
+            oc = bpy.data.collections.new(f"{PREFIX}.others.{n}")
+            for m_ in sorted(self.figures):
+                if m_ != n:
+                    for o in self.figures[m_]:
+                        if o.name.startswith("garment.collider.body_skin"):
+                            oc.objects.link(o)
+            os_ = bpy.data.objects.new(f"{PREFIX}.others_set.{n}", bpy.data.meshes.new(f"{PREFIX}.others_set.{n}"))
+            self.scene.collection.objects.link(os_)
+            os_.hide_render = True
+            os_.modifiers.new("collect", "NODES").node_group = _collector_group(oc)
             for o, px in self.states[n].get("proxies", []):
                 m = o.modifiers.new(f"{PREFIX}", "NODES")
-                m.node_group = _bind_group(group, px, sets[0], sets[1], o.name)
+                m.node_group = _bind_group(group, px, sets[0], sets[1], o.name, os_)
         self.report["vertex_stage_installed"] = True
 
 
@@ -747,6 +758,7 @@ def _clamp_group(margin, exit_test=True):
     I.new_socket("Anchors", in_out="INPUT", socket_type="NodeSocketGeometry")
     I.new_socket("Colliders", in_out="INPUT", socket_type="NodeSocketGeometry")
     I.new_socket("Closed", in_out="INPUT", socket_type="NodeSocketGeometry")
+    I.new_socket("Others", in_out="INPUT", socket_type="NodeSocketGeometry")
     I.new_socket("Self", in_out="INPUT", socket_type="NodeSocketMatrix")
     I.new_socket("Anchor Space", in_out="INPUT", socket_type="NodeSocketMatrix")
     I.new_socket("Geometry", in_out="OUTPUT", socket_type="NodeSocketGeometry")
@@ -801,9 +813,33 @@ def _clamp_group(margin, exit_test=True):
     L.new(inv.outputs[0], tl.inputs["Transform"])
     # second ray: from the (clamped) vertex towards its anchor; a first hit on a BACK face means the vertex is inside
     # that solid (its anchor got inside something at this frame): it leaves through that face, `margin` beyond
+    # anchor inside another character (the first hit of its ray on the other characters' unmasked skins is a back
+    # face: a neighbour's head over the hair's anchor): squeezed, not clamped (clamping would only move the vertex next
+    # to its anchor, still inside)
+    rc4 = N.new("GeometryNodeRaycast")
+    L.new(gi.outputs["Others"], rc4.inputs["Target Geometry"])
+    L.new(ta.outputs[0], rc4.inputs["Source Position"])
+    L.new(nd.outputs[0], rc4.inputs["Ray Direction"])
+    L.new(ln.outputs["Value"], rc4.inputs["Ray Length"])
+    dot4 = N.new("ShaderNodeVectorMath")
+    dot4.operation = "DOT_PRODUCT"
+    L.new(rc4.outputs["Hit Normal"], dot4.inputs[0])
+    L.new(nd.outputs[0], dot4.inputs[1])
+    back4 = N.new("FunctionNodeCompare")
+    back4.data_type, back4.operation = "FLOAT", "GREATER_THAN"
+    L.new(dot4.outputs["Value"], back4.inputs[0])
+    back4.inputs[1].default_value = 0.0
+    sq = N.new("FunctionNodeBooleanMath")
+    sq.operation = "AND"
+    L.new(rc4.outputs["Is Hit"], sq.inputs[0])
+    L.new(back4.outputs[0], sq.inputs[1])
+    clamp = N.new("FunctionNodeBooleanMath")
+    clamp.operation = "NIMPLY"  # hit and not squeezed
+    L.new(rc.outputs["Is Hit"], clamp.inputs[0])
+    L.new(sq.outputs[0], clamp.inputs[1])
     sw1 = N.new("GeometryNodeSwitch")
     sw1.input_type = "VECTOR"
-    L.new(rc.outputs["Is Hit"], sw1.inputs["Switch"])
+    L.new(clamp.outputs[0], sw1.inputs["Switch"])
     L.new(tw.outputs[0], sw1.inputs["False"])
     L.new(ad.outputs[0], sw1.inputs["True"])
     out = N.new("ShaderNodeVectorMath")
@@ -887,7 +923,7 @@ def _clamp_group(margin, exit_test=True):
     L.new(ex.outputs[0], sw2.inputs["True"])
     any_ = N.new("FunctionNodeBooleanMath")
     any_.operation = "OR"
-    L.new(rc.outputs["Is Hit"], any_.inputs[0])
+    L.new(clamp.outputs[0], any_.inputs[0])
     if exit_test:
         L.new(sw2.outputs[0], tl.inputs["Vector"])
         L.new(a2.outputs[0], any_.inputs[1])
@@ -901,7 +937,7 @@ def _clamp_group(margin, exit_test=True):
     return ng
 
 
-def _bind_group(clamp, proxy, collider_set, closed_set, name):
+def _bind_group(clamp, proxy, collider_set, closed_set, name, others_set):
     """Per hair object: wires its proxy, the collider set and the object transforms into the shared clamp."""
     import bpy
     ng = bpy.data.node_groups.new(f"{PREFIX}.{name}", "GeometryNodeTree")
@@ -928,6 +964,10 @@ def _bind_group(clamp, proxy, collider_set, closed_set, name):
     ocl.transform_space = "ORIGINAL"
     ocl.inputs["Object"].default_value = closed_set
     L.new(ocl.outputs["Geometry"], g.inputs["Closed"])
+    oo = N.new("GeometryNodeObjectInfo")
+    oo.transform_space = "ORIGINAL"
+    oo.inputs["Object"].default_value = others_set
+    L.new(oo.outputs["Geometry"], g.inputs["Others"])
     L.new(oself.outputs["Transform"], g.inputs["Self"])
     L.new(op.outputs["Transform"], g.inputs["Anchor Space"])
     L.new(g.outputs[0], go.inputs[0])
