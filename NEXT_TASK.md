@@ -6,6 +6,8 @@ asset changes; never change Windows security/system settings; don't modify/delet
 1. Branch `t-208-codex-eevee-shots` from the latest `origin/main` in a new worktree on C: (never write on D:).
    Write ONLY `docs/evaluation/rendering/T-208/**`. Package zips/renders stay OUTSIDE the repo (e.g. C:/AnimationWT/t208-data).
 2. Get the bake packages (GitHub Actions artifact "bake-package", private repo → needs auth):
+   - Run IDs (liaison note ~18:15Z): e912 s010 = 45052327444, e912 s020 = 45053708309, e912 s030 = 45053710885
+     (all artifacts are named "bake-package"; each zip's MANIFEST.json names its shot — verify it).
    - e912 s010: run 45052327444 (exists). e912 s020 and s030: the Supervisor triggers "Bake package" runs before you
      start — find the newest successful run per shot via the API (workflow "Bake package", check its inputs/artifact
      name) or the run IDs in RELAY_LOG/NEXT_TASK notes if added.
