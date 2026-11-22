@@ -1147,7 +1147,9 @@ Result<void> SceneEvaluator::compileActionsBody() {
         });
         if (peak > 1.0f) {
           for (const auto& [f, p] : arc) key(*gen, track, f, p, Interp::Linear);
-          std::erase_if(gen->tracks[prefix + "continuity.lookArc"].keys, [&](const Key& k) { return k.frame >= start - 1e-9 && k.frame <= start + 16 + 1e-9; });
+          auto& marks = gen->tracks[prefix + "continuity.lookArc"].keys;
+          std::erase_if(marks, [&](const Key& k) { return k.frame >= start - 1e-9 && k.frame <= start + 16 + 1e-9; });
+          if (marks.empty() || marks.front().frame > start) key(*gen, prefix + "continuity.lookArc", start - 1, vec3(0), Interp::Step);
           key(*gen, prefix + "continuity.lookArc", start, vec3(1), Interp::Step);
           key(*gen, prefix + "continuity.lookArc", start + 16, vec3(0), Interp::Step);
         }

@@ -35,25 +35,28 @@ Supervisor BEFORE re-recording. Hand-only sub-mm / sub-degree side effects: deci
 - Full suite: 284 / 285 pass; the failure is `test_bake_golden`: 3 interaction goldens change hash (clip + bake):
   `content/scenes/eval/exchange`, `e907_exchange/s010`, `e907_exchange/s010_calibrated`. NOT re-recorded.
 
+## Session 2 (2026-11-22)
+
+- Merged origin/main (no engine changes there). Golden delta measured (README "Goldens"): the 3 round-1 deltas were
+  the look arc + lag direction firing on a shift under the limit -> both gated by the measured head-chain peak (arc
+  keys + `<who>/continuity.lookArc` marker only when over; the lag direction only on marked frames). All 6 content
+  goldens bit-identical.
+- Orient blend pass (interaction.cpp, last block of finishInteractions; scene.h not touched): s020 4 -> 0. It changes
+  `test_interaction/visibleGrip/boy` (a 147 deg flip at f11 -> peak 25 deg / f): numbers sent, NOT re-recorded.
+- Bug caught by the new test: the marker track held 1 before its first key (fixed: a 0 key at start - 1).
+- tests/test_motion_continuity.cpp (5 cases, pass; built locally: `g++ ... tests/test_main.cpp
+  tests/test_motion_continuity.cpp`), tools/motion_checks/tests/test_continuity.py (registered `run` in
+  tools/motion_checks/TESTS), continuity.py on bakes: before 17 / 9 / 0, after 0 / 0 / 0.
+- Asked the Supervisor: (1) re-record visibleGrip/boy? (2) the shipped-scene per-frame test: content goldens still
+  have grasp / release finger curls 25-32 deg / f (limit 25) and e901 boy f223 hand.R 81 mm at 30 fps (1.01 x):
+  (a) fix the curls (golden change) or (b) recorded baseline rows. Recommended (b).
+
 ## Next (in order)
 
-1. Golden delta: build `0cb0053` engine in a second build dir (`git worktree add ../anim-base 0cb0053`, `cmake
-   --preset fast-dev` there), write `golden_delta_t198.cpp` (as T-190's golden_delta.cpp: per scene, per frame, per
-   bone the world turn deg / travel mm between the two builds, using the test packages like test_bake_golden's
-   contentScene) and find which fix moves them (likely the look arc: those scenes have looks between characters, or
-   the ikRamps loop). Send the Supervisor per golden: frames, max deg / mm, bones, cause. Wait.
-2. Orient flip (s020 hands): plan the blend at compile time (interaction.cpp, where the orient keys are written):
-   for frames start .. weight-full, key the orient track per frame with the blended world orientation, the
-   quaternion hemisphere kept from the previous frame (sticky), weight 1 from the ramp start (no shortest-path choice
-   at evaluation). Only where the clip hand and the planned orientation are > ~150 deg apart in the ramp (else keys
-   as before). Then re-check with continuity_t198.
-3. `tests/test_motion_continuity.cpp`: unit tests (touch end < contact + 10 not inverted; ramp lengthened under the
-   limit; look arc keys present for a swing across the head and absent otherwise; laggedLookTarget identity for r >=
-   0.75; assist identical on a converging case; exemptions: camera step = cut, `"fast"` action range) + the per-frame
-   speed-limit test over every content scene / golden test scene with the test packages: 0 unexempt snaps.
-4. `tools/motion_checks/continuity.py`: written, NOT yet run on a bake (bake e912 s010/s020/s030 with
-   `plush-render <resolved> --bake bake.json`, compare with continuity_t198); add a test under tools/motion_checks/tests.
-5. README before/after table (bakes), sheet frames if the Supervisor wants pictures, `tools/ready.py`, READY.
+1. On the Supervisor's answers: re-record visibleGrip/boy if approved (`PLUSH_GOLDEN_RECORD`-style per
+   test_bake_golden.cpp header), add the shipped-scene test case per (a) / (b).
+2. Full suite, tools/ready.py, READY (guarded paths: engine/anim/animation.cpp, engine/scene/actions.cpp,
+   engine/scene/interaction.cpp, tools/motion_checks/TESTS line added, golden if re-recorded).
 
 ## Environment notes
 
