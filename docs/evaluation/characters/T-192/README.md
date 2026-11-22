@@ -48,3 +48,21 @@ Source: `plush-render` bake of e912 s010/s020/s030 on `integration/t-187` (44f9f
 ## Render crop
 
 `boy_s020_f121_122_125_126_crop.png` (Blink 0, 0.69, 0.98, 0.15): head turned and pitched down, the far eye is covered by the fringe; the near eye closes and opens.
+
+## Close-ups (s010 front wide, 8 spp, 640x360 source)
+
+`boy_s010_f42_f44_f46_eyes.png`: scene frames 42 (Blink 0.01, open), 44 (1.0), 46 (0.68). Both lids close and open together
+(f44 both shut, f46 both arcs part-open). `s010_f42_f44_s030_f80_f82_overview.png`: the same frames plus s030 f80 / f82 (side-on).
+
+## Side finding (not a blink): the eyes are not parallel on near targets
+
+At f42 the left eye shows its iris and the right eye reads as all white. The baked eye bones (`eye.L` vs `eye.R`, skin rotations)
+differ by 13-16 degrees in yaw on every visible frame of s010 (look at the sheet / the girl): the eyes converge on a near
+point. This is gaze, not blink, and not in this task's write-set (engine/anim/animation.* is T-190, gaze limits live elsewhere);
+reported to the supervisor as the other candidate for "the eyes look out of sync".
+
+## Guard test
+
+`tests/test_blink_schedule.cpp`: "blink symmetry: automatic blinks close both eyes together (T-192)" (every frame of a 60 s run,
+schedule off and on: Blink.L == Blink.R, LeftEyeClosed == RightEyeClosed, EyeSquint.L == EyeSquint.R, and the automatic blink
+leaves Blink.L / Blink.R at 0) and "a deliberate wink is still possible" (an explicit `who/expr.Blink.R` track gives R = 1, L = 0).
