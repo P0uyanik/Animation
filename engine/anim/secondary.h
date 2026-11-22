@@ -57,6 +57,7 @@ struct ChainContact {
   float friction = 40.0f;          // 1/s: decay of the sliding speed of a joint in contact (rest only)
   float maxSwing = 12.0f;          // rad/s: how much faster than its kinematic direction a segment may turn (rest only; 0 = no cap)
   bool carry = false;              // rest + max_swing: the cap yields to the speed of the collider that pushes the joint
+  bool clearTargets = false;       // rest: a joint's spring target is taken out of the chain's colliders first
   float locks = 0.0f;              // > 0: joints keep off the joints of the other chains with the key by locks x (sum of the two radii)
 };
 
@@ -172,6 +173,7 @@ class SpringChainSolver {
     float friction = 0, maxSwing = 0;
     float locks = 0;  // contact.locks
     bool carry = false;  // contact.carry
+    bool clearTargets = false;  // contact.clear_targets
   };
   struct Collider {
     DynamicsCollider::Kind kind;
@@ -186,6 +188,7 @@ class SpringChainSolver {
     std::vector<vec3> ca, cb;    // collider ends at the end of the last step (only kept for contact.rest chains)
     std::vector<char> hit;       // per joint: a collider pushed it in the last step (only kept for contact.rest chains)
     std::vector<mat4> ext;       // the external frames of the last step (only with external colliders)
+    bool fresh = false;          // the first step from the preroll's start (contact.clear_targets starts outside)
   };
   void targets(const std::vector<mat4>& g, std::vector<vec3>& xk) const;
   void step(State& s, double dt, const std::vector<mat4>& g, const std::vector<mat4>& ext) const;

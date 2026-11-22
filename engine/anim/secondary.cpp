@@ -210,7 +210,7 @@ Result<void> readContact(const Json& c, SpringChain& ch, const std::string& wher
   if (it == c.end() || it->is_null()) return {};
   if (!it->is_object()) return fail(where + ": contact must be an object");
   for (auto& [key, _] : it->items())
-    if (key != "solid" && key != "segments" && key != "anchored_gravity" && key != "radii" && key != "rest" && key != "friction" && key != "max_swing" && key != "locks" && key != "carry")
+    if (key != "solid" && key != "segments" && key != "anchored_gravity" && key != "radii" && key != "rest" && key != "friction" && key != "max_swing" && key != "locks" && key != "carry" && key != "clear_targets")
       return fail(where + ": contact has unknown key " + key);
   ch.contact.set = true;
   if (auto so = it->find("solid"); so != it->end()) {
@@ -239,6 +239,7 @@ Result<void> readContact(const Json& c, SpringChain& ch, const std::string& wher
     ch.contact.maxSwing = ms->get<float>();
   }
   ch.contact.carry = readBool(*it, "carry", false);
+  ch.contact.clearTargets = readBool(*it, "clear_targets", false);
   if (auto lk = it->find("locks"); lk != it->end()) {
     if (!lk->is_number() || lk->get<float>() < 0 || lk->get<float>() > 1) return fail(where + ": contact.locks must be a number in [0, 1]");
     ch.contact.locks = lk->get<float>();
@@ -450,6 +451,7 @@ Json dynamicsToJson(const DynamicsSpec& s) {
       }
       if (c.contact.locks > 0) cj["contact"]["locks"] = c.contact.locks;
       if (c.contact.carry) cj["contact"]["carry"] = true;
+      if (c.contact.clearTargets) cj["contact"]["clear_targets"] = true;
     }
     chains.push_back(cj);
   }
@@ -602,6 +604,7 @@ Result<std::shared_ptr<SpringChainSolver>> SpringChainSolver::create(const Skele
         ch.friction = sc.contact.friction;
         ch.maxSwing = sc.contact.maxSwing;
         ch.carry = sc.contact.carry;
+        ch.clearTargets = sc.contact.clearTargets;
         ch.solid.assign(ch.colliders.size(), 1);
         s->keepShapes_ = true;
       }
@@ -722,6 +725,48 @@ void SpringChainSolver::step(State& s, double dtd, const std::vector<mat4>& g, c
     std::vector<char> touched(contact ? n : 0, 0);
     std::vector<Hit> hits(ch.restContact ? n : 0);
     const float segMin = kSegmentMinParam;
+    // contact.clear_targets (T-183 round 3, opt-in; contact.rest chains): the spring pulls each joint towards its target
+    // taken out of the chain's colliders, the preroll starts there, and the max_swing cap yields to a way out (below).
+    // An anchored target can lie inside the body: the head turned 54 degrees against the chest anchor puts a side
+    // lock's target inside the upper arm (e912 s030 f1-10). Started there, the projection finds a place outside, the cap
+    // turns the lock back towards its direction inside, and projection and cap hold it 30 mm in the arm. Only the
+    // spring term uses the cleared target; the target speed does not.
+    std::vector<vec3> tgt;
+    if (ch.restContact && ch.clearTargets) {
+      tgt.assign(xk.begin() + std::ptrdiff_t(o), xk.begin() + std::ptrdiff_t(o + n));
+      vec3 mid(0);
+      for (size_t k = 0; k < n; ++k) mid += tgt[k];
+      mid /= float(n);
+      float bound = 0;
+      for (size_t k = 0; k < n; ++k) bound = std::max(bound, glm::distance(tgt[k], mid) + (ch.radii.empty() ? ch.p.radius : ch.radii[k]));
+      std::vector<size_t> near;
+      for (size_t cn = 0; cn < ch.colliders.size(); ++cn) {
+        const Shape& sh = shapes[size_t(ch.colliders[cn])];
+        if (!sh.off && glm::distance(mid, nearestOn(sh, mid)) - sh.r <= bound) near.push_back(cn);
+      }
+      for (size_t k = 1; k < n; ++k) {
+        const float rk = ch.radii.empty() ? ch.p.radius : ch.radii[k];
+        for (int pass = 0; pass < kColliderPasses; ++pass) {
+          bool pushed = false;
+          for (const size_t cn : near) {
+            const Shape& sh = shapes[size_t(ch.colliders[cn])];
+            const float want = sh.r + rk;
+            const vec3 q = nearestOn(sh, tgt[k]);
+            const vec3 off = tgt[k] - q;
+            const float dist = glm::length(off);
+            if (dist >= want - (pass > 0 ? kColliderTolerance : 0.0f)) continue;
+            const vec3 nrm = dist > 1e-7f ? off / dist : glm::normalize(tgt[k] - tgt[k - 1] + vec3(0, 1e-6f, 0));
+            tgt[k] = q + nrm * want;
+            pushed = true;
+          }
+          if (!pushed) break;
+        }
+      }
+      // the preroll starts at the cleared targets: started at the raw ones (inside the arm), the max_swing cap turns
+      // each step's way out back towards the joint's direction inside, and the lock stays there
+      if (s.fresh)
+        for (size_t k = 1; k < n; ++k) s.x[o + k] = tgt[k];
+    }
     p[0] = xk[o];
     for (size_t k = 1; k < n; ++k) {
       const size_t i = o + k;
@@ -730,7 +775,7 @@ void SpringChainSolver::step(State& s, double dtd, const std::vector<mat4>& g, c
       const vec3 vk = (xk[i] - s.xk[i]) / dt;
       // contact.anchored_gravity: a joint whose target the anchor bone carries already hangs where that bone puts it
       const vec3 gk = ch.anchoredGravity && ch.anchor >= 0 ? gEff * (1.0f - ch.anchorW[k]) : gEff;
-      const vec3 a = stiff * (xk[i] - s.x[i]) + ch.p.damping * (vk - s.v[i]) - ch.p.drag * s.v[i] + gk;
+      const vec3 a = stiff * ((tgt.empty() ? xk[i] : tgt[k]) - s.x[i]) + ch.p.damping * (vk - s.v[i]) - ch.p.drag * s.v[i] + gk;
       const vec3 v = s.v[i] + a * dt;
       p[k] = s.x[i] + v * dt;
       if (contact) speedCap[k] = std::max(glm::length(v), glm::length(vk));
@@ -941,7 +986,23 @@ void SpringChainSolver::step(State& s, double dtd, const std::vector<mat4>& g, c
         const float cap = ch.carry && hits[k].on ? maxAngle + glm::length(hits[k].vc - (xk[i] - s.xk[i]) / dt) * dt / ch.length[k - 1] : maxAngle;
         if (ang > cap) {
           const vec3 axis = glm::cross(carried, dir);
+          const vec3 uncapped = dir;
           dir = glm::length(axis) > 1e-9f ? glm::angleAxis(cap, glm::normalize(axis)) * carried : carried;
+          if (ch.clearTargets) {
+            // contact.clear_targets: the cap does not hold a joint inside a collider when the uncapped direction has
+            // it outside every collider of the chain (a lock squeezed between two colliders has no such place, and
+            // the cap holds as before)
+            const float rk = ch.radii.empty() ? ch.p.radius : ch.radii[k];
+            const auto depth = [&](const vec3& x) {
+              float d = 0;
+              for (const size_t cn : active) {
+                const Shape& sh = shapes[size_t(ch.colliders[cn])];
+                d = std::max(d, sh.r + rk - glm::distance(x, nearestOn(sh, x)));
+              }
+              return d;
+            };
+            if (depth(p[k - 1] + uncapped * ch.length[k - 1]) <= kColliderTolerance && depth(p[k - 1] + dir * ch.length[k - 1]) > kColliderTolerance) dir = uncapped;
+          }
         }
         p[k] = p[k - 1] + dir * ch.length[k - 1];
       }
@@ -966,6 +1027,7 @@ void SpringChainSolver::step(State& s, double dtd, const std::vector<mat4>& g, c
     }
   }
   s.xk = std::move(xk);
+  s.fresh = false;
   if (!externals_.empty()) s.ext = ext;
   if (keepShapes_) {
     s.ca.resize(shapes.size());
@@ -1058,6 +1120,7 @@ void SpringChainSolver::apply(double frame, double frameStart, double fps, const
     targets(g0, s.xk);
     s.x = s.xk;
     s.v.assign(joints_, vec3(0));
+    s.fresh = true;
     const long long pre = (long long)std::llround(preroll_ * hz_);
     const std::vector<mat4> e0 = extAt(frameStart);
     for (long long k = 0; k < pre; ++k) step(s, h, g0, e0);

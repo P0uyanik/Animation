@@ -93,6 +93,7 @@ A chain may carry a `"contact"` block. Without it the chain takes exactly the pa
 | `friction` | with `rest`: sliding speed lost in contact, 1/s. | 40 |
 | `max_swing` | with `rest`: a segment turns at most this much faster (rad/s) than its kinematic direction, so a lock squeezed between two colliders moves steadily instead of snapping. 0 = no bound. | 12 |
 | `carry` | with `rest` and `max_swing` (T-183 round 3): the `max_swing` bound yields to a collider that moves: a pushed joint may also turn as fast as that collider moves relative to the joint's kinematic target. A forearm that sweeps a lock across the chest within a frame then takes the lock along instead of leaving it inside the arm or the chest for that frame; a still collider adds nothing, so a squeezed lock stays steady. | false |
+| `clear_targets` | with `rest` (T-183 round 3): a joint's spring target is first taken out of the chain's colliders (pushed to the full radius, as a joint), the preroll starts the chain at those targets, and the `max_swing` bound does not hold a joint inside a collider when the uncapped direction has it outside every collider of the chain (a lock squeezed between two colliders has no such place, and the bound holds as before). For an anchored target that lies inside the body: e912 s030 f1-10, the head turned 54 degrees against the chest anchor put a side lock's target inside the upper arm; started there, each step's way out was turned back by the bound and the lock stayed 30 mm inside the arm (7.7 mm through the blouse). Off = bit-identical. | false |
 | `locks` | lock against lock (T-183 round 3): a joint keeps off the joints of the other chains that carry the key by `locks` x (the two joints' radii), never by more than the two kinematic joints are apart (locks that lie together stay together). Joints only, not segments. The chains are solved in their fixed order, half the overlap is taken back per step: deterministic. A number in [0, 1]. | 0 (off) |
 
 - A push by any collider of a contact chain is inelastic: the pushed joint keeps at most the speed it had before the
@@ -130,7 +131,7 @@ Groom side (`spec.hair`, groom/5 module, `pipeline/charsys/groom_contact.py`), b
     by the joint's rest clearance to the colliders on the chain's root bone (so a lock that starts on the head does
     not collide with the head at rest). The root joint takes the next joint's radius, capped the same way: with a
     root radius of 0 the first segment was a thin cone and the short side locks turned 5-7 mm into the ears.
-  - `"rest": true | {"friction", "max_swing", "carry"}`: the chains get resting contact against every collider.
+  - `"rest": true | {"friction", "max_swing", "carry", "clear_targets"}`: the chains get resting contact against every collider.
 - `hair.ear_keepout`: `{"objects": ["ear.*"], "margin_m", "smooth", "structures"}`. Hair surface vertices inside a
   keep-out mesh are moved out along the head's front/back axis (the shorter way) before the fibres are grown, and the
   move is relaxed over the neighbours. Vertex counts and order do not change.

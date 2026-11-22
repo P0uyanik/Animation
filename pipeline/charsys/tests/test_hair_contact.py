@@ -209,6 +209,9 @@ def main():
     check("round 2: rest may be true", CT.validate(hair(None, {"contact": dict(round2(), rest=True)})) == [])
     check("round 3: rest takes carry (a boolean)",
           CT.validate(hair(None, {"contact": dict(round2(), rest={"friction": 40, "max_swing": 12, "carry": True})})) == [])
+    check("round 3: rest takes clear_targets (a boolean)",
+          CT.validate(hair(None, {"contact": dict(round2(), rest={"friction": 40, "max_swing": 12, "carry": True,
+                                                                   "clear_targets": True})})) == [])
     check("round 2: store passes the keys on (the names of what bind will do)",
           set(CT.store(hair(None, {"contact": round2()}), [{}])) >= {"colliders", "radii", "rest"})
 
@@ -226,6 +229,7 @@ def main():
     bad("rest as a number", lambda ct: ct.update(rest=1.5))
     bad("rest friction negative", lambda ct: ct.update(rest={"friction": -1}))
     bad("rest carry not a boolean", lambda ct: ct.update(rest={"carry": 1}))
+    bad("rest clear_targets not a boolean", lambda ct: ct.update(rest={"clear_targets": "yes"}))
     bad("figure without a list", lambda ct: ct.update(figure={"exclude": "WGT-*"}))
     # chain radii: a tube of points 20 mm round a straight chain, a bulge of 35 mm at joint 2
     tube = []

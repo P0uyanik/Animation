@@ -1454,3 +1454,77 @@ TEST_CASE("secondary contact: a scene collider on the neighbour's bone keeps the
   CHECK_FALSE(build(onProp, otherAt, &err));
   CHECK(err.find("cup") != std::string::npos);
 }
+
+// ---- T-183 round 3: contact.clear_targets (targets outside the colliders; the max_swing cap yields to a way out) ----
+
+TEST_CASE("secondary contact: clear_targets keeps a capped resting chain out of a collider; absent = bit-identical") {
+  // e912 s030 f1-10: the chest anchor put a side lock's target inside the upper arm; started there, the max_swing cap
+  // turned every way out back inside. Here (1) the arm's sphere arrives on the lock within a frame, and max_swing alone
+  // leaves the lock inside it for several frames; (2) the sphere is on the targets from the start, without a preroll.
+  const vec3 target(0, 0.90f, -0.12f);
+  const Skeleton sk = armSkeleton(target);
+  const double fps = 24;
+  const float r = 0.03f, pr = 0.005f, cap = 3.0f;
+  float inside[2][2] = {{0, 0}, {0, 0}}, end[2][2] = {{0, 0}, {0, 0}};
+  int frames[2][2] = {{0, 0}, {0, 0}};
+  bool sameBefore = true;
+  std::vector<std::vector<mat4>> first;
+  for (int mode = 0; mode < 2; ++mode) {
+    for (int on = 0; on < 2; ++on) {
+      auto drv = [&sk, mode](double frame) {
+        Pose p = restPose(sk);
+        const double t = mode == 0 ? std::clamp(frame - 12.0, 0.0, 1.0) : 1.0;
+        p.local[6] = glm::angleAxis(glm::radians(float(-90.0 * t)), vec3(0, 1, 0));
+        return boneGlobals(sk, p, mat4(1));
+      };
+      DynamicsSpec spec = armSpec(target, r);
+      auto& ct = spec.chains[0].contact;
+      ct.set = ct.segments = ct.rest = true;
+      ct.maxSwing = cap;
+      ct.clearTargets = on != 0;
+      if (mode == 1) spec.prerollSec = 0;
+      if (on) {
+        CHECK(dynamicsToJson(spec)["chains"][0]["contact"]["clear_targets"] == true);
+        auto back = dynamicsFromJson(dynamicsToJson(spec));
+        REQUIRE(back.has_value());
+        CHECK(back->chains[0].contact.clearTargets);
+      } else {
+        CHECK_FALSE(dynamicsToJson(spec)["chains"][0]["contact"].contains("clear_targets"));
+      }
+      auto s = SpringChainSolver::create(sk, spec);
+      REQUIRE(s.has_value());
+      for (int f = 1; f <= 72; ++f) {
+        auto g = solve(**s, drv, f, fps);
+        if (mode == 0 && f <= 12) {  // targets outside, nothing capped: the key changes nothing, bit for bit
+          if (!on) first.push_back(g);
+          else for (size_t k = 0; k < g.size(); ++k) sameBefore = sameBefore && g[k] == first[size_t(f - 1)][k];
+        }
+        const vec3 c = vec3(g[6] * vec4(armCentreRest(target) - sk.bones[6].head, 1));
+        vec3 x[5];
+        for (size_t k = 0; k < 4; ++k) x[k] = pivot(g, 2 + k);
+        x[4] = tipOf(g, sk, 5, kTipRest);
+        float in = 0;
+        for (size_t k = 1; k < 5; ++k) in = std::max(in, r + pr - glm::distance(x[k], c));
+        // without a preroll frame 1 is the kinematic pose (nothing solved yet), with the key or without it
+        if (mode == 1 && f == 1) continue;
+        inside[mode][on] = std::max(inside[mode][on], in);
+        if (in > 1e-3f) ++frames[mode][on];
+        if (f == 72) {
+          end[mode][on] = 1;
+          for (size_t k = 1; k < 5; ++k) end[mode][on] = std::min(end[mode][on], glm::distance(x[k], c));
+        }
+      }
+    }
+  }
+  MESSAGE("joint inside the sphere, arriving: " << inside[0][0] * 1000 << " mm (" << frames[0][0] << " frames over 1 mm) without, "
+          << inside[0][1] * 1000 << " mm (" << frames[0][1] << ") with clear_targets; on the targets from the start (frames 2-72): "
+          << inside[1][0] * 1000 << " mm (" << frames[1][0] << ") without, " << inside[1][1] * 1000 << " mm (" << frames[1][1] << ") with");
+  CHECK(sameBefore);
+  CHECK(inside[0][0] > 0.01f);  // capped: the lock is left inside the sphere
+  CHECK(frames[0][0] >= 2);
+  CHECK(inside[0][1] < 1e-3f);  // the cap yields to the way out
+  CHECK(frames[1][0] >= 2);
+  CHECK(inside[1][1] < 1e-3f);
+  for (int m = 0; m < 2; ++m)
+    for (int o = 0; o < 2; ++o) CHECK(end[m][o] >= r + pr - 1e-4f);
+}

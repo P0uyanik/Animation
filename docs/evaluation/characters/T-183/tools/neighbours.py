@@ -38,7 +38,7 @@ REGIONS = [
      "spacing_m": 0.012, "radius_m": 0.02, "min_radius_m": 0.004},
     {"name": "body", "bones": ["*"], "spacing_m": 0.024, "radius_m": 0.045, "min_radius_m": 0.008},
 ]
-PAD = 0.0025
+PAD = 0.004  # round 3 session 9: 0.0025 left 2.2 mm / 2 vertices of e912 s010 f12-16 in the hoodie
 
 
 def _solid(ch):
