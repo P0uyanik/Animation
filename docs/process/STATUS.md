@@ -1,12 +1,10 @@
 # Status board
 
 Updated by the Supervisor in the same commit as every merge or dispatch. Sources: [TASK_LOG](TASK_LOG.md),
-[OWNERSHIP](OWNERSHIP.md), [OWNER_DECISIONS](OWNER_DECISIONS.md) (2026-11-21). As of 2026-11-21 ~20:20Z (R5 Supervisor
-session_01NPjxeLwrBZTHQcvtcEtsUk). Owner decisions ~19:20 CET applied: T-175 r2, T-184, T-171 r3 merged (main 554e403,
-gate 44943332085 green). Running: T-183 r2 hair vs body/garment/arm (session_01NPjxeMdpkMe4aHjXTxbksg, design approved),
-T-185 adopt r3 thumb-up grasp in shots (session_01NPjxeK8rfLdXbfZnTGmDMW). Floor-offset global fix: no. P13 LIGHT rule
-adopted. Rows below older than this line are history (R4); TASK_LOG is authoritative.
-Session cap 7. Owner liaison: session_01NPjxeKamtbdzi3YwrgsWXU.
+[OWNERSHIP](OWNERSHIP.md), [OWNER_DECISIONS](OWNER_DECISIONS.md). As of 2026-11-22 ~00:45Z (R5 Supervisor
+session_01NPjxeLwrBZTHQcvtcEtsUk; handover: SUPERVISOR_HANDOVER_R6.md). Merged in R5: T-175 r2, T-184, T-171 r3, T-185,
+T-186, T-188, T-189 (main e09542f). Running: T-183 r2 (CHECKPOINT with owner), T-187 paper-boat scene (rendering).
+Rows below this line are R4 history; TASK_LOG is authoritative. Session cap 7. Owner liaison: session_01NPjxeKamtbdzi3YwrgsWXU.
 
 ## Character look
 | Task | Model | State | ETA | Branch |
