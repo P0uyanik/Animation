@@ -61,8 +61,10 @@ fix, e.g. two pinned hands' forearms, is reported, not hidden).
 Not in this task (follow-ups if the after-numbers need them): an arm-vs-other-body elbow swing (touches beside a
 neighbour's forearm), walk spacing (speed / start offset is staging).
 
-**Opt-in vs default:** opt-in — scene key `"interaction": {"bodyClearance": true, "bodyClearanceMm": 10,
-"bodyLeanMaxDeg": 12}`. Off: no track, no pose change, **no golden moves**. Turning it on by default would move every
+**Opt-in vs default:** opt-in, per character, on the existing collision action (T-047 / T-082; parsed in
+actions.cpp, so `scene.{h,cpp}` — T-183's claim — is not touched): `{"type": "collision", "character": "auburn",
+"bodyClearance": true, "bodyClearanceMm": 10, "bodyLeanMaxDeg": 12}`. A pair is resolved when at least one of the two
+opted in; only the characters that opted in lean (sharing the angle). Off: no track, no pose change, **no golden moves**. Turning it on by default would move every
 multi-character golden bake (`tests/golden` two-character shots and the e907/e909/e910/e912 bakes) — not proposed.
 Turning it on for e912 is an `episodes/**` change: I will measure before/after on copies of the resolved scenes in my
 evaluation folder and ask before touching the shot files.
@@ -71,7 +73,7 @@ evaluation folder and ask before touching the shot files.
 - `engine/scene/collision.h`, `engine/scene/collision.cpp` — body-part capsules, `bodyGap`, `pointBodyGap`,
   `segmentSegment` (added for step 1; existing functions unchanged)
 - `engine/scene/interaction.h`, `engine/scene/interaction.cpp` — `applyBodyLean`, the planning pass, model build
-- `engine/scene/scene.h`, `engine/scene/scene.cpp` — three `InteractionOptions` fields + parsing only
+- `engine/scene/actions.cpp` — the collision action's three new keys only (next to `maxElbowSwingDeg`)
 - `tests/test_collision.cpp` (append: capsule fit, segment distance, gap sign/direction) and new
   `tests/test_body_clearance.cpp` (the pass: off = bit-identical tracks, on = gap opened, rate limit, hand-hand skip,
   IK wrist kept) — registering the new file in `tests/CMakeLists.txt` is the owner's
