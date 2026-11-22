@@ -53,3 +53,19 @@ re-record goldens or rewrite test criteria in place yet. Prepare two separate co
 4. A better close-up camera for the e909 boy tile.
 5. Follow-up outside this task: clip thumb retarget (`pipeline/clips/retarget.py`, `engine/model/clip.h`); `interaction.cpp:1256`
    drops `fingerClose.wrap` on box faces.
+
+## Round 2 state (22 Nov, implementer r2)
+- `e189084`: `HandLimits::thumbBackFace` = 45 and `handLimitsFor(HandPose)` (grasp && graspFace && !wrap). The per-finger
+  box-face thumb search and the final clamp use it; wrap keeps 33. `test_hand_shapes.cpp:221`, `test_verbs.cpp:886` and
+  `:1208` pass unchanged. `golden_delta` now reports thumb and finger joints apart (`measures/golden_delta.md`).
+- Goldens at 45: exactly the 6 named hashes change (JSON diff, no other key). **Parked, uncommitted** until the owner
+  answers on e901 s010: a finger correction of 0.525 deg, back-flex past 0 on the middle hinge. `wave` clip frame 26,
+  f0b (boy R at frames 36/256, girl L at 36); `point` clip frames 26-27, f3b (boy R at 146-147). Fingertips move 0.04-0.07 mm.
+- `2b93031` WIP: `thumbJointRotations` (thumb joint coordinates). ThumbFit criteria (old thumb criteria required
+  exactly wherever an in-range thumb can meet them; else Pareto-optimal within 2 mm, plus a no-skin-penetration
+  criterion). The cup case `test_hand_shapes.cpp:168/170/171` is rewritten and passes.
+- Open (asked the Supervisor): `test_grasp_contact` shows the T-138 band fit is inert with the in-range thumb (fingers
+  not pulled in; boy/girl). The kSdf thumb misses reachable criteria by 0.03 mm (:226) and 1.08 mm (:216). Proposed fix:
+  the band fit spans the fingers only when the thumb cannot reach the band; refine the non-wrap per-finger thumb
+  search. Then the same ThumbFit rewrite for :134/139/140/157/207/216/226.
+- Local only: `tests/CMakeLists.txt` registers `test_hand_limits.cpp` (the Supervisor's at merge).
