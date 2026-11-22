@@ -34,7 +34,9 @@ B. Every hair vertex (a Geometry Nodes modifier on each hair object, evaluated b
    A static vertex (flag `ps_static`) whose anchor ray first meets a BACK face has its anchor inside that collider at
    this frame (spec `static_inside` "keep", the default): it is left as baked, not snapped next to its anchor; so is a
    static vertex that is not behind a surface (its own ray towards the anchor first meets a front face or nothing:
-   the anchor ray only went through a thin part such as the hood rim tube).
+   the anchor ray only went through a thin part such as the hood rim tube). A static vertex's clamp is faded in with
+   the distance of the hit from its anchor (spec `static_fade_m`), so a surface reaching the anchor fades it out
+   continuously instead of flipping the vertex by its whole reach.
    Vertices whose rays find nothing are not touched.
 
 Colliders: every mesh child of a rendered character's rig with an Armature modifier except hair (`hair_*`),
@@ -52,11 +54,14 @@ import numpy as np
 SKIP = ["eye*", "brow*", "lash*", "lid*", "mouth*", "glasses*"]
 DEFAULTS = {"margin_m": 0.002, "core_radius_m": 0.012, "vertex_margin_m": 0.0015, "static_reach_m": 0.03,
             "characters": "all", "stages": ["chains", "vertices"], "enclosure": True, "exit_test": False,
-            "lock_volume": False, "static_inside": "keep"}
+            "lock_volume": False, "static_inside": "keep",
+            "static_fade_m": [0.002, 0.01]}
 # exit_test / lock_volume: off by default, both make visible frame-to-frame pops (README, e912 s020 f105-111)
 # static_inside "keep": a static vertex whose anchor is inside a collider at this frame (its anchor ray first meets a
 # BACK face), or that is not behind a surface itself (its ray to the anchor first meets a FRONT face), is left as baked; "clamp" = the old rule (snapped next to its anchor: the boy's cap into his hood rim and
-# ~30 mm pops, e912 s020, session 3)
+# ~30 mm pops, e912 s020, session 3). static_fade_m [a, b]: a static vertex's clamp is faded in with the distance of
+# the anchor ray's hit from the anchor (none at <= a, full at >= b), so an anchor that a surface reaches (own neck
+# skin, a neighbour's body, the hood rim) does not flip the vertex by its whole reach from one frame to the next
 MAX_TRIES = 3
 EPS = 1e-5
 CHAIN_MIN_WEIGHT = 0.05  # a vertex with less than this summed DYN weight is static
@@ -80,6 +85,8 @@ def load_spec(arg):
         raise ValueError(f"hair push-out: stages must be chains / vertices, got {spec['stages']}")
     if spec["static_inside"] not in ("keep", "clamp"):
         raise ValueError(f"hair push-out: static_inside must be keep / clamp, got {spec['static_inside']}")
+    if len(spec["static_fade_m"]) != 2:
+        raise ValueError(f"hair push-out: static_fade_m must be [a, b], got {spec['static_fade_m']}")
     return spec
 
 
@@ -727,7 +734,7 @@ class PushOut:
             mg.node_group = _collector_group(c)
             sets.append(cs)
         group = _clamp_group(float(self.spec["vertex_margin_m"]), bool(self.spec["exit_test"]),
-                             self.spec["static_inside"] == "keep")
+                             self.spec["static_inside"] == "keep", [float(x) for x in self.spec["static_fade_m"]])
         for n in self.names:
             oc = bpy.data.collections.new(f"{PREFIX}.others.{n}")
             for m_ in sorted(self.figures):
@@ -761,7 +768,7 @@ def _collector_group(col):
     return ng
 
 
-def _clamp_group(margin, exit_test=True, static_keep=True):
+def _clamp_group(margin, exit_test=True, static_keep=True, static_fade=None):
     """Shared clamp: inputs Geometry, Anchors (geometry, world), Colliders (geometry, world), Self (matrix)."""
     import bpy
     ng = bpy.data.node_groups.new(f"{PREFIX}.clamp", "GeometryNodeTree")
@@ -845,6 +852,7 @@ def _clamp_group(margin, exit_test=True, static_keep=True):
     sq.operation = "AND"
     L.new(rc4.outputs["Is Hit"], sq.inputs[0])
     L.new(back4.outputs[0], sq.inputs[1])
+    target = ad  # the clamped position
     if static_keep:
         # a static vertex (anchor on the vertex's own weights, not on a chain centre line that stage A keeps free)
         # whose anchor ray first meets a BACK face: the anchor is inside that collider at this frame (the boy's cap
@@ -916,6 +924,23 @@ def _clamp_group(margin, exit_test=True, static_keep=True):
         L.new(sq.outputs[0], sq2.inputs[0])
         L.new(sin2.outputs[0], sq2.inputs[1])
         sq = sq2
+        if static_fade and static_fade[1] > static_fade[0]:
+            mr = N.new("ShaderNodeMapRange")  # hit distance -> 0..1, clamped
+            mr.clamp = True
+            L.new(rc.outputs["Hit Distance"], mr.inputs["Value"])
+            mr.inputs["From Min"].default_value = static_fade[0]
+            mr.inputs["From Max"].default_value = static_fade[1]
+            wm = N.new("ShaderNodeMix")  # chain vertex: 1, static vertex: the fade
+            wm.data_type = "FLOAT"
+            L.new(sst.outputs[0], wm.inputs["Factor"])
+            wm.inputs["A"].default_value = 1.0
+            L.new(mr.outputs["Result"], wm.inputs["B"])
+            pm_ = N.new("ShaderNodeMix")
+            pm_.data_type = "VECTOR"
+            L.new(wm.outputs["Result"], pm_.inputs["Factor"])
+            L.new(tw.outputs[0], pm_.inputs["A"])
+            L.new(ad.outputs[0], pm_.inputs["B"])
+            target = pm_
     clamp = N.new("FunctionNodeBooleanMath")
     clamp.operation = "NIMPLY"  # hit and not squeezed
     L.new(rc.outputs["Is Hit"], clamp.inputs[0])
@@ -924,7 +949,7 @@ def _clamp_group(margin, exit_test=True, static_keep=True):
     sw1.input_type = "VECTOR"
     L.new(clamp.outputs[0], sw1.inputs["Switch"])
     L.new(tw.outputs[0], sw1.inputs["False"])
-    L.new(ad.outputs[0], sw1.inputs["True"])
+    L.new(target.outputs[0] if target is ad else target.outputs["Result"], sw1.inputs["True"])
     out = N.new("ShaderNodeVectorMath")
     out.operation = "SCALE"
     L.new(nd.outputs[0], out.inputs[0])
