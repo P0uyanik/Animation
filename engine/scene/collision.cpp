@@ -513,7 +513,7 @@ BodyParts deriveBodyParts(const Skeleton& sk, const std::vector<SkinnedMesh>& me
     vec3 wide = e1;
     if (q2 > q1) std::swap(q1, q2), wide = e2;
     const bool flat = q1 > kBodyPartFlat * q2;
-    const float rad = flat ? q2 : q1;
+    const float rad = std::max(flat ? q2 : q1, kBodyPartMinRadius);
     float t0 = percentile(t, 0.01f, 0), t1 = percentile(t, 0.99f, 0);
     t0 += rad, t1 -= rad;
     if (t0 > t1) t0 = t1 = 0.5f * (t0 + t1);

@@ -1,8 +1,7 @@
 # T-191 · Character-character collision: check and resolution
 
 Owner request ~04:20 CET 22 Nov: bodies pass through each other (T-187 paper boat, elsewhere). Branch
-`t-191-claude-char-collision` (from `integration/t-187` 44f9fb3). **Status: STATUS — step 1 measured, step 2 design
-waiting for the owner's OK.**
+`t-191-claude-char-collision` (from `integration/t-187` 44f9fb3). **Status: READY** (design approved R5; implemented opt-in, no golden moves).
 
 ## 1. Measure (done)
 **Tool:** `tools/motion_checks/body_contact.cpp` (not in the build or the gate, built like `collision_trace.cpp`; command
@@ -43,7 +42,7 @@ Reading: the T-187 contacts come from the staging (three 0.3 m wide heads on sea
 that bring a part across the gap (lean to show, hand-over, touches next to a neighbour's arm, the stand-up clip). The
 two-character shots are mostly clean.
 
-## 2. Design (proposal — waiting for the owner's OK)
+## 2. Design (approved R5)
 **Where:** an interaction pass in `SceneEvaluator::compileActions` (interaction.cpp), after IK / look-at / the T-047 arm
 clearance and before the T-096 head tilt, the same pattern as the head tilt: a generated per-character track, planned
 per frame on the pose as it plays back, eased with a rate limit. Not staging offsets (a root shift slides a seated
@@ -79,3 +78,61 @@ evaluation folder and ask before touching the shot files.
   IK wrist kept) — registering the new file in `tests/CMakeLists.txt` is the owner's
 - new `tools/motion_checks/body_contact.cpp`, `tools/motion_checks/body_contact_report.py`
 - `docs/evaluation/interaction/T-191/**`
+
+## 3. Implementation (as built)
+- `collision.{h,cpp}`: `deriveBodyParts`, `bodyGap`, `pointBodyGap`, `segmentSegment`; `CollisionBody` gains
+  `parts`, `bodyClearance`, `bodyClearanceGap`, `bodyLeanMax` (all inert unless opted in; never in the package block).
+- `actions.cpp`: the collision action's keys `bodyClearance` (bool), `bodyClearanceMm` (0..50, default 10),
+  `bodyLeanMaxDeg` (0..30, default 12); checked (bad values fail the load).
+- `interaction.cpp` `finishInteractions` (before the T-096 head tilt), per pair with at least one opted-in character:
+  1. **lean** `<who>/bodyLean`: direction = horizontal contact direction (from the other's closest point; chest to
+     chest when the contact is mostly vertical), smoothed over ±8 frames weighted by depth; smallest 0.5 deg step that
+     clears, up to the limit; envelope at <= 0.6 deg/frame. Applied by `applyBodyLean` (spine 40 % / chest 60 %, IK
+     wrists re-solved by weight, root riders carried, eyes keep their gaze).
+  2. **arm yield** `<who>/armYield.<hand>` (added after the first after-run: forearms at hip height barely move with a
+     lean): what the lean leaves on a *free* arm part (IK weight < 0.5, and never within 25 frames of a planned contact
+     of that hand: grasp / hand-over / touch keep their exact palm) swings that upper arm about the shoulder away from
+     the other body, 1 deg steps up to 25 deg, stopping where the arm would go deeper into its own body (T-047 limb
+     clearance); envelope <= 1 deg/frame. Applied by `applyArmYield` right after the lean.
+  3. what remains below the clearance is a warning naming the pair, parts and frame.
+  `"<who>/collision.bodyLean.<other>"` records the lean (degrees). Pairs run in order and add up.
+- Off (no key / `false`): no track, no pose change — tested bit-identical (`test_body_clearance.cpp`).
+- Tests: `tests/test_collision.cpp` (+3 cases: segment distance, fit per role, gap sign/depth/direction) and new
+  `tests/test_body_clearance.cpp` (6 cases: off = identical, option checks, lean opens a -111 mm contact to +11 mm
+  within the limit and rate with hips/legs fixed, only opted-in characters lean, IK wrist kept / clip arm rides,
+  arm yield moves only that arm). **Registration of `test_body_clearance.cpp` in `tests/CMakeLists.txt` is the
+  owner's** (add it next to `test_collision.cpp` in `plush_tests`). Locally: T-191 + T-047/T-082/T-096/T-134 cases
+  18/18 pass; full suite see the READY line.
+
+## 4. Before / after (all characters opted in, default 10 mm / 12 deg; copies of the resolved scenes, no episode edited)
+Data: [`after.md`](after.md) / [`after.json`](after.json); the 20 deg variant: [`after_lean20.md`](after_lean20.md).
+
+| shot | pair | worst capsule mm | frames < -5 mm (capsule) | worst mesh mm | frames < -5 mm (mesh) |
+| --- | --- | --- | --- | --- | --- |
+| e912 s010 | auburn-boy | -51.9 → **+10.0** | 45 → **0** | -41.0 → -9.5 | 92 → 14 |
+| e912 s020 | white-auburn | -103.0 → -65.3 | 2 → 1 | -104.1 → -63.7 | 2 → 1 |
+| e912 s020 | auburn-boy | -92.2 → -101.7 | 110 → **30** | -126.9 → -101.5 | 145 → 118 |
+| e912 s030 | white-auburn | -13.4 → **+1.4** | 4 → **0** | -25.4 → -1.5 | 19 → 0 |
+| e912 s030 | auburn-boy | -99.4 → -95.0 | 48 → 35 | -96.0 → -111.2 | 48 → 48 |
+| e907 s010_verbs | boy-girl | +1.3 → +10.0 | 0 → 0 | -15.3 → **+4.2** | 16 → **0** |
+| e909 s010 | boy-girl | +19.0 → +19.0 | 0 → 0 | +11.5 → +11.5 | 0 → 0 |
+| e910 s010 | boy-girl | -16.1 → -11.7 | 4 → 3 | -11.1 → -10.3 | 2 → 2 |
+
+Fixed: s010 her touches through his forearm (his arm yields), s030 white-auburn, e907's hand-over contact, s020
+head/head while she shows the boat (f69-82: -92 → -20 mm). **Not fixed — staging, needs the owner:**
+- e912 s020 f115-138 (hand-over): her head over his *held* right forearm (-102 mm). His hand is on the boat (no yield
+  by design), her lean saturates at 12 deg; the worst frame moved from f128 (-85) to f132 (-102) because her lean away
+  from the white-hair girl pushes her towards him (she sits in the middle). Fix: hand-over point lower / nearer him,
+  or wider seats.
+- e912 s030 f57-91 (stand-up): heads and his boat hand pass through her head and chest (-95 mm); the three stand up
+  from seats 0.40-0.43 m apart with 0.3 m heads. Fix: wider seats for the stand-up or staggered timing.
+- A 20 deg limit is worse (s020 white-auburn -121 mm): the middle character is pushed into the other neighbour.
+- e910 f141-144 (hand-over, both hands held): -12 mm, hand against hand/forearm at the shared hold.
+Turning it on in e912 means adding one collision action per character to the shot files (episodes/**): not done,
+asking.
+
+**Sheet** [`before_after_sheet.jpg`](before_after_sheet.jpg) (800 x 988, Cycles 16 spp, 640x360 review profile,
+engine bakes of the resolved scene and its opted-in copy): left before, right after. The visible change at these
+framings is small: in s010 f114 his yielding forearm is out of the shot-2 frame; s020 f80 the lean opens the capsule
+gap but her hair (curls outside the 90th-percentile head capsule) still meets his; s020 f132 is the unfixed staging
+case; s030 f75 his forearm moves off hers at the table edge.

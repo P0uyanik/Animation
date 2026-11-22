@@ -63,6 +63,21 @@ struct CollisionSphere {
   vec3 centre{0};
   float r = 0.05f;
 };
+// T-191 body parts (fitted below, deriveBodyParts).
+struct BodyPartCapsule {
+  std::string part;  // role name ("chest", "thigh.L", ...)
+  int bone = -1;
+  vec3 a{0}, b{0};  // relative to the bone's rest head
+  float r = 0.05f;
+};
+struct BodyParts {
+  std::vector<BodyPartCapsule> capsules;
+  bool valid = false;  // at least one capsule
+};
+// T-191 body clearance (opt-in per character: the collision action's "bodyClearance"): the gap kept to other
+// characters' body parts and the largest upper-body lean used to keep it.
+constexpr float kBodyClearance = 0.01f;       // metres
+constexpr float kDefaultBodyLeanMaxDeg = 12.0f;
 struct CollisionBody {
   std::vector<CollisionSection> sections;
   std::vector<CollisionLimb> limbs;
@@ -71,6 +86,11 @@ struct CollisionBody {
   std::vector<CollisionSphere> heads;
   float margin = kCollisionMargin;
   float maxElbowSwing = glm::radians(kDefaultMaxElbowSwingDeg);  // radians (T-082)
+  // T-191 (opt-in): body-part capsules (derived from the meshes when bodyClearance is on; never in the package block).
+  BodyParts parts;
+  bool bodyClearance = false;
+  float bodyClearanceGap = kBodyClearance;                     // metres
+  float bodyLeanMax = glm::radians(kDefaultBodyLeanMaxDeg);  // radians
   bool valid = false;
   std::string source;  // "package" (the package's collision block) or "derived" (fitted here from the rest meshes)
 };
@@ -119,21 +139,12 @@ HeadGap headGap(const CollisionBody& a, const std::vector<mat4>& Ga, const Colli
 // direction through their centroid, the cross-section their kBodyPartRadiusQuantile distances along the two other
 // principal directions; a flat part (wide over deep by more than kBodyPartFlat, a torso, a hand, a foot) is two
 // parallel capsules of the smaller radius side by side, so the width and the depth are both close (a stadium over an
-// ellipse). The ends cover the vertices from the 1st to the 99th percentile along the axis. A part with fewer than
+// ellipse), at least kBodyPartMinRadius. The ends cover the vertices from the 1st to the 99th percentile along the axis. A part with fewer than
 // 20 vertices has no capsule. Carried rigidly by the role bone (relative to its rest head, character axes). Never
 // read from or written to the package (export/6 is unchanged).
 constexpr float kBodyPartRadiusQuantile = 0.9f;
 constexpr float kBodyPartFlat = 1.25f;
-struct BodyPartCapsule {
-  std::string part;  // role name ("chest", "thigh.L", ...)
-  int bone = -1;
-  vec3 a{0}, b{0};  // relative to the bone's rest head
-  float r = 0.05f;
-};
-struct BodyParts {
-  std::vector<BodyPartCapsule> capsules;
-  bool valid = false;  // at least one capsule
-};
+constexpr float kBodyPartMinRadius = 0.004f;  // metres (a paper-thin part still has a little volume)
 BodyParts deriveBodyParts(const Skeleton& skeleton, const std::vector<SkinnedMesh>& meshes);
 // World segment of a part capsule for bone globals G.
 void bodyPartSegment(const BodyPartCapsule& c, const std::vector<mat4>& G, vec3& a, vec3& b);
