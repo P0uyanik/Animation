@@ -148,6 +148,11 @@ Measured margins: cup 0.00-1.88 mm; grasp_contact 0.00-1.88 mm. Reachable and th
 thumb on the surface and clear (T-138, T-157). Nowhere does a thumb in range reach the far half of the cup or the band
 while touching it with no more than 2 mm of skin in, which is why the old thumb criteria failed.
 
+**After table and sheet.** Re-scanned with round 2's build (45 deg box face, firm thumb): all five scans
+(`e909_s010`, `e910_s010`, `e912_s010/020/030`) are identical, bit for bit, to `measures/after_*.jsonl.gz`. Their
+grasps are wraps, keyed shapes or clips, never a flat hand on a box face. So section 4, `measures/after_table.md` and the
+sheet stand as they are. The e909 boy tile camera (item 4) is not changed: it needs a render pass, left as a follow-up.
+
 **Solver change (T-190's own thumb, owner standing guidance).** The per-finger cylinder / sphere thumb (non-wrap,
 non-face) now avoids more than 2 mm of skin in where its range allows (`rangeThumb` `firm`). Before it, the kSdf knuckle
 sat 3.1 mm in the cup although a clear pose was in range. No golden moves; wrap and box face are unchanged.

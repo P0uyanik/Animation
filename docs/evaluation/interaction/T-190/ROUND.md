@@ -69,3 +69,5 @@ re-record goldens or rewrite test criteria in place yet. Prepare two separate co
   the band fit spans the fingers only when the thumb cannot reach the band; refine the non-wrap per-finger thumb
   search. Then the same ThumbFit rewrite for :134/139/140/157/207/216/226.
 - Local only: `tests/CMakeLists.txt` registers `test_hand_limits.cpp` (the Supervisor's at merge).
+- Done (r2): criteria rewritten (tests/thumb_fit.h, README 6b), solver `firm` thumb, 6 goldens committed, full suite
+  285/285 with test_hand_limits registered locally, after scans identical (no re-render). READY sent.
