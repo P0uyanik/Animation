@@ -1,0 +1,220 @@
+character,view,measure,unit,reference,reference_mark,reference_source,tolerance,current,current_mark,current_source,gap,result
+boy,front,head_roundness,H,0.61062,M,T-202/crops/boy_front_val27_front.png,0.045,0.64976,M,T-202/sheets/boy_faces.jpg right row 1,0.03914,within
+boy,front,cheek_width,F,0.91902,M,T-202/crops/boy_front_val27_front.png,0.055,0.75288,M,T-202/sheets/boy_faces.jpg right row 1,-0.16614,outside
+boy,front,jaw_width,F,0.67291,M,T-202/crops/boy_front_val27_front.png,0.065,0.52874,M,T-202/sheets/boy_faces.jpg right row 1,-0.14417,outside
+boy,front,chin_width,F,0.37978,M,T-202/crops/boy_front_val27_front.png,0.075,0.192,M,T-202/sheets/boy_faces.jpg right row 1,-0.18778,outside
+boy,front,chin_height,H,0.10542,E,T-202/crops/boy_front_val27_front.png,0.025,0.01826,E,T-202/sheets/boy_faces.jpg right row 1,-0.08716,outside
+boy,front,eye_width,H,0.16578,M,T-202/crops/boy_front_val27_front.png,0.018,0.14549,M,T-202/sheets/boy_faces.jpg right row 1,-0.02029,outside
+boy,front,eye_height,H,0.05245,M,T-202/crops/boy_front_val27_front.png,0.01686,0.08174,M,T-202/sheets/boy_faces.jpg right row 1,0.02929,outside
+boy,front,eye_y,H,0.76447,M,T-202/crops/boy_front_val27_front.png,0.0305,0.86416,M,T-202/sheets/boy_faces.jpg right row 1,0.09969,outside
+boy,front,eye_to_chin,H,0.23553,M,T-202/crops/boy_front_val27_front.png,0.0305,0.13584,M,T-202/sheets/boy_faces.jpg right row 1,-0.09969,outside
+boy,front,eye_x,F,-0.25773,M,T-202/crops/boy_front_val27_front.png,0.025,-0.25305,M,T-202/sheets/boy_faces.jpg right row 1,0.00468,within
+boy,front,eye_spacing,F,0.49657,M,T-202/crops/boy_front_val27_front.png,0.03,0.49537,M,T-202/sheets/boy_faces.jpg right row 1,-0.0012,within
+boy,front,iris_size,H,0.10283,M,T-202/crops/boy_front_val27_front.png,0.015,0.09767,M,T-202/sheets/boy_faces.jpg right row 1,-0.00516,within
+boy,front,opening_h_w,eye W,0.31641,M,T-202/crops/boy_front_val27_front.png,0.06,0.56184,M,T-202/sheets/boy_faces.jpg right row 1,0.24543,outside
+boy,front,iris_d_w,eye W,0.62027,M,T-202/crops/boy_front_val27_front.png,0.05,0.67133,M,T-202/sheets/boy_faces.jpg right row 1,0.05106,outside
+boy,front,iris_d_spacing,iris spacing,0.33912,M,T-202/crops/boy_front_val27_front.png,0.035,0.30344,M,T-202/sheets/boy_faces.jpg right row 1,-0.03568,outside
+boy,front,brow_gap,H,0.12379,E,T-202/crops/boy_front_val27_front.png,0.022,0.1156,M,T-202/sheets/boy_faces.jpg right row 1,-0.00819,within
+boy,front,nose_width,F,0.08244,E,T-202/crops/boy_front_val27_front.png,0.025,0.06442,E,T-202/sheets/boy_faces.jpg right row 1,-0.01802,within
+boy,front,nose_height,H,0.05037,E,T-202/crops/boy_front_val27_front.png,0.018,0.03985,E,T-202/sheets/boy_faces.jpg right row 1,-0.01052,within
+boy,front,nose_y,H,0.83792,E,T-202/crops/boy_front_val27_front.png,0.025,0.92394,E,T-202/sheets/boy_faces.jpg right row 1,0.08602,outside
+boy,front,mouth_width,F,0.07558,E,T-202/crops/boy_front_val27_front.png,0.025,0.06442,E,T-202/sheets/boy_faces.jpg right row 1,-0.01116,within
+boy,front,mouth_height,H,0.01258,E,T-202/crops/boy_front_val27_front.png,0.015,0.00796,E,T-202/sheets/boy_faces.jpg right row 1,-0.00462,within
+boy,front,mouth_y,H,0.89458,E,T-202/crops/boy_front_val27_front.png,0.025,0.98174,E,T-202/sheets/boy_faces.jpg right row 1,0.08716,outside
+boy,front,mouth_x,F,0.00173,E,T-202/crops/boy_front_val27_front.png,0.025,-0.00154,E,T-202/sheets/boy_faces.jpg right row 1,-0.00327,within
+boy,front,hair_width,F,1.6275,M,T-202/crops/boy_front_val27_front.png,0.08,1.65706,M,T-202/sheets/boy_faces.jpg right row 1,0.02956,within
+boy,front,hair_height,H,1.0,M,T-202/crops/boy_front_val27_front.png,0.06,1.0,M,T-202/sheets/boy_faces.jpg right row 1,0.0,within
+boy,front,ear_width,F,0.1964,E,T-161/targets.json#boy/ear_width (boy.jpg row 1 left (val27_front)),0.055,0.17706,E,T-202/sheets/boy_faces.jpg right row 1,-0.01934,within
+boy,front,ear_height,H,0.1728,M,T-161/targets.json#boy/ear_height (boy.jpg row 1 left (val27_front)),0.045,0.14749,E,T-202/sheets/boy_faces.jpg right row 1,-0.02531,within
+boy,front,ear_top_eye,H,-0.0257,E,T-161/targets.json#boy/ear_top_eye (boy.jpg row 1 left (val27_front)),0.045,-0.12965,E,T-202/sheets/boy_faces.jpg right row 1,-0.10395,outside
+boy,front,ear_base_mouth,H,-0.0441,E,T-161/targets.json#boy/ear_base_mouth (boy.jpg row 1 left (val27_front)),0.045,-0.09973,E,T-202/sheets/boy_faces.jpg right row 1,-0.05563,outside
+boy,front,crown_above_skull,H,0.2206,E,T-161/targets.json#boy/crown_above_skull (boy.jpg row 1 left (val27_front)),0.1,0.13274,E,T-202/sheets/boy_faces.jpg right row 1,-0.08786,within
+boy,front,forehead_covered,skull-to-brow,1.0,E,T-161/targets.json#boy/forehead_covered (boy.jpg row 1 left (val27_front)),0.13,0.97436,E,T-202/sheets/boy_faces.jpg right row 1,-0.02564,within
+boy,front,fringe_eye,H,0.0588,M,T-161/targets.json#boy/fringe_eye (boy.jpg row 1 left (val27_front)),0.05,0.17094,M,T-202/sheets/boy_faces.jpg right row 1,0.11214,outside
+boy,front,hair_cheek_width,F,0.0,M,T-161/targets.json#boy/hair_cheek_width (boy.jpg row 1 left (val27_front)),0.12,0.0,M,T-202/sheets/boy_faces.jpg right row 1,0.0,within
+boy,front,bun_width,F,0.0,M,T-161/targets.json#boy/bun_width (boy.jpg row 1 left (val27_front)),0.12,0.0,M,T-202/sheets/boy_faces.jpg right row 1,0.0,within
+boy,front,cheek_L,CIELAB L*,54.16995,M,T-202/crops/boy_front_val27_front.png,5,62.5985,M,T-202/sheets/boy_faces.jpg right row 1,8.42855,outside
+boy,front,cheek_a,CIELAB a*,27.52278,M,T-202/crops/boy_front_val27_front.png,4,27.10424,M,T-202/sheets/boy_faces.jpg right row 1,-0.41854,within
+boy,front,cheek_b,CIELAB b*,22.02944,M,T-202/crops/boy_front_val27_front.png,4,22.46874,M,T-202/sheets/boy_faces.jpg right row 1,0.4393,within
+boy,front,forehead_L,CIELAB L*,36.90453,M,T-202/crops/boy_front_val27_front.png,5,73.13118,M,T-202/sheets/boy_faces.jpg right row 1,36.22665,outside
+boy,front,forehead_a,CIELAB a*,18.0539,M,T-202/crops/boy_front_val27_front.png,4,13.23488,M,T-202/sheets/boy_faces.jpg right row 1,-4.81902,outside
+boy,front,forehead_b,CIELAB b*,17.86527,M,T-202/crops/boy_front_val27_front.png,4,19.84606,M,T-202/sheets/boy_faces.jpg right row 1,1.98079,within
+boy,front,blush_da,CIELAB a*,16.30355,M,T-202/crops/boy_front_val27_front.png,3,13.91024,M,T-202/sheets/boy_faces.jpg right row 1,-2.39331,within
+boy,three_quarter,head_roundness,H,0.55905,E,T-202/crops/boy_34_val27_threequarter_right.png,0.045,0.58924,E,T-202/sheets/boy_faces.jpg right row 4,0.03019,within
+boy,three_quarter,cheek_width,F,0.94387,E,T-202/crops/boy_34_val27_threequarter_right.png,0.055,0.69792,E,T-202/sheets/boy_faces.jpg right row 4,-0.24595,outside
+boy,three_quarter,jaw_width,F,0.64654,E,T-202/crops/boy_34_val27_threequarter_right.png,0.065,0.3707,E,T-202/sheets/boy_faces.jpg right row 4,-0.27584,outside
+boy,three_quarter,chin_width,F,0.3477,E,T-202/crops/boy_34_val27_threequarter_right.png,0.075,0.20349,E,T-202/sheets/boy_faces.jpg right row 4,-0.14421,outside
+boy,three_quarter,chin_height,H,0.11052,E,T-202/crops/boy_34_val27_threequarter_right.png,0.025,0.02978,E,T-202/sheets/boy_faces.jpg right row 4,-0.08074,outside
+boy,three_quarter,eye_width,H,0.17899,M,T-202/crops/boy_34_val27_threequarter_right.png,0.018,0.15517,M,T-202/sheets/boy_faces.jpg right row 4,-0.02382,outside
+boy,three_quarter,eye_height,H,0.05429,M,T-202/crops/boy_34_val27_threequarter_right.png,0.0175,0.0648,M,T-202/sheets/boy_faces.jpg right row 4,0.01051,within
+boy,three_quarter,eye_y,H,0.76479,M,T-202/crops/boy_34_val27_threequarter_right.png,0.02954,0.87988,M,T-202/sheets/boy_faces.jpg right row 4,0.11509,outside
+boy,three_quarter,eye_to_chin,H,0.23521,M,T-202/crops/boy_34_val27_threequarter_right.png,0.02954,0.12012,M,T-202/sheets/boy_faces.jpg right row 4,-0.11509,outside
+boy,three_quarter,eye_x,F,-0.06474,E,T-202/crops/boy_34_val27_threequarter_right.png,0.025,0.01334,E,T-202/sheets/boy_faces.jpg right row 4,0.07808,outside
+boy,three_quarter,eye_spacing,F,0.44965,E,T-202/crops/boy_34_val27_threequarter_right.png,0.03,0.42756,E,T-202/sheets/boy_faces.jpg right row 4,-0.02209,within
+boy,three_quarter,iris_size,H,0.10054,M,T-202/crops/boy_34_val27_threequarter_right.png,0.015,0.07462,M,T-202/sheets/boy_faces.jpg right row 4,-0.02592,outside
+boy,three_quarter,opening_h_w,eye W,0.30329,M,T-202/crops/boy_34_val27_threequarter_right.png,0.06,0.41757,M,T-202/sheets/boy_faces.jpg right row 4,0.11428,outside
+boy,three_quarter,iris_d_w,eye W,0.56169,M,T-202/crops/boy_34_val27_threequarter_right.png,0.05,0.48089,M,T-202/sheets/boy_faces.jpg right row 4,-0.0808,outside
+boy,three_quarter,iris_d_spacing,iris spacing,0.39994,M,T-202/crops/boy_34_val27_threequarter_right.png,0.035,0.29619,M,T-202/sheets/boy_faces.jpg right row 4,-0.10375,outside
+boy,three_quarter,brow_gap,H,0.12065,M,T-202/crops/boy_34_val27_threequarter_right.png,0.022,0.12965,M,T-202/sheets/boy_faces.jpg right row 4,0.009,within
+boy,three_quarter,nose_width,F,0.09354,E,T-202/crops/boy_34_val27_threequarter_right.png,0.025,0.06334,E,T-202/sheets/boy_faces.jpg right row 4,-0.0302,outside
+boy,three_quarter,nose_height,H,0.04223,E,T-202/crops/boy_34_val27_threequarter_right.png,0.018,0.03733,E,T-202/sheets/boy_faces.jpg right row 4,-0.0049,within
+boy,three_quarter,nose_y,H,0.83618,E,T-202/crops/boy_34_val27_threequarter_right.png,0.025,0.9064,E,T-202/sheets/boy_faces.jpg right row 4,0.07022,outside
+boy,three_quarter,mouth_width,F,0.08273,E,T-202/crops/boy_34_val27_threequarter_right.png,0.025,0.05999,E,T-202/sheets/boy_faces.jpg right row 4,-0.02274,within
+boy,three_quarter,mouth_height,H,0.01205,E,T-202/crops/boy_34_val27_threequarter_right.png,0.015,0.01177,E,T-202/sheets/boy_faces.jpg right row 4,-0.00028,within
+boy,three_quarter,mouth_y,H,0.88948,E,T-202/crops/boy_34_val27_threequarter_right.png,0.025,0.97022,E,T-202/sheets/boy_faces.jpg right row 4,0.08074,outside
+boy,three_quarter,mouth_x,F,0.20682,E,T-202/crops/boy_34_val27_threequarter_right.png,0.025,0.22669,E,T-202/sheets/boy_faces.jpg right row 4,0.01987,within
+boy,three_quarter,hair_width,F,1.62372,E,T-202/crops/boy_34_val27_threequarter_right.png,0.08,1.64776,E,T-202/sheets/boy_faces.jpg right row 4,0.02404,within
+boy,three_quarter,hair_height,H,1.0,M,T-202/crops/boy_34_val27_threequarter_right.png,0.06,1.0,M,T-202/sheets/boy_faces.jpg right row 4,0.0,within
+boy,three_quarter,ear_turn_projection,F,0.2229,E,T-161/targets.json#boy/ear_turn_projection (boy.jpg row 4 left (B02)),0.06,0.2368,E,T-202/sheets/boy_faces.jpg right row 4,0.0139,within
+boy,side,eye_y,H,0.76316,M,T-202/crops/boy_side_val27_side_right.png,0.02892,0.88496,M,T-202/sheets/boy_faces.jpg right row 6,0.1218,outside
+boy,side,eye_to_chin,H,0.23684,M,T-202/crops/boy_side_val27_side_right.png,0.02892,0.11504,M,T-202/sheets/boy_faces.jpg right row 6,-0.1218,outside
+boy,side,cheek_bulge,H,0.02886,M,T-202/crops/boy_side_val27_side_right.png,0.02067,0.02306,M,T-202/sheets/boy_faces.jpg right row 6,-0.0058,within
+boy,side,cheek_advance,H,0.0117,M,T-202/crops/boy_side_val27_side_right.png,0.03004,-0.0118,M,T-202/sheets/boy_faces.jpg right row 6,-0.0235,within
+boy,side,exposed_cheek,H,0.25146,M,T-202/crops/boy_side_val27_side_right.png,0.035,0.27729,M,T-202/sheets/boy_faces.jpg right row 6,0.02583,within
+auburn,front,head_roundness,H,0.74183,E,T-202/crops/girl_front_sheet30_front.png,0.045,0.74183,E,T-202/sheets/girl_faces.jpg right row 1,-0.0,within
+auburn,front,cheek_width,F,0.92575,E,T-202/crops/girl_front_sheet30_front.png,0.055,0.85613,E,T-202/sheets/girl_faces.jpg right row 1,-0.06962,outside
+auburn,front,jaw_width,F,0.70318,E,T-202/crops/girl_front_sheet30_front.png,0.065,0.62802,E,T-202/sheets/girl_faces.jpg right row 1,-0.07516,outside
+auburn,front,chin_width,F,0.4114,E,T-202/crops/girl_front_sheet30_front.png,0.075,0.40625,E,T-202/sheets/girl_faces.jpg right row 1,-0.00515,within
+auburn,front,chin_height,H,0.13847,E,T-202/crops/girl_front_sheet30_front.png,0.025,0.09396,E,T-202/sheets/girl_faces.jpg right row 1,-0.04451,outside
+auburn,front,eye_width,H,0.1783,E,T-202/crops/girl_front_sheet30_front.png,0.018,0.17251,E,T-202/sheets/girl_faces.jpg right row 1,-0.00579,within
+auburn,front,eye_height,H,0.15523,E,T-202/crops/girl_front_sheet30_front.png,0.015,0.13226,E,T-202/sheets/girl_faces.jpg right row 1,-0.02297,outside
+auburn,front,eye_y,H,0.68902,E,T-202/crops/girl_front_sheet30_front.png,0.025,0.75651,E,T-202/sheets/girl_faces.jpg right row 1,0.06749,outside
+auburn,front,eye_to_chin,H,0.31098,E,T-202/crops/girl_front_sheet30_front.png,0.025,0.24349,E,T-202/sheets/girl_faces.jpg right row 1,-0.06749,outside
+auburn,front,eye_x,F,-0.24416,E,T-202/crops/girl_front_sheet30_front.png,0.025,-0.22285,E,T-202/sheets/girl_faces.jpg right row 1,0.02131,within
+auburn,front,eye_spacing,F,0.4845,E,T-202/crops/girl_front_sheet30_front.png,0.03,0.43988,E,T-202/sheets/girl_faces.jpg right row 1,-0.04462,outside
+auburn,front,iris_size,H,0.13226,E,T-202/crops/girl_front_sheet30_front.png,0.015,0.11791,E,T-202/sheets/girl_faces.jpg right row 1,-0.01435,within
+auburn,front,opening_h_w,eye W,0.948,E,T-150/targets.json#auburn/front/opening_h_w,0.073,0.76665,M,T-202/sheets/girl_faces.jpg right row 1,-0.18135,outside
+auburn,front,iris_d_w,eye W,0.742,E,T-150/targets.json#auburn/front/iris_d_w,0.045,0.68352,M,T-202/sheets/girl_faces.jpg right row 1,-0.05848,outside
+auburn,front,iris_d_spacing,iris spacing,0.369,E,T-150/targets.json#auburn/front/iris_d_spacing,0.018,0.36135,M,T-202/sheets/girl_faces.jpg right row 1,-0.00765,within
+auburn,front,brow_gap,H,0.10638,E,T-202/crops/girl_front_sheet30_front.png,0.022,0.13226,E,T-202/sheets/girl_faces.jpg right row 1,0.02588,outside
+auburn,front,nose_width,F,0.08134,E,T-202/crops/girl_front_sheet30_front.png,0.025,0.09689,E,T-202/sheets/girl_faces.jpg right row 1,0.01555,within
+auburn,front,nose_height,H,0.046,E,T-202/crops/girl_front_sheet30_front.png,0.018,0.046,E,T-202/sheets/girl_faces.jpg right row 1,0.0,within
+auburn,front,nose_y,H,0.80977,E,T-202/crops/girl_front_sheet30_front.png,0.025,0.86002,E,T-202/sheets/girl_faces.jpg right row 1,0.05025,outside
+auburn,front,mouth_width,F,0.18993,E,T-202/crops/girl_front_sheet30_front.png,0.025,0.15889,E,T-202/sheets/girl_faces.jpg right row 1,-0.03104,outside
+auburn,front,mouth_height,H,0.06323,E,T-202/crops/girl_front_sheet30_front.png,0.015,0.02298,E,T-202/sheets/girl_faces.jpg right row 1,-0.04025,outside
+auburn,front,mouth_y,H,0.86153,E,T-202/crops/girl_front_sheet30_front.png,0.025,0.90604,E,T-202/sheets/girl_faces.jpg right row 1,0.04451,outside
+auburn,front,mouth_x,F,0.00195,E,T-202/crops/girl_front_sheet30_front.png,0.025,-0.00192,E,T-202/sheets/girl_faces.jpg right row 1,-0.00387,within
+auburn,front,hair_width,F,1.35375,E,T-202/crops/girl_front_sheet30_front.png,0.08,1.37096,E,T-202/sheets/girl_faces.jpg right row 1,0.01721,within
+auburn,front,hair_height,H,1.28085,E,T-202/crops/girl_front_sheet30_front.png,0.06,,,T-202/sheets/girl_faces.jpg right row 1,,unscored
+auburn,front,ear_width,F,0.1589,E,T-161/targets.json#auburn/ear_width (auburn.jpg row 1 left (sheet30_front)),0.055,0.08031,E,T-202/sheets/girl_faces.jpg right row 1,-0.07859,outside
+auburn,front,ear_height,H,0.2199,E,T-161/targets.json#auburn/ear_height (auburn.jpg row 1 left (sheet30_front)),0.045,0.1234,E,T-202/sheets/girl_faces.jpg right row 1,-0.0965,outside
+auburn,front,ear_top_eye,H,-0.0262,E,T-161/targets.json#auburn/ear_top_eye (auburn.jpg row 1 left (sheet30_front)),0.045,-0.03736,E,T-202/sheets/girl_faces.jpg right row 1,-0.01116,within
+auburn,front,ear_base_mouth,H,0.0209,E,T-161/targets.json#auburn/ear_base_mouth (auburn.jpg row 1 left (sheet30_front)),0.045,-0.06349,E,T-202/sheets/girl_faces.jpg right row 1,-0.08439,outside
+auburn,front,crown_above_skull,H,0.1257,E,T-161/targets.json#auburn/crown_above_skull (auburn.jpg row 1 left (sheet30_front)),0.1,0.11915,E,T-202/sheets/girl_faces.jpg right row 1,-0.00655,within
+auburn,front,forehead_covered,skull-to-brow,0.8,E,T-161/targets.json#auburn/forehead_covered (auburn.jpg row 1 left (sheet30_front)),0.13,0.59406,E,T-202/sheets/girl_faces.jpg right row 1,-0.20594,outside
+auburn,front,fringe_eye,H,0.288,M,T-161/targets.json#auburn/fringe_eye (auburn.jpg row 1 left (sheet30_front)),0.05,0.38204,E,T-202/sheets/girl_faces.jpg right row 1,0.09404,outside
+auburn,front,hair_cheek_width,F,1.3709,E,T-161/targets.json#auburn/hair_cheek_width (auburn.jpg row 1 left (sheet30_front)),0.12,1.24477,E,T-202/sheets/girl_faces.jpg right row 1,-0.12613,outside
+auburn,front,bun_width,F,0.7881,E,T-161/targets.json#auburn/bun_width (auburn.jpg row 1 left (sheet30_front)),0.12,0.86617,E,T-202/sheets/girl_faces.jpg right row 1,0.07807,within
+auburn,front,cheek_L,CIELAB L*,47.68755,M,T-202/crops/girl_front_sheet30_front.png,5,64.88817,M,T-202/sheets/girl_faces.jpg right row 1,17.20062,outside
+auburn,front,cheek_a,CIELAB a*,20.98468,M,T-202/crops/girl_front_sheet30_front.png,4,27.27444,M,T-202/sheets/girl_faces.jpg right row 1,6.28976,outside
+auburn,front,cheek_b,CIELAB b*,17.35867,M,T-202/crops/girl_front_sheet30_front.png,4,20.08937,M,T-202/sheets/girl_faces.jpg right row 1,2.7307,within
+auburn,front,forehead_L,CIELAB L*,79.75442,M,T-202/crops/girl_front_sheet30_front.png,5,71.61853,M,T-202/sheets/girl_faces.jpg right row 1,-8.13589,outside
+auburn,front,forehead_a,CIELAB a*,7.93431,M,T-202/crops/girl_front_sheet30_front.png,4,11.86675,M,T-202/sheets/girl_faces.jpg right row 1,3.93244,within
+auburn,front,forehead_b,CIELAB b*,11.34947,M,T-202/crops/girl_front_sheet30_front.png,4,17.08662,M,T-202/sheets/girl_faces.jpg right row 1,5.73715,outside
+auburn,front,blush_da,CIELAB a*,7.67763,M,T-202/crops/girl_front_sheet30_front.png,3,17.55198,M,T-202/sheets/girl_faces.jpg right row 1,9.87435,outside
+auburn,three_quarter,head_roundness,H,0.71963,E,T-202/crops/girl_34_sheet30_front_left.png,0.045,0.70636,E,T-202/sheets/girl_faces.jpg right row 2,-0.01327,within
+auburn,three_quarter,cheek_width,F,0.95423,E,T-202/crops/girl_34_sheet30_front_left.png,0.055,0.91201,E,T-202/sheets/girl_faces.jpg right row 2,-0.04222,within
+auburn,three_quarter,jaw_width,F,0.68452,E,T-202/crops/girl_34_sheet30_front_left.png,0.065,0.58917,E,T-202/sheets/girl_faces.jpg right row 2,-0.09535,outside
+auburn,three_quarter,chin_width,F,0.3854,E,T-202/crops/girl_34_sheet30_front_left.png,0.075,0.29659,E,T-202/sheets/girl_faces.jpg right row 2,-0.08881,outside
+auburn,three_quarter,chin_height,H,0.13925,E,T-202/crops/girl_34_sheet30_front_left.png,0.025,0.12032,E,T-202/sheets/girl_faces.jpg right row 2,-0.01893,within
+auburn,three_quarter,eye_width,H,0.1785,M,T-202/crops/girl_34_sheet30_front_left.png,0.018,0.13514,E,T-202/sheets/girl_faces.jpg right row 2,-0.04336,outside
+auburn,three_quarter,eye_height,H,0.14833,M,T-202/crops/girl_34_sheet30_front_left.png,0.015,0.14741,E,T-202/sheets/girl_faces.jpg right row 2,-0.00092,within
+auburn,three_quarter,eye_y,H,0.68907,M,T-202/crops/girl_34_sheet30_front_left.png,0.025,0.75223,E,T-202/sheets/girl_faces.jpg right row 2,0.06316,outside
+auburn,three_quarter,eye_to_chin,H,0.31093,M,T-202/crops/girl_34_sheet30_front_left.png,0.025,0.24777,E,T-202/sheets/girl_faces.jpg right row 2,-0.06316,outside
+auburn,three_quarter,eye_x,F,-0.08016,E,T-202/crops/girl_34_sheet30_front_left.png,0.025,0.06956,E,T-202/sheets/girl_faces.jpg right row 2,0.14972,outside
+auburn,three_quarter,eye_spacing,F,0.45799,E,T-202/crops/girl_34_sheet30_front_left.png,0.03,0.33346,E,T-202/sheets/girl_faces.jpg right row 2,-0.12453,outside
+auburn,three_quarter,iris_size,H,0.12085,M,T-202/crops/girl_34_sheet30_front_left.png,0.015,0.086,E,T-202/sheets/girl_faces.jpg right row 2,-0.03485,outside
+auburn,three_quarter,opening_h_w,eye W,0.987,E,T-150/targets.json#auburn/oblique_near/opening_h_w,0.035,1.09082,M,T-202/sheets/girl_faces.jpg right row 2,0.10382,outside
+auburn,three_quarter,iris_d_w,eye W,0.68,E,T-150/targets.json#auburn/oblique_near/iris_d_w,0.035,0.63639,M,T-202/sheets/girl_faces.jpg right row 2,-0.04361,outside
+auburn,three_quarter,iris_d_spacing,iris spacing,0.416,E,T-150/targets.json#auburn/oblique_near/iris_d_spacing,0.015,0.36511,M,T-202/sheets/girl_faces.jpg right row 2,-0.05089,outside
+auburn,three_quarter,brow_gap,H,0.13821,M,T-202/crops/girl_34_sheet30_front_left.png,0.022,0.15664,E,T-202/sheets/girl_faces.jpg right row 2,0.01843,within
+auburn,three_quarter,nose_width,F,0.09162,E,T-202/crops/girl_34_sheet30_front_left.png,0.025,0.087,E,T-202/sheets/girl_faces.jpg right row 2,-0.00462,within
+auburn,three_quarter,nose_height,H,0.06045,E,T-202/crops/girl_34_sheet30_front_left.png,0.018,0.05223,E,T-202/sheets/girl_faces.jpg right row 2,-0.00822,within
+auburn,three_quarter,nose_y,H,0.81543,E,T-202/crops/girl_34_sheet30_front_left.png,0.025,0.83052,E,T-202/sheets/girl_faces.jpg right row 2,0.01509,within
+auburn,three_quarter,mouth_width,F,0.16794,E,T-202/crops/girl_34_sheet30_front_left.png,0.025,0.11737,E,T-202/sheets/girl_faces.jpg right row 2,-0.05057,outside
+auburn,three_quarter,mouth_height,H,0.0302,E,T-202/crops/girl_34_sheet30_front_left.png,0.015,0.02764,E,T-202/sheets/girl_faces.jpg right row 2,-0.00256,within
+auburn,three_quarter,mouth_y,H,0.86075,E,T-202/crops/girl_34_sheet30_front_left.png,0.025,0.87968,E,T-202/sheets/girl_faces.jpg right row 2,0.01893,within
+auburn,three_quarter,mouth_x,F,0.17556,E,T-202/crops/girl_34_sheet30_front_left.png,0.025,0.21525,E,T-202/sheets/girl_faces.jpg right row 2,0.03969,outside
+auburn,three_quarter,hair_width,F,1.49692,E,T-202/crops/girl_34_sheet30_front_left.png,0.08,1.48649,E,T-202/sheets/girl_faces.jpg right row 2,-0.01043,within
+auburn,three_quarter,hair_height,H,1.31301,M,T-202/crops/girl_34_sheet30_front_left.png,0.06,,,T-202/sheets/girl_faces.jpg right row 2,,unscored
+auburn,three_quarter,ear_turn_projection,F,0.2557,E,T-161/targets.json#auburn/ear_turn_projection (auburn.jpg row 4 left (G02)),0.06,0.2381,E,T-202/sheets/girl_faces.jpg right row 2,-0.0176,within
+auburn,side,eye_y,H,0.69636,E,T-202/crops/girl_side_sheet30_left.png,0.025,0.74519,E,T-202/sheets/girl_faces.jpg right row 3,0.04883,outside
+auburn,side,eye_to_chin,H,0.30364,E,T-202/crops/girl_side_sheet30_left.png,0.025,0.25481,E,T-202/sheets/girl_faces.jpg right row 3,-0.04883,outside
+auburn,side,cheek_bulge,H,0.03894,E,T-202/crops/girl_side_sheet30_left.png,0.015,0.05518,E,T-202/sheets/girl_faces.jpg right row 3,0.01624,outside
+auburn,side,cheek_advance,H,0.0081,E,T-202/crops/girl_side_sheet30_left.png,0.02,0.02404,E,T-202/sheets/girl_faces.jpg right row 3,0.01594,within
+auburn,side,exposed_cheek,H,0.32389,E,T-202/crops/girl_side_sheet30_left.png,0.035,0.11538,E,T-202/sheets/girl_faces.jpg right row 3,-0.20851,outside
+white_haired,front,head_roundness,H,0.725,E,T-202/crops/third_front_id01_full.png,0.045,0.6702,E,T-202/sheets/third_faces.jpg right row 1,-0.0548,outside
+white_haired,front,cheek_width,F,0.93028,M,T-202/crops/third_front_id01_full.png,0.055,0.89014,E,T-202/sheets/third_faces.jpg right row 1,-0.04014,within
+white_haired,front,jaw_width,F,0.66584,M,T-202/crops/third_front_id01_full.png,0.065,0.63807,E,T-202/sheets/third_faces.jpg right row 1,-0.02777,within
+white_haired,front,chin_width,F,0.38705,M,T-202/crops/third_front_id01_full.png,0.075,0.37837,E,T-202/sheets/third_faces.jpg right row 1,-0.00868,within
+white_haired,front,chin_height,H,0.14797,E,T-202/crops/third_front_id01_full.png,0.025,0.10289,E,T-202/sheets/third_faces.jpg right row 1,-0.04508,outside
+white_haired,front,eye_width,H,0.18,E,T-202/crops/third_front_id01_full.png,0.018,0.20325,E,T-202/sheets/third_faces.jpg right row 1,0.02325,outside
+white_haired,front,eye_height,H,0.1677,E,T-202/crops/third_front_id01_full.png,0.02556,0.14008,E,T-202/sheets/third_faces.jpg right row 1,-0.02762,outside
+white_haired,front,eye_y,H,0.69175,E,T-202/crops/third_front_id01_full.png,0.04166,0.74467,E,T-202/sheets/third_faces.jpg right row 1,0.05292,outside
+white_haired,front,eye_to_chin,H,0.30825,E,T-202/crops/third_front_id01_full.png,0.04166,0.25533,E,T-202/sheets/third_faces.jpg right row 1,-0.05292,outside
+white_haired,front,eye_x,F,-0.25512,M,T-202/crops/third_front_id01_full.png,0.025,-0.28483,E,T-202/sheets/third_faces.jpg right row 1,-0.02971,outside
+white_haired,front,eye_spacing,F,0.51701,M,T-202/crops/third_front_id01_full.png,0.03,0.5635,E,T-202/sheets/third_faces.jpg right row 1,0.04649,outside
+white_haired,front,iris_size,H,0.13318,E,T-202/crops/third_front_id01_full.png,0.015,0.13459,E,T-202/sheets/third_faces.jpg right row 1,0.00141,within
+white_haired,front,opening_h_w,eye W,0.952,E,T-150/targets.json#white_haired/front/opening_h_w,0.075,0.6892,M,T-202/sheets/third_faces.jpg right row 1,-0.2628,outside
+white_haired,front,iris_d_w,eye W,0.751,E,T-150/targets.json#white_haired/front/iris_d_w,0.049,0.6622,M,T-202/sheets/third_faces.jpg right row 1,-0.0888,outside
+white_haired,front,iris_d_spacing,iris spacing,0.356,E,T-150/targets.json#white_haired/front/iris_d_spacing,0.022,0.35639,M,T-202/sheets/third_faces.jpg right row 1,0.00039,within
+white_haired,front,brow_gap,H,0.12821,E,T-202/crops/third_front_id01_full.png,0.022,,,T-202/sheets/third_faces.jpg right row 1,,unscored
+white_haired,front,nose_width,F,0.08502,E,T-202/crops/third_front_id01_full.png,0.025,0.09832,E,T-202/sheets/third_faces.jpg right row 1,0.0133,within
+white_haired,front,nose_height,H,0.04934,E,T-202/crops/third_front_id01_full.png,0.018,0.05764,E,T-202/sheets/third_faces.jpg right row 1,0.0083,within
+white_haired,front,nose_y,H,0.80518,E,T-202/crops/third_front_id01_full.png,0.025,0.83943,E,T-202/sheets/third_faces.jpg right row 1,0.03425,outside
+white_haired,front,mouth_width,F,0.14286,E,T-202/crops/third_front_id01_full.png,0.025,0.18857,E,T-202/sheets/third_faces.jpg right row 1,0.04571,outside
+white_haired,front,mouth_height,H,0.03945,E,T-202/crops/third_front_id01_full.png,0.015,0.02472,E,T-202/sheets/third_faces.jpg right row 1,-0.01473,within
+white_haired,front,mouth_y,H,0.85203,E,T-202/crops/third_front_id01_full.png,0.025,0.89711,E,T-202/sheets/third_faces.jpg right row 1,0.04508,outside
+white_haired,front,mouth_x,F,-0.0034,E,T-202/crops/third_front_id01_full.png,0.025,0.0,E,T-202/sheets/third_faces.jpg right row 1,0.0034,within
+white_haired,front,hair_width,F,1.66121,M,T-202/crops/third_front_id01_full.png,0.08,2.08043,E,T-202/sheets/third_faces.jpg right row 1,0.41922,outside
+white_haired,front,hair_height,H,1.21168,E,T-202/crops/third_front_id01_full.png,0.06,1.23171,E,T-202/sheets/third_faces.jpg right row 1,0.02003,within
+white_haired,front,ear_width,F,0.1533,E,T-161/targets.json#white_haired/ear_width (white_haired.jpg row 1 left (W01)),0.055,0.07885,E,T-202/sheets/third_faces.jpg right row 1,-0.07445,outside
+white_haired,front,ear_height,H,0.2077,M,T-161/targets.json#white_haired/ear_height (white_haired.jpg row 1 left (W01)),0.045,0.11382,E,T-202/sheets/third_faces.jpg right row 1,-0.09388,outside
+white_haired,front,ear_top_eye,H,-0.0328,E,T-161/targets.json#white_haired/ear_top_eye (white_haired.jpg row 1 left (W01)),0.045,0.00329,E,T-202/sheets/third_faces.jpg right row 1,0.03609,within
+white_haired,front,ear_base_mouth,H,0.0219,E,T-161/targets.json#white_haired/ear_base_mouth (white_haired.jpg row 1 left (W01)),0.045,-0.03533,E,T-202/sheets/third_faces.jpg right row 1,-0.05723,outside
+white_haired,front,crown_above_skull,H,0.1202,E,T-161/targets.json#white_haired/crown_above_skull (white_haired.jpg row 1 left (W01)),0.1,0.11382,E,T-202/sheets/third_faces.jpg right row 1,-0.00638,within
+white_haired,front,forehead_covered,skull-to-brow,0.9,E,T-161/targets.json#white_haired/forehead_covered (white_haired.jpg row 1 left (W01)),0.13,0.97581,E,T-202/sheets/third_faces.jpg right row 1,0.07581,within
+white_haired,front,fringe_eye,H,0.1858,M,T-161/targets.json#white_haired/fringe_eye (white_haired.jpg row 1 left (W01)),0.05,0.13898,E,T-202/sheets/third_faces.jpg right row 1,-0.04682,within
+white_haired,front,hair_cheek_width,F,1.6423,E,T-161/targets.json#white_haired/hair_cheek_width (white_haired.jpg row 1 left (W01)),0.12,1.94092,E,T-202/sheets/third_faces.jpg right row 1,0.29862,outside
+white_haired,front,bun_width,F,0.7007,M,T-161/targets.json#white_haired/bun_width (white_haired.jpg row 1 left (W01)),0.12,0.73391,E,T-202/sheets/third_faces.jpg right row 1,0.03321,within
+white_haired,front,cheek_L,CIELAB L*,52.70383,M,T-202/crops/third_front_id01_full.png,5,84.18195,M,T-202/sheets/third_faces.jpg right row 1,31.47812,outside
+white_haired,front,cheek_a,CIELAB a*,22.74723,M,T-202/crops/third_front_id01_full.png,4,10.89435,M,T-202/sheets/third_faces.jpg right row 1,-11.85288,outside
+white_haired,front,cheek_b,CIELAB b*,21.55726,M,T-202/crops/third_front_id01_full.png,4,16.26724,M,T-202/sheets/third_faces.jpg right row 1,-5.29002,outside
+white_haired,front,forehead_L,CIELAB L*,80.7322,M,T-202/crops/third_front_id01_full.png,5,71.50512,M,T-202/sheets/third_faces.jpg right row 1,-9.22708,outside
+white_haired,front,forehead_a,CIELAB a*,5.67,M,T-202/crops/third_front_id01_full.png,4,6.92306,M,T-202/sheets/third_faces.jpg right row 1,1.25306,within
+white_haired,front,forehead_b,CIELAB b*,13.27009,M,T-202/crops/third_front_id01_full.png,4,14.5966,M,T-202/sheets/third_faces.jpg right row 1,1.32651,within
+white_haired,front,bow_L,CIELAB L*,46.3258,M,T-202/crops/third_front_id01_full.png,5,46.53743,M,T-202/sheets/third_faces.jpg right row 1,0.21163,within
+white_haired,front,bow_a,CIELAB a*,-2.2043,M,T-202/crops/third_front_id01_full.png,4,-1.03728,M,T-202/sheets/third_faces.jpg right row 1,1.16702,within
+white_haired,front,bow_b,CIELAB b*,-15.25926,M,T-202/crops/third_front_id01_full.png,4,-16.11462,M,T-202/sheets/third_faces.jpg right row 1,-0.85536,within
+white_haired,front,blush_da,CIELAB a*,14.37878,M,T-202/crops/third_front_id01_full.png,3,3.54114,M,T-202/sheets/third_faces.jpg right row 1,-10.83764,outside
+white_haired,three_quarter,head_roundness,H,0.67567,E,T-202/crops/third_34_f14_head_3q.png,0.045,0.76752,E,T-202/sheets/third_faces.jpg right row 4,0.09185,outside
+white_haired,three_quarter,cheek_width,F,0.94405,E,T-202/crops/third_34_f14_head_3q.png,0.055,0.8947,E,T-202/sheets/third_faces.jpg right row 4,-0.04935,within
+white_haired,three_quarter,jaw_width,F,0.69489,E,T-202/crops/third_34_f14_head_3q.png,0.065,0.61678,E,T-202/sheets/third_faces.jpg right row 4,-0.07811,outside
+white_haired,three_quarter,chin_width,F,0.39117,E,T-202/crops/third_34_f14_head_3q.png,0.075,0.34043,E,T-202/sheets/third_faces.jpg right row 4,-0.05074,within
+white_haired,three_quarter,chin_height,H,0.14773,E,T-202/crops/third_34_f14_head_3q.png,0.025,0.1125,E,T-202/sheets/third_faces.jpg right row 4,-0.03523,outside
+white_haired,three_quarter,eye_width,H,0.19513,E,T-202/crops/third_34_f14_head_3q.png,0.018,0.195,E,T-202/sheets/third_faces.jpg right row 4,-0.00013,within
+white_haired,three_quarter,eye_height,H,0.15856,E,T-202/crops/third_34_f14_head_3q.png,0.01788,0.14285,E,T-202/sheets/third_faces.jpg right row 4,-0.01571,within
+white_haired,three_quarter,eye_y,H,0.68884,E,T-202/crops/third_34_f14_head_3q.png,0.0412,0.74467,E,T-202/sheets/third_faces.jpg right row 4,0.05583,outside
+white_haired,three_quarter,eye_to_chin,H,0.31116,E,T-202/crops/third_34_f14_head_3q.png,0.0412,0.25533,E,T-202/sheets/third_faces.jpg right row 4,-0.05583,outside
+white_haired,three_quarter,eye_x,F,-0.09748,E,T-202/crops/third_34_f14_head_3q.png,0.025,-0.01891,E,T-202/sheets/third_faces.jpg right row 4,0.07857,outside
+white_haired,three_quarter,eye_spacing,F,0.47481,E,T-202/crops/third_34_f14_head_3q.png,0.03,0.40631,E,T-202/sheets/third_faces.jpg right row 4,-0.0685,outside
+white_haired,three_quarter,iris_size,H,0.12437,E,T-202/crops/third_34_f14_head_3q.png,0.015,0.10988,E,T-202/sheets/third_faces.jpg right row 4,-0.01449,within
+white_haired,three_quarter,opening_h_w,eye W,0.81258,M,T-202/crops/third_34_f14_head_3q.png,0.06,0.73254,M,T-202/sheets/third_faces.jpg right row 4,-0.08004,outside
+white_haired,three_quarter,iris_d_w,eye W,0.63737,M,T-202/crops/third_34_f14_head_3q.png,0.05,0.56348,M,T-202/sheets/third_faces.jpg right row 4,-0.07389,outside
+white_haired,three_quarter,iris_d_spacing,iris spacing,0.38767,M,T-202/crops/third_34_f14_head_3q.png,0.035,0.35234,M,T-202/sheets/third_faces.jpg right row 4,-0.03533,outside
+white_haired,three_quarter,brow_gap,H,0.13173,E,T-202/crops/third_34_f14_head_3q.png,0.022,,,T-202/sheets/third_faces.jpg right row 4,,unscored
+white_haired,three_quarter,nose_width,F,0.10109,E,T-202/crops/third_34_f14_head_3q.png,0.025,0.07876,E,T-202/sheets/third_faces.jpg right row 4,-0.02233,within
+white_haired,three_quarter,nose_height,H,0.06343,E,T-202/crops/third_34_f14_head_3q.png,0.018,0.06045,E,T-202/sheets/third_faces.jpg right row 4,-0.00298,within
+white_haired,three_quarter,nose_y,H,0.79374,E,T-202/crops/third_34_f14_head_3q.png,0.025,0.82982,E,T-202/sheets/third_faces.jpg right row 4,0.03608,outside
+white_haired,three_quarter,mouth_width,F,0.11188,E,T-202/crops/third_34_f14_head_3q.png,0.025,0.13241,E,T-202/sheets/third_faces.jpg right row 4,0.02053,within
+white_haired,three_quarter,mouth_height,H,0.01466,E,T-202/crops/third_34_f14_head_3q.png,0.015,0.02744,E,T-202/sheets/third_faces.jpg right row 4,0.01278,within
+white_haired,three_quarter,mouth_y,H,0.85227,E,T-202/crops/third_34_f14_head_3q.png,0.025,0.8875,E,T-202/sheets/third_faces.jpg right row 4,0.03523,outside
+white_haired,three_quarter,mouth_x,F,0.19133,E,T-202/crops/third_34_f14_head_3q.png,0.025,0.17258,E,T-202/sheets/third_faces.jpg right row 4,-0.01875,within
+white_haired,three_quarter,hair_width,F,1.63496,E,T-202/crops/third_34_f14_head_3q.png,0.08,1.67894,E,T-202/sheets/third_faces.jpg right row 4,0.04398,within
+white_haired,three_quarter,hair_height,H,1.22744,E,T-202/crops/third_34_f14_head_3q.png,0.06,1.24797,E,T-202/sheets/third_faces.jpg right row 4,0.02053,within
+white_haired,three_quarter,ear_turn_projection,F,0.1916,E,T-161/targets.json#white_haired/ear_turn_projection (white_haired.jpg row 4 left (f14_head_3q)),0.06,0.15359,E,T-202/sheets/third_faces.jpg right row 4,-0.03801,within
+white_haired,side,eye_y,H,0.67778,E,T-202/crops/third_side_f14_head_side.png,0.03189,0.7439,E,T-202/sheets/third_faces.jpg right row 6,0.06612,outside
+white_haired,side,eye_to_chin,H,0.32222,E,T-202/crops/third_side_f14_head_side.png,0.03189,0.2561,E,T-202/sheets/third_faces.jpg right row 6,-0.06612,outside
+white_haired,side,cheek_bulge,H,0.04312,E,T-202/crops/third_side_f14_head_side.png,0.03131,,,T-202/sheets/third_faces.jpg right row 6,,unscored
+white_haired,side,cheek_advance,H,0.01481,E,T-202/crops/third_side_f14_head_side.png,0.02206,,,T-202/sheets/third_faces.jpg right row 6,,unscored
+white_haired,side,exposed_cheek,H,0.31852,E,T-202/crops/third_side_f14_head_side.png,0.035,0.2439,E,T-202/sheets/third_faces.jpg right row 6,-0.07462,outside
