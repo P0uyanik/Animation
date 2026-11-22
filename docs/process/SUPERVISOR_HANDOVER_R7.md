@@ -47,3 +47,4 @@ Next free ID: T-212.
 - T-201 dispatched (Opus, session_01NPjxeMa91JgXQWgeGw6Uvi). shot_render.py / run_shot.py stay with T-194: T-201 passes `--engine eevee` explicitly there;
   making shot_render/run_shot honour the profile "engine" key is a 2-line follow-up after T-194 merges.
 - T-211 merged (docs only, fast path); decision 7 (built-in Warp/Hook/Lattice as face_generic/4 knobs) relayed with T-209 D.
+- Follow-up logged (not dispatched): T-183 bake slowdown 2.26x (4 shots 51.5 s → 116.3 s); round-2 skin sphere colliders alone 2.0x, neighbour colliders +7.7 s, clear_targets +4.6 s. Cheaper skin settings (spacing_m, reach_m, substep_hz) untested; re-measure if bake time matters.
