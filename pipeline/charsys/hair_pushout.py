@@ -55,7 +55,8 @@ SKIP = ["eye*", "brow*", "lash*", "lid*", "mouth*", "glasses*"]
 DEFAULTS = {"margin_m": 0.002, "core_radius_m": 0.012, "vertex_margin_m": 0.0015, "static_reach_m": 0.03,
             "characters": "all", "stages": ["chains", "vertices"], "enclosure": True, "exit_test": False,
             "lock_volume": False, "static_inside": "keep",
-            "static_fade_m": [0.002, 0.01], "keep_outside": "static"}
+            "static_fade_m": [0.002, 0.01], "keep_outside": "static",
+            "other_skin_fade_m": [0.004, 0.012]}
 # exit_test / lock_volume: off by default, both make visible frame-to-frame pops (README, e912 s020 f105-111)
 # static_inside "keep": a static vertex whose anchor is inside a collider at this frame (its anchor ray first meets a
 # BACK face), or that is not behind a surface itself (its ray to the anchor first meets a FRONT face), is left as baked; "clamp" = the old rule (snapped next to its anchor: the boy's cap into his hood rim and
@@ -63,7 +64,12 @@ DEFAULTS = {"margin_m": 0.002, "core_radius_m": 0.012, "vertex_margin_m": 0.0015
 # the anchor ray's hit from the anchor (none at <= a, full at >= b), so an anchor that a surface reaches (own neck
 # skin, a neighbour's body, the hood rim) does not flip the vertex by its whole reach from one frame to the next.
 # keep_outside "static" | "all": which vertices are left as baked when not behind a surface (their ray to the anchor
-# first meets a FRONT face); "all" adds chain vertices (white hair_back_under_00 through the ear edge, s020 f50)
+# first meets a FRONT face); "all" adds chain vertices (white hair_back_under_00 through the ear edge, s020 f50).
+# other_skin_fade_m [a, b]: a clamp against ANOTHER character's body skin that moves the vertex by d is applied in
+# full up to d = a and faded to nothing at d = b (applied d * (b - d) / (b - a) between), so the push-out never moves
+# a vertex by more than b^2 / 4 / (b - a) (4.5 mm with the defaults) for a neighbour: deeper overlaps are staging
+# (heads / bodies inside each other, T-191), left as baked and reported apart; a clamp that lets go when the neighbour
+# leaves would be a pop (boy fringe in the auburn head, s020 f77-83, +44 mm)
 MAX_TRIES = 3
 EPS = 1e-5
 CHAIN_MIN_WEIGHT = 0.05  # a vertex with less than this summed DYN weight is static
@@ -89,8 +95,8 @@ def load_spec(arg):
         raise ValueError(f"hair push-out: static_inside must be keep / clamp, got {spec['static_inside']}")
     if spec["keep_outside"] not in ("static", "all"):
         raise ValueError(f"hair push-out: keep_outside must be static / all, got {spec['keep_outside']}")
-    if len(spec["static_fade_m"]) != 2:
-        raise ValueError(f"hair push-out: static_fade_m must be [a, b], got {spec['static_fade_m']}")
+    if len(spec["static_fade_m"]) != 2 or len(spec["other_skin_fade_m"]) != 2:
+        raise ValueError("hair push-out: static_fade_m and other_skin_fade_m must be [a, b]")
     return spec
 
 
@@ -739,7 +745,7 @@ class PushOut:
             sets.append(cs)
         group = _clamp_group(float(self.spec["vertex_margin_m"]), bool(self.spec["exit_test"]),
                              self.spec["static_inside"] == "keep", [float(x) for x in self.spec["static_fade_m"]],
-                             self.spec["keep_outside"] == "all")
+                             self.spec["keep_outside"] == "all", [float(x) for x in self.spec["other_skin_fade_m"]])
         for n in self.names:
             oc = bpy.data.collections.new(f"{PREFIX}.others.{n}")
             for m_ in sorted(self.figures):
@@ -773,7 +779,7 @@ def _collector_group(col):
     return ng
 
 
-def _clamp_group(margin, exit_test=True, static_keep=True, static_fade=None, outside_all=False):
+def _clamp_group(margin, exit_test=True, static_keep=True, static_fade=None, outside_all=False, other_fade=None):
     """Shared clamp: inputs Geometry, Anchors (geometry, world), Colliders (geometry, world), Self (matrix)."""
     import bpy
     ng = bpy.data.node_groups.new(f"{PREFIX}.clamp", "GeometryNodeTree")
@@ -949,6 +955,48 @@ def _clamp_group(margin, exit_test=True, static_keep=True, static_fade=None, out
             L.new(tw.outputs[0], pm_.inputs["A"])
             L.new(ad.outputs[0], pm_.inputs["B"])
             target = pm_
+    if other_fade and other_fade[1] > other_fade[0]:
+        # the clamping hit is on another character's unmasked skin (its first hit there is where the anchor ray
+        # stops, within 1 mm): weight (b - d) / (b - a), clamped to 0..1, d = the clamp's move
+        a_, b_ = other_fade
+        tgt = target.outputs[0] if target is ad else target.outputs["Result"]
+        dv = N.new("ShaderNodeVectorMath")
+        dv.operation = "DISTANCE"
+        L.new(tw.outputs[0], dv.inputs[0])
+        L.new(ad.outputs[0], dv.inputs[1])
+        mo = N.new("ShaderNodeMapRange")
+        mo.clamp = True
+        L.new(dv.outputs["Value"], mo.inputs["Value"])
+        mo.inputs["From Min"].default_value = a_
+        mo.inputs["From Max"].default_value = b_
+        mo.inputs["To Min"].default_value = 1.0
+        mo.inputs["To Max"].default_value = 0.0
+        df = N.new("ShaderNodeMath")
+        df.operation = "SUBTRACT"
+        L.new(rc4.outputs["Hit Distance"], df.inputs[0])
+        L.new(rc.outputs["Hit Distance"], df.inputs[1])
+        ab = N.new("ShaderNodeMath")
+        ab.operation = "ABSOLUTE"
+        L.new(df.outputs[0], ab.inputs[0])
+        same = N.new("FunctionNodeCompare")
+        same.data_type, same.operation = "FLOAT", "LESS_THAN"
+        L.new(ab.outputs[0], same.inputs[0])
+        same.inputs[1].default_value = 0.001
+        on_other = N.new("FunctionNodeBooleanMath")
+        on_other.operation = "AND"
+        L.new(rc4.outputs["Is Hit"], on_other.inputs[0])
+        L.new(same.outputs[0], on_other.inputs[1])
+        wsw = N.new("GeometryNodeSwitch")
+        wsw.input_type = "FLOAT"
+        L.new(on_other.outputs[0], wsw.inputs["Switch"])
+        wsw.inputs["False"].default_value = 1.0
+        L.new(mo.outputs["Result"], wsw.inputs["True"])
+        po_ = N.new("ShaderNodeMix")
+        po_.data_type = "VECTOR"
+        L.new(wsw.outputs[0], po_.inputs["Factor"])
+        L.new(tw.outputs[0], po_.inputs["A"])
+        L.new(tgt, po_.inputs["B"])
+        target = po_
     clamp = N.new("FunctionNodeBooleanMath")
     clamp.operation = "NIMPLY"  # hit and not squeezed
     L.new(rc.outputs["Is Hit"], clamp.inputs[0])
