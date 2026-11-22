@@ -42,8 +42,9 @@ def load_module():
 def plain():
     gdir = os.path.join(CHARSYS, "groom")
     check("groom/ is a namespace directory (no __init__.py)", not os.path.exists(os.path.join(gdir, "__init__.py")))
-    check("groom/ holds only the experiment module",
-          sorted(f for f in os.listdir(gdir) if not f.startswith("__")) == ["hair_curves.py"], os.listdir(gdir))
+    check("groom/ holds only the experiment modules (T-141 hair_curves, T-207 flock)",
+          sorted(f for f in os.listdir(gdir) if not f.startswith("__")) == ["flock.py", "hair_curves.py"],
+          os.listdir(gdir))
     out = subprocess.run([sys.executable, "-c", "import sys; sys.path.insert(0, sys.argv[1]); import importlib.util;"
                           "print(importlib.util.find_spec('groom').origin)", CHARSYS], capture_output=True, text=True)
     check("`import groom` still resolves to groom.py", out.stdout.strip() == os.path.join(CHARSYS, "groom.py"),
@@ -53,7 +54,8 @@ def plain():
         for dp, _, files in os.walk(os.path.join(ROOT, base)):
             for f in files:
                 p = os.path.join(dp, f)
-                if f.endswith(".py") and p not in (MODULE, os.path.abspath(__file__)):
+                if f.endswith(".py") and p not in (MODULE, os.path.abspath(__file__)) and \
+                        os.path.dirname(p) != gdir and f != "test_hair_flock.py":  # T-207 flock builds on it
                     if re.search(r"groom[/.\\]+hair_curves|import hair_curves|ps_hair_curves",
                                  open(p, encoding="utf-8", errors="replace").read()):
                         users.append(os.path.relpath(p, ROOT))
