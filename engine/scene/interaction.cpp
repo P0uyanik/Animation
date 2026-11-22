@@ -3321,6 +3321,69 @@ Result<void> SceneEvaluator::finishInteractions(Clip& gen, InteractionContext& c
       }
     }
   }
+  // T-210 grasp curl ramps. The grasp weight (`<who>/hand.<side>.grasp.weight`, the contact search of the fingers)
+  // closes in four frames before the contact (grasp, reach) and opens in five after a release (release, hand-over
+  // giver, reach): a finger that turns ~90 deg over such a ramp turns faster than the per-frame finger limit
+  // (MotionLimits, relative to the parent) in its middle frames. Only for a ramp whose measured finger peak is over the
+  // limit, its flat end key moves away from the ramp one frame at a time (a closing ramp starts earlier, an opening one
+  // ends later), over frames whose weight is 0 and without passing another key, up to kMaxExtra frames, until the peak
+  // is under the limit (else the lowest peak found). The key keeps its value and interpolation (the clamped cubic is the
+  // same ease over the longer span); every other key and track is unchanged.
+  {
+    constexpr int kMaxExtra = 8;
+    for (size_t c = 0; c < characters_.size(); ++c) {
+      const Skeleton& sk = characters_[c].asset.skeleton;
+      const std::string prefix = scene_.characters[c].name + "/";
+      for (const char side : {'L', 'R'}) {
+        const std::string name = prefix + "hand." + side + ".grasp.weight";
+        auto wt = gen.tracks.find(name);
+        if (wt == gen.tracks.end() || wt->second.keys.size() < 2 || scene_.animation.tracks.count(name)) continue;  // authored keys win
+        std::vector<int> fingers;
+        for (size_t b = 0; b < sk.bones.size(); ++b) {
+          const std::string& n = sk.bones[b].name;
+          if (motionBoneClass(n) == MotionBoneClass::Finger && n.size() > 2 && n[n.size() - 1] == side && n[n.size() - 2] == '.')
+            fingers.push_back(int(b));
+        }
+        if (fingers.empty()) continue;
+        Track& T = wt->second;
+        // The finger peak (ratio to the limit) over the steps into frames f0 .. f1.
+        auto peak = [&](int f0, int f1) {
+          float m = 0;
+          std::vector<mat4> prev = characterGlobals(c, f0 - 1);
+          for (int f = f0; f <= f1; ++f) {
+            std::vector<mat4> g = characterGlobals(c, f);
+            m = std::max(m, motionStepPeak(sk, prev, g, fingers, scene_.rate.fps()));
+            prev = std::move(g);
+          }
+          return m;
+        };
+        // One ramp per pair of neighbouring keys whose values differ (0 -> 1 closes, 1 -> 0 opens).
+        for (size_t k = 0; k + 1 < T.keys.size(); ++k) {
+          const Key a = T.keys[k], b = T.keys[k + 1];
+          const bool closes = a.value.x <= 0 && b.value.x >= 1, opens = a.value.x >= 1 && b.value.x <= 0;
+          if (!closes && !opens) continue;
+          const int r0 = int(std::floor(a.frame)), r1 = int(std::ceil(b.frame));
+          if (r1 < scene_.frameStart || r0 > scene_.frameEnd) continue;
+          const float before = peak(std::max(scene_.frameStart + 1, r0 + 1), std::min(scene_.frameEnd, r1));
+          if (before <= 1.0f) continue;
+          // The flat end: the key before a closing ramp, the key after an opening one; how far it may move.
+          const size_t flat = closes ? k : k + 1;
+          const double limitFrame = closes ? (k > 0 ? T.keys[k - 1].frame : -1e9) : (k + 2 < T.keys.size() ? T.keys[k + 2].frame : 1e9);
+          const Key orig = T.keys[flat];
+          double bestFrame = orig.frame;
+          float best = before;
+          for (int e = 1; e <= kMaxExtra && best > 1.0f; ++e) {
+            const double f = closes ? orig.frame - e : orig.frame + e;
+            if (closes ? f <= limitFrame + 1e-6 || f < scene_.frameStart - 1 : f >= limitFrame - 1e-6 || f > scene_.frameEnd + 1) break;
+            T.keys[flat].frame = f;
+            const int m0 = int(std::floor(closes ? f : a.frame)), m1 = int(std::ceil(closes ? b.frame : f));
+            if (const float p = peak(std::max(scene_.frameStart + 1, m0 + 1), std::min(scene_.frameEnd, m1)); p < best) best = p, bestFrame = f;
+          }
+          T.keys[flat].frame = bestFrame;
+        }
+      }
+    }
+  }
   return {};
 }
 
