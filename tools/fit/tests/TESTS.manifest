@@ -6,3 +6,4 @@
 # Adding a line for a NEW test needs no approval; changing or removing a line does.
 
 run test_fit.py                              # T-090 fit optimiser
+local test_measurer.py                       # T-214 face measurer: bpy + auburn 0.14.0 master, ~15 s (Blender gate unit at merge)
