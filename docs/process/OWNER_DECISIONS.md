@@ -997,3 +997,45 @@ hard depends-on (read) overlaps were conflicts → T-181b makes them warnings. R
   briefed). World plan stays on hold.
 - T-191 staging asks (enable body clearance in e912; wider seats / lower hand-over point): parked by "do not change e912
   now".
+
+## 2026-11-22 ~14:05 CET (via the liaison)
+- **T-189 Q1 approved:** the environment allows kenney.nl, www.kenney.nl, quaternius.com, www.quaternius.com, itch.io.
+  itch.io downloads use a separate CDN host: whoever tests it reports the exact host(s) to the liaison. Standing owner OK:
+  other useful, licence-safe sites may be investigated; hosts are listed to the liaison, who adds them.
+- **T-189 Q7:** Infinigen may be used if needed (isolated, licence-checked).
+- **World plan:** all questions answered; still not started (priority = system fixes); the liaison relays the start.
+- **New T-196 research (docs only, docs/audit/T-196/**):** Blender-first / hybrid architecture review: useful existing
+  tools/resources, right development approach?, use Blender more instead of building ourselves (per area), hybrid
+  across more parts; per-area map current vs Blender/hybrid (quality, effort saved, risks incl. determinism, headless,
+  goldens, TD-43, migration); ranked recommendations + verdict. Builds on T-174/T-176/T-189/T-193. No changes.
+
+## 2026-11-22 ~14:40 CET (via the liaison)
+- T-195 final voices: on hold (the placeholder demo stays as is).
+- T-190: the hand improvements are to be merged, further improvement later; default ON/OFF and the 33°/45° box-face
+  lay-back are not decided yet (the liaison explains) → no merge until both answers are relayed.
+- Motion-continuity guard and the T-196 follow-ups: not approved yet; no action until relayed.
+
+## 2026-11-22 ~15:10 CET (via the liaison; final)
+1. **T-190 approved:** default ON (finger/thumb limits for all existing and future animation); 45° lay-back for flat-hand
+   box-face grips only, wrap grips keep 33°. Update ONLY the 6 identified interaction goldens (thumb corrections only)
+   and rewrite ONLY the 8 identified test criteria that demanded physically impossible thumbs. No unrelated goldens,
+   character features or behaviours may change; no test weakened, removed or bypassed; rewritten tests keep or improve
+   guarantees. Merge once these hold and all tests pass.
+2. **Motion Continuity Guard approved, after T-190:** detect and correct unnatural frame-to-frame jumps in hand targets,
+   head rotation and gaze; keep intentional fast moves and camera cuts; do not change intended acting; per-frame
+   speed-limit test.
+3. **T-196 follow-ups:** approved Q1 (per-shot real-geometry collision audit), Q2 (compositor look preset; before/after
+   for owner approval before applying), Q4 (lighting setups in Blender set files), L1 (garment–body collision +
+   cloth-sim evaluation for loose pieces), L2 (corrective shape keys at strong bends, AFTER the next character release).
+   Q3 (EEVEE preview evaluation) is assigned to Codex as T-197 on the owner's PC — not dispatched by the Supervisor.
+   L3 not approved. Sensible order, dependencies respected, one owner per file.
+4. **Voices:** on hold (no final voice selection/implementation).
+- General: prefer Blender built-ins + our engine + suitable open source; no unnecessary rebuilds; keep approved designs
+  and behaviours; never compromise tests or quality; fix system-level problems, not per-scene patches.
+- Task IDs: T-197 is Codex's; Supervisor IDs continue at T-198.
+
+## 2026-11-22 ~15:20 CET (via the liaison) — standing rule
+- **No Fable model for any task from now on** (token cost). New dispatches: Opus 5.5 by default, Sonnet 5.5 for
+  mechanical / aggregation work. Running Fable sessions (T-183 colliders, T-194 push-out) reach their next checkpoint,
+  then further rounds continue in a fresh Opus session (branch + round file; no work lost). T-190 round 2, started on
+  Fable at ~13:48Z, was restarted on Opus at once (session_01NPjxeMs1WeEkn4EHp9scQE).

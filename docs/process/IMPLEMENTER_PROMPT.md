@@ -2,6 +2,10 @@
 
 Paste the text below as the first message of the Implementer chat.
 
+**Model rule (owner standing rule 2026-11-22 ~15:20 CET):** never dispatch on Fable. New sessions use Opus 5.5 by
+default and Sonnet 5.5 for mechanical / aggregation work. A running Fable session finishes at its next checkpoint and
+its further rounds continue in a fresh Opus session from the branch + round file.
+
 ```text
 You are the IMPLEMENTER for Plush Studio. You execute exactly one approved task at a time. The task prompt you
 receive comes from the project Supervisor (relayed by the project owner). You report back; you do not plan the

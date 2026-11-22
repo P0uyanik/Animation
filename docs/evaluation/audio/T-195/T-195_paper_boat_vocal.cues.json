@@ -1,0 +1,115 @@
+{
+ "format": "plush.vocalcues",
+ "version": 1,
+ "fps": 24.0,
+ "frames": 434,
+ "cues": [
+  {
+   "clipFrame": 162,
+   "time": 6.75,
+   "scene": "s020",
+   "sceneFrame": 59,
+   "shot": "3",
+   "character": "boy",
+   "personality": "boy_yellow_hoodie",
+   "seatX": 0.4,
+   "emotion": "surprised",
+   "intensity": 0.9,
+   "cue": "gasp_oh",
+   "gainDb": -3.0,
+   "sound": "library/gasp_oh/proc_gasp_oh_v2.wav",
+   "placeholder": true,
+   "cents": -324.92,
+   "pan": 0.4
+  },
+  {
+   "clipFrame": 166,
+   "time": 6.9167,
+   "scene": "s020",
+   "sceneFrame": 63,
+   "shot": "3",
+   "character": "white",
+   "personality": "girl_white_hair_blue_dress",
+   "seatX": -0.43,
+   "emotion": "surprised",
+   "intensity": 0.9,
+   "cue": "gasp_oh",
+   "gainDb": -4.0,
+   "sound": "library/gasp_oh/proc_gasp_oh_v0.wav",
+   "placeholder": true,
+   "cents": 174.96,
+   "pan": -0.43
+  },
+  {
+   "clipFrame": 176,
+   "time": 7.3333,
+   "scene": "s020",
+   "sceneFrame": 73,
+   "shot": "3",
+   "character": "auburn",
+   "personality": "girl_auburn_bun_glasses",
+   "seatX": 0.0,
+   "emotion": "girl_delighted",
+   "intensity": 0.8,
+   "cue": "giggle",
+   "gainDb": -8.0,
+   "sound": "library/giggle/proc_giggle_v0.wav",
+   "placeholder": true,
+   "cents": 31.02,
+   "pan": 0.0
+  },
+  {
+   "clipFrame": 276,
+   "time": 11.5,
+   "scene": "s020",
+   "sceneFrame": 173,
+   "shot": "4",
+   "character": "boy",
+   "personality": "boy_yellow_hoodie",
+   "seatX": 0.4,
+   "emotion": "happy",
+   "intensity": 0.8,
+   "cue": "wow",
+   "gainDb": -6.0,
+   "sound": "library/wow/proc_wow_v0.wav",
+   "placeholder": true,
+   "cents": -325.82,
+   "pan": 0.4
+  }
+ ],
+ "mix": {
+  "rate": 48000,
+  "channels": 2,
+  "busGainDb": 0.0,
+  "busPeakLimitDbfs": -1.0,
+  "peakDbfs": -7.93,
+  "wavSha256": "7ff525a8303e2877c5f00f7ac14ddf22b8aa35c3d8405068c7bce1f6748bd902",
+  "wavSamples": 868000
+ },
+ "video": {
+  "input": "docs/evaluation/video/T-187/T-187_paper_boat_h264.mp4",
+  "inputSha256": "2b0b20a72c059694ea89fed79a39b1170bfd9192ef8ac931fa490124edc070b9",
+  "output": "T-195_paper_boat_vocal.mp4",
+  "videoStreamMd5": "MD5=ea72e05aec895565957f2ed2f6ba8657",
+  "streams": [
+   {
+    "index": 0,
+    "codec_name": "h264",
+    "codec_type": "video",
+    "width": 640,
+    "height": 360,
+    "duration": "18.083333",
+    "nb_frames": "434"
+   },
+   {
+    "index": 1,
+    "codec_name": "aac",
+    "codec_type": "audio",
+    "sample_rate": "48000",
+    "channels": 2,
+    "duration": "18.083000",
+    "nb_frames": "849"
+   }
+  ]
+ }
+}
