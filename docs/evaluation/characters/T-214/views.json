@@ -1,5 +1,5 @@
 {
-  "note": "T-214 measurer cameras = T-202 face_views.py (70 mm, 36 mm vertical sensor, square). Reference views carry the T-204 yaw and the matched expression (owner default D4: smiling references are scored against a matched smile). holdout = reference view kept for checking only, never fitted. View weights are equal (D2).",
+  "note": "T-214 measurer cameras = T-202 face_views.py (70 mm, 36 mm vertical sensor, square). Reference views carry the T-204 yaw and the matched expression (owner default D4: smiling references are scored against a matched smile). holdout = reference view kept for checking only, never fitted. View weights are equal (D2). lid_shadow_h = visible-opening shadow band in H, fitted once per character on the T-202 renders (front and 3/4 opening heights, geometric minus hand, mean).",
   "yaws": [
     0,
     45,
@@ -40,7 +40,8 @@
           "reference": "girl_side_sheet30_left.png"
         }
       },
-      "holdout": "three_quarter"
+      "holdout": "three_quarter",
+      "lid_shadow_h": 0.018
     },
     "white_haired": {
       "id": "girl_white_hair_blue_dress",
@@ -74,7 +75,8 @@
       "holdout": "three_quarter",
       "flags": [
         "bun_twin"
-      ]
+      ],
+      "lid_shadow_h": 0.026
     },
     "boy": {
       "id": "boy_yellow_hoodie",
@@ -103,7 +105,8 @@
           "reference": "boy_side_val27_side_right.png"
         }
       },
-      "holdout": "three_quarter"
+      "holdout": "three_quarter",
+      "lid_shadow_h": -0.001
     }
   }
 }
