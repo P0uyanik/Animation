@@ -196,6 +196,13 @@ class T204FitTests(unittest.TestCase):
         self.assertEqual(kept, ["a", "d"])
         self.assertIn("redundant with a", dropped["b"])
         self.assertIn("max |dz|", dropped["c"])
+        # noisy measures do not drive selection; a coupled trace family drops the weaker of a parallel pair
+        cols2 = {"j": {"cw": 0.5, "jw": 0.6, "x": 0.0, "n": 3.0}, "k": {"cw": 0.4, "jw": 0.5, "x": 0.9, "n": 0.0},
+                 "e": {"cw": 0.01, "jw": 0.02, "x": -0.8, "n": 0.0}}
+        kept, dropped = select_controls(cols2, ["cw", "jw", "x", "n"], 0.25, 0.95, noisy=["n"],
+                                        coupled=[(["cw", "jw"], 0.85)])
+        self.assertEqual(kept, ["e", "k"])
+        self.assertIn("coupled on cw,jw with k", dropped["j"])
         z = linear_z(z0, cols, {"a": 0.0, "d": 0.0}, steps, {"a": 0.5, "d": 1.0})
         self.assertAlmostEqual(z["m1"], 1.5)
         self.assertAlmostEqual(z["m2"], 0.0)

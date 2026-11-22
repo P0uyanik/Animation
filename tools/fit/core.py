@@ -163,23 +163,33 @@ def _cos(a, b):
     return 0.0 if not na or not nb else sum(a[k] * b[k] for k in keys) / (na * nb)
 
 
-def select_controls(cols, measures, min_effect=0.25, max_cos=0.95):
+def select_controls(cols, measures, min_effect=0.25, max_cos=0.95, noisy=(), coupled=()):
     """Drop controls whose largest |dz| over the fitted measures stays under min_effect (no reach), then drop the
-    weaker of every pair whose columns point the same way within max_cos (redundant or coupled).
+    weaker of every pair whose columns point the same way within max_cos (redundant). `noisy` measures (a ratio over a
+    few pixels) still count in the objective but not here. `coupled` = [(measure subset, max_cos)]: the same pair test
+    on one trace family, e.g. the front and profile cheek/jaw contours (T-212: coupled cheek and jaw knobs).
     Returns (kept, dropped) with a reason per dropped control."""
+    measures = [k for k in measures if k not in set(noisy)]
     norm = {n: math.sqrt(sum(c.get(k, 0.0) ** 2 for k in measures)) for n, c in cols.items()}
     reach = {n: max([abs(c.get(k, 0.0)) for k in measures] or [0.0]) for n, c in cols.items()}
     dropped = {n: f"max |dz| {reach[n]:.3f} < {min_effect}" for n in cols if reach[n] < min_effect}
     live = sorted((n for n in cols if n not in dropped), key=lambda n: (-norm[n], n))
     kept = []
-    for n in live:
-        sub = {k: cols[n].get(k, 0.0) for k in measures}
-        twin = next((m for m in kept if abs(_cos(sub, {k: cols[m].get(k, 0.0) for k in measures})) > max_cos), None)
-        if twin:
-            c = _cos(sub, {k: cols[twin].get(k, 0.0) for k in measures})
-            dropped[n] = f"redundant with {twin} (cos {c:+.3f})"
-        else:
-            kept.append(n)
+    for subset, limit, label in [(measures, max_cos, "redundant with")] + [(list(m), c, "coupled on " + ",".join(m)
+                                                                             + " with") for m, c in coupled]:
+        kept = []
+        acts = {n for n in live if max(abs(cols[n].get(k, 0.0)) for k in subset) >= min_effect}
+        for n in live:  # a control that barely moves this family is not tested on it
+            sub = {k: cols[n].get(k, 0.0) for k in subset}
+            twin = None if n not in acts else next(
+                (m for m in kept if m in acts and abs(_cos(sub, {k: cols[m].get(k, 0.0) for k in subset})) > limit),
+                None)
+            if twin:
+                c = _cos(sub, {k: cols[twin].get(k, 0.0) for k in subset})
+                dropped[n] = f"{label} {twin} (cos {c:+.3f})"
+            else:
+                kept.append(n)
+        live = kept
     return sorted(kept), dropped
 
 

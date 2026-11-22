@@ -210,7 +210,12 @@ def t204_search(args):
     sens = read(args.sens / "sensitivity.json")
     if sens["spec_sha256"] != specs.sha256(spec):
         raise ValueError("sensitivity run used a different spec")
-    kept = args.controls.split(",") if args.controls else sens["kept"]
+    if args.controls:
+        kept, dropped = args.controls.split(","), {}
+    else:  # reselect from the stored columns with this run's rules (recorded in search.json)
+        kept, dropped = select_controls(sens["columns"], sens["fitted_measures"], args.min_effect, args.max_cos,
+                                        args.noisy.split(",") if args.noisy else (),
+                                        [(m.split(","), args.coupled_cos) for m in args.coupled])
     bounds = {k: sens["bounds"][k] for k in kept}
     start = {k: sens["start"][k] for k in kept}
     scales = {k: abs(sens["steps"][k]) for k in kept}
@@ -257,7 +262,9 @@ def t204_search(args):
     write(child(out, "proposal.json"), override(values, spec))
     write(child(out, "search.json"), {
         "character": args.character, "spec_sha256": specs.sha256(spec), "seed": args.seed, "budget": args.budget,
-        "controls": kept, "bounds": bounds, "start": start, "start_cost": start_cost[0],
+        "controls": kept, "dropped": dropped,
+        "selection": {"min_effect": args.min_effect, "max_cos": args.max_cos, "noisy": args.noisy,
+                      "coupled": args.coupled, "coupled_cos": args.coupled_cos}, "bounds": bounds, "start": start, "start_cost": start_cost[0],
         "start_per_view": start_cost[1], "surrogate_mean": mean, "edit_weight": args.edit_weight,
         "best": best, "best_cost": cost, "best_parameters": values, "trials": trials,
         "wall_s": time.perf_counter() - started})
@@ -279,6 +286,9 @@ def t204_main(argv):
     parser.add_argument("--keep-blends", action="store_true")
     parser.add_argument("--min-effect", type=float, default=0.25)
     parser.add_argument("--max-cos", type=float, default=0.95)
+    parser.add_argument("--noisy", default="", help="search: measures left out of control selection (comma list)")
+    parser.add_argument("--coupled", action="append", default=[], help="search: trace family for the coupling test")
+    parser.add_argument("--coupled-cos", type=float, default=0.85)
     parser.add_argument("--budget", type=int, default=24)
     parser.add_argument("--popsize", type=int, default=6)
     parser.add_argument("--sigma", type=float, default=0.12)
