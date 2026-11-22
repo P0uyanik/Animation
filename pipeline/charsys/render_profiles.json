@@ -16,6 +16,52 @@
     "use_persistent_data": true
    }
   },
+  "final720_look": {
+   "description": "T-199, OPT-IN (owner has not approved the look yet): final720 plus the 'plush_soft' compositor look: soft fog-glow on highlights, a gentle warm grade and a faint vignette. Render settings are identical to final720; only the compositor tree differs. Select with --profile final720_look.",
+   "resolution": [
+    1280,
+    720
+   ],
+   "samples": 128,
+   "cycles": {
+    "adaptive_threshold": 0.05
+   },
+   "render": {
+    "use_persistent_data": true
+   },
+   "compositor": {
+    "look": "plush_soft",
+    "glow": {
+     "type": "Fog Glow",
+     "quality": "High",
+     "threshold": 0.8,
+     "smoothness": 0.5,
+     "strength": 0.25,
+     "size": 0.5
+    },
+    "grade": {
+     "saturation": 1.04,
+     "lift": [
+      1.0,
+      1.0,
+      1.0
+     ],
+     "gain": [
+      1.02,
+      1.0,
+      0.97
+     ]
+    },
+    "vignette": {
+     "strength": 0.06,
+     "size": [
+      0.95,
+      0.95
+     ],
+     "softness": 0.2
+    }
+   }
+  },
   "review": {
    "description": "Review renders 1280x720: 16 spp + OIDN, adaptive 0.05. T-124 s010_verbs frame 65: about 67 s (-84%); noisier fibres and softer hair edges, for animation/timing review only.",
    "resolution": [
