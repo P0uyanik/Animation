@@ -3,7 +3,7 @@
 
     python3 docs/evaluation/interaction/T-190/closeup.py --bake <bake.json> --cast <build>/cast.json \
         --scan <measure_t190 output .jsonl[.gz]> --tiles <label>=<who>:<L|R>:<frame>:<view>,... --out <dir> \
-        [--samples 16] [--res 400 300] [--blender <exe>]
+        [--hide <object name prefix>,...] [--samples 16] [--res 400 300] [--blender <exe>]
 
 Writes a copy of the bake holding only the tiles' frames (renumbered 1..n; poses, props and lights unchanged) with
 the camera of each replaced by a close-up of that hand, renders it with pipeline/charsys/shot_render.py (one Blender
@@ -13,6 +13,9 @@ run) and saves <out>/<label>.png. The camera looks at the hand (wrist + 35 mm al
     tip     0.1 n + 0.5 r + 0.3 y + d      (from the fingertips)
     palm    n + 0.4 r + 0.2 y + 0.2 d
     back    -n + 0.3 r + 0.3 y
+    under   0.3 n + r + 0.5 y + 0.6 d      (thumb side of a hand held thumb down: from below, needs --hide table)
+--hide leaves scene objects out of the copy (e.g. the table between such a camera and the hand); the poses are the
+bake's own.
 The same tiles on two bakes (before / after) give the two columns of tools/review/shot_sheet.py.
 """
 import argparse
@@ -24,7 +27,8 @@ import shutil
 import subprocess
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..", ".."))
-VIEWS = {"radial": (0.2, 1.0, 0.2, 0.2), "tip": (0.1, 0.5, 0.3, 1.0), "palm": (1.0, 0.4, 0.2, 0.2), "back": (-1.0, 0.3, 0.3, 0.0)}
+VIEWS = {"radial": (0.2, 1.0, 0.2, 0.2), "tip": (0.1, 0.5, 0.3, 1.0), "palm": (1.0, 0.4, 0.2, 0.2), "back": (-1.0, 0.3, 0.3, 0.0),
+         "under": (0.3, 1.0, 0.5, 0.6)}
 
 
 def cross(a, b):
@@ -50,6 +54,7 @@ def main():
     ap.add_argument("--scan", required=True)
     ap.add_argument("--tiles", required=True)
     ap.add_argument("--out", required=True)
+    ap.add_argument("--hide", default="")
     ap.add_argument("--samples", type=int, default=16)
     ap.add_argument("--res", type=int, nargs=2, default=[400, 300])
     ap.add_argument("--blender", default="/usr/local/bin/blender")
@@ -61,6 +66,9 @@ def main():
             r = json.loads(line)
             rows[(r["who"], r["side"], r["frame"])] = r
     bake = json.load(open(a.bake))
+    hide = tuple(h for h in a.hide.split(",") if h)
+    if hide:
+        bake["objects"] = [o for o in bake["objects"] if not str(o.get("name", "")).startswith(hide)]
     by = {fd["frame"]: fd for fd in bake["frame_data"]}
     sub, labels = [], []
     for k, tile in enumerate(a.tiles.split(","), 1):
@@ -85,7 +93,7 @@ def main():
         subprocess.run(cmd, check=True, stdout=log, stderr=subprocess.STDOUT)
     for k, label in enumerate(labels, 1):
         shutil.copyfile(os.path.join(work, "render", f"frame_{k:04d}.png"), os.path.join(a.out, f"{label}.png"))
-    json.dump({"bake": a.bake, "scan": a.scan, "tiles": a.tiles, "samples": a.samples, "res": a.res},
+    json.dump({"bake": a.bake, "scan": a.scan, "tiles": a.tiles, "hide": a.hide, "samples": a.samples, "res": a.res},
               open(os.path.join(a.out, "closeup.json"), "w"), indent=1)
     print(f"{len(labels)} tiles -> {a.out}")
 

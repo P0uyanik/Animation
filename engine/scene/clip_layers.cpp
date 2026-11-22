@@ -601,6 +601,8 @@ void SceneEvaluator::applyClipFingers(size_t c, double frame, Pose& pose) const 
       return (isFingerRole(role) && inMask(*L.clip, role, L.mirror) && !handOwned(role)) ? fe : 0.0f;
     });
   }
+  for (char side : {'L', 'R'})  // T-190: clip-driven digits end inside the joint ranges too ("hand.<s>.limits" 0 = off)
+    if (anim.evaluate(prefix + "hand." + side + ".limits", frame, vec3(1)).x >= 0.5f) applyHandLimits(sk, pose, side);
 }
 
 }  // namespace plush

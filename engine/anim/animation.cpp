@@ -396,6 +396,187 @@ float tipRadius(const Skeleton& sk, const HandBones& h) {
   return 0.5f * sum / float(roots.size() - 1);
 }
 
+// The thumb's opposition axis (the finger direction) and abduction axis (the palm normal), signed for this hand:
+// opposition takes the thumb tip in front of the palm, positive abduction towards the fingers.
+struct ThumbAxes {
+  vec3 opp, abd;
+};
+ThumbAxes thumbAxes(const Skeleton& sk, const HandBones& h, const HandAxes& ax) {
+  ThumbAxes t{ax.dir, ax.normal};
+  if (!HandBones::ok(h.thumb)) return t;
+  const vec3 u = sk.bones[size_t(h.thumb.b)].head - sk.bones[size_t(h.thumb.a)].head;
+  if (glm::dot(glm::cross(ax.dir, u), ax.normal) < 0) t.opp = -t.opp;
+  vec3 m(0);
+  int n = 0;
+  for (const auto& f : h.fingers)
+    if (HandBones::ok(f)) m += sk.bones[size_t(f.a)].head, ++n;
+  if (n > 0 && glm::dot(glm::cross(ax.normal, u), m / float(n) - sk.bones[size_t(h.thumb.a)].head) < 0) t.abd = -t.abd;
+  return t;
+}
+constexpr float kLimitEps = 0.05f;  // degrees: inside a range by this much counts as inside (float noise of the angles)
+// An angle (degrees, any multiple of 360 away) clamped to [lo, hi]: the nearer limit when it is outside.
+bool clampAngle(float& a, float lo, float hi) {
+  while (a > 180.0f) a -= 360.0f;
+  while (a < -180.0f) a += 360.0f;
+  if (a >= lo - kLimitEps && a <= hi + kLimitEps) return false;
+  const float toLo = a < lo ? lo - a : lo + 360.0f - a, toHi = a > hi ? a - hi : a + 360.0f - hi;
+  a = toLo <= toHi ? lo : hi;
+  return true;
+}
+float angleAbout(quat q, vec3 axis) {  // signed angle (degrees) of q's twist about a unit axis
+  if (q.w < 0) q = -q;
+  return glm::degrees(2.0f * std::atan2(glm::dot(vec3(q.x, q.y, q.z), axis), q.w));
+}
+// A finger joint as flex about the curl axis, then spread about the spread axis, then roll about the third axis of
+// that frame (the finger direction): exactly fingerRot's (curl, spread) when there is no roll.
+bool limitFingerJoint(quat& q, const HandAxes& ax, float flexLo, float flexHi, float spreadMax, float rollMax) {
+  const vec3 z = glm::cross(ax.curl, ax.spread);
+  const mat3 B(ax.curl, ax.spread, z);
+  const mat3 M = glm::transpose(B) * glm::mat3_cast(q) * B;  // M[col][row]
+  float spread = glm::degrees(std::asin(std::clamp(M[2][0], -1.0f, 1.0f)));
+  float flex = glm::degrees(std::atan2(-M[2][1], M[2][2])), roll = glm::degrees(std::atan2(-M[1][0], M[0][0]));
+  bool changed = clampAngle(flex, flexLo, flexHi);
+  changed |= clampAngle(spread, -spreadMax, spreadMax);
+  changed |= clampAngle(roll, -rollMax, rollMax);
+  if (changed)
+    q = glm::angleAxis(glm::radians(flex), ax.curl) * glm::angleAxis(glm::radians(spread), ax.spread) * glm::angleAxis(glm::radians(roll), z);
+  return changed;
+}
+// The thumb base as abduction * opposition * flex (the per-finger thumb controls; the opposition axis is
+// perpendicular to the other two, so every rotation has these three angles).
+bool limitThumbBase(quat& q, const HandAxes& ax, const ThumbAxes& ta, float backMax, const HandLimits& lim) {
+  const vec3 a = ax.thumb, o = ta.opp, n = ta.abd, oa = glm::cross(o, a);
+  const float p = glm::dot(n, a), s = glm::dot(n, oa);
+  if (std::abs(s) < 1e-4f) return false;  // degenerate hand frame: no decomposition, leave the joint alone
+  const vec3 w = q * a;
+  const float b0 = std::atan2(s, p);
+  float opp = b0 - (s > 0 ? 1.0f : -1.0f) * std::acos(std::clamp(glm::dot(n, w), -1.0f, 1.0f));
+  const vec3 v = std::cos(opp) * a + std::sin(opp) * oa;
+  float abd = std::atan2(glm::dot(n, glm::cross(v, w)), glm::dot(v, w) - glm::dot(n, v) * glm::dot(n, w));
+  float flex = angleAbout(glm::inverse(glm::angleAxis(abd, n) * glm::angleAxis(opp, o)) * q, a);
+  opp = glm::degrees(opp), abd = glm::degrees(abd);
+  bool changed = clampAngle(opp, 0.0f, lim.thumbOpposition);
+  changed |= clampAngle(abd, -lim.thumbAbductionIn, lim.thumbAbductionOut);
+  changed |= clampAngle(flex, -backMax, lim.thumbFlex);
+  if (changed) q = glm::angleAxis(glm::radians(abd), n) * glm::angleAxis(glm::radians(opp), o) * glm::angleAxis(glm::radians(flex), a);
+  return changed;
+}
+// A hinge about `axis`: flex in [0, flexMax], anything off the axis at most `play`.
+bool limitHinge(quat& q, vec3 axis, float flexMax, float play) {
+  float flex = angleAbout(q, axis);
+  quat rest = glm::normalize(q * glm::angleAxis(glm::radians(-flex), axis));  // q = rest * hinge(flex)
+  if (rest.w < 0) rest = -rest;
+  const float off = glm::degrees(2.0f * std::acos(std::clamp(rest.w, -1.0f, 1.0f)));
+  bool changed = clampAngle(flex, 0.0f, flexMax);
+  if (off > play + kLimitEps) {
+    const vec3 v(rest.x, rest.y, rest.z);
+    rest = glm::length(v) > 1e-9f ? glm::angleAxis(glm::radians(play), glm::normalize(v)) : quat(1, 0, 0, 0);
+    changed = true;
+  }
+  if (changed) q = rest * glm::angleAxis(glm::radians(flex), axis);
+  return changed;
+}
+void limitHand(const Skeleton& sk, Pose& pose, char side, const HandBones& h, const HandLimits& lim) {
+  const HandAxes ax = handAxes(sk, side);
+  for (const FingerChain& f : h.fingers) {
+    if (!HandBones::ok(f)) continue;
+    limitFingerJoint(pose.local[size_t(f.a)], ax, -lim.knuckleBack, lim.knuckleFlex, lim.knuckleSpread, lim.play);
+    limitFingerJoint(pose.local[size_t(f.b)], ax, 0.0f, lim.middleFlex, lim.play, lim.play);
+    int c = -1, n = 0;
+    for (size_t i = 0; i < sk.bones.size(); ++i)
+      if (sk.bones[i].parent == f.b) c = int(i), ++n;
+    if (n == 1) limitFingerJoint(pose.local[size_t(c)], ax, 0.0f, lim.endFlex, lim.play, lim.play);
+  }
+  if (!HandBones::ok(h.thumb)) return;
+  limitThumbBase(pose.local[size_t(h.thumb.a)], ax, thumbAxes(sk, h, ax), lim.thumbBack, lim);
+  limitHinge(pose.local[size_t(h.thumb.b)], ax.thumb, lim.thumbEndFlex, lim.play);
+}
+
+// The thumb of a grasp, solved inside its range (T-171 round 3, the wrap branch's thumb; T-190: the thumb of every
+// per-finger grasp with HandPose::limits): the best pose over opposition 0..1 and abduction -20..30 deg. For each,
+// the first segment starts where it is clear of the object (laid back by at most `backMax` of a curl on a wide
+// object; never turned round), flexes onto the surface, then the second segment. Cost: tip off the surface, inside
+// the object when laid back, outside the band, on the fingers' side of the object (opposed), and a small price on
+// opposition, abduction and lying back, so equal contacts give the same, nearest pose on every frame. returns
+// the grasp pose (the caller blends it from the thumb's base pose by the grasp weight).
+struct ThumbControls {
+  float opp = 0, abd = 0, a = 0, b = 0;  // opposition 0..1, abduction (deg), flexion of the two segments (curl units)
+};
+// The thumb's own controls (as the per-finger pose): opposition about the finger direction, abduction about the palm
+// normal (positive towards the fingers), flexion of its two segments about the thumb axis.
+std::pair<quat, quat> thumbControlRots(const HandAxes& ax, const ThumbAxes& ta, const ThumbControls& t) {
+  return std::pair{glm::angleAxis(glm::radians(t.abd), ta.abd) * glm::angleAxis(glm::radians(t.opp * 60.0f), ta.opp) * thumbRot(ax, t.a * 55.0f),
+                   thumbRot(ax, t.b * 45.0f)};
+}
+ThumbControls thumbBaseControls(const HandPose& hp) {  // the keyed thumb: its opposition and curl
+  const float curl = std::clamp(hp.thumbPose ? hp.thumbPose->y : hp.thumb, 0.0f, 1.0f);
+  return ThumbControls{hp.thumbPose ? std::clamp(hp.thumbPose->x, 0.0f, 1.0f) : 0.0f, 0, curl, curl};
+}
+template <class Surf, class Height>
+std::pair<quat, quat> rangeThumb(const Skeleton& sk, const HandBones& h, const HandAxes& ax, const HandPose& hp, const mat4& handGlobal,
+                                 vec3 centre, float scale, const Surf& surf, const Height& height, bool band, float lo, float hi,
+                                 float edge, float skinT, float sideSign, vec3 split, float backMax, bool strictBack) {
+  const ThumbAxes ta = thumbAxes(sk, h, ax);
+  using Thumb = ThumbControls;
+  auto thumbRots = [&](const Thumb& t) { return thumbControlRots(ax, ta, t); };
+  struct Chain {
+    vec3 p[3];  // root, second joint, tip centre
+  };
+  const vec3 handHead = sk.bones[size_t(h.hand)].head;
+  auto thumbChain = [&](const Thumb& t) {
+    const auto r = thumbRots(t);
+    const vec3 ha = sk.bones[size_t(h.thumb.a)].head, hb = sk.bones[size_t(h.thumb.b)].head;
+    const mat4 ga = handGlobal * glm::translate(mat4(1), ha - handHead) * glm::mat4_cast(r.first);
+    const mat4 gb = ga * glm::translate(mat4(1), hb - ha) * glm::mat4_cast(r.second);
+    Chain ch;
+    ch.p[0] = vec3(ga[3]), ch.p[1] = vec3(gb[3]), ch.p[2] = vec3(gb * vec4(hb - ha, 1));
+    return ch;
+  };
+  auto gapFrom = [&](const Chain& ch, int from, float skin) {
+    float g = 1e9f;
+    for (int i = from; i < 2; ++i) g = std::min({g, surf(0.5f * (ch.p[i] + ch.p[i + 1])), surf(ch.p[i + 1])});
+    return g - skin;
+  };
+  auto firstContact = [](auto g, float lo, float hi) {  // smallest x in [lo, hi] with g(x) <= 0; hi if never
+    if (g(lo) <= 0) return lo;
+    if (g(hi) > 0) return hi;
+    for (int it = 0; it < 16; ++it) {
+      const float mid = 0.5f * (lo + hi);
+      (g(mid) <= 0 ? hi : lo) = mid;
+    }
+    return hi;
+  };
+  Thumb best = thumbBaseControls(hp);
+  const float thumbOpp = best.opp;
+  float bestCost = 1e9f;
+  const bool tucked = hp.thumbMode == HandPose::Thumb::Tucked;
+  for (int io = 0; io <= (tucked ? 0 : 4); ++io)
+    for (int ia = 0; ia <= (tucked ? 0 : 5); ++ia) {
+      Thumb t{tucked ? thumbOpp : 0.25f * float(io), tucked ? 0.0f : -20.0f + 10.0f * float(ia), 0, 0};
+      auto ga = [&](float x) {
+        t.a = x;
+        return gapFrom(thumbChain(t), 0, skinT);
+      };
+      float back = 0;
+      while (ga(back) <= 0 && back > -backMax) back -= 0.05f;
+      if (strictBack) back = std::max(back, -backMax);  // T-190: the last step stops at the limit
+      const float open = ga(back);
+      t.a = back;
+      if (open > 0) {
+        t.a = firstContact(ga, back, tucked ? 0.6f : 1.2f);
+        t.b = firstContact([&](float x) { t.b = x; return gapFrom(thumbChain(t), 1, skinT); }, 0.0f, 1.25f);
+      }
+      const Chain ch = thumbChain(t);
+      const float tipGap = surf(ch.p[2]) - skinT;
+      float cost = 4.0f * std::max(0.0f, tipGap) + 8.0f * std::max(0.0f, -open);  // off the surface; inside it when laid back
+      if (band) cost += 4.0f * std::max({0.0f, lo + 0.5f * edge - height(ch.p[2]), height(ch.p[2]) - (hi - 0.5f * edge)});
+      if (hp.thumbMode == HandPose::Thumb::Opposed) cost += 0.15f * sideSign * glm::dot(ch.p[2] - centre, split);
+      cost += 0.002f * scale * (std::abs(t.abd) / 30.0f + t.opp) + 0.01f * scale * std::max(0.0f, -t.a);
+      if (cost < bestCost) bestCost = cost, best = t;
+    }
+  return thumbRots(best);
+}
+
 // T-171 round 3 wrap (HandPose::wrap, opt-in): the grasp of a hand whose fingers have to lie round the object. Each
 // finger is a chain of two or three segments (f<k>a, f<k>b and the rig's own distal bone when f<k>b has exactly one
 // child) with one skin radius; from the open finger all joints flex together (an arched finger) until a part of it
@@ -584,37 +765,12 @@ void applyHandWrap(const Skeleton& sk, Pose& pose, const mat4& world, char side,
     if (w > 0 && distal[size_t(k)] >= 0) pose.local[size_t(distal[size_t(k)])] = fingerRot(ax, w * g.c, 0);
   }
   if (!HandBones::ok(h.thumb)) return;
-  // The thumb's own controls (as the per-finger pose): opposition about the finger direction, abduction about the palm
-  // normal (positive towards the fingers), flexion of its two segments about the thumb axis.
-  const float thumbCurl = std::clamp(hp.thumbPose ? hp.thumbPose->y : hp.thumb, 0.0f, 1.0f);
-  const float thumbOpp = hp.thumbPose ? std::clamp(hp.thumbPose->x, 0.0f, 1.0f) : 0.0f;
-  vec3 oppAxis = ax.dir, abdAxis = ax.normal;
-  {
-    const vec3 u = sk.bones[size_t(h.thumb.b)].head - sk.bones[size_t(h.thumb.a)].head;
-    if (glm::dot(glm::cross(ax.dir, u), ax.normal) < 0) oppAxis = -oppAxis;
-    vec3 m(0);
-    int n = 0;
-    for (const auto& f : h.fingers)
-      if (HandBones::ok(f)) m += sk.bones[size_t(f.a)].head, ++n;
-    if (n > 0 && glm::dot(glm::cross(ax.normal, u), m / float(n) - sk.bones[size_t(h.thumb.a)].head) < 0) abdAxis = -abdAxis;
-  }
-  struct Thumb {
-    float opp = 0, abd = 0, a = 0, b = 0;  // opposition 0..1, abduction (deg), flexion of the two segments (curl units)
-  };
-  auto thumbRots = [&](const Thumb& t) {
-    return std::pair{glm::angleAxis(glm::radians(t.abd), abdAxis) * glm::angleAxis(glm::radians(t.opp * 60.0f), oppAxis) * thumbRot(ax, t.a * 55.0f),
-                     thumbRot(ax, t.b * 45.0f)};
-  };
-  const auto b0 = thumbRots(Thumb{thumbOpp, 0, thumbCurl, thumbCurl});
+  const auto b0 = thumbControlRots(ax, thumbAxes(sk, h, ax), thumbBaseControls(hp));
   const float wt = weightOf(4);
   if (wt <= 0) {
     setChain(pose, h.thumb, b0.first, b0.second);
     return;
   }
-  auto thumbChain = [&](const Thumb& t) {
-    const auto r = thumbRots(t);
-    return chainOf(h.thumb, -1, r.first, r.second, quat(1, 0, 0, 0));
-  };
   const vec3 palmN = glm::normalize(vec3(handGlobal * vec4(ax.normal, 0)));
   vec3 split = cyl ? glm::cross(axis, palmN) : glm::cross(palmN, glm::normalize(vec3(handGlobal * vec4(ax.curl, 0))));
   split = glm::length(split) > 1e-6f ? glm::normalize(split) : vec3(1, 0, 0);
@@ -622,37 +778,11 @@ void applyHandWrap(const Skeleton& sk, Pose& pose, const mat4& world, char side,
   for (int k = 0; k < 4; ++k)
     if (HandBones::ok(h.fingers[k])) fingerSide += glm::dot(fingerChain(h.fingers[k], distal[size_t(k)], fin[size_t(k)]).p[3] - centre, split);
   const float sideSign = fingerSide >= 0 ? 1.0f : -1.0f;
-  Thumb best{thumbOpp, 0, thumbCurl, thumbCurl};
-  float bestCost = 1e9f;
-  const bool tucked = hp.thumbMode == HandPose::Thumb::Tucked;
-  for (int io = 0; io <= (tucked ? 0 : 4); ++io)
-    for (int ia = 0; ia <= (tucked ? 0 : 5); ++ia) {
-      Thumb t{tucked ? thumbOpp : 0.25f * float(io), tucked ? 0.0f : -20.0f + 10.0f * float(ia), 0, 0};
-      // The first segment starts where it is clear of the object: on a wide object the thumb has to lie back into the
-      // plane of the palm (at most kThumbBack of a curl, about 33 deg; never turned round), then flexes onto the
-      // surface, then the second segment.
-      constexpr float kThumbBack = 0.6f;
-      auto ga = [&](float x) {
-        t.a = x;
-        return gapFrom(thumbChain(t), 0, skinT);
-      };
-      float back = 0;
-      while (ga(back) <= 0 && back > -kThumbBack) back -= 0.05f;
-      const float open = ga(back);
-      t.a = back;
-      if (open > 0) {
-        t.a = firstContact(ga, back, tucked ? 0.6f : 1.2f);
-        t.b = firstContact([&](float x) { t.b = x; return gapFrom(thumbChain(t), 1, skinT); }, 0.0f, 1.25f);
-      }
-      const Chain ch = thumbChain(t);
-      const float tipGap = surf(ch.p[3]) - skinT;
-      float cost = 4.0f * std::max(0.0f, tipGap) + 8.0f * std::max(0.0f, -open);  // off the surface; inside it when laid back
-      if (band) cost += 4.0f * std::max({0.0f, lo + 0.5f * edge - height(ch.p[3]), height(ch.p[3]) - (hi - 0.5f * edge)});
-      if (hp.thumbMode == HandPose::Thumb::Opposed) cost += 0.15f * sideSign * glm::dot(ch.p[3] - centre, split);
-      cost += 0.002f * scale * (std::abs(t.abd) / 30.0f + t.opp) + 0.01f * scale * std::max(0.0f, -t.a);
-      if (cost < bestCost) bestCost = cost, best = t;
-    }
-  const auto g1 = thumbRots(best);
+  // The thumb lies back at most kThumbBack of a curl (about 33 deg = HandLimits::thumbBack).
+  constexpr float kThumbBack = 0.6f;
+  const float backMax = hp.limits ? std::min(kThumbBack, HandLimits{}.thumbBack / 55.0f) : kThumbBack;
+  const auto g1 = rangeThumb(sk, h, ax, hp, handGlobal, centre, scale, surf, height, band, lo, hi, edge, skinT, sideSign, split,
+                             backMax, hp.limits);
   setChain(pose, h.thumb, glm::slerp(b0.first, g1.first, wt), glm::slerp(b0.second, g1.second, wt));
 }
 
@@ -692,7 +822,11 @@ void applyHandPosePerFinger(const Skeleton& sk, Pose& pose, const mat4& world, c
       if (HandBones::ok(f)) m += sk.bones[size_t(f.a)].head, ++n;
     if (n > 0 && glm::dot(glm::cross(ax.normal, u), m / float(n) - sk.bones[size_t(h.thumb.a)].head) < 0) abdAxis = -abdAxis;
   }
+  const HandLimits lim;  // T-190 (hp.limits): the searches below only ever see poses inside the joint ranges
   auto fingerRots = [&](const Digit& d) {
+    if (hp.limits)
+      return std::pair{fingerRot(ax, std::clamp(d.a * kA, -lim.knuckleBack, lim.knuckleFlex), std::clamp(d.spread, -lim.knuckleSpread, lim.knuckleSpread)),
+                       fingerRot(ax, std::clamp(d.b * kB, 0.0f, lim.middleFlex), 0)};
     return std::pair{fingerRot(ax, d.a * kA, d.spread), fingerRot(ax, d.b * kB, 0)};
   };
   auto thumbRots = [&](const Digit& d) {
@@ -941,6 +1075,19 @@ void applyHandPosePerFinger(const Skeleton& sk, Pose& pose, const mat4& world, c
     set(h.thumb, thumbRots(thumbBase));
     return;
   }
+  if (hp.limits) {  // T-190: the thumb is solved inside its range (the wrap branch's search), never aimed round the object
+    const vec3 pn = glm::normalize(vec3(handGlobal * vec4(ax.normal, 0)));
+    vec3 sp = cyl ? glm::cross(axis, pn) : glm::cross(pn, glm::normalize(vec3(handGlobal * vec4(ax.curl, 0))));
+    sp = glm::length(sp) > 1e-6f ? glm::normalize(sp) : vec3(1, 0, 0);
+    float fs = 0;
+    for (int k = 0; k < 4; ++k)
+      if (HandBones::ok(h.fingers[k])) fs += glm::dot(points(h.fingers[k], fingerRots(fin[size_t(k)])).tip - centre, sp);
+    const auto b0 = thumbRots(thumbBase);
+    const auto g1 = rangeThumb(sk, h, ax, hp, handGlobal, centre, scale, surf, height, band, lo, hi, edge, tipR, fs >= 0 ? 1.0f : -1.0f, sp,
+                               lim.thumbBack / 55.0f, true);
+    setChain(pose, h.thumb, glm::slerp(b0.first, g1.first, wt), glm::slerp(b0.second, g1.second, wt));
+    return;
+  }
   // Thumb grasp: the thumb is aimed at a direction g(phi) in the plane of the grasp axis and the finger direction
   // (phi = 0: along the axis, on the thumb's side; phi > 0: turned away from the fingers, round the object's other
   // side), then curled onto the surface about the axis across g and the palm normal (its tip moves towards the
@@ -1038,7 +1185,18 @@ float fingertipRadius(const Skeleton& sk, char side) {
   return h.valid() ? tipRadius(sk, h) : 0.0f;
 }
 
+void applyHandLimits(const Skeleton& sk, Pose& pose, char side, const HandLimits& limits) {
+  const HandBones h = findHand(sk, side);
+  if (h.valid()) limitHand(sk, pose, side, h, limits);
+}
+
+static void poseHand(const Skeleton& sk, Pose& pose, const mat4& world, char side, const HandPose& hp);
 void applyHandPose(const Skeleton& sk, Pose& pose, const mat4& world, char side, const HandPose& hp) {
+  poseHand(sk, pose, world, side, hp);
+  if (hp.limits) applyHandLimits(sk, pose, side);  // T-190: whatever posed the hand, every joint ends inside its range
+}
+
+static void poseHand(const Skeleton& sk, Pose& pose, const mat4& world, char side, const HandPose& hp) {
   HandBones h = findHand(sk, side);
   if (!h.valid()) return;
   if (hp.perFinger()) {
@@ -1277,6 +1435,7 @@ void applyConstraints(const Skeleton& sk, const Clip& clip, const std::string& p
       hp.graspWeight = clip.evaluate(base + ".grasp.weight", frame, vec3(1)).x;
     }
     perFingerTracks(clip, base, frame, hp);
+    if (const Track* t = clip.find(base + ".limits"); t && !t->keys.empty()) hp.limits = t->evaluate(frame).x >= 0.5f;  // T-190
     applyHandPose(sk, pose, world, side, hp);
   }
   if (const Track* t = clip.find(prefix + "lookAt"); t && !t->keys.empty()) {
