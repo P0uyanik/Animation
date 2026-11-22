@@ -14,7 +14,8 @@ MANIFEST.json. This script:
      trusted) - entries outside the package folder, links and duplicate names are refused;
   2. verifies every file against MANIFEST.json (missing, extra or changed files stop the run);
   3. renders with the package's own shot_render.py, exactly the command run_shot.py's render stage runs
-     (resolution and samples: --resolution/--samples, else the shot's own production.render, else the profile);
+     (resolution and samples: --resolution/--samples, else the shot's own production.render, else the profile;
+     engine: --engine, else the profile's "engine" key, else cycles - T-201 preview_eevee renders with EEVEE);
   4. optionally (--video, needs ffmpeg on PATH) encodes shot.mp4 with the package's default delivery codec.
 
 Outputs go to <zip folder>/<package name>_render_<profile>[-N]/ (a new folder per run) unless --out is given:
