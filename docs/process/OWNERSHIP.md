@@ -30,5 +30,6 @@ split.
 | T-190 | E | t-190-claude-finger-limits | `engine/anim/hand_shape.h`, `engine/anim/hand_shape.cpp`, `engine/anim/animation.h`, `engine/anim/animation.cpp`, `tests/test_hand_shapes.cpp`, `engine/scene/clip_layers.cpp`, `tests/test_hand_limits.cpp`, `docs/evaluation/interaction/T-190/**` | — | — |
 | T-194 | B | t-194-claude-hair-pushout | `pipeline/charsys/shot_render.py`, `pipeline/charsys/hair_pushout.py`, `pipeline/charsys/tests/test_hair_pushout.py`, `docs/evaluation/characters/T-194/**` | T-183 | — |
 | T-195 | S | t-195-claude-vocal-sounds | `pipeline/audio/**`, `content/sounds/**`, `docs/AUDIO.md`, `docs/evaluation/audio/T-195/**` | — | — |
+| T-196 | R | t-196-claude-blender-hybrid-review | `docs/audit/T-196/**` | — | — |
 
 Supervisor-only files: docs/process/TASK_LOG.md, docs/ROADMAP.md, docs/process/OWNER_DECISIONS.md, docs/tasks/**.

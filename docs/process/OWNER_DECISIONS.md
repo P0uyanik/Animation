@@ -997,3 +997,14 @@ hard depends-on (read) overlaps were conflicts → T-181b makes them warnings. R
   briefed). World plan stays on hold.
 - T-191 staging asks (enable body clearance in e912; wider seats / lower hand-over point): parked by "do not change e912
   now".
+
+## 2026-11-22 ~14:05 CET (via the liaison)
+- **T-189 Q1 approved:** the environment allows kenney.nl, www.kenney.nl, quaternius.com, www.quaternius.com, itch.io.
+  itch.io downloads use a separate CDN host: whoever tests it reports the exact host(s) to the liaison. Standing owner OK:
+  other useful, licence-safe sites may be investigated; hosts are listed to the liaison, who adds them.
+- **T-189 Q7:** Infinigen may be used if needed (isolated, licence-checked).
+- **World plan:** all questions answered; still not started (priority = system fixes); the liaison relays the start.
+- **New T-196 research (docs only, docs/audit/T-196/**):** Blender-first / hybrid architecture review: useful existing
+  tools/resources, right development approach?, use Blender more instead of building ourselves (per area), hybrid
+  across more parts; per-area map current vs Blender/hybrid (quality, effort saved, risks incl. determinism, headless,
+  goldens, TD-43, migration); ranked recommendations + verdict. Builds on T-174/T-176/T-189/T-193. No changes.
