@@ -19,7 +19,7 @@ At most ten summary lines; details in `build/check-all/check_all.json` and `buil
 | Shared-systems lint | no new character names in shared code |
 | C++ build | CMake + Ninja (OIDN 2.3.3 prebuilt via `PLUSH_OIDN_ROOT`) |
 | C++ tests | CTest (incl. the frozen image regressions) and `plush_tests` |
-| Python tests and links | the test registry (§1.2), every `run` entry of the `TESTS` manifests (incl. the cast check, §1.1) and Markdown links |
+| Python tests and links | the test registry (§1.2), every `run` entry of the `TESTS.manifest` files (incl. the cast check, §1.1) and Markdown links |
 | Blender tier | fast tier: reported as "not required: fast tier"; full tier: verify_charsys, determinism, export, face, hair/groom, garment, material presets **and the all-character regression** (§3) |
 | Merge status | CI trial merge |
 
@@ -48,10 +48,11 @@ The Blender tier is never skipped silently: on the fast tier it says so; on the 
 FAIL; on Windows CI it states that it runs on the linux job; on a task branch without `[full]` it states that it
 runs on the `integration/*` gate (§5).
 
-### 1.2 Test registry: per-directory `TESTS` manifests (T-182, owner 2026-11-21)
+### 1.2 Test registry: per-directory `TESTS.manifest` files (T-182, owner 2026-11-21)
 
-Tests are listed next to them, not in `tools/check_all.py`. A `TESTS` file lists the tests in its directory or
-below (paths relative to it, no `..`), one per line, `#` comments allowed:
+Tests are listed next to them, not in `tools/check_all.py`. A `TESTS.manifest` file lists the tests in its directory or
+below (paths relative to it, no `..`), one per line, `#` comments allowed. The name is not `TESTS`: on a
+case-insensitive checkout (Windows, macOS) a file `TESTS` collides with a sibling `tests/` folder (T-203):
 
 | Kind | Line | Meaning |
 | --- | --- | --- |
@@ -63,8 +64,11 @@ below (paths relative to it, no `..`), one per line, `#` comments allowed:
 - **No silent skips:** every `test_*.py` / `*_test.py` outside `docs/` must be in exactly one manifest; a missing,
   duplicated or dangling entry, an unknown Blender unit or runner, or two tests with the same module name fails
   "Python tests". C++ tests stay registered in `tests/CMakeLists.txt`.
-- **Trailer rule:** a NEW test source (`test_*.py`, `*_test.py`, `tests/**/test_*.cpp`) or a new `TESTS` file, and an
-  append-only `TESTS` edit whose new entries name files the same change adds, need no `Supervisor-Approved`
+- **Name rule (T-203):** a plain `TESTS` file anywhere FAILS "Python tests" with a message to use `TESTS.manifest`
+  (there is no silent fallback), and so does any pair of tracked paths that differ only by letter case (the
+  message lists the pair).
+- **Trailer rule:** a NEW test source (`test_*.py`, `*_test.py`, `tests/**/test_*.cpp`) or a new `TESTS.manifest` file, and an
+  append-only `TESTS.manifest` edit whose new entries name files the same change adds, need no `Supervisor-Approved`
   trailer, as long as the only guarded patterns they match are the test patterns (`TEST_GUARD_PATTERNS`). Anything
   else still needs it: modifying, renaming (= delete + add; renames are never detected) or deleting an existing
   test; removing, changing or reordering a manifest line; helper or data files in test directories (they could

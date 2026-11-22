@@ -9,7 +9,7 @@ Checks, in order (the first failure stops it with a short reason and exit 1):
   pushed    origin/<branch> on the remote is exactly HEAD (`git ls-remote`)
   claims    `tools/integrate.py claims --check T-NNN`
   write-set the gate's own rule (tools/check_all.py check_write_set)
-  tests     every test file the branch adds is registered in a TESTS manifest (T-182) or tests/CMakeLists.txt
+  tests     every test file the branch adds is registered in a TESTS.manifest (T-182) or tests/CMakeLists.txt
   links     `tools/check_doc_links.py`
 On success it prints the relay line (<= 300 chars) and exits 0:
   `<UTC> | T-NNN | READY | <branch>@<sha> | input <sha> | ev <path> | ledger: ... | <cost>[ | note]`
@@ -95,7 +95,7 @@ def unregistered_tests(added: list[str], registry_text: str) -> list[str]:
 
 
 def manifest_paths(root: Path) -> list[str]:
-    """Repository paths listed in the TESTS manifests under ``root`` (T-182; the gate checks the rest)."""
+    """Repository paths listed in the TESTS.manifest files under ``root`` (T-182; the gate checks the rest)."""
     sys.path.insert(0, str(ROOT / "tools"))
     import check_all
     paths = []
@@ -112,7 +112,7 @@ def check_tests_registered(root: Path = ROOT, base: str = "origin/main") -> str:
     text += "\n" + "\n".join(manifest_paths(root))
     missing = unregistered_tests(added, text)
     if missing:
-        raise Fail(f"test(s) not registered in a TESTS manifest / {' / '.join(REGISTRIES)}: {', '.join(missing[:3])}")
+        raise Fail(f"test(s) not registered in a TESTS.manifest / {' / '.join(REGISTRIES)}: {', '.join(missing[:3])}")
     return f"{sum(is_test_file(p) for p in added)} new test file(s) registered"
 
 

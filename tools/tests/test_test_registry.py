@@ -37,7 +37,7 @@ def git(cwd, *args):
 def test_parse():
     text = ("# comment\n\nrun test_a.py --selftest   # trailing comment\nblender sub/b_test.py face\n"
             "via test_c.py tools/x/run.py\nlocal test_d.py 'needs Blender'\n")
-    entries, problems = check_all.parse_manifest_text("pkg/tests/TESTS", text)
+    entries, problems = check_all.parse_manifest_text("pkg/tests/TESTS.manifest", text)
     check(not problems, f"valid manifest parses: {problems}")
     check([(e.kind, e.path, e.rest) for e in entries] == [
         ("run", "pkg/tests/test_a.py", ("--selftest",)), ("blender", "pkg/tests/sub/b_test.py", ("face",)),
@@ -47,7 +47,7 @@ def test_parse():
                      ("run /abs/test_a.py", "absolute path"), ("local test_a.py", "local without reason"),
                      ("blender test_a.py", "blender without unit"), ("via test_a.py a b", "via with two runners"),
                      ("run", "missing file")):
-        _, problems = check_all.parse_manifest_text("pkg/tests/TESTS", bad + "\n")
+        _, problems = check_all.parse_manifest_text("pkg/tests/TESTS.manifest", bad + "\n")
         check(len(problems) == 1, f"{why} is rejected: {bad!r} -> {problems}")
 
 
@@ -70,7 +70,7 @@ def scratch_repo(tmp: Path, files: dict[str, str]) -> Path:
 
 
 def test_registry(tmp: Path):
-    base = {"pkg/tests/TESTS": "run test_a.py\nblender b_test.py face\nvia test_c.py pkg/run.py\n",
+    base = {"pkg/tests/TESTS.manifest": "run test_a.py\nblender b_test.py face\nvia test_c.py pkg/run.py\n",
             "pkg/tests/test_a.py": "", "pkg/tests/b_test.py": "", "pkg/tests/test_c.py": "", "pkg/run.py": "",
             "pkg/tests/helper.py": "", "docs/x/test_notes.py": ""}
     repo = scratch_repo(tmp, base)
@@ -78,12 +78,12 @@ def test_registry(tmp: Path):
     check(not problems and len(entries) == 3, f"complete registry passes (helpers, docs/ ignored): {problems}")
     (repo / "pkg/tests/test_new.py").write_text("")  # untracked counts too
     _, problems = check_all.test_registry(repo, ["face"])
-    check(any("in no TESTS manifest" in p and "pkg/tests/test_new.py" in p for p in problems),
+    check(any("in no TESTS.manifest file" in p and "pkg/tests/test_new.py" in p for p in problems),
           f"a test on disk in no manifest fails: {problems}")
     (repo / "pkg/tests/test_new.py").unlink()
     (repo / "other/tests").mkdir(parents=True)
     (repo / "other/tests/test_a.py").write_text("")
-    (repo / "other/tests/TESTS").write_text("run test_a.py\n")
+    (repo / "other/tests/TESTS.manifest").write_text("run test_a.py\n")
     _, problems = check_all.test_registry(repo, ["face"])
     check(any("unique" in p and "test_a.py" in p for p in problems), f"duplicate module name fails: {problems}")
     shutil.rmtree(repo / "other")
@@ -91,9 +91,34 @@ def test_registry(tmp: Path):
                       ("run test_a.py\nblender b_test.py nope\nvia test_c.py pkg/run.py\n", "unknown unit"),
                       ("run test_a.py\nblender b_test.py face\nvia test_c.py pkg/none.py\n", "unknown runner"),
                       ("run test_a.py\nrun gone.py\nblender b_test.py face\nvia test_c.py pkg/run.py\n", "missing")):
-        (repo / "pkg/tests/TESTS").write_text(text)
+        (repo / "pkg/tests/TESTS.manifest").write_text(text)
         _, problems = check_all.test_registry(repo, ["face"])
         check(len(problems) == 1, f"registry problem ({why}) reported once: {problems}")
+
+
+def test_legacy_name_and_case(tmp: Path):
+    """T-203: a plain `TESTS` file is a registry FAIL (not silently accepted); paths differing only by case fail."""
+    repo = scratch_repo(tmp, {"pkg/tests/TESTS.manifest": "run test_a.py\n", "pkg/tests/test_a.py": ""})
+    _, problems = check_all.test_registry(repo, [])
+    check(not problems, f"TESTS.manifest registry passes: {problems}")
+    (repo / "pkg/tests/TESTS").write_text("run test_a.py\n")
+    _, problems = check_all.test_registry(repo, [])
+    check(any("pkg/tests/TESTS" in p and "TESTS.manifest" in p and "rename" in p for p in problems),
+          f"a plain TESTS file fails and names TESTS.manifest: {problems}")
+    (repo / "pkg/tests/TESTS").unlink()
+    (repo / "pkg/TESTS").write_text("run tests/test_a.py\n")  # the real collision: TESTS file next to tests/ folder
+    _, problems = check_all.test_registry(repo, [])
+    check(any("TESTS" in p and "tests" in p and "letter case" in p for p in problems),
+          f"TESTS file beside a tests/ folder fails the case check: {problems}")
+    check(any("plain 'TESTS'" in p for p in problems), f"... and as a legacy name: {problems}")
+    (repo / "pkg/TESTS").unlink()
+    pairs = check_all.case_collisions(["a/Readme.md", "a/README.md", "b/x.py", "b/y.py", "C/z.py", "c/w.py"])
+    check(pairs == ["a/README.md <-> a/Readme.md", "C <-> c"], f"case pairs listed (files and folders): {pairs}")
+    check(check_all.case_collisions(["a/b.py", "a/c.py", "A2/b.py"]) == [], "distinct names do not collide")
+    (repo / "pkg/tests/Test_A.py").write_text("")
+    (repo / "pkg/tests/test_a.PY").write_text("")
+    _, problems = check_all.test_registry(repo, [])
+    check(any("letter case" in p for p in problems), f"two files differing only by case fail: {problems}")
 
 
 # ---- guard rule ---------------------------------------------------------------------------------------------------
@@ -105,7 +130,7 @@ def test_free_change_rule():
     check(free("pipeline/x/tests/test_new.py", "A"), "added test file is free")
     check(free("tools/x/foo_test.py", "A"), "added *_test.py is free")
     check(free("tests/test_new.cpp", "A"), "added C++ test source is free")
-    check(free("tools/x/tests/TESTS", "A"), "added manifest is free")
+    check(free("tools/x/tests/TESTS.manifest", "A"), "added manifest is free")
     check(not free("pipeline/x/tests/test_old.py", "M"), "modified test needs approval")
     check(not free("pipeline/x/tests/test_old.py", "D"), "deleted test needs approval")
     check(not free("pipeline/x/tests/test_old.py", "T"), "type-changed test needs approval")
@@ -117,18 +142,18 @@ def test_free_change_rule():
     check(not free("tests/test_x_threshold.json", "A"), "added threshold file needs approval")
     check(not free("tools/check_all.py", "A"), "non-test guarded file is never free")
     old = "run test_a.py\n"
-    statuses = {"p/tests/TESTS": "M", "p/tests/test_b.py": "A"}
-    check(free("p/tests/TESTS", "M", statuses, old, old + "run test_b.py  # new\n"),
+    statuses = {"p/tests/TESTS.manifest": "M", "p/tests/test_b.py": "A"}
+    check(free("p/tests/TESTS.manifest", "M", statuses, old, old + "run test_b.py  # new\n"),
           "appending an entry for a new test is free")
-    check(not free("p/tests/TESTS", "M", statuses, old, old + "run test_z.py\n"),
+    check(not free("p/tests/TESTS.manifest", "M", statuses, old, old + "run test_z.py\n"),
           "appending an entry for a file this change does not add needs approval")
-    check(not free("p/tests/TESTS", "M", statuses, old + "run test_c.py\n", "run test_a.py\n"),
+    check(not free("p/tests/TESTS.manifest", "M", statuses, old + "run test_c.py\n", "run test_a.py\n"),
           "removing a manifest line needs approval")
-    check(not free("p/tests/TESTS", "M", statuses, old, "run test_a.py --flag\n"),
+    check(not free("p/tests/TESTS.manifest", "M", statuses, old, "run test_a.py --flag\n"),
           "changing a manifest line needs approval")
-    check(not free("p/tests/TESTS", "M", statuses, old, "run test_b.py\n" + old),
+    check(not free("p/tests/TESTS.manifest", "M", statuses, old, "run test_b.py\n" + old),
           "inserting before existing lines needs approval")
-    check(not free("p/tests/TESTS", "D", statuses), "deleting a manifest needs approval")
+    check(not free("p/tests/TESTS.manifest", "D", statuses), "deleting a manifest needs approval")
 
 
 def guard_in(repo: Path) -> check_all.Result:
@@ -142,7 +167,7 @@ def guard_in(repo: Path) -> check_all.Result:
 
 def test_guard_git(tmp: Path):
     files = {"tools/guarded_paths.txt": check_all.GUARDED_PATHS.read_text(encoding="utf-8"),
-             "pkg/tests/TESTS": "run test_a.py\nrun test_b.py\n",
+             "pkg/tests/TESTS.manifest": "run test_a.py\nrun test_b.py\n",
              "pkg/tests/test_a.py": "print('a')\n", "pkg/tests/test_b.py": "print('b')\n"}
     repo = scratch_repo(tmp, files)
 
@@ -161,14 +186,14 @@ def test_guard_git(tmp: Path):
 
     def append_new():
         (repo / "pkg/tests/test_new.py").write_text("print('new')\n")
-        with open(repo / "pkg/tests/TESTS", "a", encoding="utf-8") as fh:
+        with open(repo / "pkg/tests/TESTS.manifest", "a", encoding="utf-8") as fh:
             fh.write("run test_new.py\n")
     scenario("add test + append entry", append_new, [])
 
     def new_dir():
         (repo / "lib/tests").mkdir(parents=True)
         (repo / "lib/tests/test_lib.py").write_text("")
-        (repo / "lib/tests/TESTS").write_text("run test_lib.py\n")
+        (repo / "lib/tests/TESTS.manifest").write_text("run test_lib.py\n")
     scenario("add test in a new directory with a new manifest", new_dir, [])
 
     scenario("modify", lambda: (repo / "pkg/tests/test_a.py").write_text("print('changed')\n"),
@@ -178,18 +203,18 @@ def test_guard_git(tmp: Path):
 
     def rename():
         git(repo, "mv", "pkg/tests/test_a.py", "pkg/tests/test_c.py")
-        (repo / "pkg/tests/TESTS").write_text("run test_c.py\nrun test_b.py\n")
-    scenario("rename (even unchanged content)", rename, ["pkg/tests/test_a.py", "pkg/tests/TESTS"])
+        (repo / "pkg/tests/TESTS.manifest").write_text("run test_c.py\nrun test_b.py\n")
+    scenario("rename (even unchanged content)", rename, ["pkg/tests/test_a.py", "pkg/tests/TESTS.manifest"])
 
     def delete():
         (repo / "pkg/tests/test_b.py").unlink()
-        (repo / "pkg/tests/TESTS").write_text("run test_a.py\n")
-    scenario("delete", delete, ["pkg/tests/test_b.py", "pkg/tests/TESTS"])
+        (repo / "pkg/tests/TESTS.manifest").write_text("run test_a.py\n")
+    scenario("delete", delete, ["pkg/tests/test_b.py", "pkg/tests/TESTS.manifest"])
 
-    scenario("remove from manifest only", lambda: (repo / "pkg/tests/TESTS").write_text("run test_a.py\n"),
-             ["pkg/tests/TESTS"])
-    scenario("change a manifest entry", lambda: (repo / "pkg/tests/TESTS").write_text(
-        "run test_a.py --skip-slow\nrun test_b.py\n"), ["pkg/tests/TESTS"])
+    scenario("remove from manifest only", lambda: (repo / "pkg/tests/TESTS.manifest").write_text("run test_a.py\n"),
+             ["pkg/tests/TESTS.manifest"])
+    scenario("change a manifest entry", lambda: (repo / "pkg/tests/TESTS.manifest").write_text(
+        "run test_a.py --skip-slow\nrun test_b.py\n"), ["pkg/tests/TESTS.manifest"])
     scenario("add helper module next to tests", lambda: (repo / "pkg/tests/json.py").write_text(""),
              ["pkg/tests/json.py"])
 
@@ -220,6 +245,7 @@ def main() -> int:
     try:
         test_parse()
         test_registry(tmp)
+        test_legacy_name_and_case(tmp)
         test_free_change_rule()
         test_guard_git(tmp)
         test_repository()

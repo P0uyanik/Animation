@@ -1067,3 +1067,21 @@ hard depends-on (read) overlaps were conflicts → T-181b makes them warnings. R
    (b) wool hair — wool/felt-yarn texture with less volume (hair curves + GN hair node groups, Principled Hair BSDF /
    fibre shaders, yarn/wool/felt shading, open-source generators). Quality fit, determinism/headless bpy 5.3, licence,
    effort; small feasibility renders welcome; recommendation + plan. Face work itself waits for T-206 + T-204 + owner.
+
+## 2026-11-22 ~19:10 CET (via the liaison) — T-206 answers
+1. Faces: fit existing spec values first; new face parameters only if review shows they are needed.
+2. Views: ALL angles matter (front, 3/4, side, and back where the face/hair silhouette shows) — equal weights in the
+   fit and in review sheets.
+3. Hair volume: reasonable and natural, close to the references.
+4. Hair texture: the reference hair reads as VELVETY / FLOCKED (short dense soft fibres, velvet-like sheen), not long
+   combed yarn. The hair step targets a velvet/flocked look: flock/velvet options (short dense fuzz, sheen/velvet
+   shading, Blender hair-curve node groups as needed) side by side with T-206 probe D and the references; the owner
+   picks from the sheet. D is not locked.
+5. Hair + face bundling per character: not a priority — ship what is ready independently (each needs owner approval).
+6. **Standing guidance:** our engine works closely with Blender across ALL areas, making full use of Blender's
+   capabilities and suitable open-source tools/libraries wherever possible.
+- Start hair step H1 now (opt-in, Opus; contact checks after T-183/T-194 merge) → T-207. Face fit after Codex T-204.
+- **Supervisor decision (T-198, within the approved Motion Continuity scope, ~19:45 CET):** re-record
+  test_interaction/visibleGrip/boy (the fix removes a 147° one-frame hand flip; frames 11-14, hand.R + its finger/DEF
+  bones only; all 6 content goldens unchanged). Speed-limit test as a ratchet over a recorded baseline (e901 f223 walk
+  start + listed grasp/release finger-curl rows); fixing those curls → follow-up T-209.
