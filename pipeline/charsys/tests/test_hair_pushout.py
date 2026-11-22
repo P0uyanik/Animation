@@ -236,6 +236,31 @@ for pb in pbs.values():
     pb.rotation_mode = "QUATERNION"
 states = {"ch": {"rig": rig, "bones": [(i, pbs[n]) for i, n in enumerate(["head", "torso", "fold", "rim", "slab"] + names)],
                  "ov": coll, "head_bone": "head"}}
+# a neighbour: its own rig and an unmasked skin box (x -0.09 .. -0.07) far below at rest, lifted in frame 5 into the
+# cap: the cap rows x = -0.085 are 5 mm in it (clamp move 6.5 mm: faded to 6.5 * (12 - 6.5) / 8 = 4.47 mm), the rows
+# x = -0.075 15 mm (clamp move 16.5 mm: beyond 12 mm, left as baked = staging)
+arm2 = bpy.data.armatures.new("rig2")
+rig2 = bpy.data.objects.new("rig2", arm2)
+sc.collection.objects.link(rig2)
+bpy.context.view_layer.objects.active = rig2
+bpy.ops.object.mode_set(mode="EDIT")
+nb_ = arm2.edit_bones.new("nb")
+nb_.head, nb_.tail = (0, 0, 0.0), (0, 0, 0.1)
+bpy.ops.object.mode_set(mode="OBJECT")
+nv_, nf_ = box((-0.09, -0.06, -0.60), (-0.07, 0.06, -0.52))
+nbm = bpy.data.meshes.new("garment.collider.body_skin.nb")
+nbm.from_pydata([tuple(v) for v in nv_], [], nf_)
+nbo = bpy.data.objects.new("garment.collider.body_skin.nb", nbm)
+sc.collection.objects.link(nbo)
+nbo.parent = rig2
+nbo.vertex_groups.new(name="nb").add(list(range(8)), 1.0, "REPLACE")
+nbo.modifiers.new("Armature", "ARMATURE").object = rig2
+coll2 = bpy.data.collections.new("nb")
+for o in (rig2, nbo):
+    coll2.objects.link(o)
+pb_nb = rig2.pose.bones["nb"]
+pb_nb.rotation_mode = "QUATERNION"
+states["nb"] = {"rig": rig2, "bones": [(0, pb_nb)], "ov": coll2, "head_bone": None}
 
 
 def key_bone(pb, P, Pp, frame):  # as shot_render._key_bone
@@ -254,7 +279,10 @@ check("B.cup_cap", len(po.caps) == 1 and po.caps[0].hide_render and po.caps[0] i
       caps=[c.name for c in po.caps])
 # frame 1: torso up into the lock, fold onto the cap; frame 2: everything at rest; frame 3: the rim over the anchors
 for f, (tz, fx, rz, sz) in ((1, (1.30, 0.07, 0.0, 0.0)), (2, (0.0, 0.0, 0.0, 0.0)), (3, (0.0, 0.0, 1.63, 0.0)),
-                            (4, (0.0, 0.0, 0.0, 1.63))):
+                            (4, (0.0, 0.0, 0.0, 1.63)), (5, (0.0, 0.0, 0.0, 0.0))):
+    pb_nb.location = (0, 1.63 if f == 5 else 0.0, 0)
+    for path in ("location", "rotation_quaternion", "scale"):
+        pb_nb.keyframe_insert(path, frame=f)
     for pb in pbs.values():
         pb.location, pb.rotation_quaternion, pb.scale = (0, 0, 0), (1, 0, 0, 0), (1, 1, 1)
     pbs["torso"].location = (0, tz, 0)  # bone local Y = world Z for a bone pointing up
@@ -266,7 +294,7 @@ for f, (tz, fx, rz, sz) in ((1, (1.30, 0.07, 0.0, 0.0)), (2, (0.0, 0.0, 0.0, 0.0
             pb.keyframe_insert(path, frame=f)
 baked = {}
 before = {}
-for f in (1, 2, 3, 4):
+for f in (1, 2, 3, 4, 5):
     sc.frame_set(f)
     dg = bpy.context.evaluated_depsgraph_get()
     e = lock.evaluated_get(dg)
@@ -322,6 +350,14 @@ C4 = eval_points(cap, 4)
 crossing = sum(1 for v in cap_rest if v[0] > -0.088 and v[0] - 0.03 < -0.092 and abs(v[1]) < 0.06 and 1.03 < v[2] < 1.11)
 check("B.static_outside_thin_part_kept", crossing > 0 and np.allclose(C4, cap_rest, atol=1e-6), crossing=crossing,
       cap_max=float(np.abs(C4 - cap_rest).max()))
+C5 = eval_points(cap, 5)
+r85 = np.abs(cap_rest[:, 0] + 0.085) < 1e-6
+r75 = np.abs(cap_rest[:, 0] + 0.075) < 1e-6
+inb = (np.abs(cap_rest[:, 1]) < 0.06) & (cap_rest[:, 2] > 1.03) & (cap_rest[:, 2] < 1.11)
+mv5 = np.linalg.norm(C5 - cap_rest, axis=1)
+check("B.neighbour_skin_faded", r85[inb].sum() > 0 and np.abs(mv5[r85 & inb] - 0.00447).max() < 2e-4
+      and mv5[r75 & inb].max() < 1e-6 and mv5[~(r85 & inb)].max() < 1e-6,
+      moved_5mm_deep=float(mv5[r85 & inb].max()), moved_15mm_deep=float(mv5[r75 & inb].max()))
 h1 = hashlib.sha256(np.round(eval_points(lock, 1), 7).tobytes() + np.round(eval_points(cap, 1), 7).tobytes()).hexdigest()
 eval_points(lock, 2)
 h2 = hashlib.sha256(np.round(eval_points(lock, 1), 7).tobytes() + np.round(eval_points(cap, 1), 7).tobytes()).hexdigest()

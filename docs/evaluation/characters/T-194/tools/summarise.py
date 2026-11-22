@@ -5,14 +5,15 @@
 Penetration = the deepest hair vertex per frame (> 1 mm counts), split into ALL measured frames, CALM frames (not a
 source-body snap frame +-1; T-183 `tools/snaps.py` on the same bake, imported read-only from the T-183 worktree,
 T183_ROOT, default /home/user/t183wt) and SNAP frames. Listed apart and not in those columns: hair against glasses
-(glasses are not colliders, T-183 SKIP list) and the boy's rigid hair inside his own head skin (T-191 staging).
+(glasses are not colliders, T-183 SKIP list), the boy's rigid hair inside his own head skin (T-191 staging), and
+"staging": hair deeper than 4 mm in ANOTHER character's body skin (heads / bodies overlap, T-191), listed per frame.
 Pops: per frame and character, the largest vertex jump f-step -> f (measure_eval), on minus off: frames where the
 push-out adds more than 5 mm, and the largest addition. Cost: shot_render's hair_pushout timing."""
 import json
 import os
 import sys
 
-T183 = os.environ.get("T183_ROOT", "/home/user/t183wt")
+T183 = os.environ.get("T183_ROOT", "/home/user/t183c2")
 sys.path.insert(0, os.path.join(T183, "docs", "evaluation", "characters", "T-183", "tools"))
 import snaps  # noqa: E402
 
@@ -22,12 +23,18 @@ snap = sorted({f for c in snaps.snap_frames(bake).values() for f in c})
 near = {f + d for f in snap for d in (-1, 0, 1)}
 
 
-def apart(char, key):
+STAGING_MM = 4.0  # hair_pushout other_skin_fade_m[0]: deeper in a neighbour's skin = bodies overlap (T-191)
+
+
+def apart(char, key, mm):
     part = key.split(" > ", 1)[1]
     if part.endswith(":glasses"):
         return "glasses"
     if char.startswith("boy") and part.startswith("own:body_skin"):
         return "boy_head"
+    if not part.startswith(("own:", "prop", "box")) and part.split(":", 1)[-1].startswith("body_skin") \
+            and mm > STAGING_MM:
+        return "staging"
     return None
 
 
@@ -39,10 +46,16 @@ def table(path):
         for n, c in r["chars"].items():
             res["jump"].setdefault(n, {})[f] = c["jump_mm"]
             worst, worst_key = 0.0, None
+            seen = set()
             for k, (cnt, mm) in c["surfaces"].items():
-                a = apart(n, k)
+                a = apart(n, k, mm)
                 if a:
-                    s = res["apart"].setdefault(a, {"frames": 0, "max_mm": 0.0})
+                    s = res["apart"].setdefault(a, {"frames": 0, "max_mm": 0.0, "list": []})
+                    if mm > 1.0 and a not in seen:
+                        s["frames"] += 1
+                        seen.add(a)
+                    if a == "staging" and mm > 1.0:
+                        s["list"].append([f, n, k, mm])
                     s["max_mm"] = max(s["max_mm"], mm)
                     continue
                 if mm > worst:
@@ -78,7 +91,28 @@ for col in ("all", "calm", "snap"):
     a, b = off["cols"].get(col, {}), on["cols"].get(col, {})
     print(f"  {col:5s} frames>1mm off {a.get('over', 0)}/{a.get('frames', 0)} max {a.get('max_mm', 0)} | "
           f"on {b.get('over', 0)}/{b.get('frames', 0)} max {b.get('max_mm', 0)} ({b.get('worst')})")
-print(f"  apart off {off['apart']} on {on['apart']}")
+short = lambda ap: {k: {"frames": v["frames"], "max_mm": v["max_mm"]} for k, v in ap.items()}  # noqa: E731
+print(f"  apart off {short(off['apart'])} on {short(on['apart'])}")
+
+
+def surfaces(d):
+    out = {}
+    for r in d["rows"]:
+        for n, c in r["chars"].items():
+            for k, (cnt, mm) in c["surfaces"].items():
+                if mm > 1.0 and not apart(n, k, mm):
+                    e = out.setdefault((n, k), [0, 0.0])
+                    e[0] += 1
+                    e[1] = max(e[1], mm)
+    return out
+
+
+so, sn = surfaces(d_off), surfaces(d_on)
+new = {f"{n} {k}": v for (n, k), v in sn.items() if (n, k) not in so}
+summary["new_surfaces_on"] = new
+print(f"  new surfaces with the push-out (frames, max mm): {new}")
 print(f"  pops {pops}  cost {cost}")
+
+
 if OUT:
     json.dump(summary, open(OUT, "w"), indent=1)
