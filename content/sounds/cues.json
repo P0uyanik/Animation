@@ -1,0 +1,22 @@
+{
+ "format": "plush.vocalcuemap",
+ "version": 1,
+ "description": "T-195: which vocal sound an acting beat gets. Keys are emotion names (content/emotions), looked up as the full name ('happy/laugh') first, then the base name ('happy'). An emotion action becomes a cue when its start lies in the scene's rendered range and its intensity is at least minIntensity. The sound starts `lead` x the emotion's onset after the action start (0 = with the action). Emotions not listed, or with cue null, are silent. Levels: gain_db = levelDb + lerp(quietDb, 0, (intensity - minIntensity) / (1 - minIntensity)).",
+ "defaults": {"minIntensity": 0.7, "lead": 0.25, "levelDb": 0.0, "quietDb": -9.0, "minGapSeconds": 1.0},
+ "emotions": {
+  "surprised": {"cue": "gasp_oh", "lead": 0.0},
+  "afraid": {"cue": "gasp_oh", "lead": 0.0, "levelDb": -2.0},
+  "happy": {"cue": "wow"},
+  "happy/laugh": {"cue": "laugh"},
+  "girl_delighted": {"cue": "giggle", "levelDb": -2.0},
+  "girl_wonder": {"cue": "wow", "levelDb": -2.0},
+  "curious": {"cue": "hm", "levelDb": -3.0},
+  "confused": {"cue": "hm", "levelDb": -3.0},
+  "sad": {"cue": "sigh", "levelDb": -3.0},
+  "sleepy": {"cue": "sigh", "levelDb": -4.0},
+  "angry": {"cue": null},
+  "boy_focused": {"cue": null},
+  "girl_eager": {"cue": null},
+  "girl_content": {"cue": null}
+ }
+}
