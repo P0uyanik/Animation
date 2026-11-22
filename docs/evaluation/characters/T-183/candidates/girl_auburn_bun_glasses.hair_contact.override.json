@@ -30,7 +30,8 @@
      },
      "rest": {
       "friction": 40,
-      "max_swing": 12
+      "max_swing": 12,
+      "carry": true
      },
      "colliders": [
       {

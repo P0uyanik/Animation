@@ -172,7 +172,7 @@ Result<void> readContact(const Json& c, SpringChain& ch, const std::string& wher
   if (it == c.end() || it->is_null()) return {};
   if (!it->is_object()) return fail(where + ": contact must be an object");
   for (auto& [key, _] : it->items())
-    if (key != "solid" && key != "segments" && key != "anchored_gravity" && key != "radii" && key != "rest" && key != "friction" && key != "max_swing" && key != "locks")
+    if (key != "solid" && key != "segments" && key != "anchored_gravity" && key != "radii" && key != "rest" && key != "friction" && key != "max_swing" && key != "locks" && key != "carry")
       return fail(where + ": contact has unknown key " + key);
   ch.contact.set = true;
   if (auto so = it->find("solid"); so != it->end()) {
@@ -200,6 +200,7 @@ Result<void> readContact(const Json& c, SpringChain& ch, const std::string& wher
     if (!ms->is_number() || ms->get<float>() < 0) return fail(where + ": contact.max_swing must be a number >= 0");
     ch.contact.maxSwing = ms->get<float>();
   }
+  ch.contact.carry = readBool(*it, "carry", false);
   if (auto lk = it->find("locks"); lk != it->end()) {
     if (!lk->is_number() || lk->get<float>() < 0 || lk->get<float>() > 1) return fail(where + ": contact.locks must be a number in [0, 1]");
     ch.contact.locks = lk->get<float>();
@@ -409,6 +410,7 @@ Json dynamicsToJson(const DynamicsSpec& s) {
         cj["contact"]["max_swing"] = c.contact.maxSwing;
       }
       if (c.contact.locks > 0) cj["contact"]["locks"] = c.contact.locks;
+      if (c.contact.carry) cj["contact"]["carry"] = true;
     }
     chains.push_back(cj);
   }
@@ -559,6 +561,7 @@ Result<std::shared_ptr<SpringChainSolver>> SpringChainSolver::create(const Skele
         ch.restContact = true;
         ch.friction = sc.contact.friction;
         ch.maxSwing = sc.contact.maxSwing;
+        ch.carry = sc.contact.carry;
         ch.solid.assign(ch.colliders.size(), 1);
         s->keepShapes_ = true;
       }
@@ -877,9 +880,14 @@ void SpringChainSolver::step(State& s, double dtd, const std::vector<mat4>& g, c
         const vec3 carried = glm::normalize(arc(glm::normalize(kWas), glm::normalize(kNow)) * glm::normalize(was));
         vec3 dir = glm::normalize(now);
         const float ang = std::atan2(glm::length(glm::cross(carried, dir)), glm::dot(carried, dir));
-        if (ang > maxAngle) {
+        // contact.carry: a collider that moves carries the joint it pushes: the cap yields by the collider's speed
+        // relative to the joint's kinematic target (a forearm that sweeps a lock across the chest at 3 m/s takes it
+        // along; held back by the cap, the lock is inside the arm or the chest for a frame). A slow or still collider
+        // adds nothing, so a lock squeezed between two colliders at rest still moves steadily.
+        const float cap = ch.carry && hits[k].on ? maxAngle + glm::length(hits[k].vc - (xk[i] - s.xk[i]) / dt) * dt / ch.length[k - 1] : maxAngle;
+        if (ang > cap) {
           const vec3 axis = glm::cross(carried, dir);
-          dir = glm::length(axis) > 1e-9f ? glm::angleAxis(maxAngle, glm::normalize(axis)) * carried : carried;
+          dir = glm::length(axis) > 1e-9f ? glm::angleAxis(cap, glm::normalize(axis)) * carried : carried;
         }
         p[k] = p[k - 1] + dir * ch.length[k - 1];
       }

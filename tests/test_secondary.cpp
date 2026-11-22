@@ -1183,3 +1183,76 @@ TEST_CASE("secondary contact: a sphere on another character's bone keeps a resti
   CHECK(inside < 1e-3f);
   CHECK(endOff < 2e-3f);       // and the chain hangs back where it was
 }
+
+// ---- T-183 round 3: contact.carry (the max_swing bound yields to a collider that moves) ----
+
+TEST_CASE("secondary contact: carry lets a fast collider take a capped chain along; a still one changes nothing") {
+  // The arm's sphere arrives on the lock within one frame (0.4 m in 1/24 s) and stays. With max_swing alone the lock
+  // leaves the sphere at the capped rate, so it is inside it for several frames; with carry it goes with the sphere.
+  const vec3 target(0, 0.90f, -0.12f);
+  const Skeleton sk = armSkeleton(target);
+  const double fps = 24;
+  auto drv = [&sk, fps](double frame) {
+    Pose p = restPose(sk);
+    p.local[6] = glm::angleAxis(glm::radians(float(-90.0 * std::clamp((frame - 12.0), 0.0, 1.0))), vec3(0, 1, 0));
+    return boneGlobals(sk, p, mat4(1));
+  };
+  const float r = 0.03f, pr = 0.005f, cap = 3.0f;
+  float inside[2] = {0, 0}, turnAfter[2] = {0, 0}, end[2] = {0, 0};
+  int framesInside[2] = {0, 0};
+  bool sameBefore = true;
+  std::vector<std::vector<mat4>> first;
+  for (int carry = 0; carry < 2; ++carry) {
+    DynamicsSpec spec = armSpec(target, r);
+    spec.chains[0].contact.set = true;
+    spec.chains[0].contact.segments = true;
+    spec.chains[0].contact.rest = true;
+    spec.chains[0].contact.maxSwing = cap;
+    spec.chains[0].contact.carry = carry != 0;
+    if (carry) {
+      CHECK(dynamicsToJson(spec)["chains"][0]["contact"]["carry"] == true);
+      auto back = dynamicsFromJson(dynamicsToJson(spec));
+      REQUIRE(back.has_value());
+      CHECK(back->chains[0].contact.carry);
+    } else {
+      CHECK_FALSE(dynamicsToJson(spec)["chains"][0]["contact"].contains("carry"));
+    }
+    auto s = SpringChainSolver::create(sk, spec);
+    REQUIRE(s.has_value());
+    vec3 prev[5];
+    for (int f = 1; f <= 72; ++f) {
+      auto g = solve(**s, drv, f, fps);
+      if (f <= 12) {  // before the sphere moves the key changes nothing, bit for bit
+        if (!carry) first.push_back(g);
+        else for (size_t k = 0; k < g.size(); ++k) sameBefore = sameBefore && g[k] == first[size_t(f - 1)][k];
+      }
+      const vec3 c = vec3(g[6] * vec4(armCentreRest(target) - sk.bones[6].head, 1));
+      vec3 x[5];
+      for (size_t k = 0; k < 4; ++k) x[k] = pivot(g, 2 + k);
+      x[4] = tipOf(g, sk, 5, kTipRest);
+      float in = 0;
+      for (size_t k = 1; k < 5; ++k) in = std::max(in, r + pr - glm::distance(x[k], c));
+      if (f >= 13) inside[carry] = std::max(inside[carry], in);
+      if (f >= 13 && in > 1e-3f) ++framesInside[carry];
+      for (size_t k = 1; k < 5 && f > 16; ++k) {  // once the sphere stands still the bound holds as before
+        const vec3 a = glm::normalize(prev[k] - prev[k - 1]), b = glm::normalize(x[k] - x[k - 1]);
+        turnAfter[carry] = std::max(turnAfter[carry], std::atan2(glm::length(glm::cross(a, b)), glm::dot(a, b)));
+      }
+      for (size_t k = 0; k < 5; ++k) prev[k] = x[k];
+      if (f == 72) {
+        end[carry] = 1;
+        for (size_t k = 1; k < 5; ++k) end[carry] = std::min(end[carry], glm::distance(x[k], c));
+      }
+    }
+  }
+  MESSAGE("joint inside the arriving sphere: " << inside[0] * 1000 << " mm (" << framesInside[0] << " frames over 1 mm) with max_swing alone, "
+          << inside[1] * 1000 << " mm (" << framesInside[1] << " frames) with carry; largest turn per frame once it stands: " << turnAfter[0]
+          << " / " << turnAfter[1] << " rad (bound " << cap / fps << ")");
+  CHECK(sameBefore);
+  CHECK(inside[0] > 0.01f);       // capped: the lock is left inside the sphere
+  CHECK(framesInside[0] >= 2);
+  CHECK(inside[1] < 1e-3f);       // carried: never inside
+  CHECK(turnAfter[1] <= cap / float(fps) + 1e-3f);
+  CHECK(end[0] >= r + pr - 1e-4f);
+  CHECK(end[1] >= r + pr - 1e-4f);
+}

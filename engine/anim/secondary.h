@@ -56,6 +56,7 @@ struct ChainContact {
   bool rest = false;               // resting contact: all colliders at full radius, inelastic, with friction
   float friction = 40.0f;          // 1/s: decay of the sliding speed of a joint in contact (rest only)
   float maxSwing = 12.0f;          // rad/s: how much faster than its kinematic direction a segment may turn (rest only; 0 = no cap)
+  bool carry = false;              // rest + max_swing: the cap yields to the speed of the collider that pushes the joint
   float locks = 0.0f;              // > 0: joints keep off the joints of the other chains with the key by locks x (sum of the two radii)
 };
 
@@ -167,6 +168,7 @@ class SpringChainSolver {
     bool restContact = false;  // contact.rest
     float friction = 0, maxSwing = 0;
     float locks = 0;  // contact.locks
+    bool carry = false;  // contact.carry
   };
   struct Collider {
     DynamicsCollider::Kind kind;

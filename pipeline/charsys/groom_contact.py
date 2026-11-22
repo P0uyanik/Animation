@@ -37,7 +37,8 @@ spec.hair.dynamics.contact   {"colliders": [...], "segments": bool (default true
        per joint from the vertices it carries (chain_radii), never more than the joint's rest clearance to the
        colliders on the chain's own root bone (the head); the root joint takes the next joint's radius, capped
        the same way (a thick first segment: the lock cannot swing into the ear it starts beside).
-    "rest": true | {"friction": >= 0 (40), "max_swing": >= 0 (12)}: resting contact (docs/SECONDARY_MOTION.md);
+    "rest": true | {"friction": >= 0 (40), "max_swing": >= 0 (12), "carry": bool (false; round 3: the max_swing cap
+       yields to a collider that moves, e.g. a forearm sweeping a lock along)}: resting contact (docs/SECONDARY_MOTION.md);
        the chains take every collider ("solid" of a collider is then without effect).
 """
 import fnmatch
@@ -178,9 +179,9 @@ def _validate_round2(ct):
         errs.append("hair.dynamics.contact.radii must be {\"percentile\": 1..100, \"floor_m\": 0..0.05}")
     rs = ct.get("rest")
     if rs is not None and not isinstance(rs, bool) and not (
-            isinstance(rs, dict) and set(rs) <= {"friction", "max_swing"} and _num(rs, "friction", 0, 1000, 40)
-            and _num(rs, "max_swing", 0, 1000, 12)):
-        errs.append("hair.dynamics.contact.rest must be true, false or {\"friction\": 0..1000, \"max_swing\": 0..1000}")
+            isinstance(rs, dict) and set(rs) <= {"friction", "max_swing", "carry"} and _num(rs, "friction", 0, 1000, 40)
+            and _num(rs, "max_swing", 0, 1000, 12) and isinstance(rs.get("carry", False), bool)):
+        errs.append("hair.dynamics.contact.rest must be true, false or {\"friction\": 0..1000, \"max_swing\": 0..1000, \"carry\": bool}")
     return errs
 
 
@@ -746,6 +747,8 @@ def bind_contact(rig, objs, head_bone, chest_bone):
                 radii_rep[ch["name"]] = [round(max(block["radii"]) * 1000, 1), round(max(fitted) * 1000, 1)]
             if rest_kw:
                 block.update(rest=True, friction=float(rest_kw["friction"]), max_swing=float(rest_kw["max_swing"]))
+                if rest_kw.get("carry"):  # round 3, opt-in: absent = the block as it was
+                    block["carry"] = True
                 ch.pop("colliders", None)  # every collider
             ch["contact"] = block
             chains += 1
