@@ -10,9 +10,9 @@ Checks (each line PASS/FAIL; exit code 1 on any FAIL):
            names exactly that build; the knob classifier allows ARMATURE / vertex-group MASK only and flags Warp,
            Hook, Lattice, Surface Deform, Geometry Nodes and viewport/render splits; key rules flag a non-Basis
            relative key, a vertex group and a muted key.
-  blender  (--blender; needs assets/characters/girl_auburn_bun_glasses 0.14.0, about 3 min) the current auburn
+  blender  (--blender; needs assets/characters/girl_auburn_bun_glasses 0.14.0, about 1 min) the current auburn
            master passes (knob-free, rest, raw deltas, neutral / half-blink / smile+blink within the bound); a
-           broken temporary copy (a live Lattice modifier, its lattice object scaled 10 %, on lid_upper.L and the
+           broken temporary copy (a live Lattice modifier, its lattice points scaled 10 %, on lid_upper.L and the
            Blink key of lid_upper.R made relative to another key) fails both the knob-free check and parity.
            Nothing under assets/ is written.
 """
@@ -122,7 +122,8 @@ lo.scale = (0.2, 0.2, 0.2)
 bpy.context.view_layer.update()
 m = lid.modifiers.new("fit_knob", "LATTICE")
 m.object = lo
-lo.scale = (0.22, 0.22, 0.22)  # 10 % after binding: the knob deforms rest and keys
+for pt in lat.points:  # a 10 % knob: an undeformed lattice is the identity whatever its object transform
+    pt.co_deform = pt.co * 1.1
 kb = bpy.data.objects["lid_upper.R"].data.shape_keys.key_blocks
 kb["Blink"].relative_key = kb["Blink@75"]
 bpy.ops.wm.save_as_mainfile(filepath=dst, compress=False)

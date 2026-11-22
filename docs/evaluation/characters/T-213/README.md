@@ -130,7 +130,7 @@ blender -b --factory-startup -P pipeline/charsys/face_parity.py -- --all --out <
 ```
 blender -b --factory-startup -P pipeline/charsys/face_parity.py -- --all --out docs/evaluation/characters/T-213/parity_current_masters.json
 python3 pipeline/charsys/tests/test_face_parity.py                     # plain checks, about 0.1 s, no bpy / numpy
-python3 pipeline/charsys/tests/test_face_parity.py --blender <blender>  # + auburn master and a broken temp copy, about 3 min
+python3 pipeline/charsys/tests/test_face_parity.py --blender <blender>  # + auburn master and a broken temp copy, about 1 min
 ```
 
 The `--all` run took 5 min 50 s on a 4-vCPU container. Ledger: 0 renders, 0 asset builds, 3 exports (temporary),
