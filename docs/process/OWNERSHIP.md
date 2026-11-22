@@ -29,4 +29,5 @@ split.
 | T-194 | B | t-194-claude-hair-pushout | `pipeline/charsys/shot_render.py`, `pipeline/production/run_shot.py`, `pipeline/charsys/hair_pushout.py`, `pipeline/charsys/tests/test_hair_pushout.py`, `docs/evaluation/characters/T-194/**` | T-183 | — |
 | T-201 | R | t-201-claude-preview-eevee | `pipeline/charsys/render_profiles.json`, `pipeline/charsys/render_engine.py`, `pipeline/charsys/tests/test_render_profiles.py`, `tools/pc/render_package.py`, `docs/evaluation/rendering/T-201/**` | `pipeline/charsys/shot_render.py` (stable), `pipeline/production/run_shot.py` (stable) | — |
 
+| T-213 | C | t-213-claude-face-parity | `pipeline/charsys/face_parity.py`, `pipeline/charsys/tests/test_face_parity.py`, `docs/evaluation/characters/T-213/**` | `pipeline/charsys/export_engine.py` (stable), `assets/characters/**` (stable) | — |
 Supervisor-only files: docs/process/TASK_LOG.md, docs/ROADMAP.md, docs/process/OWNER_DECISIONS.md, docs/tasks/**.
