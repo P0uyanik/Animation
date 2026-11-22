@@ -71,5 +71,15 @@
    "render_s": 748.9,
    "wall_s": 783.5
   }
+ },
+ "s020_f080-082_preview_eevee_one_run": {
+  "setup_s": 71.9,
+  "render_s": 2761.3,
+  "render_s_per_frame": 920.43,
+  "frame_saved_at": [
+   "15:02.5",
+   "30:42.4",
+   "47:09.4"
+  ]
  }
 }

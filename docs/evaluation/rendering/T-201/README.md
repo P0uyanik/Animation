@@ -34,7 +34,9 @@ the cloud the profile is a correctness check only; the speed-up is for the owner
 | s020 f160 | 627 s | 204 s | 749 s |
 
 Render seconds from `shot_render.json` (`render_s`); setup was 30–34 s in every run.
-MULTIFRAME
+Steady per frame, not a one-off shader compile: one Blender run of frames 80–82 at preview_eevee took 72 s setup,
+then 2761 s (frames done at 15:02, 30:42, 47:09 → 861–980 s each, mean 920 s/frame). The cost is the software
+rasteriser drawing the fur/hair curves and the 16 TAA samples, every frame.
 
 ## Side-by-side
 Row 1: full frame, preview_eevee | review | final720 (each scaled to 1280×720, then to 341 px wide). Row 2: the same
