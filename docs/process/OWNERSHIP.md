@@ -27,5 +27,7 @@ split.
 | Task | Lane | Branch | Write-set | Depends on | Versions bumped |
 | --- | --- | --- | --- | --- | --- |
 | T-194 | B | t-194-claude-hair-pushout | `pipeline/charsys/shot_render.py`, `pipeline/production/run_shot.py`, `pipeline/charsys/hair_pushout.py`, `pipeline/charsys/tests/test_hair_pushout.py`, `docs/evaluation/characters/T-194/**` | T-183 | — |
+| T-210 | E | t-210-claude-grasp-curls | `engine/anim/animation.h`, `engine/anim/animation.cpp`, `engine/scene/actions.cpp`, `engine/scene/interaction.h`, `engine/scene/interaction.cpp`, `tests/test_motion_continuity.cpp`, `tests/golden/continuity_baseline.json`, `tests/golden/interaction_hashes.json`, `docs/evaluation/interaction/T-210/**` | T-198 | — |
+| T-211 | R | t-211-claude-blender-first-faces | `docs/research/T-211/**` | — | — |
 
 Supervisor-only files: docs/process/TASK_LOG.md, docs/ROADMAP.md, docs/process/OWNER_DECISIONS.md, docs/tasks/**.
