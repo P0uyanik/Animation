@@ -1,0 +1,76 @@
+{
+ "schema": "plush-studio.hair-flock/1",
+ "look": "V3 flock + edge fuzz",
+ "seed": 1,
+ "note": "T-207 V3: V1 plus a sparse layer of longer, brighter fuzz on convex rest-surface areas and open borders (lock edges, rims, tips); attribute-based, camera-independent",
+ "match": [
+  "hair_*"
+ ],
+ "exclude": [
+  "hair_band*",
+  "hair_flowers*",
+  "hair_bow*"
+ ],
+ "velvet": {
+  "albedo_variation": [
+   0.8,
+   1.2
+  ],
+  "sheen": [
+   0.35,
+   0.5
+  ],
+  "sheen_roughness": 0.4,
+  "sheen_lighten": 0.35
+ },
+ "fibres": {
+  "felt": "hide",
+  "halo": "hide",
+  "flyaways": "hide"
+ },
+ "flock": {
+  "density_per_m2": 300000,
+  "length_m": 0.005,
+  "length_variation": 0.5,
+  "lean_deg": 22,
+  "lean_variation_deg": 15,
+  "bend": 0.6,
+  "spread_deg": 45,
+  "radius_m": 0.00011,
+  "profile_shape": 0.4,
+  "cull_m": 0.004,
+  "frizz": {
+   "distance": 0.0004,
+   "shape": 0.5,
+   "factor": 1.0
+  }
+ },
+ "edge": {
+  "density_per_m2": 300000,
+  "length_m": 0.011,
+  "length_variation": 0.5,
+  "points": 6,
+  "lean_deg": 50,
+  "lean_variation_deg": 20,
+  "bend": 0.6,
+  "spread_deg": 60,
+  "radius_m": 5e-05,
+  "profile_shape": 0.5,
+  "frizz": {
+   "distance": 0.0012,
+   "shape": 0.5,
+   "factor": 1.0
+  },
+  "tone": 1.4,
+  "roughness": 0.8,
+  "cull_m": 0.004,
+  "mask": {
+   "convex": [
+    25,
+    110
+   ],
+   "boundary": 1.0,
+   "base": 0.03
+  }
+ }
+}
