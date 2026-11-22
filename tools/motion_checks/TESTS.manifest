@@ -7,3 +7,4 @@
 
 local reach/tests/test_reach.py 'plain Python, not in the gate before T-182 (candidate for run)'
 local tests/test_motion_checks.py 'plain Python, not in the gate before T-182 (candidate for run)'
+run tests/test_continuity.py
