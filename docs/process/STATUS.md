@@ -1,10 +1,11 @@
 # Status board
 
 Updated by the Supervisor in the same commit as every merge or dispatch. Sources: [TASK_LOG](TASK_LOG.md),
-[OWNERSHIP](OWNERSHIP.md), [OWNER_DECISIONS](OWNER_DECISIONS.md). As of 2026-11-22 ~13:35Z (R6 Supervisor
+[OWNERSHIP](OWNERSHIP.md), [OWNER_DECISIONS](OWNER_DECISIONS.md). As of 2026-11-22 ~17:30Z (R6 Supervisor
 session_01NPjxePvWAMsLopzSs1fMXB; SUPERVISOR_HANDOVER_R6.md). Merged in R6: T-193, T-192, T-191, T-183 candidate, T-196,
-T-195 (main ec56331). Running: T-183 r3b, T-194. T-190 READY, waits for owner. Rows below this line are R4 history;
-TASK_LOG is authoritative.
+T-195, T-197 (Codex), T-200 (Codex), T-190, T-202. Running: T-183, T-194, T-198, T-199, T-203, T-205, T-206 (cap).
+Queued: T-201 preview_eevee (after T-199); Q1/Q4/L1 (after T-194); L2 (after next character release). Codex: T-204.
+Rows below this line are R4 history; TASK_LOG is authoritative.
 Session cap 7. Owner liaison: session_01NPjxeKamtbdzi3YwrgsWXU.
 
 ## Character look
