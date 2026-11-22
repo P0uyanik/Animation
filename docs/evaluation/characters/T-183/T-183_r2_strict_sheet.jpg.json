@@ -1,0 +1,70 @@
+{
+  "sheet": "/home/user/Animation/docs/evaluation/characters/T-183/sheet_r2/../T-183_r2_strict_sheet.jpg",
+  "size": [
+    840,
+    1024
+  ],
+  "max_px": 1024,
+  "frames": [
+    28,
+    76,
+    78,
+    116
+  ],
+  "columns": [
+    "before: released 0.14.0",
+    "after: T-183 candidate"
+  ],
+  "crops": [],
+  "inputs": [
+    {
+      "frame": 28,
+      "column": "before: released 0.14.0",
+      "path": "/home/user/Animation/docs/evaluation/characters/T-183/sheet_r2/before/tile_f0028.jpg",
+      "sha256": "ff1caf5853e9cc06c2158749a52f58efd1c0a685c25e08fedfdb89fdac4de5aa"
+    },
+    {
+      "frame": 28,
+      "column": "after: T-183 candidate",
+      "path": "/home/user/Animation/docs/evaluation/characters/T-183/sheet_r2/after/tile_f0028.jpg",
+      "sha256": "053a86bafa6df60b266a3070daa35ad64d8d4194627e523b5c3ade9e9fd0a327"
+    },
+    {
+      "frame": 76,
+      "column": "before: released 0.14.0",
+      "path": "/home/user/Animation/docs/evaluation/characters/T-183/sheet_r2/before/tile_f0076.jpg",
+      "sha256": "6f40be03997525261a02a55695f9df89615d875f4648f7b579829079878199e3"
+    },
+    {
+      "frame": 76,
+      "column": "after: T-183 candidate",
+      "path": "/home/user/Animation/docs/evaluation/characters/T-183/sheet_r2/after/tile_f0076.jpg",
+      "sha256": "524a3e848e6abb98ccfa4c9ca0dea2be037be3414b1ce24a10725281e41f03ec"
+    },
+    {
+      "frame": 78,
+      "column": "before: released 0.14.0",
+      "path": "/home/user/Animation/docs/evaluation/characters/T-183/sheet_r2/before/tile_f0078.jpg",
+      "sha256": "cc3f9b10e9f6b732ef2ae906296a998a9c08aa8df4993d5ddeb17b508d894688"
+    },
+    {
+      "frame": 78,
+      "column": "after: T-183 candidate",
+      "path": "/home/user/Animation/docs/evaluation/characters/T-183/sheet_r2/after/tile_f0078.jpg",
+      "sha256": "13ea962e5da3abc822a898f8fcd9a117702444cdd95e8d37de77fce586f74539"
+    },
+    {
+      "frame": 116,
+      "column": "before: released 0.14.0",
+      "path": "/home/user/Animation/docs/evaluation/characters/T-183/sheet_r2/before/tile_f0116.jpg",
+      "sha256": "714e6b4e5e74e71bb30ad455446fac867b41cbef7f8ab808c9939944e60bc51a"
+    },
+    {
+      "frame": 116,
+      "column": "after: T-183 candidate",
+      "path": "/home/user/Animation/docs/evaluation/characters/T-183/sheet_r2/after/tile_f0116.jpg",
+      "sha256": "e875133328902bf2750b00d92ed490b7643c4d598503281068107dbb36f01875"
+    }
+  ],
+  "missing": []
+}

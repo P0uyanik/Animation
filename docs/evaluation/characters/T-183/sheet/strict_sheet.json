@@ -1,0 +1,11 @@
+{
+  "title": "T-183 e909 s010 girl head, strict: hand in hair (f26, f63, f115), ear (f63, f103, f115), follow (f103, f115)",
+  "columns": [
+    {"label": "before: released girl 0.14.0 (main)", "dir": "before"},
+    {"label": "after: T-183 candidate (hair contact override)", "dir": "after"}
+  ],
+  "frames": [26, 63, 103, 115],
+  "pattern": "head_f{frame:04d}.jpg",
+  "out": "../T-183_strict_sheet.jpg",
+  "max_px": 2048
+}

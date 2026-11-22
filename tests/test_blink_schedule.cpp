@@ -127,3 +127,64 @@ TEST_CASE("blink schedule: key beats, gaze shifts, short beats and the rhythm") 
   // Deterministic and random access.
   for (int f = 1; f < 600; f += 7) CHECK(shifts->faceState(0, f).blink == shifts->faceState(0, f).blink);
 }
+
+// T-192: the automatic blink closes both eyes together. The face layer drives only the combined blink morph; the
+// per-side lid controls (Blink.L / Blink.R, LeftEyeClosed / RightEyeClosed, EyeSquint.L / .R) stay equal on every
+// frame unless an explicit track winks. A wink must still be possible.
+namespace {
+std::unique_ptr<SceneEvaluator> symmetryScene(const Json& actions, const Json& schedule, int end, bool wink) {
+  Scene s;
+  s.rate = FrameRate{24, 1};
+  s.frameStart = 1;
+  s.frameEnd = end;
+  s.path = std::filesystem::path(PLUSH_SOURCE_DIR) / "tests/data/imported/scene.json";
+  CharacterDesc cd;
+  cd.name = "who";
+  cd.asset = "girl_auburn_bun_glasses_m3/character.json";
+  cd.life.enabled = true;
+  s.characters.push_back(cd);
+  s.actions = actions;
+  s.blinkSchedule = schedule;
+  if (wink) {  // an explicit wink: the right lid shut for frames 100-130, the left untouched
+    s.animation.tracks["who/expr.Blink.R"].setKey({90, vec3(0), Interp::Linear});
+    s.animation.tracks["who/expr.Blink.R"].setKey({100, vec3(1), Interp::Linear});
+    s.animation.tracks["who/expr.Blink.R"].setKey({130, vec3(1), Interp::Linear});
+    s.animation.tracks["who/expr.Blink.R"].setKey({140, vec3(0), Interp::Linear});
+  }
+  auto ev = std::make_unique<SceneEvaluator>();
+  auto r = ev->load(s, EvalOptions{2.5f, 1.0f, false, 0});
+  REQUIRE(r.has_value());
+  return ev;
+}
+
+const char* const kSidePairs[][2] = {{"Blink.L", "Blink.R"}, {"LeftEyeClosed", "RightEyeClosed"}, {"EyeSquint.L", "EyeSquint.R"}};
+}  // namespace
+
+TEST_CASE("blink symmetry: automatic blinks close both eyes together (T-192)") {
+  const int end = 24 * 60;
+  const Json acts = looks(end, 40);
+  for (const Json& schedule : {Json(), Json(true)}) {
+    auto ev = symmetryScene(acts, schedule, end, false);
+    int blinking = 0;
+    for (int f = 1; f <= end; ++f) {
+      CAPTURE(f);
+      const float b = ev->morphControlWeight(0, "Blink", f);
+      blinking += b > 0.5f;
+      for (const auto& p : kSidePairs) CHECK(ev->morphControlWeight(0, p[0], f) == ev->morphControlWeight(0, p[1], f));
+      // The automatic blink never leaks into one side only.
+      CHECK(ev->morphControlWeight(0, "Blink.L", f) == doctest::Approx(0.0f));
+      CHECK(ev->morphControlWeight(0, "Blink.R", f) == doctest::Approx(0.0f));
+    }
+    CHECK(blinking > 10);  // the scene does blink
+  }
+}
+
+TEST_CASE("blink symmetry: a deliberate wink is still possible (T-192)") {
+  const int end = 24 * 10;
+  auto ev = symmetryScene(Json::array(), Json(), end, true);
+  for (int f = 105; f <= 125; ++f) {
+    CAPTURE(f);
+    CHECK(ev->morphControlWeight(0, "Blink.R", f) > 0.99f);
+    CHECK(ev->morphControlWeight(0, "Blink.L", f) == doctest::Approx(0.0f));
+  }
+}

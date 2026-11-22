@@ -26,7 +26,8 @@
 //              found in content/clips/<name>.clip.json above the scene file.
 //   reach/grasp {.., prop, ..}, hold, place, handover  prop interactions at asset sockets (scene/interaction.h)
 //   collision  {character, enabled=true}  enabled:false plans this character's arms without its collision body
-//              (scene/collision.h; for A/B measurements)
+//              (scene/collision.h; for A/B measurements); bodyClearance (T-191, opt-in): lean away from other
+//              characters' bodies, bodyClearanceMm (10), bodyLeanMaxDeg (12)
 //   emotion    {character, name:<library name>[/<variant>], start, end?, intensity=1}  a shared emotion
 //              (plush.emotion/1, scene/emotion.h, docs/EMOTIONS.md) found in content/emotions/<name>.emotion.json above
 //              the scene file: its face mix becomes expression weights (generated per-frame keys added to the
@@ -686,6 +687,24 @@ Result<void> SceneEvaluator::compileActionsBody() {
       if (!ms->is_number() || !(ms->get<float>() >= 0 && ms->get<float>() <= 120))
         return fail("action 'collision': maxElbowSwingDeg must be a number in [0, 120]");
       if (size_t(c) < clearance_.size()) clearance_[size_t(c)].collision.maxElbowSwing = glm::radians(ms->get<float>());
+    }
+    // T-191 (opt-in): "bodyClearance": true makes this character lean away from other characters' bodies
+    // (interaction.cpp, finishInteractions), keeping "bodyClearanceMm" (0..50, default 10) with at most
+    // "bodyLeanMaxDeg" (0..30, default 12) of upper-body lean.
+    CollisionBody* cb = size_t(c) < clearance_.size() ? &clearance_[size_t(c)].collision : nullptr;
+    if (const auto bc = ap->find("bodyClearance"); bc != ap->end()) {
+      if (!bc->is_boolean()) return fail("action 'collision': bodyClearance must be true or false");
+      if (cb) cb->bodyClearance = bc->get<bool>();
+    }
+    if (const auto bm = ap->find("bodyClearanceMm"); bm != ap->end()) {
+      if (!bm->is_number() || !(bm->get<float>() >= 0 && bm->get<float>() <= 50))
+        return fail("action 'collision': bodyClearanceMm must be a number in [0, 50]");
+      if (cb) cb->bodyClearanceGap = bm->get<float>() / 1000;
+    }
+    if (const auto bl = ap->find("bodyLeanMaxDeg"); bl != ap->end()) {
+      if (!bl->is_number() || !(bl->get<float>() >= 0 && bl->get<float>() <= 30))
+        return fail("action 'collision': bodyLeanMaxDeg must be a number in [0, 30]");
+      if (cb) cb->bodyLeanMax = glm::radians(bl->get<float>());
     }
   }
   auto objIndex = [&](const std::string& n) -> int {

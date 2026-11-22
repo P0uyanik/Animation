@@ -245,6 +245,92 @@ void applyHeadTilt(const Skeleton& sk, const Clip& clip, const std::string& pref
   }
 }
 
+// T-191: the body clearance lean "<prefix>bodyLean" (world rotation vector, radians) turns the upper body about the
+// spine (40 %) and chest (60 %) joints; hips and legs stay. Root bones that ride on the torso (imported rigs' unparented
+// arms and eyes) are carried with the chest / head, the eyes keep their world rotation (the gaze stays on its target),
+// and every IK-driven arm is solved again from the moved shoulder by its IK weight, so a held wrist stays on its target
+// and keeps its rotation while a clip arm rides with the torso.
+void applyBodyLean(const Skeleton& sk, const Clip& clip, const std::string& prefix, double frame, const mat4& world, Pose& pose) {
+  const Track* t = clip.find(prefix + "bodyLean");
+  if (!t || t->keys.empty()) return;
+  const vec3 rv = t->evaluate(frame);
+  const int hips = sk.find("hips"), spine = sk.find("spine"), head = sk.find("head");
+  const int chest = sk.find("chest") >= 0 ? sk.find("chest") : spine;
+  if (glm::length(rv) < 1e-7f || chest < 0) return;
+  auto rotOf = [](const mat4& M) {
+    return glm::normalize(glm::quat_cast(mat3(glm::normalize(vec3(M[0])), glm::normalize(vec3(M[1])), glm::normalize(vec3(M[2])))));
+  };
+  const std::vector<mat4> G0 = boneGlobals(sk, pose, world);
+  struct Kept {
+    int bone;
+    quat rot;
+    vec3 pos;
+    float w;
+  };
+  std::vector<Kept> arms, eyes;
+  std::vector<std::pair<int, int>> riders;  // root bone, its carrier
+  for (size_t b = 0; b < sk.bones.size(); ++b) {
+    const std::string& n = sk.bones[b].name;
+    const bool eye = n.rfind("eye.", 0) == 0;
+    if (eye) eyes.push_back({int(b), rotOf(G0[b]), vec3(0), 1});
+    if (n.rfind("hand", 0) == 0)
+      if (const Track* ik = clip.find(prefix + "ik." + n); ik && !ik->keys.empty())
+        arms.push_back({int(b), rotOf(G0[b]), vec3(G0[b][3]), std::clamp(clip.evaluate(prefix + "ik." + n + ".weight", frame, vec3(1)).x, 0.0f, 1.0f)});
+    if (sk.bones[b].parent < 0 && int(b) != hips) {
+      if (eye && head >= 0) riders.push_back({int(b), head});
+      else if (n.find("upperArm") != std::string::npos || n.find("shoulder") != std::string::npos || n.find("clavicle") != std::string::npos)
+        riders.push_back({int(b), chest});
+    }
+  }
+  if (pose.offset.size() != sk.bones.size()) pose.offset.resize(sk.bones.size(), vec3(0));
+  auto turn = [&](int bone, vec3 r) {
+    if (bone < 0 || glm::length(r) < 1e-7f) return;
+    const quat q = rotOf(boneGlobals(sk, pose, world)[size_t(bone)]);
+    pose.local[size_t(bone)] = glm::normalize(pose.local[size_t(bone)] * (glm::inverse(q) * fromRotationVector(r) * q));
+  };
+  const float ss = spine >= 0 && chest != spine ? 0.4f : 0.0f;
+  turn(spine, ss * rv);
+  turn(chest, (1 - ss) * rv);
+  if (!riders.empty()) {
+    const std::vector<mat4> G1 = boneGlobals(sk, pose, world);
+    const mat4 toRoot = glm::inverse(world);
+    const quat worldRot = rotOf(world);
+    for (const auto& [bone, carrier] : riders) {
+      const mat4 D = G1[size_t(carrier)] * glm::inverse(G0[size_t(carrier)]);
+      pose.offset[size_t(bone)] += vec3(toRoot * vec4(vec3(D * G0[size_t(bone)][3]) - vec3(G0[size_t(bone)][3]), 0));
+      pose.local[size_t(bone)] = glm::normalize(glm::inverse(worldRot) * rotOf(D) * worldRot * pose.local[size_t(bone)]);
+    }
+  }
+  auto restore = [&](const Kept& k, float w) {
+    if (w <= 0) return;
+    const quat q = rotOf(boneGlobals(sk, pose, world)[size_t(k.bone)]);
+    const quat back = glm::normalize(pose.local[size_t(k.bone)] * (glm::inverse(q) * k.rot));
+    pose.local[size_t(k.bone)] = glm::normalize(glm::slerp(pose.local[size_t(k.bone)], back, std::min(w, 1.0f)));
+  };
+  for (const Kept& k : eyes) restore(k, 1);  // bones come parent first
+  for (const Kept& k : arms) {
+    if (k.w <= 0) continue;
+    const vec3 carried(boneGlobals(sk, pose, world)[size_t(k.bone)][3]);
+    solveTwoBoneIK(sk, pose, world, k.bone, glm::mix(carried, k.pos, k.w), 1.0f);
+    restore(k, k.w);
+  }
+}
+
+// T-191 arm yield: "<prefix>armYield.<hand bone>" (world rotation vector, radians; planned with the body clearance lean
+// for an arm that is not on an IK target) turns that arm's upper arm about the shoulder; the hand keeps its local pose.
+void applyArmYield(const Skeleton& sk, const Clip& clip, const std::string& prefix, double frame, const mat4& world, Pose& pose) {
+  for (const char* hand : {"hand.L", "hand.R"}) {
+    const Track* t = clip.find(prefix + "armYield." + hand);
+    if (!t || t->keys.empty()) continue;
+    const vec3 rv = t->evaluate(frame);
+    const int hb = sk.find(hand), fb = hb >= 0 ? sk.bones[size_t(hb)].parent : -1, ub = fb >= 0 ? sk.bones[size_t(fb)].parent : -1;
+    if (ub < 0 || glm::length(rv) < 1e-7f) continue;
+    const mat4 M = boneGlobals(sk, pose, world)[size_t(ub)];
+    const quat q = glm::normalize(glm::quat_cast(mat3(glm::normalize(vec3(M[0])), glm::normalize(vec3(M[1])), glm::normalize(vec3(M[2])))));
+    pose.local[size_t(ub)] = glm::normalize(pose.local[size_t(ub)] * (glm::inverse(q) * fromRotationVector(rv) * q));
+  }
+}
+
 // T-134 reach mechanics (opt-in scene key "reachMechanics"): the body lead of a reach. "<prefix>reach.lead" (world
 // rotation vector, radians: lean towards the prop + turn of the reaching shoulder) is spread over hips, spine and
 // chest, each link `succession` frames ahead of the next ("<prefix>reach.lead.params": succession frames, hip share,
@@ -361,6 +447,8 @@ void applyReachLead(const Skeleton& sk, const Clip& clip, const std::string& pre
 void applyArmPoles(const Skeleton& sk, const Clip& clip, const std::string& prefix, double frame, const mat4& world,
                    Pose& pose) {
   applyReachLead(sk, clip, prefix, frame, world, pose);  // T-134 (no track: no-op)
+  applyBodyLean(sk, clip, prefix, frame, world, pose);   // T-191 (no track: no-op)
+  applyArmYield(sk, clip, prefix, frame, world, pose);   // T-191 (no track: no-op)
   applyHeadTilt(sk, clip, prefix, frame, world, pose);  // T-096 (runs at the same point of the pose path; no track: no-op)
   for (size_t i = 0; i < sk.bones.size(); ++i) {
     const std::string name = prefix + "pole." + sk.bones[i].name, swingName = prefix + "swing." + sk.bones[i].name;
@@ -2766,6 +2854,230 @@ Result<void> SceneEvaluator::finishInteractions(Clip& gen, InteractionContext& c
       if (worst < 0)
         warnings_.push_back(std::format("interaction: '{}' arm {} passes {:.1f} mm into the body at frame {} (target inside the body?)",
                                         who, side, -worst * 1000, at));
+    }
+  }
+  // T-191 body clearance (opt-in per character: the collision action's "bodyClearance"): every pair of characters of
+  // which at least one opted in keeps the larger opted-in bodyClearanceGap between their body parts (collision.h
+  // bodyGap; hand-hand pairs are skipped: a hand-over's shared hold touches by design). Per frame where they come
+  // closer, the characters that opted in lean their upper body away from the other (horizontally, chest to chest),
+  // the same angle each: the smallest kLeanStep multiple up to their bodyLeanMax that opens the gap, as the pose plays
+  // back; then the smallest envelope above those angles whose rate is at most kLeanRate per frame, so they ease away
+  // and back. The lean is a generated "<who>/bodyLean" track (applyBodyLean: IK wrists stay, clip arms ride along, the
+  // eyes keep their gaze); "<who>/collision.bodyLean.<other>" records the angle (degrees). Pairs run in order and add
+  // to the lean planned so far. What the limit cannot clear is a warning.
+  {
+    bool anyOn = false;
+    for (const auto& m : clearance_) anyOn = anyOn || m.collision.bodyClearance;
+    if (anyOn) {
+      for (size_t c = 0; c < characters_.size() && c < clearance_.size(); ++c)
+        if (!clearance_[c].collision.parts.valid)
+          clearance_[c].collision.parts = deriveBodyParts(characters_[c].asset.skeleton, characters_[c].rig.meshes);
+      constexpr float kLeanStep = 0.5f, kLeanRate = 0.6f;  // degrees, degrees per frame
+      bool (*skip)(const std::string&, const std::string&) = [](const std::string& x, const std::string& y) {
+        return x.rfind("hand", 0) == 0 && y.rfind("hand", 0) == 0;
+      };
+      const int fs = scene_.frameStart - 1, n = scene_.frameEnd - scene_.frameStart + 3;
+      for (size_t a = 0; a < characters_.size() && a < clearance_.size(); ++a)
+        for (size_t b = a + 1; b < characters_.size() && b < clearance_.size(); ++b) {
+          const CollisionBody* body[2] = {&clearance_[a].collision, &clearance_[b].collision};
+          if (!body[0]->bodyClearance && !body[1]->bodyClearance) continue;
+          if (!body[0]->parts.valid || !body[1]->parts.valid) continue;
+          const size_t who[2] = {a, b};
+          float need = 0, maxDeg = 0;
+          bool leans[2];
+          int pivot[2];
+          std::string track[2];
+          std::vector<vec3> base[2];
+          std::optional<Track> saved[2];
+          for (int k = 0; k < 2; ++k) {
+            leans[k] = body[k]->bodyClearance;
+            if (leans[k]) need = std::max(need, body[k]->bodyClearanceGap), maxDeg = std::max(maxDeg, glm::degrees(body[k]->bodyLeanMax));
+            const Skeleton& sk = characters_[who[k]].asset.skeleton;
+            pivot[k] = sk.find("chest") >= 0 ? sk.find("chest") : sk.find("spine") >= 0 ? sk.find("spine") : sk.find("hips");
+            track[k] = scene_.characters[who[k]].name + "/bodyLean";
+            if (auto it = gen.tracks.find(track[k]); it != gen.tracks.end() && !it->second.keys.empty()) saved[k] = it->second;
+            for (int i = 0; i < n; ++i) base[k].push_back(saved[k] ? saved[k]->evaluate(fs + i) : vec3(0));
+          }
+          if (pivot[0] < 0 || pivot[1] < 0) continue;
+          std::vector<vec3> axis(size_t(n), vec3(0));  // a's lean axis (b leans about its opposite)
+          auto setLean = [&](const std::vector<float>& deg) {
+            for (int k = 0; k < 2; ++k) {
+              if (!leans[k]) continue;
+              const float lim = glm::degrees(body[k]->bodyLeanMax), sign = k == 0 ? 1.0f : -1.0f;
+              std::vector<Key> keys;
+              for (int i = 0; i < n; ++i)
+                keys.push_back({double(fs + i), base[k][size_t(i)] + sign * axis[size_t(i)] * glm::radians(std::min(deg[size_t(i)], lim)), Interp::Linear});
+              gen.tracks[track[k]].keys = std::move(keys);
+            }
+          };
+          auto gapAt = [&](int i) {
+            return bodyGap(body[0]->parts, characterGlobals(a, fs + i), body[1]->parts, characterGlobals(b, fs + i), skip);
+          };
+          const std::vector<float> zero(size_t(n), 0.0f);
+          setLean(zero);
+          // Pass 1, on the pose without this pair's lean: where the gap is short and which way is away (horizontally,
+          // from b's closest point towards a's; chest to chest when the contact is mostly vertical). The direction is
+          // then smoothed over kLeanAxisWindow frames weighted by depth, so the lean axis turns slowly.
+          constexpr int kLeanAxisWindow = 8;
+          std::vector<float> depth(size_t(n), 0.0f);
+          std::vector<vec3> raw(size_t(n), vec3(0));
+          bool any = false;
+          for (int i = 0; i < n; ++i) {
+            const std::vector<mat4> GG[2] = {characterGlobals(a, fs + i), characterGlobals(b, fs + i)};
+            const BodyGap g = bodyGap(body[0]->parts, GG[0], body[1]->parts, GG[1], skip);
+            vec3 chestDir = vec3(GG[0][size_t(pivot[0])][3]) - vec3(GG[1][size_t(pivot[1])][3]);
+            chestDir.y = 0;
+            chestDir = glm::length(chestDir) > 1e-6f ? glm::normalize(chestDir) : vec3(1, 0, 0);
+            vec3 d = g.dir;
+            d.y = 0;
+            raw[size_t(i)] = glm::length(d) > 0.3f ? glm::normalize(d) : chestDir;
+            if (g.gap < need) depth[size_t(i)] = need - g.gap, any = true;
+          }
+          if (!any) {
+            for (int k = 0; k < 2; ++k)  // nothing to do: the tracks are as they were
+              if (saved[k]) gen.tracks[track[k]] = *saved[k];
+              else gen.tracks.erase(track[k]);
+            continue;
+          }
+          for (int i = 0; i < n; ++i) {
+            vec3 sum(0);
+            float wsum = 0;
+            for (int j = std::max(0, i - kLeanAxisWindow); j <= std::min(n - 1, i + kLeanAxisWindow); ++j) {
+              const float w = depth[size_t(j)] + 1e-4f;  // depth decides; without depth nearby, the plain average
+              sum += w * raw[size_t(j)], wsum += w;
+            }
+            vec3 away = sum / wsum;
+            away = glm::length(away) > 1e-6f ? glm::normalize(away) : raw[size_t(i)];
+            axis[size_t(i)] = glm::normalize(glm::cross(vec3(0, 1, 0), away));  // turns up towards `away`
+          }
+          // Pass 2: per short frame, the smallest lean about that axis that opens the gap (else the one that opens it most).
+          std::vector<float> needDeg(size_t(n), 0.0f);
+          for (int i = 0; i < n; ++i) {
+            if (depth[size_t(i)] <= 0) continue;
+            float best = 0, bestGap = need - depth[size_t(i)];
+            std::vector<float> one(size_t(n), 0.0f);
+            for (float t = kLeanStep; t <= maxDeg + 1e-4f; t += kLeanStep) {
+              one[size_t(i)] = t;
+              setLean(one);
+              const float gg = gapAt(i).gap;
+              if (gg > bestGap + 1e-5f) bestGap = gg, best = t;
+              if (gg >= need) break;
+            }
+            needDeg[size_t(i)] = best;
+          }
+          setLean(zero);
+          std::vector<float> env = needDeg;
+          for (int i = 1; i < n; ++i) env[size_t(i)] = std::max(env[size_t(i)], env[size_t(i - 1)] - kLeanRate);
+          for (int i = n - 2; i >= 0; --i) env[size_t(i)] = std::max(env[size_t(i)], env[size_t(i + 1)] - kLeanRate);
+          setLean(env);
+          for (int k = 0; k < 2; ++k) {
+            if (!leans[k]) {
+              if (saved[k]) gen.tracks[track[k]] = *saved[k];
+              else gen.tracks.erase(track[k]);
+              continue;
+            }
+            const float lim = glm::degrees(body[k]->bodyLeanMax);
+            std::vector<Key> keys;
+            for (int i = 0; i < n; ++i) keys.push_back({double(fs + i), vec3(std::min(env[size_t(i)], lim)), Interp::Linear});
+            gen.tracks[scene_.characters[who[k]].name + "/collision.bodyLean." + scene_.characters[who[1 - k]].name].keys = std::move(keys);
+          }
+          // Arm yield: what the lean leaves on an arm part of a character that opted in, while that arm is free (IK
+          // weight below 0.5: a clip or idle arm, not a hand on its target), swings the arm about its shoulder away
+          // from the other body ("<who>/armYield.<hand>", world rotation vector; applyBodyLean), the smallest
+          // kYieldStep multiple up to kYieldMax that opens the gap without taking the arm deeper into its own body
+          // (T-047 limb clearance); then the same rate-limited envelope. A held hand stays where its action put it, and
+          // no yield reaches a planned contact frame of that hand.
+          constexpr float kYieldMax = 25.0f, kYieldStep = 1.0f, kYieldRate = 1.0f;  // degrees, degrees per frame
+          for (int k = 0; k < 2; ++k) {
+            if (!leans[k]) continue;
+            const size_t c = who[k];
+            const Skeleton& sk = characters_[c].asset.skeleton;
+            const std::string name = scene_.characters[c].name;
+            for (char side : {'L', 'R'}) {
+              const std::string hand = std::string("hand.") + side;
+              const int hb = sk.find(hand), fb = hb >= 0 ? sk.bones[size_t(hb)].parent : -1, ub = fb >= 0 ? sk.bones[size_t(fb)].parent : -1;
+              if (ub < 0) continue;
+              const std::string ytrack = name + "/armYield." + hand, ik = name + "/ik." + hand;
+              std::optional<Track> ysaved;
+              if (auto it = gen.tracks.find(ytrack); it != gen.tracks.end() && !it->second.keys.empty()) ysaved = it->second;
+              std::vector<vec3> ybase(size_t(n), vec3(0)), yaxis(size_t(n), vec3(0));
+              if (ysaved)
+                for (int i = 0; i < n; ++i) ybase[size_t(i)] = ysaved->evaluate(fs + i);
+              const Track* ikTrack = gen.find(ik);
+              const bool hasIk = ikTrack && !ikTrack->keys.empty();
+              auto setYield = [&](const std::vector<float>& deg) {
+                std::vector<Key> keys;
+                for (int i = 0; i < n; ++i) keys.push_back({double(fs + i), ybase[size_t(i)] + yaxis[size_t(i)] * glm::radians(deg[size_t(i)]), Interp::Linear});
+                gen.tracks[ytrack].keys = std::move(keys);
+              };
+              std::vector<float> ydeg(size_t(n), 0.0f);
+              bool anyY = false;
+              // Never near a planned contact of this hand (grasp, hand-over, touch): the envelope reaches kYieldMax /
+              // kYieldRate frames around a planned frame, so the contact frames keep their exact palm.
+              std::vector<char> nearContact(size_t(n), 0);
+              for (const auto& ct : ctx.contacts)
+                if (ct.character == int(c) && ct.side == side)
+                  for (int i = std::max(0, int(ct.frame) - fs - int(kYieldMax / kYieldRate) - 1); i < n && i <= int(ct.frame) - fs + int(kYieldMax / kYieldRate) + 1; ++i)
+                    nearContact[size_t(i)] = 1;
+              for (int i = 0; i < n; ++i) {
+                if (nearContact[size_t(i)] || (hasIk && gen.evaluate(ik + ".weight", fs + i, vec3(1)).x >= 0.5f)) continue;
+                const std::vector<mat4> GG[2] = {characterGlobals(a, fs + i), characterGlobals(b, fs + i)};
+                const BodyGap g = bodyGap(body[0]->parts, GG[0], body[1]->parts, GG[1], skip);
+                const std::string& part = k == 0 ? g.partA : g.partB;
+                if (g.gap >= need || part.empty() || part.back() != side || part.rfind("thigh", 0) == 0 || part.rfind("shin", 0) == 0 ||
+                    part.rfind("foot", 0) == 0)
+                  continue;
+                const vec3 point = k == 0 ? g.pointA : g.pointB, away = k == 0 ? g.dir : -g.dir;
+                const vec3 ax = glm::cross(point - vec3(GG[k][size_t(ub)][3]), away);
+                if (glm::length(ax) < 1e-6f) continue;
+                yaxis[size_t(i)] = glm::normalize(ax);
+                const float own0 = std::min(limbClearance(*body[k], GG[k], side).gap, 0.0f);
+                float best = 0, bestGap = g.gap;
+                std::vector<float> one(size_t(n), 0.0f);
+                for (float t = kYieldStep; t <= kYieldMax + 1e-4f; t += kYieldStep) {
+                  one[size_t(i)] = t;
+                  setYield(one);
+                  if (limbClearance(*body[k], characterGlobals(c, fs + i), side).gap < own0 - 0.001f) break;  // into its own body
+                  const float gg = gapAt(i).gap;
+                  if (gg > bestGap + 1e-5f) bestGap = gg, best = t;
+                  if (gg >= need) break;
+                }
+                ydeg[size_t(i)] = best;
+                anyY = anyY || best > 0;
+              }
+              if (!anyY) {
+                if (ysaved) gen.tracks[ytrack] = *ysaved;
+                else gen.tracks.erase(ytrack);
+                continue;
+              }
+              for (int i = 0; i < n; ++i)  // frames without their own axis (ramps) take the nearest frame's
+                if (yaxis[size_t(i)] == vec3(0))
+                  for (int d = 1; d < n; ++d) {
+                    if (i - d >= 0 && ydeg[size_t(i - d)] > 0) {
+                      yaxis[size_t(i)] = yaxis[size_t(i - d)];
+                      break;
+                    }
+                    if (i + d < n && ydeg[size_t(i + d)] > 0) {
+                      yaxis[size_t(i)] = yaxis[size_t(i + d)];
+                      break;
+                    }
+                  }
+              std::vector<float> yenv = ydeg;
+              for (int i = 1; i < n; ++i) yenv[size_t(i)] = std::max(yenv[size_t(i)], yenv[size_t(i - 1)] - kYieldRate);
+              for (int i = n - 2; i >= 0; --i) yenv[size_t(i)] = std::max(yenv[size_t(i)], yenv[size_t(i + 1)] - kYieldRate);
+              setYield(yenv);
+            }
+          }
+          float worst = 1e9f;
+          int at = 0;
+          std::string parts;
+          for (int i = 1; i < n - 1; ++i)
+            if (const BodyGap g = gapAt(i); g.gap < worst) worst = g.gap, at = fs + i, parts = g.partA + "/" + g.partB;
+          if (worst < need - 0.0005f)
+            warnings_.push_back(std::format("interaction: the bodies of '{}' and '{}' come within {:.1f} mm at frame {} ({}; body clearance "
+                                            "{:.0f} mm, lean limit {:.0f} deg): move them apart",
+                                            scene_.characters[a].name, scene_.characters[b].name, worst * 1000, at, parts, need * 1000, maxDeg));
+        }
     }
   }
   if (io.headVolumes) {
