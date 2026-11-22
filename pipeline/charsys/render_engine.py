@@ -44,11 +44,25 @@ def configure(scene, engine, samples, *, cycles_device=None, cycles_denoiser=Non
 
 
 def apply_profile(scene, profile):
-    """T-124: applies an opt-in render profile's extra settings (``cycles`` and ``render`` blocks of
-    render_profiles.json) after configure(). Only called when a profile is requested; returns what was set."""
+    """T-124: applies an opt-in render profile's extra settings (``cycles``, ``eevee`` (T-201) and ``render`` blocks
+    of render_profiles.json) after configure(); returns what was set. A profile with an ``engine`` key (T-201
+    preview_eevee) must run on that engine: configure() picks the engine from --engine, so a mismatch is refused
+    instead of silently rendering an EEVEE profile with Cycles."""
     applied = {}
-    for block, target in (("cycles", scene.cycles), ("render", scene.render)):
-        for key, value in profile.get(block, {}).items():
+    want = profile.get("engine")  # T-201: absent on the Cycles profiles; checked only when a profile names one
+    if want is not None:
+        blender_engine = {"cycles": "CYCLES", "eevee": "BLENDER_EEVEE"}.get(want)
+        if blender_engine is None:
+            raise ValueError(f"profile engine {want!r} is not cycles or eevee")
+        if scene.render.engine != blender_engine:
+            raise ValueError(f"this profile renders with {want}, but the scene is set to {scene.render.engine}: "
+                             f"pass --engine {want}")
+        applied["engine"] = want
+    for block in ("cycles", "eevee", "render"):  # attribute read only for blocks the profile has
+        if block not in profile:
+            continue
+        target = getattr(scene, block)
+        for key, value in profile[block].items():
             if not hasattr(target, key):
                 raise ValueError(f"profile setting {block}.{key} does not exist")
             setattr(target, key, value)

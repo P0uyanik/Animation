@@ -82,6 +82,24 @@
    "cycles": {
     "adaptive_threshold": 0.01
    }
+  },
+  "preview_eevee": {
+   "description": "T-201, OPT-IN: fast EEVEE preview for blocking/acting review only (never look review or finals; Cycles stays the default). 960x540, 16 TAA samples, AO-only fast GI, 2 shadow rays at half shadow resolution. Needs --engine eevee in shot_render.py/run_shot.py (apply_profile refuses a mismatch); tools/pc/render_package.py takes the engine from this profile. Renders headless in the GPU-less cloud container via Mesa's software OpenGL, and faster on a GPU PC.",
+   "engine": "eevee",
+   "resolution": [
+    960,
+    540
+   ],
+   "samples": 16,
+   "eevee": {
+    "shadow_ray_count": 2,
+    "shadow_step_count": 4,
+    "shadow_resolution_scale": 0.5,
+    "fast_gi_method": "AMBIENT_OCCLUSION_ONLY"
+   },
+   "render": {
+    "use_persistent_data": true
+   }
   }
  },
  "default_profile": "final720",

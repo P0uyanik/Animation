@@ -1107,3 +1107,14 @@ hard depends-on (read) overlaps were conflicts → T-181b makes them warnings. R
   independent review of the T-211 Blender-first face plan (quality, efficiency, maintainability, alternatives, risks,
   Codex's own recommendation); queued after T-208. The face decisions (T-209 D 1–5 + T-211 decision 7) stay open until
   the owner has seen Codex's view. Supervisor IDs from T-213.
+
+## 2026-11-22 ~22:40 CET (via the liaison)
+- **Face plan approved** (verbatim: "approve the face plan with Codex's changes, pilot auburn first"): T-209 D1
+  fit-and-lock on our own generator (face_generic/4 if needed); D3 pass rule = every scored T-204 measure within
+  tolerance + owner sheet review; D7 in T-212's amended form (spec controls first, Warp/Hook/Lattice only for leftover
+  contour errors; bake on neutral skin before rig/masks, rebuild lid keys; regenerate lids, seat glasses rigidly, no
+  Surface Deform; acceptance adds a held-out reference view + exported-expression parity with Blender; pin the Blender
+  build). Order: **auburn pilot first**, then white-haired, then boy. Defaults kept: D2 view weights equal; D4 smiling
+  refs scored against a matched smile expression; D6 face and hair ship independently. Standing: no CURRENT change
+  without the owner's OK; every new character version needs the owner's sheet approval; P2 budget per session. The
+  liaison wants the auburn pilot sheet (all angles, before/after/reference) when ready.
