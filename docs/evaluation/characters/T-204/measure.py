@@ -73,17 +73,18 @@ def values(a, im=None):
         return np.interp(y, ys, xs, left=EM, right=EM)
 
     crown = field("crown")[1]
-    chin_x, chin = field("chin")
+    _, chin = field("chin")
     h = chin - crown
     if not h > 0:
         raise ValueError("Set crown and chin, with chin below crown.")
     x0, et, x1, eb = field("eye", 4)
     il, ey, ir = field("iris", 3)
-    ey = a.get("eye_y", ey)
-    eh, ew, diameter = a.get("eye_h", eb-et), x1-x0, ir-il
+    ey = ey if a.get("eye_y") is None else a["eye_y"]
+    eh = eb-et if a.get("eye_h") is None else a["eye_h"]
+    ew, diameter = x1-x0, ir-il
     ix = (il+ir)/2
     fx, fy = field("far")
-    ex, ey1 = field("brow_lid") if a.get("brow_lid") else (ix, et)
+    _, ey1 = field("brow_lid") if a.get("brow_lid") else (ix, et)
     nx0, nt, nx1, nb = field("nose", 4)
     mx0, mt, mx1, mb = field("mouth", 4)
     my = (mt+mb)/2
@@ -110,7 +111,7 @@ def values(a, im=None):
         d["hair_width"]=(cap[1][0]-cap[0][0])/f
     d["hair_height"]=(chin-field("crest")[1])/h
     skull, fringe, brow = (field(k)[1] for k in ("skull","fringe","midbrow"))
-    if brow > skull:
+    if brow > skull and math.isfinite(fringe):
         d["forehead_covered"]=min(1,max(0,(fringe-skull)/(brow-skull)))
     d["fringe_eye"]=(mid_eye-fringe)/h
     d["crown_above_skull"]=(skull-crown)/h
@@ -137,6 +138,11 @@ def values(a, im=None):
         tangent = u + (w-u)*(vy-uy)/(wy-uy)
         d["cheek_bulge"]=a["facing"]*(v-tangent)/h
         d["cheek_advance"]=a["facing"]*(v-u)/h
+    section_ends = a.get("profile_span")
+    if section_ends:
+        d["profile_depth"] = abs(section_ends[1][0] - section_ends[0][0]) / h
+    if a.get("nose_tip") and profile and profile[0]:
+        d["profile_nose"] = a["facing"] * (a["nose_tip"][0] - profile[0][0]) / h
     if a.get("exposed"):
         d["exposed_cheek"]=abs(a["exposed"][1][0]-a["exposed"][0][0])/h
     if im is not None:
@@ -171,7 +177,7 @@ def rounded(x):
 
 def write_csv(path, rows):
     with Path(path).open("w",newline="",encoding="utf-8") as f:
-        w=csv.DictWriter(f,fieldnames=rows[0].keys())
+        w=csv.DictWriter(f,fieldnames=rows[0].keys(), lineterminator="\n")
         w.writeheader()
         w.writerows(rows)
 
@@ -205,6 +211,9 @@ def overlay(im, a):
     if a.get("profile"):
         for p in a["profile"]:
             dot(p,gold)
+    for point in a.get("profile_span") or []:
+        dot(point, gold)
+    dot(a.get("nose_tip"), cyan)
     for k in ("crown","chin","crest","fringe"):
         dot(a.get(k),gold)
     if a.get("cap"):
