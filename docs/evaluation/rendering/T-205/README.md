@@ -18,8 +18,8 @@ If the command reports **package verification failed**, the download was damaged
 
 | Check | Result |
 |---|---|
-| Package for e912 s010, frames 1–24 at commit `0cb0053a53` | `e912_paper_boat_s010_0cb0053a53_f1-24.bake.zip`, 121.9 MB, 27 files, sha256 `acc50669…935411b` |
-| Determinism | Packing the same bake twice gave byte-identical `MANIFEST.json` and zip. A second engine bake of the resolved scene was identical apart from its host path. |
+| Package for e912 s010, frames 1–24 at commit `0cb0053a53` | `e912_paper_boat_s010_0cb0053a53_f1-24.bake.zip`, 121.9 MB, 27 files, sha256 `aa333dd4…70963e70e`. The full command (prepare, bake, pack, then a smoke render of frames 1–2 from the unpacked zip) took 1 min 46 s. |
+| Determinism | Packing the same bake twice gave byte-identical `MANIFEST.json` and zip. A fresh prepare and bake run reproduced every file hash. A second engine bake of the resolved scene was identical apart from its host path. |
 | Render from the package alone | The zip was copied alone into an empty temp folder with the engine binary renamed away and `PATH` reduced to system folders. Frames 1–3 rendered at 320×180, 4 spp, Cycles, with all three characters and nothing in `not_rendered`. Setup took 67.1 s, then 15.7 s/frame. |
 | Same pixels as the repository render | Rendering the same bake from the repository paths matched the package render pixel for pixel on frames 1–3 (MAE 0, max 0). Only the PNG metadata differs. |
 | Masters | All three masters link no library and no unpacked file. `bake_package.py` checks this with Blender on every pack. |
