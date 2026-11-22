@@ -14,6 +14,9 @@ OWNERSHIP rows must sit inside the table (above the "Supervisor-only files" foot
 Pre-existing reds (informational): "CI status (main)" summary job; Windows gate (b9c0d4e, 11-21); Branch cleanup (since 11-17).
 Owner decisions ~04:20 CET 22 Nov: T-187 accepted, NO revised video until the system fixes below land.
 
+**Model rule (owner ~15:20 CET 22 Nov): no Fable. Opus by default, Sonnet for mechanical work; running Fable sessions
+continue in a fresh Opus session after their next checkpoint.**
+
 ## R6 log (Supervisor session_01NPjxePvWAMsLopzSs1fMXB, from ~12:05Z)
 - Merged: T-193 (main 5010873, gate 45020921791), T-192 (main 7658003, gate 45021042377; ledger T-190 + clip_layers.cpp,
   tests/test_hand_limits.cpp rode along). T-183 row + scene.h (1632da5).

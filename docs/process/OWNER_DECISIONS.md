@@ -1033,3 +1033,9 @@ hard depends-on (read) overlaps were conflicts → T-181b makes them warnings. R
 - General: prefer Blender built-ins + our engine + suitable open source; no unnecessary rebuilds; keep approved designs
   and behaviours; never compromise tests or quality; fix system-level problems, not per-scene patches.
 - Task IDs: T-197 is Codex's; Supervisor IDs continue at T-198.
+
+## 2026-11-22 ~15:20 CET (via the liaison) — standing rule
+- **No Fable model for any task from now on** (token cost). New dispatches: Opus 5.5 by default, Sonnet 5.5 for
+  mechanical / aggregation work. Running Fable sessions (T-183 colliders, T-194 push-out) reach their next checkpoint,
+  then further rounds continue in a fresh Opus session (branch + round file; no work lost). T-190 round 2, started on
+  Fable at ~13:48Z, was restarted on Opus at once (session_01NPjxeMs1WeEkn4EHp9scQE).
