@@ -40,8 +40,11 @@ Pair classes (query vertices -> surfaces):
 Hair tests use one tree over all characters' figures, props and boxes (the nearest face names the class), as the
 T-194 measure did; the other classes use one tree per surface set.
 
-Depth (T-183 tools/measure_body.py rules, as in T-194 tools/measure_eval.py): exit distance towards / away from the
-nearest surface, else the second shortest of 26 fixed directions; "under the face" and "enclosed" rules. For hair_own
+Depth, hair and hand_prop (surfaces may be open shells: garments, paper props): T-183 tools/measure_body.py rules, as
+in T-194 tools/measure_eval.py: exit distance towards / away from the nearest surface, else the second shortest of 26
+fixed directions; "under the face" and "enclosed" rules. Depth, garment_body and body_body (closed solids): behind the
+nearest face = inside, depth = the distance to it (the "enclosed" rule would count a sleeve between a folded forearm
+and the chest, outside both, as 60 mm deep: e912 s020 f29). For hair_own
 and garment_body, vertices embedded at REST (rest pose, actions off, face controls at 0) count only by what they are
 deeper than at rest, and not at all where they sit at their rest distance from the same part. A vertex counts when
 deeper than --limit-mm.
@@ -412,7 +415,8 @@ def exit_depth(tree, p, loc, nrm, dist):
 class Surfaces:
     """One BVH over labelled objects (hair_pushout.object_triangles), with the label of every triangle."""
 
-    def __init__(self, labelled, deps):
+    def __init__(self, labelled, deps, closed=False):
+        self.closed = closed
         pieces = HP.object_triangles([o for _l, o in labelled], deps)
         lab = {id(o): l for l, o in labelled}
         self.labels, ends, n = [], [], 0
@@ -439,6 +443,8 @@ class Surfaces:
         loc, nrm = np.array(loc), np.array(nrm)
         sd = dist if (p - loc).dot(nrm) >= 0 else -dist
         lab = self.labels[int(np.searchsorted(self.ends, idx, side="right"))]
+        if self.closed:  # closed solid: inside = behind the nearest face, depth = the distance to it
+            return (dist if sd < 0 else 0.0), lab, sd
         return exit_depth(self.tree, p, loc, nrm, dist), lab, sd
 
 
@@ -527,7 +533,7 @@ def rest_depths(bpy, C, names, queries, surfaces_of):
         deps = bpy.context.evaluated_depsgraph_get()
         rest[n] = {}
         for role in queries:
-            S = Surfaces([(f"own:{r}:{o.name}", o) for r, o in surfaces_of(c, role)], deps)
+            S = Surfaces([(f"own:{r}:{o.name}", o) for r, o in surfaces_of(c, role)], deps, closed=role == "garment")
             R = []
             for P in points(c[role], deps):
                 r, lab, sd = np.zeros(len(P)), [None] * len(P), np.full(len(P), REACH)
@@ -621,7 +627,7 @@ def blender_part(args):
         lab += [(f"prop::{o.name}", o) for o in props] + [(f"set::{o.name}", o) for o in boxes]
         S = Surfaces(lab, deps)
         G = Surfaces([(f"{n}:glasses:{o.name}", o) for n in names for o in C[n]["glasses"]], deps)
-        for n in names:
+        for n in (names if want & set(HAIR_CLASSES) else []):
             for oi, (o, P) in enumerate(zip(C[n]["hair"], pts[n]["hair"])):
                 rr, rl, rsd = rest[n]["hair"][oi]
                 for i in S.near(P):
@@ -645,7 +651,7 @@ def blender_part(args):
                     if d > limit:
                         add("glasses", n, f"{o.name} > {lb.replace(n + ':', 'own:', 1)}", d * 1e3)
         t = tick("hair", t)
-        solid = {n: Surfaces([(f"{n}:body:{o.name}", o) for o in C[n]["solid"]], deps) for n in names}
+        solid = {n: Surfaces([(f"{n}:body:{o.name}", o) for o in C[n]["solid"]], deps, closed=True) for n in names}
         if "garment_body" in want:
             for n in names:
                 for oi, (o, P) in enumerate(zip(C[n]["garment"], pts[n]["garment"])):

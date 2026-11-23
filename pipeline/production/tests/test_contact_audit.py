@@ -11,7 +11,8 @@ Scene: two rigged "characters" (a, b) of boxes, a prop box and a floor box, fram
 Checks:
   1. Roles from metadata: hair, garment, body, solid (proxy, not the masked body), glasses, hand vertices (the hand
      bone and its child), props and set boxes (from the bake's objects).
-  2. Depths per class and frame (0.1 mm): hair_own 20 / 3, garment_body 10, hand_prop 8, body_body 50 (a in b only),
+  2. Depths per class and frame (0.1 mm): hair_own 20 / 3, garment_body 10 (a lining inside a closed hollow cage, outside
+     the solid but with no free direction, is not counted: closed-solid rule), hand_prop 8, body_body 50 (a in b only),
      body_set 5 (b only); nothing in frames where nothing is inside; depth pops of hair_own = 2 (0 -> 20 -> 3).
   3. The largest hair vertex move per frame (70 / 17 mm) and `compare` (jump pops of a run against itself = 0).
   4. Determinism: two runs give the same rows and SHA-256; --jobs 2 (frame chunks with a warm-up frame) gives the
@@ -53,6 +54,23 @@ def box_mesh(name, centre, half):
     bmesh.ops.create_cube(bm, size=1.0)
     for v in bm.verts:
         v.co = [c + h * 2 * x for c, h, x in zip(centre, half, v.co)]
+    bm.to_mesh(me)
+    bm.free()
+    return me
+
+
+def cage_mesh(name, centre, outer, inner):
+    """A closed hollow box: outer shell, inner shell facing into the cavity (a point in the cavity is outside the
+    solid but no ray of the 26 directions gets out: the T-183 "enclosed" case)."""
+    import bmesh
+    me = bpy.data.meshes.new(name)
+    bm = bmesh.new()
+    for h, flip in ((outer, False), (inner, True)):
+        r = bmesh.ops.create_cube(bm, size=2 * h)
+        for v in r["verts"]:
+            v.co = [c + x for c, x in zip(centre, v.co)]
+        if flip:
+            bmesh.ops.reverse_faces(bm, faces=list({f for v in r["verts"] for f in v.link_faces}))
     bm.to_mesh(me)
     bm.free()
     return me
@@ -113,7 +131,8 @@ def build(path, bake_path):
                            ("hairb", (0, 0, 0.75), (0, 0, 0.85), "root"),       # along +Z
                            ("garm", (0.25, 0, 0.5), (0.35, 0, 0.5), "root"),    # along +X
                            ("DEF-hand.L", (0.6, 0.3, 0.5), (0.7, 0.3, 0.5), "root"),
-                           ("DEF-f.L", (0.7, 0.3, 0.5), (0.75, 0.3, 0.5), "DEF-hand.L")], sc)
+                           ("DEF-f.L", (0.7, 0.3, 0.5), (0.75, 0.3, 0.5), "DEF-hand.L"),
+                           ("lin", (-0.75, 0, 0.5), (-0.65, 0, 0.5), "root")], sc)                # along +X
     rigged("body_skin", box_mesh("body_a", (0, 0, 0.5), (0.2, 0.2, 0.2)), a, [("root", None)], sc)
     rigged("hair_a", tri_mesh("hair_a", (0, 0, 0.75)), a, [("hairb", None)], sc)
     g = rigged("garment.shirt", tri_mesh("garm_a", (0.25, 0, 0.5), axis="x"), a, [("garm", None)], sc)
@@ -123,6 +142,9 @@ def build(path, bake_path):
     xs = [v.co.x for v in hand.data.vertices]
     gh.add([i for i, x in enumerate(xs) if x < 0.6], 1.0, "REPLACE")
     gf.add([i for i, x in enumerate(xs) if x > 0.6], 1.0, "REPLACE")
+    cage = rigged("arm.cage", cage_mesh("cage_a", (-0.6, 0, 0.5), 0.05, 0.03), a, [("root", None)], sc)
+    lin = rigged("garment.lining", tri_mesh("lining_a", (-0.68, 0, 0.5), axis="x"), a, [("lin", None)], sc)
+    lin["ps_garment_item"] = "lining"
     rigged("glasses", tri_mesh("glasses_a", (0, -0.25, 0.6), axis="x"), a, [("root", None)], sc)
     for f, y in ((1, 0.0), (2, -0.07), (3, -0.053)):
         key(a, "hairb", f, y)
@@ -130,6 +152,8 @@ def build(path, bake_path):
         key(a, "garm", f, y)
     for f, y in ((1, 0.0), (2, 0.018), (3, 0.0)):
         key(a, "DEF-hand.L", f, y)
+    for f, y in ((1, 0.0), (2, 0.1), (3, 0.0)):  # the lining is outside the cage at rest, in its cavity at f2
+        key(a, "lin", f, y)
     b = make_rig("rig_b", [("root", (0.35, 0, 0), (0.35, 0, 0.1), None)], sc)
     bb = rigged("body_skin", box_mesh("body_b", (0.35, 0, 0.195), (0.2, 0.25, 0.2)), b, [("root", None)], sc)
     keep = bb.vertex_groups.new(name="keep")
@@ -183,8 +207,8 @@ build(blend, bake)
 d1 = audit(blend, bake, os.path.join(tmp, "a1.json"))
 if d1:
     R = d1["roles"]
-    check(R["a"]["hair"] == ["hair_a"] and R["a"]["garment"] == ["garment.shirt"], "roles: hair and garment")
-    check(sorted(R["a"]["body"]) == ["body_skin", "hand.L"], f"roles: a's body = body skin + hand ({R['a']['body']})")
+    check(R["a"]["hair"] == ["hair_a"] and R["a"]["garment"] == ["garment.lining", "garment.shirt"], "roles: hair and garment")
+    check(sorted(R["a"]["body"]) == ["arm.cage", "body_skin", "hand.L"], f"roles: a's body = skin, cage, hand ({R['a']['body']})")
     check(R["b"]["solid"] == ["garment.collider.body_skin"] and R["b"]["body"] == ["body_skin.001"],
           f"roles: b's solid is the hidden proxy, the masked skin is body only ({R['b']['solid']}, {R['b']['body']})")
     check(R["a"]["glasses"] == ["glasses"] and "glasses" not in R["a"]["body"], "roles: glasses apart from the body")
@@ -195,6 +219,8 @@ if d1:
           and near(depth(d1, 3, "hair_own", "a"), 3.0), "hair_own: none / 20 / 3 mm")
     check(depth(d1, 1, "garment_body", "a") is None and near(depth(d1, 2, "garment_body", "a"), 10.0)
           and depth(d1, 3, "garment_body", "a") is None, "garment_body: 10 mm at f2 only")
+    gl = [k for r in d1["rows"] for k in r["classes"].get("garment_body", {}).get("a", {}) if "lining" in k]
+    check(gl == [], f"garment_body (closed solid rule): a lining in a closed cavity is outside, not enclosed ({gl})")
     check(near(depth(d1, 2, "hand_prop", "a"), 8.0) and depth(d1, 1, "hand_prop", "a") is None,
           "hand_prop: 8 mm at f2 only")
     check(all(near(depth(d1, f, "body_body", "a"), 50.0) and depth(d1, f, "body_body", "b") is None for f in (1, 2, 3)),
