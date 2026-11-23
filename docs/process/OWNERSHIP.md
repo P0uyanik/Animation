@@ -26,5 +26,6 @@ split.
 
 | Task | Lane | Branch | Write-set | Depends on | Versions bumped |
 | --- | --- | --- | --- | --- | --- |
+| T-222 | C | t-222-claude-garment-contact | `pipeline/charsys/garment_pushout*.py`, `pipeline/charsys/tests/test_garment_pushout*.py`, `pipeline/charsys/shot_render.py`, `pipeline/charsys/cloth_sim/**`, `pipeline/charsys/tests/test_cloth_sim*.py`, `pipeline/production/bake_package.py`, `pipeline/production/tests/test_bake_package.py`, `docs/evaluation/characters/T-222/**` | `pipeline/charsys/hair_pushout.py` (stable), `pipeline/production/contact_audit.py` (stable) | — |
 
 Supervisor-only files: docs/process/TASK_LOG.md, docs/ROADMAP.md, docs/process/OWNER_DECISIONS.md, docs/tasks/**.
