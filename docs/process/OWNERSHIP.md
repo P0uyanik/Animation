@@ -26,6 +26,5 @@ split.
 
 | Task | Lane | Branch | Write-set | Depends on | Versions bumped |
 | --- | --- | --- | --- | --- | --- |
-| T-194 | B | t-194-claude-hair-pushout | `pipeline/charsys/shot_render.py`, `pipeline/production/run_shot.py`, `pipeline/charsys/hair_pushout.py`, `pipeline/charsys/tests/test_hair_pushout.py`, `docs/evaluation/characters/T-194/**` | T-183 | — |
 
 Supervisor-only files: docs/process/TASK_LOG.md, docs/ROADMAP.md, docs/process/OWNER_DECISIONS.md, docs/tasks/**.

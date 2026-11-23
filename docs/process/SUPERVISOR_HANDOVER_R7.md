@@ -72,3 +72,8 @@ Next free ID: T-212.
   task (T-216): built-in Warp/Hook/Lattice for the T-215 stuck list (docs/evaluation/characters/T-215/stuck.json),
   baked on neutral skin before rig/masks, knob-free + face_parity acceptance.
 - Follow-up logged: stepped hair edge in front of the ear at ±90° on auburn (released 0.14.0 too; T-215 sheet_face.jpg).
+- T-194 merged (main 2a9e3551, gate 45110653574). Supervisor fixes at merge: bake_package RENDER_CODE + hair_pushout.py;
+  removed byte-identical e912 shot copies (T-178 evidence-shot cast rule: white girl has no CURRENT). Blender unit
+  hair-pushout (shard 3). Owner asked ON/OFF for static_move_fade (Supervisor: ON). shot_render.py / run_shot.py are
+  free now → T-201 engine-key follow-up, then Q1 contact audit / Q4 Blender set lighting / L1 garment push-out
+  (all shot_render.py, sequence them) + H2 hair volume. Optional follow-up: rate-limited push-out (stateful design).
