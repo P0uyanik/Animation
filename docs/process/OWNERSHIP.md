@@ -26,7 +26,7 @@ split.
 
 | Task | Lane | Branch | Write-set | Depends on | Versions bumped |
 | --- | --- | --- | --- | --- | --- |
-| T-220 | R | t-220-claude-default-look | `pipeline/charsys/render_profiles.json`, `pipeline/charsys/tests/test_render_profiles.py`, `docs/evaluation/rendering/T-220/**` | `pipeline/charsys/render_engine.py` (stable) | — |
+| T-220 | R | t-220-claude-default-look | `pipeline/charsys/render_profiles.json`, `pipeline/charsys/tests/test_render_profiles.py`, `pipeline/production/tests/test_bake_package.py`, `tools/pc/render_package.py`, `docs/evaluation/rendering/T-220/**` | `pipeline/charsys/render_engine.py` (stable) | — |
 | T-216 | C | t-216-claude-auburn-p3 | `pipeline/charsys/face_generic_v4.py`, `pipeline/charsys/face_v4/**`, `pipeline/charsys/tests/test_face_generic_v4.py`, `pipeline/charsys/versions.py`, `pipeline/charsys/build_character.py`, `docs/evaluation/characters/T-216/**` | `pipeline/charsys/face_generic_v3.py` (stable), `pipeline/charsys/face_parity.py` (stable), `tools/fit/**` (stable), `assets/characters/**` (stable) | `face_generic` |
 | T-218 | P | t-218-claude-contact-audit | `pipeline/production/contact_audit.py`, `pipeline/production/tests/test_contact_audit.py`, `docs/evaluation/production/T-218/**` | `pipeline/charsys/hair_pushout.py` (stable), `docs/evaluation/characters/T-194/**` (stable), `docs/evaluation/characters/T-183/**` (stable) | — |
 
