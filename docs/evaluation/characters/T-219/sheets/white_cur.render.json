@@ -1,0 +1,19 @@
+{
+ "applied": {
+  "compositor": "{'look': 'plush_soft', 'params': {'glow': {'type': 'Fog Glow', 'quality': 'High'",
+  "cycles.adaptive_threshold": "0.05",
+  "render.use_persistent_data": "True"
+ },
+ "blend": "girl_white_hair_blue_dress_master.blend",
+ "label": "cur",
+ "profile": "final720_look",
+ "px": 512,
+ "seconds": {
+  "+000": 39.5,
+  "+090": 19.9,
+  "+180": 17.6,
+  "-030": 31.2
+ },
+ "spp": 128,
+ "label_text": "current 0.1.0"
+}
