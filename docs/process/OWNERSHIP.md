@@ -26,5 +26,7 @@ split.
 
 | Task | Lane | Branch | Write-set | Depends on | Versions bumped |
 | --- | --- | --- | --- | --- | --- |
+| T-217 | R | t-217-claude-profile-engine | `pipeline/charsys/shot_render.py`, `pipeline/production/run_shot.py`, `pipeline/charsys/tests/test_render_profiles.py` | `pipeline/charsys/render_profiles.json` (stable) | — |
+| T-218 | P | t-218-claude-contact-audit | `pipeline/production/contact_audit.py`, `pipeline/production/tests/test_contact_audit.py`, `docs/evaluation/production/T-218/**` | `pipeline/charsys/hair_pushout.py` (stable), `docs/evaluation/characters/T-194/**` (stable), `docs/evaluation/characters/T-183/**` (stable) | — |
 
 Supervisor-only files: docs/process/TASK_LOG.md, docs/ROADMAP.md, docs/process/OWNER_DECISIONS.md, docs/tasks/**.
